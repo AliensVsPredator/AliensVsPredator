@@ -19,7 +19,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.ProjectileUtil;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.UseAnim;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.phys.BlockHitResult;
@@ -190,11 +189,6 @@ public abstract class AbstractAVPWeaponItem extends Item implements GeoItem {
 
         var reloadSound = this.getWeaponItemData().getReloadSound().get();
         level.playSound(null, player.blockPosition(), reloadSound, SoundSource.PLAYERS);
-    }
-
-    @Override
-    public @NotNull UseAnim getUseAnimation(@NotNull ItemStack itemStack) {
-        return UseAnim.NONE;
     }
 
     @Override
