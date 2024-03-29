@@ -15,7 +15,14 @@ public class Services {
 
     public static final EntityRegistry ENTITY_REGISTRY = load(EntityRegistry.class);
 
+
     public static final ItemRegistry ITEM_REGISTRY = load(ItemRegistry.class);
+
+
+    public static final NetworkHandler NETWORK_HANDLER = load(NetworkHandler.class);
+
+
+    public static final NetworkPayloadHandlerRegistry PAYLOAD_HANDLER_REGISTRY = load(NetworkPayloadHandlerRegistry.class);
 
     public static final SoundEventRegistry SOUND_EVENT_REGISTRY = load(SoundEventRegistry.class);
 
@@ -27,5 +34,9 @@ public class Services {
             .orElseThrow(() -> new NullPointerException("Failed to load service for " + clazz.getName()));
         AVPConstants.LOGGER.debug("Loaded {} for service {}", loadedService, clazz);
         return loadedService;
+    }
+
+    private Services() {
+        throw new UnsupportedOperationException();
     }
 }

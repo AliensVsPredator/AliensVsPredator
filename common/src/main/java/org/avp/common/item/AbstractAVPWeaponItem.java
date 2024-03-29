@@ -22,6 +22,8 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
+import org.avp.common.network.payload.ClientboundBulletHitBlockPayload;
+import org.avp.common.service.Services;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
@@ -152,11 +154,8 @@ public abstract class AbstractAVPWeaponItem extends Item implements GeoItem {
             return new Tuple<>(System.currentTimeMillis() + TimeUtilities.FIVE_MINUTES_IN_MILLIS, newValue);
         });
 
-        // FIXME: Use packet to emit particles, otherwise will crash server.
-        // TODO: Scale with weapon bullet count + damage
-        for (int i = 0; i < 16; i++) {
-            Minecraft.getInstance().particleEngine.crack(blockPos, hitResult.getDirection());
-        }
+        var payload = new ClientboundBulletHitBlockPayload(blockPos, hitResult.getDirection());
+        Services.NETWORK_HANDLER.sendToAllClients(level.getServer(), payload);
     }
 
     private static GameObject<SoundEvent> getRicochetSound(SoundType soundType) {
