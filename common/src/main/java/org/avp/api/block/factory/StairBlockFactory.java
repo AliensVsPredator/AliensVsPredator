@@ -4,7 +4,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 
 import org.avp.common.service.Services;
-import org.avp.common.util.GameObject;
+import org.avp.api.GameObject;
 
 public class StairBlockFactory implements BlockFactory {
 

@@ -16,7 +16,7 @@ import org.avp.common.AVPConstants;
 import org.avp.common.block.*;
 import org.avp.common.item.*;
 import org.avp.common.service.Services;
-import org.avp.common.util.GameObject;
+import org.avp.api.GameObject;
 
 /**
  * @author Boston Vanseghi

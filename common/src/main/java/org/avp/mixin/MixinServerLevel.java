@@ -7,7 +7,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import org.avp.common.AVPConstants;
-import org.avp.common.TimeUtilities;
+import org.avp.common.util.TimeUtilities;
 import org.avp.common.util.MixinUtilities;
 import org.avp.server.BlockBreakProgressManager;
 import org.avp.server.ServerScheduler;

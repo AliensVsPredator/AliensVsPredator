@@ -12,7 +12,7 @@ import java.util.function.BiFunction;
 import org.avp.api.block.BlockData;
 import org.avp.api.block.drop.BlockDropUtils;
 import org.avp.common.item.AVPItems;
-import org.avp.common.util.GameObject;
+import org.avp.api.GameObject;
 
 /**
  * @author Boston Vanseghi

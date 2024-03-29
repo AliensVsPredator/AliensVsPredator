@@ -11,7 +11,7 @@ import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
 
 import org.avp.common.AVPConstants;
-import org.avp.common.util.GameObject;
+import org.avp.api.GameObject;
 
 /**
  * @author Boston Vanseghi

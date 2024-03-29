@@ -12,7 +12,7 @@ import java.util.function.Supplier;
 
 import org.avp.api.block.BlockData;
 import org.avp.api.block.BlockDataUtils;
-import org.avp.common.util.GameObject;
+import org.avp.api.GameObject;
 
 /**
  * @author Boston Vanseghi

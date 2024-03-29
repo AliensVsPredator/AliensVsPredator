@@ -8,7 +8,7 @@ import org.avp.common.entity.living.Crusher;
 import org.avp.common.entity.living.DroneRunner;
 import org.avp.common.entity.living.WarriorRunner;
 import org.avp.common.registry.AVPRegistry;
-import org.avp.common.util.GameObject;
+import org.avp.api.GameObject;
 
 /**
  * @author Boston Vanseghi

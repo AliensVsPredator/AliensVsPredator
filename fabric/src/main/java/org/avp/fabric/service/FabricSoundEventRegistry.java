@@ -8,7 +8,7 @@ import java.util.function.Supplier;
 
 import org.avp.common.AVPResources;
 import org.avp.common.service.SoundEventRegistry;
-import org.avp.common.util.GameObject;
+import org.avp.api.GameObject;
 
 /**
  * @author Boston Vanseghi

@@ -18,7 +18,7 @@ import org.avp.api.block.factory.FenceGateBlockFactory;
 import org.avp.api.block.factory.StairBlockFactory;
 import org.avp.common.block.AVPBlocks;
 import org.avp.common.item.AVPSpawnEggItems;
-import org.avp.common.util.GameObject;
+import org.avp.api.GameObject;
 
 public class AVPFabricBlockModelProvider {
 

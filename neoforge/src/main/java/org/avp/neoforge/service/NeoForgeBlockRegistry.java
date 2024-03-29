@@ -12,7 +12,7 @@ import java.util.function.Supplier;
 import org.avp.common.AVPConstants;
 import org.avp.common.service.BlockRegistry;
 import org.avp.common.service.Services;
-import org.avp.common.util.GameObject;
+import org.avp.api.GameObject;
 import org.avp.neoforge.util.ForgeGameObject;
 
 /**

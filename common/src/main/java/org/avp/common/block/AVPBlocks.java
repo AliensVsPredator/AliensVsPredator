@@ -11,7 +11,7 @@ import java.util.List;
 import org.avp.api.Tuple;
 import org.avp.api.block.BlockData;
 import org.avp.common.service.Services;
-import org.avp.common.util.GameObject;
+import org.avp.api.GameObject;
 
 /**
  * @author Boston Vanseghi

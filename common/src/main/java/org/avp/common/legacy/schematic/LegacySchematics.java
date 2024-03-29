@@ -7,7 +7,7 @@ import java.util.Map;
 import org.avp.common.legacy.schematic.resolver.DerelictSchematicResolver;
 import org.avp.common.legacy.schematic.resolver.TestSchematicResolver;
 import org.avp.common.service.Services;
-import org.avp.common.util.GameObject;
+import org.avp.api.GameObject;
 
 /**
  * @author Boston Vanseghi

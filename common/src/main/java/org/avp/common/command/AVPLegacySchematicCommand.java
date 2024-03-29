@@ -11,7 +11,7 @@ import java.util.List;
 
 import org.avp.common.legacy.schematic.LegacySchematic;
 import org.avp.common.legacy.schematic.LegacySchematics;
-import org.avp.common.util.GameObject;
+import org.avp.api.GameObject;
 
 /**
  * @author Boston Vanseghi

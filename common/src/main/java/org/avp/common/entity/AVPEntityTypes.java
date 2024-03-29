@@ -7,7 +7,7 @@ import net.minecraft.world.entity.MobCategory;
 import org.avp.common.entity.living.*;
 import org.avp.common.registry.AVPRegistry;
 import org.avp.common.service.Services;
-import org.avp.common.util.GameObject;
+import org.avp.api.GameObject;
 
 /**
  * @author Boston Vanseghi

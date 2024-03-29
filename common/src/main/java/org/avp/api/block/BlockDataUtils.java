@@ -8,7 +8,7 @@ import net.minecraft.world.level.block.state.properties.WoodType;
 import org.avp.api.block.drop.BlockDrops;
 import org.avp.api.block.drop.key.BlockDropKeys;
 import org.avp.api.block.factory.BlockFactories;
-import org.avp.common.util.GameObject;
+import org.avp.api.GameObject;
 
 public class BlockDataUtils {
 

@@ -5,7 +5,7 @@ import net.minecraft.world.item.Item;
 import java.util.function.Supplier;
 
 import org.avp.common.service.ItemRegistry;
-import org.avp.common.util.GameObject;
+import org.avp.api.GameObject;
 import org.avp.fabric.common.registry.AVPDeferredItemRegistry;
 
 /**

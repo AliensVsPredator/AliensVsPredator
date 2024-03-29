@@ -13,7 +13,7 @@ import org.avp.common.item.weapon.M3712ShotgunItem;
 import org.avp.common.item.weapon.M41APulseRifleItem;
 import org.avp.common.item.weapon.SniperRifleItem;
 import org.avp.common.service.Services;
-import org.avp.common.util.GameObject;
+import org.avp.api.GameObject;
 
 /**
  * @author Boston Vanseghi

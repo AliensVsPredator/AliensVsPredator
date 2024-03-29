@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.avp.client.util.EntityRenderData;
-import org.avp.common.util.GameObject;
+import org.avp.api.GameObject;
 
 /**
  * @author Boston Vanseghi

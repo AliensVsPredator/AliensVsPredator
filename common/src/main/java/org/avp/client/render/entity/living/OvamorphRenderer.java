@@ -11,7 +11,7 @@ import org.jetbrains.annotations.NotNull;
 
 import org.avp.client.model.entity.living.OvamorphModel;
 import org.avp.common.AVPResources;
-import org.avp.common.TimeUtilities;
+import org.avp.common.util.TimeUtilities;
 import org.avp.common.entity.living.Ovamorph;
 
 /**

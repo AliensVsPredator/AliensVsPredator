@@ -1,4 +1,4 @@
-package org.avp.common;
+package org.avp.common.util;
 
 import java.time.LocalDate;
 import java.time.Month;

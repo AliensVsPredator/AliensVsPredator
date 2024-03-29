@@ -19,9 +19,9 @@ import net.minecraft.world.entity.projectile.ProjectileUtil;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
+import org.avp.common.util.SoundUtilities;
 import org.jetbrains.annotations.NotNull;
 
 import java.time.Duration;
@@ -32,11 +32,10 @@ import java.util.function.Supplier;
 import org.avp.api.Tuple;
 import org.avp.api.item.weapon.FireMode;
 import org.avp.api.item.weapon.WeaponItemData;
-import org.avp.common.TimeUtilities;
+import org.avp.common.util.TimeUtilities;
 import org.avp.common.network.payload.ClientboundBulletHitBlockPayload;
 import org.avp.common.service.Services;
-import org.avp.common.sound.AVPSoundEvents;
-import org.avp.common.util.GameObject;
+import org.avp.api.GameObject;
 import org.avp.mixin.MixinMinecraftAccessor;
 import org.avp.server.BlockBreakProgressManager;
 import org.avp.server.ServerScheduler;
@@ -138,8 +137,7 @@ public abstract class AbstractAVPWeaponItem extends Item implements GeoItem {
         var block = blockState.getBlock();
         var soundType = block.getSoundType(blockState);
 
-        GameObject<SoundEvent> ricochetSfx = getRicochetSound(soundType);
-
+        GameObject<SoundEvent> ricochetSfx = SoundUtilities.getRicochetSoundForSoundType(soundType);
         level.playSound(null, blockPos, ricochetSfx.get(), SoundSource.BLOCKS);
 
         BlockBreakProgressManager.BLOCK_BREAK_PROGRESS_MAP.compute(blockPos, (key, tuple) -> {
@@ -160,21 +158,6 @@ public abstract class AbstractAVPWeaponItem extends Item implements GeoItem {
         Services.NETWORK_HANDLER.sendToAllClients(level.getServer(), payload);
     }
 
-    private static GameObject<SoundEvent> getRicochetSound(SoundType soundType) {
-        GameObject<SoundEvent> ricochetSfx;
-
-        if (soundType == SoundType.GLASS) {
-            ricochetSfx = AVPSoundEvents.ITEM_WEAPON_FX_RICOCHET_GLASS;
-        } else if (soundType == SoundType.GRAVEL) {
-            ricochetSfx = AVPSoundEvents.ITEM_WEAPON_FX_RICOCHET_DIRT;
-        } else if (soundType == SoundType.METAL) {
-            ricochetSfx = AVPSoundEvents.ITEM_WEAPON_FX_RICOCHET_METAL;
-        } else {
-            ricochetSfx = AVPSoundEvents.ITEM_WEAPON_FX_RICOCHET_GENERIC;
-        }
-        return ricochetSfx;
-    }
-
     private void reload(Level level, Player player, ItemStack itemStack) {
         var maxAmmunition = this.getWeaponItemData().getMaxAmmunition();
         var reloadTimeInTicks = this.getWeaponItemData().getReloadTimeInTicks();
@@ -187,6 +170,10 @@ public abstract class AbstractAVPWeaponItem extends Item implements GeoItem {
         var reloadStartSound = this.getWeaponItemData().getReloadStartSound().get();
         level.playSound(null, player.blockPosition(), reloadStartSound, SoundSource.PLAYERS);
 
+        scheduleDelayedReloadFinishSound(level, player, itemStack, reloadTimeInTicks);
+    }
+
+    private void scheduleDelayedReloadFinishSound(Level level, Player player, ItemStack itemStack, int reloadTimeInTicks) {
         this.getWeaponItemData()
             .getReloadFinishSound()
             .ifPresent(

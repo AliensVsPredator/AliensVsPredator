@@ -12,7 +12,7 @@ import org.avp.api.block.drop.BlockDrop;
 import org.avp.api.block.drop.BlockDrops;
 import org.avp.api.block.factory.BlockFactories;
 import org.avp.api.block.factory.BlockFactory;
-import org.avp.common.util.GameObject;
+import org.avp.api.GameObject;
 
 /**
  * @author Boston Vanseghi
