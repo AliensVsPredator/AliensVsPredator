@@ -1,6 +1,7 @@
 package org.avp.common.network;
 
 import org.avp.common.network.payload.ClientboundBulletHitBlockPayload;
+import org.avp.common.network.payload.ServerboundWeaponReloadRequestPayload;
 import org.avp.common.service.Services;
 
 /**
@@ -21,6 +22,12 @@ public class AVPNetworkPayloadHandlerRegistry {
         Services.PAYLOAD_HANDLER_REGISTRY.registerClientbound(
             ClientboundBulletHitBlockPayload.PAYLOAD_ID,
             ClientboundBulletHitBlockPayload::new
+        );
+
+        // Serverbound
+        Services.PAYLOAD_HANDLER_REGISTRY.registerServerbound(
+            ServerboundWeaponReloadRequestPayload.PAYLOAD_ID,
+            ServerboundWeaponReloadRequestPayload::new
         );
     }
 }
