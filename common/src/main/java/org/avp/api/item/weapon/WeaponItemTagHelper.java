@@ -36,6 +36,10 @@ public class WeaponItemTagHelper {
         return fireMode;
     }
 
+    public static boolean hasMaxAmmunition(ItemStack itemStack, WeaponItemData weaponItemData) {
+        return getAmmunition(itemStack) == weaponItemData.getMaxAmmunition();
+    }
+
     public static void restoreAmmunition(ItemStack itemStack, WeaponItemData weaponItemData) {
         getTagSafely(itemStack).putInt(AMMUNITION_KEY, weaponItemData.getMaxAmmunition());
     }

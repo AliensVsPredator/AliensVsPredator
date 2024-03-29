@@ -16,6 +16,10 @@ public class ReloadStrategies {
     public static final ReloadStrategy NO_OP = (l, p, i, w) -> {};
 
     public static final ReloadStrategy STANDARD = (level, player, itemStack, weaponItemData) -> {
+        if (WeaponItemTagHelper.hasMaxAmmunition(itemStack, weaponItemData)) {
+            return;
+        }
+
         var reloadTimeInTicks = weaponItemData.getReloadTimeInTicks();
         player.getCooldowns().addCooldown(itemStack.getItem(), reloadTimeInTicks);
 

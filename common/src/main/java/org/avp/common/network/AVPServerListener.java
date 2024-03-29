@@ -18,16 +18,19 @@ public class AVPServerListener {
         var playerUUID = weaponReloadRequestPayload.playerUUID();
         var player = (ServerPlayer) serverLevel.getPlayerByUUID(playerUUID);
 
-        if (player != null) {
-            var usedItemHand = player.getUsedItemHand();
-            var itemStack = player.getItemInHand(usedItemHand);
-            var item = itemStack.getItem();
+        if (player == null) return;
 
-            if (item instanceof AbstractAVPWeaponItem abstractAVPWeaponItem) {
-                var weaponItemData = abstractAVPWeaponItem.getWeaponItemData();
-                weaponItemData.getReloadStrategy().tryReload(serverLevel, player, itemStack, weaponItemData);
-            }
-        }
+        var usedItemHand = player.getUsedItemHand();
+        var itemStack = player.getItemInHand(usedItemHand);
+        var item = itemStack.getItem();
+
+        // Do not reload if weapon is busy.
+        if (player.getCooldowns().isOnCooldown(item)) return;
+
+        if (!(item instanceof AbstractAVPWeaponItem abstractAVPWeaponItem)) return;
+
+        var weaponItemData = abstractAVPWeaponItem.getWeaponItemData();
+        weaponItemData.getReloadStrategy().tryReload(serverLevel, player, itemStack, weaponItemData);
     }
 
     private AVPServerListener() {
