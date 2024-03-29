@@ -7,7 +7,6 @@ import mod.azure.azurelib.common.internal.common.core.animation.AnimatableManage
 import mod.azure.azurelib.common.internal.common.util.AzureLibUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
-import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
@@ -23,25 +22,22 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
-import org.avp.api.item.weapon.FireMode;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
+import org.avp.api.Tuple;
+import org.avp.api.item.weapon.FireMode;
 import org.avp.api.item.weapon.WeaponItemData;
+import org.avp.common.TimeUtilities;
 import org.avp.common.sound.AVPSoundEvents;
 import org.avp.common.util.GameObject;
 import org.avp.mixin.MixinMinecraftAccessor;
+import org.avp.server.BlockBreakProgressManager;
 
 public abstract class AbstractAVPWeaponItem extends Item implements GeoItem {
-
-    // TODO: CLEAR THIS PERIODICALLY.
-    // FIXME: FR FR ON JAH, CLEAN THIS RN
-    private static final Map<BlockPos, Float> BLOCK_BREAK_PROGRESS_MAP = new HashMap<>();
 
     private static final String AMMUNITION_KEY = "Ammunition";
 
@@ -142,8 +138,8 @@ public abstract class AbstractAVPWeaponItem extends Item implements GeoItem {
 
         level.playSound(null, blockPos, ricochetSfx.get(), SoundSource.BLOCKS);
 
-        BLOCK_BREAK_PROGRESS_MAP.compute(blockPos, (key, value) -> {
-            var cachedValue = value == null ? 0 : value;
+        BlockBreakProgressManager.BLOCK_BREAK_PROGRESS_MAP.compute(blockPos, (key, tuple) -> {
+            var cachedValue = tuple == null ? 0 : tuple.second();
             var damage = this.getWeaponItemData().getDamage() * fireMode.consumedAmmunition();
             var newValue = cachedValue + (damage / (2F + block.defaultDestroyTime() / 2F));
             var progress = (int) Mth.clamp(newValue, 0F, 9F);
@@ -153,7 +149,7 @@ public abstract class AbstractAVPWeaponItem extends Item implements GeoItem {
                 level.destroyBlock(blockPos, false);
                 return null;
             }
-            return newValue;
+            return new Tuple<>(System.currentTimeMillis() + TimeUtilities.FIVE_MINUTES_IN_MILLIS, newValue);
         });
 
         // FIXME: Use packet to emit particles, otherwise will crash server.
