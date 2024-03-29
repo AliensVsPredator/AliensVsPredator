@@ -182,8 +182,8 @@ public abstract class AbstractAVPWeaponItem extends Item implements GeoItem {
         tag.putInt(AMMUNITION_KEY, maxAmmunition);
         // TODO: Consume ammunition item.
 
-        var reloadSound = this.getWeaponItemData().getReloadSound().get();
-        level.playSound(null, player.blockPosition(), reloadSound, SoundSource.PLAYERS);
+        var reloadStartSound = this.getWeaponItemData().getReloadStartSound().get();
+        level.playSound(null, player.blockPosition(), reloadStartSound, SoundSource.PLAYERS);
     }
 
     @Override

@@ -5,6 +5,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 import org.avp.common.util.GameObject;
 
@@ -29,7 +30,9 @@ public class WeaponItemData {
 
     private final GameObject<SoundEvent> fireFailSound;
 
-    private final GameObject<SoundEvent> reloadSound;
+    private final GameObject<SoundEvent> reloadFinishSound;
+
+    private final GameObject<SoundEvent> reloadStartSound;
 
     public WeaponItemData(
         float accuracy,
@@ -40,7 +43,8 @@ public class WeaponItemData {
         int maxAmmunition,
         int reloadTimeInTicks,
         @NotNull GameObject<SoundEvent> fireFailSound,
-        @NotNull GameObject<SoundEvent> reloadSound
+        GameObject<SoundEvent> reloadFinishSound,
+        @NotNull GameObject<SoundEvent> reloadStartSound
     ) {
         if (fireModes.isEmpty()) {
             throw new IllegalStateException("Weapons must have at least 1 fire mode!");
@@ -54,7 +58,8 @@ public class WeaponItemData {
         this.maxAmmunition = Math.max(maxAmmunition, 0);
         this.reloadTimeInTicks = Math.max(reloadTimeInTicks, 0);
         this.fireFailSound = fireFailSound;
-        this.reloadSound = reloadSound;
+        this.reloadFinishSound = reloadFinishSound;
+        this.reloadStartSound = reloadStartSound;
     }
 
     public FireMode getFireMode(String identifier) {
@@ -97,7 +102,11 @@ public class WeaponItemData {
         return fireFailSound;
     }
 
-    public GameObject<SoundEvent> getReloadSound() {
-        return reloadSound;
+    public Optional<GameObject<SoundEvent>> getReloadFinishSound() {
+        return Optional.ofNullable(reloadFinishSound);
+    }
+
+    public GameObject<SoundEvent> getReloadStartSound() {
+        return reloadStartSound;
     }
 }
