@@ -24,6 +24,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import org.jetbrains.annotations.NotNull;
 
+import java.time.Duration;
 import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
@@ -38,6 +39,7 @@ import org.avp.common.sound.AVPSoundEvents;
 import org.avp.common.util.GameObject;
 import org.avp.mixin.MixinMinecraftAccessor;
 import org.avp.server.BlockBreakProgressManager;
+import org.avp.server.ServerScheduler;
 
 public abstract class AbstractAVPWeaponItem extends Item implements GeoItem {
 
@@ -184,6 +186,22 @@ public abstract class AbstractAVPWeaponItem extends Item implements GeoItem {
 
         var reloadStartSound = this.getWeaponItemData().getReloadStartSound().get();
         level.playSound(null, player.blockPosition(), reloadStartSound, SoundSource.PLAYERS);
+
+        this.getWeaponItemData()
+            .getReloadFinishSound()
+            .ifPresent(
+                reloadFinishSound -> ServerScheduler.schedule(
+                    () -> {
+                        var interactionHand = player.getUsedItemHand();
+                        var itemInHand = player.getItemInHand(interactionHand);
+
+                        if (Objects.equals(itemStack, itemInHand)) {
+                            level.playSound(null, player.blockPosition(), reloadFinishSound.get(), SoundSource.PLAYERS);
+                        }
+                    },
+                    Duration.ofMillis(reloadTimeInTicks * 50L)
+                )
+            );
     }
 
     @Override
