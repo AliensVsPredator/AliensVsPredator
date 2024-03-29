@@ -22,8 +22,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
-import org.avp.common.network.payload.ClientboundBulletHitBlockPayload;
-import org.avp.common.service.Services;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
@@ -34,6 +32,8 @@ import org.avp.api.Tuple;
 import org.avp.api.item.weapon.FireMode;
 import org.avp.api.item.weapon.WeaponItemData;
 import org.avp.common.TimeUtilities;
+import org.avp.common.network.payload.ClientboundBulletHitBlockPayload;
+import org.avp.common.service.Services;
 import org.avp.common.sound.AVPSoundEvents;
 import org.avp.common.util.GameObject;
 import org.avp.mixin.MixinMinecraftAccessor;

@@ -4,15 +4,16 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlerEvent;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import org.avp.api.network.NetworkSide;
 import org.avp.common.AVPConstants;
 import org.avp.common.network.ClientboundPacket;
 import org.avp.common.network.PayloadHandlerData;
 import org.avp.common.network.ServerboundPacket;
 import org.avp.common.service.NetworkPayloadHandlerRegistry;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @author Boston Vanseghi
@@ -30,10 +31,12 @@ public class NeoForgeNetworkPayloadHandlerRegistry implements NetworkPayloadHand
             var handlingSide = payloadHandlerData.networkSide();
 
             registrar.play(id, reader, handler -> {
-                Runnable registerClientHandle = () ->
-                    handler.client((data, ctx) -> ctx.workHandler().execute(((ClientboundPacket)data)::handleClient));
-                Runnable registerServerHandle = () ->
-                    handler.client((data, ctx) -> ctx.workHandler().execute(((ServerboundPacket)data)::handleServer));
+                Runnable registerClientHandle = () -> handler.client(
+                    (data, ctx) -> ctx.workHandler().execute(((ClientboundPacket) data)::handleClient)
+                );
+                Runnable registerServerHandle = () -> handler.client(
+                    (data, ctx) -> ctx.workHandler().execute(((ServerboundPacket) data)::handleServer)
+                );
 
                 switch (handlingSide) {
                     case CLIENT -> registerClientHandle.run();
@@ -48,7 +51,11 @@ public class NeoForgeNetworkPayloadHandlerRegistry implements NetworkPayloadHand
     }
 
     @Override
-    public <T extends CustomPacketPayload> void register(ResourceLocation payloadId, FriendlyByteBuf.Reader<T> reader, NetworkSide handlingSide) {
+    public <T extends CustomPacketPayload> void register(
+        ResourceLocation payloadId,
+        FriendlyByteBuf.Reader<T> reader,
+        NetworkSide handlingSide
+    ) {
         PAYLOAD_HANDLER_DATA_LIST.add(new PayloadHandlerData<>(payloadId, reader, handlingSide));
     }
 }

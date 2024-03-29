@@ -15,12 +15,9 @@ public class Services {
 
     public static final EntityRegistry ENTITY_REGISTRY = load(EntityRegistry.class);
 
-
     public static final ItemRegistry ITEM_REGISTRY = load(ItemRegistry.class);
 
-
     public static final NetworkHandler NETWORK_HANDLER = load(NetworkHandler.class);
-
 
     public static final NetworkPayloadHandlerRegistry PAYLOAD_HANDLER_REGISTRY = load(NetworkPayloadHandlerRegistry.class);
 

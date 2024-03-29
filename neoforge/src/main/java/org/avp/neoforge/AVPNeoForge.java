@@ -7,8 +7,8 @@ import net.neoforged.neoforge.common.NeoForge;
 import org.avp.common.AVPCommon;
 import org.avp.common.AVPConstants;
 import org.avp.neoforge.common.command.AVPNeoForgeCommands;
-import org.avp.neoforge.service.NeoForgeNetworkPayloadHandlerRegistry;
 import org.avp.neoforge.service.*;
+import org.avp.neoforge.service.NeoForgeNetworkPayloadHandlerRegistry;
 
 /**
  * @author Boston Vanseghi

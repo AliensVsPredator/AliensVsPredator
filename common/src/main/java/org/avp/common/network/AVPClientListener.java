@@ -1,6 +1,7 @@
 package org.avp.common.network;
 
 import net.minecraft.client.Minecraft;
+
 import org.avp.common.network.payload.ClientboundBulletHitBlockPayload;
 
 /**

@@ -7,6 +7,8 @@ import net.minecraft.server.MinecraftServer;
  * @author Boston Vanseghi
  */
 public interface NetworkHandler {
+
     void sendToAllClients(MinecraftServer server, CustomPacketPayload customPacketPayload);
+
     void sendToServer(CustomPacketPayload customPacketPayload);
 }

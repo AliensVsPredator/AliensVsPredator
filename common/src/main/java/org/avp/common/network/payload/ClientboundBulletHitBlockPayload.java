@@ -5,10 +5,11 @@ import net.minecraft.core.Direction;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
+import org.jetbrains.annotations.NotNull;
+
 import org.avp.common.AVPResources;
 import org.avp.common.network.AVPClientListener;
 import org.avp.common.network.ClientboundPacket;
-import org.jetbrains.annotations.NotNull;
 
 /**
  * @author Boston Vanseghi

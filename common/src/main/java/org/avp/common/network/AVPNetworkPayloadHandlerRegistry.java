@@ -1,6 +1,5 @@
 package org.avp.common.network;
 
-import org.avp.api.network.NetworkSide;
 import org.avp.common.network.payload.ClientboundBulletHitBlockPayload;
 import org.avp.common.service.Services;
 
@@ -19,6 +18,9 @@ public class AVPNetworkPayloadHandlerRegistry {
 
     static {
         // Clientbound
-        Services.PAYLOAD_HANDLER_REGISTRY.registerClientbound(ClientboundBulletHitBlockPayload.PAYLOAD_ID, ClientboundBulletHitBlockPayload::new);
+        Services.PAYLOAD_HANDLER_REGISTRY.registerClientbound(
+            ClientboundBulletHitBlockPayload.PAYLOAD_ID,
+            ClientboundBulletHitBlockPayload::new
+        );
     }
 }
