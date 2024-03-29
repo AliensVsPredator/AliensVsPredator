@@ -1,11 +1,11 @@
 package org.avp.common.item;
 
+import java.util.List;
+
 import org.avp.api.item.weapon.FireMode;
 import org.avp.api.item.weapon.WeaponDamageTypes;
 import org.avp.api.item.weapon.WeaponItemData;
 import org.avp.common.sound.AVPSoundEvents;
-
-import java.util.List;
 
 public class AVPWeaponItemData {
 

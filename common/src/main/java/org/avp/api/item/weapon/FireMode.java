@@ -1,6 +1,7 @@
 package org.avp.api.item.weapon;
 
 import net.minecraft.sounds.SoundEvent;
+
 import org.avp.common.util.GameObject;
 
 public record FireMode(

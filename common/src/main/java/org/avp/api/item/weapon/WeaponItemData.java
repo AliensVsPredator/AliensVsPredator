@@ -3,10 +3,10 @@ package org.avp.api.item.weapon;
 import net.minecraft.sounds.SoundEvent;
 import org.jetbrains.annotations.NotNull;
 
-import org.avp.common.util.GameObject;
-
 import java.util.List;
 import java.util.Objects;
+
+import org.avp.common.util.GameObject;
 
 /**
  * @author Boston Vanseghi
