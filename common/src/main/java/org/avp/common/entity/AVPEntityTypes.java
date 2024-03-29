@@ -4,10 +4,10 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.MobCategory;
 
+import org.avp.api.GameObject;
 import org.avp.common.entity.living.*;
 import org.avp.common.registry.AVPRegistry;
 import org.avp.common.service.Services;
-import org.avp.api.GameObject;
 
 /**
  * @author Boston Vanseghi

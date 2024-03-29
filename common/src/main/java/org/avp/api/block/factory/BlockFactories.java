@@ -10,8 +10,8 @@ import net.minecraft.world.level.block.state.properties.WoodType;
 
 import java.util.function.Function;
 
-import org.avp.api.block.TransparentBlock;
 import org.avp.api.GameObject;
+import org.avp.api.block.TransparentBlock;
 
 public class BlockFactories {
 

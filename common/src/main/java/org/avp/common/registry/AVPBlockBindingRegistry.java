@@ -4,8 +4,8 @@ import net.minecraft.world.level.block.Block;
 
 import java.util.function.Supplier;
 
-import org.avp.common.service.Services;
 import org.avp.api.GameObject;
+import org.avp.common.service.Services;
 
 /**
  * @author Boston Vanseghi

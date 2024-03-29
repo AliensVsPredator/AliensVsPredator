@@ -1,11 +1,12 @@
 package org.avp.api.item.weapon.reload;
 
 import net.minecraft.sounds.SoundSource;
-import org.avp.api.item.weapon.WeaponItemTagHelper;
-import org.avp.server.ServerScheduler;
 
 import java.time.Duration;
 import java.util.Objects;
+
+import org.avp.api.item.weapon.WeaponItemTagHelper;
+import org.avp.server.ServerScheduler;
 
 /**
  * @author Boston Vanseghi

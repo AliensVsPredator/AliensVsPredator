@@ -10,11 +10,11 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 
 import java.util.function.Supplier;
 
+import org.avp.api.GameObject;
 import org.avp.common.AVPConstants;
 import org.avp.common.item.AVPSpawnEggItems;
 import org.avp.common.service.EntityRegistry;
 import org.avp.common.service.Services;
-import org.avp.api.GameObject;
 import org.avp.neoforge.util.NeoForgeEntityGameObject;
 
 /**

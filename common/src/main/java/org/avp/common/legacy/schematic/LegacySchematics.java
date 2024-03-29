@@ -4,10 +4,10 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Map;
 
+import org.avp.api.GameObject;
 import org.avp.common.legacy.schematic.resolver.DerelictSchematicResolver;
 import org.avp.common.legacy.schematic.resolver.TestSchematicResolver;
 import org.avp.common.service.Services;
-import org.avp.api.GameObject;
 
 /**
  * @author Boston Vanseghi

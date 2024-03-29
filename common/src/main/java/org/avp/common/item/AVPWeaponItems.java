@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
 
+import org.avp.api.GameObject;
 import org.avp.common.item.weapon.AK47Item;
 import org.avp.common.item.weapon.F90RifleItem;
 import org.avp.common.item.weapon.FlamethrowerSevastopolItem;
@@ -13,7 +14,6 @@ import org.avp.common.item.weapon.M3712ShotgunItem;
 import org.avp.common.item.weapon.M41APulseRifleItem;
 import org.avp.common.item.weapon.SniperRifleItem;
 import org.avp.common.service.Services;
-import org.avp.api.GameObject;
 
 /**
  * @author Boston Vanseghi

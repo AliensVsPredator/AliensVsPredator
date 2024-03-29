@@ -7,9 +7,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
 
+import org.avp.api.GameObject;
 import org.avp.common.item.armor.material.AVPArmorMaterials;
 import org.avp.common.service.Services;
-import org.avp.api.GameObject;
 
 /**
  * @author Boston Vanseghi

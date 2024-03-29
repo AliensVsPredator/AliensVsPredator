@@ -8,8 +8,8 @@ import net.minecraft.world.item.SpawnEggItem;
 
 import java.util.function.Supplier;
 
-import org.avp.common.item.AVPSpawnEggItems;
 import org.avp.api.GameObject;
+import org.avp.common.item.AVPSpawnEggItems;
 
 /**
  * @author Boston Vanseghi

@@ -11,12 +11,12 @@ import java.util.Collection;
 import java.util.List;
 import java.util.function.Supplier;
 
+import org.avp.api.GameObject;
 import org.avp.api.Tuple;
 import org.avp.common.AVPConstants;
 import org.avp.common.block.*;
 import org.avp.common.item.*;
 import org.avp.common.service.Services;
-import org.avp.api.GameObject;
 
 /**
  * @author Boston Vanseghi

@@ -4,8 +4,8 @@ import net.minecraft.world.item.CreativeModeTab;
 
 import java.util.function.Supplier;
 
-import org.avp.common.service.CreativeModeTabRegistry;
 import org.avp.api.GameObject;
+import org.avp.common.service.CreativeModeTabRegistry;
 import org.avp.fabric.common.registry.AVPDeferredCreativeTabRegistry;
 
 /**

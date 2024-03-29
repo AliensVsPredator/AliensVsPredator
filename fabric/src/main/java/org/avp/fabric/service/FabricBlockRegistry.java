@@ -8,9 +8,9 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 
 import java.util.function.Supplier;
 
+import org.avp.api.GameObject;
 import org.avp.common.service.BlockRegistry;
 import org.avp.common.service.Services;
-import org.avp.api.GameObject;
 import org.avp.fabric.common.registry.AVPDeferredBlockRegistry;
 
 /**

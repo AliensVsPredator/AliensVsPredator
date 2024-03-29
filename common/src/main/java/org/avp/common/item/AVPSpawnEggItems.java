@@ -5,8 +5,8 @@ import net.minecraft.world.item.Item;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.avp.common.registry.AVPItemBindingRegistry;
 import org.avp.api.GameObject;
+import org.avp.common.registry.AVPItemBindingRegistry;
 
 /**
  * @author Boston Vanseghi

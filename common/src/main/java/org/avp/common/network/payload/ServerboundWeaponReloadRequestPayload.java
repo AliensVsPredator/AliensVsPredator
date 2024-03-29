@@ -4,12 +4,13 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
-import org.avp.common.AVPResources;
-import org.avp.common.network.AVPServerListener;
-import org.avp.common.network.ServerboundPacket;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.UUID;
+
+import org.avp.common.AVPResources;
+import org.avp.common.network.AVPServerListener;
+import org.avp.common.network.ServerboundPacket;
 
 /**
  * @author Boston Vanseghi

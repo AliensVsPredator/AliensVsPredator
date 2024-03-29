@@ -9,10 +9,10 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 import java.util.List;
 import java.util.function.BiFunction;
 
+import org.avp.api.GameObject;
 import org.avp.api.block.BlockData;
 import org.avp.api.block.drop.BlockDropUtils;
 import org.avp.common.item.AVPItems;
-import org.avp.api.GameObject;
 
 /**
  * @author Boston Vanseghi

@@ -2,9 +2,9 @@ package org.avp.common.sound;
 
 import net.minecraft.sounds.SoundEvent;
 
+import org.avp.api.GameObject;
 import org.avp.common.AVPResources;
 import org.avp.common.service.Services;
-import org.avp.api.GameObject;
 
 /**
  * @author Boston Vanseghi

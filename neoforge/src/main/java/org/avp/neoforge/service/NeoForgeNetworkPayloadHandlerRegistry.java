@@ -36,9 +36,10 @@ public class NeoForgeNetworkPayloadHandlerRegistry implements NetworkPayloadHand
                     (data, ctx) -> ctx.workHandler().execute(((ClientboundPacket) data)::handleClient)
                 );
                 Runnable registerServerHandle = () -> handler.server(
-                    (data, ctx) -> ctx.workHandler().execute(
-                        () -> ((ServerboundPacket) data).handleServer((ServerLevel) ctx.level().orElse(null))
-                    )
+                    (data, ctx) -> ctx.workHandler()
+                        .execute(
+                            () -> ((ServerboundPacket) data).handleServer((ServerLevel) ctx.level().orElse(null))
+                        )
                 );
 
                 switch (handlingSide) {

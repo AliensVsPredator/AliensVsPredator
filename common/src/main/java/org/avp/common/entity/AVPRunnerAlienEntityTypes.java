@@ -3,12 +3,12 @@ package org.avp.common.entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
 
+import org.avp.api.GameObject;
 import org.avp.common.entity.living.ChestbursterRunner;
 import org.avp.common.entity.living.Crusher;
 import org.avp.common.entity.living.DroneRunner;
 import org.avp.common.entity.living.WarriorRunner;
 import org.avp.common.registry.AVPRegistry;
-import org.avp.api.GameObject;
 
 /**
  * @author Boston Vanseghi

@@ -5,10 +5,10 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.properties.WoodType;
 
+import org.avp.api.GameObject;
 import org.avp.api.block.drop.BlockDrops;
 import org.avp.api.block.drop.key.BlockDropKeys;
 import org.avp.api.block.factory.BlockFactories;
-import org.avp.api.GameObject;
 
 public class BlockDataUtils {
 

@@ -6,9 +6,9 @@ import net.minecraft.sounds.SoundEvent;
 
 import java.util.function.Supplier;
 
+import org.avp.api.GameObject;
 import org.avp.common.AVPResources;
 import org.avp.common.service.SoundEventRegistry;
-import org.avp.api.GameObject;
 
 /**
  * @author Boston Vanseghi
