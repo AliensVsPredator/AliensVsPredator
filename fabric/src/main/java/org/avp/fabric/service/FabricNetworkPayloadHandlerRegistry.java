@@ -35,7 +35,7 @@ public class FabricNetworkPayloadHandlerRegistry implements NetworkPayloadHandle
             packetSender
         ) -> {
             var payload = reader.apply(friendlyByteBuf);
-            minecraftServer.execute(((ServerboundPacket) payload)::handleServer);
+            minecraftServer.execute(() -> ((ServerboundPacket) payload).handleServer(serverPlayer.serverLevel()));
         };
 
         switch (handlingSide) {

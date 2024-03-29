@@ -3,6 +3,7 @@ package org.avp.neoforge.service;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlerEvent;
 
 import java.util.ArrayList;
@@ -34,8 +35,10 @@ public class NeoForgeNetworkPayloadHandlerRegistry implements NetworkPayloadHand
                 Runnable registerClientHandle = () -> handler.client(
                     (data, ctx) -> ctx.workHandler().execute(((ClientboundPacket) data)::handleClient)
                 );
-                Runnable registerServerHandle = () -> handler.client(
-                    (data, ctx) -> ctx.workHandler().execute(((ServerboundPacket) data)::handleServer)
+                Runnable registerServerHandle = () -> handler.server(
+                    (data, ctx) -> ctx.workHandler().execute(
+                        () -> ((ServerboundPacket) data).handleServer((ServerLevel) ctx.level().orElse(null))
+                    )
                 );
 
                 switch (handlingSide) {
