@@ -7,7 +7,8 @@ import mod.azure.azurelib.common.internal.common.core.animation.AnimatableManage
 import mod.azure.azurelib.common.internal.common.util.AzureLibUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
@@ -21,10 +22,10 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
+import org.avp.api.item.weapon.WeaponItemTagHelper;
 import org.avp.common.util.SoundUtilities;
 import org.jetbrains.annotations.NotNull;
 
-import java.time.Duration;
 import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
@@ -38,11 +39,8 @@ import org.avp.common.service.Services;
 import org.avp.api.GameObject;
 import org.avp.mixin.MixinMinecraftAccessor;
 import org.avp.server.BlockBreakProgressManager;
-import org.avp.server.ServerScheduler;
 
 public abstract class AbstractAVPWeaponItem extends Item implements GeoItem {
-
-    private static final String AMMUNITION_KEY = "Ammunition";
 
     private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
 
@@ -64,25 +62,19 @@ public abstract class AbstractAVPWeaponItem extends Item implements GeoItem {
         @NotNull InteractionHand interactionHand
     ) {
         var itemStack = player.getItemInHand(interactionHand);
-        var tag = itemStack.getOrCreateTag();
-        var ammunition = tag.getInt(AMMUNITION_KEY);
-        var fireModeIdentifier = tag.getString("FireMode");
-        var fireMode = this.getWeaponItemData().getFireMode(fireModeIdentifier);
-
-        if (fireModeIdentifier.isEmpty()) {
-            tag.putString("FireMode", fireMode.identifier());
-        }
+        var fireMode = WeaponItemTagHelper.getFireMode(itemStack, weaponItemData);
 
         if (level.isClientSide) {
             ((MixinMinecraftAccessor) Minecraft.getInstance()).setRightClickDelay(0);
         }
 
         if (!level.isClientSide) {
+            var ammunition = WeaponItemTagHelper.getAmmunition(itemStack);
             if (ammunition <= 0) {
-                reload(level, player, itemStack);
+                weaponItemData.getReloadStrategy().tryReload((ServerLevel) level, (ServerPlayer) player, itemStack, weaponItemData);
                 return super.use(level, player, interactionHand);
             } else {
-                fire(level, player, tag, fireMode);
+                fire(level, player, itemStack, fireMode);
             }
         }
 
@@ -95,9 +87,9 @@ public abstract class AbstractAVPWeaponItem extends Item implements GeoItem {
         return super.use(level, player, interactionHand);
     }
 
-    private void fire(@NotNull Level level, @NotNull Player player, CompoundTag tag, FireMode fireMode) {
+    private void fire(@NotNull Level level, @NotNull Player player, ItemStack itemStack, FireMode fireMode) {
         var fireRateInTicks = fireMode.fireRateInTicks();
-        tag.putInt(AMMUNITION_KEY, tag.getInt(AMMUNITION_KEY) - fireMode.consumedAmmunition());
+        WeaponItemTagHelper.consumeAmmunition(itemStack, weaponItemData);
 
         if (fireRateInTicks > 0) {
             player.getCooldowns().addCooldown(this, fireRateInTicks);
@@ -156,39 +148,6 @@ public abstract class AbstractAVPWeaponItem extends Item implements GeoItem {
 
         var payload = new ClientboundBulletHitBlockPayload(blockPos, hitResult.getDirection());
         Services.NETWORK_HANDLER.sendToAllClients(level.getServer(), payload);
-    }
-
-    private void reload(Level level, Player player, ItemStack itemStack) {
-        var maxAmmunition = this.getWeaponItemData().getMaxAmmunition();
-        var reloadTimeInTicks = this.getWeaponItemData().getReloadTimeInTicks();
-
-        player.getCooldowns().addCooldown(this, reloadTimeInTicks);
-        var tag = itemStack.getOrCreateTag();
-        tag.putInt(AMMUNITION_KEY, maxAmmunition);
-        // TODO: Consume ammunition item.
-
-        var reloadStartSound = this.getWeaponItemData().getReloadStartSound().get();
-        level.playSound(null, player.blockPosition(), reloadStartSound, SoundSource.PLAYERS);
-
-        scheduleDelayedReloadFinishSound(level, player, itemStack, reloadTimeInTicks);
-    }
-
-    private void scheduleDelayedReloadFinishSound(Level level, Player player, ItemStack itemStack, int reloadTimeInTicks) {
-        this.getWeaponItemData()
-            .getReloadFinishSound()
-            .ifPresent(
-                reloadFinishSound -> ServerScheduler.schedule(
-                    () -> {
-                        var interactionHand = player.getUsedItemHand();
-                        var itemInHand = player.getItemInHand(interactionHand);
-
-                        if (Objects.equals(itemStack, itemInHand)) {
-                            level.playSound(null, player.blockPosition(), reloadFinishSound.get(), SoundSource.PLAYERS);
-                        }
-                    },
-                    Duration.ofMillis(reloadTimeInTicks * 50L)
-                )
-            );
     }
 
     @Override

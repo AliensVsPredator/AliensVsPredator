@@ -1,6 +1,7 @@
 package org.avp.api.item.weapon;
 
 import net.minecraft.sounds.SoundEvent;
+import org.avp.api.item.weapon.reload.ReloadStrategy;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -34,6 +35,8 @@ public class WeaponItemData {
 
     private final GameObject<SoundEvent> reloadStartSound;
 
+    private final ReloadStrategy reloadStrategy;
+
     public WeaponItemData(
         float accuracy,
         @NotNull WeaponDamageType weaponDamageType,
@@ -44,7 +47,8 @@ public class WeaponItemData {
         int reloadTimeInTicks,
         @NotNull GameObject<SoundEvent> fireFailSound,
         GameObject<SoundEvent> reloadFinishSound,
-        @NotNull GameObject<SoundEvent> reloadStartSound
+        @NotNull GameObject<SoundEvent> reloadStartSound,
+        @NotNull ReloadStrategy reloadStrategy
     ) {
         if (fireModes.isEmpty()) {
             throw new IllegalStateException("Weapons must have at least 1 fire mode!");
@@ -60,6 +64,7 @@ public class WeaponItemData {
         this.fireFailSound = fireFailSound;
         this.reloadFinishSound = reloadFinishSound;
         this.reloadStartSound = reloadStartSound;
+        this.reloadStrategy = reloadStrategy;
     }
 
     public FireMode getFireMode(String identifier) {
@@ -108,5 +113,9 @@ public class WeaponItemData {
 
     public GameObject<SoundEvent> getReloadStartSound() {
         return reloadStartSound;
+    }
+
+    public ReloadStrategy getReloadStrategy() {
+        return reloadStrategy;
     }
 }

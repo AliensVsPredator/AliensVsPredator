@@ -5,6 +5,7 @@ import java.util.List;
 import org.avp.api.item.weapon.FireMode;
 import org.avp.api.item.weapon.WeaponDamageTypes;
 import org.avp.api.item.weapon.WeaponItemData;
+import org.avp.api.item.weapon.reload.ReloadStrategies;
 import org.avp.common.sound.AVPSoundEvents;
 
 public class AVPWeaponItemData {
@@ -27,7 +28,8 @@ public class AVPWeaponItemData {
         20 * 5,
         AVPSoundEvents.ITEM_WEAPON_GENERIC_SHOOT_FAIL,
         null,
-        AVPSoundEvents.ITEM_WEAPON_GENERIC_RELOAD
+        AVPSoundEvents.ITEM_WEAPON_GENERIC_RELOAD,
+        ReloadStrategies.STANDARD
     );
 
     public static final WeaponItemData FLAMETHROWER_SEVASTOPOL = new WeaponItemData(
@@ -48,7 +50,8 @@ public class AVPWeaponItemData {
         20 * 5,
         AVPSoundEvents.ITEM_WEAPON_GENERIC_SHOOT_FAIL,
         AVPSoundEvents.ITEM_WEAPON_FLAMETHROWER_RELOAD_FINISH,
-        AVPSoundEvents.ITEM_WEAPON_FLAMETHROWER_RELOAD_START
+        AVPSoundEvents.ITEM_WEAPON_FLAMETHROWER_RELOAD_START,
+        ReloadStrategies.STANDARD
     );
 
     public static final WeaponItemData M41A_PULSE_RIFLE = new WeaponItemData(
@@ -76,7 +79,8 @@ public class AVPWeaponItemData {
         20 * 3,
         AVPSoundEvents.ITEM_WEAPON_GENERIC_SHOOT_FAIL,
         null,
-        AVPSoundEvents.ITEM_WEAPON_GENERIC_RELOAD
+        AVPSoundEvents.ITEM_WEAPON_GENERIC_RELOAD,
+        ReloadStrategies.STANDARD
     );
 
     public static final WeaponItemData SHOTGUN = new WeaponItemData(
@@ -97,7 +101,8 @@ public class AVPWeaponItemData {
         20 * 4,
         AVPSoundEvents.ITEM_WEAPON_GENERIC_SHOOT_FAIL,
         null,
-        AVPSoundEvents.ITEM_WEAPON_GENERIC_RELOAD
+        AVPSoundEvents.ITEM_WEAPON_GENERIC_RELOAD,
+        ReloadStrategies.STANDARD
     );
 
     public static final WeaponItemData SNIPER_RIFLE = new WeaponItemData(
@@ -118,7 +123,8 @@ public class AVPWeaponItemData {
         20 * 7 + 10,
         AVPSoundEvents.ITEM_WEAPON_GENERIC_SHOOT_FAIL,
         null,
-        AVPSoundEvents.ITEM_WEAPON_GENERIC_RELOAD
+        AVPSoundEvents.ITEM_WEAPON_GENERIC_RELOAD,
+        ReloadStrategies.STANDARD
     );
 
     private AVPWeaponItemData() {
