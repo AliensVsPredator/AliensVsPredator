@@ -26,6 +26,7 @@ public class AVPWeaponItemData {
         32,
         20 * 5,
         AVPSoundEvents.ITEM_WEAPON_GENERIC_SHOOT_FAIL,
+        null,
         AVPSoundEvents.ITEM_WEAPON_GENERIC_RELOAD
     );
 
@@ -46,7 +47,8 @@ public class AVPWeaponItemData {
         32,
         20 * 5,
         AVPSoundEvents.ITEM_WEAPON_GENERIC_SHOOT_FAIL,
-        AVPSoundEvents.ITEM_WEAPON_GENERIC_RELOAD
+        AVPSoundEvents.ITEM_WEAPON_FLAMETHROWER_RELOAD_FINISH,
+        AVPSoundEvents.ITEM_WEAPON_FLAMETHROWER_RELOAD_START
     );
 
     public static final WeaponItemData M41A_PULSE_RIFLE = new WeaponItemData(
@@ -73,6 +75,7 @@ public class AVPWeaponItemData {
         99,
         20 * 3,
         AVPSoundEvents.ITEM_WEAPON_GENERIC_SHOOT_FAIL,
+        null,
         AVPSoundEvents.ITEM_WEAPON_GENERIC_RELOAD
     );
 
@@ -93,6 +96,7 @@ public class AVPWeaponItemData {
         6,
         20 * 4,
         AVPSoundEvents.ITEM_WEAPON_GENERIC_SHOOT_FAIL,
+        null,
         AVPSoundEvents.ITEM_WEAPON_GENERIC_RELOAD
     );
 
@@ -113,6 +117,7 @@ public class AVPWeaponItemData {
         6,
         20 * 7 + 10,
         AVPSoundEvents.ITEM_WEAPON_GENERIC_SHOOT_FAIL,
+        null,
         AVPSoundEvents.ITEM_WEAPON_GENERIC_RELOAD
     );
 

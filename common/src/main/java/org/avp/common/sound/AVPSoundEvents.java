@@ -49,6 +49,10 @@ public class AVPSoundEvents {
 
     public static final GameObject<SoundEvent> ITEM_WEAPON_AK_47_SHOOT;
 
+    public static final GameObject<SoundEvent> ITEM_WEAPON_FLAMETHROWER_RELOAD_FINISH;
+
+    public static final GameObject<SoundEvent> ITEM_WEAPON_FLAMETHROWER_RELOAD_START;
+
     public static final GameObject<SoundEvent> ITEM_WEAPON_FLAMETHROWER_SHOOT;
 
     public static final GameObject<SoundEvent> ITEM_WEAPON_FX_RICOCHET_DIRT;
@@ -98,6 +102,8 @@ public class AVPSoundEvents {
 
         ITEM_WEAPON_AK_47_SHOOT = register("item.weapon.ak_47.shoot");
 
+        ITEM_WEAPON_FLAMETHROWER_RELOAD_FINISH = register("item.weapon.flamethrower.reload_finish");
+        ITEM_WEAPON_FLAMETHROWER_RELOAD_START = register("item.weapon.flamethrower.reload_start");
         ITEM_WEAPON_FLAMETHROWER_SHOOT = register("item.weapon.flamethrower.shoot");
 
         ITEM_WEAPON_FX_RICOCHET_DIRT = register("item.weapon.fx.ricochet.dirt");
