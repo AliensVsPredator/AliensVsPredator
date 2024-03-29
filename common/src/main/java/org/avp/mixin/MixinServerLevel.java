@@ -10,6 +10,7 @@ import org.avp.common.AVPConstants;
 import org.avp.common.TimeUtilities;
 import org.avp.common.util.MixinUtilities;
 import org.avp.server.BlockBreakProgressManager;
+import org.avp.server.ServerScheduler;
 
 /**
  * @author Boston Vanseghi
@@ -19,6 +20,24 @@ public abstract class MixinServerLevel {
 
     @Inject(at = @At("HEAD"), method = "tick")
     public void tick(CallbackInfo callbackInfo) {
+        tickScheduledRunnables();
+        tickBlockBreakProgressManager();
+    }
+
+    private void tickScheduledRunnables() {
+        ServerScheduler.getScheduledTasks().removeIf(tuple -> {
+            var runTime = tuple.first();
+
+            if (System.currentTimeMillis() >= runTime) {
+                tuple.second().run();
+                return true;
+            }
+
+            return false;
+        });
+    }
+
+    private void tickBlockBreakProgressManager() {
         var serverLevel = MixinUtilities.<ServerLevel>self(this);
         var gameTime = serverLevel.getGameTime();
 
