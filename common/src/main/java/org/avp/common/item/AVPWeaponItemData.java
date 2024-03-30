@@ -54,6 +54,29 @@ public class AVPWeaponItemData {
         ReloadStrategies.STANDARD
     );
 
+    // TODO:
+    public static final WeaponItemData M4_CARBINE = new WeaponItemData(
+        1.0F,
+        WeaponDamageTypes.MEDIUM,
+        List.of(
+            new FireMode(
+                "Automatic",
+                1,
+                2,
+                AVPSoundEvents.ITEM_WEAPON_AK_47_SHOOT,
+                0.0F
+            )
+        ),
+        2F * 2,
+        0.13F,
+        32,
+        20 * 5,
+        AVPSoundEvents.ITEM_WEAPON_GENERIC_SHOOT_FAIL,
+        null,
+        AVPSoundEvents.ITEM_WEAPON_GENERIC_RELOAD,
+        ReloadStrategies.STANDARD
+    );
+
     public static final WeaponItemData M41A_PULSE_RIFLE = new WeaponItemData(
         1.0F,
         WeaponDamageTypes.MEDIUM,
