@@ -13,6 +13,7 @@ import org.avp.common.item.weapon.FlamethrowerSevastopolItem;
 import org.avp.common.item.weapon.M3712ShotgunItem;
 import org.avp.common.item.weapon.M41APulseRifleItem;
 import org.avp.common.item.weapon.M4CarbineItem;
+import org.avp.common.item.weapon.M83A2SADARItem;
 import org.avp.common.item.weapon.SniperRifleItem;
 import org.avp.common.service.Services;
 
@@ -55,6 +56,8 @@ public class AVPWeaponItems {
 
     public static final GameObject<Item> WEAPON_M56_SMARTGUN;
 
+    public static final GameObject<Item> WEAPON_M83A2_SADAR;
+
     public static final GameObject<Item> WEAPON_SNIPER_RIFLE;
 
     public static void forceInitialization() {
@@ -95,6 +98,7 @@ public class AVPWeaponItems {
         WEAPON_M4_CARBINE = register("weapon_m4_carbine", () -> new M4CarbineItem(new Item.Properties()));
         WEAPON_M41A_PULSE_RIFLE = register("weapon_m41a_pulse_rifle", () -> new M41APulseRifleItem(new Item.Properties()));
         WEAPON_M56_SMARTGUN = register("weapon_m56_smartgun", () -> new Item(new Item.Properties()));
+        WEAPON_M83A2_SADAR = register("weapon_m83a2_sadar", () -> new M83A2SADARItem(new Item.Properties()));
         WEAPON_SNIPER_RIFLE = register("weapon_sniper_rifle", () -> new SniperRifleItem(new Item.Properties()));
     }
 }
