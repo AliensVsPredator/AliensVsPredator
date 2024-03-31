@@ -22,6 +22,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
+import org.avp.client.render.item.AVPWeaponItemRenderers;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
@@ -52,8 +53,6 @@ public abstract class AbstractAVPWeaponItem extends Item implements GeoItem {
         super(properties);
         this.weaponItemData = weaponItemData;
     }
-
-    protected abstract BlockEntityWithoutLevelRenderer createRenderer();
 
     @Override
     public @NotNull InteractionResultHolder<ItemStack> use(
@@ -159,11 +158,18 @@ public abstract class AbstractAVPWeaponItem extends Item implements GeoItem {
     public void createRenderer(Consumer<Object> consumer) {
         consumer.accept(new RenderProvider() {
 
-            private final BlockEntityWithoutLevelRenderer renderer = AbstractAVPWeaponItem.this.createRenderer();
+            private BlockEntityWithoutLevelRenderer renderer;
 
             @Override
             public BlockEntityWithoutLevelRenderer getCustomRenderer() {
-                return this.renderer;
+                if (renderer == null) {
+                    var supplier = AVPWeaponItemRenderers.WEAPON_ITEM_RENDERERS.get(AbstractAVPWeaponItem.this.getClass());
+
+                    if (supplier != null) {
+                        renderer = supplier.get();
+                    }
+                }
+                return renderer;
             }
         });
     }

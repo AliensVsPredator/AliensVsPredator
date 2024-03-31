@@ -1,6 +1,8 @@
 package org.avp.neoforge.service;
 
+import net.neoforged.api.distmarker.Dist;
 import net.neoforged.fml.ModList;
+import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.fml.loading.FMLLoader;
 
 import java.nio.file.Path;
@@ -22,6 +24,11 @@ public class NeoForgePlatform implements Platform {
     @Override
     public boolean isDevelopmentEnvironment() {
         return !FMLLoader.isProduction();
+    }
+
+    @Override
+    public boolean isServerEnvironment() {
+        return FMLLoader.getDist().isDedicatedServer();
     }
 
     @Override
