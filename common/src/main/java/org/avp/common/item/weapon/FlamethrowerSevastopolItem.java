@@ -6,6 +6,7 @@ import org.avp.api.item.weapon.WeaponItemData;
 import org.avp.api.item.weapon.ammo.AmmunitionStrategy;
 import org.avp.api.item.weapon.ammo.HasAmmunitionBehavior;
 import org.avp.api.item.weapon.reload.ReloadStrategy;
+import org.avp.api.item.weapon.shoot.ShootStrategy;
 import org.avp.common.item.AbstractAVPWeaponItem;
 import org.avp.common.sound.AVPSoundEvents;
 
@@ -30,12 +31,11 @@ public class FlamethrowerSevastopolItem extends AbstractAVPWeaponItem {
         List.of(FIRE_MODE),
         1F,
         0.13F,
-        AVPSoundEvents.ITEM_WEAPON_GENERIC_SHOOT_FAIL,
         ReloadStrategy.builder(20 * 5)
             .setReloadFinishSound(AVPSoundEvents.ITEM_WEAPON_FLAMETHROWER_RELOAD_FINISH)
             .setReloadStartSound(AVPSoundEvents.ITEM_WEAPON_FLAMETHROWER_RELOAD_START)
             .build(),
-        0
+        ShootStrategy.builder().build()
     );
 
     public FlamethrowerSevastopolItem(Properties properties) {

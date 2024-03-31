@@ -69,6 +69,14 @@ public class AVPSoundEvents {
 
     public static final GameObject<SoundEvent> ITEM_WEAPON_GENERIC_SHOOT_FAIL;
 
+    public static final GameObject<SoundEvent> ITEM_WEAPON_OLD_PAINLESS_SHOOT_LOOP;
+
+    public static final GameObject<SoundEvent> ITEM_WEAPON_OLD_PAINLESS_SHOOT_SPINNING;
+
+    public static final GameObject<SoundEvent> ITEM_WEAPON_OLD_PAINLESS_SHOOT_START;
+
+    public static final GameObject<SoundEvent> ITEM_WEAPON_OLD_PAINLESS_SHOOT_STOP;
+
     public static final GameObject<SoundEvent> ITEM_WEAPON_PULSE_RIFLE_SHOOT;
 
     public static final GameObject<SoundEvent> ITEM_WEAPON_SHOTGUN_SHOOT;
@@ -114,6 +122,11 @@ public class AVPSoundEvents {
         ITEM_WEAPON_GENERIC_RELOAD = register("item.weapon.generic.reload");
         ITEM_WEAPON_GENERIC_SHOOT = register("item.weapon.generic.shoot");
         ITEM_WEAPON_GENERIC_SHOOT_FAIL = register("item.weapon.generic.shoot.fail");
+
+        ITEM_WEAPON_OLD_PAINLESS_SHOOT_LOOP = register("item.weapon.old_painless.shoot_loop");
+        ITEM_WEAPON_OLD_PAINLESS_SHOOT_SPINNING = register("item.weapon.old_painless.shoot_spinning");
+        ITEM_WEAPON_OLD_PAINLESS_SHOOT_START = register("item.weapon.old_painless.shoot_start");
+        ITEM_WEAPON_OLD_PAINLESS_SHOOT_STOP = register("item.weapon.old_painless.shoot_stop");
 
         ITEM_WEAPON_PULSE_RIFLE_SHOOT = register("item.weapon.pulse_rifle.shoot");
 

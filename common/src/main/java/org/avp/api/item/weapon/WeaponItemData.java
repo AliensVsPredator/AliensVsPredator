@@ -2,6 +2,7 @@ package org.avp.api.item.weapon;
 
 import net.minecraft.sounds.SoundEvent;
 import org.avp.api.item.weapon.ammo.AmmunitionStrategy;
+import org.avp.api.item.weapon.shoot.ShootStrategy;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -28,11 +29,9 @@ public class WeaponItemData {
 
     private final float knockback;
 
-    private final GameObject<SoundEvent> fireFailSound;
-
     private final ReloadStrategy reloadStrategy;
 
-    private final int windUpTimeInTicks;
+    private final ShootStrategy shootStrategy;
 
     public WeaponItemData(
         float accuracy,
@@ -41,9 +40,8 @@ public class WeaponItemData {
         @NotNull List<FireMode> fireModes,
         float damage,
         float knockback,
-        @NotNull GameObject<SoundEvent> fireFailSound,
         @NotNull ReloadStrategy reloadStrategy,
-        int windUpTimeInTicks
+        ShootStrategy shootStrategy
     ) {
         if (fireModes.isEmpty()) {
             throw new IllegalStateException("Weapons must have at least 1 fire mode!");
@@ -55,9 +53,8 @@ public class WeaponItemData {
         this.fireModes = fireModes;
         this.damage = Math.max(damage, 0);
         this.knockback = Math.max(knockback, 0);
-        this.fireFailSound = fireFailSound;
         this.reloadStrategy = reloadStrategy;
-        this.windUpTimeInTicks = windUpTimeInTicks;
+        this.shootStrategy = shootStrategy;
     }
 
     public FireMode getFireMode(String identifier) {
@@ -92,15 +89,11 @@ public class WeaponItemData {
         return knockback;
     }
 
-    public GameObject<SoundEvent> getFireFailSound() {
-        return fireFailSound;
-    }
-
     public ReloadStrategy getReloadStrategy() {
         return reloadStrategy;
     }
 
-    public int getWindUpTimeInTicks() {
-        return windUpTimeInTicks;
+    public ShootStrategy getShootStrategy() {
+        return shootStrategy;
     }
 }

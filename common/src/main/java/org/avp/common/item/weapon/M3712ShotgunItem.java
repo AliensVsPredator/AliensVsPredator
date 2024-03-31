@@ -7,6 +7,7 @@ import org.avp.api.item.weapon.ammo.AmmunitionStrategy;
 import org.avp.api.item.weapon.ammo.HasAmmunitionBehavior;
 import org.avp.api.item.weapon.reload.ReloadStrategy;
 import org.avp.api.item.weapon.reload.TryReloadBehavior;
+import org.avp.api.item.weapon.shoot.ShootStrategy;
 import org.avp.common.item.AbstractAVPWeaponItem;
 import org.avp.common.sound.AVPSoundEvents;
 
@@ -31,12 +32,11 @@ public class M3712ShotgunItem extends AbstractAVPWeaponItem {
         List.of(FIRE_MODE),
         8F * 2,
         0.5F,
-        AVPSoundEvents.ITEM_WEAPON_GENERIC_SHOOT_FAIL,
         ReloadStrategy.builder(20 * 4)
             .setReloadStartSound(AVPSoundEvents.ITEM_WEAPON_GENERIC_RELOAD)
             .setTryReloadBehavior(TryReloadBehavior.STANDARD)
             .build(),
-        0
+        ShootStrategy.builder().build()
     );
 
     public M3712ShotgunItem(Properties properties) {

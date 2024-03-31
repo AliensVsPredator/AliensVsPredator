@@ -54,24 +54,55 @@ public abstract class AbstractAVPWeaponItem extends Item implements GeoItem {
     }
 
     @Override
+    public void releaseUsing(@NotNull ItemStack itemStack, @NotNull Level level, @NotNull LivingEntity livingEntity, int i) {
+        var shootingStrategy = weaponItemData.getShootStrategy();
+        var windDownSoundOptional = shootingStrategy.getWindDownSound();
+
+        windDownSoundOptional.ifPresent(windDownSound -> level.playSound(null, livingEntity.blockPosition(), windDownSound.get(), SoundSource.PLAYERS));
+
+        super.releaseUsing(itemStack, level, livingEntity, i);
+    }
+
+    @Override
     public void onUseTick(@NotNull Level level, @NotNull LivingEntity livingEntity, @NotNull ItemStack itemStack, int negativeTickProgress) {
         var positiveTickProgress = Math.abs(negativeTickProgress);
+        var isFirstTick = positiveTickProgress == 0;
 
         if (!(livingEntity instanceof Player player)) return;
-        if (positiveTickProgress < weaponItemData.getWindUpTimeInTicks()) return;
         if (player.getCooldowns().isOnCooldown(this)) return;
+
+        var shootStrategy = weaponItemData.getShootStrategy();
+        var windUpSoundOptional = shootStrategy.getWindUpSound();
+
+        if (isFirstTick) {
+            windUpSoundOptional.ifPresent(windUpSound -> level.playSound(null, player.blockPosition(), windUpSound.get(), SoundSource.PLAYERS));
+        }
+
+        var windUpTimeInTicks = shootStrategy.getWindUpTimeInTicks();
+        if (positiveTickProgress < windUpTimeInTicks) return;
 
         var fireMode = WeaponItemTagHelper.getFireMode(itemStack, weaponItemData);
 
         if (!level.isClientSide) {
             var serverLevel = (ServerLevel) level;
             var serverPlayer = (ServerPlayer) player;
+
+            // Background sound that fires as long as the trigger is pulled, regardless if ammo is present.
+            var backgroundShootSoundFrequency = shootStrategy.getBackgroundShootSoundFrequency();
+            var backgroundShootSoundOptional = shootStrategy.getBackgroundShootSound();
+
+            backgroundShootSoundOptional.ifPresent(backgroundShootSound -> {
+                if (positiveTickProgress == windUpTimeInTicks || (positiveTickProgress + windUpTimeInTicks) % backgroundShootSoundFrequency == 0) {
+                    level.playSound(null, player.blockPosition(), backgroundShootSound.get(), SoundSource.PLAYERS);
+                }
+            });
+
             var hasAmmunition = weaponItemData.getAmmunitionStrategy().hasAmmunition(serverLevel, serverPlayer, itemStack, weaponItemData);
             if (!hasAmmunition) {
                 weaponItemData.getReloadStrategy().tryReload(serverLevel, serverPlayer, itemStack, weaponItemData);
                 return;
             } else {
-                fire(level, player, itemStack, fireMode);
+                fire(level, player, itemStack, fireMode, positiveTickProgress);
             }
         }
 
@@ -91,7 +122,7 @@ public abstract class AbstractAVPWeaponItem extends Item implements GeoItem {
         return ItemUtils.startUsingInstantly(level, player, interactionHand);
     }
 
-    private void fire(@NotNull Level level, @NotNull Player player, ItemStack itemStack, FireMode fireMode) {
+    private void fire(@NotNull Level level, @NotNull Player player, ItemStack itemStack, FireMode fireMode, int tickProgress) {
         var fireRateInTicks = fireMode.fireRateInTicks();
         WeaponItemTagHelper.consumeAmmunition(itemStack, weaponItemData);
 
@@ -99,8 +130,12 @@ public abstract class AbstractAVPWeaponItem extends Item implements GeoItem {
             player.getCooldowns().addCooldown(this, fireRateInTicks);
         }
 
-        var fireSound = fireMode.fireSound().get();
-        level.playSound(null, player.blockPosition(), fireSound, SoundSource.PLAYERS);
+        var shootSound = fireMode.shootSound().get();
+        var shootSoundFrequency = fireMode.shootSoundFrequency();
+
+        if (tickProgress % shootSoundFrequency == 0) {
+            level.playSound(null, player.blockPosition(), shootSound, SoundSource.PLAYERS);
+        }
 
         var hitResult = ProjectileUtil.getHitResultOnViewVector(player, entity -> true, 128.0D);
 
