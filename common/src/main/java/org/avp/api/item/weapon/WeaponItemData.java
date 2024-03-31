@@ -37,6 +37,8 @@ public class WeaponItemData {
 
     private final ReloadStrategy reloadStrategy;
 
+    private final int windUpTimeInTicks;
+
     public WeaponItemData(
         float accuracy,
         @NotNull WeaponDamageType weaponDamageType,
@@ -48,7 +50,8 @@ public class WeaponItemData {
         @NotNull GameObject<SoundEvent> fireFailSound,
         GameObject<SoundEvent> reloadFinishSound,
         @NotNull GameObject<SoundEvent> reloadStartSound,
-        @NotNull ReloadStrategy reloadStrategy
+        @NotNull ReloadStrategy reloadStrategy,
+        int windUpTimeInTicks
     ) {
         if (fireModes.isEmpty()) {
             throw new IllegalStateException("Weapons must have at least 1 fire mode!");
@@ -65,6 +68,7 @@ public class WeaponItemData {
         this.reloadFinishSound = reloadFinishSound;
         this.reloadStartSound = reloadStartSound;
         this.reloadStrategy = reloadStrategy;
+        this.windUpTimeInTicks = windUpTimeInTicks;
     }
 
     public FireMode getFireMode(String identifier) {
@@ -117,5 +121,9 @@ public class WeaponItemData {
 
     public ReloadStrategy getReloadStrategy() {
         return reloadStrategy;
+    }
+
+    public int getWindUpTimeInTicks() {
+        return windUpTimeInTicks;
     }
 }

@@ -29,7 +29,8 @@ public class AVPWeaponItemData {
         AVPSoundEvents.ITEM_WEAPON_GENERIC_SHOOT_FAIL,
         null,
         AVPSoundEvents.ITEM_WEAPON_GENERIC_RELOAD,
-        ReloadStrategies.STANDARD
+        ReloadStrategies.STANDARD,
+        0
     );
 
     public static final WeaponItemData FLAMETHROWER_SEVASTOPOL = new WeaponItemData(
@@ -51,7 +52,8 @@ public class AVPWeaponItemData {
         AVPSoundEvents.ITEM_WEAPON_GENERIC_SHOOT_FAIL,
         AVPSoundEvents.ITEM_WEAPON_FLAMETHROWER_RELOAD_FINISH,
         AVPSoundEvents.ITEM_WEAPON_FLAMETHROWER_RELOAD_START,
-        ReloadStrategies.STANDARD
+        ReloadStrategies.STANDARD,
+        0
     );
 
     // TODO:
@@ -74,7 +76,8 @@ public class AVPWeaponItemData {
         AVPSoundEvents.ITEM_WEAPON_GENERIC_SHOOT_FAIL,
         null,
         AVPSoundEvents.ITEM_WEAPON_GENERIC_RELOAD,
-        ReloadStrategies.STANDARD
+        ReloadStrategies.STANDARD,
+        0
     );
 
     public static final WeaponItemData M41A_PULSE_RIFLE = new WeaponItemData(
@@ -103,7 +106,8 @@ public class AVPWeaponItemData {
         AVPSoundEvents.ITEM_WEAPON_GENERIC_SHOOT_FAIL,
         null,
         AVPSoundEvents.ITEM_WEAPON_GENERIC_RELOAD,
-        ReloadStrategies.STANDARD
+        ReloadStrategies.STANDARD,
+        0
     );
 
     public static final WeaponItemData SHOTGUN = new WeaponItemData(
@@ -125,7 +129,8 @@ public class AVPWeaponItemData {
         AVPSoundEvents.ITEM_WEAPON_GENERIC_SHOOT_FAIL,
         null,
         AVPSoundEvents.ITEM_WEAPON_GENERIC_RELOAD,
-        ReloadStrategies.STANDARD
+        ReloadStrategies.STANDARD,
+        0
     );
 
     public static final WeaponItemData SNIPER_RIFLE = new WeaponItemData(
@@ -147,7 +152,8 @@ public class AVPWeaponItemData {
         AVPSoundEvents.ITEM_WEAPON_GENERIC_SHOOT_FAIL,
         null,
         AVPSoundEvents.ITEM_WEAPON_GENERIC_RELOAD,
-        ReloadStrategies.STANDARD
+        ReloadStrategies.STANDARD,
+        0
     );
 
     private AVPWeaponItemData() {

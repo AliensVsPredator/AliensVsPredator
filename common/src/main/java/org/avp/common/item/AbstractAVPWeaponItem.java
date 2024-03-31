@@ -5,7 +5,6 @@ import mod.azure.azurelib.common.internal.client.RenderProvider;
 import mod.azure.azurelib.common.internal.common.core.animatable.instance.AnimatableInstanceCache;
 import mod.azure.azurelib.common.internal.common.core.animation.AnimatableManager;
 import mod.azure.azurelib.common.internal.common.util.AzureLibUtil;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -19,6 +18,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.ProjectileUtil;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemUtils;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
@@ -38,7 +38,6 @@ import org.avp.common.network.payload.ClientboundBulletHitBlockPayload;
 import org.avp.common.service.Services;
 import org.avp.common.util.SoundUtilities;
 import org.avp.common.util.TimeUtilities;
-import org.avp.mixin.MixinMinecraftAccessor;
 import org.avp.server.BlockBreakProgressManager;
 
 public abstract class AbstractAVPWeaponItem extends Item implements GeoItem {
@@ -55,23 +54,20 @@ public abstract class AbstractAVPWeaponItem extends Item implements GeoItem {
     }
 
     @Override
-    public @NotNull InteractionResultHolder<ItemStack> use(
-        @NotNull Level level,
-        @NotNull Player player,
-        @NotNull InteractionHand interactionHand
-    ) {
-        var itemStack = player.getItemInHand(interactionHand);
-        var fireMode = WeaponItemTagHelper.getFireMode(itemStack, weaponItemData);
+    public void onUseTick(@NotNull Level level, @NotNull LivingEntity livingEntity, @NotNull ItemStack itemStack, int negativeTickProgress) {
+        var positiveTickProgress = Math.abs(negativeTickProgress);
 
-        if (level.isClientSide) {
-            ((MixinMinecraftAccessor) Minecraft.getInstance()).setRightClickDelay(0);
-        }
+        if (!(livingEntity instanceof Player player)) return;
+        if (positiveTickProgress < weaponItemData.getWindUpTimeInTicks()) return;
+        if (player.getCooldowns().isOnCooldown(this)) return;
+
+        var fireMode = WeaponItemTagHelper.getFireMode(itemStack, weaponItemData);
 
         if (!level.isClientSide) {
             var ammunition = WeaponItemTagHelper.getAmmunition(itemStack);
             if (ammunition <= 0) {
                 weaponItemData.getReloadStrategy().tryReload((ServerLevel) level, (ServerPlayer) player, itemStack, weaponItemData);
-                return super.use(level, player, interactionHand);
+                return;
             } else {
                 fire(level, player, itemStack, fireMode);
             }
@@ -82,8 +78,15 @@ public abstract class AbstractAVPWeaponItem extends Item implements GeoItem {
             player.attackAnim = recoil;
             player.oAttackAnim = recoil;
         }
+    }
 
-        return super.use(level, player, interactionHand);
+    @Override
+    public @NotNull InteractionResultHolder<ItemStack> use(
+        @NotNull Level level,
+        @NotNull Player player,
+        @NotNull InteractionHand interactionHand
+    ) {
+        return ItemUtils.startUsingInstantly(level, player, interactionHand);
     }
 
     private void fire(@NotNull Level level, @NotNull Player player, ItemStack itemStack, FireMode fireMode) {
@@ -102,6 +105,7 @@ public abstract class AbstractAVPWeaponItem extends Item implements GeoItem {
         switch (hitResult.getType()) {
             case BLOCK -> damageBlock(level, (BlockHitResult) hitResult, fireMode);
             case ENTITY -> damageEntity(level, player, (EntityHitResult) hitResult, fireMode);
+            case MISS -> { /* Do nothing */ }
         }
     }
 
