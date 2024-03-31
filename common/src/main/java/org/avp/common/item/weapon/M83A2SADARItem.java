@@ -5,7 +5,8 @@ import org.avp.api.item.weapon.WeaponDamageTypes;
 import org.avp.api.item.weapon.WeaponItemData;
 import org.avp.api.item.weapon.ammo.AmmunitionStrategy;
 import org.avp.api.item.weapon.ammo.HasAmmunitionBehavior;
-import org.avp.api.item.weapon.reload.ReloadStrategies;
+import org.avp.api.item.weapon.reload.ReloadStrategy;
+import org.avp.api.item.weapon.reload.TryReloadBehavior;
 import org.avp.common.item.AbstractAVPWeaponItem;
 import org.avp.common.sound.AVPSoundEvents;
 
@@ -30,11 +31,11 @@ public class M83A2SADARItem extends AbstractAVPWeaponItem {
         List.of(FIRE_MODE),
         8F * 2,
         0.5F,
-        20 * 4,
         AVPSoundEvents.ITEM_WEAPON_GENERIC_SHOOT_FAIL,
-        null,
-        AVPSoundEvents.ITEM_WEAPON_GENERIC_RELOAD,
-        ReloadStrategies.STANDARD,
+        ReloadStrategy.builder(20 * 4)
+            .setReloadStartSound(AVPSoundEvents.ITEM_WEAPON_GENERIC_RELOAD)
+            .setTryReloadBehavior(TryReloadBehavior.STANDARD)
+            .build(),
         0
     );
 

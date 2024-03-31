@@ -5,7 +5,8 @@ import org.avp.api.item.weapon.WeaponDamageTypes;
 import org.avp.api.item.weapon.WeaponItemData;
 import org.avp.api.item.weapon.ammo.AmmunitionStrategy;
 import org.avp.api.item.weapon.ammo.HasAmmunitionBehavior;
-import org.avp.api.item.weapon.reload.ReloadStrategies;
+import org.avp.api.item.weapon.reload.ReloadStrategy;
+import org.avp.api.item.weapon.reload.TryReloadBehavior;
 import org.avp.common.item.AbstractAVPWeaponItem;
 import org.avp.common.sound.AVPSoundEvents;
 
@@ -38,11 +39,11 @@ public class M41APulseRifleItem extends AbstractAVPWeaponItem {
         List.of(FIRE_MODE_BURST, FIRE_MODE_AUTOMATIC),
         4F,
         0.13F,
-        20 * 3,
         AVPSoundEvents.ITEM_WEAPON_GENERIC_SHOOT_FAIL,
-        null,
-        AVPSoundEvents.ITEM_WEAPON_GENERIC_RELOAD,
-        ReloadStrategies.STANDARD,
+        ReloadStrategy.builder(20 * 3)
+            .setReloadStartSound(AVPSoundEvents.ITEM_WEAPON_GENERIC_RELOAD)
+            .setTryReloadBehavior(TryReloadBehavior.STANDARD)
+            .build(),
         0
     );
 

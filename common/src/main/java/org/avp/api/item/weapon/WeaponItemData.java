@@ -28,13 +28,7 @@ public class WeaponItemData {
 
     private final float knockback;
 
-    private final int reloadTimeInTicks;
-
     private final GameObject<SoundEvent> fireFailSound;
-
-    private final GameObject<SoundEvent> reloadFinishSound;
-
-    private final GameObject<SoundEvent> reloadStartSound;
 
     private final ReloadStrategy reloadStrategy;
 
@@ -47,10 +41,7 @@ public class WeaponItemData {
         @NotNull List<FireMode> fireModes,
         float damage,
         float knockback,
-        int reloadTimeInTicks,
         @NotNull GameObject<SoundEvent> fireFailSound,
-        GameObject<SoundEvent> reloadFinishSound,
-        @NotNull GameObject<SoundEvent> reloadStartSound,
         @NotNull ReloadStrategy reloadStrategy,
         int windUpTimeInTicks
     ) {
@@ -64,10 +55,7 @@ public class WeaponItemData {
         this.fireModes = fireModes;
         this.damage = Math.max(damage, 0);
         this.knockback = Math.max(knockback, 0);
-        this.reloadTimeInTicks = Math.max(reloadTimeInTicks, 0);
         this.fireFailSound = fireFailSound;
-        this.reloadFinishSound = reloadFinishSound;
-        this.reloadStartSound = reloadStartSound;
         this.reloadStrategy = reloadStrategy;
         this.windUpTimeInTicks = windUpTimeInTicks;
     }
@@ -104,20 +92,8 @@ public class WeaponItemData {
         return knockback;
     }
 
-    public int getReloadTimeInTicks() {
-        return reloadTimeInTicks;
-    }
-
     public GameObject<SoundEvent> getFireFailSound() {
         return fireFailSound;
-    }
-
-    public Optional<GameObject<SoundEvent>> getReloadFinishSound() {
-        return Optional.ofNullable(reloadFinishSound);
-    }
-
-    public GameObject<SoundEvent> getReloadStartSound() {
-        return reloadStartSound;
     }
 
     public ReloadStrategy getReloadStrategy() {

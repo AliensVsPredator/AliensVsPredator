@@ -5,7 +5,7 @@ import org.avp.api.item.weapon.WeaponDamageTypes;
 import org.avp.api.item.weapon.WeaponItemData;
 import org.avp.api.item.weapon.ammo.AmmunitionStrategy;
 import org.avp.api.item.weapon.ammo.HasAmmunitionBehavior;
-import org.avp.api.item.weapon.reload.ReloadStrategies;
+import org.avp.api.item.weapon.reload.ReloadStrategy;
 import org.avp.common.item.AbstractAVPWeaponItem;
 import org.avp.common.sound.AVPSoundEvents;
 
@@ -30,11 +30,8 @@ public class OldPainlessItem extends AbstractAVPWeaponItem {
         List.of(FIRE_MODE),
         2F * 2,
         0.02F,
-        0,
         AVPSoundEvents.ITEM_WEAPON_GENERIC_SHOOT_FAIL,
-        null,
-        AVPSoundEvents.ITEM_WEAPON_GENERIC_RELOAD,
-        ReloadStrategies.NO_OP,
+        ReloadStrategy.builder(0).build(),
         20
     );
 

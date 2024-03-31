@@ -9,6 +9,10 @@ public abstract class AmmunitionStrategy {
 
     private final int maxAmmunition;
 
+    public static Builder builder(int maxAmmunition) {
+        return new Builder(maxAmmunition);
+    }
+
     protected AmmunitionStrategy(int maxAmmunition) {
         this.maxAmmunition = maxAmmunition;
     }
@@ -17,10 +21,6 @@ public abstract class AmmunitionStrategy {
 
     public int getMaxAmmunition() {
         return maxAmmunition;
-    }
-
-    public static Builder builder(int maxAmmunition) {
-        return new Builder(maxAmmunition);
     }
 
     public static class Builder {

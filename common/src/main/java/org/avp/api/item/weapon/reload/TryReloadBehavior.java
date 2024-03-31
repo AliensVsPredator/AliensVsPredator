@@ -1,35 +1,36 @@
 package org.avp.api.item.weapon.reload;
 
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.item.ItemStack;
+import org.avp.api.item.weapon.WeaponItemData;
+import org.avp.api.item.weapon.WeaponItemTagHelper;
+import org.avp.server.ServerScheduler;
 
 import java.time.Duration;
 import java.util.Objects;
 
-import org.avp.api.item.weapon.WeaponItemTagHelper;
-import org.avp.server.ServerScheduler;
+@FunctionalInterface
+public interface TryReloadBehavior {
+    TryReloadBehavior NO_OP = (l, p, i, w) -> {};
 
-/**
- * @author Boston Vanseghi
- */
-public class ReloadStrategies {
-
-    public static final ReloadStrategy NO_OP = (l, p, i, w) -> {};
-
-    public static final ReloadStrategy STANDARD = (level, player, itemStack, weaponItemData) -> {
+    TryReloadBehavior STANDARD = (level, player, itemStack, weaponItemData) -> {
         if (WeaponItemTagHelper.hasMaxAmmunition(itemStack, weaponItemData)) {
             return;
         }
 
-        var reloadTimeInTicks = weaponItemData.getReloadTimeInTicks();
+        var reloadStrategy = weaponItemData.getReloadStrategy();
+        var reloadTimeInTicks = reloadStrategy.getReloadTimeInTicks();
         player.getCooldowns().addCooldown(itemStack.getItem(), reloadTimeInTicks);
 
         // TODO: Try and consume ammunition item.
         WeaponItemTagHelper.restoreAmmunition(itemStack, weaponItemData);
 
-        var reloadStartSound = weaponItemData.getReloadStartSound().get();
+        var reloadStartSound = reloadStrategy.getReloadStartSound().get();
         level.playSound(null, player.blockPosition(), reloadStartSound, SoundSource.PLAYERS);
 
-        weaponItemData
+        reloadStrategy
             .getReloadFinishSound()
             .ifPresent(
                 reloadFinishSound -> ServerScheduler.schedule(
@@ -46,7 +47,5 @@ public class ReloadStrategies {
             );
     };
 
-    private ReloadStrategies() {
-        throw new UnsupportedOperationException();
-    }
+    void tryReload(ServerLevel serverLevel, ServerPlayer serverPlayer, ItemStack itemStack, WeaponItemData weaponItemData);
 }
