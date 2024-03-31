@@ -3,7 +3,8 @@ package org.avp.common.item.weapon;
 import org.avp.api.item.weapon.FireMode;
 import org.avp.api.item.weapon.WeaponDamageTypes;
 import org.avp.api.item.weapon.WeaponItemData;
-import org.avp.api.item.weapon.ammo.AmmunitionStrategies;
+import org.avp.api.item.weapon.ammo.AmmunitionStrategy;
+import org.avp.api.item.weapon.ammo.HasAmmunitionBehavior;
 import org.avp.api.item.weapon.reload.ReloadStrategies;
 import org.avp.common.item.AbstractAVPWeaponItem;
 import org.avp.common.sound.AVPSoundEvents;
@@ -30,12 +31,13 @@ public class M41APulseRifleItem extends AbstractAVPWeaponItem {
 
     private static final WeaponItemData WEAPON_ITEM_DATA = new WeaponItemData(
         1.0F,
-        AmmunitionStrategies.LOADED,
+        AmmunitionStrategy.builder(99)
+            .setHasAmmunitionBehavior(HasAmmunitionBehavior.LOADED)
+            .build(),
         WeaponDamageTypes.MEDIUM,
         List.of(FIRE_MODE_BURST, FIRE_MODE_AUTOMATIC),
         4F,
         0.13F,
-        99,
         20 * 3,
         AVPSoundEvents.ITEM_WEAPON_GENERIC_SHOOT_FAIL,
         null,

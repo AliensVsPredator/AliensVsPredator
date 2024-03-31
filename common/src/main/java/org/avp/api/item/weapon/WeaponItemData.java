@@ -28,8 +28,6 @@ public class WeaponItemData {
 
     private final float knockback;
 
-    private final int maxAmmunition;
-
     private final int reloadTimeInTicks;
 
     private final GameObject<SoundEvent> fireFailSound;
@@ -49,7 +47,6 @@ public class WeaponItemData {
         @NotNull List<FireMode> fireModes,
         float damage,
         float knockback,
-        int maxAmmunition,
         int reloadTimeInTicks,
         @NotNull GameObject<SoundEvent> fireFailSound,
         GameObject<SoundEvent> reloadFinishSound,
@@ -67,7 +64,6 @@ public class WeaponItemData {
         this.fireModes = fireModes;
         this.damage = Math.max(damage, 0);
         this.knockback = Math.max(knockback, 0);
-        this.maxAmmunition = Math.max(maxAmmunition, 0);
         this.reloadTimeInTicks = Math.max(reloadTimeInTicks, 0);
         this.fireFailSound = fireFailSound;
         this.reloadFinishSound = reloadFinishSound;
@@ -106,10 +102,6 @@ public class WeaponItemData {
 
     public float getKnockback() {
         return knockback;
-    }
-
-    public int getMaxAmmunition() {
-        return maxAmmunition;
     }
 
     public int getReloadTimeInTicks() {

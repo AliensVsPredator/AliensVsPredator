@@ -40,7 +40,7 @@ public class WeaponItemTagHelper {
     }
 
     public static boolean hasMaxAmmunition(ItemStack itemStack, WeaponItemData weaponItemData) {
-        return getAmmunition(itemStack) == weaponItemData.getMaxAmmunition();
+        return getAmmunition(itemStack) == weaponItemData.getAmmunitionStrategy().getMaxAmmunition();
     }
 
     public static boolean isWeapon(ItemStack itemStack) {
@@ -58,7 +58,7 @@ public class WeaponItemTagHelper {
     }
 
     public static void restoreAmmunition(ItemStack itemStack, WeaponItemData weaponItemData) {
-        getTagSafely(itemStack).putInt(AMMUNITION_KEY, weaponItemData.getMaxAmmunition());
+        getTagSafely(itemStack).putInt(AMMUNITION_KEY, weaponItemData.getAmmunitionStrategy().getMaxAmmunition());
     }
 
     public static void setWoundUp(ItemStack itemStack, boolean isWoundUp) {
