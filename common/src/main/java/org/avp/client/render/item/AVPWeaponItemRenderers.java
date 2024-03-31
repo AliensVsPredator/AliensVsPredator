@@ -9,6 +9,7 @@ import org.avp.common.item.weapon.M3712ShotgunItem;
 import org.avp.common.item.weapon.M41APulseRifleItem;
 import org.avp.common.item.weapon.M4CarbineItem;
 import org.avp.common.item.weapon.M83A2SADARItem;
+import org.avp.common.item.weapon.OldPainlessItem;
 import org.avp.common.item.weapon.SniperRifleItem;
 
 import java.util.Map;
@@ -26,6 +27,7 @@ public class AVPWeaponItemRenderers {
         Map.entry(M41APulseRifleItem.class, M41APulseRifleItemRenderer::new),
         Map.entry(M83A2SADARItem.class, M83A2SADARItemRenderer::new),
         Map.entry(M3712ShotgunItem.class, M3712ShotgunItemRenderer::new),
+        Map.entry(OldPainlessItem.class, AK47ItemRenderer::new), // TODO:
         Map.entry(SniperRifleItem.class, SniperRifleItemRenderer::new)
     );
 

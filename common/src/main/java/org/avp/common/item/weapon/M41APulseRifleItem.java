@@ -3,6 +3,7 @@ package org.avp.common.item.weapon;
 import org.avp.api.item.weapon.FireMode;
 import org.avp.api.item.weapon.WeaponDamageTypes;
 import org.avp.api.item.weapon.WeaponItemData;
+import org.avp.api.item.weapon.ammo.AmmunitionStrategies;
 import org.avp.api.item.weapon.reload.ReloadStrategies;
 import org.avp.common.item.AbstractAVPWeaponItem;
 import org.avp.common.sound.AVPSoundEvents;
@@ -29,6 +30,7 @@ public class M41APulseRifleItem extends AbstractAVPWeaponItem {
 
     private static final WeaponItemData WEAPON_ITEM_DATA = new WeaponItemData(
         1.0F,
+        AmmunitionStrategies.LOADED,
         WeaponDamageTypes.MEDIUM,
         List.of(FIRE_MODE_BURST, FIRE_MODE_AUTOMATIC),
         4F,

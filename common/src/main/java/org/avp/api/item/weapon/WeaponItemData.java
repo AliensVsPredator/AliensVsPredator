@@ -1,6 +1,7 @@
 package org.avp.api.item.weapon;
 
 import net.minecraft.sounds.SoundEvent;
+import org.avp.api.item.weapon.ammo.AmmunitionStrategy;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -16,6 +17,8 @@ import org.avp.api.item.weapon.reload.ReloadStrategy;
 public class WeaponItemData {
 
     private final float accuracy;
+
+    private final AmmunitionStrategy ammunitionStrategy;
 
     private final WeaponDamageType weaponDamageType;
 
@@ -41,6 +44,7 @@ public class WeaponItemData {
 
     public WeaponItemData(
         float accuracy,
+        AmmunitionStrategy ammunitionStrategy,
         @NotNull WeaponDamageType weaponDamageType,
         @NotNull List<FireMode> fireModes,
         float damage,
@@ -58,6 +62,7 @@ public class WeaponItemData {
         }
 
         this.accuracy = Math.max(accuracy, 0);
+        this.ammunitionStrategy = ammunitionStrategy;
         this.weaponDamageType = weaponDamageType;
         this.fireModes = fireModes;
         this.damage = Math.max(damage, 0);
@@ -81,6 +86,10 @@ public class WeaponItemData {
 
     public float getAccuracy() {
         return accuracy;
+    }
+
+    public AmmunitionStrategy getAmmunitionStrategy() {
+        return ammunitionStrategy;
     }
 
     public WeaponDamageType getBulletDamageType() {

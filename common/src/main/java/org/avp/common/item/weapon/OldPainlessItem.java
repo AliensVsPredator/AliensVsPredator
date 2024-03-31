@@ -10,33 +10,34 @@ import org.avp.common.sound.AVPSoundEvents;
 
 import java.util.List;
 
-public class FlamethrowerSevastopolItem extends AbstractAVPWeaponItem {
+public class OldPainlessItem extends AbstractAVPWeaponItem {
 
     private static final FireMode FIRE_MODE = new FireMode(
         "Automatic",
         1,
-        1,
-        AVPSoundEvents.ITEM_WEAPON_FLAMETHROWER_SHOOT,
+        0,
+        AVPSoundEvents.ITEM_WEAPON_AK_47_SHOOT,
         0.0F
     );
 
     private static final WeaponItemData WEAPON_ITEM_DATA = new WeaponItemData(
         1.0F,
-        AmmunitionStrategies.LOADED,
-        WeaponDamageTypes.MEDIUM,
+        AmmunitionStrategies.INVENTORY,
+        WeaponDamageTypes.HEAVY,
         List.of(FIRE_MODE),
-        1F,
-        0.13F,
-        32,
-        20 * 5,
+        2F * 2,
+        0.02F,
+        Integer.MAX_VALUE,
+        0,
         AVPSoundEvents.ITEM_WEAPON_GENERIC_SHOOT_FAIL,
-        AVPSoundEvents.ITEM_WEAPON_FLAMETHROWER_RELOAD_FINISH,
-        AVPSoundEvents.ITEM_WEAPON_FLAMETHROWER_RELOAD_START,
-        ReloadStrategies.STANDARD,
-        0
+        null,
+        AVPSoundEvents.ITEM_WEAPON_GENERIC_RELOAD,
+        ReloadStrategies.NO_OP,
+        20
     );
 
-    public FlamethrowerSevastopolItem(Properties properties) {
+    public OldPainlessItem(Properties properties) {
         super(properties, WEAPON_ITEM_DATA);
     }
+
 }
