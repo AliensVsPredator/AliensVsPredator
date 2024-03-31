@@ -10,6 +10,7 @@ import org.avp.api.network.NetworkSide;
 import org.avp.common.network.ClientboundPacket;
 import org.avp.common.network.ServerboundPacket;
 import org.avp.common.service.NetworkPayloadHandlerRegistry;
+import org.avp.common.service.Services;
 
 /**
  * @author Boston Vanseghi
@@ -22,29 +23,26 @@ public class FabricNetworkPayloadHandlerRegistry implements NetworkPayloadHandle
         FriendlyByteBuf.Reader<T> reader,
         NetworkSide handlingSide
     ) {
-        ClientPlayNetworking.PlayChannelHandler clientHandler = (client, listener, buf, sender) -> {
-            var payload = reader.apply(buf);
-            client.execute(((ClientboundPacket) payload)::handleClient);
-        };
+        if (!Services.PLATFORM.isServerEnvironment()) {
+            ClientPlayNetworking.PlayChannelHandler clientHandler = (client, listener, buf, sender) -> {
+                var payload = reader.apply(buf);
+                client.execute(((ClientboundPacket) payload)::handleClient);
+            };
 
-        ServerPlayNetworking.PlayChannelHandler channelHandler = (
-            minecraftServer,
-            serverPlayer,
-            listener,
-            friendlyByteBuf,
-            packetSender
-        ) -> {
-            var payload = reader.apply(friendlyByteBuf);
-            minecraftServer.execute(() -> ((ServerboundPacket) payload).handleServer(serverPlayer.serverLevel()));
-        };
+            ClientPlayNetworking.registerGlobalReceiver(payloadId, clientHandler);
+        } else {
+            ServerPlayNetworking.PlayChannelHandler channelHandler = (
+                minecraftServer,
+                serverPlayer,
+                listener,
+                friendlyByteBuf,
+                packetSender
+            ) -> {
+                var payload = reader.apply(friendlyByteBuf);
+                minecraftServer.execute(() -> ((ServerboundPacket) payload).handleServer(serverPlayer.serverLevel()));
+            };
 
-        switch (handlingSide) {
-            case CLIENT -> ClientPlayNetworking.registerGlobalReceiver(payloadId, clientHandler);
-            case COMMON -> {
-                ClientPlayNetworking.registerGlobalReceiver(payloadId, clientHandler);
-                ServerPlayNetworking.registerGlobalReceiver(payloadId, channelHandler);
-            }
-            case SERVER -> ServerPlayNetworking.registerGlobalReceiver(payloadId, channelHandler);
+            ServerPlayNetworking.registerGlobalReceiver(payloadId, channelHandler);
         }
     }
 }
