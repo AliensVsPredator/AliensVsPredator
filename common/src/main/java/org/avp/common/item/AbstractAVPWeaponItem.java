@@ -49,7 +49,7 @@ public abstract class AbstractAVPWeaponItem extends Item implements GeoItem {
     private final WeaponItemData weaponItemData;
 
     protected AbstractAVPWeaponItem(Properties properties, WeaponItemData weaponItemData) {
-        super(properties);
+        super(properties.stacksTo(1));
         this.weaponItemData = weaponItemData;
     }
 
