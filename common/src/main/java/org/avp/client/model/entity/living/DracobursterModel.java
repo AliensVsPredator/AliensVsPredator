@@ -9,7 +9,7 @@ import org.avp.common.entity.living.Dracoburster;
 
 public class DracobursterModel extends GeoModel<Dracoburster> {
 
-    private static final String ENTITY_NAME = "dracoburster";
+    private static final String ENTITY_NAME = "chestburster_draco";
 
     private static final ResourceLocation MODEL_LOCATION = AVPResources.entityGeoLocation(ENTITY_NAME);
 

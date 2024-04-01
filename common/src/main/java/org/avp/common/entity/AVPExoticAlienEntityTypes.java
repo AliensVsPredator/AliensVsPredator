@@ -27,7 +27,7 @@ public class AVPExoticAlienEntityTypes implements AVPRegistry {
         );
 
     public static final GameObject<EntityType<Dracoburster>> DRACOBURSTER = AVPEntityTypes.registerLiving(
-        "dracoburster",
+        "chestburster_draco",
         0xD8B877,
         0xF7E2B4,
         EntityType.Builder.of(Dracoburster::new, MobCategory.MONSTER)
