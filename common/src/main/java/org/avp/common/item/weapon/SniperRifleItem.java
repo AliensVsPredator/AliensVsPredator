@@ -20,6 +20,7 @@ public class SniperRifleItem extends AbstractAVPWeaponItem {
         1,
         30,
         AVPSoundEvents.ITEM_WEAPON_SNIPER_RIFLE_SHOOT,
+        128.0D,
         1.5F
     );
 

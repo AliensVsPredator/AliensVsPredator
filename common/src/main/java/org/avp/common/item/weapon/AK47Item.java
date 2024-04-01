@@ -20,6 +20,7 @@ public class AK47Item extends AbstractAVPWeaponItem {
         1,
         2,
         AVPSoundEvents.ITEM_WEAPON_AK_47_SHOOT,
+        64.0D,
         0.0F
     );
 

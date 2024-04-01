@@ -19,6 +19,7 @@ public class FlamethrowerSevastopolItem extends AbstractAVPWeaponItem {
         1,
         1,
         AVPSoundEvents.ITEM_WEAPON_FLAMETHROWER_SHOOT,
+        16.0D,
         0.0F
     );
 

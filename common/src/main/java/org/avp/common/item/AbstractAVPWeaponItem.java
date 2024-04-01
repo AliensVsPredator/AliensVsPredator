@@ -137,7 +137,7 @@ public abstract class AbstractAVPWeaponItem extends Item implements GeoItem {
             level.playSound(null, player.blockPosition(), shootSound, SoundSource.PLAYERS);
         }
 
-        var hitResult = ProjectileUtil.getHitResultOnViewVector(player, entity -> true, 128.0D);
+        var hitResult = ProjectileUtil.getHitResultOnViewVector(player, entity -> true, fireMode.range());
 
         switch (hitResult.getType()) {
             case BLOCK -> damageBlock(level, (BlockHitResult) hitResult, fireMode);

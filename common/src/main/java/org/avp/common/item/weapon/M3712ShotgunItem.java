@@ -20,6 +20,7 @@ public class M3712ShotgunItem extends AbstractAVPWeaponItem {
         1,
         20,
         AVPSoundEvents.ITEM_WEAPON_SHOTGUN_SHOOT,
+        6.0D,
         1.5F
     );
 

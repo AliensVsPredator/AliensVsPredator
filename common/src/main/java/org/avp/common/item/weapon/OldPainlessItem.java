@@ -20,6 +20,7 @@ public class OldPainlessItem extends AbstractAVPWeaponItem {
         0,
         AVPSoundEvents.ITEM_WEAPON_OLD_PAINLESS_SHOOT_LOOP,
         10,
+        64.0D,
         0.0F
     );
 

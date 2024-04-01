@@ -20,6 +20,7 @@ public class M41APulseRifleItem extends AbstractAVPWeaponItem {
         4,
         10,
         AVPSoundEvents.ITEM_WEAPON_PULSE_RIFLE_SHOOT,
+        64.0D,
         1F
     );
 
@@ -28,6 +29,7 @@ public class M41APulseRifleItem extends AbstractAVPWeaponItem {
         1,
         1,
         AVPSoundEvents.ITEM_WEAPON_PULSE_RIFLE_SHOOT, // TODO:
+        64.0D,
         0.25F
     );
 
