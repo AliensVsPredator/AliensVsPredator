@@ -4,10 +4,11 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import org.avp.api.item.weapon.WeaponItemData;
-import org.avp.api.item.weapon.WeaponItemTagHelper;
 
 import java.util.Set;
+
+import org.avp.api.item.weapon.WeaponItemData;
+import org.avp.api.item.weapon.WeaponItemTagHelper;
 
 @FunctionalInterface
 public interface HasAmmunitionBehavior {

@@ -1,5 +1,7 @@
 package org.avp.common.item.weapon;
 
+import java.util.List;
+
 import org.avp.api.item.weapon.FireMode;
 import org.avp.api.item.weapon.WeaponDamageTypes;
 import org.avp.api.item.weapon.WeaponItemData;
@@ -9,8 +11,6 @@ import org.avp.api.item.weapon.reload.ReloadStrategy;
 import org.avp.api.item.weapon.shoot.ShootStrategy;
 import org.avp.common.item.AbstractAVPWeaponItem;
 import org.avp.common.sound.AVPSoundEvents;
-
-import java.util.List;
 
 public class OldPainlessItem extends AbstractAVPWeaponItem {
 

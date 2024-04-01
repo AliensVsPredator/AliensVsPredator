@@ -4,11 +4,11 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.item.ItemStack;
-import org.avp.api.GameObject;
-import org.avp.api.item.weapon.WeaponItemData;
-import org.avp.api.item.weapon.reload.TryReloadBehavior;
 
 import java.util.Optional;
+
+import org.avp.api.GameObject;
+import org.avp.api.item.weapon.WeaponItemData;
 
 public abstract class ShootStrategy {
 
@@ -17,6 +17,7 @@ public abstract class ShootStrategy {
     }
 
     private final GameObject<SoundEvent> backgroundShootSound;
+
     private final int backgroundShootSoundFrequency;
 
     private final GameObject<SoundEvent> windDownSound;
@@ -73,8 +74,7 @@ public abstract class ShootStrategy {
 
         private int windUpTimeInTicks;
 
-        private Builder() {
-        }
+        private Builder() {}
 
         public Builder setBackgroundShootSound(GameObject<SoundEvent> backgroundShootSound, int backgroundShootSoundFrequency) {
             this.backgroundShootSound = backgroundShootSound;
@@ -99,6 +99,7 @@ public abstract class ShootStrategy {
 
         public ShootStrategy build() {
             return new ShootStrategy(backgroundShootSound, backgroundShootSoundFrequency, windDownSound, windUpSound, windUpTimeInTicks) {
+
                 @Override
                 public void shoot(ServerLevel serverLevel, ServerPlayer serverPlayer, ItemStack itemStack, WeaponItemData weaponItemData) {
                     // TODO:

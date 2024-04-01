@@ -2,6 +2,7 @@ package org.avp.client.model.item;
 
 import mod.azure.azurelib.common.api.client.model.GeoModel;
 import net.minecraft.resources.ResourceLocation;
+
 import org.avp.common.AVPResources;
 import org.avp.common.item.weapon.OldPainlessItem;
 

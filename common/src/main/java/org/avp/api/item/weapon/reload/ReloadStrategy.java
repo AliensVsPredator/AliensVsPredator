@@ -5,10 +5,10 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.item.ItemStack;
 
+import java.util.Optional;
+
 import org.avp.api.GameObject;
 import org.avp.api.item.weapon.WeaponItemData;
-
-import java.util.Optional;
 
 public abstract class ReloadStrategy {
 
@@ -74,8 +74,14 @@ public abstract class ReloadStrategy {
 
         public ReloadStrategy build() {
             return new ReloadStrategy(reloadFinishSound, reloadStartSound, reloadTimeInTicks) {
+
                 @Override
-                public void tryReload(ServerLevel serverLevel, ServerPlayer serverPlayer, ItemStack itemStack, WeaponItemData weaponItemData) {
+                public void tryReload(
+                    ServerLevel serverLevel,
+                    ServerPlayer serverPlayer,
+                    ItemStack itemStack,
+                    WeaponItemData weaponItemData
+                ) {
                     tryReloadBehavior.tryReload(serverLevel, serverPlayer, itemStack, weaponItemData);
                 }
             };

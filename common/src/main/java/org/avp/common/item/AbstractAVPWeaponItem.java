@@ -22,7 +22,6 @@ import net.minecraft.world.item.ItemUtils;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
-import org.avp.client.render.item.AVPWeaponItemRenderers;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
@@ -34,6 +33,7 @@ import org.avp.api.Tuple;
 import org.avp.api.item.weapon.FireMode;
 import org.avp.api.item.weapon.WeaponItemData;
 import org.avp.api.item.weapon.WeaponItemTagHelper;
+import org.avp.client.render.item.AVPWeaponItemRenderers;
 import org.avp.common.network.payload.ClientboundBulletHitBlockPayload;
 import org.avp.common.service.Services;
 import org.avp.common.util.SoundUtilities;
@@ -58,28 +58,40 @@ public abstract class AbstractAVPWeaponItem extends Item implements GeoItem {
         var shootingStrategy = weaponItemData.getShootStrategy();
         var windDownSoundOptional = shootingStrategy.getWindDownSound();
 
-        windDownSoundOptional.ifPresent(windDownSound -> level.playSound(null, livingEntity.blockPosition(), windDownSound.get(), SoundSource.PLAYERS));
+        windDownSoundOptional.ifPresent(
+            windDownSound -> level.playSound(null, livingEntity.blockPosition(), windDownSound.get(), SoundSource.PLAYERS)
+        );
 
         super.releaseUsing(itemStack, level, livingEntity, i);
     }
 
     @Override
-    public void onUseTick(@NotNull Level level, @NotNull LivingEntity livingEntity, @NotNull ItemStack itemStack, int negativeTickProgress) {
+    public void onUseTick(
+        @NotNull Level level,
+        @NotNull LivingEntity livingEntity,
+        @NotNull ItemStack itemStack,
+        int negativeTickProgress
+    ) {
         var positiveTickProgress = Math.abs(negativeTickProgress);
         var isFirstTick = positiveTickProgress == 0;
 
-        if (!(livingEntity instanceof Player player)) return;
-        if (player.getCooldowns().isOnCooldown(this)) return;
+        if (!(livingEntity instanceof Player player))
+            return;
+        if (player.getCooldowns().isOnCooldown(this))
+            return;
 
         var shootStrategy = weaponItemData.getShootStrategy();
         var windUpSoundOptional = shootStrategy.getWindUpSound();
 
         if (isFirstTick) {
-            windUpSoundOptional.ifPresent(windUpSound -> level.playSound(null, player.blockPosition(), windUpSound.get(), SoundSource.PLAYERS));
+            windUpSoundOptional.ifPresent(
+                windUpSound -> level.playSound(null, player.blockPosition(), windUpSound.get(), SoundSource.PLAYERS)
+            );
         }
 
         var windUpTimeInTicks = shootStrategy.getWindUpTimeInTicks();
-        if (positiveTickProgress < windUpTimeInTicks) return;
+        if (positiveTickProgress < windUpTimeInTicks)
+            return;
 
         var fireMode = WeaponItemTagHelper.getFireMode(itemStack, weaponItemData);
 
@@ -92,7 +104,10 @@ public abstract class AbstractAVPWeaponItem extends Item implements GeoItem {
             var backgroundShootSoundOptional = shootStrategy.getBackgroundShootSound();
 
             backgroundShootSoundOptional.ifPresent(backgroundShootSound -> {
-                if (positiveTickProgress == windUpTimeInTicks || (positiveTickProgress + windUpTimeInTicks) % backgroundShootSoundFrequency == 0) {
+                if (
+                    positiveTickProgress == windUpTimeInTicks || (positiveTickProgress + windUpTimeInTicks)
+                        % backgroundShootSoundFrequency == 0
+                ) {
                     level.playSound(null, player.blockPosition(), backgroundShootSound.get(), SoundSource.PLAYERS);
                 }
             });

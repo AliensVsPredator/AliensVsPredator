@@ -1,16 +1,13 @@
 package org.avp.api.item.weapon;
 
-import net.minecraft.sounds.SoundEvent;
-import org.avp.api.item.weapon.ammo.AmmunitionStrategy;
-import org.avp.api.item.weapon.shoot.ShootStrategy;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 
-import org.avp.api.GameObject;
+import org.avp.api.item.weapon.ammo.AmmunitionStrategy;
 import org.avp.api.item.weapon.reload.ReloadStrategy;
+import org.avp.api.item.weapon.shoot.ShootStrategy;
 
 /**
  * @author Boston Vanseghi

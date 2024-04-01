@@ -4,15 +4,17 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.item.ItemStack;
-import org.avp.api.item.weapon.WeaponItemData;
-import org.avp.api.item.weapon.WeaponItemTagHelper;
-import org.avp.server.ServerScheduler;
 
 import java.time.Duration;
 import java.util.Objects;
 
+import org.avp.api.item.weapon.WeaponItemData;
+import org.avp.api.item.weapon.WeaponItemTagHelper;
+import org.avp.server.ServerScheduler;
+
 @FunctionalInterface
 public interface TryReloadBehavior {
+
     TryReloadBehavior NO_OP = (l, p, i, w) -> {};
 
     TryReloadBehavior STANDARD = (level, player, itemStack, weaponItemData) -> {

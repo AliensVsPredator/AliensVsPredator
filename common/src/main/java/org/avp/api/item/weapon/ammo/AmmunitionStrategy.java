@@ -3,6 +3,7 @@ package org.avp.api.item.weapon.ammo;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
+
 import org.avp.api.item.weapon.WeaponItemData;
 
 public abstract class AmmunitionStrategy {
@@ -17,7 +18,12 @@ public abstract class AmmunitionStrategy {
         this.maxAmmunition = maxAmmunition;
     }
 
-    public abstract boolean hasAmmunition(ServerLevel serverLevel, ServerPlayer serverPlayer, ItemStack itemStack, WeaponItemData weaponItemData);
+    public abstract boolean hasAmmunition(
+        ServerLevel serverLevel,
+        ServerPlayer serverPlayer,
+        ItemStack itemStack,
+        WeaponItemData weaponItemData
+    );
 
     public int getMaxAmmunition() {
         return maxAmmunition;
@@ -40,8 +46,14 @@ public abstract class AmmunitionStrategy {
 
         public AmmunitionStrategy build() {
             return new AmmunitionStrategy(maxAmmunition) {
+
                 @Override
-                public boolean hasAmmunition(ServerLevel serverLevel, ServerPlayer serverPlayer, ItemStack itemStack, WeaponItemData weaponItemData) {
+                public boolean hasAmmunition(
+                    ServerLevel serverLevel,
+                    ServerPlayer serverPlayer,
+                    ItemStack itemStack,
+                    WeaponItemData weaponItemData
+                ) {
                     return hasAmmunitionBehavior.hasAmmunition(serverLevel, serverPlayer, itemStack, weaponItemData);
                 }
             };

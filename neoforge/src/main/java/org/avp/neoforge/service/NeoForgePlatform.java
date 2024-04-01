@@ -1,8 +1,6 @@
 package org.avp.neoforge.service;
 
-import net.neoforged.api.distmarker.Dist;
 import net.neoforged.fml.ModList;
-import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.fml.loading.FMLLoader;
 
 import java.nio.file.Path;

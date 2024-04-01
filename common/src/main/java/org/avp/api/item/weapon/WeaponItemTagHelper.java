@@ -2,6 +2,7 @@ package org.avp.api.item.weapon;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
+
 import org.avp.common.item.AbstractAVPWeaponItem;
 
 public class WeaponItemTagHelper {
@@ -48,7 +49,8 @@ public class WeaponItemTagHelper {
     }
 
     public static boolean isWoundUp(ItemStack itemStack) {
-        if (!isWeapon(itemStack)) return false;
+        if (!isWeapon(itemStack))
+            return false;
 
         if (!getTagSafely(itemStack).contains(IS_WOUND_UP_KEY)) {
             return false;
@@ -62,7 +64,8 @@ public class WeaponItemTagHelper {
     }
 
     public static void setWoundUp(ItemStack itemStack, boolean isWoundUp) {
-        if (!isWeapon(itemStack)) return;
+        if (!isWeapon(itemStack))
+            return;
 
         getTagSafely(itemStack).putBoolean(IS_WOUND_UP_KEY, isWoundUp);
     }
