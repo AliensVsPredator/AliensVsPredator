@@ -27,7 +27,7 @@ public class AVPWeaponItemRenderers {
         Map.entry(M41APulseRifleItem.class, M41APulseRifleItemRenderer::new),
         Map.entry(M83A2SADARItem.class, M83A2SADARItemRenderer::new),
         Map.entry(M3712ShotgunItem.class, M3712ShotgunItemRenderer::new),
-        Map.entry(OldPainlessItem.class, AK47ItemRenderer::new), // TODO:
+        Map.entry(OldPainlessItem.class, OldPainlessItemRenderer::new),
         Map.entry(SniperRifleItem.class, SniperRifleItemRenderer::new)
     );
 
