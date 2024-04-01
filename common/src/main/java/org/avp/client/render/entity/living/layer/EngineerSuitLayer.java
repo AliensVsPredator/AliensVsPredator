@@ -9,7 +9,6 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
 
-import org.avp.client.model.entity.living.EngineerModel;
 import org.avp.common.AVPResources;
 import org.avp.common.entity.living.Engineer;
 
@@ -22,11 +21,8 @@ public class EngineerSuitLayer extends GeoRenderLayer<Engineer> {
 
     private static final ResourceLocation JOCKEY_TEXTURE = AVPResources.entityTextureLocation("engineer_jockey");
 
-    private final EngineerModel model;
-
     public EngineerSuitLayer(GeoRenderer<Engineer> entityRendererIn) {
         super(entityRendererIn);
-        this.model = new EngineerModel();
     }
 
     @Override
@@ -41,11 +37,6 @@ public class EngineerSuitLayer extends GeoRenderLayer<Engineer> {
         int packedLight,
         int packedOverlay
     ) {
-        if (entity.isInvisible()) {
-            return;
-        }
-
-        model.showHelmet(entity.hasHelmet());
         var suitRenderType = RenderType.entityCutout(entity.getSuitType() == 0 ? SUIT_TEXTURE : JOCKEY_TEXTURE);
 
         renderer.reRender(
@@ -54,7 +45,7 @@ public class EngineerSuitLayer extends GeoRenderLayer<Engineer> {
             bufferSource,
             entity,
             suitRenderType,
-            buffer,
+            bufferSource.getBuffer(suitRenderType),
             partialTick,
             packedLight,
             packedOverlay,
@@ -63,7 +54,5 @@ public class EngineerSuitLayer extends GeoRenderLayer<Engineer> {
             1F,
             1F
         );
-
-        super.render(poseStack, entity, bakedModel, renderType, bufferSource, buffer, partialTick, packedLight, packedOverlay);
     }
 }
