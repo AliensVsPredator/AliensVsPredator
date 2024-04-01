@@ -35,12 +35,16 @@ public class EngineerModel extends GeoModel<Engineer> {
     }
 
     public void showHelmet(boolean showHelmet) {
-        var helmet = this.getBone("gHelmet");
-        helmet.ifPresent(bone -> bone.setHidden(!showHelmet));
+        var helmet = this.getAnimationProcessor().getBone("gHelmet");
+
+        if (helmet != null) {
+            helmet.setHidden(!showHelmet);
+        }
     }
 
     @Override
     public void setCustomAnimations(Engineer entity, long instanceId, AnimationState<Engineer> animationState) {
+        this.showHelmet(entity.hasHelmet());
         BasicAnimationUtils.applyHeadRotations(this, animationState, "gNeck", -0.2F);
         BasicAnimationUtils.applyLimbRotations(
             entity,
@@ -48,9 +52,9 @@ public class EngineerModel extends GeoModel<Engineer> {
             animationState,
             "gLeftArm",
             "gRightArm",
-            "gLeftLeg",
-            "gRightLeg",
-            -0.35F,
+            "gLeftThigh",
+            "gRightThigh",
+            0F,
             0F
         );
     }
