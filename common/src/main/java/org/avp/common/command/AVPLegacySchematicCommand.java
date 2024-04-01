@@ -9,9 +9,9 @@ import net.minecraft.network.chat.Component;
 
 import java.util.List;
 
+import org.avp.api.GameObject;
 import org.avp.common.legacy.schematic.LegacySchematic;
 import org.avp.common.legacy.schematic.LegacySchematics;
-import org.avp.common.util.GameObject;
 
 /**
  * @author Boston Vanseghi

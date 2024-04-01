@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.avp.common.util.GameObject;
+import org.avp.api.GameObject;
 
 /**
  * @author Boston Vanseghi

@@ -10,9 +10,9 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+import org.avp.api.GameObject;
 import org.avp.api.block.BlockData;
 import org.avp.api.block.BlockDataUtils;
-import org.avp.common.util.GameObject;
 
 /**
  * @author Boston Vanseghi

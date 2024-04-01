@@ -6,6 +6,7 @@ import org.avp.common.block.*;
 import org.avp.common.creative_tab.AVPCreativeModeTabs;
 import org.avp.common.entity.*;
 import org.avp.common.item.*;
+import org.avp.common.network.AVPNetworkPayloadHandlerRegistry;
 import org.avp.common.sound.AVPSoundEvents;
 import org.avp.common.tag.AVPBiomeTags;
 import org.avp.common.tag.AVPBlockTags;
@@ -20,6 +21,9 @@ public class AVPCommon {
     public static void init() {
         // Initialize AzureLib.
         AzureLib.initialize();
+
+        // Networking
+        AVPNetworkPayloadHandlerRegistry.forceInitialization();
 
         // World Gen resource keys
         AVPWorldGenFeatures.getInstance().register();
@@ -59,7 +63,7 @@ public class AVPCommon {
         AVPCreativeModeTabs.register();
 
         // Sounds
-        AVPSoundEvents.getInstance().register();
+        AVPSoundEvents.forceInitialization();
     }
 
     private AVPCommon() {

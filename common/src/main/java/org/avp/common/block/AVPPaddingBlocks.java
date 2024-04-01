@@ -4,9 +4,9 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 
+import org.avp.api.GameObject;
 import org.avp.api.block.BlockData;
 import org.avp.api.block.BlockDataUtils;
-import org.avp.common.util.GameObject;
 
 /**
  * @author Boston Vanseghi

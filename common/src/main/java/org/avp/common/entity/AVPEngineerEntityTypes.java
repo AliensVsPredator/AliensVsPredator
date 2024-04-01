@@ -3,9 +3,9 @@ package org.avp.common.entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
 
+import org.avp.api.GameObject;
 import org.avp.common.entity.living.Engineer;
 import org.avp.common.registry.AVPRegistry;
-import org.avp.common.util.GameObject;
 
 /**
  * @author Boston Vanseghi

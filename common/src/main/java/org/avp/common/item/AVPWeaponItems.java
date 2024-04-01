@@ -6,8 +6,17 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
 
+import org.avp.api.GameObject;
+import org.avp.common.item.weapon.AK47Item;
+import org.avp.common.item.weapon.F90RifleItem;
+import org.avp.common.item.weapon.FlamethrowerSevastopolItem;
+import org.avp.common.item.weapon.M3712ShotgunItem;
+import org.avp.common.item.weapon.M41APulseRifleItem;
+import org.avp.common.item.weapon.M4CarbineItem;
+import org.avp.common.item.weapon.M83A2SADARItem;
+import org.avp.common.item.weapon.OldPainlessItem;
+import org.avp.common.item.weapon.SniperRifleItem;
 import org.avp.common.service.Services;
-import org.avp.common.util.GameObject;
 
 /**
  * @author Boston Vanseghi
@@ -34,13 +43,23 @@ public class AVPWeaponItems {
 
     public static final GameObject<Item> WEAPON_88MOD4_COMBAT_PISTOL;
 
+    public static final GameObject<Item> WEAPON_37_12_SHOTGUN;
+
     public static final GameObject<Item> WEAPON_AK_47;
+
+    public static final GameObject<Item> WEAPON_F90_RIFLE;
+
+    public static final GameObject<Item> WEAPON_FLAMETHROWER_SEVASTOPOL;
 
     public static final GameObject<Item> WEAPON_M4_CARBINE;
 
     public static final GameObject<Item> WEAPON_M41A_PULSE_RIFLE;
 
     public static final GameObject<Item> WEAPON_M56_SMARTGUN;
+
+    public static final GameObject<Item> WEAPON_M83A2_SADAR;
+
+    public static final GameObject<Item> WEAPON_OLD_PAINLESS;
 
     public static final GameObject<Item> WEAPON_SNIPER_RIFLE;
 
@@ -71,11 +90,19 @@ public class AVPWeaponItems {
         GRENADE_INCENDIARY = register("grenade_incendiary", () -> new Item(new Item.Properties()));
         GRENADE_M40 = register("grenade_m40", () -> new Item(new Item.Properties()));
 
+        WEAPON_37_12_SHOTGUN = register("weapon_37_12_shotgun", () -> new M3712ShotgunItem(new Item.Properties()));
         WEAPON_88MOD4_COMBAT_PISTOL = register("weapon_88mod4_combat_pistol", () -> new Item(new Item.Properties()));
-        WEAPON_AK_47 = register("weapon_ak_47", () -> new Item(new Item.Properties()));
-        WEAPON_M4_CARBINE = register("weapon_m4_carbine", () -> new Item(new Item.Properties()));
-        WEAPON_M41A_PULSE_RIFLE = register("weapon_m41a_pulse_rifle", () -> new Item(new Item.Properties()));
+        WEAPON_AK_47 = register("weapon_ak_47", () -> new AK47Item(new Item.Properties()));
+        WEAPON_F90_RIFLE = register("weapon_f90_rifle", () -> new F90RifleItem(new Item.Properties()));
+        WEAPON_FLAMETHROWER_SEVASTOPOL = register(
+            "weapon_flamethrower_sevastopol",
+            () -> new FlamethrowerSevastopolItem(new Item.Properties())
+        );
+        WEAPON_M4_CARBINE = register("weapon_m4_carbine", () -> new M4CarbineItem(new Item.Properties()));
+        WEAPON_M41A_PULSE_RIFLE = register("weapon_m41a_pulse_rifle", () -> new M41APulseRifleItem(new Item.Properties()));
         WEAPON_M56_SMARTGUN = register("weapon_m56_smartgun", () -> new Item(new Item.Properties()));
-        WEAPON_SNIPER_RIFLE = register("weapon_sniper_rifle", () -> new Item(new Item.Properties()));
+        WEAPON_M83A2_SADAR = register("weapon_m83a2_sadar", () -> new M83A2SADARItem(new Item.Properties()));
+        WEAPON_OLD_PAINLESS = register("weapon_old_painless", () -> new OldPainlessItem(new Item.Properties()));
+        WEAPON_SNIPER_RIFLE = register("weapon_sniper_rifle", () -> new SniperRifleItem(new Item.Properties()));
     }
 }

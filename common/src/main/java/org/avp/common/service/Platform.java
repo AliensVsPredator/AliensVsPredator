@@ -27,6 +27,13 @@ public interface Platform {
     boolean isDevelopmentEnvironment();
 
     /**
+     * Checks if the game is currently running client-side or server-side.
+     *
+     * @return True if running server-side, false otherwise.
+     */
+    boolean isServerEnvironment();
+
+    /**
      * Gets the name of the environment type as a string.
      *
      * @return The name of the environment type.

@@ -11,6 +11,7 @@ import net.minecraft.data.models.model.TexturedModel;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
 
+import org.avp.api.GameObject;
 import org.avp.api.Tuple;
 import org.avp.api.block.BlockData;
 import org.avp.api.block.factory.BlockFactories;
@@ -18,7 +19,6 @@ import org.avp.api.block.factory.FenceGateBlockFactory;
 import org.avp.api.block.factory.StairBlockFactory;
 import org.avp.common.block.AVPBlocks;
 import org.avp.common.item.AVPSpawnEggItems;
-import org.avp.common.util.GameObject;
 
 public class AVPFabricBlockModelProvider {
 

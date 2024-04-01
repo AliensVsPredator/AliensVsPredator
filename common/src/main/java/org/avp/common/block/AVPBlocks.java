@@ -8,10 +8,10 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.avp.api.GameObject;
 import org.avp.api.Tuple;
 import org.avp.api.block.BlockData;
 import org.avp.common.service.Services;
-import org.avp.common.util.GameObject;
 
 /**
  * @author Boston Vanseghi

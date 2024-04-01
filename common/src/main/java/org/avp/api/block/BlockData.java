@@ -8,11 +8,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.avp.api.GameObject;
 import org.avp.api.block.drop.BlockDrop;
 import org.avp.api.block.drop.BlockDrops;
 import org.avp.api.block.factory.BlockFactories;
 import org.avp.api.block.factory.BlockFactory;
-import org.avp.common.util.GameObject;
 
 /**
  * @author Boston Vanseghi

@@ -3,8 +3,8 @@ package org.avp.api.block.factory;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 
+import org.avp.api.GameObject;
 import org.avp.common.service.Services;
-import org.avp.common.util.GameObject;
 
 public class StairBlockFactory implements BlockFactory {
 

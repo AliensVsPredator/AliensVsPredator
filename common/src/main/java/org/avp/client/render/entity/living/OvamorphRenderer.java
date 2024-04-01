@@ -11,8 +11,8 @@ import org.jetbrains.annotations.NotNull;
 
 import org.avp.client.model.entity.living.OvamorphModel;
 import org.avp.common.AVPResources;
-import org.avp.common.TimeUtils;
 import org.avp.common.entity.living.Ovamorph;
+import org.avp.common.util.TimeUtilities;
 
 /**
  * @author Boston Vanseghi
@@ -61,6 +61,6 @@ public class OvamorphRenderer extends GeoEntityRenderer<Ovamorph> {
 
     @Override
     public @NotNull ResourceLocation getTextureLocation(@NotNull Ovamorph entity) {
-        return TimeUtils.isHalloween() ? TEXTURE_HALLOWEEN : super.getTextureLocation(entity);
+        return TimeUtilities.isHalloween() ? TEXTURE_HALLOWEEN : super.getTextureLocation(entity);
     }
 }

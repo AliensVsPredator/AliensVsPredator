@@ -4,8 +4,8 @@ import net.minecraft.world.item.Item;
 
 import java.util.function.Supplier;
 
+import org.avp.api.GameObject;
 import org.avp.common.service.Services;
-import org.avp.common.util.GameObject;
 
 /**
  * @author Boston Vanseghi

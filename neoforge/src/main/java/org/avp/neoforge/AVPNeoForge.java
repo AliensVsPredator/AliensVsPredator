@@ -6,8 +6,10 @@ import net.neoforged.neoforge.common.NeoForge;
 
 import org.avp.common.AVPCommon;
 import org.avp.common.AVPConstants;
+import org.avp.neoforge.client.AVPNeoForgeClient;
 import org.avp.neoforge.common.command.AVPNeoForgeCommands;
 import org.avp.neoforge.service.*;
+import org.avp.neoforge.service.NeoForgeNetworkPayloadHandlerRegistry;
 
 /**
  * @author Boston Vanseghi
@@ -18,6 +20,8 @@ public class AVPNeoForge {
     public AVPNeoForge(IEventBus eventBus) {
         AVPCommon.init();
 
+        eventBus.addListener(NeoForgeNetworkPayloadHandlerRegistry::registerPayloadHandlers);
+
         NeoForgeCreativeModeTabRegistry.CREATIVE_MODE_TABS.register(eventBus);
         NeoForgeItemRegistry.ITEMS.register(eventBus);
         NeoForgeBlockRegistry.BLOCKS.register(eventBus);
@@ -26,5 +30,8 @@ public class AVPNeoForge {
         eventBus.addListener(NeoForgeEntityAttributeRegistry.getInstance()::createEntityAttributes);
 
         NeoForge.EVENT_BUS.addListener(AVPNeoForgeCommands::registerCommandsEvent);
+
+        // Client events
+        NeoForge.EVENT_BUS.addListener(AVPNeoForgeClient::onClientTick);
     }
 }

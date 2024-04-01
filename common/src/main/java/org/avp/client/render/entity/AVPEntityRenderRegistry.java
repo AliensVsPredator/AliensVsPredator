@@ -8,8 +8,8 @@ import net.minecraft.world.entity.Mob;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.avp.api.GameObject;
 import org.avp.client.util.EntityRenderData;
-import org.avp.common.util.GameObject;
 
 /**
  * @author Boston Vanseghi

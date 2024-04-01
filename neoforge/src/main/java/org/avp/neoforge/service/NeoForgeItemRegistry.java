@@ -5,9 +5,9 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 
 import java.util.function.Supplier;
 
+import org.avp.api.GameObject;
 import org.avp.common.AVPConstants;
 import org.avp.common.service.ItemRegistry;
-import org.avp.common.util.GameObject;
 import org.avp.neoforge.util.ForgeGameObject;
 
 /**
