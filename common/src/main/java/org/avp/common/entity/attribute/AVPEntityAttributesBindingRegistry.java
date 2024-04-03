@@ -47,6 +47,7 @@ public class AVPEntityAttributesBindingRegistry {
         AVPPrometheusAlienEntityAttributes.addBindings();
         AVPPrometheusEngineerEntityAttributes.addBindings();
         AVPRunnerAlienEntityAttributes.addBindings();
+        AVPYautjaEntityAttributes.addBindings();
     }
 
     private AVPEntityAttributesBindingRegistry() {

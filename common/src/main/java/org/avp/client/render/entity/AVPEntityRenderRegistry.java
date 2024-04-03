@@ -36,6 +36,7 @@ public class AVPEntityRenderRegistry {
         AVPPrometheusAlienEntityRenderers.addBindings();
         AVPPrometheusEngineerEntityRenderers.addBindings();
         AVPRunnerAlienEntityRenderers.addBindings();
+        AVPYautjaEntityRenderers.addBindings();
     }
 
     private AVPEntityRenderRegistry() {
