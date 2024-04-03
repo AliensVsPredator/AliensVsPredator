@@ -14,6 +14,7 @@ import org.avp.common.entity.AVPEntityTypes;
 import org.avp.common.entity.AVPExoticAlienEntityTypes;
 import org.avp.common.entity.AVPPrometheusAlienEntityTypes;
 import org.avp.common.entity.AVPRunnerAlienEntityTypes;
+import org.avp.common.entity.AVPYautjaEntityTypes;
 import org.avp.common.tag.AVPEntityTags;
 
 public class AVPEntityTagsProvider extends FabricTagProvider.EntityTypeTagProvider {
@@ -115,5 +116,8 @@ public class AVPEntityTagsProvider extends FabricTagProvider.EntityTypeTagProvid
                 EntityType.VEX,
                 EntityType.WARDEN
             );
+
+        getOrCreateTagBuilder(AVPEntityTags.PREDATORS)
+            .add(AVPYautjaEntityTypes.YAUTJA.get());
     }
 }
