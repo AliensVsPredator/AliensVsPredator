@@ -4,6 +4,8 @@ import mod.azure.azurelib.common.api.common.animatable.GeoEntity;
 import mod.azure.azurelib.common.internal.common.core.animatable.instance.AnimatableInstanceCache;
 import mod.azure.azurelib.common.internal.common.core.animation.AnimatableManager;
 import mod.azure.azurelib.common.internal.common.util.AzureLibUtil;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
@@ -15,7 +17,10 @@ import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 
+import org.avp.common.sound.AVPSoundEvents;
 import org.avp.common.tag.AVPEntityTags;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * @author Boston Vanseghi
@@ -44,6 +49,22 @@ public class Yautja extends Monster implements GeoEntity {
                 livingEntity -> !livingEntity.getType().is(AVPEntityTags.PREDATORS)
             )
         );
+    }
+
+    @Nullable
+    @Override
+    protected SoundEvent getAmbientSound() {
+        return AVPSoundEvents.ENTITY_YAUTJA_AMBIENT.get();
+    }
+
+    @Override
+    protected SoundEvent getDeathSound() {
+        return AVPSoundEvents.ENTITY_YAUTJA_DEATH.get();
+    }
+
+    @Override
+    protected SoundEvent getHurtSound(@NotNull DamageSource damageSource) {
+        return AVPSoundEvents.ENTITY_YAUTJA_HURT.get();
     }
 
     @Override

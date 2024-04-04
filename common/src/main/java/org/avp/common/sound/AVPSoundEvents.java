@@ -47,6 +47,16 @@ public class AVPSoundEvents {
 
     public static final GameObject<SoundEvent> ENTITY_XENOMORPH_HURT;
 
+    public static final GameObject<SoundEvent> ENTITY_YAUTJA_AMBIENT;
+
+    public static final GameObject<SoundEvent> ENTITY_YAUTJA_CLOAK;
+
+    public static final GameObject<SoundEvent> ENTITY_YAUTJA_DEATH;
+
+    public static final GameObject<SoundEvent> ENTITY_YAUTJA_DECLOAK;
+
+    public static final GameObject<SoundEvent> ENTITY_YAUTJA_HURT;
+
     public static final GameObject<SoundEvent> ITEM_WEAPON_AK_47_SHOOT;
 
     public static final GameObject<SoundEvent> ITEM_WEAPON_COMBAT_PISTOL_RELOAD;
@@ -111,6 +121,12 @@ public class AVPSoundEvents {
         ENTITY_XENOMORPH_DEATH = register("entity.xenomorph.death");
         ENTITY_XENOMORPH_EAT = register("entity.xenomorph.eat");
         ENTITY_XENOMORPH_HURT = register("entity.xenomorph.hurt");
+
+        ENTITY_YAUTJA_AMBIENT = register("entity.yautja.ambient");
+        ENTITY_YAUTJA_CLOAK = register("entity.yautja.cloak");
+        ENTITY_YAUTJA_DEATH = register("entity.yautja.death");
+        ENTITY_YAUTJA_DECLOAK = register("entity.yautja.decloak");
+        ENTITY_YAUTJA_HURT = register("entity.yautja.hurt");
 
         ITEM_WEAPON_AK_47_SHOOT = register("item.weapon.ak_47.shoot");
 
