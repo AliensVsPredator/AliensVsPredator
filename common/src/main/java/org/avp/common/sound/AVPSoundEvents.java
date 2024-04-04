@@ -49,6 +49,10 @@ public class AVPSoundEvents {
 
     public static final GameObject<SoundEvent> ITEM_WEAPON_AK_47_SHOOT;
 
+    public static final GameObject<SoundEvent> ITEM_WEAPON_COMBAT_PISTOL_RELOAD;
+
+    public static final GameObject<SoundEvent> ITEM_WEAPON_COMBAT_PISTOL_SHOOT;
+
     public static final GameObject<SoundEvent> ITEM_WEAPON_FLAMETHROWER_RELOAD_FINISH;
 
     public static final GameObject<SoundEvent> ITEM_WEAPON_FLAMETHROWER_RELOAD_START;
@@ -109,6 +113,9 @@ public class AVPSoundEvents {
         ENTITY_XENOMORPH_HURT = register("entity.xenomorph.hurt");
 
         ITEM_WEAPON_AK_47_SHOOT = register("item.weapon.ak_47.shoot");
+
+        ITEM_WEAPON_COMBAT_PISTOL_RELOAD = register("item.weapon.combat_pistol.reload");
+        ITEM_WEAPON_COMBAT_PISTOL_SHOOT = register("item.weapon.combat_pistol.shoot");
 
         ITEM_WEAPON_FLAMETHROWER_RELOAD_FINISH = register("item.weapon.flamethrower.reload_finish");
         ITEM_WEAPON_FLAMETHROWER_RELOAD_START = register("item.weapon.flamethrower.reload_start");
