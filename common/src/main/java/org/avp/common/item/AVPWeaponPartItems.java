@@ -19,6 +19,8 @@ public class AVPWeaponPartItems {
 
     public static final GameObject<Item> WEAPON_PART_BARREL_MINIGUN;
 
+    public static final GameObject<Item> WEAPON_PART_BARREL_ROCKET;
+
     public static final GameObject<Item> WEAPON_PART_BARREL_SMART;
 
     public static final GameObject<Item> WEAPON_PART_GRIP_GENERIC;
@@ -46,6 +48,7 @@ public class AVPWeaponPartItems {
     static {
         WEAPON_PART_BARREL_GENERIC = register("weapon_part_barrel", () -> new Item(new Item.Properties()));
         WEAPON_PART_BARREL_MINIGUN = register("weapon_part_barrel_minigun", () -> new Item(new Item.Properties()));
+        WEAPON_PART_BARREL_ROCKET = register("weapon_part_barrel_rocket", () -> new Item(new Item.Properties()));
         WEAPON_PART_BARREL_SMART = register("weapon_part_barrel_smart", () -> new Item(new Item.Properties()));
         WEAPON_PART_GRIP_GENERIC = register("weapon_part_grip", () -> new Item(new Item.Properties()));
         WEAPON_PART_RECEIVER_GENERIC = register("weapon_part_receiver", () -> new Item(new Item.Properties()));
