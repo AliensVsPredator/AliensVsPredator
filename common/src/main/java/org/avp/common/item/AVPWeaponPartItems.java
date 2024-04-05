@@ -29,6 +29,8 @@ public class AVPWeaponPartItems {
 
     public static final GameObject<Item> WEAPON_PART_RECEIVER_SMART;
 
+    public static final GameObject<Item> WEAPON_PART_STOCK_GENERIC;
+
     public static void forceInitialization() {
         // This method doesn't need to do anything
     }
@@ -53,5 +55,6 @@ public class AVPWeaponPartItems {
         WEAPON_PART_GRIP_GENERIC = register("weapon_part_grip", () -> new Item(new Item.Properties()));
         WEAPON_PART_RECEIVER_GENERIC = register("weapon_part_receiver", () -> new Item(new Item.Properties()));
         WEAPON_PART_RECEIVER_SMART = register("weapon_part_receiver_smart", () -> new Item(new Item.Properties()));
+        WEAPON_PART_STOCK_GENERIC = register("weapon_part_stock", () -> new Item(new Item.Properties()));
     }
 }
