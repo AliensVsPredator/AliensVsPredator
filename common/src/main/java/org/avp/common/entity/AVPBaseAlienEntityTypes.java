@@ -18,6 +18,13 @@ public class AVPBaseAlienEntityTypes implements AVPRegistry {
         return INSTANCE;
     }
 
+    public static final GameObject<EntityType<Boiler>> BOILER = AVPEntityTypes.registerLiving(
+        "boiler",
+        0x010202,
+        0x9DA930,
+        EntityType.Builder.of(Boiler::new, MobCategory.MONSTER)
+    );
+
     public static final GameObject<EntityType<Chestburster>> CHESTBURSTER = AVPEntityTypes.registerLiving(
         "chestburster",
         0xD8B877,
@@ -65,6 +72,13 @@ public class AVPBaseAlienEntityTypes implements AVPRegistry {
         0x010202,
         0x363534,
         EntityType.Builder.of(Queen::new, MobCategory.MONSTER)
+    );
+
+    public static final GameObject<EntityType<Spitter>> SPITTER = AVPEntityTypes.registerLiving(
+        "spitter",
+        0x010202,
+        0x3CDC09,
+        EntityType.Builder.of(Spitter::new, MobCategory.MONSTER)
     );
 
     public static final GameObject<EntityType<Warrior>> WARRIOR = AVPEntityTypes.registerLiving(

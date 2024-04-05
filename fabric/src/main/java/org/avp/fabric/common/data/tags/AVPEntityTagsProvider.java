@@ -53,8 +53,10 @@ public class AVPEntityTagsProvider extends FabricTagProvider.EntityTypeTagProvid
                 AVPEntityTypes.BELUGABURSTER.get(),
                 AVPEntityTypes.BELUGAMORPH.get(),
 
+                AVPBaseAlienEntityTypes.BOILER.get(),
                 AVPBaseAlienEntityTypes.CHESTBURSTER.get(),
                 AVPBaseAlienEntityTypes.DRONE.get(),
+                AVPBaseAlienEntityTypes.SPITTER.get(),
                 AVPBaseAlienEntityTypes.WARRIOR.get(),
                 AVPExoticAlienEntityTypes.DEACON_ADULT_ENGINEER.get(),
                 AVPExoticAlienEntityTypes.DRACOBURSTER.get(),

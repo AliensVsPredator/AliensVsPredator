@@ -10,6 +10,12 @@ import org.avp.common.entity.*;
  */
 public class AVPBaseAlienEntityAttributes {
 
+    private static final AttributeSupplier BOILER = AVPEntityAttributesBindingRegistry.builder()
+        .add(Attributes.ATTACK_DAMAGE, 4.0D)
+        .add(Attributes.MAX_HEALTH, 30.0D)
+        .add(Attributes.MOVEMENT_SPEED, 0.5500000238418579D)
+        .build();
+
     private static final AttributeSupplier CHESTBURSTER = AVPEntityAttributesBindingRegistry.builder()
         .add(Attributes.ATTACK_DAMAGE, 0.5D)
         .add(Attributes.MAX_HEALTH, 14.0D)
@@ -52,6 +58,12 @@ public class AVPBaseAlienEntityAttributes {
         .add(Attributes.MOVEMENT_SPEED, 0.600000238418579D)
         .build();
 
+    private static final AttributeSupplier SPITTER = AVPEntityAttributesBindingRegistry.builder()
+        .add(Attributes.ATTACK_DAMAGE, 4.0D)
+        .add(Attributes.MAX_HEALTH, 30.0D)
+        .add(Attributes.MOVEMENT_SPEED, 0.5500000238418579D)
+        .build();
+
     private static final AttributeSupplier WARRIOR = AVPEntityAttributesBindingRegistry.builder()
         .add(Attributes.ATTACK_DAMAGE, 9.0D)
         .add(Attributes.MAX_HEALTH, 50.0D)
@@ -59,6 +71,7 @@ public class AVPBaseAlienEntityAttributes {
         .build();
 
     public static void addBindings() {
+        AVPEntityAttributesBindingRegistry.addBinding(AVPBaseAlienEntityTypes.BOILER, BOILER);
         AVPEntityAttributesBindingRegistry.addBinding(AVPBaseAlienEntityTypes.CHESTBURSTER, CHESTBURSTER);
         AVPEntityAttributesBindingRegistry.addBinding(AVPBaseAlienEntityTypes.DRONE, DRONE);
         AVPEntityAttributesBindingRegistry.addBinding(AVPBaseAlienEntityTypes.FACEHUGGER, FACEHUGGER);
@@ -66,6 +79,7 @@ public class AVPBaseAlienEntityAttributes {
         AVPEntityAttributesBindingRegistry.addBinding(AVPBaseAlienEntityTypes.OVAMORPH, OVAMORPH);
         AVPEntityAttributesBindingRegistry.addBinding(AVPBaseAlienEntityTypes.PRAETORIAN, PRAETORIAN);
         AVPEntityAttributesBindingRegistry.addBinding(AVPBaseAlienEntityTypes.QUEEN, QUEEN);
+        AVPEntityAttributesBindingRegistry.addBinding(AVPBaseAlienEntityTypes.SPITTER, SPITTER);
         AVPEntityAttributesBindingRegistry.addBinding(AVPBaseAlienEntityTypes.WARRIOR, WARRIOR);
     }
 }
