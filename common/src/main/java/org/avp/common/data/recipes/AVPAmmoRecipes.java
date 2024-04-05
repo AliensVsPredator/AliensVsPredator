@@ -8,7 +8,6 @@ import net.minecraft.world.item.Items;
 import org.avp.common.item.AVPAmmunitionPartItems;
 import org.avp.common.item.AVPElectronicItems;
 import org.avp.common.item.AVPItems;
-import org.avp.common.item.AVPWeaponItems;
 
 /**
  * @author Boston Vanseghi
@@ -26,6 +25,15 @@ public final class AVPAmmoRecipes {
             .pattern("BCB")
             .pattern("DED")
             .unlockedBy("has_capacitor", AVPRecipeProvider.has(AVPElectronicItems.CAPACITOR.get()))
+            .save(recipeOutput);
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AVPAmmunitionPartItems.ROCKET.get())
+            .define('A', AVPItems.INGOT_STEEL.get())
+            .define('B', Items.TNT)
+            .pattern("AAA")
+            .pattern("ABA")
+            .pattern("AAA")
+            .unlockedBy("has_tnt", AVPRecipeProvider.has(Items.TNT))
             .save(recipeOutput);
 
         ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AVPAmmunitionPartItems.AMMO_FLAMETHROWER.get())
