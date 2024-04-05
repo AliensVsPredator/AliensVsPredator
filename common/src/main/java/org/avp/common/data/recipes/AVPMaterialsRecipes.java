@@ -40,9 +40,14 @@ public final class AVPMaterialsRecipes {
             .unlockedBy("has_carbon", AVPRecipeProvider.has(AVPItems.CARBON.get()))
             .save(recipeOutput);
 
+        var poylmerOutput = AVPItems.POLYMER.get();
+        SimpleCookingRecipeBuilder.smelting(Ingredient.of(Items.SLIME_BALL), RecipeCategory.MISC, poylmerOutput, 0.0F, 200)
+            .unlockedBy("has_slime_ball", AVPRecipeProvider.has(Items.SLIME_BALL))
+            .save(recipeOutput, AVPConstants.MOD_ID + ":polymer_from_smelting_slime_ball");
+
         var steelOutput = AVPItems.INGOT_STEEL.get();
         SimpleCookingRecipeBuilder.blasting(Ingredient.of(Items.IRON_INGOT), RecipeCategory.MISC, steelOutput, 0.7F, 100)
-            .unlockedBy("has_raw_item", AVPRecipeProvider.has(Items.IRON_INGOT))
+            .unlockedBy("has_iron_ingot", AVPRecipeProvider.has(Items.IRON_INGOT))
             .save(recipeOutput, AVPConstants.MOD_ID + ":ingot_steel_from_blasting_iron_ingot");
     }
 
