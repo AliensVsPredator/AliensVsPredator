@@ -36,6 +36,8 @@ public class AVPItems {
 
     public static final GameObject<Item> POLYCARBONATE;
 
+    public static final GameObject<Item> POLYMER;
+
     public static final GameObject<Item> RAW_BAUXITE;
 
     public static final GameObject<Item> ROYAL_JELLY;
@@ -75,6 +77,7 @@ public class AVPItems {
         NEODYMIUM = register("neodymium", () -> new Item(new Item.Properties()));
         NEODYMIUM_MAGNET = register("neodymium_magnet", () -> new Item(new Item.Properties()));
         POLYCARBONATE = register("polycarbonate", () -> new Item(new Item.Properties()));
+        POLYMER = register("polymer", () -> new Item(new Item.Properties()));
         RAW_BAUXITE = register("raw_bauxite", () -> new Item(new Item.Properties()));
         ROYAL_JELLY = register("royal_jelly", () -> new Item(new Item.Properties()));
         SHURIKEN = register("shuriken", () -> new Item(new Item.Properties()));
