@@ -27,18 +27,6 @@ public class AVPWeaponItems {
 
     private static final List<GameObject<Item>> ENTRIES = new ArrayList<>();
 
-    public static final GameObject<Item> AMMO_AR;
-
-    public static final GameObject<Item> AMMO_SMG;
-
-    public static final GameObject<Item> AMMO_CHARGE_PACK;
-
-    public static final GameObject<Item> AMMO_FLAMETHROWER;
-
-    public static final GameObject<Item> AMMO_PISTOL;
-
-    public static final GameObject<Item> AMMO_SNIPER;
-
     public static final GameObject<Item> GRENADE_INCENDIARY;
 
     public static final GameObject<Item> GRENADE_M40;
@@ -82,13 +70,6 @@ public class AVPWeaponItems {
     private AVPWeaponItems() {}
 
     static {
-        AMMO_AR = register("ammo_ar", () -> new Item(new Item.Properties()));
-        AMMO_SMG = register("ammo_smg", () -> new Item(new Item.Properties()));
-        AMMO_CHARGE_PACK = register("ammo_charge_pack", () -> new Item(new Item.Properties()));
-        AMMO_FLAMETHROWER = register("ammo_flamethrower", () -> new Item(new Item.Properties()));
-        AMMO_PISTOL = register("ammo_pistol", () -> new Item(new Item.Properties()));
-        AMMO_SNIPER = register("ammo_sniper", () -> new Item(new Item.Properties()));
-
         GRENADE_INCENDIARY = register("grenade_incendiary", () -> new Item(new Item.Properties()));
         GRENADE_M40 = register("grenade_m40", () -> new Item(new Item.Properties()));
 

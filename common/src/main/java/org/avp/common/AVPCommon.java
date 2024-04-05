@@ -34,12 +34,16 @@ public class AVPCommon {
         AVPEntityTags.forceInitialization();
 
         // Items
+        AVPAmmunitionPartItems.forceInitialization();
         AVPArmorItems.forceInitialization();
+        AVPBulletItems.forceInitialization();
         AVPElectronicItems.forceInitialization();
         AVPFoodItems.forceInitialization();
         AVPItems.forceInitialization();
         AVPToolItems.forceInitialization();
+        AVPWeaponBlueprintItems.forceInitialization();
         AVPWeaponItems.forceInitialization();
+        AVPWeaponPartItems.forceInitialization();
 
         // Blocks
         AVPBlocks.forceInitialization();
