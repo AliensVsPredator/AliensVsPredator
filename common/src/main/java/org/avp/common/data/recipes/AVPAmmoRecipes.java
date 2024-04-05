@@ -27,6 +27,7 @@ public final class AVPAmmoRecipes {
             .pattern("DED")
             .unlockedBy("has_capacitor", AVPRecipeProvider.has(AVPElectronicItems.CAPACITOR.get()))
             .save(recipeOutput);
+
         ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AVPAmmunitionPartItems.AMMO_FLAMETHROWER.get())
             .define('A', Items.SLIME_BALL)
             .define('B', AVPItems.INGOT_ALUMINUM.get())

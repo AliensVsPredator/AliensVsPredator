@@ -27,6 +27,7 @@ public class AVPRecipeProvider extends RecipeProvider {
         AVPFoodRecipes.addFoodRecipes(recipeOutput);
         AVPElectronicRecipes.addElectronicRecipes(recipeOutput);
         AVPMaterialsRecipes.addMaterialRecipes(recipeOutput);
+        AVPWeaponRecipes.addWeaponRecipes(recipeOutput);
     }
 
     public static @NotNull Criterion<InventoryChangeTrigger.TriggerInstance> has(@NotNull ItemLike itemLike) {
