@@ -3,6 +3,7 @@ package org.avp.common;
 import mod.azure.azurelib.common.internal.common.AzureLib;
 
 import org.avp.common.block.*;
+import org.avp.common.config.AVPConfig;
 import org.avp.common.creative_tab.AVPCreativeModeTabs;
 import org.avp.common.entity.*;
 import org.avp.common.item.*;
@@ -21,6 +22,9 @@ public class AVPCommon {
     public static void init() {
         // Initialize AzureLib.
         AzureLib.initialize();
+
+        // AVPConfig initialization.
+        AVPConfig.init();
 
         // Networking
         AVPNetworkPayloadHandlerRegistry.forceInitialization();
