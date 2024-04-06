@@ -3,10 +3,10 @@ package org.avp.client.model.entity.living;
 import mod.azure.azurelib.common.api.client.model.GeoModel;
 import mod.azure.azurelib.common.internal.common.core.animation.AnimationState;
 import net.minecraft.resources.ResourceLocation;
+
 import org.avp.client.util.BasicAnimationUtils;
 import org.avp.common.AVPResources;
 import org.avp.common.entity.living.Boiler;
-import org.avp.common.entity.living.Drone;
 
 /**
  * @author Boston Vanseghi

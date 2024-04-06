@@ -2,16 +2,10 @@ package org.avp.common.data.recipes;
 
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
-import net.minecraft.data.recipes.ShapedRecipeBuilder;
 import net.minecraft.data.recipes.ShapelessRecipeBuilder;
-import net.minecraft.data.recipes.SimpleCookingRecipeBuilder;
-import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.Items;
-import net.minecraft.world.item.crafting.Ingredient;
+
 import org.avp.api.GameObject;
-import org.avp.common.AVPConstants;
-import org.avp.common.item.AVPItems;
 import org.avp.common.item.AVPWeaponBlueprintItems;
 import org.avp.common.item.AVPWeaponItems;
 import org.avp.common.item.AVPWeaponPartItems;
@@ -25,9 +19,17 @@ public final class AVPWeaponRecipes {
         addGenericWeaponRecipe(recipeOutput, AVPWeaponBlueprintItems.BLUEPRINT_37_12_SHOTGUN, AVPWeaponItems.WEAPON_37_12_SHOTGUN);
         addGenericWeaponRecipe(recipeOutput, AVPWeaponBlueprintItems.BLUEPRINT_AK_47, AVPWeaponItems.WEAPON_AK_47);
         addGenericWeaponRecipe(recipeOutput, AVPWeaponBlueprintItems.BLUEPRINT_F90_RIFLE, AVPWeaponItems.WEAPON_F90_RIFLE);
-        addGenericWeaponRecipe(recipeOutput, AVPWeaponBlueprintItems.BLUEPRINT_FLAMETHROWER_SEVASTOPOL, AVPWeaponItems.WEAPON_FLAMETHROWER_SEVASTOPOL);
+        addGenericWeaponRecipe(
+            recipeOutput,
+            AVPWeaponBlueprintItems.BLUEPRINT_FLAMETHROWER_SEVASTOPOL,
+            AVPWeaponItems.WEAPON_FLAMETHROWER_SEVASTOPOL
+        );
         addGenericWeaponRecipe(recipeOutput, AVPWeaponBlueprintItems.BLUEPRINT_M4_CARBINE, AVPWeaponItems.WEAPON_M4_CARBINE);
-        addGenericWeaponRecipe(recipeOutput, AVPWeaponBlueprintItems.BLUEPRINT_M88MOD4_COMBAT_PISTOL, AVPWeaponItems.WEAPON_M88MOD4_COMBAT_PISTOL);
+        addGenericWeaponRecipe(
+            recipeOutput,
+            AVPWeaponBlueprintItems.BLUEPRINT_M88MOD4_COMBAT_PISTOL,
+            AVPWeaponItems.WEAPON_M88MOD4_COMBAT_PISTOL
+        );
         addGenericWeaponRecipe(recipeOutput, AVPWeaponBlueprintItems.BLUEPRINT_SNIPER_RIFLE, AVPWeaponItems.WEAPON_SNIPER_RIFLE);
 
         // Pulse Rifle
@@ -67,7 +69,11 @@ public final class AVPWeaponRecipes {
             .save(recipeOutput);
     }
 
-    private static void addGenericWeaponRecipe(RecipeOutput recipeOutput, GameObject<Item> blueprintGameObject, GameObject<Item> weaponGameObject) {
+    private static void addGenericWeaponRecipe(
+        RecipeOutput recipeOutput,
+        GameObject<Item> blueprintGameObject,
+        GameObject<Item> weaponGameObject
+    ) {
         ShapelessRecipeBuilder.shapeless(RecipeCategory.COMBAT, weaponGameObject.get())
             .requires(blueprintGameObject.get())
             .requires(AVPWeaponPartItems.WEAPON_PART_BARREL_GENERIC.get())

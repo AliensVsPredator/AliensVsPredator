@@ -1,12 +1,13 @@
 package org.avp.common.item;
 
 import net.minecraft.world.item.Item;
-import org.avp.api.GameObject;
-import org.avp.common.service.Services;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
+
+import org.avp.api.GameObject;
+import org.avp.common.service.Services;
 
 /**
  * @author Boston Vanseghi
