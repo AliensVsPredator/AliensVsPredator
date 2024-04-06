@@ -7,6 +7,7 @@ import org.avp.fabric.common.AVPFabricCommands;
 import org.avp.fabric.common.registry.AVPDeferredBlockRegistry;
 import org.avp.fabric.common.registry.AVPDeferredCreativeTabRegistry;
 import org.avp.fabric.common.registry.AVPDeferredItemRegistry;
+import org.avp.fabric.common.worldgen.AVPFabricEntitySpawns;
 import org.avp.fabric.common.worldgen.AVPFabricWorldGenFeatures;
 import org.avp.fabric.service.FabricEntityAttributeRegistry;
 
@@ -26,6 +27,7 @@ public class AVPFabric implements ModInitializer {
         AVPDeferredCreativeTabRegistry.registerAll();
 
         // Remaining steps
+        AVPFabricEntitySpawns.addEntitySpawns();
         AVPFabricWorldGenFeatures.getInstance().register();
         FabricEntityAttributeRegistry.getInstance().register();
         AVPFabricCommands.register();
