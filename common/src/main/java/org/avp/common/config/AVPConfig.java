@@ -26,6 +26,17 @@ public class AVPConfig {
         public static boolean ENABLE_XENOMORPH_OVERWORLD_SPAWNS = true;
     }
 
+    @Category("General")
+    public static class General {
+        @Config(
+            value = "gunsDoBlockDamage",
+            comment = """
+        Whether guns do block damage or not. Disabling this does not disable explosive block damage. Set to true by default.
+        """
+        )
+        public static boolean GUNS_DO_BLOCK_DAMAGE = true;
+    }
+
     @Category("Predators")
     public static class Predators {
         @Config(

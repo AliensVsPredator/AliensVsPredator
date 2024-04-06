@@ -22,6 +22,7 @@ import net.minecraft.world.item.ItemUtils;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
+import org.avp.common.config.AVPConfig;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
@@ -155,7 +156,11 @@ public abstract class AbstractAVPWeaponItem extends Item implements GeoItem {
         var hitResult = ProjectileUtil.getHitResultOnViewVector(player, entity -> true, fireMode.range());
 
         switch (hitResult.getType()) {
-            case BLOCK -> damageBlock(level, (BlockHitResult) hitResult, fireMode);
+            case BLOCK -> {
+                if (AVPConfig.General.GUNS_DO_BLOCK_DAMAGE) {
+                    damageBlock(level, (BlockHitResult) hitResult, fireMode);
+                }
+            }
             case ENTITY -> damageEntity(level, player, (EntityHitResult) hitResult, fireMode);
             case MISS -> { /* Do nothing */ }
         }
