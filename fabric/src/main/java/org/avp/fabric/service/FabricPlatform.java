@@ -10,6 +10,11 @@ import org.avp.common.service.Platform;
 public class FabricPlatform implements Platform {
 
     @Override
+    public Path getConfigDirectory() {
+        return FabricLoader.getInstance().getConfigDir();
+    }
+
+    @Override
     public String getPlatformName() {
         return "Fabric";
     }

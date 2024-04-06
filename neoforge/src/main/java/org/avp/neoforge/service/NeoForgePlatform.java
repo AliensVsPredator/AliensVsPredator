@@ -5,9 +5,15 @@ import net.neoforged.fml.loading.FMLLoader;
 
 import java.nio.file.Path;
 
+import net.neoforged.fml.loading.FMLPaths;
 import org.avp.common.service.Platform;
 
 public class NeoForgePlatform implements Platform {
+
+    @Override
+    public Path getConfigDirectory() {
+        return FMLPaths.CONFIGDIR.get();
+    }
 
     @Override
     public String getPlatformName() {
@@ -31,6 +37,6 @@ public class NeoForgePlatform implements Platform {
 
     @Override
     public Path getGameDirectory() {
-        return FMLLoader.getGamePath();
+        return FMLPaths.GAMEDIR.get();
     }
 }

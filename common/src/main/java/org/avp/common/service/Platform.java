@@ -5,6 +5,13 @@ import java.nio.file.Path;
 public interface Platform {
 
     /**
+     * Gets the config directory.
+     *
+     * @return The game config directory.
+     */
+    Path getConfigDirectory();
+
+    /**
      * Gets the name of the current platform
      *
      * @return The name of the current platform.
