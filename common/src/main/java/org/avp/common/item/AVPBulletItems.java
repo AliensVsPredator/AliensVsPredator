@@ -16,6 +16,18 @@ public class AVPBulletItems {
 
     private static final List<GameObject<Item>> ENTRIES = new ArrayList<>();
 
+    public static final GameObject<Item> BULLET_CASELESS;
+
+    public static final GameObject<Item> BULLET_CASELESS_ACID;
+
+    public static final GameObject<Item> BULLET_CASELESS_ELECTRIC;
+
+    public static final GameObject<Item> BULLET_CASELESS_EXPLOSIVE;
+
+    public static final GameObject<Item> BULLET_CASELESS_INCENDIARY;
+
+    public static final GameObject<Item> BULLET_CASELESS_PENETRATION;
+
     public static final GameObject<Item> BULLET_HEAVY;
 
     public static final GameObject<Item> BULLET_HEAVY_ACID;
@@ -81,6 +93,13 @@ public class AVPBulletItems {
     private AVPBulletItems() {}
 
     static {
+        BULLET_CASELESS = register("caseless", () -> new Item(new Item.Properties()));
+        BULLET_CASELESS_ACID = register("caseless_acid", () -> new Item(new Item.Properties()));
+        BULLET_CASELESS_ELECTRIC = register("caseless_electric", () -> new Item(new Item.Properties()));
+        BULLET_CASELESS_EXPLOSIVE = register("caseless_explosive", () -> new Item(new Item.Properties()));
+        BULLET_CASELESS_INCENDIARY = register("caseless_incendiary", () -> new Item(new Item.Properties()));
+        BULLET_CASELESS_PENETRATION = register("caseless_penetration", () -> new Item(new Item.Properties()));
+
         BULLET_HEAVY = register("heavy", () -> new Item(new Item.Properties()));
         BULLET_HEAVY_ACID = register("heavy_acid", () -> new Item(new Item.Properties()));
         BULLET_HEAVY_ELECTRIC = register("heavy_electric", () -> new Item(new Item.Properties()));
