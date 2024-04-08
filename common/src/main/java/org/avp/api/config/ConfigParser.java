@@ -32,7 +32,7 @@ public class ConfigParser {
     /**
      * Reads the config from the file at the path to the configClass.
      *
-     * @param path The location of the config file
+     * @param path        The location of the config file
      * @param configClass The config class
      */
     public static void read(Path path, Class<?> configClass) throws IOException, IllegalAccessException {
@@ -137,7 +137,7 @@ public class ConfigParser {
     /**
      * Writes the config to the file at the path from the configClass.
      *
-     * @param path The location of the config file
+     * @param path        The location of the config file
      * @param configClass The config class
      */
     public static void write(Path path, Class<?> configClass) throws IOException, IllegalAccessException {

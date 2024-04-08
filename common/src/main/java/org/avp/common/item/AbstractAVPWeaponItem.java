@@ -22,7 +22,6 @@ import net.minecraft.world.item.ItemUtils;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
-import org.avp.common.config.AVPConfig;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
@@ -35,6 +34,7 @@ import org.avp.api.item.weapon.FireMode;
 import org.avp.api.item.weapon.WeaponItemData;
 import org.avp.api.item.weapon.WeaponItemTagHelper;
 import org.avp.client.render.item.AVPWeaponItemRenderers;
+import org.avp.common.config.AVPConfig;
 import org.avp.common.network.payload.ClientboundBulletHitBlockPayload;
 import org.avp.common.service.Services;
 import org.avp.common.util.SoundUtilities;

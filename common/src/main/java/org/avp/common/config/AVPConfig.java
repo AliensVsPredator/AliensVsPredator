@@ -1,13 +1,13 @@
 package org.avp.common.config;
 
+import java.io.IOException;
+import java.nio.file.Files;
+
 import org.avp.api.config.Category;
 import org.avp.api.config.Config;
 import org.avp.api.config.ConfigParser;
 import org.avp.common.AVPConstants;
 import org.avp.common.service.Services;
-
-import java.io.IOException;
-import java.nio.file.Files;
 
 /**
  * @author Boston Vanseghi
@@ -17,33 +17,36 @@ public class AVPConfig {
 
     @Category("Aliens")
     public static class Aliens {
+
         @Config(
             value = "enableXenomorphOverworldSpawns",
             comment = """
-        Whether xenomorphs will spawn in the overworld or not. Set to true by default.
-        """
+                Whether xenomorphs will spawn in the overworld or not. Set to true by default.
+                """
         )
         public static boolean ENABLE_XENOMORPH_OVERWORLD_SPAWNS = true;
     }
 
     @Category("General")
     public static class General {
+
         @Config(
             value = "gunsDoBlockDamage",
             comment = """
-        Whether guns do block damage or not. Disabling this does not disable explosive block damage. Set to true by default.
-        """
+                Whether guns do block damage or not. Disabling this does not disable explosive block damage. Set to true by default.
+                """
         )
         public static boolean GUNS_DO_BLOCK_DAMAGE = true;
     }
 
     @Category("Predators")
     public static class Predators {
+
         @Config(
             value = "enableYautjaOverworldSpawns",
             comment = """
-        Whether yautja (predators) will spawn in the overworld or not. Set to true by default.
-        """
+                Whether yautja (predators) will spawn in the overworld or not. Set to true by default.
+                """
         )
         public static boolean ENABLE_YAUTJA_OVERWORLD_SPAWNS = true;
     }

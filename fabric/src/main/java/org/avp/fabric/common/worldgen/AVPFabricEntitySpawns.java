@@ -3,6 +3,7 @@ package org.avp.fabric.common.worldgen;
 import net.fabricmc.fabric.api.biome.v1.BiomeModifications;
 import net.fabricmc.fabric.api.biome.v1.BiomeSelectors;
 import net.minecraft.world.entity.MobCategory;
+
 import org.avp.common.config.AVPConfig;
 import org.avp.common.entity.AVPBaseAlienEntityTypes;
 
