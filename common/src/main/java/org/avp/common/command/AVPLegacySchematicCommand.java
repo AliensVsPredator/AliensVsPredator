@@ -32,7 +32,11 @@ public class AVPLegacySchematicCommand {
             );
         }
 
-        commandDispatcher.register(Commands.literal("schematic").then(generate));
+        commandDispatcher.register(
+            Commands.literal("schematic")
+                .requires(commandSourceStack -> commandSourceStack.hasPermission(2))
+                .then(generate)
+        );
     }
 
     private static int execute(
