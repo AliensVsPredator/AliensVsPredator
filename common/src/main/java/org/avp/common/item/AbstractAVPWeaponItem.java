@@ -6,6 +6,8 @@ import mod.azure.azurelib.common.internal.common.core.animatable.instance.Animat
 import mod.azure.azurelib.common.internal.common.core.animation.AnimatableManager;
 import mod.azure.azurelib.common.internal.common.util.AzureLibUtil;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
@@ -20,6 +22,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemUtils;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import org.jetbrains.annotations.NotNull;
@@ -164,17 +167,27 @@ public abstract class AbstractAVPWeaponItem extends Item implements GeoItem {
         var hitResult = ProjectileUtil.getHitResultOnViewVector(player, entity -> true, fireMode.range());
 
         switch (hitResult.getType()) {
-            case BLOCK -> {
-                if (AVPConfig.General.GUNS_DO_BLOCK_DAMAGE) {
-                    damageBlock(level, (BlockHitResult) hitResult, fireMode);
-                }
-            }
-            case ENTITY -> damageEntity(level, player, (EntityHitResult) hitResult, fireMode);
+            case BLOCK -> handleHitBlock(level, fireMode, (BlockHitResult) hitResult);
+            case ENTITY -> handleHitEntity(level, player, (EntityHitResult) hitResult, fireMode);
             case MISS -> { /* Do nothing */ }
         }
     }
 
-    private void damageEntity(@NotNull Level level, Player player, EntityHitResult hitResult, FireMode fireMode) {
+    private void handleHitBlock(@NotNull Level level, FireMode fireMode, BlockHitResult hitResult) {
+        var blockPos = hitResult.getBlockPos();
+        var blockState = level.getBlockState(blockPos);
+        var block = blockState.getBlock();
+        var soundType = block.getSoundType(blockState);
+
+        GameObject<SoundEvent> ricochetSfx = SoundUtilities.getRicochetSoundForSoundType(soundType);
+        level.playSound(null, blockPos, ricochetSfx.get(), SoundSource.BLOCKS);
+
+        if (AVPConfig.General.GUNS_DO_BLOCK_DAMAGE) {
+            damageBlock(level, blockPos, block, hitResult.getDirection(), fireMode);
+        }
+    }
+
+    private void handleHitEntity(@NotNull Level level, Player player, EntityHitResult hitResult, FireMode fireMode) {
         var damage = this.getWeaponItemData().getDamage() * fireMode.consumedAmmunition();
         var entity = hitResult.getEntity();
 
@@ -191,15 +204,7 @@ public abstract class AbstractAVPWeaponItem extends Item implements GeoItem {
         }
     }
 
-    private void damageBlock(@NotNull Level level, BlockHitResult hitResult, FireMode fireMode) {
-        var blockPos = hitResult.getBlockPos();
-        var blockState = level.getBlockState(blockPos);
-        var block = blockState.getBlock();
-        var soundType = block.getSoundType(blockState);
-
-        GameObject<SoundEvent> ricochetSfx = SoundUtilities.getRicochetSoundForSoundType(soundType);
-        level.playSound(null, blockPos, ricochetSfx.get(), SoundSource.BLOCKS);
-
+    private void damageBlock(@NotNull Level level, BlockPos blockPos, Block block, Direction direction, FireMode fireMode) {
         BlockBreakProgressManager.BLOCK_BREAK_PROGRESS_MAP.compute(blockPos, (key, tuple) -> {
             var cachedValue = tuple == null ? 0 : tuple.second();
             var damage = this.getWeaponItemData().getDamage() * fireMode.consumedAmmunition();
@@ -214,7 +219,7 @@ public abstract class AbstractAVPWeaponItem extends Item implements GeoItem {
             return new Tuple<>(System.currentTimeMillis() + TimeUtilities.FIVE_MINUTES_IN_MILLIS, newValue);
         });
 
-        var payload = new ClientboundBulletHitBlockPayload(blockPos, hitResult.getDirection());
+        var payload = new ClientboundBulletHitBlockPayload(blockPos, direction);
         Services.NETWORK_HANDLER.sendToAllClients(level.getServer(), payload);
     }
 
