@@ -3,8 +3,11 @@ package org.avp.common.data.recipes;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.data.recipes.ShapedRecipeBuilder;
+import net.minecraft.data.recipes.SimpleCookingRecipeBuilder;
 import net.minecraft.world.item.Items;
 
+import net.minecraft.world.item.crafting.Ingredient;
+import org.avp.common.AVPConstants;
 import org.avp.common.block.AVPIndustrialBlocks;
 import org.avp.common.item.AVPItems;
 
@@ -27,6 +30,11 @@ public final class AVPIndustrialBlockRecipes {
             .pattern(" A ")
             .unlockedBy("has_aluminum_ingot", AVPRecipeProvider.has(AVPItems.INGOT_ALUMINUM.get()))
             .save(recipeOutput);
+
+        var industrialGlassOutput = AVPIndustrialBlocks.GLASS.get();
+        SimpleCookingRecipeBuilder.blasting(Ingredient.of(Items.GLASS), RecipeCategory.MISC, industrialGlassOutput, 0.7F, 100)
+            .unlockedBy("has_glass", AVPRecipeProvider.has(Items.GLASS))
+            .save(recipeOutput, AVPConstants.MOD_ID + ":industrial_glass_from_blasting_glass");
     }
 
     private static void addBrickRecipes(RecipeOutput recipeOutput) {
