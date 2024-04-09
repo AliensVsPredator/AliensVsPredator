@@ -43,6 +43,8 @@ import org.avp.server.BlockBreakProgressManager;
 
 public abstract class AbstractAVPWeaponItem extends Item implements GeoItem {
 
+    private static final int START_TICK_PROGRESS = Integer.MAX_VALUE;
+
     private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
 
     private final Supplier<Object> renderProvider = GeoItem.makeRenderer(this);
@@ -71,9 +73,10 @@ public abstract class AbstractAVPWeaponItem extends Item implements GeoItem {
         @NotNull Level level,
         @NotNull LivingEntity livingEntity,
         @NotNull ItemStack itemStack,
-        int negativeTickProgress
+        int tickCountdown
     ) {
-        var positiveTickProgress = Math.abs(negativeTickProgress);
+        var tickProgress = START_TICK_PROGRESS - tickCountdown;
+        var positiveTickProgress = Math.abs(tickProgress);
         var isFirstTick = positiveTickProgress == 0;
 
         if (!(livingEntity instanceof Player player))
@@ -127,6 +130,11 @@ public abstract class AbstractAVPWeaponItem extends Item implements GeoItem {
             player.attackAnim = recoil;
             player.oAttackAnim = recoil;
         }
+    }
+
+    @Override
+    public int getUseDuration(ItemStack itemStack) {
+        return START_TICK_PROGRESS;
     }
 
     @Override
