@@ -8,6 +8,9 @@ import org.avp.api.GameObject;
 
 public record EntitySpawnData<T extends Mob>(
     GameObject<EntityType<T>> entityTypeGameObject,
+    int weight,
+    int minGroupSize,
+    int maxGroupSize,
     SpawnPlacements.Type spawnPlacementType,
     Heightmap.Types heightMapType,
     SpawnPlacements.SpawnPredicate<T> spawnPredicate

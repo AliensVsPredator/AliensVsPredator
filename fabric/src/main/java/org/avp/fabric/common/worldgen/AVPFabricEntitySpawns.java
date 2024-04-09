@@ -16,26 +16,24 @@ import org.avp.common.entity.spawn.AVPEntitySpawns;
  */
 public class AVPFabricEntitySpawns {
 
-    public static void addEntitySpawns() {
-        if (AVPConfig.Aliens.ENABLE_XENOMORPH_OVERWORLD_SPAWNS) {
-            // TODO: Expand this to support all types of xenos spawning.
-            BiomeModifications.addSpawn(
-                BiomeSelectors.foundInOverworld(),
-                MobCategory.MONSTER,
-                AVPBaseAlienEntityTypes.DRONE.get(),
-                100,
-                1,
-                3
-            );
-        }
-
-        addEntitySpawnChecks();
-    }
-
     @SuppressWarnings("unchecked")
-    private static void addEntitySpawnChecks() {
+    public static void addEntitySpawns() {
         AVPEntitySpawns.getEntries().forEach(entitySpawnData -> {
+            var weight = entitySpawnData.weight();
+            var minGroupSize = entitySpawnData.minGroupSize();
+            var maxGroupSize = entitySpawnData.maxGroupSize();
             var entityType = (EntityType<Mob>) entitySpawnData.entityTypeGameObject().get();
+
+            BiomeModifications.addSpawn(
+                BiomeSelectors.foundInOverworld(), // TODO: Make this generic.
+                MobCategory.MONSTER,
+                entityType,
+                weight,
+                minGroupSize,
+                maxGroupSize
+            );
+
+
             var placementType = entitySpawnData.spawnPlacementType();
             var heightMapType = entitySpawnData.heightMapType();
             var predicate = (SpawnPlacements.SpawnPredicate<Mob>) entitySpawnData.spawnPredicate();

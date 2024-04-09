@@ -1,12 +1,13 @@
 package org.avp.common.entity.spawn;
 
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.SpawnPlacements;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.level.levelgen.Heightmap;
 import org.avp.api.GameObject;
 import org.avp.common.entity.AVPBaseAlienEntityTypes;
+import org.avp.common.entity.AVPRunnerAlienEntityTypes;
+import org.avp.common.entity.AVPYautjaEntityTypes;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,20 +20,28 @@ public class AVPEntitySpawns {
         return ENTRIES;
     }
 
-    private static <T extends Monster> void registerMonsterSpawn(GameObject<EntityType<T>> entityTypeGameObject) {
+    private static <T extends Monster> void registerMonsterSpawn(GameObject<EntityType<T>> entityTypeGameObject, int weight, int minGroupSize, int maxGroupSize) {
         ENTRIES.add(new EntitySpawnData<>(
-            entityTypeGameObject, SpawnPlacements.Type.ON_GROUND,
+            entityTypeGameObject,
+            weight, minGroupSize, maxGroupSize,
+            SpawnPlacements.Type.ON_GROUND,
             Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, Monster::checkAnyLightMonsterSpawnRules
         ));
     }
 
     static {
-        registerMonsterSpawn(AVPBaseAlienEntityTypes.BOILER);
-        registerMonsterSpawn(AVPBaseAlienEntityTypes.DRONE);
-        registerMonsterSpawn(AVPBaseAlienEntityTypes.PRAETORIAN);
-        registerMonsterSpawn(AVPBaseAlienEntityTypes.QUEEN);
-        registerMonsterSpawn(AVPBaseAlienEntityTypes.SPITTER);
-        registerMonsterSpawn(AVPBaseAlienEntityTypes.WARRIOR);
+        registerMonsterSpawn(AVPBaseAlienEntityTypes.BOILER, 7, 1, 1);
+        registerMonsterSpawn(AVPBaseAlienEntityTypes.DRONE, 50, 1, 2);
+        registerMonsterSpawn(AVPBaseAlienEntityTypes.PRAETORIAN, 10, 1, 1);
+        registerMonsterSpawn(AVPBaseAlienEntityTypes.QUEEN, 5, 1, 1);
+        registerMonsterSpawn(AVPBaseAlienEntityTypes.SPITTER, 10, 1, 1);
+        registerMonsterSpawn(AVPBaseAlienEntityTypes.WARRIOR, 25, 1, 1);
+
+        registerMonsterSpawn(AVPRunnerAlienEntityTypes.DRONE_RUNNER, 50, 1, 3);
+        registerMonsterSpawn(AVPRunnerAlienEntityTypes.WARRIOR_RUNNER, 25, 1, 2);
+        registerMonsterSpawn(AVPRunnerAlienEntityTypes.CRUSHER, 10, 1, 1);
+
+        registerMonsterSpawn(AVPYautjaEntityTypes.YAUTJA, 1, 1, 1);
     }
 
     private AVPEntitySpawns() {
