@@ -1,8 +1,10 @@
 package org.avp.common.legacy.schematic;
 
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtAccounter;
 import net.minecraft.nbt.NbtIo;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.Block;
 
 import java.io.File;
@@ -13,6 +15,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 import org.avp.common.AVPConstants;
+import org.jetbrains.annotations.NotNull;
 
 public class LegacySchematicLoader {
 
@@ -62,20 +65,26 @@ public class LegacySchematicLoader {
         var addBlocks = compoundTag.getByteArray(ADD_BLOCKS);
         var mappings = compoundTag.getCompound(MAPPING);
 
-        if (mappings.getAllKeys().isEmpty()) {
-            AVPConstants.LOGGER.warn("Schematic is missing mappings!");
-        }
+        var blockIdData = loadBlockIdData(blockIds, addBlocks);
+        var blockIdsToBlockNames = loadBlockIdsToBlockNames(resolverMap, mappings);
 
-        var blockIdsToBlockNames = new HashMap<Short, String>();
+        if (blockIdsToBlockNames.isEmpty()) {
+            AVPConstants.LOGGER.warn("blockIdsToBlockNames was empty, creating fallback map!");
 
-        for (String key : mappings.getAllKeys()) {
-            var blockId = mappings.getShort(key);
-            blockIdsToBlockNames.put(blockId, key);
-            if (!resolverMap.containsKey(key)) {
-                AVPConstants.LOGGER.warn("No resolution found for key {}", key);
+            blockIdsToBlockNames = new HashMap<>();
+
+            for (var blockId: blockIdData) {
+                var blockIdString = Short.toString(blockId);
+                blockIdsToBlockNames.put(blockId, blockIdString);
             }
         }
 
+        return Optional.of(
+            new LegacySchematic(blockIdData, blockIdsToBlockNames, resolverMap, width, height, length)
+        );
+    }
+
+    private static short @NotNull [] loadBlockIdData(byte[] blockIds, byte[] addBlocks) {
         var blockIdData = new short[blockIds.length];
 
         for (int i = 0; i < blockIds.length; i++) {
@@ -90,10 +99,26 @@ public class LegacySchematicLoader {
 
             blockIdData[i] = blockID;
         }
+        return blockIdData;
+    }
 
-        return Optional.of(
-            new LegacySchematic(blockIdData, blockIdsToBlockNames, resolverMap, width, height, length)
-        );
+    @NotNull
+    private static Map<Short, String> loadBlockIdsToBlockNames(Map<String, Block> resolverMap, CompoundTag mappings) {
+        if (mappings.getAllKeys().isEmpty()) {
+            AVPConstants.LOGGER.warn("Schematic is missing mappings!");
+            return Map.of();
+        }
+
+        var blockIdsToBlockNames = new HashMap<Short, String>();
+
+        for (String key : mappings.getAllKeys()) {
+            var blockId = mappings.getShort(key);
+            blockIdsToBlockNames.put(blockId, key);
+            if (!resolverMap.containsKey(key)) {
+                AVPConstants.LOGGER.warn("No resolution found for key {}", key);
+            }
+        }
+        return blockIdsToBlockNames;
     }
 
     private LegacySchematicLoader() {
