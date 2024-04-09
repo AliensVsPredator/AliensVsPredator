@@ -22,7 +22,7 @@ public final class AVPBulletRecipes {
     }
 
     private static void addCaselessBulletRecipes(RecipeOutput recipeOutput) {
-        ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AVPBulletItems.BULLET_CASELESS.get())
+        ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AVPBulletItems.BULLET_CASELESS.get(), 16)
             .define('A', AVPAmmunitionPartItems.BULLET_TIP.get())
             .define('B', AVPAmmunitionPartItems.CASING_CASELESS.get())
             .pattern("A")
@@ -30,7 +30,7 @@ public final class AVPBulletRecipes {
             .unlockedBy("has_caseless_casing", AVPRecipeProvider.has(AVPAmmunitionPartItems.CASING_CASELESS.get()))
             .save(recipeOutput);
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AVPBulletItems.BULLET_CASELESS_ELECTRIC.get())
+        ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AVPBulletItems.BULLET_CASELESS_ELECTRIC.get(), 16)
             .define('A', AVPAmmunitionPartItems.BULLET_TIP.get())
             .define('B', AVPAmmunitionPartItems.CASING_CASELESS.get())
             .define('C', AVPElectronicItems.CAPACITOR.get())
@@ -48,7 +48,7 @@ public final class AVPBulletRecipes {
             .unlockedBy("has_caseless_casing", AVPRecipeProvider.has(AVPAmmunitionPartItems.CASING_CASELESS.get()))
             .save(recipeOutput);
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AVPBulletItems.BULLET_CASELESS_INCENDIARY.get())
+        ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AVPBulletItems.BULLET_CASELESS_INCENDIARY.get(), 16)
             .define('A', AVPAmmunitionPartItems.BULLET_TIP.get())
             .define('B', AVPAmmunitionPartItems.CASING_CASELESS.get())
             .define('C', Items.BLAZE_POWDER)
@@ -57,7 +57,7 @@ public final class AVPBulletRecipes {
             .unlockedBy("has_caseless_casing", AVPRecipeProvider.has(AVPAmmunitionPartItems.CASING_CASELESS.get()))
             .save(recipeOutput);
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AVPBulletItems.BULLET_CASELESS_PENETRATION.get())
+        ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AVPBulletItems.BULLET_CASELESS_PENETRATION.get(), 16)
             .define('A', AVPAmmunitionPartItems.BULLET_TIP.get())
             .define('B', AVPAmmunitionPartItems.CASING_CASELESS.get())
             .define('C', Items.OBSIDIAN)
@@ -68,7 +68,7 @@ public final class AVPBulletRecipes {
     }
 
     private static void addHeavyBulletRecipes(RecipeOutput recipeOutput) {
-        ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AVPBulletItems.BULLET_HEAVY.get())
+        ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AVPBulletItems.BULLET_HEAVY.get(), 16)
             .define('A', AVPAmmunitionPartItems.BULLET_TIP.get())
             .define('B', AVPAmmunitionPartItems.CASING_HEAVY.get())
             .pattern("A")
@@ -76,7 +76,7 @@ public final class AVPBulletRecipes {
             .unlockedBy("has_heavy_casing", AVPRecipeProvider.has(AVPAmmunitionPartItems.CASING_HEAVY.get()))
             .save(recipeOutput);
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AVPBulletItems.BULLET_HEAVY_ELECTRIC.get())
+        ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AVPBulletItems.BULLET_HEAVY_ELECTRIC.get(), 16)
             .define('A', AVPAmmunitionPartItems.BULLET_TIP.get())
             .define('B', AVPAmmunitionPartItems.CASING_HEAVY.get())
             .define('C', AVPElectronicItems.CAPACITOR.get())
@@ -85,7 +85,7 @@ public final class AVPBulletRecipes {
             .unlockedBy("has_heavy_casing", AVPRecipeProvider.has(AVPAmmunitionPartItems.CASING_HEAVY.get()))
             .save(recipeOutput);
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AVPBulletItems.BULLET_HEAVY_EXPLOSIVE.get())
+        ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AVPBulletItems.BULLET_HEAVY_EXPLOSIVE.get(), 16)
             .define('A', AVPAmmunitionPartItems.BULLET_TIP.get())
             .define('B', AVPAmmunitionPartItems.CASING_HEAVY.get())
             .define('C', Items.TNT)
@@ -94,7 +94,7 @@ public final class AVPBulletRecipes {
             .unlockedBy("has_heavy_casing", AVPRecipeProvider.has(AVPAmmunitionPartItems.CASING_HEAVY.get()))
             .save(recipeOutput);
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AVPBulletItems.BULLET_HEAVY_INCENDIARY.get())
+        ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AVPBulletItems.BULLET_HEAVY_INCENDIARY.get(), 16)
             .define('A', AVPAmmunitionPartItems.BULLET_TIP.get())
             .define('B', AVPAmmunitionPartItems.CASING_HEAVY.get())
             .define('C', Items.BLAZE_POWDER)
@@ -103,7 +103,7 @@ public final class AVPBulletRecipes {
             .unlockedBy("has_heavy_casing", AVPRecipeProvider.has(AVPAmmunitionPartItems.CASING_HEAVY.get()))
             .save(recipeOutput);
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AVPBulletItems.BULLET_HEAVY_PENETRATION.get())
+        ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AVPBulletItems.BULLET_HEAVY_PENETRATION.get(), 16)
             .define('A', AVPAmmunitionPartItems.BULLET_TIP.get())
             .define('B', AVPAmmunitionPartItems.CASING_HEAVY.get())
             .define('C', Items.OBSIDIAN)
@@ -114,7 +114,7 @@ public final class AVPBulletRecipes {
     }
 
     private static void addPistolBulletRecipes(RecipeOutput recipeOutput) {
-        ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AVPBulletItems.BULLET_PISTOL.get())
+        ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AVPBulletItems.BULLET_PISTOL.get(), 16)
             .define('A', AVPAmmunitionPartItems.BULLET_TIP.get())
             .define('B', AVPAmmunitionPartItems.CASING_PISTOL.get())
             .pattern("A")
@@ -122,7 +122,7 @@ public final class AVPBulletRecipes {
             .unlockedBy("has_pistol_casing", AVPRecipeProvider.has(AVPAmmunitionPartItems.CASING_PISTOL.get()))
             .save(recipeOutput);
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AVPBulletItems.BULLET_PISTOL_ELECTRIC.get())
+        ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AVPBulletItems.BULLET_PISTOL_ELECTRIC.get(), 16)
             .define('A', AVPAmmunitionPartItems.BULLET_TIP.get())
             .define('B', AVPAmmunitionPartItems.CASING_PISTOL.get())
             .define('C', AVPElectronicItems.CAPACITOR.get())
@@ -131,7 +131,7 @@ public final class AVPBulletRecipes {
             .unlockedBy("has_pistol_casing", AVPRecipeProvider.has(AVPAmmunitionPartItems.CASING_PISTOL.get()))
             .save(recipeOutput);
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AVPBulletItems.BULLET_PISTOL_EXPLOSIVE.get())
+        ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AVPBulletItems.BULLET_PISTOL_EXPLOSIVE.get(), 16)
             .define('A', AVPAmmunitionPartItems.BULLET_TIP.get())
             .define('B', AVPAmmunitionPartItems.CASING_PISTOL.get())
             .define('C', Items.TNT)
@@ -140,7 +140,7 @@ public final class AVPBulletRecipes {
             .unlockedBy("has_pistol_casing", AVPRecipeProvider.has(AVPAmmunitionPartItems.CASING_PISTOL.get()))
             .save(recipeOutput);
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AVPBulletItems.BULLET_PISTOL_INCENDIARY.get())
+        ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AVPBulletItems.BULLET_PISTOL_INCENDIARY.get(), 16)
             .define('A', AVPAmmunitionPartItems.BULLET_TIP.get())
             .define('B', AVPAmmunitionPartItems.CASING_PISTOL.get())
             .define('C', Items.BLAZE_POWDER)
@@ -149,7 +149,7 @@ public final class AVPBulletRecipes {
             .unlockedBy("has_pistol_casing", AVPRecipeProvider.has(AVPAmmunitionPartItems.CASING_PISTOL.get()))
             .save(recipeOutput);
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AVPBulletItems.BULLET_PISTOL_PENETRATION.get())
+        ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AVPBulletItems.BULLET_PISTOL_PENETRATION.get(), 16)
             .define('A', AVPAmmunitionPartItems.BULLET_TIP.get())
             .define('B', AVPAmmunitionPartItems.CASING_PISTOL.get())
             .define('C', Items.OBSIDIAN)
@@ -160,7 +160,7 @@ public final class AVPBulletRecipes {
     }
 
     private static void addRifleBulletRecipes(RecipeOutput recipeOutput) {
-        ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AVPBulletItems.BULLET_RIFLE.get())
+        ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AVPBulletItems.BULLET_RIFLE.get(), 16)
             .define('A', AVPAmmunitionPartItems.BULLET_TIP.get())
             .define('B', AVPAmmunitionPartItems.CASING_RIFLE.get())
             .pattern("A")
@@ -168,7 +168,7 @@ public final class AVPBulletRecipes {
             .unlockedBy("has_rifle_casing", AVPRecipeProvider.has(AVPAmmunitionPartItems.CASING_RIFLE.get()))
             .save(recipeOutput);
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AVPBulletItems.BULLET_RIFLE_ELECTRIC.get())
+        ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AVPBulletItems.BULLET_RIFLE_ELECTRIC.get(), 16)
             .define('A', AVPAmmunitionPartItems.BULLET_TIP.get())
             .define('B', AVPAmmunitionPartItems.CASING_RIFLE.get())
             .define('C', AVPElectronicItems.CAPACITOR.get())
@@ -177,7 +177,7 @@ public final class AVPBulletRecipes {
             .unlockedBy("has_rifle_casing", AVPRecipeProvider.has(AVPAmmunitionPartItems.CASING_RIFLE.get()))
             .save(recipeOutput);
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AVPBulletItems.BULLET_RIFLE_EXPLOSIVE.get())
+        ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AVPBulletItems.BULLET_RIFLE_EXPLOSIVE.get(), 16)
             .define('A', AVPAmmunitionPartItems.BULLET_TIP.get())
             .define('B', AVPAmmunitionPartItems.CASING_RIFLE.get())
             .define('C', Items.TNT)
@@ -186,7 +186,7 @@ public final class AVPBulletRecipes {
             .unlockedBy("has_rifle_casing", AVPRecipeProvider.has(AVPAmmunitionPartItems.CASING_RIFLE.get()))
             .save(recipeOutput);
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AVPBulletItems.BULLET_RIFLE_INCENDIARY.get())
+        ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AVPBulletItems.BULLET_RIFLE_INCENDIARY.get(), 16)
             .define('A', AVPAmmunitionPartItems.BULLET_TIP.get())
             .define('B', AVPAmmunitionPartItems.CASING_RIFLE.get())
             .define('C', Items.BLAZE_POWDER)
@@ -195,7 +195,7 @@ public final class AVPBulletRecipes {
             .unlockedBy("has_rifle_casing", AVPRecipeProvider.has(AVPAmmunitionPartItems.CASING_RIFLE.get()))
             .save(recipeOutput);
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AVPBulletItems.BULLET_RIFLE_PENETRATION.get())
+        ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AVPBulletItems.BULLET_RIFLE_PENETRATION.get(), 16)
             .define('A', AVPAmmunitionPartItems.BULLET_TIP.get())
             .define('B', AVPAmmunitionPartItems.CASING_RIFLE.get())
             .define('C', Items.OBSIDIAN)
@@ -206,7 +206,7 @@ public final class AVPBulletRecipes {
     }
 
     private static void addShotgunBulletRecipes(RecipeOutput recipeOutput) {
-        ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AVPBulletItems.BULLET_SHOTGUN.get())
+        ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AVPBulletItems.BULLET_SHOTGUN.get(), 16)
             .define('A', AVPAmmunitionPartItems.BULLET_TIP.get())
             .define('B', AVPAmmunitionPartItems.CASING_SHOTGUN.get())
             .pattern("A")
@@ -214,7 +214,7 @@ public final class AVPBulletRecipes {
             .unlockedBy("has_shotgun_casing", AVPRecipeProvider.has(AVPAmmunitionPartItems.CASING_SHOTGUN.get()))
             .save(recipeOutput);
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AVPBulletItems.BULLET_SHOTGUN_ELECTRIC.get())
+        ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AVPBulletItems.BULLET_SHOTGUN_ELECTRIC.get(), 16)
             .define('A', AVPAmmunitionPartItems.BULLET_TIP.get())
             .define('B', AVPAmmunitionPartItems.CASING_SHOTGUN.get())
             .define('C', AVPElectronicItems.CAPACITOR.get())
@@ -223,7 +223,7 @@ public final class AVPBulletRecipes {
             .unlockedBy("has_shotgun_casing", AVPRecipeProvider.has(AVPAmmunitionPartItems.CASING_SHOTGUN.get()))
             .save(recipeOutput);
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AVPBulletItems.BULLET_SHOTGUN_EXPLOSIVE.get())
+        ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AVPBulletItems.BULLET_SHOTGUN_EXPLOSIVE.get(), 16)
             .define('A', AVPAmmunitionPartItems.BULLET_TIP.get())
             .define('B', AVPAmmunitionPartItems.CASING_SHOTGUN.get())
             .define('C', Items.TNT)
@@ -232,7 +232,7 @@ public final class AVPBulletRecipes {
             .unlockedBy("has_shotgun_casing", AVPRecipeProvider.has(AVPAmmunitionPartItems.CASING_SHOTGUN.get()))
             .save(recipeOutput);
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AVPBulletItems.BULLET_SHOTGUN_INCENDIARY.get())
+        ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AVPBulletItems.BULLET_SHOTGUN_INCENDIARY.get(), 16)
             .define('A', AVPAmmunitionPartItems.BULLET_TIP.get())
             .define('B', AVPAmmunitionPartItems.CASING_SHOTGUN.get())
             .define('C', Items.BLAZE_POWDER)
@@ -241,7 +241,7 @@ public final class AVPBulletRecipes {
             .unlockedBy("has_shotgun_casing", AVPRecipeProvider.has(AVPAmmunitionPartItems.CASING_SHOTGUN.get()))
             .save(recipeOutput);
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AVPBulletItems.BULLET_SHOTGUN_PENETRATION.get())
+        ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AVPBulletItems.BULLET_SHOTGUN_PENETRATION.get(), 16)
             .define('A', AVPAmmunitionPartItems.BULLET_TIP.get())
             .define('B', AVPAmmunitionPartItems.CASING_SHOTGUN.get())
             .define('C', Items.OBSIDIAN)
