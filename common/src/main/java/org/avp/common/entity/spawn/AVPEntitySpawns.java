@@ -20,6 +20,10 @@ public class AVPEntitySpawns {
         return ENTRIES;
     }
 
+    public static void forceInitialization() {
+        // This function does not need to do anything.
+    }
+
     private static <T extends Monster> void registerMonsterSpawn(GameObject<EntityType<T>> entityTypeGameObject, int weight, int minGroupSize, int maxGroupSize) {
         ENTRIES.add(new EntitySpawnData<>(
             entityTypeGameObject,

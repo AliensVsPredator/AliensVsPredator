@@ -6,6 +6,7 @@ import org.avp.common.block.*;
 import org.avp.common.config.AVPConfig;
 import org.avp.common.creative_tab.AVPCreativeModeTabs;
 import org.avp.common.entity.*;
+import org.avp.common.entity.spawn.AVPEntitySpawns;
 import org.avp.common.item.*;
 import org.avp.common.network.AVPNetworkPayloadHandlerRegistry;
 import org.avp.common.registry.AVPFuelRegistry;
@@ -71,6 +72,7 @@ public class AVPCommon {
         AVPPrometheusAlienEntityTypes.getInstance().register();
         AVPRunnerAlienEntityTypes.getInstance().register();
         AVPYautjaEntityTypes.getInstance().register();
+        AVPEntitySpawns.forceInitialization();
 
         // It's important to register creative mode tabs last, as entities generate spawn eggs automatically.
         AVPCreativeModeTabs.register();
