@@ -6,9 +6,6 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import org.avp.client.model.entity.living.CrusherModel;
 import org.avp.common.entity.living.Crusher;
 
-/**
- * @author Boston Vanseghi
- */
 public class CrusherRenderer extends GeoEntityRenderer<Crusher> {
 
     public CrusherRenderer(EntityRendererProvider.Context context) {

@@ -9,9 +9,6 @@ import org.avp.common.legacy.schematic.resolver.DerelictSchematicResolver;
 import org.avp.common.legacy.schematic.resolver.TestSchematicResolver;
 import org.avp.common.service.Services;
 
-/**
- * @author Boston Vanseghi
- */
 public final class LegacySchematics {
 
     private static final String SCHEMATICS_DIRECTORY = "schematics";

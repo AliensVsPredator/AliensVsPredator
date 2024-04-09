@@ -11,9 +11,6 @@ import java.util.function.Supplier;
 import org.avp.api.GameObject;
 import org.avp.common.item.AVPSpawnEggItems;
 
-/**
- * @author Boston Vanseghi
- */
 public interface EntityRegistry {
 
     <T extends Entity> GameObject<EntityType<T>> register(String registryName, Supplier<EntityType<T>> supplier);

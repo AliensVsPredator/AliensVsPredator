@@ -7,9 +7,6 @@ import java.util.function.Supplier;
 
 import org.avp.common.AVPResources;
 
-/**
- * @author Boston Vanseghi
- */
 public class GameObject<T> {
 
     public static <E> GameObject<E> empty() {

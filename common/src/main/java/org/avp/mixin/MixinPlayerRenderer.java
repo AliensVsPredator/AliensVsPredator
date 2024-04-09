@@ -11,9 +11,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import org.avp.common.item.AbstractAVPWeaponItem;
 
-/**
- * @author Boston Vanseghi
- */
 @Mixin(PlayerRenderer.class)
 public abstract class MixinPlayerRenderer {
 

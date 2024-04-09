@@ -23,9 +23,6 @@ import org.jetbrains.annotations.Nullable;
 import org.avp.common.sound.AVPSoundEvents;
 import org.avp.common.tag.AVPEntityTags;
 
-/**
- * @author Boston Vanseghi
- */
 public class WarriorRunner extends Monster implements GeoEntity {
 
     private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);

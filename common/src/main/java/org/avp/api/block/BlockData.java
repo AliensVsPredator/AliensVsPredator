@@ -14,9 +14,6 @@ import org.avp.api.block.drop.BlockDrops;
 import org.avp.api.block.factory.BlockFactories;
 import org.avp.api.block.factory.BlockFactory;
 
-/**
- * @author Boston Vanseghi
- */
 public class BlockData {
 
     public static BlockData.Builder builder(BlockBehaviour.Properties properties) {

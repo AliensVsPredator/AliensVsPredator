@@ -9,9 +9,6 @@ import org.avp.api.item.weapon.ammo.AmmunitionStrategy;
 import org.avp.api.item.weapon.reload.ReloadStrategy;
 import org.avp.api.item.weapon.shoot.ShootStrategy;
 
-/**
- * @author Boston Vanseghi
- */
 public class WeaponItemData {
 
     private final float accuracy;

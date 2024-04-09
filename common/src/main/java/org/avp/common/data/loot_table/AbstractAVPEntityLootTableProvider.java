@@ -11,9 +11,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.BiConsumer;
 
-/**
- * @author Boston Vanseghi
- */
 public abstract class AbstractAVPEntityLootTableProvider extends EntityLootSubProvider {
 
     private final Map<EntityType<?>, LootTable.Builder> map;

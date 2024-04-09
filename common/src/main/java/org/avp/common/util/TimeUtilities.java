@@ -3,9 +3,6 @@ package org.avp.common.util;
 import java.time.LocalDate;
 import java.time.Month;
 
-/**
- * @author Boston Vanseghi
- */
 public class TimeUtilities {
 
     public static final int ONE_MINUTE_IN_TICKS = 20 * 60;

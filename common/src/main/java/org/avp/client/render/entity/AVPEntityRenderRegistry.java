@@ -11,9 +11,6 @@ import java.util.List;
 import org.avp.api.GameObject;
 import org.avp.client.util.EntityRenderData;
 
-/**
- * @author Boston Vanseghi
- */
 public class AVPEntityRenderRegistry {
 
     private static final List<EntityRenderData<? extends Entity>> BINDINGS = new ArrayList<>();

@@ -7,9 +7,6 @@ import net.minecraft.world.level.levelgen.placement.PlacedFeature;
 import org.avp.common.AVPResources;
 import org.avp.common.registry.AVPRegistry;
 
-/**
- * @author Boston Vanseghi
- */
 public class AVPOreFeatures implements AVPRegistry {
 
     private static final AVPOreFeatures INSTANCE = new AVPOreFeatures();

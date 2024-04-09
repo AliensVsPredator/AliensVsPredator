@@ -4,9 +4,6 @@ import java.util.ServiceLoader;
 
 import org.avp.common.AVPConstants;
 
-/**
- * @author Boston Vanseghi
- */
 public class Services {
 
     public static final BlockRegistry BLOCK_REGISTRY = load(BlockRegistry.class);

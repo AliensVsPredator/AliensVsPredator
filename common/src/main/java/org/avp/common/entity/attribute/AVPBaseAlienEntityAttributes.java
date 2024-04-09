@@ -5,9 +5,6 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 
 import org.avp.common.entity.*;
 
-/**
- * @author Boston Vanseghi
- */
 public class AVPBaseAlienEntityAttributes {
 
     private static final AttributeSupplier BOILER = AVPEntityAttributesBindingRegistry.builder()

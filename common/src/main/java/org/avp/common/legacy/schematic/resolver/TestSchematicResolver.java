@@ -7,9 +7,6 @@ import java.util.Map;
 
 import org.avp.common.block.AVPIndustrialBlocks;
 
-/**
- * @author Boston Vanseghi
- */
 public class TestSchematicResolver {
 
     public static final Map<String, Block> RESOLVER_MAP = Map.ofEntries(

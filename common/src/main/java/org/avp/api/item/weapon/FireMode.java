@@ -4,9 +4,6 @@ import net.minecraft.sounds.SoundEvent;
 
 import org.avp.api.GameObject;
 
-/**
- * @author Boston Vanseghi
- */
 public record FireMode(
     String identifier,
     int consumedAmmunition,

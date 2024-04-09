@@ -18,9 +18,6 @@ import org.avp.common.block.*;
 import org.avp.common.item.*;
 import org.avp.common.service.Services;
 
-/**
- * @author Boston Vanseghi
- */
 public final class AVPCreativeModeTabs {
 
     private static void registerCreativeModeTab(

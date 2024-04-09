@@ -14,9 +14,6 @@ import java.util.Optional;
 
 import org.avp.common.AVPConstants;
 
-/**
- * @author Boston Vanseghi
- */
 public class LegacySchematicLoader {
 
     private static final String ADD_BLOCKS = "AddBlocks";

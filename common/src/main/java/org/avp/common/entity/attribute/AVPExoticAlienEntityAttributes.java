@@ -5,9 +5,6 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 
 import org.avp.common.entity.AVPExoticAlienEntityTypes;
 
-/**
- * @author Boston Vanseghi
- */
 public class AVPExoticAlienEntityAttributes {
 
     private static final AttributeSupplier DEACON_ADULT_ENGINEER = AVPEntityAttributesBindingRegistry.builder()

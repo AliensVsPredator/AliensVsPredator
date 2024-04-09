@@ -7,9 +7,6 @@ import org.avp.api.GameObject;
 import org.avp.common.entity.living.Yautja;
 import org.avp.common.registry.AVPRegistry;
 
-/**
- * @author Boston Vanseghi
- */
 public class AVPYautjaEntityTypes implements AVPRegistry {
 
     private static final AVPYautjaEntityTypes INSTANCE = new AVPYautjaEntityTypes();

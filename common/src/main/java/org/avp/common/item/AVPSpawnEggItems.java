@@ -8,9 +8,6 @@ import java.util.List;
 import org.avp.api.GameObject;
 import org.avp.common.registry.AVPItemBindingRegistry;
 
-/**
- * @author Boston Vanseghi
- */
 public class AVPSpawnEggItems extends AVPItemBindingRegistry {
 
     public static final List<GameObject<Item>> ENTRIES = new ArrayList<>();

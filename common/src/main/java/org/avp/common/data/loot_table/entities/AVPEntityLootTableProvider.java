@@ -12,9 +12,6 @@ import org.avp.common.data.loot_table.AbstractAVPEntityLootTableProvider;
 import org.avp.common.entity.AVPBaseAlienEntityTypes;
 import org.avp.common.item.AVPItems;
 
-/**
- * @author Boston Vanseghi
- */
 public class AVPEntityLootTableProvider extends AbstractAVPEntityLootTableProvider {
 
     @Override

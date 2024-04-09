@@ -9,9 +9,6 @@ import java.util.Map;
 
 import org.avp.common.AVPConstants;
 
-/**
- * @author Boston Vanseghi
- */
 public class LegacySchematic {
 
     private final short[] blockIdData;

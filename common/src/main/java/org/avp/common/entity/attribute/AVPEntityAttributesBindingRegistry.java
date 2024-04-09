@@ -13,9 +13,6 @@ import java.util.Map;
 
 import org.avp.api.GameObject;
 
-/**
- * @author Boston Vanseghi
- */
 public class AVPEntityAttributesBindingRegistry {
 
     private static final List<Map.Entry<GameObject<? extends EntityType<? extends Mob>>, AttributeSupplier>> BINDINGS =

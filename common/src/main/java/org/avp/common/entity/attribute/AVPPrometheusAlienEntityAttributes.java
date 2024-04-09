@@ -6,9 +6,6 @@ import net.minecraft.world.entity.monster.Monster;
 
 import org.avp.common.entity.AVPPrometheusAlienEntityTypes;
 
-/**
- * @author Boston Vanseghi
- */
 public class AVPPrometheusAlienEntityAttributes {
 
     private static AttributeSupplier.Builder createAvPAttributes() {

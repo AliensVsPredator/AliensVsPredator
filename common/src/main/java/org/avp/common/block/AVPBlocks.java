@@ -13,9 +13,6 @@ import org.avp.api.Tuple;
 import org.avp.api.block.BlockData;
 import org.avp.common.service.Services;
 
-/**
- * @author Boston Vanseghi
- */
 public class AVPBlocks {
 
     private static final List<Tuple<GameObject<Block>, BlockData>> ENTRIES = new ArrayList<>();

@@ -6,9 +6,6 @@ import java.util.function.Supplier;
 
 import org.avp.api.GameObject;
 
-/**
- * @author Boston Vanseghi
- */
 public abstract class AVPBindingRegistry<T> {
 
     public final List<GameObject<T>> ENTRIES = new ArrayList<>();

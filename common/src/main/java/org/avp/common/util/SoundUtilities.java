@@ -6,9 +6,6 @@ import net.minecraft.world.level.block.SoundType;
 import org.avp.api.GameObject;
 import org.avp.common.sound.AVPSoundEvents;
 
-/**
- * @author Boston Vanseghi
- */
 public class SoundUtilities {
 
     public static GameObject<SoundEvent> getRicochetSoundForSoundType(SoundType soundType) {

@@ -8,9 +8,6 @@ import org.avp.api.GameObject;
 import org.avp.api.block.BlockData;
 import org.avp.api.block.BlockDataUtils;
 
-/**
- * @author Boston Vanseghi
- */
 public class AVPPaddingBlocks {
 
     public static final BlockBehaviour.Properties ORANGE_PADDING_PROPERTIES = BlockBehaviour.Properties.ofFullCopy(

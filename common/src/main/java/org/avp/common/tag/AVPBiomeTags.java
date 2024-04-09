@@ -6,9 +6,6 @@ import net.minecraft.world.level.biome.Biome;
 
 import org.avp.common.AVPResources;
 
-/**
- * @author Boston Vanseghi
- */
 public class AVPBiomeTags {
 
     public static final TagKey<Biome> IS_WET;

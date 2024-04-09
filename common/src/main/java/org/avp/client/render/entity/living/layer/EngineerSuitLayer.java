@@ -12,9 +12,6 @@ import net.minecraft.resources.ResourceLocation;
 import org.avp.common.AVPResources;
 import org.avp.common.entity.living.Engineer;
 
-/**
- * @author Boston Vanseghi
- */
 public class EngineerSuitLayer extends GeoRenderLayer<Engineer> {
 
     private static final ResourceLocation SUIT_TEXTURE = AVPResources.entityTextureLocation("engineer_suit");

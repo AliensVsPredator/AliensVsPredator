@@ -6,9 +6,6 @@ import org.avp.api.GameObject;
 import org.avp.common.AVPResources;
 import org.avp.common.service.Services;
 
-/**
- * @author Boston Vanseghi
- */
 public class AVPSoundEvents {
 
     private static GameObject<SoundEvent> register(String registryName) {

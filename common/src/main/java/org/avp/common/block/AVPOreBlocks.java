@@ -14,9 +14,6 @@ import org.avp.api.block.BlockData;
 import org.avp.api.block.drop.BlockDropUtils;
 import org.avp.common.item.AVPItems;
 
-/**
- * @author Boston Vanseghi
- */
 public class AVPOreBlocks {
 
     public static final BlockBehaviour.Properties BAUXITE_PROPERTIES = BlockBehaviour.Properties.ofFullCopy(

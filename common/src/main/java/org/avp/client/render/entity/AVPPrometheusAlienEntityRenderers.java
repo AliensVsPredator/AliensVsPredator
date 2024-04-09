@@ -6,9 +6,6 @@ import org.avp.client.render.entity.living.TrilobiteBabyRenderer;
 import org.avp.client.render.entity.living.TrilobiteRenderer;
 import org.avp.common.entity.AVPPrometheusAlienEntityTypes;
 
-/**
- * @author Boston Vanseghi
- */
 public class AVPPrometheusAlienEntityRenderers {
 
     private AVPPrometheusAlienEntityRenderers() {}

@@ -11,9 +11,6 @@ import org.avp.common.AVPResources;
 import org.avp.common.network.AVPClientListener;
 import org.avp.common.network.ClientboundPacket;
 
-/**
- * @author Boston Vanseghi
- */
 public record ClientboundBulletHitBlockPayload(
     BlockPos blockPos,
     Direction direction

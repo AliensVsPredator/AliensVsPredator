@@ -8,9 +8,6 @@ import org.avp.client.util.BasicAnimationUtils;
 import org.avp.common.AVPResources;
 import org.avp.common.entity.living.Drone;
 
-/**
- * @author Boston Vanseghi
- */
 public class DroneModel extends GeoModel<Drone> {
 
     private static final String ENTITY_NAME = "drone";

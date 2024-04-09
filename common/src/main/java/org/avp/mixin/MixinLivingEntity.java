@@ -12,9 +12,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import org.avp.api.entity.Host;
 
-/**
- * @author Boston Vanseghi
- */
 @Mixin(LivingEntity.class)
 public abstract class MixinLivingEntity extends Entity implements Host {
 

@@ -9,9 +9,6 @@ import org.avp.common.entity.living.*;
 import org.avp.common.registry.AVPRegistry;
 import org.avp.common.service.Services;
 
-/**
- * @author Boston Vanseghi
- */
 public class AVPEntityTypes implements AVPRegistry {
 
     private static final AVPEntityTypes INSTANCE = new AVPEntityTypes();

@@ -7,9 +7,6 @@ import java.util.function.Supplier;
 import org.avp.api.GameObject;
 import org.avp.common.service.Services;
 
-/**
- * @author Boston Vanseghi
- */
 public class AVPBlockBindingRegistry extends AVPBindingRegistry<Block> {
 
     @Override

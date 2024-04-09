@@ -7,9 +7,6 @@ import org.avp.api.GameObject;
 import org.avp.common.entity.living.*;
 import org.avp.common.registry.AVPRegistry;
 
-/**
- * @author Boston Vanseghi
- */
 public class AVPExoticAlienEntityTypes implements AVPRegistry {
 
     private static final AVPExoticAlienEntityTypes INSTANCE = new AVPExoticAlienEntityTypes();

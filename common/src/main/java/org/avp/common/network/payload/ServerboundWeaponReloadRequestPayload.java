@@ -12,9 +12,6 @@ import org.avp.common.AVPResources;
 import org.avp.common.network.AVPServerListener;
 import org.avp.common.network.ServerboundPacket;
 
-/**
- * @author Boston Vanseghi
- */
 public record ServerboundWeaponReloadRequestPayload(
     UUID playerUUID
 ) implements ServerboundPacket, CustomPacketPayload {

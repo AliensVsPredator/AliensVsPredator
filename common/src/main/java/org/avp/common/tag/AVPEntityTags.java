@@ -6,9 +6,6 @@ import net.minecraft.world.entity.EntityType;
 
 import org.avp.common.AVPResources;
 
-/**
- * @author Boston Vanseghi
- */
 public class AVPEntityTags {
 
     public static final TagKey<EntityType<?>> ACID_BLEEDERS;

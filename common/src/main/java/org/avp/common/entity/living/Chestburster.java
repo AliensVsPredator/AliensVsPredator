@@ -18,9 +18,6 @@ import org.jetbrains.annotations.NotNull;
 
 import org.avp.common.sound.AVPSoundEvents;
 
-/**
- * @author Boston Vanseghi
- */
 public class Chestburster extends Monster implements GeoEntity {
 
     private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);

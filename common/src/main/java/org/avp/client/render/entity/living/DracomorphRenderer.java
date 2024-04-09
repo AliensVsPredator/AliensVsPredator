@@ -10,9 +10,6 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import org.avp.client.model.entity.living.DracomorphModel;
 import org.avp.common.entity.living.Dracomorph;
 
-/**
- * @author Boston Vanseghi
- */
 public class DracomorphRenderer extends GeoEntityRenderer<Dracomorph> {
 
     public DracomorphRenderer(EntityRendererProvider.Context context) {

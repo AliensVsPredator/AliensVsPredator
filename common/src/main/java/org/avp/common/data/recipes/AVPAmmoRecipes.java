@@ -9,9 +9,6 @@ import org.avp.common.item.AVPAmmunitionPartItems;
 import org.avp.common.item.AVPElectronicItems;
 import org.avp.common.item.AVPItems;
 
-/**
- * @author Boston Vanseghi
- */
 public final class AVPAmmoRecipes {
 
     public static void addAmmoRecipes(RecipeOutput recipeOutput) {

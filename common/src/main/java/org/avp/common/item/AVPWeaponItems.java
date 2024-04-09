@@ -20,9 +20,6 @@ import org.avp.common.item.weapon.OldPainlessItem;
 import org.avp.common.item.weapon.SniperRifleItem;
 import org.avp.common.service.Services;
 
-/**
- * @author Boston Vanseghi
- */
 public class AVPWeaponItems {
 
     private static final List<GameObject<Item>> ENTRIES = new ArrayList<>();

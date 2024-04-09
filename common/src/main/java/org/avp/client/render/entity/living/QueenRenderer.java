@@ -10,9 +10,6 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import org.avp.client.model.entity.living.QueenModel;
 import org.avp.common.entity.living.Queen;
 
-/**
- * @author Boston Vanseghi
- */
 public class QueenRenderer extends GeoEntityRenderer<Queen> {
 
     public QueenRenderer(EntityRendererProvider.Context context) {

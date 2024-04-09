@@ -13,9 +13,6 @@ import org.avp.api.GameObject;
 import org.avp.common.legacy.schematic.LegacySchematic;
 import org.avp.common.legacy.schematic.LegacySchematics;
 
-/**
- * @author Boston Vanseghi
- */
 public class AVPLegacySchematicCommand {
 
     private static final List<GameObject<LegacySchematic>> LEGACY_SCHEMATICS = List.of(

@@ -4,9 +4,6 @@ import org.avp.client.render.entity.living.BelugabursterRenderer;
 import org.avp.client.render.entity.living.BelugamorphRenderer;
 import org.avp.common.entity.AVPEntityTypes;
 
-/**
- * @author Boston Vanseghi
- */
 public class AVPEntityRenderers {
 
     private AVPEntityRenderers() {}

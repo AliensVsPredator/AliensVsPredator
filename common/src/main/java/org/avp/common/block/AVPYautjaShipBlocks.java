@@ -14,9 +14,6 @@ import org.avp.api.GameObject;
 import org.avp.api.block.BlockData;
 import org.avp.api.block.BlockDataUtils;
 
-/**
- * @author Boston Vanseghi
- */
 public class AVPYautjaShipBlocks {
 
     public static final BlockBehaviour.Properties PROPERTIES = BlockBehaviour.Properties.ofFullCopy(

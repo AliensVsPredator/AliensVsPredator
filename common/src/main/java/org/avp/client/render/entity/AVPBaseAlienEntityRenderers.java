@@ -12,9 +12,6 @@ import org.avp.client.render.entity.living.SpitterRenderer;
 import org.avp.client.render.entity.living.WarriorRenderer;
 import org.avp.common.entity.AVPBaseAlienEntityTypes;
 
-/**
- * @author Boston Vanseghi
- */
 public class AVPBaseAlienEntityRenderers {
 
     private AVPBaseAlienEntityRenderers() {}

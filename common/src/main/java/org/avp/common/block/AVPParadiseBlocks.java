@@ -8,9 +8,6 @@ import org.avp.api.GameObject;
 import org.avp.api.block.BlockData;
 import org.avp.api.block.BlockDataUtils;
 
-/**
- * @author Boston Vanseghi
- */
 public class AVPParadiseBlocks {
 
     public static final GameObject<Block> DIRT;

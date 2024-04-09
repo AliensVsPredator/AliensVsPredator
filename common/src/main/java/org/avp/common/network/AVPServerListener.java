@@ -6,9 +6,6 @@ import net.minecraft.server.level.ServerPlayer;
 import org.avp.common.item.AbstractAVPWeaponItem;
 import org.avp.common.network.payload.ServerboundWeaponReloadRequestPayload;
 
-/**
- * @author Boston Vanseghi
- */
 public class AVPServerListener {
 
     public static void handleWeaponReloadRequest(

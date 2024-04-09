@@ -9,9 +9,6 @@ import net.minecraft.world.item.crafting.Ingredient;
 
 import org.avp.common.item.AVPFoodItems;
 
-/**
- * @author Boston Vanseghi
- */
 public final class AVPFoodRecipes {
 
     public static void addFoodRecipes(RecipeOutput recipeOutput) {

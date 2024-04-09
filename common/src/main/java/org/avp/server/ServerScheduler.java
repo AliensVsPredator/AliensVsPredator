@@ -6,9 +6,6 @@ import java.util.List;
 
 import org.avp.api.Tuple;
 
-/**
- * @author Boston Vanseghi
- */
 public class ServerScheduler {
 
     private static final List<Tuple<Long, Runnable>> SCHEDULED_TASKS = new ArrayList<>();

@@ -16,9 +16,6 @@ import org.avp.common.tag.AVPBlockTags;
 import org.avp.common.tag.AVPEntityTags;
 import org.avp.common.worldgen.AVPWorldGenFeatures;
 
-/**
- * @author Boston Vanseghi
- */
 public class AVPCommon {
 
     public static void init() {

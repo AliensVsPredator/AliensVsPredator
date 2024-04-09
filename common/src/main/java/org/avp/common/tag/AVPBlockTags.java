@@ -6,9 +6,6 @@ import net.minecraft.world.level.block.Block;
 
 import org.avp.common.AVPResources;
 
-/**
- * @author Boston Vanseghi
- */
 public class AVPBlockTags {
 
     public static final TagKey<Block> ACID_RESISTANT;

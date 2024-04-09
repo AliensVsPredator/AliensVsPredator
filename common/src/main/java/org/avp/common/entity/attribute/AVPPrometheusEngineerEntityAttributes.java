@@ -6,9 +6,6 @@ import net.minecraft.world.entity.monster.Monster;
 
 import org.avp.common.entity.AVPEngineerEntityTypes;
 
-/**
- * @author Boston Vanseghi
- */
 public class AVPPrometheusEngineerEntityAttributes {
 
     private static AttributeSupplier.Builder createAvPAttributes() {

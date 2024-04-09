@@ -10,9 +10,6 @@ import org.avp.common.entity.living.DroneRunner;
 import org.avp.common.entity.living.WarriorRunner;
 import org.avp.common.registry.AVPRegistry;
 
-/**
- * @author Boston Vanseghi
- */
 public class AVPRunnerAlienEntityTypes implements AVPRegistry {
 
     private static final AVPRunnerAlienEntityTypes INSTANCE = new AVPRunnerAlienEntityTypes();

@@ -6,9 +6,6 @@ import org.avp.client.render.entity.living.DroneRunnerRenderer;
 import org.avp.client.render.entity.living.WarriorRunnerRenderer;
 import org.avp.common.entity.AVPRunnerAlienEntityTypes;
 
-/**
- * @author Boston Vanseghi
- */
 public class AVPRunnerAlienEntityRenderers {
 
     private AVPRunnerAlienEntityRenderers() {}

@@ -6,9 +6,6 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import org.avp.client.model.entity.living.TrilobiteBabyModel;
 import org.avp.common.entity.living.TrilobiteBaby;
 
-/**
- * @author Boston Vanseghi
- */
 public class TrilobiteBabyRenderer extends GeoEntityRenderer<TrilobiteBaby> {
 
     public TrilobiteBabyRenderer(EntityRendererProvider.Context context) {

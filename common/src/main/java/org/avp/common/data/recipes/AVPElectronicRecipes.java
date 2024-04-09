@@ -8,9 +8,6 @@ import net.minecraft.world.item.Items;
 import org.avp.common.item.AVPElectronicItems;
 import org.avp.common.item.AVPItems;
 
-/**
- * @author Boston Vanseghi
- */
 public final class AVPElectronicRecipes {
 
     public static void addElectronicRecipes(RecipeOutput recipeOutput) {

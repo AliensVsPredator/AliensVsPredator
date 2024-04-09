@@ -13,9 +13,6 @@ import org.avp.api.GameObject;
 import org.avp.api.block.BlockData;
 import org.avp.api.block.BlockDataUtils;
 
-/**
- * @author Boston Vanseghi
- */
 public class AVPIndustrialBlocks {
 
     public static final BlockBehaviour.Properties METAL_PROPERTIES = BlockBehaviour.Properties.ofFullCopy(

@@ -7,9 +7,6 @@ import org.avp.api.GameObject;
 import org.avp.common.entity.living.Engineer;
 import org.avp.common.registry.AVPRegistry;
 
-/**
- * @author Boston Vanseghi
- */
 public class AVPEngineerEntityTypes implements AVPRegistry {
 
     private static final AVPEngineerEntityTypes INSTANCE = new AVPEngineerEntityTypes();

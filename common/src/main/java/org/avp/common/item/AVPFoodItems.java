@@ -10,9 +10,6 @@ import java.util.function.Supplier;
 import org.avp.api.GameObject;
 import org.avp.common.service.Services;
 
-/**
- * @author Boston Vanseghi
- */
 public class AVPFoodItems {
 
     private static final List<GameObject<Item>> ENTRIES = new ArrayList<>();

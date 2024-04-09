@@ -12,9 +12,6 @@ import org.avp.common.util.TimeUtilities;
 import org.avp.server.BlockBreakProgressManager;
 import org.avp.server.ServerScheduler;
 
-/**
- * @author Boston Vanseghi
- */
 @Mixin(ServerLevel.class)
 public abstract class MixinServerLevel {
 

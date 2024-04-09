@@ -10,9 +10,6 @@ import org.avp.common.block.AVPIndustrialBlocks;
 import org.avp.common.item.AVPArmorItems;
 import org.avp.common.item.AVPItems;
 
-/**
- * @author Boston Vanseghi
- */
 public final class AVPArmorRecipes {
 
     public static void addArmorRecipes(RecipeOutput recipeOutput) {

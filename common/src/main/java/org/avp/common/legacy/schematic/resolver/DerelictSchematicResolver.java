@@ -8,9 +8,6 @@ import java.util.Map;
 import org.avp.common.block.AVPEngineerBlocks;
 import org.avp.common.block.AVPIndustrialBlocks;
 
-/**
- * @author Boston Vanseghi
- */
 public class DerelictSchematicResolver {
 
     public static final Map<String, Block> RESOLVER_MAP = Map.<String, Block>ofEntries(

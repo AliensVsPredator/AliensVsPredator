@@ -6,9 +6,6 @@ import net.minecraft.world.item.Items;
 
 import org.avp.common.item.AVPItems;
 
-/**
- * @author Boston Vanseghi
- */
 public class AVPArmorMaterials {
 
     private static final AVPArmorMaterials INSTANCE = new AVPArmorMaterials();

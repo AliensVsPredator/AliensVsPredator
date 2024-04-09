@@ -20,9 +20,6 @@ import net.minecraft.world.level.Level;
 
 import org.avp.common.tag.AVPEntityTags;
 
-/**
- * @author Boston Vanseghi
- */
 public class Engineer extends Monster implements GeoEntity {
 
     private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);

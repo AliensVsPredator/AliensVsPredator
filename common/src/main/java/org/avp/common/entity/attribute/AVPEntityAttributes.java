@@ -5,9 +5,6 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 
 import org.avp.common.entity.AVPEntityTypes;
 
-/**
- * @author Boston Vanseghi
- */
 public class AVPEntityAttributes {
 
     private static final AttributeSupplier BELUGABURSTER = AVPEntityAttributesBindingRegistry.builder()

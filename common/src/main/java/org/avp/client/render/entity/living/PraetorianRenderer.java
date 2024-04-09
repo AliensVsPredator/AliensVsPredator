@@ -6,9 +6,6 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import org.avp.client.model.entity.living.PraetorianModel;
 import org.avp.common.entity.living.Praetorian;
 
-/**
- * @author Boston Vanseghi
- */
 public class PraetorianRenderer extends GeoEntityRenderer<Praetorian> {
 
     public PraetorianRenderer(EntityRendererProvider.Context context) {

@@ -5,9 +5,6 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 
 import org.avp.common.entity.AVPRunnerAlienEntityTypes;
 
-/**
- * @author Boston Vanseghi
- */
 public class AVPRunnerAlienEntityAttributes {
 
     private static final AttributeSupplier CHESTBURSTER_RUNNER = AVPEntityAttributesBindingRegistry.builder()

@@ -13,9 +13,6 @@ import net.minecraft.world.level.block.Block;
 import org.avp.api.GameObject;
 import org.avp.common.AVPConstants;
 
-/**
- * @author Boston Vanseghi
- */
 public final class AVPRecipeHelper {
 
     public static void compressedBlockRecipe(

@@ -7,9 +7,6 @@ import org.avp.common.block.AVPBlocks;
 import org.avp.common.block.AVPOreBlocks;
 import org.avp.common.item.AVPItems;
 
-/**
- * @author Boston Vanseghi
- */
 public final class AVPAluminumRecipes {
 
     public static void addAluminumRecipes(RecipeOutput recipeOutput) {

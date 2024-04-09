@@ -11,9 +11,6 @@ import org.avp.api.GameObject;
 import org.avp.common.item.armor.material.AVPArmorMaterials;
 import org.avp.common.service.Services;
 
-/**
- * @author Boston Vanseghi
- */
 public class AVPArmorItems {
 
     private static final List<GameObject<Item>> ENTRIES = new ArrayList<>();

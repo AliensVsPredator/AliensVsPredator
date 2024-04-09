@@ -8,9 +8,6 @@ import java.util.function.Supplier;
 
 import org.avp.api.GameObject;
 
-/**
- * @author Boston Vanseghi
- */
 public interface BlockRegistry {
 
     GameObject<Block> register(String registryName, Supplier<Block> supplier);

@@ -18,9 +18,6 @@ import org.avp.common.item.weapon.M88Mod4CombatPistolItem;
 import org.avp.common.item.weapon.OldPainlessItem;
 import org.avp.common.item.weapon.SniperRifleItem;
 
-/**
- * @author Boston Vanseghi
- */
 public class AVPWeaponItemRenderers {
 
     public static final Map<Class<? extends Item>, Supplier<GeoItemRenderer<?>>> WEAPON_ITEM_RENDERERS = Map.ofEntries(

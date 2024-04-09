@@ -9,9 +9,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Supplier;
 
-/**
- * @author Boston Vanseghi
- */
 public record AVPArmorMaterial(
     String registryName,
     int durabilityMultiplier,

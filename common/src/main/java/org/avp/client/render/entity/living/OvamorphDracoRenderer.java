@@ -10,9 +10,6 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import org.avp.client.model.entity.living.OvamorphDracoModel;
 import org.avp.common.entity.living.OvamorphDraco;
 
-/**
- * @author Boston Vanseghi
- */
 public class OvamorphDracoRenderer extends GeoEntityRenderer<OvamorphDraco> {
 
     public OvamorphDracoRenderer(EntityRendererProvider.Context context) {

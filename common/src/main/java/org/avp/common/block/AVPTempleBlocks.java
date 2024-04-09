@@ -13,9 +13,6 @@ import org.avp.api.GameObject;
 import org.avp.api.block.BlockData;
 import org.avp.api.block.BlockDataUtils;
 
-/**
- * @author Boston Vanseghi
- */
 public class AVPTempleBlocks {
 
     public static final BlockBehaviour.Properties BRICK_PROPERTIES = BlockBehaviour.Properties.ofFullCopy(

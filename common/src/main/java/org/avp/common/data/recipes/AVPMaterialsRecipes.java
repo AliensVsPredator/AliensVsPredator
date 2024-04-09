@@ -12,9 +12,6 @@ import net.minecraft.world.item.crafting.Ingredient;
 import org.avp.common.AVPConstants;
 import org.avp.common.item.AVPItems;
 
-/**
- * @author Boston Vanseghi
- */
 public final class AVPMaterialsRecipes {
 
     public static void addMaterialRecipes(RecipeOutput recipeOutput) {

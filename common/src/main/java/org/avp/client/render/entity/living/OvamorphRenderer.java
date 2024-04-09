@@ -14,9 +14,6 @@ import org.avp.common.AVPResources;
 import org.avp.common.entity.living.Ovamorph;
 import org.avp.common.util.TimeUtilities;
 
-/**
- * @author Boston Vanseghi
- */
 public class OvamorphRenderer extends GeoEntityRenderer<Ovamorph> {
 
     private static final ResourceLocation TEXTURE_HALLOWEEN = AVPResources.entityTextureLocation("ovamorph_halloween");

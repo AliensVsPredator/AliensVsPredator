@@ -8,9 +8,6 @@ import org.avp.api.network.NetworkSide;
 import org.avp.common.network.ClientboundPacket;
 import org.avp.common.network.ServerboundPacket;
 
-/**
- * @author Boston Vanseghi
- */
 public interface NetworkPayloadHandlerRegistry {
 
     <T extends CustomPacketPayload> void register(ResourceLocation payloadId, FriendlyByteBuf.Reader<T> reader, NetworkSide handlingSide);

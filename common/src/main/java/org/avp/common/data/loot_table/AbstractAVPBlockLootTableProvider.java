@@ -18,9 +18,6 @@ import java.util.stream.Collectors;
 
 import org.avp.common.AVPConstants;
 
-/**
- * @author Boston Vanseghi
- */
 public abstract class AbstractAVPBlockLootTableProvider extends BlockLootSubProvider {
 
     protected AbstractAVPBlockLootTableProvider() {

@@ -6,9 +6,6 @@ import java.util.function.Supplier;
 
 import org.avp.api.GameObject;
 
-/**
- * @author Boston Vanseghi
- */
 public interface ItemRegistry {
 
     GameObject<Item> register(String registryName, Supplier<Item> supplier);

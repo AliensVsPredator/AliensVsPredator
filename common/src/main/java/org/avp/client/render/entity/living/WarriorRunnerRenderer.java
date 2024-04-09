@@ -6,9 +6,6 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import org.avp.client.model.entity.living.WarriorRunnerModel;
 import org.avp.common.entity.living.WarriorRunner;
 
-/**
- * @author Boston Vanseghi
- */
 public class WarriorRunnerRenderer extends GeoEntityRenderer<WarriorRunner> {
 
     public WarriorRunnerRenderer(EntityRendererProvider.Context context) {

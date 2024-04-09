@@ -11,9 +11,6 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.level.ItemLike;
 import org.jetbrains.annotations.NotNull;
 
-/**
- * @author Boston Vanseghi
- */
 public class AVPRecipeProvider extends RecipeProvider {
 
     public AVPRecipeProvider(PackOutput packOutput) {

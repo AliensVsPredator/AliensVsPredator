@@ -13,9 +13,6 @@ import org.avp.api.Tuple;
 import org.avp.common.network.payload.ServerboundWeaponReloadRequestPayload;
 import org.avp.common.service.Services;
 
-/**
- * @author Boston Vanseghi
- */
 public class AVPClientKeyBindings {
 
     private static final List<Tuple<KeyMapping, BiConsumer<KeyMapping, Minecraft>>> ENTRIES = new ArrayList<>();

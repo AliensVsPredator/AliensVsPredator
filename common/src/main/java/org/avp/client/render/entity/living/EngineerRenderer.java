@@ -7,9 +7,6 @@ import org.avp.client.model.entity.living.EngineerModel;
 import org.avp.client.render.entity.living.layer.EngineerSuitLayer;
 import org.avp.common.entity.living.Engineer;
 
-/**
- * @author Boston Vanseghi
- */
 public class EngineerRenderer extends GeoEntityRenderer<Engineer> {
 
     public EngineerRenderer(EntityRendererProvider.Context context) {

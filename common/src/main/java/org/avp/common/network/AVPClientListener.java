@@ -4,9 +4,6 @@ import net.minecraft.client.Minecraft;
 
 import org.avp.common.network.payload.ClientboundBulletHitBlockPayload;
 
-/**
- * @author Boston Vanseghi
- */
 public class AVPClientListener {
 
     public static void handleBulletHitBlockPayload(ClientboundBulletHitBlockPayload bulletHitBlockPayload) {
