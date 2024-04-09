@@ -8,6 +8,7 @@ import org.avp.common.creative_tab.AVPCreativeModeTabs;
 import org.avp.common.entity.*;
 import org.avp.common.item.*;
 import org.avp.common.network.AVPNetworkPayloadHandlerRegistry;
+import org.avp.common.registry.AVPFuelRegistry;
 import org.avp.common.sound.AVPSoundEvents;
 import org.avp.common.tag.AVPBiomeTags;
 import org.avp.common.tag.AVPBlockTags;
@@ -31,6 +32,9 @@ public class AVPCommon {
 
         // World Gen resource keys
         AVPWorldGenFeatures.getInstance().register();
+
+        // Fuel
+        AVPFuelRegistry.forceInitialization();
 
         // Tags
         AVPBiomeTags.forceInitialization();

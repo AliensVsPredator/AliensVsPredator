@@ -8,6 +8,7 @@ import org.avp.common.AVPCommon;
 import org.avp.common.AVPConstants;
 import org.avp.neoforge.client.AVPNeoForgeClient;
 import org.avp.neoforge.common.command.AVPNeoForgeCommands;
+import org.avp.neoforge.common.registry.AVPNeoForgeFuelRegistry;
 import org.avp.neoforge.service.*;
 import org.avp.neoforge.service.NeoForgeNetworkPayloadHandlerRegistry;
 
@@ -29,6 +30,7 @@ public class AVPNeoForge {
         NeoForgeSoundEventRegistry.SOUND_EVENTS.register(eventBus);
         eventBus.addListener(NeoForgeEntityAttributeRegistry.getInstance()::createEntityAttributes);
 
+        NeoForge.EVENT_BUS.addListener(AVPNeoForgeFuelRegistry::handleFurnaceFuelBurnTimeEvent);
         NeoForge.EVENT_BUS.addListener(AVPNeoForgeCommands::registerCommandsEvent);
 
         // Client events
