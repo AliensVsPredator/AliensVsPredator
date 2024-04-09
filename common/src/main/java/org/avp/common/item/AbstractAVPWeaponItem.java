@@ -21,6 +21,7 @@ import net.minecraft.world.entity.projectile.ProjectileUtil;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemUtils;
+import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.phys.BlockHitResult;
@@ -182,7 +183,8 @@ public abstract class AbstractAVPWeaponItem extends Item implements GeoItem {
         GameObject<SoundEvent> ricochetSfx = SoundUtilities.getRicochetSoundForSoundType(soundType);
         level.playSound(null, blockPos, ricochetSfx.get(), SoundSource.BLOCKS);
 
-        if (AVPConfig.General.GUNS_DO_BLOCK_DAMAGE) {
+        // Only damage blocks if both are true.
+        if (AVPConfig.General.GUNS_DO_BLOCK_DAMAGE && level.getGameRules().getBoolean(GameRules.RULE_PROJECTILESCANBREAKBLOCKS)) {
             damageBlock(level, blockPos, block, hitResult.getDirection(), fireMode);
         }
     }
