@@ -46,8 +46,9 @@ public class AVPWeaponBlueprintItems {
         return ENTRIES;
     }
 
-    private static GameObject<Item> register(String registryName, Supplier<Item> itemSupplier) {
-        var gameObject = Services.ITEM_REGISTRY.register(registryName, itemSupplier);
+    private static GameObject<Item> register(String registryName) {
+        Supplier<Item> itemSupplier = () -> new Item(new Item.Properties());
+        var gameObject = Services.ITEM_REGISTRY.register("blueprint_" + registryName, itemSupplier);
         ENTRIES.add(gameObject);
         return gameObject;
     }
@@ -55,16 +56,16 @@ public class AVPWeaponBlueprintItems {
     private AVPWeaponBlueprintItems() {}
 
     static {
-        BLUEPRINT_37_12_SHOTGUN = register("blueprint_37_12_shotgun", () -> new Item(new Item.Properties()));
-        BLUEPRINT_AK_47 = register("blueprint_ak_47", () -> new Item(new Item.Properties()));
-        BLUEPRINT_F90_RIFLE = register("blueprint_f90_rifle", () -> new Item(new Item.Properties()));
-        BLUEPRINT_FLAMETHROWER_SEVASTOPOL = register("blueprint_flamethrower_sevastopol", () -> new Item(new Item.Properties()));
-        BLUEPRINT_M4_CARBINE = register("blueprint_m4_carbine", () -> new Item(new Item.Properties()));
-        BLUEPRINT_M41A_PULSE_RIFLE = register("blueprint_m41a_pulse_rifle", () -> new Item(new Item.Properties()));
-        BLUEPRINT_M56_SMARTGUN = register("blueprint_m56_smartgun", () -> new Item(new Item.Properties()));
-        BLUEPRINT_M83A2_SADAR = register("blueprint_m83a2_sadar", () -> new Item(new Item.Properties()));
-        BLUEPRINT_M88MOD4_COMBAT_PISTOL = register("blueprint_m88mod4_combat_pistol", () -> new Item(new Item.Properties()));
-        BLUEPRINT_OLD_PAINLESS = register("blueprint_old_painless", () -> new Item(new Item.Properties()));
-        BLUEPRINT_SNIPER_RIFLE = register("blueprint_sniper_rifle", () -> new Item(new Item.Properties()));
+        BLUEPRINT_37_12_SHOTGUN = register("37_12_shotgun");
+        BLUEPRINT_AK_47 = register("ak_47");
+        BLUEPRINT_F90_RIFLE = register("f90_rifle");
+        BLUEPRINT_FLAMETHROWER_SEVASTOPOL = register("flamethrower_sevastopol");
+        BLUEPRINT_M4_CARBINE = register("m4_carbine");
+        BLUEPRINT_M41A_PULSE_RIFLE = register("m41a_pulse_rifle");
+        BLUEPRINT_M56_SMARTGUN = register("m56_smartgun");
+        BLUEPRINT_M83A2_SADAR = register("m83a2_sadar");
+        BLUEPRINT_M88MOD4_COMBAT_PISTOL = register("m88mod4_combat_pistol");
+        BLUEPRINT_OLD_PAINLESS = register("old_painless");
+        BLUEPRINT_SNIPER_RIFLE = register("sniper_rifle");
     }
 }

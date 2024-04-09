@@ -7,7 +7,6 @@ import mod.azure.azurelib.common.internal.common.core.animation.AnimatableManage
 import mod.azure.azurelib.common.internal.common.util.AzureLibUtil;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
@@ -137,7 +136,7 @@ public abstract class AbstractAVPWeaponItem extends Item implements GeoItem {
     }
 
     @Override
-    public int getUseDuration(ItemStack itemStack) {
+    public int getUseDuration(@NotNull ItemStack itemStack) {
         return START_TICK_PROGRESS;
     }
 
@@ -186,7 +185,7 @@ public abstract class AbstractAVPWeaponItem extends Item implements GeoItem {
 
         // Only damage blocks if both are true.
         if (AVPConfig.General.GUNS_DO_BLOCK_DAMAGE && level.getGameRules().getBoolean(GameRules.RULE_PROJECTILESCANBREAKBLOCKS)) {
-            damageBlock(level, blockPos, block, direction, fireMode);
+            damageBlock(level, blockPos, block, fireMode);
         }
 
         var payload = new ClientboundBulletHitBlockPayload(blockPos, direction);
@@ -210,7 +209,7 @@ public abstract class AbstractAVPWeaponItem extends Item implements GeoItem {
         }
     }
 
-    private void damageBlock(@NotNull Level level, BlockPos blockPos, Block block, Direction direction, FireMode fireMode) {
+    private void damageBlock(@NotNull Level level, BlockPos blockPos, Block block, FireMode fireMode) {
         BlockBreakProgressManager.BLOCK_BREAK_PROGRESS_MAP.compute(blockPos, (key, tuple) -> {
             var cachedValue = tuple == null ? 0 : tuple.second();
             var damage = this.getWeaponItemData().getDamage() * fireMode.consumedAmmunition();
