@@ -18,6 +18,12 @@ public class AVPLegacySchematicCommand {
     private static final List<GameObject<LegacySchematic>> LEGACY_SCHEMATICS = List.of(
         LegacySchematics.DERELICT_SCHEMATIC,
         LegacySchematics.DERELICT_OLD_SCHEMATIC,
+        LegacySchematics.LV_426_SPIKE_01_SCHEMATIC,
+        LegacySchematics.LV_426_SPIKE_02_SCHEMATIC,
+        LegacySchematics.LV_426_SPIKE_03_SCHEMATIC,
+        LegacySchematics.LV_426_SPIKE_04_SCHEMATIC,
+        LegacySchematics.LV_426_SPIKE_05_SCHEMATIC,
+        LegacySchematics.LV_426_SPIKE_06_SCHEMATIC,
         LegacySchematics.TEST_SCHEMATIC
     );
 
