@@ -16,8 +16,8 @@ public class RecipeUtils {
         AVPRecipeProvider.stonecutterRecipeFromBase(
             recipeOutput,
             RecipeCategory.BUILDING_BLOCKS,
-            input.get(),
             output.get(),
+            input.get(),
             count
         );
     }

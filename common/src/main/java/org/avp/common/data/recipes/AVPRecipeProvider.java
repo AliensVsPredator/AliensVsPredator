@@ -44,7 +44,7 @@ public class AVPRecipeProvider extends RecipeProvider {
         return RecipeProvider.has(tag);
     }
 
-    public static void stonecutterRecipeFromBase(RecipeOutput recipeOutput, RecipeCategory recipeCategory, ItemLike input, ItemLike output, int count) {
-        RecipeProvider.stonecutterResultFromBase(recipeOutput, recipeCategory, input, output, count);
+    public static void stonecutterRecipeFromBase(RecipeOutput recipeOutput, RecipeCategory recipeCategory, ItemLike output, ItemLike input, int count) {
+        RecipeProvider.stonecutterResultFromBase(recipeOutput, recipeCategory, output, input, count);
     }
 }
