@@ -30,7 +30,7 @@ public class AVPFabric implements ModInitializer {
         // Fuel registration.
         AVPFabricFuelRegistry.register();
 
-        // Remaining steps
+        // Remaining steps.
         AVPFabricEntitySpawns.addEntitySpawns();
         AVPFabricWorldGenFeatures.getInstance().register();
         FabricEntityAttributeRegistry.getInstance().register();
