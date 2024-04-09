@@ -1,6 +1,7 @@
 package org.avp.common.entity.ai;
 
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.goal.FloatGoal;
 import net.minecraft.world.entity.ai.goal.GoalSelector;
 import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
 import net.minecraft.world.entity.ai.goal.MeleeAttackGoal;
@@ -14,11 +15,12 @@ import org.avp.common.tag.AVPEntityTags;
 public class AIUtils {
 
     public static void addBasicAlienAI(Monster monster, GoalSelector goalSelector, GoalSelector targetSelector) {
-        goalSelector.addGoal(8, new LookAtPlayerGoal(monster, Player.class, 8.0F));
-        goalSelector.addGoal(8, new RandomLookAroundGoal(monster));
-        goalSelector.addGoal(7, new WaterAvoidingRandomStrollGoal(monster, 1.0));
+        goalSelector.addGoal(1, new FloatGoal(monster));
+        goalSelector.addGoal(4, new MeleeAttackGoal(monster, 1.0, true));
+        goalSelector.addGoal(5, new WaterAvoidingRandomStrollGoal(monster, 1.0));
+        goalSelector.addGoal(6, new LookAtPlayerGoal(monster, Player.class, 8.0F));
+        goalSelector.addGoal(6, new RandomLookAroundGoal(monster));
 
-        goalSelector.addGoal(2, new MeleeAttackGoal(monster, 1.0, true));
         targetSelector.addGoal(
             2,
             new NearestAttackableTargetGoal<>(
