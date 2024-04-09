@@ -33,6 +33,7 @@ public class AVPRecipeProvider extends RecipeProvider {
 
         AVPIndustrialBlockRecipes.addIndustrialBlockRecipes(recipeOutput);
         AVPPaddingBlockRecipes.addPaddingBlockRecipes(recipeOutput);
+        AVPTempleBlockRecipes.addTempleBlockRecipes(recipeOutput);
     }
 
     public static @NotNull Criterion<InventoryChangeTrigger.TriggerInstance> has(@NotNull ItemLike itemLike) {
@@ -43,22 +44,7 @@ public class AVPRecipeProvider extends RecipeProvider {
         return RecipeProvider.has(tag);
     }
 
-    public static void stonecutterRecipeFromBase(
-        RecipeOutput recipeOutput,
-        RecipeCategory recipeCategory,
-        ItemLike input,
-        ItemLike output
-    ) {
-        RecipeProvider.stonecutterResultFromBase(recipeOutput, recipeCategory, input, output);
-    }
-
-    public static void stonecutterRecipeFromBase(
-        RecipeOutput recipeOutput,
-        RecipeCategory recipeCategory,
-        ItemLike input,
-        ItemLike output,
-        int count
-    ) {
+    public static void stonecutterRecipeFromBase(RecipeOutput recipeOutput, RecipeCategory recipeCategory, ItemLike input, ItemLike output, int count) {
         RecipeProvider.stonecutterResultFromBase(recipeOutput, recipeCategory, input, output, count);
     }
 }
