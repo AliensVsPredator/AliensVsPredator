@@ -176,6 +176,7 @@ public abstract class AbstractAVPWeaponItem extends Item implements GeoItem {
 
     private void handleHitBlock(@NotNull Level level, FireMode fireMode, BlockHitResult hitResult) {
         var blockPos = hitResult.getBlockPos();
+        var direction = hitResult.getDirection();
         var blockState = level.getBlockState(blockPos);
         var block = blockState.getBlock();
         var soundType = block.getSoundType(blockState);
@@ -185,8 +186,11 @@ public abstract class AbstractAVPWeaponItem extends Item implements GeoItem {
 
         // Only damage blocks if both are true.
         if (AVPConfig.General.GUNS_DO_BLOCK_DAMAGE && level.getGameRules().getBoolean(GameRules.RULE_PROJECTILESCANBREAKBLOCKS)) {
-            damageBlock(level, blockPos, block, hitResult.getDirection(), fireMode);
+            damageBlock(level, blockPos, block, direction, fireMode);
         }
+
+        var payload = new ClientboundBulletHitBlockPayload(blockPos, direction);
+        Services.NETWORK_HANDLER.sendToAllClients(level.getServer(), payload);
     }
 
     private void handleHitEntity(@NotNull Level level, Player player, EntityHitResult hitResult, FireMode fireMode) {
@@ -220,9 +224,6 @@ public abstract class AbstractAVPWeaponItem extends Item implements GeoItem {
             }
             return new Tuple<>(System.currentTimeMillis() + TimeUtilities.FIVE_MINUTES_IN_MILLIS, newValue);
         });
-
-        var payload = new ClientboundBulletHitBlockPayload(blockPos, direction);
-        Services.NETWORK_HANDLER.sendToAllClients(level.getServer(), payload);
     }
 
     @Override
