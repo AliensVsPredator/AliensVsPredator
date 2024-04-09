@@ -25,6 +25,11 @@ public class AVPEntityTagsProvider extends FabricTagProvider.EntityTypeTagProvid
 
     @Override
     protected void addTags(HolderLookup.Provider provider) {
+        createAVPTags();
+        modifyMinecraftTags();
+    }
+
+    private void createAVPTags() {
         getOrCreateTagBuilder(AVPEntityTags.PARASITES).add(
             AVPBaseAlienEntityTypes.FACEHUGGER.get(),
             AVPBaseAlienEntityTypes.FACEHUGGER_ROYAL.get(),
@@ -121,5 +126,10 @@ public class AVPEntityTagsProvider extends FabricTagProvider.EntityTypeTagProvid
 
         getOrCreateTagBuilder(AVPEntityTags.PREDATORS)
             .add(AVPYautjaEntityTypes.YAUTJA.get());
+    }
+
+    private void modifyMinecraftTags() {
+        getOrCreateTagBuilder(EntityTypeTags.CAN_BREATHE_UNDER_WATER)
+            .addTag(AVPEntityTags.ALIENS);
     }
 }
