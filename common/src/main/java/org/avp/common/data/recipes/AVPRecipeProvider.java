@@ -24,7 +24,9 @@ public class AVPRecipeProvider extends RecipeProvider {
     public void buildRecipes(@NotNull RecipeOutput recipeOutput) {
         AVPAluminumRecipes.addAluminumRecipes(recipeOutput);
         AVPAmmoRecipes.addAmmoRecipes(recipeOutput);
+        AVPAmmunitionPartRecipes.addAmmunitionPartRecipes(recipeOutput);
         AVPArmorRecipes.addArmorRecipes(recipeOutput);
+        AVPBulletRecipes.addRecipes(recipeOutput);
         AVPFoodRecipes.addFoodRecipes(recipeOutput);
         AVPElectronicRecipes.addElectronicRecipes(recipeOutput);
         AVPMaterialsRecipes.addMaterialRecipes(recipeOutput);

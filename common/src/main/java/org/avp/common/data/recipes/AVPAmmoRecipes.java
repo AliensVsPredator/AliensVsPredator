@@ -27,15 +27,6 @@ public final class AVPAmmoRecipes {
             .unlockedBy("has_capacitor", AVPRecipeProvider.has(AVPElectronicItems.CAPACITOR.get()))
             .save(recipeOutput);
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AVPAmmunitionPartItems.ROCKET.get())
-            .define('A', AVPItems.INGOT_STEEL.get())
-            .define('B', Items.TNT)
-            .pattern("AAA")
-            .pattern("ABA")
-            .pattern("AAA")
-            .unlockedBy("has_tnt", AVPRecipeProvider.has(Items.TNT))
-            .save(recipeOutput);
-
         ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AVPAmmunitionPartItems.AMMO_FLAMETHROWER.get())
             .define('A', Items.SLIME_BALL)
             .define('B', AVPItems.INGOT_ALUMINUM.get())
