@@ -27,5 +27,5 @@ runs
 **/generated/*
 
 # assets and data
-**/resources/assets/*
-**/resources/data/*
+/common/src/main/resources/assets/
+/common/src/main/resources/data/
