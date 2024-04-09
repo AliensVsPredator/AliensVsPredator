@@ -8,20 +8,12 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
-import net.minecraft.world.entity.ai.goal.MeleeAttackGoal;
-import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
-import net.minecraft.world.entity.ai.goal.WaterAvoidingRandomStrollGoal;
-import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.monster.Monster;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import org.avp.common.entity.ai.AIUtils;
+import org.avp.common.sound.AVPSoundEvents;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import org.avp.common.sound.AVPSoundEvents;
-import org.avp.common.tag.AVPEntityTags;
 
 public class Drone extends Monster implements GeoEntity {
 
@@ -39,20 +31,7 @@ public class Drone extends Monster implements GeoEntity {
 
     @Override
     protected void registerGoals() {
-        this.goalSelector.addGoal(8, new LookAtPlayerGoal(this, Player.class, 8.0F));
-        this.goalSelector.addGoal(8, new RandomLookAroundGoal(this));
-        this.goalSelector.addGoal(7, new WaterAvoidingRandomStrollGoal(this, 1.0));
-
-        this.goalSelector.addGoal(2, new MeleeAttackGoal(this, 1.0, true));
-        this.targetSelector.addGoal(
-            2,
-            new NearestAttackableTargetGoal<>(
-                this,
-                LivingEntity.class,
-                true,
-                (livingEntity) -> !livingEntity.getType().is(AVPEntityTags.ALIENS)
-            )
-        );
+        AIUtils.addBasicAlienAI(this, goalSelector, targetSelector);
     }
 
     @Nullable
