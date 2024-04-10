@@ -3,6 +3,7 @@ package org.avp.common.data.recipes;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.world.level.block.Block;
+
 import org.avp.api.GameObject;
 
 public class RecipeUtils {

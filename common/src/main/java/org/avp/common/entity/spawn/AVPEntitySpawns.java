@@ -4,13 +4,14 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.SpawnPlacements;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.level.levelgen.Heightmap;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import org.avp.api.GameObject;
 import org.avp.common.entity.AVPBaseAlienEntityTypes;
 import org.avp.common.entity.AVPRunnerAlienEntityTypes;
 import org.avp.common.entity.AVPYautjaEntityTypes;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class AVPEntitySpawns {
 
@@ -24,13 +25,23 @@ public class AVPEntitySpawns {
         // This function does not need to do anything.
     }
 
-    private static <T extends Monster> void registerMonsterSpawn(GameObject<EntityType<T>> entityTypeGameObject, int weight, int minGroupSize, int maxGroupSize) {
-        ENTRIES.add(new EntitySpawnData<>(
-            entityTypeGameObject,
-            weight, minGroupSize, maxGroupSize,
-            SpawnPlacements.Type.ON_GROUND,
-            Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, Monster::checkAnyLightMonsterSpawnRules
-        ));
+    private static <T extends Monster> void registerMonsterSpawn(
+        GameObject<EntityType<T>> entityTypeGameObject,
+        int weight,
+        int minGroupSize,
+        int maxGroupSize
+    ) {
+        ENTRIES.add(
+            new EntitySpawnData<>(
+                entityTypeGameObject,
+                weight,
+                minGroupSize,
+                maxGroupSize,
+                SpawnPlacements.Type.ON_GROUND,
+                Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
+                Monster::checkAnyLightMonsterSpawnRules
+            )
+        );
     }
 
     static {
