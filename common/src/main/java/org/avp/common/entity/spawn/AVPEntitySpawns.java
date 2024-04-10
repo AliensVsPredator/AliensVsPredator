@@ -39,7 +39,7 @@ public class AVPEntitySpawns {
                 maxGroupSize,
                 SpawnPlacements.Type.ON_GROUND,
                 Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
-                Monster::checkAnyLightMonsterSpawnRules
+                Monster::checkMonsterSpawnRules
             )
         );
     }
