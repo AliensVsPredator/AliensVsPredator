@@ -27,6 +27,7 @@ public class AVPRecipeProvider extends RecipeProvider {
         AVPFoodRecipes.addFoodRecipes(recipeOutput);
         AVPElectronicRecipes.addElectronicRecipes(recipeOutput);
         AVPMaterialsRecipes.addMaterialRecipes(recipeOutput);
+        AVPToolRecipes.addToolRecipes(recipeOutput);
         AVPWeaponBlueprintRecipes.addWeaponBlueprintRecipes(recipeOutput);
         AVPWeaponPartRecipes.addWeaponPartRecipes(recipeOutput);
         AVPWeaponRecipes.addWeaponRecipes(recipeOutput);
