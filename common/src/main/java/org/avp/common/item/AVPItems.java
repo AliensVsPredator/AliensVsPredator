@@ -47,6 +47,8 @@ public class AVPItems {
 
     public static final GameObject<Item> YAUTJA_ARTIFACT;
 
+    public static final GameObject<Item> VERITANIUM_SHARD;
+
     public static void forceInitialization() {
         // This method doesn't need to do anything
     }
@@ -81,5 +83,6 @@ public class AVPItems {
         SILICA = register("silica", () -> new Item(new Item.Properties()));
         SMART_DISC = register("smart_disc", () -> new Item(new Item.Properties()));
         YAUTJA_ARTIFACT = register("yautja_artifact", () -> new Item(new Item.Properties()));
+        VERITANIUM_SHARD = register("veritanium_shard", () -> new Item(new Item.Properties()));
     }
 }
