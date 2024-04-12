@@ -45,9 +45,11 @@ public class AVPItems {
 
     public static final GameObject<Item> SMART_DISC;
 
-    public static final GameObject<Item> YAUTJA_ARTIFACT;
-
     public static final GameObject<Item> VERITANIUM_SHARD;
+
+    public static final GameObject<Item> XENOMORPH_CHITIN;
+
+    public static final GameObject<Item> YAUTJA_ARTIFACT;
 
     public static void forceInitialization() {
         // This method doesn't need to do anything
@@ -55,6 +57,10 @@ public class AVPItems {
 
     public static List<GameObject<Item>> getEntries() {
         return ENTRIES;
+    }
+
+    private static GameObject<Item> register(String registryName) {
+        return register(registryName, () -> new Item(new Item.Properties()));
     }
 
     private static GameObject<Item> register(String registryName, Supplier<Item> itemSupplier) {
@@ -66,23 +72,24 @@ public class AVPItems {
     private AVPItems() {}
 
     static {
-        CARBON = register("carbon", () -> new Item(new Item.Properties()));
-        COBALT = register("cobalt", () -> new Item(new Item.Properties()));
-        INGOT_ALUMINUM = register("ingot_aluminum", () -> new Item(new Item.Properties()));
-        INGOT_LITHIUM = register("ingot_lithium", () -> new Item(new Item.Properties()));
-        INGOT_STEEL = register("ingot_steel", () -> new Item(new Item.Properties()));
-        LASER_MINE = register("laser_mine", () -> new Item(new Item.Properties()));
-        NBT_DRIVE = register("nbt_drive", () -> new Item(new Item.Properties()));
-        NEODYMIUM = register("neodymium", () -> new Item(new Item.Properties()));
-        NEODYMIUM_MAGNET = register("neodymium_magnet", () -> new Item(new Item.Properties()));
-        POLYCARBONATE = register("polycarbonate", () -> new Item(new Item.Properties()));
-        POLYMER = register("polymer", () -> new Item(new Item.Properties()));
-        RAW_BAUXITE = register("raw_bauxite", () -> new Item(new Item.Properties()));
-        ROYAL_JELLY = register("royal_jelly", () -> new Item(new Item.Properties()));
-        SHURIKEN = register("shuriken", () -> new Item(new Item.Properties()));
-        SILICA = register("silica", () -> new Item(new Item.Properties()));
-        SMART_DISC = register("smart_disc", () -> new Item(new Item.Properties()));
-        YAUTJA_ARTIFACT = register("yautja_artifact", () -> new Item(new Item.Properties()));
-        VERITANIUM_SHARD = register("veritanium_shard", () -> new Item(new Item.Properties()));
+        CARBON = register("carbon");
+        COBALT = register("cobalt");
+        INGOT_ALUMINUM = register("ingot_aluminum");
+        INGOT_LITHIUM = register("ingot_lithium");
+        INGOT_STEEL = register("ingot_steel");
+        LASER_MINE = register("laser_mine");
+        NBT_DRIVE = register("nbt_drive");
+        NEODYMIUM = register("neodymium");
+        NEODYMIUM_MAGNET = register("neodymium_magnet");
+        POLYCARBONATE = register("polycarbonate");
+        POLYMER = register("polymer");
+        RAW_BAUXITE = register("raw_bauxite");
+        ROYAL_JELLY = register("royal_jelly");
+        SHURIKEN = register("shuriken");
+        SILICA = register("silica");
+        SMART_DISC = register("smart_disc");
+        VERITANIUM_SHARD = register("veritanium_shard");
+        XENOMORPH_CHITIN = register("xenomorph_chitin");
+        YAUTJA_ARTIFACT = register("yautja_artifact");
     }
 }
