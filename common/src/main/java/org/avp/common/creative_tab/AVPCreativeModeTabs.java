@@ -52,7 +52,7 @@ public final class AVPCreativeModeTabs {
         registerCreativeModeTab(
             "armor",
             () -> CreativeModeTab.builder(CreativeModeTab.Row.TOP, 0)
-                .icon(AVPArmorItems.CELTIC_HELMET.get()::getDefaultInstance)
+                .icon(AVPArmorItems.VERITANIUM_HELMET.get()::getDefaultInstance)
                 .displayItems(
                     (itemDisplayParameters, output) -> output.acceptAll(
                         itemsToItemStacks(AVPArmorItems.getEntries())
@@ -118,7 +118,7 @@ public final class AVPCreativeModeTabs {
         registerCreativeModeTab(
             "tools",
             () -> CreativeModeTab.builder(CreativeModeTab.Row.BOTTOM, 0)
-                .icon(AVPToolItems.CELTIC_PICKAXE.get()::getDefaultInstance)
+                .icon(AVPToolItems.VERITANIUM_PICKAXE.get()::getDefaultInstance)
                 .displayItems(
                     (itemDisplayParameters, output) -> output.acceptAll(
                         itemsToItemStacks(AVPToolItems.getEntries())

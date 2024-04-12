@@ -95,10 +95,10 @@ public class AVPEntityLootTableProvider extends AbstractAVPEntityLootTableProvid
                 .withPool(
                     LootPool.lootPool()
                         .setRolls(ConstantValue.exactly(1.0F))
-                        .add(LootItem.lootTableItem(AVPArmorItems.CELTIC_HELMET.get()))
-                        .add(LootItem.lootTableItem(AVPArmorItems.CELTIC_BODY.get()))
-                        .add(LootItem.lootTableItem(AVPArmorItems.CELTIC_LEGGINGS.get()))
-                        .add(LootItem.lootTableItem(AVPArmorItems.CELTIC_BOOTS.get()))
+                        .add(LootItem.lootTableItem(AVPArmorItems.VERITANIUM_HELMET.get()))
+                        .add(LootItem.lootTableItem(AVPArmorItems.VERITANIUM_BODY.get()))
+                        .add(LootItem.lootTableItem(AVPArmorItems.VERITANIUM_LEGGINGS.get()))
+                        .add(LootItem.lootTableItem(AVPArmorItems.VERITANIUM_BOOTS.get()))
                 )
                 .withPool(
                     LootPool.lootPool()

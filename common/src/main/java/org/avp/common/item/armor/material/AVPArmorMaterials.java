@@ -18,17 +18,6 @@ public class AVPArmorMaterials {
         .setEnchantmentValue(10)
         .build();
 
-    public static final ArmorMaterial CELTIC = new AVPArmorMaterial.Builder(
-        "celtic",
-        SoundEvents.ARMOR_EQUIP_IRON,
-        AVPItems.YAUTJA_ARTIFACT::get
-    )
-        .setProtectionValues(new int[] { 4, 7, 9, 4 })
-        .setDurabilityMultiplier(34)
-        .setEnchantmentValue(20)
-        .setToughness(5.0F)
-        .build();
-
     public static final ArmorMaterial MK50 = new AVPArmorMaterial.Builder(
         "mk50",
         SoundEvents.ARMOR_EQUIP_CHAIN,
@@ -80,6 +69,17 @@ public class AVPArmorMaterials {
         .setDurabilityMultiplier(24)
         .setEnchantmentValue(9)
         .setToughness(1.0F)
+        .build();
+
+    public static final ArmorMaterial VERITANIUM = new AVPArmorMaterial.Builder(
+        "veritanium",
+        SoundEvents.ARMOR_EQUIP_IRON,
+        AVPItems.YAUTJA_ARTIFACT::get
+    )
+        .setProtectionValues(new int[] { 4, 7, 9, 4 })
+        .setDurabilityMultiplier(34)
+        .setEnchantmentValue(20)
+        .setToughness(5.0F)
         .build();
 
     public static final ArmorMaterial XENOMORPH_CHITIN = new AVPArmorMaterial.Builder(

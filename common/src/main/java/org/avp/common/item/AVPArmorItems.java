@@ -23,14 +23,6 @@ public class AVPArmorItems {
 
     public static final GameObject<Item> ALUMINUM_LEGGINGS;
 
-    public static final GameObject<Item> CELTIC_BODY;
-
-    public static final GameObject<Item> CELTIC_BOOTS;
-
-    public static final GameObject<Item> CELTIC_HELMET;
-
-    public static final GameObject<Item> CELTIC_LEGGINGS;
-
     public static final GameObject<Item> MK50_BODY;
 
     public static final GameObject<Item> MK50_BOOTS;
@@ -71,6 +63,14 @@ public class AVPArmorItems {
 
     public static final GameObject<Item> TITANIUM_LEGGINGS;
 
+    public static final GameObject<Item> VERITANIUM_BODY;
+
+    public static final GameObject<Item> VERITANIUM_BOOTS;
+
+    public static final GameObject<Item> VERITANIUM_HELMET;
+
+    public static final GameObject<Item> VERITANIUM_LEGGINGS;
+
     public static final GameObject<Item> XENOMORPH_BODY;
 
     public static final GameObject<Item> XENOMORPH_BOOTS;
@@ -102,12 +102,6 @@ public class AVPArmorItems {
         ALUMINUM_HELMET = register("aluminum_helmet", aluminumMaterial, ArmorItem.Type.HELMET);
         ALUMINUM_LEGGINGS = register("aluminum_leggings", aluminumMaterial, ArmorItem.Type.LEGGINGS);
 
-        var celticMaterial = AVPArmorMaterials.CELTIC;
-        CELTIC_BODY = register("celtic_body", celticMaterial, ArmorItem.Type.CHESTPLATE);
-        CELTIC_BOOTS = register("celtic_boots", celticMaterial, ArmorItem.Type.BOOTS);
-        CELTIC_HELMET = register("celtic_helmet", celticMaterial, ArmorItem.Type.HELMET);
-        CELTIC_LEGGINGS = register("celtic_leggings", celticMaterial, ArmorItem.Type.LEGGINGS);
-
         var mk50Material = AVPArmorMaterials.MK50;
         MK50_BODY = register("mk50_body", mk50Material, ArmorItem.Type.CHESTPLATE);
         MK50_BOOTS = register("mk50_boots", mk50Material, ArmorItem.Type.BOOTS);
@@ -137,6 +131,12 @@ public class AVPArmorItems {
         TITANIUM_BOOTS = register("titanium_boots", titaniumMaterial, ArmorItem.Type.BOOTS);
         TITANIUM_HELMET = register("titanium_helmet", titaniumMaterial, ArmorItem.Type.HELMET);
         TITANIUM_LEGGINGS = register("titanium_leggings", titaniumMaterial, ArmorItem.Type.LEGGINGS);
+
+        var veritaniumMaterial = AVPArmorMaterials.VERITANIUM;
+        VERITANIUM_BODY = register("veritanium_body", veritaniumMaterial, ArmorItem.Type.CHESTPLATE);
+        VERITANIUM_BOOTS = register("veritanium_boots", veritaniumMaterial, ArmorItem.Type.BOOTS);
+        VERITANIUM_HELMET = register("veritanium_helmet", veritaniumMaterial, ArmorItem.Type.HELMET);
+        VERITANIUM_LEGGINGS = register("veritanium_leggings", veritaniumMaterial, ArmorItem.Type.LEGGINGS);
 
         var xenomorphChitinMaterial = AVPArmorMaterials.XENOMORPH_CHITIN;
         XENOMORPH_BODY = register("xenomorph_chitin_body", xenomorphChitinMaterial, ArmorItem.Type.CHESTPLATE);

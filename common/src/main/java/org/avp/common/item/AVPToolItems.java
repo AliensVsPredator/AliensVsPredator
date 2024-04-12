@@ -13,15 +13,15 @@ public class AVPToolItems {
 
     private static final List<GameObject<Item>> ENTRIES = new ArrayList<>();
 
-    public static final GameObject<Item> CELTIC_AXE;
+    public static final GameObject<Item> VERITANIUM_AXE;
 
-    public static final GameObject<Item> CELTIC_HOE;
+    public static final GameObject<Item> VERITANIUM_HOE;
 
-    public static final GameObject<Item> CELTIC_PICKAXE;
+    public static final GameObject<Item> VERITANIUM_PICKAXE;
 
-    public static final GameObject<Item> CELTIC_SHOVEL;
+    public static final GameObject<Item> VERITANIUM_SHOVEL;
 
-    public static final GameObject<Item> CELTIC_SWORD;
+    public static final GameObject<Item> VERITANIUM_SWORD;
 
     public static void forceInitialization() {
         // This method doesn't need to do anything
@@ -40,10 +40,10 @@ public class AVPToolItems {
     private AVPToolItems() {}
 
     static {
-        CELTIC_AXE = register("tool_celtic_axe", () -> new Item(new Item.Properties()));
-        CELTIC_HOE = register("tool_celtic_hoe", () -> new Item(new Item.Properties()));
-        CELTIC_PICKAXE = register("tool_celtic_pickaxe", () -> new Item(new Item.Properties()));
-        CELTIC_SHOVEL = register("tool_celtic_shovel", () -> new Item(new Item.Properties()));
-        CELTIC_SWORD = register("tool_celtic_sword", () -> new Item(new Item.Properties()));
+        VERITANIUM_AXE = register("tool_veritanium_axe", () -> new Item(new Item.Properties()));
+        VERITANIUM_HOE = register("tool_veritanium_hoe", () -> new Item(new Item.Properties()));
+        VERITANIUM_PICKAXE = register("tool_veritanium_pickaxe", () -> new Item(new Item.Properties()));
+        VERITANIUM_SHOVEL = register("tool_veritanium_shovel", () -> new Item(new Item.Properties()));
+        VERITANIUM_SWORD = register("tool_veritanium_sword", () -> new Item(new Item.Properties()));
     }
 }
