@@ -23,6 +23,7 @@ public class Crusher extends Monster implements GeoEntity {
 
     public Crusher(EntityType<? extends Monster> entityType, Level level) {
         super(entityType, level);
+        this.setMaxUpStep(1.0F);
     }
 
     @Override

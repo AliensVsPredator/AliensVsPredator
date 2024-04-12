@@ -23,6 +23,7 @@ public class DroneRunner extends Monster implements GeoEntity {
 
     public DroneRunner(EntityType<? extends Monster> entityType, Level level) {
         super(entityType, level);
+        this.setMaxUpStep(1.0F);
     }
 
     @Override
