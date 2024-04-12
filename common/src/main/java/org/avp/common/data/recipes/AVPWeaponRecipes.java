@@ -15,21 +15,23 @@ import org.avp.common.item.AVPWeaponPartItems;
 public final class AVPWeaponRecipes {
 
     public static void addWeaponRecipes(RecipeOutput recipeOutput) {
-        addGenericWeaponRecipe(recipeOutput, AVPWeaponBlueprintItems.BLUEPRINT_37_12_SHOTGUN, AVPWeaponItems.WEAPON_37_12_SHOTGUN);
-        addGenericWeaponRecipe(recipeOutput, AVPWeaponBlueprintItems.BLUEPRINT_AK_47, AVPWeaponItems.WEAPON_AK_47);
-        addGenericWeaponRecipe(recipeOutput, AVPWeaponBlueprintItems.BLUEPRINT_F90_RIFLE, AVPWeaponItems.WEAPON_F90_RIFLE);
+        addGenericWeaponRecipe(recipeOutput, AVPWeaponBlueprintItems.BLUEPRINT_37_12_SHOTGUN, AVPWeaponItems.WEAPON_37_12_SHOTGUN, true);
+        addGenericWeaponRecipe(recipeOutput, AVPWeaponBlueprintItems.BLUEPRINT_AK_47, AVPWeaponItems.WEAPON_AK_47, true);
+        addGenericWeaponRecipe(recipeOutput, AVPWeaponBlueprintItems.BLUEPRINT_F90_RIFLE, AVPWeaponItems.WEAPON_F90_RIFLE, true);
         addGenericWeaponRecipe(
             recipeOutput,
             AVPWeaponBlueprintItems.BLUEPRINT_FLAMETHROWER_SEVASTOPOL,
-            AVPWeaponItems.WEAPON_FLAMETHROWER_SEVASTOPOL
+            AVPWeaponItems.WEAPON_FLAMETHROWER_SEVASTOPOL,
+            false
         );
-        addGenericWeaponRecipe(recipeOutput, AVPWeaponBlueprintItems.BLUEPRINT_M4_CARBINE, AVPWeaponItems.WEAPON_M4_CARBINE);
+        addGenericWeaponRecipe(recipeOutput, AVPWeaponBlueprintItems.BLUEPRINT_M4_CARBINE, AVPWeaponItems.WEAPON_M4_CARBINE, true);
         addGenericWeaponRecipe(
             recipeOutput,
             AVPWeaponBlueprintItems.BLUEPRINT_M88MOD4_COMBAT_PISTOL,
-            AVPWeaponItems.WEAPON_M88MOD4_COMBAT_PISTOL
+            AVPWeaponItems.WEAPON_M88MOD4_COMBAT_PISTOL,
+            false
         );
-        addGenericWeaponRecipe(recipeOutput, AVPWeaponBlueprintItems.BLUEPRINT_SNIPER_RIFLE, AVPWeaponItems.WEAPON_SNIPER_RIFLE);
+        addGenericWeaponRecipe(recipeOutput, AVPWeaponBlueprintItems.BLUEPRINT_SNIPER_RIFLE, AVPWeaponItems.WEAPON_SNIPER_RIFLE, true);
 
         // Pulse Rifle
         AVPShapelessRecipeBuilder.shapeless(RecipeCategory.COMBAT, AVPWeaponItems.WEAPON_M41A_PULSE_RIFLE)
@@ -37,6 +39,7 @@ public final class AVPWeaponRecipes {
             .requiresAndUnlockIfHas('B', AVPWeaponPartItems.WEAPON_PART_BARREL_GENERIC)
             .requiresAndUnlockIfHas('C', AVPWeaponPartItems.WEAPON_PART_GRIP_GENERIC)
             .requiresAndUnlockIfHas('D', AVPWeaponPartItems.WEAPON_PART_RECEIVER_SMART) // Different receiver here.
+            .requiresAndUnlockIfHas('E', AVPWeaponPartItems.WEAPON_PART_STOCK_GENERIC)
             .save(recipeOutput);
 
         // Smartgun
@@ -67,14 +70,20 @@ public final class AVPWeaponRecipes {
     private static void addGenericWeaponRecipe(
         RecipeOutput recipeOutput,
         GameObject<Item> blueprintGameObject,
-        GameObject<Item> weaponGameObject
+        GameObject<Item> weaponGameObject,
+        boolean hasStock
     ) {
-        AVPShapelessRecipeBuilder.shapeless(RecipeCategory.COMBAT, weaponGameObject)
+        var builder = AVPShapelessRecipeBuilder.shapeless(RecipeCategory.COMBAT, weaponGameObject)
             .requiresAndUnlockIfHas('A', blueprintGameObject)
             .requiresAndUnlockIfHas('B', AVPWeaponPartItems.WEAPON_PART_BARREL_GENERIC)
             .requiresAndUnlockIfHas('C', AVPWeaponPartItems.WEAPON_PART_GRIP_GENERIC)
-            .requiresAndUnlockIfHas('D', AVPWeaponPartItems.WEAPON_PART_RECEIVER_GENERIC)
-            .save(recipeOutput);
+            .requiresAndUnlockIfHas('D', AVPWeaponPartItems.WEAPON_PART_RECEIVER_GENERIC);
+
+        if (hasStock) {
+            builder.requiresAndUnlockIfHas('E', AVPWeaponPartItems.WEAPON_PART_STOCK_GENERIC);
+        }
+
+        builder.save(recipeOutput);
     }
 
     private AVPWeaponRecipes() {
