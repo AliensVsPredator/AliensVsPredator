@@ -23,11 +23,10 @@ public final class AVPTempleBlockRecipes {
 
         RecipeUtils.stonecutterBuildingBlock(recipeOutput, AVPTempleBlocks.FLOOR, AVPTempleBlocks.WALL_BASE);
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, AVPTempleBlocks.SKULLS.get())
-            .define('A', Items.SKELETON_SKULL)
+        AVPShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, AVPTempleBlocks.SKULLS)
+            .defineAndUnlockIfHas('A', Items.SKELETON_SKULL)
             .pattern("AA")
             .pattern("AA")
-            .unlockedBy("has_skeleton_skull", AVPRecipeProvider.has(Items.SKELETON_SKULL))
             .save(recipeOutput);
     }
 

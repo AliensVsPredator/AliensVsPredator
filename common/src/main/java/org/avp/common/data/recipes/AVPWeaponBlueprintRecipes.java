@@ -16,14 +16,13 @@ public final class AVPWeaponBlueprintRecipes {
         // For every weapon blueprint, add a recipe that allows it to be used in crafting itself into two more.
         AVPWeaponBlueprintItems.getEntries()
             .forEach(
-                itemGameObject -> ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, itemGameObject.get(), 2)
-                    .define('A', Items.PAPER)
-                    .define('B', Items.DIAMOND)
-                    .define('C', itemGameObject.get())
+                itemGameObject -> AVPShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, itemGameObject, 2)
+                    .defineAndUnlockIfHas('A', Items.PAPER)
+                    .defineAndUnlockIfHas('B', Items.DIAMOND)
+                    .defineAndUnlockIfHas('C', itemGameObject)
                     .pattern("ABA")
                     .pattern("BCB")
                     .pattern("ABA")
-                    .unlockedBy("has_blueprint", AVPRecipeProvider.has(itemGameObject.get()))
                     .save(recipeOutput)
             );
     }

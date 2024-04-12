@@ -22,13 +22,12 @@ public final class AVPIndustrialBlockRecipes {
         addMetalPanel1Recipes(recipeOutput);
         addMetalPanel2Recipes(recipeOutput);
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, AVPIndustrialBlocks.LAMP.get())
-            .define('A', AVPItems.INGOT_ALUMINUM.get())
-            .define('B', Items.REDSTONE_LAMP)
+        AVPShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, AVPIndustrialBlocks.LAMP)
+            .defineAndUnlockIfHas('A', AVPItems.INGOT_ALUMINUM)
+            .defineAndUnlockIfHas('B', Items.REDSTONE_LAMP)
             .pattern(" A ")
             .pattern("ABA")
             .pattern(" A ")
-            .unlockedBy("has_aluminum_ingot", AVPRecipeProvider.has(AVPItems.INGOT_ALUMINUM.get()))
             .save(recipeOutput);
 
         var industrialGlassOutput = AVPIndustrialBlocks.GLASS.get();
@@ -38,11 +37,10 @@ public final class AVPIndustrialBlockRecipes {
     }
 
     private static void addBrickRecipes(RecipeOutput recipeOutput) {
-        ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, AVPIndustrialBlocks.BRICK.get())
-            .define('A', AVPItems.INGOT_ALUMINUM.get())
+        AVPShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, AVPIndustrialBlocks.BRICK)
+            .defineAndUnlockIfHas('A', AVPItems.INGOT_ALUMINUM)
             .pattern("AA")
             .pattern("AA")
-            .unlockedBy("has_aluminum_ingot", AVPRecipeProvider.has(AVPItems.INGOT_ALUMINUM.get()))
             .save(recipeOutput);
 
         RecipeUtils.stonecutterBuildingBlock(recipeOutput, AVPIndustrialBlocks.BRICK, AVPIndustrialBlocks.BRICK_SLAB);
@@ -52,12 +50,11 @@ public final class AVPIndustrialBlockRecipes {
     }
 
     private static void addMetalPanel0Recipes(RecipeOutput recipeOutput) {
-        ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, AVPIndustrialBlocks.METAL_PANEL_0.get())
-            .define('A', AVPItems.INGOT_ALUMINUM.get())
-            .define('B', Items.IRON_INGOT)
+        AVPShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, AVPIndustrialBlocks.METAL_PANEL_0)
+            .defineAndUnlockIfHas('A', AVPItems.INGOT_ALUMINUM)
+            .defineAndUnlockIfHas('B', Items.IRON_INGOT)
             .pattern("BA")
             .pattern("BA")
-            .unlockedBy("has_aluminum_ingot", AVPRecipeProvider.has(AVPItems.INGOT_ALUMINUM.get()))
             .save(recipeOutput);
 
         RecipeUtils.stonecutterBuildingBlock(recipeOutput, AVPIndustrialBlocks.METAL_PANEL_0, AVPIndustrialBlocks.METAL_PANEL_0_SLAB);
@@ -65,12 +62,11 @@ public final class AVPIndustrialBlockRecipes {
     }
 
     private static void addMetalPanel1Recipes(RecipeOutput recipeOutput) {
-        ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, AVPIndustrialBlocks.METAL_PANEL_1.get())
-            .define('A', AVPItems.INGOT_ALUMINUM.get())
-            .define('B', Items.IRON_INGOT)
+        AVPShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, AVPIndustrialBlocks.METAL_PANEL_1)
+            .defineAndUnlockIfHas('A', AVPItems.INGOT_ALUMINUM)
+            .defineAndUnlockIfHas('B', Items.IRON_INGOT)
             .pattern("AA")
             .pattern("BB")
-            .unlockedBy("has_aluminum_ingot", AVPRecipeProvider.has(AVPItems.INGOT_ALUMINUM.get()))
             .save(recipeOutput);
 
         RecipeUtils.stonecutterBuildingBlock(recipeOutput, AVPIndustrialBlocks.METAL_PANEL_1, AVPIndustrialBlocks.METAL_PANEL_1_SLAB);
@@ -78,12 +74,11 @@ public final class AVPIndustrialBlockRecipes {
     }
 
     private static void addMetalPanel2Recipes(RecipeOutput recipeOutput) {
-        ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, AVPIndustrialBlocks.METAL_PANEL_2.get())
-            .define('A', AVPItems.INGOT_ALUMINUM.get())
-            .define('B', Items.IRON_INGOT)
+        AVPShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, AVPIndustrialBlocks.METAL_PANEL_2)
+            .defineAndUnlockIfHas('A', AVPItems.INGOT_ALUMINUM)
+            .defineAndUnlockIfHas('B', Items.IRON_INGOT)
             .pattern("BA")
             .pattern("AB")
-            .unlockedBy("has_aluminum_ingot", AVPRecipeProvider.has(AVPItems.INGOT_ALUMINUM.get()))
             .save(recipeOutput);
 
         RecipeUtils.stonecutterBuildingBlock(recipeOutput, AVPIndustrialBlocks.METAL_PANEL_2, AVPIndustrialBlocks.METAL_PANEL_2_SLAB);

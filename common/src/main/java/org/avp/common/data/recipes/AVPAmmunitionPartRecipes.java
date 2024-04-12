@@ -2,7 +2,6 @@ package org.avp.common.data.recipes;
 
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
-import net.minecraft.data.recipes.ShapedRecipeBuilder;
 import net.minecraft.world.item.Items;
 
 import org.avp.common.item.AVPAmmunitionPartItems;
@@ -21,97 +20,87 @@ public final class AVPAmmunitionPartRecipes {
     }
 
     private static void addCasingRecipes(RecipeOutput recipeOutput) {
-        ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AVPAmmunitionPartItems.CASING_PISTOL.get())
-            .define('A', Items.GUNPOWDER)
-            .define('B', Items.COPPER_INGOT)
+        AVPShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AVPAmmunitionPartItems.CASING_PISTOL)
+            .defineAndUnlockIfHas('A', Items.GUNPOWDER)
+            .defineAndUnlockIfHas('B', Items.COPPER_INGOT)
             .pattern("A")
             .pattern("B")
-            .unlockedBy("has_gunpowder", AVPRecipeProvider.has(Items.GUNPOWDER))
             .save(recipeOutput);
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AVPAmmunitionPartItems.CASING_SHOTGUN.get())
-            .define('A', Items.GUNPOWDER)
-            .define('B', Items.COPPER_INGOT)
-            .define('C', AVPItems.POLYMER.get())
+        AVPShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AVPAmmunitionPartItems.CASING_SHOTGUN)
+            .defineAndUnlockIfHas('A', Items.GUNPOWDER)
+            .defineAndUnlockIfHas('B', Items.COPPER_INGOT)
+            .defineAndUnlockIfHas('C', AVPItems.POLYMER)
             .pattern("A")
             .pattern("C")
             .pattern("B")
-            .unlockedBy("has_gunpowder", AVPRecipeProvider.has(Items.GUNPOWDER))
             .save(recipeOutput);
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AVPAmmunitionPartItems.CASING_RIFLE.get())
-            .define('A', Items.GUNPOWDER)
-            .define('B', Items.COPPER_INGOT)
+        AVPShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AVPAmmunitionPartItems.CASING_RIFLE)
+            .defineAndUnlockIfHas('A', Items.GUNPOWDER)
+            .defineAndUnlockIfHas('B', Items.COPPER_INGOT)
             .pattern("A")
             .pattern("B")
             .pattern("B")
-            .unlockedBy("has_gunpowder", AVPRecipeProvider.has(Items.GUNPOWDER))
             .save(recipeOutput);
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AVPAmmunitionPartItems.CASING_CASELESS.get())
-            .define('A', Items.GUNPOWDER)
-            .define('B', Items.CLAY_BALL)
+        AVPShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AVPAmmunitionPartItems.CASING_CASELESS)
+            .defineAndUnlockIfHas('A', Items.GUNPOWDER)
+            .defineAndUnlockIfHas('B', Items.CLAY_BALL)
             .pattern(" A ")
             .pattern("BAB")
             .pattern(" B ")
-            .unlockedBy("has_gunpowder", AVPRecipeProvider.has(Items.GUNPOWDER))
             .save(recipeOutput);
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AVPAmmunitionPartItems.CASING_HEAVY.get())
-            .define('A', Items.GUNPOWDER)
-            .define('B', Items.COPPER_INGOT)
+        AVPShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AVPAmmunitionPartItems.CASING_HEAVY)
+            .defineAndUnlockIfHas('A', Items.GUNPOWDER)
+            .defineAndUnlockIfHas('B', Items.COPPER_INGOT)
             .pattern("BAB")
             .pattern("BBB")
-            .unlockedBy("has_gunpowder", AVPRecipeProvider.has(Items.GUNPOWDER))
             .save(recipeOutput);
     }
 
     private static void addRocketRecipes(RecipeOutput recipeOutput) {
-        ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AVPAmmunitionPartItems.ROCKET.get())
-            .define('A', AVPItems.INGOT_STEEL.get())
-            .define('B', Items.TNT)
+        AVPShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AVPAmmunitionPartItems.ROCKET)
+            .defineAndUnlockIfHas('A', AVPItems.INGOT_STEEL)
+            .defineAndUnlockIfHas('B', Items.TNT)
             .pattern("AAA")
             .pattern("ABA")
             .pattern("AAA")
-            .unlockedBy("has_steel_ingot", AVPRecipeProvider.has(AVPItems.INGOT_STEEL.get()))
             .save(recipeOutput);
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AVPAmmunitionPartItems.ROCKET_PENETRATION.get())
-            .define('A', AVPItems.INGOT_STEEL.get())
-            .define('B', Items.TNT)
-            .define('C', Items.OBSIDIAN)
+        AVPShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AVPAmmunitionPartItems.ROCKET_PENETRATION)
+            .defineAndUnlockIfHas('A', AVPItems.INGOT_STEEL)
+            .defineAndUnlockIfHas('B', Items.TNT)
+            .defineAndUnlockIfHas('C', Items.OBSIDIAN)
             .pattern("ACA")
             .pattern("ABA")
             .pattern("AAA")
-            .unlockedBy("has_steel_ingot", AVPRecipeProvider.has(AVPItems.INGOT_STEEL.get()))
             .save(recipeOutput);
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AVPAmmunitionPartItems.ROCKET_INCENDIARY.get())
-            .define('A', AVPItems.INGOT_STEEL.get())
-            .define('B', Items.TNT)
-            .define('C', Items.BLAZE_POWDER)
+        AVPShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AVPAmmunitionPartItems.ROCKET_INCENDIARY)
+            .defineAndUnlockIfHas('A', AVPItems.INGOT_STEEL)
+            .defineAndUnlockIfHas('B', Items.TNT)
+            .defineAndUnlockIfHas('C', Items.BLAZE_POWDER)
             .pattern("ACA")
             .pattern("ABA")
             .pattern("AAA")
-            .unlockedBy("has_steel_ingot", AVPRecipeProvider.has(AVPItems.INGOT_STEEL.get()))
             .save(recipeOutput);
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AVPAmmunitionPartItems.ROCKET_ELECTRIC.get())
-            .define('A', AVPItems.INGOT_STEEL.get())
-            .define('B', Items.TNT)
-            .define('C', AVPElectronicItems.CAPACITOR.get())
+        AVPShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AVPAmmunitionPartItems.ROCKET_ELECTRIC)
+            .defineAndUnlockIfHas('A', AVPItems.INGOT_STEEL)
+            .defineAndUnlockIfHas('B', Items.TNT)
+            .defineAndUnlockIfHas('C', AVPElectronicItems.CAPACITOR)
             .pattern("ACA")
             .pattern("ABA")
             .pattern("AAA")
-            .unlockedBy("has_steel_ingot", AVPRecipeProvider.has(AVPItems.INGOT_STEEL.get()))
             .save(recipeOutput);
     }
 
     private static void addTipRecipes(RecipeOutput recipeOutput) {
-        ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AVPAmmunitionPartItems.BULLET_TIP.get())
-            .define('A', AVPItems.INGOT_STEEL.get())
+        AVPShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AVPAmmunitionPartItems.BULLET_TIP)
+            .defineAndUnlockIfHas('A', AVPItems.INGOT_STEEL)
             .pattern("A")
-            .unlockedBy("has_steel_ingot", AVPRecipeProvider.has(AVPItems.INGOT_STEEL.get()))
             .save(recipeOutput);
     }
 

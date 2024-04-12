@@ -2,8 +2,6 @@ package org.avp.common.data.recipes;
 
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
-import net.minecraft.data.recipes.ShapedRecipeBuilder;
-import net.minecraft.data.recipes.ShapelessRecipeBuilder;
 import net.minecraft.data.recipes.SimpleCookingRecipeBuilder;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -21,12 +19,11 @@ public final class AVPRecipeHelper {
         ItemLike input,
         ItemLike output
     ) {
-        ShapedRecipeBuilder.shaped(recipeCategory, output)
-            .define('A', input)
+        AVPShapedRecipeBuilder.shaped(recipeCategory, output)
+            .defineAndUnlockIfHas('A', input)
             .pattern("AAA")
             .pattern("AAA")
             .pattern("AAA")
-            .unlockedBy("has_item", AVPRecipeProvider.has(input))
             .save(recipeOutput);
     }
 
@@ -36,9 +33,8 @@ public final class AVPRecipeHelper {
         ItemLike input,
         ItemLike output
     ) {
-        ShapelessRecipeBuilder.shapeless(recipeCategory, output, 9)
-            .requires(input)
-            .unlockedBy("has_block", AVPRecipeProvider.has(input))
+        AVPShapelessRecipeBuilder.shapeless(recipeCategory, output, 9)
+            .requiresAndUnlockIfHas('A', input)
             .save(recipeOutput);
     }
 

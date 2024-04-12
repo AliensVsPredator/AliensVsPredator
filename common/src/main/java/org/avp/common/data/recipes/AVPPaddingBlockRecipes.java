@@ -2,7 +2,6 @@ package org.avp.common.data.recipes;
 
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
-import net.minecraft.data.recipes.ShapedRecipeBuilder;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.ItemLike;
@@ -68,36 +67,32 @@ public final class AVPPaddingBlockRecipes {
             var square = data.second().get(2).get();
             var tiles = data.second().get(3).get();
 
-            ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, panel)
-                .define('A', Items.LEATHER)
-                .define('B', ItemTags.WOOL)
-                .define('C', dye)
+            AVPShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, panel)
+                .defineAndUnlockIfHas('A', Items.LEATHER)
+                .defineAndUnlockIfHas('B', ItemTags.WOOL)
+                .defineAndUnlockIfHas('C', dye)
                 .pattern(" AC")
                 .pattern("ABA")
                 .pattern(" A ")
-                .unlockedBy("has_leather", AVPRecipeProvider.has(Items.LEATHER))
                 .save(recipeOutput);
 
-            ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, pipes, 2)
-                .define('A', panel)
-                .define('B', Items.IRON_NUGGET)
+            AVPShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, pipes, 2)
+                .defineAndUnlockIfHas('A', panel)
+                .defineAndUnlockIfHas('B', Items.IRON_NUGGET)
                 .pattern("BA")
                 .pattern("AB")
-                .unlockedBy("has_padding_white_panel", AVPRecipeProvider.has(panel))
                 .save(recipeOutput);
 
-            ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, square, 4)
-                .define('A', panel)
+            AVPShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, square, 4)
+                .defineAndUnlockIfHas('A', panel)
                 .pattern("AA")
                 .pattern("AA")
-                .unlockedBy("has_padding_white_panel", AVPRecipeProvider.has(panel))
                 .save(recipeOutput);
 
-            ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, tiles, 4)
-                .define('A', square)
+            AVPShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, tiles, 4)
+                .defineAndUnlockIfHas('A', square)
                 .pattern("AA")
                 .pattern("AA")
-                .unlockedBy("has_padding_white_square", AVPRecipeProvider.has(square))
                 .save(recipeOutput);
         });
     }

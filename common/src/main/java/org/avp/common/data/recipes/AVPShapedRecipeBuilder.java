@@ -18,6 +18,14 @@ public class AVPShapedRecipeBuilder {
         return new AVPShapedRecipeBuilder(ShapedRecipeBuilder.shaped(recipeCategory, itemLikeGameObject.get()));
     }
 
+    public static AVPShapedRecipeBuilder shaped(RecipeCategory recipeCategory, ItemLike itemLike, int count) {
+        return new AVPShapedRecipeBuilder(ShapedRecipeBuilder.shaped(recipeCategory, itemLike, count));
+    }
+
+    public static AVPShapedRecipeBuilder shaped(RecipeCategory recipeCategory, GameObject<? extends ItemLike> itemLikeGameObject, int count) {
+        return new AVPShapedRecipeBuilder(ShapedRecipeBuilder.shaped(recipeCategory, itemLikeGameObject.get(), count));
+    }
+
     private final ShapedRecipeBuilder shapedRecipeBuilder;
 
     private AVPShapedRecipeBuilder(ShapedRecipeBuilder shapedRecipeBuilder) {

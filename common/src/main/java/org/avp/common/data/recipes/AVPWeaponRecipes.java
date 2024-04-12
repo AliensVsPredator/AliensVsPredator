@@ -2,7 +2,6 @@ package org.avp.common.data.recipes;
 
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
-import net.minecraft.data.recipes.ShapelessRecipeBuilder;
 import net.minecraft.world.item.Item;
 
 import org.avp.api.GameObject;
@@ -33,39 +32,35 @@ public final class AVPWeaponRecipes {
         addGenericWeaponRecipe(recipeOutput, AVPWeaponBlueprintItems.BLUEPRINT_SNIPER_RIFLE, AVPWeaponItems.WEAPON_SNIPER_RIFLE);
 
         // Pulse Rifle
-        ShapelessRecipeBuilder.shapeless(RecipeCategory.COMBAT, AVPWeaponItems.WEAPON_M41A_PULSE_RIFLE.get())
-            .requires(AVPWeaponBlueprintItems.BLUEPRINT_M41A_PULSE_RIFLE.get())
-            .requires(AVPWeaponPartItems.WEAPON_PART_BARREL_GENERIC.get())
-            .requires(AVPWeaponPartItems.WEAPON_PART_GRIP_GENERIC.get())
-            .requires(AVPWeaponPartItems.WEAPON_PART_RECEIVER_SMART.get()) // Different receiver here.
-            .unlockedBy("has_blueprint", AVPRecipeProvider.has(AVPWeaponBlueprintItems.BLUEPRINT_M41A_PULSE_RIFLE.get()))
+        AVPShapelessRecipeBuilder.shapeless(RecipeCategory.COMBAT, AVPWeaponItems.WEAPON_M41A_PULSE_RIFLE)
+            .requiresAndUnlockIfHas('A', AVPWeaponBlueprintItems.BLUEPRINT_M41A_PULSE_RIFLE)
+            .requiresAndUnlockIfHas('B', AVPWeaponPartItems.WEAPON_PART_BARREL_GENERIC)
+            .requiresAndUnlockIfHas('C', AVPWeaponPartItems.WEAPON_PART_GRIP_GENERIC)
+            .requiresAndUnlockIfHas('D', AVPWeaponPartItems.WEAPON_PART_RECEIVER_SMART) // Different receiver here.
             .save(recipeOutput);
 
         // Smartgun
-        ShapelessRecipeBuilder.shapeless(RecipeCategory.COMBAT, AVPWeaponItems.WEAPON_M56_SMARTGUN.get())
-            .requires(AVPWeaponBlueprintItems.BLUEPRINT_M56_SMARTGUN.get())
-            .requires(AVPWeaponPartItems.WEAPON_PART_BARREL_SMART.get())
-            .requires(AVPWeaponPartItems.WEAPON_PART_GRIP_GENERIC.get())
-            .requires(AVPWeaponPartItems.WEAPON_PART_RECEIVER_SMART.get()) // Different receiver here.
-            .unlockedBy("has_blueprint", AVPRecipeProvider.has(AVPWeaponBlueprintItems.BLUEPRINT_M56_SMARTGUN.get()))
+        AVPShapelessRecipeBuilder.shapeless(RecipeCategory.COMBAT, AVPWeaponItems.WEAPON_M56_SMARTGUN)
+            .requiresAndUnlockIfHas('A', AVPWeaponBlueprintItems.BLUEPRINT_M56_SMARTGUN)
+            .requiresAndUnlockIfHas('B', AVPWeaponPartItems.WEAPON_PART_BARREL_SMART)
+            .requiresAndUnlockIfHas('C', AVPWeaponPartItems.WEAPON_PART_GRIP_GENERIC)
+            .requiresAndUnlockIfHas('D', AVPWeaponPartItems.WEAPON_PART_RECEIVER_SMART) // Different receiver here.
             .save(recipeOutput);
 
         // Old Painless
-        ShapelessRecipeBuilder.shapeless(RecipeCategory.COMBAT, AVPWeaponItems.WEAPON_OLD_PAINLESS.get())
-            .requires(AVPWeaponBlueprintItems.BLUEPRINT_OLD_PAINLESS.get())
-            .requires(AVPWeaponPartItems.WEAPON_PART_BARREL_MINIGUN.get())
-            .requires(AVPWeaponPartItems.WEAPON_PART_GRIP_GENERIC.get(), 2) // Two grips for a big gun.
-            .requires(AVPWeaponPartItems.WEAPON_PART_RECEIVER_GENERIC.get())
-            .unlockedBy("has_blueprint", AVPRecipeProvider.has(AVPWeaponBlueprintItems.BLUEPRINT_OLD_PAINLESS.get()))
+        AVPShapelessRecipeBuilder.shapeless(RecipeCategory.COMBAT, AVPWeaponItems.WEAPON_OLD_PAINLESS)
+            .requiresAndUnlockIfHas('A', AVPWeaponBlueprintItems.BLUEPRINT_OLD_PAINLESS)
+            .requiresAndUnlockIfHas('B', AVPWeaponPartItems.WEAPON_PART_BARREL_MINIGUN)
+            .requiresAndUnlockIfHas('C', AVPWeaponPartItems.WEAPON_PART_GRIP_GENERIC, 2) // Two grips for a big gun.
+            .requiresAndUnlockIfHas('D', AVPWeaponPartItems.WEAPON_PART_RECEIVER_GENERIC)
             .save(recipeOutput);
 
         // SADAR
-        ShapelessRecipeBuilder.shapeless(RecipeCategory.COMBAT, AVPWeaponItems.WEAPON_M83A2_SADAR.get())
-            .requires(AVPWeaponBlueprintItems.BLUEPRINT_M83A2_SADAR.get())
-            .requires(AVPWeaponPartItems.WEAPON_PART_BARREL_ROCKET.get())
-            .requires(AVPWeaponPartItems.WEAPON_PART_GRIP_GENERIC.get())
-            .requires(AVPWeaponPartItems.WEAPON_PART_RECEIVER_SMART.get())
-            .unlockedBy("has_blueprint", AVPRecipeProvider.has(AVPWeaponBlueprintItems.BLUEPRINT_M83A2_SADAR.get()))
+        AVPShapelessRecipeBuilder.shapeless(RecipeCategory.COMBAT, AVPWeaponItems.WEAPON_M83A2_SADAR)
+            .requiresAndUnlockIfHas('A', AVPWeaponBlueprintItems.BLUEPRINT_M83A2_SADAR)
+            .requiresAndUnlockIfHas('B', AVPWeaponPartItems.WEAPON_PART_BARREL_ROCKET)
+            .requiresAndUnlockIfHas('C', AVPWeaponPartItems.WEAPON_PART_GRIP_GENERIC)
+            .requiresAndUnlockIfHas('D', AVPWeaponPartItems.WEAPON_PART_RECEIVER_SMART)
             .save(recipeOutput);
     }
 
@@ -74,12 +69,11 @@ public final class AVPWeaponRecipes {
         GameObject<Item> blueprintGameObject,
         GameObject<Item> weaponGameObject
     ) {
-        ShapelessRecipeBuilder.shapeless(RecipeCategory.COMBAT, weaponGameObject.get())
-            .requires(blueprintGameObject.get())
-            .requires(AVPWeaponPartItems.WEAPON_PART_BARREL_GENERIC.get())
-            .requires(AVPWeaponPartItems.WEAPON_PART_GRIP_GENERIC.get())
-            .requires(AVPWeaponPartItems.WEAPON_PART_RECEIVER_GENERIC.get())
-            .unlockedBy("has_blueprint", AVPRecipeProvider.has(blueprintGameObject.get()))
+        AVPShapelessRecipeBuilder.shapeless(RecipeCategory.COMBAT, weaponGameObject)
+            .requiresAndUnlockIfHas('A', blueprintGameObject)
+            .requiresAndUnlockIfHas('B', AVPWeaponPartItems.WEAPON_PART_BARREL_GENERIC)
+            .requiresAndUnlockIfHas('C', AVPWeaponPartItems.WEAPON_PART_GRIP_GENERIC)
+            .requiresAndUnlockIfHas('D', AVPWeaponPartItems.WEAPON_PART_RECEIVER_GENERIC)
             .save(recipeOutput);
     }
 

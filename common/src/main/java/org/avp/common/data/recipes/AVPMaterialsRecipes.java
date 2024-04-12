@@ -15,26 +15,23 @@ import org.avp.common.item.AVPItems;
 public final class AVPMaterialsRecipes {
 
     public static void addMaterialRecipes(RecipeOutput recipeOutput) {
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, AVPItems.CARBON.get(), 8)
-            .define('A', ItemTags.COALS)
+        AVPShapedRecipeBuilder.shaped(RecipeCategory.MISC, AVPItems.CARBON, 8)
+            .defineAndUnlockIfHas('A', ItemTags.COALS)
             .pattern("AA")
             .pattern("AA")
-            .unlockedBy("has_coal", AVPRecipeProvider.has(ItemTags.COALS))
             .save(recipeOutput);
 
-        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, AVPItems.NEODYMIUM_MAGNET.get(), 4)
-            .requires(AVPItems.NEODYMIUM.get())
-            .requires(AVPItems.COBALT.get(), 2)
-            .unlockedBy("has_cobalt", AVPRecipeProvider.has(AVPItems.COBALT.get()))
+        AVPShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, AVPItems.NEODYMIUM_MAGNET, 4)
+            .requiresAndUnlockIfHas('A', AVPItems.NEODYMIUM)
+            .requiresAndUnlockIfHas('B', AVPItems.COBALT, 2)
             .save(recipeOutput);
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, AVPItems.POLYCARBONATE.get(), 4)
-            .define('A', AVPItems.SILICA.get())
-            .define('B', AVPItems.CARBON.get())
+        AVPShapedRecipeBuilder.shaped(RecipeCategory.MISC, AVPItems.POLYCARBONATE, 4)
+            .defineAndUnlockIfHas('A', AVPItems.SILICA)
+            .defineAndUnlockIfHas('B', AVPItems.CARBON)
             .pattern("AAA")
             .pattern("BBB")
             .pattern("BBB")
-            .unlockedBy("has_carbon", AVPRecipeProvider.has(AVPItems.CARBON.get()))
             .save(recipeOutput);
 
         var poylmerOutput = AVPItems.POLYMER.get();
