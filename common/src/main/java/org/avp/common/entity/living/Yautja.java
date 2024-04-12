@@ -16,6 +16,7 @@ import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import org.avp.common.tag.AVPItemTags;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -43,7 +44,11 @@ public class Yautja extends Monster implements GeoEntity {
                 this,
                 LivingEntity.class,
                 true,
-                livingEntity -> !livingEntity.getType().is(AVPEntityTags.PREDATORS)
+                livingEntity ->
+                    livingEntity.getType().is(AVPEntityTags.ALIENS) ||
+                    livingEntity instanceof Player player && player.getInventory().hasAnyMatching(
+                        itemStack -> itemStack.is(AVPItemTags.THREATENS_PREDATORS)
+                    )
             )
         );
     }
