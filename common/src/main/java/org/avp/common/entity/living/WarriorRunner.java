@@ -8,6 +8,7 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.ai.goal.LeapAtTargetGoal;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
@@ -33,6 +34,7 @@ public class WarriorRunner extends Monster implements GeoEntity {
     @Override
     protected void registerGoals() {
         AIUtils.addBasicAlienAI(this, goalSelector, targetSelector);
+        goalSelector.addGoal(3, new LeapAtTargetGoal(this, 0.4F));
     }
 
     @Nullable
