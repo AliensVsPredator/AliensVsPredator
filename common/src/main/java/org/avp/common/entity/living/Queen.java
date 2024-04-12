@@ -33,7 +33,7 @@ public class Queen extends Monster implements GeoEntity {
 
         if (entity instanceof LivingEntity livingEntity) {
             livingEntity.knockback(
-                10.0F,
+                5.0F,
                 Mth.sin(this.getYRot() * Mth.DEG_TO_RAD),
                 -Mth.cos(this.getYRot() * Mth.DEG_TO_RAD)
             );
