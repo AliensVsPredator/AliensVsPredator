@@ -29,6 +29,8 @@ public class AVPItems {
 
     public static final GameObject<Item> INGOT_STEEL;
 
+    public static final GameObject<Item> INGOT_TITANIUM;
+
     public static final GameObject<Item> LASER_MINE;
 
     public static final GameObject<Item> NBT_DRIVE;
@@ -86,6 +88,7 @@ public class AVPItems {
         INGOT_LITHIUM = register("ingot_lithium");
         INGOT_ORIONITE = register("ingot_orionite");
         INGOT_STEEL = register("ingot_steel");
+        INGOT_TITANIUM = register("ingot_titanium");
         LASER_MINE = register("laser_mine");
         NBT_DRIVE = register("nbt_drive");
         NEODYMIUM = register("neodymium");
