@@ -15,9 +15,6 @@ import org.avp.common.service.BlockRegistry;
 import org.avp.common.service.Services;
 import org.avp.neoforge.util.ForgeGameObject;
 
-/**
- * @author Boston Vanseghi
- */
 public class NeoForgeBlockRegistry implements BlockRegistry {
 
     public static final DeferredRegister<Block> BLOCKS = DeferredRegister.createBlocks(AVPConstants.MOD_ID);

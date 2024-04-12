@@ -11,9 +11,6 @@ import org.avp.common.AVPConstants;
 import org.avp.common.service.CreativeModeTabRegistry;
 import org.avp.neoforge.util.ForgeGameObject;
 
-/**
- * @author Boston Vanseghi
- */
 public class NeoForgeCreativeModeTabRegistry implements CreativeModeTabRegistry {
 
     public static final DeferredRegister<CreativeModeTab> CREATIVE_MODE_TABS = DeferredRegister.create(

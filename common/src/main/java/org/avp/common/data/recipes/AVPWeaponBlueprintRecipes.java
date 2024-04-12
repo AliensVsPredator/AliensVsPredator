@@ -7,9 +7,6 @@ import net.minecraft.world.item.Items;
 
 import org.avp.common.item.AVPWeaponBlueprintItems;
 
-/**
- * @author Boston Vanseghi
- */
 public final class AVPWeaponBlueprintRecipes {
 
     public static void addWeaponBlueprintRecipes(RecipeOutput recipeOutput) {

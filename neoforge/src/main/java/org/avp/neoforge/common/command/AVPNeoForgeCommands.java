@@ -4,9 +4,6 @@ import net.neoforged.neoforge.event.RegisterCommandsEvent;
 
 import org.avp.common.command.AVPCommands;
 
-/**
- * @author Boston Vanseghi
- */
 public final class AVPNeoForgeCommands {
 
     public static void registerCommandsEvent(RegisterCommandsEvent registerCommandsEvent) {

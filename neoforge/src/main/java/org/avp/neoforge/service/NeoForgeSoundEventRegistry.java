@@ -11,9 +11,6 @@ import org.avp.common.AVPConstants;
 import org.avp.common.service.SoundEventRegistry;
 import org.avp.neoforge.util.ForgeGameObject;
 
-/**
- * @author Boston Vanseghi
- */
 public class NeoForgeSoundEventRegistry implements SoundEventRegistry {
 
     public static final DeferredRegister<SoundEvent> SOUND_EVENTS = DeferredRegister.create(

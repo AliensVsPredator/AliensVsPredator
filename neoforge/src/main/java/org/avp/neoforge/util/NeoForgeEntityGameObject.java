@@ -8,9 +8,6 @@ import java.util.function.Supplier;
 
 import org.avp.api.GameObject;
 
-/**
- * @author Boston Vanseghi
- */
 public class NeoForgeEntityGameObject<T extends Entity> extends GameObject<EntityType<T>> {
 
     public NeoForgeEntityGameObject(

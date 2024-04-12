@@ -9,9 +9,6 @@ import org.avp.api.GameObject;
 import org.avp.api.Tuple;
 import org.avp.common.item.AVPItems;
 
-/**
- * @author Boston Vanseghi
- */
 public class AVPFuelRegistry {
 
     private static final List<Tuple<GameObject<Item>, Integer>> ENTRIES = new ArrayList<>();

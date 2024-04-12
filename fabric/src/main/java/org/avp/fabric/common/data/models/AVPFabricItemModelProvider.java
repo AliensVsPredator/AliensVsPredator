@@ -14,9 +14,6 @@ import org.avp.common.item.AVPWeaponBlueprintItems;
 import org.avp.common.item.AVPWeaponItems;
 import org.avp.common.item.AVPWeaponPartItems;
 
-/**
- * @author Boston Vanseghi
- */
 public class AVPFabricItemModelProvider {
 
     public static void addItemModels(ItemModelGenerators itemModelGenerator) {

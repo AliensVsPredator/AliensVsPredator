@@ -8,9 +8,6 @@ import org.avp.api.GameObject;
 import org.avp.common.service.CreativeModeTabRegistry;
 import org.avp.fabric.common.registry.AVPDeferredCreativeTabRegistry;
 
-/**
- * @author Boston Vanseghi
- */
 public class FabricCreativeModeTabRegistry implements CreativeModeTabRegistry {
 
     @Override

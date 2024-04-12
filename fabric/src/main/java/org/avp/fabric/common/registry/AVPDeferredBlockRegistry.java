@@ -9,9 +9,6 @@ import java.util.List;
 
 import org.avp.api.GameObject;
 
-/**
- * @author Boston Vanseghi
- */
 public final class AVPDeferredBlockRegistry {
 
     private static final List<GameObject<Block>> entries = new ArrayList<>();

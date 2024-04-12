@@ -5,9 +5,6 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 
 import org.avp.common.entity.AVPYautjaEntityTypes;
 
-/**
- * @author Boston Vanseghi
- */
 public class AVPYautjaEntityAttributes {
 
     private static final AttributeSupplier YAUTJA = AVPEntityAttributesBindingRegistry.builder()

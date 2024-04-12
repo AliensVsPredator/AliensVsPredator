@@ -13,9 +13,6 @@ import org.avp.neoforge.common.registry.AVPNeoForgeFuelRegistry;
 import org.avp.neoforge.service.*;
 import org.avp.neoforge.service.NeoForgeNetworkPayloadHandlerRegistry;
 
-/**
- * @author Boston Vanseghi
- */
 @Mod(AVPConstants.MOD_ID)
 public class AVPNeoForge {
 

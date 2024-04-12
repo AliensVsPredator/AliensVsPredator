@@ -12,9 +12,6 @@ import org.avp.common.network.ServerboundPacket;
 import org.avp.common.service.NetworkPayloadHandlerRegistry;
 import org.avp.common.service.Services;
 
-/**
- * @author Boston Vanseghi
- */
 public class FabricNetworkPayloadHandlerRegistry implements NetworkPayloadHandlerRegistry {
 
     @Override

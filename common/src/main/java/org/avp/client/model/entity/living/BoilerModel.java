@@ -8,9 +8,6 @@ import org.avp.client.util.BasicAnimationUtils;
 import org.avp.common.AVPResources;
 import org.avp.common.entity.living.Boiler;
 
-/**
- * @author Boston Vanseghi
- */
 public class BoilerModel extends GeoModel<Boiler> {
 
     private static final String ENTITY_NAME = "boiler";

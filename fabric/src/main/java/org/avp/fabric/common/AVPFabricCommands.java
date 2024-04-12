@@ -4,9 +4,6 @@ import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 
 import org.avp.common.command.AVPCommands;
 
-/**
- * @author Boston Vanseghi
- */
 public class AVPFabricCommands {
 
     public static void register() {

@@ -11,9 +11,6 @@ import org.avp.api.GameObject;
 import org.avp.common.AVPResources;
 import org.avp.common.service.EntityRegistry;
 
-/**
- * @author Boston Vanseghi
- */
 public class FabricEntityRegistry implements EntityRegistry {
 
     @Override

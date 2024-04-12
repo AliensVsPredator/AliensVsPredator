@@ -11,9 +11,6 @@ import org.avp.common.config.AVPConfig;
 import org.avp.common.entity.spawn.AVPEntitySpawns;
 import org.avp.common.tag.AVPEntityTags;
 
-/**
- * @author Boston Vanseghi
- */
 public class AVPFabricEntitySpawns {
 
     @SuppressWarnings("unchecked")

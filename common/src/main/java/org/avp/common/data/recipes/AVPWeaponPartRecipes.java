@@ -10,9 +10,6 @@ import org.avp.common.item.AVPElectronicItems;
 import org.avp.common.item.AVPItems;
 import org.avp.common.item.AVPWeaponPartItems;
 
-/**
- * @author Boston Vanseghi
- */
 public final class AVPWeaponPartRecipes {
 
     public static void addWeaponPartRecipes(RecipeOutput recipeOutput) {

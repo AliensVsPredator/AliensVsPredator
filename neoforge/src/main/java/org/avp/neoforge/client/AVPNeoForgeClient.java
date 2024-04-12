@@ -20,9 +20,6 @@ import org.avp.client.render.entity.AVPEntityRenderRegistry;
 import org.avp.common.AVPConstants;
 import org.avp.common.block.AVPBlocks;
 
-/**
- * @author Boston Vanseghi
- */
 @Mod.EventBusSubscriber(modid = AVPConstants.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
 public class AVPNeoForgeClient {
 

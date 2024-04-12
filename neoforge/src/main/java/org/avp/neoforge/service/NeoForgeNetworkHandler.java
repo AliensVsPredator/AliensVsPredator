@@ -6,9 +6,6 @@ import net.neoforged.neoforge.network.PacketDistributor;
 
 import org.avp.common.service.NetworkHandler;
 
-/**
- * @author Boston Vanseghi
- */
 public class NeoForgeNetworkHandler implements NetworkHandler {
 
     @Override

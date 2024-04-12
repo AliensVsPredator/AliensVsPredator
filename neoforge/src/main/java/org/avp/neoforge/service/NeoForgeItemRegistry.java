@@ -10,9 +10,6 @@ import org.avp.common.AVPConstants;
 import org.avp.common.service.ItemRegistry;
 import org.avp.neoforge.util.ForgeGameObject;
 
-/**
- * @author Boston Vanseghi
- */
 public class NeoForgeItemRegistry implements ItemRegistry {
 
     public static final DeferredRegister<Item> ITEMS = DeferredRegister.createItems(AVPConstants.MOD_ID);

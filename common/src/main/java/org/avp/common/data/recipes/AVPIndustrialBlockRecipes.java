@@ -11,9 +11,6 @@ import org.avp.common.AVPConstants;
 import org.avp.common.block.AVPIndustrialBlocks;
 import org.avp.common.item.AVPItems;
 
-/**
- * @author Boston Vanseghi
- */
 public final class AVPIndustrialBlockRecipes {
 
     public static void addIndustrialBlockRecipes(RecipeOutput recipeOutput) {

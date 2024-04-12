@@ -13,9 +13,6 @@ import org.avp.common.service.BlockRegistry;
 import org.avp.common.service.Services;
 import org.avp.fabric.common.registry.AVPDeferredBlockRegistry;
 
-/**
- * @author Boston Vanseghi
- */
 public class FabricBlockRegistry implements BlockRegistry {
 
     @Override

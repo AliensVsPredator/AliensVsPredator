@@ -8,9 +8,6 @@ import org.avp.api.GameObject;
 import org.avp.common.service.ItemRegistry;
 import org.avp.fabric.common.registry.AVPDeferredItemRegistry;
 
-/**
- * @author Boston Vanseghi
- */
 public class FabricItemRegistry implements ItemRegistry {
 
     @Override

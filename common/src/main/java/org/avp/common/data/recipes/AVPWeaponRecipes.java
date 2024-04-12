@@ -9,9 +9,6 @@ import org.avp.common.item.AVPWeaponBlueprintItems;
 import org.avp.common.item.AVPWeaponItems;
 import org.avp.common.item.AVPWeaponPartItems;
 
-/**
- * @author Boston Vanseghi
- */
 public final class AVPWeaponRecipes {
 
     public static void addWeaponRecipes(RecipeOutput recipeOutput) {

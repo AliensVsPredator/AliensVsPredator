@@ -8,9 +8,6 @@ import org.avp.client.util.BasicAnimationUtils;
 import org.avp.common.AVPResources;
 import org.avp.common.entity.living.Spitter;
 
-/**
- * @author Boston Vanseghi
- */
 public class SpitterModel extends GeoModel<Spitter> {
 
     private static final String ENTITY_NAME = "spitter";

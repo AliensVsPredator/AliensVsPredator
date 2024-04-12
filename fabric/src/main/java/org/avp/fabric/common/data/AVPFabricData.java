@@ -10,9 +10,6 @@ import org.avp.fabric.common.data.tags.AVPBiomeTagsProvider;
 import org.avp.fabric.common.data.tags.AVPBlockTagsProvider;
 import org.avp.fabric.common.data.tags.AVPEntityTagsProvider;
 
-/**
- * @author Boston Vanseghi
- */
 public class AVPFabricData implements DataGeneratorEntrypoint {
 
     @Override

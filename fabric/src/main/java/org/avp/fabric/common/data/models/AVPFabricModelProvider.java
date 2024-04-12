@@ -5,9 +5,6 @@ import net.fabricmc.fabric.api.datagen.v1.provider.FabricModelProvider;
 import net.minecraft.data.models.BlockModelGenerators;
 import net.minecraft.data.models.ItemModelGenerators;
 
-/**
- * @author Boston Vanseghi
- */
 public class AVPFabricModelProvider extends FabricModelProvider {
 
     public AVPFabricModelProvider(FabricDataOutput output) {

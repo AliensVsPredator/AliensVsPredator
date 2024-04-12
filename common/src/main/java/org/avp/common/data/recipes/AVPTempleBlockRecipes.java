@@ -10,9 +10,6 @@ import net.minecraft.world.item.crafting.Ingredient;
 import org.avp.common.AVPConstants;
 import org.avp.common.block.AVPTempleBlocks;
 
-/**
- * @author Boston Vanseghi
- */
 public final class AVPTempleBlockRecipes {
 
     public static void addTempleBlockRecipes(RecipeOutput recipeOutput) {

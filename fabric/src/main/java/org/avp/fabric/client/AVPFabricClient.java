@@ -15,9 +15,6 @@ import org.avp.client.AVPClientKeyBindings;
 import org.avp.client.render.entity.AVPEntityRenderRegistry;
 import org.avp.common.block.AVPBlocks;
 
-/**
- * @author Boston Vanseghi
- */
 public class AVPFabricClient implements ClientModInitializer {
 
     @Override

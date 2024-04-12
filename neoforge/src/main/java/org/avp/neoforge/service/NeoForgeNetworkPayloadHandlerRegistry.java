@@ -16,9 +16,6 @@ import org.avp.common.network.PayloadHandlerData;
 import org.avp.common.network.ServerboundPacket;
 import org.avp.common.service.NetworkPayloadHandlerRegistry;
 
-/**
- * @author Boston Vanseghi
- */
 public class NeoForgeNetworkPayloadHandlerRegistry implements NetworkPayloadHandlerRegistry {
 
     public static final List<PayloadHandlerData<?>> PAYLOAD_HANDLER_DATA_LIST = new ArrayList<>();

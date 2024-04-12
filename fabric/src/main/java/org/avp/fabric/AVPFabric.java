@@ -13,9 +13,6 @@ import org.avp.fabric.common.worldgen.AVPFabricEntitySpawns;
 import org.avp.fabric.common.worldgen.AVPFabricWorldGenFeatures;
 import org.avp.fabric.service.FabricEntityAttributeRegistry;
 
-/**
- * @author Boston Vanseghi
- */
 public class AVPFabric implements ModInitializer {
 
     @Override

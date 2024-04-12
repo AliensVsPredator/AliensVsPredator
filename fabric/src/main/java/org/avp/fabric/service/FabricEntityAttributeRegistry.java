@@ -5,9 +5,6 @@ import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRe
 import org.avp.common.entity.attribute.AVPEntityAttributesBindingRegistry;
 import org.avp.common.registry.AVPRegistry;
 
-/**
- * @author Boston Vanseghi
- */
 public class FabricEntityAttributeRegistry implements AVPRegistry {
 
     private static final FabricEntityAttributeRegistry INSTANCE = new FabricEntityAttributeRegistry();

@@ -13,9 +13,6 @@ import org.avp.api.GameObject;
 import org.avp.api.Tuple;
 import org.avp.common.block.AVPPaddingBlocks;
 
-/**
- * @author Boston Vanseghi
- */
 public final class AVPPaddingBlockRecipes {
 
     private static final List<Tuple<ItemLike, List<GameObject<Block>>>> PADDING_DATA = List.of(

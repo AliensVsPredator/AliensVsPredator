@@ -4,9 +4,6 @@ import net.neoforged.neoforge.event.entity.EntityAttributeCreationEvent;
 
 import org.avp.common.entity.attribute.*;
 
-/**
- * @author Boston Vanseghi
- */
 public class NeoForgeEntityAttributeRegistry {
 
     private static final NeoForgeEntityAttributeRegistry INSTANCE = new NeoForgeEntityAttributeRegistry();

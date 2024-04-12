@@ -10,9 +10,6 @@ import net.minecraft.server.level.ServerPlayer;
 
 import org.avp.common.service.NetworkHandler;
 
-/**
- * @author Boston Vanseghi
- */
 public class FabricNetworkHandler implements NetworkHandler {
 
     @Override

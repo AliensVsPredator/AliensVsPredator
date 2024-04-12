@@ -17,9 +17,6 @@ import org.avp.common.service.EntityRegistry;
 import org.avp.common.service.Services;
 import org.avp.neoforge.util.NeoForgeEntityGameObject;
 
-/**
- * @author Boston Vanseghi
- */
 public class NeoForgeEntityRegistry implements EntityRegistry {
 
     public static final DeferredRegister<EntityType<?>> ENTITY_TYPES = DeferredRegister.create(

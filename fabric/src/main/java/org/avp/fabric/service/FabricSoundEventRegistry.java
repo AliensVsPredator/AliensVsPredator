@@ -10,9 +10,6 @@ import org.avp.api.GameObject;
 import org.avp.common.AVPResources;
 import org.avp.common.service.SoundEventRegistry;
 
-/**
- * @author Boston Vanseghi
- */
 public class FabricSoundEventRegistry implements SoundEventRegistry {
 
     @Override
