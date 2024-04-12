@@ -63,6 +63,14 @@ public class AVPArmorItems {
 
     public static final GameObject<Item> TACTICAL_LEGGINGS;
 
+    public static final GameObject<Item> TITANIUM_BODY;
+
+    public static final GameObject<Item> TITANIUM_BOOTS;
+
+    public static final GameObject<Item> TITANIUM_HELMET;
+
+    public static final GameObject<Item> TITANIUM_LEGGINGS;
+
     public static final GameObject<Item> XENOMORPH_BODY;
 
     public static final GameObject<Item> XENOMORPH_BOOTS;
@@ -123,6 +131,12 @@ public class AVPArmorItems {
         TACTICAL_BOOTS = register("tactical_boots", tacticalMaterial, ArmorItem.Type.BOOTS);
         TACTICAL_HELMET = register("tactical_helmet", tacticalMaterial, ArmorItem.Type.HELMET);
         TACTICAL_LEGGINGS = register("tactical_leggings", tacticalMaterial, ArmorItem.Type.LEGGINGS);
+
+        var titaniumMaterial = AVPArmorMaterials.TITANIUM;
+        TITANIUM_BODY = register("titanium_body", titaniumMaterial, ArmorItem.Type.CHESTPLATE);
+        TITANIUM_BOOTS = register("titanium_boots", titaniumMaterial, ArmorItem.Type.BOOTS);
+        TITANIUM_HELMET = register("titanium_helmet", titaniumMaterial, ArmorItem.Type.HELMET);
+        TITANIUM_LEGGINGS = register("titanium_leggings", titaniumMaterial, ArmorItem.Type.LEGGINGS);
 
         var xenomorphChitinMaterial = AVPArmorMaterials.XENOMORPH_CHITIN;
         XENOMORPH_BODY = register("xenomorph_chitin_body", xenomorphChitinMaterial, ArmorItem.Type.CHESTPLATE);

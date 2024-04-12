@@ -71,6 +71,17 @@ public class AVPArmorMaterials {
         .setEnchantmentValue(5)
         .build();
 
+    public static final ArmorMaterial TITANIUM = new AVPArmorMaterial.Builder(
+        "titanium",
+        SoundEvents.ARMOR_EQUIP_IRON,
+        AVPItems.INGOT_TITANIUM::get
+    )
+        .setProtectionValues(new int[] { 2, 5, 6, 2 })
+        .setDurabilityMultiplier(24)
+        .setEnchantmentValue(9)
+        .setToughness(1.0F)
+        .build();
+
     public static final ArmorMaterial XENOMORPH_CHITIN = new AVPArmorMaterial.Builder(
         "xenomorph_chitin",
         SoundEvents.HONEY_BLOCK_STEP,
