@@ -1,11 +1,10 @@
 package org.avp.common.legacy.schematic;
 
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtAccounter;
 import net.minecraft.nbt.NbtIo;
-import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.Block;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.IOException;
@@ -15,7 +14,6 @@ import java.util.Objects;
 import java.util.Optional;
 
 import org.avp.common.AVPConstants;
-import org.jetbrains.annotations.NotNull;
 
 public class LegacySchematicLoader {
 
@@ -73,7 +71,7 @@ public class LegacySchematicLoader {
 
             blockIdsToBlockNames = new HashMap<>();
 
-            for (var blockId: blockIdData) {
+            for (var blockId : blockIdData) {
                 var blockIdString = Short.toString(blockId);
                 blockIdsToBlockNames.put(blockId, blockIdString);
             }

@@ -1,12 +1,13 @@
 package org.avp.common.registry;
 
 import net.minecraft.world.item.Item;
-import org.avp.api.GameObject;
-import org.avp.api.Tuple;
-import org.avp.common.item.AVPItems;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import org.avp.api.GameObject;
+import org.avp.api.Tuple;
+import org.avp.common.item.AVPItems;
 
 /**
  * @author Boston Vanseghi

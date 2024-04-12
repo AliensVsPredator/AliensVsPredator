@@ -60,6 +60,7 @@ public class AVPOreBlocks {
     private AVPOreBlocks() {}
 
     static {
+        var woodTier = List.of(BlockTags.MINEABLE_WITH_PICKAXE);
         var stoneTier = List.of(BlockTags.MINEABLE_WITH_PICKAXE, BlockTags.NEEDS_STONE_TOOL);
         var diamondTier = List.of(BlockTags.MINEABLE_WITH_PICKAXE, BlockTags.NEEDS_DIAMOND_TOOL);
 
@@ -70,12 +71,10 @@ public class AVPOreBlocks {
         ORE_BAUXITE = register("bauxite", oreProps.apply(BAUXITE_PROPERTIES, AVPItems.RAW_BAUXITE).tags(stoneTier));
         ORE_COBALT = register("cobalt", oreProps.apply(COBALT_PROPERTIES, AVPItems.COBALT).tags(diamondTier));
 
-        // TODO: Needs wood tool
-        ORE_LITHIUM = register("lithium", oreProps.apply(LITHIUM_PROPERTIES, AVPItems.INGOT_LITHIUM));
+        ORE_LITHIUM = register("lithium", oreProps.apply(LITHIUM_PROPERTIES, AVPItems.INGOT_LITHIUM).tags(woodTier));
         ORE_MONAZITE = register("monazite", oreProps.apply(MONAZITE_PROPERTIES, AVPItems.NEODYMIUM).tags(diamondTier));
 
-        // TODO: Needs wood tool
-        ORE_SILICA = register("silica", oreProps.apply(SILICA_PROPERTIES, AVPItems.SILICA));
+        ORE_SILICA = register("silica", oreProps.apply(SILICA_PROPERTIES, AVPItems.SILICA).tags().tags(woodTier));
 
         // NOTE: DO NOT USE AVPOreBlocks#register HERE.
         RAW_BAUXITE_BLOCK = AVPBlocks.register("raw_bauxite_block", BlockData.simple(BAUXITE_PROPERTIES).tags(stoneTier));
