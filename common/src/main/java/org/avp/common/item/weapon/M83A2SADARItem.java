@@ -18,8 +18,8 @@ public class M83A2SADARItem extends AbstractAVPWeaponItem {
     private static final FireMode FIRE_MODE = new FireMode(
         "SemiAutomatic",
         1,
-        20,
-        AVPSoundEvents.ITEM_WEAPON_SHOTGUN_SHOOT,
+        60,
+        AVPSoundEvents.ITEM_WEAPON_ROCKET_LAUNCHER_SHOOT,
         100.0D,
         1.5F
     );
@@ -33,8 +33,9 @@ public class M83A2SADARItem extends AbstractAVPWeaponItem {
         List.of(FIRE_MODE),
         8F * 2,
         0.5F,
-        ReloadStrategy.builder(20 * 4)
-            .setReloadStartSound(AVPSoundEvents.ITEM_WEAPON_GENERIC_RELOAD)
+        ReloadStrategy.builder(20 * 5)
+            .setReloadStartSound(AVPSoundEvents.ITEM_WEAPON_ROCKET_LAUNCHER_RELOAD_START)
+            .setReloadFinishSound(AVPSoundEvents.ITEM_WEAPON_ROCKET_LAUNCHER_RELOAD_FINISH)
             .setTryReloadBehavior(TryReloadBehavior.STANDARD)
             .build(),
         ShootStrategy.builder().build()

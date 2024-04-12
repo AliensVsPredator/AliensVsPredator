@@ -74,6 +74,8 @@ public class AVPSoundEvents {
 
     public static final GameObject<SoundEvent> ITEM_WEAPON_FX_RICOCHET_METAL;
 
+    public static final GameObject<SoundEvent> ITEM_WEAPON_FX_ROCKET_EXPLOSION;
+
     public static final GameObject<SoundEvent> ITEM_WEAPON_GENERIC_RELOAD;
 
     public static final GameObject<SoundEvent> ITEM_WEAPON_GENERIC_SHOOT;
@@ -89,6 +91,12 @@ public class AVPSoundEvents {
     public static final GameObject<SoundEvent> ITEM_WEAPON_OLD_PAINLESS_SHOOT_STOP;
 
     public static final GameObject<SoundEvent> ITEM_WEAPON_PULSE_RIFLE_SHOOT;
+
+    public static final GameObject<SoundEvent> ITEM_WEAPON_ROCKET_LAUNCHER_RELOAD_FINISH;
+
+    public static final GameObject<SoundEvent> ITEM_WEAPON_ROCKET_LAUNCHER_RELOAD_START;
+
+    public static final GameObject<SoundEvent> ITEM_WEAPON_ROCKET_LAUNCHER_SHOOT;
 
     public static final GameObject<SoundEvent> ITEM_WEAPON_SHOTGUN_SHOOT;
 
@@ -138,6 +146,7 @@ public class AVPSoundEvents {
         ITEM_WEAPON_FX_RICOCHET_GENERIC = register("item.weapon.fx.ricochet.generic");
         ITEM_WEAPON_FX_RICOCHET_GLASS = register("item.weapon.fx.ricochet.glass");
         ITEM_WEAPON_FX_RICOCHET_METAL = register("item.weapon.fx.ricochet.metal");
+        ITEM_WEAPON_FX_ROCKET_EXPLOSION = register("item.weapon.fx.rocket_explosion");
 
         ITEM_WEAPON_GENERIC_RELOAD = register("item.weapon.generic.reload");
         ITEM_WEAPON_GENERIC_SHOOT = register("item.weapon.generic.shoot");
@@ -149,6 +158,10 @@ public class AVPSoundEvents {
         ITEM_WEAPON_OLD_PAINLESS_SHOOT_STOP = register("item.weapon.old_painless.shoot_stop");
 
         ITEM_WEAPON_PULSE_RIFLE_SHOOT = register("item.weapon.pulse_rifle.shoot");
+
+        ITEM_WEAPON_ROCKET_LAUNCHER_RELOAD_FINISH = register("item.weapon.rocket_launcher.reload_finish");
+        ITEM_WEAPON_ROCKET_LAUNCHER_RELOAD_START = register("item.weapon.rocket_launcher.reload_start");
+        ITEM_WEAPON_ROCKET_LAUNCHER_SHOOT = register("item.weapon.rocket_launcher.shoot");
 
         ITEM_WEAPON_SHOTGUN_SHOOT = register("item.weapon.shotgun.shoot");
 
