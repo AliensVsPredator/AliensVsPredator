@@ -13,6 +13,10 @@ public class AVPItems {
 
     private static final List<GameObject<Item>> ENTRIES = new ArrayList<>();
 
+    public static final GameObject<Item> BOTTLE_TINTED;
+
+    public static final GameObject<Item> BOTTLE_TINTED_ACID;
+
     public static final GameObject<Item> CARBON;
 
     public static final GameObject<Item> COBALT;
@@ -72,6 +76,8 @@ public class AVPItems {
     private AVPItems() {}
 
     static {
+        BOTTLE_TINTED = register("bottle_tinted");
+        BOTTLE_TINTED_ACID = register("bottle_tinted_acid");
         CARBON = register("carbon");
         COBALT = register("cobalt");
         INGOT_ALUMINUM = register("ingot_aluminum");
