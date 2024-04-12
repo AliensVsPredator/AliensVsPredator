@@ -62,6 +62,7 @@ public class AVPOreBlocks {
     static {
         var woodTier = List.of(BlockTags.MINEABLE_WITH_PICKAXE);
         var stoneTier = List.of(BlockTags.MINEABLE_WITH_PICKAXE, BlockTags.NEEDS_STONE_TOOL);
+        var ironTier = List.of(BlockTags.MINEABLE_WITH_PICKAXE, BlockTags.NEEDS_IRON_TOOL);
         var diamondTier = List.of(BlockTags.MINEABLE_WITH_PICKAXE, BlockTags.NEEDS_DIAMOND_TOOL);
 
         BiFunction<BlockBehaviour.Properties, GameObject<Item>, BlockData.Builder> oreProps = (properties, item) -> BlockData.builder(
@@ -74,7 +75,7 @@ public class AVPOreBlocks {
         ORE_LITHIUM = register("lithium", oreProps.apply(LITHIUM_PROPERTIES, AVPItems.INGOT_LITHIUM).tags(woodTier));
         ORE_MONAZITE = register("monazite", oreProps.apply(MONAZITE_PROPERTIES, AVPItems.NEODYMIUM).tags(diamondTier));
 
-        ORE_SILICA = register("silica", oreProps.apply(SILICA_PROPERTIES, AVPItems.SILICA).tags().tags(woodTier));
+        ORE_SILICA = register("silica", oreProps.apply(SILICA_PROPERTIES, AVPItems.SILICA).tags().tags(ironTier));
 
         // NOTE: DO NOT USE AVPOreBlocks#register HERE.
         RAW_BAUXITE_BLOCK = AVPBlocks.register("raw_bauxite_block", BlockData.simple(BAUXITE_PROPERTIES).tags(stoneTier));
