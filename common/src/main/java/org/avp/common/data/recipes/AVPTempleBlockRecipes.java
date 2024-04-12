@@ -6,6 +6,7 @@ import net.minecraft.data.recipes.ShapedRecipeBuilder;
 import net.minecraft.data.recipes.SimpleCookingRecipeBuilder;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
+
 import org.avp.common.AVPConstants;
 import org.avp.common.block.AVPTempleBlocks;
 

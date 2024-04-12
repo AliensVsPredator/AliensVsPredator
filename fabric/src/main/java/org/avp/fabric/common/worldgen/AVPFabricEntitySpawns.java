@@ -5,11 +5,11 @@ import net.fabricmc.fabric.api.biome.v1.BiomeSelectors;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.MobCategory;
-
 import net.minecraft.world.entity.SpawnPlacements;
+
 import org.avp.common.config.AVPConfig;
-import org.avp.common.entity.AVPBaseAlienEntityTypes;
 import org.avp.common.entity.spawn.AVPEntitySpawns;
+import org.avp.common.tag.AVPEntityTags;
 
 /**
  * @author Boston Vanseghi
@@ -24,6 +24,15 @@ public class AVPFabricEntitySpawns {
             var maxGroupSize = entitySpawnData.maxGroupSize();
             var entityType = (EntityType<Mob>) entitySpawnData.entityTypeGameObject().get();
 
+            if (entityType.is(AVPEntityTags.ALIENS) && !AVPConfig.Aliens.ENABLE_XENOMORPH_OVERWORLD_SPAWNS) {
+                return;
+            }
+
+            if (entityType.is(AVPEntityTags.PREDATORS) && !AVPConfig.Predators.ENABLE_YAUTJA_OVERWORLD_SPAWNS) {
+                return;
+            }
+
+            // Register biome spawns.
             BiomeModifications.addSpawn(
                 BiomeSelectors.foundInOverworld(), // TODO: Make this generic.
                 MobCategory.MONSTER,
@@ -33,7 +42,7 @@ public class AVPFabricEntitySpawns {
                 maxGroupSize
             );
 
-
+            // Register spawn placements.
             var placementType = entitySpawnData.spawnPlacementType();
             var heightMapType = entitySpawnData.heightMapType();
             var predicate = (SpawnPlacements.SpawnPredicate<Mob>) entitySpawnData.spawnPredicate();
