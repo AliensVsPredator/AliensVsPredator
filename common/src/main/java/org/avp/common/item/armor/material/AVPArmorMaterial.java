@@ -7,6 +7,8 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Arrays;
+import java.util.Objects;
 import java.util.function.Supplier;
 
 public record AVPArmorMaterial(
@@ -123,5 +125,34 @@ public record AVPArmorMaterial(
     @Override
     public float getKnockbackResistance() {
         return knockbackResistance;
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        if (this == object) return true;
+        if (object == null || getClass() != object.getClass()) return false;
+        AVPArmorMaterial that = (AVPArmorMaterial) object;
+        return durabilityMultiplier == that.durabilityMultiplier && enchantmentValue == that.enchantmentValue && Float.compare(toughness, that.toughness) == 0 && Float.compare(knockbackResistance, that.knockbackResistance) == 0 && Objects.equals(registryName, that.registryName) && Arrays.equals(protectionValues, that.protectionValues) && Objects.equals(equipSound, that.equipSound) && Objects.equals(repairIngredientSupplier, that.repairIngredientSupplier);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = Objects.hash(registryName, durabilityMultiplier, enchantmentValue, equipSound, repairIngredientSupplier, toughness, knockbackResistance);
+        result = 31 * result + Arrays.hashCode(protectionValues);
+        return result;
+    }
+
+    @Override
+    public String toString() {
+        return "AVPArmorMaterial{" +
+            "registryName='" + registryName + '\'' +
+            ", durabilityMultiplier=" + durabilityMultiplier +
+            ", protectionValues=" + Arrays.toString(protectionValues) +
+            ", enchantmentValue=" + enchantmentValue +
+            ", equipSound=" + equipSound +
+            ", repairIngredientSupplier=" + repairIngredientSupplier +
+            ", toughness=" + toughness +
+            ", knockbackResistance=" + knockbackResistance +
+            '}';
     }
 }
