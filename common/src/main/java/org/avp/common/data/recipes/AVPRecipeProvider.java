@@ -24,9 +24,13 @@ public class AVPRecipeProvider extends RecipeProvider {
         AVPAmmunitionPartRecipes.addAmmunitionPartRecipes(recipeOutput);
         AVPArmorRecipes.addArmorRecipes(recipeOutput);
         AVPBulletRecipes.addRecipes(recipeOutput);
+        AVPCobaltRecipes.addCobaltRecipes(recipeOutput);
         AVPFoodRecipes.addFoodRecipes(recipeOutput);
         AVPElectronicRecipes.addElectronicRecipes(recipeOutput);
+        AVPLithiumRecipes.addLithiumRecipes(recipeOutput);
         AVPMaterialsRecipes.addMaterialRecipes(recipeOutput);
+        AVPNeodymiumRecipes.addNeodymiumRecipes(recipeOutput);
+        AVPSilicaRecipes.addSilicaRecipes(recipeOutput);
         AVPToolRecipes.addToolRecipes(recipeOutput);
         AVPWeaponBlueprintRecipes.addWeaponBlueprintRecipes(recipeOutput);
         AVPWeaponPartRecipes.addWeaponPartRecipes(recipeOutput);

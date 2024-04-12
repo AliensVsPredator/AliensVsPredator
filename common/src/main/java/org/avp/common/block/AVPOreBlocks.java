@@ -16,25 +16,25 @@ import org.avp.common.item.AVPItems;
 
 public class AVPOreBlocks {
 
-    public static final BlockBehaviour.Properties BAUXITE_PROPERTIES = BlockBehaviour.Properties.ofFullCopy(
+    private static final BlockBehaviour.Properties BAUXITE_PROPERTIES = BlockBehaviour.Properties.ofFullCopy(
         Blocks.STONE
     )
         .strength(3.2F, 2.6F);
 
-    public static final BlockBehaviour.Properties COBALT_PROPERTIES = BlockBehaviour.Properties.ofFullCopy(Blocks.STONE)
+    private static final BlockBehaviour.Properties COBALT_PROPERTIES = BlockBehaviour.Properties.ofFullCopy(Blocks.STONE)
         .strength(50F, 20F);
 
-    public static final BlockBehaviour.Properties LITHIUM_PROPERTIES = BlockBehaviour.Properties.ofFullCopy(
+    private static final BlockBehaviour.Properties LITHIUM_PROPERTIES = BlockBehaviour.Properties.ofFullCopy(
         Blocks.STONE
     )
         .strength(4.2F, 5.4F);
 
-    public static final BlockBehaviour.Properties MONAZITE_PROPERTIES = BlockBehaviour.Properties.ofFullCopy(
+    private static final BlockBehaviour.Properties MONAZITE_PROPERTIES = BlockBehaviour.Properties.ofFullCopy(
         Blocks.STONE
     )
         .strength(45F, 15F);
 
-    public static final BlockBehaviour.Properties SILICA_PROPERTIES = BlockBehaviour.Properties.ofFullCopy(Blocks.STONE)
+    private static final BlockBehaviour.Properties SILICA_PROPERTIES = BlockBehaviour.Properties.ofFullCopy(Blocks.STONE)
         .strength(2.2F, 1.4F);
 
     public static final GameObject<Block> ORE_BAUXITE;
@@ -48,6 +48,14 @@ public class AVPOreBlocks {
     public static final GameObject<Block> ORE_SILICA;
 
     public static final GameObject<Block> RAW_BAUXITE_BLOCK;
+
+    public static final GameObject<Block> RAW_COBALT_BLOCK;
+
+    public static final GameObject<Block> RAW_LITHIUM_BLOCK;
+
+    public static final GameObject<Block> RAW_NEODYMIUM_BLOCK;
+
+    public static final GameObject<Block> RAW_SILICA_BLOCK;
 
     public static void forceInitialization() {
         // This method doesn't need to do anything
@@ -79,5 +87,9 @@ public class AVPOreBlocks {
 
         // NOTE: DO NOT USE AVPOreBlocks#register HERE.
         RAW_BAUXITE_BLOCK = AVPBlocks.register("raw_bauxite_block", BlockData.simple(BAUXITE_PROPERTIES).tags(stoneTier));
+        RAW_COBALT_BLOCK = AVPBlocks.register("raw_cobalt_block", BlockData.simple(COBALT_PROPERTIES).tags(diamondTier));
+        RAW_LITHIUM_BLOCK = AVPBlocks.register("raw_lithium_block", BlockData.simple(LITHIUM_PROPERTIES).tags(woodTier));
+        RAW_NEODYMIUM_BLOCK = AVPBlocks.register("raw_neodymium_block", BlockData.simple(MONAZITE_PROPERTIES).tags(diamondTier));
+        RAW_SILICA_BLOCK = AVPBlocks.register("raw_silica_block", BlockData.simple(SILICA_PROPERTIES).tags(ironTier));
     }
 }
