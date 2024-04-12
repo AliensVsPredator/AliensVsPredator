@@ -24,6 +24,7 @@ public class Queen extends Monster implements GeoEntity {
 
     public Queen(EntityType<? extends Monster> entityType, Level level) {
         super(entityType, level);
+        this.setMaxUpStep(1.0F);
     }
 
     @Override
