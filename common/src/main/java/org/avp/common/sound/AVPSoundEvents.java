@@ -141,7 +141,7 @@ public class AVPSoundEvents {
 
         ITEM_WEAPON_GENERIC_RELOAD = register("item.weapon.generic.reload");
         ITEM_WEAPON_GENERIC_SHOOT = register("item.weapon.generic.shoot");
-        ITEM_WEAPON_GENERIC_SHOOT_FAIL = register("item.weapon.generic.shoot.fail");
+        ITEM_WEAPON_GENERIC_SHOOT_FAIL = register("item.weapon.generic.shoot_fail");
 
         ITEM_WEAPON_OLD_PAINLESS_SHOOT_LOOP = register("item.weapon.old_painless.shoot_loop");
         ITEM_WEAPON_OLD_PAINLESS_SHOOT_SPINNING = register("item.weapon.old_painless.shoot_spinning");
