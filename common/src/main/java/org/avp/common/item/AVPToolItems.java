@@ -13,6 +13,16 @@ public class AVPToolItems {
 
     private static final List<GameObject<Item>> ENTRIES = new ArrayList<>();
 
+    public static final GameObject<Item> ORIONITE_AXE;
+
+    public static final GameObject<Item> ORIONITE_HOE;
+
+    public static final GameObject<Item> ORIONITE_PICKAXE;
+
+    public static final GameObject<Item> ORIONITE_SHOVEL;
+
+    public static final GameObject<Item> ORIONITE_SWORD;
+
     public static final GameObject<Item> TITANIUM_AXE;
 
     public static final GameObject<Item> TITANIUM_HOE;
@@ -54,11 +64,18 @@ public class AVPToolItems {
     private AVPToolItems() {}
 
     static {
+        ORIONITE_AXE = register("orionite_axe");
+        ORIONITE_HOE = register("orionite_hoe");
+        ORIONITE_PICKAXE = register("orionite_pickaxe");
+        ORIONITE_SHOVEL = register("orionite_shovel");
+        ORIONITE_SWORD = register("orionite_sword");
+
         TITANIUM_AXE = register("titanium_axe");
         TITANIUM_HOE = register("titanium_hoe");
         TITANIUM_PICKAXE = register("titanium_pickaxe");
         TITANIUM_SHOVEL = register("titanium_shovel");
         TITANIUM_SWORD = register("titanium_sword");
+
         VERITANIUM_AXE = register("veritanium_axe");
         VERITANIUM_HOE = register("veritanium_hoe");
         VERITANIUM_PICKAXE = register("veritanium_pickaxe");
