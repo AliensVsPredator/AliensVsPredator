@@ -25,6 +25,33 @@ public class AVPConfig {
                 """
         )
         public static boolean ENABLE_XENOMORPH_OVERWORLD_SPAWNS = true;
+
+        @Config(value = "maxYLevelForBoilerSpawns", comment = "Default Value: 0")
+        public static int MAX_Y_LEVEL_FOR_BOILER_SPAWNS = 0;
+
+        @Config(value = "maxYLevelForCrusherSpawns", comment = "Default Value: 0")
+        public static int MAX_Y_LEVEL_FOR_CRUSHER_SPAWNS = 0;
+
+        @Config(value = "maxYLevelForDroneSpawns", comment = "Default Value: 75")
+        public static int MAX_Y_LEVEL_FOR_DRONE_SPAWNS = 75;
+
+        @Config(value = "maxYLevelForDroneRunnerSpawns", comment = "Default Value: 75")
+        public static int MAX_Y_LEVEL_FOR_DRONE_RUNNER_SPAWNS = 75;
+
+        @Config(value = "maxYLevelForQueenSpawns", comment = "Default Value: -24")
+        public static int MAX_Y_LEVEL_FOR_QUEEN_SPAWNS = -24;
+
+        @Config(value = "maxYLevelForPraetorianSpawns", comment = "Default Value: 0")
+        public static int MAX_Y_LEVEL_FOR_PRAETORIAN_SPAWNS = 0;
+
+        @Config(value = "maxYLevelForSpitterSpawns", comment = "Default Value: 0")
+        public static int MAX_Y_LEVEL_FOR_SPITTER_SPAWNS = 0;
+
+        @Config(value = "maxYLevelForWarriorSpawns", comment = "Default Value: 32")
+        public static int MAX_Y_LEVEL_FOR_WARRIOR_SPAWNS = 32;
+
+        @Config(value = "maxYLevelForWarriorRunnerSpawns", comment = "Default Value: 32")
+        public static int MAX_Y_LEVEL_FOR_WARRIOR_RUNNER_SPAWNS = 32;
     }
 
     @Category("General")
