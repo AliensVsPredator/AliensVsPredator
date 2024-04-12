@@ -7,6 +7,7 @@ import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
 import net.minecraft.world.entity.ai.goal.MeleeAttackGoal;
 import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
 import net.minecraft.world.entity.ai.goal.WaterAvoidingRandomStrollGoal;
+import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
@@ -22,6 +23,7 @@ public class AIUtils {
         goalSelector.addGoal(6, new LookAtPlayerGoal(monster, Player.class, 8.0F));
         goalSelector.addGoal(6, new RandomLookAroundGoal(monster));
 
+        targetSelector.addGoal(1, new HurtByTargetGoal(monster));
         targetSelector.addGoal(
             2,
             new NearestAttackableTargetGoal<>(
