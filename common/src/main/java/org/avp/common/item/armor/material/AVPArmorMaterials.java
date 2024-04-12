@@ -8,22 +8,20 @@ import org.avp.common.item.AVPItems;
 
 public class AVPArmorMaterials {
 
-    private static final AVPArmorMaterials INSTANCE = new AVPArmorMaterials();
-
-    public final ArmorMaterial ALUMINUM = new AVPArmorMaterial.Builder(
+    public static final ArmorMaterial ALUMINUM = new AVPArmorMaterial.Builder(
         "aluminum",
         SoundEvents.ARMOR_EQUIP_IRON,
-        () -> AVPItems.INGOT_ALUMINUM.get()
+        AVPItems.INGOT_ALUMINUM::get
     )
         .setProtectionValues(new int[] { 2, 5, 5, 2 })
         .setDurabilityMultiplier(14)
         .setEnchantmentValue(10)
         .build();
 
-    public final ArmorMaterial CELTIC = new AVPArmorMaterial.Builder(
+    public static final ArmorMaterial CELTIC = new AVPArmorMaterial.Builder(
         "celtic",
         SoundEvents.ARMOR_EQUIP_IRON,
-        () -> AVPItems.YAUTJA_ARTIFACT.get()
+        AVPItems.YAUTJA_ARTIFACT::get
     )
         .setProtectionValues(new int[] { 4, 7, 9, 4 })
         .setDurabilityMultiplier(34)
@@ -31,7 +29,7 @@ public class AVPArmorMaterials {
         .setToughness(5.0F)
         .build();
 
-    public final ArmorMaterial MK50 = new AVPArmorMaterial.Builder(
+    public static final ArmorMaterial MK50 = new AVPArmorMaterial.Builder(
         "mk50",
         SoundEvents.ARMOR_EQUIP_CHAIN,
         () -> Items.COPPER_INGOT
@@ -41,37 +39,49 @@ public class AVPArmorMaterials {
         .setEnchantmentValue(6)
         .build();
 
-    public final ArmorMaterial PRESSURE = new AVPArmorMaterial.Builder(
+    public static final ArmorMaterial ORIONITE = new AVPArmorMaterial.Builder(
+        "orionite",
+        SoundEvents.ARMOR_EQUIP_DIAMOND,
+        AVPItems.INGOT_ORIONITE::get
+    )
+        .setProtectionValues(new int[] { 3, 6, 8, 3 })
+        .setDurabilityMultiplier(35)
+        .setEnchantmentValue(17)
+        .setToughness(2.5F)
+        .setKnockbackResistance(0.05F)
+        .build();
+
+    public static final ArmorMaterial PRESSURE = new AVPArmorMaterial.Builder(
         "pressure",
         SoundEvents.ARMOR_EQUIP_CHAIN,
-        () -> AVPItems.INGOT_ALUMINUM.get()
+        AVPItems.INGOT_ALUMINUM::get
     )
         .setProtectionValues(new int[] { 2, 4, 3, 2 })
         .setDurabilityMultiplier(22)
         .setEnchantmentValue(6)
         .build();
 
-    public final ArmorMaterial TACTICAL = new AVPArmorMaterial.Builder(
+    public static final ArmorMaterial TACTICAL = new AVPArmorMaterial.Builder(
         "tactical",
         SoundEvents.ARMOR_EQUIP_CHAIN,
-        () -> AVPItems.INGOT_ALUMINUM.get()
+        AVPItems.INGOT_ALUMINUM::get
     )
         .setProtectionValues(new int[] { 2, 6, 3, 2 })
         .setDurabilityMultiplier(26)
         .setEnchantmentValue(5)
         .build();
 
-    public final ArmorMaterial XENOMORPH_CHITIN = new AVPArmorMaterial.Builder(
+    public static final ArmorMaterial XENOMORPH_CHITIN = new AVPArmorMaterial.Builder(
         "xenomorph_chitin",
         SoundEvents.HONEY_BLOCK_STEP,
-        () -> AVPItems.ROYAL_JELLY.get()
+        AVPItems.ROYAL_JELLY::get
     )
         .setProtectionValues(new int[] { 2, 7, 5, 3 })
         .setDurabilityMultiplier(30)
         .setEnchantmentValue(7)
         .build();
 
-    public static AVPArmorMaterials getInstance() {
-        return INSTANCE;
+    private AVPArmorMaterials() {
+        throw new UnsupportedOperationException();
     }
 }

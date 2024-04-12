@@ -4,8 +4,10 @@ import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.data.recipes.ShapedRecipeBuilder;
 import net.minecraft.tags.ItemTags;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 
+import org.avp.api.GameObject;
 import org.avp.common.block.AVPIndustrialBlocks;
 import org.avp.common.item.AVPArmorItems;
 import org.avp.common.item.AVPItems;
@@ -15,39 +17,63 @@ public final class AVPArmorRecipes {
     public static void addArmorRecipes(RecipeOutput recipeOutput) {
         addAluminumArmorRecipes(recipeOutput);
         addMK50ArmorRecipes(recipeOutput);
+        addOrioniteArmorRecipes(recipeOutput);
         addPressureArmorRecipes(recipeOutput);
         addTacticalArmorRecipes(recipeOutput);
         addXenomorphChitinArmorRecipes(recipeOutput);
     }
 
+    private static void addStandardArmorRecipes(
+        RecipeOutput recipeOutput,
+        GameObject<Item> baseIngredientGameObject,
+        GameObject<Item> helmetGameObject,
+        GameObject<Item> chestplateGameObject,
+        GameObject<Item> leggingsGameObject,
+        GameObject<Item> bootsGameObject
+    ) {
+        var unlockedByName = "has_base_ingredient";
+        var baseIngredient = baseIngredientGameObject.get();
+        var helmetIngredient = helmetGameObject.get();
+        var chestplateIngredient = chestplateGameObject.get();
+        var leggingsIngredient = leggingsGameObject.get();
+        var bootsIngredient = bootsGameObject.get();
+        ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, chestplateIngredient)
+            .define('A', baseIngredient)
+            .pattern("A A")
+            .pattern("AAA")
+            .pattern("AAA")
+            .unlockedBy(unlockedByName, AVPRecipeProvider.has(baseIngredient))
+            .save(recipeOutput);
+        ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, bootsIngredient)
+            .define('A', baseIngredient)
+            .pattern("A A")
+            .pattern("A A")
+            .unlockedBy(unlockedByName, AVPRecipeProvider.has(baseIngredient))
+            .save(recipeOutput);
+        ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, helmetIngredient)
+            .define('A', baseIngredient)
+            .pattern("AAA")
+            .pattern("A A")
+            .unlockedBy(unlockedByName, AVPRecipeProvider.has(baseIngredient))
+            .save(recipeOutput);
+        ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, leggingsIngredient)
+            .define('A', baseIngredient)
+            .pattern("AAA")
+            .pattern("A A")
+            .pattern("A A")
+            .unlockedBy(unlockedByName, AVPRecipeProvider.has(baseIngredient))
+            .save(recipeOutput);
+    }
+
     private static void addAluminumArmorRecipes(RecipeOutput recipeOutput) {
-        var baseIngredient = AVPItems.INGOT_ALUMINUM.get();
-        ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AVPArmorItems.ALUMINUM_BODY.get())
-            .define('A', baseIngredient)
-            .pattern("A A")
-            .pattern("AAA")
-            .pattern("AAA")
-            .unlockedBy("has_aluminum", AVPRecipeProvider.has(baseIngredient))
-            .save(recipeOutput);
-        ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AVPArmorItems.ALUMINUM_BOOTS.get())
-            .define('A', baseIngredient)
-            .pattern("A A")
-            .pattern("A A")
-            .unlockedBy("has_aluminum", AVPRecipeProvider.has(baseIngredient))
-            .save(recipeOutput);
-        ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AVPArmorItems.ALUMINUM_HELMET.get())
-            .define('A', baseIngredient)
-            .pattern("AAA")
-            .pattern("A A")
-            .unlockedBy("has_aluminum", AVPRecipeProvider.has(baseIngredient))
-            .save(recipeOutput);
-        ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AVPArmorItems.ALUMINUM_LEGGINGS.get())
-            .define('A', baseIngredient)
-            .pattern("AAA")
-            .pattern("A A")
-            .pattern("A A")
-            .unlockedBy("has_aluminum", AVPRecipeProvider.has(baseIngredient))
-            .save(recipeOutput);
+        addStandardArmorRecipes(
+            recipeOutput,
+            AVPItems.INGOT_ALUMINUM,
+            AVPArmorItems.ALUMINUM_HELMET,
+            AVPArmorItems.ALUMINUM_BODY,
+            AVPArmorItems.ALUMINUM_LEGGINGS,
+            AVPArmorItems.ALUMINUM_BOOTS
+        );
     }
 
     private static void addMK50ArmorRecipes(RecipeOutput recipeOutput) {
@@ -84,6 +110,17 @@ public final class AVPArmorRecipes {
             .pattern("A A")
             .unlockedBy("has_copper", AVPRecipeProvider.has(Items.COPPER_INGOT))
             .save(recipeOutput);
+    }
+
+    private static void addOrioniteArmorRecipes(RecipeOutput recipeOutput) {
+        addStandardArmorRecipes(
+            recipeOutput,
+            AVPItems.INGOT_ORIONITE,
+            AVPArmorItems.ORIONITE_HELMET,
+            AVPArmorItems.ORIONITE_BODY,
+            AVPArmorItems.ORIONITE_LEGGINGS,
+            AVPArmorItems.ORIONITE_BOOTS
+        );
     }
 
     private static void addPressureArmorRecipes(RecipeOutput recipeOutput) {
@@ -149,33 +186,14 @@ public final class AVPArmorRecipes {
     }
 
     private static void addXenomorphChitinArmorRecipes(RecipeOutput recipeOutput) {
-        var baseIngredient = AVPItems.XENOMORPH_CHITIN.get();
-        ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AVPArmorItems.XENOMORPH_BODY.get())
-            .define('A', baseIngredient)
-            .pattern("A A")
-            .pattern("AAA")
-            .pattern("AAA")
-            .unlockedBy("has_xenomorph_chitin", AVPRecipeProvider.has(baseIngredient))
-            .save(recipeOutput);
-        ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AVPArmorItems.XENOMORPH_BOOTS.get())
-            .define('A', baseIngredient)
-            .pattern("A A")
-            .pattern("A A")
-            .unlockedBy("has_xenomorph_chitin", AVPRecipeProvider.has(baseIngredient))
-            .save(recipeOutput);
-        ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AVPArmorItems.XENOMORPH_HELMET.get())
-            .define('A', baseIngredient)
-            .pattern("AAA")
-            .pattern("A A")
-            .unlockedBy("has_xenomorph_chitin", AVPRecipeProvider.has(baseIngredient))
-            .save(recipeOutput);
-        ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AVPArmorItems.XENOMORPH_LEGGINGS.get())
-            .define('A', baseIngredient)
-            .pattern("AAA")
-            .pattern("A A")
-            .pattern("A A")
-            .unlockedBy("has_xenomorph_chitin", AVPRecipeProvider.has(baseIngredient))
-            .save(recipeOutput);
+        addStandardArmorRecipes(
+            recipeOutput,
+            AVPItems.XENOMORPH_CHITIN,
+            AVPArmorItems.XENOMORPH_HELMET,
+            AVPArmorItems.XENOMORPH_BODY,
+            AVPArmorItems.XENOMORPH_LEGGINGS,
+            AVPArmorItems.XENOMORPH_BOOTS
+        );
     }
 
     private AVPArmorRecipes() {
