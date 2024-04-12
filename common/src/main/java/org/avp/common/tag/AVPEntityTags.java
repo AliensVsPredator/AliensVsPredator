@@ -18,6 +18,8 @@ public class AVPEntityTags {
 
     public static final TagKey<EntityType<?>> NON_HOSTS;
 
+    public static final TagKey<EntityType<?>> NOT_WORTH_KILLING;
+
     public static final TagKey<EntityType<?>> PARASITES;
 
     public static final TagKey<EntityType<?>> PREDATORS;
@@ -37,9 +39,14 @@ public class AVPEntityTags {
         ALIENS = create("aliens");
         EGGS = create("eggs");
         ENGINEERS = create("engineers");
+        NOT_WORTH_KILLING = create("not_worth_killing");
         NON_HOSTS = create("non_hosts");
         PARASITES = create("parasites");
         PREDATORS = create("predators");
         ROYAL_ALIENS = create("royal_aliens");
+    }
+
+    private AVPEntityTags() {
+        throw new UnsupportedOperationException();
     }
 }

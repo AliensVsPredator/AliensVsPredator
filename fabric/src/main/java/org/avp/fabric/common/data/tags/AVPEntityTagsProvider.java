@@ -83,6 +83,23 @@ public class AVPEntityTagsProvider extends FabricTagProvider.EntityTypeTagProvid
             AVPEngineerEntityTypes.ENGINEER.get()
         );
 
+        getOrCreateTagBuilder(AVPEntityTags.NOT_WORTH_KILLING)
+            .add(EntityType.ALLAY)
+            .add(EntityType.AXOLOTL)
+            .add(EntityType.BAT)
+            .add(EntityType.BEE)
+            .add(EntityType.CAT)
+            .add(EntityType.CHICKEN)
+            .add(EntityType.COD)
+            .add(EntityType.CREEPER)
+            .add(EntityType.GLOW_SQUID)
+            .add(EntityType.PARROT)
+            .add(EntityType.PUFFERFISH)
+            .add(EntityType.SALMON)
+            .add(EntityType.SQUID)
+            .add(EntityType.TADPOLE)
+            .add(EntityType.TROPICAL_FISH);
+
         getOrCreateTagBuilder(AVPEntityTags.NON_HOSTS)
             .addOptionalTag(EntityTypeTags.UNDEAD)
             .add(
