@@ -16,6 +16,7 @@ public class AVPEntityLootTableProvider extends AbstractAVPEntityLootTableProvid
 
     @Override
     public void generate() {
+        // Queen
         add(
             AVPBaseAlienEntityTypes.QUEEN.get(),
             LootTable.lootTable()
@@ -24,8 +25,17 @@ public class AVPEntityLootTableProvider extends AbstractAVPEntityLootTableProvid
                         .setRolls(ConstantValue.exactly(1.0F))
                         .add(
                             LootItem.lootTableItem(AVPItems.ROYAL_JELLY.get())
-                                .apply(SetItemCountFunction.setCount(UniformGenerator.between(0.0F, 1.0F)))
+                                .apply(SetItemCountFunction.setCount(ConstantValue.exactly(1.0F)))
                                 .apply(LootingEnchantFunction.lootingMultiplier(UniformGenerator.between(0.0F, 1.0F)))
+                        )
+                )
+                .withPool(
+                    LootPool.lootPool()
+                        .setRolls(ConstantValue.exactly(1.0F))
+                        .add(
+                            LootItem.lootTableItem(AVPItems.XENOMORPH_CHITIN.get())
+                                .apply(SetItemCountFunction.setCount(UniformGenerator.between(1.0F, 4.0F)))
+                                .apply(LootingEnchantFunction.lootingMultiplier(UniformGenerator.between(2.0F, 3.0F)))
                         )
                 )
         );
