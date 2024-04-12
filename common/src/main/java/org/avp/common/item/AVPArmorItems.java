@@ -1,11 +1,11 @@
 package org.avp.common.item;
 
 import net.minecraft.world.item.ArmorItem;
+import net.minecraft.world.item.ArmorMaterial;
 import net.minecraft.world.item.Item;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Supplier;
 
 import org.avp.api.GameObject;
 import org.avp.common.item.armor.material.AVPArmorMaterials;
@@ -71,8 +71,8 @@ public class AVPArmorItems {
         return ENTRIES;
     }
 
-    private static GameObject<Item> register(String registryName, Supplier<Item> itemSupplier) {
-        var gameObject = Services.ITEM_REGISTRY.register(registryName, itemSupplier);
+    private static GameObject<Item> register(String registryName, ArmorMaterial armorMaterial, ArmorItem.Type armorType) {
+        var gameObject = Services.ITEM_REGISTRY.register("armor_" + registryName, () -> new ArmorItem(armorMaterial, armorType, new Item.Properties()));
         ENTRIES.add(gameObject);
         return gameObject;
     }
@@ -81,111 +81,39 @@ public class AVPArmorItems {
 
     static {
         var aluminumMaterial = AVPArmorMaterials.getInstance().ALUMINUM;
-        ALUMINUM_BODY = register(
-            "armor_aluminum_body",
-            () -> new ArmorItem(aluminumMaterial, ArmorItem.Type.CHESTPLATE, new Item.Properties())
-        );
-        ALUMINUM_BOOTS = register(
-            "armor_aluminum_boots",
-            () -> new ArmorItem(aluminumMaterial, ArmorItem.Type.BOOTS, new Item.Properties())
-        );
-        ALUMINUM_HELMET = register(
-            "armor_aluminum_helmet",
-            () -> new ArmorItem(aluminumMaterial, ArmorItem.Type.HELMET, new Item.Properties())
-        );
-        ALUMINUM_LEGGINGS = register(
-            "armor_aluminum_leggings",
-            () -> new ArmorItem(aluminumMaterial, ArmorItem.Type.LEGGINGS, new Item.Properties())
-        );
+        ALUMINUM_BODY = register("aluminum_body", aluminumMaterial, ArmorItem.Type.CHESTPLATE);
+        ALUMINUM_BOOTS = register("aluminum_boots", aluminumMaterial, ArmorItem.Type.BOOTS);
+        ALUMINUM_HELMET = register("aluminum_helmet", aluminumMaterial, ArmorItem.Type.HELMET);
+        ALUMINUM_LEGGINGS = register("aluminum_leggings", aluminumMaterial, ArmorItem.Type.LEGGINGS);
 
         var celticMaterial = AVPArmorMaterials.getInstance().CELTIC;
-        CELTIC_BODY = register(
-            "armor_celtic_body",
-            () -> new ArmorItem(celticMaterial, ArmorItem.Type.CHESTPLATE, new Item.Properties())
-        );
-        CELTIC_BOOTS = register(
-            "armor_celtic_boots",
-            () -> new ArmorItem(celticMaterial, ArmorItem.Type.BOOTS, new Item.Properties())
-        );
-        CELTIC_HELMET = register(
-            "armor_celtic_helmet",
-            () -> new ArmorItem(celticMaterial, ArmorItem.Type.HELMET, new Item.Properties())
-        );
-        CELTIC_LEGGINGS = register(
-            "armor_celtic_leggings",
-            () -> new ArmorItem(celticMaterial, ArmorItem.Type.LEGGINGS, new Item.Properties())
-        );
+        CELTIC_BODY = register("celtic_body", celticMaterial, ArmorItem.Type.CHESTPLATE);
+        CELTIC_BOOTS = register("celtic_boots", celticMaterial, ArmorItem.Type.BOOTS);
+        CELTIC_HELMET = register("celtic_helmet", celticMaterial, ArmorItem.Type.HELMET);
+        CELTIC_LEGGINGS = register("celtic_leggings", celticMaterial, ArmorItem.Type.LEGGINGS);
 
         var mk50Material = AVPArmorMaterials.getInstance().MK50;
-        MK50_BODY = register(
-            "armor_mk50_body",
-            () -> new ArmorItem(mk50Material, ArmorItem.Type.CHESTPLATE, new Item.Properties())
-        );
-        MK50_BOOTS = register(
-            "armor_mk50_boots",
-            () -> new ArmorItem(mk50Material, ArmorItem.Type.BOOTS, new Item.Properties())
-        );
-        MK50_HELMET = register(
-            "armor_mk50_helmet",
-            () -> new ArmorItem(mk50Material, ArmorItem.Type.HELMET, new Item.Properties())
-        );
-        MK50_LEGGINGS = register(
-            "armor_mk50_leggings",
-            () -> new ArmorItem(mk50Material, ArmorItem.Type.LEGGINGS, new Item.Properties())
-        );
+        MK50_BODY = register("mk50_body", mk50Material, ArmorItem.Type.CHESTPLATE);
+        MK50_BOOTS = register("mk50_boots", mk50Material, ArmorItem.Type.BOOTS);
+        MK50_HELMET = register("mk50_helmet", mk50Material, ArmorItem.Type.HELMET);
+        MK50_LEGGINGS = register("mk50_leggings", mk50Material, ArmorItem.Type.LEGGINGS);
 
         var pressureMaterial = AVPArmorMaterials.getInstance().PRESSURE;
-        PRESSURE_BODY = register(
-            "armor_pressure_body",
-            () -> new ArmorItem(pressureMaterial, ArmorItem.Type.CHESTPLATE, new Item.Properties())
-        );
-        PRESSURE_BOOTS = register(
-            "armor_pressure_boots",
-            () -> new ArmorItem(pressureMaterial, ArmorItem.Type.BOOTS, new Item.Properties())
-        );
-        PRESSURE_HELMET = register(
-            "armor_pressure_helmet",
-            () -> new ArmorItem(pressureMaterial, ArmorItem.Type.HELMET, new Item.Properties())
-        );
-        PRESSURE_LEGGINGS = register(
-            "armor_pressure_leggings",
-            () -> new ArmorItem(pressureMaterial, ArmorItem.Type.LEGGINGS, new Item.Properties())
-        );
+        PRESSURE_BODY = register("pressure_body", pressureMaterial, ArmorItem.Type.CHESTPLATE);
+        PRESSURE_BOOTS = register("pressure_boots", pressureMaterial, ArmorItem.Type.BOOTS);
+        PRESSURE_HELMET = register("pressure_helmet", pressureMaterial, ArmorItem.Type.HELMET);
+        PRESSURE_LEGGINGS = register("pressure_leggings", pressureMaterial, ArmorItem.Type.LEGGINGS);
 
         var tacticalMaterial = AVPArmorMaterials.getInstance().TACTICAL;
-        TACTICAL_BODY = register(
-            "armor_tactical_body",
-            () -> new ArmorItem(tacticalMaterial, ArmorItem.Type.CHESTPLATE, new Item.Properties())
-        );
-        TACTICAL_BOOTS = register(
-            "armor_tactical_boots",
-            () -> new ArmorItem(tacticalMaterial, ArmorItem.Type.BOOTS, new Item.Properties())
-        );
-        TACTICAL_HELMET = register(
-            "armor_tactical_helmet",
-            () -> new ArmorItem(tacticalMaterial, ArmorItem.Type.HELMET, new Item.Properties())
-        );
-        TACTICAL_LEGGINGS = register(
-            "armor_tactical_leggings",
-            () -> new ArmorItem(tacticalMaterial, ArmorItem.Type.LEGGINGS, new Item.Properties())
-        );
+        TACTICAL_BODY = register("tactical_body", tacticalMaterial, ArmorItem.Type.CHESTPLATE);
+        TACTICAL_BOOTS = register("tactical_boots", tacticalMaterial, ArmorItem.Type.BOOTS);
+        TACTICAL_HELMET = register("tactical_helmet", tacticalMaterial, ArmorItem.Type.HELMET);
+        TACTICAL_LEGGINGS = register("tactical_leggings", tacticalMaterial, ArmorItem.Type.LEGGINGS);
 
         var xenomorphChitinMaterial = AVPArmorMaterials.getInstance().XENOMORPH_CHITIN;
-        XENOMORPH_BODY = register(
-            "armor_xenomorph_chitin_body",
-            () -> new ArmorItem(xenomorphChitinMaterial, ArmorItem.Type.CHESTPLATE, new Item.Properties())
-        );
-        XENOMORPH_BOOTS = register(
-            "armor_xenomorph_chitin_boots",
-            () -> new ArmorItem(xenomorphChitinMaterial, ArmorItem.Type.BOOTS, new Item.Properties())
-        );
-        XENOMORPH_HELMET = register(
-            "armor_xenomorph_chitin_helmet",
-            () -> new ArmorItem(xenomorphChitinMaterial, ArmorItem.Type.HELMET, new Item.Properties())
-        );
-        XENOMORPH_LEGGINGS = register(
-            "armor_xenomorph_chitin_leggings",
-            () -> new ArmorItem(xenomorphChitinMaterial, ArmorItem.Type.LEGGINGS, new Item.Properties())
-        );
+        XENOMORPH_BODY = register("xenomorph_chitin_body", xenomorphChitinMaterial, ArmorItem.Type.CHESTPLATE);
+        XENOMORPH_BOOTS = register("xenomorph_chitin_boots", xenomorphChitinMaterial, ArmorItem.Type.BOOTS);
+        XENOMORPH_HELMET = register("xenomorph_chitin_helmet", xenomorphChitinMaterial, ArmorItem.Type.HELMET);
+        XENOMORPH_LEGGINGS = register("xenomorph_chitin_leggings", xenomorphChitinMaterial, ArmorItem.Type.LEGGINGS);
     }
 }
