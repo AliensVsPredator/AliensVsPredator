@@ -55,6 +55,14 @@ public class AVPArmorItems {
 
     public static final GameObject<Item> TACTICAL_LEGGINGS;
 
+    public static final GameObject<Item> XENOMORPH_BODY;
+
+    public static final GameObject<Item> XENOMORPH_BOOTS;
+
+    public static final GameObject<Item> XENOMORPH_HELMET;
+
+    public static final GameObject<Item> XENOMORPH_LEGGINGS;
+
     public static void forceInitialization() {
         // This method doesn't need to do anything
     }
@@ -163,19 +171,19 @@ public class AVPArmorItems {
         );
 
         var xenomorphChitinMaterial = AVPArmorMaterials.getInstance().XENOMORPH_CHITIN;
-        register(
+        XENOMORPH_BODY = register(
             "armor_xenomorph_chitin_body",
             () -> new ArmorItem(xenomorphChitinMaterial, ArmorItem.Type.CHESTPLATE, new Item.Properties())
         );
-        register(
+        XENOMORPH_BOOTS = register(
             "armor_xenomorph_chitin_boots",
             () -> new ArmorItem(xenomorphChitinMaterial, ArmorItem.Type.BOOTS, new Item.Properties())
         );
-        register(
+        XENOMORPH_HELMET = register(
             "armor_xenomorph_chitin_helmet",
             () -> new ArmorItem(xenomorphChitinMaterial, ArmorItem.Type.HELMET, new Item.Properties())
         );
-        register(
+        XENOMORPH_LEGGINGS = register(
             "armor_xenomorph_chitin_leggings",
             () -> new ArmorItem(xenomorphChitinMaterial, ArmorItem.Type.LEGGINGS, new Item.Properties())
         );

@@ -17,34 +17,36 @@ public final class AVPArmorRecipes {
         addMK50ArmorRecipes(recipeOutput);
         addPressureArmorRecipes(recipeOutput);
         addTacticalArmorRecipes(recipeOutput);
+        addXenomorphChitinArmorRecipes(recipeOutput);
     }
 
     private static void addAluminumArmorRecipes(RecipeOutput recipeOutput) {
+        var baseIngredient = AVPItems.INGOT_ALUMINUM.get();
         ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AVPArmorItems.ALUMINUM_BODY.get())
-            .define('A', AVPItems.INGOT_ALUMINUM.get())
+            .define('A', baseIngredient)
             .pattern("A A")
             .pattern("AAA")
             .pattern("AAA")
-            .unlockedBy("has_aluminum", AVPRecipeProvider.has(AVPItems.INGOT_ALUMINUM.get()))
+            .unlockedBy("has_aluminum", AVPRecipeProvider.has(baseIngredient))
             .save(recipeOutput);
         ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AVPArmorItems.ALUMINUM_BOOTS.get())
-            .define('A', AVPItems.INGOT_ALUMINUM.get())
+            .define('A', baseIngredient)
             .pattern("A A")
             .pattern("A A")
-            .unlockedBy("has_aluminum", AVPRecipeProvider.has(AVPItems.INGOT_ALUMINUM.get()))
+            .unlockedBy("has_aluminum", AVPRecipeProvider.has(baseIngredient))
             .save(recipeOutput);
         ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AVPArmorItems.ALUMINUM_HELMET.get())
-            .define('A', AVPItems.INGOT_ALUMINUM.get())
+            .define('A', baseIngredient)
             .pattern("AAA")
             .pattern("A A")
-            .unlockedBy("has_aluminum", AVPRecipeProvider.has(AVPItems.INGOT_ALUMINUM.get()))
+            .unlockedBy("has_aluminum", AVPRecipeProvider.has(baseIngredient))
             .save(recipeOutput);
         ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AVPArmorItems.ALUMINUM_LEGGINGS.get())
-            .define('A', AVPItems.INGOT_ALUMINUM.get())
+            .define('A', baseIngredient)
             .pattern("AAA")
             .pattern("A A")
             .pattern("A A")
-            .unlockedBy("has_aluminum", AVPRecipeProvider.has(AVPItems.INGOT_ALUMINUM.get()))
+            .unlockedBy("has_aluminum", AVPRecipeProvider.has(baseIngredient))
             .save(recipeOutput);
     }
 
@@ -143,6 +145,36 @@ public final class AVPArmorRecipes {
             .pattern("B B")
             .pattern("A A")
             .unlockedBy("has_aluminum", AVPRecipeProvider.has(AVPItems.INGOT_ALUMINUM.get()))
+            .save(recipeOutput);
+    }
+
+    private static void addXenomorphChitinArmorRecipes(RecipeOutput recipeOutput) {
+        var baseIngredient = AVPItems.XENOMORPH_CHITIN.get();
+        ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AVPArmorItems.XENOMORPH_BODY.get())
+            .define('A', baseIngredient)
+            .pattern("A A")
+            .pattern("AAA")
+            .pattern("AAA")
+            .unlockedBy("has_xenomorph_chitin", AVPRecipeProvider.has(baseIngredient))
+            .save(recipeOutput);
+        ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AVPArmorItems.XENOMORPH_BOOTS.get())
+            .define('A', baseIngredient)
+            .pattern("A A")
+            .pattern("A A")
+            .unlockedBy("has_xenomorph_chitin", AVPRecipeProvider.has(baseIngredient))
+            .save(recipeOutput);
+        ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AVPArmorItems.XENOMORPH_HELMET.get())
+            .define('A', baseIngredient)
+            .pattern("AAA")
+            .pattern("A A")
+            .unlockedBy("has_xenomorph_chitin", AVPRecipeProvider.has(baseIngredient))
+            .save(recipeOutput);
+        ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AVPArmorItems.XENOMORPH_LEGGINGS.get())
+            .define('A', baseIngredient)
+            .pattern("AAA")
+            .pattern("A A")
+            .pattern("A A")
+            .unlockedBy("has_xenomorph_chitin", AVPRecipeProvider.has(baseIngredient))
             .save(recipeOutput);
     }
 
