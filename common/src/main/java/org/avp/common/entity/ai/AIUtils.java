@@ -28,7 +28,8 @@ public class AIUtils {
                 monster,
                 LivingEntity.class,
                 true,
-                livingEntity -> !livingEntity.getType().is(AVPEntityTags.ALIENS)
+                livingEntity -> !livingEntity.getType().is(AVPEntityTags.ALIENS) &&
+                    !livingEntity.getType().is(AVPEntityTags.NOT_WORTH_KILLING)
             )
         );
     }
