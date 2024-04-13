@@ -37,6 +37,9 @@ public class AVPOreBlocks {
     private static final BlockBehaviour.Properties SILICA_PROPERTIES = BlockBehaviour.Properties.ofFullCopy(Blocks.STONE)
         .strength(2.2F, 1.4F);
 
+    private static final BlockBehaviour.Properties TITANIUM_PROPERTIES = BlockBehaviour.Properties.ofFullCopy(Blocks.STONE)
+        .strength(4.0F, 4.0F);
+
     public static final GameObject<Block> ORE_BAUXITE;
 
     public static final GameObject<Block> ORE_COBALT;
@@ -47,7 +50,11 @@ public class AVPOreBlocks {
 
     public static final GameObject<Block> ORE_SILICA;
 
+    public static final GameObject<Block> ORE_TITANIUM;
+
     public static final GameObject<Block> RAW_BAUXITE_BLOCK;
+
+    public static final GameObject<Block> RAW_TITANIUM_BLOCK;
 
     public static final GameObject<Block> COBALT_BLOCK;
 
@@ -85,8 +92,11 @@ public class AVPOreBlocks {
 
         ORE_SILICA = register("silica", oreProps.apply(SILICA_PROPERTIES, AVPItems.SILICA).tags().tags(ironTier));
 
+        ORE_TITANIUM = register("titanium", oreProps.apply(TITANIUM_PROPERTIES, AVPItems.RAW_TITANIUM).tags().tags(ironTier));
+
         // NOTE: DO NOT USE AVPOreBlocks#register HERE.
         RAW_BAUXITE_BLOCK = AVPBlocks.register("raw_bauxite_block", BlockData.simple(BAUXITE_PROPERTIES).tags(stoneTier));
+        RAW_TITANIUM_BLOCK = AVPBlocks.register("raw_titanium_block", BlockData.simple(TITANIUM_PROPERTIES).tags(ironTier));
         COBALT_BLOCK = AVPBlocks.register("cobalt_block", BlockData.simple(COBALT_PROPERTIES).tags(diamondTier));
         LITHIUM_BLOCK = AVPBlocks.register("lithium_block", BlockData.simple(LITHIUM_PROPERTIES).tags(woodTier));
         NEODYMIUM_BLOCK = AVPBlocks.register("neodymium_block", BlockData.simple(MONAZITE_PROPERTIES).tags(diamondTier));
