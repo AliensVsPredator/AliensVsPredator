@@ -36,6 +36,22 @@ public class AIUtils {
         );
     }
 
+    public static void addFacehuggerAI(Monster monster, GoalSelector goalSelector, GoalSelector targetSelector) {
+        goalSelector.addGoal(1, new FloatGoal(monster));
+        goalSelector.addGoal(2, new MeleeAttackGoal(monster, 1.0, true));
+        goalSelector.addGoal(3, new WaterAvoidingRandomStrollGoal(monster, 1.0));
+        targetSelector.addGoal(
+            1,
+            new NearestAttackableTargetGoal<>(
+                monster,
+                LivingEntity.class,
+                true,
+                livingEntity -> !livingEntity.getType().is(AVPEntityTags.ALIENS) &&
+                    !livingEntity.getType().is(AVPEntityTags.NON_HOSTS)
+            )
+        );
+    }
+
     private AIUtils() {
         throw new UnsupportedOperationException();
     }
