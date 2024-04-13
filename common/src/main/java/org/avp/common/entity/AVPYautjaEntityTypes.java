@@ -20,6 +20,7 @@ public class AVPYautjaEntityTypes implements AVPRegistry {
         0xB9A86C,
         0x5A4728,
         EntityType.Builder.of(Yautja::new, MobCategory.MONSTER)
+            .sized(0.98F, 2.48F)
     );
 
     @Override
