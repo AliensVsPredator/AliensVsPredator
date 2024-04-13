@@ -20,8 +20,12 @@ public class AVPBlocks {
     public static final BlockBehaviour.Properties ALUMINUM_PROPERTIES = BlockBehaviour.Properties.ofFullCopy(
         Blocks.IRON_BLOCK
     );
+    public static final BlockBehaviour.Properties TITANIUM_PROPERTIES = BlockBehaviour.Properties.ofFullCopy(
+        Blocks.IRON_BLOCK
+    );
 
     public static final GameObject<Block> ALUMINUM_BLOCK;
+    public static final GameObject<Block> TITANIUM_BLOCK;
 
     public static void forceInitialization() {
         // This method doesn't need to do anything
@@ -41,8 +45,10 @@ public class AVPBlocks {
     private AVPBlocks() {}
 
     static {
-        var metal = List.of(BlockTags.MINEABLE_WITH_PICKAXE, BlockTags.NEEDS_STONE_TOOL);
+        var aluminum = List.of(BlockTags.MINEABLE_WITH_PICKAXE, BlockTags.NEEDS_STONE_TOOL);
+        var titanium = List.of(BlockTags.MINEABLE_WITH_PICKAXE, BlockTags.NEEDS_IRON_TOOL);
 
-        ALUMINUM_BLOCK = register("aluminum_block", BlockData.simple(ALUMINUM_PROPERTIES).tags(metal));
+        ALUMINUM_BLOCK = register("aluminum_block", BlockData.simple(ALUMINUM_PROPERTIES).tags(aluminum));
+        TITANIUM_BLOCK = register("titanium_block", BlockData.simple(TITANIUM_PROPERTIES).tags(titanium));
     }
 }
