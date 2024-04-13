@@ -1,10 +1,11 @@
-package org.avp.common.data.recipes;
+package org.avp.common.data.recipes.impl.weapon;
 
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.world.item.Item;
 
 import org.avp.api.GameObject;
+import org.avp.common.data.recipes.AVPShapelessRecipeBuilder;
 import org.avp.common.item.AVPWeaponBlueprintItems;
 import org.avp.common.item.AVPWeaponItems;
 import org.avp.common.item.AVPWeaponPartItems;

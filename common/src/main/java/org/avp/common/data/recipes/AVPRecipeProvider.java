@@ -9,6 +9,26 @@ import net.minecraft.data.recipes.RecipeProvider;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.ItemLike;
+import org.avp.common.data.recipes.impl.material.AVPAluminumRecipes;
+import org.avp.common.data.recipes.impl.AVPArmorRecipes;
+import org.avp.common.data.recipes.impl.weapon.AVPBulletRecipes;
+import org.avp.common.data.recipes.impl.material.AVPCobaltRecipes;
+import org.avp.common.data.recipes.impl.AVPElectronicRecipes;
+import org.avp.common.data.recipes.impl.AVPFoodRecipes;
+import org.avp.common.data.recipes.impl.block.AVPIndustrialBlockRecipes;
+import org.avp.common.data.recipes.impl.material.AVPLithiumRecipes;
+import org.avp.common.data.recipes.impl.AVPMaterialsRecipes;
+import org.avp.common.data.recipes.impl.material.AVPNeodymiumRecipes;
+import org.avp.common.data.recipes.impl.block.AVPPaddingBlockRecipes;
+import org.avp.common.data.recipes.impl.material.AVPSilicaRecipes;
+import org.avp.common.data.recipes.impl.block.AVPTempleBlockRecipes;
+import org.avp.common.data.recipes.impl.material.AVPTitaniumRecipes;
+import org.avp.common.data.recipes.impl.AVPToolRecipes;
+import org.avp.common.data.recipes.impl.weapon.AVPAmmoRecipes;
+import org.avp.common.data.recipes.impl.weapon.AVPAmmunitionPartRecipes;
+import org.avp.common.data.recipes.impl.weapon.AVPWeaponBlueprintRecipes;
+import org.avp.common.data.recipes.impl.weapon.AVPWeaponPartRecipes;
+import org.avp.common.data.recipes.impl.weapon.AVPWeaponRecipes;
 import org.jetbrains.annotations.NotNull;
 
 public class AVPRecipeProvider extends RecipeProvider {

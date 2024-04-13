@@ -1,10 +1,10 @@
-package org.avp.common.data.recipes;
+package org.avp.common.data.recipes.impl.weapon;
 
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
-import net.minecraft.data.recipes.ShapedRecipeBuilder;
 import net.minecraft.world.item.Items;
 
+import org.avp.common.data.recipes.AVPShapedRecipeBuilder;
 import org.avp.common.item.AVPWeaponBlueprintItems;
 
 public final class AVPWeaponBlueprintRecipes {

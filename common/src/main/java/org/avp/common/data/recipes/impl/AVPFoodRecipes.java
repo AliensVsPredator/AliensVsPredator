@@ -1,4 +1,4 @@
-package org.avp.common.data.recipes;
+package org.avp.common.data.recipes.impl;
 
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
@@ -6,6 +6,8 @@ import net.minecraft.data.recipes.SimpleCookingRecipeBuilder;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 
+import org.avp.common.data.recipes.AVPRecipeProvider;
+import org.avp.common.data.recipes.AVPShapedRecipeBuilder;
 import org.avp.common.item.AVPFoodItems;
 
 public final class AVPFoodRecipes {
