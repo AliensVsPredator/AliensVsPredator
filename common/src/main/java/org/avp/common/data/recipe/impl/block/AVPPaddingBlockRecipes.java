@@ -1,4 +1,4 @@
-package org.avp.common.data.recipes.impl.block;
+package org.avp.common.data.recipe.impl.block;
 
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
@@ -12,7 +12,7 @@ import java.util.List;
 import org.avp.api.GameObject;
 import org.avp.api.Tuple;
 import org.avp.common.block.AVPPaddingBlocks;
-import org.avp.common.data.recipes.AVPShapedRecipeBuilder;
+import org.avp.common.data.recipe.AVPShapedRecipeBuilder;
 
 public final class AVPPaddingBlockRecipes {
 

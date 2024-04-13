@@ -1,10 +1,10 @@
-package org.avp.common.data.recipes.impl.weapon;
+package org.avp.common.data.recipe.impl.weapon;
 
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.world.item.Items;
 
-import org.avp.common.data.recipes.AVPShapedRecipeBuilder;
+import org.avp.common.data.recipe.AVPShapedRecipeBuilder;
 import org.avp.common.item.AVPAmmunitionPartItems;
 import org.avp.common.item.AVPElectronicItems;
 import org.avp.common.item.AVPItems;

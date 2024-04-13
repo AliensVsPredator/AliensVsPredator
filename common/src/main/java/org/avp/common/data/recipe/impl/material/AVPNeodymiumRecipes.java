@@ -1,32 +1,32 @@
-package org.avp.common.data.recipes.impl.material;
+package org.avp.common.data.recipe.impl.material;
 
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
 import org.avp.common.block.AVPOreBlocks;
-import org.avp.common.data.recipes.AVPRecipeHelper;
+import org.avp.common.data.recipe.AVPRecipeHelper;
 import org.avp.common.item.AVPItems;
 
-public final class AVPCobaltRecipes {
+public final class AVPNeodymiumRecipes {
 
-    public static void addCobaltRecipes(RecipeOutput recipeOutput) {
+    public static void addNeodymiumRecipes(RecipeOutput recipeOutput) {
         // Compressed blocks
         AVPRecipeHelper.compressedBlockRecipe(
             recipeOutput,
             RecipeCategory.BUILDING_BLOCKS,
-            AVPItems.COBALT.get(),
-            AVPOreBlocks.COBALT_BLOCK.get()
+            AVPItems.NEODYMIUM.get(),
+            AVPOreBlocks.NEODYMIUM_BLOCK.get()
         );
 
         // Decompressed items from blocks
         AVPRecipeHelper.decompressedItemRecipe(
             recipeOutput,
             RecipeCategory.MISC,
-            AVPOreBlocks.ORE_COBALT.get(),
-            AVPItems.COBALT.get()
+            AVPOreBlocks.NEODYMIUM_BLOCK.get(),
+            AVPItems.NEODYMIUM.get()
         );
     }
 
-    private AVPCobaltRecipes() {
+    private AVPNeodymiumRecipes() {
         throw new UnsupportedOperationException();
     }
 }

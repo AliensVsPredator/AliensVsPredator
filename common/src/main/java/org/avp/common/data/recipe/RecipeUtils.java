@@ -1,4 +1,4 @@
-package org.avp.common.data.recipes;
+package org.avp.common.data.recipe;
 
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;

@@ -4,7 +4,7 @@ import net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 
 import org.avp.common.data.loot_table.AVPLootTableProvider;
-import org.avp.common.data.recipes.AVPRecipeProvider;
+import org.avp.common.data.recipe.AVPRecipeProvider;
 import org.avp.fabric.common.data.models.AVPFabricModelProvider;
 import org.avp.fabric.common.data.tags.AVPBiomeTagsProvider;
 import org.avp.fabric.common.data.tags.AVPBlockTagsProvider;

@@ -1,17 +1,16 @@
-package org.avp.common.data.recipes.impl.block;
+package org.avp.common.data.recipe.impl.block;
 
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
-import net.minecraft.data.recipes.ShapedRecipeBuilder;
 import net.minecraft.data.recipes.SimpleCookingRecipeBuilder;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 
 import org.avp.common.AVPConstants;
 import org.avp.common.block.AVPTempleBlocks;
-import org.avp.common.data.recipes.AVPRecipeProvider;
-import org.avp.common.data.recipes.AVPShapedRecipeBuilder;
-import org.avp.common.data.recipes.RecipeUtils;
+import org.avp.common.data.recipe.AVPRecipeProvider;
+import org.avp.common.data.recipe.AVPShapedRecipeBuilder;
+import org.avp.common.data.recipe.RecipeUtils;
 
 public final class AVPTempleBlockRecipes {
 

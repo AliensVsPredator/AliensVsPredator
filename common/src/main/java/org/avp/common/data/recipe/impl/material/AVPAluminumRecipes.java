@@ -1,11 +1,11 @@
-package org.avp.common.data.recipes.impl.material;
+package org.avp.common.data.recipe.impl.material;
 
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
 
 import org.avp.common.block.AVPBlocks;
 import org.avp.common.block.AVPOreBlocks;
-import org.avp.common.data.recipes.AVPRecipeHelper;
+import org.avp.common.data.recipe.AVPRecipeHelper;
 import org.avp.common.item.AVPItems;
 
 public final class AVPAluminumRecipes {
