@@ -7,8 +7,8 @@ import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import java.util.List;
 import java.util.Set;
 
-import org.avp.common.data.loot_table.blocks.AVPBlockLootTableProvider;
-import org.avp.common.data.loot_table.entities.AVPEntityLootTableProvider;
+import org.avp.common.data.loot_table.block.AVPBlockLootTableProvider;
+import org.avp.common.data.loot_table.entity.AVPEntityLootTableProvider;
 
 public class AVPLootTableProvider extends LootTableProvider {
 

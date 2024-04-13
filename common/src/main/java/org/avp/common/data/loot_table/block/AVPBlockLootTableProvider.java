@@ -1,4 +1,4 @@
-package org.avp.common.data.loot_table.blocks;
+package org.avp.common.data.loot_table.block;
 
 import net.minecraft.world.level.block.Block;
 

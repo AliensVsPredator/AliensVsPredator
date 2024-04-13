@@ -1,4 +1,4 @@
-package org.avp.common.data.loot_table.entities;
+package org.avp.common.data.loot_table.entity;
 
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.level.storage.loot.LootPool;
