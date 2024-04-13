@@ -30,6 +30,7 @@ public class AVPRunnerAlienEntityTypes implements AVPRegistry {
         0x2E2921,
         0x534A3B,
         EntityType.Builder.of(Crusher::new, MobCategory.MONSTER)
+            .sized(1.48F, 2.48F)
     );
 
     public static final GameObject<EntityType<DroneRunner>> DRONE_RUNNER = AVPEntityTypes.registerLiving(
@@ -37,6 +38,7 @@ public class AVPRunnerAlienEntityTypes implements AVPRegistry {
         0x503D34,
         0xA69E85,
         EntityType.Builder.of(DroneRunner::new, MobCategory.MONSTER)
+            .sized(0.98F, 1.98F)
     );
 
     public static final GameObject<EntityType<WarriorRunner>> WARRIOR_RUNNER = AVPEntityTypes.registerLiving(
@@ -44,6 +46,7 @@ public class AVPRunnerAlienEntityTypes implements AVPRegistry {
         0x1A1917,
         0x61615E,
         EntityType.Builder.of(WarriorRunner::new, MobCategory.MONSTER)
+            .sized(0.98F, 1.98F)
     );
 
     @Override
