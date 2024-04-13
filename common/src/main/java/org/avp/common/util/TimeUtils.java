@@ -3,7 +3,7 @@ package org.avp.common.util;
 import java.time.LocalDate;
 import java.time.Month;
 
-public class TimeUtilities {
+public class TimeUtils {
 
     public static final int ONE_MINUTE_IN_TICKS = 20 * 60;
 
@@ -14,7 +14,7 @@ public class TimeUtilities {
         return now.getMonth() == Month.OCTOBER && now.getDayOfMonth() == 31;
     }
 
-    private TimeUtilities() {
+    private TimeUtils() {
         throw new UnsupportedOperationException();
     }
 }

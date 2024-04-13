@@ -7,8 +7,8 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import org.avp.common.AVPConstants;
-import org.avp.common.util.MixinUtilities;
-import org.avp.common.util.TimeUtilities;
+import org.avp.common.util.MixinUtils;
+import org.avp.common.util.TimeUtils;
 import org.avp.server.BlockBreakProgressManager;
 import org.avp.server.ServerScheduler;
 
@@ -35,10 +35,10 @@ public abstract class MixinServerLevel {
     }
 
     private void tickBlockBreakProgressManager() {
-        var serverLevel = MixinUtilities.<ServerLevel>self(this);
+        var serverLevel = MixinUtils.<ServerLevel>self(this);
         var gameTime = serverLevel.getGameTime();
 
-        if (gameTime % TimeUtilities.ONE_MINUTE_IN_TICKS == 0) {
+        if (gameTime % TimeUtils.ONE_MINUTE_IN_TICKS == 0) {
             AVPConstants.LOGGER.debug(
                 "Cleaning block break progress map ({} entries)",
                 BlockBreakProgressManager.BLOCK_BREAK_PROGRESS_MAP.size()

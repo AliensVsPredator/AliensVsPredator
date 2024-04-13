@@ -12,7 +12,7 @@ import org.jetbrains.annotations.NotNull;
 import org.avp.client.model.entity.living.OvamorphModel;
 import org.avp.common.AVPResources;
 import org.avp.common.entity.living.Ovamorph;
-import org.avp.common.util.TimeUtilities;
+import org.avp.common.util.TimeUtils;
 
 public class OvamorphRenderer extends GeoEntityRenderer<Ovamorph> {
 
@@ -58,6 +58,6 @@ public class OvamorphRenderer extends GeoEntityRenderer<Ovamorph> {
 
     @Override
     public @NotNull ResourceLocation getTextureLocation(@NotNull Ovamorph entity) {
-        return TimeUtilities.isHalloween() ? TEXTURE_HALLOWEEN : super.getTextureLocation(entity);
+        return TimeUtils.isHalloween() ? TEXTURE_HALLOWEEN : super.getTextureLocation(entity);
     }
 }

@@ -40,8 +40,8 @@ import org.avp.client.render.item.AVPWeaponItemRenderers;
 import org.avp.common.config.AVPConfig;
 import org.avp.common.network.payload.ClientboundBulletHitBlockPayload;
 import org.avp.common.service.Services;
-import org.avp.common.util.SoundUtilities;
-import org.avp.common.util.TimeUtilities;
+import org.avp.common.util.SoundUtils;
+import org.avp.common.util.TimeUtils;
 import org.avp.server.BlockBreakProgressManager;
 
 public abstract class AbstractAVPWeaponItem extends Item implements GeoItem {
@@ -180,7 +180,7 @@ public abstract class AbstractAVPWeaponItem extends Item implements GeoItem {
         var block = blockState.getBlock();
         var soundType = block.getSoundType(blockState);
 
-        GameObject<SoundEvent> ricochetSfx = SoundUtilities.getRicochetSoundForSoundType(soundType);
+        GameObject<SoundEvent> ricochetSfx = SoundUtils.getRicochetSoundForSoundType(soundType);
         level.playSound(null, blockPos, ricochetSfx.get(), SoundSource.BLOCKS);
 
         // Only damage blocks if both are true.
@@ -218,7 +218,7 @@ public abstract class AbstractAVPWeaponItem extends Item implements GeoItem {
                 level.destroyBlock(blockPos, false);
                 return null;
             }
-            return new Tuple<>(System.currentTimeMillis() + TimeUtilities.FIVE_MINUTES_IN_MILLIS, newValue);
+            return new Tuple<>(System.currentTimeMillis() + TimeUtils.FIVE_MINUTES_IN_MILLIS, newValue);
         });
     }
 

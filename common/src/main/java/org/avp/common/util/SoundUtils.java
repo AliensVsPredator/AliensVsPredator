@@ -6,7 +6,7 @@ import net.minecraft.world.level.block.SoundType;
 import org.avp.api.GameObject;
 import org.avp.common.sound.AVPSoundEvents;
 
-public class SoundUtilities {
+public class SoundUtils {
 
     public static GameObject<SoundEvent> getRicochetSoundForSoundType(SoundType soundType) {
         GameObject<SoundEvent> ricochetSfx;
@@ -23,7 +23,7 @@ public class SoundUtilities {
         return ricochetSfx;
     }
 
-    private SoundUtilities() {
+    private SoundUtils() {
         throw new UnsupportedOperationException();
     }
 }
