@@ -1,4 +1,4 @@
-package org.avp.fabric.common.data.models;
+package org.avp.fabric.common.data.model;
 
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricModelProvider;

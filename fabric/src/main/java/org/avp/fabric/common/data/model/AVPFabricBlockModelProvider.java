@@ -1,4 +1,4 @@
-package org.avp.fabric.common.data.models;
+package org.avp.fabric.common.data.model;
 
 import net.minecraft.data.models.BlockModelGenerators;
 import net.minecraft.data.models.blockstates.Variant;

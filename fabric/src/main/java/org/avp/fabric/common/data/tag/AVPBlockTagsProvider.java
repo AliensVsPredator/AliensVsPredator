@@ -1,4 +1,4 @@
-package org.avp.fabric.common.data.tags;
+package org.avp.fabric.common.data.tag;
 
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
