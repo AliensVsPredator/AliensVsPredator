@@ -45,6 +45,8 @@ public class AVPItems {
 
     public static final GameObject<Item> RAW_BAUXITE;
 
+    public static final GameObject<Item> RAW_TITANIUM;
+
     public static final GameObject<Item> ROYAL_JELLY;
 
     public static final GameObject<Item> SHURIKEN;
@@ -96,6 +98,7 @@ public class AVPItems {
         POLYCARBONATE = register("polycarbonate");
         POLYMER = register("polymer");
         RAW_BAUXITE = register("raw_bauxite");
+        RAW_TITANIUM = register("raw_titanium");
         ROYAL_JELLY = register("royal_jelly");
         SHURIKEN = register("shuriken");
         SILICA = register("silica");
