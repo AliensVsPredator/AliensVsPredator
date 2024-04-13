@@ -23,6 +23,7 @@ public class AVPRunnerAlienEntityTypes implements AVPRegistry {
         0xD8B877,
         0xF7E2B4,
         EntityType.Builder.of(ChestbursterRunner::new, MobCategory.MONSTER)
+            .sized(0.75F, 0.98F)
     );
 
     public static final GameObject<EntityType<Crusher>> CRUSHER = AVPEntityTypes.registerLiving(
