@@ -67,11 +67,5 @@ public class AVPItemTagsProvider extends FabricTagProvider.ItemTagProvider {
             .add(AVPToolItems.ORIONITE_SWORD.get())
             .add(AVPToolItems.TITANIUM_SWORD.get())
             .add(AVPToolItems.VERITANIUM_SWORD.get());
-
-        getOrCreateTagBuilder(ItemTags.TOOLS)
-            .add(AVPToolItems.ALUMINUM_SWORD.get())
-            .add(AVPToolItems.ORIONITE_SWORD.get())
-            .add(AVPToolItems.TITANIUM_SWORD.get())
-            .add(AVPToolItems.VERITANIUM_SWORD.get());
     }
 }
