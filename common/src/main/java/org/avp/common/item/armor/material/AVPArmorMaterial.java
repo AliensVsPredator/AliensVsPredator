@@ -129,15 +129,32 @@ public record AVPArmorMaterial(
 
     @Override
     public boolean equals(Object object) {
-        if (this == object) return true;
-        if (object == null || getClass() != object.getClass()) return false;
+        if (this == object)
+            return true;
+        if (object == null || getClass() != object.getClass())
+            return false;
         AVPArmorMaterial that = (AVPArmorMaterial) object;
-        return durabilityMultiplier == that.durabilityMultiplier && enchantmentValue == that.enchantmentValue && Float.compare(toughness, that.toughness) == 0 && Float.compare(knockbackResistance, that.knockbackResistance) == 0 && Objects.equals(registryName, that.registryName) && Arrays.equals(protectionValues, that.protectionValues) && Objects.equals(equipSound, that.equipSound) && Objects.equals(repairIngredientSupplier, that.repairIngredientSupplier);
+        return durabilityMultiplier == that.durabilityMultiplier && enchantmentValue == that.enchantmentValue && Float.compare(
+            toughness,
+            that.toughness
+        ) == 0 && Float.compare(knockbackResistance, that.knockbackResistance) == 0 && Objects.equals(registryName, that.registryName)
+            && Arrays.equals(protectionValues, that.protectionValues) && Objects.equals(equipSound, that.equipSound) && Objects.equals(
+                repairIngredientSupplier,
+                that.repairIngredientSupplier
+            );
     }
 
     @Override
     public int hashCode() {
-        int result = Objects.hash(registryName, durabilityMultiplier, enchantmentValue, equipSound, repairIngredientSupplier, toughness, knockbackResistance);
+        int result = Objects.hash(
+            registryName,
+            durabilityMultiplier,
+            enchantmentValue,
+            equipSound,
+            repairIngredientSupplier,
+            toughness,
+            knockbackResistance
+        );
         result = 31 * result + Arrays.hashCode(protectionValues);
         return result;
     }

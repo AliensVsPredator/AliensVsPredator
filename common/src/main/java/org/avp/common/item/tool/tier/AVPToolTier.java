@@ -3,8 +3,9 @@ package org.avp.common.item.tool.tier;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Tier;
 import net.minecraft.world.item.crafting.Ingredient;
-import org.avp.api.GameObject;
 import org.jetbrains.annotations.NotNull;
+
+import org.avp.api.GameObject;
 
 public record AVPToolTier(
     int uses,
@@ -14,6 +15,7 @@ public record AVPToolTier(
     int enchantmentValue,
     GameObject<Item> repairItemGameObject
 ) implements Tier {
+
     @Override
     public int getUses() {
         return uses;

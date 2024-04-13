@@ -9,27 +9,28 @@ import net.minecraft.data.recipes.RecipeProvider;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.ItemLike;
-import org.avp.common.data.recipe.impl.material.AVPAluminumRecipes;
+import org.jetbrains.annotations.NotNull;
+
 import org.avp.common.data.recipe.impl.AVPArmorRecipes;
-import org.avp.common.data.recipe.impl.weapon.AVPBulletRecipes;
-import org.avp.common.data.recipe.impl.material.AVPCobaltRecipes;
 import org.avp.common.data.recipe.impl.AVPElectronicRecipes;
 import org.avp.common.data.recipe.impl.AVPFoodRecipes;
-import org.avp.common.data.recipe.impl.block.AVPIndustrialBlockRecipes;
-import org.avp.common.data.recipe.impl.material.AVPLithiumRecipes;
 import org.avp.common.data.recipe.impl.AVPMaterialsRecipes;
-import org.avp.common.data.recipe.impl.material.AVPNeodymiumRecipes;
-import org.avp.common.data.recipe.impl.block.AVPPaddingBlockRecipes;
-import org.avp.common.data.recipe.impl.material.AVPSilicaRecipes;
-import org.avp.common.data.recipe.impl.block.AVPTempleBlockRecipes;
-import org.avp.common.data.recipe.impl.material.AVPTitaniumRecipes;
 import org.avp.common.data.recipe.impl.AVPToolRecipes;
+import org.avp.common.data.recipe.impl.block.AVPIndustrialBlockRecipes;
+import org.avp.common.data.recipe.impl.block.AVPPaddingBlockRecipes;
+import org.avp.common.data.recipe.impl.block.AVPTempleBlockRecipes;
+import org.avp.common.data.recipe.impl.material.AVPAluminumRecipes;
+import org.avp.common.data.recipe.impl.material.AVPCobaltRecipes;
+import org.avp.common.data.recipe.impl.material.AVPLithiumRecipes;
+import org.avp.common.data.recipe.impl.material.AVPNeodymiumRecipes;
+import org.avp.common.data.recipe.impl.material.AVPSilicaRecipes;
+import org.avp.common.data.recipe.impl.material.AVPTitaniumRecipes;
 import org.avp.common.data.recipe.impl.weapon.AVPAmmoRecipes;
 import org.avp.common.data.recipe.impl.weapon.AVPAmmunitionPartRecipes;
+import org.avp.common.data.recipe.impl.weapon.AVPBulletRecipes;
 import org.avp.common.data.recipe.impl.weapon.AVPWeaponBlueprintRecipes;
 import org.avp.common.data.recipe.impl.weapon.AVPWeaponPartRecipes;
 import org.avp.common.data.recipe.impl.weapon.AVPWeaponRecipes;
-import org.jetbrains.annotations.NotNull;
 
 public class AVPRecipeProvider extends RecipeProvider {
 

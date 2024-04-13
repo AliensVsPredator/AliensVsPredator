@@ -6,6 +6,7 @@ import net.minecraft.data.recipes.ShapedRecipeBuilder;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.ItemLike;
+
 import org.avp.api.GameObject;
 
 public class AVPShapedRecipeBuilder {
@@ -22,7 +23,11 @@ public class AVPShapedRecipeBuilder {
         return new AVPShapedRecipeBuilder(ShapedRecipeBuilder.shaped(recipeCategory, itemLike, count));
     }
 
-    public static AVPShapedRecipeBuilder shaped(RecipeCategory recipeCategory, GameObject<? extends ItemLike> itemLikeGameObject, int count) {
+    public static AVPShapedRecipeBuilder shaped(
+        RecipeCategory recipeCategory,
+        GameObject<? extends ItemLike> itemLikeGameObject,
+        int count
+    ) {
         return new AVPShapedRecipeBuilder(ShapedRecipeBuilder.shaped(recipeCategory, itemLikeGameObject.get(), count));
     }
 

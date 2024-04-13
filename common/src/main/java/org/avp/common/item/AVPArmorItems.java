@@ -88,7 +88,10 @@ public class AVPArmorItems {
     }
 
     private static GameObject<Item> register(String registryName, ArmorMaterial armorMaterial, ArmorItem.Type armorType) {
-        var gameObject = Services.ITEM_REGISTRY.register("armor_" + registryName, () -> new ArmorItem(armorMaterial, armorType, new Item.Properties()));
+        var gameObject = Services.ITEM_REGISTRY.register(
+            "armor_" + registryName,
+            () -> new ArmorItem(armorMaterial, armorType, new Item.Properties())
+        );
         ENTRIES.add(gameObject);
         return gameObject;
     }

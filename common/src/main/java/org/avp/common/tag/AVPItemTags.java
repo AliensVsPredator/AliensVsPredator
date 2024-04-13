@@ -3,11 +3,13 @@ package org.avp.common.tag;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
+
 import org.avp.common.AVPResources;
 
 public class AVPItemTags {
 
     public static final TagKey<Item> GUNS;
+
     public static final TagKey<Item> THREATENS_PREDATORS;
 
     public static void forceInitialization() {

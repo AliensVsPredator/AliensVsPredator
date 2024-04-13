@@ -5,11 +5,12 @@ import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.Items;
+
+import java.util.concurrent.CompletableFuture;
+
 import org.avp.common.item.AVPToolItems;
 import org.avp.common.item.AVPWeaponItems;
 import org.avp.common.tag.AVPItemTags;
-
-import java.util.concurrent.CompletableFuture;
 
 public class AVPItemTagsProvider extends FabricTagProvider.ItemTagProvider {
 

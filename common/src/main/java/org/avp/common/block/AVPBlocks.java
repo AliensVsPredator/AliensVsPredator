@@ -20,11 +20,13 @@ public class AVPBlocks {
     public static final BlockBehaviour.Properties ALUMINUM_PROPERTIES = BlockBehaviour.Properties.ofFullCopy(
         Blocks.IRON_BLOCK
     );
+
     public static final BlockBehaviour.Properties TITANIUM_PROPERTIES = BlockBehaviour.Properties.ofFullCopy(
         Blocks.IRON_BLOCK
     );
 
     public static final GameObject<Block> ALUMINUM_BLOCK;
+
     public static final GameObject<Block> TITANIUM_BLOCK;
 
     public static void forceInitialization() {

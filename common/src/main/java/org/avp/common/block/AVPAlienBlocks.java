@@ -5,11 +5,12 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.MapColor;
-import org.avp.api.GameObject;
-import org.avp.api.block.BlockData;
 
 import java.util.List;
 import java.util.function.Supplier;
+
+import org.avp.api.GameObject;
+import org.avp.api.block.BlockData;
 
 public class AVPAlienBlocks {
 
@@ -19,7 +20,9 @@ public class AVPAlienBlocks {
         .mapColor(MapColor.COLOR_GRAY);
 
     public static final GameObject<Block> RESIN;
+
     public static final GameObject<Block> RESIN_VEINS;
+
     public static final GameObject<Block> RESIN_WEBBING;
 
     public static void forceInitialization() {

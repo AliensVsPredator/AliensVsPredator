@@ -6,6 +6,7 @@ import net.minecraft.data.recipes.ShapelessRecipeBuilder;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.ItemLike;
+
 import org.avp.api.GameObject;
 
 public class AVPShapelessRecipeBuilder {
@@ -22,7 +23,11 @@ public class AVPShapelessRecipeBuilder {
         return new AVPShapelessRecipeBuilder(ShapelessRecipeBuilder.shapeless(recipeCategory, itemLike, count));
     }
 
-    public static AVPShapelessRecipeBuilder shapeless(RecipeCategory recipeCategory, GameObject<? extends ItemLike> itemLikeGameObject, int count) {
+    public static AVPShapelessRecipeBuilder shapeless(
+        RecipeCategory recipeCategory,
+        GameObject<? extends ItemLike> itemLikeGameObject,
+        int count
+    ) {
         return new AVPShapelessRecipeBuilder(ShapelessRecipeBuilder.shapeless(recipeCategory, itemLikeGameObject.get(), count));
     }
 
