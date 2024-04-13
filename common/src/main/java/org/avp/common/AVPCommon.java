@@ -52,6 +52,7 @@ public class AVPCommon {
         AVPWeaponPartItems.forceInitialization();
 
         // Blocks
+        AVPUnidentifiedBlocks.forceInitialization();
         AVPBlocks.forceInitialization();
         AVPEngineerBlocks.forceInitialization();
         AVPIndustrialBlocks.forceInitialization();
