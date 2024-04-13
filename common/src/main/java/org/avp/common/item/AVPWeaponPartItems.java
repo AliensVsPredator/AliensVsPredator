@@ -37,8 +37,12 @@ public class AVPWeaponPartItems {
         return ENTRIES;
     }
 
+    private static GameObject<Item> register(String registryName) {
+        return register(registryName, () -> new Item(new Item.Properties()));
+    }
+
     private static GameObject<Item> register(String registryName, Supplier<Item> itemSupplier) {
-        var gameObject = Services.ITEM_REGISTRY.register(registryName, itemSupplier);
+        var gameObject = Services.ITEM_REGISTRY.register("weapon_part_" + registryName, itemSupplier);
         ENTRIES.add(gameObject);
         return gameObject;
     }
@@ -46,13 +50,13 @@ public class AVPWeaponPartItems {
     private AVPWeaponPartItems() {}
 
     static {
-        WEAPON_PART_BARREL_GENERIC = register("weapon_part_barrel", () -> new Item(new Item.Properties()));
-        WEAPON_PART_BARREL_MINIGUN = register("weapon_part_barrel_minigun", () -> new Item(new Item.Properties()));
-        WEAPON_PART_BARREL_ROCKET = register("weapon_part_barrel_rocket", () -> new Item(new Item.Properties()));
-        WEAPON_PART_BARREL_SMART = register("weapon_part_barrel_smart", () -> new Item(new Item.Properties()));
-        WEAPON_PART_GRIP_GENERIC = register("weapon_part_grip", () -> new Item(new Item.Properties()));
-        WEAPON_PART_RECEIVER_GENERIC = register("weapon_part_receiver", () -> new Item(new Item.Properties()));
-        WEAPON_PART_RECEIVER_SMART = register("weapon_part_receiver_smart", () -> new Item(new Item.Properties()));
-        WEAPON_PART_STOCK_GENERIC = register("weapon_part_stock", () -> new Item(new Item.Properties()));
+        WEAPON_PART_BARREL_GENERIC = register("barrel");
+        WEAPON_PART_BARREL_MINIGUN = register("barrel_minigun");
+        WEAPON_PART_BARREL_ROCKET = register("barrel_rocket");
+        WEAPON_PART_BARREL_SMART = register("barrel_smart");
+        WEAPON_PART_GRIP_GENERIC = register("grip");
+        WEAPON_PART_RECEIVER_GENERIC = register("receiver");
+        WEAPON_PART_RECEIVER_SMART = register("receiver_smart");
+        WEAPON_PART_STOCK_GENERIC = register("stock");
     }
 }
