@@ -20,6 +20,7 @@ public class AVPPrometheusAlienEntityTypes implements AVPRegistry {
         0x8896A5,
         0x495256,
         EntityType.Builder.of(Deacon::new, MobCategory.MONSTER)
+            .sized(0.75F, 1.98F)
     );
 
     public static final GameObject<EntityType<DeaconAdult>> DEACON_ADULT = AVPEntityTypes.registerLiving(
@@ -27,6 +28,7 @@ public class AVPPrometheusAlienEntityTypes implements AVPRegistry {
         0x8896A5,
         0x495256,
         EntityType.Builder.of(DeaconAdult::new, MobCategory.MONSTER)
+            .sized(0.98F, 2.48F)
     );
 
     public static final GameObject<EntityType<Trilobite>> TRILOBITE = AVPEntityTypes.registerLiving(
@@ -34,6 +36,7 @@ public class AVPPrometheusAlienEntityTypes implements AVPRegistry {
         0xCCC2A5,
         0x987379,
         EntityType.Builder.of(Trilobite::new, MobCategory.MONSTER)
+            .sized(1.98F, 1.98F)
     );
 
     public static final GameObject<EntityType<TrilobiteBaby>> TRILOBITE_BABY = AVPEntityTypes.registerLiving(
@@ -41,6 +44,7 @@ public class AVPPrometheusAlienEntityTypes implements AVPRegistry {
         0xCCC2A5,
         0x987379,
         EntityType.Builder.of(TrilobiteBaby::new, MobCategory.MONSTER)
+            .sized(0.5F, 0.25F)
     );
 
     @Override
