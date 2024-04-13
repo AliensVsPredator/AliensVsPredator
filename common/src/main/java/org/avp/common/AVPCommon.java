@@ -52,7 +52,7 @@ public class AVPCommon {
         AVPWeaponPartItems.forceInitialization();
 
         // Blocks
-        AVPUnidentifiedBlocks.forceInitialization();
+        AVPAlienBlocks.forceInitialization();
         AVPBlocks.forceInitialization();
         AVPEngineerBlocks.forceInitialization();
         AVPIndustrialBlocks.forceInitialization();
@@ -60,6 +60,7 @@ public class AVPCommon {
         AVPPaddingBlocks.forceInitialization();
         AVPParadiseBlocks.forceInitialization();
         AVPTempleBlocks.forceInitialization();
+        AVPUnidentifiedBlocks.forceInitialization();
         AVPYautjaShipBlocks.forceInitialization();
 
         // Entities
