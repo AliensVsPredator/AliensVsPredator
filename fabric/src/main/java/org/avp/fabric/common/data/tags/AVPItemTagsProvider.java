@@ -3,9 +3,9 @@ package org.avp.fabric.common.data.tags;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.Items;
+import org.avp.common.item.AVPToolItems;
 import org.avp.common.item.AVPWeaponItems;
 import org.avp.common.tag.AVPItemTags;
 
@@ -37,5 +37,41 @@ public class AVPItemTagsProvider extends FabricTagProvider.ItemTagProvider {
             .addOptionalTag(ItemTags.SWORDS)
             .addOptionalTag(ItemTags.AXES)
             .add(Items.TRIDENT);
+
+        getOrCreateTagBuilder(ItemTags.AXES)
+            .add(AVPToolItems.ALUMINUM_AXE.get())
+            .add(AVPToolItems.ORIONITE_AXE.get())
+            .add(AVPToolItems.TITANIUM_AXE.get())
+            .add(AVPToolItems.VERITANIUM_AXE.get());
+
+        getOrCreateTagBuilder(ItemTags.HOES)
+            .add(AVPToolItems.ALUMINUM_HOE.get())
+            .add(AVPToolItems.ORIONITE_HOE.get())
+            .add(AVPToolItems.TITANIUM_HOE.get())
+            .add(AVPToolItems.VERITANIUM_HOE.get());
+
+        getOrCreateTagBuilder(ItemTags.PICKAXES)
+            .add(AVPToolItems.ALUMINUM_PICKAXE.get())
+            .add(AVPToolItems.ORIONITE_PICKAXE.get())
+            .add(AVPToolItems.TITANIUM_PICKAXE.get())
+            .add(AVPToolItems.VERITANIUM_PICKAXE.get());
+
+        getOrCreateTagBuilder(ItemTags.SHOVELS)
+            .add(AVPToolItems.ALUMINUM_SHOVEL.get())
+            .add(AVPToolItems.ORIONITE_SHOVEL.get())
+            .add(AVPToolItems.TITANIUM_SHOVEL.get())
+            .add(AVPToolItems.VERITANIUM_SHOVEL.get());
+
+        getOrCreateTagBuilder(ItemTags.SWORDS)
+            .add(AVPToolItems.ALUMINUM_SWORD.get())
+            .add(AVPToolItems.ORIONITE_SWORD.get())
+            .add(AVPToolItems.TITANIUM_SWORD.get())
+            .add(AVPToolItems.VERITANIUM_SWORD.get());
+
+        getOrCreateTagBuilder(ItemTags.TOOLS)
+            .add(AVPToolItems.ALUMINUM_SWORD.get())
+            .add(AVPToolItems.ORIONITE_SWORD.get())
+            .add(AVPToolItems.TITANIUM_SWORD.get())
+            .add(AVPToolItems.VERITANIUM_SWORD.get());
     }
 }
