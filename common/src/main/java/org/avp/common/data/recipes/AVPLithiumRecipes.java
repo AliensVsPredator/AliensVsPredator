@@ -13,14 +13,14 @@ public final class AVPLithiumRecipes {
             recipeOutput,
             RecipeCategory.BUILDING_BLOCKS,
             AVPItems.INGOT_LITHIUM.get(),
-            AVPOreBlocks.RAW_LITHIUM_BLOCK.get()
+            AVPOreBlocks.LITHIUM_BLOCK.get()
         );
 
         // Decompressed items from blocks
         AVPRecipeHelper.decompressedItemRecipe(
             recipeOutput,
             RecipeCategory.MISC,
-            AVPOreBlocks.RAW_LITHIUM_BLOCK.get(),
+            AVPOreBlocks.LITHIUM_BLOCK.get(),
             AVPItems.INGOT_LITHIUM.get()
         );
     }

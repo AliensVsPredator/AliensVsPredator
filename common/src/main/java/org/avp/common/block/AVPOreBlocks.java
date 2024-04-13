@@ -49,13 +49,13 @@ public class AVPOreBlocks {
 
     public static final GameObject<Block> RAW_BAUXITE_BLOCK;
 
-    public static final GameObject<Block> RAW_COBALT_BLOCK;
+    public static final GameObject<Block> COBALT_BLOCK;
 
-    public static final GameObject<Block> RAW_LITHIUM_BLOCK;
+    public static final GameObject<Block> LITHIUM_BLOCK;
 
-    public static final GameObject<Block> RAW_NEODYMIUM_BLOCK;
+    public static final GameObject<Block> NEODYMIUM_BLOCK;
 
-    public static final GameObject<Block> RAW_SILICA_BLOCK;
+    public static final GameObject<Block> SILICA_BLOCK;
 
     public static void forceInitialization() {
         // This method doesn't need to do anything
@@ -87,9 +87,9 @@ public class AVPOreBlocks {
 
         // NOTE: DO NOT USE AVPOreBlocks#register HERE.
         RAW_BAUXITE_BLOCK = AVPBlocks.register("raw_bauxite_block", BlockData.simple(BAUXITE_PROPERTIES).tags(stoneTier));
-        RAW_COBALT_BLOCK = AVPBlocks.register("raw_cobalt_block", BlockData.simple(COBALT_PROPERTIES).tags(diamondTier));
-        RAW_LITHIUM_BLOCK = AVPBlocks.register("raw_lithium_block", BlockData.simple(LITHIUM_PROPERTIES).tags(woodTier));
-        RAW_NEODYMIUM_BLOCK = AVPBlocks.register("raw_neodymium_block", BlockData.simple(MONAZITE_PROPERTIES).tags(diamondTier));
-        RAW_SILICA_BLOCK = AVPBlocks.register("raw_silica_block", BlockData.simple(SILICA_PROPERTIES).tags(ironTier));
+        COBALT_BLOCK = AVPBlocks.register("cobalt_block", BlockData.simple(COBALT_PROPERTIES).tags(diamondTier));
+        LITHIUM_BLOCK = AVPBlocks.register("lithium_block", BlockData.simple(LITHIUM_PROPERTIES).tags(woodTier));
+        NEODYMIUM_BLOCK = AVPBlocks.register("neodymium_block", BlockData.simple(MONAZITE_PROPERTIES).tags(diamondTier));
+        SILICA_BLOCK = AVPBlocks.register("silica_block", BlockData.simple(SILICA_PROPERTIES).tags(ironTier));
     }
 }

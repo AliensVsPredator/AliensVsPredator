@@ -13,7 +13,7 @@ public final class AVPCobaltRecipes {
             recipeOutput,
             RecipeCategory.BUILDING_BLOCKS,
             AVPItems.COBALT.get(),
-            AVPOreBlocks.RAW_COBALT_BLOCK.get()
+            AVPOreBlocks.COBALT_BLOCK.get()
         );
 
         // Decompressed items from blocks
