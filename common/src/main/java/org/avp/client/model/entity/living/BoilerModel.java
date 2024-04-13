@@ -35,7 +35,7 @@ public class BoilerModel extends GeoModel<Boiler> {
 
     @Override
     public void setCustomAnimations(Boiler entity, long instanceId, AnimationState<Boiler> animationState) {
-        BasicAnimationUtils.applyHeadRotations(this, animationState, "gNeck", -0.6F);
+        BasicAnimationUtils.applyHeadRotations(this, animationState, "gHead", 0.5F);
         BasicAnimationUtils.applyLimbRotations(
             entity,
             this,
