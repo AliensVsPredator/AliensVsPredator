@@ -22,6 +22,7 @@ public class AVPEntityTypes implements AVPRegistry {
         0xC2C1BD,
         0x646857,
         EntityType.Builder.of(Belugaburster::new, MobCategory.MONSTER)
+            .sized(0.78F, 0.98F)
     );
 
     public static final GameObject<EntityType<Belugamorph>> BELUGAMORPH = registerLiving(
@@ -29,6 +30,7 @@ public class AVPEntityTypes implements AVPRegistry {
         0xBCC9C6,
         0x646E65,
         EntityType.Builder.of(Belugamorph::new, MobCategory.MONSTER)
+            .sized(0.75F, 2.98F)
     );
 
     public static <T extends Mob> GameObject<EntityType<T>> registerLiving(
