@@ -5,15 +5,8 @@ import net.minecraft.world.entity.MobCategory;
 
 import org.avp.api.GameObject;
 import org.avp.common.entity.living.*;
-import org.avp.common.registry.AVPRegistry;
 
-public class AVPExoticAlienEntityTypes implements AVPRegistry {
-
-    private static final AVPExoticAlienEntityTypes INSTANCE = new AVPExoticAlienEntityTypes();
-
-    public static AVPExoticAlienEntityTypes getInstance() {
-        return INSTANCE;
-    }
+public class AVPExoticAlienEntityTypes {
 
     public static final GameObject<EntityType<DeaconAdultEngineer>> DEACON_ADULT_ENGINEER = AVPEntityTypes
         .registerLiving(
@@ -64,6 +57,11 @@ public class AVPExoticAlienEntityTypes implements AVPRegistry {
             .sized(0.98F, 1.98F)
     );
 
-    @Override
-    public void register() {}
+    public static void forceInitialization() {
+        // This method doesn't need to do anything
+    }
+
+    private AVPExoticAlienEntityTypes() {
+        throw new UnsupportedOperationException();
+    }
 }

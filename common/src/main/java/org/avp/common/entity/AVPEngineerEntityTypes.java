@@ -7,13 +7,7 @@ import org.avp.api.GameObject;
 import org.avp.common.entity.living.Engineer;
 import org.avp.common.registry.AVPRegistry;
 
-public class AVPEngineerEntityTypes implements AVPRegistry {
-
-    private static final AVPEngineerEntityTypes INSTANCE = new AVPEngineerEntityTypes();
-
-    public static AVPEngineerEntityTypes getInstance() {
-        return INSTANCE;
-    }
+public class AVPEngineerEntityTypes {
 
     public static final GameObject<EntityType<Engineer>> ENGINEER = AVPEntityTypes.registerLiving(
         "engineer",
@@ -22,6 +16,11 @@ public class AVPEngineerEntityTypes implements AVPRegistry {
         EntityType.Builder.of(Engineer::new, MobCategory.MONSTER)
     );
 
-    @Override
-    public void register() {}
+    public static void forceInitialization() {
+        // This method doesn't need to do anything
+    }
+
+    private AVPEngineerEntityTypes() {
+        throw new UnsupportedOperationException();
+    }
 }

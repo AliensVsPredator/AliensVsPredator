@@ -64,13 +64,13 @@ public class AVPCommon {
         AVPYautjaShipBlocks.forceInitialization();
 
         // Entities
-        AVPBaseAlienEntityTypes.getInstance().register();
-        AVPEngineerEntityTypes.getInstance().register();
-        AVPEntityTypes.getInstance().register();
-        AVPExoticAlienEntityTypes.getInstance().register();
-        AVPPrometheusAlienEntityTypes.getInstance().register();
-        AVPRunnerAlienEntityTypes.getInstance().register();
-        AVPYautjaEntityTypes.getInstance().register();
+        AVPBaseAlienEntityTypes.forceInitialization();
+        AVPEngineerEntityTypes.forceInitialization();
+        AVPEntityTypes.forceInitialization();
+        AVPExoticAlienEntityTypes.forceInitialization();
+        AVPPrometheusAlienEntityTypes.forceInitialization();
+        AVPRunnerAlienEntityTypes.forceInitialization();
+        AVPYautjaEntityTypes.forceInitialization();
         AVPEntitySpawns.forceInitialization();
 
         // It's important to register creative mode tabs last, as entities generate spawn eggs automatically.

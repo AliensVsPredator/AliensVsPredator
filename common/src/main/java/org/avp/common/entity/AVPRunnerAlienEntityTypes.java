@@ -8,15 +8,8 @@ import org.avp.common.entity.living.ChestbursterRunner;
 import org.avp.common.entity.living.Crusher;
 import org.avp.common.entity.living.DroneRunner;
 import org.avp.common.entity.living.WarriorRunner;
-import org.avp.common.registry.AVPRegistry;
 
-public class AVPRunnerAlienEntityTypes implements AVPRegistry {
-
-    private static final AVPRunnerAlienEntityTypes INSTANCE = new AVPRunnerAlienEntityTypes();
-
-    public static AVPRunnerAlienEntityTypes getInstance() {
-        return INSTANCE;
-    }
+public class AVPRunnerAlienEntityTypes {
 
     public static final GameObject<EntityType<ChestbursterRunner>> CHESTBURSTER_RUNNER = AVPEntityTypes.registerLiving(
         "chestburster_runner",
@@ -50,6 +43,11 @@ public class AVPRunnerAlienEntityTypes implements AVPRegistry {
             .sized(0.98F, 1.98F)
     );
 
-    @Override
-    public void register() {}
+    public static void forceInitialization() {
+        // This method doesn't need to do anything
+    }
+
+    private AVPRunnerAlienEntityTypes() {
+        throw new UnsupportedOperationException();
+    }
 }

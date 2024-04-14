@@ -5,15 +5,8 @@ import net.minecraft.world.entity.MobCategory;
 
 import org.avp.api.GameObject;
 import org.avp.common.entity.living.Yautja;
-import org.avp.common.registry.AVPRegistry;
 
-public class AVPYautjaEntityTypes implements AVPRegistry {
-
-    private static final AVPYautjaEntityTypes INSTANCE = new AVPYautjaEntityTypes();
-
-    public static AVPYautjaEntityTypes getInstance() {
-        return INSTANCE;
-    }
+public class AVPYautjaEntityTypes {
 
     public static final GameObject<EntityType<Yautja>> YAUTJA = AVPEntityTypes.registerLiving(
         "yautja",
@@ -23,6 +16,11 @@ public class AVPYautjaEntityTypes implements AVPRegistry {
             .sized(0.98F, 2.48F)
     );
 
-    @Override
-    public void register() {}
+    public static void forceInitialization() {
+        // This method doesn't need to do anything
+    }
+
+    private AVPYautjaEntityTypes() {
+        throw new UnsupportedOperationException();
+    }
 }

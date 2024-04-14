@@ -7,13 +7,7 @@ import org.avp.api.GameObject;
 import org.avp.common.entity.living.*;
 import org.avp.common.registry.AVPRegistry;
 
-public class AVPBaseAlienEntityTypes implements AVPRegistry {
-
-    private static final AVPBaseAlienEntityTypes INSTANCE = new AVPBaseAlienEntityTypes();
-
-    public static AVPBaseAlienEntityTypes getInstance() {
-        return INSTANCE;
-    }
+public class AVPBaseAlienEntityTypes {
 
     public static final GameObject<EntityType<Boiler>> BOILER = AVPEntityTypes.registerLiving(
         "boiler",
@@ -95,6 +89,11 @@ public class AVPBaseAlienEntityTypes implements AVPRegistry {
             .sized(0.98F, 1.98F)
     );
 
-    @Override
-    public void register() {}
+    public static void forceInitialization() {
+        // This method doesn't need to do anything
+    }
+
+    private AVPBaseAlienEntityTypes() {
+        throw new UnsupportedOperationException();
+    }
 }

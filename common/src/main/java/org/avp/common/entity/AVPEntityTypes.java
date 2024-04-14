@@ -9,13 +9,7 @@ import org.avp.common.entity.living.*;
 import org.avp.common.registry.AVPRegistry;
 import org.avp.common.service.Services;
 
-public class AVPEntityTypes implements AVPRegistry {
-
-    private static final AVPEntityTypes INSTANCE = new AVPEntityTypes();
-
-    public static AVPEntityTypes getInstance() {
-        return INSTANCE;
-    }
+public class AVPEntityTypes {
 
     public static final GameObject<EntityType<Belugaburster>> BELUGABURSTER = registerLiving(
         "belugaburster",
@@ -47,6 +41,11 @@ public class AVPEntityTypes implements AVPRegistry {
         );
     }
 
-    @Override
-    public void register() {}
+    public static void forceInitialization() {
+        // This method doesn't need to do anything
+    }
+
+    private AVPEntityTypes() {
+        throw new UnsupportedOperationException();
+    }
 }
