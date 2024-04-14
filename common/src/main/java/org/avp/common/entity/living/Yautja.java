@@ -4,6 +4,9 @@ import mod.azure.azurelib.common.api.common.animatable.GeoEntity;
 import mod.azure.azurelib.common.internal.common.core.animatable.instance.AnimatableInstanceCache;
 import mod.azure.azurelib.common.internal.common.core.animation.AnimatableManager;
 import mod.azure.azurelib.common.internal.common.util.AzureLibUtil;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityType;
@@ -25,6 +28,11 @@ import org.avp.common.tag.AVPEntityTags;
 import org.avp.common.tag.AVPItemTags;
 
 public class Yautja extends Monster implements GeoEntity {
+
+    private static final EntityDataAccessor<Boolean> HAS_HELMET = SynchedEntityData.defineId(
+        Yautja.class,
+        EntityDataSerializers.BOOLEAN
+    );
 
     private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
 
@@ -53,6 +61,16 @@ public class Yautja extends Monster implements GeoEntity {
                         )
             )
         );
+    }
+
+    @Override
+    protected void defineSynchedData() {
+        super.defineSynchedData();
+        this.entityData.define(HAS_HELMET, this.random.nextBoolean());
+    }
+
+    public boolean hasHelmet() {
+        return this.entityData.get(HAS_HELMET);
     }
 
     @Nullable

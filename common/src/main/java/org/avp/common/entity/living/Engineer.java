@@ -22,8 +22,6 @@ import org.avp.common.tag.AVPEntityTags;
 
 public class Engineer extends Monster implements GeoEntity {
 
-    private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
-
     private static final EntityDataAccessor<Integer> ENGINEER_TYPE = SynchedEntityData.defineId(
         Engineer.class,
         EntityDataSerializers.INT
@@ -33,6 +31,8 @@ public class Engineer extends Monster implements GeoEntity {
         Engineer.class,
         EntityDataSerializers.BOOLEAN
     );
+
+    private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
 
     public Engineer(EntityType<? extends Monster> entityType, Level level) {
         super(entityType, level);
