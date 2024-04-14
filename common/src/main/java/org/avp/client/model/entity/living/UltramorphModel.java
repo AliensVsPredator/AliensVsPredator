@@ -36,7 +36,7 @@ public class UltramorphModel extends GeoModel<Ultramorph> {
 
     @Override
     public void setCustomAnimations(Ultramorph entity, long instanceId, AnimationState<Ultramorph> animationState) {
-        BasicAnimationUtils.applyHeadRotations(this, animationState, "gNeck", -0.2F);
+        BasicAnimationUtils.applyHeadRotations(this, animationState, "gHead", 0.2F);
         BasicAnimationUtils.applyLimbRotations(
             entity,
             this,
