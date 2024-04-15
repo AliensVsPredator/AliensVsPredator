@@ -27,19 +27,19 @@ public class FabricNetworkPayloadHandlerRegistry implements NetworkPayloadHandle
             };
 
             ClientPlayNetworking.registerGlobalReceiver(payloadId, clientHandler);
-        } else {
-            ServerPlayNetworking.PlayChannelHandler channelHandler = (
-                minecraftServer,
-                serverPlayer,
-                listener,
-                friendlyByteBuf,
-                packetSender
-            ) -> {
-                var payload = reader.apply(friendlyByteBuf);
-                minecraftServer.execute(() -> ((ServerboundPacket) payload).handleServer(serverPlayer.serverLevel()));
-            };
-
-            ServerPlayNetworking.registerGlobalReceiver(payloadId, channelHandler);
         }
+
+        ServerPlayNetworking.PlayChannelHandler channelHandler = (
+            minecraftServer,
+            serverPlayer,
+            listener,
+            friendlyByteBuf,
+            packetSender
+        ) -> {
+            var payload = reader.apply(friendlyByteBuf);
+            minecraftServer.execute(() -> ((ServerboundPacket) payload).handleServer(serverPlayer.serverLevel()));
+        };
+
+        ServerPlayNetworking.registerGlobalReceiver(payloadId, channelHandler);
     }
 }
