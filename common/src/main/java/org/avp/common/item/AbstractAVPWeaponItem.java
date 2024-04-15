@@ -5,7 +5,6 @@ import mod.azure.azurelib.common.internal.client.RenderProvider;
 import mod.azure.azurelib.common.internal.common.core.animatable.instance.AnimatableInstanceCache;
 import mod.azure.azurelib.common.internal.common.core.animation.AnimatableManager;
 import mod.azure.azurelib.common.internal.common.util.AzureLibUtil;
-import net.minecraft.ChatFormatting;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
@@ -29,6 +28,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
+import org.avp.common.util.TooltipUtils;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -232,22 +232,14 @@ public abstract class AbstractAVPWeaponItem extends Item implements GeoItem {
     public void appendHoverText(@NotNull ItemStack itemStack, @Nullable Level level, @NotNull List<Component> components, @NotNull TooltipFlag tooltipFlag) {
         super.appendHoverText(itemStack, level, components, tooltipFlag);
         var fireMode = WeaponItemTagHelper.getOrSetFireMode(itemStack, weaponItemData);
-        components.add(
-            Component.translatable("tooltip.avp.fire_mode").withStyle(ChatFormatting.DARK_GREEN)
-                .append(
-                    Component.literal(fireMode.identifier())
-                        .withStyle(ChatFormatting.GRAY)
-                )
-        );
-        components.add(
-            Component.translatable("tooltip.avp.ammunition").withStyle(ChatFormatting.DARK_GREEN)
-                .append(
-                    Component.literal(
-                            WeaponItemTagHelper.getAmmunition(itemStack) + " / " + weaponItemData.getAmmunitionStrategy().getMaxAmmunition()
-                        )
-                        .withStyle(ChatFormatting.GRAY)
-                )
-        );
+        TooltipUtils.appendLabel(components, "tooltip.avp.fire_mode", Component.literal(fireMode.identifier() + " (" + fireMode.consumedAmmunition() + " / Shot)"));
+        TooltipUtils.appendLabel(components, "tooltip.avp.ammunition",Component.literal(
+            WeaponItemTagHelper.getAmmunition(itemStack) + " / " + weaponItemData.getAmmunitionStrategy().getMaxAmmunition()
+        ));
+        TooltipUtils.appendLabel(components, "tooltip.avp.damage", Component.literal(Double.toString(weaponItemData.getDamage())));
+        TooltipUtils.appendLabel(components, "tooltip.avp.fire_rate", Component.literal(Double.toString(fireMode.fireRateInTicks() / 20D) + " / Sec"));
+        TooltipUtils.appendLabel(components, "tooltip.avp.accuracy", Component.literal(Float.toString(weaponItemData.getAccuracy())));
+        TooltipUtils.appendLabel(components, "tooltip.avp.recoil", Component.literal(Float.toString(fireMode.recoil())));
     }
 
     @Override
