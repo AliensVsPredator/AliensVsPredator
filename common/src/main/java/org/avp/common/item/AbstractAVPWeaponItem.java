@@ -101,7 +101,7 @@ public abstract class AbstractAVPWeaponItem extends Item implements GeoItem {
         if (positiveTickProgress < windUpTimeInTicks)
             return;
 
-        var fireMode = WeaponItemTagHelper.getFireMode(itemStack, weaponItemData);
+        var fireMode = WeaponItemTagHelper.getOrSetFireMode(itemStack, weaponItemData);
 
         if (!level.isClientSide) {
             var serverLevel = (ServerLevel) level;

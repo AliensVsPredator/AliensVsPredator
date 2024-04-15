@@ -51,7 +51,7 @@ public class WeaponItemData {
         this.shootStrategy = shootStrategy;
     }
 
-    public FireMode getFireMode(String identifier) {
+    public FireMode getFireModeByIdOrFirst(String identifier) {
         return this.getFireModes()
             .stream()
             .filter(mode -> Objects.equals(mode.identifier(), identifier))
