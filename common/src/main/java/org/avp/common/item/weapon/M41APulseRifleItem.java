@@ -27,7 +27,7 @@ public class M41APulseRifleItem extends AbstractAVPWeaponItem {
     private static final FireMode FIRE_MODE_AUTOMATIC = new FireMode(
         "Automatic",
         1,
-        1,
+        2,
         AVPSoundEvents.ITEM_WEAPON_PULSE_RIFLE_SHOOT, // TODO:
         64.0D,
         0.25F
