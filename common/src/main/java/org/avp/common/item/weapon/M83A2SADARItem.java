@@ -16,7 +16,7 @@ import org.avp.common.sound.AVPSoundEvents;
 public class M83A2SADARItem extends AbstractAVPWeaponItem {
 
     private static final FireMode FIRE_MODE = new FireMode(
-        "SemiAutomatic",
+        "Semi-Automatic",
         1,
         60,
         AVPSoundEvents.ITEM_WEAPON_ROCKET_LAUNCHER_SHOOT,

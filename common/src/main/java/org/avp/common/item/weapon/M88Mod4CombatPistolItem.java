@@ -16,7 +16,7 @@ import org.avp.common.sound.AVPSoundEvents;
 public class M88Mod4CombatPistolItem extends AbstractAVPWeaponItem {
 
     private static final FireMode FIRE_MODE = new FireMode(
-        "SemiAutomatic",
+        "Semi-Automatic",
         1,
         7,
         AVPSoundEvents.ITEM_WEAPON_COMBAT_PISTOL_SHOOT,

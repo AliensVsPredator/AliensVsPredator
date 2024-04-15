@@ -16,7 +16,7 @@ import org.avp.common.sound.AVPSoundEvents;
 public class SniperRifleItem extends AbstractAVPWeaponItem {
 
     private static final FireMode FIRE_MODE = new FireMode(
-        "SemiAutomatic",
+        "Semi-Automatic",
         1,
         30,
         AVPSoundEvents.ITEM_WEAPON_SNIPER_RIFLE_SHOOT,
