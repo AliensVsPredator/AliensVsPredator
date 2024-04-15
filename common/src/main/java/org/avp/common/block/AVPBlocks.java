@@ -37,11 +37,17 @@ public class AVPBlocks {
         return ENTRIES;
     }
 
-    protected static GameObject<Block> register(String registryName, BlockData.Builder blockDataBuilder) {
+    protected static GameObject<Block> register(String registryName, BlockData.Builder blockDataBuilder, boolean addEntry) {
         var blockData = blockDataBuilder.build();
         var gameObject = Services.BLOCK_REGISTRY.register(registryName, blockData::create);
-        ENTRIES.add(new Tuple<>(gameObject, blockData));
+        if (addEntry) {
+            ENTRIES.add(new Tuple<>(gameObject, blockData));
+        }
         return gameObject;
+    }
+
+    protected static GameObject<Block> register(String registryName, BlockData.Builder blockDataBuilder) {
+        return register(registryName, blockDataBuilder, true);
     }
 
     private AVPBlocks() {}

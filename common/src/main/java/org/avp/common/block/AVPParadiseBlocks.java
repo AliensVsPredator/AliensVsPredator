@@ -71,7 +71,7 @@ public class AVPParadiseBlocks {
     }
 
     private static GameObject<Block> register(String name, BlockData.Builder builder) {
-        return AVPBlocks.register("paradise_" + name, builder);
+        return AVPBlocks.register("paradise_" + name, builder, false);
     }
 
     private AVPParadiseBlocks() {}
