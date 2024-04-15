@@ -17,7 +17,7 @@ public final class AVPAmmoRecipes {
             .defineAndUnlockIfHas('B', AVPElectronicItems.CAPACITOR)
             .defineAndUnlockIfHas('C', AVPElectronicItems.RESISTOR)
             .defineAndUnlockIfHas('D', AVPItems.POLYCARBONATE)
-            .defineAndUnlockIfHas('E', AVPItems.INGOT_LITHIUM)
+            .defineAndUnlockIfHas('E', AVPItems.DUST_LITHIUM)
             .pattern("AAA")
             .pattern("BCB")
             .pattern("DED")

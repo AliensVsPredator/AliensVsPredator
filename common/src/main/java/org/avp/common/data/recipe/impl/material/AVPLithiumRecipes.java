@@ -14,7 +14,7 @@ public final class AVPLithiumRecipes {
         AVPRecipeHelper.compressedBlockRecipe(
             recipeOutput,
             RecipeCategory.BUILDING_BLOCKS,
-            AVPItems.INGOT_LITHIUM.get(),
+            AVPItems.DUST_LITHIUM.get(),
             AVPOreBlocks.LITHIUM_BLOCK.get()
         );
 
@@ -23,7 +23,7 @@ public final class AVPLithiumRecipes {
             recipeOutput,
             RecipeCategory.MISC,
             AVPOreBlocks.LITHIUM_BLOCK.get(),
-            AVPItems.INGOT_LITHIUM.get()
+            AVPItems.DUST_LITHIUM.get()
         );
     }
 

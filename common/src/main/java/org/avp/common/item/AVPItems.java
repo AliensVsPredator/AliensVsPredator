@@ -21,9 +21,9 @@ public class AVPItems {
 
     public static final GameObject<Item> COBALT;
 
-    public static final GameObject<Item> INGOT_ALUMINUM;
+    public static final GameObject<Item> DUST_LITHIUM;
 
-    public static final GameObject<Item> INGOT_LITHIUM;
+    public static final GameObject<Item> INGOT_ALUMINUM;
 
     public static final GameObject<Item> INGOT_ORIONITE;
 
@@ -86,8 +86,8 @@ public class AVPItems {
         BOTTLE_TINTED_ACID = register("bottle_tinted_acid");
         CARBON = register("carbon");
         COBALT = register("cobalt");
+        DUST_LITHIUM = register("dust_lithium");
         INGOT_ALUMINUM = register("ingot_aluminum");
-        INGOT_LITHIUM = register("ingot_lithium");
         INGOT_ORIONITE = register("ingot_orionite");
         INGOT_STEEL = register("ingot_steel");
         INGOT_TITANIUM = register("ingot_titanium");

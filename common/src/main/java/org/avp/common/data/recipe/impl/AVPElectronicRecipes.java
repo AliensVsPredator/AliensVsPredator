@@ -13,7 +13,7 @@ public final class AVPElectronicRecipes {
     public static void addElectronicRecipes(RecipeOutput recipeOutput) {
         AVPShapedRecipeBuilder.shaped(RecipeCategory.MISC, AVPElectronicItems.CAPACITOR, 8)
             .defineAndUnlockIfHas('A', Items.COPPER_INGOT)
-            .defineAndUnlockIfHas('B', AVPItems.INGOT_LITHIUM)
+            .defineAndUnlockIfHas('B', AVPItems.DUST_LITHIUM)
             .pattern("A")
             .pattern("B")
             .pattern("A")
@@ -50,7 +50,7 @@ public final class AVPElectronicRecipes {
             .defineAndUnlockIfHas('A', AVPElectronicItems.INTEGRATED_CIRCUIT)
             .defineAndUnlockIfHas('B', AVPElectronicItems.LED)
             .defineAndUnlockIfHas('C', AVPItems.POLYCARBONATE)
-            .defineAndUnlockIfHas('D', AVPItems.INGOT_LITHIUM)
+            .defineAndUnlockIfHas('D', AVPItems.DUST_LITHIUM)
             .pattern("BDB")
             .pattern("BCB")
             .pattern("BAB")
