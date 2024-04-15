@@ -3,7 +3,6 @@ package org.avp.common.item.weapon;
 import java.util.List;
 
 import org.avp.api.item.weapon.FireMode;
-import org.avp.api.item.weapon.WeaponDamageTypes;
 import org.avp.api.item.weapon.WeaponItemData;
 import org.avp.api.item.weapon.ammo.AmmunitionStrategy;
 import org.avp.api.item.weapon.ammo.HasAmmunitionBehavior;
@@ -29,7 +28,6 @@ public class OldPainlessItem extends AbstractAVPWeaponItem {
         AmmunitionStrategy.builder(Integer.MAX_VALUE)
             .setHasAmmunitionBehavior(HasAmmunitionBehavior.INVENTORY)
             .build(),
-        WeaponDamageTypes.HEAVY,
         List.of(FIRE_MODE),
         2F * 2,
         0.02F,

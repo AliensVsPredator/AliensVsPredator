@@ -237,7 +237,7 @@ public abstract class AbstractAVPWeaponItem extends Item implements GeoItem {
             WeaponItemTagHelper.getAmmunition(itemStack) + " / " + weaponItemData.getAmmunitionStrategy().getMaxAmmunition()
         ));
         TooltipUtils.appendLabel(components, "tooltip.avp.damage", Component.literal(Double.toString(weaponItemData.getDamage())));
-        TooltipUtils.appendLabel(components, "tooltip.avp.fire_rate", Component.literal(Double.toString(fireMode.fireRateInTicks() / 20D) + " / Sec"));
+        TooltipUtils.appendLabel(components, "tooltip.avp.fire_rate", Component.literal(fireMode.fireRateInTicks() / 20D + " / Sec"));
         TooltipUtils.appendLabel(components, "tooltip.avp.accuracy", Component.literal(Float.toString(weaponItemData.getAccuracy())));
         TooltipUtils.appendLabel(components, "tooltip.avp.recoil", Component.literal(Float.toString(fireMode.recoil())));
     }

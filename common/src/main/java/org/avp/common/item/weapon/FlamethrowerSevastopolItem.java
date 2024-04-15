@@ -3,7 +3,6 @@ package org.avp.common.item.weapon;
 import java.util.List;
 
 import org.avp.api.item.weapon.FireMode;
-import org.avp.api.item.weapon.WeaponDamageTypes;
 import org.avp.api.item.weapon.WeaponItemData;
 import org.avp.api.item.weapon.ammo.AmmunitionStrategy;
 import org.avp.api.item.weapon.ammo.HasAmmunitionBehavior;
@@ -28,7 +27,6 @@ public class FlamethrowerSevastopolItem extends AbstractAVPWeaponItem {
         AmmunitionStrategy.builder(500)
             .setHasAmmunitionBehavior(HasAmmunitionBehavior.LOADED)
             .build(),
-        WeaponDamageTypes.MEDIUM,
         List.of(FIRE_MODE),
         1F,
         0.13F,

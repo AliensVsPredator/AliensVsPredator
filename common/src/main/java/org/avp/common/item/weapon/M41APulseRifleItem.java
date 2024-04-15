@@ -3,7 +3,6 @@ package org.avp.common.item.weapon;
 import java.util.List;
 
 import org.avp.api.item.weapon.FireMode;
-import org.avp.api.item.weapon.WeaponDamageTypes;
 import org.avp.api.item.weapon.WeaponItemData;
 import org.avp.api.item.weapon.ammo.AmmunitionStrategy;
 import org.avp.api.item.weapon.ammo.HasAmmunitionBehavior;
@@ -38,7 +37,6 @@ public class M41APulseRifleItem extends AbstractAVPWeaponItem {
         AmmunitionStrategy.builder(99)
             .setHasAmmunitionBehavior(HasAmmunitionBehavior.LOADED)
             .build(),
-        WeaponDamageTypes.MEDIUM,
         List.of(FIRE_MODE_BURST, FIRE_MODE_AUTOMATIC),
         4F,
         0.13F,
