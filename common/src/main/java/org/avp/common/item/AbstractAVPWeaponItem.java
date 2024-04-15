@@ -174,7 +174,7 @@ public abstract class AbstractAVPWeaponItem extends Item implements GeoItem {
 
         switch (hitResult.getType()) {
             case BLOCK -> handleHitBlock(level, fireMode, (BlockHitResult) hitResult);
-            case ENTITY -> handleHitEntity(level, player, (EntityHitResult) hitResult, fireMode);
+            case ENTITY -> handleHitEntity(level, player, itemStack, (EntityHitResult) hitResult, fireMode);
             case MISS -> { /* Do nothing */ }
         }
     }
@@ -198,7 +198,7 @@ public abstract class AbstractAVPWeaponItem extends Item implements GeoItem {
         Services.NETWORK_HANDLER.sendToAllClients(level.getServer(), payload);
     }
 
-    private void handleHitEntity(@NotNull Level level, Player player, EntityHitResult hitResult, FireMode fireMode) {
+    private void handleHitEntity(@NotNull Level level, Player player, ItemStack itemStack, EntityHitResult hitResult, FireMode fireMode) {
         var damage = this.getWeaponItemData().getDamage() * fireMode.consumedAmmunition();
 
         if (hitResult.getEntity() instanceof LivingEntity livingEntity) {
@@ -209,6 +209,9 @@ public abstract class AbstractAVPWeaponItem extends Item implements GeoItem {
                 Mth.sin(player.getYRot() * Mth.DEG_TO_RAD),
                 -Mth.cos(player.getYRot() * Mth.DEG_TO_RAD)
             );
+
+            var bulletEffects = WeaponItemTagHelper.getBulletEffects(itemStack, weaponItemData);
+            bulletEffects.forEach(bulletEffect -> bulletEffect.applyEffect(livingEntity));
         }
     }
 

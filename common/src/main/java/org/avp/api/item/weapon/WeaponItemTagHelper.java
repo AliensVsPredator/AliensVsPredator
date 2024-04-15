@@ -2,7 +2,13 @@ package org.avp.api.item.weapon;
 
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import org.avp.api.item.weapon.bullet.effect.BulletEffect;
+import org.avp.api.item.weapon.bullet.effect.BulletEffectRegistry;
+
+import java.util.Set;
 
 public class WeaponItemTagHelper {
 
@@ -24,7 +30,6 @@ public class WeaponItemTagHelper {
     }
 
     public static void consumeAmmunition(ItemStack itemStack, WeaponItemData weaponItemData) {
-        var tag = getTagSafely(itemStack);
         var fireMode = getOrSetFireMode(itemStack, weaponItemData);
         var activeAmmunitionType = getOrSetActiveAmmunitionType(itemStack, weaponItemData);
         var currentAmmunition = getAmmunition(itemStack, weaponItemData);
@@ -37,6 +42,12 @@ public class WeaponItemTagHelper {
         var activeAmmunitionType = getOrSetActiveAmmunitionType(itemStack, weaponItemData);
         var ammunitionsTag = tag.getCompound(AMMUNITIONS_KEY);
         return ammunitionsTag.getInt(activeAmmunitionType);
+    }
+
+    public static Set<BulletEffect> getBulletEffects(ItemStack itemStack, WeaponItemData weaponItemData) {
+        var activeAmmunitionType = getOrSetActiveAmmunitionType(itemStack, weaponItemData);
+        var resourceLocation = new ResourceLocation(activeAmmunitionType);
+        return BulletEffectRegistry.getBulletEffects(resourceLocation);
     }
 
     private static String getOrSetActiveAmmunitionType(ItemStack itemStack, WeaponItemData weaponItemData) {
