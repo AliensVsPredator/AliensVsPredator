@@ -15,7 +15,7 @@ public interface HasAmmunitionBehavior {
 
     HasAmmunitionBehavior NO_OP = (s, p, i, w) -> true;
 
-    HasAmmunitionBehavior LOADED = (s, p, i, w) -> WeaponItemTagHelper.getAmmunition(i) > 0;
+    HasAmmunitionBehavior LOADED = (s, p, i, w) -> WeaponItemTagHelper.getAmmunition(i, w) > 0;
 
     HasAmmunitionBehavior INVENTORY = (s, p, i, w) -> p.getInventory().hasAnyOf(Set.of(Items.SNOWBALL));
 

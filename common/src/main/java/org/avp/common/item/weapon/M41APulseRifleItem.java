@@ -9,6 +9,7 @@ import org.avp.api.item.weapon.ammo.HasAmmunitionBehavior;
 import org.avp.api.item.weapon.reload.ReloadStrategy;
 import org.avp.api.item.weapon.reload.TryReloadBehavior;
 import org.avp.api.item.weapon.shoot.ShootStrategy;
+import org.avp.common.item.AVPBulletItems;
 import org.avp.common.item.AbstractAVPWeaponItem;
 import org.avp.common.sound.AVPSoundEvents;
 
@@ -34,7 +35,7 @@ public class M41APulseRifleItem extends AbstractAVPWeaponItem {
 
     private static final WeaponItemData WEAPON_ITEM_DATA = new WeaponItemData(
         1.0F,
-        AmmunitionStrategy.builder(99)
+        AmmunitionStrategy.builder(99, AVPBulletItems.BULLET_RIFLE::get)
             .setHasAmmunitionBehavior(HasAmmunitionBehavior.LOADED)
             .build(),
         List.of(FIRE_MODE_BURST, FIRE_MODE_AUTOMATIC),

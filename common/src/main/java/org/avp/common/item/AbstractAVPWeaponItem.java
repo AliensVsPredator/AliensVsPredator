@@ -234,7 +234,7 @@ public abstract class AbstractAVPWeaponItem extends Item implements GeoItem {
         var fireMode = WeaponItemTagHelper.getOrSetFireMode(itemStack, weaponItemData);
         TooltipUtils.appendLabel(components, "tooltip.avp.fire_mode", Component.literal(fireMode.identifier() + " (" + fireMode.consumedAmmunition() + " / Shot)"));
         TooltipUtils.appendLabel(components, "tooltip.avp.ammunition",Component.literal(
-            WeaponItemTagHelper.getAmmunition(itemStack) + " / " + weaponItemData.getAmmunitionStrategy().getMaxAmmunition()
+            WeaponItemTagHelper.getAmmunition(itemStack, weaponItemData) + " / " + weaponItemData.getAmmunitionStrategy().getMaxAmmunition()
         ));
         TooltipUtils.appendLabel(components, "tooltip.avp.damage", Component.literal(Double.toString(weaponItemData.getDamage())));
         TooltipUtils.appendLabel(components, "tooltip.avp.fire_rate", Component.literal(fireMode.fireRateInTicks() / 20D + " / Sec"));

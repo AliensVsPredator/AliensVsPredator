@@ -3,6 +3,7 @@ package org.avp.api.item.weapon.reload;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
 import java.time.Duration;
@@ -22,12 +23,30 @@ public interface TryReloadBehavior {
             return;
         }
 
+        var ammunitionStrategy = weaponItemData.getAmmunitionStrategy();
         var reloadStrategy = weaponItemData.getReloadStrategy();
         var reloadTimeInTicks = reloadStrategy.getReloadTimeInTicks();
-        player.getCooldowns().addCooldown(itemStack.getItem(), reloadTimeInTicks);
 
-        // TODO: Try and consume ammunition item.
-        WeaponItemTagHelper.restoreAmmunition(itemStack, weaponItemData);
+        var standardAmmunitionSupplier = ammunitionStrategy.getStandardAmmunitionSupplier();
+        var standardAmmunition = standardAmmunitionSupplier.get();
+        var ammunitionInInventory = player.getInventory().countItem(standardAmmunition);
+        var ammunitionInWeapon = WeaponItemTagHelper.getAmmunition(itemStack, weaponItemData);
+        var ammunitionMissing = weaponItemData.getAmmunitionStrategy().getMaxAmmunition() - ammunitionInWeapon;
+        var ammunitionCountToRestore = player.isCreative()
+        ? weaponItemData.getAmmunitionStrategy().getMaxAmmunition()
+        : Math.min(ammunitionInInventory, ammunitionMissing);
+
+        if (!player.isCreative()) {
+            if (ammunitionCountToRestore <= 0) {
+                // TODO: Play "click" sound or reload fail sound here.
+                return;
+            }
+
+            consumeAmmunitionFromPlayerInventory(player, ammunitionMissing, standardAmmunition);
+        }
+
+        WeaponItemTagHelper.setActiveAmmunition(itemStack, weaponItemData, ammunitionInWeapon + ammunitionCountToRestore);
+        player.getCooldowns().addCooldown(itemStack.getItem(), reloadTimeInTicks);
 
         var reloadStartSound = reloadStrategy.getReloadStartSound().get();
         level.playSound(null, player.blockPosition(), reloadStartSound, SoundSource.PLAYERS);
@@ -48,6 +67,24 @@ public interface TryReloadBehavior {
                 )
             );
     };
+
+    private static void consumeAmmunitionFromPlayerInventory(ServerPlayer player, int ammunitionCountToRestore, Item standardAmmunition) {
+        var counter = ammunitionCountToRestore;
+        for (int i = 0; i < player.getInventory().getContainerSize(); i++) {
+            if (counter <= 0) {
+                break;
+            }
+
+            var stack = player.getInventory().getItem(i);
+
+            if (Objects.equals(stack.getItem(), standardAmmunition)) {
+                var amountToConsume = Math.min(stack.getCount(), counter);
+                stack.setCount(stack.getCount() - amountToConsume);
+                counter -= amountToConsume;
+            }
+        }
+        player.getInventory().setChanged();
+    }
 
     void tryReload(ServerLevel serverLevel, ServerPlayer serverPlayer, ItemStack itemStack, WeaponItemData weaponItemData);
 }
