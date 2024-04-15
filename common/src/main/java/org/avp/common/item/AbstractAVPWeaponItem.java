@@ -198,7 +198,7 @@ public abstract class AbstractAVPWeaponItem extends Item implements GeoItem {
 
         if (hitResult.getEntity() instanceof LivingEntity livingEntity) {
             livingEntity.invulnerableTime = 0;
-            livingEntity.hurt(level.damageSources().generic(), damage);
+            livingEntity.hurt(level.damageSources().playerAttack(player), damage);
             livingEntity.knockback(
                 this.getWeaponItemData().getKnockback() * fireMode.consumedAmmunition(),
                 Mth.sin(player.getYRot() * Mth.DEG_TO_RAD),
