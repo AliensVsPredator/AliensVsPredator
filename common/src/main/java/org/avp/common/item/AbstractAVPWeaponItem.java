@@ -5,8 +5,10 @@ import mod.azure.azurelib.common.internal.client.RenderProvider;
 import mod.azure.azurelib.common.internal.common.core.animatable.instance.AnimatableInstanceCache;
 import mod.azure.azurelib.common.internal.common.core.animation.AnimatableManager;
 import mod.azure.azurelib.common.internal.common.util.AzureLibUtil;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
@@ -21,6 +23,7 @@ import net.minecraft.world.entity.projectile.ProjectileUtil;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemUtils;
+import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -28,6 +31,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
@@ -44,6 +48,7 @@ import org.avp.common.service.Services;
 import org.avp.common.util.SoundUtils;
 import org.avp.common.util.TimeUtils;
 import org.avp.server.BlockBreakProgressManager;
+import org.jetbrains.annotations.Nullable;
 
 public abstract class AbstractAVPWeaponItem extends Item implements GeoItem {
 
@@ -221,6 +226,28 @@ public abstract class AbstractAVPWeaponItem extends Item implements GeoItem {
             }
             return new Tuple<>(System.currentTimeMillis() + TimeUtils.FIVE_MINUTES_IN_MILLIS, newValue);
         });
+    }
+
+    @Override
+    public void appendHoverText(@NotNull ItemStack itemStack, @Nullable Level level, @NotNull List<Component> components, @NotNull TooltipFlag tooltipFlag) {
+        super.appendHoverText(itemStack, level, components, tooltipFlag);
+        var fireMode = WeaponItemTagHelper.getOrSetFireMode(itemStack, weaponItemData);
+        components.add(
+            Component.translatable("tooltip.avp.fire_mode").withStyle(ChatFormatting.DARK_GREEN)
+                .append(
+                    Component.literal(fireMode.identifier())
+                        .withStyle(ChatFormatting.GRAY)
+                )
+        );
+        components.add(
+            Component.translatable("tooltip.avp.ammunition").withStyle(ChatFormatting.DARK_GREEN)
+                .append(
+                    Component.literal(
+                            WeaponItemTagHelper.getAmmunition(itemStack) + " / " + weaponItemData.getAmmunitionStrategy().getMaxAmmunition()
+                        )
+                        .withStyle(ChatFormatting.GRAY)
+                )
+        );
     }
 
     @Override
