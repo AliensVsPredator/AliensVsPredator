@@ -22,7 +22,7 @@ public class AVPFabricLootTableModifier {
                     id,
                     tableBuilder,
                     AVPWeaponBlueprintItems.BLUEPRINT_M88MOD4_COMBAT_PISTOL,
-                    20
+                    50
                 );
                 addSimpleLootPool(BuiltInLootTables.SIMPLE_DUNGEON, id, tableBuilder, AVPWeaponBlueprintItems.BLUEPRINT_37_12_SHOTGUN, 10);
                 addSimpleLootPool(BuiltInLootTables.DESERT_PYRAMID, id, tableBuilder, AVPWeaponBlueprintItems.BLUEPRINT_F90_RIFLE, 10);
