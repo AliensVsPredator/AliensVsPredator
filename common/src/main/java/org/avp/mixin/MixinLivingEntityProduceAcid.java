@@ -1,6 +1,5 @@
 package org.avp.mixin;
 
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
@@ -14,19 +13,12 @@ import org.avp.common.util.MixinUtils;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-
-import org.avp.api.entity.Host;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(LivingEntity.class)
-public abstract class MixinLivingEntity extends Entity implements Host {
+public abstract class MixinLivingEntityProduceAcid extends Entity {
 
-    private static final String TICKS_UNTIL_PARASITE_BORN = "ticksUntilParasiteBorn";
-
-    private int ticksUntilParasiteBorn = -1;
-
-    protected MixinLivingEntity(EntityType<?> entityType, Level level) {
+    protected MixinLivingEntityProduceAcid(EntityType<?> entityType, Level level) {
         super(entityType, level);
     }
 
@@ -38,27 +30,5 @@ public abstract class MixinLivingEntity extends Entity implements Host {
         if (!level.isClientSide() && self.getType().is(AVPEntityTags.ACID_BLEEDERS)) {
             AVPEntityTypes.ACID.get().spawn((ServerLevel) level, self.blockPosition(), MobSpawnType.NATURAL);
         }
-    }
-
-    @Inject(at = @At("RETURN"), method = "defineSynchedData")
-    void defineSynchedData(CallbackInfo callbackInfo) {
-        // TODO:
-    }
-
-    @Inject(at = @At("RETURN"), method = "addAdditionalSaveData")
-    void addAdditionalSaveData(CompoundTag nbt, CallbackInfo callbackInfo) {
-        nbt.putInt(TICKS_UNTIL_PARASITE_BORN, ticksUntilParasiteBorn);
-    }
-
-    @Inject(at = @At("RETURN"), method = "readAdditionalSaveData")
-    void readAdditionalSaveData(CompoundTag nbt, CallbackInfo callbackInfo) {
-        if (nbt.contains(TICKS_UNTIL_PARASITE_BORN)) {
-            ticksUntilParasiteBorn = nbt.getInt(TICKS_UNTIL_PARASITE_BORN);
-        }
-    }
-
-    @Override
-    public int getTicksUntilParasiteBorn() {
-        return ticksUntilParasiteBorn;
     }
 }
