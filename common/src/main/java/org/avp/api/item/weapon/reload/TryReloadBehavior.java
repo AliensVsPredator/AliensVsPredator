@@ -27,9 +27,10 @@ public interface TryReloadBehavior {
         var reloadStrategy = weaponItemData.getReloadStrategy();
         var reloadTimeInTicks = reloadStrategy.getReloadTimeInTicks();
 
-        var standardAmmunitionSupplier = ammunitionStrategy.getStandardAmmunitionSupplier();
-        var standardAmmunition = standardAmmunitionSupplier.get();
-        var ammunitionInInventory = player.getInventory().countItem(standardAmmunition);
+        var activeAmmunitionId = WeaponItemTagHelper.getOrSetActiveAmmunitionType(itemStack, weaponItemData);
+        var ammunitionSupplier = ammunitionStrategy.getAmmunitionSupplierByKeyOrFirst(activeAmmunitionId);
+        var ammunition = ammunitionSupplier.get();
+        var ammunitionInInventory = player.getInventory().countItem(ammunition);
         var ammunitionInWeapon = WeaponItemTagHelper.getAmmunition(itemStack, weaponItemData);
         var ammunitionMissing = weaponItemData.getAmmunitionStrategy().getMaxAmmunition() - ammunitionInWeapon;
         var ammunitionCountToRestore = player.isCreative()
@@ -42,7 +43,7 @@ public interface TryReloadBehavior {
                 return;
             }
 
-            consumeAmmunitionFromPlayerInventory(player, ammunitionMissing, standardAmmunition);
+            consumeAmmunitionFromPlayerInventory(player, ammunitionMissing, ammunition);
         }
 
         WeaponItemTagHelper.setActiveAmmunition(itemStack, weaponItemData, ammunitionInWeapon + ammunitionCountToRestore);
@@ -68,7 +69,7 @@ public interface TryReloadBehavior {
             );
     };
 
-    private static void consumeAmmunitionFromPlayerInventory(ServerPlayer player, int ammunitionCountToRestore, Item standardAmmunition) {
+    private static void consumeAmmunitionFromPlayerInventory(ServerPlayer player, int ammunitionCountToRestore, Item ammunition) {
         var counter = ammunitionCountToRestore;
         for (int i = 0; i < player.getInventory().getContainerSize(); i++) {
             if (counter <= 0) {
@@ -77,7 +78,7 @@ public interface TryReloadBehavior {
 
             var stack = player.getInventory().getItem(i);
 
-            if (Objects.equals(stack.getItem(), standardAmmunition)) {
+            if (Objects.equals(stack.getItem(), ammunition)) {
                 var amountToConsume = Math.min(stack.getCount(), counter);
                 stack.setCount(stack.getCount() - amountToConsume);
                 counter -= amountToConsume;

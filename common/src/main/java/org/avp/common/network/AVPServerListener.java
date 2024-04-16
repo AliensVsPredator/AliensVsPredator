@@ -1,7 +1,6 @@
 package org.avp.common.network;
 
-import net.minecraft.network.chat.OutgoingChatMessage;
-import net.minecraft.network.chat.PlayerChatMessage;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 
@@ -10,6 +9,8 @@ import org.avp.common.item.AbstractAVPWeaponItem;
 import org.avp.common.network.payload.ServerboundWeaponReloadRequestPayload;
 import org.avp.common.network.payload.ServerboundWeaponSwapAmmunitionTypeRequestPayload;
 import org.avp.common.network.payload.ServerboundWeaponSwapFireModeRequestPayload;
+
+import java.util.Objects;
 
 public class AVPServerListener {
 
@@ -20,19 +21,22 @@ public class AVPServerListener {
         var playerUUID = weaponReloadRequestPayload.playerUUID();
         var player = (ServerPlayer) serverLevel.getPlayerByUUID(playerUUID);
 
-        if (player == null)
+        if (player == null) {
             return;
+        }
 
         var usedItemHand = player.getUsedItemHand();
         var itemStack = player.getItemInHand(usedItemHand);
         var item = itemStack.getItem();
 
         // Do not reload if weapon is busy.
-        if (player.getCooldowns().isOnCooldown(item))
+        if (player.getCooldowns().isOnCooldown(item)) {
             return;
+        }
 
-        if (!(item instanceof AbstractAVPWeaponItem abstractAVPWeaponItem))
+        if (!(item instanceof AbstractAVPWeaponItem abstractAVPWeaponItem)) {
             return;
+        }
 
         var weaponItemData = abstractAVPWeaponItem.getWeaponItemData();
         weaponItemData.getReloadStrategy().tryReload(serverLevel, player, itemStack, weaponItemData);
@@ -45,15 +49,17 @@ public class AVPServerListener {
         var playerUUID = weaponSwapFireModeRequestPayload.playerUUID();
         var player = (ServerPlayer) serverLevel.getPlayerByUUID(playerUUID);
 
-        if (player == null)
+        if (player == null) {
             return;
+        }
 
         var usedItemHand = player.getUsedItemHand();
         var itemStack = player.getItemInHand(usedItemHand);
         var item = itemStack.getItem();
 
-        if (!(item instanceof AbstractAVPWeaponItem abstractAVPWeaponItem))
+        if (!(item instanceof AbstractAVPWeaponItem abstractAVPWeaponItem)) {
             return;
+        }
 
         var weaponItemData = abstractAVPWeaponItem.getWeaponItemData();
         var fireModes = weaponItemData.getFireModes();
@@ -76,18 +82,39 @@ public class AVPServerListener {
         var playerUUID = weaponSwapAmmunitionTypeRequestPayload.playerUUID();
         var player = (ServerPlayer) serverLevel.getPlayerByUUID(playerUUID);
 
-        if (player == null)
+        if (player == null) {
             return;
+        }
 
         var usedItemHand = player.getUsedItemHand();
         var itemStack = player.getItemInHand(usedItemHand);
         var item = itemStack.getItem();
 
-        if (!(item instanceof AbstractAVPWeaponItem abstractAVPWeaponItem))
+        if (!(item instanceof AbstractAVPWeaponItem abstractAVPWeaponItem)) {
             return;
+        }
 
         var weaponItemData = abstractAVPWeaponItem.getWeaponItemData();
-        // TODO: Swap ammunition type.
+        var ammunitionSuppliers = weaponItemData.getAmmunitionStrategy().getAmmunitionSuppliers();
+
+        if (ammunitionSuppliers.size() < 2) {
+            return;
+        }
+
+        var activeAmmunitionType = WeaponItemTagHelper.getOrSetActiveAmmunitionType(itemStack, weaponItemData);
+
+        ammunitionSuppliers.stream()
+            .filter(ammunitionSupplier -> {
+                var ammunitionItem = ammunitionSupplier.get();
+                var resourceLocation = BuiltInRegistries.ITEM.getKey(ammunitionItem);
+                return Objects.equals(resourceLocation.toString(), activeAmmunitionType);
+            })
+            .findFirst()
+            .map(ammunitionSuppliers::indexOf)
+            .ifPresent(index -> {
+                var nextAmmunitionType = ammunitionSuppliers.get((index + 1) % ammunitionSuppliers.size());
+                WeaponItemTagHelper.setActiveAmmunitionType(itemStack, nextAmmunitionType.get());
+            });
     }
 
     private AVPServerListener() {

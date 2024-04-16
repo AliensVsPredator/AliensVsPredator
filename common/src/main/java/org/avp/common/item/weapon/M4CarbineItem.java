@@ -27,7 +27,17 @@ public class M4CarbineItem extends AbstractAVPWeaponItem {
     // TODO:
     private static final WeaponItemData WEAPON_ITEM_DATA = new WeaponItemData(
         1.0F,
-        AmmunitionStrategy.builder(32, AVPBulletItems.BULLET_RIFLE::get)
+        AmmunitionStrategy.builder(
+                32,
+                List.of(
+                    AVPBulletItems.BULLET_RIFLE::get,
+                    AVPBulletItems.BULLET_RIFLE_ACID::get,
+                    AVPBulletItems.BULLET_RIFLE_ELECTRIC::get,
+                    AVPBulletItems.BULLET_RIFLE_EXPLOSIVE::get,
+                    AVPBulletItems.BULLET_RIFLE_INCENDIARY::get,
+                    AVPBulletItems.BULLET_RIFLE_PENETRATION::get
+                )
+            )
             .setHasAmmunitionBehavior(HasAmmunitionBehavior.LOADED)
             .build(),
         List.of(FIRE_MODE),

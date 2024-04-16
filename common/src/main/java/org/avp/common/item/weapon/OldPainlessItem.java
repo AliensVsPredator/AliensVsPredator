@@ -26,7 +26,17 @@ public class OldPainlessItem extends AbstractAVPWeaponItem {
 
     private static final WeaponItemData WEAPON_ITEM_DATA = new WeaponItemData(
         1.0F,
-        AmmunitionStrategy.builder(Integer.MAX_VALUE, AVPBulletItems.BULLET_HEAVY::get)
+        AmmunitionStrategy.builder(
+                Integer.MAX_VALUE,
+                List.of(
+                    AVPBulletItems.BULLET_HEAVY::get,
+                    AVPBulletItems.BULLET_HEAVY_ACID::get,
+                    AVPBulletItems.BULLET_HEAVY_ELECTRIC::get,
+                    AVPBulletItems.BULLET_HEAVY_EXPLOSIVE::get,
+                    AVPBulletItems.BULLET_HEAVY_INCENDIARY::get,
+                    AVPBulletItems.BULLET_HEAVY_PENETRATION::get
+                )
+            )
             .setHasAmmunitionBehavior(HasAmmunitionBehavior.INVENTORY)
             .build(),
         List.of(FIRE_MODE),

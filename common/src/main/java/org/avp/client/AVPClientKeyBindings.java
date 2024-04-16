@@ -3,6 +3,7 @@ package org.avp.client;
 import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
+import org.avp.common.network.payload.ServerboundWeaponSwapAmmunitionTypeRequestPayload;
 import org.avp.common.network.payload.ServerboundWeaponSwapFireModeRequestPayload;
 import org.lwjgl.glfw.GLFW;
 
@@ -65,7 +66,7 @@ public class AVPClientKeyBindings {
             (keyBinding, client) -> {
                 var player = client.player;
                 if (player != null) {
-                    var payload = new ServerboundWeaponSwapFireModeRequestPayload(player.getUUID());
+                    var payload = new ServerboundWeaponSwapAmmunitionTypeRequestPayload(player.getUUID());
                     Services.NETWORK_HANDLER.sendToServer(payload);
                 }
             }

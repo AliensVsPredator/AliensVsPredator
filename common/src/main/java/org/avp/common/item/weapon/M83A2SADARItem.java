@@ -26,7 +26,15 @@ public class M83A2SADARItem extends AbstractAVPWeaponItem {
 
     private static final WeaponItemData WEAPON_ITEM_DATA = new WeaponItemData(
         1.0F,
-        AmmunitionStrategy.builder(4, AVPAmmunitionPartItems.ROCKET::get)
+        AmmunitionStrategy.builder(
+                4,
+                List.of(
+                    AVPAmmunitionPartItems.ROCKET::get,
+                    AVPAmmunitionPartItems.ROCKET_ELECTRIC::get,
+                    AVPAmmunitionPartItems.ROCKET_INCENDIARY::get,
+                    AVPAmmunitionPartItems.ROCKET_PENETRATION::get
+                )
+            )
             .setHasAmmunitionBehavior(HasAmmunitionBehavior.LOADED)
             .build(),
         List.of(FIRE_MODE),

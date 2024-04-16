@@ -1,5 +1,7 @@
 package org.avp.api.item.weapon.ammo;
 
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.Item;
@@ -7,24 +9,29 @@ import net.minecraft.world.item.ItemStack;
 
 import org.avp.api.item.weapon.WeaponItemData;
 
+import java.util.List;
+import java.util.Objects;
 import java.util.function.Supplier;
 
 public abstract class AmmunitionStrategy {
 
     private final int maxAmmunition;
 
-    private final Supplier<Item> standardAmmunitionSupplier;
+    private final List<Supplier<Item>> ammunitionSuppliers;
 
-    public static Builder builder(int maxAmmunition, Supplier<Item> standardAmmunitionSupplier) {
-        return new Builder(maxAmmunition, standardAmmunitionSupplier);
+    public static Builder builder(
+        int maxAmmunition,
+        List<Supplier<Item>> ammunitionSuppliers
+    ) {
+        return new Builder(maxAmmunition, ammunitionSuppliers);
     }
 
     protected AmmunitionStrategy(
         int maxAmmunition,
-        Supplier<Item> standardAmmunitionSupplier
+        List<Supplier<Item>> ammunitionSuppliers
     ) {
         this.maxAmmunition = maxAmmunition;
-        this.standardAmmunitionSupplier = standardAmmunitionSupplier;
+        this.ammunitionSuppliers = ammunitionSuppliers;
     }
 
     public abstract boolean hasAmmunition(
@@ -38,21 +45,30 @@ public abstract class AmmunitionStrategy {
         return maxAmmunition;
     }
 
-    public Supplier<Item> getStandardAmmunitionSupplier() {
-        return standardAmmunitionSupplier;
+    public List<Supplier<Item>> getAmmunitionSuppliers() {
+        return ammunitionSuppliers;
+    }
+
+    public Supplier<Item> getAmmunitionSupplierByKeyOrFirst(String resourceLocationString) {
+        var resourceLocation = new ResourceLocation(resourceLocationString);
+        var item = BuiltInRegistries.ITEM.get(resourceLocation);
+        return ammunitionSuppliers.stream()
+            .filter(supplier -> Objects.equals(supplier.get(), item))
+            .findFirst()
+            .orElse(ammunitionSuppliers.get(0));
     }
 
     public static class Builder {
 
         private final int maxAmmunition;
 
-        private final Supplier<Item> standardAmmunitionSupplier;
+        private final List<Supplier<Item>> ammunitionSuppliers;
 
         private HasAmmunitionBehavior hasAmmunitionBehavior = HasAmmunitionBehavior.NO_OP;
 
-        private Builder(int maxAmmunition, Supplier<Item> standardAmmunitionSupplier) {
+        private Builder(int maxAmmunition, List<Supplier<Item>> ammunitionSuppliers) {
             this.maxAmmunition = maxAmmunition;
-            this.standardAmmunitionSupplier = standardAmmunitionSupplier;
+            this.ammunitionSuppliers = ammunitionSuppliers;
         }
 
         public Builder setHasAmmunitionBehavior(HasAmmunitionBehavior hasAmmunitionBehavior) {
@@ -61,7 +77,7 @@ public abstract class AmmunitionStrategy {
         }
 
         public AmmunitionStrategy build() {
-            return new AmmunitionStrategy(maxAmmunition, standardAmmunitionSupplier) {
+            return new AmmunitionStrategy(maxAmmunition, ammunitionSuppliers) {
 
                 @Override
                 public boolean hasAmmunition(

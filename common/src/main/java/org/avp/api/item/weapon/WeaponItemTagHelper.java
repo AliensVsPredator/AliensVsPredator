@@ -50,16 +50,21 @@ public class WeaponItemTagHelper {
         return BulletEffectRegistry.getBulletEffects(resourceLocation);
     }
 
-    private static String getOrSetActiveAmmunitionType(ItemStack itemStack, WeaponItemData weaponItemData) {
+    public static void setActiveAmmunitionType(ItemStack itemStack, Item ammunitionType) {
+        var tag = getTagSafely(itemStack);
+        var resourceLocation = BuiltInRegistries.ITEM.getKey(ammunitionType);
+        var resourceLocationString = resourceLocation.toString();
+        tag.putString(ACTIVE_AMMUNITION_TYPE_KEY, resourceLocationString);
+    }
+
+    public static String getOrSetActiveAmmunitionType(ItemStack itemStack, WeaponItemData weaponItemData) {
         var tag = getTagSafely(itemStack);
         var activeAmmunitionType = tag.getString(ACTIVE_AMMUNITION_TYPE_KEY);
 
         if (activeAmmunitionType.isEmpty()) {
-            var standardAmmunition = weaponItemData.getAmmunitionStrategy().getStandardAmmunitionSupplier().get();
-            var resourceLocation = BuiltInRegistries.ITEM.getKey(standardAmmunition);
-            var resourceLocationString = resourceLocation.toString();
-            tag.putString(ACTIVE_AMMUNITION_TYPE_KEY, resourceLocationString);
-            activeAmmunitionType = resourceLocationString;
+            var standardAmmunition = weaponItemData.getAmmunitionStrategy().getAmmunitionSupplierByKeyOrFirst(activeAmmunitionType).get();
+            setActiveAmmunitionType(itemStack, standardAmmunition);
+            return tag.getString(ACTIVE_AMMUNITION_TYPE_KEY);
         }
 
         return activeAmmunitionType;
