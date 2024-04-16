@@ -1,13 +1,56 @@
 package org.avp.neoforge.common.entity;
 
+import net.minecraft.core.RegistrySetBuilder;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.data.worldgen.BootstapContext;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.tags.BiomeTags;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.SpawnPlacements;
+import net.minecraft.world.level.biome.MobSpawnSettings;
+import net.neoforged.neoforge.common.world.BiomeModifier;
+import net.neoforged.neoforge.common.world.BiomeModifiers;
 import net.neoforged.neoforge.event.entity.SpawnPlacementRegisterEvent;
 
+import net.neoforged.neoforge.registries.NeoForgeRegistries;
+import org.avp.common.AVPResources;
 import org.avp.common.entity.spawn.AVPEntitySpawns;
 
 public class AVPNeoForgeEntitySpawns {
+
+    public static final RegistrySetBuilder REGISTRY_SET_BUILDER = new RegistrySetBuilder()
+        .add(NeoForgeRegistries.Keys.BIOME_MODIFIERS, AVPNeoForgeEntitySpawns::bootstrap);
+
+    private static void bootstrap(BootstapContext<BiomeModifier> context) {
+        AVPEntitySpawns.getEntries().forEach(entitySpawnData -> {
+            var entityTypeGameObject = entitySpawnData.entityTypeGameObject();
+            var entityTypeName = entityTypeGameObject.getResourceLocation().getPath();
+            var key = createThrowawayRegistryKey("add_" + entityTypeName);
+
+            var biomes = context.lookup(Registries.BIOME);
+            // TODO: Make this different per entity spawn data.
+            var biomeNamed = biomes.get(BiomeTags.IS_JUNGLE).orElseThrow();
+
+            var entityType = entityTypeGameObject.get();
+            var weight = entitySpawnData.weight();
+            var minGroupSize = entitySpawnData.minGroupSize();
+            var maxGroupSize = entitySpawnData.maxGroupSize();
+
+            var spawnsBiomeModifier = BiomeModifiers.AddSpawnsBiomeModifier.singleSpawn(
+                biomeNamed,
+                new MobSpawnSettings.SpawnerData(
+                    entityType, weight, minGroupSize, maxGroupSize
+                )
+            );
+
+            context.register(key, spawnsBiomeModifier);
+        });
+    }
+
+    private static ResourceKey<BiomeModifier> createThrowawayRegistryKey(String registryName) {
+        return ResourceKey.create(NeoForgeRegistries.Keys.BIOME_MODIFIERS, AVPResources.location(registryName));
+    }
 
     @SuppressWarnings("unchecked")
     public static void handleSpawnPlacementRegisterEvent(SpawnPlacementRegisterEvent event) {
