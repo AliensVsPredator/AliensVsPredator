@@ -8,7 +8,7 @@ import org.avp.common.AVPResources;
 
 public class AVPBlockTags {
 
-    public static final TagKey<Block> ACID_RESISTANT;
+    public static final TagKey<Block> ACID_IMMUNE;
 
     public static void forceInitialization() {
         // This method doesn't need to do anything
@@ -19,6 +19,10 @@ public class AVPBlockTags {
     }
 
     static {
-        ACID_RESISTANT = create("acid_resistant");
+        ACID_IMMUNE = create("acid_immune");
+    }
+
+    private AVPBlockTags() {
+        throw new UnsupportedOperationException();
     }
 }

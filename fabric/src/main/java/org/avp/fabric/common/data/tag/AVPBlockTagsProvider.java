@@ -20,7 +20,7 @@ public class AVPBlockTagsProvider extends FabricTagProvider.BlockTagProvider {
     protected void addTags(HolderLookup.Provider provider) {
         // Acid-resistant blocks
         // TODO: For some reason, adding irreplaceable features crashes datagen. Investigate later.
-        getOrCreateTagBuilder(AVPBlockTags.ACID_RESISTANT).addOptionalTag(BlockTags.FEATURES_CANNOT_REPLACE);
+        getOrCreateTagBuilder(AVPBlockTags.ACID_IMMUNE).addOptionalTag(BlockTags.FEATURES_CANNOT_REPLACE);
 
         AVPBlocks.getEntries().forEach(tuple -> {
             var block = tuple.first().get();
