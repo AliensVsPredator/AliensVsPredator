@@ -13,6 +13,7 @@ import net.minecraft.world.entity.EntityType;
 import org.avp.api.block.factory.BlockFactories;
 import org.avp.client.AVPClientKeyBindings;
 import org.avp.client.render.entity.AVPEntityRenderRegistry;
+import org.avp.client.render.particle.AVPParticleTypes;
 import org.avp.common.block.AVPBlocks;
 
 public class AVPFabricClient implements ClientModInitializer {
@@ -20,6 +21,8 @@ public class AVPFabricClient implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
         registerEntityRenderBindings();
+
+        AVPParticleTypes.forceInitialization();
 
         AVPBlocks.getEntries().forEach(tuple -> {
             var block = tuple.first().get();

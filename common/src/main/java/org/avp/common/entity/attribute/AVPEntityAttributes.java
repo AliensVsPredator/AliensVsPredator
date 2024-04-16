@@ -24,4 +24,8 @@ public class AVPEntityAttributes {
         AVPEntityAttributesBindingRegistry.addBinding(AVPEntityTypes.BELUGABURSTER, BELUGABURSTER);
         AVPEntityAttributesBindingRegistry.addBinding(AVPEntityTypes.BELUGAMORPH, BELUGAMORPH);
     }
+
+    private AVPEntityAttributes() {
+        throw new UnsupportedOperationException();
+    }
 }

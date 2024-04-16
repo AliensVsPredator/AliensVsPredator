@@ -16,6 +16,10 @@ public class Services {
 
     public static final NetworkHandler NETWORK_HANDLER = load(NetworkHandler.class);
 
+    public static final ParticleFactoryRegistry PARTICLE_FACTORY_REGISTRY = load(ParticleFactoryRegistry.class);
+
+    public static final ParticleRegistry PARTICLE_REGISTRY = load(ParticleRegistry.class);
+
     public static final NetworkPayloadHandlerRegistry PAYLOAD_HANDLER_REGISTRY = load(NetworkPayloadHandlerRegistry.class);
 
     public static final SoundEventRegistry SOUND_EVENT_REGISTRY = load(SoundEventRegistry.class);
