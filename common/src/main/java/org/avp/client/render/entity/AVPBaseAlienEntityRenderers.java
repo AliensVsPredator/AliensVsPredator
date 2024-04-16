@@ -10,7 +10,7 @@ import org.avp.client.render.entity.living.PraetorianRenderer;
 import org.avp.client.render.entity.living.QueenRenderer;
 import org.avp.client.render.entity.living.SpitterRenderer;
 import org.avp.client.render.entity.living.WarriorRenderer;
-import org.avp.common.entity.AVPBaseAlienEntityTypes;
+import org.avp.common.entity.type.AVPBaseAlienEntityTypes;
 
 public class AVPBaseAlienEntityRenderers {
 

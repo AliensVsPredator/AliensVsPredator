@@ -4,7 +4,7 @@ import org.avp.client.render.entity.living.DeaconAdultRenderer;
 import org.avp.client.render.entity.living.DeaconRenderer;
 import org.avp.client.render.entity.living.TrilobiteBabyRenderer;
 import org.avp.client.render.entity.living.TrilobiteRenderer;
-import org.avp.common.entity.AVPPrometheusAlienEntityTypes;
+import org.avp.common.entity.type.AVPPrometheusAlienEntityTypes;
 
 public class AVPPrometheusAlienEntityRenderers {
 

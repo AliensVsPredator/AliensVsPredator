@@ -3,7 +3,7 @@ package org.avp.common.entity.attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 
-import org.avp.common.entity.AVPExoticAlienEntityTypes;
+import org.avp.common.entity.type.AVPExoticAlienEntityTypes;
 
 public class AVPExoticAlienEntityAttributes {
 

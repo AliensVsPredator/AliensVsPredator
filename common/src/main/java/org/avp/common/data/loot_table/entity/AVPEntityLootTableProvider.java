@@ -11,9 +11,9 @@ import net.minecraft.world.level.storage.loot.providers.number.UniformGenerator;
 
 import org.avp.api.GameObject;
 import org.avp.common.data.loot_table.AbstractAVPEntityLootTableProvider;
-import org.avp.common.entity.AVPBaseAlienEntityTypes;
-import org.avp.common.entity.AVPRunnerAlienEntityTypes;
-import org.avp.common.entity.AVPYautjaEntityTypes;
+import org.avp.common.entity.type.AVPBaseAlienEntityTypes;
+import org.avp.common.entity.type.AVPRunnerAlienEntityTypes;
+import org.avp.common.entity.type.AVPYautjaEntityTypes;
 import org.avp.common.item.AVPArmorItems;
 import org.avp.common.item.AVPItems;
 

@@ -4,7 +4,7 @@ import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.monster.Monster;
 
-import org.avp.common.entity.AVPPrometheusAlienEntityTypes;
+import org.avp.common.entity.type.AVPPrometheusAlienEntityTypes;
 
 public class AVPPrometheusAlienEntityAttributes {
 

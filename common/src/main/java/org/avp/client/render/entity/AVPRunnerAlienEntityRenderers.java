@@ -4,7 +4,7 @@ import org.avp.client.render.entity.living.ChestbursterRunnerRenderer;
 import org.avp.client.render.entity.living.CrusherRenderer;
 import org.avp.client.render.entity.living.DroneRunnerRenderer;
 import org.avp.client.render.entity.living.WarriorRunnerRenderer;
-import org.avp.common.entity.AVPRunnerAlienEntityTypes;
+import org.avp.common.entity.type.AVPRunnerAlienEntityTypes;
 
 public class AVPRunnerAlienEntityRenderers {
 

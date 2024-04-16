@@ -1,7 +1,7 @@
 package org.avp.client.render.entity;
 
 import org.avp.client.render.entity.living.EngineerRenderer;
-import org.avp.common.entity.AVPEngineerEntityTypes;
+import org.avp.common.entity.type.AVPEngineerEntityTypes;
 
 public class AVPPrometheusEngineerEntityRenderers {
 

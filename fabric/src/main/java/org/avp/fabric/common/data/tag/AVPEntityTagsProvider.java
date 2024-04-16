@@ -8,13 +8,13 @@ import net.minecraft.world.entity.EntityType;
 
 import java.util.concurrent.CompletableFuture;
 
-import org.avp.common.entity.AVPBaseAlienEntityTypes;
-import org.avp.common.entity.AVPEngineerEntityTypes;
-import org.avp.common.entity.AVPEntityTypes;
-import org.avp.common.entity.AVPExoticAlienEntityTypes;
-import org.avp.common.entity.AVPPrometheusAlienEntityTypes;
-import org.avp.common.entity.AVPRunnerAlienEntityTypes;
-import org.avp.common.entity.AVPYautjaEntityTypes;
+import org.avp.common.entity.type.AVPBaseAlienEntityTypes;
+import org.avp.common.entity.type.AVPEngineerEntityTypes;
+import org.avp.common.entity.type.AVPEntityTypes;
+import org.avp.common.entity.type.AVPExoticAlienEntityTypes;
+import org.avp.common.entity.type.AVPPrometheusAlienEntityTypes;
+import org.avp.common.entity.type.AVPRunnerAlienEntityTypes;
+import org.avp.common.entity.type.AVPYautjaEntityTypes;
 import org.avp.common.tag.AVPEntityTags;
 
 public class AVPEntityTagsProvider extends FabricTagProvider.EntityTypeTagProvider {

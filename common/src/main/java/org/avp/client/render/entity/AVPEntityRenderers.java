@@ -2,7 +2,7 @@ package org.avp.client.render.entity;
 
 import org.avp.client.render.entity.living.BelugabursterRenderer;
 import org.avp.client.render.entity.living.BelugamorphRenderer;
-import org.avp.common.entity.AVPEntityTypes;
+import org.avp.common.entity.type.AVPEntityTypes;
 
 public class AVPEntityRenderers {
 

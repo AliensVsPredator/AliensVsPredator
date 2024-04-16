@@ -1,4 +1,4 @@
-package org.avp.common.entity;
+package org.avp.common.entity.type;
 
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;

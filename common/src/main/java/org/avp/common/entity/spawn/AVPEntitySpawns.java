@@ -10,9 +10,9 @@ import java.util.List;
 
 import org.avp.api.GameObject;
 import org.avp.common.config.AVPConfig;
-import org.avp.common.entity.AVPBaseAlienEntityTypes;
-import org.avp.common.entity.AVPRunnerAlienEntityTypes;
-import org.avp.common.entity.AVPYautjaEntityTypes;
+import org.avp.common.entity.type.AVPBaseAlienEntityTypes;
+import org.avp.common.entity.type.AVPRunnerAlienEntityTypes;
+import org.avp.common.entity.type.AVPYautjaEntityTypes;
 import org.avp.common.entity.living.Yautja;
 
 public class AVPEntitySpawns {

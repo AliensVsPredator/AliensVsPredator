@@ -1,8 +1,7 @@
 package org.avp.client.render.entity;
 
-import org.avp.client.model.entity.living.*;
 import org.avp.client.render.entity.living.*;
-import org.avp.common.entity.AVPExoticAlienEntityTypes;
+import org.avp.common.entity.type.AVPExoticAlienEntityTypes;
 
 public class AVPExoticAlienEntityRenderers {
 

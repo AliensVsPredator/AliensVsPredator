@@ -1,7 +1,7 @@
 package org.avp.client.render.entity;
 
 import org.avp.client.render.entity.living.YautjaRenderer;
-import org.avp.common.entity.AVPYautjaEntityTypes;
+import org.avp.common.entity.type.AVPYautjaEntityTypes;
 
 public class AVPYautjaEntityRenderers {
 
