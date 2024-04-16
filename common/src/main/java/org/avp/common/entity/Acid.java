@@ -14,6 +14,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import org.avp.client.render.particle.AVPParticleTypes;
 import org.avp.common.item.AVPArmorItems;
+import org.avp.common.tag.AVPBlockTags;
 import org.avp.common.tag.AVPEntityTags;
 import org.avp.server.BlockBreakProgressManager;
 import org.jetbrains.annotations.NotNull;
@@ -54,8 +55,13 @@ public class Acid extends Entity {
 
         if (!level.isClientSide) {
             if (tickCount % 20 == 0) {
-                // TODO: Make this break speed configurable.
-                BlockBreakProgressManager.damage(level(), blockPosition().below(), 2F);
+                var below = blockPosition().below();
+                var blockState = level.getBlockState(below);
+
+                if (!blockState.is(AVPBlockTags.ACID_IMMUNE)) {
+                    // TODO: Make this break speed configurable.
+                    BlockBreakProgressManager.damage(level(), below, 2F);
+                }
             }
 
             if (tickCount % 10 == 0) {
