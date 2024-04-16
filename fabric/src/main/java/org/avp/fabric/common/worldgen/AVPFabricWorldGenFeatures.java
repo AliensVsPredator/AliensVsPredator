@@ -39,6 +39,11 @@ public class AVPFabricWorldGenFeatures {
             GenerationStep.Decoration.UNDERGROUND_ORES,
             AVPOreFeatures.SILICA_ORE_PLACED_KEY
         );
+        BiomeModifications.addFeature(
+            BiomeSelectors.foundInOverworld(),
+            GenerationStep.Decoration.UNDERGROUND_ORES,
+            AVPOreFeatures.TITANIUM_ORE_PLACED_KEY
+        );
     }
 
     private AVPFabricWorldGenFeatures() {

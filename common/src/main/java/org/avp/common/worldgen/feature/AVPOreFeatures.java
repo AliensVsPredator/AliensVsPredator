@@ -22,12 +22,15 @@ public class AVPOreFeatures {
 
     public static final ResourceKey<PlacedFeature> SILICA_ORE_PLACED_KEY;
 
+    public static final ResourceKey<PlacedFeature> TITANIUM_ORE_PLACED_KEY;
+
     static {
         BAUXITE_ORE_PLACED_KEY = register("ore_bauxite");
         COBALT_ORE_PLACED_KEY = register("ore_cobalt");
         LITHIUM_ORE_PLACED_KEY = register("ore_lithium");
         MONAZITE_ORE_PLACED_KEY = register("ore_monazite");
         SILICA_ORE_PLACED_KEY = register("ore_silica");
+        TITANIUM_ORE_PLACED_KEY = register("ore_titanium");
     }
 
     private static ResourceKey<PlacedFeature> register(String registryName) {
