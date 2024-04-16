@@ -13,6 +13,7 @@ import org.avp.common.config.AVPConfig;
 import org.avp.common.entity.AVPBaseAlienEntityTypes;
 import org.avp.common.entity.AVPRunnerAlienEntityTypes;
 import org.avp.common.entity.AVPYautjaEntityTypes;
+import org.avp.common.entity.living.Yautja;
 
 public class AVPEntitySpawns {
 
@@ -138,7 +139,7 @@ public class AVPEntitySpawns {
             1
         );
 
-        registerMonsterSpawn(AVPYautjaEntityTypes.YAUTJA, Monster::checkMonsterSpawnRules, 1, 1, 1);
+        registerMonsterSpawn(AVPYautjaEntityTypes.YAUTJA, Yautja::checkPredatorSpawnRules, 30, 1, 1);
     }
 
     private AVPEntitySpawns() {
