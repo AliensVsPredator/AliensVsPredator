@@ -2,6 +2,7 @@ package org.avp.common;
 
 import mod.azure.azurelib.common.internal.common.AzureLib;
 
+import org.avp.client.render.particle.AVPParticleTypes;
 import org.avp.common.block.*;
 import org.avp.common.config.AVPConfig;
 import org.avp.common.creative_tab.AVPCreativeModeTabs;
@@ -78,6 +79,9 @@ public class AVPCommon {
         AVPRunnerAlienEntityTypes.forceInitialization();
         AVPYautjaEntityTypes.forceInitialization();
         AVPEntitySpawns.forceInitialization();
+
+        // Particles
+        AVPParticleTypes.forceInitialization();
 
         // It's important to register creative mode tabs last, as entities generate spawn eggs automatically.
         AVPCreativeModeTabs.register();

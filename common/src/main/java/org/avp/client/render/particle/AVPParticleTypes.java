@@ -16,12 +16,16 @@ public class AVPParticleTypes {
         // This method doesn't need to do anything
     }
 
-    private static GameObject<SimpleParticleType> register(String registryName, Function<SpriteSet, ParticleProvider<SimpleParticleType>> factoryProvider) {
-        return Services.PARTICLE_REGISTRY.register(registryName, factoryProvider);
+    private static GameObject<SimpleParticleType> registerSimple(String registryName, Function<SpriteSet, ParticleProvider<SimpleParticleType>> factoryProvider) {
+        var gameObject = Services.PARTICLE_REGISTRY.register(registryName, factoryProvider);
+        return new GameObject<>(
+            gameObject.getResourceLocation().getPath(),
+            () -> (SimpleParticleType) gameObject.get()
+        );
     }
 
     static {
-        ACID = register("acid", AcidParticleFactory::new);
+        ACID = registerSimple("acid", AcidParticleFactory::new);
     }
 
     private AVPParticleTypes() {

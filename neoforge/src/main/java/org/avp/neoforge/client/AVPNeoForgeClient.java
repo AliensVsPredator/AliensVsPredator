@@ -1,9 +1,12 @@
 package org.avp.neoforge.client;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.particle.ParticleProvider;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.core.particles.ParticleOptions;
+import net.minecraft.core.particles.ParticleType;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.neoforged.api.distmarker.Dist;
@@ -12,6 +15,7 @@ import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
+import net.neoforged.neoforge.client.event.RegisterParticleProvidersEvent;
 import net.neoforged.neoforge.event.TickEvent;
 
 import org.avp.api.block.factory.BlockFactories;
@@ -19,6 +23,7 @@ import org.avp.client.AVPClientKeyBindings;
 import org.avp.client.render.entity.AVPEntityRenderRegistry;
 import org.avp.common.AVPConstants;
 import org.avp.common.block.AVPBlocks;
+import org.avp.neoforge.service.NeoForgeParticleFactoryRegistry;
 
 @Mod.EventBusSubscriber(modid = AVPConstants.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
 public class AVPNeoForgeClient {
@@ -50,6 +55,17 @@ public class AVPNeoForgeClient {
         AVPClientKeyBindings.getEntries().forEach(tuple -> {
             var keyMapping = tuple.first();
             event.register(keyMapping);
+        });
+    }
+
+    @SubscribeEvent
+    @SuppressWarnings("unchecked")
+    public static void registerParticleProviders(RegisterParticleProvidersEvent event) {
+        NeoForgeParticleFactoryRegistry.getEntries().forEach(supplierFunctionTuple -> {
+            var supplier = supplierFunctionTuple.first();
+            var factoryProvider = supplierFunctionTuple.second();
+            var particleType = (ParticleType<ParticleOptions>) supplier.get();
+            event.registerSpriteSet(particleType, spriteSet -> (ParticleProvider<ParticleOptions>) factoryProvider.apply(spriteSet));
         });
     }
 
