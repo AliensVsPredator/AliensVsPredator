@@ -3,7 +3,7 @@ package org.avp.fabric;
 import net.fabricmc.api.ModInitializer;
 
 import org.avp.common.AVPCommon;
-import org.avp.fabric.common.AVPFabricCommands;
+import org.avp.fabric.common.command.AVPFabricCommands;
 import org.avp.fabric.common.data.AVPFabricLootTableModifier;
 import org.avp.fabric.common.registry.AVPDeferredBlockRegistry;
 import org.avp.fabric.common.registry.AVPDeferredCreativeTabRegistry;

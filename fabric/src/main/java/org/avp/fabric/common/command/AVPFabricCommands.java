@@ -1,4 +1,4 @@
-package org.avp.fabric.common;
+package org.avp.fabric.common.command;
 
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 
