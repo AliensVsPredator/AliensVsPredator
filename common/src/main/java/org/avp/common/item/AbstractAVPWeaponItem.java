@@ -191,7 +191,7 @@ public abstract class AbstractAVPWeaponItem extends Item implements GeoItem {
 
         // Only damage blocks if both are true.
         if (AVPConfig.General.GUNS_DO_BLOCK_DAMAGE && level.getGameRules().getBoolean(GameRules.RULE_PROJECTILESCANBREAKBLOCKS)) {
-            damageBlock(level, blockPos, block, fireMode);
+            damageBlock(level, blockPos, fireMode);
         }
 
         var payload = new ClientboundBulletHitBlockPayload(blockPos, direction);
@@ -215,20 +215,9 @@ public abstract class AbstractAVPWeaponItem extends Item implements GeoItem {
         }
     }
 
-    private void damageBlock(@NotNull Level level, BlockPos blockPos, Block block, FireMode fireMode) {
-        BlockBreakProgressManager.BLOCK_BREAK_PROGRESS_MAP.compute(blockPos, (key, tuple) -> {
-            var cachedValue = tuple == null ? 0 : tuple.second();
-            var damage = this.getWeaponItemData().getDamage() * fireMode.consumedAmmunition();
-            var newValue = cachedValue + (damage / (2F + block.defaultDestroyTime() / 2F));
-            var progress = (int) Mth.clamp(newValue, 0F, 9F);
-            level.destroyBlockProgress(Objects.hash(blockPos), blockPos, progress);
-
-            if (progress >= 9) {
-                level.destroyBlock(blockPos, false);
-                return null;
-            }
-            return new Tuple<>(System.currentTimeMillis() + TimeUtils.FIVE_MINUTES_IN_MILLIS, newValue);
-        });
+    private void damageBlock(@NotNull Level level, BlockPos blockPos, FireMode fireMode) {
+        var damage = this.getWeaponItemData().getDamage() * fireMode.consumedAmmunition();
+        BlockBreakProgressManager.damage(level, blockPos, damage);
     }
 
     @Override
