@@ -31,7 +31,7 @@ public class AVPFabric implements ModInitializer {
         // Remaining steps.
         AVPFabricEntitySpawns.addEntitySpawns();
         AVPFabricLootTableModifier.registerVanillaLootTableModifications();
-        AVPFabricWorldGenFeatures.getInstance().register();
+        AVPFabricWorldGenFeatures.forceInitialization();
         FabricEntityAttributeRegistry.getInstance().register();
         AVPFabricCommands.register();
     }

@@ -14,7 +14,7 @@ import org.avp.common.sound.AVPSoundEvents;
 import org.avp.common.tag.AVPBiomeTags;
 import org.avp.common.tag.AVPBlockTags;
 import org.avp.common.tag.AVPEntityTags;
-import org.avp.common.worldgen.AVPWorldGenFeatures;
+import org.avp.common.worldgen.feature.AVPOreFeatures;
 
 public class AVPCommon {
 
@@ -29,7 +29,7 @@ public class AVPCommon {
         AVPNetworkPayloadHandlerRegistry.forceInitialization();
 
         // World Gen resource keys
-        AVPWorldGenFeatures.getInstance().register();
+        AVPOreFeatures.forceInitialization();
 
         // Fuel
         AVPFuelRegistry.forceInitialization();
