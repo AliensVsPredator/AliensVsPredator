@@ -10,6 +10,8 @@ public class AVPEntityTags {
 
     public static final TagKey<EntityType<?>> ACID_BLEEDERS;
 
+    public static final TagKey<EntityType<?>> ACID_IMMUNE;
+
     public static final TagKey<EntityType<?>> ALIENS;
 
     public static final TagKey<EntityType<?>> EGGS;
@@ -36,6 +38,7 @@ public class AVPEntityTags {
 
     static {
         ACID_BLEEDERS = create("acid_bleeders");
+        ACID_IMMUNE = create("acid_immune");
         ALIENS = create("aliens");
         EGGS = create("eggs");
         ENGINEERS = create("engineers");

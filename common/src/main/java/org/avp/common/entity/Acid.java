@@ -46,7 +46,6 @@ public class Acid extends Entity {
         this.move(MoverType.SELF, this.getDeltaMovement());
         this.setDeltaMovement(0, this.getDeltaMovement().y * 0.9800000190734863D, 0);
 
-        // TODO: Persist acid lifetime if MC doesn't already persist ticks existed for an entity.
         if (tickCount > MAX_LIFE_IN_TICKS) {
             this.kill();
         }
@@ -93,8 +92,7 @@ public class Acid extends Entity {
                 }
             }
 
-            // TODO: Make a dedicated tag for acid-resistant entities.
-            if (!entity.getType().is(AVPEntityTags.ALIENS)) {
+            if (!entity.getType().is(AVPEntityTags.ACID_IMMUNE)) {
                 // TODO: Correct the damage source here.
                 // TODO: Make damage amount configurable.
                 entity.hurt(damageSources().hotFloor(), 2F);

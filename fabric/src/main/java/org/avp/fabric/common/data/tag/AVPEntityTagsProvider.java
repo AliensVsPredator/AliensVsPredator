@@ -79,6 +79,9 @@ public class AVPEntityTagsProvider extends FabricTagProvider.EntityTypeTagProvid
         getOrCreateTagBuilder(AVPEntityTags.ACID_BLEEDERS)
             .addTag(AVPEntityTags.ALIENS);
 
+        getOrCreateTagBuilder(AVPEntityTags.ACID_IMMUNE)
+            .addTag(AVPEntityTags.ACID_BLEEDERS);
+
         getOrCreateTagBuilder(AVPEntityTags.ENGINEERS).add(
             AVPEngineerEntityTypes.ENGINEER.get()
         );
