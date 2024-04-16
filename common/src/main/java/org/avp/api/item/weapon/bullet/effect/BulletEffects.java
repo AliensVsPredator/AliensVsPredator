@@ -1,7 +1,6 @@
 package org.avp.api.item.weapon.bullet.effect;
 
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
@@ -31,7 +30,7 @@ public class BulletEffects {
         @Override
         public void applyEffect(Entity entity) {
             if (entity instanceof LivingEntity livingEntity) {
-                livingEntity.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 5));
+                livingEntity.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 3 * 20, 1));
             }
         }
     };
@@ -39,7 +38,7 @@ public class BulletEffects {
     public static final BulletEffect EXPLOSIVE = new BulletEffect("explosive") {
         @Override
         public void applyEffect(Entity entity) {
-            entity.level().explode(entity, entity.getX(), entity.getY(), entity.getZ(), 3F, Level.ExplosionInteraction.MOB);
+            entity.level().explode(entity, entity.getX(), entity.getY() + entity.getBbHeight() / 2, entity.getZ(), 1F, Level.ExplosionInteraction.NONE);
         }
     };
 
