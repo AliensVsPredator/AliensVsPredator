@@ -24,10 +24,10 @@ public class AVPFabricLootTableModifier {
                     AVPWeaponBlueprintItems.BLUEPRINT_M88MOD4_COMBAT_PISTOL,
                     50
                 );
-                addSimpleLootPool(BuiltInLootTables.SIMPLE_DUNGEON, id, tableBuilder, AVPWeaponBlueprintItems.BLUEPRINT_37_12_SHOTGUN, 10);
-                addSimpleLootPool(BuiltInLootTables.DESERT_PYRAMID, id, tableBuilder, AVPWeaponBlueprintItems.BLUEPRINT_F90_RIFLE, 10);
+                addSimpleLootPool(BuiltInLootTables.SIMPLE_DUNGEON, id, tableBuilder, AVPWeaponBlueprintItems.BLUEPRINT_37_12_SHOTGUN, 20);
+                addSimpleLootPool(BuiltInLootTables.DESERT_PYRAMID, id, tableBuilder, AVPWeaponBlueprintItems.BLUEPRINT_F90_RIFLE, 20);
                 addSimpleLootPool(BuiltInLootTables.JUNGLE_TEMPLE, id, tableBuilder, AVPWeaponBlueprintItems.BLUEPRINT_M4_CARBINE, 20);
-                addSimpleLootPool(BuiltInLootTables.PILLAGER_OUTPOST, id, tableBuilder, AVPWeaponBlueprintItems.BLUEPRINT_SNIPER_RIFLE, 10);
+                addSimpleLootPool(BuiltInLootTables.PILLAGER_OUTPOST, id, tableBuilder, AVPWeaponBlueprintItems.BLUEPRINT_SNIPER_RIFLE, 20);
                 addSimpleLootPool(
                     BuiltInLootTables.STRONGHOLD_CORRIDOR,
                     id,
@@ -42,14 +42,14 @@ public class AVPFabricLootTableModifier {
                     AVPWeaponBlueprintItems.BLUEPRINT_FLAMETHROWER_SEVASTOPOL,
                     33
                 );
-                addSimpleLootPool(BuiltInLootTables.WOODLAND_MANSION, id, tableBuilder, AVPWeaponBlueprintItems.BLUEPRINT_OLD_PAINLESS, 10);
-                addSimpleLootPool(BuiltInLootTables.ANCIENT_CITY, id, tableBuilder, AVPWeaponBlueprintItems.BLUEPRINT_M83A2_SADAR, 10);
+                addSimpleLootPool(BuiltInLootTables.WOODLAND_MANSION, id, tableBuilder, AVPWeaponBlueprintItems.BLUEPRINT_OLD_PAINLESS, 20);
+                addSimpleLootPool(BuiltInLootTables.ANCIENT_CITY, id, tableBuilder, AVPWeaponBlueprintItems.BLUEPRINT_M83A2_SADAR, 20);
                 addSimpleLootPool(
                     BuiltInLootTables.END_CITY_TREASURE,
                     id,
                     tableBuilder,
                     AVPWeaponBlueprintItems.BLUEPRINT_M56_SMARTGUN,
-                    10
+                    20
                 );
 
                 // AK-47
