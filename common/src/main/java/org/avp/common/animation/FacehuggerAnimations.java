@@ -5,7 +5,7 @@ import mod.azure.azurelib.common.internal.common.core.animation.AnimatableManage
 import mod.azure.azurelib.common.internal.common.core.animation.AnimationController;
 import mod.azure.azurelib.common.internal.common.core.animation.RawAnimation;
 import mod.azure.azurelib.common.internal.common.core.object.PlayState;
-import net.minecraft.world.entity.LivingEntity;
+import org.avp.common.entity.living.Facehugger;
 
 import java.util.function.Function;
 
@@ -22,7 +22,7 @@ public class FacehuggerAnimations {
 
     private static final RawAnimation ANIMATION_TAIL_SWAY = RawAnimation.begin().thenPlay(ANIMATION_NAME_TAIL_SWAY);
 
-    private static final Function<LivingEntity, AnimationController.AnimationStateHandler<GeoAnimatable>> HANDLER_IDLE = entity -> event -> {
+    private static final Function<Facehugger, AnimationController.AnimationStateHandler<GeoAnimatable>> HANDLER_IDLE = entity -> event -> {
         if (!event.isMoving()) {
             return event.setAndContinue(ANIMATION_TAIL_SWAY);
         }
@@ -30,7 +30,7 @@ public class FacehuggerAnimations {
         return PlayState.STOP;
     };
 
-    private static final Function<LivingEntity, AnimationController.AnimationStateHandler<GeoAnimatable>> HANDLER_MOVEMENT = entity -> event -> {
+    private static final Function<Facehugger, AnimationController.AnimationStateHandler<GeoAnimatable>> HANDLER_MOVEMENT = entity -> event -> {
         if (event.isMoving()) {
             return event.setAndContinue(ANIMATION_CRAWL);
         }
@@ -38,7 +38,7 @@ public class FacehuggerAnimations {
         return PlayState.STOP;
     };
 
-    public static <T extends LivingEntity & GeoAnimatable> void bootstrap(T entity, AnimatableManager.ControllerRegistrar registrar) {
+    public static <T extends Facehugger & GeoAnimatable> void bootstrap(T entity, AnimatableManager.ControllerRegistrar registrar) {
         registrar.add(
             new AnimationController<>(entity, CONTROLLER_NAME_IDLE, HANDLER_IDLE.apply(entity)),
             new AnimationController<>(entity, CONTROLLER_NAME_MOVE, HANDLER_MOVEMENT.apply(entity))
