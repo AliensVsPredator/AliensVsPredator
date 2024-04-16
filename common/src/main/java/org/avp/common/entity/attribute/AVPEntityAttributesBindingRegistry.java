@@ -1,7 +1,7 @@
 package org.avp.common.entity.attribute;
 
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.monster.Monster;
@@ -15,14 +15,14 @@ import org.avp.api.GameObject;
 
 public class AVPEntityAttributesBindingRegistry {
 
-    private static final List<Map.Entry<GameObject<? extends EntityType<? extends Mob>>, AttributeSupplier>> BINDINGS =
+    private static final List<Map.Entry<GameObject<? extends EntityType<? extends LivingEntity>>, AttributeSupplier>> BINDINGS =
         new ArrayList<>();
 
-    public static List<Map.Entry<GameObject<? extends EntityType<? extends Mob>>, AttributeSupplier>> getBindings() {
+    public static List<Map.Entry<GameObject<? extends EntityType<? extends LivingEntity>>, AttributeSupplier>> getBindings() {
         return BINDINGS;
     }
 
-    protected static <T extends Mob> void addBinding(
+    protected static <T extends LivingEntity> void addBinding(
         GameObject<EntityType<T>> gameObject,
         AttributeSupplier attributeSupplier
     ) {

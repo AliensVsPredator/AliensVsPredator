@@ -9,6 +9,7 @@ public class AVPEntityRenderers {
     private AVPEntityRenderers() {}
 
     public static void addBindings() {
+        AVPEntityRenderRegistry.addBinding(AVPEntityTypes.ACID, AcidRenderer::new);
         AVPEntityRenderRegistry.addBinding(AVPEntityTypes.BELUGABURSTER, BelugabursterRenderer::new);
         AVPEntityRenderRegistry.addBinding(AVPEntityTypes.BELUGAMORPH, BelugamorphRenderer::new);
     }

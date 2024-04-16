@@ -1,15 +1,22 @@
 package org.avp.common.entity.type;
 
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.MobCategory;
 
 import org.avp.api.GameObject;
+import org.avp.common.entity.Acid;
 import org.avp.common.entity.living.*;
-import org.avp.common.registry.AVPRegistry;
 import org.avp.common.service.Services;
 
 public class AVPEntityTypes {
+
+    public static final GameObject<EntityType<Acid>> ACID = register(
+        "acid",
+        EntityType.Builder.of(Acid::new, MobCategory.MISC)
+            .sized(0.8F, 0.05F)
+    );
 
     public static final GameObject<EntityType<Belugaburster>> BELUGABURSTER = registerLiving(
         "belugaburster",
@@ -26,6 +33,13 @@ public class AVPEntityTypes {
         EntityType.Builder.of(Belugamorph::new, MobCategory.MONSTER)
             .sized(0.75F, 2.98F)
     );
+
+    public static <T extends Entity> GameObject<EntityType<T>> register(
+        String registryName,
+        EntityType.Builder<T> builder
+    ) {
+        return Services.ENTITY_REGISTRY.register(registryName, () -> builder.build(registryName));
+    }
 
     public static <T extends Mob> GameObject<EntityType<T>> registerLiving(
         String registryName,

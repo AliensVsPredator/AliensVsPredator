@@ -19,7 +19,7 @@ public class AVPEntityRenderRegistry {
         return BINDINGS;
     }
 
-    protected static <T extends Mob> void addBinding(
+    protected static <T extends Entity> void addBinding(
         GameObject<EntityType<T>> entityTypeGameObject,
         EntityRendererProvider<T> entityRendererProvider
     ) {

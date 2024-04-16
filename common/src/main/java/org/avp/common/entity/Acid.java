@@ -1,0 +1,104 @@
+package org.avp.common.entity;
+
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.MoverType;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import org.avp.client.render.particle.AVPParticleTypes;
+import org.avp.common.item.AVPArmorItems;
+import org.avp.common.tag.AVPEntityTags;
+import org.avp.server.BlockBreakProgressManager;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.Objects;
+
+public class Acid extends Entity {
+
+    private static final int MAX_LIFE_IN_TICKS = 20 * 20; // 20 seconds.
+
+    public Acid(EntityType<? extends Entity> entityType, Level level) {
+        super(entityType, level);
+        this.setNoGravity(false);
+    }
+
+    @Override
+    protected void defineSynchedData() { /* Do nothing */ }
+
+    @Override
+    protected void readAdditionalSaveData(@NotNull CompoundTag compoundTag) { /* Do nothing */ }
+
+    @Override
+    protected void addAdditionalSaveData(@NotNull CompoundTag compoundTag) { /* Do nothing */ }
+
+    @Override
+    public void tick() {
+        super.tick();
+
+        this.setDeltaMovement(0, this.getDeltaMovement().y - 0.03999999910593033D, 0);
+        this.move(MoverType.SELF, this.getDeltaMovement());
+        this.setDeltaMovement(0, this.getDeltaMovement().y * 0.9800000190734863D, 0);
+
+        // TODO: Persist acid lifetime if MC doesn't already persist ticks existed for an entity.
+        if (tickCount > MAX_LIFE_IN_TICKS) {
+            this.kill();
+        }
+
+        var level = level();
+
+        if (!level.isClientSide) {
+            if (tickCount % 20 == 0) {
+                // TODO: Make this break speed configurable.
+                BlockBreakProgressManager.damage(level(), blockPosition().below(), 2F);
+            }
+
+            if (tickCount % 10 == 0) {
+                damageEntities(level);
+            }
+        }
+
+        if (level.isClientSide)
+        {
+            if (tickCount % (random.nextInt(100) + 10) == 0) {
+                level.playLocalSound(this, SoundEvents.LAVA_EXTINGUISH, SoundSource.NEUTRAL, 1F, 1F);
+            }
+            for (int i = 0; i < 2; i++) {
+                level.addAlwaysVisibleParticle(ParticleTypes.SMOKE, getRandomX(0.5), getRandomY(), getRandomZ(0.5), 0.0, 0.0, 0.0);
+            }
+            for (int i = 0; i < 2; i++) {
+                level.addAlwaysVisibleParticle(AVPParticleTypes.ACID.get(), getRandomX(0.5), getRandomY(), getRandomZ(0.5), 0.0, 0.0, 0.0);
+            }
+        }
+    }
+
+    private void damageEntities(Level level) {
+        var entities = level.getEntities(this, this.getBoundingBox(), LivingEntity.class::isInstance);
+        entities.forEach(entity -> {
+            if (entity instanceof Player player && !player.isCreative()) {
+                var itemStack = player.getItemBySlot(EquipmentSlot.FEET);
+                // TODO: Make a tag for acid-resistant items.
+                if (!Objects.equals(itemStack, ItemStack.EMPTY) && !Objects.equals(itemStack.getItem(), AVPArmorItems.XENOMORPH_BOOTS.get())) {
+                    itemStack.setDamageValue(itemStack.getDamageValue() + random.nextInt(3) + 3);
+                    if (itemStack.getDamageValue() > itemStack.getMaxDamage()) {
+                        itemStack.setCount(0);
+                    }
+                    return;
+                }
+            }
+
+            // TODO: Make a dedicated tag for acid-resistant entities.
+            if (!entity.getType().is(AVPEntityTags.ALIENS)) {
+                // TODO: Correct the damage source here.
+                // TODO: Make damage amount configurable.
+                entity.hurt(damageSources().hotFloor(), 2F);
+            }
+        });
+    }
+}
