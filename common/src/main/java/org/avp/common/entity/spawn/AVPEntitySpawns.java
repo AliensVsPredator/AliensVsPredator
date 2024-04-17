@@ -1,8 +1,11 @@
 package org.avp.common.entity.spawn;
 
+import net.minecraft.tags.BiomeTags;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.SpawnPlacements;
 import net.minecraft.world.entity.monster.Monster;
+import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.levelgen.Heightmap;
 
 import java.util.function.Supplier;
@@ -21,6 +24,7 @@ public class AVPEntitySpawns extends AVPDeferredRegistry<EntitySpawnData<?>> {
 
     private <T extends Monster> void registerMonsterSpawn(
         Holder<EntityType<T>> entityTypeHolder,
+        TagKey<Biome> biomeTagKey,
         SpawnPlacements.SpawnPredicate<T> spawnPredicate,
         int weight,
         int minGroupSize,
@@ -31,6 +35,7 @@ public class AVPEntitySpawns extends AVPDeferredRegistry<EntitySpawnData<?>> {
                 entityTypeHolder.getResourceLocation().getPath() + "_spawns",
                 () -> new EntitySpawnData<>(
                     entityTypeHolder,
+                    biomeTagKey,
                     weight,
                     minGroupSize,
                     maxGroupSize,
@@ -52,6 +57,7 @@ public class AVPEntitySpawns extends AVPDeferredRegistry<EntitySpawnData<?>> {
     ) {
         registerMonsterSpawn(
             entityTypeHolder,
+            BiomeTags.IS_OVERWORLD,
             (e, s, m, b, r) -> b.getY() <= maxYLevel && spawnPredicate.test(e, s, m, b, r),
             weight,
             minGroupSize,
@@ -140,7 +146,7 @@ public class AVPEntitySpawns extends AVPDeferredRegistry<EntitySpawnData<?>> {
             1
         );
 
-        registerMonsterSpawn(AVPYautjaEntityTypes.INSTANCE.YAUTJA, Yautja::checkPredatorSpawnRules, 30, 1, 1);
+        registerMonsterSpawn(AVPYautjaEntityTypes.INSTANCE.YAUTJA, BiomeTags.IS_JUNGLE, Yautja::checkPredatorSpawnRules, 30, 1, 1);
     }
 
     private AVPEntitySpawns() {}

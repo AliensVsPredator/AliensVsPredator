@@ -25,11 +25,11 @@ public class AVPNeoForgeEntitySpawns {
     private static void bootstrap(BootstapContext<BiomeModifier> context) {
         AVPEntitySpawns.INSTANCE.getEntries().forEach(entitySpawnDataHolder -> {
             var entitySpawnData = entitySpawnDataHolder.get();
+            var biomeTag = entitySpawnData.biomeTagKey();
             var key = createThrowawayRegistryKey(entitySpawnDataHolder.getResourceLocation());
 
             var biomes = context.lookup(Registries.BIOME);
-            // TODO: Make this different per entity spawn data.
-            var biomeNamed = biomes.get(BiomeTags.IS_JUNGLE).orElseThrow();
+            var biomeNamed = biomes.get(biomeTag).orElseThrow();
 
             var entityType = entitySpawnData.entityTypeHolder().get();
             var weight = entitySpawnData.weight();

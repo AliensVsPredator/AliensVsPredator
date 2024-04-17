@@ -1,14 +1,17 @@
 package org.avp.common.entity.spawn;
 
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.SpawnPlacements;
+import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.levelgen.Heightmap;
 
 import org.avp.api.Holder;
 
 public record EntitySpawnData<T extends Mob>(
     Holder<EntityType<T>> entityTypeHolder,
+    TagKey<Biome> biomeTagKey,
     int weight,
     int minGroupSize,
     int maxGroupSize,

@@ -17,6 +17,7 @@ public class AVPFabricEntitySpawns {
     public static void addEntitySpawns() {
         AVPEntitySpawns.INSTANCE.getEntries().forEach(entitySpawnDataHolder -> {
             var entitySpawnData = entitySpawnDataHolder.get();
+            var biomeTag = entitySpawnData.biomeTagKey();
             var weight = entitySpawnData.weight();
             var minGroupSize = entitySpawnData.minGroupSize();
             var maxGroupSize = entitySpawnData.maxGroupSize();
@@ -32,7 +33,7 @@ public class AVPFabricEntitySpawns {
 
             // Register biome spawns.
             BiomeModifications.addSpawn(
-                BiomeSelectors.foundInOverworld(), // TODO: Make this generic.
+                context -> context.hasTag(biomeTag),
                 MobCategory.MONSTER,
                 entityType,
                 weight,
