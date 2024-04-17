@@ -6,7 +6,6 @@ import org.avp.common.AVPCommon;
 import org.avp.fabric.common.command.AVPFabricCommands;
 import org.avp.fabric.common.data.AVPFabricLootTableModifier;
 import org.avp.fabric.common.registry.AVPDeferredCreativeTabRegistry;
-import org.avp.fabric.common.registry.AVPDeferredItemRegistry;
 import org.avp.fabric.common.registry.AVPFabricFuelRegistry;
 import org.avp.fabric.common.worldgen.AVPFabricEntitySpawns;
 import org.avp.fabric.common.worldgen.AVPFabricWorldGenFeatures;
@@ -20,7 +19,6 @@ public class AVPFabric implements ModInitializer {
         AVPCommon.init();
 
         // Deferred registration step.
-        AVPDeferredItemRegistry.registerAll();
         AVPDeferredCreativeTabRegistry.registerAll();
 
         // Fuel registration.

@@ -47,7 +47,7 @@ public class AVPEntityLootTableProvider extends AbstractAVPEntityLootTableProvid
                     LootPool.lootPool()
                         .setRolls(ConstantValue.exactly(1.0F))
                         .add(
-                            LootItem.lootTableItem(AVPItems.XENOMORPH_CHITIN.get())
+                            LootItem.lootTableItem(AVPItems.INSTANCE.XENOMORPH_CHITIN.get())
                                 .apply(SetItemCountFunction.setCount(UniformGenerator.between(0.0F, 2.0F)))
                                 .apply(LootingEnchantFunction.lootingMultiplier(UniformGenerator.between(1.0F, 3.0F)))
                         )
@@ -63,7 +63,7 @@ public class AVPEntityLootTableProvider extends AbstractAVPEntityLootTableProvid
                     LootPool.lootPool()
                         .setRolls(ConstantValue.exactly(1.0F))
                         .add(
-                            LootItem.lootTableItem(AVPItems.ROYAL_JELLY.get())
+                            LootItem.lootTableItem(AVPItems.INSTANCE.ROYAL_JELLY.get())
                                 .apply(SetItemCountFunction.setCount(ConstantValue.exactly(1.0F)))
                                 .apply(LootingEnchantFunction.lootingMultiplier(UniformGenerator.between(0.0F, 1.0F)))
                         )
@@ -72,7 +72,7 @@ public class AVPEntityLootTableProvider extends AbstractAVPEntityLootTableProvid
                     LootPool.lootPool()
                         .setRolls(ConstantValue.exactly(1.0F))
                         .add(
-                            LootItem.lootTableItem(AVPItems.XENOMORPH_CHITIN.get())
+                            LootItem.lootTableItem(AVPItems.INSTANCE.XENOMORPH_CHITIN.get())
                                 .apply(SetItemCountFunction.setCount(UniformGenerator.between(1.0F, 4.0F)))
                                 .apply(LootingEnchantFunction.lootingMultiplier(UniformGenerator.between(2.0F, 4.0F)))
                         )
@@ -88,7 +88,7 @@ public class AVPEntityLootTableProvider extends AbstractAVPEntityLootTableProvid
                     LootPool.lootPool()
                         .setRolls(ConstantValue.exactly(1.0F))
                         .add(
-                            LootItem.lootTableItem(AVPItems.VERITANIUM_SHARD.get())
+                            LootItem.lootTableItem(AVPItems.INSTANCE.VERITANIUM_SHARD.get())
                                 .apply(SetItemCountFunction.setCount(UniformGenerator.between(1.0F, 4.0F)))
                                 .apply(LootingEnchantFunction.lootingMultiplier(UniformGenerator.between(1.0F, 3.0F)))
                         )
@@ -96,26 +96,26 @@ public class AVPEntityLootTableProvider extends AbstractAVPEntityLootTableProvid
                 .withPool(
                     LootPool.lootPool()
                         .setRolls(ConstantValue.exactly(1.0F))
-                        .add(LootItem.lootTableItem(AVPArmorItems.VERITANIUM_HELMET.get()))
-                        .add(LootItem.lootTableItem(AVPArmorItems.VERITANIUM_BODY.get()))
-                        .add(LootItem.lootTableItem(AVPArmorItems.VERITANIUM_LEGGINGS.get()))
-                        .add(LootItem.lootTableItem(AVPArmorItems.VERITANIUM_BOOTS.get()))
+                        .add(LootItem.lootTableItem(AVPArmorItems.INSTANCE.VERITANIUM_HELMET.get()))
+                        .add(LootItem.lootTableItem(AVPArmorItems.INSTANCE.VERITANIUM_BODY.get()))
+                        .add(LootItem.lootTableItem(AVPArmorItems.INSTANCE.VERITANIUM_LEGGINGS.get()))
+                        .add(LootItem.lootTableItem(AVPArmorItems.INSTANCE.VERITANIUM_BOOTS.get()))
                 )
                 .withPool(
                     LootPool.lootPool()
                         .setRolls(ConstantValue.exactly(1.0F))
                         .add(
-                            LootItem.lootTableItem(AVPItems.LASER_MINE.get())
+                            LootItem.lootTableItem(AVPItems.INSTANCE.LASER_MINE.get())
                                 .apply(SetItemCountFunction.setCount(UniformGenerator.between(4.0F, 8.0F)))
                                 .apply(LootingEnchantFunction.lootingMultiplier(UniformGenerator.between(1.0F, 4.0F)))
                         )
                         .add(
-                            LootItem.lootTableItem(AVPItems.SHURIKEN.get())
+                            LootItem.lootTableItem(AVPItems.INSTANCE.SHURIKEN.get())
                                 .apply(SetItemCountFunction.setCount(UniformGenerator.between(4.0F, 8.0F)))
                                 .apply(LootingEnchantFunction.lootingMultiplier(UniformGenerator.between(1.0F, 4.0F)))
                         )
-                        .add(LootItem.lootTableItem(AVPItems.SMART_DISC.get()))
-                        .add(LootItem.lootTableItem(AVPItems.YAUTJA_ARTIFACT.get()))
+                        .add(LootItem.lootTableItem(AVPItems.INSTANCE.SMART_DISC.get()))
+                        .add(LootItem.lootTableItem(AVPItems.INSTANCE.YAUTJA_ARTIFACT.get()))
                 )
         );
     }

@@ -21,17 +21,17 @@ public class AVPItemTagsProvider extends FabricTagProvider.ItemTagProvider {
     @Override
     protected void addTags(HolderLookup.Provider provider) {
         getOrCreateTagBuilder(AVPItemTags.GUNS)
-            .add(AVPWeaponItems.WEAPON_37_12_SHOTGUN.get())
-            .add(AVPWeaponItems.WEAPON_AK_47.get())
-            .add(AVPWeaponItems.WEAPON_F90_RIFLE.get())
-            .add(AVPWeaponItems.WEAPON_FLAMETHROWER_SEVASTOPOL.get())
-            .add(AVPWeaponItems.WEAPON_M4_CARBINE.get())
-            .add(AVPWeaponItems.WEAPON_M41A_PULSE_RIFLE.get())
-            .add(AVPWeaponItems.WEAPON_M56_SMARTGUN.get())
-            .add(AVPWeaponItems.WEAPON_M83A2_SADAR.get())
-            .add(AVPWeaponItems.WEAPON_M88MOD4_COMBAT_PISTOL.get())
-            .add(AVPWeaponItems.WEAPON_OLD_PAINLESS.get())
-            .add(AVPWeaponItems.WEAPON_SNIPER_RIFLE.get());
+            .add(AVPWeaponItems.INSTANCE.WEAPON_37_12_SHOTGUN.get())
+            .add(AVPWeaponItems.INSTANCE.WEAPON_AK_47.get())
+            .add(AVPWeaponItems.INSTANCE.WEAPON_F90_RIFLE.get())
+            .add(AVPWeaponItems.INSTANCE.WEAPON_FLAMETHROWER_SEVASTOPOL.get())
+            .add(AVPWeaponItems.INSTANCE.WEAPON_M4_CARBINE.get())
+            .add(AVPWeaponItems.INSTANCE.WEAPON_M41A_PULSE_RIFLE.get())
+            .add(AVPWeaponItems.INSTANCE.WEAPON_M56_SMARTGUN.get())
+            .add(AVPWeaponItems.INSTANCE.WEAPON_M83A2_SADAR.get())
+            .add(AVPWeaponItems.INSTANCE.WEAPON_M88MOD4_COMBAT_PISTOL.get())
+            .add(AVPWeaponItems.INSTANCE.WEAPON_OLD_PAINLESS.get())
+            .add(AVPWeaponItems.INSTANCE.WEAPON_SNIPER_RIFLE.get());
 
         getOrCreateTagBuilder(AVPItemTags.THREATENS_PREDATORS)
             .addTag(AVPItemTags.GUNS)
@@ -40,33 +40,33 @@ public class AVPItemTagsProvider extends FabricTagProvider.ItemTagProvider {
             .add(Items.TRIDENT);
 
         getOrCreateTagBuilder(ItemTags.AXES)
-            .add(AVPToolItems.ALUMINUM_AXE.get())
-            .add(AVPToolItems.ORIONITE_AXE.get())
-            .add(AVPToolItems.TITANIUM_AXE.get())
-            .add(AVPToolItems.VERITANIUM_AXE.get());
+            .add(AVPToolItems.INSTANCE.ALUMINUM_AXE.get())
+            .add(AVPToolItems.INSTANCE.ORIONITE_AXE.get())
+            .add(AVPToolItems.INSTANCE.TITANIUM_AXE.get())
+            .add(AVPToolItems.INSTANCE.VERITANIUM_AXE.get());
 
         getOrCreateTagBuilder(ItemTags.HOES)
-            .add(AVPToolItems.ALUMINUM_HOE.get())
-            .add(AVPToolItems.ORIONITE_HOE.get())
-            .add(AVPToolItems.TITANIUM_HOE.get())
-            .add(AVPToolItems.VERITANIUM_HOE.get());
+            .add(AVPToolItems.INSTANCE.ALUMINUM_HOE.get())
+            .add(AVPToolItems.INSTANCE.ORIONITE_HOE.get())
+            .add(AVPToolItems.INSTANCE.TITANIUM_HOE.get())
+            .add(AVPToolItems.INSTANCE.VERITANIUM_HOE.get());
 
         getOrCreateTagBuilder(ItemTags.PICKAXES)
-            .add(AVPToolItems.ALUMINUM_PICKAXE.get())
-            .add(AVPToolItems.ORIONITE_PICKAXE.get())
-            .add(AVPToolItems.TITANIUM_PICKAXE.get())
-            .add(AVPToolItems.VERITANIUM_PICKAXE.get());
+            .add(AVPToolItems.INSTANCE.ALUMINUM_PICKAXE.get())
+            .add(AVPToolItems.INSTANCE.ORIONITE_PICKAXE.get())
+            .add(AVPToolItems.INSTANCE.TITANIUM_PICKAXE.get())
+            .add(AVPToolItems.INSTANCE.VERITANIUM_PICKAXE.get());
 
         getOrCreateTagBuilder(ItemTags.SHOVELS)
-            .add(AVPToolItems.ALUMINUM_SHOVEL.get())
-            .add(AVPToolItems.ORIONITE_SHOVEL.get())
-            .add(AVPToolItems.TITANIUM_SHOVEL.get())
-            .add(AVPToolItems.VERITANIUM_SHOVEL.get());
+            .add(AVPToolItems.INSTANCE.ALUMINUM_SHOVEL.get())
+            .add(AVPToolItems.INSTANCE.ORIONITE_SHOVEL.get())
+            .add(AVPToolItems.INSTANCE.TITANIUM_SHOVEL.get())
+            .add(AVPToolItems.INSTANCE.VERITANIUM_SHOVEL.get());
 
         getOrCreateTagBuilder(ItemTags.SWORDS)
-            .add(AVPToolItems.ALUMINUM_SWORD.get())
-            .add(AVPToolItems.ORIONITE_SWORD.get())
-            .add(AVPToolItems.TITANIUM_SWORD.get())
-            .add(AVPToolItems.VERITANIUM_SWORD.get());
+            .add(AVPToolItems.INSTANCE.ALUMINUM_SWORD.get())
+            .add(AVPToolItems.INSTANCE.ORIONITE_SWORD.get())
+            .add(AVPToolItems.INSTANCE.TITANIUM_SWORD.get())
+            .add(AVPToolItems.INSTANCE.VERITANIUM_SWORD.get());
     }
 }

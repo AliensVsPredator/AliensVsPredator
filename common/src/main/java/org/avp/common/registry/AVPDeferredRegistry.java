@@ -2,23 +2,23 @@ package org.avp.common.registry;
 
 import org.avp.api.GameObject;
 
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Supplier;
 
 public abstract class AVPDeferredRegistry<T> {
 
-    protected final Set<GameObject<T>> entries;
+    protected final List<GameObject<T>> entries;
 
     protected AVPDeferredRegistry() {
-        entries = ConcurrentHashMap.newKeySet();
+        entries = new ArrayList<>();
     }
 
     protected abstract GameObject<T> createHolder(String registryName, Supplier<T> supplier);
 
     public abstract void register();
 
-    public Set<GameObject<T>> getEntries() {
+    public List<GameObject<T>> getEntries() {
         return entries;
     }
 }

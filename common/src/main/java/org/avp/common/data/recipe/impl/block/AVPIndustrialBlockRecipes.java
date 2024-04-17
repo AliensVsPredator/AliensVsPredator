@@ -22,7 +22,7 @@ public final class AVPIndustrialBlockRecipes {
         addMetalPanel2Recipes(recipeOutput);
 
         AVPShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, AVPIndustrialBlocks.INSTANCE.LAMP)
-            .defineAndUnlockIfHas('A', AVPItems.INGOT_ALUMINUM)
+            .defineAndUnlockIfHas('A', AVPItems.INSTANCE.INGOT_ALUMINUM)
             .defineAndUnlockIfHas('B', Items.REDSTONE_LAMP)
             .pattern(" A ")
             .pattern("ABA")
@@ -37,7 +37,7 @@ public final class AVPIndustrialBlockRecipes {
 
     private static void addBrickRecipes(RecipeOutput recipeOutput) {
         AVPShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, AVPIndustrialBlocks.INSTANCE.BRICK)
-            .defineAndUnlockIfHas('A', AVPItems.INGOT_ALUMINUM)
+            .defineAndUnlockIfHas('A', AVPItems.INSTANCE.INGOT_ALUMINUM)
             .pattern("AA")
             .pattern("AA")
             .save(recipeOutput);
@@ -50,7 +50,7 @@ public final class AVPIndustrialBlockRecipes {
 
     private static void addMetalPanel0Recipes(RecipeOutput recipeOutput) {
         AVPShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, AVPIndustrialBlocks.INSTANCE.METAL_PANEL_0)
-            .defineAndUnlockIfHas('A', AVPItems.INGOT_ALUMINUM)
+            .defineAndUnlockIfHas('A', AVPItems.INSTANCE.INGOT_ALUMINUM)
             .defineAndUnlockIfHas('B', Items.IRON_INGOT)
             .pattern("BA")
             .pattern("BA")
@@ -62,7 +62,7 @@ public final class AVPIndustrialBlockRecipes {
 
     private static void addMetalPanel1Recipes(RecipeOutput recipeOutput) {
         AVPShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, AVPIndustrialBlocks.INSTANCE.METAL_PANEL_1)
-            .defineAndUnlockIfHas('A', AVPItems.INGOT_ALUMINUM)
+            .defineAndUnlockIfHas('A', AVPItems.INSTANCE.INGOT_ALUMINUM)
             .defineAndUnlockIfHas('B', Items.IRON_INGOT)
             .pattern("AA")
             .pattern("BB")
@@ -74,7 +74,7 @@ public final class AVPIndustrialBlockRecipes {
 
     private static void addMetalPanel2Recipes(RecipeOutput recipeOutput) {
         AVPShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, AVPIndustrialBlocks.INSTANCE.METAL_PANEL_2)
-            .defineAndUnlockIfHas('A', AVPItems.INGOT_ALUMINUM)
+            .defineAndUnlockIfHas('A', AVPItems.INSTANCE.INGOT_ALUMINUM)
             .defineAndUnlockIfHas('B', Items.IRON_INGOT)
             .pattern("BA")
             .pattern("AB")

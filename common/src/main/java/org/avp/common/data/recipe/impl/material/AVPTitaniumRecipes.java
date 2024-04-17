@@ -15,13 +15,13 @@ public final class AVPTitaniumRecipes {
         AVPRecipeHelper.compressedBlockRecipe(
             recipeOutput,
             RecipeCategory.BUILDING_BLOCKS,
-            AVPItems.INGOT_TITANIUM.get(),
+            AVPItems.INSTANCE.INGOT_TITANIUM.get(),
             AVPBlocks.INSTANCE.TITANIUM_BLOCK.get()
         );
         AVPRecipeHelper.compressedBlockRecipe(
             recipeOutput,
             RecipeCategory.BUILDING_BLOCKS,
-            AVPItems.RAW_TITANIUM.get(),
+            AVPItems.INSTANCE.RAW_TITANIUM.get(),
             AVPOreBlocks.INSTANCE.RAW_TITANIUM_BLOCK.get()
         );
 
@@ -29,9 +29,9 @@ public final class AVPTitaniumRecipes {
         AVPRecipeHelper.oreSmelting(
             recipeOutput,
             RecipeCategory.MISC,
-            AVPItems.RAW_TITANIUM,
+            AVPItems.INSTANCE.RAW_TITANIUM,
             AVPOreBlocks.INSTANCE.ORE_TITANIUM,
-            AVPItems.INGOT_TITANIUM
+            AVPItems.INSTANCE.INGOT_TITANIUM
         );
 
         // Decompressed items from blocks
@@ -39,13 +39,13 @@ public final class AVPTitaniumRecipes {
             recipeOutput,
             RecipeCategory.MISC,
             AVPBlocks.INSTANCE.TITANIUM_BLOCK.get(),
-            AVPItems.INGOT_TITANIUM.get()
+            AVPItems.INSTANCE.INGOT_TITANIUM.get()
         );
         AVPRecipeHelper.decompressedItemRecipe(
             recipeOutput,
             RecipeCategory.MISC,
             AVPOreBlocks.INSTANCE.RAW_TITANIUM_BLOCK.get(),
-            AVPItems.RAW_TITANIUM.get()
+            AVPItems.INSTANCE.RAW_TITANIUM.get()
         );
 
         // Furnace recipes

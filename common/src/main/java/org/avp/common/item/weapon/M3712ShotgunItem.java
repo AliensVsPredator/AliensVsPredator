@@ -29,12 +29,12 @@ public class M3712ShotgunItem extends AbstractAVPWeaponItem {
         AmmunitionStrategy.builder(
                 6,
                 List.of(
-                    AVPBulletItems.BULLET_SHOTGUN::get,
-                    AVPBulletItems.BULLET_SHOTGUN_ACID::get,
-                    AVPBulletItems.BULLET_SHOTGUN_ELECTRIC::get,
-                    AVPBulletItems.BULLET_SHOTGUN_EXPLOSIVE::get,
-                    AVPBulletItems.BULLET_SHOTGUN_INCENDIARY::get,
-                    AVPBulletItems.BULLET_SHOTGUN_PENETRATION::get
+                    AVPBulletItems.INSTANCE.BULLET_SHOTGUN::get,
+                    AVPBulletItems.INSTANCE.BULLET_SHOTGUN_ACID::get,
+                    AVPBulletItems.INSTANCE.BULLET_SHOTGUN_ELECTRIC::get,
+                    AVPBulletItems.INSTANCE.BULLET_SHOTGUN_EXPLOSIVE::get,
+                    AVPBulletItems.INSTANCE.BULLET_SHOTGUN_INCENDIARY::get,
+                    AVPBulletItems.INSTANCE.BULLET_SHOTGUN_PENETRATION::get
                 )
             )
             .setHasAmmunitionBehavior(HasAmmunitionBehavior.LOADED)

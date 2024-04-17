@@ -35,16 +35,16 @@ public class AVPCommon {
         AVPFuelRegistry.forceInitialization();
 
         // Items
-        AVPAmmunitionPartItems.forceInitialization();
-        AVPArmorItems.forceInitialization();
-        AVPBulletItems.forceInitialization();
-        AVPElectronicItems.forceInitialization();
-        AVPFoodItems.forceInitialization();
-        AVPItems.forceInitialization();
-        AVPToolItems.forceInitialization();
-        AVPWeaponBlueprintItems.forceInitialization();
-        AVPWeaponItems.forceInitialization();
-        AVPWeaponPartItems.forceInitialization();
+        AVPAmmunitionPartItems.INSTANCE.register();
+        AVPArmorItems.INSTANCE.register();
+        AVPBulletItems.INSTANCE.register();
+        AVPElectronicItems.INSTANCE.register();
+        AVPFoodItems.INSTANCE.register();
+        AVPItems.INSTANCE.register();
+        AVPToolItems.INSTANCE.register();
+        AVPWeaponBlueprintItems.INSTANCE.register();
+        AVPWeaponItems.INSTANCE.register();
+        AVPWeaponPartItems.INSTANCE.register();
 
         // Blocks
         AVPAlienBlocks.INSTANCE.register();
@@ -58,6 +58,9 @@ public class AVPCommon {
         AVPUnidentifiedBlocks.INSTANCE.register();
         AVPYautjaShipBlocks.INSTANCE.register();
 
+        // Item Blocks
+        AVPItemBlockItems.INSTANCE.register();
+
         // Sounds
         AVPSoundEvents.INSTANCE.register();
 
@@ -70,6 +73,9 @@ public class AVPCommon {
         AVPRunnerAlienEntityTypes.forceInitialization();
         AVPYautjaEntityTypes.forceInitialization();
         AVPEntitySpawns.forceInitialization();
+
+        // Spawn Egg Items
+        AVPSpawnEggItems.INSTANCE.register();
 
         // Particles
         AVPParticleTypes.forceInitialization();

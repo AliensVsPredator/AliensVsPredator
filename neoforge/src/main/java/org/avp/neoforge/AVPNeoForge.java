@@ -25,7 +25,7 @@ public class AVPNeoForge {
         eventBus.addListener(NeoForgeNetworkPayloadHandlerRegistry::registerPayloadHandlers);
 
         NeoForgeCreativeModeTabRegistry.CREATIVE_MODE_TABS.register(eventBus);
-        NeoForgeItemRegistry.ITEMS.register(eventBus);
+        NeoForgeItemService.ITEMS.register(eventBus);
         NeoForgeBlockService.BLOCKS.register(eventBus);
         NeoForgeEntityRegistry.ENTITY_TYPES.register(eventBus);
         NeoForgeParticleRegistry.PARTICLE_TYPES.register(eventBus);

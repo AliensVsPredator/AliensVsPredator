@@ -12,7 +12,7 @@ public class Services {
 
     public static final EntityRegistry ENTITY_REGISTRY = load(EntityRegistry.class);
 
-    public static final ItemRegistry ITEM_REGISTRY = load(ItemRegistry.class);
+    public static final ItemService ITEM_REGISTRY = load(ItemService.class);
 
     public static final NetworkHandler NETWORK_HANDLER = load(NetworkHandler.class);
 

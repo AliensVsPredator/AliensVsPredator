@@ -14,7 +14,7 @@ public final class AVPSilicaRecipes {
         AVPRecipeHelper.compressedBlockRecipe(
             recipeOutput,
             RecipeCategory.BUILDING_BLOCKS,
-            AVPItems.SILICA.get(),
+            AVPItems.INSTANCE.SILICA.get(),
             AVPOreBlocks.INSTANCE.SILICA_BLOCK.get()
         );
 
@@ -23,7 +23,7 @@ public final class AVPSilicaRecipes {
             recipeOutput,
             RecipeCategory.MISC,
             AVPOreBlocks.INSTANCE.SILICA_BLOCK.get(),
-            AVPItems.SILICA.get()
+            AVPItems.INSTANCE.SILICA.get()
         );
     }
 

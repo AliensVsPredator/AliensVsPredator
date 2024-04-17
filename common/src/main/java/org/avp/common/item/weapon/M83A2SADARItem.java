@@ -29,10 +29,10 @@ public class M83A2SADARItem extends AbstractAVPWeaponItem {
         AmmunitionStrategy.builder(
                 4,
                 List.of(
-                    AVPAmmunitionPartItems.ROCKET::get,
-                    AVPAmmunitionPartItems.ROCKET_ELECTRIC::get,
-                    AVPAmmunitionPartItems.ROCKET_INCENDIARY::get,
-                    AVPAmmunitionPartItems.ROCKET_PENETRATION::get
+                    AVPAmmunitionPartItems.INSTANCE.ROCKET::get,
+                    AVPAmmunitionPartItems.INSTANCE.ROCKET_ELECTRIC::get,
+                    AVPAmmunitionPartItems.INSTANCE.ROCKET_INCENDIARY::get,
+                    AVPAmmunitionPartItems.INSTANCE.ROCKET_PENETRATION::get
                 )
             )
             .setHasAmmunitionBehavior(HasAmmunitionBehavior.LOADED)

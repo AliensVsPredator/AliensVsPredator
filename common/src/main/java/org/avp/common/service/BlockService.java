@@ -12,7 +12,7 @@ public interface BlockService {
 
     GameObject<Block> createHolder(String registryName, Supplier<Block> supplier);
 
-    void register(GameObject<Block> blockGameObject);
+    void register(GameObject<Block> holder);
 
     StairBlock createStairBlock(GameObject<Block> blockGameObject, BlockBehaviour.Properties properties);
 }

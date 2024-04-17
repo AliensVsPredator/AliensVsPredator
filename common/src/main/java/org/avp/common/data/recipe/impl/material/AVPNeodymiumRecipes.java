@@ -14,7 +14,7 @@ public final class AVPNeodymiumRecipes {
         AVPRecipeHelper.compressedBlockRecipe(
             recipeOutput,
             RecipeCategory.BUILDING_BLOCKS,
-            AVPItems.NEODYMIUM.get(),
+            AVPItems.INSTANCE.NEODYMIUM.get(),
             AVPOreBlocks.INSTANCE.NEODYMIUM_BLOCK.get()
         );
 
@@ -23,7 +23,7 @@ public final class AVPNeodymiumRecipes {
             recipeOutput,
             RecipeCategory.MISC,
             AVPOreBlocks.INSTANCE.NEODYMIUM_BLOCK.get(),
-            AVPItems.NEODYMIUM.get()
+            AVPItems.INSTANCE.NEODYMIUM.get()
         );
     }
 

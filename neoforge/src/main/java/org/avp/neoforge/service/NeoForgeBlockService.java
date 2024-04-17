@@ -22,12 +22,12 @@ public class NeoForgeBlockService implements BlockService {
     @Override
     public GameObject<Block> createHolder(String registryName, Supplier<Block> supplier) {
         var gameObject = new ForgeGameObject<>(BLOCKS, registryName, supplier);
-        Services.ITEM_REGISTRY.register(registryName, () -> new BlockItem(gameObject.get(), new Item.Properties()));
+        Services.ITEM_REGISTRY.createHolder(registryName, () -> new BlockItem(gameObject.get(), new Item.Properties()));
         return gameObject;
     }
 
     @Override
-    public void register(GameObject<Block> blockGameObject) { /* NO-OP FOR FORGE */ }
+    public void register(GameObject<Block> holder) { /* NO-OP FOR FORGE */ }
 
     @Override
     public StairBlock createStairBlock(GameObject<Block> blockGameObject, BlockBehaviour.Properties properties) {

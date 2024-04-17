@@ -38,12 +38,12 @@ public class M41APulseRifleItem extends AbstractAVPWeaponItem {
         AmmunitionStrategy.builder(
                 99,
                 List.of(
-                    AVPBulletItems.BULLET_CASELESS::get,
-                    AVPBulletItems.BULLET_CASELESS_ACID::get,
-                    AVPBulletItems.BULLET_CASELESS_ELECTRIC::get,
-                    AVPBulletItems.BULLET_CASELESS_EXPLOSIVE::get,
-                    AVPBulletItems.BULLET_CASELESS_INCENDIARY::get,
-                    AVPBulletItems.BULLET_CASELESS_PENETRATION::get
+                    AVPBulletItems.INSTANCE.BULLET_CASELESS::get,
+                    AVPBulletItems.INSTANCE.BULLET_CASELESS_ACID::get,
+                    AVPBulletItems.INSTANCE.BULLET_CASELESS_ELECTRIC::get,
+                    AVPBulletItems.INSTANCE.BULLET_CASELESS_EXPLOSIVE::get,
+                    AVPBulletItems.INSTANCE.BULLET_CASELESS_INCENDIARY::get,
+                    AVPBulletItems.INSTANCE.BULLET_CASELESS_PENETRATION::get
                 )
             )
             .setHasAmmunitionBehavior(HasAmmunitionBehavior.LOADED)

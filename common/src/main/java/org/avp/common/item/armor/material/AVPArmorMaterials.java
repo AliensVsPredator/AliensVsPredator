@@ -11,7 +11,7 @@ public class AVPArmorMaterials {
     public static final ArmorMaterial ALUMINUM = new AVPArmorMaterial.Builder(
         "aluminum",
         SoundEvents.ARMOR_EQUIP_IRON,
-        AVPItems.INGOT_ALUMINUM::get
+        AVPItems.INSTANCE.INGOT_ALUMINUM::get
     )
         .setProtectionValues(new int[] { 2, 5, 5, 2 })
         .setDurabilityMultiplier(14)
@@ -31,7 +31,7 @@ public class AVPArmorMaterials {
     public static final ArmorMaterial ORIONITE = new AVPArmorMaterial.Builder(
         "orionite",
         SoundEvents.ARMOR_EQUIP_DIAMOND,
-        AVPItems.INGOT_ORIONITE::get
+        AVPItems.INSTANCE.INGOT_ORIONITE::get
     )
         .setProtectionValues(new int[] { 3, 6, 8, 3 })
         .setDurabilityMultiplier(35)
@@ -43,7 +43,7 @@ public class AVPArmorMaterials {
     public static final ArmorMaterial PRESSURE = new AVPArmorMaterial.Builder(
         "pressure",
         SoundEvents.ARMOR_EQUIP_CHAIN,
-        AVPItems.INGOT_ALUMINUM::get
+        AVPItems.INSTANCE.INGOT_ALUMINUM::get
     )
         .setProtectionValues(new int[] { 2, 4, 3, 2 })
         .setDurabilityMultiplier(22)
@@ -53,7 +53,7 @@ public class AVPArmorMaterials {
     public static final ArmorMaterial TACTICAL = new AVPArmorMaterial.Builder(
         "tactical",
         SoundEvents.ARMOR_EQUIP_CHAIN,
-        AVPItems.INGOT_ALUMINUM::get
+        AVPItems.INSTANCE.INGOT_ALUMINUM::get
     )
         .setProtectionValues(new int[] { 2, 6, 3, 2 })
         .setDurabilityMultiplier(26)
@@ -63,7 +63,7 @@ public class AVPArmorMaterials {
     public static final ArmorMaterial TITANIUM = new AVPArmorMaterial.Builder(
         "titanium",
         SoundEvents.ARMOR_EQUIP_IRON,
-        AVPItems.INGOT_TITANIUM::get
+        AVPItems.INSTANCE.INGOT_TITANIUM::get
     )
         .setProtectionValues(new int[] { 2, 5, 6, 2 })
         .setDurabilityMultiplier(24)
@@ -74,7 +74,7 @@ public class AVPArmorMaterials {
     public static final ArmorMaterial VERITANIUM = new AVPArmorMaterial.Builder(
         "veritanium",
         SoundEvents.ARMOR_EQUIP_IRON,
-        AVPItems.YAUTJA_ARTIFACT::get
+        AVPItems.INSTANCE.YAUTJA_ARTIFACT::get
     )
         .setProtectionValues(new int[] { 4, 7, 9, 4 })
         .setDurabilityMultiplier(34)
@@ -85,7 +85,7 @@ public class AVPArmorMaterials {
     public static final ArmorMaterial XENOMORPH_CHITIN = new AVPArmorMaterial.Builder(
         "xenomorph_chitin",
         SoundEvents.HONEY_BLOCK_STEP,
-        AVPItems.ROYAL_JELLY::get
+        AVPItems.INSTANCE.ROYAL_JELLY::get
     )
         .setProtectionValues(new int[] { 2, 7, 5, 3 })
         .setDurabilityMultiplier(30)

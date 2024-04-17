@@ -13,28 +13,28 @@ import org.avp.common.item.AVPFoodItems;
 public final class AVPFoodRecipes {
 
     public static void addFoodRecipes(RecipeOutput recipeOutput) {
-        AVPShapedRecipeBuilder.shaped(RecipeCategory.FOOD, AVPFoodItems.DORITOS)
+        AVPShapedRecipeBuilder.shaped(RecipeCategory.FOOD, AVPFoodItems.INSTANCE.DORITOS)
             .defineAndUnlockIfHas('A', Items.WHEAT)
             .defineAndUnlockIfHas('B', Items.BAKED_POTATO)
             .pattern("AAA")
             .pattern("A B")
             .pattern("BBB")
             .save(recipeOutput);
-        AVPShapedRecipeBuilder.shaped(RecipeCategory.FOOD, AVPFoodItems.DORITOS_COOL_RANCH)
-            .defineAndUnlockIfHas('A', AVPFoodItems.DORITOS)
+        AVPShapedRecipeBuilder.shaped(RecipeCategory.FOOD, AVPFoodItems.INSTANCE.DORITOS_COOL_RANCH)
+            .defineAndUnlockIfHas('A', AVPFoodItems.INSTANCE.DORITOS)
             .defineAndUnlockIfHas('B', Items.WHEAT)
             .pattern("AB")
             .pattern("B ")
             .save(recipeOutput);
 
         SimpleCookingRecipeBuilder.smelting(
-            Ingredient.of(AVPFoodItems.RAW_TENTACLE.get()),
+            Ingredient.of(AVPFoodItems.INSTANCE.RAW_TENTACLE.get()),
             RecipeCategory.FOOD,
-            AVPFoodItems.TRILO_BITE.get(),
+            AVPFoodItems.INSTANCE.TRILO_BITE.get(),
             0.35F,
             200
         )
-            .unlockedBy("has_trilo_bite", AVPRecipeProvider.has(AVPFoodItems.RAW_TENTACLE.get()))
+            .unlockedBy("has_trilo_bite", AVPRecipeProvider.has(AVPFoodItems.INSTANCE.RAW_TENTACLE.get()))
             .save(recipeOutput);
     }
 

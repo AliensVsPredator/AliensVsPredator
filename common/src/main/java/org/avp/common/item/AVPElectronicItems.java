@@ -7,67 +7,56 @@ import java.util.List;
 import java.util.function.Supplier;
 
 import org.avp.api.GameObject;
+import org.avp.common.registry.AVPDeferredItemRegistry;
 import org.avp.common.service.Services;
 
-public class AVPElectronicItems {
+public class AVPElectronicItems extends AVPDeferredItemRegistry {
 
-    private static final List<GameObject<Item>> ENTRIES = new ArrayList<>();
+    public static final AVPElectronicItems INSTANCE = new AVPElectronicItems();
 
-    public static final GameObject<Item> CAPACITOR;
+    public final GameObject<Item> CAPACITOR;
 
-    public static final GameObject<Item> CPU;
+    public final GameObject<Item> CPU;
 
-    public static final GameObject<Item> DIODE;
+    public final GameObject<Item> DIODE;
 
-    public static final GameObject<Item> INTEGRATED_CIRCUIT;
+    public final GameObject<Item> INTEGRATED_CIRCUIT;
 
-    public static final GameObject<Item> LED;
+    public final GameObject<Item> LED;
 
-    public static final GameObject<Item> LED_DISPLAY;
+    public final GameObject<Item> LED_DISPLAY;
 
-    public static final GameObject<Item> MOTHERBOARD;
+    public final GameObject<Item> MOTHERBOARD;
 
-    public static final GameObject<Item> POWER_SUPPLY;
+    public final GameObject<Item> POWER_SUPPLY;
 
-    public static final GameObject<Item> RAM;
+    public final GameObject<Item> RAM;
 
-    public static final GameObject<Item> REGULATOR;
+    public final GameObject<Item> REGULATOR;
 
-    public static final GameObject<Item> RESISTOR;
+    public final GameObject<Item> RESISTOR;
 
-    public static final GameObject<Item> SSD;
+    public final GameObject<Item> SSD;
 
-    public static final GameObject<Item> TRANSISTOR;
+    public final GameObject<Item> TRANSISTOR;
 
-    public static void forceInitialization() {
-        // This method doesn't need to do anything
+    protected GameObject<Item> createHolder(String registryName) {
+        return createHolder(registryName, () -> new Item(new Item.Properties()));
     }
 
-    public static List<GameObject<Item>> getEntries() {
-        return ENTRIES;
-    }
-
-    private static GameObject<Item> register(String registryName, Supplier<Item> itemSupplier) {
-        var gameObject = Services.ITEM_REGISTRY.register(registryName, itemSupplier);
-        ENTRIES.add(gameObject);
-        return gameObject;
-    }
-
-    private AVPElectronicItems() {}
-
-    static {
-        CAPACITOR = register("capacitor", () -> new Item(new Item.Properties()));
-        CPU = register("cpu", () -> new Item(new Item.Properties()));
-        DIODE = register("diode", () -> new Item(new Item.Properties()));
-        INTEGRATED_CIRCUIT = register("integrated_circuit", () -> new Item(new Item.Properties()));
-        LED = register("led", () -> new Item(new Item.Properties()));
-        LED_DISPLAY = register("led_display", () -> new Item(new Item.Properties()));
-        MOTHERBOARD = register("motherboard", () -> new Item(new Item.Properties()));
-        POWER_SUPPLY = register("power_supply", () -> new Item(new Item.Properties()));
-        RAM = register("ram", () -> new Item(new Item.Properties()));
-        REGULATOR = register("regulator", () -> new Item(new Item.Properties()));
-        RESISTOR = register("resistor", () -> new Item(new Item.Properties()));
-        SSD = register("ssd", () -> new Item(new Item.Properties()));
-        TRANSISTOR = register("transistor", () -> new Item(new Item.Properties()));
+    private AVPElectronicItems() {
+        CAPACITOR = createHolder("capacitor");
+        CPU = createHolder("cpu");
+        DIODE = createHolder("diode");
+        INTEGRATED_CIRCUIT = createHolder("integrated_circuit");
+        LED = createHolder("led");
+        LED_DISPLAY = createHolder("led_display");
+        MOTHERBOARD = createHolder("motherboard");
+        POWER_SUPPLY = createHolder("power_supply");
+        RAM = createHolder("ram");
+        REGULATOR = createHolder("regulator");
+        RESISTOR = createHolder("resistor");
+        SSD = createHolder("ssd");
+        TRANSISTOR = createHolder("transistor");
     }
 }

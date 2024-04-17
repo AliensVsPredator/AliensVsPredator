@@ -29,12 +29,12 @@ public class F90RifleItem extends AbstractAVPWeaponItem {
         AmmunitionStrategy.builder(
                 32,
                 List.of(
-                    AVPBulletItems.BULLET_RIFLE::get,
-                    AVPBulletItems.BULLET_RIFLE_ACID::get,
-                    AVPBulletItems.BULLET_RIFLE_ELECTRIC::get,
-                    AVPBulletItems.BULLET_RIFLE_EXPLOSIVE::get,
-                    AVPBulletItems.BULLET_RIFLE_INCENDIARY::get,
-                    AVPBulletItems.BULLET_RIFLE_PENETRATION::get
+                    AVPBulletItems.INSTANCE.BULLET_RIFLE::get,
+                    AVPBulletItems.INSTANCE.BULLET_RIFLE_ACID::get,
+                    AVPBulletItems.INSTANCE.BULLET_RIFLE_ELECTRIC::get,
+                    AVPBulletItems.INSTANCE.BULLET_RIFLE_EXPLOSIVE::get,
+                    AVPBulletItems.INSTANCE.BULLET_RIFLE_INCENDIARY::get,
+                    AVPBulletItems.INSTANCE.BULLET_RIFLE_PENETRATION::get
                 )
             )
             .setHasAmmunitionBehavior(HasAmmunitionBehavior.LOADED)

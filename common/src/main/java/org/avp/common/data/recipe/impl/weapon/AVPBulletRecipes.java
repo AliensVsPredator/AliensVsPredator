@@ -20,40 +20,40 @@ public final class AVPBulletRecipes {
     }
 
     private static void addCaselessBulletRecipes(RecipeOutput recipeOutput) {
-        AVPShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AVPBulletItems.BULLET_CASELESS, 16)
-            .defineAndUnlockIfHas('A', AVPAmmunitionPartItems.BULLET_TIP)
-            .defineAndUnlockIfHas('B', AVPAmmunitionPartItems.CASING_CASELESS)
+        AVPShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AVPBulletItems.INSTANCE.BULLET_CASELESS, 16)
+            .defineAndUnlockIfHas('A', AVPAmmunitionPartItems.INSTANCE.BULLET_TIP)
+            .defineAndUnlockIfHas('B', AVPAmmunitionPartItems.INSTANCE.CASING_CASELESS)
             .pattern("A")
             .pattern("B")
             .save(recipeOutput);
 
-        AVPShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AVPBulletItems.BULLET_CASELESS_ELECTRIC, 16)
-            .defineAndUnlockIfHas('A', AVPAmmunitionPartItems.BULLET_TIP)
-            .defineAndUnlockIfHas('B', AVPAmmunitionPartItems.CASING_CASELESS)
-            .defineAndUnlockIfHas('C', AVPElectronicItems.CAPACITOR)
+        AVPShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AVPBulletItems.INSTANCE.BULLET_CASELESS_ELECTRIC, 16)
+            .defineAndUnlockIfHas('A', AVPAmmunitionPartItems.INSTANCE.BULLET_TIP)
+            .defineAndUnlockIfHas('B', AVPAmmunitionPartItems.INSTANCE.CASING_CASELESS)
+            .defineAndUnlockIfHas('C', AVPElectronicItems.INSTANCE.CAPACITOR)
             .pattern("AC")
             .pattern("B ")
             .save(recipeOutput);
 
-        AVPShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AVPBulletItems.BULLET_CASELESS_EXPLOSIVE)
-            .defineAndUnlockIfHas('A', AVPAmmunitionPartItems.BULLET_TIP)
-            .defineAndUnlockIfHas('B', AVPAmmunitionPartItems.CASING_CASELESS)
+        AVPShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AVPBulletItems.INSTANCE.BULLET_CASELESS_EXPLOSIVE)
+            .defineAndUnlockIfHas('A', AVPAmmunitionPartItems.INSTANCE.BULLET_TIP)
+            .defineAndUnlockIfHas('B', AVPAmmunitionPartItems.INSTANCE.CASING_CASELESS)
             .defineAndUnlockIfHas('C', Items.TNT)
             .pattern("AC")
             .pattern("B ")
             .save(recipeOutput);
 
-        AVPShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AVPBulletItems.BULLET_CASELESS_INCENDIARY, 16)
-            .defineAndUnlockIfHas('A', AVPAmmunitionPartItems.BULLET_TIP)
-            .defineAndUnlockIfHas('B', AVPAmmunitionPartItems.CASING_CASELESS)
+        AVPShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AVPBulletItems.INSTANCE.BULLET_CASELESS_INCENDIARY, 16)
+            .defineAndUnlockIfHas('A', AVPAmmunitionPartItems.INSTANCE.BULLET_TIP)
+            .defineAndUnlockIfHas('B', AVPAmmunitionPartItems.INSTANCE.CASING_CASELESS)
             .defineAndUnlockIfHas('C', Items.BLAZE_POWDER)
             .pattern("AC")
             .pattern("B ")
             .save(recipeOutput);
 
-        AVPShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AVPBulletItems.BULLET_CASELESS_PENETRATION, 16)
-            .defineAndUnlockIfHas('A', AVPAmmunitionPartItems.BULLET_TIP)
-            .defineAndUnlockIfHas('B', AVPAmmunitionPartItems.CASING_CASELESS)
+        AVPShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AVPBulletItems.INSTANCE.BULLET_CASELESS_PENETRATION, 16)
+            .defineAndUnlockIfHas('A', AVPAmmunitionPartItems.INSTANCE.BULLET_TIP)
+            .defineAndUnlockIfHas('B', AVPAmmunitionPartItems.INSTANCE.CASING_CASELESS)
             .defineAndUnlockIfHas('C', Items.OBSIDIAN)
             .pattern("AC")
             .pattern("B ")
@@ -61,40 +61,40 @@ public final class AVPBulletRecipes {
     }
 
     private static void addHeavyBulletRecipes(RecipeOutput recipeOutput) {
-        AVPShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AVPBulletItems.BULLET_HEAVY, 16)
-            .defineAndUnlockIfHas('A', AVPAmmunitionPartItems.BULLET_TIP)
-            .defineAndUnlockIfHas('B', AVPAmmunitionPartItems.CASING_HEAVY)
+        AVPShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AVPBulletItems.INSTANCE.BULLET_HEAVY, 16)
+            .defineAndUnlockIfHas('A', AVPAmmunitionPartItems.INSTANCE.BULLET_TIP)
+            .defineAndUnlockIfHas('B', AVPAmmunitionPartItems.INSTANCE.CASING_HEAVY)
             .pattern("A")
             .pattern("B")
             .save(recipeOutput);
 
-        AVPShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AVPBulletItems.BULLET_HEAVY_ELECTRIC, 16)
-            .defineAndUnlockIfHas('A', AVPAmmunitionPartItems.BULLET_TIP)
-            .defineAndUnlockIfHas('B', AVPAmmunitionPartItems.CASING_HEAVY)
-            .defineAndUnlockIfHas('C', AVPElectronicItems.CAPACITOR)
+        AVPShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AVPBulletItems.INSTANCE.BULLET_HEAVY_ELECTRIC, 16)
+            .defineAndUnlockIfHas('A', AVPAmmunitionPartItems.INSTANCE.BULLET_TIP)
+            .defineAndUnlockIfHas('B', AVPAmmunitionPartItems.INSTANCE.CASING_HEAVY)
+            .defineAndUnlockIfHas('C', AVPElectronicItems.INSTANCE.CAPACITOR)
             .pattern("AC")
             .pattern("B ")
             .save(recipeOutput);
 
-        AVPShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AVPBulletItems.BULLET_HEAVY_EXPLOSIVE, 16)
-            .defineAndUnlockIfHas('A', AVPAmmunitionPartItems.BULLET_TIP)
-            .defineAndUnlockIfHas('B', AVPAmmunitionPartItems.CASING_HEAVY)
+        AVPShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AVPBulletItems.INSTANCE.BULLET_HEAVY_EXPLOSIVE, 16)
+            .defineAndUnlockIfHas('A', AVPAmmunitionPartItems.INSTANCE.BULLET_TIP)
+            .defineAndUnlockIfHas('B', AVPAmmunitionPartItems.INSTANCE.CASING_HEAVY)
             .defineAndUnlockIfHas('C', Items.TNT)
             .pattern("AC")
             .pattern("B ")
             .save(recipeOutput);
 
-        AVPShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AVPBulletItems.BULLET_HEAVY_INCENDIARY, 16)
-            .defineAndUnlockIfHas('A', AVPAmmunitionPartItems.BULLET_TIP)
-            .defineAndUnlockIfHas('B', AVPAmmunitionPartItems.CASING_HEAVY)
+        AVPShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AVPBulletItems.INSTANCE.BULLET_HEAVY_INCENDIARY, 16)
+            .defineAndUnlockIfHas('A', AVPAmmunitionPartItems.INSTANCE.BULLET_TIP)
+            .defineAndUnlockIfHas('B', AVPAmmunitionPartItems.INSTANCE.CASING_HEAVY)
             .defineAndUnlockIfHas('C', Items.BLAZE_POWDER)
             .pattern("AC")
             .pattern("B ")
             .save(recipeOutput);
 
-        AVPShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AVPBulletItems.BULLET_HEAVY_PENETRATION, 16)
-            .defineAndUnlockIfHas('A', AVPAmmunitionPartItems.BULLET_TIP)
-            .defineAndUnlockIfHas('B', AVPAmmunitionPartItems.CASING_HEAVY)
+        AVPShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AVPBulletItems.INSTANCE.BULLET_HEAVY_PENETRATION, 16)
+            .defineAndUnlockIfHas('A', AVPAmmunitionPartItems.INSTANCE.BULLET_TIP)
+            .defineAndUnlockIfHas('B', AVPAmmunitionPartItems.INSTANCE.CASING_HEAVY)
             .defineAndUnlockIfHas('C', Items.OBSIDIAN)
             .pattern("AC")
             .pattern("B ")
@@ -102,40 +102,40 @@ public final class AVPBulletRecipes {
     }
 
     private static void addPistolBulletRecipes(RecipeOutput recipeOutput) {
-        AVPShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AVPBulletItems.BULLET_PISTOL, 16)
-            .defineAndUnlockIfHas('A', AVPAmmunitionPartItems.BULLET_TIP)
-            .defineAndUnlockIfHas('B', AVPAmmunitionPartItems.CASING_PISTOL)
+        AVPShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AVPBulletItems.INSTANCE.BULLET_PISTOL, 16)
+            .defineAndUnlockIfHas('A', AVPAmmunitionPartItems.INSTANCE.BULLET_TIP)
+            .defineAndUnlockIfHas('B', AVPAmmunitionPartItems.INSTANCE.CASING_PISTOL)
             .pattern("A")
             .pattern("B")
             .save(recipeOutput);
 
-        AVPShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AVPBulletItems.BULLET_PISTOL_ELECTRIC, 16)
-            .defineAndUnlockIfHas('A', AVPAmmunitionPartItems.BULLET_TIP)
-            .defineAndUnlockIfHas('B', AVPAmmunitionPartItems.CASING_PISTOL)
-            .defineAndUnlockIfHas('C', AVPElectronicItems.CAPACITOR)
+        AVPShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AVPBulletItems.INSTANCE.BULLET_PISTOL_ELECTRIC, 16)
+            .defineAndUnlockIfHas('A', AVPAmmunitionPartItems.INSTANCE.BULLET_TIP)
+            .defineAndUnlockIfHas('B', AVPAmmunitionPartItems.INSTANCE.CASING_PISTOL)
+            .defineAndUnlockIfHas('C', AVPElectronicItems.INSTANCE.CAPACITOR)
             .pattern("AC")
             .pattern("B ")
             .save(recipeOutput);
 
-        AVPShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AVPBulletItems.BULLET_PISTOL_EXPLOSIVE, 16)
-            .defineAndUnlockIfHas('A', AVPAmmunitionPartItems.BULLET_TIP)
-            .defineAndUnlockIfHas('B', AVPAmmunitionPartItems.CASING_PISTOL)
+        AVPShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AVPBulletItems.INSTANCE.BULLET_PISTOL_EXPLOSIVE, 16)
+            .defineAndUnlockIfHas('A', AVPAmmunitionPartItems.INSTANCE.BULLET_TIP)
+            .defineAndUnlockIfHas('B', AVPAmmunitionPartItems.INSTANCE.CASING_PISTOL)
             .defineAndUnlockIfHas('C', Items.TNT)
             .pattern("AC")
             .pattern("B ")
             .save(recipeOutput);
 
-        AVPShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AVPBulletItems.BULLET_PISTOL_INCENDIARY, 16)
-            .defineAndUnlockIfHas('A', AVPAmmunitionPartItems.BULLET_TIP)
-            .defineAndUnlockIfHas('B', AVPAmmunitionPartItems.CASING_PISTOL)
+        AVPShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AVPBulletItems.INSTANCE.BULLET_PISTOL_INCENDIARY, 16)
+            .defineAndUnlockIfHas('A', AVPAmmunitionPartItems.INSTANCE.BULLET_TIP)
+            .defineAndUnlockIfHas('B', AVPAmmunitionPartItems.INSTANCE.CASING_PISTOL)
             .defineAndUnlockIfHas('C', Items.BLAZE_POWDER)
             .pattern("AC")
             .pattern("B ")
             .save(recipeOutput);
 
-        AVPShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AVPBulletItems.BULLET_PISTOL_PENETRATION, 16)
-            .defineAndUnlockIfHas('A', AVPAmmunitionPartItems.BULLET_TIP)
-            .defineAndUnlockIfHas('B', AVPAmmunitionPartItems.CASING_PISTOL)
+        AVPShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AVPBulletItems.INSTANCE.BULLET_PISTOL_PENETRATION, 16)
+            .defineAndUnlockIfHas('A', AVPAmmunitionPartItems.INSTANCE.BULLET_TIP)
+            .defineAndUnlockIfHas('B', AVPAmmunitionPartItems.INSTANCE.CASING_PISTOL)
             .defineAndUnlockIfHas('C', Items.OBSIDIAN)
             .pattern("AC")
             .pattern("B ")
@@ -143,40 +143,40 @@ public final class AVPBulletRecipes {
     }
 
     private static void addRifleBulletRecipes(RecipeOutput recipeOutput) {
-        AVPShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AVPBulletItems.BULLET_RIFLE, 16)
-            .defineAndUnlockIfHas('A', AVPAmmunitionPartItems.BULLET_TIP)
-            .defineAndUnlockIfHas('B', AVPAmmunitionPartItems.CASING_RIFLE)
+        AVPShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AVPBulletItems.INSTANCE.BULLET_RIFLE, 16)
+            .defineAndUnlockIfHas('A', AVPAmmunitionPartItems.INSTANCE.BULLET_TIP)
+            .defineAndUnlockIfHas('B', AVPAmmunitionPartItems.INSTANCE.CASING_RIFLE)
             .pattern("A")
             .pattern("B")
             .save(recipeOutput);
 
-        AVPShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AVPBulletItems.BULLET_RIFLE_ELECTRIC, 16)
-            .defineAndUnlockIfHas('A', AVPAmmunitionPartItems.BULLET_TIP)
-            .defineAndUnlockIfHas('B', AVPAmmunitionPartItems.CASING_RIFLE)
-            .defineAndUnlockIfHas('C', AVPElectronicItems.CAPACITOR)
+        AVPShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AVPBulletItems.INSTANCE.BULLET_RIFLE_ELECTRIC, 16)
+            .defineAndUnlockIfHas('A', AVPAmmunitionPartItems.INSTANCE.BULLET_TIP)
+            .defineAndUnlockIfHas('B', AVPAmmunitionPartItems.INSTANCE.CASING_RIFLE)
+            .defineAndUnlockIfHas('C', AVPElectronicItems.INSTANCE.CAPACITOR)
             .pattern("AC")
             .pattern("B ")
             .save(recipeOutput);
 
-        AVPShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AVPBulletItems.BULLET_RIFLE_EXPLOSIVE, 16)
-            .defineAndUnlockIfHas('A', AVPAmmunitionPartItems.BULLET_TIP)
-            .defineAndUnlockIfHas('B', AVPAmmunitionPartItems.CASING_RIFLE)
+        AVPShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AVPBulletItems.INSTANCE.BULLET_RIFLE_EXPLOSIVE, 16)
+            .defineAndUnlockIfHas('A', AVPAmmunitionPartItems.INSTANCE.BULLET_TIP)
+            .defineAndUnlockIfHas('B', AVPAmmunitionPartItems.INSTANCE.CASING_RIFLE)
             .defineAndUnlockIfHas('C', Items.TNT)
             .pattern("AC")
             .pattern("B ")
             .save(recipeOutput);
 
-        AVPShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AVPBulletItems.BULLET_RIFLE_INCENDIARY, 16)
-            .defineAndUnlockIfHas('A', AVPAmmunitionPartItems.BULLET_TIP)
-            .defineAndUnlockIfHas('B', AVPAmmunitionPartItems.CASING_RIFLE)
+        AVPShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AVPBulletItems.INSTANCE.BULLET_RIFLE_INCENDIARY, 16)
+            .defineAndUnlockIfHas('A', AVPAmmunitionPartItems.INSTANCE.BULLET_TIP)
+            .defineAndUnlockIfHas('B', AVPAmmunitionPartItems.INSTANCE.CASING_RIFLE)
             .defineAndUnlockIfHas('C', Items.BLAZE_POWDER)
             .pattern("AC")
             .pattern("B ")
             .save(recipeOutput);
 
-        AVPShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AVPBulletItems.BULLET_RIFLE_PENETRATION, 16)
-            .defineAndUnlockIfHas('A', AVPAmmunitionPartItems.BULLET_TIP)
-            .defineAndUnlockIfHas('B', AVPAmmunitionPartItems.CASING_RIFLE)
+        AVPShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AVPBulletItems.INSTANCE.BULLET_RIFLE_PENETRATION, 16)
+            .defineAndUnlockIfHas('A', AVPAmmunitionPartItems.INSTANCE.BULLET_TIP)
+            .defineAndUnlockIfHas('B', AVPAmmunitionPartItems.INSTANCE.CASING_RIFLE)
             .defineAndUnlockIfHas('C', Items.OBSIDIAN)
             .pattern("AC")
             .pattern("B ")
@@ -184,40 +184,40 @@ public final class AVPBulletRecipes {
     }
 
     private static void addShotgunBulletRecipes(RecipeOutput recipeOutput) {
-        AVPShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AVPBulletItems.BULLET_SHOTGUN, 16)
-            .defineAndUnlockIfHas('A', AVPAmmunitionPartItems.BULLET_TIP)
-            .defineAndUnlockIfHas('B', AVPAmmunitionPartItems.CASING_SHOTGUN)
+        AVPShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AVPBulletItems.INSTANCE.BULLET_SHOTGUN, 16)
+            .defineAndUnlockIfHas('A', AVPAmmunitionPartItems.INSTANCE.BULLET_TIP)
+            .defineAndUnlockIfHas('B', AVPAmmunitionPartItems.INSTANCE.CASING_SHOTGUN)
             .pattern("A")
             .pattern("B")
             .save(recipeOutput);
 
-        AVPShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AVPBulletItems.BULLET_SHOTGUN_ELECTRIC, 16)
-            .defineAndUnlockIfHas('A', AVPAmmunitionPartItems.BULLET_TIP)
-            .defineAndUnlockIfHas('B', AVPAmmunitionPartItems.CASING_SHOTGUN)
-            .defineAndUnlockIfHas('C', AVPElectronicItems.CAPACITOR)
+        AVPShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AVPBulletItems.INSTANCE.BULLET_SHOTGUN_ELECTRIC, 16)
+            .defineAndUnlockIfHas('A', AVPAmmunitionPartItems.INSTANCE.BULLET_TIP)
+            .defineAndUnlockIfHas('B', AVPAmmunitionPartItems.INSTANCE.CASING_SHOTGUN)
+            .defineAndUnlockIfHas('C', AVPElectronicItems.INSTANCE.CAPACITOR)
             .pattern("AC")
             .pattern("B ")
             .save(recipeOutput);
 
-        AVPShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AVPBulletItems.BULLET_SHOTGUN_EXPLOSIVE, 16)
-            .defineAndUnlockIfHas('A', AVPAmmunitionPartItems.BULLET_TIP)
-            .defineAndUnlockIfHas('B', AVPAmmunitionPartItems.CASING_SHOTGUN)
+        AVPShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AVPBulletItems.INSTANCE.BULLET_SHOTGUN_EXPLOSIVE, 16)
+            .defineAndUnlockIfHas('A', AVPAmmunitionPartItems.INSTANCE.BULLET_TIP)
+            .defineAndUnlockIfHas('B', AVPAmmunitionPartItems.INSTANCE.CASING_SHOTGUN)
             .defineAndUnlockIfHas('C', Items.TNT)
             .pattern("AC")
             .pattern("B ")
             .save(recipeOutput);
 
-        AVPShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AVPBulletItems.BULLET_SHOTGUN_INCENDIARY, 16)
-            .defineAndUnlockIfHas('A', AVPAmmunitionPartItems.BULLET_TIP)
-            .defineAndUnlockIfHas('B', AVPAmmunitionPartItems.CASING_SHOTGUN)
+        AVPShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AVPBulletItems.INSTANCE.BULLET_SHOTGUN_INCENDIARY, 16)
+            .defineAndUnlockIfHas('A', AVPAmmunitionPartItems.INSTANCE.BULLET_TIP)
+            .defineAndUnlockIfHas('B', AVPAmmunitionPartItems.INSTANCE.CASING_SHOTGUN)
             .defineAndUnlockIfHas('C', Items.BLAZE_POWDER)
             .pattern("AC")
             .pattern("B ")
             .save(recipeOutput);
 
-        AVPShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AVPBulletItems.BULLET_SHOTGUN_PENETRATION, 16)
-            .defineAndUnlockIfHas('A', AVPAmmunitionPartItems.BULLET_TIP)
-            .defineAndUnlockIfHas('B', AVPAmmunitionPartItems.CASING_SHOTGUN)
+        AVPShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AVPBulletItems.INSTANCE.BULLET_SHOTGUN_PENETRATION, 16)
+            .defineAndUnlockIfHas('A', AVPAmmunitionPartItems.INSTANCE.BULLET_TIP)
+            .defineAndUnlockIfHas('B', AVPAmmunitionPartItems.INSTANCE.CASING_SHOTGUN)
             .defineAndUnlockIfHas('C', Items.OBSIDIAN)
             .pattern("AC")
             .pattern("B ")

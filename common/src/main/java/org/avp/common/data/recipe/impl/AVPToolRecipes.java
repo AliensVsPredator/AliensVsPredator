@@ -15,30 +15,30 @@ public final class AVPToolRecipes {
     public static void addToolRecipes(RecipeOutput recipeOutput) {
         addToolSetRecipes(
             recipeOutput,
-            AVPItems.INGOT_ALUMINUM,
-            AVPToolItems.ALUMINUM_AXE,
-            AVPToolItems.ALUMINUM_HOE,
-            AVPToolItems.ALUMINUM_PICKAXE,
-            AVPToolItems.ALUMINUM_SHOVEL,
-            AVPToolItems.ALUMINUM_SWORD
+            AVPItems.INSTANCE.INGOT_ALUMINUM,
+            AVPToolItems.INSTANCE.ALUMINUM_AXE,
+            AVPToolItems.INSTANCE.ALUMINUM_HOE,
+            AVPToolItems.INSTANCE.ALUMINUM_PICKAXE,
+            AVPToolItems.INSTANCE.ALUMINUM_SHOVEL,
+            AVPToolItems.INSTANCE.ALUMINUM_SWORD
         );
         addToolSetRecipes(
             recipeOutput,
-            AVPItems.INGOT_TITANIUM,
-            AVPToolItems.TITANIUM_AXE,
-            AVPToolItems.TITANIUM_HOE,
-            AVPToolItems.TITANIUM_PICKAXE,
-            AVPToolItems.TITANIUM_SHOVEL,
-            AVPToolItems.TITANIUM_SWORD
+            AVPItems.INSTANCE.INGOT_TITANIUM,
+            AVPToolItems.INSTANCE.TITANIUM_AXE,
+            AVPToolItems.INSTANCE.TITANIUM_HOE,
+            AVPToolItems.INSTANCE.TITANIUM_PICKAXE,
+            AVPToolItems.INSTANCE.TITANIUM_SHOVEL,
+            AVPToolItems.INSTANCE.TITANIUM_SWORD
         );
         addToolSetRecipes(
             recipeOutput,
-            AVPItems.INGOT_ORIONITE,
-            AVPToolItems.ORIONITE_AXE,
-            AVPToolItems.ORIONITE_HOE,
-            AVPToolItems.ORIONITE_PICKAXE,
-            AVPToolItems.ORIONITE_SHOVEL,
-            AVPToolItems.ORIONITE_SWORD
+            AVPItems.INSTANCE.INGOT_ORIONITE,
+            AVPToolItems.INSTANCE.ORIONITE_AXE,
+            AVPToolItems.INSTANCE.ORIONITE_HOE,
+            AVPToolItems.INSTANCE.ORIONITE_PICKAXE,
+            AVPToolItems.INSTANCE.ORIONITE_SHOVEL,
+            AVPToolItems.INSTANCE.ORIONITE_SWORD
         );
     }
 

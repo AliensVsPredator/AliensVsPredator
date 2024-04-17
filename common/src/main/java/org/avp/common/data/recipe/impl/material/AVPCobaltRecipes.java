@@ -14,7 +14,7 @@ public final class AVPCobaltRecipes {
         AVPRecipeHelper.compressedBlockRecipe(
             recipeOutput,
             RecipeCategory.BUILDING_BLOCKS,
-            AVPItems.COBALT.get(),
+            AVPItems.INSTANCE.COBALT.get(),
             AVPOreBlocks.INSTANCE.COBALT_BLOCK.get()
         );
 
@@ -23,7 +23,7 @@ public final class AVPCobaltRecipes {
             recipeOutput,
             RecipeCategory.MISC,
             AVPOreBlocks.INSTANCE.ORE_COBALT.get(),
-            AVPItems.COBALT.get()
+            AVPItems.INSTANCE.COBALT.get()
         );
     }
 

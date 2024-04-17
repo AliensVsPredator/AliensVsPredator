@@ -40,11 +40,11 @@ public class NeoForgeEntityRegistry implements EntityRegistry {
         Supplier<EntityType<T>> supplier
     ) {
         var gameObject = register(registryName, supplier);
-        var spawnEggGameObject = Services.ITEM_REGISTRY.register(
+        var spawnEggGameObject = Services.ITEM_REGISTRY.createHolder(
             "spawn_egg_" + registryName,
             () -> new DeferredSpawnEggItem(gameObject::get, backgroundColor, highlightColor, new Item.Properties())
         );
-        AVPSpawnEggItems.ENTRIES.add(spawnEggGameObject);
+        AVPSpawnEggItems.INSTANCE.getEntries().add(spawnEggGameObject);
         return gameObject;
     }
 }

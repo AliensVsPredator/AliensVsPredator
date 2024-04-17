@@ -11,6 +11,7 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 import java.util.function.Supplier;
 
 import org.avp.api.GameObject;
+import org.avp.common.item.AVPItemBlockItems;
 import org.avp.common.service.BlockService;
 import org.avp.common.service.Services;
 
@@ -19,13 +20,14 @@ public class FabricBlockService implements BlockService {
     @Override
     public GameObject<Block> createHolder(String registryName, Supplier<Block> supplier) {
         var gameObject = new GameObject<>(registryName, supplier);
-        Services.ITEM_REGISTRY.register(registryName, () -> new BlockItem(gameObject.get(), new Item.Properties()));
+        var holder = Services.ITEM_REGISTRY.createHolder(registryName, () -> new BlockItem(gameObject.get(), new Item.Properties()));
+        AVPItemBlockItems.INSTANCE.addHolder(holder);
         return gameObject;
     }
 
     @Override
-    public void register(GameObject<Block> blockGameObject) {
-        Registry.register(BuiltInRegistries.BLOCK, blockGameObject.getResourceLocation(), blockGameObject.get());
+    public void register(GameObject<Block> holder) {
+        Registry.register(BuiltInRegistries.BLOCK, holder.getResourceLocation(), holder.get());
     }
 
     @Override

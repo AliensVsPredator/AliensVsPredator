@@ -12,22 +12,22 @@ import org.avp.common.item.AVPItems;
 public final class AVPAmmoRecipes {
 
     public static void addAmmoRecipes(RecipeOutput recipeOutput) {
-        AVPShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AVPAmmunitionPartItems.AMMO_CHARGE_PACK)
+        AVPShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AVPAmmunitionPartItems.INSTANCE.INSTANCE.AMMO_CHARGE_PACK)
             .defineAndUnlockIfHas('A', Items.GOLD_NUGGET)
-            .defineAndUnlockIfHas('B', AVPElectronicItems.CAPACITOR)
-            .defineAndUnlockIfHas('C', AVPElectronicItems.RESISTOR)
-            .defineAndUnlockIfHas('D', AVPItems.POLYCARBONATE)
-            .defineAndUnlockIfHas('E', AVPItems.DUST_LITHIUM)
+            .defineAndUnlockIfHas('B', AVPElectronicItems.INSTANCE.CAPACITOR)
+            .defineAndUnlockIfHas('C', AVPElectronicItems.INSTANCE.RESISTOR)
+            .defineAndUnlockIfHas('D', AVPItems.INSTANCE.POLYCARBONATE)
+            .defineAndUnlockIfHas('E', AVPItems.INSTANCE.DUST_LITHIUM)
             .pattern("AAA")
             .pattern("BCB")
             .pattern("DED")
             .save(recipeOutput);
 
-        AVPShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AVPAmmunitionPartItems.AMMO_FLAMETHROWER)
+        AVPShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AVPAmmunitionPartItems.INSTANCE.INSTANCE.AMMO_FLAMETHROWER)
             .defineAndUnlockIfHas('A', Items.SLIME_BALL)
-            .defineAndUnlockIfHas('B', AVPItems.INGOT_ALUMINUM)
+            .defineAndUnlockIfHas('B', AVPItems.INSTANCE.INGOT_ALUMINUM)
             .defineAndUnlockIfHas('C', Items.BLAZE_POWDER)
-            .defineAndUnlockIfHas('D', AVPItems.POLYCARBONATE)
+            .defineAndUnlockIfHas('D', AVPItems.INSTANCE.POLYCARBONATE)
             .pattern("DAD")
             .pattern("BCB")
             .pattern("BBB")

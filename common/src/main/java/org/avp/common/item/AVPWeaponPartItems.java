@@ -7,56 +7,37 @@ import java.util.List;
 import java.util.function.Supplier;
 
 import org.avp.api.GameObject;
+import org.avp.common.registry.AVPDeferredItemRegistry;
 import org.avp.common.service.Services;
 
-public class AVPWeaponPartItems {
+public class AVPWeaponPartItems extends AVPDeferredItemRegistry {
 
-    private static final List<GameObject<Item>> ENTRIES = new ArrayList<>();
+    public static final AVPWeaponPartItems INSTANCE = new AVPWeaponPartItems();
 
-    public static final GameObject<Item> WEAPON_PART_BARREL_GENERIC;
+    public final GameObject<Item> WEAPON_PART_BARREL_GENERIC = createHolder("barrel");
 
-    public static final GameObject<Item> WEAPON_PART_BARREL_MINIGUN;
+    public final GameObject<Item> WEAPON_PART_BARREL_MINIGUN = createHolder("barrel_minigun");
 
-    public static final GameObject<Item> WEAPON_PART_BARREL_ROCKET;
+    public final GameObject<Item> WEAPON_PART_BARREL_ROCKET = createHolder("barrel_rocket");
 
-    public static final GameObject<Item> WEAPON_PART_BARREL_SMART;
+    public final GameObject<Item> WEAPON_PART_BARREL_SMART = createHolder("barrel_smart");
 
-    public static final GameObject<Item> WEAPON_PART_GRIP_GENERIC;
+    public final GameObject<Item> WEAPON_PART_GRIP_GENERIC = createHolder("grip");
 
-    public static final GameObject<Item> WEAPON_PART_RECEIVER_GENERIC;
+    public final GameObject<Item> WEAPON_PART_RECEIVER_GENERIC = createHolder("receiver");
 
-    public static final GameObject<Item> WEAPON_PART_RECEIVER_SMART;
+    public final GameObject<Item> WEAPON_PART_RECEIVER_SMART = createHolder("receiver_smart");
 
-    public static final GameObject<Item> WEAPON_PART_STOCK_GENERIC;
+    public final GameObject<Item> WEAPON_PART_STOCK_GENERIC = createHolder("stock");
 
-    public static void forceInitialization() {
-        // This method doesn't need to do anything
+    private GameObject<Item> createHolder(String registryName) {
+        return createHolder(registryName, () -> new Item(new Item.Properties()));
     }
 
-    public static List<GameObject<Item>> getEntries() {
-        return ENTRIES;
-    }
-
-    private static GameObject<Item> register(String registryName) {
-        return register(registryName, () -> new Item(new Item.Properties()));
-    }
-
-    private static GameObject<Item> register(String registryName, Supplier<Item> itemSupplier) {
-        var gameObject = Services.ITEM_REGISTRY.register("weapon_part_" + registryName, itemSupplier);
-        ENTRIES.add(gameObject);
-        return gameObject;
+    @Override
+    protected GameObject<Item> createHolder(String registryName, Supplier<Item> itemSupplier) {
+        return super.createHolder("weapon_part_" + registryName, itemSupplier);
     }
 
     private AVPWeaponPartItems() {}
-
-    static {
-        WEAPON_PART_BARREL_GENERIC = register("barrel");
-        WEAPON_PART_BARREL_MINIGUN = register("barrel_minigun");
-        WEAPON_PART_BARREL_ROCKET = register("barrel_rocket");
-        WEAPON_PART_BARREL_SMART = register("barrel_smart");
-        WEAPON_PART_GRIP_GENERIC = register("grip");
-        WEAPON_PART_RECEIVER_GENERIC = register("receiver");
-        WEAPON_PART_RECEIVER_SMART = register("receiver_smart");
-        WEAPON_PART_STOCK_GENERIC = register("stock");
-    }
 }

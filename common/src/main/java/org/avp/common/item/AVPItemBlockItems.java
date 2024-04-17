@@ -1,18 +1,16 @@
 package org.avp.common.item;
 
 import net.minecraft.world.item.Item;
-
 import org.avp.api.GameObject;
 import org.avp.common.registry.AVPDeferredItemRegistry;
 
-public class AVPSpawnEggItems extends AVPDeferredItemRegistry {
+public class AVPItemBlockItems extends AVPDeferredItemRegistry {
 
-    public static final AVPSpawnEggItems INSTANCE = new AVPSpawnEggItems();
+    public static final AVPItemBlockItems INSTANCE = new AVPItemBlockItems();
 
-    private AVPSpawnEggItems() {}
+    private AVPItemBlockItems() {}
 
     public void addHolder(GameObject<Item> holder) {
         entries.add(holder);
     }
 }
-

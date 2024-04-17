@@ -22,7 +22,7 @@ public class AVPFuelRegistry {
     }
 
     public static void forceInitialization() {
-        register(AVPItems.CARBON, 800);
+        register(AVPItems.INSTANCE.CARBON, 800);
     }
 
     private AVPFuelRegistry() {

@@ -15,13 +15,13 @@ public final class AVPAluminumRecipes {
         AVPRecipeHelper.compressedBlockRecipe(
             recipeOutput,
             RecipeCategory.BUILDING_BLOCKS,
-            AVPItems.INGOT_ALUMINUM.get(),
+            AVPItems.INSTANCE.INGOT_ALUMINUM.get(),
             AVPBlocks.INSTANCE.ALUMINUM_BLOCK.get()
         );
         AVPRecipeHelper.compressedBlockRecipe(
             recipeOutput,
             RecipeCategory.BUILDING_BLOCKS,
-            AVPItems.RAW_BAUXITE.get(),
+            AVPItems.INSTANCE.RAW_BAUXITE.get(),
             AVPOreBlocks.INSTANCE.RAW_BAUXITE_BLOCK.get()
         );
 
@@ -29,9 +29,9 @@ public final class AVPAluminumRecipes {
         AVPRecipeHelper.oreSmelting(
             recipeOutput,
             RecipeCategory.MISC,
-            AVPItems.RAW_BAUXITE,
+            AVPItems.INSTANCE.RAW_BAUXITE,
             AVPOreBlocks.INSTANCE.ORE_BAUXITE,
-            AVPItems.INGOT_ALUMINUM
+            AVPItems.INSTANCE.INGOT_ALUMINUM
         );
 
         // Decompressed items from blocks
@@ -39,13 +39,13 @@ public final class AVPAluminumRecipes {
             recipeOutput,
             RecipeCategory.MISC,
             AVPBlocks.INSTANCE.ALUMINUM_BLOCK.get(),
-            AVPItems.INGOT_ALUMINUM.get()
+            AVPItems.INSTANCE.INGOT_ALUMINUM.get()
         );
         AVPRecipeHelper.decompressedItemRecipe(
             recipeOutput,
             RecipeCategory.MISC,
             AVPOreBlocks.INSTANCE.RAW_BAUXITE_BLOCK.get(),
-            AVPItems.RAW_BAUXITE.get()
+            AVPItems.INSTANCE.RAW_BAUXITE.get()
         );
 
         // Furnace recipes

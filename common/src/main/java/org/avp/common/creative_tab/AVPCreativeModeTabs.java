@@ -34,7 +34,7 @@ public final class AVPCreativeModeTabs {
         );
     }
 
-    private static Collection<ItemStack> itemsToItemStacks(List<GameObject<Item>> gameObjectList) {
+    private static Collection<ItemStack> itemsToItemStacks(Collection<GameObject<Item>> gameObjectList) {
         return gameObjectList.stream()
             .map(GameObject::get)
             .map(Item::getDefaultInstance)
@@ -53,10 +53,10 @@ public final class AVPCreativeModeTabs {
         registerCreativeModeTab(
             "armor",
             () -> CreativeModeTab.builder(CreativeModeTab.Row.TOP, 0)
-                .icon(AVPArmorItems.VERITANIUM_HELMET.get()::getDefaultInstance)
+                .icon(AVPArmorItems.INSTANCE.VERITANIUM_HELMET.get()::getDefaultInstance)
                 .displayItems(
                     (itemDisplayParameters, output) -> output.acceptAll(
-                        itemsToItemStacks(AVPArmorItems.getEntries())
+                        itemsToItemStacks(AVPArmorItems.INSTANCE.getEntries())
                     )
                 )
         );
@@ -75,10 +75,10 @@ public final class AVPCreativeModeTabs {
         registerCreativeModeTab(
             "food",
             () -> CreativeModeTab.builder(CreativeModeTab.Row.TOP, 2)
-                .icon(AVPFoodItems.DORITOS.get()::getDefaultInstance)
+                .icon(AVPFoodItems.INSTANCE.DORITOS.get()::getDefaultInstance)
                 .displayItems(
                     (itemDisplayParameters, output) -> output.acceptAll(
-                        itemsToItemStacks(AVPFoodItems.getEntries())
+                        itemsToItemStacks(AVPFoodItems.INSTANCE.getEntries())
                     )
                 )
         );
@@ -86,10 +86,10 @@ public final class AVPCreativeModeTabs {
         registerCreativeModeTab(
             "electronics",
             () -> CreativeModeTab.builder(CreativeModeTab.Row.TOP, 3)
-                .icon(AVPElectronicItems.CPU.get()::getDefaultInstance)
+                .icon(AVPElectronicItems.INSTANCE.CPU.get()::getDefaultInstance)
                 .displayItems(
                     (itemDisplayParameters, output) -> output.acceptAll(
-                        itemsToItemStacks(AVPElectronicItems.getEntries())
+                        itemsToItemStacks(AVPElectronicItems.INSTANCE.getEntries())
                     )
                 )
         );
@@ -100,7 +100,7 @@ public final class AVPCreativeModeTabs {
                 .icon(Items.EGG::getDefaultInstance)
                 .displayItems(
                     (itemDisplayParameters, output) -> output.acceptAll(
-                        itemsToItemStacks(AVPSpawnEggItems.ENTRIES)
+                        itemsToItemStacks(AVPSpawnEggItems.INSTANCE.getEntries())
                     )
                 )
         );
@@ -108,10 +108,10 @@ public final class AVPCreativeModeTabs {
         registerCreativeModeTab(
             "items",
             () -> CreativeModeTab.builder(CreativeModeTab.Row.TOP, 5)
-                .icon(AVPItems.ROYAL_JELLY.get()::getDefaultInstance)
+                .icon(AVPItems.INSTANCE.ROYAL_JELLY.get()::getDefaultInstance)
                 .displayItems(
                     (itemDisplayParameters, output) -> output.acceptAll(
-                        itemsToItemStacks(AVPItems.getEntries())
+                        itemsToItemStacks(AVPItems.INSTANCE.getEntries())
                     )
                 )
         );
@@ -119,10 +119,10 @@ public final class AVPCreativeModeTabs {
         registerCreativeModeTab(
             "tools",
             () -> CreativeModeTab.builder(CreativeModeTab.Row.BOTTOM, 0)
-                .icon(AVPToolItems.VERITANIUM_PICKAXE.get()::getDefaultInstance)
+                .icon(AVPToolItems.INSTANCE.VERITANIUM_PICKAXE.get()::getDefaultInstance)
                 .displayItems(
                     (itemDisplayParameters, output) -> output.acceptAll(
-                        itemsToItemStacks(AVPToolItems.getEntries())
+                        itemsToItemStacks(AVPToolItems.INSTANCE.getEntries())
                     )
                 )
         );
@@ -130,23 +130,23 @@ public final class AVPCreativeModeTabs {
         registerCreativeModeTab(
             "weapons",
             () -> CreativeModeTab.builder(CreativeModeTab.Row.BOTTOM, 1)
-                .icon(AVPWeaponItems.GRENADE_M40.get()::getDefaultInstance)
+                .icon(AVPWeaponItems.INSTANCE.GRENADE_M40.get()::getDefaultInstance)
                 .displayItems(
                     (itemDisplayParameters, output) -> {
                         output.acceptAll(
-                            itemsToItemStacks(AVPAmmunitionPartItems.getEntries())
+                            itemsToItemStacks(AVPAmmunitionPartItems.INSTANCE.getEntries())
                         );
                         output.acceptAll(
-                            itemsToItemStacks(AVPWeaponBlueprintItems.getEntries())
+                            itemsToItemStacks(AVPWeaponBlueprintItems.INSTANCE.getEntries())
                         );
                         output.acceptAll(
-                            itemsToItemStacks(AVPBulletItems.getEntries())
+                            itemsToItemStacks(AVPBulletItems.INSTANCE.getEntries())
                         );
                         output.acceptAll(
-                            itemsToItemStacks(AVPWeaponItems.getEntries())
+                            itemsToItemStacks(AVPWeaponItems.INSTANCE.getEntries())
                         );
                         output.acceptAll(
-                            itemsToItemStacks(AVPWeaponPartItems.getEntries())
+                            itemsToItemStacks(AVPWeaponPartItems.INSTANCE.getEntries())
                         );
                     }
                 )
