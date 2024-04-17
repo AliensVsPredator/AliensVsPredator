@@ -41,11 +41,6 @@ public class AVPCommon {
         // Fuel
         AVPFuelRegistry.forceInitialization();
 
-        // Tags
-        AVPBiomeTags.forceInitialization();
-        AVPBlockTags.forceInitialization();
-        AVPEntityTags.forceInitialization();
-
         // Items
         AVPAmmunitionPartItems.forceInitialization();
         AVPArmorItems.forceInitialization();

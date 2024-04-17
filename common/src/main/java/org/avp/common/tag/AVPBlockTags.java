@@ -8,18 +8,10 @@ import org.avp.common.AVPResources;
 
 public class AVPBlockTags {
 
-    public static final TagKey<Block> ACID_IMMUNE;
-
-    public static void forceInitialization() {
-        // This method doesn't need to do anything
-    }
+    public static final TagKey<Block> ACID_IMMUNE = create("acid_immune");
 
     private static TagKey<Block> create(String registryName) {
         return TagKey.create(Registries.BLOCK, AVPResources.location(registryName));
-    }
-
-    static {
-        ACID_IMMUNE = create("acid_immune");
     }
 
     private AVPBlockTags() {
