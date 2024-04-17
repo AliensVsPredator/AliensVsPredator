@@ -15,30 +15,30 @@ public final class AVPToolRecipes {
     public static void addToolRecipes(RecipeOutput recipeOutput) {
         addToolSetRecipes(
             recipeOutput,
-            AVPItems.INSTANCE.INGOT_ALUMINUM,
-            AVPToolItems.INSTANCE.ALUMINUM_AXE,
-            AVPToolItems.INSTANCE.ALUMINUM_HOE,
-            AVPToolItems.INSTANCE.ALUMINUM_PICKAXE,
-            AVPToolItems.INSTANCE.ALUMINUM_SHOVEL,
-            AVPToolItems.INSTANCE.ALUMINUM_SWORD
+            AVPItems.INSTANCE.ingotAluminum,
+            AVPToolItems.INSTANCE.aluminumAxe,
+            AVPToolItems.INSTANCE.aluminumHoe,
+            AVPToolItems.INSTANCE.aluminumPickaxe,
+            AVPToolItems.INSTANCE.aluminumShovel,
+            AVPToolItems.INSTANCE.aluminumSword
         );
         addToolSetRecipes(
             recipeOutput,
-            AVPItems.INSTANCE.INGOT_TITANIUM,
-            AVPToolItems.INSTANCE.TITANIUM_AXE,
-            AVPToolItems.INSTANCE.TITANIUM_HOE,
-            AVPToolItems.INSTANCE.TITANIUM_PICKAXE,
-            AVPToolItems.INSTANCE.TITANIUM_SHOVEL,
-            AVPToolItems.INSTANCE.TITANIUM_SWORD
+            AVPItems.INSTANCE.ingotTitanium,
+            AVPToolItems.INSTANCE.titaniumAxe,
+            AVPToolItems.INSTANCE.titaniumHoe,
+            AVPToolItems.INSTANCE.titaniumPickaxe,
+            AVPToolItems.INSTANCE.titaniumShovel,
+            AVPToolItems.INSTANCE.titaniumSword
         );
         addToolSetRecipes(
             recipeOutput,
-            AVPItems.INSTANCE.INGOT_ORIONITE,
-            AVPToolItems.INSTANCE.ORIONITE_AXE,
-            AVPToolItems.INSTANCE.ORIONITE_HOE,
-            AVPToolItems.INSTANCE.ORIONITE_PICKAXE,
-            AVPToolItems.INSTANCE.ORIONITE_SHOVEL,
-            AVPToolItems.INSTANCE.ORIONITE_SWORD
+            AVPItems.INSTANCE.ingotOrionite,
+            AVPToolItems.INSTANCE.orioniteAxe,
+            AVPToolItems.INSTANCE.orioniteHoe,
+            AVPToolItems.INSTANCE.orionitePickaxe,
+            AVPToolItems.INSTANCE.orioniteShovel,
+            AVPToolItems.INSTANCE.orioniteSword
         );
     }
 

@@ -18,55 +18,45 @@ public class AVPTempleBlocks extends AVPDeferredBlockRegistry {
 
     public static final AVPTempleBlocks INSTANCE = new AVPTempleBlocks();
 
-    public final BlockBehaviour.Properties BRICK_PROPERTIES = BlockBehaviour.Properties.ofFullCopy(
-        Blocks.STONE
-    )
-        .strength(3.0F, 6.0F);
+    public final Holder<Block> brick;
 
-    public final BlockBehaviour.Properties SKULLS_PROPERTIES = BlockBehaviour.Properties.ofFullCopy(
-        Blocks.BONE_BLOCK
-    )
-        .strength(3.0F, 6.0F);
+    public final Holder<Block> brickSlab;
 
-    public final Holder<Block> BRICK;
+    public final Holder<Block> brickStairs;
 
-    public final Holder<Block> BRICK_SLAB;
+    public final Holder<Block> brickWall;
 
-    public final Holder<Block> BRICK_STAIRS;
+    public final Holder<Block> brickChestburster;
 
-    public final Holder<Block> BRICK_WALL;
+    public final Holder<Block> brickFacehugger;
 
-    public final Holder<Block> BRICK_CHESTBURSTER;
+    public final Holder<Block> brickSingle;
 
-    public final Holder<Block> BRICK_FACEHUGGER;
+    public final Holder<Block> brickSingleSlab;
 
-    public final Holder<Block> BRICK_SINGLE;
+    public final Holder<Block> brickSingleStairs;
 
-    public final Holder<Block> BRICK_SINGLE_SLAB;
+    public final Holder<Block> brickSingleWall;
 
-    public final Holder<Block> BRICK_SINGLE_STAIRS;
+    public final Holder<Block> floor;
 
-    public final Holder<Block> BRICK_SINGLE_WALL;
+    public final Holder<Block> floorSlab;
 
-    public final Holder<Block> FLOOR;
+    public final Holder<Block> floorStairs;
 
-    public final Holder<Block> FLOOR_SLAB;
+    public final Holder<Block> floorWall;
 
-    public final Holder<Block> FLOOR_STAIRS;
+    public final Holder<Block> skulls;
 
-    public final Holder<Block> FLOOR_WALL;
+    public final Holder<Block> tile;
 
-    public final Holder<Block> SKULLS;
+    public final Holder<Block> tileSlab;
 
-    public final Holder<Block> TILE;
+    public final Holder<Block> tileStairs;
 
-    public final Holder<Block> TILE_SLAB;
+    public final Holder<Block> tileWall;
 
-    public final Holder<Block> TILE_STAIRS;
-
-    public final Holder<Block> TILE_WALL;
-
-    public final Holder<Block> WALL_BASE;
+    public final Holder<Block> wallBase;
 
     @Override
     protected Holder<Block> createHolder(String registryName, BlockData.Builder blockDataBuilder) {
@@ -74,42 +64,45 @@ public class AVPTempleBlocks extends AVPDeferredBlockRegistry {
     }
 
     private AVPTempleBlocks() {
+        var brickProperties = BlockBehaviour.Properties.ofFullCopy(Blocks.STONE).strength(3.0F, 6.0F);
+        var skullProperties = BlockBehaviour.Properties.ofFullCopy(Blocks.BONE_BLOCK).strength(3.0F, 6.0F);
+
         var stone = List.of(BlockTags.MINEABLE_WITH_PICKAXE, BlockTags.NEEDS_IRON_TOOL);
 
-        Supplier<BlockData.Builder> pickProps = () -> BlockData.simple(BRICK_PROPERTIES).tags(stone);
+        Supplier<BlockData.Builder> pickProps = () -> BlockData.simple(brickProperties).tags(stone);
 
         Function<Holder<Block>, BlockData.Builder> slabProps =
-            parent -> BlockDataUtils.slab(parent, BRICK_PROPERTIES).tags(stone);
+            parent -> BlockDataUtils.slab(parent, brickProperties).tags(stone);
         Function<Holder<Block>, BlockData.Builder> stairProps =
-            parent -> BlockDataUtils.stairs(parent, BRICK_PROPERTIES).tags(stone);
+            parent -> BlockDataUtils.stairs(parent, brickProperties).tags(stone);
         Function<Holder<Block>, BlockData.Builder> wallProps =
-            parent -> BlockDataUtils.wall(parent, BRICK_PROPERTIES).tags(stone);
+            parent -> BlockDataUtils.wall(parent, brickProperties).tags(stone);
 
-        BRICK = createHolder("brick", pickProps.get());
-        BRICK_SLAB = createHolder("brick_slab", slabProps.apply(BRICK));
-        BRICK_STAIRS = createHolder("brick_stairs", stairProps.apply(BRICK));
-        BRICK_WALL = createHolder("brick_wall", wallProps.apply(BRICK));
+        brick = createHolder("brick", pickProps.get());
+        brickSlab = createHolder("brick_slab", slabProps.apply(brick));
+        brickStairs = createHolder("brick_stairs", stairProps.apply(brick));
+        brickWall = createHolder("brick_wall", wallProps.apply(brick));
 
-        BRICK_CHESTBURSTER = createHolder("brick_chestburster", pickProps.get());
-        BRICK_FACEHUGGER = createHolder("brick_facehugger", pickProps.get());
+        brickChestburster = createHolder("brick_chestburster", pickProps.get());
+        brickFacehugger = createHolder("brick_facehugger", pickProps.get());
 
-        BRICK_SINGLE = createHolder("brick_single", pickProps.get());
-        BRICK_SINGLE_SLAB = createHolder("brick_single_slab", slabProps.apply(BRICK_SINGLE));
-        BRICK_SINGLE_STAIRS = createHolder("brick_single_stairs", stairProps.apply(BRICK_SINGLE));
-        BRICK_SINGLE_WALL = createHolder("brick_single_wall", wallProps.apply(BRICK_SINGLE));
+        brickSingle = createHolder("brick_single", pickProps.get());
+        brickSingleSlab = createHolder("brick_single_slab", slabProps.apply(brickSingle));
+        brickSingleStairs = createHolder("brick_single_stairs", stairProps.apply(brickSingle));
+        brickSingleWall = createHolder("brick_single_wall", wallProps.apply(brickSingle));
 
-        FLOOR = createHolder("floor", pickProps.get());
-        FLOOR_SLAB = createHolder("floor_slab", slabProps.apply(FLOOR));
-        FLOOR_STAIRS = createHolder("floor_stairs", stairProps.apply(FLOOR));
-        FLOOR_WALL = createHolder("floor_wall", wallProps.apply(FLOOR));
+        floor = createHolder("floor", pickProps.get());
+        floorSlab = createHolder("floor_slab", slabProps.apply(floor));
+        floorStairs = createHolder("floor_stairs", stairProps.apply(floor));
+        floorWall = createHolder("floor_wall", wallProps.apply(floor));
 
-        SKULLS = createHolder("skulls", BlockData.simple(SKULLS_PROPERTIES).tags(stone));
+        skulls = createHolder("skulls", BlockData.simple(skullProperties).tags(stone));
 
-        TILE = createHolder("tile", pickProps.get());
-        TILE_SLAB = createHolder("tile_slab", slabProps.apply(TILE));
-        TILE_STAIRS = createHolder("tile_stairs", stairProps.apply(TILE));
-        TILE_WALL = createHolder("tile_wall", wallProps.apply(TILE));
+        tile = createHolder("tile", pickProps.get());
+        tileSlab = createHolder("tile_slab", slabProps.apply(tile));
+        tileStairs = createHolder("tile_stairs", stairProps.apply(tile));
+        tileWall = createHolder("tile_wall", wallProps.apply(tile));
 
-        WALL_BASE = createHolder("wall_base", pickProps.get());
+        wallBase = createHolder("wall_base", pickProps.get());
     }
 }

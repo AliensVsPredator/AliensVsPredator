@@ -5,9 +5,9 @@ import mod.azure.azurelib.common.internal.common.core.animation.AnimationState;
 import net.minecraft.resources.ResourceLocation;
 
 import org.avp.common.AVPResources;
-import org.avp.common.entity.living.Dracoburster;
+import org.avp.common.entity.living.ChestbursterDraco;
 
-public class DracobursterModel extends GeoModel<Dracoburster> {
+public class ChestbursterDracoModel extends GeoModel<ChestbursterDraco> {
 
     private static final String ENTITY_NAME = "chestburster_draco";
 
@@ -18,22 +18,22 @@ public class DracobursterModel extends GeoModel<Dracoburster> {
     private static final ResourceLocation ANIMATION_LOCATION = AVPResources.entityAnimationLocation(ENTITY_NAME);
 
     @Override
-    public ResourceLocation getModelResource(Dracoburster entity) {
+    public ResourceLocation getModelResource(ChestbursterDraco entity) {
         return MODEL_LOCATION;
     }
 
     @Override
-    public ResourceLocation getTextureResource(Dracoburster entity) {
+    public ResourceLocation getTextureResource(ChestbursterDraco entity) {
         return TEXTURE_LOCATION;
     }
 
     @Override
-    public ResourceLocation getAnimationResource(Dracoburster entity) {
+    public ResourceLocation getAnimationResource(ChestbursterDraco entity) {
         return ANIMATION_LOCATION;
     }
 
     @Override
-    public void setCustomAnimations(Dracoburster entity, long instanceId, AnimationState<Dracoburster> animationState) {
+    public void setCustomAnimations(ChestbursterDraco entity, long instanceId, AnimationState<ChestbursterDraco> animationState) {
         // TODO:
     }
 }

@@ -17,20 +17,15 @@ public class AVPUnidentifiedBlocks extends AVPDeferredBlockRegistry {
 
     public static final AVPUnidentifiedBlocks INSTANCE = new AVPUnidentifiedBlocks();
 
-    public final BlockBehaviour.Properties STONE_PROPERTIES = BlockBehaviour.Properties.ofFullCopy(
-        Blocks.STONE
-    )
-        .mapColor(MapColor.COLOR_GRAY);
+    public final Holder<Block> dirt;
 
-    public final Holder<Block> DIRT;
+    public final Holder<Block> gravel;
 
-    public final Holder<Block> GRAVEL;
+    public final Holder<Block> rock;
 
-    public final Holder<Block> ROCK;
+    public final Holder<Block> sand;
 
-    public final Holder<Block> SAND;
-
-    public final Holder<Block> STONE;
+    public final Holder<Block> stone;
 
     @Override
     protected Holder<Block> createHolder(String registryName, BlockData.Builder blockDataBuilder) {
@@ -38,14 +33,16 @@ public class AVPUnidentifiedBlocks extends AVPDeferredBlockRegistry {
     }
 
     private AVPUnidentifiedBlocks() {
-        var stone = List.of(BlockTags.MINEABLE_WITH_PICKAXE);
+        var stoneProperties = BlockBehaviour.Properties.ofFullCopy(Blocks.STONE).mapColor(MapColor.COLOR_GRAY);
 
-        Supplier<BlockData.Builder> pickProps = () -> BlockData.simple(STONE_PROPERTIES).tags(stone);
+        var stoneTags = List.of(BlockTags.MINEABLE_WITH_PICKAXE);
 
-        DIRT = createHolder("dirt", pickProps.get());
-        GRAVEL = createHolder("gravel", pickProps.get());
-        ROCK = createHolder("rock", pickProps.get());
-        SAND = createHolder("sand", pickProps.get());
-        STONE = createHolder("stone", pickProps.get());
+        Supplier<BlockData.Builder> pickProps = () -> BlockData.simple(stoneProperties).tags(stoneTags);
+
+        dirt = createHolder("dirt", pickProps.get());
+        gravel = createHolder("gravel", pickProps.get());
+        rock = createHolder("rock", pickProps.get());
+        sand = createHolder("sand", pickProps.get());
+        stone = createHolder("stone", pickProps.get());
     }
 }

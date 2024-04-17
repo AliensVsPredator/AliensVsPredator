@@ -97,17 +97,17 @@ public class Yautja extends Monster implements GeoEntity {
     @Nullable
     @Override
     protected SoundEvent getAmbientSound() {
-        return AVPSoundEvents.INSTANCE.ENTITY_YAUTJA_AMBIENT.get();
+        return AVPSoundEvents.INSTANCE.entityYautjaAmbient.get();
     }
 
     @Override
     protected SoundEvent getDeathSound() {
-        return AVPSoundEvents.INSTANCE.ENTITY_YAUTJA_DEATH.get();
+        return AVPSoundEvents.INSTANCE.entityYautjaDeath.get();
     }
 
     @Override
     protected SoundEvent getHurtSound(@NotNull DamageSource damageSource) {
-        return AVPSoundEvents.INSTANCE.ENTITY_YAUTJA_HURT.get();
+        return AVPSoundEvents.INSTANCE.entityYautjaHurt.get();
     }
 
     @Override

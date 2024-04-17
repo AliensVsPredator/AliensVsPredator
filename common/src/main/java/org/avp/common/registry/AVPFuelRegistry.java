@@ -19,7 +19,7 @@ public class AVPFuelRegistry extends AVPDeferredRegistry<Tuple<Holder<Item>, Int
 
     @Override
     public void register() {
-        createHolder("fuel_carbon", () -> new Tuple<>(AVPItems.INSTANCE.CARBON, 800));
+        createHolder("fuel_carbon", () -> new Tuple<>(AVPItems.INSTANCE.carbon, 800));
     }
 
     private AVPFuelRegistry() {}

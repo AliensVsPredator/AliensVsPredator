@@ -19,7 +19,7 @@ public class M41APulseRifleItem extends AbstractAVPWeaponItem {
         "Burst",
         4,
         10,
-        AVPSoundEvents.INSTANCE.ITEM_WEAPON_PULSE_RIFLE_SHOOT,
+        AVPSoundEvents.INSTANCE.itemWeaponPulseRifleShoot,
         64.0D,
         1F
     );
@@ -28,7 +28,7 @@ public class M41APulseRifleItem extends AbstractAVPWeaponItem {
         "Automatic",
         1,
         2,
-        AVPSoundEvents.INSTANCE.ITEM_WEAPON_PULSE_RIFLE_SHOOT, // TODO:
+        AVPSoundEvents.INSTANCE.itemWeaponPulseRifleShoot, // TODO:
         64.0D,
         0.25F
     );
@@ -38,12 +38,12 @@ public class M41APulseRifleItem extends AbstractAVPWeaponItem {
         AmmunitionStrategy.builder(
                 99,
                 List.of(
-                    AVPBulletItems.INSTANCE.BULLET_CASELESS::get,
-                    AVPBulletItems.INSTANCE.BULLET_CASELESS_ACID::get,
-                    AVPBulletItems.INSTANCE.BULLET_CASELESS_ELECTRIC::get,
-                    AVPBulletItems.INSTANCE.BULLET_CASELESS_EXPLOSIVE::get,
-                    AVPBulletItems.INSTANCE.BULLET_CASELESS_INCENDIARY::get,
-                    AVPBulletItems.INSTANCE.BULLET_CASELESS_PENETRATION::get
+                    AVPBulletItems.INSTANCE.bulletCaseless::get,
+                    AVPBulletItems.INSTANCE.bulletCaselessAcid::get,
+                    AVPBulletItems.INSTANCE.bulletCaselessElectric::get,
+                    AVPBulletItems.INSTANCE.bulletCaselessExplosive::get,
+                    AVPBulletItems.INSTANCE.bulletCaselessIncendiary::get,
+                    AVPBulletItems.INSTANCE.bulletCaselessPenetration::get
                 )
             )
             .setHasAmmunitionBehavior(HasAmmunitionBehavior.LOADED)
@@ -52,7 +52,7 @@ public class M41APulseRifleItem extends AbstractAVPWeaponItem {
         4F,
         0.13F,
         ReloadStrategy.builder(20 * 3)
-            .setReloadStartSound(AVPSoundEvents.INSTANCE.ITEM_WEAPON_GENERIC_RELOAD)
+            .setReloadStartSound(AVPSoundEvents.INSTANCE.itemWeaponGenericReload)
             .setTryReloadBehavior(TryReloadBehavior.STANDARD)
             .build(),
         ShootStrategy.builder().build()

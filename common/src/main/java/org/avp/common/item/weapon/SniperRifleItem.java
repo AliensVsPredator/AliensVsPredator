@@ -19,7 +19,7 @@ public class SniperRifleItem extends AbstractAVPWeaponItem {
         "Semi-Automatic",
         1,
         30,
-        AVPSoundEvents.INSTANCE.INSTANCE.ITEM_WEAPON_SNIPER_RIFLE_SHOOT,
+        AVPSoundEvents.INSTANCE.itemWeaponSniperRifleShoot,
         128.0D,
         1.5F
     );
@@ -29,12 +29,12 @@ public class SniperRifleItem extends AbstractAVPWeaponItem {
         AmmunitionStrategy.builder(
                 6,
                 List.of(
-                    AVPBulletItems.INSTANCE.BULLET_RIFLE::get,
-                    AVPBulletItems.INSTANCE.BULLET_RIFLE_ACID::get,
-                    AVPBulletItems.INSTANCE.BULLET_RIFLE_ELECTRIC::get,
-                    AVPBulletItems.INSTANCE.BULLET_RIFLE_EXPLOSIVE::get,
-                    AVPBulletItems.INSTANCE.BULLET_RIFLE_INCENDIARY::get,
-                    AVPBulletItems.INSTANCE.BULLET_RIFLE_PENETRATION::get
+                    AVPBulletItems.INSTANCE.bulletRifle::get,
+                    AVPBulletItems.INSTANCE.bulletRifleAcid::get,
+                    AVPBulletItems.INSTANCE.bulletRifleElectric::get,
+                    AVPBulletItems.INSTANCE.bulletRifleExplosive::get,
+                    AVPBulletItems.INSTANCE.bulletRifleIncendiary::get,
+                    AVPBulletItems.INSTANCE.bulletRiflePenetration::get
                 )
             )
             .setHasAmmunitionBehavior(HasAmmunitionBehavior.LOADED)
@@ -43,7 +43,7 @@ public class SniperRifleItem extends AbstractAVPWeaponItem {
         15F * 2,
         0.13F,
         ReloadStrategy.builder(20 * 7 + 10)
-            .setReloadStartSound(AVPSoundEvents.INSTANCE.INSTANCE.ITEM_WEAPON_GENERIC_RELOAD)
+            .setReloadStartSound(AVPSoundEvents.INSTANCE.itemWeaponGenericReload)
             .setTryReloadBehavior(TryReloadBehavior.STANDARD)
             .build(),
         ShootStrategy.builder().build()

@@ -27,10 +27,6 @@ public class AVPWeaponPartItems extends AVPDeferredItemRegistry {
 
     public final Holder<Item> WEAPON_PART_STOCK_GENERIC = createHolder("stock");
 
-    private Holder<Item> createHolder(String registryName) {
-        return createHolder(registryName, () -> new Item(new Item.Properties()));
-    }
-
     @Override
     protected Holder<Item> createHolder(String registryName, Supplier<Item> itemSupplier) {
         return super.createHolder("weapon_part_" + registryName, itemSupplier);

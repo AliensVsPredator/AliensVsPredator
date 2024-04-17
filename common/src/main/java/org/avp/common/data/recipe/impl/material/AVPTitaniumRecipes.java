@@ -15,37 +15,37 @@ public final class AVPTitaniumRecipes {
         AVPRecipeHelper.compressedBlockRecipe(
             recipeOutput,
             RecipeCategory.BUILDING_BLOCKS,
-            AVPItems.INSTANCE.INGOT_TITANIUM.get(),
-            AVPBlocks.INSTANCE.TITANIUM_BLOCK.get()
+            AVPItems.INSTANCE.ingotTitanium.get(),
+            AVPBlocks.INSTANCE.titaniumBlock.get()
         );
         AVPRecipeHelper.compressedBlockRecipe(
             recipeOutput,
             RecipeCategory.BUILDING_BLOCKS,
-            AVPItems.INSTANCE.RAW_TITANIUM.get(),
-            AVPOreBlocks.INSTANCE.RAW_TITANIUM_BLOCK.get()
+            AVPItems.INSTANCE.rawTitanium.get(),
+            AVPOreBlocks.INSTANCE.rawTitaniumBlock.get()
         );
 
         // Smelting
         AVPRecipeHelper.oreSmelting(
             recipeOutput,
             RecipeCategory.MISC,
-            AVPItems.INSTANCE.RAW_TITANIUM,
-            AVPOreBlocks.INSTANCE.ORE_TITANIUM,
-            AVPItems.INSTANCE.INGOT_TITANIUM
+            AVPItems.INSTANCE.rawTitanium,
+            AVPOreBlocks.INSTANCE.oreTitanium,
+            AVPItems.INSTANCE.ingotTitanium
         );
 
         // Decompressed items from blocks
         AVPRecipeHelper.decompressedItemRecipe(
             recipeOutput,
             RecipeCategory.MISC,
-            AVPBlocks.INSTANCE.TITANIUM_BLOCK.get(),
-            AVPItems.INSTANCE.INGOT_TITANIUM.get()
+            AVPBlocks.INSTANCE.titaniumBlock.get(),
+            AVPItems.INSTANCE.ingotTitanium.get()
         );
         AVPRecipeHelper.decompressedItemRecipe(
             recipeOutput,
             RecipeCategory.MISC,
-            AVPOreBlocks.INSTANCE.RAW_TITANIUM_BLOCK.get(),
-            AVPItems.INSTANCE.RAW_TITANIUM.get()
+            AVPOreBlocks.INSTANCE.rawTitaniumBlock.get(),
+            AVPItems.INSTANCE.rawTitanium.get()
         );
 
         // Furnace recipes

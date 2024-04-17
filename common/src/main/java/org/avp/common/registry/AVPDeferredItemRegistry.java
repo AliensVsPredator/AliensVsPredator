@@ -15,6 +15,10 @@ public class AVPDeferredItemRegistry extends AVPDeferredRegistry<Item> {
         return holder;
     }
 
+    protected Holder<Item> createHolder(String registryName) {
+        return createHolder(registryName, () -> new Item(new Item.Properties()));
+    }
+
     @Override
     public final void register() {
         entries.forEach(Services.ITEM_SERVICE::register);

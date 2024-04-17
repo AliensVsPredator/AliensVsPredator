@@ -13,53 +13,45 @@ public class AVPPaddingBlocks extends AVPDeferredBlockRegistry {
 
     public static final AVPPaddingBlocks INSTANCE = new AVPPaddingBlocks();
 
-    public final BlockBehaviour.Properties ORANGE_PADDING_PROPERTIES = BlockBehaviour.Properties.ofFullCopy(
-        Blocks.ORANGE_WOOL
-    );
+    public final Holder<Block> paddingOrangePanel;
 
-    public final BlockBehaviour.Properties WHITE_PADDING_PROPERTIES = BlockBehaviour.Properties.ofFullCopy(
-        Blocks.WHITE_WOOL
-    );
+    public final Holder<Block> paddingOrangePipes;
 
-    public final Holder<Block> PADDING_ORANGE_PANEL;
+    public final Holder<Block> paddingOrangeSquare;
 
-    public final Holder<Block> PADDING_ORANGE_PIPES;
+    public final Holder<Block> paddingOrangeSquareSlab;
 
-    public final Holder<Block> PADDING_ORANGE_SQUARE;
+    public final Holder<Block> paddingOrangeSquareStairs;
 
-    public final Holder<Block> PADDING_ORANGE_SQUARE_SLAB;
+    public final Holder<Block> paddingOrangeSquareWall;
 
-    public final Holder<Block> PADDING_ORANGE_SQUARE_STAIRS;
+    public final Holder<Block> paddingOrangeTiles;
 
-    public final Holder<Block> PADDING_ORANGE_SQUARE_WALL;
+    public final Holder<Block> paddingOrangeTilesSlab;
 
-    public final Holder<Block> PADDING_ORANGE_TILES;
+    public final Holder<Block> paddingOrangeTilesStairs;
 
-    public final Holder<Block> PADDING_ORANGE_TILES_SLAB;
+    public final Holder<Block> paddingOrangeTilesWall;
 
-    public final Holder<Block> PADDING_ORANGE_TILES_STAIRS;
+    public final Holder<Block> paddingWhitePanel;
 
-    public final Holder<Block> PADDING_ORANGE_TILES_WALL;
+    public final Holder<Block> paddingWhitePipes;
 
-    public final Holder<Block> PADDING_WHITE_PANEL;
+    public final Holder<Block> paddingWhiteSquare;
 
-    public final Holder<Block> PADDING_WHITE_PIPES;
+    public final Holder<Block> paddingWhiteSquareSlab;
 
-    public final Holder<Block> PADDING_WHITE_SQUARE;
+    public final Holder<Block> paddingWhiteSquareStairs;
 
-    public final Holder<Block> PADDING_WHITE_SQUARE_SLAB;
+    public final Holder<Block> paddingWhiteSquareWall;
 
-    public final Holder<Block> PADDING_WHITE_SQUARE_STAIRS;
+    public final Holder<Block> paddingWhiteTiles;
 
-    public final Holder<Block> PADDING_WHITE_SQUARE_WALL;
+    public final Holder<Block> paddingWhiteTilesSlab;
 
-    public final Holder<Block> PADDING_WHITE_TILES;
+    public final Holder<Block> paddingWhiteTilesStairs;
 
-    public final Holder<Block> PADDING_WHITE_TILES_SLAB;
-
-    public final Holder<Block> PADDING_WHITE_TILES_STAIRS;
-
-    public final Holder<Block> PADDING_WHITE_TILES_WALL;
+    public final Holder<Block> paddingWhiteTilesWall;
 
     @Override
     protected Holder<Block> createHolder(String registryName, BlockData.Builder blockDataBuilder) {
@@ -67,39 +59,42 @@ public class AVPPaddingBlocks extends AVPDeferredBlockRegistry {
     }
 
     private AVPPaddingBlocks() {
-        PADDING_ORANGE_PANEL = createHolder("orange_panel", BlockData.simple(ORANGE_PADDING_PROPERTIES));
-        PADDING_ORANGE_PIPES = createHolder("orange_pipes", BlockData.simple(ORANGE_PADDING_PROPERTIES));
+        var orangePaddingProperties = BlockBehaviour.Properties.ofFullCopy(Blocks.ORANGE_WOOL);
+        var whitePaddingProperties = BlockBehaviour.Properties.ofFullCopy(Blocks.WHITE_WOOL);
 
-        PADDING_ORANGE_SQUARE = createHolder("orange_square", BlockData.simple(ORANGE_PADDING_PROPERTIES));
-        PADDING_ORANGE_SQUARE_SLAB = createHolder("orange_square_slab", BlockDataUtils.slab(PADDING_ORANGE_SQUARE, ORANGE_PADDING_PROPERTIES));
-        PADDING_ORANGE_SQUARE_STAIRS = createHolder(
+        paddingOrangePanel = createHolder("orange_panel", BlockData.simple(orangePaddingProperties));
+        paddingOrangePipes = createHolder("orange_pipes", BlockData.simple(orangePaddingProperties));
+
+        paddingOrangeSquare = createHolder("orange_square", BlockData.simple(orangePaddingProperties));
+        paddingOrangeSquareSlab = createHolder("orange_square_slab", BlockDataUtils.slab(paddingOrangeSquare, orangePaddingProperties));
+        paddingOrangeSquareStairs = createHolder(
             "orange_square_stairs",
-            BlockDataUtils.stairs(PADDING_ORANGE_SQUARE, ORANGE_PADDING_PROPERTIES)
+            BlockDataUtils.stairs(paddingOrangeSquare, orangePaddingProperties)
         );
-        PADDING_ORANGE_SQUARE_WALL = createHolder("orange_square_wall", BlockDataUtils.wall(PADDING_ORANGE_SQUARE, ORANGE_PADDING_PROPERTIES));
+        paddingOrangeSquareWall = createHolder("orange_square_wall", BlockDataUtils.wall(paddingOrangeSquare, orangePaddingProperties));
 
-        PADDING_ORANGE_TILES = createHolder("orange_tiles", BlockData.simple(ORANGE_PADDING_PROPERTIES));
-        PADDING_ORANGE_TILES_SLAB = createHolder("orange_tiles_slab", BlockDataUtils.slab(PADDING_ORANGE_TILES, ORANGE_PADDING_PROPERTIES));
-        PADDING_ORANGE_TILES_STAIRS = createHolder(
+        paddingOrangeTiles = createHolder("orange_tiles", BlockData.simple(orangePaddingProperties));
+        paddingOrangeTilesSlab = createHolder("orange_tiles_slab", BlockDataUtils.slab(paddingOrangeTiles, orangePaddingProperties));
+        paddingOrangeTilesStairs = createHolder(
             "orange_tiles_stairs",
-            BlockDataUtils.stairs(PADDING_ORANGE_TILES, ORANGE_PADDING_PROPERTIES)
+            BlockDataUtils.stairs(paddingOrangeTiles, orangePaddingProperties)
         );
-        PADDING_ORANGE_TILES_WALL = createHolder("orange_tiles_wall", BlockDataUtils.wall(PADDING_ORANGE_TILES, ORANGE_PADDING_PROPERTIES));
+        paddingOrangeTilesWall = createHolder("orange_tiles_wall", BlockDataUtils.wall(paddingOrangeTiles, orangePaddingProperties));
 
-        PADDING_WHITE_PANEL = createHolder("white_panel", BlockData.simple(WHITE_PADDING_PROPERTIES));
-        PADDING_WHITE_PIPES = createHolder("white_pipes", BlockData.simple(WHITE_PADDING_PROPERTIES));
+        paddingWhitePanel = createHolder("white_panel", BlockData.simple(whitePaddingProperties));
+        paddingWhitePipes = createHolder("white_pipes", BlockData.simple(whitePaddingProperties));
 
-        PADDING_WHITE_SQUARE = createHolder("white_square", BlockData.simple(WHITE_PADDING_PROPERTIES));
-        PADDING_WHITE_SQUARE_SLAB = createHolder("white_square_slab", BlockDataUtils.slab(PADDING_WHITE_SQUARE, WHITE_PADDING_PROPERTIES));
-        PADDING_WHITE_SQUARE_STAIRS = createHolder(
+        paddingWhiteSquare = createHolder("white_square", BlockData.simple(whitePaddingProperties));
+        paddingWhiteSquareSlab = createHolder("white_square_slab", BlockDataUtils.slab(paddingWhiteSquare, whitePaddingProperties));
+        paddingWhiteSquareStairs = createHolder(
             "white_square_stairs",
-            BlockDataUtils.stairs(PADDING_WHITE_SQUARE, WHITE_PADDING_PROPERTIES)
+            BlockDataUtils.stairs(paddingWhiteSquare, whitePaddingProperties)
         );
-        PADDING_WHITE_SQUARE_WALL = createHolder("white_square_wall", BlockDataUtils.wall(PADDING_WHITE_SQUARE, WHITE_PADDING_PROPERTIES));
+        paddingWhiteSquareWall = createHolder("white_square_wall", BlockDataUtils.wall(paddingWhiteSquare, whitePaddingProperties));
 
-        PADDING_WHITE_TILES = createHolder("white_tiles", BlockData.simple(WHITE_PADDING_PROPERTIES));
-        PADDING_WHITE_TILES_SLAB = createHolder("white_tiles_slab", BlockDataUtils.slab(PADDING_WHITE_TILES, WHITE_PADDING_PROPERTIES));
-        PADDING_WHITE_TILES_STAIRS = createHolder("white_tiles_stairs", BlockDataUtils.stairs(PADDING_WHITE_TILES, WHITE_PADDING_PROPERTIES));
-        PADDING_WHITE_TILES_WALL = createHolder("white_tiles_wall", BlockDataUtils.wall(PADDING_WHITE_TILES, WHITE_PADDING_PROPERTIES));
+        paddingWhiteTiles = createHolder("white_tiles", BlockData.simple(whitePaddingProperties));
+        paddingWhiteTilesSlab = createHolder("white_tiles_slab", BlockDataUtils.slab(paddingWhiteTiles, whitePaddingProperties));
+        paddingWhiteTilesStairs = createHolder("white_tiles_stairs", BlockDataUtils.stairs(paddingWhiteTiles, whitePaddingProperties));
+        paddingWhiteTilesWall = createHolder("white_tiles_wall", BlockDataUtils.wall(paddingWhiteTiles, whitePaddingProperties));
     }
 }

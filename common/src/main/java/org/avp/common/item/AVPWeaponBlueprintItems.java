@@ -31,10 +31,6 @@ public class AVPWeaponBlueprintItems extends AVPDeferredItemRegistry {
 
     public final Holder<Item> BLUEPRINT_SNIPER_RIFLE;
 
-    private Holder<Item> createHolder(String registryName) {
-        return super.createHolder("blueprint_" + registryName, () -> new Item(new Item.Properties()));
-    }
-
     private AVPWeaponBlueprintItems() {
         BLUEPRINT_37_12_SHOTGUN = createHolder("37_12_shotgun");
         BLUEPRINT_AK_47 = createHolder("ak_47");
@@ -47,5 +43,10 @@ public class AVPWeaponBlueprintItems extends AVPDeferredItemRegistry {
         BLUEPRINT_M88MOD4_COMBAT_PISTOL = createHolder("m88mod4_combat_pistol");
         BLUEPRINT_OLD_PAINLESS = createHolder("old_painless");
         BLUEPRINT_SNIPER_RIFLE = createHolder("sniper_rifle");
+    }
+
+    @Override
+    protected Holder<Item> createHolder(String registryName) {
+        return super.createHolder("blueprint_" + registryName, () -> new Item(new Item.Properties()));
     }
 }

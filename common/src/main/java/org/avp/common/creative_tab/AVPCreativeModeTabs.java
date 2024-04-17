@@ -61,7 +61,7 @@ public final class AVPCreativeModeTabs extends AVPDeferredRegistry<CreativeModeT
         createBuilderHolder(
             "armor",
             () -> CreativeModeTab.builder(CreativeModeTab.Row.TOP, 0)
-                .icon(AVPArmorItems.INSTANCE.VERITANIUM_HELMET.get()::getDefaultInstance)
+                .icon(AVPArmorItems.INSTANCE.veritaniumHelmet.get()::getDefaultInstance)
                 .displayItems(
                     (itemDisplayParameters, output) -> output.acceptAll(
                         itemsToItemStacks(AVPArmorItems.INSTANCE.getEntries())
@@ -72,7 +72,7 @@ public final class AVPCreativeModeTabs extends AVPDeferredRegistry<CreativeModeT
         createBuilderHolder(
             "blocks",
             () -> CreativeModeTab.builder(CreativeModeTab.Row.TOP, 1)
-                .icon(AVPTempleBlocks.INSTANCE.BRICK.get().asItem()::getDefaultInstance)
+                .icon(AVPTempleBlocks.INSTANCE.brick.get().asItem()::getDefaultInstance)
                 .displayItems(
                     (itemDisplayParameters, output) -> output.acceptAll(
                         blocksToItemStacks(AVPDeferredBlockRegistry.getDataEntries().stream().map(Tuple::first).toList())
@@ -83,7 +83,7 @@ public final class AVPCreativeModeTabs extends AVPDeferredRegistry<CreativeModeT
         createBuilderHolder(
             "food",
             () -> CreativeModeTab.builder(CreativeModeTab.Row.TOP, 2)
-                .icon(AVPFoodItems.INSTANCE.DORITOS.get()::getDefaultInstance)
+                .icon(AVPFoodItems.INSTANCE.doritos.get()::getDefaultInstance)
                 .displayItems(
                     (itemDisplayParameters, output) -> output.acceptAll(
                         itemsToItemStacks(AVPFoodItems.INSTANCE.getEntries())
@@ -94,7 +94,7 @@ public final class AVPCreativeModeTabs extends AVPDeferredRegistry<CreativeModeT
         createBuilderHolder(
             "electronics",
             () -> CreativeModeTab.builder(CreativeModeTab.Row.TOP, 3)
-                .icon(AVPElectronicItems.INSTANCE.CPU.get()::getDefaultInstance)
+                .icon(AVPElectronicItems.INSTANCE.cpu.get()::getDefaultInstance)
                 .displayItems(
                     (itemDisplayParameters, output) -> output.acceptAll(
                         itemsToItemStacks(AVPElectronicItems.INSTANCE.getEntries())
@@ -116,7 +116,7 @@ public final class AVPCreativeModeTabs extends AVPDeferredRegistry<CreativeModeT
         createBuilderHolder(
             "items",
             () -> CreativeModeTab.builder(CreativeModeTab.Row.TOP, 5)
-                .icon(AVPItems.INSTANCE.ROYAL_JELLY.get()::getDefaultInstance)
+                .icon(AVPItems.INSTANCE.royalJelly.get()::getDefaultInstance)
                 .displayItems(
                     (itemDisplayParameters, output) -> output.acceptAll(
                         itemsToItemStacks(AVPItems.INSTANCE.getEntries())
@@ -127,7 +127,7 @@ public final class AVPCreativeModeTabs extends AVPDeferredRegistry<CreativeModeT
         createBuilderHolder(
             "tools",
             () -> CreativeModeTab.builder(CreativeModeTab.Row.BOTTOM, 0)
-                .icon(AVPToolItems.INSTANCE.VERITANIUM_PICKAXE.get()::getDefaultInstance)
+                .icon(AVPToolItems.INSTANCE.veritaniumPickaxe.get()::getDefaultInstance)
                 .displayItems(
                     (itemDisplayParameters, output) -> output.acceptAll(
                         itemsToItemStacks(AVPToolItems.INSTANCE.getEntries())
@@ -138,7 +138,7 @@ public final class AVPCreativeModeTabs extends AVPDeferredRegistry<CreativeModeT
         createBuilderHolder(
             "weapons",
             () -> CreativeModeTab.builder(CreativeModeTab.Row.BOTTOM, 1)
-                .icon(AVPWeaponItems.INSTANCE.GRENADE_M40.get()::getDefaultInstance)
+                .icon(AVPWeaponItems.INSTANCE.grenadeM40.get()::getDefaultInstance)
                 .displayItems(
                     (itemDisplayParameters, output) -> {
                         output.acceptAll(

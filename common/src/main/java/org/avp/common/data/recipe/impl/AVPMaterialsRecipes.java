@@ -16,31 +16,31 @@ import org.avp.common.item.AVPItems;
 public final class AVPMaterialsRecipes {
 
     public static void addMaterialRecipes(RecipeOutput recipeOutput) {
-        AVPShapedRecipeBuilder.shaped(RecipeCategory.MISC, AVPItems.INSTANCE.CARBON, 8)
+        AVPShapedRecipeBuilder.shaped(RecipeCategory.MISC, AVPItems.INSTANCE.carbon, 8)
             .defineAndUnlockIfHas('A', ItemTags.COALS)
             .pattern("AA")
             .pattern("AA")
             .save(recipeOutput);
 
-        AVPShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, AVPItems.INSTANCE.NEODYMIUM_MAGNET, 4)
-            .requiresAndUnlockIfHas('A', AVPItems.INSTANCE.NEODYMIUM)
-            .requiresAndUnlockIfHas('B', AVPItems.INSTANCE.COBALT, 2)
+        AVPShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, AVPItems.INSTANCE.neodymiumMagnet, 4)
+            .requiresAndUnlockIfHas('A', AVPItems.INSTANCE.neodymium)
+            .requiresAndUnlockIfHas('B', AVPItems.INSTANCE.cobalt, 2)
             .save(recipeOutput);
 
-        AVPShapedRecipeBuilder.shaped(RecipeCategory.MISC, AVPItems.INSTANCE.POLYCARBONATE, 4)
-            .defineAndUnlockIfHas('A', AVPItems.INSTANCE.SILICA)
-            .defineAndUnlockIfHas('B', AVPItems.INSTANCE.CARBON)
+        AVPShapedRecipeBuilder.shaped(RecipeCategory.MISC, AVPItems.INSTANCE.polycarbonate, 4)
+            .defineAndUnlockIfHas('A', AVPItems.INSTANCE.silica)
+            .defineAndUnlockIfHas('B', AVPItems.INSTANCE.carbon)
             .pattern("AAA")
             .pattern("BBB")
             .pattern("BBB")
             .save(recipeOutput);
 
-        var poylmerOutput = AVPItems.INSTANCE.POLYMER.get();
+        var poylmerOutput = AVPItems.INSTANCE.polymer.get();
         SimpleCookingRecipeBuilder.smelting(Ingredient.of(Items.SLIME_BALL), RecipeCategory.MISC, poylmerOutput, 0.0F, 200)
             .unlockedBy("has_slime_ball", AVPRecipeProvider.has(Items.SLIME_BALL))
             .save(recipeOutput, AVPConstants.MOD_ID + ":polymer_from_smelting_slime_ball");
 
-        var steelOutput = AVPItems.INSTANCE.INGOT_STEEL.get();
+        var steelOutput = AVPItems.INSTANCE.ingotSteel.get();
         SimpleCookingRecipeBuilder.blasting(Ingredient.of(Items.IRON_INGOT), RecipeCategory.MISC, steelOutput, 0.7F, 100)
             .unlockedBy("has_iron_ingot", AVPRecipeProvider.has(Items.IRON_INGOT))
             .save(recipeOutput, AVPConstants.MOD_ID + ":ingot_steel_from_blasting_iron_ingot");

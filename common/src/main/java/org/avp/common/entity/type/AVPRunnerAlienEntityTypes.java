@@ -14,7 +14,7 @@ public class AVPRunnerAlienEntityTypes extends AVPSimpleDeferredEntityTypeRegist
 
     public static final AVPRunnerAlienEntityTypes INSTANCE = new AVPRunnerAlienEntityTypes();
 
-    public final Holder<EntityType<ChestbursterRunner>> CHESTBURSTER_RUNNER = createMobHolder(
+    public final Holder<EntityType<ChestbursterRunner>> chestbursterRunner = createMobHolder(
         "chestburster_runner",
         0xD8B877,
         0xF7E2B4,
@@ -22,7 +22,7 @@ public class AVPRunnerAlienEntityTypes extends AVPSimpleDeferredEntityTypeRegist
             .sized(0.75F, 0.98F)
     );
 
-    public final Holder<EntityType<Crusher>> CRUSHER = createMobHolder(
+    public final Holder<EntityType<Crusher>> crusher = createMobHolder(
         "crusher",
         0x2E2921,
         0x534A3B,
@@ -30,7 +30,7 @@ public class AVPRunnerAlienEntityTypes extends AVPSimpleDeferredEntityTypeRegist
             .sized(1.48F, 2.48F)
     );
 
-    public final Holder<EntityType<DroneRunner>> DRONE_RUNNER = createMobHolder(
+    public final Holder<EntityType<DroneRunner>> droneRunner = createMobHolder(
         "drone_runner",
         0x503D34,
         0xA69E85,
@@ -38,7 +38,7 @@ public class AVPRunnerAlienEntityTypes extends AVPSimpleDeferredEntityTypeRegist
             .sized(0.98F, 1.98F)
     );
 
-    public final Holder<EntityType<WarriorRunner>> WARRIOR_RUNNER = createMobHolder(
+    public final Holder<EntityType<WarriorRunner>> warriorRunner = createMobHolder(
         "warrior_runner",
         0x1A1917,
         0x61615E,

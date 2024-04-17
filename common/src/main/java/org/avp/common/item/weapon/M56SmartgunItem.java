@@ -19,7 +19,7 @@ public class M56SmartgunItem extends AbstractAVPWeaponItem {
         "Automatic",
         1,
         1,
-        AVPSoundEvents.INSTANCE.ITEM_WEAPON_AK_47_SHOOT,
+        AVPSoundEvents.INSTANCE.itemWeaponAk47Shoot,
         64.0D,
         0.0F
     );
@@ -29,12 +29,12 @@ public class M56SmartgunItem extends AbstractAVPWeaponItem {
         AmmunitionStrategy.builder(
                 500,
                 List.of(
-                    AVPBulletItems.INSTANCE.BULLET_CASELESS::get,
-                    AVPBulletItems.INSTANCE.BULLET_CASELESS_ACID::get,
-                    AVPBulletItems.INSTANCE.BULLET_CASELESS_ELECTRIC::get,
-                    AVPBulletItems.INSTANCE.BULLET_CASELESS_EXPLOSIVE::get,
-                    AVPBulletItems.INSTANCE.BULLET_CASELESS_INCENDIARY::get,
-                    AVPBulletItems.INSTANCE.BULLET_CASELESS_PENETRATION::get
+                    AVPBulletItems.INSTANCE.bulletCaseless::get,
+                    AVPBulletItems.INSTANCE.bulletCaselessAcid::get,
+                    AVPBulletItems.INSTANCE.bulletCaselessElectric::get,
+                    AVPBulletItems.INSTANCE.bulletCaselessExplosive::get,
+                    AVPBulletItems.INSTANCE.bulletCaselessIncendiary::get,
+                    AVPBulletItems.INSTANCE.bulletCaselessPenetration::get
                 )
             )
             .setHasAmmunitionBehavior(HasAmmunitionBehavior.LOADED)
@@ -43,7 +43,7 @@ public class M56SmartgunItem extends AbstractAVPWeaponItem {
         2F * 2,
         0.13F,
         ReloadStrategy.builder(20 * 5)
-            .setReloadStartSound(AVPSoundEvents.INSTANCE.ITEM_WEAPON_GENERIC_RELOAD)
+            .setReloadStartSound(AVPSoundEvents.INSTANCE.itemWeaponGenericReload)
             .setTryReloadBehavior(TryReloadBehavior.STANDARD)
             .build(),
         ShootStrategy.builder().build()

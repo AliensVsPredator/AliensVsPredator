@@ -29,7 +29,7 @@ public class Queen extends Monster implements GeoEntity {
 
     @Override
     public boolean doHurtTarget(@NotNull Entity entity) {
-        this.playSound(AVPSoundEvents.INSTANCE.ENTITY_XENOMORPH_ATTACK.get());
+        this.playSound(AVPSoundEvents.INSTANCE.entityXenomorphAttack.get());
 
         if (entity instanceof LivingEntity livingEntity) {
             livingEntity.knockback(
@@ -49,17 +49,17 @@ public class Queen extends Monster implements GeoEntity {
     @Nullable
     @Override
     protected SoundEvent getAmbientSound() {
-        return AVPSoundEvents.INSTANCE.ENTITY_QUEEN_AMBIENT.get();
+        return AVPSoundEvents.INSTANCE.entityQueenAmbient.get();
     }
 
     @Override
     protected SoundEvent getDeathSound() {
-        return AVPSoundEvents.INSTANCE.ENTITY_QUEEN_DEATH.get();
+        return AVPSoundEvents.INSTANCE.entityQueenDeath.get();
     }
 
     @Override
     protected SoundEvent getHurtSound(@NotNull DamageSource damageSource) {
-        return AVPSoundEvents.INSTANCE.ENTITY_QUEEN_HURT.get();
+        return AVPSoundEvents.INSTANCE.entityQueenHurt.get();
     }
 
     @Override

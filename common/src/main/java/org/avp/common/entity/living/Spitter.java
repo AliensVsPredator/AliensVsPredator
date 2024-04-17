@@ -26,7 +26,7 @@ public class Spitter extends Monster implements GeoEntity {
 
     @Override
     public boolean doHurtTarget(@NotNull Entity entity) {
-        this.playSound(AVPSoundEvents.INSTANCE.ENTITY_XENOMORPH_ATTACK.get());
+        this.playSound(AVPSoundEvents.INSTANCE.entityXenomorphAttack.get());
         return super.doHurtTarget(entity);
     }
 
@@ -38,17 +38,17 @@ public class Spitter extends Monster implements GeoEntity {
     @Nullable
     @Override
     protected SoundEvent getAmbientSound() {
-        return AVPSoundEvents.INSTANCE.ENTITY_XENOMORPH_AMBIENT.get();
+        return AVPSoundEvents.INSTANCE.entityXenomorphAmbient.get();
     }
 
     @Override
     protected SoundEvent getDeathSound() {
-        return AVPSoundEvents.INSTANCE.ENTITY_XENOMORPH_DEATH.get();
+        return AVPSoundEvents.INSTANCE.entityXenomorphDeath.get();
     }
 
     @Override
     protected SoundEvent getHurtSound(@NotNull DamageSource damageSource) {
-        return AVPSoundEvents.INSTANCE.ENTITY_XENOMORPH_HURT.get();
+        return AVPSoundEvents.INSTANCE.entityXenomorphHurt.get();
     }
 
     @Override

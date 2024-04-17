@@ -27,7 +27,6 @@ public class AVPAlienBlocks extends AVPDeferredBlockRegistry {
     public final Holder<Block> resinWebbing;
 
     private AVPAlienBlocks() {
-        super();
         var resinTags = List.of(BlockTags.MINEABLE_WITH_PICKAXE);
         var pickaxeProps = BlockData.simple(resinProperties).tags(resinTags);
 

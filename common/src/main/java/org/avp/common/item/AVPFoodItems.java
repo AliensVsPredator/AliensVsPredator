@@ -10,29 +10,29 @@ public class AVPFoodItems extends AVPDeferredItemRegistry {
 
     public static final AVPFoodItems INSTANCE = new AVPFoodItems();
 
-    public final Holder<Item> DORITOS = registerFood(
+    public final Holder<Item> doritos = registerFood(
         "doritos",
         new FoodProperties.Builder().alwaysEat().nutrition(2).saturationMod(0.2F)
     );
 
-    public final Holder<Item> DORITOS_COOL_RANCH = registerFood(
+    public final Holder<Item> doritosCoolRanch = registerFood(
         "doritos_cool_ranch",
         new FoodProperties.Builder().alwaysEat().nutrition(4).saturationMod(0.2F)
     );
 
     // Slightly worse than raw beef.
-    public final Holder<Item> RAW_TENTACLE = registerFood(
+    public final Holder<Item> rawTentacle = registerFood(
         "raw_tentacle",
         new FoodProperties.Builder().meat().nutrition(2).saturationMod(0.2F)
     );
 
     // Slightly worse than cooked beef.
-    public final Holder<Item> TRILO_BITE = registerFood("trilo_bite", new FoodProperties.Builder().meat().nutrition(7).saturationMod(0.7F));
+    public final Holder<Item> triloBite = registerFood("trilo_bite", new FoodProperties.Builder().meat().nutrition(7).saturationMod(0.7F));
+
+    private AVPFoodItems() {}
 
     private Holder<Item> registerFood(String registryName, FoodProperties.Builder foodPropertiesBuilder) {
         var foodProperties = foodPropertiesBuilder.build();
         return createHolder(registryName, () -> new Item(new Item.Properties().food(foodProperties)));
     }
-
-    private AVPFoodItems() {}
 }

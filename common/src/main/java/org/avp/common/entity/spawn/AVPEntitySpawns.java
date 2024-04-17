@@ -73,7 +73,7 @@ public class AVPEntitySpawns extends AVPDeferredRegistry<EntitySpawnData<?>> {
     @Override
     public void register() {
         registerAlienSpawn(
-            AVPBaseAlienEntityTypes.INSTANCE.BOILER,
+            AVPBaseAlienEntityTypes.INSTANCE.boiler,
             Monster::checkMonsterSpawnRules,
             AVPConfig.Aliens.MAX_Y_LEVEL_FOR_BOILER_SPAWNS,
             7,
@@ -81,7 +81,7 @@ public class AVPEntitySpawns extends AVPDeferredRegistry<EntitySpawnData<?>> {
             1
         );
         registerAlienSpawn(
-            AVPBaseAlienEntityTypes.INSTANCE.DRONE,
+            AVPBaseAlienEntityTypes.INSTANCE.drone,
             Monster::checkMonsterSpawnRules,
             AVPConfig.Aliens.MAX_Y_LEVEL_FOR_DRONE_SPAWNS,
             50,
@@ -89,7 +89,7 @@ public class AVPEntitySpawns extends AVPDeferredRegistry<EntitySpawnData<?>> {
             2
         );
         registerAlienSpawn(
-            AVPBaseAlienEntityTypes.INSTANCE.PRAETORIAN,
+            AVPBaseAlienEntityTypes.INSTANCE.praetorian,
             Monster::checkMonsterSpawnRules,
             AVPConfig.Aliens.MAX_Y_LEVEL_FOR_PRAETORIAN_SPAWNS,
             10,
@@ -97,7 +97,7 @@ public class AVPEntitySpawns extends AVPDeferredRegistry<EntitySpawnData<?>> {
             1
         );
         registerAlienSpawn(
-            AVPBaseAlienEntityTypes.INSTANCE.QUEEN,
+            AVPBaseAlienEntityTypes.INSTANCE.queen,
             Monster::checkMonsterSpawnRules,
             AVPConfig.Aliens.MAX_Y_LEVEL_FOR_QUEEN_SPAWNS,
             5,
@@ -105,7 +105,7 @@ public class AVPEntitySpawns extends AVPDeferredRegistry<EntitySpawnData<?>> {
             1
         );
         registerAlienSpawn(
-            AVPBaseAlienEntityTypes.INSTANCE.SPITTER,
+            AVPBaseAlienEntityTypes.INSTANCE.spitter,
             Monster::checkMonsterSpawnRules,
             AVPConfig.Aliens.MAX_Y_LEVEL_FOR_SPITTER_SPAWNS,
             10,
@@ -113,7 +113,7 @@ public class AVPEntitySpawns extends AVPDeferredRegistry<EntitySpawnData<?>> {
             1
         );
         registerAlienSpawn(
-            AVPBaseAlienEntityTypes.INSTANCE.WARRIOR,
+            AVPBaseAlienEntityTypes.INSTANCE.warrior,
             Monster::checkMonsterSpawnRules,
             AVPConfig.Aliens.MAX_Y_LEVEL_FOR_WARRIOR_SPAWNS,
             25,
@@ -122,7 +122,7 @@ public class AVPEntitySpawns extends AVPDeferredRegistry<EntitySpawnData<?>> {
         );
 
         registerAlienSpawn(
-            AVPRunnerAlienEntityTypes.INSTANCE.DRONE_RUNNER,
+            AVPRunnerAlienEntityTypes.INSTANCE.droneRunner,
             Monster::checkMonsterSpawnRules,
             AVPConfig.Aliens.MAX_Y_LEVEL_FOR_DRONE_RUNNER_SPAWNS,
             50,
@@ -130,7 +130,7 @@ public class AVPEntitySpawns extends AVPDeferredRegistry<EntitySpawnData<?>> {
             3
         );
         registerAlienSpawn(
-            AVPRunnerAlienEntityTypes.INSTANCE.WARRIOR_RUNNER,
+            AVPRunnerAlienEntityTypes.INSTANCE.warriorRunner,
             Monster::checkMonsterSpawnRules,
             AVPConfig.Aliens.MAX_Y_LEVEL_FOR_WARRIOR_RUNNER_SPAWNS,
             25,
@@ -138,7 +138,7 @@ public class AVPEntitySpawns extends AVPDeferredRegistry<EntitySpawnData<?>> {
             2
         );
         registerAlienSpawn(
-            AVPRunnerAlienEntityTypes.INSTANCE.CRUSHER,
+            AVPRunnerAlienEntityTypes.INSTANCE.crusher,
             Monster::checkMonsterSpawnRules,
             AVPConfig.Aliens.MAX_Y_LEVEL_FOR_CRUSHER_SPAWNS,
             10,

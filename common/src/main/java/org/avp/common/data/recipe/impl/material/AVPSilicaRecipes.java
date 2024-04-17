@@ -14,16 +14,16 @@ public final class AVPSilicaRecipes {
         AVPRecipeHelper.compressedBlockRecipe(
             recipeOutput,
             RecipeCategory.BUILDING_BLOCKS,
-            AVPItems.INSTANCE.SILICA.get(),
-            AVPOreBlocks.INSTANCE.SILICA_BLOCK.get()
+            AVPItems.INSTANCE.silica.get(),
+            AVPOreBlocks.INSTANCE.silicaBlock.get()
         );
 
         // Decompressed items from blocks
         AVPRecipeHelper.decompressedItemRecipe(
             recipeOutput,
             RecipeCategory.MISC,
-            AVPOreBlocks.INSTANCE.SILICA_BLOCK.get(),
-            AVPItems.INSTANCE.SILICA.get()
+            AVPOreBlocks.INSTANCE.silicaBlock.get(),
+            AVPItems.INSTANCE.silica.get()
         );
     }
 

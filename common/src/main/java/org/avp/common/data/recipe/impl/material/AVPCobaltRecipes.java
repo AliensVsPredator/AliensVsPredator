@@ -14,16 +14,16 @@ public final class AVPCobaltRecipes {
         AVPRecipeHelper.compressedBlockRecipe(
             recipeOutput,
             RecipeCategory.BUILDING_BLOCKS,
-            AVPItems.INSTANCE.COBALT.get(),
-            AVPOreBlocks.INSTANCE.COBALT_BLOCK.get()
+            AVPItems.INSTANCE.cobalt.get(),
+            AVPOreBlocks.INSTANCE.cobaltBlock.get()
         );
 
         // Decompressed items from blocks
         AVPRecipeHelper.decompressedItemRecipe(
             recipeOutput,
             RecipeCategory.MISC,
-            AVPOreBlocks.INSTANCE.ORE_COBALT.get(),
-            AVPItems.INSTANCE.COBALT.get()
+            AVPOreBlocks.INSTANCE.oreCobalt.get(),
+            AVPItems.INSTANCE.cobalt.get()
         );
     }
 

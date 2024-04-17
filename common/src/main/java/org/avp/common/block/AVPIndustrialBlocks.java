@@ -3,12 +3,12 @@ package org.avp.common.block;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.state.BlockBehaviour;
 
 import java.util.List;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+import net.minecraft.world.level.block.state.BlockBehaviour;
 import org.avp.api.Holder;
 import org.avp.api.block.BlockData;
 import org.avp.api.block.BlockDataUtils;
@@ -18,53 +18,45 @@ public class AVPIndustrialBlocks extends AVPDeferredBlockRegistry {
 
     public static final AVPIndustrialBlocks INSTANCE = new AVPIndustrialBlocks();
 
-    public final BlockBehaviour.Properties METAL_PROPERTIES = BlockBehaviour.Properties.ofFullCopy(
-        Blocks.IRON_BLOCK
-    );
+    public final Holder<Block> brick;
 
-    public final BlockBehaviour.Properties INDUSTRIAL_GLASS_PROPERTIES = BlockBehaviour.Properties.ofFullCopy(
-        Blocks.GLASS
-    );
+    public final Holder<Block> brickSlab;
 
-    public final Holder<Block> BRICK;
+    public final Holder<Block> brickStairs;
 
-    public final Holder<Block> BRICK_SLAB;
+    public final Holder<Block> floorGrill;
 
-    public final Holder<Block> BRICK_STAIRS;
+    public final Holder<Block> glass;
 
-    public final Holder<Block> FLOOR_GRILL;
+    public final Holder<Block> lamp;
 
-    public final Holder<Block> GLASS;
+    public final Holder<Block> metalPanel0;
 
-    public final Holder<Block> LAMP;
+    public final Holder<Block> metalPanel0Slab;
 
-    public final Holder<Block> METAL_PANEL_0;
+    public final Holder<Block> metalPanel0Stairs;
 
-    public final Holder<Block> METAL_PANEL_0_SLAB;
+    public final Holder<Block> metalPanel1;
 
-    public final Holder<Block> METAL_PANEL_0_STAIRS;
+    public final Holder<Block> metalPanel1Slab;
 
-    public final Holder<Block> METAL_PANEL_1;
+    public final Holder<Block> metalPanel1Stairs;
 
-    public final Holder<Block> METAL_PANEL_1_SLAB;
+    public final Holder<Block> metalPanel2;
 
-    public final Holder<Block> METAL_PANEL_1_STAIRS;
+    public final Holder<Block> metalPanel2Slab;
 
-    public final Holder<Block> METAL_PANEL_2;
+    public final Holder<Block> metalPanel2Stairs;
 
-    public final Holder<Block> METAL_PANEL_2_SLAB;
+    public final Holder<Block> vent;
 
-    public final Holder<Block> METAL_PANEL_2_STAIRS;
+    public final Holder<Block> wall;
 
-    public final Holder<Block> VENT;
+    public final Holder<Block> wallSlab;
 
-    public final Holder<Block> WALL;
+    public final Holder<Block> wallStairs;
 
-    public final Holder<Block> WALL_SLAB;
-
-    public final Holder<Block> WALL_STAIRS;
-
-    public final Holder<Block> WALL_HAZARD;
+    public final Holder<Block> wallHazard;
 
     @Override
     protected Holder<Block> createHolder(String registryName, BlockData.Builder blockDataBuilder) {
@@ -72,40 +64,43 @@ public class AVPIndustrialBlocks extends AVPDeferredBlockRegistry {
     }
 
     private AVPIndustrialBlocks() {
+        var metalProperties = BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_BLOCK);
+        var industrialGlassProperties = BlockBehaviour.Properties.ofFullCopy(Blocks.GLASS);
+
         var stoneOrMetal = List.of(BlockTags.MINEABLE_WITH_PICKAXE, BlockTags.NEEDS_IRON_TOOL);
 
-        Supplier<BlockData.Builder> pickProps = () -> BlockData.simple(METAL_PROPERTIES).tags(stoneOrMetal);
+        Supplier<BlockData.Builder> pickProps = () -> BlockData.simple(metalProperties).tags(stoneOrMetal);
         Function<Holder<Block>, BlockData.Builder> slabProps =
-            parent -> BlockDataUtils.slab(parent, METAL_PROPERTIES).tags(stoneOrMetal);
+            parent -> BlockDataUtils.slab(parent, metalProperties).tags(stoneOrMetal);
         Function<Holder<Block>, BlockData.Builder> stairProps =
-            parent -> BlockDataUtils.stairs(parent, METAL_PROPERTIES).tags(stoneOrMetal);
+            parent -> BlockDataUtils.stairs(parent, metalProperties).tags(stoneOrMetal);
 
-        BRICK = createHolder("brick", pickProps.get());
-        BRICK_SLAB = createHolder("brick_slab", slabProps.apply(BRICK));
-        BRICK_STAIRS = createHolder("brick_stairs", stairProps.apply(BRICK));
+        brick = createHolder("brick", pickProps.get());
+        brickSlab = createHolder("brick_slab", slabProps.apply(brick));
+        brickStairs = createHolder("brick_stairs", stairProps.apply(brick));
 
-        FLOOR_GRILL = createHolder("floor_grill", pickProps.get());
-        GLASS = createHolder("glass", BlockDataUtils.transparent(INDUSTRIAL_GLASS_PROPERTIES).tags(stoneOrMetal));
-        LAMP = createHolder("lamp", pickProps.get());
+        floorGrill = createHolder("floor_grill", pickProps.get());
+        glass = createHolder("glass", BlockDataUtils.transparent(industrialGlassProperties).tags(stoneOrMetal));
+        lamp = createHolder("lamp", pickProps.get());
 
-        METAL_PANEL_0 = createHolder("metal_panel_0", pickProps.get());
-        METAL_PANEL_0_SLAB = createHolder("metal_panel_0_slab", slabProps.apply(METAL_PANEL_0));
-        METAL_PANEL_0_STAIRS = createHolder("metal_panel_0_stairs", stairProps.apply(METAL_PANEL_0));
+        metalPanel0 = createHolder("metal_panel_0", pickProps.get());
+        metalPanel0Slab = createHolder("metal_panel_0_slab", slabProps.apply(metalPanel0));
+        metalPanel0Stairs = createHolder("metal_panel_0_stairs", stairProps.apply(metalPanel0));
 
-        METAL_PANEL_1 = createHolder("metal_panel_1", pickProps.get());
-        METAL_PANEL_1_SLAB = createHolder("metal_panel_1_slab", slabProps.apply(METAL_PANEL_1));
-        METAL_PANEL_1_STAIRS = createHolder("metal_panel_1_stairs", stairProps.apply(METAL_PANEL_1));
+        metalPanel1 = createHolder("metal_panel_1", pickProps.get());
+        metalPanel1Slab = createHolder("metal_panel_1_slab", slabProps.apply(metalPanel1));
+        metalPanel1Stairs = createHolder("metal_panel_1_stairs", stairProps.apply(metalPanel1));
 
-        METAL_PANEL_2 = createHolder("metal_panel_2", pickProps.get());
-        METAL_PANEL_2_SLAB = createHolder("metal_panel_2_slab", slabProps.apply(METAL_PANEL_2));
-        METAL_PANEL_2_STAIRS = createHolder("metal_panel_2_stairs", stairProps.apply(METAL_PANEL_2));
+        metalPanel2 = createHolder("metal_panel_2", pickProps.get());
+        metalPanel2Slab = createHolder("metal_panel_2_slab", slabProps.apply(metalPanel2));
+        metalPanel2Stairs = createHolder("metal_panel_2_stairs", stairProps.apply(metalPanel2));
 
-        VENT = createHolder("vent", pickProps.get());
+        vent = createHolder("vent", pickProps.get());
 
-        WALL = createHolder("wall", pickProps.get());
-        WALL_SLAB = createHolder("wall_slab", slabProps.apply(WALL));
-        WALL_STAIRS = createHolder("wall_stairs", stairProps.apply(WALL));
+        wall = createHolder("wall", pickProps.get());
+        wallSlab = createHolder("wall_slab", slabProps.apply(wall));
+        wallStairs = createHolder("wall_stairs", stairProps.apply(wall));
 
-        WALL_HAZARD = createHolder("wall_hazard", BlockDataUtils.rotatedPillar(METAL_PROPERTIES).tags(stoneOrMetal));
+        wallHazard = createHolder("wall_hazard", BlockDataUtils.rotatedPillar(metalProperties).tags(stoneOrMetal));
     }
 }

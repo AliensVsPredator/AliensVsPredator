@@ -31,23 +31,23 @@ public class AVPEntityTagsProvider extends FabricTagProvider.EntityTypeTagProvid
 
     private void createAVPTags() {
         getOrCreateTagBuilder(AVPEntityTags.PARASITES).add(
-            AVPBaseAlienEntityTypes.INSTANCE.FACEHUGGER.get(),
-            AVPBaseAlienEntityTypes.INSTANCE.FACEHUGGER_ROYAL.get(),
-            AVPExoticAlienEntityTypes.INSTANCE.OCTOHUGGER.get(),
-            AVPPrometheusAlienEntityTypes.INSTANCE.TRILOBITE.get(),
-            AVPPrometheusAlienEntityTypes.INSTANCE.TRILOBITE_BABY.get()
+            AVPBaseAlienEntityTypes.INSTANCE.facehugger.get(),
+            AVPBaseAlienEntityTypes.INSTANCE.facehuggerRoyal.get(),
+            AVPExoticAlienEntityTypes.INSTANCE.octohugger.get(),
+            AVPPrometheusAlienEntityTypes.INSTANCE.trilobite.get(),
+            AVPPrometheusAlienEntityTypes.INSTANCE.trilobiteBaby.get()
         );
 
         getOrCreateTagBuilder(AVPEntityTags.EGGS).add(
-            AVPBaseAlienEntityTypes.INSTANCE.OVAMORPH.get(),
-            AVPExoticAlienEntityTypes.INSTANCE.OVAMORPH_DRACO.get()
+            AVPBaseAlienEntityTypes.INSTANCE.ovamorph.get(),
+            AVPExoticAlienEntityTypes.INSTANCE.ovamorphDraco.get()
         );
 
         getOrCreateTagBuilder(AVPEntityTags.ROYAL_ALIENS).add(
-            AVPBaseAlienEntityTypes.INSTANCE.FACEHUGGER_ROYAL.get(),
-            AVPBaseAlienEntityTypes.INSTANCE.PRAETORIAN.get(),
-            AVPBaseAlienEntityTypes.INSTANCE.QUEEN.get(),
-            AVPRunnerAlienEntityTypes.INSTANCE.CRUSHER.get()
+            AVPBaseAlienEntityTypes.INSTANCE.facehuggerRoyal.get(),
+            AVPBaseAlienEntityTypes.INSTANCE.praetorian.get(),
+            AVPBaseAlienEntityTypes.INSTANCE.queen.get(),
+            AVPRunnerAlienEntityTypes.INSTANCE.crusher.get()
         );
 
         getOrCreateTagBuilder(AVPEntityTags.ALIENS)
@@ -55,25 +55,25 @@ public class AVPEntityTagsProvider extends FabricTagProvider.EntityTypeTagProvid
             .addTag(AVPEntityTags.PARASITES)
             .addTag(AVPEntityTags.ROYAL_ALIENS)
             .add(
-                AVPEntityTypes.INSTANCE.BELUGABURSTER.get(),
-                AVPEntityTypes.INSTANCE.BELUGAMORPH.get(),
+                AVPEntityTypes.INSTANCE.belugaburster.get(),
+                AVPEntityTypes.INSTANCE.belugamorph.get(),
 
-                AVPBaseAlienEntityTypes.INSTANCE.BOILER.get(),
-                AVPBaseAlienEntityTypes.INSTANCE.CHESTBURSTER.get(),
-                AVPBaseAlienEntityTypes.INSTANCE.DRONE.get(),
-                AVPBaseAlienEntityTypes.INSTANCE.SPITTER.get(),
-                AVPBaseAlienEntityTypes.INSTANCE.WARRIOR.get(),
-                AVPExoticAlienEntityTypes.INSTANCE.DEACON_ADULT_ENGINEER.get(),
-                AVPExoticAlienEntityTypes.INSTANCE.DRACOBURSTER.get(),
-                AVPExoticAlienEntityTypes.INSTANCE.DRACOMORPH.get(),
-                AVPExoticAlienEntityTypes.INSTANCE.ULTRAMORPH.get(),
+                AVPBaseAlienEntityTypes.INSTANCE.boiler.get(),
+                AVPBaseAlienEntityTypes.INSTANCE.chestburster.get(),
+                AVPBaseAlienEntityTypes.INSTANCE.drone.get(),
+                AVPBaseAlienEntityTypes.INSTANCE.spitter.get(),
+                AVPBaseAlienEntityTypes.INSTANCE.warrior.get(),
+                AVPExoticAlienEntityTypes.INSTANCE.deaconAdultEngineer.get(),
+                AVPExoticAlienEntityTypes.INSTANCE.chestbursterDraco.get(),
+                AVPExoticAlienEntityTypes.INSTANCE.dracomorph.get(),
+                AVPExoticAlienEntityTypes.INSTANCE.ultramorph.get(),
 
-                AVPPrometheusAlienEntityTypes.INSTANCE.DEACON.get(),
-                AVPPrometheusAlienEntityTypes.INSTANCE.DEACON_ADULT.get(),
+                AVPPrometheusAlienEntityTypes.INSTANCE.deacon.get(),
+                AVPPrometheusAlienEntityTypes.INSTANCE.deaconAdult.get(),
 
-                AVPRunnerAlienEntityTypes.INSTANCE.CHESTBURSTER_RUNNER.get(),
-                AVPRunnerAlienEntityTypes.INSTANCE.DRONE_RUNNER.get(),
-                AVPRunnerAlienEntityTypes.INSTANCE.WARRIOR_RUNNER.get()
+                AVPRunnerAlienEntityTypes.INSTANCE.chestbursterRunner.get(),
+                AVPRunnerAlienEntityTypes.INSTANCE.droneRunner.get(),
+                AVPRunnerAlienEntityTypes.INSTANCE.warriorRunner.get()
             );
 
         getOrCreateTagBuilder(AVPEntityTags.ACID_BLEEDERS)
@@ -83,7 +83,7 @@ public class AVPEntityTagsProvider extends FabricTagProvider.EntityTypeTagProvid
             .addTag(AVPEntityTags.ACID_BLEEDERS);
 
         getOrCreateTagBuilder(AVPEntityTags.ENGINEERS).add(
-            AVPEngineerEntityTypes.INSTANCE.ENGINEER.get()
+            AVPEngineerEntityTypes.INSTANCE.engineer.get()
         );
 
         getOrCreateTagBuilder(AVPEntityTags.NOT_WORTH_KILLING)

@@ -12,13 +12,13 @@ public class AVPEntityTypes extends AVPSimpleDeferredEntityTypeRegistry {
 
     public static final AVPEntityTypes INSTANCE = new AVPEntityTypes();
 
-    public final Holder<EntityType<Acid>> ACID = createHolder(
+    public final Holder<EntityType<Acid>> acid = createHolder(
         "acid",
         EntityType.Builder.of(Acid::new, MobCategory.MISC)
             .sized(0.8F, 0.05F)
     );
 
-    public final Holder<EntityType<Belugaburster>> BELUGABURSTER = createMobHolder(
+    public final Holder<EntityType<Belugaburster>> belugaburster = createMobHolder(
         "belugaburster",
         0xC2C1BD,
         0x646857,
@@ -26,7 +26,7 @@ public class AVPEntityTypes extends AVPSimpleDeferredEntityTypeRegistry {
             .sized(0.78F, 0.98F)
     );
 
-    public final Holder<EntityType<Belugamorph>> BELUGAMORPH = createMobHolder(
+    public final Holder<EntityType<Belugamorph>> belugamorph = createMobHolder(
         "belugamorph",
         0xBCC9C6,
         0x646E65,

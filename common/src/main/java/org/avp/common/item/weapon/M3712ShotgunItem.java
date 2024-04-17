@@ -19,7 +19,7 @@ public class M3712ShotgunItem extends AbstractAVPWeaponItem {
         "Semi-Automatic",
         1,
         20,
-        AVPSoundEvents.INSTANCE.ITEM_WEAPON_SHOTGUN_SHOOT,
+        AVPSoundEvents.INSTANCE.itemWeaponShotgunShoot,
         6.0D,
         1.5F
     );
@@ -29,12 +29,12 @@ public class M3712ShotgunItem extends AbstractAVPWeaponItem {
         AmmunitionStrategy.builder(
                 6,
                 List.of(
-                    AVPBulletItems.INSTANCE.BULLET_SHOTGUN::get,
-                    AVPBulletItems.INSTANCE.BULLET_SHOTGUN_ACID::get,
-                    AVPBulletItems.INSTANCE.BULLET_SHOTGUN_ELECTRIC::get,
-                    AVPBulletItems.INSTANCE.BULLET_SHOTGUN_EXPLOSIVE::get,
-                    AVPBulletItems.INSTANCE.BULLET_SHOTGUN_INCENDIARY::get,
-                    AVPBulletItems.INSTANCE.BULLET_SHOTGUN_PENETRATION::get
+                    AVPBulletItems.INSTANCE.bulletShotgun::get,
+                    AVPBulletItems.INSTANCE.bulletShotgunAcid::get,
+                    AVPBulletItems.INSTANCE.bulletShotgunElectric::get,
+                    AVPBulletItems.INSTANCE.bulletShotgunExplosive::get,
+                    AVPBulletItems.INSTANCE.bulletShotgunIncendiary::get,
+                    AVPBulletItems.INSTANCE.bulletShotgunPenetration::get
                 )
             )
             .setHasAmmunitionBehavior(HasAmmunitionBehavior.LOADED)
@@ -43,7 +43,7 @@ public class M3712ShotgunItem extends AbstractAVPWeaponItem {
         8F * 2,
         0.5F,
         ReloadStrategy.builder(20 * 4)
-            .setReloadStartSound(AVPSoundEvents.INSTANCE.ITEM_WEAPON_GENERIC_RELOAD)
+            .setReloadStartSound(AVPSoundEvents.INSTANCE.itemWeaponGenericReload)
             .setTryReloadBehavior(TryReloadBehavior.STANDARD)
             .build(),
         ShootStrategy.builder().build()

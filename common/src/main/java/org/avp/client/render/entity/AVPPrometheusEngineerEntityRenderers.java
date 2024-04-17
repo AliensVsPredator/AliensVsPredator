@@ -8,6 +8,6 @@ public class AVPPrometheusEngineerEntityRenderers {
     private AVPPrometheusEngineerEntityRenderers() {}
 
     public static void addBindings() {
-        AVPEntityRenderRegistry.addBinding(AVPEngineerEntityTypes.INSTANCE.ENGINEER, EngineerRenderer::new);
+        AVPEntityRenderRegistry.addBinding(AVPEngineerEntityTypes.INSTANCE.engineer, EngineerRenderer::new);
     }
 }

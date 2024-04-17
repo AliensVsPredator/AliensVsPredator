@@ -18,7 +18,7 @@ public class OldPainlessItem extends AbstractAVPWeaponItem {
         "Automatic",
         1,
         0,
-        AVPSoundEvents.INSTANCE.ITEM_WEAPON_OLD_PAINLESS_SHOOT_LOOP,
+        AVPSoundEvents.INSTANCE.itemWeaponOldPainlessShootLoop,
         10,
         64.0D,
         0.0F
@@ -29,12 +29,12 @@ public class OldPainlessItem extends AbstractAVPWeaponItem {
         AmmunitionStrategy.builder(
                 Integer.MAX_VALUE,
                 List.of(
-                    AVPBulletItems.INSTANCE.BULLET_HEAVY::get,
-                    AVPBulletItems.INSTANCE.BULLET_HEAVY_ACID::get,
-                    AVPBulletItems.INSTANCE.BULLET_HEAVY_ELECTRIC::get,
-                    AVPBulletItems.INSTANCE.BULLET_HEAVY_EXPLOSIVE::get,
-                    AVPBulletItems.INSTANCE.BULLET_HEAVY_INCENDIARY::get,
-                    AVPBulletItems.INSTANCE.BULLET_HEAVY_PENETRATION::get
+                    AVPBulletItems.INSTANCE.bulletHeavy::get,
+                    AVPBulletItems.INSTANCE.bulletHeavyAcid::get,
+                    AVPBulletItems.INSTANCE.bulletHeavyElectric::get,
+                    AVPBulletItems.INSTANCE.bulletHeavyExplosive::get,
+                    AVPBulletItems.INSTANCE.bulletHeavyIncendiary::get,
+                    AVPBulletItems.INSTANCE.bulletHeavyPenetration::get
                 )
             )
             .setHasAmmunitionBehavior(HasAmmunitionBehavior.INVENTORY)
@@ -44,9 +44,9 @@ public class OldPainlessItem extends AbstractAVPWeaponItem {
         0.02F,
         ReloadStrategy.builder(0).build(),
         ShootStrategy.builder()
-            .setBackgroundShootSound(AVPSoundEvents.INSTANCE.ITEM_WEAPON_OLD_PAINLESS_SHOOT_SPINNING, 30)
-            .setWindUpSound(AVPSoundEvents.INSTANCE.ITEM_WEAPON_OLD_PAINLESS_SHOOT_START)
-            .setWindDownSound(AVPSoundEvents.INSTANCE.ITEM_WEAPON_OLD_PAINLESS_SHOOT_STOP)
+            .setBackgroundShootSound(AVPSoundEvents.INSTANCE.itemWeaponOldPainlessShootSpinning, 30)
+            .setWindUpSound(AVPSoundEvents.INSTANCE.itemWeaponOldPainlessShootStart)
+            .setWindDownSound(AVPSoundEvents.INSTANCE.itemWeaponOldPainlessShootStop)
             .setWindUpTimeInTicks(20)
             .build()
     );

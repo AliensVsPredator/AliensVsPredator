@@ -15,37 +15,37 @@ public final class AVPAluminumRecipes {
         AVPRecipeHelper.compressedBlockRecipe(
             recipeOutput,
             RecipeCategory.BUILDING_BLOCKS,
-            AVPItems.INSTANCE.INGOT_ALUMINUM.get(),
-            AVPBlocks.INSTANCE.ALUMINUM_BLOCK.get()
+            AVPItems.INSTANCE.ingotAluminum.get(),
+            AVPBlocks.INSTANCE.aluminumBlock.get()
         );
         AVPRecipeHelper.compressedBlockRecipe(
             recipeOutput,
             RecipeCategory.BUILDING_BLOCKS,
-            AVPItems.INSTANCE.RAW_BAUXITE.get(),
-            AVPOreBlocks.INSTANCE.RAW_BAUXITE_BLOCK.get()
+            AVPItems.INSTANCE.rawBauxite.get(),
+            AVPOreBlocks.INSTANCE.rawBauxiteBlock.get()
         );
 
         // Smelting
         AVPRecipeHelper.oreSmelting(
             recipeOutput,
             RecipeCategory.MISC,
-            AVPItems.INSTANCE.RAW_BAUXITE,
-            AVPOreBlocks.INSTANCE.ORE_BAUXITE,
-            AVPItems.INSTANCE.INGOT_ALUMINUM
+            AVPItems.INSTANCE.rawBauxite,
+            AVPOreBlocks.INSTANCE.oreBauxite,
+            AVPItems.INSTANCE.ingotAluminum
         );
 
         // Decompressed items from blocks
         AVPRecipeHelper.decompressedItemRecipe(
             recipeOutput,
             RecipeCategory.MISC,
-            AVPBlocks.INSTANCE.ALUMINUM_BLOCK.get(),
-            AVPItems.INSTANCE.INGOT_ALUMINUM.get()
+            AVPBlocks.INSTANCE.aluminumBlock.get(),
+            AVPItems.INSTANCE.ingotAluminum.get()
         );
         AVPRecipeHelper.decompressedItemRecipe(
             recipeOutput,
             RecipeCategory.MISC,
-            AVPOreBlocks.INSTANCE.RAW_BAUXITE_BLOCK.get(),
-            AVPItems.INSTANCE.RAW_BAUXITE.get()
+            AVPOreBlocks.INSTANCE.rawBauxiteBlock.get(),
+            AVPItems.INSTANCE.rawBauxite.get()
         );
 
         // Furnace recipes

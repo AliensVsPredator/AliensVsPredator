@@ -20,49 +20,49 @@ public class AVPWeaponItems extends AVPDeferredItemRegistry {
 
     public static final AVPWeaponItems INSTANCE = new AVPWeaponItems();
 
-    public final Holder<Item> GRENADE_INCENDIARY;
+    public final Holder<Item> grenadeIncendiary;
 
-    public final Holder<Item> GRENADE_M40;
+    public final Holder<Item> grenadeM40;
 
-    public final Holder<Item> WEAPON_M88MOD4_COMBAT_PISTOL;
+    public final Holder<Item> weaponM88Mod4CombatPistol;
 
-    public final Holder<Item> WEAPON_37_12_SHOTGUN;
+    public final Holder<Item> weapon3712Shotgun;
 
-    public final Holder<Item> WEAPON_AK_47;
+    public final Holder<Item> weaponAk47;
 
-    public final Holder<Item> WEAPON_F90_RIFLE;
+    public final Holder<Item> weaponF90Rifle;
 
-    public final Holder<Item> WEAPON_FLAMETHROWER_SEVASTOPOL;
+    public final Holder<Item> weaponFlamethrowerSevastopol;
 
-    public final Holder<Item> WEAPON_M4_CARBINE;
+    public final Holder<Item> weaponM4Carbine;
 
-    public final Holder<Item> WEAPON_M41A_PULSE_RIFLE;
+    public final Holder<Item> weaponM41APulseRifle;
 
-    public final Holder<Item> WEAPON_M56_SMARTGUN;
+    public final Holder<Item> weaponM56Smartgun;
 
-    public final Holder<Item> WEAPON_M83A2_SADAR;
+    public final Holder<Item> weaponM83A2Sadar;
 
-    public final Holder<Item> WEAPON_OLD_PAINLESS;
+    public final Holder<Item> weaponOldPainless;
 
-    public final Holder<Item> WEAPON_SNIPER_RIFLE;
+    public final Holder<Item> weaponSniperRifle;
 
     private AVPWeaponItems() {
-        GRENADE_INCENDIARY = createHolder("grenade_incendiary", () -> new Item(new Item.Properties()));
-        GRENADE_M40 = createHolder("grenade_m40", () -> new Item(new Item.Properties()));
+        grenadeIncendiary = createHolder("grenade_incendiary", () -> new Item(new Item.Properties()));
+        grenadeM40 = createHolder("grenade_m40", () -> new Item(new Item.Properties()));
 
-        WEAPON_37_12_SHOTGUN = createHolder("weapon_37_12_shotgun", () -> new M3712ShotgunItem(new Item.Properties()));
-        WEAPON_M88MOD4_COMBAT_PISTOL = createHolder("weapon_m88mod4_combat_pistol", () -> new M88Mod4CombatPistolItem(new Item.Properties()));
-        WEAPON_AK_47 = createHolder("weapon_ak_47", () -> new AK47Item(new Item.Properties()));
-        WEAPON_F90_RIFLE = createHolder("weapon_f90_rifle", () -> new F90RifleItem(new Item.Properties()));
-        WEAPON_FLAMETHROWER_SEVASTOPOL = createHolder(
+        weapon3712Shotgun = createHolder("weapon_37_12_shotgun", () -> new M3712ShotgunItem(new Item.Properties()));
+        weaponM88Mod4CombatPistol = createHolder("weapon_m88mod4_combat_pistol", () -> new M88Mod4CombatPistolItem(new Item.Properties()));
+        weaponAk47 = createHolder("weapon_ak_47", () -> new AK47Item(new Item.Properties()));
+        weaponF90Rifle = createHolder("weapon_f90_rifle", () -> new F90RifleItem(new Item.Properties()));
+        weaponFlamethrowerSevastopol = createHolder(
             "weapon_flamethrower_sevastopol",
             () -> new FlamethrowerSevastopolItem(new Item.Properties())
         );
-        WEAPON_M4_CARBINE = createHolder("weapon_m4_carbine", () -> new M4CarbineItem(new Item.Properties()));
-        WEAPON_M41A_PULSE_RIFLE = createHolder("weapon_m41a_pulse_rifle", () -> new M41APulseRifleItem(new Item.Properties()));
-        WEAPON_M56_SMARTGUN = createHolder("weapon_m56_smartgun", () -> new M56SmartgunItem(new Item.Properties()));
-        WEAPON_M83A2_SADAR = createHolder("weapon_m83a2_sadar", () -> new M83A2SADARItem(new Item.Properties()));
-        WEAPON_OLD_PAINLESS = createHolder("weapon_old_painless", () -> new OldPainlessItem(new Item.Properties()));
-        WEAPON_SNIPER_RIFLE = createHolder("weapon_sniper_rifle", () -> new SniperRifleItem(new Item.Properties()));
+        weaponM4Carbine = createHolder("weapon_m4_carbine", () -> new M4CarbineItem(new Item.Properties()));
+        weaponM41APulseRifle = createHolder("weapon_m41a_pulse_rifle", () -> new M41APulseRifleItem(new Item.Properties()));
+        weaponM56Smartgun = createHolder("weapon_m56_smartgun", () -> new M56SmartgunItem(new Item.Properties()));
+        weaponM83A2Sadar = createHolder("weapon_m83a2_sadar", () -> new M83A2SADARItem(new Item.Properties()));
+        weaponOldPainless = createHolder("weapon_old_painless", () -> new OldPainlessItem(new Item.Properties()));
+        weaponSniperRifle = createHolder("weapon_sniper_rifle", () -> new SniperRifleItem(new Item.Properties()));
     }
 }

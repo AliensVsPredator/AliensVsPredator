@@ -13,11 +13,11 @@ import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 
-public class Dracoburster extends Monster implements GeoEntity {
+public class ChestbursterDraco extends Monster implements GeoEntity {
 
     private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
 
-    public Dracoburster(EntityType<? extends Monster> entityType, Level level) {
+    public ChestbursterDraco(EntityType<? extends Monster> entityType, Level level) {
         super(entityType, level);
     }
 

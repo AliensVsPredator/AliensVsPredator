@@ -19,7 +19,7 @@ public class M4CarbineItem extends AbstractAVPWeaponItem {
         "Automatic",
         1,
         2,
-        AVPSoundEvents.INSTANCE.ITEM_WEAPON_AK_47_SHOOT,
+        AVPSoundEvents.INSTANCE.itemWeaponAk47Shoot,
         64.0D,
         0.0F
     );
@@ -30,12 +30,12 @@ public class M4CarbineItem extends AbstractAVPWeaponItem {
         AmmunitionStrategy.builder(
                 32,
                 List.of(
-                    AVPBulletItems.INSTANCE.BULLET_RIFLE::get,
-                    AVPBulletItems.INSTANCE.BULLET_RIFLE_ACID::get,
-                    AVPBulletItems.INSTANCE.BULLET_RIFLE_ELECTRIC::get,
-                    AVPBulletItems.INSTANCE.BULLET_RIFLE_EXPLOSIVE::get,
-                    AVPBulletItems.INSTANCE.BULLET_RIFLE_INCENDIARY::get,
-                    AVPBulletItems.INSTANCE.BULLET_RIFLE_PENETRATION::get
+                    AVPBulletItems.INSTANCE.bulletRifle::get,
+                    AVPBulletItems.INSTANCE.bulletRifleAcid::get,
+                    AVPBulletItems.INSTANCE.bulletRifleElectric::get,
+                    AVPBulletItems.INSTANCE.bulletRifleExplosive::get,
+                    AVPBulletItems.INSTANCE.bulletRifleIncendiary::get,
+                    AVPBulletItems.INSTANCE.bulletRiflePenetration::get
                 )
             )
             .setHasAmmunitionBehavior(HasAmmunitionBehavior.LOADED)
@@ -44,7 +44,7 @@ public class M4CarbineItem extends AbstractAVPWeaponItem {
         2F * 2,
         0.13F,
         ReloadStrategy.builder(20 * 5)
-            .setReloadStartSound(AVPSoundEvents.INSTANCE.ITEM_WEAPON_GENERIC_RELOAD)
+            .setReloadStartSound(AVPSoundEvents.INSTANCE.itemWeaponGenericReload)
             .setTryReloadBehavior(TryReloadBehavior.STANDARD)
             .build(),
         ShootStrategy.builder().build()

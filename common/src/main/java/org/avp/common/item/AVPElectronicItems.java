@@ -9,49 +9,45 @@ public class AVPElectronicItems extends AVPDeferredItemRegistry {
 
     public static final AVPElectronicItems INSTANCE = new AVPElectronicItems();
 
-    public final Holder<Item> CAPACITOR;
+    public final Holder<Item> capacitor;
 
-    public final Holder<Item> CPU;
+    public final Holder<Item> cpu;
 
-    public final Holder<Item> DIODE;
+    public final Holder<Item> diode;
 
-    public final Holder<Item> INTEGRATED_CIRCUIT;
+    public final Holder<Item> integratedCircuit;
 
-    public final Holder<Item> LED;
+    public final Holder<Item> led;
 
-    public final Holder<Item> LED_DISPLAY;
+    public final Holder<Item> ledDisplay;
 
-    public final Holder<Item> MOTHERBOARD;
+    public final Holder<Item> motherboard;
 
-    public final Holder<Item> POWER_SUPPLY;
+    public final Holder<Item> powerSupply;
 
-    public final Holder<Item> RAM;
+    public final Holder<Item> ram;
 
-    public final Holder<Item> REGULATOR;
+    public final Holder<Item> regulator;
 
-    public final Holder<Item> RESISTOR;
+    public final Holder<Item> resistor;
 
-    public final Holder<Item> SSD;
+    public final Holder<Item> ssd;
 
-    public final Holder<Item> TRANSISTOR;
-
-    protected Holder<Item> createHolder(String registryName) {
-        return createHolder(registryName, () -> new Item(new Item.Properties()));
-    }
+    public final Holder<Item> transistor;
 
     private AVPElectronicItems() {
-        CAPACITOR = createHolder("capacitor");
-        CPU = createHolder("cpu");
-        DIODE = createHolder("diode");
-        INTEGRATED_CIRCUIT = createHolder("integrated_circuit");
-        LED = createHolder("led");
-        LED_DISPLAY = createHolder("led_display");
-        MOTHERBOARD = createHolder("motherboard");
-        POWER_SUPPLY = createHolder("power_supply");
-        RAM = createHolder("ram");
-        REGULATOR = createHolder("regulator");
-        RESISTOR = createHolder("resistor");
-        SSD = createHolder("ssd");
-        TRANSISTOR = createHolder("transistor");
+        capacitor = createHolder("capacitor");
+        cpu = createHolder("cpu");
+        diode = createHolder("diode");
+        integratedCircuit = createHolder("integrated_circuit");
+        led = createHolder("led");
+        ledDisplay = createHolder("led_display");
+        motherboard = createHolder("motherboard");
+        powerSupply = createHolder("power_supply");
+        ram = createHolder("ram");
+        regulator = createHolder("regulator");
+        resistor = createHolder("resistor");
+        ssd = createHolder("ssd");
+        transistor = createHolder("transistor");
     }
 }

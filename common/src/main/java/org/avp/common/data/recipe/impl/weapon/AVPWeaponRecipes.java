@@ -13,26 +13,26 @@ import org.avp.common.item.AVPWeaponPartItems;
 public final class AVPWeaponRecipes {
 
     public static void addWeaponRecipes(RecipeOutput recipeOutput) {
-        addGenericWeaponRecipe(recipeOutput, AVPWeaponBlueprintItems.INSTANCE.BLUEPRINT_37_12_SHOTGUN, AVPWeaponItems.INSTANCE.WEAPON_37_12_SHOTGUN, true);
-        addGenericWeaponRecipe(recipeOutput, AVPWeaponBlueprintItems.INSTANCE.BLUEPRINT_AK_47, AVPWeaponItems.INSTANCE.WEAPON_AK_47, true);
-        addGenericWeaponRecipe(recipeOutput, AVPWeaponBlueprintItems.INSTANCE.BLUEPRINT_F90_RIFLE, AVPWeaponItems.INSTANCE.WEAPON_F90_RIFLE, true);
+        addGenericWeaponRecipe(recipeOutput, AVPWeaponBlueprintItems.INSTANCE.BLUEPRINT_37_12_SHOTGUN, AVPWeaponItems.INSTANCE.weapon3712Shotgun, true);
+        addGenericWeaponRecipe(recipeOutput, AVPWeaponBlueprintItems.INSTANCE.BLUEPRINT_AK_47, AVPWeaponItems.INSTANCE.weaponAk47, true);
+        addGenericWeaponRecipe(recipeOutput, AVPWeaponBlueprintItems.INSTANCE.BLUEPRINT_F90_RIFLE, AVPWeaponItems.INSTANCE.weaponF90Rifle, true);
         addGenericWeaponRecipe(
             recipeOutput,
             AVPWeaponBlueprintItems.INSTANCE.BLUEPRINT_FLAMETHROWER_SEVASTOPOL,
-            AVPWeaponItems.INSTANCE.WEAPON_FLAMETHROWER_SEVASTOPOL,
+            AVPWeaponItems.INSTANCE.weaponFlamethrowerSevastopol,
             false
         );
-        addGenericWeaponRecipe(recipeOutput, AVPWeaponBlueprintItems.INSTANCE.BLUEPRINT_M4_CARBINE, AVPWeaponItems.INSTANCE.WEAPON_M4_CARBINE, true);
+        addGenericWeaponRecipe(recipeOutput, AVPWeaponBlueprintItems.INSTANCE.BLUEPRINT_M4_CARBINE, AVPWeaponItems.INSTANCE.weaponM4Carbine, true);
         addGenericWeaponRecipe(
             recipeOutput,
             AVPWeaponBlueprintItems.INSTANCE.BLUEPRINT_M88MOD4_COMBAT_PISTOL,
-            AVPWeaponItems.INSTANCE.WEAPON_M88MOD4_COMBAT_PISTOL,
+            AVPWeaponItems.INSTANCE.weaponM88Mod4CombatPistol,
             false
         );
-        addGenericWeaponRecipe(recipeOutput, AVPWeaponBlueprintItems.INSTANCE.BLUEPRINT_SNIPER_RIFLE, AVPWeaponItems.INSTANCE.WEAPON_SNIPER_RIFLE, true);
+        addGenericWeaponRecipe(recipeOutput, AVPWeaponBlueprintItems.INSTANCE.BLUEPRINT_SNIPER_RIFLE, AVPWeaponItems.INSTANCE.weaponSniperRifle, true);
 
         // Pulse Rifle
-        AVPShapelessRecipeBuilder.shapeless(RecipeCategory.COMBAT, AVPWeaponItems.INSTANCE.WEAPON_M41A_PULSE_RIFLE)
+        AVPShapelessRecipeBuilder.shapeless(RecipeCategory.COMBAT, AVPWeaponItems.INSTANCE.weaponM41APulseRifle)
             .requiresAndUnlockIfHas('A', AVPWeaponBlueprintItems.INSTANCE.BLUEPRINT_M41A_PULSE_RIFLE)
             .requiresAndUnlockIfHas('B', AVPWeaponPartItems.INSTANCE.WEAPON_PART_BARREL_GENERIC)
             .requiresAndUnlockIfHas('C', AVPWeaponPartItems.INSTANCE.WEAPON_PART_GRIP_GENERIC)
@@ -41,7 +41,7 @@ public final class AVPWeaponRecipes {
             .save(recipeOutput);
 
         // Smartgun
-        AVPShapelessRecipeBuilder.shapeless(RecipeCategory.COMBAT, AVPWeaponItems.INSTANCE.WEAPON_M56_SMARTGUN)
+        AVPShapelessRecipeBuilder.shapeless(RecipeCategory.COMBAT, AVPWeaponItems.INSTANCE.weaponM56Smartgun)
             .requiresAndUnlockIfHas('A', AVPWeaponBlueprintItems.INSTANCE.BLUEPRINT_M56_SMARTGUN)
             .requiresAndUnlockIfHas('B', AVPWeaponPartItems.INSTANCE.WEAPON_PART_BARREL_SMART)
             .requiresAndUnlockIfHas('C', AVPWeaponPartItems.INSTANCE.WEAPON_PART_GRIP_GENERIC)
@@ -49,7 +49,7 @@ public final class AVPWeaponRecipes {
             .save(recipeOutput);
 
         // Old Painless
-        AVPShapelessRecipeBuilder.shapeless(RecipeCategory.COMBAT, AVPWeaponItems.INSTANCE.WEAPON_OLD_PAINLESS)
+        AVPShapelessRecipeBuilder.shapeless(RecipeCategory.COMBAT, AVPWeaponItems.INSTANCE.weaponOldPainless)
             .requiresAndUnlockIfHas('A', AVPWeaponBlueprintItems.INSTANCE.BLUEPRINT_OLD_PAINLESS)
             .requiresAndUnlockIfHas('B', AVPWeaponPartItems.INSTANCE.WEAPON_PART_BARREL_MINIGUN)
             .requiresAndUnlockIfHas('C', AVPWeaponPartItems.INSTANCE.WEAPON_PART_GRIP_GENERIC, 2) // Two grips for a big gun.
@@ -57,7 +57,7 @@ public final class AVPWeaponRecipes {
             .save(recipeOutput);
 
         // SADAR
-        AVPShapelessRecipeBuilder.shapeless(RecipeCategory.COMBAT, AVPWeaponItems.INSTANCE.WEAPON_M83A2_SADAR)
+        AVPShapelessRecipeBuilder.shapeless(RecipeCategory.COMBAT, AVPWeaponItems.INSTANCE.weaponM83A2Sadar)
             .requiresAndUnlockIfHas('A', AVPWeaponBlueprintItems.INSTANCE.BLUEPRINT_M83A2_SADAR)
             .requiresAndUnlockIfHas('B', AVPWeaponPartItems.INSTANCE.WEAPON_PART_BARREL_ROCKET)
             .requiresAndUnlockIfHas('C', AVPWeaponPartItems.INSTANCE.WEAPON_PART_GRIP_GENERIC)

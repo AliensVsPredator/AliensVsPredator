@@ -9,82 +9,78 @@ public class AVPItems extends AVPDeferredItemRegistry {
 
     public static final AVPItems INSTANCE = new AVPItems();
 
-    public final Holder<Item> BOTTLE_TINTED;
+    public final Holder<Item> bottleTinted;
 
-    public final Holder<Item> BOTTLE_TINTED_ACID;
+    public final Holder<Item> bottleTintedAcid;
 
-    public final Holder<Item> CARBON;
+    public final Holder<Item> carbon;
 
-    public final Holder<Item> COBALT;
+    public final Holder<Item> cobalt;
 
-    public final Holder<Item> DUST_LITHIUM;
+    public final Holder<Item> dustLithium;
 
-    public final Holder<Item> INGOT_ALUMINUM;
+    public final Holder<Item> ingotAluminum;
 
-    public final Holder<Item> INGOT_ORIONITE;
+    public final Holder<Item> ingotOrionite;
 
-    public final Holder<Item> INGOT_STEEL;
+    public final Holder<Item> ingotSteel;
 
-    public final Holder<Item> INGOT_TITANIUM;
+    public final Holder<Item> ingotTitanium;
 
-    public final Holder<Item> LASER_MINE;
+    public final Holder<Item> laserMine;
 
-    public final Holder<Item> NBT_DRIVE;
+    public final Holder<Item> nbtDrive;
 
-    public final Holder<Item> NEODYMIUM;
+    public final Holder<Item> neodymium;
 
-    public final Holder<Item> NEODYMIUM_MAGNET;
+    public final Holder<Item> neodymiumMagnet;
 
-    public final Holder<Item> POLYCARBONATE;
+    public final Holder<Item> polycarbonate;
 
-    public final Holder<Item> POLYMER;
+    public final Holder<Item> polymer;
 
-    public final Holder<Item> RAW_BAUXITE;
+    public final Holder<Item> rawBauxite;
 
-    public final Holder<Item> RAW_TITANIUM;
+    public final Holder<Item> rawTitanium;
 
-    public final Holder<Item> ROYAL_JELLY;
+    public final Holder<Item> royalJelly;
 
-    public final Holder<Item> SHURIKEN;
+    public final Holder<Item> shuriken;
 
-    public final Holder<Item> SILICA;
+    public final Holder<Item> silica;
 
-    public final Holder<Item> SMART_DISC;
+    public final Holder<Item> smartDisc;
 
-    public final Holder<Item> VERITANIUM_SHARD;
+    public final Holder<Item> veritaniumShard;
 
-    public final Holder<Item> XENOMORPH_CHITIN;
+    public final Holder<Item> xenomorphChitin;
 
-    public final Holder<Item> YAUTJA_ARTIFACT;
-
-    private Holder<Item> createHolder(String registryName) {
-        return createHolder(registryName, () -> new Item(new Item.Properties()));
-    }
+    public final Holder<Item> yautjaArtifact;
 
     private AVPItems() {
-        BOTTLE_TINTED = createHolder("bottle_tinted");
-        BOTTLE_TINTED_ACID = createHolder("bottle_tinted_acid");
-        CARBON = createHolder("carbon");
-        COBALT = createHolder("cobalt");
-        DUST_LITHIUM = createHolder("dust_lithium");
-        INGOT_ALUMINUM = createHolder("ingot_aluminum");
-        INGOT_ORIONITE = createHolder("ingot_orionite");
-        INGOT_STEEL = createHolder("ingot_steel");
-        INGOT_TITANIUM = createHolder("ingot_titanium");
-        LASER_MINE = createHolder("laser_mine");
-        NBT_DRIVE = createHolder("nbt_drive");
-        NEODYMIUM = createHolder("neodymium");
-        NEODYMIUM_MAGNET = createHolder("neodymium_magnet");
-        POLYCARBONATE = createHolder("polycarbonate");
-        POLYMER = createHolder("polymer");
-        RAW_BAUXITE = createHolder("raw_bauxite");
-        RAW_TITANIUM = createHolder("raw_titanium");
-        ROYAL_JELLY = createHolder("royal_jelly");
-        SHURIKEN = createHolder("shuriken");
-        SILICA = createHolder("silica");
-        SMART_DISC = createHolder("smart_disc");
-        VERITANIUM_SHARD = createHolder("veritanium_shard");
-        XENOMORPH_CHITIN = createHolder("xenomorph_chitin");
-        YAUTJA_ARTIFACT = createHolder("yautja_artifact");
+        bottleTinted = createHolder("bottle_tinted");
+        bottleTintedAcid = createHolder("bottle_tinted_acid");
+        carbon = createHolder("carbon");
+        cobalt = createHolder("cobalt");
+        dustLithium = createHolder("dust_lithium");
+        ingotAluminum = createHolder("ingot_aluminum");
+        ingotOrionite = createHolder("ingot_orionite");
+        ingotSteel = createHolder("ingot_steel");
+        ingotTitanium = createHolder("ingot_titanium");
+        laserMine = createHolder("laser_mine");
+        nbtDrive = createHolder("nbt_drive");
+        neodymium = createHolder("neodymium");
+        neodymiumMagnet = createHolder("neodymium_magnet");
+        polycarbonate = createHolder("polycarbonate");
+        polymer = createHolder("polymer");
+        rawBauxite = createHolder("raw_bauxite");
+        rawTitanium = createHolder("raw_titanium");
+        royalJelly = createHolder("royal_jelly");
+        shuriken = createHolder("shuriken");
+        silica = createHolder("silica");
+        smartDisc = createHolder("smart_disc");
+        veritaniumShard = createHolder("veritanium_shard");
+        xenomorphChitin = createHolder("xenomorph_chitin");
+        yautjaArtifact = createHolder("yautja_artifact");
     }
 }

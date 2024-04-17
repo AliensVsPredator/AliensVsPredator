@@ -36,9 +36,9 @@ public class AVPPrometheusAlienEntityAttributes {
         .build();
 
     public static void addBindings() {
-        AVPEntityAttributesBindingRegistry.addBinding(AVPPrometheusAlienEntityTypes.INSTANCE.DEACON, DEACON_ADULT); // TODO:
-        AVPEntityAttributesBindingRegistry.addBinding(AVPPrometheusAlienEntityTypes.INSTANCE.DEACON_ADULT, DEACON_ADULT);
-        AVPEntityAttributesBindingRegistry.addBinding(AVPPrometheusAlienEntityTypes.INSTANCE.TRILOBITE, TRILOBITE);
-        AVPEntityAttributesBindingRegistry.addBinding(AVPPrometheusAlienEntityTypes.INSTANCE.TRILOBITE_BABY, TRILOBITE_BABY);
+        AVPEntityAttributesBindingRegistry.addBinding(AVPPrometheusAlienEntityTypes.INSTANCE.deacon, DEACON_ADULT); // TODO:
+        AVPEntityAttributesBindingRegistry.addBinding(AVPPrometheusAlienEntityTypes.INSTANCE.deaconAdult, DEACON_ADULT);
+        AVPEntityAttributesBindingRegistry.addBinding(AVPPrometheusAlienEntityTypes.INSTANCE.trilobite, TRILOBITE);
+        AVPEntityAttributesBindingRegistry.addBinding(AVPPrometheusAlienEntityTypes.INSTANCE.trilobiteBaby, TRILOBITE_BABY);
     }
 }

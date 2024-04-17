@@ -11,7 +11,7 @@ public class AVPEngineerEntityTypes extends AVPSimpleDeferredEntityTypeRegistry 
 
     public static final AVPEngineerEntityTypes INSTANCE = new AVPEngineerEntityTypes();
 
-    public final Holder<EntityType<Engineer>> ENGINEER = createMobHolder(
+    public final Holder<EntityType<Engineer>> engineer = createMobHolder(
         "engineer",
         0xB8B1B6,
         0x99AFBD,

@@ -18,22 +18,22 @@ public class FlamethrowerSevastopolItem extends AbstractAVPWeaponItem {
         "Automatic",
         1,
         1,
-        AVPSoundEvents.INSTANCE.ITEM_WEAPON_FLAMETHROWER_SHOOT,
+        AVPSoundEvents.INSTANCE.itemWeaponFlamethrowerShoot,
         16.0D,
         0.0F
     );
 
     private static final WeaponItemData WEAPON_ITEM_DATA = new WeaponItemData(
         1.0F,
-        AmmunitionStrategy.builder(500, List.of(AVPAmmunitionPartItems.INSTANCE.INSTANCE.AMMO_FLAMETHROWER::get))
+        AmmunitionStrategy.builder(500, List.of(AVPAmmunitionPartItems.INSTANCE.ammoFlamethrower::get))
             .setHasAmmunitionBehavior(HasAmmunitionBehavior.LOADED)
             .build(),
         List.of(FIRE_MODE),
         1F,
         0.13F,
         ReloadStrategy.builder(20 * 5)
-            .setReloadFinishSound(AVPSoundEvents.INSTANCE.ITEM_WEAPON_FLAMETHROWER_RELOAD_FINISH)
-            .setReloadStartSound(AVPSoundEvents.INSTANCE.ITEM_WEAPON_FLAMETHROWER_RELOAD_START)
+            .setReloadFinishSound(AVPSoundEvents.INSTANCE.itemWeaponFlamethrowerReloadFinish)
+            .setReloadStartSound(AVPSoundEvents.INSTANCE.itemWeaponFlamethrowerReloadStart)
             .build(),
         ShootStrategy.builder().build()
     );

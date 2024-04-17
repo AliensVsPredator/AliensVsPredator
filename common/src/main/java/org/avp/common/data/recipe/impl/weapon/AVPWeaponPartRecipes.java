@@ -15,7 +15,7 @@ public final class AVPWeaponPartRecipes {
     public static void addWeaponPartRecipes(RecipeOutput recipeOutput) {
         // Generic Barrel
         AVPShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AVPWeaponPartItems.INSTANCE.WEAPON_PART_BARREL_GENERIC)
-            .defineAndUnlockIfHas('A', AVPItems.INSTANCE.INGOT_STEEL)
+            .defineAndUnlockIfHas('A', AVPItems.INSTANCE.ingotSteel)
             .pattern("AAA")
             .save(recipeOutput);
 
@@ -27,8 +27,8 @@ public final class AVPWeaponPartRecipes {
 
         // Generic Grip
         AVPShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AVPWeaponPartItems.INSTANCE.WEAPON_PART_GRIP_GENERIC)
-            .defineAndUnlockIfHas('A', AVPItems.INSTANCE.POLYMER)
-            .defineAndUnlockIfHas('B', AVPItems.INSTANCE.INGOT_STEEL)
+            .defineAndUnlockIfHas('A', AVPItems.INSTANCE.polymer)
+            .defineAndUnlockIfHas('B', AVPItems.INSTANCE.ingotSteel)
             .pattern("B")
             .pattern("A")
             .pattern("A")
@@ -36,7 +36,7 @@ public final class AVPWeaponPartRecipes {
 
         // Minigun Barrel
         AVPShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AVPWeaponPartItems.INSTANCE.WEAPON_PART_BARREL_MINIGUN)
-            .defineAndUnlockIfHas('A', AVPItems.INSTANCE.INGOT_STEEL)
+            .defineAndUnlockIfHas('A', AVPItems.INSTANCE.ingotSteel)
             .defineAndUnlockIfHas('B', AVPWeaponPartItems.INSTANCE.WEAPON_PART_BARREL_GENERIC)
             .pattern("BBB")
             .pattern("A A")
@@ -45,7 +45,7 @@ public final class AVPWeaponPartRecipes {
 
         // Rocket Barrel
         AVPShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AVPWeaponPartItems.INSTANCE.WEAPON_PART_BARREL_ROCKET)
-            .defineAndUnlockIfHas('A', AVPItems.INSTANCE.INGOT_STEEL)
+            .defineAndUnlockIfHas('A', AVPItems.INSTANCE.ingotSteel)
             .pattern("AAA")
             .pattern("   ")
             .pattern("AAA")
@@ -53,8 +53,8 @@ public final class AVPWeaponPartRecipes {
 
         // Generic Receiver
         AVPShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AVPWeaponPartItems.INSTANCE.WEAPON_PART_RECEIVER_GENERIC)
-            .defineAndUnlockIfHas('A', AVPItems.INSTANCE.INGOT_STEEL)
-            .defineAndUnlockIfHas('B', AVPItems.INSTANCE.POLYMER)
+            .defineAndUnlockIfHas('A', AVPItems.INSTANCE.ingotSteel)
+            .defineAndUnlockIfHas('B', AVPItems.INSTANCE.polymer)
             .defineAndUnlockIfHas('C', Items.TRIPWIRE_HOOK)
             .defineAndUnlockIfHas('D', Items.STONE_BUTTON)
             .pattern("AAA")
@@ -65,11 +65,11 @@ public final class AVPWeaponPartRecipes {
         // Smart Receiver
         AVPShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AVPWeaponPartItems.INSTANCE.WEAPON_PART_RECEIVER_SMART)
             .defineAndUnlockIfHas('A', AVPWeaponPartItems.INSTANCE.WEAPON_PART_RECEIVER_GENERIC)
-            .defineAndUnlockIfHas('B', AVPElectronicItems.INSTANCE.CPU)
-            .defineAndUnlockIfHas('C', AVPElectronicItems.INSTANCE.LED_DISPLAY)
-            .defineAndUnlockIfHas('D', AVPElectronicItems.INSTANCE.POWER_SUPPLY)
-            .defineAndUnlockIfHas('E', AVPItems.INSTANCE.POLYMER)
-            .defineAndUnlockIfHas('F', AVPElectronicItems.INSTANCE.CAPACITOR)
+            .defineAndUnlockIfHas('B', AVPElectronicItems.INSTANCE.cpu)
+            .defineAndUnlockIfHas('C', AVPElectronicItems.INSTANCE.ledDisplay)
+            .defineAndUnlockIfHas('D', AVPElectronicItems.INSTANCE.powerSupply)
+            .defineAndUnlockIfHas('E', AVPItems.INSTANCE.polymer)
+            .defineAndUnlockIfHas('F', AVPElectronicItems.INSTANCE.capacitor)
             .pattern(" A ")
             .pattern("BCD")
             .pattern("EFE")
@@ -77,8 +77,8 @@ public final class AVPWeaponPartRecipes {
 
         // Generic Stock
         AVPShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AVPWeaponPartItems.INSTANCE.WEAPON_PART_STOCK_GENERIC)
-            .defineAndUnlockIfHas('A', AVPItems.INSTANCE.POLYMER)
-            .defineAndUnlockIfHas('B', AVPItems.INSTANCE.INGOT_STEEL)
+            .defineAndUnlockIfHas('A', AVPItems.INSTANCE.polymer)
+            .defineAndUnlockIfHas('B', AVPItems.INSTANCE.ingotSteel)
             .pattern("  A")
             .pattern("BAA")
             .pattern("  A")

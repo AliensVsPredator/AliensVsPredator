@@ -19,7 +19,7 @@ public class M83A2SADARItem extends AbstractAVPWeaponItem {
         "Semi-Automatic",
         1,
         60,
-        AVPSoundEvents.INSTANCE.ITEM_WEAPON_ROCKET_LAUNCHER_SHOOT,
+        AVPSoundEvents.INSTANCE.itemWeaponRocketLauncherShoot,
         100.0D,
         1.5F
     );
@@ -29,10 +29,10 @@ public class M83A2SADARItem extends AbstractAVPWeaponItem {
         AmmunitionStrategy.builder(
                 4,
                 List.of(
-                    AVPAmmunitionPartItems.INSTANCE.ROCKET::get,
-                    AVPAmmunitionPartItems.INSTANCE.ROCKET_ELECTRIC::get,
-                    AVPAmmunitionPartItems.INSTANCE.ROCKET_INCENDIARY::get,
-                    AVPAmmunitionPartItems.INSTANCE.ROCKET_PENETRATION::get
+                    AVPAmmunitionPartItems.INSTANCE.rocket::get,
+                    AVPAmmunitionPartItems.INSTANCE.rocketElectric::get,
+                    AVPAmmunitionPartItems.INSTANCE.rocketIncendiary::get,
+                    AVPAmmunitionPartItems.INSTANCE.rocketPenetration::get
                 )
             )
             .setHasAmmunitionBehavior(HasAmmunitionBehavior.LOADED)
@@ -41,8 +41,8 @@ public class M83A2SADARItem extends AbstractAVPWeaponItem {
         8F * 2,
         0.5F,
         ReloadStrategy.builder(20 * 5)
-            .setReloadStartSound(AVPSoundEvents.INSTANCE.ITEM_WEAPON_ROCKET_LAUNCHER_RELOAD_START)
-            .setReloadFinishSound(AVPSoundEvents.INSTANCE.ITEM_WEAPON_ROCKET_LAUNCHER_RELOAD_FINISH)
+            .setReloadStartSound(AVPSoundEvents.INSTANCE.itemWeaponRocketLauncherReloadStart)
+            .setReloadFinishSound(AVPSoundEvents.INSTANCE.itemWeaponRocketLauncherReloadFinish)
             .setTryReloadBehavior(TryReloadBehavior.STANDARD)
             .build(),
         ShootStrategy.builder().build()
