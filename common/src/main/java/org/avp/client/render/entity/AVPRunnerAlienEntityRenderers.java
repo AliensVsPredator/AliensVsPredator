@@ -11,9 +11,9 @@ public class AVPRunnerAlienEntityRenderers {
     private AVPRunnerAlienEntityRenderers() {}
 
     public static void addBindings() {
-        AVPEntityRenderRegistry.addBinding(AVPRunnerAlienEntityTypes.CHESTBURSTER_RUNNER, ChestbursterRunnerRenderer::new);
-        AVPEntityRenderRegistry.addBinding(AVPRunnerAlienEntityTypes.CRUSHER, CrusherRenderer::new);
-        AVPEntityRenderRegistry.addBinding(AVPRunnerAlienEntityTypes.DRONE_RUNNER, DroneRunnerRenderer::new);
-        AVPEntityRenderRegistry.addBinding(AVPRunnerAlienEntityTypes.WARRIOR_RUNNER, WarriorRunnerRenderer::new);
+        AVPEntityRenderRegistry.addBinding(AVPRunnerAlienEntityTypes.INSTANCE.CHESTBURSTER_RUNNER, ChestbursterRunnerRenderer::new);
+        AVPEntityRenderRegistry.addBinding(AVPRunnerAlienEntityTypes.INSTANCE.CRUSHER, CrusherRenderer::new);
+        AVPEntityRenderRegistry.addBinding(AVPRunnerAlienEntityTypes.INSTANCE.DRONE_RUNNER, DroneRunnerRenderer::new);
+        AVPEntityRenderRegistry.addBinding(AVPRunnerAlienEntityTypes.INSTANCE.WARRIOR_RUNNER, WarriorRunnerRenderer::new);
     }
 }

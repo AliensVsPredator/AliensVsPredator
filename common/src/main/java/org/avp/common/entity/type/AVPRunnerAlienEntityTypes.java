@@ -8,10 +8,13 @@ import org.avp.common.entity.living.ChestbursterRunner;
 import org.avp.common.entity.living.Crusher;
 import org.avp.common.entity.living.DroneRunner;
 import org.avp.common.entity.living.WarriorRunner;
+import org.avp.common.registry.AVPSimpleDeferredEntityTypeRegistry;
 
-public class AVPRunnerAlienEntityTypes {
+public class AVPRunnerAlienEntityTypes extends AVPSimpleDeferredEntityTypeRegistry {
 
-    public static final GameObject<EntityType<ChestbursterRunner>> CHESTBURSTER_RUNNER = AVPEntityTypes.registerLiving(
+    public static final AVPRunnerAlienEntityTypes INSTANCE = new AVPRunnerAlienEntityTypes();
+
+    public final GameObject<EntityType<ChestbursterRunner>> CHESTBURSTER_RUNNER = createMobHolder(
         "chestburster_runner",
         0xD8B877,
         0xF7E2B4,
@@ -19,7 +22,7 @@ public class AVPRunnerAlienEntityTypes {
             .sized(0.75F, 0.98F)
     );
 
-    public static final GameObject<EntityType<Crusher>> CRUSHER = AVPEntityTypes.registerLiving(
+    public final GameObject<EntityType<Crusher>> CRUSHER = createMobHolder(
         "crusher",
         0x2E2921,
         0x534A3B,
@@ -27,7 +30,7 @@ public class AVPRunnerAlienEntityTypes {
             .sized(1.48F, 2.48F)
     );
 
-    public static final GameObject<EntityType<DroneRunner>> DRONE_RUNNER = AVPEntityTypes.registerLiving(
+    public final GameObject<EntityType<DroneRunner>> DRONE_RUNNER = createMobHolder(
         "drone_runner",
         0x503D34,
         0xA69E85,
@@ -35,7 +38,7 @@ public class AVPRunnerAlienEntityTypes {
             .sized(0.98F, 1.98F)
     );
 
-    public static final GameObject<EntityType<WarriorRunner>> WARRIOR_RUNNER = AVPEntityTypes.registerLiving(
+    public final GameObject<EntityType<WarriorRunner>> WARRIOR_RUNNER = createMobHolder(
         "warrior_runner",
         0x1A1917,
         0x61615E,
@@ -43,11 +46,5 @@ public class AVPRunnerAlienEntityTypes {
             .sized(0.98F, 1.98F)
     );
 
-    public static void forceInitialization() {
-        // This method doesn't need to do anything
-    }
-
-    private AVPRunnerAlienEntityTypes() {
-        throw new UnsupportedOperationException();
-    }
+    private AVPRunnerAlienEntityTypes() {}
 }

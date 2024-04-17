@@ -33,12 +33,9 @@ public class AVPRunnerAlienEntityAttributes {
         .build();
 
     public static void addBindings() {
-        AVPEntityAttributesBindingRegistry.addBinding(
-            AVPRunnerAlienEntityTypes.CHESTBURSTER_RUNNER,
-            CHESTBURSTER_RUNNER
-        );
-        AVPEntityAttributesBindingRegistry.addBinding(AVPRunnerAlienEntityTypes.CRUSHER, CRUSHER);
-        AVPEntityAttributesBindingRegistry.addBinding(AVPRunnerAlienEntityTypes.DRONE_RUNNER, DRONE_RUNNER);
-        AVPEntityAttributesBindingRegistry.addBinding(AVPRunnerAlienEntityTypes.WARRIOR_RUNNER, WARRIOR_RUNNER);
+        AVPEntityAttributesBindingRegistry.addBinding(AVPRunnerAlienEntityTypes.INSTANCE.CHESTBURSTER_RUNNER, CHESTBURSTER_RUNNER);
+        AVPEntityAttributesBindingRegistry.addBinding(AVPRunnerAlienEntityTypes.INSTANCE.CRUSHER, CRUSHER);
+        AVPEntityAttributesBindingRegistry.addBinding(AVPRunnerAlienEntityTypes.INSTANCE.DRONE_RUNNER, DRONE_RUNNER);
+        AVPEntityAttributesBindingRegistry.addBinding(AVPRunnerAlienEntityTypes.INSTANCE.WARRIOR_RUNNER, WARRIOR_RUNNER);
     }
 }

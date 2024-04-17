@@ -28,7 +28,5 @@ public class AVPParticleTypes {
         ACID = registerSimple("acid", AcidParticleFactory::new);
     }
 
-    private AVPParticleTypes() {
-        throw new UnsupportedOperationException();
-    }
+    private AVPParticleTypes() {}
 }

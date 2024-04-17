@@ -68,15 +68,15 @@ public class AVPBaseAlienEntityAttributes {
         .build();
 
     public static void addBindings() {
-        AVPEntityAttributesBindingRegistry.addBinding(AVPBaseAlienEntityTypes.BOILER, BOILER);
-        AVPEntityAttributesBindingRegistry.addBinding(AVPBaseAlienEntityTypes.CHESTBURSTER, CHESTBURSTER);
-        AVPEntityAttributesBindingRegistry.addBinding(AVPBaseAlienEntityTypes.DRONE, DRONE);
-        AVPEntityAttributesBindingRegistry.addBinding(AVPBaseAlienEntityTypes.FACEHUGGER, FACEHUGGER);
-        AVPEntityAttributesBindingRegistry.addBinding(AVPBaseAlienEntityTypes.FACEHUGGER_ROYAL, FACEHUGGER_ROYAL);
-        AVPEntityAttributesBindingRegistry.addBinding(AVPBaseAlienEntityTypes.OVAMORPH, OVAMORPH);
-        AVPEntityAttributesBindingRegistry.addBinding(AVPBaseAlienEntityTypes.PRAETORIAN, PRAETORIAN);
-        AVPEntityAttributesBindingRegistry.addBinding(AVPBaseAlienEntityTypes.QUEEN, QUEEN);
-        AVPEntityAttributesBindingRegistry.addBinding(AVPBaseAlienEntityTypes.SPITTER, SPITTER);
-        AVPEntityAttributesBindingRegistry.addBinding(AVPBaseAlienEntityTypes.WARRIOR, WARRIOR);
+        AVPEntityAttributesBindingRegistry.addBinding(AVPBaseAlienEntityTypes.INSTANCE.BOILER, BOILER);
+        AVPEntityAttributesBindingRegistry.addBinding(AVPBaseAlienEntityTypes.INSTANCE.CHESTBURSTER, CHESTBURSTER);
+        AVPEntityAttributesBindingRegistry.addBinding(AVPBaseAlienEntityTypes.INSTANCE.DRONE, DRONE);
+        AVPEntityAttributesBindingRegistry.addBinding(AVPBaseAlienEntityTypes.INSTANCE.FACEHUGGER, FACEHUGGER);
+        AVPEntityAttributesBindingRegistry.addBinding(AVPBaseAlienEntityTypes.INSTANCE.FACEHUGGER_ROYAL, FACEHUGGER_ROYAL);
+        AVPEntityAttributesBindingRegistry.addBinding(AVPBaseAlienEntityTypes.INSTANCE.OVAMORPH, OVAMORPH);
+        AVPEntityAttributesBindingRegistry.addBinding(AVPBaseAlienEntityTypes.INSTANCE.PRAETORIAN, PRAETORIAN);
+        AVPEntityAttributesBindingRegistry.addBinding(AVPBaseAlienEntityTypes.INSTANCE.QUEEN, QUEEN);
+        AVPEntityAttributesBindingRegistry.addBinding(AVPBaseAlienEntityTypes.INSTANCE.SPITTER, SPITTER);
+        AVPEntityAttributesBindingRegistry.addBinding(AVPBaseAlienEntityTypes.INSTANCE.WARRIOR, WARRIOR);
     }
 }

@@ -10,7 +10,7 @@ public class Services {
 
     public static final CreativeModeTabRegistry CREATIVE_MODE_TAB_REGISTRY = load(CreativeModeTabRegistry.class);
 
-    public static final EntityRegistry ENTITY_REGISTRY = load(EntityRegistry.class);
+    public static final EntityTypeService ENTITY_SERVICE = load(EntityTypeService.class);
 
     public static final ItemService ITEM_REGISTRY = load(ItemService.class);
 

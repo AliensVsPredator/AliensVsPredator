@@ -5,10 +5,13 @@ import net.minecraft.world.entity.MobCategory;
 
 import org.avp.api.GameObject;
 import org.avp.common.entity.living.Yautja;
+import org.avp.common.registry.AVPSimpleDeferredEntityTypeRegistry;
 
-public class AVPYautjaEntityTypes {
+public class AVPYautjaEntityTypes extends AVPSimpleDeferredEntityTypeRegistry {
 
-    public static final GameObject<EntityType<Yautja>> YAUTJA = AVPEntityTypes.registerLiving(
+    public static final AVPYautjaEntityTypes INSTANCE = new AVPYautjaEntityTypes();
+
+    public final GameObject<EntityType<Yautja>> YAUTJA = createMobHolder(
         "yautja",
         0xB9A86C,
         0x5A4728,
@@ -16,11 +19,5 @@ public class AVPYautjaEntityTypes {
             .sized(0.98F, 2.48F)
     );
 
-    public static void forceInitialization() {
-        // This method doesn't need to do anything
-    }
-
-    private AVPYautjaEntityTypes() {
-        throw new UnsupportedOperationException();
-    }
+    private AVPYautjaEntityTypes() {}
 }

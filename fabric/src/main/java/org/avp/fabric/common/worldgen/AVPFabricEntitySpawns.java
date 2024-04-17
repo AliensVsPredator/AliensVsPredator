@@ -15,7 +15,8 @@ public class AVPFabricEntitySpawns {
 
     @SuppressWarnings("unchecked")
     public static void addEntitySpawns() {
-        AVPEntitySpawns.getEntries().forEach(entitySpawnData -> {
+        AVPEntitySpawns.INSTANCE.getEntries().forEach(entitySpawnDataHolder -> {
+            var entitySpawnData = entitySpawnDataHolder.get();
             var weight = entitySpawnData.weight();
             var minGroupSize = entitySpawnData.minGroupSize();
             var maxGroupSize = entitySpawnData.maxGroupSize();

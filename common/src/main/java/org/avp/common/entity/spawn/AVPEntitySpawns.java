@@ -7,6 +7,7 @@ import net.minecraft.world.level.levelgen.Heightmap;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Supplier;
 
 import org.avp.api.GameObject;
 import org.avp.common.config.AVPConfig;
@@ -14,40 +15,36 @@ import org.avp.common.entity.type.AVPBaseAlienEntityTypes;
 import org.avp.common.entity.type.AVPRunnerAlienEntityTypes;
 import org.avp.common.entity.type.AVPYautjaEntityTypes;
 import org.avp.common.entity.living.Yautja;
+import org.avp.common.registry.AVPDeferredRegistry;
 
-public class AVPEntitySpawns {
+public class AVPEntitySpawns extends AVPDeferredRegistry<EntitySpawnData<?>> {
 
-    private static final List<EntitySpawnData<?>> ENTRIES = new ArrayList<>();
+    public static final AVPEntitySpawns INSTANCE = new AVPEntitySpawns();
 
-    public static List<EntitySpawnData<?>> getEntries() {
-        return ENTRIES;
-    }
-
-    public static void forceInitialization() {
-        // This function does not need to do anything.
-    }
-
-    private static <T extends Monster> void registerMonsterSpawn(
+    private <T extends Monster> void registerMonsterSpawn(
         GameObject<EntityType<T>> entityTypeGameObject,
         SpawnPlacements.SpawnPredicate<T> spawnPredicate,
         int weight,
         int minGroupSize,
         int maxGroupSize
     ) {
-        ENTRIES.add(
-            new EntitySpawnData<>(
-                entityTypeGameObject,
-                weight,
-                minGroupSize,
-                maxGroupSize,
-                SpawnPlacements.Type.ON_GROUND,
-                Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
-                spawnPredicate
+        entries.add(
+            new GameObject<>(
+                entityTypeGameObject.getResourceLocation().getPath() + "_spawns",
+                () -> new EntitySpawnData<>(
+                    entityTypeGameObject,
+                    weight,
+                    minGroupSize,
+                    maxGroupSize,
+                    SpawnPlacements.Type.ON_GROUND,
+                    Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
+                    spawnPredicate
+                )
             )
         );
     }
 
-    private static <T extends Monster> void registerAlienSpawn(
+    private <T extends Monster> void registerAlienSpawn(
         GameObject<EntityType<T>> entityTypeGameObject,
         SpawnPlacements.SpawnPredicate<T> spawnPredicate,
         int maxYLevel,
@@ -64,9 +61,15 @@ public class AVPEntitySpawns {
         );
     }
 
-    static {
+    @Override
+    protected GameObject<EntitySpawnData<?>> createHolder(String registryName, Supplier<EntitySpawnData<?>> supplier) {
+        return null;
+    }
+
+    @Override
+    public void register() {
         registerAlienSpawn(
-            AVPBaseAlienEntityTypes.BOILER,
+            AVPBaseAlienEntityTypes.INSTANCE.BOILER,
             Monster::checkMonsterSpawnRules,
             AVPConfig.Aliens.MAX_Y_LEVEL_FOR_BOILER_SPAWNS,
             7,
@@ -74,7 +77,7 @@ public class AVPEntitySpawns {
             1
         );
         registerAlienSpawn(
-            AVPBaseAlienEntityTypes.DRONE,
+            AVPBaseAlienEntityTypes.INSTANCE.DRONE,
             Monster::checkMonsterSpawnRules,
             AVPConfig.Aliens.MAX_Y_LEVEL_FOR_DRONE_SPAWNS,
             50,
@@ -82,7 +85,7 @@ public class AVPEntitySpawns {
             2
         );
         registerAlienSpawn(
-            AVPBaseAlienEntityTypes.PRAETORIAN,
+            AVPBaseAlienEntityTypes.INSTANCE.PRAETORIAN,
             Monster::checkMonsterSpawnRules,
             AVPConfig.Aliens.MAX_Y_LEVEL_FOR_PRAETORIAN_SPAWNS,
             10,
@@ -90,7 +93,7 @@ public class AVPEntitySpawns {
             1
         );
         registerAlienSpawn(
-            AVPBaseAlienEntityTypes.QUEEN,
+            AVPBaseAlienEntityTypes.INSTANCE.QUEEN,
             Monster::checkMonsterSpawnRules,
             AVPConfig.Aliens.MAX_Y_LEVEL_FOR_QUEEN_SPAWNS,
             5,
@@ -98,7 +101,7 @@ public class AVPEntitySpawns {
             1
         );
         registerAlienSpawn(
-            AVPBaseAlienEntityTypes.SPITTER,
+            AVPBaseAlienEntityTypes.INSTANCE.SPITTER,
             Monster::checkMonsterSpawnRules,
             AVPConfig.Aliens.MAX_Y_LEVEL_FOR_SPITTER_SPAWNS,
             10,
@@ -106,7 +109,7 @@ public class AVPEntitySpawns {
             1
         );
         registerAlienSpawn(
-            AVPBaseAlienEntityTypes.WARRIOR,
+            AVPBaseAlienEntityTypes.INSTANCE.WARRIOR,
             Monster::checkMonsterSpawnRules,
             AVPConfig.Aliens.MAX_Y_LEVEL_FOR_WARRIOR_SPAWNS,
             25,
@@ -115,7 +118,7 @@ public class AVPEntitySpawns {
         );
 
         registerAlienSpawn(
-            AVPRunnerAlienEntityTypes.DRONE_RUNNER,
+            AVPRunnerAlienEntityTypes.INSTANCE.DRONE_RUNNER,
             Monster::checkMonsterSpawnRules,
             AVPConfig.Aliens.MAX_Y_LEVEL_FOR_DRONE_RUNNER_SPAWNS,
             50,
@@ -123,7 +126,7 @@ public class AVPEntitySpawns {
             3
         );
         registerAlienSpawn(
-            AVPRunnerAlienEntityTypes.WARRIOR_RUNNER,
+            AVPRunnerAlienEntityTypes.INSTANCE.WARRIOR_RUNNER,
             Monster::checkMonsterSpawnRules,
             AVPConfig.Aliens.MAX_Y_LEVEL_FOR_WARRIOR_RUNNER_SPAWNS,
             25,
@@ -131,7 +134,7 @@ public class AVPEntitySpawns {
             2
         );
         registerAlienSpawn(
-            AVPRunnerAlienEntityTypes.CRUSHER,
+            AVPRunnerAlienEntityTypes.INSTANCE.CRUSHER,
             Monster::checkMonsterSpawnRules,
             AVPConfig.Aliens.MAX_Y_LEVEL_FOR_CRUSHER_SPAWNS,
             10,
@@ -139,10 +142,8 @@ public class AVPEntitySpawns {
             1
         );
 
-        registerMonsterSpawn(AVPYautjaEntityTypes.YAUTJA, Yautja::checkPredatorSpawnRules, 30, 1, 1);
+        registerMonsterSpawn(AVPYautjaEntityTypes.INSTANCE.YAUTJA, Yautja::checkPredatorSpawnRules, 30, 1, 1);
     }
 
-    private AVPEntitySpawns() {
-        throw new UnsupportedOperationException();
-    }
+    private AVPEntitySpawns() {}
 }

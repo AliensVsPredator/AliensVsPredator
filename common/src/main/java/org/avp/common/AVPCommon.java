@@ -65,14 +65,16 @@ public class AVPCommon {
         AVPSoundEvents.INSTANCE.register();
 
         // Entities
-        AVPBaseAlienEntityTypes.forceInitialization();
-        AVPEngineerEntityTypes.forceInitialization();
-        AVPEntityTypes.forceInitialization();
-        AVPExoticAlienEntityTypes.forceInitialization();
-        AVPPrometheusAlienEntityTypes.forceInitialization();
-        AVPRunnerAlienEntityTypes.forceInitialization();
-        AVPYautjaEntityTypes.forceInitialization();
-        AVPEntitySpawns.forceInitialization();
+        AVPBaseAlienEntityTypes.INSTANCE.register();
+        AVPEngineerEntityTypes.INSTANCE.register();
+        AVPEntityTypes.INSTANCE.register();
+        AVPExoticAlienEntityTypes.INSTANCE.register();
+        AVPPrometheusAlienEntityTypes.INSTANCE.register();
+        AVPRunnerAlienEntityTypes.INSTANCE.register();
+        AVPYautjaEntityTypes.INSTANCE.register();
+
+        // Entity Spawns
+        AVPEntitySpawns.INSTANCE.register();
 
         // Spawn Egg Items
         AVPSpawnEggItems.INSTANCE.register();

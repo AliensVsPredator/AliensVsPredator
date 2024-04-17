@@ -5,6 +5,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.SpawnEggItem;
 import net.neoforged.neoforge.common.DeferredSpawnEggItem;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
@@ -13,11 +14,11 @@ import java.util.function.Supplier;
 import org.avp.api.GameObject;
 import org.avp.common.AVPConstants;
 import org.avp.common.item.AVPSpawnEggItems;
-import org.avp.common.service.EntityRegistry;
+import org.avp.common.service.EntityTypeService;
 import org.avp.common.service.Services;
 import org.avp.neoforge.util.NeoForgeEntityGameObject;
 
-public class NeoForgeEntityRegistry implements EntityRegistry {
+public class NeoForgeEntityTypeService implements EntityTypeService {
 
     public static final DeferredRegister<EntityType<?>> ENTITY_TYPES = DeferredRegister.create(
         BuiltInRegistries.ENTITY_TYPE,
@@ -25,7 +26,7 @@ public class NeoForgeEntityRegistry implements EntityRegistry {
     );
 
     @Override
-    public <T extends Entity> GameObject<EntityType<T>> register(
+    public <T extends Entity> GameObject<EntityType<T>> createHolder(
         String registryName,
         Supplier<EntityType<T>> supplier
     ) {
@@ -33,18 +34,10 @@ public class NeoForgeEntityRegistry implements EntityRegistry {
     }
 
     @Override
-    public <T extends Mob> GameObject<EntityType<T>> registerWithSpawnEgg(
-        String registryName,
-        int backgroundColor,
-        int highlightColor,
-        Supplier<EntityType<T>> supplier
-    ) {
-        var gameObject = register(registryName, supplier);
-        var spawnEggGameObject = Services.ITEM_REGISTRY.createHolder(
-            "spawn_egg_" + registryName,
-            () -> new DeferredSpawnEggItem(gameObject::get, backgroundColor, highlightColor, new Item.Properties())
-        );
-        AVPSpawnEggItems.INSTANCE.getEntries().add(spawnEggGameObject);
-        return gameObject;
+    public void register(GameObject<EntityType<?>> holder) { /* NO-OP FOR FORGE */ }
+
+    @Override
+    public SpawnEggItem createSpawnEggItem(GameObject<? extends EntityType<? extends Mob>> holder, int backgroundColor, int highlightColor, Item.Properties properties) {
+        return new DeferredSpawnEggItem(holder::get, backgroundColor, highlightColor, properties);
     }
 }

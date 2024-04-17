@@ -24,6 +24,6 @@ public class AVPPrometheusEngineerEntityAttributes {
         .build();
 
     public static void addBindings() {
-        AVPEntityAttributesBindingRegistry.addBinding(AVPEngineerEntityTypes.ENGINEER, ENGINEER);
+        AVPEntityAttributesBindingRegistry.addBinding(AVPEngineerEntityTypes.INSTANCE.ENGINEER, ENGINEER);
     }
 }

@@ -31,23 +31,23 @@ public class AVPEntityTagsProvider extends FabricTagProvider.EntityTypeTagProvid
 
     private void createAVPTags() {
         getOrCreateTagBuilder(AVPEntityTags.PARASITES).add(
-            AVPBaseAlienEntityTypes.FACEHUGGER.get(),
-            AVPBaseAlienEntityTypes.FACEHUGGER_ROYAL.get(),
-            AVPExoticAlienEntityTypes.OCTOHUGGER.get(),
-            AVPPrometheusAlienEntityTypes.TRILOBITE.get(),
-            AVPPrometheusAlienEntityTypes.TRILOBITE_BABY.get()
+            AVPBaseAlienEntityTypes.INSTANCE.FACEHUGGER.get(),
+            AVPBaseAlienEntityTypes.INSTANCE.FACEHUGGER_ROYAL.get(),
+            AVPExoticAlienEntityTypes.INSTANCE.OCTOHUGGER.get(),
+            AVPPrometheusAlienEntityTypes.INSTANCE.TRILOBITE.get(),
+            AVPPrometheusAlienEntityTypes.INSTANCE.TRILOBITE_BABY.get()
         );
 
         getOrCreateTagBuilder(AVPEntityTags.EGGS).add(
-            AVPBaseAlienEntityTypes.OVAMORPH.get(),
-            AVPExoticAlienEntityTypes.OVAMORPH_DRACO.get()
+            AVPBaseAlienEntityTypes.INSTANCE.OVAMORPH.get(),
+            AVPExoticAlienEntityTypes.INSTANCE.OVAMORPH_DRACO.get()
         );
 
         getOrCreateTagBuilder(AVPEntityTags.ROYAL_ALIENS).add(
-            AVPBaseAlienEntityTypes.FACEHUGGER_ROYAL.get(),
-            AVPBaseAlienEntityTypes.PRAETORIAN.get(),
-            AVPBaseAlienEntityTypes.QUEEN.get(),
-            AVPRunnerAlienEntityTypes.CRUSHER.get()
+            AVPBaseAlienEntityTypes.INSTANCE.FACEHUGGER_ROYAL.get(),
+            AVPBaseAlienEntityTypes.INSTANCE.PRAETORIAN.get(),
+            AVPBaseAlienEntityTypes.INSTANCE.QUEEN.get(),
+            AVPRunnerAlienEntityTypes.INSTANCE.CRUSHER.get()
         );
 
         getOrCreateTagBuilder(AVPEntityTags.ALIENS)
@@ -55,25 +55,25 @@ public class AVPEntityTagsProvider extends FabricTagProvider.EntityTypeTagProvid
             .addTag(AVPEntityTags.PARASITES)
             .addTag(AVPEntityTags.ROYAL_ALIENS)
             .add(
-                AVPEntityTypes.BELUGABURSTER.get(),
-                AVPEntityTypes.BELUGAMORPH.get(),
+                AVPEntityTypes.INSTANCE.BELUGABURSTER.get(),
+                AVPEntityTypes.INSTANCE.BELUGAMORPH.get(),
 
-                AVPBaseAlienEntityTypes.BOILER.get(),
-                AVPBaseAlienEntityTypes.CHESTBURSTER.get(),
-                AVPBaseAlienEntityTypes.DRONE.get(),
-                AVPBaseAlienEntityTypes.SPITTER.get(),
-                AVPBaseAlienEntityTypes.WARRIOR.get(),
-                AVPExoticAlienEntityTypes.DEACON_ADULT_ENGINEER.get(),
-                AVPExoticAlienEntityTypes.DRACOBURSTER.get(),
-                AVPExoticAlienEntityTypes.DRACOMORPH.get(),
-                AVPExoticAlienEntityTypes.ULTRAMORPH.get(),
+                AVPBaseAlienEntityTypes.INSTANCE.BOILER.get(),
+                AVPBaseAlienEntityTypes.INSTANCE.CHESTBURSTER.get(),
+                AVPBaseAlienEntityTypes.INSTANCE.DRONE.get(),
+                AVPBaseAlienEntityTypes.INSTANCE.SPITTER.get(),
+                AVPBaseAlienEntityTypes.INSTANCE.WARRIOR.get(),
+                AVPExoticAlienEntityTypes.INSTANCE.DEACON_ADULT_ENGINEER.get(),
+                AVPExoticAlienEntityTypes.INSTANCE.DRACOBURSTER.get(),
+                AVPExoticAlienEntityTypes.INSTANCE.DRACOMORPH.get(),
+                AVPExoticAlienEntityTypes.INSTANCE.ULTRAMORPH.get(),
 
-                AVPPrometheusAlienEntityTypes.DEACON.get(),
-                AVPPrometheusAlienEntityTypes.DEACON_ADULT.get(),
+                AVPPrometheusAlienEntityTypes.INSTANCE.DEACON.get(),
+                AVPPrometheusAlienEntityTypes.INSTANCE.DEACON_ADULT.get(),
 
-                AVPRunnerAlienEntityTypes.CHESTBURSTER_RUNNER.get(),
-                AVPRunnerAlienEntityTypes.DRONE_RUNNER.get(),
-                AVPRunnerAlienEntityTypes.WARRIOR_RUNNER.get()
+                AVPRunnerAlienEntityTypes.INSTANCE.CHESTBURSTER_RUNNER.get(),
+                AVPRunnerAlienEntityTypes.INSTANCE.DRONE_RUNNER.get(),
+                AVPRunnerAlienEntityTypes.INSTANCE.WARRIOR_RUNNER.get()
             );
 
         getOrCreateTagBuilder(AVPEntityTags.ACID_BLEEDERS)
@@ -83,7 +83,7 @@ public class AVPEntityTagsProvider extends FabricTagProvider.EntityTypeTagProvid
             .addTag(AVPEntityTags.ACID_BLEEDERS);
 
         getOrCreateTagBuilder(AVPEntityTags.ENGINEERS).add(
-            AVPEngineerEntityTypes.ENGINEER.get()
+            AVPEngineerEntityTypes.INSTANCE.ENGINEER.get()
         );
 
         getOrCreateTagBuilder(AVPEntityTags.NOT_WORTH_KILLING)
@@ -145,7 +145,7 @@ public class AVPEntityTagsProvider extends FabricTagProvider.EntityTypeTagProvid
             );
 
         getOrCreateTagBuilder(AVPEntityTags.PREDATORS)
-            .add(AVPYautjaEntityTypes.YAUTJA.get());
+            .add(AVPYautjaEntityTypes.INSTANCE.YAUTJA.get());
     }
 
     private void modifyMinecraftTags() {

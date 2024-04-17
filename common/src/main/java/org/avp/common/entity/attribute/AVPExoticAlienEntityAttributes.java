@@ -45,14 +45,11 @@ public class AVPExoticAlienEntityAttributes {
         .build();
 
     public static void addBindings() {
-        AVPEntityAttributesBindingRegistry.addBinding(
-            AVPExoticAlienEntityTypes.DEACON_ADULT_ENGINEER,
-            DEACON_ADULT_ENGINEER
-        );
-        AVPEntityAttributesBindingRegistry.addBinding(AVPExoticAlienEntityTypes.DRACOBURSTER, DRACOBURSTER);
-        AVPEntityAttributesBindingRegistry.addBinding(AVPExoticAlienEntityTypes.DRACOMORPH, DRACOMORPH);
-        AVPEntityAttributesBindingRegistry.addBinding(AVPExoticAlienEntityTypes.OCTOHUGGER, OCTOHUGGER);
-        AVPEntityAttributesBindingRegistry.addBinding(AVPExoticAlienEntityTypes.OVAMORPH_DRACO, OVAMORPH_DRACO);
-        AVPEntityAttributesBindingRegistry.addBinding(AVPExoticAlienEntityTypes.ULTRAMORPH, ULTRAMORPH);
+        AVPEntityAttributesBindingRegistry.addBinding(AVPExoticAlienEntityTypes.INSTANCE.DEACON_ADULT_ENGINEER, DEACON_ADULT_ENGINEER);
+        AVPEntityAttributesBindingRegistry.addBinding(AVPExoticAlienEntityTypes.INSTANCE.DRACOBURSTER, DRACOBURSTER);
+        AVPEntityAttributesBindingRegistry.addBinding(AVPExoticAlienEntityTypes.INSTANCE.DRACOMORPH, DRACOMORPH);
+        AVPEntityAttributesBindingRegistry.addBinding(AVPExoticAlienEntityTypes.INSTANCE.OCTOHUGGER, OCTOHUGGER);
+        AVPEntityAttributesBindingRegistry.addBinding(AVPExoticAlienEntityTypes.INSTANCE.OVAMORPH_DRACO, OVAMORPH_DRACO);
+        AVPEntityAttributesBindingRegistry.addBinding(AVPExoticAlienEntityTypes.INSTANCE.ULTRAMORPH, ULTRAMORPH);
     }
 }

@@ -23,16 +23,16 @@ public class AVPEntityLootTableProvider extends AbstractAVPEntityLootTableProvid
     public void generate() {
         // Base line
         addQueenLootTable();
-        addStandardXenomorphLootTable(AVPBaseAlienEntityTypes.BOILER);
-        addStandardXenomorphLootTable(AVPBaseAlienEntityTypes.DRONE);
-        addStandardXenomorphLootTable(AVPBaseAlienEntityTypes.PRAETORIAN);
-        addStandardXenomorphLootTable(AVPBaseAlienEntityTypes.SPITTER);
-        addStandardXenomorphLootTable(AVPBaseAlienEntityTypes.WARRIOR);
+        addStandardXenomorphLootTable(AVPBaseAlienEntityTypes.INSTANCE.BOILER);
+        addStandardXenomorphLootTable(AVPBaseAlienEntityTypes.INSTANCE.DRONE);
+        addStandardXenomorphLootTable(AVPBaseAlienEntityTypes.INSTANCE.PRAETORIAN);
+        addStandardXenomorphLootTable(AVPBaseAlienEntityTypes.INSTANCE.SPITTER);
+        addStandardXenomorphLootTable(AVPBaseAlienEntityTypes.INSTANCE.WARRIOR);
 
         // Runner line
-        addStandardXenomorphLootTable(AVPRunnerAlienEntityTypes.CRUSHER);
-        addStandardXenomorphLootTable(AVPRunnerAlienEntityTypes.DRONE_RUNNER);
-        addStandardXenomorphLootTable(AVPRunnerAlienEntityTypes.WARRIOR_RUNNER);
+        addStandardXenomorphLootTable(AVPRunnerAlienEntityTypes.INSTANCE.CRUSHER);
+        addStandardXenomorphLootTable(AVPRunnerAlienEntityTypes.INSTANCE.DRONE_RUNNER);
+        addStandardXenomorphLootTable(AVPRunnerAlienEntityTypes.INSTANCE.WARRIOR_RUNNER);
 
         // Yautja
         addYautjaLootTable();
@@ -57,7 +57,7 @@ public class AVPEntityLootTableProvider extends AbstractAVPEntityLootTableProvid
 
     private void addQueenLootTable() {
         add(
-            AVPBaseAlienEntityTypes.QUEEN.get(),
+            AVPBaseAlienEntityTypes.INSTANCE.QUEEN.get(),
             LootTable.lootTable()
                 .withPool(
                     LootPool.lootPool()
@@ -82,7 +82,7 @@ public class AVPEntityLootTableProvider extends AbstractAVPEntityLootTableProvid
 
     private void addYautjaLootTable() {
         add(
-            AVPYautjaEntityTypes.YAUTJA.get(),
+            AVPYautjaEntityTypes.INSTANCE.YAUTJA.get(),
             LootTable.lootTable()
                 .withPool(
                     LootPool.lootPool()

@@ -15,6 +15,6 @@ public class AVPYautjaEntityAttributes {
         .build();
 
     public static void addBindings() {
-        AVPEntityAttributesBindingRegistry.addBinding(AVPYautjaEntityTypes.YAUTJA, YAUTJA);
+        AVPEntityAttributesBindingRegistry.addBinding(AVPYautjaEntityTypes.INSTANCE.YAUTJA, YAUTJA);
     }
 }

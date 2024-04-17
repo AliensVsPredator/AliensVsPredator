@@ -1,0 +1,60 @@
+package org.avp.common.registry;
+
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.SpawnEggItem;
+import org.avp.api.GameObject;
+import org.avp.common.item.AVPSpawnEggItems;
+import org.avp.common.service.Services;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Supplier;
+
+public class AVPSimpleDeferredEntityTypeRegistry extends AVPAbstractDeferredEntityTypeRegistry {
+
+
+    protected final List<GameObject<? extends EntityType<? extends Mob>>> livingEntries;
+
+    protected AVPSimpleDeferredEntityTypeRegistry() {
+        livingEntries = new ArrayList<>();
+    }
+
+    @Override
+    protected <T extends Entity> GameObject<EntityType<T>> createHolder(String registryName, Supplier<EntityType<T>> supplier) {
+        var holder = Services.ENTITY_SERVICE.createHolder(registryName, supplier);
+        entries.add(holder);
+        return holder;
+    }
+
+    protected <T extends Entity> GameObject<EntityType<T>> createHolder(String registryName, EntityType.Builder<T> builder) {
+        return createHolder(registryName, () -> builder.build(registryName));
+    }
+
+    protected <T extends Mob> GameObject<EntityType<T>> createMobHolder(
+        String registryName,
+        int backgroundColor,
+        int highlightColor,
+        EntityType.Builder<T> builder
+    ) {
+        var holder = createHolder(registryName,  () -> builder.build(registryName));
+        livingEntries.add(holder);
+
+        var spawnEggGameObject = Services.ITEM_REGISTRY.createHolder(
+            "spawn_egg_" + registryName,
+            () -> Services.ENTITY_SERVICE.createSpawnEggItem(holder, backgroundColor, highlightColor, new Item.Properties())
+        );
+        AVPSpawnEggItems.INSTANCE.addHolder(spawnEggGameObject);
+
+        return holder;
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public final void register() {
+        entries.forEach(holder -> Services.ENTITY_SERVICE.register((GameObject<EntityType<?>>) holder));
+    }
+}

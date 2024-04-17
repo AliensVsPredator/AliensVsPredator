@@ -28,7 +28,7 @@ public abstract class MixinLivingEntityProduceAcid extends Entity {
         var level = self.level();
 
         if (!level.isClientSide() && self.getType().is(AVPEntityTags.ACID_BLEEDERS)) {
-            AVPEntityTypes.ACID.get().spawn((ServerLevel) level, self.blockPosition(), MobSpawnType.NATURAL);
+            AVPEntityTypes.INSTANCE.ACID.get().spawn((ServerLevel) level, self.blockPosition(), MobSpawnType.NATURAL);
         }
     }
 }

@@ -8,11 +8,11 @@ public class AVPExoticAlienEntityRenderers {
     private AVPExoticAlienEntityRenderers() {}
 
     public static void addBindings() {
-        AVPEntityRenderRegistry.addBinding(AVPExoticAlienEntityTypes.DEACON_ADULT_ENGINEER, DeaconAdultEngineerRenderer::new);
-        AVPEntityRenderRegistry.addBinding(AVPExoticAlienEntityTypes.DRACOBURSTER, DracobursterRenderer::new);
-        AVPEntityRenderRegistry.addBinding(AVPExoticAlienEntityTypes.DRACOMORPH, DracomorphRenderer::new);
-        AVPEntityRenderRegistry.addBinding(AVPExoticAlienEntityTypes.OCTOHUGGER, OctohuggerRenderer::new);
-        AVPEntityRenderRegistry.addBinding(AVPExoticAlienEntityTypes.OVAMORPH_DRACO, OvamorphDracoRenderer::new);
-        AVPEntityRenderRegistry.addBinding(AVPExoticAlienEntityTypes.ULTRAMORPH, UltramorphRenderer::new);
+        AVPEntityRenderRegistry.addBinding(AVPExoticAlienEntityTypes.INSTANCE.DEACON_ADULT_ENGINEER, DeaconAdultEngineerRenderer::new);
+        AVPEntityRenderRegistry.addBinding(AVPExoticAlienEntityTypes.INSTANCE.DRACOBURSTER, DracobursterRenderer::new);
+        AVPEntityRenderRegistry.addBinding(AVPExoticAlienEntityTypes.INSTANCE.DRACOMORPH, DracomorphRenderer::new);
+        AVPEntityRenderRegistry.addBinding(AVPExoticAlienEntityTypes.INSTANCE.OCTOHUGGER, OctohuggerRenderer::new);
+        AVPEntityRenderRegistry.addBinding(AVPExoticAlienEntityTypes.INSTANCE.OVAMORPH_DRACO, OvamorphDracoRenderer::new);
+        AVPEntityRenderRegistry.addBinding(AVPExoticAlienEntityTypes.INSTANCE.ULTRAMORPH, UltramorphRenderer::new);
     }
 }

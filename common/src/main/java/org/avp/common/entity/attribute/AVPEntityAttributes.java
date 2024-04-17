@@ -21,8 +21,8 @@ public class AVPEntityAttributes {
 
     public static void addBindings() {
         // Unclassified
-        AVPEntityAttributesBindingRegistry.addBinding(AVPEntityTypes.BELUGABURSTER, BELUGABURSTER);
-        AVPEntityAttributesBindingRegistry.addBinding(AVPEntityTypes.BELUGAMORPH, BELUGAMORPH);
+        AVPEntityAttributesBindingRegistry.addBinding(AVPEntityTypes.INSTANCE.BELUGABURSTER, BELUGABURSTER);
+        AVPEntityAttributesBindingRegistry.addBinding(AVPEntityTypes.INSTANCE.BELUGAMORPH, BELUGAMORPH);
     }
 
     private AVPEntityAttributes() {

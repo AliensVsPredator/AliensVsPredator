@@ -8,6 +8,6 @@ public class AVPYautjaEntityRenderers {
     private AVPYautjaEntityRenderers() {}
 
     public static void addBindings() {
-        AVPEntityRenderRegistry.addBinding(AVPYautjaEntityTypes.YAUTJA, YautjaRenderer::new);
+        AVPEntityRenderRegistry.addBinding(AVPYautjaEntityTypes.INSTANCE.YAUTJA, YautjaRenderer::new);
     }
 }

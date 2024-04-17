@@ -11,9 +11,9 @@ public class AVPPrometheusAlienEntityRenderers {
     private AVPPrometheusAlienEntityRenderers() {}
 
     public static void addBindings() {
-        AVPEntityRenderRegistry.addBinding(AVPPrometheusAlienEntityTypes.DEACON, DeaconRenderer::new);
-        AVPEntityRenderRegistry.addBinding(AVPPrometheusAlienEntityTypes.DEACON_ADULT, DeaconAdultRenderer::new);
-        AVPEntityRenderRegistry.addBinding(AVPPrometheusAlienEntityTypes.TRILOBITE, TrilobiteRenderer::new);
-        AVPEntityRenderRegistry.addBinding(AVPPrometheusAlienEntityTypes.TRILOBITE_BABY, TrilobiteBabyRenderer::new);
+        AVPEntityRenderRegistry.addBinding(AVPPrometheusAlienEntityTypes.INSTANCE.DEACON, DeaconRenderer::new);
+        AVPEntityRenderRegistry.addBinding(AVPPrometheusAlienEntityTypes.INSTANCE.DEACON_ADULT, DeaconAdultRenderer::new);
+        AVPEntityRenderRegistry.addBinding(AVPPrometheusAlienEntityTypes.INSTANCE.TRILOBITE, TrilobiteRenderer::new);
+        AVPEntityRenderRegistry.addBinding(AVPPrometheusAlienEntityTypes.INSTANCE.TRILOBITE_BABY, TrilobiteBabyRenderer::new);
     }
 }
