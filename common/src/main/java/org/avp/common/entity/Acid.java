@@ -73,7 +73,7 @@ public class Acid extends Entity {
             }
             for (int i = 0; i < 2; i++) {
                 level.addAlwaysVisibleParticle(ParticleTypes.SMOKE, getRandomX(0.5), getRandomY(), getRandomZ(0.5), 0.0, 0.0, 0.0);
-                level.addAlwaysVisibleParticle(AVPParticleTypes.ACID.get(), getRandomX(0.5), getRandomY(), getRandomZ(0.5), 0.0, 0.0, 0.0);
+                level.addAlwaysVisibleParticle(AVPParticleTypes.INSTANCE.acid.get(), getRandomX(0.5), getRandomY(), getRandomZ(0.5), 0.0, 0.0, 0.0);
             }
         }
     }

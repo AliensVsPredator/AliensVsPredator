@@ -22,7 +22,8 @@ public class AVPFabricClient implements ClientModInitializer {
     public void onInitializeClient() {
         registerEntityRenderBindings();
 
-        AVPParticleTypes.forceInitialization();
+        // FIXME:
+//        AVPParticleTypes.INSTANCE.register();
 
         AVPDeferredBlockRegistry.getDataEntries().forEach(tuple -> {
             var block = tuple.first().get();

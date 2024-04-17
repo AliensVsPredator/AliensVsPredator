@@ -1,27 +1,25 @@
 package org.avp.fabric.service;
 
 import net.fabricmc.fabric.api.particle.v1.FabricParticleTypes;
-import net.minecraft.client.particle.ParticleProvider;
-import net.minecraft.client.particle.SpriteSet;
 import net.minecraft.core.Registry;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleType;
 import net.minecraft.core.registries.BuiltInRegistries;
 import org.avp.api.Holder;
-import org.avp.common.AVPResources;
 import org.avp.common.service.ParticleTypeService;
-import org.avp.common.service.Services;
 
-import java.util.function.Function;
+import java.util.function.Supplier;
 
 public class FabricParticleTypeService implements ParticleTypeService {
+
     @Override
-    public <T extends ParticleOptions> Holder<ParticleType<T>> register(String registryName, Function<SpriteSet, ParticleProvider<T>> factoryProvider) {
-        var particleType = this.<T>simple();
-        var resourceLocation = AVPResources.location(registryName);
-        Registry.register(BuiltInRegistries.PARTICLE_TYPE, resourceLocation, particleType);
-        Services.PARTICLE_PROVIDER_SERVICE.register(() -> particleType, factoryProvider);
-        return new Holder<>(registryName, () -> particleType);
+    public <T extends ParticleOptions> Holder<ParticleType<T>> createHolder(String registryName, Supplier<ParticleType<T>> supplier) {
+        return new Holder<>(registryName, this::simple);
+    }
+
+    @Override
+    public void register(Holder<ParticleType<?>> holder) {
+        Registry.register(BuiltInRegistries.PARTICLE_TYPE, holder.getResourceLocation(), holder.get());
     }
 
     @SuppressWarnings("unchecked")
