@@ -8,9 +8,11 @@ import java.util.function.Supplier;
 
 import org.avp.api.GameObject;
 
-public interface BlockRegistry {
+public interface BlockService {
 
-    GameObject<Block> register(String registryName, Supplier<Block> supplier);
+    GameObject<Block> createHolder(String registryName, Supplier<Block> supplier);
+
+    void register(GameObject<Block> blockGameObject);
 
     StairBlock createStairBlock(GameObject<Block> blockGameObject, BlockBehaviour.Properties properties);
 }

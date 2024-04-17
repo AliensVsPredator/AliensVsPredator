@@ -11,43 +11,41 @@ import java.util.function.Supplier;
 
 import org.avp.api.GameObject;
 import org.avp.api.block.BlockData;
+import org.avp.common.registry.AVPDeferredBlockRegistry;
 
-public class AVPUnidentifiedBlocks {
+public class AVPUnidentifiedBlocks extends AVPDeferredBlockRegistry {
 
-    public static final BlockBehaviour.Properties STONE_PROPERTIES = BlockBehaviour.Properties.ofFullCopy(
+    public static final AVPUnidentifiedBlocks INSTANCE = new AVPUnidentifiedBlocks();
+
+    public final BlockBehaviour.Properties STONE_PROPERTIES = BlockBehaviour.Properties.ofFullCopy(
         Blocks.STONE
     )
         .mapColor(MapColor.COLOR_GRAY);
 
-    public static final GameObject<Block> DIRT;
+    public final GameObject<Block> DIRT;
 
-    public static final GameObject<Block> GRAVEL;
+    public final GameObject<Block> GRAVEL;
 
-    public static final GameObject<Block> ROCK;
+    public final GameObject<Block> ROCK;
 
-    public static final GameObject<Block> SAND;
+    public final GameObject<Block> SAND;
 
-    public static final GameObject<Block> STONE;
+    public final GameObject<Block> STONE;
 
-    public static void forceInitialization() {
-        // This method doesn't need to do anything
+    @Override
+    protected GameObject<Block> createHolder(String registryName, BlockData.Builder blockDataBuilder) {
+        return super.createHolder("unidentified_" + registryName, blockDataBuilder);
     }
 
-    private static GameObject<Block> register(String name, BlockData.Builder builder) {
-        return AVPBlocks.register("unidentified_" + name, builder);
-    }
-
-    private AVPUnidentifiedBlocks() {}
-
-    static {
+    private AVPUnidentifiedBlocks() {
         var stone = List.of(BlockTags.MINEABLE_WITH_PICKAXE);
 
         Supplier<BlockData.Builder> pickProps = () -> BlockData.simple(STONE_PROPERTIES).tags(stone);
 
-        DIRT = register("dirt", pickProps.get());
-        GRAVEL = register("gravel", pickProps.get());
-        ROCK = register("rock", pickProps.get());
-        SAND = register("sand", pickProps.get());
-        STONE = register("stone", pickProps.get());
+        DIRT = createHolder("dirt", pickProps.get());
+        GRAVEL = createHolder("gravel", pickProps.get());
+        ROCK = createHolder("rock", pickProps.get());
+        SAND = createHolder("sand", pickProps.get());
+        STONE = createHolder("stone", pickProps.get());
     }
 }

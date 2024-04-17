@@ -31,10 +31,10 @@ public final class AVPPaddingBlockRecipes {
         new Tuple<>(
             Items.ORANGE_DYE,
             List.of(
-                AVPPaddingBlocks.PADDING_ORANGE_PANEL,
-                AVPPaddingBlocks.PADDING_ORANGE_PIPES,
-                AVPPaddingBlocks.PADDING_ORANGE_SQUARE,
-                AVPPaddingBlocks.PADDING_ORANGE_TILES
+                AVPPaddingBlocks.INSTANCE.PADDING_ORANGE_PANEL,
+                AVPPaddingBlocks.INSTANCE.PADDING_ORANGE_PIPES,
+                AVPPaddingBlocks.INSTANCE.PADDING_ORANGE_SQUARE,
+                AVPPaddingBlocks.INSTANCE.PADDING_ORANGE_TILES
             )
         ),
         new Tuple<>(Items.PINK_DYE, null),
@@ -43,10 +43,10 @@ public final class AVPPaddingBlockRecipes {
         new Tuple<>(
             Items.WHITE_DYE,
             List.of(
-                AVPPaddingBlocks.PADDING_WHITE_PANEL,
-                AVPPaddingBlocks.PADDING_WHITE_PIPES,
-                AVPPaddingBlocks.PADDING_WHITE_SQUARE,
-                AVPPaddingBlocks.PADDING_WHITE_TILES
+                AVPPaddingBlocks.INSTANCE.PADDING_WHITE_PANEL,
+                AVPPaddingBlocks.INSTANCE.PADDING_WHITE_PIPES,
+                AVPPaddingBlocks.INSTANCE.PADDING_WHITE_SQUARE,
+                AVPPaddingBlocks.INSTANCE.PADDING_WHITE_TILES
             )
         ),
         new Tuple<>(Items.YELLOW_DYE, null)

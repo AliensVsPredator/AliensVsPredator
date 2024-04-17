@@ -11,52 +11,31 @@ import java.util.List;
 import org.avp.api.GameObject;
 import org.avp.api.Tuple;
 import org.avp.api.block.BlockData;
+import org.avp.common.registry.AVPDeferredBlockRegistry;
 import org.avp.common.service.Services;
 
-public class AVPBlocks {
+public class AVPBlocks extends AVPDeferredBlockRegistry {
 
-    private static final List<Tuple<GameObject<Block>, BlockData>> ENTRIES = new ArrayList<>();
+    public static final AVPBlocks INSTANCE = new AVPBlocks();
 
-    public static final BlockBehaviour.Properties ALUMINUM_PROPERTIES = BlockBehaviour.Properties.ofFullCopy(
+    public final BlockBehaviour.Properties ALUMINUM_PROPERTIES = BlockBehaviour.Properties.ofFullCopy(
         Blocks.IRON_BLOCK
     );
 
-    public static final BlockBehaviour.Properties TITANIUM_PROPERTIES = BlockBehaviour.Properties.ofFullCopy(
+    public final BlockBehaviour.Properties TITANIUM_PROPERTIES = BlockBehaviour.Properties.ofFullCopy(
         Blocks.IRON_BLOCK
     );
 
-    public static final GameObject<Block> ALUMINUM_BLOCK;
+    public final GameObject<Block> ALUMINUM_BLOCK;
 
-    public static final GameObject<Block> TITANIUM_BLOCK;
+    public final GameObject<Block> TITANIUM_BLOCK;
 
-    public static void forceInitialization() {
-        // This method doesn't need to do anything
-    }
-
-    public static List<Tuple<GameObject<Block>, BlockData>> getEntries() {
-        return ENTRIES;
-    }
-
-    protected static GameObject<Block> register(String registryName, BlockData.Builder blockDataBuilder, boolean addEntry) {
-        var blockData = blockDataBuilder.build();
-        var gameObject = Services.BLOCK_REGISTRY.register(registryName, blockData::create);
-        if (addEntry) {
-            ENTRIES.add(new Tuple<>(gameObject, blockData));
-        }
-        return gameObject;
-    }
-
-    protected static GameObject<Block> register(String registryName, BlockData.Builder blockDataBuilder) {
-        return register(registryName, blockDataBuilder, true);
-    }
-
-    private AVPBlocks() {}
-
-    static {
+    private AVPBlocks() {
+        super();
         var aluminum = List.of(BlockTags.MINEABLE_WITH_PICKAXE, BlockTags.NEEDS_STONE_TOOL);
         var titanium = List.of(BlockTags.MINEABLE_WITH_PICKAXE, BlockTags.NEEDS_IRON_TOOL);
 
-        ALUMINUM_BLOCK = register("aluminum_block", BlockData.simple(ALUMINUM_PROPERTIES).tags(aluminum));
-        TITANIUM_BLOCK = register("titanium_block", BlockData.simple(TITANIUM_PROPERTIES).tags(titanium));
+        ALUMINUM_BLOCK = createHolder("aluminum_block", BlockData.simple(ALUMINUM_PROPERTIES).tags(aluminum));
+        TITANIUM_BLOCK = createHolder("titanium_block", BlockData.simple(TITANIUM_PROPERTIES).tags(titanium));
     }
 }

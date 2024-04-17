@@ -6,7 +6,7 @@ import org.avp.common.AVPConstants;
 
 public class Services {
 
-    public static final BlockRegistry BLOCK_REGISTRY = load(BlockRegistry.class);
+    public static final BlockService BLOCK_SERVICE = load(BlockService.class);
 
     public static final CreativeModeTabRegistry CREATIVE_MODE_TAB_REGISTRY = load(CreativeModeTabRegistry.class);
 

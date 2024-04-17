@@ -7,41 +7,32 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.MapColor;
 
 import java.util.List;
-import java.util.function.Supplier;
 
 import org.avp.api.GameObject;
 import org.avp.api.block.BlockData;
+import org.avp.common.registry.AVPDeferredBlockRegistry;
 
-public class AVPAlienBlocks {
+public class AVPAlienBlocks extends AVPDeferredBlockRegistry {
 
-    public static final BlockBehaviour.Properties RESIN_PROPERTIES = BlockBehaviour.Properties.ofFullCopy(
-        Blocks.STONE
-    )
+    public static final AVPAlienBlocks INSTANCE = new AVPAlienBlocks();
+
+    public final BlockBehaviour.Properties resinProperties = BlockBehaviour.Properties.ofFullCopy(Blocks.STONE)
         .mapColor(MapColor.COLOR_GRAY);
 
-    public static final GameObject<Block> RESIN;
 
-    public static final GameObject<Block> RESIN_VEINS;
+    public final GameObject<Block> resin;
 
-    public static final GameObject<Block> RESIN_WEBBING;
+    public final GameObject<Block> resinVeins;
 
-    public static void forceInitialization() {
-        // This method doesn't need to do anything
-    }
+    public final GameObject<Block> resinWebbing;
 
-    private static GameObject<Block> register(String name, BlockData.Builder builder) {
-        return AVPBlocks.register(name, builder);
-    }
+    private AVPAlienBlocks() {
+        super();
+        var resinTags = List.of(BlockTags.MINEABLE_WITH_PICKAXE);
+        var pickaxeProps = BlockData.simple(resinProperties).tags(resinTags);
 
-    private AVPAlienBlocks() {}
-
-    static {
-        var resin = List.of(BlockTags.MINEABLE_WITH_PICKAXE);
-
-        Supplier<BlockData.Builder> pickProps = () -> BlockData.simple(RESIN_PROPERTIES).tags(resin);
-
-        RESIN = register("resin", pickProps.get());
-        RESIN_VEINS = register("resin_veins", pickProps.get());
-        RESIN_WEBBING = register("resin_webbing", pickProps.get());
+        resin = createHolder("resin", pickaxeProps);
+        resinVeins = createHolder("resin_veins", pickaxeProps);
+        resinWebbing = createHolder("resin_webbing", pickaxeProps);
     }
 }

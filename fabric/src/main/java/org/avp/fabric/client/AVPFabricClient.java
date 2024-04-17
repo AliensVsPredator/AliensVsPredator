@@ -15,6 +15,7 @@ import org.avp.client.AVPClientKeyBindings;
 import org.avp.client.render.entity.AVPEntityRenderRegistry;
 import org.avp.client.render.particle.AVPParticleTypes;
 import org.avp.common.block.AVPBlocks;
+import org.avp.common.registry.AVPDeferredBlockRegistry;
 
 public class AVPFabricClient implements ClientModInitializer {
 
@@ -24,7 +25,7 @@ public class AVPFabricClient implements ClientModInitializer {
 
         AVPParticleTypes.forceInitialization();
 
-        AVPBlocks.getEntries().forEach(tuple -> {
+        AVPDeferredBlockRegistry.getDataEntries().forEach(tuple -> {
             var block = tuple.first().get();
             var blockData = tuple.second();
             var factory = blockData.getFactory();

@@ -22,7 +22,7 @@ import org.avp.api.block.factory.BlockFactories;
 import org.avp.client.AVPClientKeyBindings;
 import org.avp.client.render.entity.AVPEntityRenderRegistry;
 import org.avp.common.AVPConstants;
-import org.avp.common.block.AVPBlocks;
+import org.avp.common.registry.AVPDeferredBlockRegistry;
 import org.avp.neoforge.service.NeoForgeParticleFactoryRegistry;
 
 @Mod.EventBusSubscriber(modid = AVPConstants.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
@@ -30,7 +30,7 @@ public class AVPNeoForgeClient {
 
     @SubscribeEvent
     public static void init(FMLClientSetupEvent event) {
-        AVPBlocks.getEntries().forEach(tuple -> {
+        AVPDeferredBlockRegistry.getDataEntries().forEach(tuple -> {
             var block = tuple.first().get();
             var blockData = tuple.second();
             var factory = blockData.getFactory();

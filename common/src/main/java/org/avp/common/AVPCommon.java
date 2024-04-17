@@ -17,11 +17,6 @@ import org.avp.common.entity.type.AVPYautjaEntityTypes;
 import org.avp.common.item.*;
 import org.avp.common.network.AVPNetworkPayloadHandlerRegistry;
 import org.avp.common.registry.AVPFuelRegistry;
-import org.avp.common.sound.AVPSoundEvents;
-import org.avp.common.tag.AVPBiomeTags;
-import org.avp.common.tag.AVPBlockTags;
-import org.avp.common.tag.AVPEntityTags;
-import org.avp.common.worldgen.feature.AVPOreFeatures;
 
 public class AVPCommon {
 
@@ -34,9 +29,6 @@ public class AVPCommon {
 
         // Networking
         AVPNetworkPayloadHandlerRegistry.forceInitialization();
-
-        // World Gen resource keys
-        AVPOreFeatures.forceInitialization();
 
         // Fuel
         AVPFuelRegistry.forceInitialization();
@@ -54,16 +46,16 @@ public class AVPCommon {
         AVPWeaponPartItems.forceInitialization();
 
         // Blocks
-        AVPAlienBlocks.forceInitialization();
-        AVPBlocks.forceInitialization();
-        AVPEngineerBlocks.forceInitialization();
-        AVPIndustrialBlocks.forceInitialization();
-        AVPOreBlocks.forceInitialization();
-        AVPPaddingBlocks.forceInitialization();
-        AVPParadiseBlocks.forceInitialization();
-        AVPTempleBlocks.forceInitialization();
-        AVPUnidentifiedBlocks.forceInitialization();
-        AVPYautjaShipBlocks.forceInitialization();
+        AVPAlienBlocks.INSTANCE.register();
+        AVPBlocks.INSTANCE.register();
+        AVPEngineerBlocks.INSTANCE.register();
+        AVPIndustrialBlocks.INSTANCE.register();
+        AVPOreBlocks.INSTANCE.register();
+        AVPPaddingBlocks.INSTANCE.register();
+        AVPParadiseBlocks.INSTANCE.register();
+        AVPTempleBlocks.INSTANCE.register();
+        AVPUnidentifiedBlocks.INSTANCE.register();
+        AVPYautjaShipBlocks.INSTANCE.register();
 
         // Entities
         AVPBaseAlienEntityTypes.forceInitialization();
@@ -80,9 +72,6 @@ public class AVPCommon {
 
         // It's important to register creative mode tabs last, as entities generate spawn eggs automatically.
         AVPCreativeModeTabs.register();
-
-        // Sounds
-        AVPSoundEvents.forceInitialization();
     }
 
     private AVPCommon() {

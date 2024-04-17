@@ -11,20 +11,23 @@ import java.util.function.Supplier;
 
 import org.avp.api.GameObject;
 import org.avp.common.AVPConstants;
-import org.avp.common.service.BlockRegistry;
+import org.avp.common.service.BlockService;
 import org.avp.common.service.Services;
 import org.avp.neoforge.util.ForgeGameObject;
 
-public class NeoForgeBlockRegistry implements BlockRegistry {
+public class NeoForgeBlockService implements BlockService {
 
     public static final DeferredRegister<Block> BLOCKS = DeferredRegister.createBlocks(AVPConstants.MOD_ID);
 
     @Override
-    public GameObject<Block> register(String registryName, Supplier<Block> supplier) {
+    public GameObject<Block> createHolder(String registryName, Supplier<Block> supplier) {
         var gameObject = new ForgeGameObject<>(BLOCKS, registryName, supplier);
         Services.ITEM_REGISTRY.register(registryName, () -> new BlockItem(gameObject.get(), new Item.Properties()));
         return gameObject;
     }
+
+    @Override
+    public void register(GameObject<Block> blockGameObject) { /* NO-OP FOR FORGE */ }
 
     @Override
     public StairBlock createStairBlock(GameObject<Block> blockGameObject, BlockBehaviour.Properties properties) {

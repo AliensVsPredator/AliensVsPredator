@@ -16,6 +16,7 @@ import org.avp.api.Tuple;
 import org.avp.common.AVPConstants;
 import org.avp.common.block.*;
 import org.avp.common.item.*;
+import org.avp.common.registry.AVPDeferredBlockRegistry;
 import org.avp.common.service.Services;
 
 public final class AVPCreativeModeTabs {
@@ -63,10 +64,10 @@ public final class AVPCreativeModeTabs {
         registerCreativeModeTab(
             "blocks",
             () -> CreativeModeTab.builder(CreativeModeTab.Row.TOP, 1)
-                .icon(AVPTempleBlocks.BRICK.get().asItem()::getDefaultInstance)
+                .icon(AVPTempleBlocks.INSTANCE.BRICK.get().asItem()::getDefaultInstance)
                 .displayItems(
                     (itemDisplayParameters, output) -> output.acceptAll(
-                        blocksToItemStacks(AVPBlocks.getEntries().stream().map(Tuple::first).toList())
+                        blocksToItemStacks(AVPDeferredBlockRegistry.getDataEntries().stream().map(Tuple::first).toList())
                     )
                 )
         );

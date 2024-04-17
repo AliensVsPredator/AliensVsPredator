@@ -15,14 +15,14 @@ public final class AVPNeodymiumRecipes {
             recipeOutput,
             RecipeCategory.BUILDING_BLOCKS,
             AVPItems.NEODYMIUM.get(),
-            AVPOreBlocks.NEODYMIUM_BLOCK.get()
+            AVPOreBlocks.INSTANCE.NEODYMIUM_BLOCK.get()
         );
 
         // Decompressed items from blocks
         AVPRecipeHelper.decompressedItemRecipe(
             recipeOutput,
             RecipeCategory.MISC,
-            AVPOreBlocks.NEODYMIUM_BLOCK.get(),
+            AVPOreBlocks.INSTANCE.NEODYMIUM_BLOCK.get(),
             AVPItems.NEODYMIUM.get()
         );
     }

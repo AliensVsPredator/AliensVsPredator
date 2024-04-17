@@ -13,68 +13,65 @@ import org.avp.api.GameObject;
 import org.avp.api.block.BlockData;
 import org.avp.api.block.drop.BlockDropUtils;
 import org.avp.common.item.AVPItems;
+import org.avp.common.registry.AVPDeferredBlockRegistry;
 
-public class AVPOreBlocks {
+public class AVPOreBlocks extends AVPDeferredBlockRegistry {
 
-    private static final BlockBehaviour.Properties BAUXITE_PROPERTIES = BlockBehaviour.Properties.ofFullCopy(
+    public static final AVPOreBlocks INSTANCE = new AVPOreBlocks();
+
+    private final BlockBehaviour.Properties BAUXITE_PROPERTIES = BlockBehaviour.Properties.ofFullCopy(
         Blocks.STONE
     )
         .strength(3.2F, 2.6F);
 
-    private static final BlockBehaviour.Properties COBALT_PROPERTIES = BlockBehaviour.Properties.ofFullCopy(Blocks.STONE)
+    private final BlockBehaviour.Properties COBALT_PROPERTIES = BlockBehaviour.Properties.ofFullCopy(Blocks.STONE)
         .strength(50F, 20F);
 
-    private static final BlockBehaviour.Properties LITHIUM_PROPERTIES = BlockBehaviour.Properties.ofFullCopy(
+    private final BlockBehaviour.Properties LITHIUM_PROPERTIES = BlockBehaviour.Properties.ofFullCopy(
         Blocks.STONE
     )
         .strength(4.2F, 5.4F);
 
-    private static final BlockBehaviour.Properties MONAZITE_PROPERTIES = BlockBehaviour.Properties.ofFullCopy(
+    private final BlockBehaviour.Properties MONAZITE_PROPERTIES = BlockBehaviour.Properties.ofFullCopy(
         Blocks.STONE
     )
         .strength(45F, 15F);
 
-    private static final BlockBehaviour.Properties SILICA_PROPERTIES = BlockBehaviour.Properties.ofFullCopy(Blocks.STONE)
+    private final BlockBehaviour.Properties SILICA_PROPERTIES = BlockBehaviour.Properties.ofFullCopy(Blocks.STONE)
         .strength(2.2F, 1.4F);
 
-    private static final BlockBehaviour.Properties TITANIUM_PROPERTIES = BlockBehaviour.Properties.ofFullCopy(Blocks.STONE)
+    private final BlockBehaviour.Properties TITANIUM_PROPERTIES = BlockBehaviour.Properties.ofFullCopy(Blocks.STONE)
         .strength(4.0F, 4.0F);
 
-    public static final GameObject<Block> ORE_BAUXITE;
+    public final GameObject<Block> ORE_BAUXITE;
 
-    public static final GameObject<Block> ORE_COBALT;
+    public final GameObject<Block> ORE_COBALT;
 
-    public static final GameObject<Block> ORE_LITHIUM;
+    public final GameObject<Block> ORE_LITHIUM;
 
-    public static final GameObject<Block> ORE_MONAZITE;
+    public final GameObject<Block> ORE_MONAZITE;
 
-    public static final GameObject<Block> ORE_SILICA;
+    public final GameObject<Block> ORE_SILICA;
 
-    public static final GameObject<Block> ORE_TITANIUM;
+    public final GameObject<Block> ORE_TITANIUM;
 
-    public static final GameObject<Block> RAW_BAUXITE_BLOCK;
+    public final GameObject<Block> RAW_BAUXITE_BLOCK;
 
-    public static final GameObject<Block> RAW_TITANIUM_BLOCK;
+    public final GameObject<Block> RAW_TITANIUM_BLOCK;
 
-    public static final GameObject<Block> COBALT_BLOCK;
+    public final GameObject<Block> COBALT_BLOCK;
 
-    public static final GameObject<Block> LITHIUM_BLOCK;
+    public final GameObject<Block> LITHIUM_BLOCK;
 
-    public static final GameObject<Block> NEODYMIUM_BLOCK;
+    public final GameObject<Block> NEODYMIUM_BLOCK;
 
-    public static final GameObject<Block> SILICA_BLOCK;
+    public final GameObject<Block> SILICA_BLOCK;
 
-    public static void forceInitialization() {
-        // This method doesn't need to do anything
+    protected GameObject<Block> createOreHolder(String registryName, BlockData.Builder blockDataBuilder) {
+        return super.createHolder("ore_" + registryName, blockDataBuilder);
     }
 
-    private static GameObject<Block> register(String name, BlockData.Builder builder) {
-        return AVPBlocks.register("ore_" + name, builder);
-    }
-
-    private AVPOreBlocks() {}
-
-    static {
+    private AVPOreBlocks() {
         var woodTier = List.of(BlockTags.MINEABLE_WITH_PICKAXE);
         var stoneTier = List.of(BlockTags.MINEABLE_WITH_PICKAXE, BlockTags.NEEDS_STONE_TOOL);
         var ironTier = List.of(BlockTags.MINEABLE_WITH_PICKAXE, BlockTags.NEEDS_IRON_TOOL);
@@ -84,22 +81,22 @@ public class AVPOreBlocks {
             properties
         ).drop(BlockDropUtils.ore(item));
 
-        ORE_BAUXITE = register("bauxite", oreProps.apply(BAUXITE_PROPERTIES, AVPItems.RAW_BAUXITE).tags(stoneTier));
-        ORE_COBALT = register("cobalt", oreProps.apply(COBALT_PROPERTIES, AVPItems.COBALT).tags(diamondTier));
+        ORE_BAUXITE = createOreHolder("bauxite", oreProps.apply(BAUXITE_PROPERTIES, AVPItems.RAW_BAUXITE).tags(stoneTier));
+        ORE_COBALT = createOreHolder("cobalt", oreProps.apply(COBALT_PROPERTIES, AVPItems.COBALT).tags(diamondTier));
 
-        ORE_LITHIUM = register("lithium", oreProps.apply(LITHIUM_PROPERTIES, AVPItems.DUST_LITHIUM).tags(woodTier));
-        ORE_MONAZITE = register("monazite", oreProps.apply(MONAZITE_PROPERTIES, AVPItems.NEODYMIUM).tags(diamondTier));
+        ORE_LITHIUM = createOreHolder("lithium", oreProps.apply(LITHIUM_PROPERTIES, AVPItems.DUST_LITHIUM).tags(woodTier));
+        ORE_MONAZITE = createOreHolder("monazite", oreProps.apply(MONAZITE_PROPERTIES, AVPItems.NEODYMIUM).tags(diamondTier));
 
-        ORE_SILICA = register("silica", oreProps.apply(SILICA_PROPERTIES, AVPItems.SILICA).tags().tags(ironTier));
+        ORE_SILICA = createOreHolder("silica", oreProps.apply(SILICA_PROPERTIES, AVPItems.SILICA).tags().tags(ironTier));
 
-        ORE_TITANIUM = register("titanium", oreProps.apply(TITANIUM_PROPERTIES, AVPItems.RAW_TITANIUM).tags().tags(ironTier));
+        ORE_TITANIUM = createOreHolder("titanium", oreProps.apply(TITANIUM_PROPERTIES, AVPItems.RAW_TITANIUM).tags().tags(ironTier));
 
-        // NOTE: DO NOT USE AVPOreBlocks#register HERE.
-        RAW_BAUXITE_BLOCK = AVPBlocks.register("raw_bauxite_block", BlockData.simple(BAUXITE_PROPERTIES).tags(stoneTier));
-        RAW_TITANIUM_BLOCK = AVPBlocks.register("raw_titanium_block", BlockData.simple(TITANIUM_PROPERTIES).tags(ironTier));
-        COBALT_BLOCK = AVPBlocks.register("cobalt_block", BlockData.simple(COBALT_PROPERTIES).tags(diamondTier));
-        LITHIUM_BLOCK = AVPBlocks.register("lithium_block", BlockData.simple(LITHIUM_PROPERTIES).tags(woodTier));
-        NEODYMIUM_BLOCK = AVPBlocks.register("neodymium_block", BlockData.simple(MONAZITE_PROPERTIES).tags(diamondTier));
-        SILICA_BLOCK = AVPBlocks.register("silica_block", BlockData.simple(SILICA_PROPERTIES).tags(ironTier));
+        // NOTE: DO NOT USE AVPOreBlocks#createHolder HERE.
+        RAW_BAUXITE_BLOCK = createHolder("raw_bauxite_block", BlockData.simple(BAUXITE_PROPERTIES).tags(stoneTier));
+        RAW_TITANIUM_BLOCK = createHolder("raw_titanium_block", BlockData.simple(TITANIUM_PROPERTIES).tags(ironTier));
+        COBALT_BLOCK = createHolder("cobalt_block", BlockData.simple(COBALT_PROPERTIES).tags(diamondTier));
+        LITHIUM_BLOCK = createHolder("lithium_block", BlockData.simple(LITHIUM_PROPERTIES).tags(woodTier));
+        NEODYMIUM_BLOCK = createHolder("neodymium_block", BlockData.simple(MONAZITE_PROPERTIES).tags(diamondTier));
+        SILICA_BLOCK = createHolder("silica_block", BlockData.simple(SILICA_PROPERTIES).tags(ironTier));
     }
 }

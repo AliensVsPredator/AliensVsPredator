@@ -16,6 +16,6 @@ public class StairBlockFactory implements BlockFactory {
 
     @Override
     public Block create(BlockBehaviour.Properties properties) {
-        return Services.BLOCK_REGISTRY.createStairBlock(parent, properties);
+        return Services.BLOCK_SERVICE.createStairBlock(parent, properties);
     }
 }

@@ -19,11 +19,12 @@ import org.avp.api.block.factory.FenceGateBlockFactory;
 import org.avp.api.block.factory.StairBlockFactory;
 import org.avp.common.block.AVPBlocks;
 import org.avp.common.item.AVPSpawnEggItems;
+import org.avp.common.registry.AVPDeferredBlockRegistry;
 
 public class AVPFabricBlockModelProvider {
 
     public static void addBlockModels(BlockModelGenerators generator) {
-        AVPBlocks.getEntries().forEach(tuple -> computeBlockModels(generator, tuple));
+        AVPDeferredBlockRegistry.getDataEntries().forEach(tuple -> computeBlockModels(generator, tuple));
 
         // Listen, I don't like this any more than you do. But Mojang also does this, so...
         AVPSpawnEggItems.ENTRIES.forEach(

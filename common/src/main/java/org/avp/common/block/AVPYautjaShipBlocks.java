@@ -13,52 +13,50 @@ import java.util.function.Supplier;
 import org.avp.api.GameObject;
 import org.avp.api.block.BlockData;
 import org.avp.api.block.BlockDataUtils;
+import org.avp.common.registry.AVPDeferredBlockRegistry;
 
-public class AVPYautjaShipBlocks {
+public class AVPYautjaShipBlocks extends AVPDeferredBlockRegistry {
 
-    public static final BlockBehaviour.Properties PROPERTIES = BlockBehaviour.Properties.ofFullCopy(
+    public static final AVPYautjaShipBlocks INSTANCE = new AVPYautjaShipBlocks();
+
+    public final BlockBehaviour.Properties PROPERTIES = BlockBehaviour.Properties.ofFullCopy(
         Blocks.IRON_BLOCK
     )
         .mapColor(MapColor.COLOR_RED)
         .strength(75.0F, 1500.0F);
 
-    public static final GameObject<Block> BRICK;
+    public final GameObject<Block> BRICK;
 
-    public static final GameObject<Block> BRICK_SLAB;
+    public final GameObject<Block> BRICK_SLAB;
 
-    public static final GameObject<Block> BRICK_STAIRS;
+    public final GameObject<Block> BRICK_STAIRS;
 
-    public static final GameObject<Block> BRICK_WALL;
+    public final GameObject<Block> BRICK_WALL;
 
-    public static final GameObject<Block> DECOR_1;
+    public final GameObject<Block> DECOR_1;
 
-    public static final GameObject<Block> DECOR_2;
+    public final GameObject<Block> DECOR_2;
 
-    public static final GameObject<Block> DECOR_3;
+    public final GameObject<Block> DECOR_3;
 
-    public static final GameObject<Block> DECOR_3_SLAB;
+    public final GameObject<Block> DECOR_3_SLAB;
 
-    public static final GameObject<Block> DECOR_3_STAIRS;
+    public final GameObject<Block> DECOR_3_STAIRS;
 
-    public static final GameObject<Block> DECOR_3_WALL;
+    public final GameObject<Block> DECOR_3_WALL;
 
-    public static final GameObject<Block> PANEL;
+    public final GameObject<Block> PANEL;
 
-    public static final GameObject<Block> SUPPORT_PILLAR;
+    public final GameObject<Block> SUPPORT_PILLAR;
 
-    public static final GameObject<Block> WALL_BASE;
+    public final GameObject<Block> WALL_BASE;
 
-    public static void forceInitialization() {
-        // This method doesn't need to do anything
+    @Override
+    protected GameObject<Block> createHolder(String registryName, BlockData.Builder blockDataBuilder) {
+        return super.createHolder("yautja_ship_" + registryName, blockDataBuilder);
     }
 
-    private static GameObject<Block> register(String name, BlockData.Builder builder) {
-        return AVPBlocks.register("yautja_ship_" + name, builder);
-    }
-
-    private AVPYautjaShipBlocks() {}
-
-    static {
+    private AVPYautjaShipBlocks() {
         var metal = List.of(BlockTags.MINEABLE_WITH_PICKAXE, BlockTags.NEEDS_DIAMOND_TOOL);
 
         Supplier<BlockData.Builder> pickProps = () -> BlockData.simple(PROPERTIES).tags(metal);
@@ -70,21 +68,21 @@ public class AVPYautjaShipBlocks {
         Function<GameObject<Block>, BlockData.Builder> wallProps =
             parent -> BlockDataUtils.wall(parent, PROPERTIES).tags(metal);
 
-        BRICK = register("brick", pickProps.get());
-        BRICK_SLAB = register("brick_slab", slabProps.apply(BRICK));
-        BRICK_STAIRS = register("brick_stairs", stairProps.apply(BRICK));
-        BRICK_WALL = register("brick_wall", wallProps.apply(BRICK));
+        BRICK = createHolder("brick", pickProps.get());
+        BRICK_SLAB = createHolder("brick_slab", slabProps.apply(BRICK));
+        BRICK_STAIRS = createHolder("brick_stairs", stairProps.apply(BRICK));
+        BRICK_WALL = createHolder("brick_wall", wallProps.apply(BRICK));
 
-        DECOR_1 = register("decor_1", pickProps.get());
-        DECOR_2 = register("decor_2", pickProps.get());
+        DECOR_1 = createHolder("decor_1", pickProps.get());
+        DECOR_2 = createHolder("decor_2", pickProps.get());
 
-        DECOR_3 = register("decor_3", pickProps.get());
-        DECOR_3_SLAB = register("decor_3_slab", slabProps.apply(DECOR_3));
-        DECOR_3_STAIRS = register("decor_3_stairs", stairProps.apply(DECOR_3));
-        DECOR_3_WALL = register("decor_3_wall", wallProps.apply(DECOR_3));
+        DECOR_3 = createHolder("decor_3", pickProps.get());
+        DECOR_3_SLAB = createHolder("decor_3_slab", slabProps.apply(DECOR_3));
+        DECOR_3_STAIRS = createHolder("decor_3_stairs", stairProps.apply(DECOR_3));
+        DECOR_3_WALL = createHolder("decor_3_wall", wallProps.apply(DECOR_3));
 
-        PANEL = register("panel", pickProps.get());
-        SUPPORT_PILLAR = register("support_pillar", pickProps.get());
-        WALL_BASE = register("wall_base", pickProps.get());
+        PANEL = createHolder("panel", pickProps.get());
+        SUPPORT_PILLAR = createHolder("support_pillar", pickProps.get());
+        WALL_BASE = createHolder("wall_base", pickProps.get());
     }
 }

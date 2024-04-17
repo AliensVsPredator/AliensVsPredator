@@ -10,9 +10,9 @@ import org.avp.common.block.AVPIndustrialBlocks;
 public class TestSchematicResolver {
 
     public static final Map<String, Block> RESOLVER_MAP = Map.ofEntries(
-        Map.entry("avp:industrialglass", AVPIndustrialBlocks.GLASS.get()),
-        Map.entry("avp:industrialwall", AVPIndustrialBlocks.WALL.get()),
-        Map.entry("avp:industrialwall2", AVPIndustrialBlocks.WALL_HAZARD.get()),
+        Map.entry("avp:industrialglass", AVPIndustrialBlocks.INSTANCE.GLASS.get()),
+        Map.entry("avp:industrialwall", AVPIndustrialBlocks.INSTANCE.WALL.get()),
+        Map.entry("avp:industrialwall2", AVPIndustrialBlocks.INSTANCE.WALL_HAZARD.get()),
         Map.entry("minecraft:air", Blocks.AIR),
 
         // WOOL PLACEHOLDERS

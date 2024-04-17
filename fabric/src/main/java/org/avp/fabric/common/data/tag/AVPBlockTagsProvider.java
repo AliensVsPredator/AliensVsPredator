@@ -8,6 +8,7 @@ import net.minecraft.tags.BlockTags;
 import java.util.concurrent.CompletableFuture;
 
 import org.avp.common.block.AVPBlocks;
+import org.avp.common.registry.AVPDeferredBlockRegistry;
 import org.avp.common.tag.AVPBlockTags;
 
 public class AVPBlockTagsProvider extends FabricTagProvider.BlockTagProvider {
@@ -22,7 +23,7 @@ public class AVPBlockTagsProvider extends FabricTagProvider.BlockTagProvider {
         // TODO: For some reason, adding irreplaceable features crashes datagen. Investigate later.
         getOrCreateTagBuilder(AVPBlockTags.ACID_IMMUNE).addOptionalTag(BlockTags.FEATURES_CANNOT_REPLACE);
 
-        AVPBlocks.getEntries().forEach(tuple -> {
+        AVPDeferredBlockRegistry.getDataEntries().forEach(tuple -> {
             var block = tuple.first().get();
             var blockData = tuple.second();
 
