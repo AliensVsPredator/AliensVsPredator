@@ -7,10 +7,10 @@ import net.minecraft.client.particle.SpriteSet;
 import net.minecraft.core.particles.SimpleParticleType;
 import org.jetbrains.annotations.NotNull;
 
-public class AcidParticleFactory implements ParticleProvider<SimpleParticleType> {
+public class AcidParticleProvider implements ParticleProvider<SimpleParticleType> {
     private final SpriteSet spriteProvider;
 
-    public AcidParticleFactory(SpriteSet spriteProvider) {
+    public AcidParticleProvider(SpriteSet spriteProvider) {
         this.spriteProvider = spriteProvider;
     }
 

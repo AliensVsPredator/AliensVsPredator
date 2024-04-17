@@ -25,7 +25,7 @@ public class AVPParticleTypes {
     }
 
     static {
-        ACID = registerSimple("acid", AcidParticleFactory::new);
+        ACID = registerSimple("acid", AcidParticleProvider::new);
     }
 
     private AVPParticleTypes() {}
