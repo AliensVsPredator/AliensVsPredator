@@ -8,7 +8,7 @@ import org.avp.common.AVPResources;
 
 public class AVPItemTags {
 
-    public static final TagKey<Item> ACID_RESISTANT = create("acid_resistant");
+    public static final TagKey<Item> ACID_IMMUNE = create("acid_immune");
 
     public static final TagKey<Item> GUNS = create("guns");
 

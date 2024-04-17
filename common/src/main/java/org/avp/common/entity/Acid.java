@@ -10,16 +10,13 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import org.avp.client.render.particle.AVPParticleTypes;
-import org.avp.common.item.AVPArmorItems;
 import org.avp.common.tag.AVPBlockTags;
 import org.avp.common.tag.AVPEntityTags;
+import org.avp.common.tag.AVPItemTags;
 import org.avp.server.BlockBreakProgressManager;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.Objects;
 
 public class Acid extends Entity {
 
@@ -86,8 +83,7 @@ public class Acid extends Entity {
         entities.forEach(entity -> {
             if (entity instanceof Player player && !player.isCreative()) {
                 var itemStack = player.getItemBySlot(EquipmentSlot.FEET);
-                // TODO: Make a tag for acid-resistant items.
-                if (!Objects.equals(itemStack, ItemStack.EMPTY) && !Objects.equals(itemStack.getItem(), AVPArmorItems.XENOMORPH_BOOTS.get())) {
+                if (!itemStack.is(AVPItemTags.ACID_IMMUNE)) {
                     itemStack.setDamageValue(itemStack.getDamageValue() + random.nextInt(3) + 3);
                     if (itemStack.getDamageValue() > itemStack.getMaxDamage()) {
                         itemStack.setCount(0);
