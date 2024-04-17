@@ -4,10 +4,11 @@ import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleProvider;
 import net.minecraft.client.particle.SpriteSet;
+import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.SimpleParticleType;
 import org.jetbrains.annotations.NotNull;
 
-public class AcidParticleProvider implements ParticleProvider<SimpleParticleType> {
+public class AcidParticleProvider<T extends ParticleOptions> implements ParticleProvider<T> {
     private final SpriteSet spriteProvider;
 
     public AcidParticleProvider(SpriteSet spriteProvider) {
@@ -16,7 +17,7 @@ public class AcidParticleProvider implements ParticleProvider<SimpleParticleType
 
     @Override
     public Particle createParticle(
-        @NotNull SimpleParticleType defaultParticleType,
+        @NotNull ParticleOptions particleOptions,
         @NotNull ClientLevel clientWorld,
         double d,
         double e,

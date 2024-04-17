@@ -13,7 +13,7 @@ import net.minecraft.world.entity.EntityType;
 import org.avp.api.block.factory.BlockFactories;
 import org.avp.client.AVPClientKeyBindings;
 import org.avp.client.render.entity.AVPEntityRenderRegistry;
-import org.avp.client.render.particle.AVPParticleTypes;
+import org.avp.client.render.particle.AVPParticleTypeProviders;
 import org.avp.common.registry.AVPDeferredBlockRegistry;
 
 public class AVPFabricClient implements ClientModInitializer {
@@ -22,8 +22,7 @@ public class AVPFabricClient implements ClientModInitializer {
     public void onInitializeClient() {
         registerEntityRenderBindings();
 
-        // FIXME:
-//        AVPParticleTypes.INSTANCE.register();
+        AVPParticleTypeProviders.INSTANCE.register();
 
         AVPDeferredBlockRegistry.getDataEntries().forEach(tuple -> {
             var block = tuple.first().get();

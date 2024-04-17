@@ -17,10 +17,10 @@ import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
 import net.neoforged.neoforge.client.event.RegisterParticleProvidersEvent;
 import net.neoforged.neoforge.event.TickEvent;
-
 import org.avp.api.block.factory.BlockFactories;
 import org.avp.client.AVPClientKeyBindings;
 import org.avp.client.render.entity.AVPEntityRenderRegistry;
+import org.avp.client.render.particle.AVPParticleTypeProviders;
 import org.avp.common.AVPConstants;
 import org.avp.common.registry.AVPDeferredBlockRegistry;
 import org.avp.neoforge.service.NeoForgeParticleProviderService;
@@ -61,11 +61,19 @@ public class AVPNeoForgeClient {
     @SubscribeEvent
     @SuppressWarnings("unchecked")
     public static void registerParticleProviders(RegisterParticleProvidersEvent event) {
-        NeoForgeParticleProviderService.getEntries().forEach(supplierFunctionTuple -> {
-            var supplier = supplierFunctionTuple.first();
-            var factoryProvider = supplierFunctionTuple.second();
-            var particleType = (ParticleType<ParticleOptions>) supplier.get();
-            event.registerSpriteSet(particleType, spriteSet -> (ParticleProvider<ParticleOptions>) factoryProvider.apply(spriteSet));
+        // Register the providers to our deferred registry, first.
+        AVPParticleTypeProviders.INSTANCE.register();
+
+        // Then iterate over them and register for NeoForge.
+        AVPParticleTypeProviders.INSTANCE.getEntries().forEach(particleProviderDataHolder -> {
+            var particleProviderData = particleProviderDataHolder.get();
+            var supplier = particleProviderData.particleTypeHolder();
+            var factoryProvider = particleProviderData.providerFactory();
+            var particleType = supplier.get();
+            event.registerSpriteSet(
+                (ParticleType<ParticleOptions>) particleType,
+                spriteSet -> (ParticleProvider<ParticleOptions>) factoryProvider.apply(spriteSet)
+            );
         });
     }
 
