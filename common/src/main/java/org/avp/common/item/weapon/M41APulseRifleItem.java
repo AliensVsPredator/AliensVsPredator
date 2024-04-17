@@ -19,7 +19,7 @@ public class M41APulseRifleItem extends AbstractAVPWeaponItem {
         "Burst",
         4,
         10,
-        AVPSoundEvents.ITEM_WEAPON_PULSE_RIFLE_SHOOT,
+        AVPSoundEvents.INSTANCE.ITEM_WEAPON_PULSE_RIFLE_SHOOT,
         64.0D,
         1F
     );
@@ -28,7 +28,7 @@ public class M41APulseRifleItem extends AbstractAVPWeaponItem {
         "Automatic",
         1,
         2,
-        AVPSoundEvents.ITEM_WEAPON_PULSE_RIFLE_SHOOT, // TODO:
+        AVPSoundEvents.INSTANCE.ITEM_WEAPON_PULSE_RIFLE_SHOOT, // TODO:
         64.0D,
         0.25F
     );
@@ -52,7 +52,7 @@ public class M41APulseRifleItem extends AbstractAVPWeaponItem {
         4F,
         0.13F,
         ReloadStrategy.builder(20 * 3)
-            .setReloadStartSound(AVPSoundEvents.ITEM_WEAPON_GENERIC_RELOAD)
+            .setReloadStartSound(AVPSoundEvents.INSTANCE.ITEM_WEAPON_GENERIC_RELOAD)
             .setTryReloadBehavior(TryReloadBehavior.STANDARD)
             .build(),
         ShootStrategy.builder().build()

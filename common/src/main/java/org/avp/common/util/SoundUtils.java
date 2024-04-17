@@ -12,13 +12,13 @@ public class SoundUtils {
         GameObject<SoundEvent> ricochetSfx;
 
         if (soundType == SoundType.GLASS) {
-            ricochetSfx = AVPSoundEvents.ITEM_WEAPON_FX_RICOCHET_GLASS;
+            ricochetSfx = AVPSoundEvents.INSTANCE.ITEM_WEAPON_FX_RICOCHET_GLASS;
         } else if (soundType == SoundType.GRAVEL) {
-            ricochetSfx = AVPSoundEvents.ITEM_WEAPON_FX_RICOCHET_DIRT;
+            ricochetSfx = AVPSoundEvents.INSTANCE.ITEM_WEAPON_FX_RICOCHET_DIRT;
         } else if (soundType == SoundType.METAL) {
-            ricochetSfx = AVPSoundEvents.ITEM_WEAPON_FX_RICOCHET_METAL;
+            ricochetSfx = AVPSoundEvents.INSTANCE.ITEM_WEAPON_FX_RICOCHET_METAL;
         } else {
-            ricochetSfx = AVPSoundEvents.ITEM_WEAPON_FX_RICOCHET_GENERIC;
+            ricochetSfx = AVPSoundEvents.INSTANCE.ITEM_WEAPON_FX_RICOCHET_GENERIC;
         }
         return ricochetSfx;
     }

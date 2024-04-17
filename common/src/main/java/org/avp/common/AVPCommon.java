@@ -17,6 +17,7 @@ import org.avp.common.entity.type.AVPYautjaEntityTypes;
 import org.avp.common.item.*;
 import org.avp.common.network.AVPNetworkPayloadHandlerRegistry;
 import org.avp.common.registry.AVPFuelRegistry;
+import org.avp.common.sound.AVPSoundEvents;
 
 public class AVPCommon {
 
@@ -56,6 +57,9 @@ public class AVPCommon {
         AVPTempleBlocks.INSTANCE.register();
         AVPUnidentifiedBlocks.INSTANCE.register();
         AVPYautjaShipBlocks.INSTANCE.register();
+
+        // Sounds
+        AVPSoundEvents.INSTANCE.register();
 
         // Entities
         AVPBaseAlienEntityTypes.forceInitialization();

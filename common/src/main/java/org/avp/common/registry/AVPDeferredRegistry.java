@@ -16,7 +16,7 @@ public abstract class AVPDeferredRegistry<T> {
 
     protected abstract GameObject<T> createHolder(String registryName, Supplier<T> supplier);
 
-    protected abstract void register();
+    public abstract void register();
 
     public Set<GameObject<T>> getEntries() {
         return entries;

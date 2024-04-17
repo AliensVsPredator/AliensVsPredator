@@ -18,7 +18,7 @@ public class FlamethrowerSevastopolItem extends AbstractAVPWeaponItem {
         "Automatic",
         1,
         1,
-        AVPSoundEvents.ITEM_WEAPON_FLAMETHROWER_SHOOT,
+        AVPSoundEvents.INSTANCE.ITEM_WEAPON_FLAMETHROWER_SHOOT,
         16.0D,
         0.0F
     );
@@ -32,8 +32,8 @@ public class FlamethrowerSevastopolItem extends AbstractAVPWeaponItem {
         1F,
         0.13F,
         ReloadStrategy.builder(20 * 5)
-            .setReloadFinishSound(AVPSoundEvents.ITEM_WEAPON_FLAMETHROWER_RELOAD_FINISH)
-            .setReloadStartSound(AVPSoundEvents.ITEM_WEAPON_FLAMETHROWER_RELOAD_START)
+            .setReloadFinishSound(AVPSoundEvents.INSTANCE.ITEM_WEAPON_FLAMETHROWER_RELOAD_FINISH)
+            .setReloadStartSound(AVPSoundEvents.INSTANCE.ITEM_WEAPON_FLAMETHROWER_RELOAD_START)
             .build(),
         ShootStrategy.builder().build()
     );

@@ -19,7 +19,7 @@ public class M3712ShotgunItem extends AbstractAVPWeaponItem {
         "Semi-Automatic",
         1,
         20,
-        AVPSoundEvents.ITEM_WEAPON_SHOTGUN_SHOOT,
+        AVPSoundEvents.INSTANCE.ITEM_WEAPON_SHOTGUN_SHOOT,
         6.0D,
         1.5F
     );
@@ -43,7 +43,7 @@ public class M3712ShotgunItem extends AbstractAVPWeaponItem {
         8F * 2,
         0.5F,
         ReloadStrategy.builder(20 * 4)
-            .setReloadStartSound(AVPSoundEvents.ITEM_WEAPON_GENERIC_RELOAD)
+            .setReloadStartSound(AVPSoundEvents.INSTANCE.ITEM_WEAPON_GENERIC_RELOAD)
             .setTryReloadBehavior(TryReloadBehavior.STANDARD)
             .build(),
         ShootStrategy.builder().build()

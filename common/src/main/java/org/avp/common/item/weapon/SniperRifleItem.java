@@ -19,7 +19,7 @@ public class SniperRifleItem extends AbstractAVPWeaponItem {
         "Semi-Automatic",
         1,
         30,
-        AVPSoundEvents.ITEM_WEAPON_SNIPER_RIFLE_SHOOT,
+        AVPSoundEvents.INSTANCE.INSTANCE.ITEM_WEAPON_SNIPER_RIFLE_SHOOT,
         128.0D,
         1.5F
     );
@@ -43,7 +43,7 @@ public class SniperRifleItem extends AbstractAVPWeaponItem {
         15F * 2,
         0.13F,
         ReloadStrategy.builder(20 * 7 + 10)
-            .setReloadStartSound(AVPSoundEvents.ITEM_WEAPON_GENERIC_RELOAD)
+            .setReloadStartSound(AVPSoundEvents.INSTANCE.INSTANCE.ITEM_WEAPON_GENERIC_RELOAD)
             .setTryReloadBehavior(TryReloadBehavior.STANDARD)
             .build(),
         ShootStrategy.builder().build()

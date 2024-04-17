@@ -29,7 +29,7 @@ public class AVPNeoForge {
         NeoForgeBlockService.BLOCKS.register(eventBus);
         NeoForgeEntityRegistry.ENTITY_TYPES.register(eventBus);
         NeoForgeParticleRegistry.PARTICLE_TYPES.register(eventBus);
-        NeoForgeSoundEventRegistry.SOUND_EVENTS.register(eventBus);
+        NeoForgeSoundEventService.SOUND_EVENTS.register(eventBus);
         eventBus.addListener(NeoForgeEntityAttributeRegistry.getInstance()::createEntityAttributes);
 
         NeoForge.EVENT_BUS.addListener(AVPNeoForgeCommands::registerCommandsEvent);

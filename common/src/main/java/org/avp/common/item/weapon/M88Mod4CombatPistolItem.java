@@ -19,7 +19,7 @@ public class M88Mod4CombatPistolItem extends AbstractAVPWeaponItem {
         "Semi-Automatic",
         1,
         7,
-        AVPSoundEvents.ITEM_WEAPON_COMBAT_PISTOL_SHOOT,
+        AVPSoundEvents.INSTANCE.ITEM_WEAPON_COMBAT_PISTOL_SHOOT,
         32.0D,
         0.0F
     );
@@ -43,7 +43,7 @@ public class M88Mod4CombatPistolItem extends AbstractAVPWeaponItem {
         2F,
         0.06F,
         ReloadStrategy.builder(20 * 2)
-            .setReloadStartSound(AVPSoundEvents.ITEM_WEAPON_COMBAT_PISTOL_RELOAD)
+            .setReloadStartSound(AVPSoundEvents.INSTANCE.ITEM_WEAPON_COMBAT_PISTOL_RELOAD)
             .setTryReloadBehavior(TryReloadBehavior.STANDARD)
             .build(),
         ShootStrategy.builder().build()

@@ -19,7 +19,7 @@ public class M83A2SADARItem extends AbstractAVPWeaponItem {
         "Semi-Automatic",
         1,
         60,
-        AVPSoundEvents.ITEM_WEAPON_ROCKET_LAUNCHER_SHOOT,
+        AVPSoundEvents.INSTANCE.ITEM_WEAPON_ROCKET_LAUNCHER_SHOOT,
         100.0D,
         1.5F
     );
@@ -41,8 +41,8 @@ public class M83A2SADARItem extends AbstractAVPWeaponItem {
         8F * 2,
         0.5F,
         ReloadStrategy.builder(20 * 5)
-            .setReloadStartSound(AVPSoundEvents.ITEM_WEAPON_ROCKET_LAUNCHER_RELOAD_START)
-            .setReloadFinishSound(AVPSoundEvents.ITEM_WEAPON_ROCKET_LAUNCHER_RELOAD_FINISH)
+            .setReloadStartSound(AVPSoundEvents.INSTANCE.ITEM_WEAPON_ROCKET_LAUNCHER_RELOAD_START)
+            .setReloadFinishSound(AVPSoundEvents.INSTANCE.ITEM_WEAPON_ROCKET_LAUNCHER_RELOAD_FINISH)
             .setTryReloadBehavior(TryReloadBehavior.STANDARD)
             .build(),
         ShootStrategy.builder().build()

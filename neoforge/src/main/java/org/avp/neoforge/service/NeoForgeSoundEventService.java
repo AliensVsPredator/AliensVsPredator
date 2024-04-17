@@ -8,10 +8,10 @@ import java.util.function.Supplier;
 
 import org.avp.api.GameObject;
 import org.avp.common.AVPConstants;
-import org.avp.common.service.SoundEventRegistry;
+import org.avp.common.service.SoundEventService;
 import org.avp.neoforge.util.ForgeGameObject;
 
-public class NeoForgeSoundEventRegistry implements SoundEventRegistry {
+public class NeoForgeSoundEventService implements SoundEventService {
 
     public static final DeferredRegister<SoundEvent> SOUND_EVENTS = DeferredRegister.create(
         BuiltInRegistries.SOUND_EVENT,
@@ -19,7 +19,10 @@ public class NeoForgeSoundEventRegistry implements SoundEventRegistry {
     );
 
     @Override
-    public GameObject<SoundEvent> register(String registryName, Supplier<SoundEvent> supplier) {
+    public GameObject<SoundEvent> createHolder(String registryName, Supplier<SoundEvent> supplier) {
         return new ForgeGameObject<>(SOUND_EVENTS, registryName, supplier);
     }
+
+    @Override
+    public void register(GameObject<SoundEvent> gameObject) { /* NO-OP FOR FORGE */ }
 }

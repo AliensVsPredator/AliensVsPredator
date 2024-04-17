@@ -19,7 +19,7 @@ public class AK47Item extends AbstractAVPWeaponItem {
         "Automatic",
         1,
         2,
-        AVPSoundEvents.ITEM_WEAPON_AK_47_SHOOT,
+        AVPSoundEvents.INSTANCE.ITEM_WEAPON_AK_47_SHOOT,
         64.0D,
         0.0F
     );
@@ -43,7 +43,7 @@ public class AK47Item extends AbstractAVPWeaponItem {
         2F * 2,
         0.13F,
         ReloadStrategy.builder(20 * 5)
-            .setReloadStartSound(AVPSoundEvents.ITEM_WEAPON_GENERIC_RELOAD)
+            .setReloadStartSound(AVPSoundEvents.INSTANCE.ITEM_WEAPON_GENERIC_RELOAD)
             .setTryReloadBehavior(TryReloadBehavior.STANDARD)
             .build(),
         ShootStrategy.builder().build()

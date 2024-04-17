@@ -22,7 +22,7 @@ public class Services {
 
     public static final NetworkPayloadHandlerRegistry PAYLOAD_HANDLER_REGISTRY = load(NetworkPayloadHandlerRegistry.class);
 
-    public static final SoundEventRegistry SOUND_EVENT_REGISTRY = load(SoundEventRegistry.class);
+    public static final SoundEventService SOUND_EVENT_SERVICE = load(SoundEventService.class);
 
     public static final Platform PLATFORM = load(Platform.class);
 

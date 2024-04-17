@@ -18,7 +18,7 @@ public class OldPainlessItem extends AbstractAVPWeaponItem {
         "Automatic",
         1,
         0,
-        AVPSoundEvents.ITEM_WEAPON_OLD_PAINLESS_SHOOT_LOOP,
+        AVPSoundEvents.INSTANCE.ITEM_WEAPON_OLD_PAINLESS_SHOOT_LOOP,
         10,
         64.0D,
         0.0F
@@ -44,9 +44,9 @@ public class OldPainlessItem extends AbstractAVPWeaponItem {
         0.02F,
         ReloadStrategy.builder(0).build(),
         ShootStrategy.builder()
-            .setBackgroundShootSound(AVPSoundEvents.ITEM_WEAPON_OLD_PAINLESS_SHOOT_SPINNING, 30)
-            .setWindUpSound(AVPSoundEvents.ITEM_WEAPON_OLD_PAINLESS_SHOOT_START)
-            .setWindDownSound(AVPSoundEvents.ITEM_WEAPON_OLD_PAINLESS_SHOOT_STOP)
+            .setBackgroundShootSound(AVPSoundEvents.INSTANCE.ITEM_WEAPON_OLD_PAINLESS_SHOOT_SPINNING, 30)
+            .setWindUpSound(AVPSoundEvents.INSTANCE.ITEM_WEAPON_OLD_PAINLESS_SHOOT_START)
+            .setWindDownSound(AVPSoundEvents.INSTANCE.ITEM_WEAPON_OLD_PAINLESS_SHOOT_STOP)
             .setWindUpTimeInTicks(20)
             .build()
     );
