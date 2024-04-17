@@ -8,9 +8,9 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 
-import org.avp.common.service.NetworkHandler;
+import org.avp.common.service.NetworkService;
 
-public class FabricNetworkHandler implements NetworkHandler {
+public class FabricNetworkService implements NetworkService {
 
     @Override
     public void sendToAllClients(MinecraftServer server, CustomPacketPayload customPacketPayload) {

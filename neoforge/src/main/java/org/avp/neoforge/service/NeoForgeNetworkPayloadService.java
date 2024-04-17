@@ -14,9 +14,9 @@ import org.avp.common.AVPConstants;
 import org.avp.common.network.ClientboundPacket;
 import org.avp.common.network.PayloadHandlerData;
 import org.avp.common.network.ServerboundPacket;
-import org.avp.common.service.NetworkPayloadHandlerRegistry;
+import org.avp.common.service.NetworkPayloadService;
 
-public class NeoForgeNetworkPayloadHandlerRegistry implements NetworkPayloadHandlerRegistry {
+public class NeoForgeNetworkPayloadService implements NetworkPayloadService {
 
     public static final List<PayloadHandlerData<?>> PAYLOAD_HANDLER_DATA_LIST = new ArrayList<>();
 

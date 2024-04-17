@@ -18,21 +18,21 @@ public class AVPNetworkPayloadHandlerRegistry {
 
     static {
         // Clientbound
-        Services.PAYLOAD_HANDLER_REGISTRY.registerClientbound(
+        Services.NETWORK_PAYLOAD_SERVICE.registerClientbound(
             ClientboundBulletHitBlockPayload.PAYLOAD_ID,
             ClientboundBulletHitBlockPayload::new
         );
 
         // Serverbound
-        Services.PAYLOAD_HANDLER_REGISTRY.registerServerbound(
+        Services.NETWORK_PAYLOAD_SERVICE.registerServerbound(
             ServerboundWeaponReloadRequestPayload.PAYLOAD_ID,
             ServerboundWeaponReloadRequestPayload::new
         );
-        Services.PAYLOAD_HANDLER_REGISTRY.registerServerbound(
+        Services.NETWORK_PAYLOAD_SERVICE.registerServerbound(
             ServerboundWeaponSwapAmmunitionTypeRequestPayload.PAYLOAD_ID,
             ServerboundWeaponSwapAmmunitionTypeRequestPayload::new
         );
-        Services.PAYLOAD_HANDLER_REGISTRY.registerServerbound(
+        Services.NETWORK_PAYLOAD_SERVICE.registerServerbound(
             ServerboundWeaponSwapFireModeRequestPayload.PAYLOAD_ID,
             ServerboundWeaponSwapFireModeRequestPayload::new
         );

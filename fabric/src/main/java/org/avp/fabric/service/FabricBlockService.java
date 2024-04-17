@@ -20,7 +20,7 @@ public class FabricBlockService implements BlockService {
     @Override
     public Holder<Block> createHolder(String registryName, Supplier<Block> supplier) {
         var holder = new Holder<>(registryName, supplier);
-        var blockItemHolder = Services.ITEM_REGISTRY.createHolder(registryName, () -> new BlockItem(holder.get(), new Item.Properties()));
+        var blockItemHolder = Services.ITEM_SERVICE.createHolder(registryName, () -> new BlockItem(holder.get(), new Item.Properties()));
         AVPItemBlockItems.INSTANCE.addHolder(blockItemHolder);
         return holder;
     }

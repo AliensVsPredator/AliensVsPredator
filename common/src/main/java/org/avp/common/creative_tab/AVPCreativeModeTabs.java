@@ -26,7 +26,7 @@ public final class AVPCreativeModeTabs {
         Supplier<CreativeModeTab.Builder> creativeModeTabBuilderSupplier
     ) {
         var name = String.format("tab.%s.%s", AVPConstants.MOD_ID, registryName);
-        Services.CREATIVE_MODE_TAB_REGISTRY.register(
+        Services.CREATIVE_MODE_TAB_SERVICE.register(
             name,
             () -> creativeModeTabBuilderSupplier.get()
                 .title(Component.translatable(name))

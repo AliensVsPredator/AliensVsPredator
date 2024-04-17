@@ -33,7 +33,7 @@ public final class LegacySchematics {
     private static final Path LV_426_SPIKE_06_PATH;
 
     static {
-        var gameDirPath = Services.PLATFORM.getGameDirectory();
+        var gameDirPath = Services.PLATFORM_SERVICE.getGameDirectory();
         var gameDirString = gameDirPath.toString();
         DERELICT_OLD_PATH = Paths.get(gameDirString, SCHEMATICS_DIRECTORY, "derelictold.schematic");
         DERELICT_PATH = Paths.get(gameDirString, SCHEMATICS_DIRECTORY, "derelict.schematic");

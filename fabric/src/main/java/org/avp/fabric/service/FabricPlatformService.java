@@ -5,9 +5,9 @@ import net.fabricmc.loader.api.FabricLoader;
 
 import java.nio.file.Path;
 
-import org.avp.common.service.Platform;
+import org.avp.common.service.PlatformService;
 
-public class FabricPlatform implements Platform {
+public class FabricPlatformService implements PlatformService {
 
     @Override
     public Path getConfigDirectory() {

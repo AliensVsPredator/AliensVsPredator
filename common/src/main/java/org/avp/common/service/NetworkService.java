@@ -3,7 +3,7 @@ package org.avp.common.service;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.server.MinecraftServer;
 
-public interface NetworkHandler {
+public interface NetworkService {
 
     void sendToAllClients(MinecraftServer server, CustomPacketPayload customPacketPayload);
 

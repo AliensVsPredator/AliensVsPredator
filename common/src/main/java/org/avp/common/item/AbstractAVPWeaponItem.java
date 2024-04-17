@@ -191,7 +191,7 @@ public abstract class AbstractAVPWeaponItem extends Item implements GeoItem {
         }
 
         var payload = new ClientboundBulletHitBlockPayload(blockPos, direction);
-        Services.NETWORK_HANDLER.sendToAllClients(level.getServer(), payload);
+        Services.NETWORK_SERVICE.sendToAllClients(level.getServer(), payload);
     }
 
     private void handleHitEntity(@NotNull Level level, Player player, ItemStack itemStack, EntityHitResult hitResult, FireMode fireMode) {

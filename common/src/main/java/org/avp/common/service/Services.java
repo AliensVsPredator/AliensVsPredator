@@ -8,23 +8,23 @@ public class Services {
 
     public static final BlockService BLOCK_SERVICE = load(BlockService.class);
 
-    public static final CreativeModeTabRegistry CREATIVE_MODE_TAB_REGISTRY = load(CreativeModeTabRegistry.class);
+    public static final CreativeModeTabService CREATIVE_MODE_TAB_SERVICE = load(CreativeModeTabService.class);
 
-    public static final EntityTypeService ENTITY_SERVICE = load(EntityTypeService.class);
+    public static final EntityTypeService ENTITY_TYPE_SERVICE = load(EntityTypeService.class);
 
-    public static final ItemService ITEM_REGISTRY = load(ItemService.class);
+    public static final ItemService ITEM_SERVICE = load(ItemService.class);
 
-    public static final NetworkHandler NETWORK_HANDLER = load(NetworkHandler.class);
+    public static final NetworkService NETWORK_SERVICE = load(NetworkService.class);
 
-    public static final ParticleFactoryRegistry PARTICLE_FACTORY_REGISTRY = load(ParticleFactoryRegistry.class);
+    public static final ParticleProviderService PARTICLE_PROVIDER_SERVICE = load(ParticleProviderService.class);
 
-    public static final ParticleRegistry PARTICLE_REGISTRY = load(ParticleRegistry.class);
+    public static final ParticleTypeService PARTICLE_TYPE_SERVICE = load(ParticleTypeService.class);
 
-    public static final NetworkPayloadHandlerRegistry PAYLOAD_HANDLER_REGISTRY = load(NetworkPayloadHandlerRegistry.class);
+    public static final NetworkPayloadService NETWORK_PAYLOAD_SERVICE = load(NetworkPayloadService.class);
 
     public static final SoundEventService SOUND_EVENT_SERVICE = load(SoundEventService.class);
 
-    public static final Platform PLATFORM = load(Platform.class);
+    public static final PlatformService PLATFORM_SERVICE = load(PlatformService.class);
 
     public static <T> T load(Class<T> clazz) {
         final T loadedService = ServiceLoader.load(clazz)

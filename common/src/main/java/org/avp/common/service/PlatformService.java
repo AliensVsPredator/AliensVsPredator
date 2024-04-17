@@ -2,7 +2,7 @@ package org.avp.common.service;
 
 import java.nio.file.Path;
 
-public interface Platform {
+public interface PlatformService {
 
     /**
      * Gets the config directory.

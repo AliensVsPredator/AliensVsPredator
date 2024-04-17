@@ -23,7 +23,7 @@ import org.avp.client.AVPClientKeyBindings;
 import org.avp.client.render.entity.AVPEntityRenderRegistry;
 import org.avp.common.AVPConstants;
 import org.avp.common.registry.AVPDeferredBlockRegistry;
-import org.avp.neoforge.service.NeoForgeParticleFactoryRegistry;
+import org.avp.neoforge.service.NeoForgeParticleProviderService;
 
 @Mod.EventBusSubscriber(modid = AVPConstants.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
 public class AVPNeoForgeClient {
@@ -61,7 +61,7 @@ public class AVPNeoForgeClient {
     @SubscribeEvent
     @SuppressWarnings("unchecked")
     public static void registerParticleProviders(RegisterParticleProvidersEvent event) {
-        NeoForgeParticleFactoryRegistry.getEntries().forEach(supplierFunctionTuple -> {
+        NeoForgeParticleProviderService.getEntries().forEach(supplierFunctionTuple -> {
             var supplier = supplierFunctionTuple.first();
             var factoryProvider = supplierFunctionTuple.second();
             var particleType = (ParticleType<ParticleOptions>) supplier.get();

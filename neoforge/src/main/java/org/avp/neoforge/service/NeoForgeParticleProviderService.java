@@ -5,14 +5,14 @@ import net.minecraft.client.particle.SpriteSet;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleType;
 import org.avp.api.Tuple;
-import org.avp.common.service.ParticleFactoryRegistry;
+import org.avp.common.service.ParticleProviderService;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-public class NeoForgeParticleFactoryRegistry implements ParticleFactoryRegistry {
+public class NeoForgeParticleProviderService implements ParticleProviderService {
 
     private static final List<Tuple<Supplier<ParticleType<?>>, Function<SpriteSet, ParticleProvider<?>>>> ENTRIES = new ArrayList<>();
 

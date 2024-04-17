@@ -43,7 +43,7 @@ public class AVPClientKeyBindings {
                 var player = client.player;
                 if (player != null) {
                     var payload = new ServerboundWeaponReloadRequestPayload(player.getUUID());
-                    Services.NETWORK_HANDLER.sendToServer(payload);
+                    Services.NETWORK_SERVICE.sendToServer(payload);
                 }
             }
         );
@@ -55,7 +55,7 @@ public class AVPClientKeyBindings {
                 var player = client.player;
                 if (player != null) {
                     var payload = new ServerboundWeaponSwapFireModeRequestPayload(player.getUUID());
-                    Services.NETWORK_HANDLER.sendToServer(payload);
+                    Services.NETWORK_SERVICE.sendToServer(payload);
                 }
             }
         );
@@ -67,7 +67,7 @@ public class AVPClientKeyBindings {
                 var player = client.player;
                 if (player != null) {
                     var payload = new ServerboundWeaponSwapAmmunitionTypeRequestPayload(player.getUUID());
-                    Services.NETWORK_HANDLER.sendToServer(payload);
+                    Services.NETWORK_SERVICE.sendToServer(payload);
                 }
             }
         );

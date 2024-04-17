@@ -5,10 +5,10 @@ import net.minecraft.world.item.CreativeModeTab;
 import java.util.function.Supplier;
 
 import org.avp.api.Holder;
-import org.avp.common.service.CreativeModeTabRegistry;
+import org.avp.common.service.CreativeModeTabService;
 import org.avp.fabric.common.registry.AVPDeferredCreativeTabRegistry;
 
-public class FabricCreativeModeTabRegistry implements CreativeModeTabRegistry {
+public class FabricCreativeModeTabService implements CreativeModeTabService {
 
     @Override
     public Holder<CreativeModeTab> register(String registryName, Supplier<CreativeModeTab> supplier) {

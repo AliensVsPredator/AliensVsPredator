@@ -9,18 +9,18 @@ import net.minecraft.core.particles.ParticleType;
 import net.minecraft.core.registries.BuiltInRegistries;
 import org.avp.api.Holder;
 import org.avp.common.AVPResources;
-import org.avp.common.service.ParticleRegistry;
+import org.avp.common.service.ParticleTypeService;
 import org.avp.common.service.Services;
 
 import java.util.function.Function;
 
-public class FabricParticleRegistry implements ParticleRegistry {
+public class FabricParticleTypeService implements ParticleTypeService {
     @Override
     public <T extends ParticleOptions> Holder<ParticleType<T>> register(String registryName, Function<SpriteSet, ParticleProvider<T>> factoryProvider) {
         var particleType = this.<T>simple();
         var resourceLocation = AVPResources.location(registryName);
         Registry.register(BuiltInRegistries.PARTICLE_TYPE, resourceLocation, particleType);
-        Services.PARTICLE_FACTORY_REGISTRY.register(() -> particleType, factoryProvider);
+        Services.PARTICLE_PROVIDER_SERVICE.register(() -> particleType, factoryProvider);
         return new Holder<>(registryName, () -> particleType);
     }
 

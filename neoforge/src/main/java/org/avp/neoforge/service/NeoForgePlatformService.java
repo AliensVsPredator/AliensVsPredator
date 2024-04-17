@@ -6,9 +6,9 @@ import net.neoforged.fml.loading.FMLPaths;
 
 import java.nio.file.Path;
 
-import org.avp.common.service.Platform;
+import org.avp.common.service.PlatformService;
 
-public class NeoForgePlatform implements Platform {
+public class NeoForgePlatformService implements PlatformService {
 
     @Override
     public Path getConfigDirectory() {

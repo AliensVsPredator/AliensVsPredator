@@ -23,7 +23,7 @@ public class AVPSimpleDeferredEntityTypeRegistry extends AVPAbstractDeferredEnti
 
     @Override
     protected <T extends Entity> Holder<EntityType<T>> createHolder(String registryName, Supplier<EntityType<T>> supplier) {
-        var holder = Services.ENTITY_SERVICE.createHolder(registryName, supplier);
+        var holder = Services.ENTITY_TYPE_SERVICE.createHolder(registryName, supplier);
         entries.add(holder);
         return holder;
     }
@@ -41,9 +41,9 @@ public class AVPSimpleDeferredEntityTypeRegistry extends AVPAbstractDeferredEnti
         var holder = createHolder(registryName,  () -> builder.build(registryName));
         livingEntries.add(holder);
 
-        var spawnEggItemHolder = Services.ITEM_REGISTRY.createHolder(
+        var spawnEggItemHolder = Services.ITEM_SERVICE.createHolder(
             "spawn_egg_" + registryName,
-            () -> Services.ENTITY_SERVICE.createSpawnEggItem(holder, backgroundColor, highlightColor, new Item.Properties())
+            () -> Services.ENTITY_TYPE_SERVICE.createSpawnEggItem(holder, backgroundColor, highlightColor, new Item.Properties())
         );
         AVPSpawnEggItems.INSTANCE.addHolder(spawnEggItemHolder);
 
@@ -53,6 +53,6 @@ public class AVPSimpleDeferredEntityTypeRegistry extends AVPAbstractDeferredEnti
     @Override
     @SuppressWarnings("unchecked")
     public final void register() {
-        entries.forEach(holder -> Services.ENTITY_SERVICE.register((Holder<EntityType<?>>) holder));
+        entries.forEach(holder -> Services.ENTITY_TYPE_SERVICE.register((Holder<EntityType<?>>) holder));
     }
 }

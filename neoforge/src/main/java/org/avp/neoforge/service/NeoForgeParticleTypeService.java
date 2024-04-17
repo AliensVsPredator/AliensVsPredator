@@ -9,14 +9,14 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import org.avp.api.Holder;
 import org.avp.common.AVPConstants;
-import org.avp.common.service.ParticleRegistry;
+import org.avp.common.service.ParticleTypeService;
 import org.avp.common.service.Services;
 import org.avp.neoforge.util.NeoForgeParticleTypeHolder;
 
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-public class NeoForgeParticleRegistry implements ParticleRegistry {
+public class NeoForgeParticleTypeService implements ParticleTypeService {
 
     public static final DeferredRegister<ParticleType<?>> PARTICLE_TYPES = DeferredRegister.create(BuiltInRegistries.PARTICLE_TYPE, AVPConstants.MOD_ID);
 
@@ -24,7 +24,7 @@ public class NeoForgeParticleRegistry implements ParticleRegistry {
     public <T extends ParticleOptions> Holder<ParticleType<T>> register(String registryName, Function<SpriteSet, ParticleProvider<T>> factoryProvider) {
         var particleType = this.<T>simple();
         Supplier<ParticleType<T>> supplier = () -> particleType;
-        Services.PARTICLE_FACTORY_REGISTRY.register(supplier, factoryProvider);
+        Services.PARTICLE_PROVIDER_SERVICE.register(supplier, factoryProvider);
         return new NeoForgeParticleTypeHolder<>(PARTICLE_TYPES, registryName, supplier);
     }
 

@@ -22,7 +22,7 @@ public class NeoForgeBlockService implements BlockService {
     @Override
     public Holder<Block> createHolder(String registryName, Supplier<Block> supplier) {
         var holder = new NeoForgeHolder<>(BLOCKS, registryName, supplier);
-        Services.ITEM_REGISTRY.createHolder(registryName, () -> new BlockItem(holder.get(), new Item.Properties()));
+        Services.ITEM_SERVICE.createHolder(registryName, () -> new BlockItem(holder.get(), new Item.Properties()));
         return holder;
     }
 

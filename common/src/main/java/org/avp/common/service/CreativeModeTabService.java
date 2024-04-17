@@ -6,7 +6,7 @@ import java.util.function.Supplier;
 
 import org.avp.api.Holder;
 
-public interface CreativeModeTabRegistry {
+public interface CreativeModeTabService {
 
     Holder<CreativeModeTab> register(String registryName, Supplier<CreativeModeTab> supplier);
 }

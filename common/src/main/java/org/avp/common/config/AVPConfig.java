@@ -79,7 +79,7 @@ public class AVPConfig {
     }
 
     public static void init() {
-        var configFile = Services.PLATFORM.getConfigDirectory().resolve(AVPConstants.MOD_ID + ".properties");
+        var configFile = Services.PLATFORM_SERVICE.getConfigDirectory().resolve(AVPConstants.MOD_ID + ".properties");
 
         if (Files.exists(configFile)) {
             AVPConstants.LOGGER.info("Config file found. Attempting to read it...");

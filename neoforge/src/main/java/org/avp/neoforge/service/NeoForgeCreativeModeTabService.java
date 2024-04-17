@@ -8,10 +8,10 @@ import java.util.function.Supplier;
 
 import org.avp.api.Holder;
 import org.avp.common.AVPConstants;
-import org.avp.common.service.CreativeModeTabRegistry;
+import org.avp.common.service.CreativeModeTabService;
 import org.avp.neoforge.util.NeoForgeHolder;
 
-public class NeoForgeCreativeModeTabRegistry implements CreativeModeTabRegistry {
+public class NeoForgeCreativeModeTabService implements CreativeModeTabService {
 
     public static final DeferredRegister<CreativeModeTab> CREATIVE_MODE_TABS = DeferredRegister.create(
         BuiltInRegistries.CREATIVE_MODE_TAB,

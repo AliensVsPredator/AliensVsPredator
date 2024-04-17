@@ -17,7 +17,7 @@ public class AVPParticleTypes {
     }
 
     private static Holder<SimpleParticleType> registerSimple(String registryName, Function<SpriteSet, ParticleProvider<SimpleParticleType>> factoryProvider) {
-        var holder = Services.PARTICLE_REGISTRY.register(registryName, factoryProvider);
+        var holder = Services.PARTICLE_TYPE_SERVICE.register(registryName, factoryProvider);
         return new Holder<>(
             holder.getResourceLocation().getPath(),
             () -> (SimpleParticleType) holder.get()

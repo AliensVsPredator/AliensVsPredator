@@ -9,10 +9,10 @@ import net.minecraft.resources.ResourceLocation;
 import org.avp.api.network.NetworkSide;
 import org.avp.common.network.ClientboundPacket;
 import org.avp.common.network.ServerboundPacket;
-import org.avp.common.service.NetworkPayloadHandlerRegistry;
+import org.avp.common.service.NetworkPayloadService;
 import org.avp.common.service.Services;
 
-public class FabricNetworkPayloadHandlerRegistry implements NetworkPayloadHandlerRegistry {
+public class FabricNetworkPayloadService implements NetworkPayloadService {
 
     @Override
     public <T extends CustomPacketPayload> void register(
@@ -20,7 +20,7 @@ public class FabricNetworkPayloadHandlerRegistry implements NetworkPayloadHandle
         FriendlyByteBuf.Reader<T> reader,
         NetworkSide handlingSide
     ) {
-        if (!Services.PLATFORM.isServerEnvironment()) {
+        if (!Services.PLATFORM_SERVICE.isServerEnvironment()) {
             ClientPlayNetworking.PlayChannelHandler clientHandler = (client, listener, buf, sender) -> {
                 var payload = reader.apply(buf);
                 client.execute(((ClientboundPacket) payload)::handleClient);
