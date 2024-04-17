@@ -8,5 +8,7 @@ import org.avp.api.Holder;
 
 public interface CreativeModeTabService {
 
-    Holder<CreativeModeTab> register(String registryName, Supplier<CreativeModeTab> supplier);
+    Holder<CreativeModeTab> createHolder(String registryName, Supplier<CreativeModeTab> supplier);
+
+    void register(Holder<CreativeModeTab> holder);
 }

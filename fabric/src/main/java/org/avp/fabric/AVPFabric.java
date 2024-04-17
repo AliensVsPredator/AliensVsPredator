@@ -5,7 +5,6 @@ import net.fabricmc.api.ModInitializer;
 import org.avp.common.AVPCommon;
 import org.avp.fabric.common.command.AVPFabricCommands;
 import org.avp.fabric.common.data.AVPFabricLootTableModifier;
-import org.avp.fabric.common.registry.AVPDeferredCreativeTabRegistry;
 import org.avp.fabric.common.registry.AVPFabricFuelRegistry;
 import org.avp.fabric.common.worldgen.AVPFabricEntitySpawns;
 import org.avp.fabric.common.worldgen.AVPFabricWorldGenFeatures;
@@ -17,9 +16,6 @@ public class AVPFabric implements ModInitializer {
     public void onInitialize() {
         // Use Fabric to bootstrap the Common mod.
         AVPCommon.init();
-
-        // Deferred registration step.
-        AVPDeferredCreativeTabRegistry.registerAll();
 
         // Fuel registration.
         AVPFabricFuelRegistry.register();

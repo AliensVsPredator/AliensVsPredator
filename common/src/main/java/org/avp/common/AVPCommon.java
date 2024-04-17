@@ -83,7 +83,7 @@ public class AVPCommon {
         AVPParticleTypes.forceInitialization();
 
         // It's important to register creative mode tabs last, as entities generate spawn eggs automatically.
-        AVPCreativeModeTabs.register();
+        AVPCreativeModeTabs.INSTANCE.register();
     }
 
     private AVPCommon() {

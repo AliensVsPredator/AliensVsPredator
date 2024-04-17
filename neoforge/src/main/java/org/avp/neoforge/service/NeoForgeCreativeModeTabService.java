@@ -19,7 +19,10 @@ public class NeoForgeCreativeModeTabService implements CreativeModeTabService {
     );
 
     @Override
-    public Holder<CreativeModeTab> register(String registryName, Supplier<CreativeModeTab> supplier) {
+    public Holder<CreativeModeTab> createHolder(String registryName, Supplier<CreativeModeTab> supplier) {
         return new NeoForgeHolder<>(CREATIVE_MODE_TABS, registryName, supplier);
     }
+
+    @Override
+    public void register(Holder<CreativeModeTab> holder) { /* NO-OP FOR FORGE */ }
 }

@@ -17,16 +17,16 @@ import org.avp.common.AVPConstants;
 import org.avp.common.block.*;
 import org.avp.common.item.*;
 import org.avp.common.registry.AVPDeferredBlockRegistry;
+import org.avp.common.registry.AVPDeferredRegistry;
 import org.avp.common.service.Services;
 
-public final class AVPCreativeModeTabs {
+public final class AVPCreativeModeTabs extends AVPDeferredRegistry<CreativeModeTab> {
 
-    private static void registerCreativeModeTab(
-        String registryName,
-        Supplier<CreativeModeTab.Builder> creativeModeTabBuilderSupplier
-    ) {
+    public static final AVPCreativeModeTabs INSTANCE = new AVPCreativeModeTabs();
+
+    private void createBuilderHolder(String registryName, Supplier<CreativeModeTab.Builder> creativeModeTabBuilderSupplier) {
         var name = String.format("tab.%s.%s", AVPConstants.MOD_ID, registryName);
-        Services.CREATIVE_MODE_TAB_SERVICE.register(
+        createHolder(
             name,
             () -> creativeModeTabBuilderSupplier.get()
                 .title(Component.translatable(name))
@@ -49,8 +49,16 @@ public final class AVPCreativeModeTabs {
             .toList();
     }
 
-    public static void register() {
-        registerCreativeModeTab(
+    @Override
+    protected Holder<CreativeModeTab> createHolder(String registryName, Supplier<CreativeModeTab> supplier) {
+        var holder = Services.CREATIVE_MODE_TAB_SERVICE.createHolder(registryName, supplier);
+        entries.add(holder);
+        return holder;
+    }
+
+    @Override
+    public void register() {
+        createBuilderHolder(
             "armor",
             () -> CreativeModeTab.builder(CreativeModeTab.Row.TOP, 0)
                 .icon(AVPArmorItems.INSTANCE.VERITANIUM_HELMET.get()::getDefaultInstance)
@@ -61,7 +69,7 @@ public final class AVPCreativeModeTabs {
                 )
         );
 
-        registerCreativeModeTab(
+        createBuilderHolder(
             "blocks",
             () -> CreativeModeTab.builder(CreativeModeTab.Row.TOP, 1)
                 .icon(AVPTempleBlocks.INSTANCE.BRICK.get().asItem()::getDefaultInstance)
@@ -72,7 +80,7 @@ public final class AVPCreativeModeTabs {
                 )
         );
 
-        registerCreativeModeTab(
+        createBuilderHolder(
             "food",
             () -> CreativeModeTab.builder(CreativeModeTab.Row.TOP, 2)
                 .icon(AVPFoodItems.INSTANCE.DORITOS.get()::getDefaultInstance)
@@ -83,7 +91,7 @@ public final class AVPCreativeModeTabs {
                 )
         );
 
-        registerCreativeModeTab(
+        createBuilderHolder(
             "electronics",
             () -> CreativeModeTab.builder(CreativeModeTab.Row.TOP, 3)
                 .icon(AVPElectronicItems.INSTANCE.CPU.get()::getDefaultInstance)
@@ -94,7 +102,7 @@ public final class AVPCreativeModeTabs {
                 )
         );
 
-        registerCreativeModeTab(
+        createBuilderHolder(
             "entities",
             () -> CreativeModeTab.builder(CreativeModeTab.Row.TOP, 4)
                 .icon(Items.EGG::getDefaultInstance)
@@ -105,7 +113,7 @@ public final class AVPCreativeModeTabs {
                 )
         );
 
-        registerCreativeModeTab(
+        createBuilderHolder(
             "items",
             () -> CreativeModeTab.builder(CreativeModeTab.Row.TOP, 5)
                 .icon(AVPItems.INSTANCE.ROYAL_JELLY.get()::getDefaultInstance)
@@ -116,7 +124,7 @@ public final class AVPCreativeModeTabs {
                 )
         );
 
-        registerCreativeModeTab(
+        createBuilderHolder(
             "tools",
             () -> CreativeModeTab.builder(CreativeModeTab.Row.BOTTOM, 0)
                 .icon(AVPToolItems.INSTANCE.VERITANIUM_PICKAXE.get()::getDefaultInstance)
@@ -127,7 +135,7 @@ public final class AVPCreativeModeTabs {
                 )
         );
 
-        registerCreativeModeTab(
+        createBuilderHolder(
             "weapons",
             () -> CreativeModeTab.builder(CreativeModeTab.Row.BOTTOM, 1)
                 .icon(AVPWeaponItems.INSTANCE.GRENADE_M40.get()::getDefaultInstance)
@@ -151,9 +159,10 @@ public final class AVPCreativeModeTabs {
                     }
                 )
         );
+
+        // Register all the holders we just created.
+        entries.forEach(Services.CREATIVE_MODE_TAB_SERVICE::register);
     }
 
-    private AVPCreativeModeTabs() {
-        throw new UnsupportedOperationException();
-    }
+    private AVPCreativeModeTabs() {}
 }
