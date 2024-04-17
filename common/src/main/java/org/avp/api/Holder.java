@@ -7,10 +7,10 @@ import java.util.function.Supplier;
 
 import org.avp.common.AVPResources;
 
-public class GameObject<T> {
+public class Holder<T> {
 
-    public static <E> GameObject<E> empty() {
-        return new GameObject<>("null", () -> null);
+    public static <E> Holder<E> empty() {
+        return new Holder<>("null", () -> null);
     }
 
     private T object;
@@ -19,7 +19,7 @@ public class GameObject<T> {
 
     private final Supplier<T> supplier;
 
-    public GameObject(String location, Supplier<T> supplier) {
+    public Holder(String location, Supplier<T> supplier) {
         this.resourceLocation = AVPResources.location(location);
         this.supplier = supplier;
     }

@@ -3,7 +3,7 @@ package org.avp.common.entity.type;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
 
-import org.avp.api.GameObject;
+import org.avp.api.Holder;
 import org.avp.common.entity.living.*;
 import org.avp.common.registry.AVPSimpleDeferredEntityTypeRegistry;
 
@@ -11,7 +11,7 @@ public class AVPExoticAlienEntityTypes extends AVPSimpleDeferredEntityTypeRegist
 
     public static final AVPExoticAlienEntityTypes INSTANCE = new AVPExoticAlienEntityTypes();
 
-    public final GameObject<EntityType<DeaconAdultEngineer>> DEACON_ADULT_ENGINEER = createMobHolder(
+    public final Holder<EntityType<DeaconAdultEngineer>> DEACON_ADULT_ENGINEER = createMobHolder(
             "deacon_adult_engineer",
             0x8896A5,
             0x495256,
@@ -19,7 +19,7 @@ public class AVPExoticAlienEntityTypes extends AVPSimpleDeferredEntityTypeRegist
                 .sized(0.98F, 2.98F)
         );
 
-    public final GameObject<EntityType<Dracoburster>> DRACOBURSTER = createMobHolder(
+    public final Holder<EntityType<Dracoburster>> DRACOBURSTER = createMobHolder(
         "chestburster_draco",
         0xD8B877,
         0xF7E2B4,
@@ -27,7 +27,7 @@ public class AVPExoticAlienEntityTypes extends AVPSimpleDeferredEntityTypeRegist
             .sized(0.98F, 1.98F)
     );
 
-    public final GameObject<EntityType<Dracomorph>> DRACOMORPH = createMobHolder(
+    public final Holder<EntityType<Dracomorph>> DRACOMORPH = createMobHolder(
         "dracomorph",
         0x212121,
         0x535353,
@@ -35,7 +35,7 @@ public class AVPExoticAlienEntityTypes extends AVPSimpleDeferredEntityTypeRegist
             .sized(1.98F, 2.98F)
     );
 
-    public final GameObject<EntityType<Octohugger>> OCTOHUGGER = createMobHolder(
+    public final Holder<EntityType<Octohugger>> OCTOHUGGER = createMobHolder(
         "octohugger",
         0xC2BCC8,
         0xC09CAE,
@@ -43,7 +43,7 @@ public class AVPExoticAlienEntityTypes extends AVPSimpleDeferredEntityTypeRegist
             .sized(0.25F, 0.75F)
     );
 
-    public final GameObject<EntityType<OvamorphDraco>> OVAMORPH_DRACO = createMobHolder(
+    public final Holder<EntityType<OvamorphDraco>> OVAMORPH_DRACO = createMobHolder(
         "ovamorph_draco",
         0x2F2F2F,
         0xA36762,
@@ -51,7 +51,7 @@ public class AVPExoticAlienEntityTypes extends AVPSimpleDeferredEntityTypeRegist
             .sized(0.98F, 0.98F)
     );
 
-    public final GameObject<EntityType<Ultramorph>> ULTRAMORPH = createMobHolder(
+    public final Holder<EntityType<Ultramorph>> ULTRAMORPH = createMobHolder(
         "ultramorph",
         0x3E474E,
         0x696E76,

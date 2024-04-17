@@ -5,15 +5,15 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.SpawnEggItem;
-import org.avp.api.GameObject;
+import org.avp.api.Holder;
 
 import java.util.function.Supplier;
 
 public interface EntityTypeService {
 
-    <T extends Entity> GameObject<EntityType<T>> createHolder(String registryName, Supplier<EntityType<T>> supplier);
+    <T extends Entity> Holder<EntityType<T>> createHolder(String registryName, Supplier<EntityType<T>> supplier);
 
-    void register(GameObject<EntityType<?>> holder);
+    void register(Holder<EntityType<?>> holder);
 
-    SpawnEggItem createSpawnEggItem(GameObject<? extends EntityType<? extends Mob>> holder, int backgroundColor, int highlightColor, Item.Properties properties);
+    SpawnEggItem createSpawnEggItem(Holder<? extends EntityType<? extends Mob>> holder, int backgroundColor, int highlightColor, Item.Properties properties);
 }

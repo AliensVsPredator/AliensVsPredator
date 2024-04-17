@@ -2,67 +2,62 @@ package org.avp.common.item;
 
 import net.minecraft.world.item.Item;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.function.Supplier;
-
-import org.avp.api.GameObject;
+import org.avp.api.Holder;
 import org.avp.common.registry.AVPDeferredItemRegistry;
-import org.avp.common.service.Services;
 
 public class AVPItems extends AVPDeferredItemRegistry {
 
     public static final AVPItems INSTANCE = new AVPItems();
 
-    public final GameObject<Item> BOTTLE_TINTED;
+    public final Holder<Item> BOTTLE_TINTED;
 
-    public final GameObject<Item> BOTTLE_TINTED_ACID;
+    public final Holder<Item> BOTTLE_TINTED_ACID;
 
-    public final GameObject<Item> CARBON;
+    public final Holder<Item> CARBON;
 
-    public final GameObject<Item> COBALT;
+    public final Holder<Item> COBALT;
 
-    public final GameObject<Item> DUST_LITHIUM;
+    public final Holder<Item> DUST_LITHIUM;
 
-    public final GameObject<Item> INGOT_ALUMINUM;
+    public final Holder<Item> INGOT_ALUMINUM;
 
-    public final GameObject<Item> INGOT_ORIONITE;
+    public final Holder<Item> INGOT_ORIONITE;
 
-    public final GameObject<Item> INGOT_STEEL;
+    public final Holder<Item> INGOT_STEEL;
 
-    public final GameObject<Item> INGOT_TITANIUM;
+    public final Holder<Item> INGOT_TITANIUM;
 
-    public final GameObject<Item> LASER_MINE;
+    public final Holder<Item> LASER_MINE;
 
-    public final GameObject<Item> NBT_DRIVE;
+    public final Holder<Item> NBT_DRIVE;
 
-    public final GameObject<Item> NEODYMIUM;
+    public final Holder<Item> NEODYMIUM;
 
-    public final GameObject<Item> NEODYMIUM_MAGNET;
+    public final Holder<Item> NEODYMIUM_MAGNET;
 
-    public final GameObject<Item> POLYCARBONATE;
+    public final Holder<Item> POLYCARBONATE;
 
-    public final GameObject<Item> POLYMER;
+    public final Holder<Item> POLYMER;
 
-    public final GameObject<Item> RAW_BAUXITE;
+    public final Holder<Item> RAW_BAUXITE;
 
-    public final GameObject<Item> RAW_TITANIUM;
+    public final Holder<Item> RAW_TITANIUM;
 
-    public final GameObject<Item> ROYAL_JELLY;
+    public final Holder<Item> ROYAL_JELLY;
 
-    public final GameObject<Item> SHURIKEN;
+    public final Holder<Item> SHURIKEN;
 
-    public final GameObject<Item> SILICA;
+    public final Holder<Item> SILICA;
 
-    public final GameObject<Item> SMART_DISC;
+    public final Holder<Item> SMART_DISC;
 
-    public final GameObject<Item> VERITANIUM_SHARD;
+    public final Holder<Item> VERITANIUM_SHARD;
 
-    public final GameObject<Item> XENOMORPH_CHITIN;
+    public final Holder<Item> XENOMORPH_CHITIN;
 
-    public final GameObject<Item> YAUTJA_ARTIFACT;
+    public final Holder<Item> YAUTJA_ARTIFACT;
 
-    private GameObject<Item> createHolder(String registryName) {
+    private Holder<Item> createHolder(String registryName) {
         return createHolder(registryName, () -> new Item(new Item.Properties()));
     }
 

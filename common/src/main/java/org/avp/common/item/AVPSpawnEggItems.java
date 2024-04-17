@@ -2,7 +2,7 @@ package org.avp.common.item;
 
 import net.minecraft.world.item.Item;
 
-import org.avp.api.GameObject;
+import org.avp.api.Holder;
 import org.avp.common.registry.AVPDeferredItemRegistry;
 
 public class AVPSpawnEggItems extends AVPDeferredItemRegistry {
@@ -11,7 +11,7 @@ public class AVPSpawnEggItems extends AVPDeferredItemRegistry {
 
     private AVPSpawnEggItems() {}
 
-    public void addHolder(GameObject<Item> holder) {
+    public void addHolder(Holder<Item> holder) {
         entries.add(holder);
     }
 }

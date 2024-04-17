@@ -10,7 +10,7 @@ import net.minecraft.world.level.block.state.properties.WoodType;
 
 import java.util.function.Function;
 
-import org.avp.api.GameObject;
+import org.avp.api.Holder;
 import org.avp.api.block.TransparentBlock;
 
 public class BlockFactories {
@@ -29,7 +29,7 @@ public class BlockFactories {
 
     public static final BlockFactory SLAB = SlabBlock::new;
 
-    public static final Function<GameObject<Block>, BlockFactory> STAIRS = StairBlockFactory::new;
+    public static final Function<Holder<Block>, BlockFactory> STAIRS = StairBlockFactory::new;
 
     public static final BlockFactory TRANSPARENT = TransparentBlock::new;
 

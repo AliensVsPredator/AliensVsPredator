@@ -9,14 +9,14 @@ import net.minecraft.world.level.block.Block;
 
 import java.util.List;
 
-import org.avp.api.GameObject;
+import org.avp.api.Holder;
 import org.avp.api.Tuple;
 import org.avp.common.block.AVPPaddingBlocks;
 import org.avp.common.data.recipe.AVPShapedRecipeBuilder;
 
 public final class AVPPaddingBlockRecipes {
 
-    private static final List<Tuple<ItemLike, List<GameObject<Block>>>> PADDING_DATA = List.of(
+    private static final List<Tuple<ItemLike, List<Holder<Block>>>> PADDING_DATA = List.of(
         new Tuple<>(Items.BLACK_DYE, null),
         new Tuple<>(Items.BLUE_DYE, null),
         new Tuple<>(Items.BROWN_DYE, null),

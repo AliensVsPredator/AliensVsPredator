@@ -6,10 +6,10 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 
 import java.util.function.Supplier;
 
-import org.avp.api.GameObject;
+import org.avp.api.Holder;
 import org.avp.common.AVPConstants;
 import org.avp.common.service.CreativeModeTabRegistry;
-import org.avp.neoforge.util.ForgeGameObject;
+import org.avp.neoforge.util.NeoForgeHolder;
 
 public class NeoForgeCreativeModeTabRegistry implements CreativeModeTabRegistry {
 
@@ -19,7 +19,7 @@ public class NeoForgeCreativeModeTabRegistry implements CreativeModeTabRegistry 
     );
 
     @Override
-    public GameObject<CreativeModeTab> register(String registryName, Supplier<CreativeModeTab> supplier) {
-        return new ForgeGameObject<>(CREATIVE_MODE_TABS, registryName, supplier);
+    public Holder<CreativeModeTab> register(String registryName, Supplier<CreativeModeTab> supplier) {
+        return new NeoForgeHolder<>(CREATIVE_MODE_TABS, registryName, supplier);
     }
 }

@@ -7,22 +7,22 @@ import net.minecraft.world.item.CreativeModeTab;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.avp.api.GameObject;
+import org.avp.api.Holder;
 
 public final class AVPDeferredCreativeTabRegistry {
 
-    private static final List<GameObject<CreativeModeTab>> entries = new ArrayList<>();
+    private static final List<Holder<CreativeModeTab>> entries = new ArrayList<>();
 
-    public static void enqueue(GameObject<CreativeModeTab> object) {
+    public static void enqueue(Holder<CreativeModeTab> object) {
         entries.add(object);
     }
 
     public static void registerAll() {
         entries.forEach(
-            creativeModeTabGameObject -> Registry.register(
+            holder -> Registry.register(
                 BuiltInRegistries.CREATIVE_MODE_TAB,
-                creativeModeTabGameObject.getResourceLocation(),
-                creativeModeTabGameObject.get()
+                holder.getResourceLocation(),
+                holder.get()
             )
         );
     }

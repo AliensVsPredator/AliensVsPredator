@@ -4,11 +4,11 @@ import net.minecraft.sounds.SoundEvent;
 
 import java.util.function.Supplier;
 
-import org.avp.api.GameObject;
+import org.avp.api.Holder;
 
 public interface SoundEventService {
 
-    GameObject<SoundEvent> createHolder(String registryName, Supplier<SoundEvent> supplier);
+    Holder<SoundEvent> createHolder(String registryName, Supplier<SoundEvent> supplier);
 
-    void register(GameObject<SoundEvent> gameObject);
+    void register(Holder<SoundEvent> holder);
 }

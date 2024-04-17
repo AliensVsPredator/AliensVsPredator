@@ -9,7 +9,7 @@ import net.minecraft.world.level.material.MapColor;
 import java.util.List;
 import java.util.function.Supplier;
 
-import org.avp.api.GameObject;
+import org.avp.api.Holder;
 import org.avp.api.block.BlockData;
 import org.avp.common.registry.AVPDeferredBlockRegistry;
 
@@ -22,18 +22,18 @@ public class AVPUnidentifiedBlocks extends AVPDeferredBlockRegistry {
     )
         .mapColor(MapColor.COLOR_GRAY);
 
-    public final GameObject<Block> DIRT;
+    public final Holder<Block> DIRT;
 
-    public final GameObject<Block> GRAVEL;
+    public final Holder<Block> GRAVEL;
 
-    public final GameObject<Block> ROCK;
+    public final Holder<Block> ROCK;
 
-    public final GameObject<Block> SAND;
+    public final Holder<Block> SAND;
 
-    public final GameObject<Block> STONE;
+    public final Holder<Block> STONE;
 
     @Override
-    protected GameObject<Block> createHolder(String registryName, BlockData.Builder blockDataBuilder) {
+    protected Holder<Block> createHolder(String registryName, BlockData.Builder blockDataBuilder) {
         return super.createHolder("unidentified_" + registryName, blockDataBuilder);
     }
 

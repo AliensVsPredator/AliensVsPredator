@@ -19,49 +19,49 @@ public class AVPFabricItemModelProvider {
     public static void addItemModels(ItemModelGenerators itemModelGenerator) {
         AVPAmmunitionPartItems.INSTANCE.getEntries()
             .forEach(
-                itemGameObject -> itemModelGenerator.generateFlatItem(itemGameObject.get(), ModelTemplates.FLAT_ITEM)
+                holder -> itemModelGenerator.generateFlatItem(holder.get(), ModelTemplates.FLAT_ITEM)
             );
         AVPArmorItems.INSTANCE.getEntries()
             .forEach(
-                itemGameObject -> itemModelGenerator.generateFlatItem(itemGameObject.get(), ModelTemplates.FLAT_ITEM)
+                holder -> itemModelGenerator.generateFlatItem(holder.get(), ModelTemplates.FLAT_ITEM)
             );
         AVPBulletItems.INSTANCE.getEntries()
             .forEach(
-                itemGameObject -> itemModelGenerator.generateFlatItem(itemGameObject.get(), ModelTemplates.FLAT_ITEM)
+                holder -> itemModelGenerator.generateFlatItem(holder.get(), ModelTemplates.FLAT_ITEM)
             );
         AVPElectronicItems.INSTANCE.getEntries()
             .forEach(
-                itemGameObject -> itemModelGenerator.generateFlatItem(itemGameObject.get(), ModelTemplates.FLAT_ITEM)
+                holder -> itemModelGenerator.generateFlatItem(holder.get(), ModelTemplates.FLAT_ITEM)
             );
         AVPFoodItems.INSTANCE.getEntries()
             .forEach(
-                itemGameObject -> itemModelGenerator.generateFlatItem(itemGameObject.get(), ModelTemplates.FLAT_ITEM)
+                holder -> itemModelGenerator.generateFlatItem(holder.get(), ModelTemplates.FLAT_ITEM)
             );
         AVPItems.INSTANCE.getEntries()
             .forEach(
-                itemGameObject -> itemModelGenerator.generateFlatItem(itemGameObject.get(), ModelTemplates.FLAT_ITEM)
+                holder -> itemModelGenerator.generateFlatItem(holder.get(), ModelTemplates.FLAT_ITEM)
             );
         AVPToolItems.INSTANCE.getEntries()
             .forEach(
-                itemGameObject -> itemModelGenerator.generateFlatItem(
-                    itemGameObject.get(),
+                holder -> itemModelGenerator.generateFlatItem(
+                    holder.get(),
                     ModelTemplates.FLAT_HANDHELD_ITEM
                 )
             );
         AVPWeaponBlueprintItems.INSTANCE.getEntries()
             .forEach(
-                itemGameObject -> itemModelGenerator.generateFlatItem(itemGameObject.get(), ModelTemplates.FLAT_ITEM)
+                holder -> itemModelGenerator.generateFlatItem(holder.get(), ModelTemplates.FLAT_ITEM)
             );
         AVPWeaponItems.INSTANCE.getEntries()
             .forEach(
-                itemGameObject -> itemModelGenerator.generateFlatItem(
-                    itemGameObject.get(),
+                holder -> itemModelGenerator.generateFlatItem(
+                    holder.get(),
                     ModelTemplates.FLAT_HANDHELD_ITEM
                 )
             );
         AVPWeaponPartItems.INSTANCE.getEntries()
             .forEach(
-                itemGameObject -> itemModelGenerator.generateFlatItem(itemGameObject.get(), ModelTemplates.FLAT_ITEM)
+                holder -> itemModelGenerator.generateFlatItem(holder.get(), ModelTemplates.FLAT_ITEM)
             );
     }
 

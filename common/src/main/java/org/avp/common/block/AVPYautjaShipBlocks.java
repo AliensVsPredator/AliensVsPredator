@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import org.avp.api.GameObject;
+import org.avp.api.Holder;
 import org.avp.api.block.BlockData;
 import org.avp.api.block.BlockDataUtils;
 import org.avp.common.registry.AVPDeferredBlockRegistry;
@@ -25,34 +25,34 @@ public class AVPYautjaShipBlocks extends AVPDeferredBlockRegistry {
         .mapColor(MapColor.COLOR_RED)
         .strength(75.0F, 1500.0F);
 
-    public final GameObject<Block> BRICK;
+    public final Holder<Block> BRICK;
 
-    public final GameObject<Block> BRICK_SLAB;
+    public final Holder<Block> BRICK_SLAB;
 
-    public final GameObject<Block> BRICK_STAIRS;
+    public final Holder<Block> BRICK_STAIRS;
 
-    public final GameObject<Block> BRICK_WALL;
+    public final Holder<Block> BRICK_WALL;
 
-    public final GameObject<Block> DECOR_1;
+    public final Holder<Block> DECOR_1;
 
-    public final GameObject<Block> DECOR_2;
+    public final Holder<Block> DECOR_2;
 
-    public final GameObject<Block> DECOR_3;
+    public final Holder<Block> DECOR_3;
 
-    public final GameObject<Block> DECOR_3_SLAB;
+    public final Holder<Block> DECOR_3_SLAB;
 
-    public final GameObject<Block> DECOR_3_STAIRS;
+    public final Holder<Block> DECOR_3_STAIRS;
 
-    public final GameObject<Block> DECOR_3_WALL;
+    public final Holder<Block> DECOR_3_WALL;
 
-    public final GameObject<Block> PANEL;
+    public final Holder<Block> PANEL;
 
-    public final GameObject<Block> SUPPORT_PILLAR;
+    public final Holder<Block> SUPPORT_PILLAR;
 
-    public final GameObject<Block> WALL_BASE;
+    public final Holder<Block> WALL_BASE;
 
     @Override
-    protected GameObject<Block> createHolder(String registryName, BlockData.Builder blockDataBuilder) {
+    protected Holder<Block> createHolder(String registryName, BlockData.Builder blockDataBuilder) {
         return super.createHolder("yautja_ship_" + registryName, blockDataBuilder);
     }
 
@@ -61,11 +61,11 @@ public class AVPYautjaShipBlocks extends AVPDeferredBlockRegistry {
 
         Supplier<BlockData.Builder> pickProps = () -> BlockData.simple(PROPERTIES).tags(metal);
 
-        Function<GameObject<Block>, BlockData.Builder> slabProps =
+        Function<Holder<Block>, BlockData.Builder> slabProps =
             parent -> BlockDataUtils.slab(parent, PROPERTIES).tags(metal);
-        Function<GameObject<Block>, BlockData.Builder> stairProps =
+        Function<Holder<Block>, BlockData.Builder> stairProps =
             parent -> BlockDataUtils.stairs(parent, PROPERTIES).tags(metal);
-        Function<GameObject<Block>, BlockData.Builder> wallProps =
+        Function<Holder<Block>, BlockData.Builder> wallProps =
             parent -> BlockDataUtils.wall(parent, PROPERTIES).tags(metal);
 
         BRICK = createHolder("brick", pickProps.get());

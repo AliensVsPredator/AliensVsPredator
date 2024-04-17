@@ -3,13 +3,13 @@ package org.avp.neoforge.util;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleType;
 import net.neoforged.neoforge.registries.DeferredRegister;
-import org.avp.api.GameObject;
+import org.avp.api.Holder;
 
 import java.util.function.Supplier;
 
-public class NeoForgeParticleTypeGameObject<T extends ParticleOptions> extends GameObject<ParticleType<T>> {
+public class NeoForgeParticleTypeHolder<T extends ParticleOptions> extends Holder<ParticleType<T>> {
 
-    public NeoForgeParticleTypeGameObject(
+    public NeoForgeParticleTypeHolder(
         DeferredRegister<ParticleType<?>> deferredRegister,
         String registryName,
         Supplier<ParticleType<T>> supplier

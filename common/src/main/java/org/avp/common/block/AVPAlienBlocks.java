@@ -8,7 +8,7 @@ import net.minecraft.world.level.material.MapColor;
 
 import java.util.List;
 
-import org.avp.api.GameObject;
+import org.avp.api.Holder;
 import org.avp.api.block.BlockData;
 import org.avp.common.registry.AVPDeferredBlockRegistry;
 
@@ -20,11 +20,11 @@ public class AVPAlienBlocks extends AVPDeferredBlockRegistry {
         .mapColor(MapColor.COLOR_GRAY);
 
 
-    public final GameObject<Block> resin;
+    public final Holder<Block> resin;
 
-    public final GameObject<Block> resinVeins;
+    public final Holder<Block> resinVeins;
 
-    public final GameObject<Block> resinWebbing;
+    public final Holder<Block> resinWebbing;
 
     private AVPAlienBlocks() {
         super();

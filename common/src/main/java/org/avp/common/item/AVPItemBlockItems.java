@@ -1,7 +1,7 @@
 package org.avp.common.item;
 
 import net.minecraft.world.item.Item;
-import org.avp.api.GameObject;
+import org.avp.api.Holder;
 import org.avp.common.registry.AVPDeferredItemRegistry;
 
 public class AVPItemBlockItems extends AVPDeferredItemRegistry {
@@ -10,7 +10,7 @@ public class AVPItemBlockItems extends AVPDeferredItemRegistry {
 
     private AVPItemBlockItems() {}
 
-    public void addHolder(GameObject<Item> holder) {
+    public void addHolder(Holder<Item> holder) {
         entries.add(holder);
     }
 }

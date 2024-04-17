@@ -6,15 +6,11 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 
 import java.util.function.Supplier;
 
-import org.avp.api.GameObject;
+import org.avp.api.Holder;
 
-public class NeoForgeEntityGameObject<T extends Entity> extends GameObject<EntityType<T>> {
+public class NeoForgeEntityHolder<T extends Entity> extends Holder<EntityType<T>> {
 
-    public NeoForgeEntityGameObject(
-        DeferredRegister<EntityType<?>> deferredRegister,
-        String registryName,
-        Supplier<EntityType<T>> supplier
-    ) {
+    public NeoForgeEntityHolder(DeferredRegister<EntityType<?>> deferredRegister, String registryName, Supplier<EntityType<T>> supplier) {
         super(registryName, deferredRegister.register(registryName, supplier));
     }
 }

@@ -5,7 +5,7 @@ import net.fabricmc.fabric.api.biome.v1.BiomeSelectors;
 import net.minecraft.tags.BiomeTags;
 import net.minecraft.world.level.levelgen.GenerationStep;
 
-import org.avp.api.GameObject;
+import org.avp.api.Holder;
 import org.avp.common.registry.AVPDeferredRegistry;
 import org.avp.common.worldgen.feature.AVPOreFeatures;
 
@@ -18,7 +18,7 @@ public class AVPFabricWorldGenFeatures extends AVPDeferredRegistry<Void> {
     private AVPFabricWorldGenFeatures() {}
 
     @Override
-    protected GameObject<Void> createHolder(String registryName, Supplier<Void> supplier) {
+    protected Holder<Void> createHolder(String registryName, Supplier<Void> supplier) {
         return null;
     }
 

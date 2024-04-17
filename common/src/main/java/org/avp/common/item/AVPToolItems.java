@@ -3,7 +3,7 @@ package org.avp.common.item;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ShovelItem;
 import net.minecraft.world.item.SwordItem;
-import org.avp.api.GameObject;
+import org.avp.api.Holder;
 import org.avp.api.item.tool.ModdedAxeItem;
 import org.avp.api.item.tool.ModdedHoeItem;
 import org.avp.api.item.tool.ModdedPickaxeItem;
@@ -16,48 +16,48 @@ public class AVPToolItems extends AVPDeferredItemRegistry {
 
     public static final AVPToolItems INSTANCE = new AVPToolItems();
 
-    public final GameObject<Item> ALUMINUM_AXE;
+    public final Holder<Item> ALUMINUM_AXE;
 
-    public final GameObject<Item> ALUMINUM_HOE;
+    public final Holder<Item> ALUMINUM_HOE;
 
-    public final GameObject<Item> ALUMINUM_PICKAXE;
+    public final Holder<Item> ALUMINUM_PICKAXE;
 
-    public final GameObject<Item> ALUMINUM_SHOVEL;
+    public final Holder<Item> ALUMINUM_SHOVEL;
 
-    public final GameObject<Item> ALUMINUM_SWORD;
+    public final Holder<Item> ALUMINUM_SWORD;
 
-    public final GameObject<Item> ORIONITE_AXE;
+    public final Holder<Item> ORIONITE_AXE;
 
-    public final GameObject<Item> ORIONITE_HOE;
+    public final Holder<Item> ORIONITE_HOE;
 
-    public final GameObject<Item> ORIONITE_PICKAXE;
+    public final Holder<Item> ORIONITE_PICKAXE;
 
-    public final GameObject<Item> ORIONITE_SHOVEL;
+    public final Holder<Item> ORIONITE_SHOVEL;
 
-    public final GameObject<Item> ORIONITE_SWORD;
+    public final Holder<Item> ORIONITE_SWORD;
 
-    public final GameObject<Item> TITANIUM_AXE;
+    public final Holder<Item> TITANIUM_AXE;
 
-    public final GameObject<Item> TITANIUM_HOE;
+    public final Holder<Item> TITANIUM_HOE;
 
-    public final GameObject<Item> TITANIUM_PICKAXE;
+    public final Holder<Item> TITANIUM_PICKAXE;
 
-    public final GameObject<Item> TITANIUM_SHOVEL;
+    public final Holder<Item> TITANIUM_SHOVEL;
 
-    public final GameObject<Item> TITANIUM_SWORD;
+    public final Holder<Item> TITANIUM_SWORD;
 
-    public final GameObject<Item> VERITANIUM_AXE;
+    public final Holder<Item> VERITANIUM_AXE;
 
-    public final GameObject<Item> VERITANIUM_HOE;
+    public final Holder<Item> VERITANIUM_HOE;
 
-    public final GameObject<Item> VERITANIUM_PICKAXE;
+    public final Holder<Item> VERITANIUM_PICKAXE;
 
-    public final GameObject<Item> VERITANIUM_SHOVEL;
+    public final Holder<Item> VERITANIUM_SHOVEL;
 
-    public final GameObject<Item> VERITANIUM_SWORD;
+    public final Holder<Item> VERITANIUM_SWORD;
 
     @Override
-    protected GameObject<Item> createHolder(String registryName, Supplier<Item> supplier) {
+    protected Holder<Item> createHolder(String registryName, Supplier<Item> supplier) {
         return super.createHolder("tool_" + registryName, supplier);
     }
 

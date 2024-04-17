@@ -20,7 +20,7 @@ public class AVPFabricEntitySpawns {
             var weight = entitySpawnData.weight();
             var minGroupSize = entitySpawnData.minGroupSize();
             var maxGroupSize = entitySpawnData.maxGroupSize();
-            var entityType = (EntityType<Mob>) entitySpawnData.entityTypeGameObject().get();
+            var entityType = (EntityType<Mob>) entitySpawnData.entityTypeHolder().get();
 
             if (entityType.is(AVPEntityTags.ALIENS) && !AVPConfig.Aliens.ENABLE_XENOMORPH_OVERWORLD_SPAWNS) {
                 return;

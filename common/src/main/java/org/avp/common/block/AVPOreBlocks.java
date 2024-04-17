@@ -9,7 +9,7 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 import java.util.List;
 import java.util.function.BiFunction;
 
-import org.avp.api.GameObject;
+import org.avp.api.Holder;
 import org.avp.api.block.BlockData;
 import org.avp.api.block.drop.BlockDropUtils;
 import org.avp.common.item.AVPItems;
@@ -43,31 +43,31 @@ public class AVPOreBlocks extends AVPDeferredBlockRegistry {
     private final BlockBehaviour.Properties TITANIUM_PROPERTIES = BlockBehaviour.Properties.ofFullCopy(Blocks.STONE)
         .strength(4.0F, 4.0F);
 
-    public final GameObject<Block> ORE_BAUXITE;
+    public final Holder<Block> ORE_BAUXITE;
 
-    public final GameObject<Block> ORE_COBALT;
+    public final Holder<Block> ORE_COBALT;
 
-    public final GameObject<Block> ORE_LITHIUM;
+    public final Holder<Block> ORE_LITHIUM;
 
-    public final GameObject<Block> ORE_MONAZITE;
+    public final Holder<Block> ORE_MONAZITE;
 
-    public final GameObject<Block> ORE_SILICA;
+    public final Holder<Block> ORE_SILICA;
 
-    public final GameObject<Block> ORE_TITANIUM;
+    public final Holder<Block> ORE_TITANIUM;
 
-    public final GameObject<Block> RAW_BAUXITE_BLOCK;
+    public final Holder<Block> RAW_BAUXITE_BLOCK;
 
-    public final GameObject<Block> RAW_TITANIUM_BLOCK;
+    public final Holder<Block> RAW_TITANIUM_BLOCK;
 
-    public final GameObject<Block> COBALT_BLOCK;
+    public final Holder<Block> COBALT_BLOCK;
 
-    public final GameObject<Block> LITHIUM_BLOCK;
+    public final Holder<Block> LITHIUM_BLOCK;
 
-    public final GameObject<Block> NEODYMIUM_BLOCK;
+    public final Holder<Block> NEODYMIUM_BLOCK;
 
-    public final GameObject<Block> SILICA_BLOCK;
+    public final Holder<Block> SILICA_BLOCK;
 
-    protected GameObject<Block> createOreHolder(String registryName, BlockData.Builder blockDataBuilder) {
+    protected Holder<Block> createOreHolder(String registryName, BlockData.Builder blockDataBuilder) {
         return super.createHolder("ore_" + registryName, blockDataBuilder);
     }
 
@@ -77,7 +77,7 @@ public class AVPOreBlocks extends AVPDeferredBlockRegistry {
         var ironTier = List.of(BlockTags.MINEABLE_WITH_PICKAXE, BlockTags.NEEDS_IRON_TOOL);
         var diamondTier = List.of(BlockTags.MINEABLE_WITH_PICKAXE, BlockTags.NEEDS_DIAMOND_TOOL);
 
-        BiFunction<BlockBehaviour.Properties, GameObject<Item>, BlockData.Builder> oreProps = (properties, item) -> BlockData.builder(
+        BiFunction<BlockBehaviour.Properties, Holder<Item>, BlockData.Builder> oreProps = (properties, item) -> BlockData.builder(
             properties
         ).drop(BlockDropUtils.ore(item));
 

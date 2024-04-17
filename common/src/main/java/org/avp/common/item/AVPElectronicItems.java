@@ -2,45 +2,40 @@ package org.avp.common.item;
 
 import net.minecraft.world.item.Item;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.function.Supplier;
-
-import org.avp.api.GameObject;
+import org.avp.api.Holder;
 import org.avp.common.registry.AVPDeferredItemRegistry;
-import org.avp.common.service.Services;
 
 public class AVPElectronicItems extends AVPDeferredItemRegistry {
 
     public static final AVPElectronicItems INSTANCE = new AVPElectronicItems();
 
-    public final GameObject<Item> CAPACITOR;
+    public final Holder<Item> CAPACITOR;
 
-    public final GameObject<Item> CPU;
+    public final Holder<Item> CPU;
 
-    public final GameObject<Item> DIODE;
+    public final Holder<Item> DIODE;
 
-    public final GameObject<Item> INTEGRATED_CIRCUIT;
+    public final Holder<Item> INTEGRATED_CIRCUIT;
 
-    public final GameObject<Item> LED;
+    public final Holder<Item> LED;
 
-    public final GameObject<Item> LED_DISPLAY;
+    public final Holder<Item> LED_DISPLAY;
 
-    public final GameObject<Item> MOTHERBOARD;
+    public final Holder<Item> MOTHERBOARD;
 
-    public final GameObject<Item> POWER_SUPPLY;
+    public final Holder<Item> POWER_SUPPLY;
 
-    public final GameObject<Item> RAM;
+    public final Holder<Item> RAM;
 
-    public final GameObject<Item> REGULATOR;
+    public final Holder<Item> REGULATOR;
 
-    public final GameObject<Item> RESISTOR;
+    public final Holder<Item> RESISTOR;
 
-    public final GameObject<Item> SSD;
+    public final Holder<Item> SSD;
 
-    public final GameObject<Item> TRANSISTOR;
+    public final Holder<Item> TRANSISTOR;
 
-    protected GameObject<Item> createHolder(String registryName) {
+    protected Holder<Item> createHolder(String registryName) {
         return createHolder(registryName, () -> new Item(new Item.Properties()));
     }
 

@@ -5,11 +5,9 @@ import net.minecraft.world.entity.SpawnPlacements;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.level.levelgen.Heightmap;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.function.Supplier;
 
-import org.avp.api.GameObject;
+import org.avp.api.Holder;
 import org.avp.common.config.AVPConfig;
 import org.avp.common.entity.type.AVPBaseAlienEntityTypes;
 import org.avp.common.entity.type.AVPRunnerAlienEntityTypes;
@@ -22,17 +20,17 @@ public class AVPEntitySpawns extends AVPDeferredRegistry<EntitySpawnData<?>> {
     public static final AVPEntitySpawns INSTANCE = new AVPEntitySpawns();
 
     private <T extends Monster> void registerMonsterSpawn(
-        GameObject<EntityType<T>> entityTypeGameObject,
+        Holder<EntityType<T>> entityTypeHolder,
         SpawnPlacements.SpawnPredicate<T> spawnPredicate,
         int weight,
         int minGroupSize,
         int maxGroupSize
     ) {
         entries.add(
-            new GameObject<>(
-                entityTypeGameObject.getResourceLocation().getPath() + "_spawns",
+            new Holder<>(
+                entityTypeHolder.getResourceLocation().getPath() + "_spawns",
                 () -> new EntitySpawnData<>(
-                    entityTypeGameObject,
+                    entityTypeHolder,
                     weight,
                     minGroupSize,
                     maxGroupSize,
@@ -45,7 +43,7 @@ public class AVPEntitySpawns extends AVPDeferredRegistry<EntitySpawnData<?>> {
     }
 
     private <T extends Monster> void registerAlienSpawn(
-        GameObject<EntityType<T>> entityTypeGameObject,
+        Holder<EntityType<T>> entityTypeHolder,
         SpawnPlacements.SpawnPredicate<T> spawnPredicate,
         int maxYLevel,
         int weight,
@@ -53,7 +51,7 @@ public class AVPEntitySpawns extends AVPDeferredRegistry<EntitySpawnData<?>> {
         int maxGroupSize
     ) {
         registerMonsterSpawn(
-            entityTypeGameObject,
+            entityTypeHolder,
             (e, s, m, b, r) -> b.getY() <= maxYLevel && spawnPredicate.test(e, s, m, b, r),
             weight,
             minGroupSize,
@@ -62,7 +60,7 @@ public class AVPEntitySpawns extends AVPDeferredRegistry<EntitySpawnData<?>> {
     }
 
     @Override
-    protected GameObject<EntitySpawnData<?>> createHolder(String registryName, Supplier<EntitySpawnData<?>> supplier) {
+    protected Holder<EntitySpawnData<?>> createHolder(String registryName, Supplier<EntitySpawnData<?>> supplier) {
         return null;
     }
 

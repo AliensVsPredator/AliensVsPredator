@@ -8,7 +8,7 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
 
-import org.avp.api.GameObject;
+import org.avp.api.Holder;
 import org.avp.common.AVPConstants;
 
 public final class AVPRecipeHelper {
@@ -41,18 +41,18 @@ public final class AVPRecipeHelper {
     public static void oreSmelting(
         RecipeOutput recipeOutput,
         RecipeCategory recipeCategory,
-        GameObject<Item> oreItemGameObject,
-        GameObject<Block> oreBlockGameObject,
-        GameObject<Item> outputGameObject
+        Holder<Item> oreItemHolder,
+        Holder<Block> oreBlockHolder,
+        Holder<Item> outputHolder
     ) {
-        var oreItemName = oreItemGameObject.getResourceLocation().getPath();
-        var oreBlockName = oreBlockGameObject.getResourceLocation().getPath();
-        var outputItemName = outputGameObject.getResourceLocation().getPath();
-        var oreItemIngredient = Ingredient.of(oreItemGameObject.get());
-        var oreBlockIngredient = Ingredient.of(oreBlockGameObject.get());
-        var oreItem = oreItemGameObject.get();
-        var oreBlock = oreBlockGameObject.get();
-        var output = outputGameObject.get();
+        var oreItemName = oreItemHolder.getResourceLocation().getPath();
+        var oreBlockName = oreBlockHolder.getResourceLocation().getPath();
+        var outputItemName = outputHolder.getResourceLocation().getPath();
+        var oreItemIngredient = Ingredient.of(oreItemHolder.get());
+        var oreBlockIngredient = Ingredient.of(oreBlockHolder.get());
+        var oreItem = oreItemHolder.get();
+        var oreBlock = oreBlockHolder.get();
+        var output = outputHolder.get();
         var xp = 0.7F;
         var cookTime = 200;
 

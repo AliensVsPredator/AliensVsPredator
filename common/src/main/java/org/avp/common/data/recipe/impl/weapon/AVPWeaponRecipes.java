@@ -4,7 +4,7 @@ import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.world.item.Item;
 
-import org.avp.api.GameObject;
+import org.avp.api.Holder;
 import org.avp.common.data.recipe.AVPShapelessRecipeBuilder;
 import org.avp.common.item.AVPWeaponBlueprintItems;
 import org.avp.common.item.AVPWeaponItems;
@@ -67,12 +67,12 @@ public final class AVPWeaponRecipes {
 
     private static void addGenericWeaponRecipe(
         RecipeOutput recipeOutput,
-        GameObject<Item> blueprintGameObject,
-        GameObject<Item> weaponGameObject,
+        Holder<Item> blueprintHolder,
+        Holder<Item> weaponHolder,
         boolean hasStock
     ) {
-        var builder = AVPShapelessRecipeBuilder.shapeless(RecipeCategory.COMBAT, weaponGameObject)
-            .requiresAndUnlockIfHas('A', blueprintGameObject)
+        var builder = AVPShapelessRecipeBuilder.shapeless(RecipeCategory.COMBAT, weaponHolder)
+            .requiresAndUnlockIfHas('A', blueprintHolder)
             .requiresAndUnlockIfHas('B', AVPWeaponPartItems.INSTANCE.WEAPON_PART_BARREL_GENERIC)
             .requiresAndUnlockIfHas('C', AVPWeaponPartItems.INSTANCE.WEAPON_PART_GRIP_GENERIC)
             .requiresAndUnlockIfHas('D', AVPWeaponPartItems.INSTANCE.WEAPON_PART_RECEIVER_GENERIC);

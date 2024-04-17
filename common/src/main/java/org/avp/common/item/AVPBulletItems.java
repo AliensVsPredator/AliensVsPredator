@@ -1,7 +1,7 @@
 package org.avp.common.item;
 
 import net.minecraft.world.item.Item;
-import org.avp.api.GameObject;
+import org.avp.api.Holder;
 import org.avp.api.item.weapon.bullet.effect.BulletEffect;
 import org.avp.api.item.weapon.bullet.effect.BulletEffectRegistry;
 import org.avp.api.item.weapon.bullet.effect.BulletEffects;
@@ -17,71 +17,71 @@ public class AVPBulletItems extends AVPDeferredItemRegistry {
 
     private static final String BULLET_ITEM_PREFIX = "bullet_";
 
-    public final GameObject<Item> BULLET_CASELESS;
+    public final Holder<Item> BULLET_CASELESS;
 
-    public final GameObject<Item> BULLET_CASELESS_ACID;
+    public final Holder<Item> BULLET_CASELESS_ACID;
 
-    public final GameObject<Item> BULLET_CASELESS_ELECTRIC;
+    public final Holder<Item> BULLET_CASELESS_ELECTRIC;
 
-    public final GameObject<Item> BULLET_CASELESS_EXPLOSIVE;
+    public final Holder<Item> BULLET_CASELESS_EXPLOSIVE;
 
-    public final GameObject<Item> BULLET_CASELESS_INCENDIARY;
+    public final Holder<Item> BULLET_CASELESS_INCENDIARY;
 
-    public final GameObject<Item> BULLET_CASELESS_PENETRATION;
+    public final Holder<Item> BULLET_CASELESS_PENETRATION;
 
-    public final GameObject<Item> BULLET_HEAVY;
+    public final Holder<Item> BULLET_HEAVY;
 
-    public final GameObject<Item> BULLET_HEAVY_ACID;
+    public final Holder<Item> BULLET_HEAVY_ACID;
 
-    public final GameObject<Item> BULLET_HEAVY_ELECTRIC;
+    public final Holder<Item> BULLET_HEAVY_ELECTRIC;
 
-    public final GameObject<Item> BULLET_HEAVY_EXPLOSIVE;
+    public final Holder<Item> BULLET_HEAVY_EXPLOSIVE;
 
-    public final GameObject<Item> BULLET_HEAVY_INCENDIARY;
+    public final Holder<Item> BULLET_HEAVY_INCENDIARY;
 
-    public final GameObject<Item> BULLET_HEAVY_PENETRATION;
+    public final Holder<Item> BULLET_HEAVY_PENETRATION;
 
-    public final GameObject<Item> BULLET_PISTOL;
+    public final Holder<Item> BULLET_PISTOL;
 
-    public final GameObject<Item> BULLET_PISTOL_ACID;
+    public final Holder<Item> BULLET_PISTOL_ACID;
 
-    public final GameObject<Item> BULLET_PISTOL_ELECTRIC;
+    public final Holder<Item> BULLET_PISTOL_ELECTRIC;
 
-    public final GameObject<Item> BULLET_PISTOL_EXPLOSIVE;
+    public final Holder<Item> BULLET_PISTOL_EXPLOSIVE;
 
-    public final GameObject<Item> BULLET_PISTOL_INCENDIARY;
+    public final Holder<Item> BULLET_PISTOL_INCENDIARY;
 
-    public final GameObject<Item> BULLET_PISTOL_PENETRATION;
+    public final Holder<Item> BULLET_PISTOL_PENETRATION;
 
-    public final GameObject<Item> BULLET_RIFLE;
+    public final Holder<Item> BULLET_RIFLE;
 
-    public final GameObject<Item> BULLET_RIFLE_ACID;
+    public final Holder<Item> BULLET_RIFLE_ACID;
 
-    public final GameObject<Item> BULLET_RIFLE_ELECTRIC;
+    public final Holder<Item> BULLET_RIFLE_ELECTRIC;
 
-    public final GameObject<Item> BULLET_RIFLE_EXPLOSIVE;
+    public final Holder<Item> BULLET_RIFLE_EXPLOSIVE;
 
-    public final GameObject<Item> BULLET_RIFLE_INCENDIARY;
+    public final Holder<Item> BULLET_RIFLE_INCENDIARY;
 
-    public final GameObject<Item> BULLET_RIFLE_PENETRATION;
+    public final Holder<Item> BULLET_RIFLE_PENETRATION;
 
-    public final GameObject<Item> BULLET_SHOTGUN;
+    public final Holder<Item> BULLET_SHOTGUN;
 
-    public final GameObject<Item> BULLET_SHOTGUN_ACID;
+    public final Holder<Item> BULLET_SHOTGUN_ACID;
 
-    public final GameObject<Item> BULLET_SHOTGUN_ELECTRIC;
+    public final Holder<Item> BULLET_SHOTGUN_ELECTRIC;
 
-    public final GameObject<Item> BULLET_SHOTGUN_EXPLOSIVE;
+    public final Holder<Item> BULLET_SHOTGUN_EXPLOSIVE;
 
-    public final GameObject<Item> BULLET_SHOTGUN_INCENDIARY;
+    public final Holder<Item> BULLET_SHOTGUN_INCENDIARY;
 
-    public final GameObject<Item> BULLET_SHOTGUN_PENETRATION;
+    public final Holder<Item> BULLET_SHOTGUN_PENETRATION;
 
-    private GameObject<Item> createHolder(String registryName, BulletEffect bulletEffect) {
+    private Holder<Item> createHolder(String registryName, BulletEffect bulletEffect) {
         return createHolder(registryName, Set.of(bulletEffect));
     }
 
-    private GameObject<Item> createHolder(String registryName, Set<BulletEffect> bulletEffects) {
+    private Holder<Item> createHolder(String registryName, Set<BulletEffect> bulletEffects) {
         return createHolder(registryName, () -> {
             var item = new Item(new Item.Properties());
             var location = AVPResources.location(BULLET_ITEM_PREFIX + registryName);
@@ -91,7 +91,7 @@ public class AVPBulletItems extends AVPDeferredItemRegistry {
     }
 
     @Override
-    protected GameObject<Item> createHolder(String registryName, Supplier<Item> supplier) {
+    protected Holder<Item> createHolder(String registryName, Supplier<Item> supplier) {
         return super.createHolder(BULLET_ITEM_PREFIX + registryName, supplier);
     }
 

@@ -2,7 +2,7 @@ package org.avp.fabric.service;
 
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry;
 
-import org.avp.api.GameObject;
+import org.avp.api.Holder;
 import org.avp.common.entity.attribute.AVPEntityAttributesBindingRegistry;
 import org.avp.common.registry.AVPDeferredRegistry;
 
@@ -15,7 +15,7 @@ public class FabricEntityAttributeRegistry extends AVPDeferredRegistry<Void> {
     private FabricEntityAttributeRegistry() {}
 
     @Override
-    protected GameObject<Void> createHolder(String registryName, Supplier<Void> supplier) {
+    protected Holder<Void> createHolder(String registryName, Supplier<Void> supplier) {
         return null;
     }
 

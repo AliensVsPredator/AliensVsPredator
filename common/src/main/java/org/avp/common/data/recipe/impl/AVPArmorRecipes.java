@@ -6,7 +6,7 @@ import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 
-import org.avp.api.GameObject;
+import org.avp.api.Holder;
 import org.avp.common.block.AVPIndustrialBlocks;
 import org.avp.common.data.recipe.AVPShapedRecipeBuilder;
 import org.avp.common.item.AVPArmorItems;
@@ -25,30 +25,30 @@ public final class AVPArmorRecipes {
 
     private static void addStandardArmorRecipes(
         RecipeOutput recipeOutput,
-        GameObject<Item> baseIngredientGameObject,
-        GameObject<Item> helmetGameObject,
-        GameObject<Item> chestplateGameObject,
-        GameObject<Item> leggingsGameObject,
-        GameObject<Item> bootsGameObject
+        Holder<Item> baseIngredientHolder,
+        Holder<Item> helmetHolder,
+        Holder<Item> chestplateHolder,
+        Holder<Item> leggingsHolder,
+        Holder<Item> bootsHolder
     ) {
-        AVPShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, chestplateGameObject)
-            .defineAndUnlockIfHas('A', baseIngredientGameObject)
+        AVPShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, chestplateHolder)
+            .defineAndUnlockIfHas('A', baseIngredientHolder)
             .pattern("A A")
             .pattern("AAA")
             .pattern("AAA")
             .save(recipeOutput);
-        AVPShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, bootsGameObject)
-            .defineAndUnlockIfHas('A', baseIngredientGameObject)
+        AVPShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, bootsHolder)
+            .defineAndUnlockIfHas('A', baseIngredientHolder)
             .pattern("A A")
             .pattern("A A")
             .save(recipeOutput);
-        AVPShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, helmetGameObject)
-            .defineAndUnlockIfHas('A', baseIngredientGameObject)
+        AVPShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, helmetHolder)
+            .defineAndUnlockIfHas('A', baseIngredientHolder)
             .pattern("AAA")
             .pattern("A A")
             .save(recipeOutput);
-        AVPShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, leggingsGameObject)
-            .defineAndUnlockIfHas('A', baseIngredientGameObject)
+        AVPShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, leggingsHolder)
+            .defineAndUnlockIfHas('A', baseIngredientHolder)
             .pattern("AAA")
             .pattern("A A")
             .pattern("A A")

@@ -1,36 +1,36 @@
 package org.avp.common.item;
 
 import net.minecraft.world.item.Item;
-import org.avp.api.GameObject;
+import org.avp.api.Holder;
 import org.avp.common.registry.AVPDeferredItemRegistry;
 
 public class AVPAmmunitionPartItems extends AVPDeferredItemRegistry {
 
     public static final AVPAmmunitionPartItems INSTANCE = new AVPAmmunitionPartItems();
 
-    public final GameObject<Item> AMMO_CHARGE_PACK;
+    public final Holder<Item> AMMO_CHARGE_PACK;
 
-    public final GameObject<Item> AMMO_FLAMETHROWER;
+    public final Holder<Item> AMMO_FLAMETHROWER;
 
-    public final GameObject<Item> BULLET_TIP;
+    public final Holder<Item> BULLET_TIP;
 
-    public final GameObject<Item> CASING_CASELESS;
+    public final Holder<Item> CASING_CASELESS;
 
-    public final GameObject<Item> CASING_HEAVY;
+    public final Holder<Item> CASING_HEAVY;
 
-    public final GameObject<Item> CASING_PISTOL;
+    public final Holder<Item> CASING_PISTOL;
 
-    public final GameObject<Item> CASING_RIFLE;
+    public final Holder<Item> CASING_RIFLE;
 
-    public final GameObject<Item> CASING_SHOTGUN;
+    public final Holder<Item> CASING_SHOTGUN;
 
-    public final GameObject<Item> ROCKET;
+    public final Holder<Item> ROCKET;
 
-    public final GameObject<Item> ROCKET_ELECTRIC;
+    public final Holder<Item> ROCKET_ELECTRIC;
 
-    public final GameObject<Item> ROCKET_INCENDIARY;
+    public final Holder<Item> ROCKET_INCENDIARY;
 
-    public final GameObject<Item> ROCKET_PENETRATION;
+    public final Holder<Item> ROCKET_PENETRATION;
 
     private AVPAmmunitionPartItems() {
         AMMO_CHARGE_PACK = createHolder("ammo_charge_pack", () -> new Item(new Item.Properties()));

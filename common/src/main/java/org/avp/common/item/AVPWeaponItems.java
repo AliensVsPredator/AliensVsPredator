@@ -2,11 +2,7 @@ package org.avp.common.item;
 
 import net.minecraft.world.item.Item;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.function.Supplier;
-
-import org.avp.api.GameObject;
+import org.avp.api.Holder;
 import org.avp.common.item.weapon.AK47Item;
 import org.avp.common.item.weapon.F90RifleItem;
 import org.avp.common.item.weapon.FlamethrowerSevastopolItem;
@@ -19,37 +15,36 @@ import org.avp.common.item.weapon.M88Mod4CombatPistolItem;
 import org.avp.common.item.weapon.OldPainlessItem;
 import org.avp.common.item.weapon.SniperRifleItem;
 import org.avp.common.registry.AVPDeferredItemRegistry;
-import org.avp.common.service.Services;
 
 public class AVPWeaponItems extends AVPDeferredItemRegistry {
 
     public static final AVPWeaponItems INSTANCE = new AVPWeaponItems();
 
-    public final GameObject<Item> GRENADE_INCENDIARY;
+    public final Holder<Item> GRENADE_INCENDIARY;
 
-    public final GameObject<Item> GRENADE_M40;
+    public final Holder<Item> GRENADE_M40;
 
-    public final GameObject<Item> WEAPON_M88MOD4_COMBAT_PISTOL;
+    public final Holder<Item> WEAPON_M88MOD4_COMBAT_PISTOL;
 
-    public final GameObject<Item> WEAPON_37_12_SHOTGUN;
+    public final Holder<Item> WEAPON_37_12_SHOTGUN;
 
-    public final GameObject<Item> WEAPON_AK_47;
+    public final Holder<Item> WEAPON_AK_47;
 
-    public final GameObject<Item> WEAPON_F90_RIFLE;
+    public final Holder<Item> WEAPON_F90_RIFLE;
 
-    public final GameObject<Item> WEAPON_FLAMETHROWER_SEVASTOPOL;
+    public final Holder<Item> WEAPON_FLAMETHROWER_SEVASTOPOL;
 
-    public final GameObject<Item> WEAPON_M4_CARBINE;
+    public final Holder<Item> WEAPON_M4_CARBINE;
 
-    public final GameObject<Item> WEAPON_M41A_PULSE_RIFLE;
+    public final Holder<Item> WEAPON_M41A_PULSE_RIFLE;
 
-    public final GameObject<Item> WEAPON_M56_SMARTGUN;
+    public final Holder<Item> WEAPON_M56_SMARTGUN;
 
-    public final GameObject<Item> WEAPON_M83A2_SADAR;
+    public final Holder<Item> WEAPON_M83A2_SADAR;
 
-    public final GameObject<Item> WEAPON_OLD_PAINLESS;
+    public final Holder<Item> WEAPON_OLD_PAINLESS;
 
-    public final GameObject<Item> WEAPON_SNIPER_RIFLE;
+    public final Holder<Item> WEAPON_SNIPER_RIFLE;
 
     private AVPWeaponItems() {
         GRENADE_INCENDIARY = createHolder("grenade_incendiary", () -> new Item(new Item.Properties()));

@@ -9,7 +9,7 @@ import net.minecraft.world.level.storage.loot.functions.SetItemCountFunction;
 import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
 import net.minecraft.world.level.storage.loot.providers.number.UniformGenerator;
 
-import org.avp.api.GameObject;
+import org.avp.api.Holder;
 import org.avp.common.data.loot_table.AbstractAVPEntityLootTableProvider;
 import org.avp.common.entity.type.AVPBaseAlienEntityTypes;
 import org.avp.common.entity.type.AVPRunnerAlienEntityTypes;
@@ -38,10 +38,10 @@ public class AVPEntityLootTableProvider extends AbstractAVPEntityLootTableProvid
         addYautjaLootTable();
     }
 
-    private void addStandardXenomorphLootTable(GameObject<? extends EntityType<?>> entityTypeGameObject) {
+    private void addStandardXenomorphLootTable(Holder<? extends EntityType<?>> entityTypeHolder) {
         // Queen
         add(
-            entityTypeGameObject.get(),
+            entityTypeHolder.get(),
             LootTable.lootTable()
                 .withPool(
                     LootPool.lootPool()

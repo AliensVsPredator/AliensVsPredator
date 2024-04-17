@@ -5,7 +5,7 @@ import net.minecraft.world.item.Tier;
 import net.minecraft.world.item.crafting.Ingredient;
 import org.jetbrains.annotations.NotNull;
 
-import org.avp.api.GameObject;
+import org.avp.api.Holder;
 
 public record AVPToolTier(
     int uses,
@@ -13,7 +13,7 @@ public record AVPToolTier(
     float attackDamageBonus,
     int harvestLevel,
     int enchantmentValue,
-    GameObject<Item> repairItemGameObject
+    Holder<Item> repairItemHolder
 ) implements Tier {
 
     @Override
@@ -43,6 +43,6 @@ public record AVPToolTier(
 
     @Override
     public @NotNull Ingredient getRepairIngredient() {
-        return Ingredient.of(repairItemGameObject.get());
+        return Ingredient.of(repairItemHolder.get());
     }
 }

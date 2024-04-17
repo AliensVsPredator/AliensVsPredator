@@ -2,41 +2,36 @@ package org.avp.common.item;
 
 import net.minecraft.world.item.Item;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.function.Supplier;
-
-import org.avp.api.GameObject;
+import org.avp.api.Holder;
 import org.avp.common.registry.AVPDeferredItemRegistry;
-import org.avp.common.service.Services;
 
 public class AVPWeaponBlueprintItems extends AVPDeferredItemRegistry {
 
     public static final AVPWeaponBlueprintItems INSTANCE = new AVPWeaponBlueprintItems();
 
-    public final GameObject<Item> BLUEPRINT_37_12_SHOTGUN;
+    public final Holder<Item> BLUEPRINT_37_12_SHOTGUN;
 
-    public final GameObject<Item> BLUEPRINT_AK_47;
+    public final Holder<Item> BLUEPRINT_AK_47;
 
-    public final GameObject<Item> BLUEPRINT_F90_RIFLE;
+    public final Holder<Item> BLUEPRINT_F90_RIFLE;
 
-    public final GameObject<Item> BLUEPRINT_FLAMETHROWER_SEVASTOPOL;
+    public final Holder<Item> BLUEPRINT_FLAMETHROWER_SEVASTOPOL;
 
-    public final GameObject<Item> BLUEPRINT_M4_CARBINE;
+    public final Holder<Item> BLUEPRINT_M4_CARBINE;
 
-    public final GameObject<Item> BLUEPRINT_M41A_PULSE_RIFLE;
+    public final Holder<Item> BLUEPRINT_M41A_PULSE_RIFLE;
 
-    public final GameObject<Item> BLUEPRINT_M56_SMARTGUN;
+    public final Holder<Item> BLUEPRINT_M56_SMARTGUN;
 
-    public final GameObject<Item> BLUEPRINT_M83A2_SADAR;
+    public final Holder<Item> BLUEPRINT_M83A2_SADAR;
 
-    public final GameObject<Item> BLUEPRINT_M88MOD4_COMBAT_PISTOL;
+    public final Holder<Item> BLUEPRINT_M88MOD4_COMBAT_PISTOL;
 
-    public final GameObject<Item> BLUEPRINT_OLD_PAINLESS;
+    public final Holder<Item> BLUEPRINT_OLD_PAINLESS;
 
-    public final GameObject<Item> BLUEPRINT_SNIPER_RIFLE;
+    public final Holder<Item> BLUEPRINT_SNIPER_RIFLE;
 
-    private GameObject<Item> createHolder(String registryName) {
+    private Holder<Item> createHolder(String registryName) {
         return super.createHolder("blueprint_" + registryName, () -> new Item(new Item.Properties()));
     }
 

@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import org.avp.api.GameObject;
+import org.avp.api.Holder;
 import org.avp.api.block.BlockData;
 import org.avp.api.block.BlockDataUtils;
 import org.avp.common.registry.AVPDeferredBlockRegistry;
@@ -28,48 +28,48 @@ public class AVPTempleBlocks extends AVPDeferredBlockRegistry {
     )
         .strength(3.0F, 6.0F);
 
-    public final GameObject<Block> BRICK;
+    public final Holder<Block> BRICK;
 
-    public final GameObject<Block> BRICK_SLAB;
+    public final Holder<Block> BRICK_SLAB;
 
-    public final GameObject<Block> BRICK_STAIRS;
+    public final Holder<Block> BRICK_STAIRS;
 
-    public final GameObject<Block> BRICK_WALL;
+    public final Holder<Block> BRICK_WALL;
 
-    public final GameObject<Block> BRICK_CHESTBURSTER;
+    public final Holder<Block> BRICK_CHESTBURSTER;
 
-    public final GameObject<Block> BRICK_FACEHUGGER;
+    public final Holder<Block> BRICK_FACEHUGGER;
 
-    public final GameObject<Block> BRICK_SINGLE;
+    public final Holder<Block> BRICK_SINGLE;
 
-    public final GameObject<Block> BRICK_SINGLE_SLAB;
+    public final Holder<Block> BRICK_SINGLE_SLAB;
 
-    public final GameObject<Block> BRICK_SINGLE_STAIRS;
+    public final Holder<Block> BRICK_SINGLE_STAIRS;
 
-    public final GameObject<Block> BRICK_SINGLE_WALL;
+    public final Holder<Block> BRICK_SINGLE_WALL;
 
-    public final GameObject<Block> FLOOR;
+    public final Holder<Block> FLOOR;
 
-    public final GameObject<Block> FLOOR_SLAB;
+    public final Holder<Block> FLOOR_SLAB;
 
-    public final GameObject<Block> FLOOR_STAIRS;
+    public final Holder<Block> FLOOR_STAIRS;
 
-    public final GameObject<Block> FLOOR_WALL;
+    public final Holder<Block> FLOOR_WALL;
 
-    public final GameObject<Block> SKULLS;
+    public final Holder<Block> SKULLS;
 
-    public final GameObject<Block> TILE;
+    public final Holder<Block> TILE;
 
-    public final GameObject<Block> TILE_SLAB;
+    public final Holder<Block> TILE_SLAB;
 
-    public final GameObject<Block> TILE_STAIRS;
+    public final Holder<Block> TILE_STAIRS;
 
-    public final GameObject<Block> TILE_WALL;
+    public final Holder<Block> TILE_WALL;
 
-    public final GameObject<Block> WALL_BASE;
+    public final Holder<Block> WALL_BASE;
 
     @Override
-    protected GameObject<Block> createHolder(String registryName, BlockData.Builder blockDataBuilder) {
+    protected Holder<Block> createHolder(String registryName, BlockData.Builder blockDataBuilder) {
         return super.createHolder("temple_" + registryName, blockDataBuilder);
     }
 
@@ -78,11 +78,11 @@ public class AVPTempleBlocks extends AVPDeferredBlockRegistry {
 
         Supplier<BlockData.Builder> pickProps = () -> BlockData.simple(BRICK_PROPERTIES).tags(stone);
 
-        Function<GameObject<Block>, BlockData.Builder> slabProps =
+        Function<Holder<Block>, BlockData.Builder> slabProps =
             parent -> BlockDataUtils.slab(parent, BRICK_PROPERTIES).tags(stone);
-        Function<GameObject<Block>, BlockData.Builder> stairProps =
+        Function<Holder<Block>, BlockData.Builder> stairProps =
             parent -> BlockDataUtils.stairs(parent, BRICK_PROPERTIES).tags(stone);
-        Function<GameObject<Block>, BlockData.Builder> wallProps =
+        Function<Holder<Block>, BlockData.Builder> wallProps =
             parent -> BlockDataUtils.wall(parent, BRICK_PROPERTIES).tags(stone);
 
         BRICK = createHolder("brick", pickProps.get());

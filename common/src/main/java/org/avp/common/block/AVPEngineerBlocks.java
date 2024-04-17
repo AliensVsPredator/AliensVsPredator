@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import org.avp.api.GameObject;
+import org.avp.api.Holder;
 import org.avp.api.block.BlockData;
 import org.avp.api.block.BlockDataUtils;
 import org.avp.common.registry.AVPDeferredBlockRegistry;
@@ -23,120 +23,120 @@ public class AVPEngineerBlocks extends AVPDeferredBlockRegistry {
     )
         .strength(100.0F, 1800.0F);
 
-    public final GameObject<Block> BRICK;
+    public final Holder<Block> BRICK;
 
-    public final GameObject<Block> BRICK_SLAB;
+    public final Holder<Block> BRICK_SLAB;
 
-    public final GameObject<Block> BRICK_STAIRS;
+    public final Holder<Block> BRICK_STAIRS;
 
-    public final GameObject<Block> BRICK_WALL;
+    public final Holder<Block> BRICK_WALL;
 
-    public final GameObject<Block> BRICK_1;
+    public final Holder<Block> BRICK_1;
 
-    public final GameObject<Block> BRICK_1_SLAB;
+    public final Holder<Block> BRICK_1_SLAB;
 
-    public final GameObject<Block> BRICK_1_STAIRS;
+    public final Holder<Block> BRICK_1_STAIRS;
 
-    public final GameObject<Block> BRICK_1_WALL;
+    public final Holder<Block> BRICK_1_WALL;
 
-    public final GameObject<Block> BRICK_2;
+    public final Holder<Block> BRICK_2;
 
-    public final GameObject<Block> BRICK_2_SLAB;
+    public final Holder<Block> BRICK_2_SLAB;
 
-    public final GameObject<Block> BRICK_2_STAIRS;
+    public final Holder<Block> BRICK_2_STAIRS;
 
-    public final GameObject<Block> BRICK_2_WALL;
+    public final Holder<Block> BRICK_2_WALL;
 
-    public final GameObject<Block> BRICK_3;
+    public final Holder<Block> BRICK_3;
 
-    public final GameObject<Block> BRICK_3_SLAB;
+    public final Holder<Block> BRICK_3_SLAB;
 
-    public final GameObject<Block> BRICK_3_STAIRS;
+    public final Holder<Block> BRICK_3_STAIRS;
 
-    public final GameObject<Block> BRICK_3_WALL;
+    public final Holder<Block> BRICK_3_WALL;
 
-    public final GameObject<Block> COLUMN_1;
+    public final Holder<Block> COLUMN_1;
 
-    public final GameObject<Block> COLUMN_2;
+    public final Holder<Block> COLUMN_2;
 
-    public final GameObject<Block> FLOOR;
+    public final Holder<Block> FLOOR;
 
-    public final GameObject<Block> GRAVEL;
+    public final Holder<Block> GRAVEL;
 
-    public final GameObject<Block> MATERIAL_0;
+    public final Holder<Block> MATERIAL_0;
 
-    public final GameObject<Block> MATERIAL_0_SLAB;
+    public final Holder<Block> MATERIAL_0_SLAB;
 
-    public final GameObject<Block> MATERIAL_0_STAIRS;
+    public final Holder<Block> MATERIAL_0_STAIRS;
 
-    public final GameObject<Block> MATERIAL_0_WALL;
+    public final Holder<Block> MATERIAL_0_WALL;
 
-    public final GameObject<Block> MATERIAL_1;
+    public final Holder<Block> MATERIAL_1;
 
-    public final GameObject<Block> MATERIAL_1_SLAB;
+    public final Holder<Block> MATERIAL_1_SLAB;
 
-    public final GameObject<Block> MATERIAL_1_STAIRS;
+    public final Holder<Block> MATERIAL_1_STAIRS;
 
-    public final GameObject<Block> MATERIAL_1_WALL;
+    public final Holder<Block> MATERIAL_1_WALL;
 
-    public final GameObject<Block> MATERIAL_2;
+    public final Holder<Block> MATERIAL_2;
 
-    public final GameObject<Block> MATERIAL_2_SLAB;
+    public final Holder<Block> MATERIAL_2_SLAB;
 
-    public final GameObject<Block> MATERIAL_2_STAIRS;
+    public final Holder<Block> MATERIAL_2_STAIRS;
 
-    public final GameObject<Block> MATERIAL_2_WALL;
+    public final Holder<Block> MATERIAL_2_WALL;
 
-    public final GameObject<Block> ROCK;
+    public final Holder<Block> ROCK;
 
-    public final GameObject<Block> ROCK_1;
+    public final Holder<Block> ROCK_1;
 
-    public final GameObject<Block> ROCK_2;
+    public final Holder<Block> ROCK_2;
 
-    public final GameObject<Block> ROCK_3;
+    public final Holder<Block> ROCK_3;
 
-    public final GameObject<Block> WALL;
+    public final Holder<Block> WALL;
 
-    public final GameObject<Block> WALL_SLAB;
+    public final Holder<Block> WALL_SLAB;
 
-    public final GameObject<Block> WALL_STAIRS;
+    public final Holder<Block> WALL_STAIRS;
 
-    public final GameObject<Block> WALL_WALL;
+    public final Holder<Block> WALL_WALL;
 
-    public final GameObject<Block> WALL_1;
+    public final Holder<Block> WALL_1;
 
-    public final GameObject<Block> WALL_1_SLAB;
+    public final Holder<Block> WALL_1_SLAB;
 
-    public final GameObject<Block> WALL_1_STAIRS;
+    public final Holder<Block> WALL_1_STAIRS;
 
-    public final GameObject<Block> WALL_1_WALL;
+    public final Holder<Block> WALL_1_WALL;
 
-    public final GameObject<Block> WALL_2;
+    public final Holder<Block> WALL_2;
 
-    public final GameObject<Block> WALL_2_SLAB;
+    public final Holder<Block> WALL_2_SLAB;
 
-    public final GameObject<Block> WALL_2_STAIRS;
+    public final Holder<Block> WALL_2_STAIRS;
 
-    public final GameObject<Block> WALL_2_WALL;
+    public final Holder<Block> WALL_2_WALL;
 
-    public final GameObject<Block> WALL_3;
+    public final Holder<Block> WALL_3;
 
-    public final GameObject<Block> WALL_3_SLAB;
+    public final Holder<Block> WALL_3_SLAB;
 
-    public final GameObject<Block> WALL_3_STAIRS;
+    public final Holder<Block> WALL_3_STAIRS;
 
-    public final GameObject<Block> WALL_3_WALL;
+    public final Holder<Block> WALL_3_WALL;
 
-    public final GameObject<Block> WALL_4;
+    public final Holder<Block> WALL_4;
 
-    public final GameObject<Block> WALL_4_SLAB;
+    public final Holder<Block> WALL_4_SLAB;
 
-    public final GameObject<Block> WALL_4_STAIRS;
+    public final Holder<Block> WALL_4_STAIRS;
 
-    public final GameObject<Block> WALL_4_WALL;
+    public final Holder<Block> WALL_4_WALL;
 
     @Override
-    protected GameObject<Block> createHolder(String registryName, BlockData.Builder blockDataBuilder) {
+    protected Holder<Block> createHolder(String registryName, BlockData.Builder blockDataBuilder) {
         return super.createHolder("engineer_ship_" + registryName, blockDataBuilder);
     }
 
@@ -147,11 +147,11 @@ public class AVPEngineerBlocks extends AVPDeferredBlockRegistry {
 
         Supplier<BlockData.Builder> pickProps = () -> BlockData.simple(METAL_PROPERTIES).tags(stoneOrMetal);
         Supplier<BlockData.Builder> shovelProps = () -> BlockData.simple(METAL_PROPERTIES).tags(soft);
-        Function<GameObject<Block>, BlockData.Builder> slabProps =
+        Function<Holder<Block>, BlockData.Builder> slabProps =
             parent -> BlockDataUtils.slab(parent, METAL_PROPERTIES).tags(stoneOrMetal);
-        Function<GameObject<Block>, BlockData.Builder> stairProps =
+        Function<Holder<Block>, BlockData.Builder> stairProps =
             parent -> BlockDataUtils.stairs(parent, METAL_PROPERTIES).tags(stoneOrMetal);
-        Function<GameObject<Block>, BlockData.Builder> wallProps =
+        Function<Holder<Block>, BlockData.Builder> wallProps =
             parent -> BlockDataUtils.wall(parent, METAL_PROPERTIES).tags(stoneOrMetal);
 
         BRICK = createHolder("brick", pickProps.get());

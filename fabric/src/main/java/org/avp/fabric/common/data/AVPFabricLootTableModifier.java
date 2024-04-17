@@ -9,7 +9,7 @@ import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.entries.EmptyLootItem;
 import net.minecraft.world.level.storage.loot.entries.LootItem;
 
-import org.avp.api.GameObject;
+import org.avp.api.Holder;
 import org.avp.common.item.AVPWeaponBlueprintItems;
 
 public class AVPFabricLootTableModifier {
@@ -69,7 +69,7 @@ public class AVPFabricLootTableModifier {
         ResourceLocation target,
         ResourceLocation id,
         LootTable.Builder tableBuilder,
-        GameObject<Item> itemGameObject,
+        Holder<Item> itemHolder,
         int weight
     ) {
         if (!target.equals(id)) {
@@ -79,7 +79,7 @@ public class AVPFabricLootTableModifier {
         var poolBuilder = LootPool.lootPool()
             .add(EmptyLootItem.emptyItem().setWeight(100 - weight))
             .add(
-                LootItem.lootTableItem(itemGameObject.get())
+                LootItem.lootTableItem(itemHolder.get())
                     .setWeight(weight)
             )
             .build();

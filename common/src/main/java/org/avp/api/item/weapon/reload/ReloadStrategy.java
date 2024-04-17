@@ -7,7 +7,7 @@ import net.minecraft.world.item.ItemStack;
 
 import java.util.Optional;
 
-import org.avp.api.GameObject;
+import org.avp.api.Holder;
 import org.avp.api.item.weapon.WeaponItemData;
 
 public abstract class ReloadStrategy {
@@ -16,13 +16,13 @@ public abstract class ReloadStrategy {
         return new Builder(reloadTimeInTicks);
     }
 
-    private final GameObject<SoundEvent> reloadFinishSound;
+    private final Holder<SoundEvent> reloadFinishSound;
 
-    private final GameObject<SoundEvent> reloadStartSound;
+    private final Holder<SoundEvent> reloadStartSound;
 
     private final int reloadTimeInTicks;
 
-    protected ReloadStrategy(GameObject<SoundEvent> reloadFinishSound, GameObject<SoundEvent> reloadStartSound, int reloadTimeInTicks) {
+    protected ReloadStrategy(Holder<SoundEvent> reloadFinishSound, Holder<SoundEvent> reloadStartSound, int reloadTimeInTicks) {
         this.reloadFinishSound = reloadFinishSound;
         this.reloadStartSound = reloadStartSound;
         this.reloadTimeInTicks = reloadTimeInTicks;
@@ -30,11 +30,11 @@ public abstract class ReloadStrategy {
 
     public abstract void tryReload(ServerLevel serverLevel, ServerPlayer serverPlayer, ItemStack itemStack, WeaponItemData weaponItemData);
 
-    public Optional<GameObject<SoundEvent>> getReloadFinishSound() {
+    public Optional<Holder<SoundEvent>> getReloadFinishSound() {
         return Optional.ofNullable(reloadFinishSound);
     }
 
-    public GameObject<SoundEvent> getReloadStartSound() {
+    public Holder<SoundEvent> getReloadStartSound() {
         return reloadStartSound;
     }
 
@@ -44,9 +44,9 @@ public abstract class ReloadStrategy {
 
     public static class Builder {
 
-        private GameObject<SoundEvent> reloadFinishSound;
+        private Holder<SoundEvent> reloadFinishSound;
 
-        private GameObject<SoundEvent> reloadStartSound;
+        private Holder<SoundEvent> reloadStartSound;
 
         private final int reloadTimeInTicks;
 
@@ -57,12 +57,12 @@ public abstract class ReloadStrategy {
             this.tryReloadBehavior = TryReloadBehavior.NO_OP;
         }
 
-        public Builder setReloadFinishSound(GameObject<SoundEvent> reloadFinishSound) {
+        public Builder setReloadFinishSound(Holder<SoundEvent> reloadFinishSound) {
             this.reloadFinishSound = reloadFinishSound;
             return this;
         }
 
-        public Builder setReloadStartSound(GameObject<SoundEvent> reloadStartSound) {
+        public Builder setReloadStartSound(Holder<SoundEvent> reloadStartSound) {
             this.reloadStartSound = reloadStartSound;
             return this;
         }

@@ -11,7 +11,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.function.Supplier;
 
-import org.avp.api.GameObject;
+import org.avp.api.Holder;
 import org.avp.api.Tuple;
 import org.avp.common.AVPConstants;
 import org.avp.common.block.*;
@@ -34,16 +34,16 @@ public final class AVPCreativeModeTabs {
         );
     }
 
-    private static Collection<ItemStack> itemsToItemStacks(Collection<GameObject<Item>> gameObjectList) {
-        return gameObjectList.stream()
-            .map(GameObject::get)
+    private static Collection<ItemStack> itemsToItemStacks(Collection<Holder<Item>> holderList) {
+        return holderList.stream()
+            .map(Holder::get)
             .map(Item::getDefaultInstance)
             .toList();
     }
 
-    private static Collection<ItemStack> blocksToItemStacks(List<GameObject<Block>> gameObjectList) {
-        return gameObjectList.stream()
-            .map(GameObject::get)
+    private static Collection<ItemStack> blocksToItemStacks(List<Holder<Block>> holderList) {
+        return holderList.stream()
+            .map(Holder::get)
             .map(Block::asItem)
             .map(Item::getDefaultInstance)
             .toList();

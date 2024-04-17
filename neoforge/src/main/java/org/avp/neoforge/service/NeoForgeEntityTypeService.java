@@ -11,12 +11,10 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 
 import java.util.function.Supplier;
 
-import org.avp.api.GameObject;
+import org.avp.api.Holder;
 import org.avp.common.AVPConstants;
-import org.avp.common.item.AVPSpawnEggItems;
 import org.avp.common.service.EntityTypeService;
-import org.avp.common.service.Services;
-import org.avp.neoforge.util.NeoForgeEntityGameObject;
+import org.avp.neoforge.util.NeoForgeEntityHolder;
 
 public class NeoForgeEntityTypeService implements EntityTypeService {
 
@@ -26,18 +24,18 @@ public class NeoForgeEntityTypeService implements EntityTypeService {
     );
 
     @Override
-    public <T extends Entity> GameObject<EntityType<T>> createHolder(
+    public <T extends Entity> Holder<EntityType<T>> createHolder(
         String registryName,
         Supplier<EntityType<T>> supplier
     ) {
-        return new NeoForgeEntityGameObject<>(ENTITY_TYPES, registryName, supplier);
+        return new NeoForgeEntityHolder<>(ENTITY_TYPES, registryName, supplier);
     }
 
     @Override
-    public void register(GameObject<EntityType<?>> holder) { /* NO-OP FOR FORGE */ }
+    public void register(Holder<EntityType<?>> holder) { /* NO-OP FOR FORGE */ }
 
     @Override
-    public SpawnEggItem createSpawnEggItem(GameObject<? extends EntityType<? extends Mob>> holder, int backgroundColor, int highlightColor, Item.Properties properties) {
+    public SpawnEggItem createSpawnEggItem(Holder<? extends EntityType<? extends Mob>> holder, int backgroundColor, int highlightColor, Item.Properties properties) {
         return new DeferredSpawnEggItem(holder::get, backgroundColor, highlightColor, properties);
     }
 }

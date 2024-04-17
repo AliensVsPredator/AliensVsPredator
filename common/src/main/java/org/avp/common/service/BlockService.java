@@ -6,13 +6,13 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 
 import java.util.function.Supplier;
 
-import org.avp.api.GameObject;
+import org.avp.api.Holder;
 
 public interface BlockService {
 
-    GameObject<Block> createHolder(String registryName, Supplier<Block> supplier);
+    Holder<Block> createHolder(String registryName, Supplier<Block> supplier);
 
-    void register(GameObject<Block> holder);
+    void register(Holder<Block> holder);
 
-    StairBlock createStairBlock(GameObject<Block> blockGameObject, BlockBehaviour.Properties properties);
+    StairBlock createStairBlock(Holder<Block> blockHolder, BlockBehaviour.Properties properties);
 }

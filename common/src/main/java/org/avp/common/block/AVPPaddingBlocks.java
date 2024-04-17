@@ -4,7 +4,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 
-import org.avp.api.GameObject;
+import org.avp.api.Holder;
 import org.avp.api.block.BlockData;
 import org.avp.api.block.BlockDataUtils;
 import org.avp.common.registry.AVPDeferredBlockRegistry;
@@ -21,48 +21,48 @@ public class AVPPaddingBlocks extends AVPDeferredBlockRegistry {
         Blocks.WHITE_WOOL
     );
 
-    public final GameObject<Block> PADDING_ORANGE_PANEL;
+    public final Holder<Block> PADDING_ORANGE_PANEL;
 
-    public final GameObject<Block> PADDING_ORANGE_PIPES;
+    public final Holder<Block> PADDING_ORANGE_PIPES;
 
-    public final GameObject<Block> PADDING_ORANGE_SQUARE;
+    public final Holder<Block> PADDING_ORANGE_SQUARE;
 
-    public final GameObject<Block> PADDING_ORANGE_SQUARE_SLAB;
+    public final Holder<Block> PADDING_ORANGE_SQUARE_SLAB;
 
-    public final GameObject<Block> PADDING_ORANGE_SQUARE_STAIRS;
+    public final Holder<Block> PADDING_ORANGE_SQUARE_STAIRS;
 
-    public final GameObject<Block> PADDING_ORANGE_SQUARE_WALL;
+    public final Holder<Block> PADDING_ORANGE_SQUARE_WALL;
 
-    public final GameObject<Block> PADDING_ORANGE_TILES;
+    public final Holder<Block> PADDING_ORANGE_TILES;
 
-    public final GameObject<Block> PADDING_ORANGE_TILES_SLAB;
+    public final Holder<Block> PADDING_ORANGE_TILES_SLAB;
 
-    public final GameObject<Block> PADDING_ORANGE_TILES_STAIRS;
+    public final Holder<Block> PADDING_ORANGE_TILES_STAIRS;
 
-    public final GameObject<Block> PADDING_ORANGE_TILES_WALL;
+    public final Holder<Block> PADDING_ORANGE_TILES_WALL;
 
-    public final GameObject<Block> PADDING_WHITE_PANEL;
+    public final Holder<Block> PADDING_WHITE_PANEL;
 
-    public final GameObject<Block> PADDING_WHITE_PIPES;
+    public final Holder<Block> PADDING_WHITE_PIPES;
 
-    public final GameObject<Block> PADDING_WHITE_SQUARE;
+    public final Holder<Block> PADDING_WHITE_SQUARE;
 
-    public final GameObject<Block> PADDING_WHITE_SQUARE_SLAB;
+    public final Holder<Block> PADDING_WHITE_SQUARE_SLAB;
 
-    public final GameObject<Block> PADDING_WHITE_SQUARE_STAIRS;
+    public final Holder<Block> PADDING_WHITE_SQUARE_STAIRS;
 
-    public final GameObject<Block> PADDING_WHITE_SQUARE_WALL;
+    public final Holder<Block> PADDING_WHITE_SQUARE_WALL;
 
-    public final GameObject<Block> PADDING_WHITE_TILES;
+    public final Holder<Block> PADDING_WHITE_TILES;
 
-    public final GameObject<Block> PADDING_WHITE_TILES_SLAB;
+    public final Holder<Block> PADDING_WHITE_TILES_SLAB;
 
-    public final GameObject<Block> PADDING_WHITE_TILES_STAIRS;
+    public final Holder<Block> PADDING_WHITE_TILES_STAIRS;
 
-    public final GameObject<Block> PADDING_WHITE_TILES_WALL;
+    public final Holder<Block> PADDING_WHITE_TILES_WALL;
 
     @Override
-    protected GameObject<Block> createHolder(String registryName, BlockData.Builder blockDataBuilder) {
+    protected Holder<Block> createHolder(String registryName, BlockData.Builder blockDataBuilder) {
         return super.createHolder("padding_" + registryName, blockDataBuilder);
     }
 

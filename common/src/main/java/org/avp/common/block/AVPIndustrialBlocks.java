@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import org.avp.api.GameObject;
+import org.avp.api.Holder;
 import org.avp.api.block.BlockData;
 import org.avp.api.block.BlockDataUtils;
 import org.avp.common.registry.AVPDeferredBlockRegistry;
@@ -26,48 +26,48 @@ public class AVPIndustrialBlocks extends AVPDeferredBlockRegistry {
         Blocks.GLASS
     );
 
-    public final GameObject<Block> BRICK;
+    public final Holder<Block> BRICK;
 
-    public final GameObject<Block> BRICK_SLAB;
+    public final Holder<Block> BRICK_SLAB;
 
-    public final GameObject<Block> BRICK_STAIRS;
+    public final Holder<Block> BRICK_STAIRS;
 
-    public final GameObject<Block> FLOOR_GRILL;
+    public final Holder<Block> FLOOR_GRILL;
 
-    public final GameObject<Block> GLASS;
+    public final Holder<Block> GLASS;
 
-    public final GameObject<Block> LAMP;
+    public final Holder<Block> LAMP;
 
-    public final GameObject<Block> METAL_PANEL_0;
+    public final Holder<Block> METAL_PANEL_0;
 
-    public final GameObject<Block> METAL_PANEL_0_SLAB;
+    public final Holder<Block> METAL_PANEL_0_SLAB;
 
-    public final GameObject<Block> METAL_PANEL_0_STAIRS;
+    public final Holder<Block> METAL_PANEL_0_STAIRS;
 
-    public final GameObject<Block> METAL_PANEL_1;
+    public final Holder<Block> METAL_PANEL_1;
 
-    public final GameObject<Block> METAL_PANEL_1_SLAB;
+    public final Holder<Block> METAL_PANEL_1_SLAB;
 
-    public final GameObject<Block> METAL_PANEL_1_STAIRS;
+    public final Holder<Block> METAL_PANEL_1_STAIRS;
 
-    public final GameObject<Block> METAL_PANEL_2;
+    public final Holder<Block> METAL_PANEL_2;
 
-    public final GameObject<Block> METAL_PANEL_2_SLAB;
+    public final Holder<Block> METAL_PANEL_2_SLAB;
 
-    public final GameObject<Block> METAL_PANEL_2_STAIRS;
+    public final Holder<Block> METAL_PANEL_2_STAIRS;
 
-    public final GameObject<Block> VENT;
+    public final Holder<Block> VENT;
 
-    public final GameObject<Block> WALL;
+    public final Holder<Block> WALL;
 
-    public final GameObject<Block> WALL_SLAB;
+    public final Holder<Block> WALL_SLAB;
 
-    public final GameObject<Block> WALL_STAIRS;
+    public final Holder<Block> WALL_STAIRS;
 
-    public final GameObject<Block> WALL_HAZARD;
+    public final Holder<Block> WALL_HAZARD;
 
     @Override
-    protected GameObject<Block> createHolder(String registryName, BlockData.Builder blockDataBuilder) {
+    protected Holder<Block> createHolder(String registryName, BlockData.Builder blockDataBuilder) {
         return super.createHolder("industrial_" + registryName, blockDataBuilder);
     }
 
@@ -75,9 +75,9 @@ public class AVPIndustrialBlocks extends AVPDeferredBlockRegistry {
         var stoneOrMetal = List.of(BlockTags.MINEABLE_WITH_PICKAXE, BlockTags.NEEDS_IRON_TOOL);
 
         Supplier<BlockData.Builder> pickProps = () -> BlockData.simple(METAL_PROPERTIES).tags(stoneOrMetal);
-        Function<GameObject<Block>, BlockData.Builder> slabProps =
+        Function<Holder<Block>, BlockData.Builder> slabProps =
             parent -> BlockDataUtils.slab(parent, METAL_PROPERTIES).tags(stoneOrMetal);
-        Function<GameObject<Block>, BlockData.Builder> stairProps =
+        Function<Holder<Block>, BlockData.Builder> stairProps =
             parent -> BlockDataUtils.stairs(parent, METAL_PROPERTIES).tags(stoneOrMetal);
 
         BRICK = createHolder("brick", pickProps.get());

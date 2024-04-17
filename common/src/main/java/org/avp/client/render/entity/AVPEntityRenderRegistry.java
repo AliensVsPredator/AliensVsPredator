@@ -3,12 +3,11 @@ package org.avp.client.render.entity;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.Mob;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import org.avp.api.GameObject;
+import org.avp.api.Holder;
 import org.avp.client.util.EntityRenderData;
 
 public class AVPEntityRenderRegistry {
@@ -20,10 +19,10 @@ public class AVPEntityRenderRegistry {
     }
 
     protected static <T extends Entity> void addBinding(
-        GameObject<EntityType<T>> entityTypeGameObject,
+        Holder<EntityType<T>> entityTypeHolder,
         EntityRendererProvider<T> entityRendererProvider
     ) {
-        BINDINGS.add(new EntityRenderData<>(entityTypeGameObject, entityRendererProvider));
+        BINDINGS.add(new EntityRenderData<>(entityTypeHolder, entityRendererProvider));
     }
 
     static {

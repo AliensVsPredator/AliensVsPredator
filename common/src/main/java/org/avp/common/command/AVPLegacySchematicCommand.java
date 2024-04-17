@@ -9,13 +9,13 @@ import net.minecraft.network.chat.Component;
 
 import java.util.List;
 
-import org.avp.api.GameObject;
+import org.avp.api.Holder;
 import org.avp.common.legacy.schematic.LegacySchematic;
 import org.avp.common.legacy.schematic.LegacySchematics;
 
 public class AVPLegacySchematicCommand {
 
-    private static final List<GameObject<LegacySchematic>> LEGACY_SCHEMATICS = List.of(
+    private static final List<Holder<LegacySchematic>> LEGACY_SCHEMATICS = List.of(
         LegacySchematics.DERELICT_SCHEMATIC,
         LegacySchematics.DERELICT_OLD_SCHEMATIC,
         LegacySchematics.LV_426_SPIKE_01_SCHEMATIC,
@@ -30,11 +30,11 @@ public class AVPLegacySchematicCommand {
     public static void register(CommandDispatcher<CommandSourceStack> commandDispatcher) {
         var generate = Commands.literal("generate");
 
-        for (GameObject<LegacySchematic> legacySchematicGameObject : LEGACY_SCHEMATICS) {
-            var id = legacySchematicGameObject.getResourceLocation().getPath();
+        for (Holder<LegacySchematic> legacySchematicHolder : LEGACY_SCHEMATICS) {
+            var id = legacySchematicHolder.getResourceLocation().getPath();
             generate.then(
                 Commands.literal(id)
-                    .executes(ctx -> execute(legacySchematicGameObject, ctx))
+                    .executes(ctx -> execute(legacySchematicHolder, ctx))
             );
         }
 
@@ -46,7 +46,7 @@ public class AVPLegacySchematicCommand {
     }
 
     private static int execute(
-        GameObject<LegacySchematic> legacySchematicGameObject,
+        Holder<LegacySchematic> legacySchematicHolder,
         CommandContext<CommandSourceStack> context
     ) throws CommandSyntaxException {
         var commandSourceStack = context.getSource();
@@ -60,7 +60,7 @@ public class AVPLegacySchematicCommand {
         var player = commandSourceStack.getPlayerOrException();
         var playerBlockPos = player.getOnPos();
         var serverLevel = commandSourceStack.getLevel();
-        var schematicOptional = legacySchematicGameObject.getOptional();
+        var schematicOptional = legacySchematicHolder.getOptional();
 
         if (schematicOptional.isEmpty()) {
             context.getSource().sendFailure(Component.literal("Could not retrieve schematic file."));

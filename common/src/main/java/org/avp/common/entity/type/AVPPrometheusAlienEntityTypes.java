@@ -3,7 +3,7 @@ package org.avp.common.entity.type;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
 
-import org.avp.api.GameObject;
+import org.avp.api.Holder;
 import org.avp.common.entity.living.*;
 import org.avp.common.registry.AVPSimpleDeferredEntityTypeRegistry;
 
@@ -11,7 +11,7 @@ public class AVPPrometheusAlienEntityTypes extends AVPSimpleDeferredEntityTypeRe
 
     public static final AVPPrometheusAlienEntityTypes INSTANCE = new AVPPrometheusAlienEntityTypes();
 
-    public final GameObject<EntityType<Deacon>> DEACON = createMobHolder(
+    public final Holder<EntityType<Deacon>> DEACON = createMobHolder(
         "deacon",
         0x8896A5,
         0x495256,
@@ -19,7 +19,7 @@ public class AVPPrometheusAlienEntityTypes extends AVPSimpleDeferredEntityTypeRe
             .sized(0.75F, 1.98F)
     );
 
-    public final GameObject<EntityType<DeaconAdult>> DEACON_ADULT = createMobHolder(
+    public final Holder<EntityType<DeaconAdult>> DEACON_ADULT = createMobHolder(
         "deacon_adult",
         0x8896A5,
         0x495256,
@@ -27,7 +27,7 @@ public class AVPPrometheusAlienEntityTypes extends AVPSimpleDeferredEntityTypeRe
             .sized(0.98F, 2.48F)
     );
 
-    public final GameObject<EntityType<Trilobite>> TRILOBITE = createMobHolder(
+    public final Holder<EntityType<Trilobite>> TRILOBITE = createMobHolder(
         "trilobite",
         0xCCC2A5,
         0x987379,
@@ -35,7 +35,7 @@ public class AVPPrometheusAlienEntityTypes extends AVPSimpleDeferredEntityTypeRe
             .sized(1.98F, 1.98F)
     );
 
-    public final GameObject<EntityType<TrilobiteBaby>> TRILOBITE_BABY = createMobHolder(
+    public final Holder<EntityType<TrilobiteBaby>> TRILOBITE_BABY = createMobHolder(
         "trilobite_baby",
         0xCCC2A5,
         0x987379,

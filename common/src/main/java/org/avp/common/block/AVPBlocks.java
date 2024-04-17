@@ -5,14 +5,11 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import org.avp.api.GameObject;
-import org.avp.api.Tuple;
+import org.avp.api.Holder;
 import org.avp.api.block.BlockData;
 import org.avp.common.registry.AVPDeferredBlockRegistry;
-import org.avp.common.service.Services;
 
 public class AVPBlocks extends AVPDeferredBlockRegistry {
 
@@ -26,9 +23,9 @@ public class AVPBlocks extends AVPDeferredBlockRegistry {
         Blocks.IRON_BLOCK
     );
 
-    public final GameObject<Block> ALUMINUM_BLOCK;
+    public final Holder<Block> ALUMINUM_BLOCK;
 
-    public final GameObject<Block> TITANIUM_BLOCK;
+    public final Holder<Block> TITANIUM_BLOCK;
 
     private AVPBlocks() {
         super();

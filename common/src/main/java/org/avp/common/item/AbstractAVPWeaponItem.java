@@ -25,19 +25,16 @@ import net.minecraft.world.item.ItemUtils;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import org.avp.common.util.TooltipUtils;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-import org.avp.api.GameObject;
-import org.avp.api.Tuple;
+import org.avp.api.Holder;
 import org.avp.api.item.weapon.FireMode;
 import org.avp.api.item.weapon.WeaponItemData;
 import org.avp.api.item.weapon.WeaponItemTagHelper;
@@ -46,7 +43,6 @@ import org.avp.common.config.AVPConfig;
 import org.avp.common.network.payload.ClientboundBulletHitBlockPayload;
 import org.avp.common.service.Services;
 import org.avp.common.util.SoundUtils;
-import org.avp.common.util.TimeUtils;
 import org.avp.server.BlockBreakProgressManager;
 import org.jetbrains.annotations.Nullable;
 
@@ -186,7 +182,7 @@ public abstract class AbstractAVPWeaponItem extends Item implements GeoItem {
         var block = blockState.getBlock();
         var soundType = block.getSoundType(blockState);
 
-        GameObject<SoundEvent> ricochetSfx = SoundUtils.getRicochetSoundForSoundType(soundType);
+        Holder<SoundEvent> ricochetSfx = SoundUtils.getRicochetSoundForSoundType(soundType);
         level.playSound(null, blockPos, ricochetSfx.get(), SoundSource.BLOCKS);
 
         // Only damage blocks if both are true.

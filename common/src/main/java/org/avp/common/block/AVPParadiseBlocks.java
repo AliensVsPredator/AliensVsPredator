@@ -4,7 +4,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 
-import org.avp.api.GameObject;
+import org.avp.api.Holder;
 import org.avp.api.block.BlockData;
 import org.avp.api.block.BlockDataUtils;
 import org.avp.common.registry.AVPDeferredBlockRegistry;
@@ -13,64 +13,64 @@ public class AVPParadiseBlocks extends AVPDeferredBlockRegistry {
 
     public static final AVPParadiseBlocks INSTANCE = new AVPParadiseBlocks();
 
-    public final GameObject<Block> DIRT;
+    public final Holder<Block> DIRT;
 
-    public final GameObject<Block> DIRT_MOSSY;
+    public final Holder<Block> DIRT_MOSSY;
 
-    public final GameObject<Block> DIRT_PODZOL;
+    public final Holder<Block> DIRT_PODZOL;
 
-    public final GameObject<Block> FENCE_GATE_LARGE;
+    public final Holder<Block> FENCE_GATE_LARGE;
 
-    public final GameObject<Block> FENCE_GATE_MEDIUM;
+    public final Holder<Block> FENCE_GATE_MEDIUM;
 
-    public final GameObject<Block> FENCE_GATE_SMALL;
+    public final Holder<Block> FENCE_GATE_SMALL;
 
-    public final GameObject<Block> FENCE_LARGE;
+    public final Holder<Block> FENCE_LARGE;
 
-    public final GameObject<Block> FENCE_MEDIUM;
+    public final Holder<Block> FENCE_MEDIUM;
 
-    public final GameObject<Block> FENCE_SMALL;
+    public final Holder<Block> FENCE_SMALL;
 
-    public final GameObject<Block> GRASS;
+    public final Holder<Block> GRASS;
 
-    public final GameObject<Block> LEAVES_LARGE;
+    public final Holder<Block> LEAVES_LARGE;
 
-    public final GameObject<Block> LEAVES_MEDIUM;
+    public final Holder<Block> LEAVES_MEDIUM;
 
-    public final GameObject<Block> LEAVES_SMALL;
+    public final Holder<Block> LEAVES_SMALL;
 
-    public final GameObject<Block> LOG_LARGE;
+    public final Holder<Block> LOG_LARGE;
 
-    public final GameObject<Block> LOG_LARGE_PLANKS;
+    public final Holder<Block> LOG_LARGE_PLANKS;
 
-    public final GameObject<Block> LOG_MEDIUM;
+    public final Holder<Block> LOG_MEDIUM;
 
-    public final GameObject<Block> LOG_MEDIUM_PLANKS;
+    public final Holder<Block> LOG_MEDIUM_PLANKS;
 
-    public final GameObject<Block> LOG_SMALL;
+    public final Holder<Block> LOG_SMALL;
 
-    public final GameObject<Block> LOG_SMALL_PLANKS;
+    public final Holder<Block> LOG_SMALL_PLANKS;
 
-    public final GameObject<Block> SLAB_LARGE;
+    public final Holder<Block> SLAB_LARGE;
 
-    public final GameObject<Block> SLAB_MEDIUM;
+    public final Holder<Block> SLAB_MEDIUM;
 
-    public final GameObject<Block> SLAB_SMALL;
+    public final Holder<Block> SLAB_SMALL;
 
-    public final GameObject<Block> STAIRS_LARGE;
+    public final Holder<Block> STAIRS_LARGE;
 
-    public final GameObject<Block> STAIRS_MEDIUM;
+    public final Holder<Block> STAIRS_MEDIUM;
 
-    public final GameObject<Block> STAIRS_SMALL;
+    public final Holder<Block> STAIRS_SMALL;
 
-    public final GameObject<Block> WOOD_LARGE;
+    public final Holder<Block> WOOD_LARGE;
 
-    public final GameObject<Block> WOOD_MEDIUM;
+    public final Holder<Block> WOOD_MEDIUM;
 
-    public final GameObject<Block> WOOD_SMALL;
+    public final Holder<Block> WOOD_SMALL;
 
     @Override
-    protected GameObject<Block> createHolder(String registryName, BlockData.Builder blockDataBuilder) {
+    protected Holder<Block> createHolder(String registryName, BlockData.Builder blockDataBuilder) {
         return super.createHolder("paradise_" + registryName, blockDataBuilder);
     }
 

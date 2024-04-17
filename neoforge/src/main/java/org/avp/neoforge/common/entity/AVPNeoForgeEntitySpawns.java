@@ -25,14 +25,13 @@ public class AVPNeoForgeEntitySpawns {
     private static void bootstrap(BootstapContext<BiomeModifier> context) {
         AVPEntitySpawns.INSTANCE.getEntries().forEach(entitySpawnDataHolder -> {
             var entitySpawnData = entitySpawnDataHolder.get();
-            var entityTypeGameObject = entitySpawnData.entityTypeGameObject();
             var key = createThrowawayRegistryKey(entitySpawnDataHolder.getResourceLocation());
 
             var biomes = context.lookup(Registries.BIOME);
             // TODO: Make this different per entity spawn data.
             var biomeNamed = biomes.get(BiomeTags.IS_JUNGLE).orElseThrow();
 
-            var entityType = entityTypeGameObject.get();
+            var entityType = entitySpawnData.entityTypeHolder().get();
             var weight = entitySpawnData.weight();
             var minGroupSize = entitySpawnData.minGroupSize();
             var maxGroupSize = entitySpawnData.maxGroupSize();
@@ -56,7 +55,7 @@ public class AVPNeoForgeEntitySpawns {
     public static void handleSpawnPlacementRegisterEvent(SpawnPlacementRegisterEvent event) {
         AVPEntitySpawns.INSTANCE.getEntries().forEach(entitySpawnDataHolder -> {
             var entitySpawnData = entitySpawnDataHolder.get();
-            var entityType = (EntityType<Mob>) entitySpawnData.entityTypeGameObject().get();
+            var entityType = (EntityType<Mob>) entitySpawnData.entityTypeHolder().get();
             var placementType = entitySpawnData.spawnPlacementType();
             var heightMapType = entitySpawnData.heightMapType();
             var predicate = (SpawnPlacements.SpawnPredicate<Mob>) entitySpawnData.spawnPredicate();

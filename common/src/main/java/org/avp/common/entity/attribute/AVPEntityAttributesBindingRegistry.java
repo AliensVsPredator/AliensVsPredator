@@ -11,22 +11,22 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.avp.api.GameObject;
+import org.avp.api.Holder;
 
 public class AVPEntityAttributesBindingRegistry {
 
-    private static final List<Map.Entry<GameObject<? extends EntityType<? extends LivingEntity>>, AttributeSupplier>> BINDINGS =
+    private static final List<Map.Entry<Holder<? extends EntityType<? extends LivingEntity>>, AttributeSupplier>> BINDINGS =
         new ArrayList<>();
 
-    public static List<Map.Entry<GameObject<? extends EntityType<? extends LivingEntity>>, AttributeSupplier>> getBindings() {
+    public static List<Map.Entry<Holder<? extends EntityType<? extends LivingEntity>>, AttributeSupplier>> getBindings() {
         return BINDINGS;
     }
 
     protected static <T extends LivingEntity> void addBinding(
-        GameObject<EntityType<T>> gameObject,
+        Holder<EntityType<T>> holder,
         AttributeSupplier attributeSupplier
     ) {
-        BINDINGS.add(new AbstractMap.SimpleEntry<>(gameObject, attributeSupplier));
+        BINDINGS.add(new AbstractMap.SimpleEntry<>(holder, attributeSupplier));
     }
 
     protected static AttributeSupplier.Builder builder() {
