@@ -8,6 +8,8 @@ import net.minecraft.world.item.Items;
 
 import java.util.concurrent.CompletableFuture;
 
+import org.avp.common.item.AVPArmorItems;
+import org.avp.common.item.AVPItems;
 import org.avp.common.item.AVPToolItems;
 import org.avp.common.item.AVPWeaponItems;
 import org.avp.common.tag.AVPItemTags;
@@ -20,6 +22,14 @@ public class AVPItemTagsProvider extends FabricTagProvider.ItemTagProvider {
 
     @Override
     protected void addTags(HolderLookup.Provider provider) {
+        getOrCreateTagBuilder(AVPItemTags.ACID_IMMUNE)
+            .add(AVPItems.INSTANCE.ROYAL_JELLY.get())
+            .add(AVPItems.INSTANCE.XENOMORPH_CHITIN.get())
+            .add(AVPArmorItems.INSTANCE.XENOMORPH_HELMET.get())
+            .add(AVPArmorItems.INSTANCE.XENOMORPH_BODY.get())
+            .add(AVPArmorItems.INSTANCE.XENOMORPH_LEGGINGS.get())
+            .add(AVPArmorItems.INSTANCE.XENOMORPH_BOOTS.get());
+
         getOrCreateTagBuilder(AVPItemTags.GUNS)
             .add(AVPWeaponItems.INSTANCE.WEAPON_37_12_SHOTGUN.get())
             .add(AVPWeaponItems.INSTANCE.WEAPON_AK_47.get())
