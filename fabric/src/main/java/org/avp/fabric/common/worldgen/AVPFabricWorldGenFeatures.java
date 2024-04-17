@@ -5,15 +5,25 @@ import net.fabricmc.fabric.api.biome.v1.BiomeSelectors;
 import net.minecraft.tags.BiomeTags;
 import net.minecraft.world.level.levelgen.GenerationStep;
 
+import org.avp.api.GameObject;
+import org.avp.common.registry.AVPDeferredRegistry;
 import org.avp.common.worldgen.feature.AVPOreFeatures;
 
-public class AVPFabricWorldGenFeatures {
+import java.util.function.Supplier;
 
-    public static void forceInitialization() {
-        // This method doesn't need to do anything
+public class AVPFabricWorldGenFeatures extends AVPDeferredRegistry<Void> {
+
+    public static final AVPFabricWorldGenFeatures INSTANCE = new AVPFabricWorldGenFeatures();
+
+    private AVPFabricWorldGenFeatures() {}
+
+    @Override
+    protected GameObject<Void> createHolder(String registryName, Supplier<Void> supplier) {
+        return null;
     }
 
-    static {
+    @Override
+    public void register() {
         BiomeModifications.addFeature(
             BiomeSelectors.foundInOverworld(),
             GenerationStep.Decoration.UNDERGROUND_ORES,
@@ -44,9 +54,5 @@ public class AVPFabricWorldGenFeatures {
             GenerationStep.Decoration.UNDERGROUND_ORES,
             AVPOreFeatures.TITANIUM_ORE_PLACED_KEY
         );
-    }
-
-    private AVPFabricWorldGenFeatures() {
-        throw new UnsupportedOperationException();
     }
 }

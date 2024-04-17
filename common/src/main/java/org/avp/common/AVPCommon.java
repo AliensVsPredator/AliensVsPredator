@@ -32,7 +32,7 @@ public class AVPCommon {
         AVPNetworkPayloadHandlerRegistry.forceInitialization();
 
         // Fuel
-        AVPFuelRegistry.forceInitialization();
+        AVPFuelRegistry.INSTANCE.register();
 
         // Items
         AVPAmmunitionPartItems.INSTANCE.register();

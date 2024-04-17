@@ -4,25 +4,24 @@ import net.minecraft.world.item.Item;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Supplier;
 
 import org.avp.api.GameObject;
 import org.avp.api.Tuple;
 import org.avp.common.item.AVPItems;
 
-public class AVPFuelRegistry {
+public class AVPFuelRegistry extends AVPDeferredRegistry<Tuple<GameObject<Item>, Integer>> {
 
-    private static final List<Tuple<GameObject<Item>, Integer>> ENTRIES = new ArrayList<>();
+    public static final AVPFuelRegistry INSTANCE = new AVPFuelRegistry();
 
-    public static List<Tuple<GameObject<Item>, Integer>> getEntries() {
-        return ENTRIES;
+    @Override
+    protected GameObject<Tuple<GameObject<Item>, Integer>> createHolder(String registryName, Supplier<Tuple<GameObject<Item>, Integer>> supplier) {
+        return new GameObject<>(registryName, supplier);
     }
 
-    private static void register(GameObject<Item> itemGameObject, int burnTime) {
-        ENTRIES.add(new Tuple<>(itemGameObject, burnTime));
-    }
-
-    public static void forceInitialization() {
-        register(AVPItems.INSTANCE.CARBON, 800);
+    @Override
+    public void register() {
+        createHolder("fuel_carbon", () -> new Tuple<>(AVPItems.INSTANCE.CARBON, 800));
     }
 
     private AVPFuelRegistry() {
