@@ -1,7 +1,6 @@
 package org.avp.client.model.entity.living;
 
 import mod.azure.azurelib.common.api.client.model.GeoModel;
-import mod.azure.azurelib.common.internal.common.core.animation.AnimationState;
 import net.minecraft.resources.ResourceLocation;
 
 import org.avp.common.AVPResources;
@@ -31,7 +30,4 @@ public class OctohuggerModel extends GeoModel<Octohugger> {
     public ResourceLocation getAnimationResource(Octohugger entity) {
         return ANIMATION_LOCATION;
     }
-
-    @Override
-    public void setCustomAnimations(Octohugger entity, long instanceId, AnimationState<Octohugger> animationState) {}
 }
