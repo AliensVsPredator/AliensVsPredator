@@ -12,6 +12,7 @@ import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import org.avp.client.render.particle.AVPParticleTypes;
+import org.avp.common.config.AVPConfig;
 import org.avp.common.damage.AVPDamageSources;
 import org.avp.common.tag.AVPBlockTags;
 import org.avp.common.tag.AVPEntityTags;
@@ -105,8 +106,7 @@ public class Acid extends Entity {
             }
 
             if (!entity.getType().is(AVPEntityTags.ACID_IMMUNE)) {
-                // TODO: Make damage amount configurable.
-                AVPDamageSources.INSTANCE.acid.get().hurt(entity, 2F);
+                AVPDamageSources.INSTANCE.acid.get().hurt(entity, AVPConfig.General.ACID_DAMAGE);
             }
         });
     }

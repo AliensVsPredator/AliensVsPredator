@@ -21,7 +21,8 @@ public class AVPConfig {
         @Config(
             value = "enableXenomorphOverworldSpawns",
             comment = """
-                Whether xenomorphs will spawn in the overworld or not. Set to true by default.
+                Whether xenomorphs will spawn in the overworld or not.
+                Default Value: true
                 """
         )
         public static boolean ENABLE_XENOMORPH_OVERWORLD_SPAWNS = true;
@@ -58,9 +59,19 @@ public class AVPConfig {
     public static class General {
 
         @Config(
+            value = "acidDamage",
+            comment = """
+                The amount of damage dealt by acid.
+                Default Value: 2.0
+                """
+        )
+        public static float ACID_DAMAGE = 2F;
+
+        @Config(
             value = "gunsDoBlockDamage",
             comment = """
-                Whether guns do block damage or not. Disabling this does not disable explosive block damage. Set to true by default.
+                Whether guns do block damage or not. Disabling this does not disable explosive block damage.
+                Default Value: true
                 """
         )
         public static boolean GUNS_DO_BLOCK_DAMAGE = true;
@@ -72,7 +83,8 @@ public class AVPConfig {
         @Config(
             value = "enableYautjaOverworldSpawns",
             comment = """
-                Whether yautja (predators) will spawn in the overworld or not. Set to true by default.
+                Whether yautja (predators) will spawn in the overworld or not.
+                Default Value: true
                 """
         )
         public static boolean ENABLE_YAUTJA_OVERWORLD_SPAWNS = true;
