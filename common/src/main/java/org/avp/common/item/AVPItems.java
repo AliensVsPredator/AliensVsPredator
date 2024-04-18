@@ -44,7 +44,7 @@ public class AVPItems extends AVPDeferredItemRegistry {
 
     public final Holder<Item> rawTitanium;
 
-    public final Holder<Item> resin;
+    public final Holder<Item> resinBall;
 
     public final Holder<Item> royalJelly;
 
@@ -63,8 +63,8 @@ public class AVPItems extends AVPDeferredItemRegistry {
     public final Holder<Item> yautjaArtifact;
 
     private AVPItems() {
-        bottleTinted = createHolder("bottle_tinted");
-        bottleTintedAcid = createHolder("bottle_tinted_acid");
+        bottleTinted = createHolder("bottle_tinted", () -> new TintedBottleItem(new Item.Properties()));
+        bottleTintedAcid = createHolder("bottle_tinted_acid", () -> new Item(new Item.Properties().craftRemainder(bottleTinted.get())));
         carbon = createHolder("carbon");
         cobalt = createHolder("cobalt");
         dustLithium = createHolder("dust_lithium");
@@ -80,7 +80,7 @@ public class AVPItems extends AVPDeferredItemRegistry {
         polymer = createHolder("polymer");
         rawBauxite = createHolder("raw_bauxite");
         rawTitanium = createHolder("raw_titanium");
-        resin = createHolder("resin");
+        resinBall = createHolder("resin_ball");
         royalJelly = createHolder("royal_jelly", () -> new Item(new Item.Properties().rarity(Rarity.UNCOMMON)));
         sheetOrionite = createHolder("sheet_orionite");
         shuriken = createHolder("shuriken");

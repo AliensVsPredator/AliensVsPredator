@@ -8,6 +8,7 @@ import org.avp.common.data.recipe.AVPShapedRecipeBuilder;
 import org.avp.common.item.AVPAmmunitionPartItems;
 import org.avp.common.item.AVPBulletItems;
 import org.avp.common.item.AVPElectronicItems;
+import org.avp.common.item.AVPItems;
 
 public final class AVPBulletRecipes {
 
@@ -25,6 +26,14 @@ public final class AVPBulletRecipes {
             .defineAndUnlockIfHas('B', AVPAmmunitionPartItems.INSTANCE.casingCaseless)
             .pattern("A")
             .pattern("B")
+            .save(recipeOutput);
+
+        AVPShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AVPBulletItems.INSTANCE.bulletCaselessAcid, 16)
+            .defineAndUnlockIfHas('A', AVPAmmunitionPartItems.INSTANCE.bulletTip)
+            .defineAndUnlockIfHas('B', AVPAmmunitionPartItems.INSTANCE.casingCaseless)
+            .defineAndUnlockIfHas('C', AVPItems.INSTANCE.bottleTintedAcid)
+            .pattern("AC")
+            .pattern("B ")
             .save(recipeOutput);
 
         AVPShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AVPBulletItems.INSTANCE.bulletCaselessElectric, 16)
@@ -68,6 +77,14 @@ public final class AVPBulletRecipes {
             .pattern("B")
             .save(recipeOutput);
 
+        AVPShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AVPBulletItems.INSTANCE.bulletHeavyAcid, 16)
+            .defineAndUnlockIfHas('A', AVPAmmunitionPartItems.INSTANCE.bulletTip)
+            .defineAndUnlockIfHas('B', AVPAmmunitionPartItems.INSTANCE.casingHeavy)
+            .defineAndUnlockIfHas('C', AVPItems.INSTANCE.bottleTintedAcid)
+            .pattern("AC")
+            .pattern("B ")
+            .save(recipeOutput);
+
         AVPShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AVPBulletItems.INSTANCE.bulletHeavyElectric, 16)
             .defineAndUnlockIfHas('A', AVPAmmunitionPartItems.INSTANCE.bulletTip)
             .defineAndUnlockIfHas('B', AVPAmmunitionPartItems.INSTANCE.casingHeavy)
@@ -107,6 +124,14 @@ public final class AVPBulletRecipes {
             .defineAndUnlockIfHas('B', AVPAmmunitionPartItems.INSTANCE.casingPistol)
             .pattern("A")
             .pattern("B")
+            .save(recipeOutput);
+
+        AVPShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AVPBulletItems.INSTANCE.bulletPistolAcid, 16)
+            .defineAndUnlockIfHas('A', AVPAmmunitionPartItems.INSTANCE.bulletTip)
+            .defineAndUnlockIfHas('B', AVPAmmunitionPartItems.INSTANCE.casingPistol)
+            .defineAndUnlockIfHas('C', AVPItems.INSTANCE.bottleTintedAcid)
+            .pattern("AC")
+            .pattern("B ")
             .save(recipeOutput);
 
         AVPShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AVPBulletItems.INSTANCE.bulletPistolElectric, 16)
@@ -150,6 +175,14 @@ public final class AVPBulletRecipes {
             .pattern("B")
             .save(recipeOutput);
 
+        AVPShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AVPBulletItems.INSTANCE.bulletRifleAcid, 16)
+            .defineAndUnlockIfHas('A', AVPAmmunitionPartItems.INSTANCE.bulletTip)
+            .defineAndUnlockIfHas('B', AVPAmmunitionPartItems.INSTANCE.casingRifle)
+            .defineAndUnlockIfHas('C', AVPItems.INSTANCE.bottleTintedAcid)
+            .pattern("AC")
+            .pattern("B ")
+            .save(recipeOutput);
+
         AVPShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AVPBulletItems.INSTANCE.bulletRifleElectric, 16)
             .defineAndUnlockIfHas('A', AVPAmmunitionPartItems.INSTANCE.bulletTip)
             .defineAndUnlockIfHas('B', AVPAmmunitionPartItems.INSTANCE.casingRifle)
@@ -189,6 +222,14 @@ public final class AVPBulletRecipes {
             .defineAndUnlockIfHas('B', AVPAmmunitionPartItems.INSTANCE.casingShotgun)
             .pattern("A")
             .pattern("B")
+            .save(recipeOutput);
+
+        AVPShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AVPBulletItems.INSTANCE.bulletShotgunAcid, 16)
+            .defineAndUnlockIfHas('A', AVPAmmunitionPartItems.INSTANCE.bulletTip)
+            .defineAndUnlockIfHas('B', AVPAmmunitionPartItems.INSTANCE.casingShotgun)
+            .defineAndUnlockIfHas('C', AVPItems.INSTANCE.bottleTintedAcid)
+            .pattern("AC")
+            .pattern("B ")
             .save(recipeOutput);
 
         AVPShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AVPBulletItems.INSTANCE.bulletShotgunElectric, 16)
