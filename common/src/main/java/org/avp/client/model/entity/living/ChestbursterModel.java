@@ -1,8 +1,6 @@
 package org.avp.client.model.entity.living;
 
 import mod.azure.azurelib.common.api.client.model.GeoModel;
-import mod.azure.azurelib.common.internal.common.core.animation.AnimationState;
-import net.minecraft.client.model.geom.builders.*;
 import net.minecraft.resources.ResourceLocation;
 
 import org.avp.common.AVPResources;
@@ -31,10 +29,5 @@ public class ChestbursterModel extends GeoModel<Chestburster> {
     @Override
     public ResourceLocation getAnimationResource(Chestburster entity) {
         return ANIMATION_LOCATION;
-    }
-
-    @Override
-    public void setCustomAnimations(Chestburster entity, long instanceId, AnimationState<Chestburster> animationState) {
-        // TODO:
     }
 }

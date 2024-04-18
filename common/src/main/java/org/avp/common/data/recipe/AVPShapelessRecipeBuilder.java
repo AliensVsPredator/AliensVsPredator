@@ -6,7 +6,8 @@ import net.minecraft.data.recipes.ShapelessRecipeBuilder;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.ItemLike;
-import org.avp.api.GameObject;
+
+import org.avp.api.Holder;
 
 public class AVPShapelessRecipeBuilder {
 
@@ -14,16 +15,20 @@ public class AVPShapelessRecipeBuilder {
         return new AVPShapelessRecipeBuilder(ShapelessRecipeBuilder.shapeless(recipeCategory, itemLike));
     }
 
-    public static AVPShapelessRecipeBuilder shapeless(RecipeCategory recipeCategory, GameObject<? extends ItemLike> itemLikeGameObject) {
-        return new AVPShapelessRecipeBuilder(ShapelessRecipeBuilder.shapeless(recipeCategory, itemLikeGameObject.get()));
+    public static AVPShapelessRecipeBuilder shapeless(RecipeCategory recipeCategory, Holder<? extends ItemLike> itemLikeHolder) {
+        return new AVPShapelessRecipeBuilder(ShapelessRecipeBuilder.shapeless(recipeCategory, itemLikeHolder.get()));
     }
 
     public static AVPShapelessRecipeBuilder shapeless(RecipeCategory recipeCategory, ItemLike itemLike, int count) {
         return new AVPShapelessRecipeBuilder(ShapelessRecipeBuilder.shapeless(recipeCategory, itemLike, count));
     }
 
-    public static AVPShapelessRecipeBuilder shapeless(RecipeCategory recipeCategory, GameObject<? extends ItemLike> itemLikeGameObject, int count) {
-        return new AVPShapelessRecipeBuilder(ShapelessRecipeBuilder.shapeless(recipeCategory, itemLikeGameObject.get(), count));
+    public static AVPShapelessRecipeBuilder shapeless(
+        RecipeCategory recipeCategory,
+        Holder<? extends ItemLike> itemLikeHolder,
+        int count
+    ) {
+        return new AVPShapelessRecipeBuilder(ShapelessRecipeBuilder.shapeless(recipeCategory, itemLikeHolder.get(), count));
     }
 
     private final ShapelessRecipeBuilder shapelessRecipeBuilder;
@@ -42,8 +47,8 @@ public class AVPShapelessRecipeBuilder {
         return this;
     }
 
-    public AVPShapelessRecipeBuilder requiresAndUnlockIfHas(char character, GameObject<? extends ItemLike> itemLikeGameObject) {
-        return requiresAndUnlockIfHas(character, itemLikeGameObject.get());
+    public AVPShapelessRecipeBuilder requiresAndUnlockIfHas(char character, Holder<? extends ItemLike> itemLikeHolder) {
+        return requiresAndUnlockIfHas(character, itemLikeHolder.get());
     }
 
     public AVPShapelessRecipeBuilder requiresAndUnlockIfHas(char character, ItemLike itemLike, int count) {
@@ -52,8 +57,8 @@ public class AVPShapelessRecipeBuilder {
         return this;
     }
 
-    public AVPShapelessRecipeBuilder requiresAndUnlockIfHas(char character, GameObject<? extends ItemLike> itemLikeGameObject, int count) {
-        return requiresAndUnlockIfHas(character, itemLikeGameObject.get(), count);
+    public AVPShapelessRecipeBuilder requiresAndUnlockIfHas(char character, Holder<? extends ItemLike> itemLikeHolder, int count) {
+        return requiresAndUnlockIfHas(character, itemLikeHolder.get(), count);
     }
 
     public void save(RecipeOutput recipeOutput) {

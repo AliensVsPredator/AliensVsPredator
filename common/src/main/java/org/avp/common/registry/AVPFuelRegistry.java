@@ -2,30 +2,25 @@ package org.avp.common.registry;
 
 import net.minecraft.world.item.Item;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.function.Supplier;
 
-import org.avp.api.GameObject;
+import org.avp.api.Holder;
 import org.avp.api.Tuple;
 import org.avp.common.item.AVPItems;
 
-public class AVPFuelRegistry {
+public class AVPFuelRegistry extends AVPDeferredRegistry<Tuple<Holder<Item>, Integer>> {
 
-    private static final List<Tuple<GameObject<Item>, Integer>> ENTRIES = new ArrayList<>();
+    public static final AVPFuelRegistry INSTANCE = new AVPFuelRegistry();
 
-    public static List<Tuple<GameObject<Item>, Integer>> getEntries() {
-        return ENTRIES;
+    @Override
+    protected Holder<Tuple<Holder<Item>, Integer>> createHolder(String registryName, Supplier<Tuple<Holder<Item>, Integer>> supplier) {
+        return new Holder<>(registryName, supplier);
     }
 
-    private static void register(GameObject<Item> itemGameObject, int burnTime) {
-        ENTRIES.add(new Tuple<>(itemGameObject, burnTime));
+    @Override
+    public void register() {
+        createHolder("fuel_carbon", () -> new Tuple<>(AVPItems.INSTANCE.carbon, 800));
     }
 
-    public static void forceInitialization() {
-        register(AVPItems.CARBON, 800);
-    }
-
-    private AVPFuelRegistry() {
-        throw new UnsupportedOperationException();
-    }
+    private AVPFuelRegistry() {}
 }

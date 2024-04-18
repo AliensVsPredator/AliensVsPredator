@@ -37,12 +37,12 @@ public class Chestburster extends Monster implements GeoEntity {
 
     @Override
     protected SoundEvent getDeathSound() {
-        return AVPSoundEvents.ENTITY_CHESTBURSTER_DEATH.get();
+        return AVPSoundEvents.INSTANCE.entityChestbursterDeath.get();
     }
 
     @Override
     protected SoundEvent getHurtSound(@NotNull DamageSource damageSource) {
-        return AVPSoundEvents.ENTITY_CHESTBURSTER_HURT.get();
+        return AVPSoundEvents.INSTANCE.entityChestbursterHurt.get();
     }
 
     @Override

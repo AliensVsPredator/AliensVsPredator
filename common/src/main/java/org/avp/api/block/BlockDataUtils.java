@@ -5,36 +5,36 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.properties.WoodType;
 
-import org.avp.api.GameObject;
+import org.avp.api.Holder;
 import org.avp.api.block.drop.BlockDrops;
 import org.avp.api.block.drop.key.BlockDropKeys;
 import org.avp.api.block.factory.BlockFactories;
 
 public class BlockDataUtils {
 
-    public static BlockData.Builder fence(GameObject<Block> parentGameObject, BlockBehaviour.Properties properties) {
+    public static BlockData.Builder fence(Holder<Block> parentHolder, BlockBehaviour.Properties properties) {
         return BlockData.builder(properties)
-            .parent(parentGameObject)
+            .parent(parentHolder)
             .factory(BlockFactories.FENCE)
             .tags(BlockTags.FENCES);
     }
 
     public static BlockData.Builder fenceGate(
-        GameObject<Block> parentGameObject,
+        Holder<Block> parentHolder,
         WoodType woodType,
         BlockBehaviour.Properties properties
     ) {
         return BlockData.builder(properties)
-            .parent(parentGameObject)
+            .parent(parentHolder)
             .factory(BlockFactories.FENCE_GATE.apply(woodType))
             .tags(BlockTags.FENCE_GATES);
     }
 
-    public static BlockData.Builder grass(GameObject<Block> parentGameObject, BlockBehaviour.Properties properties) {
+    public static BlockData.Builder grass(Holder<Block> parentHolder, BlockBehaviour.Properties properties) {
         return BlockData.builder(properties)
-            .parent(parentGameObject)
+            .parent(parentHolder)
             .factory(BlockFactories.GRASS)
-            .drop(BlockDrops.OTHER.apply(BlockDropKeys.OTHER, parentGameObject::get));
+            .drop(BlockDrops.OTHER.apply(BlockDropKeys.OTHER, parentHolder::get));
     }
 
     public static BlockData.Builder rotatedPillar(BlockBehaviour.Properties properties) {
@@ -45,17 +45,17 @@ public class BlockDataUtils {
         return BlockData.builder(properties).factory(BlockFactories.ROTATED_VARIANT);
     }
 
-    public static BlockData.Builder slab(GameObject<Block> parentGameObject, BlockBehaviour.Properties properties) {
+    public static BlockData.Builder slab(Holder<Block> parentHolder, BlockBehaviour.Properties properties) {
         return BlockData.builder(properties)
-            .parent(parentGameObject)
+            .parent(parentHolder)
             .factory(BlockFactories.SLAB)
             .tags(BlockTags.SLABS);
     }
 
-    public static BlockData.Builder stairs(GameObject<Block> parentGameObject, BlockBehaviour.Properties properties) {
+    public static BlockData.Builder stairs(Holder<Block> parentHolder, BlockBehaviour.Properties properties) {
         return BlockData.builder(properties)
-            .parent(parentGameObject)
-            .factory(BlockFactories.STAIRS.apply(parentGameObject))
+            .parent(parentHolder)
+            .factory(BlockFactories.STAIRS.apply(parentHolder))
             .tags(BlockTags.STAIRS);
     }
 
@@ -63,16 +63,16 @@ public class BlockDataUtils {
         return BlockData.builder(properties).factory(BlockFactories.TRANSPARENT);
     }
 
-    public static BlockData.Builder wall(GameObject<Block> parentGameObject, BlockBehaviour.Properties properties) {
+    public static BlockData.Builder wall(Holder<Block> parentHolder, BlockBehaviour.Properties properties) {
         return BlockData.builder(properties)
-            .parent(parentGameObject)
+            .parent(parentHolder)
             .factory(BlockFactories.WALL)
             .tags(BlockTags.WALLS);
     }
 
-    public static BlockData.Builder wood(GameObject<Block> parentGameObject, BlockBehaviour.Properties properties) {
+    public static BlockData.Builder wood(Holder<Block> parentHolder, BlockBehaviour.Properties properties) {
         return BlockData.builder(properties)
-            .parent(parentGameObject)
+            .parent(parentHolder)
             .factory(BlockFactories.WOOD);
     }
 

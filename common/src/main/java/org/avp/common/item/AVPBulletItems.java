@@ -2,127 +2,134 @@ package org.avp.common.item;
 
 import net.minecraft.world.item.Item;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Set;
 import java.util.function.Supplier;
 
-import org.avp.api.GameObject;
-import org.avp.common.service.Services;
+import org.avp.api.Holder;
+import org.avp.api.item.weapon.bullet.effect.BulletEffect;
+import org.avp.api.item.weapon.bullet.effect.BulletEffectRegistry;
+import org.avp.api.item.weapon.bullet.effect.BulletEffects;
+import org.avp.common.AVPResources;
+import org.avp.common.registry.AVPDeferredItemRegistry;
 
-public class AVPBulletItems {
+public class AVPBulletItems extends AVPDeferredItemRegistry {
 
-    private static final List<GameObject<Item>> ENTRIES = new ArrayList<>();
+    public static final AVPBulletItems INSTANCE = new AVPBulletItems();
 
-    public static final GameObject<Item> BULLET_CASELESS;
+    private static final String BULLET_ITEM_PREFIX = "bullet_";
 
-    public static final GameObject<Item> BULLET_CASELESS_ACID;
+    public final Holder<Item> bulletCaseless;
 
-    public static final GameObject<Item> BULLET_CASELESS_ELECTRIC;
+    public final Holder<Item> bulletCaselessAcid;
 
-    public static final GameObject<Item> BULLET_CASELESS_EXPLOSIVE;
+    public final Holder<Item> bulletCaselessElectric;
 
-    public static final GameObject<Item> BULLET_CASELESS_INCENDIARY;
+    public final Holder<Item> bulletCaselessExplosive;
 
-    public static final GameObject<Item> BULLET_CASELESS_PENETRATION;
+    public final Holder<Item> bulletCaselessIncendiary;
 
-    public static final GameObject<Item> BULLET_HEAVY;
+    public final Holder<Item> bulletCaselessPenetration;
 
-    public static final GameObject<Item> BULLET_HEAVY_ACID;
+    public final Holder<Item> bulletHeavy;
 
-    public static final GameObject<Item> BULLET_HEAVY_ELECTRIC;
+    public final Holder<Item> bulletHeavyAcid;
 
-    public static final GameObject<Item> BULLET_HEAVY_EXPLOSIVE;
+    public final Holder<Item> bulletHeavyElectric;
 
-    public static final GameObject<Item> BULLET_HEAVY_INCENDIARY;
+    public final Holder<Item> bulletHeavyExplosive;
 
-    public static final GameObject<Item> BULLET_HEAVY_PENETRATION;
+    public final Holder<Item> bulletHeavyIncendiary;
 
-    public static final GameObject<Item> BULLET_PISTOL;
+    public final Holder<Item> bulletHeavyPenetration;
 
-    public static final GameObject<Item> BULLET_PISTOL_ACID;
+    public final Holder<Item> bulletPistol;
 
-    public static final GameObject<Item> BULLET_PISTOL_ELECTRIC;
+    public final Holder<Item> bulletPistolAcid;
 
-    public static final GameObject<Item> BULLET_PISTOL_EXPLOSIVE;
+    public final Holder<Item> bulletPistolElectric;
 
-    public static final GameObject<Item> BULLET_PISTOL_INCENDIARY;
+    public final Holder<Item> bulletPistolExplosive;
 
-    public static final GameObject<Item> BULLET_PISTOL_PENETRATION;
+    public final Holder<Item> bulletPistolIncendiary;
 
-    public static final GameObject<Item> BULLET_RIFLE;
+    public final Holder<Item> bulletPistolPenetration;
 
-    public static final GameObject<Item> BULLET_RIFLE_ACID;
+    public final Holder<Item> bulletRifle;
 
-    public static final GameObject<Item> BULLET_RIFLE_ELECTRIC;
+    public final Holder<Item> bulletRifleAcid;
 
-    public static final GameObject<Item> BULLET_RIFLE_EXPLOSIVE;
+    public final Holder<Item> bulletRifleElectric;
 
-    public static final GameObject<Item> BULLET_RIFLE_INCENDIARY;
+    public final Holder<Item> bulletRifleExplosive;
 
-    public static final GameObject<Item> BULLET_RIFLE_PENETRATION;
+    public final Holder<Item> bulletRifleIncendiary;
 
-    public static final GameObject<Item> BULLET_SHOTGUN;
+    public final Holder<Item> bulletRiflePenetration;
 
-    public static final GameObject<Item> BULLET_SHOTGUN_ACID;
+    public final Holder<Item> bulletShotgun;
 
-    public static final GameObject<Item> BULLET_SHOTGUN_ELECTRIC;
+    public final Holder<Item> bulletShotgunAcid;
 
-    public static final GameObject<Item> BULLET_SHOTGUN_EXPLOSIVE;
+    public final Holder<Item> bulletShotgunElectric;
 
-    public static final GameObject<Item> BULLET_SHOTGUN_INCENDIARY;
+    public final Holder<Item> bulletShotgunExplosive;
 
-    public static final GameObject<Item> BULLET_SHOTGUN_PENETRATION;
+    public final Holder<Item> bulletShotgunIncendiary;
 
-    public static void forceInitialization() {
-        // This method doesn't need to do anything
+    public final Holder<Item> bulletShotgunPenetration;
+
+    private Holder<Item> createHolder(String registryName, BulletEffect bulletEffect) {
+        return createHolder(registryName, Set.of(bulletEffect));
     }
 
-    public static List<GameObject<Item>> getEntries() {
-        return ENTRIES;
+    private Holder<Item> createHolder(String registryName, Set<BulletEffect> bulletEffects) {
+        return createHolder(registryName, () -> {
+            var item = new Item(new Item.Properties());
+            var location = AVPResources.location(BULLET_ITEM_PREFIX + registryName);
+            bulletEffects.forEach(bulletEffect -> BulletEffectRegistry.registerBulletEffect(location, bulletEffect));
+            return item;
+        });
     }
 
-    private static GameObject<Item> register(String registryName, Supplier<Item> itemSupplier) {
-        var gameObject = Services.ITEM_REGISTRY.register("bullet_" + registryName, itemSupplier);
-        ENTRIES.add(gameObject);
-        return gameObject;
+    @Override
+    protected Holder<Item> createHolder(String registryName, Supplier<Item> supplier) {
+        return super.createHolder(BULLET_ITEM_PREFIX + registryName, supplier);
     }
 
-    private AVPBulletItems() {}
+    private AVPBulletItems() {
+        bulletCaseless = createHolder("caseless", BulletEffects.STANDARD);
+        bulletCaselessAcid = createHolder("caseless_acid", BulletEffects.ACID);
+        bulletCaselessElectric = createHolder("caseless_electric", BulletEffects.ELECTRIC);
+        bulletCaselessExplosive = createHolder("caseless_explosive", BulletEffects.EXPLOSIVE);
+        bulletCaselessIncendiary = createHolder("caseless_incendiary", BulletEffects.INCENDIARY);
+        bulletCaselessPenetration = createHolder("caseless_penetration", BulletEffects.ARMOR_PENETRATION);
 
-    static {
-        BULLET_CASELESS = register("caseless", () -> new Item(new Item.Properties()));
-        BULLET_CASELESS_ACID = register("caseless_acid", () -> new Item(new Item.Properties()));
-        BULLET_CASELESS_ELECTRIC = register("caseless_electric", () -> new Item(new Item.Properties()));
-        BULLET_CASELESS_EXPLOSIVE = register("caseless_explosive", () -> new Item(new Item.Properties()));
-        BULLET_CASELESS_INCENDIARY = register("caseless_incendiary", () -> new Item(new Item.Properties()));
-        BULLET_CASELESS_PENETRATION = register("caseless_penetration", () -> new Item(new Item.Properties()));
+        bulletHeavy = createHolder("heavy", BulletEffects.STANDARD);
+        bulletHeavyAcid = createHolder("heavy_acid", BulletEffects.ACID);
+        bulletHeavyElectric = createHolder("heavy_electric", BulletEffects.ELECTRIC);
+        bulletHeavyExplosive = createHolder("heavy_explosive", BulletEffects.EXPLOSIVE);
+        bulletHeavyIncendiary = createHolder("heavy_incendiary", BulletEffects.INCENDIARY);
+        bulletHeavyPenetration = createHolder("heavy_penetration", BulletEffects.ARMOR_PENETRATION);
 
-        BULLET_HEAVY = register("heavy", () -> new Item(new Item.Properties()));
-        BULLET_HEAVY_ACID = register("heavy_acid", () -> new Item(new Item.Properties()));
-        BULLET_HEAVY_ELECTRIC = register("heavy_electric", () -> new Item(new Item.Properties()));
-        BULLET_HEAVY_EXPLOSIVE = register("heavy_explosive", () -> new Item(new Item.Properties()));
-        BULLET_HEAVY_INCENDIARY = register("heavy_incendiary", () -> new Item(new Item.Properties()));
-        BULLET_HEAVY_PENETRATION = register("heavy_penetration", () -> new Item(new Item.Properties()));
+        bulletPistol = createHolder("pistol", BulletEffects.STANDARD);
+        bulletPistolAcid = createHolder("pistol_acid", BulletEffects.ACID);
+        bulletPistolElectric = createHolder("pistol_electric", BulletEffects.ELECTRIC);
+        bulletPistolExplosive = createHolder("pistol_explosive", BulletEffects.EXPLOSIVE);
+        bulletPistolIncendiary = createHolder("pistol_incendiary", BulletEffects.INCENDIARY);
+        bulletPistolPenetration = createHolder("pistol_penetration", BulletEffects.ARMOR_PENETRATION);
 
-        BULLET_PISTOL = register("pistol", () -> new Item(new Item.Properties()));
-        BULLET_PISTOL_ACID = register("pistol_acid", () -> new Item(new Item.Properties()));
-        BULLET_PISTOL_ELECTRIC = register("pistol_electric", () -> new Item(new Item.Properties()));
-        BULLET_PISTOL_EXPLOSIVE = register("pistol_explosive", () -> new Item(new Item.Properties()));
-        BULLET_PISTOL_INCENDIARY = register("pistol_incendiary", () -> new Item(new Item.Properties()));
-        BULLET_PISTOL_PENETRATION = register("pistol_penetration", () -> new Item(new Item.Properties()));
+        bulletRifle = createHolder("rifle", BulletEffects.STANDARD);
+        bulletRifleAcid = createHolder("rifle_acid", BulletEffects.ACID);
+        bulletRifleElectric = createHolder("rifle_electric", BulletEffects.ELECTRIC);
+        bulletRifleExplosive = createHolder("rifle_explosive", BulletEffects.EXPLOSIVE);
+        bulletRifleIncendiary = createHolder("rifle_incendiary", BulletEffects.INCENDIARY);
+        bulletRiflePenetration = createHolder("rifle_penetration", BulletEffects.ARMOR_PENETRATION);
 
-        BULLET_RIFLE = register("rifle", () -> new Item(new Item.Properties()));
-        BULLET_RIFLE_ACID = register("rifle_acid", () -> new Item(new Item.Properties()));
-        BULLET_RIFLE_ELECTRIC = register("rifle_electric", () -> new Item(new Item.Properties()));
-        BULLET_RIFLE_EXPLOSIVE = register("rifle_explosive", () -> new Item(new Item.Properties()));
-        BULLET_RIFLE_INCENDIARY = register("rifle_incendiary", () -> new Item(new Item.Properties()));
-        BULLET_RIFLE_PENETRATION = register("rifle_penetration", () -> new Item(new Item.Properties()));
-
-        BULLET_SHOTGUN = register("shotgun", () -> new Item(new Item.Properties()));
-        BULLET_SHOTGUN_ACID = register("shotgun_acid", () -> new Item(new Item.Properties()));
-        BULLET_SHOTGUN_ELECTRIC = register("shotgun_electric", () -> new Item(new Item.Properties()));
-        BULLET_SHOTGUN_EXPLOSIVE = register("shotgun_explosive", () -> new Item(new Item.Properties()));
-        BULLET_SHOTGUN_INCENDIARY = register("shotgun_incendiary", () -> new Item(new Item.Properties()));
-        BULLET_SHOTGUN_PENETRATION = register("shotgun_penetration", () -> new Item(new Item.Properties()));
+        bulletShotgun = createHolder("shotgun", BulletEffects.STANDARD);
+        bulletShotgunAcid = createHolder("shotgun_acid", BulletEffects.ACID);
+        bulletShotgunElectric = createHolder("shotgun_electric", BulletEffects.ELECTRIC);
+        bulletShotgunExplosive = createHolder("shotgun_explosive", BulletEffects.EXPLOSIVE);
+        bulletShotgunIncendiary = createHolder("shotgun_incendiary", BulletEffects.INCENDIARY);
+        bulletShotgunPenetration = createHolder("shotgun_penetration", BulletEffects.ARMOR_PENETRATION);
     }
 }

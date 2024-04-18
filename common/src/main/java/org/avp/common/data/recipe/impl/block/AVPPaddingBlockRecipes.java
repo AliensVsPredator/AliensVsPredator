@@ -9,14 +9,14 @@ import net.minecraft.world.level.block.Block;
 
 import java.util.List;
 
-import org.avp.api.GameObject;
+import org.avp.api.Holder;
 import org.avp.api.Tuple;
 import org.avp.common.block.AVPPaddingBlocks;
 import org.avp.common.data.recipe.AVPShapedRecipeBuilder;
 
 public final class AVPPaddingBlockRecipes {
 
-    private static final List<Tuple<ItemLike, List<GameObject<Block>>>> PADDING_DATA = List.of(
+    private static final List<Tuple<ItemLike, List<Holder<Block>>>> PADDING_DATA = List.of(
         new Tuple<>(Items.BLACK_DYE, null),
         new Tuple<>(Items.BLUE_DYE, null),
         new Tuple<>(Items.BROWN_DYE, null),
@@ -31,10 +31,10 @@ public final class AVPPaddingBlockRecipes {
         new Tuple<>(
             Items.ORANGE_DYE,
             List.of(
-                AVPPaddingBlocks.PADDING_ORANGE_PANEL,
-                AVPPaddingBlocks.PADDING_ORANGE_PIPES,
-                AVPPaddingBlocks.PADDING_ORANGE_SQUARE,
-                AVPPaddingBlocks.PADDING_ORANGE_TILES
+                AVPPaddingBlocks.INSTANCE.paddingOrangePanel,
+                AVPPaddingBlocks.INSTANCE.paddingOrangePipes,
+                AVPPaddingBlocks.INSTANCE.paddingOrangeSquare,
+                AVPPaddingBlocks.INSTANCE.paddingOrangeTiles
             )
         ),
         new Tuple<>(Items.PINK_DYE, null),
@@ -43,10 +43,10 @@ public final class AVPPaddingBlockRecipes {
         new Tuple<>(
             Items.WHITE_DYE,
             List.of(
-                AVPPaddingBlocks.PADDING_WHITE_PANEL,
-                AVPPaddingBlocks.PADDING_WHITE_PIPES,
-                AVPPaddingBlocks.PADDING_WHITE_SQUARE,
-                AVPPaddingBlocks.PADDING_WHITE_TILES
+                AVPPaddingBlocks.INSTANCE.paddingWhitePanel,
+                AVPPaddingBlocks.INSTANCE.paddingWhitePipes,
+                AVPPaddingBlocks.INSTANCE.paddingWhiteSquare,
+                AVPPaddingBlocks.INSTANCE.paddingWhiteTiles
             )
         ),
         new Tuple<>(Items.YELLOW_DYE, null)

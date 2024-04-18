@@ -4,178 +4,176 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 
-import org.avp.api.GameObject;
+import org.avp.api.Holder;
 import org.avp.api.block.BlockData;
 import org.avp.api.block.BlockDataUtils;
+import org.avp.common.registry.AVPDeferredBlockRegistry;
 
-public class AVPParadiseBlocks {
+public class AVPParadiseBlocks extends AVPDeferredBlockRegistry {
 
-    public static final GameObject<Block> DIRT;
+    public static final AVPParadiseBlocks INSTANCE = new AVPParadiseBlocks();
 
-    public static final GameObject<Block> DIRT_MOSSY;
+    public final Holder<Block> dirt;
 
-    public static final GameObject<Block> DIRT_PODZOL;
+    public final Holder<Block> dirtMossy;
 
-    public static final GameObject<Block> FENCE_GATE_LARGE;
+    public final Holder<Block> dirtPodzol;
 
-    public static final GameObject<Block> FENCE_GATE_MEDIUM;
+    public final Holder<Block> fenceGateLarge;
 
-    public static final GameObject<Block> FENCE_GATE_SMALL;
+    public final Holder<Block> fenceGateMedium;
 
-    public static final GameObject<Block> FENCE_LARGE;
+    public final Holder<Block> fenceGateSmall;
 
-    public static final GameObject<Block> FENCE_MEDIUM;
+    public final Holder<Block> fenceLarge;
 
-    public static final GameObject<Block> FENCE_SMALL;
+    public final Holder<Block> fenceMedium;
 
-    public static final GameObject<Block> GRASS;
+    public final Holder<Block> fenceSmall;
 
-    public static final GameObject<Block> LEAVES_LARGE;
+    public final Holder<Block> grass;
 
-    public static final GameObject<Block> LEAVES_MEDIUM;
+    public final Holder<Block> leavesLarge;
 
-    public static final GameObject<Block> LEAVES_SMALL;
+    public final Holder<Block> leavesMedium;
 
-    public static final GameObject<Block> LOG_LARGE;
+    public final Holder<Block> leavesSmall;
 
-    public static final GameObject<Block> LOG_LARGE_PLANKS;
+    public final Holder<Block> logLarge;
 
-    public static final GameObject<Block> LOG_MEDIUM;
+    public final Holder<Block> logLargePlanks;
 
-    public static final GameObject<Block> LOG_MEDIUM_PLANKS;
+    public final Holder<Block> logMedium;
 
-    public static final GameObject<Block> LOG_SMALL;
+    public final Holder<Block> logMediumPlanks;
 
-    public static final GameObject<Block> LOG_SMALL_PLANKS;
+    public final Holder<Block> logSmall;
 
-    public static final GameObject<Block> SLAB_LARGE;
+    public final Holder<Block> logSmallPlanks;
 
-    public static final GameObject<Block> SLAB_MEDIUM;
+    public final Holder<Block> slabLarge;
 
-    public static final GameObject<Block> SLAB_SMALL;
+    public final Holder<Block> slabMedium;
 
-    public static final GameObject<Block> STAIRS_LARGE;
+    public final Holder<Block> slabSmall;
 
-    public static final GameObject<Block> STAIRS_MEDIUM;
+    public final Holder<Block> stairsLarge;
 
-    public static final GameObject<Block> STAIRS_SMALL;
+    public final Holder<Block> stairsMedium;
 
-    public static final GameObject<Block> WOOD_LARGE;
+    public final Holder<Block> stairsSmall;
 
-    public static final GameObject<Block> WOOD_MEDIUM;
+    public final Holder<Block> woodLarge;
 
-    public static final GameObject<Block> WOOD_SMALL;
+    public final Holder<Block> woodMedium;
 
-    public static void forceInitialization() {
-        // This method doesn't need to do anything
+    public final Holder<Block> woodSmall;
+
+    @Override
+    protected Holder<Block> createHolder(String registryName, BlockData.Builder blockDataBuilder) {
+        return super.createHolder("paradise_" + registryName, blockDataBuilder);
     }
 
-    private static GameObject<Block> register(String name, BlockData.Builder builder) {
-        return AVPBlocks.register("paradise_" + name, builder);
-    }
-
-    private AVPParadiseBlocks() {}
-
-    static {
-        DIRT = register("dirt", BlockData.simple(BlockBehaviour.Properties.of()));
-        DIRT_MOSSY = register(
+    private AVPParadiseBlocks() {
+        dirt = createHolder("dirt", BlockData.simple(BlockBehaviour.Properties.of()));
+        dirtMossy = createHolder(
             "dirt_mossy",
             BlockData.simple(BlockBehaviour.Properties.of())
         );
-        DIRT_PODZOL = register(
+        dirtPodzol = createHolder(
             "dirt_podzol",
-            BlockDataUtils.grass(DIRT, BlockBehaviour.Properties.ofFullCopy(Blocks.PODZOL))
+            BlockDataUtils.grass(dirt, BlockBehaviour.Properties.ofFullCopy(Blocks.PODZOL))
         );
-        GRASS = register(
+        grass = createHolder(
             "grass",
-            BlockDataUtils.grass(DIRT, BlockBehaviour.Properties.ofFullCopy(Blocks.GRASS_BLOCK))
+            BlockDataUtils.grass(dirt, BlockBehaviour.Properties.ofFullCopy(Blocks.GRASS_BLOCK))
         );
 
-        LEAVES_LARGE = register("leaves_large", BlockData.simple(BlockBehaviour.Properties.of()));
-        LEAVES_MEDIUM = register("leaves_medium", BlockData.simple(BlockBehaviour.Properties.of()));
-        LEAVES_SMALL = register("leaves_small", BlockData.simple(BlockBehaviour.Properties.of()));
+        leavesLarge = createHolder("leaves_large", BlockData.simple(BlockBehaviour.Properties.of()));
+        leavesMedium = createHolder("leaves_medium", BlockData.simple(BlockBehaviour.Properties.of()));
+        leavesSmall = createHolder("leaves_small", BlockData.simple(BlockBehaviour.Properties.of()));
 
-        LOG_LARGE = register("log_large", BlockDataUtils.rotatedPillar(BlockBehaviour.Properties.of()));
-        LOG_LARGE_PLANKS = register("log_large_planks", BlockData.simple(BlockBehaviour.Properties.of()));
+        logLarge = createHolder("log_large", BlockDataUtils.rotatedPillar(BlockBehaviour.Properties.of()));
+        logLargePlanks = createHolder("log_large_planks", BlockData.simple(BlockBehaviour.Properties.of()));
 
-        LOG_MEDIUM = register("log_medium", BlockDataUtils.rotatedPillar(BlockBehaviour.Properties.of()));
-        LOG_MEDIUM_PLANKS = register(
+        logMedium = createHolder("log_medium", BlockDataUtils.rotatedPillar(BlockBehaviour.Properties.of()));
+        logMediumPlanks = createHolder(
             "log_medium_planks",
             BlockData.simple(BlockBehaviour.Properties.of())
         );
 
-        LOG_SMALL = register(
+        logSmall = createHolder(
             "log_small",
             BlockDataUtils.rotatedPillar(BlockBehaviour.Properties.of())
         );
-        LOG_SMALL_PLANKS = register(
+        logSmallPlanks = createHolder(
             "log_small_planks",
             BlockData.simple(BlockBehaviour.Properties.of())
         );
 
-        FENCE_GATE_LARGE = register(
+        fenceGateLarge = createHolder(
             "fence_gate_large",
-            BlockDataUtils.fenceGate(LOG_LARGE_PLANKS, AVPWoodType.LARGE, BlockBehaviour.Properties.of())
+            BlockDataUtils.fenceGate(logLargePlanks, AVPWoodType.LARGE, BlockBehaviour.Properties.of())
         );
-        FENCE_GATE_MEDIUM = register(
+        fenceGateMedium = createHolder(
             "fence_gate_medium",
-            BlockDataUtils.fenceGate(LOG_MEDIUM_PLANKS, AVPWoodType.MEDIUM, BlockBehaviour.Properties.of())
+            BlockDataUtils.fenceGate(logMediumPlanks, AVPWoodType.MEDIUM, BlockBehaviour.Properties.of())
         );
-        FENCE_GATE_SMALL = register(
+        fenceGateSmall = createHolder(
             "fence_gate_small",
-            BlockDataUtils.fenceGate(LOG_SMALL_PLANKS, AVPWoodType.SMALL, BlockBehaviour.Properties.of())
+            BlockDataUtils.fenceGate(logSmallPlanks, AVPWoodType.SMALL, BlockBehaviour.Properties.of())
         );
 
-        FENCE_LARGE = register(
+        fenceLarge = createHolder(
             "fence_large",
-            BlockDataUtils.fence(LOG_LARGE_PLANKS, BlockBehaviour.Properties.of())
+            BlockDataUtils.fence(logLargePlanks, BlockBehaviour.Properties.of())
         );
-        FENCE_MEDIUM = register(
+        fenceMedium = createHolder(
             "fence_medium",
-            BlockDataUtils.fence(LOG_MEDIUM_PLANKS, BlockBehaviour.Properties.of())
+            BlockDataUtils.fence(logMediumPlanks, BlockBehaviour.Properties.of())
         );
-        FENCE_SMALL = register(
+        fenceSmall = createHolder(
             "fence_small",
-            BlockDataUtils.fence(LOG_SMALL_PLANKS, BlockBehaviour.Properties.of())
+            BlockDataUtils.fence(logSmallPlanks, BlockBehaviour.Properties.of())
         );
 
-        SLAB_LARGE = register(
+        slabLarge = createHolder(
             "slab_large",
-            BlockDataUtils.slab(LOG_LARGE_PLANKS, BlockBehaviour.Properties.of())
+            BlockDataUtils.slab(logLargePlanks, BlockBehaviour.Properties.of())
         );
-        SLAB_MEDIUM = register(
+        slabMedium = createHolder(
             "slab_medium",
-            BlockDataUtils.slab(LOG_MEDIUM_PLANKS, BlockBehaviour.Properties.of())
+            BlockDataUtils.slab(logMediumPlanks, BlockBehaviour.Properties.of())
         );
-        SLAB_SMALL = register(
+        slabSmall = createHolder(
             "slab_small",
-            BlockDataUtils.slab(LOG_SMALL_PLANKS, BlockBehaviour.Properties.of())
+            BlockDataUtils.slab(logSmallPlanks, BlockBehaviour.Properties.of())
         );
 
-        STAIRS_LARGE = register(
+        stairsLarge = createHolder(
             "stairs_large",
-            BlockDataUtils.stairs(LOG_LARGE_PLANKS, BlockBehaviour.Properties.of())
+            BlockDataUtils.stairs(logLargePlanks, BlockBehaviour.Properties.of())
         );
-        STAIRS_MEDIUM = register(
+        stairsMedium = createHolder(
             "stairs_medium",
-            BlockDataUtils.stairs(LOG_MEDIUM_PLANKS, BlockBehaviour.Properties.of())
+            BlockDataUtils.stairs(logMediumPlanks, BlockBehaviour.Properties.of())
         );
-        STAIRS_SMALL = register(
+        stairsSmall = createHolder(
             "stairs_small",
-            BlockDataUtils.stairs(LOG_SMALL_PLANKS, BlockBehaviour.Properties.of())
+            BlockDataUtils.stairs(logSmallPlanks, BlockBehaviour.Properties.of())
         );
 
-        WOOD_LARGE = register(
+        woodLarge = createHolder(
             "wood_large",
-            BlockDataUtils.wood(LOG_LARGE, BlockBehaviour.Properties.of())
+            BlockDataUtils.wood(logLarge, BlockBehaviour.Properties.of())
         );
-        WOOD_MEDIUM = register(
+        woodMedium = createHolder(
             "wood_medium",
-            BlockDataUtils.wood(LOG_MEDIUM, BlockBehaviour.Properties.of())
+            BlockDataUtils.wood(logMedium, BlockBehaviour.Properties.of())
         );
-        WOOD_SMALL = register(
+        woodSmall = createHolder(
             "wood_small",
-            BlockDataUtils.wood(LOG_SMALL, BlockBehaviour.Properties.of())
+            BlockDataUtils.wood(logSmall, BlockBehaviour.Properties.of())
         );
     }
 }

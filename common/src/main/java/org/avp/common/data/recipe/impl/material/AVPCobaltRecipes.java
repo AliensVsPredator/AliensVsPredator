@@ -2,6 +2,7 @@ package org.avp.common.data.recipe.impl.material;
 
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
+
 import org.avp.common.block.AVPOreBlocks;
 import org.avp.common.data.recipe.AVPRecipeHelper;
 import org.avp.common.item.AVPItems;
@@ -13,16 +14,16 @@ public final class AVPCobaltRecipes {
         AVPRecipeHelper.compressedBlockRecipe(
             recipeOutput,
             RecipeCategory.BUILDING_BLOCKS,
-            AVPItems.COBALT.get(),
-            AVPOreBlocks.COBALT_BLOCK.get()
+            AVPItems.INSTANCE.cobalt.get(),
+            AVPOreBlocks.INSTANCE.cobaltBlock.get()
         );
 
         // Decompressed items from blocks
         AVPRecipeHelper.decompressedItemRecipe(
             recipeOutput,
             RecipeCategory.MISC,
-            AVPOreBlocks.ORE_COBALT.get(),
-            AVPItems.COBALT.get()
+            AVPOreBlocks.INSTANCE.oreCobalt.get(),
+            AVPItems.INSTANCE.cobalt.get()
         );
     }
 

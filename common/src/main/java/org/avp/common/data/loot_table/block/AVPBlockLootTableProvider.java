@@ -14,7 +14,7 @@ public class AVPBlockLootTableProvider extends AbstractAVPBlockLootTableProvider
 
     @Override
     public void generate() {
-        AVPBlocks.getEntries().forEach(tuple -> {
+        AVPBlocks.getDataEntries().forEach(tuple -> {
             var block = tuple.first().get();
             var data = tuple.second();
             var drop = data.getDrop();

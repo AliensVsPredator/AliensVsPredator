@@ -1,13 +1,13 @@
 package org.avp.client.render.entity;
 
 import org.avp.client.render.entity.living.YautjaRenderer;
-import org.avp.common.entity.AVPYautjaEntityTypes;
+import org.avp.common.entity.type.AVPYautjaEntityTypes;
 
 public class AVPYautjaEntityRenderers {
 
     private AVPYautjaEntityRenderers() {}
 
     public static void addBindings() {
-        AVPEntityRenderRegistry.addBinding(AVPYautjaEntityTypes.YAUTJA, YautjaRenderer::new);
+        AVPEntityRenderRegistry.addBinding(AVPYautjaEntityTypes.INSTANCE.YAUTJA, YautjaRenderer::new);
     }
 }

@@ -5,15 +5,21 @@ import net.fabricmc.fabric.api.biome.v1.BiomeSelectors;
 import net.minecraft.tags.BiomeTags;
 import net.minecraft.world.level.levelgen.GenerationStep;
 
-import org.avp.common.registry.AVPRegistry;
+import java.util.function.Supplier;
+
+import org.avp.api.Holder;
+import org.avp.common.registry.AVPDeferredRegistry;
 import org.avp.common.worldgen.feature.AVPOreFeatures;
 
-public class AVPFabricWorldGenFeatures implements AVPRegistry {
+public class AVPFabricWorldGenFeatures extends AVPDeferredRegistry<Void> {
 
-    private static final AVPFabricWorldGenFeatures INSTANCE = new AVPFabricWorldGenFeatures();
+    public static final AVPFabricWorldGenFeatures INSTANCE = new AVPFabricWorldGenFeatures();
 
-    public static AVPFabricWorldGenFeatures getInstance() {
-        return INSTANCE;
+    private AVPFabricWorldGenFeatures() {}
+
+    @Override
+    protected Holder<Void> createHolder(String registryName, Supplier<Void> supplier) {
+        return null;
     }
 
     @Override
@@ -21,27 +27,32 @@ public class AVPFabricWorldGenFeatures implements AVPRegistry {
         BiomeModifications.addFeature(
             BiomeSelectors.foundInOverworld(),
             GenerationStep.Decoration.UNDERGROUND_ORES,
-            AVPOreFeatures.getInstance().BAUXITE_ORE_PLACED_KEY
+            AVPOreFeatures.BAUXITE_ORE_PLACED_KEY
         );
         BiomeModifications.addFeature(
             BiomeSelectors.tag(BiomeTags.IS_JUNGLE),
             GenerationStep.Decoration.UNDERGROUND_ORES,
-            AVPOreFeatures.getInstance().COBALT_ORE_PLACED_KEY
+            AVPOreFeatures.COBALT_ORE_PLACED_KEY
         );
         BiomeModifications.addFeature(
             ctx -> ctx.hasTag(BiomeTags.IS_OCEAN) || ctx.hasTag(BiomeTags.IS_RIVER) || ctx.hasTag(BiomeTags.IS_BEACH),
             GenerationStep.Decoration.UNDERGROUND_ORES,
-            AVPOreFeatures.getInstance().LITHIUM_ORE_PLACED_KEY
+            AVPOreFeatures.LITHIUM_ORE_PLACED_KEY
         );
         BiomeModifications.addFeature(
             BiomeSelectors.foundInOverworld(),
             GenerationStep.Decoration.UNDERGROUND_ORES,
-            AVPOreFeatures.getInstance().MONAZITE_ORE_PLACED_KEY
+            AVPOreFeatures.MONAZITE_ORE_PLACED_KEY
         );
         BiomeModifications.addFeature(
             BiomeSelectors.foundInOverworld(),
             GenerationStep.Decoration.UNDERGROUND_ORES,
-            AVPOreFeatures.getInstance().SILICA_ORE_PLACED_KEY
+            AVPOreFeatures.SILICA_ORE_PLACED_KEY
+        );
+        BiomeModifications.addFeature(
+            BiomeSelectors.foundInOverworld(),
+            GenerationStep.Decoration.UNDERGROUND_ORES,
+            AVPOreFeatures.TITANIUM_ORE_PLACED_KEY
         );
     }
 }

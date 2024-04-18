@@ -4,7 +4,7 @@ import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.monster.Monster;
 
-import org.avp.common.entity.AVPPrometheusAlienEntityTypes;
+import org.avp.common.entity.type.AVPPrometheusAlienEntityTypes;
 
 public class AVPPrometheusAlienEntityAttributes {
 
@@ -36,9 +36,9 @@ public class AVPPrometheusAlienEntityAttributes {
         .build();
 
     public static void addBindings() {
-        AVPEntityAttributesBindingRegistry.addBinding(AVPPrometheusAlienEntityTypes.DEACON, DEACON_ADULT); // TODO:
-        AVPEntityAttributesBindingRegistry.addBinding(AVPPrometheusAlienEntityTypes.DEACON_ADULT, DEACON_ADULT);
-        AVPEntityAttributesBindingRegistry.addBinding(AVPPrometheusAlienEntityTypes.TRILOBITE, TRILOBITE);
-        AVPEntityAttributesBindingRegistry.addBinding(AVPPrometheusAlienEntityTypes.TRILOBITE_BABY, TRILOBITE_BABY);
+        AVPEntityAttributesBindingRegistry.addBinding(AVPPrometheusAlienEntityTypes.INSTANCE.deacon, DEACON_ADULT); // TODO:
+        AVPEntityAttributesBindingRegistry.addBinding(AVPPrometheusAlienEntityTypes.INSTANCE.deaconAdult, DEACON_ADULT);
+        AVPEntityAttributesBindingRegistry.addBinding(AVPPrometheusAlienEntityTypes.INSTANCE.trilobite, TRILOBITE);
+        AVPEntityAttributesBindingRegistry.addBinding(AVPPrometheusAlienEntityTypes.INSTANCE.trilobiteBaby, TRILOBITE_BABY);
     }
 }

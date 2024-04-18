@@ -4,10 +4,16 @@ import mod.azure.azurelib.common.api.common.animatable.GeoEntity;
 import mod.azure.azurelib.common.internal.common.core.animatable.instance.AnimatableInstanceCache;
 import mod.azure.azurelib.common.internal.common.core.animation.AnimatableManager;
 import mod.azure.azurelib.common.internal.common.util.AzureLibUtil;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
 import net.minecraft.world.entity.ai.goal.MeleeAttackGoal;
 import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
@@ -17,14 +23,37 @@ import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
-import org.avp.common.tag.AVPItemTags;
+import net.minecraft.world.level.ServerLevelAccessor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import org.avp.common.sound.AVPSoundEvents;
 import org.avp.common.tag.AVPEntityTags;
+import org.avp.common.tag.AVPItemTags;
 
 public class Yautja extends Monster implements GeoEntity {
+
+    public static boolean checkPredatorSpawnRules(
+        EntityType<? extends Monster> entityType,
+        ServerLevelAccessor serverLevelAccessor,
+        MobSpawnType mobSpawnType,
+        BlockPos blockPos,
+        RandomSource randomSource
+    ) {
+        return blockPos.getY() > 60 &&
+            Monster.checkMonsterSpawnRules(
+                entityType,
+                serverLevelAccessor,
+                mobSpawnType,
+                blockPos,
+                randomSource
+            );
+    }
+
+    private static final EntityDataAccessor<Boolean> HAS_HELMET = SynchedEntityData.defineId(
+        Yautja.class,
+        EntityDataSerializers.BOOLEAN
+    );
 
     private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
 
@@ -46,29 +75,39 @@ public class Yautja extends Monster implements GeoEntity {
                 this,
                 LivingEntity.class,
                 true,
-                livingEntity ->
-                    livingEntity.getType().is(AVPEntityTags.ALIENS) ||
-                    livingEntity instanceof Player player && player.getInventory().hasAnyMatching(
-                        itemStack -> itemStack.is(AVPItemTags.THREATENS_PREDATORS)
-                    )
+                livingEntity -> livingEntity.getType().is(AVPEntityTags.ALIENS) ||
+                    livingEntity instanceof Player player && player.getInventory()
+                        .hasAnyMatching(
+                            itemStack -> itemStack.is(AVPItemTags.THREATENS_PREDATORS)
+                        )
             )
         );
+    }
+
+    @Override
+    protected void defineSynchedData() {
+        super.defineSynchedData();
+        this.entityData.define(HAS_HELMET, this.random.nextBoolean());
+    }
+
+    public boolean hasHelmet() {
+        return this.entityData.get(HAS_HELMET);
     }
 
     @Nullable
     @Override
     protected SoundEvent getAmbientSound() {
-        return AVPSoundEvents.ENTITY_YAUTJA_AMBIENT.get();
+        return AVPSoundEvents.INSTANCE.entityYautjaAmbient.get();
     }
 
     @Override
     protected SoundEvent getDeathSound() {
-        return AVPSoundEvents.ENTITY_YAUTJA_DEATH.get();
+        return AVPSoundEvents.INSTANCE.entityYautjaDeath.get();
     }
 
     @Override
     protected SoundEvent getHurtSound(@NotNull DamageSource damageSource) {
-        return AVPSoundEvents.ENTITY_YAUTJA_HURT.get();
+        return AVPSoundEvents.INSTANCE.entityYautjaHurt.get();
     }
 
     @Override

@@ -33,8 +33,17 @@ public class YautjaModel extends GeoModel<Yautja> {
         return ANIMATION_LOCATION;
     }
 
+    public void showHelmet(boolean showHelmet) {
+        var helmet = this.getAnimationProcessor().getBone("gMaskArmor");
+
+        if (helmet != null) {
+            helmet.setHidden(!showHelmet);
+        }
+    }
+
     @Override
     public void setCustomAnimations(Yautja entity, long instanceId, AnimationState<Yautja> animationState) {
+        this.showHelmet(entity.hasHelmet());
         BasicAnimationUtils.applyHeadRotations(this, animationState, "face", -0.2F);
         BasicAnimationUtils.applyLimbRotations(
             entity,

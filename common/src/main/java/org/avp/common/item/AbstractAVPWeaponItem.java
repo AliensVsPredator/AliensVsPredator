@@ -7,6 +7,7 @@ import mod.azure.azurelib.common.internal.common.core.animation.AnimatableManage
 import mod.azure.azurelib.common.internal.common.util.AzureLibUtil;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
@@ -14,25 +15,26 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.ProjectileUtil;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemUtils;
+import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-import java.util.Objects;
+import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-import org.avp.api.GameObject;
-import org.avp.api.Tuple;
+import org.avp.api.Holder;
 import org.avp.api.item.weapon.FireMode;
 import org.avp.api.item.weapon.WeaponItemData;
 import org.avp.api.item.weapon.WeaponItemTagHelper;
@@ -41,7 +43,7 @@ import org.avp.common.config.AVPConfig;
 import org.avp.common.network.payload.ClientboundBulletHitBlockPayload;
 import org.avp.common.service.Services;
 import org.avp.common.util.SoundUtils;
-import org.avp.common.util.TimeUtils;
+import org.avp.common.util.TooltipUtils;
 import org.avp.server.BlockBreakProgressManager;
 
 public abstract class AbstractAVPWeaponItem extends Item implements GeoItem {
@@ -100,7 +102,7 @@ public abstract class AbstractAVPWeaponItem extends Item implements GeoItem {
         if (positiveTickProgress < windUpTimeInTicks)
             return;
 
-        var fireMode = WeaponItemTagHelper.getFireMode(itemStack, weaponItemData);
+        var fireMode = WeaponItemTagHelper.getOrSetFireMode(itemStack, weaponItemData);
 
         if (!level.isClientSide) {
             var serverLevel = (ServerLevel) level;
@@ -164,11 +166,11 @@ public abstract class AbstractAVPWeaponItem extends Item implements GeoItem {
             level.playSound(null, player.blockPosition(), shootSound, SoundSource.PLAYERS);
         }
 
-        var hitResult = ProjectileUtil.getHitResultOnViewVector(player, entity -> true, fireMode.range());
+        var hitResult = ProjectileUtil.getHitResultOnViewVector(player, Entity::isAlive, fireMode.range());
 
         switch (hitResult.getType()) {
             case BLOCK -> handleHitBlock(level, fireMode, (BlockHitResult) hitResult);
-            case ENTITY -> handleHitEntity(level, player, (EntityHitResult) hitResult, fireMode);
+            case ENTITY -> handleHitEntity(level, player, itemStack, (EntityHitResult) hitResult, fireMode);
             case MISS -> { /* Do nothing */ }
         }
     }
@@ -180,46 +182,73 @@ public abstract class AbstractAVPWeaponItem extends Item implements GeoItem {
         var block = blockState.getBlock();
         var soundType = block.getSoundType(blockState);
 
-        GameObject<SoundEvent> ricochetSfx = SoundUtils.getRicochetSoundForSoundType(soundType);
+        Holder<SoundEvent> ricochetSfx = SoundUtils.getRicochetSoundForSoundType(soundType);
         level.playSound(null, blockPos, ricochetSfx.get(), SoundSource.BLOCKS);
 
         // Only damage blocks if both are true.
         if (AVPConfig.General.GUNS_DO_BLOCK_DAMAGE && level.getGameRules().getBoolean(GameRules.RULE_PROJECTILESCANBREAKBLOCKS)) {
-            damageBlock(level, blockPos, block, fireMode);
+            damageBlock(level, blockPos, fireMode);
         }
 
         var payload = new ClientboundBulletHitBlockPayload(blockPos, direction);
-        Services.NETWORK_HANDLER.sendToAllClients(level.getServer(), payload);
+        Services.NETWORK_SERVICE.sendToAllClients(level.getServer(), payload);
     }
 
-    private void handleHitEntity(@NotNull Level level, Player player, EntityHitResult hitResult, FireMode fireMode) {
+    private void handleHitEntity(@NotNull Level level, Player player, ItemStack itemStack, EntityHitResult hitResult, FireMode fireMode) {
         var damage = this.getWeaponItemData().getDamage() * fireMode.consumedAmmunition();
 
         if (hitResult.getEntity() instanceof LivingEntity livingEntity) {
             livingEntity.invulnerableTime = 0;
-            livingEntity.hurt(level.damageSources().generic(), damage);
+            livingEntity.hurt(level.damageSources().playerAttack(player), damage);
             livingEntity.knockback(
                 this.getWeaponItemData().getKnockback() * fireMode.consumedAmmunition(),
                 Mth.sin(player.getYRot() * Mth.DEG_TO_RAD),
                 -Mth.cos(player.getYRot() * Mth.DEG_TO_RAD)
             );
+
+            var bulletEffects = WeaponItemTagHelper.getBulletEffects(itemStack, weaponItemData);
+            bulletEffects.forEach(bulletEffect -> bulletEffect.applyEffect(livingEntity));
         }
     }
 
-    private void damageBlock(@NotNull Level level, BlockPos blockPos, Block block, FireMode fireMode) {
-        BlockBreakProgressManager.BLOCK_BREAK_PROGRESS_MAP.compute(blockPos, (key, tuple) -> {
-            var cachedValue = tuple == null ? 0 : tuple.second();
-            var damage = this.getWeaponItemData().getDamage() * fireMode.consumedAmmunition();
-            var newValue = cachedValue + (damage / (2F + block.defaultDestroyTime() / 2F));
-            var progress = (int) Mth.clamp(newValue, 0F, 9F);
-            level.destroyBlockProgress(Objects.hash(blockPos), blockPos, progress);
+    private void damageBlock(@NotNull Level level, BlockPos blockPos, FireMode fireMode) {
+        var damage = this.getWeaponItemData().getDamage() * fireMode.consumedAmmunition();
+        BlockBreakProgressManager.damage(level, blockPos, damage);
+    }
 
-            if (progress >= 9) {
-                level.destroyBlock(blockPos, false);
-                return null;
-            }
-            return new Tuple<>(System.currentTimeMillis() + TimeUtils.FIVE_MINUTES_IN_MILLIS, newValue);
-        });
+    @Override
+    public void appendHoverText(
+        @NotNull ItemStack itemStack,
+        @Nullable Level level,
+        @NotNull List<Component> components,
+        @NotNull TooltipFlag tooltipFlag
+    ) {
+        super.appendHoverText(itemStack, level, components, tooltipFlag);
+        var fireMode = WeaponItemTagHelper.getOrSetFireMode(itemStack, weaponItemData);
+        TooltipUtils.appendLabel(
+            components,
+            "tooltip.avp.fire_mode",
+            Component.literal(fireMode.identifier() + " (" + fireMode.consumedAmmunition() + " / Shot)")
+        );
+        TooltipUtils.appendLabel(
+            components,
+            "tooltip.avp.ammunition",
+            Component.literal(
+                WeaponItemTagHelper.getAmmunition(itemStack, weaponItemData) + " / " + weaponItemData.getAmmunitionStrategy()
+                    .getMaxAmmunition()
+            )
+        );
+        TooltipUtils.appendLabel(
+            components,
+            "tooltip.avp.ammunition_type",
+            Component.translatable(
+                "item." + WeaponItemTagHelper.getOrSetActiveAmmunitionType(itemStack, weaponItemData).replace(":", ".")
+            )
+        );
+        TooltipUtils.appendLabel(components, "tooltip.avp.damage", Component.literal(Double.toString(weaponItemData.getDamage())));
+        TooltipUtils.appendLabel(components, "tooltip.avp.fire_rate", Component.literal(fireMode.fireRateInTicks() / 20D + " / Sec"));
+        TooltipUtils.appendLabel(components, "tooltip.avp.accuracy", Component.literal(Float.toString(weaponItemData.getAccuracy())));
+        TooltipUtils.appendLabel(components, "tooltip.avp.recoil", Component.literal(Float.toString(fireMode.recoil())));
     }
 
     @Override

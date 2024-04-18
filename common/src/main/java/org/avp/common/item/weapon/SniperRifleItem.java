@@ -3,38 +3,47 @@ package org.avp.common.item.weapon;
 import java.util.List;
 
 import org.avp.api.item.weapon.FireMode;
-import org.avp.api.item.weapon.WeaponDamageTypes;
 import org.avp.api.item.weapon.WeaponItemData;
 import org.avp.api.item.weapon.ammo.AmmunitionStrategy;
 import org.avp.api.item.weapon.ammo.HasAmmunitionBehavior;
 import org.avp.api.item.weapon.reload.ReloadStrategy;
 import org.avp.api.item.weapon.reload.TryReloadBehavior;
 import org.avp.api.item.weapon.shoot.ShootStrategy;
+import org.avp.common.item.AVPBulletItems;
 import org.avp.common.item.AbstractAVPWeaponItem;
 import org.avp.common.sound.AVPSoundEvents;
 
 public class SniperRifleItem extends AbstractAVPWeaponItem {
 
     private static final FireMode FIRE_MODE = new FireMode(
-        "SemiAutomatic",
+        "Semi-Automatic",
         1,
         30,
-        AVPSoundEvents.ITEM_WEAPON_SNIPER_RIFLE_SHOOT,
+        AVPSoundEvents.INSTANCE.itemWeaponSniperRifleShoot,
         128.0D,
         1.5F
     );
 
     private static final WeaponItemData WEAPON_ITEM_DATA = new WeaponItemData(
         1.0F,
-        AmmunitionStrategy.builder(6)
+        AmmunitionStrategy.builder(
+            6,
+            List.of(
+                AVPBulletItems.INSTANCE.bulletRifle::get,
+                AVPBulletItems.INSTANCE.bulletRifleAcid::get,
+                AVPBulletItems.INSTANCE.bulletRifleElectric::get,
+                AVPBulletItems.INSTANCE.bulletRifleExplosive::get,
+                AVPBulletItems.INSTANCE.bulletRifleIncendiary::get,
+                AVPBulletItems.INSTANCE.bulletRiflePenetration::get
+            )
+        )
             .setHasAmmunitionBehavior(HasAmmunitionBehavior.LOADED)
             .build(),
-        WeaponDamageTypes.HEAVY,
         List.of(FIRE_MODE),
         15F * 2,
         0.13F,
         ReloadStrategy.builder(20 * 7 + 10)
-            .setReloadStartSound(AVPSoundEvents.ITEM_WEAPON_GENERIC_RELOAD)
+            .setReloadStartSound(AVPSoundEvents.INSTANCE.itemWeaponGenericReload)
             .setTryReloadBehavior(TryReloadBehavior.STANDARD)
             .build(),
         ShootStrategy.builder().build()

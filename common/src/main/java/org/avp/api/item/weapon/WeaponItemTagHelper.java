@@ -1,73 +1,100 @@
 package org.avp.api.item.weapon;
 
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
-import org.avp.common.item.AbstractAVPWeaponItem;
+import java.util.Set;
+
+import org.avp.api.item.weapon.bullet.effect.BulletEffect;
+import org.avp.api.item.weapon.bullet.effect.BulletEffectRegistry;
 
 public class WeaponItemTagHelper {
 
-    private static final String AMMUNITION_KEY = "Ammunition";
+    private static final String ACTIVE_AMMUNITION_TYPE_KEY = "ActiveAmmunitionType";
+
+    private static final String AMMUNITIONS_KEY = "Ammunitions";
 
     private static final String FIRE_MODE_KEY = "FireMode";
 
-    private static final String IS_WOUND_UP_KEY = "IsWoundUp";
-
     private static CompoundTag getTagSafely(ItemStack itemStack) {
-        var maybeTag = itemStack.getTag();
-        return maybeTag != null ? maybeTag : itemStack.getOrCreateTag();
+        return itemStack.getOrCreateTag();
+    }
+
+    private static void setAmmunitionForAmmunitionType(ItemStack itemStack, String ammunitionType, int count) {
+        var tag = getTagSafely(itemStack);
+        var ammunitionsTag = tag.getCompound(AMMUNITIONS_KEY);
+        ammunitionsTag.putInt(ammunitionType, count);
+        tag.put(AMMUNITIONS_KEY, ammunitionsTag);
     }
 
     public static void consumeAmmunition(ItemStack itemStack, WeaponItemData weaponItemData) {
-        var currentAmmunition = getAmmunition(itemStack);
-        var fireMode = getFireMode(itemStack, weaponItemData);
-        getTagSafely(itemStack).putInt(AMMUNITION_KEY, currentAmmunition - fireMode.consumedAmmunition());
+        var fireMode = getOrSetFireMode(itemStack, weaponItemData);
+        var activeAmmunitionType = getOrSetActiveAmmunitionType(itemStack, weaponItemData);
+        var currentAmmunition = getAmmunition(itemStack, weaponItemData);
+        var newAmmunitionCount = Math.max(currentAmmunition - fireMode.consumedAmmunition(), 0);
+        setAmmunitionForAmmunitionType(itemStack, activeAmmunitionType, newAmmunitionCount);
     }
 
-    public static int getAmmunition(ItemStack itemStack) {
-        return getTagSafely(itemStack).getInt(AMMUNITION_KEY);
+    public static int getAmmunition(ItemStack itemStack, WeaponItemData weaponItemData) {
+        var tag = getTagSafely(itemStack);
+        var activeAmmunitionType = getOrSetActiveAmmunitionType(itemStack, weaponItemData);
+        var ammunitionsTag = tag.getCompound(AMMUNITIONS_KEY);
+        return ammunitionsTag.getInt(activeAmmunitionType);
     }
 
-    public static FireMode getFireMode(ItemStack itemStack, WeaponItemData weaponItemData) {
+    public static Set<BulletEffect> getBulletEffects(ItemStack itemStack, WeaponItemData weaponItemData) {
+        var activeAmmunitionType = getOrSetActiveAmmunitionType(itemStack, weaponItemData);
+        var resourceLocation = new ResourceLocation(activeAmmunitionType);
+        return BulletEffectRegistry.getBulletEffects(resourceLocation);
+    }
+
+    public static void setActiveAmmunitionType(ItemStack itemStack, Item ammunitionType) {
+        var tag = getTagSafely(itemStack);
+        var resourceLocation = BuiltInRegistries.ITEM.getKey(ammunitionType);
+        var resourceLocationString = resourceLocation.toString();
+        tag.putString(ACTIVE_AMMUNITION_TYPE_KEY, resourceLocationString);
+    }
+
+    public static String getOrSetActiveAmmunitionType(ItemStack itemStack, WeaponItemData weaponItemData) {
+        var tag = getTagSafely(itemStack);
+        var activeAmmunitionType = tag.getString(ACTIVE_AMMUNITION_TYPE_KEY);
+
+        if (activeAmmunitionType.isEmpty()) {
+            var standardAmmunition = weaponItemData.getAmmunitionStrategy().getAmmunitionSupplierByKeyOrFirst(activeAmmunitionType).get();
+            setActiveAmmunitionType(itemStack, standardAmmunition);
+            return tag.getString(ACTIVE_AMMUNITION_TYPE_KEY);
+        }
+
+        return activeAmmunitionType;
+    }
+
+    public static FireMode getOrSetFireMode(ItemStack itemStack, WeaponItemData weaponItemData) {
         var tag = getTagSafely(itemStack);
         var fireModeIdentifier = tag.getString(FIRE_MODE_KEY);
-        var fireMode = weaponItemData.getFireMode(fireModeIdentifier);
+        var fireMode = weaponItemData.getFireModeByIdOrFirst(fireModeIdentifier);
 
         if (fireModeIdentifier.isEmpty()) {
-            tag.putString(FIRE_MODE_KEY, fireMode.identifier());
+            WeaponItemTagHelper.setFireMode(itemStack, fireMode);
         }
 
         return fireMode;
     }
 
     public static boolean hasMaxAmmunition(ItemStack itemStack, WeaponItemData weaponItemData) {
-        return getAmmunition(itemStack) == weaponItemData.getAmmunitionStrategy().getMaxAmmunition();
+        return getAmmunition(itemStack, weaponItemData) == weaponItemData.getAmmunitionStrategy().getMaxAmmunition();
     }
 
-    public static boolean isWeapon(ItemStack itemStack) {
-        return itemStack.getItem() instanceof AbstractAVPWeaponItem;
+    public static void setActiveAmmunition(ItemStack itemStack, WeaponItemData weaponItemData, int count) {
+        var activeAmmunitionType = getOrSetActiveAmmunitionType(itemStack, weaponItemData);
+        setAmmunitionForAmmunitionType(itemStack, activeAmmunitionType, count);
     }
 
-    public static boolean isWoundUp(ItemStack itemStack) {
-        if (!isWeapon(itemStack))
-            return false;
-
-        if (!getTagSafely(itemStack).contains(IS_WOUND_UP_KEY)) {
-            return false;
-        }
-
-        return getTagSafely(itemStack).getBoolean(IS_WOUND_UP_KEY);
-    }
-
-    public static void restoreAmmunition(ItemStack itemStack, WeaponItemData weaponItemData) {
-        getTagSafely(itemStack).putInt(AMMUNITION_KEY, weaponItemData.getAmmunitionStrategy().getMaxAmmunition());
-    }
-
-    public static void setWoundUp(ItemStack itemStack, boolean isWoundUp) {
-        if (!isWeapon(itemStack))
-            return;
-
-        getTagSafely(itemStack).putBoolean(IS_WOUND_UP_KEY, isWoundUp);
+    public static void setFireMode(ItemStack itemStack, FireMode fireMode) {
+        var tag = getTagSafely(itemStack);
+        tag.putString(FIRE_MODE_KEY, fireMode.identifier());
     }
 
     private WeaponItemTagHelper() {

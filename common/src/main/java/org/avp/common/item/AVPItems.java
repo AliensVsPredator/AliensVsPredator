@@ -1,110 +1,93 @@
 package org.avp.common.item;
 
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Rarity;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.function.Supplier;
+import org.avp.api.Holder;
+import org.avp.common.registry.AVPDeferredItemRegistry;
 
-import org.avp.api.GameObject;
-import org.avp.common.service.Services;
+public class AVPItems extends AVPDeferredItemRegistry {
 
-public class AVPItems {
+    public static final AVPItems INSTANCE = new AVPItems();
 
-    private static final List<GameObject<Item>> ENTRIES = new ArrayList<>();
+    public final Holder<Item> bottleTinted;
 
-    public static final GameObject<Item> BOTTLE_TINTED;
+    public final Holder<Item> bottleTintedAcid;
 
-    public static final GameObject<Item> BOTTLE_TINTED_ACID;
+    public final Holder<Item> carbon;
 
-    public static final GameObject<Item> CARBON;
+    public final Holder<Item> cobalt;
 
-    public static final GameObject<Item> COBALT;
+    public final Holder<Item> dustLithium;
 
-    public static final GameObject<Item> INGOT_ALUMINUM;
+    public final Holder<Item> ingotAluminum;
 
-    public static final GameObject<Item> INGOT_LITHIUM;
+    public final Holder<Item> ingotOrionite;
 
-    public static final GameObject<Item> INGOT_ORIONITE;
+    public final Holder<Item> ingotSteel;
 
-    public static final GameObject<Item> INGOT_STEEL;
+    public final Holder<Item> ingotTitanium;
 
-    public static final GameObject<Item> INGOT_TITANIUM;
+    public final Holder<Item> laserMine;
 
-    public static final GameObject<Item> LASER_MINE;
+    public final Holder<Item> nbtDrive;
 
-    public static final GameObject<Item> NBT_DRIVE;
+    public final Holder<Item> neodymium;
 
-    public static final GameObject<Item> NEODYMIUM;
+    public final Holder<Item> neodymiumMagnet;
 
-    public static final GameObject<Item> NEODYMIUM_MAGNET;
+    public final Holder<Item> polycarbonate;
 
-    public static final GameObject<Item> POLYCARBONATE;
+    public final Holder<Item> polymer;
 
-    public static final GameObject<Item> POLYMER;
+    public final Holder<Item> rawBauxite;
 
-    public static final GameObject<Item> RAW_BAUXITE;
+    public final Holder<Item> rawTitanium;
 
-    public static final GameObject<Item> RAW_TITANIUM;
+    public final Holder<Item> resinBall;
 
-    public static final GameObject<Item> ROYAL_JELLY;
+    public final Holder<Item> royalJelly;
 
-    public static final GameObject<Item> SHURIKEN;
+    public final Holder<Item> sheetOrionite;
 
-    public static final GameObject<Item> SILICA;
+    public final Holder<Item> shuriken;
 
-    public static final GameObject<Item> SMART_DISC;
+    public final Holder<Item> silica;
 
-    public static final GameObject<Item> VERITANIUM_SHARD;
+    public final Holder<Item> smartDisc;
 
-    public static final GameObject<Item> XENOMORPH_CHITIN;
+    public final Holder<Item> veritaniumShard;
 
-    public static final GameObject<Item> YAUTJA_ARTIFACT;
+    public final Holder<Item> xenomorphChitin;
 
-    public static void forceInitialization() {
-        // This method doesn't need to do anything
-    }
+    public final Holder<Item> yautjaArtifact;
 
-    public static List<GameObject<Item>> getEntries() {
-        return ENTRIES;
-    }
-
-    private static GameObject<Item> register(String registryName) {
-        return register(registryName, () -> new Item(new Item.Properties()));
-    }
-
-    private static GameObject<Item> register(String registryName, Supplier<Item> itemSupplier) {
-        var gameObject = Services.ITEM_REGISTRY.register(registryName, itemSupplier);
-        ENTRIES.add(gameObject);
-        return gameObject;
-    }
-
-    private AVPItems() {}
-
-    static {
-        BOTTLE_TINTED = register("bottle_tinted");
-        BOTTLE_TINTED_ACID = register("bottle_tinted_acid");
-        CARBON = register("carbon");
-        COBALT = register("cobalt");
-        INGOT_ALUMINUM = register("ingot_aluminum");
-        INGOT_LITHIUM = register("ingot_lithium");
-        INGOT_ORIONITE = register("ingot_orionite");
-        INGOT_STEEL = register("ingot_steel");
-        INGOT_TITANIUM = register("ingot_titanium");
-        LASER_MINE = register("laser_mine");
-        NBT_DRIVE = register("nbt_drive");
-        NEODYMIUM = register("neodymium");
-        NEODYMIUM_MAGNET = register("neodymium_magnet");
-        POLYCARBONATE = register("polycarbonate");
-        POLYMER = register("polymer");
-        RAW_BAUXITE = register("raw_bauxite");
-        RAW_TITANIUM = register("raw_titanium");
-        ROYAL_JELLY = register("royal_jelly");
-        SHURIKEN = register("shuriken");
-        SILICA = register("silica");
-        SMART_DISC = register("smart_disc");
-        VERITANIUM_SHARD = register("veritanium_shard");
-        XENOMORPH_CHITIN = register("xenomorph_chitin");
-        YAUTJA_ARTIFACT = register("yautja_artifact");
+    private AVPItems() {
+        bottleTinted = createHolder("bottle_tinted", () -> new TintedBottleItem(new Item.Properties()));
+        bottleTintedAcid = createHolder("bottle_tinted_acid", () -> new Item(new Item.Properties().craftRemainder(bottleTinted.get())));
+        carbon = createHolder("carbon");
+        cobalt = createHolder("cobalt");
+        dustLithium = createHolder("dust_lithium");
+        ingotAluminum = createHolder("ingot_aluminum");
+        ingotOrionite = createHolder("ingot_orionite");
+        ingotSteel = createHolder("ingot_steel");
+        ingotTitanium = createHolder("ingot_titanium");
+        laserMine = createHolder("laser_mine");
+        nbtDrive = createHolder("nbt_drive");
+        neodymium = createHolder("neodymium");
+        neodymiumMagnet = createHolder("neodymium_magnet");
+        polycarbonate = createHolder("polycarbonate");
+        polymer = createHolder("polymer");
+        rawBauxite = createHolder("raw_bauxite");
+        rawTitanium = createHolder("raw_titanium");
+        resinBall = createHolder("resin_ball");
+        royalJelly = createHolder("royal_jelly", () -> new Item(new Item.Properties().rarity(Rarity.UNCOMMON)));
+        sheetOrionite = createHolder("sheet_orionite");
+        shuriken = createHolder("shuriken");
+        silica = createHolder("silica");
+        smartDisc = createHolder("smart_disc");
+        veritaniumShard = createHolder("veritanium_shard");
+        xenomorphChitin = createHolder("xenomorph_chitin");
+        yautjaArtifact = createHolder("yautja_artifact");
     }
 }

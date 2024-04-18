@@ -11,77 +11,78 @@ import net.minecraft.data.models.model.TexturedModel;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
 
-import org.avp.api.GameObject;
+import org.avp.api.Holder;
 import org.avp.api.Tuple;
 import org.avp.api.block.BlockData;
 import org.avp.api.block.factory.BlockFactories;
 import org.avp.api.block.factory.FenceGateBlockFactory;
 import org.avp.api.block.factory.StairBlockFactory;
-import org.avp.common.block.AVPBlocks;
 import org.avp.common.item.AVPSpawnEggItems;
+import org.avp.common.registry.AVPDeferredBlockRegistry;
 
 public class AVPFabricBlockModelProvider {
 
     public static void addBlockModels(BlockModelGenerators generator) {
-        AVPBlocks.getEntries().forEach(tuple -> computeBlockModels(generator, tuple));
+        AVPDeferredBlockRegistry.getDataEntries().forEach(tuple -> computeBlockModels(generator, tuple));
 
         // Listen, I don't like this any more than you do. But Mojang also does this, so...
-        AVPSpawnEggItems.ENTRIES.forEach(
-            itemGameObject -> generator.delegateItemModel(
-                itemGameObject.get(),
-                ModelLocationUtils.decorateItemModelLocation("template_spawn_egg")
-            )
-        );
+        AVPSpawnEggItems.INSTANCE.getEntries()
+            .forEach(
+                holder -> generator.delegateItemModel(
+                    holder.get(),
+                    ModelLocationUtils.decorateItemModelLocation("template_spawn_egg")
+                )
+            );
     }
 
-    private static void computeBlockModels(BlockModelGenerators generator, Tuple<GameObject<Block>, BlockData> tuple) {
-        var blockGameObject = tuple.first();
+    private static void computeBlockModels(BlockModelGenerators generator, Tuple<Holder<Block>, BlockData> tuple) {
+        var blockHolder = tuple.first();
         var blockData = tuple.second();
-        var parentGameObject = blockData.getParent();
+        var parentHolder = blockData.getParent();
         var factory = blockData.getFactory();
 
         // Generate the corresponding model depending on the type of factory used to create the block.
         if (factory == BlockFactories.CUBE || factory == BlockFactories.TRANSPARENT) {
-            generator.createTrivialCube(blockGameObject.get());
+            generator.createTrivialCube(blockHolder.get());
         } else if (factory == BlockFactories.FENCE) {
-            if (parentGameObject == null) {
+            if (parentHolder == null) {
                 throw new IllegalStateException("Null parent block for fence block!");
             }
-            createFenceBlockModel(generator, parentGameObject.get(), blockGameObject.get());
+            createFenceBlockModel(generator, parentHolder.get(), blockHolder.get());
         } else if (factory instanceof FenceGateBlockFactory) {
-            if (parentGameObject == null) {
+            if (parentHolder == null) {
                 throw new IllegalStateException("Null parent block for fence gate block!");
             }
-            createFenceGateBlockModel(generator, parentGameObject.get(), blockGameObject.get());
+            createFenceGateBlockModel(generator, parentHolder.get(), blockHolder.get());
         } else if (factory == BlockFactories.GRASS) {
-            if (parentGameObject == null) {
+            if (parentHolder == null) {
                 throw new IllegalStateException("Null parent block for grass block!");
             }
-            createGrassLikeBlock(generator, parentGameObject.get(), blockGameObject.get());
+            createGrassLikeBlock(generator, parentHolder.get(), blockHolder.get());
         } else if (factory == BlockFactories.ROTATED_PILLAR) {
-            createPillarBlockModel(generator, blockGameObject.get());
+            createPillarBlockModel(generator, blockHolder.get());
         } else if (factory == BlockFactories.ROTATED_VARIANT) {
-            createRotatedVariantBlock(generator, blockGameObject.get());
+            createRotatedVariantBlock(generator, blockHolder.get());
         } else if (factory == BlockFactories.SLAB) {
-            if (parentGameObject == null) {
+            if (parentHolder == null) {
                 throw new IllegalStateException("Null parent block for slab block!");
             }
-            createSlabBlockModel(generator, parentGameObject.get(), blockGameObject.get());
+            createSlabBlockModel(generator, parentHolder.get(), blockHolder.get());
         } else if (factory instanceof StairBlockFactory) {
-            if (parentGameObject == null) {
+            if (parentHolder == null) {
                 throw new IllegalStateException("Null parent block for stair block!");
             }
-            createStairBlockModel(generator, parentGameObject.get(), blockGameObject.get());
+            createStairBlockModel(generator, parentHolder.get(), blockHolder.get());
         } else if (factory == BlockFactories.WALL) {
-            if (parentGameObject == null) {
+            if (parentHolder == null) {
                 throw new IllegalStateException("Null parent block for wall block!");
             }
-            createWallBlockModel(generator, parentGameObject.get(), blockGameObject.get());
+            createWallBlockModel(generator, parentHolder.get(), blockHolder.get());
         } else if (factory == BlockFactories.WOOD) {
-            if (parentGameObject == null) {
+            if (parentHolder == null) {
                 throw new IllegalStateException("Null parent block for wood block!");
             }
-            createWoodBlockModel(generator, parentGameObject.get(), blockGameObject.get());
+            createWoodBlockModel(generator, parentHolder.get(), blockHolder.get());
         }
     }
 

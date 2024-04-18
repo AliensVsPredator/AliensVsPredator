@@ -2,72 +2,52 @@ package org.avp.common.item;
 
 import net.minecraft.world.item.Item;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.function.Supplier;
+import org.avp.api.Holder;
+import org.avp.common.registry.AVPDeferredItemRegistry;
 
-import org.avp.api.GameObject;
-import org.avp.common.service.Services;
+public class AVPAmmunitionPartItems extends AVPDeferredItemRegistry {
 
-public class AVPAmmunitionPartItems {
+    public static final AVPAmmunitionPartItems INSTANCE = new AVPAmmunitionPartItems();
 
-    private static final List<GameObject<Item>> ENTRIES = new ArrayList<>();
+    public final Holder<Item> ammoChargePack;
 
-    public static final GameObject<Item> AMMO_CHARGE_PACK;
+    public final Holder<Item> ammoFlamethrower;
 
-    public static final GameObject<Item> AMMO_FLAMETHROWER;
+    public final Holder<Item> bulletTip;
 
-    public static final GameObject<Item> BULLET_TIP;
+    public final Holder<Item> casingCaseless;
 
-    public static final GameObject<Item> CASING_CASELESS;
+    public final Holder<Item> casingHeavy;
 
-    public static final GameObject<Item> CASING_HEAVY;
+    public final Holder<Item> casingPistol;
 
-    public static final GameObject<Item> CASING_PISTOL;
+    public final Holder<Item> casingRifle;
 
-    public static final GameObject<Item> CASING_RIFLE;
+    public final Holder<Item> casingShotgun;
 
-    public static final GameObject<Item> CASING_SHOTGUN;
+    public final Holder<Item> rocket;
 
-    public static final GameObject<Item> ROCKET;
+    public final Holder<Item> rocketElectric;
 
-    public static final GameObject<Item> ROCKET_ELECTRIC;
+    public final Holder<Item> rocketIncendiary;
 
-    public static final GameObject<Item> ROCKET_INCENDIARY;
+    public final Holder<Item> rocketPenetration;
 
-    public static final GameObject<Item> ROCKET_PENETRATION;
+    private AVPAmmunitionPartItems() {
+        ammoChargePack = createHolder("ammo_charge_pack");
+        ammoFlamethrower = createHolder("ammo_flamethrower");
 
-    public static void forceInitialization() {
-        // This method doesn't need to do anything
-    }
+        bulletTip = createHolder("bullet_tip");
 
-    public static List<GameObject<Item>> getEntries() {
-        return ENTRIES;
-    }
+        casingCaseless = createHolder("casing_caseless");
+        casingHeavy = createHolder("casing_heavy");
+        casingPistol = createHolder("casing_pistol");
+        casingRifle = createHolder("casing_rifle");
+        casingShotgun = createHolder("casing_shotgun");
 
-    private static GameObject<Item> register(String registryName, Supplier<Item> itemSupplier) {
-        var gameObject = Services.ITEM_REGISTRY.register(registryName, itemSupplier);
-        ENTRIES.add(gameObject);
-        return gameObject;
-    }
-
-    private AVPAmmunitionPartItems() {}
-
-    static {
-        AMMO_CHARGE_PACK = register("ammo_charge_pack", () -> new Item(new Item.Properties()));
-        AMMO_FLAMETHROWER = register("ammo_flamethrower", () -> new Item(new Item.Properties()));
-
-        BULLET_TIP = register("bullet_tip", () -> new Item(new Item.Properties()));
-
-        CASING_CASELESS = register("casing_caseless", () -> new Item(new Item.Properties()));
-        CASING_HEAVY = register("casing_heavy", () -> new Item(new Item.Properties()));
-        CASING_PISTOL = register("casing_pistol", () -> new Item(new Item.Properties()));
-        CASING_RIFLE = register("casing_rifle", () -> new Item(new Item.Properties()));
-        CASING_SHOTGUN = register("casing_shotgun", () -> new Item(new Item.Properties()));
-
-        ROCKET = register("rocket", () -> new Item(new Item.Properties()));
-        ROCKET_ELECTRIC = register("rocket_electric", () -> new Item(new Item.Properties()));
-        ROCKET_INCENDIARY = register("rocket_incendiary", () -> new Item(new Item.Properties()));
-        ROCKET_PENETRATION = register("rocket_penetration", () -> new Item(new Item.Properties()));
+        rocket = createHolder("rocket");
+        rocketElectric = createHolder("rocket_electric");
+        rocketIncendiary = createHolder("rocket_incendiary");
+        rocketPenetration = createHolder("rocket_penetration");
     }
 }

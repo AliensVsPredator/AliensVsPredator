@@ -7,7 +7,7 @@ import net.minecraft.world.item.ItemStack;
 
 import java.util.Optional;
 
-import org.avp.api.GameObject;
+import org.avp.api.Holder;
 import org.avp.api.item.weapon.WeaponItemData;
 
 public abstract class ShootStrategy {
@@ -16,21 +16,21 @@ public abstract class ShootStrategy {
         return new Builder();
     }
 
-    private final GameObject<SoundEvent> backgroundShootSound;
+    private final Holder<SoundEvent> backgroundShootSound;
 
     private final int backgroundShootSoundFrequency;
 
-    private final GameObject<SoundEvent> windDownSound;
+    private final Holder<SoundEvent> windDownSound;
 
-    private final GameObject<SoundEvent> windUpSound;
+    private final Holder<SoundEvent> windUpSound;
 
     private final int windUpTimeInTicks;
 
     protected ShootStrategy(
-        GameObject<SoundEvent> backgroundShootSound,
+        Holder<SoundEvent> backgroundShootSound,
         int backgroundShootSoundFrequency,
-        GameObject<SoundEvent> windDownSound,
-        GameObject<SoundEvent> windUpSound,
+        Holder<SoundEvent> windDownSound,
+        Holder<SoundEvent> windUpSound,
         int windUpTimeInTicks
     ) {
         this.backgroundShootSound = backgroundShootSound;
@@ -42,7 +42,7 @@ public abstract class ShootStrategy {
 
     public abstract void shoot(ServerLevel serverLevel, ServerPlayer serverPlayer, ItemStack itemStack, WeaponItemData weaponItemData);
 
-    public Optional<GameObject<SoundEvent>> getBackgroundShootSound() {
+    public Optional<Holder<SoundEvent>> getBackgroundShootSound() {
         return Optional.ofNullable(backgroundShootSound);
     }
 
@@ -50,11 +50,11 @@ public abstract class ShootStrategy {
         return backgroundShootSoundFrequency;
     }
 
-    public Optional<GameObject<SoundEvent>> getWindDownSound() {
+    public Optional<Holder<SoundEvent>> getWindDownSound() {
         return Optional.ofNullable(windDownSound);
     }
 
-    public Optional<GameObject<SoundEvent>> getWindUpSound() {
+    public Optional<Holder<SoundEvent>> getWindUpSound() {
         return Optional.ofNullable(windUpSound);
     }
 
@@ -64,30 +64,30 @@ public abstract class ShootStrategy {
 
     public static class Builder {
 
-        private GameObject<SoundEvent> backgroundShootSound;
+        private Holder<SoundEvent> backgroundShootSound;
 
         private int backgroundShootSoundFrequency;
 
-        private GameObject<SoundEvent> windDownSound;
+        private Holder<SoundEvent> windDownSound;
 
-        private GameObject<SoundEvent> windUpSound;
+        private Holder<SoundEvent> windUpSound;
 
         private int windUpTimeInTicks;
 
         private Builder() {}
 
-        public Builder setBackgroundShootSound(GameObject<SoundEvent> backgroundShootSound, int backgroundShootSoundFrequency) {
+        public Builder setBackgroundShootSound(Holder<SoundEvent> backgroundShootSound, int backgroundShootSoundFrequency) {
             this.backgroundShootSound = backgroundShootSound;
             this.backgroundShootSoundFrequency = backgroundShootSoundFrequency;
             return this;
         }
 
-        public Builder setWindDownSound(GameObject<SoundEvent> windDownSound) {
+        public Builder setWindDownSound(Holder<SoundEvent> windDownSound) {
             this.windDownSound = windDownSound;
             return this;
         }
 
-        public Builder setWindUpSound(GameObject<SoundEvent> windUpSound) {
+        public Builder setWindUpSound(Holder<SoundEvent> windUpSound) {
             this.windUpSound = windUpSound;
             return this;
         }

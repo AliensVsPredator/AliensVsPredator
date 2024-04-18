@@ -5,11 +5,14 @@ import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.Items;
+
+import java.util.concurrent.CompletableFuture;
+
+import org.avp.common.item.AVPArmorItems;
+import org.avp.common.item.AVPItems;
 import org.avp.common.item.AVPToolItems;
 import org.avp.common.item.AVPWeaponItems;
 import org.avp.common.tag.AVPItemTags;
-
-import java.util.concurrent.CompletableFuture;
 
 public class AVPItemTagsProvider extends FabricTagProvider.ItemTagProvider {
 
@@ -19,18 +22,26 @@ public class AVPItemTagsProvider extends FabricTagProvider.ItemTagProvider {
 
     @Override
     protected void addTags(HolderLookup.Provider provider) {
+        getOrCreateTagBuilder(AVPItemTags.ACID_IMMUNE)
+            .add(AVPItems.INSTANCE.royalJelly.get())
+            .add(AVPItems.INSTANCE.xenomorphChitin.get())
+            .add(AVPArmorItems.INSTANCE.xenomorphHelmet.get())
+            .add(AVPArmorItems.INSTANCE.xenomorphBody.get())
+            .add(AVPArmorItems.INSTANCE.xenomorphLeggings.get())
+            .add(AVPArmorItems.INSTANCE.xenomorphBoots.get());
+
         getOrCreateTagBuilder(AVPItemTags.GUNS)
-            .add(AVPWeaponItems.WEAPON_37_12_SHOTGUN.get())
-            .add(AVPWeaponItems.WEAPON_AK_47.get())
-            .add(AVPWeaponItems.WEAPON_F90_RIFLE.get())
-            .add(AVPWeaponItems.WEAPON_FLAMETHROWER_SEVASTOPOL.get())
-            .add(AVPWeaponItems.WEAPON_M4_CARBINE.get())
-            .add(AVPWeaponItems.WEAPON_M41A_PULSE_RIFLE.get())
-            .add(AVPWeaponItems.WEAPON_M56_SMARTGUN.get())
-            .add(AVPWeaponItems.WEAPON_M83A2_SADAR.get())
-            .add(AVPWeaponItems.WEAPON_M88MOD4_COMBAT_PISTOL.get())
-            .add(AVPWeaponItems.WEAPON_OLD_PAINLESS.get())
-            .add(AVPWeaponItems.WEAPON_SNIPER_RIFLE.get());
+            .add(AVPWeaponItems.INSTANCE.weapon3712Shotgun.get())
+            .add(AVPWeaponItems.INSTANCE.weaponAk47.get())
+            .add(AVPWeaponItems.INSTANCE.weaponF90Rifle.get())
+            .add(AVPWeaponItems.INSTANCE.weaponFlamethrowerSevastopol.get())
+            .add(AVPWeaponItems.INSTANCE.weaponM4Carbine.get())
+            .add(AVPWeaponItems.INSTANCE.weaponM41APulseRifle.get())
+            .add(AVPWeaponItems.INSTANCE.weaponM56Smartgun.get())
+            .add(AVPWeaponItems.INSTANCE.weaponM83A2Sadar.get())
+            .add(AVPWeaponItems.INSTANCE.weaponM88Mod4CombatPistol.get())
+            .add(AVPWeaponItems.INSTANCE.weaponOldPainless.get())
+            .add(AVPWeaponItems.INSTANCE.weaponSniperRifle.get());
 
         getOrCreateTagBuilder(AVPItemTags.THREATENS_PREDATORS)
             .addTag(AVPItemTags.GUNS)
@@ -39,33 +50,33 @@ public class AVPItemTagsProvider extends FabricTagProvider.ItemTagProvider {
             .add(Items.TRIDENT);
 
         getOrCreateTagBuilder(ItemTags.AXES)
-            .add(AVPToolItems.ALUMINUM_AXE.get())
-            .add(AVPToolItems.ORIONITE_AXE.get())
-            .add(AVPToolItems.TITANIUM_AXE.get())
-            .add(AVPToolItems.VERITANIUM_AXE.get());
+            .add(AVPToolItems.INSTANCE.aluminumAxe.get())
+            .add(AVPToolItems.INSTANCE.orioniteAxe.get())
+            .add(AVPToolItems.INSTANCE.titaniumAxe.get())
+            .add(AVPToolItems.INSTANCE.veritaniumAxe.get());
 
         getOrCreateTagBuilder(ItemTags.HOES)
-            .add(AVPToolItems.ALUMINUM_HOE.get())
-            .add(AVPToolItems.ORIONITE_HOE.get())
-            .add(AVPToolItems.TITANIUM_HOE.get())
-            .add(AVPToolItems.VERITANIUM_HOE.get());
+            .add(AVPToolItems.INSTANCE.aluminumHoe.get())
+            .add(AVPToolItems.INSTANCE.orioniteHoe.get())
+            .add(AVPToolItems.INSTANCE.titaniumHoe.get())
+            .add(AVPToolItems.INSTANCE.veritaniumHoe.get());
 
         getOrCreateTagBuilder(ItemTags.PICKAXES)
-            .add(AVPToolItems.ALUMINUM_PICKAXE.get())
-            .add(AVPToolItems.ORIONITE_PICKAXE.get())
-            .add(AVPToolItems.TITANIUM_PICKAXE.get())
-            .add(AVPToolItems.VERITANIUM_PICKAXE.get());
+            .add(AVPToolItems.INSTANCE.aluminumPickaxe.get())
+            .add(AVPToolItems.INSTANCE.orionitePickaxe.get())
+            .add(AVPToolItems.INSTANCE.titaniumPickaxe.get())
+            .add(AVPToolItems.INSTANCE.veritaniumPickaxe.get());
 
         getOrCreateTagBuilder(ItemTags.SHOVELS)
-            .add(AVPToolItems.ALUMINUM_SHOVEL.get())
-            .add(AVPToolItems.ORIONITE_SHOVEL.get())
-            .add(AVPToolItems.TITANIUM_SHOVEL.get())
-            .add(AVPToolItems.VERITANIUM_SHOVEL.get());
+            .add(AVPToolItems.INSTANCE.aluminumShovel.get())
+            .add(AVPToolItems.INSTANCE.orioniteShovel.get())
+            .add(AVPToolItems.INSTANCE.titaniumShovel.get())
+            .add(AVPToolItems.INSTANCE.veritaniumShovel.get());
 
         getOrCreateTagBuilder(ItemTags.SWORDS)
-            .add(AVPToolItems.ALUMINUM_SWORD.get())
-            .add(AVPToolItems.ORIONITE_SWORD.get())
-            .add(AVPToolItems.TITANIUM_SWORD.get())
-            .add(AVPToolItems.VERITANIUM_SWORD.get());
+            .add(AVPToolItems.INSTANCE.aluminumSword.get())
+            .add(AVPToolItems.INSTANCE.orioniteSword.get())
+            .add(AVPToolItems.INSTANCE.titaniumSword.get())
+            .add(AVPToolItems.INSTANCE.veritaniumSword.get());
     }
 }

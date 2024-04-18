@@ -4,7 +4,7 @@ import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.monster.Monster;
 
-import org.avp.common.entity.AVPEngineerEntityTypes;
+import org.avp.common.entity.type.AVPEngineerEntityTypes;
 
 public class AVPPrometheusEngineerEntityAttributes {
 
@@ -24,6 +24,6 @@ public class AVPPrometheusEngineerEntityAttributes {
         .build();
 
     public static void addBindings() {
-        AVPEntityAttributesBindingRegistry.addBinding(AVPEngineerEntityTypes.ENGINEER, ENGINEER);
+        AVPEntityAttributesBindingRegistry.addBinding(AVPEngineerEntityTypes.INSTANCE.engineer, ENGINEER);
     }
 }

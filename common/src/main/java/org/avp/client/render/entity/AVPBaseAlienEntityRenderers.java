@@ -10,22 +10,22 @@ import org.avp.client.render.entity.living.PraetorianRenderer;
 import org.avp.client.render.entity.living.QueenRenderer;
 import org.avp.client.render.entity.living.SpitterRenderer;
 import org.avp.client.render.entity.living.WarriorRenderer;
-import org.avp.common.entity.AVPBaseAlienEntityTypes;
+import org.avp.common.entity.type.AVPBaseAlienEntityTypes;
 
 public class AVPBaseAlienEntityRenderers {
 
     private AVPBaseAlienEntityRenderers() {}
 
     public static void addBindings() {
-        AVPEntityRenderRegistry.addBinding(AVPBaseAlienEntityTypes.BOILER, BoilerRenderer::new);
-        AVPEntityRenderRegistry.addBinding(AVPBaseAlienEntityTypes.CHESTBURSTER, ChestbursterRenderer::new);
-        AVPEntityRenderRegistry.addBinding(AVPBaseAlienEntityTypes.DRONE, DroneRenderer::new);
-        AVPEntityRenderRegistry.addBinding(AVPBaseAlienEntityTypes.FACEHUGGER, FacehuggerRenderer::new);
-        AVPEntityRenderRegistry.addBinding(AVPBaseAlienEntityTypes.FACEHUGGER_ROYAL, FacehuggerRoyalRenderer::new);
-        AVPEntityRenderRegistry.addBinding(AVPBaseAlienEntityTypes.OVAMORPH, OvamorphRenderer::new);
-        AVPEntityRenderRegistry.addBinding(AVPBaseAlienEntityTypes.PRAETORIAN, PraetorianRenderer::new);
-        AVPEntityRenderRegistry.addBinding(AVPBaseAlienEntityTypes.QUEEN, QueenRenderer::new);
-        AVPEntityRenderRegistry.addBinding(AVPBaseAlienEntityTypes.SPITTER, SpitterRenderer::new);
-        AVPEntityRenderRegistry.addBinding(AVPBaseAlienEntityTypes.WARRIOR, WarriorRenderer::new);
+        AVPEntityRenderRegistry.addBinding(AVPBaseAlienEntityTypes.INSTANCE.boiler, BoilerRenderer::new);
+        AVPEntityRenderRegistry.addBinding(AVPBaseAlienEntityTypes.INSTANCE.chestburster, ChestbursterRenderer::new);
+        AVPEntityRenderRegistry.addBinding(AVPBaseAlienEntityTypes.INSTANCE.drone, DroneRenderer::new);
+        AVPEntityRenderRegistry.addBinding(AVPBaseAlienEntityTypes.INSTANCE.facehugger, FacehuggerRenderer::new);
+        AVPEntityRenderRegistry.addBinding(AVPBaseAlienEntityTypes.INSTANCE.facehuggerRoyal, FacehuggerRoyalRenderer::new);
+        AVPEntityRenderRegistry.addBinding(AVPBaseAlienEntityTypes.INSTANCE.ovamorph, OvamorphRenderer::new);
+        AVPEntityRenderRegistry.addBinding(AVPBaseAlienEntityTypes.INSTANCE.praetorian, PraetorianRenderer::new);
+        AVPEntityRenderRegistry.addBinding(AVPBaseAlienEntityTypes.INSTANCE.queen, QueenRenderer::new);
+        AVPEntityRenderRegistry.addBinding(AVPBaseAlienEntityTypes.INSTANCE.spitter, SpitterRenderer::new);
+        AVPEntityRenderRegistry.addBinding(AVPBaseAlienEntityTypes.INSTANCE.warrior, WarriorRenderer::new);
     }
 }

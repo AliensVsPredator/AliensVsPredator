@@ -2,19 +2,22 @@ package org.avp.common;
 
 import mod.azure.azurelib.common.internal.common.AzureLib;
 
+import org.avp.client.render.particle.AVPParticleTypes;
 import org.avp.common.block.*;
 import org.avp.common.config.AVPConfig;
 import org.avp.common.creative_tab.AVPCreativeModeTabs;
-import org.avp.common.entity.*;
 import org.avp.common.entity.spawn.AVPEntitySpawns;
+import org.avp.common.entity.type.AVPBaseAlienEntityTypes;
+import org.avp.common.entity.type.AVPEngineerEntityTypes;
+import org.avp.common.entity.type.AVPEntityTypes;
+import org.avp.common.entity.type.AVPExoticAlienEntityTypes;
+import org.avp.common.entity.type.AVPPrometheusAlienEntityTypes;
+import org.avp.common.entity.type.AVPRunnerAlienEntityTypes;
+import org.avp.common.entity.type.AVPYautjaEntityTypes;
 import org.avp.common.item.*;
 import org.avp.common.network.AVPNetworkPayloadHandlerRegistry;
 import org.avp.common.registry.AVPFuelRegistry;
 import org.avp.common.sound.AVPSoundEvents;
-import org.avp.common.tag.AVPBiomeTags;
-import org.avp.common.tag.AVPBlockTags;
-import org.avp.common.tag.AVPEntityTags;
-import org.avp.common.worldgen.AVPWorldGenFeatures;
 
 public class AVPCommon {
 
@@ -28,56 +31,59 @@ public class AVPCommon {
         // Networking
         AVPNetworkPayloadHandlerRegistry.forceInitialization();
 
-        // World Gen resource keys
-        AVPWorldGenFeatures.getInstance().register();
-
         // Fuel
-        AVPFuelRegistry.forceInitialization();
-
-        // Tags
-        AVPBiomeTags.forceInitialization();
-        AVPBlockTags.forceInitialization();
-        AVPEntityTags.forceInitialization();
+        AVPFuelRegistry.INSTANCE.register();
 
         // Items
-        AVPAmmunitionPartItems.forceInitialization();
-        AVPArmorItems.forceInitialization();
-        AVPBulletItems.forceInitialization();
-        AVPElectronicItems.forceInitialization();
-        AVPFoodItems.forceInitialization();
-        AVPItems.forceInitialization();
-        AVPToolItems.forceInitialization();
-        AVPWeaponBlueprintItems.forceInitialization();
-        AVPWeaponItems.forceInitialization();
-        AVPWeaponPartItems.forceInitialization();
+        AVPAmmunitionPartItems.INSTANCE.register();
+        AVPArmorItems.INSTANCE.register();
+        AVPBulletItems.INSTANCE.register();
+        AVPElectronicItems.INSTANCE.register();
+        AVPFoodItems.INSTANCE.register();
+        AVPItems.INSTANCE.register();
+        AVPToolItems.INSTANCE.register();
+        AVPWeaponBlueprintItems.INSTANCE.register();
+        AVPWeaponItems.INSTANCE.register();
+        AVPWeaponPartItems.INSTANCE.register();
 
         // Blocks
-        AVPAlienBlocks.forceInitialization();
-        AVPBlocks.forceInitialization();
-        AVPEngineerBlocks.forceInitialization();
-        AVPIndustrialBlocks.forceInitialization();
-        AVPOreBlocks.forceInitialization();
-        AVPPaddingBlocks.forceInitialization();
-        AVPParadiseBlocks.forceInitialization();
-        AVPTempleBlocks.forceInitialization();
-        AVPUnidentifiedBlocks.forceInitialization();
-        AVPYautjaShipBlocks.forceInitialization();
+        AVPAlienBlocks.INSTANCE.register();
+        AVPBlocks.INSTANCE.register();
+        AVPEngineerBlocks.INSTANCE.register();
+        AVPIndustrialBlocks.INSTANCE.register();
+        AVPOreBlocks.INSTANCE.register();
+        AVPPaddingBlocks.INSTANCE.register();
+        AVPParadiseBlocks.INSTANCE.register();
+        AVPTempleBlocks.INSTANCE.register();
+        AVPUnidentifiedBlocks.INSTANCE.register();
+        AVPYautjaShipBlocks.INSTANCE.register();
 
-        // Entities
-        AVPBaseAlienEntityTypes.getInstance().register();
-        AVPEngineerEntityTypes.getInstance().register();
-        AVPEntityTypes.getInstance().register();
-        AVPExoticAlienEntityTypes.getInstance().register();
-        AVPPrometheusAlienEntityTypes.getInstance().register();
-        AVPRunnerAlienEntityTypes.getInstance().register();
-        AVPYautjaEntityTypes.getInstance().register();
-        AVPEntitySpawns.forceInitialization();
-
-        // It's important to register creative mode tabs last, as entities generate spawn eggs automatically.
-        AVPCreativeModeTabs.register();
+        // Item Blocks
+        AVPItemBlockItems.INSTANCE.register();
 
         // Sounds
-        AVPSoundEvents.forceInitialization();
+        AVPSoundEvents.INSTANCE.register();
+
+        // Entities
+        AVPBaseAlienEntityTypes.INSTANCE.register();
+        AVPEngineerEntityTypes.INSTANCE.register();
+        AVPEntityTypes.INSTANCE.register();
+        AVPExoticAlienEntityTypes.INSTANCE.register();
+        AVPPrometheusAlienEntityTypes.INSTANCE.register();
+        AVPRunnerAlienEntityTypes.INSTANCE.register();
+        AVPYautjaEntityTypes.INSTANCE.register();
+
+        // Entity Spawns
+        AVPEntitySpawns.INSTANCE.register();
+
+        // Spawn Egg Items
+        AVPSpawnEggItems.INSTANCE.register();
+
+        // Particles
+        AVPParticleTypes.INSTANCE.register();
+
+        // It's important to register creative mode tabs last, as entities generate spawn eggs automatically.
+        AVPCreativeModeTabs.INSTANCE.register();
     }
 
     private AVPCommon() {

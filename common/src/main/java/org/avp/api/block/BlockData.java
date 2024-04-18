@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.avp.api.GameObject;
+import org.avp.api.Holder;
 import org.avp.api.block.drop.BlockDrop;
 import org.avp.api.block.drop.BlockDrops;
 import org.avp.api.block.factory.BlockFactories;
@@ -24,7 +24,7 @@ public class BlockData {
         return BlockData.builder(properties);
     }
 
-    private final GameObject<Block> parentBlockGameObject;
+    private final Holder<Block> parentBlockHolder;
 
     private final BlockFactory blockFactory;
 
@@ -35,13 +35,13 @@ public class BlockData {
     private final BlockBehaviour.Properties properties;
 
     private BlockData(
-        GameObject<Block> parentBlockGameObject,
+        Holder<Block> parentBlockHolder,
         BlockFactory blockFactory,
         BlockDrop blockDrop,
         List<TagKey<Block>> relatedTags,
         BlockBehaviour.Properties properties
     ) {
-        this.parentBlockGameObject = parentBlockGameObject;
+        this.parentBlockHolder = parentBlockHolder;
         this.blockFactory = blockFactory;
         this.blockDrop = blockDrop;
         this.relatedTags = relatedTags;
@@ -52,8 +52,8 @@ public class BlockData {
         return blockFactory.create(properties);
     }
 
-    public GameObject<Block> getParent() {
-        return parentBlockGameObject;
+    public Holder<Block> getParent() {
+        return parentBlockHolder;
     }
 
     public BlockDrop getDrop() {
@@ -70,7 +70,7 @@ public class BlockData {
 
     public static class Builder {
 
-        private GameObject<Block> parentGameObject;
+        private Holder<Block> parentHolder;
 
         private BlockFactory blockFactory;
 
@@ -108,14 +108,14 @@ public class BlockData {
             return this;
         }
 
-        public Builder parent(GameObject<Block> parentGameObject) {
-            this.parentGameObject = parentGameObject;
+        public Builder parent(Holder<Block> parentHolder) {
+            this.parentHolder = parentHolder;
             return this;
         }
 
         public BlockData build() {
             return new BlockData(
-                parentGameObject,
+                parentHolder,
                 blockFactory,
                 blockDrop,
                 relatedTags,

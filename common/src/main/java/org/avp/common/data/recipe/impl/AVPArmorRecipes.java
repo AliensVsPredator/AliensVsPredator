@@ -6,7 +6,7 @@ import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 
-import org.avp.api.GameObject;
+import org.avp.api.Holder;
 import org.avp.common.block.AVPIndustrialBlocks;
 import org.avp.common.data.recipe.AVPShapedRecipeBuilder;
 import org.avp.common.item.AVPArmorItems;
@@ -20,35 +20,36 @@ public final class AVPArmorRecipes {
         addOrioniteArmorRecipes(recipeOutput);
         addPressureArmorRecipes(recipeOutput);
         addTacticalArmorRecipes(recipeOutput);
+        addTitaniumArmorRecipes(recipeOutput);
         addXenomorphChitinArmorRecipes(recipeOutput);
     }
 
     private static void addStandardArmorRecipes(
         RecipeOutput recipeOutput,
-        GameObject<Item> baseIngredientGameObject,
-        GameObject<Item> helmetGameObject,
-        GameObject<Item> chestplateGameObject,
-        GameObject<Item> leggingsGameObject,
-        GameObject<Item> bootsGameObject
+        Holder<Item> baseIngredientHolder,
+        Holder<Item> helmetHolder,
+        Holder<Item> chestplateHolder,
+        Holder<Item> leggingsHolder,
+        Holder<Item> bootsHolder
     ) {
-        AVPShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, chestplateGameObject)
-            .defineAndUnlockIfHas('A', baseIngredientGameObject)
+        AVPShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, chestplateHolder)
+            .defineAndUnlockIfHas('A', baseIngredientHolder)
             .pattern("A A")
             .pattern("AAA")
             .pattern("AAA")
             .save(recipeOutput);
-        AVPShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, bootsGameObject)
-            .defineAndUnlockIfHas('A', baseIngredientGameObject)
+        AVPShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, bootsHolder)
+            .defineAndUnlockIfHas('A', baseIngredientHolder)
             .pattern("A A")
             .pattern("A A")
             .save(recipeOutput);
-        AVPShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, helmetGameObject)
-            .defineAndUnlockIfHas('A', baseIngredientGameObject)
+        AVPShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, helmetHolder)
+            .defineAndUnlockIfHas('A', baseIngredientHolder)
             .pattern("AAA")
             .pattern("A A")
             .save(recipeOutput);
-        AVPShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, leggingsGameObject)
-            .defineAndUnlockIfHas('A', baseIngredientGameObject)
+        AVPShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, leggingsHolder)
+            .defineAndUnlockIfHas('A', baseIngredientHolder)
             .pattern("AAA")
             .pattern("A A")
             .pattern("A A")
@@ -58,40 +59,40 @@ public final class AVPArmorRecipes {
     private static void addAluminumArmorRecipes(RecipeOutput recipeOutput) {
         addStandardArmorRecipes(
             recipeOutput,
-            AVPItems.INGOT_ALUMINUM,
-            AVPArmorItems.ALUMINUM_HELMET,
-            AVPArmorItems.ALUMINUM_BODY,
-            AVPArmorItems.ALUMINUM_LEGGINGS,
-            AVPArmorItems.ALUMINUM_BOOTS
+            AVPItems.INSTANCE.ingotAluminum,
+            AVPArmorItems.INSTANCE.aluminumHelmet,
+            AVPArmorItems.INSTANCE.aluminumBody,
+            AVPArmorItems.INSTANCE.aluminumLeggings,
+            AVPArmorItems.INSTANCE.aluminumBoots
         );
     }
 
     private static void addMK50ArmorRecipes(RecipeOutput recipeOutput) {
-        AVPShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AVPArmorItems.MK50_BODY)
+        AVPShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AVPArmorItems.INSTANCE.mk50Body)
             .defineAndUnlockIfHas('A', Items.COPPER_INGOT)
-            .defineAndUnlockIfHas('B', AVPIndustrialBlocks.GLASS)
+            .defineAndUnlockIfHas('B', AVPIndustrialBlocks.INSTANCE.glass)
             .pattern("B B")
             .pattern("ABA")
             .pattern("BAB")
             .save(recipeOutput);
-        AVPShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AVPArmorItems.MK50_BOOTS)
+        AVPShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AVPArmorItems.INSTANCE.mk50Boots)
             .defineAndUnlockIfHas('A', Items.COPPER_INGOT)
-            .defineAndUnlockIfHas('B', AVPIndustrialBlocks.GLASS)
+            .defineAndUnlockIfHas('B', AVPIndustrialBlocks.INSTANCE.glass)
             .pattern("B B")
             .pattern("A A")
             .save(recipeOutput);
-        AVPShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AVPArmorItems.MK50_HELMET)
+        AVPShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AVPArmorItems.INSTANCE.mk50Helmet)
             .defineAndUnlockIfHas('A', Items.COPPER_INGOT)
-            .defineAndUnlockIfHas('B', AVPIndustrialBlocks.GLASS)
-            .defineAndUnlockIfHas('C', AVPItems.CARBON)
-            .defineAndUnlockIfHas('D', AVPItems.SILICA)
+            .defineAndUnlockIfHas('B', AVPIndustrialBlocks.INSTANCE.glass)
+            .defineAndUnlockIfHas('C', AVPItems.INSTANCE.carbon)
+            .defineAndUnlockIfHas('D', AVPItems.INSTANCE.silica)
             .pattern("AAA")
             .pattern("B B")
             .pattern("DCD")
             .save(recipeOutput);
-        AVPShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AVPArmorItems.MK50_LEGGINGS)
+        AVPShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AVPArmorItems.INSTANCE.mk50Leggings)
             .defineAndUnlockIfHas('A', Items.COPPER_INGOT)
-            .defineAndUnlockIfHas('B', AVPIndustrialBlocks.GLASS)
+            .defineAndUnlockIfHas('B', AVPIndustrialBlocks.INSTANCE.glass)
             .pattern("BAB")
             .pattern("B B")
             .pattern("A A")
@@ -101,40 +102,40 @@ public final class AVPArmorRecipes {
     private static void addOrioniteArmorRecipes(RecipeOutput recipeOutput) {
         addStandardArmorRecipes(
             recipeOutput,
-            AVPItems.INGOT_ORIONITE,
-            AVPArmorItems.ORIONITE_HELMET,
-            AVPArmorItems.ORIONITE_BODY,
-            AVPArmorItems.ORIONITE_LEGGINGS,
-            AVPArmorItems.ORIONITE_BOOTS
+            AVPItems.INSTANCE.ingotOrionite,
+            AVPArmorItems.INSTANCE.orioniteHelmet,
+            AVPArmorItems.INSTANCE.orioniteBody,
+            AVPArmorItems.INSTANCE.orioniteLeggings,
+            AVPArmorItems.INSTANCE.orioniteBoots
         );
     }
 
     private static void addPressureArmorRecipes(RecipeOutput recipeOutput) {
-        AVPShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AVPArmorItems.PRESSURE_BODY)
-            .defineAndUnlockIfHas('A', AVPItems.INGOT_ALUMINUM)
-            .defineAndUnlockIfHas('B', AVPIndustrialBlocks.GLASS)
+        AVPShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AVPArmorItems.INSTANCE.pressureBody)
+            .defineAndUnlockIfHas('A', AVPItems.INSTANCE.ingotAluminum)
+            .defineAndUnlockIfHas('B', AVPIndustrialBlocks.INSTANCE.glass)
             .pattern("B B")
             .pattern("ABA")
             .pattern("BAB")
             .save(recipeOutput);
-        AVPShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AVPArmorItems.PRESSURE_BOOTS)
-            .defineAndUnlockIfHas('A', AVPItems.INGOT_ALUMINUM)
-            .defineAndUnlockIfHas('B', AVPIndustrialBlocks.GLASS)
+        AVPShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AVPArmorItems.INSTANCE.pressureBoots)
+            .defineAndUnlockIfHas('A', AVPItems.INSTANCE.ingotAluminum)
+            .defineAndUnlockIfHas('B', AVPIndustrialBlocks.INSTANCE.glass)
             .pattern("B B")
             .pattern("A A")
             .save(recipeOutput);
-        AVPShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AVPArmorItems.PRESSURE_HELMET)
-            .defineAndUnlockIfHas('A', AVPItems.INGOT_ALUMINUM)
-            .defineAndUnlockIfHas('B', AVPIndustrialBlocks.GLASS)
-            .defineAndUnlockIfHas('C', AVPItems.CARBON)
-            .defineAndUnlockIfHas('D', AVPItems.SILICA)
+        AVPShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AVPArmorItems.INSTANCE.pressureHelmet)
+            .defineAndUnlockIfHas('A', AVPItems.INSTANCE.ingotAluminum)
+            .defineAndUnlockIfHas('B', AVPIndustrialBlocks.INSTANCE.glass)
+            .defineAndUnlockIfHas('C', AVPItems.INSTANCE.carbon)
+            .defineAndUnlockIfHas('D', AVPItems.INSTANCE.silica)
             .pattern("AAA")
             .pattern("B B")
             .pattern("DCD")
             .save(recipeOutput);
-        AVPShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AVPArmorItems.PRESSURE_LEGGINGS)
-            .defineAndUnlockIfHas('A', AVPItems.INGOT_ALUMINUM)
-            .defineAndUnlockIfHas('B', AVPIndustrialBlocks.GLASS)
+        AVPShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AVPArmorItems.INSTANCE.pressureLeggings)
+            .defineAndUnlockIfHas('A', AVPItems.INSTANCE.ingotAluminum)
+            .defineAndUnlockIfHas('B', AVPIndustrialBlocks.INSTANCE.glass)
             .pattern("BAB")
             .pattern("B B")
             .pattern("A A")
@@ -142,21 +143,21 @@ public final class AVPArmorRecipes {
     }
 
     private static void addTacticalArmorRecipes(RecipeOutput recipeOutput) {
-        AVPShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AVPArmorItems.TACTICAL_BODY)
-            .defineAndUnlockIfHas('A', AVPItems.INGOT_ALUMINUM)
+        AVPShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AVPArmorItems.INSTANCE.tacticalBody)
+            .defineAndUnlockIfHas('A', AVPItems.INSTANCE.ingotAluminum)
             .defineAndUnlockIfHas('B', ItemTags.WOOL)
             .pattern("B B")
             .pattern("ABA")
             .pattern("BAB")
             .save(recipeOutput);
-        AVPShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AVPArmorItems.TACTICAL_BOOTS)
-            .defineAndUnlockIfHas('A', AVPItems.INGOT_ALUMINUM)
+        AVPShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AVPArmorItems.INSTANCE.tacticalBoots)
+            .defineAndUnlockIfHas('A', AVPItems.INSTANCE.ingotAluminum)
             .defineAndUnlockIfHas('B', ItemTags.WOOL)
             .pattern("B B")
             .pattern("A A")
             .save(recipeOutput);
-        AVPShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AVPArmorItems.TACTICAL_LEGGINGS)
-            .defineAndUnlockIfHas('A', AVPItems.INGOT_ALUMINUM)
+        AVPShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AVPArmorItems.INSTANCE.tacticalLeggings)
+            .defineAndUnlockIfHas('A', AVPItems.INSTANCE.ingotAluminum)
             .defineAndUnlockIfHas('B', ItemTags.WOOL)
             .pattern("BAB")
             .pattern("B B")
@@ -164,14 +165,25 @@ public final class AVPArmorRecipes {
             .save(recipeOutput);
     }
 
+    private static void addTitaniumArmorRecipes(RecipeOutput recipeOutput) {
+        addStandardArmorRecipes(
+            recipeOutput,
+            AVPItems.INSTANCE.ingotTitanium,
+            AVPArmorItems.INSTANCE.titaniumHelmet,
+            AVPArmorItems.INSTANCE.titaniumBody,
+            AVPArmorItems.INSTANCE.titaniumLeggings,
+            AVPArmorItems.INSTANCE.titaniumBoots
+        );
+    }
+
     private static void addXenomorphChitinArmorRecipes(RecipeOutput recipeOutput) {
         addStandardArmorRecipes(
             recipeOutput,
-            AVPItems.XENOMORPH_CHITIN,
-            AVPArmorItems.XENOMORPH_HELMET,
-            AVPArmorItems.XENOMORPH_BODY,
-            AVPArmorItems.XENOMORPH_LEGGINGS,
-            AVPArmorItems.XENOMORPH_BOOTS
+            AVPItems.INSTANCE.xenomorphChitin,
+            AVPArmorItems.INSTANCE.xenomorphHelmet,
+            AVPArmorItems.INSTANCE.xenomorphBody,
+            AVPArmorItems.INSTANCE.xenomorphLeggings,
+            AVPArmorItems.INSTANCE.xenomorphBoots
         );
     }
 

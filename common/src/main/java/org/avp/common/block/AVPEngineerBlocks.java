@@ -9,221 +9,216 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import org.avp.api.GameObject;
+import org.avp.api.Holder;
 import org.avp.api.block.BlockData;
 import org.avp.api.block.BlockDataUtils;
+import org.avp.common.registry.AVPDeferredBlockRegistry;
 
-public class AVPEngineerBlocks {
+public class AVPEngineerBlocks extends AVPDeferredBlockRegistry {
 
-    public static final BlockBehaviour.Properties METAL_PROPERTIES = BlockBehaviour.Properties.ofFullCopy(
-        Blocks.IRON_BLOCK
-    )
-        .strength(100.0F, 1800.0F);
+    public static final AVPEngineerBlocks INSTANCE = new AVPEngineerBlocks();
 
-    public static final GameObject<Block> BRICK;
+    public final Holder<Block> brick;
 
-    public static final GameObject<Block> BRICK_SLAB;
+    public final Holder<Block> brickSlab;
 
-    public static final GameObject<Block> BRICK_STAIRS;
+    public final Holder<Block> brickStairs;
 
-    public static final GameObject<Block> BRICK_WALL;
+    public final Holder<Block> brickWall;
 
-    public static final GameObject<Block> BRICK_1;
+    public final Holder<Block> brick1;
 
-    public static final GameObject<Block> BRICK_1_SLAB;
+    public final Holder<Block> brick1Slab;
 
-    public static final GameObject<Block> BRICK_1_STAIRS;
+    public final Holder<Block> brick1Stairs;
 
-    public static final GameObject<Block> BRICK_1_WALL;
+    public final Holder<Block> brick1Wall;
 
-    public static final GameObject<Block> BRICK_2;
+    public final Holder<Block> brick2;
 
-    public static final GameObject<Block> BRICK_2_SLAB;
+    public final Holder<Block> brick2Slab;
 
-    public static final GameObject<Block> BRICK_2_STAIRS;
+    public final Holder<Block> brick2Stairs;
 
-    public static final GameObject<Block> BRICK_2_WALL;
+    public final Holder<Block> brick2Wall;
 
-    public static final GameObject<Block> BRICK_3;
+    public final Holder<Block> brick3;
 
-    public static final GameObject<Block> BRICK_3_SLAB;
+    public final Holder<Block> brick3Slab;
 
-    public static final GameObject<Block> BRICK_3_STAIRS;
+    public final Holder<Block> brick3Stairs;
 
-    public static final GameObject<Block> BRICK_3_WALL;
+    public final Holder<Block> brick3Wall;
 
-    public static final GameObject<Block> COLUMN_1;
+    public final Holder<Block> column1;
 
-    public static final GameObject<Block> COLUMN_2;
+    public final Holder<Block> column2;
 
-    public static final GameObject<Block> FLOOR;
+    public final Holder<Block> floor;
 
-    public static final GameObject<Block> GRAVEL;
+    public final Holder<Block> gravel;
 
-    public static final GameObject<Block> MATERIAL_0;
+    public final Holder<Block> material0;
 
-    public static final GameObject<Block> MATERIAL_0_SLAB;
+    public final Holder<Block> material0Slab;
 
-    public static final GameObject<Block> MATERIAL_0_STAIRS;
+    public final Holder<Block> material0Stairs;
 
-    public static final GameObject<Block> MATERIAL_0_WALL;
+    public final Holder<Block> material0Wall;
 
-    public static final GameObject<Block> MATERIAL_1;
+    public final Holder<Block> material1;
 
-    public static final GameObject<Block> MATERIAL_1_SLAB;
+    public final Holder<Block> material1Slab;
 
-    public static final GameObject<Block> MATERIAL_1_STAIRS;
+    public final Holder<Block> material1Stairs;
 
-    public static final GameObject<Block> MATERIAL_1_WALL;
+    public final Holder<Block> material1Wall;
 
-    public static final GameObject<Block> MATERIAL_2;
+    public final Holder<Block> material2;
 
-    public static final GameObject<Block> MATERIAL_2_SLAB;
+    public final Holder<Block> material2Slab;
 
-    public static final GameObject<Block> MATERIAL_2_STAIRS;
+    public final Holder<Block> material2Stairs;
 
-    public static final GameObject<Block> MATERIAL_2_WALL;
+    public final Holder<Block> material2Wall;
 
-    public static final GameObject<Block> ROCK;
+    public final Holder<Block> rock;
 
-    public static final GameObject<Block> ROCK_1;
+    public final Holder<Block> rock1;
 
-    public static final GameObject<Block> ROCK_2;
+    public final Holder<Block> rock2;
 
-    public static final GameObject<Block> ROCK_3;
+    public final Holder<Block> rock3;
 
-    public static final GameObject<Block> WALL;
+    public final Holder<Block> wall;
 
-    public static final GameObject<Block> WALL_SLAB;
+    public final Holder<Block> wallSlab;
 
-    public static final GameObject<Block> WALL_STAIRS;
+    public final Holder<Block> wallStairs;
 
-    public static final GameObject<Block> WALL_WALL;
+    public final Holder<Block> wallWall;
 
-    public static final GameObject<Block> WALL_1;
+    public final Holder<Block> wall1;
 
-    public static final GameObject<Block> WALL_1_SLAB;
+    public final Holder<Block> wall1Slab;
 
-    public static final GameObject<Block> WALL_1_STAIRS;
+    public final Holder<Block> wall1Stairs;
 
-    public static final GameObject<Block> WALL_1_WALL;
+    public final Holder<Block> wall1Wall;
 
-    public static final GameObject<Block> WALL_2;
+    public final Holder<Block> wall2;
 
-    public static final GameObject<Block> WALL_2_SLAB;
+    public final Holder<Block> wall2Slab;
 
-    public static final GameObject<Block> WALL_2_STAIRS;
+    public final Holder<Block> wall2Stairs;
 
-    public static final GameObject<Block> WALL_2_WALL;
+    public final Holder<Block> wall2Wall;
 
-    public static final GameObject<Block> WALL_3;
+    public final Holder<Block> wall3;
 
-    public static final GameObject<Block> WALL_3_SLAB;
+    public final Holder<Block> wall3Slab;
 
-    public static final GameObject<Block> WALL_3_STAIRS;
+    public final Holder<Block> wall3Stairs;
 
-    public static final GameObject<Block> WALL_3_WALL;
+    public final Holder<Block> wall3Wall;
 
-    public static final GameObject<Block> WALL_4;
+    public final Holder<Block> wall4;
 
-    public static final GameObject<Block> WALL_4_SLAB;
+    public final Holder<Block> wall4Slab;
 
-    public static final GameObject<Block> WALL_4_STAIRS;
+    public final Holder<Block> wall4Stairs;
 
-    public static final GameObject<Block> WALL_4_WALL;
+    public final Holder<Block> wall4Wall;
 
-    public static void forceInitialization() {
-        // This method doesn't need to do anything
+    @Override
+    protected Holder<Block> createHolder(String registryName, BlockData.Builder blockDataBuilder) {
+        return super.createHolder("engineer_ship_" + registryName, blockDataBuilder);
     }
 
-    private static GameObject<Block> register(String name, BlockData.Builder builder) {
-        return AVPBlocks.register("engineer_ship_" + name, builder);
-    }
+    private AVPEngineerBlocks() {
+        var properties = BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_BLOCK).strength(100.0F, 1800.0F);
 
-    private AVPEngineerBlocks() {}
-
-    static {
         var soft = List.of(BlockTags.MINEABLE_WITH_SHOVEL, BlockTags.NEEDS_DIAMOND_TOOL);
         var stoneOrMetal = List.of(BlockTags.MINEABLE_WITH_PICKAXE, BlockTags.NEEDS_DIAMOND_TOOL);
 
-        Supplier<BlockData.Builder> pickProps = () -> BlockData.simple(METAL_PROPERTIES).tags(stoneOrMetal);
-        Supplier<BlockData.Builder> shovelProps = () -> BlockData.simple(METAL_PROPERTIES).tags(soft);
-        Function<GameObject<Block>, BlockData.Builder> slabProps =
-            parent -> BlockDataUtils.slab(parent, METAL_PROPERTIES).tags(stoneOrMetal);
-        Function<GameObject<Block>, BlockData.Builder> stairProps =
-            parent -> BlockDataUtils.stairs(parent, METAL_PROPERTIES).tags(stoneOrMetal);
-        Function<GameObject<Block>, BlockData.Builder> wallProps =
-            parent -> BlockDataUtils.wall(parent, METAL_PROPERTIES).tags(stoneOrMetal);
+        Supplier<BlockData.Builder> pickProps = () -> BlockData.simple(properties).tags(stoneOrMetal);
+        Supplier<BlockData.Builder> shovelProps = () -> BlockData.simple(properties).tags(soft);
+        Function<Holder<Block>, BlockData.Builder> slabProps =
+            parent -> BlockDataUtils.slab(parent, properties).tags(stoneOrMetal);
+        Function<Holder<Block>, BlockData.Builder> stairProps =
+            parent -> BlockDataUtils.stairs(parent, properties).tags(stoneOrMetal);
+        Function<Holder<Block>, BlockData.Builder> wallProps =
+            parent -> BlockDataUtils.wall(parent, properties).tags(stoneOrMetal);
 
-        BRICK = register("brick", pickProps.get());
-        BRICK_SLAB = register("brick_slab", slabProps.apply(BRICK));
-        BRICK_STAIRS = register("brick_stairs", stairProps.apply(BRICK));
-        BRICK_WALL = register("brick_wall", wallProps.apply(BRICK));
+        brick = createHolder("brick", pickProps.get());
+        brickSlab = createHolder("brick_slab", slabProps.apply(brick));
+        brickStairs = createHolder("brick_stairs", stairProps.apply(brick));
+        brickWall = createHolder("brick_wall", wallProps.apply(brick));
 
-        BRICK_1 = register("brick_1", BlockData.simple(METAL_PROPERTIES));
-        BRICK_1_SLAB = register("brick_1_slab", slabProps.apply(BRICK_1));
-        BRICK_1_STAIRS = register("brick_1_stairs", stairProps.apply(BRICK_1));
-        BRICK_1_WALL = register("brick_1_wall", wallProps.apply(BRICK_1));
+        brick1 = createHolder("brick_1", BlockData.simple(properties));
+        brick1Slab = createHolder("brick_1_slab", slabProps.apply(brick1));
+        brick1Stairs = createHolder("brick_1_stairs", stairProps.apply(brick1));
+        brick1Wall = createHolder("brick_1_wall", wallProps.apply(brick1));
 
-        BRICK_2 = register("brick_2", pickProps.get());
-        BRICK_2_SLAB = register("brick_2_slab", slabProps.apply(BRICK_2));
-        BRICK_2_STAIRS = register("brick_2_stairs", stairProps.apply(BRICK_2));
-        BRICK_2_WALL = register("brick_2_wall", wallProps.apply(BRICK_2));
+        brick2 = createHolder("brick_2", pickProps.get());
+        brick2Slab = createHolder("brick_2_slab", slabProps.apply(brick2));
+        brick2Stairs = createHolder("brick_2_stairs", stairProps.apply(brick2));
+        brick2Wall = createHolder("brick_2_wall", wallProps.apply(brick2));
 
-        BRICK_3 = register("brick_3", pickProps.get());
-        BRICK_3_SLAB = register("brick_3_slab", slabProps.apply(BRICK_3));
-        BRICK_3_STAIRS = register("brick_3_stairs", stairProps.apply(BRICK_3));
-        BRICK_3_WALL = register("brick_3_wall", wallProps.apply(BRICK_3));
+        brick3 = createHolder("brick_3", pickProps.get());
+        brick3Slab = createHolder("brick_3_slab", slabProps.apply(brick3));
+        brick3Stairs = createHolder("brick_3_stairs", stairProps.apply(brick3));
+        brick3Wall = createHolder("brick_3_wall", wallProps.apply(brick3));
 
-        COLUMN_1 = register("column_1", pickProps.get());
-        COLUMN_2 = register("column_2", pickProps.get());
-        FLOOR = register("floor", shovelProps.get());
-        GRAVEL = register("gravel", shovelProps.get());
+        column1 = createHolder("column_1", pickProps.get());
+        column2 = createHolder("column_2", pickProps.get());
+        floor = createHolder("floor", shovelProps.get());
+        gravel = createHolder("gravel", shovelProps.get());
 
-        MATERIAL_0 = register("material_0", pickProps.get());
-        MATERIAL_0_SLAB = register("material_0_slab", slabProps.apply(MATERIAL_0));
-        MATERIAL_0_STAIRS = register("material_0_stairs", stairProps.apply(MATERIAL_0));
-        MATERIAL_0_WALL = register("material_0_wall", wallProps.apply(MATERIAL_0));
+        material0 = createHolder("material_0", pickProps.get());
+        material0Slab = createHolder("material_0_slab", slabProps.apply(material0));
+        material0Stairs = createHolder("material_0_stairs", stairProps.apply(material0));
+        material0Wall = createHolder("material_0_wall", wallProps.apply(material0));
 
-        MATERIAL_1 = register("material_1", pickProps.get());
-        MATERIAL_1_SLAB = register("material_1_slab", slabProps.apply(MATERIAL_1));
-        MATERIAL_1_STAIRS = register("material_1_stairs", stairProps.apply(MATERIAL_1));
-        MATERIAL_1_WALL = register("material_1_wall", wallProps.apply(MATERIAL_1));
+        material1 = createHolder("material_1", pickProps.get());
+        material1Slab = createHolder("material_1_slab", slabProps.apply(material1));
+        material1Stairs = createHolder("material_1_stairs", stairProps.apply(material1));
+        material1Wall = createHolder("material_1_wall", wallProps.apply(material1));
 
-        MATERIAL_2 = register("material_2", pickProps.get());
-        MATERIAL_2_SLAB = register("material_2_slab", slabProps.apply(MATERIAL_2));
-        MATERIAL_2_STAIRS = register("material_2_stairs", stairProps.apply(MATERIAL_2));
-        MATERIAL_2_WALL = register("material_2_wall", wallProps.apply(MATERIAL_2));
+        material2 = createHolder("material_2", pickProps.get());
+        material2Slab = createHolder("material_2_slab", slabProps.apply(material2));
+        material2Stairs = createHolder("material_2_stairs", stairProps.apply(material2));
+        material2Wall = createHolder("material_2_wall", wallProps.apply(material2));
 
-        ROCK = register("rock", pickProps.get());
-        ROCK_1 = register("rock_1", pickProps.get());
-        ROCK_2 = register("rock_2", pickProps.get());
-        ROCK_3 = register("rock_3", pickProps.get());
+        rock = createHolder("rock", pickProps.get());
+        rock1 = createHolder("rock_1", pickProps.get());
+        rock2 = createHolder("rock_2", pickProps.get());
+        rock3 = createHolder("rock_3", pickProps.get());
 
-        WALL = register("wall", pickProps.get());
-        WALL_SLAB = register("wall_slab", slabProps.apply(WALL));
-        WALL_STAIRS = register("wall_stairs", stairProps.apply(WALL));
-        WALL_WALL = register("wall_wall", wallProps.apply(WALL));
+        wall = createHolder("wall", pickProps.get());
+        wallSlab = createHolder("wall_slab", slabProps.apply(wall));
+        wallStairs = createHolder("wall_stairs", stairProps.apply(wall));
+        wallWall = createHolder("wall_wall", wallProps.apply(wall));
 
-        WALL_1 = register("wall_1", pickProps.get());
-        WALL_1_SLAB = register("wall_1_slab", slabProps.apply(WALL_1));
-        WALL_1_STAIRS = register("wall_1_stairs", stairProps.apply(WALL_1));
-        WALL_1_WALL = register("wall_1_wall", wallProps.apply(WALL_1));
+        wall1 = createHolder("wall_1", pickProps.get());
+        wall1Slab = createHolder("wall_1_slab", slabProps.apply(wall1));
+        wall1Stairs = createHolder("wall_1_stairs", stairProps.apply(wall1));
+        wall1Wall = createHolder("wall_1_wall", wallProps.apply(wall1));
 
-        WALL_2 = register("wall_2", pickProps.get());
-        WALL_2_SLAB = register("wall_2_slab", slabProps.apply(WALL_2));
-        WALL_2_STAIRS = register("wall_2_stairs", stairProps.apply(WALL_2));
-        WALL_2_WALL = register("wall_2_wall", wallProps.apply(WALL_2));
+        wall2 = createHolder("wall_2", pickProps.get());
+        wall2Slab = createHolder("wall_2_slab", slabProps.apply(wall2));
+        wall2Stairs = createHolder("wall_2_stairs", stairProps.apply(wall2));
+        wall2Wall = createHolder("wall_2_wall", wallProps.apply(wall2));
 
-        WALL_3 = register("wall_3", pickProps.get());
-        WALL_3_SLAB = register("wall_3_slab", slabProps.apply(WALL_3));
-        WALL_3_STAIRS = register("wall_3_stairs", stairProps.apply(WALL_3));
-        WALL_3_WALL = register("wall_3_wall", wallProps.apply(WALL_3));
+        wall3 = createHolder("wall_3", pickProps.get());
+        wall3Slab = createHolder("wall_3_slab", slabProps.apply(wall3));
+        wall3Stairs = createHolder("wall_3_stairs", stairProps.apply(wall3));
+        wall3Wall = createHolder("wall_3_wall", wallProps.apply(wall3));
 
-        WALL_4 = register("wall_4", pickProps.get());
-        WALL_4_SLAB = register("wall_4_slab", slabProps.apply(WALL_4));
-        WALL_4_STAIRS = register("wall_4_stairs", stairProps.apply(WALL_4));
-        WALL_4_WALL = register("wall_4_wall", wallProps.apply(WALL_4));
+        wall4 = createHolder("wall_4", pickProps.get());
+        wall4Slab = createHolder("wall_4_slab", slabProps.apply(wall4));
+        wall4Stairs = createHolder("wall_4_stairs", stairProps.apply(wall4));
+        wall4Wall = createHolder("wall_4_wall", wallProps.apply(wall4));
     }
 
 }

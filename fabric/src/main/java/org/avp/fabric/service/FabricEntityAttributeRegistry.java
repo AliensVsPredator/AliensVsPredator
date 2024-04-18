@@ -2,18 +2,22 @@ package org.avp.fabric.service;
 
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry;
 
+import java.util.function.Supplier;
+
+import org.avp.api.Holder;
 import org.avp.common.entity.attribute.AVPEntityAttributesBindingRegistry;
-import org.avp.common.registry.AVPRegistry;
+import org.avp.common.registry.AVPDeferredRegistry;
 
-public class FabricEntityAttributeRegistry implements AVPRegistry {
+public class FabricEntityAttributeRegistry extends AVPDeferredRegistry<Void> {
 
-    private static final FabricEntityAttributeRegistry INSTANCE = new FabricEntityAttributeRegistry();
-
-    public static FabricEntityAttributeRegistry getInstance() {
-        return INSTANCE;
-    }
+    public static final FabricEntityAttributeRegistry INSTANCE = new FabricEntityAttributeRegistry();
 
     private FabricEntityAttributeRegistry() {}
+
+    @Override
+    protected Holder<Void> createHolder(String registryName, Supplier<Void> supplier) {
+        return null;
+    }
 
     @Override
     public void register() {

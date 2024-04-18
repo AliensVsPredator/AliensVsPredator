@@ -3,7 +3,7 @@ package org.avp.common.entity.attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 
-import org.avp.common.entity.AVPRunnerAlienEntityTypes;
+import org.avp.common.entity.type.AVPRunnerAlienEntityTypes;
 
 public class AVPRunnerAlienEntityAttributes {
 
@@ -33,12 +33,9 @@ public class AVPRunnerAlienEntityAttributes {
         .build();
 
     public static void addBindings() {
-        AVPEntityAttributesBindingRegistry.addBinding(
-            AVPRunnerAlienEntityTypes.CHESTBURSTER_RUNNER,
-            CHESTBURSTER_RUNNER
-        );
-        AVPEntityAttributesBindingRegistry.addBinding(AVPRunnerAlienEntityTypes.CRUSHER, CRUSHER);
-        AVPEntityAttributesBindingRegistry.addBinding(AVPRunnerAlienEntityTypes.DRONE_RUNNER, DRONE_RUNNER);
-        AVPEntityAttributesBindingRegistry.addBinding(AVPRunnerAlienEntityTypes.WARRIOR_RUNNER, WARRIOR_RUNNER);
+        AVPEntityAttributesBindingRegistry.addBinding(AVPRunnerAlienEntityTypes.INSTANCE.chestbursterRunner, CHESTBURSTER_RUNNER);
+        AVPEntityAttributesBindingRegistry.addBinding(AVPRunnerAlienEntityTypes.INSTANCE.crusher, CRUSHER);
+        AVPEntityAttributesBindingRegistry.addBinding(AVPRunnerAlienEntityTypes.INSTANCE.droneRunner, DRONE_RUNNER);
+        AVPEntityAttributesBindingRegistry.addBinding(AVPRunnerAlienEntityTypes.INSTANCE.warriorRunner, WARRIOR_RUNNER);
     }
 }

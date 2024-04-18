@@ -26,7 +26,7 @@ public class Praetorian extends Monster implements GeoEntity {
 
     @Override
     public boolean doHurtTarget(@NotNull Entity entity) {
-        this.playSound(AVPSoundEvents.ENTITY_XENOMORPH_ATTACK.get());
+        this.playSound(AVPSoundEvents.INSTANCE.entityXenomorphAttack.get());
         return super.doHurtTarget(entity);
     }
 
@@ -38,17 +38,17 @@ public class Praetorian extends Monster implements GeoEntity {
     @Nullable
     @Override
     protected SoundEvent getAmbientSound() {
-        return AVPSoundEvents.ENTITY_PRAETORIAN_AMBIENT.get();
+        return AVPSoundEvents.INSTANCE.entityPraetorianAmbient.get();
     }
 
     @Override
     protected SoundEvent getDeathSound() {
-        return AVPSoundEvents.ENTITY_PRAETORIAN_DEATH.get();
+        return AVPSoundEvents.INSTANCE.entityPraetorianDeath.get();
     }
 
     @Override
     protected SoundEvent getHurtSound(@NotNull DamageSource damageSource) {
-        return AVPSoundEvents.ENTITY_PRAETORIAN_HURT.get();
+        return AVPSoundEvents.INSTANCE.entityPraetorianHurt.get();
     }
 
     @Override

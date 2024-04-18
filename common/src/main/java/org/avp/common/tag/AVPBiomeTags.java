@@ -8,17 +8,13 @@ import org.avp.common.AVPResources;
 
 public class AVPBiomeTags {
 
-    public static final TagKey<Biome> IS_WET;
-
-    public static void forceInitialization() {
-        // This method doesn't need to do anything
-    }
+    public static final TagKey<Biome> IS_WET = create("is_wet");
 
     private static TagKey<Biome> create(String registryName) {
         return TagKey.create(Registries.BIOME, AVPResources.location(registryName));
     }
 
-    static {
-        IS_WET = create("is_wet");
+    private AVPBiomeTags() {
+        throw new UnsupportedOperationException();
     }
 }

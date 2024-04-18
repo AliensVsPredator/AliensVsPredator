@@ -4,7 +4,8 @@ import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
-import org.avp.api.GameObject;
+
+import org.avp.api.Holder;
 import org.avp.common.data.recipe.AVPShapedRecipeBuilder;
 import org.avp.common.item.AVPItems;
 import org.avp.common.item.AVPToolItems;
@@ -14,71 +15,71 @@ public final class AVPToolRecipes {
     public static void addToolRecipes(RecipeOutput recipeOutput) {
         addToolSetRecipes(
             recipeOutput,
-            AVPItems.INGOT_ALUMINUM,
-            AVPToolItems.ALUMINUM_AXE,
-            AVPToolItems.ALUMINUM_HOE,
-            AVPToolItems.ALUMINUM_PICKAXE,
-            AVPToolItems.ALUMINUM_SHOVEL,
-            AVPToolItems.ALUMINUM_SWORD
+            AVPItems.INSTANCE.ingotAluminum,
+            AVPToolItems.INSTANCE.aluminumAxe,
+            AVPToolItems.INSTANCE.aluminumHoe,
+            AVPToolItems.INSTANCE.aluminumPickaxe,
+            AVPToolItems.INSTANCE.aluminumShovel,
+            AVPToolItems.INSTANCE.aluminumSword
         );
         addToolSetRecipes(
             recipeOutput,
-            AVPItems.INGOT_TITANIUM,
-            AVPToolItems.TITANIUM_AXE,
-            AVPToolItems.TITANIUM_HOE,
-            AVPToolItems.TITANIUM_PICKAXE,
-            AVPToolItems.TITANIUM_SHOVEL,
-            AVPToolItems.TITANIUM_SWORD
+            AVPItems.INSTANCE.ingotTitanium,
+            AVPToolItems.INSTANCE.titaniumAxe,
+            AVPToolItems.INSTANCE.titaniumHoe,
+            AVPToolItems.INSTANCE.titaniumPickaxe,
+            AVPToolItems.INSTANCE.titaniumShovel,
+            AVPToolItems.INSTANCE.titaniumSword
         );
         addToolSetRecipes(
             recipeOutput,
-            AVPItems.INGOT_ORIONITE,
-            AVPToolItems.ORIONITE_AXE,
-            AVPToolItems.ORIONITE_HOE,
-            AVPToolItems.ORIONITE_PICKAXE,
-            AVPToolItems.ORIONITE_SHOVEL,
-            AVPToolItems.ORIONITE_SWORD
+            AVPItems.INSTANCE.ingotOrionite,
+            AVPToolItems.INSTANCE.orioniteAxe,
+            AVPToolItems.INSTANCE.orioniteHoe,
+            AVPToolItems.INSTANCE.orionitePickaxe,
+            AVPToolItems.INSTANCE.orioniteShovel,
+            AVPToolItems.INSTANCE.orioniteSword
         );
     }
 
     private static void addToolSetRecipes(
         RecipeOutput recipeOutput,
-        GameObject<Item> baseIngredient,
-        GameObject<Item> axeItemGameObject,
-        GameObject<Item> hoeItemGameObject,
-        GameObject<Item> pickaxeItemGameObject,
-        GameObject<Item> shovelItemGameObject,
-        GameObject<Item> swordItemGameObject
+        Holder<Item> baseIngredient,
+        Holder<Item> axeItemHolder,
+        Holder<Item> hoeItemHolder,
+        Holder<Item> pickaxeItemHolder,
+        Holder<Item> shovelItemHolder,
+        Holder<Item> swordItemHolder
     ) {
-        AVPShapedRecipeBuilder.shaped(RecipeCategory.TOOLS, axeItemGameObject)
+        AVPShapedRecipeBuilder.shaped(RecipeCategory.TOOLS, axeItemHolder)
             .defineAndUnlockIfHas('A', baseIngredient)
             .defineAndUnlockIfHas('B', Items.STICK)
             .pattern("AA")
             .pattern("AB")
             .pattern(" B")
             .save(recipeOutput);
-        AVPShapedRecipeBuilder.shaped(RecipeCategory.TOOLS, hoeItemGameObject)
+        AVPShapedRecipeBuilder.shaped(RecipeCategory.TOOLS, hoeItemHolder)
             .defineAndUnlockIfHas('A', baseIngredient)
             .defineAndUnlockIfHas('B', Items.STICK)
             .pattern("AA")
             .pattern(" B")
             .pattern(" B")
             .save(recipeOutput);
-        AVPShapedRecipeBuilder.shaped(RecipeCategory.TOOLS, pickaxeItemGameObject)
+        AVPShapedRecipeBuilder.shaped(RecipeCategory.TOOLS, pickaxeItemHolder)
             .defineAndUnlockIfHas('A', baseIngredient)
             .defineAndUnlockIfHas('B', Items.STICK)
             .pattern("AAA")
             .pattern(" B ")
             .pattern(" B ")
             .save(recipeOutput);
-        AVPShapedRecipeBuilder.shaped(RecipeCategory.TOOLS, shovelItemGameObject)
+        AVPShapedRecipeBuilder.shaped(RecipeCategory.TOOLS, shovelItemHolder)
             .defineAndUnlockIfHas('A', baseIngredient)
             .defineAndUnlockIfHas('B', Items.STICK)
             .pattern("A")
             .pattern("B")
             .pattern("B")
             .save(recipeOutput);
-        AVPShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, swordItemGameObject)
+        AVPShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, swordItemHolder)
             .defineAndUnlockIfHas('A', baseIngredient)
             .defineAndUnlockIfHas('B', Items.STICK)
             .pattern("A")

@@ -3,7 +3,7 @@ package org.avp.common.entity.attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 
-import org.avp.common.entity.AVPEntityTypes;
+import org.avp.common.entity.type.AVPEntityTypes;
 
 public class AVPEntityAttributes {
 
@@ -21,7 +21,11 @@ public class AVPEntityAttributes {
 
     public static void addBindings() {
         // Unclassified
-        AVPEntityAttributesBindingRegistry.addBinding(AVPEntityTypes.BELUGABURSTER, BELUGABURSTER);
-        AVPEntityAttributesBindingRegistry.addBinding(AVPEntityTypes.BELUGAMORPH, BELUGAMORPH);
+        AVPEntityAttributesBindingRegistry.addBinding(AVPEntityTypes.INSTANCE.belugaburster, BELUGABURSTER);
+        AVPEntityAttributesBindingRegistry.addBinding(AVPEntityTypes.INSTANCE.belugamorph, BELUGAMORPH);
+    }
+
+    private AVPEntityAttributes() {
+        throw new UnsupportedOperationException();
     }
 }

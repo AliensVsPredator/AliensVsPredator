@@ -2,72 +2,52 @@ package org.avp.common.item;
 
 import net.minecraft.world.item.Item;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.function.Supplier;
+import org.avp.api.Holder;
+import org.avp.common.registry.AVPDeferredItemRegistry;
 
-import org.avp.api.GameObject;
-import org.avp.common.service.Services;
+public class AVPElectronicItems extends AVPDeferredItemRegistry {
 
-public class AVPElectronicItems {
+    public static final AVPElectronicItems INSTANCE = new AVPElectronicItems();
 
-    private static final List<GameObject<Item>> ENTRIES = new ArrayList<>();
+    public final Holder<Item> capacitor;
 
-    public static final GameObject<Item> CAPACITOR;
+    public final Holder<Item> cpu;
 
-    public static final GameObject<Item> CPU;
+    public final Holder<Item> diode;
 
-    public static final GameObject<Item> DIODE;
+    public final Holder<Item> integratedCircuit;
 
-    public static final GameObject<Item> INTEGRATED_CIRCUIT;
+    public final Holder<Item> led;
 
-    public static final GameObject<Item> LED;
+    public final Holder<Item> ledDisplay;
 
-    public static final GameObject<Item> LED_DISPLAY;
+    public final Holder<Item> motherboard;
 
-    public static final GameObject<Item> MOTHERBOARD;
+    public final Holder<Item> powerSupply;
 
-    public static final GameObject<Item> POWER_SUPPLY;
+    public final Holder<Item> ram;
 
-    public static final GameObject<Item> RAM;
+    public final Holder<Item> regulator;
 
-    public static final GameObject<Item> REGULATOR;
+    public final Holder<Item> resistor;
 
-    public static final GameObject<Item> RESISTOR;
+    public final Holder<Item> ssd;
 
-    public static final GameObject<Item> SSD;
+    public final Holder<Item> transistor;
 
-    public static final GameObject<Item> TRANSISTOR;
-
-    public static void forceInitialization() {
-        // This method doesn't need to do anything
-    }
-
-    public static List<GameObject<Item>> getEntries() {
-        return ENTRIES;
-    }
-
-    private static GameObject<Item> register(String registryName, Supplier<Item> itemSupplier) {
-        var gameObject = Services.ITEM_REGISTRY.register(registryName, itemSupplier);
-        ENTRIES.add(gameObject);
-        return gameObject;
-    }
-
-    private AVPElectronicItems() {}
-
-    static {
-        CAPACITOR = register("capacitor", () -> new Item(new Item.Properties()));
-        CPU = register("cpu", () -> new Item(new Item.Properties()));
-        DIODE = register("diode", () -> new Item(new Item.Properties()));
-        INTEGRATED_CIRCUIT = register("integrated_circuit", () -> new Item(new Item.Properties()));
-        LED = register("led", () -> new Item(new Item.Properties()));
-        LED_DISPLAY = register("led_display", () -> new Item(new Item.Properties()));
-        MOTHERBOARD = register("motherboard", () -> new Item(new Item.Properties()));
-        POWER_SUPPLY = register("power_supply", () -> new Item(new Item.Properties()));
-        RAM = register("ram", () -> new Item(new Item.Properties()));
-        REGULATOR = register("regulator", () -> new Item(new Item.Properties()));
-        RESISTOR = register("resistor", () -> new Item(new Item.Properties()));
-        SSD = register("ssd", () -> new Item(new Item.Properties()));
-        TRANSISTOR = register("transistor", () -> new Item(new Item.Properties()));
+    private AVPElectronicItems() {
+        capacitor = createHolder("capacitor");
+        cpu = createHolder("cpu");
+        diode = createHolder("diode");
+        integratedCircuit = createHolder("integrated_circuit");
+        led = createHolder("led");
+        ledDisplay = createHolder("led_display");
+        motherboard = createHolder("motherboard");
+        powerSupply = createHolder("power_supply");
+        ram = createHolder("ram");
+        regulator = createHolder("regulator");
+        resistor = createHolder("resistor");
+        ssd = createHolder("ssd");
+        transistor = createHolder("transistor");
     }
 }

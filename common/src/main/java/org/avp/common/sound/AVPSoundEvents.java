@@ -2,169 +2,118 @@ package org.avp.common.sound;
 
 import net.minecraft.sounds.SoundEvent;
 
-import org.avp.api.GameObject;
+import java.util.function.Supplier;
+
+import org.avp.api.Holder;
 import org.avp.common.AVPResources;
+import org.avp.common.registry.AVPDeferredRegistry;
 import org.avp.common.service.Services;
 
-public class AVPSoundEvents {
+public class AVPSoundEvents extends AVPDeferredRegistry<SoundEvent> {
 
-    private static GameObject<SoundEvent> register(String registryName) {
-        var resourceLocation = AVPResources.location(registryName);
-        return Services.SOUND_EVENT_REGISTRY.register(
-            registryName,
-            () -> SoundEvent.createVariableRangeEvent(resourceLocation)
-        );
+    public static final AVPSoundEvents INSTANCE = new AVPSoundEvents();
+
+    public final Holder<SoundEvent> entityChestbursterDeath = createHolder("entity.chestburster.death");
+
+    public final Holder<SoundEvent> entityChestbursterHurt = createHolder("entity.chestburster.hurt");
+
+    public final Holder<SoundEvent> entityPraetorianAmbient = createHolder("entity.praetorian.ambient");
+
+    public final Holder<SoundEvent> entityPraetorianDeath = createHolder("entity.praetorian.death");
+
+    public final Holder<SoundEvent> entityPraetorianHurt = createHolder("entity.praetorian.hurt");
+
+    public final Holder<SoundEvent> entityQueenAmbient = createHolder("entity.queen.ambient");
+
+    public final Holder<SoundEvent> entityQueenAmbientLoop = createHolder("entity.queen.ambient.loop");
+
+    public final Holder<SoundEvent> entityQueenDeath = createHolder("entity.queen.death");
+
+    public final Holder<SoundEvent> entityQueenHurt = createHolder("entity.queen.hurt");
+
+    public final Holder<SoundEvent> entityXenomorphAmbient = createHolder("entity.xenomorph.ambient");
+
+    public final Holder<SoundEvent> entityXenomorphAttack = createHolder("entity.xenomorph.attack");
+
+    public final Holder<SoundEvent> entityXenomorphDeath = createHolder("entity.xenomorph.death");
+
+    public final Holder<SoundEvent> entityXenomorphEat = createHolder("entity.xenomorph.eat");
+
+    public final Holder<SoundEvent> entityXenomorphHurt = createHolder("entity.xenomorph.hurt");
+
+    public final Holder<SoundEvent> entityYautjaAmbient = createHolder("entity.yautja.ambient");
+
+    public final Holder<SoundEvent> entityYautjaCloak = createHolder("entity.yautja.cloak");
+
+    public final Holder<SoundEvent> entityYautjaDeath = createHolder("entity.yautja.death");
+
+    public final Holder<SoundEvent> entityYautjaDecloak = createHolder("entity.yautja.decloak");
+
+    public final Holder<SoundEvent> entityYautjaHurt = createHolder("entity.yautja.hurt");
+
+    public final Holder<SoundEvent> itemWeaponAk47Shoot = createHolder("item.weapon.ak_47.shoot");
+
+    public final Holder<SoundEvent> itemWeaponCombatPistolReload = createHolder("item.weapon.combat_pistol.reload");
+
+    public final Holder<SoundEvent> itemWeaponCombatPistolShoot = createHolder("item.weapon.combat_pistol.shoot");
+
+    public final Holder<SoundEvent> itemWeaponFlamethrowerReloadFinish = createHolder("item.weapon.flamethrower.reload_finish");
+
+    public final Holder<SoundEvent> itemWeaponFlamethrowerReloadStart = createHolder("item.weapon.flamethrower.reload_start");
+
+    public final Holder<SoundEvent> itemWeaponFlamethrowerShoot = createHolder("item.weapon.flamethrower.shoot");
+
+    public final Holder<SoundEvent> itemWeaponFxRicochetDirt = createHolder("item.weapon.fx.ricochet.dirt");
+
+    public final Holder<SoundEvent> itemWeaponFxRicochetGeneric = createHolder("item.weapon.fx.ricochet.generic");
+
+    public final Holder<SoundEvent> itemWeaponFxRicochetGlass = createHolder("item.weapon.fx.ricochet.glass");
+
+    public final Holder<SoundEvent> itemWeaponFxRicochetMetal = createHolder("item.weapon.fx.ricochet.metal");
+
+    public final Holder<SoundEvent> itemWeaponFxRocketExplosion = createHolder("item.weapon.fx.rocket_explosion");
+
+    public final Holder<SoundEvent> itemWeaponGenericReload = createHolder("item.weapon.generic.reload");
+
+    public final Holder<SoundEvent> itemWeaponGenericShoot = createHolder("item.weapon.generic.shoot");
+
+    public final Holder<SoundEvent> itemWeaponGenericShootFail = createHolder("item.weapon.generic.shoot_fail");
+
+    public final Holder<SoundEvent> itemWeaponOldPainlessShootLoop = createHolder("item.weapon.old_painless.shoot_loop");
+
+    public final Holder<SoundEvent> itemWeaponOldPainlessShootSpinning = createHolder("item.weapon.old_painless.shoot_spinning");
+
+    public final Holder<SoundEvent> itemWeaponOldPainlessShootStart = createHolder("item.weapon.old_painless.shoot_start");
+
+    public final Holder<SoundEvent> itemWeaponOldPainlessShootStop = createHolder("item.weapon.old_painless.shoot_stop");
+
+    public final Holder<SoundEvent> itemWeaponPulseRifleShoot = createHolder("item.weapon.pulse_rifle.shoot");
+
+    public final Holder<SoundEvent> itemWeaponRocketLauncherReloadFinish = createHolder("item.weapon.rocket_launcher.reload_finish");
+
+    public final Holder<SoundEvent> itemWeaponRocketLauncherReloadStart = createHolder("item.weapon.rocket_launcher.reload_start");
+
+    public final Holder<SoundEvent> itemWeaponRocketLauncherShoot = createHolder("item.weapon.rocket_launcher.shoot");
+
+    public final Holder<SoundEvent> itemWeaponShotgunShoot = createHolder("item.weapon.shotgun.shoot");
+
+    public final Holder<SoundEvent> itemWeaponSniperRifleShoot = createHolder("item.weapon.sniper_rifle.shoot");
+
+    @Override
+    protected Holder<SoundEvent> createHolder(String registryName, Supplier<SoundEvent> supplier) {
+        var holder = Services.SOUND_EVENT_SERVICE.createHolder(registryName, supplier);
+        entries.add(holder);
+        return holder;
     }
 
-    public static final GameObject<SoundEvent> ENTITY_CHESTBURSTER_DEATH;
-
-    public static final GameObject<SoundEvent> ENTITY_CHESTBURSTER_HURT;
-
-    public static final GameObject<SoundEvent> ENTITY_PRAETORIAN_AMBIENT;
-
-    public static final GameObject<SoundEvent> ENTITY_PRAETORIAN_DEATH;
-
-    public static final GameObject<SoundEvent> ENTITY_PRAETORIAN_HURT;
-
-    public static final GameObject<SoundEvent> ENTITY_QUEEN_AMBIENT;
-
-    public static final GameObject<SoundEvent> ENTITY_QUEEN_AMBIENT_LOOP;
-
-    public static final GameObject<SoundEvent> ENTITY_QUEEN_DEATH;
-
-    public static final GameObject<SoundEvent> ENTITY_QUEEN_HURT;
-
-    public static final GameObject<SoundEvent> ENTITY_XENOMORPH_AMBIENT;
-
-    public static final GameObject<SoundEvent> ENTITY_XENOMORPH_ATTACK;
-
-    public static final GameObject<SoundEvent> ENTITY_XENOMORPH_DEATH;
-
-    public static final GameObject<SoundEvent> ENTITY_XENOMORPH_EAT;
-
-    public static final GameObject<SoundEvent> ENTITY_XENOMORPH_HURT;
-
-    public static final GameObject<SoundEvent> ENTITY_YAUTJA_AMBIENT;
-
-    public static final GameObject<SoundEvent> ENTITY_YAUTJA_CLOAK;
-
-    public static final GameObject<SoundEvent> ENTITY_YAUTJA_DEATH;
-
-    public static final GameObject<SoundEvent> ENTITY_YAUTJA_DECLOAK;
-
-    public static final GameObject<SoundEvent> ENTITY_YAUTJA_HURT;
-
-    public static final GameObject<SoundEvent> ITEM_WEAPON_AK_47_SHOOT;
-
-    public static final GameObject<SoundEvent> ITEM_WEAPON_COMBAT_PISTOL_RELOAD;
-
-    public static final GameObject<SoundEvent> ITEM_WEAPON_COMBAT_PISTOL_SHOOT;
-
-    public static final GameObject<SoundEvent> ITEM_WEAPON_FLAMETHROWER_RELOAD_FINISH;
-
-    public static final GameObject<SoundEvent> ITEM_WEAPON_FLAMETHROWER_RELOAD_START;
-
-    public static final GameObject<SoundEvent> ITEM_WEAPON_FLAMETHROWER_SHOOT;
-
-    public static final GameObject<SoundEvent> ITEM_WEAPON_FX_RICOCHET_DIRT;
-
-    public static final GameObject<SoundEvent> ITEM_WEAPON_FX_RICOCHET_GENERIC;
-
-    public static final GameObject<SoundEvent> ITEM_WEAPON_FX_RICOCHET_GLASS;
-
-    public static final GameObject<SoundEvent> ITEM_WEAPON_FX_RICOCHET_METAL;
-
-    public static final GameObject<SoundEvent> ITEM_WEAPON_FX_ROCKET_EXPLOSION;
-
-    public static final GameObject<SoundEvent> ITEM_WEAPON_GENERIC_RELOAD;
-
-    public static final GameObject<SoundEvent> ITEM_WEAPON_GENERIC_SHOOT;
-
-    public static final GameObject<SoundEvent> ITEM_WEAPON_GENERIC_SHOOT_FAIL;
-
-    public static final GameObject<SoundEvent> ITEM_WEAPON_OLD_PAINLESS_SHOOT_LOOP;
-
-    public static final GameObject<SoundEvent> ITEM_WEAPON_OLD_PAINLESS_SHOOT_SPINNING;
-
-    public static final GameObject<SoundEvent> ITEM_WEAPON_OLD_PAINLESS_SHOOT_START;
-
-    public static final GameObject<SoundEvent> ITEM_WEAPON_OLD_PAINLESS_SHOOT_STOP;
-
-    public static final GameObject<SoundEvent> ITEM_WEAPON_PULSE_RIFLE_SHOOT;
-
-    public static final GameObject<SoundEvent> ITEM_WEAPON_ROCKET_LAUNCHER_RELOAD_FINISH;
-
-    public static final GameObject<SoundEvent> ITEM_WEAPON_ROCKET_LAUNCHER_RELOAD_START;
-
-    public static final GameObject<SoundEvent> ITEM_WEAPON_ROCKET_LAUNCHER_SHOOT;
-
-    public static final GameObject<SoundEvent> ITEM_WEAPON_SHOTGUN_SHOOT;
-
-    public static final GameObject<SoundEvent> ITEM_WEAPON_SNIPER_RIFLE_SHOOT;
-
-    public static void forceInitialization() {
-        // This method doesn't need to do anything
+    private Holder<SoundEvent> createHolder(String registryName) {
+        return createHolder(registryName, () -> SoundEvent.createVariableRangeEvent(AVPResources.location(registryName)));
     }
 
     private AVPSoundEvents() {}
 
-    static {
-        ENTITY_CHESTBURSTER_DEATH = register("entity.chestburster.death");
-        ENTITY_CHESTBURSTER_HURT = register("entity.chestburster.hurt");
-
-        ENTITY_PRAETORIAN_AMBIENT = register("entity.praetorian.ambient");
-        ENTITY_PRAETORIAN_DEATH = register("entity.praetorian.death");
-        ENTITY_PRAETORIAN_HURT = register("entity.praetorian.hurt");
-
-        ENTITY_QUEEN_AMBIENT = register("entity.queen.ambient");
-        ENTITY_QUEEN_AMBIENT_LOOP = register("entity.queen.ambient.loop");
-        ENTITY_QUEEN_DEATH = register("entity.queen.death");
-        ENTITY_QUEEN_HURT = register("entity.queen.hurt");
-
-        ENTITY_XENOMORPH_AMBIENT = register("entity.xenomorph.ambient");
-        ENTITY_XENOMORPH_ATTACK = register("entity.xenomorph.attack");
-        ENTITY_XENOMORPH_DEATH = register("entity.xenomorph.death");
-        ENTITY_XENOMORPH_EAT = register("entity.xenomorph.eat");
-        ENTITY_XENOMORPH_HURT = register("entity.xenomorph.hurt");
-
-        ENTITY_YAUTJA_AMBIENT = register("entity.yautja.ambient");
-        ENTITY_YAUTJA_CLOAK = register("entity.yautja.cloak");
-        ENTITY_YAUTJA_DEATH = register("entity.yautja.death");
-        ENTITY_YAUTJA_DECLOAK = register("entity.yautja.decloak");
-        ENTITY_YAUTJA_HURT = register("entity.yautja.hurt");
-
-        ITEM_WEAPON_AK_47_SHOOT = register("item.weapon.ak_47.shoot");
-
-        ITEM_WEAPON_COMBAT_PISTOL_RELOAD = register("item.weapon.combat_pistol.reload");
-        ITEM_WEAPON_COMBAT_PISTOL_SHOOT = register("item.weapon.combat_pistol.shoot");
-
-        ITEM_WEAPON_FLAMETHROWER_RELOAD_FINISH = register("item.weapon.flamethrower.reload_finish");
-        ITEM_WEAPON_FLAMETHROWER_RELOAD_START = register("item.weapon.flamethrower.reload_start");
-        ITEM_WEAPON_FLAMETHROWER_SHOOT = register("item.weapon.flamethrower.shoot");
-
-        ITEM_WEAPON_FX_RICOCHET_DIRT = register("item.weapon.fx.ricochet.dirt");
-        ITEM_WEAPON_FX_RICOCHET_GENERIC = register("item.weapon.fx.ricochet.generic");
-        ITEM_WEAPON_FX_RICOCHET_GLASS = register("item.weapon.fx.ricochet.glass");
-        ITEM_WEAPON_FX_RICOCHET_METAL = register("item.weapon.fx.ricochet.metal");
-        ITEM_WEAPON_FX_ROCKET_EXPLOSION = register("item.weapon.fx.rocket_explosion");
-
-        ITEM_WEAPON_GENERIC_RELOAD = register("item.weapon.generic.reload");
-        ITEM_WEAPON_GENERIC_SHOOT = register("item.weapon.generic.shoot");
-        ITEM_WEAPON_GENERIC_SHOOT_FAIL = register("item.weapon.generic.shoot_fail");
-
-        ITEM_WEAPON_OLD_PAINLESS_SHOOT_LOOP = register("item.weapon.old_painless.shoot_loop");
-        ITEM_WEAPON_OLD_PAINLESS_SHOOT_SPINNING = register("item.weapon.old_painless.shoot_spinning");
-        ITEM_WEAPON_OLD_PAINLESS_SHOOT_START = register("item.weapon.old_painless.shoot_start");
-        ITEM_WEAPON_OLD_PAINLESS_SHOOT_STOP = register("item.weapon.old_painless.shoot_stop");
-
-        ITEM_WEAPON_PULSE_RIFLE_SHOOT = register("item.weapon.pulse_rifle.shoot");
-
-        ITEM_WEAPON_ROCKET_LAUNCHER_RELOAD_FINISH = register("item.weapon.rocket_launcher.reload_finish");
-        ITEM_WEAPON_ROCKET_LAUNCHER_RELOAD_START = register("item.weapon.rocket_launcher.reload_start");
-        ITEM_WEAPON_ROCKET_LAUNCHER_SHOOT = register("item.weapon.rocket_launcher.shoot");
-
-        ITEM_WEAPON_SHOTGUN_SHOOT = register("item.weapon.shotgun.shoot");
-
-        ITEM_WEAPON_SNIPER_RIFLE_SHOOT = register("item.weapon.sniper_rifle.shoot");
+    @Override
+    public void register() {
+        entries.forEach(Services.SOUND_EVENT_SERVICE::register);
     }
 }

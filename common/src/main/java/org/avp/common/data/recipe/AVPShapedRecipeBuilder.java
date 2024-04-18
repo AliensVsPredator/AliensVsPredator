@@ -6,7 +6,8 @@ import net.minecraft.data.recipes.ShapedRecipeBuilder;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.ItemLike;
-import org.avp.api.GameObject;
+
+import org.avp.api.Holder;
 
 public class AVPShapedRecipeBuilder {
 
@@ -14,16 +15,20 @@ public class AVPShapedRecipeBuilder {
         return new AVPShapedRecipeBuilder(ShapedRecipeBuilder.shaped(recipeCategory, itemLike));
     }
 
-    public static AVPShapedRecipeBuilder shaped(RecipeCategory recipeCategory, GameObject<? extends ItemLike> itemLikeGameObject) {
-        return new AVPShapedRecipeBuilder(ShapedRecipeBuilder.shaped(recipeCategory, itemLikeGameObject.get()));
+    public static AVPShapedRecipeBuilder shaped(RecipeCategory recipeCategory, Holder<? extends ItemLike> itemLikeHolder) {
+        return new AVPShapedRecipeBuilder(ShapedRecipeBuilder.shaped(recipeCategory, itemLikeHolder.get()));
     }
 
     public static AVPShapedRecipeBuilder shaped(RecipeCategory recipeCategory, ItemLike itemLike, int count) {
         return new AVPShapedRecipeBuilder(ShapedRecipeBuilder.shaped(recipeCategory, itemLike, count));
     }
 
-    public static AVPShapedRecipeBuilder shaped(RecipeCategory recipeCategory, GameObject<? extends ItemLike> itemLikeGameObject, int count) {
-        return new AVPShapedRecipeBuilder(ShapedRecipeBuilder.shaped(recipeCategory, itemLikeGameObject.get(), count));
+    public static AVPShapedRecipeBuilder shaped(
+        RecipeCategory recipeCategory,
+        Holder<? extends ItemLike> itemLikeHolder,
+        int count
+    ) {
+        return new AVPShapedRecipeBuilder(ShapedRecipeBuilder.shaped(recipeCategory, itemLikeHolder.get(), count));
     }
 
     private final ShapedRecipeBuilder shapedRecipeBuilder;
@@ -44,8 +49,8 @@ public class AVPShapedRecipeBuilder {
         return this;
     }
 
-    public AVPShapedRecipeBuilder defineAndUnlockIfHas(char character, GameObject<? extends ItemLike> itemLikeGameObject) {
-        return defineAndUnlockIfHas(character, itemLikeGameObject.get());
+    public AVPShapedRecipeBuilder defineAndUnlockIfHas(char character, Holder<? extends ItemLike> itemLikeHolder) {
+        return defineAndUnlockIfHas(character, itemLikeHolder.get());
     }
 
     public AVPShapedRecipeBuilder pattern(String pattern) {

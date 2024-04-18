@@ -5,11 +5,13 @@ import net.minecraft.world.level.block.Blocks;
 
 import java.util.Map;
 
+import org.avp.common.block.AVPUnidentifiedBlocks;
+
 public class LVRockSchematicResolver {
 
     public static final Map<String, Block> RESOLVER_MAP = Map.<String, Block>ofEntries(
         Map.entry("0", Blocks.AIR),
-        Map.entry("1", Blocks.WHITE_WOOL) // TODO: LV 426 Stone
+        Map.entry("1", AVPUnidentifiedBlocks.INSTANCE.rock.get())
     );
 
     private LVRockSchematicResolver() {

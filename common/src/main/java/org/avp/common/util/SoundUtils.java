@@ -3,22 +3,22 @@ package org.avp.common.util;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.level.block.SoundType;
 
-import org.avp.api.GameObject;
+import org.avp.api.Holder;
 import org.avp.common.sound.AVPSoundEvents;
 
 public class SoundUtils {
 
-    public static GameObject<SoundEvent> getRicochetSoundForSoundType(SoundType soundType) {
-        GameObject<SoundEvent> ricochetSfx;
+    public static Holder<SoundEvent> getRicochetSoundForSoundType(SoundType soundType) {
+        Holder<SoundEvent> ricochetSfx;
 
         if (soundType == SoundType.GLASS) {
-            ricochetSfx = AVPSoundEvents.ITEM_WEAPON_FX_RICOCHET_GLASS;
+            ricochetSfx = AVPSoundEvents.INSTANCE.itemWeaponFxRicochetGlass;
         } else if (soundType == SoundType.GRAVEL) {
-            ricochetSfx = AVPSoundEvents.ITEM_WEAPON_FX_RICOCHET_DIRT;
+            ricochetSfx = AVPSoundEvents.INSTANCE.itemWeaponFxRicochetDirt;
         } else if (soundType == SoundType.METAL) {
-            ricochetSfx = AVPSoundEvents.ITEM_WEAPON_FX_RICOCHET_METAL;
+            ricochetSfx = AVPSoundEvents.INSTANCE.itemWeaponFxRicochetMetal;
         } else {
-            ricochetSfx = AVPSoundEvents.ITEM_WEAPON_FX_RICOCHET_GENERIC;
+            ricochetSfx = AVPSoundEvents.INSTANCE.itemWeaponFxRicochetGeneric;
         }
         return ricochetSfx;
     }

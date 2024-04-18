@@ -11,6 +11,8 @@ import java.util.function.BiConsumer;
 
 import org.avp.api.Tuple;
 import org.avp.common.network.payload.ServerboundWeaponReloadRequestPayload;
+import org.avp.common.network.payload.ServerboundWeaponSwapAmmunitionTypeRequestPayload;
+import org.avp.common.network.payload.ServerboundWeaponSwapFireModeRequestPayload;
 import org.avp.common.service.Services;
 
 public class AVPClientKeyBindings {
@@ -41,7 +43,31 @@ public class AVPClientKeyBindings {
                 var player = client.player;
                 if (player != null) {
                     var payload = new ServerboundWeaponReloadRequestPayload(player.getUUID());
-                    Services.NETWORK_HANDLER.sendToServer(payload);
+                    Services.NETWORK_SERVICE.sendToServer(payload);
+                }
+            }
+        );
+        registerKeyBinding(
+            "swap_fire_mode",
+            "weapons",
+            GLFW.GLFW_KEY_Z,
+            (keyBinding, client) -> {
+                var player = client.player;
+                if (player != null) {
+                    var payload = new ServerboundWeaponSwapFireModeRequestPayload(player.getUUID());
+                    Services.NETWORK_SERVICE.sendToServer(payload);
+                }
+            }
+        );
+        registerKeyBinding(
+            "swap_ammunition_type",
+            "weapons",
+            GLFW.GLFW_KEY_X,
+            (keyBinding, client) -> {
+                var player = client.player;
+                if (player != null) {
+                    var payload = new ServerboundWeaponSwapAmmunitionTypeRequestPayload(player.getUUID());
+                    Services.NETWORK_SERVICE.sendToServer(payload);
                 }
             }
         );

@@ -1,7 +1,6 @@
 package org.avp.client.model.entity.living;
 
 import mod.azure.azurelib.common.api.client.model.GeoModel;
-import mod.azure.azurelib.common.internal.common.core.animation.AnimationState;
 import net.minecraft.resources.ResourceLocation;
 
 import org.avp.common.AVPResources;
@@ -30,10 +29,5 @@ public class FacehuggerModel extends GeoModel<Facehugger> {
     @Override
     public ResourceLocation getAnimationResource(Facehugger entity) {
         return ANIMATION_LOCATION;
-    }
-
-    @Override
-    public void setCustomAnimations(Facehugger entity, long instanceId, AnimationState<Facehugger> animationState) {
-        // TODO:
     }
 }

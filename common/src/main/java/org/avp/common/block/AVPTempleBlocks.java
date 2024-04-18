@@ -9,109 +9,100 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import org.avp.api.GameObject;
+import org.avp.api.Holder;
 import org.avp.api.block.BlockData;
 import org.avp.api.block.BlockDataUtils;
+import org.avp.common.registry.AVPDeferredBlockRegistry;
 
-public class AVPTempleBlocks {
+public class AVPTempleBlocks extends AVPDeferredBlockRegistry {
 
-    public static final BlockBehaviour.Properties BRICK_PROPERTIES = BlockBehaviour.Properties.ofFullCopy(
-        Blocks.STONE
-    )
-        .strength(3.0F, 6.0F);
+    public static final AVPTempleBlocks INSTANCE = new AVPTempleBlocks();
 
-    public static final BlockBehaviour.Properties SKULLS_PROPERTIES = BlockBehaviour.Properties.ofFullCopy(
-        Blocks.BONE_BLOCK
-    )
-        .strength(3.0F, 6.0F);
+    public final Holder<Block> brick;
 
-    public static final GameObject<Block> BRICK;
+    public final Holder<Block> brickSlab;
 
-    public static final GameObject<Block> BRICK_SLAB;
+    public final Holder<Block> brickStairs;
 
-    public static final GameObject<Block> BRICK_STAIRS;
+    public final Holder<Block> brickWall;
 
-    public static final GameObject<Block> BRICK_WALL;
+    public final Holder<Block> brickChestburster;
 
-    public static final GameObject<Block> BRICK_CHESTBURSTER;
+    public final Holder<Block> brickFacehugger;
 
-    public static final GameObject<Block> BRICK_FACEHUGGER;
+    public final Holder<Block> brickSingle;
 
-    public static final GameObject<Block> BRICK_SINGLE;
+    public final Holder<Block> brickSingleSlab;
 
-    public static final GameObject<Block> BRICK_SINGLE_SLAB;
+    public final Holder<Block> brickSingleStairs;
 
-    public static final GameObject<Block> BRICK_SINGLE_STAIRS;
+    public final Holder<Block> brickSingleWall;
 
-    public static final GameObject<Block> BRICK_SINGLE_WALL;
+    public final Holder<Block> floor;
 
-    public static final GameObject<Block> FLOOR;
+    public final Holder<Block> floorSlab;
 
-    public static final GameObject<Block> FLOOR_SLAB;
+    public final Holder<Block> floorStairs;
 
-    public static final GameObject<Block> FLOOR_STAIRS;
+    public final Holder<Block> floorWall;
 
-    public static final GameObject<Block> FLOOR_WALL;
+    public final Holder<Block> skulls;
 
-    public static final GameObject<Block> SKULLS;
+    public final Holder<Block> tile;
 
-    public static final GameObject<Block> TILE;
+    public final Holder<Block> tileSlab;
 
-    public static final GameObject<Block> TILE_SLAB;
+    public final Holder<Block> tileStairs;
 
-    public static final GameObject<Block> TILE_STAIRS;
+    public final Holder<Block> tileWall;
 
-    public static final GameObject<Block> TILE_WALL;
+    public final Holder<Block> wallBase;
 
-    public static final GameObject<Block> WALL_BASE;
-
-    public static void forceInitialization() {
-        // This method doesn't need to do anything
+    @Override
+    protected Holder<Block> createHolder(String registryName, BlockData.Builder blockDataBuilder) {
+        return super.createHolder("temple_" + registryName, blockDataBuilder);
     }
 
-    private static GameObject<Block> register(String name, BlockData.Builder builder) {
-        return AVPBlocks.register("temple_" + name, builder);
-    }
+    private AVPTempleBlocks() {
+        var brickProperties = BlockBehaviour.Properties.ofFullCopy(Blocks.STONE).strength(3.0F, 6.0F);
+        var skullProperties = BlockBehaviour.Properties.ofFullCopy(Blocks.BONE_BLOCK).strength(3.0F, 6.0F);
 
-    private AVPTempleBlocks() {}
-
-    static {
         var stone = List.of(BlockTags.MINEABLE_WITH_PICKAXE, BlockTags.NEEDS_IRON_TOOL);
 
-        Supplier<BlockData.Builder> pickProps = () -> BlockData.simple(BRICK_PROPERTIES).tags(stone);
+        Supplier<BlockData.Builder> pickProps = () -> BlockData.simple(brickProperties).tags(stone);
 
-        Function<GameObject<Block>, BlockData.Builder> slabProps =
-            parent -> BlockDataUtils.slab(parent, BRICK_PROPERTIES).tags(stone);
-        Function<GameObject<Block>, BlockData.Builder> stairProps =
-            parent -> BlockDataUtils.stairs(parent, BRICK_PROPERTIES).tags(stone);
-        Function<GameObject<Block>, BlockData.Builder> wallProps =
-            parent -> BlockDataUtils.wall(parent, BRICK_PROPERTIES).tags(stone);
+        Function<Holder<Block>, BlockData.Builder> slabProps =
+            parent -> BlockDataUtils.slab(parent, brickProperties).tags(stone);
+        Function<Holder<Block>, BlockData.Builder> stairProps =
+            parent -> BlockDataUtils.stairs(parent, brickProperties).tags(stone);
+        Function<Holder<Block>, BlockData.Builder> wallProps =
+            parent -> BlockDataUtils.wall(parent, brickProperties).tags(stone);
 
-        BRICK = register("brick", pickProps.get());
-        BRICK_SLAB = register("brick_slab", slabProps.apply(BRICK));
-        BRICK_STAIRS = register("brick_stairs", stairProps.apply(BRICK));
-        BRICK_WALL = register("brick_wall", wallProps.apply(BRICK));
+        brick = createHolder("brick", pickProps.get());
+        brickSlab = createHolder("brick_slab", slabProps.apply(brick));
+        brickStairs = createHolder("brick_stairs", stairProps.apply(brick));
+        brickWall = createHolder("brick_wall", wallProps.apply(brick));
 
-        BRICK_CHESTBURSTER = register("brick_chestburster", pickProps.get());
-        BRICK_FACEHUGGER = register("brick_facehugger", pickProps.get());
+        brickChestburster = createHolder("brick_chestburster", pickProps.get());
+        brickFacehugger = createHolder("brick_facehugger", pickProps.get());
 
-        BRICK_SINGLE = register("brick_single", pickProps.get());
-        BRICK_SINGLE_SLAB = register("brick_single_slab", slabProps.apply(BRICK_SINGLE));
-        BRICK_SINGLE_STAIRS = register("brick_single_stairs", stairProps.apply(BRICK_SINGLE));
-        BRICK_SINGLE_WALL = register("brick_single_wall", wallProps.apply(BRICK_SINGLE));
+        brickSingle = createHolder("brick_single", pickProps.get());
+        brickSingleSlab = createHolder("brick_single_slab", slabProps.apply(brickSingle));
+        brickSingleStairs = createHolder("brick_single_stairs", stairProps.apply(brickSingle));
+        brickSingleWall = createHolder("brick_single_wall", wallProps.apply(brickSingle));
 
-        FLOOR = register("floor", pickProps.get());
-        FLOOR_SLAB = register("floor_slab", slabProps.apply(FLOOR));
-        FLOOR_STAIRS = register("floor_stairs", stairProps.apply(FLOOR));
-        FLOOR_WALL = register("floor_wall", wallProps.apply(FLOOR));
+        floor = createHolder("floor", pickProps.get());
+        floorSlab = createHolder("floor_slab", slabProps.apply(floor));
+        floorStairs = createHolder("floor_stairs", stairProps.apply(floor));
+        floorWall = createHolder("floor_wall", wallProps.apply(floor));
 
-        SKULLS = register("skulls", BlockData.simple(SKULLS_PROPERTIES).tags(stone));
+        skulls = createHolder("skulls", BlockData.simple(skullProperties).tags(stone));
 
-        TILE = register("tile", pickProps.get());
-        TILE_SLAB = register("tile_slab", slabProps.apply(TILE));
-        TILE_STAIRS = register("tile_stairs", stairProps.apply(TILE));
-        TILE_WALL = register("tile_wall", wallProps.apply(TILE));
+        tile = createHolder("tile", pickProps.get());
+        tileSlab = createHolder("tile_slab", slabProps.apply(tile));
+        tileStairs = createHolder("tile_stairs", stairProps.apply(tile));
+        tileWall = createHolder("tile_wall", wallProps.apply(tile));
 
-        WALL_BASE = register("wall_base", pickProps.get());
+        wallBase = createHolder("wall_base", pickProps.get());
     }
 }

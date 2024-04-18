@@ -13,7 +13,8 @@ import net.minecraft.world.entity.EntityType;
 import org.avp.api.block.factory.BlockFactories;
 import org.avp.client.AVPClientKeyBindings;
 import org.avp.client.render.entity.AVPEntityRenderRegistry;
-import org.avp.common.block.AVPBlocks;
+import org.avp.client.render.particle.AVPParticleTypeProviders;
+import org.avp.common.registry.AVPDeferredBlockRegistry;
 
 public class AVPFabricClient implements ClientModInitializer {
 
@@ -21,7 +22,9 @@ public class AVPFabricClient implements ClientModInitializer {
     public void onInitializeClient() {
         registerEntityRenderBindings();
 
-        AVPBlocks.getEntries().forEach(tuple -> {
+        AVPParticleTypeProviders.INSTANCE.register();
+
+        AVPDeferredBlockRegistry.getDataEntries().forEach(tuple -> {
             var block = tuple.first().get();
             var blockData = tuple.second();
             var factory = blockData.getFactory();
@@ -36,7 +39,7 @@ public class AVPFabricClient implements ClientModInitializer {
     @SuppressWarnings("unchecked")
     private static void registerEntityRenderBindings() {
         AVPEntityRenderRegistry.getBindings().forEach(binding -> {
-            var entityType = (EntityType<Entity>) binding.entityTypeGameObject().get();
+            var entityType = (EntityType<Entity>) binding.entityTypeHolder().get();
             var provider = (EntityRendererProvider<Entity>) binding.entityRendererProvider();
             EntityRendererRegistry.register(entityType, provider);
         });

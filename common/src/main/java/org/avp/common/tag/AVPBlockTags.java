@@ -8,17 +8,13 @@ import org.avp.common.AVPResources;
 
 public class AVPBlockTags {
 
-    public static final TagKey<Block> ACID_RESISTANT;
-
-    public static void forceInitialization() {
-        // This method doesn't need to do anything
-    }
+    public static final TagKey<Block> ACID_IMMUNE = create("acid_immune");
 
     private static TagKey<Block> create(String registryName) {
         return TagKey.create(Registries.BLOCK, AVPResources.location(registryName));
     }
 
-    static {
-        ACID_RESISTANT = create("acid_resistant");
+    private AVPBlockTags() {
+        throw new UnsupportedOperationException();
     }
 }
