@@ -12,6 +12,7 @@ import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import org.avp.client.render.particle.AVPParticleTypes;
+import org.avp.common.damage.AVPDamageSources;
 import org.avp.common.tag.AVPBlockTags;
 import org.avp.common.tag.AVPEntityTags;
 import org.avp.common.tag.AVPItemTags;
@@ -40,9 +41,7 @@ public class Acid extends Entity {
     public void tick() {
         super.tick();
 
-        this.setDeltaMovement(0, this.getDeltaMovement().y - 0.03999999910593033D, 0);
-        this.move(MoverType.SELF, this.getDeltaMovement());
-        this.setDeltaMovement(0, this.getDeltaMovement().y * 0.9800000190734863D, 0);
+        applyGravity();
 
         if (tickCount > MAX_LIFE_IN_TICKS) {
             this.kill();
@@ -78,12 +77,25 @@ public class Acid extends Entity {
         }
     }
 
+    private void applyGravity() {
+        this.setDeltaMovement(0, this.getDeltaMovement().y - 0.03999999910593033D, 0);
+        this.move(MoverType.SELF, this.getDeltaMovement());
+        this.setDeltaMovement(0, this.getDeltaMovement().y * 0.9800000190734863D, 0);
+    }
+
     private void damageEntities(Level level) {
         var entities = level.getEntities(this, this.getBoundingBox(), LivingEntity.class::isInstance);
         entities.forEach(entity -> {
-            if (entity instanceof Player player && !player.isCreative()) {
-                var itemStack = player.getItemBySlot(EquipmentSlot.FEET);
-                if (!itemStack.is(AVPItemTags.ACID_IMMUNE)) {
+            if (entity instanceof Player player && player.isCreative()) {
+                return;
+            }
+
+            if (entity instanceof LivingEntity livingEntity) {
+                var itemStack = livingEntity.getItemBySlot(EquipmentSlot.FEET);
+
+                if (itemStack.is(AVPItemTags.ACID_IMMUNE)) {
+                    return;
+                } else if (!itemStack.isEmpty()) {
                     itemStack.setDamageValue(itemStack.getDamageValue() + random.nextInt(3) + 3);
                     if (itemStack.getDamageValue() > itemStack.getMaxDamage()) {
                         itemStack.setCount(0);
@@ -93,9 +105,8 @@ public class Acid extends Entity {
             }
 
             if (!entity.getType().is(AVPEntityTags.ACID_IMMUNE)) {
-                // TODO: Correct the damage source here.
                 // TODO: Make damage amount configurable.
-                entity.hurt(damageSources().hotFloor(), 2F);
+                AVPDamageSources.INSTANCE.acid.get().hurt(entity, 2F);
             }
         });
     }
