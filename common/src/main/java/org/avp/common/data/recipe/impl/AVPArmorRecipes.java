@@ -20,6 +20,7 @@ public final class AVPArmorRecipes {
         addOrioniteArmorRecipes(recipeOutput);
         addPressureArmorRecipes(recipeOutput);
         addTacticalArmorRecipes(recipeOutput);
+        addTitaniumArmorRecipes(recipeOutput);
         addXenomorphChitinArmorRecipes(recipeOutput);
     }
 
@@ -162,6 +163,17 @@ public final class AVPArmorRecipes {
             .pattern("B B")
             .pattern("A A")
             .save(recipeOutput);
+    }
+
+    private static void addTitaniumArmorRecipes(RecipeOutput recipeOutput) {
+        addStandardArmorRecipes(
+            recipeOutput,
+            AVPItems.INSTANCE.ingotTitanium,
+            AVPArmorItems.INSTANCE.titaniumHelmet,
+            AVPArmorItems.INSTANCE.titaniumBody,
+            AVPArmorItems.INSTANCE.titaniumLeggings,
+            AVPArmorItems.INSTANCE.titaniumBoots
+        );
     }
 
     private static void addXenomorphChitinArmorRecipes(RecipeOutput recipeOutput) {
