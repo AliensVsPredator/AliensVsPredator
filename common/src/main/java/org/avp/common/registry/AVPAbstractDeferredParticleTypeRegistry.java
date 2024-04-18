@@ -2,11 +2,12 @@ package org.avp.common.registry;
 
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleType;
-import org.avp.api.Holder;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
+
+import org.avp.api.Holder;
 
 public abstract class AVPAbstractDeferredParticleTypeRegistry {
 
@@ -16,7 +17,10 @@ public abstract class AVPAbstractDeferredParticleTypeRegistry {
         entries = new ArrayList<>();
     }
 
-    protected abstract <T extends ParticleOptions> Holder<ParticleType<T>> createHolder(String registryName, Supplier<ParticleType<T>> supplier);
+    protected abstract <T extends ParticleOptions> Holder<ParticleType<T>> createHolder(
+        String registryName,
+        Supplier<ParticleType<T>> supplier
+    );
 
     public abstract void register();
 

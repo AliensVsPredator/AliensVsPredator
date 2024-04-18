@@ -56,8 +56,16 @@ public final class AVPIndustrialBlockRecipes {
             .pattern("BA")
             .save(recipeOutput);
 
-        RecipeUtils.stonecutterBuildingBlock(recipeOutput, AVPIndustrialBlocks.INSTANCE.metalPanel0, AVPIndustrialBlocks.INSTANCE.metalPanel0Slab);
-        RecipeUtils.stonecutterBuildingBlock(recipeOutput, AVPIndustrialBlocks.INSTANCE.metalPanel0, AVPIndustrialBlocks.INSTANCE.metalPanel0Stairs);
+        RecipeUtils.stonecutterBuildingBlock(
+            recipeOutput,
+            AVPIndustrialBlocks.INSTANCE.metalPanel0,
+            AVPIndustrialBlocks.INSTANCE.metalPanel0Slab
+        );
+        RecipeUtils.stonecutterBuildingBlock(
+            recipeOutput,
+            AVPIndustrialBlocks.INSTANCE.metalPanel0,
+            AVPIndustrialBlocks.INSTANCE.metalPanel0Stairs
+        );
     }
 
     private static void addMetalPanel1Recipes(RecipeOutput recipeOutput) {
@@ -68,8 +76,16 @@ public final class AVPIndustrialBlockRecipes {
             .pattern("BB")
             .save(recipeOutput);
 
-        RecipeUtils.stonecutterBuildingBlock(recipeOutput, AVPIndustrialBlocks.INSTANCE.metalPanel1, AVPIndustrialBlocks.INSTANCE.metalPanel1Slab);
-        RecipeUtils.stonecutterBuildingBlock(recipeOutput, AVPIndustrialBlocks.INSTANCE.metalPanel1, AVPIndustrialBlocks.INSTANCE.metalPanel1Stairs);
+        RecipeUtils.stonecutterBuildingBlock(
+            recipeOutput,
+            AVPIndustrialBlocks.INSTANCE.metalPanel1,
+            AVPIndustrialBlocks.INSTANCE.metalPanel1Slab
+        );
+        RecipeUtils.stonecutterBuildingBlock(
+            recipeOutput,
+            AVPIndustrialBlocks.INSTANCE.metalPanel1,
+            AVPIndustrialBlocks.INSTANCE.metalPanel1Stairs
+        );
     }
 
     private static void addMetalPanel2Recipes(RecipeOutput recipeOutput) {
@@ -80,8 +96,16 @@ public final class AVPIndustrialBlockRecipes {
             .pattern("AB")
             .save(recipeOutput);
 
-        RecipeUtils.stonecutterBuildingBlock(recipeOutput, AVPIndustrialBlocks.INSTANCE.metalPanel2, AVPIndustrialBlocks.INSTANCE.metalPanel2Slab);
-        RecipeUtils.stonecutterBuildingBlock(recipeOutput, AVPIndustrialBlocks.INSTANCE.metalPanel2, AVPIndustrialBlocks.INSTANCE.metalPanel2Stairs);
+        RecipeUtils.stonecutterBuildingBlock(
+            recipeOutput,
+            AVPIndustrialBlocks.INSTANCE.metalPanel2,
+            AVPIndustrialBlocks.INSTANCE.metalPanel2Slab
+        );
+        RecipeUtils.stonecutterBuildingBlock(
+            recipeOutput,
+            AVPIndustrialBlocks.INSTANCE.metalPanel2,
+            AVPIndustrialBlocks.INSTANCE.metalPanel2Stairs
+        );
     }
 
     private AVPIndustrialBlockRecipes() {

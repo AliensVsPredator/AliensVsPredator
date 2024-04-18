@@ -36,16 +36,16 @@ public class M41APulseRifleItem extends AbstractAVPWeaponItem {
     private static final WeaponItemData WEAPON_ITEM_DATA = new WeaponItemData(
         1.0F,
         AmmunitionStrategy.builder(
-                99,
-                List.of(
-                    AVPBulletItems.INSTANCE.bulletCaseless::get,
-                    AVPBulletItems.INSTANCE.bulletCaselessAcid::get,
-                    AVPBulletItems.INSTANCE.bulletCaselessElectric::get,
-                    AVPBulletItems.INSTANCE.bulletCaselessExplosive::get,
-                    AVPBulletItems.INSTANCE.bulletCaselessIncendiary::get,
-                    AVPBulletItems.INSTANCE.bulletCaselessPenetration::get
-                )
+            99,
+            List.of(
+                AVPBulletItems.INSTANCE.bulletCaseless::get,
+                AVPBulletItems.INSTANCE.bulletCaselessAcid::get,
+                AVPBulletItems.INSTANCE.bulletCaselessElectric::get,
+                AVPBulletItems.INSTANCE.bulletCaselessExplosive::get,
+                AVPBulletItems.INSTANCE.bulletCaselessIncendiary::get,
+                AVPBulletItems.INSTANCE.bulletCaselessPenetration::get
             )
+        )
             .setHasAmmunitionBehavior(HasAmmunitionBehavior.LOADED)
             .build(),
         List.of(FIRE_MODE_BURST, FIRE_MODE_AUTOMATIC),

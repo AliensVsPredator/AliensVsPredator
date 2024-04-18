@@ -35,7 +35,12 @@ public class NeoForgeEntityTypeService implements EntityTypeService {
     public void register(Holder<EntityType<?>> holder) { /* NO-OP FOR FORGE */ }
 
     @Override
-    public SpawnEggItem createSpawnEggItem(Holder<? extends EntityType<? extends Mob>> holder, int backgroundColor, int highlightColor, Item.Properties properties) {
+    public SpawnEggItem createSpawnEggItem(
+        Holder<? extends EntityType<? extends Mob>> holder,
+        int backgroundColor,
+        int highlightColor,
+        Item.Properties properties
+    ) {
         return new DeferredSpawnEggItem(holder::get, backgroundColor, highlightColor, properties);
     }
 }

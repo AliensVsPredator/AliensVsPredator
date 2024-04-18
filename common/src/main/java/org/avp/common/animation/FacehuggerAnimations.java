@@ -5,13 +5,15 @@ import mod.azure.azurelib.common.internal.common.core.animation.AnimatableManage
 import mod.azure.azurelib.common.internal.common.core.animation.AnimationController;
 import mod.azure.azurelib.common.internal.common.core.animation.RawAnimation;
 import mod.azure.azurelib.common.internal.common.core.object.PlayState;
-import org.avp.common.entity.living.Facehugger;
 
 import java.util.function.Function;
+
+import org.avp.common.entity.living.Facehugger;
 
 public class FacehuggerAnimations {
 
     private static final String CONTROLLER_NAME_IDLE = "idle";
+
     private static final String CONTROLLER_NAME_MOVE = "move";
 
     private static final String ANIMATION_NAME_TAIL_SWAY = "animation.tailsway";
@@ -30,13 +32,14 @@ public class FacehuggerAnimations {
         return PlayState.STOP;
     };
 
-    private static final Function<Facehugger, AnimationController.AnimationStateHandler<GeoAnimatable>> HANDLER_MOVEMENT = entity -> event -> {
-        if (event.isMoving()) {
-            return event.setAndContinue(ANIMATION_CRAWL);
-        }
+    private static final Function<Facehugger, AnimationController.AnimationStateHandler<GeoAnimatable>> HANDLER_MOVEMENT =
+        entity -> event -> {
+            if (event.isMoving()) {
+                return event.setAndContinue(ANIMATION_CRAWL);
+            }
 
-        return PlayState.STOP;
-    };
+            return PlayState.STOP;
+        };
 
     public static <T extends Facehugger & GeoAnimatable> void bootstrap(T entity, AnimatableManager.ControllerRegistrar registrar) {
         registrar.add(

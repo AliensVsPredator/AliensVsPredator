@@ -2,10 +2,11 @@ package org.avp.neoforge.common.data;
 
 import net.neoforged.neoforge.common.data.DatapackBuiltinEntriesProvider;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
-import org.avp.common.AVPConstants;
-import org.avp.neoforge.common.entity.AVPNeoForgeEntitySpawns;
 
 import java.util.Set;
+
+import org.avp.common.AVPConstants;
+import org.avp.neoforge.common.entity.AVPNeoForgeEntitySpawns;
 
 public class AVPNeoForgeData {
 

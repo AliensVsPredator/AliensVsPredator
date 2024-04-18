@@ -24,10 +24,34 @@ public class AVPFabricLootTableModifier {
                     AVPWeaponBlueprintItems.INSTANCE.BLUEPRINT_M88MOD4_COMBAT_PISTOL,
                     50
                 );
-                addSimpleLootPool(BuiltInLootTables.SIMPLE_DUNGEON, id, tableBuilder, AVPWeaponBlueprintItems.INSTANCE.BLUEPRINT_37_12_SHOTGUN, 20);
-                addSimpleLootPool(BuiltInLootTables.DESERT_PYRAMID, id, tableBuilder, AVPWeaponBlueprintItems.INSTANCE.BLUEPRINT_F90_RIFLE, 20);
-                addSimpleLootPool(BuiltInLootTables.JUNGLE_TEMPLE, id, tableBuilder, AVPWeaponBlueprintItems.INSTANCE.BLUEPRINT_M4_CARBINE, 20);
-                addSimpleLootPool(BuiltInLootTables.PILLAGER_OUTPOST, id, tableBuilder, AVPWeaponBlueprintItems.INSTANCE.BLUEPRINT_SNIPER_RIFLE, 20);
+                addSimpleLootPool(
+                    BuiltInLootTables.SIMPLE_DUNGEON,
+                    id,
+                    tableBuilder,
+                    AVPWeaponBlueprintItems.INSTANCE.BLUEPRINT_37_12_SHOTGUN,
+                    20
+                );
+                addSimpleLootPool(
+                    BuiltInLootTables.DESERT_PYRAMID,
+                    id,
+                    tableBuilder,
+                    AVPWeaponBlueprintItems.INSTANCE.BLUEPRINT_F90_RIFLE,
+                    20
+                );
+                addSimpleLootPool(
+                    BuiltInLootTables.JUNGLE_TEMPLE,
+                    id,
+                    tableBuilder,
+                    AVPWeaponBlueprintItems.INSTANCE.BLUEPRINT_M4_CARBINE,
+                    20
+                );
+                addSimpleLootPool(
+                    BuiltInLootTables.PILLAGER_OUTPOST,
+                    id,
+                    tableBuilder,
+                    AVPWeaponBlueprintItems.INSTANCE.BLUEPRINT_SNIPER_RIFLE,
+                    20
+                );
                 addSimpleLootPool(
                     BuiltInLootTables.STRONGHOLD_CORRIDOR,
                     id,
@@ -42,8 +66,20 @@ public class AVPFabricLootTableModifier {
                     AVPWeaponBlueprintItems.INSTANCE.BLUEPRINT_FLAMETHROWER_SEVASTOPOL,
                     33
                 );
-                addSimpleLootPool(BuiltInLootTables.WOODLAND_MANSION, id, tableBuilder, AVPWeaponBlueprintItems.INSTANCE.BLUEPRINT_OLD_PAINLESS, 20);
-                addSimpleLootPool(BuiltInLootTables.ANCIENT_CITY, id, tableBuilder, AVPWeaponBlueprintItems.INSTANCE.BLUEPRINT_M83A2_SADAR, 20);
+                addSimpleLootPool(
+                    BuiltInLootTables.WOODLAND_MANSION,
+                    id,
+                    tableBuilder,
+                    AVPWeaponBlueprintItems.INSTANCE.BLUEPRINT_OLD_PAINLESS,
+                    20
+                );
+                addSimpleLootPool(
+                    BuiltInLootTables.ANCIENT_CITY,
+                    id,
+                    tableBuilder,
+                    AVPWeaponBlueprintItems.INSTANCE.BLUEPRINT_M83A2_SADAR,
+                    20
+                );
                 addSimpleLootPool(
                     BuiltInLootTables.END_CITY_TREASURE,
                     id,

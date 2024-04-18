@@ -5,10 +5,11 @@ import net.minecraft.core.Registry;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleType;
 import net.minecraft.core.registries.BuiltInRegistries;
-import org.avp.api.Holder;
-import org.avp.common.service.ParticleTypeService;
 
 import java.util.function.Supplier;
+
+import org.avp.api.Holder;
+import org.avp.common.service.ParticleTypeService;
 
 public class FabricParticleTypeService implements ParticleTypeService {
 

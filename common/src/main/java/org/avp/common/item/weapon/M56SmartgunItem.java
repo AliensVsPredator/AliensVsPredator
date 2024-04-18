@@ -27,16 +27,16 @@ public class M56SmartgunItem extends AbstractAVPWeaponItem {
     private static final WeaponItemData WEAPON_ITEM_DATA = new WeaponItemData(
         1.0F,
         AmmunitionStrategy.builder(
-                500,
-                List.of(
-                    AVPBulletItems.INSTANCE.bulletCaseless::get,
-                    AVPBulletItems.INSTANCE.bulletCaselessAcid::get,
-                    AVPBulletItems.INSTANCE.bulletCaselessElectric::get,
-                    AVPBulletItems.INSTANCE.bulletCaselessExplosive::get,
-                    AVPBulletItems.INSTANCE.bulletCaselessIncendiary::get,
-                    AVPBulletItems.INSTANCE.bulletCaselessPenetration::get
-                )
+            500,
+            List.of(
+                AVPBulletItems.INSTANCE.bulletCaseless::get,
+                AVPBulletItems.INSTANCE.bulletCaselessAcid::get,
+                AVPBulletItems.INSTANCE.bulletCaselessElectric::get,
+                AVPBulletItems.INSTANCE.bulletCaselessExplosive::get,
+                AVPBulletItems.INSTANCE.bulletCaselessIncendiary::get,
+                AVPBulletItems.INSTANCE.bulletCaselessPenetration::get
             )
+        )
             .setHasAmmunitionBehavior(HasAmmunitionBehavior.LOADED)
             .build(),
         List.of(FIRE_MODE),

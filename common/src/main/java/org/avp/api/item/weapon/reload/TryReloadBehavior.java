@@ -35,8 +35,8 @@ public interface TryReloadBehavior {
         var ammunitionInWeapon = WeaponItemTagHelper.getAmmunition(itemStack, weaponItemData);
         var ammunitionMissing = weaponItemData.getAmmunitionStrategy().getMaxAmmunition() - ammunitionInWeapon;
         var ammunitionCountToRestore = AVPPredicates.IS_IMMORTAL.test(player)
-        ? weaponItemData.getAmmunitionStrategy().getMaxAmmunition()
-        : Math.min(ammunitionInInventory, ammunitionMissing);
+            ? weaponItemData.getAmmunitionStrategy().getMaxAmmunition()
+            : Math.min(ammunitionInInventory, ammunitionMissing);
 
         if (!AVPPredicates.IS_IMMORTAL.test(player)) {
             if (ammunitionCountToRestore <= 0) {

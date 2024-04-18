@@ -2,11 +2,12 @@ package org.avp.common.registry;
 
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
-import org.avp.api.Holder;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
+
+import org.avp.api.Holder;
 
 public abstract class AVPAbstractDeferredEntityTypeRegistry {
 

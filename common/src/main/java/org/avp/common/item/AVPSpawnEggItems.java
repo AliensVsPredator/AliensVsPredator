@@ -15,4 +15,3 @@ public class AVPSpawnEggItems extends AVPDeferredItemRegistry {
         entries.add(holder);
     }
 }
-

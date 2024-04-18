@@ -1,14 +1,15 @@
 package org.avp.common.registry;
 
 import net.minecraft.world.level.block.Block;
-import org.avp.api.Holder;
-import org.avp.api.Tuple;
-import org.avp.api.block.BlockData;
-import org.avp.common.service.Services;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
+
+import org.avp.api.Holder;
+import org.avp.api.Tuple;
+import org.avp.api.block.BlockData;
+import org.avp.common.service.Services;
 
 public class AVPDeferredBlockRegistry extends AVPDeferredRegistry<Block> {
 

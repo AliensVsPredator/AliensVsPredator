@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.Set;
 
 public class BulletEffectRegistry {
+
     private static final Map<ResourceLocation, Set<BulletEffect>> ITEM_RESOURCE_LOCATIONS_TO_BULLET_EFFECTS = new HashMap<>();
 
     public static void registerBulletEffect(ResourceLocation resourceLocation, BulletEffect bulletEffect) {

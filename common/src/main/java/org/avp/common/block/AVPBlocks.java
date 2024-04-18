@@ -3,10 +3,10 @@ package org.avp.common.block;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockBehaviour;
 
 import java.util.List;
 
-import net.minecraft.world.level.block.state.BlockBehaviour;
 import org.avp.api.Holder;
 import org.avp.api.block.BlockData;
 import org.avp.common.registry.AVPDeferredBlockRegistry;

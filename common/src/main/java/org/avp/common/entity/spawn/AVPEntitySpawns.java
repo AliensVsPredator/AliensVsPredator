@@ -12,10 +12,10 @@ import java.util.function.Supplier;
 
 import org.avp.api.Holder;
 import org.avp.common.config.AVPConfig;
+import org.avp.common.entity.living.Yautja;
 import org.avp.common.entity.type.AVPBaseAlienEntityTypes;
 import org.avp.common.entity.type.AVPRunnerAlienEntityTypes;
 import org.avp.common.entity.type.AVPYautjaEntityTypes;
-import org.avp.common.entity.living.Yautja;
 import org.avp.common.registry.AVPDeferredRegistry;
 
 public class AVPEntitySpawns extends AVPDeferredRegistry<EntitySpawnData<?>> {

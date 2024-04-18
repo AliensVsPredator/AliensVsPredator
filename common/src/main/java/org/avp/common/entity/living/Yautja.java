@@ -42,12 +42,12 @@ public class Yautja extends Monster implements GeoEntity {
     ) {
         return blockPos.getY() > 60 &&
             Monster.checkMonsterSpawnRules(
-            entityType,
-            serverLevelAccessor,
-            mobSpawnType,
-            blockPos,
-            randomSource
-        );
+                entityType,
+                serverLevelAccessor,
+                mobSpawnType,
+                blockPos,
+                randomSource
+            );
     }
 
     private static final EntityDataAccessor<Boolean> HAS_HELMET = SynchedEntityData.defineId(

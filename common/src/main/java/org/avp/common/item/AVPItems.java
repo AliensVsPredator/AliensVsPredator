@@ -1,8 +1,8 @@
 package org.avp.common.item;
 
 import net.minecraft.world.item.Item;
-
 import net.minecraft.world.item.Rarity;
+
 import org.avp.api.Holder;
 import org.avp.common.registry.AVPDeferredItemRegistry;
 

@@ -2,10 +2,11 @@ package org.avp.common.registry;
 
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleType;
-import org.avp.api.Holder;
-import org.avp.common.service.Services;
 
 import java.util.function.Supplier;
+
+import org.avp.api.Holder;
+import org.avp.common.service.Services;
 
 public class AVPSimpleDeferredParticleTypeRegistry extends AVPAbstractDeferredParticleTypeRegistry {
 

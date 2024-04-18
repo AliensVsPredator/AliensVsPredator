@@ -11,6 +11,7 @@ import org.jetbrains.annotations.NotNull;
 public record AVPDamageSource(
     ResourceKey<DamageType> damageTypeResourceKey
 ) {
+
     public void hurt(Entity entity, float damage) {
         var damageSource = asDamageSource(entity.level());
         entity.hurt(damageSource, damage);
@@ -22,6 +23,7 @@ public record AVPDamageSource(
             level.registryAccess()
                 .registry(Registries.DAMAGE_TYPE)
                 .orElseThrow()
-                .getHolderOrThrow(damageTypeResourceKey));
+                .getHolderOrThrow(damageTypeResourceKey)
+        );
     }
 }

@@ -49,21 +49,21 @@ public class AVPOreBlocks extends AVPDeferredBlockRegistry {
 
     private AVPOreBlocks() {
         var bauxiteProperties = BlockBehaviour.Properties.ofFullCopy(
-                Blocks.STONE
-            )
+            Blocks.STONE
+        )
             .strength(3.2F, 2.6F);
 
         var cobaltProperties = BlockBehaviour.Properties.ofFullCopy(Blocks.STONE)
             .strength(50F, 20F);
 
         var lithiumProperties = BlockBehaviour.Properties.ofFullCopy(
-                Blocks.STONE
-            )
+            Blocks.STONE
+        )
             .strength(4.2F, 5.4F);
 
         var monaziteProperties = BlockBehaviour.Properties.ofFullCopy(
-                Blocks.STONE
-            )
+            Blocks.STONE
+        )
             .strength(45F, 15F);
 
         var silicaProperties = BlockBehaviour.Properties.ofFullCopy(Blocks.STONE)

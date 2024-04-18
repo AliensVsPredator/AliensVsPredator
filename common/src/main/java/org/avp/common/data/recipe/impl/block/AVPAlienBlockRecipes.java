@@ -2,15 +2,9 @@ package org.avp.common.data.recipe.impl.block;
 
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
-import net.minecraft.data.recipes.SimpleCookingRecipeBuilder;
-import net.minecraft.world.item.Items;
-import net.minecraft.world.item.crafting.Ingredient;
-import org.avp.common.AVPConstants;
+
 import org.avp.common.block.AVPAlienBlocks;
-import org.avp.common.block.AVPIndustrialBlocks;
-import org.avp.common.data.recipe.AVPRecipeProvider;
 import org.avp.common.data.recipe.AVPShapedRecipeBuilder;
-import org.avp.common.data.recipe.RecipeUtils;
 import org.avp.common.item.AVPItems;
 
 public final class AVPAlienBlockRecipes {

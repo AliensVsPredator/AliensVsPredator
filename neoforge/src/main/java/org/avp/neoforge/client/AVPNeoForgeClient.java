@@ -17,13 +17,13 @@ import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
 import net.neoforged.neoforge.client.event.RegisterParticleProvidersEvent;
 import net.neoforged.neoforge.event.TickEvent;
+
 import org.avp.api.block.factory.BlockFactories;
 import org.avp.client.AVPClientKeyBindings;
 import org.avp.client.render.entity.AVPEntityRenderRegistry;
 import org.avp.client.render.particle.AVPParticleTypeProviders;
 import org.avp.common.AVPConstants;
 import org.avp.common.registry.AVPDeferredBlockRegistry;
-import org.avp.neoforge.service.NeoForgeParticleProviderService;
 
 @Mod.EventBusSubscriber(modid = AVPConstants.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
 public class AVPNeoForgeClient {

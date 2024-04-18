@@ -1,6 +1,7 @@
 package org.avp.client.render.particle;
 
 import net.minecraft.core.particles.SimpleParticleType;
+
 import org.avp.api.Holder;
 import org.avp.common.registry.AVPSimpleDeferredParticleTypeRegistry;
 

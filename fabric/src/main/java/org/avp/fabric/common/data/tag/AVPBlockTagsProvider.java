@@ -7,7 +7,6 @@ import net.minecraft.tags.BlockTags;
 
 import java.util.concurrent.CompletableFuture;
 
-import org.avp.common.block.AVPBlocks;
 import org.avp.common.registry.AVPDeferredBlockRegistry;
 import org.avp.common.tag.AVPBlockTags;
 

@@ -2,9 +2,10 @@ package org.avp.common.legacy.schematic.resolver;
 
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
-import org.avp.common.block.AVPUnidentifiedBlocks;
 
 import java.util.Map;
+
+import org.avp.common.block.AVPUnidentifiedBlocks;
 
 public class LVRockSchematicResolver {
 

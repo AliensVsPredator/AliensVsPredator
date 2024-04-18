@@ -12,12 +12,12 @@ public class AVPExoticAlienEntityTypes extends AVPSimpleDeferredEntityTypeRegist
     public static final AVPExoticAlienEntityTypes INSTANCE = new AVPExoticAlienEntityTypes();
 
     public final Holder<EntityType<DeaconAdultEngineer>> deaconAdultEngineer = createMobHolder(
-            "deacon_adult_engineer",
-            0x8896A5,
-            0x495256,
-            EntityType.Builder.of(DeaconAdultEngineer::new, MobCategory.MONSTER)
-                .sized(0.98F, 2.98F)
-        );
+        "deacon_adult_engineer",
+        0x8896A5,
+        0x495256,
+        EntityType.Builder.of(DeaconAdultEngineer::new, MobCategory.MONSTER)
+            .sized(0.98F, 2.98F)
+    );
 
     public final Holder<EntityType<ChestbursterDraco>> chestbursterDraco = createMobHolder(
         "chestburster_draco",

@@ -5,11 +5,11 @@ import net.fabricmc.fabric.api.biome.v1.BiomeSelectors;
 import net.minecraft.tags.BiomeTags;
 import net.minecraft.world.level.levelgen.GenerationStep;
 
+import java.util.function.Supplier;
+
 import org.avp.api.Holder;
 import org.avp.common.registry.AVPDeferredRegistry;
 import org.avp.common.worldgen.feature.AVPOreFeatures;
-
-import java.util.function.Supplier;
 
 public class AVPFabricWorldGenFeatures extends AVPDeferredRegistry<Void> {
 

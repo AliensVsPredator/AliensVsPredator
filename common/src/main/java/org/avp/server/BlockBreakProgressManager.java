@@ -1,13 +1,13 @@
 package org.avp.server;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.util.Mth;
+import net.minecraft.world.level.Level;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
-import net.minecraft.util.Mth;
-import net.minecraft.world.level.Level;
 import org.avp.api.Tuple;
 import org.avp.common.AVPConstants;
 import org.avp.common.util.TimeUtils;
@@ -22,12 +22,18 @@ public class BlockBreakProgressManager {
             return;
         }
 
-        AVPConstants.LOGGER.debug("Cleaning block break progress map ({} entries)", BlockBreakProgressManager.BLOCK_BREAK_PROGRESS_MAP.size());
+        AVPConstants.LOGGER.debug(
+            "Cleaning block break progress map ({} entries)",
+            BlockBreakProgressManager.BLOCK_BREAK_PROGRESS_MAP.size()
+        );
         BlockBreakProgressManager.BLOCK_BREAK_PROGRESS_MAP.entrySet().removeIf(entry -> {
             var lastUpdateTimeMillis = entry.getValue().first();
             return System.currentTimeMillis() > lastUpdateTimeMillis;
         });
-        AVPConstants.LOGGER.debug("Finished cleaning block break progress map ({} entries)", BlockBreakProgressManager.BLOCK_BREAK_PROGRESS_MAP.size());
+        AVPConstants.LOGGER.debug(
+            "Finished cleaning block break progress map ({} entries)",
+            BlockBreakProgressManager.BLOCK_BREAK_PROGRESS_MAP.size()
+        );
     }
 
     public static void damage(Level level, BlockPos blockPos, float damage) {

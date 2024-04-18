@@ -7,11 +7,11 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
-import org.avp.api.item.weapon.WeaponItemData;
-
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Supplier;
+
+import org.avp.api.item.weapon.WeaponItemData;
 
 public abstract class AmmunitionStrategy {
 

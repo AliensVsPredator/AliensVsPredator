@@ -4,16 +4,16 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.item.Item;
-import org.avp.api.Holder;
-import org.avp.common.item.AVPSpawnEggItems;
-import org.avp.common.service.Services;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
 
-public class AVPSimpleDeferredEntityTypeRegistry extends AVPAbstractDeferredEntityTypeRegistry {
+import org.avp.api.Holder;
+import org.avp.common.item.AVPSpawnEggItems;
+import org.avp.common.service.Services;
 
+public class AVPSimpleDeferredEntityTypeRegistry extends AVPAbstractDeferredEntityTypeRegistry {
 
     protected final List<Holder<? extends EntityType<? extends Mob>>> livingEntries;
 
@@ -38,7 +38,7 @@ public class AVPSimpleDeferredEntityTypeRegistry extends AVPAbstractDeferredEnti
         int highlightColor,
         EntityType.Builder<T> builder
     ) {
-        var holder = createHolder(registryName,  () -> builder.build(registryName));
+        var holder = createHolder(registryName, () -> builder.build(registryName));
         livingEntries.add(holder);
 
         var spawnEggItemHolder = Services.ITEM_SERVICE.createHolder(

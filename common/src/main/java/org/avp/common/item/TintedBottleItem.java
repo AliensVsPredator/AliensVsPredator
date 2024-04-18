@@ -12,21 +12,34 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemUtils;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.HitResult;
-import org.avp.common.entity.Acid;
 import org.jetbrains.annotations.NotNull;
 
+import org.avp.common.entity.Acid;
+
 public class TintedBottleItem extends Item {
+
     public TintedBottleItem(Properties properties) {
         super(properties);
     }
 
     @Override
-    public @NotNull InteractionResultHolder<ItemStack> use(@NotNull Level level, @NotNull Player player, @NotNull InteractionHand interactionHand) {
+    public @NotNull InteractionResultHolder<ItemStack> use(
+        @NotNull Level level,
+        @NotNull Player player,
+        @NotNull InteractionHand interactionHand
+    ) {
         var hitResult = ProjectileUtil.getHitResultOnViewVector(player, Acid.class::isInstance, 4F);
 
         if (hitResult.getType() == HitResult.Type.ENTITY) {
             level.playSound(
-                player, player.getX(), player.getY(), player.getZ(), SoundEvents.BOTTLE_FILL, SoundSource.NEUTRAL, 1.0F, 1.0F
+                player,
+                player.getX(),
+                player.getY(),
+                player.getZ(),
+                SoundEvents.BOTTLE_FILL,
+                SoundSource.NEUTRAL,
+                1.0F,
+                1.0F
             );
             ItemStack itemstack = player.getItemInHand(interactionHand);
             return InteractionResultHolder.sidedSuccess(

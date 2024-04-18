@@ -5,13 +5,15 @@ import mod.azure.azurelib.common.internal.common.core.animation.AnimatableManage
 import mod.azure.azurelib.common.internal.common.core.animation.AnimationController;
 import mod.azure.azurelib.common.internal.common.core.animation.RawAnimation;
 import mod.azure.azurelib.common.internal.common.core.object.PlayState;
-import org.avp.common.entity.living.FacehuggerRoyal;
 
 import java.util.function.Function;
+
+import org.avp.common.entity.living.FacehuggerRoyal;
 
 public class FacehuggerRoyalAnimations {
 
     private static final String CONTROLLER_NAME_IDLE = "idle";
+
     private static final String CONTROLLER_NAME_MOVE = "move";
 
     private static final String ANIMATION_NAME_TAIL_SWAY = "animation.tailsway";
@@ -22,21 +24,23 @@ public class FacehuggerRoyalAnimations {
 
     private static final RawAnimation ANIMATION_TAIL_SWAY = RawAnimation.begin().thenPlay(ANIMATION_NAME_TAIL_SWAY);
 
-    private static final Function<FacehuggerRoyal, AnimationController.AnimationStateHandler<GeoAnimatable>> HANDLER_IDLE = entity -> event -> {
-        if (!event.isMoving()) {
-            return event.setAndContinue(ANIMATION_TAIL_SWAY);
-        }
+    private static final Function<FacehuggerRoyal, AnimationController.AnimationStateHandler<GeoAnimatable>> HANDLER_IDLE =
+        entity -> event -> {
+            if (!event.isMoving()) {
+                return event.setAndContinue(ANIMATION_TAIL_SWAY);
+            }
 
-        return PlayState.STOP;
-    };
+            return PlayState.STOP;
+        };
 
-    private static final Function<FacehuggerRoyal, AnimationController.AnimationStateHandler<GeoAnimatable>> HANDLER_MOVEMENT = entity -> event -> {
-        if (event.isMoving()) {
-            return event.setAndContinue(ANIMATION_CRAWL);
-        }
+    private static final Function<FacehuggerRoyal, AnimationController.AnimationStateHandler<GeoAnimatable>> HANDLER_MOVEMENT =
+        entity -> event -> {
+            if (event.isMoving()) {
+                return event.setAndContinue(ANIMATION_CRAWL);
+            }
 
-        return PlayState.STOP;
-    };
+            return PlayState.STOP;
+        };
 
     public static <T extends FacehuggerRoyal & GeoAnimatable> void bootstrap(T entity, AnimatableManager.ControllerRegistrar registrar) {
         registrar.add(

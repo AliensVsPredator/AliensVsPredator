@@ -5,8 +5,9 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
-import org.avp.common.entity.Acid;
 import org.jetbrains.annotations.NotNull;
+
+import org.avp.common.entity.Acid;
 
 public class AcidRenderer extends EntityRenderer<Acid> {
 

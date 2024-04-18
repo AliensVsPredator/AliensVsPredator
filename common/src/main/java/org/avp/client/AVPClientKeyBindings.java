@@ -3,8 +3,6 @@ package org.avp.client;
 import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
-import org.avp.common.network.payload.ServerboundWeaponSwapAmmunitionTypeRequestPayload;
-import org.avp.common.network.payload.ServerboundWeaponSwapFireModeRequestPayload;
 import org.lwjgl.glfw.GLFW;
 
 import java.util.ArrayList;
@@ -13,6 +11,8 @@ import java.util.function.BiConsumer;
 
 import org.avp.api.Tuple;
 import org.avp.common.network.payload.ServerboundWeaponReloadRequestPayload;
+import org.avp.common.network.payload.ServerboundWeaponSwapAmmunitionTypeRequestPayload;
+import org.avp.common.network.payload.ServerboundWeaponSwapFireModeRequestPayload;
 import org.avp.common.service.Services;
 
 public class AVPClientKeyBindings {

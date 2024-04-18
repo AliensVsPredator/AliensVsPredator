@@ -5,10 +5,11 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import org.avp.api.item.weapon.bullet.effect.BulletEffect;
-import org.avp.api.item.weapon.bullet.effect.BulletEffectRegistry;
 
 import java.util.Set;
+
+import org.avp.api.item.weapon.bullet.effect.BulletEffect;
+import org.avp.api.item.weapon.bullet.effect.BulletEffectRegistry;
 
 public class WeaponItemTagHelper {
 

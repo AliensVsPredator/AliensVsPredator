@@ -33,7 +33,11 @@ public final class AVPTempleBlockRecipes {
         RecipeUtils.stonecutterBuildingBlock(recipeOutput, AVPTempleBlocks.INSTANCE.floor, AVPTempleBlocks.INSTANCE.brickSingle);
 
         RecipeUtils.stonecutterBuildingBlock(recipeOutput, AVPTempleBlocks.INSTANCE.brickSingle, AVPTempleBlocks.INSTANCE.brickSingleSlab);
-        RecipeUtils.stonecutterBuildingBlock(recipeOutput, AVPTempleBlocks.INSTANCE.brickSingle, AVPTempleBlocks.INSTANCE.brickSingleStairs);
+        RecipeUtils.stonecutterBuildingBlock(
+            recipeOutput,
+            AVPTempleBlocks.INSTANCE.brickSingle,
+            AVPTempleBlocks.INSTANCE.brickSingleStairs
+        );
         RecipeUtils.stonecutterBuildingBlock(recipeOutput, AVPTempleBlocks.INSTANCE.brickSingle, AVPTempleBlocks.INSTANCE.brickSingleWall);
         RecipeUtils.stonecutterBuildingBlock(recipeOutput, AVPTempleBlocks.INSTANCE.brickSingle, AVPTempleBlocks.INSTANCE.wallBase);
     }

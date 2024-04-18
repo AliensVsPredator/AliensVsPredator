@@ -10,6 +10,7 @@ import net.minecraft.world.level.Level;
 public class BulletEffects {
 
     public static final BulletEffect ACID = new BulletEffect("acid") {
+
         @Override
         public void applyEffect(Entity entity) {
             if (entity instanceof LivingEntity livingEntity) {
@@ -19,6 +20,7 @@ public class BulletEffects {
     };
 
     public static final BulletEffect ARMOR_PENETRATION = new BulletEffect("penetration") {
+
         @Override
         public DamageSource getDamageSource(LivingEntity shootingEntity, Entity entity) {
             // TODO: This should return a custom damage source for armor penetrating bullets.
@@ -27,6 +29,7 @@ public class BulletEffects {
     };
 
     public static final BulletEffect ELECTRIC = new BulletEffect("electric") {
+
         @Override
         public void applyEffect(Entity entity) {
             if (entity instanceof LivingEntity livingEntity) {
@@ -36,13 +39,23 @@ public class BulletEffects {
     };
 
     public static final BulletEffect EXPLOSIVE = new BulletEffect("explosive") {
+
         @Override
         public void applyEffect(Entity entity) {
-            entity.level().explode(entity, entity.getX(), entity.getY() + entity.getBbHeight() / 2, entity.getZ(), 1F, Level.ExplosionInteraction.NONE);
+            entity.level()
+                .explode(
+                    entity,
+                    entity.getX(),
+                    entity.getY() + entity.getBbHeight() / 2,
+                    entity.getZ(),
+                    1F,
+                    Level.ExplosionInteraction.NONE
+                );
         }
     };
 
     public static final BulletEffect INCENDIARY = new BulletEffect("incendiary") {
+
         @Override
         public void applyEffect(Entity entity) {
             entity.setSecondsOnFire(5);

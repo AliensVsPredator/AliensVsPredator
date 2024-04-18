@@ -26,12 +26,13 @@ public class AVPFabricBlockModelProvider {
         AVPDeferredBlockRegistry.getDataEntries().forEach(tuple -> computeBlockModels(generator, tuple));
 
         // Listen, I don't like this any more than you do. But Mojang also does this, so...
-        AVPSpawnEggItems.INSTANCE.getEntries().forEach(
-            holder -> generator.delegateItemModel(
-                holder.get(),
-                ModelLocationUtils.decorateItemModelLocation("template_spawn_egg")
-            )
-        );
+        AVPSpawnEggItems.INSTANCE.getEntries()
+            .forEach(
+                holder -> generator.delegateItemModel(
+                    holder.get(),
+                    ModelLocationUtils.decorateItemModelLocation("template_spawn_egg")
+                )
+            );
     }
 
     private static void computeBlockModels(BlockModelGenerators generator, Tuple<Holder<Block>, BlockData> tuple) {

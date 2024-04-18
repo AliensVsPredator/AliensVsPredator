@@ -11,6 +11,8 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import org.jetbrains.annotations.NotNull;
+
 import org.avp.client.render.particle.AVPParticleTypes;
 import org.avp.common.config.AVPConfig;
 import org.avp.common.damage.AVPDamageSources;
@@ -19,7 +21,6 @@ import org.avp.common.tag.AVPEntityTags;
 import org.avp.common.tag.AVPItemTags;
 import org.avp.common.util.AVPPredicates;
 import org.avp.server.BlockBreakProgressManager;
-import org.jetbrains.annotations.NotNull;
 
 public class Acid extends Entity {
 
@@ -67,14 +68,21 @@ public class Acid extends Entity {
             }
         }
 
-        if (level.isClientSide)
-        {
+        if (level.isClientSide) {
             if (tickCount % (random.nextInt(100) + 10) == 0) {
                 level.playLocalSound(this, SoundEvents.LAVA_EXTINGUISH, SoundSource.NEUTRAL, 1F, 1F);
             }
             for (int i = 0; i < 2; i++) {
                 level.addAlwaysVisibleParticle(ParticleTypes.SMOKE, getRandomX(0.5), getRandomY(), getRandomZ(0.5), 0.0, 0.0, 0.0);
-                level.addAlwaysVisibleParticle(AVPParticleTypes.INSTANCE.acid.get(), getRandomX(0.5), getRandomY(), getRandomZ(0.5), 0.0, 0.0, 0.0);
+                level.addAlwaysVisibleParticle(
+                    AVPParticleTypes.INSTANCE.acid.get(),
+                    getRandomX(0.5),
+                    getRandomY(),
+                    getRandomZ(0.5),
+                    0.0,
+                    0.0,
+                    0.0
+                );
             }
         }
     }

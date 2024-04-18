@@ -5,9 +5,10 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.SpawnEggItem;
-import org.avp.api.Holder;
 
 import java.util.function.Supplier;
+
+import org.avp.api.Holder;
 
 public interface EntityTypeService {
 
@@ -15,5 +16,10 @@ public interface EntityTypeService {
 
     void register(Holder<EntityType<?>> holder);
 
-    SpawnEggItem createSpawnEggItem(Holder<? extends EntityType<? extends Mob>> holder, int backgroundColor, int highlightColor, Item.Properties properties);
+    SpawnEggItem createSpawnEggItem(
+        Holder<? extends EntityType<? extends Mob>> holder,
+        int backgroundColor,
+        int highlightColor,
+        Item.Properties properties
+    );
 }

@@ -8,7 +8,8 @@ import org.avp.common.registry.AVPFuelRegistry;
 public class AVPFabricFuelRegistry {
 
     public static void register() {
-        AVPFuelRegistry.INSTANCE.getEntries().stream()
+        AVPFuelRegistry.INSTANCE.getEntries()
+            .stream()
             .map(Holder::get)
             .forEach(tuple -> FuelRegistry.INSTANCE.add(tuple.first().get(), tuple.second()));
     }

@@ -11,11 +11,11 @@ public class TooltipUtils {
 
     public static void appendLabel(@NotNull List<Component> components, String label, MutableComponent component) {
         components.add(
-            Component.translatable(label).withStyle(ChatFormatting.DARK_GREEN)
+            Component.translatable(label)
+                .withStyle(ChatFormatting.DARK_GREEN)
                 .append(component.withStyle(ChatFormatting.GRAY))
         );
     }
-
 
     private TooltipUtils() {
         throw new UnsupportedOperationException();

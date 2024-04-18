@@ -27,16 +27,16 @@ public class M88Mod4CombatPistolItem extends AbstractAVPWeaponItem {
     private static final WeaponItemData WEAPON_ITEM_DATA = new WeaponItemData(
         1.0F,
         AmmunitionStrategy.builder(
-                18,
-                List.of(
-                    AVPBulletItems.INSTANCE.bulletPistol::get,
-                    AVPBulletItems.INSTANCE.bulletPistolAcid::get,
-                    AVPBulletItems.INSTANCE.bulletPistolElectric::get,
-                    AVPBulletItems.INSTANCE.bulletPistolExplosive::get,
-                    AVPBulletItems.INSTANCE.bulletPistolIncendiary::get,
-                    AVPBulletItems.INSTANCE.bulletPistolPenetration::get
-                )
+            18,
+            List.of(
+                AVPBulletItems.INSTANCE.bulletPistol::get,
+                AVPBulletItems.INSTANCE.bulletPistolAcid::get,
+                AVPBulletItems.INSTANCE.bulletPistolElectric::get,
+                AVPBulletItems.INSTANCE.bulletPistolExplosive::get,
+                AVPBulletItems.INSTANCE.bulletPistolIncendiary::get,
+                AVPBulletItems.INSTANCE.bulletPistolPenetration::get
             )
+        )
             .setHasAmmunitionBehavior(HasAmmunitionBehavior.LOADED)
             .build(),
         List.of(FIRE_MODE),

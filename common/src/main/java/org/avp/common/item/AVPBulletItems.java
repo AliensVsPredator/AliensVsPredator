@@ -1,15 +1,16 @@
 package org.avp.common.item;
 
 import net.minecraft.world.item.Item;
+
+import java.util.Set;
+import java.util.function.Supplier;
+
 import org.avp.api.Holder;
 import org.avp.api.item.weapon.bullet.effect.BulletEffect;
 import org.avp.api.item.weapon.bullet.effect.BulletEffectRegistry;
 import org.avp.api.item.weapon.bullet.effect.BulletEffects;
 import org.avp.common.AVPResources;
 import org.avp.common.registry.AVPDeferredItemRegistry;
-
-import java.util.Set;
-import java.util.function.Supplier;
 
 public class AVPBulletItems extends AVPDeferredItemRegistry {
 

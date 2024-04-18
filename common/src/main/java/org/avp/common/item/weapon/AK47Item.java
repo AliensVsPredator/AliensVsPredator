@@ -27,16 +27,16 @@ public class AK47Item extends AbstractAVPWeaponItem {
     private static final WeaponItemData WEAPON_ITEM_DATA = new WeaponItemData(
         1.0F,
         AmmunitionStrategy.builder(
-                32,
-                List.of(
-                    AVPBulletItems.INSTANCE.bulletRifle::get,
-                    AVPBulletItems.INSTANCE.bulletRifleAcid::get,
-                    AVPBulletItems.INSTANCE.bulletRifleElectric::get,
-                    AVPBulletItems.INSTANCE.bulletRifleExplosive::get,
-                    AVPBulletItems.INSTANCE.bulletRifleIncendiary::get,
-                    AVPBulletItems.INSTANCE.bulletRiflePenetration::get
-                )
+            32,
+            List.of(
+                AVPBulletItems.INSTANCE.bulletRifle::get,
+                AVPBulletItems.INSTANCE.bulletRifleAcid::get,
+                AVPBulletItems.INSTANCE.bulletRifleElectric::get,
+                AVPBulletItems.INSTANCE.bulletRifleExplosive::get,
+                AVPBulletItems.INSTANCE.bulletRifleIncendiary::get,
+                AVPBulletItems.INSTANCE.bulletRiflePenetration::get
             )
+        )
             .setHasAmmunitionBehavior(HasAmmunitionBehavior.LOADED)
             .build(),
         List.of(FIRE_MODE),

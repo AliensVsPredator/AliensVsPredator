@@ -5,10 +5,10 @@ import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleProvider;
 import net.minecraft.client.particle.SpriteSet;
 import net.minecraft.core.particles.ParticleOptions;
-import net.minecraft.core.particles.SimpleParticleType;
 import org.jetbrains.annotations.NotNull;
 
 public class AcidParticleProvider<T extends ParticleOptions> implements ParticleProvider<T> {
+
     private final SpriteSet spriteProvider;
 
     public AcidParticleProvider(SpriteSet spriteProvider) {

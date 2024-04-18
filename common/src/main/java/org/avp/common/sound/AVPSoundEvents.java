@@ -2,12 +2,12 @@ package org.avp.common.sound;
 
 import net.minecraft.sounds.SoundEvent;
 
+import java.util.function.Supplier;
+
 import org.avp.api.Holder;
 import org.avp.common.AVPResources;
 import org.avp.common.registry.AVPDeferredRegistry;
 import org.avp.common.service.Services;
-
-import java.util.function.Supplier;
 
 public class AVPSoundEvents extends AVPDeferredRegistry<SoundEvent> {
 

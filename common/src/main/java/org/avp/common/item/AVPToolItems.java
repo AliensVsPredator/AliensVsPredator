@@ -3,14 +3,15 @@ package org.avp.common.item;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ShovelItem;
 import net.minecraft.world.item.SwordItem;
+
+import java.util.function.Supplier;
+
 import org.avp.api.Holder;
 import org.avp.api.item.tool.ModdedAxeItem;
 import org.avp.api.item.tool.ModdedHoeItem;
 import org.avp.api.item.tool.ModdedPickaxeItem;
 import org.avp.common.item.tool.tier.AVPToolTiers;
 import org.avp.common.registry.AVPDeferredItemRegistry;
-
-import java.util.function.Supplier;
 
 public class AVPToolItems extends AVPDeferredItemRegistry {
 
@@ -84,7 +85,10 @@ public class AVPToolItems extends AVPDeferredItemRegistry {
         titaniumShovel = createHolder("titanium_shovel", () -> new ShovelItem(AVPToolTiers.TITANIUM, 1.5F, -3.0F, new Item.Properties()));
         titaniumSword = createHolder("titanium_sword", () -> new SwordItem(AVPToolTiers.TITANIUM, 3, -2.4F, new Item.Properties()));
 
-        veritaniumAxe = createHolder("veritanium_axe", () -> new ModdedAxeItem(AVPToolTiers.VERITANIUM, 5.0F, -3.0F, new Item.Properties()));
+        veritaniumAxe = createHolder(
+            "veritanium_axe",
+            () -> new ModdedAxeItem(AVPToolTiers.VERITANIUM, 5.0F, -3.0F, new Item.Properties())
+        );
         veritaniumHoe = createHolder("veritanium_hoe", () -> new ModdedHoeItem(AVPToolTiers.VERITANIUM, -4, 0.0F, new Item.Properties()));
         veritaniumPickaxe = createHolder(
             "veritanium_pickaxe",

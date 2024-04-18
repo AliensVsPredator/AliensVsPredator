@@ -9,7 +9,6 @@ import net.minecraft.data.recipes.RecipeProvider;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.ItemLike;
-import org.avp.common.data.recipe.impl.block.AVPAlienBlockRecipes;
 import org.jetbrains.annotations.NotNull;
 
 import org.avp.common.data.recipe.impl.AVPArmorRecipes;
@@ -17,6 +16,7 @@ import org.avp.common.data.recipe.impl.AVPElectronicRecipes;
 import org.avp.common.data.recipe.impl.AVPFoodRecipes;
 import org.avp.common.data.recipe.impl.AVPMaterialsRecipes;
 import org.avp.common.data.recipe.impl.AVPToolRecipes;
+import org.avp.common.data.recipe.impl.block.AVPAlienBlockRecipes;
 import org.avp.common.data.recipe.impl.block.AVPIndustrialBlockRecipes;
 import org.avp.common.data.recipe.impl.block.AVPPaddingBlockRecipes;
 import org.avp.common.data.recipe.impl.block.AVPTempleBlockRecipes;

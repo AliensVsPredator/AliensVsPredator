@@ -5,7 +5,6 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.BootstapContext;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.BiomeTags;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.SpawnPlacements;
@@ -13,8 +12,8 @@ import net.minecraft.world.level.biome.MobSpawnSettings;
 import net.neoforged.neoforge.common.world.BiomeModifier;
 import net.neoforged.neoforge.common.world.BiomeModifiers;
 import net.neoforged.neoforge.event.entity.SpawnPlacementRegisterEvent;
-
 import net.neoforged.neoforge.registries.NeoForgeRegistries;
+
 import org.avp.common.entity.spawn.AVPEntitySpawns;
 
 public class AVPNeoForgeEntitySpawns {
@@ -39,7 +38,10 @@ public class AVPNeoForgeEntitySpawns {
             var spawnsBiomeModifier = BiomeModifiers.AddSpawnsBiomeModifier.singleSpawn(
                 biomeNamed,
                 new MobSpawnSettings.SpawnerData(
-                    entityType, weight, minGroupSize, maxGroupSize
+                    entityType,
+                    weight,
+                    minGroupSize,
+                    maxGroupSize
                 )
             );
 

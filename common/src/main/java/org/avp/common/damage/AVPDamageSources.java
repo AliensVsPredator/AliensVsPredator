@@ -1,9 +1,9 @@
 package org.avp.common.damage;
 
+import java.util.function.Supplier;
+
 import org.avp.api.Holder;
 import org.avp.common.registry.AVPDeferredRegistry;
-
-import java.util.function.Supplier;
 
 public class AVPDamageSources extends AVPDeferredRegistry<AVPDamageSource> {
 

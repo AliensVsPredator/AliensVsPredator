@@ -1,10 +1,11 @@
 package org.avp.common.registry;
 
 import net.minecraft.world.item.Item;
-import org.avp.api.Holder;
-import org.avp.common.service.Services;
 
 import java.util.function.Supplier;
+
+import org.avp.api.Holder;
+import org.avp.common.service.Services;
 
 public class AVPDeferredItemRegistry extends AVPDeferredRegistry<Item> {
 

@@ -8,9 +8,10 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.level.Level;
+import org.jetbrains.annotations.NotNull;
+
 import org.avp.common.animation.FacehuggerRoyalAnimations;
 import org.avp.common.entity.ai.AIUtils;
-import org.jetbrains.annotations.NotNull;
 
 public class FacehuggerRoyal extends Monster implements GeoEntity {
 

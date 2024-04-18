@@ -19,7 +19,6 @@ public class AVPAlienBlocks extends AVPDeferredBlockRegistry {
     public final BlockBehaviour.Properties resinProperties = BlockBehaviour.Properties.ofFullCopy(Blocks.STONE)
         .mapColor(MapColor.COLOR_GRAY);
 
-
     public final Holder<Block> resin;
 
     public final Holder<Block> resinVeins;

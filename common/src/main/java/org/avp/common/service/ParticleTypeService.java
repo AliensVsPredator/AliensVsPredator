@@ -2,9 +2,10 @@ package org.avp.common.service;
 
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleType;
-import org.avp.api.Holder;
 
 import java.util.function.Supplier;
+
+import org.avp.api.Holder;
 
 public interface ParticleTypeService {
 
