@@ -85,7 +85,7 @@ public class AVPArmorMaterials {
     public static final ArmorMaterial XENOMORPH_CHITIN = new AVPArmorMaterial.Builder(
         "xenomorph_chitin",
         SoundEvents.HONEY_BLOCK_STEP,
-        AVPItems.INSTANCE.royalJelly::get
+        AVPItems.INSTANCE.xenomorphChitin::get
     )
         .setProtectionValues(new int[] { 2, 7, 5, 3 })
         .setDurabilityMultiplier(30)
