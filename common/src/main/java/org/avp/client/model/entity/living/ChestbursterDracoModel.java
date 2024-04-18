@@ -4,6 +4,7 @@ import mod.azure.azurelib.common.api.client.model.GeoModel;
 import mod.azure.azurelib.common.internal.common.core.animation.AnimationState;
 import net.minecraft.resources.ResourceLocation;
 
+import org.avp.client.util.BasicAnimationUtils;
 import org.avp.common.AVPResources;
 import org.avp.common.entity.living.ChestbursterDraco;
 
@@ -34,6 +35,17 @@ public class ChestbursterDracoModel extends GeoModel<ChestbursterDraco> {
 
     @Override
     public void setCustomAnimations(ChestbursterDraco entity, long instanceId, AnimationState<ChestbursterDraco> animationState) {
-        // TODO:
+        BasicAnimationUtils.applyHeadRotations(this, animationState, "gNeck", 0.4F);
+        BasicAnimationUtils.applyLimbRotations(
+            entity,
+            this,
+            animationState,
+            "gLeftArm",
+            "gRightArm",
+            "gLeftLeg",
+            "gRightLeg",
+            0F,
+            0.35F
+        );
     }
 }
