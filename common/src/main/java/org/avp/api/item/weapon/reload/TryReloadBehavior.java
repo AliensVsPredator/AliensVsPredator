@@ -11,6 +11,7 @@ import java.util.Objects;
 
 import org.avp.api.item.weapon.WeaponItemData;
 import org.avp.api.item.weapon.WeaponItemTagHelper;
+import org.avp.common.util.AVPPredicates;
 import org.avp.server.ServerScheduler;
 
 @FunctionalInterface
@@ -33,11 +34,11 @@ public interface TryReloadBehavior {
         var ammunitionInInventory = player.getInventory().countItem(ammunition);
         var ammunitionInWeapon = WeaponItemTagHelper.getAmmunition(itemStack, weaponItemData);
         var ammunitionMissing = weaponItemData.getAmmunitionStrategy().getMaxAmmunition() - ammunitionInWeapon;
-        var ammunitionCountToRestore = player.isCreative()
+        var ammunitionCountToRestore = AVPPredicates.IS_IMMORTAL.test(player)
         ? weaponItemData.getAmmunitionStrategy().getMaxAmmunition()
         : Math.min(ammunitionInInventory, ammunitionMissing);
 
-        if (!player.isCreative()) {
+        if (!AVPPredicates.IS_IMMORTAL.test(player)) {
             if (ammunitionCountToRestore <= 0) {
                 // TODO: Play "click" sound or reload fail sound here.
                 return;

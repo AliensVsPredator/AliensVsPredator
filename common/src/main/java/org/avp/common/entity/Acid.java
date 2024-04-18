@@ -17,6 +17,7 @@ import org.avp.common.damage.AVPDamageSources;
 import org.avp.common.tag.AVPBlockTags;
 import org.avp.common.tag.AVPEntityTags;
 import org.avp.common.tag.AVPItemTags;
+import org.avp.common.util.AVPPredicates;
 import org.avp.server.BlockBreakProgressManager;
 import org.jetbrains.annotations.NotNull;
 
@@ -87,7 +88,7 @@ public class Acid extends Entity {
     private void damageEntities(Level level) {
         var entities = level.getEntities(this, this.getBoundingBox(), LivingEntity.class::isInstance);
         entities.forEach(entity -> {
-            if (entity instanceof Player player && player.isCreative()) {
+            if (entity instanceof Player player && AVPPredicates.IS_IMMORTAL.test(player)) {
                 return;
             }
 
