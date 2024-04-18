@@ -9,6 +9,7 @@ import net.minecraft.data.recipes.RecipeProvider;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.ItemLike;
+import org.avp.common.data.recipe.impl.block.AVPAlienBlockRecipes;
 import org.jetbrains.annotations.NotNull;
 
 import org.avp.common.data.recipe.impl.AVPArmorRecipes;
@@ -40,6 +41,7 @@ public class AVPRecipeProvider extends RecipeProvider {
 
     @Override
     public void buildRecipes(@NotNull RecipeOutput recipeOutput) {
+        AVPAlienBlockRecipes.addAlienBlockRecipes(recipeOutput);
         AVPAluminumRecipes.addAluminumRecipes(recipeOutput);
         AVPAmmoRecipes.addAmmoRecipes(recipeOutput);
         AVPAmmunitionPartRecipes.addAmmunitionPartRecipes(recipeOutput);
