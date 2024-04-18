@@ -2,6 +2,7 @@ package org.avp.common.item;
 
 import net.minecraft.world.item.Item;
 
+import net.minecraft.world.item.Rarity;
 import org.avp.api.Holder;
 import org.avp.common.registry.AVPDeferredItemRegistry;
 
@@ -75,7 +76,7 @@ public class AVPItems extends AVPDeferredItemRegistry {
         polymer = createHolder("polymer");
         rawBauxite = createHolder("raw_bauxite");
         rawTitanium = createHolder("raw_titanium");
-        royalJelly = createHolder("royal_jelly");
+        royalJelly = createHolder("royal_jelly", () -> new Item(new Item.Properties().rarity(Rarity.UNCOMMON)));
         shuriken = createHolder("shuriken");
         silica = createHolder("silica");
         smartDisc = createHolder("smart_disc");
