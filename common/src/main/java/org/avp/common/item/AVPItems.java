@@ -44,7 +44,11 @@ public class AVPItems extends AVPDeferredItemRegistry {
 
     public final Holder<Item> rawTitanium;
 
+    public final Holder<Item> resin;
+
     public final Holder<Item> royalJelly;
+
+    public final Holder<Item> sheetOrionite;
 
     public final Holder<Item> shuriken;
 
@@ -76,7 +80,9 @@ public class AVPItems extends AVPDeferredItemRegistry {
         polymer = createHolder("polymer");
         rawBauxite = createHolder("raw_bauxite");
         rawTitanium = createHolder("raw_titanium");
+        resin = createHolder("resin");
         royalJelly = createHolder("royal_jelly", () -> new Item(new Item.Properties().rarity(Rarity.UNCOMMON)));
+        sheetOrionite = createHolder("sheet_orionite");
         shuriken = createHolder("shuriken");
         silica = createHolder("silica");
         smartDisc = createHolder("smart_disc");
