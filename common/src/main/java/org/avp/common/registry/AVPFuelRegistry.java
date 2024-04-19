@@ -14,7 +14,9 @@ public class AVPFuelRegistry extends AVPDeferredRegistry<Tuple<Holder<Item>, Int
 
     @Override
     protected Holder<Tuple<Holder<Item>, Integer>> createHolder(String registryName, Supplier<Tuple<Holder<Item>, Integer>> supplier) {
-        return new Holder<>(registryName, supplier);
+        var holder = new Holder<>(registryName, supplier);
+        entries.add(holder);
+        return holder;
     }
 
     @Override
