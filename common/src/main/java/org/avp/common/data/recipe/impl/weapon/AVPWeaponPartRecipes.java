@@ -40,7 +40,7 @@ public final class AVPWeaponPartRecipes {
             .defineAndUnlockIfHas('B', AVPWeaponPartItems.INSTANCE.WEAPON_PART_BARREL_GENERIC)
             .pattern("BBB")
             .pattern("A A")
-            .pattern("ABB")
+            .pattern("BBB")
             .save(recipeOutput);
 
         // Rocket Barrel
