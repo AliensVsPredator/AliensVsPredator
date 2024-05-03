@@ -96,7 +96,7 @@ public final class AVPAmmunitionPartRecipes {
     }
 
     private static void addTipRecipes(RecipeOutput recipeOutput) {
-        AVPShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AVPAmmunitionPartItems.INSTANCE.bulletTip)
+        AVPShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AVPAmmunitionPartItems.INSTANCE.bulletTip, 4)
             .defineAndUnlockIfHas('A', AVPItems.INSTANCE.ingotSteel)
             .pattern("A")
             .save(recipeOutput);
