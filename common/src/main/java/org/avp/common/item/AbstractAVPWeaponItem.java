@@ -15,7 +15,6 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.ProjectileUtil;
@@ -27,6 +26,7 @@ import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
+import org.avp.common.util.AVPPredicates;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -166,7 +166,7 @@ public abstract class AbstractAVPWeaponItem extends Item implements GeoItem {
             level.playSound(null, player.blockPosition(), shootSound, SoundSource.PLAYERS);
         }
 
-        var hitResult = ProjectileUtil.getHitResultOnViewVector(player, Entity::isAlive, fireMode.range());
+        var hitResult = ProjectileUtil.getHitResultOnViewVector(player, AVPPredicates.IS_LIVING, fireMode.range());
 
         switch (hitResult.getType()) {
             case BLOCK -> handleHitBlock(level, fireMode, (BlockHitResult) hitResult);
