@@ -5,6 +5,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+
 import org.avp.common.util.AVPPredicates;
 
 import static org.avp.api.item.weapon.reload.ReloadBehavior.BLOCK_ENTITY_TAG_ID;
@@ -30,7 +31,7 @@ public class CountAmmunitionAction {
                 var items = NonNullList.withSize(27, ItemStack.EMPTY);
                 ContainerHelper.loadAllItems(blockEntityTag, items);
 
-                for (var shulkerBoxItemStack: items) {
+                for (var shulkerBoxItemStack : items) {
                     if (shulkerBoxItemStack.is(ammunitionItem)) {
                         rawInventoryItemCount += shulkerBoxItemStack.getCount();
                     }

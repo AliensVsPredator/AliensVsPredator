@@ -9,10 +9,12 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.SpawnEggItem;
 import net.minecraft.world.level.block.DispenserBlock;
 import net.minecraft.world.level.gameevent.GameEvent;
-import org.avp.common.item.AVPSpawnEggItems;
 import org.jetbrains.annotations.NotNull;
 
+import org.avp.common.item.AVPSpawnEggItems;
+
 public class AVPDispenserBlockBehaviors {
+
     public static final AVPDispenserBlockBehaviors INSTANCE = new AVPDispenserBlockBehaviors();
 
     private AVPDispenserBlockBehaviors() {}
@@ -20,6 +22,7 @@ public class AVPDispenserBlockBehaviors {
     public void registerAll() {
         // Borrowed from Mojang's own dispenser behavior logic for vanilla spawn eggs.
         DefaultDispenseItemBehavior defaultdispenseitembehavior = new DefaultDispenseItemBehavior() {
+
             @Override
             public @NotNull ItemStack execute(BlockSource blockSource, ItemStack itemStack) {
                 Direction direction = blockSource.state().getValue(DispenserBlock.FACING);
@@ -27,7 +30,13 @@ public class AVPDispenserBlockBehaviors {
 
                 try {
                     entitytype.spawn(
-                        blockSource.level(), itemStack, null, blockSource.pos().relative(direction), MobSpawnType.DISPENSER, direction != Direction.UP, false
+                        blockSource.level(),
+                        itemStack,
+                        null,
+                        blockSource.pos().relative(direction),
+                        MobSpawnType.DISPENSER,
+                        direction != Direction.UP,
+                        false
                     );
                 } catch (Exception exception) {
                     LOGGER.error("Error while dispensing spawn egg from dispenser at {}", blockSource.pos(), exception);
@@ -40,6 +49,7 @@ public class AVPDispenserBlockBehaviors {
             }
         };
 
-        AVPSpawnEggItems.INSTANCE.getEntries().forEach(itemHolder -> DispenserBlock.registerBehavior(itemHolder.get(), defaultdispenseitembehavior));
+        AVPSpawnEggItems.INSTANCE.getEntries()
+            .forEach(itemHolder -> DispenserBlock.registerBehavior(itemHolder.get(), defaultdispenseitembehavior));
     }
 }

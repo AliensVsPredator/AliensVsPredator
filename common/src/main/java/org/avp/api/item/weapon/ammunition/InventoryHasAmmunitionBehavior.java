@@ -6,19 +6,28 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.item.ItemStack;
+
+import java.util.Objects;
+
 import org.avp.api.item.weapon.WeaponItemData;
 import org.avp.api.item.weapon.WeaponItemTagHelper;
 import org.avp.common.util.AVPPredicates;
 
-import java.util.Objects;
-
 import static org.avp.api.item.weapon.reload.ReloadBehavior.BLOCK_ENTITY_TAG_ID;
 
 public class InventoryHasAmmunitionBehavior implements HasAmmunitionBehavior {
+
     @Override
-    public boolean hasAmmunition(ServerLevel serverLevel, ServerPlayer serverPlayer, ItemStack weaponItemStack, WeaponItemData weaponItemData) {
+    public boolean hasAmmunition(
+        ServerLevel serverLevel,
+        ServerPlayer serverPlayer,
+        ItemStack weaponItemStack,
+        WeaponItemData weaponItemData
+    ) {
         var activeAmmunitionType = WeaponItemTagHelper.getOrSetActiveAmmunitionType(weaponItemStack, weaponItemData);
-        var ammunitionSupplierOptional = weaponItemData.getAmmunitionStrategy().getAmmunitionSuppliers().stream()
+        var ammunitionSupplierOptional = weaponItemData.getAmmunitionStrategy()
+            .getAmmunitionSuppliers()
+            .stream()
             .filter(ammunitionSupplier -> {
                 var ammunitionItem = ammunitionSupplier.get();
                 var resourceLocation = BuiltInRegistries.ITEM.getKey(ammunitionItem);
@@ -40,13 +49,14 @@ public class InventoryHasAmmunitionBehavior implements HasAmmunitionBehavior {
             if (AVPPredicates.IS_ITEM_SHULKER_BOX.test(itemStack.getItem())) {
                 var itemStackTag = itemStack.getTag();
 
-                if (itemStackTag == null) continue;
+                if (itemStackTag == null)
+                    continue;
 
                 var blockEntityTag = itemStackTag.getCompound(BLOCK_ENTITY_TAG_ID);
                 var items = NonNullList.withSize(27, ItemStack.EMPTY);
                 ContainerHelper.loadAllItems(blockEntityTag, items);
 
-                for (var shulkerBoxItemStack: items) {
+                for (var shulkerBoxItemStack : items) {
                     if (shulkerBoxItemStack.is(ammunitionItem) && !shulkerBoxItemStack.isEmpty()) {
                         return true;
                     }

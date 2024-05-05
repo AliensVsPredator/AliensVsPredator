@@ -3,6 +3,7 @@ package org.avp.api.item.weapon.reload;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
+
 import org.avp.api.item.weapon.WeaponItemData;
 import org.avp.api.item.weapon.WeaponItemTagHelper;
 import org.avp.api.item.weapon.ammunition.ConsumeAmmunitionAction;
@@ -10,6 +11,7 @@ import org.avp.api.item.weapon.ammunition.CountAmmunitionAction;
 import org.avp.common.util.AVPPredicates;
 
 public class LoadIntoWeaponReloadBehavior implements ReloadBehavior {
+
     @Override
     public void tryReload(ServerLevel serverLevel, ServerPlayer serverPlayer, ItemStack itemStack, WeaponItemData weaponItemData) {
         // If the weapon already has max ammunition, abort.

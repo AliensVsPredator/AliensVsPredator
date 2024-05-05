@@ -3,11 +3,12 @@ package org.avp.mixin;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.sensing.NearestVisibleLivingEntitySensor;
 import net.minecraft.world.entity.ai.sensing.VillagerHostilesSensor;
-import org.avp.common.tag.AVPEntityTags;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+
+import org.avp.common.tag.AVPEntityTags;
 
 @Mixin(VillagerHostilesSensor.class)
 public abstract class MixinVillagerHostilesSensorRunFromAVPMonsters extends NearestVisibleLivingEntitySensor {
@@ -16,8 +17,9 @@ public abstract class MixinVillagerHostilesSensorRunFromAVPMonsters extends Near
     void isClose(LivingEntity livingEntity, LivingEntity livingEntity2, CallbackInfoReturnable<Boolean> callbackInfoReturnable) {
         if (
             !livingEntity2.getType().is(AVPEntityTags.ALIENS) &&
-            !livingEntity2.getType().is(AVPEntityTags.PREDATORS)
-        ) return;
+                !livingEntity2.getType().is(AVPEntityTags.PREDATORS)
+        )
+            return;
 
         var distance = 12F;
         var returnValue = livingEntity2.distanceToSqr(livingEntity) <= (distance * distance);
@@ -28,7 +30,7 @@ public abstract class MixinVillagerHostilesSensorRunFromAVPMonsters extends Near
     void isHostile(LivingEntity livingEntity, CallbackInfoReturnable<Boolean> callbackInfoReturnable) {
         if (
             livingEntity.getType().is(AVPEntityTags.ALIENS) ||
-            livingEntity.getType().is(AVPEntityTags.PREDATORS)
+                livingEntity.getType().is(AVPEntityTags.PREDATORS)
         ) {
             callbackInfoReturnable.setReturnValue(true);
         }

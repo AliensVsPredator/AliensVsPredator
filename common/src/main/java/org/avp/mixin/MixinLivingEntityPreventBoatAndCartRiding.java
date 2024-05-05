@@ -3,13 +3,14 @@ package org.avp.mixin;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.vehicle.Boat;
 import net.minecraft.world.entity.vehicle.Minecart;
-import org.avp.common.tag.AVPEntityTags;
-import org.avp.common.util.MixinUtils;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+
+import org.avp.common.tag.AVPEntityTags;
+import org.avp.common.util.MixinUtils;
 
 @Mixin(Entity.class)
 public abstract class MixinLivingEntityPreventBoatAndCartRiding {
@@ -22,8 +23,9 @@ public abstract class MixinLivingEntityPreventBoatAndCartRiding {
         // All aliens will not ride boats.
         if (
             !self.getType().is(AVPEntityTags.ALIENS) &&
-            !self.getType().is(AVPEntityTags.PREDATORS)
-        ) return;
+                !self.getType().is(AVPEntityTags.PREDATORS)
+        )
+            return;
 
         if (entity instanceof Boat || entity instanceof Minecart) {
             callbackInfoReturnable.setReturnValue(false);
@@ -36,11 +38,13 @@ public abstract class MixinLivingEntityPreventBoatAndCartRiding {
         var self = MixinUtils.<Entity>self(this);
         var level = self.level();
 
-        if (level.isClientSide) return;
+        if (level.isClientSide)
+            return;
         if (
             !self.getType().is(AVPEntityTags.ALIENS) &&
-            !self.getType().is(AVPEntityTags.PREDATORS)
-        ) return;
+                !self.getType().is(AVPEntityTags.PREDATORS)
+        )
+            return;
 
         if (self.getVehicle() instanceof Boat || self.getVehicle() instanceof Minecart) {
             self.stopRiding();

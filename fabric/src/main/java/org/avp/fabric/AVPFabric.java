@@ -18,7 +18,7 @@ public class AVPFabric implements ModInitializer {
         // Use Fabric to bootstrap the Common mod.
         AVPCommon.init();
 
-        //  Dispenser behavior registration.
+        // Dispenser behavior registration.
         AVPDispenserBlockBehaviors.INSTANCE.registerAll();
 
         // Fuel registration.

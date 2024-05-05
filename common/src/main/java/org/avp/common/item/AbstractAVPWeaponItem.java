@@ -26,7 +26,6 @@ import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
-import org.avp.common.util.AVPPredicates;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -42,6 +41,7 @@ import org.avp.client.render.item.AVPWeaponItemRenderers;
 import org.avp.common.config.AVPConfig;
 import org.avp.common.network.payload.ClientboundBulletHitBlockPayload;
 import org.avp.common.service.Services;
+import org.avp.common.util.AVPPredicates;
 import org.avp.common.util.SoundUtils;
 import org.avp.common.util.TooltipUtils;
 import org.avp.server.BlockBreakProgressManager;
@@ -213,8 +213,10 @@ public abstract class AbstractAVPWeaponItem extends Item implements GeoItem {
 
     private void damageBlock(@NotNull Level level, BlockPos blockPos, FireMode fireMode) {
         // Only damage blocks if both are true.
-        if (!AVPConfig.General.GUNS_DO_BLOCK_DAMAGE) return;
-        if (!level.getGameRules().getBoolean(GameRules.RULE_PROJECTILESCANBREAKBLOCKS)) return;
+        if (!AVPConfig.General.GUNS_DO_BLOCK_DAMAGE)
+            return;
+        if (!level.getGameRules().getBoolean(GameRules.RULE_PROJECTILESCANBREAKBLOCKS))
+            return;
 
         var damage = this.getWeaponItemData().getDamage() * fireMode.consumedAmmunition();
         BlockBreakProgressManager.damage(level, blockPos, damage);

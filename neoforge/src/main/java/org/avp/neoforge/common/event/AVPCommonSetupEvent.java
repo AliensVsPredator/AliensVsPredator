@@ -1,6 +1,7 @@
 package org.avp.neoforge.common.event;
 
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
+
 import org.avp.common.block.AVPDispenserBlockBehaviors;
 
 public class AVPCommonSetupEvent {

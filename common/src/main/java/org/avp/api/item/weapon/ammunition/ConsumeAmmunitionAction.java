@@ -6,9 +6,10 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import org.avp.common.util.AVPPredicates;
 
 import java.util.Objects;
+
+import org.avp.common.util.AVPPredicates;
 
 import static org.avp.api.item.weapon.reload.ReloadBehavior.BLOCK_ENTITY_TAG_ID;
 
@@ -31,7 +32,8 @@ public class ConsumeAmmunitionAction {
                 // If the stack item is a shulker box, try to consume ammunition from it.
                 var itemStackTag = itemStack.getTag();
 
-                if (itemStackTag == null) continue;
+                if (itemStackTag == null)
+                    continue;
 
                 counter = fromShulkerBox(itemStack, itemStackTag, counter);
             }
@@ -43,7 +45,7 @@ public class ConsumeAmmunitionAction {
         var shulkerBoxItemStacks = NonNullList.withSize(27, ItemStack.EMPTY);
         ContainerHelper.loadAllItems(blockEntityTag, shulkerBoxItemStacks);
 
-        for (var shulkerBoxItemStack: shulkerBoxItemStacks) {
+        for (var shulkerBoxItemStack : shulkerBoxItemStacks) {
             // If the stack item is the same type as the ammunition item, consume part or all of the stack.
             var count = shulkerBoxItemStack.getCount();
             var amountToConsume = Math.min(count, counter);
