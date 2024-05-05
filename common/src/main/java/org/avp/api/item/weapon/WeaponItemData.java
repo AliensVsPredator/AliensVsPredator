@@ -5,7 +5,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 import java.util.Objects;
 
-import org.avp.api.item.weapon.ammo.AmmunitionStrategy;
+import org.avp.api.item.weapon.ammunition.AmmunitionStrategy;
 import org.avp.api.item.weapon.reload.ReloadStrategy;
 import org.avp.api.item.weapon.shoot.ShootStrategy;
 

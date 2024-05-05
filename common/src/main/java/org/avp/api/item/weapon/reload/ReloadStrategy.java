@@ -50,11 +50,11 @@ public abstract class ReloadStrategy {
 
         private final int reloadTimeInTicks;
 
-        private TryReloadBehavior tryReloadBehavior;
+        private ReloadBehavior reloadBehavior;
 
         private Builder(int reloadTimeInTicks) {
             this.reloadTimeInTicks = reloadTimeInTicks;
-            this.tryReloadBehavior = TryReloadBehavior.NO_OP;
+            this.reloadBehavior = ReloadBehavior.NO_OP;
         }
 
         public Builder setReloadFinishSound(Holder<SoundEvent> reloadFinishSound) {
@@ -67,8 +67,8 @@ public abstract class ReloadStrategy {
             return this;
         }
 
-        public Builder setTryReloadBehavior(TryReloadBehavior tryReloadBehavior) {
-            this.tryReloadBehavior = tryReloadBehavior;
+        public Builder setTryReloadBehavior(ReloadBehavior reloadBehavior) {
+            this.reloadBehavior = reloadBehavior;
             return this;
         }
 
@@ -82,7 +82,7 @@ public abstract class ReloadStrategy {
                     ItemStack itemStack,
                     WeaponItemData weaponItemData
                 ) {
-                    tryReloadBehavior.tryReload(serverLevel, serverPlayer, itemStack, weaponItemData);
+                    reloadBehavior.tryReload(serverLevel, serverPlayer, itemStack, weaponItemData);
                 }
             };
         }

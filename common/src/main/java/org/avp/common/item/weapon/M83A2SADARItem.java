@@ -4,10 +4,10 @@ import java.util.List;
 
 import org.avp.api.item.weapon.FireMode;
 import org.avp.api.item.weapon.WeaponItemData;
-import org.avp.api.item.weapon.ammo.AmmunitionStrategy;
-import org.avp.api.item.weapon.ammo.HasAmmunitionBehavior;
+import org.avp.api.item.weapon.ammunition.AmmunitionStrategy;
+import org.avp.api.item.weapon.ammunition.HasAmmunitionBehavior;
 import org.avp.api.item.weapon.reload.ReloadStrategy;
-import org.avp.api.item.weapon.reload.TryReloadBehavior;
+import org.avp.api.item.weapon.reload.ReloadBehavior;
 import org.avp.api.item.weapon.shoot.ShootStrategy;
 import org.avp.common.item.AVPAmmunitionPartItems;
 import org.avp.common.item.AbstractAVPWeaponItem;
@@ -43,7 +43,7 @@ public class M83A2SADARItem extends AbstractAVPWeaponItem {
         ReloadStrategy.builder(20 * 5)
             .setReloadStartSound(AVPSoundEvents.INSTANCE.itemWeaponRocketLauncherReloadStart)
             .setReloadFinishSound(AVPSoundEvents.INSTANCE.itemWeaponRocketLauncherReloadFinish)
-            .setTryReloadBehavior(TryReloadBehavior.STANDARD)
+            .setTryReloadBehavior(ReloadBehavior.LOAD_INTO_WEAPON)
             .build(),
         ShootStrategy.builder().build()
     );
