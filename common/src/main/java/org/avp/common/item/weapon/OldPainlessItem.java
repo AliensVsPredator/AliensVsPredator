@@ -45,9 +45,11 @@ public class OldPainlessItem extends AbstractAVPWeaponItem {
         ReloadStrategy.builder(0).build(),
         ShootStrategy.builder()
             .setBackgroundShootSound(AVPSoundEvents.INSTANCE.itemWeaponOldPainlessShootSpinning, 30)
-            .setWindUpSound(AVPSoundEvents.INSTANCE.itemWeaponOldPainlessShootStart)
-            .setWindDownSound(AVPSoundEvents.INSTANCE.itemWeaponOldPainlessShootStop)
-            .setWindUpTimeInTicks(20)
+            .setWindingLogic(
+                20,
+                AVPSoundEvents.INSTANCE.itemWeaponOldPainlessShootStart,
+                AVPSoundEvents.INSTANCE.itemWeaponOldPainlessShootStop
+            )
             .build()
     );
 
