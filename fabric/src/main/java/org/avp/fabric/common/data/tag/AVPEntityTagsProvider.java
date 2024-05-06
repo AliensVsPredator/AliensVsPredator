@@ -145,7 +145,7 @@ public class AVPEntityTagsProvider extends FabricTagProvider.EntityTypeTagProvid
             );
 
         getOrCreateTagBuilder(AVPEntityTags.PREDATORS)
-            .add(AVPYautjaEntityTypes.INSTANCE.YAUTJA.get());
+            .add(AVPYautjaEntityTypes.INSTANCE.yautja.get());
     }
 
     private void modifyMinecraftTags() {

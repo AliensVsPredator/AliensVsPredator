@@ -83,7 +83,7 @@ public class AVPEntityLootTableProvider extends AbstractAVPEntityLootTableProvid
 
     private void addYautjaLootTable() {
         add(
-            AVPYautjaEntityTypes.INSTANCE.YAUTJA.get(),
+            AVPYautjaEntityTypes.INSTANCE.yautja.get(),
             LootTable.lootTable()
                 .withPool(
                     LootPool.lootPool()
