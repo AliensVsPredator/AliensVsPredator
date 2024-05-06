@@ -81,7 +81,7 @@ public final class AVPElectronicRecipes {
             .defineAndUnlockIfHas('B', AVPElectronicItems.INSTANCE.regulator)
             .defineAndUnlockIfHas('C', AVPItems.INSTANCE.ingotAluminum)
             .defineAndUnlockIfHas('D', AVPElectronicItems.INSTANCE.capacitor)
-            .defineAndUnlockIfHas('E', AVPElectronicItems.INSTANCE.battery)
+            .defineAndUnlockIfHas('E', Items.BEDROCK) // TODO: This should be a transformer block
             .pattern("ABC")
             .pattern("DEC")
             .pattern("ABC")
