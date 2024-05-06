@@ -11,6 +11,14 @@ import org.avp.common.item.AVPItems;
 public final class AVPElectronicRecipes {
 
     public static void addElectronicRecipes(RecipeOutput recipeOutput) {
+        AVPShapedRecipeBuilder.shaped(RecipeCategory.MISC, AVPElectronicItems.INSTANCE.battery)
+            .defineAndUnlockIfHas('A', AVPItems.INSTANCE.ingotAluminum)
+            .defineAndUnlockIfHas('B', AVPItems.INSTANCE.dustLithium)
+            .defineAndUnlockIfHas('C', AVPElectronicItems.INSTANCE.capacitor)
+            .pattern("ACA")
+            .pattern("BBB")
+            .pattern("ACA")
+            .save(recipeOutput);
         AVPShapedRecipeBuilder.shaped(RecipeCategory.MISC, AVPElectronicItems.INSTANCE.capacitor, 8)
             .defineAndUnlockIfHas('A', Items.COPPER_INGOT)
             .defineAndUnlockIfHas('B', AVPItems.INSTANCE.dustLithium)
@@ -73,7 +81,7 @@ public final class AVPElectronicRecipes {
             .defineAndUnlockIfHas('B', AVPElectronicItems.INSTANCE.regulator)
             .defineAndUnlockIfHas('C', AVPItems.INSTANCE.ingotAluminum)
             .defineAndUnlockIfHas('D', AVPElectronicItems.INSTANCE.capacitor)
-            .defineAndUnlockIfHas('E', Items.BEDROCK) // TODO: This should be a transformer block
+            .defineAndUnlockIfHas('E', AVPElectronicItems.INSTANCE.battery)
             .pattern("ABC")
             .pattern("DEC")
             .pattern("ABC")
