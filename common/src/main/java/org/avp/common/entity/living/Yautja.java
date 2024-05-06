@@ -59,6 +59,7 @@ public class Yautja extends Monster implements GeoEntity {
 
     public Yautja(EntityType<? extends Monster> entityType, Level level) {
         super(entityType, level);
+        this.setPersistenceRequired();
     }
 
     @Override
