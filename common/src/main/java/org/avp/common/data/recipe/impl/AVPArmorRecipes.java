@@ -156,6 +156,12 @@ public final class AVPArmorRecipes {
             .pattern("B B")
             .pattern("A A")
             .save(recipeOutput);
+        AVPShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AVPArmorItems.INSTANCE.tacticalHelmet)
+            .defineAndUnlockIfHas('A', ItemTags.WOOL)
+            .defineAndUnlockIfHas('B', AVPItems.INSTANCE.ingotSteel)
+            .pattern("AAA")
+            .pattern("B B")
+            .save(recipeOutput);
         AVPShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AVPArmorItems.INSTANCE.tacticalLeggings)
             .defineAndUnlockIfHas('A', AVPItems.INSTANCE.ingotAluminum)
             .defineAndUnlockIfHas('B', ItemTags.WOOL)
