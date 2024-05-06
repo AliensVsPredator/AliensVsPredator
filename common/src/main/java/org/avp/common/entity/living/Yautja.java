@@ -41,7 +41,7 @@ public class Yautja extends Monster implements GeoEntity {
         RandomSource randomSource
     ) {
         return blockPos.getY() > 60 &&
-            Monster.checkMonsterSpawnRules(
+            Monster.checkAnyLightMonsterSpawnRules(
                 entityType,
                 serverLevelAccessor,
                 mobSpawnType,
