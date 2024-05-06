@@ -9,6 +9,7 @@
         "MixinLivingEntityPreventBoatAndCartRiding",
         "MixinLivingEntityProduceAcid",
         "MixinServerLevel",
+        "MixinServerPlayerPressureSuitProvidesAir",
         "MixinVillagerHostilesSensorRunFromAVPMonsters"
     ],
     "client": [
