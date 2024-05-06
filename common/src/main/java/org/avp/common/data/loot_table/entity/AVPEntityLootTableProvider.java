@@ -3,6 +3,7 @@ package org.avp.common.data.loot_table.entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.level.storage.loot.LootPool;
 import net.minecraft.world.level.storage.loot.LootTable;
+import net.minecraft.world.level.storage.loot.entries.EmptyLootItem;
 import net.minecraft.world.level.storage.loot.entries.LootItem;
 import net.minecraft.world.level.storage.loot.functions.LootingEnchantFunction;
 import net.minecraft.world.level.storage.loot.functions.SetItemCountFunction;
@@ -96,10 +97,11 @@ public class AVPEntityLootTableProvider extends AbstractAVPEntityLootTableProvid
                 .withPool(
                     LootPool.lootPool()
                         .setRolls(ConstantValue.exactly(1.0F))
-                        .add(LootItem.lootTableItem(AVPArmorItems.INSTANCE.veritaniumHelmet.get()))
-                        .add(LootItem.lootTableItem(AVPArmorItems.INSTANCE.veritaniumBody.get()))
-                        .add(LootItem.lootTableItem(AVPArmorItems.INSTANCE.veritaniumLeggings.get()))
-                        .add(LootItem.lootTableItem(AVPArmorItems.INSTANCE.veritaniumBoots.get()))
+                        .add(EmptyLootItem.emptyItem().setWeight(36))
+                        .add(LootItem.lootTableItem(AVPArmorItems.INSTANCE.veritaniumHelmet.get()).setWeight(1))
+                        .add(LootItem.lootTableItem(AVPArmorItems.INSTANCE.veritaniumBody.get()).setWeight(1))
+                        .add(LootItem.lootTableItem(AVPArmorItems.INSTANCE.veritaniumLeggings.get()).setWeight(1))
+                        .add(LootItem.lootTableItem(AVPArmorItems.INSTANCE.veritaniumBoots.get()).setWeight(1))
                 )
                 .withPool(
                     LootPool.lootPool()
