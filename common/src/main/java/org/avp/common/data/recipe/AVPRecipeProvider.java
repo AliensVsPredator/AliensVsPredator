@@ -9,6 +9,7 @@ import net.minecraft.data.recipes.RecipeProvider;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.ItemLike;
+import org.avp.common.data.recipe.impl.material.AVPSteelRecipes;
 import org.jetbrains.annotations.NotNull;
 
 import org.avp.common.data.recipe.impl.AVPArmorRecipes;
@@ -54,6 +55,7 @@ public class AVPRecipeProvider extends RecipeProvider {
         AVPMaterialsRecipes.addMaterialRecipes(recipeOutput);
         AVPNeodymiumRecipes.addNeodymiumRecipes(recipeOutput);
         AVPSilicaRecipes.addSilicaRecipes(recipeOutput);
+        AVPSteelRecipes.addSteelRecipes(recipeOutput);
         AVPTitaniumRecipes.addTitaniumRecipes(recipeOutput);
         AVPToolRecipes.addToolRecipes(recipeOutput);
         AVPWeaponBlueprintRecipes.addWeaponBlueprintRecipes(recipeOutput);

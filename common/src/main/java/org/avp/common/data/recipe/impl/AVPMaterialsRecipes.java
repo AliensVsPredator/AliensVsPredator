@@ -40,11 +40,6 @@ public final class AVPMaterialsRecipes {
             .unlockedBy("has_slime_ball", AVPRecipeProvider.has(Items.SLIME_BALL))
             .save(recipeOutput, AVPConstants.MOD_ID + ":polymer_from_smelting_slime_ball");
 
-        var steelOutput = AVPItems.INSTANCE.ingotSteel.get();
-        SimpleCookingRecipeBuilder.blasting(Ingredient.of(Items.IRON_INGOT), RecipeCategory.MISC, steelOutput, 0.7F, 100)
-            .unlockedBy("has_iron_ingot", AVPRecipeProvider.has(Items.IRON_INGOT))
-            .save(recipeOutput, AVPConstants.MOD_ID + ":ingot_steel_from_blasting_iron_ingot");
-
         AVPShapedRecipeBuilder.shaped(RecipeCategory.MISC, AVPItems.INSTANCE.bottleTinted, 3)
             .defineAndUnlockIfHas('A', Items.TINTED_GLASS)
             .pattern("A A")
