@@ -9,6 +9,7 @@ import net.minecraft.data.recipes.RecipeProvider;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.ItemLike;
+import org.avp.common.data.recipe.impl.block.AVPIndustrialGlassBlockRecipes;
 import org.avp.common.data.recipe.impl.material.AVPSteelRecipes;
 import org.jetbrains.annotations.NotNull;
 
@@ -27,7 +28,7 @@ import org.avp.common.data.recipe.impl.material.AVPLithiumRecipes;
 import org.avp.common.data.recipe.impl.material.AVPNeodymiumRecipes;
 import org.avp.common.data.recipe.impl.material.AVPSilicaRecipes;
 import org.avp.common.data.recipe.impl.material.AVPTitaniumRecipes;
-import org.avp.common.data.recipe.impl.weapon.AVPAmmoRecipes;
+import org.avp.common.data.recipe.impl.weapon.AVPAmmunitionRecipes;
 import org.avp.common.data.recipe.impl.weapon.AVPAmmunitionPartRecipes;
 import org.avp.common.data.recipe.impl.weapon.AVPBulletRecipes;
 import org.avp.common.data.recipe.impl.weapon.AVPWeaponBlueprintRecipes;
@@ -44,8 +45,10 @@ public class AVPRecipeProvider extends RecipeProvider {
     public void buildRecipes(@NotNull RecipeOutput recipeOutput) {
         AVPAlienBlockRecipes.addAlienBlockRecipes(recipeOutput);
         AVPAluminumRecipes.addAluminumRecipes(recipeOutput);
-        AVPAmmoRecipes.addAmmoRecipes(recipeOutput);
+
+        AVPAmmunitionRecipes.addAmmoRecipes(recipeOutput);
         AVPAmmunitionPartRecipes.addAmmunitionPartRecipes(recipeOutput);
+
         AVPArmorRecipes.addArmorRecipes(recipeOutput);
         AVPBulletRecipes.addRecipes(recipeOutput);
         AVPCobaltRecipes.addCobaltRecipes(recipeOutput);
@@ -58,11 +61,13 @@ public class AVPRecipeProvider extends RecipeProvider {
         AVPSteelRecipes.addSteelRecipes(recipeOutput);
         AVPTitaniumRecipes.addTitaniumRecipes(recipeOutput);
         AVPToolRecipes.addToolRecipes(recipeOutput);
+
         AVPWeaponBlueprintRecipes.addWeaponBlueprintRecipes(recipeOutput);
         AVPWeaponPartRecipes.addWeaponPartRecipes(recipeOutput);
         AVPWeaponRecipes.addWeaponRecipes(recipeOutput);
 
         AVPIndustrialBlockRecipes.addIndustrialBlockRecipes(recipeOutput);
+        AVPIndustrialGlassBlockRecipes.addIndustrialGlassBlockRecipes(recipeOutput);
         AVPPaddingBlockRecipes.addPaddingBlockRecipes(recipeOutput);
         AVPTempleBlockRecipes.addTempleBlockRecipes(recipeOutput);
     }

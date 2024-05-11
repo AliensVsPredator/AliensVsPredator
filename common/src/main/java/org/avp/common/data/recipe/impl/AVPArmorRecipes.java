@@ -7,7 +7,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 
 import org.avp.api.Holder;
-import org.avp.common.block.AVPIndustrialBlocks;
+import org.avp.common.block.AVPIndustrialGlassBlocks;
 import org.avp.common.data.recipe.AVPShapedRecipeBuilder;
 import org.avp.common.item.AVPArmorItems;
 import org.avp.common.item.AVPItems;
@@ -70,20 +70,20 @@ public final class AVPArmorRecipes {
     private static void addMK50ArmorRecipes(RecipeOutput recipeOutput) {
         AVPShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AVPArmorItems.INSTANCE.mk50Body)
             .defineAndUnlockIfHas('A', Items.COPPER_INGOT)
-            .defineAndUnlockIfHas('B', AVPIndustrialBlocks.INSTANCE.glass)
+            .defineAndUnlockIfHas('B', AVPIndustrialGlassBlocks.INSTANCE.grayGlass)
             .pattern("B B")
             .pattern("ABA")
             .pattern("BAB")
             .save(recipeOutput);
         AVPShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AVPArmorItems.INSTANCE.mk50Boots)
             .defineAndUnlockIfHas('A', Items.COPPER_INGOT)
-            .defineAndUnlockIfHas('B', AVPIndustrialBlocks.INSTANCE.glass)
+            .defineAndUnlockIfHas('B', AVPIndustrialGlassBlocks.INSTANCE.grayGlass)
             .pattern("B B")
             .pattern("A A")
             .save(recipeOutput);
         AVPShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AVPArmorItems.INSTANCE.mk50Helmet)
             .defineAndUnlockIfHas('A', Items.COPPER_INGOT)
-            .defineAndUnlockIfHas('B', AVPIndustrialBlocks.INSTANCE.glass)
+            .defineAndUnlockIfHas('B', AVPIndustrialGlassBlocks.INSTANCE.grayGlass)
             .defineAndUnlockIfHas('C', AVPItems.INSTANCE.carbon)
             .defineAndUnlockIfHas('D', AVPItems.INSTANCE.silica)
             .pattern("AAA")
@@ -92,7 +92,7 @@ public final class AVPArmorRecipes {
             .save(recipeOutput);
         AVPShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AVPArmorItems.INSTANCE.mk50Leggings)
             .defineAndUnlockIfHas('A', Items.COPPER_INGOT)
-            .defineAndUnlockIfHas('B', AVPIndustrialBlocks.INSTANCE.glass)
+            .defineAndUnlockIfHas('B', AVPIndustrialGlassBlocks.INSTANCE.grayGlass)
             .pattern("BAB")
             .pattern("B B")
             .pattern("A A")
@@ -113,20 +113,20 @@ public final class AVPArmorRecipes {
     private static void addPressureArmorRecipes(RecipeOutput recipeOutput) {
         AVPShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AVPArmorItems.INSTANCE.pressureBody)
             .defineAndUnlockIfHas('A', AVPItems.INSTANCE.ingotAluminum)
-            .defineAndUnlockIfHas('B', AVPIndustrialBlocks.INSTANCE.glass)
+            .defineAndUnlockIfHas('B', AVPIndustrialGlassBlocks.INSTANCE.grayGlass)
             .pattern("B B")
             .pattern("ABA")
             .pattern("BAB")
             .save(recipeOutput);
         AVPShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AVPArmorItems.INSTANCE.pressureBoots)
             .defineAndUnlockIfHas('A', AVPItems.INSTANCE.ingotAluminum)
-            .defineAndUnlockIfHas('B', AVPIndustrialBlocks.INSTANCE.glass)
+            .defineAndUnlockIfHas('B', AVPIndustrialGlassBlocks.INSTANCE.grayGlass)
             .pattern("B B")
             .pattern("A A")
             .save(recipeOutput);
         AVPShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AVPArmorItems.INSTANCE.pressureHelmet)
             .defineAndUnlockIfHas('A', AVPItems.INSTANCE.ingotAluminum)
-            .defineAndUnlockIfHas('B', AVPIndustrialBlocks.INSTANCE.glass)
+            .defineAndUnlockIfHas('B', AVPIndustrialGlassBlocks.INSTANCE.grayGlass)
             .defineAndUnlockIfHas('C', AVPItems.INSTANCE.carbon)
             .defineAndUnlockIfHas('D', AVPItems.INSTANCE.silica)
             .pattern("AAA")
@@ -135,7 +135,7 @@ public final class AVPArmorRecipes {
             .save(recipeOutput);
         AVPShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AVPArmorItems.INSTANCE.pressureLeggings)
             .defineAndUnlockIfHas('A', AVPItems.INSTANCE.ingotAluminum)
-            .defineAndUnlockIfHas('B', AVPIndustrialBlocks.INSTANCE.glass)
+            .defineAndUnlockIfHas('B', AVPIndustrialGlassBlocks.INSTANCE.grayGlass)
             .pattern("BAB")
             .pattern("B B")
             .pattern("A A")

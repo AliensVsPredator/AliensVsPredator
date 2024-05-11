@@ -26,8 +26,6 @@ public class AVPIndustrialBlocks extends AVPDeferredBlockRegistry {
 
     public final Holder<Block> floorGrill;
 
-    public final Holder<Block> glass;
-
     public final Holder<Block> lamp;
 
     public final Holder<Block> metalPanel0;
@@ -65,7 +63,6 @@ public class AVPIndustrialBlocks extends AVPDeferredBlockRegistry {
 
     private AVPIndustrialBlocks() {
         var metalProperties = BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_BLOCK);
-        var industrialGlassProperties = BlockBehaviour.Properties.ofFullCopy(Blocks.GLASS);
 
         var stoneOrMetal = List.of(BlockTags.MINEABLE_WITH_PICKAXE, BlockTags.NEEDS_IRON_TOOL);
 
@@ -80,7 +77,7 @@ public class AVPIndustrialBlocks extends AVPDeferredBlockRegistry {
         brickStairs = createHolder("brick_stairs", stairProps.apply(brick));
 
         floorGrill = createHolder("floor_grill", pickProps.get());
-        glass = createHolder("glass", BlockDataUtils.transparent(industrialGlassProperties).tags(stoneOrMetal));
+
         lamp = createHolder("lamp", pickProps.get());
 
         metalPanel0 = createHolder("metal_panel_0", pickProps.get());

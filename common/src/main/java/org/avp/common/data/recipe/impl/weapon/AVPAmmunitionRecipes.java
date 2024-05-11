@@ -9,7 +9,7 @@ import org.avp.common.item.AVPAmmunitionPartItems;
 import org.avp.common.item.AVPElectronicItems;
 import org.avp.common.item.AVPItems;
 
-public final class AVPAmmoRecipes {
+public final class AVPAmmunitionRecipes {
 
     public static void addAmmoRecipes(RecipeOutput recipeOutput) {
         AVPShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AVPAmmunitionPartItems.INSTANCE.ammoChargePack)
@@ -34,7 +34,7 @@ public final class AVPAmmoRecipes {
             .save(recipeOutput);
     }
 
-    private AVPAmmoRecipes() {
+    private AVPAmmunitionRecipes() {
         throw new UnsupportedOperationException();
     }
 }
