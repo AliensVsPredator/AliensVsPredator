@@ -12,6 +12,8 @@ public class AVPItemTags {
 
     public static final TagKey<Item> GUNS = create("guns");
 
+    public static final TagKey<Item> INDUSTRIAL_GLASS = create("industrial_glass");
+
     public static final TagKey<Item> THREATENS_PREDATORS = create("threatens_predators");
 
     private static TagKey<Item> create(String registryName) {
