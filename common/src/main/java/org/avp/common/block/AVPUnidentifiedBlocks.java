@@ -37,7 +37,7 @@ public class AVPUnidentifiedBlocks extends AVPDeferredBlockRegistry {
 
         var stoneTags = List.of(BlockTags.MINEABLE_WITH_PICKAXE);
 
-        Supplier<BlockData.Builder> pickProps = () -> BlockData.simple(stoneProperties).tags(stoneTags);
+        Supplier<BlockData.Builder> pickProps = () -> BlockData.simple(stoneProperties).blockTags(stoneTags);
 
         dirt = createHolder("dirt", pickProps.get());
         gravel = createHolder("gravel", pickProps.get());

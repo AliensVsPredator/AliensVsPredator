@@ -16,7 +16,7 @@ public class BlockDataUtils {
         return BlockData.builder(properties)
             .parent(parentHolder)
             .factory(BlockFactories.FENCE)
-            .tags(BlockTags.FENCES);
+            .blockTags(BlockTags.FENCES);
     }
 
     public static BlockData.Builder fenceGate(
@@ -27,7 +27,7 @@ public class BlockDataUtils {
         return BlockData.builder(properties)
             .parent(parentHolder)
             .factory(BlockFactories.FENCE_GATE.apply(woodType))
-            .tags(BlockTags.FENCE_GATES);
+            .blockTags(BlockTags.FENCE_GATES);
     }
 
     public static BlockData.Builder grass(Holder<Block> parentHolder, BlockBehaviour.Properties properties) {
@@ -49,14 +49,14 @@ public class BlockDataUtils {
         return BlockData.builder(properties)
             .parent(parentHolder)
             .factory(BlockFactories.SLAB)
-            .tags(BlockTags.SLABS);
+            .blockTags(BlockTags.SLABS);
     }
 
     public static BlockData.Builder stairs(Holder<Block> parentHolder, BlockBehaviour.Properties properties) {
         return BlockData.builder(properties)
             .parent(parentHolder)
             .factory(BlockFactories.STAIRS.apply(parentHolder))
-            .tags(BlockTags.STAIRS);
+            .blockTags(BlockTags.STAIRS);
     }
 
     public static BlockData.Builder transparent(BlockBehaviour.Properties properties) {
@@ -67,7 +67,7 @@ public class BlockDataUtils {
         return BlockData.builder(properties)
             .parent(parentHolder)
             .factory(BlockFactories.WALL)
-            .tags(BlockTags.WALLS);
+            .blockTags(BlockTags.WALLS);
     }
 
     public static BlockData.Builder wood(Holder<Block> parentHolder, BlockBehaviour.Properties properties) {

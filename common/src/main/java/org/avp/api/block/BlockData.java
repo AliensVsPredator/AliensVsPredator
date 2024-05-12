@@ -1,6 +1,7 @@
 package org.avp.api.block;
 
 import net.minecraft.tags.TagKey;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 
@@ -30,7 +31,9 @@ public class BlockData {
 
     private final BlockDrop blockDrop;
 
-    private final List<TagKey<Block>> relatedTags;
+    private final List<TagKey<Block>> relatedBlockTags;
+
+    private final List<TagKey<Item>> relatedItemTags;
 
     private final BlockBehaviour.Properties properties;
 
@@ -38,13 +41,15 @@ public class BlockData {
         Holder<Block> parentBlockHolder,
         BlockFactory blockFactory,
         BlockDrop blockDrop,
-        List<TagKey<Block>> relatedTags,
+        List<TagKey<Block>> relatedBlockTags,
+        List<TagKey<Item>> relatedItemTags,
         BlockBehaviour.Properties properties
     ) {
         this.parentBlockHolder = parentBlockHolder;
         this.blockFactory = blockFactory;
         this.blockDrop = blockDrop;
-        this.relatedTags = relatedTags;
+        this.relatedBlockTags = relatedBlockTags;
+        this.relatedItemTags = relatedItemTags;
         this.properties = properties;
     }
 
@@ -60,8 +65,12 @@ public class BlockData {
         return blockDrop;
     }
 
-    public List<TagKey<Block>> getRelatedTags() {
-        return relatedTags;
+    public List<TagKey<Block>> getRelatedBlockTags() {
+        return relatedBlockTags;
+    }
+
+    public List<TagKey<Item>> getRelatedItemTags() {
+        return relatedItemTags;
     }
 
     public BlockFactory getFactory() {
@@ -76,14 +85,17 @@ public class BlockData {
 
         private BlockDrop blockDrop;
 
-        private final List<TagKey<Block>> relatedTags;
+        private final List<TagKey<Block>> relatedBlockTags;
+
+        private final List<TagKey<Item>> relatedItemTags;
 
         private final BlockBehaviour.Properties properties;
 
         private Builder(BlockBehaviour.Properties properties) {
             blockFactory = BlockFactories.CUBE;
             blockDrop = BlockDrops.SELF;
-            relatedTags = new ArrayList<>();
+            relatedBlockTags = new ArrayList<>();
+            relatedItemTags = new ArrayList<>();
             this.properties = properties;
         }
 
@@ -98,13 +110,24 @@ public class BlockData {
         }
 
         @SafeVarargs
-        public final Builder tags(TagKey<Block>... tags) {
-            relatedTags.addAll(Arrays.asList(tags));
+        public final Builder blockTags(TagKey<Block>... tags) {
+            relatedBlockTags.addAll(Arrays.asList(tags));
             return this;
         }
 
-        public final Builder tags(List<TagKey<Block>> tags) {
-            relatedTags.addAll(tags);
+        public final Builder blockTags(List<TagKey<Block>> tags) {
+            relatedBlockTags.addAll(tags);
+            return this;
+        }
+
+        @SafeVarargs
+        public final Builder itemTags(TagKey<Item>... tags) {
+            relatedItemTags.addAll(Arrays.asList(tags));
+            return this;
+        }
+
+        public final Builder itemTags(List<TagKey<Item>> tags) {
+            relatedItemTags.addAll(tags);
             return this;
         }
 
@@ -118,7 +141,8 @@ public class BlockData {
                 parentHolder,
                 blockFactory,
                 blockDrop,
-                relatedTags,
+                relatedBlockTags,
+                relatedItemTags,
                 properties
             );
         }

@@ -11,6 +11,7 @@ import org.avp.api.block.BlockData;
 import org.avp.api.block.BlockDataUtils;
 import org.avp.common.registry.AVPDeferredBlockRegistry;
 import org.avp.common.tag.AVPBlockTags;
+import org.avp.common.tag.AVPItemTags;
 
 import java.util.List;
 
@@ -59,8 +60,9 @@ public class AVPIndustrialGlassBlocks extends AVPDeferredBlockRegistry {
 
     private AVPIndustrialGlassBlocks() {
         var industrialGlassProperties = BlockBehaviour.Properties.ofFullCopy(Blocks.GLASS);
-        var glassTags = List.of(BlockTags.MINEABLE_WITH_PICKAXE, BlockTags.NEEDS_IRON_TOOL, AVPBlockTags.INDUSTRIAL_GLASS);
-        var blockDataBuilder = BlockDataUtils.transparent(industrialGlassProperties).tags(glassTags);
+        var blockTags = List.of(BlockTags.MINEABLE_WITH_PICKAXE, BlockTags.NEEDS_IRON_TOOL, AVPBlockTags.INDUSTRIAL_GLASS);
+        var itemTags = List.of(AVPItemTags.INDUSTRIAL_GLASS);
+        var blockDataBuilder = BlockDataUtils.transparent(industrialGlassProperties).blockTags(blockTags).itemTags(itemTags);
 
         glass = super.createHolder("industrial_glass", blockDataBuilder);
 

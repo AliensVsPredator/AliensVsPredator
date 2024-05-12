@@ -141,14 +141,14 @@ public class AVPEngineerBlocks extends AVPDeferredBlockRegistry {
         var soft = List.of(BlockTags.MINEABLE_WITH_SHOVEL, BlockTags.NEEDS_DIAMOND_TOOL);
         var stoneOrMetal = List.of(BlockTags.MINEABLE_WITH_PICKAXE, BlockTags.NEEDS_DIAMOND_TOOL);
 
-        Supplier<BlockData.Builder> pickProps = () -> BlockData.simple(properties).tags(stoneOrMetal);
-        Supplier<BlockData.Builder> shovelProps = () -> BlockData.simple(properties).tags(soft);
+        Supplier<BlockData.Builder> pickProps = () -> BlockData.simple(properties).blockTags(stoneOrMetal);
+        Supplier<BlockData.Builder> shovelProps = () -> BlockData.simple(properties).blockTags(soft);
         Function<Holder<Block>, BlockData.Builder> slabProps =
-            parent -> BlockDataUtils.slab(parent, properties).tags(stoneOrMetal);
+            parent -> BlockDataUtils.slab(parent, properties).blockTags(stoneOrMetal);
         Function<Holder<Block>, BlockData.Builder> stairProps =
-            parent -> BlockDataUtils.stairs(parent, properties).tags(stoneOrMetal);
+            parent -> BlockDataUtils.stairs(parent, properties).blockTags(stoneOrMetal);
         Function<Holder<Block>, BlockData.Builder> wallProps =
-            parent -> BlockDataUtils.wall(parent, properties).tags(stoneOrMetal);
+            parent -> BlockDataUtils.wall(parent, properties).blockTags(stoneOrMetal);
 
         brick = createHolder("brick", pickProps.get());
         brickSlab = createHolder("brick_slab", slabProps.apply(brick));

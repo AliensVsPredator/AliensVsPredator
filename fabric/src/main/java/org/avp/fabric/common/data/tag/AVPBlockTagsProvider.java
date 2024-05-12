@@ -26,7 +26,7 @@ public class AVPBlockTagsProvider extends FabricTagProvider.BlockTagProvider {
             var block = tuple.first().get();
             var blockData = tuple.second();
 
-            blockData.getRelatedTags().forEach(tag -> getOrCreateTagBuilder(tag).add(block));
+            blockData.getRelatedBlockTags().forEach(tag -> getOrCreateTagBuilder(tag).add(block));
         });
     }
 }

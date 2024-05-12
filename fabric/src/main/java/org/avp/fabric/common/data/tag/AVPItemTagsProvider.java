@@ -12,6 +12,7 @@ import org.avp.common.item.AVPArmorItems;
 import org.avp.common.item.AVPItems;
 import org.avp.common.item.AVPToolItems;
 import org.avp.common.item.AVPWeaponItems;
+import org.avp.common.registry.AVPDeferredBlockRegistry;
 import org.avp.common.tag.AVPItemTags;
 
 public class AVPItemTagsProvider extends FabricTagProvider.ItemTagProvider {
@@ -78,5 +79,12 @@ public class AVPItemTagsProvider extends FabricTagProvider.ItemTagProvider {
             .add(AVPToolItems.INSTANCE.orioniteSword.get())
             .add(AVPToolItems.INSTANCE.titaniumSword.get())
             .add(AVPToolItems.INSTANCE.veritaniumSword.get());
+
+        AVPDeferredBlockRegistry.getDataEntries().forEach(tuple -> {
+            var block = tuple.first().get();
+            var blockData = tuple.second();
+
+            blockData.getRelatedItemTags().forEach(tag -> getOrCreateTagBuilder(tag).add(block.asItem()));
+        });
     }
 }

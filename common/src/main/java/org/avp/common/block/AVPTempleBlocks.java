@@ -69,14 +69,14 @@ public class AVPTempleBlocks extends AVPDeferredBlockRegistry {
 
         var stone = List.of(BlockTags.MINEABLE_WITH_PICKAXE, BlockTags.NEEDS_IRON_TOOL);
 
-        Supplier<BlockData.Builder> pickProps = () -> BlockData.simple(brickProperties).tags(stone);
+        Supplier<BlockData.Builder> pickProps = () -> BlockData.simple(brickProperties).blockTags(stone);
 
         Function<Holder<Block>, BlockData.Builder> slabProps =
-            parent -> BlockDataUtils.slab(parent, brickProperties).tags(stone);
+            parent -> BlockDataUtils.slab(parent, brickProperties).blockTags(stone);
         Function<Holder<Block>, BlockData.Builder> stairProps =
-            parent -> BlockDataUtils.stairs(parent, brickProperties).tags(stone);
+            parent -> BlockDataUtils.stairs(parent, brickProperties).blockTags(stone);
         Function<Holder<Block>, BlockData.Builder> wallProps =
-            parent -> BlockDataUtils.wall(parent, brickProperties).tags(stone);
+            parent -> BlockDataUtils.wall(parent, brickProperties).blockTags(stone);
 
         brick = createHolder("brick", pickProps.get());
         brickSlab = createHolder("brick_slab", slabProps.apply(brick));
@@ -96,7 +96,7 @@ public class AVPTempleBlocks extends AVPDeferredBlockRegistry {
         floorStairs = createHolder("floor_stairs", stairProps.apply(floor));
         floorWall = createHolder("floor_wall", wallProps.apply(floor));
 
-        skulls = createHolder("skulls", BlockData.simple(skullProperties).tags(stone));
+        skulls = createHolder("skulls", BlockData.simple(skullProperties).blockTags(stone));
 
         tile = createHolder("tile", pickProps.get());
         tileSlab = createHolder("tile_slab", slabProps.apply(tile));

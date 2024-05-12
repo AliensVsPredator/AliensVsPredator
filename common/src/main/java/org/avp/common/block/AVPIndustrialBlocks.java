@@ -66,11 +66,11 @@ public class AVPIndustrialBlocks extends AVPDeferredBlockRegistry {
 
         var stoneOrMetal = List.of(BlockTags.MINEABLE_WITH_PICKAXE, BlockTags.NEEDS_IRON_TOOL);
 
-        Supplier<BlockData.Builder> pickProps = () -> BlockData.simple(metalProperties).tags(stoneOrMetal);
+        Supplier<BlockData.Builder> pickProps = () -> BlockData.simple(metalProperties).blockTags(stoneOrMetal);
         Function<Holder<Block>, BlockData.Builder> slabProps =
-            parent -> BlockDataUtils.slab(parent, metalProperties).tags(stoneOrMetal);
+            parent -> BlockDataUtils.slab(parent, metalProperties).blockTags(stoneOrMetal);
         Function<Holder<Block>, BlockData.Builder> stairProps =
-            parent -> BlockDataUtils.stairs(parent, metalProperties).tags(stoneOrMetal);
+            parent -> BlockDataUtils.stairs(parent, metalProperties).blockTags(stoneOrMetal);
 
         brick = createHolder("brick", pickProps.get());
         brickSlab = createHolder("brick_slab", slabProps.apply(brick));
@@ -98,6 +98,6 @@ public class AVPIndustrialBlocks extends AVPDeferredBlockRegistry {
         wallSlab = createHolder("wall_slab", slabProps.apply(wall));
         wallStairs = createHolder("wall_stairs", stairProps.apply(wall));
 
-        wallHazard = createHolder("wall_hazard", BlockDataUtils.rotatedPillar(metalProperties).tags(stoneOrMetal));
+        wallHazard = createHolder("wall_hazard", BlockDataUtils.rotatedPillar(metalProperties).blockTags(stoneOrMetal));
     }
 }
