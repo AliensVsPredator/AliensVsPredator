@@ -11,7 +11,7 @@ import java.util.function.BiFunction;
 
 import org.avp.api.Holder;
 import org.avp.api.block.BlockData;
-import org.avp.api.block.drop.BlockDropUtils;
+import org.avp.api.block.loot_table.LootProviders;
 import org.avp.common.item.AVPItems;
 import org.avp.common.registry.AVPDeferredBlockRegistry;
 
@@ -79,7 +79,11 @@ public class AVPOreBlocks extends AVPDeferredBlockRegistry {
 
         BiFunction<BlockBehaviour.Properties, Holder<Item>, BlockData.Builder> oreProps = (properties, item) -> BlockData.builder(
             properties
-        ).drop(BlockDropUtils.ore(item));
+        ).lootProvider(block -> LootProviders.ORE.apply(block, item.get()));
+
+        BiFunction<BlockBehaviour.Properties, Holder<Item>, BlockData.Builder> silicaOreProps = (properties, item) -> BlockData.builder(
+            properties
+        ).lootProvider(block -> LootProviders.ORE_VARIABLE.apply(block, item.get(), 3, 5));
 
         oreBauxite = createOreHolder("bauxite", oreProps.apply(bauxiteProperties, AVPItems.INSTANCE.rawBauxite).blockTags(stoneTier));
         oreCobalt = createOreHolder("cobalt", oreProps.apply(cobaltProperties, AVPItems.INSTANCE.cobalt).blockTags(diamondTier));
@@ -87,7 +91,7 @@ public class AVPOreBlocks extends AVPDeferredBlockRegistry {
         oreLithium = createOreHolder("lithium", oreProps.apply(lithiumProperties, AVPItems.INSTANCE.dustLithium).blockTags(woodTier));
         oreMonazite = createOreHolder("monazite", oreProps.apply(monaziteProperties, AVPItems.INSTANCE.neodymium).blockTags(diamondTier));
 
-        oreSilica = createOreHolder("silica", oreProps.apply(silicaProperties, AVPItems.INSTANCE.silica).blockTags().blockTags(ironTier));
+        oreSilica = createOreHolder("silica", silicaOreProps.apply(silicaProperties, AVPItems.INSTANCE.silica).blockTags().blockTags(ironTier));
 
         oreTitanium = createOreHolder("titanium", oreProps.apply(titaniumProperties, AVPItems.INSTANCE.rawTitanium).blockTags().blockTags(ironTier));
 

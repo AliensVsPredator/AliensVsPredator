@@ -6,9 +6,8 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.properties.WoodType;
 
 import org.avp.api.Holder;
-import org.avp.api.block.drop.BlockDrops;
-import org.avp.api.block.drop.key.BlockDropKeys;
 import org.avp.api.block.factory.BlockFactories;
+import org.avp.api.block.loot_table.LootProviders;
 
 public class BlockDataUtils {
 
@@ -34,7 +33,7 @@ public class BlockDataUtils {
         return BlockData.builder(properties)
             .parent(parentHolder)
             .factory(BlockFactories.GRASS)
-            .drop(BlockDrops.OTHER.apply(BlockDropKeys.OTHER, parentHolder::get));
+            .lootProvider(block -> LootProviders.OTHER.apply(block, parentHolder.get()));
     }
 
     public static BlockData.Builder rotatedPillar(BlockBehaviour.Properties properties) {
