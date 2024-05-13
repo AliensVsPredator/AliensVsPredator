@@ -19,12 +19,12 @@ public class FlamethrowerSevastopolItem extends AbstractAVPWeaponItem {
         1,
         1,
         AVPSoundEvents.INSTANCE.itemWeaponFlamethrowerShoot,
-        16.0D,
-        0.0F
+        16,
+        0
     );
 
     private static final WeaponItemData WEAPON_ITEM_DATA = new WeaponItemData(
-        1.0F,
+        1,
         AmmunitionStrategy.builder(500, List.of(AVPAmmunitionPartItems.INSTANCE.ammoFlamethrower::get))
             .setHasAmmunitionBehavior(HasAmmunitionBehavior.LOADED)
             .build(),

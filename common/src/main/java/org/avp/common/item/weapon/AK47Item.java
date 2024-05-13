@@ -20,12 +20,12 @@ public class AK47Item extends AbstractAVPWeaponItem {
         1,
         2,
         AVPSoundEvents.INSTANCE.itemWeaponAk47Shoot,
-        64.0D,
-        0.0F
+        64,
+        0
     );
 
     private static final WeaponItemData WEAPON_ITEM_DATA = new WeaponItemData(
-        1.0F,
+        1,
         AmmunitionStrategy.builder(
             32,
             List.of(

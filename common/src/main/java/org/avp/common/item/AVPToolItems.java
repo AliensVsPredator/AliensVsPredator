@@ -58,45 +58,45 @@ public class AVPToolItems extends AVPDeferredItemRegistry {
     public final Holder<Item> veritaniumSword;
 
     private AVPToolItems() {
-        aluminumAxe = createHolder("aluminum_axe", () -> new ModdedAxeItem(AVPToolTiers.ALUMINUM, 5.0F, -3.0F, new Item.Properties()));
-        aluminumHoe = createHolder("aluminum_hoe", () -> new ModdedHoeItem(AVPToolTiers.ALUMINUM, -1, -2.0F, new Item.Properties()));
+        aluminumAxe = createHolder("aluminum_axe", () -> new ModdedAxeItem(AVPToolTiers.ALUMINUM, 5, -3, new Item.Properties()));
+        aluminumHoe = createHolder("aluminum_hoe", () -> new ModdedHoeItem(AVPToolTiers.ALUMINUM, -1, -2, new Item.Properties()));
         aluminumPickaxe = createHolder(
             "aluminum_pickaxe",
             () -> new ModdedPickaxeItem(AVPToolTiers.ALUMINUM, 1, -2.8F, new Item.Properties())
         );
-        aluminumShovel = createHolder("aluminum_shovel", () -> new ShovelItem(AVPToolTiers.ALUMINUM, 1.5F, -3.0F, new Item.Properties()));
+        aluminumShovel = createHolder("aluminum_shovel", () -> new ShovelItem(AVPToolTiers.ALUMINUM, 1.5F, -3, new Item.Properties()));
         aluminumSword = createHolder("aluminum_sword", () -> new SwordItem(AVPToolTiers.ALUMINUM, 3, -2.4F, new Item.Properties()));
 
-        orioniteAxe = createHolder("orionite_axe", () -> new ModdedAxeItem(AVPToolTiers.ORIONITE, 5.0F, -3.0F, new Item.Properties()));
-        orioniteHoe = createHolder("orionite_hoe", () -> new ModdedHoeItem(AVPToolTiers.ORIONITE, -3, 0.0F, new Item.Properties()));
+        orioniteAxe = createHolder("orionite_axe", () -> new ModdedAxeItem(AVPToolTiers.ORIONITE, 5, -3, new Item.Properties()));
+        orioniteHoe = createHolder("orionite_hoe", () -> new ModdedHoeItem(AVPToolTiers.ORIONITE, -3, 0, new Item.Properties()));
         orionitePickaxe = createHolder(
             "orionite_pickaxe",
             () -> new ModdedPickaxeItem(AVPToolTiers.ORIONITE, 1, -2.8F, new Item.Properties())
         );
-        orioniteShovel = createHolder("orionite_shovel", () -> new ShovelItem(AVPToolTiers.ORIONITE, 1.5F, -3.0F, new Item.Properties()));
+        orioniteShovel = createHolder("orionite_shovel", () -> new ShovelItem(AVPToolTiers.ORIONITE, 1.5F, -3, new Item.Properties()));
         orioniteSword = createHolder("orionite_sword", () -> new SwordItem(AVPToolTiers.ORIONITE, 3, -2.4F, new Item.Properties()));
 
-        titaniumAxe = createHolder("titanium_axe", () -> new ModdedAxeItem(AVPToolTiers.TITANIUM, 5.0F, -3.0F, new Item.Properties()));
-        titaniumHoe = createHolder("titanium_hoe", () -> new ModdedHoeItem(AVPToolTiers.TITANIUM, -2, -1.0F, new Item.Properties()));
+        titaniumAxe = createHolder("titanium_axe", () -> new ModdedAxeItem(AVPToolTiers.TITANIUM, 5, -3, new Item.Properties()));
+        titaniumHoe = createHolder("titanium_hoe", () -> new ModdedHoeItem(AVPToolTiers.TITANIUM, -2, -1, new Item.Properties()));
         titaniumPickaxe = createHolder(
             "titanium_pickaxe",
             () -> new ModdedPickaxeItem(AVPToolTiers.TITANIUM, 1, -2.8F, new Item.Properties())
         );
-        titaniumShovel = createHolder("titanium_shovel", () -> new ShovelItem(AVPToolTiers.TITANIUM, 1.5F, -3.0F, new Item.Properties()));
+        titaniumShovel = createHolder("titanium_shovel", () -> new ShovelItem(AVPToolTiers.TITANIUM, 1.5F, -3, new Item.Properties()));
         titaniumSword = createHolder("titanium_sword", () -> new SwordItem(AVPToolTiers.TITANIUM, 3, -2.4F, new Item.Properties()));
 
         veritaniumAxe = createHolder(
             "veritanium_axe",
-            () -> new ModdedAxeItem(AVPToolTiers.VERITANIUM, 5.0F, -3.0F, new Item.Properties())
+            () -> new ModdedAxeItem(AVPToolTiers.VERITANIUM, 5, -3, new Item.Properties())
         );
-        veritaniumHoe = createHolder("veritanium_hoe", () -> new ModdedHoeItem(AVPToolTiers.VERITANIUM, -4, 0.0F, new Item.Properties()));
+        veritaniumHoe = createHolder("veritanium_hoe", () -> new ModdedHoeItem(AVPToolTiers.VERITANIUM, -4, 0, new Item.Properties()));
         veritaniumPickaxe = createHolder(
             "veritanium_pickaxe",
             () -> new ModdedPickaxeItem(AVPToolTiers.VERITANIUM, 1, -2.8F, new Item.Properties())
         );
         veritaniumShovel = createHolder(
             "veritanium_shovel",
-            () -> new ShovelItem(AVPToolTiers.VERITANIUM, 1.5F, -3.0F, new Item.Properties())
+            () -> new ShovelItem(AVPToolTiers.VERITANIUM, 1.5F, -3, new Item.Properties())
         );
         veritaniumSword = createHolder("veritanium_sword", () -> new SwordItem(AVPToolTiers.VERITANIUM, 3, -2.4F, new Item.Properties()));
     }

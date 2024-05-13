@@ -30,7 +30,7 @@ public class LootProviders {
         LootTable.lootTable().withPool(
             LootPool.lootPool()
                 .when(ExplosionCondition.survivesExplosion())
-                .setRolls(ConstantValue.exactly(1.0F))
+                .setRolls(ConstantValue.exactly(1))
                 .add(LootItem.lootTableItem(other))
         );
 
@@ -39,7 +39,7 @@ public class LootProviders {
     public static final BiFunction<Block, ItemLike, LootTable.Builder> ORE = (block, item) ->
         LootTable.lootTable().withPool(
             LootPool.lootPool()
-                .setRolls(ConstantValue.exactly(1.0F))
+                .setRolls(ConstantValue.exactly(1))
                 .add(
                     LootItem.lootTableItem(block)
                         .when(HAS_SILK_TOUCH)
@@ -54,7 +54,7 @@ public class LootProviders {
     public static final QuadFunction<Block, ItemLike, Integer, Integer, LootTable.Builder> ORE_VARIABLE = (block, item, min, max) ->
         LootTable.lootTable().withPool(
             LootPool.lootPool()
-                .setRolls(ConstantValue.exactly(1.0F))
+                .setRolls(ConstantValue.exactly(1))
                 .add(
                     LootItem.lootTableItem(block)
                         .when(HAS_SILK_TOUCH)

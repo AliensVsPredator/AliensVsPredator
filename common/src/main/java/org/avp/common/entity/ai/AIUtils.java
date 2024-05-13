@@ -18,9 +18,9 @@ public class AIUtils {
 
     public static void addBasicAlienAI(Monster monster, GoalSelector goalSelector, GoalSelector targetSelector) {
         goalSelector.addGoal(1, new FloatGoal(monster));
-        goalSelector.addGoal(4, new MeleeAttackGoal(monster, 1.0, true));
-        goalSelector.addGoal(5, new WaterAvoidingRandomStrollGoal(monster, 1.0));
-        goalSelector.addGoal(6, new LookAtPlayerGoal(monster, Player.class, 8.0F));
+        goalSelector.addGoal(4, new MeleeAttackGoal(monster, 1, true));
+        goalSelector.addGoal(5, new WaterAvoidingRandomStrollGoal(monster, 1));
+        goalSelector.addGoal(6, new LookAtPlayerGoal(monster, Player.class, 8));
         goalSelector.addGoal(6, new RandomLookAroundGoal(monster));
 
         targetSelector.addGoal(1, new HurtByTargetGoal(monster));
@@ -38,8 +38,8 @@ public class AIUtils {
 
     public static void addFacehuggerAI(Monster monster, GoalSelector goalSelector, GoalSelector targetSelector) {
         goalSelector.addGoal(1, new FloatGoal(monster));
-        goalSelector.addGoal(2, new MeleeAttackGoal(monster, 1.0, true));
-        goalSelector.addGoal(3, new WaterAvoidingRandomStrollGoal(monster, 1.0));
+        goalSelector.addGoal(2, new MeleeAttackGoal(monster, 1, true));
+        goalSelector.addGoal(3, new WaterAvoidingRandomStrollGoal(monster, 1));
         targetSelector.addGoal(
             1,
             new NearestAttackableTargetGoal<>(

@@ -20,12 +20,12 @@ public class M88Mod4CombatPistolItem extends AbstractAVPWeaponItem {
         1,
         7,
         AVPSoundEvents.INSTANCE.itemWeaponCombatPistolShoot,
-        32.0D,
-        0.0F
+        32,
+        0
     );
 
     private static final WeaponItemData WEAPON_ITEM_DATA = new WeaponItemData(
-        1.0F,
+        1,
         AmmunitionStrategy.builder(
             18,
             List.of(

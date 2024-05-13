@@ -20,12 +20,12 @@ public class SniperRifleItem extends AbstractAVPWeaponItem {
         1,
         30,
         AVPSoundEvents.INSTANCE.itemWeaponSniperRifleShoot,
-        128.0D,
+        128,
         1.5F
     );
 
     private static final WeaponItemData WEAPON_ITEM_DATA = new WeaponItemData(
-        1.0F,
+        1,
         AmmunitionStrategy.builder(
             6,
             List.of(

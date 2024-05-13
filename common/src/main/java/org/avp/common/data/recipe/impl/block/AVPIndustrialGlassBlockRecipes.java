@@ -34,7 +34,7 @@ public final class AVPIndustrialGlassBlockRecipes {
                 .save(recipeOutput);
 
             // All colored industrial glass blocks can be blasted again to remove dyed colors.
-            SimpleCookingRecipeBuilder.blasting(Ingredient.of(coloredIndustrialGlassBlock), RecipeCategory.MISC, industrialGlassOutput, 0.0F, 100)
+            SimpleCookingRecipeBuilder.blasting(Ingredient.of(coloredIndustrialGlassBlock), RecipeCategory.MISC, industrialGlassOutput, 0, 100)
                 .unlockedBy("has_industrial_glass", AVPRecipeProvider.has(industrialGlassOutput))
                 .save(recipeOutput, AVPConstants.MOD_ID + ":industrial_glass_from_blasting_" + coloredIndustrialGlassName);
         });

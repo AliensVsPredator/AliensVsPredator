@@ -20,8 +20,8 @@ public class M41APulseRifleItem extends AbstractAVPWeaponItem {
         4,
         10,
         AVPSoundEvents.INSTANCE.itemWeaponPulseRifleShoot,
-        64.0D,
-        1F
+        64,
+        1
     );
 
     private static final FireMode FIRE_MODE_AUTOMATIC = new FireMode(
@@ -29,12 +29,12 @@ public class M41APulseRifleItem extends AbstractAVPWeaponItem {
         1,
         2,
         AVPSoundEvents.INSTANCE.itemWeaponPulseRifleShoot, // TODO:
-        64.0D,
+        64,
         0.25F
     );
 
     private static final WeaponItemData WEAPON_ITEM_DATA = new WeaponItemData(
-        1.0F,
+        1,
         AmmunitionStrategy.builder(
             99,
             List.of(

@@ -136,7 +136,7 @@ public class AVPEngineerBlocks extends AVPDeferredBlockRegistry {
     }
 
     private AVPEngineerBlocks() {
-        var properties = BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_BLOCK).strength(100.0F, 1800.0F);
+        var properties = BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_BLOCK).strength(100, 1800);
 
         var soft = List.of(BlockTags.MINEABLE_WITH_SHOVEL, BlockTags.NEEDS_DIAMOND_TOOL);
         var stoneOrMetal = List.of(BlockTags.MINEABLE_WITH_PICKAXE, BlockTags.NEEDS_DIAMOND_TOOL);

@@ -70,7 +70,7 @@ public class AVPOreBlocks extends AVPDeferredBlockRegistry {
             .strength(2.2F, 1.4F);
 
         var titaniumProperties = BlockBehaviour.Properties.ofFullCopy(Blocks.STONE)
-            .strength(4.0F, 4.0F);
+            .strength(4, 4);
 
         var woodTier = List.of(BlockTags.MINEABLE_WITH_PICKAXE);
         var stoneTier = List.of(BlockTags.MINEABLE_WITH_PICKAXE, BlockTags.NEEDS_STONE_TOOL);

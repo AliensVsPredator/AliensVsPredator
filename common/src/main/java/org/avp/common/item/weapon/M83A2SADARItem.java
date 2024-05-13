@@ -20,12 +20,12 @@ public class M83A2SADARItem extends AbstractAVPWeaponItem {
         1,
         60,
         AVPSoundEvents.INSTANCE.itemWeaponRocketLauncherShoot,
-        100.0D,
+        100,
         1.5F
     );
 
     private static final WeaponItemData WEAPON_ITEM_DATA = new WeaponItemData(
-        1.0F,
+        1,
         AmmunitionStrategy.builder(
             4,
             List.of(

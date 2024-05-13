@@ -64,8 +64,8 @@ public class AVPTempleBlocks extends AVPDeferredBlockRegistry {
     }
 
     private AVPTempleBlocks() {
-        var brickProperties = BlockBehaviour.Properties.ofFullCopy(Blocks.STONE).strength(3.0F, 6.0F);
-        var skullProperties = BlockBehaviour.Properties.ofFullCopy(Blocks.BONE_BLOCK).strength(3.0F, 6.0F);
+        var brickProperties = BlockBehaviour.Properties.ofFullCopy(Blocks.STONE).strength(3, 6);
+        var skullProperties = BlockBehaviour.Properties.ofFullCopy(Blocks.BONE_BLOCK).strength(3, 6);
 
         var stone = List.of(BlockTags.MINEABLE_WITH_PICKAXE, BlockTags.NEEDS_IRON_TOOL);
 

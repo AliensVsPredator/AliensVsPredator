@@ -53,7 +53,7 @@ public class AVPYautjaShipBlocks extends AVPDeferredBlockRegistry {
     private AVPYautjaShipBlocks() {
         var metalProperties = BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_BLOCK)
             .mapColor(MapColor.COLOR_RED)
-            .strength(75.0F, 1500.0F);
+            .strength(75, 1500);
 
         var metal = List.of(BlockTags.MINEABLE_WITH_PICKAXE, BlockTags.NEEDS_DIAMOND_TOOL);
 

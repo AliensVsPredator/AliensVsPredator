@@ -20,12 +20,12 @@ public class M3712ShotgunItem extends AbstractAVPWeaponItem {
         1,
         20,
         AVPSoundEvents.INSTANCE.itemWeaponShotgunShoot,
-        6.0D,
+        6,
         1.5F
     );
 
     private static final WeaponItemData WEAPON_ITEM_DATA = new WeaponItemData(
-        1.0F,
+        1,
         AmmunitionStrategy.builder(
             6,
             List.of(

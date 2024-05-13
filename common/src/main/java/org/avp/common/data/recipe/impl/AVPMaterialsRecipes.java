@@ -36,7 +36,7 @@ public final class AVPMaterialsRecipes {
             .save(recipeOutput);
 
         var poylmerOutput = AVPItems.INSTANCE.polymer.get();
-        SimpleCookingRecipeBuilder.smelting(Ingredient.of(Items.SLIME_BALL), RecipeCategory.MISC, poylmerOutput, 0.0F, 200)
+        SimpleCookingRecipeBuilder.smelting(Ingredient.of(Items.SLIME_BALL), RecipeCategory.MISC, poylmerOutput, 0, 200)
             .unlockedBy("has_slime_ball", AVPRecipeProvider.has(Items.SLIME_BALL))
             .save(recipeOutput, AVPConstants.MOD_ID + ":polymer_from_smelting_slime_ball");
 
