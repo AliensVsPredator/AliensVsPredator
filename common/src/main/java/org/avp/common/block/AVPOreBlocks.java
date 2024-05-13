@@ -99,7 +99,7 @@ public class AVPOreBlocks extends AVPDeferredBlockRegistry {
 
         oreTitanium = createOreHolder("titanium", oreProps.apply(titaniumProperties, AVPItems.INSTANCE.rawTitanium).blockTags().blockTags(ironTier));
 
-        // NOTE: DO NOT USE AVPOreBlocks#createHolder HERE.
+        // NOTE: DO NOT USE createOreHolder HERE.
         rawBauxiteBlock = createHolder("raw_bauxite_block", BlockData.simple(bauxiteProperties).blockTags(stoneTier));
         rawTitaniumBlock = createHolder("raw_titanium_block", BlockData.simple(titaniumProperties).blockTags(ironTier));
         cobaltBlock = createHolder("cobalt_block", BlockData.simple(cobaltProperties).blockTags(diamondTier));

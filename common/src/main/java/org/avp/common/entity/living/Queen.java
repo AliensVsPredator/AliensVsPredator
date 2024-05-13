@@ -4,8 +4,13 @@ import mod.azure.azurelib.common.api.common.animatable.GeoEntity;
 import mod.azure.azurelib.common.internal.common.core.animatable.instance.AnimatableInstanceCache;
 import mod.azure.azurelib.common.internal.common.core.animation.AnimatableManager;
 import mod.azure.azurelib.common.internal.common.util.AzureLibUtil;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerBossEvent;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.util.Mth;
+import net.minecraft.world.BossEvent;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -23,10 +28,22 @@ public class Queen extends Monster implements GeoEntity {
 
     private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
 
+    private final ServerBossEvent bossEvent = (ServerBossEvent) new ServerBossEvent(
+        this.getDisplayName(), BossEvent.BossBarColor.GREEN, BossEvent.BossBarOverlay.PROGRESS
+    ).setDarkenScreen(true);
+
     public Queen(EntityType<? extends Monster> entityType, Level level) {
         super(entityType, level);
         this.setMaxUpStep(1.0F);
         this.setPersistenceRequired();
+    }
+
+    @Override
+    public void readAdditionalSaveData(@NotNull CompoundTag compoundTag) {
+        super.readAdditionalSaveData(compoundTag);
+        if (this.hasCustomName()) {
+            this.bossEvent.setName(this.getDisplayName());
+        }
     }
 
     @Override
@@ -49,6 +66,18 @@ public class Queen extends Monster implements GeoEntity {
         targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, Queen.class, true, Queen.class::isInstance));
     }
 
+    @Override
+    protected void customServerAiStep() {
+        super.customServerAiStep();
+        this.bossEvent.setProgress(this.getHealth() / this.getMaxHealth());
+    }
+
+    @Override
+    public void setCustomName(@Nullable Component component) {
+        super.setCustomName(component);
+        this.bossEvent.setName(this.getDisplayName());
+    }
+
     @Nullable
     @Override
     protected SoundEvent getAmbientSound() {
@@ -63,6 +92,18 @@ public class Queen extends Monster implements GeoEntity {
     @Override
     protected SoundEvent getHurtSound(@NotNull DamageSource damageSource) {
         return AVPSoundEvents.INSTANCE.entityQueenHurt.get();
+    }
+
+    @Override
+    public void startSeenByPlayer(@NotNull ServerPlayer serverPlayer) {
+        super.startSeenByPlayer(serverPlayer);
+        bossEvent.addPlayer(serverPlayer);
+    }
+
+    @Override
+    public void stopSeenByPlayer(@NotNull ServerPlayer serverPlayer) {
+        super.stopSeenByPlayer(serverPlayer);
+        bossEvent.removePlayer(serverPlayer);
     }
 
     @Override
