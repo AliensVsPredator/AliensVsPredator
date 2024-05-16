@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.function.Supplier;
 
 import org.avp.api.Holder;
+import org.avp.api.entity.SilencedEntityTypeBuilder;
 import org.avp.common.item.AVPSpawnEggItems;
 import org.avp.common.service.Services;
 
@@ -29,7 +30,7 @@ public class AVPSimpleDeferredEntityTypeRegistry extends AVPAbstractDeferredEnti
     }
 
     protected <T extends Entity> Holder<EntityType<T>> createHolder(String registryName, EntityType.Builder<T> builder) {
-        return createHolder(registryName, () -> builder.build(registryName));
+        return createHolder(registryName, () -> ((SilencedEntityTypeBuilder) builder).buildWithoutDataFixerCheck());
     }
 
     protected <T extends Mob> Holder<EntityType<T>> createMobHolder(
@@ -38,7 +39,7 @@ public class AVPSimpleDeferredEntityTypeRegistry extends AVPAbstractDeferredEnti
         int highlightColor,
         EntityType.Builder<T> builder
     ) {
-        var holder = createHolder(registryName, () -> builder.build(registryName));
+        var holder = createHolder(registryName, () -> ((SilencedEntityTypeBuilder) builder).<T>buildWithoutDataFixerCheck());
         livingEntries.add(holder);
 
         var spawnEggItemHolder = Services.ITEM_SERVICE.createHolder(
