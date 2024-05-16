@@ -29,7 +29,9 @@ public class Queen extends Monster implements GeoEntity {
     private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
 
     private final ServerBossEvent bossEvent = (ServerBossEvent) new ServerBossEvent(
-        this.getDisplayName(), BossEvent.BossBarColor.GREEN, BossEvent.BossBarOverlay.PROGRESS
+        this.getDisplayName(),
+        BossEvent.BossBarColor.GREEN,
+        BossEvent.BossBarOverlay.PROGRESS
     ).setDarkenScreen(true);
 
     public Queen(EntityType<? extends Monster> entityType, Level level) {

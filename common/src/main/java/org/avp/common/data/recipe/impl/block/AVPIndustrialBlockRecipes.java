@@ -3,6 +3,7 @@ package org.avp.common.data.recipe.impl.block;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.world.item.Items;
+
 import org.avp.common.block.AVPIndustrialBlocks;
 import org.avp.common.data.recipe.AVPShapedRecipeBuilder;
 import org.avp.common.data.recipe.RecipeUtils;

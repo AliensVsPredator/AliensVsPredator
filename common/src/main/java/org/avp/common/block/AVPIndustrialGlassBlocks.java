@@ -6,15 +6,16 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockBehaviour;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import org.avp.api.Holder;
 import org.avp.api.block.BlockData;
 import org.avp.api.block.BlockDataUtils;
 import org.avp.common.registry.AVPDeferredBlockRegistry;
 import org.avp.common.tag.AVPBlockTags;
 import org.avp.common.tag.AVPItemTags;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class AVPIndustrialGlassBlocks extends AVPDeferredBlockRegistry {
 
@@ -97,5 +98,8 @@ public class AVPIndustrialGlassBlocks extends AVPDeferredBlockRegistry {
         return coloredIndustrialGlassHolder;
     }
 
-    public record ColoredIndustrialGlassHolder(Item dyeItem, Holder<Block> holder) {}
+    public record ColoredIndustrialGlassHolder(
+        Item dyeItem,
+        Holder<Block> holder
+    ) {}
 }

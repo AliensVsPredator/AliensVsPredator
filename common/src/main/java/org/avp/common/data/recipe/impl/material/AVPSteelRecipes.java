@@ -5,9 +5,9 @@ import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.data.recipes.SimpleCookingRecipeBuilder;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
+
 import org.avp.common.AVPConstants;
 import org.avp.common.block.AVPBlocks;
-import org.avp.common.block.AVPOreBlocks;
 import org.avp.common.data.recipe.AVPRecipeHelper;
 import org.avp.common.data.recipe.AVPRecipeProvider;
 import org.avp.common.item.AVPItems;

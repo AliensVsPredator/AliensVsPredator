@@ -63,7 +63,9 @@ public class Yautja extends Monster implements GeoEntity {
     private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
 
     private final ServerBossEvent bossEvent = (ServerBossEvent) new ServerBossEvent(
-        this.getDisplayName(), BossEvent.BossBarColor.RED, BossEvent.BossBarOverlay.PROGRESS
+        this.getDisplayName(),
+        BossEvent.BossBarColor.RED,
+        BossEvent.BossBarOverlay.PROGRESS
     ).setDarkenScreen(false);
 
     public Yautja(EntityType<? extends Monster> entityType, Level level) {
@@ -151,7 +153,6 @@ public class Yautja extends Monster implements GeoEntity {
         super.stopSeenByPlayer(serverPlayer);
         bossEvent.removePlayer(serverPlayer);
     }
-
 
     @Override
     public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {

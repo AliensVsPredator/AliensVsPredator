@@ -123,7 +123,11 @@ public class Acid extends Entity {
         if (level.isClientSide || tickCount % 10 != 0)
             return;
 
-        var entities = level.getEntities(this, this.getBoundingBox(), entity -> AVPPredicates.IS_LIVING.test(entity) || entity instanceof Acid);
+        var entities = level.getEntities(
+            this,
+            this.getBoundingBox(),
+            entity -> AVPPredicates.IS_LIVING.test(entity) || entity instanceof Acid
+        );
         entities.forEach(entity -> {
             // Ignore immortal players.
             if (entity instanceof Player player && AVPPredicates.IS_IMMORTAL.test(player)) {

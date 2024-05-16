@@ -16,18 +16,22 @@ import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 import net.minecraft.world.level.storage.loot.predicates.MatchTool;
 import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
 import net.minecraft.world.level.storage.loot.providers.number.UniformGenerator;
-import org.avp.api.QuadFunction;
 
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
+import org.avp.api.QuadFunction;
+
 public class LootProviders {
 
     public static final LootItemCondition.Builder HAS_SILK_TOUCH =
-        MatchTool.toolMatches(net.minecraft.advancements.critereon.ItemPredicate.Builder.item().hasEnchantment(new EnchantmentPredicate(Enchantments.SILK_TOUCH, MinMaxBounds.Ints.atLeast(1))));
+        MatchTool.toolMatches(
+            net.minecraft.advancements.critereon.ItemPredicate.Builder.item()
+                .hasEnchantment(new EnchantmentPredicate(Enchantments.SILK_TOUCH, MinMaxBounds.Ints.atLeast(1)))
+        );
 
-    public static final BiFunction<Block, ItemLike, LootTable.Builder> OTHER = (block, other) ->
-        LootTable.lootTable().withPool(
+    public static final BiFunction<Block, ItemLike, LootTable.Builder> OTHER = (block, other) -> LootTable.lootTable()
+        .withPool(
             LootPool.lootPool()
                 .when(ExplosionCondition.survivesExplosion())
                 .setRolls(ConstantValue.exactly(1))
@@ -36,8 +40,8 @@ public class LootProviders {
 
     public static final Function<Block, LootTable.Builder> SELF = block -> OTHER.apply(block, block);
 
-    public static final BiFunction<Block, ItemLike, LootTable.Builder> ORE = (block, item) ->
-        LootTable.lootTable().withPool(
+    public static final BiFunction<Block, ItemLike, LootTable.Builder> ORE = (block, item) -> LootTable.lootTable()
+        .withPool(
             LootPool.lootPool()
                 .setRolls(ConstantValue.exactly(1))
                 .add(
@@ -51,8 +55,13 @@ public class LootProviders {
                 )
         );
 
-    public static final QuadFunction<Block, ItemLike, Integer, Integer, LootTable.Builder> ORE_VARIABLE = (block, item, min, max) ->
-        LootTable.lootTable().withPool(
+    public static final QuadFunction<Block, ItemLike, Integer, Integer, LootTable.Builder> ORE_VARIABLE = (
+        block,
+        item,
+        min,
+        max
+    ) -> LootTable.lootTable()
+        .withPool(
             LootPool.lootPool()
                 .setRolls(ConstantValue.exactly(1))
                 .add(

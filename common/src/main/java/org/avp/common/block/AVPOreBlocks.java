@@ -92,12 +92,21 @@ public class AVPOreBlocks extends AVPDeferredBlockRegistry {
         oreBauxite = createOreHolder("bauxite", oreProps.apply(bauxiteProperties, AVPItems.INSTANCE.rawBauxite).blockTags(stoneTier));
         oreCobalt = createOreHolder("cobalt", oreProps.apply(cobaltProperties, AVPItems.INSTANCE.cobalt).blockTags(diamondTier));
 
-        oreLithium = createOreHolder("lithium", lithiumOreProps.apply(lithiumProperties, AVPItems.INSTANCE.dustLithium).blockTags(woodTier));
+        oreLithium = createOreHolder(
+            "lithium",
+            lithiumOreProps.apply(lithiumProperties, AVPItems.INSTANCE.dustLithium).blockTags(woodTier)
+        );
         oreMonazite = createOreHolder("monazite", oreProps.apply(monaziteProperties, AVPItems.INSTANCE.neodymium).blockTags(diamondTier));
 
-        oreSilica = createOreHolder("silica", silicaOreProps.apply(silicaProperties, AVPItems.INSTANCE.silica).blockTags().blockTags(ironTier));
+        oreSilica = createOreHolder(
+            "silica",
+            silicaOreProps.apply(silicaProperties, AVPItems.INSTANCE.silica).blockTags().blockTags(ironTier)
+        );
 
-        oreTitanium = createOreHolder("titanium", oreProps.apply(titaniumProperties, AVPItems.INSTANCE.rawTitanium).blockTags().blockTags(ironTier));
+        oreTitanium = createOreHolder(
+            "titanium",
+            oreProps.apply(titaniumProperties, AVPItems.INSTANCE.rawTitanium).blockTags().blockTags(ironTier)
+        );
 
         // NOTE: DO NOT USE createOreHolder HERE.
         rawBauxiteBlock = createHolder("raw_bauxite_block", BlockData.simple(bauxiteProperties).blockTags(stoneTier));
