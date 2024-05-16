@@ -63,13 +63,21 @@ public class Acid extends Entity {
         var level = level();
 
         applyGravity(level);
-        damageBlock(level);
-        damageEntities(level);
+
+        if (isVolatile()) {
+            damageBlock(level);
+            damageEntities(level);
+        }
+
         createParticlesAndSounds(level);
 
         if (tickCount > MAX_LIFE_IN_TICKS * this.getMultiplier()) {
             this.kill();
         }
+    }
+
+    private boolean isVolatile() {
+        return !this.isInWater();
     }
 
     private void damageBlock(Level level) {
