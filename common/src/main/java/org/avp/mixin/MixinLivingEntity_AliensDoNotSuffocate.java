@@ -1,6 +1,7 @@
 package org.avp.mixin;
 
-import net.minecraft.util.Mth;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -13,17 +14,17 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(LivingEntity.class)
-public abstract class MixinLivingEntityReduceFallDamage extends Entity {
+public abstract class MixinLivingEntity_AliensDoNotSuffocate extends Entity {
 
-    protected MixinLivingEntityReduceFallDamage(EntityType<?> entityType, Level level) {
+    protected MixinLivingEntity_AliensDoNotSuffocate(EntityType<?> entityType, Level level) {
         super(entityType, level);
     }
 
-    @Inject(at = @At("HEAD"), cancellable = true, method = "calculateFallDamage")
-    void calculateReducedFallDamage(float height, float damage, CallbackInfoReturnable<Integer> callbackInfoReturnable) {
+    @Inject(at = @At("HEAD"), cancellable = true, method = "hurt")
+    void ignoreSuffocationDamage(DamageSource damageSource, float damage, CallbackInfoReturnable<Boolean> callbackInfoReturnable) {
         var self = MixinUtils.<LivingEntity>self(this);
-        if (self.getType().is(AVPEntityTags.ALIENS)) {
-            callbackInfoReturnable.setReturnValue(Mth.ceil((height - 16.0F) * damage));
+        if (self.getType().is(AVPEntityTags.ALIENS) && damageSource.is(DamageTypes.IN_WALL)) {
+            callbackInfoReturnable.setReturnValue(false);
         }
     }
 }

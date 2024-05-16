@@ -1,4 +1,4 @@
-package org.avp.mixin;
+package org.avp.mixin.server;
 
 import com.mojang.authlib.GameProfile;
 import net.minecraft.core.BlockPos;
@@ -15,9 +15,9 @@ import org.avp.common.item.AVPArmorItems;
 import org.avp.common.util.MixinUtils;
 
 @Mixin(ServerPlayer.class)
-public abstract class MixinServerPlayerPressureSuitProvidesAir extends Player {
+public abstract class MixinServerPlayer_PressureSuitProvidesAir extends Player {
 
-    protected MixinServerPlayerPressureSuitProvidesAir(Level level, BlockPos blockPos, float f, GameProfile gameProfile) {
+    protected MixinServerPlayer_PressureSuitProvidesAir(Level level, BlockPos blockPos, float f, GameProfile gameProfile) {
         super(level, blockPos, f, gameProfile);
     }
 

@@ -1,4 +1,4 @@
-package org.avp.mixin;
+package org.avp.mixin.server;
 
 import net.minecraft.server.level.ServerLevel;
 import org.spongepowered.asm.mixin.Mixin;

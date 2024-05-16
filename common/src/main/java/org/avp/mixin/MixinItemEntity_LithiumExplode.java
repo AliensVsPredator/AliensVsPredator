@@ -12,7 +12,7 @@ import org.avp.common.item.AVPItems;
 import org.avp.common.util.MixinUtils;
 
 @Mixin(ItemEntity.class)
-public abstract class MixinItemEntityLithiumExplode {
+public abstract class MixinItemEntity_LithiumExplode {
 
     @Inject(at = @At("TAIL"), method = "tick", cancellable = true)
     void tick(CallbackInfo callbackInfo) {

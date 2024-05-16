@@ -17,9 +17,9 @@ import org.avp.common.tag.AVPEntityTags;
 import org.avp.common.util.MixinUtils;
 
 @Mixin(LivingEntity.class)
-public abstract class MixinLivingEntityProduceAcid extends Entity {
+public abstract class MixinLivingEntity_ProduceAcid extends Entity {
 
-    protected MixinLivingEntityProduceAcid(EntityType<?> entityType, Level level) {
+    protected MixinLivingEntity_ProduceAcid(EntityType<?> entityType, Level level) {
         super(entityType, level);
     }
 

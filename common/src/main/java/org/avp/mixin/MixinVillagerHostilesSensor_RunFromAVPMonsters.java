@@ -11,7 +11,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.avp.common.tag.AVPEntityTags;
 
 @Mixin(VillagerHostilesSensor.class)
-public abstract class MixinVillagerHostilesSensorRunFromAVPMonsters extends NearestVisibleLivingEntitySensor {
+public abstract class MixinVillagerHostilesSensor_RunFromAVPMonsters extends NearestVisibleLivingEntitySensor {
 
     @Inject(at = @At("HEAD"), method = "isClose", cancellable = true)
     void isClose(LivingEntity livingEntity, LivingEntity livingEntity2, CallbackInfoReturnable<Boolean> callbackInfoReturnable) {

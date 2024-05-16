@@ -13,7 +13,7 @@ import org.avp.common.tag.AVPEntityTags;
 import org.avp.common.util.MixinUtils;
 
 @Mixin(Entity.class)
-public abstract class MixinLivingEntityPreventBoatAndCartRiding {
+public abstract class MixinLivingEntity_PreventBoatAndCartRiding {
 
     // If a boat or cart attempts to force the alien/predator to start riding it, tell the boat no.
     @Inject(at = @At("HEAD"), method = "startRiding", cancellable = true)

@@ -1,4 +1,4 @@
-package org.avp.mixin;
+package org.avp.mixin.client;
 
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.player.AbstractClientPlayer;

@@ -13,13 +13,13 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.avp.api.entity.Host;
 
 @Mixin(LivingEntity.class)
-public abstract class MixinLivingEntityHost extends Entity implements Host {
+public abstract class MixinLivingEntity_Host extends Entity implements Host {
 
     private static final String TICKS_UNTIL_PARASITE_BORN = "ticksUntilParasiteBorn";
 
     private int ticksUntilParasiteBorn = -1;
 
-    protected MixinLivingEntityHost(EntityType<?> entityType, Level level) {
+    protected MixinLivingEntity_Host(EntityType<?> entityType, Level level) {
         super(entityType, level);
     }
 
