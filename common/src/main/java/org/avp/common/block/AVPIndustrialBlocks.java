@@ -26,8 +26,6 @@ public class AVPIndustrialBlocks extends AVPDeferredBlockRegistry {
 
     public final Holder<Block> floorGrill;
 
-    public final Holder<Block> glass;
-
     public final Holder<Block> lamp;
 
     public final Holder<Block> metalPanel0;
@@ -65,22 +63,21 @@ public class AVPIndustrialBlocks extends AVPDeferredBlockRegistry {
 
     private AVPIndustrialBlocks() {
         var metalProperties = BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_BLOCK);
-        var industrialGlassProperties = BlockBehaviour.Properties.ofFullCopy(Blocks.GLASS);
 
         var stoneOrMetal = List.of(BlockTags.MINEABLE_WITH_PICKAXE, BlockTags.NEEDS_IRON_TOOL);
 
-        Supplier<BlockData.Builder> pickProps = () -> BlockData.simple(metalProperties).tags(stoneOrMetal);
+        Supplier<BlockData.Builder> pickProps = () -> BlockData.simple(metalProperties).blockTags(stoneOrMetal);
         Function<Holder<Block>, BlockData.Builder> slabProps =
-            parent -> BlockDataUtils.slab(parent, metalProperties).tags(stoneOrMetal);
+            parent -> BlockDataUtils.slab(parent, metalProperties).blockTags(stoneOrMetal);
         Function<Holder<Block>, BlockData.Builder> stairProps =
-            parent -> BlockDataUtils.stairs(parent, metalProperties).tags(stoneOrMetal);
+            parent -> BlockDataUtils.stairs(parent, metalProperties).blockTags(stoneOrMetal);
 
         brick = createHolder("brick", pickProps.get());
         brickSlab = createHolder("brick_slab", slabProps.apply(brick));
         brickStairs = createHolder("brick_stairs", stairProps.apply(brick));
 
         floorGrill = createHolder("floor_grill", pickProps.get());
-        glass = createHolder("glass", BlockDataUtils.transparent(industrialGlassProperties).tags(stoneOrMetal));
+
         lamp = createHolder("lamp", pickProps.get());
 
         metalPanel0 = createHolder("metal_panel_0", pickProps.get());
@@ -101,6 +98,6 @@ public class AVPIndustrialBlocks extends AVPDeferredBlockRegistry {
         wallSlab = createHolder("wall_slab", slabProps.apply(wall));
         wallStairs = createHolder("wall_stairs", stairProps.apply(wall));
 
-        wallHazard = createHolder("wall_hazard", BlockDataUtils.rotatedPillar(metalProperties).tags(stoneOrMetal));
+        wallHazard = createHolder("wall_hazard", BlockDataUtils.rotatedPillar(metalProperties).blockTags(stoneOrMetal));
     }
 }

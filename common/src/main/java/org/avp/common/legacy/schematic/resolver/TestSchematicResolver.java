@@ -6,11 +6,12 @@ import net.minecraft.world.level.block.Blocks;
 import java.util.Map;
 
 import org.avp.common.block.AVPIndustrialBlocks;
+import org.avp.common.block.AVPIndustrialGlassBlocks;
 
 public class TestSchematicResolver {
 
     public static final Map<String, Block> RESOLVER_MAP = Map.ofEntries(
-        Map.entry("avp:industrialglass", AVPIndustrialBlocks.INSTANCE.glass.get()),
+        Map.entry("avp:industrialglass", AVPIndustrialGlassBlocks.INSTANCE.glass.get()),
         Map.entry("avp:industrialwall", AVPIndustrialBlocks.INSTANCE.wall.get()),
         Map.entry("avp:industrialwall2", AVPIndustrialBlocks.INSTANCE.wallHazard.get()),
         Map.entry("minecraft:air", Blocks.AIR),

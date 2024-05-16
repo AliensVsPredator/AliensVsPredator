@@ -35,7 +35,7 @@ public class AVPNeoForgeClient {
             var blockData = tuple.second();
             var factory = blockData.getFactory();
             if (factory == BlockFactories.TRANSPARENT) {
-                ItemBlockRenderTypes.setRenderLayer(block, RenderType.cutout());
+                ItemBlockRenderTypes.setRenderLayer(block, RenderType.translucent());
             }
         });
     }

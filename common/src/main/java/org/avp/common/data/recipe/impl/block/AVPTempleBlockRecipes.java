@@ -62,7 +62,7 @@ public final class AVPTempleBlockRecipes {
 
     private static void addTempleStoneRecipes(RecipeOutput recipeOutput) {
         var templeStoneOutput = AVPTempleBlocks.INSTANCE.floor.get();
-        SimpleCookingRecipeBuilder.blasting(Ingredient.of(Items.DEEPSLATE), RecipeCategory.MISC, templeStoneOutput, 0.0F, 100)
+        SimpleCookingRecipeBuilder.blasting(Ingredient.of(Items.DEEPSLATE), RecipeCategory.MISC, templeStoneOutput, 0, 100)
             .unlockedBy("has_deepslate", AVPRecipeProvider.has(Items.DEEPSLATE))
             .save(recipeOutput, AVPConstants.MOD_ID + ":temple_stone_from_blasting_deepslate");
 

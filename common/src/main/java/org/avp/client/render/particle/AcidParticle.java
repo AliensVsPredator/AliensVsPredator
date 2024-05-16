@@ -39,9 +39,9 @@ public class AcidParticle extends TextureSheetParticle {
         this.xo = this.x;
         this.yo = this.y;
         this.zo = this.z;
-        if (this.age++ < this.lifetime && this.alpha > 0.0F) {
-            this.xd += this.random.nextFloat() / 5000.0F * (this.random.nextBoolean() ? 1 : -1);
-            this.zd += this.random.nextFloat() / 5000.0F * (this.random.nextBoolean() ? 1 : -1);
+        if (this.age++ < this.lifetime && this.alpha > 0) {
+            this.xd += this.random.nextFloat() / 5000 * (this.random.nextBoolean() ? 1 : -1);
+            this.zd += this.random.nextFloat() / 5000 * (this.random.nextBoolean() ? 1 : -1);
             this.yd -= this.gravity;
             this.move(this.xd, this.yd, this.zd);
             if (this.age >= this.lifetime && this.alpha > 0.01F)

@@ -9,6 +9,8 @@ public class AVPElectronicItems extends AVPDeferredItemRegistry {
 
     public static final AVPElectronicItems INSTANCE = new AVPElectronicItems();
 
+    public final Holder<Item> battery;
+
     public final Holder<Item> capacitor;
 
     public final Holder<Item> cpu;
@@ -36,6 +38,7 @@ public class AVPElectronicItems extends AVPDeferredItemRegistry {
     public final Holder<Item> transistor;
 
     private AVPElectronicItems() {
+        battery = createHolder("battery");
         capacitor = createHolder("capacitor");
         cpu = createHolder("cpu");
         diode = createHolder("diode");

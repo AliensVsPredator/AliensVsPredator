@@ -1,5 +1,7 @@
 package org.avp.common.block;
 
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockBehaviour;
@@ -13,45 +15,37 @@ public class AVPPaddingBlocks extends AVPDeferredBlockRegistry {
 
     public static final AVPPaddingBlocks INSTANCE = new AVPPaddingBlocks();
 
-    public final Holder<Block> paddingOrangePanel;
+    public final PaddingBlockSet paddingBlack;
 
-    public final Holder<Block> paddingOrangePipes;
+    public final PaddingBlockSet paddingBlue;
 
-    public final Holder<Block> paddingOrangeSquare;
+    public final PaddingBlockSet paddingBrown;
 
-    public final Holder<Block> paddingOrangeSquareSlab;
+    public final PaddingBlockSet paddingCyan;
 
-    public final Holder<Block> paddingOrangeSquareStairs;
+    public final PaddingBlockSet paddingGray;
 
-    public final Holder<Block> paddingOrangeSquareWall;
+    public final PaddingBlockSet paddingGreen;
 
-    public final Holder<Block> paddingOrangeTiles;
+    public final PaddingBlockSet paddingLightBlue;
 
-    public final Holder<Block> paddingOrangeTilesSlab;
+    public final PaddingBlockSet paddingLightGray;
 
-    public final Holder<Block> paddingOrangeTilesStairs;
+    public final PaddingBlockSet paddingLime;
 
-    public final Holder<Block> paddingOrangeTilesWall;
+    public final PaddingBlockSet paddingMagenta;
 
-    public final Holder<Block> paddingWhitePanel;
+    public final PaddingBlockSet paddingOrange;
 
-    public final Holder<Block> paddingWhitePipes;
+    public final PaddingBlockSet paddingPink;
 
-    public final Holder<Block> paddingWhiteSquare;
+    public final PaddingBlockSet paddingPurple;
 
-    public final Holder<Block> paddingWhiteSquareSlab;
+    public final PaddingBlockSet paddingRed;
 
-    public final Holder<Block> paddingWhiteSquareStairs;
+    public final PaddingBlockSet paddingWhite;
 
-    public final Holder<Block> paddingWhiteSquareWall;
-
-    public final Holder<Block> paddingWhiteTiles;
-
-    public final Holder<Block> paddingWhiteTilesSlab;
-
-    public final Holder<Block> paddingWhiteTilesStairs;
-
-    public final Holder<Block> paddingWhiteTilesWall;
+    public final PaddingBlockSet paddingYellow;
 
     @Override
     protected Holder<Block> createHolder(String registryName, BlockData.Builder blockDataBuilder) {
@@ -59,42 +53,66 @@ public class AVPPaddingBlocks extends AVPDeferredBlockRegistry {
     }
 
     private AVPPaddingBlocks() {
-        var orangePaddingProperties = BlockBehaviour.Properties.ofFullCopy(Blocks.ORANGE_WOOL);
-        var whitePaddingProperties = BlockBehaviour.Properties.ofFullCopy(Blocks.WHITE_WOOL);
-
-        paddingOrangePanel = createHolder("orange_panel", BlockData.simple(orangePaddingProperties));
-        paddingOrangePipes = createHolder("orange_pipes", BlockData.simple(orangePaddingProperties));
-
-        paddingOrangeSquare = createHolder("orange_square", BlockData.simple(orangePaddingProperties));
-        paddingOrangeSquareSlab = createHolder("orange_square_slab", BlockDataUtils.slab(paddingOrangeSquare, orangePaddingProperties));
-        paddingOrangeSquareStairs = createHolder(
-            "orange_square_stairs",
-            BlockDataUtils.stairs(paddingOrangeSquare, orangePaddingProperties)
-        );
-        paddingOrangeSquareWall = createHolder("orange_square_wall", BlockDataUtils.wall(paddingOrangeSquare, orangePaddingProperties));
-
-        paddingOrangeTiles = createHolder("orange_tiles", BlockData.simple(orangePaddingProperties));
-        paddingOrangeTilesSlab = createHolder("orange_tiles_slab", BlockDataUtils.slab(paddingOrangeTiles, orangePaddingProperties));
-        paddingOrangeTilesStairs = createHolder(
-            "orange_tiles_stairs",
-            BlockDataUtils.stairs(paddingOrangeTiles, orangePaddingProperties)
-        );
-        paddingOrangeTilesWall = createHolder("orange_tiles_wall", BlockDataUtils.wall(paddingOrangeTiles, orangePaddingProperties));
-
-        paddingWhitePanel = createHolder("white_panel", BlockData.simple(whitePaddingProperties));
-        paddingWhitePipes = createHolder("white_pipes", BlockData.simple(whitePaddingProperties));
-
-        paddingWhiteSquare = createHolder("white_square", BlockData.simple(whitePaddingProperties));
-        paddingWhiteSquareSlab = createHolder("white_square_slab", BlockDataUtils.slab(paddingWhiteSquare, whitePaddingProperties));
-        paddingWhiteSquareStairs = createHolder(
-            "white_square_stairs",
-            BlockDataUtils.stairs(paddingWhiteSquare, whitePaddingProperties)
-        );
-        paddingWhiteSquareWall = createHolder("white_square_wall", BlockDataUtils.wall(paddingWhiteSquare, whitePaddingProperties));
-
-        paddingWhiteTiles = createHolder("white_tiles", BlockData.simple(whitePaddingProperties));
-        paddingWhiteTilesSlab = createHolder("white_tiles_slab", BlockDataUtils.slab(paddingWhiteTiles, whitePaddingProperties));
-        paddingWhiteTilesStairs = createHolder("white_tiles_stairs", BlockDataUtils.stairs(paddingWhiteTiles, whitePaddingProperties));
-        paddingWhiteTilesWall = createHolder("white_tiles_wall", BlockDataUtils.wall(paddingWhiteTiles, whitePaddingProperties));
+        paddingBlack = createSet(Items.BLACK_DYE, "black", BlockBehaviour.Properties.ofFullCopy(Blocks.BLACK_WOOL));
+        paddingBlue = createSet(Items.BLUE_DYE, "blue", BlockBehaviour.Properties.ofFullCopy(Blocks.BLUE_WOOL));
+        paddingBrown = createSet(Items.BROWN_DYE, "brown", BlockBehaviour.Properties.ofFullCopy(Blocks.BROWN_WOOL));
+        paddingCyan = createSet(Items.CYAN_DYE, "cyan", BlockBehaviour.Properties.ofFullCopy(Blocks.CYAN_WOOL));
+        paddingGray = createSet(Items.GRAY_DYE, "gray", BlockBehaviour.Properties.ofFullCopy(Blocks.GRAY_WOOL));
+        paddingGreen = createSet(Items.GREEN_DYE, "green", BlockBehaviour.Properties.ofFullCopy(Blocks.GREEN_WOOL));
+        paddingLightBlue = createSet(Items.LIGHT_BLUE_DYE, "light_blue", BlockBehaviour.Properties.ofFullCopy(Blocks.LIGHT_BLUE_WOOL));
+        paddingLightGray = createSet(Items.LIGHT_GRAY_DYE, "light_gray", BlockBehaviour.Properties.ofFullCopy(Blocks.LIGHT_GRAY_WOOL));
+        paddingLime = createSet(Items.LIME_DYE, "lime", BlockBehaviour.Properties.ofFullCopy(Blocks.LIME_WOOL));
+        paddingMagenta = createSet(Items.MAGENTA_DYE, "magenta", BlockBehaviour.Properties.ofFullCopy(Blocks.MAGENTA_WOOL));
+        paddingOrange = createSet(Items.ORANGE_DYE, "orange", BlockBehaviour.Properties.ofFullCopy(Blocks.ORANGE_WOOL));
+        paddingPink = createSet(Items.PINK_DYE, "pink", BlockBehaviour.Properties.ofFullCopy(Blocks.PINK_WOOL));
+        paddingPurple = createSet(Items.PURPLE_DYE, "purple", BlockBehaviour.Properties.ofFullCopy(Blocks.PURPLE_WOOL));
+        paddingRed = createSet(Items.RED_DYE, "red", BlockBehaviour.Properties.ofFullCopy(Blocks.RED_WOOL));
+        paddingWhite = createSet(Items.WHITE_DYE, "white", BlockBehaviour.Properties.ofFullCopy(Blocks.WHITE_WOOL));
+        paddingYellow = createSet(Items.YELLOW_DYE, "yellow", BlockBehaviour.Properties.ofFullCopy(Blocks.YELLOW_WOOL));
     }
+
+    private PaddingBlockSet createSet(Item dyeItem, String prefix, BlockBehaviour.Properties properties) {
+        var blockData = BlockData.simple(properties);
+
+        var squareHolder = createHolder(prefix + "_square", blockData);
+        var squareSlabData = BlockDataUtils.slab(squareHolder, properties);
+        var squareStairData = BlockDataUtils.stairs(squareHolder, properties);
+        var squareWallData = BlockDataUtils.wall(squareHolder, properties);
+
+        var tilesHolder = createHolder(prefix + "_tiles", blockData);
+        var tilesSlabData = BlockDataUtils.slab(tilesHolder, properties);
+        var tilesStairData = BlockDataUtils.stairs(tilesHolder, properties);
+        var tilesWallData = BlockDataUtils.wall(tilesHolder, properties);
+
+        return new PaddingBlockSet(
+            dyeItem,
+            createHolder(prefix + "_panel", blockData),
+            createHolder(prefix + "_pipes", blockData),
+            squareHolder,
+            createHolder(prefix + "_square_slab", squareSlabData),
+            createHolder(prefix + "_square_stairs", squareStairData),
+            createHolder(prefix + "_square_wall", squareWallData),
+            tilesHolder,
+            createHolder(prefix + "_tiles_slab", tilesSlabData),
+            createHolder(prefix + "_tiles_stairs", tilesStairData),
+            createHolder(prefix + "_tiles_wall", tilesWallData)
+        );
+    }
+
+    public record PaddingBlockSet(
+        Item dyeItem,
+
+        Holder<Block> panel,
+        Holder<Block> pipes,
+
+        Holder<Block> square,
+        Holder<Block> squareSlab,
+        Holder<Block> squareStairs,
+        Holder<Block> squareWall,
+
+        Holder<Block> tiles,
+        Holder<Block> tilesSlab,
+        Holder<Block> tilesStairs,
+        Holder<Block> tilesWall
+    ) {}
 }

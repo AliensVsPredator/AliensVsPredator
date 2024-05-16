@@ -10,6 +10,8 @@ public class AVPBlockTags {
 
     public static final TagKey<Block> ACID_IMMUNE = create("acid_immune");
 
+    public static final TagKey<Block> INDUSTRIAL_GLASS = create("industrial_glass");
+
     private static TagKey<Block> create(String registryName) {
         return TagKey.create(Registries.BLOCK, AVPResources.location(registryName));
     }

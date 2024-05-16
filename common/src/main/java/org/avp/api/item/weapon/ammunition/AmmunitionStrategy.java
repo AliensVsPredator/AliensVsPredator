@@ -1,4 +1,4 @@
-package org.avp.api.item.weapon.ammo;
+package org.avp.api.item.weapon.ammunition;
 
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;

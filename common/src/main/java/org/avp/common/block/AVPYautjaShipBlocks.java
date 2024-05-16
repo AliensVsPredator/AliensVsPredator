@@ -53,18 +53,18 @@ public class AVPYautjaShipBlocks extends AVPDeferredBlockRegistry {
     private AVPYautjaShipBlocks() {
         var metalProperties = BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_BLOCK)
             .mapColor(MapColor.COLOR_RED)
-            .strength(75.0F, 1500.0F);
+            .strength(75, 1500);
 
         var metal = List.of(BlockTags.MINEABLE_WITH_PICKAXE, BlockTags.NEEDS_DIAMOND_TOOL);
 
-        Supplier<BlockData.Builder> pickProps = () -> BlockData.simple(metalProperties).tags(metal);
+        Supplier<BlockData.Builder> pickProps = () -> BlockData.simple(metalProperties).blockTags(metal);
 
         Function<Holder<Block>, BlockData.Builder> slabProps =
-            parent -> BlockDataUtils.slab(parent, metalProperties).tags(metal);
+            parent -> BlockDataUtils.slab(parent, metalProperties).blockTags(metal);
         Function<Holder<Block>, BlockData.Builder> stairProps =
-            parent -> BlockDataUtils.stairs(parent, metalProperties).tags(metal);
+            parent -> BlockDataUtils.stairs(parent, metalProperties).blockTags(metal);
         Function<Holder<Block>, BlockData.Builder> wallProps =
-            parent -> BlockDataUtils.wall(parent, metalProperties).tags(metal);
+            parent -> BlockDataUtils.wall(parent, metalProperties).blockTags(metal);
 
         brick = createHolder("brick", pickProps.get());
         brickSlab = createHolder("brick_slab", slabProps.apply(brick));

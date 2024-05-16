@@ -44,8 +44,8 @@ public class BasicAnimationUtils {
         var leftLeg = animationProcessor.getBone(leftLegName);
         var rightLeg = animationProcessor.getBone(rightLegName);
 
-        leftArm.setRotX(Mth.cos(walkPosition * constant) * 2.0F * walkSpeed * 0.5F + armOffset);
-        rightArm.setRotX(Mth.cos(walkPosition * constant + Mth.PI) * 2.0F * walkSpeed * 0.5F + armOffset);
+        leftArm.setRotX(Mth.cos(walkPosition * constant) * 2 * walkSpeed * 0.5F + armOffset);
+        rightArm.setRotX(Mth.cos(walkPosition * constant + Mth.PI) * 2 * walkSpeed * 0.5F + armOffset);
 
         leftLeg.setRotX(Mth.cos(walkPosition * constant + Mth.PI) * 1.4F * walkSpeed * 0.5F + legOffset);
         rightLeg.setRotX(Mth.cos(walkPosition * constant) * 1.4F * walkSpeed * 0.5F + legOffset);

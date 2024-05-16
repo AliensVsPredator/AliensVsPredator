@@ -68,7 +68,7 @@ public class AVPArmorMaterials {
         .setProtectionValues(new int[] { 2, 5, 6, 2 })
         .setDurabilityMultiplier(24)
         .setEnchantmentValue(9)
-        .setToughness(1.0F)
+        .setToughness(1)
         .build();
 
     public static final ArmorMaterial VERITANIUM = new AVPArmorMaterial.Builder(
@@ -79,7 +79,7 @@ public class AVPArmorMaterials {
         .setProtectionValues(new int[] { 4, 7, 9, 4 })
         .setDurabilityMultiplier(34)
         .setEnchantmentValue(20)
-        .setToughness(5.0F)
+        .setToughness(5)
         .build();
 
     public static final ArmorMaterial XENOMORPH_CHITIN = new AVPArmorMaterial.Builder(

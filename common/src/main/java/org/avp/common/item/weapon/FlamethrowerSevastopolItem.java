@@ -4,8 +4,8 @@ import java.util.List;
 
 import org.avp.api.item.weapon.FireMode;
 import org.avp.api.item.weapon.WeaponItemData;
-import org.avp.api.item.weapon.ammo.AmmunitionStrategy;
-import org.avp.api.item.weapon.ammo.HasAmmunitionBehavior;
+import org.avp.api.item.weapon.ammunition.AmmunitionStrategy;
+import org.avp.api.item.weapon.ammunition.HasAmmunitionBehavior;
 import org.avp.api.item.weapon.reload.ReloadStrategy;
 import org.avp.api.item.weapon.shoot.ShootStrategy;
 import org.avp.common.item.AVPAmmunitionPartItems;
@@ -19,12 +19,12 @@ public class FlamethrowerSevastopolItem extends AbstractAVPWeaponItem {
         1,
         1,
         AVPSoundEvents.INSTANCE.itemWeaponFlamethrowerShoot,
-        16.0D,
-        0.0F
+        16,
+        0
     );
 
     private static final WeaponItemData WEAPON_ITEM_DATA = new WeaponItemData(
-        1.0F,
+        1,
         AmmunitionStrategy.builder(500, List.of(AVPAmmunitionPartItems.INSTANCE.ammoFlamethrower::get))
             .setHasAmmunitionBehavior(HasAmmunitionBehavior.LOADED)
             .build(),

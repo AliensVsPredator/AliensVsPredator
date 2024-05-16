@@ -10,4 +10,8 @@ public class AVPConstants {
     public static final String MOD_NAME = "AliensVsPredator";
 
     public static final Logger LOGGER = LoggerFactory.getLogger(MOD_NAME);
+
+    private AVPConstants() {
+        throw new UnsupportedOperationException();
+    }
 }

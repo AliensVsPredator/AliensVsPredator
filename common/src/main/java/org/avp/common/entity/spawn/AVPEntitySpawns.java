@@ -146,7 +146,9 @@ public class AVPEntitySpawns extends AVPDeferredRegistry<EntitySpawnData<?>> {
             1
         );
 
-        registerMonsterSpawn(AVPYautjaEntityTypes.INSTANCE.YAUTJA, BiomeTags.IS_JUNGLE, Yautja::checkPredatorSpawnRules, 30, 1, 1);
+        registerMonsterSpawn(
+            AVPYautjaEntityTypes.INSTANCE.yautja, BiomeTags.IS_JUNGLE, Yautja::checkPredatorSpawnRules, 30, 1, 1
+        );
     }
 
     private AVPEntitySpawns() {}

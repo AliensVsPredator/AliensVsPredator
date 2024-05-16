@@ -2,6 +2,9 @@ package org.avp.common.entity;
 
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.Entity;
@@ -26,76 +29,103 @@ public class Acid extends Entity {
 
     private static final int MAX_LIFE_IN_TICKS = 20 * 20; // 20 seconds.
 
+    private static final String MULTIPLIER_KEY = "multiplier";
+
+    private static final EntityDataAccessor<Integer> MULTIPLIER = SynchedEntityData.defineId(
+        Acid.class,
+        EntityDataSerializers.INT
+    );
+
     public Acid(EntityType<? extends Entity> entityType, Level level) {
         super(entityType, level);
         this.setNoGravity(false);
     }
 
     @Override
-    protected void defineSynchedData() { /* Do nothing */ }
+    protected void defineSynchedData() {
+        this.entityData.define(MULTIPLIER, 1);
+    }
 
     @Override
-    protected void readAdditionalSaveData(@NotNull CompoundTag compoundTag) { /* Do nothing */ }
+    protected void readAdditionalSaveData(@NotNull CompoundTag compoundTag) {
+        this.setMultiplier(compoundTag.getInt(MULTIPLIER_KEY));
+    }
 
     @Override
-    protected void addAdditionalSaveData(@NotNull CompoundTag compoundTag) { /* Do nothing */ }
+    protected void addAdditionalSaveData(@NotNull CompoundTag compoundTag) {
+        compoundTag.putInt(MULTIPLIER_KEY, this.getMultiplier());
+    }
 
     @Override
     public void tick() {
         super.tick();
 
-        applyGravity();
-
-        if (tickCount > MAX_LIFE_IN_TICKS) {
-            this.kill();
-        }
-
         var level = level();
 
-        if (!level.isClientSide) {
-            if (tickCount % 20 == 0) {
-                var below = blockPosition().below();
-                var blockState = level.getBlockState(below);
+        applyGravity(level);
+        damageBlock(level);
+        damageEntities(level);
+        createParticlesAndSounds(level);
 
-                if (!blockState.is(AVPBlockTags.ACID_IMMUNE)) {
-                    // TODO: Make this break speed configurable.
-                    BlockBreakProgressManager.damage(level(), below, 2F);
-                }
-            }
-
-            if (tickCount % 10 == 0) {
-                damageEntities(level);
-            }
-        }
-
-        if (level.isClientSide) {
-            if (tickCount % (random.nextInt(100) + 10) == 0) {
-                level.playLocalSound(this, SoundEvents.LAVA_EXTINGUISH, SoundSource.NEUTRAL, 1F, 1F);
-            }
-            for (int i = 0; i < 2; i++) {
-                level.addAlwaysVisibleParticle(ParticleTypes.SMOKE, getRandomX(0.5), getRandomY(), getRandomZ(0.5), 0.0, 0.0, 0.0);
-                level.addAlwaysVisibleParticle(
-                    AVPParticleTypes.INSTANCE.acid.get(),
-                    getRandomX(0.5),
-                    getRandomY(),
-                    getRandomZ(0.5),
-                    0.0,
-                    0.0,
-                    0.0
-                );
-            }
+        if (tickCount > MAX_LIFE_IN_TICKS * this.getMultiplier()) {
+            this.kill();
         }
     }
 
-    private void applyGravity() {
+    private void damageBlock(Level level) {
+        if (level.isClientSide || tickCount % 20 != 0)
+            return;
+
+        var below = blockPosition().below();
+        var blockState = level.getBlockState(below);
+
+        if (!blockState.is(AVPBlockTags.ACID_IMMUNE)) {
+            // TODO: Make this break speed configurable.
+            BlockBreakProgressManager.damage(level(), below, 2F * this.getMultiplier());
+        }
+    }
+
+    private void createParticlesAndSounds(Level level) {
+        // Both particles and fizzing sounds should only play client-side.
+        if (!level.isClientSide)
+            return;
+
+        if (tickCount % (random.nextInt(100) + 10) == 0) {
+            level.playLocalSound(this, SoundEvents.LAVA_EXTINGUISH, SoundSource.NEUTRAL, 1F, 1F);
+        }
+
+        for (int i = 0; i < 2 * this.getMultiplier(); i++) {
+            level.addAlwaysVisibleParticle(ParticleTypes.SMOKE, getRandomX(0.5), getRandomY(), getRandomZ(0.5), 0, 0, 0);
+            level.addAlwaysVisibleParticle(
+                AVPParticleTypes.INSTANCE.acid.get(),
+                getRandomX(0.5),
+                getRandomY(),
+                getRandomZ(0.5),
+                0,
+                0,
+                0
+            );
+        }
+    }
+
+    private void applyGravity(Level level) {
+        // Gravity should only be applied server-side.
+        if (level.isClientSide)
+            return;
+
         this.setDeltaMovement(0, this.getDeltaMovement().y - 0.03999999910593033D, 0);
         this.move(MoverType.SELF, this.getDeltaMovement());
         this.setDeltaMovement(0, this.getDeltaMovement().y * 0.9800000190734863D, 0);
     }
 
     private void damageEntities(Level level) {
-        var entities = level.getEntities(this, this.getBoundingBox(), LivingEntity.class::isInstance);
+        // Entity damage should only be done server-side.
+        if (level.isClientSide || tickCount % 10 != 0)
+            return;
+
+        var entities = level.getEntities(this, this.getBoundingBox(), entity -> AVPPredicates.IS_LIVING.test(entity) || entity instanceof Acid);
         entities.forEach(entity -> {
+            // Ignore immortal players.
             if (entity instanceof Player player && AVPPredicates.IS_IMMORTAL.test(player)) {
                 return;
             }
@@ -106,7 +136,9 @@ public class Acid extends Entity {
                 if (itemStack.is(AVPItemTags.ACID_IMMUNE)) {
                     return;
                 } else if (!itemStack.isEmpty()) {
-                    itemStack.setDamageValue(itemStack.getDamageValue() + random.nextInt(3) + 3);
+                    // Damage feet item if present.
+                    var damage = (random.nextInt(3) + 3) * this.getMultiplier();
+                    itemStack.setDamageValue(itemStack.getDamageValue() + damage);
                     if (itemStack.getDamageValue() > itemStack.getMaxDamage()) {
                         itemStack.setCount(0);
                     }
@@ -114,9 +146,25 @@ public class Acid extends Entity {
                 }
             }
 
+            if (entity instanceof Acid) {
+                if (entity.isAlive()) {
+                    entity.remove(RemovalReason.DISCARDED);
+                    this.setMultiplier(this.getMultiplier() + 1);
+                }
+                return;
+            }
+
             if (!entity.getType().is(AVPEntityTags.ACID_IMMUNE)) {
                 AVPDamageSources.INSTANCE.acid.get().hurt(entity, AVPConfig.General.ACID_DAMAGE);
             }
         });
+    }
+
+    private int getMultiplier() {
+        return this.entityData.get(MULTIPLIER);
+    }
+
+    private void setMultiplier(int multiplier) {
+        this.entityData.set(MULTIPLIER, multiplier);
     }
 }

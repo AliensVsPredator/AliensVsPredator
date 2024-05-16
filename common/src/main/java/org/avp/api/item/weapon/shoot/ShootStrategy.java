@@ -82,18 +82,14 @@ public abstract class ShootStrategy {
             return this;
         }
 
-        public Builder setWindDownSound(Holder<SoundEvent> windDownSound) {
-            this.windDownSound = windDownSound;
-            return this;
-        }
-
-        public Builder setWindUpSound(Holder<SoundEvent> windUpSound) {
-            this.windUpSound = windUpSound;
-            return this;
-        }
-
-        public Builder setWindUpTimeInTicks(int windUpTimeInTicks) {
+        public Builder setWindingLogic(
+            int windUpTimeInTicks,
+            Holder<SoundEvent> windUpSound,
+            Holder<SoundEvent> windDownSound
+        ) {
             this.windUpTimeInTicks = windUpTimeInTicks;
+            this.windUpSound = windUpSound;
+            this.windDownSound = windDownSound;
             return this;
         }
 

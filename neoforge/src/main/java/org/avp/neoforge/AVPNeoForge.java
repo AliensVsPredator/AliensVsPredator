@@ -10,6 +10,7 @@ import org.avp.neoforge.client.AVPNeoForgeClient;
 import org.avp.neoforge.common.command.AVPNeoForgeCommands;
 import org.avp.neoforge.common.data.AVPNeoForgeData;
 import org.avp.neoforge.common.entity.AVPNeoForgeEntitySpawns;
+import org.avp.neoforge.common.event.AVPCommonSetupEvent;
 import org.avp.neoforge.common.registry.AVPNeoForgeFuelRegistry;
 import org.avp.neoforge.service.*;
 import org.avp.neoforge.service.NeoForgeNetworkPayloadService;
@@ -20,6 +21,7 @@ public class AVPNeoForge {
     public AVPNeoForge(IEventBus eventBus) {
         AVPCommon.init();
 
+        eventBus.addListener(AVPCommonSetupEvent::handleCommonSetupEvent);
         eventBus.addListener(AVPNeoForgeData::handleGatherDataEvent);
         eventBus.addListener(AVPNeoForgeEntitySpawns::handleSpawnPlacementRegisterEvent);
         eventBus.addListener(NeoForgeNetworkPayloadService::registerPayloadHandlers);

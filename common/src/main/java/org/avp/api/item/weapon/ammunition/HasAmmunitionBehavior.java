@@ -1,11 +1,8 @@
-package org.avp.api.item.weapon.ammo;
+package org.avp.api.item.weapon.ammunition;
 
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
-
-import java.util.Set;
 
 import org.avp.api.item.weapon.WeaponItemData;
 import org.avp.api.item.weapon.WeaponItemTagHelper;
@@ -17,7 +14,7 @@ public interface HasAmmunitionBehavior {
 
     HasAmmunitionBehavior LOADED = (s, p, i, w) -> WeaponItemTagHelper.getAmmunition(i, w) > 0;
 
-    HasAmmunitionBehavior INVENTORY = (s, p, i, w) -> p.getInventory().hasAnyOf(Set.of(Items.SNOWBALL));
+    HasAmmunitionBehavior INVENTORY = new InventoryHasAmmunitionBehavior();
 
     boolean hasAmmunition(ServerLevel serverLevel, ServerPlayer serverPlayer, ItemStack itemStack, WeaponItemData weaponItemData);
 }

@@ -4,10 +4,10 @@ import java.util.List;
 
 import org.avp.api.item.weapon.FireMode;
 import org.avp.api.item.weapon.WeaponItemData;
-import org.avp.api.item.weapon.ammo.AmmunitionStrategy;
-import org.avp.api.item.weapon.ammo.HasAmmunitionBehavior;
+import org.avp.api.item.weapon.ammunition.AmmunitionStrategy;
+import org.avp.api.item.weapon.ammunition.HasAmmunitionBehavior;
+import org.avp.api.item.weapon.reload.ReloadBehavior;
 import org.avp.api.item.weapon.reload.ReloadStrategy;
-import org.avp.api.item.weapon.reload.TryReloadBehavior;
 import org.avp.api.item.weapon.shoot.ShootStrategy;
 import org.avp.common.item.AVPBulletItems;
 import org.avp.common.item.AbstractAVPWeaponItem;
@@ -20,12 +20,12 @@ public class M3712ShotgunItem extends AbstractAVPWeaponItem {
         1,
         20,
         AVPSoundEvents.INSTANCE.itemWeaponShotgunShoot,
-        6.0D,
+        6,
         1.5F
     );
 
     private static final WeaponItemData WEAPON_ITEM_DATA = new WeaponItemData(
-        1.0F,
+        1,
         AmmunitionStrategy.builder(
             6,
             List.of(
@@ -44,7 +44,7 @@ public class M3712ShotgunItem extends AbstractAVPWeaponItem {
         0.5F,
         ReloadStrategy.builder(20 * 4)
             .setReloadStartSound(AVPSoundEvents.INSTANCE.itemWeaponGenericReload)
-            .setTryReloadBehavior(TryReloadBehavior.STANDARD)
+            .setTryReloadBehavior(ReloadBehavior.LOAD_INTO_WEAPON)
             .build(),
         ShootStrategy.builder().build()
     );

@@ -11,7 +11,7 @@ public class AVPYautjaEntityTypes extends AVPSimpleDeferredEntityTypeRegistry {
 
     public static final AVPYautjaEntityTypes INSTANCE = new AVPYautjaEntityTypes();
 
-    public final Holder<EntityType<Yautja>> YAUTJA = createMobHolder(
+    public final Holder<EntityType<Yautja>> yautja = createMobHolder(
         "yautja",
         0xB9A86C,
         0x5A4728,

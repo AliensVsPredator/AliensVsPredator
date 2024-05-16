@@ -11,7 +11,7 @@ import java.util.function.BiFunction;
 
 import org.avp.api.Holder;
 import org.avp.api.block.BlockData;
-import org.avp.api.block.drop.BlockDropUtils;
+import org.avp.api.block.loot_table.LootProviders;
 import org.avp.common.item.AVPItems;
 import org.avp.common.registry.AVPDeferredBlockRegistry;
 
@@ -70,7 +70,7 @@ public class AVPOreBlocks extends AVPDeferredBlockRegistry {
             .strength(2.2F, 1.4F);
 
         var titaniumProperties = BlockBehaviour.Properties.ofFullCopy(Blocks.STONE)
-            .strength(4.0F, 4.0F);
+            .strength(4, 4);
 
         var woodTier = List.of(BlockTags.MINEABLE_WITH_PICKAXE);
         var stoneTier = List.of(BlockTags.MINEABLE_WITH_PICKAXE, BlockTags.NEEDS_STONE_TOOL);
@@ -79,24 +79,32 @@ public class AVPOreBlocks extends AVPDeferredBlockRegistry {
 
         BiFunction<BlockBehaviour.Properties, Holder<Item>, BlockData.Builder> oreProps = (properties, item) -> BlockData.builder(
             properties
-        ).drop(BlockDropUtils.ore(item));
+        ).lootProvider(block -> LootProviders.ORE.apply(block, item.get()));
 
-        oreBauxite = createOreHolder("bauxite", oreProps.apply(bauxiteProperties, AVPItems.INSTANCE.rawBauxite).tags(stoneTier));
-        oreCobalt = createOreHolder("cobalt", oreProps.apply(cobaltProperties, AVPItems.INSTANCE.cobalt).tags(diamondTier));
+        BiFunction<BlockBehaviour.Properties, Holder<Item>, BlockData.Builder> lithiumOreProps = (properties, item) -> BlockData.builder(
+            properties
+        ).lootProvider(block -> LootProviders.ORE_VARIABLE.apply(block, item.get(), 1, 3));
 
-        oreLithium = createOreHolder("lithium", oreProps.apply(lithiumProperties, AVPItems.INSTANCE.dustLithium).tags(woodTier));
-        oreMonazite = createOreHolder("monazite", oreProps.apply(monaziteProperties, AVPItems.INSTANCE.neodymium).tags(diamondTier));
+        BiFunction<BlockBehaviour.Properties, Holder<Item>, BlockData.Builder> silicaOreProps = (properties, item) -> BlockData.builder(
+            properties
+        ).lootProvider(block -> LootProviders.ORE_VARIABLE.apply(block, item.get(), 3, 5));
 
-        oreSilica = createOreHolder("silica", oreProps.apply(silicaProperties, AVPItems.INSTANCE.silica).tags().tags(ironTier));
+        oreBauxite = createOreHolder("bauxite", oreProps.apply(bauxiteProperties, AVPItems.INSTANCE.rawBauxite).blockTags(stoneTier));
+        oreCobalt = createOreHolder("cobalt", oreProps.apply(cobaltProperties, AVPItems.INSTANCE.cobalt).blockTags(diamondTier));
 
-        oreTitanium = createOreHolder("titanium", oreProps.apply(titaniumProperties, AVPItems.INSTANCE.rawTitanium).tags().tags(ironTier));
+        oreLithium = createOreHolder("lithium", lithiumOreProps.apply(lithiumProperties, AVPItems.INSTANCE.dustLithium).blockTags(woodTier));
+        oreMonazite = createOreHolder("monazite", oreProps.apply(monaziteProperties, AVPItems.INSTANCE.neodymium).blockTags(diamondTier));
 
-        // NOTE: DO NOT USE AVPOreBlocks#createHolder HERE.
-        rawBauxiteBlock = createHolder("raw_bauxite_block", BlockData.simple(bauxiteProperties).tags(stoneTier));
-        rawTitaniumBlock = createHolder("raw_titanium_block", BlockData.simple(titaniumProperties).tags(ironTier));
-        cobaltBlock = createHolder("cobalt_block", BlockData.simple(cobaltProperties).tags(diamondTier));
-        lithiumBlock = createHolder("lithium_block", BlockData.simple(lithiumProperties).tags(woodTier));
-        neodymiumBlock = createHolder("neodymium_block", BlockData.simple(monaziteProperties).tags(diamondTier));
-        silicaBlock = createHolder("silica_block", BlockData.simple(silicaProperties).tags(ironTier));
+        oreSilica = createOreHolder("silica", silicaOreProps.apply(silicaProperties, AVPItems.INSTANCE.silica).blockTags().blockTags(ironTier));
+
+        oreTitanium = createOreHolder("titanium", oreProps.apply(titaniumProperties, AVPItems.INSTANCE.rawTitanium).blockTags().blockTags(ironTier));
+
+        // NOTE: DO NOT USE createOreHolder HERE.
+        rawBauxiteBlock = createHolder("raw_bauxite_block", BlockData.simple(bauxiteProperties).blockTags(stoneTier));
+        rawTitaniumBlock = createHolder("raw_titanium_block", BlockData.simple(titaniumProperties).blockTags(ironTier));
+        cobaltBlock = createHolder("cobalt_block", BlockData.simple(cobaltProperties).blockTags(diamondTier));
+        lithiumBlock = createHolder("lithium_block", BlockData.simple(lithiumProperties).blockTags(woodTier));
+        neodymiumBlock = createHolder("neodymium_block", BlockData.simple(monaziteProperties).blockTags(diamondTier));
+        silicaBlock = createHolder("silica_block", BlockData.simple(silicaProperties).blockTags(ironTier));
     }
 }

@@ -4,8 +4,8 @@ import java.util.List;
 
 import org.avp.api.item.weapon.FireMode;
 import org.avp.api.item.weapon.WeaponItemData;
-import org.avp.api.item.weapon.ammo.AmmunitionStrategy;
-import org.avp.api.item.weapon.ammo.HasAmmunitionBehavior;
+import org.avp.api.item.weapon.ammunition.AmmunitionStrategy;
+import org.avp.api.item.weapon.ammunition.HasAmmunitionBehavior;
 import org.avp.api.item.weapon.reload.ReloadStrategy;
 import org.avp.api.item.weapon.shoot.ShootStrategy;
 import org.avp.common.item.AVPBulletItems;
@@ -20,12 +20,12 @@ public class OldPainlessItem extends AbstractAVPWeaponItem {
         0,
         AVPSoundEvents.INSTANCE.itemWeaponOldPainlessShootLoop,
         10,
-        64.0D,
-        0.0F
+        64,
+        0
     );
 
     private static final WeaponItemData WEAPON_ITEM_DATA = new WeaponItemData(
-        1.0F,
+        1,
         AmmunitionStrategy.builder(
             Integer.MAX_VALUE,
             List.of(
@@ -45,9 +45,11 @@ public class OldPainlessItem extends AbstractAVPWeaponItem {
         ReloadStrategy.builder(0).build(),
         ShootStrategy.builder()
             .setBackgroundShootSound(AVPSoundEvents.INSTANCE.itemWeaponOldPainlessShootSpinning, 30)
-            .setWindUpSound(AVPSoundEvents.INSTANCE.itemWeaponOldPainlessShootStart)
-            .setWindDownSound(AVPSoundEvents.INSTANCE.itemWeaponOldPainlessShootStop)
-            .setWindUpTimeInTicks(20)
+            .setWindingLogic(
+                20,
+                AVPSoundEvents.INSTANCE.itemWeaponOldPainlessShootStart,
+                AVPSoundEvents.INSTANCE.itemWeaponOldPainlessShootStop
+            )
             .build()
     );
 

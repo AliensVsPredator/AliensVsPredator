@@ -38,8 +38,8 @@ public class TintedBottleItem extends Item {
                 player.getZ(),
                 SoundEvents.BOTTLE_FILL,
                 SoundSource.NEUTRAL,
-                1.0F,
-                1.0F
+                1,
+                1
             );
             ItemStack itemstack = player.getItemInHand(interactionHand);
             return InteractionResultHolder.sidedSuccess(

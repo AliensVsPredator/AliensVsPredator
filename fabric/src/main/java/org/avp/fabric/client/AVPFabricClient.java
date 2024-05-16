@@ -29,7 +29,7 @@ public class AVPFabricClient implements ClientModInitializer {
             var blockData = tuple.second();
             var factory = blockData.getFactory();
             if (factory == BlockFactories.TRANSPARENT) {
-                BlockRenderLayerMap.INSTANCE.putBlock(block, RenderType.cutout());
+                BlockRenderLayerMap.INSTANCE.putBlock(block, RenderType.translucent());
             }
         });
 

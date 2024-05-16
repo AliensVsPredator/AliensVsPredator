@@ -18,6 +18,8 @@ public class AVPEntityTags {
 
     public static final TagKey<EntityType<?>> ENGINEERS = create("engineers");
 
+    public static final TagKey<EntityType<?>> MONSTERS = create("monsters");
+
     public static final TagKey<EntityType<?>> NON_HOSTS = create("non_hosts");
 
     public static final TagKey<EntityType<?>> NOT_WORTH_KILLING = create("not_worth_killing");

@@ -40,7 +40,7 @@ public final class AVPWeaponPartRecipes {
             .defineAndUnlockIfHas('B', AVPWeaponPartItems.INSTANCE.WEAPON_PART_BARREL_GENERIC)
             .pattern("BBB")
             .pattern("A A")
-            .pattern("ABB")
+            .pattern("BBB")
             .save(recipeOutput);
 
         // Rocket Barrel
@@ -67,7 +67,7 @@ public final class AVPWeaponPartRecipes {
             .defineAndUnlockIfHas('A', AVPWeaponPartItems.INSTANCE.WEAPON_PART_RECEIVER_GENERIC)
             .defineAndUnlockIfHas('B', AVPElectronicItems.INSTANCE.cpu)
             .defineAndUnlockIfHas('C', AVPElectronicItems.INSTANCE.ledDisplay)
-            .defineAndUnlockIfHas('D', AVPElectronicItems.INSTANCE.powerSupply)
+            .defineAndUnlockIfHas('D', AVPElectronicItems.INSTANCE.battery)
             .defineAndUnlockIfHas('E', AVPItems.INSTANCE.polymer)
             .defineAndUnlockIfHas('F', AVPElectronicItems.INSTANCE.capacitor)
             .pattern(" A ")

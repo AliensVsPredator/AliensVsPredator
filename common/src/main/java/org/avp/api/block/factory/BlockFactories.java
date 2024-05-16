@@ -11,7 +11,7 @@ import net.minecraft.world.level.block.state.properties.WoodType;
 import java.util.function.Function;
 
 import org.avp.api.Holder;
-import org.avp.api.block.TransparentBlock;
+import org.avp.api.block.CustomTransparentBlock;
 
 public class BlockFactories {
 
@@ -31,7 +31,7 @@ public class BlockFactories {
 
     public static final Function<Holder<Block>, BlockFactory> STAIRS = StairBlockFactory::new;
 
-    public static final BlockFactory TRANSPARENT = TransparentBlock::new;
+    public static final BlockFactory TRANSPARENT = CustomTransparentBlock::new;
 
     public static final BlockFactory WALL = WallBlock::new;
 
