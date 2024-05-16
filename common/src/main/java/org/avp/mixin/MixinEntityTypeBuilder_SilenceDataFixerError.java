@@ -10,6 +10,7 @@ import net.minecraft.world.level.block.Block;
 import org.avp.api.entity.SilencedEntityTypeBuilder;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 
 @Mixin(EntityType.Builder.class)
 public class MixinEntityTypeBuilder_SilenceDataFixerError implements SilencedEntityTypeBuilder {
@@ -37,6 +38,7 @@ public class MixinEntityTypeBuilder_SilenceDataFixerError implements SilencedEnt
     @Shadow
     private FeatureFlagSet requiredFeatures;
 
+    @Unique
     @Override
     @SuppressWarnings("unchecked")
     public <T extends Entity> EntityType<T> buildWithoutDataFixerCheck() {

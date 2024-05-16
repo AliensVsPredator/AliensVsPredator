@@ -4,6 +4,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.level.Level;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -36,6 +37,7 @@ public abstract class MixinItemEntity_LithiumExplode {
         }
     }
 
+    @Unique
     private boolean canExplodeAtEntityPosition(Level level, Entity entity) {
         if (level.random.nextInt(25) != 0)
             return false;
@@ -43,6 +45,7 @@ public abstract class MixinItemEntity_LithiumExplode {
         return level.isRainingAt(entity.blockPosition()) && level.canSeeSky(entity.blockPosition());
     }
 
+    @Unique
     private void explode(Level level, Entity entity) {
         level.explode(entity, entity.getX(), entity.getY() + entity.getBbHeight() / 2, entity.getZ(), 1F, Level.ExplosionInteraction.NONE);
     }
