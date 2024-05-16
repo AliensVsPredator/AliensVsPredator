@@ -5,13 +5,10 @@ import mod.azure.azurelib.common.internal.common.core.animatable.instance.Animat
 import mod.azure.azurelib.common.internal.common.core.animation.AnimatableManager;
 import mod.azure.azurelib.common.internal.common.util.AzureLibUtil;
 import net.minecraft.core.BlockPos;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.chat.Component;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerBossEvent;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.BossEvent;
@@ -29,6 +26,7 @@ import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
+import org.avp.api.entity.Boss;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -36,7 +34,7 @@ import org.avp.common.sound.AVPSoundEvents;
 import org.avp.common.tag.AVPEntityTags;
 import org.avp.common.tag.AVPItemTags;
 
-public class Yautja extends Monster implements GeoEntity {
+public class Yautja extends Monster implements Boss, GeoEntity {
 
     public static boolean checkPredatorSpawnRules(
         EntityType<? extends Monster> entityType,
@@ -74,14 +72,6 @@ public class Yautja extends Monster implements GeoEntity {
     }
 
     @Override
-    public void readAdditionalSaveData(@NotNull CompoundTag compoundTag) {
-        super.readAdditionalSaveData(compoundTag);
-        if (this.hasCustomName()) {
-            this.bossEvent.setName(this.getDisplayName());
-        }
-    }
-
-    @Override
     protected void registerGoals() {
         this.goalSelector.addGoal(8, new LookAtPlayerGoal(this, Player.class, 8));
         this.goalSelector.addGoal(8, new RandomLookAroundGoal(this));
@@ -102,18 +92,6 @@ public class Yautja extends Monster implements GeoEntity {
                         )
             )
         );
-    }
-
-    @Override
-    protected void customServerAiStep() {
-        super.customServerAiStep();
-        this.bossEvent.setProgress(this.getHealth() / this.getMaxHealth());
-    }
-
-    @Override
-    public void setCustomName(@Nullable Component component) {
-        super.setCustomName(component);
-        this.bossEvent.setName(this.getDisplayName());
     }
 
     @Override
@@ -143,18 +121,6 @@ public class Yautja extends Monster implements GeoEntity {
     }
 
     @Override
-    public void startSeenByPlayer(@NotNull ServerPlayer serverPlayer) {
-        super.startSeenByPlayer(serverPlayer);
-        bossEvent.addPlayer(serverPlayer);
-    }
-
-    @Override
-    public void stopSeenByPlayer(@NotNull ServerPlayer serverPlayer) {
-        super.stopSeenByPlayer(serverPlayer);
-        bossEvent.removePlayer(serverPlayer);
-    }
-
-    @Override
     public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
         // TODO:
     }
@@ -162,5 +128,10 @@ public class Yautja extends Monster implements GeoEntity {
     @Override
     public AnimatableInstanceCache getAnimatableInstanceCache() {
         return cache;
+    }
+
+    @Override
+    public ServerBossEvent getBossEvent() {
+        return bossEvent;
     }
 }

@@ -13,6 +13,7 @@
         "MixinLivingEntity_PreventBoatAndCartRiding",
         "MixinLivingEntity_ProduceAcid",
         "MixinLivingEntity_ReduceFallDamage",
+        "MixinMob_PerformBossLogic",
         "MixinVillagerHostilesSensor_RunFromAVPMonsters",
         "server.MixinServerLevel",
         "server.MixinServerPlayer_PressureSuitProvidesAir"
