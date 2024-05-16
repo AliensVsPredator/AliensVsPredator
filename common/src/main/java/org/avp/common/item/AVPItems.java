@@ -4,6 +4,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Rarity;
 
 import org.avp.api.Holder;
+import org.avp.common.item.impl.TintedBottleItem;
 import org.avp.common.registry.AVPDeferredItemRegistry;
 
 public class AVPItems extends AVPDeferredItemRegistry {
