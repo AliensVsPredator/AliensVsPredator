@@ -7,6 +7,7 @@
     "mixins": [
         "MixinEntityTypeBuilder_SilenceDataFixerError",
         "MixinItemEntity_LithiumExplode",
+        "MixinLivingEntity_AliensAreImmuneToPoison",
         "MixinLivingEntity_AliensDoNotSuffocate",
         "MixinLivingEntity_Host",
         "MixinLivingEntity_PreventBoatAndCartRiding",
