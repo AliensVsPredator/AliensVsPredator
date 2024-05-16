@@ -58,13 +58,13 @@ public class Yautja extends Monster implements Boss, GeoEntity {
         EntityDataSerializers.BOOLEAN
     );
 
-    private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
-
     private final ServerBossEvent bossEvent = (ServerBossEvent) new ServerBossEvent(
         this.getDisplayName(),
         BossEvent.BossBarColor.RED,
         BossEvent.BossBarOverlay.PROGRESS
     ).setDarkenScreen(false);
+
+    private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
 
     public Yautja(EntityType<? extends Monster> entityType, Level level) {
         super(entityType, level);

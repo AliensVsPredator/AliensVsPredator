@@ -24,13 +24,13 @@ import org.avp.common.sound.AVPSoundEvents;
 
 public class Queen extends Monster implements Boss, GeoEntity {
 
-    private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
-
     private final ServerBossEvent bossEvent = (ServerBossEvent) new ServerBossEvent(
         this.getDisplayName(),
         BossEvent.BossBarColor.GREEN,
         BossEvent.BossBarOverlay.PROGRESS
     ).setDarkenScreen(true);
+
+    private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
 
     public Queen(EntityType<? extends Monster> entityType, Level level) {
         super(entityType, level);

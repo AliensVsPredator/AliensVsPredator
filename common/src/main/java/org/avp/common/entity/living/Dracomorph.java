@@ -4,13 +4,22 @@ import mod.azure.azurelib.common.api.common.animatable.GeoEntity;
 import mod.azure.azurelib.common.internal.common.core.animatable.instance.AnimatableInstanceCache;
 import mod.azure.azurelib.common.internal.common.core.animation.AnimatableManager;
 import mod.azure.azurelib.common.internal.common.util.AzureLibUtil;
+import net.minecraft.server.level.ServerBossEvent;
+import net.minecraft.world.BossEvent;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.level.Level;
 
+import org.avp.api.entity.Boss;
 import org.avp.common.entity.ai.AIUtils;
 
-public class Dracomorph extends Monster implements GeoEntity {
+public class Dracomorph extends Monster implements Boss, GeoEntity {
+
+    private final ServerBossEvent bossEvent = (ServerBossEvent) new ServerBossEvent(
+        this.getDisplayName(),
+        BossEvent.BossBarColor.GREEN,
+        BossEvent.BossBarOverlay.PROGRESS
+    ).setDarkenScreen(true);
 
     private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
 
@@ -31,5 +40,10 @@ public class Dracomorph extends Monster implements GeoEntity {
     @Override
     public AnimatableInstanceCache getAnimatableInstanceCache() {
         return cache;
+    }
+
+    @Override
+    public ServerBossEvent getBossEvent() {
+        return bossEvent;
     }
 }
