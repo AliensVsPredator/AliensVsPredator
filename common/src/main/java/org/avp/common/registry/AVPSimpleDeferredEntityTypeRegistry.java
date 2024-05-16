@@ -30,7 +30,8 @@ public class AVPSimpleDeferredEntityTypeRegistry extends AVPAbstractDeferredEnti
     }
 
     protected <T extends Entity> Holder<EntityType<T>> createHolder(String registryName, EntityType.Builder<T> builder) {
-        return createHolder(registryName, () -> ((SilencedEntityTypeBuilder) builder).buildWithoutDataFixerCheck());
+        var silencedBuilder = (SilencedEntityTypeBuilder) builder;
+        return createHolder(registryName, silencedBuilder::buildWithoutDataFixerCheck);
     }
 
     protected <T extends Mob> Holder<EntityType<T>> createMobHolder(
@@ -39,7 +40,8 @@ public class AVPSimpleDeferredEntityTypeRegistry extends AVPAbstractDeferredEnti
         int highlightColor,
         EntityType.Builder<T> builder
     ) {
-        var holder = createHolder(registryName, () -> ((SilencedEntityTypeBuilder) builder).<T>buildWithoutDataFixerCheck());
+        var silencedBuilder = (SilencedEntityTypeBuilder) builder;
+        var holder = createHolder(registryName, silencedBuilder::<T>buildWithoutDataFixerCheck);
         livingEntries.add(holder);
 
         var spawnEggItemHolder = Services.ITEM_SERVICE.createHolder(

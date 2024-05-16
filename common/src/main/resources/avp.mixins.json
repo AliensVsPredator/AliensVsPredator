@@ -10,6 +10,7 @@
         "MixinLivingEntityHost",
         "MixinLivingEntityPreventBoatAndCartRiding",
         "MixinLivingEntityProduceAcid",
+        "MixinLivingEntityReduceFallDamage",
         "MixinServerLevel",
         "MixinServerPlayerPressureSuitProvidesAir",
         "MixinVillagerHostilesSensorRunFromAVPMonsters"
