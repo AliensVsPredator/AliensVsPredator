@@ -6,6 +6,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.ai.targeting.TargetingConditions;
 import net.minecraft.world.level.Level;
 import org.avp.api.entity.Boss;
 import org.avp.common.util.MixinUtils;
@@ -33,16 +34,29 @@ public abstract class MixinMob_PerformBossLogic extends LivingEntity {
     void customServerAiStep(CallbackInfo callbackInfo) {
         if (this instanceof Boss boss) {
             var self = MixinUtils.<Mob>self(this);
+            var level = self.level();
+
             boss.getBossEvent().setProgress(self.getHealth() / self.getMaxHealth());
+
+            if (self.tickCount % 20 == 0) {
+                var nearbyPlayers = level.getNearbyPlayers(TargetingConditions.DEFAULT, self, self.getBoundingBox().inflate(16));
+                nearbyPlayers.forEach(player -> boss.getBossEvent().addPlayer((ServerPlayer) player));
+
+                var playersToRemove = boss.getBossEvent()
+                    .getPlayers()
+                    .stream()
+                    .filter(serverPlayer -> !nearbyPlayers.contains(serverPlayer))
+                    .toList();
+
+                playersToRemove.forEach(boss.getBossEvent()::removePlayer);
+            }
         }
     }
 
     @Override
     public void startSeenByPlayer(@NotNull ServerPlayer serverPlayer) {
         super.startSeenByPlayer(serverPlayer);
-        if (this instanceof Boss boss) {
-            boss.getBossEvent().addPlayer(serverPlayer);
-        }
+        // TODO: Need to do boss encounter "start"-related logic here eventually.
     }
 
     @Override
