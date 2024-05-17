@@ -26,7 +26,9 @@ import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
+import net.minecraft.world.level.entity.EntityTypeTest;
 import org.avp.api.entity.Boss;
+import org.avp.common.util.AVPPredicates;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -36,6 +38,15 @@ import org.avp.common.tag.AVPItemTags;
 
 public class Yautja extends Monster implements Boss, GeoEntity {
 
+    private static final int SPAWN_MIN_Y_LEVEL = 60;
+    private static final int SPAWN_MIN_DISTANCE_IN_BLOCKS = 256;
+    private static final int SPAWN_DISTANCE_SQUARED = SPAWN_MIN_DISTANCE_IN_BLOCKS * SPAWN_MIN_DISTANCE_IN_BLOCKS;
+
+    public static boolean anyNearbyPredators(ServerLevelAccessor serverLevelAccessor, BlockPos blockPos) {
+        var allYautja = serverLevelAccessor.getLevel().getEntities(EntityTypeTest.forClass(Yautja.class), AVPPredicates.ALWAYS_TRUE);
+        return allYautja.stream().anyMatch(yautja -> yautja.distanceToSqr(blockPos.getX(), blockPos.getY(), blockPos.getZ()) < SPAWN_DISTANCE_SQUARED);
+    }
+
     public static boolean checkPredatorSpawnRules(
         EntityType<? extends Monster> entityType,
         ServerLevelAccessor serverLevelAccessor,
@@ -43,14 +54,15 @@ public class Yautja extends Monster implements Boss, GeoEntity {
         BlockPos blockPos,
         RandomSource randomSource
     ) {
-        return blockPos.getY() > 60 &&
+        return blockPos.getY() > SPAWN_MIN_Y_LEVEL &&
             Monster.checkAnyLightMonsterSpawnRules(
                 entityType,
                 serverLevelAccessor,
                 mobSpawnType,
                 blockPos,
                 randomSource
-            );
+            ) &&
+            !anyNearbyPredators(serverLevelAccessor, blockPos);
     }
 
     private static final EntityDataAccessor<Boolean> HAS_HELMET = SynchedEntityData.defineId(
