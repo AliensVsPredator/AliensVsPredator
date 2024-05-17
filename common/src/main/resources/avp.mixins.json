@@ -6,10 +6,12 @@
     "compatibilityLevel": "JAVA_17",
     "mixins": [
         "MixinEnchantment_VeritaniumCanNotBeEnchanted",
+        "MixinEntity_ReduceFlowingWaterSlowDownForAliens",
         "MixinEntityTypeBuilder_SilenceDataFixerError",
         "MixinItemEntity_LithiumExplode",
         "MixinLivingEntity_AliensAreImmuneToPoison",
         "MixinLivingEntity_AliensDoNotSuffocate",
+        "MixinLivingEntity_ReduceWaterSlowDownForAliens",
         "MixinLivingEntity_Host",
         "MixinLivingEntity_PreventBoatAndCartRiding",
         "MixinLivingEntity_ProduceAcid",
