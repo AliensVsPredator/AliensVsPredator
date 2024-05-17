@@ -78,7 +78,7 @@ public class AVPArmorMaterials {
     )
         .setProtectionValues(new int[] { 4, 7, 9, 4 })
         .setDurabilityMultiplier(34)
-        .setEnchantmentValue(20)
+        .setEnchantmentValue(0)
         .setToughness(5)
         .build();
 
