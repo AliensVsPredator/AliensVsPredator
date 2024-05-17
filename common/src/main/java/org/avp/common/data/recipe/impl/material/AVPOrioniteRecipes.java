@@ -3,9 +3,10 @@ package org.avp.common.data.recipe.impl.material;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.data.recipes.SimpleCookingRecipeBuilder;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 import org.avp.common.AVPConstants;
+import org.avp.common.block.AVPBlocks;
+import org.avp.common.data.recipe.AVPRecipeHelper;
 import org.avp.common.data.recipe.AVPRecipeProvider;
 import org.avp.common.data.recipe.AVPShapedRecipeBuilder;
 import org.avp.common.item.AVPItems;
@@ -14,13 +15,12 @@ public final class AVPOrioniteRecipes {
 
     public static void addOrioniteRecipes(RecipeOutput recipeOutput) {
         // Compressed blocks
-        // TODO:
-//        AVPRecipeHelper.compressedBlockRecipe(
-//            recipeOutput,
-//            RecipeCategory.BUILDING_BLOCKS,
-//            AVPItems.INSTANCE.ingotOrionite.get(),
-//            AVPBlocks.INSTANCE.orioniteBlock.get()
-//        );
+        AVPRecipeHelper.compressedBlockRecipe(
+            recipeOutput,
+            RecipeCategory.BUILDING_BLOCKS,
+            AVPItems.INSTANCE.ingotOrionite.get(),
+            AVPBlocks.INSTANCE.orioniteBlock.get()
+        );
 
         // Titanium ore + veritanium shards = orionite sheet
         AVPShapedRecipeBuilder.shaped(RecipeCategory.MISC, AVPItems.INSTANCE.sheetOrionite)
@@ -39,13 +39,12 @@ public final class AVPOrioniteRecipes {
             .save(recipeOutput, AVPConstants.MOD_ID + ":ingot_orionite_from_blasting_sheet_orionite");
 
         // Decompressed items from blocks
-        // TODO:
-//        AVPRecipeHelper.decompressedItemRecipe(
-//            recipeOutput,
-//            RecipeCategory.MISC,
-//            AVPBlocks.INSTANCE.orioniteBlock.get(),
-//            AVPItems.INSTANCE.ingotOrionite.get()
-//        );
+        AVPRecipeHelper.decompressedItemRecipe(
+            recipeOutput,
+            RecipeCategory.MISC,
+            AVPBlocks.INSTANCE.orioniteBlock.get(),
+            AVPItems.INSTANCE.ingotOrionite.get()
+        );
     }
 
     private AVPOrioniteRecipes() {
