@@ -2,37 +2,29 @@ package org.avp.common.entity.attribute;
 
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.monster.Monster;
 
+import org.avp.common.entity.AVPEntitySpeedConstants;
 import org.avp.common.entity.type.AVPPrometheusAlienEntityTypes;
 
 public class AVPPrometheusAlienEntityAttributes {
 
-    private static AttributeSupplier.Builder createAvPAttributes() {
-        return Monster.createMonsterAttributes()
-            .add(Attributes.ARMOR, 0)
-            .add(Attributes.FOLLOW_RANGE, 16)
-            .add(Attributes.MAX_HEALTH, 20)
-            .add(Attributes.MOVEMENT_SPEED, 1);
-    }
-
-    private static final AttributeSupplier DEACON_ADULT = createAvPAttributes()
-        .add(Attributes.ATTACK_DAMAGE, 3D)
-        .add(Attributes.MAX_HEALTH, 120.0D)
-        .add(Attributes.MOVEMENT_SPEED, 0.4700000238418579D)
+    private static final AttributeSupplier DEACON_ADULT = AVPEntityAttributesBindingRegistry.builder()
+        .add(Attributes.ATTACK_DAMAGE, 3)
+        .add(Attributes.MAX_HEALTH, 120)
+        .add(Attributes.MOVEMENT_SPEED, AVPEntitySpeedConstants.DEACON_ADULT_SPEED)
         .build();
 
-    private static final AttributeSupplier TRILOBITE = createAvPAttributes()
-        .add(Attributes.ATTACK_DAMAGE, 4.0D)
-        .add(Attributes.KNOCKBACK_RESISTANCE, 1F)
-        .add(Attributes.MAX_HEALTH, 44.0D)
-        .add(Attributes.MOVEMENT_SPEED, 0.6999999761581421D)
+    private static final AttributeSupplier TRILOBITE = AVPEntityAttributesBindingRegistry.builder()
+        .add(Attributes.ATTACK_DAMAGE, 4)
+        .add(Attributes.KNOCKBACK_RESISTANCE, 1)
+        .add(Attributes.MAX_HEALTH, 44)
+        .add(Attributes.MOVEMENT_SPEED, AVPEntitySpeedConstants.TRILOBITE_SPEED)
         .build();
 
-    private static final AttributeSupplier TRILOBITE_BABY = createAvPAttributes()
-        .add(Attributes.ATTACK_DAMAGE, 0.5D)
-        .add(Attributes.MAX_HEALTH, 16.0D)
-        .add(Attributes.MOVEMENT_SPEED, 0.6499999761581421D)
+    private static final AttributeSupplier TRILOBITE_BABY = AVPEntityAttributesBindingRegistry.builder()
+        .add(Attributes.ATTACK_DAMAGE, 0.5)
+        .add(Attributes.MAX_HEALTH, 16)
+        .add(Attributes.MOVEMENT_SPEED, AVPEntitySpeedConstants.TRILOBITE_BABY_SPEED)
         .build();
 
     public static void addBindings() {
@@ -40,5 +32,9 @@ public class AVPPrometheusAlienEntityAttributes {
         AVPEntityAttributesBindingRegistry.addBinding(AVPPrometheusAlienEntityTypes.INSTANCE.deaconAdult, DEACON_ADULT);
         AVPEntityAttributesBindingRegistry.addBinding(AVPPrometheusAlienEntityTypes.INSTANCE.trilobite, TRILOBITE);
         AVPEntityAttributesBindingRegistry.addBinding(AVPPrometheusAlienEntityTypes.INSTANCE.trilobiteBaby, TRILOBITE_BABY);
+    }
+
+    private AVPPrometheusAlienEntityAttributes() {
+        throw new UnsupportedOperationException();
     }
 }
