@@ -30,7 +30,7 @@ public abstract class MixinLivingEntity_ProduceAcid extends Entity {
         var level = self.level();
 
         if (!level.isClientSide() && self.getType().is(AVPEntityTags.ACID_BLEEDERS)) {
-            if (!damageSource.is(AVPDamageTypeTags.PUNCTURE)) {
+            if (!damageSource.is(AVPDamageTypeTags.IS_PUNCTURING)) {
                 return;
             }
 

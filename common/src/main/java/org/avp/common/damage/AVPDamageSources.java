@@ -11,6 +11,8 @@ public class AVPDamageSources extends AVPDeferredRegistry<AVPDamageSource> {
 
     public final Holder<AVPDamageSource> acid = createHolder("acid", () -> new AVPDamageSource(AVPDamageTypes.INSTANCE.acid));
 
+    public final Holder<AVPDamageSource> bullet = createHolder("bullet", () -> new AVPDamageSource(AVPDamageTypes.INSTANCE.bullet));
+
     private AVPDamageSources() {}
 
     @Override

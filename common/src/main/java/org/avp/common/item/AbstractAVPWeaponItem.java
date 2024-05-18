@@ -26,6 +26,7 @@ import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
+import org.avp.common.damage.AVPDamageSources;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -171,7 +172,7 @@ public abstract class AbstractAVPWeaponItem extends Item implements GeoItem {
 
         switch (hitResult.getType()) {
             case BLOCK -> handleHitBlock(level, fireMode, (BlockHitResult) hitResult);
-            case ENTITY -> handleHitEntity(level, player, itemStack, (EntityHitResult) hitResult, fireMode);
+            case ENTITY -> handleHitEntity(player, itemStack, (EntityHitResult) hitResult, fireMode);
             case MISS -> { /* Do nothing */ }
         }
     }
@@ -192,7 +193,7 @@ public abstract class AbstractAVPWeaponItem extends Item implements GeoItem {
         Services.NETWORK_SERVICE.sendToAllClients(level.getServer(), payload);
     }
 
-    private void handleHitEntity(@NotNull Level level, Player player, ItemStack itemStack, EntityHitResult hitResult, FireMode fireMode) {
+    private void handleHitEntity(Player player, ItemStack itemStack, EntityHitResult hitResult, FireMode fireMode) {
         if (!(hitResult.getEntity() instanceof LivingEntity livingEntity)) {
             return;
         }
@@ -200,7 +201,8 @@ public abstract class AbstractAVPWeaponItem extends Item implements GeoItem {
         var damage = this.getWeaponItemData().getDamage() * fireMode.consumedAmmunition();
 
         livingEntity.invulnerableTime = 0;
-        livingEntity.hurt(level.damageSources().playerAttack(player), damage);
+        AVPDamageSources.INSTANCE.bullet.get().hurtCovertlyAndIndirectly(livingEntity, damage);
+        livingEntity.setLastHurtByMob(player);
         livingEntity.knockback(
             this.getWeaponItemData().getKnockback() * fireMode.consumedAmmunition(),
             Mth.sin(player.getYRot() * Mth.DEG_TO_RAD),

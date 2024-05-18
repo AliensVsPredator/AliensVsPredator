@@ -1,5 +1,6 @@
 package org.avp.common.damage;
 
+import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.damagesource.DamageSource;
@@ -12,18 +13,30 @@ public record AVPDamageSource(
     ResourceKey<DamageType> damageTypeResourceKey
 ) {
 
-    public void hurt(Entity entity, float damage) {
-        var damageSource = asDamageSource(entity.level());
-        entity.hurt(damageSource, damage);
+    public void hurt(Entity targetEntity, float damage) {
+        var damageSource = simpleDamageSource(targetEntity.level());
+        targetEntity.hurt(damageSource, damage);
+    }
+
+    public void hurtCovertlyAndIndirectly(Entity targetEntity, float damage) {
+        var damageSource = covertIndirectDamageSource(targetEntity.level(), targetEntity);
+        targetEntity.hurt(damageSource, damage);
     }
 
     @NotNull
-    private DamageSource asDamageSource(Level level) {
-        return new DamageSource(
-            level.registryAccess()
-                .registry(Registries.DAMAGE_TYPE)
-                .orElseThrow()
-                .getHolderOrThrow(damageTypeResourceKey)
-        );
+    private DamageSource covertIndirectDamageSource(Level level, Entity targetEntity) {
+        return new DamageSource(getHolderOrThrow(level), null, targetEntity);
+    }
+
+    @NotNull
+    private DamageSource simpleDamageSource(Level level) {
+        return new DamageSource(getHolderOrThrow(level));
+    }
+
+    private Holder.@NotNull Reference<DamageType> getHolderOrThrow(Level level) {
+        return level.registryAccess()
+            .registry(Registries.DAMAGE_TYPE)
+            .orElseThrow()
+            .getHolderOrThrow(damageTypeResourceKey);
     }
 }
