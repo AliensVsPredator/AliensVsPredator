@@ -7,6 +7,7 @@ import mod.azure.azurelib.common.internal.common.util.AzureLibUtil;
 import net.minecraft.server.level.ServerBossEvent;
 import net.minecraft.world.BossEvent;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.level.Level;
 
@@ -30,6 +31,8 @@ public class Dracomorph extends Monster implements Boss, GeoEntity {
     @Override
     protected void registerGoals() {
         AIUtils.addBasicAlienAI(this, goalSelector, targetSelector);
+        targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, Dracomorph.class, true, Dracomorph.class::isInstance));
+        targetSelector.addGoal(4, new NearestAttackableTargetGoal<>(this, Queen.class, true, Queen.class::isInstance));
     }
 
     @Override

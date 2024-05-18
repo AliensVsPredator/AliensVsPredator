@@ -87,6 +87,7 @@ public class Queen extends Monster implements Boss, GeoEntity {
     protected void registerGoals() {
         AIUtils.addBasicAlienAI(this, goalSelector, targetSelector);
         targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, Queen.class, true, Queen.class::isInstance));
+        targetSelector.addGoal(4, new NearestAttackableTargetGoal<>(this, Dracomorph.class, true, Dracomorph.class::isInstance));
     }
 
     @Nullable
