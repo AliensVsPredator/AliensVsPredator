@@ -5,6 +5,7 @@ import org.avp.client.render.entity.living.ChestbursterRenderer;
 import org.avp.client.render.entity.living.DroneRenderer;
 import org.avp.client.render.entity.living.FacehuggerRenderer;
 import org.avp.client.render.entity.living.FacehuggerRoyalRenderer;
+import org.avp.client.render.entity.living.NauticomorphRenderer;
 import org.avp.client.render.entity.living.OvamorphRenderer;
 import org.avp.client.render.entity.living.PraetorianRenderer;
 import org.avp.client.render.entity.living.QueenRenderer;
@@ -22,6 +23,7 @@ public class AVPBaseAlienEntityRenderers {
         AVPEntityRenderRegistry.addBinding(AVPBaseAlienEntityTypes.INSTANCE.drone, DroneRenderer::new);
         AVPEntityRenderRegistry.addBinding(AVPBaseAlienEntityTypes.INSTANCE.facehugger, FacehuggerRenderer::new);
         AVPEntityRenderRegistry.addBinding(AVPBaseAlienEntityTypes.INSTANCE.facehuggerRoyal, FacehuggerRoyalRenderer::new);
+        AVPEntityRenderRegistry.addBinding(AVPBaseAlienEntityTypes.INSTANCE.nauticomorph, NauticomorphRenderer::new);
         AVPEntityRenderRegistry.addBinding(AVPBaseAlienEntityTypes.INSTANCE.ovamorph, OvamorphRenderer::new);
         AVPEntityRenderRegistry.addBinding(AVPBaseAlienEntityTypes.INSTANCE.praetorian, PraetorianRenderer::new);
         AVPEntityRenderRegistry.addBinding(AVPBaseAlienEntityTypes.INSTANCE.queen, QueenRenderer::new);

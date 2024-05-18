@@ -61,6 +61,7 @@ public class AVPEntityTagsProvider extends FabricTagProvider.EntityTypeTagProvid
                 AVPBaseAlienEntityTypes.INSTANCE.boiler.get(),
                 AVPBaseAlienEntityTypes.INSTANCE.chestburster.get(),
                 AVPBaseAlienEntityTypes.INSTANCE.drone.get(),
+                AVPBaseAlienEntityTypes.INSTANCE.nauticomorph.get(),
                 AVPBaseAlienEntityTypes.INSTANCE.spitter.get(),
                 AVPBaseAlienEntityTypes.INSTANCE.warrior.get(),
                 AVPExoticAlienEntityTypes.INSTANCE.deaconAdultEngineer.get(),

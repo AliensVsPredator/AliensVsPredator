@@ -51,6 +51,14 @@ public class AVPBaseAlienEntityTypes extends AVPSimpleDeferredEntityTypeRegistry
             .sized(0.75F, 0.3F)
     );
 
+    public final Holder<EntityType<Nauticomorph>> nauticomorph = createMobHolder(
+        "nauticomorph",
+        0x010202,
+        0xDFE2E4,
+        EntityType.Builder.of(Nauticomorph::new, MobCategory.MONSTER)
+            .sized(0.98F, 1.98F)
+    );
+
     public final Holder<EntityType<Ovamorph>> ovamorph = createMobHolder(
         "ovamorph",
         0x615B45,

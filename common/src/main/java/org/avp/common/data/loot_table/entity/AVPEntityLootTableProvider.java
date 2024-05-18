@@ -26,6 +26,7 @@ public class AVPEntityLootTableProvider extends AbstractAVPEntityLootTableProvid
         addQueenLootTable();
         addStandardXenomorphLootTable(AVPBaseAlienEntityTypes.INSTANCE.boiler);
         addStandardXenomorphLootTable(AVPBaseAlienEntityTypes.INSTANCE.drone);
+        addStandardXenomorphLootTable(AVPBaseAlienEntityTypes.INSTANCE.nauticomorph);
         addStandardXenomorphLootTable(AVPBaseAlienEntityTypes.INSTANCE.praetorian);
         addStandardXenomorphLootTable(AVPBaseAlienEntityTypes.INSTANCE.spitter);
         addStandardXenomorphLootTable(AVPBaseAlienEntityTypes.INSTANCE.warrior);

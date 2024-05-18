@@ -36,6 +36,12 @@ public class AVPBaseAlienEntityAttributes {
         .add(Attributes.MOVEMENT_SPEED, AVPEntitySpeedConstants.FACEHUGGER_ROYAL_SPEED)
         .build();
 
+    private static final AttributeSupplier NAUTICOMORPH = AVPEntityAttributesBindingRegistry.builder()
+        .add(Attributes.ATTACK_DAMAGE, 7)
+        .add(Attributes.MAX_HEALTH, 40)
+        .add(Attributes.MOVEMENT_SPEED, AVPEntitySpeedConstants.DRONE_SPEED) // TODO:
+        .build();
+
     private static final AttributeSupplier OVAMORPH = AVPEntityAttributesBindingRegistry.builder()
         .add(Attributes.KNOCKBACK_RESISTANCE, 1)
         .add(Attributes.MAX_HEALTH, 8)
@@ -74,6 +80,7 @@ public class AVPBaseAlienEntityAttributes {
         AVPEntityAttributesBindingRegistry.addBinding(AVPBaseAlienEntityTypes.INSTANCE.drone, DRONE);
         AVPEntityAttributesBindingRegistry.addBinding(AVPBaseAlienEntityTypes.INSTANCE.facehugger, FACEHUGGER);
         AVPEntityAttributesBindingRegistry.addBinding(AVPBaseAlienEntityTypes.INSTANCE.facehuggerRoyal, FACEHUGGER_ROYAL);
+        AVPEntityAttributesBindingRegistry.addBinding(AVPBaseAlienEntityTypes.INSTANCE.nauticomorph, NAUTICOMORPH);
         AVPEntityAttributesBindingRegistry.addBinding(AVPBaseAlienEntityTypes.INSTANCE.ovamorph, OVAMORPH);
         AVPEntityAttributesBindingRegistry.addBinding(AVPBaseAlienEntityTypes.INSTANCE.praetorian, PRAETORIAN);
         AVPEntityAttributesBindingRegistry.addBinding(AVPBaseAlienEntityTypes.INSTANCE.queen, QUEEN);

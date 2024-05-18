@@ -90,6 +90,14 @@ public class AVPEntitySpawns extends AVPDeferredRegistry<EntitySpawnData<?>> {
             2
         );
         registerAlienSpawn(
+            AVPBaseAlienEntityTypes.INSTANCE.nauticomorph,
+            Monster::checkMonsterSpawnRules, // TODO:
+            AVPConfig.Aliens.MAX_Y_LEVEL_FOR_DRONE_SPAWNS, // TODO:
+            50,
+            1,
+            2
+        );
+        registerAlienSpawn(
             AVPBaseAlienEntityTypes.INSTANCE.praetorian,
             Monster::checkMonsterSpawnRules,
             AVPConfig.Aliens.MAX_Y_LEVEL_FOR_PRAETORIAN_SPAWNS,
