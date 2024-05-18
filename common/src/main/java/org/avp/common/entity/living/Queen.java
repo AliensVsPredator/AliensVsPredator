@@ -4,18 +4,24 @@ import mod.azure.azurelib.common.api.common.animatable.GeoEntity;
 import mod.azure.azurelib.common.internal.common.core.animatable.instance.AnimatableInstanceCache;
 import mod.azure.azurelib.common.internal.common.core.animation.AnimatableManager;
 import mod.azure.azurelib.common.internal.common.util.AzureLibUtil;
+import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerBossEvent;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.util.Mth;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.BossEvent;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.ServerLevelAccessor;
+import net.minecraft.world.level.entity.EntityTypeTest;
 import org.avp.api.entity.Boss;
+import org.avp.common.util.AVPPredicates;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -23,6 +29,31 @@ import org.avp.common.entity.ai.AIUtils;
 import org.avp.common.sound.AVPSoundEvents;
 
 public class Queen extends Monster implements Boss, GeoEntity {
+
+    private static final int SPAWN_MIN_DISTANCE_IN_BLOCKS = 512;
+    private static final int SPAWN_DISTANCE_SQUARED = SPAWN_MIN_DISTANCE_IN_BLOCKS * SPAWN_MIN_DISTANCE_IN_BLOCKS;
+
+    public static boolean anyNearbyQueens(ServerLevelAccessor serverLevelAccessor, BlockPos blockPos) {
+        var allQueens = serverLevelAccessor.getLevel().getEntities(EntityTypeTest.forClass(Queen.class), AVPPredicates.ALWAYS_TRUE);
+        return allQueens.stream().anyMatch(queen -> queen.distanceToSqr(blockPos.getX(), blockPos.getY(), blockPos.getZ()) < SPAWN_DISTANCE_SQUARED);
+    }
+
+    public static boolean checkQueenSpawnRules(
+        EntityType<? extends Monster> entityType,
+        ServerLevelAccessor serverLevelAccessor,
+        MobSpawnType mobSpawnType,
+        BlockPos blockPos,
+        RandomSource randomSource
+    ) {
+        return Monster.checkMonsterSpawnRules(
+                entityType,
+                serverLevelAccessor,
+                mobSpawnType,
+                blockPos,
+                randomSource
+            ) &&
+            !anyNearbyQueens(serverLevelAccessor, blockPos);
+    }
 
     private final ServerBossEvent bossEvent = (ServerBossEvent) new ServerBossEvent(
         this.getDisplayName(),

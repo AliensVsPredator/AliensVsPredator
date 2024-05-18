@@ -12,6 +12,7 @@ import java.util.function.Supplier;
 
 import org.avp.api.Holder;
 import org.avp.common.config.AVPConfig;
+import org.avp.common.entity.living.Queen;
 import org.avp.common.entity.living.Yautja;
 import org.avp.common.entity.type.AVPBaseAlienEntityTypes;
 import org.avp.common.entity.type.AVPRunnerAlienEntityTypes;
@@ -98,7 +99,7 @@ public class AVPEntitySpawns extends AVPDeferredRegistry<EntitySpawnData<?>> {
         );
         registerAlienSpawn(
             AVPBaseAlienEntityTypes.INSTANCE.queen,
-            Monster::checkMonsterSpawnRules,
+            Queen::checkQueenSpawnRules,
             AVPConfig.Aliens.MAX_Y_LEVEL_FOR_QUEEN_SPAWNS,
             5,
             1,
