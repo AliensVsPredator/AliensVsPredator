@@ -3,6 +3,8 @@ package org.avp.fabric;
 import net.fabricmc.api.ModInitializer;
 
 import org.avp.common.AVPCommon;
+import org.avp.common.alien.infection.AVPAlienInfections;
+import org.avp.common.alien.maturation.AVPAlienMaturations;
 import org.avp.common.block.AVPDispenserBlockBehaviors;
 import org.avp.fabric.common.command.AVPFabricCommands;
 import org.avp.fabric.common.data.AVPFabricLootTableModifier;
@@ -23,6 +25,10 @@ public class AVPFabric implements ModInitializer {
 
         // Fuel registration.
         AVPFabricFuelRegistry.register();
+
+        // Alien lifecycle registration.
+        AVPAlienInfections.INSTANCE.register();
+        AVPAlienMaturations.INSTANCE.register();
 
         // Remaining steps.
         AVPFabricEntitySpawns.addEntitySpawns();

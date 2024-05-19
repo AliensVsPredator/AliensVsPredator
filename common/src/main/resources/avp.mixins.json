@@ -17,6 +17,7 @@
         "MixinLivingEntity_PreventBoatAndCartRiding",
         "MixinLivingEntity_ProduceAcid",
         "MixinLivingEntity_ReduceFallDamage",
+        "MixinMob_AliensMature",
         "MixinMob_PerformBossLogic",
         "MixinVillagerHostilesSensor_RunFromAVPMonsters",
         "server.MixinServerLevel",
