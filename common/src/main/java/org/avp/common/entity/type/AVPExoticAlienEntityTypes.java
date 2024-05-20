@@ -24,7 +24,7 @@ public class AVPExoticAlienEntityTypes extends AVPSimpleDeferredEntityTypeRegist
         0xD8B877,
         0xF7E2B4,
         EntityType.Builder.of(ChestbursterDraco::new, MobCategory.MONSTER)
-            .sized(0.98F, 1.98F)
+            .sized(0.75F, 0.98F)
     );
 
     public final Holder<EntityType<Dracomorph>> dracomorph = createMobHolder(
