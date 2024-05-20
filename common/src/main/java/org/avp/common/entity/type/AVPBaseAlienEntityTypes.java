@@ -27,6 +27,14 @@ public class AVPBaseAlienEntityTypes extends AVPSimpleDeferredEntityTypeRegistry
             .sized(0.75F, 0.3F)
     );
 
+    public final Holder<EntityType<ChestbursterQueen>> chestbursterQueen = createMobHolder(
+        "chestburster_queen",
+        0xD8B877,
+        0xF7E2B4,
+        EntityType.Builder.of(ChestbursterQueen::new, MobCategory.MONSTER)
+            .sized(0.75F, 0.98F)
+    );
+
     public final Holder<EntityType<Drone>> drone = createMobHolder(
         "drone",
         0x010202,

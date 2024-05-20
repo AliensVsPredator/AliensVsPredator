@@ -53,6 +53,8 @@ public class AVPAlienMaturations extends AVPDeferredRegistry<AlienMaturation> {
 
     public final Holder<AlienMaturation> nauticomorphMaturation;
 
+    public final Holder<AlienMaturation> praetorianMaturation;
+
     public final Holder<AlienMaturation> queenMaturation;
 
     public final Holder<AlienMaturation> spitterMaturation;
@@ -170,6 +172,16 @@ public class AVPAlienMaturations extends AVPDeferredRegistry<AlienMaturation> {
                 new AlienMaturationStep(
                     AVPBaseAlienEntityTypes.INSTANCE.chestburster.get(),
                     AVPBaseAlienEntityTypes.INSTANCE.nauticomorph.get(),
+                    12_000
+                )
+            )
+        ));
+        praetorianMaturation = createHolder("chestburster_queen_to_praetorian", () -> new AlienMaturation(
+            null,
+            List.of(
+                new AlienMaturationStep(
+                    AVPBaseAlienEntityTypes.INSTANCE.chestbursterQueen.get(),
+                    AVPBaseAlienEntityTypes.INSTANCE.praetorian.get(),
                     12_000
                 )
             )

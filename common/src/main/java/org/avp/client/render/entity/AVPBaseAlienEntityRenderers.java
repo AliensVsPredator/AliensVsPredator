@@ -1,6 +1,7 @@
 package org.avp.client.render.entity;
 
 import org.avp.client.render.entity.living.BoilerRenderer;
+import org.avp.client.render.entity.living.ChestbursterQueenRenderer;
 import org.avp.client.render.entity.living.ChestbursterRenderer;
 import org.avp.client.render.entity.living.DroneRenderer;
 import org.avp.client.render.entity.living.FacehuggerRenderer;
@@ -20,6 +21,7 @@ public class AVPBaseAlienEntityRenderers {
     public static void addBindings() {
         AVPEntityRenderRegistry.addBinding(AVPBaseAlienEntityTypes.INSTANCE.boiler, BoilerRenderer::new);
         AVPEntityRenderRegistry.addBinding(AVPBaseAlienEntityTypes.INSTANCE.chestburster, ChestbursterRenderer::new);
+        AVPEntityRenderRegistry.addBinding(AVPBaseAlienEntityTypes.INSTANCE.chestbursterQueen, ChestbursterQueenRenderer::new);
         AVPEntityRenderRegistry.addBinding(AVPBaseAlienEntityTypes.INSTANCE.drone, DroneRenderer::new);
         AVPEntityRenderRegistry.addBinding(AVPBaseAlienEntityTypes.INSTANCE.facehugger, FacehuggerRenderer::new);
         AVPEntityRenderRegistry.addBinding(AVPBaseAlienEntityTypes.INSTANCE.facehuggerRoyal, FacehuggerRoyalRenderer::new);

@@ -31,6 +31,8 @@ public class AVPAlienInfections extends AVPDeferredRegistry<AlienInfection> {
 
     public final Holder<AlienInfection> facehuggerProducesChestburster;
 
+    public final Holder<AlienInfection> facehuggerRoyalProducesChestbursterQueen;
+
     public final Holder<AlienInfection> octohuggerProducesBelugaburster;
 
     public final Holder<AlienInfection> trilobiteProducesDeacon;
@@ -67,6 +69,15 @@ public class AVPAlienInfections extends AVPDeferredRegistry<AlienInfection> {
             AVPBaseAlienEntityTypes.INSTANCE.facehugger.get(),
             null, // Chestburster will be default for any unknown host.
             AVPBaseAlienEntityTypes.INSTANCE.chestburster.get(),
+            60,
+            1200,
+            6000
+        ));
+
+        facehuggerRoyalProducesChestbursterQueen = createHolder("facehugger_royal_produces_chestburster_queen", () -> new AlienInfection(
+            AVPBaseAlienEntityTypes.INSTANCE.facehuggerRoyal.get(),
+            null, // Chestburster will be default for any unknown host.
+            AVPBaseAlienEntityTypes.INSTANCE.chestbursterQueen.get(),
             60,
             1200,
             6000

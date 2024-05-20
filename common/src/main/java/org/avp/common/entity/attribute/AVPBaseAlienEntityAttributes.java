@@ -20,6 +20,12 @@ public class AVPBaseAlienEntityAttributes {
         .add(Attributes.MOVEMENT_SPEED, AVPEntitySpeedConstants.CHESTBURSTER_SPEED)
         .build();
 
+    private static final AttributeSupplier CHESTBURSTER_QUEEN = AVPEntityAttributesBindingRegistry.builder()
+        .add(Attributes.ATTACK_DAMAGE, 0.5)
+        .add(Attributes.MAX_HEALTH, 14)
+        .add(Attributes.MOVEMENT_SPEED, AVPEntitySpeedConstants.CHESTBURSTER_SPEED)
+        .build();
+
     private static final AttributeSupplier DRONE = AVPEntityAttributesBindingRegistry.builder()
         .add(Attributes.ATTACK_DAMAGE, 7)
         .add(Attributes.MAX_HEALTH, 40)
@@ -77,6 +83,7 @@ public class AVPBaseAlienEntityAttributes {
     public static void addBindings() {
         AVPEntityAttributesBindingRegistry.addBinding(AVPBaseAlienEntityTypes.INSTANCE.boiler, BOILER);
         AVPEntityAttributesBindingRegistry.addBinding(AVPBaseAlienEntityTypes.INSTANCE.chestburster, CHESTBURSTER);
+        AVPEntityAttributesBindingRegistry.addBinding(AVPBaseAlienEntityTypes.INSTANCE.chestbursterQueen, CHESTBURSTER_QUEEN);
         AVPEntityAttributesBindingRegistry.addBinding(AVPBaseAlienEntityTypes.INSTANCE.drone, DRONE);
         AVPEntityAttributesBindingRegistry.addBinding(AVPBaseAlienEntityTypes.INSTANCE.facehugger, FACEHUGGER);
         AVPEntityAttributesBindingRegistry.addBinding(AVPBaseAlienEntityTypes.INSTANCE.facehuggerRoyal, FACEHUGGER_ROYAL);
