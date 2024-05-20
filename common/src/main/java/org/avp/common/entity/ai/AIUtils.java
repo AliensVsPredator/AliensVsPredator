@@ -13,6 +13,7 @@ import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
 
 import org.avp.common.tag.AVPEntityTags;
+import org.avp.common.tag.AVPItemTags;
 
 public class AIUtils {
 
@@ -48,6 +49,28 @@ public class AIUtils {
                 true,
                 livingEntity -> !livingEntity.getType().is(AVPEntityTags.ALIENS) &&
                     !livingEntity.getType().is(AVPEntityTags.NON_HOSTS)
+            )
+        );
+    }
+
+    public static void addYautjaAI(Monster monster, GoalSelector goalSelector, GoalSelector targetSelector) {
+        goalSelector.addGoal(8, new LookAtPlayerGoal(monster, Player.class, 8));
+        goalSelector.addGoal(8, new RandomLookAroundGoal(monster));
+        goalSelector.addGoal(7, new WaterAvoidingRandomStrollGoal(monster, 1));
+
+        goalSelector.addGoal(2, new MeleeAttackGoal(monster, 1, true));
+        targetSelector.addGoal(1, new HurtByTargetGoal(monster));
+        targetSelector.addGoal(
+            2,
+            new NearestAttackableTargetGoal<>(
+                monster,
+                LivingEntity.class,
+                true,
+                livingEntity -> livingEntity.getType().is(AVPEntityTags.ALIENS) ||
+                    livingEntity instanceof Player player && player.getInventory()
+                        .hasAnyMatching(
+                            itemStack -> itemStack.is(AVPItemTags.THREATENS_PREDATORS)
+                        )
             )
         );
     }
