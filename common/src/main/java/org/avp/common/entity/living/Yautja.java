@@ -14,6 +14,7 @@ import net.minecraft.world.BossEvent;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.SpawnGroupData;
 import net.minecraft.world.entity.monster.Monster;
@@ -30,6 +31,7 @@ import org.jetbrains.annotations.Nullable;
 public class Yautja extends Monster implements Boss, GeoEntity {
 
     private static final EntityDataAccessor<Boolean> HAS_HELMET = SynchedEntityData.defineId(Yautja.class, EntityDataSerializers.BOOLEAN);
+    private static final EntityDataAccessor<Boolean> WRISTBLADES_VISIBLE = SynchedEntityData.defineId(Yautja.class, EntityDataSerializers.BOOLEAN);
 
     private final ServerBossEvent bossEvent = (ServerBossEvent) new ServerBossEvent(
         this.getDisplayName(),
@@ -40,11 +42,13 @@ public class Yautja extends Monster implements Boss, GeoEntity {
     private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
 
     public final SyncedDataHandle<Boolean> hasHelmet;
+    public final SyncedDataHandle<Boolean> wristbladesVisible;
 
     public Yautja(EntityType<? extends Monster> entityType, Level level) {
         super(entityType, level);
         this.setPersistenceRequired();
         this.hasHelmet = SyncedDataHandle.attach("HasHelmet", true, this, HAS_HELMET, SyncedDataSerializer.BOOLEAN);
+        this.wristbladesVisible = SyncedDataHandle.attach("WristbladesVisible", false, this, WRISTBLADES_VISIBLE, SyncedDataSerializer.BOOLEAN);
     }
 
     @Nullable
@@ -63,6 +67,12 @@ public class Yautja extends Monster implements Boss, GeoEntity {
     @Override
     protected void registerGoals() {
         AIUtils.addYautjaAI(this, goalSelector, targetSelector);
+    }
+
+    @Override
+    public void setTarget(@Nullable LivingEntity livingEntity) {
+        super.setTarget(livingEntity);
+        wristbladesVisible.set(livingEntity != null);
     }
 
     @Nullable
