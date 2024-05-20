@@ -6,7 +6,7 @@ import org.avp.common.entity.living.Drone;
 
 public class DroneModel extends AVPGeoModel<Drone> {
     public DroneModel() {
-        super("drone");
+        super("drone", GeoModelType.ENTITY);
     }
 
     @Override

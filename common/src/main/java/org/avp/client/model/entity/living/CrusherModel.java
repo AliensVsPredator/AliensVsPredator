@@ -6,7 +6,7 @@ import org.avp.common.entity.living.Crusher;
 
 public class CrusherModel extends AVPGeoModel<Crusher> {
     public CrusherModel() {
-        super("crusher");
+        super("crusher", GeoModelType.ENTITY);
     }
 
     @Override

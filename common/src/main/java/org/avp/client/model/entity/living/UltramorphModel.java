@@ -6,7 +6,7 @@ import org.avp.common.entity.living.Ultramorph;
 
 public class UltramorphModel extends AVPGeoModel<Ultramorph> {
     public UltramorphModel() {
-        super("ultramorph");
+        super("ultramorph", GeoModelType.ENTITY);
     }
 
     @Override

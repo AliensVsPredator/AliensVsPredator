@@ -6,7 +6,7 @@ import org.avp.common.entity.living.Warrior;
 
 public class WarriorModel extends AVPGeoModel<Warrior> {
     public WarriorModel() {
-        super("warrior");
+        super("warrior", GeoModelType.ENTITY);
     }
 
     @Override

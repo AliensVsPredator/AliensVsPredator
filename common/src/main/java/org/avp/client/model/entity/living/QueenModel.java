@@ -6,7 +6,7 @@ import org.avp.common.entity.living.Queen;
 
 public class QueenModel extends AVPGeoModel<Queen> {
     public QueenModel() {
-        super("queen");
+        super("queen", GeoModelType.ENTITY);
     }
 
     @Override

@@ -6,7 +6,7 @@ import org.avp.common.entity.living.Boiler;
 
 public class BoilerModel extends AVPGeoModel<Boiler> {
     public BoilerModel() {
-        super("boiler");
+        super("boiler", GeoModelType.ENTITY);
     }
 
     @Override

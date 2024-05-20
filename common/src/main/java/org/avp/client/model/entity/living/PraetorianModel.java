@@ -6,7 +6,7 @@ import org.avp.common.entity.living.Praetorian;
 
 public class PraetorianModel extends AVPGeoModel<Praetorian> {
     public PraetorianModel() {
-        super("praetorian");
+        super("praetorian", GeoModelType.ENTITY);
     }
 
     @Override

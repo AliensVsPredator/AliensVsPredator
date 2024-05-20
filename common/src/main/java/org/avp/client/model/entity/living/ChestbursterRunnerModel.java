@@ -6,7 +6,7 @@ import org.avp.common.entity.living.ChestbursterRunner;
 
 public class ChestbursterRunnerModel extends AVPGeoModel<ChestbursterRunner> {
     public ChestbursterRunnerModel() {
-        super("chestburster_runner");
+        super("chestburster_runner", GeoModelType.ENTITY);
     }
 
     @Override

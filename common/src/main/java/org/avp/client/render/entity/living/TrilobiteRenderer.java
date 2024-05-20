@@ -1,52 +1,15 @@
 package org.avp.client.render.entity.living;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 import mod.azure.azurelib.common.api.client.renderer.GeoEntityRenderer;
-import mod.azure.azurelib.common.internal.common.cache.object.BakedGeoModel;
-import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
-
-import org.avp.client.model.entity.living.TrilobiteModel;
+import org.avp.client.model.entity.living.AVPGeoModel;
+import org.avp.client.model.entity.living.GeoModelType;
 import org.avp.common.entity.living.Trilobite;
 
 public class TrilobiteRenderer extends GeoEntityRenderer<Trilobite> {
 
     public TrilobiteRenderer(EntityRendererProvider.Context context) {
-        super(context, new TrilobiteModel());
-    }
-
-    @Override
-    public void preRender(
-        PoseStack poseStack,
-        Trilobite animatable,
-        BakedGeoModel model,
-        MultiBufferSource bufferSource,
-        VertexConsumer buffer,
-        boolean isReRender,
-        float partialTick,
-        int packedLight,
-        int packedOverlay,
-        float red,
-        float green,
-        float blue,
-        float alpha
-    ) {
-        super.preRender(
-            poseStack,
-            animatable,
-            model,
-            bufferSource,
-            buffer,
-            isReRender,
-            partialTick,
-            packedLight,
-            packedOverlay,
-            red,
-            green,
-            blue,
-            alpha
-        );
-        poseStack.scale(1.75F, 1.75F, 1.75F);
+        super(context, new AVPGeoModel<>("trilobite", GeoModelType.ENTITY));
+        this.withScale(1.75F);
     }
 }

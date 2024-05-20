@@ -6,7 +6,7 @@ import org.avp.common.entity.living.Belugamorph;
 
 public class BelugamorphModel extends AVPGeoModel<Belugamorph> {
     public BelugamorphModel() {
-        super("belugamorph");
+        super("belugamorph", GeoModelType.ENTITY);
     }
 
     @Override

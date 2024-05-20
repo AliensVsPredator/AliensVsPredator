@@ -6,7 +6,7 @@ import org.avp.common.entity.living.Yautja;
 
 public class YautjaModel extends AVPGeoModel<Yautja> {
     public YautjaModel() {
-        super("yautja");
+        super("yautja", GeoModelType.ENTITY);
     }
 
     public void showHelmet(boolean show) {

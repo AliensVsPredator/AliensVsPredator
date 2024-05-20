@@ -6,7 +6,7 @@ import org.avp.common.entity.living.DeaconAdult;
 
 public class DeaconAdultModel extends AVPGeoModel<DeaconAdult> {
     public DeaconAdultModel() {
-        super("deacon_adult");
+        super("deacon_adult", GeoModelType.ENTITY);
     }
 
     @Override

@@ -8,7 +8,7 @@ import org.avp.common.AVPResources;
 import java.util.HashMap;
 import java.util.Map;
 
-public abstract class AVPGeoModel<T extends GeoAnimatable> extends GeoModel<T> {
+public class AVPGeoModel<T extends GeoAnimatable> extends GeoModel<T> {
 
     private static final Map<String, ResourceLocation> ANIMATION_RESOURCES = new HashMap<>();
 
@@ -18,12 +18,21 @@ public abstract class AVPGeoModel<T extends GeoAnimatable> extends GeoModel<T> {
 
     private final String registryName;
 
-    protected AVPGeoModel(String registryName) {
+    public AVPGeoModel(String registryName, GeoModelType geoModelType) {
         super();
         this.registryName = registryName;
-        ANIMATION_RESOURCES.computeIfAbsent(registryName, AVPResources::entityAnimationLocation);
-        MODEL_RESOURCES.computeIfAbsent(registryName, AVPResources::entityGeoLocation);
-        TEXTURE_RESOURCES.computeIfAbsent(registryName, AVPResources::entityTextureLocation);
+        switch (geoModelType) {
+            case ITEM -> {
+                ANIMATION_RESOURCES.computeIfAbsent(registryName, AVPResources::itemAnimationLocation);
+                MODEL_RESOURCES.computeIfAbsent(registryName, AVPResources::itemGeoLocation);
+                TEXTURE_RESOURCES.computeIfAbsent(registryName, AVPResources::itemTextureLocation);
+            }
+            case ENTITY -> {
+                ANIMATION_RESOURCES.computeIfAbsent(registryName, AVPResources::entityAnimationLocation);
+                MODEL_RESOURCES.computeIfAbsent(registryName, AVPResources::entityGeoLocation);
+                TEXTURE_RESOURCES.computeIfAbsent(registryName, AVPResources::entityTextureLocation);
+            }
+        }
     }
 
     @Override

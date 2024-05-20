@@ -6,7 +6,7 @@ import org.avp.common.entity.living.Engineer;
 
 public class EngineerModel extends AVPGeoModel<Engineer> {
     public EngineerModel() {
-        super("engineer");
+        super("engineer", GeoModelType.ENTITY);
     }
 
     public void showHelmet(boolean showHelmet) {

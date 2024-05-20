@@ -6,7 +6,7 @@ import org.avp.common.entity.living.ChestbursterDraco;
 
 public class ChestbursterDracoModel extends AVPGeoModel<ChestbursterDraco> {
     public ChestbursterDracoModel() {
-        super("chestburster_draco");
+        super("chestburster_draco", GeoModelType.ENTITY);
     }
 
     @Override

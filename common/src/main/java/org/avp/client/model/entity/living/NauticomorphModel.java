@@ -6,7 +6,7 @@ import org.avp.common.entity.living.Nauticomorph;
 
 public class NauticomorphModel extends AVPGeoModel<Nauticomorph> {
     public NauticomorphModel() {
-        super("nauticomorph");
+        super("nauticomorph", GeoModelType.ENTITY);
     }
 
     @Override

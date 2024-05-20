@@ -6,7 +6,7 @@ import org.avp.common.entity.living.Spitter;
 
 public class SpitterModel extends AVPGeoModel<Spitter> {
     public SpitterModel() {
-        super("spitter");
+        super("spitter", GeoModelType.ENTITY);
     }
 
     @Override

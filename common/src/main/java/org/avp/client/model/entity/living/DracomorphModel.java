@@ -6,7 +6,7 @@ import org.avp.common.entity.living.Dracomorph;
 
 public class DracomorphModel extends AVPGeoModel<Dracomorph> {
     public DracomorphModel() {
-        super("dracomorph");
+        super("dracomorph", GeoModelType.ENTITY);
     }
 
     @Override
