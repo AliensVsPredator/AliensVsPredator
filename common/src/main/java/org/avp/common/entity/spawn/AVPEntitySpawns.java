@@ -13,7 +13,6 @@ import java.util.function.Supplier;
 import org.avp.api.Holder;
 import org.avp.common.config.AVPConfig;
 import org.avp.common.entity.living.Queen;
-import org.avp.common.entity.living.Yautja;
 import org.avp.common.entity.type.AVPBaseAlienEntityTypes;
 import org.avp.common.entity.type.AVPRunnerAlienEntityTypes;
 import org.avp.common.entity.type.AVPYautjaEntityTypes;
@@ -158,7 +157,7 @@ public class AVPEntitySpawns extends AVPDeferredRegistry<EntitySpawnData<?>> {
         registerMonsterSpawn(
             AVPYautjaEntityTypes.INSTANCE.yautja,
             BiomeTags.IS_JUNGLE,
-            Yautja::checkPredatorSpawnRules,
+            YautjaSpawning::checkPredatorSpawnRules,
             30,
             1,
             1
