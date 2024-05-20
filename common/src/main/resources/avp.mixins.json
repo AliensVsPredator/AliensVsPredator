@@ -12,6 +12,7 @@
         "MixinItemEntity_LithiumExplode",
         "MixinLivingEntity_AliensAreImmuneToPoison",
         "MixinLivingEntity_AliensDoNotSuffocate",
+        "MixinLivingEntity_AliensRegenerateHealth",
         "MixinLivingEntity_ReduceWaterSlowDownForAliens",
         "MixinLivingEntity_Host",
         "MixinLivingEntity_PreventBoatAndCartRiding",
