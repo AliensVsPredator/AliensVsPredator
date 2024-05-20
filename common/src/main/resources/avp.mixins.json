@@ -17,6 +17,7 @@
         "MixinLivingEntity_PreventBoatAndCartRiding",
         "MixinLivingEntity_ProduceAcid",
         "MixinLivingEntity_ReduceFallDamage",
+        "MixinLivingEntity_SyncedDataHandleUser",
         "MixinMob_AliensMature",
         "MixinMob_PerformBossLogic",
         "MixinVillagerHostilesSensor_RunFromAVPMonsters",

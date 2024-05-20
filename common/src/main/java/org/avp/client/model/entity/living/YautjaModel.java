@@ -19,7 +19,7 @@ public class YautjaModel extends AVPGeoModel<Yautja> {
 
     @Override
     public void setCustomAnimations(Yautja entity, long instanceId, AnimationState<Yautja> animationState) {
-        this.showHelmet(entity.hasHelmet());
+        this.showHelmet(entity.hasHelmet.get());
         BasicAnimationUtils.applyHeadRotations(this, animationState, "face", -0.2F);
         BasicAnimationUtils.applyLimbRotations(
             entity,
