@@ -10,5 +10,6 @@ public class ChestbursterDracoRenderer extends GeoEntityRenderer<ChestbursterDra
 
     public ChestbursterDracoRenderer(EntityRendererProvider.Context context) {
         super(context, new ChestbursterDracoModel());
+        this.withScale(0.5F);
     }
 }
