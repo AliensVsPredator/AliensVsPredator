@@ -5,16 +5,19 @@ import mod.azure.azurelib.common.internal.common.core.animatable.instance.Animat
 import mod.azure.azurelib.common.internal.common.core.animation.AnimatableManager;
 import mod.azure.azurelib.common.internal.common.util.AzureLibUtil;
 import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerBossEvent;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.BossEvent;
+import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MobSpawnType;
+import net.minecraft.world.entity.SpawnGroupData;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.level.Level;
@@ -22,6 +25,7 @@ import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.entity.EntityTypeTest;
 import org.avp.api.entity.Boss;
 import org.avp.common.util.AVPPredicates;
+import org.avp.server.QueenManager;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -88,6 +92,25 @@ public class Queen extends Monster implements Boss, GeoEntity {
         AIUtils.addBasicAlienAI(this, goalSelector, targetSelector);
         targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, Queen.class, true, Queen.class::isInstance));
         targetSelector.addGoal(4, new NearestAttackableTargetGoal<>(this, Dracomorph.class, true, Dracomorph.class::isInstance));
+    }
+
+    @Nullable
+    @Override
+    public SpawnGroupData finalizeSpawn(
+        @NotNull ServerLevelAccessor serverLevelAccessor,
+        @NotNull DifficultyInstance difficultyInstance,
+        @NotNull MobSpawnType mobSpawnType,
+        @Nullable SpawnGroupData spawnGroupData,
+        @Nullable CompoundTag compoundTag
+    ) {
+        QueenManager.submit(this);
+        return super.finalizeSpawn(serverLevelAccessor, difficultyInstance, mobSpawnType, spawnGroupData, compoundTag);
+    }
+
+    @Override
+    public void remove(@NotNull RemovalReason removalReason) {
+        super.remove(removalReason);
+        QueenManager.remove(getUUID());
     }
 
     @Nullable
