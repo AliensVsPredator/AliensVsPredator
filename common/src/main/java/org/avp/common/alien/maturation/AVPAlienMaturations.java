@@ -1,12 +1,12 @@
 package org.avp.common.alien.maturation;
 
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.level.ServerLevelAccessor;
 import org.avp.api.Holder;
+import org.avp.api.entity.HiveMember;
+import org.avp.api.entity.RoyalJellyHolder;
 import org.avp.common.data.alien.AlienGrowthLookupKey;
 import org.avp.common.data.alien.maturation.AlienMaturation;
 import org.avp.common.data.alien.maturation.AlienMaturationStep;
-import org.avp.common.entity.living.Queen;
 import org.avp.common.entity.type.AVPBaseAlienEntityTypes;
 import org.avp.common.entity.type.AVPEngineerEntityTypes;
 import org.avp.common.entity.type.AVPEntityTypes;
@@ -14,6 +14,7 @@ import org.avp.common.entity.type.AVPExoticAlienEntityTypes;
 import org.avp.common.entity.type.AVPPrometheusAlienEntityTypes;
 import org.avp.common.entity.type.AVPRunnerAlienEntityTypes;
 import org.avp.common.registry.AVPDeferredRegistry;
+import org.avp.server.HivemindManager;
 
 import java.util.HashMap;
 import java.util.List;
@@ -153,14 +154,28 @@ public class AVPAlienMaturations extends AVPDeferredRegistry<AlienMaturation> {
                     AVPBaseAlienEntityTypes.INSTANCE.warrior.get(),
                     AVPBaseAlienEntityTypes.INSTANCE.praetorian.get(),
                     12_000,
-                    entity -> true // TODO: Test for royal jelly presence here.
+                    entity -> entity instanceof RoyalJellyHolder royalJellyHolder && royalJellyHolder.hasRoyalJelly()
                 ),
                 new AlienMaturationStep(
                     AVPBaseAlienEntityTypes.INSTANCE.praetorian.get(),
                     AVPBaseAlienEntityTypes.INSTANCE.queen.get(),
                     12_000,
-                    // TODO: It would be cheaper to check if this entity is part of a hive with an existing queen.
-                    entity -> !Queen.anyNearbyQueens((ServerLevelAccessor) entity.level(), entity.blockPosition())
+                    entity -> {
+                        if (entity instanceof HiveMember hiveMember && hiveMember.hasHivemind()) {
+                            var hivemindOptional = HivemindManager.getByUUID(hiveMember.getHivemindSignature());
+
+                            if (hivemindOptional.isEmpty()) {
+                                return true;
+                            }
+
+                            var hivemind = hivemindOptional.get();
+                            var leader = hivemind.getLeader();
+
+                            return leader.isEmpty() || leader.get().is(entity);
+                        }
+
+                        return true;
+                    }
                 )
             )
         ));
