@@ -14,6 +14,7 @@
         "MixinLivingEntity_AliensDoNotSuffocate",
         "MixinLivingEntity_AliensRegenerateHealth",
         "MixinLivingEntity_ReduceWaterSlowDownForAliens",
+        "MixinLivingEntity_RoyalJellyHolder",
         "MixinLivingEntity_Host",
         "MixinLivingEntity_PreventBoatAndCartRiding",
         "MixinLivingEntity_ProduceAcid",
