@@ -2,6 +2,7 @@ package org.avp.common.entity.ai.hive;
 
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
+import org.avp.api.entity.HiveMember;
 import org.avp.api.entity.RoyalJellyHolder;
 import org.avp.common.tag.AVPEntityTags;
 import org.avp.server.HivemindManager;
@@ -60,6 +61,10 @@ public class HivemindAI {
     public void acceptNewHiveMember(LivingEntity hiveMember) {
         if (!hiveMember.getType().is(AVPEntityTags.ALIENS)) {
             throw new IllegalArgumentException("Cannot accept entity that is not an alien entity type! Entity Type: " + hiveMember.getType());
+        }
+
+        if (hiveMember instanceof HiveMember member) {
+            member.setHivemindSignature(uuid);
         }
 
         hiveMembersByUUID.put(hiveMember.getUUID(), hiveMember);
