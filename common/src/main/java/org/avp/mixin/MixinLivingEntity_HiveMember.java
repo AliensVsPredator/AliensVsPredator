@@ -44,6 +44,11 @@ public abstract class MixinLivingEntity_HiveMember extends Entity implements Hiv
     }
 
     @Override
+    public UUID getHivemindSignature() {
+        return hivemindSignature;
+    }
+
+    @Override
     public void setHivemindSignature(UUID hivemindSignature) {
         this.hivemindSignature = hivemindSignature;
     }
