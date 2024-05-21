@@ -13,13 +13,13 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
-public class HivemindAI {
+public class Hivemind {
 
     private final UUID uuid;
 
     private final Map<UUID, LivingEntity> hiveMembersByUUID;
 
-    public HivemindAI(LivingEntity leader) {
+    public Hivemind(LivingEntity leader) {
         this.uuid = leader.getUUID();
         this.hiveMembersByUUID = new HashMap<>();
         hiveMembersByUUID.put(uuid, leader);
