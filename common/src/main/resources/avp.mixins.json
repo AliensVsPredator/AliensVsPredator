@@ -7,6 +7,7 @@
     "mixins": [
         "MixinDamageTypes_RegisterModdedDamageTypes",
         "MixinEnchantment_VeritaniumCanNotBeEnchanted",
+        "MixinEntity_PreventBoatAndCartRiding",
         "MixinEntity_ReduceFlowingWaterSlowDownForAliens",
         "MixinEntityTypeBuilder_SilenceDataFixerError",
         "MixinItemEntity_LithiumExplode",
@@ -16,7 +17,6 @@
         "MixinLivingEntity_ReduceWaterSlowDownForAliens",
         "MixinLivingEntity_RoyalJellyHolder",
         "MixinLivingEntity_Host",
-        "MixinLivingEntity_PreventBoatAndCartRiding",
         "MixinLivingEntity_ProduceAcid",
         "MixinLivingEntity_ReduceFallDamage",
         "MixinLivingEntity_SyncedDataHandleUser",
