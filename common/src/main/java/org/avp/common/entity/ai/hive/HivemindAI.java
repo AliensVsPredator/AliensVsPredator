@@ -2,6 +2,7 @@ package org.avp.common.entity.ai.hive;
 
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
+import org.avp.api.entity.RoyalJellyHolder;
 import org.avp.common.tag.AVPEntityTags;
 import org.avp.server.HivemindManager;
 
@@ -47,7 +48,11 @@ public class HivemindAI {
 
         return hiveMembersByUUID.entrySet()
             .stream()
-            .filter(entry -> entry.getValue().getType().is(AVPEntityTags.ROYAL_ALIENS))
+            .filter(entry -> {
+                var entity = entry.getValue();
+                var royalJellyHolder = (RoyalJellyHolder) entity;
+                return royalJellyHolder.hasRoyalJelly() || entity.getType().is(AVPEntityTags.ROYAL_ALIENS);
+            })
             .findFirst()
             .map(Map.Entry::getValue);
     }
