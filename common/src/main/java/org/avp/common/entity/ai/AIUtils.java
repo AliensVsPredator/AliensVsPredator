@@ -12,8 +12,11 @@ import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
 
+import org.avp.api.entity.HiveMember;
 import org.avp.common.tag.AVPEntityTags;
 import org.avp.common.tag.AVPItemTags;
+
+import java.util.Objects;
 
 public class AIUtils {
 
@@ -31,8 +34,18 @@ public class AIUtils {
                 monster,
                 LivingEntity.class,
                 true,
-                livingEntity -> !livingEntity.getType().is(AVPEntityTags.ALIENS) &&
-                    !livingEntity.getType().is(AVPEntityTags.NOT_WORTH_KILLING)
+                livingEntity -> {
+                    var shouldKill = !livingEntity.getType().is(AVPEntityTags.ALIENS) &&
+                        !livingEntity.getType().is(AVPEntityTags.NOT_WORTH_KILLING);
+
+                    var isOpposingHiveMember = monster instanceof HiveMember selfMember &&
+                        livingEntity instanceof HiveMember otherMember &&
+                        selfMember.hasHivemind() &&
+                        otherMember.hasHivemind() &&
+                        Objects.equals(selfMember.getHivemindSignature(), otherMember.getHivemindSignature());
+
+                    return shouldKill || isOpposingHiveMember;
+                }
             )
         );
     }
