@@ -30,7 +30,7 @@ public class Dracomorph extends Monster implements Boss, GeoEntity {
 
     @Override
     protected void registerGoals() {
-        AIUtils.addBasicAlienAI(this, goalSelector, targetSelector);
+        AIUtils.addHiveAlienAI(this, goalSelector, targetSelector);
         targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, Dracomorph.class, true, Dracomorph.class::isInstance));
         targetSelector.addGoal(4, new NearestAttackableTargetGoal<>(this, Queen.class, true, Queen.class::isInstance));
     }

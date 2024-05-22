@@ -20,7 +20,7 @@ import java.util.Objects;
 
 public class AIUtils {
 
-    public static void addBasicAlienAI(Monster monster, GoalSelector goalSelector, GoalSelector targetSelector) {
+    public static void addHiveAlienAI(Monster monster, GoalSelector goalSelector, GoalSelector targetSelector) {
         goalSelector.addGoal(1, new FloatGoal(monster));
         goalSelector.addGoal(4, new MeleeAttackGoal(monster, 1, true));
         goalSelector.addGoal(5, new WaterAvoidingRandomStrollGoal(monster, 1));

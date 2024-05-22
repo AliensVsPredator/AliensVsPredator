@@ -32,7 +32,7 @@ public class Boiler extends Monster implements GeoEntity {
 
     @Override
     protected void registerGoals() {
-        AIUtils.addBasicAlienAI(this, goalSelector, targetSelector);
+        AIUtils.addHiveAlienAI(this, goalSelector, targetSelector);
     }
 
     @Nullable
