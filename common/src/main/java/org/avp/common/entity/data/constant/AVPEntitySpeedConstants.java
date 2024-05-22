@@ -1,4 +1,4 @@
-package org.avp.common.entity;
+package org.avp.common.entity.data.constant;
 
 public class AVPEntitySpeedConstants {
 

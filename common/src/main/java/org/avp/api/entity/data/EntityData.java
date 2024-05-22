@@ -6,6 +6,7 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.level.storage.loot.LootTable;
 import org.avp.api.Holder;
+import org.avp.common.entity.data.spawn.EntitySpawnData;
 
 import java.util.List;
 import java.util.Optional;
@@ -16,11 +17,13 @@ public abstract class EntityData<T extends Entity> {
     private final AttributeSupplier attributeSupplier = createAttributeSupplier().orElse(null);
     private final List<TagKey<EntityType<?>>> tags = createTags();
     private final LootTable.Builder lootTableBuilder = createLootTable().orElse(null);
+    private final EntitySpawnData<?> spawnData = createSpawnData().orElse(null);
 
     protected abstract Holder<EntityType<T>> createHolder();
     protected abstract Optional<AttributeSupplier> createAttributeSupplier();
     protected abstract List<TagKey<EntityType<?>>> createTags();
     protected abstract Optional<LootTable.Builder> createLootTable();
+    protected abstract Optional<EntitySpawnData<?>> createSpawnData();
 
     public final Holder<EntityType<T>> getHolder() {
         return holder;
@@ -36,5 +39,9 @@ public abstract class EntityData<T extends Entity> {
 
     public final Optional<LootTable.Builder> getLootTableBuilder() {
         return Optional.ofNullable(lootTableBuilder);
+    }
+
+    public final Optional<EntitySpawnData<?>> getSpawnData() {
+        return Optional.ofNullable(spawnData);
     }
 }

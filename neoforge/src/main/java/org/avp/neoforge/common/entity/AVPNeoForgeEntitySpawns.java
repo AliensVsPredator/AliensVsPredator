@@ -14,7 +14,7 @@ import net.neoforged.neoforge.common.world.BiomeModifiers;
 import net.neoforged.neoforge.event.entity.SpawnPlacementRegisterEvent;
 import net.neoforged.neoforge.registries.NeoForgeRegistries;
 
-import org.avp.common.entity.spawn.AVPEntitySpawns;
+import org.avp.common.entity.data.type.AVPEntityDataRegistry;
 
 public class AVPNeoForgeEntitySpawns {
 
@@ -22,30 +22,33 @@ public class AVPNeoForgeEntitySpawns {
         .add(NeoForgeRegistries.Keys.BIOME_MODIFIERS, AVPNeoForgeEntitySpawns::bootstrap);
 
     private static void bootstrap(BootstapContext<BiomeModifier> context) {
-        AVPEntitySpawns.INSTANCE.getEntries().forEach(entitySpawnDataHolder -> {
-            var entitySpawnData = entitySpawnDataHolder.get();
-            var biomeTag = entitySpawnData.biomeTagKey();
-            var key = createThrowawayRegistryKey(entitySpawnDataHolder.getResourceLocation());
+        AVPEntityDataRegistry.INSTANCE.getMobEntries().forEach(entityData -> {
+            var entityTypeHolder = entityData.getHolder();
+            var entityType = entityTypeHolder.get();
 
-            var biomes = context.lookup(Registries.BIOME);
-            var biomeNamed = biomes.get(biomeTag).orElseThrow();
+            entityData.getSpawnData().ifPresent(spawnData -> {
+                var biomeTag = spawnData.biomeTagKey();
+                var key = createThrowawayRegistryKey(entityTypeHolder.getResourceLocation());
 
-            var entityType = entitySpawnData.entityTypeHolder().get();
-            var weight = entitySpawnData.weight();
-            var minGroupSize = entitySpawnData.minGroupSize();
-            var maxGroupSize = entitySpawnData.maxGroupSize();
+                var biomes = context.lookup(Registries.BIOME);
+                var biomeNamed = biomes.get(biomeTag).orElseThrow();
 
-            var spawnsBiomeModifier = BiomeModifiers.AddSpawnsBiomeModifier.singleSpawn(
-                biomeNamed,
-                new MobSpawnSettings.SpawnerData(
-                    entityType,
-                    weight,
-                    minGroupSize,
-                    maxGroupSize
-                )
-            );
+                var weight = spawnData.weight();
+                var minGroupSize = spawnData.minGroupSize();
+                var maxGroupSize = spawnData.maxGroupSize();
 
-            context.register(key, spawnsBiomeModifier);
+                var spawnsBiomeModifier = BiomeModifiers.AddSpawnsBiomeModifier.singleSpawn(
+                    biomeNamed,
+                    new MobSpawnSettings.SpawnerData(
+                        entityType,
+                        weight,
+                        minGroupSize,
+                        maxGroupSize
+                    )
+                );
+
+                context.register(key, spawnsBiomeModifier);
+            });
         });
     }
 
@@ -55,13 +58,15 @@ public class AVPNeoForgeEntitySpawns {
 
     @SuppressWarnings("unchecked")
     public static void handleSpawnPlacementRegisterEvent(SpawnPlacementRegisterEvent event) {
-        AVPEntitySpawns.INSTANCE.getEntries().forEach(entitySpawnDataHolder -> {
-            var entitySpawnData = entitySpawnDataHolder.get();
-            var entityType = (EntityType<Mob>) entitySpawnData.entityTypeHolder().get();
-            var placementType = entitySpawnData.spawnPlacementType();
-            var heightMapType = entitySpawnData.heightMapType();
-            var predicate = (SpawnPlacements.SpawnPredicate<Mob>) entitySpawnData.spawnPredicate();
-            event.register(entityType, placementType, heightMapType, predicate, SpawnPlacementRegisterEvent.Operation.AND);
+        AVPEntityDataRegistry.INSTANCE.getMobEntries().forEach(entityData -> {
+            var entityType = (EntityType<Mob>) entityData.getHolder().get();
+
+            entityData.getSpawnData().ifPresent(spawnData -> {
+                var placementType = spawnData.spawnPlacementType();
+                var heightMapType = spawnData.heightMapType();
+                var predicate = (SpawnPlacements.SpawnPredicate<Mob>) spawnData.spawnPredicate();
+                event.register(entityType, placementType, heightMapType, predicate, SpawnPlacementRegisterEvent.Operation.AND);
+            });
         });
     }
 

@@ -8,9 +8,10 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.level.storage.loot.LootTable;
 import org.avp.api.Holder;
 import org.avp.api.entity.data.EntityData;
-import org.avp.common.entity.AVPEntitySpeedConstants;
-import org.avp.common.entity.attribute.AVPEntityAttributesBindingRegistry;
+import org.avp.common.entity.data.constant.AVPEntitySpeedConstants;
+import org.avp.common.entity.data.attribute.AVPAttributeSupplier;
 import org.avp.common.entity.living.Belugaburster;
+import org.avp.common.entity.data.spawn.EntitySpawnData;
 import org.avp.common.registry.AVPSimpleDeferredEntityTypeRegistry;
 import org.avp.common.tag.AVPEntityTypeTags;
 
@@ -34,7 +35,7 @@ public class BelugabursterData extends EntityData<Belugaburster> {
 
     @Override
     protected Optional<AttributeSupplier> createAttributeSupplier() {
-        return Optional.of(AVPEntityAttributesBindingRegistry.builder()
+        return Optional.of(AVPAttributeSupplier.builder()
             .add(Attributes.ATTACK_DAMAGE, 0.5)
             .add(Attributes.MAX_HEALTH, 14)
             .add(Attributes.MOVEMENT_SPEED, AVPEntitySpeedConstants.CHESTBURSTER_SPEED)
@@ -52,6 +53,11 @@ public class BelugabursterData extends EntityData<Belugaburster> {
 
     @Override
     protected Optional<LootTable.Builder> createLootTable() {
+        return Optional.empty();
+    }
+
+    @Override
+    protected Optional<EntitySpawnData<?>> createSpawnData() {
         return Optional.empty();
     }
 }

@@ -1,10 +1,10 @@
-package org.avp.common.entity.attribute;
+package org.avp.common.entity.data.attribute;
 
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.monster.Monster;
 
-public class AVPEntityAttributesBindingRegistry {
+public class AVPAttributeSupplier {
 
     public static AttributeSupplier.Builder builder() {
         return Monster.createMonsterAttributes()
@@ -14,7 +14,7 @@ public class AVPEntityAttributesBindingRegistry {
             .add(Attributes.MOVEMENT_SPEED, 1);
     }
 
-    private AVPEntityAttributesBindingRegistry() {
+    private AVPAttributeSupplier() {
         throw new UnsupportedOperationException();
     }
 }

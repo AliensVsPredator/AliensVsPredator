@@ -8,6 +8,7 @@ import net.minecraft.world.level.storage.loot.LootTable;
 import org.avp.api.Holder;
 import org.avp.api.entity.data.EntityData;
 import org.avp.common.entity.Acid;
+import org.avp.common.entity.data.spawn.EntitySpawnData;
 import org.avp.common.registry.AVPSimpleDeferredEntityTypeRegistry;
 
 import java.util.List;
@@ -38,6 +39,11 @@ public class AcidData extends EntityData<Acid> {
 
     @Override
     protected Optional<LootTable.Builder> createLootTable() {
+        return Optional.empty();
+    }
+
+    @Override
+    protected Optional<EntitySpawnData<?>> createSpawnData() {
         return Optional.empty();
     }
 }

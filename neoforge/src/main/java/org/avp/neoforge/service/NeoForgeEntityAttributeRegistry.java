@@ -1,7 +1,7 @@
 package org.avp.neoforge.service;
 
 import net.neoforged.neoforge.event.entity.EntityAttributeCreationEvent;
-import org.avp.common.entity.type.AVPEntityDataRegistry;
+import org.avp.common.entity.data.type.AVPEntityDataRegistry;
 
 public class NeoForgeEntityAttributeRegistry {
 

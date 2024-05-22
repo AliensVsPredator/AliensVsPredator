@@ -1,4 +1,4 @@
-package org.avp.common.entity.spawn;
+package org.avp.common.entity.data.spawn;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.RandomSource;

@@ -1,10 +1,13 @@
 package org.avp.common.entity.data;
 
+import net.minecraft.tags.BiomeTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
+import net.minecraft.world.entity.SpawnPlacements;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.storage.loot.LootPool;
 import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.entries.EmptyLootItem;
@@ -15,9 +18,11 @@ import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
 import net.minecraft.world.level.storage.loot.providers.number.UniformGenerator;
 import org.avp.api.Holder;
 import org.avp.api.entity.data.EntityData;
-import org.avp.common.entity.AVPEntitySpeedConstants;
-import org.avp.common.entity.attribute.AVPEntityAttributesBindingRegistry;
+import org.avp.common.entity.data.constant.AVPEntitySpeedConstants;
+import org.avp.common.entity.data.attribute.AVPAttributeSupplier;
 import org.avp.common.entity.living.Yautja;
+import org.avp.common.entity.data.spawn.EntitySpawnData;
+import org.avp.common.entity.data.spawn.YautjaSpawning;
 import org.avp.common.item.AVPArmorItems;
 import org.avp.common.item.AVPItems;
 import org.avp.common.registry.AVPSimpleDeferredEntityTypeRegistry;
@@ -43,7 +48,7 @@ public class YautjaData extends EntityData<Yautja> {
 
     @Override
     protected Optional<AttributeSupplier> createAttributeSupplier() {
-        return Optional.of(AVPEntityAttributesBindingRegistry.builder()
+        return Optional.of(AVPAttributeSupplier.builder()
             .add(Attributes.ATTACK_DAMAGE, 12)
             .add(Attributes.KNOCKBACK_RESISTANCE, 0.75)
             .add(Attributes.MAX_HEALTH, 80)
@@ -96,5 +101,20 @@ public class YautjaData extends EntityData<Yautja> {
                     .add(LootItem.lootTableItem(AVPItems.INSTANCE.smartDisc.get()))
                     .add(LootItem.lootTableItem(AVPItems.INSTANCE.yautjaArtifact.get()))
             ));
+    }
+
+    @Override
+    protected Optional<EntitySpawnData<?>> createSpawnData() {
+        return Optional.of(
+            new EntitySpawnData<>(
+                BiomeTags.IS_JUNGLE,
+                30,
+                1,
+                1,
+                SpawnPlacements.Type.ON_GROUND,
+                Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
+                YautjaSpawning::checkPredatorSpawnRules
+            )
+        );
     }
 }

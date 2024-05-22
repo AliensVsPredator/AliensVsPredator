@@ -6,8 +6,7 @@ import org.avp.client.render.particle.AVPParticleTypes;
 import org.avp.common.block.*;
 import org.avp.common.config.AVPConfig;
 import org.avp.common.creative_tab.AVPCreativeModeTabs;
-import org.avp.common.entity.spawn.AVPEntitySpawns;
-import org.avp.common.entity.type.AVPEntityDataRegistry;
+import org.avp.common.entity.data.type.AVPEntityDataRegistry;
 import org.avp.common.item.*;
 import org.avp.common.network.AVPNetworkPayloadHandlerRegistry;
 import org.avp.common.registry.AVPFuelRegistry;
@@ -66,9 +65,6 @@ public class AVPCommon {
 
         // Entity Types
         AVPSimpleDeferredEntityTypeRegistry.INSTANCE.register();
-
-        // Entity Spawns
-        AVPEntitySpawns.INSTANCE.register();
 
         // Spawn Egg Items
         AVPSpawnEggItems.INSTANCE.register();

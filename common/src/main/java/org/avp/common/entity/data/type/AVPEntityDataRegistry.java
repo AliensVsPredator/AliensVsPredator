@@ -1,7 +1,8 @@
-package org.avp.common.entity.type;
+package org.avp.common.entity.data.type;
 
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
 import org.avp.api.entity.data.EntityData;
 import org.avp.common.entity.data.AcidData;
 import org.avp.common.entity.data.BelugabursterData;
@@ -44,6 +45,7 @@ public class AVPEntityDataRegistry {
 
     private final List<EntityData<?>> entries = new ArrayList<>();
     private final List<EntityData<? extends LivingEntity>> livingEntries = new ArrayList<>();
+    private final List<EntityData<? extends Mob>> mobEntries = new ArrayList<>();
 
     public List<EntityData<?>> getEntries() {
         return Collections.unmodifiableList(entries);
@@ -51,6 +53,10 @@ public class AVPEntityDataRegistry {
 
     public List<EntityData<? extends LivingEntity>> getLivingEntries() {
         return Collections.unmodifiableList(livingEntries);
+    }
+
+    public List<EntityData<? extends Mob>> getMobEntries() {
+        return Collections.unmodifiableList(mobEntries);
     }
 
     private void addEntry(EntityData<? extends Entity> entityData) {
@@ -62,52 +68,57 @@ public class AVPEntityDataRegistry {
         livingEntries.add(entityData);
     }
 
+    private void addMobEntry(EntityData<? extends Mob> entityData) {
+        addLivingEntry(entityData);
+        mobEntries.add(entityData);
+    }
+
     public void register() {
         addEntry(AcidData.INSTANCE);
 
-        addLivingEntry(BelugabursterData.INSTANCE);
-        addLivingEntry(BelugamorphData.INSTANCE);
-        addLivingEntry(BoilerData.INSTANCE);
+        addMobEntry(BelugabursterData.INSTANCE);
+        addMobEntry(BelugamorphData.INSTANCE);
+        addMobEntry(BoilerData.INSTANCE);
 
-        addLivingEntry(ChestbursterData.INSTANCE);
-        addLivingEntry(ChestbursterDracoData.INSTANCE);
-        addLivingEntry(ChestbursterQueenData.INSTANCE);
-        addLivingEntry(ChestbursterRunnerData.INSTANCE);
-        addLivingEntry(CrusherData.INSTANCE);
+        addMobEntry(ChestbursterData.INSTANCE);
+        addMobEntry(ChestbursterDracoData.INSTANCE);
+        addMobEntry(ChestbursterQueenData.INSTANCE);
+        addMobEntry(ChestbursterRunnerData.INSTANCE);
+        addMobEntry(CrusherData.INSTANCE);
 
-        addLivingEntry(DeaconAdultData.INSTANCE);
-        addLivingEntry(DeaconAdultEngineerData.INSTANCE);
-        addLivingEntry(DeaconData.INSTANCE);
-        addLivingEntry(DracomorphData.INSTANCE);
-        addLivingEntry(DroneData.INSTANCE);
-        addLivingEntry(DroneRunnerData.INSTANCE);
+        addMobEntry(DeaconAdultData.INSTANCE);
+        addMobEntry(DeaconAdultEngineerData.INSTANCE);
+        addMobEntry(DeaconData.INSTANCE);
+        addMobEntry(DracomorphData.INSTANCE);
+        addMobEntry(DroneData.INSTANCE);
+        addMobEntry(DroneRunnerData.INSTANCE);
 
-        addLivingEntry(EngineerData.INSTANCE);
+        addMobEntry(EngineerData.INSTANCE);
 
-        addLivingEntry(FacehuggerData.INSTANCE);
-        addLivingEntry(FacehuggerRoyalData.INSTANCE);
+        addMobEntry(FacehuggerData.INSTANCE);
+        addMobEntry(FacehuggerRoyalData.INSTANCE);
 
-        addLivingEntry(NauticomorphData.INSTANCE);
+        addMobEntry(NauticomorphData.INSTANCE);
 
-        addLivingEntry(OctohuggerData.INSTANCE);
-        addLivingEntry(OvamorphData.INSTANCE);
-        addLivingEntry(OvamorphDracoData.INSTANCE);
+        addMobEntry(OctohuggerData.INSTANCE);
+        addMobEntry(OvamorphData.INSTANCE);
+        addMobEntry(OvamorphDracoData.INSTANCE);
 
-        addLivingEntry(PraetorianData.INSTANCE);
+        addMobEntry(PraetorianData.INSTANCE);
 
-        addLivingEntry(QueenData.INSTANCE);
+        addMobEntry(QueenData.INSTANCE);
 
-        addLivingEntry(SpitterData.INSTANCE);
+        addMobEntry(SpitterData.INSTANCE);
 
-        addLivingEntry(TrilobiteBabyData.INSTANCE);
-        addLivingEntry(TrilobiteData.INSTANCE);
+        addMobEntry(TrilobiteBabyData.INSTANCE);
+        addMobEntry(TrilobiteData.INSTANCE);
 
-        addLivingEntry(UltramorphData.INSTANCE);
+        addMobEntry(UltramorphData.INSTANCE);
 
-        addLivingEntry(WarriorData.INSTANCE);
-        addLivingEntry(WarriorRunnerData.INSTANCE);
+        addMobEntry(WarriorData.INSTANCE);
+        addMobEntry(WarriorRunnerData.INSTANCE);
 
-        addLivingEntry(YautjaData.INSTANCE);
+        addMobEntry(YautjaData.INSTANCE);
     }
 
     private AVPEntityDataRegistry() {}
