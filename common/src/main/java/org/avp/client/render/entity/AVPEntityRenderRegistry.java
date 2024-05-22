@@ -4,8 +4,7 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.function.Supplier;
 
 import org.avp.api.Holder;
 import org.avp.client.render.entity.living.BelugabursterRenderer;
@@ -46,70 +45,73 @@ import org.avp.common.entity.type.AVPExoticAlienEntityTypes;
 import org.avp.common.entity.type.AVPPrometheusAlienEntityTypes;
 import org.avp.common.entity.type.AVPRunnerAlienEntityTypes;
 import org.avp.common.entity.type.AVPYautjaEntityTypes;
+import org.avp.common.registry.AVPDeferredRegistry;
 
-public class AVPEntityRenderRegistry {
+public class AVPEntityRenderRegistry extends AVPDeferredRegistry<EntityRenderData<? extends Entity>> {
 
-    private static final List<EntityRenderData<? extends Entity>> BINDINGS = new ArrayList<>();
+    public static final AVPEntityRenderRegistry INSTANCE = new AVPEntityRenderRegistry();
 
-    public static List<EntityRenderData<? extends Entity>> getBindings() {
-        return BINDINGS;
-    }
-
-    protected static <T extends Entity> void addBinding(
+    protected <T extends Entity> Holder<EntityRenderData<? extends Entity>> createHolder(
         Holder<EntityType<T>> entityTypeHolder,
         EntityRendererProvider<T> entityRendererProvider
     ) {
-        BINDINGS.add(new EntityRenderData<>(entityTypeHolder, entityRendererProvider));
+        return createHolder(entityTypeHolder.getResourceLocation().getPath(), () -> new EntityRenderData<>(entityTypeHolder, entityRendererProvider));
     }
 
-    static {
-        // Misc. entities
-        addBinding(AVPEntityTypes.INSTANCE.acid, AcidRenderer::new);
-        addBinding(AVPEntityTypes.INSTANCE.belugaburster, BelugabursterRenderer::new);
-        addBinding(AVPEntityTypes.INSTANCE.belugamorph, BelugamorphRenderer::new);
-
-        // Base aliens
-        addBinding(AVPBaseAlienEntityTypes.INSTANCE.boiler, BoilerRenderer::new);
-        addBinding(AVPBaseAlienEntityTypes.INSTANCE.chestburster, ChestbursterRenderer::new);
-        addBinding(AVPBaseAlienEntityTypes.INSTANCE.chestbursterQueen, ChestbursterQueenRenderer::new);
-        addBinding(AVPBaseAlienEntityTypes.INSTANCE.drone, DroneRenderer::new);
-        addBinding(AVPBaseAlienEntityTypes.INSTANCE.facehugger, FacehuggerRenderer::new);
-        addBinding(AVPBaseAlienEntityTypes.INSTANCE.facehuggerRoyal, FacehuggerRoyalRenderer::new);
-        addBinding(AVPBaseAlienEntityTypes.INSTANCE.nauticomorph, NauticomorphRenderer::new);
-        addBinding(AVPBaseAlienEntityTypes.INSTANCE.ovamorph, OvamorphRenderer::new);
-        addBinding(AVPBaseAlienEntityTypes.INSTANCE.praetorian, PraetorianRenderer::new);
-        addBinding(AVPBaseAlienEntityTypes.INSTANCE.queen, QueenRenderer::new);
-        addBinding(AVPBaseAlienEntityTypes.INSTANCE.spitter, SpitterRenderer::new);
-        addBinding(AVPBaseAlienEntityTypes.INSTANCE.warrior, WarriorRenderer::new);
-
-        // Exotic aliens
-        addBinding(AVPExoticAlienEntityTypes.INSTANCE.deaconAdultEngineer, DeaconAdultEngineerRenderer::new);
-        addBinding(AVPExoticAlienEntityTypes.INSTANCE.chestbursterDraco, ChestbursterDracoRenderer::new);
-        addBinding(AVPExoticAlienEntityTypes.INSTANCE.dracomorph, DracomorphRenderer::new);
-        addBinding(AVPExoticAlienEntityTypes.INSTANCE.octohugger, OctohuggerRenderer::new);
-        addBinding(AVPExoticAlienEntityTypes.INSTANCE.ovamorphDraco, OvamorphDracoRenderer::new);
-        addBinding(AVPExoticAlienEntityTypes.INSTANCE.ultramorph, UltramorphRenderer::new);
-
-        // Prometheus aliens
-        addBinding(AVPPrometheusAlienEntityTypes.INSTANCE.deacon, DeaconRenderer::new);
-        addBinding(AVPPrometheusAlienEntityTypes.INSTANCE.deaconAdult, DeaconAdultRenderer::new);
-        addBinding(AVPPrometheusAlienEntityTypes.INSTANCE.trilobite, TrilobiteRenderer::new);
-        addBinding(AVPPrometheusAlienEntityTypes.INSTANCE.trilobiteBaby, TrilobiteBabyRenderer::new);
-
-        // Prometheus engineers
-        addBinding(AVPEngineerEntityTypes.INSTANCE.engineer, EngineerRenderer::new);
-
-        // Runner aliens
-        addBinding(AVPRunnerAlienEntityTypes.INSTANCE.chestbursterRunner, ChestbursterRunnerRenderer::new);
-        addBinding(AVPRunnerAlienEntityTypes.INSTANCE.crusher, CrusherRenderer::new);
-        addBinding(AVPRunnerAlienEntityTypes.INSTANCE.droneRunner, DroneRunnerRenderer::new);
-        addBinding(AVPRunnerAlienEntityTypes.INSTANCE.warriorRunner, WarriorRunnerRenderer::new);
-
-        // Yautja
-        addBinding(AVPYautjaEntityTypes.INSTANCE.yautja, YautjaRenderer::new);
+    @Override
+    protected Holder<EntityRenderData<?>> createHolder(String registryName, Supplier<EntityRenderData<?>> supplier) {
+        var holder = new Holder<>(registryName, supplier);
+        entries.add(holder);
+        return holder;
     }
 
     private AVPEntityRenderRegistry() {
-        throw new UnsupportedOperationException();
+        // Misc. entities
+        createHolder(AVPEntityTypes.INSTANCE.acid, AcidRenderer::new);
+        createHolder(AVPEntityTypes.INSTANCE.belugaburster, BelugabursterRenderer::new);
+        createHolder(AVPEntityTypes.INSTANCE.belugamorph, BelugamorphRenderer::new);
+
+        // Base aliens
+        createHolder(AVPBaseAlienEntityTypes.INSTANCE.boiler, BoilerRenderer::new);
+        createHolder(AVPBaseAlienEntityTypes.INSTANCE.chestburster, ChestbursterRenderer::new);
+        createHolder(AVPBaseAlienEntityTypes.INSTANCE.chestbursterQueen, ChestbursterQueenRenderer::new);
+        createHolder(AVPBaseAlienEntityTypes.INSTANCE.drone, DroneRenderer::new);
+        createHolder(AVPBaseAlienEntityTypes.INSTANCE.facehugger, FacehuggerRenderer::new);
+        createHolder(AVPBaseAlienEntityTypes.INSTANCE.facehuggerRoyal, FacehuggerRoyalRenderer::new);
+        createHolder(AVPBaseAlienEntityTypes.INSTANCE.nauticomorph, NauticomorphRenderer::new);
+        createHolder(AVPBaseAlienEntityTypes.INSTANCE.ovamorph, OvamorphRenderer::new);
+        createHolder(AVPBaseAlienEntityTypes.INSTANCE.praetorian, PraetorianRenderer::new);
+        createHolder(AVPBaseAlienEntityTypes.INSTANCE.queen, QueenRenderer::new);
+        createHolder(AVPBaseAlienEntityTypes.INSTANCE.spitter, SpitterRenderer::new);
+        createHolder(AVPBaseAlienEntityTypes.INSTANCE.warrior, WarriorRenderer::new);
+
+        // Exotic aliens
+        createHolder(AVPExoticAlienEntityTypes.INSTANCE.deaconAdultEngineer, DeaconAdultEngineerRenderer::new);
+        createHolder(AVPExoticAlienEntityTypes.INSTANCE.chestbursterDraco, ChestbursterDracoRenderer::new);
+        createHolder(AVPExoticAlienEntityTypes.INSTANCE.dracomorph, DracomorphRenderer::new);
+        createHolder(AVPExoticAlienEntityTypes.INSTANCE.octohugger, OctohuggerRenderer::new);
+        createHolder(AVPExoticAlienEntityTypes.INSTANCE.ovamorphDraco, OvamorphDracoRenderer::new);
+        createHolder(AVPExoticAlienEntityTypes.INSTANCE.ultramorph, UltramorphRenderer::new);
+
+        // Prometheus aliens
+        createHolder(AVPPrometheusAlienEntityTypes.INSTANCE.deacon, DeaconRenderer::new);
+        createHolder(AVPPrometheusAlienEntityTypes.INSTANCE.deaconAdult, DeaconAdultRenderer::new);
+        createHolder(AVPPrometheusAlienEntityTypes.INSTANCE.trilobite, TrilobiteRenderer::new);
+        createHolder(AVPPrometheusAlienEntityTypes.INSTANCE.trilobiteBaby, TrilobiteBabyRenderer::new);
+
+        // Prometheus engineers
+        createHolder(AVPEngineerEntityTypes.INSTANCE.engineer, EngineerRenderer::new);
+
+        // Runner aliens
+        createHolder(AVPRunnerAlienEntityTypes.INSTANCE.chestbursterRunner, ChestbursterRunnerRenderer::new);
+        createHolder(AVPRunnerAlienEntityTypes.INSTANCE.crusher, CrusherRenderer::new);
+        createHolder(AVPRunnerAlienEntityTypes.INSTANCE.droneRunner, DroneRunnerRenderer::new);
+        createHolder(AVPRunnerAlienEntityTypes.INSTANCE.warriorRunner, WarriorRunnerRenderer::new);
+
+        // Yautja
+        createHolder(AVPYautjaEntityTypes.INSTANCE.yautja, YautjaRenderer::new);
     }
+
+    @Override
+    public void register() { /* Do nothing */ }
 }

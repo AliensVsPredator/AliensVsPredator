@@ -38,9 +38,10 @@ public class AVPFabricClient implements ClientModInitializer {
 
     @SuppressWarnings("unchecked")
     private static void registerEntityRenderBindings() {
-        AVPEntityRenderRegistry.getBindings().forEach(binding -> {
-            var entityType = (EntityType<Entity>) binding.entityTypeHolder().get();
-            var provider = (EntityRendererProvider<Entity>) binding.entityRendererProvider();
+        AVPEntityRenderRegistry.INSTANCE.getEntries().forEach(entityDataHolder -> {
+            var entityData = entityDataHolder.get();
+            var entityType = (EntityType<Entity>) entityData.entityTypeHolder().get();
+            var provider = (EntityRendererProvider<Entity>) entityData.entityRendererProvider();
             EntityRendererRegistry.register(entityType, provider);
         });
     }
