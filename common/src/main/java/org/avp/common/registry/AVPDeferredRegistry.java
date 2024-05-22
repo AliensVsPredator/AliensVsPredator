@@ -1,6 +1,7 @@
 package org.avp.common.registry;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.function.Supplier;
 
@@ -19,6 +20,6 @@ public abstract class AVPDeferredRegistry<T> {
     public abstract void register();
 
     public List<Holder<T>> getEntries() {
-        return entries;
+        return Collections.unmodifiableList(entries);
     }
 }
