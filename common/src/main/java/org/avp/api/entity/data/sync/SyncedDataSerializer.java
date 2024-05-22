@@ -1,4 +1,4 @@
-package org.avp.api.entity.data;
+package org.avp.api.entity.data.sync;
 
 import net.minecraft.nbt.CompoundTag;
 
