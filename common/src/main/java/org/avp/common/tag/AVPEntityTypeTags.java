@@ -18,6 +18,8 @@ public class AVPEntityTypeTags {
 
     public static final TagKey<EntityType<?>> ENGINEERS = create("engineers");
 
+    public static final TagKey<EntityType<?>> HIVE_ALIENS = create("hive_aliens");
+
     public static final TagKey<EntityType<?>> MONSTERS = create("monsters");
 
     public static final TagKey<EntityType<?>> NON_HOSTS = create("non_hosts");
@@ -27,6 +29,8 @@ public class AVPEntityTypeTags {
     public static final TagKey<EntityType<?>> PARASITES = create("parasites");
 
     public static final TagKey<EntityType<?>> PREDATORS = create("predators");
+
+    public static final TagKey<EntityType<?>> PRODUCES_RESIN = create("produces_resin");
 
     public static final TagKey<EntityType<?>> ROYAL_ALIENS = create("royal_aliens");
 
