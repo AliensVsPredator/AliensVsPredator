@@ -4,6 +4,7 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 
+import java.util.Objects;
 import java.util.function.Supplier;
 
 import org.avp.api.Holder;
@@ -69,6 +70,7 @@ import org.avp.common.entity.data.UltramorphData;
 import org.avp.common.entity.data.WarriorData;
 import org.avp.common.entity.data.WarriorRunnerData;
 import org.avp.common.entity.data.YautjaData;
+import org.avp.common.entity.data.type.AVPEntityDataRegistry;
 import org.avp.common.registry.AVPDeferredRegistry;
 
 public class AVPEntityRenderRegistry extends AVPDeferredRegistry<EntityRenderData<? extends Entity>> {
@@ -138,4 +140,17 @@ public class AVPEntityRenderRegistry extends AVPDeferredRegistry<EntityRenderDat
 
     @Override
     public void register() { /* Do nothing */ }
+
+    public void verifyAllRendererProvidersPresent() throws IllegalStateException {
+        AVPEntityDataRegistry.INSTANCE.getEntries().forEach(entityData -> {
+            if (
+                entries.stream()
+                    .filter(holder -> Objects.equals(entityData.getHolder(), holder.get().entityTypeHolder()))
+                    .findAny()
+                    .isEmpty()
+            ) {
+                throw new IllegalStateException("Entity was registered, but does not have a render provider holder! Entity: " + entityData.getHolder().getResourceLocation());
+            }
+        });
+    }
 }

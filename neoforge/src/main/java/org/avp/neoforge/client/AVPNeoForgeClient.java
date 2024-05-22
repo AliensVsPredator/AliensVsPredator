@@ -43,6 +43,7 @@ public class AVPNeoForgeClient {
     @SubscribeEvent
     @SuppressWarnings("unchecked")
     public static void registerEntityRenderers(EntityRenderersEvent.RegisterRenderers event) {
+        AVPEntityRenderRegistry.INSTANCE.verifyAllRendererProvidersPresent();
         AVPEntityRenderRegistry.INSTANCE.getEntries().forEach(entityDataHolder -> {
             var entityData = entityDataHolder.get();
             var entityType = (EntityType<Entity>) entityData.entityTypeHolder().get();

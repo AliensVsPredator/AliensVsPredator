@@ -9,6 +9,7 @@ import org.avp.api.Holder;
 
 public abstract class AVPDeferredRegistry<T> {
 
+    // TODO: This could be a map of resource location to holder to improve random access speed.
     protected final List<Holder<T>> entries;
 
     protected AVPDeferredRegistry() {
