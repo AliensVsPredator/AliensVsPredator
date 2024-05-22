@@ -12,9 +12,17 @@ import net.minecraft.world.level.storage.loot.providers.number.UniformGenerator;
 
 import org.avp.api.Holder;
 import org.avp.common.data.loot_table.AbstractAVPEntityLootTableProvider;
-import org.avp.common.entity.type.AVPBaseAlienEntityTypes;
-import org.avp.common.entity.type.AVPRunnerAlienEntityTypes;
-import org.avp.common.entity.type.AVPYautjaEntityTypes;
+import org.avp.common.entity.data.BoilerData;
+import org.avp.common.entity.data.CrusherData;
+import org.avp.common.entity.data.DroneData;
+import org.avp.common.entity.data.DroneRunnerData;
+import org.avp.common.entity.data.NauticomorphData;
+import org.avp.common.entity.data.PraetorianData;
+import org.avp.common.entity.data.QueenData;
+import org.avp.common.entity.data.SpitterData;
+import org.avp.common.entity.data.WarriorData;
+import org.avp.common.entity.data.WarriorRunnerData;
+import org.avp.common.entity.data.YautjaData;
 import org.avp.common.item.AVPArmorItems;
 import org.avp.common.item.AVPItems;
 
@@ -24,17 +32,17 @@ public class AVPEntityLootTableProvider extends AbstractAVPEntityLootTableProvid
     public void generate() {
         // Base line
         addQueenLootTable();
-        addStandardXenomorphLootTable(AVPBaseAlienEntityTypes.INSTANCE.boiler);
-        addStandardXenomorphLootTable(AVPBaseAlienEntityTypes.INSTANCE.drone);
-        addStandardXenomorphLootTable(AVPBaseAlienEntityTypes.INSTANCE.nauticomorph);
-        addStandardXenomorphLootTable(AVPBaseAlienEntityTypes.INSTANCE.praetorian);
-        addStandardXenomorphLootTable(AVPBaseAlienEntityTypes.INSTANCE.spitter);
-        addStandardXenomorphLootTable(AVPBaseAlienEntityTypes.INSTANCE.warrior);
+        addStandardXenomorphLootTable(BoilerData.INSTANCE.getHolder());
+        addStandardXenomorphLootTable(DroneData.INSTANCE.getHolder());
+        addStandardXenomorphLootTable(NauticomorphData.INSTANCE.getHolder());
+        addStandardXenomorphLootTable(PraetorianData.INSTANCE.getHolder());
+        addStandardXenomorphLootTable(SpitterData.INSTANCE.getHolder());
+        addStandardXenomorphLootTable(WarriorData.INSTANCE.getHolder());
 
         // Runner line
-        addStandardXenomorphLootTable(AVPRunnerAlienEntityTypes.INSTANCE.crusher);
-        addStandardXenomorphLootTable(AVPRunnerAlienEntityTypes.INSTANCE.droneRunner);
-        addStandardXenomorphLootTable(AVPRunnerAlienEntityTypes.INSTANCE.warriorRunner);
+        addStandardXenomorphLootTable(CrusherData.INSTANCE.getHolder());
+        addStandardXenomorphLootTable(DroneRunnerData.INSTANCE.getHolder());
+        addStandardXenomorphLootTable(WarriorRunnerData.INSTANCE.getHolder());
 
         // Yautja
         addYautjaLootTable();
@@ -59,7 +67,7 @@ public class AVPEntityLootTableProvider extends AbstractAVPEntityLootTableProvid
 
     private void addQueenLootTable() {
         add(
-            AVPBaseAlienEntityTypes.INSTANCE.queen.get(),
+            QueenData.INSTANCE.getHolder().get(),
             LootTable.lootTable()
                 .withPool(
                     LootPool.lootPool()
@@ -84,7 +92,7 @@ public class AVPEntityLootTableProvider extends AbstractAVPEntityLootTableProvid
 
     private void addYautjaLootTable() {
         add(
-            AVPYautjaEntityTypes.INSTANCE.yautja.get(),
+            YautjaData.INSTANCE.getHolder().get(),
             LootTable.lootTable()
                 .withPool(
                     LootPool.lootPool()

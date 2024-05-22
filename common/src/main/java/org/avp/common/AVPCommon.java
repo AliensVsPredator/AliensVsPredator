@@ -7,16 +7,11 @@ import org.avp.common.block.*;
 import org.avp.common.config.AVPConfig;
 import org.avp.common.creative_tab.AVPCreativeModeTabs;
 import org.avp.common.entity.spawn.AVPEntitySpawns;
-import org.avp.common.entity.type.AVPBaseAlienEntityTypes;
-import org.avp.common.entity.type.AVPEngineerEntityTypes;
-import org.avp.common.entity.type.AVPEntityTypes;
-import org.avp.common.entity.type.AVPExoticAlienEntityTypes;
-import org.avp.common.entity.type.AVPPrometheusAlienEntityTypes;
-import org.avp.common.entity.type.AVPRunnerAlienEntityTypes;
-import org.avp.common.entity.type.AVPYautjaEntityTypes;
+import org.avp.common.entity.type.AVPEntityDataRegistry;
 import org.avp.common.item.*;
 import org.avp.common.network.AVPNetworkPayloadHandlerRegistry;
 import org.avp.common.registry.AVPFuelRegistry;
+import org.avp.common.registry.AVPSimpleDeferredEntityTypeRegistry;
 import org.avp.common.sound.AVPSoundEvents;
 
 public class AVPCommon {
@@ -65,14 +60,12 @@ public class AVPCommon {
         // Sounds
         AVPSoundEvents.INSTANCE.register();
 
-        // Entities
-        AVPBaseAlienEntityTypes.INSTANCE.register();
-        AVPEngineerEntityTypes.INSTANCE.register();
-        AVPEntityTypes.INSTANCE.register();
-        AVPExoticAlienEntityTypes.INSTANCE.register();
-        AVPPrometheusAlienEntityTypes.INSTANCE.register();
-        AVPRunnerAlienEntityTypes.INSTANCE.register();
-        AVPYautjaEntityTypes.INSTANCE.register();
+        // Entity Data
+        // Must be registered first, sets up entity type holders.
+        AVPEntityDataRegistry.INSTANCE.register();
+
+        // Entity Types
+        AVPSimpleDeferredEntityTypeRegistry.INSTANCE.register();
 
         // Entity Spawns
         AVPEntitySpawns.INSTANCE.register();

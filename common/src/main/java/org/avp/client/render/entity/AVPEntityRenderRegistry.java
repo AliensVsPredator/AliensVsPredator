@@ -38,13 +38,37 @@ import org.avp.client.render.entity.living.WarriorRenderer;
 import org.avp.client.render.entity.living.WarriorRunnerRenderer;
 import org.avp.client.render.entity.living.YautjaRenderer;
 import org.avp.client.util.EntityRenderData;
-import org.avp.common.entity.type.AVPBaseAlienEntityTypes;
-import org.avp.common.entity.type.AVPEngineerEntityTypes;
-import org.avp.common.entity.type.AVPEntityTypes;
-import org.avp.common.entity.type.AVPExoticAlienEntityTypes;
-import org.avp.common.entity.type.AVPPrometheusAlienEntityTypes;
-import org.avp.common.entity.type.AVPRunnerAlienEntityTypes;
-import org.avp.common.entity.type.AVPYautjaEntityTypes;
+import org.avp.common.entity.data.AcidData;
+import org.avp.common.entity.data.BelugabursterData;
+import org.avp.common.entity.data.BelugamorphData;
+import org.avp.common.entity.data.BoilerData;
+import org.avp.common.entity.data.ChestbursterData;
+import org.avp.common.entity.data.ChestbursterDracoData;
+import org.avp.common.entity.data.ChestbursterQueenData;
+import org.avp.common.entity.data.ChestbursterRunnerData;
+import org.avp.common.entity.data.CrusherData;
+import org.avp.common.entity.data.DeaconAdultData;
+import org.avp.common.entity.data.DeaconAdultEngineerData;
+import org.avp.common.entity.data.DeaconData;
+import org.avp.common.entity.data.DracomorphData;
+import org.avp.common.entity.data.DroneData;
+import org.avp.common.entity.data.DroneRunnerData;
+import org.avp.common.entity.data.EngineerData;
+import org.avp.common.entity.data.FacehuggerData;
+import org.avp.common.entity.data.FacehuggerRoyalData;
+import org.avp.common.entity.data.NauticomorphData;
+import org.avp.common.entity.data.OctohuggerData;
+import org.avp.common.entity.data.OvamorphData;
+import org.avp.common.entity.data.OvamorphDracoData;
+import org.avp.common.entity.data.PraetorianData;
+import org.avp.common.entity.data.QueenData;
+import org.avp.common.entity.data.SpitterData;
+import org.avp.common.entity.data.TrilobiteBabyData;
+import org.avp.common.entity.data.TrilobiteData;
+import org.avp.common.entity.data.UltramorphData;
+import org.avp.common.entity.data.WarriorData;
+import org.avp.common.entity.data.WarriorRunnerData;
+import org.avp.common.entity.data.YautjaData;
 import org.avp.common.registry.AVPDeferredRegistry;
 
 public class AVPEntityRenderRegistry extends AVPDeferredRegistry<EntityRenderData<? extends Entity>> {
@@ -67,49 +91,49 @@ public class AVPEntityRenderRegistry extends AVPDeferredRegistry<EntityRenderDat
 
     private AVPEntityRenderRegistry() {
         // Misc. entities
-        createHolder(AVPEntityTypes.INSTANCE.acid, AcidRenderer::new);
-        createHolder(AVPEntityTypes.INSTANCE.belugaburster, BelugabursterRenderer::new);
-        createHolder(AVPEntityTypes.INSTANCE.belugamorph, BelugamorphRenderer::new);
+        createHolder(AcidData.INSTANCE.getHolder(), AcidRenderer::new);
+        createHolder(BelugabursterData.INSTANCE.getHolder(), BelugabursterRenderer::new);
+        createHolder(BelugamorphData.INSTANCE.getHolder(), BelugamorphRenderer::new);
 
         // Base aliens
-        createHolder(AVPBaseAlienEntityTypes.INSTANCE.boiler, BoilerRenderer::new);
-        createHolder(AVPBaseAlienEntityTypes.INSTANCE.chestburster, ChestbursterRenderer::new);
-        createHolder(AVPBaseAlienEntityTypes.INSTANCE.chestbursterQueen, ChestbursterQueenRenderer::new);
-        createHolder(AVPBaseAlienEntityTypes.INSTANCE.drone, DroneRenderer::new);
-        createHolder(AVPBaseAlienEntityTypes.INSTANCE.facehugger, FacehuggerRenderer::new);
-        createHolder(AVPBaseAlienEntityTypes.INSTANCE.facehuggerRoyal, FacehuggerRoyalRenderer::new);
-        createHolder(AVPBaseAlienEntityTypes.INSTANCE.nauticomorph, NauticomorphRenderer::new);
-        createHolder(AVPBaseAlienEntityTypes.INSTANCE.ovamorph, OvamorphRenderer::new);
-        createHolder(AVPBaseAlienEntityTypes.INSTANCE.praetorian, PraetorianRenderer::new);
-        createHolder(AVPBaseAlienEntityTypes.INSTANCE.queen, QueenRenderer::new);
-        createHolder(AVPBaseAlienEntityTypes.INSTANCE.spitter, SpitterRenderer::new);
-        createHolder(AVPBaseAlienEntityTypes.INSTANCE.warrior, WarriorRenderer::new);
+        createHolder(BoilerData.INSTANCE.getHolder(), BoilerRenderer::new);
+        createHolder(ChestbursterData.INSTANCE.getHolder(), ChestbursterRenderer::new);
+        createHolder(ChestbursterQueenData.INSTANCE.getHolder(), ChestbursterQueenRenderer::new);
+        createHolder(DroneData.INSTANCE.getHolder(), DroneRenderer::new);
+        createHolder(FacehuggerData.INSTANCE.getHolder(), FacehuggerRenderer::new);
+        createHolder(FacehuggerRoyalData.INSTANCE.getHolder(), FacehuggerRoyalRenderer::new);
+        createHolder(NauticomorphData.INSTANCE.getHolder(), NauticomorphRenderer::new);
+        createHolder(OvamorphData.INSTANCE.getHolder(), OvamorphRenderer::new);
+        createHolder(PraetorianData.INSTANCE.getHolder(), PraetorianRenderer::new);
+        createHolder(QueenData.INSTANCE.getHolder(), QueenRenderer::new);
+        createHolder(SpitterData.INSTANCE.getHolder(), SpitterRenderer::new);
+        createHolder(WarriorData.INSTANCE.getHolder(), WarriorRenderer::new);
 
         // Exotic aliens
-        createHolder(AVPExoticAlienEntityTypes.INSTANCE.deaconAdultEngineer, DeaconAdultEngineerRenderer::new);
-        createHolder(AVPExoticAlienEntityTypes.INSTANCE.chestbursterDraco, ChestbursterDracoRenderer::new);
-        createHolder(AVPExoticAlienEntityTypes.INSTANCE.dracomorph, DracomorphRenderer::new);
-        createHolder(AVPExoticAlienEntityTypes.INSTANCE.octohugger, OctohuggerRenderer::new);
-        createHolder(AVPExoticAlienEntityTypes.INSTANCE.ovamorphDraco, OvamorphDracoRenderer::new);
-        createHolder(AVPExoticAlienEntityTypes.INSTANCE.ultramorph, UltramorphRenderer::new);
+        createHolder(DeaconAdultEngineerData.INSTANCE.getHolder(), DeaconAdultEngineerRenderer::new);
+        createHolder(ChestbursterDracoData.INSTANCE.getHolder(), ChestbursterDracoRenderer::new);
+        createHolder(DracomorphData.INSTANCE.getHolder(), DracomorphRenderer::new);
+        createHolder(OctohuggerData.INSTANCE.getHolder(), OctohuggerRenderer::new);
+        createHolder(OvamorphDracoData.INSTANCE.getHolder(), OvamorphDracoRenderer::new);
+        createHolder(UltramorphData.INSTANCE.getHolder(), UltramorphRenderer::new);
 
         // Prometheus aliens
-        createHolder(AVPPrometheusAlienEntityTypes.INSTANCE.deacon, DeaconRenderer::new);
-        createHolder(AVPPrometheusAlienEntityTypes.INSTANCE.deaconAdult, DeaconAdultRenderer::new);
-        createHolder(AVPPrometheusAlienEntityTypes.INSTANCE.trilobite, TrilobiteRenderer::new);
-        createHolder(AVPPrometheusAlienEntityTypes.INSTANCE.trilobiteBaby, TrilobiteBabyRenderer::new);
+        createHolder(DeaconData.INSTANCE.getHolder(), DeaconRenderer::new);
+        createHolder(DeaconAdultData.INSTANCE.getHolder(), DeaconAdultRenderer::new);
+        createHolder(TrilobiteData.INSTANCE.getHolder(), TrilobiteRenderer::new);
+        createHolder(TrilobiteBabyData.INSTANCE.getHolder(), TrilobiteBabyRenderer::new);
 
         // Prometheus engineers
-        createHolder(AVPEngineerEntityTypes.INSTANCE.engineer, EngineerRenderer::new);
+        createHolder(EngineerData.INSTANCE.getHolder(), EngineerRenderer::new);
 
         // Runner aliens
-        createHolder(AVPRunnerAlienEntityTypes.INSTANCE.chestbursterRunner, ChestbursterRunnerRenderer::new);
-        createHolder(AVPRunnerAlienEntityTypes.INSTANCE.crusher, CrusherRenderer::new);
-        createHolder(AVPRunnerAlienEntityTypes.INSTANCE.droneRunner, DroneRunnerRenderer::new);
-        createHolder(AVPRunnerAlienEntityTypes.INSTANCE.warriorRunner, WarriorRunnerRenderer::new);
+        createHolder(ChestbursterRunnerData.INSTANCE.getHolder(), ChestbursterRunnerRenderer::new);
+        createHolder(CrusherData.INSTANCE.getHolder(), CrusherRenderer::new);
+        createHolder(DroneRunnerData.INSTANCE.getHolder(), DroneRunnerRenderer::new);
+        createHolder(WarriorRunnerData.INSTANCE.getHolder(), WarriorRunnerRenderer::new);
 
         // Yautja
-        createHolder(AVPYautjaEntityTypes.INSTANCE.yautja, YautjaRenderer::new);
+        createHolder(YautjaData.INSTANCE.getHolder(), YautjaRenderer::new);
     }
 
     @Override

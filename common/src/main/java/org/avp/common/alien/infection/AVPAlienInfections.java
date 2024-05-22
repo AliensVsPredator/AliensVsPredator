@@ -4,11 +4,15 @@ import net.minecraft.world.entity.EntityType;
 import org.avp.api.Holder;
 import org.avp.common.data.alien.AlienGrowthLookupKey;
 import org.avp.common.data.alien.infection.AlienInfection;
-import org.avp.common.entity.type.AVPBaseAlienEntityTypes;
-import org.avp.common.entity.type.AVPEntityTypes;
-import org.avp.common.entity.type.AVPExoticAlienEntityTypes;
-import org.avp.common.entity.type.AVPPrometheusAlienEntityTypes;
-import org.avp.common.entity.type.AVPRunnerAlienEntityTypes;
+import org.avp.common.entity.data.BelugabursterData;
+import org.avp.common.entity.data.ChestbursterData;
+import org.avp.common.entity.data.ChestbursterQueenData;
+import org.avp.common.entity.data.ChestbursterRunnerData;
+import org.avp.common.entity.data.DeaconData;
+import org.avp.common.entity.data.FacehuggerData;
+import org.avp.common.entity.data.FacehuggerRoyalData;
+import org.avp.common.entity.data.OctohuggerData;
+import org.avp.common.entity.data.TrilobiteData;
 import org.avp.common.registry.AVPDeferredRegistry;
 
 import java.util.HashMap;
@@ -39,7 +43,7 @@ public class AVPAlienInfections extends AVPDeferredRegistry<AlienInfection> {
 
     private AVPAlienInfections() {
         facehuggerProducesChestbursterRunner = createHolder("facehugger_produces_chestburster_runner", () -> new AlienInfection(
-            AVPBaseAlienEntityTypes.INSTANCE.facehugger.get(),
+            FacehuggerData.INSTANCE.getHolder().get(),
             Set.of(
                 EntityType.CAMEL,
                 EntityType.COW,
@@ -59,43 +63,43 @@ public class AVPAlienInfections extends AVPDeferredRegistry<AlienInfection> {
                 EntityType.TRADER_LLAMA,
                 EntityType.WOLF
             ),
-            AVPRunnerAlienEntityTypes.INSTANCE.chestbursterRunner.get(),
+            ChestbursterRunnerData.INSTANCE.getHolder().get(),
             60,
             1200,
             4000
         ));
 
         facehuggerProducesChestburster = createHolder("facehugger_produces_chestburster", () -> new AlienInfection(
-            AVPBaseAlienEntityTypes.INSTANCE.facehugger.get(),
+            FacehuggerData.INSTANCE.getHolder().get(),
             null, // Chestburster will be default for any unknown host.
-            AVPBaseAlienEntityTypes.INSTANCE.chestburster.get(),
+            ChestbursterData.INSTANCE.getHolder().get(),
             60,
             1200,
             6000
         ));
 
         facehuggerRoyalProducesChestbursterQueen = createHolder("facehugger_royal_produces_chestburster_queen", () -> new AlienInfection(
-            AVPBaseAlienEntityTypes.INSTANCE.facehuggerRoyal.get(),
+            FacehuggerRoyalData.INSTANCE.getHolder().get(),
             null, // Chestburster will be default for any unknown host.
-            AVPBaseAlienEntityTypes.INSTANCE.chestbursterQueen.get(),
+            ChestbursterQueenData.INSTANCE.getHolder().get(),
             60,
             1200,
             6000
         ));
 
         octohuggerProducesBelugaburster = createHolder("octohugger_produces_belugaburster", () -> new AlienInfection(
-            AVPExoticAlienEntityTypes.INSTANCE.octohugger.get(),
+            OctohuggerData.INSTANCE.getHolder().get(),
             null, // Belugaburster will be default for any unknown host.
-            AVPEntityTypes.INSTANCE.belugaburster.get(),
+            BelugabursterData.INSTANCE.getHolder().get(),
             60,
             1200,
             6000
         ));
 
         trilobiteProducesDeacon = createHolder("trilobite_produces_deacon", () -> new AlienInfection(
-            AVPPrometheusAlienEntityTypes.INSTANCE.trilobite.get(),
+            TrilobiteData.INSTANCE.getHolder().get(),
             null, // Deacon will be default for any unknown host.
-            AVPPrometheusAlienEntityTypes.INSTANCE.deacon.get(),
+            DeaconData.INSTANCE.getHolder().get(),
             60,
             1200,
             6000

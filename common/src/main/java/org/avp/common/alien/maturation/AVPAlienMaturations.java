@@ -7,12 +7,28 @@ import org.avp.api.entity.RoyalJellyHolder;
 import org.avp.common.data.alien.AlienGrowthLookupKey;
 import org.avp.common.data.alien.maturation.AlienMaturation;
 import org.avp.common.data.alien.maturation.AlienMaturationStep;
-import org.avp.common.entity.type.AVPBaseAlienEntityTypes;
-import org.avp.common.entity.type.AVPEngineerEntityTypes;
-import org.avp.common.entity.type.AVPEntityTypes;
-import org.avp.common.entity.type.AVPExoticAlienEntityTypes;
-import org.avp.common.entity.type.AVPPrometheusAlienEntityTypes;
-import org.avp.common.entity.type.AVPRunnerAlienEntityTypes;
+import org.avp.common.entity.data.BelugabursterData;
+import org.avp.common.entity.data.BelugamorphData;
+import org.avp.common.entity.data.BoilerData;
+import org.avp.common.entity.data.ChestbursterData;
+import org.avp.common.entity.data.ChestbursterDracoData;
+import org.avp.common.entity.data.ChestbursterQueenData;
+import org.avp.common.entity.data.ChestbursterRunnerData;
+import org.avp.common.entity.data.CrusherData;
+import org.avp.common.entity.data.DeaconAdultData;
+import org.avp.common.entity.data.DeaconAdultEngineerData;
+import org.avp.common.entity.data.DeaconData;
+import org.avp.common.entity.data.DracomorphData;
+import org.avp.common.entity.data.DroneData;
+import org.avp.common.entity.data.DroneRunnerData;
+import org.avp.common.entity.data.EngineerData;
+import org.avp.common.entity.data.NauticomorphData;
+import org.avp.common.entity.data.PraetorianData;
+import org.avp.common.entity.data.QueenData;
+import org.avp.common.entity.data.SpitterData;
+import org.avp.common.entity.data.UltramorphData;
+import org.avp.common.entity.data.WarriorData;
+import org.avp.common.entity.data.WarriorRunnerData;
 import org.avp.common.registry.AVPDeferredRegistry;
 import org.avp.server.HivemindManager;
 
@@ -67,8 +83,8 @@ public class AVPAlienMaturations extends AVPDeferredRegistry<AlienMaturation> {
             null,
             List.of(
                 new AlienMaturationStep(
-                    AVPEntityTypes.INSTANCE.belugaburster.get(),
-                    AVPEntityTypes.INSTANCE.belugamorph.get(),
+                    BelugabursterData.INSTANCE.getHolder().get(),
+                    BelugamorphData.INSTANCE.getHolder().get(),
                     12_000
                 )
             )
@@ -79,8 +95,8 @@ public class AVPAlienMaturations extends AVPDeferredRegistry<AlienMaturation> {
             ),
             List.of(
                 new AlienMaturationStep(
-                    AVPBaseAlienEntityTypes.INSTANCE.chestburster.get(),
-                    AVPBaseAlienEntityTypes.INSTANCE.boiler.get(),
+                    ChestbursterData.INSTANCE.getHolder().get(),
+                    BoilerData.INSTANCE.getHolder().get(),
                     12_000
                 )
             )
@@ -89,30 +105,30 @@ public class AVPAlienMaturations extends AVPDeferredRegistry<AlienMaturation> {
             null, // No hosts = this lifecycle will be the default for all runner chestbursters.
             List.of(
                 new AlienMaturationStep(
-                    AVPRunnerAlienEntityTypes.INSTANCE.chestbursterRunner.get(),
-                    AVPRunnerAlienEntityTypes.INSTANCE.droneRunner.get(),
+                    ChestbursterRunnerData.INSTANCE.getHolder().get(),
+                    DroneRunnerData.INSTANCE.getHolder().get(),
                     12_000
                 ),
                 new AlienMaturationStep(
-                    AVPRunnerAlienEntityTypes.INSTANCE.droneRunner.get(),
-                    AVPRunnerAlienEntityTypes.INSTANCE.warriorRunner.get(),
+                    DroneRunnerData.INSTANCE.getHolder().get(),
+                    WarriorRunnerData.INSTANCE.getHolder().get(),
                     12_000
                 ),
                 new AlienMaturationStep(
-                    AVPRunnerAlienEntityTypes.INSTANCE.warriorRunner.get(),
-                    AVPRunnerAlienEntityTypes.INSTANCE.crusher.get(),
+                    WarriorRunnerData.INSTANCE.getHolder().get(),
+                    CrusherData.INSTANCE.getHolder().get(),
                     12_000
                 )
             )
         ));
         deaconAdultEngineerMaturation = createHolder("deacon_adult_to_deacon_adult_engineer", () -> new AlienMaturation(
             Set.of(
-                AVPEngineerEntityTypes.INSTANCE.engineer.get()
+                EngineerData.INSTANCE.getHolder().get()
             ),
             List.of(
                 new AlienMaturationStep(
-                    AVPPrometheusAlienEntityTypes.INSTANCE.deaconAdult.get(),
-                    AVPExoticAlienEntityTypes.INSTANCE.deaconAdultEngineer.get(),
+                    DeaconAdultData.INSTANCE.getHolder().get(),
+                    DeaconAdultEngineerData.INSTANCE.getHolder().get(),
                     12_000
                 )
             )
@@ -121,8 +137,8 @@ public class AVPAlienMaturations extends AVPDeferredRegistry<AlienMaturation> {
             null, // A deacon from any host will mature into an adult deacon.
             List.of(
                 new AlienMaturationStep(
-                    AVPPrometheusAlienEntityTypes.INSTANCE.deacon.get(),
-                    AVPPrometheusAlienEntityTypes.INSTANCE.deaconAdult.get(),
+                    DeaconData.INSTANCE.getHolder().get(),
+                    DeaconAdultData.INSTANCE.getHolder().get(),
                     12_000
                 )
             )
@@ -131,8 +147,8 @@ public class AVPAlienMaturations extends AVPDeferredRegistry<AlienMaturation> {
             null, // A chestburster_draco from any host will produce a dracomorph.
             List.of(
                 new AlienMaturationStep(
-                    AVPExoticAlienEntityTypes.INSTANCE.chestbursterDraco.get(),
-                    AVPExoticAlienEntityTypes.INSTANCE.dracomorph.get(),
+                    ChestbursterDracoData.INSTANCE.getHolder().get(),
+                    DracomorphData.INSTANCE.getHolder().get(),
                     24_000
                 )
             )
@@ -141,24 +157,24 @@ public class AVPAlienMaturations extends AVPDeferredRegistry<AlienMaturation> {
             null, // No hosts = this lifecycle will be the default for all chestbursters.
             List.of(
                 new AlienMaturationStep(
-                    AVPBaseAlienEntityTypes.INSTANCE.chestburster.get(),
-                    AVPBaseAlienEntityTypes.INSTANCE.drone.get(),
+                    ChestbursterData.INSTANCE.getHolder().get(),
+                    DroneData.INSTANCE.getHolder().get(),
                     12_000
                 ),
                 new AlienMaturationStep(
-                    AVPBaseAlienEntityTypes.INSTANCE.drone.get(),
-                    AVPBaseAlienEntityTypes.INSTANCE.warrior.get(),
+                    DroneData.INSTANCE.getHolder().get(),
+                    WarriorData.INSTANCE.getHolder().get(),
                     12_000
                 ),
                 new AlienMaturationStep(
-                    AVPBaseAlienEntityTypes.INSTANCE.warrior.get(),
-                    AVPBaseAlienEntityTypes.INSTANCE.praetorian.get(),
+                    WarriorData.INSTANCE.getHolder().get(),
+                    PraetorianData.INSTANCE.getHolder().get(),
                     12_000,
                     entity -> entity instanceof RoyalJellyHolder royalJellyHolder && royalJellyHolder.hasRoyalJelly()
                 ),
                 new AlienMaturationStep(
-                    AVPBaseAlienEntityTypes.INSTANCE.praetorian.get(),
-                    AVPBaseAlienEntityTypes.INSTANCE.queen.get(),
+                    PraetorianData.INSTANCE.getHolder().get(),
+                    QueenData.INSTANCE.getHolder().get(),
                     12_000,
                     entity -> {
                         if (entity instanceof HiveMember hiveMember && hiveMember.hasHivemind()) {
@@ -185,8 +201,8 @@ public class AVPAlienMaturations extends AVPDeferredRegistry<AlienMaturation> {
             ),
             List.of(
                 new AlienMaturationStep(
-                    AVPBaseAlienEntityTypes.INSTANCE.chestburster.get(),
-                    AVPBaseAlienEntityTypes.INSTANCE.nauticomorph.get(),
+                    ChestbursterData.INSTANCE.getHolder().get(),
+                    NauticomorphData.INSTANCE.getHolder().get(),
                     12_000
                 )
             )
@@ -195,8 +211,8 @@ public class AVPAlienMaturations extends AVPDeferredRegistry<AlienMaturation> {
             null,
             List.of(
                 new AlienMaturationStep(
-                    AVPBaseAlienEntityTypes.INSTANCE.chestbursterQueen.get(),
-                    AVPBaseAlienEntityTypes.INSTANCE.praetorian.get(),
+                    ChestbursterQueenData.INSTANCE.getHolder().get(),
+                    PraetorianData.INSTANCE.getHolder().get(),
                     12_000
                 )
             )
@@ -208,20 +224,20 @@ public class AVPAlienMaturations extends AVPDeferredRegistry<AlienMaturation> {
             ),
             List.of(
                 new AlienMaturationStep(
-                    AVPRunnerAlienEntityTypes.INSTANCE.chestbursterRunner.get(),
-                    AVPBaseAlienEntityTypes.INSTANCE.spitter.get(),
+                    ChestbursterRunnerData.INSTANCE.getHolder().get(),
+                    SpitterData.INSTANCE.getHolder().get(),
                     12_000
                 )
             )
         ));
         ultramorphMaturation = createHolder("chestburster_to_ultramorph", () -> new AlienMaturation(
             Set.of(
-                AVPEngineerEntityTypes.INSTANCE.engineer.get()
+                EngineerData.INSTANCE.getHolder().get()
             ),
             List.of(
                 new AlienMaturationStep(
-                    AVPBaseAlienEntityTypes.INSTANCE.chestburster.get(),
-                    AVPExoticAlienEntityTypes.INSTANCE.ultramorph.get(),
+                    ChestbursterData.INSTANCE.getHolder().get(),
+                    UltramorphData.INSTANCE.getHolder().get(),
                     12_000
                 )
             )
