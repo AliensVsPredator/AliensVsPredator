@@ -5,6 +5,7 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.level.storage.loot.LootTable;
 import org.avp.api.Holder;
 import org.avp.api.entity.data.EntityData;
 import org.avp.common.entity.AVPEntitySpeedConstants;
@@ -20,42 +21,41 @@ public class DracomorphData extends EntityData<Dracomorph> {
 
     public static final DracomorphData INSTANCE = new DracomorphData();
 
-    private static final Holder<EntityType<Dracomorph>> HOLDER = AVPSimpleDeferredEntityTypeRegistry.INSTANCE.createMobHolder(
-        "dracomorph",
-        0x212121,
-        0x535353,
-        EntityType.Builder.of(Dracomorph::new, MobCategory.MONSTER)
-            .sized(1.98F, 2.98F)
-    );
-
-    private static final AttributeSupplier ATTRIBUTE_SUPPLIER = AVPEntityAttributesBindingRegistry.builder()
-        .add(Attributes.ATTACK_DAMAGE, 8)
-        .add(Attributes.KNOCKBACK_RESISTANCE, 0.75)
-        .add(Attributes.MAX_HEALTH, 400)
-        .add(Attributes.MOVEMENT_SPEED, AVPEntitySpeedConstants.DRACOMORPH_SPEED)
-        .build();
-
-    private static final List<TagKey<EntityType<?>>> TAGS = List.of(
-        AVPEntityTypeTags.ACID_BLEEDERS,
-        AVPEntityTypeTags.ALIENS,
-        AVPEntityTypeTags.HIVE_ALIENS,
-        AVPEntityTypeTags.MONSTERS,
-        AVPEntityTypeTags.PRODUCES_RESIN,
-        AVPEntityTypeTags.ROYAL_ALIENS
-    );
-
     @Override
-    public Holder<EntityType<Dracomorph>> getHolder() {
-        return HOLDER;
+    protected Holder<EntityType<Dracomorph>> createHolder() {
+        return AVPSimpleDeferredEntityTypeRegistry.INSTANCE.createMobHolder(
+            "dracomorph",
+            0x212121,
+            0x535353,
+            EntityType.Builder.of(Dracomorph::new, MobCategory.MONSTER)
+                .sized(1.98F, 2.98F)
+        );
     }
 
     @Override
-    public Optional<AttributeSupplier> getAttributeSupplier() {
-        return Optional.of(ATTRIBUTE_SUPPLIER);
+    protected Optional<AttributeSupplier> createAttributeSupplier() {
+        return Optional.of(AVPEntityAttributesBindingRegistry.builder()
+            .add(Attributes.ATTACK_DAMAGE, 8)
+            .add(Attributes.KNOCKBACK_RESISTANCE, 0.75)
+            .add(Attributes.MAX_HEALTH, 400)
+            .add(Attributes.MOVEMENT_SPEED, AVPEntitySpeedConstants.DRACOMORPH_SPEED)
+            .build());
     }
 
     @Override
-    public List<TagKey<EntityType<?>>> getTags() {
-        return TAGS;
+    protected List<TagKey<EntityType<?>>> createTags() {
+        return List.of(
+            AVPEntityTypeTags.ACID_BLEEDERS,
+            AVPEntityTypeTags.ALIENS,
+            AVPEntityTypeTags.HIVE_ALIENS,
+            AVPEntityTypeTags.MONSTERS,
+            AVPEntityTypeTags.PRODUCES_RESIN,
+            AVPEntityTypeTags.ROYAL_ALIENS
+        );
+    }
+
+    @Override
+    protected Optional<LootTable.Builder> createLootTable() {
+        return Optional.empty();
     }
 }

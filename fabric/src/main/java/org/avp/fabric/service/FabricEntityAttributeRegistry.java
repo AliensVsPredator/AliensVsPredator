@@ -5,7 +5,6 @@ import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRe
 import java.util.function.Supplier;
 
 import org.avp.api.Holder;
-import org.avp.common.entity.attribute.AVPEntityAttributesBindingRegistry;
 import org.avp.common.entity.type.AVPEntityDataRegistry;
 import org.avp.common.registry.AVPDeferredRegistry;
 

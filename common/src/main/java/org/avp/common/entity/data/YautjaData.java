@@ -5,11 +5,21 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.level.storage.loot.LootPool;
+import net.minecraft.world.level.storage.loot.LootTable;
+import net.minecraft.world.level.storage.loot.entries.EmptyLootItem;
+import net.minecraft.world.level.storage.loot.entries.LootItem;
+import net.minecraft.world.level.storage.loot.functions.LootingEnchantFunction;
+import net.minecraft.world.level.storage.loot.functions.SetItemCountFunction;
+import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
+import net.minecraft.world.level.storage.loot.providers.number.UniformGenerator;
 import org.avp.api.Holder;
 import org.avp.api.entity.data.EntityData;
 import org.avp.common.entity.AVPEntitySpeedConstants;
 import org.avp.common.entity.attribute.AVPEntityAttributesBindingRegistry;
 import org.avp.common.entity.living.Yautja;
+import org.avp.common.item.AVPArmorItems;
+import org.avp.common.item.AVPItems;
 import org.avp.common.registry.AVPSimpleDeferredEntityTypeRegistry;
 import org.avp.common.tag.AVPEntityTypeTags;
 
@@ -20,38 +30,71 @@ public class YautjaData extends EntityData<Yautja> {
 
     public static final YautjaData INSTANCE = new YautjaData();
 
-    private static final Holder<EntityType<Yautja>> HOLDER = AVPSimpleDeferredEntityTypeRegistry.INSTANCE.createMobHolder(
-        "yautja",
-        0xB9A86C,
-        0x5A4728,
-        EntityType.Builder.of(Yautja::new, MobCategory.MONSTER)
-            .sized(0.98F, 2.48F)
-    );
-
-    private static final AttributeSupplier ATTRIBUTE_SUPPLIER = AVPEntityAttributesBindingRegistry.builder()
-        .add(Attributes.ATTACK_DAMAGE, 12)
-        .add(Attributes.KNOCKBACK_RESISTANCE, 0.75)
-        .add(Attributes.MAX_HEALTH, 80)
-        .add(Attributes.MOVEMENT_SPEED, AVPEntitySpeedConstants.YAUTJA_SPEED)
-        .build();
-
-    private static final List<TagKey<EntityType<?>>> TAGS = List.of(
-        AVPEntityTypeTags.MONSTERS,
-        AVPEntityTypeTags.PREDATORS
-    );
-
     @Override
-    public Holder<EntityType<Yautja>> getHolder() {
-        return HOLDER;
+    protected Holder<EntityType<Yautja>> createHolder() {
+        return AVPSimpleDeferredEntityTypeRegistry.INSTANCE.createMobHolder(
+            "yautja",
+            0xB9A86C,
+            0x5A4728,
+            EntityType.Builder.of(Yautja::new, MobCategory.MONSTER)
+                .sized(0.98F, 2.48F)
+        );
     }
 
     @Override
-    public Optional<AttributeSupplier> getAttributeSupplier() {
-        return Optional.of(ATTRIBUTE_SUPPLIER);
+    protected Optional<AttributeSupplier> createAttributeSupplier() {
+        return Optional.of(AVPEntityAttributesBindingRegistry.builder()
+            .add(Attributes.ATTACK_DAMAGE, 12)
+            .add(Attributes.KNOCKBACK_RESISTANCE, 0.75)
+            .add(Attributes.MAX_HEALTH, 80)
+            .add(Attributes.MOVEMENT_SPEED, AVPEntitySpeedConstants.YAUTJA_SPEED)
+            .build());
     }
 
     @Override
-    public List<TagKey<EntityType<?>>> getTags() {
-        return TAGS;
+    protected List<TagKey<EntityType<?>>> createTags() {
+        return List.of(
+            AVPEntityTypeTags.MONSTERS,
+            AVPEntityTypeTags.PREDATORS
+        );
+    }
+
+    @Override
+    protected Optional<LootTable.Builder> createLootTable() {
+        return Optional.of(LootTable.lootTable()
+            .withPool(
+                LootPool.lootPool()
+                    .setRolls(ConstantValue.exactly(1))
+                    .add(
+                        LootItem.lootTableItem(AVPItems.INSTANCE.veritaniumShard.get())
+                            .apply(SetItemCountFunction.setCount(UniformGenerator.between(1, 4)))
+                            .apply(LootingEnchantFunction.lootingMultiplier(UniformGenerator.between(1, 3)))
+                    )
+            )
+            .withPool(
+                LootPool.lootPool()
+                    .setRolls(ConstantValue.exactly(1))
+                    .add(EmptyLootItem.emptyItem().setWeight(36))
+                    .add(LootItem.lootTableItem(AVPArmorItems.INSTANCE.veritaniumHelmet.get()).setWeight(1))
+                    .add(LootItem.lootTableItem(AVPArmorItems.INSTANCE.veritaniumBody.get()).setWeight(1))
+                    .add(LootItem.lootTableItem(AVPArmorItems.INSTANCE.veritaniumLeggings.get()).setWeight(1))
+                    .add(LootItem.lootTableItem(AVPArmorItems.INSTANCE.veritaniumBoots.get()).setWeight(1))
+            )
+            .withPool(
+                LootPool.lootPool()
+                    .setRolls(ConstantValue.exactly(1))
+                    .add(
+                        LootItem.lootTableItem(AVPItems.INSTANCE.laserMine.get())
+                            .apply(SetItemCountFunction.setCount(UniformGenerator.between(4, 8)))
+                            .apply(LootingEnchantFunction.lootingMultiplier(UniformGenerator.between(1, 4)))
+                    )
+                    .add(
+                        LootItem.lootTableItem(AVPItems.INSTANCE.shuriken.get())
+                            .apply(SetItemCountFunction.setCount(UniformGenerator.between(4, 8)))
+                            .apply(LootingEnchantFunction.lootingMultiplier(UniformGenerator.between(1, 4)))
+                    )
+                    .add(LootItem.lootTableItem(AVPItems.INSTANCE.smartDisc.get()))
+                    .add(LootItem.lootTableItem(AVPItems.INSTANCE.yautjaArtifact.get()))
+            ));
     }
 }

@@ -5,6 +5,7 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.level.storage.loot.LootTable;
 import org.avp.api.Holder;
 import org.avp.api.entity.data.EntityData;
 import org.avp.common.entity.AVPEntitySpeedConstants;
@@ -20,39 +21,38 @@ public class BoilerData extends EntityData<Boiler> {
 
     public static final BoilerData INSTANCE = new BoilerData();
 
-    private static final Holder<EntityType<Boiler>> HOLDER = AVPSimpleDeferredEntityTypeRegistry.INSTANCE.createMobHolder(
-        "boiler",
-        0x010202,
-        0x9DA930,
-        EntityType.Builder.of(Boiler::new, MobCategory.MONSTER)
-            .sized(0.98F, 2.48F)
-    );
-
-    private static final AttributeSupplier ATTRIBUTE_SUPPLIER = AVPEntityAttributesBindingRegistry.builder()
-        .add(Attributes.ATTACK_DAMAGE, 4)
-        .add(Attributes.MAX_HEALTH, 30)
-        .add(Attributes.MOVEMENT_SPEED, AVPEntitySpeedConstants.BASE_SPEED)
-        .build();
-
-    private static final List<TagKey<EntityType<?>>> TAGS = List.of(
-        AVPEntityTypeTags.ACID_BLEEDERS,
-        AVPEntityTypeTags.ALIENS,
-        AVPEntityTypeTags.HIVE_ALIENS,
-        AVPEntityTypeTags.MONSTERS
-    );
-
     @Override
-    public Holder<EntityType<Boiler>> getHolder() {
-        return HOLDER;
+    protected Holder<EntityType<Boiler>> createHolder() {
+        return AVPSimpleDeferredEntityTypeRegistry.INSTANCE.createMobHolder(
+            "boiler",
+            0x010202,
+            0x9DA930,
+            EntityType.Builder.of(Boiler::new, MobCategory.MONSTER)
+                .sized(0.98F, 2.48F)
+        );
     }
 
     @Override
-    public Optional<AttributeSupplier> getAttributeSupplier() {
-        return Optional.of(ATTRIBUTE_SUPPLIER);
+    protected Optional<AttributeSupplier> createAttributeSupplier() {
+        return Optional.of(AVPEntityAttributesBindingRegistry.builder()
+            .add(Attributes.ATTACK_DAMAGE, 4)
+            .add(Attributes.MAX_HEALTH, 30)
+            .add(Attributes.MOVEMENT_SPEED, AVPEntitySpeedConstants.BASE_SPEED)
+            .build());
     }
 
     @Override
-    public List<TagKey<EntityType<?>>> getTags() {
-        return TAGS;
+    protected List<TagKey<EntityType<?>>> createTags() {
+        return List.of(
+            AVPEntityTypeTags.ACID_BLEEDERS,
+            AVPEntityTypeTags.ALIENS,
+            AVPEntityTypeTags.HIVE_ALIENS,
+            AVPEntityTypeTags.MONSTERS
+        );
+    }
+
+    @Override
+    protected Optional<LootTable.Builder> createLootTable() {
+        return Optional.empty();
     }
 }

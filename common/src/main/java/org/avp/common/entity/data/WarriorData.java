@@ -5,6 +5,7 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.level.storage.loot.LootTable;
 import org.avp.api.Holder;
 import org.avp.api.entity.data.EntityData;
 import org.avp.common.entity.AVPEntitySpeedConstants;
@@ -20,40 +21,39 @@ public class WarriorData extends EntityData<Warrior> {
 
     public static final WarriorData INSTANCE = new WarriorData();
 
-    private static final Holder<EntityType<Warrior>> HOLDER = AVPSimpleDeferredEntityTypeRegistry.INSTANCE.createMobHolder(
-        "warrior",
-        0x010202,
-        0x4A4E55,
-        EntityType.Builder.of(Warrior::new, MobCategory.MONSTER)
-            .sized(0.98F, 1.98F)
-    );
-
-    private static final AttributeSupplier ATTRIBUTE_SUPPLIER = AVPEntityAttributesBindingRegistry.builder()
-        .add(Attributes.ATTACK_DAMAGE, 9)
-        .add(Attributes.MAX_HEALTH, 50)
-        .add(Attributes.MOVEMENT_SPEED, AVPEntitySpeedConstants.WARRIOR_SPEED)
-        .build();
-
-    private static final List<TagKey<EntityType<?>>> TAGS = List.of(
-        AVPEntityTypeTags.ACID_BLEEDERS,
-        AVPEntityTypeTags.ALIENS,
-        AVPEntityTypeTags.HIVE_ALIENS,
-        AVPEntityTypeTags.MONSTERS,
-        AVPEntityTypeTags.PRODUCES_RESIN
-    );
-
     @Override
-    public Holder<EntityType<Warrior>> getHolder() {
-        return HOLDER;
+    protected Holder<EntityType<Warrior>> createHolder() {
+        return AVPSimpleDeferredEntityTypeRegistry.INSTANCE.createMobHolder(
+            "warrior",
+            0x010202,
+            0x4A4E55,
+            EntityType.Builder.of(Warrior::new, MobCategory.MONSTER)
+                .sized(0.98F, 1.98F)
+        );
     }
 
     @Override
-    public Optional<AttributeSupplier> getAttributeSupplier() {
-        return Optional.of(ATTRIBUTE_SUPPLIER);
+    protected Optional<AttributeSupplier> createAttributeSupplier() {
+        return Optional.of(AVPEntityAttributesBindingRegistry.builder()
+            .add(Attributes.ATTACK_DAMAGE, 9)
+            .add(Attributes.MAX_HEALTH, 50)
+            .add(Attributes.MOVEMENT_SPEED, AVPEntitySpeedConstants.WARRIOR_SPEED)
+            .build());
     }
 
     @Override
-    public List<TagKey<EntityType<?>>> getTags() {
-        return TAGS;
+    protected List<TagKey<EntityType<?>>> createTags() {
+        return List.of(
+            AVPEntityTypeTags.ACID_BLEEDERS,
+            AVPEntityTypeTags.ALIENS,
+            AVPEntityTypeTags.HIVE_ALIENS,
+            AVPEntityTypeTags.MONSTERS,
+            AVPEntityTypeTags.PRODUCES_RESIN
+        );
+    }
+
+    @Override
+    protected Optional<LootTable.Builder> createLootTable() {
+        return Optional.empty();
     }
 }

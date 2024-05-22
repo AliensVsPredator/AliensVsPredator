@@ -5,6 +5,7 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.level.storage.loot.LootTable;
 import org.avp.api.Holder;
 import org.avp.api.entity.data.EntityData;
 import org.avp.common.entity.AVPEntitySpeedConstants;
@@ -20,40 +21,39 @@ public class FacehuggerRoyalData extends EntityData<FacehuggerRoyal> {
 
     public static final FacehuggerRoyalData INSTANCE = new FacehuggerRoyalData();
 
-    private static final Holder<EntityType<FacehuggerRoyal>> HOLDER = AVPSimpleDeferredEntityTypeRegistry.INSTANCE.createMobHolder(
-        "facehugger_royal",
-        0x81785E,
-        0x583A3A,
-        EntityType.Builder.of(FacehuggerRoyal::new, MobCategory.MONSTER)
-            .sized(0.75F, 0.3F)
-    );
-
-    private static final AttributeSupplier ATTRIBUTE_SUPPLIER = AVPEntityAttributesBindingRegistry.builder()
-        .add(Attributes.MAX_HEALTH, 14)
-        .add(Attributes.MOVEMENT_SPEED, AVPEntitySpeedConstants.FACEHUGGER_ROYAL_SPEED)
-        .build();
-
-    private static final List<TagKey<EntityType<?>>> TAGS = List.of(
-        AVPEntityTypeTags.ACID_BLEEDERS,
-        AVPEntityTypeTags.ALIENS,
-        AVPEntityTypeTags.HIVE_ALIENS,
-        AVPEntityTypeTags.MONSTERS,
-        AVPEntityTypeTags.PARASITES,
-        AVPEntityTypeTags.ROYAL_ALIENS
-    );
-
     @Override
-    public Holder<EntityType<FacehuggerRoyal>> getHolder() {
-        return HOLDER;
+    protected Holder<EntityType<FacehuggerRoyal>> createHolder() {
+        return AVPSimpleDeferredEntityTypeRegistry.INSTANCE.createMobHolder(
+            "facehugger_royal",
+            0x81785E,
+            0x583A3A,
+            EntityType.Builder.of(FacehuggerRoyal::new, MobCategory.MONSTER)
+                .sized(0.75F, 0.3F)
+        );
     }
 
     @Override
-    public Optional<AttributeSupplier> getAttributeSupplier() {
-        return Optional.of(ATTRIBUTE_SUPPLIER);
+    protected Optional<AttributeSupplier> createAttributeSupplier() {
+        return Optional.of(AVPEntityAttributesBindingRegistry.builder()
+            .add(Attributes.MAX_HEALTH, 14)
+            .add(Attributes.MOVEMENT_SPEED, AVPEntitySpeedConstants.FACEHUGGER_ROYAL_SPEED)
+            .build());
     }
 
     @Override
-    public List<TagKey<EntityType<?>>> getTags() {
-        return TAGS;
+    protected List<TagKey<EntityType<?>>> createTags() {
+        return List.of(
+            AVPEntityTypeTags.ACID_BLEEDERS,
+            AVPEntityTypeTags.ALIENS,
+            AVPEntityTypeTags.HIVE_ALIENS,
+            AVPEntityTypeTags.MONSTERS,
+            AVPEntityTypeTags.PARASITES,
+            AVPEntityTypeTags.ROYAL_ALIENS
+        );
+    }
+
+    @Override
+    protected Optional<LootTable.Builder> createLootTable() {
+        return Optional.empty();
     }
 }

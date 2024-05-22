@@ -4,6 +4,7 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
+import net.minecraft.world.level.storage.loot.LootTable;
 import org.avp.api.Holder;
 import org.avp.api.entity.data.EntityData;
 import org.avp.common.entity.Acid;
@@ -16,26 +17,27 @@ public class AcidData extends EntityData<Acid> {
 
     public static final AcidData INSTANCE = new AcidData();
 
-    private static final Holder<EntityType<Acid>> HOLDER = AVPSimpleDeferredEntityTypeRegistry.INSTANCE.createHolder(
-        "acid",
-        EntityType.Builder.of(Acid::new, MobCategory.MISC)
-            .sized(0.8F, 0.05F)
-    );
-
-    private static final List<TagKey<EntityType<?>>> TAGS = List.of();
-
     @Override
-    public Holder<EntityType<Acid>> getHolder() {
-        return HOLDER;
+    protected Holder<EntityType<Acid>> createHolder() {
+        return AVPSimpleDeferredEntityTypeRegistry.INSTANCE.createHolder(
+            "acid",
+            EntityType.Builder.of(Acid::new, MobCategory.MISC)
+                .sized(0.8F, 0.05F)
+        );
     }
 
     @Override
-    public Optional<AttributeSupplier> getAttributeSupplier() {
+    protected Optional<AttributeSupplier> createAttributeSupplier() {
         return Optional.empty();
     }
 
     @Override
-    public List<TagKey<EntityType<?>>> getTags() {
-        return TAGS;
+    protected List<TagKey<EntityType<?>>> createTags() {
+        return List.of();
+    }
+
+    @Override
+    protected Optional<LootTable.Builder> createLootTable() {
+        return Optional.empty();
     }
 }
