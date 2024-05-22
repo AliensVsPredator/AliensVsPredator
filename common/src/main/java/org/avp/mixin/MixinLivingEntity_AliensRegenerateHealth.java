@@ -1,7 +1,7 @@
 package org.avp.mixin;
 
 import net.minecraft.world.entity.LivingEntity;
-import org.avp.common.tag.AVPEntityTags;
+import org.avp.common.tag.AVPEntityTypeTags;
 import org.avp.common.util.MixinUtils;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -20,7 +20,7 @@ public abstract class MixinLivingEntity_AliensRegenerateHealth {
             return;
         if (self.tickCount % 20 != 0)
             return;
-        if (!self.getType().is(AVPEntityTags.ALIENS))
+        if (!self.getType().is(AVPEntityTypeTags.ALIENS))
             return;
         if (self.getHealth() >= self.getMaxHealth())
             return;

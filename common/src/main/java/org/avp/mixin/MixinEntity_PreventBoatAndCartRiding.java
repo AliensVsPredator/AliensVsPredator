@@ -9,7 +9,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import org.avp.common.tag.AVPEntityTags;
+import org.avp.common.tag.AVPEntityTypeTags;
 import org.avp.common.util.MixinUtils;
 
 @Mixin(Entity.class)
@@ -22,8 +22,8 @@ public abstract class MixinEntity_PreventBoatAndCartRiding {
 
         // All aliens will not ride boats.
         if (
-            !self.getType().is(AVPEntityTags.ALIENS) &&
-                !self.getType().is(AVPEntityTags.PREDATORS)
+            !self.getType().is(AVPEntityTypeTags.ALIENS) &&
+                !self.getType().is(AVPEntityTypeTags.PREDATORS)
         )
             return;
 
@@ -41,8 +41,8 @@ public abstract class MixinEntity_PreventBoatAndCartRiding {
         if (level.isClientSide)
             return;
         if (
-            !self.getType().is(AVPEntityTags.ALIENS) &&
-                !self.getType().is(AVPEntityTags.PREDATORS)
+            !self.getType().is(AVPEntityTypeTags.ALIENS) &&
+                !self.getType().is(AVPEntityTypeTags.PREDATORS)
         )
             return;
 

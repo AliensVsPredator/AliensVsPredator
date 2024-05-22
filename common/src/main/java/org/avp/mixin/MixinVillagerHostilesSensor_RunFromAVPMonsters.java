@@ -8,7 +8,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import org.avp.common.tag.AVPEntityTags;
+import org.avp.common.tag.AVPEntityTypeTags;
 
 @Mixin(VillagerHostilesSensor.class)
 public abstract class MixinVillagerHostilesSensor_RunFromAVPMonsters extends NearestVisibleLivingEntitySensor {
@@ -16,8 +16,8 @@ public abstract class MixinVillagerHostilesSensor_RunFromAVPMonsters extends Nea
     @Inject(at = @At("HEAD"), method = "isClose", cancellable = true)
     void isClose(LivingEntity livingEntity, LivingEntity livingEntity2, CallbackInfoReturnable<Boolean> callbackInfoReturnable) {
         if (
-            !livingEntity2.getType().is(AVPEntityTags.ALIENS) &&
-                !livingEntity2.getType().is(AVPEntityTags.PREDATORS)
+            !livingEntity2.getType().is(AVPEntityTypeTags.ALIENS) &&
+                !livingEntity2.getType().is(AVPEntityTypeTags.PREDATORS)
         )
             return;
 
@@ -29,8 +29,8 @@ public abstract class MixinVillagerHostilesSensor_RunFromAVPMonsters extends Nea
     @Inject(at = @At("HEAD"), method = "isHostile", cancellable = true)
     void isHostile(LivingEntity livingEntity, CallbackInfoReturnable<Boolean> callbackInfoReturnable) {
         if (
-            livingEntity.getType().is(AVPEntityTags.ALIENS) ||
-                livingEntity.getType().is(AVPEntityTags.PREDATORS)
+            livingEntity.getType().is(AVPEntityTypeTags.ALIENS) ||
+                livingEntity.getType().is(AVPEntityTypeTags.PREDATORS)
         ) {
             callbackInfoReturnable.setReturnValue(true);
         }

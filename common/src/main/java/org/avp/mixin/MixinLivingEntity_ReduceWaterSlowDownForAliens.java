@@ -4,7 +4,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
-import org.avp.common.tag.AVPEntityTags;
+import org.avp.common.tag.AVPEntityTypeTags;
 import org.avp.common.util.MixinUtils;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -21,7 +21,7 @@ public abstract class MixinLivingEntity_ReduceWaterSlowDownForAliens extends Ent
     @Inject(at = @At("HEAD"), cancellable = true, method = "getWaterSlowDown")
     void aliensNotSlowedDownMuchByWater(CallbackInfoReturnable<Float> callbackInfoReturnable) {
         var self = MixinUtils.<LivingEntity>self(this);
-        if (self.getType().is(AVPEntityTags.ALIENS)) {
+        if (self.getType().is(AVPEntityTypeTags.ALIENS)) {
             callbackInfoReturnable.setReturnValue(0.9F);
         }
     }

@@ -6,7 +6,7 @@ import net.minecraft.world.entity.EntityType;
 
 import org.avp.common.AVPResources;
 
-public class AVPEntityTags {
+public class AVPEntityTypeTags {
 
     public static final TagKey<EntityType<?>> ACID_BLEEDERS = create("acid_bleeders");
 
@@ -34,7 +34,7 @@ public class AVPEntityTags {
         return TagKey.create(Registries.ENTITY_TYPE, AVPResources.location(registryName));
     }
 
-    private AVPEntityTags() {
+    private AVPEntityTypeTags() {
         throw new UnsupportedOperationException();
     }
 }

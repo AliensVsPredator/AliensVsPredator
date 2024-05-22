@@ -6,7 +6,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
-import org.avp.common.tag.AVPEntityTags;
+import org.avp.common.tag.AVPEntityTypeTags;
 import org.avp.common.util.MixinUtils;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -23,7 +23,7 @@ public abstract class MixinLivingEntity_AliensDoNotSuffocate extends Entity {
     @Inject(at = @At("HEAD"), cancellable = true, method = "hurt")
     void ignoreSuffocationDamage(DamageSource damageSource, float damage, CallbackInfoReturnable<Boolean> callbackInfoReturnable) {
         var self = MixinUtils.<LivingEntity>self(this);
-        if (self.getType().is(AVPEntityTags.ALIENS) && damageSource.is(DamageTypes.IN_WALL)) {
+        if (self.getType().is(AVPEntityTypeTags.ALIENS) && damageSource.is(DamageTypes.IN_WALL)) {
             callbackInfoReturnable.setReturnValue(false);
         }
     }

@@ -4,7 +4,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
 import org.avp.api.entity.HiveMember;
 import org.avp.api.entity.RoyalJellyHolder;
-import org.avp.common.tag.AVPEntityTags;
+import org.avp.common.tag.AVPEntityTypeTags;
 import org.avp.server.HivemindManager;
 
 import java.util.Collection;
@@ -52,14 +52,14 @@ public class Hivemind {
             .filter(entry -> {
                 var entity = entry.getValue();
                 var royalJellyHolder = (RoyalJellyHolder) entity;
-                return royalJellyHolder.hasRoyalJelly() || entity.getType().is(AVPEntityTags.ROYAL_ALIENS);
+                return royalJellyHolder.hasRoyalJelly() || entity.getType().is(AVPEntityTypeTags.ROYAL_ALIENS);
             })
             .findFirst()
             .map(Map.Entry::getValue);
     }
 
     public void acceptNewHiveMember(LivingEntity hiveMember) {
-        if (!hiveMember.getType().is(AVPEntityTags.ALIENS)) {
+        if (!hiveMember.getType().is(AVPEntityTypeTags.ALIENS)) {
             throw new IllegalArgumentException("Cannot accept entity that is not an alien entity type! Entity Type: " + hiveMember.getType());
         }
 

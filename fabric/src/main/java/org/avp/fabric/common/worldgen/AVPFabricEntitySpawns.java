@@ -8,7 +8,7 @@ import net.minecraft.world.entity.SpawnPlacements;
 
 import org.avp.common.config.AVPConfig;
 import org.avp.common.entity.spawn.AVPEntitySpawns;
-import org.avp.common.tag.AVPEntityTags;
+import org.avp.common.tag.AVPEntityTypeTags;
 
 public class AVPFabricEntitySpawns {
 
@@ -22,11 +22,11 @@ public class AVPFabricEntitySpawns {
             var maxGroupSize = entitySpawnData.maxGroupSize();
             var entityType = (EntityType<Mob>) entitySpawnData.entityTypeHolder().get();
 
-            if (entityType.is(AVPEntityTags.ALIENS) && !AVPConfig.Aliens.ENABLE_XENOMORPH_OVERWORLD_SPAWNS) {
+            if (entityType.is(AVPEntityTypeTags.ALIENS) && !AVPConfig.Aliens.ENABLE_XENOMORPH_OVERWORLD_SPAWNS) {
                 return;
             }
 
-            if (entityType.is(AVPEntityTags.PREDATORS) && !AVPConfig.Predators.ENABLE_YAUTJA_OVERWORLD_SPAWNS) {
+            if (entityType.is(AVPEntityTypeTags.PREDATORS) && !AVPConfig.Predators.ENABLE_YAUTJA_OVERWORLD_SPAWNS) {
                 return;
             }
 

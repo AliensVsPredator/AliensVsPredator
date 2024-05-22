@@ -13,7 +13,7 @@ import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
 
 import org.avp.api.entity.HiveMember;
-import org.avp.common.tag.AVPEntityTags;
+import org.avp.common.tag.AVPEntityTypeTags;
 import org.avp.common.tag.AVPItemTags;
 
 import java.util.Objects;
@@ -35,8 +35,8 @@ public class AIUtils {
                 LivingEntity.class,
                 true,
                 livingEntity -> {
-                    var shouldKill = !livingEntity.getType().is(AVPEntityTags.ALIENS) &&
-                        !livingEntity.getType().is(AVPEntityTags.NOT_WORTH_KILLING);
+                    var shouldKill = !livingEntity.getType().is(AVPEntityTypeTags.ALIENS) &&
+                        !livingEntity.getType().is(AVPEntityTypeTags.NOT_WORTH_KILLING);
 
                     var isOpposingHiveMember = monster instanceof HiveMember selfMember &&
                         livingEntity instanceof HiveMember otherMember &&
@@ -60,8 +60,8 @@ public class AIUtils {
                 monster,
                 LivingEntity.class,
                 true,
-                livingEntity -> !livingEntity.getType().is(AVPEntityTags.ALIENS) &&
-                    !livingEntity.getType().is(AVPEntityTags.NON_HOSTS)
+                livingEntity -> !livingEntity.getType().is(AVPEntityTypeTags.ALIENS) &&
+                    !livingEntity.getType().is(AVPEntityTypeTags.NON_HOSTS)
             )
         );
     }
@@ -79,7 +79,7 @@ public class AIUtils {
                 monster,
                 LivingEntity.class,
                 true,
-                livingEntity -> livingEntity.getType().is(AVPEntityTags.ALIENS) ||
+                livingEntity -> livingEntity.getType().is(AVPEntityTypeTags.ALIENS) ||
                     livingEntity instanceof Player player && player.getInventory()
                         .hasAnyMatching(
                             itemStack -> itemStack.is(AVPItemTags.THREATENS_PREDATORS)

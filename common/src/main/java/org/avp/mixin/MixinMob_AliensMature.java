@@ -7,7 +7,7 @@ import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.level.Level;
 import org.avp.common.alien.maturation.AVPAlienMaturations;
-import org.avp.common.tag.AVPEntityTags;
+import org.avp.common.tag.AVPEntityTypeTags;
 import org.avp.common.util.MixinUtils;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -28,7 +28,7 @@ public abstract class MixinMob_AliensMature extends LivingEntity {
 
         if (level.isClientSide)
             return;
-        if (!self.getType().is(AVPEntityTags.ALIENS))
+        if (!self.getType().is(AVPEntityTypeTags.ALIENS))
             return;
         if (self.tickCount % 20 != 0)
             return;

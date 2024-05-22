@@ -14,7 +14,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import org.avp.common.entity.type.AVPEntityTypes;
-import org.avp.common.tag.AVPEntityTags;
+import org.avp.common.tag.AVPEntityTypeTags;
 import org.avp.common.util.MixinUtils;
 
 @Mixin(LivingEntity.class)
@@ -29,7 +29,7 @@ public abstract class MixinLivingEntity_ProduceAcid extends Entity {
         var self = MixinUtils.<LivingEntity>self(this);
         var level = self.level();
 
-        if (!level.isClientSide() && self.getType().is(AVPEntityTags.ACID_BLEEDERS)) {
+        if (!level.isClientSide() && self.getType().is(AVPEntityTypeTags.ACID_BLEEDERS)) {
             if (!damageSource.is(AVPDamageTypeTags.IS_PUNCTURING)) {
                 return;
             }

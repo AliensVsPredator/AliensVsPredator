@@ -15,7 +15,7 @@ import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 
-import org.avp.common.tag.AVPEntityTags;
+import org.avp.common.tag.AVPEntityTypeTags;
 
 public class DeaconAdultEngineer extends Monster implements GeoEntity {
 
@@ -38,7 +38,7 @@ public class DeaconAdultEngineer extends Monster implements GeoEntity {
                 this,
                 LivingEntity.class,
                 true,
-                (livingEntity) -> !livingEntity.getType().is(AVPEntityTags.ALIENS)
+                (livingEntity) -> !livingEntity.getType().is(AVPEntityTypeTags.ALIENS)
             )
         );
     }

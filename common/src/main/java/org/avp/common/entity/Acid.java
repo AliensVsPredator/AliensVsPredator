@@ -20,7 +20,7 @@ import org.avp.client.render.particle.AVPParticleTypes;
 import org.avp.common.config.AVPConfig;
 import org.avp.common.damage.AVPDamageSources;
 import org.avp.common.tag.AVPBlockTags;
-import org.avp.common.tag.AVPEntityTags;
+import org.avp.common.tag.AVPEntityTypeTags;
 import org.avp.common.tag.AVPItemTags;
 import org.avp.common.util.AVPPredicates;
 import org.avp.server.BlockBreakProgressManager;
@@ -166,7 +166,7 @@ public class Acid extends Entity {
                 return;
             }
 
-            if (!entity.getType().is(AVPEntityTags.ACID_IMMUNE)) {
+            if (!entity.getType().is(AVPEntityTypeTags.ACID_IMMUNE)) {
                 AVPDamageSources.INSTANCE.acid.get().hurt(entity, AVPConfig.General.ACID_DAMAGE);
             }
         });
