@@ -5,13 +5,9 @@ import mod.azure.azurelib.common.internal.common.core.animatable.instance.Animat
 import mod.azure.azurelib.common.internal.common.core.animation.AnimatableManager;
 import mod.azure.azurelib.common.internal.common.util.AzureLibUtil;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.ai.goal.AvoidEntityGoal;
-import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
-import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
-import net.minecraft.world.entity.ai.goal.WaterAvoidingRandomStrollGoal;
 import net.minecraft.world.entity.monster.Monster;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import org.avp.common.entity.ai.AIUtils;
 
 public class ChestbursterDraco extends Monster implements GeoEntity {
 
@@ -23,11 +19,7 @@ public class ChestbursterDraco extends Monster implements GeoEntity {
 
     @Override
     protected void registerGoals() {
-        this.goalSelector.addGoal(8, new LookAtPlayerGoal(this, Player.class, 8));
-        this.goalSelector.addGoal(8, new RandomLookAroundGoal(this));
-        this.goalSelector.addGoal(7, new WaterAvoidingRandomStrollGoal(this, 1));
-
-        this.goalSelector.addGoal(3, new AvoidEntityGoal<>(this, Player.class, 6, 1, 1.2));
+        AIUtils.addChestbursterAI(this, goalSelector);
     }
 
     @Override

@@ -20,7 +20,7 @@ public class DeaconAdult extends Monster implements GeoEntity {
 
     @Override
     protected void registerGoals() {
-        AIUtils.addHiveAlienAI(this, goalSelector, targetSelector);
+        AIUtils.addBasicAlienAI(this, goalSelector, targetSelector);
     }
 
     @Override

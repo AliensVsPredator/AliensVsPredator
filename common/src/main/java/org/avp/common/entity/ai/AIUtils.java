@@ -1,6 +1,7 @@
 package org.avp.common.entity.ai;
 
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.goal.AvoidEntityGoal;
 import net.minecraft.world.entity.ai.goal.FloatGoal;
 import net.minecraft.world.entity.ai.goal.GoalSelector;
 import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
@@ -20,14 +21,40 @@ import java.util.Objects;
 
 public class AIUtils {
 
-    public static void addHiveAlienAI(Monster monster, GoalSelector goalSelector, GoalSelector targetSelector) {
+    public static void addBasicAI(Monster monster, GoalSelector goalSelector) {
         goalSelector.addGoal(1, new FloatGoal(monster));
         goalSelector.addGoal(4, new MeleeAttackGoal(monster, 1, true));
         goalSelector.addGoal(5, new WaterAvoidingRandomStrollGoal(monster, 1));
         goalSelector.addGoal(6, new LookAtPlayerGoal(monster, Player.class, 8));
         goalSelector.addGoal(6, new RandomLookAroundGoal(monster));
+    }
 
+    public static void addBasicAlienAI(Monster monster, GoalSelector goalSelector, GoalSelector targetSelector) {
+        addBasicAI(monster, goalSelector);
         targetSelector.addGoal(1, new HurtByTargetGoal(monster));
+
+        targetSelector.addGoal(
+            2,
+            new NearestAttackableTargetGoal<>(
+                monster,
+                LivingEntity.class,
+                true,
+                livingEntity -> !livingEntity.getType().is(AVPEntityTypeTags.ALIENS)
+            )
+        );
+    }
+
+    public static void addChestbursterAI(Monster monster, GoalSelector goalSelector) {
+        goalSelector.addGoal(8, new LookAtPlayerGoal(monster, Player.class, 8));
+        goalSelector.addGoal(8, new RandomLookAroundGoal(monster));
+        goalSelector.addGoal(7, new WaterAvoidingRandomStrollGoal(monster, 1));
+
+        goalSelector.addGoal(3, new AvoidEntityGoal<>(monster, Player.class, 6, 1, 1.2));
+    }
+
+    public static void addHiveAlienAI(Monster monster, GoalSelector goalSelector, GoalSelector targetSelector) {
+        addBasicAlienAI(monster, goalSelector, targetSelector);
+
         targetSelector.addGoal(
             2,
             new NearestAttackableTargetGoal<>(
@@ -51,9 +78,8 @@ public class AIUtils {
     }
 
     public static void addFacehuggerAI(Monster monster, GoalSelector goalSelector, GoalSelector targetSelector) {
-        goalSelector.addGoal(1, new FloatGoal(monster));
-        goalSelector.addGoal(2, new MeleeAttackGoal(monster, 1, true));
-        goalSelector.addGoal(3, new WaterAvoidingRandomStrollGoal(monster, 1));
+        addBasicAI(monster, goalSelector);
+
         targetSelector.addGoal(
             1,
             new NearestAttackableTargetGoal<>(
@@ -67,11 +93,8 @@ public class AIUtils {
     }
 
     public static void addYautjaAI(Monster monster, GoalSelector goalSelector, GoalSelector targetSelector) {
-        goalSelector.addGoal(8, new LookAtPlayerGoal(monster, Player.class, 8));
-        goalSelector.addGoal(8, new RandomLookAroundGoal(monster));
-        goalSelector.addGoal(7, new WaterAvoidingRandomStrollGoal(monster, 1));
+        addBasicAI(monster, goalSelector);
 
-        goalSelector.addGoal(2, new MeleeAttackGoal(monster, 1, true));
         targetSelector.addGoal(1, new HurtByTargetGoal(monster));
         targetSelector.addGoal(
             2,
