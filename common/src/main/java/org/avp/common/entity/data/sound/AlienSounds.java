@@ -13,7 +13,7 @@ public class AlienSounds {
     public static Function<DamageSource, Holder<SoundEvent>> createSoundEventSelector(Holder<SoundEvent> defaultSoundEventHolder) {
         return damageSource -> {
             if (damageSource.is(DamageTypeTags.IS_FIRE)) {
-                return AVPSoundEvents.INSTANCE.entityPraetorianHurt;
+                return AVPSoundEvents.INSTANCE.entityXenomorphHurtScreech;
             }
 
             return defaultSoundEventHolder;
