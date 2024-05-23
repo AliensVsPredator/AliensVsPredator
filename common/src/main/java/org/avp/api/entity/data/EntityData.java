@@ -6,6 +6,7 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.level.storage.loot.LootTable;
 import org.avp.api.Holder;
+import org.avp.common.entity.data.sound.EntitySoundData;
 import org.avp.common.entity.data.spawn.EntitySpawnData;
 
 import java.util.List;
@@ -16,12 +17,14 @@ public abstract class EntityData<T extends Entity> {
     private final Holder<EntityType<T>> holder = createHolder();
     private final AttributeSupplier attributeSupplier = createAttributeSupplier().orElse(null);
     private final List<TagKey<EntityType<?>>> tags = createTags();
+    private final EntitySoundData soundData = createSoundData().orElse(null);
     private final LootTable.Builder lootTableBuilder = createLootTable().orElse(null);
     private final EntitySpawnData<?> spawnData = createSpawnData().orElse(null);
 
     protected abstract Holder<EntityType<T>> createHolder();
     protected abstract Optional<AttributeSupplier> createAttributeSupplier();
     protected abstract List<TagKey<EntityType<?>>> createTags();
+    protected abstract Optional<EntitySoundData> createSoundData();
     protected abstract Optional<LootTable.Builder> createLootTable();
     protected abstract Optional<EntitySpawnData<?>> createSpawnData();
 
@@ -35,6 +38,10 @@ public abstract class EntityData<T extends Entity> {
 
     public final List<TagKey<EntityType<?>>> getTags() {
         return tags;
+    }
+
+    public final Optional<EntitySoundData> getSoundData() {
+        return Optional.ofNullable(soundData);
     }
 
     public final Optional<LootTable.Builder> getLootTableBuilder() {

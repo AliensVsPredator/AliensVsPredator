@@ -7,12 +7,10 @@ import mod.azure.azurelib.common.internal.common.util.AzureLibUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerBossEvent;
-import net.minecraft.sounds.SoundEvent;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.BossEvent;
 import net.minecraft.world.DifficultyInstance;
-import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -24,13 +22,12 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.entity.EntityTypeTest;
 import org.avp.api.entity.Boss;
+import org.avp.common.entity.ai.AIUtils;
+import org.avp.common.sound.AVPSoundEvents;
 import org.avp.common.util.AVPPredicates;
 import org.avp.server.QueenManager;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import org.avp.common.entity.ai.AIUtils;
-import org.avp.common.sound.AVPSoundEvents;
 
 public class Queen extends Monster implements Boss, GeoEntity {
 
@@ -111,22 +108,6 @@ public class Queen extends Monster implements Boss, GeoEntity {
     public void remove(@NotNull RemovalReason removalReason) {
         super.remove(removalReason);
         QueenManager.remove(getUUID());
-    }
-
-    @Nullable
-    @Override
-    protected SoundEvent getAmbientSound() {
-        return AVPSoundEvents.INSTANCE.entityQueenAmbient.get();
-    }
-
-    @Override
-    protected SoundEvent getDeathSound() {
-        return AVPSoundEvents.INSTANCE.entityQueenDeath.get();
-    }
-
-    @Override
-    protected SoundEvent getHurtSound(@NotNull DamageSource damageSource) {
-        return AVPSoundEvents.INSTANCE.entityQueenHurt.get();
     }
 
     @Override

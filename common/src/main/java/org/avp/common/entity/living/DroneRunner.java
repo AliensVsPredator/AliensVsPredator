@@ -4,18 +4,14 @@ import mod.azure.azurelib.common.api.common.animatable.GeoEntity;
 import mod.azure.azurelib.common.internal.common.core.animatable.instance.AnimatableInstanceCache;
 import mod.azure.azurelib.common.internal.common.core.animation.AnimatableManager;
 import mod.azure.azurelib.common.internal.common.util.AzureLibUtil;
-import net.minecraft.sounds.SoundEvent;
-import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.ai.goal.LeapAtTargetGoal;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.level.Level;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
 import org.avp.common.entity.ai.AIUtils;
 import org.avp.common.sound.AVPSoundEvents;
+import org.jetbrains.annotations.NotNull;
 
 public class DroneRunner extends Monster implements GeoEntity {
 
@@ -36,22 +32,6 @@ public class DroneRunner extends Monster implements GeoEntity {
     protected void registerGoals() {
         AIUtils.addHiveAlienAI(this, goalSelector, targetSelector);
         goalSelector.addGoal(3, new LeapAtTargetGoal(this, 0.4F));
-    }
-
-    @Nullable
-    @Override
-    protected SoundEvent getAmbientSound() {
-        return AVPSoundEvents.INSTANCE.entityXenomorphAmbient.get();
-    }
-
-    @Override
-    protected SoundEvent getDeathSound() {
-        return AVPSoundEvents.INSTANCE.entityXenomorphDeath.get();
-    }
-
-    @Override
-    protected SoundEvent getHurtSound(@NotNull DamageSource damageSource) {
-        return AVPSoundEvents.INSTANCE.entityXenomorphHurt.get();
     }
 
     @Override

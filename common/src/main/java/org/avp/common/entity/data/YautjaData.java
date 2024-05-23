@@ -20,12 +20,14 @@ import org.avp.api.Holder;
 import org.avp.api.entity.data.EntityData;
 import org.avp.common.entity.data.constant.AVPEntitySpeedConstants;
 import org.avp.common.entity.data.attribute.AVPAttributeSupplier;
+import org.avp.common.entity.data.sound.EntitySoundData;
 import org.avp.common.entity.living.Yautja;
 import org.avp.common.entity.data.spawn.EntitySpawnData;
 import org.avp.common.entity.data.spawn.YautjaSpawning;
 import org.avp.common.item.AVPArmorItems;
 import org.avp.common.item.AVPItems;
 import org.avp.common.registry.AVPSimpleDeferredEntityTypeRegistry;
+import org.avp.common.sound.AVPSoundEvents;
 import org.avp.common.tag.AVPEntityTypeTags;
 
 import java.util.List;
@@ -61,6 +63,17 @@ public class YautjaData extends EntityData<Yautja> {
         return List.of(
             AVPEntityTypeTags.MONSTERS,
             AVPEntityTypeTags.PREDATORS
+        );
+    }
+
+    @Override
+    protected Optional<EntitySoundData> createSoundData() {
+        return Optional.of(
+            new EntitySoundData(
+                AVPSoundEvents.INSTANCE.entityYautjaAmbient,
+                AVPSoundEvents.INSTANCE.entityYautjaHurt,
+                AVPSoundEvents.INSTANCE.entityYautjaDeath
+            )
         );
     }
 

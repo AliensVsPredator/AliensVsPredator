@@ -9,6 +9,7 @@ import net.minecraft.world.level.storage.loot.LootTable;
 import org.avp.api.Holder;
 import org.avp.api.entity.data.EntityData;
 import org.avp.common.entity.data.attribute.AVPAttributeSupplier;
+import org.avp.common.entity.data.sound.EntitySoundData;
 import org.avp.common.entity.data.spawn.EntitySpawnData;
 import org.avp.common.entity.living.Ovamorph;
 import org.avp.common.registry.AVPSimpleDeferredEntityTypeRegistry;
@@ -50,6 +51,11 @@ public class OvamorphData extends EntityData<Ovamorph> {
             AVPEntityTypeTags.HIVE_ALIENS,
             AVPEntityTypeTags.MONSTERS
         );
+    }
+
+    @Override
+    protected Optional<EntitySoundData> createSoundData() {
+        return Optional.empty();
     }
 
     @Override

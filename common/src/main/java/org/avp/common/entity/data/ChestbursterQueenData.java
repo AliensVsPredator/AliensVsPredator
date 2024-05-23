@@ -10,9 +10,11 @@ import org.avp.api.Holder;
 import org.avp.api.entity.data.EntityData;
 import org.avp.common.entity.data.constant.AVPEntitySpeedConstants;
 import org.avp.common.entity.data.attribute.AVPAttributeSupplier;
+import org.avp.common.entity.data.sound.EntitySoundData;
 import org.avp.common.entity.living.ChestbursterQueen;
 import org.avp.common.entity.data.spawn.EntitySpawnData;
 import org.avp.common.registry.AVPSimpleDeferredEntityTypeRegistry;
+import org.avp.common.sound.AVPSoundEvents;
 import org.avp.common.tag.AVPEntityTypeTags;
 
 import java.util.List;
@@ -49,6 +51,17 @@ public class ChestbursterQueenData extends EntityData<ChestbursterQueen> {
             AVPEntityTypeTags.ALIENS,
             AVPEntityTypeTags.HIVE_ALIENS,
             AVPEntityTypeTags.MONSTERS
+        );
+    }
+
+    @Override
+    protected Optional<EntitySoundData> createSoundData() {
+        return Optional.of(
+            new EntitySoundData(
+                Holder.empty(),
+                AVPSoundEvents.INSTANCE.entityChestbursterHurt,
+                AVPSoundEvents.INSTANCE.entityChestbursterDeath
+            )
         );
     }
 

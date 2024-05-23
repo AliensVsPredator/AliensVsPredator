@@ -8,6 +8,7 @@ import net.minecraft.world.level.storage.loot.LootTable;
 import org.avp.api.Holder;
 import org.avp.api.entity.data.EntityData;
 import org.avp.common.entity.Acid;
+import org.avp.common.entity.data.sound.EntitySoundData;
 import org.avp.common.entity.data.spawn.EntitySpawnData;
 import org.avp.common.registry.AVPSimpleDeferredEntityTypeRegistry;
 
@@ -35,6 +36,11 @@ public class AcidData extends EntityData<Acid> {
     @Override
     protected List<TagKey<EntityType<?>>> createTags() {
         return List.of();
+    }
+
+    @Override
+    protected Optional<EntitySoundData> createSoundData() {
+        return Optional.empty();
     }
 
     @Override

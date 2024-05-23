@@ -10,6 +10,7 @@ import org.avp.api.Holder;
 import org.avp.api.entity.data.EntityData;
 import org.avp.common.entity.data.constant.AVPEntitySpeedConstants;
 import org.avp.common.entity.data.attribute.AVPAttributeSupplier;
+import org.avp.common.entity.data.sound.EntitySoundData;
 import org.avp.common.entity.living.Belugaburster;
 import org.avp.common.entity.data.spawn.EntitySpawnData;
 import org.avp.common.registry.AVPSimpleDeferredEntityTypeRegistry;
@@ -49,6 +50,11 @@ public class BelugabursterData extends EntityData<Belugaburster> {
             AVPEntityTypeTags.ALIENS,
             AVPEntityTypeTags.MONSTERS
         );
+    }
+
+    @Override
+    protected Optional<EntitySoundData> createSoundData() {
+        return Optional.empty();
     }
 
     @Override

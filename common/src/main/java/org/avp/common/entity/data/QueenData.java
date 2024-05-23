@@ -14,10 +14,12 @@ import org.avp.api.entity.data.EntityData;
 import org.avp.common.config.AVPConfig;
 import org.avp.common.entity.data.constant.AVPEntitySpeedConstants;
 import org.avp.common.entity.data.attribute.AVPAttributeSupplier;
+import org.avp.common.entity.data.sound.EntitySoundData;
 import org.avp.common.entity.living.Queen;
 import org.avp.common.entity.data.loot_table.QueenLootTable;
 import org.avp.common.entity.data.spawn.EntitySpawnData;
 import org.avp.common.registry.AVPSimpleDeferredEntityTypeRegistry;
+import org.avp.common.sound.AVPSoundEvents;
 import org.avp.common.tag.AVPEntityTypeTags;
 
 import java.util.List;
@@ -57,6 +59,17 @@ public class QueenData extends EntityData<Queen> {
             AVPEntityTypeTags.MONSTERS,
             AVPEntityTypeTags.PRODUCES_RESIN,
             AVPEntityTypeTags.ROYAL_ALIENS
+        );
+    }
+
+    @Override
+    protected Optional<EntitySoundData> createSoundData() {
+        return Optional.of(
+            new EntitySoundData(
+                AVPSoundEvents.INSTANCE.entityQueenAmbient,
+                AVPSoundEvents.INSTANCE.entityQueenHurt,
+                AVPSoundEvents.INSTANCE.entityQueenDeath
+            )
         );
     }
 

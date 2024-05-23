@@ -10,6 +10,7 @@ import org.avp.api.Holder;
 import org.avp.api.entity.data.EntityData;
 import org.avp.common.entity.data.constant.AVPEntitySpeedConstants;
 import org.avp.common.entity.data.attribute.AVPAttributeSupplier;
+import org.avp.common.entity.data.sound.EntitySoundData;
 import org.avp.common.entity.living.Facehugger;
 import org.avp.common.entity.data.spawn.EntitySpawnData;
 import org.avp.common.registry.AVPSimpleDeferredEntityTypeRegistry;
@@ -50,6 +51,11 @@ public class FacehuggerData extends EntityData<Facehugger> {
             AVPEntityTypeTags.MONSTERS,
             AVPEntityTypeTags.PARASITES
         );
+    }
+
+    @Override
+    protected Optional<EntitySoundData> createSoundData() {
+        return Optional.empty();
     }
 
     @Override

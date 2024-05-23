@@ -23,6 +23,8 @@
         "MixinLivingEntity_SyncedDataHandleUser",
         "MixinMob_AliensMature",
         "MixinMob_PerformBossLogic",
+        "MixinMob_ProvideAmbientSounds",
+        "MixinMonster_ProvideHurtAndDeathSounds",
         "MixinVillagerHostilesSensor_RunFromAVPMonsters",
         "server.MixinServerLevel",
         "server.MixinServerPlayer_PressureSuitProvidesAir"

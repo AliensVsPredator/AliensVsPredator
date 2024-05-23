@@ -9,10 +9,8 @@ import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerBossEvent;
-import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.BossEvent;
 import net.minecraft.world.DifficultyInstance;
-import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MobSpawnType;
@@ -24,7 +22,6 @@ import org.avp.api.entity.Boss;
 import org.avp.api.entity.data.sync.SyncedDataHandle;
 import org.avp.api.entity.data.sync.SyncedDataSerializer;
 import org.avp.common.entity.ai.AIUtils;
-import org.avp.common.sound.AVPSoundEvents;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -73,22 +70,6 @@ public class Yautja extends Monster implements Boss, GeoEntity {
     public void setTarget(@Nullable LivingEntity livingEntity) {
         super.setTarget(livingEntity);
         wristbladesVisible.set(livingEntity != null);
-    }
-
-    @Nullable
-    @Override
-    protected SoundEvent getAmbientSound() {
-        return AVPSoundEvents.INSTANCE.entityYautjaAmbient.get();
-    }
-
-    @Override
-    protected SoundEvent getDeathSound() {
-        return AVPSoundEvents.INSTANCE.entityYautjaDeath.get();
-    }
-
-    @Override
-    protected SoundEvent getHurtSound(@NotNull DamageSource damageSource) {
-        return AVPSoundEvents.INSTANCE.entityYautjaHurt.get();
     }
 
     @Override
