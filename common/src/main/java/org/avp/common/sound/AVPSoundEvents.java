@@ -103,6 +103,10 @@ public class AVPSoundEvents extends AVPDeferredRegistry<SoundEvent> {
 
     public final Holder<SoundEvent> itemWeaponSniperRifleShoot = createHolder("item.weapon.sniper_rifle.shoot");
 
+    public final Holder<SoundEvent> itemWeaponWristbladeClose = createHolder("item.weapon.wristblade.close");
+
+    public final Holder<SoundEvent> itemWeaponWristbladeOpen = createHolder("item.weapon.wristblade.open");
+
     @Override
     protected Holder<SoundEvent> createHolder(String registryName, Supplier<SoundEvent> supplier) {
         var holder = Services.SOUND_EVENT_SERVICE.createHolder(registryName, supplier);

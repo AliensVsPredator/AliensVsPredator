@@ -40,6 +40,9 @@ public class Yautja extends Monster implements Boss, GeoEntity {
     private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
 
     public final SyncedDataHandle<Boolean> hasHelmet;
+
+    public int lastSeenAttackTargetTimestamp;
+
     public final SyncedDataHandle<Boolean> wristbladesVisible;
 
     public Yautja(EntityType<? extends Monster> entityType, Level level) {
@@ -68,13 +71,40 @@ public class Yautja extends Monster implements Boss, GeoEntity {
     }
 
     @Override
+    public void tick() {
+        super.tick();
+        hideWristbladesIfOutOfCombat();
+    }
+
+    private void hideWristbladesIfOutOfCombat() {
+        if (
+            !level().isClientSide &&
+                wristbladesVisible.get() &&
+                this.getTarget() == null &&
+                this.tickCount > lastSeenAttackTargetTimestamp + 3 * 20
+        ) {
+            playSound(AVPSoundEvents.INSTANCE.itemWeaponWristbladeClose.get());
+            wristbladesVisible.set(false);
+        }
+    }
+
+    @Override
     public void setTarget(@Nullable LivingEntity livingEntity) {
-        if (this.getTarget() == null && livingEntity != null) {
-            playSound(AVPSoundEvents.INSTANCE.entityYautjaIntimidate.get());
+
+        if (livingEntity != null && !wristbladesVisible.get()) {
+            playSound(AVPSoundEvents.INSTANCE.itemWeaponWristbladeOpen.get());
+            wristbladesVisible.set(true);
+        }
+
+        if (livingEntity != null) {
+            // If no target or changing target, growl.
+            if (this.getTarget() == null || this.getTarget() != livingEntity) {
+                playSound(AVPSoundEvents.INSTANCE.entityYautjaIntimidate.get());
+            }
+            this.lastSeenAttackTargetTimestamp = tickCount;
         }
 
         super.setTarget(livingEntity);
-        wristbladesVisible.set(livingEntity != null);
     }
 
     @Override
