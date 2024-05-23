@@ -1,10 +1,13 @@
 package org.avp.common.entity.data.sound;
 
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.world.damagesource.DamageSource;
 import org.avp.api.Holder;
+
+import java.util.function.Function;
 
 public record EntitySoundData(
     Holder<SoundEvent> ambientSoundEventHolder,
-    Holder<SoundEvent> hurtSoundEventHolder,
+    Function<DamageSource, Holder<SoundEvent>> hurtSoundEventHolderSelector,
     Holder<SoundEvent> deathSoundEventHolder
 ) {}

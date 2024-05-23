@@ -61,7 +61,7 @@ public class ChestbursterData extends EntityData<Chestburster> {
         return Optional.of(
             new EntitySoundData(
                 Holder.empty(),
-                AVPSoundEvents.INSTANCE.entityChestbursterHurt,
+                $ -> AVPSoundEvents.INSTANCE.entityChestbursterHurt,
                 AVPSoundEvents.INSTANCE.entityChestbursterDeath
             )
         );

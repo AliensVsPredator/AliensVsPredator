@@ -10,6 +10,7 @@ import org.avp.api.Holder;
 import org.avp.api.entity.data.EntityData;
 import org.avp.common.entity.data.constant.AVPEntitySpeedConstants;
 import org.avp.common.entity.data.attribute.AVPAttributeSupplier;
+import org.avp.common.entity.data.sound.AlienSounds;
 import org.avp.common.entity.data.sound.EntitySoundData;
 import org.avp.common.entity.living.Dracomorph;
 import org.avp.common.entity.data.loot_table.QueenLootTable;
@@ -63,7 +64,7 @@ public class DracomorphData extends EntityData<Dracomorph> {
         return Optional.of(
             new EntitySoundData(
                 AVPSoundEvents.INSTANCE.entityQueenAmbient,
-                AVPSoundEvents.INSTANCE.entityQueenHurt,
+                AlienSounds.createSoundEventSelector(AVPSoundEvents.INSTANCE.entityQueenHurt),
                 AVPSoundEvents.INSTANCE.entityQueenDeath
             )
         );

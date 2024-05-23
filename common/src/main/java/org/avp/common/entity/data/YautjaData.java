@@ -71,7 +71,7 @@ public class YautjaData extends EntityData<Yautja> {
         return Optional.of(
             new EntitySoundData(
                 AVPSoundEvents.INSTANCE.entityYautjaAmbient,
-                AVPSoundEvents.INSTANCE.entityYautjaHurt,
+                $ -> AVPSoundEvents.INSTANCE.entityYautjaHurt,
                 AVPSoundEvents.INSTANCE.entityYautjaDeath
             )
         );

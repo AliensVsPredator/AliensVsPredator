@@ -1,6 +1,7 @@
 package org.avp.common.entity.data;
 
 import net.minecraft.tags.BiomeTags;
+import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
@@ -15,6 +16,7 @@ import org.avp.api.entity.data.EntityData;
 import org.avp.common.config.AVPConfig;
 import org.avp.common.entity.data.constant.AVPEntitySpeedConstants;
 import org.avp.common.entity.data.attribute.AVPAttributeSupplier;
+import org.avp.common.entity.data.sound.AlienSounds;
 import org.avp.common.entity.data.sound.EntitySoundData;
 import org.avp.common.entity.living.Praetorian;
 import org.avp.common.entity.data.loot_table.XenomorphLootTable;
@@ -68,7 +70,7 @@ public class PraetorianData extends EntityData<Praetorian> {
         return Optional.of(
             new EntitySoundData(
                 AVPSoundEvents.INSTANCE.entityPraetorianAmbient,
-                AVPSoundEvents.INSTANCE.entityPraetorianHurt,
+                AlienSounds.createSoundEventSelector(AVPSoundEvents.INSTANCE.entityPraetorianHurt),
                 AVPSoundEvents.INSTANCE.entityPraetorianDeath
             )
         );

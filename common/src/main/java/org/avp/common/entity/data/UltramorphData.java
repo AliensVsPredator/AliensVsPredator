@@ -10,6 +10,7 @@ import org.avp.api.Holder;
 import org.avp.api.entity.data.EntityData;
 import org.avp.common.entity.data.constant.AVPEntitySpeedConstants;
 import org.avp.common.entity.data.attribute.AVPAttributeSupplier;
+import org.avp.common.entity.data.sound.AlienSounds;
 import org.avp.common.entity.data.sound.EntitySoundData;
 import org.avp.common.entity.data.spawn.EntitySpawnData;
 import org.avp.common.entity.living.Ultramorph;
@@ -61,7 +62,7 @@ public class UltramorphData extends EntityData<Ultramorph> {
         return Optional.of(
             new EntitySoundData(
                 AVPSoundEvents.INSTANCE.entityXenomorphAmbient,
-                AVPSoundEvents.INSTANCE.entityXenomorphHurt,
+                AlienSounds.createSoundEventSelector(AVPSoundEvents.INSTANCE.entityXenomorphHurt),
                 AVPSoundEvents.INSTANCE.entityXenomorphDeath
             )
         );

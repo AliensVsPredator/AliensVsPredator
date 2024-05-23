@@ -15,6 +15,7 @@ import org.avp.api.entity.data.EntityData;
 import org.avp.common.config.AVPConfig;
 import org.avp.common.entity.data.constant.AVPEntitySpeedConstants;
 import org.avp.common.entity.data.attribute.AVPAttributeSupplier;
+import org.avp.common.entity.data.sound.AlienSounds;
 import org.avp.common.entity.data.sound.EntitySoundData;
 import org.avp.common.entity.living.DroneRunner;
 import org.avp.common.entity.data.loot_table.XenomorphLootTable;
@@ -66,7 +67,7 @@ public class DroneRunnerData extends EntityData<DroneRunner> {
         return Optional.of(
             new EntitySoundData(
                 AVPSoundEvents.INSTANCE.entityXenomorphAmbient,
-                AVPSoundEvents.INSTANCE.entityXenomorphHurt,
+                AlienSounds.createSoundEventSelector(AVPSoundEvents.INSTANCE.entityXenomorphHurt),
                 AVPSoundEvents.INSTANCE.entityXenomorphDeath
             )
         );

@@ -15,6 +15,7 @@ import org.avp.api.entity.data.EntityData;
 import org.avp.common.config.AVPConfig;
 import org.avp.common.entity.data.constant.AVPEntitySpeedConstants;
 import org.avp.common.entity.data.attribute.AVPAttributeSupplier;
+import org.avp.common.entity.data.sound.AlienSounds;
 import org.avp.common.entity.data.sound.EntitySoundData;
 import org.avp.common.entity.living.Crusher;
 import org.avp.common.entity.data.spawn.EntitySpawnData;
@@ -67,7 +68,7 @@ public class CrusherData extends EntityData<Crusher> {
         return Optional.of(
             new EntitySoundData(
                 AVPSoundEvents.INSTANCE.entityPraetorianAmbient,
-                AVPSoundEvents.INSTANCE.entityPraetorianHurt,
+                AlienSounds.createSoundEventSelector(AVPSoundEvents.INSTANCE.entityPraetorianHurt),
                 AVPSoundEvents.INSTANCE.entityPraetorianDeath
             )
         );
