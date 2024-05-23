@@ -27,33 +27,39 @@ import org.avp.server.BlockBreakProgressManager;
 
 public class Acid extends Entity {
 
-    private static final int MAX_LIFE_IN_TICKS = 20 * 20; // 20 seconds.
+    private static final int DEFAULT_MAX_LIFE_IN_TICKS = 20 * 20; // 20 seconds.
 
     private static final String MULTIPLIER_KEY = "multiplier";
+
+    private static final String TICKS_ALIVE_KEY = "TicksAlive";
 
     private static final EntityDataAccessor<Integer> MULTIPLIER = SynchedEntityData.defineId(
         Acid.class,
         EntityDataSerializers.INT
     );
 
+    private int ticksAlive = 0;
+
     public Acid(EntityType<? extends Entity> entityType, Level level) {
         super(entityType, level);
-        this.setNoGravity(false);
+        setNoGravity(false);
     }
 
     @Override
     protected void defineSynchedData() {
-        this.entityData.define(MULTIPLIER, 1);
+        entityData.define(MULTIPLIER, 1);
     }
 
     @Override
     protected void readAdditionalSaveData(@NotNull CompoundTag compoundTag) {
-        this.setMultiplier(compoundTag.getInt(MULTIPLIER_KEY));
+        setMultiplier(compoundTag.getInt(MULTIPLIER_KEY));
+        ticksAlive = compoundTag.getInt(TICKS_ALIVE_KEY);
     }
 
     @Override
     protected void addAdditionalSaveData(@NotNull CompoundTag compoundTag) {
-        compoundTag.putInt(MULTIPLIER_KEY, this.getMultiplier());
+        compoundTag.putInt(MULTIPLIER_KEY, getMultiplier());
+        compoundTag.putInt(TICKS_ALIVE_KEY, ticksAlive);
     }
 
     @Override
@@ -69,17 +75,16 @@ public class Acid extends Entity {
 
         createParticlesAndSounds(level);
 
-        if (tickCount > MAX_LIFE_IN_TICKS * this.getMultiplier()) {
-            this.kill();
+        // Acid disappears twice as fast when in water.
+        ticksAlive += isInWater() ? 2 : 1;
+
+        if (ticksAlive > DEFAULT_MAX_LIFE_IN_TICKS * getMultiplier()) {
+            kill();
         }
     }
 
-    private boolean isVolatile() {
-        return !this.isInWater();
-    }
-
     private void damageBlock(Level level) {
-        if (level.isClientSide || tickCount % 20 != 0 || !isVolatile())
+        if (level.isClientSide || tickCount % 20 != 0 || isInWater())
             return;
 
         var below = blockPosition().below();
@@ -87,7 +92,7 @@ public class Acid extends Entity {
 
         if (!blockState.is(AVPBlockTags.ACID_IMMUNE)) {
             // TODO: Make this break speed configurable.
-            BlockBreakProgressManager.damage(level(), below, 2F * this.getMultiplier());
+            BlockBreakProgressManager.damage(level(), below, 2F * getMultiplier());
         }
     }
 
@@ -100,7 +105,7 @@ public class Acid extends Entity {
             level.playLocalSound(this, SoundEvents.LAVA_EXTINGUISH, SoundSource.NEUTRAL, 1F, 1F);
         }
 
-        for (int i = 0; i < 2 * this.getMultiplier(); i++) {
+        for (int i = 0; i < 2 * getMultiplier(); i++) {
             level.addAlwaysVisibleParticle(ParticleTypes.SMOKE, getRandomX(0.5), getRandomY(), getRandomZ(0.5), 0, 0, 0);
             level.addAlwaysVisibleParticle(
                 AVPParticleTypes.INSTANCE.acid.get(),
@@ -119,9 +124,9 @@ public class Acid extends Entity {
         if (level.isClientSide)
             return;
 
-        this.setDeltaMovement(0, this.getDeltaMovement().y - 0.03999999910593033D, 0);
-        this.move(MoverType.SELF, this.getDeltaMovement());
-        this.setDeltaMovement(0, this.getDeltaMovement().y * 0.9800000190734863D, 0);
+        setDeltaMovement(0, getDeltaMovement().y - 0.03999999910593033D, 0);
+        move(MoverType.SELF, getDeltaMovement());
+        setDeltaMovement(0, getDeltaMovement().y * 0.9800000190734863D, 0);
     }
 
     private void damageEntities(Level level) {
@@ -131,14 +136,14 @@ public class Acid extends Entity {
 
         var entities = level.getEntities(
             this,
-            this.getBoundingBox(),
+            getBoundingBox(),
             entity -> AVPPredicates.IS_LIVING.test(entity) || entity instanceof Acid
         );
         entities.forEach(entity -> {
             if (entity instanceof Acid) {
                 if (entity.isAlive()) {
                     entity.remove(RemovalReason.DISCARDED);
-                    this.setMultiplier(this.getMultiplier() + 1);
+                    setMultiplier(getMultiplier() + 1);
                 }
                 return;
             }
@@ -148,7 +153,7 @@ public class Acid extends Entity {
                 return;
             }
 
-            if (!isVolatile()) {
+            if (isInWater()) {
                 return;
             }
 
@@ -159,7 +164,7 @@ public class Acid extends Entity {
                     return;
                 } else if (!itemStack.isEmpty()) {
                     // Damage feet item if present.
-                    var damage = (random.nextInt(3) + 3) * this.getMultiplier();
+                    var damage = (random.nextInt(3) + 3) * getMultiplier();
                     itemStack.setDamageValue(itemStack.getDamageValue() + damage);
                     if (itemStack.getDamageValue() > itemStack.getMaxDamage()) {
                         itemStack.setCount(0);
@@ -175,10 +180,10 @@ public class Acid extends Entity {
     }
 
     private int getMultiplier() {
-        return this.entityData.get(MULTIPLIER);
+        return entityData.get(MULTIPLIER);
     }
 
     private void setMultiplier(int multiplier) {
-        this.entityData.set(MULTIPLIER, multiplier);
+        entityData.set(MULTIPLIER, multiplier);
     }
 }
