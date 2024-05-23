@@ -40,7 +40,7 @@ public class AVPSimpleDeferredEntityTypeRegistry extends AVPAbstractDeferredEnti
             "spawn_egg_" + registryName,
             () -> Services.ENTITY_TYPE_SERVICE.createSpawnEggItem(holder, backgroundColor, highlightColor, new Item.Properties())
         );
-        AVPSpawnEggItems.INSTANCE.addHolder(spawnEggItemHolder);
+        AVPSpawnEggItems.INSTANCE.addHolder(registryName, spawnEggItemHolder);
 
         return holder;
     }

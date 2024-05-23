@@ -247,13 +247,13 @@ public class AVPAlienMaturations extends AVPDeferredRegistry<AlienMaturation> {
     @Override
     protected Holder<AlienMaturation> createHolder(String registryName, Supplier<AlienMaturation> supplier) {
         var holder = new Holder<>(registryName, supplier);
-        entries.add(holder);
+        entries.put(registryName, holder);
         return holder;
     }
 
     @Override
     public void register() {
-        entries.forEach(alienMaturationHolder -> {
+        getValues().forEach(alienMaturationHolder -> {
             var alienMaturation = alienMaturationHolder.get();
             var hosts = alienMaturation.hosts();
             var steps = alienMaturation.steps();

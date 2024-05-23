@@ -44,7 +44,7 @@ public class AVPNeoForgeClient {
     @SuppressWarnings("unchecked")
     public static void registerEntityRenderers(EntityRenderersEvent.RegisterRenderers event) {
         AVPEntityRenderRegistry.INSTANCE.verifyAllRendererProvidersPresent();
-        AVPEntityRenderRegistry.INSTANCE.getEntries().forEach(entityDataHolder -> {
+        AVPEntityRenderRegistry.INSTANCE.getValues().forEach(entityDataHolder -> {
             var entityData = entityDataHolder.get();
             var entityType = (EntityType<Entity>) entityData.entityTypeHolder().get();
             var provider = (EntityRendererProvider<Entity>) entityData.entityRendererProvider();
@@ -67,7 +67,7 @@ public class AVPNeoForgeClient {
         AVPParticleTypeProviders.INSTANCE.register();
 
         // Then iterate over them and register for NeoForge.
-        AVPParticleTypeProviders.INSTANCE.getEntries().forEach(particleProviderDataHolder -> {
+        AVPParticleTypeProviders.INSTANCE.getValues().forEach(particleProviderDataHolder -> {
             var particleProviderData = particleProviderDataHolder.get();
             var supplier = particleProviderData.particleTypeHolder();
             var factoryProvider = particleProviderData.providerFactory();

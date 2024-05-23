@@ -11,7 +11,7 @@ public final class AVPWeaponBlueprintRecipes {
 
     public static void addWeaponBlueprintRecipes(RecipeOutput recipeOutput) {
         // For every weapon blueprint, add a recipe that allows it to be used in crafting itself into two more.
-        AVPWeaponBlueprintItems.INSTANCE.getEntries()
+        AVPWeaponBlueprintItems.INSTANCE.getValues()
             .forEach(
                 holder -> AVPShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, holder, 2)
                     .defineAndUnlockIfHas('A', Items.PAPER)

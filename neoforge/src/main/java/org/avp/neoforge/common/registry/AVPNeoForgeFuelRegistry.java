@@ -10,7 +10,7 @@ import org.avp.common.registry.AVPFuelRegistry;
 public class AVPNeoForgeFuelRegistry {
 
     public static void handleFurnaceFuelBurnTimeEvent(FurnaceFuelBurnTimeEvent event) {
-        AVPFuelRegistry.INSTANCE.getEntries()
+        AVPFuelRegistry.INSTANCE.getValues()
             .stream()
             .map(Holder::get)
             .filter(tuple -> Objects.equals(tuple.first().get(), event.getItemStack().getItem()))

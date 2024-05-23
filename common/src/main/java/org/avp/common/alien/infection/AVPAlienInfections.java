@@ -109,13 +109,13 @@ public class AVPAlienInfections extends AVPDeferredRegistry<AlienInfection> {
     @Override
     protected Holder<AlienInfection> createHolder(String registryName, Supplier<AlienInfection> supplier) {
         var holder = new Holder<>(registryName, supplier);
-        entries.add(holder);
+        entries.put(registryName, holder);
         return holder;
     }
 
     @Override
     public void register() {
-        entries.forEach(alienInfectionHolder -> {
+        getValues().forEach(alienInfectionHolder -> {
             var alienInfection = alienInfectionHolder.get();
             var hosts = alienInfection.hosts();
 

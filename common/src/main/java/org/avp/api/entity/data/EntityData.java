@@ -51,4 +51,8 @@ public abstract class EntityData<T extends Entity> {
     public final Optional<EntitySpawnData<?>> getSpawnData() {
         return Optional.ofNullable(spawnData);
     }
+
+    public final String getRegistryName() {
+        return getHolder().getResourceLocation().getPath();
+    }
 }

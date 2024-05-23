@@ -14,7 +14,7 @@ import net.neoforged.neoforge.common.world.BiomeModifiers;
 import net.neoforged.neoforge.event.entity.SpawnPlacementRegisterEvent;
 import net.neoforged.neoforge.registries.NeoForgeRegistries;
 
-import org.avp.common.entity.data.type.AVPEntityDataRegistry;
+import org.avp.common.entity.data.AVPEntityDataRegistry;
 
 public class AVPNeoForgeEntitySpawns {
 

@@ -49,7 +49,7 @@ public class AVPDispenserBlockBehaviors {
             }
         };
 
-        AVPSpawnEggItems.INSTANCE.getEntries()
+        AVPSpawnEggItems.INSTANCE.getValues()
             .forEach(itemHolder -> DispenserBlock.registerBehavior(itemHolder.get(), defaultdispenseitembehavior));
     }
 }

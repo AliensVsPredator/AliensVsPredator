@@ -1,7 +1,7 @@
 package org.avp.common.data.loot_table.entity;
 
 import org.avp.common.data.loot_table.AbstractAVPEntityLootTableProvider;
-import org.avp.common.entity.data.type.AVPEntityDataRegistry;
+import org.avp.common.entity.data.AVPEntityDataRegistry;
 
 public class AVPEntityLootTableProvider extends AbstractAVPEntityLootTableProvider {
 

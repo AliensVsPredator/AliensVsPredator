@@ -22,7 +22,7 @@ public class AVPDeferredBlockRegistry extends AVPDeferredRegistry<Block> {
     protected Holder<Block> createHolder(String registryName, BlockData.Builder blockDataBuilder) {
         var blockData = blockDataBuilder.build();
         var holder = createHolder(registryName, blockData::create);
-        entries.add(holder);
+        entries.put(registryName, holder);
         DATA_ENTRIES.add(new Tuple<>(holder, blockData));
         return holder;
     }
@@ -34,6 +34,6 @@ public class AVPDeferredBlockRegistry extends AVPDeferredRegistry<Block> {
 
     @Override
     public final void register() {
-        entries.forEach(Services.BLOCK_SERVICE::register);
+        getValues().forEach(Services.BLOCK_SERVICE::register);
     }
 }

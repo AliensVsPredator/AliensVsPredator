@@ -8,7 +8,7 @@ import net.minecraft.world.level.Level;
 import org.avp.api.Holder;
 import org.avp.api.entity.data.EntityData;
 import org.avp.common.entity.data.sound.EntitySoundData;
-import org.avp.common.entity.data.type.AVPEntityDataRegistry;
+import org.avp.common.entity.data.AVPEntityDataRegistry;
 import org.avp.common.tag.AVPEntityTypeTags;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;

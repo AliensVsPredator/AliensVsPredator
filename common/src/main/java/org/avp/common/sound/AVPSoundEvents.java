@@ -102,7 +102,7 @@ public class AVPSoundEvents extends AVPDeferredRegistry<SoundEvent> {
     @Override
     protected Holder<SoundEvent> createHolder(String registryName, Supplier<SoundEvent> supplier) {
         var holder = Services.SOUND_EVENT_SERVICE.createHolder(registryName, supplier);
-        entries.add(holder);
+        entries.put(registryName, holder);
         return holder;
     }
 
@@ -114,6 +114,6 @@ public class AVPSoundEvents extends AVPDeferredRegistry<SoundEvent> {
 
     @Override
     public void register() {
-        entries.forEach(Services.SOUND_EVENT_SERVICE::register);
+        getValues().forEach(Services.SOUND_EVENT_SERVICE::register);
     }
 }

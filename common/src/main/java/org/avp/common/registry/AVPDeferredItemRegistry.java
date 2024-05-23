@@ -12,7 +12,7 @@ public class AVPDeferredItemRegistry extends AVPDeferredRegistry<Item> {
     @Override
     protected Holder<Item> createHolder(String registryName, Supplier<Item> supplier) {
         var holder = Services.ITEM_SERVICE.createHolder(registryName, supplier);
-        entries.add(holder);
+        entries.put(registryName, holder);
         return holder;
     }
 
@@ -22,6 +22,6 @@ public class AVPDeferredItemRegistry extends AVPDeferredRegistry<Item> {
 
     @Override
     public final void register() {
-        entries.forEach(Services.ITEM_SERVICE::register);
+        getValues().forEach(Services.ITEM_SERVICE::register);
     }
 }

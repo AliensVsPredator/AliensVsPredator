@@ -70,7 +70,7 @@ import org.avp.common.entity.data.UltramorphData;
 import org.avp.common.entity.data.WarriorData;
 import org.avp.common.entity.data.WarriorRunnerData;
 import org.avp.common.entity.data.YautjaData;
-import org.avp.common.entity.data.type.AVPEntityDataRegistry;
+import org.avp.common.entity.data.AVPEntityDataRegistry;
 import org.avp.common.registry.AVPDeferredRegistry;
 
 public class AVPEntityRenderRegistry extends AVPDeferredRegistry<EntityRenderData<? extends Entity>> {
@@ -87,7 +87,7 @@ public class AVPEntityRenderRegistry extends AVPDeferredRegistry<EntityRenderDat
     @Override
     protected Holder<EntityRenderData<?>> createHolder(String registryName, Supplier<EntityRenderData<?>> supplier) {
         var holder = new Holder<>(registryName, supplier);
-        entries.add(holder);
+        entries.put(registryName, holder);
         return holder;
     }
 
@@ -143,12 +143,8 @@ public class AVPEntityRenderRegistry extends AVPDeferredRegistry<EntityRenderDat
 
     public void verifyAllRendererProvidersPresent() throws IllegalStateException {
         AVPEntityDataRegistry.INSTANCE.getEntries().forEach(entityData -> {
-            if (
-                entries.stream()
-                    .filter(holder -> Objects.equals(entityData.getHolder(), holder.get().entityTypeHolder()))
-                    .findAny()
-                    .isEmpty()
-            ) {
+            var renderDataHolder = entries.get(entityData.getRegistryName());
+            if (!Objects.equals(entityData.getHolder(), renderDataHolder.get().entityTypeHolder())) {
                 throw new IllegalStateException("Entity was registered, but does not have a render provider holder! Entity: " + entityData.getHolder().getResourceLocation());
             }
         });
