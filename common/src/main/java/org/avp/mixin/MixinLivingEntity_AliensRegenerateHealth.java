@@ -27,6 +27,6 @@ public abstract class MixinLivingEntity_AliensRegenerateHealth {
         if (!self.isAlive())
             return;
 
-        self.setHealth(Math.min(self.getHealth() + 1F, self.getMaxHealth()));
+        self.heal(1F);
     }
 }
