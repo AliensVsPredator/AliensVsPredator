@@ -7,18 +7,22 @@ import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.entity.EntityTypeTest;
+
 import org.avp.common.entity.living.Yautja;
 import org.avp.common.util.AVPPredicates;
 
 public class YautjaSpawning {
 
     private static final int SPAWN_MIN_Y_LEVEL = 60;
+
     private static final int SPAWN_MIN_DISTANCE_IN_BLOCKS = 256;
+
     private static final int SPAWN_DISTANCE_SQUARED = SPAWN_MIN_DISTANCE_IN_BLOCKS * SPAWN_MIN_DISTANCE_IN_BLOCKS;
 
     public static boolean anyNearbyPredators(ServerLevelAccessor serverLevelAccessor, BlockPos blockPos) {
         var allYautja = serverLevelAccessor.getLevel().getEntities(EntityTypeTest.forClass(Yautja.class), AVPPredicates.ALWAYS_TRUE);
-        return allYautja.stream().anyMatch(yautja -> yautja.distanceToSqr(blockPos.getX(), blockPos.getY(), blockPos.getZ()) < SPAWN_DISTANCE_SQUARED);
+        return allYautja.stream()
+            .anyMatch(yautja -> yautja.distanceToSqr(blockPos.getX(), blockPos.getY(), blockPos.getZ()) < SPAWN_DISTANCE_SQUARED);
     }
 
     public static boolean checkPredatorSpawnRules(

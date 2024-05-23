@@ -1,8 +1,6 @@
 package org.avp.mixin.server;
 
 import net.minecraft.server.level.ServerLevel;
-import org.avp.server.HivemindManager;
-import org.avp.server.QueenManager;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -11,6 +9,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import org.avp.common.util.MixinUtils;
 import org.avp.server.BlockBreakProgressManager;
+import org.avp.server.HivemindManager;
+import org.avp.server.QueenManager;
 import org.avp.server.ServerScheduler;
 
 @Mixin(ServerLevel.class)

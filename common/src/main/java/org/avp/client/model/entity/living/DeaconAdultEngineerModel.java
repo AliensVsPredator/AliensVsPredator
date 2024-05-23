@@ -1,10 +1,12 @@
 package org.avp.client.model.entity.living;
 
 import mod.azure.azurelib.common.internal.common.core.animation.AnimationState;
+
 import org.avp.client.util.BasicAnimationUtils;
 import org.avp.common.entity.living.DeaconAdultEngineer;
 
 public class DeaconAdultEngineerModel extends AVPGeoModel<DeaconAdultEngineer> {
+
     public DeaconAdultEngineerModel() {
         super("deacon_adult_engineer", GeoModelType.ENTITY);
     }

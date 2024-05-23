@@ -8,9 +8,10 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.level.Level;
+import org.jetbrains.annotations.NotNull;
+
 import org.avp.common.entity.ai.AIUtils;
 import org.avp.common.sound.AVPSoundEvents;
-import org.jetbrains.annotations.NotNull;
 
 public class Praetorian extends Monster implements GeoEntity {
 
@@ -30,7 +31,6 @@ public class Praetorian extends Monster implements GeoEntity {
     protected void registerGoals() {
         AIUtils.addHiveAlienAI(this, goalSelector, targetSelector);
     }
-
 
     @Override
     public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {

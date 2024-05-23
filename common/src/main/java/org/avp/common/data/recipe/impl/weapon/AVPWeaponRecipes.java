@@ -57,7 +57,7 @@ public final class AVPWeaponRecipes {
             .requiresAndUnlockIfHas('B', AVPWeaponPartItems.INSTANCE.weaponPartBarrelGeneric)
             .requiresAndUnlockIfHas('C', AVPWeaponPartItems.INSTANCE.weaponPartGripGeneric)
             .requiresAndUnlockIfHas('D', AVPWeaponPartItems.INSTANCE.weaponPartReceiverSmart) // Different receiver
-                                                                                                 // here.
+                                                                                              // here.
             .requiresAndUnlockIfHas('E', AVPWeaponPartItems.INSTANCE.weaponPartStockGeneric)
             .save(recipeOutput);
 
@@ -67,7 +67,7 @@ public final class AVPWeaponRecipes {
             .requiresAndUnlockIfHas('B', AVPWeaponPartItems.INSTANCE.weaponPartBarrelSmart)
             .requiresAndUnlockIfHas('C', AVPWeaponPartItems.INSTANCE.weaponPartGripGeneric)
             .requiresAndUnlockIfHas('D', AVPWeaponPartItems.INSTANCE.weaponPartReceiverSmart) // Different receiver
-                                                                                                 // here.
+                                                                                              // here.
             .save(recipeOutput);
 
         // Old Painless
@@ -75,7 +75,7 @@ public final class AVPWeaponRecipes {
             .requiresAndUnlockIfHas('A', AVPWeaponBlueprintItems.INSTANCE.blueprintOldPainless)
             .requiresAndUnlockIfHas('B', AVPWeaponPartItems.INSTANCE.weaponPartBarrelMinigun)
             .requiresAndUnlockIfHas('C', AVPWeaponPartItems.INSTANCE.weaponPartGripGeneric, 2) // Two grips for a big
-                                                                                                  // gun.
+                                                                                               // gun.
             .requiresAndUnlockIfHas('D', AVPWeaponPartItems.INSTANCE.weaponPartReceiverGeneric)
             .save(recipeOutput);
 

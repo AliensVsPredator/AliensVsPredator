@@ -18,18 +18,23 @@ import net.minecraft.world.entity.SpawnGroupData;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import org.avp.api.entity.Boss;
 import org.avp.api.entity.data.sync.SyncedDataHandle;
 import org.avp.api.entity.data.sync.SyncedDataSerializer;
 import org.avp.common.entity.ai.AIUtils;
 import org.avp.common.sound.AVPSoundEvents;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 public class Yautja extends Monster implements Boss, GeoEntity {
 
     private static final EntityDataAccessor<Boolean> HAS_HELMET = SynchedEntityData.defineId(Yautja.class, EntityDataSerializers.BOOLEAN);
-    private static final EntityDataAccessor<Boolean> WRISTBLADES_VISIBLE = SynchedEntityData.defineId(Yautja.class, EntityDataSerializers.BOOLEAN);
+
+    private static final EntityDataAccessor<Boolean> WRISTBLADES_VISIBLE = SynchedEntityData.defineId(
+        Yautja.class,
+        EntityDataSerializers.BOOLEAN
+    );
 
     private final ServerBossEvent bossEvent = (ServerBossEvent) new ServerBossEvent(
         this.getDisplayName(),
@@ -49,7 +54,13 @@ public class Yautja extends Monster implements Boss, GeoEntity {
         super(entityType, level);
         this.setPersistenceRequired();
         this.hasHelmet = SyncedDataHandle.attach("HasHelmet", true, this, HAS_HELMET, SyncedDataSerializer.BOOLEAN);
-        this.wristbladesVisible = SyncedDataHandle.attach("WristbladesVisible", false, this, WRISTBLADES_VISIBLE, SyncedDataSerializer.BOOLEAN);
+        this.wristbladesVisible = SyncedDataHandle.attach(
+            "WristbladesVisible",
+            false,
+            this,
+            WRISTBLADES_VISIBLE,
+            SyncedDataSerializer.BOOLEAN
+        );
     }
 
     @Nullable
@@ -90,7 +101,6 @@ public class Yautja extends Monster implements Boss, GeoEntity {
 
     @Override
     public void setTarget(@Nullable LivingEntity livingEntity) {
-
         if (livingEntity != null && !wristbladesVisible.get()) {
             playSound(AVPSoundEvents.INSTANCE.itemWeaponWristbladeOpen.get());
             wristbladesVisible.set(true);

@@ -3,10 +3,11 @@ package org.avp.client.model.entity.living;
 import mod.azure.azurelib.common.api.client.model.GeoModel;
 import mod.azure.azurelib.common.internal.common.core.animatable.GeoAnimatable;
 import net.minecraft.resources.ResourceLocation;
-import org.avp.common.AVPResources;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import org.avp.common.AVPResources;
 
 public class AVPGeoModel<T extends GeoAnimatable> extends GeoModel<T> {
 

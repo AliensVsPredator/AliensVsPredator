@@ -10,22 +10,23 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.storage.loot.LootTable;
-import org.avp.api.Holder;
-import org.avp.api.entity.data.EntityData;
-import org.avp.common.config.AVPConfig;
-import org.avp.common.entity.data.constant.AVPEntitySpeedConstants;
-import org.avp.common.entity.data.attribute.AVPAttributeSupplier;
-import org.avp.common.entity.data.sound.AlienSounds;
-import org.avp.common.entity.data.sound.EntitySoundData;
-import org.avp.common.entity.living.Warrior;
-import org.avp.common.entity.data.loot_table.XenomorphLootTable;
-import org.avp.common.entity.data.spawn.EntitySpawnData;
-import org.avp.common.registry.AVPSimpleDeferredEntityTypeRegistry;
-import org.avp.common.sound.AVPSoundEvents;
-import org.avp.common.tag.AVPEntityTypeTags;
 
 import java.util.List;
 import java.util.Optional;
+
+import org.avp.api.Holder;
+import org.avp.api.entity.data.EntityData;
+import org.avp.common.config.AVPConfig;
+import org.avp.common.entity.data.attribute.AVPAttributeSupplier;
+import org.avp.common.entity.data.constant.AVPEntitySpeedConstants;
+import org.avp.common.entity.data.loot_table.XenomorphLootTable;
+import org.avp.common.entity.data.sound.AlienSounds;
+import org.avp.common.entity.data.sound.EntitySoundData;
+import org.avp.common.entity.data.spawn.EntitySpawnData;
+import org.avp.common.entity.living.Warrior;
+import org.avp.common.registry.AVPSimpleDeferredEntityTypeRegistry;
+import org.avp.common.sound.AVPSoundEvents;
+import org.avp.common.tag.AVPEntityTypeTags;
 
 public class WarriorData extends EntityData<Warrior> {
 
@@ -44,11 +45,13 @@ public class WarriorData extends EntityData<Warrior> {
 
     @Override
     protected Optional<AttributeSupplier> createAttributeSupplier() {
-        return Optional.of(AVPAttributeSupplier.builder()
-            .add(Attributes.ATTACK_DAMAGE, 9)
-            .add(Attributes.MAX_HEALTH, 50)
-            .add(Attributes.MOVEMENT_SPEED, AVPEntitySpeedConstants.WARRIOR_SPEED)
-            .build());
+        return Optional.of(
+            AVPAttributeSupplier.builder()
+                .add(Attributes.ATTACK_DAMAGE, 9)
+                .add(Attributes.MAX_HEALTH, 50)
+                .add(Attributes.MOVEMENT_SPEED, AVPEntitySpeedConstants.WARRIOR_SPEED)
+                .build()
+        );
     }
 
     @Override

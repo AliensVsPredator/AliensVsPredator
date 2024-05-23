@@ -1,12 +1,12 @@
 package org.avp.common.registry;
 
-import org.avp.api.Holder;
-
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Supplier;
+
+import org.avp.api.Holder;
 
 public abstract class AVPDeferredRegistry<T> {
 

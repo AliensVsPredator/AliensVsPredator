@@ -24,7 +24,9 @@ public class FabricEntityAttributeRegistry extends AVPDeferredRegistry<Void> {
         AVPEntityDataRegistry.INSTANCE.getLivingEntries().forEach(entityData -> {
             var entityType = entityData.getHolder().get();
             var attributeSupplierOptional = entityData.getAttributeSupplier();
-            attributeSupplierOptional.ifPresent(attributeSupplier -> FabricDefaultAttributeRegistry.register(entityType, attributeSupplier));
+            attributeSupplierOptional.ifPresent(
+                attributeSupplier -> FabricDefaultAttributeRegistry.register(entityType, attributeSupplier)
+            );
         });
     }
 }

@@ -5,15 +5,16 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.level.storage.loot.LootTable;
+
+import java.util.List;
+import java.util.Optional;
+
 import org.avp.api.Holder;
 import org.avp.api.entity.data.EntityData;
 import org.avp.common.entity.Acid;
 import org.avp.common.entity.data.sound.EntitySoundData;
 import org.avp.common.entity.data.spawn.EntitySpawnData;
 import org.avp.common.registry.AVPSimpleDeferredEntityTypeRegistry;
-
-import java.util.List;
-import java.util.Optional;
 
 public class AcidData extends EntityData<Acid> {
 

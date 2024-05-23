@@ -39,6 +39,7 @@ import org.avp.client.render.entity.living.WarriorRenderer;
 import org.avp.client.render.entity.living.WarriorRunnerRenderer;
 import org.avp.client.render.entity.living.YautjaRenderer;
 import org.avp.client.util.EntityRenderData;
+import org.avp.common.entity.data.AVPEntityDataRegistry;
 import org.avp.common.entity.data.AcidData;
 import org.avp.common.entity.data.BelugabursterData;
 import org.avp.common.entity.data.BelugamorphData;
@@ -70,7 +71,6 @@ import org.avp.common.entity.data.UltramorphData;
 import org.avp.common.entity.data.WarriorData;
 import org.avp.common.entity.data.WarriorRunnerData;
 import org.avp.common.entity.data.YautjaData;
-import org.avp.common.entity.data.AVPEntityDataRegistry;
 import org.avp.common.registry.AVPDeferredRegistry;
 
 public class AVPEntityRenderRegistry extends AVPDeferredRegistry<EntityRenderData<? extends Entity>> {
@@ -81,7 +81,10 @@ public class AVPEntityRenderRegistry extends AVPDeferredRegistry<EntityRenderDat
         Holder<EntityType<T>> entityTypeHolder,
         EntityRendererProvider<T> entityRendererProvider
     ) {
-        return createHolder(entityTypeHolder.getResourceLocation().getPath(), () -> new EntityRenderData<>(entityTypeHolder, entityRendererProvider));
+        return createHolder(
+            entityTypeHolder.getResourceLocation().getPath(),
+            () -> new EntityRenderData<>(entityTypeHolder, entityRendererProvider)
+        );
     }
 
     @Override
@@ -145,7 +148,10 @@ public class AVPEntityRenderRegistry extends AVPDeferredRegistry<EntityRenderDat
         AVPEntityDataRegistry.INSTANCE.getEntries().forEach(entityData -> {
             var renderDataHolder = entries.get(entityData.getRegistryName());
             if (!Objects.equals(entityData.getHolder(), renderDataHolder.get().entityTypeHolder())) {
-                throw new IllegalStateException("Entity was registered, but does not have a render provider holder! Entity: " + entityData.getHolder().getResourceLocation());
+                throw new IllegalStateException(
+                    "Entity was registered, but does not have a render provider holder! Entity: " + entityData.getHolder()
+                        .getResourceLocation()
+                );
             }
         });
     }

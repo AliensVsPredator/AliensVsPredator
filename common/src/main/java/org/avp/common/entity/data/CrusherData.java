@@ -10,21 +10,22 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.storage.loot.LootTable;
-import org.avp.api.Holder;
-import org.avp.api.entity.data.EntityData;
-import org.avp.common.config.AVPConfig;
-import org.avp.common.entity.data.constant.AVPEntitySpeedConstants;
-import org.avp.common.entity.data.attribute.AVPAttributeSupplier;
-import org.avp.common.entity.data.sound.AlienSounds;
-import org.avp.common.entity.data.sound.EntitySoundData;
-import org.avp.common.entity.living.Crusher;
-import org.avp.common.entity.data.spawn.EntitySpawnData;
-import org.avp.common.registry.AVPSimpleDeferredEntityTypeRegistry;
-import org.avp.common.sound.AVPSoundEvents;
-import org.avp.common.tag.AVPEntityTypeTags;
 
 import java.util.List;
 import java.util.Optional;
+
+import org.avp.api.Holder;
+import org.avp.api.entity.data.EntityData;
+import org.avp.common.config.AVPConfig;
+import org.avp.common.entity.data.attribute.AVPAttributeSupplier;
+import org.avp.common.entity.data.constant.AVPEntitySpeedConstants;
+import org.avp.common.entity.data.sound.AlienSounds;
+import org.avp.common.entity.data.sound.EntitySoundData;
+import org.avp.common.entity.data.spawn.EntitySpawnData;
+import org.avp.common.entity.living.Crusher;
+import org.avp.common.registry.AVPSimpleDeferredEntityTypeRegistry;
+import org.avp.common.sound.AVPSoundEvents;
+import org.avp.common.tag.AVPEntityTypeTags;
 
 public class CrusherData extends EntityData<Crusher> {
 
@@ -43,12 +44,14 @@ public class CrusherData extends EntityData<Crusher> {
 
     @Override
     protected Optional<AttributeSupplier> createAttributeSupplier() {
-        return Optional.of(AVPAttributeSupplier.builder()
-            .add(Attributes.ATTACK_DAMAGE, 12)
-            .add(Attributes.KNOCKBACK_RESISTANCE, 1)
-            .add(Attributes.MAX_HEALTH, 90)
-            .add(Attributes.MOVEMENT_SPEED, AVPEntitySpeedConstants.CRUSHER_SPEED)
-            .build());
+        return Optional.of(
+            AVPAttributeSupplier.builder()
+                .add(Attributes.ATTACK_DAMAGE, 12)
+                .add(Attributes.KNOCKBACK_RESISTANCE, 1)
+                .add(Attributes.MAX_HEALTH, 90)
+                .add(Attributes.MOVEMENT_SPEED, AVPEntitySpeedConstants.CRUSHER_SPEED)
+                .build()
+        );
     }
 
     @Override

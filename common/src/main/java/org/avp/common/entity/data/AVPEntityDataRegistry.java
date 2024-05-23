@@ -3,18 +3,22 @@ package org.avp.common.entity.data;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
-import org.avp.api.entity.data.EntityData;
 
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.avp.api.entity.data.EntityData;
+
 public class AVPEntityDataRegistry {
+
     public static final AVPEntityDataRegistry INSTANCE = new AVPEntityDataRegistry();
 
     private final Map<String, EntityData<?>> entries = new HashMap<>();
+
     private final Map<String, EntityData<? extends LivingEntity>> livingEntries = new HashMap<>();
+
     private final Map<String, EntityData<? extends Mob>> mobEntries = new HashMap<>();
 
     public Collection<EntityData<?>> getEntries() {

@@ -27,7 +27,6 @@ import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
-import org.avp.common.damage.AVPDamageSources;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -41,6 +40,7 @@ import org.avp.api.item.weapon.WeaponItemData;
 import org.avp.api.item.weapon.WeaponItemTagHelper;
 import org.avp.client.render.item.AVPWeaponItemRenderers;
 import org.avp.common.config.AVPConfig;
+import org.avp.common.damage.AVPDamageSources;
 import org.avp.common.network.payload.ClientboundBulletHitBlockPayload;
 import org.avp.common.service.Services;
 import org.avp.common.util.AVPPredicates;
@@ -171,7 +171,7 @@ public abstract class AbstractAVPWeaponItem extends Item implements GeoItem {
 
         var hitResult = ProjectileUtil.getHitResultOnViewVector(
             player,
-            entity -> entity.getType() == EntityType.END_CRYSTAL ||  AVPPredicates.IS_LIVING.test(entity),
+            entity -> entity.getType() == EntityType.END_CRYSTAL || AVPPredicates.IS_LIVING.test(entity),
             fireMode.range()
         );
 

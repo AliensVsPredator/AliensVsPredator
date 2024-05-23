@@ -4,16 +4,18 @@ import net.minecraft.tags.FluidTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.material.Fluid;
-import org.avp.common.tag.AVPEntityTypeTags;
-import org.avp.common.util.MixinUtils;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
 
 import java.util.Objects;
 
+import org.avp.common.tag.AVPEntityTypeTags;
+import org.avp.common.util.MixinUtils;
+
 @Mixin(Entity.class)
 public abstract class MixinEntity_ReduceFlowingWaterSlowDownForAliens {
+
     @ModifyVariable(
         method = "updateFluidHeightAndDoFluidPushing(Lnet/minecraft/tags/TagKey;D)Z",
         at = @At("HEAD"),

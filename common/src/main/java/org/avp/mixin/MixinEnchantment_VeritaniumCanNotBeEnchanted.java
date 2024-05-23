@@ -3,11 +3,12 @@ package org.avp.mixin;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantment;
-import org.avp.common.item.armor.material.AVPArmorMaterials;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+
+import org.avp.common.item.armor.material.AVPArmorMaterials;
 
 @Mixin(Enchantment.class)
 public abstract class MixinEnchantment_VeritaniumCanNotBeEnchanted {

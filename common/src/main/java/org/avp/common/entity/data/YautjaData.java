@@ -16,22 +16,23 @@ import net.minecraft.world.level.storage.loot.functions.LootingEnchantFunction;
 import net.minecraft.world.level.storage.loot.functions.SetItemCountFunction;
 import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
 import net.minecraft.world.level.storage.loot.providers.number.UniformGenerator;
+
+import java.util.List;
+import java.util.Optional;
+
 import org.avp.api.Holder;
 import org.avp.api.entity.data.EntityData;
-import org.avp.common.entity.data.constant.AVPEntitySpeedConstants;
 import org.avp.common.entity.data.attribute.AVPAttributeSupplier;
+import org.avp.common.entity.data.constant.AVPEntitySpeedConstants;
 import org.avp.common.entity.data.sound.EntitySoundData;
-import org.avp.common.entity.living.Yautja;
 import org.avp.common.entity.data.spawn.EntitySpawnData;
 import org.avp.common.entity.data.spawn.YautjaSpawning;
+import org.avp.common.entity.living.Yautja;
 import org.avp.common.item.AVPArmorItems;
 import org.avp.common.item.AVPItems;
 import org.avp.common.registry.AVPSimpleDeferredEntityTypeRegistry;
 import org.avp.common.sound.AVPSoundEvents;
 import org.avp.common.tag.AVPEntityTypeTags;
-
-import java.util.List;
-import java.util.Optional;
 
 public class YautjaData extends EntityData<Yautja> {
 
@@ -50,12 +51,14 @@ public class YautjaData extends EntityData<Yautja> {
 
     @Override
     protected Optional<AttributeSupplier> createAttributeSupplier() {
-        return Optional.of(AVPAttributeSupplier.builder()
-            .add(Attributes.ATTACK_DAMAGE, 12)
-            .add(Attributes.KNOCKBACK_RESISTANCE, 0.75)
-            .add(Attributes.MAX_HEALTH, 80)
-            .add(Attributes.MOVEMENT_SPEED, AVPEntitySpeedConstants.YAUTJA_SPEED)
-            .build());
+        return Optional.of(
+            AVPAttributeSupplier.builder()
+                .add(Attributes.ATTACK_DAMAGE, 12)
+                .add(Attributes.KNOCKBACK_RESISTANCE, 0.75)
+                .add(Attributes.MAX_HEALTH, 80)
+                .add(Attributes.MOVEMENT_SPEED, AVPEntitySpeedConstants.YAUTJA_SPEED)
+                .build()
+        );
     }
 
     @Override
@@ -79,41 +82,43 @@ public class YautjaData extends EntityData<Yautja> {
 
     @Override
     protected Optional<LootTable.Builder> createLootTable() {
-        return Optional.of(LootTable.lootTable()
-            .withPool(
-                LootPool.lootPool()
-                    .setRolls(ConstantValue.exactly(1))
-                    .add(
-                        LootItem.lootTableItem(AVPItems.INSTANCE.veritaniumShard.get())
-                            .apply(SetItemCountFunction.setCount(UniformGenerator.between(1, 4)))
-                            .apply(LootingEnchantFunction.lootingMultiplier(UniformGenerator.between(1, 3)))
-                    )
-            )
-            .withPool(
-                LootPool.lootPool()
-                    .setRolls(ConstantValue.exactly(1))
-                    .add(EmptyLootItem.emptyItem().setWeight(36))
-                    .add(LootItem.lootTableItem(AVPArmorItems.INSTANCE.veritaniumHelmet.get()).setWeight(1))
-                    .add(LootItem.lootTableItem(AVPArmorItems.INSTANCE.veritaniumBody.get()).setWeight(1))
-                    .add(LootItem.lootTableItem(AVPArmorItems.INSTANCE.veritaniumLeggings.get()).setWeight(1))
-                    .add(LootItem.lootTableItem(AVPArmorItems.INSTANCE.veritaniumBoots.get()).setWeight(1))
-            )
-            .withPool(
-                LootPool.lootPool()
-                    .setRolls(ConstantValue.exactly(1))
-                    .add(
-                        LootItem.lootTableItem(AVPItems.INSTANCE.laserMine.get())
-                            .apply(SetItemCountFunction.setCount(UniformGenerator.between(4, 8)))
-                            .apply(LootingEnchantFunction.lootingMultiplier(UniformGenerator.between(1, 4)))
-                    )
-                    .add(
-                        LootItem.lootTableItem(AVPItems.INSTANCE.shuriken.get())
-                            .apply(SetItemCountFunction.setCount(UniformGenerator.between(4, 8)))
-                            .apply(LootingEnchantFunction.lootingMultiplier(UniformGenerator.between(1, 4)))
-                    )
-                    .add(LootItem.lootTableItem(AVPItems.INSTANCE.smartDisc.get()))
-                    .add(LootItem.lootTableItem(AVPItems.INSTANCE.yautjaArtifact.get()))
-            ));
+        return Optional.of(
+            LootTable.lootTable()
+                .withPool(
+                    LootPool.lootPool()
+                        .setRolls(ConstantValue.exactly(1))
+                        .add(
+                            LootItem.lootTableItem(AVPItems.INSTANCE.veritaniumShard.get())
+                                .apply(SetItemCountFunction.setCount(UniformGenerator.between(1, 4)))
+                                .apply(LootingEnchantFunction.lootingMultiplier(UniformGenerator.between(1, 3)))
+                        )
+                )
+                .withPool(
+                    LootPool.lootPool()
+                        .setRolls(ConstantValue.exactly(1))
+                        .add(EmptyLootItem.emptyItem().setWeight(36))
+                        .add(LootItem.lootTableItem(AVPArmorItems.INSTANCE.veritaniumHelmet.get()).setWeight(1))
+                        .add(LootItem.lootTableItem(AVPArmorItems.INSTANCE.veritaniumBody.get()).setWeight(1))
+                        .add(LootItem.lootTableItem(AVPArmorItems.INSTANCE.veritaniumLeggings.get()).setWeight(1))
+                        .add(LootItem.lootTableItem(AVPArmorItems.INSTANCE.veritaniumBoots.get()).setWeight(1))
+                )
+                .withPool(
+                    LootPool.lootPool()
+                        .setRolls(ConstantValue.exactly(1))
+                        .add(
+                            LootItem.lootTableItem(AVPItems.INSTANCE.laserMine.get())
+                                .apply(SetItemCountFunction.setCount(UniformGenerator.between(4, 8)))
+                                .apply(LootingEnchantFunction.lootingMultiplier(UniformGenerator.between(1, 4)))
+                        )
+                        .add(
+                            LootItem.lootTableItem(AVPItems.INSTANCE.shuriken.get())
+                                .apply(SetItemCountFunction.setCount(UniformGenerator.between(4, 8)))
+                                .apply(LootingEnchantFunction.lootingMultiplier(UniformGenerator.between(1, 4)))
+                        )
+                        .add(LootItem.lootTableItem(AVPItems.INSTANCE.smartDisc.get()))
+                        .add(LootItem.lootTableItem(AVPItems.INSTANCE.yautjaArtifact.get()))
+                )
+        );
     }
 
     @Override

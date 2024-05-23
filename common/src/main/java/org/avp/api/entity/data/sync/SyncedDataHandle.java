@@ -6,7 +6,13 @@ import net.minecraft.world.entity.Entity;
 
 public class SyncedDataHandle<T> {
 
-    public static <V> SyncedDataHandle<V> attach(String key, V defaultValue, Entity entity, EntityDataAccessor<V> entityDataAccessor, SyncedDataSerializer<V> syncedDataSerializer) {
+    public static <V> SyncedDataHandle<V> attach(
+        String key,
+        V defaultValue,
+        Entity entity,
+        EntityDataAccessor<V> entityDataAccessor,
+        SyncedDataSerializer<V> syncedDataSerializer
+    ) {
         // Create the synced data handle.
         var syncedDataHandle = new SyncedDataHandle<>(key, defaultValue, entity, entityDataAccessor, syncedDataSerializer);
         // Attach the synced data handle to the entity.
@@ -17,11 +23,20 @@ public class SyncedDataHandle<T> {
     }
 
     private final String key;
+
     private final Entity entity;
+
     private final EntityDataAccessor<T> entityDataAccessor;
+
     private final SyncedDataSerializer<T> syncedDataSerializer;
 
-    private SyncedDataHandle(String key, T defaultValue, Entity entity, EntityDataAccessor<T> entityDataAccessor, SyncedDataSerializer<T> syncedDataSerializer) {
+    private SyncedDataHandle(
+        String key,
+        T defaultValue,
+        Entity entity,
+        EntityDataAccessor<T> entityDataAccessor,
+        SyncedDataSerializer<T> syncedDataSerializer
+    ) {
         this.key = key;
         this.entity = entity;
         this.entityDataAccessor = entityDataAccessor;

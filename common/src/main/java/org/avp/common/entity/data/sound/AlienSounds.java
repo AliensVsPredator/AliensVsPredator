@@ -3,10 +3,11 @@ package org.avp.common.entity.data.sound;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.world.damagesource.DamageSource;
-import org.avp.api.Holder;
-import org.avp.common.sound.AVPSoundEvents;
 
 import java.util.function.Function;
+
+import org.avp.api.Holder;
+import org.avp.common.sound.AVPSoundEvents;
 
 public class AlienSounds {
 
@@ -19,7 +20,6 @@ public class AlienSounds {
             return defaultSoundEventHolder;
         };
     }
-
 
     private AlienSounds() {
         throw new UnsupportedOperationException();

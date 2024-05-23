@@ -76,7 +76,7 @@ public class AVPIndustrialGlassBlocks extends AVPDeferredBlockRegistry {
 
         glass = super.createHolder("industrial_glass", blockDataBuilder.apply(DyeColor.WHITE));
 
-        glassBlack = createColoredIndustrialGlassHolder( DyeColor.BLACK, blockDataBuilder);
+        glassBlack = createColoredIndustrialGlassHolder(DyeColor.BLACK, blockDataBuilder);
         glassBlue = createColoredIndustrialGlassHolder(DyeColor.BLUE, blockDataBuilder);
         glassBrown = createColoredIndustrialGlassHolder(DyeColor.BROWN, blockDataBuilder);
         glassCyan = createColoredIndustrialGlassHolder(DyeColor.CYAN, blockDataBuilder);
@@ -94,8 +94,14 @@ public class AVPIndustrialGlassBlocks extends AVPDeferredBlockRegistry {
         glassYellow = createColoredIndustrialGlassHolder(DyeColor.YELLOW, blockDataBuilder);
     }
 
-    private ColoredIndustrialGlassHolder createColoredIndustrialGlassHolder(DyeColor dyeColor, Function<DyeColor, BlockData.Builder> blockDataBuilder) {
-        var coloredIndustrialGlassHolder = new ColoredIndustrialGlassHolder(dyeColor, createHolder(dyeColor.getName(), blockDataBuilder.apply(dyeColor)));
+    private ColoredIndustrialGlassHolder createColoredIndustrialGlassHolder(
+        DyeColor dyeColor,
+        Function<DyeColor, BlockData.Builder> blockDataBuilder
+    ) {
+        var coloredIndustrialGlassHolder = new ColoredIndustrialGlassHolder(
+            dyeColor,
+            createHolder(dyeColor.getName(), blockDataBuilder.apply(dyeColor))
+        );
         COLORED_INDUSTRIAL_GLASS_ENTRIES.add(coloredIndustrialGlassHolder);
         return coloredIndustrialGlassHolder;
     }

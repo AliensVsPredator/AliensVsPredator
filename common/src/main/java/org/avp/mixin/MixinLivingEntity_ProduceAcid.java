@@ -9,14 +9,14 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
-import org.avp.common.entity.data.AcidData;
-import org.avp.common.tag.AVPDamageTypeTags;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+import org.avp.common.entity.data.AcidData;
+import org.avp.common.tag.AVPDamageTypeTags;
 import org.avp.common.tag.AVPEntityTypeTags;
 import org.avp.common.util.MixinUtils;
 
@@ -35,9 +35,9 @@ public abstract class MixinLivingEntity_ProduceAcid extends Entity {
         if (!level.isClientSide() && self.getType().is(AVPEntityTypeTags.ACID_BLEEDERS)) {
             if (
                 damage > self.getMaxHealth() * 0.1 ||
-                self.getHealth() <= self.getMaxHealth() * 0.33 ||
-                damageSource.is(AVPDamageTypeTags.IS_PUNCTURING) ||
-                hurtByPlayerWithAxeOrSwordWeapon(damageSource)
+                    self.getHealth() <= self.getMaxHealth() * 0.33 ||
+                    damageSource.is(AVPDamageTypeTags.IS_PUNCTURING) ||
+                    hurtByPlayerWithAxeOrSwordWeapon(damageSource)
             ) {
                 var box = self.getBoundingBox();
                 var pos = self.blockPosition();

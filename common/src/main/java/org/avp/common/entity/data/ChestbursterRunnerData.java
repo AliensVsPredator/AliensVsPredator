@@ -6,19 +6,20 @@ import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.level.storage.loot.LootTable;
-import org.avp.api.Holder;
-import org.avp.api.entity.data.EntityData;
-import org.avp.common.entity.data.constant.AVPEntitySpeedConstants;
-import org.avp.common.entity.data.attribute.AVPAttributeSupplier;
-import org.avp.common.entity.data.sound.EntitySoundData;
-import org.avp.common.entity.living.ChestbursterRunner;
-import org.avp.common.entity.data.spawn.EntitySpawnData;
-import org.avp.common.registry.AVPSimpleDeferredEntityTypeRegistry;
-import org.avp.common.sound.AVPSoundEvents;
-import org.avp.common.tag.AVPEntityTypeTags;
 
 import java.util.List;
 import java.util.Optional;
+
+import org.avp.api.Holder;
+import org.avp.api.entity.data.EntityData;
+import org.avp.common.entity.data.attribute.AVPAttributeSupplier;
+import org.avp.common.entity.data.constant.AVPEntitySpeedConstants;
+import org.avp.common.entity.data.sound.EntitySoundData;
+import org.avp.common.entity.data.spawn.EntitySpawnData;
+import org.avp.common.entity.living.ChestbursterRunner;
+import org.avp.common.registry.AVPSimpleDeferredEntityTypeRegistry;
+import org.avp.common.sound.AVPSoundEvents;
+import org.avp.common.tag.AVPEntityTypeTags;
 
 public class ChestbursterRunnerData extends EntityData<ChestbursterRunner> {
 
@@ -37,11 +38,13 @@ public class ChestbursterRunnerData extends EntityData<ChestbursterRunner> {
 
     @Override
     protected Optional<AttributeSupplier> createAttributeSupplier() {
-        return Optional.of(AVPAttributeSupplier.builder()
-            .add(Attributes.ATTACK_DAMAGE, 0.5)
-            .add(Attributes.MAX_HEALTH, 14)
-            .add(Attributes.MOVEMENT_SPEED, AVPEntitySpeedConstants.CHESTBURSTER_SPEED)
-            .build());
+        return Optional.of(
+            AVPAttributeSupplier.builder()
+                .add(Attributes.ATTACK_DAMAGE, 0.5)
+                .add(Attributes.MAX_HEALTH, 14)
+                .add(Attributes.MOVEMENT_SPEED, AVPEntitySpeedConstants.CHESTBURSTER_SPEED)
+                .build()
+        );
     }
 
     @Override

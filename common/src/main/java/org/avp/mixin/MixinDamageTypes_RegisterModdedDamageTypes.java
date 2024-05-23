@@ -3,11 +3,12 @@ package org.avp.mixin;
 import net.minecraft.data.worldgen.BootstapContext;
 import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.damagesource.DamageTypes;
-import org.avp.common.damage.AVPDamageTypes;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+
+import org.avp.common.damage.AVPDamageTypes;
 
 @Mixin(DamageTypes.class)
 public interface MixinDamageTypes_RegisterModdedDamageTypes {

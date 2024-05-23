@@ -6,17 +6,18 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.level.Level;
-import org.avp.api.Holder;
-import org.avp.api.entity.data.EntityData;
-import org.avp.common.entity.data.sound.EntitySoundData;
-import org.avp.common.entity.data.AVPEntityDataRegistry;
-import org.avp.common.tag.AVPEntityTypeTags;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.util.Objects;
+
+import org.avp.api.Holder;
+import org.avp.api.entity.data.EntityData;
+import org.avp.common.entity.data.AVPEntityDataRegistry;
+import org.avp.common.entity.data.sound.EntitySoundData;
+import org.avp.common.tag.AVPEntityTypeTags;
 
 @Mixin(Monster.class)
 public abstract class MixinMonster_ProvideHurtAndDeathSounds extends PathfinderMob {

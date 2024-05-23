@@ -21,22 +21,25 @@ import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.entity.EntityTypeTest;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import org.avp.api.entity.Boss;
 import org.avp.common.entity.ai.AIUtils;
 import org.avp.common.sound.AVPSoundEvents;
 import org.avp.common.util.AVPPredicates;
 import org.avp.server.QueenManager;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 public class Queen extends Monster implements Boss, GeoEntity {
 
     private static final int SPAWN_MIN_DISTANCE_IN_BLOCKS = 512;
+
     private static final int SPAWN_DISTANCE_SQUARED = SPAWN_MIN_DISTANCE_IN_BLOCKS * SPAWN_MIN_DISTANCE_IN_BLOCKS;
 
     public static boolean anyNearbyQueens(ServerLevelAccessor serverLevelAccessor, BlockPos blockPos) {
         var allQueens = serverLevelAccessor.getLevel().getEntities(EntityTypeTest.forClass(Queen.class), AVPPredicates.ALWAYS_TRUE);
-        return allQueens.stream().anyMatch(queen -> queen.distanceToSqr(blockPos.getX(), blockPos.getY(), blockPos.getZ()) < SPAWN_DISTANCE_SQUARED);
+        return allQueens.stream()
+            .anyMatch(queen -> queen.distanceToSqr(blockPos.getX(), blockPos.getY(), blockPos.getZ()) < SPAWN_DISTANCE_SQUARED);
     }
 
     public static boolean checkQueenSpawnRules(
@@ -47,12 +50,12 @@ public class Queen extends Monster implements Boss, GeoEntity {
         RandomSource randomSource
     ) {
         return Monster.checkMonsterSpawnRules(
-                entityType,
-                serverLevelAccessor,
-                mobSpawnType,
-                blockPos,
-                randomSource
-            ) &&
+            entityType,
+            serverLevelAccessor,
+            mobSpawnType,
+            blockPos,
+            randomSource
+        ) &&
             !anyNearbyQueens(serverLevelAccessor, blockPos);
     }
 

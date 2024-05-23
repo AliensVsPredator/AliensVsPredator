@@ -12,7 +12,6 @@ import net.minecraft.world.level.block.state.properties.WoodType;
 import java.util.function.Function;
 
 import org.avp.api.Holder;
-import org.avp.api.block.CustomTransparentBlock;
 
 public class BlockFactories {
 

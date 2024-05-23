@@ -2,12 +2,13 @@ package org.avp.server;
 
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
-import org.avp.common.entity.ai.hive.Hivemind;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
+
+import org.avp.common.entity.ai.hive.Hivemind;
 
 public class HivemindManager {
 

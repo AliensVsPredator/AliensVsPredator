@@ -7,10 +7,11 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.damagesource.DamageTypes;
-import org.avp.common.damage.AVPDamageTypes;
-import org.avp.common.tag.AVPDamageTypeTags;
 
 import java.util.concurrent.CompletableFuture;
+
+import org.avp.common.damage.AVPDamageTypes;
+import org.avp.common.tag.AVPDamageTypeTags;
 
 public class AVPDamageTypeTagsProvider extends FabricTagProvider<DamageType> {
 

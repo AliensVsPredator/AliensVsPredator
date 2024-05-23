@@ -2,20 +2,19 @@ package org.avp.server;
 
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
-import org.avp.common.entity.living.Queen;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
+import org.avp.common.entity.living.Queen;
+
 public class QueenManager {
 
     private static final Map<UUID, Queen> QUEEN_BY_UUID_MAP = new HashMap<>();
 
-    public static void tick(Level level) {
-
-    }
+    public static void tick(Level level) {}
 
     public static Optional<Queen> get(UUID queenUUID) {
         return Optional.ofNullable(QUEEN_BY_UUID_MAP.get(queenUUID));

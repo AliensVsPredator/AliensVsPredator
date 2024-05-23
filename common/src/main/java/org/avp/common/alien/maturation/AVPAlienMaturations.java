@@ -1,6 +1,14 @@
 package org.avp.common.alien.maturation;
 
 import net.minecraft.world.entity.EntityType;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import java.util.function.Supplier;
+
 import org.avp.api.Holder;
 import org.avp.api.entity.HiveMember;
 import org.avp.api.entity.RoyalJellyHolder;
@@ -32,13 +40,6 @@ import org.avp.common.entity.data.WarriorRunnerData;
 import org.avp.common.registry.AVPDeferredRegistry;
 import org.avp.server.HivemindManager;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
-import java.util.function.Supplier;
-
 public class AVPAlienMaturations extends AVPDeferredRegistry<AlienMaturation> {
 
     public static final AVPAlienMaturations INSTANCE = new AVPAlienMaturations();
@@ -46,14 +47,13 @@ public class AVPAlienMaturations extends AVPDeferredRegistry<AlienMaturation> {
     private static final Map<AlienGrowthLookupKey, AlienMaturationStep> ALIEN_MATURATION_LOOKUP_MAP = new HashMap<>();
 
     public static Optional<AlienMaturationStep> lookup(EntityType<?> host, EntityType<?> currentForm) {
-        return
-            Optional.ofNullable(
-                // Try and get a direct mapping, first.
-                ALIEN_MATURATION_LOOKUP_MAP.get(new AlienGrowthLookupKey(host, currentForm))
-            ).or(() ->
-                // If a direct mapping could not be found, then try and look up a default mapping for an unknown host.
-                Optional.ofNullable(ALIEN_MATURATION_LOOKUP_MAP.get(new AlienGrowthLookupKey(null, currentForm)))
-            );
+        return Optional.ofNullable(
+            // Try and get a direct mapping, first.
+            ALIEN_MATURATION_LOOKUP_MAP.get(new AlienGrowthLookupKey(host, currentForm))
+        ).or(() ->
+        // If a direct mapping could not be found, then try and look up a default mapping for an unknown host.
+        Optional.ofNullable(ALIEN_MATURATION_LOOKUP_MAP.get(new AlienGrowthLookupKey(null, currentForm)))
+        );
     }
 
     public final Holder<AlienMaturation> belugamorphMaturation;
@@ -79,169 +79,202 @@ public class AVPAlienMaturations extends AVPDeferredRegistry<AlienMaturation> {
     public final Holder<AlienMaturation> ultramorphMaturation;
 
     private AVPAlienMaturations() {
-        belugamorphMaturation = createHolder("belugaburster_to_belugamorph", () -> new AlienMaturation(
-            null,
-            List.of(
-                new AlienMaturationStep(
-                    BelugabursterData.INSTANCE.getHolder().get(),
-                    BelugamorphData.INSTANCE.getHolder().get(),
-                    12_000
+        belugamorphMaturation = createHolder(
+            "belugaburster_to_belugamorph",
+            () -> new AlienMaturation(
+                null,
+                List.of(
+                    new AlienMaturationStep(
+                        BelugabursterData.INSTANCE.getHolder().get(),
+                        BelugamorphData.INSTANCE.getHolder().get(),
+                        12_000
+                    )
                 )
             )
-        ));
-        boilerMaturation = createHolder("chestburster_to_boiler", () -> new AlienMaturation(
-            Set.of(
-                EntityType.CREEPER
-            ),
-            List.of(
-                new AlienMaturationStep(
-                    ChestbursterData.INSTANCE.getHolder().get(),
-                    BoilerData.INSTANCE.getHolder().get(),
-                    12_000
-                )
-            )
-        ));
-        crusherMaturation = createHolder("chestburster_runner_to_crusher", () -> new AlienMaturation(
-            null, // No hosts = this lifecycle will be the default for all runner chestbursters.
-            List.of(
-                new AlienMaturationStep(
-                    ChestbursterRunnerData.INSTANCE.getHolder().get(),
-                    DroneRunnerData.INSTANCE.getHolder().get(),
-                    12_000
+        );
+        boilerMaturation = createHolder(
+            "chestburster_to_boiler",
+            () -> new AlienMaturation(
+                Set.of(
+                    EntityType.CREEPER
                 ),
-                new AlienMaturationStep(
-                    DroneRunnerData.INSTANCE.getHolder().get(),
-                    WarriorRunnerData.INSTANCE.getHolder().get(),
-                    12_000
-                ),
-                new AlienMaturationStep(
-                    WarriorRunnerData.INSTANCE.getHolder().get(),
-                    CrusherData.INSTANCE.getHolder().get(),
-                    12_000
+                List.of(
+                    new AlienMaturationStep(
+                        ChestbursterData.INSTANCE.getHolder().get(),
+                        BoilerData.INSTANCE.getHolder().get(),
+                        12_000
+                    )
                 )
             )
-        ));
-        deaconAdultEngineerMaturation = createHolder("deacon_adult_to_deacon_adult_engineer", () -> new AlienMaturation(
-            Set.of(
-                EngineerData.INSTANCE.getHolder().get()
-            ),
-            List.of(
-                new AlienMaturationStep(
-                    DeaconAdultData.INSTANCE.getHolder().get(),
-                    DeaconAdultEngineerData.INSTANCE.getHolder().get(),
-                    12_000
+        );
+        crusherMaturation = createHolder(
+            "chestburster_runner_to_crusher",
+            () -> new AlienMaturation(
+                null, // No hosts = this lifecycle will be the default for all runner chestbursters.
+                List.of(
+                    new AlienMaturationStep(
+                        ChestbursterRunnerData.INSTANCE.getHolder().get(),
+                        DroneRunnerData.INSTANCE.getHolder().get(),
+                        12_000
+                    ),
+                    new AlienMaturationStep(
+                        DroneRunnerData.INSTANCE.getHolder().get(),
+                        WarriorRunnerData.INSTANCE.getHolder().get(),
+                        12_000
+                    ),
+                    new AlienMaturationStep(
+                        WarriorRunnerData.INSTANCE.getHolder().get(),
+                        CrusherData.INSTANCE.getHolder().get(),
+                        12_000
+                    )
                 )
             )
-        ));
-        deaconAdultMaturation = createHolder("deacon_to_deacon_adult", () -> new AlienMaturation(
-            null, // A deacon from any host will mature into an adult deacon.
-            List.of(
-                new AlienMaturationStep(
-                    DeaconData.INSTANCE.getHolder().get(),
-                    DeaconAdultData.INSTANCE.getHolder().get(),
-                    12_000
+        );
+        deaconAdultEngineerMaturation = createHolder(
+            "deacon_adult_to_deacon_adult_engineer",
+            () -> new AlienMaturation(
+                Set.of(
+                    EngineerData.INSTANCE.getHolder().get()
+                ),
+                List.of(
+                    new AlienMaturationStep(
+                        DeaconAdultData.INSTANCE.getHolder().get(),
+                        DeaconAdultEngineerData.INSTANCE.getHolder().get(),
+                        12_000
+                    )
                 )
             )
-        ));
-        dracomorphMaturation = createHolder("chestburster_draco_to_dracomorph", () -> new AlienMaturation(
-            null, // A chestburster_draco from any host will produce a dracomorph.
-            List.of(
-                new AlienMaturationStep(
-                    ChestbursterDracoData.INSTANCE.getHolder().get(),
-                    DracomorphData.INSTANCE.getHolder().get(),
-                    24_000
+        );
+        deaconAdultMaturation = createHolder(
+            "deacon_to_deacon_adult",
+            () -> new AlienMaturation(
+                null, // A deacon from any host will mature into an adult deacon.
+                List.of(
+                    new AlienMaturationStep(
+                        DeaconData.INSTANCE.getHolder().get(),
+                        DeaconAdultData.INSTANCE.getHolder().get(),
+                        12_000
+                    )
                 )
             )
-        ));
-        queenMaturation = createHolder("chestburster_to_queen", () -> new AlienMaturation(
-            null, // No hosts = this lifecycle will be the default for all chestbursters.
-            List.of(
-                new AlienMaturationStep(
-                    ChestbursterData.INSTANCE.getHolder().get(),
-                    DroneData.INSTANCE.getHolder().get(),
-                    12_000
-                ),
-                new AlienMaturationStep(
-                    DroneData.INSTANCE.getHolder().get(),
-                    WarriorData.INSTANCE.getHolder().get(),
-                    12_000
-                ),
-                new AlienMaturationStep(
-                    WarriorData.INSTANCE.getHolder().get(),
-                    PraetorianData.INSTANCE.getHolder().get(),
-                    12_000,
-                    entity -> entity instanceof RoyalJellyHolder royalJellyHolder && royalJellyHolder.hasRoyalJelly()
-                ),
-                new AlienMaturationStep(
-                    PraetorianData.INSTANCE.getHolder().get(),
-                    QueenData.INSTANCE.getHolder().get(),
-                    12_000,
-                    entity -> {
-                        if (entity instanceof HiveMember hiveMember && hiveMember.hasHivemind()) {
-                            var hivemindOptional = HivemindManager.getByUUID(hiveMember.getHivemindSignature());
+        );
+        dracomorphMaturation = createHolder(
+            "chestburster_draco_to_dracomorph",
+            () -> new AlienMaturation(
+                null, // A chestburster_draco from any host will produce a dracomorph.
+                List.of(
+                    new AlienMaturationStep(
+                        ChestbursterDracoData.INSTANCE.getHolder().get(),
+                        DracomorphData.INSTANCE.getHolder().get(),
+                        24_000
+                    )
+                )
+            )
+        );
+        queenMaturation = createHolder(
+            "chestburster_to_queen",
+            () -> new AlienMaturation(
+                null, // No hosts = this lifecycle will be the default for all chestbursters.
+                List.of(
+                    new AlienMaturationStep(
+                        ChestbursterData.INSTANCE.getHolder().get(),
+                        DroneData.INSTANCE.getHolder().get(),
+                        12_000
+                    ),
+                    new AlienMaturationStep(
+                        DroneData.INSTANCE.getHolder().get(),
+                        WarriorData.INSTANCE.getHolder().get(),
+                        12_000
+                    ),
+                    new AlienMaturationStep(
+                        WarriorData.INSTANCE.getHolder().get(),
+                        PraetorianData.INSTANCE.getHolder().get(),
+                        12_000,
+                        entity -> entity instanceof RoyalJellyHolder royalJellyHolder && royalJellyHolder.hasRoyalJelly()
+                    ),
+                    new AlienMaturationStep(
+                        PraetorianData.INSTANCE.getHolder().get(),
+                        QueenData.INSTANCE.getHolder().get(),
+                        12_000,
+                        entity -> {
+                            if (entity instanceof HiveMember hiveMember && hiveMember.hasHivemind()) {
+                                var hivemindOptional = HivemindManager.getByUUID(hiveMember.getHivemindSignature());
 
-                            if (hivemindOptional.isEmpty()) {
-                                return true;
+                                if (hivemindOptional.isEmpty()) {
+                                    return true;
+                                }
+
+                                var hivemind = hivemindOptional.get();
+                                var leader = hivemind.getLeader();
+
+                                return leader.isEmpty() || leader.get().is(entity);
                             }
 
-                            var hivemind = hivemindOptional.get();
-                            var leader = hivemind.getLeader();
-
-                            return leader.isEmpty() || leader.get().is(entity);
+                            return true;
                         }
-
-                        return true;
-                    }
+                    )
                 )
             )
-        ));
-        nauticomorphMaturation = createHolder("chestburster_to_nauticomorph", () -> new AlienMaturation(
-            Set.of(
-                EntityType.TURTLE
-            ),
-            List.of(
-                new AlienMaturationStep(
-                    ChestbursterData.INSTANCE.getHolder().get(),
-                    NauticomorphData.INSTANCE.getHolder().get(),
-                    12_000
+        );
+        nauticomorphMaturation = createHolder(
+            "chestburster_to_nauticomorph",
+            () -> new AlienMaturation(
+                Set.of(
+                    EntityType.TURTLE
+                ),
+                List.of(
+                    new AlienMaturationStep(
+                        ChestbursterData.INSTANCE.getHolder().get(),
+                        NauticomorphData.INSTANCE.getHolder().get(),
+                        12_000
+                    )
                 )
             )
-        ));
-        praetorianMaturation = createHolder("chestburster_queen_to_praetorian", () -> new AlienMaturation(
-            null,
-            List.of(
-                new AlienMaturationStep(
-                    ChestbursterQueenData.INSTANCE.getHolder().get(),
-                    PraetorianData.INSTANCE.getHolder().get(),
-                    12_000
+        );
+        praetorianMaturation = createHolder(
+            "chestburster_queen_to_praetorian",
+            () -> new AlienMaturation(
+                null,
+                List.of(
+                    new AlienMaturationStep(
+                        ChestbursterQueenData.INSTANCE.getHolder().get(),
+                        PraetorianData.INSTANCE.getHolder().get(),
+                        12_000
+                    )
                 )
             )
-        ));
-        spitterMaturation = createHolder("chestburster_runner_to_spitter", () -> new AlienMaturation(
-            Set.of(
-                EntityType.LLAMA,
-                EntityType.TRADER_LLAMA
-            ),
-            List.of(
-                new AlienMaturationStep(
-                    ChestbursterRunnerData.INSTANCE.getHolder().get(),
-                    SpitterData.INSTANCE.getHolder().get(),
-                    12_000
+        );
+        spitterMaturation = createHolder(
+            "chestburster_runner_to_spitter",
+            () -> new AlienMaturation(
+                Set.of(
+                    EntityType.LLAMA,
+                    EntityType.TRADER_LLAMA
+                ),
+                List.of(
+                    new AlienMaturationStep(
+                        ChestbursterRunnerData.INSTANCE.getHolder().get(),
+                        SpitterData.INSTANCE.getHolder().get(),
+                        12_000
+                    )
                 )
             )
-        ));
-        ultramorphMaturation = createHolder("chestburster_to_ultramorph", () -> new AlienMaturation(
-            Set.of(
-                EngineerData.INSTANCE.getHolder().get()
-            ),
-            List.of(
-                new AlienMaturationStep(
-                    ChestbursterData.INSTANCE.getHolder().get(),
-                    UltramorphData.INSTANCE.getHolder().get(),
-                    12_000
+        );
+        ultramorphMaturation = createHolder(
+            "chestburster_to_ultramorph",
+            () -> new AlienMaturation(
+                Set.of(
+                    EngineerData.INSTANCE.getHolder().get()
+                ),
+                List.of(
+                    new AlienMaturationStep(
+                        ChestbursterData.INSTANCE.getHolder().get(),
+                        UltramorphData.INSTANCE.getHolder().get(),
+                        12_000
+                    )
                 )
             )
-        ));
+        );
     }
 
     @Override

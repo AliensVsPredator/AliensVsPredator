@@ -6,6 +6,10 @@ import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.level.storage.loot.LootTable;
+
+import java.util.List;
+import java.util.Optional;
+
 import org.avp.api.Holder;
 import org.avp.api.entity.data.EntityData;
 import org.avp.common.entity.data.attribute.AVPAttributeSupplier;
@@ -14,9 +18,6 @@ import org.avp.common.entity.data.spawn.EntitySpawnData;
 import org.avp.common.entity.living.OvamorphDraco;
 import org.avp.common.registry.AVPSimpleDeferredEntityTypeRegistry;
 import org.avp.common.tag.AVPEntityTypeTags;
-
-import java.util.List;
-import java.util.Optional;
 
 public class OvamorphDracoData extends EntityData<OvamorphDraco> {
 
@@ -37,11 +38,13 @@ public class OvamorphDracoData extends EntityData<OvamorphDraco> {
 
     @Override
     protected Optional<AttributeSupplier> createAttributeSupplier() {
-        return Optional.of(AVPAttributeSupplier.builder()
-            .add(Attributes.KNOCKBACK_RESISTANCE, 1)
-            .add(Attributes.MAX_HEALTH, 16)
-            .add(Attributes.MOVEMENT_SPEED, 0)
-            .build());
+        return Optional.of(
+            AVPAttributeSupplier.builder()
+                .add(Attributes.KNOCKBACK_RESISTANCE, 1)
+                .add(Attributes.MAX_HEALTH, 16)
+                .add(Attributes.MOVEMENT_SPEED, 0)
+                .build()
+        );
     }
 
     @Override

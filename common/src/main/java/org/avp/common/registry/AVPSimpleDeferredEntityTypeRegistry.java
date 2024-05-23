@@ -13,6 +13,7 @@ import org.avp.common.item.AVPSpawnEggItems;
 import org.avp.common.service.Services;
 
 public class AVPSimpleDeferredEntityTypeRegistry extends AVPAbstractDeferredEntityTypeRegistry {
+
     public static final AVPSimpleDeferredEntityTypeRegistry INSTANCE = new AVPSimpleDeferredEntityTypeRegistry();
 
     @Override

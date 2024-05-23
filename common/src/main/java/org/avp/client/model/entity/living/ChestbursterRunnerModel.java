@@ -1,10 +1,12 @@
 package org.avp.client.model.entity.living;
 
 import mod.azure.azurelib.common.internal.common.core.animation.AnimationState;
+
 import org.avp.client.util.BasicAnimationUtils;
 import org.avp.common.entity.living.ChestbursterRunner;
 
 public class ChestbursterRunnerModel extends AVPGeoModel<ChestbursterRunner> {
+
     public ChestbursterRunnerModel() {
         super("chestburster_runner", GeoModelType.ENTITY);
     }

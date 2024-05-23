@@ -12,10 +12,10 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemUtils;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.HitResult;
-import org.avp.common.item.AVPItems;
 import org.jetbrains.annotations.NotNull;
 
 import org.avp.common.entity.Acid;
+import org.avp.common.item.AVPItems;
 
 public class TintedBottleItem extends Item {
 

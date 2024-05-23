@@ -3,12 +3,13 @@ package org.avp.client.render.entity.living;
 import mod.azure.azurelib.common.api.client.renderer.GeoEntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
+import org.jetbrains.annotations.NotNull;
+
 import org.avp.client.model.entity.living.AVPGeoModel;
 import org.avp.client.model.entity.living.GeoModelType;
 import org.avp.common.AVPResources;
 import org.avp.common.entity.living.Ovamorph;
 import org.avp.common.util.TimeUtils;
-import org.jetbrains.annotations.NotNull;
 
 public class OvamorphRenderer extends GeoEntityRenderer<Ovamorph> {
 

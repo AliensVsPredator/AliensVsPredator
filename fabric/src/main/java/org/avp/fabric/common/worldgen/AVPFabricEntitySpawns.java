@@ -5,6 +5,7 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.entity.SpawnPlacements;
+
 import org.avp.common.config.AVPConfig;
 import org.avp.common.entity.data.AVPEntityDataRegistry;
 import org.avp.common.tag.AVPEntityTypeTags;

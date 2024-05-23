@@ -9,9 +9,10 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.ai.goal.LeapAtTargetGoal;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.level.Level;
+import org.jetbrains.annotations.NotNull;
+
 import org.avp.common.entity.ai.AIUtils;
 import org.avp.common.sound.AVPSoundEvents;
-import org.jetbrains.annotations.NotNull;
 
 public class Crusher extends Monster implements GeoEntity {
 
