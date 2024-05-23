@@ -41,6 +41,8 @@ public class AVPSoundEvents extends AVPDeferredRegistry<SoundEvent> {
 
     public final Holder<SoundEvent> entityXenomorphHurt = createHolder("entity.xenomorph.hurt");
 
+    public final Holder<SoundEvent> entityXenomorphHurtScreech = createHolder("entity.xenomorph.hurt.screech");
+
     public final Holder<SoundEvent> entityYautjaAmbient = createHolder("entity.yautja.ambient");
 
     public final Holder<SoundEvent> entityYautjaCloak = createHolder("entity.yautja.cloak");
