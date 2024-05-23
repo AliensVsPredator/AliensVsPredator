@@ -24,12 +24,12 @@ public record AVPDamageSource(
     }
 
     @NotNull
-    private DamageSource covertIndirectDamageSource(Level level, Entity targetEntity) {
+    public DamageSource covertIndirectDamageSource(Level level, Entity targetEntity) {
         return new DamageSource(getHolderOrThrow(level), null, targetEntity);
     }
 
     @NotNull
-    private DamageSource simpleDamageSource(Level level) {
+    public DamageSource simpleDamageSource(Level level) {
         return new DamageSource(getHolderOrThrow(level));
     }
 
