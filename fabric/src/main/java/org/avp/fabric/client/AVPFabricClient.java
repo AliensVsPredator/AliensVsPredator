@@ -10,7 +10,7 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 
-import org.avp.api.block.factory.BlockFactories;
+import org.avp.api.block.factory.CustomTransparentBlockFactory;
 import org.avp.client.AVPClientKeyBindings;
 import org.avp.client.render.entity.AVPEntityRenderRegistry;
 import org.avp.client.render.particle.AVPParticleTypeProviders;
@@ -28,7 +28,8 @@ public class AVPFabricClient implements ClientModInitializer {
             var block = tuple.first().get();
             var blockData = tuple.second();
             var factory = blockData.getFactory();
-            if (factory == BlockFactories.TRANSPARENT) {
+
+            if (factory instanceof CustomTransparentBlockFactory) {
                 BlockRenderLayerMap.INSTANCE.putBlock(block, RenderType.translucent());
             }
         });
