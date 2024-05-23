@@ -7,6 +7,7 @@
     "mixins": [
         "MixinDamageTypes_RegisterModdedDamageTypes",
         "MixinEnchantment_VeritaniumCanNotBeEnchanted",
+        "MixinEnderDragon_ReduceDamageFromBullets",
         "MixinEntity_PreventBoatAndCartRiding",
         "MixinEntity_ReduceFlowingWaterSlowDownForAliens",
         "MixinEntityTypeBuilder_SilenceDataFixerError",
