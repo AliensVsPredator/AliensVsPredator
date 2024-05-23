@@ -12,6 +12,8 @@ public class AVPDamageTypes {
 
     public final ResourceKey<DamageType> acid = create("acid");
 
+    public final ResourceKey<DamageType> bullet = create("bullet");
+
     private AVPDamageTypes() {}
 
     public ResourceKey<DamageType> create(String registryName) {

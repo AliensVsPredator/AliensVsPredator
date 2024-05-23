@@ -41,6 +41,8 @@ public class AVPSoundEvents extends AVPDeferredRegistry<SoundEvent> {
 
     public final Holder<SoundEvent> entityXenomorphHurt = createHolder("entity.xenomorph.hurt");
 
+    public final Holder<SoundEvent> entityXenomorphHurtScreech = createHolder("entity.xenomorph.hurt.screech");
+
     public final Holder<SoundEvent> entityYautjaAmbient = createHolder("entity.yautja.ambient");
 
     public final Holder<SoundEvent> entityYautjaCloak = createHolder("entity.yautja.cloak");
@@ -50,6 +52,8 @@ public class AVPSoundEvents extends AVPDeferredRegistry<SoundEvent> {
     public final Holder<SoundEvent> entityYautjaDecloak = createHolder("entity.yautja.decloak");
 
     public final Holder<SoundEvent> entityYautjaHurt = createHolder("entity.yautja.hurt");
+
+    public final Holder<SoundEvent> entityYautjaIntimidate = createHolder("entity.yautja.intimidate");
 
     public final Holder<SoundEvent> itemWeaponAk47Shoot = createHolder("item.weapon.ak_47.shoot");
 
@@ -99,10 +103,14 @@ public class AVPSoundEvents extends AVPDeferredRegistry<SoundEvent> {
 
     public final Holder<SoundEvent> itemWeaponSniperRifleShoot = createHolder("item.weapon.sniper_rifle.shoot");
 
+    public final Holder<SoundEvent> itemWeaponWristbladeClose = createHolder("item.weapon.wristblade.close");
+
+    public final Holder<SoundEvent> itemWeaponWristbladeOpen = createHolder("item.weapon.wristblade.open");
+
     @Override
     protected Holder<SoundEvent> createHolder(String registryName, Supplier<SoundEvent> supplier) {
         var holder = Services.SOUND_EVENT_SERVICE.createHolder(registryName, supplier);
-        entries.add(holder);
+        entries.put(registryName, holder);
         return holder;
     }
 
@@ -114,6 +122,6 @@ public class AVPSoundEvents extends AVPDeferredRegistry<SoundEvent> {
 
     @Override
     public void register() {
-        entries.forEach(Services.SOUND_EVENT_SERVICE::register);
+        getValues().forEach(Services.SOUND_EVENT_SERVICE::register);
     }
 }

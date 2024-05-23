@@ -19,7 +19,7 @@ public class AVPParticleTypeProviders extends AVPDeferredRegistry<ParticleProvid
         Supplier<ParticleProviderData<ParticleOptions>> supplier
     ) {
         var holder = Services.PARTICLE_PROVIDER_SERVICE.createHolder(registryName, supplier);
-        entries.add(holder);
+        entries.put(registryName, holder);
         return holder;
     }
 
@@ -34,7 +34,7 @@ public class AVPParticleTypeProviders extends AVPDeferredRegistry<ParticleProvid
             )
         );
 
-        entries.forEach(providerDataHolder -> {
+        getValues().forEach(providerDataHolder -> {
             var providerData = providerDataHolder.get();
             var particleTypeHolder = providerDataHolder.get().particleTypeHolder();
             var factory = providerData.providerFactory();

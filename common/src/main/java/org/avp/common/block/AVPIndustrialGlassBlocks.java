@@ -1,14 +1,14 @@
 package org.avp.common.block;
 
 import net.minecraft.tags.BlockTags;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.Items;
+import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
 
 import org.avp.api.Holder;
 import org.avp.api.block.BlockData;
@@ -70,36 +70,44 @@ public class AVPIndustrialGlassBlocks extends AVPDeferredBlockRegistry {
         var industrialGlassProperties = BlockBehaviour.Properties.ofFullCopy(Blocks.GLASS);
         var blockTags = List.of(BlockTags.MINEABLE_WITH_PICKAXE, BlockTags.NEEDS_IRON_TOOL, AVPBlockTags.INDUSTRIAL_GLASS);
         var itemTags = List.of(AVPItemTags.INDUSTRIAL_GLASS);
-        var blockDataBuilder = BlockDataUtils.transparent(industrialGlassProperties).blockTags(blockTags).itemTags(itemTags);
+        Function<DyeColor, BlockData.Builder> blockDataBuilder = dyeColor -> BlockDataUtils.transparent(dyeColor, industrialGlassProperties)
+            .blockTags(blockTags)
+            .itemTags(itemTags);
 
-        glass = super.createHolder("industrial_glass", blockDataBuilder);
+        glass = super.createHolder("industrial_glass", blockDataBuilder.apply(DyeColor.WHITE));
 
-        glassBlack = createColoredIndustrialGlassHolder(Items.BLACK_DYE, "black", blockDataBuilder);
-        glassBlue = createColoredIndustrialGlassHolder(Items.BLUE_DYE, "blue", blockDataBuilder);
-        glassBrown = createColoredIndustrialGlassHolder(Items.BROWN_DYE, "brown", blockDataBuilder);
-        glassCyan = createColoredIndustrialGlassHolder(Items.CYAN_DYE, "cyan", blockDataBuilder);
-        glassGray = createColoredIndustrialGlassHolder(Items.GRAY_DYE, "gray", blockDataBuilder);
-        glassGreen = createColoredIndustrialGlassHolder(Items.GREEN_DYE, "green", blockDataBuilder);
-        glassLightBlue = createColoredIndustrialGlassHolder(Items.LIGHT_BLUE_DYE, "light_blue", blockDataBuilder);
-        glassLightGray = createColoredIndustrialGlassHolder(Items.LIGHT_GRAY_DYE, "light_gray", blockDataBuilder);
-        glassLime = createColoredIndustrialGlassHolder(Items.LIME_DYE, "lime", blockDataBuilder);
-        glassMagenta = createColoredIndustrialGlassHolder(Items.MAGENTA_DYE, "magenta", blockDataBuilder);
-        glassOrange = createColoredIndustrialGlassHolder(Items.ORANGE_DYE, "orange", blockDataBuilder);
-        glassPink = createColoredIndustrialGlassHolder(Items.PINK_DYE, "pink", blockDataBuilder);
-        glassPurple = createColoredIndustrialGlassHolder(Items.PURPLE_DYE, "purple", blockDataBuilder);
-        glassRed = createColoredIndustrialGlassHolder(Items.RED_DYE, "red", blockDataBuilder);
-        glassWhite = createColoredIndustrialGlassHolder(Items.WHITE_DYE, "white", blockDataBuilder);
-        glassYellow = createColoredIndustrialGlassHolder(Items.YELLOW_DYE, "yellow", blockDataBuilder);
+        glassBlack = createColoredIndustrialGlassHolder(DyeColor.BLACK, blockDataBuilder);
+        glassBlue = createColoredIndustrialGlassHolder(DyeColor.BLUE, blockDataBuilder);
+        glassBrown = createColoredIndustrialGlassHolder(DyeColor.BROWN, blockDataBuilder);
+        glassCyan = createColoredIndustrialGlassHolder(DyeColor.CYAN, blockDataBuilder);
+        glassGray = createColoredIndustrialGlassHolder(DyeColor.GRAY, blockDataBuilder);
+        glassGreen = createColoredIndustrialGlassHolder(DyeColor.GREEN, blockDataBuilder);
+        glassLightBlue = createColoredIndustrialGlassHolder(DyeColor.LIGHT_BLUE, blockDataBuilder);
+        glassLightGray = createColoredIndustrialGlassHolder(DyeColor.LIGHT_GRAY, blockDataBuilder);
+        glassLime = createColoredIndustrialGlassHolder(DyeColor.LIME, blockDataBuilder);
+        glassMagenta = createColoredIndustrialGlassHolder(DyeColor.MAGENTA, blockDataBuilder);
+        glassOrange = createColoredIndustrialGlassHolder(DyeColor.ORANGE, blockDataBuilder);
+        glassPink = createColoredIndustrialGlassHolder(DyeColor.PINK, blockDataBuilder);
+        glassPurple = createColoredIndustrialGlassHolder(DyeColor.PURPLE, blockDataBuilder);
+        glassRed = createColoredIndustrialGlassHolder(DyeColor.RED, blockDataBuilder);
+        glassWhite = createColoredIndustrialGlassHolder(DyeColor.WHITE, blockDataBuilder);
+        glassYellow = createColoredIndustrialGlassHolder(DyeColor.YELLOW, blockDataBuilder);
     }
 
-    private ColoredIndustrialGlassHolder createColoredIndustrialGlassHolder(Item dyeItem, String name, BlockData.Builder blockDataBuilder) {
-        var coloredIndustrialGlassHolder = new ColoredIndustrialGlassHolder(dyeItem, createHolder(name, blockDataBuilder));
+    private ColoredIndustrialGlassHolder createColoredIndustrialGlassHolder(
+        DyeColor dyeColor,
+        Function<DyeColor, BlockData.Builder> blockDataBuilder
+    ) {
+        var coloredIndustrialGlassHolder = new ColoredIndustrialGlassHolder(
+            dyeColor,
+            createHolder(dyeColor.getName(), blockDataBuilder.apply(dyeColor))
+        );
         COLORED_INDUSTRIAL_GLASS_ENTRIES.add(coloredIndustrialGlassHolder);
         return coloredIndustrialGlassHolder;
     }
 
     public record ColoredIndustrialGlassHolder(
-        Item dyeItem,
+        DyeColor dyeColor,
         Holder<Block> holder
     ) {}
 }

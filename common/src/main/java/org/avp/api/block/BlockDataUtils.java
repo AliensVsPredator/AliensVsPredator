@@ -1,6 +1,7 @@
 package org.avp.api.block;
 
 import net.minecraft.tags.BlockTags;
+import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.properties.WoodType;
@@ -58,8 +59,8 @@ public class BlockDataUtils {
             .blockTags(BlockTags.STAIRS);
     }
 
-    public static BlockData.Builder transparent(BlockBehaviour.Properties properties) {
-        return BlockData.builder(properties).factory(BlockFactories.TRANSPARENT);
+    public static BlockData.Builder transparent(DyeColor dyeColor, BlockBehaviour.Properties properties) {
+        return BlockData.builder(properties).factory(BlockFactories.TRANSPARENT.apply(dyeColor));
     }
 
     public static BlockData.Builder wall(Holder<Block> parentHolder, BlockBehaviour.Properties properties) {

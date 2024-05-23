@@ -9,40 +9,40 @@ public class AVPWeaponBlueprintItems extends AVPDeferredItemRegistry {
 
     public static final AVPWeaponBlueprintItems INSTANCE = new AVPWeaponBlueprintItems();
 
-    public final Holder<Item> BLUEPRINT_37_12_SHOTGUN;
+    public final Holder<Item> blueprint3712Shotgun;
 
-    public final Holder<Item> BLUEPRINT_AK_47;
+    public final Holder<Item> blueprintAk47;
 
-    public final Holder<Item> BLUEPRINT_F90_RIFLE;
+    public final Holder<Item> blueprintF90Rifle;
 
-    public final Holder<Item> BLUEPRINT_FLAMETHROWER_SEVASTOPOL;
+    public final Holder<Item> blueprintFlamethrowerSevastopol;
 
-    public final Holder<Item> BLUEPRINT_M4_CARBINE;
+    public final Holder<Item> blueprintM4Carbine;
 
-    public final Holder<Item> BLUEPRINT_M41A_PULSE_RIFLE;
+    public final Holder<Item> blueprintM41APulseRifle;
 
-    public final Holder<Item> BLUEPRINT_M56_SMARTGUN;
+    public final Holder<Item> blueprintM56Smartgun;
 
-    public final Holder<Item> BLUEPRINT_M83A2_SADAR;
+    public final Holder<Item> blueprintM83A2Sadar;
 
-    public final Holder<Item> BLUEPRINT_M88MOD4_COMBAT_PISTOL;
+    public final Holder<Item> blueprintM88Mod4CombatPistol;
 
-    public final Holder<Item> BLUEPRINT_OLD_PAINLESS;
+    public final Holder<Item> blueprintOldPainless;
 
-    public final Holder<Item> BLUEPRINT_SNIPER_RIFLE;
+    public final Holder<Item> blueprintSniperRifle;
 
     private AVPWeaponBlueprintItems() {
-        BLUEPRINT_37_12_SHOTGUN = createHolder("37_12_shotgun");
-        BLUEPRINT_AK_47 = createHolder("ak_47");
-        BLUEPRINT_F90_RIFLE = createHolder("f90_rifle");
-        BLUEPRINT_FLAMETHROWER_SEVASTOPOL = createHolder("flamethrower_sevastopol");
-        BLUEPRINT_M4_CARBINE = createHolder("m4_carbine");
-        BLUEPRINT_M41A_PULSE_RIFLE = createHolder("m41a_pulse_rifle");
-        BLUEPRINT_M56_SMARTGUN = createHolder("m56_smartgun");
-        BLUEPRINT_M83A2_SADAR = createHolder("m83a2_sadar");
-        BLUEPRINT_M88MOD4_COMBAT_PISTOL = createHolder("m88mod4_combat_pistol");
-        BLUEPRINT_OLD_PAINLESS = createHolder("old_painless");
-        BLUEPRINT_SNIPER_RIFLE = createHolder("sniper_rifle");
+        blueprint3712Shotgun = createHolder("37_12_shotgun");
+        blueprintAk47 = createHolder("ak_47");
+        blueprintF90Rifle = createHolder("f90_rifle");
+        blueprintFlamethrowerSevastopol = createHolder("flamethrower_sevastopol");
+        blueprintM4Carbine = createHolder("m4_carbine");
+        blueprintM41APulseRifle = createHolder("m41a_pulse_rifle");
+        blueprintM56Smartgun = createHolder("m56_smartgun");
+        blueprintM83A2Sadar = createHolder("m83a2_sadar");
+        blueprintM88Mod4CombatPistol = createHolder("m88mod4_combat_pistol");
+        blueprintOldPainless = createHolder("old_painless");
+        blueprintSniperRifle = createHolder("sniper_rifle");
     }
 
     @Override

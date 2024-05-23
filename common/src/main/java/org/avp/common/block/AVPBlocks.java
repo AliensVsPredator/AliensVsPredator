@@ -17,6 +17,8 @@ public class AVPBlocks extends AVPDeferredBlockRegistry {
 
     public final Holder<Block> aluminumBlock;
 
+    public final Holder<Block> orioniteBlock;
+
     public final Holder<Block> steelBlock;
 
     public final Holder<Block> titaniumBlock;
@@ -25,10 +27,12 @@ public class AVPBlocks extends AVPDeferredBlockRegistry {
         var properties = BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_BLOCK); // TODO:
 
         var aluminum = List.of(BlockTags.MINEABLE_WITH_PICKAXE, BlockTags.NEEDS_STONE_TOOL);
+        var orionite = List.of(BlockTags.MINEABLE_WITH_PICKAXE, BlockTags.NEEDS_DIAMOND_TOOL);
         var steel = List.of(BlockTags.MINEABLE_WITH_PICKAXE, BlockTags.NEEDS_IRON_TOOL);
         var titanium = List.of(BlockTags.MINEABLE_WITH_PICKAXE, BlockTags.NEEDS_IRON_TOOL);
 
         aluminumBlock = createHolder("aluminum_block", BlockData.simple(properties).blockTags(aluminum));
+        orioniteBlock = createHolder("orionite_block", BlockData.simple(properties).blockTags(orionite));
         steelBlock = createHolder("steel_block", BlockData.simple(properties).blockTags(steel));
         titaniumBlock = createHolder("titanium_block", BlockData.simple(properties).blockTags(titanium));
     }

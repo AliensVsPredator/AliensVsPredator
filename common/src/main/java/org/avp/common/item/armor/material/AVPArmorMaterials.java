@@ -74,11 +74,11 @@ public class AVPArmorMaterials {
     public static final ArmorMaterial VERITANIUM = new AVPArmorMaterial.Builder(
         "veritanium",
         SoundEvents.ARMOR_EQUIP_IRON,
-        AVPItems.INSTANCE.yautjaArtifact::get
+        AVPItems.INSTANCE.veritaniumShard::get
     )
         .setProtectionValues(new int[] { 4, 7, 9, 4 })
         .setDurabilityMultiplier(34)
-        .setEnchantmentValue(20)
+        .setEnchantmentValue(0)
         .setToughness(5)
         .build();
 

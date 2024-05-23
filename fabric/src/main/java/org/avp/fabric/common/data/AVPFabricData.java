@@ -8,6 +8,7 @@ import org.avp.common.data.recipe.AVPRecipeProvider;
 import org.avp.fabric.common.data.model.AVPFabricModelProvider;
 import org.avp.fabric.common.data.tag.AVPBiomeTagsProvider;
 import org.avp.fabric.common.data.tag.AVPBlockTagsProvider;
+import org.avp.fabric.common.data.tag.AVPDamageTypeTagsProvider;
 import org.avp.fabric.common.data.tag.AVPEntityTagsProvider;
 import org.avp.fabric.common.data.tag.AVPItemTagsProvider;
 
@@ -23,6 +24,7 @@ public class AVPFabricData implements DataGeneratorEntrypoint {
         // Tags
         pack.addProvider(AVPBiomeTagsProvider::new);
         pack.addProvider(AVPBlockTagsProvider::new);
+        pack.addProvider(AVPDamageTypeTagsProvider::new);
         pack.addProvider(AVPEntityTagsProvider::new);
         pack.addProvider(AVPItemTagsProvider::new);
     }

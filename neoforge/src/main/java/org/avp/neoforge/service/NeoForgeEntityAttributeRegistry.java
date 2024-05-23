@@ -2,7 +2,7 @@ package org.avp.neoforge.service;
 
 import net.neoforged.neoforge.event.entity.EntityAttributeCreationEvent;
 
-import org.avp.common.entity.attribute.*;
+import org.avp.common.entity.data.AVPEntityDataRegistry;
 
 public class NeoForgeEntityAttributeRegistry {
 
@@ -15,10 +15,10 @@ public class NeoForgeEntityAttributeRegistry {
     private NeoForgeEntityAttributeRegistry() {}
 
     public void createEntityAttributes(EntityAttributeCreationEvent event) {
-        AVPEntityAttributesBindingRegistry.getBindings().forEach(binding -> {
-            var entityType = binding.getKey().get();
-            var attributeSupplier = binding.getValue();
-            event.put(entityType, attributeSupplier);
+        AVPEntityDataRegistry.INSTANCE.getLivingEntries().forEach(entityData -> {
+            var entityType = entityData.getHolder().get();
+            var attributeSupplierOptional = entityData.getAttributeSupplier();
+            attributeSupplierOptional.ifPresent(attributeSupplier -> event.put(entityType, attributeSupplier));
         });
     }
 }

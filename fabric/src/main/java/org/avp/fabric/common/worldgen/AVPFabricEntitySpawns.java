@@ -7,44 +7,46 @@ import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.entity.SpawnPlacements;
 
 import org.avp.common.config.AVPConfig;
-import org.avp.common.entity.spawn.AVPEntitySpawns;
-import org.avp.common.tag.AVPEntityTags;
+import org.avp.common.entity.data.AVPEntityDataRegistry;
+import org.avp.common.tag.AVPEntityTypeTags;
 
 public class AVPFabricEntitySpawns {
 
     @SuppressWarnings("unchecked")
     public static void addEntitySpawns() {
-        AVPEntitySpawns.INSTANCE.getEntries().forEach(entitySpawnDataHolder -> {
-            var entitySpawnData = entitySpawnDataHolder.get();
-            var biomeTag = entitySpawnData.biomeTagKey();
-            var weight = entitySpawnData.weight();
-            var minGroupSize = entitySpawnData.minGroupSize();
-            var maxGroupSize = entitySpawnData.maxGroupSize();
-            var entityType = (EntityType<Mob>) entitySpawnData.entityTypeHolder().get();
+        AVPEntityDataRegistry.INSTANCE.getMobEntries().forEach(entityData -> {
+            var entityType = (EntityType<Mob>) entityData.getHolder().get();
+            var spawnDataOptional = entityData.getSpawnData();
+            spawnDataOptional.ifPresent(spawnData -> {
+                var biomeTag = spawnData.biomeTagKey();
+                var weight = spawnData.weight();
+                var minGroupSize = spawnData.minGroupSize();
+                var maxGroupSize = spawnData.maxGroupSize();
 
-            if (entityType.is(AVPEntityTags.ALIENS) && !AVPConfig.Aliens.ENABLE_XENOMORPH_OVERWORLD_SPAWNS) {
-                return;
-            }
+                if (entityType.is(AVPEntityTypeTags.ALIENS) && !AVPConfig.Aliens.ENABLE_XENOMORPH_OVERWORLD_SPAWNS) {
+                    return;
+                }
 
-            if (entityType.is(AVPEntityTags.PREDATORS) && !AVPConfig.Predators.ENABLE_YAUTJA_OVERWORLD_SPAWNS) {
-                return;
-            }
+                if (entityType.is(AVPEntityTypeTags.PREDATORS) && !AVPConfig.Predators.ENABLE_YAUTJA_OVERWORLD_SPAWNS) {
+                    return;
+                }
 
-            // Register biome spawns.
-            BiomeModifications.addSpawn(
-                context -> context.hasTag(biomeTag),
-                MobCategory.MONSTER,
-                entityType,
-                weight,
-                minGroupSize,
-                maxGroupSize
-            );
+                // Register biome spawns.
+                BiomeModifications.addSpawn(
+                    context -> context.hasTag(biomeTag),
+                    MobCategory.MONSTER,
+                    entityType,
+                    weight,
+                    minGroupSize,
+                    maxGroupSize
+                );
 
-            // Register spawn placements.
-            var placementType = entitySpawnData.spawnPlacementType();
-            var heightMapType = entitySpawnData.heightMapType();
-            var predicate = (SpawnPlacements.SpawnPredicate<Mob>) entitySpawnData.spawnPredicate();
-            SpawnPlacements.register(entityType, placementType, heightMapType, predicate);
+                // Register spawn placements.
+                var placementType = spawnData.spawnPlacementType();
+                var heightMapType = spawnData.heightMapType();
+                var predicate = (SpawnPlacements.SpawnPredicate<Mob>) spawnData.spawnPredicate();
+                SpawnPlacements.register(entityType, placementType, heightMapType, predicate);
+            });
         });
     }
 

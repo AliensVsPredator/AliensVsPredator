@@ -11,6 +11,8 @@ import java.util.function.Predicate;
 
 public class AVPPredicates {
 
+    public static final Predicate<Object> ALWAYS_TRUE = o -> true;
+
     public static final Predicate<Player> IS_IMMORTAL = player -> player.isCreative() || player.isSpectator();
 
     public static final Predicate<Item> IS_ITEM_SHULKER_BOX = item -> item instanceof BlockItem blockItem &&

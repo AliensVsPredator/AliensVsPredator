@@ -4,29 +4,60 @@ import mod.azure.azurelib.common.api.common.animatable.GeoEntity;
 import mod.azure.azurelib.common.internal.common.core.animatable.instance.AnimatableInstanceCache;
 import mod.azure.azurelib.common.internal.common.core.animation.AnimatableManager;
 import mod.azure.azurelib.common.internal.common.util.AzureLibUtil;
+import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerBossEvent;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.sounds.SoundEvent;
 import net.minecraft.util.Mth;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.BossEvent;
-import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.MobSpawnType;
+import net.minecraft.world.entity.SpawnGroupData;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.ServerLevelAccessor;
+import net.minecraft.world.level.entity.EntityTypeTest;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import org.avp.api.entity.Boss;
 import org.avp.common.entity.ai.AIUtils;
 import org.avp.common.sound.AVPSoundEvents;
+import org.avp.common.util.AVPPredicates;
+import org.avp.server.QueenManager;
 
-public class Queen extends Monster implements GeoEntity {
+public class Queen extends Monster implements Boss, GeoEntity {
 
-    private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
+    private static final int SPAWN_MIN_DISTANCE_IN_BLOCKS = 512;
+
+    private static final int SPAWN_DISTANCE_SQUARED = SPAWN_MIN_DISTANCE_IN_BLOCKS * SPAWN_MIN_DISTANCE_IN_BLOCKS;
+
+    public static boolean anyNearbyQueens(ServerLevelAccessor serverLevelAccessor, BlockPos blockPos) {
+        var allQueens = serverLevelAccessor.getLevel().getEntities(EntityTypeTest.forClass(Queen.class), AVPPredicates.ALWAYS_TRUE);
+        return allQueens.stream()
+            .anyMatch(queen -> queen.distanceToSqr(blockPos.getX(), blockPos.getY(), blockPos.getZ()) < SPAWN_DISTANCE_SQUARED);
+    }
+
+    public static boolean checkQueenSpawnRules(
+        EntityType<? extends Monster> entityType,
+        ServerLevelAccessor serverLevelAccessor,
+        MobSpawnType mobSpawnType,
+        BlockPos blockPos,
+        RandomSource randomSource
+    ) {
+        return Monster.checkMonsterSpawnRules(
+            entityType,
+            serverLevelAccessor,
+            mobSpawnType,
+            blockPos,
+            randomSource
+        ) &&
+            !anyNearbyQueens(serverLevelAccessor, blockPos);
+    }
 
     private final ServerBossEvent bossEvent = (ServerBossEvent) new ServerBossEvent(
         this.getDisplayName(),
@@ -34,18 +65,12 @@ public class Queen extends Monster implements GeoEntity {
         BossEvent.BossBarOverlay.PROGRESS
     ).setDarkenScreen(true);
 
+    private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
+
     public Queen(EntityType<? extends Monster> entityType, Level level) {
         super(entityType, level);
         this.setMaxUpStep(1);
         this.setPersistenceRequired();
-    }
-
-    @Override
-    public void readAdditionalSaveData(@NotNull CompoundTag compoundTag) {
-        super.readAdditionalSaveData(compoundTag);
-        if (this.hasCustomName()) {
-            this.bossEvent.setName(this.getDisplayName());
-        }
     }
 
     @Override
@@ -64,48 +89,28 @@ public class Queen extends Monster implements GeoEntity {
 
     @Override
     protected void registerGoals() {
-        AIUtils.addBasicAlienAI(this, goalSelector, targetSelector);
+        AIUtils.addHiveAlienAI(this, goalSelector, targetSelector);
         targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, Queen.class, true, Queen.class::isInstance));
-    }
-
-    @Override
-    protected void customServerAiStep() {
-        super.customServerAiStep();
-        this.bossEvent.setProgress(this.getHealth() / this.getMaxHealth());
-    }
-
-    @Override
-    public void setCustomName(@Nullable Component component) {
-        super.setCustomName(component);
-        this.bossEvent.setName(this.getDisplayName());
+        targetSelector.addGoal(4, new NearestAttackableTargetGoal<>(this, Dracomorph.class, true, Dracomorph.class::isInstance));
     }
 
     @Nullable
     @Override
-    protected SoundEvent getAmbientSound() {
-        return AVPSoundEvents.INSTANCE.entityQueenAmbient.get();
+    public SpawnGroupData finalizeSpawn(
+        @NotNull ServerLevelAccessor serverLevelAccessor,
+        @NotNull DifficultyInstance difficultyInstance,
+        @NotNull MobSpawnType mobSpawnType,
+        @Nullable SpawnGroupData spawnGroupData,
+        @Nullable CompoundTag compoundTag
+    ) {
+        QueenManager.submit(this);
+        return super.finalizeSpawn(serverLevelAccessor, difficultyInstance, mobSpawnType, spawnGroupData, compoundTag);
     }
 
     @Override
-    protected SoundEvent getDeathSound() {
-        return AVPSoundEvents.INSTANCE.entityQueenDeath.get();
-    }
-
-    @Override
-    protected SoundEvent getHurtSound(@NotNull DamageSource damageSource) {
-        return AVPSoundEvents.INSTANCE.entityQueenHurt.get();
-    }
-
-    @Override
-    public void startSeenByPlayer(@NotNull ServerPlayer serverPlayer) {
-        super.startSeenByPlayer(serverPlayer);
-        bossEvent.addPlayer(serverPlayer);
-    }
-
-    @Override
-    public void stopSeenByPlayer(@NotNull ServerPlayer serverPlayer) {
-        super.stopSeenByPlayer(serverPlayer);
-        bossEvent.removePlayer(serverPlayer);
+    public void remove(@NotNull RemovalReason removalReason) {
+        super.remove(removalReason);
+        QueenManager.remove(getUUID());
     }
 
     @Override
@@ -116,5 +121,10 @@ public class Queen extends Monster implements GeoEntity {
     @Override
     public AnimatableInstanceCache getAnimatableInstanceCache() {
         return cache;
+    }
+
+    @Override
+    public ServerBossEvent getBossEvent() {
+        return bossEvent;
     }
 }

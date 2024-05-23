@@ -15,6 +15,7 @@ import org.avp.api.Holder;
 import org.avp.api.Tuple;
 import org.avp.api.block.BlockData;
 import org.avp.api.block.factory.BlockFactories;
+import org.avp.api.block.factory.CustomTransparentBlockFactory;
 import org.avp.api.block.factory.FenceGateBlockFactory;
 import org.avp.api.block.factory.StairBlockFactory;
 import org.avp.common.item.AVPSpawnEggItems;
@@ -26,7 +27,7 @@ public class AVPFabricBlockModelProvider {
         AVPDeferredBlockRegistry.getDataEntries().forEach(tuple -> computeBlockModels(generator, tuple));
 
         // Listen, I don't like this any more than you do. But Mojang also does this, so...
-        AVPSpawnEggItems.INSTANCE.getEntries()
+        AVPSpawnEggItems.INSTANCE.getValues()
             .forEach(
                 holder -> generator.delegateItemModel(
                     holder.get(),
@@ -42,7 +43,7 @@ public class AVPFabricBlockModelProvider {
         var factory = blockData.getFactory();
 
         // Generate the corresponding model depending on the type of factory used to create the block.
-        if (factory == BlockFactories.CUBE || factory == BlockFactories.TRANSPARENT) {
+        if (factory == BlockFactories.CUBE || factory instanceof CustomTransparentBlockFactory) {
             generator.createTrivialCube(blockHolder.get());
         } else if (factory == BlockFactories.FENCE) {
             if (parentHolder == null) {

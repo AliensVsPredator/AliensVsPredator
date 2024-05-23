@@ -1,50 +1,37 @@
 package org.avp.client.model.entity.living;
 
-import mod.azure.azurelib.common.api.client.model.GeoModel;
 import mod.azure.azurelib.common.internal.common.core.animation.AnimationState;
-import net.minecraft.resources.ResourceLocation;
 
 import org.avp.client.util.BasicAnimationUtils;
-import org.avp.common.AVPResources;
 import org.avp.common.entity.living.Yautja;
 
-public class YautjaModel extends GeoModel<Yautja> {
+public class YautjaModel extends AVPGeoModel<Yautja> {
 
-    private static final String ENTITY_NAME = "yautja";
-
-    private static final ResourceLocation MODEL_LOCATION = AVPResources.entityGeoLocation(ENTITY_NAME);
-
-    private static final ResourceLocation TEXTURE_LOCATION = AVPResources.entityTextureLocation(ENTITY_NAME);
-
-    private static final ResourceLocation ANIMATION_LOCATION = AVPResources.entityAnimationLocation(ENTITY_NAME);
-
-    @Override
-    public ResourceLocation getModelResource(Yautja entity) {
-        return MODEL_LOCATION;
+    public YautjaModel() {
+        super("yautja", GeoModelType.ENTITY);
     }
 
-    @Override
-    public ResourceLocation getTextureResource(Yautja entity) {
-        return TEXTURE_LOCATION;
-    }
-
-    @Override
-    public ResourceLocation getAnimationResource(Yautja entity) {
-        return ANIMATION_LOCATION;
-    }
-
-    public void showHelmet(boolean showHelmet) {
+    public void showHelmet(boolean show) {
         var helmet = this.getAnimationProcessor().getBone("gMaskArmor");
 
         if (helmet != null) {
-            helmet.setHidden(!showHelmet);
+            helmet.setHidden(!show);
+        }
+    }
+
+    public void showWristblades(boolean show) {
+        var blades = this.getAnimationProcessor().getBone("gWristBlade");
+
+        if (blades != null) {
+            blades.setHidden(!show);
         }
     }
 
     @Override
     public void setCustomAnimations(Yautja entity, long instanceId, AnimationState<Yautja> animationState) {
-        this.showHelmet(entity.hasHelmet());
-        BasicAnimationUtils.applyHeadRotations(this, animationState, "face", -0.2F);
+        this.showHelmet(entity.hasHelmet.get());
+        this.showWristblades(entity.wristbladesVisible.get());
+        BasicAnimationUtils.applyHeadRotations(this, animationState, "gNeckUpper", -0.2F);
         BasicAnimationUtils.applyLimbRotations(
             entity,
             this,

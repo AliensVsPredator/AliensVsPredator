@@ -15,6 +15,7 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.ProjectileUtil;
@@ -39,6 +40,7 @@ import org.avp.api.item.weapon.WeaponItemData;
 import org.avp.api.item.weapon.WeaponItemTagHelper;
 import org.avp.client.render.item.AVPWeaponItemRenderers;
 import org.avp.common.config.AVPConfig;
+import org.avp.common.damage.AVPDamageSources;
 import org.avp.common.network.payload.ClientboundBulletHitBlockPayload;
 import org.avp.common.service.Services;
 import org.avp.common.util.AVPPredicates;
@@ -167,11 +169,15 @@ public abstract class AbstractAVPWeaponItem extends Item implements GeoItem {
             level.playSound(null, player.blockPosition(), shootSound, SoundSource.PLAYERS);
         }
 
-        var hitResult = ProjectileUtil.getHitResultOnViewVector(player, AVPPredicates.IS_LIVING, fireMode.range());
+        var hitResult = ProjectileUtil.getHitResultOnViewVector(
+            player,
+            entity -> entity.getType() == EntityType.END_CRYSTAL || AVPPredicates.IS_LIVING.test(entity),
+            fireMode.range()
+        );
 
         switch (hitResult.getType()) {
             case BLOCK -> handleHitBlock(level, fireMode, (BlockHitResult) hitResult);
-            case ENTITY -> handleHitEntity(level, player, itemStack, (EntityHitResult) hitResult, fireMode);
+            case ENTITY -> handleHitEntity(player, itemStack, (EntityHitResult) hitResult, fireMode);
             case MISS -> { /* Do nothing */ }
         }
     }
@@ -192,23 +198,26 @@ public abstract class AbstractAVPWeaponItem extends Item implements GeoItem {
         Services.NETWORK_SERVICE.sendToAllClients(level.getServer(), payload);
     }
 
-    private void handleHitEntity(@NotNull Level level, Player player, ItemStack itemStack, EntityHitResult hitResult, FireMode fireMode) {
-        if (!(hitResult.getEntity() instanceof LivingEntity livingEntity)) {
-            return;
-        }
-
+    private void handleHitEntity(Player player, ItemStack itemStack, EntityHitResult hitResult, FireMode fireMode) {
+        var hitEntity = hitResult.getEntity();
         var damage = this.getWeaponItemData().getDamage() * fireMode.consumedAmmunition();
 
-        livingEntity.invulnerableTime = 0;
-        livingEntity.hurt(level.damageSources().playerAttack(player), damage);
-        livingEntity.knockback(
-            this.getWeaponItemData().getKnockback() * fireMode.consumedAmmunition(),
-            Mth.sin(player.getYRot() * Mth.DEG_TO_RAD),
-            -Mth.cos(player.getYRot() * Mth.DEG_TO_RAD)
-        );
+        var damageSource = AVPDamageSources.INSTANCE.bullet.get().covertIndirectDamageSource(player.level(), player);
+        hitEntity.hurt(damageSource, damage);
 
-        var bulletEffects = WeaponItemTagHelper.getBulletEffects(itemStack, weaponItemData);
-        bulletEffects.forEach(bulletEffect -> bulletEffect.applyEffect(livingEntity));
+        if (hitEntity instanceof LivingEntity livingEntity) {
+            livingEntity.invulnerableTime = 0;
+            livingEntity.setLastHurtByMob(player);
+
+            livingEntity.knockback(
+                this.getWeaponItemData().getKnockback() * fireMode.consumedAmmunition(),
+                Mth.sin(player.getYRot() * Mth.DEG_TO_RAD),
+                -Mth.cos(player.getYRot() * Mth.DEG_TO_RAD)
+            );
+
+            var bulletEffects = WeaponItemTagHelper.getBulletEffects(itemStack, weaponItemData);
+            bulletEffects.forEach(bulletEffect -> bulletEffect.applyEffect(livingEntity));
+        }
     }
 
     private void damageBlock(@NotNull Level level, BlockPos blockPos, FireMode fireMode) {

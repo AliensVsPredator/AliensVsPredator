@@ -52,7 +52,7 @@ public final class AVPCreativeModeTabs extends AVPDeferredRegistry<CreativeModeT
     @Override
     protected Holder<CreativeModeTab> createHolder(String registryName, Supplier<CreativeModeTab> supplier) {
         var holder = Services.CREATIVE_MODE_TAB_SERVICE.createHolder(registryName, supplier);
-        entries.add(holder);
+        entries.put(registryName, holder);
         return holder;
     }
 
@@ -64,7 +64,7 @@ public final class AVPCreativeModeTabs extends AVPDeferredRegistry<CreativeModeT
                 .icon(AVPArmorItems.INSTANCE.veritaniumHelmet.get()::getDefaultInstance)
                 .displayItems(
                     (itemDisplayParameters, output) -> output.acceptAll(
-                        itemsToItemStacks(AVPArmorItems.INSTANCE.getEntries())
+                        itemsToItemStacks(AVPArmorItems.INSTANCE.getValues())
                     )
                 )
         );
@@ -86,7 +86,7 @@ public final class AVPCreativeModeTabs extends AVPDeferredRegistry<CreativeModeT
                 .icon(AVPFoodItems.INSTANCE.doritos.get()::getDefaultInstance)
                 .displayItems(
                     (itemDisplayParameters, output) -> output.acceptAll(
-                        itemsToItemStacks(AVPFoodItems.INSTANCE.getEntries())
+                        itemsToItemStacks(AVPFoodItems.INSTANCE.getValues())
                     )
                 )
         );
@@ -97,7 +97,7 @@ public final class AVPCreativeModeTabs extends AVPDeferredRegistry<CreativeModeT
                 .icon(AVPElectronicItems.INSTANCE.cpu.get()::getDefaultInstance)
                 .displayItems(
                     (itemDisplayParameters, output) -> output.acceptAll(
-                        itemsToItemStacks(AVPElectronicItems.INSTANCE.getEntries())
+                        itemsToItemStacks(AVPElectronicItems.INSTANCE.getValues())
                     )
                 )
         );
@@ -108,7 +108,7 @@ public final class AVPCreativeModeTabs extends AVPDeferredRegistry<CreativeModeT
                 .icon(Items.EGG::getDefaultInstance)
                 .displayItems(
                     (itemDisplayParameters, output) -> output.acceptAll(
-                        itemsToItemStacks(AVPSpawnEggItems.INSTANCE.getEntries())
+                        itemsToItemStacks(AVPSpawnEggItems.INSTANCE.getValues())
                     )
                 )
         );
@@ -119,7 +119,7 @@ public final class AVPCreativeModeTabs extends AVPDeferredRegistry<CreativeModeT
                 .icon(AVPItems.INSTANCE.royalJelly.get()::getDefaultInstance)
                 .displayItems(
                     (itemDisplayParameters, output) -> output.acceptAll(
-                        itemsToItemStacks(AVPItems.INSTANCE.getEntries())
+                        itemsToItemStacks(AVPItems.INSTANCE.getValues())
                     )
                 )
         );
@@ -130,7 +130,7 @@ public final class AVPCreativeModeTabs extends AVPDeferredRegistry<CreativeModeT
                 .icon(AVPToolItems.INSTANCE.veritaniumPickaxe.get()::getDefaultInstance)
                 .displayItems(
                     (itemDisplayParameters, output) -> output.acceptAll(
-                        itemsToItemStacks(AVPToolItems.INSTANCE.getEntries())
+                        itemsToItemStacks(AVPToolItems.INSTANCE.getValues())
                     )
                 )
         );
@@ -142,26 +142,26 @@ public final class AVPCreativeModeTabs extends AVPDeferredRegistry<CreativeModeT
                 .displayItems(
                     (itemDisplayParameters, output) -> {
                         output.acceptAll(
-                            itemsToItemStacks(AVPAmmunitionPartItems.INSTANCE.getEntries())
+                            itemsToItemStacks(AVPAmmunitionPartItems.INSTANCE.getValues())
                         );
                         output.acceptAll(
-                            itemsToItemStacks(AVPWeaponBlueprintItems.INSTANCE.getEntries())
+                            itemsToItemStacks(AVPWeaponBlueprintItems.INSTANCE.getValues())
                         );
                         output.acceptAll(
-                            itemsToItemStacks(AVPBulletItems.INSTANCE.getEntries())
+                            itemsToItemStacks(AVPBulletItems.INSTANCE.getValues())
                         );
                         output.acceptAll(
-                            itemsToItemStacks(AVPWeaponItems.INSTANCE.getEntries())
+                            itemsToItemStacks(AVPWeaponItems.INSTANCE.getValues())
                         );
                         output.acceptAll(
-                            itemsToItemStacks(AVPWeaponPartItems.INSTANCE.getEntries())
+                            itemsToItemStacks(AVPWeaponPartItems.INSTANCE.getValues())
                         );
                     }
                 )
         );
 
         // Register all the holders we just created.
-        entries.forEach(Services.CREATIVE_MODE_TAB_SERVICE::register);
+        getValues().forEach(Services.CREATIVE_MODE_TAB_SERVICE::register);
     }
 
     private AVPCreativeModeTabs() {}

@@ -8,14 +8,8 @@ import net.minecraft.world.entity.EntityType;
 
 import java.util.concurrent.CompletableFuture;
 
-import org.avp.common.entity.type.AVPBaseAlienEntityTypes;
-import org.avp.common.entity.type.AVPEngineerEntityTypes;
-import org.avp.common.entity.type.AVPEntityTypes;
-import org.avp.common.entity.type.AVPExoticAlienEntityTypes;
-import org.avp.common.entity.type.AVPPrometheusAlienEntityTypes;
-import org.avp.common.entity.type.AVPRunnerAlienEntityTypes;
-import org.avp.common.entity.type.AVPYautjaEntityTypes;
-import org.avp.common.tag.AVPEntityTags;
+import org.avp.common.entity.data.AVPEntityDataRegistry;
+import org.avp.common.tag.AVPEntityTypeTags;
 
 public class AVPEntityTagsProvider extends FabricTagProvider.EntityTypeTagProvider {
 
@@ -30,80 +24,46 @@ public class AVPEntityTagsProvider extends FabricTagProvider.EntityTypeTagProvid
     }
 
     private void createAVPTags() {
-        getOrCreateTagBuilder(AVPEntityTags.PARASITES).add(
-            AVPBaseAlienEntityTypes.INSTANCE.facehugger.get(),
-            AVPBaseAlienEntityTypes.INSTANCE.facehuggerRoyal.get(),
-            AVPExoticAlienEntityTypes.INSTANCE.octohugger.get(),
-            AVPPrometheusAlienEntityTypes.INSTANCE.trilobite.get(),
-            AVPPrometheusAlienEntityTypes.INSTANCE.trilobiteBaby.get()
-        );
+        AVPEntityDataRegistry.INSTANCE.getEntries().forEach(entityData -> {
+            var entityType = entityData.getHolder().get();
+            var tags = entityData.getTags();
 
-        getOrCreateTagBuilder(AVPEntityTags.EGGS).add(
-            AVPBaseAlienEntityTypes.INSTANCE.ovamorph.get(),
-            AVPExoticAlienEntityTypes.INSTANCE.ovamorphDraco.get()
-        );
+            tags.forEach(tag -> getOrCreateTagBuilder(tag).add(entityType));
+        });
 
-        getOrCreateTagBuilder(AVPEntityTags.ROYAL_ALIENS).add(
-            AVPBaseAlienEntityTypes.INSTANCE.facehuggerRoyal.get(),
-            AVPBaseAlienEntityTypes.INSTANCE.praetorian.get(),
-            AVPBaseAlienEntityTypes.INSTANCE.queen.get(),
-            AVPRunnerAlienEntityTypes.INSTANCE.crusher.get()
-        );
+        getOrCreateTagBuilder(AVPEntityTypeTags.HIVE_ALIENS)
+            .addTag(AVPEntityTypeTags.EGGS)
+            .addTag(AVPEntityTypeTags.ROYAL_ALIENS);
 
-        getOrCreateTagBuilder(AVPEntityTags.ALIENS)
-            .addTag(AVPEntityTags.EGGS)
-            .addTag(AVPEntityTags.PARASITES)
-            .addTag(AVPEntityTags.ROYAL_ALIENS)
+        getOrCreateTagBuilder(AVPEntityTypeTags.ALIENS)
+            .addTag(AVPEntityTypeTags.HIVE_ALIENS)
+            .addTag(AVPEntityTypeTags.EGGS)
+            .addTag(AVPEntityTypeTags.PARASITES)
+            .addTag(AVPEntityTypeTags.ROYAL_ALIENS);
+
+        getOrCreateTagBuilder(AVPEntityTypeTags.ACID_IMMUNE)
+            .addTag(AVPEntityTypeTags.ACID_BLEEDERS);
+
+        getOrCreateTagBuilder(AVPEntityTypeTags.NOT_WORTH_KILLING)
             .add(
-                AVPEntityTypes.INSTANCE.belugaburster.get(),
-                AVPEntityTypes.INSTANCE.belugamorph.get(),
-
-                AVPBaseAlienEntityTypes.INSTANCE.boiler.get(),
-                AVPBaseAlienEntityTypes.INSTANCE.chestburster.get(),
-                AVPBaseAlienEntityTypes.INSTANCE.drone.get(),
-                AVPBaseAlienEntityTypes.INSTANCE.spitter.get(),
-                AVPBaseAlienEntityTypes.INSTANCE.warrior.get(),
-                AVPExoticAlienEntityTypes.INSTANCE.deaconAdultEngineer.get(),
-                AVPExoticAlienEntityTypes.INSTANCE.chestbursterDraco.get(),
-                AVPExoticAlienEntityTypes.INSTANCE.dracomorph.get(),
-                AVPExoticAlienEntityTypes.INSTANCE.ultramorph.get(),
-
-                AVPPrometheusAlienEntityTypes.INSTANCE.deacon.get(),
-                AVPPrometheusAlienEntityTypes.INSTANCE.deaconAdult.get(),
-
-                AVPRunnerAlienEntityTypes.INSTANCE.chestbursterRunner.get(),
-                AVPRunnerAlienEntityTypes.INSTANCE.droneRunner.get(),
-                AVPRunnerAlienEntityTypes.INSTANCE.warriorRunner.get()
+                EntityType.ALLAY,
+                EntityType.AXOLOTL,
+                EntityType.BAT,
+                EntityType.BEE,
+                EntityType.CAT,
+                EntityType.CHICKEN,
+                EntityType.COD,
+                EntityType.CREEPER,
+                EntityType.GLOW_SQUID,
+                EntityType.PARROT,
+                EntityType.PUFFERFISH,
+                EntityType.SALMON,
+                EntityType.SQUID,
+                EntityType.TADPOLE,
+                EntityType.TROPICAL_FISH
             );
 
-        getOrCreateTagBuilder(AVPEntityTags.ACID_BLEEDERS)
-            .addTag(AVPEntityTags.ALIENS);
-
-        getOrCreateTagBuilder(AVPEntityTags.ACID_IMMUNE)
-            .addTag(AVPEntityTags.ACID_BLEEDERS);
-
-        getOrCreateTagBuilder(AVPEntityTags.ENGINEERS).add(
-            AVPEngineerEntityTypes.INSTANCE.engineer.get()
-        );
-
-        getOrCreateTagBuilder(AVPEntityTags.NOT_WORTH_KILLING)
-            .add(EntityType.ALLAY)
-            .add(EntityType.AXOLOTL)
-            .add(EntityType.BAT)
-            .add(EntityType.BEE)
-            .add(EntityType.CAT)
-            .add(EntityType.CHICKEN)
-            .add(EntityType.COD)
-            .add(EntityType.CREEPER)
-            .add(EntityType.GLOW_SQUID)
-            .add(EntityType.PARROT)
-            .add(EntityType.PUFFERFISH)
-            .add(EntityType.SALMON)
-            .add(EntityType.SQUID)
-            .add(EntityType.TADPOLE)
-            .add(EntityType.TROPICAL_FISH);
-
-        getOrCreateTagBuilder(AVPEntityTags.NON_HOSTS)
+        getOrCreateTagBuilder(AVPEntityTypeTags.NON_HOSTS)
             .addOptionalTag(EntityTypeTags.UNDEAD)
             .add(
                 EntityType.ALLAY,
@@ -144,16 +104,13 @@ public class AVPEntityTagsProvider extends FabricTagProvider.EntityTypeTagProvid
                 EntityType.WARDEN
             );
 
-        getOrCreateTagBuilder(AVPEntityTags.PREDATORS)
-            .add(AVPYautjaEntityTypes.INSTANCE.yautja.get());
-
-        getOrCreateTagBuilder(AVPEntityTags.MONSTERS)
-            .addTag(AVPEntityTags.ALIENS)
-            .addTag(AVPEntityTags.PREDATORS);
+        getOrCreateTagBuilder(AVPEntityTypeTags.MONSTERS)
+            .addTag(AVPEntityTypeTags.ALIENS)
+            .addTag(AVPEntityTypeTags.PREDATORS);
     }
 
     private void modifyMinecraftTags() {
         getOrCreateTagBuilder(EntityTypeTags.CAN_BREATHE_UNDER_WATER)
-            .addTag(AVPEntityTags.ALIENS);
+            .addTag(AVPEntityTypeTags.ALIENS);
     }
 }

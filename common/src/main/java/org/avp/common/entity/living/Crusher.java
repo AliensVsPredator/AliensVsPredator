@@ -4,15 +4,12 @@ import mod.azure.azurelib.common.api.common.animatable.GeoEntity;
 import mod.azure.azurelib.common.internal.common.core.animatable.instance.AnimatableInstanceCache;
 import mod.azure.azurelib.common.internal.common.core.animation.AnimatableManager;
 import mod.azure.azurelib.common.internal.common.util.AzureLibUtil;
-import net.minecraft.sounds.SoundEvent;
-import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.ai.goal.LeapAtTargetGoal;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import org.avp.common.entity.ai.AIUtils;
 import org.avp.common.sound.AVPSoundEvents;
@@ -34,24 +31,8 @@ public class Crusher extends Monster implements GeoEntity {
 
     @Override
     protected void registerGoals() {
-        AIUtils.addBasicAlienAI(this, goalSelector, targetSelector);
+        AIUtils.addHiveAlienAI(this, goalSelector, targetSelector);
         goalSelector.addGoal(3, new LeapAtTargetGoal(this, 0.4F));
-    }
-
-    @Nullable
-    @Override
-    protected SoundEvent getAmbientSound() {
-        return AVPSoundEvents.INSTANCE.entityPraetorianAmbient.get();
-    }
-
-    @Override
-    protected SoundEvent getDeathSound() {
-        return AVPSoundEvents.INSTANCE.entityPraetorianDeath.get();
-    }
-
-    @Override
-    protected SoundEvent getHurtSound(@NotNull DamageSource damageSource) {
-        return AVPSoundEvents.INSTANCE.entityPraetorianHurt.get();
     }
 
     @Override

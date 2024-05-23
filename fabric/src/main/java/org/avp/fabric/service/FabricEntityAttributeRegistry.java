@@ -5,7 +5,7 @@ import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRe
 import java.util.function.Supplier;
 
 import org.avp.api.Holder;
-import org.avp.common.entity.attribute.AVPEntityAttributesBindingRegistry;
+import org.avp.common.entity.data.AVPEntityDataRegistry;
 import org.avp.common.registry.AVPDeferredRegistry;
 
 public class FabricEntityAttributeRegistry extends AVPDeferredRegistry<Void> {
@@ -21,10 +21,12 @@ public class FabricEntityAttributeRegistry extends AVPDeferredRegistry<Void> {
 
     @Override
     public void register() {
-        AVPEntityAttributesBindingRegistry.getBindings().forEach(binding -> {
-            var entityType = binding.getKey().get();
-            var attributeSupplier = binding.getValue();
-            FabricDefaultAttributeRegistry.register(entityType, attributeSupplier);
+        AVPEntityDataRegistry.INSTANCE.getLivingEntries().forEach(entityData -> {
+            var entityType = entityData.getHolder().get();
+            var attributeSupplierOptional = entityData.getAttributeSupplier();
+            attributeSupplierOptional.ifPresent(
+                attributeSupplier -> FabricDefaultAttributeRegistry.register(entityType, attributeSupplier)
+            );
         });
     }
 }

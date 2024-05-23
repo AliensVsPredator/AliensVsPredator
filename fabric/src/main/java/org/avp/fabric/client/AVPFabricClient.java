@@ -10,7 +10,7 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 
-import org.avp.api.block.factory.BlockFactories;
+import org.avp.api.block.factory.CustomTransparentBlockFactory;
 import org.avp.client.AVPClientKeyBindings;
 import org.avp.client.render.entity.AVPEntityRenderRegistry;
 import org.avp.client.render.particle.AVPParticleTypeProviders;
@@ -28,7 +28,8 @@ public class AVPFabricClient implements ClientModInitializer {
             var block = tuple.first().get();
             var blockData = tuple.second();
             var factory = blockData.getFactory();
-            if (factory == BlockFactories.TRANSPARENT) {
+
+            if (factory instanceof CustomTransparentBlockFactory) {
                 BlockRenderLayerMap.INSTANCE.putBlock(block, RenderType.translucent());
             }
         });
@@ -38,9 +39,11 @@ public class AVPFabricClient implements ClientModInitializer {
 
     @SuppressWarnings("unchecked")
     private static void registerEntityRenderBindings() {
-        AVPEntityRenderRegistry.getBindings().forEach(binding -> {
-            var entityType = (EntityType<Entity>) binding.entityTypeHolder().get();
-            var provider = (EntityRendererProvider<Entity>) binding.entityRendererProvider();
+        AVPEntityRenderRegistry.INSTANCE.verifyAllRendererProvidersPresent();
+        AVPEntityRenderRegistry.INSTANCE.getValues().forEach(entityDataHolder -> {
+            var entityData = entityDataHolder.get();
+            var entityType = (EntityType<Entity>) entityData.entityTypeHolder().get();
+            var provider = (EntityRendererProvider<Entity>) entityData.entityRendererProvider();
             EntityRendererRegistry.register(entityType, provider);
         });
     }

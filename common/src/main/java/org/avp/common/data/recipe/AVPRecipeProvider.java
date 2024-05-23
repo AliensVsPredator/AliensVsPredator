@@ -25,6 +25,7 @@ import org.avp.common.data.recipe.impl.material.AVPAluminumRecipes;
 import org.avp.common.data.recipe.impl.material.AVPCobaltRecipes;
 import org.avp.common.data.recipe.impl.material.AVPLithiumRecipes;
 import org.avp.common.data.recipe.impl.material.AVPNeodymiumRecipes;
+import org.avp.common.data.recipe.impl.material.AVPOrioniteRecipes;
 import org.avp.common.data.recipe.impl.material.AVPSilicaRecipes;
 import org.avp.common.data.recipe.impl.material.AVPSteelRecipes;
 import org.avp.common.data.recipe.impl.material.AVPTitaniumRecipes;
@@ -57,6 +58,7 @@ public class AVPRecipeProvider extends RecipeProvider {
         AVPLithiumRecipes.addLithiumRecipes(recipeOutput);
         AVPMaterialsRecipes.addMaterialRecipes(recipeOutput);
         AVPNeodymiumRecipes.addNeodymiumRecipes(recipeOutput);
+        AVPOrioniteRecipes.addOrioniteRecipes(recipeOutput);
         AVPSilicaRecipes.addSilicaRecipes(recipeOutput);
         AVPSteelRecipes.addSteelRecipes(recipeOutput);
         AVPTitaniumRecipes.addTitaniumRecipes(recipeOutput);

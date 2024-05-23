@@ -1,5 +1,6 @@
 package org.avp.api.block.factory;
 
+import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.FenceBlock;
 import net.minecraft.world.level.block.GrassBlock;
@@ -11,7 +12,6 @@ import net.minecraft.world.level.block.state.properties.WoodType;
 import java.util.function.Function;
 
 import org.avp.api.Holder;
-import org.avp.api.block.CustomTransparentBlock;
 
 public class BlockFactories {
 
@@ -31,7 +31,7 @@ public class BlockFactories {
 
     public static final Function<Holder<Block>, BlockFactory> STAIRS = StairBlockFactory::new;
 
-    public static final BlockFactory TRANSPARENT = CustomTransparentBlock::new;
+    public static final Function<DyeColor, BlockFactory> TRANSPARENT = CustomTransparentBlockFactory::new;
 
     public static final BlockFactory WALL = WallBlock::new;
 

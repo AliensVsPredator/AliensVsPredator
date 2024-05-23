@@ -21,70 +21,70 @@ public class AVPFabricLootTableModifier {
                     BuiltInLootTables.VILLAGE_WEAPONSMITH,
                     id,
                     tableBuilder,
-                    AVPWeaponBlueprintItems.INSTANCE.BLUEPRINT_M88MOD4_COMBAT_PISTOL,
+                    AVPWeaponBlueprintItems.INSTANCE.blueprintM88Mod4CombatPistol,
                     50
                 );
                 addSimpleLootPool(
                     BuiltInLootTables.SIMPLE_DUNGEON,
                     id,
                     tableBuilder,
-                    AVPWeaponBlueprintItems.INSTANCE.BLUEPRINT_37_12_SHOTGUN,
+                    AVPWeaponBlueprintItems.INSTANCE.blueprint3712Shotgun,
                     20
                 );
                 addSimpleLootPool(
                     BuiltInLootTables.DESERT_PYRAMID,
                     id,
                     tableBuilder,
-                    AVPWeaponBlueprintItems.INSTANCE.BLUEPRINT_F90_RIFLE,
+                    AVPWeaponBlueprintItems.INSTANCE.blueprintF90Rifle,
                     20
                 );
                 addSimpleLootPool(
                     BuiltInLootTables.JUNGLE_TEMPLE,
                     id,
                     tableBuilder,
-                    AVPWeaponBlueprintItems.INSTANCE.BLUEPRINT_M4_CARBINE,
+                    AVPWeaponBlueprintItems.INSTANCE.blueprintM4Carbine,
                     20
                 );
                 addSimpleLootPool(
                     BuiltInLootTables.PILLAGER_OUTPOST,
                     id,
                     tableBuilder,
-                    AVPWeaponBlueprintItems.INSTANCE.BLUEPRINT_SNIPER_RIFLE,
+                    AVPWeaponBlueprintItems.INSTANCE.blueprintSniperRifle,
                     20
                 );
                 addSimpleLootPool(
                     BuiltInLootTables.STRONGHOLD_CORRIDOR,
                     id,
                     tableBuilder,
-                    AVPWeaponBlueprintItems.INSTANCE.BLUEPRINT_M41A_PULSE_RIFLE,
+                    AVPWeaponBlueprintItems.INSTANCE.blueprintM41APulseRifle,
                     20
                 );
                 addSimpleLootPool(
                     BuiltInLootTables.BASTION_TREASURE,
                     id,
                     tableBuilder,
-                    AVPWeaponBlueprintItems.INSTANCE.BLUEPRINT_FLAMETHROWER_SEVASTOPOL,
+                    AVPWeaponBlueprintItems.INSTANCE.blueprintFlamethrowerSevastopol,
                     33
                 );
                 addSimpleLootPool(
                     BuiltInLootTables.WOODLAND_MANSION,
                     id,
                     tableBuilder,
-                    AVPWeaponBlueprintItems.INSTANCE.BLUEPRINT_OLD_PAINLESS,
+                    AVPWeaponBlueprintItems.INSTANCE.blueprintOldPainless,
                     20
                 );
                 addSimpleLootPool(
                     BuiltInLootTables.ANCIENT_CITY,
                     id,
                     tableBuilder,
-                    AVPWeaponBlueprintItems.INSTANCE.BLUEPRINT_M83A2_SADAR,
+                    AVPWeaponBlueprintItems.INSTANCE.blueprintM83A2Sadar,
                     20
                 );
                 addSimpleLootPool(
                     BuiltInLootTables.END_CITY_TREASURE,
                     id,
                     tableBuilder,
-                    AVPWeaponBlueprintItems.INSTANCE.BLUEPRINT_M56_SMARTGUN,
+                    AVPWeaponBlueprintItems.INSTANCE.blueprintM56Smartgun,
                     20
                 );
 
@@ -92,7 +92,7 @@ public class AVPFabricLootTableModifier {
                 if (BuiltInLootTables.TRAIL_RUINS_ARCHAEOLOGY_RARE.equals(id)) {
                     var poolBuilder = LootPool.lootPool()
                         .add(
-                            LootItem.lootTableItem(AVPWeaponBlueprintItems.INSTANCE.BLUEPRINT_AK_47.get())
+                            LootItem.lootTableItem(AVPWeaponBlueprintItems.INSTANCE.blueprintAk47.get())
                         )
                         .build();
                     tableBuilder.pool(poolBuilder);

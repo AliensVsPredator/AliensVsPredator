@@ -11,7 +11,7 @@ public class AVPItemBlockItems extends AVPDeferredItemRegistry {
 
     private AVPItemBlockItems() {}
 
-    public void addHolder(Holder<Item> holder) {
-        entries.add(holder);
+    public void addHolder(String registryName, Holder<Item> holder) {
+        entries.put(registryName, holder);
     }
 }

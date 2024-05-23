@@ -11,7 +11,7 @@ public class AVPSpawnEggItems extends AVPDeferredItemRegistry {
 
     private AVPSpawnEggItems() {}
 
-    public void addHolder(Holder<Item> holder) {
-        entries.add(holder);
+    public void addHolder(String registryName, Holder<Item> holder) {
+        entries.put(registryName, holder);
     }
 }

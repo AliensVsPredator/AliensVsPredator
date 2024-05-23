@@ -1,52 +1,16 @@
 package org.avp.client.render.entity.living;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 import mod.azure.azurelib.common.api.client.renderer.GeoEntityRenderer;
-import mod.azure.azurelib.common.internal.common.cache.object.BakedGeoModel;
-import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 
-import org.avp.client.model.entity.living.ChestbursterModel;
+import org.avp.client.model.entity.living.AVPGeoModel;
+import org.avp.client.model.entity.living.GeoModelType;
 import org.avp.common.entity.living.Chestburster;
 
 public class ChestbursterRenderer extends GeoEntityRenderer<Chestburster> {
 
     public ChestbursterRenderer(EntityRendererProvider.Context context) {
-        super(context, new ChestbursterModel());
-    }
-
-    @Override
-    public void preRender(
-        PoseStack poseStack,
-        Chestburster animatable,
-        BakedGeoModel model,
-        MultiBufferSource bufferSource,
-        VertexConsumer buffer,
-        boolean isReRender,
-        float partialTick,
-        int packedLight,
-        int packedOverlay,
-        float red,
-        float green,
-        float blue,
-        float alpha
-    ) {
-        super.preRender(
-            poseStack,
-            animatable,
-            model,
-            bufferSource,
-            buffer,
-            isReRender,
-            partialTick,
-            packedLight,
-            packedOverlay,
-            red,
-            green,
-            blue,
-            alpha
-        );
-        poseStack.scale(0.65F, 0.65F, 0.65F);
+        super(context, new AVPGeoModel<>("chestburster", GeoModelType.ENTITY));
+        withScale(0.65F);
     }
 }
