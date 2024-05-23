@@ -24,7 +24,7 @@ public abstract class MixinMob_ProvideAmbientSounds extends LivingEntity {
         super(entityType, level);
     }
 
-    @Inject(at = @At("HEAD"), method = "getAmbientSound", cancellable = true)
+    @Inject(at = @At("RETURN"), method = "getAmbientSound", cancellable = true)
     void getAmbientSound(CallbackInfoReturnable<SoundEvent> callbackInfoReturnable) {
         // We only want to affect AVP monsters.
         if (!this.getType().is(AVPEntityTypeTags.MONSTERS)) {

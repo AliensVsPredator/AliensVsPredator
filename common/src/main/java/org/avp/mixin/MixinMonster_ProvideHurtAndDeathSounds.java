@@ -25,7 +25,7 @@ public abstract class MixinMonster_ProvideHurtAndDeathSounds extends PathfinderM
         super(entityType, level);
     }
 
-    @Inject(at = @At("HEAD"), method = "getHurtSound", cancellable = true)
+    @Inject(at = @At("RETURN"), method = "getHurtSound", cancellable = true)
     void getHurtSound(DamageSource damageSource, CallbackInfoReturnable<SoundEvent> callbackInfoReturnable) {
         // We only want to affect AVP monsters.
         if (!this.getType().is(AVPEntityTypeTags.MONSTERS)) {
@@ -38,14 +38,15 @@ public abstract class MixinMonster_ProvideHurtAndDeathSounds extends PathfinderM
             .filter(data -> Objects.equals(data.getHolder().get(), this.getType()))
             .findFirst()
             .flatMap(EntityData::getSoundData)
-            .map(EntitySoundData::hurtSoundEventHolder)
+            .map(EntitySoundData::hurtSoundEventHolderSelector)
+            .map(selector -> selector.apply(damageSource))
             .flatMap(Holder::getOptional)
             .orElse(callbackInfoReturnable.getReturnValue());
 
         callbackInfoReturnable.setReturnValue(returnValue);
     }
 
-    @Inject(at = @At("HEAD"), method = "getDeathSound", cancellable = true)
+    @Inject(at = @At("RETURN"), method = "getDeathSound", cancellable = true)
     void getDeathSound(CallbackInfoReturnable<SoundEvent> callbackInfoReturnable) {
         // We only want to affect AVP monsters.
         if (!this.getType().is(AVPEntityTypeTags.MONSTERS)) {
