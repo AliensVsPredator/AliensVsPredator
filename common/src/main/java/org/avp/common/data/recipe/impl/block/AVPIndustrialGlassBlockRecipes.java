@@ -3,6 +3,8 @@ package org.avp.common.data.recipe.impl.block;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.data.recipes.SimpleCookingRecipeBuilder;
+import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.item.DyeItem;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 
@@ -28,7 +30,7 @@ public final class AVPIndustrialGlassBlockRecipes {
             // Industrial glass combined with dyes creates colored industrial glass.
             AVPShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, coloredIndustrialGlassBlock, 8)
                 .defineAndUnlockIfHas('A', industrialGlassOutput)
-                .defineAndUnlockIfHas('B', coloredIndustrialGlassHolder.dyeItem())
+                .defineAndUnlockIfHas('B', DyeItem.byColor(coloredIndustrialGlassHolder.dyeColor()))
                 .pattern("AAA")
                 .pattern("ABA")
                 .pattern("AAA")
