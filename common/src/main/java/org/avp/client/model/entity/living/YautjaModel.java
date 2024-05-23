@@ -18,8 +18,7 @@ public class YautjaModel extends AVPGeoModel<Yautja> {
     }
 
     public void showWristblades(boolean show) {
-        // FIXME: This is not the right group to hide, but it is close enough.
-        var blades = this.getAnimationProcessor().getBone("gRightForearmArmor");
+        var blades = this.getAnimationProcessor().getBone("gWristBlade");
 
         if (blades != null) {
             blades.setHidden(!show);
@@ -30,7 +29,7 @@ public class YautjaModel extends AVPGeoModel<Yautja> {
     public void setCustomAnimations(Yautja entity, long instanceId, AnimationState<Yautja> animationState) {
         this.showHelmet(entity.hasHelmet.get());
         this.showWristblades(entity.wristbladesVisible.get());
-        BasicAnimationUtils.applyHeadRotations(this, animationState, "face", -0.2F);
+        BasicAnimationUtils.applyHeadRotations(this, animationState, "gNeckUpper", -0.2F);
         BasicAnimationUtils.applyLimbRotations(
             entity,
             this,
