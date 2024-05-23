@@ -64,10 +64,8 @@ public class Acid extends Entity {
 
         applyGravity(level);
 
-        if (isVolatile()) {
-            damageBlock(level);
-            damageEntities(level);
-        }
+        damageBlock(level);
+        damageEntities(level);
 
         createParticlesAndSounds(level);
 
@@ -81,7 +79,7 @@ public class Acid extends Entity {
     }
 
     private void damageBlock(Level level) {
-        if (level.isClientSide || tickCount % 20 != 0)
+        if (level.isClientSide || tickCount % 20 != 0 || !isVolatile())
             return;
 
         var below = blockPosition().below();
@@ -137,8 +135,20 @@ public class Acid extends Entity {
             entity -> AVPPredicates.IS_LIVING.test(entity) || entity instanceof Acid
         );
         entities.forEach(entity -> {
+            if (entity instanceof Acid) {
+                if (entity.isAlive()) {
+                    entity.remove(RemovalReason.DISCARDED);
+                    this.setMultiplier(this.getMultiplier() + 1);
+                }
+                return;
+            }
+
             // Ignore immortal players.
             if (entity instanceof Player player && AVPPredicates.IS_IMMORTAL.test(player)) {
+                return;
+            }
+
+            if (!isVolatile()) {
                 return;
             }
 
@@ -156,14 +166,6 @@ public class Acid extends Entity {
                     }
                     return;
                 }
-            }
-
-            if (entity instanceof Acid) {
-                if (entity.isAlive()) {
-                    entity.remove(RemovalReason.DISCARDED);
-                    this.setMultiplier(this.getMultiplier() + 1);
-                }
-                return;
             }
 
             if (!entity.getType().is(AVPEntityTypeTags.ACID_IMMUNE)) {
