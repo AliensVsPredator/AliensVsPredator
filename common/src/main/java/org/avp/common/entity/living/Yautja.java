@@ -22,6 +22,7 @@ import org.avp.api.entity.Boss;
 import org.avp.api.entity.data.sync.SyncedDataHandle;
 import org.avp.api.entity.data.sync.SyncedDataSerializer;
 import org.avp.common.entity.ai.AIUtils;
+import org.avp.common.sound.AVPSoundEvents;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -68,6 +69,10 @@ public class Yautja extends Monster implements Boss, GeoEntity {
 
     @Override
     public void setTarget(@Nullable LivingEntity livingEntity) {
+        if (this.getTarget() == null && livingEntity != null) {
+            playSound(AVPSoundEvents.INSTANCE.entityYautjaIntimidate.get());
+        }
+
         super.setTarget(livingEntity);
         wristbladesVisible.set(livingEntity != null);
     }

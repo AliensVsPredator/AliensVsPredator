@@ -53,6 +53,8 @@ public class AVPSoundEvents extends AVPDeferredRegistry<SoundEvent> {
 
     public final Holder<SoundEvent> entityYautjaHurt = createHolder("entity.yautja.hurt");
 
+    public final Holder<SoundEvent> entityYautjaIntimidate = createHolder("entity.yautja.intimidate");
+
     public final Holder<SoundEvent> itemWeaponAk47Shoot = createHolder("item.weapon.ak_47.shoot");
 
     public final Holder<SoundEvent> itemWeaponCombatPistolReload = createHolder("item.weapon.combat_pistol.reload");
