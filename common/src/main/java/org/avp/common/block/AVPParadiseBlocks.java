@@ -86,13 +86,13 @@ public class AVPParadiseBlocks extends AVPDeferredBlockRegistry {
         leavesMedium = createHolder(new BlockData("leaves_medium", BlockModelData.cube(), BlockTagData.none()));
         leavesSmall = createHolder(new BlockData("leaves_small", BlockModelData.cube(), BlockTagData.none()));
 
-        logLarge = createHolder(new BlockData("log_large", BlockModelData.cube(), BlockTagData.none()));
+        logLarge = createHolder(new BlockData("log_large", BlockModelData.rotatedPillar(), BlockTagData.none()));
         logLargePlanks = createHolder(new BlockData("log_large_planks", BlockModelData.cube(), BlockTagData.none()));
 
-        logMedium = createHolder(new BlockData("log_medium", BlockModelData.cube(), BlockTagData.none()));
+        logMedium = createHolder(new BlockData("log_medium", BlockModelData.rotatedPillar(), BlockTagData.none()));
         logMediumPlanks = createHolder(new BlockData("log_medium_planks", BlockModelData.cube(), BlockTagData.none()));
 
-        logSmall = createHolder(new BlockData("log_small", BlockModelData.cube(), BlockTagData.none()));
+        logSmall = createHolder(new BlockData("log_small", BlockModelData.rotatedPillar(), BlockTagData.none()));
         logSmallPlanks = createHolder(new BlockData("log_small_planks", BlockModelData.cube(), BlockTagData.none()));
 
         fenceGateLarge = createHolder(new BlockData("fence_gate_large", BlockModelData.fenceGate(logLargePlanks, AVPWoodType.LARGE), BlockTagData.none()));
