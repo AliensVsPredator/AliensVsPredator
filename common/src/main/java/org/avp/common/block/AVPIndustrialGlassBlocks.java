@@ -16,7 +16,7 @@ import org.avp.api.block.BlockData;
 import org.avp.api.block.BlockModelData;
 import org.avp.api.block.BlockTagData;
 import org.avp.api.block.CustomTransparentBlock;
-import org.avp.api.block.model.provider.CubeBlockModelProvider;
+import org.avp.api.block.model.provider.BlockModelDataType;
 import org.avp.api.block.model.render_type.BlockModelRenderType;
 import org.avp.common.registry.AVPDeferredBlockRegistry;
 import org.avp.common.tag.AVPBlockTags;
@@ -82,42 +82,42 @@ public class AVPIndustrialGlassBlocks extends AVPDeferredBlockRegistry {
             "industrial_glass",
             new BlockModelData(
                 () -> new CustomTransparentBlock(DyeColor.WHITE, industrialGlassProperties),
-                CubeBlockModelProvider::new,
+                BlockModelDataType.Cube::new,
                 BlockModelRenderType.TRANSLUCENT
             ),
             blockTagData
         ));
 
-        Function<DyeColor, BlockData> blockDataProvider = dyeColor -> new BlockData(
+        Function<DyeColor, BlockData> blockDataFactory = dyeColor -> new BlockData(
             dyeColor.getName(),
             new BlockModelData(
                 () -> new CustomTransparentBlock(dyeColor, industrialGlassProperties),
-                CubeBlockModelProvider::new,
+                BlockModelDataType.Cube::new,
                 BlockModelRenderType.TRANSLUCENT
             ),
             blockTagData
         );
 
-        glassBlack = createColoredIndustrialGlassHolder(DyeColor.BLACK, blockDataProvider);
-        glassBlue = createColoredIndustrialGlassHolder(DyeColor.BLUE, blockDataProvider);
-        glassBrown = createColoredIndustrialGlassHolder(DyeColor.BROWN, blockDataProvider);
-        glassCyan = createColoredIndustrialGlassHolder(DyeColor.CYAN, blockDataProvider);
-        glassGray = createColoredIndustrialGlassHolder(DyeColor.GRAY, blockDataProvider);
-        glassGreen = createColoredIndustrialGlassHolder(DyeColor.GREEN, blockDataProvider);
-        glassLightBlue = createColoredIndustrialGlassHolder(DyeColor.LIGHT_BLUE, blockDataProvider);
-        glassLightGray = createColoredIndustrialGlassHolder(DyeColor.LIGHT_GRAY, blockDataProvider);
-        glassLime = createColoredIndustrialGlassHolder(DyeColor.LIME, blockDataProvider);
-        glassMagenta = createColoredIndustrialGlassHolder(DyeColor.MAGENTA, blockDataProvider);
-        glassOrange = createColoredIndustrialGlassHolder(DyeColor.ORANGE, blockDataProvider);
-        glassPink = createColoredIndustrialGlassHolder(DyeColor.PINK, blockDataProvider);
-        glassPurple = createColoredIndustrialGlassHolder(DyeColor.PURPLE, blockDataProvider);
-        glassRed = createColoredIndustrialGlassHolder(DyeColor.RED, blockDataProvider);
-        glassWhite = createColoredIndustrialGlassHolder(DyeColor.WHITE, blockDataProvider);
-        glassYellow = createColoredIndustrialGlassHolder(DyeColor.YELLOW, blockDataProvider);
+        glassBlack = createColoredIndustrialGlassHolder(DyeColor.BLACK, blockDataFactory);
+        glassBlue = createColoredIndustrialGlassHolder(DyeColor.BLUE, blockDataFactory);
+        glassBrown = createColoredIndustrialGlassHolder(DyeColor.BROWN, blockDataFactory);
+        glassCyan = createColoredIndustrialGlassHolder(DyeColor.CYAN, blockDataFactory);
+        glassGray = createColoredIndustrialGlassHolder(DyeColor.GRAY, blockDataFactory);
+        glassGreen = createColoredIndustrialGlassHolder(DyeColor.GREEN, blockDataFactory);
+        glassLightBlue = createColoredIndustrialGlassHolder(DyeColor.LIGHT_BLUE, blockDataFactory);
+        glassLightGray = createColoredIndustrialGlassHolder(DyeColor.LIGHT_GRAY, blockDataFactory);
+        glassLime = createColoredIndustrialGlassHolder(DyeColor.LIME, blockDataFactory);
+        glassMagenta = createColoredIndustrialGlassHolder(DyeColor.MAGENTA, blockDataFactory);
+        glassOrange = createColoredIndustrialGlassHolder(DyeColor.ORANGE, blockDataFactory);
+        glassPink = createColoredIndustrialGlassHolder(DyeColor.PINK, blockDataFactory);
+        glassPurple = createColoredIndustrialGlassHolder(DyeColor.PURPLE, blockDataFactory);
+        glassRed = createColoredIndustrialGlassHolder(DyeColor.RED, blockDataFactory);
+        glassWhite = createColoredIndustrialGlassHolder(DyeColor.WHITE, blockDataFactory);
+        glassYellow = createColoredIndustrialGlassHolder(DyeColor.YELLOW, blockDataFactory);
     }
 
-    private ColoredIndustrialGlassHolder createColoredIndustrialGlassHolder(DyeColor dyeColor, Function<DyeColor, BlockData> blockDataProvider) {
-        var blockData = blockDataProvider.apply(dyeColor);
+    private ColoredIndustrialGlassHolder createColoredIndustrialGlassHolder(DyeColor dyeColor, Function<DyeColor, BlockData> blockDataFactory) {
+        var blockData = blockDataFactory.apply(dyeColor);
         var holder = createHolder(blockData);
         var coloredIndustrialGlassHolder = new ColoredIndustrialGlassHolder(dyeColor, holder);
         COLORED_INDUSTRIAL_GLASS_ENTRIES.add(coloredIndustrialGlassHolder);
