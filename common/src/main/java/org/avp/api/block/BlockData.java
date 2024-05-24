@@ -55,7 +55,7 @@ public record BlockData(
 
         return new BlockData(
             blockData.registryName() + "_stairs",
-            BlockModelData.slab(parentHolder, properties),
+            BlockModelData.stairs(parentHolder, properties),
             new BlockTagData(blockTags, itemTags)
         );
     }
