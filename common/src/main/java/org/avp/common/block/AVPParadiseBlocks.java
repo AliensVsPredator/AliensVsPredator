@@ -78,9 +78,9 @@ public class AVPParadiseBlocks extends AVPDeferredBlockRegistry {
         // TODO:
         dirtMossy = createHolder(new BlockData("dirt_mossy", BlockModelData.cube(), BlockTagData.none()));
         // TODO:
-        dirtPodzol = createHolder(new BlockData("dirt_podzol", BlockModelData.cube(), BlockTagData.none()));
+        dirtPodzol = createHolder(new BlockData("dirt_podzol", BlockModelData.grass(dirt), BlockTagData.none()));
         // TODO:
-        grass = createHolder(new BlockData("dirt_grass", BlockModelData.cube(), BlockTagData.none()));
+        grass = createHolder(new BlockData("grass", BlockModelData.grass(dirt), BlockTagData.none()));
 
         leavesLarge = createHolder(new BlockData("leaves_large", BlockModelData.cube(), BlockTagData.none()));
         leavesMedium = createHolder(new BlockData("leaves_medium", BlockModelData.cube(), BlockTagData.none()));
