@@ -14,6 +14,7 @@ import org.avp.api.block.model.provider.CubeBlockModelProvider;
 import org.avp.api.block.model.provider.FenceBlockModelProvider;
 import org.avp.api.block.model.provider.FenceGateBlockModelProvider;
 import org.avp.api.block.model.provider.MultifaceBlockModelProvider;
+import org.avp.api.block.model.provider.RotatedPillarBlockModelProvider;
 import org.avp.api.block.model.provider.SlabBlockModelProvider;
 import org.avp.api.block.model.provider.StairBlockModelProvider;
 import org.avp.api.block.model.provider.WallBlockModelProvider;
@@ -70,7 +71,7 @@ public record BlockModelData(
     ) {
         return new BlockModelData(
             () -> new FenceGateBlock(woodType, properties),
-            block -> new FenceGateBlockModelProvider(block, parentHolder.get()),
+            block -> new FenceGateBlockModelProvider(parentHolder.get(), block),
             BlockModelRenderType.NORMAL
         );
     }
@@ -85,6 +86,20 @@ public record BlockModelData(
         return new BlockModelData(
             () -> new Block(properties), // FIXME: Ensure this is correct?
             MultifaceBlockModelProvider::new,
+            BlockModelRenderType.NORMAL
+        );
+    }
+
+    public static BlockModelData rotatedPillar() {
+        return rotatedPillar(BlockBehaviour.Properties.of());
+    }
+
+    public static BlockModelData rotatedPillar(
+        BlockBehaviour.Properties properties
+    ) {
+        return new BlockModelData(
+            () -> new RotatedPillarBlock(properties),
+            RotatedPillarBlockModelProvider::new,
             BlockModelRenderType.NORMAL
         );
     }
