@@ -72,7 +72,7 @@ public final class AVPCreativeModeTabs extends AVPDeferredRegistry<CreativeModeT
         createBuilderHolder(
             "blocks",
             () -> CreativeModeTab.builder(CreativeModeTab.Row.TOP, 1)
-                .icon(AVPTempleBlocks.INSTANCE.brick.get().asItem()::getDefaultInstance)
+                .icon(AVPTempleBlocks.INSTANCE.brick.base().get().asItem()::getDefaultInstance)
                 .displayItems(
                     (itemDisplayParameters, output) -> output.acceptAll(
                         blocksToItemStacks(AVPDeferredBlockRegistry.getDataEntries().stream().map(Tuple::first).toList())

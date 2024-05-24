@@ -84,7 +84,7 @@ public class AVPItemTagsProvider extends FabricTagProvider.ItemTagProvider {
             var block = tuple.first().get();
             var blockData = tuple.second();
 
-            blockData.getRelatedItemTags().forEach(tag -> getOrCreateTagBuilder(tag).add(block.asItem()));
+            blockData.blockTagData().itemTags().forEach(tag -> getOrCreateTagBuilder(tag).add(block.asItem()));
         });
     }
 }

@@ -8,7 +8,10 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 
 import org.avp.api.Holder;
 import org.avp.api.block.BlockData;
-import org.avp.api.block.BlockDataUtils;
+import org.avp.api.block.BlockHolderSet;
+import org.avp.api.block.BlockHolderSetData;
+import org.avp.api.block.BlockModelData;
+import org.avp.api.block.BlockTagData;
 import org.avp.common.registry.AVPDeferredBlockRegistry;
 
 public class AVPPaddingBlocks extends AVPDeferredBlockRegistry {
@@ -48,8 +51,8 @@ public class AVPPaddingBlocks extends AVPDeferredBlockRegistry {
     public final PaddingBlockSet paddingYellow;
 
     @Override
-    protected Holder<Block> createHolder(String registryName, BlockData.Builder blockDataBuilder) {
-        return super.createHolder("padding_" + registryName, blockDataBuilder);
+    protected Holder<Block> createHolder(BlockData blockData) {
+        return super.createHolder(blockData.withRegistryName("padding_" + blockData.registryName()));
     }
 
     private AVPPaddingBlocks() {
@@ -72,47 +75,19 @@ public class AVPPaddingBlocks extends AVPDeferredBlockRegistry {
     }
 
     private PaddingBlockSet createSet(Item dyeItem, String prefix, BlockBehaviour.Properties properties) {
-        var blockData = BlockData.simple(properties);
+        var blockData = new BlockData(prefix, BlockModelData.cube(properties), BlockTagData.none());
 
-        var squareHolder = createHolder(prefix + "_square", blockData);
-        var squareSlabData = BlockDataUtils.slab(squareHolder, properties);
-        var squareStairData = BlockDataUtils.stairs(squareHolder, properties);
-        var squareWallData = BlockDataUtils.wall(squareHolder, properties);
+        var panelHolder = createHolder(blockData.withSuffixRegistryName("_panel"));
+        var pipesHolder = createHolder(blockData.withSuffixRegistryName("_pipes"));
 
-        var tilesHolder = createHolder(prefix + "_tiles", blockData);
-        var tilesSlabData = BlockDataUtils.slab(tilesHolder, properties);
-        var tilesStairData = BlockDataUtils.stairs(tilesHolder, properties);
-        var tilesWallData = BlockDataUtils.wall(tilesHolder, properties);
+        var squareData = blockData.withSuffixRegistryName("_square");
+        var squareSet = registerBlockHolderSet(new BlockHolderSetData(properties, squareData));
 
-        return new PaddingBlockSet(
-            dyeItem,
-            createHolder(prefix + "_panel", blockData),
-            createHolder(prefix + "_pipes", blockData),
-            squareHolder,
-            createHolder(prefix + "_square_slab", squareSlabData),
-            createHolder(prefix + "_square_stairs", squareStairData),
-            createHolder(prefix + "_square_wall", squareWallData),
-            tilesHolder,
-            createHolder(prefix + "_tiles_slab", tilesSlabData),
-            createHolder(prefix + "_tiles_stairs", tilesStairData),
-            createHolder(prefix + "_tiles_wall", tilesWallData)
-        );
+        var tilesData = blockData.withSuffixRegistryName("_tiles");
+        var tilesSet = registerBlockHolderSet(new BlockHolderSetData(properties, tilesData));
+
+        return new PaddingBlockSet(dyeItem, panelHolder, pipesHolder, squareSet, tilesSet);
     }
 
-    public record PaddingBlockSet(
-        Item dyeItem,
-
-        Holder<Block> panel,
-        Holder<Block> pipes,
-
-        Holder<Block> square,
-        Holder<Block> squareSlab,
-        Holder<Block> squareStairs,
-        Holder<Block> squareWall,
-
-        Holder<Block> tiles,
-        Holder<Block> tilesSlab,
-        Holder<Block> tilesStairs,
-        Holder<Block> tilesWall
-    ) {}
+    public record PaddingBlockSet(Item dyeItem, Holder<Block> panel, Holder<Block> pipes, BlockHolderSet square, BlockHolderSet tiles) {}
 }

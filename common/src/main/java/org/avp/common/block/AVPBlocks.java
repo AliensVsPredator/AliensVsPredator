@@ -5,10 +5,12 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 
-import java.util.List;
+import java.util.Set;
 
 import org.avp.api.Holder;
 import org.avp.api.block.BlockData;
+import org.avp.api.block.BlockModelData;
+import org.avp.api.block.BlockTagData;
 import org.avp.common.registry.AVPDeferredBlockRegistry;
 
 public class AVPBlocks extends AVPDeferredBlockRegistry {
@@ -26,14 +28,13 @@ public class AVPBlocks extends AVPDeferredBlockRegistry {
     private AVPBlocks() {
         var properties = BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_BLOCK); // TODO:
 
-        var aluminum = List.of(BlockTags.MINEABLE_WITH_PICKAXE, BlockTags.NEEDS_STONE_TOOL);
-        var orionite = List.of(BlockTags.MINEABLE_WITH_PICKAXE, BlockTags.NEEDS_DIAMOND_TOOL);
-        var steel = List.of(BlockTags.MINEABLE_WITH_PICKAXE, BlockTags.NEEDS_IRON_TOOL);
-        var titanium = List.of(BlockTags.MINEABLE_WITH_PICKAXE, BlockTags.NEEDS_IRON_TOOL);
+        var stoneTier = BlockTagData.ofBlock(Set.of(BlockTags.MINEABLE_WITH_PICKAXE, BlockTags.NEEDS_STONE_TOOL));
+        var ironTier = BlockTagData.ofBlock(Set.of(BlockTags.MINEABLE_WITH_PICKAXE, BlockTags.NEEDS_IRON_TOOL));
+        var diamondTier = BlockTagData.ofBlock(Set.of(BlockTags.MINEABLE_WITH_PICKAXE, BlockTags.NEEDS_DIAMOND_TOOL));
 
-        aluminumBlock = createHolder("aluminum_block", BlockData.simple(properties).blockTags(aluminum));
-        orioniteBlock = createHolder("orionite_block", BlockData.simple(properties).blockTags(orionite));
-        steelBlock = createHolder("steel_block", BlockData.simple(properties).blockTags(steel));
-        titaniumBlock = createHolder("titanium_block", BlockData.simple(properties).blockTags(titanium));
+        aluminumBlock = createHolder(new BlockData("aluminum_block", BlockModelData.cube(properties), stoneTier));
+        orioniteBlock = createHolder(new BlockData("orionite_block", BlockModelData.cube(properties), diamondTier));
+        steelBlock = createHolder(new BlockData("steel_block", BlockModelData.cube(properties), ironTier));
+        titaniumBlock = createHolder(new BlockData("titanium_block", BlockModelData.cube(properties), ironTier));
     }
 }

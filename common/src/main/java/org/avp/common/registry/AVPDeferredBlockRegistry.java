@@ -9,6 +9,8 @@ import java.util.function.Supplier;
 import org.avp.api.Holder;
 import org.avp.api.Tuple;
 import org.avp.api.block.BlockData;
+import org.avp.api.block.BlockHolderSet;
+import org.avp.api.block.BlockHolderSetData;
 import org.avp.common.service.Services;
 
 public class AVPDeferredBlockRegistry extends AVPDeferredRegistry<Block> {
@@ -19,12 +21,23 @@ public class AVPDeferredBlockRegistry extends AVPDeferredRegistry<Block> {
         return DATA_ENTRIES;
     }
 
-    protected Holder<Block> createHolder(String registryName, BlockData.Builder blockDataBuilder) {
-        var blockData = blockDataBuilder.build();
-        var holder = createHolder(registryName, blockData::create);
+    protected Holder<Block> createHolder(BlockData blockData) {
+        var registryName = blockData.registryName();
+        var holder = createHolder(registryName,() -> blockData.blockModelData().blockSupplier().get());
         entries.put(registryName, holder);
         DATA_ENTRIES.add(new Tuple<>(holder, blockData));
         return holder;
+    }
+
+    protected BlockHolderSet registerBlockHolderSet(BlockHolderSetData blockHolderSetData) {
+        var blockData = blockHolderSetData.blockData();
+        var registryName = blockData.registryName();
+        var properties = blockHolderSetData.properties();
+        var holder = createHolder(registryName, () -> blockData.blockModelData().blockSupplier().get());
+        var slabHolder = createHolder(BlockData.toSlab(holder, properties, blockData));
+        var stairsHolder = createHolder(BlockData.toStairs(holder, properties, blockData));
+        var wallHolder = createHolder(BlockData.toWall(holder, properties, blockData));
+        return new BlockHolderSet(holder, slabHolder, stairsHolder, wallHolder);
     }
 
     @Override

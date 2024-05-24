@@ -46,14 +46,14 @@ public final class AVPPaddingBlockRecipes {
             .pattern("AB")
             .save(recipeOutput);
 
-        AVPShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, paddingBlockSet.square(), 4)
+        AVPShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, paddingBlockSet.square().base(), 4)
             .defineAndUnlockIfHas('A', paddingBlockSet.panel())
             .pattern("AA")
             .pattern("AA")
             .save(recipeOutput);
 
-        AVPShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, paddingBlockSet.tiles(), 4)
-            .defineAndUnlockIfHas('A', paddingBlockSet.square())
+        AVPShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, paddingBlockSet.tiles().base(), 4)
+            .defineAndUnlockIfHas('A', paddingBlockSet.square().base())
             .pattern("AA")
             .pattern("AA")
             .save(recipeOutput);

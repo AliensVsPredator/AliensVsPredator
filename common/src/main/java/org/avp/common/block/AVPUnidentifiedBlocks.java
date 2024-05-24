@@ -5,13 +5,13 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.MapColor;
-
-import java.util.List;
-import java.util.function.Supplier;
-
 import org.avp.api.Holder;
 import org.avp.api.block.BlockData;
+import org.avp.api.block.BlockModelData;
+import org.avp.api.block.BlockTagData;
 import org.avp.common.registry.AVPDeferredBlockRegistry;
+
+import java.util.Set;
 
 public class AVPUnidentifiedBlocks extends AVPDeferredBlockRegistry {
 
@@ -28,21 +28,19 @@ public class AVPUnidentifiedBlocks extends AVPDeferredBlockRegistry {
     public final Holder<Block> stone;
 
     @Override
-    protected Holder<Block> createHolder(String registryName, BlockData.Builder blockDataBuilder) {
-        return super.createHolder("unidentified_" + registryName, blockDataBuilder);
+    protected Holder<Block> createHolder(BlockData blockData) {
+        return super.createHolder(blockData.withPrefixRegistryName("unidentified_"));
     }
 
     private AVPUnidentifiedBlocks() {
         var stoneProperties = BlockBehaviour.Properties.ofFullCopy(Blocks.STONE).mapColor(MapColor.COLOR_GRAY);
 
-        var stoneTags = List.of(BlockTags.MINEABLE_WITH_PICKAXE);
+        var stoneTags = BlockTagData.ofBlock(Set.of(BlockTags.MINEABLE_WITH_PICKAXE));
 
-        Supplier<BlockData.Builder> pickProps = () -> BlockData.simple(stoneProperties).blockTags(stoneTags);
-
-        dirt = createHolder("dirt", pickProps.get());
-        gravel = createHolder("gravel", pickProps.get());
-        rock = createHolder("rock", pickProps.get());
-        sand = createHolder("sand", pickProps.get());
-        stone = createHolder("stone", pickProps.get());
+        dirt = createHolder(new BlockData("dirt", BlockModelData.cube(stoneProperties), stoneTags));
+        gravel = createHolder(new BlockData("gravel", BlockModelData.cube(stoneProperties), stoneTags));
+        rock = createHolder(new BlockData("rock", BlockModelData.cube(stoneProperties), stoneTags));
+        sand = createHolder(new BlockData("sand", BlockModelData.cube(stoneProperties), stoneTags));
+        stone = createHolder(new BlockData("stone", BlockModelData.cube(stoneProperties), stoneTags));
     }
 }

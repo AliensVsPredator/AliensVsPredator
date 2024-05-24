@@ -18,7 +18,6 @@ import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
 import net.neoforged.neoforge.client.event.RegisterParticleProvidersEvent;
 import net.neoforged.neoforge.event.TickEvent;
 
-import org.avp.api.block.factory.CustomTransparentBlockFactory;
 import org.avp.client.AVPClientKeyBindings;
 import org.avp.client.render.entity.AVPEntityRenderRegistry;
 import org.avp.client.render.particle.AVPParticleTypeProviders;
@@ -33,9 +32,11 @@ public class AVPNeoForgeClient {
         AVPDeferredBlockRegistry.getDataEntries().forEach(tuple -> {
             var block = tuple.first().get();
             var blockData = tuple.second();
-            var factory = blockData.getFactory();
-            if (factory instanceof CustomTransparentBlockFactory) {
-                ItemBlockRenderTypes.setRenderLayer(block, RenderType.translucent());
+            var blockModelRenderType = blockData.blockModelData().blockModelRenderType();
+
+            switch (blockModelRenderType) {
+                case NORMAL -> {/* NO-OP */}
+                case TRANSLUCENT -> ItemBlockRenderTypes.setRenderLayer(block, RenderType.translucent());
             }
         });
     }
