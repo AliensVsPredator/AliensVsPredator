@@ -6,7 +6,9 @@ import net.minecraft.data.models.model.TexturedModel;
 import net.minecraft.world.level.block.Block;
 import org.avp.mixin.MixinBlockModelsGenerator_Accessor;
 
-public class FenceBlockModelProvider extends BlockModelProvider {
+public class FenceBlockModelProvider extends BlockModelProvider implements ItemModelDelegator {
+
+    private ItemDelegateData itemDelegateData;
 
     private final Block baseBlock;
 
@@ -27,12 +29,16 @@ public class FenceBlockModelProvider extends BlockModelProvider {
             ModelTemplates.FENCE_POST.create(fenceBlock, textureMapping, modelOutput);
         var sideResourceLocation =
             ModelTemplates.FENCE_SIDE.create(fenceBlock, textureMapping, modelOutput);
-        var inventoryResourceLocation =
-            ModelTemplates.FENCE_INVENTORY.create(fenceBlock, textureMapping, modelOutput);
 
-        blockModelGeneratorsAccessor.delegateItemModel(fenceBlock.asItem(), inventoryResourceLocation);
+        itemDelegateData = new ItemDelegateData(ModelTemplates.FENCE_INVENTORY, textureMapping);
+
         blockModelGeneratorsAccessor.getBlockStateOutput().accept(
             MixinBlockModelsGenerator_Accessor.createFence(fenceBlock, postResourceLocation, sideResourceLocation)
         );
+    }
+
+    @Override
+    public ItemDelegateData getItemModelDelegateData() {
+        return itemDelegateData;
     }
 }

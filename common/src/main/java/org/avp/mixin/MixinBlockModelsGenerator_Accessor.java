@@ -6,7 +6,6 @@ import net.minecraft.data.models.blockstates.BlockStateGenerator;
 import net.minecraft.data.models.blockstates.MultiVariantGenerator;
 import net.minecraft.data.models.blockstates.Variant;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
@@ -27,9 +26,6 @@ public interface MixinBlockModelsGenerator_Accessor {
 
     @Invoker("createSimpleFlatItemModel")
     void createSimpleFlatItemModel(Block block);
-
-    @Invoker("delegateItemModel")
-    void delegateItemModel(Item item, ResourceLocation resourceLocation);
 
     @Invoker("createAxisAlignedPillarBlock")
     static BlockStateGenerator createAxisAlignedPillarBlock(Block block, ResourceLocation rl1) {
