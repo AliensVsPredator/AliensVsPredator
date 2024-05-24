@@ -31,9 +31,8 @@ public class AVPDeferredBlockRegistry extends AVPDeferredRegistry<Block> {
 
     protected BlockHolderSet registerBlockHolderSet(BlockHolderSetData blockHolderSetData) {
         var blockData = blockHolderSetData.blockData();
-        var registryName = blockData.registryName();
         var properties = blockHolderSetData.properties();
-        var holder = createHolder(registryName, () -> blockData.blockModelData().blockSupplier().get());
+        var holder = createHolder(blockData);
         var slabHolder = createHolder(BlockData.toSlab(holder, properties, blockData));
         var stairsHolder = createHolder(BlockData.toStairs(holder, properties, blockData));
         var wallHolder = createHolder(BlockData.toWall(holder, properties, blockData));
