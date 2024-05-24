@@ -68,6 +68,6 @@ public class AVPIndustrialBlocks extends AVPDeferredBlockRegistry {
         var wallBlockData = new BlockData("wall", BlockModelData.cube(metalProperties), stoneOrMetal);
         wall = registerBlockHolderSet(new BlockHolderSetData(metalProperties, wallBlockData));
 
-        wallHazard = createHolder(new BlockData("wall_hazard", BlockModelData.cube(metalProperties), stoneOrMetal));
+        wallHazard = createHolder(new BlockData("wall_hazard", BlockModelData.rotatedPillar(metalProperties), stoneOrMetal));
     }
 }
