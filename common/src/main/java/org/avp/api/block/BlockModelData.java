@@ -83,17 +83,18 @@ public record BlockModelData(
         );
     }
 
-    public static BlockModelData multiface() {
-        return multiface(BlockBehaviour.Properties.of());
+    public static BlockModelData multiface(Supplier<Block> blockSupplier) {
+        return multiface(blockSupplier, BlockModelRenderType.NORMAL);
     }
 
     public static BlockModelData multiface(
-        BlockBehaviour.Properties properties
+        Supplier<Block> blockSupplier,
+        BlockModelRenderType blockModelRenderType
     ) {
         return new BlockModelData(
-            () -> new Block(properties), // FIXME: Ensure this is correct?
+            blockSupplier,
             BlockModelDataType.MultiFace::new,
-            BlockModelRenderType.NORMAL
+            blockModelRenderType
         );
     }
 
