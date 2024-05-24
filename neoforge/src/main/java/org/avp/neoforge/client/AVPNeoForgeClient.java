@@ -35,6 +35,7 @@ public class AVPNeoForgeClient {
             var blockModelRenderType = blockData.blockModelData().blockModelRenderType();
 
             switch (blockModelRenderType) {
+                case CUTOUT -> ItemBlockRenderTypes.setRenderLayer(block, RenderType.cutout());
                 case NORMAL -> {/* NO-OP */}
                 case TRANSLUCENT -> ItemBlockRenderTypes.setRenderLayer(block, RenderType.translucent());
             }

@@ -29,6 +29,7 @@ public class AVPFabricClient implements ClientModInitializer {
             var blockModelRenderType = blockData.blockModelData().blockModelRenderType();
 
             switch (blockModelRenderType) {
+                case CUTOUT -> BlockRenderLayerMap.INSTANCE.putBlock(block, RenderType.cutout());
                 case NORMAL -> {/* NO-OP */}
                 case TRANSLUCENT -> BlockRenderLayerMap.INSTANCE.putBlock(block, RenderType.translucent());
             }
