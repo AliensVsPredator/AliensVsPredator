@@ -120,11 +120,11 @@ public class AVPOreBlocks extends AVPDeferredBlockRegistry {
         );
 
         // NOTE: DO NOT USE createOreHolder HERE.
-        rawBauxiteBlock = createHolder(new BlockData("raw_bauxite_block", BlockModelData.cube(bauxiteProperties), stoneTier));
-        rawTitaniumBlock = createHolder(new BlockData("raw_titanium_block", BlockModelData.cube(titaniumProperties), ironTier));
-        cobaltBlock = createHolder(new BlockData("cobalt_block", BlockModelData.cube(cobaltProperties), diamondTier));
-        lithiumBlock = createHolder(new BlockData("lithium_block", BlockModelData.cube(lithiumProperties), woodTier));
-        neodymiumBlock = createHolder(new BlockData("neodymium_block", BlockModelData.cube(monaziteProperties), diamondTier));
-        silicaBlock = createHolder(new BlockData("silica_block", BlockModelData.cube(silicaProperties), ironTier));
+        rawBauxiteBlock = createHolder("raw_bauxite_block", BlockModelData.cube(bauxiteProperties), stoneTier);
+        rawTitaniumBlock = createHolder("raw_titanium_block", BlockModelData.cube(titaniumProperties), ironTier);
+        cobaltBlock = createHolder("cobalt_block", BlockModelData.cube(cobaltProperties), diamondTier);
+        lithiumBlock = createHolder("lithium_block", BlockModelData.cube(lithiumProperties), woodTier);
+        neodymiumBlock = createHolder("neodymium_block", BlockModelData.cube(monaziteProperties), diamondTier);
+        silicaBlock = createHolder("silica_block", BlockModelData.cube(silicaProperties), ironTier);
     }
 }

@@ -37,10 +37,10 @@ public class AVPUnidentifiedBlocks extends AVPDeferredBlockRegistry {
 
         var stoneTags = BlockTagData.ofBlock(Set.of(BlockTags.MINEABLE_WITH_PICKAXE));
 
-        dirt = createHolder(new BlockData("dirt", BlockModelData.cube(stoneProperties), stoneTags));
-        gravel = createHolder(new BlockData("gravel", BlockModelData.cube(stoneProperties), stoneTags));
-        rock = createHolder(new BlockData("rock", BlockModelData.cube(stoneProperties), stoneTags));
-        sand = createHolder(new BlockData("sand", BlockModelData.cube(stoneProperties), stoneTags));
-        stone = createHolder(new BlockData("stone", BlockModelData.cube(stoneProperties), stoneTags));
+        dirt = createHolder("dirt", BlockModelData.cube(stoneProperties), stoneTags);
+        gravel = createHolder("gravel", BlockModelData.cube(stoneProperties), stoneTags);
+        rock = createHolder("rock", BlockModelData.cube(stoneProperties), stoneTags);
+        sand = createHolder("sand", BlockModelData.cube(stoneProperties), stoneTags);
+        stone = createHolder("stone", BlockModelData.cube(stoneProperties), stoneTags);
     }
 }

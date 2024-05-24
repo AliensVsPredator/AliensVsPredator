@@ -48,8 +48,8 @@ public class AVPTempleBlocks extends AVPDeferredBlockRegistry {
         var brickBlockData = new BlockData("brick", BlockModelData.cube(brickProperties), ironTier);
         brick = registerBlockHolderSet(new BlockHolderSetData(brickProperties, brickBlockData));
 
-        brickChestburster = createHolder(new BlockData("brick_chestburster", BlockModelData.cube(brickProperties), ironTier));
-        brickFacehugger = createHolder(new BlockData("brick_facehugger", BlockModelData.cube(brickProperties), ironTier));
+        brickChestburster = createHolder("brick_chestburster", BlockModelData.cube(brickProperties), ironTier);
+        brickFacehugger = createHolder("brick_facehugger", BlockModelData.cube(brickProperties), ironTier);
 
         var brickSingleBlockData = new BlockData("brick_single", BlockModelData.cube(brickProperties), ironTier);
         brickSingle = registerBlockHolderSet(new BlockHolderSetData(brickProperties, brickSingleBlockData));
@@ -57,11 +57,11 @@ public class AVPTempleBlocks extends AVPDeferredBlockRegistry {
         var floorBlockData = new BlockData("floor", BlockModelData.cube(brickProperties), ironTier);
         floor = registerBlockHolderSet(new BlockHolderSetData(brickProperties, floorBlockData));
 
-        skulls = createHolder(new BlockData("skulls", BlockModelData.cube(skullProperties), ironTier));
+        skulls = createHolder("skulls", BlockModelData.cube(skullProperties), ironTier);
 
         var tileBlockData = new BlockData("tile", BlockModelData.cube(brickProperties), ironTier);
         tile = registerBlockHolderSet(new BlockHolderSetData(brickProperties, tileBlockData));
 
-        wallBase = createHolder(new BlockData("wall_base", BlockModelData.cube(brickProperties), ironTier));
+        wallBase = createHolder("wall_base", BlockModelData.cube(brickProperties), ironTier);
     }
 }

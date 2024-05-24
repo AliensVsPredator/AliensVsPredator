@@ -4,13 +4,17 @@ import net.minecraft.world.level.block.Block;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
+import net.minecraft.world.level.storage.loot.LootTable;
 import org.avp.api.Holder;
 import org.avp.api.Tuple;
 import org.avp.api.block.BlockData;
 import org.avp.api.block.BlockHolderSet;
 import org.avp.api.block.BlockHolderSetData;
+import org.avp.api.block.BlockModelData;
+import org.avp.api.block.BlockTagData;
 import org.avp.common.service.Services;
 
 public class AVPDeferredBlockRegistry extends AVPDeferredRegistry<Block> {
@@ -19,6 +23,23 @@ public class AVPDeferredBlockRegistry extends AVPDeferredRegistry<Block> {
 
     public static List<Tuple<Holder<Block>, BlockData>> getDataEntries() {
         return DATA_ENTRIES;
+    }
+
+    protected Holder<Block> createHolder(
+        String registryName,
+        BlockModelData blockModelData,
+        BlockTagData blockTagData
+    ) {
+        return createHolder(new BlockData(registryName, blockModelData, blockTagData));
+    }
+
+    protected Holder<Block> createHolder(
+        String registryName,
+        BlockModelData blockModelData,
+        BlockTagData blockTagData,
+        Function<Block, LootTable.Builder> lootProvider
+    ) {
+        return createHolder(new BlockData(registryName, blockModelData, blockTagData, lootProvider));
     }
 
     protected Holder<Block> createHolder(BlockData blockData) {

@@ -82,10 +82,10 @@ public class AVPEngineerBlocks extends AVPDeferredBlockRegistry {
         var brick3BlockData = new BlockData("brick_3", BlockModelData.cube(properties), stoneOrMetalTags);
         brick3 = registerBlockHolderSet(new BlockHolderSetData(properties, brick3BlockData));
 
-        column1 = createHolder(new BlockData("column_1", BlockModelData.cube(properties), stoneOrMetalTags));
-        column2 = createHolder(new BlockData("column_2", BlockModelData.cube(properties), stoneOrMetalTags));
-        floor = createHolder(new BlockData("floor", BlockModelData.cube(properties), soft));
-        gravel = createHolder(new BlockData("gravel", BlockModelData.cube(properties), soft));
+        column1 = createHolder("column_1", BlockModelData.cube(properties), stoneOrMetalTags);
+        column2 = createHolder("column_2", BlockModelData.cube(properties), stoneOrMetalTags);
+        floor = createHolder("floor", BlockModelData.cube(properties), soft);
+        gravel = createHolder("gravel", BlockModelData.cube(properties), soft);
 
         var material0BlockData = new BlockData("material_0", BlockModelData.cube(properties), stoneOrMetalTags);
         material0 = registerBlockHolderSet(new BlockHolderSetData(properties, material0BlockData));
@@ -96,10 +96,10 @@ public class AVPEngineerBlocks extends AVPDeferredBlockRegistry {
         var material2BlockData = new BlockData("material_2", BlockModelData.cube(properties), stoneOrMetalTags);
         material2 = registerBlockHolderSet(new BlockHolderSetData(properties, material2BlockData));
 
-        rock = createHolder(new BlockData("rock", BlockModelData.cube(properties), stoneOrMetalTags));
-        rock1 = createHolder(new BlockData("rock_1", BlockModelData.cube(properties), stoneOrMetalTags));
-        rock2 = createHolder(new BlockData("rock_2", BlockModelData.cube(properties), stoneOrMetalTags));
-        rock3 = createHolder(new BlockData("rock_3", BlockModelData.cube(properties), stoneOrMetalTags));
+        rock = createHolder("rock", BlockModelData.cube(properties), stoneOrMetalTags);
+        rock1 = createHolder("rock_1", BlockModelData.cube(properties), stoneOrMetalTags);
+        rock2 = createHolder("rock_2", BlockModelData.cube(properties), stoneOrMetalTags);
+        rock3 = createHolder("rock_3", BlockModelData.cube(properties), stoneOrMetalTags);
 
         var wallBlockData = new BlockData("wall", BlockModelData.cube(properties), stoneOrMetalTags);
         wall = registerBlockHolderSet(new BlockHolderSetData(properties, wallBlockData));

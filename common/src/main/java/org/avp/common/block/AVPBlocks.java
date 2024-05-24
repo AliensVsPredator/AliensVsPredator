@@ -32,9 +32,9 @@ public class AVPBlocks extends AVPDeferredBlockRegistry {
         var ironTier = BlockTagData.ofBlock(Set.of(BlockTags.MINEABLE_WITH_PICKAXE, BlockTags.NEEDS_IRON_TOOL));
         var diamondTier = BlockTagData.ofBlock(Set.of(BlockTags.MINEABLE_WITH_PICKAXE, BlockTags.NEEDS_DIAMOND_TOOL));
 
-        aluminumBlock = createHolder(new BlockData("aluminum_block", BlockModelData.cube(properties), stoneTier));
-        orioniteBlock = createHolder(new BlockData("orionite_block", BlockModelData.cube(properties), diamondTier));
-        steelBlock = createHolder(new BlockData("steel_block", BlockModelData.cube(properties), ironTier));
-        titaniumBlock = createHolder(new BlockData("titanium_block", BlockModelData.cube(properties), ironTier));
+        aluminumBlock = createHolder("aluminum_block", BlockModelData.cube(properties), stoneTier);
+        orioniteBlock = createHolder("orionite_block", BlockModelData.cube(properties), diamondTier);
+        steelBlock = createHolder("steel_block", BlockModelData.cube(properties), ironTier);
+        titaniumBlock = createHolder("titanium_block", BlockModelData.cube(properties), ironTier);
     }
 }

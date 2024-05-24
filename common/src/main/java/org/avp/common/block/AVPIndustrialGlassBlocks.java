@@ -78,7 +78,7 @@ public class AVPIndustrialGlassBlocks extends AVPDeferredBlockRegistry {
             Set.of(AVPItemTags.INDUSTRIAL_GLASS)
         );
 
-        glass = super.createHolder(new BlockData(
+        glass = super.createHolder(
             "industrial_glass",
             new BlockModelData(
                 () -> new CustomTransparentBlock(DyeColor.WHITE, industrialGlassProperties),
@@ -86,7 +86,7 @@ public class AVPIndustrialGlassBlocks extends AVPDeferredBlockRegistry {
                 BlockModelRenderType.TRANSLUCENT
             ),
             blockTagData
-        ));
+        );
 
         Function<DyeColor, BlockData> blockDataFactory = dyeColor -> new BlockData(
             dyeColor.getName(),

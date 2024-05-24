@@ -50,9 +50,9 @@ public class AVPIndustrialBlocks extends AVPDeferredBlockRegistry {
         var brickBlockData = new BlockData("brick", BlockModelData.cube(metalProperties), stoneOrMetal);
         brick = registerBlockHolderSet(new BlockHolderSetData(metalProperties, brickBlockData));
 
-        floorGrill = createHolder(new BlockData("floor_grill", BlockModelData.cube(metalProperties), stoneOrMetal));
+        floorGrill = createHolder("floor_grill", BlockModelData.cube(metalProperties), stoneOrMetal);
 
-        lamp = createHolder(new BlockData("lamp", BlockModelData.cube(metalProperties), stoneOrMetal));
+        lamp = createHolder("lamp", BlockModelData.cube(metalProperties), stoneOrMetal);
 
         var metalPanel0BlockData = new BlockData("metal_panel_0", BlockModelData.cube(metalProperties), stoneOrMetal);
         metalPanel0 = registerBlockHolderSet(new BlockHolderSetData(metalProperties, metalPanel0BlockData));
@@ -63,11 +63,11 @@ public class AVPIndustrialBlocks extends AVPDeferredBlockRegistry {
         var metalPanel2BlockData = new BlockData("metal_panel_2", BlockModelData.cube(metalProperties), stoneOrMetal);
         metalPanel2 = registerBlockHolderSet(new BlockHolderSetData(metalProperties, metalPanel2BlockData));
 
-        vent = createHolder(new BlockData("vent", BlockModelData.cube(metalProperties), stoneOrMetal));
+        vent = createHolder("vent", BlockModelData.cube(metalProperties), stoneOrMetal);
 
         var wallBlockData = new BlockData("wall", BlockModelData.cube(metalProperties), stoneOrMetal);
         wall = registerBlockHolderSet(new BlockHolderSetData(metalProperties, wallBlockData));
 
-        wallHazard = createHolder(new BlockData("wall_hazard", BlockModelData.rotatedPillar(metalProperties), stoneOrMetal));
+        wallHazard = createHolder("wall_hazard", BlockModelData.rotatedPillar(metalProperties), stoneOrMetal);
     }
 }

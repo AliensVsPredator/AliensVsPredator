@@ -48,14 +48,14 @@ public class AVPYautjaShipBlocks extends AVPDeferredBlockRegistry {
         var brickBlockData = new BlockData("brick", BlockModelData.cube(properties), tags);
         brick = registerBlockHolderSet(new BlockHolderSetData(properties, brickBlockData));
 
-        decor1 = createHolder(new BlockData("decor_1", BlockModelData.cube(properties), tags));
-        decor2 = createHolder(new BlockData("decor_2", BlockModelData.cube(properties), tags));
+        decor1 = createHolder("decor_1", BlockModelData.cube(properties), tags);
+        decor2 = createHolder("decor_2", BlockModelData.cube(properties), tags);
 
         var decor3BlockData = new BlockData("decor_3", BlockModelData.cube(properties), tags);
         decor3 = registerBlockHolderSet(new BlockHolderSetData(properties, decor3BlockData));
 
-        panel = createHolder(new BlockData("panel", BlockModelData.cube(properties), tags));
-        supportPillar = createHolder(new BlockData("support_pillar", BlockModelData.cube(properties), tags));
-        wallBase = createHolder(new BlockData("wall_base", BlockModelData.cube(properties), tags));
+        panel = createHolder("panel", BlockModelData.cube(properties), tags);
+        supportPillar = createHolder("support_pillar", BlockModelData.cube(properties), tags);
+        wallBase = createHolder("wall_base", BlockModelData.cube(properties), tags);
     }
 }
