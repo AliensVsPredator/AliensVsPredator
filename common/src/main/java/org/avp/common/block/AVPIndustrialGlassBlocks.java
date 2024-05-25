@@ -79,13 +79,15 @@ public class AVPIndustrialGlassBlocks extends AVPDeferredBlockRegistry {
         );
 
         glass = super.createHolder(
-            "industrial_glass",
-            new BlockModelData(
-                () -> new CustomTransparentBlock(DyeColor.WHITE, industrialGlassProperties),
-                BlockModelDataType.Cube::new,
-                BlockModelRenderType.TRANSLUCENT
-            ),
-            blockTagData
+            new BlockData(
+                "industrial_glass",
+                new BlockModelData(
+                    () -> new CustomTransparentBlock(DyeColor.WHITE, industrialGlassProperties),
+                    BlockModelDataType.Cube::new,
+                    BlockModelRenderType.TRANSLUCENT
+                ),
+                blockTagData
+            )
         );
 
         Function<DyeColor, BlockData> blockDataFactory = dyeColor -> new BlockData(
