@@ -29,12 +29,12 @@ public class OldPainlessItem extends AbstractAVPWeaponItem {
         AmmunitionStrategy.builder(
             Integer.MAX_VALUE,
             List.of(
-                AVPBulletItems.INSTANCE.bulletHeavy::get,
-                AVPBulletItems.INSTANCE.bulletHeavyAcid::get,
-                AVPBulletItems.INSTANCE.bulletHeavyElectric::get,
-                AVPBulletItems.INSTANCE.bulletHeavyExplosive::get,
-                AVPBulletItems.INSTANCE.bulletHeavyIncendiary::get,
-                AVPBulletItems.INSTANCE.bulletHeavyPenetration::get
+                AVPBulletItems.INSTANCE.bulletHeavy.base()::get,
+                AVPBulletItems.INSTANCE.bulletHeavy.acid()::get,
+                AVPBulletItems.INSTANCE.bulletHeavy.electric()::get,
+                AVPBulletItems.INSTANCE.bulletHeavy.explosive()::get,
+                AVPBulletItems.INSTANCE.bulletHeavy.incendiary()::get,
+                AVPBulletItems.INSTANCE.bulletHeavy.penetration()::get
             )
         )
             .setHasAmmunitionBehavior(HasAmmunitionBehavior.INVENTORY)

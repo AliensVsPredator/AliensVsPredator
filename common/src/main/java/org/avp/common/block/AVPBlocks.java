@@ -8,8 +8,7 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 import java.util.Set;
 
 import org.avp.api.Holder;
-import org.avp.api.block.BlockData;
-import org.avp.api.block.BlockModelData;
+import org.avp.api.block.model.BlockModelData;
 import org.avp.api.block.BlockTagData;
 import org.avp.common.registry.AVPDeferredBlockRegistry;
 

@@ -11,7 +11,7 @@ import java.util.Set;
 
 import net.minecraft.world.level.material.PushReaction;
 import org.avp.api.Holder;
-import org.avp.api.block.BlockModelData;
+import org.avp.api.block.model.BlockModelData;
 import org.avp.api.block.BlockTagData;
 import org.avp.api.block.model.render_type.BlockModelRenderType;
 import org.avp.common.block.impl.ResinVeinBlock;

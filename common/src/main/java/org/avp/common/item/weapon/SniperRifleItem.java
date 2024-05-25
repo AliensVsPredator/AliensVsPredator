@@ -29,12 +29,12 @@ public class SniperRifleItem extends AbstractAVPWeaponItem {
         AmmunitionStrategy.builder(
             6,
             List.of(
-                AVPBulletItems.INSTANCE.bulletRifle::get,
-                AVPBulletItems.INSTANCE.bulletRifleAcid::get,
-                AVPBulletItems.INSTANCE.bulletRifleElectric::get,
-                AVPBulletItems.INSTANCE.bulletRifleExplosive::get,
-                AVPBulletItems.INSTANCE.bulletRifleIncendiary::get,
-                AVPBulletItems.INSTANCE.bulletRiflePenetration::get
+                AVPBulletItems.INSTANCE.bulletRifle.base()::get,
+                AVPBulletItems.INSTANCE.bulletRifle.acid()::get,
+                AVPBulletItems.INSTANCE.bulletRifle.electric()::get,
+                AVPBulletItems.INSTANCE.bulletRifle.explosive()::get,
+                AVPBulletItems.INSTANCE.bulletRifle.incendiary()::get,
+                AVPBulletItems.INSTANCE.bulletRifle.penetration()::get
             )
         )
             .setHasAmmunitionBehavior(HasAmmunitionBehavior.LOADED)

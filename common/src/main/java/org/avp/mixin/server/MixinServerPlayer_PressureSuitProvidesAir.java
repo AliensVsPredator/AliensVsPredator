@@ -27,10 +27,10 @@ public abstract class MixinServerPlayer_PressureSuitProvidesAir extends Player {
 
         if (
             self.tickCount % 20 == 0 &&
-                self.getItemBySlot(EquipmentSlot.HEAD).is(AVPArmorItems.INSTANCE.pressureHelmet.get()) &&
-                self.getItemBySlot(EquipmentSlot.CHEST).is(AVPArmorItems.INSTANCE.pressureBody.get()) &&
-                self.getItemBySlot(EquipmentSlot.LEGS).is(AVPArmorItems.INSTANCE.pressureLeggings.get()) &&
-                self.getItemBySlot(EquipmentSlot.FEET).is(AVPArmorItems.INSTANCE.pressureBoots.get())
+                self.getItemBySlot(EquipmentSlot.HEAD).is(AVPArmorItems.INSTANCE.pressure.helmet().get()) &&
+                self.getItemBySlot(EquipmentSlot.CHEST).is(AVPArmorItems.INSTANCE.pressure.body().get()) &&
+                self.getItemBySlot(EquipmentSlot.LEGS).is(AVPArmorItems.INSTANCE.pressure.leggings().get()) &&
+                self.getItemBySlot(EquipmentSlot.FEET).is(AVPArmorItems.INSTANCE.pressure.boots().get())
         ) {
             self.setAirSupply(self.getMaxAirSupply());
         }

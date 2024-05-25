@@ -11,7 +11,7 @@ import java.util.function.Function;
 import net.minecraft.world.level.storage.loot.LootTable;
 import org.avp.api.Holder;
 import org.avp.api.block.BlockData;
-import org.avp.api.block.BlockModelData;
+import org.avp.api.block.model.BlockModelData;
 import org.avp.api.block.BlockTagData;
 import org.avp.api.block.loot_table.LootProviders;
 import org.avp.common.item.AVPItems;

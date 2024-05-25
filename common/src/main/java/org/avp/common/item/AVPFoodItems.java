@@ -33,6 +33,6 @@ public class AVPFoodItems extends AVPDeferredItemRegistry {
 
     private Holder<Item> registerFood(String registryName, FoodProperties.Builder foodPropertiesBuilder) {
         var foodProperties = foodPropertiesBuilder.build();
-        return createHolder(registryName, () -> new Item(new Item.Properties().food(foodProperties)));
+        return createHolder(registryName, new Item.Properties().food(foodProperties));
     }
 }

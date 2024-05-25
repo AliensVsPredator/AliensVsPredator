@@ -1,4 +1,4 @@
-package org.avp.api.block;
+package org.avp.api.block.model;
 
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.FenceBlock;

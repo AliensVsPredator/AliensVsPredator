@@ -3,6 +3,7 @@ package org.avp.common.item;
 import net.minecraft.world.item.Item;
 
 import org.avp.api.Holder;
+import org.avp.api.item.ItemData;
 import org.avp.common.registry.AVPDeferredItemRegistry;
 
 public class AVPWeaponBlueprintItems extends AVPDeferredItemRegistry {
@@ -31,6 +32,11 @@ public class AVPWeaponBlueprintItems extends AVPDeferredItemRegistry {
 
     public final Holder<Item> blueprintSniperRifle;
 
+    @Override
+    protected Holder<Item> createHolder(ItemData itemData) {
+        return super.createHolder(itemData.withPrefixRegistryName("blueprint_"));
+    }
+
     private AVPWeaponBlueprintItems() {
         blueprint3712Shotgun = createHolder("37_12_shotgun");
         blueprintAk47 = createHolder("ak_47");
@@ -43,10 +49,5 @@ public class AVPWeaponBlueprintItems extends AVPDeferredItemRegistry {
         blueprintM88Mod4CombatPistol = createHolder("m88mod4_combat_pistol");
         blueprintOldPainless = createHolder("old_painless");
         blueprintSniperRifle = createHolder("sniper_rifle");
-    }
-
-    @Override
-    protected Holder<Item> createHolder(String registryName) {
-        return super.createHolder("blueprint_" + registryName, () -> new Item(new Item.Properties()));
     }
 }

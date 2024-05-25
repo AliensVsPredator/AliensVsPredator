@@ -6,6 +6,9 @@ import net.minecraft.world.item.Rarity;
 import org.avp.api.Holder;
 import org.avp.common.item.impl.TintedBottleItem;
 import org.avp.common.registry.AVPDeferredItemRegistry;
+import org.avp.common.tag.AVPItemTags;
+
+import java.util.Set;
 
 public class AVPItems extends AVPDeferredItemRegistry {
 
@@ -64,8 +67,8 @@ public class AVPItems extends AVPDeferredItemRegistry {
     public final Holder<Item> yautjaArtifact;
 
     private AVPItems() {
-        bottleTinted = createHolder("bottle_tinted", () -> new TintedBottleItem(new Item.Properties()));
-        bottleTintedAcid = createHolder("bottle_tinted_acid", () -> new Item(new Item.Properties().craftRemainder(bottleTinted.get())));
+        bottleTinted = createHolder("bottle_tinted", TintedBottleItem::new);
+        bottleTintedAcid = createHolder("bottle_tinted_acid", new Item.Properties().craftRemainder(bottleTinted.get()));
         carbon = createHolder("carbon");
         cobalt = createHolder("cobalt");
         dustLithium = createHolder("dust_lithium");
@@ -81,14 +84,14 @@ public class AVPItems extends AVPDeferredItemRegistry {
         polymer = createHolder("polymer");
         rawBauxite = createHolder("raw_bauxite");
         rawTitanium = createHolder("raw_titanium");
-        resinBall = createHolder("resin_ball");
-        royalJelly = createHolder("royal_jelly", () -> new Item(new Item.Properties().rarity(Rarity.UNCOMMON)));
+        resinBall = createHolder("resin_ball", Set.of(AVPItemTags.ACID_IMMUNE));
+        royalJelly = createHolder("royal_jelly", new Item.Properties().rarity(Rarity.UNCOMMON), Set.of(AVPItemTags.ACID_IMMUNE));
         sheetOrionite = createHolder("sheet_orionite");
         shuriken = createHolder("shuriken");
         silica = createHolder("silica");
         smartDisc = createHolder("smart_disc");
         veritaniumShard = createHolder("veritanium_shard");
-        xenomorphChitin = createHolder("xenomorph_chitin");
+        xenomorphChitin = createHolder("xenomorph_chitin", Set.of(AVPItemTags.ACID_IMMUNE));
         yautjaArtifact = createHolder("yautja_artifact");
     }
 }

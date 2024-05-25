@@ -61,7 +61,7 @@ public final class AVPCreativeModeTabs extends AVPDeferredRegistry<CreativeModeT
         createBuilderHolder(
             "armor",
             () -> CreativeModeTab.builder(CreativeModeTab.Row.TOP, 0)
-                .icon(AVPArmorItems.INSTANCE.veritaniumHelmet.get()::getDefaultInstance)
+                .icon(AVPArmorItems.INSTANCE.veritanium.helmet().get()::getDefaultInstance)
                 .displayItems(
                     (itemDisplayParameters, output) -> output.acceptAll(
                         itemsToItemStacks(AVPArmorItems.INSTANCE.getValues())
