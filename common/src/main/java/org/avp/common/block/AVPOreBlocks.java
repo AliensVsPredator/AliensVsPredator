@@ -46,7 +46,7 @@ public class AVPOreBlocks extends AVPDeferredBlockRegistry {
     public final Holder<Block> silicaBlock;
 
     protected Holder<Block> createOreHolder(BlockData blockData) {
-        return super.createHolder(blockData.withPrefixRegistryName("ore_"));
+        return createHolder(blockData.withPrefixRegistryName("ore_"));
     }
 
     private AVPOreBlocks() {

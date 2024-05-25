@@ -24,15 +24,15 @@ public record BlockData(
     }
 
     public BlockData withRegistryName(String registryName) {
-        return new BlockData(registryName, blockModelData, blockTagData);
+        return new BlockData(registryName, blockModelData, blockTagData, lootProvider);
     }
 
     public BlockData withPrefixRegistryName(String prefix) {
-        return new BlockData(prefix + registryName, blockModelData, blockTagData);
+        return new BlockData(prefix + registryName, blockModelData, blockTagData, lootProvider);
     }
 
     public BlockData withSuffixRegistryName(String suffix) {
-        return new BlockData(registryName + suffix, blockModelData, blockTagData);
+        return new BlockData(registryName + suffix, blockModelData, blockTagData, lootProvider);
     }
 
     public static BlockData toSlab(Holder<Block> parentHolder, BlockBehaviour.Properties properties, BlockData blockData) {

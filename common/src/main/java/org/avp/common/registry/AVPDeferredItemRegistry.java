@@ -61,6 +61,7 @@ public class AVPDeferredItemRegistry extends AVPDeferredRegistry<Item> {
     /**
      * @deprecated Do not use directly.
      */
+    @Deprecated
     @Override
     protected final Holder<Item> createHolder(String registryName, Supplier<Item> supplier) throws UnsupportedOperationException {
         throw new UnsupportedOperationException();
