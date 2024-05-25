@@ -14,12 +14,12 @@ public record ItemModelData(
     public static ItemModelData none() {
         return new ItemModelData(
             () -> new Item(new Item.Properties()),
-            ItemModelDataType.Flat::new
+            $ -> new ItemModelDataType.None()
         );
     }
 
     public static ItemModelData none(Supplier<Item> itemFactory) {
-        return new ItemModelData(itemFactory, ItemModelDataType.Flat::new);
+        return new ItemModelData(itemFactory, $ -> new ItemModelDataType.None());
     }
 
     public static ItemModelData flat() {
