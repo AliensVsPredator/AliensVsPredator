@@ -10,7 +10,7 @@ import net.minecraft.world.level.block.WallBlock;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.properties.WoodType;
 import org.avp.api.Holder;
-import org.avp.api.block.model.provider.BlockModelDataType;
+import org.avp.api.block.model.type.BlockModelDataType;
 import org.avp.api.block.model.render_type.BlockModelRenderType;
 import org.avp.common.service.Services;
 

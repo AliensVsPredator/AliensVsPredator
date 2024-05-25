@@ -1,4 +1,4 @@
-package org.avp.api.block.model.provider;
+package org.avp.api.block.model.type;
 
 import net.minecraft.world.level.block.Block;
 

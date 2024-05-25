@@ -16,7 +16,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import org.avp.api.block.BlockData;
-import org.avp.api.block.model.provider.BlockModelDataType;
+import org.avp.api.block.model.type.BlockModelDataType;
 import org.avp.common.item.AVPSpawnEggItems;
 import org.avp.common.registry.AVPDeferredBlockRegistry;
 

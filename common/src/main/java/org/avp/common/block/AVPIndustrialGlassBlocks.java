@@ -16,7 +16,7 @@ import org.avp.api.block.BlockData;
 import org.avp.api.block.BlockModelData;
 import org.avp.api.block.BlockTagData;
 import org.avp.api.block.CustomTransparentBlock;
-import org.avp.api.block.model.provider.BlockModelDataType;
+import org.avp.api.block.model.type.BlockModelDataType;
 import org.avp.api.block.model.render_type.BlockModelRenderType;
 import org.avp.common.registry.AVPDeferredBlockRegistry;
 import org.avp.common.tag.AVPBlockTags;
