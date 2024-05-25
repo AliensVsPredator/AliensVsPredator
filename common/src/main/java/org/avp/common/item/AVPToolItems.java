@@ -64,6 +64,11 @@ public class AVPToolItems extends AVPDeferredItemRegistry {
 
     public final Holder<Item> veritaniumSword;
 
+    @Override
+    protected Holder<Item> createHolder(ItemData itemData) {
+        return super.createHolder(itemData.withPrefixRegistryName("tool_"));
+    }
+
     protected Holder<Item> createToolHolder2(
         String registryName,
         AVPToolTier toolTier,
@@ -88,12 +93,7 @@ public class AVPToolItems extends AVPDeferredItemRegistry {
             ItemModelDataType.HandHeld::new
         );
 
-        return super.createHolder(new ItemData(registryName, itemModelData, tags));
-    }
-
-    @Override
-    protected Holder<Item> createHolder(ItemData itemData) {
-        return super.createHolder(itemData.withPrefixRegistryName("tool_"));
+        return createHolder(new ItemData(registryName, itemModelData, tags));
     }
 
     private AVPToolItems() {
