@@ -2,6 +2,7 @@ package org.avp.common.block;
 
 import net.minecraft.world.level.block.Block;
 
+import net.minecraft.world.level.block.state.BlockBehaviour;
 import org.avp.api.Holder;
 import org.avp.api.block.BlockData;
 import org.avp.api.block.model.BlockModelData;
@@ -87,13 +88,19 @@ public class AVPParadiseBlocks extends AVPDeferredBlockRegistry {
         leavesSmall = createHolder("leaves_small", BlockModelData.cube(), BlockTagData.none());
 
         logLarge = createHolder("log_large", BlockModelData.rotatedPillar(), BlockTagData.none());
-        logLargePlanks = createHolder("log_large_planks", BlockModelData.cube(), BlockTagData.none());
+        var logLargePlanksProperties = BlockBehaviour.Properties.of();
+        var logLargePlanksBlockData = new BlockData("log_large_planks", BlockModelData.cube(logLargePlanksProperties), BlockTagData.none());
+        logLargePlanks = createHolder(logLargePlanksBlockData);
 
         logMedium = createHolder("log_medium", BlockModelData.rotatedPillar(), BlockTagData.none());
-        logMediumPlanks = createHolder("log_medium_planks", BlockModelData.cube(), BlockTagData.none());
+        var logMediumPlanksProperties = BlockBehaviour.Properties.of();
+        var logMediumPlanksBlockData = new BlockData("log_medium_planks", BlockModelData.cube(logMediumPlanksProperties), BlockTagData.none());
+        logMediumPlanks = createHolder("log_medium_planks", BlockModelData.cube(logMediumPlanksProperties), BlockTagData.none());
 
         logSmall = createHolder("log_small", BlockModelData.rotatedPillar(), BlockTagData.none());
-        logSmallPlanks = createHolder("log_small_planks", BlockModelData.cube(), BlockTagData.none());
+        var logSmallPlanksProperties = BlockBehaviour.Properties.of();
+        var logSmallPlanksBlockData = new BlockData("log_small_planks", BlockModelData.cube(logSmallPlanksProperties), BlockTagData.none());
+        logSmallPlanks = createHolder("log_small_planks", BlockModelData.cube(logSmallPlanksProperties), BlockTagData.none());
 
         fenceGateLarge = createHolder("fence_gate_large", BlockModelData.fenceGate(logLargePlanks, AVPWoodType.LARGE), BlockTagData.none());
         fenceGateMedium = createHolder("fence_gate_medium", BlockModelData.fenceGate(logMediumPlanks, AVPWoodType.MEDIUM), BlockTagData.none());
@@ -103,13 +110,13 @@ public class AVPParadiseBlocks extends AVPDeferredBlockRegistry {
         fenceMedium = createHolder("fence_medium", BlockModelData.fence(logMediumPlanks), BlockTagData.none());
         fenceSmall = createHolder("fence_small", BlockModelData.fence(logSmallPlanks), BlockTagData.none());
 
-        slabLarge = createHolder("slab_large", BlockModelData.slab(logLargePlanks), BlockTagData.none());
-        slabMedium = createHolder("slab_medium", BlockModelData.slab(logMediumPlanks), BlockTagData.none());
-        slabSmall = createHolder("slab_small", BlockModelData.slab(logSmallPlanks), BlockTagData.none());
+        slabLarge = createHolder(BlockData.toSlab(logLargePlanks, logLargePlanksProperties, logLargePlanksBlockData));
+        slabMedium = createHolder(BlockData.toSlab(logMediumPlanks, logMediumPlanksProperties, logMediumPlanksBlockData));
+        slabSmall = createHolder(BlockData.toSlab(logSmallPlanks, logSmallPlanksProperties, logSmallPlanksBlockData));
 
-        stairsLarge = createHolder("stairs_large", BlockModelData.stairs(logLargePlanks), BlockTagData.none());
-        stairsMedium = createHolder("stairs_medium", BlockModelData.stairs(logMediumPlanks), BlockTagData.none());
-        stairsSmall = createHolder("stairs_small", BlockModelData.stairs(logSmallPlanks), BlockTagData.none());
+        stairsLarge = createHolder(BlockData.toStairs(logLargePlanks, logLargePlanksProperties, logLargePlanksBlockData));
+        stairsMedium = createHolder(BlockData.toStairs(logMediumPlanks, logMediumPlanksProperties, logMediumPlanksBlockData));
+        stairsSmall = createHolder(BlockData.toStairs(logSmallPlanks, logSmallPlanksProperties, logSmallPlanksBlockData));
 
         woodLarge = createHolder("wood_large", BlockModelData.wood(logLarge), BlockTagData.none());
         woodMedium = createHolder("wood_medium", BlockModelData.wood(logMedium), BlockTagData.none());
