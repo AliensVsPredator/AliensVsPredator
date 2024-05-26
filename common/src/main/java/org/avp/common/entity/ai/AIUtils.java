@@ -29,21 +29,6 @@ public class AIUtils {
         goalSelector.addGoal(6, new RandomLookAroundGoal(monster));
     }
 
-    public static void addBasicAlienAI(Monster monster, GoalSelector goalSelector, GoalSelector targetSelector) {
-        addBasicAI(monster, goalSelector);
-        targetSelector.addGoal(1, new HurtByTargetGoal(monster));
-
-        targetSelector.addGoal(
-            2,
-            new NearestAttackableTargetGoal<>(
-                monster,
-                LivingEntity.class,
-                true,
-                livingEntity -> !livingEntity.getType().is(AVPEntityTypeTags.ALIENS)
-            )
-        );
-    }
-
     public static void addChestbursterAI(Monster monster, GoalSelector goalSelector) {
         goalSelector.addGoal(8, new LookAtPlayerGoal(monster, Player.class, 8));
         goalSelector.addGoal(8, new RandomLookAroundGoal(monster));
@@ -52,8 +37,9 @@ public class AIUtils {
         goalSelector.addGoal(3, new AvoidEntityGoal<>(monster, Player.class, 6, 1, 1.2));
     }
 
-    public static void addHiveAlienAI(Monster monster, GoalSelector goalSelector, GoalSelector targetSelector) {
-        addBasicAlienAI(monster, goalSelector, targetSelector);
+    public static void addAlienAI(Monster monster, GoalSelector goalSelector, GoalSelector targetSelector) {
+        addBasicAI(monster, goalSelector);
+        targetSelector.addGoal(1, new HurtByTargetGoal(monster));
 
         targetSelector.addGoal(
             2,
