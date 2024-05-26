@@ -13,9 +13,17 @@ public class AVPSoundEvents extends AVPDeferredRegistry<SoundEvent> {
 
     public static final AVPSoundEvents INSTANCE = new AVPSoundEvents();
 
+    public final Holder<SoundEvent> blockAcidBurn = createHolder("block.acid.burn");
+
     public final Holder<SoundEvent> entityChestbursterDeath = createHolder("entity.chestburster.death");
 
     public final Holder<SoundEvent> entityChestbursterHurt = createHolder("entity.chestburster.hurt");
+
+    public final Holder<SoundEvent> entityCrusherAmbient = createHolder("entity.crusher.ambient");
+
+    public final Holder<SoundEvent> entityCrusherDeath = createHolder("entity.crusher.death");
+
+    public final Holder<SoundEvent> entityCrusherHurt = createHolder("entity.crusher.hurt");
 
     public final Holder<SoundEvent> entityPraetorianAmbient = createHolder("entity.praetorian.ambient");
 

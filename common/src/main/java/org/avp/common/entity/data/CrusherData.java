@@ -70,9 +70,9 @@ public class CrusherData extends EntityData<Crusher> {
     protected Optional<EntitySoundData> createSoundData() {
         return Optional.of(
             new EntitySoundData(
-                AVPSoundEvents.INSTANCE.entityPraetorianAmbient,
-                AlienSounds.createSoundEventSelector(AVPSoundEvents.INSTANCE.entityPraetorianHurt),
-                AVPSoundEvents.INSTANCE.entityPraetorianDeath
+                AVPSoundEvents.INSTANCE.entityCrusherAmbient,
+                AlienSounds.createSoundEventSelector(AVPSoundEvents.INSTANCE.entityCrusherHurt),
+                AVPSoundEvents.INSTANCE.entityCrusherDeath
             )
         );
     }
