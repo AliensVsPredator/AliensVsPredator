@@ -20,7 +20,7 @@ public class AVPBlockTagsProvider extends FabricTagProvider.BlockTagProvider {
     @Override
     protected void addTags(HolderLookup.Provider provider) {
         getOrCreateTagBuilder(AVPBlockTags.SHOULD_NOT_BE_DESTROYED)
-            .addTag(BlockTags.FEATURES_CANNOT_REPLACE)
+            .addOptionalTag(BlockTags.FEATURES_CANNOT_REPLACE)
             .add(
                 Blocks.BARRIER,
                 Blocks.BEDROCK,
