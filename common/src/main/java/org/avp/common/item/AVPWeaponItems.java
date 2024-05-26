@@ -1,5 +1,6 @@
 package org.avp.common.item;
 
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 
 import org.avp.api.Holder;
@@ -19,9 +20,9 @@ import org.avp.common.item.weapon.SniperRifleItem;
 import org.avp.common.registry.AVPDeferredItemRegistry;
 import org.avp.common.tag.AVPItemTags;
 
+import java.util.HashSet;
 import java.util.Set;
 import java.util.function.Function;
-import java.util.function.Supplier;
 
 public class AVPWeaponItems extends AVPDeferredItemRegistry {
 
@@ -53,12 +54,14 @@ public class AVPWeaponItems extends AVPDeferredItemRegistry {
 
     public final Holder<Item> weaponSniperRifle;
 
-    private Holder<Item> createWeaponHolder(String registryName, Function<Item.Properties, Item> itemSupplier) {
+    private Holder<Item> createWeaponHolder(String registryName, Function<Item.Properties, Item> itemSupplier, Set<TagKey<Item>> tags) {
+        var itemTags = new HashSet<>(tags);
+        itemTags.add(AVPItemTags.GUNS);
         return createHolder(
             new ItemData(
                 "weapon_" + registryName,
                 ItemModelData.none(() -> itemSupplier.apply(new Item.Properties())),
-                Set.of(AVPItemTags.GUNS)
+                itemTags
             )
         );
     }
@@ -67,16 +70,23 @@ public class AVPWeaponItems extends AVPDeferredItemRegistry {
         grenadeIncendiary = createHolder("grenade_incendiary");
         grenadeM40 = createHolder("grenade_m40");
 
-        weapon3712Shotgun = createWeaponHolder("37_12_shotgun", M3712ShotgunItem::new);
-        weaponM88Mod4CombatPistol = createWeaponHolder("m88mod4_combat_pistol", M88Mod4CombatPistolItem::new);
-        weaponAk47 = createWeaponHolder("ak_47", AK47Item::new);
-        weaponF90Rifle = createWeaponHolder("f90_rifle", F90RifleItem::new);
-        weaponFlamethrowerSevastopol = createWeaponHolder("flamethrower_sevastopol", FlamethrowerSevastopolItem::new);
-        weaponM4Carbine = createWeaponHolder("m4_carbine", M4CarbineItem::new);
-        weaponM41APulseRifle = createWeaponHolder("m41a_pulse_rifle", M41APulseRifleItem::new);
-        weaponM56Smartgun = createWeaponHolder("m56_smartgun", M56SmartgunItem::new);
-        weaponM83A2Sadar = createWeaponHolder("m83a2_sadar", M83A2SADARItem::new);
-        weaponOldPainless = createWeaponHolder("old_painless", OldPainlessItem::new);
-        weaponSniperRifle = createWeaponHolder("sniper_rifle", SniperRifleItem::new);
+        // Small
+        weaponM88Mod4CombatPistol = createWeaponHolder("m88mod4_combat_pistol", M88Mod4CombatPistolItem::new, Set.of(AVPItemTags.SMALL_GUNS));
+
+        // Medium
+        weapon3712Shotgun = createWeaponHolder("37_12_shotgun", M3712ShotgunItem::new, Set.of(AVPItemTags.MEDIUM_GUNS));
+        weaponAk47 = createWeaponHolder("ak_47", AK47Item::new, Set.of(AVPItemTags.MEDIUM_GUNS));
+        weaponF90Rifle = createWeaponHolder("f90_rifle", F90RifleItem::new, Set.of(AVPItemTags.MEDIUM_GUNS));
+        weaponFlamethrowerSevastopol = createWeaponHolder("flamethrower_sevastopol", FlamethrowerSevastopolItem::new, Set.of(AVPItemTags.MEDIUM_GUNS));
+        weaponM4Carbine = createWeaponHolder("m4_carbine", M4CarbineItem::new, Set.of(AVPItemTags.MEDIUM_GUNS));
+
+        // Heavy
+        weaponM41APulseRifle = createWeaponHolder("m41a_pulse_rifle", M41APulseRifleItem::new, Set.of(AVPItemTags.HEAVY_GUNS));
+
+        // Uber
+        weaponM56Smartgun = createWeaponHolder("m56_smartgun", M56SmartgunItem::new, Set.of(AVPItemTags.UBER_GUNS));
+        weaponM83A2Sadar = createWeaponHolder("m83a2_sadar", M83A2SADARItem::new, Set.of(AVPItemTags.UBER_GUNS));
+        weaponOldPainless = createWeaponHolder("old_painless", OldPainlessItem::new, Set.of(AVPItemTags.UBER_GUNS));
+        weaponSniperRifle = createWeaponHolder("sniper_rifle", SniperRifleItem::new, Set.of(AVPItemTags.UBER_GUNS));
     }
 }
