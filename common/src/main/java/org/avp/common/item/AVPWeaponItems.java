@@ -70,6 +70,9 @@ public class AVPWeaponItems extends AVPDeferredItemRegistry {
         grenadeIncendiary = createHolder("grenade_incendiary");
         grenadeM40 = createHolder("grenade_m40");
 
+        // N/A
+        weaponFlamethrowerSevastopol = createWeaponHolder("flamethrower_sevastopol", FlamethrowerSevastopolItem::new, Set.of());
+
         // Small
         weaponM88Mod4CombatPistol = createWeaponHolder("m88mod4_combat_pistol", M88Mod4CombatPistolItem::new, Set.of(AVPItemTags.SMALL_GUNS));
 
@@ -77,16 +80,15 @@ public class AVPWeaponItems extends AVPDeferredItemRegistry {
         weapon3712Shotgun = createWeaponHolder("37_12_shotgun", M3712ShotgunItem::new, Set.of(AVPItemTags.MEDIUM_GUNS));
         weaponAk47 = createWeaponHolder("ak_47", AK47Item::new, Set.of(AVPItemTags.MEDIUM_GUNS));
         weaponF90Rifle = createWeaponHolder("f90_rifle", F90RifleItem::new, Set.of(AVPItemTags.MEDIUM_GUNS));
-        weaponFlamethrowerSevastopol = createWeaponHolder("flamethrower_sevastopol", FlamethrowerSevastopolItem::new, Set.of(AVPItemTags.MEDIUM_GUNS));
         weaponM4Carbine = createWeaponHolder("m4_carbine", M4CarbineItem::new, Set.of(AVPItemTags.MEDIUM_GUNS));
 
         // Heavy
         weaponM41APulseRifle = createWeaponHolder("m41a_pulse_rifle", M41APulseRifleItem::new, Set.of(AVPItemTags.HEAVY_GUNS));
+        weaponSniperRifle = createWeaponHolder("sniper_rifle", SniperRifleItem::new, Set.of(AVPItemTags.HEAVY_GUNS));
 
         // Uber
         weaponM56Smartgun = createWeaponHolder("m56_smartgun", M56SmartgunItem::new, Set.of(AVPItemTags.UBER_GUNS));
         weaponM83A2Sadar = createWeaponHolder("m83a2_sadar", M83A2SADARItem::new, Set.of(AVPItemTags.UBER_GUNS));
         weaponOldPainless = createWeaponHolder("old_painless", OldPainlessItem::new, Set.of(AVPItemTags.UBER_GUNS));
-        weaponSniperRifle = createWeaponHolder("sniper_rifle", SniperRifleItem::new, Set.of(AVPItemTags.UBER_GUNS));
     }
 }
