@@ -12,6 +12,7 @@
         "MixinEntity_ReduceFlowingWaterSlowDownForAliens",
         "MixinEntityTypeBuilder_SilenceDataFixerError",
         "MixinItemEntity_LithiumExplode",
+        "MixinLivingEntity_AliensAreImmuneToCertainGuns",
         "MixinLivingEntity_AliensAreImmuneToPoison",
         "MixinLivingEntity_AliensDoNotBurn",
         "MixinLivingEntity_AliensDoNotSuffocate",
