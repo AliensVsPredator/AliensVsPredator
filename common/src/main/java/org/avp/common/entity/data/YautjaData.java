@@ -96,7 +96,7 @@ public class YautjaData extends EntityData<Yautja> {
                 .withPool(
                     LootPool.lootPool()
                         .setRolls(ConstantValue.exactly(1))
-                        .add(EmptyLootItem.emptyItem().setWeight(36))
+                        .add(EmptyLootItem.emptyItem().setWeight(396))
                         .add(LootItem.lootTableItem(AVPArmorItems.INSTANCE.veritanium.helmet().get()).setWeight(1))
                         .add(LootItem.lootTableItem(AVPArmorItems.INSTANCE.veritanium.body().get()).setWeight(1))
                         .add(LootItem.lootTableItem(AVPArmorItems.INSTANCE.veritanium.leggings().get()).setWeight(1))
