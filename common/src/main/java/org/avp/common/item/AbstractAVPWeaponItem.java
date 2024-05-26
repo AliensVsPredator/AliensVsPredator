@@ -28,6 +28,7 @@ import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
+import org.avp.common.tag.AVPBlockTags;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -234,6 +235,13 @@ public abstract class AbstractAVPWeaponItem extends Item implements GeoItem {
             return;
         if (!level.getGameRules().getBoolean(GameRules.RULE_PROJECTILESCANBREAKBLOCKS))
             return;
+
+        var blockState = level.getBlockState(blockPos);
+
+        // Only damage blocks if they should be destroyed.
+        if (blockState.is(AVPBlockTags.SHOULD_NOT_BE_DESTROYED)) {
+            return;
+        }
 
         var damage = this.getWeaponItemData().getDamage() * fireMode.consumedAmmunition();
         BlockBreakProgressManager.damage(level, blockPos, damage);
