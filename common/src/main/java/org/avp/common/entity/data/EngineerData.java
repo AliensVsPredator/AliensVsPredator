@@ -49,7 +49,8 @@ public class EngineerData extends EntityData<Engineer> {
     @Override
     protected List<TagKey<EntityType<?>>> createTags() {
         return List.of(
-            AVPEntityTypeTags.ENGINEERS
+            AVPEntityTypeTags.ENGINEERS,
+            AVPEntityTypeTags.SMALL_GUNS_IMMUNE
         );
     }
 

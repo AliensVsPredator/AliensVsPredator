@@ -68,7 +68,8 @@ public class YautjaData extends EntityData<Yautja> {
     protected List<TagKey<EntityType<?>>> createTags() {
         return List.of(
             AVPEntityTypeTags.MONSTERS,
-            AVPEntityTypeTags.PREDATORS
+            AVPEntityTypeTags.PREDATORS,
+            AVPEntityTypeTags.MEDIUM_GUNS_IMMUNE
         );
     }
 

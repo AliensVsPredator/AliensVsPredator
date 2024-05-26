@@ -59,7 +59,8 @@ public class BoilerData extends EntityData<Boiler> {
             AVPEntityTypeTags.ACID_BLEEDERS,
             AVPEntityTypeTags.ALIENS,
             AVPEntityTypeTags.HIVE_ALIENS,
-            AVPEntityTypeTags.MONSTERS
+            AVPEntityTypeTags.MONSTERS,
+            AVPEntityTypeTags.HEAVY_GUNS_IMMUNE
         );
     }
 
