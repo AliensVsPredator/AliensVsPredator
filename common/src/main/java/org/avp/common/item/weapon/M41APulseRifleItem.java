@@ -48,6 +48,7 @@ public class M41APulseRifleItem extends AbstractAVPWeaponItem {
         )
             .setHasAmmunitionBehavior(HasAmmunitionBehavior.LOADED)
             .build(),
+        2048,
         List.of(FIRE_MODE_BURST, FIRE_MODE_AUTOMATIC),
         4F,
         0.13F,

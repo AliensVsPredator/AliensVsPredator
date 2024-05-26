@@ -39,6 +39,7 @@ public class AK47Item extends AbstractAVPWeaponItem {
         )
             .setHasAmmunitionBehavior(HasAmmunitionBehavior.LOADED)
             .build(),
+        1560,
         List.of(FIRE_MODE),
         2F * 2,
         0.13F,

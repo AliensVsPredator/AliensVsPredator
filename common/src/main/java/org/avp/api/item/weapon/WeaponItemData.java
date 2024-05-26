@@ -15,6 +15,8 @@ public class WeaponItemData {
 
     private final AmmunitionStrategy ammunitionStrategy;
 
+    private final int durability;
+
     private final List<FireMode> fireModes;
 
     private final float damage;
@@ -28,6 +30,7 @@ public class WeaponItemData {
     public WeaponItemData(
         float accuracy,
         AmmunitionStrategy ammunitionStrategy,
+        int durability,
         @NotNull List<FireMode> fireModes,
         float damage,
         float knockback,
@@ -40,6 +43,7 @@ public class WeaponItemData {
 
         this.accuracy = Math.max(accuracy, 0);
         this.ammunitionStrategy = ammunitionStrategy;
+        this.durability = Math.max(durability, 0);
         this.fireModes = fireModes;
         this.damage = Math.max(damage, 0);
         this.knockback = Math.max(knockback, 0);
@@ -61,6 +65,10 @@ public class WeaponItemData {
 
     public AmmunitionStrategy getAmmunitionStrategy() {
         return ammunitionStrategy;
+    }
+
+    public int getDurability() {
+        return durability;
     }
 
     public List<FireMode> getFireModes() {

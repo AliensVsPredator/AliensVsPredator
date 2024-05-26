@@ -39,6 +39,7 @@ public class M3712ShotgunItem extends AbstractAVPWeaponItem {
         )
             .setHasAmmunitionBehavior(HasAmmunitionBehavior.LOADED)
             .build(),
+        768,
         List.of(FIRE_MODE),
         8F * 2,
         0.5F,

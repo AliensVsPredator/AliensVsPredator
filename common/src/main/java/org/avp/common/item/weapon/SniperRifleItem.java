@@ -39,6 +39,7 @@ public class SniperRifleItem extends AbstractAVPWeaponItem {
         )
             .setHasAmmunitionBehavior(HasAmmunitionBehavior.LOADED)
             .build(),
+        512,
         List.of(FIRE_MODE),
         15F * 2,
         0.13F,

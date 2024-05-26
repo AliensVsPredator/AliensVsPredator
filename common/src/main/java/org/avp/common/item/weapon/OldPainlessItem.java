@@ -39,6 +39,7 @@ public class OldPainlessItem extends AbstractAVPWeaponItem {
         )
             .setHasAmmunitionBehavior(HasAmmunitionBehavior.INVENTORY)
             .build(),
+        2560,
         List.of(FIRE_MODE),
         2F * 2,
         0.02F,

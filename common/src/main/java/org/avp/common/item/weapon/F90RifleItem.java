@@ -39,6 +39,7 @@ public class F90RifleItem extends AbstractAVPWeaponItem {
         )
             .setHasAmmunitionBehavior(HasAmmunitionBehavior.LOADED)
             .build(),
+        1816,
         List.of(FIRE_MODE),
         2F * 2,
         0.13F,

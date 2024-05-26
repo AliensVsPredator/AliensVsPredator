@@ -39,6 +39,7 @@ public class M88Mod4CombatPistolItem extends AbstractAVPWeaponItem {
         )
             .setHasAmmunitionBehavior(HasAmmunitionBehavior.LOADED)
             .build(),
+        512,
         List.of(FIRE_MODE),
         2F,
         0.06F,

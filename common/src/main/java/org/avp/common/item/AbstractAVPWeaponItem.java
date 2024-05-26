@@ -16,6 +16,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.ProjectileUtil;
@@ -59,8 +60,13 @@ public abstract class AbstractAVPWeaponItem extends Item implements GeoItem {
     private final WeaponItemData weaponItemData;
 
     protected AbstractAVPWeaponItem(Properties properties, WeaponItemData weaponItemData) {
-        super(properties.stacksTo(1));
+        super(properties.stacksTo(1).durability(weaponItemData.getDurability()));
         this.weaponItemData = weaponItemData;
+    }
+
+    @Override
+    public boolean isValidRepairItem(@NotNull ItemStack toRepair, ItemStack repairIngredient) {
+        return repairIngredient.is(AVPItems.INSTANCE.ingotSteel.get());
     }
 
     @Override
@@ -155,6 +161,8 @@ public abstract class AbstractAVPWeaponItem extends Item implements GeoItem {
 
     private void fire(@NotNull Level level, @NotNull Player player, ItemStack itemStack, FireMode fireMode, int tickProgress) {
         WeaponItemTagHelper.consumeAmmunition(itemStack, weaponItemData);
+
+        itemStack.hurtAndBreak(1, player, thePlayer -> thePlayer.broadcastBreakEvent(EquipmentSlot.MAINHAND));
 
         var fireRateInTicks = fireMode.fireRateInTicks();
 
