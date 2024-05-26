@@ -28,6 +28,7 @@ public class AVPMetalRecipeHelper {
         // Base -> Cut
         addStandardCutterRecipes(recipeOutput, baseBlock, fullBlockHolderMetalSet.cutSet());
 
+        // Base -> Extended Set
         var extendedSet = fullBlockHolderMetalSet.extendedSet();
         addMetalSetRecipes(recipeOutput, baseBlock, extendedSet);
     }
@@ -39,17 +40,39 @@ public class AVPMetalRecipeHelper {
         addStandardCutterRecipes(recipeOutput, baseBlock, blockHolderMetalSet.platedChevronSet());
         // Base -> Plated Stack
         addStandardCutterRecipes(recipeOutput, baseBlock, blockHolderMetalSet.platedStackSet());
+        // Base -> Grate
+        RecipeUtils.stonecutterBuildingBlock(recipeOutput, baseBlock, blockHolderMetalSet.grate().get(), 2);
+        // Base -> Vent
+        RecipeUtils.stonecutterBuildingBlock(recipeOutput, baseBlock, blockHolderMetalSet.vent().get());
     }
 
-    private static void addStandardCutterRecipes(RecipeOutput recipeOutput, Block baseBlock, BlockHolderSet fullBlockHolderMetalSet) {
-        var setBaseBlock = fullBlockHolderMetalSet.base().get();
+    private static void addStandardCutterRecipes(RecipeOutput recipeOutput, Block baseBlock, BlockHolderSet blockHolderSet) {
+        var setBaseBlock = blockHolderSet.base().get();
 
-        // Stonecutter recipes
+        // Base
         RecipeUtils.stonecutterBuildingBlock(recipeOutput, baseBlock, setBaseBlock, 4);
-        // Cut -> Slabs, Stairs, Walls
-        RecipeUtils.stonecutterBuildingBlock(recipeOutput, setBaseBlock, fullBlockHolderMetalSet.slab().get(), 2);
-        RecipeUtils.stonecutterBuildingBlock(recipeOutput, setBaseBlock, fullBlockHolderMetalSet.stairs().get());
-        RecipeUtils.stonecutterBuildingBlock(recipeOutput, setBaseBlock, fullBlockHolderMetalSet.wall().get());
+
+        // Slabs
+        RecipeUtils.stonecutterBuildingBlock(recipeOutput, setBaseBlock, blockHolderSet.slab().get(), 2);
+        AVPShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, blockHolderSet.slab().get(), 6)
+            .defineAndUnlockIfHas('A', setBaseBlock)
+            .pattern("AAA")
+            .save(recipeOutput);
+        // Stairs
+        RecipeUtils.stonecutterBuildingBlock(recipeOutput, setBaseBlock, blockHolderSet.stairs().get());
+        AVPShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, blockHolderSet.stairs().get(), 4)
+            .defineAndUnlockIfHas('A', setBaseBlock)
+            .pattern("A  ")
+            .pattern("AA ")
+            .pattern("AAA")
+            .save(recipeOutput);
+        // Wall
+        RecipeUtils.stonecutterBuildingBlock(recipeOutput, setBaseBlock, blockHolderSet.wall().get());
+        AVPShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, blockHolderSet.wall().get(), 6)
+            .defineAndUnlockIfHas('A', setBaseBlock)
+            .pattern("AAA")
+            .pattern("AAA")
+            .save(recipeOutput);
     }
 
     private AVPMetalRecipeHelper() {
