@@ -14,6 +14,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import org.avp.common.sound.AVPSoundEvents;
 import org.jetbrains.annotations.NotNull;
 
 import org.avp.client.render.particle.AVPParticleTypes;
@@ -102,7 +103,7 @@ public class Acid extends Entity {
             return;
 
         if (tickCount % (random.nextInt(100) + 10) == 0) {
-            level.playLocalSound(this, SoundEvents.LAVA_EXTINGUISH, SoundSource.NEUTRAL, 1F, 1F);
+            level.playLocalSound(this, AVPSoundEvents.INSTANCE.blockAcidBurn.get(), SoundSource.NEUTRAL, 1F, 1F);
         }
 
         for (int i = 0; i < 2 * getMultiplier(); i++) {
