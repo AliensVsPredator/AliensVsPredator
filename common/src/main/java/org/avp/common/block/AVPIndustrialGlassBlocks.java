@@ -15,7 +15,7 @@ import org.avp.api.Holder;
 import org.avp.api.block.BlockData;
 import org.avp.api.block.model.BlockModelData;
 import org.avp.api.block.BlockTagData;
-import org.avp.api.block.CustomTransparentBlock;
+import org.avp.api.block.IndustrialGlassBlock;
 import org.avp.api.block.model.type.BlockModelDataType;
 import org.avp.api.block.model.render_type.BlockModelRenderType;
 import org.avp.common.registry.AVPDeferredBlockRegistry;
@@ -82,7 +82,7 @@ public class AVPIndustrialGlassBlocks extends AVPDeferredBlockRegistry {
             new BlockData(
                 "industrial_glass",
                 new BlockModelData(
-                    () -> new CustomTransparentBlock(DyeColor.WHITE, industrialGlassProperties),
+                    () -> new IndustrialGlassBlock(DyeColor.WHITE, industrialGlassProperties),
                     BlockModelDataType.Cube::new,
                     BlockModelRenderType.TRANSLUCENT
                 ),
@@ -93,7 +93,7 @@ public class AVPIndustrialGlassBlocks extends AVPDeferredBlockRegistry {
         Function<DyeColor, BlockData> blockDataFactory = dyeColor -> new BlockData(
             dyeColor.getName(),
             new BlockModelData(
-                () -> new CustomTransparentBlock(dyeColor, industrialGlassProperties),
+                () -> new IndustrialGlassBlock(dyeColor, industrialGlassProperties),
                 BlockModelDataType.Cube::new,
                 BlockModelRenderType.TRANSLUCENT
             ),

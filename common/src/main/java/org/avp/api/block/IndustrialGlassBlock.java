@@ -5,11 +5,11 @@ import net.minecraft.world.level.block.BeaconBeamBlock;
 import net.minecraft.world.level.block.TransparentBlock;
 import org.jetbrains.annotations.NotNull;
 
-public class CustomTransparentBlock extends TransparentBlock implements BeaconBeamBlock {
+public class IndustrialGlassBlock extends TransparentBlock implements BeaconBeamBlock {
 
     private final DyeColor dyeColor;
 
-    public CustomTransparentBlock(DyeColor dyeColor, Properties properties) {
+    public IndustrialGlassBlock(DyeColor dyeColor, Properties properties) {
         super(properties);
         this.dyeColor = dyeColor;
     }
