@@ -5,37 +5,23 @@ import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.data.recipes.SimpleCookingRecipeBuilder;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
-
 import org.avp.common.AVPConstants;
 import org.avp.common.block.AVPBlocks;
-import org.avp.common.data.recipe.AVPRecipeHelper;
+import org.avp.common.data.recipe.AVPMetalRecipeHelper;
 import org.avp.common.data.recipe.AVPRecipeProvider;
 import org.avp.common.item.AVPItems;
 
 public final class AVPSteelRecipes {
 
     public static void addSteelRecipes(RecipeOutput recipeOutput) {
-        // Compressed blocks
-        AVPRecipeHelper.compressedBlockRecipe(
-            recipeOutput,
-            RecipeCategory.BUILDING_BLOCKS,
-            AVPItems.INSTANCE.ingotSteel.get(),
-            AVPBlocks.INSTANCE.steelBlock.get()
-        );
+        var ingotHolder = AVPItems.INSTANCE.ingotSteel;
+
+        AVPMetalRecipeHelper.addFullMetalSetRecipes(recipeOutput, ingotHolder, AVPBlocks.INSTANCE.steel);
 
         // Smelting
-        var steelOutput = AVPItems.INSTANCE.ingotSteel.get();
-        SimpleCookingRecipeBuilder.blasting(Ingredient.of(Items.IRON_INGOT), RecipeCategory.MISC, steelOutput, 0.7F, 100)
+        SimpleCookingRecipeBuilder.blasting(Ingredient.of(Items.IRON_INGOT), RecipeCategory.MISC, ingotHolder.get(), 0.7F, 100)
             .unlockedBy("has_iron_ingot", AVPRecipeProvider.has(Items.IRON_INGOT))
             .save(recipeOutput, AVPConstants.MOD_ID + ":ingot_steel_from_blasting_iron_ingot");
-
-        // Decompressed items from blocks
-        AVPRecipeHelper.decompressedItemRecipe(
-            recipeOutput,
-            RecipeCategory.MISC,
-            AVPBlocks.INSTANCE.steelBlock.get(),
-            AVPItems.INSTANCE.ingotSteel.get()
-        );
     }
 
     private AVPSteelRecipes() {
