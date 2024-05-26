@@ -186,4 +186,9 @@ public class Acid extends Entity {
     private void setMultiplier(int multiplier) {
         entityData.set(MULTIPLIER, multiplier);
     }
+
+    @Override
+    public boolean fireImmune() {
+        return true;
+    }
 }
