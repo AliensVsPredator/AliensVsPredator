@@ -44,6 +44,18 @@ public class AVPEntityTagsProvider extends FabricTagProvider.EntityTypeTagProvid
         getOrCreateTagBuilder(AVPEntityTypeTags.ACID_IMMUNE)
             .addTag(AVPEntityTypeTags.ACID_BLEEDERS);
 
+        getOrCreateTagBuilder(AVPEntityTypeTags.SMALL_GUNS_IMMUNE)
+            .addOptionalTag(AVPEntityTypeTags.MEDIUM_GUNS_IMMUNE)
+            .addOptionalTag(AVPEntityTypeTags.HEAVY_GUNS_IMMUNE)
+            .addOptionalTag(AVPEntityTypeTags.UBER_GUNS_IMMUNE);
+
+        getOrCreateTagBuilder(AVPEntityTypeTags.MEDIUM_GUNS_IMMUNE)
+            .addOptionalTag(AVPEntityTypeTags.HEAVY_GUNS_IMMUNE)
+            .addOptionalTag(AVPEntityTypeTags.UBER_GUNS_IMMUNE);
+
+        getOrCreateTagBuilder(AVPEntityTypeTags.HEAVY_GUNS_IMMUNE)
+            .addOptionalTag(AVPEntityTypeTags.UBER_GUNS_IMMUNE);
+
         getOrCreateTagBuilder(AVPEntityTypeTags.NOT_WORTH_KILLING)
             .add(
                 EntityType.ALLAY,

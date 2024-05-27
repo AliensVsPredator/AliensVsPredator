@@ -5,99 +5,69 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 
-import java.util.List;
-import java.util.function.Function;
-import java.util.function.Supplier;
+import java.util.Set;
 
 import org.avp.api.Holder;
 import org.avp.api.block.BlockData;
-import org.avp.api.block.BlockDataUtils;
+import org.avp.api.block.BlockHolderSet;
+import org.avp.api.block.BlockHolderSetData;
+import org.avp.api.block.BlockTagData;
+import org.avp.api.block.model.BlockModelData;
 import org.avp.common.registry.AVPDeferredBlockRegistry;
 
 public class AVPIndustrialBlocks extends AVPDeferredBlockRegistry {
 
     public static final AVPIndustrialBlocks INSTANCE = new AVPIndustrialBlocks();
 
-    public final Holder<Block> brick;
-
-    public final Holder<Block> brickSlab;
-
-    public final Holder<Block> brickStairs;
+    public final BlockHolderSet brick;
 
     public final Holder<Block> floorGrill;
 
     public final Holder<Block> lamp;
 
-    public final Holder<Block> metalPanel0;
+    public final BlockHolderSet metalPanel0;
 
-    public final Holder<Block> metalPanel0Slab;
+    public final BlockHolderSet metalPanel1;
 
-    public final Holder<Block> metalPanel0Stairs;
-
-    public final Holder<Block> metalPanel1;
-
-    public final Holder<Block> metalPanel1Slab;
-
-    public final Holder<Block> metalPanel1Stairs;
-
-    public final Holder<Block> metalPanel2;
-
-    public final Holder<Block> metalPanel2Slab;
-
-    public final Holder<Block> metalPanel2Stairs;
+    public final BlockHolderSet metalPanel2;
 
     public final Holder<Block> vent;
 
-    public final Holder<Block> wall;
-
-    public final Holder<Block> wallSlab;
-
-    public final Holder<Block> wallStairs;
+    public final BlockHolderSet wall;
 
     public final Holder<Block> wallHazard;
 
     @Override
-    protected Holder<Block> createHolder(String registryName, BlockData.Builder blockDataBuilder) {
-        return super.createHolder("industrial_" + registryName, blockDataBuilder);
+    protected Holder<Block> createHolder(BlockData blockData) {
+        return super.createHolder(blockData.withPrefixRegistryName("industrial_"));
     }
 
     private AVPIndustrialBlocks() {
         var metalProperties = BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_BLOCK);
 
-        var stoneOrMetal = List.of(BlockTags.MINEABLE_WITH_PICKAXE, BlockTags.NEEDS_IRON_TOOL);
+        var stoneOrMetal = BlockTagData.ofBlock(Set.of(BlockTags.MINEABLE_WITH_PICKAXE, BlockTags.NEEDS_IRON_TOOL));
 
-        Supplier<BlockData.Builder> pickProps = () -> BlockData.simple(metalProperties).blockTags(stoneOrMetal);
-        Function<Holder<Block>, BlockData.Builder> slabProps =
-            parent -> BlockDataUtils.slab(parent, metalProperties).blockTags(stoneOrMetal);
-        Function<Holder<Block>, BlockData.Builder> stairProps =
-            parent -> BlockDataUtils.stairs(parent, metalProperties).blockTags(stoneOrMetal);
+        var brickBlockData = new BlockData("brick", BlockModelData.cube(metalProperties), stoneOrMetal);
+        brick = registerBlockHolderSet(new BlockHolderSetData(metalProperties, brickBlockData));
 
-        brick = createHolder("brick", pickProps.get());
-        brickSlab = createHolder("brick_slab", slabProps.apply(brick));
-        brickStairs = createHolder("brick_stairs", stairProps.apply(brick));
+        floorGrill = createHolder("floor_grill", BlockModelData.cube(metalProperties), stoneOrMetal);
 
-        floorGrill = createHolder("floor_grill", pickProps.get());
+        lamp = createHolder("lamp", BlockModelData.cube(metalProperties), stoneOrMetal);
 
-        lamp = createHolder("lamp", pickProps.get());
+        var metalPanel0BlockData = new BlockData("metal_panel_0", BlockModelData.cube(metalProperties), stoneOrMetal);
+        metalPanel0 = registerBlockHolderSet(new BlockHolderSetData(metalProperties, metalPanel0BlockData));
 
-        metalPanel0 = createHolder("metal_panel_0", pickProps.get());
-        metalPanel0Slab = createHolder("metal_panel_0_slab", slabProps.apply(metalPanel0));
-        metalPanel0Stairs = createHolder("metal_panel_0_stairs", stairProps.apply(metalPanel0));
+        var metalPanel1BlockData = new BlockData("metal_panel_1", BlockModelData.cube(metalProperties), stoneOrMetal);
+        metalPanel1 = registerBlockHolderSet(new BlockHolderSetData(metalProperties, metalPanel1BlockData));
 
-        metalPanel1 = createHolder("metal_panel_1", pickProps.get());
-        metalPanel1Slab = createHolder("metal_panel_1_slab", slabProps.apply(metalPanel1));
-        metalPanel1Stairs = createHolder("metal_panel_1_stairs", stairProps.apply(metalPanel1));
+        var metalPanel2BlockData = new BlockData("metal_panel_2", BlockModelData.cube(metalProperties), stoneOrMetal);
+        metalPanel2 = registerBlockHolderSet(new BlockHolderSetData(metalProperties, metalPanel2BlockData));
 
-        metalPanel2 = createHolder("metal_panel_2", pickProps.get());
-        metalPanel2Slab = createHolder("metal_panel_2_slab", slabProps.apply(metalPanel2));
-        metalPanel2Stairs = createHolder("metal_panel_2_stairs", stairProps.apply(metalPanel2));
+        vent = createHolder("vent", BlockModelData.cube(metalProperties), stoneOrMetal);
 
-        vent = createHolder("vent", pickProps.get());
+        var wallBlockData = new BlockData("wall", BlockModelData.cube(metalProperties), stoneOrMetal);
+        wall = registerBlockHolderSet(new BlockHolderSetData(metalProperties, wallBlockData));
 
-        wall = createHolder("wall", pickProps.get());
-        wallSlab = createHolder("wall_slab", slabProps.apply(wall));
-        wallStairs = createHolder("wall_stairs", stairProps.apply(wall));
-
-        wallHazard = createHolder("wall_hazard", BlockDataUtils.rotatedPillar(metalProperties).blockTags(stoneOrMetal));
+        wallHazard = createHolder("wall_hazard", BlockModelData.rotatedPillar(metalProperties), stoneOrMetal);
     }
 }

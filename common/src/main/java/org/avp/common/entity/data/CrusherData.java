@@ -19,6 +19,7 @@ import org.avp.api.entity.data.EntityData;
 import org.avp.common.config.AVPConfig;
 import org.avp.common.entity.data.attribute.AVPAttributeSupplier;
 import org.avp.common.entity.data.constant.AVPEntitySpeedConstants;
+import org.avp.common.entity.data.loot_table.XenomorphLootTable;
 import org.avp.common.entity.data.sound.AlienSounds;
 import org.avp.common.entity.data.sound.EntitySoundData;
 import org.avp.common.entity.data.spawn.EntitySpawnData;
@@ -62,7 +63,8 @@ public class CrusherData extends EntityData<Crusher> {
             AVPEntityTypeTags.HIVE_ALIENS,
             AVPEntityTypeTags.MONSTERS,
             AVPEntityTypeTags.PRODUCES_RESIN,
-            AVPEntityTypeTags.ROYAL_ALIENS
+            AVPEntityTypeTags.ROYAL_ALIENS,
+            AVPEntityTypeTags.MEDIUM_GUNS_IMMUNE
         );
     }
 
@@ -70,16 +72,16 @@ public class CrusherData extends EntityData<Crusher> {
     protected Optional<EntitySoundData> createSoundData() {
         return Optional.of(
             new EntitySoundData(
-                AVPSoundEvents.INSTANCE.entityPraetorianAmbient,
-                AlienSounds.createSoundEventSelector(AVPSoundEvents.INSTANCE.entityPraetorianHurt),
-                AVPSoundEvents.INSTANCE.entityPraetorianDeath
+                AVPSoundEvents.INSTANCE.entityCrusherAmbient,
+                AlienSounds.createSoundEventSelector(AVPSoundEvents.INSTANCE.entityCrusherHurt),
+                AVPSoundEvents.INSTANCE.entityCrusherDeath
             )
         );
     }
 
     @Override
     protected Optional<LootTable.Builder> createLootTable() {
-        return Optional.empty();
+        return Optional.of(XenomorphLootTable.LOOT_TABLE);
     }
 
     @Override

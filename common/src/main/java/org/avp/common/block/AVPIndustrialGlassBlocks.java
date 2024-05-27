@@ -8,11 +8,16 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.function.Function;
 
 import org.avp.api.Holder;
 import org.avp.api.block.BlockData;
-import org.avp.api.block.BlockDataUtils;
+import org.avp.api.block.BlockTagData;
+import org.avp.api.block.IndustrialGlassBlock;
+import org.avp.api.block.model.BlockModelData;
+import org.avp.api.block.model.render_type.BlockModelRenderType;
+import org.avp.api.block.model.type.BlockModelDataType;
 import org.avp.common.registry.AVPDeferredBlockRegistry;
 import org.avp.common.tag.AVPBlockTags;
 import org.avp.common.tag.AVPItemTags;
@@ -62,46 +67,64 @@ public class AVPIndustrialGlassBlocks extends AVPDeferredBlockRegistry {
     }
 
     @Override
-    protected Holder<Block> createHolder(String registryName, BlockData.Builder blockDataBuilder) {
-        return super.createHolder("industrial_glass_" + registryName, blockDataBuilder);
+    protected Holder<Block> createHolder(BlockData blockData) {
+        return super.createHolder(blockData.withPrefixRegistryName("industrial_glass_"));
     }
 
     private AVPIndustrialGlassBlocks() {
         var industrialGlassProperties = BlockBehaviour.Properties.ofFullCopy(Blocks.GLASS);
-        var blockTags = List.of(BlockTags.MINEABLE_WITH_PICKAXE, BlockTags.NEEDS_IRON_TOOL, AVPBlockTags.INDUSTRIAL_GLASS);
-        var itemTags = List.of(AVPItemTags.INDUSTRIAL_GLASS);
-        Function<DyeColor, BlockData.Builder> blockDataBuilder = dyeColor -> BlockDataUtils.transparent(dyeColor, industrialGlassProperties)
-            .blockTags(blockTags)
-            .itemTags(itemTags);
+        var blockTagData = new BlockTagData(
+            Set.of(BlockTags.MINEABLE_WITH_PICKAXE, BlockTags.NEEDS_IRON_TOOL, AVPBlockTags.INDUSTRIAL_GLASS),
+            Set.of(AVPItemTags.INDUSTRIAL_GLASS)
+        );
 
-        glass = super.createHolder("industrial_glass", blockDataBuilder.apply(DyeColor.WHITE));
+        glass = super.createHolder(
+            new BlockData(
+                "industrial_glass",
+                new BlockModelData(
+                    () -> new IndustrialGlassBlock(DyeColor.WHITE, industrialGlassProperties),
+                    BlockModelDataType.Cube::new,
+                    BlockModelRenderType.TRANSLUCENT
+                ),
+                blockTagData
+            )
+        );
 
-        glassBlack = createColoredIndustrialGlassHolder(DyeColor.BLACK, blockDataBuilder);
-        glassBlue = createColoredIndustrialGlassHolder(DyeColor.BLUE, blockDataBuilder);
-        glassBrown = createColoredIndustrialGlassHolder(DyeColor.BROWN, blockDataBuilder);
-        glassCyan = createColoredIndustrialGlassHolder(DyeColor.CYAN, blockDataBuilder);
-        glassGray = createColoredIndustrialGlassHolder(DyeColor.GRAY, blockDataBuilder);
-        glassGreen = createColoredIndustrialGlassHolder(DyeColor.GREEN, blockDataBuilder);
-        glassLightBlue = createColoredIndustrialGlassHolder(DyeColor.LIGHT_BLUE, blockDataBuilder);
-        glassLightGray = createColoredIndustrialGlassHolder(DyeColor.LIGHT_GRAY, blockDataBuilder);
-        glassLime = createColoredIndustrialGlassHolder(DyeColor.LIME, blockDataBuilder);
-        glassMagenta = createColoredIndustrialGlassHolder(DyeColor.MAGENTA, blockDataBuilder);
-        glassOrange = createColoredIndustrialGlassHolder(DyeColor.ORANGE, blockDataBuilder);
-        glassPink = createColoredIndustrialGlassHolder(DyeColor.PINK, blockDataBuilder);
-        glassPurple = createColoredIndustrialGlassHolder(DyeColor.PURPLE, blockDataBuilder);
-        glassRed = createColoredIndustrialGlassHolder(DyeColor.RED, blockDataBuilder);
-        glassWhite = createColoredIndustrialGlassHolder(DyeColor.WHITE, blockDataBuilder);
-        glassYellow = createColoredIndustrialGlassHolder(DyeColor.YELLOW, blockDataBuilder);
+        Function<DyeColor, BlockData> blockDataFactory = dyeColor -> new BlockData(
+            dyeColor.getName(),
+            new BlockModelData(
+                () -> new IndustrialGlassBlock(dyeColor, industrialGlassProperties),
+                BlockModelDataType.Cube::new,
+                BlockModelRenderType.TRANSLUCENT
+            ),
+            blockTagData
+        );
+
+        glassBlack = createColoredIndustrialGlassHolder(DyeColor.BLACK, blockDataFactory);
+        glassBlue = createColoredIndustrialGlassHolder(DyeColor.BLUE, blockDataFactory);
+        glassBrown = createColoredIndustrialGlassHolder(DyeColor.BROWN, blockDataFactory);
+        glassCyan = createColoredIndustrialGlassHolder(DyeColor.CYAN, blockDataFactory);
+        glassGray = createColoredIndustrialGlassHolder(DyeColor.GRAY, blockDataFactory);
+        glassGreen = createColoredIndustrialGlassHolder(DyeColor.GREEN, blockDataFactory);
+        glassLightBlue = createColoredIndustrialGlassHolder(DyeColor.LIGHT_BLUE, blockDataFactory);
+        glassLightGray = createColoredIndustrialGlassHolder(DyeColor.LIGHT_GRAY, blockDataFactory);
+        glassLime = createColoredIndustrialGlassHolder(DyeColor.LIME, blockDataFactory);
+        glassMagenta = createColoredIndustrialGlassHolder(DyeColor.MAGENTA, blockDataFactory);
+        glassOrange = createColoredIndustrialGlassHolder(DyeColor.ORANGE, blockDataFactory);
+        glassPink = createColoredIndustrialGlassHolder(DyeColor.PINK, blockDataFactory);
+        glassPurple = createColoredIndustrialGlassHolder(DyeColor.PURPLE, blockDataFactory);
+        glassRed = createColoredIndustrialGlassHolder(DyeColor.RED, blockDataFactory);
+        glassWhite = createColoredIndustrialGlassHolder(DyeColor.WHITE, blockDataFactory);
+        glassYellow = createColoredIndustrialGlassHolder(DyeColor.YELLOW, blockDataFactory);
     }
 
     private ColoredIndustrialGlassHolder createColoredIndustrialGlassHolder(
         DyeColor dyeColor,
-        Function<DyeColor, BlockData.Builder> blockDataBuilder
+        Function<DyeColor, BlockData> blockDataFactory
     ) {
-        var coloredIndustrialGlassHolder = new ColoredIndustrialGlassHolder(
-            dyeColor,
-            createHolder(dyeColor.getName(), blockDataBuilder.apply(dyeColor))
-        );
+        var blockData = blockDataFactory.apply(dyeColor);
+        var holder = createHolder(blockData);
+        var coloredIndustrialGlassHolder = new ColoredIndustrialGlassHolder(dyeColor, holder);
         COLORED_INDUSTRIAL_GLASS_ENTRIES.add(coloredIndustrialGlassHolder);
         return coloredIndustrialGlassHolder;
     }

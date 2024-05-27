@@ -29,7 +29,7 @@ public class Spitter extends Monster implements GeoEntity {
 
     @Override
     protected void registerGoals() {
-        AIUtils.addHiveAlienAI(this, goalSelector, targetSelector);
+        AIUtils.addAlienAI(this, goalSelector, targetSelector);
     }
 
     @Override

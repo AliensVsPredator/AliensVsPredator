@@ -1,0 +1,171 @@
+package org.avp.api.block.model;
+
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.FenceBlock;
+import net.minecraft.world.level.block.FenceGateBlock;
+import net.minecraft.world.level.block.GrassBlock;
+import net.minecraft.world.level.block.RotatedPillarBlock;
+import net.minecraft.world.level.block.SlabBlock;
+import net.minecraft.world.level.block.WallBlock;
+import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.block.state.properties.WoodType;
+
+import java.util.function.Function;
+import java.util.function.Supplier;
+
+import org.avp.api.Holder;
+import org.avp.api.block.model.render_type.BlockModelRenderType;
+import org.avp.api.block.model.type.BlockModelDataType;
+import org.avp.common.service.Services;
+
+public record BlockModelData(
+    Supplier<Block> blockSupplier,
+    Function<Block, BlockModelDataType> blockModelDataTypeFactory,
+    BlockModelRenderType blockModelRenderType
+) {
+
+    public static BlockModelData cube() {
+        return cube(BlockBehaviour.Properties.of());
+    }
+
+    public static BlockModelData cube(
+        BlockBehaviour.Properties properties
+    ) {
+        return new BlockModelData(
+            () -> new Block(properties),
+            BlockModelDataType.Cube::new,
+            BlockModelRenderType.NORMAL
+        );
+    }
+
+    public static BlockModelData fence(Holder<Block> parentHolder) {
+        return fence(parentHolder, BlockBehaviour.Properties.of());
+    }
+
+    public static BlockModelData fence(
+        Holder<Block> parentHolder,
+        BlockBehaviour.Properties properties
+    ) {
+        return new BlockModelData(
+            () -> new FenceBlock(properties),
+            block -> new BlockModelDataType.Fence(parentHolder.get(), block),
+            BlockModelRenderType.NORMAL
+        );
+    }
+
+    public static BlockModelData fenceGate(Holder<Block> parentHolder, WoodType woodType) {
+        return fenceGate(parentHolder, woodType, BlockBehaviour.Properties.of());
+    }
+
+    public static BlockModelData fenceGate(
+        Holder<Block> parentHolder,
+        WoodType woodType,
+        BlockBehaviour.Properties properties
+    ) {
+        return new BlockModelData(
+            () -> new FenceGateBlock(woodType, properties),
+            block -> new BlockModelDataType.FenceGate(parentHolder.get(), block),
+            BlockModelRenderType.NORMAL
+        );
+    }
+
+    public static BlockModelData grass(Holder<Block> parentHolder) {
+        return grass(parentHolder, BlockBehaviour.Properties.of());
+    }
+
+    public static BlockModelData grass(
+        Holder<Block> parentHolder,
+        BlockBehaviour.Properties properties
+    ) {
+        return new BlockModelData(
+            () -> new GrassBlock(properties),
+            block -> new BlockModelDataType.GrassLike(parentHolder.get(), block),
+            BlockModelRenderType.NORMAL
+        );
+    }
+
+    public static BlockModelData multiface(Supplier<Block> blockSupplier) {
+        return multiface(blockSupplier, BlockModelRenderType.NORMAL);
+    }
+
+    public static BlockModelData multiface(
+        Supplier<Block> blockSupplier,
+        BlockModelRenderType blockModelRenderType
+    ) {
+        return new BlockModelData(
+            blockSupplier,
+            BlockModelDataType.MultiFace::new,
+            blockModelRenderType
+        );
+    }
+
+    public static BlockModelData rotatedPillar() {
+        return rotatedPillar(BlockBehaviour.Properties.of());
+    }
+
+    public static BlockModelData rotatedPillar(
+        BlockBehaviour.Properties properties
+    ) {
+        return new BlockModelData(
+            () -> new RotatedPillarBlock(properties),
+            BlockModelDataType.RotatedPillar::new,
+            BlockModelRenderType.NORMAL
+        );
+    }
+
+    public static BlockModelData slab(Holder<Block> parentHolder) {
+        return slab(parentHolder, BlockBehaviour.Properties.of());
+    }
+
+    public static BlockModelData slab(
+        Holder<Block> parentHolder,
+        BlockBehaviour.Properties properties
+    ) {
+        return new BlockModelData(
+            () -> new SlabBlock(properties),
+            block -> new BlockModelDataType.Slab(parentHolder.get(), block),
+            BlockModelRenderType.NORMAL
+        );
+    }
+
+    public static BlockModelData stairs(Holder<Block> parentHolder) {
+        return stairs(parentHolder, BlockBehaviour.Properties.of());
+    }
+
+    public static BlockModelData stairs(
+        Holder<Block> parentHolder,
+        BlockBehaviour.Properties properties
+    ) {
+        return new BlockModelData(
+            () -> Services.BLOCK_SERVICE.createStairBlock(parentHolder, properties),
+            block -> new BlockModelDataType.Stair(parentHolder.get(), block),
+            BlockModelRenderType.NORMAL
+        );
+    }
+
+    public static BlockModelData wall(
+        Holder<Block> parentHolder,
+        BlockBehaviour.Properties properties
+    ) {
+        return new BlockModelData(
+            () -> new WallBlock(properties),
+            block -> new BlockModelDataType.Wall(parentHolder.get(), block),
+            BlockModelRenderType.NORMAL
+        );
+    }
+
+    public static BlockModelData wood(Holder<Block> parentHolder) {
+        return wood(parentHolder, BlockBehaviour.Properties.of());
+    }
+
+    public static BlockModelData wood(
+        Holder<Block> parentHolder,
+        BlockBehaviour.Properties properties
+    ) {
+        return new BlockModelData(
+            () -> new RotatedPillarBlock(properties),
+            block -> new BlockModelDataType.Wood(parentHolder.get(), block),
+            BlockModelRenderType.NORMAL
+        );
+    }
+}

@@ -54,7 +54,8 @@ public class TrilobiteData extends EntityData<Trilobite> {
             AVPEntityTypeTags.ALIENS,
             AVPEntityTypeTags.HIVE_ALIENS,
             AVPEntityTypeTags.MONSTERS,
-            AVPEntityTypeTags.PARASITES
+            AVPEntityTypeTags.PARASITES,
+            AVPEntityTypeTags.SMALL_GUNS_IMMUNE
         );
     }
 

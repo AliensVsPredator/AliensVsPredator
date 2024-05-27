@@ -5,24 +5,31 @@ import net.minecraft.data.recipes.RecipeOutput;
 
 import org.avp.common.block.AVPBlocks;
 import org.avp.common.block.AVPOreBlocks;
+import org.avp.common.data.recipe.AVPMetalRecipeHelper;
 import org.avp.common.data.recipe.AVPRecipeHelper;
 import org.avp.common.item.AVPItems;
 
 public final class AVPTitaniumRecipes {
 
     public static void addTitaniumRecipes(RecipeOutput recipeOutput) {
-        // Compressed blocks
-        AVPRecipeHelper.compressedBlockRecipe(
-            recipeOutput,
-            RecipeCategory.BUILDING_BLOCKS,
-            AVPItems.INSTANCE.ingotTitanium.get(),
-            AVPBlocks.INSTANCE.titaniumBlock.get()
-        );
+        var ingotHolder = AVPItems.INSTANCE.ingotTitanium;
+
+        AVPMetalRecipeHelper.addFullMetalSetRecipes(recipeOutput, ingotHolder, AVPBlocks.INSTANCE.titanium);
+
+        // Compressed raw
         AVPRecipeHelper.compressedBlockRecipe(
             recipeOutput,
             RecipeCategory.BUILDING_BLOCKS,
             AVPItems.INSTANCE.rawTitanium.get(),
             AVPOreBlocks.INSTANCE.rawTitaniumBlock.get()
+        );
+
+        // Decompressed raw
+        AVPRecipeHelper.decompressedItemRecipe(
+            recipeOutput,
+            RecipeCategory.MISC,
+            AVPOreBlocks.INSTANCE.rawTitaniumBlock.get(),
+            AVPItems.INSTANCE.rawTitanium.get()
         );
 
         // Smelting
@@ -32,20 +39,6 @@ public final class AVPTitaniumRecipes {
             AVPItems.INSTANCE.rawTitanium,
             AVPOreBlocks.INSTANCE.oreTitanium,
             AVPItems.INSTANCE.ingotTitanium
-        );
-
-        // Decompressed items from blocks
-        AVPRecipeHelper.decompressedItemRecipe(
-            recipeOutput,
-            RecipeCategory.MISC,
-            AVPBlocks.INSTANCE.titaniumBlock.get(),
-            AVPItems.INSTANCE.ingotTitanium.get()
-        );
-        AVPRecipeHelper.decompressedItemRecipe(
-            recipeOutput,
-            RecipeCategory.MISC,
-            AVPOreBlocks.INSTANCE.rawTitaniumBlock.get(),
-            AVPItems.INSTANCE.rawTitanium.get()
         );
 
         // Furnace recipes

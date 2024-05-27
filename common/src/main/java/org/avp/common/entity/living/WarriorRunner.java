@@ -31,7 +31,7 @@ public class WarriorRunner extends Monster implements GeoEntity {
 
     @Override
     protected void registerGoals() {
-        AIUtils.addHiveAlienAI(this, goalSelector, targetSelector);
+        AIUtils.addAlienAI(this, goalSelector, targetSelector);
         goalSelector.addGoal(3, new LeapAtTargetGoal(this, 0.4F));
     }
 

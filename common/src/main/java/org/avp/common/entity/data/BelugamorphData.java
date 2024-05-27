@@ -51,7 +51,8 @@ public class BelugamorphData extends EntityData<Belugamorph> {
         return List.of(
             AVPEntityTypeTags.ACID_BLEEDERS,
             AVPEntityTypeTags.ALIENS,
-            AVPEntityTypeTags.MONSTERS
+            AVPEntityTypeTags.MONSTERS,
+            AVPEntityTypeTags.SMALL_GUNS_IMMUNE
         );
     }
 

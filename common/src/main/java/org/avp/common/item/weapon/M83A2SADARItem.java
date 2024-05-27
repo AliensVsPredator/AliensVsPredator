@@ -37,6 +37,7 @@ public class M83A2SADARItem extends AbstractAVPWeaponItem {
         )
             .setHasAmmunitionBehavior(HasAmmunitionBehavior.LOADED)
             .build(),
+        256,
         List.of(FIRE_MODE),
         8F * 2,
         0.5F,

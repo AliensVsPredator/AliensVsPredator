@@ -62,7 +62,8 @@ public class QueenData extends EntityData<Queen> {
             AVPEntityTypeTags.HIVE_ALIENS,
             AVPEntityTypeTags.MONSTERS,
             AVPEntityTypeTags.PRODUCES_RESIN,
-            AVPEntityTypeTags.ROYAL_ALIENS
+            AVPEntityTypeTags.ROYAL_ALIENS,
+            AVPEntityTypeTags.HEAVY_GUNS_IMMUNE
         );
     }
 

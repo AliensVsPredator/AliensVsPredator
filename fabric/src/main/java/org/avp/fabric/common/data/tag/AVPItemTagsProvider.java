@@ -5,14 +5,12 @@ import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.level.block.Blocks;
 
 import java.util.concurrent.CompletableFuture;
 
-import org.avp.common.item.AVPArmorItems;
-import org.avp.common.item.AVPItems;
-import org.avp.common.item.AVPToolItems;
-import org.avp.common.item.AVPWeaponItems;
 import org.avp.common.registry.AVPDeferredBlockRegistry;
+import org.avp.common.registry.AVPDeferredItemRegistry;
 import org.avp.common.tag.AVPItemTags;
 
 public class AVPItemTagsProvider extends FabricTagProvider.ItemTagProvider {
@@ -23,26 +21,31 @@ public class AVPItemTagsProvider extends FabricTagProvider.ItemTagProvider {
 
     @Override
     protected void addTags(HolderLookup.Provider provider) {
-        getOrCreateTagBuilder(AVPItemTags.ACID_IMMUNE)
-            .add(AVPItems.INSTANCE.royalJelly.get())
-            .add(AVPItems.INSTANCE.xenomorphChitin.get())
-            .add(AVPArmorItems.INSTANCE.xenomorphHelmet.get())
-            .add(AVPArmorItems.INSTANCE.xenomorphBody.get())
-            .add(AVPArmorItems.INSTANCE.xenomorphLeggings.get())
-            .add(AVPArmorItems.INSTANCE.xenomorphBoots.get());
+        AVPDeferredItemRegistry.getDataEntries().forEach(holderItemDataTuple -> {
+            var item = holderItemDataTuple.first().get();
+            var itemTagData = holderItemDataTuple.second().itemTagData();
+            itemTagData.forEach(itemTagKey -> getOrCreateTagBuilder(itemTagKey).add(item));
+        });
 
-        getOrCreateTagBuilder(AVPItemTags.GUNS)
-            .add(AVPWeaponItems.INSTANCE.weapon3712Shotgun.get())
-            .add(AVPWeaponItems.INSTANCE.weaponAk47.get())
-            .add(AVPWeaponItems.INSTANCE.weaponF90Rifle.get())
-            .add(AVPWeaponItems.INSTANCE.weaponFlamethrowerSevastopol.get())
-            .add(AVPWeaponItems.INSTANCE.weaponM4Carbine.get())
-            .add(AVPWeaponItems.INSTANCE.weaponM41APulseRifle.get())
-            .add(AVPWeaponItems.INSTANCE.weaponM56Smartgun.get())
-            .add(AVPWeaponItems.INSTANCE.weaponM83A2Sadar.get())
-            .add(AVPWeaponItems.INSTANCE.weaponM88Mod4CombatPistol.get())
-            .add(AVPWeaponItems.INSTANCE.weaponOldPainless.get())
-            .add(AVPWeaponItems.INSTANCE.weaponSniperRifle.get());
+        getOrCreateTagBuilder(AVPItemTags.CONCRETE)
+            .add(
+                Blocks.BLACK_CONCRETE.asItem(),
+                Blocks.BLUE_CONCRETE.asItem(),
+                Blocks.BROWN_CONCRETE.asItem(),
+                Blocks.CYAN_CONCRETE.asItem(),
+                Blocks.GRAY_CONCRETE.asItem(),
+                Blocks.GREEN_CONCRETE.asItem(),
+                Blocks.LIGHT_BLUE_CONCRETE.asItem(),
+                Blocks.LIGHT_GRAY_CONCRETE.asItem(),
+                Blocks.LIME_CONCRETE.asItem(),
+                Blocks.MAGENTA_CONCRETE.asItem(),
+                Blocks.ORANGE_CONCRETE.asItem(),
+                Blocks.PINK_CONCRETE.asItem(),
+                Blocks.PURPLE_CONCRETE.asItem(),
+                Blocks.RED_CONCRETE.asItem(),
+                Blocks.WHITE_CONCRETE.asItem(),
+                Blocks.YELLOW_CONCRETE.asItem()
+            );
 
         getOrCreateTagBuilder(AVPItemTags.THREATENS_PREDATORS)
             .addTag(AVPItemTags.GUNS)
@@ -50,41 +53,11 @@ public class AVPItemTagsProvider extends FabricTagProvider.ItemTagProvider {
             .addOptionalTag(ItemTags.AXES)
             .add(Items.TRIDENT);
 
-        getOrCreateTagBuilder(ItemTags.AXES)
-            .add(AVPToolItems.INSTANCE.aluminumAxe.get())
-            .add(AVPToolItems.INSTANCE.orioniteAxe.get())
-            .add(AVPToolItems.INSTANCE.titaniumAxe.get())
-            .add(AVPToolItems.INSTANCE.veritaniumAxe.get());
-
-        getOrCreateTagBuilder(ItemTags.HOES)
-            .add(AVPToolItems.INSTANCE.aluminumHoe.get())
-            .add(AVPToolItems.INSTANCE.orioniteHoe.get())
-            .add(AVPToolItems.INSTANCE.titaniumHoe.get())
-            .add(AVPToolItems.INSTANCE.veritaniumHoe.get());
-
-        getOrCreateTagBuilder(ItemTags.PICKAXES)
-            .add(AVPToolItems.INSTANCE.aluminumPickaxe.get())
-            .add(AVPToolItems.INSTANCE.orionitePickaxe.get())
-            .add(AVPToolItems.INSTANCE.titaniumPickaxe.get())
-            .add(AVPToolItems.INSTANCE.veritaniumPickaxe.get());
-
-        getOrCreateTagBuilder(ItemTags.SHOVELS)
-            .add(AVPToolItems.INSTANCE.aluminumShovel.get())
-            .add(AVPToolItems.INSTANCE.orioniteShovel.get())
-            .add(AVPToolItems.INSTANCE.titaniumShovel.get())
-            .add(AVPToolItems.INSTANCE.veritaniumShovel.get());
-
-        getOrCreateTagBuilder(ItemTags.SWORDS)
-            .add(AVPToolItems.INSTANCE.aluminumSword.get())
-            .add(AVPToolItems.INSTANCE.orioniteSword.get())
-            .add(AVPToolItems.INSTANCE.titaniumSword.get())
-            .add(AVPToolItems.INSTANCE.veritaniumSword.get());
-
         AVPDeferredBlockRegistry.getDataEntries().forEach(tuple -> {
             var block = tuple.first().get();
             var blockData = tuple.second();
 
-            blockData.getRelatedItemTags().forEach(tag -> getOrCreateTagBuilder(tag).add(block.asItem()));
+            blockData.blockTagData().itemTags().forEach(tag -> getOrCreateTagBuilder(tag).add(block.asItem()));
         });
     }
 }

@@ -51,7 +51,8 @@ public class DeaconAdultEngineerData extends EntityData<DeaconAdultEngineer> {
         return List.of(
             AVPEntityTypeTags.ACID_BLEEDERS,
             AVPEntityTypeTags.ALIENS,
-            AVPEntityTypeTags.MONSTERS
+            AVPEntityTypeTags.MONSTERS,
+            AVPEntityTypeTags.MEDIUM_GUNS_IMMUNE
         );
     }
 

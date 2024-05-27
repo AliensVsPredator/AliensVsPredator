@@ -22,8 +22,8 @@ public class NauticomorphModel extends AVPGeoModel<Nauticomorph> {
             "gRightArm",
             "gLeftLeg",
             "gRightLeg",
-            -0.35F,
-            0F
+            -0.55F,
+            0.31F
         );
     }
 }

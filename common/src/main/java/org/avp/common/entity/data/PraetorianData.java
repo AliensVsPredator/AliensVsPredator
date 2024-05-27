@@ -63,7 +63,8 @@ public class PraetorianData extends EntityData<Praetorian> {
             AVPEntityTypeTags.HIVE_ALIENS,
             AVPEntityTypeTags.MONSTERS,
             AVPEntityTypeTags.PRODUCES_RESIN,
-            AVPEntityTypeTags.ROYAL_ALIENS
+            AVPEntityTypeTags.ROYAL_ALIENS,
+            AVPEntityTypeTags.MEDIUM_GUNS_IMMUNE
         );
     }
 

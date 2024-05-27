@@ -28,6 +28,7 @@ public class FlamethrowerSevastopolItem extends AbstractAVPWeaponItem {
         AmmunitionStrategy.builder(500, List.of(AVPAmmunitionPartItems.INSTANCE.ammoFlamethrower::get))
             .setHasAmmunitionBehavior(HasAmmunitionBehavior.LOADED)
             .build(),
+        2048,
         List.of(FIRE_MODE),
         1F,
         0.13F,

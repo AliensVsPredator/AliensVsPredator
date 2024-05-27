@@ -23,6 +23,8 @@ import org.avp.common.data.recipe.impl.block.AVPPaddingBlockRecipes;
 import org.avp.common.data.recipe.impl.block.AVPTempleBlockRecipes;
 import org.avp.common.data.recipe.impl.material.AVPAluminumRecipes;
 import org.avp.common.data.recipe.impl.material.AVPCobaltRecipes;
+import org.avp.common.data.recipe.impl.material.AVPCopperRecipes;
+import org.avp.common.data.recipe.impl.material.AVPFerroaluminumRecipes;
 import org.avp.common.data.recipe.impl.material.AVPLithiumRecipes;
 import org.avp.common.data.recipe.impl.material.AVPNeodymiumRecipes;
 import org.avp.common.data.recipe.impl.material.AVPOrioniteRecipes;
@@ -53,6 +55,8 @@ public class AVPRecipeProvider extends RecipeProvider {
         AVPArmorRecipes.addArmorRecipes(recipeOutput);
         AVPBulletRecipes.addRecipes(recipeOutput);
         AVPCobaltRecipes.addCobaltRecipes(recipeOutput);
+        AVPCopperRecipes.addCopperRecipes(recipeOutput);
+        AVPFerroaluminumRecipes.addFerroaluminumRecipes(recipeOutput);
         AVPFoodRecipes.addFoodRecipes(recipeOutput);
         AVPElectronicRecipes.addElectronicRecipes(recipeOutput);
         AVPLithiumRecipes.addLithiumRecipes(recipeOutput);

@@ -10,10 +10,11 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.storage.loot.LootPool;
 import net.minecraft.world.level.storage.loot.LootTable;
-import net.minecraft.world.level.storage.loot.entries.EmptyLootItem;
 import net.minecraft.world.level.storage.loot.entries.LootItem;
 import net.minecraft.world.level.storage.loot.functions.LootingEnchantFunction;
 import net.minecraft.world.level.storage.loot.functions.SetItemCountFunction;
+import net.minecraft.world.level.storage.loot.predicates.LootItemKilledByPlayerCondition;
+import net.minecraft.world.level.storage.loot.predicates.LootItemRandomChanceWithLootingCondition;
 import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
 import net.minecraft.world.level.storage.loot.providers.number.UniformGenerator;
 
@@ -30,6 +31,7 @@ import org.avp.common.entity.data.spawn.YautjaSpawning;
 import org.avp.common.entity.living.Yautja;
 import org.avp.common.item.AVPArmorItems;
 import org.avp.common.item.AVPItems;
+import org.avp.common.item.AVPToolItems;
 import org.avp.common.registry.AVPSimpleDeferredEntityTypeRegistry;
 import org.avp.common.sound.AVPSoundEvents;
 import org.avp.common.tag.AVPEntityTypeTags;
@@ -65,7 +67,8 @@ public class YautjaData extends EntityData<Yautja> {
     protected List<TagKey<EntityType<?>>> createTags() {
         return List.of(
             AVPEntityTypeTags.MONSTERS,
-            AVPEntityTypeTags.PREDATORS
+            AVPEntityTypeTags.PREDATORS,
+            AVPEntityTypeTags.MEDIUM_GUNS_IMMUNE
         );
     }
 
@@ -96,11 +99,17 @@ public class YautjaData extends EntityData<Yautja> {
                 .withPool(
                     LootPool.lootPool()
                         .setRolls(ConstantValue.exactly(1))
-                        .add(EmptyLootItem.emptyItem().setWeight(36))
-                        .add(LootItem.lootTableItem(AVPArmorItems.INSTANCE.veritaniumHelmet.get()).setWeight(1))
-                        .add(LootItem.lootTableItem(AVPArmorItems.INSTANCE.veritaniumBody.get()).setWeight(1))
-                        .add(LootItem.lootTableItem(AVPArmorItems.INSTANCE.veritaniumLeggings.get()).setWeight(1))
-                        .add(LootItem.lootTableItem(AVPArmorItems.INSTANCE.veritaniumBoots.get()).setWeight(1))
+                        .add(LootItem.lootTableItem(AVPArmorItems.INSTANCE.veritanium.helmet().get()).setWeight(1))
+                        .add(LootItem.lootTableItem(AVPArmorItems.INSTANCE.veritanium.body().get()).setWeight(1))
+                        .add(LootItem.lootTableItem(AVPArmorItems.INSTANCE.veritanium.leggings().get()).setWeight(1))
+                        .add(LootItem.lootTableItem(AVPArmorItems.INSTANCE.veritanium.boots().get()).setWeight(1))
+                        .add(LootItem.lootTableItem(AVPToolItems.INSTANCE.veritaniumAxe.get()).setWeight(1))
+                        .add(LootItem.lootTableItem(AVPToolItems.INSTANCE.veritaniumHoe.get()).setWeight(1))
+                        .add(LootItem.lootTableItem(AVPToolItems.INSTANCE.veritaniumPickaxe.get()).setWeight(1))
+                        .add(LootItem.lootTableItem(AVPToolItems.INSTANCE.veritaniumShovel.get()).setWeight(1))
+                        .add(LootItem.lootTableItem(AVPToolItems.INSTANCE.veritaniumSword.get()).setWeight(1))
+                        .when(LootItemKilledByPlayerCondition.killedByPlayer())
+                        .when(LootItemRandomChanceWithLootingCondition.randomChanceAndLootingBoost(0.1F, 0.033F))
                 )
                 .withPool(
                     LootPool.lootPool()

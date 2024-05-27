@@ -37,7 +37,7 @@ public class NauticomorphData extends EntityData<Nauticomorph> {
         return AVPSimpleDeferredEntityTypeRegistry.INSTANCE.createMobHolder(
             "nauticomorph",
             0x010202,
-            0xDFE2E4,
+            0x678275,
             EntityType.Builder.of(Nauticomorph::new, MobCategory.MONSTER)
                 .sized(0.98F, 1.98F)
         );
@@ -61,7 +61,8 @@ public class NauticomorphData extends EntityData<Nauticomorph> {
             AVPEntityTypeTags.ALIENS,
             AVPEntityTypeTags.HIVE_ALIENS,
             AVPEntityTypeTags.MONSTERS,
-            AVPEntityTypeTags.PRODUCES_RESIN
+            AVPEntityTypeTags.PRODUCES_RESIN,
+            AVPEntityTypeTags.SMALL_GUNS_IMMUNE
         );
     }
 

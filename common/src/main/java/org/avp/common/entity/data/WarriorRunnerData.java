@@ -61,7 +61,8 @@ public class WarriorRunnerData extends EntityData<WarriorRunner> {
             AVPEntityTypeTags.ALIENS,
             AVPEntityTypeTags.HIVE_ALIENS,
             AVPEntityTypeTags.MONSTERS,
-            AVPEntityTypeTags.PRODUCES_RESIN
+            AVPEntityTypeTags.PRODUCES_RESIN,
+            AVPEntityTypeTags.SMALL_GUNS_IMMUNE
         );
     }
 

@@ -13,7 +13,9 @@ public abstract class BulletEffect {
         this.identifier = identifier;
     }
 
-    public void applyEffect(Entity entity) { /* Do Nothing */ }
+    public abstract int getColor();
+
+    public abstract void applyEffect(Entity entity);
 
     public DamageSource getDamageSource(LivingEntity shootingEntity, Entity entity) {
         return shootingEntity instanceof Player player

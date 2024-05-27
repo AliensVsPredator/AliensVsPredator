@@ -10,7 +10,7 @@ public class AVPBlockLootTableProvider extends AbstractAVPBlockLootTableProvider
         AVPDeferredBlockRegistry.getDataEntries().forEach(tuple -> {
             var block = tuple.first().get();
             var data = tuple.second();
-            var lootProvider = data.getLootProvider();
+            var lootProvider = data.lootProvider();
             var lootTableBuilder = lootProvider.apply(block);
 
             add(block, lootTableBuilder);

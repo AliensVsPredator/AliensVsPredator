@@ -17,6 +17,11 @@ public class BulletEffects {
                 // TODO: Add disintegration effect
             }
         }
+
+        @Override
+        public int getColor() {
+            return 0xFFBAB728;
+        }
     };
 
     public static final BulletEffect ARMOR_PENETRATION = new BulletEffect("penetration") {
@@ -25,6 +30,14 @@ public class BulletEffects {
         public DamageSource getDamageSource(LivingEntity shootingEntity, Entity entity) {
             // TODO: This should return a custom damage source for armor penetrating bullets.
             return super.getDamageSource(shootingEntity, entity);
+        }
+
+        @Override
+        public void applyEffect(Entity entity) {/* NO-OP */}
+
+        @Override
+        public int getColor() {
+            return 0xFF62428C;
         }
     };
 
@@ -35,6 +48,11 @@ public class BulletEffects {
             if (entity instanceof LivingEntity livingEntity) {
                 livingEntity.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 3 * 20, 1));
             }
+        }
+
+        @Override
+        public int getColor() {
+            return 0xFF335DC1;
         }
     };
 
@@ -52,6 +70,11 @@ public class BulletEffects {
                     Level.ExplosionInteraction.NONE
                 );
         }
+
+        @Override
+        public int getColor() {
+            return 0xFFB12615;
+        }
     };
 
     public static final BulletEffect INCENDIARY = new BulletEffect("incendiary") {
@@ -60,9 +83,23 @@ public class BulletEffects {
         public void applyEffect(Entity entity) {
             entity.setSecondsOnFire(5);
         }
+
+        @Override
+        public int getColor() {
+            return 0xFFFCA100;
+        }
     };
 
-    public static final BulletEffect STANDARD = new BulletEffect("standard") {};
+    public static final BulletEffect STANDARD = new BulletEffect("standard") {
+
+        @Override
+        public void applyEffect(Entity entity) {/* NO-OP */}
+
+        @Override
+        public int getColor() {
+            return 0;
+        }
+    };
 
     private BulletEffects() {
         throw new UnsupportedOperationException();

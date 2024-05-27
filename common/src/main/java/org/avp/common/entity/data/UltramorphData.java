@@ -56,7 +56,8 @@ public class UltramorphData extends EntityData<Ultramorph> {
             AVPEntityTypeTags.ALIENS,
             AVPEntityTypeTags.HIVE_ALIENS,
             AVPEntityTypeTags.MONSTERS,
-            AVPEntityTypeTags.PRODUCES_RESIN
+            AVPEntityTypeTags.PRODUCES_RESIN,
+            AVPEntityTypeTags.MEDIUM_GUNS_IMMUNE
         );
     }
 
