@@ -10,6 +10,8 @@ public class AVPItemTags {
 
     public static final TagKey<Item> ACID_IMMUNE = create("acid_immune");
 
+    public static final TagKey<Item> CONCRETE = create("concrete");
+
     public static final TagKey<Item> GUNS = create("guns");
 
     public static final TagKey<Item> HEAVY_GUNS = create("heavy_guns");
