@@ -33,6 +33,7 @@
         "server.MixinServerPlayer_PressureSuitProvidesAir"
     ],
     "client": [
+        "client.MixinGuiGraphics",
         "client.MixinMinecraft_Accessor",
         "client.MixinPlayerRenderer"
     ],
