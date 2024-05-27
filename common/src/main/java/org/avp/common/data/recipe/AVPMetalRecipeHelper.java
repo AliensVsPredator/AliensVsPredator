@@ -27,6 +27,11 @@ public class AVPMetalRecipeHelper {
 
         // Base -> Cut
         addStandardCutterRecipes(recipeOutput, baseBlockHolder, fullBlockHolderMetalSet.cutSet());
+        AVPShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, fullBlockHolderMetalSet.cutSet().base(), 4)
+            .defineAndUnlockIfHas('A', baseBlock)
+            .pattern("AA")
+            .pattern("AA")
+            .save(recipeOutput);
 
         // Base -> Extended Set
         var extendedSet = fullBlockHolderMetalSet.extendedSet();
@@ -50,9 +55,7 @@ public class AVPMetalRecipeHelper {
         var setBaseBlock = blockHolderSet.base().get();
 
         // Base
-        baseBlockHolder.getOptional().ifPresent(baseBlock ->
-            RecipeUtils.stonecutterBuildingBlock(recipeOutput, baseBlock, setBaseBlock, 4)
-        );
+        baseBlockHolder.getOptional().ifPresent(baseBlock -> RecipeUtils.stonecutterBuildingBlock(recipeOutput, baseBlock, setBaseBlock, 4));
 
         // Slabs
         RecipeUtils.stonecutterBuildingBlock(recipeOutput, setBaseBlock, blockHolderSet.slab().get(), 2);
