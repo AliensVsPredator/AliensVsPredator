@@ -4,10 +4,13 @@ import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.world.item.Items;
 
+import org.avp.api.Holder;
 import org.avp.common.block.AVPIndustrialBlocks;
+import org.avp.common.data.recipe.AVPMetalRecipeHelper;
 import org.avp.common.data.recipe.AVPShapedRecipeBuilder;
 import org.avp.common.data.recipe.RecipeUtils;
 import org.avp.common.item.AVPItems;
+import org.avp.common.tag.AVPItemTags;
 
 public final class AVPIndustrialBlockRecipes {
 
@@ -16,6 +19,7 @@ public final class AVPIndustrialBlockRecipes {
         addMetalPanel0Recipes(recipeOutput);
         addMetalPanel1Recipes(recipeOutput);
         addMetalPanel2Recipes(recipeOutput);
+        addIndustrialWallRecipes(recipeOutput);
 
         AVPShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, AVPIndustrialBlocks.INSTANCE.lamp)
             .defineAndUnlockIfHas('A', AVPItems.INSTANCE.ingotAluminum)
@@ -97,6 +101,17 @@ public final class AVPIndustrialBlockRecipes {
             AVPIndustrialBlocks.INSTANCE.metalPanel2.base(),
             AVPIndustrialBlocks.INSTANCE.metalPanel2.stairs()
         );
+    }
+
+    private static void addIndustrialWallRecipes(RecipeOutput recipeOutput) {
+        AVPShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, AVPIndustrialBlocks.INSTANCE.wall.base())
+            .defineAndUnlockIfHas('A', AVPItemTags.CONCRETE)
+            .defineAndUnlockIfHas('B', AVPItems.INSTANCE.ingotSteel)
+            .pattern("AAA")
+            .pattern("ABA")
+            .pattern("AAA")
+            .save(recipeOutput);
+        AVPMetalRecipeHelper.addStandardCutterRecipes(recipeOutput, Holder.empty(), AVPIndustrialBlocks.INSTANCE.wall);
     }
 
     private AVPIndustrialBlockRecipes() {
