@@ -26,31 +26,33 @@ public class AVPMetalRecipeHelper {
         });
 
         // Base -> Cut
-        addStandardCutterRecipes(recipeOutput, baseBlock, fullBlockHolderMetalSet.cutSet());
+        addStandardCutterRecipes(recipeOutput, baseBlockHolder, fullBlockHolderMetalSet.cutSet());
 
         // Base -> Extended Set
         var extendedSet = fullBlockHolderMetalSet.extendedSet();
-        addMetalSetRecipes(recipeOutput, baseBlock, extendedSet);
+        addMetalSetRecipes(recipeOutput, baseBlockHolder, extendedSet);
     }
 
-    public static void addMetalSetRecipes(RecipeOutput recipeOutput, Block baseBlock, AVPBlocks.BlockHolderMetalSet blockHolderMetalSet) {
+    public static void addMetalSetRecipes(RecipeOutput recipeOutput, Holder<Block> baseBlockHolder, AVPBlocks.BlockHolderMetalSet blockHolderMetalSet) {
         // Base -> Plated
-        addStandardCutterRecipes(recipeOutput, baseBlock, blockHolderMetalSet.platedSet());
+        addStandardCutterRecipes(recipeOutput, baseBlockHolder, blockHolderMetalSet.platedSet());
         // Base -> Plated Chevron
-        addStandardCutterRecipes(recipeOutput, baseBlock, blockHolderMetalSet.platedChevronSet());
+        addStandardCutterRecipes(recipeOutput, baseBlockHolder, blockHolderMetalSet.platedChevronSet());
         // Base -> Plated Stack
-        addStandardCutterRecipes(recipeOutput, baseBlock, blockHolderMetalSet.platedStackSet());
+        addStandardCutterRecipes(recipeOutput, baseBlockHolder, blockHolderMetalSet.platedStackSet());
         // Base -> Grate
-        RecipeUtils.stonecutterBuildingBlock(recipeOutput, baseBlock, blockHolderMetalSet.grate().get(), 2);
+        RecipeUtils.stonecutterBuildingBlock(recipeOutput, baseBlockHolder, blockHolderMetalSet.grate(), 2);
         // Base -> Vent
-        RecipeUtils.stonecutterBuildingBlock(recipeOutput, baseBlock, blockHolderMetalSet.vent().get());
+        RecipeUtils.stonecutterBuildingBlock(recipeOutput, baseBlockHolder, blockHolderMetalSet.vent());
     }
 
-    private static void addStandardCutterRecipes(RecipeOutput recipeOutput, Block baseBlock, BlockHolderSet blockHolderSet) {
+    public static void addStandardCutterRecipes(RecipeOutput recipeOutput, Holder<Block> baseBlockHolder, BlockHolderSet blockHolderSet) {
         var setBaseBlock = blockHolderSet.base().get();
 
         // Base
-        RecipeUtils.stonecutterBuildingBlock(recipeOutput, baseBlock, setBaseBlock, 4);
+        baseBlockHolder.getOptional().ifPresent(baseBlock ->
+            RecipeUtils.stonecutterBuildingBlock(recipeOutput, baseBlock, setBaseBlock, 4)
+        );
 
         // Slabs
         RecipeUtils.stonecutterBuildingBlock(recipeOutput, setBaseBlock, blockHolderSet.slab().get(), 2);
