@@ -104,7 +104,7 @@ public final class AVPIndustrialBlockRecipes {
     }
 
     private static void addIndustrialWallRecipes(RecipeOutput recipeOutput) {
-        AVPShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, AVPIndustrialBlocks.INSTANCE.wall.base())
+        AVPShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, AVPIndustrialBlocks.INSTANCE.wall.base(), 8)
             .defineAndUnlockIfHas('A', AVPItemTags.CONCRETE)
             .defineAndUnlockIfHas('B', AVPItems.INSTANCE.ingotSteel)
             .pattern("AAA")
