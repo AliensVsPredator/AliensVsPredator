@@ -42,20 +42,36 @@ public class AVPYautjaShipBlocks extends AVPDeferredBlockRegistry {
         var properties = BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_BLOCK)
             .mapColor(MapColor.COLOR_RED)
             .strength(75, 1500);
+        var decor1Properties = BlockBehaviour.Properties.of()
+            .mapColor(MapColor.COLOR_RED)
+            .strength(75, 1500)
+            .lightLevel(($0) -> 10);
+        var decor2Properties = BlockBehaviour.Properties.of()
+            .mapColor(MapColor.COLOR_RED)
+            .strength(75, 1500)
+            .lightLevel(($0) -> 8);
+        var panelProperties = BlockBehaviour.Properties.of()
+            .mapColor(MapColor.COLOR_RED)
+            .strength(75, 1500)
+            .lightLevel(($0) -> 6);
+        var wallBaseProperties = BlockBehaviour.Properties.of()
+            .mapColor(MapColor.COLOR_RED)
+            .strength(75, 1500)
+            .lightLevel(($0) -> 4);
 
-        var tags = BlockTagData.ofBlock(Set.of(BlockTags.MINEABLE_WITH_PICKAXE, BlockTags.NEEDS_DIAMOND_TOOL));
+            var tags = BlockTagData.ofBlock(Set.of(BlockTags.MINEABLE_WITH_PICKAXE, BlockTags.NEEDS_DIAMOND_TOOL));
 
         var brickBlockData = new BlockData("brick", BlockModelData.cube(properties), tags);
         brick = registerBlockHolderSet(new BlockHolderSetData(properties, brickBlockData));
 
-        decor1 = createHolder("decor_1", BlockModelData.cube(properties), tags);
-        decor2 = createHolder("decor_2", BlockModelData.cube(properties), tags);
+        decor1 = createHolder("decor_1", BlockModelData.cube(decor1Properties), tags);
+        decor2 = createHolder("decor_2", BlockModelData.cube(decor2Properties), tags);
 
         var decor3BlockData = new BlockData("decor_3", BlockModelData.cube(properties), tags);
         decor3 = registerBlockHolderSet(new BlockHolderSetData(properties, decor3BlockData));
 
-        panel = createHolder("panel", BlockModelData.cube(properties), tags);
+        panel = createHolder("panel", BlockModelData.cube(panelProperties), tags);
         supportPillar = createHolder("support_pillar", BlockModelData.cube(properties), tags);
-        wallBase = createHolder("wall_base", BlockModelData.cube(properties), tags);
+        wallBase = createHolder("wall_base", BlockModelData.cube(wallBaseProperties), tags);
     }
 }
