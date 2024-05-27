@@ -33,7 +33,7 @@ public class BulletEffects {
         }
 
         @Override
-        public void applyEffect(Entity entity) {/*NO-OP*/}
+        public void applyEffect(Entity entity) {/* NO-OP */}
 
         @Override
         public int getColor() {
@@ -91,8 +91,9 @@ public class BulletEffects {
     };
 
     public static final BulletEffect STANDARD = new BulletEffect("standard") {
+
         @Override
-        public void applyEffect(Entity entity) {/*NO-OP*/}
+        public void applyEffect(Entity entity) {/* NO-OP */}
 
         @Override
         public int getColor() {

@@ -15,12 +15,13 @@ import net.minecraft.data.models.model.TexturedModel;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
+
+import java.util.function.Function;
+
 import org.avp.api.block.BlockData;
 import org.avp.api.block.model.type.BlockModelDataType;
 import org.avp.common.item.AVPSpawnEggItems;
 import org.avp.common.registry.AVPDeferredBlockRegistry;
-
-import java.util.function.Function;
 
 import static net.minecraft.data.models.BlockModelGenerators.MULTIFACE_GENERATOR;
 
@@ -138,14 +139,15 @@ public class AVPFabricBlockModelProvider {
         ResourceLocation resourcelocation = ModelLocationUtils.getModelLocation(block);
         MultiPartGenerator multipartgenerator = MultiPartGenerator.multiPart(block);
         Condition.TerminalCondition terminalCondition = Util.make(
-            Condition.condition(), condition -> MULTIFACE_GENERATOR.stream().map(Pair::getFirst).forEach(booleanProperty -> {
+            Condition.condition(),
+            condition -> MULTIFACE_GENERATOR.stream().map(Pair::getFirst).forEach(booleanProperty -> {
                 if (block.defaultBlockState().hasProperty(booleanProperty)) {
                     condition.term(booleanProperty, false);
                 }
             })
         );
 
-        for(Pair<BooleanProperty, Function<ResourceLocation, Variant>> pair : MULTIFACE_GENERATOR) {
+        for (Pair<BooleanProperty, Function<ResourceLocation, Variant>> pair : MULTIFACE_GENERATOR) {
             BooleanProperty booleanproperty = pair.getFirst();
             Function<ResourceLocation, Variant> function = pair.getSecond();
             if (block.defaultBlockState().hasProperty(booleanproperty)) {

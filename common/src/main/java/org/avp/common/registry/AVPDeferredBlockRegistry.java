@@ -1,20 +1,20 @@
 package org.avp.common.registry;
 
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.storage.loot.LootTable;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import net.minecraft.world.level.storage.loot.LootTable;
 import org.avp.api.Holder;
 import org.avp.api.Tuple;
 import org.avp.api.block.BlockData;
 import org.avp.api.block.BlockHolderSet;
 import org.avp.api.block.BlockHolderSetData;
-import org.avp.api.block.model.BlockModelData;
 import org.avp.api.block.BlockTagData;
+import org.avp.api.block.model.BlockModelData;
 import org.avp.common.service.Services;
 
 public class AVPDeferredBlockRegistry extends AVPDeferredRegistry<Block> {
@@ -44,7 +44,7 @@ public class AVPDeferredBlockRegistry extends AVPDeferredRegistry<Block> {
 
     protected Holder<Block> createHolder(BlockData blockData) {
         var registryName = blockData.registryName();
-        var holder = createHolder(registryName,() -> blockData.blockModelData().blockSupplier().get());
+        var holder = createHolder(registryName, () -> blockData.blockModelData().blockSupplier().get());
         entries.put(registryName, holder);
         DATA_ENTRIES.add(new Tuple<>(holder, blockData));
         return holder;

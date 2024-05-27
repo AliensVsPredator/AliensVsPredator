@@ -2,15 +2,17 @@ package org.avp.api.item;
 
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
-import org.avp.api.item.model.ItemModelData;
 
 import java.util.Set;
+
+import org.avp.api.item.model.ItemModelData;
 
 public record ItemData(
     String registryName,
     ItemModelData itemModelData,
     Set<TagKey<Item>> itemTagData
 ) {
+
     public ItemData withRegistryName(String registryName) {
         return new ItemData(registryName, itemModelData, itemTagData);
     }

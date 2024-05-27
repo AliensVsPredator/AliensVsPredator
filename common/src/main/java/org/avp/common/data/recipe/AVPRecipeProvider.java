@@ -9,8 +9,6 @@ import net.minecraft.data.recipes.RecipeProvider;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.ItemLike;
-import org.avp.common.data.recipe.impl.material.AVPCopperRecipes;
-import org.avp.common.data.recipe.impl.material.AVPFerroaluminumRecipes;
 import org.jetbrains.annotations.NotNull;
 
 import org.avp.common.data.recipe.impl.AVPArmorRecipes;
@@ -25,6 +23,8 @@ import org.avp.common.data.recipe.impl.block.AVPPaddingBlockRecipes;
 import org.avp.common.data.recipe.impl.block.AVPTempleBlockRecipes;
 import org.avp.common.data.recipe.impl.material.AVPAluminumRecipes;
 import org.avp.common.data.recipe.impl.material.AVPCobaltRecipes;
+import org.avp.common.data.recipe.impl.material.AVPCopperRecipes;
+import org.avp.common.data.recipe.impl.material.AVPFerroaluminumRecipes;
 import org.avp.common.data.recipe.impl.material.AVPLithiumRecipes;
 import org.avp.common.data.recipe.impl.material.AVPNeodymiumRecipes;
 import org.avp.common.data.recipe.impl.material.AVPOrioniteRecipes;

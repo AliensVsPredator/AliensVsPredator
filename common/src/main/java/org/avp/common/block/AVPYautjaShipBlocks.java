@@ -5,15 +5,16 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.MapColor;
+
+import java.util.Set;
+
 import org.avp.api.Holder;
 import org.avp.api.block.BlockData;
 import org.avp.api.block.BlockHolderSet;
 import org.avp.api.block.BlockHolderSetData;
-import org.avp.api.block.model.BlockModelData;
 import org.avp.api.block.BlockTagData;
+import org.avp.api.block.model.BlockModelData;
 import org.avp.common.registry.AVPDeferredBlockRegistry;
-
-import java.util.Set;
 
 public class AVPYautjaShipBlocks extends AVPDeferredBlockRegistry {
 
@@ -59,7 +60,7 @@ public class AVPYautjaShipBlocks extends AVPDeferredBlockRegistry {
             .strength(75, 1500)
             .lightLevel(($0) -> 4);
 
-            var tags = BlockTagData.ofBlock(Set.of(BlockTags.MINEABLE_WITH_PICKAXE, BlockTags.NEEDS_DIAMOND_TOOL));
+        var tags = BlockTagData.ofBlock(Set.of(BlockTags.MINEABLE_WITH_PICKAXE, BlockTags.NEEDS_DIAMOND_TOOL));
 
         var brickBlockData = new BlockData("brick", BlockModelData.cube(properties), tags);
         brick = registerBlockHolderSet(new BlockHolderSetData(properties, brickBlockData));

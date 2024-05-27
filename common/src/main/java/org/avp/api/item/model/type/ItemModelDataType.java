@@ -13,6 +13,7 @@ public sealed interface ItemModelDataType {
     GenType getGenType();
 
     record Flat(Item item) implements ItemModelDataType {
+
         @Override
         public GenType getGenType() {
             return GenType.FLAT;
@@ -20,6 +21,7 @@ public sealed interface ItemModelDataType {
     }
 
     record HandHeld(Item item) implements ItemModelDataType {
+
         @Override
         public GenType getGenType() {
             return GenType.HANDHELD;
@@ -27,6 +29,7 @@ public sealed interface ItemModelDataType {
     }
 
     record None() implements ItemModelDataType {
+
         @Override
         public GenType getGenType() {
             return GenType.NONE;

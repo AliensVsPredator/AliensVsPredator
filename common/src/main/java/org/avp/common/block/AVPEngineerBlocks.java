@@ -4,15 +4,16 @@ import net.minecraft.tags.BlockTags;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockBehaviour;
+
+import java.util.Set;
+
 import org.avp.api.Holder;
 import org.avp.api.block.BlockData;
 import org.avp.api.block.BlockHolderSet;
 import org.avp.api.block.BlockHolderSetData;
-import org.avp.api.block.model.BlockModelData;
 import org.avp.api.block.BlockTagData;
+import org.avp.api.block.model.BlockModelData;
 import org.avp.common.registry.AVPDeferredBlockRegistry;
-
-import java.util.Set;
 
 public class AVPEngineerBlocks extends AVPDeferredBlockRegistry {
 

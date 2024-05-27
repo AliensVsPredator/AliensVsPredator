@@ -13,11 +13,11 @@ import java.util.function.Function;
 
 import org.avp.api.Holder;
 import org.avp.api.block.BlockData;
-import org.avp.api.block.model.BlockModelData;
 import org.avp.api.block.BlockTagData;
 import org.avp.api.block.IndustrialGlassBlock;
-import org.avp.api.block.model.type.BlockModelDataType;
+import org.avp.api.block.model.BlockModelData;
 import org.avp.api.block.model.render_type.BlockModelRenderType;
+import org.avp.api.block.model.type.BlockModelDataType;
 import org.avp.common.registry.AVPDeferredBlockRegistry;
 import org.avp.common.tag.AVPBlockTags;
 import org.avp.common.tag.AVPItemTags;
@@ -118,7 +118,10 @@ public class AVPIndustrialGlassBlocks extends AVPDeferredBlockRegistry {
         glassYellow = createColoredIndustrialGlassHolder(DyeColor.YELLOW, blockDataFactory);
     }
 
-    private ColoredIndustrialGlassHolder createColoredIndustrialGlassHolder(DyeColor dyeColor, Function<DyeColor, BlockData> blockDataFactory) {
+    private ColoredIndustrialGlassHolder createColoredIndustrialGlassHolder(
+        DyeColor dyeColor,
+        Function<DyeColor, BlockData> blockDataFactory
+    ) {
         var blockData = blockDataFactory.apply(dyeColor);
         var holder = createHolder(blockData);
         var coloredIndustrialGlassHolder = new ColoredIndustrialGlassHolder(dyeColor, holder);
@@ -126,5 +129,8 @@ public class AVPIndustrialGlassBlocks extends AVPDeferredBlockRegistry {
         return coloredIndustrialGlassHolder;
     }
 
-    public record ColoredIndustrialGlassHolder(DyeColor dyeColor, Holder<Block> holder) {}
+    public record ColoredIndustrialGlassHolder(
+        DyeColor dyeColor,
+        Holder<Block> holder
+    ) {}
 }

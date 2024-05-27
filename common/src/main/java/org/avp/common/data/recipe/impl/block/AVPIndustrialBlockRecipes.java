@@ -37,9 +37,22 @@ public final class AVPIndustrialBlockRecipes {
             .pattern("AA")
             .save(recipeOutput);
 
-        RecipeUtils.stonecutterBuildingBlock(recipeOutput, AVPIndustrialBlocks.INSTANCE.brick.base(), AVPIndustrialBlocks.INSTANCE.brick.slab());
-        RecipeUtils.stonecutterBuildingBlock(recipeOutput, AVPIndustrialBlocks.INSTANCE.brick.base(), AVPIndustrialBlocks.INSTANCE.brick.stairs());
-        RecipeUtils.stonecutterBuildingBlock(recipeOutput, AVPIndustrialBlocks.INSTANCE.brick.base(), AVPIndustrialBlocks.INSTANCE.floorGrill, 4);
+        RecipeUtils.stonecutterBuildingBlock(
+            recipeOutput,
+            AVPIndustrialBlocks.INSTANCE.brick.base(),
+            AVPIndustrialBlocks.INSTANCE.brick.slab()
+        );
+        RecipeUtils.stonecutterBuildingBlock(
+            recipeOutput,
+            AVPIndustrialBlocks.INSTANCE.brick.base(),
+            AVPIndustrialBlocks.INSTANCE.brick.stairs()
+        );
+        RecipeUtils.stonecutterBuildingBlock(
+            recipeOutput,
+            AVPIndustrialBlocks.INSTANCE.brick.base(),
+            AVPIndustrialBlocks.INSTANCE.floorGrill,
+            4
+        );
         RecipeUtils.stonecutterBuildingBlock(recipeOutput, AVPIndustrialBlocks.INSTANCE.brick.base(), AVPIndustrialBlocks.INSTANCE.vent);
     }
 

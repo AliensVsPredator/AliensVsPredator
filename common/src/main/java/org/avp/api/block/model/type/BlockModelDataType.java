@@ -21,27 +21,40 @@ public sealed interface BlockModelDataType {
     GenType getGenType();
 
     record Cube(Block block) implements BlockModelDataType {
+
         @Override
         public GenType getGenType() {
             return GenType.CUBE;
         }
     }
 
-    record Fence(Block baseBlock, Block fenceBlock) implements BlockModelDataType {
+    record Fence(
+        Block baseBlock,
+        Block fenceBlock
+    ) implements BlockModelDataType {
+
         @Override
         public GenType getGenType() {
             return GenType.FENCE;
         }
     }
 
-    record FenceGate(Block baseBlock, Block fenceGateBlock) implements BlockModelDataType {
+    record FenceGate(
+        Block baseBlock,
+        Block fenceGateBlock
+    ) implements BlockModelDataType {
+
         @Override
         public GenType getGenType() {
             return GenType.FENCE_GATE;
         }
     }
 
-    record GrassLike(Block dirtBlock, Block grassBlock) implements BlockModelDataType {
+    record GrassLike(
+        Block dirtBlock,
+        Block grassBlock
+    ) implements BlockModelDataType {
+
         @Override
         public GenType getGenType() {
             return GenType.GRASS_LIKE;
@@ -49,6 +62,7 @@ public sealed interface BlockModelDataType {
     }
 
     record MultiFace(Block baseBlock) implements BlockModelDataType {
+
         @Override
         public GenType getGenType() {
             return GenType.MULTI_FACE;
@@ -56,6 +70,7 @@ public sealed interface BlockModelDataType {
     }
 
     record RotatedPillar(Block block) implements BlockModelDataType {
+
         @Override
         public GenType getGenType() {
             return GenType.ROTATED_PILLAR;
@@ -63,34 +78,51 @@ public sealed interface BlockModelDataType {
     }
 
     record RotatedVariant(Block block) implements BlockModelDataType {
+
         @Override
         public GenType getGenType() {
             return GenType.ROTATED_VARIANT;
         }
     }
 
-    record Slab(Block baseBlock, Block slabBlock) implements BlockModelDataType {
+    record Slab(
+        Block baseBlock,
+        Block slabBlock
+    ) implements BlockModelDataType {
+
         @Override
         public GenType getGenType() {
             return GenType.SLAB;
         }
     }
 
-    record Stair(Block baseBlock, Block stairBlock) implements BlockModelDataType {
+    record Stair(
+        Block baseBlock,
+        Block stairBlock
+    ) implements BlockModelDataType {
+
         @Override
         public GenType getGenType() {
             return GenType.STAIR;
         }
     }
 
-    record Wall(Block baseBlock, Block wallBlock) implements BlockModelDataType {
+    record Wall(
+        Block baseBlock,
+        Block wallBlock
+    ) implements BlockModelDataType {
+
         @Override
         public GenType getGenType() {
             return GenType.WALL;
         }
     }
 
-    record Wood(Block baseBlock, Block woodBlock) implements BlockModelDataType {
+    record Wood(
+        Block baseBlock,
+        Block woodBlock
+    ) implements BlockModelDataType {
+
         @Override
         public GenType getGenType() {
             return GenType.WOOD;

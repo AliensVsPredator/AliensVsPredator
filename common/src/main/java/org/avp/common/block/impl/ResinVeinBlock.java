@@ -6,6 +6,7 @@ import net.minecraft.world.level.block.MultifaceSpreader;
 import org.jetbrains.annotations.NotNull;
 
 public class ResinVeinBlock extends MultifaceBlock {
+
     public static final MapCodec<MultifaceBlock> CODEC = simpleCodec(ResinVeinBlock::new);
 
     public ResinVeinBlock(Properties properties) {
@@ -16,7 +17,6 @@ public class ResinVeinBlock extends MultifaceBlock {
     protected @NotNull MapCodec<MultifaceBlock> codec() {
         return CODEC;
     }
-
 
     @Override
     public @NotNull MultifaceSpreader getSpreader() {

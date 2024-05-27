@@ -5,13 +5,14 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.MapColor;
-import org.avp.api.Holder;
-import org.avp.api.block.BlockData;
-import org.avp.api.block.model.BlockModelData;
-import org.avp.api.block.BlockTagData;
-import org.avp.common.registry.AVPDeferredBlockRegistry;
 
 import java.util.Set;
+
+import org.avp.api.Holder;
+import org.avp.api.block.BlockData;
+import org.avp.api.block.BlockTagData;
+import org.avp.api.block.model.BlockModelData;
+import org.avp.common.registry.AVPDeferredBlockRegistry;
 
 public class AVPUnidentifiedBlocks extends AVPDeferredBlockRegistry {
 

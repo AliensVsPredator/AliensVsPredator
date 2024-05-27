@@ -4,6 +4,9 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ArmorMaterial;
 import net.minecraft.world.item.Item;
+
+import java.util.Set;
+
 import org.avp.api.Holder;
 import org.avp.api.item.ItemData;
 import org.avp.api.item.ItemHolderArmorSet;
@@ -12,8 +15,6 @@ import org.avp.api.item.model.type.ItemModelDataType;
 import org.avp.common.item.armor.material.AVPArmorMaterials;
 import org.avp.common.registry.AVPDeferredItemRegistry;
 import org.avp.common.tag.AVPItemTags;
-
-import java.util.Set;
 
 public class AVPArmorItems extends AVPDeferredItemRegistry {
 
@@ -35,7 +36,12 @@ public class AVPArmorItems extends AVPDeferredItemRegistry {
 
     public final ItemHolderArmorSet xenomorphChitin;
 
-    protected Holder<Item> createHolder(String registryName, ArmorMaterial armorMaterial, ArmorItem.Type armorType, Set<TagKey<Item>> tags) {
+    protected Holder<Item> createHolder(
+        String registryName,
+        ArmorMaterial armorMaterial,
+        ArmorItem.Type armorType,
+        Set<TagKey<Item>> tags
+    ) {
         var itemModelData = new ItemModelData(
             () -> new ArmorItem(armorMaterial, armorType, new Item.Properties()),
             ItemModelDataType.Flat::new

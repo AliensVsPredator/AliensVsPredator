@@ -4,6 +4,9 @@ import net.minecraft.tags.BlockTags;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockBehaviour;
+
+import java.util.Set;
+
 import org.avp.api.Holder;
 import org.avp.api.block.BlockData;
 import org.avp.api.block.BlockHolderSet;
@@ -13,8 +16,6 @@ import org.avp.api.block.model.BlockModelData;
 import org.avp.api.block.model.render_type.BlockModelRenderType;
 import org.avp.api.block.model.type.BlockModelDataType;
 import org.avp.common.registry.AVPDeferredBlockRegistry;
-
-import java.util.Set;
 
 public class AVPBlocks extends AVPDeferredBlockRegistry {
 
@@ -41,7 +42,11 @@ public class AVPBlocks extends AVPDeferredBlockRegistry {
         );
     }
 
-    private BlockHolderMetalSet createBlockHolderMetalSet(String baseName, BlockBehaviour.Properties properties, BlockTagData blockTagData) {
+    private BlockHolderMetalSet createBlockHolderMetalSet(
+        String baseName,
+        BlockBehaviour.Properties properties,
+        BlockTagData blockTagData
+    ) {
         var cubeModelData = BlockModelData.cube(properties);
 
         var grateProperties = BlockBehaviour.Properties.of().noOcclusion();
@@ -69,7 +74,11 @@ public class AVPBlocks extends AVPDeferredBlockRegistry {
         );
     }
 
-    private FullBlockHolderMetalSet createFullBlockHolderMetalSet(String baseName, BlockBehaviour.Properties properties, BlockTagData blockTagData) {
+    private FullBlockHolderMetalSet createFullBlockHolderMetalSet(
+        String baseName,
+        BlockBehaviour.Properties properties,
+        BlockTagData blockTagData
+    ) {
         var cubeModelData = BlockModelData.cube(properties);
 
         var baseBlockData = new BlockData(baseName + "_block", cubeModelData, blockTagData);

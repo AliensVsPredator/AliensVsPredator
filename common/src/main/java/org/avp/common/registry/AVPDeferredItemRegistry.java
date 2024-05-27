@@ -2,17 +2,18 @@ package org.avp.common.registry;
 
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
-import org.avp.api.Holder;
-import org.avp.api.Tuple;
-import org.avp.api.item.ItemData;
-import org.avp.api.item.model.ItemModelData;
-import org.avp.common.service.Services;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Supplier;
+
+import org.avp.api.Holder;
+import org.avp.api.Tuple;
+import org.avp.api.item.ItemData;
+import org.avp.api.item.model.ItemModelData;
+import org.avp.common.service.Services;
 
 public class AVPDeferredItemRegistry extends AVPDeferredRegistry<Item> {
 
@@ -48,7 +49,7 @@ public class AVPDeferredItemRegistry extends AVPDeferredRegistry<Item> {
 
     protected Holder<Item> createHolder(ItemData itemData) {
         var registryName = itemData.registryName();
-        var holder = createHolderInternal(registryName,() -> itemData.itemModelData().itemSupplier().get());
+        var holder = createHolderInternal(registryName, () -> itemData.itemModelData().itemSupplier().get());
         entries.put(registryName, holder);
         DATA_ENTRIES.add(new Tuple<>(holder, itemData));
         return holder;

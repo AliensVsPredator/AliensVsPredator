@@ -1,10 +1,11 @@
 package org.avp.api.item.model;
 
 import net.minecraft.world.item.Item;
-import org.avp.api.item.model.type.ItemModelDataType;
 
 import java.util.function.Function;
 import java.util.function.Supplier;
+
+import org.avp.api.item.model.type.ItemModelDataType;
 
 public record ItemModelData(
     Supplier<Item> itemSupplier,

@@ -6,13 +6,13 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.MapColor;
+import net.minecraft.world.level.material.PushReaction;
 
 import java.util.Set;
 
-import net.minecraft.world.level.material.PushReaction;
 import org.avp.api.Holder;
-import org.avp.api.block.model.BlockModelData;
 import org.avp.api.block.BlockTagData;
+import org.avp.api.block.model.BlockModelData;
 import org.avp.api.block.model.render_type.BlockModelRenderType;
 import org.avp.common.block.impl.ResinVeinBlock;
 import org.avp.common.registry.AVPDeferredBlockRegistry;
@@ -48,7 +48,8 @@ public class AVPAlienBlocks extends AVPDeferredBlockRegistry {
         resin = createHolder("resin", BlockModelData.cube(resinProperties), resinTagData);
         resinVeins = createHolder(
             "resin_vein",
-            BlockModelData.multiface(() -> new ResinVeinBlock(resinVeinProperties),
+            BlockModelData.multiface(
+                () -> new ResinVeinBlock(resinVeinProperties),
                 BlockModelRenderType.TRANSLUCENT
             ),
             resinTagData

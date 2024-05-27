@@ -3,6 +3,10 @@ package org.avp.common.item;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 
+import java.util.HashSet;
+import java.util.Set;
+import java.util.function.Function;
+
 import org.avp.api.Holder;
 import org.avp.api.item.ItemData;
 import org.avp.api.item.model.ItemModelData;
@@ -19,10 +23,6 @@ import org.avp.common.item.weapon.OldPainlessItem;
 import org.avp.common.item.weapon.SniperRifleItem;
 import org.avp.common.registry.AVPDeferredItemRegistry;
 import org.avp.common.tag.AVPItemTags;
-
-import java.util.HashSet;
-import java.util.Set;
-import java.util.function.Function;
 
 public class AVPWeaponItems extends AVPDeferredItemRegistry {
 
@@ -74,7 +74,11 @@ public class AVPWeaponItems extends AVPDeferredItemRegistry {
         weaponFlamethrowerSevastopol = createWeaponHolder("flamethrower_sevastopol", FlamethrowerSevastopolItem::new, Set.of());
 
         // Small
-        weaponM88Mod4CombatPistol = createWeaponHolder("m88mod4_combat_pistol", M88Mod4CombatPistolItem::new, Set.of(AVPItemTags.SMALL_GUNS));
+        weaponM88Mod4CombatPistol = createWeaponHolder(
+            "m88mod4_combat_pistol",
+            M88Mod4CombatPistolItem::new,
+            Set.of(AVPItemTags.SMALL_GUNS)
+        );
 
         // Medium
         weapon3712Shotgun = createWeaponHolder("37_12_shotgun", M3712ShotgunItem::new, Set.of(AVPItemTags.MEDIUM_GUNS));

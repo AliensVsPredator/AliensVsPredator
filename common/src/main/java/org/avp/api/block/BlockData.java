@@ -5,12 +5,13 @@ import net.minecraft.tags.ItemTags;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.storage.loot.LootTable;
-import org.avp.api.Holder;
-import org.avp.api.block.loot_table.LootProviders;
-import org.avp.api.block.model.BlockModelData;
 
 import java.util.HashSet;
 import java.util.function.Function;
+
+import org.avp.api.Holder;
+import org.avp.api.block.loot_table.LootProviders;
+import org.avp.api.block.model.BlockModelData;
 
 public record BlockData(
     String registryName,

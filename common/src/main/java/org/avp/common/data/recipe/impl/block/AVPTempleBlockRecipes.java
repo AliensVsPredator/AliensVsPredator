@@ -30,15 +30,27 @@ public final class AVPTempleBlockRecipes {
     }
 
     private static void addTempleBrickSingleRecipes(RecipeOutput recipeOutput) {
-        RecipeUtils.stonecutterBuildingBlock(recipeOutput, AVPTempleBlocks.INSTANCE.floor.base(), AVPTempleBlocks.INSTANCE.brickSingle.base());
+        RecipeUtils.stonecutterBuildingBlock(
+            recipeOutput,
+            AVPTempleBlocks.INSTANCE.floor.base(),
+            AVPTempleBlocks.INSTANCE.brickSingle.base()
+        );
 
-        RecipeUtils.stonecutterBuildingBlock(recipeOutput, AVPTempleBlocks.INSTANCE.brickSingle.base(), AVPTempleBlocks.INSTANCE.brickSingle.slab());
+        RecipeUtils.stonecutterBuildingBlock(
+            recipeOutput,
+            AVPTempleBlocks.INSTANCE.brickSingle.base(),
+            AVPTempleBlocks.INSTANCE.brickSingle.slab()
+        );
         RecipeUtils.stonecutterBuildingBlock(
             recipeOutput,
             AVPTempleBlocks.INSTANCE.brickSingle.base(),
             AVPTempleBlocks.INSTANCE.brickSingle.stairs()
         );
-        RecipeUtils.stonecutterBuildingBlock(recipeOutput, AVPTempleBlocks.INSTANCE.brickSingle.base(), AVPTempleBlocks.INSTANCE.brickSingle.wall());
+        RecipeUtils.stonecutterBuildingBlock(
+            recipeOutput,
+            AVPTempleBlocks.INSTANCE.brickSingle.base(),
+            AVPTempleBlocks.INSTANCE.brickSingle.wall()
+        );
         RecipeUtils.stonecutterBuildingBlock(recipeOutput, AVPTempleBlocks.INSTANCE.brickSingle.base(), AVPTempleBlocks.INSTANCE.wallBase);
     }
 

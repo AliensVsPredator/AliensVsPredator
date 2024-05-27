@@ -10,6 +10,7 @@ public record BlockTagData(
     Set<TagKey<Block>> blockTags,
     Set<TagKey<Item>> itemTags
 ) {
+
     public static BlockTagData none() {
         return new BlockTagData(Set.of(), Set.of());
     }

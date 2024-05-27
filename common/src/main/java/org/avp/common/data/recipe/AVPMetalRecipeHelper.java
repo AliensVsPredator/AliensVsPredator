@@ -4,6 +4,7 @@ import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
+
 import org.avp.api.Holder;
 import org.avp.api.block.BlockHolderSet;
 import org.avp.common.block.AVPBlocks;
@@ -38,7 +39,11 @@ public class AVPMetalRecipeHelper {
         addMetalSetRecipes(recipeOutput, baseBlockHolder, extendedSet);
     }
 
-    public static void addMetalSetRecipes(RecipeOutput recipeOutput, Holder<Block> baseBlockHolder, AVPBlocks.BlockHolderMetalSet blockHolderMetalSet) {
+    public static void addMetalSetRecipes(
+        RecipeOutput recipeOutput,
+        Holder<Block> baseBlockHolder,
+        AVPBlocks.BlockHolderMetalSet blockHolderMetalSet
+    ) {
         // Base -> Plated
         addStandardCutterRecipes(recipeOutput, baseBlockHolder, blockHolderMetalSet.platedSet());
         // Base -> Plated Chevron
@@ -55,7 +60,8 @@ public class AVPMetalRecipeHelper {
         var setBaseBlock = blockHolderSet.base().get();
 
         // Base
-        baseBlockHolder.getOptional().ifPresent(baseBlock -> RecipeUtils.stonecutterBuildingBlock(recipeOutput, baseBlock, setBaseBlock, 4));
+        baseBlockHolder.getOptional()
+            .ifPresent(baseBlock -> RecipeUtils.stonecutterBuildingBlock(recipeOutput, baseBlock, setBaseBlock, 4));
 
         // Slabs
         RecipeUtils.stonecutterBuildingBlock(recipeOutput, setBaseBlock, blockHolderSet.slab().get(), 2);

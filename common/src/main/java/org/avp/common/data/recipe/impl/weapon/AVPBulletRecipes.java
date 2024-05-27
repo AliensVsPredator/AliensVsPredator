@@ -3,8 +3,8 @@ package org.avp.common.data.recipe.impl.weapon;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.world.item.Items;
-
 import net.minecraft.world.level.ItemLike;
+
 import org.avp.api.Holder;
 import org.avp.common.data.recipe.AVPShapedRecipeBuilder;
 import org.avp.common.item.AVPAmmunitionPartItems;
@@ -59,7 +59,11 @@ public final class AVPBulletRecipes {
         addModifiedBulletRecipe(recipeOutput, outputHolder, casingHolder, modificationHolder.get());
     }
 
-    private static void addBulletSetRecipes(RecipeOutput recipeOutput, AVPBulletItems.ItemHolderBulletSet itemHolderBulletSet, Holder<? extends ItemLike> casingHolder) {
+    private static void addBulletSetRecipes(
+        RecipeOutput recipeOutput,
+        AVPBulletItems.ItemHolderBulletSet itemHolderBulletSet,
+        Holder<? extends ItemLike> casingHolder
+    ) {
         addStandardBulletRecipe(recipeOutput, itemHolderBulletSet.base(), casingHolder);
         addModifiedBulletRecipe(recipeOutput, itemHolderBulletSet.acid(), casingHolder, AVPItems.INSTANCE.bottleTintedAcid);
         addModifiedBulletRecipe(recipeOutput, itemHolderBulletSet.electric(), casingHolder, AVPElectronicItems.INSTANCE.capacitor);

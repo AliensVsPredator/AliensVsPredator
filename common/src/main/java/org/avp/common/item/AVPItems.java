@@ -3,12 +3,12 @@ package org.avp.common.item;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Rarity;
 
+import java.util.Set;
+
 import org.avp.api.Holder;
 import org.avp.common.item.impl.TintedBottleItem;
 import org.avp.common.registry.AVPDeferredItemRegistry;
 import org.avp.common.tag.AVPItemTags;
-
-import java.util.Set;
 
 public class AVPItems extends AVPDeferredItemRegistry {
 

@@ -28,7 +28,6 @@ import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
-import org.avp.common.tag.AVPBlockTags;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -45,6 +44,7 @@ import org.avp.common.config.AVPConfig;
 import org.avp.common.damage.AVPDamageSources;
 import org.avp.common.network.payload.ClientboundBulletHitBlockPayload;
 import org.avp.common.service.Services;
+import org.avp.common.tag.AVPBlockTags;
 import org.avp.common.util.AVPPredicates;
 import org.avp.common.util.SoundUtils;
 import org.avp.common.util.TooltipUtils;

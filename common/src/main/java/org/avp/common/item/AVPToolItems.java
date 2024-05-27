@@ -77,7 +77,14 @@ public class AVPToolItems extends AVPDeferredItemRegistry {
         QuadFunction<AVPToolTier, Integer, Float, Item.Properties, Item> toolFactory,
         Set<TagKey<Item>> tags
     ) {
-        return createToolHolder(registryName, toolTier, attackDamage, attackSpeed, (a, b, c, d) -> toolFactory.apply(a, b.intValue(), c, d), tags);
+        return createToolHolder(
+            registryName,
+            toolTier,
+            attackDamage,
+            attackSpeed,
+            (a, b, c, d) -> toolFactory.apply(a, b.intValue(), c, d),
+            tags
+        );
     }
 
     protected Holder<Item> createToolHolder(
@@ -105,7 +112,7 @@ public class AVPToolItems extends AVPDeferredItemRegistry {
 
         aluminumAxe = createToolHolder("aluminum_axe", AVPToolTiers.ALUMINUM, 5, -3, ModdedAxeItem::new, axeTags);
         aluminumHoe = createToolHolder2("aluminum_hoe", AVPToolTiers.ALUMINUM, -1, -2, ModdedHoeItem::new, hoeTags);
-        aluminumPickaxe = createToolHolder2("aluminum_pickaxe",AVPToolTiers.ALUMINUM, 1, -2.8F, ModdedPickaxeItem::new, pickaxeTags);
+        aluminumPickaxe = createToolHolder2("aluminum_pickaxe", AVPToolTiers.ALUMINUM, 1, -2.8F, ModdedPickaxeItem::new, pickaxeTags);
         aluminumShovel = createToolHolder("aluminum_shovel", AVPToolTiers.ALUMINUM, 1.5F, -3, ShovelItem::new, shovelTags);
         aluminumSword = createToolHolder2("aluminum_sword", AVPToolTiers.ALUMINUM, 3, -2.4F, SwordItem::new, swordTags);
 

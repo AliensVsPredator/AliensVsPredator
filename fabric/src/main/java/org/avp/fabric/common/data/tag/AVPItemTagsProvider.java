@@ -6,11 +6,12 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
+
+import java.util.concurrent.CompletableFuture;
+
 import org.avp.common.registry.AVPDeferredBlockRegistry;
 import org.avp.common.registry.AVPDeferredItemRegistry;
 import org.avp.common.tag.AVPItemTags;
-
-import java.util.concurrent.CompletableFuture;
 
 public class AVPItemTagsProvider extends FabricTagProvider.ItemTagProvider {
 

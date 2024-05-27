@@ -4,15 +4,16 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import org.avp.api.item.weapon.WeaponItemTagHelper;
-import org.avp.common.item.AbstractAVPWeaponItem;
-import org.avp.common.util.MixinUtils;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import javax.annotation.Nullable;
+
+import org.avp.api.item.weapon.WeaponItemTagHelper;
+import org.avp.common.item.AbstractAVPWeaponItem;
+import org.avp.common.util.MixinUtils;
 
 @Mixin(GuiGraphics.class)
 public abstract class MixinGuiGraphics {
