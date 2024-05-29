@@ -83,6 +83,10 @@ public class Acid extends Entity {
         }
     }
 
+    public void decreaseMultiplier() {
+        this.setMultiplier(this.getMultiplier() - 1);
+    }
+
     private void damageBlock(Level level) {
         if (level.isClientSide || tickCount % 20 != 0 || isInWater())
             return;
