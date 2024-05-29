@@ -6,6 +6,8 @@ import org.avp.common.AVPConstants;
 
 public class Services {
 
+    public static final BlockEntityTypeService BLOCK_ENTITY_TYPE_SERVICE = load(BlockEntityTypeService.class);
+
     public static final BlockService BLOCK_SERVICE = load(BlockService.class);
 
     public static final CreativeModeTabService CREATIVE_MODE_TAB_SERVICE = load(CreativeModeTabService.class);

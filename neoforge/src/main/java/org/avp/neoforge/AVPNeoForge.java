@@ -29,6 +29,7 @@ public class AVPNeoForge {
         NeoForgeCreativeModeTabService.CREATIVE_MODE_TABS.register(eventBus);
         NeoForgeItemService.ITEMS.register(eventBus);
         NeoForgeBlockService.BLOCKS.register(eventBus);
+        NeoForgeBlockEntityTypeService.BLOCK_ENTITY_TYPES.register(eventBus);
         NeoForgeEntityTypeService.ENTITY_TYPES.register(eventBus);
         NeoForgeParticleTypeService.PARTICLE_TYPES.register(eventBus);
         NeoForgeSoundEventService.SOUND_EVENTS.register(eventBus);

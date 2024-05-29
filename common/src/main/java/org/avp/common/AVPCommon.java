@@ -10,6 +10,7 @@ import org.avp.common.entity.data.AVPEntityDataRegistry;
 import org.avp.common.item.*;
 import org.avp.common.network.AVPNetworkPayloadHandlerRegistry;
 import org.avp.common.registry.AVPFuelRegistry;
+import org.avp.common.registry.AVPSimpleDeferredBlockEntityTypeRegistry;
 import org.avp.common.registry.AVPSimpleDeferredEntityTypeRegistry;
 import org.avp.common.sound.AVPSoundEvents;
 
@@ -46,6 +47,7 @@ public class AVPCommon {
         AVPEngineerBlocks.INSTANCE.register();
         AVPIndustrialBlocks.INSTANCE.register();
         AVPIndustrialGlassBlocks.INSTANCE.register();
+        AVPMachineBlocks.INSTANCE.register();
         AVPOreBlocks.INSTANCE.register();
         AVPPaddingBlocks.INSTANCE.register();
         AVPParadiseBlocks.INSTANCE.register();
@@ -55,6 +57,13 @@ public class AVPCommon {
 
         // Item Blocks
         AVPItemBlockItems.INSTANCE.register();
+
+        // Block Entity Data
+        // Must be registered first, sets up block entity type holders.
+        AVPSimpleDeferredBlockEntityTypeRegistry.INSTANCE.register();
+
+        // Block Entity Types
+        AVPSimpleDeferredBlockEntityTypeRegistry.INSTANCE.register();
 
         // Sounds
         AVPSoundEvents.INSTANCE.register();
