@@ -71,7 +71,7 @@ public class AVPArmorItems extends AVPDeferredItemRegistry {
         aluminum = createArmorHolderSet("aluminum", AVPArmorMaterials.ALUMINUM);
         mk50 = createArmorHolderSet("mk50", AVPArmorMaterials.MK50);
         orionite = createArmorHolderSet("orionite", AVPArmorMaterials.ORIONITE);
-        pressure = createArmorHolderSet("pressure", AVPArmorMaterials.MK50);
+        pressure = createArmorHolderSet("pressure", AVPArmorMaterials.PRESSURE);
         tactical = createArmorHolderSet("tactical", AVPArmorMaterials.TACTICAL);
         titanium = createArmorHolderSet("titanium", AVPArmorMaterials.TITANIUM);
         veritanium = createArmorHolderSet("veritanium", AVPArmorMaterials.VERITANIUM);
