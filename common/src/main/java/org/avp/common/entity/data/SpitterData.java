@@ -70,9 +70,9 @@ public class SpitterData extends EntityData<Spitter> {
     protected Optional<EntitySoundData> createSoundData() {
         return Optional.of(
             new EntitySoundData(
-                AVPSoundEvents.INSTANCE.entityXenomorphAmbient,
-                AlienSounds.createSoundEventSelector(AVPSoundEvents.INSTANCE.entityXenomorphHurt),
-                AVPSoundEvents.INSTANCE.entityXenomorphDeath
+                AVPSoundEvents.INSTANCE.entitySpitter.ambient(),
+                AlienSounds.createSoundEventSelector(AVPSoundEvents.INSTANCE.entitySpitter.hurt()),
+                AVPSoundEvents.INSTANCE.entitySpitter.death()
             )
         );
     }
