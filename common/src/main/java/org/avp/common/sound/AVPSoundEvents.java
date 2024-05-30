@@ -15,6 +15,8 @@ public class AVPSoundEvents extends AVPDeferredRegistry<SoundEvent> {
 
     public final Holder<SoundEvent> blockAcidBurn;
 
+    public final EntitySoundHolderSet entityBoiler;
+
     public final Holder<SoundEvent> entityChestbursterDeath;
 
     public final Holder<SoundEvent> entityChestbursterHurt;
@@ -130,6 +132,8 @@ public class AVPSoundEvents extends AVPDeferredRegistry<SoundEvent> {
 
     private AVPSoundEvents() {
         blockAcidBurn = createHolder("block.acid.burn");
+
+        entityBoiler = createEntitySoundHolderSet("entity.boiler");
 
         entityChestbursterDeath = createHolder("entity.chestburster.death");
 

@@ -68,9 +68,9 @@ public class BoilerData extends EntityData<Boiler> {
     protected Optional<EntitySoundData> createSoundData() {
         return Optional.of(
             new EntitySoundData(
-                AVPSoundEvents.INSTANCE.entityXenomorphAmbient,
-                AlienSounds.createSoundEventSelector(AVPSoundEvents.INSTANCE.entityXenomorphHurt),
-                AVPSoundEvents.INSTANCE.entityXenomorphDeath
+                AVPSoundEvents.INSTANCE.entityBoiler.ambient(),
+                AlienSounds.createSoundEventSelector(AVPSoundEvents.INSTANCE.entityBoiler.hurt()),
+                AVPSoundEvents.INSTANCE.entityBoiler.death()
             )
         );
     }
