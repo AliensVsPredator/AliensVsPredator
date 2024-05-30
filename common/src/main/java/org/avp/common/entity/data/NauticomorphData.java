@@ -70,9 +70,9 @@ public class NauticomorphData extends EntityData<Nauticomorph> {
     protected Optional<EntitySoundData> createSoundData() {
         return Optional.of(
             new EntitySoundData(
-                AVPSoundEvents.INSTANCE.entityXenomorphAmbient,
-                AlienSounds.createSoundEventSelector(AVPSoundEvents.INSTANCE.entityXenomorphHurt),
-                AVPSoundEvents.INSTANCE.entityXenomorphDeath
+                AVPSoundEvents.INSTANCE.entityNauticomorph.ambient(),
+                AlienSounds.createSoundEventSelector(AVPSoundEvents.INSTANCE.entityNauticomorph.hurt()),
+                AVPSoundEvents.INSTANCE.entityNauticomorph.death()
             )
         );
     }
