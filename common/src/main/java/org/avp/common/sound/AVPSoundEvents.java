@@ -37,6 +37,8 @@ public class AVPSoundEvents extends AVPDeferredRegistry<SoundEvent> {
 
     public final EntitySoundHolderSet entitySpitter;
 
+    public final EntitySoundHolderSet entityUltramorph;
+
     public final EntitySoundHolderSet entityWarrior;
 
     public final Holder<SoundEvent> entityXenomorphAmbient;
@@ -154,6 +156,8 @@ public class AVPSoundEvents extends AVPDeferredRegistry<SoundEvent> {
         entityQueenAmbientLoop = createHolder("entity.queen.ambient.loop");
 
         entitySpitter = createEntitySoundHolderSet("entity.spitter");
+
+        entityUltramorph = createEntitySoundHolderSet("entity.ultramorph");
 
         entityWarrior = createEntitySoundHolderSet("entity.warrior");
 
