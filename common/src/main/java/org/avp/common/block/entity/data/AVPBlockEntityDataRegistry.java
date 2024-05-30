@@ -23,6 +23,7 @@ public class AVPBlockEntityDataRegistry {
     }
 
     public void register() {
+        addEntry(SolarPanelData.INSTANCE);
     }
 
     private AVPBlockEntityDataRegistry() {}

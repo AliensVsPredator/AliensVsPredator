@@ -4,6 +4,7 @@ import mod.azure.azurelib.common.internal.common.AzureLib;
 
 import org.avp.client.render.particle.AVPParticleTypes;
 import org.avp.common.block.*;
+import org.avp.common.block.entity.data.AVPBlockEntityDataRegistry;
 import org.avp.common.config.AVPConfig;
 import org.avp.common.creative_tab.AVPCreativeModeTabs;
 import org.avp.common.entity.data.AVPEntityDataRegistry;
@@ -60,7 +61,7 @@ public class AVPCommon {
 
         // Block Entity Data
         // Must be registered first, sets up block entity type holders.
-        AVPSimpleDeferredBlockEntityTypeRegistry.INSTANCE.register();
+        AVPBlockEntityDataRegistry.INSTANCE.register();
 
         // Block Entity Types
         AVPSimpleDeferredBlockEntityTypeRegistry.INSTANCE.register();
