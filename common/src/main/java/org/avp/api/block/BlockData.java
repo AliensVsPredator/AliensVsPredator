@@ -45,7 +45,8 @@ public record BlockData(
         return new BlockData(
             blockData.registryName() + "_slab",
             BlockModelData.slab(parentHolder, properties),
-            new BlockTagData(blockTags, itemTags)
+            new BlockTagData(blockTags, itemTags),
+            LootProviders.SLAB
         );
     }
 
