@@ -67,9 +67,9 @@ public class DracomorphData extends EntityData<Dracomorph> {
     protected Optional<EntitySoundData> createSoundData() {
         return Optional.of(
             new EntitySoundData(
-                AVPSoundEvents.INSTANCE.entityQueenAmbient,
-                AlienSounds.createSoundEventSelector(AVPSoundEvents.INSTANCE.entityQueenHurt),
-                AVPSoundEvents.INSTANCE.entityQueenDeath
+                AVPSoundEvents.INSTANCE.entityQueen.ambient(),
+                AlienSounds.createSoundEventSelector(AVPSoundEvents.INSTANCE.entityQueen.hurt()),
+                AVPSoundEvents.INSTANCE.entityQueen.death()
             )
         );
     }

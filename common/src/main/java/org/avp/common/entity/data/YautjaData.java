@@ -76,9 +76,9 @@ public class YautjaData extends EntityData<Yautja> {
     protected Optional<EntitySoundData> createSoundData() {
         return Optional.of(
             new EntitySoundData(
-                AVPSoundEvents.INSTANCE.entityYautjaAmbient,
-                $ -> AVPSoundEvents.INSTANCE.entityYautjaHurt,
-                AVPSoundEvents.INSTANCE.entityYautjaDeath
+                AVPSoundEvents.INSTANCE.entityYautja.ambient(),
+                $ -> AVPSoundEvents.INSTANCE.entityYautja.hurt(),
+                AVPSoundEvents.INSTANCE.entityYautja.death()
             )
         );
     }

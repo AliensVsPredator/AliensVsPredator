@@ -13,107 +13,91 @@ public class AVPSoundEvents extends AVPDeferredRegistry<SoundEvent> {
 
     public static final AVPSoundEvents INSTANCE = new AVPSoundEvents();
 
-    public final Holder<SoundEvent> blockAcidBurn = createHolder("block.acid.burn");
+    public final Holder<SoundEvent> blockAcidBurn;
 
-    public final Holder<SoundEvent> entityChestbursterDeath = createHolder("entity.chestburster.death");
+    public final Holder<SoundEvent> entityChestbursterDeath;
 
-    public final Holder<SoundEvent> entityChestbursterHurt = createHolder("entity.chestburster.hurt");
+    public final Holder<SoundEvent> entityChestbursterHurt;
 
-    public final Holder<SoundEvent> entityCrusherAmbient = createHolder("entity.crusher.ambient");
+    public final EntitySoundHolderSet entityCrusher;
 
-    public final Holder<SoundEvent> entityCrusherDeath = createHolder("entity.crusher.death");
+    public final EntitySoundHolderSet entityPraetorian;
 
-    public final Holder<SoundEvent> entityCrusherHurt = createHolder("entity.crusher.hurt");
+    public final EntitySoundHolderSet entityQueen;
 
-    public final Holder<SoundEvent> entityPraetorianAmbient = createHolder("entity.praetorian.ambient");
+    public final Holder<SoundEvent> entityQueenAmbientLoop;
 
-    public final Holder<SoundEvent> entityPraetorianDeath = createHolder("entity.praetorian.death");
+    public final Holder<SoundEvent> entityXenomorphAmbient;
 
-    public final Holder<SoundEvent> entityPraetorianHurt = createHolder("entity.praetorian.hurt");
+    public final Holder<SoundEvent> entityXenomorphAttack;
 
-    public final Holder<SoundEvent> entityQueenAmbient = createHolder("entity.queen.ambient");
+    public final Holder<SoundEvent> entityXenomorphDeath;
 
-    public final Holder<SoundEvent> entityQueenAmbientLoop = createHolder("entity.queen.ambient.loop");
+    public final Holder<SoundEvent> entityXenomorphEat;
 
-    public final Holder<SoundEvent> entityQueenDeath = createHolder("entity.queen.death");
+    public final Holder<SoundEvent> entityXenomorphHurt;
 
-    public final Holder<SoundEvent> entityQueenHurt = createHolder("entity.queen.hurt");
+    public final Holder<SoundEvent> entityXenomorphHurtScreech;
 
-    public final Holder<SoundEvent> entityXenomorphAmbient = createHolder("entity.xenomorph.ambient");
+    public final EntitySoundHolderSet entityYautja;
 
-    public final Holder<SoundEvent> entityXenomorphAttack = createHolder("entity.xenomorph.attack");
+    public final Holder<SoundEvent> entityYautjaCloak;
 
-    public final Holder<SoundEvent> entityXenomorphDeath = createHolder("entity.xenomorph.death");
+    public final Holder<SoundEvent> entityYautjaDecloak;
 
-    public final Holder<SoundEvent> entityXenomorphEat = createHolder("entity.xenomorph.eat");
+    public final Holder<SoundEvent> entityYautjaIntimidate;
 
-    public final Holder<SoundEvent> entityXenomorphHurt = createHolder("entity.xenomorph.hurt");
+    public final Holder<SoundEvent> itemWeaponAk47Shoot;
 
-    public final Holder<SoundEvent> entityXenomorphHurtScreech = createHolder("entity.xenomorph.hurt.screech");
+    public final Holder<SoundEvent> itemWeaponCombatPistolReload;
 
-    public final Holder<SoundEvent> entityYautjaAmbient = createHolder("entity.yautja.ambient");
+    public final Holder<SoundEvent> itemWeaponCombatPistolShoot;
 
-    public final Holder<SoundEvent> entityYautjaCloak = createHolder("entity.yautja.cloak");
+    public final Holder<SoundEvent> itemWeaponFlamethrowerReloadFinish;
 
-    public final Holder<SoundEvent> entityYautjaDeath = createHolder("entity.yautja.death");
+    public final Holder<SoundEvent> itemWeaponFlamethrowerReloadStart;
 
-    public final Holder<SoundEvent> entityYautjaDecloak = createHolder("entity.yautja.decloak");
+    public final Holder<SoundEvent> itemWeaponFlamethrowerShoot;
 
-    public final Holder<SoundEvent> entityYautjaHurt = createHolder("entity.yautja.hurt");
+    public final Holder<SoundEvent> itemWeaponFxRicochetDirt;
 
-    public final Holder<SoundEvent> entityYautjaIntimidate = createHolder("entity.yautja.intimidate");
+    public final Holder<SoundEvent> itemWeaponFxRicochetGeneric;
 
-    public final Holder<SoundEvent> itemWeaponAk47Shoot = createHolder("item.weapon.ak_47.shoot");
+    public final Holder<SoundEvent> itemWeaponFxRicochetGlass;
 
-    public final Holder<SoundEvent> itemWeaponCombatPistolReload = createHolder("item.weapon.combat_pistol.reload");
+    public final Holder<SoundEvent> itemWeaponFxRicochetMetal;
 
-    public final Holder<SoundEvent> itemWeaponCombatPistolShoot = createHolder("item.weapon.combat_pistol.shoot");
+    public final Holder<SoundEvent> itemWeaponFxRocketExplosion;
 
-    public final Holder<SoundEvent> itemWeaponFlamethrowerReloadFinish = createHolder("item.weapon.flamethrower.reload_finish");
+    public final Holder<SoundEvent> itemWeaponGenericReload;
 
-    public final Holder<SoundEvent> itemWeaponFlamethrowerReloadStart = createHolder("item.weapon.flamethrower.reload_start");
+    public final Holder<SoundEvent> itemWeaponGenericShoot;
 
-    public final Holder<SoundEvent> itemWeaponFlamethrowerShoot = createHolder("item.weapon.flamethrower.shoot");
+    public final Holder<SoundEvent> itemWeaponGenericShootFail;
 
-    public final Holder<SoundEvent> itemWeaponFxRicochetDirt = createHolder("item.weapon.fx.ricochet.dirt");
+    public final Holder<SoundEvent> itemWeaponOldPainlessShootLoop;
 
-    public final Holder<SoundEvent> itemWeaponFxRicochetGeneric = createHolder("item.weapon.fx.ricochet.generic");
+    public final Holder<SoundEvent> itemWeaponOldPainlessShootSpinning;
 
-    public final Holder<SoundEvent> itemWeaponFxRicochetGlass = createHolder("item.weapon.fx.ricochet.glass");
+    public final Holder<SoundEvent> itemWeaponOldPainlessShootStart;
 
-    public final Holder<SoundEvent> itemWeaponFxRicochetMetal = createHolder("item.weapon.fx.ricochet.metal");
+    public final Holder<SoundEvent> itemWeaponOldPainlessShootStop;
 
-    public final Holder<SoundEvent> itemWeaponFxRocketExplosion = createHolder("item.weapon.fx.rocket_explosion");
+    public final Holder<SoundEvent> itemWeaponPulseRifleShoot;
 
-    public final Holder<SoundEvent> itemWeaponGenericReload = createHolder("item.weapon.generic.reload");
+    public final Holder<SoundEvent> itemWeaponRocketLauncherReloadFinish;
 
-    public final Holder<SoundEvent> itemWeaponGenericShoot = createHolder("item.weapon.generic.shoot");
+    public final Holder<SoundEvent> itemWeaponRocketLauncherReloadStart;
 
-    public final Holder<SoundEvent> itemWeaponGenericShootFail = createHolder("item.weapon.generic.shoot_fail");
+    public final Holder<SoundEvent> itemWeaponRocketLauncherShoot;
 
-    public final Holder<SoundEvent> itemWeaponOldPainlessShootLoop = createHolder("item.weapon.old_painless.shoot_loop");
+    public final Holder<SoundEvent> itemWeaponShotgunShoot;
 
-    public final Holder<SoundEvent> itemWeaponOldPainlessShootSpinning = createHolder("item.weapon.old_painless.shoot_spinning");
+    public final Holder<SoundEvent> itemWeaponSniperRifleShoot;
 
-    public final Holder<SoundEvent> itemWeaponOldPainlessShootStart = createHolder("item.weapon.old_painless.shoot_start");
+    public final Holder<SoundEvent> itemWeaponWristbladeClose;
 
-    public final Holder<SoundEvent> itemWeaponOldPainlessShootStop = createHolder("item.weapon.old_painless.shoot_stop");
-
-    public final Holder<SoundEvent> itemWeaponPulseRifleShoot = createHolder("item.weapon.pulse_rifle.shoot");
-
-    public final Holder<SoundEvent> itemWeaponRocketLauncherReloadFinish = createHolder("item.weapon.rocket_launcher.reload_finish");
-
-    public final Holder<SoundEvent> itemWeaponRocketLauncherReloadStart = createHolder("item.weapon.rocket_launcher.reload_start");
-
-    public final Holder<SoundEvent> itemWeaponRocketLauncherShoot = createHolder("item.weapon.rocket_launcher.shoot");
-
-    public final Holder<SoundEvent> itemWeaponShotgunShoot = createHolder("item.weapon.shotgun.shoot");
-
-    public final Holder<SoundEvent> itemWeaponSniperRifleShoot = createHolder("item.weapon.sniper_rifle.shoot");
-
-    public final Holder<SoundEvent> itemWeaponWristbladeClose = createHolder("item.weapon.wristblade.close");
-
-    public final Holder<SoundEvent> itemWeaponWristbladeOpen = createHolder("item.weapon.wristblade.open");
+    public final Holder<SoundEvent> itemWeaponWristbladeOpen;
 
     @Override
     protected Holder<SoundEvent> createHolder(String registryName, Supplier<SoundEvent> supplier) {
@@ -126,10 +110,110 @@ public class AVPSoundEvents extends AVPDeferredRegistry<SoundEvent> {
         return createHolder(registryName, () -> SoundEvent.createVariableRangeEvent(AVPResources.location(registryName)));
     }
 
-    private AVPSoundEvents() {}
+    private EntitySoundHolderSet createEntitySoundHolderSet(String baseRegistryName) {
+        return new EntitySoundHolderSet(
+            createHolder(baseRegistryName + ".ambient"),
+            createHolder(baseRegistryName + ".death"),
+            createHolder(baseRegistryName + ".hurt")
+        );
+    }
+
+    private AVPSoundEvents() {
+        blockAcidBurn = createHolder("block.acid.burn");
+
+        entityChestbursterDeath = createHolder("entity.chestburster.death");
+
+        entityChestbursterHurt = createHolder("entity.chestburster.hurt");
+
+        entityCrusher = createEntitySoundHolderSet("entity.crusher");
+
+        entityPraetorian = createEntitySoundHolderSet("entity.praetorian");
+
+        entityQueen = createEntitySoundHolderSet("entity.queen");
+
+        entityQueenAmbientLoop = createHolder("entity.queen.ambient.loop");
+
+        entityXenomorphAmbient = createHolder("entity.xenomorph.ambient");
+
+        entityXenomorphAttack = createHolder("entity.xenomorph.attack");
+
+        entityXenomorphDeath = createHolder("entity.xenomorph.death");
+
+        entityXenomorphEat = createHolder("entity.xenomorph.eat");
+
+        entityXenomorphHurt = createHolder("entity.xenomorph.hurt");
+
+        entityXenomorphHurtScreech = createHolder("entity.xenomorph.hurt.screech");
+
+        entityYautja = createEntitySoundHolderSet("entity.yautja");
+
+        entityYautjaCloak = createHolder("entity.yautja.cloak");
+
+        entityYautjaDecloak = createHolder("entity.yautja.decloak");
+
+        entityYautjaIntimidate = createHolder("entity.yautja.intimidate");
+
+        itemWeaponAk47Shoot = createHolder("item.weapon.ak_47.shoot");
+
+        itemWeaponCombatPistolReload = createHolder("item.weapon.combat_pistol.reload");
+
+        itemWeaponCombatPistolShoot = createHolder("item.weapon.combat_pistol.shoot");
+
+        itemWeaponFlamethrowerReloadFinish = createHolder("item.weapon.flamethrower.reload_finish");
+
+        itemWeaponFlamethrowerReloadStart = createHolder("item.weapon.flamethrower.reload_start");
+
+        itemWeaponFlamethrowerShoot = createHolder("item.weapon.flamethrower.shoot");
+
+        itemWeaponFxRicochetDirt = createHolder("item.weapon.fx.ricochet.dirt");
+
+        itemWeaponFxRicochetGeneric = createHolder("item.weapon.fx.ricochet.generic");
+
+        itemWeaponFxRicochetGlass = createHolder("item.weapon.fx.ricochet.glass");
+
+        itemWeaponFxRicochetMetal = createHolder("item.weapon.fx.ricochet.metal");
+
+        itemWeaponFxRocketExplosion = createHolder("item.weapon.fx.rocket_explosion");
+
+        itemWeaponGenericReload = createHolder("item.weapon.generic.reload");
+
+        itemWeaponGenericShoot = createHolder("item.weapon.generic.shoot");
+
+        itemWeaponGenericShootFail = createHolder("item.weapon.generic.shoot_fail");
+
+        itemWeaponOldPainlessShootLoop = createHolder("item.weapon.old_painless.shoot_loop");
+
+        itemWeaponOldPainlessShootSpinning = createHolder("item.weapon.old_painless.shoot_spinning");
+
+        itemWeaponOldPainlessShootStart = createHolder("item.weapon.old_painless.shoot_start");
+
+        itemWeaponOldPainlessShootStop = createHolder("item.weapon.old_painless.shoot_stop");
+
+        itemWeaponPulseRifleShoot = createHolder("item.weapon.pulse_rifle.shoot");
+
+        itemWeaponRocketLauncherReloadFinish = createHolder("item.weapon.rocket_launcher.reload_finish");
+
+        itemWeaponRocketLauncherReloadStart = createHolder("item.weapon.rocket_launcher.reload_start");
+
+        itemWeaponRocketLauncherShoot = createHolder("item.weapon.rocket_launcher.shoot");
+
+        itemWeaponShotgunShoot = createHolder("item.weapon.shotgun.shoot");
+
+        itemWeaponSniperRifleShoot = createHolder("item.weapon.sniper_rifle.shoot");
+
+        itemWeaponWristbladeClose = createHolder("item.weapon.wristblade.close");
+
+        itemWeaponWristbladeOpen = createHolder("item.weapon.wristblade.open");
+    }
 
     @Override
     public void register() {
         getValues().forEach(Services.SOUND_EVENT_SERVICE::register);
     }
+
+    public record EntitySoundHolderSet(
+        Holder<SoundEvent> ambient,
+        Holder<SoundEvent> death,
+        Holder<SoundEvent> hurt
+    ) {}
 }

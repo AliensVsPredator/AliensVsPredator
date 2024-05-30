@@ -72,9 +72,9 @@ public class PraetorianData extends EntityData<Praetorian> {
     protected Optional<EntitySoundData> createSoundData() {
         return Optional.of(
             new EntitySoundData(
-                AVPSoundEvents.INSTANCE.entityPraetorianAmbient,
-                AlienSounds.createSoundEventSelector(AVPSoundEvents.INSTANCE.entityPraetorianHurt),
-                AVPSoundEvents.INSTANCE.entityPraetorianDeath
+                AVPSoundEvents.INSTANCE.entityPraetorian.ambient(),
+                AlienSounds.createSoundEventSelector(AVPSoundEvents.INSTANCE.entityPraetorian.hurt()),
+                AVPSoundEvents.INSTANCE.entityPraetorian.death()
             )
         );
     }
