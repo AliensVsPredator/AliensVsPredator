@@ -70,9 +70,9 @@ public class WarriorRunnerData extends EntityData<WarriorRunner> {
     protected Optional<EntitySoundData> createSoundData() {
         return Optional.of(
             new EntitySoundData(
-                AVPSoundEvents.INSTANCE.entityXenomorphAmbient,
-                AlienSounds.createSoundEventSelector(AVPSoundEvents.INSTANCE.entityXenomorphHurt),
-                AVPSoundEvents.INSTANCE.entityXenomorphDeath
+                AVPSoundEvents.INSTANCE.entityWarriorRunner.ambient(),
+                AlienSounds.createSoundEventSelector(AVPSoundEvents.INSTANCE.entityWarriorRunner.hurt()),
+                AVPSoundEvents.INSTANCE.entityWarriorRunner.death()
             )
         );
     }

@@ -70,9 +70,9 @@ public class DroneRunnerData extends EntityData<DroneRunner> {
     protected Optional<EntitySoundData> createSoundData() {
         return Optional.of(
             new EntitySoundData(
-                AVPSoundEvents.INSTANCE.entityXenomorphAmbient,
-                AlienSounds.createSoundEventSelector(AVPSoundEvents.INSTANCE.entityXenomorphHurt),
-                AVPSoundEvents.INSTANCE.entityXenomorphDeath
+                AVPSoundEvents.INSTANCE.entityDroneRunner.ambient(),
+                AlienSounds.createSoundEventSelector(AVPSoundEvents.INSTANCE.entityDroneRunner.hurt()),
+                AVPSoundEvents.INSTANCE.entityDroneRunner.death()
             )
         );
     }
