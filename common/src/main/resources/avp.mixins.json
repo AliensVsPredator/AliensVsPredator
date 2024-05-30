@@ -6,7 +6,6 @@
     "compatibilityLevel": "JAVA_17",
     "mixins": [
         "MixinDamageTypes_RegisterModdedDamageTypes",
-        "MixinEnchantment_VeritaniumCanNotBeEnchanted",
         "MixinEnderDragon_ReduceDamageFromBullets",
         "MixinEntity_PreventBoatAndCartRiding",
         "MixinEntity_ReduceFlowingWaterSlowDownForAliens",
