@@ -70,9 +70,9 @@ public class DroneData extends EntityData<Drone> {
     protected Optional<EntitySoundData> createSoundData() {
         return Optional.of(
             new EntitySoundData(
-                AVPSoundEvents.INSTANCE.entityXenomorphAmbient,
-                AlienSounds.createSoundEventSelector(AVPSoundEvents.INSTANCE.entityXenomorphHurt),
-                AVPSoundEvents.INSTANCE.entityXenomorphDeath
+                AVPSoundEvents.INSTANCE.entityDrone.ambient(),
+                AlienSounds.createSoundEventSelector(AVPSoundEvents.INSTANCE.entityDrone.hurt()),
+                AVPSoundEvents.INSTANCE.entityDrone.death()
             )
         );
     }
