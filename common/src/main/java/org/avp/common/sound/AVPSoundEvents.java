@@ -21,6 +21,8 @@ public class AVPSoundEvents extends AVPDeferredRegistry<SoundEvent> {
 
     public final EntitySoundHolderSet entityCrusher;
 
+    public final EntitySoundHolderSet entityDracomorph;
+
     public final EntitySoundHolderSet entityDrone;
 
     public final EntitySoundHolderSet entityNauticomorph;
@@ -134,6 +136,8 @@ public class AVPSoundEvents extends AVPDeferredRegistry<SoundEvent> {
         entityChestbursterHurt = createHolder("entity.chestburster.hurt");
 
         entityCrusher = createEntitySoundHolderSet("entity.crusher");
+
+        entityDracomorph = createEntitySoundHolderSet("entity.dracomorph");
 
         entityDrone = createEntitySoundHolderSet("entity.drone");
 
