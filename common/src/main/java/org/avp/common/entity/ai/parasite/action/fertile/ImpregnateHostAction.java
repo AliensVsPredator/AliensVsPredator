@@ -1,4 +1,4 @@
-package org.avp.common.entity.ai.parasite.action;
+package org.avp.common.entity.ai.parasite.action.fertile;
 
 import net.minecraft.world.entity.monster.Monster;
 import org.avp.api.entity.Parasite;

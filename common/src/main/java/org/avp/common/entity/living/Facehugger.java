@@ -4,6 +4,7 @@ import mod.azure.azurelib.common.api.common.animatable.GeoEntity;
 import mod.azure.azurelib.common.internal.common.core.animatable.instance.AnimatableInstanceCache;
 import mod.azure.azurelib.common.internal.common.core.animation.AnimatableManager;
 import mod.azure.azurelib.common.internal.common.util.AzureLibUtil;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -20,7 +21,11 @@ import org.jetbrains.annotations.NotNull;
 
 public class Facehugger extends Monster implements GeoEntity, Parasite {
 
+    private static final String TICKS_ATTACHED_TO_HOST_KEY = "TicksAttachedToHost";
+
     private static final EntityDataAccessor<Boolean> IS_FERTILE = SynchedEntityData.defineId(Facehugger.class, EntityDataSerializers.BOOLEAN);
+
+    private int ticksAttachedToHost;
 
     private final ParasiteBrain goapBrain;
 
@@ -43,6 +48,18 @@ public class Facehugger extends Monster implements GeoEntity, Parasite {
     }
 
     @Override
+    public void addAdditionalSaveData(@NotNull CompoundTag compoundTag) {
+        super.addAdditionalSaveData(compoundTag);
+        compoundTag.putInt(TICKS_ATTACHED_TO_HOST_KEY, ticksAttachedToHost);
+    }
+
+    @Override
+    public void readAdditionalSaveData(@NotNull CompoundTag compoundTag) {
+        super.readAdditionalSaveData(compoundTag);
+        ticksAttachedToHost = compoundTag.getInt(TICKS_ATTACHED_TO_HOST_KEY);
+    }
+
+    @Override
     public boolean doHurtTarget(@NotNull Entity entity) {
         return true;
     }
@@ -55,6 +72,16 @@ public class Facehugger extends Monster implements GeoEntity, Parasite {
     @Override
     public AnimatableInstanceCache getAnimatableInstanceCache() {
         return cache;
+    }
+
+    @Override
+    public void incrementTicksAttachedToHost() {
+        ticksAttachedToHost++;
+    }
+
+    @Override
+    public int getTicksAttachedToHost() {
+        return ticksAttachedToHost;
     }
 
     @Override

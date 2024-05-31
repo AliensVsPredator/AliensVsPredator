@@ -1,10 +1,10 @@
-package org.avp.common.entity.ai.parasite.goal;
+package org.avp.common.entity.ai.parasite.goal.fertile;
 
 import net.minecraft.world.entity.monster.Monster;
 import org.avp.api.entity.ai.goal.Goal;
 import org.avp.api.entity.ai.ProgressKey;
 import org.avp.common.entity.ai.AVPProgressions;
-import org.avp.common.entity.ai.parasite.action.AttachToHostAction;
+import org.avp.common.entity.ai.parasite.action.fertile.AttachToHostAction;
 
 import java.util.Objects;
 import java.util.Optional;

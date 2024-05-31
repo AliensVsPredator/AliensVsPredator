@@ -1,23 +1,23 @@
-package org.avp.common.entity.ai.parasite.goal;
+package org.avp.common.entity.ai.parasite.goal.fertile;
 
 import net.minecraft.world.entity.monster.Monster;
-import org.avp.api.entity.Parasite;
 import org.avp.api.entity.ai.goal.Goal;
 import org.avp.api.entity.ai.ProgressKey;
 import org.avp.common.entity.ai.AVPProgressions;
-import org.avp.common.entity.ai.parasite.action.ImpregnateHostAction;
+import org.avp.common.entity.ai.parasite.action.fertile.MoveToHostAction;
 
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
-public class ImpregnateHostGoal extends Goal {
+public class MoveToHostGoal extends Goal {
 
     private final Monster parasite;
 
-    public ImpregnateHostGoal(Monster parasite) {
+    public MoveToHostGoal(Monster parasite) {
         super(
             Set.of(
-                new ImpregnateHostAction(parasite)
+                new MoveToHostAction(parasite)
             )
         );
         this.parasite = parasite;
@@ -25,21 +25,22 @@ public class ImpregnateHostGoal extends Goal {
 
     @Override
     public boolean isValid() {
-        return ((Parasite) parasite).isFertile();
+        return parasite.getTarget() != null;
     }
 
     @Override
     public boolean isCompleted() {
-        return !((Parasite) parasite).isFertile();
+        var target = Objects.requireNonNull(parasite.getTarget());
+        return parasite.distanceTo(target) < 1 + target.getBbWidth();
     }
 
     @Override
     public Optional<ProgressKey> createProgresses() {
-        return Optional.empty();
+        return Optional.of(AVPProgressions.MOVE_TO_TARGET);
     }
 
     @Override
     public Optional<ProgressKey> createProgressedBy() {
-        return Optional.of(AVPProgressions.ATTACH_TO_HOST);
+        return Optional.empty();
     }
 }

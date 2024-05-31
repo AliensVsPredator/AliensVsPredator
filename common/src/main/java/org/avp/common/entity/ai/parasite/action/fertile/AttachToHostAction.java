@@ -1,15 +1,15 @@
-package org.avp.common.entity.ai.parasite.action;
+package org.avp.common.entity.ai.parasite.action.fertile;
 
 import net.minecraft.world.entity.monster.Monster;
 import org.avp.api.entity.ai.action.Action;
 
 import java.util.Objects;
 
-public class MoveToHostAction extends Action {
+public class AttachToHostAction extends Action {
 
     private final Monster parasite;
 
-    public MoveToHostAction(Monster parasite) {
+    public AttachToHostAction(Monster parasite) {
         this.parasite = parasite;
     }
 
@@ -21,7 +21,7 @@ public class MoveToHostAction extends Action {
     @Override
     public void execute() {
         var target = Objects.requireNonNull(parasite.getTarget());
-        parasite.getNavigation().moveTo(target, 1);
-        System.out.println("MOVING TO HOST...");
+        parasite.startRiding(target);
+        // TODO: Send out a packet to tell the clients that the target entity is now being ridden.
     }
 }
