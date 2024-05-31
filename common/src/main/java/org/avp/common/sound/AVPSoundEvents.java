@@ -17,9 +17,13 @@ public class AVPSoundEvents extends AVPDeferredRegistry<SoundEvent> {
 
     public final EntitySoundHolderSet entityBoiler;
 
-    public final Holder<SoundEvent> entityChestbursterDeath;
+    public final ChestbursterSoundHolderSet entityChestburster;
 
-    public final Holder<SoundEvent> entityChestbursterHurt;
+    public final ChestbursterSoundHolderSet entityChestbursterDraco;
+
+    public final ChestbursterSoundHolderSet entityChestbursterQueen;
+
+    public final ChestbursterSoundHolderSet entityChestbursterRunner;
 
     public final EntitySoundHolderSet entityCrusher;
 
@@ -45,15 +49,11 @@ public class AVPSoundEvents extends AVPDeferredRegistry<SoundEvent> {
 
     public final EntitySoundHolderSet entityWarriorRunner;
 
-    public final Holder<SoundEvent> entityXenomorphAmbient;
+    public final EntitySoundHolderSet entityXenomorph;
 
     public final Holder<SoundEvent> entityXenomorphAttack;
 
-    public final Holder<SoundEvent> entityXenomorphDeath;
-
     public final Holder<SoundEvent> entityXenomorphEat;
-
-    public final Holder<SoundEvent> entityXenomorphHurt;
 
     public final Holder<SoundEvent> entityXenomorphHurtScreech;
 
@@ -128,6 +128,13 @@ public class AVPSoundEvents extends AVPDeferredRegistry<SoundEvent> {
         return createHolder(registryName, () -> SoundEvent.createVariableRangeEvent(AVPResources.location(registryName)));
     }
 
+    private ChestbursterSoundHolderSet createChestbursterSoundHolderSet(String baseRegistryName) {
+        return new ChestbursterSoundHolderSet(
+            createHolder(baseRegistryName + ".death"),
+            createHolder(baseRegistryName + ".hurt")
+        );
+    }
+
     private EntitySoundHolderSet createEntitySoundHolderSet(String baseRegistryName) {
         return new EntitySoundHolderSet(
             createHolder(baseRegistryName + ".ambient"),
@@ -141,9 +148,13 @@ public class AVPSoundEvents extends AVPDeferredRegistry<SoundEvent> {
 
         entityBoiler = createEntitySoundHolderSet("entity.boiler");
 
-        entityChestbursterDeath = createHolder("entity.chestburster.death");
+        entityChestburster = createChestbursterSoundHolderSet("entity.chestburster");
 
-        entityChestbursterHurt = createHolder("entity.chestburster.hurt");
+        entityChestbursterDraco = createChestbursterSoundHolderSet("entity.chestburster_draco");
+
+        entityChestbursterQueen = createChestbursterSoundHolderSet("entity.chestburster_queen");
+
+        entityChestbursterRunner = createChestbursterSoundHolderSet("entity.chestburster_runner");
 
         entityCrusher = createEntitySoundHolderSet("entity.crusher");
 
@@ -169,15 +180,11 @@ public class AVPSoundEvents extends AVPDeferredRegistry<SoundEvent> {
 
         entityWarriorRunner = createEntitySoundHolderSet("entity.warrior_runner");
 
-        entityXenomorphAmbient = createHolder("entity.xenomorph.ambient");
+        entityXenomorph = createEntitySoundHolderSet("entity.xenomorph");
 
         entityXenomorphAttack = createHolder("entity.xenomorph.attack");
 
-        entityXenomorphDeath = createHolder("entity.xenomorph.death");
-
         entityXenomorphEat = createHolder("entity.xenomorph.eat");
-
-        entityXenomorphHurt = createHolder("entity.xenomorph.hurt");
 
         entityXenomorphHurtScreech = createHolder("entity.xenomorph.hurt.screech");
 
@@ -246,6 +253,11 @@ public class AVPSoundEvents extends AVPDeferredRegistry<SoundEvent> {
     public void register() {
         getValues().forEach(Services.SOUND_EVENT_SERVICE::register);
     }
+
+    public record ChestbursterSoundHolderSet(
+        Holder<SoundEvent> death,
+        Holder<SoundEvent> hurt
+    ) {}
 
     public record EntitySoundHolderSet(
         Holder<SoundEvent> ambient,
