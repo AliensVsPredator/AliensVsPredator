@@ -10,7 +10,7 @@ import java.util.Set;
 
 public class IdleMoveGoal extends Goal {
 
-    private final PathfinderMob pathfinderMob;
+    protected final PathfinderMob pathfinderMob;
 
     public IdleMoveGoal(PathfinderMob pathfinderMob) {
         super(
@@ -23,7 +23,7 @@ public class IdleMoveGoal extends Goal {
 
     @Override
     public boolean isValid() {
-        return pathfinderMob.getTarget() == null;
+        return pathfinderMob.getTarget() == null && pathfinderMob.getVehicle() == null;
     }
 
     @Override
