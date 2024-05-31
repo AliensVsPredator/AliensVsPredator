@@ -43,11 +43,13 @@ public class BlockBreakProgressManager {
             var cachedValue = tuple == null ? 0 : tuple.second();
             var newValue = cachedValue + (damage / (2F + block.defaultDestroyTime() / 2F));
             var progress = (int) Mth.clamp(newValue, 0F, 9F);
-            level.destroyBlockProgress(Objects.hash(blockPos), blockPos, progress);
 
             if (progress >= 9) {
+                level.destroyBlockProgress(Objects.hash(blockPos), blockPos, -1);
                 level.destroyBlock(blockPos, false);
                 return null;
+            } else {
+                level.destroyBlockProgress(Objects.hash(blockPos), blockPos, progress);
             }
             return new Tuple<>(System.currentTimeMillis() + TimeUtils.FIVE_MINUTES_IN_MILLIS, newValue);
         });
