@@ -19,6 +19,10 @@ public class GOAPBrainCache {
         cache.put(sensorKey, value);
     }
 
+    public void clear() {
+        cache.clear();
+    }
+
     public void remove(SensorKey<?> sensorKey) {
         cache.remove(sensorKey);
     }

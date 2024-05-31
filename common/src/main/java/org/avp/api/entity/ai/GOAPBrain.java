@@ -23,6 +23,7 @@ public abstract class GOAPBrain {
     public void tick() {
         sensors.forEach(Sensor::sense);
         planner.tick();
+        goapBrainCache.clear();
     }
 
     public GOAPBrainCache getCache() {
