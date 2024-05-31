@@ -3,6 +3,7 @@ package org.avp.common.entity.ai.parasite;
 import net.minecraft.world.entity.monster.Monster;
 import org.avp.api.entity.Parasite;
 import org.avp.api.entity.ai.GOAPBrain;
+import org.avp.api.entity.ai.goal.impl.IdleMoveGoal;
 import org.avp.api.entity.ai.plan.Planner;
 import org.avp.api.entity.ai.sensor.impl.NearbyEntitiesSensor;
 import org.avp.api.entity.ai.sensor.impl.NearbyLivingEntitiesSensor;
@@ -21,6 +22,8 @@ public class ParasiteBrain extends GOAPBrain {
         super(
             new Planner(
                 Set.of(
+                    new IdleMoveGoal(parasite),
+
                     // Anticipated plan for impregnation
                     new MoveToHostGoal(parasite),
                     new AttachToHostGoal(parasite),

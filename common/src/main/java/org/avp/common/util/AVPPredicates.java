@@ -19,7 +19,8 @@ public class AVPPredicates {
     public static final Predicate<LivingEntity> IS_HOST = livingEntity ->
         !IS_IMMORTAL.test(livingEntity) &&
         !livingEntity.getType().is(AVPEntityTypeTags.ALIENS) &&
-        !livingEntity.getType().is(AVPEntityTypeTags.NON_HOSTS);
+        !livingEntity.getType().is(AVPEntityTypeTags.NON_HOSTS) &&
+        livingEntity.getPassengers().isEmpty();
 
     public static final Predicate<Item> IS_ITEM_SHULKER_BOX = item -> item instanceof BlockItem blockItem &&
         blockItem.getBlock().defaultBlockState().is(BlockTags.SHULKER_BOXES);
