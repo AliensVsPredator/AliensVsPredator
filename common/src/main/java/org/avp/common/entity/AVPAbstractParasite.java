@@ -1,10 +1,13 @@
 package org.avp.common.entity;
 
 import mod.azure.azurelib.common.api.common.animatable.GeoEntity;
+import mod.azure.azurelib.common.internal.common.core.animatable.instance.AnimatableInstanceCache;
+import mod.azure.azurelib.common.internal.common.util.AzureLibUtil;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.level.Level;
@@ -21,6 +24,8 @@ public abstract class AVPAbstractParasite extends Monster implements GeoEntity, 
     private static final String TICKS_ATTACHED_TO_HOST_KEY = "TicksAttachedToHost";
 
     private static final EntityDataAccessor<Boolean> IS_FERTILE = SynchedEntityData.defineId(AVPAbstractParasite.class, EntityDataSerializers.BOOLEAN);
+
+    private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
 
     private int ticksAttachedToHost;
 
@@ -41,6 +46,16 @@ public abstract class AVPAbstractParasite extends Monster implements GeoEntity, 
     public void readAdditionalSaveData(@NotNull CompoundTag compoundTag) {
         super.readAdditionalSaveData(compoundTag);
         ticksAttachedToHost = compoundTag.getInt(TICKS_ATTACHED_TO_HOST_KEY);
+    }
+
+    @Override
+    public boolean doHurtTarget(@NotNull Entity entity) {
+        return true;
+    }
+
+    @Override
+    public AnimatableInstanceCache getAnimatableInstanceCache() {
+        return cache;
     }
 
     @Override
