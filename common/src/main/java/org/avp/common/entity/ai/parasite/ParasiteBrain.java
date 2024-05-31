@@ -39,7 +39,11 @@ public class ParasiteBrain extends GOAPBrain {
         }
 
         var cache = getCache();
-        sensors.add(new NearbyEntitiesSensor(cache, parasite));
+        sensors.add(
+            new NearbyEntitiesSensor(cache, parasite)
+                // Disable sensor if facehugger is infertile.
+                .disableIf(() -> !((Parasite) parasite).isFertile())
+        );
         sensors.add(new NearbyLivingEntitiesSensor(cache));
         sensors.add(new TargetSensor(cache, parasite, AVPPredicates.IS_HOST));
     }

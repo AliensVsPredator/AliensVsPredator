@@ -16,6 +16,10 @@ public class NearbyEntitiesSensor extends Sensor {
 
     @Override
     public void sense() {
+        if (isDisabled()) {
+            return;
+        }
+
         var nearbyEntities = entity.level().getEntitiesOfClass(Entity.class, entity.getBoundingBox().inflate(16));
         goapBrainCache.cache(SensorKeys.NEARBY_ENTITIES, nearbyEntities);
     }
