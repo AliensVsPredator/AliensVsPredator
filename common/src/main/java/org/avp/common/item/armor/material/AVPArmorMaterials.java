@@ -1,16 +1,16 @@
 package org.avp.common.item.armor.material;
 
-import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.item.ArmorMaterial;
 import net.minecraft.world.item.Items;
 
 import org.avp.common.item.AVPItems;
+import org.avp.common.sound.AVPSoundEvents;
 
 public class AVPArmorMaterials {
 
     public static final ArmorMaterial ALUMINUM = new AVPArmorMaterial.Builder(
         "aluminum",
-        SoundEvents.ARMOR_EQUIP_IRON,
+        AVPSoundEvents.INSTANCE.itemArmorEquipAluminum,
         AVPItems.INSTANCE.ingotAluminum::get
     )
         .setProtectionValues(new int[] { 2, 5, 5, 2 })
@@ -20,7 +20,7 @@ public class AVPArmorMaterials {
 
     public static final ArmorMaterial MK50 = new AVPArmorMaterial.Builder(
         "mk50",
-        SoundEvents.ARMOR_EQUIP_CHAIN,
+        AVPSoundEvents.INSTANCE.itemArmorEquipMK50,
         () -> Items.COPPER_INGOT
     )
         .setProtectionValues(new int[] { 2, 4, 3, 2 })
@@ -30,7 +30,7 @@ public class AVPArmorMaterials {
 
     public static final ArmorMaterial ORIONITE = new AVPArmorMaterial.Builder(
         "orionite",
-        SoundEvents.ARMOR_EQUIP_DIAMOND,
+        AVPSoundEvents.INSTANCE.itemArmorEquipOrionite,
         AVPItems.INSTANCE.ingotOrionite::get
     )
         .setProtectionValues(new int[] { 3, 6, 8, 3 })
@@ -42,7 +42,7 @@ public class AVPArmorMaterials {
 
     public static final ArmorMaterial PRESSURE = new AVPArmorMaterial.Builder(
         "pressure",
-        SoundEvents.ARMOR_EQUIP_CHAIN,
+        AVPSoundEvents.INSTANCE.itemArmorEquipPressure,
         AVPItems.INSTANCE.ingotAluminum::get
     )
         .setProtectionValues(new int[] { 2, 4, 3, 2 })
@@ -52,7 +52,7 @@ public class AVPArmorMaterials {
 
     public static final ArmorMaterial TACTICAL = new AVPArmorMaterial.Builder(
         "tactical",
-        SoundEvents.ARMOR_EQUIP_CHAIN,
+        AVPSoundEvents.INSTANCE.itemArmorEquipTactical,
         AVPItems.INSTANCE.ingotAluminum::get
     )
         .setProtectionValues(new int[] { 2, 6, 3, 2 })
@@ -62,7 +62,7 @@ public class AVPArmorMaterials {
 
     public static final ArmorMaterial TITANIUM = new AVPArmorMaterial.Builder(
         "titanium",
-        SoundEvents.ARMOR_EQUIP_IRON,
+        AVPSoundEvents.INSTANCE.itemArmorEquipTitanium,
         AVPItems.INSTANCE.ingotTitanium::get
     )
         .setProtectionValues(new int[] { 2, 5, 6, 2 })
@@ -73,7 +73,7 @@ public class AVPArmorMaterials {
 
     public static final ArmorMaterial VERITANIUM = new AVPArmorMaterial.Builder(
         "veritanium",
-        SoundEvents.ARMOR_EQUIP_IRON,
+        AVPSoundEvents.INSTANCE.itemArmorEquipVeritanium,
         AVPItems.INSTANCE.veritaniumShard::get
     )
         .setProtectionValues(new int[] { 4, 7, 9, 4 })
@@ -84,7 +84,7 @@ public class AVPArmorMaterials {
 
     public static final ArmorMaterial XENOMORPH_CHITIN = new AVPArmorMaterial.Builder(
         "xenomorph_chitin",
-        SoundEvents.HONEY_BLOCK_STEP,
+        AVPSoundEvents.INSTANCE.itemArmorEquipXenomorphChitin,
         AVPItems.INSTANCE.xenomorphChitin::get
     )
         .setProtectionValues(new int[] { 2, 7, 5, 3 })

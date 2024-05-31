@@ -65,6 +65,22 @@ public class AVPSoundEvents extends AVPDeferredRegistry<SoundEvent> {
 
     public final Holder<SoundEvent> entityYautjaIntimidate;
 
+    public final Holder<SoundEvent> itemArmorEquipAluminum;
+
+    public final Holder<SoundEvent> itemArmorEquipMK50;
+
+    public final Holder<SoundEvent> itemArmorEquipOrionite;
+
+    public final Holder<SoundEvent> itemArmorEquipPressure;
+
+    public final Holder<SoundEvent> itemArmorEquipTactical;
+
+    public final Holder<SoundEvent> itemArmorEquipTitanium;
+
+    public final Holder<SoundEvent> itemArmorEquipVeritanium;
+
+    public final Holder<SoundEvent> itemArmorEquipXenomorphChitin;
+
     public final Holder<SoundEvent> itemWeaponAk47Shoot;
 
     public final Holder<SoundEvent> itemWeaponCombatPistolReload;
@@ -195,6 +211,22 @@ public class AVPSoundEvents extends AVPDeferredRegistry<SoundEvent> {
         entityYautjaDecloak = createHolder("entity.yautja.decloak");
 
         entityYautjaIntimidate = createHolder("entity.yautja.intimidate");
+
+        itemArmorEquipAluminum = createHolder("item.armor.equip_aluminum");
+
+        itemArmorEquipMK50 = createHolder("item.armor.equip_mk50");
+
+        itemArmorEquipOrionite = createHolder("item.armor.equip_orionite");
+
+        itemArmorEquipPressure = createHolder("item.armor.equip_pressure");
+
+        itemArmorEquipTactical = createHolder("item.armor.equip_tactical");
+
+        itemArmorEquipTitanium = createHolder("item.armor.equip_titanium");
+
+        itemArmorEquipVeritanium = createHolder("item.armor.equip_veritanium");
+
+        itemArmorEquipXenomorphChitin = createHolder("item.armor.equip_xenomorph_chitin");
 
         itemWeaponAk47Shoot = createHolder("item.weapon.ak_47.shoot");
 

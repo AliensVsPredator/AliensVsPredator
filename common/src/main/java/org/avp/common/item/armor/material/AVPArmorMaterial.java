@@ -5,6 +5,7 @@ import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ArmorMaterial;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
+import org.avp.api.Holder;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
@@ -16,7 +17,7 @@ public record AVPArmorMaterial(
     int durabilityMultiplier,
     int[] protectionValues,
     int enchantmentValue,
-    SoundEvent equipSound,
+    Holder<SoundEvent> equipSoundHolder,
     Supplier<ItemLike> repairIngredientSupplier,
     float toughness,
     float knockbackResistance
@@ -34,7 +35,7 @@ public record AVPArmorMaterial(
 
         private int enchantmentValue;
 
-        private final SoundEvent equipSound;
+        private final Holder<SoundEvent> equipSoundHolder;
 
         private final Supplier<ItemLike> repairIngredientSupplier;
 
@@ -42,9 +43,9 @@ public record AVPArmorMaterial(
 
         private float knockbackResistance;
 
-        public Builder(String registryName, SoundEvent equipSound, Supplier<ItemLike> repairIngredientSupplier) {
+        public Builder(String registryName, Holder<SoundEvent> equipSoundHolder, Supplier<ItemLike> repairIngredientSupplier) {
             this.registryName = registryName;
-            this.equipSound = equipSound;
+            this.equipSoundHolder = equipSoundHolder;
             this.repairIngredientSupplier = repairIngredientSupplier;
         }
 
@@ -79,7 +80,7 @@ public record AVPArmorMaterial(
                 durabilityMultiplier,
                 protectionValues,
                 enchantmentValue,
-                equipSound,
+                equipSoundHolder,
                 repairIngredientSupplier,
                 toughness,
                 knockbackResistance
@@ -104,7 +105,7 @@ public record AVPArmorMaterial(
 
     @Override
     public @NotNull SoundEvent getEquipSound() {
-        return equipSound;
+        return equipSoundHolder.get();
     }
 
     @Override
@@ -138,7 +139,7 @@ public record AVPArmorMaterial(
             toughness,
             that.toughness
         ) == 0 && Float.compare(knockbackResistance, that.knockbackResistance) == 0 && Objects.equals(registryName, that.registryName)
-            && Arrays.equals(protectionValues, that.protectionValues) && Objects.equals(equipSound, that.equipSound) && Objects.equals(
+            && Arrays.equals(protectionValues, that.protectionValues) && Objects.equals(equipSoundHolder, that.equipSoundHolder) && Objects.equals(
                 repairIngredientSupplier,
                 that.repairIngredientSupplier
             );
@@ -150,7 +151,7 @@ public record AVPArmorMaterial(
             registryName,
             durabilityMultiplier,
             enchantmentValue,
-            equipSound,
+            equipSoundHolder,
             repairIngredientSupplier,
             toughness,
             knockbackResistance
@@ -166,7 +167,7 @@ public record AVPArmorMaterial(
             ", durabilityMultiplier=" + durabilityMultiplier +
             ", protectionValues=" + Arrays.toString(protectionValues) +
             ", enchantmentValue=" + enchantmentValue +
-            ", equipSound=" + equipSound +
+            ", equipSoundHolder=" + equipSoundHolder +
             ", repairIngredientSupplier=" + repairIngredientSupplier +
             ", toughness=" + toughness +
             ", knockbackResistance=" + knockbackResistance +
