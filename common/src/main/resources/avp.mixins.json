@@ -25,6 +25,7 @@
         "MixinLivingEntity_SyncedDataHandleUser",
         "MixinMob_AliensMature",
         "MixinMob_PerformBossLogic",
+        "MixinMob_PerformGOAPLogic",
         "MixinMob_ProvideAmbientSounds",
         "MixinMonster_ProvideHurtAndDeathSounds",
         "MixinVillagerHostilesSensor_RunFromAVPMonsters",
