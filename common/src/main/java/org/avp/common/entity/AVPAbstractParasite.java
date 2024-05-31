@@ -1,0 +1,70 @@
+package org.avp.common.entity;
+
+import mod.azure.azurelib.common.api.common.animatable.GeoEntity;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.monster.Monster;
+import net.minecraft.world.level.Level;
+import org.avp.api.entity.GOAPBrainUser;
+import org.avp.api.entity.Parasite;
+import org.avp.api.entity.ai.GOAPBrain;
+import org.avp.api.entity.data.sync.SyncedDataHandle;
+import org.avp.api.entity.data.sync.SyncedDataSerializer;
+import org.avp.common.entity.ai.parasite.ParasiteBrain;
+import org.jetbrains.annotations.NotNull;
+
+public abstract class AVPAbstractParasite extends Monster implements GeoEntity, GOAPBrainUser, Parasite {
+
+    private static final String TICKS_ATTACHED_TO_HOST_KEY = "TicksAttachedToHost";
+
+    private static final EntityDataAccessor<Boolean> IS_FERTILE = SynchedEntityData.defineId(AVPAbstractParasite.class, EntityDataSerializers.BOOLEAN);
+
+    private int ticksAttachedToHost;
+
+    private final SyncedDataHandle<Boolean> isFertile;
+
+    protected AVPAbstractParasite(EntityType<? extends Monster> entityType, Level level) {
+        super(entityType, level);
+        this.isFertile = SyncedDataHandle.attach("IsFertile", true, this, IS_FERTILE, SyncedDataSerializer.BOOLEAN);
+    }
+
+    @Override
+    public void addAdditionalSaveData(@NotNull CompoundTag compoundTag) {
+        super.addAdditionalSaveData(compoundTag);
+        compoundTag.putInt(TICKS_ATTACHED_TO_HOST_KEY, ticksAttachedToHost);
+    }
+
+    @Override
+    public void readAdditionalSaveData(@NotNull CompoundTag compoundTag) {
+        super.readAdditionalSaveData(compoundTag);
+        ticksAttachedToHost = compoundTag.getInt(TICKS_ATTACHED_TO_HOST_KEY);
+    }
+
+    @Override
+    public void incrementTicksAttachedToHost() {
+        ticksAttachedToHost++;
+    }
+
+    @Override
+    public int getTicksAttachedToHost() {
+        return ticksAttachedToHost;
+    }
+
+    @Override
+    public boolean isFertile() {
+        return isFertile.get();
+    }
+
+    @Override
+    public void setFertile(boolean isFertile) {
+        this.isFertile.set(isFertile);
+    }
+
+    @Override
+    public GOAPBrain createGOAPBrain() {
+        return new ParasiteBrain(this);
+    }
+}
