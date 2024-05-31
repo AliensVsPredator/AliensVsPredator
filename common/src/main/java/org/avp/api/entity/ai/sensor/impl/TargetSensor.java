@@ -33,9 +33,8 @@ public class TargetSensor extends Sensor {
             .filter(targetPredicate)
             .min(Comparator.comparingDouble(mob::distanceToSqr)));
 
-        closestTargetOptional.ifPresent(closestTarget -> {
-            goapBrainCache.cache(SensorKeys.TARGET, closestTarget);
-            mob.setTarget(closestTarget);
-        });
+        var closestTarget = closestTargetOptional.orElse(null);
+        goapBrainCache.cache(SensorKeys.TARGET, closestTarget);
+        mob.setTarget(closestTarget);
     }
 }
