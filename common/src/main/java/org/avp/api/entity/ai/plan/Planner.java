@@ -59,13 +59,25 @@ public class Planner {
 
         if (prerequisiteOptional.isPresent()) {
             var prerequisite = prerequisiteOptional.get();
-            var goalForPrerequisite = availableGoals.stream()
+            var goalForPrerequisiteOptional = availableGoals.stream()
                 .filter(goal -> Objects.equals(prerequisite, goal.getProgresses().orElse(null)))
                 .findFirst();
 
-            var isValidPrerequisiteGoal = goalForPrerequisite.filter(goal -> accumulateValidPreGoalsForTargetGoal(goal, accumulatedGoals))
-                .isPresent();
+            // If no goal could be found for the prerequisite, it is impossible to complete the plan.
+            if (goalForPrerequisiteOptional.isEmpty()) {
+                return false;
+            }
 
+            var goalForPrerequisite = goalForPrerequisiteOptional.get();
+
+            // If the goal is already completed, we can skip it and its prerequisite goals.
+            if (goalForPrerequisite.isCompleted()) {
+                return true;
+            }
+
+            var isValidPrerequisiteGoal = accumulateValidPreGoalsForTargetGoal(goalForPrerequisite, accumulatedGoals);
+
+            // If the goal is not valid, the plan is not sound, so we must assume it is impossible.
             if (!isValidPrerequisiteGoal) {
                 return false;
             }
