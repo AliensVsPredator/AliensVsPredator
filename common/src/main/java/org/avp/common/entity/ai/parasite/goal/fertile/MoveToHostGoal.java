@@ -30,7 +30,12 @@ public class MoveToHostGoal extends Goal {
 
     @Override
     public boolean isCompleted() {
-        var target = Objects.requireNonNull(parasite.getTarget());
+        var target = parasite.getTarget();
+
+        if (target == null) {
+            return false;
+        }
+
         return parasite.distanceTo(target) < 1 + target.getBbWidth();
     }
 

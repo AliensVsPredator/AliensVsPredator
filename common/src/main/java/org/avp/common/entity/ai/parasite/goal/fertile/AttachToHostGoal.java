@@ -32,7 +32,12 @@ public class AttachToHostGoal extends Goal {
 
     @Override
     public boolean isCompleted() {
-        var target = Objects.requireNonNull(parasite.getTarget());
+        var target = parasite.getTarget();
+
+        if (target == null) {
+            return false;
+        }
+
         return parasite.getVehicle() == target;
     }
 
