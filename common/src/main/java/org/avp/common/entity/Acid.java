@@ -88,7 +88,7 @@ public class Acid extends Entity {
     }
 
     private void damageBlock(Level level) {
-        if (level.isClientSide || tickCount % 20 != 0 || isInWater())
+        if (level.isClientSide || tickCount % 20 != 0 || isInWater() || !onGround())
             return;
 
         var below = blockPosition().below();
