@@ -20,6 +20,7 @@ public class Planner {
 
     public void tick() {
         if (plan == null || !plan.isValid() || plan.isCompleted()) {
+            this.plan = null;
             var bestPlanOptional = getBestPlan();
             bestPlanOptional.ifPresent(bestPlan -> this.plan = bestPlan);
         }
