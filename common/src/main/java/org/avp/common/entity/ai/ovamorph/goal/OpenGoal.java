@@ -24,12 +24,12 @@ public class OpenGoal extends Goal {
 
     @Override
     public boolean isValid() {
-        return !ovamorph.isOpening.get();
+        return !ovamorph.isOpening.get() && !ovamorph.isOpen.get();
     }
 
     @Override
     public boolean isCompleted() {
-        return ovamorph.isOpening.get();
+        return ovamorph.isOpening.get() || ovamorph.isOpen.get();
     }
 
     @Override
