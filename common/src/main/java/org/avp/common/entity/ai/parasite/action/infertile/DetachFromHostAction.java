@@ -1,6 +1,5 @@
 package org.avp.common.entity.ai.parasite.action.infertile;
 
-import org.avp.api.entity.Parasite;
 import org.avp.api.entity.ai.action.Action;
 import org.avp.common.entity.AVPAbstractParasite;
 
@@ -22,12 +21,10 @@ public class DetachFromHostAction extends Action {
 
     @Override
     public void execute() {
-        var trueParasite = (Parasite) parasite;
-
-        if (trueParasite.getTicksAttachedToHost() >= smotherTimeInTicks) {
+        if (parasite.getTicksAttachedToHost() >= smotherTimeInTicks) {
             parasite.stopRiding();
         } else {
-            trueParasite.incrementTicksAttachedToHost();
+            parasite.incrementTicksAttachedToHost();
         }
     }
 }

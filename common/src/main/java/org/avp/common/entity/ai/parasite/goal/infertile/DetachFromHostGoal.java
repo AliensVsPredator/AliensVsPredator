@@ -1,6 +1,5 @@
 package org.avp.common.entity.ai.parasite.goal.infertile;
 
-import org.avp.api.entity.Parasite;
 import org.avp.api.entity.ai.ProgressKey;
 import org.avp.api.entity.ai.goal.Goal;
 import org.avp.common.entity.AVPAbstractParasite;
@@ -24,7 +23,7 @@ public class DetachFromHostGoal extends Goal {
 
     @Override
     public boolean isValid() {
-        return parasite.getVehicle() != null && !((Parasite) parasite).isFertile();
+        return parasite.getVehicle() != null && !parasite.isFertile();
     }
 
     @Override

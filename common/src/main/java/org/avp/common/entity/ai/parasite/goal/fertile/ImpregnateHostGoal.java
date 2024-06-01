@@ -1,6 +1,5 @@
 package org.avp.common.entity.ai.parasite.goal.fertile;
 
-import org.avp.api.entity.Parasite;
 import org.avp.api.entity.ai.goal.Goal;
 import org.avp.api.entity.ai.ProgressKey;
 import org.avp.common.entity.AVPAbstractParasite;
@@ -25,12 +24,12 @@ public class ImpregnateHostGoal extends Goal {
 
     @Override
     public boolean isValid() {
-        return ((Parasite) parasite).isFertile();
+        return parasite.isFertile();
     }
 
     @Override
     public boolean isCompleted() {
-        return !((Parasite) parasite).isFertile();
+        return !parasite.isFertile();
     }
 
     @Override
