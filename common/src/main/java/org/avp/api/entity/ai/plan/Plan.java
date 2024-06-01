@@ -6,13 +6,13 @@ import java.util.List;
 
 public class Plan {
 
-    private final Goal targetGoal;
+    private int currentGoalIndex;
 
-    private final List<Goal> preGoals;
+    private final List<Goal> goals;
 
-    public Plan(Goal targetGoal, List<Goal> preGoals) {
-        this.targetGoal = targetGoal;
-        this.preGoals = preGoals;
+    public Plan(List<Goal> goals) {
+        this.currentGoalIndex = 0;
+        this.goals = goals;
     }
 
     public void execute() {
@@ -20,19 +20,12 @@ public class Plan {
             return;
         }
 
-        var firstPreGoalOptional = preGoals.stream().findFirst();
+        var currentGoal = goals.get(currentGoalIndex);
+        var isCompleted = executeGoal(currentGoal);
 
-        if (firstPreGoalOptional.isPresent()) {
-            var firstPreGoal = firstPreGoalOptional.get();
-            var isCompleted = executeGoal(firstPreGoal);
-
-            if (isCompleted) {
-                preGoals.remove(firstPreGoal);
-            }
-            return;
+        if (isCompleted) {
+            currentGoalIndex++;
         }
-
-        executeGoal(targetGoal);
     }
 
     private boolean executeGoal(Goal goal) {
@@ -42,10 +35,28 @@ public class Plan {
     }
 
     public boolean isValid() {
-        return preGoals.stream().allMatch(Goal::isValid) && targetGoal.isValid();
+        if (goals.isEmpty() || currentGoalIndex >= goals.size()) {
+            return false;
+        }
+
+        var previousGoals = goals.subList(0, currentGoalIndex);
+        var remainingGoals = goals.subList(currentGoalIndex, goals.size());
+        return areGoalsCompleted(previousGoals) && areGoalsValid(remainingGoals);
     }
 
     public boolean isCompleted() {
-        return targetGoal.isCompleted();
+        if (goals.isEmpty() || currentGoalIndex >= goals.size()) {
+            return true;
+        }
+
+        return currentGoalIndex == goals.size() - 1;
+    }
+
+    private boolean areGoalsCompleted(List<Goal> goals) {
+        return goals.stream().allMatch(Goal::isCompleted);
+    }
+
+    private boolean areGoalsValid(List<Goal> goals) {
+        return goals.stream().allMatch(Goal::isValid);
     }
 }
