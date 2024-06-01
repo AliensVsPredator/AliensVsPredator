@@ -1,5 +1,6 @@
 package org.avp.api.entity.ai.plan;
 
+import org.avp.api.entity.ai.action.Action;
 import org.avp.api.entity.ai.goal.Goal;
 
 import java.util.List;
@@ -20,18 +21,19 @@ public class Plan {
             return;
         }
 
-        var currentGoal = goals.get(currentGoalIndex);
-        var isCompleted = executeGoal(currentGoal);
+        // Tick remaining goals.
+        var remainingGoals = goals.subList(currentGoalIndex, goals.size());
+        remainingGoals.forEach(Goal::tick);
 
-        if (isCompleted) {
+        // Execute the current goal.
+        var currentGoal = goals.get(currentGoalIndex);
+        var bestAction = currentGoal.getBestAction();
+        bestAction.ifPresent(Action::execute);
+
+        if (currentGoal.isCompleted()) {
+            currentGoal.onComplete();
             currentGoalIndex++;
         }
-    }
-
-    private boolean executeGoal(Goal goal) {
-        var bestAction = goal.getBestAction();
-        bestAction.execute();
-        return goal.isCompleted();
     }
 
     public boolean isValid() {

@@ -14,6 +14,11 @@ public class MoveToHostAction extends Action {
     }
 
     @Override
+    public boolean isValid() {
+        return parasite.getTarget() != null;
+    }
+
+    @Override
     public int getCost() {
         return 0;
     }

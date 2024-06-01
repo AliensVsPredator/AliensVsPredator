@@ -19,12 +19,6 @@ public abstract class Goal {
         this.availableActions = availableActions;
     }
 
-    public Action getBestAction() {
-        return availableActions.stream()
-            .min(Comparator.comparingInt(Action::getCost))
-            .get();
-    }
-
     public abstract boolean isValid();
 
     public abstract boolean isCompleted();
@@ -38,6 +32,20 @@ public abstract class Goal {
      * The type of progress required for this goal to be available.
      */
     protected abstract Optional<ProgressKey> createProgressedBy();
+
+    public void tick() {
+        availableActions.forEach(Action::tick);
+    }
+
+    public void onComplete() {
+        availableActions.forEach(Action::onComplete);
+    }
+
+    public Optional<Action> getBestAction() {
+        return availableActions.stream()
+            .filter(Action::isValid)
+            .min(Comparator.comparingInt(Action::getCost));
+    }
 
     public final Optional<ProgressKey> getProgresses() {
         return progresses;

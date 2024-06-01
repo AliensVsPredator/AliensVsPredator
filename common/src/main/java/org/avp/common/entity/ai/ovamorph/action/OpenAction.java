@@ -13,6 +13,11 @@ public class OpenAction extends Action {
     }
 
     @Override
+    public boolean isValid() {
+        return !ovamorph.isOpen.get();
+    }
+
+    @Override
     public int getCost() {
         return 0;
     }

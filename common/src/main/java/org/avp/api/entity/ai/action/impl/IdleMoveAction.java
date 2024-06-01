@@ -2,27 +2,20 @@ package org.avp.api.entity.ai.action.impl;
 
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.ai.util.LandRandomPos;
-import org.avp.api.entity.ai.action.Action;
+import org.avp.api.entity.ai.action.CooldownAction;
 
-public class IdleMoveAction extends Action {
-
-    private static final int DEFAULT_INTERVAL = 6 * 20;
-
-    private int idleMoveCooldown;
+public class IdleMoveAction extends CooldownAction {
 
     private final PathfinderMob pathfinderMob;
 
     public IdleMoveAction(PathfinderMob pathfinderMob) {
+        super(120, pathfinderMob.getRandom());
         this.pathfinderMob = pathfinderMob;
-        this.idleMoveCooldown = pathfinderMob.getRandom().nextInt(DEFAULT_INTERVAL);
     }
 
     @Override
-    public int getCost() {
-        if (idleMoveCooldown > 0) {
-            idleMoveCooldown--;
-        }
-        return idleMoveCooldown;
+    public boolean isValid() {
+        return super.isValid() && pathfinderMob.getNavigation().isDone();
     }
 
     @Override
@@ -31,7 +24,13 @@ public class IdleMoveAction extends Action {
 
         if (pos != null) {
             pathfinderMob.getNavigation().moveTo(pos.x, pos.y, pos.z, 0.8);
-            idleMoveCooldown = pathfinderMob.getRandom().nextInt(DEFAULT_INTERVAL);
+            resetCooldown();
         }
+    }
+
+    @Override
+    public void onComplete() {
+        super.onComplete();
+        pathfinderMob.getNavigation().stop();
     }
 }

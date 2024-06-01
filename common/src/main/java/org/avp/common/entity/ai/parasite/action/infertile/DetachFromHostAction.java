@@ -17,6 +17,11 @@ public class DetachFromHostAction extends Action {
     }
 
     @Override
+    public boolean isValid() {
+        return parasite.getVehicle() instanceof Mob;
+    }
+
+    @Override
     public int getCost() {
         return 0;
     }

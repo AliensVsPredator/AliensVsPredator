@@ -14,6 +14,11 @@ public class AttachToHostAction extends Action {
     }
 
     @Override
+    public boolean isValid() {
+        return parasite.getTarget() != null && parasite.getTarget().getPassengers().isEmpty();
+    }
+
+    @Override
     public int getCost() {
         return 0;
     }

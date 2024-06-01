@@ -15,6 +15,11 @@ public class ReleaseFacehuggerAction extends Action {
     }
 
     @Override
+    public boolean isValid() {
+        return ovamorph.hasFacehugger();
+    }
+
+    @Override
     public int getCost() {
         return 0;
     }

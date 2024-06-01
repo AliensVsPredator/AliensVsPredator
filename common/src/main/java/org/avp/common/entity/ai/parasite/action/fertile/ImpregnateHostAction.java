@@ -13,6 +13,11 @@ public class ImpregnateHostAction extends Action {
     }
 
     @Override
+    public boolean isValid() {
+        return parasite.isFertile();
+    }
+
+    @Override
     public int getCost() {
         return 0;
     }

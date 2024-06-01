@@ -12,6 +12,11 @@ public class DisturbAction extends Action {
     }
 
     @Override
+    public boolean isValid() {
+        return !ovamorph.isFullyDisturbed();
+    }
+
+    @Override
     public int getCost() {
         return 0;
     }
