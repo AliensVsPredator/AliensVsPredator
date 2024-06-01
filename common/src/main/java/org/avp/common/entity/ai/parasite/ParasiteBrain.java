@@ -43,6 +43,14 @@ public class ParasiteBrain extends GOAPBrain {
                 .disableIf(() -> !parasite.isFertile())
         );
         sensors.add(new NearbyLivingEntitiesSensor(cache));
-        sensors.add(new TargetSensor(cache, parasite, AVPPredicates.IS_HOST));
+        sensors.add(
+            new TargetSensor(
+                cache,
+                parasite,
+                maybeTarget -> AVPPredicates.IS_HOST.test(maybeTarget) &&
+                    // If target has no passengers or if the parasite is attached to the target.
+                    (maybeTarget.getPassengers().isEmpty() || parasite.getVehicle() == maybeTarget)
+            )
+        );
     }
 }
