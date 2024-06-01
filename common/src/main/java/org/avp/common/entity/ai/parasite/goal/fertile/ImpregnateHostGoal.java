@@ -24,7 +24,7 @@ public class ImpregnateHostGoal extends Goal {
 
     @Override
     public boolean isValid() {
-        return parasite.isFertile();
+        return parasite.isFertile() && parasite.getTarget() != null;
     }
 
     @Override
