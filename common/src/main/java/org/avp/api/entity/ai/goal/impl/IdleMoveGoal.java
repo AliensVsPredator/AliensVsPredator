@@ -2,6 +2,7 @@ package org.avp.api.entity.ai.goal.impl;
 
 import net.minecraft.world.entity.PathfinderMob;
 import org.avp.api.entity.ai.ProgressKey;
+import org.avp.api.entity.ai.action.impl.IdleLookAroundAction;
 import org.avp.api.entity.ai.action.impl.IdleMoveAction;
 import org.avp.api.entity.ai.goal.Goal;
 
@@ -15,6 +16,7 @@ public class IdleMoveGoal<T extends PathfinderMob> extends Goal {
     public IdleMoveGoal(T pathfinderMob) {
         super(
             Set.of(
+                new IdleLookAroundAction(pathfinderMob),
                 new IdleMoveAction(pathfinderMob)
             )
         );
@@ -28,7 +30,8 @@ public class IdleMoveGoal<T extends PathfinderMob> extends Goal {
 
     @Override
     public boolean isCompleted() {
-        return true;
+        // This task has no definitive end.
+        return false;
     }
 
     @Override

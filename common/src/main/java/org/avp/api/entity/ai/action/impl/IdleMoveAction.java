@@ -19,20 +19,18 @@ public class IdleMoveAction extends Action {
 
     @Override
     public int getCost() {
+        if (idleMoveCooldown > 0) {
+            idleMoveCooldown--;
+        }
         return idleMoveCooldown;
     }
 
     @Override
     public void execute() {
-        if (idleMoveCooldown > 0) {
-            idleMoveCooldown--;
-            return;
-        }
-
         var pos = LandRandomPos.getPos(this.pathfinderMob, 10, 7);
 
         if (pos != null) {
-            pathfinderMob.getNavigation().moveTo(pos.x, pos.y, pos.z, 1);
+            pathfinderMob.getNavigation().moveTo(pos.x, pos.y, pos.z, 0.8);
             idleMoveCooldown = pathfinderMob.getRandom().nextInt(DEFAULT_INTERVAL);
         }
     }
