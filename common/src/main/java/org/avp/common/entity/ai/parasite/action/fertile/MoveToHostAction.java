@@ -1,15 +1,15 @@
 package org.avp.common.entity.ai.parasite.action.fertile;
 
-import net.minecraft.world.entity.monster.Monster;
 import org.avp.api.entity.ai.action.Action;
+import org.avp.common.entity.AVPAbstractParasite;
 
 import java.util.Objects;
 
 public class MoveToHostAction extends Action {
 
-    private final Monster parasite;
+    private final AVPAbstractParasite parasite;
 
-    public MoveToHostAction(Monster parasite) {
+    public MoveToHostAction(AVPAbstractParasite parasite) {
         this.parasite = parasite;
     }
 

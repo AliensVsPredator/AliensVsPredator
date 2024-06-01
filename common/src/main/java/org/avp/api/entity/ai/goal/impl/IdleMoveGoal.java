@@ -8,11 +8,11 @@ import org.avp.api.entity.ai.goal.Goal;
 import java.util.Optional;
 import java.util.Set;
 
-public class IdleMoveGoal extends Goal {
+public class IdleMoveGoal<T extends PathfinderMob> extends Goal {
 
-    protected final PathfinderMob pathfinderMob;
+    protected final T pathfinderMob;
 
-    public IdleMoveGoal(PathfinderMob pathfinderMob) {
+    public IdleMoveGoal(T pathfinderMob) {
         super(
             Set.of(
                 new IdleMoveAction(pathfinderMob)

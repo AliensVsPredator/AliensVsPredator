@@ -1,9 +1,9 @@
 package org.avp.common.entity.ai.parasite.goal.fertile;
 
-import net.minecraft.world.entity.monster.Monster;
 import org.avp.api.entity.Parasite;
 import org.avp.api.entity.ai.goal.Goal;
 import org.avp.api.entity.ai.ProgressKey;
+import org.avp.common.entity.AVPAbstractParasite;
 import org.avp.common.entity.ai.AVPProgressions;
 import org.avp.common.entity.ai.parasite.action.fertile.ImpregnateHostAction;
 
@@ -12,9 +12,9 @@ import java.util.Set;
 
 public class ImpregnateHostGoal extends Goal {
 
-    private final Monster parasite;
+    private final AVPAbstractParasite parasite;
 
-    public ImpregnateHostGoal(Monster parasite) {
+    public ImpregnateHostGoal(AVPAbstractParasite parasite) {
         super(
             Set.of(
                 new ImpregnateHostAction(parasite)

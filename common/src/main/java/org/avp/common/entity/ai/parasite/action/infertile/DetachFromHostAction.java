@@ -1,16 +1,16 @@
 package org.avp.common.entity.ai.parasite.action.infertile;
 
-import net.minecraft.world.entity.monster.Monster;
 import org.avp.api.entity.Parasite;
 import org.avp.api.entity.ai.action.Action;
+import org.avp.common.entity.AVPAbstractParasite;
 
 public class DetachFromHostAction extends Action {
 
     private final int smotherTimeInTicks;
 
-    private final Monster parasite;
+    private final AVPAbstractParasite parasite;
 
-    public DetachFromHostAction(Monster parasite, int smotherTimeInTicks) {
+    public DetachFromHostAction(AVPAbstractParasite parasite, int smotherTimeInTicks) {
         this.parasite = parasite;
         this.smotherTimeInTicks = smotherTimeInTicks;
     }

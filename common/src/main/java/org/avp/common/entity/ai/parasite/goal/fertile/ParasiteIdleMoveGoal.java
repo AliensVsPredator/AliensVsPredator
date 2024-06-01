@@ -1,17 +1,16 @@
 package org.avp.common.entity.ai.parasite.goal.fertile;
 
-import net.minecraft.world.entity.PathfinderMob;
-import org.avp.api.entity.Parasite;
 import org.avp.api.entity.ai.goal.impl.IdleMoveGoal;
+import org.avp.common.entity.AVPAbstractParasite;
 
-public class ParasiteIdleMoveGoal extends IdleMoveGoal {
+public class ParasiteIdleMoveGoal extends IdleMoveGoal<AVPAbstractParasite> {
 
-    public ParasiteIdleMoveGoal(PathfinderMob pathfinderMob) {
+    public ParasiteIdleMoveGoal(AVPAbstractParasite pathfinderMob) {
         super(pathfinderMob);
     }
 
     @Override
     public boolean isValid() {
-        return super.isValid() && ((Parasite) pathfinderMob).isFertile();
+        return super.isValid() && pathfinderMob.isFertile();
     }
 }
