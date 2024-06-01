@@ -10,9 +10,9 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import org.avp.common.util.GravityUtils;
 import org.jetbrains.annotations.NotNull;
 
 import org.avp.client.render.particle.AVPParticleTypes;
@@ -128,9 +128,7 @@ public class Acid extends Entity {
         if (level.isClientSide)
             return;
 
-        setDeltaMovement(0, getDeltaMovement().y - 0.03999999910593033D, 0);
-        move(MoverType.SELF, getDeltaMovement());
-        setDeltaMovement(0, getDeltaMovement().y * 0.9800000190734863D, 0);
+        GravityUtils.apply(this);
     }
 
     private void damageEntities(Level level) {
