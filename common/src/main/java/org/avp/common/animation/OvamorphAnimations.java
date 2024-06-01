@@ -15,11 +15,19 @@ public class OvamorphAnimations {
 
     private static final String ANIMATION_NAME_EGG_OPEN = "animation.egg.open";
 
+    private static final String ANIMATION_NAME_EGG_OPEN_LOOP = "egg.open_loop";
+
     private static final RawAnimation ANIMATION_EGG_OPEN = RawAnimation.begin().thenPlayAndHold(ANIMATION_NAME_EGG_OPEN);
 
+    private static final RawAnimation ANIMATION_EGG_OPEN_LOOP = RawAnimation.begin().thenLoop(ANIMATION_NAME_EGG_OPEN_LOOP);
+
     private static final Function<Ovamorph, AnimationController.AnimationStateHandler<GeoAnimatable>> HANDLER_OPEN = entity -> event -> {
-        if (entity.getOpenProgress() > 0) {
+        if (entity.isOpening.get()) {
             return event.setAndContinue(ANIMATION_EGG_OPEN);
+        }
+
+        if (entity.isOpen.get()) {
+            return event.setAndContinue(ANIMATION_EGG_OPEN_LOOP);
         }
 
         return PlayState.STOP;
