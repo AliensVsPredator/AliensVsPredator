@@ -39,14 +39,14 @@ public class Planner {
      * Attempts to create a plan for a given goal.
      */
     public Optional<Plan> createPlan(Goal goal) {
-        var preGoalsCollector = new ArrayList<Goal>();
-        var succeeded = accumulateValidPreGoalsForTargetGoal(goal, preGoalsCollector);
+        var goalsCollector = new ArrayList<Goal>();
+        var succeeded = accumulateValidPreGoalsForTargetGoal(goal, goalsCollector);
 
         if (!succeeded) {
             return Optional.empty();
         }
 
-        return Optional.of(new Plan(goal, preGoalsCollector));
+        return Optional.of(new Plan(goalsCollector));
     }
 
     /**
@@ -70,25 +70,20 @@ public class Planner {
 
             var goalForPrerequisite = goalForPrerequisiteOptional.get();
 
-            // If the goal is already completed, we can skip it and its prerequisite goals.
-            if (goalForPrerequisite.isCompleted()) {
-                return true;
-            }
-
-            var isValidPrerequisiteGoal = accumulateValidPreGoalsForTargetGoal(goalForPrerequisite, accumulatedGoals);
+            var isChainValid = accumulateValidPreGoalsForTargetGoal(goalForPrerequisite, accumulatedGoals);
 
             // If the goal is not valid, the plan is not sound, so we must assume it is impossible.
-            if (!isValidPrerequisiteGoal) {
+            if (!isChainValid) {
                 return false;
             }
         }
 
-        if (targetGoal.isValid()) {
+        if (targetGoal.isValid() && !targetGoal.isCompleted()) {
             accumulatedGoals.add(targetGoal);
             return true;
         }
 
-        return false;
+        return targetGoal.isCompleted();
     }
 
     /**
