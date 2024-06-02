@@ -1,9 +1,11 @@
 package org.avp.common.entity.ai.parasite.goal.fertile;
 
+import net.minecraft.world.phys.Vec3;
 import org.avp.api.entity.ai.goal.Goal;
 import org.avp.api.entity.ai.ProgressKey;
 import org.avp.common.entity.AVPAbstractParasite;
 import org.avp.common.entity.ai.AVPProgressions;
+import org.avp.common.entity.ai.parasite.action.fertile.LeapTowardsHostAction;
 import org.avp.common.entity.ai.parasite.action.fertile.MoveToHostAction;
 
 import java.util.Optional;
@@ -16,7 +18,8 @@ public class MoveToHostGoal extends Goal {
     public MoveToHostGoal(AVPAbstractParasite parasite) {
         super(
             Set.of(
-                new MoveToHostAction(parasite)
+                new MoveToHostAction(parasite),
+                new LeapTowardsHostAction(parasite)
             )
         );
         this.parasite = parasite;
@@ -24,18 +27,24 @@ public class MoveToHostGoal extends Goal {
 
     @Override
     public boolean isValid() {
-        return parasite.getTarget() != null;
+        return parasite.getTarget() != null &&
+            parasite.getVehicle() == null &&
+            !isCloseEnoughToTarget();
     }
 
     @Override
     public boolean isCompleted() {
+        return isCloseEnoughToTarget();
+    }
+
+    private boolean isCloseEnoughToTarget() {
         var target = parasite.getTarget();
 
         if (target == null) {
             return false;
         }
 
-        return parasite.distanceTo(target) < 1 + target.getBbWidth();
+        return parasite.distanceTo(target) < 1 || parasite.getVehicle() == target;
     }
 
     @Override
