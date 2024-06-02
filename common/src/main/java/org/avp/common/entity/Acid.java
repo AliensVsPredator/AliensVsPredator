@@ -12,6 +12,7 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Blocks;
 import org.avp.common.util.GravityUtils;
 import org.jetbrains.annotations.NotNull;
 
@@ -91,12 +92,18 @@ public class Acid extends Entity {
         if (level.isClientSide || tickCount % 20 != 0 || isInWater() || !onGround())
             return;
 
-        var below = blockPosition().below();
-        var blockState = level.getBlockState(below);
+        var blockPos = blockPosition();
+        var blockState = level.getBlockState(blockPos);
+
+        if (blockState.getBlock() == Blocks.AIR) {
+            blockPos = blockPos.below();
+            blockState = level.getBlockState(blockPos);
+        }
+
 
         if (!blockState.is(AVPBlockTags.ACID_IMMUNE)) {
             // TODO: Make this break speed configurable.
-            BlockBreakProgressManager.damage(level(), below, 2F * getMultiplier());
+            BlockBreakProgressManager.damage(level(), blockPos, 2F * getMultiplier());
         }
     }
 
