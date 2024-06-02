@@ -1,5 +1,6 @@
 package org.avp.common.entity.ai.parasite.action.fertile;
 
+import net.minecraft.util.Mth;
 import org.avp.api.entity.ai.action.Action;
 import org.avp.common.entity.AVPAbstractParasite;
 
@@ -15,17 +16,25 @@ public class MoveToHostAction extends Action {
 
     @Override
     public boolean isValid() {
-        return parasite.getTarget() != null;
+        return parasite.getTarget() != null && parasite.onGround();
     }
 
     @Override
     public int getCost() {
-        return 0;
+        var target = Objects.requireNonNull(parasite.getTarget());
+        var distanceToHost = parasite.distanceTo(target);
+        return (int) Mth.map(distanceToHost, 0F, 16F, 0F, 200F);
     }
 
     @Override
     public void execute() {
         var target = Objects.requireNonNull(parasite.getTarget());
         parasite.getNavigation().moveTo(target, 1);
+    }
+
+    @Override
+    public void onComplete() {
+        super.onComplete();
+        parasite.getNavigation().stop();
     }
 }
