@@ -9,7 +9,7 @@ public class IdleMoveAction extends CooldownAction {
     private final PathfinderMob pathfinderMob;
 
     public IdleMoveAction(PathfinderMob pathfinderMob) {
-        super(120, pathfinderMob.getRandom());
+        super(120, pathfinderMob.getRandom(), true);
         this.pathfinderMob = pathfinderMob;
     }
 

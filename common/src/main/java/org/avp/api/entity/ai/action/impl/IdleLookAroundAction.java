@@ -15,7 +15,7 @@ public class IdleLookAroundAction extends CooldownAction {
     private final Mob mob;
 
     public IdleLookAroundAction(Mob mob) {
-        super(120, mob.getRandom());
+        super(120, mob.getRandom(), false);
         this.mob = mob;
     }
 

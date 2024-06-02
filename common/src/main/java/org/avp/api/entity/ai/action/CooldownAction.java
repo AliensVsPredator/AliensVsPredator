@@ -10,10 +10,13 @@ public abstract class CooldownAction extends Action {
 
     private final RandomSource randomSource;
 
-    protected CooldownAction(int cooldownInterval, RandomSource randomSource) {
+    protected CooldownAction(int cooldownInterval, RandomSource randomSource, boolean hasInitialCooldown) {
         this.cooldownInterval = cooldownInterval;
         this.randomSource = randomSource;
-        resetCooldown();
+
+        if (hasInitialCooldown) {
+            resetCooldown();
+        }
     }
 
     @Override
