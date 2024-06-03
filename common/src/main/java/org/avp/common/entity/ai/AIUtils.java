@@ -63,21 +63,6 @@ public class AIUtils {
         );
     }
 
-    public static void addFacehuggerAI(Monster monster, GoalSelector goalSelector, GoalSelector targetSelector) {
-        addBasicAI(monster, goalSelector);
-
-        targetSelector.addGoal(
-            1,
-            new NearestAttackableTargetGoal<>(
-                monster,
-                LivingEntity.class,
-                true,
-                livingEntity -> !livingEntity.getType().is(AVPEntityTypeTags.ALIENS) &&
-                    !livingEntity.getType().is(AVPEntityTypeTags.NON_HOSTS)
-            )
-        );
-    }
-
     public static void addYautjaAI(Monster monster, GoalSelector goalSelector, GoalSelector targetSelector) {
         addBasicAI(monster, goalSelector);
 
