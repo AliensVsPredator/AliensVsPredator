@@ -1,16 +1,17 @@
 package org.avp.common.entity.ai.parasite;
 
 import org.avp.api.entity.ai.GOAPBrain;
+import org.avp.api.entity.ai.action.impl.LeapTowardsTargetAction;
 import org.avp.api.entity.ai.plan.Planner;
 import org.avp.api.entity.ai.sensor.impl.NearbyEntitiesSensor;
 import org.avp.api.entity.ai.sensor.impl.NearbyLivingEntitiesSensor;
 import org.avp.api.entity.ai.sensor.impl.TargetSensor;
 import org.avp.common.entity.AVPAbstractParasite;
-import org.avp.common.entity.ai.parasite.goal.fertile.AttachToHostGoal;
-import org.avp.common.entity.ai.parasite.goal.fertile.ParasiteIdleMoveGoal;
-import org.avp.common.entity.ai.parasite.goal.infertile.DetachFromHostGoal;
-import org.avp.common.entity.ai.parasite.goal.fertile.ImpregnateHostGoal;
-import org.avp.common.entity.ai.parasite.goal.fertile.MoveToHostGoal;
+import org.avp.api.entity.ai.goal.impl.RideTargetGoal;
+import org.avp.common.entity.ai.parasite.goal.ParasiteIdleMoveGoal;
+import org.avp.common.entity.ai.parasite.goal.DetachFromHostGoal;
+import org.avp.common.entity.ai.parasite.goal.ImpregnateHostGoal;
+import org.avp.api.entity.ai.goal.impl.MoveToTargetGoal;
 import org.avp.common.util.AVPPredicates;
 
 import java.util.Set;
@@ -26,8 +27,9 @@ public class ParasiteBrain extends GOAPBrain {
                     new ParasiteIdleMoveGoal(parasite),
 
                     // Anticipated plan for impregnation
-                    new MoveToHostGoal(parasite),
-                    new AttachToHostGoal(parasite),
+                    new MoveToTargetGoal(parasite)
+                        .addAction(new LeapTowardsTargetAction(parasite)),
+                    new RideTargetGoal(parasite),
                     new ImpregnateHostGoal(parasite),
 
                     // Anticipated plan for smothering

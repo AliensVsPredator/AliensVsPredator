@@ -7,19 +7,14 @@ import org.avp.common.entity.ai.AVPProgressions;
 import org.avp.common.entity.ai.ovamorph.action.DisturbAction;
 
 import java.util.Optional;
-import java.util.Set;
 
 public class DisturbedGoal extends Goal {
 
     private final AVPAbstractOvamorph ovamorph;
 
     public DisturbedGoal(AVPAbstractOvamorph ovamorph) {
-        super(
-            Set.of(
-                new DisturbAction(ovamorph)
-            )
-        );
         this.ovamorph = ovamorph;
+        availableActions.add(new DisturbAction(ovamorph));
     }
 
     @Override

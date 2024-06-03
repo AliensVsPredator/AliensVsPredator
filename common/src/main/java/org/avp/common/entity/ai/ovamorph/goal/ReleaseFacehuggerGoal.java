@@ -7,19 +7,14 @@ import org.avp.common.entity.ai.AVPProgressions;
 import org.avp.common.entity.ai.ovamorph.action.ReleaseFacehuggerAction;
 
 import java.util.Optional;
-import java.util.Set;
 
 public class ReleaseFacehuggerGoal extends Goal {
 
     private final AVPAbstractOvamorph ovamorph;
 
     public ReleaseFacehuggerGoal(AVPAbstractOvamorph ovamorph) {
-        super(
-            Set.of(
-                new ReleaseFacehuggerAction(ovamorph)
-            )
-        );
         this.ovamorph = ovamorph;
+        availableActions.add(new ReleaseFacehuggerAction(ovamorph));
     }
 
     @Override

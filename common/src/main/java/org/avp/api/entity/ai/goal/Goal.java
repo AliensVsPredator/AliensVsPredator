@@ -4,6 +4,7 @@ import org.avp.api.entity.ai.action.Action;
 import org.avp.api.entity.ai.ProgressKey;
 
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 
@@ -13,10 +14,10 @@ public abstract class Goal {
 
     private final Optional<ProgressKey> progressedBy = createProgressedBy();
 
-    private final Set<Action> availableActions;
+    protected final Set<Action> availableActions;
 
-    protected Goal(Set<Action> availableActions) {
-        this.availableActions = availableActions;
+    protected Goal() {
+        this.availableActions = new HashSet<>();
     }
 
     public abstract boolean isValid();
@@ -32,6 +33,11 @@ public abstract class Goal {
      * The type of progress required for this goal to be available.
      */
     protected abstract Optional<ProgressKey> createProgressedBy();
+
+    public final Goal addAction(Action action) {
+        availableActions.add(action);
+        return this;
+    }
 
     public void tick() {
         availableActions.forEach(Action::tick);

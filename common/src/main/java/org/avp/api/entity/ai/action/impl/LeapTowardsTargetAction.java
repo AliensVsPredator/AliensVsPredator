@@ -1,13 +1,13 @@
-package org.avp.common.entity.ai.parasite.action.fertile;
+package org.avp.api.entity.ai.action.impl;
 
 import net.minecraft.util.Mth;
+import net.minecraft.world.entity.Mob;
 import net.minecraft.world.phys.Vec3;
 import org.avp.api.entity.ai.action.CooldownAction;
-import org.avp.common.entity.AVPAbstractParasite;
 
 import java.util.Objects;
 
-public class LeapTowardsHostAction extends CooldownAction {
+public class LeapTowardsTargetAction extends CooldownAction {
 
     private static final int DEFAULT_WIND_UP_TIME_IN_TICKS = 10;
 
@@ -21,11 +21,11 @@ public class LeapTowardsHostAction extends CooldownAction {
 
     private float distanceToTarget;
 
-    private final AVPAbstractParasite parasite;
+    private final Mob mob;
 
-    public LeapTowardsHostAction(AVPAbstractParasite parasite) {
-        super(100, parasite.getRandom(), false);
-        this.parasite = parasite;
+    public LeapTowardsTargetAction(Mob mob) {
+        super(100, mob.getRandom(), false);
+        this.mob = mob;
         resetWindUpTimeInTicks();
         distanceToTarget = DEFAULT_DISTANCE_TARGET;
     }
@@ -33,34 +33,34 @@ public class LeapTowardsHostAction extends CooldownAction {
     @Override
     public boolean isValid() {
         return super.isValid() &&
-            parasite.getTarget() != null &&
-            parasite.onGround() &&
+            mob.getTarget() != null &&
+            mob.onGround() &&
             isInLeapingRange();
     }
 
     @Override
     public int getCost() {
-        var target = Objects.requireNonNull(parasite.getTarget());
-        var distanceToHost = parasite.distanceTo(target);
+        var target = Objects.requireNonNull(mob.getTarget());
+        var distanceToHost = mob.distanceTo(target);
         return (int) Mth.map(distanceToHost, MIN_LEAP_DISTANCE, MAX_LEAP_DISTANCE, 0F, 100F);
     }
 
     @Override
     public void execute() {
-        var target = Objects.requireNonNull(parasite.getTarget());
-        var currentDistanceToTarget = parasite.distanceTo(target);
+        var target = Objects.requireNonNull(mob.getTarget());
+        var currentDistanceToTarget = mob.distanceTo(target);
 
         if (distanceToTarget == DEFAULT_DISTANCE_TARGET) {
             distanceToTarget = currentDistanceToTarget;
         }
 
-        parasite.getLookControl().setLookAt(target, 30.0F, 30.0F);
+        mob.getLookControl().setLookAt(target, 30.0F, 30.0F);
 
         // If the mob was hurt,
         // Or if the target moved further away,
         // Then leap immediately.
         if (
-            (parasite.getLastHurtByMobTimestamp() > 0 && parasite.tickCount - parasite.getLastHurtByMobTimestamp() < 20) ||
+            (mob.getLastHurtByMobTimestamp() > 0 && mob.tickCount - mob.getLastHurtByMobTimestamp() < 20) ||
             currentDistanceToTarget > distanceToTarget
         ) {
             windUpTimeInTicks = 0;
@@ -68,20 +68,20 @@ public class LeapTowardsHostAction extends CooldownAction {
 
         if (windUpTimeInTicks > 0) {
             windUpTimeInTicks--;
-            parasite.getNavigation().stop();
+            mob.getNavigation().stop();
             return;
         }
 
         distanceToTarget = currentDistanceToTarget;
 
-        Vec3 deltaMovement = parasite.getDeltaMovement();
-        Vec3 vectorDifference = new Vec3(target.getX() - parasite.getX(), target.getY() - parasite.getY(), target.getZ() - parasite.getZ());
+        Vec3 deltaMovement = mob.getDeltaMovement();
+        Vec3 vectorDifference = new Vec3(target.getX() - mob.getX(), target.getY() - mob.getY(), target.getZ() - mob.getZ());
 
         vectorDifference = vectorDifference.normalize()
             .scale(0.2 * distanceToTarget)
             .add(deltaMovement.scale(0.2));
 
-        parasite.setDeltaMovement(vectorDifference.x, vectorDifference.y, vectorDifference.z);
+        mob.setDeltaMovement(vectorDifference.x, vectorDifference.y, vectorDifference.z);
 
         resetCooldown();
     }
@@ -98,13 +98,13 @@ public class LeapTowardsHostAction extends CooldownAction {
     }
 
     private boolean isInLeapingRange() {
-        var target = parasite.getTarget();
+        var target = mob.getTarget();
 
         if (target == null) {
             return false;
         }
 
-        var distanceToHost = parasite.distanceTo(target);
+        var distanceToHost = mob.distanceTo(target);
 
         return distanceToHost <= MAX_LEAP_DISTANCE && distanceToHost >= MIN_LEAP_DISTANCE;
     }

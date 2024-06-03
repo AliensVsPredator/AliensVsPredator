@@ -1,4 +1,4 @@
-package org.avp.common.entity.ai.parasite.action.fertile;
+package org.avp.common.entity.ai.parasite.action;
 
 import org.avp.api.entity.ai.action.Action;
 import org.avp.common.entity.AVPAbstractParasite;

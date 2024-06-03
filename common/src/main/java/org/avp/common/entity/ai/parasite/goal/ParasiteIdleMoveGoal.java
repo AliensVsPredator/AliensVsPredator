@@ -1,4 +1,4 @@
-package org.avp.common.entity.ai.parasite.goal.fertile;
+package org.avp.common.entity.ai.parasite.goal;
 
 import org.avp.api.entity.ai.goal.impl.IdleMoveGoal;
 import org.avp.common.entity.AVPAbstractParasite;

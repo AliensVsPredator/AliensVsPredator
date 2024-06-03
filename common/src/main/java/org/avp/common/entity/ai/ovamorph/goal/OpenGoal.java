@@ -7,19 +7,14 @@ import org.avp.common.entity.ai.AVPProgressions;
 import org.avp.common.entity.ai.ovamorph.action.OpenAction;
 
 import java.util.Optional;
-import java.util.Set;
 
 public class OpenGoal extends Goal {
 
     private final AVPAbstractOvamorph ovamorph;
 
     public OpenGoal(AVPAbstractOvamorph ovamorph) {
-        super(
-            Set.of(
-                new OpenAction(ovamorph)
-            )
-        );
         this.ovamorph = ovamorph;
+        availableActions.add(new OpenAction(ovamorph));
     }
 
     @Override

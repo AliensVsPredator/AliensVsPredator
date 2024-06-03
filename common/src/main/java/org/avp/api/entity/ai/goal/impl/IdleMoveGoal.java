@@ -7,20 +7,15 @@ import org.avp.api.entity.ai.action.impl.IdleMoveAction;
 import org.avp.api.entity.ai.goal.Goal;
 
 import java.util.Optional;
-import java.util.Set;
 
 public class IdleMoveGoal<T extends PathfinderMob> extends Goal {
 
     protected final T pathfinderMob;
 
     public IdleMoveGoal(T pathfinderMob) {
-        super(
-            Set.of(
-                new IdleLookAroundAction(pathfinderMob),
-                new IdleMoveAction(pathfinderMob)
-            )
-        );
         this.pathfinderMob = pathfinderMob;
+        availableActions.add(new IdleLookAroundAction(pathfinderMob));
+        availableActions.add(new IdleMoveAction(pathfinderMob));
     }
 
     @Override

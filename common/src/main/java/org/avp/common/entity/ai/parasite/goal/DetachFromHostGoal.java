@@ -1,24 +1,19 @@
-package org.avp.common.entity.ai.parasite.goal.infertile;
+package org.avp.common.entity.ai.parasite.goal;
 
 import org.avp.api.entity.ai.ProgressKey;
 import org.avp.api.entity.ai.goal.Goal;
 import org.avp.common.entity.AVPAbstractParasite;
-import org.avp.common.entity.ai.parasite.action.infertile.DetachFromHostAction;
+import org.avp.common.entity.ai.parasite.action.DetachFromHostAction;
 
 import java.util.Optional;
-import java.util.Set;
 
 public class DetachFromHostGoal extends Goal {
 
     private final AVPAbstractParasite parasite;
 
     public DetachFromHostGoal(AVPAbstractParasite parasite, int smotherTimeInTicks) {
-        super(
-            Set.of(
-                new DetachFromHostAction(parasite, smotherTimeInTicks)
-            )
-        );
         this.parasite = parasite;
+        availableActions.add(new DetachFromHostAction(parasite, smotherTimeInTicks));
     }
 
     @Override
