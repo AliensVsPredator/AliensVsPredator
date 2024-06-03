@@ -15,7 +15,9 @@ public class IdleMoveAction extends CooldownAction {
 
     @Override
     public boolean isValid() {
-        return super.isValid() && pathfinderMob.getNavigation().isDone();
+        return super.isValid() &&
+            pathfinderMob.onGround() &&
+            pathfinderMob.getNavigation().isDone();
     }
 
     @Override
