@@ -54,7 +54,7 @@ public class LeapTowardsTargetAction extends CooldownAction {
             distanceToTarget = currentDistanceToTarget;
         }
 
-        mob.getLookControl().setLookAt(target, 30.0F, 30.0F);
+        mob.getLookControl().setLookAt(target, 180.0F, 180.0F);
 
         // If the mob was hurt,
         // Or if the target moved further away,
