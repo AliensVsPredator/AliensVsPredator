@@ -2,7 +2,6 @@ package org.avp.common.entity.ai.parasite.action.fertile;
 
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
-import org.avp.api.entity.ai.action.Action;
 import org.avp.api.entity.ai.action.CooldownAction;
 import org.avp.common.entity.AVPAbstractParasite;
 
@@ -10,7 +9,7 @@ import java.util.Objects;
 
 public class LeapTowardsHostAction extends CooldownAction {
 
-    private static final int DEFAULT_WIND_UP_TIME_IN_TICKS = 20;
+    private static final int DEFAULT_WIND_UP_TIME_IN_TICKS = 10;
 
     private static final float DEFAULT_DISTANCE_TARGET = -1F;
 
@@ -33,18 +32,16 @@ public class LeapTowardsHostAction extends CooldownAction {
 
     @Override
     public boolean isValid() {
-        return super.isValid() && parasite.getTarget() != null && parasite.onGround();
+        return super.isValid() &&
+            parasite.getTarget() != null &&
+            parasite.onGround() &&
+            isInLeapingRange();
     }
 
     @Override
     public int getCost() {
         var target = Objects.requireNonNull(parasite.getTarget());
         var distanceToHost = parasite.distanceTo(target);
-
-        if (distanceToHost > MAX_LEAP_DISTANCE || distanceToHost < MIN_LEAP_DISTANCE) {
-            return Integer.MAX_VALUE;
-        }
-
         return (int) Mth.map(distanceToHost, MIN_LEAP_DISTANCE, MAX_LEAP_DISTANCE, 0F, 100F);
     }
 
@@ -78,13 +75,13 @@ public class LeapTowardsHostAction extends CooldownAction {
         distanceToTarget = currentDistanceToTarget;
 
         Vec3 deltaMovement = parasite.getDeltaMovement();
-        Vec3 vectorDifference = new Vec3(target.getX() - parasite.getX(), 0.0, target.getZ() - parasite.getZ());
+        Vec3 vectorDifference = new Vec3(target.getX() - parasite.getX(), target.getY() - parasite.getY(), target.getZ() - parasite.getZ());
 
         vectorDifference = vectorDifference.normalize()
             .scale(0.2 * distanceToTarget)
             .add(deltaMovement.scale(0.2));
 
-        parasite.setDeltaMovement(vectorDifference.x, 0.6, vectorDifference.z);
+        parasite.setDeltaMovement(vectorDifference.x, vectorDifference.y, vectorDifference.z);
 
         resetCooldown();
     }
@@ -98,5 +95,17 @@ public class LeapTowardsHostAction extends CooldownAction {
 
     private void resetWindUpTimeInTicks() {
         this.windUpTimeInTicks = DEFAULT_WIND_UP_TIME_IN_TICKS;
+    }
+
+    private boolean isInLeapingRange() {
+        var target = parasite.getTarget();
+
+        if (target == null) {
+            return false;
+        }
+
+        var distanceToHost = parasite.distanceTo(target);
+
+        return distanceToHost <= MAX_LEAP_DISTANCE && distanceToHost >= MIN_LEAP_DISTANCE;
     }
 }
