@@ -3,10 +3,13 @@ package org.avp.common.block;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 
 import java.util.Set;
 
+import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
+import net.minecraft.world.level.material.MapColor;
 import org.avp.api.Holder;
 import org.avp.api.block.BlockData;
 import org.avp.api.block.BlockHolderSet;
@@ -94,19 +97,49 @@ public class AVPBlocks extends AVPDeferredBlockRegistry {
     }
 
     private AVPBlocks() {
-        var properties = BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_BLOCK); // TODO:
+        var aluminumProperties = BlockBehaviour.Properties.of()
+            .instrument(NoteBlockInstrument.IRON_XYLOPHONE)
+            .mapColor(MapColor.COLOR_LIGHT_GRAY)
+            .requiresCorrectToolForDrops()
+            .sound(SoundType.COPPER)
+            .strength(4, 6);
+        var ferroaluminumProperties = BlockBehaviour.Properties.of()
+            .instrument(NoteBlockInstrument.IRON_XYLOPHONE)
+            .mapColor(MapColor.COLOR_GRAY)
+            .requiresCorrectToolForDrops()
+            .sound(SoundType.COPPER)
+            .strength(7, 9);
+        var orioniteProperties = BlockBehaviour.Properties.of()
+            .instrument(NoteBlockInstrument.IRON_XYLOPHONE)
+            .mapColor(MapColor.SAND)
+            .requiresCorrectToolForDrops()
+            .sound(SoundType.COPPER)
+            .strength(20, 12);
+        var steelProperties = BlockBehaviour.Properties.of()
+            .instrument(NoteBlockInstrument.IRON_XYLOPHONE)
+            .mapColor(MapColor.COLOR_LIGHT_BLUE)
+            .requiresCorrectToolForDrops()
+            .sound(SoundType.COPPER)
+            .strength(10, 12);
+        var titaniumProperties = BlockBehaviour.Properties.of()
+            .instrument(NoteBlockInstrument.IRON_XYLOPHONE)
+            .mapColor(MapColor.SAND)
+            .requiresCorrectToolForDrops()
+            .sound(SoundType.COPPER)
+            .strength(15, 12);
+
         var copperProperties = BlockBehaviour.Properties.ofFullCopy(Blocks.COPPER_BLOCK);
 
         var stoneTier = BlockTagData.ofBlock(Set.of(BlockTags.MINEABLE_WITH_PICKAXE, BlockTags.NEEDS_STONE_TOOL));
         var ironTier = BlockTagData.ofBlock(Set.of(BlockTags.MINEABLE_WITH_PICKAXE, BlockTags.NEEDS_IRON_TOOL));
         var diamondTier = BlockTagData.ofBlock(Set.of(BlockTags.MINEABLE_WITH_PICKAXE, BlockTags.NEEDS_DIAMOND_TOOL));
 
-        aluminum = createFullBlockHolderMetalSet("aluminum", properties, stoneTier);
+        aluminum = createFullBlockHolderMetalSet("aluminum", aluminumProperties, stoneTier);
         copper = createBlockHolderMetalSet("copper", copperProperties, stoneTier);
-        ferroaluminum = createFullBlockHolderMetalSet("ferroaluminum", properties, stoneTier);
-        orioniteBlock = createHolder("orionite_block", BlockModelData.cube(properties), diamondTier);
-        steel = createFullBlockHolderMetalSet("steel", properties, ironTier);
-        titanium = createFullBlockHolderMetalSet("titanium", properties, ironTier);
+        ferroaluminum = createFullBlockHolderMetalSet("ferroaluminum", ferroaluminumProperties, stoneTier);
+        orioniteBlock = createHolder("orionite_block", BlockModelData.cube(orioniteProperties), diamondTier);
+        steel = createFullBlockHolderMetalSet("steel", steelProperties, ironTier);
+        titanium = createFullBlockHolderMetalSet("titanium", titaniumProperties, ironTier);
     }
 
     public record FullBlockHolderMetalSet(
