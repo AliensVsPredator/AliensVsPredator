@@ -22,7 +22,7 @@ public final class AVPCobaltRecipes {
         AVPRecipeHelper.decompressedItemRecipe(
             recipeOutput,
             RecipeCategory.MISC,
-            AVPOreBlocks.INSTANCE.oreCobalt.get(),
+            AVPOreBlocks.INSTANCE.cobaltBlock.get(),
             AVPItems.INSTANCE.cobalt.get()
         );
     }
