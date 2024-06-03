@@ -7,6 +7,7 @@ import net.minecraft.world.item.Items;
 
 import org.avp.common.block.AVPPaddingBlocks;
 import org.avp.common.data.recipe.AVPShapedRecipeBuilder;
+import org.avp.common.data.recipe.AVPShapelessRecipeBuilder;
 
 public final class AVPPaddingBlockRecipes {
 
@@ -30,13 +31,10 @@ public final class AVPPaddingBlockRecipes {
     }
 
     private static void addPaddingBlockRecipeSet(AVPPaddingBlocks.PaddingBlockSet paddingBlockSet, RecipeOutput recipeOutput) {
-        AVPShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, paddingBlockSet.panel())
-            .defineAndUnlockIfHas('A', Items.LEATHER)
-            .defineAndUnlockIfHas('B', ItemTags.WOOL)
-            .defineAndUnlockIfHas('C', paddingBlockSet.dyeItem())
-            .pattern(" AC")
-            .pattern("ABA")
-            .pattern(" A ")
+        AVPShapelessRecipeBuilder.shapeless(RecipeCategory.BUILDING_BLOCKS, paddingBlockSet.panel())
+            .requiresAndUnlockIfHas('A', Items.LEATHER)
+            .requiresAndUnlockIfHas('B', ItemTags.WOOL)
+            .requiresAndUnlockIfHas('C', paddingBlockSet.dyeItem())
             .save(recipeOutput);
 
         AVPShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, paddingBlockSet.pipes(), 2)
