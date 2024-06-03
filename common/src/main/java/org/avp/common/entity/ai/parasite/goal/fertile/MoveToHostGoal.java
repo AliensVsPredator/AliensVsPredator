@@ -1,6 +1,5 @@
 package org.avp.common.entity.ai.parasite.goal.fertile;
 
-import net.minecraft.world.phys.Vec3;
 import org.avp.api.entity.ai.goal.Goal;
 import org.avp.api.entity.ai.ProgressKey;
 import org.avp.common.entity.AVPAbstractParasite;

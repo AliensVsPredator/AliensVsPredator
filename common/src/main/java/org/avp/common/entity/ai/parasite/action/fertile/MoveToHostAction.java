@@ -23,7 +23,7 @@ public class MoveToHostAction extends Action {
     public int getCost() {
         var target = Objects.requireNonNull(parasite.getTarget());
         var distanceToHost = parasite.distanceTo(target);
-        return (int) Mth.map(distanceToHost, 0F, 16F, 0F, 200F);
+        return (int) Mth.map(distanceToHost, 0F, 16F, 0F, 100F);
     }
 
     @Override
