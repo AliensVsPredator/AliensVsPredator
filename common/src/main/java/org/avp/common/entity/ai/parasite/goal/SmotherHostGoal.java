@@ -3,17 +3,17 @@ package org.avp.common.entity.ai.parasite.goal;
 import org.avp.api.entity.ai.ProgressKey;
 import org.avp.api.entity.ai.goal.Goal;
 import org.avp.common.entity.AVPAbstractParasite;
-import org.avp.common.entity.ai.parasite.action.DetachFromHostAction;
+import org.avp.common.entity.ai.parasite.action.SmotherHostAction;
 
 import java.util.Optional;
 
-public class DetachFromHostGoal extends Goal {
+public class SmotherHostGoal extends Goal {
 
     private final AVPAbstractParasite parasite;
 
-    public DetachFromHostGoal(AVPAbstractParasite parasite, int smotherTimeInTicks) {
+    public SmotherHostGoal(AVPAbstractParasite parasite, int smotherTimeInTicks) {
         this.parasite = parasite;
-        availableActions.add(new DetachFromHostAction(parasite, smotherTimeInTicks));
+        availableActions.add(new SmotherHostAction(parasite, smotherTimeInTicks));
     }
 
     @Override

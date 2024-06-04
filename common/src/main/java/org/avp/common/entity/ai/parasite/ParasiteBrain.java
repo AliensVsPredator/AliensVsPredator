@@ -9,7 +9,7 @@ import org.avp.api.entity.ai.sensor.impl.TargetSensor;
 import org.avp.common.entity.AVPAbstractParasite;
 import org.avp.api.entity.ai.goal.impl.RideTargetGoal;
 import org.avp.common.entity.ai.parasite.goal.ParasiteIdleMoveGoal;
-import org.avp.common.entity.ai.parasite.goal.DetachFromHostGoal;
+import org.avp.common.entity.ai.parasite.goal.SmotherHostGoal;
 import org.avp.common.entity.ai.parasite.goal.ImpregnateHostGoal;
 import org.avp.api.entity.ai.goal.impl.MoveToTargetGoal;
 import org.avp.common.util.AVPPredicates;
@@ -33,7 +33,7 @@ public class ParasiteBrain extends GOAPBrain {
                     new ImpregnateHostGoal(parasite),
 
                     // Anticipated plan for smothering
-                    new DetachFromHostGoal(parasite, PARASITE_SMOTHER_TIME)
+                    new SmotherHostGoal(parasite, PARASITE_SMOTHER_TIME)
                 )
             )
         );
