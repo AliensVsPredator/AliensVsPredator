@@ -74,14 +74,17 @@ public class LeapTowardsTargetAction extends CooldownAction {
 
         distanceToTarget = currentDistanceToTarget;
 
-        Vec3 deltaMovement = mob.getDeltaMovement();
-        Vec3 vectorDifference = new Vec3(target.getX() - mob.getX(), target.getY() - mob.getY(), target.getZ() - mob.getZ());
+        var deltaMovement = mob.getDeltaMovement();
+        // Target might be on the same y level as the mob.
+        var y = Math.max(target.getY() - mob.getY(), target.getBbHeight());
+        Vec3 vectorDifference = new Vec3(target.getX() - mob.getX(), y, target.getZ() - mob.getZ());
 
         vectorDifference = vectorDifference.normalize()
             .scale(0.2 * distanceToTarget)
             .add(deltaMovement.scale(0.2));
 
-        mob.setDeltaMovement(vectorDifference.x, vectorDifference.y, vectorDifference.z);
+        // 0.6 seems to be a good minimum value for leaping towards the target's upper half.
+        mob.setDeltaMovement(vectorDifference.x, Math.max(vectorDifference.y, 0.6), vectorDifference.z);
 
         resetCooldown();
     }
