@@ -37,7 +37,7 @@ public class MoveToTargetGoal extends Goal {
             return false;
         }
 
-        return mob.distanceTo(target) < 1 || mob.getVehicle() == target;
+        return mob.distanceTo(target) < 2 || mob.getVehicle() == target;
     }
 
     @Override
