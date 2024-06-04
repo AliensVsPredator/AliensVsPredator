@@ -21,7 +21,7 @@ public abstract class CooldownAction extends Action {
 
     @Override
     public boolean isValid() {
-        return cooldown <= 0;
+        return !isCooldownActive();
     }
 
     @Override
@@ -32,7 +32,7 @@ public abstract class CooldownAction extends Action {
     @Override
     public void tick() {
         super.tick();
-        if (cooldown > 0) {
+        if (isCooldownActive()) {
             cooldown--;
         }
     }
@@ -41,6 +41,10 @@ public abstract class CooldownAction extends Action {
     public void onComplete() {
         super.onComplete();
         resetCooldown();
+    }
+
+    protected boolean isCooldownActive() {
+        return cooldown > 0;
     }
 
     protected int getCooldown() {
