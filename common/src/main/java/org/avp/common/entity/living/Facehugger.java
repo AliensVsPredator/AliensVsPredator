@@ -5,9 +5,9 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.level.Level;
 import org.avp.common.animation.FacehuggerAnimations;
-import org.avp.common.entity.AVPAbstractParasite;
+import org.avp.common.entity.AVPAbstractFacehugger;
 
-public class Facehugger extends AVPAbstractParasite {
+public class Facehugger extends AVPAbstractFacehugger {
 
     public Facehugger(EntityType<? extends Monster> entityType, Level level) {
         super(entityType, level);
