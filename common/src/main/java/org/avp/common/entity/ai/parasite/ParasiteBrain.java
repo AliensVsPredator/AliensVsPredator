@@ -3,6 +3,7 @@ package org.avp.common.entity.ai.parasite;
 import org.avp.api.entity.ai.GOAPBrain;
 import org.avp.api.entity.ai.action.impl.LeapTowardsTargetAction;
 import org.avp.api.entity.ai.plan.Planner;
+import org.avp.api.entity.ai.sensor.Sensor;
 import org.avp.api.entity.ai.sensor.impl.NearbyEntitiesSensor;
 import org.avp.api.entity.ai.sensor.impl.NearbyLivingEntitiesSensor;
 import org.avp.api.entity.ai.sensor.impl.ClosestTargetSensor;
@@ -14,30 +15,20 @@ import org.avp.common.entity.ai.parasite.goal.ImpregnateHostGoal;
 import org.avp.api.entity.ai.goal.impl.MoveToTargetGoal;
 import org.avp.common.util.AVPPredicates;
 
-import java.util.Set;
+import java.util.List;
 
 public class ParasiteBrain extends GOAPBrain {
 
     private static final int PARASITE_SMOTHER_TIME = 5 * 60 * 20;
 
+    private final AVPAbstractParasite parasite;
+
     public ParasiteBrain(AVPAbstractParasite parasite) {
-        super(
-            new Planner(
-                Set.of(
-                    new ParasiteIdleMoveGoal(parasite),
+        this.parasite = parasite;
+    }
 
-                    // Anticipated plan for impregnation
-                    new MoveToTargetGoal(parasite)
-                        .addAction(new LeapTowardsTargetAction(parasite)),
-                    new RideTargetGoal(parasite),
-                    new ImpregnateHostGoal(parasite),
-
-                    // Anticipated plan for smothering
-                    new SmotherHostGoal(parasite, PARASITE_SMOTHER_TIME)
-                )
-            )
-        );
-
+    @Override
+    protected void addSensors(List<Sensor> sensors) {
         var cache = getCache();
         sensors.add(
             new NearbyEntitiesSensor(cache, parasite)
@@ -54,5 +45,28 @@ public class ParasiteBrain extends GOAPBrain {
                     (maybeTarget.getPassengers().isEmpty() || parasite.getVehicle() == maybeTarget)
             )
         );
+    }
+
+    @Override
+    protected void addGoals(Planner planner) {
+        // Anticipated plan for impregnation
+        addImpregnationGoals(planner);
+
+        // Anticipated plan for smothering
+        addSmotherGoals(planner);
+    }
+
+    private void addImpregnationGoals(Planner planner) {
+        planner.addGoal(new ParasiteIdleMoveGoal(parasite));
+        planner.addGoal(
+            new MoveToTargetGoal(parasite)
+                .addAction(new LeapTowardsTargetAction(parasite))
+        );
+        planner.addGoal(new RideTargetGoal(parasite));
+        planner.addGoal(new ImpregnateHostGoal(parasite));
+    }
+
+    private void addSmotherGoals(Planner planner) {
+        planner.addGoal(new SmotherHostGoal(parasite, PARASITE_SMOTHER_TIME));
     }
 }

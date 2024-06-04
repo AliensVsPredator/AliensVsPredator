@@ -3,6 +3,7 @@ package org.avp.api.entity.ai.plan;
 import org.avp.api.entity.ai.goal.Goal;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -14,8 +15,12 @@ public class Planner {
 
     private final Set<Goal> availableGoals;
 
-    public Planner(Set<Goal> availableGoals) {
-        this.availableGoals = availableGoals;
+    public Planner() {
+        this.availableGoals = new HashSet<>();
+    }
+
+    public void addGoal(Goal goal) {
+        availableGoals.add(goal);
     }
 
     public void tick() {

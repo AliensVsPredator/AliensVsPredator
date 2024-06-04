@@ -10,15 +10,20 @@ public abstract class GOAPBrain {
 
     protected final GOAPBrainCache goapBrainCache;
 
-    protected final Planner planner;
+    private final Planner planner;
 
-    protected final List<Sensor> sensors;
+    private final List<Sensor> sensors;
 
-    protected GOAPBrain(Planner planner) {
+    protected GOAPBrain() {
         this.goapBrainCache = new GOAPBrainCache();
-        this.planner = planner;
+        this.planner = new Planner();
         this.sensors = new ArrayList<>();
+        addSensors(sensors);
+        addGoals(planner);
     }
+
+    protected abstract void addSensors(List<Sensor> sensors);
+    protected abstract void addGoals(Planner planner);
 
     public void tick() {
         sensors.forEach(Sensor::sense);
