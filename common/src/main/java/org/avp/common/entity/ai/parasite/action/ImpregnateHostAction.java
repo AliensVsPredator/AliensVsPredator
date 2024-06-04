@@ -1,10 +1,17 @@
 package org.avp.common.entity.ai.parasite.action;
 
+import net.minecraft.world.entity.LivingEntity;
 import org.avp.api.entity.ai.action.Action;
 import org.avp.common.entity.AVPAbstractParasite;
 import org.avp.common.sound.AVPSoundEvents;
 
+import java.util.Objects;
+
 public class ImpregnateHostAction extends Action {
+
+    private static final int TICKS_UNTIL_TOOB_ACTION = 2 * 20;
+
+    private int ticksOnHost;
 
     private final AVPAbstractParasite parasite;
 
@@ -14,7 +21,7 @@ public class ImpregnateHostAction extends Action {
 
     @Override
     public boolean isValid() {
-        return parasite.isFertile();
+        return parasite.isFertile() && parasite.getVehicle() != null;
     }
 
     @Override
@@ -24,11 +31,21 @@ public class ImpregnateHostAction extends Action {
 
     @Override
     public void execute() {
-        if (parasite.getVehicle() == null) {
+        var vehicle = Objects.requireNonNull(parasite.getVehicle());
+
+        ticksOnHost++;
+
+        if(ticksOnHost <= TICKS_UNTIL_TOOB_ACTION) {
+            if (parasite.tickCount % 10 == 0 && vehicle instanceof LivingEntity livingEntity) {
+                livingEntity.hurt(parasite.damageSources().inWall(), 0F);
+            }
+
             return;
         }
 
+
         parasite.setFertile(false);
-        parasite.playSound(AVPSoundEvents.INSTANCE.entityParasiteImpregnate.get());
+        parasite.playSound(AVPSoundEvents.INSTANCE.entityParasiteImpregnate.get(), 0.2F, 1F);
+        ticksOnHost = 0;
     }
 }
