@@ -4,7 +4,7 @@ import org.avp.api.entity.ai.GOAPBrain;
 import org.avp.api.entity.ai.plan.Planner;
 import org.avp.api.entity.ai.sensor.impl.NearbyEntitiesSensor;
 import org.avp.api.entity.ai.sensor.impl.NearbyLivingEntitiesSensor;
-import org.avp.api.entity.ai.sensor.impl.TargetSensor;
+import org.avp.api.entity.ai.sensor.impl.ClosestTargetSensor;
 import org.avp.common.entity.AVPAbstractOvamorph;
 import org.avp.common.entity.ai.ovamorph.goal.DisturbedGoal;
 import org.avp.common.entity.ai.ovamorph.goal.OpenGoal;
@@ -33,6 +33,6 @@ public class OvamorphBrain extends GOAPBrain {
                 .disableIf(() -> !ovamorph.hasFacehugger())
         );
         sensors.add(new NearbyLivingEntitiesSensor(cache));
-        sensors.add(new TargetSensor(cache, ovamorph, AVPPredicates.IS_HOST));
+        sensors.add(new ClosestTargetSensor(cache, ovamorph, AVPPredicates.IS_HOST));
     }
 }

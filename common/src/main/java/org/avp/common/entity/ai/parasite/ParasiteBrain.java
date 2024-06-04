@@ -5,7 +5,7 @@ import org.avp.api.entity.ai.action.impl.LeapTowardsTargetAction;
 import org.avp.api.entity.ai.plan.Planner;
 import org.avp.api.entity.ai.sensor.impl.NearbyEntitiesSensor;
 import org.avp.api.entity.ai.sensor.impl.NearbyLivingEntitiesSensor;
-import org.avp.api.entity.ai.sensor.impl.TargetSensor;
+import org.avp.api.entity.ai.sensor.impl.ClosestTargetSensor;
 import org.avp.common.entity.AVPAbstractParasite;
 import org.avp.api.entity.ai.goal.impl.RideTargetGoal;
 import org.avp.common.entity.ai.parasite.goal.ParasiteIdleMoveGoal;
@@ -46,7 +46,7 @@ public class ParasiteBrain extends GOAPBrain {
         );
         sensors.add(new NearbyLivingEntitiesSensor(cache));
         sensors.add(
-            new TargetSensor(
+            new ClosestTargetSensor(
                 cache,
                 parasite,
                 maybeTarget -> AVPPredicates.IS_HOST.test(maybeTarget) &&
