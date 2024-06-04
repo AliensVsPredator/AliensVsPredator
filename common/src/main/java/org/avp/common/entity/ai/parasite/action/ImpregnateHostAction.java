@@ -9,7 +9,7 @@ import java.util.Objects;
 
 public class ImpregnateHostAction extends Action {
 
-    private static final int TICKS_UNTIL_TOOB_ACTION = 2 * 20;
+    private static final int MAX_TICKS_UNTIL_TOOB = 2 * 20;
 
     private int ticksOnHost;
 
@@ -35,7 +35,7 @@ public class ImpregnateHostAction extends Action {
 
         ticksOnHost++;
 
-        if(ticksOnHost <= TICKS_UNTIL_TOOB_ACTION) {
+        if(ticksOnHost <= MAX_TICKS_UNTIL_TOOB) {
             if (parasite.tickCount % 10 == 0 && vehicle instanceof LivingEntity livingEntity) {
                 livingEntity.hurt(parasite.damageSources().inWall(), 0F);
             }
