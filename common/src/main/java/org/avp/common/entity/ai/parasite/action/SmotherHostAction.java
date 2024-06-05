@@ -1,6 +1,7 @@
 package org.avp.common.entity.ai.parasite.action;
 
 import net.minecraft.world.entity.LivingEntity;
+import org.avp.api.entity.ai.CostConstraint;
 import org.avp.api.entity.ai.action.Action;
 import org.avp.common.entity.AVPAbstractParasite;
 
@@ -13,6 +14,11 @@ public class SmotherHostAction extends Action {
     public SmotherHostAction(AVPAbstractParasite parasite, int smotherTimeInTicks) {
         this.parasite = parasite;
         this.smotherTimeInTicks = smotherTimeInTicks;
+    }
+
+    @Override
+    public CostConstraint createCostConstraint() {
+        return CostConstraint.DEFAULT;
     }
 
     @Override

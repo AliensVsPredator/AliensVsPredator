@@ -1,6 +1,7 @@
 package org.avp.api.entity.ai.action;
 
 import net.minecraft.util.RandomSource;
+import org.avp.api.entity.ai.CostConstraint;
 
 public abstract class CooldownAction extends Action {
 
@@ -17,6 +18,11 @@ public abstract class CooldownAction extends Action {
         if (hasInitialCooldown) {
             resetCooldown();
         }
+    }
+
+    @Override
+    public CostConstraint createCostConstraint() {
+        return new CostConstraint(0, cooldownInterval * 2);
     }
 
     @Override

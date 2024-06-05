@@ -1,7 +1,7 @@
 package org.avp.api.entity.ai.goal;
 
 import org.avp.api.entity.ai.action.Action;
-import org.avp.api.entity.ai.ProgressKey;
+import org.avp.api.entity.ai.progress.ProgressKey;
 
 import java.util.Comparator;
 import java.util.HashSet;
@@ -50,7 +50,9 @@ public abstract class Goal {
     public Optional<Action> getBestAction() {
         return availableActions.stream()
             .filter(Action::isValid)
-            .min(Comparator.comparingInt(Action::getCost));
+            .min(Comparator.comparingInt(
+                action -> action.getCostConstraint().apply(action.getCost())
+            ));
     }
 
     public final Optional<ProgressKey> getProgresses() {

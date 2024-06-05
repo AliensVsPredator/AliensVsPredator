@@ -3,6 +3,7 @@ package org.avp.api.entity.ai.action.impl;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.phys.Vec3;
+import org.avp.api.entity.ai.CostConstraint;
 import org.avp.api.entity.ai.action.CooldownAction;
 
 import java.util.Objects;
@@ -31,6 +32,11 @@ public class LeapTowardsTargetAction extends CooldownAction {
     }
 
     @Override
+    public CostConstraint createCostConstraint() {
+        return new CostConstraint(MIN_LEAP_DISTANCE, MAX_LEAP_DISTANCE);
+    }
+
+    @Override
     public boolean isValid() {
         return super.isValid() &&
             mob.getTarget() != null &&
@@ -42,7 +48,7 @@ public class LeapTowardsTargetAction extends CooldownAction {
     public int getCost() {
         var target = Objects.requireNonNull(mob.getTarget());
         var distanceToHost = mob.distanceTo(target);
-        return (int) Mth.map(distanceToHost, MIN_LEAP_DISTANCE, MAX_LEAP_DISTANCE, 0F, 100F);
+        return (int) distanceToHost;
     }
 
     @Override

@@ -1,6 +1,7 @@
 package org.avp.common.entity.ai.parasite.action;
 
 import net.minecraft.world.entity.LivingEntity;
+import org.avp.api.entity.ai.CostConstraint;
 import org.avp.api.entity.ai.action.Action;
 import org.avp.common.entity.AVPAbstractParasite;
 import org.avp.common.sound.AVPSoundEvents;
@@ -17,6 +18,11 @@ public class ImpregnateHostAction extends Action {
 
     public ImpregnateHostAction(AVPAbstractParasite parasite) {
         this.parasite = parasite;
+    }
+
+    @Override
+    public CostConstraint createCostConstraint() {
+        return CostConstraint.DEFAULT;
     }
 
     @Override

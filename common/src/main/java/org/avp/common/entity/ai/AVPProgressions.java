@@ -1,6 +1,6 @@
 package org.avp.common.entity.ai;
 
-import org.avp.api.entity.ai.ProgressKey;
+import org.avp.api.entity.ai.progress.ProgressKey;
 
 public class AVPProgressions {
     // Ovamorph

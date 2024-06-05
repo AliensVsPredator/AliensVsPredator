@@ -1,7 +1,7 @@
 package org.avp.api.entity.ai.action.impl;
 
-import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Mob;
+import org.avp.api.entity.ai.CostConstraint;
 import org.avp.api.entity.ai.action.Action;
 
 import java.util.Objects;
@@ -15,6 +15,11 @@ public class MoveToTargetAction extends Action {
     }
 
     @Override
+    public CostConstraint createCostConstraint() {
+        return new CostConstraint(0, 16);
+    }
+
+    @Override
     public boolean isValid() {
         return mob.getTarget() != null && mob.onGround();
     }
@@ -23,7 +28,7 @@ public class MoveToTargetAction extends Action {
     public int getCost() {
         var target = Objects.requireNonNull(mob.getTarget());
         var distanceToHost = mob.distanceTo(target);
-        return (int) Mth.map(distanceToHost, 0F, 16F, 0F, 100F);
+        return (int) distanceToHost;
     }
 
     @Override

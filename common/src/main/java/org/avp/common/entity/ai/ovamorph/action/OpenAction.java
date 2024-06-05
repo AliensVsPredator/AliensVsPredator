@@ -1,5 +1,6 @@
 package org.avp.common.entity.ai.ovamorph.action;
 
+import org.avp.api.entity.ai.CostConstraint;
 import org.avp.api.entity.ai.action.Action;
 import org.avp.common.entity.AVPAbstractOvamorph;
 import org.avp.common.sound.AVPSoundEvents;
@@ -10,6 +11,11 @@ public class OpenAction extends Action {
 
     public OpenAction(AVPAbstractOvamorph ovamorph) {
         this.ovamorph = ovamorph;
+    }
+
+    @Override
+    public CostConstraint createCostConstraint() {
+        return CostConstraint.DEFAULT;
     }
 
     @Override

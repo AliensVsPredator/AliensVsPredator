@@ -1,6 +1,6 @@
 package org.avp.common.entity.ai.ovamorph.goal;
 
-import org.avp.api.entity.ai.ProgressKey;
+import org.avp.api.entity.ai.progress.ProgressKey;
 import org.avp.api.entity.ai.goal.Goal;
 import org.avp.common.entity.AVPAbstractOvamorph;
 import org.avp.common.entity.ai.AVPProgressions;

@@ -1,6 +1,7 @@
 package org.avp.api.entity.ai.action.impl;
 
 import net.minecraft.world.entity.Mob;
+import org.avp.api.entity.ai.CostConstraint;
 import org.avp.api.entity.ai.action.Action;
 
 import java.util.Objects;
@@ -11,6 +12,11 @@ public class RideTargetAction extends Action {
 
     public RideTargetAction(Mob mob) {
         this.mob = mob;
+    }
+
+    @Override
+    public CostConstraint createCostConstraint() {
+        return CostConstraint.DEFAULT;
     }
 
     @Override
