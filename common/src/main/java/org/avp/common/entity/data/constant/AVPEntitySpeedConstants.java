@@ -49,7 +49,7 @@ public class AVPEntitySpeedConstants {
 
     public static final double WARRIOR_RUNNER_SPEED = PLAYER_SPRINT_JUMP_SPEED * 1.1;
 
-    public static final double YAUTJA_SPEED = PLAYER_SPRINT_JUMP_SPEED;
+    public static final double YAUTJA_SPEED = PLAYER_SPRINT_SPEED * 1.2;
 
     private AVPEntitySpeedConstants() {
         throw new UnsupportedOperationException();
