@@ -28,6 +28,7 @@
         "MixinMob_PerformGOAPLogic",
         "MixinMob_ProvideAmbientSounds",
         "MixinMonster_ProvideHurtAndDeathSounds",
+        "MixinShearsItem_ExpandShearableBlocks",
         "MixinVillagerHostilesSensor_RunFromAVPMonsters",
         "server.MixinServerLevel",
         "server.MixinServerPlayer_PressureSuitProvidesAir"
