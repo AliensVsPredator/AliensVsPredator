@@ -33,6 +33,7 @@ public abstract class MixinMob_PerformGOAPLogic extends LivingEntity {
 
         if (goapBrain == null) {
             goapBrain = goapBrainUser.createGOAPBrain();
+            goapBrain.init();
         }
 
         goapBrain.tick();
