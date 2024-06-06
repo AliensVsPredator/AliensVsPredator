@@ -13,6 +13,9 @@ import org.avp.api.block.BlockHolderSetData;
 import org.avp.api.block.BlockTagData;
 import org.avp.api.block.model.BlockModelData;
 import org.avp.common.registry.AVPDeferredBlockRegistry;
+import org.avp.common.tag.AVPBlockTags;
+
+import java.util.Set;
 
 public class AVPPaddingBlocks extends AVPDeferredBlockRegistry {
 
@@ -75,7 +78,8 @@ public class AVPPaddingBlocks extends AVPDeferredBlockRegistry {
     }
 
     private PaddingBlockSet createSet(Item dyeItem, String prefix, BlockBehaviour.Properties properties) {
-        var blockData = new BlockData(prefix, BlockModelData.cube(properties), BlockTagData.none());
+        var blockTagData = BlockTagData.ofBlock(Set.of(AVPBlockTags.PADDING));
+        var blockData = new BlockData(prefix, BlockModelData.cube(properties), blockTagData);
 
         var panelHolder = createHolder(blockData.withSuffixRegistryName("_panel"));
         var pipesHolder = createHolder(blockData.withSuffixRegistryName("_pipes"));

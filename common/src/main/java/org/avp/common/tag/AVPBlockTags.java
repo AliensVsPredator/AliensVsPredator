@@ -12,6 +12,8 @@ public class AVPBlockTags {
 
     public static final TagKey<Block> INDUSTRIAL_GLASS = create("industrial_glass");
 
+    public static final TagKey<Block> PADDING = create("padding");
+
     public static final TagKey<Block> SHOULD_NOT_BE_DESTROYED = create("should_not_be_destroyed");
 
     private static TagKey<Block> create(String registryName) {
