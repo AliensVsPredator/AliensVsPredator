@@ -1,6 +1,7 @@
 package org.avp.client.render.entity;
 
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.client.renderer.entity.ThrownItemRenderer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 
@@ -58,6 +59,7 @@ import org.avp.common.entity.data.DroneRunnerData;
 import org.avp.common.entity.data.EngineerData;
 import org.avp.common.entity.data.FacehuggerData;
 import org.avp.common.entity.data.FacehuggerRoyalData;
+import org.avp.common.entity.data.GrenadeData;
 import org.avp.common.entity.data.NauticomorphData;
 import org.avp.common.entity.data.OctohuggerData;
 import org.avp.common.entity.data.OvamorphData;
@@ -97,6 +99,9 @@ public class AVPEntityRenderRegistry extends AVPDeferredRegistry<EntityRenderDat
     private AVPEntityRenderRegistry() {
         // Misc. entities
         createHolder(AcidData.INSTANCE.getHolder(), AcidRenderer::new);
+        createHolder(GrenadeData.INSTANCE.getHolder(), ThrownItemRenderer::new);
+
+        // Misc. aliens
         createHolder(BelugabursterData.INSTANCE.getHolder(), BelugabursterRenderer::new);
         createHolder(BelugamorphData.INSTANCE.getHolder(), BelugamorphRenderer::new);
 

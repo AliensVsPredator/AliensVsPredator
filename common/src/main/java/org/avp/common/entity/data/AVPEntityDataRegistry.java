@@ -72,6 +72,8 @@ public class AVPEntityDataRegistry {
         addMobEntry(FacehuggerData.INSTANCE);
         addMobEntry(FacehuggerRoyalData.INSTANCE);
 
+        addEntry(GrenadeData.INSTANCE);
+
         addMobEntry(NauticomorphData.INSTANCE);
 
         addMobEntry(OctohuggerData.INSTANCE);
