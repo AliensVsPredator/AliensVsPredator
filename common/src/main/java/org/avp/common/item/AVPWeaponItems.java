@@ -13,6 +13,7 @@ import org.avp.api.item.model.ItemModelData;
 import org.avp.common.item.weapon.AK47Item;
 import org.avp.common.item.weapon.F90RifleItem;
 import org.avp.common.item.weapon.FlamethrowerSevastopolItem;
+import org.avp.common.item.weapon.GrenadeItem;
 import org.avp.common.item.weapon.M3712ShotgunItem;
 import org.avp.common.item.weapon.M41APulseRifleItem;
 import org.avp.common.item.weapon.M4CarbineItem;
@@ -67,8 +68,8 @@ public class AVPWeaponItems extends AVPDeferredItemRegistry {
     }
 
     private AVPWeaponItems() {
-        grenadeIncendiary = createHolder("grenade_incendiary");
-        grenadeM40 = createHolder("grenade_m40");
+        grenadeIncendiary = createHolder("grenade_incendiary", properties -> new GrenadeItem(properties, true));
+        grenadeM40 = createHolder("grenade_m40", GrenadeItem::new);
 
         // N/A
         weaponFlamethrowerSevastopol = createWeaponHolder("flamethrower_sevastopol", FlamethrowerSevastopolItem::new, Set.of());
