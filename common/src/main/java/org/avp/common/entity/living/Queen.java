@@ -21,6 +21,8 @@ import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.entity.EntityTypeTest;
+import org.avp.api.entity.Morphable;
+import org.avp.common.entity.data.PraetorianData;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -30,7 +32,7 @@ import org.avp.common.sound.AVPSoundEvents;
 import org.avp.common.util.AVPPredicates;
 import org.avp.server.QueenManager;
 
-public class Queen extends Monster implements Boss, GeoEntity {
+public class Queen extends Monster implements Morphable, Boss, GeoEntity {
 
     private static final int SPAWN_MIN_DISTANCE_IN_BLOCKS = 512;
 
@@ -126,5 +128,10 @@ public class Queen extends Monster implements Boss, GeoEntity {
     @Override
     public ServerBossEvent getBossEvent() {
         return bossEvent;
+    }
+
+    @Override
+    public EntityType<?> getEntityTypeForPreviousForm() {
+        return PraetorianData.INSTANCE.getHolder().get();
     }
 }

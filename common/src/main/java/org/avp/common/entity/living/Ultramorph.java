@@ -8,9 +8,11 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.level.Level;
 
+import org.avp.api.entity.Morphable;
 import org.avp.common.entity.ai.AIUtils;
+import org.avp.common.entity.data.ChestbursterData;
 
-public class Ultramorph extends Monster implements GeoEntity {
+public class Ultramorph extends Monster implements Morphable, GeoEntity {
 
     private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
 
@@ -31,5 +33,10 @@ public class Ultramorph extends Monster implements GeoEntity {
     @Override
     public AnimatableInstanceCache getAnimatableInstanceCache() {
         return cache;
+    }
+
+    @Override
+    public EntityType<?> getEntityTypeForPreviousForm() {
+        return ChestbursterData.INSTANCE.getHolder().get();
     }
 }

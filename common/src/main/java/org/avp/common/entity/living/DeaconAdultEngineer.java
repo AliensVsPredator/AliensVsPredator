@@ -8,9 +8,11 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.level.Level;
 
+import org.avp.api.entity.Morphable;
 import org.avp.common.entity.ai.AIUtils;
+import org.avp.common.entity.data.DeaconAdultData;
 
-public class DeaconAdultEngineer extends Monster implements GeoEntity {
+public class DeaconAdultEngineer extends Monster implements Morphable, GeoEntity {
 
     private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
 
@@ -31,5 +33,10 @@ public class DeaconAdultEngineer extends Monster implements GeoEntity {
     @Override
     public AnimatableInstanceCache getAnimatableInstanceCache() {
         return cache;
+    }
+
+    @Override
+    public EntityType<?> getEntityTypeForPreviousForm() {
+        return DeaconAdultData.INSTANCE.getHolder().get();
     }
 }

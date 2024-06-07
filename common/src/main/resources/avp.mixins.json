@@ -27,6 +27,7 @@
         "MixinMob_PerformBossLogic",
         "MixinMob_PerformGOAPLogic",
         "MixinMob_ProvideAmbientSounds",
+        "MixinMob_SpawnEggInteractSpawnsBaby",
         "MixinMonster_ProvideHurtAndDeathSounds",
         "MixinShearsItem_ExpandShearableBlocks",
         "MixinVillagerHostilesSensor_RunFromAVPMonsters",
