@@ -30,6 +30,12 @@ public class AVPBlocks extends AVPDeferredBlockRegistry {
 
     public final FullBlockHolderMetalSet ferroaluminum;
 
+    public final BlockHolderMetalSet gold;
+
+    public final BlockHolderMetalSet iron;
+
+    public final BlockHolderMetalSet netherite;
+
     public final Holder<Block> orioniteBlock;
 
     public final FullBlockHolderMetalSet steel;
@@ -129,6 +135,9 @@ public class AVPBlocks extends AVPDeferredBlockRegistry {
             .strength(15, 12);
 
         var copperProperties = BlockBehaviour.Properties.ofFullCopy(Blocks.COPPER_BLOCK);
+        var goldProperties = BlockBehaviour.Properties.ofFullCopy(Blocks.GOLD_BLOCK);
+        var ironProperties = BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_BLOCK);
+        var netheriteProperties = BlockBehaviour.Properties.ofFullCopy(Blocks.NETHERITE_BLOCK);
 
         var stoneTier = BlockTagData.ofBlock(Set.of(BlockTags.MINEABLE_WITH_PICKAXE, BlockTags.NEEDS_STONE_TOOL));
         var ironTier = BlockTagData.ofBlock(Set.of(BlockTags.MINEABLE_WITH_PICKAXE, BlockTags.NEEDS_IRON_TOOL));
@@ -137,6 +146,9 @@ public class AVPBlocks extends AVPDeferredBlockRegistry {
         aluminum = createFullBlockHolderMetalSet("aluminum", aluminumProperties, stoneTier);
         copper = createBlockHolderMetalSet("copper", copperProperties, stoneTier);
         ferroaluminum = createFullBlockHolderMetalSet("ferroaluminum", ferroaluminumProperties, stoneTier);
+        gold = createBlockHolderMetalSet("gold", goldProperties, ironTier);
+        iron = createBlockHolderMetalSet("iron", ironProperties, ironTier);
+        netherite = createBlockHolderMetalSet("netherite", netheriteProperties, diamondTier);
         orioniteBlock = createHolder("orionite_block", BlockModelData.cube(orioniteProperties), diamondTier);
         steel = createFullBlockHolderMetalSet("steel", steelProperties, ironTier);
         titanium = createFullBlockHolderMetalSet("titanium", titaniumProperties, ironTier);

@@ -10,6 +10,9 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.ItemLike;
 import org.avp.common.data.recipe.impl.block.AVPPlasticBlockRecipes;
+import org.avp.common.data.recipe.impl.material.AVPGoldRecipes;
+import org.avp.common.data.recipe.impl.material.AVPIronRecipes;
+import org.avp.common.data.recipe.impl.material.AVPNetheriteRecipes;
 import org.avp.common.data.recipe.impl.weapon.AVPGrenadeRecipes;
 import org.jetbrains.annotations.NotNull;
 
@@ -58,13 +61,16 @@ public class AVPRecipeProvider extends RecipeProvider {
         AVPBulletRecipes.addRecipes(recipeOutput);
         AVPCobaltRecipes.addCobaltRecipes(recipeOutput);
         AVPCopperRecipes.addCopperRecipes(recipeOutput);
+        AVPElectronicRecipes.addElectronicRecipes(recipeOutput);
         AVPFerroaluminumRecipes.addFerroaluminumRecipes(recipeOutput);
         AVPFoodRecipes.addFoodRecipes(recipeOutput);
         AVPGrenadeRecipes.addGrenadeRecipes(recipeOutput);
-        AVPElectronicRecipes.addElectronicRecipes(recipeOutput);
+        AVPGoldRecipes.addGoldRecipes(recipeOutput);
+        AVPIronRecipes.addIronRecipes(recipeOutput);
         AVPLithiumRecipes.addLithiumRecipes(recipeOutput);
         AVPMaterialsRecipes.addMaterialRecipes(recipeOutput);
         AVPNeodymiumRecipes.addNeodymiumRecipes(recipeOutput);
+        AVPNetheriteRecipes.addNetheriteRecipes(recipeOutput);
         AVPOrioniteRecipes.addOrioniteRecipes(recipeOutput);
         AVPSilicaRecipes.addSilicaRecipes(recipeOutput);
         AVPSteelRecipes.addSteelRecipes(recipeOutput);
