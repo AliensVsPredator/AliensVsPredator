@@ -52,6 +52,7 @@ public class AVPCommon {
         AVPOreBlocks.INSTANCE.register();
         AVPPaddingBlocks.INSTANCE.register();
         AVPParadiseBlocks.INSTANCE.register();
+        AVPPlasticBlocks.INSTANCE.register();
         AVPTempleBlocks.INSTANCE.register();
         AVPUnidentifiedBlocks.INSTANCE.register();
         AVPYautjaShipBlocks.INSTANCE.register();

@@ -1,5 +1,6 @@
 package org.avp.common.data.recipe;
 
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.data.recipes.SimpleCookingRecipeBuilder;
@@ -36,6 +37,10 @@ public final class AVPRecipeHelper {
         AVPShapelessRecipeBuilder.shapeless(recipeCategory, output, 9)
             .requiresAndUnlockIfHas('A', input)
             .save(recipeOutput);
+    }
+
+    public static String getItemName(ItemLike itemLike) {
+        return BuiltInRegistries.ITEM.getKey(itemLike.asItem()).getPath();
     }
 
     public static void oreSmelting(

@@ -9,6 +9,7 @@ import net.minecraft.data.recipes.RecipeProvider;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.ItemLike;
+import org.avp.common.data.recipe.impl.block.AVPPlasticBlockRecipes;
 import org.avp.common.data.recipe.impl.weapon.AVPGrenadeRecipes;
 import org.jetbrains.annotations.NotNull;
 
@@ -77,6 +78,7 @@ public class AVPRecipeProvider extends RecipeProvider {
         AVPIndustrialBlockRecipes.addIndustrialBlockRecipes(recipeOutput);
         AVPIndustrialGlassBlockRecipes.addIndustrialGlassBlockRecipes(recipeOutput);
         AVPPaddingBlockRecipes.addPaddingBlockRecipes(recipeOutput);
+        AVPPlasticBlockRecipes.addPlasticBlockRecipes(recipeOutput);
         AVPTempleBlockRecipes.addTempleBlockRecipes(recipeOutput);
     }
 

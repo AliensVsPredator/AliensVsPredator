@@ -5,9 +5,13 @@ import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.data.recipes.ShapelessRecipeBuilder;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
 
 import org.avp.api.Holder;
+
+import java.util.Arrays;
 
 public class AVPShapelessRecipeBuilder {
 
@@ -47,6 +51,16 @@ public class AVPShapelessRecipeBuilder {
         return this;
     }
 
+    public AVPShapelessRecipeBuilder requiresAndUnlockIfHas(char character, Ingredient ingredient) {
+        shapelessRecipeBuilder.requires(ingredient);
+        var ingredientItemStacks = ingredient.getItems();
+        for (int i = 0; i < ingredientItemStacks.length; i++) {
+            var itemStack = ingredientItemStacks[0];
+            shapelessRecipeBuilder.unlockedBy("has_" + character + "_" + i, AVPRecipeProvider.has(itemStack.getItem()));
+        }
+        return this;
+    }
+
     public AVPShapelessRecipeBuilder requiresAndUnlockIfHas(char character, Holder<? extends ItemLike> itemLikeHolder) {
         return requiresAndUnlockIfHas(character, itemLikeHolder.get());
     }
@@ -63,5 +77,9 @@ public class AVPShapelessRecipeBuilder {
 
     public void save(RecipeOutput recipeOutput) {
         shapelessRecipeBuilder.save(recipeOutput);
+    }
+
+    public void save(RecipeOutput recipeOutput, String name) {
+        shapelessRecipeBuilder.save(recipeOutput, name);
     }
 }
