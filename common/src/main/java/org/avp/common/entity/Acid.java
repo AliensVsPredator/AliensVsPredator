@@ -6,10 +6,13 @@ import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
@@ -28,22 +31,29 @@ import org.avp.server.BlockBreakProgressManager;
 
 public class Acid extends Entity {
 
-    private static final int DEFAULT_MAX_LIFE_IN_TICKS = 20 * 20; // 20 seconds.
+    private static final int DEFAULT_MAX_LIFE_IN_TICKS = 20 * 20; // 10 seconds.
 
-    private static final String MULTIPLIER_KEY = "multiplier";
+    private static final int MAX_MULTIPLIER = 10;
 
-    private static final String TICKS_ALIVE_KEY = "TicksAlive";
+    private static final int MIN_TICKS_UNTIL_PARTICLES = 5;
+
+    private static final String MULTIPLIER_KEY = "Multiplier";
+
+    private static final String TICK_COUNT_FOR_CURRENT_MULTIPLIER = "TickCountForMultiplier";
 
     private static final EntityDataAccessor<Integer> MULTIPLIER = SynchedEntityData.defineId(
         Acid.class,
         EntityDataSerializers.INT
     );
 
-    private int ticksAlive = 0;
+    private int particleTickCounter = 0;
+
+    private int tickCountForCurrentMultiplier = 0;
 
     public Acid(EntityType<? extends Entity> entityType, Level level) {
         super(entityType, level);
         setNoGravity(false);
+        refreshDimensions();
     }
 
     @Override
@@ -54,13 +64,13 @@ public class Acid extends Entity {
     @Override
     protected void readAdditionalSaveData(@NotNull CompoundTag compoundTag) {
         setMultiplier(compoundTag.getInt(MULTIPLIER_KEY));
-        ticksAlive = compoundTag.getInt(TICKS_ALIVE_KEY);
+        tickCountForCurrentMultiplier = compoundTag.getInt(TICK_COUNT_FOR_CURRENT_MULTIPLIER);
     }
 
     @Override
     protected void addAdditionalSaveData(@NotNull CompoundTag compoundTag) {
         compoundTag.putInt(MULTIPLIER_KEY, getMultiplier());
-        compoundTag.putInt(TICKS_ALIVE_KEY, ticksAlive);
+        compoundTag.putInt(TICK_COUNT_FOR_CURRENT_MULTIPLIER, tickCountForCurrentMultiplier);
     }
 
     @Override
@@ -74,13 +84,23 @@ public class Acid extends Entity {
         damageBlock(level);
         damageEntities(level);
 
+        particleTickCounter += getMultiplier();
+
         createParticlesAndSounds(level);
 
-        // Acid disappears twice as fast when in water.
-        ticksAlive += isInWater() ? 2 : 1;
 
-        if (ticksAlive > DEFAULT_MAX_LIFE_IN_TICKS * getMultiplier()) {
-            kill();
+        if (!level.isClientSide) {
+            // Acid disappears twice as fast when in water.
+            tickCountForCurrentMultiplier += getMultiplier() * (isInWater() ? 2 : 1);
+
+            if (tickCountForCurrentMultiplier > DEFAULT_MAX_LIFE_IN_TICKS) {
+                decreaseMultiplier();
+                tickCountForCurrentMultiplier = 0;
+
+                if (getMultiplier() == 0) {
+                    kill();
+                }
+            }
         }
     }
 
@@ -89,7 +109,7 @@ public class Acid extends Entity {
     }
 
     private void damageBlock(Level level) {
-        if (level.isClientSide || tickCount % 20 != 0 || isInWater() || !onGround())
+        if (level.isClientSide || isInWater() || !onGround())
             return;
 
         var blockPos = blockPosition();
@@ -100,10 +120,9 @@ public class Acid extends Entity {
             blockState = level.getBlockState(blockPos);
         }
 
-
         if (!blockState.is(AVPBlockTags.ACID_IMMUNE)) {
             // TODO: Make this break speed configurable.
-            BlockBreakProgressManager.damage(level(), blockPos, 2F * getMultiplier());
+            BlockBreakProgressManager.damage(level(), blockPos, (2F * getMultiplier()) / 20F);
         }
     }
 
@@ -116,7 +135,13 @@ public class Acid extends Entity {
             level.playLocalSound(this, AVPSoundEvents.INSTANCE.blockAcidBurn.get(), SoundSource.NEUTRAL, 1F, 1F);
         }
 
-        for (int i = 0; i < 2 * getMultiplier(); i++) {
+        if (particleTickCounter < MIN_TICKS_UNTIL_PARTICLES) {
+            return;
+        }
+
+        particleTickCounter = 0;
+
+        for (int i = 0; i < getMultiplier(); i++) {
             level.addAlwaysVisibleParticle(ParticleTypes.SMOKE, getRandomX(0.5), getRandomY(), getRandomZ(0.5), 0, 0, 0);
             level.addAlwaysVisibleParticle(
                 AVPParticleTypes.INSTANCE.acid.get(),
@@ -140,7 +165,7 @@ public class Acid extends Entity {
 
     private void damageEntities(Level level) {
         // Entity damage should only be done server-side.
-        if (level.isClientSide || tickCount % 10 != 0)
+        if (level.isClientSide)
             return;
 
         var entities = level.getEntities(
@@ -148,52 +173,74 @@ public class Acid extends Entity {
             getBoundingBox(),
             entity -> AVPPredicates.IS_LIVING.test(entity) || entity instanceof Acid
         );
-        entities.forEach(entity -> {
-            if (entity instanceof Acid) {
-                if (entity.isAlive()) {
-                    entity.remove(RemovalReason.DISCARDED);
-                    setMultiplier(getMultiplier() + 1);
+        entities.forEach(this::damageEntity);
+    }
+
+    private void damageEntity(Entity entity) {
+        if (entity instanceof Acid otherAcid) {
+            if (otherAcid.isAlive()) {
+                otherAcid.remove(RemovalReason.DISCARDED);
+                setMultiplier(getMultiplier() + otherAcid.getMultiplier());
+            }
+            return;
+        }
+
+        if (isInWater() || tickCount % 10 != 0) {
+            return;
+        }
+
+        // Ignore immortal players.
+        if (entity instanceof Player player && AVPPredicates.IS_IMMORTAL.test(player)) {
+            return;
+        }
+
+        if (entity instanceof LivingEntity livingEntity) {
+            var itemStack = livingEntity.getItemBySlot(EquipmentSlot.FEET);
+
+            if (itemStack.is(AVPItemTags.ACID_IMMUNE)) {
+                return;
+            } else if (!itemStack.isEmpty()) {
+                // Damage feet item if present.
+                var damage = (random.nextInt(3) + 3) * getMultiplier();
+                itemStack.setDamageValue(itemStack.getDamageValue() + damage);
+                if (itemStack.getDamageValue() > itemStack.getMaxDamage()) {
+                    itemStack.setCount(0);
                 }
                 return;
             }
+        }
 
-            // Ignore immortal players.
-            if (entity instanceof Player player && AVPPredicates.IS_IMMORTAL.test(player)) {
-                return;
-            }
-
-            if (isInWater()) {
-                return;
-            }
-
-            if (entity instanceof LivingEntity livingEntity) {
-                var itemStack = livingEntity.getItemBySlot(EquipmentSlot.FEET);
-
-                if (itemStack.is(AVPItemTags.ACID_IMMUNE)) {
-                    return;
-                } else if (!itemStack.isEmpty()) {
-                    // Damage feet item if present.
-                    var damage = (random.nextInt(3) + 3) * getMultiplier();
-                    itemStack.setDamageValue(itemStack.getDamageValue() + damage);
-                    if (itemStack.getDamageValue() > itemStack.getMaxDamage()) {
-                        itemStack.setCount(0);
-                    }
-                    return;
-                }
-            }
-
-            if (!entity.getType().is(AVPEntityTypeTags.ACID_IMMUNE)) {
-                AVPDamageSources.INSTANCE.acid.get().hurt(entity, AVPConfig.General.ACID_DAMAGE);
-            }
-        });
+        if (!entity.getType().is(AVPEntityTypeTags.ACID_IMMUNE)) {
+            AVPDamageSources.INSTANCE.acid.get().hurt(entity, AVPConfig.General.ACID_DAMAGE);
+        }
     }
 
     private int getMultiplier() {
         return entityData.get(MULTIPLIER);
     }
 
-    private void setMultiplier(int multiplier) {
-        entityData.set(MULTIPLIER, multiplier);
+    public void setMultiplier(int multiplier) {
+        entityData.set(MULTIPLIER, Mth.clamp(multiplier, 0 ,MAX_MULTIPLIER));
+        tickCountForCurrentMultiplier = 0;
+        refreshDimensions();
+    }
+
+    @Override
+    public void onSyncedDataUpdated(@NotNull EntityDataAccessor<?> entityDataAccessor) {
+        if (MULTIPLIER.equals(entityDataAccessor)) {
+            refreshDimensions();
+        }
+
+        super.onSyncedDataUpdated(entityDataAccessor);
+    }
+
+    @Override
+    public @NotNull EntityDimensions getDimensions(@NotNull Pose pose) {
+        var originalDimensions = super.getDimensions(pose);
+        var originalWidth = originalDimensions.width;
+        var maxScale = 1F / originalWidth;
+        var scaleStep = Mth.map(getMultiplier(), 0, MAX_MULTIPLIER, 1F, maxScale);
+        return originalDimensions.scale(scaleStep, 1);
     }
 
     @Override
