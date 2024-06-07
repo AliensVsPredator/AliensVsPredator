@@ -25,7 +25,7 @@ public class AcidData extends EntityData<Acid> {
         return AVPSimpleDeferredEntityTypeRegistry.INSTANCE.createHolder(
             "acid",
             EntityType.Builder.of(Acid::new, MobCategory.MISC)
-                .sized(0.8F, 0.05F)
+                .sized(0.66F, 0.05F)
         );
     }
 
