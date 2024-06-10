@@ -5,12 +5,12 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
+import org.avp.api.item.weapon.WeaponItemStack;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import org.avp.api.item.weapon.WeaponItemTagHelper;
 import org.avp.api.item.weapon.bullet.effect.BulletEffects;
 import org.avp.common.item.AbstractAVPWeaponItem;
 import org.avp.common.sound.AVPSoundEvents;
@@ -49,8 +49,8 @@ public abstract class MixinLivingEntity_AliensAreImmuneToCertainGuns extends Ent
             return;
         }
 
-        var weaponData = weaponItem.getWeaponItemData();
-        var bulletEffects = WeaponItemTagHelper.getBulletEffects(mainHandItemStack, weaponData);
+        var weaponItemStack = new WeaponItemStack(mainHandItemStack, weaponItem.getWeaponData());
+        var bulletEffects = weaponItemStack.getBulletEffects();
 
         // If the weapon's bullet effect was AP, the xenomorph's immunity is bypassed.
         if (bulletEffects.contains(BulletEffects.ARMOR_PENETRATION)) {

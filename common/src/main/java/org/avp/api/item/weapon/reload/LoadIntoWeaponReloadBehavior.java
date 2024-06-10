@@ -2,10 +2,7 @@ package org.avp.api.item.weapon.reload;
 
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.item.ItemStack;
-
-import org.avp.api.item.weapon.WeaponItemData;
-import org.avp.api.item.weapon.WeaponItemTagHelper;
+import org.avp.api.item.weapon.WeaponItemStack;
 import org.avp.api.item.weapon.ammunition.ConsumeAmmunitionAction;
 import org.avp.api.item.weapon.ammunition.CountAmmunitionAction;
 import org.avp.common.util.AVPPredicates;
@@ -13,26 +10,28 @@ import org.avp.common.util.AVPPredicates;
 public class LoadIntoWeaponReloadBehavior implements ReloadBehavior {
 
     @Override
-    public void tryReload(ServerLevel serverLevel, ServerPlayer serverPlayer, ItemStack itemStack, WeaponItemData weaponItemData) {
+    public void tryReload(ServerLevel serverLevel, ServerPlayer serverPlayer, WeaponItemStack weaponItemStack) {
         // If the weapon already has max ammunition, abort.
-        if (WeaponItemTagHelper.hasMaxAmmunition(itemStack, weaponItemData)) {
+        if (weaponItemStack.hasMaxAmmunition()) {
             return;
         }
 
+        var fireModeData = weaponItemStack.getOrSetFireMode();
+        var ammunitionData = fireModeData.ammunitionData();
+
         // Compute the ammunition item that will be consumed.
-        var ammunitionStrategy = weaponItemData.getAmmunitionStrategy();
-        var activeAmmunitionId = WeaponItemTagHelper.getOrSetActiveAmmunitionType(itemStack, weaponItemData);
-        var ammunitionSupplier = ammunitionStrategy.getAmmunitionSupplierByKeyOrFirst(activeAmmunitionId);
+        var activeAmmunitionId = weaponItemStack.getOrSetActiveAmmunitionType();
+        var ammunitionSupplier = ammunitionData.getAmmunitionSupplierByKeyOrFirst(activeAmmunitionId);
         var ammunitionItem = ammunitionSupplier.get();
         // Compute how much of that ammunition item the player has in their inventory.
         var ammunitionInInventory = CountAmmunitionAction.inPlayerInventoryIncludingShulkerBoxes(serverPlayer, ammunitionItem);
         // Compute how much ammunition is loaded into the weapon.
-        var ammunitionInWeapon = WeaponItemTagHelper.getAmmunition(itemStack, weaponItemData);
+        var ammunitionInWeapon = weaponItemStack.getAmmunition();
         // How much ammunition is needed until the weapon is full again.
-        var ammunitionMissing = weaponItemData.getAmmunitionStrategy().getMaxAmmunition() - ammunitionInWeapon;
+        var ammunitionMissing = ammunitionData.maxAmmunition() - ammunitionInWeapon;
         var isPlayerImmortal = AVPPredicates.IS_IMMORTAL.test(serverPlayer);
         var ammunitionCountToRestore = isPlayerImmortal
-            ? weaponItemData.getAmmunitionStrategy().getMaxAmmunition()
+            ? ammunitionData.maxAmmunition()
             : Math.min(ammunitionInInventory, ammunitionMissing);
 
         // If the player is mortal, try and consume ammunition from their inventory.
@@ -48,8 +47,8 @@ public class LoadIntoWeaponReloadBehavior implements ReloadBehavior {
         }
 
         // Set ammunition to the given count.
-        WeaponItemTagHelper.setActiveAmmunition(itemStack, weaponItemData, ammunitionInWeapon + ammunitionCountToRestore);
+        weaponItemStack.setActiveAmmunition(ammunitionInWeapon + ammunitionCountToRestore);
         // Perform reload logic (weapon cooldown, sound effects, etc.)
-        ReloadAction.perform(serverLevel, serverPlayer, itemStack, weaponItemData);
+        ReloadAction.perform(serverLevel, serverPlayer, weaponItemStack);
     }
 }

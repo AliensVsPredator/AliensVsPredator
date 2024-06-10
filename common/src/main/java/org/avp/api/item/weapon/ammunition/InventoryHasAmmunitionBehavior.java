@@ -9,8 +9,7 @@ import net.minecraft.world.item.ItemStack;
 
 import java.util.Objects;
 
-import org.avp.api.item.weapon.WeaponItemData;
-import org.avp.api.item.weapon.WeaponItemTagHelper;
+import org.avp.api.item.weapon.WeaponItemStack;
 import org.avp.common.util.AVPPredicates;
 
 import static org.avp.api.item.weapon.reload.ReloadBehavior.BLOCK_ENTITY_TAG_ID;
@@ -21,12 +20,11 @@ public class InventoryHasAmmunitionBehavior implements HasAmmunitionBehavior {
     public boolean hasAmmunition(
         ServerLevel serverLevel,
         ServerPlayer serverPlayer,
-        ItemStack weaponItemStack,
-        WeaponItemData weaponItemData
+        WeaponItemStack weaponItemStack
     ) {
-        var activeAmmunitionType = WeaponItemTagHelper.getOrSetActiveAmmunitionType(weaponItemStack, weaponItemData);
-        var ammunitionSupplierOptional = weaponItemData.getAmmunitionStrategy()
-            .getAmmunitionSuppliers()
+        var activeAmmunitionType = weaponItemStack.getOrSetActiveAmmunitionType();
+        var fireModeData = weaponItemStack.getOrSetFireMode();
+        var ammunitionSupplierOptional = fireModeData.ammunitionData().ammunitionSuppliers()
             .stream()
             .filter(ammunitionSupplier -> {
                 var ammunitionItem = ammunitionSupplier.get();

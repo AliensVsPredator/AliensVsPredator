@@ -3,6 +3,7 @@ package org.avp.api;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.Optional;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import org.avp.common.AVPResources;
@@ -37,5 +38,11 @@ public class Holder<T> {
 
     public Optional<T> getOptional() {
         return Optional.ofNullable(get());
+    }
+
+    public void ifPresent(Consumer<T> consumer) {
+        if (object != null) {
+            consumer.accept(object);
+        }
     }
 }

@@ -2,19 +2,16 @@ package org.avp.api.item.weapon.ammunition;
 
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.item.ItemStack;
-
-import org.avp.api.item.weapon.WeaponItemData;
-import org.avp.api.item.weapon.WeaponItemTagHelper;
+import org.avp.api.item.weapon.WeaponItemStack;
 
 @FunctionalInterface
 public interface HasAmmunitionBehavior {
 
-    HasAmmunitionBehavior NO_OP = (s, p, i, w) -> true;
+    HasAmmunitionBehavior NO_OP = (s, p, w) -> true;
 
-    HasAmmunitionBehavior LOADED = (s, p, i, w) -> WeaponItemTagHelper.getAmmunition(i, w) > 0;
+    HasAmmunitionBehavior LOADED = (s, p, w) -> w.getAmmunition() > 0;
 
     HasAmmunitionBehavior INVENTORY = new InventoryHasAmmunitionBehavior();
 
-    boolean hasAmmunition(ServerLevel serverLevel, ServerPlayer serverPlayer, ItemStack itemStack, WeaponItemData weaponItemData);
+    boolean hasAmmunition(ServerLevel serverLevel, ServerPlayer serverPlayer, WeaponItemStack weaponItemStack);
 }
