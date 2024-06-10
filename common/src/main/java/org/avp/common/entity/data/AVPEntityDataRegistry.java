@@ -84,6 +84,8 @@ public class AVPEntityDataRegistry {
 
         addMobEntry(QueenData.INSTANCE);
 
+        addEntry(RocketData.INSTANCE);
+
         addMobEntry(SpitterData.INSTANCE);
 
         addMobEntry(TrilobiteBabyData.INSTANCE);

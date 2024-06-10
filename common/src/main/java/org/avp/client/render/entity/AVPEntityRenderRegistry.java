@@ -66,6 +66,7 @@ import org.avp.common.entity.data.OvamorphData;
 import org.avp.common.entity.data.OvamorphDracoData;
 import org.avp.common.entity.data.PraetorianData;
 import org.avp.common.entity.data.QueenData;
+import org.avp.common.entity.data.RocketData;
 import org.avp.common.entity.data.SpitterData;
 import org.avp.common.entity.data.TrilobiteBabyData;
 import org.avp.common.entity.data.TrilobiteData;
@@ -100,6 +101,7 @@ public class AVPEntityRenderRegistry extends AVPDeferredRegistry<EntityRenderDat
         // Misc. entities
         createHolder(AcidData.INSTANCE.getHolder(), AcidRenderer::new);
         createHolder(GrenadeData.INSTANCE.getHolder(), ThrownItemRenderer::new);
+        createHolder(RocketData.INSTANCE.getHolder(), RocketRenderer::new);
 
         // Misc. aliens
         createHolder(BelugabursterData.INSTANCE.getHolder(), BelugabursterRenderer::new);

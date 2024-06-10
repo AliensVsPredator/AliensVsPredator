@@ -6,15 +6,10 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import org.avp.api.item.weapon.WeaponItemStack;
 
-public class ProjectileWeaponAttack extends AbstractWeaponAttack {
+public abstract class ProjectileWeaponAttack extends AbstractWeaponAttack {
 
     protected ProjectileWeaponAttack(WeaponItemStack weaponItemStack, LivingEntity shooter) {
         super(weaponItemStack, shooter);
-    }
-
-    @Override
-    public void shoot() {
-
     }
 
     @Override
