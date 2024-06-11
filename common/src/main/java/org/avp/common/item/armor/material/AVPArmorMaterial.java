@@ -8,14 +8,14 @@ import net.minecraft.world.level.ItemLike;
 import org.avp.api.Holder;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Arrays;
+import java.util.Map;
 import java.util.Objects;
 import java.util.function.Supplier;
 
 public record AVPArmorMaterial(
     String registryName,
     int durabilityMultiplier,
-    int[] protectionValues,
+    Map<ArmorItem.Type, Integer> protectionValues,
     int enchantmentValue,
     Holder<SoundEvent> equipSoundHolder,
     Supplier<ItemLike> repairIngredientSupplier,
@@ -23,7 +23,12 @@ public record AVPArmorMaterial(
     float knockbackResistance
 ) implements ArmorMaterial {
 
-    private static final int[] BASE_DURABILITY = new int[] { 13, 15, 16, 11 };
+    private static final Map<ArmorItem.Type, Integer> BASE_DURABILITY = Map.ofEntries(
+        Map.entry(ArmorItem.Type.HELMET, 13),
+        Map.entry(ArmorItem.Type.CHESTPLATE, 16),
+        Map.entry(ArmorItem.Type.LEGGINGS, 15),
+        Map.entry(ArmorItem.Type.BOOTS,11)
+    );
 
     public static final class Builder {
 
@@ -31,7 +36,7 @@ public record AVPArmorMaterial(
 
         private int durabilityMultiplier;
 
-        private int[] protectionValues;
+        private Map<ArmorItem.Type, Integer> protectionValues;
 
         private int enchantmentValue;
 
@@ -54,7 +59,24 @@ public record AVPArmorMaterial(
             return this;
         }
 
-        public AVPArmorMaterial.Builder setProtectionValues(int[] protectionValues) {
+        public AVPArmorMaterial.Builder setProtectionValues(Map<ArmorItem.Type, Integer> protectionValues) {
+            var helmet = Objects.requireNonNull(protectionValues.get(ArmorItem.Type.HELMET));
+            var chestplate = Objects.requireNonNull(protectionValues.get(ArmorItem.Type.CHESTPLATE));
+            var leggings = Objects.requireNonNull(protectionValues.get(ArmorItem.Type.LEGGINGS));
+            var boots = Objects.requireNonNull(protectionValues.get(ArmorItem.Type.BOOTS));
+
+            if (
+                // Helmets, boots and leggings must not provide more armor value than a chestplate.
+                helmet > chestplate ||
+                boots > chestplate ||
+                leggings > chestplate ||
+                // Helmets and boots must not provide more armor value than leggings.
+                helmet > leggings ||
+                boots > leggings
+            ) {
+                throw new IllegalArgumentException("Invalid armor value(s)! Helmet: " + helmet + ", Chestplate: " + chestplate + ", Leggings: " + leggings + ", Boots: " + boots);
+            }
+
             this.protectionValues = protectionValues;
             return this;
         }
@@ -90,12 +112,12 @@ public record AVPArmorMaterial(
 
     @Override
     public int getDurabilityForType(@NotNull ArmorItem.Type type) {
-        return BASE_DURABILITY[type.getSlot().getIndex()] * durabilityMultiplier;
+        return BASE_DURABILITY.get(type) * durabilityMultiplier;
     }
 
     @Override
     public int getDefenseForType(@NotNull ArmorItem.Type type) {
-        return protectionValues[type.getSlot().getIndex()];
+        return protectionValues.get(type);
     }
 
     @Override
@@ -126,51 +148,5 @@ public record AVPArmorMaterial(
     @Override
     public float getKnockbackResistance() {
         return knockbackResistance;
-    }
-
-    @Override
-    public boolean equals(Object object) {
-        if (this == object)
-            return true;
-        if (object == null || getClass() != object.getClass())
-            return false;
-        AVPArmorMaterial that = (AVPArmorMaterial) object;
-        return durabilityMultiplier == that.durabilityMultiplier && enchantmentValue == that.enchantmentValue && Float.compare(
-            toughness,
-            that.toughness
-        ) == 0 && Float.compare(knockbackResistance, that.knockbackResistance) == 0 && Objects.equals(registryName, that.registryName)
-            && Arrays.equals(protectionValues, that.protectionValues) && Objects.equals(equipSoundHolder, that.equipSoundHolder) && Objects.equals(
-                repairIngredientSupplier,
-                that.repairIngredientSupplier
-            );
-    }
-
-    @Override
-    public int hashCode() {
-        int result = Objects.hash(
-            registryName,
-            durabilityMultiplier,
-            enchantmentValue,
-            equipSoundHolder,
-            repairIngredientSupplier,
-            toughness,
-            knockbackResistance
-        );
-        result = 31 * result + Arrays.hashCode(protectionValues);
-        return result;
-    }
-
-    @Override
-    public String toString() {
-        return "AVPArmorMaterial{" +
-            "registryName='" + registryName + '\'' +
-            ", durabilityMultiplier=" + durabilityMultiplier +
-            ", protectionValues=" + Arrays.toString(protectionValues) +
-            ", enchantmentValue=" + enchantmentValue +
-            ", equipSoundHolder=" + equipSoundHolder +
-            ", repairIngredientSupplier=" + repairIngredientSupplier +
-            ", toughness=" + toughness +
-            ", knockbackResistance=" + knockbackResistance +
-            '}';
     }
 }

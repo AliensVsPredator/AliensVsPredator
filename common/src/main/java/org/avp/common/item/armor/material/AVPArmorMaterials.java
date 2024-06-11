@@ -1,10 +1,13 @@
 package org.avp.common.item.armor.material;
 
+import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ArmorMaterial;
 import net.minecraft.world.item.Items;
 
 import org.avp.common.item.AVPItems;
 import org.avp.common.sound.AVPSoundEvents;
+
+import java.util.Map;
 
 public class AVPArmorMaterials {
 
@@ -13,7 +16,14 @@ public class AVPArmorMaterials {
         AVPSoundEvents.INSTANCE.itemArmorEquipAluminum,
         AVPItems.INSTANCE.ingotAluminum::get
     )
-        .setProtectionValues(new int[] { 2, 5, 5, 2 })
+        .setProtectionValues(
+            Map.ofEntries(
+                Map.entry(ArmorItem.Type.HELMET, 2),
+                Map.entry(ArmorItem.Type.CHESTPLATE, 5),
+                Map.entry(ArmorItem.Type.LEGGINGS, 5),
+                Map.entry(ArmorItem.Type.BOOTS, 2)
+            )
+        )
         .setDurabilityMultiplier(14)
         .setEnchantmentValue(10)
         .build();
@@ -23,7 +33,14 @@ public class AVPArmorMaterials {
         AVPSoundEvents.INSTANCE.itemArmorEquipMK50,
         () -> Items.COPPER_INGOT
     )
-        .setProtectionValues(new int[] { 2, 4, 3, 2 })
+        .setProtectionValues(
+            Map.ofEntries(
+                Map.entry(ArmorItem.Type.HELMET, 2),
+                Map.entry(ArmorItem.Type.CHESTPLATE, 4),
+                Map.entry(ArmorItem.Type.LEGGINGS, 3),
+                Map.entry(ArmorItem.Type.BOOTS, 2)
+            )
+        )
         .setDurabilityMultiplier(24)
         .setEnchantmentValue(6)
         .build();
@@ -33,7 +50,14 @@ public class AVPArmorMaterials {
         AVPSoundEvents.INSTANCE.itemArmorEquipOrionite,
         AVPItems.INSTANCE.ingotOrionite::get
     )
-        .setProtectionValues(new int[] { 3, 6, 8, 3 })
+        .setProtectionValues(
+            Map.ofEntries(
+                Map.entry(ArmorItem.Type.HELMET, 3),
+                Map.entry(ArmorItem.Type.CHESTPLATE, 8),
+                Map.entry(ArmorItem.Type.LEGGINGS, 6),
+                Map.entry(ArmorItem.Type.BOOTS, 3)
+            )
+        )
         .setDurabilityMultiplier(35)
         .setEnchantmentValue(17)
         .setToughness(2.5F)
@@ -45,7 +69,14 @@ public class AVPArmorMaterials {
         AVPSoundEvents.INSTANCE.itemArmorEquipPressure,
         AVPItems.INSTANCE.ingotAluminum::get
     )
-        .setProtectionValues(new int[] { 2, 4, 3, 2 })
+        .setProtectionValues(
+            Map.ofEntries(
+                Map.entry(ArmorItem.Type.HELMET, 2),
+                Map.entry(ArmorItem.Type.CHESTPLATE, 4),
+                Map.entry(ArmorItem.Type.LEGGINGS, 3),
+                Map.entry(ArmorItem.Type.BOOTS, 2)
+            )
+        )
         .setDurabilityMultiplier(22)
         .setEnchantmentValue(6)
         .build();
@@ -55,7 +86,14 @@ public class AVPArmorMaterials {
         AVPSoundEvents.INSTANCE.itemArmorEquipTactical,
         AVPItems.INSTANCE.ingotAluminum::get
     )
-        .setProtectionValues(new int[] { 2, 6, 3, 2 })
+        .setProtectionValues(
+            Map.ofEntries(
+                Map.entry(ArmorItem.Type.HELMET, 2),
+                Map.entry(ArmorItem.Type.CHESTPLATE, 6),
+                Map.entry(ArmorItem.Type.LEGGINGS, 3),
+                Map.entry(ArmorItem.Type.BOOTS, 2)
+            )
+        )
         .setDurabilityMultiplier(26)
         .setEnchantmentValue(5)
         .build();
@@ -65,7 +103,14 @@ public class AVPArmorMaterials {
         AVPSoundEvents.INSTANCE.itemArmorEquipTitanium,
         AVPItems.INSTANCE.ingotTitanium::get
     )
-        .setProtectionValues(new int[] { 2, 5, 6, 2 })
+        .setProtectionValues(
+            Map.ofEntries(
+                Map.entry(ArmorItem.Type.HELMET, 2),
+                Map.entry(ArmorItem.Type.CHESTPLATE, 6),
+                Map.entry(ArmorItem.Type.LEGGINGS, 5),
+                Map.entry(ArmorItem.Type.BOOTS, 2)
+            )
+        )
         .setDurabilityMultiplier(24)
         .setEnchantmentValue(9)
         .setToughness(1)
@@ -76,7 +121,14 @@ public class AVPArmorMaterials {
         AVPSoundEvents.INSTANCE.itemArmorEquipVeritanium,
         AVPItems.INSTANCE.veritaniumShard::get
     )
-        .setProtectionValues(new int[] { 4, 7, 9, 4 })
+        .setProtectionValues(
+            Map.ofEntries(
+                Map.entry(ArmorItem.Type.HELMET, 4),
+                Map.entry(ArmorItem.Type.CHESTPLATE, 9),
+                Map.entry(ArmorItem.Type.LEGGINGS, 7),
+                Map.entry(ArmorItem.Type.BOOTS, 4)
+            )
+        )
         .setDurabilityMultiplier(34)
         .setEnchantmentValue(0)
         .setToughness(5)
@@ -87,7 +139,14 @@ public class AVPArmorMaterials {
         AVPSoundEvents.INSTANCE.itemArmorEquipXenomorphChitin,
         AVPItems.INSTANCE.xenomorphChitin::get
     )
-        .setProtectionValues(new int[] { 2, 7, 5, 3 })
+        .setProtectionValues(
+            Map.ofEntries(
+                Map.entry(ArmorItem.Type.HELMET, 2),
+                Map.entry(ArmorItem.Type.CHESTPLATE, 7),
+                Map.entry(ArmorItem.Type.LEGGINGS, 5),
+                Map.entry(ArmorItem.Type.BOOTS, 3)
+            )
+        )
         .setDurabilityMultiplier(30)
         .setEnchantmentValue(7)
         .build();
