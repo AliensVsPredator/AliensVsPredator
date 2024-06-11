@@ -5,7 +5,9 @@ import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.Items;
 
+import org.avp.api.Holder;
 import org.avp.common.block.AVPPaddingBlocks;
+import org.avp.common.data.recipe.AVPMetalRecipeHelper;
 import org.avp.common.data.recipe.AVPShapedRecipeBuilder;
 import org.avp.common.data.recipe.AVPShapelessRecipeBuilder;
 
@@ -50,11 +52,15 @@ public final class AVPPaddingBlockRecipes {
             .pattern("AA")
             .save(recipeOutput);
 
+        AVPMetalRecipeHelper.addStandardCutterRecipes(recipeOutput, Holder.empty(), paddingBlockSet.square());
+
         AVPShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, paddingBlockSet.tiles().base(), 4)
             .defineAndUnlockIfHas('A', paddingBlockSet.square().base())
             .pattern("AA")
             .pattern("AA")
             .save(recipeOutput);
+
+        AVPMetalRecipeHelper.addStandardCutterRecipes(recipeOutput, Holder.empty(), paddingBlockSet.tiles());
     }
 
     private AVPPaddingBlockRecipes() {
