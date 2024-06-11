@@ -11,36 +11,36 @@ import org.avp.common.AVPConstants;
 import org.avp.common.data.recipe.AVPRecipeProvider;
 import org.avp.common.data.recipe.AVPShapedRecipeBuilder;
 import org.avp.common.data.recipe.AVPShapelessRecipeBuilder;
-import org.avp.common.item.AVPItems;
+import org.avp.common.registry.item.AVPItemRegistry;
 
 public final class AVPMaterialsRecipes {
 
     public static void addMaterialRecipes(RecipeOutput recipeOutput) {
-        AVPShapedRecipeBuilder.shaped(RecipeCategory.MISC, AVPItems.INSTANCE.carbon, 8)
+        AVPShapedRecipeBuilder.shaped(RecipeCategory.MISC, AVPItemRegistry.INSTANCE.carbon, 8)
             .defineAndUnlockIfHas('A', ItemTags.COALS)
             .pattern("AA")
             .pattern("AA")
             .save(recipeOutput);
 
-        AVPShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, AVPItems.INSTANCE.neodymiumMagnet, 4)
-            .requiresAndUnlockIfHas('A', AVPItems.INSTANCE.neodymium)
-            .requiresAndUnlockIfHas('B', AVPItems.INSTANCE.cobalt, 2)
+        AVPShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, AVPItemRegistry.INSTANCE.neodymiumMagnet, 4)
+            .requiresAndUnlockIfHas('A', AVPItemRegistry.INSTANCE.neodymium)
+            .requiresAndUnlockIfHas('B', AVPItemRegistry.INSTANCE.cobalt, 2)
             .save(recipeOutput);
 
-        AVPShapedRecipeBuilder.shaped(RecipeCategory.MISC, AVPItems.INSTANCE.polycarbonate, 4)
-            .defineAndUnlockIfHas('A', AVPItems.INSTANCE.silica)
-            .defineAndUnlockIfHas('B', AVPItems.INSTANCE.carbon)
+        AVPShapedRecipeBuilder.shaped(RecipeCategory.MISC, AVPItemRegistry.INSTANCE.polycarbonate, 4)
+            .defineAndUnlockIfHas('A', AVPItemRegistry.INSTANCE.silica)
+            .defineAndUnlockIfHas('B', AVPItemRegistry.INSTANCE.carbon)
             .pattern("AAA")
             .pattern("BBB")
             .pattern("BBB")
             .save(recipeOutput);
 
-        var poylmerOutput = AVPItems.INSTANCE.polymer.get();
+        var poylmerOutput = AVPItemRegistry.INSTANCE.polymer.get();
         SimpleCookingRecipeBuilder.smelting(Ingredient.of(Items.SLIME_BALL), RecipeCategory.MISC, poylmerOutput, 0, 200)
             .unlockedBy("has_slime_ball", AVPRecipeProvider.has(Items.SLIME_BALL))
             .save(recipeOutput, AVPConstants.MOD_ID + ":polymer_from_smelting_slime_ball");
 
-        AVPShapedRecipeBuilder.shaped(RecipeCategory.MISC, AVPItems.INSTANCE.bottleTinted, 3)
+        AVPShapedRecipeBuilder.shaped(RecipeCategory.MISC, AVPItemRegistry.INSTANCE.bottleTinted, 3)
             .defineAndUnlockIfHas('A', Items.TINTED_GLASS)
             .pattern("A A")
             .pattern(" A ")

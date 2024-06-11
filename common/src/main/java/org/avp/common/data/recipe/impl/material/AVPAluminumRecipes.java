@@ -3,42 +3,42 @@ package org.avp.common.data.recipe.impl.material;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
 
-import org.avp.common.block.AVPBlocks;
-import org.avp.common.block.AVPOreBlocks;
+import org.avp.common.registry.block.AVPBlockRegistry;
+import org.avp.common.registry.block.AVPOreBlockRegistry;
 import org.avp.common.data.recipe.AVPMetalRecipeHelper;
 import org.avp.common.data.recipe.AVPRecipeHelper;
-import org.avp.common.item.AVPItems;
+import org.avp.common.registry.item.AVPItemRegistry;
 
 public final class AVPAluminumRecipes {
 
     public static void addAluminumRecipes(RecipeOutput recipeOutput) {
-        var ingotHolder = AVPItems.INSTANCE.ingotAluminum;
+        var ingotHolder = AVPItemRegistry.INSTANCE.ingotAluminum;
 
-        AVPMetalRecipeHelper.addFullMetalSetRecipes(recipeOutput, ingotHolder, AVPBlocks.INSTANCE.aluminum);
+        AVPMetalRecipeHelper.addFullMetalSetRecipes(recipeOutput, ingotHolder, AVPBlockRegistry.INSTANCE.aluminum);
 
         // Compressed blocks
         AVPRecipeHelper.compressedBlockRecipe(
             recipeOutput,
             RecipeCategory.BUILDING_BLOCKS,
-            AVPItems.INSTANCE.rawBauxite.get(),
-            AVPOreBlocks.INSTANCE.rawBauxiteBlock.get()
+            AVPItemRegistry.INSTANCE.rawBauxite.get(),
+            AVPOreBlockRegistry.INSTANCE.rawBauxiteBlock.get()
         );
 
         // Decompressed items from blocks
         AVPRecipeHelper.decompressedItemRecipe(
             recipeOutput,
             RecipeCategory.MISC,
-            AVPOreBlocks.INSTANCE.rawBauxiteBlock.get(),
-            AVPItems.INSTANCE.rawBauxite.get()
+            AVPOreBlockRegistry.INSTANCE.rawBauxiteBlock.get(),
+            AVPItemRegistry.INSTANCE.rawBauxite.get()
         );
 
         // Smelting
         AVPRecipeHelper.oreSmelting(
             recipeOutput,
             RecipeCategory.MISC,
-            AVPItems.INSTANCE.rawBauxite,
-            AVPOreBlocks.INSTANCE.oreBauxite,
-            AVPItems.INSTANCE.ingotAluminum
+            AVPItemRegistry.INSTANCE.rawBauxite,
+            AVPOreBlockRegistry.INSTANCE.oreBauxite,
+            AVPItemRegistry.INSTANCE.ingotAluminum
         );
     }
 

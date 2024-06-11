@@ -2,13 +2,13 @@ package org.avp.api.item.weapon;
 
 import net.minecraft.sounds.SoundEvent;
 
-import org.avp.api.Holder;
+import org.avp.api.registry.holder.BLHolder;
 
 public record FireMode(
     String identifier,
     int consumedAmmunition,
     int fireRateInTicks,
-    Holder<SoundEvent> shootSound,
+    BLHolder<SoundEvent> shootSound,
     int shootSoundFrequency,
     double range,
     float recoil
@@ -24,7 +24,7 @@ public record FireMode(
         String identifier,
         int consumedAmmunition,
         int fireRateInTicks,
-        Holder<SoundEvent> shootSound,
+        BLHolder<SoundEvent> shootSound,
         double range,
         float recoil
     ) {

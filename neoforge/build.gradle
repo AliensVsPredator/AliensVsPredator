@@ -1,8 +1,8 @@
 plugins {
     id 'idea'
+    id 'java-library'
     id 'maven-publish'
     id 'net.neoforged.gradle.userdev' version '7.0.81'
-    id 'java-library'
 }
 base {
     archivesName = "${mod_name}-neoforge-${minecraft_version}"
@@ -39,6 +39,7 @@ sourceSets.main.resources { srcDir 'src/generated/resources' }
 
 dependencies {
     implementation "net.neoforged:neoforge:${neoforge_version}"
+    api project(":api")
     compileOnly project(":common")
 }
 

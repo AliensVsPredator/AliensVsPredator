@@ -8,8 +8,8 @@ import net.minecraft.world.level.block.Blocks;
 
 import java.util.concurrent.CompletableFuture;
 
-import org.avp.common.registry.AVPDeferredBlockRegistry;
-import org.avp.common.tag.AVPBlockTags;
+import org.avp.api.registry.AVPDeferredBlockRegistry;
+import org.avp.common.data.tag.AVPBlockTags;
 
 public class AVPBlockTagsProvider extends FabricTagProvider.BlockTagProvider {
 

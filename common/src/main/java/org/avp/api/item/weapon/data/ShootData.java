@@ -1,12 +1,12 @@
 package org.avp.api.item.weapon.data;
 
 import net.minecraft.sounds.SoundEvent;
-import org.avp.api.Holder;
+import org.avp.api.registry.holder.BLHolder;
 
 public record ShootData(
     int backgroundShootSoundFrequencyInTicks,
-    Holder<SoundEvent> backgroundShootSoundHolder,
+    BLHolder<SoundEvent> backgroundShootSoundHolder,
     int shootSoundFrequencyInTicks,
-    Holder<SoundEvent> shootSoundHolder
+    BLHolder<SoundEvent> shootSoundHolder
 ) {
 }

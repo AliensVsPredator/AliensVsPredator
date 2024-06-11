@@ -10,6 +10,7 @@ import net.minecraft.world.item.ItemStack;
 import java.util.Objects;
 
 import org.avp.api.item.weapon.WeaponItemStack;
+import org.avp.api.util.BLPredicates;
 import org.avp.common.util.AVPPredicates;
 
 import static org.avp.api.item.weapon.reload.ReloadBehavior.BLOCK_ENTITY_TAG_ID;
@@ -44,7 +45,7 @@ public class InventoryHasAmmunitionBehavior implements HasAmmunitionBehavior {
                 return true;
             }
 
-            if (AVPPredicates.IS_ITEM_SHULKER_BOX.test(itemStack.getItem())) {
+            if (BLPredicates.IS_ITEM_SHULKER_BOX.test(itemStack.getItem())) {
                 var itemStackTag = itemStack.getTag();
 
                 if (itemStackTag == null)

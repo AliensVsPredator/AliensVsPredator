@@ -5,7 +5,7 @@ import mod.azure.azurelib.common.internal.common.core.animation.AnimatableManage
 import mod.azure.azurelib.common.internal.common.core.animation.AnimationController;
 import mod.azure.azurelib.common.internal.common.core.animation.RawAnimation;
 import mod.azure.azurelib.common.internal.common.core.object.PlayState;
-import org.avp.common.entity.living.Ovamorph;
+import org.avp.common.game.entity.living.alien.base_line.Ovamorph;
 
 import java.util.function.Function;
 

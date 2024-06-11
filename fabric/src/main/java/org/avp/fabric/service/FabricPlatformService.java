@@ -5,7 +5,7 @@ import net.fabricmc.loader.api.FabricLoader;
 
 import java.nio.file.Path;
 
-import org.avp.common.service.PlatformService;
+import org.avp.api.service.PlatformService;
 
 public class FabricPlatformService implements PlatformService {
 

@@ -11,9 +11,9 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 
 import java.util.function.Supplier;
 
-import org.avp.api.Holder;
+import org.avp.api.registry.holder.BLHolder;
 import org.avp.common.AVPConstants;
-import org.avp.common.service.EntityTypeService;
+import org.avp.api.service.EntityTypeService;
 import org.avp.neoforge.util.NeoForgeEntityHolder;
 
 public class NeoForgeEntityTypeService implements EntityTypeService {
@@ -24,7 +24,7 @@ public class NeoForgeEntityTypeService implements EntityTypeService {
     );
 
     @Override
-    public <T extends Entity> Holder<EntityType<T>> createHolder(
+    public <T extends Entity> BLHolder<EntityType<T>> createHolder(
         String registryName,
         Supplier<EntityType<T>> supplier
     ) {
@@ -32,11 +32,11 @@ public class NeoForgeEntityTypeService implements EntityTypeService {
     }
 
     @Override
-    public void register(Holder<EntityType<?>> holder) { /* NO-OP FOR FORGE */ }
+    public void register(BLHolder<EntityType<?>> holder) { /* NO-OP FOR FORGE */ }
 
     @Override
     public SpawnEggItem createSpawnEggItem(
-        Holder<? extends EntityType<? extends Mob>> holder,
+        BLHolder<? extends EntityType<? extends Mob>> holder,
         int backgroundColor,
         int highlightColor,
         Item.Properties properties

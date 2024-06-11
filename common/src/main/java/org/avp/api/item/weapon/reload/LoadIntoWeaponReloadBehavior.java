@@ -5,6 +5,7 @@ import net.minecraft.server.level.ServerPlayer;
 import org.avp.api.item.weapon.WeaponItemStack;
 import org.avp.api.item.weapon.ammunition.ConsumeAmmunitionAction;
 import org.avp.api.item.weapon.ammunition.CountAmmunitionAction;
+import org.avp.api.util.BLPredicates;
 import org.avp.common.util.AVPPredicates;
 
 public class LoadIntoWeaponReloadBehavior implements ReloadBehavior {
@@ -29,7 +30,7 @@ public class LoadIntoWeaponReloadBehavior implements ReloadBehavior {
         var ammunitionInWeapon = weaponItemStack.getAmmunition();
         // How much ammunition is needed until the weapon is full again.
         var ammunitionMissing = ammunitionData.maxAmmunition() - ammunitionInWeapon;
-        var isPlayerImmortal = AVPPredicates.IS_IMMORTAL.test(serverPlayer);
+        var isPlayerImmortal = BLPredicates.IS_IMMORTAL.test(serverPlayer);
         var ammunitionCountToRestore = isPlayerImmortal
             ? ammunitionData.maxAmmunition()
             : Math.min(ammunitionInInventory, ammunitionMissing);

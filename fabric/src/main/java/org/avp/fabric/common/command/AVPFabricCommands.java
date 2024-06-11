@@ -2,7 +2,7 @@ package org.avp.fabric.common.command;
 
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 
-import org.avp.common.command.AVPCommands;
+import org.avp.common.game.command.AVPCommands;
 
 public class AVPFabricCommands {
 

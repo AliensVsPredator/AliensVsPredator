@@ -9,6 +9,7 @@ import net.minecraft.world.item.ItemStack;
 
 import java.util.Objects;
 
+import org.avp.api.util.BLPredicates;
 import org.avp.common.util.AVPPredicates;
 
 import static org.avp.api.item.weapon.reload.ReloadBehavior.BLOCK_ENTITY_TAG_ID;
@@ -28,7 +29,7 @@ public class ConsumeAmmunitionAction {
                 var amountToConsume = Math.min(count, counter);
                 itemStack.setCount(count - amountToConsume);
                 counter -= amountToConsume;
-            } else if (AVPPredicates.IS_ITEM_SHULKER_BOX.test(itemStack.getItem())) {
+            } else if (BLPredicates.IS_ITEM_SHULKER_BOX.test(itemStack.getItem())) {
                 // If the stack item is a shulker box, try to consume ammunition from it.
                 var itemStackTag = itemStack.getTag();
 

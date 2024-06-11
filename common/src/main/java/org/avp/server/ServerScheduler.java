@@ -4,7 +4,7 @@ import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.avp.api.Tuple;
+import org.avp.api.util.Tuple;
 
 public class ServerScheduler {
 

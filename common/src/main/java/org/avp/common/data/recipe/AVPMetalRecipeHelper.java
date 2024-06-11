@@ -5,16 +5,16 @@ import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 
-import org.avp.api.Holder;
-import org.avp.api.block.BlockHolderSet;
-import org.avp.common.block.AVPBlocks;
+import org.avp.api.registry.holder.BLHolder;
+import org.avp.api.registry.holder.BlockHolderSet;
+import org.avp.common.registry.block.AVPBlockRegistry;
 
 public class AVPMetalRecipeHelper {
 
     public static void addFullMetalSetRecipes(
         RecipeOutput recipeOutput,
-        Holder<Item> ingotHolder,
-        AVPBlocks.FullBlockHolderMetalSet fullBlockHolderMetalSet
+        BLHolder<Item> ingotHolder,
+        AVPBlockRegistry.FullBlockHolderMetalSet fullBlockHolderMetalSet
     ) {
         var baseBlockHolder = fullBlockHolderMetalSet.base();
         var baseBlock = baseBlockHolder.get();
@@ -41,8 +41,8 @@ public class AVPMetalRecipeHelper {
 
     public static void addMetalSetRecipes(
         RecipeOutput recipeOutput,
-        Holder<Block> baseBlockHolder,
-        AVPBlocks.BlockHolderMetalSet blockHolderMetalSet
+        BLHolder<Block> baseBlockHolder,
+        AVPBlockRegistry.BlockHolderMetalSet blockHolderMetalSet
     ) {
         // Base -> Plated
         addStandardCutterRecipes(recipeOutput, baseBlockHolder, blockHolderMetalSet.platedSet());
@@ -56,7 +56,7 @@ public class AVPMetalRecipeHelper {
         RecipeUtils.stonecutterBuildingBlock(recipeOutput, baseBlockHolder, blockHolderMetalSet.vent());
     }
 
-    public static void addStandardCutterRecipes(RecipeOutput recipeOutput, Holder<Block> baseBlockHolder, BlockHolderSet blockHolderSet) {
+    public static void addStandardCutterRecipes(RecipeOutput recipeOutput, BLHolder<Block> baseBlockHolder, BlockHolderSet blockHolderSet) {
         var setBaseBlock = blockHolderSet.base().get();
 
         // Base

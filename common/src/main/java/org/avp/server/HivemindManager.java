@@ -8,7 +8,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
-import org.avp.common.entity.ai.hive.Hivemind;
+import org.avp.common.ai.hive.Hivemind;
 
 public class HivemindManager {
 

@@ -12,11 +12,11 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.util.Objects;
 
-import org.avp.api.Holder;
-import org.avp.api.entity.data.EntityData;
-import org.avp.common.entity.data.AVPEntityDataRegistry;
-import org.avp.common.entity.data.sound.EntitySoundData;
-import org.avp.common.tag.AVPEntityTypeTags;
+import org.avp.api.registry.holder.BLHolder;
+import org.avp.api.data.entity.EntityData;
+import org.avp.common.registry.AVPEntityDataRegistry;
+import org.avp.api.data.entity.EntitySoundData;
+import org.avp.common.data.tag.AVPEntityTypeTags;
 
 @Mixin(Mob.class)
 public abstract class MixinMob_ProvideAmbientSounds extends LivingEntity {
@@ -40,7 +40,7 @@ public abstract class MixinMob_ProvideAmbientSounds extends LivingEntity {
                 .findFirst()
                 .flatMap(EntityData::getSoundData)
                 .map(EntitySoundData::ambientSoundEventHolder)
-                .flatMap(Holder::getOptional)
+                .flatMap(BLHolder::getOptional)
                 .orElse(callbackInfoReturnable.getReturnValue())
         );
     }

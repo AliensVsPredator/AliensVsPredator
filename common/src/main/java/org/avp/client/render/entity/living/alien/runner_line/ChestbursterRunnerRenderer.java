@@ -1,0 +1,14 @@
+package org.avp.client.render.entity.living.alien.runner_line;
+
+import mod.azure.azurelib.common.api.client.renderer.GeoEntityRenderer;
+import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import org.avp.client.model.entity.living.alien.runner_line.ChestbursterRunnerModel;
+import org.avp.common.game.entity.living.alien.runner_line.ChestbursterRunner;
+
+public class ChestbursterRunnerRenderer extends GeoEntityRenderer<ChestbursterRunner> {
+
+    public ChestbursterRunnerRenderer(EntityRendererProvider.Context context) {
+        super(context, new ChestbursterRunnerModel());
+        this.withScale(0.5F);
+    }
+}

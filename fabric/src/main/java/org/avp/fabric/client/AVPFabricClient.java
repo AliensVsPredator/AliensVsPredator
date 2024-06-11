@@ -10,10 +10,10 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 
+import org.avp.api.registry.AVPDeferredBlockRegistry;
 import org.avp.client.AVPClientKeyBindings;
-import org.avp.client.render.entity.AVPEntityRenderRegistry;
+import org.avp.client.registry.AVPEntityRenderRegistry;
 import org.avp.client.render.particle.AVPParticleTypeProviders;
-import org.avp.common.registry.AVPDeferredBlockRegistry;
 
 public class AVPFabricClient implements ClientModInitializer {
 

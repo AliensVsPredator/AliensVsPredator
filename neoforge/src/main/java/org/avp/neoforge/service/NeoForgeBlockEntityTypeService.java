@@ -7,9 +7,9 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.registries.DeferredRegister;
-import org.avp.api.Holder;
+import org.avp.api.registry.holder.BLHolder;
 import org.avp.common.AVPConstants;
-import org.avp.common.service.BlockEntityTypeService;
+import org.avp.api.service.BlockEntityTypeService;
 import org.avp.neoforge.util.NeoForgeBlockEntityHolder;
 
 import java.util.function.BiFunction;
@@ -22,10 +22,10 @@ public class NeoForgeBlockEntityTypeService implements BlockEntityTypeService {
     );
 
     @Override
-    public <T extends BlockEntity> Holder<BlockEntityType<T>> createHolder(
+    public <T extends BlockEntity> BLHolder<BlockEntityType<T>> createHolder(
         String registryName,
         BiFunction<BlockPos, BlockState, T> blockEntityFactory,
-        Holder<Block> blockHolder
+        BLHolder<Block> blockHolder
     ) {
         return new NeoForgeBlockEntityHolder<>(
             BLOCK_ENTITY_TYPES,
@@ -35,5 +35,5 @@ public class NeoForgeBlockEntityTypeService implements BlockEntityTypeService {
     }
 
     @Override
-    public void register(Holder<BlockEntityType<?>> holder) { /* NO-OP FOR FORGE */ }
+    public void register(BLHolder<BlockEntityType<?>> holder) { /* NO-OP FOR FORGE */ }
 }

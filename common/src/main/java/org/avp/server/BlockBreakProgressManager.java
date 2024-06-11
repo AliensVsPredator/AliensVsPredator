@@ -8,9 +8,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
-import org.avp.api.Tuple;
+import org.avp.api.util.Tuple;
 import org.avp.common.AVPConstants;
-import org.avp.common.util.TimeUtils;
+import org.avp.api.util.TimeUtils;
 
 public class BlockBreakProgressManager {
 

@@ -8,7 +8,7 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 
 import org.avp.common.AVPConstants;
-import org.avp.common.block.AVPIndustrialGlassBlocks;
+import org.avp.common.registry.block.AVPIndustrialGlassBlockRegistry;
 import org.avp.common.data.recipe.AVPRecipeProvider;
 import org.avp.common.data.recipe.AVPShapedRecipeBuilder;
 
@@ -16,13 +16,13 @@ public final class AVPIndustrialGlassBlockRecipes {
 
     public static void addIndustrialGlassBlockRecipes(RecipeOutput recipeOutput) {
         // Industrial glass originates from blasting regular glass.
-        var industrialGlassOutput = AVPIndustrialGlassBlocks.INSTANCE.glass.get();
+        var industrialGlassOutput = AVPIndustrialGlassBlockRegistry.INSTANCE.glass.get();
         SimpleCookingRecipeBuilder.blasting(Ingredient.of(Items.GLASS), RecipeCategory.MISC, industrialGlassOutput, 0.7F, 100)
             .unlockedBy("has_glass", AVPRecipeProvider.has(Items.GLASS))
             .save(recipeOutput, AVPConstants.MOD_ID + ":industrial_glass_from_blasting_glass");
 
         // Generate recipes for every colored industrial glass block.
-        AVPIndustrialGlassBlocks.getColoredIndustrialGlassEntries().forEach(coloredIndustrialGlassHolder -> {
+        AVPIndustrialGlassBlockRegistry.getColoredIndustrialGlassEntries().forEach(coloredIndustrialGlassHolder -> {
             var coloredIndustrialGlassName = coloredIndustrialGlassHolder.holder().getResourceLocation().getPath();
             var coloredIndustrialGlassBlock = coloredIndustrialGlassHolder.holder().get();
 

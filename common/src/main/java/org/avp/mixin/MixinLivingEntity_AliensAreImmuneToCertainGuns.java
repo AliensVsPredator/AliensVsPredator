@@ -6,18 +6,18 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
 import org.avp.api.item.weapon.WeaponItemStack;
+import org.avp.common.game.sound.AVPSoundEventRegistry;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import org.avp.api.item.weapon.bullet.effect.BulletEffects;
-import org.avp.common.item.AbstractAVPWeaponItem;
-import org.avp.common.sound.AVPSoundEvents;
-import org.avp.common.tag.AVPDamageTypeTags;
-import org.avp.common.tag.AVPEntityTypeTags;
-import org.avp.common.tag.AVPItemTags;
-import org.avp.common.util.MixinUtils;
+import org.avp.common.game.item.AbstractAVPWeaponItem;
+import org.avp.common.data.tag.AVPDamageTypeTags;
+import org.avp.common.data.tag.AVPEntityTypeTags;
+import org.avp.common.data.tag.AVPItemTags;
+import org.avp.api.util.TypeUtil;
 
 @Mixin(LivingEntity.class)
 public abstract class MixinLivingEntity_AliensAreImmuneToCertainGuns extends Entity {
@@ -28,7 +28,7 @@ public abstract class MixinLivingEntity_AliensAreImmuneToCertainGuns extends Ent
 
     @Inject(at = @At("HEAD"), cancellable = true, method = "hurt")
     void ignoresCertainGunDamage(DamageSource damageSource, float damage, CallbackInfoReturnable<Boolean> callbackInfoReturnable) {
-        var self = MixinUtils.<LivingEntity>self(this);
+        var self = TypeUtil.<LivingEntity>self(this);
         var type = self.getType();
 
         if (!type.is(AVPEntityTypeTags.ALIENS))
@@ -63,7 +63,7 @@ public abstract class MixinLivingEntity_AliensAreImmuneToCertainGuns extends Ent
                 type.is(AVPEntityTypeTags.HEAVY_GUNS_IMMUNE) && mainHandItemStack.is(AVPItemTags.HEAVY_GUNS) ||
                 type.is(AVPEntityTypeTags.UBER_GUNS_IMMUNE) && mainHandItemStack.is(AVPItemTags.UBER_GUNS)
         ) {
-            self.playSound(AVPSoundEvents.INSTANCE.itemWeaponFxRicochetGeneric.get());
+            self.playSound(AVPSoundEventRegistry.INSTANCE.itemWeaponFxRicochetGeneric.get());
             callbackInfoReturnable.setReturnValue(false);
         }
     }

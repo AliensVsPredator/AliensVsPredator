@@ -8,7 +8,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import org.avp.common.damage.AVPDamageTypes;
+import org.avp.common.game.damage.AVPDamageTypes;
 
 @Mixin(DamageTypes.class)
 public interface MixinDamageTypes_RegisterModdedDamageTypes {

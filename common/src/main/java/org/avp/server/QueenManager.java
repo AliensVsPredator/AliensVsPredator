@@ -2,13 +2,12 @@ package org.avp.server;
 
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
+import org.avp.common.game.entity.living.alien.base_line.Queen;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
-
-import org.avp.common.entity.living.Queen;
 
 public class QueenManager {
 

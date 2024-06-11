@@ -4,9 +4,9 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.level.Level;
-import org.avp.api.entity.GOAPBrainUser;
-import org.avp.api.entity.ai.GOAPBrain;
-import org.avp.common.util.MixinUtils;
+import org.avp.api.game.entity.GOAPBrainUser;
+import org.avp.api.ai.GOAPBrain;
+import org.avp.api.util.TypeUtil;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -23,7 +23,7 @@ public abstract class MixinMob_PerformGOAPLogic extends LivingEntity {
 
     @Inject(at = @At("HEAD"), method = "tick")
     void tick(CallbackInfo callbackInfo) {
-        var self = MixinUtils.<Mob>self(this);
+        var self = TypeUtil.<Mob>self(this);
         var level = self.level();
 
         if (level.isClientSide)

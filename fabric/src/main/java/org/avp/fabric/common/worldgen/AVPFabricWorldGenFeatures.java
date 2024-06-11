@@ -7,9 +7,9 @@ import net.minecraft.world.level.levelgen.GenerationStep;
 
 import java.util.function.Supplier;
 
-import org.avp.api.Holder;
-import org.avp.common.registry.AVPDeferredRegistry;
-import org.avp.common.worldgen.feature.AVPOreFeatures;
+import org.avp.api.registry.AVPDeferredRegistry;
+import org.avp.api.registry.holder.BLHolder;
+import org.avp.common.game.worldgen.feature.AVPOreFeatures;
 
 public class AVPFabricWorldGenFeatures extends AVPDeferredRegistry<Void> {
 
@@ -18,7 +18,7 @@ public class AVPFabricWorldGenFeatures extends AVPDeferredRegistry<Void> {
     private AVPFabricWorldGenFeatures() {}
 
     @Override
-    protected Holder<Void> createHolder(String registryName, Supplier<Void> supplier) {
+    protected BLHolder<Void> createHolder(String registryName, Supplier<Void> supplier) {
         return null;
     }
 

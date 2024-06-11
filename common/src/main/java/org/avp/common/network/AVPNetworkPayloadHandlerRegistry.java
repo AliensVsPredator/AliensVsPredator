@@ -4,7 +4,7 @@ import org.avp.common.network.payload.ClientboundBulletHitBlockPayload;
 import org.avp.common.network.payload.ServerboundWeaponReloadRequestPayload;
 import org.avp.common.network.payload.ServerboundWeaponSwapAmmunitionTypeRequestPayload;
 import org.avp.common.network.payload.ServerboundWeaponSwapFireModeRequestPayload;
-import org.avp.common.service.Services;
+import org.avp.api.service.Services;
 
 public class AVPNetworkPayloadHandlerRegistry {
 

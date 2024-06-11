@@ -7,27 +7,28 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import org.avp.api.Holder;
-import org.avp.common.service.BlockEntityTypeService;
+import org.avp.api.registry.holder.BLHolder;
+import org.avp.api.service.BlockEntityTypeService;
+import org.avp.common.registry.holder.AVPHolder;
 
 import java.util.function.BiFunction;
 
 public class FabricBlockEntityTypeService implements BlockEntityTypeService {
 
     @Override
-    public <T extends BlockEntity> Holder<BlockEntityType<T>> createHolder(
+    public <T extends BlockEntity> BLHolder<BlockEntityType<T>> createHolder(
         String registryName,
         BiFunction<BlockPos, BlockState, T> blockEntityFactory,
-        Holder<Block> blockHolder
+        BLHolder<Block> blockHolder
     ) {
-        return new Holder<>(
+        return new AVPHolder<>(
             registryName,
             () -> BlockEntityType.Builder.of(blockEntityFactory::apply, blockHolder.get()).build()
         );
     }
 
     @Override
-    public void register(Holder<BlockEntityType<?>> holder) {
+    public void register(BLHolder<BlockEntityType<?>> holder) {
         Registry.register(BuiltInRegistries.BLOCK_ENTITY_TYPE, holder.getResourceLocation(), holder.get());
     }
 }

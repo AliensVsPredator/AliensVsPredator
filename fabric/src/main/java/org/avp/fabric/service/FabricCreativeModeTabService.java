@@ -6,18 +6,19 @@ import net.minecraft.world.item.CreativeModeTab;
 
 import java.util.function.Supplier;
 
-import org.avp.api.Holder;
-import org.avp.common.service.CreativeModeTabService;
+import org.avp.api.registry.holder.BLHolder;
+import org.avp.api.service.CreativeModeTabService;
+import org.avp.common.registry.holder.AVPHolder;
 
 public class FabricCreativeModeTabService implements CreativeModeTabService {
 
     @Override
-    public Holder<CreativeModeTab> createHolder(String registryName, Supplier<CreativeModeTab> supplier) {
-        return new Holder<>(registryName, supplier);
+    public BLHolder<CreativeModeTab> createHolder(String registryName, Supplier<CreativeModeTab> supplier) {
+        return new AVPHolder<>(registryName, supplier);
     }
 
     @Override
-    public void register(Holder<CreativeModeTab> holder) {
+    public void register(BLHolder<CreativeModeTab> holder) {
         Registry.register(BuiltInRegistries.CREATIVE_MODE_TAB, holder.getResourceLocation(), holder.get());
     }
 }

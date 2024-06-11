@@ -5,30 +5,30 @@ import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.ItemLike;
 
-import org.avp.api.Holder;
+import org.avp.api.registry.holder.BLHolder;
 import org.avp.common.data.recipe.AVPShapedRecipeBuilder;
-import org.avp.common.item.AVPAmmunitionPartItems;
-import org.avp.common.item.AVPBulletItems;
-import org.avp.common.item.AVPElectronicItems;
-import org.avp.common.item.AVPItems;
+import org.avp.common.registry.item.AVPAmmunitionPartItemRegistry;
+import org.avp.common.registry.item.AVPBulletItemRegistry;
+import org.avp.common.registry.item.AVPElectronicItemRegistry;
+import org.avp.common.registry.item.AVPItemRegistry;
 
 public final class AVPBulletRecipes {
 
     public static void addRecipes(RecipeOutput recipeOutput) {
-        addBulletSetRecipes(recipeOutput, AVPBulletItems.INSTANCE.bulletCaseless, AVPAmmunitionPartItems.INSTANCE.casingCaseless);
-        addBulletSetRecipes(recipeOutput, AVPBulletItems.INSTANCE.bulletHeavy, AVPAmmunitionPartItems.INSTANCE.casingHeavy);
-        addBulletSetRecipes(recipeOutput, AVPBulletItems.INSTANCE.bulletPistol, AVPAmmunitionPartItems.INSTANCE.casingPistol);
-        addBulletSetRecipes(recipeOutput, AVPBulletItems.INSTANCE.bulletRifle, AVPAmmunitionPartItems.INSTANCE.casingRifle);
-        addBulletSetRecipes(recipeOutput, AVPBulletItems.INSTANCE.bulletShotgun, AVPAmmunitionPartItems.INSTANCE.casingShotgun);
+        addBulletSetRecipes(recipeOutput, AVPBulletItemRegistry.INSTANCE.bulletCaseless, AVPAmmunitionPartItemRegistry.INSTANCE.casingCaseless);
+        addBulletSetRecipes(recipeOutput, AVPBulletItemRegistry.INSTANCE.bulletHeavy, AVPAmmunitionPartItemRegistry.INSTANCE.casingHeavy);
+        addBulletSetRecipes(recipeOutput, AVPBulletItemRegistry.INSTANCE.bulletPistol, AVPAmmunitionPartItemRegistry.INSTANCE.casingPistol);
+        addBulletSetRecipes(recipeOutput, AVPBulletItemRegistry.INSTANCE.bulletRifle, AVPAmmunitionPartItemRegistry.INSTANCE.casingRifle);
+        addBulletSetRecipes(recipeOutput, AVPBulletItemRegistry.INSTANCE.bulletShotgun, AVPAmmunitionPartItemRegistry.INSTANCE.casingShotgun);
     }
 
     private static void addStandardBulletRecipe(
         RecipeOutput recipeOutput,
-        Holder<? extends ItemLike> outputHolder,
-        Holder<? extends ItemLike> casingHolder
+        BLHolder<? extends ItemLike> outputHolder,
+        BLHolder<? extends ItemLike> casingHolder
     ) {
         AVPShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, outputHolder, 16)
-            .defineAndUnlockIfHas('A', AVPAmmunitionPartItems.INSTANCE.bulletTip)
+            .defineAndUnlockIfHas('A', AVPAmmunitionPartItemRegistry.INSTANCE.bulletTip)
             .defineAndUnlockIfHas('B', casingHolder)
             .pattern("A")
             .pattern("B")
@@ -37,12 +37,12 @@ public final class AVPBulletRecipes {
 
     private static void addModifiedBulletRecipe(
         RecipeOutput recipeOutput,
-        Holder<? extends ItemLike> outputHolder,
-        Holder<? extends ItemLike> casingHolder,
+        BLHolder<? extends ItemLike> outputHolder,
+        BLHolder<? extends ItemLike> casingHolder,
         ItemLike itemLikeModification
     ) {
         AVPShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, outputHolder, 16)
-            .defineAndUnlockIfHas('A', AVPAmmunitionPartItems.INSTANCE.bulletTip)
+            .defineAndUnlockIfHas('A', AVPAmmunitionPartItemRegistry.INSTANCE.bulletTip)
             .defineAndUnlockIfHas('B', casingHolder)
             .defineAndUnlockIfHas('C', itemLikeModification)
             .pattern("AC")
@@ -52,21 +52,21 @@ public final class AVPBulletRecipes {
 
     private static void addModifiedBulletRecipe(
         RecipeOutput recipeOutput,
-        Holder<? extends ItemLike> outputHolder,
-        Holder<? extends ItemLike> casingHolder,
-        Holder<? extends ItemLike> modificationHolder
+        BLHolder<? extends ItemLike> outputHolder,
+        BLHolder<? extends ItemLike> casingHolder,
+        BLHolder<? extends ItemLike> modificationHolder
     ) {
         addModifiedBulletRecipe(recipeOutput, outputHolder, casingHolder, modificationHolder.get());
     }
 
     private static void addBulletSetRecipes(
         RecipeOutput recipeOutput,
-        AVPBulletItems.ItemHolderBulletSet itemHolderBulletSet,
-        Holder<? extends ItemLike> casingHolder
+        AVPBulletItemRegistry.ItemHolderBulletSet itemHolderBulletSet,
+        BLHolder<? extends ItemLike> casingHolder
     ) {
         addStandardBulletRecipe(recipeOutput, itemHolderBulletSet.base(), casingHolder);
-        addModifiedBulletRecipe(recipeOutput, itemHolderBulletSet.acid(), casingHolder, AVPItems.INSTANCE.bottleTintedAcid);
-        addModifiedBulletRecipe(recipeOutput, itemHolderBulletSet.electric(), casingHolder, AVPElectronicItems.INSTANCE.capacitor);
+        addModifiedBulletRecipe(recipeOutput, itemHolderBulletSet.acid(), casingHolder, AVPItemRegistry.INSTANCE.bottleTintedAcid);
+        addModifiedBulletRecipe(recipeOutput, itemHolderBulletSet.electric(), casingHolder, AVPElectronicItemRegistry.INSTANCE.capacitor);
         addModifiedBulletRecipe(recipeOutput, itemHolderBulletSet.explosive(), casingHolder, Items.TNT);
         addModifiedBulletRecipe(recipeOutput, itemHolderBulletSet.incendiary(), casingHolder, Items.BLAZE_POWDER);
         addModifiedBulletRecipe(recipeOutput, itemHolderBulletSet.penetration(), casingHolder, Items.OBSIDIAN);

@@ -5,10 +5,9 @@ import mod.azure.azurelib.common.internal.common.core.animation.AnimatableManage
 import mod.azure.azurelib.common.internal.common.core.animation.AnimationController;
 import mod.azure.azurelib.common.internal.common.core.animation.RawAnimation;
 import mod.azure.azurelib.common.internal.common.core.object.PlayState;
+import org.avp.common.game.entity.living.alien.base_line.FacehuggerRoyal;
 
 import java.util.function.Function;
-
-import org.avp.common.entity.living.FacehuggerRoyal;
 
 public class FacehuggerRoyalAnimations {
 

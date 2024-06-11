@@ -1,12 +1,12 @@
 package org.avp.api.item.weapon.data;
 
 import net.minecraft.sounds.SoundEvent;
-import org.avp.api.Holder;
+import org.avp.api.registry.holder.BLHolder;
 
 public record WindData(
     int windUpTimeInTicks,
-    Holder<SoundEvent> windUpSoundHolder,
-    Holder<SoundEvent> windDownSoundHolder
+    BLHolder<SoundEvent> windUpSoundHolder,
+    BLHolder<SoundEvent> windDownSoundHolder
 ) {
-    public static final WindData EMPTY = new WindData(-1, Holder.empty(), Holder.empty());
+    public static final WindData EMPTY = new WindData(-1, BLHolder.empty(), BLHolder.empty());
 }

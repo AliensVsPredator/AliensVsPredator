@@ -5,28 +5,28 @@ import net.minecraft.world.level.block.Blocks;
 
 import java.util.Map;
 
-import org.avp.common.block.AVPEngineerBlocks;
-import org.avp.common.block.AVPIndustrialGlassBlocks;
+import org.avp.common.registry.block.AVPEngineerBlockRegistry;
+import org.avp.common.registry.block.AVPIndustrialGlassBlockRegistry;
 
 public class DerelictSchematicResolver {
 
     public static final Map<String, Block> RESOLVER_MAP = Map.<String, Block>ofEntries(
         Map.entry("avp:blackgoo", Blocks.WATER),
-        Map.entry("avp:engineershipbrick1", AVPEngineerBlocks.INSTANCE.brick1.base().get()),
-        Map.entry("avp:engineershipbrick2", AVPEngineerBlocks.INSTANCE.brick2.base().get()),
-        Map.entry("avp:engineershipbrick3", AVPEngineerBlocks.INSTANCE.brick3.base().get()),
-        Map.entry("avp:engineershipcolumn1", AVPEngineerBlocks.INSTANCE.column1.get()),
-        Map.entry("avp:engineershipcolumn2", AVPEngineerBlocks.INSTANCE.column2.get()),
-        Map.entry("avp:engineershipgravel", AVPEngineerBlocks.INSTANCE.gravel.get()),
-        Map.entry("avp:engineershipmaterial1", AVPEngineerBlocks.INSTANCE.material1.base().get()),
-        Map.entry("avp:engineershipmaterial2", AVPEngineerBlocks.INSTANCE.material2.base().get()),
-        Map.entry("avp:engineershiprock2", AVPEngineerBlocks.INSTANCE.rock2.get()),
-        Map.entry("avp:engineershiprock3", AVPEngineerBlocks.INSTANCE.rock3.get()),
-        Map.entry("avp:engineershipwall1", AVPEngineerBlocks.INSTANCE.wall1.base().get()),
-        Map.entry("avp:engineershipwall2", AVPEngineerBlocks.INSTANCE.wall2.base().get()),
-        Map.entry("avp:engineershipwall3", AVPEngineerBlocks.INSTANCE.wall3.base().get()),
-        Map.entry("avp:engineershipwall4", AVPEngineerBlocks.INSTANCE.wall4.base().get()),
-        Map.entry("avp:industrialglass", AVPIndustrialGlassBlocks.INSTANCE.glass.get()),
+        Map.entry("avp:engineershipbrick1", AVPEngineerBlockRegistry.INSTANCE.brick1.base().get()),
+        Map.entry("avp:engineershipbrick2", AVPEngineerBlockRegistry.INSTANCE.brick2.base().get()),
+        Map.entry("avp:engineershipbrick3", AVPEngineerBlockRegistry.INSTANCE.brick3.base().get()),
+        Map.entry("avp:engineershipcolumn1", AVPEngineerBlockRegistry.INSTANCE.column1.get()),
+        Map.entry("avp:engineershipcolumn2", AVPEngineerBlockRegistry.INSTANCE.column2.get()),
+        Map.entry("avp:engineershipgravel", AVPEngineerBlockRegistry.INSTANCE.gravel.get()),
+        Map.entry("avp:engineershipmaterial1", AVPEngineerBlockRegistry.INSTANCE.material1.base().get()),
+        Map.entry("avp:engineershipmaterial2", AVPEngineerBlockRegistry.INSTANCE.material2.base().get()),
+        Map.entry("avp:engineershiprock2", AVPEngineerBlockRegistry.INSTANCE.rock2.get()),
+        Map.entry("avp:engineershiprock3", AVPEngineerBlockRegistry.INSTANCE.rock3.get()),
+        Map.entry("avp:engineershipwall1", AVPEngineerBlockRegistry.INSTANCE.wall1.base().get()),
+        Map.entry("avp:engineershipwall2", AVPEngineerBlockRegistry.INSTANCE.wall2.base().get()),
+        Map.entry("avp:engineershipwall3", AVPEngineerBlockRegistry.INSTANCE.wall3.base().get()),
+        Map.entry("avp:engineershipwall4", AVPEngineerBlockRegistry.INSTANCE.wall4.base().get()),
+        Map.entry("avp:industrialglass", AVPIndustrialGlassBlockRegistry.INSTANCE.glass.get()),
         Map.entry("minecraft:air", Blocks.AIR),
         Map.entry("minecraft:carrots", Blocks.CARROTS),
         Map.entry("minecraft:potatoes", Blocks.POTATOES),

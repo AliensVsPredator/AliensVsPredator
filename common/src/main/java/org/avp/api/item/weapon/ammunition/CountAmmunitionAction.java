@@ -6,6 +6,7 @@ import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
+import org.avp.api.util.BLPredicates;
 import org.avp.common.util.AVPPredicates;
 
 import static org.avp.api.item.weapon.reload.ReloadBehavior.BLOCK_ENTITY_TAG_ID;
@@ -20,7 +21,7 @@ public class CountAmmunitionAction {
                 continue;
             }
 
-            if (AVPPredicates.IS_ITEM_SHULKER_BOX.test(itemStack.getItem())) {
+            if (BLPredicates.IS_ITEM_SHULKER_BOX.test(itemStack.getItem())) {
                 var itemStackTag = itemStack.getTag();
 
                 if (itemStackTag == null) {

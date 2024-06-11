@@ -16,7 +16,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import org.avp.api.entity.Boss;
-import org.avp.common.util.MixinUtils;
+import org.avp.api.util.TypeUtil;
 
 @Mixin(Mob.class)
 public abstract class MixinMob_PerformBossLogic extends LivingEntity {
@@ -35,7 +35,7 @@ public abstract class MixinMob_PerformBossLogic extends LivingEntity {
     @Inject(at = @At("TAIL"), method = "customServerAiStep")
     void customServerAiStep(CallbackInfo callbackInfo) {
         if (this instanceof Boss boss) {
-            var self = MixinUtils.<Mob>self(this);
+            var self = TypeUtil.<Mob>self(this);
             var level = self.level();
 
             boss.getBossEvent().setProgress(self.getHealth() / self.getMaxHealth());

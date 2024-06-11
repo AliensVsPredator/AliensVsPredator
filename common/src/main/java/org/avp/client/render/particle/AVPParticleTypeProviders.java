@@ -5,16 +5,17 @@ import net.minecraft.core.particles.ParticleType;
 
 import java.util.function.Supplier;
 
-import org.avp.api.Holder;
-import org.avp.common.registry.AVPDeferredRegistry;
-import org.avp.common.service.Services;
+import org.avp.api.client.ParticleProviderData;
+import org.avp.api.registry.holder.BLHolder;
+import org.avp.api.registry.AVPDeferredRegistry;
+import org.avp.api.service.Services;
 
 public class AVPParticleTypeProviders extends AVPDeferredRegistry<ParticleProviderData<ParticleOptions>> {
 
     public static final AVPParticleTypeProviders INSTANCE = new AVPParticleTypeProviders();
 
     @Override
-    protected Holder<ParticleProviderData<ParticleOptions>> createHolder(
+    protected BLHolder<ParticleProviderData<ParticleOptions>> createHolder(
         String registryName,
         Supplier<ParticleProviderData<ParticleOptions>> supplier
     ) {
@@ -29,7 +30,7 @@ public class AVPParticleTypeProviders extends AVPDeferredRegistry<ParticleProvid
         createHolder(
             "acid_provider",
             () -> new ParticleProviderData<>(
-                AVPParticleTypes.INSTANCE.acid,
+                AVPParticleTypeRegistry.INSTANCE.acid,
                 AcidParticleProvider::new
             )
         );

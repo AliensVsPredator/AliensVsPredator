@@ -9,7 +9,7 @@ import net.minecraft.world.level.biome.Biome;
 
 import java.util.concurrent.CompletableFuture;
 
-import org.avp.common.tag.AVPBiomeTags;
+import org.avp.common.data.tag.AVPBiomeTags;
 
 public class AVPBiomeTagsProvider extends FabricTagProvider<Biome> {
 

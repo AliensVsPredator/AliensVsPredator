@@ -13,13 +13,14 @@ import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
-import org.avp.api.Holder;
+import org.avp.api.registry.holder.BLHolder;
 import org.avp.api.item.weapon.WeaponItemStack;
+import org.avp.api.util.BLPredicates;
 import org.avp.common.config.AVPConfig;
-import org.avp.common.damage.AVPDamageSources;
+import org.avp.common.game.damage.AVPDamageSources;
 import org.avp.common.network.payload.ClientboundBulletHitBlockPayload;
-import org.avp.common.service.Services;
-import org.avp.common.tag.AVPBlockTags;
+import org.avp.api.service.Services;
+import org.avp.common.data.tag.AVPBlockTags;
 import org.avp.common.util.AVPPredicates;
 import org.avp.common.util.SoundUtils;
 import org.avp.server.BlockBreakProgressManager;
@@ -35,7 +36,7 @@ public class HitscanWeaponAttack extends AbstractWeaponAttack {
     public void shoot() {
         var hitResult = ProjectileUtil.getHitResultOnViewVector(
             shooter,
-            entity -> entity.getType() == EntityType.END_CRYSTAL || AVPPredicates.IS_LIVING.test(entity),
+            entity -> entity.getType() == EntityType.END_CRYSTAL || BLPredicates.IS_LIVING.test(entity),
             fireModeData.range()
         );
 
@@ -57,7 +58,7 @@ public class HitscanWeaponAttack extends AbstractWeaponAttack {
         var block = blockState.getBlock();
         var soundType = block.getSoundType(blockState);
 
-        Holder<SoundEvent> ricochetSfx = SoundUtils.getRicochetSoundForSoundType(soundType);
+        BLHolder<SoundEvent> ricochetSfx = SoundUtils.getRicochetSoundForSoundType(soundType);
         level.playSound(null, blockPos, ricochetSfx.get(), SoundSource.BLOCKS);
 
         damageBlock(level, blockPos);

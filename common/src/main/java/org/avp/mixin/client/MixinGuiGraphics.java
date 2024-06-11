@@ -12,8 +12,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import javax.annotation.Nullable;
 
-import org.avp.common.item.AbstractAVPWeaponItem;
-import org.avp.common.util.MixinUtils;
+import org.avp.common.game.item.AbstractAVPWeaponItem;
+import org.avp.api.util.TypeUtil;
 
 @Mixin(GuiGraphics.class)
 public abstract class MixinGuiGraphics {
@@ -47,7 +47,7 @@ public abstract class MixinGuiGraphics {
         if (!itemStack.hasTag())
             return;
 
-        var self = MixinUtils.<GuiGraphics>self(this);
+        var self = TypeUtil.<GuiGraphics>self(this);
         var weaponData = weaponItem.getWeaponData();
         var weaponItemStack = new WeaponItemStack(itemStack, weaponData);
         var bulletEffects = weaponItemStack.getBulletEffects();

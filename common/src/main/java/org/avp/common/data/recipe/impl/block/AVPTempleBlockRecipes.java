@@ -7,7 +7,7 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 
 import org.avp.common.AVPConstants;
-import org.avp.common.block.AVPTempleBlocks;
+import org.avp.common.registry.block.AVPTempleBlockRegistry;
 import org.avp.common.data.recipe.AVPRecipeProvider;
 import org.avp.common.data.recipe.AVPShapedRecipeBuilder;
 import org.avp.common.data.recipe.RecipeUtils;
@@ -20,9 +20,9 @@ public final class AVPTempleBlockRecipes {
         addTempleBrickRecipes(recipeOutput);
         addTempleTileRecipes(recipeOutput);
 
-        RecipeUtils.stonecutterBuildingBlock(recipeOutput, AVPTempleBlocks.INSTANCE.floor.base(), AVPTempleBlocks.INSTANCE.wallBase);
+        RecipeUtils.stonecutterBuildingBlock(recipeOutput, AVPTempleBlockRegistry.INSTANCE.floor.base(), AVPTempleBlockRegistry.INSTANCE.wallBase);
 
-        AVPShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, AVPTempleBlocks.INSTANCE.skulls)
+        AVPShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, AVPTempleBlockRegistry.INSTANCE.skulls)
             .defineAndUnlockIfHas('A', Items.SKELETON_SKULL)
             .pattern("AA")
             .pattern("AA")
@@ -32,55 +32,55 @@ public final class AVPTempleBlockRecipes {
     private static void addTempleBrickSingleRecipes(RecipeOutput recipeOutput) {
         RecipeUtils.stonecutterBuildingBlock(
             recipeOutput,
-            AVPTempleBlocks.INSTANCE.floor.base(),
-            AVPTempleBlocks.INSTANCE.brickSingle.base()
+            AVPTempleBlockRegistry.INSTANCE.floor.base(),
+            AVPTempleBlockRegistry.INSTANCE.brickSingle.base()
         );
 
         RecipeUtils.stonecutterBuildingBlock(
             recipeOutput,
-            AVPTempleBlocks.INSTANCE.brickSingle.base(),
-            AVPTempleBlocks.INSTANCE.brickSingle.slab()
+            AVPTempleBlockRegistry.INSTANCE.brickSingle.base(),
+            AVPTempleBlockRegistry.INSTANCE.brickSingle.slab()
         );
         RecipeUtils.stonecutterBuildingBlock(
             recipeOutput,
-            AVPTempleBlocks.INSTANCE.brickSingle.base(),
-            AVPTempleBlocks.INSTANCE.brickSingle.stairs()
+            AVPTempleBlockRegistry.INSTANCE.brickSingle.base(),
+            AVPTempleBlockRegistry.INSTANCE.brickSingle.stairs()
         );
         RecipeUtils.stonecutterBuildingBlock(
             recipeOutput,
-            AVPTempleBlocks.INSTANCE.brickSingle.base(),
-            AVPTempleBlocks.INSTANCE.brickSingle.wall()
+            AVPTempleBlockRegistry.INSTANCE.brickSingle.base(),
+            AVPTempleBlockRegistry.INSTANCE.brickSingle.wall()
         );
-        RecipeUtils.stonecutterBuildingBlock(recipeOutput, AVPTempleBlocks.INSTANCE.brickSingle.base(), AVPTempleBlocks.INSTANCE.wallBase);
+        RecipeUtils.stonecutterBuildingBlock(recipeOutput, AVPTempleBlockRegistry.INSTANCE.brickSingle.base(), AVPTempleBlockRegistry.INSTANCE.wallBase);
     }
 
     private static void addTempleBrickRecipes(RecipeOutput recipeOutput) {
-        RecipeUtils.stonecutterBuildingBlock(recipeOutput, AVPTempleBlocks.INSTANCE.floor.base(), AVPTempleBlocks.INSTANCE.brick.base());
+        RecipeUtils.stonecutterBuildingBlock(recipeOutput, AVPTempleBlockRegistry.INSTANCE.floor.base(), AVPTempleBlockRegistry.INSTANCE.brick.base());
 
-        RecipeUtils.stonecutterBuildingBlock(recipeOutput, AVPTempleBlocks.INSTANCE.brick.base(), AVPTempleBlocks.INSTANCE.brick.slab());
-        RecipeUtils.stonecutterBuildingBlock(recipeOutput, AVPTempleBlocks.INSTANCE.brick.base(), AVPTempleBlocks.INSTANCE.brick.stairs());
-        RecipeUtils.stonecutterBuildingBlock(recipeOutput, AVPTempleBlocks.INSTANCE.brick.base(), AVPTempleBlocks.INSTANCE.brick.wall());
-        RecipeUtils.stonecutterBuildingBlock(recipeOutput, AVPTempleBlocks.INSTANCE.brick.base(), AVPTempleBlocks.INSTANCE.wallBase);
+        RecipeUtils.stonecutterBuildingBlock(recipeOutput, AVPTempleBlockRegistry.INSTANCE.brick.base(), AVPTempleBlockRegistry.INSTANCE.brick.slab());
+        RecipeUtils.stonecutterBuildingBlock(recipeOutput, AVPTempleBlockRegistry.INSTANCE.brick.base(), AVPTempleBlockRegistry.INSTANCE.brick.stairs());
+        RecipeUtils.stonecutterBuildingBlock(recipeOutput, AVPTempleBlockRegistry.INSTANCE.brick.base(), AVPTempleBlockRegistry.INSTANCE.brick.wall());
+        RecipeUtils.stonecutterBuildingBlock(recipeOutput, AVPTempleBlockRegistry.INSTANCE.brick.base(), AVPTempleBlockRegistry.INSTANCE.wallBase);
     }
 
     private static void addTempleTileRecipes(RecipeOutput recipeOutput) {
-        RecipeUtils.stonecutterBuildingBlock(recipeOutput, AVPTempleBlocks.INSTANCE.floor.base(), AVPTempleBlocks.INSTANCE.tile.base());
+        RecipeUtils.stonecutterBuildingBlock(recipeOutput, AVPTempleBlockRegistry.INSTANCE.floor.base(), AVPTempleBlockRegistry.INSTANCE.tile.base());
 
-        RecipeUtils.stonecutterBuildingBlock(recipeOutput, AVPTempleBlocks.INSTANCE.tile.base(), AVPTempleBlocks.INSTANCE.tile.slab());
-        RecipeUtils.stonecutterBuildingBlock(recipeOutput, AVPTempleBlocks.INSTANCE.tile.base(), AVPTempleBlocks.INSTANCE.tile.stairs());
-        RecipeUtils.stonecutterBuildingBlock(recipeOutput, AVPTempleBlocks.INSTANCE.tile.base(), AVPTempleBlocks.INSTANCE.tile.wall());
-        RecipeUtils.stonecutterBuildingBlock(recipeOutput, AVPTempleBlocks.INSTANCE.tile.base(), AVPTempleBlocks.INSTANCE.wallBase);
+        RecipeUtils.stonecutterBuildingBlock(recipeOutput, AVPTempleBlockRegistry.INSTANCE.tile.base(), AVPTempleBlockRegistry.INSTANCE.tile.slab());
+        RecipeUtils.stonecutterBuildingBlock(recipeOutput, AVPTempleBlockRegistry.INSTANCE.tile.base(), AVPTempleBlockRegistry.INSTANCE.tile.stairs());
+        RecipeUtils.stonecutterBuildingBlock(recipeOutput, AVPTempleBlockRegistry.INSTANCE.tile.base(), AVPTempleBlockRegistry.INSTANCE.tile.wall());
+        RecipeUtils.stonecutterBuildingBlock(recipeOutput, AVPTempleBlockRegistry.INSTANCE.tile.base(), AVPTempleBlockRegistry.INSTANCE.wallBase);
     }
 
     private static void addTempleStoneRecipes(RecipeOutput recipeOutput) {
-        var templeStoneOutput = AVPTempleBlocks.INSTANCE.floor.base().get();
+        var templeStoneOutput = AVPTempleBlockRegistry.INSTANCE.floor.base().get();
         SimpleCookingRecipeBuilder.blasting(Ingredient.of(Items.DEEPSLATE), RecipeCategory.MISC, templeStoneOutput, 0, 100)
             .unlockedBy("has_deepslate", AVPRecipeProvider.has(Items.DEEPSLATE))
             .save(recipeOutput, AVPConstants.MOD_ID + ":temple_stone_from_blasting_deepslate");
 
-        RecipeUtils.stonecutterBuildingBlock(recipeOutput, AVPTempleBlocks.INSTANCE.floor.base(), AVPTempleBlocks.INSTANCE.floor.slab());
-        RecipeUtils.stonecutterBuildingBlock(recipeOutput, AVPTempleBlocks.INSTANCE.floor.base(), AVPTempleBlocks.INSTANCE.floor.stairs());
-        RecipeUtils.stonecutterBuildingBlock(recipeOutput, AVPTempleBlocks.INSTANCE.floor.base(), AVPTempleBlocks.INSTANCE.floor.wall());
+        RecipeUtils.stonecutterBuildingBlock(recipeOutput, AVPTempleBlockRegistry.INSTANCE.floor.base(), AVPTempleBlockRegistry.INSTANCE.floor.slab());
+        RecipeUtils.stonecutterBuildingBlock(recipeOutput, AVPTempleBlockRegistry.INSTANCE.floor.base(), AVPTempleBlockRegistry.INSTANCE.floor.stairs());
+        RecipeUtils.stonecutterBuildingBlock(recipeOutput, AVPTempleBlockRegistry.INSTANCE.floor.base(), AVPTempleBlockRegistry.INSTANCE.floor.wall());
     }
 
     private AVPTempleBlockRecipes() {

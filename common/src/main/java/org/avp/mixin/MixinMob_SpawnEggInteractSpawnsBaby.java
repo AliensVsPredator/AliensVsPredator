@@ -9,7 +9,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.SpawnEggItem;
 import net.minecraft.world.level.Level;
 import org.avp.api.entity.Morphable;
-import org.avp.common.util.MixinUtils;
+import org.avp.api.util.TypeUtil;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -26,7 +26,7 @@ public abstract class MixinMob_SpawnEggInteractSpawnsBaby extends LivingEntity {
 
     @Inject(at = @At("HEAD"), method = "mobInteract", cancellable = true)
     void mobInteract(Player player, InteractionHand interactionHand, CallbackInfoReturnable<InteractionResult> callbackInfoReturnable) {
-        var self = MixinUtils.<Mob>self(this);
+        var self = TypeUtil.<Mob>self(this);
         var level = self.level();
 
         if (level.isClientSide) {

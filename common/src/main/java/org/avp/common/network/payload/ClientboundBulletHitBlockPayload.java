@@ -9,7 +9,7 @@ import org.jetbrains.annotations.NotNull;
 
 import org.avp.common.AVPResources;
 import org.avp.common.network.AVPClientListener;
-import org.avp.common.network.ClientboundPacket;
+import org.avp.api.network.ClientboundPacket;
 
 public record ClientboundBulletHitBlockPayload(
     BlockPos blockPos,

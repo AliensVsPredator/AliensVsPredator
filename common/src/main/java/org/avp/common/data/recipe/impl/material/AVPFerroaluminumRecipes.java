@@ -4,24 +4,24 @@ import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.world.item.Items;
 
-import org.avp.api.Holder;
-import org.avp.common.block.AVPBlocks;
+import org.avp.api.registry.holder.BLHolder;
+import org.avp.common.registry.block.AVPBlockRegistry;
 import org.avp.common.data.recipe.AVPMetalRecipeHelper;
 import org.avp.common.data.recipe.AVPShapedRecipeBuilder;
-import org.avp.common.item.AVPItems;
+import org.avp.common.registry.item.AVPItemRegistry;
 
 public final class AVPFerroaluminumRecipes {
 
     public static void addFerroaluminumRecipes(RecipeOutput recipeOutput) {
-        AVPShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, AVPBlocks.INSTANCE.ferroaluminum.base())
+        AVPShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, AVPBlockRegistry.INSTANCE.ferroaluminum.base())
             .defineAndUnlockIfHas('A', Items.IRON_INGOT)
-            .defineAndUnlockIfHas('B', AVPItems.INSTANCE.ingotAluminum)
+            .defineAndUnlockIfHas('B', AVPItemRegistry.INSTANCE.ingotAluminum)
             .pattern("BAB")
             .pattern("AAA")
             .pattern("BAB")
             .save(recipeOutput);
 
-        AVPMetalRecipeHelper.addFullMetalSetRecipes(recipeOutput, Holder.empty(), AVPBlocks.INSTANCE.ferroaluminum);
+        AVPMetalRecipeHelper.addFullMetalSetRecipes(recipeOutput, BLHolder.empty(), AVPBlockRegistry.INSTANCE.ferroaluminum);
     }
 
     private AVPFerroaluminumRecipes() {

@@ -10,28 +10,29 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 
 import java.util.function.Supplier;
 
-import org.avp.api.Holder;
-import org.avp.common.item.AVPItemBlockItems;
-import org.avp.common.service.BlockService;
-import org.avp.common.service.Services;
+import org.avp.api.registry.holder.BLHolder;
+import org.avp.common.registry.holder.AVPHolder;
+import org.avp.common.registry.item.AVPItemBlockItemRegistry;
+import org.avp.api.service.BlockService;
+import org.avp.api.service.Services;
 
 public class FabricBlockService implements BlockService {
 
     @Override
-    public Holder<Block> createHolder(String registryName, Supplier<Block> supplier) {
-        var holder = new Holder<>(registryName, supplier);
+    public BLHolder<Block> createHolder(String registryName, Supplier<Block> supplier) {
+        var holder = new AVPHolder<>(registryName, supplier);
         var blockItemHolder = Services.ITEM_SERVICE.createHolder(registryName, () -> new BlockItem(holder.get(), new Item.Properties()));
-        AVPItemBlockItems.INSTANCE.addHolder(registryName, blockItemHolder);
+        AVPItemBlockItemRegistry.INSTANCE.addHolder(registryName, blockItemHolder);
         return holder;
     }
 
     @Override
-    public void register(Holder<Block> holder) {
+    public void register(BLHolder<Block> holder) {
         Registry.register(BuiltInRegistries.BLOCK, holder.getResourceLocation(), holder.get());
     }
 
     @Override
-    public StairBlock createStairBlock(Holder<Block> blockHolder, BlockBehaviour.Properties properties) {
+    public StairBlock createStairBlock(BLHolder<Block> blockHolder, BlockBehaviour.Properties properties) {
         return new StairBlock(blockHolder.get().defaultBlockState(), properties);
     }
 }

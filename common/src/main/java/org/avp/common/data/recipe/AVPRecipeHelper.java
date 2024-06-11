@@ -9,7 +9,7 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
 
-import org.avp.api.Holder;
+import org.avp.api.registry.holder.BLHolder;
 import org.avp.common.AVPConstants;
 
 public final class AVPRecipeHelper {
@@ -46,9 +46,9 @@ public final class AVPRecipeHelper {
     public static void oreSmelting(
         RecipeOutput recipeOutput,
         RecipeCategory recipeCategory,
-        Holder<Item> oreItemHolder,
-        Holder<Block> oreBlockHolder,
-        Holder<Item> outputHolder
+        BLHolder<Item> oreItemHolder,
+        BLHolder<Block> oreBlockHolder,
+        BLHolder<Item> outputHolder
     ) {
         var oreItemName = oreItemHolder.getResourceLocation().getPath();
         var oreBlockName = oreBlockHolder.getResourceLocation().getPath();

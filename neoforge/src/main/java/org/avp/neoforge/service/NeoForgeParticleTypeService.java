@@ -7,9 +7,9 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 
 import java.util.function.Supplier;
 
-import org.avp.api.Holder;
+import org.avp.api.registry.holder.BLHolder;
 import org.avp.common.AVPConstants;
-import org.avp.common.service.ParticleTypeService;
+import org.avp.api.service.ParticleTypeService;
 import org.avp.neoforge.util.NeoForgeParticleTypeHolder;
 
 public class NeoForgeParticleTypeService implements ParticleTypeService {
@@ -20,10 +20,10 @@ public class NeoForgeParticleTypeService implements ParticleTypeService {
     );
 
     @Override
-    public <T extends ParticleOptions> Holder<ParticleType<T>> createHolder(String registryName, Supplier<ParticleType<T>> supplier) {
+    public <T extends ParticleOptions> BLHolder<ParticleType<T>> createHolder(String registryName, Supplier<ParticleType<T>> supplier) {
         return new NeoForgeParticleTypeHolder<>(PARTICLE_TYPES, registryName, supplier);
     }
 
     @Override
-    public void register(Holder<ParticleType<?>> holder) { /* NO-OP FOR FORGE */ }
+    public void register(BLHolder<ParticleType<?>> holder) { /* NO-OP FOR FORGE */ }
 }

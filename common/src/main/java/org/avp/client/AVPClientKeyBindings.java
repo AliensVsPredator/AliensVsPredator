@@ -9,11 +9,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.BiConsumer;
 
-import org.avp.api.Tuple;
+import org.avp.api.util.Tuple;
 import org.avp.common.network.payload.ServerboundWeaponReloadRequestPayload;
 import org.avp.common.network.payload.ServerboundWeaponSwapAmmunitionTypeRequestPayload;
 import org.avp.common.network.payload.ServerboundWeaponSwapFireModeRequestPayload;
-import org.avp.common.service.Services;
+import org.avp.api.service.Services;
 
 public class AVPClientKeyBindings {
 

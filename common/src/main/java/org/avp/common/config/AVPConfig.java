@@ -7,7 +7,7 @@ import org.avp.api.config.Category;
 import org.avp.api.config.Config;
 import org.avp.api.config.ConfigParser;
 import org.avp.common.AVPConstants;
-import org.avp.common.service.Services;
+import org.avp.api.service.Services;
 
 /**
  * @author Boston Vanseghi

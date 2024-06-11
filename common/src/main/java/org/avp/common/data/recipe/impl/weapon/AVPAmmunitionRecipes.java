@@ -5,29 +5,29 @@ import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.world.item.Items;
 
 import org.avp.common.data.recipe.AVPShapedRecipeBuilder;
-import org.avp.common.item.AVPAmmunitionPartItems;
-import org.avp.common.item.AVPElectronicItems;
-import org.avp.common.item.AVPItems;
+import org.avp.common.registry.item.AVPAmmunitionPartItemRegistry;
+import org.avp.common.registry.item.AVPElectronicItemRegistry;
+import org.avp.common.registry.item.AVPItemRegistry;
 
 public final class AVPAmmunitionRecipes {
 
     public static void addAmmoRecipes(RecipeOutput recipeOutput) {
-        AVPShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AVPAmmunitionPartItems.INSTANCE.ammoChargePack)
+        AVPShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AVPAmmunitionPartItemRegistry.INSTANCE.ammoChargePack)
             .defineAndUnlockIfHas('A', Items.GOLD_NUGGET)
-            .defineAndUnlockIfHas('B', AVPElectronicItems.INSTANCE.capacitor)
-            .defineAndUnlockIfHas('C', AVPElectronicItems.INSTANCE.resistor)
-            .defineAndUnlockIfHas('D', AVPItems.INSTANCE.polycarbonate)
-            .defineAndUnlockIfHas('E', AVPItems.INSTANCE.dustLithium)
+            .defineAndUnlockIfHas('B', AVPElectronicItemRegistry.INSTANCE.capacitor)
+            .defineAndUnlockIfHas('C', AVPElectronicItemRegistry.INSTANCE.resistor)
+            .defineAndUnlockIfHas('D', AVPItemRegistry.INSTANCE.polycarbonate)
+            .defineAndUnlockIfHas('E', AVPItemRegistry.INSTANCE.dustLithium)
             .pattern("AAA")
             .pattern("BCB")
             .pattern("DED")
             .save(recipeOutput);
 
-        AVPShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AVPAmmunitionPartItems.INSTANCE.ammoFlamethrower)
+        AVPShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AVPAmmunitionPartItemRegistry.INSTANCE.ammoFlamethrower)
             .defineAndUnlockIfHas('A', Items.SLIME_BALL)
-            .defineAndUnlockIfHas('B', AVPItems.INSTANCE.ingotAluminum)
+            .defineAndUnlockIfHas('B', AVPItemRegistry.INSTANCE.ingotAluminum)
             .defineAndUnlockIfHas('C', Items.BLAZE_POWDER)
-            .defineAndUnlockIfHas('D', AVPItems.INSTANCE.polycarbonate)
+            .defineAndUnlockIfHas('D', AVPItemRegistry.INSTANCE.polycarbonate)
             .pattern("DAD")
             .pattern("BCB")
             .pattern("BBB")

@@ -4,41 +4,41 @@ import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
-import org.avp.api.Holder;
-import org.avp.common.block.AVPPlasticBlocks;
+import org.avp.api.registry.holder.BLHolder;
+import org.avp.common.registry.block.AVPPlasticBlockRegistry;
 import org.avp.common.data.recipe.AVPMetalRecipeHelper;
 import org.avp.common.data.recipe.AVPRecipeHelper;
 import org.avp.common.data.recipe.AVPShapedRecipeBuilder;
 import org.avp.common.data.recipe.AVPShapelessRecipeBuilder;
-import org.avp.common.item.AVPItems;
+import org.avp.common.registry.item.AVPItemRegistry;
 
 import java.util.List;
 
 public final class AVPPlasticBlockRecipes {
 
     public static void addPlasticBlockRecipes(RecipeOutput recipeOutput) {
-        AVPShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, AVPPlasticBlocks.INSTANCE.plasticGreen.base().base())
-            .defineAndUnlockIfHas('A', AVPItems.INSTANCE.polymer)
+        AVPShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, AVPPlasticBlockRegistry.INSTANCE.plasticGreen.base().base())
+            .defineAndUnlockIfHas('A', AVPItemRegistry.INSTANCE.polymer)
             .pattern("AA")
             .pattern("AA")
             .save(recipeOutput);
 
         var plasticList = List.of(
-            AVPPlasticBlocks.INSTANCE.plasticBlack,
-            AVPPlasticBlocks.INSTANCE.plasticBlue,
-            AVPPlasticBlocks.INSTANCE.plasticBrown,
-            AVPPlasticBlocks.INSTANCE.plasticCyan,
-            AVPPlasticBlocks.INSTANCE.plasticGreen,
-            AVPPlasticBlocks.INSTANCE.plasticLightBlue,
-            AVPPlasticBlocks.INSTANCE.plasticLightGray,
-            AVPPlasticBlocks.INSTANCE.plasticLime,
-            AVPPlasticBlocks.INSTANCE.plasticMagenta,
-            AVPPlasticBlocks.INSTANCE.plasticOrange,
-            AVPPlasticBlocks.INSTANCE.plasticPink,
-            AVPPlasticBlocks.INSTANCE.plasticPurple,
-            AVPPlasticBlocks.INSTANCE.plasticRed,
-            AVPPlasticBlocks.INSTANCE.plasticWhite,
-            AVPPlasticBlocks.INSTANCE.plasticYellow
+            AVPPlasticBlockRegistry.INSTANCE.plasticBlack,
+            AVPPlasticBlockRegistry.INSTANCE.plasticBlue,
+            AVPPlasticBlockRegistry.INSTANCE.plasticBrown,
+            AVPPlasticBlockRegistry.INSTANCE.plasticCyan,
+            AVPPlasticBlockRegistry.INSTANCE.plasticGreen,
+            AVPPlasticBlockRegistry.INSTANCE.plasticLightBlue,
+            AVPPlasticBlockRegistry.INSTANCE.plasticLightGray,
+            AVPPlasticBlockRegistry.INSTANCE.plasticLime,
+            AVPPlasticBlockRegistry.INSTANCE.plasticMagenta,
+            AVPPlasticBlockRegistry.INSTANCE.plasticOrange,
+            AVPPlasticBlockRegistry.INSTANCE.plasticPink,
+            AVPPlasticBlockRegistry.INSTANCE.plasticPurple,
+            AVPPlasticBlockRegistry.INSTANCE.plasticRed,
+            AVPPlasticBlockRegistry.INSTANCE.plasticWhite,
+            AVPPlasticBlockRegistry.INSTANCE.plasticYellow
         );
 
         for (int i = 0; i < plasticList.size(); i++) {
@@ -54,26 +54,26 @@ public final class AVPPlasticBlockRecipes {
                 .save(recipeOutput, "dye_" + AVPRecipeHelper.getItemName(baseBlock.get()));
         }
 
-        addPlasticBlockRecipeSet(AVPPlasticBlocks.INSTANCE.plasticBlack, recipeOutput);
-        addPlasticBlockRecipeSet(AVPPlasticBlocks.INSTANCE.plasticBlue, recipeOutput);
-        addPlasticBlockRecipeSet(AVPPlasticBlocks.INSTANCE.plasticBrown, recipeOutput);
-        addPlasticBlockRecipeSet(AVPPlasticBlocks.INSTANCE.plasticCyan, recipeOutput);
-        addPlasticBlockRecipeSet(AVPPlasticBlocks.INSTANCE.plasticGray, recipeOutput);
-        addPlasticBlockRecipeSet(AVPPlasticBlocks.INSTANCE.plasticGreen, recipeOutput);
-        addPlasticBlockRecipeSet(AVPPlasticBlocks.INSTANCE.plasticLightBlue, recipeOutput);
-        addPlasticBlockRecipeSet(AVPPlasticBlocks.INSTANCE.plasticLightGray, recipeOutput);
-        addPlasticBlockRecipeSet(AVPPlasticBlocks.INSTANCE.plasticLime, recipeOutput);
-        addPlasticBlockRecipeSet(AVPPlasticBlocks.INSTANCE.plasticMagenta, recipeOutput);
-        addPlasticBlockRecipeSet(AVPPlasticBlocks.INSTANCE.plasticOrange, recipeOutput);
-        addPlasticBlockRecipeSet(AVPPlasticBlocks.INSTANCE.plasticPink, recipeOutput);
-        addPlasticBlockRecipeSet(AVPPlasticBlocks.INSTANCE.plasticPurple, recipeOutput);
-        addPlasticBlockRecipeSet(AVPPlasticBlocks.INSTANCE.plasticRed, recipeOutput);
-        addPlasticBlockRecipeSet(AVPPlasticBlocks.INSTANCE.plasticWhite, recipeOutput);
-        addPlasticBlockRecipeSet(AVPPlasticBlocks.INSTANCE.plasticYellow, recipeOutput);
+        addPlasticBlockRecipeSet(AVPPlasticBlockRegistry.INSTANCE.plasticBlack, recipeOutput);
+        addPlasticBlockRecipeSet(AVPPlasticBlockRegistry.INSTANCE.plasticBlue, recipeOutput);
+        addPlasticBlockRecipeSet(AVPPlasticBlockRegistry.INSTANCE.plasticBrown, recipeOutput);
+        addPlasticBlockRecipeSet(AVPPlasticBlockRegistry.INSTANCE.plasticCyan, recipeOutput);
+        addPlasticBlockRecipeSet(AVPPlasticBlockRegistry.INSTANCE.plasticGray, recipeOutput);
+        addPlasticBlockRecipeSet(AVPPlasticBlockRegistry.INSTANCE.plasticGreen, recipeOutput);
+        addPlasticBlockRecipeSet(AVPPlasticBlockRegistry.INSTANCE.plasticLightBlue, recipeOutput);
+        addPlasticBlockRecipeSet(AVPPlasticBlockRegistry.INSTANCE.plasticLightGray, recipeOutput);
+        addPlasticBlockRecipeSet(AVPPlasticBlockRegistry.INSTANCE.plasticLime, recipeOutput);
+        addPlasticBlockRecipeSet(AVPPlasticBlockRegistry.INSTANCE.plasticMagenta, recipeOutput);
+        addPlasticBlockRecipeSet(AVPPlasticBlockRegistry.INSTANCE.plasticOrange, recipeOutput);
+        addPlasticBlockRecipeSet(AVPPlasticBlockRegistry.INSTANCE.plasticPink, recipeOutput);
+        addPlasticBlockRecipeSet(AVPPlasticBlockRegistry.INSTANCE.plasticPurple, recipeOutput);
+        addPlasticBlockRecipeSet(AVPPlasticBlockRegistry.INSTANCE.plasticRed, recipeOutput);
+        addPlasticBlockRecipeSet(AVPPlasticBlockRegistry.INSTANCE.plasticWhite, recipeOutput);
+        addPlasticBlockRecipeSet(AVPPlasticBlockRegistry.INSTANCE.plasticYellow, recipeOutput);
     }
 
-    private static void addPlasticBlockRecipeSet(AVPPlasticBlocks.PlasticBlockSet plasticBlockSet, RecipeOutput recipeOutput) {
-        AVPMetalRecipeHelper.addStandardCutterRecipes(recipeOutput, Holder.empty(), plasticBlockSet.base());
+    private static void addPlasticBlockRecipeSet(AVPPlasticBlockRegistry.PlasticBlockSet plasticBlockSet, RecipeOutput recipeOutput) {
+        AVPMetalRecipeHelper.addStandardCutterRecipes(recipeOutput, BLHolder.empty(), plasticBlockSet.base());
     }
 
     private AVPPlasticBlockRecipes() {

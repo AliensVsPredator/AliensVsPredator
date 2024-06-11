@@ -5,9 +5,9 @@ import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.world.item.Items;
 
 import org.avp.common.data.recipe.AVPShapedRecipeBuilder;
-import org.avp.common.item.AVPAmmunitionPartItems;
-import org.avp.common.item.AVPElectronicItems;
-import org.avp.common.item.AVPItems;
+import org.avp.common.registry.item.AVPAmmunitionPartItemRegistry;
+import org.avp.common.registry.item.AVPElectronicItemRegistry;
+import org.avp.common.registry.item.AVPItemRegistry;
 
 public final class AVPAmmunitionPartRecipes {
 
@@ -18,23 +18,23 @@ public final class AVPAmmunitionPartRecipes {
     }
 
     private static void addCasingRecipes(RecipeOutput recipeOutput) {
-        AVPShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AVPAmmunitionPartItems.INSTANCE.casingPistol)
+        AVPShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AVPAmmunitionPartItemRegistry.INSTANCE.casingPistol)
             .defineAndUnlockIfHas('A', Items.GUNPOWDER)
             .defineAndUnlockIfHas('B', Items.COPPER_INGOT)
             .pattern("A")
             .pattern("B")
             .save(recipeOutput);
 
-        AVPShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AVPAmmunitionPartItems.INSTANCE.casingShotgun)
+        AVPShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AVPAmmunitionPartItemRegistry.INSTANCE.casingShotgun)
             .defineAndUnlockIfHas('A', Items.GUNPOWDER)
             .defineAndUnlockIfHas('B', Items.COPPER_INGOT)
-            .defineAndUnlockIfHas('C', AVPItems.INSTANCE.polymer)
+            .defineAndUnlockIfHas('C', AVPItemRegistry.INSTANCE.polymer)
             .pattern("A")
             .pattern("C")
             .pattern("B")
             .save(recipeOutput);
 
-        AVPShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AVPAmmunitionPartItems.INSTANCE.casingRifle)
+        AVPShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AVPAmmunitionPartItemRegistry.INSTANCE.casingRifle)
             .defineAndUnlockIfHas('A', Items.GUNPOWDER)
             .defineAndUnlockIfHas('B', Items.COPPER_INGOT)
             .pattern("A")
@@ -42,7 +42,7 @@ public final class AVPAmmunitionPartRecipes {
             .pattern("B")
             .save(recipeOutput);
 
-        AVPShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AVPAmmunitionPartItems.INSTANCE.casingCaseless)
+        AVPShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AVPAmmunitionPartItemRegistry.INSTANCE.casingCaseless)
             .defineAndUnlockIfHas('A', Items.GUNPOWDER)
             .defineAndUnlockIfHas('B', Items.CLAY_BALL)
             .pattern(" A ")
@@ -50,7 +50,7 @@ public final class AVPAmmunitionPartRecipes {
             .pattern(" B ")
             .save(recipeOutput);
 
-        AVPShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AVPAmmunitionPartItems.INSTANCE.casingHeavy)
+        AVPShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AVPAmmunitionPartItemRegistry.INSTANCE.casingHeavy)
             .defineAndUnlockIfHas('A', Items.GUNPOWDER)
             .defineAndUnlockIfHas('B', Items.COPPER_INGOT)
             .pattern("BAB")
@@ -59,16 +59,16 @@ public final class AVPAmmunitionPartRecipes {
     }
 
     private static void addRocketRecipes(RecipeOutput recipeOutput) {
-        AVPShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AVPAmmunitionPartItems.INSTANCE.rocket)
-            .defineAndUnlockIfHas('A', AVPItems.INSTANCE.ingotSteel)
+        AVPShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AVPAmmunitionPartItemRegistry.INSTANCE.rocket)
+            .defineAndUnlockIfHas('A', AVPItemRegistry.INSTANCE.ingotSteel)
             .defineAndUnlockIfHas('B', Items.TNT)
             .pattern("AAA")
             .pattern("ABA")
             .pattern("AAA")
             .save(recipeOutput);
 
-        AVPShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AVPAmmunitionPartItems.INSTANCE.rocketPenetration)
-            .defineAndUnlockIfHas('A', AVPItems.INSTANCE.ingotSteel)
+        AVPShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AVPAmmunitionPartItemRegistry.INSTANCE.rocketPenetration)
+            .defineAndUnlockIfHas('A', AVPItemRegistry.INSTANCE.ingotSteel)
             .defineAndUnlockIfHas('B', Items.TNT)
             .defineAndUnlockIfHas('C', Items.OBSIDIAN)
             .pattern("ACA")
@@ -76,8 +76,8 @@ public final class AVPAmmunitionPartRecipes {
             .pattern("AAA")
             .save(recipeOutput);
 
-        AVPShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AVPAmmunitionPartItems.INSTANCE.rocketIncendiary)
-            .defineAndUnlockIfHas('A', AVPItems.INSTANCE.ingotSteel)
+        AVPShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AVPAmmunitionPartItemRegistry.INSTANCE.rocketIncendiary)
+            .defineAndUnlockIfHas('A', AVPItemRegistry.INSTANCE.ingotSteel)
             .defineAndUnlockIfHas('B', Items.TNT)
             .defineAndUnlockIfHas('C', Items.BLAZE_POWDER)
             .pattern("ACA")
@@ -85,10 +85,10 @@ public final class AVPAmmunitionPartRecipes {
             .pattern("AAA")
             .save(recipeOutput);
 
-        AVPShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AVPAmmunitionPartItems.INSTANCE.rocketElectric)
-            .defineAndUnlockIfHas('A', AVPItems.INSTANCE.ingotSteel)
+        AVPShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AVPAmmunitionPartItemRegistry.INSTANCE.rocketElectric)
+            .defineAndUnlockIfHas('A', AVPItemRegistry.INSTANCE.ingotSteel)
             .defineAndUnlockIfHas('B', Items.TNT)
-            .defineAndUnlockIfHas('C', AVPElectronicItems.INSTANCE.capacitor)
+            .defineAndUnlockIfHas('C', AVPElectronicItemRegistry.INSTANCE.capacitor)
             .pattern("ACA")
             .pattern("ABA")
             .pattern("AAA")
@@ -96,8 +96,8 @@ public final class AVPAmmunitionPartRecipes {
     }
 
     private static void addTipRecipes(RecipeOutput recipeOutput) {
-        AVPShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AVPAmmunitionPartItems.INSTANCE.bulletTip, 4)
-            .defineAndUnlockIfHas('A', AVPItems.INSTANCE.ingotSteel)
+        AVPShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AVPAmmunitionPartItemRegistry.INSTANCE.bulletTip, 4)
+            .defineAndUnlockIfHas('A', AVPItemRegistry.INSTANCE.ingotSteel)
             .pattern("A")
             .save(recipeOutput);
     }

@@ -35,3 +35,5 @@ rootProject.name = 'AliensVsPredator'
 include("common")
 include("fabric")
 include("neoforge")
+include 'api'
+

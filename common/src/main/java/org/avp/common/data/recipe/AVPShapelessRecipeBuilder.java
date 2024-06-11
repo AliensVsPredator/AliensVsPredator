@@ -5,13 +5,10 @@ import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.data.recipes.ShapelessRecipeBuilder;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
 
-import org.avp.api.Holder;
-
-import java.util.Arrays;
+import org.avp.api.registry.holder.BLHolder;
 
 public class AVPShapelessRecipeBuilder {
 
@@ -19,7 +16,7 @@ public class AVPShapelessRecipeBuilder {
         return new AVPShapelessRecipeBuilder(ShapelessRecipeBuilder.shapeless(recipeCategory, itemLike));
     }
 
-    public static AVPShapelessRecipeBuilder shapeless(RecipeCategory recipeCategory, Holder<? extends ItemLike> itemLikeHolder) {
+    public static AVPShapelessRecipeBuilder shapeless(RecipeCategory recipeCategory, BLHolder<? extends ItemLike> itemLikeHolder) {
         return new AVPShapelessRecipeBuilder(ShapelessRecipeBuilder.shapeless(recipeCategory, itemLikeHolder.get()));
     }
 
@@ -29,7 +26,7 @@ public class AVPShapelessRecipeBuilder {
 
     public static AVPShapelessRecipeBuilder shapeless(
         RecipeCategory recipeCategory,
-        Holder<? extends ItemLike> itemLikeHolder,
+        BLHolder<? extends ItemLike> itemLikeHolder,
         int count
     ) {
         return new AVPShapelessRecipeBuilder(ShapelessRecipeBuilder.shapeless(recipeCategory, itemLikeHolder.get(), count));
@@ -61,7 +58,7 @@ public class AVPShapelessRecipeBuilder {
         return this;
     }
 
-    public AVPShapelessRecipeBuilder requiresAndUnlockIfHas(char character, Holder<? extends ItemLike> itemLikeHolder) {
+    public AVPShapelessRecipeBuilder requiresAndUnlockIfHas(char character, BLHolder<? extends ItemLike> itemLikeHolder) {
         return requiresAndUnlockIfHas(character, itemLikeHolder.get());
     }
 
@@ -71,7 +68,7 @@ public class AVPShapelessRecipeBuilder {
         return this;
     }
 
-    public AVPShapelessRecipeBuilder requiresAndUnlockIfHas(char character, Holder<? extends ItemLike> itemLikeHolder, int count) {
+    public AVPShapelessRecipeBuilder requiresAndUnlockIfHas(char character, BLHolder<? extends ItemLike> itemLikeHolder, int count) {
         return requiresAndUnlockIfHas(character, itemLikeHolder.get(), count);
     }
 

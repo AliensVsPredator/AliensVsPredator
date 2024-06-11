@@ -10,7 +10,7 @@ import java.util.UUID;
 
 import org.avp.common.AVPResources;
 import org.avp.common.network.AVPServerListener;
-import org.avp.common.network.ServerboundPacket;
+import org.avp.api.network.ServerboundPacket;
 
 public record ServerboundWeaponReloadRequestPayload(
     UUID playerUUID
