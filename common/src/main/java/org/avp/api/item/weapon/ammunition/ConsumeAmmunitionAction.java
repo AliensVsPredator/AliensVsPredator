@@ -36,17 +36,20 @@ public class ConsumeAmmunitionAction {
                 if (itemStackTag == null)
                     continue;
 
-                counter = fromShulkerBox(itemStack, itemStackTag, counter);
+                counter = fromShulkerBox(itemStack, itemStackTag, ammunition, counter);
             }
         }
     }
 
-    private static int fromShulkerBox(ItemStack itemStack, CompoundTag itemStackTag, int counter) {
+    private static int fromShulkerBox(ItemStack itemStack, CompoundTag itemStackTag, Item ammunition, int counter) {
         var blockEntityTag = itemStackTag.getCompound(BLOCK_ENTITY_TAG_ID);
         var shulkerBoxItemStacks = NonNullList.withSize(27, ItemStack.EMPTY);
         ContainerHelper.loadAllItems(blockEntityTag, shulkerBoxItemStacks);
 
         for (var shulkerBoxItemStack : shulkerBoxItemStacks) {
+            if (shulkerBoxItemStack.getItem() != ammunition)
+                continue;
+
             // If the stack item is the same type as the ammunition item, consume part or all of the stack.
             var count = shulkerBoxItemStack.getCount();
             var amountToConsume = Math.min(count, counter);
@@ -55,7 +58,7 @@ public class ConsumeAmmunitionAction {
         }
 
         // Save the modified shulker box item stacks back to the shulker box block entity tag.
-        ContainerHelper.saveAllItems(blockEntityTag, shulkerBoxItemStacks, false);
+        ContainerHelper.saveAllItems(blockEntityTag, shulkerBoxItemStacks, true);
         // Save the block entity tag back to the item stack tag.
         itemStackTag.put(BLOCK_ENTITY_TAG_ID, blockEntityTag);
         // Set the item stack tag back on the item stack.

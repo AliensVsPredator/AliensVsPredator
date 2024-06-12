@@ -22,6 +22,7 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import org.avp.api.item.weapon.WeaponItemStack;
 import org.avp.api.item.weapon.data.WeaponData;
+import org.avp.api.item.weapon.reload.ReloadBehavior;
 import org.avp.common.registry.item.AVPItemRegistry;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -117,11 +118,15 @@ public abstract class AbstractAVPWeaponItem extends Item implements GeoItem {
             });
 
             var hasAmmunition = fireMode.ammunitionData().hasAmmunitionBehavior().hasAmmunition(serverLevel, serverPlayer, weaponItemStack);
+            var reloadBehavior = fireMode.reloadData().reloadBehavior();
 
             if (hasAmmunition) {
+                if (reloadBehavior == ReloadBehavior.LOAD_FROM_INVENTORY) {
+                    reloadBehavior.tryReload(serverLevel, serverPlayer, weaponItemStack);
+                }
                 fire(level, player, weaponItemStack, positiveTickProgress);
             } else {
-                fireMode.reloadData().reloadBehavior().tryReload(serverLevel, serverPlayer, weaponItemStack);
+                reloadBehavior.tryReload(serverLevel, serverPlayer, weaponItemStack);
             }
         }
 

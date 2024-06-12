@@ -11,6 +11,8 @@ public interface ReloadBehavior {
 
     ReloadBehavior NO_OP = (l, p, w) -> {};
 
+    ReloadBehavior LOAD_FROM_INVENTORY = new LoadFromInventoryReloadBehavior();
+
     ReloadBehavior LOAD_INTO_WEAPON = new LoadIntoWeaponReloadBehavior();
 
     void tryReload(ServerLevel serverLevel, ServerPlayer serverPlayer, WeaponItemStack weaponItemStack);

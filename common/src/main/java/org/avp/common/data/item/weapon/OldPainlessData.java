@@ -41,7 +41,7 @@ public class OldPainlessData extends WeaponData {
                     0,
                     BLHolder.empty(),
                     BLHolder.empty(),
-                    ReloadBehavior.NO_OP
+                    ReloadBehavior.LOAD_FROM_INVENTORY
                 ),
                 new ShootData(
                     30,

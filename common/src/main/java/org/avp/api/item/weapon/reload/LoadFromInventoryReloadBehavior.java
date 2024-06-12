@@ -7,7 +7,7 @@ import org.avp.api.item.weapon.ammunition.ConsumeAmmunitionAction;
 import org.avp.api.item.weapon.ammunition.CountAmmunitionAction;
 import org.avp.api.util.BLPredicates;
 
-public class LoadIntoWeaponReloadBehavior implements ReloadBehavior {
+public class LoadFromInventoryReloadBehavior implements ReloadBehavior {
 
     @Override
     public void tryReload(ServerLevel serverLevel, ServerPlayer serverPlayer, WeaponItemStack weaponItemStack) {
@@ -25,29 +25,20 @@ public class LoadIntoWeaponReloadBehavior implements ReloadBehavior {
         var ammunitionItem = ammunitionSupplier.get();
         // Compute how much of that ammunition item the player has in their inventory.
         var ammunitionInInventory = CountAmmunitionAction.inPlayerInventoryIncludingShulkerBoxes(serverPlayer, ammunitionItem);
-        // Compute how much ammunition is loaded into the weapon.
-        var ammunitionInWeapon = weaponItemStack.getAmmunition();
-        // How much ammunition is needed until the weapon is full again.
-        var ammunitionMissing = ammunitionData.maxAmmunition() - ammunitionInWeapon;
         var isPlayerImmortal = BLPredicates.IS_IMMORTAL.test(serverPlayer);
-        var ammunitionCountToRestore = isPlayerImmortal
-            ? ammunitionData.maxAmmunition()
-            : Math.min(ammunitionInInventory, ammunitionMissing);
 
         // If the player is mortal, try and consume ammunition from their inventory.
         if (!isPlayerImmortal) {
             // If there is no ammunition to consume, abort.
-            if (ammunitionCountToRestore <= 0) {
+            if (ammunitionInInventory <= 0) {
                 // TODO: Play "click" sound or reload fail sound here.
                 return;
             }
 
             // Consume ammunition.
-            ConsumeAmmunitionAction.fromPlayerInventory(serverPlayer, ammunitionMissing, ammunitionItem);
+            ConsumeAmmunitionAction.fromPlayerInventory(serverPlayer, 1, ammunitionItem);
         }
 
-        // Set ammunition to the given count.
-        weaponItemStack.setActiveAmmunition(ammunitionInWeapon + ammunitionCountToRestore);
         // Perform reload logic (weapon cooldown, sound effects, etc.)
         ReloadAction.perform(serverLevel, serverPlayer, weaponItemStack);
     }
