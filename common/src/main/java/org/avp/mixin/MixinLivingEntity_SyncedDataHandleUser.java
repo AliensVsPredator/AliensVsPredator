@@ -13,8 +13,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.avp.api.entity.data.sync.SyncedDataHandle;
-import org.avp.api.entity.data.sync.SyncedDataHandleUser;
+import org.avp.api.game.entity.data_sync.SyncedDataHandle;
+import org.avp.api.game.entity.data_sync.SyncedDataHandleUser;
 
 @Mixin(LivingEntity.class)
 public abstract class MixinLivingEntity_SyncedDataHandleUser extends Entity implements SyncedDataHandleUser {

@@ -1,7 +1,7 @@
 package org.avp.client.render.item;
 
 import mod.azure.azurelib.common.api.client.renderer.GeoItemRenderer;
-import org.avp.api.item.weapon.data.WeaponData;
+import org.avp.api.weapon.data.WeaponData;
 import org.avp.common.data.item.weapon.AK47Data;
 import org.avp.common.data.item.weapon.F90RifleData;
 import org.avp.common.data.item.weapon.FlamethrowerSevastopolData;

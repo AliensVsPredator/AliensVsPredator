@@ -15,7 +15,7 @@ import net.minecraft.world.entity.player.Player;
 
 import java.util.Objects;
 
-import org.avp.api.entity.HiveMember;
+import org.avp.common.game.entity.type.HiveMember;
 import org.avp.common.data.tag.AVPEntityTypeTags;
 import org.avp.common.data.tag.AVPItemTags;
 

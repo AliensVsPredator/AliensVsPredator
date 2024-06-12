@@ -1,14 +1,14 @@
 package org.avp.common.data.item.weapon;
 
 import org.avp.api.registry.holder.BLHolder;
-import org.avp.api.item.weapon.ammunition.HasAmmunitionBehavior;
-import org.avp.api.item.weapon.data.AmmunitionData;
-import org.avp.api.item.weapon.data.FireModeData;
-import org.avp.api.item.weapon.data.ReloadData;
-import org.avp.api.item.weapon.data.ShootData;
-import org.avp.api.item.weapon.data.WeaponData;
-import org.avp.api.item.weapon.data.WindData;
-import org.avp.api.item.weapon.reload.ReloadBehavior;
+import org.avp.api.weapon.ammunition.HasAmmunitionBehavior;
+import org.avp.api.weapon.data.AmmunitionData;
+import org.avp.api.weapon.data.FireModeData;
+import org.avp.api.weapon.data.ReloadData;
+import org.avp.api.weapon.data.ShootData;
+import org.avp.api.weapon.data.WeaponData;
+import org.avp.api.weapon.data.WindData;
+import org.avp.api.weapon.reload.ReloadBehavior;
 import org.avp.common.game.sound.AVPSoundEventRegistry;
 import org.avp.common.registry.item.AVPAmmunitionPartItemRegistry;
 import org.avp.common.game.item.weapon.FlamethrowerProjectileWeaponAttack;

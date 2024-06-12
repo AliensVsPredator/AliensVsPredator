@@ -8,7 +8,7 @@ import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.SpawnEggItem;
 import net.minecraft.world.level.Level;
-import org.avp.api.entity.Morphable;
+import org.avp.common.game.entity.type.Morphable;
 import org.avp.api.util.TypeUtil;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;

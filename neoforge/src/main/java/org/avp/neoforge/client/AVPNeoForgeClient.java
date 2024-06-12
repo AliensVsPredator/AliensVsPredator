@@ -19,7 +19,7 @@ import net.neoforged.neoforge.client.event.RegisterParticleProvidersEvent;
 import net.neoforged.neoforge.event.TickEvent;
 
 import org.avp.api.registry.AVPDeferredBlockRegistry;
-import org.avp.client.AVPClientKeyBindings;
+import org.avp.client.AVPClientKeyBindingRegistry;
 import org.avp.client.registry.AVPEntityRenderRegistry;
 import org.avp.client.render.particle.AVPParticleTypeProviders;
 import org.avp.common.AVPConstants;
@@ -56,7 +56,7 @@ public class AVPNeoForgeClient {
 
     @SubscribeEvent
     public static void registerKeyBindings(RegisterKeyMappingsEvent event) {
-        AVPClientKeyBindings.getEntries().forEach(tuple -> {
+        AVPClientKeyBindingRegistry.getEntries().forEach(tuple -> {
             var keyMapping = tuple.first();
             event.register(keyMapping);
         });
@@ -83,7 +83,7 @@ public class AVPNeoForgeClient {
 
     public static void onClientTick(TickEvent.ClientTickEvent event) {
         if (event.phase == TickEvent.Phase.START) { // Only call code once as the tick event is called twice every tick
-            AVPClientKeyBindings.getEntries().forEach(tuple -> {
+            AVPClientKeyBindingRegistry.getEntries().forEach(tuple -> {
                 var keyMapping = tuple.first();
                 var biConsumer = tuple.second();
                 while (keyMapping.consumeClick()) {

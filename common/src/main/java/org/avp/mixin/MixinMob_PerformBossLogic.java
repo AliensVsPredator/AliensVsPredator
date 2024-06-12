@@ -15,7 +15,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import org.avp.api.entity.Boss;
+import org.avp.common.game.entity.type.Boss;
 import org.avp.api.util.TypeUtil;
 
 @Mixin(Mob.class)

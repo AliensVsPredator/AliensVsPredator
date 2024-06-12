@@ -10,8 +10,8 @@ import java.util.Set;
 import java.util.function.Supplier;
 
 import org.avp.api.registry.holder.BLHolder;
-import org.avp.api.entity.HiveMember;
-import org.avp.api.entity.RoyalJellyHolder;
+import org.avp.common.game.entity.type.HiveMember;
+import org.avp.common.game.entity.type.RoyalJellyHolder;
 import org.avp.common.data.alien.AlienGrowthLookupKey;
 import org.avp.common.data.alien.maturation.AlienMaturation;
 import org.avp.common.data.alien.maturation.AlienMaturationStep;

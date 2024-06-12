@@ -4,7 +4,7 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import org.avp.api.data.item.ItemData;
 import org.avp.api.data.item.ItemModelData;
-import org.avp.api.item.weapon.data.WeaponData;
+import org.avp.api.weapon.data.WeaponData;
 import org.avp.api.registry.AVPDeferredItemRegistry;
 import org.avp.api.registry.holder.BLHolder;
 import org.avp.common.data.item.weapon.AK47Data;

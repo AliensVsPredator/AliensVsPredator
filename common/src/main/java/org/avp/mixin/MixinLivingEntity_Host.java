@@ -11,7 +11,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import org.avp.api.entity.Host;
+import org.avp.common.game.entity.type.Host;
 
 @Mixin(LivingEntity.class)
 public abstract class MixinLivingEntity_Host extends Entity implements Host {

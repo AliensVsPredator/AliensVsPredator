@@ -22,9 +22,9 @@ import org.avp.common.game.sound.AVPSoundEventRegistry;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import org.avp.api.entity.Boss;
-import org.avp.api.entity.data.sync.SyncedDataHandle;
-import org.avp.api.entity.data.sync.SyncedDataSerializer;
+import org.avp.common.game.entity.type.Boss;
+import org.avp.api.game.entity.data_sync.SyncedDataHandle;
+import org.avp.api.game.entity.data_sync.SyncedDataSerializer;
 import org.avp.common.ai.AIUtils;
 
 public class Yautja extends Monster implements Boss, GeoEntity {

@@ -11,7 +11,7 @@ import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.level.Level;
 
-import org.avp.api.entity.Boss;
+import org.avp.common.game.entity.type.Boss;
 import org.avp.common.ai.AIUtils;
 import org.avp.common.game.entity.living.alien.base_line.Queen;
 

@@ -27,7 +27,7 @@ import org.avp.common.game.damage.AVPDamageSources;
 import org.avp.common.data.tag.AVPBlockTags;
 import org.avp.common.data.tag.AVPEntityTypeTags;
 import org.avp.common.data.tag.AVPItemTags;
-import org.avp.server.BlockBreakProgressManager;
+import org.avp.api.server.BlockBreakProgressManager;
 
 public class Acid extends Entity {
 

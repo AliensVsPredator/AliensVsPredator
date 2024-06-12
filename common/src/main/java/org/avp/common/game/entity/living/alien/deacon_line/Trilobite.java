@@ -4,7 +4,7 @@ import mod.azure.azurelib.common.internal.common.core.animation.AnimatableManage
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.level.Level;
-import org.avp.api.entity.Morphable;
+import org.avp.common.game.entity.type.Morphable;
 import org.avp.common.game.entity.AbstractParasite;
 import org.avp.common.data.entity.living.alien.deacon_line.TrilobiteBabyData;
 

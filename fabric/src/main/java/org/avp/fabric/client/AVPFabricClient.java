@@ -11,7 +11,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 
 import org.avp.api.registry.AVPDeferredBlockRegistry;
-import org.avp.client.AVPClientKeyBindings;
+import org.avp.client.AVPClientKeyBindingRegistry;
 import org.avp.client.registry.AVPEntityRenderRegistry;
 import org.avp.client.render.particle.AVPParticleTypeProviders;
 
@@ -50,7 +50,7 @@ public class AVPFabricClient implements ClientModInitializer {
     }
 
     private static void registerKeyBindings() {
-        AVPClientKeyBindings.getEntries().forEach(tuple -> {
+        AVPClientKeyBindingRegistry.getEntries().forEach(tuple -> {
             var keyMapping = tuple.first();
             var biConsumer = tuple.second();
 
