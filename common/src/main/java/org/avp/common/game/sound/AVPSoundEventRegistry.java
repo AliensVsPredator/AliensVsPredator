@@ -4,9 +4,9 @@ import net.minecraft.sounds.SoundEvent;
 
 import java.util.function.Supplier;
 
-import org.avp.api.registry.holder.BLHolder;
+import org.avp.api.common.registry.holder.BLHolder;
 import org.avp.common.AVPResources;
-import org.avp.api.registry.AVPDeferredRegistry;
+import org.avp.api.common.registry.AVPDeferredRegistry;
 import org.avp.api.service.Services;
 
 public class AVPSoundEventRegistry extends AVPDeferredRegistry<SoundEvent> {

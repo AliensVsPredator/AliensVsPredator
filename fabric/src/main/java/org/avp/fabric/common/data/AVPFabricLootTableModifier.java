@@ -9,7 +9,7 @@ import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.entries.EmptyLootItem;
 import net.minecraft.world.level.storage.loot.entries.LootItem;
 
-import org.avp.api.registry.holder.BLHolder;
+import org.avp.api.common.registry.holder.BLHolder;
 import org.avp.common.registry.item.AVPWeaponBlueprintItemRegistry;
 
 public class AVPFabricLootTableModifier {

@@ -8,7 +8,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 
 import java.util.function.Supplier;
 
-import org.avp.api.registry.holder.BLHolder;
+import org.avp.api.common.registry.holder.BLHolder;
 import org.avp.api.service.ParticleTypeService;
 import org.avp.common.registry.holder.AVPHolder;
 

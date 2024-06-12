@@ -1,6 +1,6 @@
 package org.avp.common.registry.holder;
 
-import org.avp.api.registry.holder.BLHolder;
+import org.avp.api.common.registry.holder.BLHolder;
 import org.avp.common.AVPResources;
 
 import java.util.function.Supplier;

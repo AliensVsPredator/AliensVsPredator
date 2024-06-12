@@ -6,7 +6,7 @@ import net.minecraft.server.level.ServerPlayer;
 
 import java.util.Objects;
 
-import org.avp.api.weapon.WeaponItemStack;
+import org.avp.api.common.weapon.WeaponItemStack;
 import org.avp.common.game.item.AbstractAVPWeaponItem;
 import org.avp.common.network.payload.ServerboundWeaponReloadRequestPayload;
 import org.avp.common.network.payload.ServerboundWeaponSwapAmmunitionTypeRequestPayload;

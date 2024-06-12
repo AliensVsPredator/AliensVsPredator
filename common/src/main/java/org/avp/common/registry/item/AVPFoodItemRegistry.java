@@ -3,8 +3,8 @@ package org.avp.common.registry.item;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.Item;
 
-import org.avp.api.registry.holder.BLHolder;
-import org.avp.api.registry.AVPDeferredItemRegistry;
+import org.avp.api.common.registry.holder.BLHolder;
+import org.avp.api.common.registry.AVPDeferredItemRegistry;
 
 public class AVPFoodItemRegistry extends AVPDeferredItemRegistry {
 

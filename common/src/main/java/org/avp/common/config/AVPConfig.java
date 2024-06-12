@@ -3,9 +3,9 @@ package org.avp.common.config;
 import java.io.IOException;
 import java.nio.file.Files;
 
-import org.avp.api.config.Category;
-import org.avp.api.config.Config;
-import org.avp.api.config.ConfigParser;
+import org.avp.api.common.config.Category;
+import org.avp.api.common.config.Config;
+import org.avp.api.common.config.ConfigParser;
 import org.avp.common.AVPConstants;
 import org.avp.api.service.Services;
 

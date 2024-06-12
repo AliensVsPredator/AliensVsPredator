@@ -1,7 +1,7 @@
 package org.avp.common.data.loot_table;
 
-import org.avp.api.data.loot_table.AbstractAVPBlockLootTableProvider;
-import org.avp.api.registry.AVPDeferredBlockRegistry;
+import org.avp.api.common.data.loot_table.AbstractAVPBlockLootTableProvider;
+import org.avp.api.common.registry.AVPDeferredBlockRegistry;
 import org.avp.common.AVPConstants;
 
 public class AVPBlockLootTableProvider extends AbstractAVPBlockLootTableProvider {

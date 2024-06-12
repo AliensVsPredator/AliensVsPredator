@@ -5,7 +5,7 @@ import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.ItemLike;
 
-import org.avp.api.registry.holder.BLHolder;
+import org.avp.api.common.registry.holder.BLHolder;
 import org.avp.common.data.recipe.AVPShapedRecipeBuilder;
 import org.avp.common.registry.item.AVPAmmunitionPartItemRegistry;
 import org.avp.common.registry.item.AVPBulletItemRegistry;

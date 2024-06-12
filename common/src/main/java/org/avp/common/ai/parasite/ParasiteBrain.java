@@ -1,18 +1,18 @@
 package org.avp.common.ai.parasite;
 
-import org.avp.api.ai.GOAPBrain;
-import org.avp.api.ai.action.impl.LeapTowardsTargetAction;
-import org.avp.api.ai.plan.Planner;
-import org.avp.api.ai.sensor.Sensor;
-import org.avp.api.ai.sensor.impl.NearbyEntitiesSensor;
-import org.avp.api.ai.sensor.impl.NearbyLivingEntitiesSensor;
-import org.avp.api.ai.sensor.impl.ClosestTargetSensor;
+import org.avp.api.common.ai.GOAPBrain;
+import org.avp.api.common.ai.action.impl.LeapTowardsTargetAction;
+import org.avp.api.common.ai.plan.Planner;
+import org.avp.api.common.ai.sensor.Sensor;
+import org.avp.api.common.ai.sensor.impl.NearbyEntitiesSensor;
+import org.avp.api.common.ai.sensor.impl.NearbyLivingEntitiesSensor;
+import org.avp.api.common.ai.sensor.impl.ClosestTargetSensor;
 import org.avp.common.game.entity.AbstractParasite;
-import org.avp.api.ai.goal.impl.RideTargetGoal;
+import org.avp.api.common.ai.goal.impl.RideTargetGoal;
 import org.avp.common.ai.parasite.goal.ParasiteIdleMoveGoal;
 import org.avp.common.ai.parasite.goal.SmotherHostGoal;
 import org.avp.common.ai.parasite.goal.ImpregnateHostGoal;
-import org.avp.api.ai.goal.impl.MoveToTargetGoal;
+import org.avp.api.common.ai.goal.impl.MoveToTargetGoal;
 import org.avp.common.util.AVPPredicates;
 
 import java.util.List;

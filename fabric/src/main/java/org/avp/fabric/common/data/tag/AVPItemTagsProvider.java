@@ -9,8 +9,8 @@ import net.minecraft.world.level.block.Blocks;
 
 import java.util.concurrent.CompletableFuture;
 
-import org.avp.api.registry.AVPDeferredBlockRegistry;
-import org.avp.api.registry.AVPDeferredItemRegistry;
+import org.avp.api.common.registry.AVPDeferredBlockRegistry;
+import org.avp.api.common.registry.AVPDeferredItemRegistry;
 import org.avp.common.data.tag.AVPItemTags;
 
 public class AVPItemTagsProvider extends FabricTagProvider.ItemTagProvider {

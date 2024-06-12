@@ -10,7 +10,7 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 
 import java.util.function.Supplier;
 
-import org.avp.api.registry.holder.BLHolder;
+import org.avp.api.common.registry.holder.BLHolder;
 import org.avp.common.registry.holder.AVPHolder;
 import org.avp.common.registry.item.AVPItemBlockItemRegistry;
 import org.avp.api.service.BlockService;

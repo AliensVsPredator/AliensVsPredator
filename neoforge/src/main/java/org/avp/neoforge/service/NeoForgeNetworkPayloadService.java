@@ -9,10 +9,10 @@ import net.neoforged.neoforge.network.event.RegisterPayloadHandlerEvent;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.avp.api.network.ClientboundPacket;
-import org.avp.api.network.NetworkSide;
-import org.avp.api.network.PayloadHandlerData;
-import org.avp.api.network.ServerboundPacket;
+import org.avp.api.common.network.ClientboundPacket;
+import org.avp.api.common.network.NetworkSide;
+import org.avp.api.common.network.PayloadHandlerData;
+import org.avp.api.common.network.ServerboundPacket;
 import org.avp.common.AVPConstants;
 import org.avp.api.service.NetworkPayloadService;
 

@@ -12,10 +12,10 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.util.Objects;
 
-import org.avp.api.registry.holder.BLHolder;
-import org.avp.api.data.entity.EntityData;
+import org.avp.api.common.registry.holder.BLHolder;
+import org.avp.api.common.data.entity.EntityData;
 import org.avp.common.registry.AVPEntityDataRegistry;
-import org.avp.api.data.entity.EntitySoundData;
+import org.avp.api.common.data.entity.EntitySoundData;
 import org.avp.common.data.tag.AVPEntityTypeTags;
 
 @Mixin(Mob.class)

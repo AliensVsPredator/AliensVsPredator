@@ -7,7 +7,7 @@ import net.minecraft.core.particles.ParticleType;
 
 import java.util.function.Function;
 
-import org.avp.api.registry.holder.BLHolder;
+import org.avp.api.common.registry.holder.BLHolder;
 
 public record ParticleProviderData<T extends ParticleOptions>(
     BLHolder<? extends ParticleType<? extends T>> particleTypeHolder,

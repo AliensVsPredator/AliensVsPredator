@@ -6,8 +6,8 @@ import net.minecraft.core.particles.ParticleType;
 import java.util.function.Supplier;
 
 import org.avp.api.client.ParticleProviderData;
-import org.avp.api.registry.holder.BLHolder;
-import org.avp.api.registry.AVPDeferredRegistry;
+import org.avp.api.common.registry.holder.BLHolder;
+import org.avp.api.common.registry.AVPDeferredRegistry;
 import org.avp.api.service.Services;
 
 public class AVPParticleTypeProviders extends AVPDeferredRegistry<ParticleProviderData<ParticleOptions>> {

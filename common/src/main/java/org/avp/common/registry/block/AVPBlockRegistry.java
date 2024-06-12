@@ -10,15 +10,15 @@ import java.util.Set;
 
 import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
 import net.minecraft.world.level.material.MapColor;
-import org.avp.api.game.block.CustomTransparentBlock;
-import org.avp.api.registry.holder.BLHolder;
-import org.avp.api.data.block.BlockData;
-import org.avp.api.registry.holder.BlockHolderSet;
-import org.avp.api.data.block.BlockTagData;
-import org.avp.api.data.block.BlockModelData;
-import org.avp.api.data.block.BlockModelRenderType;
-import org.avp.api.data.block.BlockModelDataType;
-import org.avp.api.registry.AVPDeferredBlockRegistry;
+import org.avp.api.common.game.block.CustomTransparentBlock;
+import org.avp.api.common.registry.holder.BLHolder;
+import org.avp.api.common.data.block.BlockData;
+import org.avp.api.common.registry.holder.BlockHolderSet;
+import org.avp.api.common.data.block.BlockTagData;
+import org.avp.api.common.data.block.BlockModelData;
+import org.avp.api.common.data.block.BlockModelRenderType;
+import org.avp.api.common.data.block.BlockModelDataType;
+import org.avp.api.common.registry.AVPDeferredBlockRegistry;
 
 public class AVPBlockRegistry extends AVPDeferredBlockRegistry {
 

@@ -3,11 +3,11 @@ package org.avp.common.registry.block;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 
-import org.avp.api.registry.holder.BLHolder;
-import org.avp.api.data.block.BlockData;
-import org.avp.api.data.block.BlockTagData;
-import org.avp.api.data.block.BlockModelData;
-import org.avp.api.registry.AVPDeferredBlockRegistry;
+import org.avp.api.common.registry.holder.BLHolder;
+import org.avp.api.common.data.block.BlockData;
+import org.avp.api.common.data.block.BlockTagData;
+import org.avp.api.common.data.block.BlockModelData;
+import org.avp.api.common.registry.AVPDeferredBlockRegistry;
 import org.avp.common.game.block.AVPWoodType;
 
 public class AVPParadiseBlockRegistry extends AVPDeferredBlockRegistry {

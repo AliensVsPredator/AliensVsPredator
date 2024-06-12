@@ -1,8 +1,8 @@
 package org.avp.common.ai.parasite.goal;
 
-import org.avp.api.ai.progress.Progressions;
-import org.avp.api.ai.goal.Goal;
-import org.avp.api.ai.progress.ProgressKey;
+import org.avp.api.common.ai.progress.Progressions;
+import org.avp.api.common.ai.goal.Goal;
+import org.avp.api.common.ai.progress.ProgressKey;
 import org.avp.common.ai.parasite.action.ImpregnateHostAction;
 import org.avp.common.game.entity.AbstractParasite;
 

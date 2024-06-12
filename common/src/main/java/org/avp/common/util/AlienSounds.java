@@ -6,7 +6,7 @@ import net.minecraft.world.damagesource.DamageSource;
 
 import java.util.function.Function;
 
-import org.avp.api.registry.holder.BLHolder;
+import org.avp.api.common.registry.holder.BLHolder;
 import org.avp.common.game.sound.AVPSoundEventRegistry;
 
 public class AlienSounds {

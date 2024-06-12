@@ -5,13 +5,13 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.MapColor;
-import org.avp.api.registry.holder.BLHolder;
-import org.avp.api.data.block.BlockTagData;
-import org.avp.api.data.block.BlockModelData;
-import org.avp.api.data.block.BlockModelRenderType;
-import org.avp.api.data.block.BlockModelDataType;
+import org.avp.api.common.registry.holder.BLHolder;
+import org.avp.api.common.data.block.BlockTagData;
+import org.avp.api.common.data.block.BlockModelData;
+import org.avp.api.common.data.block.BlockModelRenderType;
+import org.avp.api.common.data.block.BlockModelDataType;
 import org.avp.common.game.block.SolarPanelBlock;
-import org.avp.api.registry.AVPDeferredBlockRegistry;
+import org.avp.api.common.registry.AVPDeferredBlockRegistry;
 
 import java.util.Set;
 

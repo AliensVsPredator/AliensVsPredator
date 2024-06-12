@@ -6,8 +6,8 @@ import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 
-import org.avp.api.registry.holder.BLHolder;
-import org.avp.api.registry.holder.ItemHolderArmorSet;
+import org.avp.api.common.registry.holder.BLHolder;
+import org.avp.api.common.registry.holder.ItemHolderArmorSet;
 import org.avp.common.data.recipe.AVPShapedRecipeBuilder;
 import org.avp.common.registry.item.AVPArmorItemRegistry;
 import org.avp.common.registry.item.AVPItemRegistry;

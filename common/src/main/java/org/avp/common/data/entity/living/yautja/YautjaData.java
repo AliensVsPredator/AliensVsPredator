@@ -21,19 +21,19 @@ import net.minecraft.world.level.storage.loot.providers.number.UniformGenerator;
 import java.util.List;
 import java.util.Optional;
 
-import org.avp.api.data.entity.AttributeSupplierUtil;
-import org.avp.api.registry.holder.BLHolder;
-import org.avp.api.data.entity.EntityData;
+import org.avp.api.common.data.entity.AttributeSupplierUtil;
+import org.avp.api.common.registry.holder.BLHolder;
+import org.avp.api.common.data.entity.EntityData;
 import org.avp.common.data.entity.AVPEntitySpeedConstants;
-import org.avp.api.data.entity.EntitySoundData;
-import org.avp.api.data.entity.EntitySpawnData;
+import org.avp.api.common.data.entity.EntitySoundData;
+import org.avp.api.common.data.entity.EntitySpawnData;
 import org.avp.common.game.sound.AVPSoundEventRegistry;
 import org.avp.common.registry.item.AVPArmorItemRegistry;
 import org.avp.common.registry.item.AVPItemRegistry;
 import org.avp.common.util.YautjaSpawning;
 import org.avp.common.game.entity.living.yautja.Yautja;
 import org.avp.common.registry.item.AVPToolItemRegistry;
-import org.avp.api.registry.entity.AVPSimpleDeferredEntityTypeRegistry;
+import org.avp.api.common.registry.entity.AVPSimpleDeferredEntityTypeRegistry;
 import org.avp.common.data.tag.AVPEntityTypeTags;
 
 public class YautjaData extends EntityData<Yautja> {

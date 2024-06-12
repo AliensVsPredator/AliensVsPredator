@@ -9,7 +9,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.function.Supplier;
 
-import org.avp.api.registry.holder.BLHolder;
+import org.avp.api.common.registry.holder.BLHolder;
 import org.avp.common.game.entity.type.HiveMember;
 import org.avp.common.game.entity.type.RoyalJellyHolder;
 import org.avp.common.data.alien.AlienGrowthLookupKey;
@@ -37,7 +37,7 @@ import org.avp.common.data.entity.living.alien.base_line.SpitterData;
 import org.avp.common.data.entity.living.alien.base_line.UltramorphData;
 import org.avp.common.data.entity.living.alien.base_line.WarriorData;
 import org.avp.common.data.entity.living.alien.runner_line.WarriorRunnerData;
-import org.avp.api.registry.AVPDeferredRegistry;
+import org.avp.api.common.registry.AVPDeferredRegistry;
 import org.avp.common.registry.holder.AVPHolder;
 import org.avp.server.HivemindManager;
 

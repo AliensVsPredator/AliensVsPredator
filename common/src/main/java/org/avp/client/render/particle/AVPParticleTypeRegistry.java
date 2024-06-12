@@ -2,8 +2,8 @@ package org.avp.client.render.particle;
 
 import net.minecraft.core.particles.SimpleParticleType;
 
-import org.avp.api.registry.holder.BLHolder;
-import org.avp.api.registry.particle.AVPSimpleDeferredParticleTypeRegistry;
+import org.avp.api.common.registry.holder.BLHolder;
+import org.avp.api.common.registry.particle.AVPSimpleDeferredParticleTypeRegistry;
 import org.avp.common.registry.holder.AVPHolder;
 
 public class AVPParticleTypeRegistry extends AVPSimpleDeferredParticleTypeRegistry {

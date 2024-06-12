@@ -8,17 +8,17 @@ import net.minecraft.world.item.SwordItem;
 
 import java.util.Set;
 
-import org.avp.api.registry.holder.BLHolder;
+import org.avp.api.common.registry.holder.BLHolder;
 import org.avp.api.util.function.QuadFunction;
-import org.avp.api.data.item.ItemData;
-import org.avp.api.data.item.ItemModelData;
-import org.avp.api.data.item.ItemModelDataType;
-import org.avp.api.game.item.tool.CustomAxeItem;
-import org.avp.api.game.item.tool.CustomHoeItem;
-import org.avp.api.game.item.tool.CustomPickaxeItem;
-import org.avp.api.game.item.tool.ToolTier;
+import org.avp.api.common.data.item.ItemData;
+import org.avp.api.common.data.item.ItemModelData;
+import org.avp.api.common.data.item.ItemModelDataType;
+import org.avp.api.common.game.item.tool.CustomAxeItem;
+import org.avp.api.common.game.item.tool.CustomHoeItem;
+import org.avp.api.common.game.item.tool.CustomPickaxeItem;
+import org.avp.api.common.game.item.tool.ToolTier;
 import org.avp.common.game.item.tool.AVPToolTiers;
-import org.avp.api.registry.AVPDeferredItemRegistry;
+import org.avp.api.common.registry.AVPDeferredItemRegistry;
 
 public class AVPToolItemRegistry extends AVPDeferredItemRegistry {
 

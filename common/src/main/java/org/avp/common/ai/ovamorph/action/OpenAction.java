@@ -1,7 +1,7 @@
 package org.avp.common.ai.ovamorph.action;
 
-import org.avp.api.ai.CostConstraint;
-import org.avp.api.ai.action.Action;
+import org.avp.api.common.ai.CostConstraint;
+import org.avp.api.common.ai.action.Action;
 import org.avp.common.game.entity.AbstractOvamorph;
 import org.avp.common.game.sound.AVPSoundEventRegistry;
 

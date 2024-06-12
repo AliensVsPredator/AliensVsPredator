@@ -4,7 +4,7 @@ import net.neoforged.neoforge.event.furnace.FurnaceFuelBurnTimeEvent;
 
 import java.util.Objects;
 
-import org.avp.api.registry.holder.BLHolder;
+import org.avp.api.common.registry.holder.BLHolder;
 import org.avp.common.registry.AVPFuelRegistry;
 
 public class AVPNeoForgeFuelRegistry {

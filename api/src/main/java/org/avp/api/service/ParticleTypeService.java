@@ -5,7 +5,7 @@ import net.minecraft.core.particles.ParticleType;
 
 import java.util.function.Supplier;
 
-import org.avp.api.registry.holder.BLHolder;
+import org.avp.api.common.registry.holder.BLHolder;
 
 public interface ParticleTypeService {
 

@@ -7,9 +7,8 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.SpawnEggItem;
-import org.avp.api.registry.holder.BLHolder;
+import org.avp.api.common.registry.holder.BLHolder;
 import org.avp.api.service.EntityTypeService;
-import org.avp.common.AVPResources;
 import org.avp.common.registry.holder.AVPHolder;
 
 import java.util.function.Supplier;

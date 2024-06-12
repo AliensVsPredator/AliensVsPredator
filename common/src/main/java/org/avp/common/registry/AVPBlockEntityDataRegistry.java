@@ -1,7 +1,7 @@
 package org.avp.common.registry;
 
 import net.minecraft.world.level.block.entity.BlockEntity;
-import org.avp.api.data.block_entity.BlockEntityData;
+import org.avp.api.common.data.block_entity.BlockEntityData;
 import org.avp.common.data.block_entity.SolarPanelData;
 
 import java.util.Collection;

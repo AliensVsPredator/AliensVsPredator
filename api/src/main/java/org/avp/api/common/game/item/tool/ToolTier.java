@@ -1,0 +1,47 @@
+package org.avp.api.common.game.item.tool;
+
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Tier;
+import net.minecraft.world.item.crafting.Ingredient;
+import org.avp.api.common.registry.holder.BLHolder;
+import org.jetbrains.annotations.NotNull;
+
+public record ToolTier(
+    int uses,
+    float speed,
+    float attackDamageBonus,
+    int harvestLevel,
+    int enchantmentValue,
+    BLHolder<Item> repairItemHolder
+) implements Tier {
+
+    @Override
+    public int getUses() {
+        return uses;
+    }
+
+    @Override
+    public float getSpeed() {
+        return speed;
+    }
+
+    @Override
+    public float getAttackDamageBonus() {
+        return attackDamageBonus;
+    }
+
+    @Override
+    public int getLevel() {
+        return harvestLevel;
+    }
+
+    @Override
+    public int getEnchantmentValue() {
+        return enchantmentValue;
+    }
+
+    @Override
+    public @NotNull Ingredient getRepairIngredient() {
+        return Ingredient.of(repairItemHolder.get());
+    }
+}

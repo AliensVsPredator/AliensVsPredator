@@ -1,6 +1,6 @@
 package org.avp.common.game.item.tool;
 
-import org.avp.api.game.item.tool.ToolTier;
+import org.avp.api.common.game.item.tool.ToolTier;
 import org.avp.common.registry.item.AVPItemRegistry;
 
 public class AVPToolTiers {

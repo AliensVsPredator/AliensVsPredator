@@ -10,7 +10,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 import org.avp.api.client.ParticleProviderData;
-import org.avp.api.registry.holder.BLHolder;
+import org.avp.api.common.registry.holder.BLHolder;
 import org.avp.api.service.ParticleProviderService;
 import org.avp.common.registry.holder.AVPHolder;
 

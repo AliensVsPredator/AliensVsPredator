@@ -4,12 +4,12 @@ import net.minecraft.world.item.Item;
 
 import java.util.Set;
 
-import org.avp.api.registry.holder.BLHolder;
-import org.avp.api.weapon.bullet_effect.BulletEffect;
-import org.avp.api.weapon.bullet_effect.BulletEffectRegistry;
-import org.avp.api.weapon.bullet_effect.BulletEffects;
+import org.avp.api.common.registry.holder.BLHolder;
+import org.avp.api.common.weapon.bullet_effect.BulletEffect;
+import org.avp.api.common.weapon.bullet_effect.BulletEffectRegistry;
+import org.avp.api.common.weapon.bullet_effect.BulletEffects;
 import org.avp.common.AVPResources;
-import org.avp.api.registry.AVPDeferredItemRegistry;
+import org.avp.api.common.registry.AVPDeferredItemRegistry;
 
 public class AVPBulletItemRegistry extends AVPDeferredItemRegistry {
 

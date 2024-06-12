@@ -4,8 +4,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Map;
 
-import org.avp.api.registry.holder.BLHolder;
-import org.avp.common.AVPResources;
+import org.avp.api.common.registry.holder.BLHolder;
 import org.avp.common.legacy.schematic.resolver.DerelictSchematicResolver;
 import org.avp.common.legacy.schematic.resolver.LVRockSchematicResolver;
 import org.avp.common.legacy.schematic.resolver.TestSchematicResolver;

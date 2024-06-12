@@ -9,7 +9,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.avp.api.data.entity.EntityData;
+import org.avp.api.common.data.entity.EntityData;
 import org.avp.common.data.entity.AcidData;
 import org.avp.common.data.entity.RocketData;
 import org.avp.common.data.entity.living.alien.base_line.BoilerData;

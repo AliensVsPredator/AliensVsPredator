@@ -1,8 +1,8 @@
 package org.avp.common.game.item.weapon;
 
 import net.minecraft.world.entity.LivingEntity;
-import org.avp.api.weapon.WeaponItemStack;
-import org.avp.api.weapon.attack.ProjectileWeaponAttack;
+import org.avp.api.common.weapon.WeaponItemStack;
+import org.avp.api.common.weapon.attack.ProjectileWeaponAttack;
 import org.avp.common.game.entity.Rocket;
 
 public class M83A2SADARProjectileWeaponAttack extends ProjectileWeaponAttack {

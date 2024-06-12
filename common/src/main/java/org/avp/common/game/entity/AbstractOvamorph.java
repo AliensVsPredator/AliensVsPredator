@@ -10,10 +10,10 @@ import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.level.Level;
-import org.avp.api.game.entity.GOAPBrainUser;
-import org.avp.api.ai.GOAPBrain;
-import org.avp.api.game.entity.data_sync.SyncedDataHandle;
-import org.avp.api.game.entity.data_sync.SyncedDataSerializer;
+import org.avp.api.common.game.entity.GOAPBrainUser;
+import org.avp.api.common.ai.GOAPBrain;
+import org.avp.api.common.game.entity.data_sync.SyncedDataHandle;
+import org.avp.api.common.game.entity.data_sync.SyncedDataSerializer;
 import org.avp.common.ai.ovamorph.OvamorphBrain;
 import org.jetbrains.annotations.NotNull;
 

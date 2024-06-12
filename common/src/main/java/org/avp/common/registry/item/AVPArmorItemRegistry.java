@@ -7,13 +7,13 @@ import net.minecraft.world.item.Item;
 
 import java.util.Set;
 
-import org.avp.api.registry.holder.BLHolder;
-import org.avp.api.data.item.ItemData;
-import org.avp.api.registry.holder.ItemHolderArmorSet;
-import org.avp.api.data.item.ItemModelData;
-import org.avp.api.data.item.ItemModelDataType;
+import org.avp.api.common.registry.holder.BLHolder;
+import org.avp.api.common.data.item.ItemData;
+import org.avp.api.common.registry.holder.ItemHolderArmorSet;
+import org.avp.api.common.data.item.ItemModelData;
+import org.avp.api.common.data.item.ItemModelDataType;
 import org.avp.common.game.item.armor.AVPArmorMaterials;
-import org.avp.api.registry.AVPDeferredItemRegistry;
+import org.avp.api.common.registry.AVPDeferredItemRegistry;
 import org.avp.common.data.tag.AVPItemTags;
 
 public class AVPArmorItemRegistry extends AVPDeferredItemRegistry {

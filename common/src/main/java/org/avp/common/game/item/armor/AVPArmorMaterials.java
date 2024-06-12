@@ -4,7 +4,7 @@ import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ArmorMaterial;
 import net.minecraft.world.item.Items;
 
-import org.avp.api.game.item.armor.CustomArmorMaterial;
+import org.avp.api.common.game.item.armor.CustomArmorMaterial;
 import org.avp.common.game.sound.AVPSoundEventRegistry;
 import org.avp.common.registry.item.AVPItemRegistry;
 

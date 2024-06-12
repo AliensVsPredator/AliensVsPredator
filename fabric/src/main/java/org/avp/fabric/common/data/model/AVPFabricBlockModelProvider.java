@@ -18,9 +18,9 @@ import net.minecraft.world.level.block.state.properties.BooleanProperty;
 
 import java.util.function.Function;
 
-import org.avp.api.data.block.BlockData;
-import org.avp.api.data.block.BlockModelDataType;
-import org.avp.api.registry.AVPDeferredBlockRegistry;
+import org.avp.api.common.data.block.BlockData;
+import org.avp.api.common.data.block.BlockModelDataType;
+import org.avp.api.common.registry.AVPDeferredBlockRegistry;
 import org.avp.common.registry.item.AVPSpawnEggItemRegistry;
 
 import static net.minecraft.data.models.BlockModelGenerators.MULTIFACE_GENERATOR;

@@ -2,11 +2,11 @@ package org.avp.common.registry.item;
 
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
-import org.avp.api.data.item.ItemData;
-import org.avp.api.data.item.ItemModelData;
-import org.avp.api.weapon.data.WeaponData;
-import org.avp.api.registry.AVPDeferredItemRegistry;
-import org.avp.api.registry.holder.BLHolder;
+import org.avp.api.common.data.item.ItemData;
+import org.avp.api.common.data.item.ItemModelData;
+import org.avp.api.common.weapon.data.WeaponData;
+import org.avp.api.common.registry.AVPDeferredItemRegistry;
+import org.avp.api.common.registry.holder.BLHolder;
 import org.avp.common.data.item.weapon.AK47Data;
 import org.avp.common.data.item.weapon.F90RifleData;
 import org.avp.common.data.item.weapon.FlamethrowerSevastopolData;

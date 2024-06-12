@@ -7,8 +7,8 @@ import net.minecraft.world.level.levelgen.GenerationStep;
 
 import java.util.function.Supplier;
 
-import org.avp.api.registry.AVPDeferredRegistry;
-import org.avp.api.registry.holder.BLHolder;
+import org.avp.api.common.registry.AVPDeferredRegistry;
+import org.avp.api.common.registry.holder.BLHolder;
 import org.avp.common.game.worldgen.feature.AVPOreFeatures;
 
 public class AVPFabricWorldGenFeatures extends AVPDeferredRegistry<Void> {

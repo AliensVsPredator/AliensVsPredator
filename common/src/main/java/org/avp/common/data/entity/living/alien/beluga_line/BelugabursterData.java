@@ -10,13 +10,13 @@ import net.minecraft.world.level.storage.loot.LootTable;
 import java.util.List;
 import java.util.Optional;
 
-import org.avp.api.data.entity.AttributeSupplierUtil;
-import org.avp.api.registry.holder.BLHolder;
-import org.avp.api.data.entity.EntityData;
+import org.avp.api.common.data.entity.AttributeSupplierUtil;
+import org.avp.api.common.registry.holder.BLHolder;
+import org.avp.api.common.data.entity.EntityData;
 import org.avp.common.data.entity.AVPEntitySpeedConstants;
-import org.avp.api.data.entity.EntitySoundData;
-import org.avp.api.data.entity.EntitySpawnData;
-import org.avp.api.registry.entity.AVPSimpleDeferredEntityTypeRegistry;
+import org.avp.api.common.data.entity.EntitySoundData;
+import org.avp.api.common.data.entity.EntitySpawnData;
+import org.avp.api.common.registry.entity.AVPSimpleDeferredEntityTypeRegistry;
 import org.avp.common.data.tag.AVPEntityTypeTags;
 import org.avp.common.game.entity.living.alien.beluga_line.Belugaburster;
 

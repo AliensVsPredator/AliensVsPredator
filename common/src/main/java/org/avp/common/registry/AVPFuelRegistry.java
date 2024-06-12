@@ -4,8 +4,8 @@ import net.minecraft.world.item.Item;
 
 import java.util.function.Supplier;
 
-import org.avp.api.registry.AVPDeferredRegistry;
-import org.avp.api.registry.holder.BLHolder;
+import org.avp.api.common.registry.AVPDeferredRegistry;
+import org.avp.api.common.registry.holder.BLHolder;
 import org.avp.api.util.Tuple;
 import org.avp.common.registry.holder.AVPHolder;
 import org.avp.common.registry.item.AVPItemRegistry;

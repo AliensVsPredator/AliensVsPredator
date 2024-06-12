@@ -8,7 +8,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.function.Supplier;
 
-import org.avp.api.registry.holder.BLHolder;
+import org.avp.api.common.registry.holder.BLHolder;
 import org.avp.common.data.alien.AlienGrowthLookupKey;
 import org.avp.common.data.alien.infection.AlienInfection;
 import org.avp.common.data.entity.living.alien.beluga_line.BelugabursterData;
@@ -20,7 +20,7 @@ import org.avp.common.data.entity.living.alien.base_line.FacehuggerData;
 import org.avp.common.data.entity.living.alien.base_line.FacehuggerRoyalData;
 import org.avp.common.data.entity.living.alien.beluga_line.OctohuggerData;
 import org.avp.common.data.entity.living.alien.deacon_line.TrilobiteData;
-import org.avp.api.registry.AVPDeferredRegistry;
+import org.avp.api.common.registry.AVPDeferredRegistry;
 import org.avp.common.registry.holder.AVPHolder;
 
 public class AVPAlienInfectionRegistry extends AVPDeferredRegistry<AlienInfection> {

@@ -8,7 +8,7 @@ import net.minecraft.world.entity.EntityType;
 import java.util.Objects;
 import java.util.function.Supplier;
 
-import org.avp.api.registry.holder.BLHolder;
+import org.avp.api.common.registry.holder.BLHolder;
 import org.avp.client.render.entity.AcidRenderer;
 import org.avp.client.render.entity.RocketRenderer;
 import org.avp.client.render.entity.living.alien.base_line.BoilerRenderer;
@@ -42,7 +42,6 @@ import org.avp.client.render.entity.living.alien.runner_line.WarriorRunnerRender
 import org.avp.client.render.entity.living.engineer.EngineerRenderer;
 import org.avp.client.render.entity.living.yautja.YautjaRenderer;
 import org.avp.client.util.EntityRenderData;
-import org.avp.common.AVPResources;
 import org.avp.common.registry.AVPEntityDataRegistry;
 import org.avp.common.data.entity.AcidData;
 import org.avp.common.data.entity.living.alien.beluga_line.BelugabursterData;
@@ -77,7 +76,7 @@ import org.avp.common.data.entity.living.alien.base_line.UltramorphData;
 import org.avp.common.data.entity.living.alien.base_line.WarriorData;
 import org.avp.common.data.entity.living.alien.runner_line.WarriorRunnerData;
 import org.avp.common.data.entity.living.yautja.YautjaData;
-import org.avp.api.registry.AVPDeferredRegistry;
+import org.avp.api.common.registry.AVPDeferredRegistry;
 import org.avp.common.registry.holder.AVPHolder;
 
 public class AVPEntityRenderRegistry extends AVPDeferredRegistry<EntityRenderData<? extends Entity>> {

@@ -1,8 +1,8 @@
 package org.avp.common.ai.parasite.action;
 
 import net.minecraft.world.entity.LivingEntity;
-import org.avp.api.ai.CostConstraint;
-import org.avp.api.ai.action.Action;
+import org.avp.api.common.ai.CostConstraint;
+import org.avp.api.common.ai.action.Action;
 import org.avp.common.game.entity.AbstractParasite;
 
 public class SmotherHostAction extends Action {

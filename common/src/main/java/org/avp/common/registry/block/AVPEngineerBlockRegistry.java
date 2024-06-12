@@ -7,13 +7,13 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 
 import java.util.Set;
 
-import org.avp.api.registry.holder.BLHolder;
-import org.avp.api.data.block.BlockData;
-import org.avp.api.registry.holder.BlockHolderSet;
-import org.avp.api.registry.holder.BlockHolderSetData;
-import org.avp.api.data.block.BlockTagData;
-import org.avp.api.data.block.BlockModelData;
-import org.avp.api.registry.AVPDeferredBlockRegistry;
+import org.avp.api.common.registry.holder.BLHolder;
+import org.avp.api.common.data.block.BlockData;
+import org.avp.api.common.registry.holder.BlockHolderSet;
+import org.avp.api.common.registry.holder.BlockHolderSetData;
+import org.avp.api.common.data.block.BlockTagData;
+import org.avp.api.common.data.block.BlockModelData;
+import org.avp.api.common.registry.AVPDeferredBlockRegistry;
 
 public class AVPEngineerBlockRegistry extends AVPDeferredBlockRegistry {
 
