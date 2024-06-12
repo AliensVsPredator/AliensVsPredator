@@ -5,20 +5,20 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
+import net.minecraft.world.level.material.MapColor;
 
 import java.util.Set;
 
-import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
-import net.minecraft.world.level.material.MapColor;
-import org.avp.api.common.game.block.CustomTransparentBlock;
-import org.avp.api.common.registry.holder.BLHolder;
 import org.avp.api.common.data.block.BlockData;
-import org.avp.api.common.registry.holder.BlockHolderSet;
-import org.avp.api.common.data.block.BlockTagData;
 import org.avp.api.common.data.block.BlockModelData;
-import org.avp.api.common.data.block.BlockModelRenderType;
 import org.avp.api.common.data.block.BlockModelDataType;
+import org.avp.api.common.data.block.BlockModelRenderType;
+import org.avp.api.common.data.block.BlockTagData;
+import org.avp.api.common.game.block.CustomTransparentBlock;
 import org.avp.api.common.registry.AVPDeferredBlockRegistry;
+import org.avp.api.common.registry.holder.BLHolder;
+import org.avp.api.common.registry.holder.BlockHolderSet;
 
 public class AVPBlockRegistry extends AVPDeferredBlockRegistry {
 

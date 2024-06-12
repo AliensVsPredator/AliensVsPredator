@@ -7,9 +7,10 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.Level;
+import org.jetbrains.annotations.NotNull;
+
 import org.avp.common.data.entity.GrenadeData;
 import org.avp.common.registry.item.AVPWeaponItemRegistry;
-import org.jetbrains.annotations.NotNull;
 
 public class ThrownGrenade extends BouncingItemProjectile {
 

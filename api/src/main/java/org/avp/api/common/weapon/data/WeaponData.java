@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Objects;
 
 public abstract class WeaponData {
+
     private final List<FireModeData> fireModeDataList = createFireModeData();
 
     protected abstract List<FireModeData> createFireModeData();

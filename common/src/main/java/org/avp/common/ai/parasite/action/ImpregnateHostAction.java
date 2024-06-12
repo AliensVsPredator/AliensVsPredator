@@ -1,12 +1,13 @@
 package org.avp.common.ai.parasite.action;
 
 import net.minecraft.world.entity.LivingEntity;
+
+import java.util.Objects;
+
 import org.avp.api.common.ai.CostConstraint;
 import org.avp.api.common.ai.action.Action;
 import org.avp.common.game.entity.AbstractParasite;
 import org.avp.common.game.sound.AVPSoundEventRegistry;
-
-import java.util.Objects;
 
 public class ImpregnateHostAction extends Action {
 
@@ -41,14 +42,13 @@ public class ImpregnateHostAction extends Action {
 
         ticksOnHost++;
 
-        if(ticksOnHost <= MAX_TICKS_UNTIL_TOOB) {
+        if (ticksOnHost <= MAX_TICKS_UNTIL_TOOB) {
             if (parasite.tickCount % 10 == 0 && vehicle instanceof LivingEntity livingEntity) {
                 livingEntity.hurt(parasite.damageSources().inWall(), 0F);
             }
 
             return;
         }
-
 
         parasite.setFertile(false);
         parasite.playSound(AVPSoundEventRegistry.INSTANCE.entityParasiteImpregnate.get(), 0.2F, 1F);

@@ -9,8 +9,9 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import org.avp.common.game.entity.ThrownGrenade;
 import org.jetbrains.annotations.NotNull;
+
+import org.avp.common.game.entity.ThrownGrenade;
 
 public class GrenadeItem extends Item {
 
@@ -29,7 +30,16 @@ public class GrenadeItem extends Item {
     public @NotNull InteractionResultHolder<ItemStack> use(Level level, Player player, @NotNull InteractionHand interactionHand) {
         var itemInHand = player.getItemInHand(interactionHand);
         // TODO: Change sound effect here.
-        level.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.EGG_THROW, SoundSource.PLAYERS, 0.5F, 0.4F / (level.getRandom().nextFloat() * 0.4F + 0.8F));
+        level.playSound(
+            null,
+            player.getX(),
+            player.getY(),
+            player.getZ(),
+            SoundEvents.EGG_THROW,
+            SoundSource.PLAYERS,
+            0.5F,
+            0.4F / (level.getRandom().nextFloat() * 0.4F + 0.8F)
+        );
 
         if (!level.isClientSide) {
             var thrownGrenade = new ThrownGrenade(level, player);

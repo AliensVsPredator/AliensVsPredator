@@ -2,6 +2,7 @@ package org.avp.api.common.ai.action.impl;
 
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.ai.util.LandRandomPos;
+
 import org.avp.api.common.ai.action.CooldownAction;
 
 public class IdleMoveAction extends CooldownAction {

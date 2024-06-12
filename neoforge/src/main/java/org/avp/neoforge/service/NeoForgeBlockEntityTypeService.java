@@ -7,12 +7,13 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.registries.DeferredRegister;
-import org.avp.api.common.registry.holder.BLHolder;
-import org.avp.common.AVPConstants;
-import org.avp.api.service.BlockEntityTypeService;
-import org.avp.neoforge.util.NeoForgeBlockEntityHolder;
 
 import java.util.function.BiFunction;
+
+import org.avp.api.common.registry.holder.BLHolder;
+import org.avp.api.service.BlockEntityTypeService;
+import org.avp.common.AVPConstants;
+import org.avp.neoforge.util.NeoForgeBlockEntityHolder;
 
 public class NeoForgeBlockEntityTypeService implements BlockEntityTypeService {
 

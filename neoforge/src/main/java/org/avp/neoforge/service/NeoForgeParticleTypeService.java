@@ -8,8 +8,8 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 import java.util.function.Supplier;
 
 import org.avp.api.common.registry.holder.BLHolder;
-import org.avp.common.AVPConstants;
 import org.avp.api.service.ParticleTypeService;
+import org.avp.common.AVPConstants;
 import org.avp.neoforge.util.NeoForgeParticleTypeHolder;
 
 public class NeoForgeParticleTypeService implements ParticleTypeService {

@@ -1,12 +1,12 @@
 package org.avp.api.common.ai.goal;
 
-import org.avp.api.common.ai.progress.ProgressKey;
-import org.avp.api.common.ai.action.Action;
-
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
+
+import org.avp.api.common.ai.action.Action;
+import org.avp.api.common.ai.progress.ProgressKey;
 
 public abstract class Goal {
 
@@ -50,9 +50,11 @@ public abstract class Goal {
     public Optional<Action> getBestAction() {
         return availableActions.stream()
             .filter(Action::isValid)
-            .min(Comparator.comparingInt(
-                action -> action.getCostConstraint().apply(action.getCost())
-            ));
+            .min(
+                Comparator.comparingInt(
+                    action -> action.getCostConstraint().apply(action.getCost())
+                )
+            );
     }
 
     public final Optional<ProgressKey> getProgresses() {

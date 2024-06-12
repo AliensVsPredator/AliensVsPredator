@@ -8,6 +8,7 @@ public record PowerNode(
     BlockPos blockPos,
     Set<PowerPath> powerPaths
 ) {
+
     public void addConnection(PowerPath powerPath) {
         powerPaths.add(powerPath);
     }

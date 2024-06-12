@@ -1,5 +1,7 @@
 package org.avp.common.data.item.weapon;
 
+import java.util.List;
+
 import org.avp.api.common.registry.holder.BLHolder;
 import org.avp.api.common.weapon.ammunition.HasAmmunitionBehavior;
 import org.avp.api.common.weapon.data.AmmunitionData;
@@ -11,8 +13,6 @@ import org.avp.api.common.weapon.data.WindData;
 import org.avp.api.common.weapon.reload.ReloadBehavior;
 import org.avp.common.game.item.weapon.M83A2SADARProjectileWeaponAttack;
 import org.avp.common.game.sound.AVPSoundEventRegistry;
-
-import java.util.List;
 
 public class M83A2SADARData extends WeaponData {
 

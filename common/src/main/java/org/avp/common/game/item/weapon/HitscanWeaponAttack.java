@@ -13,18 +13,19 @@ import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
+import org.jetbrains.annotations.NotNull;
+
 import org.avp.api.common.registry.holder.BLHolder;
-import org.avp.api.util.BLPredicates;
 import org.avp.api.common.weapon.WeaponItemStack;
 import org.avp.api.common.weapon.attack.AbstractWeaponAttack;
+import org.avp.api.server.BlockBreakProgressManager;
+import org.avp.api.service.Services;
+import org.avp.api.util.BLPredicates;
 import org.avp.common.config.AVPConfig;
+import org.avp.common.data.tag.AVPBlockTags;
 import org.avp.common.game.damage.AVPDamageSources;
 import org.avp.common.network.payload.ClientboundBulletHitBlockPayload;
-import org.avp.api.service.Services;
-import org.avp.common.data.tag.AVPBlockTags;
 import org.avp.common.util.SoundUtils;
-import org.avp.api.server.BlockBreakProgressManager;
-import org.jetbrains.annotations.NotNull;
 
 public class HitscanWeaponAttack extends AbstractWeaponAttack {
 

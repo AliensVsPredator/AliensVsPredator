@@ -11,13 +11,13 @@ import java.util.Collection;
 import java.util.List;
 import java.util.function.Supplier;
 
+import org.avp.api.common.registry.AVPDeferredBlockRegistry;
+import org.avp.api.common.registry.AVPDeferredRegistry;
 import org.avp.api.common.registry.holder.BLHolder;
+import org.avp.api.service.Services;
 import org.avp.api.util.Tuple;
 import org.avp.common.AVPConstants;
 import org.avp.common.registry.block.AVPTempleBlockRegistry;
-import org.avp.api.common.registry.AVPDeferredBlockRegistry;
-import org.avp.api.common.registry.AVPDeferredRegistry;
-import org.avp.api.service.Services;
 import org.avp.common.registry.item.AVPAmmunitionPartItemRegistry;
 import org.avp.common.registry.item.AVPArmorItemRegistry;
 import org.avp.common.registry.item.AVPBulletItemRegistry;

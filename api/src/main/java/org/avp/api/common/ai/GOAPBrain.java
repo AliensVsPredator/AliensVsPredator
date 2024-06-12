@@ -1,10 +1,10 @@
 package org.avp.api.common.ai;
 
-import org.avp.api.common.ai.plan.Planner;
-import org.avp.api.common.ai.sensor.Sensor;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import org.avp.api.common.ai.plan.Planner;
+import org.avp.api.common.ai.sensor.Sensor;
 
 public abstract class GOAPBrain {
 
@@ -23,6 +23,7 @@ public abstract class GOAPBrain {
     }
 
     protected abstract void addSensors(List<Sensor> sensors);
+
     protected abstract void addGoals(Planner planner);
 
     public void init() {

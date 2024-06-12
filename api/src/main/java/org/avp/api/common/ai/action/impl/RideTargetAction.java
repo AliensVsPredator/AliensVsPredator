@@ -1,10 +1,11 @@
 package org.avp.api.common.ai.action.impl;
 
 import net.minecraft.world.entity.Mob;
-import org.avp.api.common.ai.CostConstraint;
-import org.avp.api.common.ai.action.Action;
 
 import java.util.Objects;
+
+import org.avp.api.common.ai.CostConstraint;
+import org.avp.api.common.ai.action.Action;
 
 public class RideTargetAction extends Action {
 

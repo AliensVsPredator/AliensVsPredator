@@ -6,14 +6,14 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.level.Level;
-import org.avp.api.util.time.Tick;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import org.avp.common.registry.alien.maturation.AVPAlienMaturationRegistry;
+import org.avp.api.util.time.Tick;
 import org.avp.common.data.tag.AVPEntityTypeTags;
+import org.avp.common.registry.alien.maturation.AVPAlienMaturationRegistry;
 
 @Mixin(Mob.class)
 public abstract class MixinMob_AliensMature extends LivingEntity {

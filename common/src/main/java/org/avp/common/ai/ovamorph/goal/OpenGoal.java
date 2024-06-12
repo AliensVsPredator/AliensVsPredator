@@ -1,12 +1,12 @@
 package org.avp.common.ai.ovamorph.goal;
 
-import org.avp.api.common.ai.progress.ProgressKey;
+import java.util.Optional;
+
 import org.avp.api.common.ai.goal.Goal;
+import org.avp.api.common.ai.progress.ProgressKey;
+import org.avp.common.ai.AVPProgressions;
 import org.avp.common.ai.ovamorph.action.OpenAction;
 import org.avp.common.game.entity.AbstractOvamorph;
-import org.avp.common.ai.AVPProgressions;
-
-import java.util.Optional;
 
 public class OpenGoal extends Goal {
 

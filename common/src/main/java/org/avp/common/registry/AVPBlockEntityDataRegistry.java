@@ -1,13 +1,14 @@
 package org.avp.common.registry;
 
 import net.minecraft.world.level.block.entity.BlockEntity;
-import org.avp.api.common.data.block_entity.BlockEntityData;
-import org.avp.common.data.block_entity.SolarPanelData;
 
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+
+import org.avp.api.common.data.block_entity.BlockEntityData;
+import org.avp.common.data.block_entity.SolarPanelData;
 
 public class AVPBlockEntityDataRegistry {
 

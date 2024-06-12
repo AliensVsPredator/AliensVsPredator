@@ -6,12 +6,13 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
-import org.avp.api.util.time.Tick;
-import org.avp.common.registry.item.AVPArmorItemRegistry;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+
+import org.avp.api.util.time.Tick;
+import org.avp.common.registry.item.AVPArmorItemRegistry;
 
 @Mixin(ServerPlayer.class)
 public abstract class MixinServerPlayer_PressureSuitProvidesAir extends Player {

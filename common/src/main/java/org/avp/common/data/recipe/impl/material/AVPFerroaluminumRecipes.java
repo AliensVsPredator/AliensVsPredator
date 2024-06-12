@@ -5,9 +5,9 @@ import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.world.item.Items;
 
 import org.avp.api.common.registry.holder.BLHolder;
-import org.avp.common.registry.block.AVPBlockRegistry;
 import org.avp.common.data.recipe.AVPMetalRecipeHelper;
 import org.avp.common.data.recipe.AVPShapedRecipeBuilder;
+import org.avp.common.registry.block.AVPBlockRegistry;
 import org.avp.common.registry.item.AVPItemRegistry;
 
 public final class AVPFerroaluminumRecipes {

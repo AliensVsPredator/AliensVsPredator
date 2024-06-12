@@ -4,15 +4,16 @@ import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
+
+import java.util.List;
+
 import org.avp.api.common.registry.holder.BLHolder;
-import org.avp.common.registry.block.AVPPlasticBlockRegistry;
 import org.avp.common.data.recipe.AVPMetalRecipeHelper;
 import org.avp.common.data.recipe.AVPRecipeHelper;
 import org.avp.common.data.recipe.AVPShapedRecipeBuilder;
 import org.avp.common.data.recipe.AVPShapelessRecipeBuilder;
+import org.avp.common.registry.block.AVPPlasticBlockRegistry;
 import org.avp.common.registry.item.AVPItemRegistry;
-
-import java.util.List;
 
 public final class AVPPlasticBlockRecipes {
 
@@ -48,9 +49,12 @@ public final class AVPPlasticBlockRecipes {
                 .requiresAndUnlockIfHas('A', dyeItem)
                 .requiresAndUnlockIfHas(
                     'B',
-                    Ingredient.of(plasticList.stream()
-                        .filter(plasticBlockSet -> !plasticBlockSet.base().base().equals(baseBlock))
-                        .map(plasticBlockSet -> new ItemStack(plasticBlockSet.base().base().get()))))
+                    Ingredient.of(
+                        plasticList.stream()
+                            .filter(plasticBlockSet -> !plasticBlockSet.base().base().equals(baseBlock))
+                            .map(plasticBlockSet -> new ItemStack(plasticBlockSet.base().base().get()))
+                    )
+                )
                 .save(recipeOutput, "dye_" + AVPRecipeHelper.getItemName(baseBlock.get()));
         }
 

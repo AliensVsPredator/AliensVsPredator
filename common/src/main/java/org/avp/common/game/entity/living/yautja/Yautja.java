@@ -18,14 +18,14 @@ import net.minecraft.world.entity.SpawnGroupData;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
-import org.avp.common.game.sound.AVPSoundEventRegistry;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import org.avp.common.game.entity.type.Boss;
 import org.avp.api.common.game.entity.data_sync.SyncedDataHandle;
 import org.avp.api.common.game.entity.data_sync.SyncedDataSerializer;
 import org.avp.common.ai.AIUtils;
+import org.avp.common.game.entity.type.Boss;
+import org.avp.common.game.sound.AVPSoundEventRegistry;
 
 public class Yautja extends Monster implements Boss, GeoEntity {
 

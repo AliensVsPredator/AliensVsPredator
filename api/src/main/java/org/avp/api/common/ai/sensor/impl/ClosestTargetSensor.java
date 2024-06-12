@@ -2,12 +2,13 @@ package org.avp.api.common.ai.sensor.impl;
 
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
-import org.avp.api.common.ai.GOAPBrainCache;
-import org.avp.api.common.ai.sensor.key.SensorKeys;
-import org.avp.api.common.ai.sensor.Sensor;
 
 import java.util.List;
 import java.util.function.Predicate;
+
+import org.avp.api.common.ai.GOAPBrainCache;
+import org.avp.api.common.ai.sensor.Sensor;
+import org.avp.api.common.ai.sensor.key.SensorKeys;
 
 public class ClosestTargetSensor extends Sensor {
 
@@ -44,7 +45,7 @@ public class ClosestTargetSensor extends Sensor {
         var minimumDistance = -1.0;
         LivingEntity closestTarget = null;
 
-        for (var target: targetEntities) {
+        for (var target : targetEntities) {
             var distance = mob.distanceToSqr(target);
 
             if (minimumDistance == -1.0 || distance < minimumDistance) {

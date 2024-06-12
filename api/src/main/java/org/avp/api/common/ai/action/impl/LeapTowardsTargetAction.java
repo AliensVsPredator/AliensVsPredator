@@ -2,10 +2,11 @@ package org.avp.api.common.ai.action.impl;
 
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.phys.Vec3;
-import org.avp.api.common.ai.CostConstraint;
-import org.avp.api.common.ai.action.CooldownAction;
 
 import java.util.Objects;
+
+import org.avp.api.common.ai.CostConstraint;
+import org.avp.api.common.ai.action.CooldownAction;
 
 public class LeapTowardsTargetAction extends CooldownAction {
 
@@ -66,7 +67,7 @@ public class LeapTowardsTargetAction extends CooldownAction {
         // Then leap immediately.
         if (
             (mob.getLastHurtByMobTimestamp() > 0 && mob.tickCount - mob.getLastHurtByMobTimestamp() < 20) ||
-            currentDistanceToTarget > distanceToTarget
+                currentDistanceToTarget > distanceToTarget
         ) {
             windUpTimeInTicks = 0;
         }

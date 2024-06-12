@@ -5,12 +5,13 @@ import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ArmorMaterial;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
-import org.avp.api.common.registry.holder.BLHolder;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.Supplier;
+
+import org.avp.api.common.registry.holder.BLHolder;
 
 public record CustomArmorMaterial(
     String registryName,
@@ -27,7 +28,7 @@ public record CustomArmorMaterial(
         Map.entry(ArmorItem.Type.HELMET, 13),
         Map.entry(ArmorItem.Type.CHESTPLATE, 16),
         Map.entry(ArmorItem.Type.LEGGINGS, 15),
-        Map.entry(ArmorItem.Type.BOOTS,11)
+        Map.entry(ArmorItem.Type.BOOTS, 11)
     );
 
     public static final class Builder {
@@ -68,13 +69,16 @@ public record CustomArmorMaterial(
             if (
                 // Helmets, boots and leggings must not provide more armor value than a chestplate.
                 helmet > chestplate ||
-                boots > chestplate ||
-                leggings > chestplate ||
-                // Helmets and boots must not provide more armor value than leggings.
-                helmet > leggings ||
-                boots > leggings
+                    boots > chestplate ||
+                    leggings > chestplate ||
+                    // Helmets and boots must not provide more armor value than leggings.
+                    helmet > leggings ||
+                    boots > leggings
             ) {
-                throw new IllegalArgumentException("Invalid armor value(s)! Helmet: " + helmet + ", Chestplate: " + chestplate + ", Leggings: " + leggings + ", Boots: " + boots);
+                throw new IllegalArgumentException(
+                    "Invalid armor value(s)! Helmet: " + helmet + ", Chestplate: " + chestplate + ", Leggings: " + leggings + ", Boots: "
+                        + boots
+                );
             }
 
             this.protectionValues = protectionValues;

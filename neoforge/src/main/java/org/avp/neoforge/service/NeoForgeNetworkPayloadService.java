@@ -13,8 +13,8 @@ import org.avp.api.common.network.ClientboundPacket;
 import org.avp.api.common.network.NetworkSide;
 import org.avp.api.common.network.PayloadHandlerData;
 import org.avp.api.common.network.ServerboundPacket;
-import org.avp.common.AVPConstants;
 import org.avp.api.service.NetworkPayloadService;
+import org.avp.common.AVPConstants;
 
 public class NeoForgeNetworkPayloadService implements NetworkPayloadService {
 

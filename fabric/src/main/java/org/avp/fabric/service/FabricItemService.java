@@ -3,11 +3,12 @@ package org.avp.fabric.service;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.Item;
+
+import java.util.function.Supplier;
+
 import org.avp.api.common.registry.holder.BLHolder;
 import org.avp.api.service.ItemService;
 import org.avp.common.registry.holder.AVPHolder;
-
-import java.util.function.Supplier;
 
 public class FabricItemService implements ItemService {
 

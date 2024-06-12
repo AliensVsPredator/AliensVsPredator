@@ -35,7 +35,8 @@ public class LootProviders {
                 .hasEnchantment(new EnchantmentPredicate(Enchantments.SILK_TOUCH, MinMaxBounds.Ints.atLeast(1)))
         );
 
-    public static final TriFunction<Block, ItemLike, Integer, LootTable.Builder> OTHER_VARIABLE = (block, other, count) -> LootTable.lootTable()
+    public static final TriFunction<Block, ItemLike, Integer, LootTable.Builder> OTHER_VARIABLE = (block, other, count) -> LootTable
+        .lootTable()
         .withPool(
             LootPool.lootPool()
                 .when(ExplosionCondition.survivesExplosion())
@@ -45,7 +46,11 @@ public class LootProviders {
 
     public static final BiFunction<Block, ItemLike, LootTable.Builder> OTHER = (block, other) -> OTHER_VARIABLE.apply(block, other, 1);
 
-    public static final BiFunction<Block, Integer, LootTable.Builder> SELF_VARIABLE = (block, count) -> OTHER_VARIABLE.apply(block, block, count);
+    public static final BiFunction<Block, Integer, LootTable.Builder> SELF_VARIABLE = (block, count) -> OTHER_VARIABLE.apply(
+        block,
+        block,
+        count
+    );
 
     public static final Function<Block, LootTable.Builder> SELF = block -> OTHER.apply(block, block);
 
@@ -59,7 +64,9 @@ public class LootProviders {
                             SetItemCountFunction.setCount(ConstantValue.exactly(2.0F))
                                 .when(
                                     LootItemBlockStatePropertyCondition.hasBlockStateProperties(block)
-                                        .setProperties(StatePropertiesPredicate.Builder.properties().hasProperty(SlabBlock.TYPE, SlabType.DOUBLE))
+                                        .setProperties(
+                                            StatePropertiesPredicate.Builder.properties().hasProperty(SlabBlock.TYPE, SlabType.DOUBLE)
+                                        )
                                 )
                         )
                         .apply(ApplyExplosionDecay.explosionDecay())

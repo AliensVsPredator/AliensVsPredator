@@ -1,9 +1,10 @@
 package org.avp.api.common.ai.sensor.impl;
 
 import net.minecraft.world.entity.LivingEntity;
+
 import org.avp.api.common.ai.GOAPBrainCache;
-import org.avp.api.common.ai.sensor.key.SensorKeys;
 import org.avp.api.common.ai.sensor.Sensor;
+import org.avp.api.common.ai.sensor.key.SensorKeys;
 
 public class NearbyLivingEntitiesSensor extends Sensor {
 

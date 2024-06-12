@@ -1,21 +1,21 @@
 package org.avp.common.ai.parasite;
 
+import java.util.List;
+
 import org.avp.api.common.ai.GOAPBrain;
 import org.avp.api.common.ai.action.impl.LeapTowardsTargetAction;
+import org.avp.api.common.ai.goal.impl.MoveToTargetGoal;
+import org.avp.api.common.ai.goal.impl.RideTargetGoal;
 import org.avp.api.common.ai.plan.Planner;
 import org.avp.api.common.ai.sensor.Sensor;
+import org.avp.api.common.ai.sensor.impl.ClosestTargetSensor;
 import org.avp.api.common.ai.sensor.impl.NearbyEntitiesSensor;
 import org.avp.api.common.ai.sensor.impl.NearbyLivingEntitiesSensor;
-import org.avp.api.common.ai.sensor.impl.ClosestTargetSensor;
-import org.avp.common.game.entity.AbstractParasite;
-import org.avp.api.common.ai.goal.impl.RideTargetGoal;
+import org.avp.common.ai.parasite.goal.ImpregnateHostGoal;
 import org.avp.common.ai.parasite.goal.ParasiteIdleMoveGoal;
 import org.avp.common.ai.parasite.goal.SmotherHostGoal;
-import org.avp.common.ai.parasite.goal.ImpregnateHostGoal;
-import org.avp.api.common.ai.goal.impl.MoveToTargetGoal;
+import org.avp.common.game.entity.AbstractParasite;
 import org.avp.common.util.AVPPredicates;
-
-import java.util.List;
 
 public class ParasiteBrain extends GOAPBrain {
 
@@ -41,7 +41,7 @@ public class ParasiteBrain extends GOAPBrain {
                 cache,
                 parasite,
                 maybeTarget -> AVPPredicates.IS_HOST.test(maybeTarget) &&
-                    // If target has no passengers or if the parasite is attached to the target.
+                // If target has no passengers or if the parasite is attached to the target.
                     (maybeTarget.getPassengers().isEmpty() || parasite.getVehicle() == maybeTarget)
             )
         );

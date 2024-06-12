@@ -9,8 +9,8 @@ import net.minecraft.world.level.storage.loot.LootTable;
 import java.util.HashSet;
 import java.util.function.Function;
 
-import org.avp.api.common.registry.holder.BLHolder;
 import org.avp.api.common.data.loot_table.LootProviders;
+import org.avp.api.common.registry.holder.BLHolder;
 
 public record BlockData(
     String registryName,

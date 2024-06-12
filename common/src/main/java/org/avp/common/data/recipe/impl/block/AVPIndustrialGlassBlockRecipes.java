@@ -6,16 +6,16 @@ import net.minecraft.data.recipes.SimpleCookingRecipeBuilder;
 import net.minecraft.world.item.DyeItem;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
-
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
-import org.avp.common.AVPConstants;
-import org.avp.common.data.recipe.AVPRecipeHelper;
-import org.avp.common.registry.block.AVPIndustrialGlassBlockRegistry;
-import org.avp.common.data.recipe.AVPRecipeProvider;
-import org.avp.common.data.recipe.AVPShapedRecipeBuilder;
 
 import java.util.Set;
+
+import org.avp.common.AVPConstants;
+import org.avp.common.data.recipe.AVPRecipeHelper;
+import org.avp.common.data.recipe.AVPRecipeProvider;
+import org.avp.common.data.recipe.AVPShapedRecipeBuilder;
+import org.avp.common.registry.block.AVPIndustrialGlassBlockRegistry;
 
 public final class AVPIndustrialGlassBlockRecipes {
 
@@ -72,16 +72,16 @@ public final class AVPIndustrialGlassBlockRecipes {
         });
 
         STAINED_GLASS_BLOCKS.forEach(stainedGlassBlock ->
-            // All stained glass blocks can be blasted again to remove dyed colors.
-            SimpleCookingRecipeBuilder.blasting(
-                    Ingredient.of(stainedGlassBlock),
-                    RecipeCategory.MISC,
-                    industrialGlassOutput,
-                    0,
-                    100
-                )
-                .unlockedBy("has_industrial_glass", AVPRecipeProvider.has(industrialGlassOutput))
-                .save(recipeOutput, AVPConstants.MOD_ID + ":industrial_glass_from_blasting_" + AVPRecipeHelper.getItemName(stainedGlassBlock))
+        // All stained glass blocks can be blasted again to remove dyed colors.
+        SimpleCookingRecipeBuilder.blasting(
+            Ingredient.of(stainedGlassBlock),
+            RecipeCategory.MISC,
+            industrialGlassOutput,
+            0,
+            100
+        )
+            .unlockedBy("has_industrial_glass", AVPRecipeProvider.has(industrialGlassOutput))
+            .save(recipeOutput, AVPConstants.MOD_ID + ":industrial_glass_from_blasting_" + AVPRecipeHelper.getItemName(stainedGlassBlock))
         );
     }
 

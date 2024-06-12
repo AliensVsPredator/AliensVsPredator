@@ -8,9 +8,9 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.UUID;
 
+import org.avp.api.common.network.ServerboundPacket;
 import org.avp.common.AVPResources;
 import org.avp.common.network.AVPServerListener;
-import org.avp.api.common.network.ServerboundPacket;
 
 public record ServerboundWeaponSwapAmmunitionTypeRequestPayload(
     UUID playerUUID

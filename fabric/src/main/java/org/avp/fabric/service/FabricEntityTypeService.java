@@ -7,11 +7,12 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.SpawnEggItem;
+
+import java.util.function.Supplier;
+
 import org.avp.api.common.registry.holder.BLHolder;
 import org.avp.api.service.EntityTypeService;
 import org.avp.common.registry.holder.AVPHolder;
-
-import java.util.function.Supplier;
 
 public class FabricEntityTypeService implements EntityTypeService {
 

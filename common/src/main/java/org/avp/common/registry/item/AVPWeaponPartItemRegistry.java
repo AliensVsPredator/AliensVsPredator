@@ -2,9 +2,9 @@ package org.avp.common.registry.item;
 
 import net.minecraft.world.item.Item;
 
-import org.avp.api.common.registry.holder.BLHolder;
 import org.avp.api.common.data.item.ItemData;
 import org.avp.api.common.registry.AVPDeferredItemRegistry;
+import org.avp.api.common.registry.holder.BLHolder;
 
 public class AVPWeaponPartItemRegistry extends AVPDeferredItemRegistry {
 

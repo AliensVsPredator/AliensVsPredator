@@ -8,9 +8,9 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.level.Level;
 
-import org.avp.common.game.entity.type.Morphable;
 import org.avp.common.ai.AIUtils;
 import org.avp.common.data.entity.living.alien.base_line.FacehuggerData;
+import org.avp.common.game.entity.type.Morphable;
 
 public class Chestburster extends Monster implements Morphable, GeoEntity {
 

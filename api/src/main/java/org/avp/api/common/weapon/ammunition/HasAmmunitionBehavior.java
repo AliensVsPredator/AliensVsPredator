@@ -2,6 +2,7 @@ package org.avp.api.common.weapon.ammunition;
 
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+
 import org.avp.api.common.weapon.WeaponItemStack;
 
 @FunctionalInterface

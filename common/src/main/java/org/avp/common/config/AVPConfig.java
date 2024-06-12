@@ -6,8 +6,8 @@ import java.nio.file.Files;
 import org.avp.api.common.config.Category;
 import org.avp.api.common.config.Config;
 import org.avp.api.common.config.ConfigParser;
-import org.avp.common.AVPConstants;
 import org.avp.api.service.Services;
+import org.avp.common.AVPConstants;
 
 /**
  * @author Boston Vanseghi

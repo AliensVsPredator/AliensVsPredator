@@ -3,16 +3,16 @@ package org.avp.api.server;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.Level;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
-import org.avp.api.util.time.Tick;
 import org.avp.api.util.Tuple;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.avp.api.util.time.Tick;
 
 public class BlockBreakProgressManager {
 

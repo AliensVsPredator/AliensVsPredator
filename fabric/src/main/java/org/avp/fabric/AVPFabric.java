@@ -3,9 +3,9 @@ package org.avp.fabric;
 import net.fabricmc.api.ModInitializer;
 
 import org.avp.common.AVPCommon;
+import org.avp.common.game.block.AVPDispenserBlockBehaviors;
 import org.avp.common.registry.alien.infection.AVPAlienInfectionRegistry;
 import org.avp.common.registry.alien.maturation.AVPAlienMaturationRegistry;
-import org.avp.common.game.block.AVPDispenserBlockBehaviors;
 import org.avp.fabric.common.command.AVPFabricCommands;
 import org.avp.fabric.common.data.AVPFabricLootTableModifier;
 import org.avp.fabric.common.registry.AVPFabricFuelRegistry;

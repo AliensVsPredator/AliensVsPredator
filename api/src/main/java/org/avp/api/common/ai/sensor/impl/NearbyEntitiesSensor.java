@@ -1,6 +1,7 @@
 package org.avp.api.common.ai.sensor.impl;
 
 import net.minecraft.world.entity.Entity;
+
 import org.avp.api.common.ai.GOAPBrainCache;
 import org.avp.api.common.ai.sensor.Sensor;
 import org.avp.api.common.ai.sensor.key.SensorKeys;

@@ -2,6 +2,7 @@ package org.avp.api.common.data.block_entity;
 
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
+
 import org.avp.api.common.registry.holder.BLHolder;
 
 public abstract class BlockEntityData<T extends BlockEntity> {

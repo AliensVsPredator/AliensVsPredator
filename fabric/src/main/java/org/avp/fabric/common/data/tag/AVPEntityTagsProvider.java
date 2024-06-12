@@ -8,8 +8,8 @@ import net.minecraft.world.entity.EntityType;
 
 import java.util.concurrent.CompletableFuture;
 
-import org.avp.common.registry.AVPEntityDataRegistry;
 import org.avp.common.data.tag.AVPEntityTypeTags;
+import org.avp.common.registry.AVPEntityDataRegistry;
 
 public class AVPEntityTagsProvider extends FabricTagProvider.EntityTypeTagProvider {
 

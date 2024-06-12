@@ -9,13 +9,13 @@ import net.minecraft.world.level.storage.loot.LootTable;
 import java.util.Set;
 import java.util.function.Function;
 
-import org.avp.api.common.registry.holder.BLHolder;
 import org.avp.api.common.data.block.BlockData;
+import org.avp.api.common.data.block.BlockModelData;
 import org.avp.api.common.data.block.BlockTagData;
 import org.avp.api.common.data.loot_table.LootProviders;
-import org.avp.api.common.data.block.BlockModelData;
-import org.avp.common.registry.item.AVPItemRegistry;
 import org.avp.api.common.registry.AVPDeferredBlockRegistry;
+import org.avp.api.common.registry.holder.BLHolder;
+import org.avp.common.registry.item.AVPItemRegistry;
 
 public class AVPOreBlockRegistry extends AVPDeferredBlockRegistry {
 

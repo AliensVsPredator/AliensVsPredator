@@ -9,11 +9,11 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import org.avp.api.common.registry.holder.BLHolder;
-import org.avp.api.util.Tuple;
 import org.avp.api.common.data.item.ItemData;
 import org.avp.api.common.data.item.ItemModelData;
+import org.avp.api.common.registry.holder.BLHolder;
 import org.avp.api.service.Services;
+import org.avp.api.util.Tuple;
 
 public class AVPDeferredItemRegistry extends AVPDeferredRegistry<Item> {
 

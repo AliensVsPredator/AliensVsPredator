@@ -19,7 +19,12 @@ public final class AVPWeaponRecipes {
             AVPWeaponItemRegistry.INSTANCE.weapon3712Shotgun,
             true
         );
-        addGenericWeaponRecipe(recipeOutput, AVPWeaponBlueprintItemRegistry.INSTANCE.blueprintAk47, AVPWeaponItemRegistry.INSTANCE.weaponAk47, true);
+        addGenericWeaponRecipe(
+            recipeOutput,
+            AVPWeaponBlueprintItemRegistry.INSTANCE.blueprintAk47,
+            AVPWeaponItemRegistry.INSTANCE.weaponAk47,
+            true
+        );
         addGenericWeaponRecipe(
             recipeOutput,
             AVPWeaponBlueprintItemRegistry.INSTANCE.blueprintF90Rifle,
@@ -56,8 +61,9 @@ public final class AVPWeaponRecipes {
             .requiresAndUnlockIfHas('A', AVPWeaponBlueprintItemRegistry.INSTANCE.blueprintM41APulseRifle)
             .requiresAndUnlockIfHas('B', AVPWeaponPartItemRegistry.INSTANCE.weaponPartBarrelGeneric)
             .requiresAndUnlockIfHas('C', AVPWeaponPartItemRegistry.INSTANCE.weaponPartGripGeneric)
-            .requiresAndUnlockIfHas('D', AVPWeaponPartItemRegistry.INSTANCE.weaponPartReceiverSmart) // Different receiver
-                                                                                              // here.
+            .requiresAndUnlockIfHas('D', AVPWeaponPartItemRegistry.INSTANCE.weaponPartReceiverSmart) // Different
+                                                                                                     // receiver
+            // here.
             .requiresAndUnlockIfHas('E', AVPWeaponPartItemRegistry.INSTANCE.weaponPartStockGeneric)
             .save(recipeOutput);
 
@@ -66,16 +72,18 @@ public final class AVPWeaponRecipes {
             .requiresAndUnlockIfHas('A', AVPWeaponBlueprintItemRegistry.INSTANCE.blueprintM56Smartgun)
             .requiresAndUnlockIfHas('B', AVPWeaponPartItemRegistry.INSTANCE.weaponPartBarrelSmart)
             .requiresAndUnlockIfHas('C', AVPWeaponPartItemRegistry.INSTANCE.weaponPartGripGeneric)
-            .requiresAndUnlockIfHas('D', AVPWeaponPartItemRegistry.INSTANCE.weaponPartReceiverSmart) // Different receiver
-                                                                                              // here.
+            .requiresAndUnlockIfHas('D', AVPWeaponPartItemRegistry.INSTANCE.weaponPartReceiverSmart) // Different
+                                                                                                     // receiver
+            // here.
             .save(recipeOutput);
 
         // Old Painless
         AVPShapelessRecipeBuilder.shapeless(RecipeCategory.COMBAT, AVPWeaponItemRegistry.INSTANCE.weaponOldPainless)
             .requiresAndUnlockIfHas('A', AVPWeaponBlueprintItemRegistry.INSTANCE.blueprintOldPainless)
             .requiresAndUnlockIfHas('B', AVPWeaponPartItemRegistry.INSTANCE.weaponPartBarrelMinigun)
-            .requiresAndUnlockIfHas('C', AVPWeaponPartItemRegistry.INSTANCE.weaponPartGripGeneric, 2) // Two grips for a big
-                                                                                               // gun.
+            .requiresAndUnlockIfHas('C', AVPWeaponPartItemRegistry.INSTANCE.weaponPartGripGeneric, 2) // Two grips for a
+                                                                                                      // big
+            // gun.
             .requiresAndUnlockIfHas('D', AVPWeaponPartItemRegistry.INSTANCE.weaponPartReceiverGeneric)
             .save(recipeOutput);
 

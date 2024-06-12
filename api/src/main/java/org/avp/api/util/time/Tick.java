@@ -1,9 +1,13 @@
 package org.avp.api.util.time;
 
 public class Tick {
+
     public static final int PER_SECOND = 20;
+
     public static final int PER_MINUTE = 60 * PER_SECOND;
+
     public static final int PER_HOUR = 60 * PER_MINUTE * PER_SECOND;
+
     public static final int MILLIS_PER_TICK = 1000 / PER_SECOND;
 
     public static int fromMillis(int millis) {

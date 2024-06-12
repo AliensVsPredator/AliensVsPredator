@@ -11,6 +11,7 @@ import java.util.Map;
 
 import org.avp.api.common.data.entity.EntityData;
 import org.avp.common.data.entity.AcidData;
+import org.avp.common.data.entity.GrenadeData;
 import org.avp.common.data.entity.RocketData;
 import org.avp.common.data.entity.living.alien.base_line.BoilerData;
 import org.avp.common.data.entity.living.alien.base_line.ChestbursterData;
@@ -41,7 +42,6 @@ import org.avp.common.data.entity.living.alien.runner_line.CrusherData;
 import org.avp.common.data.entity.living.alien.runner_line.DroneRunnerData;
 import org.avp.common.data.entity.living.alien.runner_line.WarriorRunnerData;
 import org.avp.common.data.entity.living.engineer.EngineerData;
-import org.avp.common.data.entity.GrenadeData;
 import org.avp.common.data.entity.living.yautja.YautjaData;
 
 public class AVPEntityDataRegistry {

@@ -1,6 +1,7 @@
 package org.avp.api.common.ai.action;
 
 import net.minecraft.util.RandomSource;
+
 import org.avp.api.common.ai.CostConstraint;
 
 public abstract class CooldownAction extends Action {

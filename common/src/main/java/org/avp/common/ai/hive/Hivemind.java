@@ -9,9 +9,9 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
+import org.avp.common.data.tag.AVPEntityTypeTags;
 import org.avp.common.game.entity.type.HiveMember;
 import org.avp.common.game.entity.type.RoyalJellyHolder;
-import org.avp.common.data.tag.AVPEntityTypeTags;
 import org.avp.server.HivemindManager;
 
 public class Hivemind {

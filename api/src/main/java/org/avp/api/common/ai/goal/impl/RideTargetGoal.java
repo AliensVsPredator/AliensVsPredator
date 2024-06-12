@@ -1,12 +1,13 @@
 package org.avp.api.common.ai.goal.impl;
 
 import net.minecraft.world.entity.Mob;
+
+import java.util.Optional;
+
+import org.avp.api.common.ai.action.impl.RideTargetAction;
 import org.avp.api.common.ai.goal.Goal;
 import org.avp.api.common.ai.progress.ProgressKey;
 import org.avp.api.common.ai.progress.Progressions;
-import org.avp.api.common.ai.action.impl.RideTargetAction;
-
-import java.util.Optional;
 
 public class RideTargetGoal extends Goal {
 

@@ -8,13 +8,15 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import org.avp.common.game.block_entity.SolarPanelBlockEntity;
-import org.avp.common.data.block_entity.SolarPanelData;
-import org.avp.common.game.block_entity.ticker.SolarPanelBlockTicker;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import org.avp.common.data.block_entity.SolarPanelData;
+import org.avp.common.game.block_entity.SolarPanelBlockEntity;
+import org.avp.common.game.block_entity.ticker.SolarPanelBlockTicker;
+
 public class SolarPanelBlock extends BaseEntityBlock {
+
     public static final MapCodec<SolarPanelBlock> CODEC = simpleCodec(SolarPanelBlock::new);
 
     public SolarPanelBlock(Properties properties) {

@@ -2,9 +2,10 @@ package org.avp.api.common.weapon.reload;
 
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+
 import org.avp.api.common.weapon.WeaponItemStack;
-import org.avp.api.common.weapon.ammunition.CountAmmunitionAction;
 import org.avp.api.common.weapon.ammunition.ConsumeAmmunitionAction;
+import org.avp.api.common.weapon.ammunition.CountAmmunitionAction;
 import org.avp.api.util.BLPredicates;
 
 public class LoadIntoWeaponReloadBehavior implements ReloadBehavior {

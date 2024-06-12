@@ -5,12 +5,13 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import org.avp.api.common.weapon.bullet_effect.BulletEffect;
-import org.avp.api.common.weapon.bullet_effect.BulletEffectRegistry;
-import org.avp.api.common.weapon.data.WeaponData;
-import org.avp.api.common.weapon.data.FireModeData;
 
 import java.util.Set;
+
+import org.avp.api.common.weapon.bullet_effect.BulletEffect;
+import org.avp.api.common.weapon.bullet_effect.BulletEffectRegistry;
+import org.avp.api.common.weapon.data.FireModeData;
+import org.avp.api.common.weapon.data.WeaponData;
 
 public class WeaponItemStack {
 

@@ -3,8 +3,9 @@ package org.avp.api.common.game.item.tool;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Tier;
 import net.minecraft.world.item.crafting.Ingredient;
-import org.avp.api.common.registry.holder.BLHolder;
 import org.jetbrains.annotations.NotNull;
+
+import org.avp.api.common.registry.holder.BLHolder;
 
 public record ToolTier(
     int uses,

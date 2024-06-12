@@ -10,12 +10,12 @@ import net.minecraft.world.level.material.PushReaction;
 
 import java.util.Set;
 
-import org.avp.api.common.registry.holder.BLHolder;
-import org.avp.api.common.data.block.BlockTagData;
 import org.avp.api.common.data.block.BlockModelData;
 import org.avp.api.common.data.block.BlockModelRenderType;
-import org.avp.common.game.block.ResinVeinBlock;
+import org.avp.api.common.data.block.BlockTagData;
 import org.avp.api.common.registry.AVPDeferredBlockRegistry;
+import org.avp.api.common.registry.holder.BLHolder;
+import org.avp.common.game.block.ResinVeinBlock;
 
 public class AVPAlienBlockRegistry extends AVPDeferredBlockRegistry {
 

@@ -12,11 +12,11 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.util.Objects;
 
-import org.avp.api.common.registry.holder.BLHolder;
 import org.avp.api.common.data.entity.EntityData;
-import org.avp.common.registry.AVPEntityDataRegistry;
 import org.avp.api.common.data.entity.EntitySoundData;
+import org.avp.api.common.registry.holder.BLHolder;
 import org.avp.common.data.tag.AVPEntityTypeTags;
+import org.avp.common.registry.AVPEntityDataRegistry;
 
 @Mixin(Mob.class)
 public abstract class MixinMob_ProvideAmbientSounds extends LivingEntity {

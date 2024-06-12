@@ -1,9 +1,10 @@
 package org.avp.neoforge.util;
 
 import net.neoforged.neoforge.registries.DeferredRegister;
-import org.avp.common.registry.holder.AVPHolder;
 
 import java.util.function.Supplier;
+
+import org.avp.common.registry.holder.AVPHolder;
 
 public class NeoForgeHolder<T> extends AVPHolder<T> {
 

@@ -5,6 +5,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
+
 import org.avp.api.common.weapon.WeaponItemStack;
 import org.avp.api.common.weapon.data.FireModeData;
 
@@ -29,6 +30,8 @@ public abstract class AbstractWeaponAttack {
     }
 
     public abstract void shoot();
+
     public abstract void onBlockHit(BlockPos blockPos, Direction direction);
+
     public abstract void onEntityHit(Entity hitEntity);
 }

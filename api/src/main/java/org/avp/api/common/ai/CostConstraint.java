@@ -6,6 +6,7 @@ public record CostConstraint(
     int minValue,
     int maxValue
 ) {
+
     public static final CostConstraint DEFAULT = new CostConstraint(0, 100);
 
     public int apply(int value) {

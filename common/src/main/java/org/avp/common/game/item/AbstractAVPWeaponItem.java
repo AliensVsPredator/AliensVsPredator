@@ -20,10 +20,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemUtils;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
-import org.avp.api.common.weapon.WeaponItemStack;
-import org.avp.api.common.weapon.data.WeaponData;
-import org.avp.api.common.weapon.reload.ReloadBehavior;
-import org.avp.common.registry.item.AVPItemRegistry;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -31,8 +27,12 @@ import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-import org.avp.client.render.item.AVPWeaponItemRenderers;
+import org.avp.api.common.weapon.WeaponItemStack;
+import org.avp.api.common.weapon.data.WeaponData;
+import org.avp.api.common.weapon.reload.ReloadBehavior;
 import org.avp.api.util.TooltipUtils;
+import org.avp.client.render.item.AVPWeaponItemRenderers;
+import org.avp.common.registry.item.AVPItemRegistry;
 
 public abstract class AbstractAVPWeaponItem extends Item implements GeoItem {
 

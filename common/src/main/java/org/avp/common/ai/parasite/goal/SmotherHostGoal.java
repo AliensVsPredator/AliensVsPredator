@@ -1,11 +1,11 @@
 package org.avp.common.ai.parasite.goal;
 
-import org.avp.api.common.ai.progress.ProgressKey;
-import org.avp.api.common.ai.goal.Goal;
-import org.avp.common.game.entity.AbstractParasite;
-import org.avp.common.ai.parasite.action.SmotherHostAction;
-
 import java.util.Optional;
+
+import org.avp.api.common.ai.goal.Goal;
+import org.avp.api.common.ai.progress.ProgressKey;
+import org.avp.common.ai.parasite.action.SmotherHostAction;
+import org.avp.common.game.entity.AbstractParasite;
 
 public class SmotherHostGoal extends Goal {
 

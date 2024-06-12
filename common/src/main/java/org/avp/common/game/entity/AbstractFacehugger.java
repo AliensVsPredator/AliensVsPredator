@@ -6,9 +6,10 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
-import org.avp.common.game.entity.type.Morphable;
-import org.avp.common.data.entity.living.alien.base_line.OvamorphData;
 import org.jetbrains.annotations.NotNull;
+
+import org.avp.common.data.entity.living.alien.base_line.OvamorphData;
+import org.avp.common.game.entity.type.Morphable;
 
 public abstract class AbstractFacehugger extends AbstractParasite implements Morphable {
 

@@ -11,14 +11,14 @@ import java.util.List;
 import java.util.Optional;
 
 import org.avp.api.common.data.entity.AttributeSupplierUtil;
-import org.avp.api.common.registry.holder.BLHolder;
 import org.avp.api.common.data.entity.EntityData;
-import org.avp.common.data.entity.AVPEntitySpeedConstants;
 import org.avp.api.common.data.entity.EntitySoundData;
 import org.avp.api.common.data.entity.EntitySpawnData;
-import org.avp.common.game.entity.living.engineer.Engineer;
 import org.avp.api.common.registry.entity.AVPSimpleDeferredEntityTypeRegistry;
+import org.avp.api.common.registry.holder.BLHolder;
+import org.avp.common.data.entity.AVPEntitySpeedConstants;
 import org.avp.common.data.tag.AVPEntityTypeTags;
+import org.avp.common.game.entity.living.engineer.Engineer;
 
 public class EngineerData extends EntityData<Engineer> {
 

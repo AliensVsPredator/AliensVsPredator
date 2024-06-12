@@ -3,11 +3,12 @@ package org.avp.api.common.weapon.reload;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
-import org.avp.api.common.weapon.WeaponItemStack;
-import org.avp.api.server.ServerScheduler;
 
 import java.time.Duration;
 import java.util.Objects;
+
+import org.avp.api.common.weapon.WeaponItemStack;
+import org.avp.api.server.ServerScheduler;
 
 public class ReloadAction {
 

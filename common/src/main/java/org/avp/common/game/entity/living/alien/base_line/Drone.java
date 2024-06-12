@@ -8,11 +8,11 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.level.Level;
-import org.avp.common.game.entity.type.Morphable;
-import org.avp.common.data.entity.living.alien.base_line.ChestbursterData;
 import org.jetbrains.annotations.NotNull;
 
 import org.avp.common.ai.AIUtils;
+import org.avp.common.data.entity.living.alien.base_line.ChestbursterData;
+import org.avp.common.game.entity.type.Morphable;
 import org.avp.common.game.sound.AVPSoundEventRegistry;
 
 public class Drone extends Monster implements Morphable, GeoEntity {

@@ -8,11 +8,11 @@ import net.minecraft.world.level.material.MapColor;
 
 import java.util.Set;
 
-import org.avp.api.common.registry.holder.BLHolder;
 import org.avp.api.common.data.block.BlockData;
-import org.avp.api.common.data.block.BlockTagData;
 import org.avp.api.common.data.block.BlockModelData;
+import org.avp.api.common.data.block.BlockTagData;
 import org.avp.api.common.registry.AVPDeferredBlockRegistry;
+import org.avp.api.common.registry.holder.BLHolder;
 
 public class AVPUnidentifiedBlockRegistry extends AVPDeferredBlockRegistry {
 

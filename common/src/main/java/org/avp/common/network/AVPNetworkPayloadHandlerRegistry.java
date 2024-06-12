@@ -1,10 +1,10 @@
 package org.avp.common.network;
 
+import org.avp.api.service.Services;
 import org.avp.common.network.payload.ClientboundBulletHitBlockPayload;
 import org.avp.common.network.payload.ServerboundWeaponReloadRequestPayload;
 import org.avp.common.network.payload.ServerboundWeaponSwapAmmunitionTypeRequestPayload;
 import org.avp.common.network.payload.ServerboundWeaponSwapFireModeRequestPayload;
-import org.avp.api.service.Services;
 
 public class AVPNetworkPayloadHandlerRegistry {
 

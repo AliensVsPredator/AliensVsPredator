@@ -9,9 +9,9 @@ import net.minecraft.world.item.Items;
 import org.avp.api.common.registry.holder.BLHolder;
 import org.avp.api.common.registry.holder.ItemHolderArmorSet;
 import org.avp.common.data.recipe.AVPShapedRecipeBuilder;
+import org.avp.common.data.tag.AVPItemTags;
 import org.avp.common.registry.item.AVPArmorItemRegistry;
 import org.avp.common.registry.item.AVPItemRegistry;
-import org.avp.common.data.tag.AVPItemTags;
 
 public final class AVPArmorRecipes {
 

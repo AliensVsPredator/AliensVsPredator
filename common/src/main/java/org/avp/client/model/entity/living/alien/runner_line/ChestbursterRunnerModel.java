@@ -1,6 +1,7 @@
 package org.avp.client.model.entity.living.alien.runner_line;
 
 import mod.azure.azurelib.common.internal.common.core.animation.AnimationState;
+
 import org.avp.client.model.AVPGeoModel;
 import org.avp.client.model.GeoModelType;
 import org.avp.client.util.BasicAnimationUtils;

@@ -9,6 +9,10 @@ import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.storage.loot.LootTable;
+
+import java.util.List;
+import java.util.Optional;
+
 import org.avp.api.common.data.entity.AttributeSupplierUtil;
 import org.avp.api.common.data.entity.EntityData;
 import org.avp.api.common.data.entity.EntitySoundData;
@@ -22,9 +26,6 @@ import org.avp.common.data.tag.AVPEntityTypeTags;
 import org.avp.common.game.entity.living.alien.base_line.Queen;
 import org.avp.common.game.sound.AVPSoundEventRegistry;
 import org.avp.common.util.AlienSounds;
-
-import java.util.List;
-import java.util.Optional;
 
 public class QueenData extends EntityData<Queen> {
 

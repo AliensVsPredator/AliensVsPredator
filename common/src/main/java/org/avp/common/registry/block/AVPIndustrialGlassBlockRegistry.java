@@ -11,14 +11,14 @@ import java.util.List;
 import java.util.Set;
 import java.util.function.Function;
 
-import org.avp.api.common.registry.holder.BLHolder;
 import org.avp.api.common.data.block.BlockData;
+import org.avp.api.common.data.block.BlockModelData;
+import org.avp.api.common.data.block.BlockModelDataType;
+import org.avp.api.common.data.block.BlockModelRenderType;
 import org.avp.api.common.data.block.BlockTagData;
 import org.avp.api.common.game.block.ColoredTransparentBlock;
-import org.avp.api.common.data.block.BlockModelData;
-import org.avp.api.common.data.block.BlockModelRenderType;
-import org.avp.api.common.data.block.BlockModelDataType;
 import org.avp.api.common.registry.AVPDeferredBlockRegistry;
+import org.avp.api.common.registry.holder.BLHolder;
 import org.avp.common.data.tag.AVPBlockTags;
 import org.avp.common.data.tag.AVPItemTags;
 

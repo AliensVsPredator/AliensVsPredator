@@ -6,6 +6,7 @@ public record PowerPath(
     BlockPos start,
     BlockPos end
 ) {
+
     public int getDistanceSquared() {
         var xComponent = (end.getX() - start.getX());
         var yComponent = (end.getY() - start.getY());

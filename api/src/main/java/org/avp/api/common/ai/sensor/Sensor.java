@@ -1,8 +1,8 @@
 package org.avp.api.common.ai.sensor;
 
-import org.avp.api.common.ai.GOAPBrainCache;
-
 import java.util.function.BooleanSupplier;
+
+import org.avp.api.common.ai.GOAPBrainCache;
 
 public abstract class Sensor {
 

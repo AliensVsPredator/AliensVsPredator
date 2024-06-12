@@ -5,12 +5,12 @@ import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.world.item.Items;
 
 import org.avp.api.common.registry.holder.BLHolder;
-import org.avp.common.registry.block.AVPIndustrialBlockRegistry;
 import org.avp.common.data.recipe.AVPMetalRecipeHelper;
 import org.avp.common.data.recipe.AVPShapedRecipeBuilder;
 import org.avp.common.data.recipe.RecipeUtils;
-import org.avp.common.registry.item.AVPItemRegistry;
 import org.avp.common.data.tag.AVPItemTags;
+import org.avp.common.registry.block.AVPIndustrialBlockRegistry;
+import org.avp.common.registry.item.AVPItemRegistry;
 
 public final class AVPIndustrialBlockRecipes {
 
@@ -53,7 +53,11 @@ public final class AVPIndustrialBlockRecipes {
             AVPIndustrialBlockRegistry.INSTANCE.floorGrill,
             4
         );
-        RecipeUtils.stonecutterBuildingBlock(recipeOutput, AVPIndustrialBlockRegistry.INSTANCE.brick.base(), AVPIndustrialBlockRegistry.INSTANCE.vent);
+        RecipeUtils.stonecutterBuildingBlock(
+            recipeOutput,
+            AVPIndustrialBlockRegistry.INSTANCE.brick.base(),
+            AVPIndustrialBlockRegistry.INSTANCE.vent
+        );
     }
 
     private static void addMetalPanel0Recipes(RecipeOutput recipeOutput) {

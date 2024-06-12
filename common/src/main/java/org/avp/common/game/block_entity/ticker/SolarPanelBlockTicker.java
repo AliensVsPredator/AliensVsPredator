@@ -5,8 +5,9 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LightLayer;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.state.BlockState;
-import org.avp.common.game.block_entity.SolarPanelBlockEntity;
 import org.jetbrains.annotations.NotNull;
+
+import org.avp.common.game.block_entity.SolarPanelBlockEntity;
 
 public class SolarPanelBlockTicker implements BlockEntityTicker<SolarPanelBlockEntity> {
 

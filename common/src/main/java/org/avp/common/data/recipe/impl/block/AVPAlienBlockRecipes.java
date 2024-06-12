@@ -3,8 +3,8 @@ package org.avp.common.data.recipe.impl.block;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
 
-import org.avp.common.registry.block.AVPAlienBlockRegistry;
 import org.avp.common.data.recipe.AVPShapedRecipeBuilder;
+import org.avp.common.registry.block.AVPAlienBlockRegistry;
 import org.avp.common.registry.item.AVPItemRegistry;
 
 public final class AVPAlienBlockRecipes {

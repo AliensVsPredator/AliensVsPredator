@@ -12,20 +12,24 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.level.Level;
-import org.avp.api.common.game.entity.GOAPBrainUser;
-import org.avp.common.game.entity.type.Parasite;
+import org.jetbrains.annotations.NotNull;
+
 import org.avp.api.common.ai.GOAPBrain;
+import org.avp.api.common.game.entity.GOAPBrainUser;
 import org.avp.api.common.game.entity.data_sync.SyncedDataHandle;
 import org.avp.api.common.game.entity.data_sync.SyncedDataSerializer;
-import org.avp.common.ai.parasite.ParasiteBrain;
 import org.avp.api.util.phys.GravityUtil;
-import org.jetbrains.annotations.NotNull;
+import org.avp.common.ai.parasite.ParasiteBrain;
+import org.avp.common.game.entity.type.Parasite;
 
 public abstract class AbstractParasite extends Monster implements GeoEntity, GOAPBrainUser, Parasite {
 
     private static final String TICKS_ATTACHED_TO_HOST_KEY = "TicksAttachedToHost";
 
-    private static final EntityDataAccessor<Boolean> IS_FERTILE = SynchedEntityData.defineId(AbstractParasite.class, EntityDataSerializers.BOOLEAN);
+    private static final EntityDataAccessor<Boolean> IS_FERTILE = SynchedEntityData.defineId(
+        AbstractParasite.class,
+        EntityDataSerializers.BOOLEAN
+    );
 
     private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
 
@@ -95,7 +99,8 @@ public abstract class AbstractParasite extends Monster implements GeoEntity, GOA
     public void smotherHost() {
         var vehicle = getVehicle();
 
-        if (vehicle == null) return;
+        if (vehicle == null)
+            return;
 
         if (vehicle instanceof Mob mob) {
             mob.setNoAi(true);
@@ -112,7 +117,8 @@ public abstract class AbstractParasite extends Monster implements GeoEntity, GOA
     public void restoreHost() {
         var vehicle = getVehicle();
 
-        if (vehicle == null) return;
+        if (vehicle == null)
+            return;
 
         // Reset state.
         if (vehicle instanceof Mob mob) {

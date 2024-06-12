@@ -16,18 +16,18 @@ import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
+import org.jetbrains.annotations.NotNull;
+
+import org.avp.api.server.BlockBreakProgressManager;
 import org.avp.api.util.BLPredicates;
 import org.avp.api.util.phys.GravityUtil;
 import org.avp.client.render.particle.AVPParticleTypeRegistry;
-import org.avp.common.game.sound.AVPSoundEventRegistry;
-import org.jetbrains.annotations.NotNull;
-
 import org.avp.common.config.AVPConfig;
-import org.avp.common.game.damage.AVPDamageSources;
 import org.avp.common.data.tag.AVPBlockTags;
 import org.avp.common.data.tag.AVPEntityTypeTags;
 import org.avp.common.data.tag.AVPItemTags;
-import org.avp.api.server.BlockBreakProgressManager;
+import org.avp.common.game.damage.AVPDamageSources;
+import org.avp.common.game.sound.AVPSoundEventRegistry;
 
 public class Acid extends Entity {
 
@@ -87,7 +87,6 @@ public class Acid extends Entity {
         particleTickCounter += getMultiplier();
 
         createParticlesAndSounds(level);
-
 
         if (!level.isClientSide) {
             // Acid disappears twice as fast when in water.
@@ -220,7 +219,7 @@ public class Acid extends Entity {
     }
 
     public void setMultiplier(int multiplier) {
-        entityData.set(MULTIPLIER, Mth.clamp(multiplier, 0 ,MAX_MULTIPLIER));
+        entityData.set(MULTIPLIER, Mth.clamp(multiplier, 0, MAX_MULTIPLIER));
         tickCountForCurrentMultiplier = 0;
         refreshDimensions();
     }

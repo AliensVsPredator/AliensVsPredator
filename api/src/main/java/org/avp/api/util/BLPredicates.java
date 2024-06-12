@@ -13,7 +13,8 @@ public class BLPredicates {
 
     public static final Predicate<Object> ALWAYS_TRUE = o -> true;
 
-    public static final Predicate<LivingEntity> IS_IMMORTAL = livingEntity -> livingEntity instanceof Player player && (player.isCreative() || player.isSpectator());
+    public static final Predicate<LivingEntity> IS_IMMORTAL = livingEntity -> livingEntity instanceof Player player && (player.isCreative()
+        || player.isSpectator());
 
     public static final Predicate<Item> IS_ITEM_SHULKER_BOX = item -> item instanceof BlockItem blockItem &&
         blockItem.getBlock().defaultBlockState().is(BlockTags.SHULKER_BOXES);

@@ -15,11 +15,19 @@ import org.avp.common.registry.item.AVPItemRegistry;
 public final class AVPBulletRecipes {
 
     public static void addRecipes(RecipeOutput recipeOutput) {
-        addBulletSetRecipes(recipeOutput, AVPBulletItemRegistry.INSTANCE.bulletCaseless, AVPAmmunitionPartItemRegistry.INSTANCE.casingCaseless);
+        addBulletSetRecipes(
+            recipeOutput,
+            AVPBulletItemRegistry.INSTANCE.bulletCaseless,
+            AVPAmmunitionPartItemRegistry.INSTANCE.casingCaseless
+        );
         addBulletSetRecipes(recipeOutput, AVPBulletItemRegistry.INSTANCE.bulletHeavy, AVPAmmunitionPartItemRegistry.INSTANCE.casingHeavy);
         addBulletSetRecipes(recipeOutput, AVPBulletItemRegistry.INSTANCE.bulletPistol, AVPAmmunitionPartItemRegistry.INSTANCE.casingPistol);
         addBulletSetRecipes(recipeOutput, AVPBulletItemRegistry.INSTANCE.bulletRifle, AVPAmmunitionPartItemRegistry.INSTANCE.casingRifle);
-        addBulletSetRecipes(recipeOutput, AVPBulletItemRegistry.INSTANCE.bulletShotgun, AVPAmmunitionPartItemRegistry.INSTANCE.casingShotgun);
+        addBulletSetRecipes(
+            recipeOutput,
+            AVPBulletItemRegistry.INSTANCE.bulletShotgun,
+            AVPAmmunitionPartItemRegistry.INSTANCE.casingShotgun
+        );
     }
 
     private static void addStandardBulletRecipe(

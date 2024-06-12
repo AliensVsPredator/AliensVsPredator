@@ -6,8 +6,8 @@ import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
-import org.avp.api.util.BLPredicates;
 import org.avp.api.common.weapon.reload.ReloadBehavior;
+import org.avp.api.util.BLPredicates;
 
 public class CountAmmunitionAction {
 

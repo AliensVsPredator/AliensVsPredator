@@ -8,9 +8,9 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import org.avp.api.server.BlockBreakProgressManager;
+import org.avp.api.server.ServerScheduler;
 import org.avp.server.HivemindManager;
 import org.avp.server.QueenManager;
-import org.avp.api.server.ServerScheduler;
 
 @Mixin(ServerLevel.class)
 public abstract class MixinServerLevel {

@@ -4,12 +4,13 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.level.Level;
-import org.avp.api.common.game.entity.GOAPBrainUser;
-import org.avp.api.common.ai.GOAPBrain;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+
+import org.avp.api.common.ai.GOAPBrain;
+import org.avp.api.common.game.entity.GOAPBrainUser;
 
 @Mixin(Mob.class)
 public abstract class MixinMob_PerformGOAPLogic extends LivingEntity {

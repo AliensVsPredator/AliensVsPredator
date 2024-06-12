@@ -2,6 +2,7 @@ package org.avp.fabric.common.data.model;
 
 import net.minecraft.data.models.ItemModelGenerators;
 import net.minecraft.data.models.model.ModelTemplates;
+
 import org.avp.api.common.registry.AVPDeferredItemRegistry;
 
 public class AVPFabricItemModelProvider {

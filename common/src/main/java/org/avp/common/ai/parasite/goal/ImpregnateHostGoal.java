@@ -1,12 +1,12 @@
 package org.avp.common.ai.parasite.goal;
 
-import org.avp.api.common.ai.progress.Progressions;
+import java.util.Optional;
+
 import org.avp.api.common.ai.goal.Goal;
 import org.avp.api.common.ai.progress.ProgressKey;
+import org.avp.api.common.ai.progress.Progressions;
 import org.avp.common.ai.parasite.action.ImpregnateHostAction;
 import org.avp.common.game.entity.AbstractParasite;
-
-import java.util.Optional;
 
 public class ImpregnateHostGoal extends Goal {
 

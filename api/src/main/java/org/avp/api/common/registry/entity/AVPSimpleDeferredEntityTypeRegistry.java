@@ -7,8 +7,8 @@ import net.minecraft.world.item.Item;
 
 import java.util.function.Supplier;
 
-import org.avp.api.common.registry.holder.BLHolder;
 import org.avp.api.common.game.entity.SilencedEntityTypeBuilder;
+import org.avp.api.common.registry.holder.BLHolder;
 import org.avp.api.service.Services;
 
 public class AVPSimpleDeferredEntityTypeRegistry extends AVPAbstractDeferredEntityTypeRegistry {
@@ -41,7 +41,7 @@ public class AVPSimpleDeferredEntityTypeRegistry extends AVPAbstractDeferredEnti
             () -> Services.ENTITY_TYPE_SERVICE.createSpawnEggItem(holder, backgroundColor, highlightColor, new Item.Properties())
         );
         // FIXME:
-//        AVPSpawnEggItems.INSTANCE.addHolder(registryName, spawnEggItemHolder);
+        // AVPSpawnEggItems.INSTANCE.addHolder(registryName, spawnEggItemHolder);
 
         return holder;
     }

@@ -1,9 +1,9 @@
 package org.avp.api.common.ai.plan;
 
+import java.util.List;
+
 import org.avp.api.common.ai.action.Action;
 import org.avp.api.common.ai.goal.Goal;
-
-import java.util.List;
 
 public class Plan {
 

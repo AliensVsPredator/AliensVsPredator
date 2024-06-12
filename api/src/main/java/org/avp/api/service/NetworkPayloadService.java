@@ -4,8 +4,8 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 
-import org.avp.api.common.network.NetworkSide;
 import org.avp.api.common.network.ClientboundPacket;
+import org.avp.api.common.network.NetworkSide;
 import org.avp.api.common.network.ServerboundPacket;
 
 public interface NetworkPayloadService {

@@ -3,6 +3,7 @@ package org.avp.common.game.block_entity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+
 import org.avp.api.common.power.PowerGraph;
 import org.avp.api.common.power.PowerProvider;
 import org.avp.common.data.block_entity.SolarPanelData;

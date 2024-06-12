@@ -11,9 +11,9 @@ import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.level.Level;
 
-import org.avp.common.game.entity.type.Boss;
 import org.avp.common.ai.AIUtils;
 import org.avp.common.game.entity.living.alien.base_line.Queen;
+import org.avp.common.game.entity.type.Boss;
 
 public class Dracomorph extends Monster implements Boss, GeoEntity {
 

@@ -7,8 +7,8 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 import java.util.function.Supplier;
 
 import org.avp.api.common.registry.holder.BLHolder;
-import org.avp.common.AVPConstants;
 import org.avp.api.service.CreativeModeTabService;
+import org.avp.common.AVPConstants;
 import org.avp.neoforge.util.NeoForgeHolder;
 
 public class NeoForgeCreativeModeTabService implements CreativeModeTabService {

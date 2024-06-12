@@ -7,7 +7,6 @@ import net.minecraft.world.entity.monster.Monster;
 import java.util.function.Predicate;
 
 import org.avp.api.util.BLPredicates;
-import org.avp.common.util.AVPPredicates;
 
 public record AlienMaturationStep(
     EntityType<? extends Monster> from,

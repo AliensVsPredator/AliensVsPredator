@@ -10,12 +10,13 @@ import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.level.Level;
-import org.avp.api.common.game.entity.GOAPBrainUser;
+import org.jetbrains.annotations.NotNull;
+
 import org.avp.api.common.ai.GOAPBrain;
+import org.avp.api.common.game.entity.GOAPBrainUser;
 import org.avp.api.common.game.entity.data_sync.SyncedDataHandle;
 import org.avp.api.common.game.entity.data_sync.SyncedDataSerializer;
 import org.avp.common.ai.ovamorph.OvamorphBrain;
-import org.jetbrains.annotations.NotNull;
 
 public abstract class AbstractOvamorph extends Monster implements GeoEntity, GOAPBrainUser {
 
@@ -29,9 +30,15 @@ public abstract class AbstractOvamorph extends Monster implements GeoEntity, GOA
 
     private static final String OPEN_PROGRESS_IN_TICKS_KEY = "OpenProgressInTicks";
 
-    private static final EntityDataAccessor<Boolean> IS_OPEN = SynchedEntityData.defineId(AbstractOvamorph.class, EntityDataSerializers.BOOLEAN);
+    private static final EntityDataAccessor<Boolean> IS_OPEN = SynchedEntityData.defineId(
+        AbstractOvamorph.class,
+        EntityDataSerializers.BOOLEAN
+    );
 
-    private static final EntityDataAccessor<Boolean> IS_OPENING = SynchedEntityData.defineId(AbstractOvamorph.class, EntityDataSerializers.BOOLEAN);
+    private static final EntityDataAccessor<Boolean> IS_OPENING = SynchedEntityData.defineId(
+        AbstractOvamorph.class,
+        EntityDataSerializers.BOOLEAN
+    );
 
     private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
 

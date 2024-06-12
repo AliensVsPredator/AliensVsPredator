@@ -3,8 +3,8 @@ package org.avp.common.registry.item;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.Item;
 
-import org.avp.api.common.registry.holder.BLHolder;
 import org.avp.api.common.registry.AVPDeferredItemRegistry;
+import org.avp.api.common.registry.holder.BLHolder;
 
 public class AVPFoodItemRegistry extends AVPDeferredItemRegistry {
 
@@ -27,7 +27,10 @@ public class AVPFoodItemRegistry extends AVPDeferredItemRegistry {
     );
 
     // Slightly worse than cooked beef.
-    public final BLHolder<Item> triloBite = registerFood("trilo_bite", new FoodProperties.Builder().meat().nutrition(7).saturationMod(0.7F));
+    public final BLHolder<Item> triloBite = registerFood(
+        "trilo_bite",
+        new FoodProperties.Builder().meat().nutrition(7).saturationMod(0.7F)
+    );
 
     private AVPFoodItemRegistry() {}
 

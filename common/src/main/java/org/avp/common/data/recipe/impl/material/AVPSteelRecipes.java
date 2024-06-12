@@ -7,9 +7,9 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 
 import org.avp.common.AVPConstants;
-import org.avp.common.registry.block.AVPBlockRegistry;
 import org.avp.common.data.recipe.AVPMetalRecipeHelper;
 import org.avp.common.data.recipe.AVPRecipeProvider;
+import org.avp.common.registry.block.AVPBlockRegistry;
 import org.avp.common.registry.item.AVPItemRegistry;
 
 public final class AVPSteelRecipes {

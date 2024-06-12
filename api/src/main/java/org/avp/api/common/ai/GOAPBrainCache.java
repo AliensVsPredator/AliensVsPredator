@@ -1,10 +1,10 @@
 package org.avp.api.common.ai;
 
-import org.avp.api.common.ai.sensor.key.SensorKey;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+
+import org.avp.api.common.ai.sensor.key.SensorKey;
 
 public class GOAPBrainCache {
 

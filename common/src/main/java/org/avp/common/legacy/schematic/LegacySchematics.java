@@ -5,10 +5,10 @@ import java.nio.file.Paths;
 import java.util.Map;
 
 import org.avp.api.common.registry.holder.BLHolder;
+import org.avp.api.service.Services;
 import org.avp.common.legacy.schematic.resolver.DerelictSchematicResolver;
 import org.avp.common.legacy.schematic.resolver.LVRockSchematicResolver;
 import org.avp.common.legacy.schematic.resolver.TestSchematicResolver;
-import org.avp.api.service.Services;
 import org.avp.common.registry.holder.AVPHolder;
 
 public final class LegacySchematics {

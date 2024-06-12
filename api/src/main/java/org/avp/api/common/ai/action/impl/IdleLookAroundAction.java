@@ -1,6 +1,7 @@
 package org.avp.api.common.ai.action.impl;
 
 import net.minecraft.world.entity.Mob;
+
 import org.avp.api.common.ai.action.CooldownAction;
 
 public class IdleLookAroundAction extends CooldownAction {

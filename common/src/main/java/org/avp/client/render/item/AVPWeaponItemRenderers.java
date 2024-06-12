@@ -1,6 +1,10 @@
 package org.avp.client.render.item;
 
 import mod.azure.azurelib.common.api.client.renderer.GeoItemRenderer;
+
+import java.util.Map;
+import java.util.function.Supplier;
+
 import org.avp.api.common.weapon.data.WeaponData;
 import org.avp.common.data.item.weapon.AK47Data;
 import org.avp.common.data.item.weapon.F90RifleData;
@@ -13,9 +17,6 @@ import org.avp.common.data.item.weapon.M83A2SADARData;
 import org.avp.common.data.item.weapon.M88Mod4CombatPistolData;
 import org.avp.common.data.item.weapon.OldPainlessData;
 import org.avp.common.data.item.weapon.SniperRifleData;
-
-import java.util.Map;
-import java.util.function.Supplier;
 
 public class AVPWeaponItemRenderers {
 

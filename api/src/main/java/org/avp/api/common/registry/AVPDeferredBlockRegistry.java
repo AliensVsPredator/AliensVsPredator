@@ -8,14 +8,14 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import org.avp.api.common.registry.holder.BlockHolderSet;
-import org.avp.api.common.registry.holder.BLHolder;
-import org.avp.api.util.Tuple;
 import org.avp.api.common.data.block.BlockData;
-import org.avp.api.common.registry.holder.BlockHolderSetData;
-import org.avp.api.common.data.block.BlockTagData;
 import org.avp.api.common.data.block.BlockModelData;
+import org.avp.api.common.data.block.BlockTagData;
+import org.avp.api.common.registry.holder.BLHolder;
+import org.avp.api.common.registry.holder.BlockHolderSet;
+import org.avp.api.common.registry.holder.BlockHolderSetData;
 import org.avp.api.service.Services;
+import org.avp.api.util.Tuple;
 
 public class AVPDeferredBlockRegistry extends AVPDeferredRegistry<Block> {
 

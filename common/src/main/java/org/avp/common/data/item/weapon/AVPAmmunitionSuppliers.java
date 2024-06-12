@@ -1,11 +1,12 @@
 package org.avp.common.data.item.weapon;
 
 import net.minecraft.world.item.Item;
-import org.avp.common.registry.item.AVPAmmunitionPartItemRegistry;
-import org.avp.common.registry.item.AVPBulletItemRegistry;
 
 import java.util.List;
 import java.util.function.Supplier;
+
+import org.avp.common.registry.item.AVPAmmunitionPartItemRegistry;
+import org.avp.common.registry.item.AVPBulletItemRegistry;
 
 public class AVPAmmunitionSuppliers {
 

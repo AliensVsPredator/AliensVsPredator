@@ -2,11 +2,15 @@ package org.avp.common.registry.item;
 
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
+
+import java.util.HashSet;
+import java.util.Set;
+
 import org.avp.api.common.data.item.ItemData;
 import org.avp.api.common.data.item.ItemModelData;
-import org.avp.api.common.weapon.data.WeaponData;
 import org.avp.api.common.registry.AVPDeferredItemRegistry;
 import org.avp.api.common.registry.holder.BLHolder;
+import org.avp.api.common.weapon.data.WeaponData;
 import org.avp.common.data.item.weapon.AK47Data;
 import org.avp.common.data.item.weapon.F90RifleData;
 import org.avp.common.data.item.weapon.FlamethrowerSevastopolData;
@@ -21,9 +25,6 @@ import org.avp.common.data.item.weapon.SniperRifleData;
 import org.avp.common.data.tag.AVPItemTags;
 import org.avp.common.game.item.AbstractAVPWeaponItem;
 import org.avp.common.game.item.GrenadeItem;
-
-import java.util.HashSet;
-import java.util.Set;
 
 public class AVPWeaponItemRegistry extends AVPDeferredItemRegistry {
 

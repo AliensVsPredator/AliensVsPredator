@@ -9,8 +9,9 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.projectile.ThrowableProjectile;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.HitResult;
-import org.avp.common.data.entity.RocketData;
 import org.jetbrains.annotations.NotNull;
+
+import org.avp.common.data.entity.RocketData;
 
 public class Rocket extends ThrowableProjectile implements GeoEntity {
 

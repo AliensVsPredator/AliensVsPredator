@@ -3,12 +3,13 @@ package org.avp.mixin;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.level.Level;
-import org.avp.common.registry.item.AVPItemRegistry;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+
+import org.avp.common.registry.item.AVPItemRegistry;
 
 @Mixin(ItemEntity.class)
 public abstract class MixinItemEntity_LithiumExplode {

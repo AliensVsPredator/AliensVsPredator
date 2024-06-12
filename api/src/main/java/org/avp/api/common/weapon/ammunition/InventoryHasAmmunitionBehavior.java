@@ -23,7 +23,8 @@ public class InventoryHasAmmunitionBehavior implements HasAmmunitionBehavior {
     ) {
         var activeAmmunitionType = weaponItemStack.getOrSetActiveAmmunitionType();
         var fireModeData = weaponItemStack.getOrSetFireMode();
-        var ammunitionSupplierOptional = fireModeData.ammunitionData().ammunitionSuppliers()
+        var ammunitionSupplierOptional = fireModeData.ammunitionData()
+            .ammunitionSuppliers()
             .stream()
             .filter(ammunitionSupplier -> {
                 var ammunitionItem = ammunitionSupplier.get();

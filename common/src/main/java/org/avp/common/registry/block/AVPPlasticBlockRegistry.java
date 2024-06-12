@@ -8,17 +8,17 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 
-import org.avp.api.common.registry.holder.BLHolder;
-import org.avp.api.common.data.block.BlockData;
-import org.avp.api.common.registry.holder.BlockHolderSet;
-import org.avp.api.common.registry.holder.BlockHolderSetData;
-import org.avp.api.common.data.block.BlockTagData;
-import org.avp.api.common.data.block.BlockModelData;
-import org.avp.api.common.registry.AVPDeferredBlockRegistry;
-import org.avp.common.data.tag.AVPBlockTags;
-
 import java.util.Set;
 import java.util.function.Function;
+
+import org.avp.api.common.data.block.BlockData;
+import org.avp.api.common.data.block.BlockModelData;
+import org.avp.api.common.data.block.BlockTagData;
+import org.avp.api.common.registry.AVPDeferredBlockRegistry;
+import org.avp.api.common.registry.holder.BLHolder;
+import org.avp.api.common.registry.holder.BlockHolderSet;
+import org.avp.api.common.registry.holder.BlockHolderSetData;
+import org.avp.common.data.tag.AVPBlockTags;
 
 public class AVPPlasticBlockRegistry extends AVPDeferredBlockRegistry {
 
@@ -88,7 +88,9 @@ public class AVPPlasticBlockRegistry extends AVPDeferredBlockRegistry {
 
     private PlasticBlockSet createSet(Item dyeItem, String prefix, Function<DyeItem, BlockBehaviour.Properties> propertiesProvider) {
         var properties = propertiesProvider.apply((DyeItem) dyeItem);
-        var blockTagData = BlockTagData.ofBlock(Set.of(AVPBlockTags.ACID_IMMUNE, BlockTags.NEEDS_IRON_TOOL, BlockTags.MINEABLE_WITH_PICKAXE, AVPBlockTags.PLASTIC));
+        var blockTagData = BlockTagData.ofBlock(
+            Set.of(AVPBlockTags.ACID_IMMUNE, BlockTags.NEEDS_IRON_TOOL, BlockTags.MINEABLE_WITH_PICKAXE, AVPBlockTags.PLASTIC)
+        );
         var blockData = new BlockData(prefix, BlockModelData.cube(properties), blockTagData);
         var baseSet = registerBlockHolderSet(new BlockHolderSetData(properties, blockData));
         return new PlasticBlockSet(dyeItem, baseSet);

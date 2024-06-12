@@ -3,8 +3,8 @@ package org.avp.common.game.damage;
 import java.util.function.Supplier;
 
 import org.avp.api.common.game.damage.CustomDamageSource;
-import org.avp.api.common.registry.holder.BLHolder;
 import org.avp.api.common.registry.AVPDeferredRegistry;
+import org.avp.api.common.registry.holder.BLHolder;
 import org.avp.common.registry.holder.AVPHolder;
 
 public class AVPDamageSources extends AVPDeferredRegistry<CustomDamageSource> {

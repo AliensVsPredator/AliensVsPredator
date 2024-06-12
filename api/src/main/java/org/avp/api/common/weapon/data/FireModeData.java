@@ -1,10 +1,11 @@
 package org.avp.api.common.weapon.data;
 
 import net.minecraft.world.entity.LivingEntity;
-import org.avp.api.common.weapon.WeaponItemStack;
-import org.avp.api.common.weapon.attack.AbstractWeaponAttack;
 
 import java.util.function.BiFunction;
+
+import org.avp.api.common.weapon.WeaponItemStack;
+import org.avp.api.common.weapon.attack.AbstractWeaponAttack;
 
 public record FireModeData(
     String identifier,
@@ -20,6 +21,7 @@ public record FireModeData(
     WindData windData,
     BiFunction<WeaponItemStack, LivingEntity, AbstractWeaponAttack> weaponAttackProvider
 ) {
+
     public AbstractWeaponAttack createWeaponAttack(WeaponItemStack weaponItemStack, LivingEntity shooter) {
         return weaponAttackProvider.apply(weaponItemStack, shooter);
     }

@@ -1,18 +1,18 @@
 package org.avp.common.ai.ovamorph;
 
+import java.util.List;
+
 import org.avp.api.common.ai.GOAPBrain;
 import org.avp.api.common.ai.plan.Planner;
 import org.avp.api.common.ai.sensor.Sensor;
+import org.avp.api.common.ai.sensor.impl.ClosestTargetSensor;
 import org.avp.api.common.ai.sensor.impl.NearbyEntitiesSensor;
 import org.avp.api.common.ai.sensor.impl.NearbyLivingEntitiesSensor;
-import org.avp.api.common.ai.sensor.impl.ClosestTargetSensor;
-import org.avp.common.game.entity.AbstractOvamorph;
 import org.avp.common.ai.ovamorph.goal.DisturbedGoal;
 import org.avp.common.ai.ovamorph.goal.OpenGoal;
 import org.avp.common.ai.ovamorph.goal.ReleaseFacehuggerGoal;
+import org.avp.common.game.entity.AbstractOvamorph;
 import org.avp.common.util.AVPPredicates;
-
-import java.util.List;
 
 public class OvamorphBrain extends GOAPBrain {
 

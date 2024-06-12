@@ -1,12 +1,13 @@
 package org.avp.api.common.ai.goal.impl;
 
 import net.minecraft.world.entity.PathfinderMob;
-import org.avp.api.common.ai.action.impl.IdleMoveAction;
-import org.avp.api.common.ai.progress.ProgressKey;
-import org.avp.api.common.ai.action.impl.IdleLookAroundAction;
-import org.avp.api.common.ai.goal.Goal;
 
 import java.util.Optional;
+
+import org.avp.api.common.ai.action.impl.IdleLookAroundAction;
+import org.avp.api.common.ai.action.impl.IdleMoveAction;
+import org.avp.api.common.ai.goal.Goal;
+import org.avp.api.common.ai.progress.ProgressKey;
 
 public class IdleMoveGoal<T extends PathfinderMob> extends Goal {
 
