@@ -18,7 +18,7 @@ import org.avp.api.common.ai.GOAPBrain;
 import org.avp.api.common.game.entity.data_sync.SyncedDataHandle;
 import org.avp.api.common.game.entity.data_sync.SyncedDataSerializer;
 import org.avp.common.ai.parasite.ParasiteBrain;
-import org.avp.api.util.GravityUtils;
+import org.avp.api.util.phys.GravityUtil;
 import org.jetbrains.annotations.NotNull;
 
 public abstract class AbstractParasite extends Monster implements GeoEntity, GOAPBrainUser, Parasite {
@@ -102,7 +102,7 @@ public abstract class AbstractParasite extends Monster implements GeoEntity, GOA
         }
 
         // Apply gravity while mob's "AI" is off.
-        GravityUtils.apply(vehicle);
+        GravityUtil.apply(vehicle);
         // Facehuggers provide oxygen to their host.
         vehicle.setAirSupply(vehicle.getMaxAirSupply());
         // Parasites silence host.

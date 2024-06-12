@@ -7,7 +7,6 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import org.avp.api.util.TypeUtil;
 import org.avp.api.server.BlockBreakProgressManager;
 import org.avp.server.HivemindManager;
 import org.avp.server.QueenManager;
@@ -20,7 +19,7 @@ public abstract class MixinServerLevel {
     public void tick(CallbackInfo callbackInfo) {
         tickScheduledRunnables();
 
-        var serverLevel = TypeUtil.<ServerLevel>self(this);
+        var serverLevel = ServerLevel.class.cast(this);
         BlockBreakProgressManager.tick(serverLevel);
         HivemindManager.tick(serverLevel);
         QueenManager.tick(serverLevel);

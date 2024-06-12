@@ -11,7 +11,6 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import org.avp.common.data.tag.AVPEntityTypeTags;
-import org.avp.api.util.TypeUtil;
 
 @Mixin(LivingEntity.class)
 public abstract class MixinLivingEntity_ReduceFallDamage extends Entity {
@@ -22,7 +21,7 @@ public abstract class MixinLivingEntity_ReduceFallDamage extends Entity {
 
     @Inject(at = @At("HEAD"), cancellable = true, method = "calculateFallDamage")
     void calculateReducedFallDamage(float height, float damage, CallbackInfoReturnable<Integer> callbackInfoReturnable) {
-        var self = TypeUtil.<LivingEntity>self(this);
+        var self = LivingEntity.class.cast(this);
         if (self.getType().is(AVPEntityTypeTags.ALIENS)) {
             callbackInfoReturnable.setReturnValue(Mth.ceil((height - 16.0F) * damage));
         }

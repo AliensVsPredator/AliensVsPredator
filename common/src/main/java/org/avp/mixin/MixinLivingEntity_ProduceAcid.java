@@ -18,7 +18,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.avp.common.data.entity.AcidData;
 import org.avp.common.data.tag.AVPDamageTypeTags;
 import org.avp.common.data.tag.AVPEntityTypeTags;
-import org.avp.api.util.TypeUtil;
 
 @Mixin(LivingEntity.class)
 public abstract class MixinLivingEntity_ProduceAcid extends Entity {
@@ -29,7 +28,7 @@ public abstract class MixinLivingEntity_ProduceAcid extends Entity {
 
     @Inject(at = @At("HEAD"), method = "hurt")
     void hurt(DamageSource damageSource, float damage, CallbackInfoReturnable<Boolean> callbackInfoReturnable) {
-        var self = TypeUtil.<LivingEntity>self(this);
+        var self = LivingEntity.class.cast(this);
         var level = self.level();
 
         if (!level.isClientSide() && self.getType().is(AVPEntityTypeTags.ACID_BLEEDERS)) {

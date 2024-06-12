@@ -11,7 +11,6 @@ import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import java.util.Objects;
 
 import org.avp.common.data.tag.AVPEntityTypeTags;
-import org.avp.api.util.TypeUtil;
 
 @Mixin(Entity.class)
 public abstract class MixinEntity_ReduceFlowingWaterSlowDownForAliens {
@@ -22,7 +21,7 @@ public abstract class MixinEntity_ReduceFlowingWaterSlowDownForAliens {
         argsOnly = true
     )
     private double modifyWaterCurrentSlowDown(double waterCurrentSlowDownModifier, TagKey<Fluid> fluidTagKey) {
-        var self = TypeUtil.<Entity>self(this);
+        var self = Entity.class.cast(this);
         if (Objects.equals(fluidTagKey, FluidTags.WATER) && self.getType().is(AVPEntityTypeTags.ALIENS)) {
             return 0;
         }

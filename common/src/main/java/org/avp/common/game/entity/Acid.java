@@ -17,7 +17,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import org.avp.api.util.BLPredicates;
-import org.avp.api.util.GravityUtils;
+import org.avp.api.util.phys.GravityUtil;
 import org.avp.client.render.particle.AVPParticleTypeRegistry;
 import org.avp.common.game.sound.AVPSoundEventRegistry;
 import org.jetbrains.annotations.NotNull;
@@ -160,7 +160,7 @@ public class Acid extends Entity {
         if (level.isClientSide)
             return;
 
-        GravityUtils.apply(this);
+        GravityUtil.apply(this);
     }
 
     private void damageEntities(Level level) {

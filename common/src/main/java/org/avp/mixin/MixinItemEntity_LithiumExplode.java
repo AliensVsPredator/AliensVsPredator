@@ -10,14 +10,12 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import org.avp.api.util.TypeUtil;
-
 @Mixin(ItemEntity.class)
 public abstract class MixinItemEntity_LithiumExplode {
 
     @Inject(at = @At("TAIL"), method = "tick", cancellable = true)
     void tick(CallbackInfo callbackInfo) {
-        var self = TypeUtil.<ItemEntity>self(this);
+        var self = ItemEntity.class.cast(this);
         var level = self.level();
 
         if (!self.getItem().is(AVPItemRegistry.INSTANCE.dustLithium.get()))

@@ -6,6 +6,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.level.Level;
+import org.avp.api.util.time.Tick;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -13,7 +14,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import org.avp.common.registry.alien.maturation.AVPAlienMaturationRegistry;
 import org.avp.common.data.tag.AVPEntityTypeTags;
-import org.avp.api.util.TypeUtil;
 
 @Mixin(Mob.class)
 public abstract class MixinMob_AliensMature extends LivingEntity {
@@ -24,14 +24,14 @@ public abstract class MixinMob_AliensMature extends LivingEntity {
 
     @Inject(at = @At("HEAD"), method = "tick")
     void tick(CallbackInfo callbackInfo) {
-        var self = TypeUtil.<Mob>self(this);
+        var self = Mob.class.cast(this);
         var level = self.level();
 
         if (level.isClientSide)
             return;
         if (!self.getType().is(AVPEntityTypeTags.ALIENS))
             return;
-        if (self.tickCount % 20 != 0)
+        if (self.tickCount % Tick.PER_SECOND != 0)
             return;
 
         var maturationStepOptional = AVPAlienMaturationRegistry.lookup(null, self.getType());

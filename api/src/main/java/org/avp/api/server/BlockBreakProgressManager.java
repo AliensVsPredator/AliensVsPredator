@@ -7,9 +7,10 @@ import net.minecraft.world.level.Level;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 
+import org.avp.api.util.time.Tick;
 import org.avp.api.util.Tuple;
-import org.avp.api.util.TimeUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,7 +22,7 @@ public class BlockBreakProgressManager {
 
     public static void tick(Level level) {
         var gameTime = level.getGameTime();
-        if (gameTime % TimeUtils.ONE_MINUTE_IN_TICKS != 0) {
+        if (gameTime % Tick.PER_MINUTE != 0) {
             return;
         }
 
@@ -54,7 +55,7 @@ public class BlockBreakProgressManager {
             } else {
                 level.destroyBlockProgress(Objects.hash(blockPos), blockPos, progress);
             }
-            return new Tuple<>(System.currentTimeMillis() + TimeUtils.FIVE_MINUTES_IN_MILLIS, newValue);
+            return new Tuple<>(System.currentTimeMillis() + TimeUnit.MINUTES.toMillis(5), newValue);
         });
     }
 

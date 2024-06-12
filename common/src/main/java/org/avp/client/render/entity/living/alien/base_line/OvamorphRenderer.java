@@ -3,7 +3,7 @@ package org.avp.client.render.entity.living.alien.base_line;
 import mod.azure.azurelib.common.api.client.renderer.GeoEntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
-import org.avp.api.util.TimeUtils;
+import org.avp.api.util.time.DateUtil;
 import org.avp.client.model.AVPGeoModel;
 import org.avp.client.model.GeoModelType;
 import org.avp.common.AVPResources;
@@ -21,6 +21,6 @@ public class OvamorphRenderer extends GeoEntityRenderer<Ovamorph> {
 
     @Override
     public @NotNull ResourceLocation getTextureLocation(@NotNull Ovamorph entity) {
-        return TimeUtils.isHalloween() ? TEXTURE_HALLOWEEN : super.getTextureLocation(entity);
+        return DateUtil.isHalloween() ? TEXTURE_HALLOWEEN : super.getTextureLocation(entity);
     }
 }

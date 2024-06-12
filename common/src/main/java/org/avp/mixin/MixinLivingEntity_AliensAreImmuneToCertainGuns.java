@@ -17,7 +17,6 @@ import org.avp.common.game.item.AbstractAVPWeaponItem;
 import org.avp.common.data.tag.AVPDamageTypeTags;
 import org.avp.common.data.tag.AVPEntityTypeTags;
 import org.avp.common.data.tag.AVPItemTags;
-import org.avp.api.util.TypeUtil;
 
 @Mixin(LivingEntity.class)
 public abstract class MixinLivingEntity_AliensAreImmuneToCertainGuns extends Entity {
@@ -28,7 +27,7 @@ public abstract class MixinLivingEntity_AliensAreImmuneToCertainGuns extends Ent
 
     @Inject(at = @At("HEAD"), cancellable = true, method = "hurt")
     void ignoresCertainGunDamage(DamageSource damageSource, float damage, CallbackInfoReturnable<Boolean> callbackInfoReturnable) {
-        var self = TypeUtil.<LivingEntity>self(this);
+        var self = LivingEntity.class.cast(this);
         var type = self.getType();
 
         if (!type.is(AVPEntityTypeTags.ALIENS))

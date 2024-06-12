@@ -8,6 +8,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.targeting.TargetingConditions;
 import net.minecraft.world.level.Level;
+import org.avp.api.util.time.Tick;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
@@ -16,7 +17,6 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import org.avp.common.game.entity.type.Boss;
-import org.avp.api.util.TypeUtil;
 
 @Mixin(Mob.class)
 public abstract class MixinMob_PerformBossLogic extends LivingEntity {
@@ -35,12 +35,12 @@ public abstract class MixinMob_PerformBossLogic extends LivingEntity {
     @Inject(at = @At("TAIL"), method = "customServerAiStep")
     void customServerAiStep(CallbackInfo callbackInfo) {
         if (this instanceof Boss boss) {
-            var self = TypeUtil.<Mob>self(this);
+            var self = Mob.class.cast(this);
             var level = self.level();
 
             boss.getBossEvent().setProgress(self.getHealth() / self.getMaxHealth());
 
-            if (self.tickCount % 20 == 0) {
+            if (self.tickCount % Tick.PER_SECOND == 0) {
                 var nearbyPlayers = level.getNearbyPlayers(TargetingConditions.DEFAULT, self, self.getBoundingBox().inflate(16));
                 nearbyPlayers.forEach(player -> boss.getBossEvent().addPlayer((ServerPlayer) player));
 

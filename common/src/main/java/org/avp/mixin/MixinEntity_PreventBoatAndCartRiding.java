@@ -10,7 +10,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import org.avp.common.data.tag.AVPEntityTypeTags;
-import org.avp.api.util.TypeUtil;
 
 @Mixin(Entity.class)
 public abstract class MixinEntity_PreventBoatAndCartRiding {
@@ -18,7 +17,7 @@ public abstract class MixinEntity_PreventBoatAndCartRiding {
     // If a boat or cart attempts to force the alien/predator to start riding it, tell the boat no.
     @Inject(at = @At("HEAD"), method = "startRiding", cancellable = true)
     void startRiding(Entity entity, CallbackInfoReturnable<Boolean> callbackInfoReturnable) {
-        var self = TypeUtil.<Entity>self(this);
+        var self = Entity.class.cast(this);
 
         // All aliens will not ride boats.
         if (
@@ -35,7 +34,7 @@ public abstract class MixinEntity_PreventBoatAndCartRiding {
     // If the alien/predator is already riding a boat somehow, stop riding the boat.
     @Inject(at = @At("HEAD"), method = "tick")
     void tick(CallbackInfo callbackInfo) {
-        var self = TypeUtil.<Entity>self(this);
+        var self = Entity.class.cast(this);
         var level = self.level();
 
         if (level.isClientSide)
