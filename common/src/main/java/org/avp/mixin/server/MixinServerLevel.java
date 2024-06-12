@@ -27,11 +27,11 @@ public abstract class MixinServerLevel {
 
     @Unique
     private void tickScheduledRunnables() {
-        ServerScheduler.getScheduledTasks().removeIf(tuple -> {
-            var runTime = tuple.first();
+        ServerScheduler.getScheduledTasks().removeIf(entry -> {
+            var runTime = entry.getKey();
 
             if (System.currentTimeMillis() >= runTime) {
-                tuple.second().run();
+                entry.getValue().run();
                 return true;
             }
 

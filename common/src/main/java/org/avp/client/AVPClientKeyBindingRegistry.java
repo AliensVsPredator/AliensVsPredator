@@ -5,22 +5,22 @@ import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import org.lwjgl.glfw.GLFW;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 import java.util.function.BiConsumer;
 
 import org.avp.api.service.Services;
-import org.avp.api.util.Tuple;
 import org.avp.common.network.payload.ServerboundWeaponReloadRequestPayload;
 import org.avp.common.network.payload.ServerboundWeaponSwapAmmunitionTypeRequestPayload;
 import org.avp.common.network.payload.ServerboundWeaponSwapFireModeRequestPayload;
 
 public class AVPClientKeyBindingRegistry {
 
-    private static final List<Tuple<KeyMapping, BiConsumer<KeyMapping, Minecraft>>> ENTRIES = new ArrayList<>();
+    private static final Map<KeyMapping, BiConsumer<KeyMapping, Minecraft>> ENTRIES = new HashMap<>();
 
-    public static List<Tuple<KeyMapping, BiConsumer<KeyMapping, Minecraft>>> getEntries() {
-        return ENTRIES;
+    public static Set<Map.Entry<KeyMapping, BiConsumer<KeyMapping, Minecraft>>> getEntries() {
+        return ENTRIES.entrySet();
     }
 
     private static void registerKeyBinding(String name, String category, int key, BiConsumer<KeyMapping, Minecraft> biConsumer) {
@@ -31,7 +31,7 @@ public class AVPClientKeyBindingRegistry {
             "keybind.category.avp." + category
         );
 
-        ENTRIES.add(new Tuple<>(keyMapping, biConsumer));
+        ENTRIES.put(keyMapping, biConsumer);
     }
 
     static {

@@ -3,8 +3,9 @@ package org.avp.api.common.registry;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.storage.loot.LootTable;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -15,14 +16,13 @@ import org.avp.api.common.registry.holder.BLHolder;
 import org.avp.api.common.registry.holder.BlockHolderSet;
 import org.avp.api.common.registry.holder.BlockHolderSetData;
 import org.avp.api.service.Services;
-import org.avp.api.util.Tuple;
 
 public class AVPDeferredBlockRegistry extends AVPDeferredRegistry<Block> {
 
-    private static final List<Tuple<BLHolder<Block>, BlockData>> DATA_ENTRIES = new ArrayList<>();
+    private static final Map<BLHolder<Block>, BlockData> DATA_ENTRIES = new HashMap<>();
 
-    public static List<Tuple<BLHolder<Block>, BlockData>> getDataEntries() {
-        return DATA_ENTRIES;
+    public static Set<Map.Entry<BLHolder<Block>, BlockData>> getDataEntries() {
+        return DATA_ENTRIES.entrySet();
     }
 
     protected BLHolder<Block> createHolder(
@@ -46,7 +46,7 @@ public class AVPDeferredBlockRegistry extends AVPDeferredRegistry<Block> {
         var registryName = blockData.registryName();
         var holder = createHolder(registryName, () -> blockData.blockModelData().blockSupplier().get());
         entries.put(registryName, holder);
-        DATA_ENTRIES.add(new Tuple<>(holder, blockData));
+        DATA_ENTRIES.put(holder, blockData);
         return holder;
     }
 

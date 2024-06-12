@@ -1,22 +1,21 @@
 package org.avp.api.server;
 
 import java.time.Duration;
-import java.util.ArrayList;
-import java.util.List;
-
-import org.avp.api.util.Tuple;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
 public class ServerScheduler {
 
-    private static final List<Tuple<Long, Runnable>> SCHEDULED_TASKS = new ArrayList<>();
+    private static final Map<Long, Runnable> SCHEDULED_TASKS = new HashMap<>();
 
     public static void schedule(Runnable runnable, Duration duration) {
         var runTime = System.currentTimeMillis() + duration.toMillis();
-        SCHEDULED_TASKS.add(new Tuple<>(runTime, runnable));
+        SCHEDULED_TASKS.put(runTime, runnable);
     }
 
-    public static List<Tuple<Long, Runnable>> getScheduledTasks() {
-        return SCHEDULED_TASKS;
+    public static Set<Map.Entry<Long, Runnable>> getScheduledTasks() {
+        return SCHEDULED_TASKS.entrySet();
     }
 
     private ServerScheduler() {

@@ -1,4 +1,4 @@
-package org.avp.api.util;
+package org.avp.api.util.delegate;
 
 import java.util.function.Supplier;
 

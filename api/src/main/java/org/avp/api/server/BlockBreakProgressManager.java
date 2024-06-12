@@ -11,14 +11,13 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
-import org.avp.api.util.Tuple;
 import org.avp.api.util.time.Tick;
 
 public class BlockBreakProgressManager {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(BlockBreakProgressManager.class);
 
-    private static final Map<BlockPos, Tuple<Long, Float>> BLOCK_BREAK_PROGRESS_MAP = new HashMap<>();
+    private static final Map<BlockPos, Map.Entry<Long, Float>> BLOCK_BREAK_PROGRESS_MAP = new HashMap<>();
 
     public static void tick(Level level) {
         var gameTime = level.getGameTime();
@@ -31,7 +30,7 @@ public class BlockBreakProgressManager {
             BlockBreakProgressManager.BLOCK_BREAK_PROGRESS_MAP.size()
         );
         BlockBreakProgressManager.BLOCK_BREAK_PROGRESS_MAP.entrySet().removeIf(entry -> {
-            var lastUpdateTimeMillis = entry.getValue().first();
+            var lastUpdateTimeMillis = entry.getValue().getKey();
             return System.currentTimeMillis() > lastUpdateTimeMillis;
         });
         LOGGER.debug(
@@ -41,10 +40,10 @@ public class BlockBreakProgressManager {
     }
 
     public static void damage(Level level, BlockPos blockPos, float damage) {
-        BlockBreakProgressManager.BLOCK_BREAK_PROGRESS_MAP.compute(blockPos, (key, tuple) -> {
+        BlockBreakProgressManager.BLOCK_BREAK_PROGRESS_MAP.compute(blockPos, (key, entry) -> {
             var blockState = level.getBlockState(blockPos);
             var block = blockState.getBlock();
-            var cachedValue = tuple == null ? 0 : tuple.second();
+            var cachedValue = entry == null ? 0 : entry.getValue();
             var newValue = cachedValue + (damage / (2F + block.defaultDestroyTime() / 2F));
             var progress = (int) Mth.clamp(newValue, 0F, 9F);
 
@@ -55,7 +54,7 @@ public class BlockBreakProgressManager {
             } else {
                 level.destroyBlockProgress(Objects.hash(blockPos), blockPos, progress);
             }
-            return new Tuple<>(System.currentTimeMillis() + TimeUnit.MINUTES.toMillis(5), newValue);
+            return Map.entry(System.currentTimeMillis() + TimeUnit.MINUTES.toMillis(5), newValue);
         });
     }
 

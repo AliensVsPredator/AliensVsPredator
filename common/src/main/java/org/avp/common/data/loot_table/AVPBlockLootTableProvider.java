@@ -12,9 +12,9 @@ public class AVPBlockLootTableProvider extends AbstractAVPBlockLootTableProvider
 
     @Override
     public void generate() {
-        AVPDeferredBlockRegistry.getDataEntries().forEach(tuple -> {
-            var block = tuple.first().get();
-            var data = tuple.second();
+        AVPDeferredBlockRegistry.getDataEntries().forEach(entry -> {
+            var block = entry.getKey().get();
+            var data = entry.getValue();
             var lootProvider = data.lootProvider();
             var lootTableBuilder = lootProvider.apply(block);
 

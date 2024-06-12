@@ -29,9 +29,9 @@ public class AVPNeoForgeClient {
 
     @SubscribeEvent
     public static void init(FMLClientSetupEvent event) {
-        AVPDeferredBlockRegistry.getDataEntries().forEach(tuple -> {
-            var block = tuple.first().get();
-            var blockData = tuple.second();
+        AVPDeferredBlockRegistry.getDataEntries().forEach(entry -> {
+            var block = entry.getKey().get();
+            var blockData = entry.getValue();
             var blockModelRenderType = blockData.blockModelData().blockModelRenderType();
 
             switch (blockModelRenderType) {
@@ -56,8 +56,8 @@ public class AVPNeoForgeClient {
 
     @SubscribeEvent
     public static void registerKeyBindings(RegisterKeyMappingsEvent event) {
-        AVPClientKeyBindingRegistry.getEntries().forEach(tuple -> {
-            var keyMapping = tuple.first();
+        AVPClientKeyBindingRegistry.getEntries().forEach(entry -> {
+            var keyMapping = entry.getKey();
             event.register(keyMapping);
         });
     }
@@ -83,9 +83,9 @@ public class AVPNeoForgeClient {
 
     public static void onClientTick(TickEvent.ClientTickEvent event) {
         if (event.phase == TickEvent.Phase.START) { // Only call code once as the tick event is called twice every tick
-            AVPClientKeyBindingRegistry.getEntries().forEach(tuple -> {
-                var keyMapping = tuple.first();
-                var biConsumer = tuple.second();
+            AVPClientKeyBindingRegistry.getEntries().forEach(entry -> {
+                var keyMapping = entry.getKey();
+                var biConsumer = entry.getValue();
                 while (keyMapping.consumeClick()) {
                     biConsumer.accept(keyMapping, Minecraft.getInstance());
                 }

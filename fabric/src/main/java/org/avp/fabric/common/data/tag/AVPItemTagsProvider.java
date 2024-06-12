@@ -21,9 +21,9 @@ public class AVPItemTagsProvider extends FabricTagProvider.ItemTagProvider {
 
     @Override
     protected void addTags(HolderLookup.Provider provider) {
-        AVPDeferredItemRegistry.getDataEntries().forEach(holderItemDataTuple -> {
-            var item = holderItemDataTuple.first().get();
-            var itemTagData = holderItemDataTuple.second().itemTagData();
+        AVPDeferredItemRegistry.getDataEntries().forEach(entry -> {
+            var item = entry.getKey().get();
+            var itemTagData = entry.getValue().itemTagData();
             itemTagData.forEach(itemTagKey -> getOrCreateTagBuilder(itemTagKey).add(item));
         });
 
@@ -53,9 +53,9 @@ public class AVPItemTagsProvider extends FabricTagProvider.ItemTagProvider {
             .addOptionalTag(ItemTags.AXES)
             .add(Items.TRIDENT);
 
-        AVPDeferredBlockRegistry.getDataEntries().forEach(tuple -> {
-            var block = tuple.first().get();
-            var blockData = tuple.second();
+        AVPDeferredBlockRegistry.getDataEntries().forEach(entry -> {
+            var block = entry.getKey().get();
+            var blockData = entry.getValue();
 
             blockData.blockTagData().itemTags().forEach(tag -> getOrCreateTagBuilder(tag).add(block.asItem()));
         });

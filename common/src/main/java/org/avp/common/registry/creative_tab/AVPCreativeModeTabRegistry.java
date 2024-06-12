@@ -9,13 +9,13 @@ import net.minecraft.world.level.block.Block;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Supplier;
 
 import org.avp.api.common.registry.AVPDeferredBlockRegistry;
 import org.avp.api.common.registry.AVPDeferredRegistry;
 import org.avp.api.common.registry.holder.BLHolder;
 import org.avp.api.service.Services;
-import org.avp.api.util.Tuple;
 import org.avp.common.AVPConstants;
 import org.avp.common.registry.block.AVPTempleBlockRegistry;
 import org.avp.common.registry.item.AVPAmmunitionPartItemRegistry;
@@ -85,7 +85,7 @@ public final class AVPCreativeModeTabRegistry extends AVPDeferredRegistry<Creati
                 .icon(AVPTempleBlockRegistry.INSTANCE.brick.base().get().asItem()::getDefaultInstance)
                 .displayItems(
                     (itemDisplayParameters, output) -> output.acceptAll(
-                        blocksToItemStacks(AVPDeferredBlockRegistry.getDataEntries().stream().map(Tuple::first).toList())
+                        blocksToItemStacks(AVPDeferredBlockRegistry.getDataEntries().stream().map(Map.Entry::getKey).toList())
                     )
                 )
         );

@@ -13,9 +13,9 @@ public class AVPNeoForgeFuelRegistry {
         AVPFuelRegistry.INSTANCE.getValues()
             .stream()
             .map(BLHolder::get)
-            .filter(tuple -> Objects.equals(tuple.first().get(), event.getItemStack().getItem()))
+            .filter(entry -> Objects.equals(entry.getKey().get(), event.getItemStack().getItem()))
             .findFirst()
-            .ifPresent(tuple -> event.setBurnTime(tuple.second()));
+            .ifPresent(entry -> event.setBurnTime(entry.getValue()));
     }
 
     private AVPNeoForgeFuelRegistry() {

@@ -2,22 +2,22 @@ package org.avp.common.registry;
 
 import net.minecraft.world.item.Item;
 
+import java.util.Map;
 import java.util.function.Supplier;
 
 import org.avp.api.common.registry.AVPDeferredRegistry;
 import org.avp.api.common.registry.holder.BLHolder;
-import org.avp.api.util.Tuple;
 import org.avp.common.registry.holder.AVPHolder;
 import org.avp.common.registry.item.AVPItemRegistry;
 
-public class AVPFuelRegistry extends AVPDeferredRegistry<Tuple<BLHolder<Item>, Integer>> {
+public class AVPFuelRegistry extends AVPDeferredRegistry<Map.Entry<BLHolder<Item>, Integer>> {
 
     public static final AVPFuelRegistry INSTANCE = new AVPFuelRegistry();
 
     @Override
-    protected BLHolder<Tuple<BLHolder<Item>, Integer>> createHolder(
+    protected BLHolder<Map.Entry<BLHolder<Item>, Integer>> createHolder(
         String registryName,
-        Supplier<Tuple<BLHolder<Item>, Integer>> supplier
+        Supplier<Map.Entry<BLHolder<Item>, Integer>> supplier
     ) {
         var holder = new AVPHolder<>(registryName, supplier);
         entries.put(registryName, holder);
@@ -26,7 +26,7 @@ public class AVPFuelRegistry extends AVPDeferredRegistry<Tuple<BLHolder<Item>, I
 
     @Override
     public void register() {
-        createHolder("fuel_carbon", () -> new Tuple<>(AVPItemRegistry.INSTANCE.carbon, 800));
+        createHolder("fuel_carbon", () -> Map.entry(AVPItemRegistry.INSTANCE.carbon, 800));
     }
 
     private AVPFuelRegistry() {}

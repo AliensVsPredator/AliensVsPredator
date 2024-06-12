@@ -23,9 +23,9 @@ public class AVPFabricClient implements ClientModInitializer {
 
         AVPParticleTypeProviders.INSTANCE.register();
 
-        AVPDeferredBlockRegistry.getDataEntries().forEach(tuple -> {
-            var block = tuple.first().get();
-            var blockData = tuple.second();
+        AVPDeferredBlockRegistry.getDataEntries().forEach(entry -> {
+            var block = entry.getKey().get();
+            var blockData = entry.getValue();
             var blockModelRenderType = blockData.blockModelData().blockModelRenderType();
 
             switch (blockModelRenderType) {
@@ -50,9 +50,9 @@ public class AVPFabricClient implements ClientModInitializer {
     }
 
     private static void registerKeyBindings() {
-        AVPClientKeyBindingRegistry.getEntries().forEach(tuple -> {
-            var keyMapping = tuple.first();
-            var biConsumer = tuple.second();
+        AVPClientKeyBindingRegistry.getEntries().forEach(entry -> {
+            var keyMapping = entry.getKey();
+            var biConsumer = entry.getValue();
 
             KeyBindingHelper.registerKeyBinding(keyMapping);
             ClientTickEvents.END_CLIENT_TICK.register(client -> {

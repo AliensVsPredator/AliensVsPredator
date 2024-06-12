@@ -8,9 +8,9 @@ import org.avp.api.common.registry.AVPDeferredItemRegistry;
 public class AVPFabricItemModelProvider {
 
     public static void addItemModels(ItemModelGenerators itemModelGenerator) {
-        AVPDeferredItemRegistry.getDataEntries().forEach(holderItemDataTuple -> {
-            var item = holderItemDataTuple.first().get();
-            var itemData = holderItemDataTuple.second();
+        AVPDeferredItemRegistry.getDataEntries().forEach(entry -> {
+            var item = entry.getKey().get();
+            var itemData = entry.getValue();
             var itemModelData = itemData.itemModelData();
             var itemModelDataType = itemModelData.itemModelDataTypeFactory().apply(item);
 

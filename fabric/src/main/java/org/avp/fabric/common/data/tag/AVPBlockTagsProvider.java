@@ -41,9 +41,9 @@ public class AVPBlockTagsProvider extends FabricTagProvider.BlockTagProvider {
         getOrCreateTagBuilder(AVPBlockTags.ACID_IMMUNE)
             .addOptionalTag(AVPBlockTags.SHOULD_NOT_BE_DESTROYED);
 
-        AVPDeferredBlockRegistry.getDataEntries().forEach(tuple -> {
-            var block = tuple.first().get();
-            var blockData = tuple.second();
+        AVPDeferredBlockRegistry.getDataEntries().forEach(entry -> {
+            var block = entry.getKey().get();
+            var blockData = entry.getValue();
 
             blockData.blockTagData().blockTags().forEach(tag -> getOrCreateTagBuilder(tag).add(block));
         });

@@ -11,7 +11,7 @@ public class AVPFabricFuelRegistry {
         AVPFuelRegistry.INSTANCE.getValues()
             .stream()
             .map(BLHolder::get)
-            .forEach(tuple -> FuelRegistry.INSTANCE.add(tuple.first().get(), tuple.second()));
+            .forEach(entry -> FuelRegistry.INSTANCE.add(entry.getKey().get(), entry.getValue()));
     }
 
     private AVPFabricFuelRegistry() {

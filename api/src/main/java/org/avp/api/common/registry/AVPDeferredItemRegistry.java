@@ -3,8 +3,8 @@ package org.avp.api.common.registry;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -13,14 +13,13 @@ import org.avp.api.common.data.item.ItemData;
 import org.avp.api.common.data.item.ItemModelData;
 import org.avp.api.common.registry.holder.BLHolder;
 import org.avp.api.service.Services;
-import org.avp.api.util.Tuple;
 
 public class AVPDeferredItemRegistry extends AVPDeferredRegistry<Item> {
 
-    private static final List<Tuple<BLHolder<Item>, ItemData>> DATA_ENTRIES = new ArrayList<>();
+    private static final Map<BLHolder<Item>, ItemData> DATA_ENTRIES = new HashMap<>();
 
-    public static List<Tuple<BLHolder<Item>, ItemData>> getDataEntries() {
-        return DATA_ENTRIES;
+    public static Set<Map.Entry<BLHolder<Item>, ItemData>> getDataEntries() {
+        return DATA_ENTRIES.entrySet();
     }
 
     protected BLHolder<Item> createHolder(String registryName) {
@@ -51,7 +50,7 @@ public class AVPDeferredItemRegistry extends AVPDeferredRegistry<Item> {
         var registryName = itemData.registryName();
         var holder = createHolderInternal(registryName, () -> itemData.itemModelData().itemSupplier().get());
         entries.put(registryName, holder);
-        DATA_ENTRIES.add(new Tuple<>(holder, itemData));
+        DATA_ENTRIES.put(holder, itemData);
         return holder;
     }
 
