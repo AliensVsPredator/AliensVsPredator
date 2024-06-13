@@ -2,7 +2,7 @@ package org.avp.api.common.registry;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.function.Supplier;
 
@@ -13,7 +13,7 @@ public abstract class AVPDeferredRegistry<T> {
     protected final Map<String, BLHolder<T>> entries;
 
     protected AVPDeferredRegistry() {
-        entries = new HashMap<>();
+        entries = new LinkedHashMap<>();
     }
 
     protected abstract BLHolder<T> createHolder(String registryName, Supplier<T> supplier);

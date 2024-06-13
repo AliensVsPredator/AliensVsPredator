@@ -3,7 +3,7 @@ package org.avp.api.common.registry;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.storage.loot.LootTable;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
@@ -19,7 +19,7 @@ import org.avp.api.service.Services;
 
 public class AVPDeferredBlockRegistry extends AVPDeferredRegistry<Block> {
 
-    private static final Map<BLHolder<Block>, BlockData> DATA_ENTRIES = new HashMap<>();
+    private static final Map<BLHolder<Block>, BlockData> DATA_ENTRIES = new LinkedHashMap<>();
 
     public static Set<Map.Entry<BLHolder<Block>, BlockData>> getDataEntries() {
         return DATA_ENTRIES.entrySet();
