@@ -3,7 +3,7 @@ package org.avp.api.common.registry;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
@@ -16,7 +16,7 @@ import org.avp.api.service.Services;
 
 public class AVPDeferredItemRegistry extends AVPDeferredRegistry<Item> {
 
-    private static final Map<BLHolder<Item>, ItemData> DATA_ENTRIES = new HashMap<>();
+    private static final Map<BLHolder<Item>, ItemData> DATA_ENTRIES = new LinkedHashMap<>();
 
     public static Set<Map.Entry<BLHolder<Item>, ItemData>> getDataEntries() {
         return DATA_ENTRIES.entrySet();
