@@ -5,51 +5,51 @@ import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 
-import org.avp.api.Holder;
+import org.avp.api.common.registry.holder.BLHolder;
 import org.avp.common.data.recipe.AVPShapedRecipeBuilder;
-import org.avp.common.item.AVPItems;
-import org.avp.common.item.AVPToolItems;
+import org.avp.common.registry.item.AVPItemRegistry;
+import org.avp.common.registry.item.AVPToolItemRegistry;
 
 public final class AVPToolRecipes {
 
     public static void addToolRecipes(RecipeOutput recipeOutput) {
         addToolSetRecipes(
             recipeOutput,
-            AVPItems.INSTANCE.ingotAluminum,
-            AVPToolItems.INSTANCE.aluminumAxe,
-            AVPToolItems.INSTANCE.aluminumHoe,
-            AVPToolItems.INSTANCE.aluminumPickaxe,
-            AVPToolItems.INSTANCE.aluminumShovel,
-            AVPToolItems.INSTANCE.aluminumSword
+            AVPItemRegistry.INSTANCE.ingotAluminum,
+            AVPToolItemRegistry.INSTANCE.aluminumAxe,
+            AVPToolItemRegistry.INSTANCE.aluminumHoe,
+            AVPToolItemRegistry.INSTANCE.aluminumPickaxe,
+            AVPToolItemRegistry.INSTANCE.aluminumShovel,
+            AVPToolItemRegistry.INSTANCE.aluminumSword
         );
         addToolSetRecipes(
             recipeOutput,
-            AVPItems.INSTANCE.ingotTitanium,
-            AVPToolItems.INSTANCE.titaniumAxe,
-            AVPToolItems.INSTANCE.titaniumHoe,
-            AVPToolItems.INSTANCE.titaniumPickaxe,
-            AVPToolItems.INSTANCE.titaniumShovel,
-            AVPToolItems.INSTANCE.titaniumSword
+            AVPItemRegistry.INSTANCE.ingotTitanium,
+            AVPToolItemRegistry.INSTANCE.titaniumAxe,
+            AVPToolItemRegistry.INSTANCE.titaniumHoe,
+            AVPToolItemRegistry.INSTANCE.titaniumPickaxe,
+            AVPToolItemRegistry.INSTANCE.titaniumShovel,
+            AVPToolItemRegistry.INSTANCE.titaniumSword
         );
         addToolSetRecipes(
             recipeOutput,
-            AVPItems.INSTANCE.ingotOrionite,
-            AVPToolItems.INSTANCE.orioniteAxe,
-            AVPToolItems.INSTANCE.orioniteHoe,
-            AVPToolItems.INSTANCE.orionitePickaxe,
-            AVPToolItems.INSTANCE.orioniteShovel,
-            AVPToolItems.INSTANCE.orioniteSword
+            AVPItemRegistry.INSTANCE.ingotOrionite,
+            AVPToolItemRegistry.INSTANCE.orioniteAxe,
+            AVPToolItemRegistry.INSTANCE.orioniteHoe,
+            AVPToolItemRegistry.INSTANCE.orionitePickaxe,
+            AVPToolItemRegistry.INSTANCE.orioniteShovel,
+            AVPToolItemRegistry.INSTANCE.orioniteSword
         );
     }
 
     private static void addToolSetRecipes(
         RecipeOutput recipeOutput,
-        Holder<Item> baseIngredient,
-        Holder<Item> axeItemHolder,
-        Holder<Item> hoeItemHolder,
-        Holder<Item> pickaxeItemHolder,
-        Holder<Item> shovelItemHolder,
-        Holder<Item> swordItemHolder
+        BLHolder<Item> baseIngredient,
+        BLHolder<Item> axeItemHolder,
+        BLHolder<Item> hoeItemHolder,
+        BLHolder<Item> pickaxeItemHolder,
+        BLHolder<Item> shovelItemHolder,
+        BLHolder<Item> swordItemHolder
     ) {
         AVPShapedRecipeBuilder.shaped(RecipeCategory.TOOLS, axeItemHolder)
             .defineAndUnlockIfHas('A', baseIngredient)

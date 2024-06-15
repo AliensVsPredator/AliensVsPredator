@@ -2,16 +2,41 @@ package org.avp.common;
 
 import mod.azure.azurelib.common.internal.common.AzureLib;
 
-import org.avp.client.render.particle.AVPParticleTypes;
-import org.avp.common.block.*;
+import org.avp.api.common.registry.block_entity.AVPSimpleDeferredBlockEntityTypeRegistry;
+import org.avp.api.common.registry.entity.AVPSimpleDeferredEntityTypeRegistry;
+import org.avp.client.render.particle.AVPParticleTypeRegistry;
 import org.avp.common.config.AVPConfig;
-import org.avp.common.creative_tab.AVPCreativeModeTabs;
-import org.avp.common.entity.data.AVPEntityDataRegistry;
-import org.avp.common.item.*;
+import org.avp.common.game.sound.AVPSoundEventRegistry;
 import org.avp.common.network.AVPNetworkPayloadHandlerRegistry;
+import org.avp.common.registry.AVPBlockEntityDataRegistry;
+import org.avp.common.registry.AVPEntityDataRegistry;
 import org.avp.common.registry.AVPFuelRegistry;
-import org.avp.common.registry.AVPSimpleDeferredEntityTypeRegistry;
-import org.avp.common.sound.AVPSoundEvents;
+import org.avp.common.registry.block.AVPAlienBlockRegistry;
+import org.avp.common.registry.block.AVPBlockRegistry;
+import org.avp.common.registry.block.AVPEngineerBlockRegistry;
+import org.avp.common.registry.block.AVPIndustrialBlockRegistry;
+import org.avp.common.registry.block.AVPIndustrialGlassBlockRegistry;
+import org.avp.common.registry.block.AVPMachineBlockRegistry;
+import org.avp.common.registry.block.AVPOreBlockRegistry;
+import org.avp.common.registry.block.AVPPaddingBlockRegistry;
+import org.avp.common.registry.block.AVPParadiseBlockRegistry;
+import org.avp.common.registry.block.AVPPlasticBlockRegistry;
+import org.avp.common.registry.block.AVPTempleBlockRegistry;
+import org.avp.common.registry.block.AVPUnidentifiedBlockRegistry;
+import org.avp.common.registry.block.AVPYautjaShipBlockRegistry;
+import org.avp.common.registry.creative_tab.AVPCreativeModeTabRegistry;
+import org.avp.common.registry.item.AVPAmmunitionPartItemRegistry;
+import org.avp.common.registry.item.AVPArmorItemRegistry;
+import org.avp.common.registry.item.AVPBulletItemRegistry;
+import org.avp.common.registry.item.AVPElectronicItemRegistry;
+import org.avp.common.registry.item.AVPFoodItemRegistry;
+import org.avp.common.registry.item.AVPItemBlockItemRegistry;
+import org.avp.common.registry.item.AVPItemRegistry;
+import org.avp.common.registry.item.AVPSpawnEggItemRegistry;
+import org.avp.common.registry.item.AVPToolItemRegistry;
+import org.avp.common.registry.item.AVPWeaponBlueprintItemRegistry;
+import org.avp.common.registry.item.AVPWeaponItemRegistry;
+import org.avp.common.registry.item.AVPWeaponPartItemRegistry;
 
 public class AVPCommon {
 
@@ -29,35 +54,44 @@ public class AVPCommon {
         AVPFuelRegistry.INSTANCE.register();
 
         // Items
-        AVPAmmunitionPartItems.INSTANCE.register();
-        AVPArmorItems.INSTANCE.register();
-        AVPBulletItems.INSTANCE.register();
-        AVPElectronicItems.INSTANCE.register();
-        AVPFoodItems.INSTANCE.register();
-        AVPItems.INSTANCE.register();
-        AVPToolItems.INSTANCE.register();
-        AVPWeaponBlueprintItems.INSTANCE.register();
-        AVPWeaponItems.INSTANCE.register();
-        AVPWeaponPartItems.INSTANCE.register();
+        AVPAmmunitionPartItemRegistry.INSTANCE.register();
+        AVPArmorItemRegistry.INSTANCE.register();
+        AVPBulletItemRegistry.INSTANCE.register();
+        AVPElectronicItemRegistry.INSTANCE.register();
+        AVPFoodItemRegistry.INSTANCE.register();
+        AVPItemRegistry.INSTANCE.register();
+        AVPToolItemRegistry.INSTANCE.register();
+        AVPWeaponBlueprintItemRegistry.INSTANCE.register();
+        AVPWeaponItemRegistry.INSTANCE.register();
+        AVPWeaponPartItemRegistry.INSTANCE.register();
 
         // Blocks
-        AVPAlienBlocks.INSTANCE.register();
-        AVPBlocks.INSTANCE.register();
-        AVPEngineerBlocks.INSTANCE.register();
-        AVPIndustrialBlocks.INSTANCE.register();
-        AVPIndustrialGlassBlocks.INSTANCE.register();
-        AVPOreBlocks.INSTANCE.register();
-        AVPPaddingBlocks.INSTANCE.register();
-        AVPParadiseBlocks.INSTANCE.register();
-        AVPTempleBlocks.INSTANCE.register();
-        AVPUnidentifiedBlocks.INSTANCE.register();
-        AVPYautjaShipBlocks.INSTANCE.register();
+        AVPAlienBlockRegistry.INSTANCE.register();
+        AVPBlockRegistry.INSTANCE.register();
+        AVPEngineerBlockRegistry.INSTANCE.register();
+        AVPIndustrialBlockRegistry.INSTANCE.register();
+        AVPIndustrialGlassBlockRegistry.INSTANCE.register();
+        AVPMachineBlockRegistry.INSTANCE.register();
+        AVPOreBlockRegistry.INSTANCE.register();
+        AVPPaddingBlockRegistry.INSTANCE.register();
+        AVPParadiseBlockRegistry.INSTANCE.register();
+        AVPPlasticBlockRegistry.INSTANCE.register();
+        AVPTempleBlockRegistry.INSTANCE.register();
+        AVPUnidentifiedBlockRegistry.INSTANCE.register();
+        AVPYautjaShipBlockRegistry.INSTANCE.register();
 
         // Item Blocks
-        AVPItemBlockItems.INSTANCE.register();
+        AVPItemBlockItemRegistry.INSTANCE.register();
+
+        // Block Entity Data
+        // Must be registered first, sets up block entity type holders.
+        AVPBlockEntityDataRegistry.INSTANCE.register();
+
+        // Block Entity Types
+        AVPSimpleDeferredBlockEntityTypeRegistry.INSTANCE.register();
 
         // Sounds
-        AVPSoundEvents.INSTANCE.register();
+        AVPSoundEventRegistry.INSTANCE.register();
 
         // Entity Data
         // Must be registered first, sets up entity type holders.
@@ -67,13 +101,13 @@ public class AVPCommon {
         AVPSimpleDeferredEntityTypeRegistry.INSTANCE.register();
 
         // Spawn Egg Items
-        AVPSpawnEggItems.INSTANCE.register();
+        AVPSpawnEggItemRegistry.INSTANCE.register();
 
         // Particles
-        AVPParticleTypes.INSTANCE.register();
+        AVPParticleTypeRegistry.INSTANCE.register();
 
         // It's important to register creative mode tabs last, as entities generate spawn eggs automatically.
-        AVPCreativeModeTabs.INSTANCE.register();
+        AVPCreativeModeTabRegistry.INSTANCE.register();
     }
 
     private AVPCommon() {

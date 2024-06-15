@@ -9,8 +9,8 @@ import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.entries.EmptyLootItem;
 import net.minecraft.world.level.storage.loot.entries.LootItem;
 
-import org.avp.api.Holder;
-import org.avp.common.item.AVPWeaponBlueprintItems;
+import org.avp.api.common.registry.holder.BLHolder;
+import org.avp.common.registry.item.AVPWeaponBlueprintItemRegistry;
 
 public class AVPFabricLootTableModifier {
 
@@ -21,70 +21,70 @@ public class AVPFabricLootTableModifier {
                     BuiltInLootTables.VILLAGE_WEAPONSMITH,
                     id,
                     tableBuilder,
-                    AVPWeaponBlueprintItems.INSTANCE.blueprintM88Mod4CombatPistol,
+                    AVPWeaponBlueprintItemRegistry.INSTANCE.blueprintM88Mod4CombatPistol,
                     50
                 );
                 addSimpleLootPool(
                     BuiltInLootTables.SIMPLE_DUNGEON,
                     id,
                     tableBuilder,
-                    AVPWeaponBlueprintItems.INSTANCE.blueprint3712Shotgun,
+                    AVPWeaponBlueprintItemRegistry.INSTANCE.blueprint3712Shotgun,
                     20
                 );
                 addSimpleLootPool(
                     BuiltInLootTables.DESERT_PYRAMID,
                     id,
                     tableBuilder,
-                    AVPWeaponBlueprintItems.INSTANCE.blueprintF90Rifle,
+                    AVPWeaponBlueprintItemRegistry.INSTANCE.blueprintF90Rifle,
                     20
                 );
                 addSimpleLootPool(
                     BuiltInLootTables.JUNGLE_TEMPLE,
                     id,
                     tableBuilder,
-                    AVPWeaponBlueprintItems.INSTANCE.blueprintM4Carbine,
+                    AVPWeaponBlueprintItemRegistry.INSTANCE.blueprintM4Carbine,
                     20
                 );
                 addSimpleLootPool(
                     BuiltInLootTables.PILLAGER_OUTPOST,
                     id,
                     tableBuilder,
-                    AVPWeaponBlueprintItems.INSTANCE.blueprintSniperRifle,
+                    AVPWeaponBlueprintItemRegistry.INSTANCE.blueprintSniperRifle,
                     20
                 );
                 addSimpleLootPool(
                     BuiltInLootTables.STRONGHOLD_CORRIDOR,
                     id,
                     tableBuilder,
-                    AVPWeaponBlueprintItems.INSTANCE.blueprintM41APulseRifle,
+                    AVPWeaponBlueprintItemRegistry.INSTANCE.blueprintM41APulseRifle,
                     20
                 );
                 addSimpleLootPool(
                     BuiltInLootTables.BASTION_TREASURE,
                     id,
                     tableBuilder,
-                    AVPWeaponBlueprintItems.INSTANCE.blueprintFlamethrowerSevastopol,
+                    AVPWeaponBlueprintItemRegistry.INSTANCE.blueprintFlamethrowerSevastopol,
                     33
                 );
                 addSimpleLootPool(
                     BuiltInLootTables.WOODLAND_MANSION,
                     id,
                     tableBuilder,
-                    AVPWeaponBlueprintItems.INSTANCE.blueprintOldPainless,
+                    AVPWeaponBlueprintItemRegistry.INSTANCE.blueprintOldPainless,
                     20
                 );
                 addSimpleLootPool(
                     BuiltInLootTables.ANCIENT_CITY,
                     id,
                     tableBuilder,
-                    AVPWeaponBlueprintItems.INSTANCE.blueprintM83A2Sadar,
+                    AVPWeaponBlueprintItemRegistry.INSTANCE.blueprintM83A2Sadar,
                     20
                 );
                 addSimpleLootPool(
                     BuiltInLootTables.END_CITY_TREASURE,
                     id,
                     tableBuilder,
-                    AVPWeaponBlueprintItems.INSTANCE.blueprintM56Smartgun,
+                    AVPWeaponBlueprintItemRegistry.INSTANCE.blueprintM56Smartgun,
                     20
                 );
 
@@ -92,7 +92,7 @@ public class AVPFabricLootTableModifier {
                 if (BuiltInLootTables.TRAIL_RUINS_ARCHAEOLOGY_RARE.equals(id)) {
                     var poolBuilder = LootPool.lootPool()
                         .add(
-                            LootItem.lootTableItem(AVPWeaponBlueprintItems.INSTANCE.blueprintAk47.get())
+                            LootItem.lootTableItem(AVPWeaponBlueprintItemRegistry.INSTANCE.blueprintAk47.get())
                         )
                         .build();
                     tableBuilder.pool(poolBuilder);
@@ -105,7 +105,7 @@ public class AVPFabricLootTableModifier {
         ResourceLocation target,
         ResourceLocation id,
         LootTable.Builder tableBuilder,
-        Holder<Item> itemHolder,
+        BLHolder<Item> itemHolder,
         int weight
     ) {
         if (!target.equals(id)) {

@@ -8,8 +8,8 @@ import net.minecraft.world.level.block.Blocks;
 
 import java.util.concurrent.CompletableFuture;
 
-import org.avp.common.registry.AVPDeferredBlockRegistry;
-import org.avp.common.tag.AVPBlockTags;
+import org.avp.api.common.registry.AVPDeferredBlockRegistry;
+import org.avp.common.data.tag.AVPBlockTags;
 
 public class AVPBlockTagsProvider extends FabricTagProvider.BlockTagProvider {
 
@@ -41,9 +41,9 @@ public class AVPBlockTagsProvider extends FabricTagProvider.BlockTagProvider {
         getOrCreateTagBuilder(AVPBlockTags.ACID_IMMUNE)
             .addOptionalTag(AVPBlockTags.SHOULD_NOT_BE_DESTROYED);
 
-        AVPDeferredBlockRegistry.getDataEntries().forEach(tuple -> {
-            var block = tuple.first().get();
-            var blockData = tuple.second();
+        AVPDeferredBlockRegistry.getDataEntries().forEach(entry -> {
+            var block = entry.getKey().get();
+            var blockData = entry.getValue();
 
             blockData.blockTagData().blockTags().forEach(tag -> getOrCreateTagBuilder(tag).add(block));
         });

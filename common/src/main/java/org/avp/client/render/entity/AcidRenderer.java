@@ -7,7 +7,7 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 
-import org.avp.common.entity.Acid;
+import org.avp.common.game.entity.Acid;
 
 public class AcidRenderer extends EntityRenderer<Acid> {
 

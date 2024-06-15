@@ -10,7 +10,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
 
-import org.avp.common.tag.AVPDamageTypeTags;
+import org.avp.common.data.tag.AVPDamageTypeTags;
 
 @Mixin(EnderDragon.class)
 public abstract class MixinEnderDragon_ReduceDamageFromBullets extends Mob {

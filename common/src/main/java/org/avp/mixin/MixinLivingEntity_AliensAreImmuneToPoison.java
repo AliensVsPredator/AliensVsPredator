@@ -11,8 +11,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import org.avp.common.tag.AVPEntityTypeTags;
-import org.avp.common.util.MixinUtils;
+import org.avp.common.data.tag.AVPEntityTypeTags;
 
 @Mixin(LivingEntity.class)
 public abstract class MixinLivingEntity_AliensAreImmuneToPoison extends Entity {
@@ -23,7 +22,7 @@ public abstract class MixinLivingEntity_AliensAreImmuneToPoison extends Entity {
 
     @Inject(at = @At("HEAD"), cancellable = true, method = "canBeAffected")
     void ignorePoisonDamage(MobEffectInstance mobEffectInstance, CallbackInfoReturnable<Boolean> callbackInfoReturnable) {
-        var self = MixinUtils.<LivingEntity>self(this);
+        var self = LivingEntity.class.cast(this);
         if (self.getType().is(AVPEntityTypeTags.ALIENS) && mobEffectInstance.getEffect() == MobEffects.POISON) {
             callbackInfoReturnable.setReturnValue(false);
         }

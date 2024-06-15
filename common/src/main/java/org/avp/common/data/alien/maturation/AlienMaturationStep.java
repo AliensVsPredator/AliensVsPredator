@@ -6,7 +6,7 @@ import net.minecraft.world.entity.monster.Monster;
 
 import java.util.function.Predicate;
 
-import org.avp.common.util.AVPPredicates;
+import org.avp.api.util.BLPredicates;
 
 public record AlienMaturationStep(
     EntityType<? extends Monster> from,
@@ -20,6 +20,6 @@ public record AlienMaturationStep(
         EntityType<? extends Monster> to,
         int growthTime
     ) {
-        this(from, to, growthTime, AVPPredicates.ALWAYS_TRUE);
+        this(from, to, growthTime, BLPredicates.ALWAYS_TRUE);
     }
 }

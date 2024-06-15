@@ -9,9 +9,9 @@ import net.minecraft.world.level.block.Blocks;
 
 import java.util.concurrent.CompletableFuture;
 
-import org.avp.common.registry.AVPDeferredBlockRegistry;
-import org.avp.common.registry.AVPDeferredItemRegistry;
-import org.avp.common.tag.AVPItemTags;
+import org.avp.api.common.registry.AVPDeferredBlockRegistry;
+import org.avp.api.common.registry.AVPDeferredItemRegistry;
+import org.avp.common.data.tag.AVPItemTags;
 
 public class AVPItemTagsProvider extends FabricTagProvider.ItemTagProvider {
 
@@ -21,9 +21,9 @@ public class AVPItemTagsProvider extends FabricTagProvider.ItemTagProvider {
 
     @Override
     protected void addTags(HolderLookup.Provider provider) {
-        AVPDeferredItemRegistry.getDataEntries().forEach(holderItemDataTuple -> {
-            var item = holderItemDataTuple.first().get();
-            var itemTagData = holderItemDataTuple.second().itemTagData();
+        AVPDeferredItemRegistry.getDataEntries().forEach(entry -> {
+            var item = entry.getKey().get();
+            var itemTagData = entry.getValue().itemTagData();
             itemTagData.forEach(itemTagKey -> getOrCreateTagBuilder(itemTagKey).add(item));
         });
 
@@ -53,9 +53,9 @@ public class AVPItemTagsProvider extends FabricTagProvider.ItemTagProvider {
             .addOptionalTag(ItemTags.AXES)
             .add(Items.TRIDENT);
 
-        AVPDeferredBlockRegistry.getDataEntries().forEach(tuple -> {
-            var block = tuple.first().get();
-            var blockData = tuple.second();
+        AVPDeferredBlockRegistry.getDataEntries().forEach(entry -> {
+            var block = entry.getKey().get();
+            var blockData = entry.getValue();
 
             blockData.blockTagData().itemTags().forEach(tag -> getOrCreateTagBuilder(tag).add(block.asItem()));
         });

@@ -11,8 +11,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import org.avp.common.tag.AVPEntityTypeTags;
-import org.avp.common.util.MixinUtils;
+import org.avp.common.data.tag.AVPEntityTypeTags;
 
 @Mixin(LivingEntity.class)
 public abstract class MixinLivingEntity_AliensDoNotBurn extends Entity {
@@ -23,7 +22,7 @@ public abstract class MixinLivingEntity_AliensDoNotBurn extends Entity {
 
     @Inject(at = @At("HEAD"), cancellable = true, method = "hurt")
     void ignoresFireDamage(DamageSource damageSource, float damage, CallbackInfoReturnable<Boolean> callbackInfoReturnable) {
-        var self = MixinUtils.<LivingEntity>self(this);
+        var self = LivingEntity.class.cast(this);
 
         if (!self.getType().is(AVPEntityTypeTags.ALIENS))
             return;

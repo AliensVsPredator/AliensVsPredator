@@ -7,8 +7,8 @@ import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.entity.SpawnPlacements;
 
 import org.avp.common.config.AVPConfig;
-import org.avp.common.entity.data.AVPEntityDataRegistry;
-import org.avp.common.tag.AVPEntityTypeTags;
+import org.avp.common.data.tag.AVPEntityTypeTags;
+import org.avp.common.registry.AVPEntityDataRegistry;
 
 public class AVPFabricEntitySpawns {
 

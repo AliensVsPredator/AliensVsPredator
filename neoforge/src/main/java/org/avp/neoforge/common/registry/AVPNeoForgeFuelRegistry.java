@@ -4,7 +4,7 @@ import net.neoforged.neoforge.event.furnace.FurnaceFuelBurnTimeEvent;
 
 import java.util.Objects;
 
-import org.avp.api.Holder;
+import org.avp.api.common.registry.holder.BLHolder;
 import org.avp.common.registry.AVPFuelRegistry;
 
 public class AVPNeoForgeFuelRegistry {
@@ -12,10 +12,10 @@ public class AVPNeoForgeFuelRegistry {
     public static void handleFurnaceFuelBurnTimeEvent(FurnaceFuelBurnTimeEvent event) {
         AVPFuelRegistry.INSTANCE.getValues()
             .stream()
-            .map(Holder::get)
-            .filter(tuple -> Objects.equals(tuple.first().get(), event.getItemStack().getItem()))
+            .map(BLHolder::get)
+            .filter(entry -> Objects.equals(entry.getKey().get(), event.getItemStack().getItem()))
             .findFirst()
-            .ifPresent(tuple -> event.setBurnTime(tuple.second()));
+            .ifPresent(entry -> event.setBurnTime(entry.getValue()));
     }
 
     private AVPNeoForgeFuelRegistry() {

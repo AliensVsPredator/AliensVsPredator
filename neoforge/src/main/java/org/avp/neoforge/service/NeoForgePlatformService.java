@@ -6,7 +6,7 @@ import net.neoforged.fml.loading.FMLPaths;
 
 import java.nio.file.Path;
 
-import org.avp.common.service.PlatformService;
+import org.avp.api.service.PlatformService;
 
 public class NeoForgePlatformService implements PlatformService {
 

@@ -6,20 +6,20 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import org.avp.common.tag.AVPEntityTypeTags;
-import org.avp.common.util.MixinUtils;
+import org.avp.api.util.time.Tick;
+import org.avp.common.data.tag.AVPEntityTypeTags;
 
 @Mixin(LivingEntity.class)
 public abstract class MixinLivingEntity_AliensRegenerateHealth {
 
     @Inject(at = @At("HEAD"), method = "tick")
     void tick(CallbackInfo callbackInfo) {
-        var self = MixinUtils.<LivingEntity>self(this);
+        var self = LivingEntity.class.cast(this);
         var level = self.level();
 
         if (level.isClientSide)
             return;
-        if (self.tickCount % 20 != 0)
+        if (self.tickCount % Tick.PER_SECOND != 0)
             return;
         if (!self.getType().is(AVPEntityTypeTags.ALIENS))
             return;

@@ -6,9 +6,9 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 
 import java.util.function.Supplier;
 
-import org.avp.api.Holder;
+import org.avp.common.registry.holder.AVPHolder;
 
-public class NeoForgeParticleTypeHolder<T extends ParticleOptions> extends Holder<ParticleType<T>> {
+public class NeoForgeParticleTypeHolder<T extends ParticleOptions> extends AVPHolder<ParticleType<T>> {
 
     public NeoForgeParticleTypeHolder(
         DeferredRegister<ParticleType<?>> deferredRegister,

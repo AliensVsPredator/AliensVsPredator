@@ -13,11 +13,11 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.util.Objects;
 
-import org.avp.api.Holder;
-import org.avp.api.entity.data.EntityData;
-import org.avp.common.entity.data.AVPEntityDataRegistry;
-import org.avp.common.entity.data.sound.EntitySoundData;
-import org.avp.common.tag.AVPEntityTypeTags;
+import org.avp.api.common.data.entity.EntityData;
+import org.avp.api.common.data.entity.EntitySoundData;
+import org.avp.api.common.registry.holder.BLHolder;
+import org.avp.common.data.tag.AVPEntityTypeTags;
+import org.avp.common.registry.AVPEntityDataRegistry;
 
 @Mixin(Monster.class)
 public abstract class MixinMonster_ProvideHurtAndDeathSounds extends PathfinderMob {
@@ -41,7 +41,7 @@ public abstract class MixinMonster_ProvideHurtAndDeathSounds extends PathfinderM
             .flatMap(EntityData::getSoundData)
             .map(EntitySoundData::hurtSoundEventHolderSelector)
             .map(selector -> selector.apply(damageSource))
-            .flatMap(Holder::getOptional)
+            .flatMap(BLHolder::getOptional)
             .orElse(callbackInfoReturnable.getReturnValue());
 
         callbackInfoReturnable.setReturnValue(returnValue);
@@ -61,7 +61,7 @@ public abstract class MixinMonster_ProvideHurtAndDeathSounds extends PathfinderM
             .findFirst()
             .flatMap(EntityData::getSoundData)
             .map(EntitySoundData::deathSoundEventHolder)
-            .flatMap(Holder::getOptional)
+            .flatMap(BLHolder::getOptional)
             .orElse(callbackInfoReturnable.getReturnValue());
 
         callbackInfoReturnable.setReturnValue(returnValue);

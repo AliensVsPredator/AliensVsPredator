@@ -9,7 +9,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import org.avp.common.item.AbstractAVPWeaponItem;
+import org.avp.common.game.item.AbstractAVPWeaponItem;
 
 @Mixin(PlayerRenderer.class)
 public abstract class MixinPlayerRenderer {

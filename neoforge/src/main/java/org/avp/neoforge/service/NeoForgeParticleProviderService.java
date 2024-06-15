@@ -8,18 +8,19 @@ import net.minecraft.core.particles.ParticleType;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import org.avp.api.Holder;
-import org.avp.client.render.particle.ParticleProviderData;
-import org.avp.common.service.ParticleProviderService;
+import org.avp.api.client.ParticleProviderData;
+import org.avp.api.common.registry.holder.BLHolder;
+import org.avp.api.service.ParticleProviderService;
+import org.avp.common.registry.holder.AVPHolder;
 
 public class NeoForgeParticleProviderService implements ParticleProviderService {
 
     @Override
-    public Holder<ParticleProviderData<ParticleOptions>> createHolder(
+    public BLHolder<ParticleProviderData<ParticleOptions>> createHolder(
         String registryName,
         Supplier<ParticleProviderData<ParticleOptions>> supplier
     ) {
-        return new Holder<>(registryName, supplier);
+        return new AVPHolder<>(registryName, supplier);
     }
 
     @Override

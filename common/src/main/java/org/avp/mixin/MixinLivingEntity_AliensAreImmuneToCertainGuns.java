@@ -10,14 +10,13 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import org.avp.api.item.weapon.WeaponItemTagHelper;
-import org.avp.api.item.weapon.bullet.effect.BulletEffects;
-import org.avp.common.item.AbstractAVPWeaponItem;
-import org.avp.common.sound.AVPSoundEvents;
-import org.avp.common.tag.AVPDamageTypeTags;
-import org.avp.common.tag.AVPEntityTypeTags;
-import org.avp.common.tag.AVPItemTags;
-import org.avp.common.util.MixinUtils;
+import org.avp.api.common.weapon.WeaponItemStack;
+import org.avp.api.common.weapon.bullet_effect.BulletEffects;
+import org.avp.common.data.tag.AVPDamageTypeTags;
+import org.avp.common.data.tag.AVPEntityTypeTags;
+import org.avp.common.data.tag.AVPItemTags;
+import org.avp.common.game.item.AbstractAVPWeaponItem;
+import org.avp.common.game.sound.AVPSoundEventRegistry;
 
 @Mixin(LivingEntity.class)
 public abstract class MixinLivingEntity_AliensAreImmuneToCertainGuns extends Entity {
@@ -28,7 +27,7 @@ public abstract class MixinLivingEntity_AliensAreImmuneToCertainGuns extends Ent
 
     @Inject(at = @At("HEAD"), cancellable = true, method = "hurt")
     void ignoresCertainGunDamage(DamageSource damageSource, float damage, CallbackInfoReturnable<Boolean> callbackInfoReturnable) {
-        var self = MixinUtils.<LivingEntity>self(this);
+        var self = LivingEntity.class.cast(this);
         var type = self.getType();
 
         if (!type.is(AVPEntityTypeTags.ALIENS))
@@ -49,8 +48,8 @@ public abstract class MixinLivingEntity_AliensAreImmuneToCertainGuns extends Ent
             return;
         }
 
-        var weaponData = weaponItem.getWeaponItemData();
-        var bulletEffects = WeaponItemTagHelper.getBulletEffects(mainHandItemStack, weaponData);
+        var weaponItemStack = new WeaponItemStack(mainHandItemStack, weaponItem.getWeaponData());
+        var bulletEffects = weaponItemStack.getBulletEffects();
 
         // If the weapon's bullet effect was AP, the xenomorph's immunity is bypassed.
         if (bulletEffects.contains(BulletEffects.ARMOR_PENETRATION)) {
@@ -63,7 +62,7 @@ public abstract class MixinLivingEntity_AliensAreImmuneToCertainGuns extends Ent
                 type.is(AVPEntityTypeTags.HEAVY_GUNS_IMMUNE) && mainHandItemStack.is(AVPItemTags.HEAVY_GUNS) ||
                 type.is(AVPEntityTypeTags.UBER_GUNS_IMMUNE) && mainHandItemStack.is(AVPItemTags.UBER_GUNS)
         ) {
-            self.playSound(AVPSoundEvents.INSTANCE.itemWeaponFxRicochetGeneric.get());
+            self.playSound(AVPSoundEventRegistry.INSTANCE.itemWeaponFxRicochetGeneric.get());
             callbackInfoReturnable.setReturnValue(false);
         }
     }

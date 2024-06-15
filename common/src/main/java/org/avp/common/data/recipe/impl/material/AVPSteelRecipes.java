@@ -7,17 +7,17 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 
 import org.avp.common.AVPConstants;
-import org.avp.common.block.AVPBlocks;
 import org.avp.common.data.recipe.AVPMetalRecipeHelper;
 import org.avp.common.data.recipe.AVPRecipeProvider;
-import org.avp.common.item.AVPItems;
+import org.avp.common.registry.block.AVPBlockRegistry;
+import org.avp.common.registry.item.AVPItemRegistry;
 
 public final class AVPSteelRecipes {
 
     public static void addSteelRecipes(RecipeOutput recipeOutput) {
-        var ingotHolder = AVPItems.INSTANCE.ingotSteel;
+        var ingotHolder = AVPItemRegistry.INSTANCE.ingotSteel;
 
-        AVPMetalRecipeHelper.addFullMetalSetRecipes(recipeOutput, ingotHolder, AVPBlocks.INSTANCE.steel);
+        AVPMetalRecipeHelper.addFullMetalSetRecipes(recipeOutput, ingotHolder, AVPBlockRegistry.INSTANCE.steel);
 
         // Smelting
         SimpleCookingRecipeBuilder.blasting(Ingredient.of(Items.IRON_INGOT), RecipeCategory.MISC, ingotHolder.get(), 0.7F, 100)

@@ -9,18 +9,17 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import org.avp.common.item.AVPItems;
-import org.avp.common.util.MixinUtils;
+import org.avp.common.registry.item.AVPItemRegistry;
 
 @Mixin(ItemEntity.class)
 public abstract class MixinItemEntity_LithiumExplode {
 
     @Inject(at = @At("TAIL"), method = "tick", cancellable = true)
     void tick(CallbackInfo callbackInfo) {
-        var self = MixinUtils.<ItemEntity>self(this);
+        var self = ItemEntity.class.cast(this);
         var level = self.level();
 
-        if (!self.getItem().is(AVPItems.INSTANCE.dustLithium.get()))
+        if (!self.getItem().is(AVPItemRegistry.INSTANCE.dustLithium.get()))
             return;
         if (level.isClientSide || level.getGameTime() % 10 != 0)
             return;

@@ -7,11 +7,10 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import org.avp.common.util.MixinUtils;
-import org.avp.server.BlockBreakProgressManager;
+import org.avp.api.server.BlockBreakProgressManager;
+import org.avp.api.server.ServerScheduler;
 import org.avp.server.HivemindManager;
 import org.avp.server.QueenManager;
-import org.avp.server.ServerScheduler;
 
 @Mixin(ServerLevel.class)
 public abstract class MixinServerLevel {
@@ -20,7 +19,7 @@ public abstract class MixinServerLevel {
     public void tick(CallbackInfo callbackInfo) {
         tickScheduledRunnables();
 
-        var serverLevel = MixinUtils.<ServerLevel>self(this);
+        var serverLevel = ServerLevel.class.cast(this);
         BlockBreakProgressManager.tick(serverLevel);
         HivemindManager.tick(serverLevel);
         QueenManager.tick(serverLevel);
@@ -28,11 +27,11 @@ public abstract class MixinServerLevel {
 
     @Unique
     private void tickScheduledRunnables() {
-        ServerScheduler.getScheduledTasks().removeIf(tuple -> {
-            var runTime = tuple.first();
+        ServerScheduler.getScheduledTasks().removeIf(entry -> {
+            var runTime = entry.getKey();
 
             if (System.currentTimeMillis() >= runTime) {
-                tuple.second().run();
+                entry.getValue().run();
                 return true;
             }
 

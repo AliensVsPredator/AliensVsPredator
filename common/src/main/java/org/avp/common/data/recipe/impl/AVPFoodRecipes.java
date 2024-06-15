@@ -8,33 +8,33 @@ import net.minecraft.world.item.crafting.Ingredient;
 
 import org.avp.common.data.recipe.AVPRecipeProvider;
 import org.avp.common.data.recipe.AVPShapedRecipeBuilder;
-import org.avp.common.item.AVPFoodItems;
+import org.avp.common.registry.item.AVPFoodItemRegistry;
 
 public final class AVPFoodRecipes {
 
     public static void addFoodRecipes(RecipeOutput recipeOutput) {
-        AVPShapedRecipeBuilder.shaped(RecipeCategory.FOOD, AVPFoodItems.INSTANCE.doritos)
+        AVPShapedRecipeBuilder.shaped(RecipeCategory.FOOD, AVPFoodItemRegistry.INSTANCE.doritos)
             .defineAndUnlockIfHas('A', Items.WHEAT)
             .defineAndUnlockIfHas('B', Items.BAKED_POTATO)
             .pattern("AAA")
             .pattern("A B")
             .pattern("BBB")
             .save(recipeOutput);
-        AVPShapedRecipeBuilder.shaped(RecipeCategory.FOOD, AVPFoodItems.INSTANCE.doritosCoolRanch)
-            .defineAndUnlockIfHas('A', AVPFoodItems.INSTANCE.doritos)
+        AVPShapedRecipeBuilder.shaped(RecipeCategory.FOOD, AVPFoodItemRegistry.INSTANCE.doritosCoolRanch)
+            .defineAndUnlockIfHas('A', AVPFoodItemRegistry.INSTANCE.doritos)
             .defineAndUnlockIfHas('B', Items.WHEAT)
             .pattern("AB")
             .pattern("B ")
             .save(recipeOutput);
 
         SimpleCookingRecipeBuilder.smelting(
-            Ingredient.of(AVPFoodItems.INSTANCE.rawTentacle.get()),
+            Ingredient.of(AVPFoodItemRegistry.INSTANCE.rawTentacle.get()),
             RecipeCategory.FOOD,
-            AVPFoodItems.INSTANCE.triloBite.get(),
+            AVPFoodItemRegistry.INSTANCE.triloBite.get(),
             0.35F,
             200
         )
-            .unlockedBy("has_trilo_bite", AVPRecipeProvider.has(AVPFoodItems.INSTANCE.rawTentacle.get()))
+            .unlockedBy("has_trilo_bite", AVPRecipeProvider.has(AVPFoodItemRegistry.INSTANCE.rawTentacle.get()))
             .save(recipeOutput);
     }
 

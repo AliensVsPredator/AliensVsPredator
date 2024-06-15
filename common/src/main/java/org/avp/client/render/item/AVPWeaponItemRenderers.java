@@ -1,37 +1,37 @@
 package org.avp.client.render.item;
 
 import mod.azure.azurelib.common.api.client.renderer.GeoItemRenderer;
-import net.minecraft.world.item.Item;
 
 import java.util.Map;
 import java.util.function.Supplier;
 
-import org.avp.common.item.weapon.AK47Item;
-import org.avp.common.item.weapon.F90RifleItem;
-import org.avp.common.item.weapon.FlamethrowerSevastopolItem;
-import org.avp.common.item.weapon.M3712ShotgunItem;
-import org.avp.common.item.weapon.M41APulseRifleItem;
-import org.avp.common.item.weapon.M4CarbineItem;
-import org.avp.common.item.weapon.M56SmartgunItem;
-import org.avp.common.item.weapon.M83A2SADARItem;
-import org.avp.common.item.weapon.M88Mod4CombatPistolItem;
-import org.avp.common.item.weapon.OldPainlessItem;
-import org.avp.common.item.weapon.SniperRifleItem;
+import org.avp.api.common.weapon.data.WeaponData;
+import org.avp.common.data.item.weapon.AK47Data;
+import org.avp.common.data.item.weapon.F90RifleData;
+import org.avp.common.data.item.weapon.FlamethrowerSevastopolData;
+import org.avp.common.data.item.weapon.M3712ShotgunData;
+import org.avp.common.data.item.weapon.M41APulseRifleData;
+import org.avp.common.data.item.weapon.M4CarbineData;
+import org.avp.common.data.item.weapon.M56SmartgunData;
+import org.avp.common.data.item.weapon.M83A2SADARData;
+import org.avp.common.data.item.weapon.M88Mod4CombatPistolData;
+import org.avp.common.data.item.weapon.OldPainlessData;
+import org.avp.common.data.item.weapon.SniperRifleData;
 
 public class AVPWeaponItemRenderers {
 
-    public static final Map<Class<? extends Item>, Supplier<GeoItemRenderer<?>>> WEAPON_ITEM_RENDERERS = Map.ofEntries(
-        Map.entry(AK47Item.class, AK47ItemRenderer::new),
-        Map.entry(F90RifleItem.class, F90RifleItemRenderer::new),
-        Map.entry(FlamethrowerSevastopolItem.class, FlamethrowerSevastopolItemRenderer::new),
-        Map.entry(M3712ShotgunItem.class, M3712ShotgunItemRenderer::new),
-        Map.entry(M4CarbineItem.class, M4CarbineItemRenderer::new),
-        Map.entry(M41APulseRifleItem.class, M41APulseRifleItemRenderer::new),
-        Map.entry(M56SmartgunItem.class, M56SmartgunItemRenderer::new),
-        Map.entry(M83A2SADARItem.class, M83A2SADARItemRenderer::new),
-        Map.entry(M88Mod4CombatPistolItem.class, M88Mod4CombatPistolItemRenderer::new),
-        Map.entry(OldPainlessItem.class, OldPainlessItemRenderer::new),
-        Map.entry(SniperRifleItem.class, SniperRifleItemRenderer::new)
+    public static final Map<WeaponData, Supplier<GeoItemRenderer<?>>> WEAPON_ITEM_RENDERERS = Map.ofEntries(
+        Map.entry(AK47Data.INSTANCE, AK47ItemRenderer::new),
+        Map.entry(F90RifleData.INSTANCE, F90RifleItemRenderer::new),
+        Map.entry(FlamethrowerSevastopolData.INSTANCE, FlamethrowerSevastopolItemRenderer::new),
+        Map.entry(M3712ShotgunData.INSTANCE, M3712ShotgunItemRenderer::new),
+        Map.entry(M4CarbineData.INSTANCE, M4CarbineItemRenderer::new),
+        Map.entry(M41APulseRifleData.INSTANCE, M41APulseRifleItemRenderer::new),
+        Map.entry(M56SmartgunData.INSTANCE, M56SmartgunItemRenderer::new),
+        Map.entry(M83A2SADARData.INSTANCE, M83A2SADARItemRenderer::new),
+        Map.entry(M88Mod4CombatPistolData.INSTANCE, M88Mod4CombatPistolItemRenderer::new),
+        Map.entry(OldPainlessData.INSTANCE, OldPainlessItemRenderer::new),
+        Map.entry(SniperRifleData.INSTANCE, SniperRifleItemRenderer::new)
     );
 
     private AVPWeaponItemRenderers() {

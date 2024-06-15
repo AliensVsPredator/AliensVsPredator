@@ -1,0 +1,62 @@
+package org.avp.common.data.item.weapon;
+
+import java.util.List;
+
+import org.avp.api.common.registry.holder.BLHolder;
+import org.avp.api.common.weapon.ammunition.HasAmmunitionBehavior;
+import org.avp.api.common.weapon.data.AmmunitionData;
+import org.avp.api.common.weapon.data.FireModeData;
+import org.avp.api.common.weapon.data.ReloadData;
+import org.avp.api.common.weapon.data.ShootData;
+import org.avp.api.common.weapon.data.WeaponData;
+import org.avp.api.common.weapon.data.WindData;
+import org.avp.api.common.weapon.reload.ReloadBehavior;
+import org.avp.common.game.item.weapon.HitscanWeaponAttack;
+import org.avp.common.game.sound.AVPSoundEventRegistry;
+
+public class M3712ShotgunData extends WeaponData {
+
+    public static final M3712ShotgunData INSTANCE = new M3712ShotgunData();
+
+    private M3712ShotgunData() {}
+
+    @Override
+    protected List<FireModeData> createFireModeData() {
+        return List.of(
+            new FireModeData(
+                "Semi-Automatic",
+                1,
+                8F * 2,
+                20,
+                0.5F,
+                6,
+                1.5F,
+                new AmmunitionData(
+                    1,
+                    6,
+                    AVPAmmunitionSuppliers.SHOTGUN_AMMUNITION_SUPPLIERS,
+                    HasAmmunitionBehavior.LOADED
+                ),
+                new ReloadData(
+                    20 * 4,
+                    AVPSoundEventRegistry.INSTANCE.itemWeaponGenericReload,
+                    BLHolder.empty(),
+                    ReloadBehavior.LOAD_INTO_WEAPON
+                ),
+                new ShootData(
+                    0,
+                    BLHolder.empty(),
+                    0,
+                    AVPSoundEventRegistry.INSTANCE.itemWeaponShotgunShoot
+                ),
+                WindData.EMPTY,
+                HitscanWeaponAttack::new
+            )
+        );
+    }
+
+    @Override
+    public int getDurability() {
+        return 512 + 256;
+    }
+}

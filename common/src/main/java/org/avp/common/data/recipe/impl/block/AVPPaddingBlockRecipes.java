@@ -5,38 +5,38 @@ import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.Items;
 
-import org.avp.common.block.AVPPaddingBlocks;
+import org.avp.api.common.registry.holder.BLHolder;
+import org.avp.common.data.recipe.AVPMetalRecipeHelper;
 import org.avp.common.data.recipe.AVPShapedRecipeBuilder;
+import org.avp.common.data.recipe.AVPShapelessRecipeBuilder;
+import org.avp.common.registry.block.AVPPaddingBlockRegistry;
 
 public final class AVPPaddingBlockRecipes {
 
     public static void addPaddingBlockRecipes(RecipeOutput recipeOutput) {
-        addPaddingBlockRecipeSet(AVPPaddingBlocks.INSTANCE.paddingBlack, recipeOutput);
-        addPaddingBlockRecipeSet(AVPPaddingBlocks.INSTANCE.paddingBlue, recipeOutput);
-        addPaddingBlockRecipeSet(AVPPaddingBlocks.INSTANCE.paddingBrown, recipeOutput);
-        addPaddingBlockRecipeSet(AVPPaddingBlocks.INSTANCE.paddingCyan, recipeOutput);
-        addPaddingBlockRecipeSet(AVPPaddingBlocks.INSTANCE.paddingGray, recipeOutput);
-        addPaddingBlockRecipeSet(AVPPaddingBlocks.INSTANCE.paddingGreen, recipeOutput);
-        addPaddingBlockRecipeSet(AVPPaddingBlocks.INSTANCE.paddingLightBlue, recipeOutput);
-        addPaddingBlockRecipeSet(AVPPaddingBlocks.INSTANCE.paddingLightGray, recipeOutput);
-        addPaddingBlockRecipeSet(AVPPaddingBlocks.INSTANCE.paddingLime, recipeOutput);
-        addPaddingBlockRecipeSet(AVPPaddingBlocks.INSTANCE.paddingMagenta, recipeOutput);
-        addPaddingBlockRecipeSet(AVPPaddingBlocks.INSTANCE.paddingOrange, recipeOutput);
-        addPaddingBlockRecipeSet(AVPPaddingBlocks.INSTANCE.paddingPink, recipeOutput);
-        addPaddingBlockRecipeSet(AVPPaddingBlocks.INSTANCE.paddingPurple, recipeOutput);
-        addPaddingBlockRecipeSet(AVPPaddingBlocks.INSTANCE.paddingRed, recipeOutput);
-        addPaddingBlockRecipeSet(AVPPaddingBlocks.INSTANCE.paddingWhite, recipeOutput);
-        addPaddingBlockRecipeSet(AVPPaddingBlocks.INSTANCE.paddingYellow, recipeOutput);
+        addPaddingBlockRecipeSet(AVPPaddingBlockRegistry.INSTANCE.paddingBlack, recipeOutput);
+        addPaddingBlockRecipeSet(AVPPaddingBlockRegistry.INSTANCE.paddingBlue, recipeOutput);
+        addPaddingBlockRecipeSet(AVPPaddingBlockRegistry.INSTANCE.paddingBrown, recipeOutput);
+        addPaddingBlockRecipeSet(AVPPaddingBlockRegistry.INSTANCE.paddingCyan, recipeOutput);
+        addPaddingBlockRecipeSet(AVPPaddingBlockRegistry.INSTANCE.paddingGray, recipeOutput);
+        addPaddingBlockRecipeSet(AVPPaddingBlockRegistry.INSTANCE.paddingGreen, recipeOutput);
+        addPaddingBlockRecipeSet(AVPPaddingBlockRegistry.INSTANCE.paddingLightBlue, recipeOutput);
+        addPaddingBlockRecipeSet(AVPPaddingBlockRegistry.INSTANCE.paddingLightGray, recipeOutput);
+        addPaddingBlockRecipeSet(AVPPaddingBlockRegistry.INSTANCE.paddingLime, recipeOutput);
+        addPaddingBlockRecipeSet(AVPPaddingBlockRegistry.INSTANCE.paddingMagenta, recipeOutput);
+        addPaddingBlockRecipeSet(AVPPaddingBlockRegistry.INSTANCE.paddingOrange, recipeOutput);
+        addPaddingBlockRecipeSet(AVPPaddingBlockRegistry.INSTANCE.paddingPink, recipeOutput);
+        addPaddingBlockRecipeSet(AVPPaddingBlockRegistry.INSTANCE.paddingPurple, recipeOutput);
+        addPaddingBlockRecipeSet(AVPPaddingBlockRegistry.INSTANCE.paddingRed, recipeOutput);
+        addPaddingBlockRecipeSet(AVPPaddingBlockRegistry.INSTANCE.paddingWhite, recipeOutput);
+        addPaddingBlockRecipeSet(AVPPaddingBlockRegistry.INSTANCE.paddingYellow, recipeOutput);
     }
 
-    private static void addPaddingBlockRecipeSet(AVPPaddingBlocks.PaddingBlockSet paddingBlockSet, RecipeOutput recipeOutput) {
-        AVPShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, paddingBlockSet.panel())
-            .defineAndUnlockIfHas('A', Items.LEATHER)
-            .defineAndUnlockIfHas('B', ItemTags.WOOL)
-            .defineAndUnlockIfHas('C', paddingBlockSet.dyeItem())
-            .pattern(" AC")
-            .pattern("ABA")
-            .pattern(" A ")
+    private static void addPaddingBlockRecipeSet(AVPPaddingBlockRegistry.PaddingBlockSet paddingBlockSet, RecipeOutput recipeOutput) {
+        AVPShapelessRecipeBuilder.shapeless(RecipeCategory.BUILDING_BLOCKS, paddingBlockSet.panel())
+            .requiresAndUnlockIfHas('A', Items.LEATHER)
+            .requiresAndUnlockIfHas('B', ItemTags.WOOL)
+            .requiresAndUnlockIfHas('C', paddingBlockSet.dyeItem())
             .save(recipeOutput);
 
         AVPShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, paddingBlockSet.pipes(), 2)
@@ -52,11 +52,15 @@ public final class AVPPaddingBlockRecipes {
             .pattern("AA")
             .save(recipeOutput);
 
+        AVPMetalRecipeHelper.addStandardCutterRecipes(recipeOutput, BLHolder.empty(), paddingBlockSet.square());
+
         AVPShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, paddingBlockSet.tiles().base(), 4)
             .defineAndUnlockIfHas('A', paddingBlockSet.square().base())
             .pattern("AA")
             .pattern("AA")
             .save(recipeOutput);
+
+        AVPMetalRecipeHelper.addStandardCutterRecipes(recipeOutput, BLHolder.empty(), paddingBlockSet.tiles());
     }
 
     private AVPPaddingBlockRecipes() {

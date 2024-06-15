@@ -15,8 +15,8 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import org.avp.api.entity.Boss;
-import org.avp.common.util.MixinUtils;
+import org.avp.api.util.time.Tick;
+import org.avp.common.game.entity.type.Boss;
 
 @Mixin(Mob.class)
 public abstract class MixinMob_PerformBossLogic extends LivingEntity {
@@ -35,12 +35,12 @@ public abstract class MixinMob_PerformBossLogic extends LivingEntity {
     @Inject(at = @At("TAIL"), method = "customServerAiStep")
     void customServerAiStep(CallbackInfo callbackInfo) {
         if (this instanceof Boss boss) {
-            var self = MixinUtils.<Mob>self(this);
+            var self = Mob.class.cast(this);
             var level = self.level();
 
             boss.getBossEvent().setProgress(self.getHealth() / self.getMaxHealth());
 
-            if (self.tickCount % 20 == 0) {
+            if (self.tickCount % Tick.PER_SECOND == 0) {
                 var nearbyPlayers = level.getNearbyPlayers(TargetingConditions.DEFAULT, self, self.getBoundingBox().inflate(16));
                 nearbyPlayers.forEach(player -> boss.getBossEvent().addPlayer((ServerPlayer) player));
 

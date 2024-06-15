@@ -8,7 +8,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
-import org.avp.common.entity.living.Queen;
+import org.avp.common.game.entity.living.alien.base_line.Queen;
 
 public class QueenManager {
 

@@ -10,10 +10,10 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 
-import org.avp.client.AVPClientKeyBindings;
-import org.avp.client.render.entity.AVPEntityRenderRegistry;
+import org.avp.api.common.registry.AVPDeferredBlockRegistry;
+import org.avp.client.AVPClientKeyBindingRegistry;
+import org.avp.client.registry.AVPEntityRenderRegistry;
 import org.avp.client.render.particle.AVPParticleTypeProviders;
-import org.avp.common.registry.AVPDeferredBlockRegistry;
 
 public class AVPFabricClient implements ClientModInitializer {
 
@@ -23,9 +23,9 @@ public class AVPFabricClient implements ClientModInitializer {
 
         AVPParticleTypeProviders.INSTANCE.register();
 
-        AVPDeferredBlockRegistry.getDataEntries().forEach(tuple -> {
-            var block = tuple.first().get();
-            var blockData = tuple.second();
+        AVPDeferredBlockRegistry.getDataEntries().forEach(entry -> {
+            var block = entry.getKey().get();
+            var blockData = entry.getValue();
             var blockModelRenderType = blockData.blockModelData().blockModelRenderType();
 
             switch (blockModelRenderType) {
@@ -50,9 +50,9 @@ public class AVPFabricClient implements ClientModInitializer {
     }
 
     private static void registerKeyBindings() {
-        AVPClientKeyBindings.getEntries().forEach(tuple -> {
-            var keyMapping = tuple.first();
-            var biConsumer = tuple.second();
+        AVPClientKeyBindingRegistry.getEntries().forEach(entry -> {
+            var keyMapping = entry.getKey();
+            var biConsumer = entry.getValue();
 
             KeyBindingHelper.registerKeyBinding(keyMapping);
             ClientTickEvents.END_CLIENT_TICK.register(client -> {

@@ -4,7 +4,7 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.server.MinecraftServer;
 import net.neoforged.neoforge.network.PacketDistributor;
 
-import org.avp.common.service.NetworkService;
+import org.avp.api.service.NetworkService;
 
 public class NeoForgeNetworkService implements NetworkService {
 

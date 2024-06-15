@@ -8,7 +8,7 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 
-import org.avp.common.service.NetworkService;
+import org.avp.api.service.NetworkService;
 
 public class FabricNetworkService implements NetworkService {
 

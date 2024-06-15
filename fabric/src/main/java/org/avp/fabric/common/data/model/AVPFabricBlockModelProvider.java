@@ -18,20 +18,20 @@ import net.minecraft.world.level.block.state.properties.BooleanProperty;
 
 import java.util.function.Function;
 
-import org.avp.api.block.BlockData;
-import org.avp.api.block.model.type.BlockModelDataType;
-import org.avp.common.item.AVPSpawnEggItems;
-import org.avp.common.registry.AVPDeferredBlockRegistry;
+import org.avp.api.common.data.block.BlockData;
+import org.avp.api.common.data.block.BlockModelDataType;
+import org.avp.api.common.registry.AVPDeferredBlockRegistry;
+import org.avp.common.registry.item.AVPSpawnEggItemRegistry;
 
 import static net.minecraft.data.models.BlockModelGenerators.MULTIFACE_GENERATOR;
 
 public class AVPFabricBlockModelProvider {
 
     public static void addBlockModels(BlockModelGenerators generator) {
-        AVPDeferredBlockRegistry.getDataEntries().forEach(tuple -> computeBlockModels(generator, tuple.first().get(), tuple.second()));
+        AVPDeferredBlockRegistry.getDataEntries().forEach(entry -> computeBlockModels(generator, entry.getKey().get(), entry.getValue()));
 
         // Listen, I don't like this any more than you do. But Mojang also does this, so...
-        AVPSpawnEggItems.INSTANCE.getValues()
+        AVPSpawnEggItemRegistry.INSTANCE.getValues()
             .forEach(
                 holder -> generator.delegateItemModel(
                     holder.get(),

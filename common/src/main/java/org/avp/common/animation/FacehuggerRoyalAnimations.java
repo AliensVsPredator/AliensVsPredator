@@ -8,7 +8,7 @@ import mod.azure.azurelib.common.internal.common.core.object.PlayState;
 
 import java.util.function.Function;
 
-import org.avp.common.entity.living.FacehuggerRoyal;
+import org.avp.common.game.entity.living.alien.base_line.FacehuggerRoyal;
 
 public class FacehuggerRoyalAnimations {
 

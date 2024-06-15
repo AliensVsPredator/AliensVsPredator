@@ -4,9 +4,9 @@ import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRe
 
 import java.util.function.Supplier;
 
-import org.avp.api.Holder;
-import org.avp.common.entity.data.AVPEntityDataRegistry;
-import org.avp.common.registry.AVPDeferredRegistry;
+import org.avp.api.common.registry.AVPDeferredRegistry;
+import org.avp.api.common.registry.holder.BLHolder;
+import org.avp.common.registry.AVPEntityDataRegistry;
 
 public class FabricEntityAttributeRegistry extends AVPDeferredRegistry<Void> {
 
@@ -15,7 +15,7 @@ public class FabricEntityAttributeRegistry extends AVPDeferredRegistry<Void> {
     private FabricEntityAttributeRegistry() {}
 
     @Override
-    protected Holder<Void> createHolder(String registryName, Supplier<Void> supplier) {
+    protected BLHolder<Void> createHolder(String registryName, Supplier<Void> supplier) {
         return null;
     }
 

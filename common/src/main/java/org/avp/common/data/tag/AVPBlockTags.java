@@ -1,0 +1,28 @@
+package org.avp.common.data.tag;
+
+import net.minecraft.core.registries.Registries;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.level.block.Block;
+
+import org.avp.common.AVPResources;
+
+public class AVPBlockTags {
+
+    public static final TagKey<Block> ACID_IMMUNE = create("acid_immune");
+
+    public static final TagKey<Block> INDUSTRIAL_GLASS = create("industrial_glass");
+
+    public static final TagKey<Block> PADDING = create("padding");
+
+    public static final TagKey<Block> PLASTIC = create("plastic");
+
+    public static final TagKey<Block> SHOULD_NOT_BE_DESTROYED = create("should_not_be_destroyed");
+
+    private static TagKey<Block> create(String registryName) {
+        return TagKey.create(Registries.BLOCK, AVPResources.location(registryName));
+    }
+
+    private AVPBlockTags() {
+        throw new UnsupportedOperationException();
+    }
+}

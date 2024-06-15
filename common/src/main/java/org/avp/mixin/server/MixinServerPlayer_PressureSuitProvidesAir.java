@@ -11,8 +11,8 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import org.avp.common.item.AVPArmorItems;
-import org.avp.common.util.MixinUtils;
+import org.avp.api.util.time.Tick;
+import org.avp.common.registry.item.AVPArmorItemRegistry;
 
 @Mixin(ServerPlayer.class)
 public abstract class MixinServerPlayer_PressureSuitProvidesAir extends Player {
@@ -23,14 +23,14 @@ public abstract class MixinServerPlayer_PressureSuitProvidesAir extends Player {
 
     @Inject(at = @At("HEAD"), method = "tick")
     public void tick(CallbackInfo callbackInfo) {
-        var self = MixinUtils.<ServerPlayer>self(this);
+        var self = ServerPlayer.class.cast(this);
 
         if (
-            self.tickCount % 20 == 0 &&
-                self.getItemBySlot(EquipmentSlot.HEAD).is(AVPArmorItems.INSTANCE.pressure.helmet().get()) &&
-                self.getItemBySlot(EquipmentSlot.CHEST).is(AVPArmorItems.INSTANCE.pressure.body().get()) &&
-                self.getItemBySlot(EquipmentSlot.LEGS).is(AVPArmorItems.INSTANCE.pressure.leggings().get()) &&
-                self.getItemBySlot(EquipmentSlot.FEET).is(AVPArmorItems.INSTANCE.pressure.boots().get())
+            self.tickCount % Tick.PER_SECOND == 0 &&
+                self.getItemBySlot(EquipmentSlot.HEAD).is(AVPArmorItemRegistry.INSTANCE.pressure.helmet().get()) &&
+                self.getItemBySlot(EquipmentSlot.CHEST).is(AVPArmorItemRegistry.INSTANCE.pressure.body().get()) &&
+                self.getItemBySlot(EquipmentSlot.LEGS).is(AVPArmorItemRegistry.INSTANCE.pressure.leggings().get()) &&
+                self.getItemBySlot(EquipmentSlot.FEET).is(AVPArmorItemRegistry.INSTANCE.pressure.boots().get())
         ) {
             self.setAirSupply(self.getMaxAirSupply());
         }

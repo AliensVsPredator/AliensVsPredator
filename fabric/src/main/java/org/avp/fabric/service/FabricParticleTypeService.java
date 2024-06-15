@@ -8,18 +8,19 @@ import net.minecraft.core.registries.BuiltInRegistries;
 
 import java.util.function.Supplier;
 
-import org.avp.api.Holder;
-import org.avp.common.service.ParticleTypeService;
+import org.avp.api.common.registry.holder.BLHolder;
+import org.avp.api.service.ParticleTypeService;
+import org.avp.common.registry.holder.AVPHolder;
 
 public class FabricParticleTypeService implements ParticleTypeService {
 
     @Override
-    public <T extends ParticleOptions> Holder<ParticleType<T>> createHolder(String registryName, Supplier<ParticleType<T>> supplier) {
-        return new Holder<>(registryName, this::simple);
+    public <T extends ParticleOptions> BLHolder<ParticleType<T>> createHolder(String registryName, Supplier<ParticleType<T>> supplier) {
+        return new AVPHolder<>(registryName, this::simple);
     }
 
     @Override
-    public void register(Holder<ParticleType<?>> holder) {
+    public void register(BLHolder<ParticleType<?>> holder) {
         Registry.register(BuiltInRegistries.PARTICLE_TYPE, holder.getResourceLocation(), holder.get());
     }
 

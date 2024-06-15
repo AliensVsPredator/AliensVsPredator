@@ -6,8 +6,8 @@ import net.minecraft.server.level.ServerPlayer;
 
 import java.util.Objects;
 
-import org.avp.api.item.weapon.WeaponItemTagHelper;
-import org.avp.common.item.AbstractAVPWeaponItem;
+import org.avp.api.common.weapon.WeaponItemStack;
+import org.avp.common.game.item.AbstractAVPWeaponItem;
 import org.avp.common.network.payload.ServerboundWeaponReloadRequestPayload;
 import org.avp.common.network.payload.ServerboundWeaponSwapAmmunitionTypeRequestPayload;
 import org.avp.common.network.payload.ServerboundWeaponSwapFireModeRequestPayload;
@@ -38,8 +38,11 @@ public class AVPServerListener {
             return;
         }
 
-        var weaponItemData = abstractAVPWeaponItem.getWeaponItemData();
-        weaponItemData.getReloadStrategy().tryReload(serverLevel, player, itemStack, weaponItemData);
+        var weaponData = abstractAVPWeaponItem.getWeaponData();
+        var weaponItemStack = new WeaponItemStack(itemStack, weaponData);
+        var fireModeData = weaponItemStack.getOrSetFireMode();
+        var reloadData = fireModeData.reloadData();
+        reloadData.reloadBehavior().tryReload(serverLevel, player, weaponItemStack);
     }
 
     public static void handleWeaponSwapFireModeRequest(
@@ -61,17 +64,18 @@ public class AVPServerListener {
             return;
         }
 
-        var weaponItemData = abstractAVPWeaponItem.getWeaponItemData();
-        var fireModes = weaponItemData.getFireModes();
+        var weaponData = abstractAVPWeaponItem.getWeaponData();
+        var fireModeDataSet = weaponData.getFireModeDataList();
 
-        if (fireModes.size() < 2) {
+        if (fireModeDataSet.size() < 2) {
             return;
         }
 
-        var currentFireMode = WeaponItemTagHelper.getOrSetFireMode(itemStack, weaponItemData);
-        var currentFireModeIndex = weaponItemData.getFireModes().indexOf(currentFireMode);
-        var nextFireMode = fireModes.get((currentFireModeIndex + 1) % fireModes.size());
-        WeaponItemTagHelper.setFireMode(itemStack, nextFireMode);
+        var weaponItemStack = new WeaponItemStack(itemStack, weaponData);
+        var currentFireMode = weaponItemStack.getOrSetFireMode();
+        var currentFireModeIndex = fireModeDataSet.indexOf(currentFireMode);
+        var nextFireMode = fireModeDataSet.get((currentFireModeIndex + 1) % fireModeDataSet.size());
+        weaponItemStack.setFireMode(nextFireMode);
         // TODO: Add some sort of visual or audible cue is needed here to indicate the fire mode has changed.
     }
 
@@ -94,14 +98,16 @@ public class AVPServerListener {
             return;
         }
 
-        var weaponItemData = abstractAVPWeaponItem.getWeaponItemData();
-        var ammunitionSuppliers = weaponItemData.getAmmunitionStrategy().getAmmunitionSuppliers();
+        var weaponData = abstractAVPWeaponItem.getWeaponData();
+        var weaponItemStack = new WeaponItemStack(itemStack, weaponData);
+        var fireModeData = weaponItemStack.getOrSetFireMode();
+        var ammunitionSuppliers = fireModeData.ammunitionData().ammunitionSuppliers();
 
         if (ammunitionSuppliers.size() < 2) {
             return;
         }
 
-        var activeAmmunitionType = WeaponItemTagHelper.getOrSetActiveAmmunitionType(itemStack, weaponItemData);
+        var activeAmmunitionType = weaponItemStack.getOrSetActiveAmmunitionType();
 
         ammunitionSuppliers.stream()
             .filter(ammunitionSupplier -> {
@@ -113,7 +119,7 @@ public class AVPServerListener {
             .map(ammunitionSuppliers::indexOf)
             .ifPresent(index -> {
                 var nextAmmunitionType = ammunitionSuppliers.get((index + 1) % ammunitionSuppliers.size());
-                WeaponItemTagHelper.setActiveAmmunitionType(itemStack, nextAmmunitionType.get());
+                weaponItemStack.setActiveAmmunitionType(nextAmmunitionType.get());
             });
     }
 

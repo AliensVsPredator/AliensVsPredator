@@ -6,18 +6,19 @@ import net.minecraft.sounds.SoundEvent;
 
 import java.util.function.Supplier;
 
-import org.avp.api.Holder;
-import org.avp.common.service.SoundEventService;
+import org.avp.api.common.registry.holder.BLHolder;
+import org.avp.api.service.SoundEventService;
+import org.avp.common.registry.holder.AVPHolder;
 
 public class FabricSoundEventService implements SoundEventService {
 
     @Override
-    public Holder<SoundEvent> createHolder(String registryName, Supplier<SoundEvent> supplier) {
-        return new Holder<>(registryName, supplier);
+    public BLHolder<SoundEvent> createHolder(String registryName, Supplier<SoundEvent> supplier) {
+        return new AVPHolder<>(registryName, supplier);
     }
 
     @Override
-    public void register(Holder<SoundEvent> holder) {
+    public void register(BLHolder<SoundEvent> holder) {
         Registry.register(BuiltInRegistries.SOUND_EVENT, holder.getResourceLocation(), holder.get());
     }
 }

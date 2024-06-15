@@ -11,9 +11,9 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import org.avp.common.alien.maturation.AVPAlienMaturations;
-import org.avp.common.tag.AVPEntityTypeTags;
-import org.avp.common.util.MixinUtils;
+import org.avp.api.util.time.Tick;
+import org.avp.common.data.tag.AVPEntityTypeTags;
+import org.avp.common.registry.alien.maturation.AVPAlienMaturationRegistry;
 
 @Mixin(Mob.class)
 public abstract class MixinMob_AliensMature extends LivingEntity {
@@ -24,17 +24,17 @@ public abstract class MixinMob_AliensMature extends LivingEntity {
 
     @Inject(at = @At("HEAD"), method = "tick")
     void tick(CallbackInfo callbackInfo) {
-        var self = MixinUtils.<Mob>self(this);
+        var self = Mob.class.cast(this);
         var level = self.level();
 
         if (level.isClientSide)
             return;
         if (!self.getType().is(AVPEntityTypeTags.ALIENS))
             return;
-        if (self.tickCount % 20 != 0)
+        if (self.tickCount % Tick.PER_SECOND != 0)
             return;
 
-        var maturationStepOptional = AVPAlienMaturations.lookup(null, self.getType());
+        var maturationStepOptional = AVPAlienMaturationRegistry.lookup(null, self.getType());
 
         maturationStepOptional.ifPresent(maturationStep -> {
             var entityTypeToMatureInto = maturationStep.to();

@@ -4,12 +4,12 @@ import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.world.level.block.Block;
 
-import org.avp.api.Holder;
+import org.avp.api.common.registry.holder.BLHolder;
 
 public class RecipeUtils {
 
     // Stonecutter - Building Blocks
-    public static void stonecutterBuildingBlock(RecipeOutput recipeOutput, Holder<Block> input, Holder<Block> output) {
+    public static void stonecutterBuildingBlock(RecipeOutput recipeOutput, BLHolder<Block> input, BLHolder<Block> output) {
         stonecutterBuildingBlock(recipeOutput, input.get(), output.get(), 1);
     }
 
@@ -17,7 +17,7 @@ public class RecipeUtils {
         stonecutterBuildingBlock(recipeOutput, input, output, 1);
     }
 
-    public static void stonecutterBuildingBlock(RecipeOutput recipeOutput, Holder<Block> input, Holder<Block> output, int count) {
+    public static void stonecutterBuildingBlock(RecipeOutput recipeOutput, BLHolder<Block> input, BLHolder<Block> output, int count) {
         AVPRecipeProvider.stonecutterRecipeFromBase(
             recipeOutput,
             RecipeCategory.BUILDING_BLOCKS,

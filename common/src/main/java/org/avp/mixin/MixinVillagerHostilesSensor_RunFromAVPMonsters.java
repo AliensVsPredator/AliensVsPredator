@@ -8,7 +8,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import org.avp.common.tag.AVPEntityTypeTags;
+import org.avp.common.data.tag.AVPEntityTypeTags;
 
 @Mixin(VillagerHostilesSensor.class)
 public abstract class MixinVillagerHostilesSensor_RunFromAVPMonsters extends NearestVisibleLivingEntitySensor {

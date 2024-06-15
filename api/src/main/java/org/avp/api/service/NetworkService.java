@@ -1,0 +1,11 @@
+package org.avp.api.service;
+
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.server.MinecraftServer;
+
+public interface NetworkService {
+
+    void sendToAllClients(MinecraftServer server, CustomPacketPayload customPacketPayload);
+
+    void sendToServer(CustomPacketPayload customPacketPayload);
+}

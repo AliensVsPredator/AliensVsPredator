@@ -3,9 +3,9 @@ package org.avp.common.data.recipe.impl.material;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
 
-import org.avp.common.block.AVPOreBlocks;
 import org.avp.common.data.recipe.AVPRecipeHelper;
-import org.avp.common.item.AVPItems;
+import org.avp.common.registry.block.AVPOreBlockRegistry;
+import org.avp.common.registry.item.AVPItemRegistry;
 
 public final class AVPLithiumRecipes {
 
@@ -14,16 +14,16 @@ public final class AVPLithiumRecipes {
         AVPRecipeHelper.compressedBlockRecipe(
             recipeOutput,
             RecipeCategory.BUILDING_BLOCKS,
-            AVPItems.INSTANCE.dustLithium.get(),
-            AVPOreBlocks.INSTANCE.lithiumBlock.get()
+            AVPItemRegistry.INSTANCE.dustLithium.get(),
+            AVPOreBlockRegistry.INSTANCE.lithiumBlock.get()
         );
 
         // Decompressed items from blocks
         AVPRecipeHelper.decompressedItemRecipe(
             recipeOutput,
             RecipeCategory.MISC,
-            AVPOreBlocks.INSTANCE.lithiumBlock.get(),
-            AVPItems.INSTANCE.dustLithium.get()
+            AVPOreBlockRegistry.INSTANCE.lithiumBlock.get(),
+            AVPItemRegistry.INSTANCE.dustLithium.get()
         );
     }
 

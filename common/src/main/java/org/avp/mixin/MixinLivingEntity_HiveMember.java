@@ -12,7 +12,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.UUID;
 
-import org.avp.api.entity.HiveMember;
+import org.avp.common.game.entity.type.HiveMember;
 
 @Mixin(LivingEntity.class)
 public abstract class MixinLivingEntity_HiveMember extends Entity implements HiveMember {

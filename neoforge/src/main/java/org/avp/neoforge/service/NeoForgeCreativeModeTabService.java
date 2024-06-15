@@ -6,9 +6,9 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 
 import java.util.function.Supplier;
 
-import org.avp.api.Holder;
+import org.avp.api.common.registry.holder.BLHolder;
+import org.avp.api.service.CreativeModeTabService;
 import org.avp.common.AVPConstants;
-import org.avp.common.service.CreativeModeTabService;
 import org.avp.neoforge.util.NeoForgeHolder;
 
 public class NeoForgeCreativeModeTabService implements CreativeModeTabService {
@@ -19,10 +19,10 @@ public class NeoForgeCreativeModeTabService implements CreativeModeTabService {
     );
 
     @Override
-    public Holder<CreativeModeTab> createHolder(String registryName, Supplier<CreativeModeTab> supplier) {
+    public BLHolder<CreativeModeTab> createHolder(String registryName, Supplier<CreativeModeTab> supplier) {
         return new NeoForgeHolder<>(CREATIVE_MODE_TABS, registryName, supplier);
     }
 
     @Override
-    public void register(Holder<CreativeModeTab> holder) { /* NO-OP FOR FORGE */ }
+    public void register(BLHolder<CreativeModeTab> holder) { /* NO-OP FOR FORGE */ }
 }

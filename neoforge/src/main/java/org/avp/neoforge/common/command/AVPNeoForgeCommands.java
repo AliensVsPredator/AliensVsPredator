@@ -2,7 +2,7 @@ package org.avp.neoforge.common.command;
 
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
 
-import org.avp.common.command.AVPCommands;
+import org.avp.common.game.command.AVPCommands;
 
 public final class AVPNeoForgeCommands {
 

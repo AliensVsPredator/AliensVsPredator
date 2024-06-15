@@ -7,7 +7,7 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.ItemLike;
 
-import org.avp.api.Holder;
+import org.avp.api.common.registry.holder.BLHolder;
 
 public class AVPShapedRecipeBuilder {
 
@@ -15,7 +15,7 @@ public class AVPShapedRecipeBuilder {
         return new AVPShapedRecipeBuilder(ShapedRecipeBuilder.shaped(recipeCategory, itemLike));
     }
 
-    public static AVPShapedRecipeBuilder shaped(RecipeCategory recipeCategory, Holder<? extends ItemLike> itemLikeHolder) {
+    public static AVPShapedRecipeBuilder shaped(RecipeCategory recipeCategory, BLHolder<? extends ItemLike> itemLikeHolder) {
         return new AVPShapedRecipeBuilder(ShapedRecipeBuilder.shaped(recipeCategory, itemLikeHolder.get()));
     }
 
@@ -25,7 +25,7 @@ public class AVPShapedRecipeBuilder {
 
     public static AVPShapedRecipeBuilder shaped(
         RecipeCategory recipeCategory,
-        Holder<? extends ItemLike> itemLikeHolder,
+        BLHolder<? extends ItemLike> itemLikeHolder,
         int count
     ) {
         return new AVPShapedRecipeBuilder(ShapedRecipeBuilder.shaped(recipeCategory, itemLikeHolder.get(), count));
@@ -49,7 +49,7 @@ public class AVPShapedRecipeBuilder {
         return this;
     }
 
-    public AVPShapedRecipeBuilder defineAndUnlockIfHas(char character, Holder<? extends ItemLike> itemLikeHolder) {
+    public AVPShapedRecipeBuilder defineAndUnlockIfHas(char character, BLHolder<? extends ItemLike> itemLikeHolder) {
         return defineAndUnlockIfHas(character, itemLikeHolder.get());
     }
 
