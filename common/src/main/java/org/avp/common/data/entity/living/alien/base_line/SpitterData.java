@@ -18,7 +18,6 @@ import org.avp.api.common.data.entity.AttributeSupplierUtil;
 import org.avp.api.common.data.entity.EntityData;
 import org.avp.api.common.data.entity.EntitySoundData;
 import org.avp.api.common.data.entity.EntitySpawnData;
-import org.avp.api.common.registry.entity.AVPSimpleDeferredEntityTypeRegistry;
 import org.avp.api.common.registry.holder.BLHolder;
 import org.avp.common.config.AVPConfig;
 import org.avp.common.data.entity.AVPEntitySpeedConstants;
@@ -26,6 +25,7 @@ import org.avp.common.data.loot_table.entity.XenomorphLootTable;
 import org.avp.common.data.tag.AVPEntityTypeTags;
 import org.avp.common.game.entity.living.alien.base_line.Spitter;
 import org.avp.common.game.sound.AVPSoundEventRegistry;
+import org.avp.common.registry.entity.AVPSimpleDeferredEntityTypeRegistry;
 import org.avp.common.util.AlienSounds;
 
 public class SpitterData extends EntityData<Spitter> {

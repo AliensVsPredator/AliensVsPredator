@@ -12,9 +12,9 @@ import java.util.Optional;
 import org.avp.api.common.data.entity.EntityData;
 import org.avp.api.common.data.entity.EntitySoundData;
 import org.avp.api.common.data.entity.EntitySpawnData;
-import org.avp.api.common.registry.entity.AVPSimpleDeferredEntityTypeRegistry;
 import org.avp.api.common.registry.holder.BLHolder;
 import org.avp.common.game.entity.Rocket;
+import org.avp.common.registry.entity.AVPSimpleDeferredEntityTypeRegistry;
 
 public class RocketData extends EntityData<Rocket> {
 

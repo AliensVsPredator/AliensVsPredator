@@ -2,8 +2,6 @@ package org.avp.common;
 
 import mod.azure.azurelib.common.internal.common.AzureLib;
 
-import org.avp.api.common.registry.block_entity.AVPSimpleDeferredBlockEntityTypeRegistry;
-import org.avp.api.common.registry.entity.AVPSimpleDeferredEntityTypeRegistry;
 import org.avp.client.render.particle.AVPParticleTypeRegistry;
 import org.avp.common.config.AVPConfig;
 import org.avp.common.game.sound.AVPSoundEventRegistry;
@@ -24,7 +22,9 @@ import org.avp.common.registry.block.AVPPlasticBlockRegistry;
 import org.avp.common.registry.block.AVPTempleBlockRegistry;
 import org.avp.common.registry.block.AVPUnidentifiedBlockRegistry;
 import org.avp.common.registry.block.AVPYautjaShipBlockRegistry;
+import org.avp.common.registry.block_entity.AVPSimpleDeferredBlockEntityTypeRegistry;
 import org.avp.common.registry.creative_tab.AVPCreativeModeTabRegistry;
+import org.avp.common.registry.entity.AVPSimpleDeferredEntityTypeRegistry;
 import org.avp.common.registry.item.AVPAmmunitionPartItemRegistry;
 import org.avp.common.registry.item.AVPArmorItemRegistry;
 import org.avp.common.registry.item.AVPBulletItemRegistry;

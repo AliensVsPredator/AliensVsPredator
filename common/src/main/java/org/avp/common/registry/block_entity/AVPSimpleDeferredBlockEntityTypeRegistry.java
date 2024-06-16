@@ -1,4 +1,4 @@
-package org.avp.api.common.registry.block_entity;
+package org.avp.common.registry.block_entity;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.Block;
@@ -8,6 +8,7 @@ import net.minecraft.world.level.block.state.BlockState;
 
 import java.util.function.BiFunction;
 
+import org.avp.api.common.registry.block_entity.AVPAbstractDeferredBlockEntityTypeRegistry;
 import org.avp.api.common.registry.holder.BLHolder;
 import org.avp.api.service.Services;
 
