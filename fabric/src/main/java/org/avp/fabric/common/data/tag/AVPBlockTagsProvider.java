@@ -10,6 +10,7 @@ import java.util.concurrent.CompletableFuture;
 
 import org.avp.api.common.registry.AVPDeferredBlockRegistry;
 import org.avp.common.data.tag.AVPBlockTags;
+import org.avp.common.registry.block.AVPBlockDataRegistry;
 
 public class AVPBlockTagsProvider extends FabricTagProvider.BlockTagProvider {
 
@@ -40,6 +41,11 @@ public class AVPBlockTagsProvider extends FabricTagProvider.BlockTagProvider {
         // Acid-resistant blocks
         getOrCreateTagBuilder(AVPBlockTags.ACID_IMMUNE)
             .addOptionalTag(AVPBlockTags.SHOULD_NOT_BE_DESTROYED);
+
+        AVPBlockDataRegistry.INSTANCE.getEntries().forEach(entry -> {
+            var block = entry.getHolder().get();
+            entry.getBlockTagData().blockTags().forEach(tag -> getOrCreateTagBuilder(tag).add(block));
+        });
 
         AVPDeferredBlockRegistry.getDataEntries().forEach(entry -> {
             var block = entry.getKey().get();

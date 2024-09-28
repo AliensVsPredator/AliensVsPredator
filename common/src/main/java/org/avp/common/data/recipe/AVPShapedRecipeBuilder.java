@@ -9,6 +9,9 @@ import net.minecraft.world.level.ItemLike;
 
 import org.avp.api.common.registry.holder.BLHolder;
 
+/**
+ * @deprecated
+ */
 public class AVPShapedRecipeBuilder {
 
     public static AVPShapedRecipeBuilder shaped(RecipeCategory recipeCategory, ItemLike itemLike) {

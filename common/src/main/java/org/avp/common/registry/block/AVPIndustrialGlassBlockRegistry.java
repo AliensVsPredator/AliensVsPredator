@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.function.Function;
 
-import org.avp.api.common.data.block.BlockData;
+import org.avp.api.common.data.block.OldBlockData;
 import org.avp.api.common.data.block.BlockModelData;
 import org.avp.api.common.data.block.BlockModelDataType;
 import org.avp.api.common.data.block.BlockModelRenderType;
@@ -22,6 +22,7 @@ import org.avp.api.common.registry.holder.BLHolder;
 import org.avp.common.data.tag.AVPBlockTags;
 import org.avp.common.data.tag.AVPItemTags;
 
+@Deprecated(forRemoval = true)
 public class AVPIndustrialGlassBlockRegistry extends AVPDeferredBlockRegistry {
 
     private static final List<ColoredIndustrialGlassHolder> COLORED_INDUSTRIAL_GLASS_ENTRIES = new ArrayList<>();
@@ -67,8 +68,8 @@ public class AVPIndustrialGlassBlockRegistry extends AVPDeferredBlockRegistry {
     }
 
     @Override
-    protected BLHolder<Block> createHolder(BlockData blockData) {
-        return super.createHolder(blockData.withPrefixRegistryName("industrial_glass_"));
+    protected BLHolder<Block> createHolder(OldBlockData oldBlockData) {
+        return super.createHolder(oldBlockData.withPrefixRegistryName("industrial_glass_"));
     }
 
     private AVPIndustrialGlassBlockRegistry() {
@@ -79,7 +80,7 @@ public class AVPIndustrialGlassBlockRegistry extends AVPDeferredBlockRegistry {
         );
 
         glass = super.createHolder(
-            new BlockData(
+            new OldBlockData(
                 "industrial_glass",
                 new BlockModelData(
                     () -> new ColoredTransparentBlock(DyeColor.WHITE, industrialGlassProperties),
@@ -90,7 +91,7 @@ public class AVPIndustrialGlassBlockRegistry extends AVPDeferredBlockRegistry {
             )
         );
 
-        Function<DyeColor, BlockData> blockDataFactory = dyeColor -> new BlockData(
+        Function<DyeColor, OldBlockData> blockDataFactory = dyeColor -> new OldBlockData(
             dyeColor.getName(),
             new BlockModelData(
                 () -> new ColoredTransparentBlock(dyeColor, industrialGlassProperties),
@@ -120,7 +121,7 @@ public class AVPIndustrialGlassBlockRegistry extends AVPDeferredBlockRegistry {
 
     private ColoredIndustrialGlassHolder createColoredIndustrialGlassHolder(
         DyeColor dyeColor,
-        Function<DyeColor, BlockData> blockDataFactory
+        Function<DyeColor, OldBlockData> blockDataFactory
     ) {
         var blockData = blockDataFactory.apply(dyeColor);
         var holder = createHolder(blockData);

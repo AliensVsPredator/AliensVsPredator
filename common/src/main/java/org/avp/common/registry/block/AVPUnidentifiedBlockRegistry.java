@@ -8,12 +8,13 @@ import net.minecraft.world.level.material.MapColor;
 
 import java.util.Set;
 
-import org.avp.api.common.data.block.BlockData;
+import org.avp.api.common.data.block.OldBlockData;
 import org.avp.api.common.data.block.BlockModelData;
 import org.avp.api.common.data.block.BlockTagData;
 import org.avp.api.common.registry.AVPDeferredBlockRegistry;
 import org.avp.api.common.registry.holder.BLHolder;
 
+@Deprecated(forRemoval = true)
 public class AVPUnidentifiedBlockRegistry extends AVPDeferredBlockRegistry {
 
     public static final AVPUnidentifiedBlockRegistry INSTANCE = new AVPUnidentifiedBlockRegistry();
@@ -29,8 +30,8 @@ public class AVPUnidentifiedBlockRegistry extends AVPDeferredBlockRegistry {
     public final BLHolder<Block> stone;
 
     @Override
-    protected BLHolder<Block> createHolder(BlockData blockData) {
-        return super.createHolder(blockData.withPrefixRegistryName("unidentified_"));
+    protected BLHolder<Block> createHolder(OldBlockData oldBlockData) {
+        return super.createHolder(oldBlockData.withPrefixRegistryName("unidentified_"));
     }
 
     private AVPUnidentifiedBlockRegistry() {

@@ -12,6 +12,9 @@ import org.avp.common.data.tag.AVPItemTags;
 import org.avp.common.registry.block.AVPIndustrialBlockRegistry;
 import org.avp.common.registry.item.AVPItemRegistry;
 
+/**
+ * @deprecated
+ */
 public final class AVPIndustrialBlockRecipes {
 
     public static void addIndustrialBlockRecipes(RecipeOutput recipeOutput) {

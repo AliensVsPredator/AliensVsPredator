@@ -16,6 +16,7 @@ import org.avp.api.common.registry.AVPDeferredBlockRegistry;
 import org.avp.api.common.registry.holder.BLHolder;
 import org.avp.common.game.block.SolarPanelBlock;
 
+@Deprecated(forRemoval = true)
 public class AVPMachineBlockRegistry extends AVPDeferredBlockRegistry {
 
     public static final AVPMachineBlockRegistry INSTANCE = new AVPMachineBlockRegistry();

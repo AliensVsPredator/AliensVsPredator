@@ -6,6 +6,9 @@ import net.minecraft.world.level.block.Block;
 
 import org.avp.api.common.registry.holder.BLHolder;
 
+/**
+ * @deprecated
+ */
 public class RecipeUtils {
 
     // Stonecutter - Building Blocks

@@ -17,6 +17,7 @@ import org.avp.api.common.registry.AVPDeferredBlockRegistry;
 import org.avp.api.common.registry.holder.BLHolder;
 import org.avp.common.game.block.ResinVeinBlock;
 
+@Deprecated(forRemoval = true)
 public class AVPAlienBlockRegistry extends AVPDeferredBlockRegistry {
 
     public static final AVPAlienBlockRegistry INSTANCE = new AVPAlienBlockRegistry();

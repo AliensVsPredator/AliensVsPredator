@@ -23,12 +23,24 @@ import org.avp.client.AVPClientKeyBindingRegistry;
 import org.avp.client.registry.AVPEntityRenderRegistry;
 import org.avp.client.render.particle.AVPParticleTypeProviders;
 import org.avp.common.AVPConstants;
+import org.avp.common.registry.block.AVPBlockDataRegistry;
 
 @Mod.EventBusSubscriber(modid = AVPConstants.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
 public class AVPNeoForgeClient {
 
     @SubscribeEvent
     public static void init(FMLClientSetupEvent event) {
+        AVPBlockDataRegistry.INSTANCE.getEntries().forEach(entry -> {
+            var block = entry.getHolder().get();
+            var blockModelRenderType = entry.getBlockModelData().blockModelRenderType();
+
+            switch (blockModelRenderType) {
+                case CUTOUT -> ItemBlockRenderTypes.setRenderLayer(block, RenderType.cutout());
+                case NORMAL -> {/* NO-OP */}
+                case TRANSLUCENT -> ItemBlockRenderTypes.setRenderLayer(block, RenderType.translucent());
+            }
+        });
+
         AVPDeferredBlockRegistry.getDataEntries().forEach(entry -> {
             var block = entry.getKey().get();
             var blockData = entry.getValue();

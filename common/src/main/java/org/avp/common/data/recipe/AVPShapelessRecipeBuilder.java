@@ -10,6 +10,9 @@ import net.minecraft.world.level.ItemLike;
 
 import org.avp.api.common.registry.holder.BLHolder;
 
+/**
+ * @deprecated
+ */
 public class AVPShapelessRecipeBuilder {
 
     public static AVPShapelessRecipeBuilder shapeless(RecipeCategory recipeCategory, ItemLike itemLike) {

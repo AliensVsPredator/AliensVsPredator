@@ -9,7 +9,7 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import org.avp.api.common.data.block.BlockData;
+import org.avp.api.common.data.block.OldBlockData;
 import org.avp.api.common.data.block.BlockModelData;
 import org.avp.api.common.data.block.BlockTagData;
 import org.avp.api.common.registry.holder.BLHolder;
@@ -19,49 +19,63 @@ import org.avp.api.service.Services;
 
 public class AVPDeferredBlockRegistry extends AVPDeferredRegistry<Block> {
 
-    private static final Map<BLHolder<Block>, BlockData> DATA_ENTRIES = new LinkedHashMap<>();
+    public static final AVPDeferredBlockRegistry INSTANCE = new AVPDeferredBlockRegistry();
 
-    public static Set<Map.Entry<BLHolder<Block>, BlockData>> getDataEntries() {
+    @Deprecated(forRemoval = true)
+    private static final Map<BLHolder<Block>, OldBlockData> DATA_ENTRIES = new LinkedHashMap<>();
+
+    @Deprecated(forRemoval = true)
+    public static Set<Map.Entry<BLHolder<Block>, OldBlockData>> getDataEntries() {
         return DATA_ENTRIES.entrySet();
     }
 
+    @Deprecated(forRemoval = true)
     protected BLHolder<Block> createHolder(
         String registryName,
         BlockModelData blockModelData,
         BlockTagData blockTagData
     ) {
-        return createHolder(new BlockData(registryName, blockModelData, blockTagData));
+        return createHolder(new OldBlockData(registryName, blockModelData, blockTagData));
     }
 
+    @Deprecated(forRemoval = true)
     protected BLHolder<Block> createHolder(
         String registryName,
         BlockModelData blockModelData,
         BlockTagData blockTagData,
         Function<Block, LootTable.Builder> lootProvider
     ) {
-        return createHolder(new BlockData(registryName, blockModelData, blockTagData, lootProvider));
+        return createHolder(new OldBlockData(registryName, blockModelData, blockTagData, lootProvider));
     }
 
-    protected BLHolder<Block> createHolder(BlockData blockData) {
-        var registryName = blockData.registryName();
-        var holder = createHolder(registryName, () -> blockData.blockModelData().blockSupplier().get());
+    @Deprecated(forRemoval = true)
+    protected BLHolder<Block> createHolder(OldBlockData oldBlockData) {
+        var registryName = oldBlockData.registryName();
+        var holder = createHolder(registryName, () -> oldBlockData.blockModelData().blockSupplier().get());
         entries.put(registryName, holder);
-        DATA_ENTRIES.put(holder, blockData);
+        DATA_ENTRIES.put(holder, oldBlockData);
         return holder;
     }
 
+    @Deprecated(forRemoval = true)
     protected BlockHolderSet registerBlockHolderSet(BlockHolderSetData blockHolderSetData) {
-        var blockData = blockHolderSetData.blockData();
+        var blockData = blockHolderSetData.oldBlockData();
         var properties = blockHolderSetData.properties();
         var holder = createHolder(blockData);
-        var slabHolder = createHolder(BlockData.toSlab(holder, properties, blockData));
-        var stairsHolder = createHolder(BlockData.toStairs(holder, properties, blockData));
-        var wallHolder = createHolder(BlockData.toWall(holder, properties, blockData));
+        var slabHolder = createHolder(OldBlockData.toSlab(holder, properties, blockData));
+        var stairsHolder = createHolder(OldBlockData.toStairs(holder, properties, blockData));
+        var wallHolder = createHolder(OldBlockData.toWall(holder, properties, blockData));
         return new BlockHolderSet(holder, slabHolder, stairsHolder, wallHolder);
     }
 
     @Override
-    protected BLHolder<Block> createHolder(String registryName, Supplier<Block> supplier) {
+    public BLHolder<Block> createHolder(String registryName, Supplier<Block> supplier) {
+        var holder = Services.BLOCK_SERVICE.createHolder(registryName, supplier);
+        entries.put(registryName, holder);
+        return holder;
+    }
+
+    public BLHolder<Block> tempCreateHolder(String registryName, Supplier<Block> supplier) {
         return Services.BLOCK_SERVICE.createHolder(registryName, supplier);
     }
 

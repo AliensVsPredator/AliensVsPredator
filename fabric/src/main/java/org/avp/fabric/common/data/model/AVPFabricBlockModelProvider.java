@@ -18,9 +18,10 @@ import net.minecraft.world.level.block.state.properties.BooleanProperty;
 
 import java.util.function.Function;
 
-import org.avp.api.common.data.block.BlockData;
+import org.avp.api.common.data.block.OldBlockData;
 import org.avp.api.common.data.block.BlockModelDataType;
 import org.avp.api.common.registry.AVPDeferredBlockRegistry;
+import org.avp.common.registry.block.AVPBlockDataRegistry;
 import org.avp.common.registry.item.AVPSpawnEggItemRegistry;
 
 import static net.minecraft.data.models.BlockModelGenerators.MULTIFACE_GENERATOR;
@@ -28,6 +29,12 @@ import static net.minecraft.data.models.BlockModelGenerators.MULTIFACE_GENERATOR
 public class AVPFabricBlockModelProvider {
 
     public static void addBlockModels(BlockModelGenerators generator) {
+        AVPBlockDataRegistry.INSTANCE.getEntries().forEach(entry -> computeBlockModels(generator, entry.getHolder().get(), new OldBlockData(
+            entry.getRegistryName(),
+            entry.getBlockModelData(),
+            entry.getBlockTagData(),
+            entry.getLootTableBuilder()
+        )));
         AVPDeferredBlockRegistry.getDataEntries().forEach(entry -> computeBlockModels(generator, entry.getKey().get(), entry.getValue()));
 
         // Listen, I don't like this any more than you do. But Mojang also does this, so...
@@ -40,8 +47,8 @@ public class AVPFabricBlockModelProvider {
             );
     }
 
-    private static void computeBlockModels(BlockModelGenerators generator, Block block, BlockData blockData) {
-        var blockModelDataType = blockData.blockModelData().blockModelDataTypeFactory().apply(block);
+    private static void computeBlockModels(BlockModelGenerators generator, Block block, OldBlockData oldBlockData) {
+        var blockModelDataType = oldBlockData.blockModelData().blockModelDataTypeFactory().apply(block);
         var genType = blockModelDataType.getGenType();
 
         switch (genType) {

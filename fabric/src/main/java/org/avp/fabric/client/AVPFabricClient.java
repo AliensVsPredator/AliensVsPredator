@@ -14,6 +14,7 @@ import org.avp.api.common.registry.AVPDeferredBlockRegistry;
 import org.avp.client.AVPClientKeyBindingRegistry;
 import org.avp.client.registry.AVPEntityRenderRegistry;
 import org.avp.client.render.particle.AVPParticleTypeProviders;
+import org.avp.common.registry.block.AVPBlockDataRegistry;
 
 public class AVPFabricClient implements ClientModInitializer {
 
@@ -22,6 +23,17 @@ public class AVPFabricClient implements ClientModInitializer {
         registerEntityRenderBindings();
 
         AVPParticleTypeProviders.INSTANCE.register();
+
+        AVPBlockDataRegistry.INSTANCE.getEntries().forEach(entry -> {
+            var block = entry.getHolder().get();
+            var blockModelRenderType = entry.getBlockModelData().blockModelRenderType();
+
+            switch (blockModelRenderType) {
+                case CUTOUT -> BlockRenderLayerMap.INSTANCE.putBlock(block, RenderType.cutout());
+                case NORMAL -> {/* NO-OP */}
+                case TRANSLUCENT -> BlockRenderLayerMap.INSTANCE.putBlock(block, RenderType.translucent());
+            }
+        });
 
         AVPDeferredBlockRegistry.getDataEntries().forEach(entry -> {
             var block = entry.getKey().get();

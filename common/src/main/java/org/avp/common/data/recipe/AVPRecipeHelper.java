@@ -12,6 +12,9 @@ import net.minecraft.world.level.block.Block;
 import org.avp.api.common.registry.holder.BLHolder;
 import org.avp.common.AVPConstants;
 
+/**
+ * @deprecated
+ */
 public final class AVPRecipeHelper {
 
     public static void compressedBlockRecipe(
@@ -61,18 +64,26 @@ public final class AVPRecipeHelper {
         var xp = 0.7F;
         var cookTime = 200;
 
+        // Raw chunk -> ingot
+        // TODO: Move
         SimpleCookingRecipeBuilder.smelting(oreItemIngredient, recipeCategory, output, xp, cookTime)
             .unlockedBy("has_raw_item", AVPRecipeProvider.has(oreItem))
             .save(recipeOutput, AVPConstants.MOD_ID + ":" + outputItemName + "_from_smelting_" + oreItemName);
 
+        // Ore block -> ingot
+        // TODO: Move
         SimpleCookingRecipeBuilder.smelting(oreBlockIngredient, recipeCategory, output, xp, cookTime)
             .unlockedBy("has_ore", AVPRecipeProvider.has(oreBlock))
             .save(recipeOutput, AVPConstants.MOD_ID + ":" + outputItemName + "_from_smelting_" + oreBlockName);
 
+        // Raw chunk -> ingot
+        // TODO: Move
         SimpleCookingRecipeBuilder.blasting(oreItemIngredient, recipeCategory, output, xp, cookTime / 2)
             .unlockedBy("has_raw_item", AVPRecipeProvider.has(oreItem))
             .save(recipeOutput, AVPConstants.MOD_ID + ":" + outputItemName + "_from_blasting_" + oreItemName);
 
+        // Ore block -> ingot
+        // TODO: Move
         SimpleCookingRecipeBuilder.blasting(oreBlockIngredient, recipeCategory, output, xp, cookTime / 2)
             .unlockedBy("has_ore", AVPRecipeProvider.has(oreBlock))
             .save(recipeOutput, AVPConstants.MOD_ID + ":" + outputItemName + "_from_blasting_" + oreBlockName);

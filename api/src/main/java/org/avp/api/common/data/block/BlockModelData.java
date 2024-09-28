@@ -22,10 +22,24 @@ public record BlockModelData(
     BlockModelRenderType blockModelRenderType
 ) {
 
+    public static final BlockModelData NORMAL_CUBE = new BlockModelData(BlockModelDataType.Cube::new, BlockModelRenderType.NORMAL);
+    public static final BlockModelData TRANSPARENT_CUBE = new BlockModelData(BlockModelDataType.Cube::new, BlockModelRenderType.TRANSLUCENT);
+
+    public BlockModelData(
+        Function<Block, BlockModelDataType> blockModelDataTypeFactory,
+        BlockModelRenderType blockModelRenderType
+    ) {
+        this(() -> {
+            throw new UnsupportedOperationException("This supplier should not be used.");
+        }, blockModelDataTypeFactory, blockModelRenderType);
+    }
+
+    @Deprecated(forRemoval = true)
     public static BlockModelData cube() {
         return cube(BlockBehaviour.Properties.of());
     }
 
+    @Deprecated(forRemoval = true)
     public static BlockModelData cube(
         BlockBehaviour.Properties properties
     ) {
@@ -36,10 +50,12 @@ public record BlockModelData(
         );
     }
 
+    @Deprecated(forRemoval = true)
     public static BlockModelData fence(BLHolder<Block> parentHolder) {
         return fence(parentHolder, BlockBehaviour.Properties.of());
     }
 
+    @Deprecated(forRemoval = true)
     public static BlockModelData fence(
         BLHolder<Block> parentHolder,
         BlockBehaviour.Properties properties
@@ -51,10 +67,12 @@ public record BlockModelData(
         );
     }
 
+    @Deprecated(forRemoval = true)
     public static BlockModelData fenceGate(BLHolder<Block> parentHolder, WoodType woodType) {
         return fenceGate(parentHolder, woodType, BlockBehaviour.Properties.of());
     }
 
+    @Deprecated(forRemoval = true)
     public static BlockModelData fenceGate(
         BLHolder<Block> parentHolder,
         WoodType woodType,
@@ -67,10 +85,12 @@ public record BlockModelData(
         );
     }
 
+    @Deprecated(forRemoval = true)
     public static BlockModelData grass(BLHolder<Block> parentHolder) {
         return grass(parentHolder, BlockBehaviour.Properties.of());
     }
 
+    @Deprecated(forRemoval = true)
     public static BlockModelData grass(
         BLHolder<Block> parentHolder,
         BlockBehaviour.Properties properties
@@ -82,10 +102,12 @@ public record BlockModelData(
         );
     }
 
+    @Deprecated(forRemoval = true)
     public static BlockModelData multiface(Supplier<Block> blockSupplier) {
         return multiface(blockSupplier, BlockModelRenderType.NORMAL);
     }
 
+    @Deprecated(forRemoval = true)
     public static BlockModelData multiface(
         Supplier<Block> blockSupplier,
         BlockModelRenderType blockModelRenderType
@@ -97,10 +119,12 @@ public record BlockModelData(
         );
     }
 
+    @Deprecated(forRemoval = true)
     public static BlockModelData rotatedPillar() {
         return rotatedPillar(BlockBehaviour.Properties.of());
     }
 
+    @Deprecated(forRemoval = true)
     public static BlockModelData rotatedPillar(
         BlockBehaviour.Properties properties
     ) {
@@ -111,10 +135,12 @@ public record BlockModelData(
         );
     }
 
+    @Deprecated(forRemoval = true)
     public static BlockModelData slab(BLHolder<Block> parentHolder) {
         return slab(parentHolder, BlockBehaviour.Properties.of());
     }
 
+    @Deprecated(forRemoval = true)
     public static BlockModelData slab(
         BLHolder<Block> parentHolder,
         BlockBehaviour.Properties properties
@@ -126,10 +152,12 @@ public record BlockModelData(
         );
     }
 
+    @Deprecated(forRemoval = true)
     public static BlockModelData stairs(BLHolder<Block> parentHolder) {
         return stairs(parentHolder, BlockBehaviour.Properties.of());
     }
 
+    @Deprecated(forRemoval = true)
     public static BlockModelData stairs(
         BLHolder<Block> parentHolder,
         BlockBehaviour.Properties properties
@@ -141,6 +169,7 @@ public record BlockModelData(
         );
     }
 
+    @Deprecated(forRemoval = true)
     public static BlockModelData wall(
         BLHolder<Block> parentHolder,
         BlockBehaviour.Properties properties
@@ -152,10 +181,12 @@ public record BlockModelData(
         );
     }
 
+    @Deprecated(forRemoval = true)
     public static BlockModelData wood(BLHolder<Block> parentHolder) {
         return wood(parentHolder, BlockBehaviour.Properties.of());
     }
 
+    @Deprecated(forRemoval = true)
     public static BlockModelData wood(
         BLHolder<Block> parentHolder,
         BlockBehaviour.Properties properties

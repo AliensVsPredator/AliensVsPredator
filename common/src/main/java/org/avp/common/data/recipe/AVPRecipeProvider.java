@@ -9,6 +9,7 @@ import net.minecraft.data.recipes.RecipeProvider;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.ItemLike;
+import org.avp.common.registry.block.AVPBlockDataRegistry;
 import org.jetbrains.annotations.NotNull;
 
 import org.avp.common.data.recipe.impl.AVPArmorRecipes;
@@ -19,18 +20,10 @@ import org.avp.common.data.recipe.impl.AVPToolRecipes;
 import org.avp.common.data.recipe.impl.block.AVPAlienBlockRecipes;
 import org.avp.common.data.recipe.impl.block.AVPIndustrialBlockRecipes;
 import org.avp.common.data.recipe.impl.block.AVPIndustrialGlassBlockRecipes;
-import org.avp.common.data.recipe.impl.block.AVPPaddingBlockRecipes;
-import org.avp.common.data.recipe.impl.block.AVPPlasticBlockRecipes;
-import org.avp.common.data.recipe.impl.block.AVPTempleBlockRecipes;
 import org.avp.common.data.recipe.impl.material.AVPAluminumRecipes;
 import org.avp.common.data.recipe.impl.material.AVPCobaltRecipes;
-import org.avp.common.data.recipe.impl.material.AVPCopperRecipes;
-import org.avp.common.data.recipe.impl.material.AVPFerroaluminumRecipes;
-import org.avp.common.data.recipe.impl.material.AVPGoldRecipes;
-import org.avp.common.data.recipe.impl.material.AVPIronRecipes;
 import org.avp.common.data.recipe.impl.material.AVPLithiumRecipes;
 import org.avp.common.data.recipe.impl.material.AVPNeodymiumRecipes;
-import org.avp.common.data.recipe.impl.material.AVPNetheriteRecipes;
 import org.avp.common.data.recipe.impl.material.AVPOrioniteRecipes;
 import org.avp.common.data.recipe.impl.material.AVPSilicaRecipes;
 import org.avp.common.data.recipe.impl.material.AVPSteelRecipes;
@@ -60,17 +53,12 @@ public class AVPRecipeProvider extends RecipeProvider {
         AVPArmorRecipes.addArmorRecipes(recipeOutput);
         AVPBulletRecipes.addRecipes(recipeOutput);
         AVPCobaltRecipes.addCobaltRecipes(recipeOutput);
-        AVPCopperRecipes.addCopperRecipes(recipeOutput);
         AVPElectronicRecipes.addElectronicRecipes(recipeOutput);
-        AVPFerroaluminumRecipes.addFerroaluminumRecipes(recipeOutput);
         AVPFoodRecipes.addFoodRecipes(recipeOutput);
         AVPGrenadeRecipes.addGrenadeRecipes(recipeOutput);
-        AVPGoldRecipes.addGoldRecipes(recipeOutput);
-        AVPIronRecipes.addIronRecipes(recipeOutput);
         AVPLithiumRecipes.addLithiumRecipes(recipeOutput);
         AVPMaterialsRecipes.addMaterialRecipes(recipeOutput);
         AVPNeodymiumRecipes.addNeodymiumRecipes(recipeOutput);
-        AVPNetheriteRecipes.addNetheriteRecipes(recipeOutput);
         AVPOrioniteRecipes.addOrioniteRecipes(recipeOutput);
         AVPSilicaRecipes.addSilicaRecipes(recipeOutput);
         AVPSteelRecipes.addSteelRecipes(recipeOutput);
@@ -83,9 +71,8 @@ public class AVPRecipeProvider extends RecipeProvider {
 
         AVPIndustrialBlockRecipes.addIndustrialBlockRecipes(recipeOutput);
         AVPIndustrialGlassBlockRecipes.addIndustrialGlassBlockRecipes(recipeOutput);
-        AVPPaddingBlockRecipes.addPaddingBlockRecipes(recipeOutput);
-        AVPPlasticBlockRecipes.addPlasticBlockRecipes(recipeOutput);
-        AVPTempleBlockRecipes.addTempleBlockRecipes(recipeOutput);
+
+        AVPBlockDataRegistry.INSTANCE.getEntries().forEach(blockDataContainer -> blockDataContainer.createRecipes(recipeOutput));
     }
 
     public static @NotNull Criterion<InventoryChangeTrigger.TriggerInstance> has(@NotNull ItemLike itemLike) {

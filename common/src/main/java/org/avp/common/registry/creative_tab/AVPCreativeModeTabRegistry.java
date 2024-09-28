@@ -12,12 +12,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
 
+import org.avp.api.common.data.block.SingleBlockDataContainer;
 import org.avp.api.common.registry.AVPDeferredBlockRegistry;
 import org.avp.api.common.registry.AVPDeferredRegistry;
 import org.avp.api.common.registry.holder.BLHolder;
 import org.avp.api.service.Services;
 import org.avp.common.AVPConstants;
-import org.avp.common.registry.block.AVPTempleBlockRegistry;
+import org.avp.common.data.block.TempleBlockDataContainer;
+import org.avp.common.registry.block.AVPBlockDataRegistry;
 import org.avp.common.registry.item.AVPAmmunitionPartItemRegistry;
 import org.avp.common.registry.item.AVPArmorItemRegistry;
 import org.avp.common.registry.item.AVPBulletItemRegistry;
@@ -82,11 +84,16 @@ public final class AVPCreativeModeTabRegistry extends AVPDeferredRegistry<Creati
         createBuilderHolder(
             "blocks",
             () -> CreativeModeTab.builder(CreativeModeTab.Row.TOP, 1)
-                .icon(AVPTempleBlockRegistry.INSTANCE.brick.base().get().asItem()::getDefaultInstance)
+                .icon(TempleBlockDataContainer.INSTANCE.getHolder().get().asItem()::getDefaultInstance)
                 .displayItems(
-                    (itemDisplayParameters, output) -> output.acceptAll(
-                        blocksToItemStacks(AVPDeferredBlockRegistry.getDataEntries().stream().map(Map.Entry::getKey).toList())
-                    )
+                    (itemDisplayParameters, output) -> {
+                        output.acceptAll(
+                            blocksToItemStacks(AVPBlockDataRegistry.INSTANCE.getEntries().stream().map(SingleBlockDataContainer.Holder::getHolder).toList())
+                        );
+                        output.acceptAll(
+                            blocksToItemStacks(AVPDeferredBlockRegistry.getDataEntries().stream().map(Map.Entry::getKey).toList())
+                        );
+                    }
                 )
         );
 
