@@ -17,12 +17,12 @@ public final class AVPOrioniteRecipes {
 
     public static void addOrioniteRecipes(RecipeOutput recipeOutput) {
         // Compressed blocks
-//        AVPRecipeHelper.compressedBlockRecipe(
-//            recipeOutput,
-//            RecipeCategory.BUILDING_BLOCKS,
-//            AVPItemRegistry.INSTANCE.ingotOrionite.get(),
-//            AVPBlockRegistry.INSTANCE.orioniteBlock.get()
-//        );
+        // AVPRecipeHelper.compressedBlockRecipe(
+        // recipeOutput,
+        // RecipeCategory.BUILDING_BLOCKS,
+        // AVPItemRegistry.INSTANCE.ingotOrionite.get(),
+        // AVPBlockRegistry.INSTANCE.orioniteBlock.get()
+        // );
 
         // Titanium ore + veritanium shards = orionite sheet
         AVPShapedRecipeBuilder.shaped(RecipeCategory.MISC, AVPItemRegistry.INSTANCE.sheetOrionite)
@@ -41,12 +41,12 @@ public final class AVPOrioniteRecipes {
             .save(recipeOutput, AVPConstants.MOD_ID + ":ingot_orionite_from_blasting_sheet_orionite");
 
         // Decompressed items from blocks
-//        AVPRecipeHelper.decompressedItemRecipe(
-//            recipeOutput,
-//            RecipeCategory.MISC,
-//            AVPBlockRegistry.INSTANCE.orioniteBlock.get(),
-//            AVPItemRegistry.INSTANCE.ingotOrionite.get()
-//        );
+        // AVPRecipeHelper.decompressedItemRecipe(
+        // recipeOutput,
+        // RecipeCategory.MISC,
+        // AVPBlockRegistry.INSTANCE.orioniteBlock.get(),
+        // AVPItemRegistry.INSTANCE.ingotOrionite.get()
+        // );
     }
 
     private AVPOrioniteRecipes() {

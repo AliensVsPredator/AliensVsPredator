@@ -10,6 +10,14 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
+
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+import java.util.function.Function;
+
 import org.avp.api.common.data.block.BlockModelData;
 import org.avp.api.common.data.block.BlockTagData;
 import org.avp.api.common.data.block.ExtendedBlockDataContainer;
@@ -18,13 +26,6 @@ import org.avp.api.common.data.loot_table.LootProviders;
 import org.avp.common.data.recipe.AVPRecipeBuilder;
 import org.avp.common.data.tag.AVPBlockTags;
 import org.avp.common.registry.item.AVPItemRegistry;
-
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
-import java.util.function.Function;
 
 public class PlasticBlockSetDataContainer extends ExtendedBlockDataContainer {
 
@@ -88,9 +89,11 @@ public class PlasticBlockSetDataContainer extends ExtendedBlockDataContainer {
             }
 
             var ingredient = Ingredient.of(
-                COLORS_TO_PADDING_BLOCK_SET_MAP.values().stream()
+                COLORS_TO_PADDING_BLOCK_SET_MAP.values()
+                    .stream()
                     .filter(plasticBlockSet -> !plasticBlockSet.base().equals(coloredPlasticBlockSet.base))
-                    .map(plasticBlockSet -> new ItemStack(plasticBlockSet.base())));
+                    .map(plasticBlockSet -> new ItemStack(plasticBlockSet.base()))
+            );
 
             builder.shapeless()
                 .withCategory(RecipeCategory.BUILDING_BLOCKS)

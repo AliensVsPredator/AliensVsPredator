@@ -7,13 +7,14 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockBehaviour;
+
+import java.util.Set;
+
 import org.avp.api.common.data.block.BlockModelData;
 import org.avp.api.common.data.block.BlockTagData;
 import org.avp.api.common.data.block.SingleBlockDataContainer;
 import org.avp.api.common.data.loot_table.LootProviders;
 import org.avp.common.data.recipe.AVPRecipeBuilder;
-
-import java.util.Set;
 
 public class TempleBlockDataContainer extends SingleBlockDataContainer.Holder {
 
@@ -21,9 +22,12 @@ public class TempleBlockDataContainer extends SingleBlockDataContainer.Holder {
 
     private static final BlockBehaviour.Properties STONE_PROPERTIES = BlockBehaviour.Properties.ofFullCopy(Blocks.STONE).strength(3, 6);
 
-    private static final BlockBehaviour.Properties SKULL_PROPERTIES = BlockBehaviour.Properties.ofFullCopy(Blocks.BONE_BLOCK).strength(3, 6);
+    private static final BlockBehaviour.Properties SKULL_PROPERTIES = BlockBehaviour.Properties.ofFullCopy(Blocks.BONE_BLOCK)
+        .strength(3, 6);
 
-    private static final BlockTagData PICKAXE_TAGS = BlockTagData.ofBlock(Set.of(BlockTags.MINEABLE_WITH_PICKAXE, BlockTags.NEEDS_IRON_TOOL));
+    private static final BlockTagData PICKAXE_TAGS = BlockTagData.ofBlock(
+        Set.of(BlockTags.MINEABLE_WITH_PICKAXE, BlockTags.NEEDS_IRON_TOOL)
+    );
 
     private final VanillaVariantBlockDataContainer baseVariantSet;
 
@@ -103,7 +107,6 @@ public class TempleBlockDataContainer extends SingleBlockDataContainer.Holder {
     @Override
     public void createRecipes(RecipeOutput recipeOutput) {
         var builder = AVPRecipeBuilder.with(recipeOutput);
-
 
         builder.shape()
             .withCategory(RecipeCategory.BUILDING_BLOCKS)

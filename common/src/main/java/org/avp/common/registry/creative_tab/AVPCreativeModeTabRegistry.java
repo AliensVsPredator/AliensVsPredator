@@ -88,7 +88,9 @@ public final class AVPCreativeModeTabRegistry extends AVPDeferredRegistry<Creati
                 .displayItems(
                     (itemDisplayParameters, output) -> {
                         output.acceptAll(
-                            blocksToItemStacks(AVPBlockDataRegistry.INSTANCE.getEntries().stream().map(SingleBlockDataContainer.Holder::getHolder).toList())
+                            blocksToItemStacks(
+                                AVPBlockDataRegistry.INSTANCE.getEntries().stream().map(SingleBlockDataContainer.Holder::getHolder).toList()
+                            )
                         );
                         output.acceptAll(
                             blocksToItemStacks(AVPDeferredBlockRegistry.getDataEntries().stream().map(Map.Entry::getKey).toList())

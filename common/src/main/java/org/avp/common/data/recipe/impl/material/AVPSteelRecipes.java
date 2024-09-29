@@ -18,7 +18,7 @@ public final class AVPSteelRecipes {
     public static void addSteelRecipes(RecipeOutput recipeOutput) {
         var ingotHolder = AVPItemRegistry.INSTANCE.ingotSteel;
 
-//        AVPMetalRecipeHelper.addFullMetalSetRecipes(recipeOutput, ingotHolder, AVPBlockRegistry.INSTANCE.steel);
+        // AVPMetalRecipeHelper.addFullMetalSetRecipes(recipeOutput, ingotHolder, AVPBlockRegistry.INSTANCE.steel);
 
         // Smelting
         // TODO:

@@ -5,22 +5,29 @@ import net.minecraft.tags.BlockTags;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockBehaviour;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.Set;
+
 import org.avp.api.common.data.block.BlockModelData;
 import org.avp.api.common.data.block.BlockTagData;
 import org.avp.api.common.data.block.SingleBlockDataContainer;
 import org.avp.api.common.data.loot_table.LootProviders;
-import org.jetbrains.annotations.NotNull;
-
-import java.util.Set;
 
 public class EngineerShipBlockSetDataContainer extends SingleBlockDataContainer.Holder {
 
     private static final String REGISTRY_NAME_PREFIX = "engineer_ship_";
 
-    private static final BlockBehaviour.Properties METAL_PROPERTIES = BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_BLOCK).strength(100, 1800);
+    private static final BlockBehaviour.Properties METAL_PROPERTIES = BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_BLOCK)
+        .strength(100, 1800);
 
-    private static final BlockTagData PICKAXE_TAGS = BlockTagData.ofBlock(Set.of(BlockTags.MINEABLE_WITH_PICKAXE, BlockTags.NEEDS_DIAMOND_TOOL));
-    private static final BlockTagData SHOVEL_TAGS = BlockTagData.ofBlock(Set.of(BlockTags.MINEABLE_WITH_SHOVEL, BlockTags.NEEDS_DIAMOND_TOOL));
+    private static final BlockTagData PICKAXE_TAGS = BlockTagData.ofBlock(
+        Set.of(BlockTags.MINEABLE_WITH_PICKAXE, BlockTags.NEEDS_DIAMOND_TOOL)
+    );
+
+    private static final BlockTagData SHOVEL_TAGS = BlockTagData.ofBlock(
+        Set.of(BlockTags.MINEABLE_WITH_SHOVEL, BlockTags.NEEDS_DIAMOND_TOOL)
+    );
 
     private final VanillaVariantBlockDataContainer baseVariantSet;
 
@@ -112,13 +119,13 @@ public class EngineerShipBlockSetDataContainer extends SingleBlockDataContainer.
             this.transform(REGISTRY_NAME_PREFIX + "floor")
                 .withBlockTagData(SHOVEL_TAGS)
                 .build()
-                
+
         );
         this.gravel = this.addVariant(
             this.transform(REGISTRY_NAME_PREFIX + "gravel")
                 .withBlockTagData(SHOVEL_TAGS)
                 .build()
-                
+
         );
 
         this.material0 = this.addVariant(this.extend(REGISTRY_NAME_PREFIX + "material_0"));
@@ -167,7 +174,9 @@ public class EngineerShipBlockSetDataContainer extends SingleBlockDataContainer.
         wall4VariantSet.createRecipes(recipeOutput);
     }
 
-    private @NotNull VanillaVariantBlockDataContainer createFullVanillaVariantSet(SingleBlockDataContainer.Holder singleBlockDataContainer) {
+    private @NotNull VanillaVariantBlockDataContainer createFullVanillaVariantSet(
+        SingleBlockDataContainer.Holder singleBlockDataContainer
+    ) {
         return this.addVariant(
             new VanillaVariantBlockDataContainer(singleBlockDataContainer)
                 .withSlab()

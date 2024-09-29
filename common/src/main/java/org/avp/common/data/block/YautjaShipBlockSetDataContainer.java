@@ -6,12 +6,13 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.MapColor;
+
+import java.util.Set;
+
 import org.avp.api.common.data.block.BlockModelData;
 import org.avp.api.common.data.block.BlockTagData;
 import org.avp.api.common.data.block.SingleBlockDataContainer;
 import org.avp.api.common.data.loot_table.LootProviders;
-
-import java.util.Set;
 
 public class YautjaShipBlockSetDataContainer extends SingleBlockDataContainer.Holder {
 
@@ -41,7 +42,9 @@ public class YautjaShipBlockSetDataContainer extends SingleBlockDataContainer.Ho
         .strength(75, 1500)
         .lightLevel(($0) -> 4);
 
-    private static final BlockTagData PICKAXE_TAGS = BlockTagData.ofBlock(Set.of(BlockTags.MINEABLE_WITH_PICKAXE, BlockTags.NEEDS_DIAMOND_TOOL));
+    private static final BlockTagData PICKAXE_TAGS = BlockTagData.ofBlock(
+        Set.of(BlockTags.MINEABLE_WITH_PICKAXE, BlockTags.NEEDS_DIAMOND_TOOL)
+    );
 
     private final VanillaVariantBlockDataContainer baseVariantSet;
 

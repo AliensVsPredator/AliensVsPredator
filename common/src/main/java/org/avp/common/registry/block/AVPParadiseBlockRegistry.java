@@ -3,9 +3,9 @@ package org.avp.common.registry.block;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 
-import org.avp.api.common.data.block.OldBlockData;
 import org.avp.api.common.data.block.BlockModelData;
 import org.avp.api.common.data.block.BlockTagData;
+import org.avp.api.common.data.block.OldBlockData;
 import org.avp.api.common.registry.AVPDeferredBlockRegistry;
 import org.avp.api.common.registry.holder.BLHolder;
 import org.avp.common.game.block.AVPWoodType;
@@ -91,7 +91,11 @@ public class AVPParadiseBlockRegistry extends AVPDeferredBlockRegistry {
 
         logLarge = createHolder("log_large", BlockModelData.rotatedPillar(), BlockTagData.none());
         var logLargePlanksProperties = BlockBehaviour.Properties.of();
-        var logLargePlanksBlockData = new OldBlockData("log_large_planks", BlockModelData.cube(logLargePlanksProperties), BlockTagData.none());
+        var logLargePlanksBlockData = new OldBlockData(
+            "log_large_planks",
+            BlockModelData.cube(logLargePlanksProperties),
+            BlockTagData.none()
+        );
         logLargePlanks = createHolder(logLargePlanksBlockData);
 
         logMedium = createHolder("log_medium", BlockModelData.rotatedPillar(), BlockTagData.none());
@@ -105,7 +109,11 @@ public class AVPParadiseBlockRegistry extends AVPDeferredBlockRegistry {
 
         logSmall = createHolder("log_small", BlockModelData.rotatedPillar(), BlockTagData.none());
         var logSmallPlanksProperties = BlockBehaviour.Properties.of();
-        var logSmallPlanksBlockData = new OldBlockData("log_small_planks", BlockModelData.cube(logSmallPlanksProperties), BlockTagData.none());
+        var logSmallPlanksBlockData = new OldBlockData(
+            "log_small_planks",
+            BlockModelData.cube(logSmallPlanksProperties),
+            BlockTagData.none()
+        );
         logSmallPlanks = createHolder("log_small_planks", BlockModelData.cube(logSmallPlanksProperties), BlockTagData.none());
 
         fenceGateLarge = createHolder("fence_gate_large", BlockModelData.fenceGate(logLargePlanks, AVPWoodType.LARGE), BlockTagData.none());

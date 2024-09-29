@@ -5,8 +5,9 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
-import org.avp.common.data.block.ore.OreLithiumBlockDataContainer;
 import org.jetbrains.annotations.NotNull;
+
+import org.avp.common.data.block.ore.OreLithiumBlockDataContainer;
 
 public class AVPLithiumBlock extends Block {
 

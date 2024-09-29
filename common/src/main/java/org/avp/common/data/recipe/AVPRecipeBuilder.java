@@ -10,11 +10,12 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
-import org.avp.common.AVPConstants;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.UnaryOperator;
+
+import org.avp.common.AVPConstants;
 
 public class AVPRecipeBuilder {
 

@@ -16,7 +16,7 @@ public final class AVPTitaniumRecipes {
     public static void addTitaniumRecipes(RecipeOutput recipeOutput) {
         var ingotHolder = AVPItemRegistry.INSTANCE.ingotTitanium;
 
-//        AVPMetalRecipeHelper.addFullMetalSetRecipes(recipeOutput, ingotHolder, AVPBlockRegistry.INSTANCE.titanium);
+        // AVPMetalRecipeHelper.addFullMetalSetRecipes(recipeOutput, ingotHolder, AVPBlockRegistry.INSTANCE.titanium);
 
         // Compressed raw
         AVPRecipeHelper.compressedBlockRecipe(

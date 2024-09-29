@@ -8,6 +8,9 @@ import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
 import net.minecraft.world.level.material.MapColor;
+
+import java.util.Set;
+
 import org.avp.api.common.data.block.BlockModelData;
 import org.avp.api.common.data.block.BlockTagData;
 import org.avp.api.common.data.block.SingleBlockDataContainer;
@@ -15,8 +18,6 @@ import org.avp.api.common.data.loot_table.LootProviders;
 import org.avp.common.data.block.VanillaVariantBlockDataContainer;
 import org.avp.common.data.recipe.AVPRecipeBuilder;
 import org.avp.common.registry.item.AVPItemRegistry;
-
-import java.util.Set;
 
 public class MetalSteelBlockSetDataContainer extends SingleBlockDataContainer.Holder {
 
@@ -73,7 +74,7 @@ public class MetalSteelBlockSetDataContainer extends SingleBlockDataContainer.Ho
                 .withSupplier(() -> new Block(BlockBehaviour.Properties.of().noOcclusion()))
                 .withModelData(BlockModelData.TRANSPARENT_CUBE)
                 .build()
-                
+
         );
 
         // Plated

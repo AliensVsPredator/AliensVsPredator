@@ -9,6 +9,13 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockBehaviour;
+
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+
 import org.avp.api.common.data.block.BlockModelData;
 import org.avp.api.common.data.block.BlockTagData;
 import org.avp.api.common.data.block.ExtendedBlockDataContainer;
@@ -16,12 +23,6 @@ import org.avp.api.common.data.block.SingleBlockDataContainer;
 import org.avp.api.common.data.loot_table.LootProviders;
 import org.avp.common.data.recipe.AVPRecipeBuilder;
 import org.avp.common.data.tag.AVPBlockTags;
-
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
 
 public class PaddingBlockSetDataContainer extends ExtendedBlockDataContainer {
 

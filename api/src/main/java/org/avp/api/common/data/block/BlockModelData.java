@@ -23,7 +23,11 @@ public record BlockModelData(
 ) {
 
     public static final BlockModelData NORMAL_CUBE = new BlockModelData(BlockModelDataType.Cube::new, BlockModelRenderType.NORMAL);
-    public static final BlockModelData TRANSPARENT_CUBE = new BlockModelData(BlockModelDataType.Cube::new, BlockModelRenderType.TRANSLUCENT);
+
+    public static final BlockModelData TRANSPARENT_CUBE = new BlockModelData(
+        BlockModelDataType.Cube::new,
+        BlockModelRenderType.TRANSLUCENT
+    );
 
     public BlockModelData(
         Function<Block, BlockModelDataType> blockModelDataTypeFactory,

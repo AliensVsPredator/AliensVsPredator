@@ -4,10 +4,11 @@ import net.minecraft.tags.BlockTags;
 import net.minecraft.world.level.block.SlabBlock;
 import net.minecraft.world.level.block.WallBlock;
 import net.minecraft.world.level.block.state.BlockBehaviour;
-import org.avp.api.common.data.loot_table.LootProviders;
-import org.avp.api.service.Services;
 
 import java.util.HashSet;
+
+import org.avp.api.common.data.loot_table.LootProviders;
+import org.avp.api.service.Services;
 
 public class BlockDataUtils {
 

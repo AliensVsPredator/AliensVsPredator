@@ -4,6 +4,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.storage.loot.LootTable;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
 import java.util.function.Function;
@@ -11,7 +12,6 @@ import java.util.function.Supplier;
 
 import org.avp.api.common.registry.AVPDeferredBlockRegistry;
 import org.avp.api.common.registry.holder.BLHolder;
-import org.jetbrains.annotations.NotNull;
 
 public non-sealed class SingleBlockDataContainer extends BlockDataContainer {
 
@@ -65,8 +65,10 @@ public non-sealed class SingleBlockDataContainer extends BlockDataContainer {
 
     @Override
     public final boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
         SingleBlockDataContainer that = (SingleBlockDataContainer) o;
         return Objects.equals(registryName, that.registryName);
     }
