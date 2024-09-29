@@ -6,7 +6,7 @@ import net.minecraft.world.level.block.Blocks;
 import java.util.Map;
 
 import org.avp.common.data.block.EngineerShipBlockSetDataContainer;
-import org.avp.common.registry.block.AVPIndustrialGlassBlockRegistry;
+import org.avp.common.data.block.IndustrialGlassBlockSetDataContainer;
 
 public class DerelictSchematicResolver {
 
@@ -26,7 +26,7 @@ public class DerelictSchematicResolver {
         Map.entry("avp:engineershipwall2", EngineerShipBlockSetDataContainer.INSTANCE.wall2.getHolder().get()),
         Map.entry("avp:engineershipwall3", EngineerShipBlockSetDataContainer.INSTANCE.wall3.getHolder().get()),
         Map.entry("avp:engineershipwall4", EngineerShipBlockSetDataContainer.INSTANCE.wall4.getHolder().get()),
-        Map.entry("avp:industrialglass", AVPIndustrialGlassBlockRegistry.INSTANCE.glass.get()),
+        Map.entry("avp:industrialglass", IndustrialGlassBlockSetDataContainer.INSTANCE.base.getHolder().get()),
         Map.entry("minecraft:air", Blocks.AIR),
         Map.entry("minecraft:carrots", Blocks.CARROTS),
         Map.entry("minecraft:potatoes", Blocks.POTATOES),

@@ -9,7 +9,6 @@ import net.minecraft.data.recipes.RecipeProvider;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.ItemLike;
-import org.avp.common.registry.block.AVPBlockDataRegistry;
 import org.jetbrains.annotations.NotNull;
 
 import org.avp.common.data.recipe.impl.AVPArmorRecipes;
@@ -19,7 +18,6 @@ import org.avp.common.data.recipe.impl.AVPMaterialsRecipes;
 import org.avp.common.data.recipe.impl.AVPToolRecipes;
 import org.avp.common.data.recipe.impl.block.AVPAlienBlockRecipes;
 import org.avp.common.data.recipe.impl.block.AVPIndustrialBlockRecipes;
-import org.avp.common.data.recipe.impl.block.AVPIndustrialGlassBlockRecipes;
 import org.avp.common.data.recipe.impl.material.AVPAluminumRecipes;
 import org.avp.common.data.recipe.impl.material.AVPCobaltRecipes;
 import org.avp.common.data.recipe.impl.material.AVPLithiumRecipes;
@@ -35,6 +33,7 @@ import org.avp.common.data.recipe.impl.weapon.AVPGrenadeRecipes;
 import org.avp.common.data.recipe.impl.weapon.AVPWeaponBlueprintRecipes;
 import org.avp.common.data.recipe.impl.weapon.AVPWeaponPartRecipes;
 import org.avp.common.data.recipe.impl.weapon.AVPWeaponRecipes;
+import org.avp.common.registry.block.AVPBlockDataRegistry;
 
 public class AVPRecipeProvider extends RecipeProvider {
 
@@ -70,7 +69,6 @@ public class AVPRecipeProvider extends RecipeProvider {
         AVPWeaponRecipes.addWeaponRecipes(recipeOutput);
 
         AVPIndustrialBlockRecipes.addIndustrialBlockRecipes(recipeOutput);
-        AVPIndustrialGlassBlockRecipes.addIndustrialGlassBlockRecipes(recipeOutput);
 
         AVPBlockDataRegistry.INSTANCE.getEntries().forEach(blockDataContainer -> blockDataContainer.createRecipes(recipeOutput));
     }

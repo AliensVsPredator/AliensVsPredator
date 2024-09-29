@@ -5,13 +5,13 @@ import net.minecraft.world.level.block.Blocks;
 
 import java.util.Map;
 
+import org.avp.common.data.block.IndustrialGlassBlockSetDataContainer;
 import org.avp.common.registry.block.AVPIndustrialBlockRegistry;
-import org.avp.common.registry.block.AVPIndustrialGlassBlockRegistry;
 
 public class TestSchematicResolver {
 
     public static final Map<String, Block> RESOLVER_MAP = Map.ofEntries(
-        Map.entry("avp:industrialglass", AVPIndustrialGlassBlockRegistry.INSTANCE.glass.get()),
+        Map.entry("avp:industrialglass", IndustrialGlassBlockSetDataContainer.INSTANCE.base.getHolder().get()),
         Map.entry("avp:industrialwall", AVPIndustrialBlockRegistry.INSTANCE.wall.base().get()),
         Map.entry("avp:industrialwall2", AVPIndustrialBlockRegistry.INSTANCE.wallHazard.get()),
         Map.entry("minecraft:air", Blocks.AIR),

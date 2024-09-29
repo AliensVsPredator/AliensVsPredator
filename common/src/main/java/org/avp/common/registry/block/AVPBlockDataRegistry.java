@@ -1,12 +1,20 @@
 package org.avp.common.registry.block;
 
+import java.util.Collection;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 import org.avp.api.common.data.block.BlockDataContainer;
 import org.avp.api.common.data.block.ExtendedBlockDataContainer;
 import org.avp.api.common.data.block.SingleBlockDataContainer;
 import org.avp.api.service.Services;
 import org.avp.common.data.block.EngineerShipBlockSetDataContainer;
+import org.avp.common.data.block.IndustrialGlassBlockSetDataContainer;
 import org.avp.common.data.block.PaddingBlockSetDataContainer;
 import org.avp.common.data.block.PlasticBlockSetDataContainer;
+import org.avp.common.data.block.TempleBlockDataContainer;
+import org.avp.common.data.block.YautjaShipBlockSetDataContainer;
 import org.avp.common.data.block.metal.MetalAluminumBlockSetDataContainer;
 import org.avp.common.data.block.metal.MetalCopperBlockSetDataContainer;
 import org.avp.common.data.block.metal.MetalFerroaluminumBlockSetDataContainer;
@@ -28,13 +36,6 @@ import org.avp.common.data.block.raw.RawCobaltBlockDataContainer;
 import org.avp.common.data.block.raw.RawLithiumBlockDataContainer;
 import org.avp.common.data.block.raw.RawSilicaBlockDataContainer;
 import org.avp.common.data.block.raw.RawTitaniumBlockDataContainer;
-import org.avp.common.data.block.TempleBlockDataContainer;
-import org.avp.common.data.block.YautjaShipBlockSetDataContainer;
-
-import java.util.Collection;
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.Map;
 
 public class AVPBlockDataRegistry {
 
@@ -63,6 +64,9 @@ public class AVPBlockDataRegistry {
     private void registerDataEntries() {
         // Engineer Ship
         addEntry(EngineerShipBlockSetDataContainer.INSTANCE);
+
+        // Industrial Glass
+        addEntry(IndustrialGlassBlockSetDataContainer.INSTANCE);
 
         // Metals
         addEntry(MetalAluminumBlockSetDataContainer.INSTANCE);

@@ -1,6 +1,7 @@
 package org.avp.common;
 
 import mod.azure.azurelib.common.internal.common.AzureLib;
+
 import org.avp.client.render.particle.AVPParticleTypeRegistry;
 import org.avp.common.config.AVPConfig;
 import org.avp.common.game.sound.AVPSoundEventRegistry;
@@ -11,7 +12,6 @@ import org.avp.common.registry.AVPFuelRegistry;
 import org.avp.common.registry.block.AVPAlienBlockRegistry;
 import org.avp.common.registry.block.AVPBlockDataRegistry;
 import org.avp.common.registry.block.AVPIndustrialBlockRegistry;
-import org.avp.common.registry.block.AVPIndustrialGlassBlockRegistry;
 import org.avp.common.registry.block.AVPMachineBlockRegistry;
 import org.avp.common.registry.block.AVPParadiseBlockRegistry;
 import org.avp.common.registry.block.AVPUnidentifiedBlockRegistry;
@@ -63,7 +63,6 @@ public class AVPCommon {
 
         AVPAlienBlockRegistry.INSTANCE.register();
         AVPIndustrialBlockRegistry.INSTANCE.register();
-        AVPIndustrialGlassBlockRegistry.INSTANCE.register();
         AVPMachineBlockRegistry.INSTANCE.register();
         AVPParadiseBlockRegistry.INSTANCE.register();
         AVPUnidentifiedBlockRegistry.INSTANCE.register();
