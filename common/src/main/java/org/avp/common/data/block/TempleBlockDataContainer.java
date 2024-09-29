@@ -88,7 +88,7 @@ public class TempleBlockDataContainer extends SingleBlockDataContainer.Holder {
                 .build()
         );
 
-        this.tile = this.addVariant(this.extend(REGISTRY_NAME_PREFIX + "wall_base"));
+        this.tile = this.addVariant(this.extend(REGISTRY_NAME_PREFIX + "tile"));
 
         this.tileVariantSet = this.addVariant(
             new VanillaVariantBlockDataContainer(tile)
