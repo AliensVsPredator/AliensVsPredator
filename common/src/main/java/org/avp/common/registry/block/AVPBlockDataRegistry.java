@@ -14,6 +14,7 @@ import org.avp.common.data.block.IndustrialGlassBlockSetDataContainer;
 import org.avp.common.data.block.PaddingBlockSetDataContainer;
 import org.avp.common.data.block.PlasticBlockSetDataContainer;
 import org.avp.common.data.block.TempleBlockDataContainer;
+import org.avp.common.data.block.UnidentifiedBlockSetDataContainer;
 import org.avp.common.data.block.YautjaShipBlockSetDataContainer;
 import org.avp.common.data.block.metal.MetalAluminumBlockSetDataContainer;
 import org.avp.common.data.block.metal.MetalCopperBlockSetDataContainer;
@@ -103,6 +104,9 @@ public class AVPBlockDataRegistry {
 
         // Temple
         addEntry(TempleBlockDataContainer.INSTANCE);
+
+        // Unidentified
+        addEntry(UnidentifiedBlockSetDataContainer.INSTANCE);
 
         // Yautja Ship
         addEntry(YautjaShipBlockSetDataContainer.INSTANCE);

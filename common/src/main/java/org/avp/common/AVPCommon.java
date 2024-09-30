@@ -14,7 +14,6 @@ import org.avp.common.registry.block.AVPBlockDataRegistry;
 import org.avp.common.registry.block.AVPIndustrialBlockRegistry;
 import org.avp.common.registry.block.AVPMachineBlockRegistry;
 import org.avp.common.registry.block.AVPParadiseBlockRegistry;
-import org.avp.common.registry.block.AVPUnidentifiedBlockRegistry;
 import org.avp.common.registry.block_entity.AVPSimpleDeferredBlockEntityTypeRegistry;
 import org.avp.common.registry.creative_tab.AVPCreativeModeTabRegistry;
 import org.avp.common.registry.entity.AVPSimpleDeferredEntityTypeRegistry;
@@ -65,7 +64,6 @@ public class AVPCommon {
         AVPIndustrialBlockRegistry.INSTANCE.register();
         AVPMachineBlockRegistry.INSTANCE.register();
         AVPParadiseBlockRegistry.INSTANCE.register();
-        AVPUnidentifiedBlockRegistry.INSTANCE.register();
 
         // Item Blocks
         AVPItemBlockItemRegistry.INSTANCE.register();
