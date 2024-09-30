@@ -1,6 +1,7 @@
 package org.avp.api.common.data.block;
 
 import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.world.level.block.FenceBlock;
 import net.minecraft.world.level.block.FenceGateBlock;
 import net.minecraft.world.level.block.SlabBlock;
@@ -18,6 +19,8 @@ public class BlockDataUtils {
     public static SingleBlockDataContainer.Holder intoFence(SingleBlockDataContainer.Holder holder) {
         var extendedBlockTags = new HashSet<>(holder.getBlockTagData().blockTags());
         extendedBlockTags.add(BlockTags.FENCES);
+        var extendedItemTags = new HashSet<>(holder.getBlockTagData().itemTags());
+        extendedItemTags.add(ItemTags.FENCES);
         return new SingleBlockDataContainer(
             () -> new FenceBlock(BlockBehaviour.Properties.ofFullCopy(holder.getHolder().get())),
             holder.getRegistryName() + "_fence",
@@ -25,7 +28,7 @@ public class BlockDataUtils {
                 block -> new BlockModelDataType.Fence(holder.getHolder().get(), block),
                 holder.getBlockModelData().blockModelRenderType()
             ),
-            BlockTagData.ofBlock(extendedBlockTags),
+            new BlockTagData(extendedBlockTags, extendedItemTags),
             LootProviders.SELF
         ).withHolder();
     }
@@ -33,6 +36,8 @@ public class BlockDataUtils {
     public static SingleBlockDataContainer.Holder intoFenceGate(WoodType woodType, SingleBlockDataContainer.Holder holder) {
         var extendedBlockTags = new HashSet<>(holder.getBlockTagData().blockTags());
         extendedBlockTags.add(BlockTags.FENCE_GATES);
+        var extendedItemTags = new HashSet<>(holder.getBlockTagData().itemTags());
+        extendedItemTags.add(ItemTags.FENCE_GATES);
         return new SingleBlockDataContainer(
             () -> new FenceGateBlock(woodType, BlockBehaviour.Properties.ofFullCopy(holder.getHolder().get())),
             holder.getRegistryName() + "_fence_gate",
@@ -40,7 +45,7 @@ public class BlockDataUtils {
                 block -> new BlockModelDataType.FenceGate(holder.getHolder().get(), block),
                 holder.getBlockModelData().blockModelRenderType()
             ),
-            BlockTagData.ofBlock(extendedBlockTags),
+            new BlockTagData(extendedBlockTags, extendedItemTags),
             LootProviders.SELF
         ).withHolder();
     }
@@ -48,6 +53,8 @@ public class BlockDataUtils {
     public static SingleBlockDataContainer.Holder intoSlab(SingleBlockDataContainer.Holder holder) {
         var extendedBlockTags = new HashSet<>(holder.getBlockTagData().blockTags());
         extendedBlockTags.add(BlockTags.SLABS);
+        var extendedItemTags = new HashSet<>(holder.getBlockTagData().itemTags());
+        extendedItemTags.add(ItemTags.SLABS);
         return new SingleBlockDataContainer(
             () -> new SlabBlock(BlockBehaviour.Properties.ofFullCopy(holder.getHolder().get())),
             holder.getRegistryName() + "_slab",
@@ -55,7 +62,7 @@ public class BlockDataUtils {
                 block -> new BlockModelDataType.Slab(holder.getHolder().get(), block),
                 holder.getBlockModelData().blockModelRenderType()
             ),
-            BlockTagData.ofBlock(extendedBlockTags),
+            new BlockTagData(extendedBlockTags, extendedItemTags),
             LootProviders.SLAB
         ).withHolder();
     }
@@ -63,6 +70,8 @@ public class BlockDataUtils {
     public static SingleBlockDataContainer.Holder intoStairs(SingleBlockDataContainer.Holder holder) {
         var extendedBlockTags = new HashSet<>(holder.getBlockTagData().blockTags());
         extendedBlockTags.add(BlockTags.STAIRS);
+        var extendedItemTags = new HashSet<>(holder.getBlockTagData().itemTags());
+        extendedItemTags.add(ItemTags.STAIRS);
         return new SingleBlockDataContainer(
             () -> {
                 var parentHolder = holder.getHolder();
@@ -75,7 +84,7 @@ public class BlockDataUtils {
                 block -> new BlockModelDataType.Stair(holder.getHolder().get(), block),
                 holder.getBlockModelData().blockModelRenderType()
             ),
-            BlockTagData.ofBlock(extendedBlockTags),
+            new BlockTagData(extendedBlockTags, extendedItemTags),
             LootProviders.SELF
         ).withHolder();
     }
@@ -83,6 +92,8 @@ public class BlockDataUtils {
     public static SingleBlockDataContainer.Holder intoWall(SingleBlockDataContainer.Holder holder) {
         var extendedBlockTags = new HashSet<>(holder.getBlockTagData().blockTags());
         extendedBlockTags.add(BlockTags.WALLS);
+        var extendedItemTags = new HashSet<>(holder.getBlockTagData().itemTags());
+        extendedItemTags.add(ItemTags.WALLS);
         return new SingleBlockDataContainer(
             () -> new WallBlock(BlockBehaviour.Properties.ofFullCopy(holder.getHolder().get())),
             holder.getRegistryName() + "_wall",
@@ -90,7 +101,7 @@ public class BlockDataUtils {
                 block -> new BlockModelDataType.Wall(holder.getHolder().get(), block),
                 holder.getBlockModelData().blockModelRenderType()
             ),
-            BlockTagData.ofBlock(extendedBlockTags),
+            new BlockTagData(extendedBlockTags, extendedItemTags),
             LootProviders.SELF
         ).withHolder();
     }
