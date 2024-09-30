@@ -130,6 +130,15 @@ public class AVPRecipeBuilder {
             return this;
         }
 
+        public AVPShapedRecipeBuilder define(char key, TagKey<Item> itemTagKey) {
+            transformations.add((shapedRecipeBuilder -> {
+                shapedRecipeBuilder.define(key, itemTagKey);
+                shapedRecipeBuilder.unlockedBy("has_" + key, AVPRecipeProvider.has(itemTagKey));
+                return shapedRecipeBuilder;
+            }));
+            return this;
+        }
+
         public AVPShapedRecipeBuilder pattern(String pattern) {
             this.transformations.add((shapedRecipeBuilder -> {
                 shapedRecipeBuilder.pattern(pattern);
@@ -190,10 +199,10 @@ public class AVPRecipeBuilder {
             return this;
         }
 
-        public AVPShapelessRecipeBuilder requires(char key, int count, TagKey<Item> ingredient) {
+        public AVPShapelessRecipeBuilder requires(char key, int count, TagKey<Item> itemTagKey) {
             transformations.add((shapelessRecipeBuilder -> {
-                shapelessRecipeBuilder.requires(Ingredient.of(ingredient), count);
-                shapelessRecipeBuilder.unlockedBy("has_" + key, AVPRecipeProvider.has(ingredient));
+                shapelessRecipeBuilder.requires(Ingredient.of(itemTagKey), count);
+                shapelessRecipeBuilder.unlockedBy("has_" + key, AVPRecipeProvider.has(itemTagKey));
                 return shapelessRecipeBuilder;
             }));
             return this;

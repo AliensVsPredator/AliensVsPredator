@@ -10,6 +10,7 @@ import org.avp.api.common.data.block.ExtendedBlockDataContainer;
 import org.avp.api.common.data.block.SingleBlockDataContainer;
 import org.avp.api.service.Services;
 import org.avp.common.data.block.EngineerShipBlockSetDataContainer;
+import org.avp.common.data.block.IndustrialBlockSetDataContainer;
 import org.avp.common.data.block.IndustrialGlassBlockSetDataContainer;
 import org.avp.common.data.block.PaddingBlockSetDataContainer;
 import org.avp.common.data.block.PlasticBlockSetDataContainer;
@@ -65,6 +66,9 @@ public class AVPBlockDataRegistry {
     private void registerDataEntries() {
         // Engineer Ship
         addEntry(EngineerShipBlockSetDataContainer.INSTANCE);
+
+        // Industrial
+        addEntry(IndustrialBlockSetDataContainer.INSTANCE);
 
         // Industrial Glass
         addEntry(IndustrialGlassBlockSetDataContainer.INSTANCE);
