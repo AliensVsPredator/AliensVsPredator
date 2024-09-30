@@ -5,6 +5,7 @@ import net.minecraft.tags.BlockTags;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.GrassBlock;
+import net.minecraft.world.level.block.RotatedPillarBlock;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.MapColor;
 
@@ -78,7 +79,7 @@ public class ParadiseBlockSetDataContainer extends ExtendedBlockDataContainer {
         this.addVariant(leavesBase.extend(REGISTRY_NAME_PREFIX + "leaves_small"));
 
         var woodLogBase = new SingleBlockDataContainer(
-            () -> new Block(PROPERTIES),
+            () -> new RotatedPillarBlock(PROPERTIES),
             REGISTRY_NAME_PREFIX + "log",
             new BlockModelData(
                 BlockModelDataType.RotatedPillar::new,
@@ -95,7 +96,7 @@ public class ParadiseBlockSetDataContainer extends ExtendedBlockDataContainer {
         var logSmall = this.addVariant(woodLogBase.extend(REGISTRY_NAME_PREFIX + "log_small"));
 
         var woodBase = new SingleBlockDataContainer(
-            () -> new Block(PROPERTIES),
+            () -> new RotatedPillarBlock(PROPERTIES),
             REGISTRY_NAME_PREFIX + "wood",
             BlockModelData.NORMAL_CUBE,
             AXE_TAGS,
