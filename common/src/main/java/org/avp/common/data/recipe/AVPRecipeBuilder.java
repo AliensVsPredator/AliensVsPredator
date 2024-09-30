@@ -287,8 +287,8 @@ public class AVPRecipeBuilder {
             AVPRecipeProvider.stonecutterRecipeFromBase(
                 avpRecipeBuilder.getRecipeOutput(),
                 recipeCategory,
-                source.asItem(),
                 destination.asItem(),
+                source.asItem(),
                 count
             );
         }
