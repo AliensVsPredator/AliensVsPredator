@@ -44,6 +44,8 @@ public class TempleBlockDataContainer extends SingleBlockDataContainer.Holder im
 
     private final VanillaVariantBlockDataContainer floorVariantSet;
 
+    private final SingleBlockDataContainer.Holder skulls;
+
     private final SingleBlockDataContainer.Holder tile;
 
     private final VanillaVariantBlockDataContainer tileVariantSet;
@@ -87,7 +89,7 @@ public class TempleBlockDataContainer extends SingleBlockDataContainer.Holder im
                 .withWall()
         );
 
-        this.addVariant(
+        this.skulls = this.addVariant(
             this.transform(REGISTRY_NAME_PREFIX + "skulls")
                 .withSupplier(() -> new Block(SKULL_PROPERTIES))
                 .build()
@@ -114,7 +116,7 @@ public class TempleBlockDataContainer extends SingleBlockDataContainer.Holder im
             .define('A', Items.SKELETON_SKULL)
             .pattern("AA")
             .pattern("AA")
-            .into(1, this);
+            .into(1, skulls);
 
         var stonecut = builder.stonecut(this);
 
