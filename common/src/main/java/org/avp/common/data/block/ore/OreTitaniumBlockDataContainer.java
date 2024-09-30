@@ -43,17 +43,19 @@ public class OreTitaniumBlockDataContainer extends SingleBlockDataContainer.Hold
         var cookTimeInTicks = 100;
 
         // Smelting
-        builder.smelt(this)
-            .withCategory(recipeCategory)
-            .withExperience(experience)
-            .withCookTime(cookTimeInTicks * 2)
-            .into(AVPItemRegistry.INSTANCE.ingotTitanium.get());
+        // TODO:
+//        builder.smelt(this)
+//            .withCategory(recipeCategory)
+//            .withExperience(experience)
+//            .withCookTime(cookTimeInTicks * 2)
+//            .into(AVPItemRegistry.INSTANCE.ingotTitanium.get());
 
         // Blasting
-        builder.blast(this)
-            .withCategory(recipeCategory)
-            .withExperience(experience)
-            .withCookTime(cookTimeInTicks)
-            .into(AVPItemRegistry.INSTANCE.ingotTitanium.get());
+        // TODO:
+//        builder.blast(this)
+//            .withCategory(recipeCategory)
+//            .withExperience(experience)
+//            .withCookTime(cookTimeInTicks)
+//            .into(AVPItemRegistry.INSTANCE.ingotTitanium.get());
     }
 }

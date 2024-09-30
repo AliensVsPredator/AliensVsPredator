@@ -12,6 +12,8 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 import java.util.function.UnaryOperator;
 
@@ -93,11 +95,11 @@ public class AVPRecipeBuilder {
 
         public void into(ItemLike destination) {
             var ingredient = Ingredient.of(source);
-            var sourceName = BuiltInRegistries.ITEM.getKey(source.asItem()).getPath();
-            var destinationName = BuiltInRegistries.ITEM.getKey(destination.asItem()).getPath();
+            var sourceName = getNameForItem(source.asItem());
+            var destinationName = getNameForItem(destination.asItem());
 
             SimpleCookingRecipeBuilder.blasting(ingredient, recipeCategory, destination, experience, cookTime)
-                .unlockedBy("has_ingredient", AVPRecipeProvider.has(source))
+                .unlockedBy("has_" + sourceName, AVPRecipeProvider.has(source))
                 .save(avpRecipeBuilder.getRecipeOutput(), AVPConstants.MOD_ID + ":" + destinationName + "_from_blasting_" + sourceName);
         }
     }
@@ -121,10 +123,12 @@ public class AVPRecipeBuilder {
             return this;
         }
 
-        public AVPShapedRecipeBuilder define(char key, ItemLike ingredient) {
+        public AVPShapedRecipeBuilder define(char key, ItemLike itemLike) {
             transformations.add((shapedRecipeBuilder -> {
-                shapedRecipeBuilder.define(key, ingredient);
-                shapedRecipeBuilder.unlockedBy("has_" + key, AVPRecipeProvider.has(ingredient));
+                var itemName = getNameForItem(itemLike.asItem());
+
+                shapedRecipeBuilder.define(key, itemLike);
+                shapedRecipeBuilder.unlockedBy("has_" + itemName, AVPRecipeProvider.has(itemLike));
                 return shapedRecipeBuilder;
             }));
             return this;
@@ -133,7 +137,7 @@ public class AVPRecipeBuilder {
         public AVPShapedRecipeBuilder define(char key, TagKey<Item> itemTagKey) {
             transformations.add((shapedRecipeBuilder -> {
                 shapedRecipeBuilder.define(key, itemTagKey);
-                shapedRecipeBuilder.unlockedBy("has_" + key, AVPRecipeProvider.has(itemTagKey));
+                shapedRecipeBuilder.unlockedBy("has_" + itemTagKey.location().getPath(), AVPRecipeProvider.has(itemTagKey));
                 return shapedRecipeBuilder;
             }));
             return this;
@@ -184,14 +188,14 @@ public class AVPRecipeBuilder {
             return this;
         }
 
-        public AVPShapelessRecipeBuilder requires(char key, int count, Ingredient ingredient) {
+        public AVPShapelessRecipeBuilder requires(int count, Ingredient ingredient) {
             transformations.add((shapelessRecipeBuilder -> {
                 shapelessRecipeBuilder.requires(ingredient, count);
-                var ingredientItemStacks = ingredient.getItems();
+                var ingredientItemStacks = Arrays.stream(ingredient.getItems()).sorted(Comparator.comparing(itemStackA -> getNameForItem(itemStackA.getItem()))).toList();
 
-                for (int i = 0; i < ingredientItemStacks.length; i++) {
-                    var itemStack = ingredientItemStacks[i];
-                    shapelessRecipeBuilder.unlockedBy("has_" + key + "_" + i, AVPRecipeProvider.has(itemStack.getItem()));
+                for (var itemStack : ingredientItemStacks) {
+                    var itemName = getNameForItem(itemStack.getItem());
+                    shapelessRecipeBuilder.unlockedBy("has_" + itemName, AVPRecipeProvider.has(itemStack.getItem()));
                 }
 
                 return shapelessRecipeBuilder;
@@ -199,19 +203,20 @@ public class AVPRecipeBuilder {
             return this;
         }
 
-        public AVPShapelessRecipeBuilder requires(char key, int count, ItemLike itemLike) {
+        public AVPShapelessRecipeBuilder requires(int count, ItemLike itemLike) {
             transformations.add((shapelessRecipeBuilder -> {
+                var itemName = getNameForItem(itemLike.asItem());
                 shapelessRecipeBuilder.requires(itemLike, count);
-                shapelessRecipeBuilder.unlockedBy("has_" + key, AVPRecipeProvider.has(itemLike));
+                shapelessRecipeBuilder.unlockedBy("has_" + itemName, AVPRecipeProvider.has(itemLike));
                 return shapelessRecipeBuilder;
             }));
             return this;
         }
 
-        public AVPShapelessRecipeBuilder requires(char key, int count, TagKey<Item> itemTagKey) {
+        public AVPShapelessRecipeBuilder requires(int count, TagKey<Item> itemTagKey) {
             transformations.add((shapelessRecipeBuilder -> {
                 shapelessRecipeBuilder.requires(Ingredient.of(itemTagKey), count);
-                shapelessRecipeBuilder.unlockedBy("has_" + key, AVPRecipeProvider.has(itemTagKey));
+                shapelessRecipeBuilder.unlockedBy("has_" + itemTagKey.location().getPath(), AVPRecipeProvider.has(itemTagKey));
                 return shapelessRecipeBuilder;
             }));
             return this;
@@ -283,7 +288,7 @@ public class AVPRecipeBuilder {
                 : customNameOperator.apply(destinationName);
 
             SimpleCookingRecipeBuilder.smelting(ingredient, recipeCategory, destination, experience, cookTime)
-                .unlockedBy("has_ingredient", AVPRecipeProvider.has(source))
+                .unlockedBy("has_" + sourceName, AVPRecipeProvider.has(source))
                 .save(avpRecipeBuilder.getRecipeOutput(), AVPConstants.MOD_ID + ":" + customName);
         }
     }

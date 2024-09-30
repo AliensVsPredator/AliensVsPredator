@@ -124,7 +124,7 @@ public class MetalAluminumBlockSetDataContainer extends SingleBlockDataContainer
         // Block -> ingots
         builder.shapeless()
             .withCategory(RecipeCategory.MISC)
-            .requires('A', 1, this)
+            .requires(1, this)
             .into(9, AVPItemRegistry.INSTANCE.ingotAluminum.get());
 
         var stonecutBase = builder.stonecut(this)
@@ -138,7 +138,7 @@ public class MetalAluminumBlockSetDataContainer extends SingleBlockDataContainer
             .pattern("AA")
             .into(4, cut);
 
-        stonecutBase.into(1, cut);
+        stonecutBase.into(4, cut);
         stonecutBase.into(2, grate);
         stonecutBase.into(4, plated);
         stonecutBase.into(4, platedChevron);

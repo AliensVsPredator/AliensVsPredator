@@ -95,9 +95,9 @@ public class PaddingBlockSetDataContainer extends ExtendedBlockDataContainer imp
             // Panel recipe
             builder.shapeless()
                 .withCategory(RecipeCategory.BUILDING_BLOCKS)
-                .requires('A', 1, Items.LEATHER)
-                .requires('B', 1, ItemTags.WOOL)
-                .requires('C', 1, dyeItem)
+                .requires(1, Items.LEATHER)
+                .requires(1, ItemTags.WOOL)
+                .requires(1, dyeItem)
                 .into(1, coloredPaddingBlockSet.panel());
 
             // Pipes recipe

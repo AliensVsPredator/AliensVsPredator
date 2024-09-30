@@ -98,8 +98,8 @@ public class PlasticBlockSetDataContainer extends ExtendedBlockDataContainer imp
 
             builder.shapeless()
                 .withCategory(RecipeCategory.BUILDING_BLOCKS)
-                .requires('A', 1, dyeItem)
-                .requires('B', 1, ingredient)
+                .requires(1, dyeItem)
+                .requires(1, ingredient)
                 .withCustomName((outputItem) -> "dye_" + outputItem)
                 .into(1, coloredPlasticBlockSet.base());
 

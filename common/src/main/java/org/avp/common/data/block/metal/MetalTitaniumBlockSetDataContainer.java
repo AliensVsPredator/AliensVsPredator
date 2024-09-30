@@ -132,7 +132,7 @@ public class MetalTitaniumBlockSetDataContainer extends SingleBlockDataContainer
             .pattern("AA")
             .into(4, cut);
 
-        stonecutBase.into(1, cut);
+        stonecutBase.into(4, cut);
         stonecutBase.into(2, grate);
         stonecutBase.into(4, plated);
         stonecutBase.into(4, platedChevron);

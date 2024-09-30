@@ -56,7 +56,7 @@ public class MetalOrioniteBlockDataContainer extends SingleBlockDataContainer.Ho
         // Block -> ingots
         builder.shapeless()
             .withCategory(RecipeCategory.MISC)
-            .requires('A', 1, this)
+            .requires(1, this)
             .into(9, AVPItemRegistry.INSTANCE.ingotOrionite.get());
     }
 }
