@@ -191,7 +191,9 @@ public class AVPRecipeBuilder {
         public AVPShapelessRecipeBuilder requires(int count, Ingredient ingredient) {
             transformations.add((shapelessRecipeBuilder -> {
                 shapelessRecipeBuilder.requires(ingredient, count);
-                var ingredientItemStacks = Arrays.stream(ingredient.getItems()).sorted(Comparator.comparing(itemStackA -> getNameForItem(itemStackA.getItem()))).toList();
+                var ingredientItemStacks = Arrays.stream(ingredient.getItems())
+                    .sorted(Comparator.comparing(itemStackA -> getNameForItem(itemStackA.getItem())))
+                    .toList();
 
                 for (var itemStack : ingredientItemStacks) {
                     var itemName = getNameForItem(itemStack.getItem());

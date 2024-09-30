@@ -5,13 +5,13 @@ import net.minecraft.tags.BlockTags;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockBehaviour;
-import org.avp.api.common.data.block.RecipeCreator;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Set;
 
 import org.avp.api.common.data.block.BlockModelData;
 import org.avp.api.common.data.block.BlockTagData;
+import org.avp.api.common.data.block.RecipeCreator;
 import org.avp.api.common.data.block.SingleBlockDataContainer;
 import org.avp.api.common.data.loot_table.LootProviders;
 

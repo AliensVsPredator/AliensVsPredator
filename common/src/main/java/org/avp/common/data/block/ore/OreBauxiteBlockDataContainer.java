@@ -44,18 +44,18 @@ public class OreBauxiteBlockDataContainer extends SingleBlockDataContainer.Holde
 
         // Smelting
         // TODO:
-//        builder.smelt(this)
-//            .withCategory(recipeCategory)
-//            .withExperience(experience)
-//            .withCookTime(cookTimeInTicks * 2)
-//            .into(AVPItemRegistry.INSTANCE.ingotAluminum.get());
+        // builder.smelt(this)
+        // .withCategory(recipeCategory)
+        // .withExperience(experience)
+        // .withCookTime(cookTimeInTicks * 2)
+        // .into(AVPItemRegistry.INSTANCE.ingotAluminum.get());
 
         // Blasting
         // TODO:
-//        builder.blast(this)
-//            .withCategory(recipeCategory)
-//            .withExperience(experience)
-//            .withCookTime(cookTimeInTicks)
-//            .into(AVPItemRegistry.INSTANCE.ingotAluminum.get());
+        // builder.blast(this)
+        // .withCategory(recipeCategory)
+        // .withExperience(experience)
+        // .withCookTime(cookTimeInTicks)
+        // .into(AVPItemRegistry.INSTANCE.ingotAluminum.get());
     }
 }
