@@ -42,10 +42,6 @@ public final class AVPRecipeHelper {
             .save(recipeOutput);
     }
 
-    public static String getItemName(ItemLike itemLike) {
-        return BuiltInRegistries.ITEM.getKey(itemLike.asItem()).getPath();
-    }
-
     public static void oreSmelting(
         RecipeOutput recipeOutput,
         RecipeCategory recipeCategory,
