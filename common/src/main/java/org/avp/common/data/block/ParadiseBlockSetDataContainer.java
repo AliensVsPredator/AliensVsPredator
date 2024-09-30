@@ -153,7 +153,7 @@ public class ParadiseBlockSetDataContainer extends ExtendedBlockDataContainer im
         this.largePlanks = this.addVariant(
             new SingleBlockDataContainer(
                 () -> new Block(PROPERTIES),
-                REGISTRY_NAME_PREFIX + "log_large_planks",
+                REGISTRY_NAME_PREFIX + "planks_large",
                 BlockModelData.NORMAL_CUBE,
                 AXE_TAGS,
                 LootProviders.SELF
@@ -171,7 +171,7 @@ public class ParadiseBlockSetDataContainer extends ExtendedBlockDataContainer im
         this.mediumPlanks = this.addVariant(
             new SingleBlockDataContainer(
                 () -> new Block(PROPERTIES),
-                REGISTRY_NAME_PREFIX + "log_medium_planks",
+                REGISTRY_NAME_PREFIX + "planks_medium",
                 BlockModelData.NORMAL_CUBE,
                 AXE_TAGS,
                 LootProviders.SELF
@@ -189,7 +189,7 @@ public class ParadiseBlockSetDataContainer extends ExtendedBlockDataContainer im
         this.smallPlanks = this.addVariant(
             new SingleBlockDataContainer(
                 () -> new Block(PROPERTIES),
-                REGISTRY_NAME_PREFIX + "log_small_planks",
+                REGISTRY_NAME_PREFIX + "planks_small",
                 BlockModelData.NORMAL_CUBE,
                 AXE_TAGS,
                 LootProviders.SELF
