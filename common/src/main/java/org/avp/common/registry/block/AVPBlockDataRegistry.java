@@ -13,6 +13,7 @@ import org.avp.common.data.block.EngineerShipBlockSetDataContainer;
 import org.avp.common.data.block.IndustrialBlockSetDataContainer;
 import org.avp.common.data.block.IndustrialGlassBlockSetDataContainer;
 import org.avp.common.data.block.PaddingBlockSetDataContainer;
+import org.avp.common.data.block.ParadiseBlockSetDataContainer;
 import org.avp.common.data.block.PlasticBlockSetDataContainer;
 import org.avp.common.data.block.TempleBlockDataContainer;
 import org.avp.common.data.block.UnidentifiedBlockSetDataContainer;
@@ -94,6 +95,9 @@ public class AVPBlockDataRegistry {
 
         // Padding
         addEntry(PaddingBlockSetDataContainer.INSTANCE);
+
+        // Paradise
+        addEntry(ParadiseBlockSetDataContainer.INSTANCE);
 
         // Plastic
         addEntry(PlasticBlockSetDataContainer.INSTANCE);
