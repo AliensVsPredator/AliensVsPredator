@@ -14,13 +14,14 @@ import java.util.Set;
 
 import org.avp.api.common.data.block.BlockModelData;
 import org.avp.api.common.data.block.BlockTagData;
+import org.avp.api.common.data.block.RecipeCreator;
 import org.avp.api.common.data.block.SingleBlockDataContainer;
 import org.avp.api.common.data.loot_table.LootProviders;
 import org.avp.common.data.block.VanillaVariantBlockDataContainer;
 import org.avp.common.data.recipe.AVPRecipeBuilder;
 import org.avp.common.registry.item.AVPItemRegistry;
 
-public class MetalFerroaluminumBlockSetDataContainer extends SingleBlockDataContainer.Holder {
+public class MetalFerroaluminumBlockSetDataContainer extends SingleBlockDataContainer.Holder implements RecipeCreator {
 
     public static final MetalFerroaluminumBlockSetDataContainer INSTANCE = new MetalFerroaluminumBlockSetDataContainer();
 

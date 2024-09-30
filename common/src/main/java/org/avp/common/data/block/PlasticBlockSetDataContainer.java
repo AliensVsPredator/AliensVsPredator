@@ -21,13 +21,14 @@ import java.util.function.Function;
 import org.avp.api.common.data.block.BlockModelData;
 import org.avp.api.common.data.block.BlockTagData;
 import org.avp.api.common.data.block.ExtendedBlockDataContainer;
+import org.avp.api.common.data.block.RecipeCreator;
 import org.avp.api.common.data.block.SingleBlockDataContainer;
 import org.avp.api.common.data.loot_table.LootProviders;
 import org.avp.common.data.recipe.AVPRecipeBuilder;
 import org.avp.common.data.tag.AVPBlockTags;
 import org.avp.common.registry.item.AVPItemRegistry;
 
-public class PlasticBlockSetDataContainer extends ExtendedBlockDataContainer {
+public class PlasticBlockSetDataContainer extends ExtendedBlockDataContainer implements RecipeCreator {
 
     private static final String REGISTRY_NAME_PREFIX = "plastic_";
 
@@ -99,6 +100,7 @@ public class PlasticBlockSetDataContainer extends ExtendedBlockDataContainer {
                 .withCategory(RecipeCategory.BUILDING_BLOCKS)
                 .requires('A', 1, dyeItem)
                 .requires('B', 1, ingredient)
+                .withCustomName((outputItem) -> "dye_" + outputItem)
                 .into(1, coloredPlasticBlockSet.base());
 
             coloredPlasticBlockSet.variantSet().createRecipes(recipeOutput);

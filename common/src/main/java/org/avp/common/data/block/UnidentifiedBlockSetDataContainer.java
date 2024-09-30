@@ -12,10 +12,11 @@ import java.util.Set;
 import org.avp.api.common.data.block.BlockModelData;
 import org.avp.api.common.data.block.BlockTagData;
 import org.avp.api.common.data.block.ExtendedBlockDataContainer;
+import org.avp.api.common.data.block.RecipeCreator;
 import org.avp.api.common.data.block.SingleBlockDataContainer;
 import org.avp.api.common.data.loot_table.LootProviders;
 
-public class UnidentifiedBlockSetDataContainer extends ExtendedBlockDataContainer {
+public class UnidentifiedBlockSetDataContainer extends ExtendedBlockDataContainer implements RecipeCreator {
 
     private static final String REGISTRY_NAME_PREFIX = "unidentified_";
 

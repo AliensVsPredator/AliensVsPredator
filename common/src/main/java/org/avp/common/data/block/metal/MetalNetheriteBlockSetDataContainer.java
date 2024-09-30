@@ -12,12 +12,13 @@ import java.util.Set;
 import org.avp.api.common.data.block.BlockModelData;
 import org.avp.api.common.data.block.BlockTagData;
 import org.avp.api.common.data.block.ExtendedBlockDataContainer;
+import org.avp.api.common.data.block.RecipeCreator;
 import org.avp.api.common.data.block.SingleBlockDataContainer;
 import org.avp.api.common.data.loot_table.LootProviders;
 import org.avp.common.data.block.VanillaVariantBlockDataContainer;
 import org.avp.common.data.recipe.AVPRecipeBuilder;
 
-public class MetalNetheriteBlockSetDataContainer extends ExtendedBlockDataContainer {
+public class MetalNetheriteBlockSetDataContainer extends ExtendedBlockDataContainer implements RecipeCreator {
 
     public static final MetalNetheriteBlockSetDataContainer INSTANCE = new MetalNetheriteBlockSetDataContainer();
 

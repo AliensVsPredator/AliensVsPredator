@@ -11,12 +11,13 @@ import java.util.Set;
 
 import org.avp.api.common.data.block.BlockModelData;
 import org.avp.api.common.data.block.BlockTagData;
+import org.avp.api.common.data.block.RecipeCreator;
 import org.avp.api.common.data.block.SingleBlockDataContainer;
 import org.avp.api.common.data.loot_table.LootProviders;
 import org.avp.common.data.recipe.AVPRecipeBuilder;
 import org.avp.common.registry.item.AVPItemRegistry;
 
-public class OreBauxiteBlockDataContainer extends SingleBlockDataContainer.Holder {
+public class OreBauxiteBlockDataContainer extends SingleBlockDataContainer.Holder implements RecipeCreator {
 
     public static final OreBauxiteBlockDataContainer INSTANCE = new OreBauxiteBlockDataContainer();
 

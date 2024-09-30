@@ -67,7 +67,7 @@ public class AVPRecipeProvider extends RecipeProvider {
         AVPWeaponPartRecipes.addWeaponPartRecipes(recipeOutput);
         AVPWeaponRecipes.addWeaponRecipes(recipeOutput);
 
-        AVPBlockDataRegistry.INSTANCE.getEntries().forEach(blockDataContainer -> blockDataContainer.createRecipes(recipeOutput));
+        AVPBlockDataRegistry.INSTANCE.getRecipeCreators().forEach(blockDataContainer -> blockDataContainer.createRecipes(recipeOutput));
     }
 
     public static @NotNull Criterion<InventoryChangeTrigger.TriggerInstance> has(@NotNull ItemLike itemLike) {

@@ -16,11 +16,12 @@ import org.avp.api.common.data.block.BlockModelDataType;
 import org.avp.api.common.data.block.BlockModelRenderType;
 import org.avp.api.common.data.block.BlockTagData;
 import org.avp.api.common.data.block.ExtendedBlockDataContainer;
+import org.avp.api.common.data.block.RecipeCreator;
 import org.avp.api.common.data.block.SingleBlockDataContainer;
 import org.avp.api.common.data.loot_table.LootProviders;
 import org.avp.common.game.block.AVPWoodType;
 
-public class ParadiseBlockSetDataContainer extends ExtendedBlockDataContainer {
+public class ParadiseBlockSetDataContainer extends ExtendedBlockDataContainer implements RecipeCreator {
 
     private static final String REGISTRY_NAME_PREFIX = "paradise_";
 

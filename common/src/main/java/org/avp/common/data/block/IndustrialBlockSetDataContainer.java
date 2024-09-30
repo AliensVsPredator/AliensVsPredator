@@ -12,13 +12,14 @@ import java.util.Set;
 import org.avp.api.common.data.block.BlockModelData;
 import org.avp.api.common.data.block.BlockTagData;
 import org.avp.api.common.data.block.ExtendedBlockDataContainer;
+import org.avp.api.common.data.block.RecipeCreator;
 import org.avp.api.common.data.block.SingleBlockDataContainer;
 import org.avp.api.common.data.loot_table.LootProviders;
 import org.avp.common.data.recipe.AVPRecipeBuilder;
 import org.avp.common.data.tag.AVPItemTags;
 import org.avp.common.registry.item.AVPItemRegistry;
 
-public class IndustrialBlockSetDataContainer extends ExtendedBlockDataContainer {
+public class IndustrialBlockSetDataContainer extends ExtendedBlockDataContainer implements RecipeCreator {
 
     private static final String REGISTRY_NAME_PREFIX = "industrial_";
 
