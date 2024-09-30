@@ -1,12 +1,15 @@
 package org.avp.common.registry.block;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.avp.api.common.data.block.BlockDataContainer;
 import org.avp.api.common.data.block.ExtendedBlockDataContainer;
+import org.avp.api.common.data.block.RecipeCreator;
 import org.avp.api.common.data.block.SingleBlockDataContainer;
 import org.avp.api.service.Services;
 import org.avp.common.data.block.EngineerShipBlockSetDataContainer;
@@ -46,11 +49,21 @@ public class AVPBlockDataRegistry {
 
     private final Map<String, SingleBlockDataContainer.Holder> entries = new LinkedHashMap<>();
 
+    private final List<RecipeCreator> recipeCreators = new ArrayList<>();
+
     public Collection<SingleBlockDataContainer.Holder> getEntries() {
         return Collections.unmodifiableCollection(entries.values());
     }
 
+    public Collection<RecipeCreator> getRecipeCreators() {
+        return Collections.unmodifiableCollection(recipeCreators);
+    }
+
     public void addEntry(BlockDataContainer blockDataContainer) {
+        if (blockDataContainer instanceof RecipeCreator recipeCreator) {
+            recipeCreators.add(recipeCreator);
+        }
+
         if (blockDataContainer instanceof SingleBlockDataContainer.Holder holder) {
             entries.put(holder.getRegistryName(), holder);
             holder.getVariants().forEach(this::addEntry);

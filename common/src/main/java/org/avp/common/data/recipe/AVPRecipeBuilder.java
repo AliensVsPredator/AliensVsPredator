@@ -98,7 +98,7 @@ public class AVPRecipeBuilder {
 
             SimpleCookingRecipeBuilder.blasting(ingredient, recipeCategory, destination, experience, cookTime)
                 .unlockedBy("has_ingredient", AVPRecipeProvider.has(source))
-                .save(avpRecipeBuilder.getRecipeOutput(), AVPConstants.MOD_ID + ":" + sourceName + "_from_blasting_" + destinationName);
+                .save(avpRecipeBuilder.getRecipeOutput(), AVPConstants.MOD_ID + ":" + destinationName + "_from_blasting_" + sourceName);
         }
     }
 
@@ -166,6 +166,8 @@ public class AVPRecipeBuilder {
 
         private RecipeCategory recipeCategory;
 
+        private UnaryOperator<String> customNameOperator;
+
         private AVPShapelessRecipeBuilder(AVPRecipeBuilder avpRecipeBuilder) {
             this.avpRecipeBuilder = avpRecipeBuilder;
             this.transformations = new ArrayList<>();
@@ -177,23 +179,30 @@ public class AVPRecipeBuilder {
             return this;
         }
 
+        public AVPShapelessRecipeBuilder withCustomName(UnaryOperator<String> customNameOperator) {
+            this.customNameOperator = customNameOperator;
+            return this;
+        }
+
         public AVPShapelessRecipeBuilder requires(char key, int count, Ingredient ingredient) {
             transformations.add((shapelessRecipeBuilder -> {
                 shapelessRecipeBuilder.requires(ingredient, count);
                 var ingredientItemStacks = ingredient.getItems();
+
                 for (int i = 0; i < ingredientItemStacks.length; i++) {
-                    var itemStack = ingredientItemStacks[0];
+                    var itemStack = ingredientItemStacks[i];
                     shapelessRecipeBuilder.unlockedBy("has_" + key + "_" + i, AVPRecipeProvider.has(itemStack.getItem()));
                 }
+
                 return shapelessRecipeBuilder;
             }));
             return this;
         }
 
-        public AVPShapelessRecipeBuilder requires(char key, int count, ItemLike ingredient) {
+        public AVPShapelessRecipeBuilder requires(char key, int count, ItemLike itemLike) {
             transformations.add((shapelessRecipeBuilder -> {
-                shapelessRecipeBuilder.requires(ingredient, count);
-                shapelessRecipeBuilder.unlockedBy("has_" + key, AVPRecipeProvider.has(ingredient));
+                shapelessRecipeBuilder.requires(itemLike, count);
+                shapelessRecipeBuilder.unlockedBy("has_" + key, AVPRecipeProvider.has(itemLike));
                 return shapelessRecipeBuilder;
             }));
             return this;
@@ -215,7 +224,12 @@ public class AVPRecipeBuilder {
                 builder = transformation.apply(builder);
             }
 
-            builder.save(avpRecipeBuilder.getRecipeOutput());
+            if (customNameOperator == null) {
+                builder.save(avpRecipeBuilder.getRecipeOutput());
+            } else {
+                var destinationName = getNameForItem(destination);
+                builder.save(avpRecipeBuilder.getRecipeOutput(), customNameOperator.apply(destinationName));
+            }
         }
     }
 
@@ -230,6 +244,8 @@ public class AVPRecipeBuilder {
         private float experience;
 
         private int cookTime;
+
+        private UnaryOperator<String> customNameOperator;
 
         private AVPSmeltingRecipeBuilder(AVPRecipeBuilder avpRecipeBuilder, ItemLike source) {
             this.avpRecipeBuilder = avpRecipeBuilder;
@@ -253,14 +269,22 @@ public class AVPRecipeBuilder {
             return this;
         }
 
+        public AVPSmeltingRecipeBuilder withCustomName(UnaryOperator<String> customNameOperator) {
+            this.customNameOperator = customNameOperator;
+            return this;
+        }
+
         public void into(ItemLike destination) {
             var ingredient = Ingredient.of(source);
             var sourceName = getNameForItem(source);
             var destinationName = getNameForItem(destination);
+            var customName = customNameOperator == null
+                ? destinationName + "_from_smelting_" + sourceName
+                : customNameOperator.apply(destinationName);
 
             SimpleCookingRecipeBuilder.smelting(ingredient, recipeCategory, destination, experience, cookTime)
                 .unlockedBy("has_ingredient", AVPRecipeProvider.has(source))
-                .save(avpRecipeBuilder.getRecipeOutput(), AVPConstants.MOD_ID + ":" + sourceName + "_from_smelting_" + destinationName);
+                .save(avpRecipeBuilder.getRecipeOutput(), AVPConstants.MOD_ID + ":" + customName);
         }
     }
 
