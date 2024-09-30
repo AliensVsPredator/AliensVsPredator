@@ -7,6 +7,8 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 
 import org.avp.common.AVPConstants;
+import org.avp.common.data.block.metal.MetalSteelBlockSetDataContainer;
+import org.avp.common.data.recipe.AVPRecipeHelper;
 import org.avp.common.data.recipe.AVPRecipeProvider;
 import org.avp.common.registry.item.AVPItemRegistry;
 
@@ -18,7 +20,14 @@ public final class AVPSteelRecipes {
     public static void addSteelRecipes(RecipeOutput recipeOutput) {
         var ingotHolder = AVPItemRegistry.INSTANCE.ingotSteel;
 
-        // AVPMetalRecipeHelper.addFullMetalSetRecipes(recipeOutput, ingotHolder, AVPBlockRegistry.INSTANCE.steel);
+        // TODO: Remove eventually.
+        // Decompressed items from blocks
+        AVPRecipeHelper.decompressedItemRecipe(
+            recipeOutput,
+            RecipeCategory.MISC,
+            MetalSteelBlockSetDataContainer.INSTANCE.getHolder().get(),
+            AVPItemRegistry.INSTANCE.ingotSteel.get()
+        );
 
         // Smelting
         // TODO:

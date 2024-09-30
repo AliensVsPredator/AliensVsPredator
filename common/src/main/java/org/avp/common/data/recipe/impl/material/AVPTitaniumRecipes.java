@@ -3,6 +3,7 @@ package org.avp.common.data.recipe.impl.material;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
 
+import org.avp.common.data.block.metal.MetalTitaniumBlockSetDataContainer;
 import org.avp.common.data.block.ore.OreTitaniumBlockDataContainer;
 import org.avp.common.data.block.raw.RawTitaniumBlockDataContainer;
 import org.avp.common.data.recipe.AVPRecipeHelper;
@@ -14,10 +15,6 @@ import org.avp.common.registry.item.AVPItemRegistry;
 public final class AVPTitaniumRecipes {
 
     public static void addTitaniumRecipes(RecipeOutput recipeOutput) {
-        var ingotHolder = AVPItemRegistry.INSTANCE.ingotTitanium;
-
-        // AVPMetalRecipeHelper.addFullMetalSetRecipes(recipeOutput, ingotHolder, AVPBlockRegistry.INSTANCE.titanium);
-
         // Compressed raw
         AVPRecipeHelper.compressedBlockRecipe(
             recipeOutput,
@@ -43,7 +40,14 @@ public final class AVPTitaniumRecipes {
             AVPItemRegistry.INSTANCE.ingotTitanium
         );
 
-        // Furnace recipes
+        // TODO: Remove eventually.
+        // Decompressed items from blocks
+        AVPRecipeHelper.decompressedItemRecipe(
+            recipeOutput,
+            RecipeCategory.MISC,
+            MetalTitaniumBlockSetDataContainer.INSTANCE.getHolder().get(),
+            AVPItemRegistry.INSTANCE.ingotTitanium.get()
+        );
     }
 
     private AVPTitaniumRecipes() {
