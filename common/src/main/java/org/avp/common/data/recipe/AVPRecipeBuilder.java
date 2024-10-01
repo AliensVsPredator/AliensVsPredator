@@ -35,7 +35,7 @@ public class AVPRecipeBuilder {
         return new AVPBlastingRecipeBuilder(this, source);
     }
 
-    public AVPShapedRecipeBuilder shape() {
+    public AVPShapedRecipeBuilder shaped() {
         return new AVPShapedRecipeBuilder(this);
     }
 

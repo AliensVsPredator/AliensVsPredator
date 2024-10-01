@@ -101,7 +101,7 @@ public class PaddingBlockSetDataContainer extends ExtendedBlockDataContainer imp
                 .into(1, coloredPaddingBlockSet.panel());
 
             // Pipes recipe
-            builder.shape()
+            builder.shaped()
                 .withCategory(RecipeCategory.BUILDING_BLOCKS)
                 .define('A', coloredPaddingBlockSet.panel())
                 .define('B', Items.IRON_NUGGET)
@@ -110,7 +110,7 @@ public class PaddingBlockSetDataContainer extends ExtendedBlockDataContainer imp
                 .into(2, coloredPaddingBlockSet.pipes());
 
             // Square recipe
-            builder.shape()
+            builder.shaped()
                 .withCategory(RecipeCategory.BUILDING_BLOCKS)
                 .define('A', coloredPaddingBlockSet.panel())
                 .pattern("AA")
@@ -118,7 +118,7 @@ public class PaddingBlockSetDataContainer extends ExtendedBlockDataContainer imp
                 .into(4, coloredPaddingBlockSet.square());
 
             // Tile recipe
-            builder.shape()
+            builder.shaped()
                 .withCategory(RecipeCategory.BUILDING_BLOCKS)
                 .define('A', coloredPaddingBlockSet.square())
                 .pattern("AA")

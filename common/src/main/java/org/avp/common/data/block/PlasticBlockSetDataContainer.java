@@ -81,7 +81,7 @@ public class PlasticBlockSetDataContainer extends ExtendedBlockDataContainer imp
             var dyeItem = DyeItem.byColor(dyeColor);
 
             if (dyeColor == DyeColor.GREEN) {
-                builder.shape()
+                builder.shaped()
                     .withCategory(RecipeCategory.BUILDING_BLOCKS)
                     .define('A', AVPItemRegistry.INSTANCE.polymer.get())
                     .pattern("AA")

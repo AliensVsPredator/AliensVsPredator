@@ -118,7 +118,7 @@ public class MetalTitaniumBlockSetDataContainer extends ExtendedBlockDataContain
         var builder = AVPRecipeBuilder.with(recipeOutput);
 
         // Ingots -> base block
-        builder.shape()
+        builder.shaped()
             .withCategory(RecipeCategory.BUILDING_BLOCKS)
             .define('A', AVPItemRegistry.INSTANCE.ingotTitanium.get())
             .pattern("AAA")
@@ -130,7 +130,7 @@ public class MetalTitaniumBlockSetDataContainer extends ExtendedBlockDataContain
             .withCategory(RecipeCategory.BUILDING_BLOCKS);
 
         // 1 Base block -> 4 cut blocks
-        builder.shape()
+        builder.shaped()
             .withCategory(RecipeCategory.BUILDING_BLOCKS)
             .define('A', base)
             .pattern("AA")

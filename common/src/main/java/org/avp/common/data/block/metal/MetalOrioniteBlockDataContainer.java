@@ -50,7 +50,7 @@ public class MetalOrioniteBlockDataContainer extends ExtendedBlockDataContainer 
         var builder = AVPRecipeBuilder.with(recipeOutput);
 
         // Ingots -> block
-        builder.shape()
+        builder.shaped()
             .withCategory(RecipeCategory.BUILDING_BLOCKS)
             .define('A', AVPItemRegistry.INSTANCE.ingotOrionite.get())
             .pattern("AAA")

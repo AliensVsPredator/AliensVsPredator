@@ -90,7 +90,7 @@ public class AlienBlockSetDataContainer extends ExtendedBlockDataContainer imple
     public void createRecipes(RecipeOutput recipeOutput) {
         var builder = AVPRecipeBuilder.with(recipeOutput);
 
-        builder.shape()
+        builder.shaped()
             .withCategory(RecipeCategory.BUILDING_BLOCKS)
             .define('A', AVPItemRegistry.INSTANCE.resinBall.get())
             .pattern("AAA")
@@ -98,7 +98,7 @@ public class AlienBlockSetDataContainer extends ExtendedBlockDataContainer imple
             .pattern("AAA")
             .into(3, resin);
 
-        builder.shape()
+        builder.shaped()
             .withCategory(RecipeCategory.BUILDING_BLOCKS)
             .define('A', AVPItemRegistry.INSTANCE.resinBall.get())
             .pattern(" A ")
@@ -106,7 +106,7 @@ public class AlienBlockSetDataContainer extends ExtendedBlockDataContainer imple
             .pattern(" A ")
             .into(3, resinVein);
 
-        builder.shape()
+        builder.shaped()
             .withCategory(RecipeCategory.BUILDING_BLOCKS)
             .define('A', AVPItemRegistry.INSTANCE.resinBall.get())
             .pattern("A A")

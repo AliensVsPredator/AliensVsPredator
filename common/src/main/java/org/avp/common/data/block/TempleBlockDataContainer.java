@@ -116,7 +116,7 @@ public class TempleBlockDataContainer extends ExtendedBlockDataContainer impleme
     public void createRecipes(RecipeOutput recipeOutput) {
         var builder = AVPRecipeBuilder.with(recipeOutput);
 
-        builder.shape()
+        builder.shaped()
             .withCategory(RecipeCategory.BUILDING_BLOCKS)
             .define('A', Items.SKELETON_SKULL)
             .pattern("AA")

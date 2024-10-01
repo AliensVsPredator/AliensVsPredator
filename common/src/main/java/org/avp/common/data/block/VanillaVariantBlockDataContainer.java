@@ -59,7 +59,7 @@ public class VanillaVariantBlockDataContainer extends ExtendedBlockDataContainer
         // Fence
         if (fence != null) {
             // TODO:
-            builder.shape()
+            builder.shaped()
                 .withCategory(RecipeCategory.BUILDING_BLOCKS)
                 .define('A', base)
                 .define('B', Items.STICK)
@@ -71,7 +71,7 @@ public class VanillaVariantBlockDataContainer extends ExtendedBlockDataContainer
         // Fence Gate
         if (fenceGate != null) {
             // TODO:
-            builder.shape()
+            builder.shaped()
                 .withCategory(RecipeCategory.BUILDING_BLOCKS)
                 .define('A', Items.STICK)
                 .define('B', base)
@@ -86,7 +86,7 @@ public class VanillaVariantBlockDataContainer extends ExtendedBlockDataContainer
         // Slab
         if (slab != null) {
             stonecut.into(2, slab);
-            builder.shape()
+            builder.shaped()
                 .withCategory(RecipeCategory.BUILDING_BLOCKS)
                 .define('A', base)
                 .pattern("AAA")
@@ -96,7 +96,7 @@ public class VanillaVariantBlockDataContainer extends ExtendedBlockDataContainer
         // Stairs
         if (stairs != null) {
             stonecut.into(1, stairs);
-            builder.shape()
+            builder.shaped()
                 .withCategory(RecipeCategory.BUILDING_BLOCKS)
                 .define('A', base)
                 .pattern("A  ")
@@ -108,7 +108,7 @@ public class VanillaVariantBlockDataContainer extends ExtendedBlockDataContainer
         // Wall
         if (wall != null) {
             stonecut.into(1, wall);
-            builder.shape()
+            builder.shaped()
                 .withCategory(RecipeCategory.BUILDING_BLOCKS)
                 .define('A', base)
                 .pattern("AAA")

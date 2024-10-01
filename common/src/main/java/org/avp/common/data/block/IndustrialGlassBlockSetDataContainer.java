@@ -88,7 +88,7 @@ public class IndustrialGlassBlockSetDataContainer extends ExtendedBlockDataConta
             var dyeItem = DyeItem.byColor(dyeColor);
 
             // Industrial glass combined with dyes creates colored industrial glass.
-            builder.shape()
+            builder.shaped()
                 .withCategory(RecipeCategory.BUILDING_BLOCKS)
                 .define('A', base)
                 .define('B', dyeItem)

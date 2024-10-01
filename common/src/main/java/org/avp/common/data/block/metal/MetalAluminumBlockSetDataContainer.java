@@ -118,7 +118,7 @@ public class MetalAluminumBlockSetDataContainer extends ExtendedBlockDataContain
         var builder = AVPRecipeBuilder.with(recipeOutput);
 
         // Ingots -> block
-        builder.shape()
+        builder.shaped()
             .withCategory(RecipeCategory.BUILDING_BLOCKS)
             .define('A', AVPItemRegistry.INSTANCE.ingotAluminum.get())
             .pattern("AAA")
@@ -136,7 +136,7 @@ public class MetalAluminumBlockSetDataContainer extends ExtendedBlockDataContain
             .withCategory(RecipeCategory.BUILDING_BLOCKS);
 
         // 1 Base block -> 4 cut blocks
-        builder.shape()
+        builder.shaped()
             .withCategory(RecipeCategory.BUILDING_BLOCKS)
             .define('A', base)
             .pattern("AA")
