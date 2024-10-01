@@ -12,12 +12,13 @@ import java.util.Set;
 
 import org.avp.api.common.data.block.BlockModelData;
 import org.avp.api.common.data.block.BlockTagData;
+import org.avp.api.common.data.block.ExtendedBlockDataContainer;
 import org.avp.api.common.data.block.RecipeCreator;
 import org.avp.api.common.data.block.SingleBlockDataContainer;
 import org.avp.api.common.data.loot_table.LootProviders;
 import org.avp.common.data.recipe.AVPRecipeBuilder;
 
-public class TempleBlockDataContainer extends SingleBlockDataContainer.Holder implements RecipeCreator {
+public class TempleBlockDataContainer extends ExtendedBlockDataContainer implements RecipeCreator {
 
     private static final String REGISTRY_NAME_PREFIX = "temple_";
 
@@ -29,6 +30,8 @@ public class TempleBlockDataContainer extends SingleBlockDataContainer.Holder im
     private static final BlockTagData PICKAXE_TAGS = BlockTagData.ofBlock(
         Set.of(BlockTags.MINEABLE_WITH_PICKAXE, BlockTags.NEEDS_IRON_TOOL)
     );
+
+    public final SingleBlockDataContainer.Holder base;
 
     private final VanillaVariantBlockDataContainer baseVariantSet;
 
@@ -53,25 +56,27 @@ public class TempleBlockDataContainer extends SingleBlockDataContainer.Holder im
     private final SingleBlockDataContainer.Holder wallBase;
 
     protected TempleBlockDataContainer() {
-        super(
-            () -> new Block(STONE_PROPERTIES),
-            REGISTRY_NAME_PREFIX + "brick",
-            BlockModelData.NORMAL_CUBE,
-            PICKAXE_TAGS,
-            LootProviders.SELF
+        this.base = this.addVariant(
+            new SingleBlockDataContainer(
+                () -> new Block(STONE_PROPERTIES),
+                REGISTRY_NAME_PREFIX + "brick",
+                BlockModelData.NORMAL_CUBE,
+                PICKAXE_TAGS,
+                LootProviders.SELF
+            )
         );
 
         this.baseVariantSet = this.addVariant(
-            new VanillaVariantBlockDataContainer(this)
+            new VanillaVariantBlockDataContainer(base)
                 .withSlab()
                 .withStairs()
                 .withWall()
         );
 
-        this.brickChestburster = this.addVariant(this.extend(REGISTRY_NAME_PREFIX + "brick_chestburster"));
-        this.brickFacehugger = this.addVariant(this.extend(REGISTRY_NAME_PREFIX + "brick_facehugger"));
+        this.brickChestburster = this.addVariant(base.extend(REGISTRY_NAME_PREFIX + "brick_chestburster"));
+        this.brickFacehugger = this.addVariant(base.extend(REGISTRY_NAME_PREFIX + "brick_facehugger"));
 
-        this.brickSingle = this.addVariant(this.extend(REGISTRY_NAME_PREFIX + "brick_single"));
+        this.brickSingle = this.addVariant(base.extend(REGISTRY_NAME_PREFIX + "brick_single"));
 
         this.brickSingleVariantSet = this.addVariant(
             new VanillaVariantBlockDataContainer(brickSingle)
@@ -80,7 +85,7 @@ public class TempleBlockDataContainer extends SingleBlockDataContainer.Holder im
                 .withWall()
         );
 
-        this.floor = this.addVariant(this.extend(REGISTRY_NAME_PREFIX + "floor"));
+        this.floor = this.addVariant(base.extend(REGISTRY_NAME_PREFIX + "floor"));
 
         this.floorVariantSet = this.addVariant(
             new VanillaVariantBlockDataContainer(floor)
@@ -90,12 +95,12 @@ public class TempleBlockDataContainer extends SingleBlockDataContainer.Holder im
         );
 
         this.skulls = this.addVariant(
-            this.transform(REGISTRY_NAME_PREFIX + "skulls")
+            base.transform(REGISTRY_NAME_PREFIX + "skulls")
                 .withSupplier(() -> new Block(SKULL_PROPERTIES))
                 .build()
         );
 
-        this.tile = this.addVariant(this.extend(REGISTRY_NAME_PREFIX + "tile"));
+        this.tile = this.addVariant(base.extend(REGISTRY_NAME_PREFIX + "tile"));
 
         this.tileVariantSet = this.addVariant(
             new VanillaVariantBlockDataContainer(tile)
@@ -104,7 +109,7 @@ public class TempleBlockDataContainer extends SingleBlockDataContainer.Holder im
                 .withWall()
         );
 
-        this.wallBase = this.addVariant(this.extend(REGISTRY_NAME_PREFIX + "wall_base"));
+        this.wallBase = this.addVariant(base.extend(REGISTRY_NAME_PREFIX + "wall_base"));
     }
 
     @Override
@@ -118,7 +123,7 @@ public class TempleBlockDataContainer extends SingleBlockDataContainer.Holder im
             .pattern("AA")
             .into(1, skulls);
 
-        var stonecut = builder.stonecut(this);
+        var stonecut = builder.stonecut(base);
 
         stonecut.into(1, brickChestburster);
         stonecut.into(1, brickFacehugger);
@@ -135,7 +140,7 @@ public class TempleBlockDataContainer extends SingleBlockDataContainer.Holder im
         var floorStonecut = builder.stonecut(floor);
         floorStonecut.into(1, wallBase);
         floorStonecut.into(1, brickSingle);
-        floorStonecut.into(1, this);
+        floorStonecut.into(1, base);
         floorStonecut.into(1, tile);
 
         baseVariantSet.createRecipes(recipeOutput);

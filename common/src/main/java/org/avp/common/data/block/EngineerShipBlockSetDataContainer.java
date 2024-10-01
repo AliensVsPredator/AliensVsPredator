@@ -11,11 +11,12 @@ import java.util.Set;
 
 import org.avp.api.common.data.block.BlockModelData;
 import org.avp.api.common.data.block.BlockTagData;
+import org.avp.api.common.data.block.ExtendedBlockDataContainer;
 import org.avp.api.common.data.block.RecipeCreator;
 import org.avp.api.common.data.block.SingleBlockDataContainer;
 import org.avp.api.common.data.loot_table.LootProviders;
 
-public class EngineerShipBlockSetDataContainer extends SingleBlockDataContainer.Holder implements RecipeCreator {
+public class EngineerShipBlockSetDataContainer extends ExtendedBlockDataContainer implements RecipeCreator {
 
     private static final String REGISTRY_NAME_PREFIX = "engineer_ship_";
 
@@ -29,6 +30,8 @@ public class EngineerShipBlockSetDataContainer extends SingleBlockDataContainer.
     private static final BlockTagData SHOVEL_TAGS = BlockTagData.ofBlock(
         Set.of(BlockTags.MINEABLE_WITH_SHOVEL, BlockTags.NEEDS_DIAMOND_TOOL)
     );
+
+    private final SingleBlockDataContainer.Holder base;
 
     private final VanillaVariantBlockDataContainer baseVariantSet;
 
@@ -93,69 +96,71 @@ public class EngineerShipBlockSetDataContainer extends SingleBlockDataContainer.
     private final VanillaVariantBlockDataContainer wall4VariantSet;
 
     protected EngineerShipBlockSetDataContainer() {
-        super(
-            () -> new Block(METAL_PROPERTIES),
-            REGISTRY_NAME_PREFIX + "brick",
-            BlockModelData.NORMAL_CUBE,
-            PICKAXE_TAGS,
-            LootProviders.SELF
+        this.base = this.addVariant(
+            new SingleBlockDataContainer(
+                () -> new Block(METAL_PROPERTIES),
+                REGISTRY_NAME_PREFIX + "brick",
+                BlockModelData.NORMAL_CUBE,
+                PICKAXE_TAGS,
+                LootProviders.SELF
+            )
         );
 
         // Variants
-        this.baseVariantSet = createFullVanillaVariantSet(this);
+        this.baseVariantSet = createFullVanillaVariantSet(base);
 
-        brick1 = this.addVariant(this.extend(REGISTRY_NAME_PREFIX + "brick_1"));
+        brick1 = this.addVariant(base.extend(REGISTRY_NAME_PREFIX + "brick_1"));
         this.brick1VariantSet = createFullVanillaVariantSet(brick1);
 
-        brick2 = this.addVariant(this.extend(REGISTRY_NAME_PREFIX + "brick_2"));
+        brick2 = this.addVariant(base.extend(REGISTRY_NAME_PREFIX + "brick_2"));
         this.brick2VariantSet = createFullVanillaVariantSet(brick2);
 
-        brick3 = this.addVariant(this.extend(REGISTRY_NAME_PREFIX + "brick_3"));
+        brick3 = this.addVariant(base.extend(REGISTRY_NAME_PREFIX + "brick_3"));
         this.brick3VariantSet = createFullVanillaVariantSet(brick3);
 
-        this.column1 = this.addVariant(this.extend(REGISTRY_NAME_PREFIX + "column_1"));
-        this.column2 = this.addVariant(this.extend(REGISTRY_NAME_PREFIX + "column_2"));
+        this.column1 = this.addVariant(base.extend(REGISTRY_NAME_PREFIX + "column_1"));
+        this.column2 = this.addVariant(base.extend(REGISTRY_NAME_PREFIX + "column_2"));
 
         this.floor = this.addVariant(
-            this.transform(REGISTRY_NAME_PREFIX + "floor")
+            base.transform(REGISTRY_NAME_PREFIX + "floor")
                 .withBlockTagData(SHOVEL_TAGS)
                 .build()
 
         );
         this.gravel = this.addVariant(
-            this.transform(REGISTRY_NAME_PREFIX + "gravel")
+            base.transform(REGISTRY_NAME_PREFIX + "gravel")
                 .withBlockTagData(SHOVEL_TAGS)
                 .build()
 
         );
 
-        this.material0 = this.addVariant(this.extend(REGISTRY_NAME_PREFIX + "material_0"));
+        this.material0 = this.addVariant(base.extend(REGISTRY_NAME_PREFIX + "material_0"));
         this.material0VariantSet = createFullVanillaVariantSet(material0);
 
-        this.material1 = this.addVariant(this.extend(REGISTRY_NAME_PREFIX + "material_1"));
+        this.material1 = this.addVariant(base.extend(REGISTRY_NAME_PREFIX + "material_1"));
         this.material1VariantSet = createFullVanillaVariantSet(material1);
 
-        this.material2 = this.addVariant(this.extend(REGISTRY_NAME_PREFIX + "material_2"));
+        this.material2 = this.addVariant(base.extend(REGISTRY_NAME_PREFIX + "material_2"));
         this.material2VariantSet = createFullVanillaVariantSet(material2);
 
-        this.rock = this.addVariant(this.extend(REGISTRY_NAME_PREFIX + "rock"));
-        this.rock1 = this.addVariant(this.extend(REGISTRY_NAME_PREFIX + "rock_1"));
-        this.rock2 = this.addVariant(this.extend(REGISTRY_NAME_PREFIX + "rock_2"));
-        this.rock3 = this.addVariant(this.extend(REGISTRY_NAME_PREFIX + "rock_3"));
+        this.rock = this.addVariant(base.extend(REGISTRY_NAME_PREFIX + "rock"));
+        this.rock1 = this.addVariant(base.extend(REGISTRY_NAME_PREFIX + "rock_1"));
+        this.rock2 = this.addVariant(base.extend(REGISTRY_NAME_PREFIX + "rock_2"));
+        this.rock3 = this.addVariant(base.extend(REGISTRY_NAME_PREFIX + "rock_3"));
 
-        this.wall = this.addVariant(this.extend(REGISTRY_NAME_PREFIX + "wall"));
+        this.wall = this.addVariant(base.extend(REGISTRY_NAME_PREFIX + "wall"));
         this.wallVariantSet = createFullVanillaVariantSet(wall);
 
-        this.wall1 = this.addVariant(this.extend(REGISTRY_NAME_PREFIX + "wall_1"));
+        this.wall1 = this.addVariant(base.extend(REGISTRY_NAME_PREFIX + "wall_1"));
         this.wall1VariantSet = createFullVanillaVariantSet(wall1);
 
-        this.wall2 = this.addVariant(this.extend(REGISTRY_NAME_PREFIX + "wall_2"));
+        this.wall2 = this.addVariant(base.extend(REGISTRY_NAME_PREFIX + "wall_2"));
         this.wall2VariantSet = createFullVanillaVariantSet(wall2);
 
-        this.wall3 = this.addVariant(this.extend(REGISTRY_NAME_PREFIX + "wall_3"));
+        this.wall3 = this.addVariant(base.extend(REGISTRY_NAME_PREFIX + "wall_3"));
         this.wall3VariantSet = createFullVanillaVariantSet(wall3);
 
-        this.wall4 = this.addVariant(this.extend(REGISTRY_NAME_PREFIX + "wall_4"));
+        this.wall4 = this.addVariant(base.extend(REGISTRY_NAME_PREFIX + "wall_4"));
         this.wall4VariantSet = createFullVanillaVariantSet(wall4);
     }
 

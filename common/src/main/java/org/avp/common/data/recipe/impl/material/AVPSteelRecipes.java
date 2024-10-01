@@ -25,7 +25,7 @@ public final class AVPSteelRecipes {
         AVPRecipeHelper.decompressedItemRecipe(
             recipeOutput,
             RecipeCategory.MISC,
-            MetalSteelBlockSetDataContainer.INSTANCE.getHolder().get(),
+            MetalSteelBlockSetDataContainer.INSTANCE.base.getHolder().get(),
             AVPItemRegistry.INSTANCE.ingotSteel.get()
         );
 

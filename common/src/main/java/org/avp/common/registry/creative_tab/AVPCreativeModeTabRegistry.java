@@ -84,7 +84,7 @@ public final class AVPCreativeModeTabRegistry extends AVPDeferredRegistry<Creati
         createBuilderHolder(
             "blocks",
             () -> CreativeModeTab.builder(CreativeModeTab.Row.TOP, 1)
-                .icon(TempleBlockDataContainer.INSTANCE.getHolder().get().asItem()::getDefaultInstance)
+                .icon(TempleBlockDataContainer.INSTANCE.base.getHolder().get().asItem()::getDefaultInstance)
                 .displayItems(
                     (itemDisplayParameters, output) -> {
                         output.acceptAll(

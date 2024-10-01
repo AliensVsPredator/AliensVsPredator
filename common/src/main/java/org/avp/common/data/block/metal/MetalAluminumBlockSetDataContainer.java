@@ -13,6 +13,7 @@ import java.util.Set;
 
 import org.avp.api.common.data.block.BlockModelData;
 import org.avp.api.common.data.block.BlockTagData;
+import org.avp.api.common.data.block.ExtendedBlockDataContainer;
 import org.avp.api.common.data.block.RecipeCreator;
 import org.avp.api.common.data.block.SingleBlockDataContainer;
 import org.avp.api.common.data.loot_table.LootProviders;
@@ -20,7 +21,7 @@ import org.avp.common.data.block.VanillaVariantBlockDataContainer;
 import org.avp.common.data.recipe.AVPRecipeBuilder;
 import org.avp.common.registry.item.AVPItemRegistry;
 
-public class MetalAluminumBlockSetDataContainer extends SingleBlockDataContainer.Holder implements RecipeCreator {
+public class MetalAluminumBlockSetDataContainer extends ExtendedBlockDataContainer implements RecipeCreator {
 
     public static final MetalAluminumBlockSetDataContainer INSTANCE = new MetalAluminumBlockSetDataContainer();
 
@@ -30,6 +31,8 @@ public class MetalAluminumBlockSetDataContainer extends SingleBlockDataContainer
         .requiresCorrectToolForDrops()
         .sound(SoundType.COPPER)
         .strength(4, 6);
+
+    private final SingleBlockDataContainer.Holder base;
 
     private final SingleBlockDataContainer.Holder cut;
 
@@ -52,16 +55,18 @@ public class MetalAluminumBlockSetDataContainer extends SingleBlockDataContainer
     private final SingleBlockDataContainer.Holder vent;
 
     protected MetalAluminumBlockSetDataContainer() {
-        super(
-            () -> new Block(PROPERTIES),
-            "aluminum_block",
-            BlockModelData.NORMAL_CUBE,
-            BlockTagData.ofBlock(Set.of(BlockTags.MINEABLE_WITH_PICKAXE, BlockTags.NEEDS_STONE_TOOL)),
-            LootProviders.SELF
+        this.base = this.addVariant(
+            new SingleBlockDataContainer(
+                () -> new Block(PROPERTIES),
+                "aluminum_block",
+                BlockModelData.NORMAL_CUBE,
+                BlockTagData.ofBlock(Set.of(BlockTags.MINEABLE_WITH_PICKAXE, BlockTags.NEEDS_STONE_TOOL)),
+                LootProviders.SELF
+            )
         );
 
         // Cut
-        this.cut = this.addVariant(this.extend("aluminum_cut"));
+        this.cut = this.addVariant(base.extend("aluminum_cut"));
         this.cutVariantSet = this.addVariant(
             new VanillaVariantBlockDataContainer(cut)
                 .withSlab()
@@ -71,7 +76,7 @@ public class MetalAluminumBlockSetDataContainer extends SingleBlockDataContainer
 
         // Grate
         this.grate = this.addVariant(
-            this.transform("aluminum_grate")
+            base.transform("aluminum_grate")
                 .withSupplier(() -> new Block(BlockBehaviour.Properties.of().noOcclusion()))
                 .withModelData(BlockModelData.TRANSPARENT_CUBE)
                 .build()
@@ -79,7 +84,7 @@ public class MetalAluminumBlockSetDataContainer extends SingleBlockDataContainer
         );
 
         // Plated
-        this.plated = this.addVariant(this.extend("aluminum_plated"));
+        this.plated = this.addVariant(base.extend("aluminum_plated"));
         this.platedVariantSet = this.addVariant(
             new VanillaVariantBlockDataContainer(plated)
                 .withSlab()
@@ -88,7 +93,7 @@ public class MetalAluminumBlockSetDataContainer extends SingleBlockDataContainer
         );
 
         // Plated Chevron
-        this.platedChevron = this.addVariant(this.extend("aluminum_plated_chevron"));
+        this.platedChevron = this.addVariant(base.extend("aluminum_plated_chevron"));
         this.platedChevronVariantSet = this.addVariant(
             new VanillaVariantBlockDataContainer(platedChevron)
                 .withSlab()
@@ -97,7 +102,7 @@ public class MetalAluminumBlockSetDataContainer extends SingleBlockDataContainer
         );
 
         // Plated Stack
-        this.platedStack = this.addVariant(this.extend("aluminum_plated_stack"));
+        this.platedStack = this.addVariant(base.extend("aluminum_plated_stack"));
         this.platedStackVariantSet = this.addVariant(
             new VanillaVariantBlockDataContainer(platedStack)
                 .withSlab()
@@ -105,7 +110,7 @@ public class MetalAluminumBlockSetDataContainer extends SingleBlockDataContainer
                 .withWall()
         );
 
-        this.vent = this.addVariant(this.extend("aluminum_vent"));
+        this.vent = this.addVariant(base.extend("aluminum_vent"));
     }
 
     @Override
@@ -119,21 +124,21 @@ public class MetalAluminumBlockSetDataContainer extends SingleBlockDataContainer
             .pattern("AAA")
             .pattern("AAA")
             .pattern("AAA")
-            .into(1, this);
+            .into(1, base);
 
         // Block -> ingots
         builder.shapeless()
             .withCategory(RecipeCategory.MISC)
-            .requires(1, this)
+            .requires(1, base)
             .into(9, AVPItemRegistry.INSTANCE.ingotAluminum.get());
 
-        var stonecutBase = builder.stonecut(this)
+        var stonecutBase = builder.stonecut(base)
             .withCategory(RecipeCategory.BUILDING_BLOCKS);
 
         // 1 Base block -> 4 cut blocks
         builder.shape()
             .withCategory(RecipeCategory.BUILDING_BLOCKS)
-            .define('A', this)
+            .define('A', base)
             .pattern("AA")
             .pattern("AA")
             .into(4, cut);

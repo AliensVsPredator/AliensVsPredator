@@ -45,7 +45,7 @@ public final class AVPTitaniumRecipes {
         AVPRecipeHelper.decompressedItemRecipe(
             recipeOutput,
             RecipeCategory.MISC,
-            MetalTitaniumBlockSetDataContainer.INSTANCE.getHolder().get(),
+            MetalTitaniumBlockSetDataContainer.INSTANCE.base.getHolder().get(),
             AVPItemRegistry.INSTANCE.ingotTitanium.get()
         );
     }

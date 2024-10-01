@@ -123,15 +123,15 @@ public non-sealed class SingleBlockDataContainer extends BlockDataContainer {
 
     public static final class Builder {
 
-        private String registryName;
+        private final String registryName;
+
+        private final Function<Block, LootTable.Builder> lootTableBuilder;
 
         private Supplier<Block> supplier;
 
         private BlockModelData blockModelData;
 
         private BlockTagData blockTagData;
-
-        private Function<Block, LootTable.Builder> lootTableBuilder;
 
         private Builder(SingleBlockDataContainer singleBlockDataContainer, String registryName) {
             this.registryName = registryName;

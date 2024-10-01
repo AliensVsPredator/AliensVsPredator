@@ -11,11 +11,12 @@ import java.util.Set;
 
 import org.avp.api.common.data.block.BlockModelData;
 import org.avp.api.common.data.block.BlockTagData;
+import org.avp.api.common.data.block.ExtendedBlockDataContainer;
 import org.avp.api.common.data.block.RecipeCreator;
 import org.avp.api.common.data.block.SingleBlockDataContainer;
 import org.avp.api.common.data.loot_table.LootProviders;
 
-public class YautjaShipBlockSetDataContainer extends SingleBlockDataContainer.Holder implements RecipeCreator {
+public class YautjaShipBlockSetDataContainer extends ExtendedBlockDataContainer implements RecipeCreator {
 
     private static final String REGISTRY_NAME_PREFIX = "yautja_ship_";
 
@@ -52,35 +53,37 @@ public class YautjaShipBlockSetDataContainer extends SingleBlockDataContainer.Ho
     private final VanillaVariantBlockDataContainer decor3VariantSet;
 
     protected YautjaShipBlockSetDataContainer() {
-        super(
-            () -> new Block(METAL_PROPERTIES),
-            REGISTRY_NAME_PREFIX + "brick",
-            BlockModelData.NORMAL_CUBE,
-            PICKAXE_TAGS,
-            LootProviders.SELF
+        var base = this.addVariant(
+            new SingleBlockDataContainer(
+                () -> new Block(METAL_PROPERTIES),
+                REGISTRY_NAME_PREFIX + "brick",
+                BlockModelData.NORMAL_CUBE,
+                PICKAXE_TAGS,
+                LootProviders.SELF
+            )
         );
 
         // Variants
         this.baseVariantSet = this.addVariant(
-            new VanillaVariantBlockDataContainer(this)
+            new VanillaVariantBlockDataContainer(base)
                 .withSlab()
                 .withStairs()
                 .withWall()
         );
 
         this.addVariant(
-            this.transform(REGISTRY_NAME_PREFIX + "decor_1")
+            base.transform(REGISTRY_NAME_PREFIX + "decor_1")
                 .withSupplier(() -> new Block(DECOR_1_PROPERTIES))
                 .build()
         );
 
         this.addVariant(
-            this.transform(REGISTRY_NAME_PREFIX + "decor_2")
+            base.transform(REGISTRY_NAME_PREFIX + "decor_2")
                 .withSupplier(() -> new Block(DECOR_2_PROPERTIES))
                 .build()
         );
 
-        var decor3 = this.addVariant(this.extend(REGISTRY_NAME_PREFIX + "decor_3"));
+        var decor3 = this.addVariant(base.extend(REGISTRY_NAME_PREFIX + "decor_3"));
 
         this.decor3VariantSet = this.addVariant(
             new VanillaVariantBlockDataContainer(decor3)
@@ -90,15 +93,15 @@ public class YautjaShipBlockSetDataContainer extends SingleBlockDataContainer.Ho
         );
 
         this.addVariant(
-            this.transform(REGISTRY_NAME_PREFIX + "panel")
+            base.transform(REGISTRY_NAME_PREFIX + "panel")
                 .withSupplier(() -> new Block(PANEL_PROPERTIES))
                 .build()
         );
 
-        this.addVariant(this.extend(REGISTRY_NAME_PREFIX + "support_pillar"));
+        this.addVariant(base.extend(REGISTRY_NAME_PREFIX + "support_pillar"));
 
         this.addVariant(
-            this.transform(REGISTRY_NAME_PREFIX + "wall_base")
+            base.transform(REGISTRY_NAME_PREFIX + "wall_base")
                 .withSupplier(() -> new Block(WALL_PROPERTIES))
                 .build()
         );

@@ -13,6 +13,7 @@ import java.util.Set;
 
 import org.avp.api.common.data.block.BlockModelData;
 import org.avp.api.common.data.block.BlockTagData;
+import org.avp.api.common.data.block.ExtendedBlockDataContainer;
 import org.avp.api.common.data.block.RecipeCreator;
 import org.avp.api.common.data.block.SingleBlockDataContainer;
 import org.avp.api.common.data.loot_table.LootProviders;
@@ -20,7 +21,7 @@ import org.avp.common.data.block.VanillaVariantBlockDataContainer;
 import org.avp.common.data.recipe.AVPRecipeBuilder;
 import org.avp.common.registry.item.AVPItemRegistry;
 
-public class MetalTitaniumBlockSetDataContainer extends SingleBlockDataContainer.Holder implements RecipeCreator {
+public class MetalTitaniumBlockSetDataContainer extends ExtendedBlockDataContainer implements RecipeCreator {
 
     public static final MetalTitaniumBlockSetDataContainer INSTANCE = new MetalTitaniumBlockSetDataContainer();
 
@@ -30,6 +31,8 @@ public class MetalTitaniumBlockSetDataContainer extends SingleBlockDataContainer
         .requiresCorrectToolForDrops()
         .sound(SoundType.COPPER)
         .strength(15, 12);
+
+    public final SingleBlockDataContainer.Holder base;
 
     private final SingleBlockDataContainer.Holder cut;
 
@@ -52,16 +55,18 @@ public class MetalTitaniumBlockSetDataContainer extends SingleBlockDataContainer
     private final SingleBlockDataContainer.Holder vent;
 
     protected MetalTitaniumBlockSetDataContainer() {
-        super(
-            () -> new Block(PROPERTIES),
-            "titanium_block",
-            BlockModelData.NORMAL_CUBE,
-            BlockTagData.ofBlock(Set.of(BlockTags.MINEABLE_WITH_PICKAXE, BlockTags.NEEDS_IRON_TOOL)),
-            LootProviders.SELF
+        this.base = this.addVariant(
+            new SingleBlockDataContainer(
+                () -> new Block(PROPERTIES),
+                "titanium_block",
+                BlockModelData.NORMAL_CUBE,
+                BlockTagData.ofBlock(Set.of(BlockTags.MINEABLE_WITH_PICKAXE, BlockTags.NEEDS_IRON_TOOL)),
+                LootProviders.SELF
+            )
         );
 
         // Cut
-        this.cut = this.addVariant(this.extend("titanium_cut"));
+        this.cut = this.addVariant(base.extend("titanium_cut"));
         this.cutVariantSet = this.addVariant(
             new VanillaVariantBlockDataContainer(cut)
                 .withSlab()
@@ -71,7 +76,7 @@ public class MetalTitaniumBlockSetDataContainer extends SingleBlockDataContainer
 
         // Grate
         this.grate = this.addVariant(
-            this.transform("titanium_grate")
+            base.transform("titanium_grate")
                 .withSupplier(() -> new Block(BlockBehaviour.Properties.of().noOcclusion()))
                 .withModelData(BlockModelData.TRANSPARENT_CUBE)
                 .build()
@@ -79,7 +84,7 @@ public class MetalTitaniumBlockSetDataContainer extends SingleBlockDataContainer
         );
 
         // Plated
-        this.plated = this.addVariant(this.extend("titanium_plated"));
+        this.plated = this.addVariant(base.extend("titanium_plated"));
         this.platedVariantSet = this.addVariant(
             new VanillaVariantBlockDataContainer(plated)
                 .withSlab()
@@ -88,7 +93,7 @@ public class MetalTitaniumBlockSetDataContainer extends SingleBlockDataContainer
         );
 
         // Plated Chevron
-        this.platedChevron = this.addVariant(this.extend("titanium_plated_chevron"));
+        this.platedChevron = this.addVariant(base.extend("titanium_plated_chevron"));
         this.platedChevronVariantSet = this.addVariant(
             new VanillaVariantBlockDataContainer(platedChevron)
                 .withSlab()
@@ -97,7 +102,7 @@ public class MetalTitaniumBlockSetDataContainer extends SingleBlockDataContainer
         );
 
         // Plated Stack
-        this.platedStack = this.addVariant(this.extend("titanium_plated_stack"));
+        this.platedStack = this.addVariant(base.extend("titanium_plated_stack"));
         this.platedStackVariantSet = this.addVariant(
             new VanillaVariantBlockDataContainer(platedStack)
                 .withSlab()
@@ -105,7 +110,7 @@ public class MetalTitaniumBlockSetDataContainer extends SingleBlockDataContainer
                 .withWall()
         );
 
-        this.vent = this.addVariant(this.extend("titanium_vent"));
+        this.vent = this.addVariant(base.extend("titanium_vent"));
     }
 
     @Override
@@ -119,15 +124,15 @@ public class MetalTitaniumBlockSetDataContainer extends SingleBlockDataContainer
             .pattern("AAA")
             .pattern("AAA")
             .pattern("AAA")
-            .into(1, this);
+            .into(1, base);
 
-        var stonecutBase = builder.stonecut(this)
+        var stonecutBase = builder.stonecut(base)
             .withCategory(RecipeCategory.BUILDING_BLOCKS);
 
         // 1 Base block -> 4 cut blocks
         builder.shape()
             .withCategory(RecipeCategory.BUILDING_BLOCKS)
-            .define('A', this)
+            .define('A', base)
             .pattern("AA")
             .pattern("AA")
             .into(4, cut);

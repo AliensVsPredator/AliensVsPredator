@@ -13,13 +13,14 @@ import java.util.Set;
 
 import org.avp.api.common.data.block.BlockModelData;
 import org.avp.api.common.data.block.BlockTagData;
+import org.avp.api.common.data.block.ExtendedBlockDataContainer;
 import org.avp.api.common.data.block.RecipeCreator;
 import org.avp.api.common.data.block.SingleBlockDataContainer;
 import org.avp.api.common.data.loot_table.LootProviders;
 import org.avp.common.data.recipe.AVPRecipeBuilder;
 import org.avp.common.registry.item.AVPItemRegistry;
 
-public class MetalOrioniteBlockDataContainer extends SingleBlockDataContainer.Holder implements RecipeCreator {
+public class MetalOrioniteBlockDataContainer extends ExtendedBlockDataContainer implements RecipeCreator {
 
     public static final MetalOrioniteBlockDataContainer INSTANCE = new MetalOrioniteBlockDataContainer();
 
@@ -30,13 +31,17 @@ public class MetalOrioniteBlockDataContainer extends SingleBlockDataContainer.Ho
         .sound(SoundType.COPPER)
         .strength(20, 12);
 
+    private final SingleBlockDataContainer.Holder base;
+
     protected MetalOrioniteBlockDataContainer() {
-        super(
-            () -> new Block(PROPERTIES),
-            "orionite_block",
-            BlockModelData.NORMAL_CUBE,
-            BlockTagData.ofBlock(Set.of(BlockTags.MINEABLE_WITH_PICKAXE, BlockTags.NEEDS_DIAMOND_TOOL)),
-            LootProviders.SELF
+        this.base = this.addVariant(
+            new SingleBlockDataContainer(
+                () -> new Block(PROPERTIES),
+                "orionite_block",
+                BlockModelData.NORMAL_CUBE,
+                BlockTagData.ofBlock(Set.of(BlockTags.MINEABLE_WITH_PICKAXE, BlockTags.NEEDS_DIAMOND_TOOL)),
+                LootProviders.SELF
+            )
         );
     }
 
@@ -51,12 +56,12 @@ public class MetalOrioniteBlockDataContainer extends SingleBlockDataContainer.Ho
             .pattern("AAA")
             .pattern("AAA")
             .pattern("AAA")
-            .into(1, this);
+            .into(1, base);
 
         // Block -> ingots
         builder.shapeless()
             .withCategory(RecipeCategory.MISC)
-            .requires(1, this)
+            .requires(1, base)
             .into(9, AVPItemRegistry.INSTANCE.ingotOrionite.get());
     }
 }

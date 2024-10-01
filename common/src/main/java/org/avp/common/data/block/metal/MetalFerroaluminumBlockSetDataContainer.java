@@ -14,6 +14,7 @@ import java.util.Set;
 
 import org.avp.api.common.data.block.BlockModelData;
 import org.avp.api.common.data.block.BlockTagData;
+import org.avp.api.common.data.block.ExtendedBlockDataContainer;
 import org.avp.api.common.data.block.RecipeCreator;
 import org.avp.api.common.data.block.SingleBlockDataContainer;
 import org.avp.api.common.data.loot_table.LootProviders;
@@ -21,7 +22,7 @@ import org.avp.common.data.block.VanillaVariantBlockDataContainer;
 import org.avp.common.data.recipe.AVPRecipeBuilder;
 import org.avp.common.registry.item.AVPItemRegistry;
 
-public class MetalFerroaluminumBlockSetDataContainer extends SingleBlockDataContainer.Holder implements RecipeCreator {
+public class MetalFerroaluminumBlockSetDataContainer extends ExtendedBlockDataContainer implements RecipeCreator {
 
     public static final MetalFerroaluminumBlockSetDataContainer INSTANCE = new MetalFerroaluminumBlockSetDataContainer();
 
@@ -31,6 +32,8 @@ public class MetalFerroaluminumBlockSetDataContainer extends SingleBlockDataCont
         .requiresCorrectToolForDrops()
         .sound(SoundType.COPPER)
         .strength(7, 9);
+
+    private final SingleBlockDataContainer.Holder base;
 
     private final SingleBlockDataContainer.Holder cut;
 
@@ -53,16 +56,18 @@ public class MetalFerroaluminumBlockSetDataContainer extends SingleBlockDataCont
     private final SingleBlockDataContainer.Holder vent;
 
     protected MetalFerroaluminumBlockSetDataContainer() {
-        super(
-            () -> new Block(PROPERTIES),
-            "ferroaluminum_block",
-            BlockModelData.NORMAL_CUBE,
-            BlockTagData.ofBlock(Set.of(BlockTags.MINEABLE_WITH_PICKAXE, BlockTags.NEEDS_STONE_TOOL)),
-            LootProviders.SELF
+        this.base = this.addVariant(
+            new SingleBlockDataContainer(
+                () -> new Block(PROPERTIES),
+                "ferroaluminum_block",
+                BlockModelData.NORMAL_CUBE,
+                BlockTagData.ofBlock(Set.of(BlockTags.MINEABLE_WITH_PICKAXE, BlockTags.NEEDS_STONE_TOOL)),
+                LootProviders.SELF
+            )
         );
 
         // Cut
-        this.cut = this.addVariant(this.extend("ferroaluminum_cut"));
+        this.cut = this.addVariant(base.extend("ferroaluminum_cut"));
         this.cutVariantSet = this.addVariant(
             new VanillaVariantBlockDataContainer(cut)
                 .withSlab()
@@ -72,7 +77,7 @@ public class MetalFerroaluminumBlockSetDataContainer extends SingleBlockDataCont
 
         // Grate
         this.grate = this.addVariant(
-            this.transform("ferroaluminum_grate")
+            base.transform("ferroaluminum_grate")
                 .withSupplier(() -> new Block(BlockBehaviour.Properties.of().noOcclusion()))
                 .withModelData(BlockModelData.TRANSPARENT_CUBE)
                 .build()
@@ -80,7 +85,7 @@ public class MetalFerroaluminumBlockSetDataContainer extends SingleBlockDataCont
         );
 
         // Plated
-        this.plated = this.addVariant(this.extend("ferroaluminum_plated"));
+        this.plated = this.addVariant(base.extend("ferroaluminum_plated"));
         this.platedVariantSet = this.addVariant(
             new VanillaVariantBlockDataContainer(plated)
                 .withSlab()
@@ -89,7 +94,7 @@ public class MetalFerroaluminumBlockSetDataContainer extends SingleBlockDataCont
         );
 
         // Plated Chevron
-        this.platedChevron = this.addVariant(this.extend("ferroaluminum_plated_chevron"));
+        this.platedChevron = this.addVariant(base.extend("ferroaluminum_plated_chevron"));
         this.platedChevronVariantSet = this.addVariant(
             new VanillaVariantBlockDataContainer(platedChevron)
                 .withSlab()
@@ -98,7 +103,7 @@ public class MetalFerroaluminumBlockSetDataContainer extends SingleBlockDataCont
         );
 
         // Plated Stack
-        this.platedStack = this.addVariant(this.extend("ferroaluminum_plated_stack"));
+        this.platedStack = this.addVariant(base.extend("ferroaluminum_plated_stack"));
         this.platedStackVariantSet = this.addVariant(
             new VanillaVariantBlockDataContainer(platedStack)
                 .withSlab()
@@ -106,7 +111,7 @@ public class MetalFerroaluminumBlockSetDataContainer extends SingleBlockDataCont
                 .withWall()
         );
 
-        this.vent = this.addVariant(this.extend("ferroaluminum_vent"));
+        this.vent = this.addVariant(base.extend("ferroaluminum_vent"));
     }
 
     @Override
@@ -121,15 +126,15 @@ public class MetalFerroaluminumBlockSetDataContainer extends SingleBlockDataCont
             .pattern("BAB")
             .pattern("AAA")
             .pattern("BAB")
-            .into(1, this);
+            .into(1, base);
 
-        var stonecutBase = builder.stonecut(this)
+        var stonecutBase = builder.stonecut(base)
             .withCategory(RecipeCategory.BUILDING_BLOCKS);
 
         // 1 Base block -> 4 cut blocks
         builder.shape()
             .withCategory(RecipeCategory.BUILDING_BLOCKS)
-            .define('A', this)
+            .define('A', base)
             .pattern("AA")
             .pattern("AA")
             .into(4, cut);
