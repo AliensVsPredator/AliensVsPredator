@@ -9,11 +9,9 @@ import net.minecraft.world.level.block.Block;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 import java.util.function.Supplier;
 
 import org.avp.api.common.data.block.SingleBlockDataContainer;
-import org.avp.api.common.registry.AVPDeferredBlockRegistry;
 import org.avp.api.common.registry.AVPDeferredRegistry;
 import org.avp.api.common.registry.holder.BLHolder;
 import org.avp.api.service.Services;
@@ -91,9 +89,6 @@ public final class AVPCreativeModeTabRegistry extends AVPDeferredRegistry<Creati
                             blocksToItemStacks(
                                 AVPBlockDataRegistry.INSTANCE.getEntries().stream().map(SingleBlockDataContainer.Holder::getHolder).toList()
                             )
-                        );
-                        output.acceptAll(
-                            blocksToItemStacks(AVPDeferredBlockRegistry.getDataEntries().stream().map(Map.Entry::getKey).toList())
                         );
                     }
                 )

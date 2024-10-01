@@ -16,7 +16,6 @@ import org.avp.common.data.recipe.impl.AVPElectronicRecipes;
 import org.avp.common.data.recipe.impl.AVPFoodRecipes;
 import org.avp.common.data.recipe.impl.AVPMaterialsRecipes;
 import org.avp.common.data.recipe.impl.AVPToolRecipes;
-import org.avp.common.data.recipe.impl.block.AVPAlienBlockRecipes;
 import org.avp.common.data.recipe.impl.material.AVPAluminumRecipes;
 import org.avp.common.data.recipe.impl.material.AVPCobaltRecipes;
 import org.avp.common.data.recipe.impl.material.AVPLithiumRecipes;
@@ -42,7 +41,6 @@ public class AVPRecipeProvider extends RecipeProvider {
 
     @Override
     public void buildRecipes(@NotNull RecipeOutput recipeOutput) {
-        AVPAlienBlockRecipes.addAlienBlockRecipes(recipeOutput);
         AVPAluminumRecipes.addAluminumRecipes(recipeOutput);
 
         AVPAmmunitionRecipes.addAmmoRecipes(recipeOutput);

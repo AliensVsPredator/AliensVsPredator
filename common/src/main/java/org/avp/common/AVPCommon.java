@@ -9,9 +9,7 @@ import org.avp.common.network.AVPNetworkPayloadHandlerRegistry;
 import org.avp.common.registry.AVPBlockEntityDataRegistry;
 import org.avp.common.registry.AVPEntityDataRegistry;
 import org.avp.common.registry.AVPFuelRegistry;
-import org.avp.common.registry.block.AVPAlienBlockRegistry;
 import org.avp.common.registry.block.AVPBlockDataRegistry;
-import org.avp.common.registry.block.AVPMachineBlockRegistry;
 import org.avp.common.registry.block_entity.AVPSimpleDeferredBlockEntityTypeRegistry;
 import org.avp.common.registry.creative_tab.AVPCreativeModeTabRegistry;
 import org.avp.common.registry.entity.AVPSimpleDeferredEntityTypeRegistry;
@@ -57,9 +55,6 @@ public class AVPCommon {
 
         // Blocks
         AVPBlockDataRegistry.INSTANCE.register();
-
-        AVPAlienBlockRegistry.INSTANCE.register();
-        AVPMachineBlockRegistry.INSTANCE.register();
 
         // Item Blocks
         AVPItemBlockItemRegistry.INSTANCE.register();

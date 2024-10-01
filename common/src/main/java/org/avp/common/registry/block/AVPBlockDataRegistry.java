@@ -12,9 +12,11 @@ import org.avp.api.common.data.block.ExtendedBlockDataContainer;
 import org.avp.api.common.data.block.RecipeCreator;
 import org.avp.api.common.data.block.SingleBlockDataContainer;
 import org.avp.api.service.Services;
+import org.avp.common.data.block.AlienBlockSetDataContainer;
 import org.avp.common.data.block.EngineerShipBlockSetDataContainer;
 import org.avp.common.data.block.IndustrialBlockSetDataContainer;
 import org.avp.common.data.block.IndustrialGlassBlockSetDataContainer;
+import org.avp.common.data.block.MachineBlockSetDataContainer;
 import org.avp.common.data.block.PaddingBlockSetDataContainer;
 import org.avp.common.data.block.ParadiseBlockSetDataContainer;
 import org.avp.common.data.block.PlasticBlockSetDataContainer;
@@ -78,6 +80,9 @@ public class AVPBlockDataRegistry {
     }
 
     private void registerDataEntries() {
+        // Alien
+        addEntry(AlienBlockSetDataContainer.INSTANCE);
+
         // Engineer Ship
         addEntry(EngineerShipBlockSetDataContainer.INSTANCE);
 
@@ -86,6 +91,9 @@ public class AVPBlockDataRegistry {
 
         // Industrial Glass
         addEntry(IndustrialGlassBlockSetDataContainer.INSTANCE);
+
+        // Machine
+        addEntry(MachineBlockSetDataContainer.INSTANCE);
 
         // Metals
         addEntry(MetalAluminumBlockSetDataContainer.INSTANCE);

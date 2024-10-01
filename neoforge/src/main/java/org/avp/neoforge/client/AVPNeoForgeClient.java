@@ -18,7 +18,6 @@ import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
 import net.neoforged.neoforge.client.event.RegisterParticleProvidersEvent;
 import net.neoforged.neoforge.event.TickEvent;
 
-import org.avp.api.common.registry.AVPDeferredBlockRegistry;
 import org.avp.client.AVPClientKeyBindingRegistry;
 import org.avp.client.registry.AVPEntityRenderRegistry;
 import org.avp.client.render.particle.AVPParticleTypeProviders;
@@ -33,18 +32,6 @@ public class AVPNeoForgeClient {
         AVPBlockDataRegistry.INSTANCE.getEntries().forEach(entry -> {
             var block = entry.getHolder().get();
             var blockModelRenderType = entry.getBlockModelData().blockModelRenderType();
-
-            switch (blockModelRenderType) {
-                case CUTOUT -> ItemBlockRenderTypes.setRenderLayer(block, RenderType.cutout());
-                case NORMAL -> {/* NO-OP */}
-                case TRANSLUCENT -> ItemBlockRenderTypes.setRenderLayer(block, RenderType.translucent());
-            }
-        });
-
-        AVPDeferredBlockRegistry.getDataEntries().forEach(entry -> {
-            var block = entry.getKey().get();
-            var blockData = entry.getValue();
-            var blockModelRenderType = blockData.blockModelData().blockModelRenderType();
 
             switch (blockModelRenderType) {
                 case CUTOUT -> ItemBlockRenderTypes.setRenderLayer(block, RenderType.cutout());

@@ -8,7 +8,6 @@ import net.minecraft.world.level.block.Blocks;
 
 import java.util.concurrent.CompletableFuture;
 
-import org.avp.api.common.registry.AVPDeferredBlockRegistry;
 import org.avp.common.data.tag.AVPBlockTags;
 import org.avp.common.registry.block.AVPBlockDataRegistry;
 
@@ -45,13 +44,6 @@ public class AVPBlockTagsProvider extends FabricTagProvider.BlockTagProvider {
         AVPBlockDataRegistry.INSTANCE.getEntries().forEach(entry -> {
             var block = entry.getHolder().get();
             entry.getBlockTagData().blockTags().forEach(tag -> getOrCreateTagBuilder(tag).add(block));
-        });
-
-        AVPDeferredBlockRegistry.getDataEntries().forEach(entry -> {
-            var block = entry.getKey().get();
-            var blockData = entry.getValue();
-
-            blockData.blockTagData().blockTags().forEach(tag -> getOrCreateTagBuilder(tag).add(block));
         });
     }
 }
