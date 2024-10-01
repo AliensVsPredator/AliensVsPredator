@@ -5,11 +5,14 @@ import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.RotatedPillarBlock;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 
 import java.util.Set;
 
 import org.avp.api.common.data.block.BlockModelData;
+import org.avp.api.common.data.block.BlockModelDataType;
+import org.avp.api.common.data.block.BlockModelRenderType;
 import org.avp.api.common.data.block.BlockTagData;
 import org.avp.api.common.data.block.ExtendedBlockDataContainer;
 import org.avp.api.common.data.block.RecipeCreator;
@@ -55,7 +58,17 @@ public class IndustrialBlockSetDataContainer extends ExtendedBlockDataContainer 
                 .withWall()
         );
 
-        this.wallHazard = this.addVariant(wall.extend(REGISTRY_NAME_PREFIX + "wall_hazard"));
+        this.wallHazard = this.addVariant(
+            wall.transform(REGISTRY_NAME_PREFIX + "wall_hazard")
+                .withSupplier(() -> new RotatedPillarBlock(PROPERTIES))
+                .withModelData(
+                    new BlockModelData(
+                        BlockModelDataType.RotatedPillar::new,
+                        BlockModelRenderType.NORMAL
+                    )
+                )
+                .build()
+        );
     }
 
     @Override
