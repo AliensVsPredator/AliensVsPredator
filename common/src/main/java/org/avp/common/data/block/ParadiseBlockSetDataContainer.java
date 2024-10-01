@@ -63,7 +63,17 @@ public class ParadiseBlockSetDataContainer extends ExtendedBlockDataContainer im
 
         this.addVariant(dirt.extend(REGISTRY_NAME_PREFIX + "dirt_mossy"));
 
-        this.addVariant(dirt.extend(REGISTRY_NAME_PREFIX + "dirt_podzol"));
+        this.addVariant(
+            dirt.transform(REGISTRY_NAME_PREFIX + "dirt_podzol")
+                .withSupplier(() -> new GrassBlock(PROPERTIES))
+                .withModelData(
+                    new BlockModelData(
+                        (block) -> new BlockModelDataType.GrassLike(dirt.getHolder().get(), block),
+                        BlockModelRenderType.NORMAL
+                    )
+                )
+                .build()
+        );
 
         var leavesBase = new SingleBlockDataContainer(
             () -> new Block(PROPERTIES),
