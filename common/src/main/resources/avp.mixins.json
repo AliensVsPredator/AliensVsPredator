@@ -36,6 +36,7 @@
     ],
     "client": [
         "client.MixinGuiGraphics",
+        "client.MixinInGameOverlayRenderer",
         "client.MixinMinecraft_Accessor",
         "client.MixinPlayerRenderer"
     ],
