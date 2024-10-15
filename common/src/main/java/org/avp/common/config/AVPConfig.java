@@ -68,6 +68,16 @@ public class AVPConfig {
         public static float ACID_DAMAGE = 2F;
 
         @Config(
+                value = "acidBreakspeedModifier",
+                comment = """
+                The modifier that controls how fast acid is.
+                Higher numbers is slower, lower is faster
+                Default Value: 40.0
+                """
+        )
+        public static float ACID_BREAKSPEED_MODIFIER = 40F;
+
+        @Config(
             value = "gunsDoBlockDamage",
             comment = """
                 Whether guns do block damage or not. Disabling this does not disable explosive block damage.
