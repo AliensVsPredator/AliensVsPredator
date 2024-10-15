@@ -120,7 +120,7 @@ public abstract class AbstractAVPWeaponItem extends Item implements GeoItem {
             var hasAmmunition = fireMode.ammunitionData().hasAmmunitionBehavior().hasAmmunition(serverLevel, serverPlayer, weaponItemStack);
             var reloadBehavior = fireMode.reloadData().reloadBehavior();
 
-            if (hasAmmunition) {
+            if (hasAmmunition || serverPlayer.isCreative()) {
                 if (reloadBehavior == ReloadBehavior.LOAD_FROM_INVENTORY) {
                     reloadBehavior.tryReload(serverLevel, serverPlayer, weaponItemStack);
                 }
