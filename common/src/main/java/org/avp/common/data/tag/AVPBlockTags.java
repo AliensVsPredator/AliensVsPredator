@@ -18,6 +18,8 @@ public class AVPBlockTags {
 
     public static final TagKey<Block> SHOULD_NOT_BE_DESTROYED = create("should_not_be_destroyed");
 
+    public static final TagKey<Block> RESIN_WEBBING = create("resin_webbing");
+
     private static TagKey<Block> create(String registryName) {
         return TagKey.create(Registries.BLOCK, AVPResources.location(registryName));
     }
