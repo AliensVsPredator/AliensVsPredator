@@ -100,6 +100,8 @@ public class Acid extends Entity {
                     kill();
                 }
             }
+            if (tickCount >= 140)
+                kill();
         }
     }
 
