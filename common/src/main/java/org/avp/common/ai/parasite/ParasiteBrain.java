@@ -2,6 +2,7 @@ package org.avp.common.ai.parasite;
 
 import java.util.List;
 
+import net.minecraft.world.entity.Mob;
 import org.avp.api.common.ai.GOAPBrain;
 import org.avp.api.common.ai.action.impl.LeapTowardsTargetAction;
 import org.avp.api.common.ai.goal.impl.MoveToTargetGoal;
@@ -40,7 +41,7 @@ public class ParasiteBrain extends GOAPBrain {
             new ClosestTargetSensor(
                 cache,
                 parasite,
-                maybeTarget -> AVPPredicates.IS_HOST.test(maybeTarget) && maybeTarget.getPassengers().stream().noneMatch(AbstractParasite.class::isInstance)
+                maybeTarget -> AVPPredicates.IS_HOST.test(maybeTarget) && maybeTarget.getPassengers().stream().noneMatch(AbstractParasite.class::isInstance) && maybeTarget instanceof Mob
             )
         );
     }
