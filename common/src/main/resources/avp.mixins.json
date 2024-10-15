@@ -20,6 +20,7 @@
         "MixinLivingEntity_ReduceWaterSlowDownForAliens",
         "MixinLivingEntity_RoyalJellyHolder",
         "MixinLivingEntity_Host",
+        "MixinLivingEntity_PreventMovementWhenHugged",
         "MixinLivingEntity_ProduceAcid",
         "MixinLivingEntity_ReduceFallDamage",
         "MixinLivingEntity_SyncedDataHandleUser",
@@ -36,6 +37,7 @@
     ],
     "client": [
         "client.MixinGuiGraphics",
+        "client.MixinInGameOverlayRenderer",
         "client.MixinMinecraft_Accessor",
         "client.MixinPlayerRenderer"
     ],

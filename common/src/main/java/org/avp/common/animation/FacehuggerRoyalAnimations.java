@@ -16,13 +16,19 @@ public class FacehuggerRoyalAnimations {
 
     private static final String CONTROLLER_NAME_MOVE = "move";
 
+    private static final String CONTROLLER_NAME_ATTACK = "attack";
+
     private static final String ANIMATION_NAME_TAIL_SWAY = "animation.tailsway";
 
     private static final String ANIMATION_NAME_WALK = "animation.walk";
 
+    private static final String ANIMATION_NAME_FACEHUG = "animation.facehug";
+
     private static final RawAnimation ANIMATION_CRAWL = RawAnimation.begin().thenPlay(ANIMATION_NAME_WALK);
 
     private static final RawAnimation ANIMATION_TAIL_SWAY = RawAnimation.begin().thenPlay(ANIMATION_NAME_TAIL_SWAY);
+
+    private static final RawAnimation ANIMATION_FACEHUG = RawAnimation.begin().thenPlayAndHold(ANIMATION_NAME_FACEHUG);
 
     private static final Function<FacehuggerRoyal, AnimationController.AnimationStateHandler<GeoAnimatable>> HANDLER_IDLE =
         entity -> event -> {
@@ -38,14 +44,21 @@ public class FacehuggerRoyalAnimations {
             if (event.isMoving()) {
                 return event.setAndContinue(ANIMATION_CRAWL);
             }
+            if (entity.isPassenger()) {
+                return event.setAndContinue(ANIMATION_FACEHUG);
+            }
 
             return PlayState.STOP;
         };
 
+    private static final Function<FacehuggerRoyal, AnimationController.AnimationStateHandler<GeoAnimatable>> HANDLER_ATTACK =
+            entity -> event -> PlayState.CONTINUE;
+
     public static <T extends FacehuggerRoyal & GeoAnimatable> void bootstrap(T entity, AnimatableManager.ControllerRegistrar registrar) {
         registrar.add(
-            new AnimationController<>(entity, CONTROLLER_NAME_IDLE, HANDLER_IDLE.apply(entity)),
-            new AnimationController<>(entity, CONTROLLER_NAME_MOVE, HANDLER_MOVEMENT.apply(entity))
+                new AnimationController<>(entity, CONTROLLER_NAME_IDLE, HANDLER_IDLE.apply(entity)),
+                new AnimationController<>(entity, CONTROLLER_NAME_MOVE, HANDLER_MOVEMENT.apply(entity)),
+                new AnimationController<>(entity, CONTROLLER_NAME_ATTACK, HANDLER_ATTACK.apply(entity)).triggerableAnim("leap", RawAnimation.begin().thenPlay("animation.leap"))
         );
     }
 

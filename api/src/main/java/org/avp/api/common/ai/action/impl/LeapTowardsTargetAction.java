@@ -1,5 +1,6 @@
 package org.avp.api.common.ai.action.impl;
 
+import mod.azure.azurelib.common.api.common.animatable.GeoEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.phys.Vec3;
 
@@ -77,6 +78,9 @@ public class LeapTowardsTargetAction extends CooldownAction {
             mob.getNavigation().stop();
             return;
         }
+
+        if (mob instanceof GeoEntity facehugger)
+            facehugger.triggerAnim("attack", "leap");
 
         distanceToTarget = currentDistanceToTarget;
 

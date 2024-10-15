@@ -2,8 +2,12 @@ package org.avp.common.game.item;
 
 import mod.azure.azurelib.common.api.common.animatable.GeoItem;
 import mod.azure.azurelib.common.internal.client.RenderProvider;
+import mod.azure.azurelib.common.internal.common.animatable.SingletonGeoAnimatable;
 import mod.azure.azurelib.common.internal.common.core.animatable.instance.AnimatableInstanceCache;
 import mod.azure.azurelib.common.internal.common.core.animation.AnimatableManager;
+import mod.azure.azurelib.common.internal.common.core.animation.AnimationController;
+import mod.azure.azurelib.common.internal.common.core.animation.RawAnimation;
+import mod.azure.azurelib.common.internal.common.core.object.PlayState;
 import mod.azure.azurelib.common.internal.common.util.AzureLibUtil;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.network.chat.Component;
@@ -47,6 +51,7 @@ public abstract class AbstractAVPWeaponItem extends Item implements GeoItem {
     protected AbstractAVPWeaponItem(Properties properties, WeaponData weaponData) {
         super(properties.stacksTo(1).durability(weaponData.getDurability()));
         this.weaponData = weaponData;
+        SingletonGeoAnimatable.registerSyncedAnimatable(this);
     }
 
     @Override
@@ -114,16 +119,18 @@ public abstract class AbstractAVPWeaponItem extends Item implements GeoItem {
                         % backgroundShootSoundFrequency == 0
                 ) {
                     level.playSound(null, player.blockPosition(), backgroundShootSound, SoundSource.PLAYERS);
+                    triggerAnim(serverPlayer, GeoItem.getOrAssignId(itemStack, serverLevel), "main", "spin");
                 }
             });
 
             var hasAmmunition = fireMode.ammunitionData().hasAmmunitionBehavior().hasAmmunition(serverLevel, serverPlayer, weaponItemStack);
             var reloadBehavior = fireMode.reloadData().reloadBehavior();
 
-            if (hasAmmunition) {
+            if (hasAmmunition || serverPlayer.isCreative()) {
                 if (reloadBehavior == ReloadBehavior.LOAD_FROM_INVENTORY) {
                     reloadBehavior.tryReload(serverLevel, serverPlayer, weaponItemStack);
                 }
+                triggerAnim(serverPlayer, GeoItem.getOrAssignId(itemStack, serverLevel), "main", "spin");
                 fire(level, player, weaponItemStack, positiveTickProgress);
             } else {
                 reloadBehavior.tryReload(serverLevel, serverPlayer, weaponItemStack);
@@ -211,7 +218,7 @@ public abstract class AbstractAVPWeaponItem extends Item implements GeoItem {
 
     @Override
     public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
-        // Do nothing
+        controllers.add(new AnimationController<>(this, "main", event -> PlayState.CONTINUE).triggerableAnim("spin", RawAnimation.begin().thenPlay("barrelspin")));
     }
 
     @Override

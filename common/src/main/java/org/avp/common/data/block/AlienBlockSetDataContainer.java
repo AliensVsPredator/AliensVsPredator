@@ -22,12 +22,13 @@ import org.avp.api.common.data.block.SingleBlockDataContainer;
 import org.avp.api.common.data.loot_table.LootProviders;
 import org.avp.common.data.recipe.AVPRecipeBuilder;
 import org.avp.common.game.block.ResinVeinBlock;
+import org.avp.common.game.block.ResinWebbingBlock;
 import org.avp.common.registry.item.AVPItemRegistry;
 
 public class AlienBlockSetDataContainer extends ExtendedBlockDataContainer implements RecipeCreator {
 
     private static final BlockBehaviour.Properties RESIN_PROPERTIES = BlockBehaviour.Properties.ofFullCopy(Blocks.STONE)
-        .mapColor(MapColor.COLOR_GRAY);
+        .mapColor(MapColor.COLOR_GRAY).noCollission().noOcclusion();
 
     // FIXME:
     private static final BlockBehaviour.Properties RESIN_VEIN_PROPERTIES = BlockBehaviour.Properties.of()
@@ -77,9 +78,9 @@ public class AlienBlockSetDataContainer extends ExtendedBlockDataContainer imple
         // FIXME: fix model data
         this.resinWebbing = this.addVariant(
             new SingleBlockDataContainer(
-                () -> new Block(RESIN_PROPERTIES),
+                () -> new ResinWebbingBlock(RESIN_PROPERTIES),
                 "resin_webbing",
-                BlockModelData.NORMAL_CUBE,
+                BlockModelData.CUTOUT_CUBE,
                 BLOCK_TAGS,
                 LootProviders.SELF
             )

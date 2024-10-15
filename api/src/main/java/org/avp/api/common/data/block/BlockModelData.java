@@ -15,4 +15,6 @@ public record BlockModelData(
         BlockModelDataType.Cube::new,
         BlockModelRenderType.TRANSLUCENT
     );
+
+    public static final BlockModelData CUTOUT_CUBE = new BlockModelData(BlockModelDataType.Cube::new, BlockModelRenderType.CUTOUT);
 }

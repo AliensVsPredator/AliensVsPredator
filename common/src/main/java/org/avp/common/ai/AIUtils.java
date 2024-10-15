@@ -45,7 +45,7 @@ public class AIUtils {
             2,
             new NearestAttackableTargetGoal<>(
                 monster,
-                LivingEntity.class,
+                Mob.class,
                 true,
                 livingEntity -> {
                     var shouldKill = !livingEntity.getType().is(AVPEntityTypeTags.ALIENS) &&
