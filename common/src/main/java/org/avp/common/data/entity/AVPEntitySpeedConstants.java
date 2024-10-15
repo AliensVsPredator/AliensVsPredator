@@ -23,7 +23,7 @@ public class AVPEntitySpeedConstants {
 
     public static final double DRACOMORPH_SPEED = PLAYER_SPRINT_SPEED * 0.95;
 
-    public static final double DRONE_SPEED = PLAYER_SPRINT_SPEED * 0.9;
+    public static final double DRONE_SPEED = PLAYER_SPRINT_SPEED * 1.3;
 
     public static final double DRONE_RUNNER_SPEED = PLAYER_SPRINT_JUMP_SPEED * 1.05;
 
