@@ -40,9 +40,7 @@ public class ParasiteBrain extends GOAPBrain {
             new ClosestTargetSensor(
                 cache,
                 parasite,
-                maybeTarget -> AVPPredicates.IS_HOST.test(maybeTarget) &&
-                // If target has no passengers or if the parasite is attached to the target.
-                    (maybeTarget.getPassengers().isEmpty() || parasite.getVehicle() == maybeTarget)
+                maybeTarget -> AVPPredicates.IS_HOST.test(maybeTarget) && maybeTarget.getPassengers().stream().noneMatch(AbstractParasite.class::isInstance)
             )
         );
     }
