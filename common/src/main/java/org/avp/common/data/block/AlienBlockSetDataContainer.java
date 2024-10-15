@@ -79,7 +79,7 @@ public class AlienBlockSetDataContainer extends ExtendedBlockDataContainer imple
             new SingleBlockDataContainer(
                 () -> new Block(RESIN_PROPERTIES),
                 "resin_webbing",
-                BlockModelData.NORMAL_CUBE,
+                BlockModelData.CUTOUT_CUBE,
                 BLOCK_TAGS,
                 LootProviders.SELF
             )
