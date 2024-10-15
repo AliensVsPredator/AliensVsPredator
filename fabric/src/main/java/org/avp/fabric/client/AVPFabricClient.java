@@ -10,10 +10,10 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 
-import org.avp.api.common.registry.AVPDeferredBlockRegistry;
 import org.avp.client.AVPClientKeyBindingRegistry;
 import org.avp.client.registry.AVPEntityRenderRegistry;
 import org.avp.client.render.particle.AVPParticleTypeProviders;
+import org.avp.common.registry.block.AVPBlockDataRegistry;
 
 public class AVPFabricClient implements ClientModInitializer {
 
@@ -23,10 +23,9 @@ public class AVPFabricClient implements ClientModInitializer {
 
         AVPParticleTypeProviders.INSTANCE.register();
 
-        AVPDeferredBlockRegistry.getDataEntries().forEach(entry -> {
-            var block = entry.getKey().get();
-            var blockData = entry.getValue();
-            var blockModelRenderType = blockData.blockModelData().blockModelRenderType();
+        AVPBlockDataRegistry.INSTANCE.getEntries().forEach(entry -> {
+            var block = entry.getHolder().get();
+            var blockModelRenderType = entry.getBlockModelData().blockModelRenderType();
 
             switch (blockModelRenderType) {
                 case CUTOUT -> BlockRenderLayerMap.INSTANCE.putBlock(block, RenderType.cutout());

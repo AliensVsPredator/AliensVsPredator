@@ -1,6 +1,5 @@
 package org.avp.common.data.recipe;
 
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.data.recipes.SimpleCookingRecipeBuilder;
@@ -12,6 +11,9 @@ import net.minecraft.world.level.block.Block;
 import org.avp.api.common.registry.holder.BLHolder;
 import org.avp.common.AVPConstants;
 
+/**
+ * @deprecated
+ */
 public final class AVPRecipeHelper {
 
     public static void compressedBlockRecipe(
@@ -39,10 +41,6 @@ public final class AVPRecipeHelper {
             .save(recipeOutput);
     }
 
-    public static String getItemName(ItemLike itemLike) {
-        return BuiltInRegistries.ITEM.getKey(itemLike.asItem()).getPath();
-    }
-
     public static void oreSmelting(
         RecipeOutput recipeOutput,
         RecipeCategory recipeCategory,
@@ -61,18 +59,26 @@ public final class AVPRecipeHelper {
         var xp = 0.7F;
         var cookTime = 200;
 
+        // Raw chunk -> ingot
+        // TODO: Move
         SimpleCookingRecipeBuilder.smelting(oreItemIngredient, recipeCategory, output, xp, cookTime)
             .unlockedBy("has_raw_item", AVPRecipeProvider.has(oreItem))
             .save(recipeOutput, AVPConstants.MOD_ID + ":" + outputItemName + "_from_smelting_" + oreItemName);
 
+        // Ore block -> ingot
+        // TODO: Move
         SimpleCookingRecipeBuilder.smelting(oreBlockIngredient, recipeCategory, output, xp, cookTime)
             .unlockedBy("has_ore", AVPRecipeProvider.has(oreBlock))
             .save(recipeOutput, AVPConstants.MOD_ID + ":" + outputItemName + "_from_smelting_" + oreBlockName);
 
+        // Raw chunk -> ingot
+        // TODO: Move
         SimpleCookingRecipeBuilder.blasting(oreItemIngredient, recipeCategory, output, xp, cookTime / 2)
             .unlockedBy("has_raw_item", AVPRecipeProvider.has(oreItem))
             .save(recipeOutput, AVPConstants.MOD_ID + ":" + outputItemName + "_from_blasting_" + oreItemName);
 
+        // Ore block -> ingot
+        // TODO: Move
         SimpleCookingRecipeBuilder.blasting(oreBlockIngredient, recipeCategory, output, xp, cookTime / 2)
             .unlockedBy("has_ore", AVPRecipeProvider.has(oreBlock))
             .save(recipeOutput, AVPConstants.MOD_ID + ":" + outputItemName + "_from_blasting_" + oreBlockName);

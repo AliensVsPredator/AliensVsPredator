@@ -4,7 +4,13 @@
 # against bad commits.
 
 name: build
-on: [pull_request, push]
+on:
+  push:
+    branches:
+      - 1.20+ # TODO: Switch to dev branch once the port is finished.
+  pull_request:
+    branches:
+      - 1.20+ # TODO: Switch to dev branch once the port is finished.
 
 jobs:
   build:

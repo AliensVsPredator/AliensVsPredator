@@ -9,19 +9,7 @@ import org.avp.common.network.AVPNetworkPayloadHandlerRegistry;
 import org.avp.common.registry.AVPBlockEntityDataRegistry;
 import org.avp.common.registry.AVPEntityDataRegistry;
 import org.avp.common.registry.AVPFuelRegistry;
-import org.avp.common.registry.block.AVPAlienBlockRegistry;
-import org.avp.common.registry.block.AVPBlockRegistry;
-import org.avp.common.registry.block.AVPEngineerBlockRegistry;
-import org.avp.common.registry.block.AVPIndustrialBlockRegistry;
-import org.avp.common.registry.block.AVPIndustrialGlassBlockRegistry;
-import org.avp.common.registry.block.AVPMachineBlockRegistry;
-import org.avp.common.registry.block.AVPOreBlockRegistry;
-import org.avp.common.registry.block.AVPPaddingBlockRegistry;
-import org.avp.common.registry.block.AVPParadiseBlockRegistry;
-import org.avp.common.registry.block.AVPPlasticBlockRegistry;
-import org.avp.common.registry.block.AVPTempleBlockRegistry;
-import org.avp.common.registry.block.AVPUnidentifiedBlockRegistry;
-import org.avp.common.registry.block.AVPYautjaShipBlockRegistry;
+import org.avp.common.registry.block.AVPBlockDataRegistry;
 import org.avp.common.registry.block_entity.AVPSimpleDeferredBlockEntityTypeRegistry;
 import org.avp.common.registry.creative_tab.AVPCreativeModeTabRegistry;
 import org.avp.common.registry.entity.AVPSimpleDeferredEntityTypeRegistry;
@@ -66,19 +54,7 @@ public class AVPCommon {
         AVPWeaponPartItemRegistry.INSTANCE.register();
 
         // Blocks
-        AVPAlienBlockRegistry.INSTANCE.register();
-        AVPBlockRegistry.INSTANCE.register();
-        AVPEngineerBlockRegistry.INSTANCE.register();
-        AVPIndustrialBlockRegistry.INSTANCE.register();
-        AVPIndustrialGlassBlockRegistry.INSTANCE.register();
-        AVPMachineBlockRegistry.INSTANCE.register();
-        AVPOreBlockRegistry.INSTANCE.register();
-        AVPPaddingBlockRegistry.INSTANCE.register();
-        AVPParadiseBlockRegistry.INSTANCE.register();
-        AVPPlasticBlockRegistry.INSTANCE.register();
-        AVPTempleBlockRegistry.INSTANCE.register();
-        AVPUnidentifiedBlockRegistry.INSTANCE.register();
-        AVPYautjaShipBlockRegistry.INSTANCE.register();
+        AVPBlockDataRegistry.INSTANCE.register();
 
         // Item Blocks
         AVPItemBlockItemRegistry.INSTANCE.register();

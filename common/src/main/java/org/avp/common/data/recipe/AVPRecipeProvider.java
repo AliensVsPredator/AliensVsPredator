@@ -16,21 +16,10 @@ import org.avp.common.data.recipe.impl.AVPElectronicRecipes;
 import org.avp.common.data.recipe.impl.AVPFoodRecipes;
 import org.avp.common.data.recipe.impl.AVPMaterialsRecipes;
 import org.avp.common.data.recipe.impl.AVPToolRecipes;
-import org.avp.common.data.recipe.impl.block.AVPAlienBlockRecipes;
-import org.avp.common.data.recipe.impl.block.AVPIndustrialBlockRecipes;
-import org.avp.common.data.recipe.impl.block.AVPIndustrialGlassBlockRecipes;
-import org.avp.common.data.recipe.impl.block.AVPPaddingBlockRecipes;
-import org.avp.common.data.recipe.impl.block.AVPPlasticBlockRecipes;
-import org.avp.common.data.recipe.impl.block.AVPTempleBlockRecipes;
 import org.avp.common.data.recipe.impl.material.AVPAluminumRecipes;
 import org.avp.common.data.recipe.impl.material.AVPCobaltRecipes;
-import org.avp.common.data.recipe.impl.material.AVPCopperRecipes;
-import org.avp.common.data.recipe.impl.material.AVPFerroaluminumRecipes;
-import org.avp.common.data.recipe.impl.material.AVPGoldRecipes;
-import org.avp.common.data.recipe.impl.material.AVPIronRecipes;
 import org.avp.common.data.recipe.impl.material.AVPLithiumRecipes;
 import org.avp.common.data.recipe.impl.material.AVPNeodymiumRecipes;
-import org.avp.common.data.recipe.impl.material.AVPNetheriteRecipes;
 import org.avp.common.data.recipe.impl.material.AVPOrioniteRecipes;
 import org.avp.common.data.recipe.impl.material.AVPSilicaRecipes;
 import org.avp.common.data.recipe.impl.material.AVPSteelRecipes;
@@ -42,6 +31,7 @@ import org.avp.common.data.recipe.impl.weapon.AVPGrenadeRecipes;
 import org.avp.common.data.recipe.impl.weapon.AVPWeaponBlueprintRecipes;
 import org.avp.common.data.recipe.impl.weapon.AVPWeaponPartRecipes;
 import org.avp.common.data.recipe.impl.weapon.AVPWeaponRecipes;
+import org.avp.common.registry.block.AVPBlockDataRegistry;
 
 public class AVPRecipeProvider extends RecipeProvider {
 
@@ -51,7 +41,6 @@ public class AVPRecipeProvider extends RecipeProvider {
 
     @Override
     public void buildRecipes(@NotNull RecipeOutput recipeOutput) {
-        AVPAlienBlockRecipes.addAlienBlockRecipes(recipeOutput);
         AVPAluminumRecipes.addAluminumRecipes(recipeOutput);
 
         AVPAmmunitionRecipes.addAmmoRecipes(recipeOutput);
@@ -60,17 +49,12 @@ public class AVPRecipeProvider extends RecipeProvider {
         AVPArmorRecipes.addArmorRecipes(recipeOutput);
         AVPBulletRecipes.addRecipes(recipeOutput);
         AVPCobaltRecipes.addCobaltRecipes(recipeOutput);
-        AVPCopperRecipes.addCopperRecipes(recipeOutput);
         AVPElectronicRecipes.addElectronicRecipes(recipeOutput);
-        AVPFerroaluminumRecipes.addFerroaluminumRecipes(recipeOutput);
         AVPFoodRecipes.addFoodRecipes(recipeOutput);
         AVPGrenadeRecipes.addGrenadeRecipes(recipeOutput);
-        AVPGoldRecipes.addGoldRecipes(recipeOutput);
-        AVPIronRecipes.addIronRecipes(recipeOutput);
         AVPLithiumRecipes.addLithiumRecipes(recipeOutput);
         AVPMaterialsRecipes.addMaterialRecipes(recipeOutput);
         AVPNeodymiumRecipes.addNeodymiumRecipes(recipeOutput);
-        AVPNetheriteRecipes.addNetheriteRecipes(recipeOutput);
         AVPOrioniteRecipes.addOrioniteRecipes(recipeOutput);
         AVPSilicaRecipes.addSilicaRecipes(recipeOutput);
         AVPSteelRecipes.addSteelRecipes(recipeOutput);
@@ -81,11 +65,7 @@ public class AVPRecipeProvider extends RecipeProvider {
         AVPWeaponPartRecipes.addWeaponPartRecipes(recipeOutput);
         AVPWeaponRecipes.addWeaponRecipes(recipeOutput);
 
-        AVPIndustrialBlockRecipes.addIndustrialBlockRecipes(recipeOutput);
-        AVPIndustrialGlassBlockRecipes.addIndustrialGlassBlockRecipes(recipeOutput);
-        AVPPaddingBlockRecipes.addPaddingBlockRecipes(recipeOutput);
-        AVPPlasticBlockRecipes.addPlasticBlockRecipes(recipeOutput);
-        AVPTempleBlockRecipes.addTempleBlockRecipes(recipeOutput);
+        AVPBlockDataRegistry.INSTANCE.getRecipeCreators().forEach(blockDataContainer -> blockDataContainer.createRecipes(recipeOutput));
     }
 
     public static @NotNull Criterion<InventoryChangeTrigger.TriggerInstance> has(@NotNull ItemLike itemLike) {

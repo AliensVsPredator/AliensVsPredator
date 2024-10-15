@@ -5,28 +5,28 @@ import net.minecraft.world.level.block.Blocks;
 
 import java.util.Map;
 
-import org.avp.common.registry.block.AVPEngineerBlockRegistry;
-import org.avp.common.registry.block.AVPIndustrialGlassBlockRegistry;
+import org.avp.common.data.block.EngineerShipBlockSetDataContainer;
+import org.avp.common.data.block.IndustrialGlassBlockSetDataContainer;
 
 public class DerelictSchematicResolver {
 
     public static final Map<String, Block> RESOLVER_MAP = Map.<String, Block>ofEntries(
         Map.entry("avp:blackgoo", Blocks.WATER),
-        Map.entry("avp:engineershipbrick1", AVPEngineerBlockRegistry.INSTANCE.brick1.base().get()),
-        Map.entry("avp:engineershipbrick2", AVPEngineerBlockRegistry.INSTANCE.brick2.base().get()),
-        Map.entry("avp:engineershipbrick3", AVPEngineerBlockRegistry.INSTANCE.brick3.base().get()),
-        Map.entry("avp:engineershipcolumn1", AVPEngineerBlockRegistry.INSTANCE.column1.get()),
-        Map.entry("avp:engineershipcolumn2", AVPEngineerBlockRegistry.INSTANCE.column2.get()),
-        Map.entry("avp:engineershipgravel", AVPEngineerBlockRegistry.INSTANCE.gravel.get()),
-        Map.entry("avp:engineershipmaterial1", AVPEngineerBlockRegistry.INSTANCE.material1.base().get()),
-        Map.entry("avp:engineershipmaterial2", AVPEngineerBlockRegistry.INSTANCE.material2.base().get()),
-        Map.entry("avp:engineershiprock2", AVPEngineerBlockRegistry.INSTANCE.rock2.get()),
-        Map.entry("avp:engineershiprock3", AVPEngineerBlockRegistry.INSTANCE.rock3.get()),
-        Map.entry("avp:engineershipwall1", AVPEngineerBlockRegistry.INSTANCE.wall1.base().get()),
-        Map.entry("avp:engineershipwall2", AVPEngineerBlockRegistry.INSTANCE.wall2.base().get()),
-        Map.entry("avp:engineershipwall3", AVPEngineerBlockRegistry.INSTANCE.wall3.base().get()),
-        Map.entry("avp:engineershipwall4", AVPEngineerBlockRegistry.INSTANCE.wall4.base().get()),
-        Map.entry("avp:industrialglass", AVPIndustrialGlassBlockRegistry.INSTANCE.glass.get()),
+        Map.entry("avp:engineershipbrick1", EngineerShipBlockSetDataContainer.INSTANCE.brick1.getHolder().get()),
+        Map.entry("avp:engineershipbrick2", EngineerShipBlockSetDataContainer.INSTANCE.brick2.getHolder().get()),
+        Map.entry("avp:engineershipbrick3", EngineerShipBlockSetDataContainer.INSTANCE.brick3.getHolder().get()),
+        Map.entry("avp:engineershipcolumn1", EngineerShipBlockSetDataContainer.INSTANCE.column1.getHolder().get()),
+        Map.entry("avp:engineershipcolumn2", EngineerShipBlockSetDataContainer.INSTANCE.column2.getHolder().get()),
+        Map.entry("avp:engineershipgravel", EngineerShipBlockSetDataContainer.INSTANCE.gravel.getHolder().get()),
+        Map.entry("avp:engineershipmaterial1", EngineerShipBlockSetDataContainer.INSTANCE.material1.getHolder().get()),
+        Map.entry("avp:engineershipmaterial2", EngineerShipBlockSetDataContainer.INSTANCE.material2.getHolder().get()),
+        Map.entry("avp:engineershiprock2", EngineerShipBlockSetDataContainer.INSTANCE.rock2.getHolder().get()),
+        Map.entry("avp:engineershiprock3", EngineerShipBlockSetDataContainer.INSTANCE.rock3.getHolder().get()),
+        Map.entry("avp:engineershipwall1", EngineerShipBlockSetDataContainer.INSTANCE.wall1.getHolder().get()),
+        Map.entry("avp:engineershipwall2", EngineerShipBlockSetDataContainer.INSTANCE.wall2.getHolder().get()),
+        Map.entry("avp:engineershipwall3", EngineerShipBlockSetDataContainer.INSTANCE.wall3.getHolder().get()),
+        Map.entry("avp:engineershipwall4", EngineerShipBlockSetDataContainer.INSTANCE.wall4.getHolder().get()),
+        Map.entry("avp:industrialglass", IndustrialGlassBlockSetDataContainer.INSTANCE.base.getHolder().get()),
         Map.entry("minecraft:air", Blocks.AIR),
         Map.entry("minecraft:carrots", Blocks.CARROTS),
         Map.entry("minecraft:potatoes", Blocks.POTATOES),

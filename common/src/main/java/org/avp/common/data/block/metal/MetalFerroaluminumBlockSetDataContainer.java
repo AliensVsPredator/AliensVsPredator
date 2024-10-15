@@ -1,0 +1,154 @@
+package org.avp.common.data.block.metal;
+
+import net.minecraft.data.recipes.RecipeCategory;
+import net.minecraft.data.recipes.RecipeOutput;
+import net.minecraft.tags.BlockTags;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
+import net.minecraft.world.level.material.MapColor;
+
+import java.util.Set;
+
+import org.avp.api.common.data.block.BlockModelData;
+import org.avp.api.common.data.block.BlockTagData;
+import org.avp.api.common.data.block.ExtendedBlockDataContainer;
+import org.avp.api.common.data.block.RecipeCreator;
+import org.avp.api.common.data.block.SingleBlockDataContainer;
+import org.avp.api.common.data.loot_table.LootProviders;
+import org.avp.common.data.block.VanillaVariantBlockDataContainer;
+import org.avp.common.data.recipe.AVPRecipeBuilder;
+import org.avp.common.registry.item.AVPItemRegistry;
+
+public class MetalFerroaluminumBlockSetDataContainer extends ExtendedBlockDataContainer implements RecipeCreator {
+
+    public static final MetalFerroaluminumBlockSetDataContainer INSTANCE = new MetalFerroaluminumBlockSetDataContainer();
+
+    private static final BlockBehaviour.Properties PROPERTIES = BlockBehaviour.Properties.of()
+        .instrument(NoteBlockInstrument.IRON_XYLOPHONE)
+        .mapColor(MapColor.COLOR_GRAY)
+        .requiresCorrectToolForDrops()
+        .sound(SoundType.COPPER)
+        .strength(7, 9);
+
+    private final SingleBlockDataContainer.Holder base;
+
+    private final SingleBlockDataContainer.Holder cut;
+
+    private final VanillaVariantBlockDataContainer cutVariantSet;
+
+    private final SingleBlockDataContainer.Holder grate;
+
+    private final SingleBlockDataContainer.Holder plated;
+
+    private final VanillaVariantBlockDataContainer platedVariantSet;
+
+    private final SingleBlockDataContainer.Holder platedChevron;
+
+    private final VanillaVariantBlockDataContainer platedChevronVariantSet;
+
+    private final SingleBlockDataContainer.Holder platedStack;
+
+    private final VanillaVariantBlockDataContainer platedStackVariantSet;
+
+    private final SingleBlockDataContainer.Holder vent;
+
+    protected MetalFerroaluminumBlockSetDataContainer() {
+        this.base = this.addVariant(
+            new SingleBlockDataContainer(
+                () -> new Block(PROPERTIES),
+                "ferroaluminum_block",
+                BlockModelData.NORMAL_CUBE,
+                BlockTagData.ofBlock(Set.of(BlockTags.MINEABLE_WITH_PICKAXE, BlockTags.NEEDS_STONE_TOOL)),
+                LootProviders.SELF
+            )
+        );
+
+        // Cut
+        this.cut = this.addVariant(base.extend("ferroaluminum_cut"));
+        this.cutVariantSet = this.addVariant(
+            new VanillaVariantBlockDataContainer(cut)
+                .withSlab()
+                .withStairs()
+                .withWall()
+        );
+
+        // Grate
+        this.grate = this.addVariant(
+            base.transform("ferroaluminum_grate")
+                .withSupplier(() -> new Block(BlockBehaviour.Properties.of().noOcclusion()))
+                .withModelData(BlockModelData.TRANSPARENT_CUBE)
+                .build()
+
+        );
+
+        // Plated
+        this.plated = this.addVariant(base.extend("ferroaluminum_plated"));
+        this.platedVariantSet = this.addVariant(
+            new VanillaVariantBlockDataContainer(plated)
+                .withSlab()
+                .withStairs()
+                .withWall()
+        );
+
+        // Plated Chevron
+        this.platedChevron = this.addVariant(base.extend("ferroaluminum_plated_chevron"));
+        this.platedChevronVariantSet = this.addVariant(
+            new VanillaVariantBlockDataContainer(platedChevron)
+                .withSlab()
+                .withStairs()
+                .withWall()
+        );
+
+        // Plated Stack
+        this.platedStack = this.addVariant(base.extend("ferroaluminum_plated_stack"));
+        this.platedStackVariantSet = this.addVariant(
+            new VanillaVariantBlockDataContainer(platedStack)
+                .withSlab()
+                .withStairs()
+                .withWall()
+        );
+
+        this.vent = this.addVariant(base.extend("ferroaluminum_vent"));
+    }
+
+    @Override
+    public void createRecipes(RecipeOutput recipeOutput) {
+        var builder = AVPRecipeBuilder.with(recipeOutput);
+
+        // Ingots -> base block
+        builder.shaped()
+            .withCategory(RecipeCategory.BUILDING_BLOCKS)
+            .define('A', Items.IRON_INGOT)
+            .define('B', AVPItemRegistry.INSTANCE.ingotAluminum.get())
+            .pattern("BAB")
+            .pattern("AAA")
+            .pattern("BAB")
+            .into(1, base);
+
+        var stonecutBase = builder.stonecut(base)
+            .withCategory(RecipeCategory.BUILDING_BLOCKS);
+
+        // 1 Base block -> 4 cut blocks
+        builder.shaped()
+            .withCategory(RecipeCategory.BUILDING_BLOCKS)
+            .define('A', base)
+            .pattern("AA")
+            .pattern("AA")
+            .into(4, cut);
+
+        stonecutBase.into(4, cut);
+        stonecutBase.into(2, grate);
+        stonecutBase.into(4, plated);
+        stonecutBase.into(4, platedChevron);
+        stonecutBase.into(4, platedStack);
+        stonecutBase.into(1, vent);
+
+        cutVariantSet.createRecipes(recipeOutput);
+        platedVariantSet.createRecipes(recipeOutput);
+        platedChevronVariantSet.createRecipes(recipeOutput);
+        platedStackVariantSet.createRecipes(recipeOutput);
+    }
+}

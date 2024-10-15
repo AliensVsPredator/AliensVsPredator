@@ -13,14 +13,13 @@ import net.minecraft.data.models.model.TextureMapping;
 import net.minecraft.data.models.model.TextureSlot;
 import net.minecraft.data.models.model.TexturedModel;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 
 import java.util.function.Function;
 
-import org.avp.api.common.data.block.BlockData;
 import org.avp.api.common.data.block.BlockModelDataType;
-import org.avp.api.common.registry.AVPDeferredBlockRegistry;
+import org.avp.api.common.data.block.SingleBlockDataContainer;
+import org.avp.common.registry.block.AVPBlockDataRegistry;
 import org.avp.common.registry.item.AVPSpawnEggItemRegistry;
 
 import static net.minecraft.data.models.BlockModelGenerators.MULTIFACE_GENERATOR;
@@ -28,7 +27,8 @@ import static net.minecraft.data.models.BlockModelGenerators.MULTIFACE_GENERATOR
 public class AVPFabricBlockModelProvider {
 
     public static void addBlockModels(BlockModelGenerators generator) {
-        AVPDeferredBlockRegistry.getDataEntries().forEach(entry -> computeBlockModels(generator, entry.getKey().get(), entry.getValue()));
+        AVPBlockDataRegistry.INSTANCE.getEntries()
+            .forEach(entry -> computeBlockModels(generator, entry));
 
         // Listen, I don't like this any more than you do. But Mojang also does this, so...
         AVPSpawnEggItemRegistry.INSTANCE.getValues()
@@ -40,8 +40,10 @@ public class AVPFabricBlockModelProvider {
             );
     }
 
-    private static void computeBlockModels(BlockModelGenerators generator, Block block, BlockData blockData) {
-        var blockModelDataType = blockData.blockModelData().blockModelDataTypeFactory().apply(block);
+    private static void computeBlockModels(BlockModelGenerators generator, SingleBlockDataContainer.Holder singleBlockDataContainer) {
+        var block = singleBlockDataContainer.getHolder().get();
+        var blockModelData = singleBlockDataContainer.getBlockModelData();
+        var blockModelDataType = blockModelData.blockModelDataTypeFactory().apply(block);
         var genType = blockModelDataType.getGenType();
 
         switch (genType) {
