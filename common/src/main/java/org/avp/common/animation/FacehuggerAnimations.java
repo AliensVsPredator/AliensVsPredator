@@ -20,9 +20,13 @@ public class FacehuggerAnimations {
 
     private static final String ANIMATION_NAME_WALK = "animation.walk";
 
+    private static final String ANIMATION_NAME_FACEHUG = "animation.facehug";
+
     private static final RawAnimation ANIMATION_CRAWL = RawAnimation.begin().thenPlay(ANIMATION_NAME_WALK);
 
     private static final RawAnimation ANIMATION_TAIL_SWAY = RawAnimation.begin().thenPlay(ANIMATION_NAME_TAIL_SWAY);
+
+    private static final RawAnimation ANIMATION_FACEHUG = RawAnimation.begin().thenPlayAndHold(ANIMATION_NAME_FACEHUG);
 
     private static final Function<Facehugger, AnimationController.AnimationStateHandler<GeoAnimatable>> HANDLER_IDLE = entity -> event -> {
         if (!event.isMoving() && entity.isFertile()) {
@@ -37,7 +41,10 @@ public class FacehuggerAnimations {
             if (event.isMoving() && entity.isFertile()) {
                 return event.setAndContinue(ANIMATION_CRAWL);
             }
-
+            if (entity.isPassenger()) {
+                return event.setAndContinue(ANIMATION_FACEHUG);
+            }
+            
             return PlayState.STOP;
         };
 
