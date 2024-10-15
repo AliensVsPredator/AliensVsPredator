@@ -122,8 +122,7 @@ public class Acid extends Entity {
         }
 
         if (!blockState.is(AVPBlockTags.ACID_IMMUNE)) {
-            // TODO: Make this break speed configurable.
-            BlockBreakProgressManager.damage(level(), blockPos, (2F * getMultiplier()) / 20F);
+            BlockBreakProgressManager.damage(level(), blockPos, (2F * getMultiplier()) / AVPConfig.General.ACID_BREAKSPEED_MODIFIER);
         }
     }
 
