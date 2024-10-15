@@ -7,7 +7,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
-import org.avp.common.AVPConstants;
+import org.avp.api.util.BLPredicates;
 import org.avp.common.data.tag.AVPEntityTypeTags;
 import org.jetbrains.annotations.NotNull;
 
@@ -21,7 +21,7 @@ public class ResinWebbingBlock extends Block {
     @Override
     public void entityInside(@NotNull BlockState state, @NotNull Level world, @NotNull BlockPos pos, @NotNull Entity entity) {
         if (entity.getType().is(AVPEntityTypeTags.ALIENS)) return;
-        if (AVPConstants.isCreativeSpecPlayer.test(entity)) return;
+        if (entity instanceof LivingEntity livingEntity && BLPredicates.IS_IMMORTAL.test(livingEntity)) return;
         if (entity instanceof LivingEntity livingEntity) {
             livingEntity.makeStuckInBlock(state, new Vec3(0.25, 0.05F, 0.25));
             if (!world.isClientSide())
