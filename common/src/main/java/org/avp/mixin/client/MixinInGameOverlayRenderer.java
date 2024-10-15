@@ -8,7 +8,7 @@ import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.ScreenEffectRenderer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
-import org.avp.common.AVPConstants;
+import org.avp.api.util.BLPredicates;
 import org.avp.common.AVPResources;
 import org.avp.common.data.tag.AVPBlockTags;
 import org.joml.Matrix4f;
@@ -24,7 +24,7 @@ public class MixinInGameOverlayRenderer {
 
     @Inject(method = {"renderScreenEffect"}, at = {@At("RETURN")})
     private static void renderOverlays(Minecraft client, PoseStack matrices, CallbackInfo ci) {
-        if (!AVPConstants.isCreativeSpecPlayer.test(client.player) && client.player.level().getBlockState(client.player.blockPosition()).is(AVPBlockTags.RESIN_WEBBING)) {
+        if (!BLPredicates.IS_IMMORTAL.test(client.player) && client.player.level().getBlockState(client.player.blockPosition()).is(AVPBlockTags.RESIN_WEBBING)) {
             renderOverlay(client, matrices, 1, RESIN_OVERLAY_TEXTURE);
         }
     }
