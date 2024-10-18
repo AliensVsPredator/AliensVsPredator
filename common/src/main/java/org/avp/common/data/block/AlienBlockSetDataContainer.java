@@ -28,6 +28,9 @@ import org.avp.common.registry.item.AVPItemRegistry;
 public class AlienBlockSetDataContainer extends ExtendedBlockDataContainer implements RecipeCreator {
 
     private static final BlockBehaviour.Properties RESIN_PROPERTIES = BlockBehaviour.Properties.ofFullCopy(Blocks.STONE)
+        .mapColor(MapColor.COLOR_GRAY).noOcclusion();
+
+    private static final BlockBehaviour.Properties RESIN_WEBBING_PROPERTIES = BlockBehaviour.Properties.ofFullCopy(Blocks.STONE)
         .mapColor(MapColor.COLOR_GRAY).noCollission().noOcclusion();
 
     // FIXME:
@@ -75,10 +78,9 @@ public class AlienBlockSetDataContainer extends ExtendedBlockDataContainer imple
             )
         );
 
-        // FIXME: fix model data
         this.resinWebbing = this.addVariant(
             new SingleBlockDataContainer(
-                () -> new ResinWebbingBlock(RESIN_PROPERTIES),
+                () -> new ResinWebbingBlock(RESIN_WEBBING_PROPERTIES),
                 "resin_webbing",
                 BlockModelData.CUTOUT_CUBE,
                 BLOCK_TAGS,
