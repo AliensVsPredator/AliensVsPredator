@@ -1,0 +1,8 @@
+{
+  "type": "minecraft:stonecutting",
+  "count": 2,
+  "ingredient": {
+    "item": "avp:padding_cyan_square"
+  },
+  "result": "avp:padding_cyan_square_slab"
+}

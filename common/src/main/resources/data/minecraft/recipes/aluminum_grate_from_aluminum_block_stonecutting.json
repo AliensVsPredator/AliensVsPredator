@@ -1,0 +1,8 @@
+{
+  "type": "minecraft:stonecutting",
+  "count": 2,
+  "ingredient": {
+    "item": "avp:aluminum_block"
+  },
+  "result": "avp:aluminum_grate"
+}

@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/slab_top",
+  "textures": {
+    "bottom": "avp:block/yautja_ship_brick",
+    "side": "avp:block/yautja_ship_brick",
+    "top": "avp:block/yautja_ship_brick"
+  }
+}

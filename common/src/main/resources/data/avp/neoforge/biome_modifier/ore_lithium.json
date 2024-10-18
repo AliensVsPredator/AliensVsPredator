@@ -1,0 +1,6 @@
+{
+  "type": "neoforge:add_features",
+  "features": "avp:ore_lithium",
+  "biomes": "#avp:is_wet",
+  "step": "underground_ores"
+}

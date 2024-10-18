@@ -1,6 +1,0 @@
-{
-    "parent": "block/fence_side",
-    "textures": {
-        "texture": "avp:blocks/paradise_medium_log_planks"
-    }
-}

@@ -1,22 +1,27 @@
-# Everything
-/*
+# eclipse
+bin
+*.launch
+.settings
+.metadata
+.classpath
+.project
 
-# Directories
-!/src
-!/gradle
+# idea
+out
+*.ipr
+*.iws
+*.iml
+.idea/*
+!.idea/scopes
 
-# files
-!/.gitignore
-!/.gitmodules
-!/CONTRIBUTING.MD
-!/LICENSE.txt
-!/README.md
-!/gradle.properties
-!/build.gradle
-!/gradlew
-!/gradlew.bat
-!/.travis.yml
-!/travisSetup.sh
-.DS_Store
+# gradle
+build
+.gradle
 
-mdxlib_at.cfg
+# other
+eclipse
+run
+runs
+
+# minecraft datagen
+**/generated/*

@@ -1,8 +1,0 @@
-{
-    "parent": "block/outer_stairs",
-    "textures": {
-        "bottom": "avp:blocks/templefloor",
-        "top": "avp:blocks/templefloor",
-        "side": "avp:blocks/templefloor"
-    }
-}

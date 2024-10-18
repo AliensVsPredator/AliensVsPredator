@@ -1,0 +1,8 @@
+{
+  "type": "minecraft:stonecutting",
+  "count": 4,
+  "ingredient": {
+    "item": "avp:ferroaluminum_block"
+  },
+  "result": "avp:ferroaluminum_plated_stack"
+}

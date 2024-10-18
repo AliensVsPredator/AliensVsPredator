@@ -1,7 +1,0 @@
-{
-    "parent": "block/cube_column",
-    "textures": {
-        "end": "avp:blocks/paradise_large_log_top",
-        "side": "avp:blocks/paradise_large_log_side"
-    }
-}

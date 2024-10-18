@@ -1,8 +1,0 @@
-{
-    "parent": "block/half_slab",
-    "textures": {
-        "bottom": "avp:blocks/shippanel",
-        "top": "avp:blocks/shippanel",
-        "side": "avp:blocks/shippanel"
-    }
-}

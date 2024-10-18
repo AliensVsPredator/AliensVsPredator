@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/inner_stairs",
+  "textures": {
+    "bottom": "avp:block/plastic_cyan",
+    "side": "avp:block/plastic_cyan",
+    "top": "avp:block/plastic_cyan"
+  }
+}

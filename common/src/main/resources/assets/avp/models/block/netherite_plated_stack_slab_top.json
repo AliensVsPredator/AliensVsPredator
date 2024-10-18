@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/slab_top",
+  "textures": {
+    "bottom": "avp:block/netherite_plated_stack",
+    "side": "avp:block/netherite_plated_stack",
+    "top": "avp:block/netherite_plated_stack"
+  }
+}

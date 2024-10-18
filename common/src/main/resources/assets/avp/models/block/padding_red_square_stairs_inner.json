@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/inner_stairs",
+  "textures": {
+    "bottom": "avp:block/padding_red_square",
+    "side": "avp:block/padding_red_square",
+    "top": "avp:block/padding_red_square"
+  }
+}

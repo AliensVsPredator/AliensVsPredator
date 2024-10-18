@@ -1,0 +1,8 @@
+{
+  "type": "minecraft:stonecutting",
+  "count": 1,
+  "ingredient": {
+    "item": "avp:plastic_lime"
+  },
+  "result": "avp:plastic_lime_stairs"
+}

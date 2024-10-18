@@ -1,0 +1,8 @@
+{
+  "type": "minecraft:stonecutting",
+  "count": 1,
+  "ingredient": {
+    "item": "avp:ferroaluminum_cut"
+  },
+  "result": "avp:ferroaluminum_cut_wall"
+}

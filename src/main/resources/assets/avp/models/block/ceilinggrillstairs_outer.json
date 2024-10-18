@@ -1,8 +1,0 @@
-{
-    "parent": "block/outer_stairs",
-    "textures": {
-        "bottom": "avp:blocks/ceilinggrill",
-        "top": "avp:blocks/ceilinggrill",
-        "side": "avp:blocks/ceilinggrill"
-    }
-}

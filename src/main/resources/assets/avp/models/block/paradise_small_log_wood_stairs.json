@@ -1,8 +1,0 @@
-{
-    "parent": "block/stairs",
-    "textures": {
-        "bottom": "avp:blocks/paradise_small_log_planks",
-        "top": "avp:blocks/paradise_small_log_planks",
-        "side": "avp:blocks/paradise_small_log_planks"
-    }
-}

@@ -1,0 +1,38 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": {
+      "item": "avp:integrated_circuit"
+    },
+    "B": {
+      "item": "avp:polycarbonate"
+    },
+    "C": {
+      "item": "avp:transistor"
+    },
+    "D": {
+      "item": "avp:capacitor"
+    },
+    "E": {
+      "item": "avp:regulator"
+    },
+    "F": {
+      "item": "avp:diode"
+    },
+    "G": {
+      "item": "avp:resistor"
+    },
+    "H": {
+      "item": "avp:led"
+    }
+  },
+  "pattern": [
+    "AEF",
+    "GBC",
+    "DBH"
+  ],
+  "result": {
+    "item": "avp:motherboard"
+  }
+}

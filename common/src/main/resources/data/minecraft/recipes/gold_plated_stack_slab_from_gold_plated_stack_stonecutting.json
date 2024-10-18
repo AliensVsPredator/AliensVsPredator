@@ -1,0 +1,8 @@
+{
+  "type": "minecraft:stonecutting",
+  "count": 2,
+  "ingredient": {
+    "item": "avp:gold_plated_stack"
+  },
+  "result": "avp:gold_plated_stack_slab"
+}

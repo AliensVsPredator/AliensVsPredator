@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "equipment",
+  "ingredients": [
+    {
+      "item": "avp:blueprint_m83a2_sadar"
+    },
+    {
+      "item": "avp:weapon_part_barrel_rocket"
+    },
+    {
+      "item": "avp:weapon_part_grip"
+    },
+    {
+      "item": "avp:weapon_part_receiver_smart"
+    }
+  ],
+  "result": {
+    "item": "avp:weapon_m83a2_sadar"
+  }
+}

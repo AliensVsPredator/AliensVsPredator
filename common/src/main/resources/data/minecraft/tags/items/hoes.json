@@ -1,0 +1,9 @@
+{
+  "replace": false,
+  "values": [
+    "avp:tool_aluminum_hoe",
+    "avp:tool_orionite_hoe",
+    "avp:tool_titanium_hoe",
+    "avp:tool_veritanium_hoe"
+  ]
+}

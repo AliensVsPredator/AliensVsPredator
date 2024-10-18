@@ -1,6 +1,0 @@
-{
-    "variants": {
-        "half=bottom,variant=default": { "model": "avp:bottom_ship_decor_3_slab" },
-        "half=top,variant=default": { "model": "avp:upper_ship_decor_3_slab" }
-    }
-}

@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "type=bottom": {
+      "model": "avp:block/plastic_cyan_slab"
+    },
+    "type=double": {
+      "model": "avp:block/plastic_cyan"
+    },
+    "type=top": {
+      "model": "avp:block/plastic_cyan_slab_top"
+    }
+  }
+}

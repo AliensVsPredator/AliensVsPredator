@@ -1,0 +1,21 @@
+{
+  "replace": false,
+  "values": [
+    "avp:tool_aluminum_axe",
+    "avp:tool_aluminum_hoe",
+    "avp:tool_aluminum_pickaxe",
+    "avp:tool_aluminum_shovel",
+    "avp:tool_orionite_axe",
+    "avp:tool_orionite_hoe",
+    "avp:tool_orionite_pickaxe",
+    "avp:tool_orionite_shovel",
+    "avp:tool_titanium_axe",
+    "avp:tool_titanium_hoe",
+    "avp:tool_titanium_pickaxe",
+    "avp:tool_titanium_shovel",
+    "avp:tool_veritanium_axe",
+    "avp:tool_veritanium_hoe",
+    "avp:tool_veritanium_pickaxe",
+    "avp:tool_veritanium_shovel"
+  ]
+}

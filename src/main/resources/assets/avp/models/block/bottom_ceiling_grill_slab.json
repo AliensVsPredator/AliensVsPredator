@@ -1,8 +1,0 @@
-{
-    "parent": "block/half_slab",
-    "textures": {
-        "bottom": "avp:blocks/ceilinggrill",
-        "top": "avp:blocks/ceilinggrill",
-        "side": "avp:blocks/ceilinggrill"
-    }
-}

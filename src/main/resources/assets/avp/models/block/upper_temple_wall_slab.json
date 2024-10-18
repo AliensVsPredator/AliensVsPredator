@@ -1,8 +1,0 @@
-{
-    "parent": "block/upper_slab",
-    "textures": {
-        "bottom": "avp:blocks/templewallbase",
-        "top": "avp:blocks/templewallbase",
-        "side": "avp:blocks/templewallbase"
-    }
-}

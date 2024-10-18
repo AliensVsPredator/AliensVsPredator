@@ -1,6 +1,0 @@
-{
-    "variants": {
-        "half=bottom,variant=default": { "model": "avp:bottom_paradise_medium_log_wood_slab" },
-        "half=top,variant=default": { "model": "avp:upper_paradise_medium_log_wood_slab" }
-    }
-}

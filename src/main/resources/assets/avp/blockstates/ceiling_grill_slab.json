@@ -1,6 +1,0 @@
-{
-    "variants": {
-        "half=bottom,variant=default": { "model": "avp:bottom_ceiling_grill_slab" },
-        "half=top,variant=default": { "model": "avp:upper_ceiling_grill_slab" }
-    }
-}

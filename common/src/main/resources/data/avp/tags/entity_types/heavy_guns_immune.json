@@ -1,0 +1,12 @@
+{
+  "replace": false,
+  "values": [
+    "avp:queen",
+    "avp:dracomorph",
+    "avp:boiler",
+    {
+      "id": "#avp:uber_guns_immune",
+      "required": false
+    }
+  ]
+}

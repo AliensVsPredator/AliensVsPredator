@@ -1,8 +1,0 @@
-{
-    "parent": "block/half_slab",
-    "textures": {
-        "bottom": "avp:blocks/floorgrill",
-        "top": "avp:blocks/floorgrill",
-        "side": "avp:blocks/floorgrill"
-    }
-}

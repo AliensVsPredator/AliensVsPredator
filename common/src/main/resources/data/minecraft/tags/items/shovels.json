@@ -1,0 +1,9 @@
+{
+  "replace": false,
+  "values": [
+    "avp:tool_aluminum_shovel",
+    "avp:tool_orionite_shovel",
+    "avp:tool_titanium_shovel",
+    "avp:tool_veritanium_shovel"
+  ]
+}

@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "A": {
+      "item": "avp:bullet_tip"
+    },
+    "B": {
+      "item": "avp:casing_heavy"
+    },
+    "C": {
+      "item": "avp:bottle_tinted_acid"
+    }
+  },
+  "pattern": [
+    "AC",
+    "B "
+  ],
+  "result": {
+    "count": 16,
+    "item": "avp:bullet_heavy_acid"
+  }
+}

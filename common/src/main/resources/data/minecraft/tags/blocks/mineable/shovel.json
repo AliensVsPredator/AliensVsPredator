@@ -1,0 +1,14 @@
+{
+  "replace": false,
+  "values": [
+    "avp:engineer_ship_floor",
+    "avp:engineer_ship_gravel",
+    "avp:paradise_grass",
+    "avp:paradise_dirt_podzol",
+    "avp:paradise_dirt",
+    "avp:paradise_dirt_mossy",
+    "avp:unidentified_dirt",
+    "avp:unidentified_gravel",
+    "avp:unidentified_sand"
+  ]
+}

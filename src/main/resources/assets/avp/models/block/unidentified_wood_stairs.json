@@ -1,8 +1,0 @@
-{
-    "parent": "block/stairs",
-    "textures": {
-        "bottom": "avp:blocks/unidentified_planks",
-        "top": "avp:blocks/unidentified_planks",
-        "side": "avp:blocks/unidentified_planks"
-    }
-}

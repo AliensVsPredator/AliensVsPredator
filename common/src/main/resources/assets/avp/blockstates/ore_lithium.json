@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "avp:block/ore_lithium"
+    }
+  }
+}

@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/wall_inventory",
+  "textures": {
+    "wall": "avp:block/ferroaluminum_plated_stack"
+  }
+}

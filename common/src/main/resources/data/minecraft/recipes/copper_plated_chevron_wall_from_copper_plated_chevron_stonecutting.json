@@ -1,0 +1,8 @@
+{
+  "type": "minecraft:stonecutting",
+  "count": 1,
+  "ingredient": {
+    "item": "avp:copper_plated_chevron"
+  },
+  "result": "avp:copper_plated_chevron_wall"
+}

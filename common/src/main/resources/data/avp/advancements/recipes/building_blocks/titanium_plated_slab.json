@@ -1,0 +1,34 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "avp:titanium_plated_slab"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    },
+    "has_titanium_plated": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "avp:titanium_plated"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_titanium_plated"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "avp:titanium_plated_slab"
+    ]
+  }
+}

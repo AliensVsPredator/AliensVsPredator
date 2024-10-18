@@ -1,0 +1,39 @@
+package org.avp.common.ai.ovamorph.goal;
+
+import java.util.Optional;
+
+import org.avp.api.common.ai.goal.Goal;
+import org.avp.api.common.ai.progress.ProgressKey;
+import org.avp.common.ai.AVPProgressions;
+import org.avp.common.ai.ovamorph.action.DisturbAction;
+import org.avp.common.game.entity.AbstractOvamorph;
+
+public class DisturbedGoal extends Goal {
+
+    private final AbstractOvamorph ovamorph;
+
+    public DisturbedGoal(AbstractOvamorph ovamorph) {
+        this.ovamorph = ovamorph;
+        availableActions.add(new DisturbAction(ovamorph));
+    }
+
+    @Override
+    public boolean isValid() {
+        return ovamorph.getTarget() != null;
+    }
+
+    @Override
+    public boolean isCompleted() {
+        return ovamorph.isFullyDisturbed();
+    }
+
+    @Override
+    protected Optional<ProgressKey> createProgresses() {
+        return Optional.of(AVPProgressions.OPEN);
+    }
+
+    @Override
+    protected Optional<ProgressKey> createProgressedBy() {
+        return Optional.empty();
+    }
+}

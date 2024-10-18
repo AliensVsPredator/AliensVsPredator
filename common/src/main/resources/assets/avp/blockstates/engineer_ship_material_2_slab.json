@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "type=bottom": {
+      "model": "avp:block/engineer_ship_material_2_slab"
+    },
+    "type=double": {
+      "model": "avp:block/engineer_ship_material_2"
+    },
+    "type=top": {
+      "model": "avp:block/engineer_ship_material_2_slab_top"
+    }
+  }
+}

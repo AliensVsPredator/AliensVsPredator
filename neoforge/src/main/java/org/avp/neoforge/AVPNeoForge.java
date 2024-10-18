@@ -1,0 +1,44 @@
+package org.avp.neoforge;
+
+import net.neoforged.bus.api.IEventBus;
+import net.neoforged.fml.common.Mod;
+import net.neoforged.neoforge.common.NeoForge;
+
+import org.avp.common.AVPCommon;
+import org.avp.common.AVPConstants;
+import org.avp.neoforge.client.AVPNeoForgeClient;
+import org.avp.neoforge.common.command.AVPNeoForgeCommands;
+import org.avp.neoforge.common.data.AVPNeoForgeData;
+import org.avp.neoforge.common.entity.AVPNeoForgeEntitySpawns;
+import org.avp.neoforge.common.event.AVPCommonSetupEvent;
+import org.avp.neoforge.common.registry.AVPNeoForgeFuelRegistry;
+import org.avp.neoforge.service.*;
+import org.avp.neoforge.service.NeoForgeNetworkPayloadService;
+
+@Mod(AVPConstants.MOD_ID)
+public class AVPNeoForge {
+
+    public AVPNeoForge(IEventBus eventBus) {
+        AVPCommon.init();
+
+        eventBus.addListener(AVPCommonSetupEvent::handleCommonSetupEvent);
+        eventBus.addListener(AVPNeoForgeData::handleGatherDataEvent);
+        eventBus.addListener(AVPNeoForgeEntitySpawns::handleSpawnPlacementRegisterEvent);
+        eventBus.addListener(NeoForgeNetworkPayloadService::registerPayloadHandlers);
+
+        NeoForgeCreativeModeTabService.CREATIVE_MODE_TABS.register(eventBus);
+        NeoForgeItemService.ITEMS.register(eventBus);
+        NeoForgeBlockService.BLOCKS.register(eventBus);
+        NeoForgeBlockEntityTypeService.BLOCK_ENTITY_TYPES.register(eventBus);
+        NeoForgeEntityTypeService.ENTITY_TYPES.register(eventBus);
+        NeoForgeParticleTypeService.PARTICLE_TYPES.register(eventBus);
+        NeoForgeSoundEventService.SOUND_EVENTS.register(eventBus);
+        eventBus.addListener(NeoForgeEntityAttributeRegistry.getInstance()::createEntityAttributes);
+
+        NeoForge.EVENT_BUS.addListener(AVPNeoForgeCommands::registerCommandsEvent);
+        NeoForge.EVENT_BUS.addListener(AVPNeoForgeFuelRegistry::handleFurnaceFuelBurnTimeEvent);
+
+        // Client events
+        NeoForge.EVENT_BUS.addListener(AVPNeoForgeClient::onClientTick);
+    }
+}

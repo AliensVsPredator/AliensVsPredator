@@ -1,179 +1,150 @@
-buildscript {
-    repositories {
-    	mavenCentral()
-        maven { url = "https://maven.minecraftforge.net/" }
-        maven {
-            url = "https://oss.sonatype.org/content/groups/public"
-        }
-        maven {
-            url = "https://plugins.gradle.org/m2/"
-        }
-    }
-    dependencies {
-        classpath ('com.anatawa12.forge:ForgeGradle:2.3-1.0.+') {
-        	changing = true
-        }
-        classpath 'org.ajoberstar:gradle-git:0.10.1'
-        classpath "gradle.plugin.com.matthewprenger:CurseGradle:1.1.0"
-    }
-}
+import groovy.json.JsonOutput
+import groovy.json.JsonSlurper
 
 plugins {
-  id "com.matthewprenger.cursegradle" version "1.1.0"
-}
-
-apply plugin: 'net.minecraftforge.gradle.forge'
-apply plugin: 'com.matthewprenger.cursegradle'
-apply plugin: 'maven'
-
-configurations {
-    deployerJars
+    id("com.diffplug.spotless")
+    id("com.github.ben-manes.versions")
+    id("eclipse")
+    id("idea")
+    id("java-library")
+    // Required for NeoGradle
+    id "org.jetbrains.gradle.plugin.idea-ext" version "1.1.7"
 }
 
 repositories {
-    maven {
-        name = "aliensvspredator"
-        url = "http://maven.aliensvspredator.org/"
-        allowInsecureProtocol = true
-    }
+    mavenCentral()
 }
 
-def version_minecraft="1.12.2"
-def version_forge="14.23.5.2847"
-def version_mappings="stable_39"
-def mdxversion="4.0.0.35"
-def curseforge_id="221641"
-def curseforge_release_type="release"
-def curseforge_api_key="${System.env.CURSEFORGE_API_KEY}"
-def mavenUsername="${System.env.MAVEN_USER}"
-def mavenPassword="${System.env.MAVEN_PASS}"
+subprojects {
+    apply plugin: 'java'
+    apply plugin: 'com.diffplug.spotless'
 
-version = "${System.env.PROJECT_VERSION}"
-group = "org.avp"
-archivesBaseName = "aliensvspredator"
+    java.toolchain.languageVersion = JavaLanguageVersion.of(17)
+    java.withSourcesJar()
+    java.withJavadocJar()
 
-tasks.withType(JavaCompile) {
-	sourceCompatibility = "1.8"
-	targetCompatibility = "1.8"
-	options.encoding = 'UTF-8'
-}
-
-minecraft {
-    version = "${version_minecraft}-${version_forge}"
-    runDir = "run"
-    mappings = version_mappings
-    
-    replace "required-after:mdxlib", "required-after:mdxlib@[${mdxversion},)" 
-    replaceIn 'AliensVsPredator.java'
-}
-
-println "Minecraft ${version_minecraft}"
-println "Minecraft Forge ${version_minecraft} with mappings ${version_mappings}"
-println "Minecraft Development Library X ${mdxversion}"
-
-dependencies {
-    deployerJars 'org.apache.maven.wagon:wagon-ftp:2.2'
-    implementation "com.asx:mdxlib:${mdxversion}:deobf"
-    implementation fileTree(dir: 'lib', includes: ['*.jar'])
-}
-
-jar {
-	archiveName = "${archivesBaseName}-${version}.jar"
-}
-
-task srcJar(type: Jar) {
-    from sourceSets.main.output
-	archiveName = "${archivesBaseName}-${version}-sources.jar"
-    classifier = 'sources'
-}
-
-task deobfJar(type: Jar) {
-    from sourceSets.main.output
-	archiveName = "${archivesBaseName}-${version}-deobf.jar"
-    classifier = 'deobf'
-}
-
-artifacts {
-    archives srcJar, deobfJar
-}
-
-curseforge {
-        apiKey = curseforge_api_key
-
-        project {
-            id = curseforge_id
-            changelog = ''
-            releaseType = hasProperty('curseforge_release_type') ? curseforge_release_type : 'release'
-
-            mainArtifact jar
-
-            relations {
-                requiredLibrary 'mdxlib'
+    jar {
+        from(rootProject.file("LICENSE")) {
+            rename { "${it}_${mod_name}" }
+        }
+        manifest {
+            attributes([
+                    'Specification-Title'     : mod_name,
+                    'Specification-Vendor'    : mod_author,
+                    'Specification-Version'   : project.jar.archiveVersion,
+                    'Implementation-Title'    : project.name,
+                    'Implementation-Version'  : project.jar.archiveVersion,
+                    'Implementation-Vendor'   : mod_author,
+                    'Implementation-Timestamp': new Date().format("yyyy-MM-dd'T'HH:mm:ssZ"),
+                    'Timestamp'               : System.currentTimeMillis(),
+                    'Built-On-Java'           : "${System.getProperty('java.vm.version')} (${System.getProperty('java.vm.vendor')})",
+                    'Built-On-Minecraft'      : minecraft_version
+            ])
         }
     }
-}
 
-processResources {
-    inputs.property "version", version
-    inputs.property "mcversion", minecraft.version
-
-    from(sourceSets.main.resources.srcDirs) {
-        include 'mcmod.info'
-        expand 'version':version, 'mcversion':minecraft.version
-    }
-        
-    from(sourceSets.main.resources.srcDirs) {
-        exclude 'mcmod.info'
-    }
-}
-
-idea {
-    module {
-        inheritOutputDirs = true 
-    }
-}
-
-//publishing {
-//    publications {
-//        mavenJava(MavenPublication) {
-//            from components.java
-//
-//            pom {
-//                properties = [
-//                    forgeVersion: version_minecraft,
-//                    mcVersion: minecraft.version
-//                ]
-//            }
-//        }
-//    }
-//
-//    repositories {
-//        maven {
-//            credentials {
-//                username mavenUsername
-//                password mavenPassword
-//            }
-//            url = "ftp://maven.aliensvspredator.org"
-//        }
-//    }
-//}
-
-task("publishToMaven", dependsOn:"build") {
-    description = "Uploads the artifacts generated during the build process to the aliensvspredator maven repository"
-
-    uploadArchives {
-        repositories.mavenDeployer {
-            configuration = configurations.deployerJars
-            repository(url: "ftp://maven.aliensvspredator.org") {
-                authentication(userName: mavenUsername, password: mavenPassword)
-            }
-
-            pom.project {
-        		properties {
-            		forgeVersion = version_minecraft
-	            	mcVersion = minecraft.version
-            	}
-            }
+    sourcesJar {
+        from(rootProject.file("LICENSE")) {
+            rename { "${it}_${mod_name}" }
         }
     }
+
+    repositories {
+        mavenCentral()
+        maven { url 'https://libs.azuredoom.com:4443/mods' }
+        maven {
+            name = 'Sponge / Mixin'
+            url = 'https://repo.spongepowered.org/repository/maven-public/'
+        }
+        maven {
+            name = 'BlameJared Maven (JEI / CraftTweaker / Bookshelf)'
+            url = 'https://maven.blamejared.com'
+        }
+    }
+
+    dependencies {
+        implementation "mod.azure.azurelib:azurelib-neo-${minecraft_version}:${azurelib_version}"
+    }
+
+    tasks.withType(JavaCompile).configureEach {
+
+        it.options.encoding = 'UTF-8'
+        it.options.getRelease().set(17)
+    }
+
+    processResources {
+        duplicatesStrategy(DuplicatesStrategy.EXCLUDE)
+
+        def expandProps = [
+                "version": version,
+                "group": project.group, // Else we target the task's group.
+                "minecraft_version": minecraft_version,
+                "minecraft_version_range": minecraft_version_range,
+                "fabric_version": fabric_version,
+                "fabric_loader_version": fabric_loader_version,
+                "mod_name": mod_name,
+                "mod_author": mod_author,
+                "mod_id": mod_id,
+                "license": license,
+                "description": project.description,
+                "neoforge_version": neoforge_version,
+                "neoforge_loader_version_range": neoforge_loader_version_range,
+                "credits": credits
+        ]
+
+        filesMatching(['pack.mcmeta', 'fabric.mod.json', 'META-INF/mods.toml', '*.mixins.json']) {
+            expand expandProps
+        }
+        inputs.properties(expandProps)
+
+        doLast {
+            def jsonMinifyStart = System.currentTimeMillis()
+            def jsonMinified = 0
+            def jsonBytesSaved = 0
+            fileTree(dir: outputs.files.asPath, include: '**/*.json').each {
+                File file = it
+                jsonMinified++
+                def oldLength = file.length()
+                file.text = JsonOutput.toJson(new JsonSlurper().parse(file))
+                jsonBytesSaved += oldLength - file.length()
+            }
+            println('Minified ' + jsonMinified + ' json files. Saved ' + jsonBytesSaved + ' bytes. Took ' + (System.currentTimeMillis() - jsonMinifyStart) + 'ms.')
+        }
+    }
+
+    // Disables Gradle's custom module metadata from being published to maven. The
+    // metadata includes mapped dependencies which are not reasonably consumable by
+    // other mod developers.
+    tasks.withType(GenerateModuleMetadata).configureEach {
+
+        enabled = false
+    }
+
+    spotless {
+        java {
+            eclipse().configFile("$rootDir/eclipse-formatter.xml")
+            endWithNewline()
+            importOrder("", "java", group.toString(), "\\#")
+            indentWithSpaces(4)
+            removeUnusedImports()
+            trimTrailingWhitespace()
+        }
+    }
+
+    tasks.build {
+        dependsOn("spotlessApply")
+    }
+}
+
+tasks.register("installGitHooks", Copy) {
+    from "$rootDir/githooks"
+    into "$rootDir/.git/hooks"
+
+    doLast {
+        project.logger.lifecycle("Successfully copied Git Hooks to .git folder!")
+    }
+}
+
+tasks.build {
+    dependsOn(":installGitHooks")
 }

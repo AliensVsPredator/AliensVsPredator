@@ -1,0 +1,24 @@
+{
+  "variants": {
+    "snowy=false": [
+      {
+        "model": "avp:block/paradise_grass"
+      },
+      {
+        "model": "avp:block/paradise_grass",
+        "y": 90
+      },
+      {
+        "model": "avp:block/paradise_grass",
+        "y": 180
+      },
+      {
+        "model": "avp:block/paradise_grass",
+        "y": 270
+      }
+    ],
+    "snowy=true": {
+      "model": "avp:block/paradise_grass_snow"
+    }
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "A": {
+      "item": "avp:polymer"
+    },
+    "B": {
+      "item": "avp:ingot_steel"
+    }
+  },
+  "pattern": [
+    "B",
+    "A",
+    "A"
+  ],
+  "result": {
+    "item": "avp:weapon_part_grip"
+  }
+}

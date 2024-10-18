@@ -1,8 +1,0 @@
-{
-    "parent": "block/half_slab",
-    "textures": {
-        "bottom": "avp:blocks/industrialglass",
-        "top": "avp:blocks/industrialglass",
-        "side": "avp:blocks/industrialglass"
-    }
-}

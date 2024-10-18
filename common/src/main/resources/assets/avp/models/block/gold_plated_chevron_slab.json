@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/slab",
+  "textures": {
+    "bottom": "avp:block/gold_plated_chevron",
+    "side": "avp:block/gold_plated_chevron",
+    "top": "avp:block/gold_plated_chevron"
+  }
+}

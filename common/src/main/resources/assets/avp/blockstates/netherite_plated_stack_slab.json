@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "type=bottom": {
+      "model": "avp:block/netherite_plated_stack_slab"
+    },
+    "type=double": {
+      "model": "avp:block/netherite_plated_stack"
+    },
+    "type=top": {
+      "model": "avp:block/netherite_plated_stack_slab_top"
+    }
+  }
+}

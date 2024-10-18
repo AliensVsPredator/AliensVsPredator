@@ -1,6 +1,0 @@
-{
-    "variants": {
-        "half=bottom,variant=default": { "model": "avp:bottom_temple_floor_slab" },
-        "half=top,variant=default": { "model": "avp:upper_temple_floor_slab" }
-    }
-}

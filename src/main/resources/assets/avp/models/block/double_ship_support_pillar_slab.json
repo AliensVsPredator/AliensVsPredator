@@ -1,7 +1,0 @@
-{
-  "parent": "block/cube_column",
-  "textures": {
-    "end": "avp:blocks/shipsupportpillar",
-    "side": "avp:blocks/shipsupportpillar"
-  }
-}

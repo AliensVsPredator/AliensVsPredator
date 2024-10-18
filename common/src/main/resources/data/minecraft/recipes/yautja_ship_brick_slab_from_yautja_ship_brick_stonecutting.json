@@ -1,0 +1,8 @@
+{
+  "type": "minecraft:stonecutting",
+  "count": 2,
+  "ingredient": {
+    "item": "avp:yautja_ship_brick"
+  },
+  "result": "avp:yautja_ship_brick_slab"
+}

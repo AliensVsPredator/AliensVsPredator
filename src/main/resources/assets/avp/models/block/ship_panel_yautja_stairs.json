@@ -1,8 +1,0 @@
-{
-    "parent": "block/stairs",
-    "textures": {
-        "bottom": "avp:blocks/shippanelyautja",
-        "top": "avp:blocks/shippanelyautja",
-        "side": "avp:blocks/shippanelyautja"
-    }
-}

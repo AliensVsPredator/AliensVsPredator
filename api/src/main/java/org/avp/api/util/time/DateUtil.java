@@ -1,0 +1,16 @@
+package org.avp.api.util.time;
+
+import java.time.LocalDate;
+import java.time.Month;
+
+public class DateUtil {
+
+    public static boolean isHalloween() {
+        LocalDate now = LocalDate.now();
+        return now.getMonth() == Month.OCTOBER && now.getDayOfMonth() == 31;
+    }
+
+    private DateUtil() {
+        throw new UnsupportedOperationException();
+    }
+}

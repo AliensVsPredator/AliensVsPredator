@@ -1,0 +1,8 @@
+{
+  "type": "minecraft:stonecutting",
+  "count": 1,
+  "ingredient": {
+    "item": "avp:plastic_purple"
+  },
+  "result": "avp:plastic_purple_wall"
+}

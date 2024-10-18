@@ -1,0 +1,7 @@
+{
+  "replace": false,
+  "values": [
+    "avp:weapon_m41a_pulse_rifle",
+    "avp:weapon_sniper_rifle"
+  ]
+}

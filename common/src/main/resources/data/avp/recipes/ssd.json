@@ -1,0 +1,32 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": {
+      "item": "avp:ram"
+    },
+    "B": {
+      "item": "avp:polycarbonate"
+    },
+    "C": {
+      "item": "avp:integrated_circuit"
+    },
+    "D": {
+      "item": "avp:regulator"
+    },
+    "E": {
+      "item": "avp:transistor"
+    },
+    "F": {
+      "item": "avp:capacitor"
+    }
+  },
+  "pattern": [
+    "AAA",
+    "ECE",
+    "BDF"
+  ],
+  "result": {
+    "item": "avp:ssd"
+  }
+}

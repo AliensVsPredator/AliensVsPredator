@@ -1,7 +1,0 @@
-{
-  "parent": "block/cube_column",
-  "textures": {
-    "end": "avp:blocks/floorgrill",
-    "side": "avp:blocks/floorgrill"
-  }
-}

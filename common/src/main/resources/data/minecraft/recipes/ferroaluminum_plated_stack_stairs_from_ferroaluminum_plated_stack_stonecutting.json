@@ -1,0 +1,8 @@
+{
+  "type": "minecraft:stonecutting",
+  "count": 1,
+  "ingredient": {
+    "item": "avp:ferroaluminum_plated_stack"
+  },
+  "result": "avp:ferroaluminum_plated_stack_stairs"
+}
