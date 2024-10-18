@@ -1,0 +1,8 @@
+{
+  "type": "minecraft:stonecutting",
+  "count": 1,
+  "ingredient": {
+    "item": "avp:padding_brown_square"
+  },
+  "result": "avp:padding_brown_square_wall"
+}

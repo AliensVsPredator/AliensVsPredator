@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "type=bottom": {
+      "model": "avp:block/aluminum_plated_chevron_slab"
+    },
+    "type=double": {
+      "model": "avp:block/aluminum_plated_chevron"
+    },
+    "type=top": {
+      "model": "avp:block/aluminum_plated_chevron_slab_top"
+    }
+  }
+}

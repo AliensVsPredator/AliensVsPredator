@@ -25,7 +25,3 @@ runs
 
 # minecraft datagen
 **/generated/*
-
-# assets and data
-/common/src/main/resources/assets/
-/common/src/main/resources/data/

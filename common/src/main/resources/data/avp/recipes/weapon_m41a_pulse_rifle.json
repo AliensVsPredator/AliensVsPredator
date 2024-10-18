@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "equipment",
+  "ingredients": [
+    {
+      "item": "avp:blueprint_m41a_pulse_rifle"
+    },
+    {
+      "item": "avp:weapon_part_barrel"
+    },
+    {
+      "item": "avp:weapon_part_grip"
+    },
+    {
+      "item": "avp:weapon_part_receiver_smart"
+    },
+    {
+      "item": "avp:weapon_part_stock"
+    }
+  ],
+  "result": {
+    "item": "avp:weapon_m41a_pulse_rifle"
+  }
+}

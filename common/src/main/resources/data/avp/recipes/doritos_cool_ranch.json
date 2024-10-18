@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": {
+      "item": "avp:doritos"
+    },
+    "B": {
+      "item": "minecraft:wheat"
+    }
+  },
+  "pattern": [
+    "AB",
+    "B "
+  ],
+  "result": {
+    "item": "avp:doritos_cool_ranch"
+  }
+}

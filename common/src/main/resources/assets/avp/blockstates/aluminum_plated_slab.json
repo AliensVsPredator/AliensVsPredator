@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "type=bottom": {
+      "model": "avp:block/aluminum_plated_slab"
+    },
+    "type=double": {
+      "model": "avp:block/aluminum_plated"
+    },
+    "type=top": {
+      "model": "avp:block/aluminum_plated_slab_top"
+    }
+  }
+}

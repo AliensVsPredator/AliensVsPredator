@@ -1,0 +1,26 @@
+{
+  "replace": false,
+  "values": [
+    "avp:paradise_planks_small",
+    "avp:paradise_planks_medium_stairs",
+    "avp:paradise_wood_small",
+    "avp:paradise_planks_small_stairs",
+    "avp:paradise_planks_medium",
+    "avp:paradise_planks_medium_slab",
+    "avp:paradise_planks_large_fence",
+    "avp:paradise_planks_large_slab",
+    "avp:paradise_planks_large_stairs",
+    "avp:paradise_planks_small_fence_gate",
+    "avp:paradise_wood_medium",
+    "avp:paradise_planks_medium_fence_gate",
+    "avp:paradise_wood_large",
+    "avp:paradise_log_large",
+    "avp:paradise_planks_small_slab",
+    "avp:paradise_planks_large",
+    "avp:paradise_log_medium",
+    "avp:paradise_planks_medium_fence",
+    "avp:paradise_planks_large_fence_gate",
+    "avp:paradise_planks_small_fence",
+    "avp:paradise_log_small"
+  ]
+}

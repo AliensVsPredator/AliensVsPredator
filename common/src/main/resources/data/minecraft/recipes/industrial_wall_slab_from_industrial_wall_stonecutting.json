@@ -1,0 +1,8 @@
+{
+  "type": "minecraft:stonecutting",
+  "count": 2,
+  "ingredient": {
+    "item": "avp:industrial_wall"
+  },
+  "result": "avp:industrial_wall_slab"
+}

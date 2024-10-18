@@ -1,0 +1,26 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "A": {
+      "item": "avp:ingot_steel"
+    },
+    "B": {
+      "item": "avp:polymer"
+    },
+    "C": {
+      "item": "minecraft:tripwire_hook"
+    },
+    "D": {
+      "item": "minecraft:stone_button"
+    }
+  },
+  "pattern": [
+    "AAA",
+    "BAC",
+    "BDB"
+  ],
+  "result": {
+    "item": "avp:weapon_part_receiver"
+  }
+}

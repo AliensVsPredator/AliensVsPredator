@@ -1,0 +1,8 @@
+{
+  "type": "minecraft:stonecutting",
+  "count": 4,
+  "ingredient": {
+    "item": "avp:titanium_block"
+  },
+  "result": "avp:titanium_plated_stack"
+}

@@ -1,0 +1,16 @@
+{
+  "replace": false,
+  "values": [
+    "avp:weapon_flamethrower_sevastopol",
+    "avp:weapon_m88mod4_combat_pistol",
+    "avp:weapon_37_12_shotgun",
+    "avp:weapon_ak_47",
+    "avp:weapon_f90_rifle",
+    "avp:weapon_m4_carbine",
+    "avp:weapon_m41a_pulse_rifle",
+    "avp:weapon_sniper_rifle",
+    "avp:weapon_m56_smartgun",
+    "avp:weapon_m83a2_sadar",
+    "avp:weapon_old_painless"
+  ]
+}

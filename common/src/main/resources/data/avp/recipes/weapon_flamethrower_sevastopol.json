@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "equipment",
+  "ingredients": [
+    {
+      "item": "avp:blueprint_flamethrower_sevastopol"
+    },
+    {
+      "item": "avp:weapon_part_barrel"
+    },
+    {
+      "item": "avp:weapon_part_grip"
+    },
+    {
+      "item": "avp:weapon_part_receiver"
+    }
+  ],
+  "result": {
+    "item": "avp:weapon_flamethrower_sevastopol"
+  }
+}

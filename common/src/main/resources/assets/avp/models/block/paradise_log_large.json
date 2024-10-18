@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/cube_column",
+  "textures": {
+    "end": "avp:block/paradise_log_large_top",
+    "side": "avp:block/paradise_log_large"
+  }
+}

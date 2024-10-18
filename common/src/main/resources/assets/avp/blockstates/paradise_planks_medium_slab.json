@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "type=bottom": {
+      "model": "avp:block/paradise_planks_medium_slab"
+    },
+    "type=double": {
+      "model": "avp:block/paradise_planks_medium"
+    },
+    "type=top": {
+      "model": "avp:block/paradise_planks_medium_slab_top"
+    }
+  }
+}

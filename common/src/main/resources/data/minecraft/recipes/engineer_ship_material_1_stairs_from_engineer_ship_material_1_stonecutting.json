@@ -1,0 +1,8 @@
+{
+  "type": "minecraft:stonecutting",
+  "count": 1,
+  "ingredient": {
+    "item": "avp:engineer_ship_material_1"
+  },
+  "result": "avp:engineer_ship_material_1_stairs"
+}

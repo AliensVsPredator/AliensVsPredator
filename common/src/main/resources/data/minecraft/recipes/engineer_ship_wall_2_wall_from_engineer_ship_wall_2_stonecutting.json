@@ -1,0 +1,8 @@
+{
+  "type": "minecraft:stonecutting",
+  "count": 1,
+  "ingredient": {
+    "item": "avp:engineer_ship_wall_2"
+  },
+  "result": "avp:engineer_ship_wall_2_wall"
+}

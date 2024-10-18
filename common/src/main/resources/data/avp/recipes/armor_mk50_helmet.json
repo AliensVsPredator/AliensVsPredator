@@ -1,0 +1,26 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "A": {
+      "item": "minecraft:copper_ingot"
+    },
+    "B": {
+      "tag": "avp:industrial_glass"
+    },
+    "C": {
+      "item": "avp:carbon"
+    },
+    "D": {
+      "item": "avp:silica"
+    }
+  },
+  "pattern": [
+    "AAA",
+    "B B",
+    "DCD"
+  ],
+  "result": {
+    "item": "avp:armor_mk50_helmet"
+  }
+}

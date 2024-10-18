@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "type=bottom": {
+      "model": "avp:block/yautja_ship_decor_3_slab"
+    },
+    "type=double": {
+      "model": "avp:block/yautja_ship_decor_3"
+    },
+    "type=top": {
+      "model": "avp:block/yautja_ship_decor_3_slab_top"
+    }
+  }
+}

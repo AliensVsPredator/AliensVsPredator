@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "type=bottom": {
+      "model": "avp:block/aluminum_cut_slab"
+    },
+    "type=double": {
+      "model": "avp:block/aluminum_cut"
+    },
+    "type=top": {
+      "model": "avp:block/aluminum_cut_slab_top"
+    }
+  }
+}

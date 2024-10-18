@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/inner_stairs",
+  "textures": {
+    "bottom": "avp:block/iron_plated_chevron",
+    "side": "avp:block/iron_plated_chevron",
+    "top": "avp:block/iron_plated_chevron"
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/outer_stairs",
+  "textures": {
+    "bottom": "avp:block/titanium_plated",
+    "side": "avp:block/titanium_plated",
+    "top": "avp:block/titanium_plated"
+  }
+}

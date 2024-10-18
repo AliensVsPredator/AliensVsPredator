@@ -1,0 +1,8 @@
+{
+  "type": "minecraft:stonecutting",
+  "count": 1,
+  "ingredient": {
+    "item": "avp:industrial_wall"
+  },
+  "result": "avp:industrial_wall_stairs"
+}

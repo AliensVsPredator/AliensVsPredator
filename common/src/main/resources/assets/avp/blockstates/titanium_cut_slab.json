@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "type=bottom": {
+      "model": "avp:block/titanium_cut_slab"
+    },
+    "type=double": {
+      "model": "avp:block/titanium_cut"
+    },
+    "type=top": {
+      "model": "avp:block/titanium_cut_slab_top"
+    }
+  }
+}

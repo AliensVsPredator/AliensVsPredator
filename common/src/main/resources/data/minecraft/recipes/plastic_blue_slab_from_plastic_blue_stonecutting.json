@@ -1,0 +1,8 @@
+{
+  "type": "minecraft:stonecutting",
+  "count": 2,
+  "ingredient": {
+    "item": "avp:plastic_blue"
+  },
+  "result": "avp:plastic_blue_slab"
+}

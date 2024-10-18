@@ -1,0 +1,8 @@
+{
+  "type": "minecraft:stonecutting",
+  "count": 2,
+  "ingredient": {
+    "item": "avp:temple_tile"
+  },
+  "result": "avp:temple_tile_slab"
+}

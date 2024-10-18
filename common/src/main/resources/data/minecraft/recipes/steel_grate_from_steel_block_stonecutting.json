@@ -1,0 +1,8 @@
+{
+  "type": "minecraft:stonecutting",
+  "count": 2,
+  "ingredient": {
+    "item": "avp:steel_block"
+  },
+  "result": "avp:steel_grate"
+}
