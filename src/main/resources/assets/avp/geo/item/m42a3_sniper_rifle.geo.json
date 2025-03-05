@@ -1,0 +1,133 @@
+{
+	"format_version": "1.12.0",
+	"minecraft:geometry": [
+		{
+			"description": {
+				"identifier": "geometry.unknown",
+				"texture_width": 128,
+				"texture_height": 64,
+				"visible_bounds_width": 3,
+				"visible_bounds_height": 1.5,
+				"visible_bounds_offset": [0, 0.25, 0]
+			},
+			"bones": [
+				{
+					"name": "root",
+					"pivot": [0.5, 1.2, -3.4]
+				},
+				{
+					"name": "gGun",
+					"parent": "root",
+					"pivot": [0.5, -16.06205, -13.73227]
+				},
+				{
+					"name": "gStock",
+					"parent": "gGun",
+					"pivot": [0, 4.588, 4.29024],
+					"cubes": [
+						{"origin": [-0.5, 4.6, 7.8], "size": [1, 1, 4], "inflate": -0.201, "uv": [91, 2]},
+						{"origin": [-0.5, 4.47574, 7.5], "size": [1, 1, 1], "inflate": -0.202, "pivot": [0, 4.97574, 8], "rotation": [45, 0, 0], "uv": [97, 8]},
+						{"origin": [-0.5, 3.6, 10.9], "size": [1, 2, 2], "inflate": -0.3, "uv": [84, 3]},
+						{"origin": [-0.5, 4, 5.8], "size": [1, 1, 5], "uv": [84, 8]},
+						{"origin": [-0.5, 2.2, 10.6], "size": [1, 3, 2], "inflate": -0.2, "uv": [95, 15]},
+						{"origin": [-0.5, 2.38492, 9.44645], "size": [1, 2, 1], "inflate": -0.201, "pivot": [0, 3.88492, 10.44645], "rotation": [45, 0, 0], "uv": [84, 9]},
+						{"origin": [-0.5, 3, 8], "size": [1, 2, 3], "inflate": -0.2, "uv": [86, 15]},
+						{"origin": [-0.5, 3.4, 6.8], "size": [1, 1, 2], "inflate": -0.3, "uv": [92, 9]},
+						{"origin": [-1.1, 2.6236, 4.52819], "size": [3, 3, 3], "inflate": -1.2, "uv": [93, 22]},
+						{"origin": [-1.9, 2.6236, 4.52819], "size": [3, 3, 3], "inflate": -1.2, "uv": [93, 22], "mirror": true},
+						{"origin": [-2, 2.5236, 4.52819], "size": [4, 4, 3], "inflate": -1.301, "uv": [78, 21]}
+					]
+				},
+				{
+					"name": "gBarrel",
+					"parent": "gGun",
+					"pivot": [0, 4.76667, -7.85],
+					"cubes": [
+						{"origin": [-0.5, 4.03333, -14.4], "size": [1, 1, 10], "uv": [82, 38]},
+						{"origin": [-1.5, 3.03333, -17.3], "size": [3, 3, 4], "inflate": -0.9, "uv": [73, 37]}
+					]
+				},
+				{
+					"name": "gScope",
+					"parent": "gGun",
+					"pivot": [0, 5.9, -1.46667],
+					"cubes": [
+						{"origin": [-0.5, 5.9, -2], "size": [1, 1, 6], "uv": [86, 30]},
+						{"origin": [0, 4.9, -0.53333], "size": [0, 1, 3], "uv": [95, 30]}
+					]
+				},
+				{
+					"name": "gReceiver",
+					"parent": "gGun",
+					"pivot": [0, 3.44714, -0.36249],
+					"cubes": [
+						{"origin": [-1, 3.5, -9.7], "size": [2, 2, 16], "inflate": -0.38, "uv": [42, 31]},
+						{"origin": [0.2, 2.7, 1.1], "size": [1, 1, 0], "inflate": 0, "pivot": [0.6, 3.2, 1.1], "rotation": [0, 90, 0], "uv": [18, 17]}
+					]
+				},
+				{
+					"name": "uppersupport",
+					"parent": "gReceiver",
+					"pivot": [-0.5, 5.09345, 4.13932],
+					"cubes": [
+						{"origin": [-0.5, 4.2, -8.7], "size": [1, 2, 14], "inflate": -0.66, "uv": [26, 15]},
+						{"origin": [-1, 4.1, -9], "size": [2, 2, 14], "inflate": -0.68, "uv": [43, 12]},
+						{"origin": [-1, 4.3, -9], "size": [2, 2, 3], "inflate": -0.481, "uv": [43, 17]},
+						{"origin": [-1, 4.43816, -9.66645], "size": [2, 2, 2], "inflate": -0.48, "pivot": [0, 5.43816, -8.16645], "rotation": [45, 0, 0], "uv": [44, 11]},
+						{"origin": [-1, 4.43816, -7.62645], "size": [2, 2, 2], "inflate": -0.48, "pivot": [0, 5.43816, -6.12645], "rotation": [45, 0, 0], "uv": [44, 6]},
+						{"origin": [-0.5, 4.60379, 4.42064], "size": [1, 1, 2], "inflate": -0.151, "pivot": [-0.5, 5.10379, 4.92064], "rotation": [-33, 0, 0], "uv": [30, 23]},
+						{"origin": [-0.5, 4.73795, 3.96773], "size": [1, 1, 1], "inflate": -0.15, "uv": [31, 20]},
+						{"origin": [-0.5, 4.59345, 3.63932], "size": [1, 1, 1], "inflate": -0.151, "pivot": [-0.5, 5.09345, 4.13932], "rotation": [47.5, 0, 0], "uv": [31, 20]}
+					]
+				},
+				{
+					"name": "forwardgrip",
+					"parent": "gReceiver",
+					"pivot": [0, 3.36742, -1.51213],
+					"cubes": [
+						{"origin": [-0.5, 2.8, -9.5], "size": [1, 2, 2], "inflate": -0.2, "uv": [28, 38], "mirror": true},
+						{"origin": [-0.5, 2.86742, -7.98787], "size": [1, 2, 2], "inflate": -0.201, "pivot": [0, 3.36742, -7.48787], "rotation": [15, 0, 0], "uv": [40, 38]},
+						{"origin": [-0.5, 2.8, -1.5], "size": [1, 2, 2], "inflate": -0.2, "uv": [40, 38], "mirror": true},
+						{"origin": [-0.5, 2.86742, -2.01213], "size": [1, 2, 2], "inflate": -0.201, "pivot": [0, 3.36742, -1.51213], "rotation": [15, 180, 0], "uv": [40, 38]},
+						{"origin": [-1, 2.7, -7.3], "size": [2, 2, 6], "inflate": -0.58, "uv": [29, 37]}
+					]
+				},
+				{
+					"name": "midreciever",
+					"parent": "gReceiver",
+					"pivot": [0.5, -19, 2],
+					"cubes": [
+						{"origin": [-1, 2, -0.2], "size": [2, 3, 3], "inflate": -0.401, "uv": [1, 14]},
+						{"origin": [-1, 1.5, 2], "size": [2, 2, 3], "inflate": -0.401, "uv": [1, 3]},
+						{"origin": [-1, 1.74853, 1.4], "size": [2, 2, 2], "inflate": -0.402, "pivot": [0, 2.74853, 2.4], "rotation": [-45, 0, 0], "uv": [2, 9]},
+						{"origin": [-1, 2.6, 1.6], "size": [2, 2, 6], "inflate": -0.4, "uv": [6, 15]},
+						{"origin": [-1.2, 2.7, 1.1], "size": [1, 1, 0], "inflate": 0, "pivot": [-0.6, 3.2, 1.1], "rotation": [0, -90, 0], "uv": [18, 17], "mirror": true},
+						{"origin": [-1.2, 1.59154, 2.49614], "size": [3, 3, 3], "inflate": -1, "pivot": [0.3, 3.09154, 3.99614], "rotation": [-30, 0, 0], "uv": [11, 7]},
+						{"origin": [-1.8, 1.59154, 2.49614], "size": [3, 3, 3], "inflate": -1, "pivot": [-0.3, 3.09154, 3.99614], "rotation": [-30, 0, 0], "uv": [11, 7], "mirror": true}
+					]
+				},
+				{
+					"name": "handle",
+					"parent": "gReceiver",
+					"pivot": [0.4, -18.1, 1.8],
+					"cubes": [
+						{"origin": [-1, 0.13273, 5.60943], "size": [2, 1, 2], "inflate": -0.4, "pivot": [0, 2.23273, 6.60943], "rotation": [27, 0, 0], "uv": [65, 12]},
+						{"origin": [-0.5, 0.73273, 6.10943], "size": [1, 3, 1], "pivot": [0, 2.23273, 6.60943], "rotation": [27, 0, 0], "uv": [66, 18]},
+						{"origin": [-2, 1.13273, 4.20943], "size": [4, 3, 3], "inflate": -2, "uv": [26, 4]},
+						{"origin": [-0.4, 1.6, 3.7], "size": [1, 1, 3], "inflate": -0.4, "uv": [13, 1]},
+						{"origin": [-0.6, 1.6, 3.7], "size": [1, 1, 3], "inflate": -0.4, "uv": [13, 1]}
+					]
+				},
+				{
+					"name": "ammoclip",
+					"parent": "gReceiver",
+					"pivot": [0, 0.65202, 5.46098],
+					"cubes": [
+						{"origin": [-1, -0.94798, 0.46098], "size": [2, 5, 5], "inflate": -1.3, "uv": [7, 35]},
+						{"origin": [-1, -0.92311, 0.44662], "size": [2, 5, 5], "inflate": -1.295, "pivot": [0, 0.39125, 1.80021], "rotation": [27, 0, 0], "uv": [7, 24]}
+					]
+				}
+			]
+		}
+	]
+}

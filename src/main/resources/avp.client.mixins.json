@@ -1,0 +1,13 @@
+{
+	"required": true,
+	"package": "com.avp.mixin.client",
+	"compatibilityLevel": "JAVA_21",
+	"client": [
+		"MixinGui_CrosshairPickEntityWithinGunRange",
+		"MixinItemInHandRenderer_AdjustHandRenderingForGun",
+		"MixinPlayerRenderer_AdjustArmPoseForGun"
+	],
+	"injectors": {
+		"defaultRequire": 1
+	}
+}

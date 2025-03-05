@@ -1,0 +1,33 @@
+{
+	"format_version": "1.8.0",
+	"animations": {
+		"barrelspin": {
+			"loop": true,
+			"animation_length": 0.6667,
+			"bones": {
+				"gBarrel": {
+					"rotation": {
+						"0.0": {
+							"vector": [0, 0, 0]
+						},
+						"0.1667": {
+							"vector": [0, 0, 90]
+						},
+						"0.3333": {
+							"vector": [0, 0, 180]
+						},
+						"0.5": {
+							"vector": [0, 0, 270]
+						},
+						"0.6667": {
+							"vector": [0, 0, 360]
+						}
+					}
+				}
+			}
+		},
+		"idle": {
+			"loop": true
+		}
+	}
+}

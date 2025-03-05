@@ -1,0 +1,324 @@
+{
+  "block.acid.burn": {
+    "sounds": [
+      {
+        "name": "minecraft:block.lava.extinguish",
+        "type": "event"
+      }
+    ],
+    "subtitle": "subtitles.block.acid.burn"
+  },
+  "entity.xenomorph.attack": {
+    "sounds": [
+      "avp:entity/xenomorph/attack/attack0",
+      "avp:entity/xenomorph/attack/attack1"
+    ],
+    "subtitle": "subtitles.entity.xenomorph.attack"
+  },
+  "entity.xenomorph.death": {
+    "sounds": [
+      "avp:entity/xenomorph/death/death0",
+      "avp:entity/xenomorph/death/death1",
+      "avp:entity/xenomorph/death/death2",
+      "avp:entity/xenomorph/death/death3",
+      "avp:entity/xenomorph/death/death4"
+    ],
+    "subtitle": "subtitles.entity.xenomorph.death"
+  },
+  "entity.xenomorph.hiss": {
+    "sounds": [
+      "avp:entity/xenomorph/hiss/hiss0",
+      "avp:entity/xenomorph/hiss/hiss1",
+      "avp:entity/xenomorph/hiss/hiss2",
+      "avp:entity/xenomorph/hiss/hiss3",
+      "avp:entity/xenomorph/hiss/hiss4",
+      "avp:entity/xenomorph/hiss/hiss5",
+      "avp:entity/xenomorph/hiss/hiss6",
+      "avp:entity/xenomorph/hiss/hiss7",
+      "avp:entity/xenomorph/hiss/hiss8",
+      "avp:entity/xenomorph/hiss/hiss9",
+      "avp:entity/xenomorph/hiss/hiss10",
+      "avp:entity/xenomorph/hiss/hiss11"
+    ],
+    "subtitle": "subtitles.entity.xenomorph.hiss"
+  },
+  "entity.xenomorph.hurt": {
+    "sounds": [
+      "avp:entity/xenomorph/hurt/hurt0",
+      "avp:entity/xenomorph/hurt/hurt1",
+      "avp:entity/xenomorph/hurt/hurt2",
+      "avp:entity/xenomorph/hurt/hurt3",
+      "avp:entity/xenomorph/hurt/hurt4"
+    ],
+    "subtitle": "subtitles.entity.xenomorph.hurt"
+  },
+  "entity.xenomorph.idle": {
+    "sounds": [
+      "avp:entity/xenomorph/idle/idle0",
+      "avp:entity/xenomorph/idle/idle1",
+      "avp:entity/xenomorph/idle/idle2",
+      "avp:entity/xenomorph/idle/idle3"
+    ],
+    "subtitle": "subtitles.entity.xenomorph.idle"
+  },
+  "entity.xenomorph.lunge": {
+    "sounds": [
+      "avp:entity/xenomorph/lunge/lunge0"
+    ],
+    "subtitle": "subtitles.entity.xenomorph.lunge"
+  },
+  "item.armor.equip_chitin": {
+    "sounds": [
+      {
+        "name": "minecraft:block.honey_block.step",
+        "type": "event"
+      }
+    ],
+    "subtitle": "subtitles.item.armor.equip_chitin"
+  },
+  "item.armor.equip_mk50": {
+    "sounds": [
+      {
+        "name": "minecraft:item.armor.equip_leather",
+        "type": "event"
+      }
+    ],
+    "subtitle": "subtitles.item.armor.equip_mk50"
+  },
+  "item.armor.equip_pressure": {
+    "sounds": [
+      {
+        "name": "minecraft:item.armor.equip_leather",
+        "type": "event"
+      }
+    ],
+    "subtitle": "subtitles.item.armor.equip_pressure"
+  },
+  "item.armor.equip_steel": {
+    "sounds": [
+      {
+        "name": "minecraft:item.armor.equip_iron",
+        "type": "event"
+      }
+    ],
+    "subtitle": "subtitles.item.armor.equip_titanium"
+  },
+  "item.armor.equip_tactical": {
+    "sounds": [
+      {
+        "name": "minecraft:item.armor.equip_chain",
+        "type": "event"
+      }
+    ],
+    "subtitle": "subtitles.item.armor.equip_tactical"
+  },
+  "item.armor.equip_titanium": {
+    "sounds": [
+      {
+        "name": "minecraft:item.armor.equip_iron",
+        "type": "event"
+      }
+    ],
+    "subtitle": "subtitles.item.armor.equip_titanium"
+  },
+  "item.armor.equip_veritanium": {
+    "sounds": [
+      {
+        "name": "minecraft:item.armor.equip_iron",
+        "type": "event"
+      }
+    ],
+    "subtitle": "subtitles.item.armor.equip_veritanium"
+  },
+  "item.weapon.flamethrower_sevastopol.reload_finish": {
+    "sounds": [
+      "avp:item/weapon/flamethrower_sevastopol/reload_finish"
+    ],
+    "subtitle": "subtitles.item.weapon.flamethrower_sevastopol.reload_finish"
+  },
+  "item.weapon.flamethrower_sevastopol.reload_start": {
+    "sounds": [
+      "avp:item/weapon/flamethrower_sevastopol/reload_start"
+    ],
+    "subtitle": "subtitles.item.weapon.flamethrower_sevastopol.reload_start"
+  },
+  "item.weapon.flamethrower_sevastopol.shoot": {
+    "sounds": [
+      "avp:item/weapon/flamethrower_sevastopol/shoot"
+    ],
+    "subtitle": "subtitles.item.weapon.flamethrower_sevastopol.shoot"
+  },
+
+  "item.weapon.fx.ricochet.dirt": {
+    "sounds": [
+      "avp:item/weapon/fx/ricochet/dirt/impact0",
+      "avp:item/weapon/fx/ricochet/dirt/impact1",
+      "avp:item/weapon/fx/ricochet/dirt/impact2",
+      "avp:item/weapon/fx/ricochet/dirt/impact3",
+      "avp:item/weapon/fx/ricochet/dirt/impact4",
+      "avp:item/weapon/fx/ricochet/dirt/impact5",
+      "avp:item/weapon/fx/ricochet/dirt/impact6",
+      "avp:item/weapon/fx/ricochet/dirt/impact7",
+      "avp:item/weapon/fx/ricochet/dirt/impact8",
+      "avp:item/weapon/fx/ricochet/dirt/impact9",
+      "avp:item/weapon/fx/ricochet/dirt/impact10",
+      "avp:item/weapon/fx/ricochet/dirt/impact11",
+      "avp:item/weapon/fx/ricochet/dirt/impact12",
+      "avp:item/weapon/fx/ricochet/dirt/impact13",
+      "avp:item/weapon/fx/ricochet/dirt/impact14"
+    ],
+    "subtitle": "subtitles.item.weapon.fx.ricochet.dirt"
+  },
+  "item.weapon.fx.ricochet.generic": {
+    "sounds": [
+      "avp:item/weapon/fx/ricochet/generic/impact0",
+      "avp:item/weapon/fx/ricochet/generic/impact1",
+      "avp:item/weapon/fx/ricochet/generic/impact2",
+      "avp:item/weapon/fx/ricochet/generic/impact3",
+      "avp:item/weapon/fx/ricochet/generic/impact4",
+      "avp:item/weapon/fx/ricochet/generic/impact5",
+      "avp:item/weapon/fx/ricochet/generic/impact6",
+      "avp:item/weapon/fx/ricochet/generic/impact7",
+      "avp:item/weapon/fx/ricochet/generic/impact8",
+      "avp:item/weapon/fx/ricochet/generic/impact9",
+      "avp:item/weapon/fx/ricochet/generic/impact10",
+      "avp:item/weapon/fx/ricochet/generic/impact11"
+    ],
+    "subtitle": "subtitles.item.weapon.fx.ricochet.generic"
+  },
+  "item.weapon.fx.ricochet.glass": {
+    "sounds": [
+      "avp:item/weapon/fx/ricochet/glass/impact0",
+      "avp:item/weapon/fx/ricochet/glass/impact1",
+      "avp:item/weapon/fx/ricochet/glass/impact2",
+      "avp:item/weapon/fx/ricochet/glass/impact3"
+    ],
+    "subtitle": "subtitles.item.weapon.fx.ricochet.glass"
+  },
+  "item.weapon.fx.ricochet.metal": {
+    "sounds": [
+      "avp:item/weapon/fx/ricochet/metal/impact0",
+      "avp:item/weapon/fx/ricochet/metal/impact1",
+      "avp:item/weapon/fx/ricochet/metal/impact2",
+      "avp:item/weapon/fx/ricochet/metal/impact3",
+      "avp:item/weapon/fx/ricochet/metal/impact4",
+      "avp:item/weapon/fx/ricochet/metal/impact5"
+    ],
+    "subtitle": "subtitles.item.weapon.fx.ricochet.metal"
+  },
+  "item.weapon.generic.reload": {
+    "sounds": [
+      "avp:item/weapon/generic/reload"
+    ],
+    "subtitle": "subtitles.item.weapon.generic.reload"
+  },
+  "item.weapon.generic.shoot": {
+    "sounds": [
+      "avp:item/weapon/generic/shoot"
+    ],
+    "subtitle": "subtitles.item.weapon.generic.shoot"
+  },
+  "item.weapon.generic.shoot_fail": {
+    "sounds": [
+      "avp:item/weapon/generic/shoot_fail"
+    ],
+    "subtitle": "subtitles.item.weapon.generic.shoot_fail"
+  },
+  "item.weapon.m37_12_shotgun.shoot": {
+    "sounds": [
+      "avp:item/weapon/m37_12_shotgun/shoot0",
+      "avp:item/weapon/m37_12_shotgun/shoot1"
+    ],
+    "subtitle": "subtitles.item.weapon.m37_12_shotgun.shoot"
+  },
+  "item.weapon.m41a_pulse_rifle.shoot": {
+    "sounds": [
+      "avp:item/weapon/m41a_pulse_rifle/shoot0",
+      "avp:item/weapon/m41a_pulse_rifle/shoot1",
+      "avp:item/weapon/m41a_pulse_rifle/shoot2",
+      "avp:item/weapon/m41a_pulse_rifle/shoot3",
+      "avp:item/weapon/m41a_pulse_rifle/shoot4"
+    ],
+    "subtitle": "subtitles.item.weapon.m41a_pulse_rifle.shoot"
+  },
+  "item.weapon.m42a3_sniper_rifle.shoot": {
+    "sounds": [
+      "avp:item/weapon/m42a3_sniper_rifle/shoot"
+    ],
+    "subtitle": "subtitles.item.weapon.m42a3_sniper_rifle.shoot"
+  },
+  "item.weapon.m4ra_battle_rifle.shoot": {
+    "sounds": [
+      "avp:item/weapon/m4ra_battle_rifle/shoot"
+    ],
+    "subtitle": "subtitles.item.weapon.m4ra_battle_rifle.shoot"
+  },
+  "item.weapon.m56_smartgun.shoot": {
+    "sounds": [
+      "avp:item/weapon/m56_smartgun/shoot"
+    ],
+    "subtitle": "subtitles.item.weapon.m56_smartgun.shoot"
+  },
+  "item.weapon.m6b_rocket_launcher.reload_finish": {
+    "sounds": [
+      "avp:item/weapon/m6b_rocket_launcher/reload_finish"
+    ],
+    "subtitle": "subtitles.item.weapon.m6b_rocket_launcher.reload_finish"
+  },
+  "item.weapon.m6b_rocket_launcher.reload_start": {
+    "sounds": [
+      "avp:item/weapon/m6b_rocket_launcher/reload_start"
+    ],
+    "subtitle": "subtitles.item.weapon.m6b_rocket_launcher.reload_start"
+  },
+  "item.weapon.m6b_rocket_launcher.shoot": {
+    "sounds": [
+      "avp:item/weapon/m6b_rocket_launcher/shoot"
+    ],
+    "subtitle": "subtitles.item.weapon.m6b_rocket_launcher.shoot"
+  },
+  "item.weapon.m88_mod_4_combat_pistol.reload": {
+    "sounds": [
+      "avp:item/weapon/m88_mod_4_combat_pistol/reload"
+    ],
+    "subtitle": "subtitles.item.weapon.m88_mod_4_combat_pistol.reload"
+  },
+  "item.weapon.m88_mod_4_combat_pistol.shoot": {
+    "sounds": [
+      "avp:item/weapon/m88_mod_4_combat_pistol/shoot0",
+      "avp:item/weapon/m88_mod_4_combat_pistol/shoot1"
+    ],
+    "subtitle": "subtitles.item.weapon.m88_mod_4_combat_pistol.shoot"
+  },
+  "item.weapon.old_painless.shoot": {
+    "sounds": [
+      "avp:item/weapon/old_painless/shoot"
+    ],
+    "subtitle": "subtitles.item.weapon.old_painless.shoot"
+  },
+  "item.weapon.old_painless.shoot_finish": {
+    "sounds": [
+      "avp:item/weapon/old_painless/shoot_finish"
+    ],
+    "subtitle": "subtitles.item.weapon.old_painless.shoot_finish"
+  },
+  "item.weapon.old_painless.shoot_spinning": {
+    "sounds": [
+      "avp:item/weapon/old_painless/shoot_spinning"
+    ],
+    "subtitle": "subtitles.item.weapon.old_painless.shoot_spinning"
+  },
+  "item.weapon.old_painless.shoot_start": {
+    "sounds": [
+      "avp:item/weapon/old_painless/shoot_start"
+    ],
+    "subtitle": "subtitles.item.weapon.old_painless.shoot_start"
+  },
+  "item.weapon.zx_76_shotgun.shoot": {
+    "sounds": [
+      "avp:item/weapon/zx_76_shotgun/shoot0",
+      "avp:item/weapon/zx_76_shotgun/shoot1"
+    ],
+    "subtitle": "subtitles.item.weapon.zx_76_shotgun.shoot"
+  }
+}

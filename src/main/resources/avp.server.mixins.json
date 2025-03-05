@@ -1,0 +1,11 @@
+{
+	"required": true,
+	"package": "com.avp.mixin.server",
+	"compatibilityLevel": "JAVA_21",
+	"mixins": [
+		"MixinServerLevel_RunTickRoutines"
+	],
+	"injectors": {
+		"defaultRequire": 1
+	}
+}
