@@ -1,6 +1,6 @@
 {
   "required": true,
-  "package": "com.avp.mixins",
+  "package": "com.avp.core.mixin",
   "compatibilityLevel": "JAVA_21",
   "refmap": "avp.refmap.json",
   "injectors": {
