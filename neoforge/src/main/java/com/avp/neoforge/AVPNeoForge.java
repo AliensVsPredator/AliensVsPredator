@@ -7,6 +7,7 @@ import com.avp.neoforge.platform.service.NeoForgeRegistryService;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.Mod;
+import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
 import net.neoforged.neoforge.event.entity.EntityAttributeCreationEvent;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
@@ -21,19 +22,18 @@ public final class AVPNeoForge {
         registry.initialize(eventBus);
 
         AVP.initialize();
+        NeoForge.EVENT_BUS.addListener(this::registerCommands);
+        eventBus.addListener(this::registerEntityAttributes);
+        eventBus.addListener(this::registerNetworkingHandlers);
     }
 
-    // TODO: Verify that we can use @SubscribeEvent here.
-    @SubscribeEvent
-    public static void registerCommands(RegisterCommandsEvent event) {
+    public void registerCommands(RegisterCommandsEvent event) {
         var registry = (NeoForgeRegistryService) Services.REGISTRY;
 
         registry.getCommands().forEach(event.getDispatcher()::register);
     }
 
-    // TODO: Verify that we can use @SubscribeEvent here.
-    @SubscribeEvent
-    public static void registerEntityAttributes(EntityAttributeCreationEvent event) {
+    public void registerEntityAttributes(final EntityAttributeCreationEvent event) {
         var registry = (NeoForgeRegistryService) Services.REGISTRY;
         var pairs = registry.getEntityTypeAttributePairs();
         pairs.forEach(pair -> {
@@ -43,9 +43,7 @@ public final class AVPNeoForge {
         });
     }
 
-    // TODO: Verify that we can use @SubscribeEvent here.
-    @SubscribeEvent
-    public static void registerNetworkingHandlers(RegisterPayloadHandlersEvent event) {
+    public void registerNetworkingHandlers(final RegisterPayloadHandlersEvent event) {
         var registrar = event.registrar("1");
 
         // TODO:
