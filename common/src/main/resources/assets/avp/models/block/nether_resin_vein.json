@@ -1,0 +1,17 @@
+{
+  "ambientocclusion": false,
+  "textures": {
+    "particle": "avp:block/nether_resin_vein",
+    "nether_resin_vein": "avp:block/nether_resin_vein"
+  },
+  "elements": [
+    {
+      "from": [ 0, 0, 0.1 ],
+      "to": [ 16, 16, 0.1 ],
+      "faces": {
+        "north": { "uv": [ 0, 0, 16, 16 ], "texture": "#nether_resin_vein" },
+        "south": { "uv": [ 0, 0, 16, 16 ], "texture": "#nether_resin_vein" }
+      }
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "com.avp.core.mixin",
+  "refmap": "${mod_id}.refmap.json",
+  "compatibilityLevel": "JAVA_21",
+  "mixins": [
+    "MixinArmorStand_EquipArmorFromArmorCase",
+    "MixinDecoratedPotPatterns_GetPatternForCustomSherds",
+    "MixinEntityTypeBuilder_SilenceDataFixerError",
+    "MixinItemEntity_LithiumExplode",
+    "MixinLivingEntity_ApplyArmorEffects",
+    "MixinLivingEntity_GrowEmbryo",
+    "MixinMob_IncapacitateHost",
+    "MixinMobCategory_InjectCustomAlienCategory",
+    "MixinVillagerHostilesSensor_RunAwayFromAVPMonsters"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

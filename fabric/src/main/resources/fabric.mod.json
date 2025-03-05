@@ -1,0 +1,57 @@
+{
+	"schemaVersion": 1,
+	"id": "${mod_id}",
+	"version": "${version}",
+	"name": "${mod_name}",
+	"description": "${description}",
+	"accessWidener": "${mod_id}.accesswidener",
+	"authors": [
+		"AzureDoom",
+		"Boston Vanseghi",
+		"Caution",
+		"gorblegorble",
+		"Gothic Lycan",
+		"Hossaurus",
+		"Pheonix Atredes",
+		"Shift",
+		"Spookyboo117",
+		"Whiteshark01",
+		"Xavier"
+	],
+	"contact": {
+		"homepage": "https://fabricmc.net/",
+		"sources": "https://github.com/FabricMC/fabric-example-mod"
+	},
+	"license": "CC0-1.0",
+	"icon": "assets/avp/icon.png",
+	"environment": "*",
+	"entrypoints": {
+		"main": [
+			"com.avp.fabric.AVPFabric"
+		],
+		"client": [
+			"com.avp.fabric.client.AVPFabricClient"
+		],
+		"fabric-datagen": [
+			"com.avp.fabric.data.AVPDataGenerator"
+		]
+	},
+	"mixins": [
+		"${mod_id}.mixins.json",
+		"${mod_id}.server.mixins.json",
+		{
+			"config": "${mod_id}.client.mixins.json",
+			"environment": "client"
+		}
+	],
+	"depends": {
+		"fabricloader": ">=${fabric_loader_version}",
+		"fabric-api": "*",
+		"minecraft": "${minecraft_version}",
+		"java": ">=${java_version}",
+		"azurelib": "~3.0.6"
+	},
+	"suggests": {
+		"another-mod": "*"
+	}
+}

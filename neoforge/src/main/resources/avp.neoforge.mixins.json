@@ -1,0 +1,12 @@
+{
+  "required": true,
+  "package": "com.avp.mixins",
+  "compatibilityLevel": "JAVA_21",
+  "refmap": "avp.refmap.json",
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "mixins": [],
+  "client": [],
+  "server": []
+}
