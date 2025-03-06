@@ -2,15 +2,11 @@ package com.avp.core.common.component;
 
 import com.avp.core.platform.service.Services;
 import com.mojang.serialization.Codec;
-import net.minecraft.core.Registry;
 import net.minecraft.core.component.DataComponentType;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.codec.ByteBufCodecs;
 
 import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
-
-import com.avp.core.AVPResources;
 
 public class DataComponents {
 
@@ -29,7 +25,7 @@ public class DataComponents {
     );
 
     private static <T> Supplier<DataComponentType<T>> register(String id, UnaryOperator<DataComponentType.Builder<T>> unaryOperator) {
-        return Services.REGISTRY.register(BuiltInRegistries.DATA_COMPONENT_TYPE, id, () -> unaryOperator.apply(DataComponentType.builder()).build());
+        return Services.REGISTRY.registerDataComponent(id, () -> unaryOperator.apply(DataComponentType.builder()).build());
     }
 
     public static void initialize() {}

@@ -13,7 +13,7 @@ public class AVPParticleTypes {
     public static final Supplier<SimpleParticleType> BLUE_ACID = register("blue_acid");
 
     public static Supplier<SimpleParticleType> register(String id) {
-        return Services.REGISTRY.register(BuiltInRegistries.PARTICLE_TYPE, id, () -> new SimpleParticleType(false) {});
+        return Services.REGISTRY.registerParticle(id, () -> new SimpleParticleType(false) {});
     }
 
     public static void initialize() {}

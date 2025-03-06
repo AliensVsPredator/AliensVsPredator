@@ -19,7 +19,7 @@ public class AVPGameEvents {
     }
 
     private static Supplier<GameEvent>  register(String id, int radius) {
-        return Services.REGISTRY.register(BuiltInRegistries.GAME_EVENT, id, () -> new GameEvent(radius));
+        return Services.REGISTRY.registerGameEvent(id, () -> new GameEvent(radius));
     }
 
     public static void initialize() {}

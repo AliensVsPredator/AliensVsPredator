@@ -65,6 +65,7 @@ public class AVP {
         ConfigProperties.initialize();
 
         // Core
+        AVPSoundEvents.initialize();
         BlockEntityTypes.initialize();
         AVPBlocks.initialize();
         AVPItems.initialize();
@@ -79,7 +80,6 @@ public class AVP {
         DataComponents.initialize();
         DecoratedPotPatterns.initialize();
         WorldGen.initialize();
-        AVPSoundEvents.initialize();
         AVPGameEvents.initialize();
         CommonPacketRegistry.initialize();
 

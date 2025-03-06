@@ -20,7 +20,7 @@ public class DecoratedPotPatterns {
     public static final Supplier<DecoratedPotPattern> VECTOR = register("vector_pottery_pattern");
 
     private static Supplier<DecoratedPotPattern> register(String name) {
-        return Services.REGISTRY.register(BuiltInRegistries.DECORATED_POT_PATTERN, name, () -> new DecoratedPotPattern(AVPResources.location(name)));
+        return Services.REGISTRY.registerDecoratedPotPattern(name, () -> new DecoratedPotPattern(AVPResources.location(name)));
     }
 
     public static void initialize() {}

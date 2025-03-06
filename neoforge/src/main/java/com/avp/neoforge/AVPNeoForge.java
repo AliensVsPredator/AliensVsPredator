@@ -19,7 +19,7 @@ public final class AVPNeoForge {
     public AVPNeoForge(IEventBus eventBus) {
         var registry = (NeoForgeRegistryService) Services.REGISTRY;
 
-        registry.initialize(eventBus);
+        NeoForgeRegistryService.initialize(eventBus);
 
         AVP.initialize();
         NeoForge.EVENT_BUS.addListener(this::registerCommands);

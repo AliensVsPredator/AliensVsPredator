@@ -588,7 +588,7 @@ public class AVPBlocks {
     }
 
     public static Supplier<Block> register(Supplier<Block> blockSupplier, String id) {
-        return Services.REGISTRY.register(BuiltInRegistries.BLOCK, id, blockSupplier);
+        return Services.REGISTRY.registerBlock(id, blockSupplier);
     }
 
     public static void initialize() {}

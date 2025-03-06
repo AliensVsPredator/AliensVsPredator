@@ -94,7 +94,7 @@ public class AVPSoundEvents {
     public static final Supplier<SoundEvent> WEAPON_ZX_76_SHOTGUN_SHOOT = register("item.weapon.zx_76_shotgun.shoot");
 
     private static Supplier<SoundEvent> register(String id) {
-        return Services.REGISTRY.register(BuiltInRegistries.SOUND_EVENT, id, () -> SoundEvent.createVariableRangeEvent(AVPResources.location(id)));
+        return Services.REGISTRY.registerSound(id, () -> SoundEvent.createVariableRangeEvent(AVPResources.location(id)));
     }
 
     public static void initialize() {}

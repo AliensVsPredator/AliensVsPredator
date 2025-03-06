@@ -1,7 +1,6 @@
 package com.avp.core.common.block_item;
 
 import com.avp.core.platform.service.Services;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
@@ -428,7 +427,7 @@ public class AVPBlockItems {
     }
 
     public static Supplier<BlockItem> register(String name, Item.Properties properties, Supplier<Block> blockSupplier) {
-        return Services.REGISTRY.register(BuiltInRegistries.ITEM, name, () -> new BlockItem(blockSupplier.get(), properties));
+        return Services.REGISTRY.registerItem(name, () -> new BlockItem(blockSupplier.get(), properties));
     }
 
     public static void initialize() {}

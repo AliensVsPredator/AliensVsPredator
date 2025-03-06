@@ -15,7 +15,7 @@ public class MenuTypes {
     public static final Supplier<MenuType<ArmorCaseMenu>> ARMOR_CASE = register(ArmorCaseMenu::new, "armor_case");
 
     public static <T extends AbstractContainerMenu> Supplier<MenuType<T>> register(MenuType.MenuSupplier<T> supplier, String id) {
-        return Services.REGISTRY.register(BuiltInRegistries.MENU, id, () -> new MenuType<>(supplier, FeatureFlagSet.of()));
+        return Services.REGISTRY.registerScreen(id, () -> new MenuType<>(supplier, FeatureFlagSet.of()));
     }
 
     public static void initialize() {}

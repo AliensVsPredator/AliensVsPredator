@@ -73,7 +73,7 @@ public class CreativeModeTabs {
         var path = resourceKey.location().getPath();
 
         // TODO: Ensure that these row/column values work properly.
-        return Services.REGISTRY.register(BuiltInRegistries.CREATIVE_MODE_TAB, path, () -> CreativeModeTab.builder(CreativeModeTab.Row.TOP, 0)
+        return Services.REGISTRY.registerCreativeModeTab(path, () -> CreativeModeTab.builder(CreativeModeTab.Row.TOP, 0)
             .icon(iconSupplier)
             .title(Component.translatable(BASE_PATH + "." + AVP.MOD_ID + "." + path))
             .displayItems((parameters, output) -> outputConsumer.accept(output))

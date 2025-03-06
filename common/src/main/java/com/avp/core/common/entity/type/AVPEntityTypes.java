@@ -1,7 +1,6 @@
 package com.avp.core.common.entity.type;
 
 import com.avp.core.platform.service.Services;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
@@ -192,7 +191,7 @@ public class AVPEntityTypes {
     }
 
     private static <T extends Entity> Supplier<EntityType<T>> register(String name, Supplier<EntityType.Builder<T>> builderSupplier) {
-        return Services.REGISTRY.register(BuiltInRegistries.ENTITY_TYPE, name, () -> ((SilencedEntityTypeBuilder) builderSupplier.get()).buildWithoutDataFixerCheck());
+        return Services.REGISTRY.registerEntity(name, () -> ((SilencedEntityTypeBuilder) builderSupplier.get()).buildWithoutDataFixerCheck());
     }
 
     public static void initialize() {

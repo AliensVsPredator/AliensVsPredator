@@ -310,7 +310,7 @@ public class AVPItems {
     }
 
     public static Supplier<Item> register(Supplier<Item> itemSupplier, String id) {
-        return Services.REGISTRY.register(BuiltInRegistries.ITEM, id, itemSupplier);
+        return Services.REGISTRY.registerItem(id, itemSupplier);
     }
 
     public static void initialize() {

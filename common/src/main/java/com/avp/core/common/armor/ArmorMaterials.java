@@ -5,6 +5,7 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ArmorMaterial;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -31,7 +32,7 @@ public class ArmorMaterials {
             )
         ),
         7,
-        AVPSoundEvents.ITEM_ARMOR_EQUIP_CHITIN,
+        SoundEvents.ARMOR_EQUIP_GENERIC.value(),
         () -> Ingredient.of(AVPItems.CHITIN.get()),
         0,
         0,
@@ -48,7 +49,7 @@ public class ArmorMaterials {
             )
         ),
         6,
-        AVPSoundEvents.ITEM_ARMOR_EQUIP_MK50,
+        SoundEvents.ARMOR_EQUIP_GENERIC.value(),
         () -> Ingredient.of(AVPItems.LEAD_INGOT.get()),
         0,
         0,
@@ -65,7 +66,7 @@ public class ArmorMaterials {
             )
         ),
         7,
-        AVPSoundEvents.ITEM_ARMOR_EQUIP_CHITIN,
+        SoundEvents.ARMOR_EQUIP_GENERIC.value(),
         () -> Ingredient.of(AVPItems.NETHER_CHITIN.get()),
         0,
         0,
@@ -76,7 +77,7 @@ public class ArmorMaterials {
         "plated_chitin",
         relativeDefense(net.minecraft.world.item.ArmorMaterials.DIAMOND, Map.of()),
         7,
-        AVPSoundEvents.ITEM_ARMOR_EQUIP_CHITIN,
+        SoundEvents.ARMOR_EQUIP_GENERIC.value(),
         () -> Ingredient.of(AVPItems.PLATED_CHITIN.get()),
         1,
         0,
@@ -87,7 +88,7 @@ public class ArmorMaterials {
         "plated_nether_chitin",
         relativeDefense(net.minecraft.world.item.ArmorMaterials.DIAMOND, Map.of()),
         7,
-        AVPSoundEvents.ITEM_ARMOR_EQUIP_CHITIN,
+        SoundEvents.ARMOR_EQUIP_GENERIC.value(),
         () -> Ingredient.of(AVPItems.PLATED_NETHER_CHITIN.get()),
         1,
         0,
@@ -104,7 +105,7 @@ public class ArmorMaterials {
             )
         ),
         6,
-        AVPSoundEvents.ITEM_ARMOR_EQUIP_PRESSURE,
+        SoundEvents.ARMOR_EQUIP_GENERIC.value(),
         () -> Ingredient.of(AVPItems.ALUMINUM_INGOT.get()),
         0,
         0,
@@ -123,7 +124,7 @@ public class ArmorMaterials {
             )
         ),
         5, // TODO:
-        AVPSoundEvents.ITEM_ARMOR_EQUIP_STEEL,
+        SoundEvents.ARMOR_EQUIP_GENERIC.value(),
         () -> Ingredient.of(AVPItems.STEEL_INGOT.get()),
         0,
         0,
@@ -139,7 +140,7 @@ public class ArmorMaterials {
             Map.entry(ArmorItem.Type.BOOTS, 2)
         ),
         5,
-        AVPSoundEvents.ITEM_ARMOR_EQUIP_TACTICAL,
+        SoundEvents.ARMOR_EQUIP_GENERIC.value(),
         () -> Ingredient.of(AVPItems.STEEL_INGOT.get()),
         0,
         0,
@@ -158,7 +159,7 @@ public class ArmorMaterials {
             )
         ),
         5,
-        AVPSoundEvents.ITEM_ARMOR_EQUIP_TITANIUM,
+        SoundEvents.ARMOR_EQUIP_GENERIC.value(),
         () -> Ingredient.of(AVPItems.TITANIUM_INGOT.get()),
         1,
         0,
@@ -177,7 +178,7 @@ public class ArmorMaterials {
             )
         ),
         6,
-        AVPSoundEvents.ITEM_ARMOR_EQUIP_VERITANIUM,
+        SoundEvents.ARMOR_EQUIP_GENERIC.value(),
         () -> Ingredient.of(AVPItems.VERITANIUM_SHARD.get()),
         4,
         0.15F,
@@ -188,7 +189,7 @@ public class ArmorMaterials {
         String id,
         Map<ArmorItem.Type, Integer> defensePoints,
         int enchantability,
-        Supplier<SoundEvent> equipSound,
+        SoundEvent equipSound,
         Supplier<Ingredient> repairIngredientSupplier,
         float toughness,
         float knockbackResistance,
@@ -201,10 +202,10 @@ public class ArmorMaterials {
         );
 
         // Register the material within the ArmorMaterials registry.
-        return Services.REGISTRY.register(BuiltInRegistries.ARMOR_MATERIAL, id, () -> new ArmorMaterial(
+        return Services.REGISTRY.registerArmorMaterial(id, () -> new ArmorMaterial(
             defensePoints,
             enchantability,
-            Holder.direct(equipSound.get()),
+            Holder.direct(equipSound),
             repairIngredientSupplier,
             layers,
             toughness,
