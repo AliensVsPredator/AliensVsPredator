@@ -75,6 +75,9 @@ public class AVP {
         ArmorItems.initialize();
         SpawnEggItems.initialize();
         AVPEntityTypes.initialize();
+        /**
+         * TODO: Get working with NeoForge
+         */
 //        Infections.initialize();
 //        Lifecycles.initialize();
         AVPParticleTypes.initialize();
@@ -97,6 +100,9 @@ public class AVP {
         AVPCommands.initialize();
     }
 
+    /**
+     * TODO: Convert to AzureLib configs system.
+     */
     private static Config loadConfig(Config base, ConfigTemplate template) {
         var name = base.name();
         var loadedConfig = ConfigLoader.load(name)
