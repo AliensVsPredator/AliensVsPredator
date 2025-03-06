@@ -13,6 +13,7 @@
     "MixinLivingEntity_GrowEmbryo",
     "MixinMob_IncapacitateHost",
     "MixinMobCategory_InjectCustomAlienCategory",
+    "MixinShearsItem",
     "MixinVillagerHostilesSensor_RunAwayFromAVPMonsters"
   ],
   "client": [
