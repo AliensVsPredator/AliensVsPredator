@@ -5,6 +5,7 @@ import com.avp.core.platform.PacketHandleContext;
 import com.avp.core.platform.service.RegistryService;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.particles.ParticleType;
 import net.minecraft.core.registries.Registries;
@@ -93,8 +94,8 @@ public class NeoForgeRegistryService implements RegistryService {
     }
 
     @Override
-    public <T extends ArmorMaterial> Supplier<T> registerArmorMaterial(String armorMaterialName, Supplier<T> armorMaterial) {
-        return armorMaterials.register(armorMaterialName, armorMaterial);
+    public <T extends ArmorMaterial> Holder<T> registerArmorMaterial(String armorMaterialName, Supplier<T> armorMaterial) {
+        return (Holder<T>) armorMaterials.register(armorMaterialName, armorMaterial);
     }
 
     @Override

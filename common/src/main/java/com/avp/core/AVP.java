@@ -1,5 +1,6 @@
 package com.avp.core;
 
+import com.avp.core.common.armor.ArmorMaterials;
 import com.avp.core.common.block.AVPBlocks;
 import com.avp.core.common.block.AVPCompostingChanceRegistry;
 import com.avp.core.common.block.DecoratedPotPatterns;
@@ -69,6 +70,7 @@ public class AVP {
         BlockEntityTypes.initialize();
         AVPBlocks.initialize();
         AVPItems.initialize();
+        ArmorMaterials.initialize();
         AVPBlockItems.initialize();
         ArmorItems.initialize();
         SpawnEggItems.initialize();

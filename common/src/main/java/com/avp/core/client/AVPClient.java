@@ -78,26 +78,6 @@ public class AVPClient {
         Services.CLIENT_REGISTRY.registerBlockRenderType(AVPBlocks.INDUSTRIAL_GLASS_PANE, RenderType.cutout());
         AVPBlocks.DYE_COLOR_TO_INDUSTRIAL_GLASS_PANE.values()
             .forEach(block -> Services.CLIENT_REGISTRY.registerBlockRenderType(block, RenderType.translucent()));
-
-        // Entities
-        Services.CLIENT_REGISTRY.registerEntityRenderer(AVPEntityTypes.ACID, AcidRenderer::new);
-        Services.CLIENT_REGISTRY.registerEntityRenderer(AVPEntityTypes.CHESTBURSTER, ChestbursterRenderer::new);
-        Services.CLIENT_REGISTRY.registerEntityRenderer(AVPEntityTypes.DRONE, DroneRenderer::new);
-        Services.CLIENT_REGISTRY.registerEntityRenderer(AVPEntityTypes.FACEHUGGER, FacehuggerRenderer::new);
-        Services.CLIENT_REGISTRY.registerEntityRenderer(AVPEntityTypes.FLAMETHROW, FlamethrowRenderer::new);
-        Services.CLIENT_REGISTRY.registerEntityRenderer(AVPEntityTypes.OVAMORPH, OvamorphRenderer::new);
-        Services.CLIENT_REGISTRY.registerEntityRenderer(AVPEntityTypes.PRAETORIAN, PraetorianRenderer::new);
-        Services.CLIENT_REGISTRY.registerEntityRenderer(AVPEntityTypes.QUEEN, QueenRenderer::new);
-        Services.CLIENT_REGISTRY.registerEntityRenderer(AVPEntityTypes.ROCKET, RocketRenderer::new);
-        Services.CLIENT_REGISTRY.registerEntityRenderer(AVPEntityTypes.WARRIOR, WarriorRenderer::new);
-        Services.CLIENT_REGISTRY.registerEntityRenderer(AVPEntityTypes.YAUTJA, YautjaRenderer::new);
-
-        // Menu Screens
-        Services.CLIENT_REGISTRY.registerMenuScreen(MenuTypes.ARMOR_CASE, ArmorCaseScreen::new);
-
-        // Particles
-        Services.CLIENT_REGISTRY.registerParticleFactory(AVPParticleTypes.ACID, AcidParticleProvider::new);
-        Services.CLIENT_REGISTRY.registerParticleFactory(AVPParticleTypes.BLUE_ACID, BlueAcidParticleProvider::new);
     }
 
     private static void registerArmorRenderers() {

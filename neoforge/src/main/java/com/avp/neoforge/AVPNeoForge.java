@@ -1,7 +1,18 @@
 package com.avp.neoforge;
 
 import com.avp.core.AVP;
+import com.avp.core.client.network.AVPClientListener;
+import com.avp.core.common.entity.living.alien.chestburster.Chestburster;
+import com.avp.core.common.entity.living.alien.ovamorph.Ovamorph;
+import com.avp.core.common.entity.living.alien.parasite.facehugger.Facehugger;
+import com.avp.core.common.entity.living.alien.xenomorph.drone.Drone;
+import com.avp.core.common.entity.living.alien.xenomorph.praetorian.Praetorian;
+import com.avp.core.common.entity.living.alien.xenomorph.queen.Queen;
+import com.avp.core.common.entity.living.alien.xenomorph.warrior.Warrior;
+import com.avp.core.common.entity.living.yautja.Yautja;
+import com.avp.core.common.entity.type.AVPEntityTypes;
 import com.avp.core.common.network.packet.S2CBulletHitBlockPayload;
+import com.avp.core.common.network.packet.S2CGunRecoilPayload;
 import com.avp.core.platform.service.Services;
 import com.avp.neoforge.platform.service.NeoForgeRegistryService;
 import net.neoforged.bus.api.IEventBus;
@@ -18,10 +29,9 @@ public final class AVPNeoForge {
 
     public AVPNeoForge(IEventBus eventBus) {
         var registry = (NeoForgeRegistryService) Services.REGISTRY;
-
+        AVP.initialize();
         NeoForgeRegistryService.initialize(eventBus);
 
-        AVP.initialize();
         NeoForge.EVENT_BUS.addListener(this::registerCommands);
         eventBus.addListener(this::registerEntityAttributes);
         eventBus.addListener(this::registerNetworkingHandlers);
@@ -44,9 +54,8 @@ public final class AVPNeoForge {
     }
 
     public void registerNetworkingHandlers(final RegisterPayloadHandlersEvent event) {
-        var registrar = event.registrar("1");
+        var registrar = event.registrar(AVP.MOD_ID);
 
-        // TODO:
         registrar.playBidirectional(
             S2CBulletHitBlockPayload.TYPE,
             S2CBulletHitBlockPayload.CODEC,
@@ -54,6 +63,14 @@ public final class AVPNeoForge {
                 ((payload, context) -> {}),
                 (payload, context) -> {}
             )
+        );
+        registrar.playBidirectional(
+                S2CGunRecoilPayload.TYPE,
+                S2CGunRecoilPayload.CODEC,
+                new DirectionalPayloadHandler<>(
+                        ((payload, context) -> {}),
+                        (payload, context) -> {}
+                )
         );
     }
 }

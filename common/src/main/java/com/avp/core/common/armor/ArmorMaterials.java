@@ -19,10 +19,13 @@ import com.avp.core.AVPResources;
 import com.avp.core.common.item.AVPItems;
 import com.avp.core.common.sound.AVPSoundEvents;
 
+/**
+ * TODO: Get Sounds changed over, have to use Holders for those, not suppliers
+ */
 public class ArmorMaterials {
 
     // Should be slightly stronger than iron.
-    public static final Supplier<ArmorMaterial> CHITIN = register(
+    public static final Holder<ArmorMaterial> CHITIN = register(
         "chitin",
         relativeDefense(
             net.minecraft.world.item.ArmorMaterials.IRON,
@@ -32,14 +35,14 @@ public class ArmorMaterials {
             )
         ),
         7,
-        SoundEvents.ARMOR_EQUIP_GENERIC.value(),
+        SoundEvents.ARMOR_EQUIP_GENERIC,
         () -> Ingredient.of(AVPItems.CHITIN.get()),
         0,
         0,
         false
     );
 
-    public static final Supplier<ArmorMaterial> MK50 = register(
+    public static final Holder<ArmorMaterial> MK50 = register(
         "mk50",
         relativeDefense(
             net.minecraft.world.item.ArmorMaterials.IRON,
@@ -49,14 +52,14 @@ public class ArmorMaterials {
             )
         ),
         6,
-        SoundEvents.ARMOR_EQUIP_GENERIC.value(),
+        SoundEvents.ARMOR_EQUIP_GENERIC,
         () -> Ingredient.of(AVPItems.LEAD_INGOT.get()),
         0,
         0,
         false
     );
 
-    public static final Supplier<ArmorMaterial> NETHER_CHITIN = register(
+    public static final Holder<ArmorMaterial> NETHER_CHITIN = register(
         "nether_chitin",
         relativeDefense(
             net.minecraft.world.item.ArmorMaterials.IRON,
@@ -66,36 +69,36 @@ public class ArmorMaterials {
             )
         ),
         7,
-        SoundEvents.ARMOR_EQUIP_GENERIC.value(),
+        SoundEvents.ARMOR_EQUIP_GENERIC,
         () -> Ingredient.of(AVPItems.NETHER_CHITIN.get()),
         0,
         0,
         false
     );
 
-    public static final Supplier<ArmorMaterial> PLATED_CHITIN = register(
+    public static final Holder<ArmorMaterial> PLATED_CHITIN = register(
         "plated_chitin",
         relativeDefense(net.minecraft.world.item.ArmorMaterials.DIAMOND, Map.of()),
         7,
-        SoundEvents.ARMOR_EQUIP_GENERIC.value(),
+        SoundEvents.ARMOR_EQUIP_GENERIC,
         () -> Ingredient.of(AVPItems.PLATED_CHITIN.get()),
         1,
         0,
         false
     );
 
-    public static final Supplier<ArmorMaterial> PLATED_NETHER_CHITIN = register(
+    public static final Holder<ArmorMaterial> PLATED_NETHER_CHITIN = register(
         "plated_nether_chitin",
         relativeDefense(net.minecraft.world.item.ArmorMaterials.DIAMOND, Map.of()),
         7,
-        SoundEvents.ARMOR_EQUIP_GENERIC.value(),
+        SoundEvents.ARMOR_EQUIP_GENERIC,
         () -> Ingredient.of(AVPItems.PLATED_NETHER_CHITIN.get()),
         1,
         0,
         false
     );
 
-    public static final Supplier<ArmorMaterial> PRESSURE = register(
+    public static final Holder<ArmorMaterial> PRESSURE = register(
         "pressure",
         relativeDefense(
             net.minecraft.world.item.ArmorMaterials.IRON,
@@ -105,14 +108,14 @@ public class ArmorMaterials {
             )
         ),
         6,
-        SoundEvents.ARMOR_EQUIP_GENERIC.value(),
+        SoundEvents.ARMOR_EQUIP_GENERIC,
         () -> Ingredient.of(AVPItems.ALUMINUM_INGOT.get()),
         0,
         0,
         false
     );
 
-    public static final Supplier<ArmorMaterial> STEEL = register(
+    public static final Holder<ArmorMaterial> STEEL = register(
         "steel",
         relativeDefense(
             net.minecraft.world.item.ArmorMaterials.IRON,
@@ -124,14 +127,14 @@ public class ArmorMaterials {
             )
         ),
         5, // TODO:
-        SoundEvents.ARMOR_EQUIP_GENERIC.value(),
+        SoundEvents.ARMOR_EQUIP_GENERIC,
         () -> Ingredient.of(AVPItems.STEEL_INGOT.get()),
         0,
         0,
         false
     );
 
-    public static final Supplier<ArmorMaterial> TACTICAL = register(
+    public static final Holder<ArmorMaterial> TACTICAL = register(
         "tactical",
         Map.ofEntries(
             Map.entry(ArmorItem.Type.HELMET, 2),
@@ -140,14 +143,14 @@ public class ArmorMaterials {
             Map.entry(ArmorItem.Type.BOOTS, 2)
         ),
         5,
-        SoundEvents.ARMOR_EQUIP_GENERIC.value(),
+        SoundEvents.ARMOR_EQUIP_GENERIC,
         () -> Ingredient.of(AVPItems.STEEL_INGOT.get()),
         0,
         0,
         false
     );
 
-    public static final Supplier<ArmorMaterial> TITANIUM = register(
+    public static final Holder<ArmorMaterial> TITANIUM = register(
         "titanium",
         relativeDefense(
             net.minecraft.world.item.ArmorMaterials.IRON,
@@ -159,14 +162,14 @@ public class ArmorMaterials {
             )
         ),
         5,
-        SoundEvents.ARMOR_EQUIP_GENERIC.value(),
+        SoundEvents.ARMOR_EQUIP_GENERIC,
         () -> Ingredient.of(AVPItems.TITANIUM_INGOT.get()),
         1,
         0,
         false
     );
 
-    public static final Supplier<ArmorMaterial> VERITANIUM = register(
+    public static final Holder<ArmorMaterial> VERITANIUM = register(
         "veritanium",
         relativeDefense(
             net.minecraft.world.item.ArmorMaterials.NETHERITE,
@@ -178,18 +181,18 @@ public class ArmorMaterials {
             )
         ),
         6,
-        SoundEvents.ARMOR_EQUIP_GENERIC.value(),
+        SoundEvents.ARMOR_EQUIP_GENERIC,
         () -> Ingredient.of(AVPItems.VERITANIUM_SHARD.get()),
         4,
         0.15F,
         false
     );
 
-    private static Supplier<ArmorMaterial> register(
+    private static Holder<ArmorMaterial> register(
         String id,
         Map<ArmorItem.Type, Integer> defensePoints,
         int enchantability,
-        SoundEvent equipSound,
+        Holder<SoundEvent> equipSound,
         Supplier<Ingredient> repairIngredientSupplier,
         float toughness,
         float knockbackResistance,
@@ -205,7 +208,7 @@ public class ArmorMaterials {
         return Services.REGISTRY.registerArmorMaterial(id, () -> new ArmorMaterial(
             defensePoints,
             enchantability,
-            Holder.direct(equipSound),
+            equipSound,
             repairIngredientSupplier,
             layers,
             toughness,
@@ -234,4 +237,6 @@ public class ArmorMaterials {
     ) {
         return Map.entry(type, armorMaterial.getDefense(type) + additiveDefense.getOrDefault(type, 0));
     }
+
+    public static void initialize() {}
 }

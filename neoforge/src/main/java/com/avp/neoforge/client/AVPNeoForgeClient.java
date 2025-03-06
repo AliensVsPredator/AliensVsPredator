@@ -2,6 +2,14 @@ package com.avp.neoforge.client;
 
 import com.avp.core.AVP;
 import com.avp.core.client.AVPClient;
+import com.avp.core.client.particle.AcidParticleProvider;
+import com.avp.core.client.particle.BlueAcidParticleProvider;
+import com.avp.core.client.render.entity.*;
+import com.avp.core.client.render.entity.parasite.facehugger.FacehuggerRenderer;
+import com.avp.core.client.screen.ArmorCaseScreen;
+import com.avp.core.common.entity.type.AVPEntityTypes;
+import com.avp.core.common.menu.MenuTypes;
+import com.avp.core.common.particle.AVPParticleTypes;
 import com.avp.core.platform.service.Services;
 import com.avp.neoforge.platform.service.NeoForgeClientRegistryService;
 import net.minecraft.client.gui.screens.MenuScreens;
@@ -31,15 +39,18 @@ public class AVPNeoForgeClient {
     }
 
     @SubscribeEvent
-    @SuppressWarnings("unchecked")
-    public static void registerEntityRenderers(EntityRenderersEvent.RegisterRenderers event) {
-        var pairs = ((NeoForgeClientRegistryService) Services.CLIENT_REGISTRY).getEntityTypeRendererPairs();
-
-        pairs.forEach(pair -> {
-            var entityType = (EntityType<Entity>) pair.getKey().get();
-            var provider = (EntityRendererProvider<Entity>) pair.getValue();
-            event.registerEntityRenderer(entityType, provider);
-        });
+    public static void registerEntityRenderers(final EntityRenderersEvent.RegisterRenderers event) {
+        event.registerEntityRenderer(AVPEntityTypes.ACID.get(), AcidRenderer::new);
+        event.registerEntityRenderer(AVPEntityTypes.CHESTBURSTER.get(), ChestbursterRenderer::new);
+        event.registerEntityRenderer(AVPEntityTypes.DRONE.get(), DroneRenderer::new);
+        event.registerEntityRenderer(AVPEntityTypes.FACEHUGGER.get(), FacehuggerRenderer::new);
+        event.registerEntityRenderer(AVPEntityTypes.FLAMETHROW.get(), FlamethrowRenderer::new);
+        event.registerEntityRenderer(AVPEntityTypes.OVAMORPH.get(), OvamorphRenderer::new);
+        event.registerEntityRenderer(AVPEntityTypes.PRAETORIAN.get(), PraetorianRenderer::new);
+        event.registerEntityRenderer(AVPEntityTypes.QUEEN.get(), QueenRenderer::new);
+        event.registerEntityRenderer(AVPEntityTypes.ROCKET.get(), RocketRenderer::new);
+        event.registerEntityRenderer(AVPEntityTypes.WARRIOR.get(), WarriorRenderer::new);
+        event.registerEntityRenderer(AVPEntityTypes.YAUTJA.get(), YautjaRenderer::new);
     }
 
     @SubscribeEvent
@@ -54,13 +65,8 @@ public class AVPNeoForgeClient {
     }
 
     @SubscribeEvent
-    @SuppressWarnings("unchecked")
     public static void registerParticleProviders(RegisterParticleProvidersEvent event) {
-        var pairs = ((NeoForgeClientRegistryService) Services.CLIENT_REGISTRY).getParticleTypeProviderPairs();
-        pairs.forEach(pair -> {
-            var particleType = (ParticleType<SimpleParticleType>) pair.getKey().get();
-            var particleProvider = (ParticleProvider<SimpleParticleType>) pair.getValue();
-            event.registerSpecial(particleType, particleProvider);
-        });
+        event.registerSpriteSet(AVPParticleTypes.ACID.get(), AcidParticleProvider::new);
+        event.registerSpriteSet(AVPParticleTypes.BLUE_ACID.get(), BlueAcidParticleProvider::new);
     }
 }

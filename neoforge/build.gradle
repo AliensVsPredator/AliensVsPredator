@@ -50,4 +50,4 @@ dependencies {
     implementation "mod.azure.azurelib:azurelib-neo-${minecraft_version}:${azurelib_version}"
 }
 
-sourceSets.main.resources { srcDir 'src/main/generated' }
+sourceSets.main.resources { srcDir "../common/generated" }

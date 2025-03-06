@@ -34,7 +34,7 @@ public interface RegistryService {
 
     <T extends Entity> Supplier<EntityType<T>> registerEntity(String entityName, Supplier<EntityType<T>> entity);
 
-    <T extends ArmorMaterial> Supplier<T> registerArmorMaterial(String armorMaterialName, Supplier<T> armorMaterial);
+    <T extends ArmorMaterial> Holder<T> registerArmorMaterial(String armorMaterialName, Supplier<T> armorMaterial);
 
     <T extends Block> Supplier<T> registerBlock(String blockName, Supplier<T> block);
 

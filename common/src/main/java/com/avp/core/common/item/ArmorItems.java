@@ -32,35 +32,35 @@ public class ArmorItems {
 
     public static final Supplier<Item> CHITIN_BOOTS = register(
         "chitin_boots",
-        ArmorMaterials.CHITIN.get(),
+        ArmorMaterials.CHITIN,
         ArmorItem.Type.BOOTS,
         CHITIN_DURABILITY_MULTIPLIER
     );
 
     public static final Supplier<Item> CHITIN_CHESTPLATE = register(
         "chitin_chestplate",
-        ArmorMaterials.CHITIN.get(),
+        ArmorMaterials.CHITIN,
         ArmorItem.Type.CHESTPLATE,
         CHITIN_DURABILITY_MULTIPLIER
     );
 
     public static final Supplier<Item> CHITIN_HELMET = register(
         "chitin_helmet",
-        ArmorMaterials.CHITIN.get(),
+        ArmorMaterials.CHITIN,
         ArmorItem.Type.HELMET,
         CHITIN_DURABILITY_MULTIPLIER
     );
 
     public static final Supplier<Item> CHITIN_LEGGINGS = register(
         "chitin_leggings",
-        ArmorMaterials.CHITIN.get(),
+        ArmorMaterials.CHITIN,
         ArmorItem.Type.LEGGINGS,
         CHITIN_DURABILITY_MULTIPLIER
     );
 
     public static final Supplier<Item> JUNGLE_PREDATOR_BOOTS = register(
         "jungle_predator_boots",
-        ArmorMaterials.VERITANIUM.get(),
+        ArmorMaterials.VERITANIUM,
         ArmorItem.Type.BOOTS,
         VERITANIUM_DURABILITY_MULTIPLIER,
         Item.Properties::fireResistant
@@ -68,7 +68,7 @@ public class ArmorItems {
 
     public static final Supplier<Item> JUNGLE_PREDATOR_CHESTPLATE = register(
         "jungle_predator_chestplate",
-        ArmorMaterials.VERITANIUM.get(),
+        ArmorMaterials.VERITANIUM,
         ArmorItem.Type.CHESTPLATE,
         VERITANIUM_DURABILITY_MULTIPLIER,
         Item.Properties::fireResistant
@@ -76,7 +76,7 @@ public class ArmorItems {
 
     public static final Supplier<Item> JUNGLE_PREDATOR_HELMET = register(
         "jungle_predator_helmet",
-        ArmorMaterials.VERITANIUM.get(),
+        ArmorMaterials.VERITANIUM,
         ArmorItem.Type.HELMET,
         VERITANIUM_DURABILITY_MULTIPLIER,
         Item.Properties::fireResistant
@@ -84,7 +84,7 @@ public class ArmorItems {
 
     public static final Supplier<Item> JUNGLE_PREDATOR_LEGGINGS = register(
         "jungle_predator_leggings",
-        ArmorMaterials.VERITANIUM.get(),
+        ArmorMaterials.VERITANIUM,
         ArmorItem.Type.LEGGINGS,
         VERITANIUM_DURABILITY_MULTIPLIER,
         Item.Properties::fireResistant
@@ -92,35 +92,35 @@ public class ArmorItems {
 
     public static final Supplier<Item> MK50_BOOTS = register(
         "mk50_boots",
-        ArmorMaterials.MK50.get(),
+        ArmorMaterials.MK50,
         ArmorItem.Type.BOOTS,
         MK50_DURABILITY_MULTIPLIER
     );
 
     public static final Supplier<Item> MK50_CHESTPLATE = register(
         "mk50_chestplate",
-        ArmorMaterials.MK50.get(),
+        ArmorMaterials.MK50,
         ArmorItem.Type.CHESTPLATE,
         MK50_DURABILITY_MULTIPLIER
     );
 
     public static final Supplier<Item> MK50_HELMET = register(
         "mk50_helmet",
-        ArmorMaterials.MK50.get(),
+        ArmorMaterials.MK50,
         ArmorItem.Type.HELMET,
         MK50_DURABILITY_MULTIPLIER
     );
 
     public static final Supplier<Item> MK50_LEGGINGS = register(
         "mk50_leggings",
-        ArmorMaterials.MK50.get(),
+        ArmorMaterials.MK50,
         ArmorItem.Type.LEGGINGS,
         MK50_DURABILITY_MULTIPLIER
     );
 
     public static final Supplier<Item> NETHER_CHITIN_BOOTS = register(
         "nether_chitin_boots",
-        ArmorMaterials.NETHER_CHITIN.get(),
+        ArmorMaterials.NETHER_CHITIN,
         ArmorItem.Type.BOOTS,
         CHITIN_DURABILITY_MULTIPLIER,
         Item.Properties::fireResistant
@@ -128,7 +128,7 @@ public class ArmorItems {
 
     public static final Supplier<Item> NETHER_CHITIN_CHESTPLATE = register(
         "nether_chitin_chestplate",
-        ArmorMaterials.NETHER_CHITIN.get(),
+        ArmorMaterials.NETHER_CHITIN,
         ArmorItem.Type.CHESTPLATE,
         CHITIN_DURABILITY_MULTIPLIER,
         Item.Properties::fireResistant
@@ -136,7 +136,7 @@ public class ArmorItems {
 
     public static final Supplier<Item> NETHER_CHITIN_HELMET = register(
         "nether_chitin_helmet",
-        ArmorMaterials.NETHER_CHITIN.get(),
+        ArmorMaterials.NETHER_CHITIN,
         ArmorItem.Type.HELMET,
         CHITIN_DURABILITY_MULTIPLIER,
         Item.Properties::fireResistant
@@ -144,7 +144,7 @@ public class ArmorItems {
 
     public static final Supplier<Item> NETHER_CHITIN_LEGGINGS = register(
         "nether_chitin_leggings",
-        ArmorMaterials.NETHER_CHITIN.get(),
+        ArmorMaterials.NETHER_CHITIN,
         ArmorItem.Type.LEGGINGS,
         CHITIN_DURABILITY_MULTIPLIER,
         Item.Properties::fireResistant
@@ -152,35 +152,35 @@ public class ArmorItems {
 
     public static final Supplier<Item> PLATED_CHITIN_BOOTS = register(
         "plated_chitin_boots",
-        ArmorMaterials.PLATED_CHITIN.get(),
+        ArmorMaterials.PLATED_CHITIN,
         ArmorItem.Type.BOOTS,
         PLATED_CHITIN_DURABILITY_MULTIPLIER
     );
 
     public static final Supplier<Item> PLATED_CHITIN_CHESTPLATE = register(
         "plated_chitin_chestplate",
-        ArmorMaterials.PLATED_CHITIN.get(),
+        ArmorMaterials.PLATED_CHITIN,
         ArmorItem.Type.CHESTPLATE,
         PLATED_CHITIN_DURABILITY_MULTIPLIER
     );
 
     public static final Supplier<Item> PLATED_CHITIN_HELMET = register(
         "plated_chitin_helmet",
-        ArmorMaterials.PLATED_CHITIN.get(),
+        ArmorMaterials.PLATED_CHITIN,
         ArmorItem.Type.HELMET,
         PLATED_CHITIN_DURABILITY_MULTIPLIER
     );
 
     public static final Supplier<Item> PLATED_CHITIN_LEGGINGS = register(
         "plated_chitin_leggings",
-        ArmorMaterials.PLATED_CHITIN.get(),
+        ArmorMaterials.PLATED_CHITIN,
         ArmorItem.Type.LEGGINGS,
         PLATED_CHITIN_DURABILITY_MULTIPLIER
     );
 
     public static final Supplier<Item> PLATED_NETHER_CHITIN_BOOTS = register(
         "plated_nether_chitin_boots",
-        ArmorMaterials.PLATED_NETHER_CHITIN.get(),
+        ArmorMaterials.PLATED_NETHER_CHITIN,
         ArmorItem.Type.BOOTS,
         PLATED_CHITIN_DURABILITY_MULTIPLIER,
         Item.Properties::fireResistant
@@ -188,7 +188,7 @@ public class ArmorItems {
 
     public static final Supplier<Item> PLATED_NETHER_CHITIN_CHESTPLATE = register(
         "plated_nether_chitin_chestplate",
-        ArmorMaterials.PLATED_NETHER_CHITIN.get(),
+        ArmorMaterials.PLATED_NETHER_CHITIN,
         ArmorItem.Type.CHESTPLATE,
         PLATED_CHITIN_DURABILITY_MULTIPLIER,
         Item.Properties::fireResistant
@@ -196,7 +196,7 @@ public class ArmorItems {
 
     public static final Supplier<Item> PLATED_NETHER_CHITIN_HELMET = register(
         "plated_nether_chitin_helmet",
-        ArmorMaterials.PLATED_NETHER_CHITIN.get(),
+        ArmorMaterials.PLATED_NETHER_CHITIN,
         ArmorItem.Type.HELMET,
         PLATED_CHITIN_DURABILITY_MULTIPLIER,
         Item.Properties::fireResistant
@@ -204,7 +204,7 @@ public class ArmorItems {
 
     public static final Supplier<Item> PLATED_NETHER_CHITIN_LEGGINGS = register(
         "plated_nether_chitin_leggings",
-        ArmorMaterials.PLATED_NETHER_CHITIN.get(),
+        ArmorMaterials.PLATED_NETHER_CHITIN,
         ArmorItem.Type.LEGGINGS,
         PLATED_CHITIN_DURABILITY_MULTIPLIER,
         Item.Properties::fireResistant
@@ -212,130 +212,130 @@ public class ArmorItems {
 
     public static final Supplier<Item> PRESSURE_BOOTS = register(
         "pressure_boots",
-        ArmorMaterials.PRESSURE.get(),
+        ArmorMaterials.PRESSURE,
         ArmorItem.Type.BOOTS,
         PRESSURE_DURABILITY_MULTIPLIER
     );
 
     public static final Supplier<Item> PRESSURE_CHESTPLATE = register(
         "pressure_chestplate",
-        ArmorMaterials.PRESSURE.get(),
+        ArmorMaterials.PRESSURE,
         ArmorItem.Type.CHESTPLATE,
         PRESSURE_DURABILITY_MULTIPLIER
     );
 
     public static final Supplier<Item> PRESSURE_HELMET = register(
         "pressure_helmet",
-        ArmorMaterials.PRESSURE.get(),
+        ArmorMaterials.PRESSURE,
         ArmorItem.Type.HELMET,
         PRESSURE_DURABILITY_MULTIPLIER
     );
 
     public static final Supplier<Item> PRESSURE_LEGGINGS = register(
         "pressure_leggings",
-        ArmorMaterials.PRESSURE.get(),
+        ArmorMaterials.PRESSURE,
         ArmorItem.Type.LEGGINGS,
         PRESSURE_DURABILITY_MULTIPLIER
     );
 
     public static final Supplier<Item> STEEL_BOOTS = register(
         "steel_boots",
-        ArmorMaterials.STEEL.get(),
+        ArmorMaterials.STEEL,
         ArmorItem.Type.BOOTS,
         STEEL_DURABILITY_MULTIPLIER
     );
 
     public static final Supplier<Item> STEEL_CHESTPLATE = register(
         "steel_chestplate",
-        ArmorMaterials.STEEL.get(),
+        ArmorMaterials.STEEL,
         ArmorItem.Type.CHESTPLATE,
         STEEL_DURABILITY_MULTIPLIER
     );
 
     public static final Supplier<Item> STEEL_HELMET = register(
         "steel_helmet",
-        ArmorMaterials.STEEL.get(),
+        ArmorMaterials.STEEL,
         ArmorItem.Type.HELMET,
         STEEL_DURABILITY_MULTIPLIER
     );
 
     public static final Supplier<Item> STEEL_LEGGINGS = register(
         "steel_leggings",
-        ArmorMaterials.STEEL.get(),
+        ArmorMaterials.STEEL,
         ArmorItem.Type.LEGGINGS,
         STEEL_DURABILITY_MULTIPLIER
     );
 
     public static final Supplier<Item> TACTICAL_BOOTS = register(
         "tactical_boots",
-        ArmorMaterials.TACTICAL.get(),
+        ArmorMaterials.TACTICAL,
         ArmorItem.Type.BOOTS,
         TACTICAL_DURABILITY_MULTIPLIER
     );
 
     public static final Supplier<Item> TACTICAL_CHESTPLATE = register(
         "tactical_chestplate",
-        ArmorMaterials.TACTICAL.get(),
+        ArmorMaterials.TACTICAL,
         ArmorItem.Type.CHESTPLATE,
         TACTICAL_DURABILITY_MULTIPLIER
     );
 
     public static final Supplier<Item> TACTICAL_HELMET = register(
         "tactical_helmet",
-        ArmorMaterials.TACTICAL.get(),
+        ArmorMaterials.TACTICAL,
         ArmorItem.Type.HELMET,
         TACTICAL_DURABILITY_MULTIPLIER
     );
 
     public static final Supplier<Item> TACTICAL_LEGGINGS = register(
         "tactical_leggings",
-        ArmorMaterials.TACTICAL.get(),
+        ArmorMaterials.TACTICAL,
         ArmorItem.Type.LEGGINGS,
         TACTICAL_DURABILITY_MULTIPLIER
     );
 
     public static final Supplier<Item> TITANIUM_BOOTS = register(
         "titanium_boots",
-        ArmorMaterials.TITANIUM.get(),
+        ArmorMaterials.TITANIUM,
         ArmorItem.Type.BOOTS,
         TITANIUM_DURABILITY_MULTIPLIER
     );
 
     public static final Supplier<Item> TITANIUM_CHESTPLATE = register(
         "titanium_chestplate",
-        ArmorMaterials.TITANIUM.get(),
+        ArmorMaterials.TITANIUM,
         ArmorItem.Type.CHESTPLATE,
         TITANIUM_DURABILITY_MULTIPLIER
     );
 
     public static final Supplier<Item> TITANIUM_HELMET = register(
         "titanium_helmet",
-        ArmorMaterials.TITANIUM.get(),
+        ArmorMaterials.TITANIUM,
         ArmorItem.Type.HELMET,
         TITANIUM_DURABILITY_MULTIPLIER
     );
 
     public static final Supplier<Item> TITANIUM_LEGGINGS = register(
         "titanium_leggings",
-        ArmorMaterials.TITANIUM.get(),
+        ArmorMaterials.TITANIUM,
         ArmorItem.Type.LEGGINGS,
         TITANIUM_DURABILITY_MULTIPLIER
     );
 
-    public static Supplier<Item> register(String id, ArmorMaterial armorMaterialSupplier, ArmorItem.Type type, int durabilityMultiplier) {
+    public static Supplier<Item> register(String id, Holder<ArmorMaterial> armorMaterialSupplier, ArmorItem.Type type, int durabilityMultiplier) {
         return register(id, armorMaterialSupplier, type, durabilityMultiplier, UnaryOperator.identity());
     }
 
     public static Supplier<Item> register(
         String id,
-        ArmorMaterial armorMaterialSupplier,
+        Holder<ArmorMaterial> armorMaterialSupplier,
         ArmorItem.Type type,
         int durabilityMultiplier,
         UnaryOperator<Item.Properties> propertiesUnaryOperator
     ) {
         var durability = type.getDurability(durabilityMultiplier);
         var properties = propertiesUnaryOperator.apply(new Item.Properties().durability(durability));
-        return register(() -> new ArmorItem(Holder.direct(armorMaterialSupplier), type, properties), id);
+        return register(() -> new ArmorItem(armorMaterialSupplier, type, properties), id);
     }
 
     public static Supplier<Item> register(Supplier<Item> itemSupplier, String id) {

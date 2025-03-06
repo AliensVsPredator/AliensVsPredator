@@ -18,6 +18,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -74,8 +75,8 @@ public class FabricRegistryService implements RegistryService {
     }
 
     @Override
-    public <T extends ArmorMaterial> Supplier<T> registerArmorMaterial(String armorMaterialName, Supplier<T> armorMaterial) {
-        return registerSupplier(BuiltInRegistries.ARMOR_MATERIAL, armorMaterialName, armorMaterial);
+    public <T extends ArmorMaterial> Holder<T> registerArmorMaterial(String armorMaterialName, Supplier<T> armorMaterial) {
+        return registerHolder(BuiltInRegistries.ARMOR_MATERIAL, armorMaterialName, armorMaterial);
     }
 
     @Override
