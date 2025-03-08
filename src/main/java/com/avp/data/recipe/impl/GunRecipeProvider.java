@@ -43,10 +43,10 @@ public class GunRecipeProvider {
             .into(1, AVPItems.MEDIUM_CASING);
         builder.shaped()
             .withCategory(RecipeCategory.COMBAT)
-            .define('A', Items.GUNPOWDER)
-            .define('B', AVPItems.BRASS_INGOT)
-            .pattern("BAB")
-            .pattern("BBB")
+            .define('G', Items.GUNPOWDER)
+            .define('S', AVPItems.STEEL_INGOT)
+            .pattern("SGS")
+            .pattern(" S ")
             .into(1, AVPItems.HEAVY_CASING);
         builder.shaped()
             .withCategory(RecipeCategory.COMBAT)

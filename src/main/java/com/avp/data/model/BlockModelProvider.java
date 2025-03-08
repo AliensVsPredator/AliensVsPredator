@@ -2,6 +2,7 @@ package com.avp.data.model;
 
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricModelProvider;
+import net.minecraft.client.resources.model.BlockStateModelLoader;
 import net.minecraft.data.models.BlockModelGenerators;
 import net.minecraft.data.models.ItemModelGenerators;
 import net.minecraft.data.models.blockstates.Condition;
@@ -165,7 +166,7 @@ public class BlockModelProvider extends FabricModelProvider {
 
         generators.createTrivialCube(AVPBlocks.DEEPSLATE_TITANIUM_ORE);
         generators.createTrivialCube(AVPBlocks.DEEPSLATE_ZINC_ORE);
-        generators.createTrivialCube(AVPBlocks.FERROALUMINUM_BLOCK);
+        //generators.createTrivialCube(AVPBlocks.FERROALUMINUM_BLOCK);
         BarsGenerator.generate(generators, AVPBlocks.FERROALUMINUM_CHAIN_FENCE);
         generators.createRotatedPillarWithHorizontalVariant(
             AVPBlocks.FERROALUMINUM_COLUMN,
@@ -193,7 +194,7 @@ public class BlockModelProvider extends FabricModelProvider {
         generators.createCrossBlock(AVPBlocks.RAZOR_WIRE, BlockModelGenerators.TintState.NOT_TINTED);
         generators.createTrivialCube(AVPBlocks.SILICA_GRAVEL);
         BarsGenerator.generate(generators, AVPBlocks.STEEL_BARS);
-        generators.createTrivialCube(AVPBlocks.STEEL_BLOCK);
+        //generators.createTrivialCube(AVPBlocks.STEEL_BLOCK);
         BarsGenerator.generate(generators, AVPBlocks.STEEL_CHAIN_FENCE);
         generators.createRotatedPillarWithHorizontalVariant(
             AVPBlocks.STEEL_COLUMN,
@@ -207,7 +208,7 @@ public class BlockModelProvider extends FabricModelProvider {
         generators.createTrivialCube(AVPBlocks.STEEL_SIDING);
         generators.createTrivialCube(AVPBlocks.STEEL_STANDING);
         generators.createTrivialCube(AVPBlocks.STEEL_TREAD);
-        generators.createTrivialCube(AVPBlocks.TITANIUM_BLOCK);
+        //generators.createTrivialCube(AVPBlocks.TITANIUM_BLOCK);
         BarsGenerator.generate(generators, AVPBlocks.TITANIUM_CHAIN_FENCE);
         generators.createRotatedPillarWithHorizontalVariant(
             AVPBlocks.TITANIUM_COLUMN,
@@ -225,6 +226,22 @@ public class BlockModelProvider extends FabricModelProvider {
         generators.createTrivialCube(AVPBlocks.ZINC_BLOCK);
         generators.createTrivialCube(AVPBlocks.ZINC_ORE);
 
+        createDoorsAndTrapDoors(generators);
+        BlockModelGenerators.BlockFamilyProvider ferroProvider = generators.family(AVPBlocks.FERROALUMINUM_BLOCK);
+        BlockModelGenerators.BlockFamilyProvider steelProvider = generators.family(AVPBlocks.STEEL_BLOCK);
+        BlockModelGenerators.BlockFamilyProvider titaniumProvider = generators.family(AVPBlocks.TITANIUM_BLOCK);
+//        ferroProvider.button(AVPBlocks.FERROALUMINUM_BUTTON);
+//        steelProvider.button(AVPBlocks.STEEL_BUTTON);
+//        titaniumProvider.button(AVPBlocks.TITANIUM_BUTTON);
+        ferroProvider.pressurePlate(AVPBlocks.FERROALUMINUM_PRESSURE_PLATE);
+        steelProvider.pressurePlate(AVPBlocks.STEEL_PRESSURE_PLATE);
+        titaniumProvider.pressurePlate(AVPBlocks.TITANIUM_PRESSURE_PLATE);
+//        generators.createDoor(AVPBlocks.FERROALUMINUM_DOOR);
+//        generators.createDoor(AVPBlocks.STEEL_DOOR);
+//        generators.createDoor(AVPBlocks.TITANIUM_DOOR);
+//        generators.createTrapdoor(AVPBlocks.FERROALUMINUM_TRAP_DOOR);
+//        generators.createTrapdoor(AVPBlocks.STEEL_TRAP_DOOR);
+//        generators.createTrapdoor(AVPBlocks.TITANIUM_TRAP_DOOR);
         var spawnEggLocation = ModelLocationUtils.decorateItemModelLocation("template_spawn_egg");
 
         SpawnEggItems.getAll()
@@ -391,6 +408,12 @@ public class BlockModelProvider extends FabricModelProvider {
             generators.modelOutput
         );
         generators.delegateItemModel(wallBlock, inventoryResourceLocation);
+    }
+
+    private void createDoorsAndTrapDoors(
+            BlockModelGenerators generators
+    ){
+
     }
 
     @Override

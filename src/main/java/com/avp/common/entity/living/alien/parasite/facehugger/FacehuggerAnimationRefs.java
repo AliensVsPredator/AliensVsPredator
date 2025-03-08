@@ -21,5 +21,6 @@ public class FacehuggerAnimationRefs {
     public static final String TAIL_FLAIL_ANIMATION_NAME = "animation.tailflail";
 
     public static final String TAIL_SWAY_ANIMATION_NAME = "animation.tailsway";
+    public static final String INFERTILE_ANIMATION_NAME = "animation.dead";
 
 }

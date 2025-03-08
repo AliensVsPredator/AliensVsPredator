@@ -162,6 +162,15 @@ public class ItemModelProvider extends FabricModelProvider {
         generateStandardItem(generators, AVPItems.VECTOR_POTTERY_SHERD);
         generateStandardItem(generators, AVPItems.VERITANIUM_SHARD);
         generateStandardItem(generators, AVPItems.ZINC_INGOT);
+
+        generateStandardItem(generators,AVPItems.FERROALUMINUM_NUGGET);
+        generateStandardItem(generators,AVPItems.STEEL_NUGGET);
+        generateStandardItem(generators,AVPItems.BRASS_NUGGET);
+        generateStandardItem(generators,AVPItems.TITANIUM_NUGGET);
+        generateStandardItem(generators,AVPItems.ZINC_NUGGET);
+        generateStandardItem(generators,AVPItems.LEAD_NUGGET);
+        generateStandardItem(generators,AVPItems.URANIUM_NUGGET);
+        generateStandardItem(generators,AVPItems.ALUMINUM_NUGGET);
     }
 
     private void generateHandheldItem(ItemModelGenerators generators, Item item) {

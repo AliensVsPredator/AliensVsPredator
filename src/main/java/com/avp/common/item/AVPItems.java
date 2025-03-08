@@ -201,6 +201,17 @@ public class AVPItems {
 
     public static final Item ZINC_INGOT = register("zinc_ingot");
 
+    //Nuggets
+    public static final Item FERROALUMINUM_NUGGET = register("ferroaluminum_nugget");
+    public static final Item STEEL_NUGGET = register("steel_nugget");
+    public static final Item BRASS_NUGGET = register("brass_nugget");
+    public static final Item TITANIUM_NUGGET = register("titanium_nugget");
+    public static final Item LEAD_NUGGET = register("lead_nugget");
+    public static final Item URANIUM_NUGGET = register("uranium_nugget");
+    public static final Item ZINC_NUGGET = register("zinc_nugget");
+    public static final Item ALUMINUM_NUGGET = register("aluminum_nugget");
+
+
     // Tools & Utilities
     public static final Item ARMOR_CASE = register(new ArmorCaseItem(new Item.Properties().stacksTo(1)), "armor_case");
 
