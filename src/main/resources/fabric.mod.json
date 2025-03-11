@@ -4,6 +4,7 @@
 	"version": "${version}",
 	"name": "avp",
 	"description": "Adds a variety of content from both the Alien and Predator franchises!",
+	"accessWidener": "avp.accesswidener",
 	"authors": [
 		"AzureDoom",
 		"Boston Vanseghi",

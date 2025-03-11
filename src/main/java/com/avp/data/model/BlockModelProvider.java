@@ -166,7 +166,6 @@ public class BlockModelProvider extends FabricModelProvider {
 
         generators.createTrivialCube(AVPBlocks.DEEPSLATE_TITANIUM_ORE);
         generators.createTrivialCube(AVPBlocks.DEEPSLATE_ZINC_ORE);
-        //generators.createTrivialCube(AVPBlocks.FERROALUMINUM_BLOCK);
         BarsGenerator.generate(generators, AVPBlocks.FERROALUMINUM_CHAIN_FENCE);
         generators.createRotatedPillarWithHorizontalVariant(
             AVPBlocks.FERROALUMINUM_COLUMN,
@@ -194,7 +193,6 @@ public class BlockModelProvider extends FabricModelProvider {
         generators.createCrossBlock(AVPBlocks.RAZOR_WIRE, BlockModelGenerators.TintState.NOT_TINTED);
         generators.createTrivialCube(AVPBlocks.SILICA_GRAVEL);
         BarsGenerator.generate(generators, AVPBlocks.STEEL_BARS);
-        //generators.createTrivialCube(AVPBlocks.STEEL_BLOCK);
         BarsGenerator.generate(generators, AVPBlocks.STEEL_CHAIN_FENCE);
         generators.createRotatedPillarWithHorizontalVariant(
             AVPBlocks.STEEL_COLUMN,
@@ -208,7 +206,6 @@ public class BlockModelProvider extends FabricModelProvider {
         generators.createTrivialCube(AVPBlocks.STEEL_SIDING);
         generators.createTrivialCube(AVPBlocks.STEEL_STANDING);
         generators.createTrivialCube(AVPBlocks.STEEL_TREAD);
-        //generators.createTrivialCube(AVPBlocks.TITANIUM_BLOCK);
         BarsGenerator.generate(generators, AVPBlocks.TITANIUM_CHAIN_FENCE);
         generators.createRotatedPillarWithHorizontalVariant(
             AVPBlocks.TITANIUM_COLUMN,
@@ -226,22 +223,23 @@ public class BlockModelProvider extends FabricModelProvider {
         generators.createTrivialCube(AVPBlocks.ZINC_BLOCK);
         generators.createTrivialCube(AVPBlocks.ZINC_ORE);
 
-        createDoorsAndTrapDoors(generators);
-        BlockModelGenerators.BlockFamilyProvider ferroProvider = generators.family(AVPBlocks.FERROALUMINUM_BLOCK);
-        BlockModelGenerators.BlockFamilyProvider steelProvider = generators.family(AVPBlocks.STEEL_BLOCK);
-        BlockModelGenerators.BlockFamilyProvider titaniumProvider = generators.family(AVPBlocks.TITANIUM_BLOCK);
-//        ferroProvider.button(AVPBlocks.FERROALUMINUM_BUTTON);
-//        steelProvider.button(AVPBlocks.STEEL_BUTTON);
-//        titaniumProvider.button(AVPBlocks.TITANIUM_BUTTON);
-        ferroProvider.pressurePlate(AVPBlocks.FERROALUMINUM_PRESSURE_PLATE);
-        steelProvider.pressurePlate(AVPBlocks.STEEL_PRESSURE_PLATE);
-        titaniumProvider.pressurePlate(AVPBlocks.TITANIUM_PRESSURE_PLATE);
-//        generators.createDoor(AVPBlocks.FERROALUMINUM_DOOR);
-//        generators.createDoor(AVPBlocks.STEEL_DOOR);
-//        generators.createDoor(AVPBlocks.TITANIUM_DOOR);
-//        generators.createTrapdoor(AVPBlocks.FERROALUMINUM_TRAP_DOOR);
-//        generators.createTrapdoor(AVPBlocks.STEEL_TRAP_DOOR);
-//        generators.createTrapdoor(AVPBlocks.TITANIUM_TRAP_DOOR);
+        generators.family(AVPBlocks.FERROALUMINUM_BLOCK)
+                .pressurePlate(AVPBlocks.FERROALUMINUM_PRESSURE_PLATE);
+        generators.family(AVPBlocks.STEEL_BLOCK)
+                .pressurePlate(AVPBlocks.STEEL_PRESSURE_PLATE);
+        generators.family(AVPBlocks.TITANIUM_BLOCK)
+                .pressurePlate(AVPBlocks.TITANIUM_PRESSURE_PLATE);
+
+        createDoor(generators, AVPBlocks.FERROALUMINUM_DOOR);
+        createDoor(generators, AVPBlocks.STEEL_DOOR);
+        createDoor(generators, AVPBlocks.TITANIUM_DOOR);
+        createTrapdoor(generators, AVPBlocks.FERROALUMINUM_TRAP_DOOR);
+        createTrapdoor(generators, AVPBlocks.STEEL_TRAP_DOOR);
+        createTrapdoor(generators, AVPBlocks.TITANIUM_TRAP_DOOR);
+        createButton(generators, AVPBlocks.FERROALUMINUM_BUTTON);
+        createButton(generators, AVPBlocks.STEEL_BUTTON);
+        createButton(generators, AVPBlocks.TITANIUM_BUTTON);
+
         var spawnEggLocation = ModelLocationUtils.decorateItemModelLocation("template_spawn_egg");
 
         SpawnEggItems.getAll()
@@ -410,10 +408,33 @@ public class BlockModelProvider extends FabricModelProvider {
         generators.delegateItemModel(wallBlock, inventoryResourceLocation);
     }
 
-    private void createDoorsAndTrapDoors(
-            BlockModelGenerators generators
-    ){
 
+    public void createDoor(BlockModelGenerators generators, Block block) {
+        TextureMapping textureMapping = TextureMapping.door(block);
+        ResourceLocation resourceLocation = ModelTemplates.DOOR_BOTTOM_LEFT.create(block, textureMapping, generators.modelOutput);
+        ResourceLocation resourceLocation2 = ModelTemplates.DOOR_BOTTOM_LEFT_OPEN.create(block, textureMapping, generators.modelOutput);
+        ResourceLocation resourceLocation3 = ModelTemplates.DOOR_BOTTOM_RIGHT.create(block, textureMapping, generators.modelOutput);
+        ResourceLocation resourceLocation4 = ModelTemplates.DOOR_BOTTOM_RIGHT_OPEN.create(block, textureMapping, generators.modelOutput);
+        ResourceLocation resourceLocation5 = ModelTemplates.DOOR_TOP_LEFT.create(block, textureMapping, generators.modelOutput);
+        ResourceLocation resourceLocation6 = ModelTemplates.DOOR_TOP_LEFT_OPEN.create(block, textureMapping, generators.modelOutput);
+        ResourceLocation resourceLocation7 = ModelTemplates.DOOR_TOP_RIGHT.create(block, textureMapping, generators.modelOutput);
+        ResourceLocation resourceLocation8 = ModelTemplates.DOOR_TOP_RIGHT_OPEN.create(block, textureMapping, generators.modelOutput);
+        generators.blockStateOutput.accept(generators.createDoor(block, resourceLocation, resourceLocation2, resourceLocation3, resourceLocation4, resourceLocation5, resourceLocation6, resourceLocation7, resourceLocation8));
+    }
+
+    public void createButton(BlockModelGenerators generators, Block block) {
+        TextureMapping textureMapping = TextureMapping.defaultTexture(block);
+        ResourceLocation resourceLocation = ModelTemplates.BUTTON.create(block, textureMapping, generators.modelOutput);
+        ResourceLocation resourceLocation2 = ModelTemplates.BUTTON_PRESSED.create(block, textureMapping, generators.modelOutput);
+        generators.blockStateOutput.accept(BlockModelGenerators.createButton(block, resourceLocation, resourceLocation2));
+    }
+
+    public void createTrapdoor(BlockModelGenerators generators, Block block) {
+        TextureMapping textureMapping = TextureMapping.defaultTexture(block);
+        ResourceLocation resourceLocation = ModelTemplates.TRAPDOOR_TOP.create(block, textureMapping, generators.modelOutput);
+        ResourceLocation resourceLocation2 = ModelTemplates.TRAPDOOR_BOTTOM.create(block, textureMapping, generators.modelOutput);
+        ResourceLocation resourceLocation3 = ModelTemplates.TRAPDOOR_OPEN.create(block, textureMapping, generators.modelOutput);
+        generators.blockStateOutput.accept(BlockModelGenerators.createTrapdoor(block, resourceLocation, resourceLocation2, resourceLocation3));
     }
 
     @Override

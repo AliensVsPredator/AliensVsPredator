@@ -1,0 +1,4 @@
+accessWidener	v1	named
+
+accessible field net/minecraft/data/models/BlockModelGenerators$BlockFamilyProvider mapping Lnet/minecraft/data/models/model/TextureMapping;
+mutable field net/minecraft/data/models/BlockModelGenerators$BlockFamilyProvider mapping Lnet/minecraft/data/models/model/TextureMapping;

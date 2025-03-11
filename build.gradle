@@ -29,12 +29,14 @@ repositories {
 }
 
 loom {
-//	splitEnvironmentSourceSets()
+	def aw = file("src/main/resources/avp.accesswidener")
 
+	if (aw.exists()) {
+		accessWidenerPath.set(aw)
+	}
 	mods {
 		"avp" {
 			sourceSet sourceSets.main
-//			sourceSet sourceSets.client
 		}
 	}
 
@@ -104,11 +106,6 @@ tasks.withType(JavaCompile).configureEach {
 }
 
 java {
-	// Loom will automatically attach sourcesJar to a RemapSourcesJar task and to the "build" task
-	// if it is present.
-	// If you remove this line, sources will not be generated.
-	withSourcesJar()
-
 	sourceCompatibility = JavaVersion.VERSION_21
 	targetCompatibility = JavaVersion.VERSION_21
 }
@@ -119,7 +116,6 @@ jar {
 	}
 }
 
-// configure the maven publication
 publishing {
 	publications {
 		create("mavenJava", MavenPublication) {
@@ -130,9 +126,5 @@ publishing {
 
 	// See https://docs.gradle.org/current/userguide/publishing_maven.html for information on how to set up publishing.
 	repositories {
-		// Add repositories to publish to here.
-		// Notice: This block does NOT have the same function as the block in the top level.
-		// The repositories here will be used for publishing your artifact, not for
-		// retrieving dependencies.
 	}
 }
