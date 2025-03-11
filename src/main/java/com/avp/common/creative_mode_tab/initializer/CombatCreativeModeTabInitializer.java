@@ -10,6 +10,9 @@ public class CombatCreativeModeTabInitializer {
 
     public static void initialize() {
         ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.COMBAT_KEY).register(entries -> {
+            entries.accept(AVPItems.GRENADE);
+            entries.accept(AVPItems.GRENADE_INCENDIARY);
+            entries.accept(AVPItems.GRENADE_IRRADIATED);
             entries.accept(AVPItems.CASELESS_BULLET);
             entries.accept(AVPItems.HEAVY_BULLET);
             entries.accept(AVPItems.SMALL_BULLET);

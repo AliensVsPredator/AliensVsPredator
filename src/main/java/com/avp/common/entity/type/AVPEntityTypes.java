@@ -1,5 +1,6 @@
 package com.avp.common.entity.type;
 
+import com.avp.common.entity.projectile.ThrownGrenade;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -94,6 +95,12 @@ public class AVPEntityTypes {
             .sized(0.1F, 0.1F)
             .clientTrackingRange(8)
             .updateInterval(10)
+    );
+
+    public static final EntityType<ThrownGrenade> GRENADE_THROWN = register(
+            "grenade_thrown",
+            EntityType.Builder.<ThrownGrenade>of(ThrownGrenade::new, MobCategory.MISC)
+                    .sized(0.25F, 0.25F)
     );
 
     public static final EntityType<Warrior> WARRIOR = register(

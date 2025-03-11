@@ -23,6 +23,33 @@ public class GunRecipeProvider {
         createBulletRecipes(builder);
         createGunPartRecipes(builder);
         createGunRecipes(builder);
+        createGrendade(builder);
+    }
+
+    private static void createGrendade(RecipeBuilder builder) {
+        builder.shaped()
+            .withCategory(RecipeCategory.COMBAT)
+            .define('A', AVPItems.STEEL_INGOT)
+            .define('B', Items.GUNPOWDER)
+            .pattern("ABA")
+            .pattern("ABA")
+            .into(4, AVPItems.GRENADE);
+        builder.shaped()
+                .withCategory(RecipeCategory.COMBAT)
+                .define('A', AVPItems.STEEL_INGOT)
+                .define('B', Items.GUNPOWDER)
+                .define('C', Items.BLAZE_POWDER)
+                .pattern("ABC")
+                .pattern("ABA")
+                .into(4, AVPItems.GRENADE_INCENDIARY);
+        builder.shaped()
+                .withCategory(RecipeCategory.COMBAT)
+                .define('A', AVPItems.STEEL_INGOT)
+                .define('B', Items.GUNPOWDER)
+                .define('C', AVPItems.URANIUM_NUGGET)
+                .pattern("ABC")
+                .pattern("ABA")
+                .into(4, AVPItems.GRENADE_IRRADIATED);
     }
 
     private static void createCasingRecipes(RecipeBuilder builder) {

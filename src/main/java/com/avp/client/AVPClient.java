@@ -10,6 +10,7 @@ import net.fabricmc.fabric.api.client.particle.v1.ParticleFactoryRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.entity.ThrownItemRenderer;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.Item;
 
@@ -159,6 +160,7 @@ public class AVPClient implements ClientModInitializer {
         EntityRendererRegistry.register(AVPEntityTypes.DRONE, DroneRenderer::new);
         EntityRendererRegistry.register(AVPEntityTypes.FACEHUGGER, FacehuggerRenderer::new);
         EntityRendererRegistry.register(AVPEntityTypes.FLAMETHROW, FlamethrowRenderer::new);
+        EntityRendererRegistry.register(AVPEntityTypes.GRENADE_THROWN, ThrownItemRenderer::new);
         EntityRendererRegistry.register(AVPEntityTypes.OVAMORPH, OvamorphRenderer::new);
         EntityRendererRegistry.register(AVPEntityTypes.PRAETORIAN, PraetorianRenderer::new);
         EntityRendererRegistry.register(AVPEntityTypes.QUEEN, QueenRenderer::new);

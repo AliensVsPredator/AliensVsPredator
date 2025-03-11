@@ -214,9 +214,12 @@ public class EnglishLanguageProvider extends FabricLanguageProvider {
         translationBuilder.add(AVPEntityTypes.WARRIOR, "Warrior");
         translationBuilder.add(AVPEntityTypes.YAUTJA, "Yautja");
         translationBuilder.add(AVPEntityTypes.ROCKET, "Rocket");
+        translationBuilder.add(AVPEntityTypes.GRENADE_THROWN, "Grenade");
 
         // Combat Items
-
+        translationBuilder.add(AVPItems.GRENADE, "Grenade");
+        translationBuilder.add(AVPItems.GRENADE_INCENDIARY, "Incendiary Grenade");
+        translationBuilder.add(AVPItems.GRENADE_IRRADIATED, "Iradiated Grenade");
         translationBuilder.add(AVPItems.CASELESS_BULLET, "Caseless Bullet");
         translationBuilder.add(ArmorItems.CHITIN_BOOTS, "Chitin Boots");
         translationBuilder.add(ArmorItems.CHITIN_CHESTPLATE, "Chitin Chestplate");

@@ -4,3 +4,4 @@ accessible field net/minecraft/data/models/BlockModelGenerators$BlockFamilyProvi
 mutable field net/minecraft/data/models/BlockModelGenerators$BlockFamilyProvider mapping Lnet/minecraft/data/models/model/TextureMapping;
 accessible method net/minecraft/data/models/BlockModelGenerators$BlockFamilyProvider door (Lnet/minecraft/world/level/block/Block;)Lnet/minecraft/data/models/BlockModelGenerators$BlockFamilyProvider;
 accessible method net/minecraft/data/models/BlockModelGenerators$BlockFamilyProvider trapdoor (Lnet/minecraft/world/level/block/Block;)V
+accessible method net/minecraft/world/level/block/state/BlockBehaviour getSoundType (Lnet/minecraft/world/level/block/state/BlockState;)Lnet/minecraft/world/level/block/SoundType;

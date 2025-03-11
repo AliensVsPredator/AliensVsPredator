@@ -29,6 +29,9 @@ public class ItemModelProvider extends FabricModelProvider {
 
     @Override
     public void generateItemModels(ItemModelGenerators generators) {
+        generateStandardItem(generators, AVPItems.GRENADE);
+        generateStandardItem(generators, AVPItems.GRENADE_INCENDIARY);
+        generateStandardItem(generators, AVPItems.GRENADE_IRRADIATED);
         generateStandardItem(generators, AVPItems.CASELESS_BULLET);
         generateStandardItem(generators, AVPItems.HEAVY_BULLET);
         generateStandardItem(generators, AVPItems.SMALL_BULLET);

@@ -1,5 +1,6 @@
 package com.avp.common.item;
 
+import com.avp.common.item.grenades.GrendeItem;
 import mod.azure.azurelib.rewrite.animation.cache.AzIdentityRegistry;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -19,6 +20,12 @@ import com.avp.common.item.old_painless.OldPainlessItem;
 public class AVPItems {
 
     // Combat Items
+    public static final Item GRENADE = register(new GrendeItem(false, false),"grenade_standard");
+
+    public static final Item GRENADE_INCENDIARY = register(new GrendeItem(true, false),"grenade_incendiary");
+
+    public static final Item GRENADE_IRRADIATED = register(new GrendeItem(false, true),"grenade_irradiated");
+
     public static final Item CASELESS_BULLET = register("caseless_bullet");
 
     public static final Item F903WE_RIFLE = register(new GunItem(GunData.F903WE_RIFLE), "f903we_rifle");
