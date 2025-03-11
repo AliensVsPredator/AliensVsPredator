@@ -97,7 +97,7 @@ public class MetalRecipeProvider {
                 .into(2, AVPBlocks.STEEL_BUTTON);
         builder.shaped()
                 .withCategory(RecipeCategory.BUILDING_BLOCKS)
-                .apply(RecipeTemplates.BUTTON_BLOCK.apply(AVPItems.FERROALUMINUM_INGOT))
+                .apply(RecipeTemplates.BUTTON_BLOCK.apply(AVPItems.TITANIUM_INGOT))
                 .into(2, AVPBlocks.TITANIUM_BUTTON);
         builder.shaped()
                 .withCategory(RecipeCategory.BUILDING_BLOCKS)
