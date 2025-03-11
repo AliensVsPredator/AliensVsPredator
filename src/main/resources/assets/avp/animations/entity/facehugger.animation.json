@@ -72,6 +72,126 @@
 				}
 			}
 		},
+		"animation.dead": {
+			"loop": true,
+			"bones": {
+				"gTail1": {
+					"rotation": {
+						"vector": [0, 10, 0]
+					}
+				},
+				"gTail2": {
+					"rotation": {
+						"vector": [0, 17.5, 0]
+					}
+				},
+				"gTail3": {
+					"rotation": {
+						"vector": [0, 25, 0]
+					}
+				},
+				"gTail4": {
+					"rotation": {
+						"vector": [0, 32.5, 0]
+					}
+				},
+				"gTail5": {
+					"rotation": {
+						"vector": [0, 32.5, 0]
+					}
+				},
+				"gTail6": {
+					"rotation": {
+						"vector": [0, 27.5, 0]
+					}
+				},
+				"gTail7": {
+					"rotation": {
+						"vector": [0, 25, 0]
+					}
+				},
+				"gTail8": {
+					"rotation": {
+						"vector": [0, 20, 0]
+					}
+				},
+				"gTail9": {
+					"rotation": {
+						"vector": [0, 15, 0]
+					}
+				},
+				"gTail10": {
+					"rotation": {
+						"vector": [0, 15, 0]
+					}
+				},
+				"gTail11": {
+					"rotation": {
+						"vector": [0, 17.5, 0]
+					}
+				},
+				"gLFrontLeg": {
+					"rotation": {
+						"vector": [0, 0, 27.5]
+					}
+				},
+				"gLFrontLegBottom": {
+					"rotation": {
+						"vector": [0, 0, 15]
+					}
+				},
+				"gRFrontLeg": {
+					"rotation": {
+						"vector": [0, 0, -27.5]
+					}
+				},
+				"gRFrontLegBottom": {
+					"rotation": {
+						"vector": [0, 0, -15]
+					}
+				},
+				"gLeftSide": {
+					"rotation": {
+						"vector": [0, 0, 27.5]
+					}
+				},
+				"gLMidLeg1Bottom": {
+					"rotation": {
+						"vector": [0, 0, 15]
+					}
+				},
+				"gLMidLeg2Bottom": {
+					"rotation": {
+						"vector": [0, 0, 15]
+					}
+				},
+				"gLBottomLegBottom": {
+					"rotation": {
+						"vector": [0, 0, 15]
+					}
+				},
+				"gRightSide": {
+					"rotation": {
+						"vector": [0, 0, -25]
+					}
+				},
+				"gRMidLeg1Bottom": {
+					"rotation": {
+						"vector": [0, 0, -15]
+					}
+				},
+				"gRMidLeg2Bottom": {
+					"rotation": {
+						"vector": [0, 0, -15]
+					}
+				},
+				"gRBottomLegBottom": {
+					"rotation": {
+						"vector": [0, 0, -15]
+					}
+				}
+			}
+		},
 		"animation.sack": {
 			"loop": true,
 			"animation_length": 2,
