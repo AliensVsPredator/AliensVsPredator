@@ -19,7 +19,7 @@ import net.minecraft.world.level.block.state.properties.BlockSetType;
 
 public class AVPBlocks {
 
-    public static final Block NUKE_BLOCK = register(BlockProperties.STEEL, "nuke");
+    public static final Block NUKE_BLOCK = register(BlockProperties.NUKE, "nuke");
 
     public static final Block ROYAL_JELLY_BLOCK = register(BlockProperties.JELLY, "royal_jelly_block");
 

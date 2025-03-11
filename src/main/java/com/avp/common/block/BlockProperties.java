@@ -163,6 +163,15 @@ public class BlockProperties {
         .sound(SoundType.COPPER)
         .strength(2, 2);
 
+    public static final Supplier<BlockBehaviour.Properties> NUKE_SUPPLIER = () -> BlockBehaviour.Properties.of()
+            .instrument(NoteBlockInstrument.IRON_XYLOPHONE)
+            .mapColor(MapColor.COLOR_GRAY)
+            .requiresCorrectToolForDrops()
+            .sound(SoundType.COPPER)
+            .strength(4);
+
+    public static final BlockBehaviour.Properties NUKE = NUKE_SUPPLIER.get();
+
     public static final Supplier<BlockBehaviour.Properties> STEEL_SUPPLIER = () -> BlockBehaviour.Properties.of()
         .instrument(NoteBlockInstrument.IRON_XYLOPHONE)
         .mapColor(MapColor.COLOR_GRAY)
