@@ -1,7 +1,5 @@
 package com.avp.common.entity.type;
 
-import com.avp.common.entity.living.human.marine.MarineMob;
-import com.avp.common.entity.projectile.ThrownGrenade;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -26,9 +24,11 @@ import com.avp.common.entity.living.alien.xenomorph.drone.Drone;
 import com.avp.common.entity.living.alien.xenomorph.praetorian.Praetorian;
 import com.avp.common.entity.living.alien.xenomorph.queen.Queen;
 import com.avp.common.entity.living.alien.xenomorph.warrior.Warrior;
+import com.avp.common.entity.living.human.marine.MarineMob;
 import com.avp.common.entity.living.yautja.Yautja;
 import com.avp.common.entity.projectile.Flamethrow;
 import com.avp.common.entity.projectile.Rocket;
+import com.avp.common.entity.projectile.ThrownGrenade;
 import com.avp.common.gene.GeneKeys;
 
 public class AVPEntityTypes {
@@ -99,9 +99,9 @@ public class AVPEntityTypes {
     );
 
     public static final EntityType<ThrownGrenade> GRENADE_THROWN = register(
-            "grenade_thrown",
-            EntityType.Builder.<ThrownGrenade>of(ThrownGrenade::new, MobCategory.MISC)
-                    .sized(0.25F, 0.25F)
+        "grenade_thrown",
+        EntityType.Builder.<ThrownGrenade>of(ThrownGrenade::new, MobCategory.MISC)
+            .sized(0.25F, 0.25F)
     );
 
     public static final EntityType<Warrior> WARRIOR = register(
@@ -115,8 +115,8 @@ public class AVPEntityTypes {
     );
 
     public static final EntityType<MarineMob> MARINE = register(
-            "marine",
-            EntityType.Builder.of(MarineMob::new, MobCategory.CREATURE).sized(0.7F, 1.95F)
+        "marine",
+        EntityType.Builder.of(MarineMob::new, MobCategory.CREATURE).sized(0.7F, 1.95F)
     );
 
     // These are "deferred" entity types for our existing entities. We want different spawn colors for these spawn eggs,

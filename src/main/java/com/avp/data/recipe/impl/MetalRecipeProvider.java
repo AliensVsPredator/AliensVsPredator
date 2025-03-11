@@ -1,6 +1,5 @@
 package com.avp.data.recipe.impl;
 
-import com.avp.common.block_item.AVPBlockItems;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.ItemLike;
@@ -83,60 +82,60 @@ public class MetalRecipeProvider {
         RecipeUtil.createCompressedBlockRecipes3x3(builder, AVPItems.RAW_ZINC, AVPBlocks.RAW_ZINC_BLOCK);
 
         builder.shaped()
-                .withCategory(RecipeCategory.BUILDING_BLOCKS)
-                .apply(RecipeTemplates.BARS_BLOCK.apply(AVPItems.STEEL_INGOT))
-                .into(16, AVPBlocks.STEEL_BARS);
+            .withCategory(RecipeCategory.BUILDING_BLOCKS)
+            .apply(RecipeTemplates.BARS_BLOCK.apply(AVPItems.STEEL_INGOT))
+            .into(16, AVPBlocks.STEEL_BARS);
 
         builder.shaped()
-                .withCategory(RecipeCategory.BUILDING_BLOCKS)
-                .apply(RecipeTemplates.BUTTON_BLOCK.apply(AVPItems.FERROALUMINUM_INGOT))
-                .into(2, AVPBlocks.FERROALUMINUM_BUTTON);
+            .withCategory(RecipeCategory.BUILDING_BLOCKS)
+            .apply(RecipeTemplates.BUTTON_BLOCK.apply(AVPItems.FERROALUMINUM_INGOT))
+            .into(2, AVPBlocks.FERROALUMINUM_BUTTON);
         builder.shaped()
-                .withCategory(RecipeCategory.BUILDING_BLOCKS)
-                .apply(RecipeTemplates.BUTTON_BLOCK.apply(AVPItems.STEEL_INGOT))
-                .into(2, AVPBlocks.STEEL_BUTTON);
+            .withCategory(RecipeCategory.BUILDING_BLOCKS)
+            .apply(RecipeTemplates.BUTTON_BLOCK.apply(AVPItems.STEEL_INGOT))
+            .into(2, AVPBlocks.STEEL_BUTTON);
         builder.shaped()
-                .withCategory(RecipeCategory.BUILDING_BLOCKS)
-                .apply(RecipeTemplates.BUTTON_BLOCK.apply(AVPItems.TITANIUM_INGOT))
-                .into(2, AVPBlocks.TITANIUM_BUTTON);
+            .withCategory(RecipeCategory.BUILDING_BLOCKS)
+            .apply(RecipeTemplates.BUTTON_BLOCK.apply(AVPItems.TITANIUM_INGOT))
+            .into(2, AVPBlocks.TITANIUM_BUTTON);
         builder.shaped()
-                .withCategory(RecipeCategory.BUILDING_BLOCKS)
-                .apply(RecipeTemplates.DOOR_BLOCK.apply(AVPItems.FERROALUMINUM_INGOT))
-                .into(1, AVPBlocks.FERROALUMINUM_DOOR);
+            .withCategory(RecipeCategory.BUILDING_BLOCKS)
+            .apply(RecipeTemplates.DOOR_BLOCK.apply(AVPItems.FERROALUMINUM_INGOT))
+            .into(1, AVPBlocks.FERROALUMINUM_DOOR);
         builder.shaped()
-                .withCategory(RecipeCategory.BUILDING_BLOCKS)
-                .apply(RecipeTemplates.DOOR_BLOCK.apply(AVPItems.STEEL_INGOT))
-                .into(1, AVPBlocks.STEEL_DOOR);
+            .withCategory(RecipeCategory.BUILDING_BLOCKS)
+            .apply(RecipeTemplates.DOOR_BLOCK.apply(AVPItems.STEEL_INGOT))
+            .into(1, AVPBlocks.STEEL_DOOR);
         builder.shaped()
-                .withCategory(RecipeCategory.BUILDING_BLOCKS)
-                .apply(RecipeTemplates.DOOR_BLOCK.apply(AVPItems.TITANIUM_INGOT))
-                .into(1, AVPBlocks.TITANIUM_DOOR);
+            .withCategory(RecipeCategory.BUILDING_BLOCKS)
+            .apply(RecipeTemplates.DOOR_BLOCK.apply(AVPItems.TITANIUM_INGOT))
+            .into(1, AVPBlocks.TITANIUM_DOOR);
 
         builder.shaped()
-                .withCategory(RecipeCategory.BUILDING_BLOCKS)
-                .apply(RecipeTemplates.TRAP_DOOR_BLOCK.apply(AVPItems.FERROALUMINUM_INGOT))
-                .into(1, AVPBlocks.FERROALUMINUM_TRAP_DOOR);
+            .withCategory(RecipeCategory.BUILDING_BLOCKS)
+            .apply(RecipeTemplates.TRAP_DOOR_BLOCK.apply(AVPItems.FERROALUMINUM_INGOT))
+            .into(1, AVPBlocks.FERROALUMINUM_TRAP_DOOR);
         builder.shaped()
-                .withCategory(RecipeCategory.BUILDING_BLOCKS)
-                .apply(RecipeTemplates.TRAP_DOOR_BLOCK.apply(AVPItems.STEEL_INGOT))
-                .into(1, AVPBlocks.STEEL_TRAP_DOOR);
+            .withCategory(RecipeCategory.BUILDING_BLOCKS)
+            .apply(RecipeTemplates.TRAP_DOOR_BLOCK.apply(AVPItems.STEEL_INGOT))
+            .into(1, AVPBlocks.STEEL_TRAP_DOOR);
         builder.shaped()
-                .withCategory(RecipeCategory.BUILDING_BLOCKS)
-                .apply(RecipeTemplates.TRAP_DOOR_BLOCK.apply(AVPItems.TITANIUM_INGOT))
-                .into(1, AVPBlocks.TITANIUM_TRAP_DOOR);
+            .withCategory(RecipeCategory.BUILDING_BLOCKS)
+            .apply(RecipeTemplates.TRAP_DOOR_BLOCK.apply(AVPItems.TITANIUM_INGOT))
+            .into(1, AVPBlocks.TITANIUM_TRAP_DOOR);
 
         builder.shaped()
-                .withCategory(RecipeCategory.BUILDING_BLOCKS)
-                .apply(RecipeTemplates.PRESSURE_PLATE_BLOCK.apply(AVPItems.FERROALUMINUM_INGOT))
-                .into(1, AVPBlocks.FERROALUMINUM_PRESSURE_PLATE);
+            .withCategory(RecipeCategory.BUILDING_BLOCKS)
+            .apply(RecipeTemplates.PRESSURE_PLATE_BLOCK.apply(AVPItems.FERROALUMINUM_INGOT))
+            .into(1, AVPBlocks.FERROALUMINUM_PRESSURE_PLATE);
         builder.shaped()
-                .withCategory(RecipeCategory.BUILDING_BLOCKS)
-                .apply(RecipeTemplates.PRESSURE_PLATE_BLOCK.apply(AVPItems.STEEL_INGOT))
-                .into(1, AVPBlocks.STEEL_PRESSURE_PLATE);
+            .withCategory(RecipeCategory.BUILDING_BLOCKS)
+            .apply(RecipeTemplates.PRESSURE_PLATE_BLOCK.apply(AVPItems.STEEL_INGOT))
+            .into(1, AVPBlocks.STEEL_PRESSURE_PLATE);
         builder.shaped()
-                .withCategory(RecipeCategory.BUILDING_BLOCKS)
-                .apply(RecipeTemplates.PRESSURE_PLATE_BLOCK.apply(AVPItems.TITANIUM_INGOT))
-                .into(1, AVPBlocks.TITANIUM_PRESSURE_PLATE);
+            .withCategory(RecipeCategory.BUILDING_BLOCKS)
+            .apply(RecipeTemplates.PRESSURE_PLATE_BLOCK.apply(AVPItems.TITANIUM_INGOT))
+            .into(1, AVPBlocks.TITANIUM_PRESSURE_PLATE);
 
         createFerroaluminumBlockVariantRecipes(builder);
         createSteelBlockVariantRecipes(builder);

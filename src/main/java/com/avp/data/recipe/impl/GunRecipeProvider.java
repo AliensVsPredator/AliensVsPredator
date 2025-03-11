@@ -35,21 +35,21 @@ public class GunRecipeProvider {
             .pattern("ABA")
             .into(4, AVPItems.GRENADE);
         builder.shaped()
-                .withCategory(RecipeCategory.COMBAT)
-                .define('A', AVPItems.STEEL_NUGGET)
-                .define('B', Items.GUNPOWDER)
-                .define('C', Items.BLAZE_POWDER)
-                .pattern("ACA")
-                .pattern("ABA")
-                .into(4, AVPItems.GRENADE_INCENDIARY);
+            .withCategory(RecipeCategory.COMBAT)
+            .define('A', AVPItems.STEEL_NUGGET)
+            .define('B', Items.GUNPOWDER)
+            .define('C', Items.BLAZE_POWDER)
+            .pattern("ACA")
+            .pattern("ABA")
+            .into(4, AVPItems.GRENADE_INCENDIARY);
         builder.shaped()
-                .withCategory(RecipeCategory.COMBAT)
-                .define('A', AVPItems.STEEL_NUGGET)
-                .define('B', Items.GUNPOWDER)
-                .define('C', AVPItems.URANIUM_NUGGET)
-                .pattern("ACA")
-                .pattern("ABA")
-                .into(4, AVPItems.GRENADE_IRRADIATED);
+            .withCategory(RecipeCategory.COMBAT)
+            .define('A', AVPItems.STEEL_NUGGET)
+            .define('B', Items.GUNPOWDER)
+            .define('C', AVPItems.URANIUM_NUGGET)
+            .pattern("ACA")
+            .pattern("ABA")
+            .into(4, AVPItems.GRENADE_IRRADIATED);
     }
 
     private static void createCasingRecipes(RecipeBuilder builder) {

@@ -1,6 +1,5 @@
 package com.avp.client;
 
-import com.avp.client.render.entity.*;
 import mod.azure.azurelib.rewrite.render.armor.AzArmorRendererRegistry;
 import mod.azure.azurelib.rewrite.render.item.AzItemRenderer;
 import mod.azure.azurelib.rewrite.render.item.AzItemRendererRegistry;
@@ -29,6 +28,7 @@ import com.avp.client.render.armor.PlatedChitinArmorRenderer;
 import com.avp.client.render.armor.PlatedNetherChitinArmorRenderer;
 import com.avp.client.render.armor.PressureArmorRenderer;
 import com.avp.client.render.armor.TacticalArmorRenderer;
+import com.avp.client.render.entity.*;
 import com.avp.client.render.entity.parasite.facehugger.FacehuggerRenderer;
 import com.avp.client.render.item.OldPainlessItemRenderer;
 import com.avp.client.render.item.SimpleItemRenderer;

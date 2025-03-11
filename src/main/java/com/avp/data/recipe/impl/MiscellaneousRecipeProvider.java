@@ -58,36 +58,35 @@ public class MiscellaneousRecipeProvider {
             .into(16, AVPBlocks.RAZOR_WIRE);
 
         builder.shaped()
-                .withCategory(RecipeCategory.MISC)
-                .define('I', AVPItems.RAW_ROYAL_JELLY)
-                .pattern("III")
-                .pattern("III")
-                .pattern("III")
-                .into(1, AVPBlocks.ROYAL_JELLY_BLOCK);
+            .withCategory(RecipeCategory.MISC)
+            .define('I', AVPItems.RAW_ROYAL_JELLY)
+            .pattern("III")
+            .pattern("III")
+            .pattern("III")
+            .into(1, AVPBlocks.ROYAL_JELLY_BLOCK);
 
         builder.shapeless()
-                .withCategory(RecipeCategory.MISC)
-                .requires(1, AVPBlocks.ROYAL_JELLY_BLOCK)
-                .into(9, AVPItems.RAW_ROYAL_JELLY);
+            .withCategory(RecipeCategory.MISC)
+            .requires(1, AVPBlocks.ROYAL_JELLY_BLOCK)
+            .into(9, AVPItems.RAW_ROYAL_JELLY);
 
         builder.shapeless()
-                .withCategory(RecipeCategory.MISC)
-                .requires(1, Items.POISONOUS_POTATO)
-                .requires(1, AVPItems.RAW_ROYAL_JELLY)
-                .into(1, AVPItems.POISON_JELLY);
+            .withCategory(RecipeCategory.MISC)
+            .requires(1, Items.POISONOUS_POTATO)
+            .requires(1, AVPItems.RAW_ROYAL_JELLY)
+            .into(1, AVPItems.POISON_JELLY);
 
         builder.shaped()
-                .withCategory(RecipeCategory.MISC)
-                .define('C', Items.CLOCK)
-                .define('S', AVPItems.LED_DISPLAY)
-                .define('P', AVPItems.CPU)
-                .define('L', AVPItems.LEAD_INGOT)
-                .define('N', AVPItems.NEODYMIUM_MAGNET)
-                .define('T', Items.TNT)
-                .pattern("CSP")
-                .pattern("LNL")
-                .pattern("TTT")
-                .into(1, AVPBlocks.NUKE_BLOCK);
-
+            .withCategory(RecipeCategory.MISC)
+            .define('C', Items.CLOCK)
+            .define('S', AVPItems.LED_DISPLAY)
+            .define('P', AVPItems.CPU)
+            .define('L', AVPItems.LEAD_INGOT)
+            .define('N', AVPItems.NEODYMIUM_MAGNET)
+            .define('T', Items.TNT)
+            .pattern("CSP")
+            .pattern("LNL")
+            .pattern("TTT")
+            .into(1, AVPBlocks.NUKE_BLOCK);
     }
 }

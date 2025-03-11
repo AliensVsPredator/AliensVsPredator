@@ -1,6 +1,5 @@
 package com.avp.data.recipe;
 
-import com.avp.data.recipe.builder.ShapelessRecipeBuilder;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.ItemLike;
@@ -28,10 +27,10 @@ public class RecipeTemplates {
             .pattern("AAA");
 
     public static final Function<ItemLike, UnaryOperator<ShapedRecipeBuilder>> BUTTON_BLOCK =
-            itemLike -> builder -> builder
-                    .define('A', itemLike)
-                    .pattern("A")
-                    .pattern("A");
+        itemLike -> builder -> builder
+            .define('A', itemLike)
+            .pattern("A")
+            .pattern("A");
 
     public static final Function<ItemLike, UnaryOperator<ShapedRecipeBuilder>> BOOTS = itemLike -> builder -> builder
         .withCategory(RecipeCategory.COMBAT)
@@ -61,11 +60,11 @@ public class RecipeTemplates {
             .pattern("AAA");
 
     public static final Function<ItemLike, UnaryOperator<ShapedRecipeBuilder>> DOOR_BLOCK =
-            itemLike -> builder -> builder
-                    .define('A', itemLike)
-                    .pattern("AA")
-                    .pattern("AA")
-                    .pattern("AA");
+        itemLike -> builder -> builder
+            .define('A', itemLike)
+            .pattern("AA")
+            .pattern("AA")
+            .pattern("AA");
 
     public static final Function<ItemLike, UnaryOperator<ShapedRecipeBuilder>> HELMET = itemLike -> builder -> builder
         .withCategory(RecipeCategory.COMBAT)
@@ -107,9 +106,9 @@ public class RecipeTemplates {
             .pattern(" A ");
 
     public static final Function<ItemLike, UnaryOperator<ShapedRecipeBuilder>> PRESSURE_PLATE_BLOCK =
-            itemLike -> builder -> builder
-                    .define('A', itemLike)
-                    .pattern("AA");
+        itemLike -> builder -> builder
+            .define('A', itemLike)
+            .pattern("AA");
 
     public static final Function<ItemLike, UnaryOperator<ShapedRecipeBuilder>> SHOVEL =
         itemLike -> builder -> builder
@@ -142,10 +141,10 @@ public class RecipeTemplates {
             .pattern(" B ");
 
     public static final Function<ItemLike, UnaryOperator<ShapedRecipeBuilder>> TRAP_DOOR_BLOCK =
-            itemLike -> builder -> builder
-                    .define('A', itemLike)
-                    .pattern("AA")
-                    .pattern("AA");
+        itemLike -> builder -> builder
+            .define('A', itemLike)
+            .pattern("AA")
+            .pattern("AA");
 
     public static final Function<ItemLike, UnaryOperator<ShapedRecipeBuilder>> WALL_BLOCK =
         itemLike -> builder -> builder

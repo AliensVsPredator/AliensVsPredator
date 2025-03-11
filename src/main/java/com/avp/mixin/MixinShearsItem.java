@@ -1,13 +1,11 @@
 package com.avp.mixin;
 
-import com.avp.common.block.AVPBlocks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ShearsItem;
 import net.minecraft.world.item.component.Tool;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -17,8 +15,11 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.avp.common.block.AVPBlocks;
+
 @Mixin(ShearsItem.class)
 public class MixinShearsItem {
+
     @Inject(method = "createToolProperties", at = @At("RETURN"), cancellable = true)
     private static void avp$createToolProperties(CallbackInfoReturnable<Tool> cir) {
         Tool originalTool = cir.getReturnValue();
@@ -33,8 +34,14 @@ public class MixinShearsItem {
     }
 
     @Inject(method = "mineBlock", at = @At("RETURN"), cancellable = true)
-    private void avp$mineBlock(ItemStack itemStack, Level level, BlockState blockState, BlockPos blockPos, LivingEntity livingEntity, CallbackInfoReturnable<Boolean> cir)
-    {
+    private void avp$mineBlock(
+        ItemStack itemStack,
+        Level level,
+        BlockState blockState,
+        BlockPos blockPos,
+        LivingEntity livingEntity,
+        CallbackInfoReturnable<Boolean> cir
+    ) {
         cir.setReturnValue(blockState.is(AVPBlocks.RAZOR_WIRE));
     }
 }

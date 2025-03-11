@@ -5,8 +5,6 @@ import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.control.MoveControl;
 
-import com.avp.common.entity.living.alien.xenomorph.Xenomorph;
-
 public class WaterMoveControl extends MoveControl {
 
     private final PathfinderMob pathfinderMob;
@@ -41,7 +39,7 @@ public class WaterMoveControl extends MoveControl {
             var j = Mth.lerp(0.125F, pathfinderMob.getSpeed(), i);
             pathfinderMob.setSpeed(j);
             pathfinderMob.setDeltaMovement(
-                    pathfinderMob.getDeltaMovement().add(j * d * 0.005, j * e * 0.1, j * f * 0.005)
+                pathfinderMob.getDeltaMovement().add(j * d * 0.005, j * e * 0.1, j * f * 0.005)
             );
         } else {
             if (!pathfinderMob.onGround()) {
