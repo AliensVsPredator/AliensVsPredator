@@ -56,7 +56,7 @@ public class EnglishLanguageProvider extends FabricLanguageProvider {
         translationBuilder.add(AVPBlocks.FERROALUMINUM_PLATING, "Ferroaluminum Plating");
         translationBuilder.add(AVPBlocks.FERROALUMINUM_SIDING, "Ferroaluminum Siding");
         translationBuilder.add(AVPBlocks.FERROALUMINUM_STANDING, "Ferroaluminum Standing");
-        translationBuilder.add(AVPBlocks.FERROALUMINUM_TRAP_DOOR, "Ferroaluminum Trap Door");
+        translationBuilder.add(AVPBlocks.FERROALUMINUM_TRAP_DOOR, "Ferroaluminum Trapdoor");
         translationBuilder.add(AVPBlocks.FERROALUMINUM_TREAD, "Ferroaluminum Tread");
         translationBuilder.add(AVPBlocks.GALENA_ORE, "Galena Ore");
         translationBuilder.add(AVPBlocks.INDUSTRIAL_GLASS, "Industrial Glass");
@@ -172,7 +172,7 @@ public class EnglishLanguageProvider extends FabricLanguageProvider {
         translationBuilder.add(AVPBlocks.STEEL_PLATING, "Steel Plating");
         translationBuilder.add(AVPBlocks.STEEL_SIDING, "Steel Siding");
         translationBuilder.add(AVPBlocks.STEEL_STANDING, "Steel Standing");
-        translationBuilder.add(AVPBlocks.STEEL_TRAP_DOOR, "Steel Trap Door");
+        translationBuilder.add(AVPBlocks.STEEL_TRAP_DOOR, "Steel Trapdoor");
         translationBuilder.add(AVPBlocks.STEEL_TREAD, "Steel Tread");
         translationBuilder.add(AVPBlocks.TITANIUM_BLOCK, "Block of Titanium");
         translationBuilder.add(AVPBlocks.TITANIUM_BUTTON, "Titanium Button");
@@ -186,7 +186,7 @@ public class EnglishLanguageProvider extends FabricLanguageProvider {
         translationBuilder.add(AVPBlocks.TITANIUM_PLATING, "Titanium Plating");
         translationBuilder.add(AVPBlocks.TITANIUM_SIDING, "Titanium Siding");
         translationBuilder.add(AVPBlocks.TITANIUM_STANDING, "Titanium Standing");
-        translationBuilder.add(AVPBlocks.TITANIUM_TRAP_DOOR, "Titanium Door");
+        translationBuilder.add(AVPBlocks.TITANIUM_TRAP_DOOR, "Titanium Trapdoor");
         translationBuilder.add(AVPBlocks.TITANIUM_TREAD, "Titanium Tread");
         translationBuilder.add(AVPBlocks.URANIUM_BLOCK, "Block of Uranium");
         translationBuilder.add(AVPBlocks.ZINC_BLOCK, "Block of Zinc");
