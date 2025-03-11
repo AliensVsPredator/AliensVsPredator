@@ -12,7 +12,9 @@ import mod.azure.azurelib.rewrite.model.AzBone;
 import mod.azure.azurelib.rewrite.render.AzRendererPipelineContext;
 import mod.azure.azurelib.rewrite.render.entity.AzEntityRenderer;
 import mod.azure.azurelib.rewrite.render.entity.AzEntityRendererConfig;
+import mod.azure.azurelib.rewrite.render.layer.AzArmorLayer;
 import mod.azure.azurelib.rewrite.render.layer.AzBlockAndItemLayer;
+import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -41,6 +43,21 @@ public class MarineRenderer extends AzEntityRenderer<MarineMob> {
                 .addRenderLayer(new HumanHair())
                 .addRenderLayer(new HumanEyes())
                 .addRenderLayer(new MarineOutfit())
+                .addRenderLayer(new AzArmorLayer<>() {
+                    /**
+                     * TODO: Add armor bones and test.
+                     */
+                    @Override
+                    protected ItemStack getArmorItemForBone(AzRendererPipelineContext<MarineMob> context, AzBone bone) {
+                        return switch (bone.getName()) {
+//                            case "gHead" -> context.animatable().getItemBySlot(EquipmentSlot.HEAD);
+//                            case "gBody" -> context.animatable().getItemBySlot(EquipmentSlot.CHEST);
+//                            case "gLegs" -> context.animatable().getItemBySlot(EquipmentSlot.LEGS);
+//                            case "bootsBone" -> context.animatable().getItemBySlot(EquipmentSlot.FEET);
+                            default -> null;
+                        };
+                    }
+                })
                 .addRenderLayer(new AzBlockAndItemLayer<>() {
                     @Override
                     public ItemStack itemStackForBone(AzBone bone, MarineMob animatable) {

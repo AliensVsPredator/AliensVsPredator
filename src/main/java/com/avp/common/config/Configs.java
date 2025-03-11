@@ -222,7 +222,7 @@ public class Configs {
         .property(ConfigProperties.MARINE_ATTRIBUTES.attackDamage(), AttackDamageConstants.MARINE_ATTACK_DAMAGE)
         .property(ConfigProperties.MARINE_ATTRIBUTES.followRange(), FollowRangeConstants.MARINE_FOLLOW_RANGE)
         .property(ConfigProperties.MARINE_ATTRIBUTES.health(), HealthConstants.PLAYER_HEALTH)
-        .property(ConfigProperties.MARINE_ATTRIBUTES.moveSpeed(), MoveSpeedConstants.PLAYER_WALK_SPEED)
+        .property(ConfigProperties.MARINE_ATTRIBUTES.moveSpeed(), MoveSpeedConstants.PLAYER_SPRINT_JUMP_SPEED)
         .build();
 
     public static final Config WEAPONS = ConfigBuilder.create("weapons")

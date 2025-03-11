@@ -4,6 +4,7 @@ import com.avp.AVP;
 import com.avp.common.config.ConfigProperties;
 import com.avp.common.entity.living.human.AbstractHumanMob;
 import com.avp.common.item.AVPItems;
+import com.avp.common.item.ArmorItems;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
@@ -41,6 +42,9 @@ public class MarineMob extends AbstractHumanMob {
     @Override
     public @Nullable SpawnGroupData finalizeSpawn(@NotNull ServerLevelAccessor level, @NotNull DifficultyInstance difficulty, @NotNull MobSpawnType spawnType, @Nullable SpawnGroupData spawnGroupData) {
         setItemSlot(EquipmentSlot.MAINHAND, makeInitialWeapon());
+        setItemSlot(EquipmentSlot.HEAD, new ItemStack(ArmorItems.MK50_HELMET));
+        setItemSlot(EquipmentSlot.CHEST, new ItemStack(ArmorItems.MK50_CHESTPLATE));
+        setItemSlot(EquipmentSlot.LEGS, new ItemStack(ArmorItems.MK50_LEGGINGS));
         return super.finalizeSpawn(level, difficulty, spawnType, spawnGroupData);
     }
 
