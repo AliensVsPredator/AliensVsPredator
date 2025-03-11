@@ -168,7 +168,7 @@ public class EnglishLanguageProvider extends FabricLanguageProvider {
         translationBuilder.add(AVPBlocks.STEEL_FASTENED_SIDING, "Steel Fastened Siding");
         translationBuilder.add(AVPBlocks.STEEL_FASTENED_STANDING, "Steel Fastened Standing");
         translationBuilder.add(AVPBlocks.STEEL_GRATE, "Steel Grate");
-        translationBuilder.add(AVPBlocks.STEEL_TRAP_DOOR, "Steel Pressure Plate");
+        translationBuilder.add(AVPBlocks.STEEL_PRESSURE_PLATE, "Steel Pressure Plate");
         translationBuilder.add(AVPBlocks.STEEL_PLATING, "Steel Plating");
         translationBuilder.add(AVPBlocks.STEEL_SIDING, "Steel Siding");
         translationBuilder.add(AVPBlocks.STEEL_STANDING, "Steel Standing");
