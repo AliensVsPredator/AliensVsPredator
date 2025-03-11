@@ -87,9 +87,21 @@ public class MetalRecipeProvider {
                 .apply(RecipeTemplates.BARS_BLOCK.apply(AVPItems.STEEL_INGOT))
                 .into(16, AVPBlocks.STEEL_BARS);
 
-        builder.shapeless().withCategory(RecipeCategory.BUILDING_BLOCKS).requires(2, AVPItems.FERROALUMINUM_INGOT).into(4, AVPBlockItems.FERROALUMINUM_BUTTON);
-        builder.shapeless().withCategory(RecipeCategory.BUILDING_BLOCKS).requires(2, AVPItems.STEEL_INGOT).into(4, AVPBlockItems.STEEL_BUTTON);
-        builder.shapeless().withCategory(RecipeCategory.BUILDING_BLOCKS).requires(2, AVPItems.TITANIUM_INGOT).into(4, AVPBlockItems.TITANIUM_BUTTON);
+        builder.shapeless().withCategory(RecipeCategory.BUILDING_BLOCKS).requires(1, AVPItems.FERROALUMINUM_INGOT).into(1, AVPBlockItems.FERROALUMINUM_BUTTON);
+        builder.shapeless().withCategory(RecipeCategory.BUILDING_BLOCKS).requires(1, AVPItems.STEEL_INGOT).into(1, AVPBlockItems.STEEL_BUTTON);
+        builder.shapeless().withCategory(RecipeCategory.BUILDING_BLOCKS).requires(1, AVPItems.TITANIUM_INGOT).into(1, AVPBlockItems.TITANIUM_BUTTON);
+        builder.shaped()
+                .withCategory(RecipeCategory.BUILDING_BLOCKS)
+                .apply(RecipeTemplates.BUTTON_BLOCK.apply(AVPItems.FERROALUMINUM_INGOT))
+                .into(2, AVPBlocks.FERROALUMINUM_BUTTON);
+        builder.shaped()
+                .withCategory(RecipeCategory.BUILDING_BLOCKS)
+                .apply(RecipeTemplates.BUTTON_BLOCK.apply(AVPItems.STEEL_INGOT))
+                .into(2, AVPBlocks.STEEL_BUTTON);
+        builder.shaped()
+                .withCategory(RecipeCategory.BUILDING_BLOCKS)
+                .apply(RecipeTemplates.BUTTON_BLOCK.apply(AVPItems.FERROALUMINUM_INGOT))
+                .into(2, AVPBlocks.TITANIUM_BUTTON);
         builder.shaped()
                 .withCategory(RecipeCategory.BUILDING_BLOCKS)
                 .apply(RecipeTemplates.DOOR_BLOCK.apply(AVPItems.FERROALUMINUM_INGOT))

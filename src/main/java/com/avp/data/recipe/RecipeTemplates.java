@@ -27,6 +27,12 @@ public class RecipeTemplates {
             .pattern("AAA")
             .pattern("AAA");
 
+    public static final Function<ItemLike, UnaryOperator<ShapedRecipeBuilder>> BUTTON_BLOCK =
+            itemLike -> builder -> builder
+                    .define('A', itemLike)
+                    .pattern("A")
+                    .pattern("A");
+
     public static final Function<ItemLike, UnaryOperator<ShapedRecipeBuilder>> BOOTS = itemLike -> builder -> builder
         .withCategory(RecipeCategory.COMBAT)
         .define('A', itemLike)
