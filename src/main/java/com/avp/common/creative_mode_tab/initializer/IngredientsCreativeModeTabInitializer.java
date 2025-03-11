@@ -21,6 +21,14 @@ public class IngredientsCreativeModeTabInitializer {
             entries.accept(AVPItems.RAW_SILICA);
             entries.accept(AVPItems.RAW_TITANIUM);
             entries.accept(AVPItems.RAW_ZINC);
+            entries.accept(AVPItems.ALUMINUM_NUGGET);
+            entries.accept(AVPItems.BRASS_NUGGET);
+            entries.accept(AVPItems.FERROALUMINUM_NUGGET);
+            entries.accept(AVPItems.LEAD_NUGGET);
+            entries.accept(AVPItems.STEEL_NUGGET);
+            entries.accept(AVPItems.TITANIUM_NUGGET);
+            entries.accept(AVPItems.URANIUM_NUGGET);
+            entries.accept(AVPItems.ZINC_NUGGET);
             // Refined materials
             entries.accept(AVPItems.ALUMINUM_INGOT);
             entries.accept(AVPItems.BRASS_INGOT);
