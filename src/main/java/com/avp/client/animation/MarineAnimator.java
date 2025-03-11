@@ -41,13 +41,13 @@ public class MarineAnimator extends AzEntityAnimator<MarineMob>  {
         var rightLeg = boneCache.getBakedModel().getBone("gRightLeg");
         if (leftArm.isPresent() && !animatable.isAggressive())
             leftArm.get().setRotX(Mth.cos(animatable.walkAnimation.position(
-                partialTicks) * 0.6662F) * 2.0F * animatable.walkAnimation.speed() * 0.5F);
+                partialTicks) * 0.6662F) * 2.0F * animatable.walkAnimation.speed() * 0.9F);
         if (rightArm.isPresent() && !animatable.isAggressive())
             rightArm.get().setRotX(Mth.cos(animatable.walkAnimation.position(
-                    partialTicks) * 0.6662F + 3.1415927F) * 2.0F * animatable.walkAnimation.speed() * 0.5F);
+                    partialTicks) * 0.6662F + 3.1415927F) * 2.0F * animatable.walkAnimation.speed() * 0.9F);
         leftLeg.ifPresent(azBone -> azBone.setRotX(Mth.cos(animatable.walkAnimation.position(
-                partialTicks) * 0.6662F + 3.1415927F) * 1.4F * animatable.walkAnimation.speed() * 0.5F));
+                partialTicks) * 0.6662F + 3.1415927F) * 1.4F * animatable.walkAnimation.speed() * 0.9F));
         rightLeg.ifPresent(azBone -> azBone.setRotX(Mth.cos(animatable.walkAnimation.position(
-                partialTicks) * 0.6662F) * 1.4F * animatable.walkAnimation.speed() * 0.5F));
+                partialTicks) * 0.6662F) * 1.4F * animatable.walkAnimation.speed() * 0.9F));
     }
 }
