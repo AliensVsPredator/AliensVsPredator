@@ -29,14 +29,14 @@ public class GunRecipeProvider {
         builder.shaped()
             .withCategory(RecipeCategory.COMBAT)
             .define('A', Items.GUNPOWDER)
-            .define('B', AVPItems.BRASS_INGOT)
+            .define('B', AVPItems.BRASS_NUGGET)
             .pattern("A")
             .pattern("B")
             .into(1, AVPItems.SMALL_CASING);
         builder.shaped()
             .withCategory(RecipeCategory.COMBAT)
             .define('A', Items.GUNPOWDER)
-            .define('B', AVPItems.BRASS_INGOT)
+            .define('B', AVPItems.BRASS_NUGGET)
             .pattern("A")
             .pattern("B")
             .pattern("B")
@@ -51,7 +51,7 @@ public class GunRecipeProvider {
         builder.shaped()
             .withCategory(RecipeCategory.COMBAT)
             .define('A', Items.GUNPOWDER)
-            .define('B', AVPItems.BRASS_INGOT)
+            .define('B', AVPItems.BRASS_NUGGET)
             .define('C', AVPItems.POLYMER)
             .pattern("A")
             .pattern("C")
@@ -70,7 +70,7 @@ public class GunRecipeProvider {
     private static void createBulletRecipes(RecipeBuilder builder) {
         builder.shaped()
             .withCategory(RecipeCategory.COMBAT)
-            .define('A', AVPItems.LEAD_INGOT)
+            .define('A', AVPItems.LEAD_NUGGET)
             .pattern("A")
             .into(4, AVPItems.BULLET_TIP);
         builder.shaped()
@@ -110,7 +110,7 @@ public class GunRecipeProvider {
             .into(8, AVPItems.CASELESS_BULLET);
         builder.shaped()
             .withCategory(RecipeCategory.COMBAT)
-            .define('A', AVPItems.ALUMINUM_INGOT)
+            .define('A', AVPItems.ALUMINUM_NUGGET)
             .define('B', Items.MAGMA_CREAM)
             .pattern("AAA")
             .pattern("ABA")
