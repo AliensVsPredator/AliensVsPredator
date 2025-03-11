@@ -228,7 +228,7 @@ public class AVPBlocks {
 
     //Doors And Trapdoors
     public static final Block FERROALUMINUM_DOOR = register(new DoorBlock(BlockSetType.COPPER,BlockProperties.FERROALUMINUM),"ferroaluminum_door");
-    public static final Block FERROALUMINUM_TRAP_DOOR = register(new TrapDoorBlock(BlockSetType.COPPER,BlockProperties.FERROALUMINUM),"ferroaluminum_trapdoor");
+    public static final Block FERROALUMINUM_TRAP_DOOR = register(new TrapDoorBlock(BlockSetType.COPPER,BlockProperties.FERROALUMINUM.noOcclusion()),"ferroaluminum_trapdoor");
     public static final Block STEEL_DOOR = register(new DoorBlock(BlockSetType.COPPER,BlockProperties.STEEL),"steel_door");
     public static final Block STEEL_TRAP_DOOR = register(new TrapDoorBlock(BlockSetType.COPPER,BlockProperties.STEEL),"steel_trapdoor");
     public static final Block TITANIUM_DOOR = register(new DoorBlock(BlockSetType.COPPER,BlockProperties.TITANIUM),"titanium_door");
