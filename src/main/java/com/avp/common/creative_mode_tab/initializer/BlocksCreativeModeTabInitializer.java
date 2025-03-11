@@ -98,6 +98,7 @@ public class BlocksCreativeModeTabInitializer {
             entries.accept(AVPBlocks.NETHER_RESIN);
             entries.accept(AVPBlocks.NETHER_RESIN_VEIN);
             entries.accept(AVPBlocks.NETHER_RESIN_WEB);
+            entries.accept(AVPBlocks.ROYAL_JELLY_BLOCK);
         });
     }
 }

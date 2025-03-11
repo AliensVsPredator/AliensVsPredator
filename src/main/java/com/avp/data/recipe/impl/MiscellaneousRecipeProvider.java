@@ -56,5 +56,13 @@ public class MiscellaneousRecipeProvider {
             .pattern("NIN")
             .pattern("INI")
             .into(16, AVPBlocks.RAZOR_WIRE);
+
+        builder.shaped()
+                .withCategory(RecipeCategory.MISC)
+                .define('I', AVPItems.RAW_ROYAL_JELLY)
+                .pattern("III")
+                .pattern("III")
+                .pattern("III")
+                .into(1, AVPBlocks.ROYAL_JELLY_BLOCK);
     }
 }

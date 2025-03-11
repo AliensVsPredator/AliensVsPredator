@@ -143,6 +143,7 @@ public class BlockModelProvider extends FabricModelProvider {
             }
         );
 
+        generators.createTrivialCube(AVPBlocks.ROYAL_JELLY_BLOCK);
         generators.createTrivialCube(AVPBlocks.ALUMINUM_BLOCK);
         generators.createTrivialCube(AVPBlocks.AUTUNITE_BLOCK);
         generators.createTrivialCube(AVPBlocks.AUTUNITE_ORE);

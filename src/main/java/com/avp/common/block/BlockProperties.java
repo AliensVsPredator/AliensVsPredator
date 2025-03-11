@@ -19,6 +19,11 @@ import com.avp.common.entity.AVPEntityTypeTags;
 
 public class BlockProperties {
 
+    public static final BlockBehaviour.Properties JELLY = BlockBehaviour.Properties.of()
+            .mapColor(MapColor.GRASS)
+            .sound(SoundType.SLIME_BLOCK)
+            .friction(0.8F);
+
     private static final Supplier<BlockBehaviour.Properties> INDUSTRIAL_GLASS_SUPPLIER = () -> BlockBehaviour.Properties.ofFullCopy(
         Blocks.GLASS
     )
