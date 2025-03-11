@@ -65,13 +65,10 @@ public class MiscellaneousRecipeProvider {
                 .pattern("III")
                 .into(1, AVPBlocks.ROYAL_JELLY_BLOCK);
 
-        builder.shaped()
+        builder.shapeless()
                 .withCategory(RecipeCategory.MISC)
-                .define('C', AVPItems.RAW_ROYAL_JELLY)
-                .pattern("CCC")
-                .pattern("CCC")
-                .pattern("CCC")
-                .into(1, AVPBlocks.ROYAL_JELLY_BLOCK);
+                .requires(1, AVPBlocks.ROYAL_JELLY_BLOCK)
+                .into(9, AVPItems.RAW_ROYAL_JELLY);
 
         builder.shapeless()
                 .withCategory(RecipeCategory.MISC)
