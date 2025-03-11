@@ -40,7 +40,11 @@ public class AVPBlockTagProvider extends FabricTagProvider.BlockTagProvider {
                 AVPBlocks.FERROALUMINUM_PLATING,
                 AVPBlocks.FERROALUMINUM_SIDING,
                 AVPBlocks.FERROALUMINUM_STANDING,
-                AVPBlocks.FERROALUMINUM_TREAD
+                AVPBlocks.FERROALUMINUM_TREAD,
+                AVPBlocks.FERROALUMINUM_DOOR,
+                AVPBlocks.FERROALUMINUM_TRAP_DOOR,
+                AVPBlocks.FERROALUMINUM_PRESSURE_PLATE,
+                AVPBlocks.FERROALUMINUM_BUTTON
             );
 
         var industrialConcreteTagBuilder = getOrCreateTagBuilder(AVPBlockTags.INDUSTRIAL_CONCRETE);
