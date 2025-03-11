@@ -25,6 +25,7 @@ public class EnglishLanguageProvider extends FabricLanguageProvider {
     @Override
     public void generateTranslations(HolderLookup.Provider registryLookup, TranslationBuilder translationBuilder) {
         // Blocks
+        translationBuilder.add(AVPBlocks.NUKE_BLOCK, "Nuke Block");
         translationBuilder.add(AVPBlocks.ROYAL_JELLY_BLOCK, "Royal Jelly Block");
         translationBuilder.add(AVPBlocks.ALUMINUM_BLOCK, "Block of Aluminum");
         translationBuilder.add(AVPBlocks.AUTUNITE_BLOCK, "Autunite Block");

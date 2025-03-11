@@ -70,5 +70,19 @@ public class MiscellaneousRecipeProvider {
                 .requires(1, Items.POISONOUS_POTATO)
                 .requires(1, AVPItems.RAW_ROYAL_JELLY)
                 .into(1, AVPItems.POISON_JELLY);
+
+        builder.shaped()
+                .withCategory(RecipeCategory.MISC)
+                .define('C', Items.CLOCK)
+                .define('S', AVPItems.LED_DISPLAY)
+                .define('P', AVPItems.CPU)
+                .define('L', AVPItems.LEAD_INGOT)
+                .define('N', AVPItems.NEODYMIUM_MAGNET)
+                .define('T', Items.TNT)
+                .pattern("CSP")
+                .pattern("LNL")
+                .pattern("TTT")
+                .into(1, AVPBlocks.NUKE_BLOCK);
+
     }
 }

@@ -27,6 +27,7 @@ public class BlocksCreativeModeTabInitializer {
             entries.accept(AVPBlocks.RAW_SILICA_BLOCK);
             entries.accept(AVPBlocks.RAW_TITANIUM_BLOCK);
             entries.accept(AVPBlocks.RAW_ZINC_BLOCK);
+            entries.accept(AVPBlocks.TRINITITE_BLOCK);
 
             // Unnatural blocks (Metals, machines, etc.)
             entries.accept(AVPBlocks.ALUMINUM_BLOCK);
@@ -50,6 +51,7 @@ public class BlocksCreativeModeTabInitializer {
             entries.accept(AVPBlocks.FERROALUMINUM_TRAP_DOOR);
             entries.accept(AVPBlocks.FERROALUMINUM_TREAD);
             entries.accept(AVPBlocks.LEAD_BLOCK);
+            entries.accept(AVPBlocks.NUKE_BLOCK);
             entries.accept(AVPBlocks.STEEL_BLOCK);
             entries.accept(AVPBlocks.STEEL_BARS);
             entries.accept(AVPBlocks.STEEL_CHAIN_FENCE);

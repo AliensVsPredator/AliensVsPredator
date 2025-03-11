@@ -18,6 +18,8 @@ import com.avp.common.block.AVPBlocks;
 
 public class AVPBlockItems {
 
+    public static final BlockItem NUKE_BLOCK = register(AVPBlocks.NUKE_BLOCK);
+
     public static final BlockItem ROYAL_JELLY_BLOCK = register(AVPBlocks.ROYAL_JELLY_BLOCK);
 
     public static final BlockItem ALUMINUM_BLOCK = register(AVPBlocks.ALUMINUM_BLOCK);

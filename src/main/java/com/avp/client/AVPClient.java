@@ -1,5 +1,6 @@
 package com.avp.client;
 
+import com.avp.client.render.entity.*;
 import mod.azure.azurelib.rewrite.render.armor.AzArmorRendererRegistry;
 import mod.azure.azurelib.rewrite.render.item.AzItemRenderer;
 import mod.azure.azurelib.rewrite.render.item.AzItemRendererRegistry;
@@ -27,16 +28,6 @@ import com.avp.client.render.armor.PlatedChitinArmorRenderer;
 import com.avp.client.render.armor.PlatedNetherChitinArmorRenderer;
 import com.avp.client.render.armor.PressureArmorRenderer;
 import com.avp.client.render.armor.TacticalArmorRenderer;
-import com.avp.client.render.entity.AcidRenderer;
-import com.avp.client.render.entity.ChestbursterRenderer;
-import com.avp.client.render.entity.DroneRenderer;
-import com.avp.client.render.entity.FlamethrowRenderer;
-import com.avp.client.render.entity.OvamorphRenderer;
-import com.avp.client.render.entity.PraetorianRenderer;
-import com.avp.client.render.entity.QueenRenderer;
-import com.avp.client.render.entity.RocketRenderer;
-import com.avp.client.render.entity.WarriorRenderer;
-import com.avp.client.render.entity.YautjaRenderer;
 import com.avp.client.render.entity.parasite.facehugger.FacehuggerRenderer;
 import com.avp.client.render.item.OldPainlessItemRenderer;
 import com.avp.client.render.item.SimpleItemRenderer;
@@ -80,6 +71,7 @@ public class AVPClient implements ClientModInitializer {
         BlockRenderLayerMap.INSTANCE.putBlock(AVPBlocks.STEEL_DOOR, RenderType.cutout());
         BlockRenderLayerMap.INSTANCE.putBlock(AVPBlocks.TITANIUM_DOOR, RenderType.cutout());
         BlockRenderLayerMap.INSTANCE.putBlock(AVPBlocks.FERROALUMINUM_TRAP_DOOR, RenderType.cutout());
+        BlockRenderLayerMap.INSTANCE.putBlock(AVPBlocks.ROYAL_JELLY_BLOCK, RenderType.translucent());
 
         BlockRenderLayerMap.INSTANCE.putBlock(AVPBlocks.INDUSTRIAL_GLASS, RenderType.cutout());
         AVPBlocks.DYE_COLOR_TO_INDUSTRIAL_GLASS.values()
