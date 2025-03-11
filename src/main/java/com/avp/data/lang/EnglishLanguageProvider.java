@@ -27,6 +27,7 @@ public class EnglishLanguageProvider extends FabricLanguageProvider {
         // Blocks
         translationBuilder.add(AVPBlocks.NUKE_BLOCK, "Nuke Block");
         translationBuilder.add(AVPBlocks.ROYAL_JELLY_BLOCK, "Royal Jelly Block");
+        translationBuilder.add(AVPBlocks.TRINITITE_BLOCK, "Block of Trinitite");
         translationBuilder.add(AVPBlocks.ALUMINUM_BLOCK, "Block of Aluminum");
         translationBuilder.add(AVPBlocks.AUTUNITE_BLOCK, "Autunite Block");
         translationBuilder.add(AVPBlocks.AUTUNITE_ORE, "Autunite Ore");
