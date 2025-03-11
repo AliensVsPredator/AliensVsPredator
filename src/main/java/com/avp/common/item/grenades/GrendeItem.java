@@ -43,10 +43,10 @@ public class GrendeItem extends Item {
             var thrownGrenade = new ThrownGrenade(level, player);
             thrownGrenade.setItem(itemInHand);
             if (isIrradiated) {
-                thrownGrenade.setIrradiated(isIrradiated);
+                thrownGrenade.setIrradiated(true);
             }
             if (isIncendiary) {
-                thrownGrenade.setIncendiary(isIncendiary);
+                thrownGrenade.setIncendiary(true);
             }
             thrownGrenade.shootFromRotation(player, player.getXRot(), player.getYRot(), 0.0F, 1.5F, 1.0F);
             level.addFreshEntity(thrownGrenade);
