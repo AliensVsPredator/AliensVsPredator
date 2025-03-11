@@ -2,3 +2,5 @@ accessWidener	v1	named
 
 accessible field net/minecraft/data/models/BlockModelGenerators$BlockFamilyProvider mapping Lnet/minecraft/data/models/model/TextureMapping;
 mutable field net/minecraft/data/models/BlockModelGenerators$BlockFamilyProvider mapping Lnet/minecraft/data/models/model/TextureMapping;
+accessible method net/minecraft/data/models/BlockModelGenerators$BlockFamilyProvider door (Lnet/minecraft/world/level/block/Block;)Lnet/minecraft/data/models/BlockModelGenerators$BlockFamilyProvider;
+accessible method net/minecraft/data/models/BlockModelGenerators$BlockFamilyProvider trapdoor (Lnet/minecraft/world/level/block/Block;)V
