@@ -20,7 +20,7 @@ public class HumanEyes implements AzRenderLayer<MarineMob> {
         var animatable = context.animatable();
         AzRendererPipeline<MarineMob> renderPipeline = context.rendererPipeline();
         var textureMaleLocation = AVPResources.entityTextureLocation("marine_male_eyes");
-        var textureFemaleLocation = AVPResources.entityTextureLocation("marine_female_hair_eyes");
+        var textureFemaleLocation = AVPResources.entityTextureLocation("marine_female_eyes");
         if (Boolean.TRUE.equals(animatable.getEntityData().get(AbstractHumanMob.SET_GENDER))) {
             context.setVertexConsumer(context.multiBufferSource().getBuffer(RenderType.entityCutout(textureMaleLocation)));
         } else {
