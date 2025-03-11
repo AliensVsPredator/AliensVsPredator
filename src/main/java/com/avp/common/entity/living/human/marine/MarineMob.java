@@ -42,9 +42,14 @@ public class MarineMob extends AbstractHumanMob {
     @Override
     public @Nullable SpawnGroupData finalizeSpawn(@NotNull ServerLevelAccessor level, @NotNull DifficultyInstance difficulty, @NotNull MobSpawnType spawnType, @Nullable SpawnGroupData spawnGroupData) {
         setItemSlot(EquipmentSlot.MAINHAND, makeInitialWeapon());
-        setItemSlot(EquipmentSlot.HEAD, new ItemStack(ArmorItems.MK50_HELMET));
-        setItemSlot(EquipmentSlot.CHEST, new ItemStack(ArmorItems.MK50_CHESTPLATE));
-        setItemSlot(EquipmentSlot.LEGS, new ItemStack(ArmorItems.MK50_LEGGINGS));
+        if ( random.nextInt( 100 ) <= 10) 
+            setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(AVPItems.GRENADE));
+        if ( random.nextInt( 100 ) <= 60) {
+            setItemSlot(EquipmentSlot.HEAD, new ItemStack(ArmorItems.TACTICAL_HELMET));
+            setItemSlot(EquipmentSlot.CHEST, new ItemStack(ArmorItems.TACTICAL_CHESTPLATE));
+            setItemSlot(EquipmentSlot.LEGS, new ItemStack(ArmorItems.TACTICAL_LEGGINGS));
+            setItemSlot(EquipmentSlot.FEET, new ItemStack(ArmorItems.TACTICAL_BOOTS));
+        }
         return super.finalizeSpawn(level, difficulty, spawnType, spawnGroupData);
     }
 
