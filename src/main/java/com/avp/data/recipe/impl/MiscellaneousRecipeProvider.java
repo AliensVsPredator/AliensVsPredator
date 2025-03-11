@@ -65,6 +65,14 @@ public class MiscellaneousRecipeProvider {
                 .pattern("III")
                 .into(1, AVPBlocks.ROYAL_JELLY_BLOCK);
 
+        builder.shaped()
+                .withCategory(RecipeCategory.MISC)
+                .define('C', AVPItems.RAW_ROYAL_JELLY)
+                .pattern("CCC")
+                .pattern("CCC")
+                .pattern("CCC")
+                .into(1, AVPBlocks.ROYAL_JELLY_BLOCK);
+
         builder.shapeless()
                 .withCategory(RecipeCategory.MISC)
                 .requires(1, Items.POISONOUS_POTATO)
