@@ -6,6 +6,8 @@ public class AttackDamageConstants {
     public static final double PLAYER_HEALTH = 20;
 
     // Alien measurements (in terms of half-hearts).
+    public static final double MARINE_ATTACK_DAMAGE = PLAYER_HEALTH * 0.1;
+
     public static final double CHESTBURSTER_ATTACK_DAMAGE = PLAYER_HEALTH * 0.1;
 
     public static final double DRONE_ATTACK_DAMAGE = PLAYER_HEALTH * 0.25;

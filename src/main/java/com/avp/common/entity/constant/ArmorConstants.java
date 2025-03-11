@@ -12,6 +12,8 @@ public class ArmorConstants {
 
     public static final double YAUTJA_ARMOR = 16.0;
 
+    public static final double MARINE_ARMOR = 2.0;
+
     private ArmorConstants() {
         throw new UnsupportedOperationException();
     }

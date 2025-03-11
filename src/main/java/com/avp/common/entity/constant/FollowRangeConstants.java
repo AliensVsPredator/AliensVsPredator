@@ -12,6 +12,8 @@ public class FollowRangeConstants {
 
     public static final double YAUTJA_FOLLOW_RANGE = 35;
 
+    public static final double MARINE_FOLLOW_RANGE = 20;
+
     private FollowRangeConstants() {
         throw new UnsupportedOperationException();
     }

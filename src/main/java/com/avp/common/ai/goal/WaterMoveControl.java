@@ -1,6 +1,7 @@
 package com.avp.common.ai.goal;
 
 import net.minecraft.util.Mth;
+import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.control.MoveControl;
 
@@ -8,43 +9,43 @@ import com.avp.common.entity.living.alien.xenomorph.Xenomorph;
 
 public class WaterMoveControl extends MoveControl {
 
-    private final Xenomorph xenomorph;
+    private final PathfinderMob pathfinderMob;
 
-    public WaterMoveControl(Xenomorph xenomorph) {
-        super(xenomorph);
-        this.xenomorph = xenomorph;
+    public WaterMoveControl(PathfinderMob pathfinderMob) {
+        super(pathfinderMob);
+        this.pathfinderMob = pathfinderMob;
     }
 
     @Override
     public void tick() {
-        var livingEntity = xenomorph.getTarget();
-        if (xenomorph.isUnderWater()) {
-            if (livingEntity != null && livingEntity.getY() > xenomorph.getY()) {
-                xenomorph.setDeltaMovement(xenomorph.getDeltaMovement().add(0.0, 0.002, 0.0));
+        var livingEntity = pathfinderMob.getTarget();
+        if (pathfinderMob.isUnderWater()) {
+            if (livingEntity != null && livingEntity.getY() > pathfinderMob.getY()) {
+                pathfinderMob.setDeltaMovement(pathfinderMob.getDeltaMovement().add(0.0, 0.002, 0.0));
             }
 
-            if (operation != MoveControl.Operation.MOVE_TO || xenomorph.getNavigation().isDone()) {
-                xenomorph.setSpeed(0.0F);
+            if (operation != MoveControl.Operation.MOVE_TO || pathfinderMob.getNavigation().isDone()) {
+                pathfinderMob.setSpeed(0.0F);
                 return;
             }
 
-            double d = wantedX - xenomorph.getX();
-            double e = wantedY - xenomorph.getY();
-            double f = wantedZ - xenomorph.getZ();
-            double g = Math.sqrt(d * d + e * e + f * f);
+            var d = wantedX - pathfinderMob.getX();
+            var e = wantedY - pathfinderMob.getY();
+            var f = wantedZ - pathfinderMob.getZ();
+            var g = Math.sqrt(d * d + e * e + f * f);
             e /= g;
-            float h = (float) (Mth.atan2(f, d) * 180.0F / (float) Math.PI) - 90.0F;
-            xenomorph.setYRot(rotlerp(xenomorph.getYRot(), h, 90.0F));
-            xenomorph.yBodyRot = xenomorph.getYRot();
-            float i = (float) (speedModifier * xenomorph.getAttributeValue(Attributes.MOVEMENT_SPEED));
-            float j = Mth.lerp(0.125F, xenomorph.getSpeed(), i);
-            xenomorph.setSpeed(j);
-            xenomorph.setDeltaMovement(
-                xenomorph.getDeltaMovement().add((double) j * d * 0.005, (double) j * e * 0.1, (double) j * f * 0.005)
+            var h = (float) (Mth.atan2(f, d) * 180.0F / (float) Math.PI) - 90.0F;
+            pathfinderMob.setYRot(rotlerp(pathfinderMob.getYRot(), h, 90.0F));
+            pathfinderMob.yBodyRot = pathfinderMob.getYRot();
+            var i = (float) (speedModifier * pathfinderMob.getAttributeValue(Attributes.MOVEMENT_SPEED));
+            var j = Mth.lerp(0.125F, pathfinderMob.getSpeed(), i);
+            pathfinderMob.setSpeed(j);
+            pathfinderMob.setDeltaMovement(
+                    pathfinderMob.getDeltaMovement().add(j * d * 0.005, j * e * 0.1, j * f * 0.005)
             );
         } else {
-            if (!xenomorph.onGround()) {
-                xenomorph.setDeltaMovement(xenomorph.getDeltaMovement().add(0.0, -0.008, 0.0));
+            if (!pathfinderMob.onGround()) {
+                pathfinderMob.setDeltaMovement(pathfinderMob.getDeltaMovement().add(0.0, -0.008, 0.0));
             }
 
             super.tick();

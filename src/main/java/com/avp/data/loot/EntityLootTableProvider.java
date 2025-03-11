@@ -1,5 +1,6 @@
 package com.avp.data.loot;
 
+import com.avp.common.entity.living.human.marine.MarineLootTable;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.SimpleFabricLootTableProvider;
 import net.minecraft.core.HolderLookup;
@@ -43,5 +44,6 @@ public class EntityLootTableProvider extends SimpleFabricLootTableProvider {
         );
         biConsumer.accept(AVPEntityTypes.QUEEN.getDefaultLootTable(), QueenLootTable.LOOT_TABLE.apply(provider));
         biConsumer.accept(AVPEntityTypes.YAUTJA.getDefaultLootTable(), YautjaLootTable.LOOT_TABLE.apply(provider));
+        biConsumer.accept(AVPEntityTypes.MARINE.getDefaultLootTable(), MarineLootTable.LOOT_TABLE.apply(provider));
     }
 }

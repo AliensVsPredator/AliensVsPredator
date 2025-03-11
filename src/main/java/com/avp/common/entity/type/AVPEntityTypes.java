@@ -1,5 +1,6 @@
 package com.avp.common.entity.type;
 
+import com.avp.common.entity.living.human.marine.MarineMob;
 import com.avp.common.entity.projectile.ThrownGrenade;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry;
 import net.minecraft.core.Registry;
@@ -113,6 +114,11 @@ public class AVPEntityTypes {
         EntityType.Builder.of(Yautja::new, MobCategory.MONSTER).sized(0.98f, 2.48f)
     );
 
+    public static final EntityType<MarineMob> MARINE = register(
+            "marine",
+            EntityType.Builder.of(MarineMob::new, MobCategory.CREATURE).sized(1.1F, 2.1F)
+    );
+
     // These are "deferred" entity types for our existing entities. We want different spawn colors for these spawn eggs,
     // but spawn eggs unfortunately map themselves under their respective entity type, meaning that we can't simply
     // create multiple spawn eggs for the same entity type.
@@ -216,5 +222,6 @@ public class AVPEntityTypes {
         FabricDefaultAttributeRegistry.register(QUEEN, Queen.createQueenAttributes());
         FabricDefaultAttributeRegistry.register(WARRIOR, Warrior.createWarriorAttributes());
         FabricDefaultAttributeRegistry.register(YAUTJA, Yautja.createYautjaAttributes());
+        FabricDefaultAttributeRegistry.register(MARINE, MarineMob.createMarineAttributes());
     }
 }

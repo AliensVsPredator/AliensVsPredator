@@ -167,6 +167,7 @@ public class AVPClient implements ClientModInitializer {
         EntityRendererRegistry.register(AVPEntityTypes.ROCKET, RocketRenderer::new);
         EntityRendererRegistry.register(AVPEntityTypes.WARRIOR, WarriorRenderer::new);
         EntityRendererRegistry.register(AVPEntityTypes.YAUTJA, YautjaRenderer::new);
+        EntityRendererRegistry.register(AVPEntityTypes.MARINE, MarineRenderer::new);
 
         // Particles
         ParticleFactoryRegistry.getInstance().register(AVPParticleTypes.ACID, AcidParticleProvider::new);

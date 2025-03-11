@@ -121,9 +121,12 @@ public class BlockProperties {
 
     public static final BlockBehaviour.Properties MONAZITE_ORE = STONE_ORE_PROPERTIES_SUPPLIER.get();
 
-    public static final BlockBehaviour.Properties RAZOR_WIRE = BlockBehaviour.Properties.ofFullCopy(Blocks.CHAIN)
+    public static final BlockBehaviour.Properties RAZOR_WIRE = BlockBehaviour.Properties.of()
+        .forceSolidOn()
         .noOcclusion()
         .noCollission()
+        .sound(SoundType.CHAIN)
+        .strength(2.0F)
         .pushReaction(PushReaction.DESTROY);
 
     public static final BlockBehaviour.Properties TITANIUM_ORE = STONE_ORE_PROPERTIES_SUPPLIER.get();

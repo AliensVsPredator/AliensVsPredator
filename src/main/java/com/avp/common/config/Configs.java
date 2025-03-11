@@ -217,6 +217,12 @@ public class Configs {
             KnockbackResistanceConstants.YAUTJA_KNOCKBACK_RESISTANCE
         )
         .property(ConfigProperties.YAUTJA_ATTRIBUTES.moveSpeed(), MoveSpeedConstants.YAUTJA_SPEED)
+        // Marine properties
+        .property(ConfigProperties.MARINE_ATTRIBUTES.armor(), ArmorConstants.MARINE_ARMOR)
+        .property(ConfigProperties.MARINE_ATTRIBUTES.attackDamage(), AttackDamageConstants.MARINE_ATTACK_DAMAGE)
+        .property(ConfigProperties.MARINE_ATTRIBUTES.followRange(), FollowRangeConstants.MARINE_FOLLOW_RANGE)
+        .property(ConfigProperties.MARINE_ATTRIBUTES.health(), HealthConstants.PLAYER_HEALTH)
+        .property(ConfigProperties.MARINE_ATTRIBUTES.moveSpeed(), MoveSpeedConstants.PLAYER_WALK_SPEED)
         .build();
 
     public static final Config WEAPONS = ConfigBuilder.create("weapons")

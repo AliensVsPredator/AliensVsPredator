@@ -111,6 +111,8 @@ public class ConfigProperties {
 
     public static final ConfigPropertyKey<Boolean> YOUNG_SPAWNING_ENABLED = registerBoolean("spawning.young.enabled");
 
+    public static final ConfigMobAttributesContainer MARINE_ATTRIBUTES = registerAttributes("marine");
+
     private static ConfigMobAttributesContainer registerAttributes(String entityName) {
         var subpath = entityName + ".stats.";
 

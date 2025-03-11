@@ -14,6 +14,7 @@ public class ConfigPropertyMappings {
         Map.entry(AVPEntityTypes.PRAETORIAN, ConfigProperties.PRAETORIAN_ATTRIBUTES),
         Map.entry(AVPEntityTypes.QUEEN, ConfigProperties.QUEEN_ATTRIBUTES),
         Map.entry(AVPEntityTypes.WARRIOR, ConfigProperties.WARRIOR_ATTRIBUTES),
-        Map.entry(AVPEntityTypes.YAUTJA, ConfigProperties.YAUTJA_ATTRIBUTES)
+        Map.entry(AVPEntityTypes.YAUTJA, ConfigProperties.YAUTJA_ATTRIBUTES),
+        Map.entry(AVPEntityTypes.MARINE, ConfigProperties.MARINE_ATTRIBUTES)
     );
 }

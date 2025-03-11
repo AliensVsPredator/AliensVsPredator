@@ -64,6 +64,8 @@ public class SpawnEggItems {
 
     public static final Item YAUTJA_SPAWN_EGG = register(AVPEntityTypes.YAUTJA, 0xB9A86C, 0x5A4728);
 
+    public static final Item MARINE_SPAWN_EGG = register(AVPEntityTypes.MARINE, 0x5a5941, 0x414441);
+
     private static Item register(EntityType<? extends Mob> entityType, int primaryColor, int secondaryColor) {
         var entityTypeResourceLocation = BuiltInRegistries.ENTITY_TYPE.getKey(entityType);
         var entityTypeName = entityTypeResourceLocation.getPath();

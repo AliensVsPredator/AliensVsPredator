@@ -215,6 +215,7 @@ public class EnglishLanguageProvider extends FabricLanguageProvider {
         translationBuilder.add(AVPEntityTypes.YAUTJA, "Yautja");
         translationBuilder.add(AVPEntityTypes.ROCKET, "Rocket");
         translationBuilder.add(AVPEntityTypes.GRENADE_THROWN, "Grenade");
+        translationBuilder.add(AVPEntityTypes.MARINE, "Marine");
 
         // Combat Items
         translationBuilder.add(AVPItems.GRENADE, "Grenade");
@@ -400,6 +401,7 @@ public class EnglishLanguageProvider extends FabricLanguageProvider {
         translationBuilder.add(SpawnEggItems.QUEEN_SPAWN_EGG, "Queen Spawn Egg");
         translationBuilder.add(SpawnEggItems.WARRIOR_SPAWN_EGG, "Warrior Spawn Egg");
         translationBuilder.add(SpawnEggItems.YAUTJA_SPAWN_EGG, "Yautja Spawn Egg");
+        translationBuilder.add(SpawnEggItems.MARINE_SPAWN_EGG, "Marine Spawn Egg");
 
         // Sounds
         addSound(translationBuilder, AVPSoundEvents.BLOCK_ACID_BURN, "Acid burns");

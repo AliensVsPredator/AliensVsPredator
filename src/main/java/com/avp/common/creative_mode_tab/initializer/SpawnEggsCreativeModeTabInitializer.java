@@ -9,6 +9,8 @@ public class SpawnEggsCreativeModeTabInitializer {
 
     public static void initialize() {
         ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.SPAWN_EGGS_KEY).register(entries -> {
+            entries.accept(SpawnEggItems.MARINE_SPAWN_EGG);
+
             entries.accept(SpawnEggItems.CHESTBURSTER_SPAWN_EGG);
             entries.accept(SpawnEggItems.DRONE_SPAWN_EGG);
             entries.accept(SpawnEggItems.FACEHUGGER_SPAWN_EGG);

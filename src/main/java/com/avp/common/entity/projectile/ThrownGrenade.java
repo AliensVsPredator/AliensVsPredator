@@ -69,8 +69,10 @@ public class ThrownGrenade extends BouncingItemProjectile {
 
     @Override
     protected void onDeath() {
-        // Explosion logic
-        level().explode(this, getX(), getY(), getZ(), 3F, isIncendiary, Level.ExplosionInteraction.BLOCK);
+        level().explode(this, getX(), getY(), getZ(),  isIrradiated ? 9F : 3F, isIncendiary, Level.ExplosionInteraction.BLOCK);
+        if (isIrradiated) {
+            // TODO: Do radiation here, if effect, do an AoECloudEntity honestly.
+        }
     }
 
     @Override
