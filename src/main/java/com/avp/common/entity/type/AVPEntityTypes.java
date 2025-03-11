@@ -116,7 +116,7 @@ public class AVPEntityTypes {
 
     public static final EntityType<MarineMob> MARINE = register(
             "marine",
-            EntityType.Builder.of(MarineMob::new, MobCategory.CREATURE).sized(1.1F, 2.1F)
+            EntityType.Builder.of(MarineMob::new, MobCategory.CREATURE).sized(0.7F, 1.95F)
     );
 
     // These are "deferred" entity types for our existing entities. We want different spawn colors for these spawn eggs,
