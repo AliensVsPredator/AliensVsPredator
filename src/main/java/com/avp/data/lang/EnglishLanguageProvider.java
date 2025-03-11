@@ -323,6 +323,7 @@ public class EnglishLanguageProvider extends FabricLanguageProvider {
         translationBuilder.add(AVPItems.RAW_GALENA, "Raw Galena");
         translationBuilder.add(AVPItems.RAW_MONAZITE, "Raw Monazite");
         translationBuilder.add(AVPItems.RAW_ROYAL_JELLY, "Raw Royal Jelly");
+        translationBuilder.add(AVPItems.POISON_JELLY, "Poison Jelly");
         translationBuilder.add(AVPItems.RAW_SILICA, "Raw Silica");
         translationBuilder.add(AVPItems.RAW_TITANIUM, "Raw Titanium");
         translationBuilder.add(AVPItems.RAW_ZINC, "Raw Zinc");

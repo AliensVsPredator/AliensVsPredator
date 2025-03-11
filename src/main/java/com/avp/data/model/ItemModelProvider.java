@@ -176,6 +176,8 @@ public class ItemModelProvider extends FabricModelProvider {
         generateHandheldItem(generators, AVPBlockItems.FERROALUMINUM_DOOR);
         generateHandheldItem(generators, AVPBlockItems.STEEL_DOOR);
         generateHandheldItem(generators, AVPBlockItems.TITANIUM_DOOR);
+
+        generateStandardItem(generators, AVPItems.POISON_JELLY);
     }
 
     private void generateHandheldItem(ItemModelGenerators generators, Item item) {

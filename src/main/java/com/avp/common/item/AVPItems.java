@@ -163,6 +163,8 @@ public class AVPItems {
 
     public static final Item RAW_ROYAL_JELLY = register("raw_royal_jelly");
 
+    public static final Item POISON_JELLY = register("poison_jelly");
+
     public static final Item RAW_SILICA = register("raw_silica");
 
     public static final Item RAW_TITANIUM = register("raw_titanium");
