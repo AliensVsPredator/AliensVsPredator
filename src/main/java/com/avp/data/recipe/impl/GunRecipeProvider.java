@@ -71,7 +71,7 @@ public class GunRecipeProvider {
         builder.shaped()
             .withCategory(RecipeCategory.COMBAT)
             .define('G', Items.GUNPOWDER)
-            .define('S', AVPItems.STEEL_INGOT)
+            .define('S', AVPItems.STEEL_NUGGET)
             .pattern("SGS")
             .pattern(" S ")
             .into(1, AVPItems.HEAVY_CASING);
