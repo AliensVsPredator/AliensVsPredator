@@ -211,6 +211,7 @@ public class EnglishLanguageProvider extends FabricLanguageProvider {
         translationBuilder.add(AVPEntityTypes.QUEEN, "Queen");
         translationBuilder.add(AVPEntityTypes.WARRIOR, "Warrior");
         translationBuilder.add(AVPEntityTypes.YAUTJA, "Yautja");
+        translationBuilder.add(AVPEntityTypes.ROCKET, "Rocket");
 
         // Combat Items
 
@@ -344,6 +345,14 @@ public class EnglishLanguageProvider extends FabricLanguageProvider {
         translationBuilder.add(AVPItems.VECTOR_POTTERY_SHERD, "Vector Pottery Sherd");
         translationBuilder.add(AVPItems.VERITANIUM_SHARD, "Veritanium Shard");
         translationBuilder.add(AVPItems.ZINC_INGOT, "Zinc Ingot");
+        translationBuilder.add(AVPItems.ALUMINUM_NUGGET, "Aluminum Nugget");
+        translationBuilder.add(AVPItems.BRASS_NUGGET, "Brass Nugget");
+        translationBuilder.add(AVPItems.FERROALUMINUM_NUGGET, "Ferroaluminum Nugget");
+        translationBuilder.add(AVPItems.LEAD_NUGGET, "Lead Nugget");
+        translationBuilder.add(AVPItems.STEEL_NUGGET, "Steel Nugget");
+        translationBuilder.add(AVPItems.TITANIUM_NUGGET, "Titanium Nugget");
+        translationBuilder.add(AVPItems.URANIUM_NUGGET, "Uranium Nugget");
+        translationBuilder.add(AVPItems.ZINC_NUGGET, "Zinc Nugget");
 
         // Tools & Utilities Items
         translationBuilder.add(AVPItems.ARMOR_CASE, "Armor Case");
