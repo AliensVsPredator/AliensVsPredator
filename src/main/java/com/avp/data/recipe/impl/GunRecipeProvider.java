@@ -29,25 +29,25 @@ public class GunRecipeProvider {
     private static void createGrendade(RecipeBuilder builder) {
         builder.shaped()
             .withCategory(RecipeCategory.COMBAT)
-            .define('A', AVPItems.STEEL_INGOT)
+            .define('A', AVPItems.STEEL_NUGGET)
             .define('B', Items.GUNPOWDER)
             .pattern("ABA")
             .pattern("ABA")
             .into(4, AVPItems.GRENADE);
         builder.shaped()
                 .withCategory(RecipeCategory.COMBAT)
-                .define('A', AVPItems.STEEL_INGOT)
+                .define('A', AVPItems.STEEL_NUGGET)
                 .define('B', Items.GUNPOWDER)
                 .define('C', Items.BLAZE_POWDER)
-                .pattern("ABC")
+                .pattern("ACA")
                 .pattern("ABA")
                 .into(4, AVPItems.GRENADE_INCENDIARY);
         builder.shaped()
                 .withCategory(RecipeCategory.COMBAT)
-                .define('A', AVPItems.STEEL_INGOT)
+                .define('A', AVPItems.STEEL_NUGGET)
                 .define('B', Items.GUNPOWDER)
                 .define('C', AVPItems.URANIUM_NUGGET)
-                .pattern("ABC")
+                .pattern("ACA")
                 .pattern("ABA")
                 .into(4, AVPItems.GRENADE_IRRADIATED);
     }
