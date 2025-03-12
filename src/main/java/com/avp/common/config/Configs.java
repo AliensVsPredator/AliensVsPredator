@@ -41,6 +41,7 @@ public class Configs {
         .property(ConfigProperties.REMOVE_VANILLA_SPAWNS, false)
         .property(ConfigProperties.ALIEN_CUSTOM_MOB_CATEGORY_ENABLED, false)
         .property(ConfigProperties.ALIEN_CUSTOM_MOB_CATEGORY_SPAWN_LIMIT, 70)
+        .property(ConfigProperties.PREDATOR_CUSTOM_MOB_CATEGORY_SPAWN_LIMIT, 70)
         // Mob spawning properties
         .property(ConfigProperties.CHESTBURSTER_SPAWNING.mobSpawning().enabled(), true)
         .property(ConfigProperties.CHESTBURSTER_SPAWNING.mobSpawning().maxGroupSize(), 2)

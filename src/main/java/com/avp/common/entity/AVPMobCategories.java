@@ -10,4 +10,6 @@ public class AVPMobCategories {
     }
 
     public static MobCategory ALIENS;
+
+    public static MobCategory PREDATOR;
 }

@@ -41,6 +41,14 @@ public class AVPEntityTypes {
         return MobCategory.MONSTER;
     }).get();
 
+    public static final MobCategory PREDATOR_CATEGORY = ((Supplier<MobCategory>) () -> {
+        if (AVP.SPAWNING_CONFIG.properties().getOrThrow(ConfigProperties.ALIEN_CUSTOM_MOB_CATEGORY_ENABLED)) {
+            return AVPMobCategories.PREDATOR;
+        }
+
+        return MobCategory.MONSTER;
+    }).get();
+
     public static final EntityType<Acid> ACID = register(
         "acid",
         EntityType.Builder.of(Acid::new, MobCategory.MISC).sized(0.66F, 0.05F)
@@ -111,7 +119,7 @@ public class AVPEntityTypes {
 
     public static final EntityType<Yautja> YAUTJA = register(
         "yautja",
-        EntityType.Builder.of(Yautja::new, MobCategory.MONSTER).sized(0.98f, 2.48f)
+        EntityType.Builder.of(Yautja::new, PREDATOR_CATEGORY).sized(0.98f, 2.48f)
     );
 
     public static final EntityType<MarineMob> MARINE = register(

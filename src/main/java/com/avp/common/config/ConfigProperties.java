@@ -39,6 +39,10 @@ public class ConfigProperties {
         "spawning.custom_mob_category.alien.limit"
     );
 
+    public static final ConfigPropertyKey<Integer> PREDATOR_CUSTOM_MOB_CATEGORY_SPAWN_LIMIT = registerInt(
+            "spawning.custom_mob_category.predator.limit"
+    );
+
     public static final ConfigPropertyKey<Boolean> BULLETS_DAMAGE_BLOCKS_ENABLED = registerBoolean("bullets_damage_blocks.enabled");
 
     public static final ConfigMobAttributesContainer CHESTBURSTER_ATTRIBUTES = registerAttributes("chestburster");
