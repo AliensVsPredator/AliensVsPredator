@@ -1,5 +1,6 @@
 package com.avp.client.render.entity.parasite;
 
+import com.avp.common.entity.type.AVPEntityTypes;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.phys.Vec3;
 
@@ -55,7 +56,8 @@ public record EntityHeadData(
             Map.entry(EntityType.VINDICATOR, VILLAGER),
             Map.entry(EntityType.WITCH, VILLAGER),
             Map.entry(EntityType.WANDERING_TRADER, VILLAGER),
-            Map.entry(EntityType.WOLF, adjust(vec3(6, 6, 4), vec3(-3, 7.5, -9), vec3(1, 10.5, -7)))
+            Map.entry(EntityType.WOLF, adjust(vec3(6, 6, 4), vec3(-3, 7.5, -9), vec3(1, 10.5, -7))),
+            Map.entry(AVPEntityTypes.MARINE, adjust(vec3(8, 8, 8), vec3(-4, 24, -4), vec3(0, 24, 0)))
         )
     );
 

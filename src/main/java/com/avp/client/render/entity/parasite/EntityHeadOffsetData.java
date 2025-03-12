@@ -1,5 +1,6 @@
 package com.avp.client.render.entity.parasite;
 
+import com.avp.common.entity.type.AVPEntityTypes;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 
@@ -100,9 +101,21 @@ public record EntityHeadOffsetData(
             Map.entry(
                 EntityType.WOLF,
                 new EntityHeadOffsetData(EntityHeadOffsetData::wolfVerticalOffset, EntityHeadOffsetData::wolfFaceOffset)
+            ),
+            Map.entry(
+                    AVPEntityTypes.MARINE,
+                    new EntityHeadOffsetData(EntityHeadOffsetData::marineVerticalOffset, EntityHeadOffsetData::marineFaceOffset)
             )
         )
     );
+
+    private static double marineVerticalOffset(EntityHeadData data, Entity parasite) {
+        return -data.size().y - (data.size().y / 4);
+    }
+
+    private static double marineFaceOffset(EntityHeadData data, Entity parasite) {
+        return data.size().z - (data.size().z / 2);
+    }
 
     private static double camelVerticalOffset(EntityHeadData data, Entity parasite) {
         return data.size().y / 1.5;
