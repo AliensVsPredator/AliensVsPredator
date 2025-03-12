@@ -154,6 +154,7 @@ public class Configs {
         )
         .property(ConfigProperties.CHESTBURSTER_ATTRIBUTES.moveSpeed(), MoveSpeedConstants.CHESTBURSTER_SPEED)
         .property(ConfigProperties.CHESTBURSTER_MAX_GROWTH_TIMER_SECONDS, 400)
+        .property(ConfigProperties.CHESTBURSTER_NEST_TICKRATE, 750)
         // Drone properties
         .property(ConfigProperties.DRONE_ATTRIBUTES.armor(), ArmorConstants.DRONE_ARMOR)
         .property(ConfigProperties.DRONE_ATTRIBUTES.attackDamage(), AttackDamageConstants.DRONE_ATTACK_DAMAGE)
@@ -166,6 +167,7 @@ public class Configs {
         )
         .property(ConfigProperties.DRONE_ATTRIBUTES.moveSpeed(), MoveSpeedConstants.DRONE_SPEED)
         .property(ConfigProperties.DRONE_MAX_GROWTH_TIMER_SECONDS, 800)
+        .property(ConfigProperties.DRONE_NEST_TICKRATE, 20)
         // Ovamorph properties
         .property(ConfigProperties.OVAMORPH_ATTRIBUTES.health(), HealthConstants.OVAMORPH_HEALTH)
         .property(ConfigProperties.OVAMORPH_ATTRIBUTES.healthRegenPerSecond(), HealthRegenConstants.OVAMORPH_HEALTH_REGEN)
@@ -187,6 +189,7 @@ public class Configs {
         .property(ConfigProperties.PRAETORIAN_ATTRIBUTES.moveSpeed(), MoveSpeedConstants.PRAETORIAN_SPEED)
         .property(ConfigProperties.PRAETORIAN_MAX_GROWTH_TIMER_SECONDS, 3200)
         .property(ConfigProperties.PRAETORIAN_SHORTCUT_TIMER_SECONDS, 600)
+        .property(ConfigProperties.PRAETORIAN_NEST_TICKRATE, 80)
         // Queen properties
         .property(ConfigProperties.QUEEN_ATTRIBUTES.armor(), ArmorConstants.QUEEN_ARMOR)
         .property(ConfigProperties.QUEEN_ATTRIBUTES.armorToughness(), ArmorToughnessConstants.QUEEN_ARMOR_TOUGHNESS)
@@ -199,6 +202,7 @@ public class Configs {
             KnockbackResistanceConstants.QUEEN_KNOCKBACK_RESISTANCE
         )
         .property(ConfigProperties.QUEEN_ATTRIBUTES.moveSpeed(), MoveSpeedConstants.QUEEN_SPEED)
+        .property(ConfigProperties.QUEEN_NEST_TICKRATE, 160)
         // Warrior properties
         .property(ConfigProperties.WARRIOR_ATTRIBUTES.armor(), ArmorConstants.WARRIOR_ARMOR)
         .property(ConfigProperties.WARRIOR_ATTRIBUTES.attackDamage(), AttackDamageConstants.WARRIOR_ATTACK_DAMAGE)
@@ -211,6 +215,7 @@ public class Configs {
         )
         .property(ConfigProperties.WARRIOR_ATTRIBUTES.moveSpeed(), MoveSpeedConstants.WARRIOR_SPEED)
         .property(ConfigProperties.WARRIOR_MAX_GROWTH_TIMER_SECONDS, 1600)
+        .property(ConfigProperties.WARRIOR_NEST_TICKRATE, 40)
         // Yautja properties
         .property(ConfigProperties.YAUTJA_ATTRIBUTES.armor(), ArmorConstants.YAUTJA_ARMOR)
         .property(ConfigProperties.YAUTJA_ATTRIBUTES.armorToughness(), ArmorToughnessConstants.YAUTJA_ARMOR_TOUGHNESS)

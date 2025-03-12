@@ -33,7 +33,8 @@ public class Praetorian extends Xenomorph {
 
     @Override
     protected @NotNull ResinData createResinData() {
-        return new ResinData(0, 64, 1, 4 * 20);
+        var container = AVP.STATS_CONFIG.properties();
+        return new ResinData(0, 64, 1, container.getOrDefault(ConfigProperties.PRAETORIAN_NEST_TICKRATE, 80));
     }
 
     @Override

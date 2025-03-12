@@ -133,6 +133,26 @@ public class ConfigProperties {
             "praetorian_shortcut_timer_seconds"
     );
 
+    public static final ConfigPropertyKey<Integer> CHESTBURSTER_NEST_TICKRATE = registerInt(
+            "chestburster_nest_tickrate"
+    );
+
+    public static final ConfigPropertyKey<Integer> DRONE_NEST_TICKRATE = registerInt(
+            "drone_nest_tickrate"
+    );
+
+    public static final ConfigPropertyKey<Integer> WARRIOR_NEST_TICKRATE = registerInt(
+            "warrior_nest_tickrate"
+    );
+
+    public static final ConfigPropertyKey<Integer> PRAETORIAN_NEST_TICKRATE = registerInt(
+            "praetorian_nest_tickrate"
+    );
+
+    public static final ConfigPropertyKey<Integer> QUEEN_NEST_TICKRATE = registerInt(
+            "queen_nest_tickrate"
+    );
+
     private static ConfigMobAttributesContainer registerAttributes(String entityName) {
         var subpath = entityName + ".stats.";
 

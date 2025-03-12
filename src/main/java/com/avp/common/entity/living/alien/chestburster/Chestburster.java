@@ -100,7 +100,8 @@ public class Chestburster extends Alien implements ResinProducer {
     }
 
     protected @NotNull ResinData createResinData() {
-        return new ResinData(0, 8, 1, 750);
+        var container = AVP.STATS_CONFIG.properties();
+        return new ResinData(0, 8, 1, container.getOrDefault(ConfigProperties.CHESTBURSTER_NEST_TICKRATE, 750));
     }
 
     public void runPassiveAnimations() {

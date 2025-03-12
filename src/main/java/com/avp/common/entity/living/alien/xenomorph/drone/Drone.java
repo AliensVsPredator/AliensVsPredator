@@ -35,7 +35,8 @@ public class Drone extends Xenomorph {
 
     @Override
     protected @NotNull ResinData createResinData() {
-        return new ResinData(0, 16, 1, 20);
+        var container = AVP.STATS_CONFIG.properties();
+        return new ResinData(0, 16, 1, container.getOrDefault(ConfigProperties.DRONE_NEST_TICKRATE, 20));
     }
 
     @Override
