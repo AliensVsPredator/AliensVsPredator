@@ -68,11 +68,10 @@ public class FacehuggerAnimationDispatcher {
         ),
         SACK
     );
-
     private static final AzCommand INFERTILE = AzCommand.create(
-        FacehuggerAnimationRefs.LEGS_CONTROLLER_NAME,
-        FacehuggerAnimationRefs.INFERTILE_ANIMATION_NAME,
-        AzPlayBehaviors.HOLD_ON_LAST_FRAME
+            FacehuggerAnimationRefs.LEGS_CONTROLLER_NAME,
+            FacehuggerAnimationRefs.INFERTILE_ANIMATION_NAME,
+            AzPlayBehaviors.HOLD_ON_LAST_FRAME
     );
 
     private static final AzCommand RUN_AND_FLAIL = AzCommand.compose(RUN, FLAIL);

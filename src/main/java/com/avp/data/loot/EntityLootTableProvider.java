@@ -1,5 +1,6 @@
 package com.avp.data.loot;
 
+import com.avp.common.entity.living.human.marine.MarineLootTable;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.SimpleFabricLootTableProvider;
 import net.minecraft.core.HolderLookup;
@@ -14,7 +15,6 @@ import com.avp.common.entity.living.alien.xenomorph.drone.DroneLootTable;
 import com.avp.common.entity.living.alien.xenomorph.praetorian.PraetorianLootTable;
 import com.avp.common.entity.living.alien.xenomorph.queen.QueenLootTable;
 import com.avp.common.entity.living.alien.xenomorph.warrior.WarriorLootTable;
-import com.avp.common.entity.living.human.marine.MarineLootTable;
 import com.avp.common.entity.living.yautja.YautjaLootTable;
 import com.avp.common.entity.type.AVPEntityTypes;
 import com.avp.common.item.AVPItems;

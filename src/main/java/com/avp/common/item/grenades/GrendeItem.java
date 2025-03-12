@@ -1,5 +1,6 @@
 package com.avp.common.item.grenades;
 
+import com.avp.common.entity.projectile.ThrownGrenade;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.stats.Stats;
@@ -10,8 +11,6 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
-
-import com.avp.common.entity.projectile.ThrownGrenade;
 
 public class GrendeItem extends Item {
 
@@ -30,14 +29,14 @@ public class GrendeItem extends Item {
         var itemInHand = player.getItemInHand(interactionHand);
         // TODO: Change sound effect here.
         level.playSound(
-            null,
-            player.getX(),
-            player.getY(),
-            player.getZ(),
-            SoundEvents.EGG_THROW,
-            SoundSource.PLAYERS,
-            0.5F,
-            0.4F / (level.getRandom().nextFloat() * 0.4F + 0.8F)
+                null,
+                player.getX(),
+                player.getY(),
+                player.getZ(),
+                SoundEvents.EGG_THROW,
+                SoundSource.PLAYERS,
+                0.5F,
+                0.4F / (level.getRandom().nextFloat() * 0.4F + 0.8F)
         );
 
         if (!level.isClientSide) {

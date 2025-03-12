@@ -2,6 +2,7 @@ package com.avp.data.model;
 
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricModelProvider;
+import net.minecraft.client.resources.model.BlockStateModelLoader;
 import net.minecraft.data.models.BlockModelGenerators;
 import net.minecraft.data.models.ItemModelGenerators;
 import net.minecraft.data.models.blockstates.Condition;
@@ -225,20 +226,20 @@ public class BlockModelProvider extends FabricModelProvider {
         generators.createTrivialCube(AVPBlocks.ZINC_ORE);
 
         generators.family(AVPBlocks.FERROALUMINUM_BLOCK)
-            .pressurePlate(AVPBlocks.FERROALUMINUM_PRESSURE_PLATE)
-            .button(AVPBlocks.FERROALUMINUM_BUTTON)
-            .door(AVPBlocks.FERROALUMINUM_DOOR)
-            .trapdoor(AVPBlocks.FERROALUMINUM_TRAP_DOOR);
+                .pressurePlate(AVPBlocks.FERROALUMINUM_PRESSURE_PLATE)
+                .button(AVPBlocks.FERROALUMINUM_BUTTON)
+                .door(AVPBlocks.FERROALUMINUM_DOOR)
+                .trapdoor(AVPBlocks.FERROALUMINUM_TRAP_DOOR);
         generators.family(AVPBlocks.STEEL_BLOCK)
-            .pressurePlate(AVPBlocks.STEEL_PRESSURE_PLATE)
-            .button(AVPBlocks.STEEL_BUTTON)
-            .door(AVPBlocks.STEEL_DOOR)
-            .trapdoor(AVPBlocks.STEEL_TRAP_DOOR);
+                .pressurePlate(AVPBlocks.STEEL_PRESSURE_PLATE)
+                .button(AVPBlocks.STEEL_BUTTON)
+                .door(AVPBlocks.STEEL_DOOR)
+                .trapdoor(AVPBlocks.STEEL_TRAP_DOOR);
         generators.family(AVPBlocks.TITANIUM_BLOCK)
-            .pressurePlate(AVPBlocks.TITANIUM_PRESSURE_PLATE)
-            .button(AVPBlocks.TITANIUM_BUTTON)
-            .door(AVPBlocks.TITANIUM_DOOR)
-            .trapdoor(AVPBlocks.TITANIUM_TRAP_DOOR);
+                .pressurePlate(AVPBlocks.TITANIUM_PRESSURE_PLATE)
+                .button(AVPBlocks.TITANIUM_BUTTON)
+                .door(AVPBlocks.TITANIUM_DOOR)
+                .trapdoor(AVPBlocks.TITANIUM_TRAP_DOOR);
 
         var spawnEggLocation = ModelLocationUtils.decorateItemModelLocation("template_spawn_egg");
 

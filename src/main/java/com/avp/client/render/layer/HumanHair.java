@@ -1,19 +1,20 @@
 package com.avp.client.render.layer;
 
+import com.avp.AVPResources;
+import com.avp.common.entity.living.human.AbstractHumanMob;
+import com.avp.common.entity.living.human.marine.MarineMob;
 import mod.azure.azurelib.rewrite.model.AzBone;
 import mod.azure.azurelib.rewrite.render.AzRendererPipeline;
 import mod.azure.azurelib.rewrite.render.AzRendererPipelineContext;
 import mod.azure.azurelib.rewrite.render.layer.AzRenderLayer;
 import net.minecraft.client.renderer.RenderType;
-
-import com.avp.AVPResources;
-import com.avp.common.entity.living.human.AbstractHumanMob;
-import com.avp.common.entity.living.human.marine.MarineMob;
+import net.minecraft.util.FastColor;
 
 public class HumanHair implements AzRenderLayer<MarineMob> {
 
     @Override
-    public void preRender(AzRendererPipelineContext<MarineMob> context) {}
+    public void preRender(AzRendererPipelineContext<MarineMob> context) {
+    }
 
     @Override
     public void render(AzRendererPipelineContext<MarineMob> context) {
@@ -30,5 +31,7 @@ public class HumanHair implements AzRenderLayer<MarineMob> {
     }
 
     @Override
-    public void renderForBone(AzRendererPipelineContext<MarineMob> context, AzBone bone) {}
+    public void renderForBone(AzRendererPipelineContext<MarineMob> context, AzBone bone) {
+
+    }
 }

@@ -1,5 +1,6 @@
 package com.avp.data.model;
 
+import com.avp.common.block_item.AVPBlockItems;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricModelProvider;
 import net.minecraft.data.models.BlockModelGenerators;
@@ -10,7 +11,6 @@ import net.minecraft.world.item.Item;
 import org.jetbrains.annotations.NotNull;
 
 import com.avp.common.block.AVPBlocks;
-import com.avp.common.block_item.AVPBlockItems;
 import com.avp.common.item.AVPItems;
 import com.avp.common.item.ArmorItems;
 
@@ -167,14 +167,14 @@ public class ItemModelProvider extends FabricModelProvider {
         generateStandardItem(generators, AVPItems.VERITANIUM_SHARD);
         generateStandardItem(generators, AVPItems.ZINC_INGOT);
 
-        generateStandardItem(generators, AVPItems.FERROALUMINUM_NUGGET);
-        generateStandardItem(generators, AVPItems.STEEL_NUGGET);
-        generateStandardItem(generators, AVPItems.BRASS_NUGGET);
-        generateStandardItem(generators, AVPItems.TITANIUM_NUGGET);
-        generateStandardItem(generators, AVPItems.ZINC_NUGGET);
-        generateStandardItem(generators, AVPItems.LEAD_NUGGET);
-        generateStandardItem(generators, AVPItems.URANIUM_NUGGET);
-        generateStandardItem(generators, AVPItems.ALUMINUM_NUGGET);
+        generateStandardItem(generators,AVPItems.FERROALUMINUM_NUGGET);
+        generateStandardItem(generators,AVPItems.STEEL_NUGGET);
+        generateStandardItem(generators,AVPItems.BRASS_NUGGET);
+        generateStandardItem(generators,AVPItems.TITANIUM_NUGGET);
+        generateStandardItem(generators,AVPItems.ZINC_NUGGET);
+        generateStandardItem(generators,AVPItems.LEAD_NUGGET);
+        generateStandardItem(generators,AVPItems.URANIUM_NUGGET);
+        generateStandardItem(generators,AVPItems.ALUMINUM_NUGGET);
 
         generateHandheldItem(generators, AVPBlockItems.FERROALUMINUM_DOOR);
         generateHandheldItem(generators, AVPBlockItems.STEEL_DOOR);

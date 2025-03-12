@@ -74,7 +74,7 @@ public abstract class BouncingItemProjectile extends ThrowableItemProjectile {
                 entity.hurt(entity.damageSources().thrown(this, this.getOwner()), 1.0F);
             }
             this.bounce(
-                Direction.getNearest(this.getDeltaMovement().x(), this.getDeltaMovement().y(), this.getDeltaMovement().z()).getOpposite()
+                    Direction.getNearest(this.getDeltaMovement().x(), this.getDeltaMovement().y(), this.getDeltaMovement().z()).getOpposite()
             );
             this.setDeltaMovement(this.getDeltaMovement().multiply(0.25, 0.25, 0.25));
         } else {
@@ -100,14 +100,14 @@ public abstract class BouncingItemProjectile extends ThrowableItemProjectile {
             BlockState state = level.getBlockState(resultPos);
             SoundEvent event = state.getBlock().getSoundType(state).getStepSound();
             level.playSound(
-                null,
-                result.getLocation().x,
-                result.getLocation().y,
-                result.getLocation().z,
-                event,
-                SoundSource.AMBIENT,
-                1.0F,
-                1.0F
+                    null,
+                    result.getLocation().x,
+                    result.getLocation().y,
+                    result.getLocation().z,
+                    event,
+                    SoundSource.AMBIENT,
+                    1.0F,
+                    1.0F
             );
         }
 

@@ -20,20 +20,20 @@ import com.avp.common.entity.AVPEntityTypeTags;
 public class BlockProperties {
 
     public static final BlockBehaviour.Properties TRINITITE = BlockBehaviour.Properties.of()
-        .instrument(NoteBlockInstrument.HAT)
-        .strength(0.3F)
-        .sound(SoundType.GLASS)
-        .noOcclusion()
-        .isValidSpawn(Blocks::never)
-        .isRedstoneConductor(Blocks::never)
-        .isSuffocating(Blocks::never)
-        .isViewBlocking(Blocks::never);
+            .instrument(NoteBlockInstrument.HAT)
+            .strength(0.3F)
+            .sound(SoundType.GLASS)
+            .noOcclusion()
+            .isValidSpawn(Blocks::never)
+            .isRedstoneConductor(Blocks::never)
+            .isSuffocating(Blocks::never)
+            .isViewBlocking(Blocks::never);
 
     public static final BlockBehaviour.Properties JELLY = BlockBehaviour.Properties.of()
-        .mapColor(MapColor.GRASS)
-        .sound(SoundType.SLIME_BLOCK)
-        .noOcclusion()
-        .friction(0.8F);
+            .mapColor(MapColor.GRASS)
+            .sound(SoundType.SLIME_BLOCK)
+            .noOcclusion()
+            .friction(0.8F);
 
     private static final Supplier<BlockBehaviour.Properties> INDUSTRIAL_GLASS_SUPPLIER = () -> BlockBehaviour.Properties.ofFullCopy(
         Blocks.GLASS
@@ -167,11 +167,11 @@ public class BlockProperties {
         .strength(2, 2);
 
     public static final Supplier<BlockBehaviour.Properties> NUKE_SUPPLIER = () -> BlockBehaviour.Properties.of()
-        .instrument(NoteBlockInstrument.IRON_XYLOPHONE)
-        .mapColor(MapColor.COLOR_GRAY)
-        .requiresCorrectToolForDrops()
-        .sound(SoundType.COPPER)
-        .strength(4);
+            .instrument(NoteBlockInstrument.IRON_XYLOPHONE)
+            .mapColor(MapColor.COLOR_GRAY)
+            .requiresCorrectToolForDrops()
+            .sound(SoundType.COPPER)
+            .strength(4);
 
     public static final BlockBehaviour.Properties NUKE = NUKE_SUPPLIER.get();
 

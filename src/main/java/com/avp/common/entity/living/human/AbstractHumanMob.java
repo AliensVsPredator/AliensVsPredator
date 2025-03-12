@@ -1,5 +1,8 @@
 package com.avp.common.entity.living.human;
 
+import com.avp.common.MoveAnalysis;
+import com.avp.common.ai.goal.StrollAroundInWaterGoal;
+import com.avp.common.entity.living.alien.Alien;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -20,15 +23,11 @@ import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import com.avp.common.MoveAnalysis;
-import com.avp.common.ai.goal.StrollAroundInWaterGoal;
-import com.avp.common.entity.living.alien.Alien;
-
 public abstract class AbstractHumanMob extends PathfinderMob {
 
     public static final EntityDataAccessor<Boolean> SET_GENDER = SynchedEntityData.defineId(
-        AbstractHumanMob.class,
-        EntityDataSerializers.BOOLEAN
+            AbstractHumanMob.class,
+            EntityDataSerializers.BOOLEAN
     );
 
     private static final String GENDER_TAG_KEY = "gender";
@@ -73,13 +72,13 @@ public abstract class AbstractHumanMob extends PathfinderMob {
         goalSelector.addGoal(7, new WaterAvoidingRandomStrollGoal(this, 0.5));
         targetSelector.addGoal(1, (new HurtByTargetGoal(this)).setAlertOthers(AbstractHumanMob.class));
         targetSelector.addGoal(
-            2,
-            new NearestAttackableTargetGoal<>(
-                this,
-                LivingEntity.class,
-                false,
-                target -> (this.getLastAttacker() != null && this.getLastAttacker().is(target)) || target instanceof Alien
-            )
+                2,
+                new NearestAttackableTargetGoal<>(
+                        this,
+                        LivingEntity.class,
+                        false,
+                        target -> (this.getLastAttacker() != null && this.getLastAttacker().is(target)) || target instanceof Alien
+                )
         );
     }
 
@@ -123,12 +122,7 @@ public abstract class AbstractHumanMob extends PathfinderMob {
 
     @Nullable
     @Override
-    public SpawnGroupData finalizeSpawn(
-        @NotNull ServerLevelAccessor level,
-        @NotNull DifficultyInstance difficulty,
-        @NotNull MobSpawnType spawnType,
-        @Nullable SpawnGroupData spawnGroupData
-    ) {
+    public SpawnGroupData finalizeSpawn(@NotNull ServerLevelAccessor level, @NotNull DifficultyInstance difficulty, @NotNull MobSpawnType spawnType, @Nullable SpawnGroupData spawnGroupData) {
         entityData.set(SET_GENDER, random.nextIntBetweenInclusive(0, 10) <= 6); // False = Female, True = Male
         return super.finalizeSpawn(level, difficulty, spawnType, spawnGroupData);
     }

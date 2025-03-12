@@ -6,7 +6,6 @@ import net.minecraft.util.ColorRGBA;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.BlockBehaviour;
-import net.minecraft.world.level.block.state.properties.BlockSetType;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -16,6 +15,7 @@ import java.util.stream.Collectors;
 
 import com.avp.AVPResources;
 import com.avp.common.block.resin.ResinVeinBlock;
+import net.minecraft.world.level.block.state.properties.BlockSetType;
 
 public class AVPBlocks {
 
@@ -232,56 +232,22 @@ public class AVPBlocks {
 
     public static final Block ZINC_ORE = register(BlockProperties.ZINC_ORE, "zinc_ore");
 
-    // Doors And Trapdoors
-    public static final Block FERROALUMINUM_DOOR = register(
-        new DoorBlock(BlockSetType.COPPER, BlockProperties.FERROALUMINUM),
-        "ferroaluminum_door"
-    );
+    //Doors And Trapdoors
+    public static final Block FERROALUMINUM_DOOR = register(new DoorBlock(BlockSetType.COPPER,BlockProperties.FERROALUMINUM),"ferroaluminum_door");
+    public static final Block FERROALUMINUM_TRAP_DOOR = register(new TrapDoorBlock(BlockSetType.COPPER,BlockProperties.FERROALUMINUM.noOcclusion()),"ferroaluminum_trapdoor");
+    public static final Block STEEL_DOOR = register(new DoorBlock(BlockSetType.COPPER,BlockProperties.STEEL),"steel_door");
+    public static final Block STEEL_TRAP_DOOR = register(new TrapDoorBlock(BlockSetType.COPPER,BlockProperties.STEEL),"steel_trapdoor");
+    public static final Block TITANIUM_DOOR = register(new DoorBlock(BlockSetType.COPPER,BlockProperties.TITANIUM),"titanium_door");
+    public static final Block TITANIUM_TRAP_DOOR = register(new TrapDoorBlock(BlockSetType.COPPER,BlockProperties.TITANIUM),"titanium_trapdoor");
 
-    public static final Block FERROALUMINUM_TRAP_DOOR = register(
-        new TrapDoorBlock(BlockSetType.COPPER, BlockProperties.FERROALUMINUM.noOcclusion()),
-        "ferroaluminum_trapdoor"
-    );
+    //Pressure plates And Buttons
+    public static final Block FERROALUMINUM_BUTTON = register(new ButtonBlock(AVPBlockSetTypes.FERROALUMINUM,20,BlockProperties.FERROALUMINUM),"ferroaluminum_button");
+    public static final Block STEEL_BUTTON = register(new ButtonBlock(AVPBlockSetTypes.STEEL,20,BlockProperties.STEEL),"steel_button");
+    public static final Block TITANIUM_BUTTON = register(new ButtonBlock(AVPBlockSetTypes.TITANIUM,20,BlockProperties.TITANIUM),"titanium_button");
 
-    public static final Block STEEL_DOOR = register(new DoorBlock(BlockSetType.COPPER, BlockProperties.STEEL), "steel_door");
-
-    public static final Block STEEL_TRAP_DOOR = register(new TrapDoorBlock(BlockSetType.COPPER, BlockProperties.STEEL), "steel_trapdoor");
-
-    public static final Block TITANIUM_DOOR = register(new DoorBlock(BlockSetType.COPPER, BlockProperties.TITANIUM), "titanium_door");
-
-    public static final Block TITANIUM_TRAP_DOOR = register(
-        new TrapDoorBlock(BlockSetType.COPPER, BlockProperties.TITANIUM),
-        "titanium_trapdoor"
-    );
-
-    // Pressure plates And Buttons
-    public static final Block FERROALUMINUM_BUTTON = register(
-        new ButtonBlock(AVPBlockSetTypes.FERROALUMINUM, 20, BlockProperties.FERROALUMINUM),
-        "ferroaluminum_button"
-    );
-
-    public static final Block STEEL_BUTTON = register(new ButtonBlock(AVPBlockSetTypes.STEEL, 20, BlockProperties.STEEL), "steel_button");
-
-    public static final Block TITANIUM_BUTTON = register(
-        new ButtonBlock(AVPBlockSetTypes.TITANIUM, 20, BlockProperties.TITANIUM),
-        "titanium_button"
-    );
-
-    public static final Block FERROALUMINUM_PRESSURE_PLATE = register(
-        new PressurePlateBlock(BlockSetType.COPPER, BlockProperties.FERROALUMINUM),
-        "ferroaluminum_pressure_plate"
-    );
-
-    public static final Block STEEL_PRESSURE_PLATE = register(
-        new PressurePlateBlock(BlockSetType.COPPER, BlockProperties.STEEL),
-        "steel_pressure_plate"
-    );
-
-    public static final Block TITANIUM_PRESSURE_PLATE = register(
-        new PressurePlateBlock(BlockSetType.COPPER, BlockProperties.TITANIUM),
-        "titanium_pressure_plate"
-    );
-
+    public static final Block FERROALUMINUM_PRESSURE_PLATE = register(new PressurePlateBlock(BlockSetType.COPPER,BlockProperties.FERROALUMINUM),"ferroaluminum_pressure_plate");
+    public static final Block STEEL_PRESSURE_PLATE = register(new PressurePlateBlock(BlockSetType.COPPER,BlockProperties.STEEL),"steel_pressure_plate");
+    public static final Block TITANIUM_PRESSURE_PLATE = register(new PressurePlateBlock(BlockSetType.COPPER,BlockProperties.TITANIUM),"titanium_pressure_plate");
     public static final Map<DyeColor, Block> DYE_COLOR_TO_CONCRETE_SLAB =
         Collections.unmodifiableMap(
             Arrays.stream(DyeColor.values())
