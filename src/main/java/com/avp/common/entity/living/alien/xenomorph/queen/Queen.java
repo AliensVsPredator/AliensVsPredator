@@ -46,4 +46,9 @@ public class Queen extends Xenomorph {
     public boolean isPushable() {
         return false;
     }
+
+    @Override
+    public int maxJellyToGrowth() {
+        return Integer.MAX_VALUE;
+    }
 }

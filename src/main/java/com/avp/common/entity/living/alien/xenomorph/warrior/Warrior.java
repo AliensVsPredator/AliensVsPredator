@@ -104,4 +104,9 @@ public class Warrior extends Xenomorph {
 
         return super.getDefaultLootTable();
     }
+
+    @Override
+    public int maxJellyToGrowth() {
+        return 4;
+    }
 }

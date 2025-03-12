@@ -110,6 +110,7 @@ public class GrowthManager {
 
     private void swapOldStageWithNewStage(LivingEntity nextForm, Level level) {
         copyEntityTagData(entity, nextForm);
+        nextForm.getEntityData().set(Xenomorph.JELLY_COUNT, 0);
 
         // Move the next form to the entity's current position. Set rotation angles as well.
         nextForm.moveTo(entity.position(), entity.getYRot(), entity.getXRot());

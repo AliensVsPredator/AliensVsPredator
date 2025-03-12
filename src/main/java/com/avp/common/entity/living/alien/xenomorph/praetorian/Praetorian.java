@@ -102,4 +102,9 @@ public class Praetorian extends Xenomorph {
 
         return super.getDefaultLootTable();
     }
+
+    @Override
+    public int maxJellyToGrowth() {
+        return 9;
+    }
 }

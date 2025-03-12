@@ -105,4 +105,9 @@ public class Drone extends Xenomorph {
 
         return super.getDefaultLootTable();
     }
+
+    @Override
+    public int maxJellyToGrowth() {
+        return 2;
+    }
 }
