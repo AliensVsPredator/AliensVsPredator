@@ -1,5 +1,6 @@
 package com.avp.mixin.client;
 
+import com.avp.common.item.gun.GunData;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.renderer.entity.player.PlayerRenderer;
@@ -18,12 +19,13 @@ public class MixinPlayerRenderer_AdjustArmPoseForGun {
     @Inject(method = "getArmPose", at = @At(value = "TAIL"), cancellable = true)
     private static void tryItemPose(AbstractClientPlayer player, InteractionHand hand, CallbackInfoReturnable<HumanoidModel.ArmPose> ci) {
         var itemstack = player.getItemInHand(hand);
-        if (itemstack.getItem() instanceof GunItem) {
-            var armPose = itemstack.getItem() instanceof OldPainlessItem
-                ? HumanoidModel.ArmPose.CROSSBOW_HOLD
-                : HumanoidModel.ArmPose.BOW_AND_ARROW;
-
-            ci.setReturnValue(armPose);
+        if (itemstack.getItem() instanceof GunItem gunItem &&
+                (gunItem.gunConfig == GunData.OLD_PAINLESS ||
+                        gunItem.gunConfig == GunData.FLAMETHROWER_SEVASTOPOL ||
+                        gunItem.gunConfig == GunData.M56_SMARTGUN)) {
+            ci.setReturnValue(HumanoidModel.ArmPose.BOW_AND_ARROW);
+        } else if (itemstack.getItem() instanceof GunItem gunItem && gunItem.gunConfig != GunData.OLD_PAINLESS && player.isUsingItem()) {
+            ci.setReturnValue(HumanoidModel.ArmPose.CROSSBOW_HOLD);
         }
     }
 }

@@ -44,7 +44,7 @@ public class GunItem extends Item {
 
     private static final int START_TICK_PROGRESS = Integer.MAX_VALUE;
 
-    protected final GunConfig gunConfig;
+    public final GunConfig gunConfig;
 
     public GunItem(GunConfig gunConfig) {
         super(new Item.Properties().stacksTo(1).durability(gunConfig.durability()).attributes(createAttributes()));
