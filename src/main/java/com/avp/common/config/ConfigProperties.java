@@ -113,6 +113,26 @@ public class ConfigProperties {
 
     public static final ConfigMobAttributesContainer MARINE_ATTRIBUTES = registerAttributes("marine");
 
+    public static final ConfigPropertyKey<Integer> CHESTBURSTER_MAX_GROWTH_TIMER_SECONDS = registerInt(
+            "chestburster_max_growth_timer_seconds"
+    );
+
+    public static final ConfigPropertyKey<Integer> DRONE_MAX_GROWTH_TIMER_SECONDS = registerInt(
+            "drone_max_growth_timer_seconds"
+    );
+
+    public static final ConfigPropertyKey<Integer> WARRIOR_MAX_GROWTH_TIMER_SECONDS = registerInt(
+            "warrior_max_growth_timer_seconds"
+    );
+
+    public static final ConfigPropertyKey<Integer> PRAETORIAN_MAX_GROWTH_TIMER_SECONDS = registerInt(
+            "praetorian_max_growth_timer_seconds"
+    );
+
+    public static final ConfigPropertyKey<Integer> PRAETORIAN_SHORTCUT_TIMER_SECONDS = registerInt(
+            "praetorian_shortcut_timer_seconds"
+    );
+
     private static ConfigMobAttributesContainer registerAttributes(String entityName) {
         var subpath = entityName + ".stats.";
 
