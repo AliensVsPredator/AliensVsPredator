@@ -132,7 +132,7 @@ public class BalanceHiveTask extends HiveTask {
         var type = xenomorph.getType();
         var growthStage = AlienLifecycleRegistry.getOrNull(null, type);
 
-        if (growthStage == null) {
+        if (growthStage == null || xenomorph.getEntityData().get(Xenomorph.IS_POISONED)) {
             return;
         }
 
