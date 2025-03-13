@@ -54,6 +54,11 @@ public class MarineMob extends AbstractHumanMob {
         if (random.nextInt( 100 ) <= 10) {
             setItemSlot(EquipmentSlot.OFFHAND, new ItemStack(AVPItems.GRENADE));
         }
+        this.makeInitialArmor();
+        return super.finalizeSpawn(level, difficulty, spawnType, spawnGroupData);
+    }
+
+    private void makeInitialArmor() {
         var selectedArmor = List.of(
                         List.of(
                                 ArmorItems.TACTICAL_HELMET,
@@ -67,7 +72,8 @@ public class MarineMob extends AbstractHumanMob {
                                 ArmorItems.TACTICAL_CAMO_LEGGINGS,
                                 ArmorItems.TACTICAL_CAMO_BOOTS
                         )
-                ).get(this.getRandom().nextIntBetweenInclusive(0, 1))
+                )
+                .get(this.getRandom().nextIntBetweenInclusive(0, 1)) // Randomly choose one set
                 .stream()
                 .map(ItemStack::new)
                 .toArray(ItemStack[]::new);
@@ -76,7 +82,6 @@ public class MarineMob extends AbstractHumanMob {
         for (var i = 0; i < selectedArmor.length; i++) {
             setItemSlot(slots[i], selectedArmor[i]);
         }
-        return super.finalizeSpawn(level, difficulty, spawnType, spawnGroupData);
     }
 
     private ItemStack makeInitialWeapon() {
