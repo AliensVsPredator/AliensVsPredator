@@ -211,6 +211,7 @@ public class AVPBlockTagProvider extends FabricTagProvider.BlockTagProvider {
             .addTag(AVPBlockTags.STEEL)
             .addTag(AVPBlockTags.TITANIUM)
             .add(
+                AVPBlocks.INDUSTRIAL_FURNACE,
                 AVPBlocks.NUKE_BLOCK,
                 AVPBlocks.TRINITITE_BLOCK,
                 AVPBlocks.ALUMINUM_BLOCK,
@@ -261,6 +262,7 @@ public class AVPBlockTagProvider extends FabricTagProvider.BlockTagProvider {
             .addTag(AVPBlockTags.STEEL)
             .addTag(AVPBlockTags.TITANIUM)
             .add(
+                AVPBlocks.INDUSTRIAL_FURNACE,
                 AVPBlocks.NUKE_BLOCK,
                 AVPBlocks.TRINITITE_BLOCK,
                 AVPBlocks.DEEPSLATE_TITANIUM_ORE,

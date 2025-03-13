@@ -92,6 +92,7 @@ public class BlocksCreativeModeTabInitializer {
             entries.accept(AVPBlocks.URANIUM_BLOCK);
             entries.accept(AVPBlocks.ZINC_BLOCK);
             entries.accept(AVPBlocks.RAZOR_WIRE);
+            entries.accept(AVPBlocks.INDUSTRIAL_FURNACE);
 
             // Alien blocks
             entries.accept(AVPBlocks.RESIN);

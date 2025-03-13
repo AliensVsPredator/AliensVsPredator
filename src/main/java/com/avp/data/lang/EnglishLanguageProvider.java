@@ -194,6 +194,7 @@ public class EnglishLanguageProvider extends FabricLanguageProvider {
         translationBuilder.add(AVPBlocks.URANIUM_BLOCK, "Block of Uranium");
         translationBuilder.add(AVPBlocks.ZINC_BLOCK, "Block of Zinc");
         translationBuilder.add(AVPBlocks.ZINC_ORE, "Zinc Ore");
+        translationBuilder.add(AVPBlocks.INDUSTRIAL_FURNACE, "Industrial Furnace");
 
         // Creative Mode Tabs
         translationBuilder.add(CreativeModeTabs.BLOCKS_KEY, "AVP Blocks");
@@ -491,6 +492,8 @@ public class EnglishLanguageProvider extends FabricLanguageProvider {
 
         // Hive boss bar
         translationBuilder.add("bossbar.avp.hive.title", "Hive");
+
+        translationBuilder.add("avp.industrialfurance.displayName", "Industrial Furance");
     }
 
     private void addSound(TranslationBuilder translationBuilder, SoundEvent soundEvent, String value) {
