@@ -281,6 +281,15 @@ public class AVPBlocks {
     public static final Block TITANIUM_SIDING_SLAB = register(new SlabBlock(BlockProperties.TITANIUM), "titanium_siding_slab");
     public static final Block TITANIUM_SIDING_STAIRS = register(new StairBlock(TITANIUM_SIDING.defaultBlockState(), BlockProperties.TITANIUM), "titanium_siding_stairs");
 
+    // Standing Blocks - Slabs And Stairs
+    public static final Block FERROALUMINUM_STANDING_SLAB = register(new SlabBlock(BlockProperties.FERROALUMINUM), "ferroaluminum_standing_slab");
+    public static final Block FERROALUMINUM_STANDING_STAIRS = register(new StairBlock(FERROALUMINUM_STANDING.defaultBlockState(), BlockProperties.FERROALUMINUM), "ferroaluminum_standing_stairs");
+
+    public static final Block STEEL_STANDING_SLAB = register(new SlabBlock(BlockProperties.STEEL), "steel_standing_slab");
+    public static final Block STEEL_STANDING_STAIRS = register(new StairBlock(STEEL_STANDING.defaultBlockState(), BlockProperties.STEEL), "steel_standing_stairs");
+
+    public static final Block TITANIUM_STANDING_SLAB = register(new SlabBlock(BlockProperties.TITANIUM), "titanium_standing_slab");
+    public static final Block TITANIUM_STANDING_STAIRS = register(new StairBlock(TITANIUM_STANDING.defaultBlockState(), BlockProperties.TITANIUM), "titanium_standing_stairs");
 
     // Fastened Siding - Slabs and Stairs
     public static final Block FERROALUMINUM_FASTENED_SIDING_SLAB = register(new SlabBlock(BlockProperties.FERROALUMINUM), "ferroaluminum_fastened_siding_slab");

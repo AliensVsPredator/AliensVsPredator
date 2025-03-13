@@ -126,7 +126,7 @@ public class BlockProperties {
         .noOcclusion()
         .noCollission()
         .sound(SoundType.CHAIN)
-        .strength(2.0F)
+        .strength(1.1F)
         .pushReaction(PushReaction.DESTROY);
 
     public static final BlockBehaviour.Properties TITANIUM_ORE = STONE_ORE_PROPERTIES_SUPPLIER.get();

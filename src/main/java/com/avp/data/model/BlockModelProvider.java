@@ -260,6 +260,18 @@ public class BlockModelProvider extends FabricModelProvider {
                 .slab(AVPBlocks.TITANIUM_SIDING_SLAB)
                 .stairs(AVPBlocks.TITANIUM_SIDING_STAIRS);
 
+        generators.family(AVPBlocks.FERROALUMINUM_STANDING)
+                .slab(AVPBlocks.FERROALUMINUM_STANDING_SLAB)
+                .stairs(AVPBlocks.FERROALUMINUM_STANDING_STAIRS);
+
+        generators.family(AVPBlocks.STEEL_STANDING)
+                .slab(AVPBlocks.STEEL_STANDING_SLAB)
+                .stairs(AVPBlocks.STEEL_STANDING_STAIRS);
+
+        generators.family(AVPBlocks.TITANIUM_STANDING)
+                .slab(AVPBlocks.TITANIUM_STANDING_SLAB)
+                .stairs(AVPBlocks.TITANIUM_STANDING_STAIRS);
+
         generators.family(AVPBlocks.FERROALUMINUM_FASTENED_SIDING)
                 .slab(AVPBlocks.FERROALUMINUM_FASTENED_SIDING_SLAB)
                 .stairs(AVPBlocks.FERROALUMINUM_FASTENED_SIDING_STAIRS);

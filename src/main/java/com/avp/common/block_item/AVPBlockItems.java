@@ -222,6 +222,14 @@ public class AVPBlockItems {
     public static final BlockItem TITANIUM_SIDING_SLAB = register(AVPBlocks.TITANIUM_SIDING_SLAB);
     public static final BlockItem TITANIUM_SIDING_STAIRS = register(AVPBlocks.TITANIUM_SIDING_STAIRS);
 
+    public static final BlockItem FERROALUMINUM_STANDING_SLAB = register(AVPBlocks.FERROALUMINUM_STANDING_SLAB);
+    public static final BlockItem FERROALUMINUM_STANDING_STAIRS = register(AVPBlocks.FERROALUMINUM_STANDING_STAIRS);
+    public static final BlockItem STEEL_STANDING_SLAB = register(AVPBlocks.STEEL_STANDING_SLAB);
+    public static final BlockItem STEEL_STANDING_STAIRS = register(AVPBlocks.STEEL_STANDING_STAIRS);
+
+    public static final BlockItem TITANIUM_STANDING_SLAB = register(AVPBlocks.TITANIUM_STANDING_SLAB);
+    public static final BlockItem TITANIUM_STANDING_STAIRS = register(AVPBlocks.TITANIUM_STANDING_STAIRS);
+
     // Fastened Siding - Slabs and Stairs
     public static final BlockItem FERROALUMINUM_FASTENED_SIDING_SLAB = register(AVPBlocks.FERROALUMINUM_FASTENED_SIDING_SLAB);
     public static final BlockItem FERROALUMINUM_FASTENED_SIDING_STAIRS = register(AVPBlocks.FERROALUMINUM_FASTENED_SIDING_STAIRS);
