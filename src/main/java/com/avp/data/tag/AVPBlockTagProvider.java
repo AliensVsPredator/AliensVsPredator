@@ -27,24 +27,40 @@ public class AVPBlockTagProvider extends FabricTagProvider.BlockTagProvider {
 
         getOrCreateTagBuilder(AVPBlockTags.FERROALUMINUM)
             .add(
-                AVPBlocks.CHISELED_FERROALUMINUM,
-                AVPBlocks.CUT_FERROALUMINUM,
-                AVPBlocks.CUT_FERROALUMINUM_SLAB,
-                AVPBlocks.CUT_FERROALUMINUM_STAIRS,
-                AVPBlocks.FERROALUMINUM_BLOCK,
-                AVPBlocks.FERROALUMINUM_CHAIN_FENCE,
-                AVPBlocks.FERROALUMINUM_COLUMN,
-                AVPBlocks.FERROALUMINUM_FASTENED_SIDING,
-                AVPBlocks.FERROALUMINUM_FASTENED_STANDING,
-                AVPBlocks.FERROALUMINUM_GRATE,
-                AVPBlocks.FERROALUMINUM_PLATING,
-                AVPBlocks.FERROALUMINUM_SIDING,
-                AVPBlocks.FERROALUMINUM_STANDING,
-                AVPBlocks.FERROALUMINUM_TREAD,
-                AVPBlocks.FERROALUMINUM_DOOR,
-                AVPBlocks.FERROALUMINUM_TRAP_DOOR,
-                AVPBlocks.FERROALUMINUM_PRESSURE_PLATE,
-                AVPBlocks.FERROALUMINUM_BUTTON
+                    AVPBlocks.CHISELED_FERROALUMINUM,
+                    AVPBlocks.CUT_FERROALUMINUM,
+                    AVPBlocks.CUT_FERROALUMINUM_SLAB,
+                    AVPBlocks.CUT_FERROALUMINUM_STAIRS,
+                    AVPBlocks.FERROALUMINUM_BLOCK,
+                    AVPBlocks.FERROALUMINUM_CHAIN_FENCE,
+                    AVPBlocks.FERROALUMINUM_COLUMN,
+                    AVPBlocks.FERROALUMINUM_FASTENED_SIDING,
+                    AVPBlocks.FERROALUMINUM_FASTENED_STANDING,
+                    AVPBlocks.FERROALUMINUM_GRATE,
+                    AVPBlocks.FERROALUMINUM_PLATING,
+                    AVPBlocks.FERROALUMINUM_SIDING,
+                    AVPBlocks.FERROALUMINUM_STANDING,
+                    AVPBlocks.FERROALUMINUM_TREAD,
+                    AVPBlocks.FERROALUMINUM_DOOR,
+                    AVPBlocks.FERROALUMINUM_TRAP_DOOR,
+                    AVPBlocks.FERROALUMINUM_PRESSURE_PLATE,
+                    AVPBlocks.FERROALUMINUM_BUTTON,
+                    AVPBlocks.FERROALUMINUM_FASTENED_SIDING_SLAB,
+                    AVPBlocks.FERROALUMINUM_FASTENED_SIDING_STAIRS,
+                    AVPBlocks.FERROALUMINUM_FASTENED_STANDING_SLAB,
+                    AVPBlocks.FERROALUMINUM_FASTENED_STANDING_STAIRS,
+                    AVPBlocks.FERROALUMINUM_GRATE_SLAB,
+                    AVPBlocks.FERROALUMINUM_GRATE_STAIRS,
+                    AVPBlocks.FERROALUMINUM_PLATING_SLAB,
+                    AVPBlocks.FERROALUMINUM_PLATING_STAIRS,
+                    AVPBlocks.FERROALUMINUM_SIDING_SLAB,
+                    AVPBlocks.FERROALUMINUM_SIDING_STAIRS,
+                    AVPBlocks.FERROALUMINUM_SLAB,
+                    AVPBlocks.FERROALUMINUM_STAIRS,
+                    AVPBlocks.FERROALUMINUM_STANDING_SLAB,
+                    AVPBlocks.FERROALUMINUM_STANDING_STAIRS,
+                    AVPBlocks.FERROALUMINUM_TREAD_SLAB,
+                    AVPBlocks.FERROALUMINUM_TREAD_STAIRS
             );
 
         var industrialConcreteTagBuilder = getOrCreateTagBuilder(AVPBlockTags.INDUSTRIAL_CONCRETE);
@@ -114,39 +130,81 @@ public class AVPBlockTagProvider extends FabricTagProvider.BlockTagProvider {
 
         getOrCreateTagBuilder(AVPBlockTags.STEEL)
             .add(
-                AVPBlocks.CHISELED_STEEL,
-                AVPBlocks.CUT_STEEL,
-                AVPBlocks.CUT_STEEL_SLAB,
-                AVPBlocks.CUT_STEEL_STAIRS,
-                AVPBlocks.STEEL_BARS,
-                AVPBlocks.STEEL_BLOCK,
-                AVPBlocks.STEEL_CHAIN_FENCE,
-                AVPBlocks.STEEL_COLUMN,
-                AVPBlocks.STEEL_FASTENED_SIDING,
-                AVPBlocks.STEEL_FASTENED_STANDING,
-                AVPBlocks.STEEL_GRATE,
-                AVPBlocks.STEEL_PLATING,
-                AVPBlocks.STEEL_SIDING,
-                AVPBlocks.STEEL_STANDING,
-                AVPBlocks.STEEL_TREAD
+                    AVPBlocks.CHISELED_STEEL,
+                    AVPBlocks.CUT_STEEL,
+                    AVPBlocks.CUT_STEEL_SLAB,
+                    AVPBlocks.CUT_STEEL_STAIRS,
+                    AVPBlocks.STEEL_BARS,
+                    AVPBlocks.STEEL_BLOCK,
+                    AVPBlocks.STEEL_CHAIN_FENCE,
+                    AVPBlocks.STEEL_COLUMN,
+                    AVPBlocks.STEEL_FASTENED_SIDING,
+                    AVPBlocks.STEEL_FASTENED_SIDING_SLAB,
+                    AVPBlocks.STEEL_FASTENED_SIDING_STAIRS,
+                    AVPBlocks.STEEL_FASTENED_STANDING,
+                    AVPBlocks.STEEL_FASTENED_STANDING_SLAB,
+                    AVPBlocks.STEEL_FASTENED_STANDING_STAIRS,
+                    AVPBlocks.STEEL_GRATE,
+                    AVPBlocks.STEEL_GRATE_SLAB,
+                    AVPBlocks.STEEL_GRATE_STAIRS,
+                    AVPBlocks.STEEL_PLATING,
+                    AVPBlocks.STEEL_PLATING_SLAB,
+                    AVPBlocks.STEEL_PLATING_STAIRS,
+                    AVPBlocks.STEEL_PRESSURE_PLATE,
+                    AVPBlocks.STEEL_SIDING,
+                    AVPBlocks.STEEL_SIDING_SLAB,
+                    AVPBlocks.STEEL_SIDING_STAIRS,
+                    AVPBlocks.STEEL_SLAB,
+                    AVPBlocks.STEEL_STAIRS,
+                    AVPBlocks.STEEL_STANDING,
+                    AVPBlocks.STEEL_STANDING_SLAB,
+                    AVPBlocks.STEEL_STANDING_STAIRS,
+                    AVPBlocks.STEEL_TREAD,
+                    AVPBlocks.STEEL_TREAD_SLAB,
+                    AVPBlocks.STEEL_TREAD_STAIRS,
+                    AVPBlocks.STEEL_BUTTON,
+                    AVPBlocks.STEEL_DOOR,
+                    AVPBlocks.STEEL_TRAP_DOOR
             );
 
         getOrCreateTagBuilder(AVPBlockTags.TITANIUM)
             .add(
-                AVPBlocks.CHISELED_TITANIUM,
-                AVPBlocks.CUT_TITANIUM,
-                AVPBlocks.CUT_TITANIUM_SLAB,
-                AVPBlocks.CUT_TITANIUM_STAIRS,
-                AVPBlocks.TITANIUM_BLOCK,
-                AVPBlocks.TITANIUM_CHAIN_FENCE,
-                AVPBlocks.TITANIUM_COLUMN,
-                AVPBlocks.TITANIUM_FASTENED_SIDING,
-                AVPBlocks.TITANIUM_FASTENED_STANDING,
-                AVPBlocks.TITANIUM_GRATE,
-                AVPBlocks.TITANIUM_PLATING,
-                AVPBlocks.TITANIUM_SIDING,
-                AVPBlocks.TITANIUM_STANDING,
-                AVPBlocks.TITANIUM_TREAD
+                    AVPBlocks.CHISELED_TITANIUM,
+                    AVPBlocks.CUT_TITANIUM,
+                    AVPBlocks.CUT_TITANIUM_SLAB,
+                    AVPBlocks.CUT_TITANIUM_STAIRS,
+                    AVPBlocks.TITANIUM_BLOCK,
+                    AVPBlocks.TITANIUM_CHAIN_FENCE,
+                    AVPBlocks.TITANIUM_COLUMN,
+                    AVPBlocks.TITANIUM_FASTENED_SIDING,
+                    AVPBlocks.TITANIUM_FASTENED_SIDING_SLAB,
+                    AVPBlocks.TITANIUM_FASTENED_SIDING_STAIRS,
+                    AVPBlocks.TITANIUM_FASTENED_STANDING,
+                    AVPBlocks.TITANIUM_FASTENED_STANDING_SLAB,
+                    AVPBlocks.TITANIUM_FASTENED_STANDING_STAIRS,
+                    AVPBlocks.TITANIUM_GRATE,
+                    AVPBlocks.TITANIUM_GRATE_SLAB,
+                    AVPBlocks.TITANIUM_GRATE_STAIRS,
+                    AVPBlocks.TITANIUM_PLATING,
+                    AVPBlocks.TITANIUM_PLATING_SLAB,
+                    AVPBlocks.TITANIUM_PLATING_STAIRS,
+                    AVPBlocks.TITANIUM_PRESSURE_PLATE,
+                    AVPBlocks.TITANIUM_SIDING,
+                    AVPBlocks.TITANIUM_SIDING_SLAB,
+                    AVPBlocks.TITANIUM_SIDING_STAIRS,
+                    AVPBlocks.TITANIUM_SLAB,
+                    AVPBlocks.TITANIUM_STAIRS,
+                    AVPBlocks.TITANIUM_STANDING,
+                    AVPBlocks.TITANIUM_STANDING_SLAB,
+                    AVPBlocks.TITANIUM_STANDING_STAIRS,
+                    AVPBlocks.TITANIUM_TREAD,
+                    AVPBlocks.TITANIUM_TREAD_SLAB,
+                    AVPBlocks.TITANIUM_TREAD_STAIRS,
+                    AVPBlocks.TITANIUM_BUTTON,
+                    AVPBlocks.TITANIUM_DOOR,
+                    AVPBlocks.TITANIUM_TRAP_DOOR,
+                    AVPBlocks.DEEPSLATE_TITANIUM_ORE,
+                    AVPBlocks.RAW_TITANIUM_BLOCK
             );
 
         // Acid-immune blocks
@@ -273,9 +331,33 @@ public class AVPBlockTagProvider extends FabricTagProvider.BlockTagProvider {
         var slabTagProvider = getOrCreateTagBuilder(BlockTags.SLABS);
 
         slabTagProvider.add(
-            AVPBlocks.CUT_FERROALUMINUM_SLAB,
-            AVPBlocks.CUT_STEEL_SLAB,
-            AVPBlocks.CUT_TITANIUM_SLAB
+                AVPBlocks.CUT_FERROALUMINUM_SLAB,
+                AVPBlocks.CUT_STEEL_SLAB,
+                AVPBlocks.CUT_TITANIUM_SLAB,
+                AVPBlocks.FERROALUMINUM_FASTENED_SIDING_SLAB,
+                AVPBlocks.FERROALUMINUM_FASTENED_STANDING_SLAB,
+                AVPBlocks.FERROALUMINUM_GRATE_SLAB,
+                AVPBlocks.FERROALUMINUM_PLATING_SLAB,
+                AVPBlocks.FERROALUMINUM_SIDING_SLAB,
+                AVPBlocks.FERROALUMINUM_SLAB,
+                AVPBlocks.FERROALUMINUM_STANDING_SLAB,
+                AVPBlocks.FERROALUMINUM_TREAD_SLAB,
+                AVPBlocks.STEEL_FASTENED_SIDING_SLAB,
+                AVPBlocks.STEEL_FASTENED_STANDING_SLAB,
+                AVPBlocks.STEEL_GRATE_SLAB,
+                AVPBlocks.STEEL_PLATING_SLAB,
+                AVPBlocks.STEEL_SIDING_SLAB,
+                AVPBlocks.STEEL_SLAB,
+                AVPBlocks.STEEL_STANDING_SLAB,
+                AVPBlocks.STEEL_TREAD_SLAB,
+                AVPBlocks.TITANIUM_FASTENED_SIDING_SLAB,
+                AVPBlocks.TITANIUM_FASTENED_STANDING_SLAB,
+                AVPBlocks.TITANIUM_GRATE_SLAB,
+                AVPBlocks.TITANIUM_PLATING_SLAB,
+                AVPBlocks.TITANIUM_SIDING_SLAB,
+                AVPBlocks.TITANIUM_SLAB,
+                AVPBlocks.TITANIUM_STANDING_SLAB,
+                AVPBlocks.TITANIUM_TREAD_SLAB
         );
 
         AVPBlocks.DYE_COLOR_TO_CONCRETE_SLAB.values().forEach(slabTagProvider::add);
@@ -286,12 +368,76 @@ public class AVPBlockTagProvider extends FabricTagProvider.BlockTagProvider {
         AVPBlocks.DYE_COLOR_TO_PIPE_PADDING_SLAB.values().forEach(slabTagProvider::add);
         AVPBlocks.DYE_COLOR_TO_PLASTIC_SLAB.values().forEach(slabTagProvider::add);
 
+        var pressurePlateTagProvider = getOrCreateTagBuilder(BlockTags.PRESSURE_PLATES);
+
+        pressurePlateTagProvider.add(
+            AVPBlocks.FERROALUMINUM_PRESSURE_PLATE,
+            AVPBlocks.STEEL_PRESSURE_PLATE,
+            AVPBlocks.TITANIUM_PRESSURE_PLATE
+        );
+
+        var doorTagProvider = getOrCreateTagBuilder(BlockTags.DOORS);
+
+        doorTagProvider.add(
+            AVPBlocks.FERROALUMINUM_DOOR,
+            AVPBlocks.STEEL_DOOR,
+            AVPBlocks.TITANIUM_DOOR
+        );
+
+        var trapdoorTagProvider = getOrCreateTagBuilder(BlockTags.TRAPDOORS);
+
+        trapdoorTagProvider.add(
+            AVPBlocks.FERROALUMINUM_TRAP_DOOR,
+            AVPBlocks.STEEL_TRAP_DOOR,
+            AVPBlocks.TITANIUM_TRAP_DOOR
+        );
+
+        var buttonTagProvider = getOrCreateTagBuilder(BlockTags.BUTTONS);
+
+        buttonTagProvider.add(
+            AVPBlocks.FERROALUMINUM_BUTTON,
+            AVPBlocks.STEEL_BUTTON,
+            AVPBlocks.TITANIUM_BUTTON
+        );
+
+        var fenceTagProvider = getOrCreateTagBuilder(BlockTags.FENCES);
+
+        fenceTagProvider.add(
+            AVPBlocks.FERROALUMINUM_CHAIN_FENCE,
+            AVPBlocks.STEEL_CHAIN_FENCE,
+            AVPBlocks.TITANIUM_CHAIN_FENCE
+        );
+
         var stairsTagProvider = getOrCreateTagBuilder(BlockTags.STAIRS);
 
         stairsTagProvider.add(
-            AVPBlocks.CUT_FERROALUMINUM_STAIRS,
-            AVPBlocks.CUT_STEEL_STAIRS,
-            AVPBlocks.CUT_TITANIUM_STAIRS
+                AVPBlocks.CUT_FERROALUMINUM_STAIRS,
+                AVPBlocks.CUT_STEEL_STAIRS,
+                AVPBlocks.CUT_TITANIUM_STAIRS,
+                AVPBlocks.FERROALUMINUM_FASTENED_SIDING_STAIRS,
+                AVPBlocks.FERROALUMINUM_FASTENED_STANDING_STAIRS,
+                AVPBlocks.FERROALUMINUM_GRATE_STAIRS,
+                AVPBlocks.FERROALUMINUM_PLATING_STAIRS,
+                AVPBlocks.FERROALUMINUM_SIDING_STAIRS,
+                AVPBlocks.FERROALUMINUM_STAIRS,
+                AVPBlocks.FERROALUMINUM_STANDING_STAIRS,
+                AVPBlocks.FERROALUMINUM_TREAD_STAIRS,
+                AVPBlocks.STEEL_FASTENED_SIDING_STAIRS,
+                AVPBlocks.STEEL_FASTENED_STANDING_STAIRS,
+                AVPBlocks.STEEL_GRATE_STAIRS,
+                AVPBlocks.STEEL_PLATING_STAIRS,
+                AVPBlocks.STEEL_SIDING_STAIRS,
+                AVPBlocks.STEEL_STAIRS,
+                AVPBlocks.STEEL_STANDING_STAIRS,
+                AVPBlocks.STEEL_TREAD_STAIRS,
+                AVPBlocks.TITANIUM_FASTENED_SIDING_STAIRS,
+                AVPBlocks.TITANIUM_FASTENED_STANDING_STAIRS,
+                AVPBlocks.TITANIUM_GRATE_STAIRS,
+                AVPBlocks.TITANIUM_PLATING_STAIRS,
+                AVPBlocks.TITANIUM_SIDING_STAIRS,
+                AVPBlocks.TITANIUM_STAIRS,
+                AVPBlocks.TITANIUM_STANDING_STAIRS,
+                AVPBlocks.TITANIUM_TREAD_STAIRS
         );
 
         AVPBlocks.DYE_COLOR_TO_CONCRETE_STAIRS.values().forEach(stairsTagProvider::add);
