@@ -168,9 +168,9 @@ public class AVPItems {
 
     public static final Item RAW_MONAZITE = register("raw_monazite");
 
-    public static final Item RAW_ROYAL_JELLY = register("raw_royal_jelly");
+    public static final Item RAW_ROYAL_JELLY = register(new RoyalJellyItem(), "raw_royal_jelly");
 
-    public static final Item POISON_JELLY = register("poison_jelly");
+    public static final Item POISON_JELLY = register(new PoisionJellyItem(), "poison_jelly");
 
     public static final Item RAW_SILICA = register("raw_silica");
 

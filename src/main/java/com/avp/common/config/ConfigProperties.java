@@ -39,6 +39,10 @@ public class ConfigProperties {
         "spawning.custom_mob_category.alien.limit"
     );
 
+    public static final ConfigPropertyKey<Integer> PREDATOR_CUSTOM_MOB_CATEGORY_SPAWN_LIMIT = registerInt(
+            "spawning.custom_mob_category.predator.limit"
+    );
+
     public static final ConfigPropertyKey<Boolean> BULLETS_DAMAGE_BLOCKS_ENABLED = registerBoolean("bullets_damage_blocks.enabled");
 
     public static final ConfigMobAttributesContainer CHESTBURSTER_ATTRIBUTES = registerAttributes("chestburster");
@@ -112,6 +116,46 @@ public class ConfigProperties {
     public static final ConfigPropertyKey<Boolean> YOUNG_SPAWNING_ENABLED = registerBoolean("spawning.young.enabled");
 
     public static final ConfigMobAttributesContainer MARINE_ATTRIBUTES = registerAttributes("marine");
+
+    public static final ConfigPropertyKey<Integer> CHESTBURSTER_MAX_GROWTH_TIMER_SECONDS = registerInt(
+            "chestburster_max_growth_timer_seconds"
+    );
+
+    public static final ConfigPropertyKey<Integer> DRONE_MAX_GROWTH_TIMER_SECONDS = registerInt(
+            "drone_max_growth_timer_seconds"
+    );
+
+    public static final ConfigPropertyKey<Integer> WARRIOR_MAX_GROWTH_TIMER_SECONDS = registerInt(
+            "warrior_max_growth_timer_seconds"
+    );
+
+    public static final ConfigPropertyKey<Integer> PRAETORIAN_MAX_GROWTH_TIMER_SECONDS = registerInt(
+            "praetorian_max_growth_timer_seconds"
+    );
+
+    public static final ConfigPropertyKey<Integer> PRAETORIAN_SHORTCUT_TIMER_SECONDS = registerInt(
+            "praetorian_shortcut_timer_seconds"
+    );
+
+    public static final ConfigPropertyKey<Integer> CHESTBURSTER_NEST_TICKRATE = registerInt(
+            "chestburster_nest_tickrate"
+    );
+
+    public static final ConfigPropertyKey<Integer> DRONE_NEST_TICKRATE = registerInt(
+            "drone_nest_tickrate"
+    );
+
+    public static final ConfigPropertyKey<Integer> WARRIOR_NEST_TICKRATE = registerInt(
+            "warrior_nest_tickrate"
+    );
+
+    public static final ConfigPropertyKey<Integer> PRAETORIAN_NEST_TICKRATE = registerInt(
+            "praetorian_nest_tickrate"
+    );
+
+    public static final ConfigPropertyKey<Integer> QUEEN_NEST_TICKRATE = registerInt(
+            "queen_nest_tickrate"
+    );
 
     private static ConfigMobAttributesContainer registerAttributes(String entityName) {
         var subpath = entityName + ".stats.";

@@ -77,6 +77,7 @@ public class BalanceHiveTask extends HiveTask {
         var hiveMemberCount = hive.hiveMemberDataMap().size();
         var warriors = membersByType.getOrDefault(AVPEntityTypes.WARRIOR, List.of());
         var praetorians = membersByType.getOrDefault(AVPEntityTypes.PRAETORIAN, List.of());
+        var queens = membersByType.getOrDefault(AVPEntityTypes.QUEEN, List.of());
 
         var properties = AVP.HIVES_CONFIG.properties();
         int hiveMembersRequiredForPraetorian = properties.getOrThrow(ConfigProperties.HIVE_MEMBERS_REQUIRED_FOR_PRAETORIAN);
@@ -85,7 +86,7 @@ public class BalanceHiveTask extends HiveTask {
             ? Math.max(0, Math.clamp(hiveMemberCount / hiveMembersRequiredForPraetorian, 0, maxPraetorianCount) - praetorians.size())
             : 0;
 
-        if (desiredPraetorianCount == 0) {
+        if (desiredPraetorianCount == 0 || !queens.isEmpty() || !hive.isChunkLoaded()) {
             return;
         }
 
@@ -131,7 +132,7 @@ public class BalanceHiveTask extends HiveTask {
         var type = xenomorph.getType();
         var growthStage = AlienLifecycleRegistry.getOrNull(null, type);
 
-        if (growthStage == null) {
+        if (growthStage == null || xenomorph.getEntityData().get(Xenomorph.IS_POISONED)) {
             return;
         }
 

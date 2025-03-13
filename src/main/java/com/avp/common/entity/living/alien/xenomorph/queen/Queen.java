@@ -24,7 +24,8 @@ public class Queen extends Xenomorph {
 
     @Override
     protected @NotNull ResinData createResinData() {
-        return new ResinData(0, 128, 1, 8 * 20);
+        var container = AVP.STATS_CONFIG.properties();
+        return new ResinData(0, 128, 1, container.getOrDefault(ConfigProperties.QUEEN_NEST_TICKRATE, 160));
     }
 
     @Override
@@ -45,5 +46,10 @@ public class Queen extends Xenomorph {
     @Override
     public boolean isPushable() {
         return false;
+    }
+
+    @Override
+    public int maxJellyToGrowth() {
+        return Integer.MAX_VALUE;
     }
 }

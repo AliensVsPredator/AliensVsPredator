@@ -45,7 +45,7 @@ public class SpawnPlacements {
             var weight = properties.getOrThrow(ConfigProperties.YAUTJA_SPAWNING.weight());
 
             net.minecraft.world.entity.SpawnPlacements.register(AVPEntityTypes.YAUTJA, placement, heightMap, YautjaSpawning.PREDICATE);
-            BiomeModifications.addSpawn(IS_JUNGLE, MobCategory.MONSTER, AVPEntityTypes.YAUTJA, weight, minGroupSize, maxGroupSize);
+            BiomeModifications.addSpawn(IS_JUNGLE, AVPEntityTypes.PREDATOR_CATEGORY, AVPEntityTypes.YAUTJA, weight, minGroupSize, maxGroupSize);
         }
 
         if (adultSpawningEnabled) {

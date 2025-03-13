@@ -1,5 +1,6 @@
 package com.avp.common.block_item;
 
+import com.avp.common.item.RoyalJellyBlockItem;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.BlockItem;
@@ -22,7 +23,7 @@ public class AVPBlockItems {
 
     public static final BlockItem NUKE_BLOCK = register(AVPBlocks.NUKE_BLOCK);
 
-    public static final BlockItem ROYAL_JELLY_BLOCK = register(AVPBlocks.ROYAL_JELLY_BLOCK);
+    public static final BlockItem ROYAL_JELLY_BLOCK = registerCustomBlockItem(new RoyalJellyBlockItem(AVPBlocks.ROYAL_JELLY_BLOCK), AVPBlocks.ROYAL_JELLY_BLOCK);
 
     public static final BlockItem ALUMINUM_BLOCK = register(AVPBlocks.ALUMINUM_BLOCK);
 
@@ -535,6 +536,12 @@ public class AVPBlockItems {
     public static BlockItem register(Item.Properties properties, Block block, String id) {
         var resourceLocation = AVPResources.location(id);
         var blockItem = new BlockItem(block, properties);
+
+        return Registry.register(BuiltInRegistries.ITEM, resourceLocation, blockItem);
+    }
+
+    public static BlockItem registerCustomBlockItem(BlockItem blockItem, Block block) {
+        var resourceLocation = AVPResources.location(BuiltInRegistries.BLOCK.getKey(block).getPath());
 
         return Registry.register(BuiltInRegistries.ITEM, resourceLocation, blockItem);
     }

@@ -1,5 +1,6 @@
 package com.avp.common.entity.living.alien.xenomorph;
 
+import com.avp.common.lifecycle.registry.AlienLifecycleRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -141,6 +142,13 @@ public abstract class Xenomorph extends Alien implements ResinProducer {
             if (target != null && !AlienPredicates.isThreateningTarget(this, target)) {
                 // If the target is no longer valid, stop targeting them.
                 setTarget(null);
+            }
+
+            var type = this.getType();
+            var growthStage = AlienLifecycleRegistry.getOrNull(null, type);
+
+            if (growthStage != null && !this.getEntityData().get(Xenomorph.IS_POISONED) && this.getEntityData().get(Xenomorph.JELLY_COUNT) >= this.maxJellyToGrowth()) {
+                this.growthManager().grow(growthStage);
             }
         }
     }

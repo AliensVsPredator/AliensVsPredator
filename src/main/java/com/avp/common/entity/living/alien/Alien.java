@@ -1,5 +1,6 @@
 package com.avp.common.entity.living.alien;
 
+import com.avp.common.entity.living.alien.xenomorph.Xenomorph;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -40,6 +41,16 @@ public abstract class Alien extends Monster {
         EntityDataSerializers.BOOLEAN
     );
 
+    public static final EntityDataAccessor<Integer> JELLY_COUNT = SynchedEntityData.defineId(
+            Alien.class,
+            EntityDataSerializers.INT
+    );
+
+    public static final EntityDataAccessor<Boolean> IS_POISONED = SynchedEntityData.defineId(
+            Alien.class,
+            EntityDataSerializers.BOOLEAN
+    );
+
     protected final GeneManager geneManager;
 
     protected final HiveManager hiveManager;
@@ -77,6 +88,8 @@ public abstract class Alien extends Monster {
         super.defineSynchedData(builder);
         builder.define(IS_ABERRANT, false);
         builder.define(IS_NETHER_AFFLICTED, false);
+        builder.define(IS_POISONED, false);
+        builder.define(JELLY_COUNT, 0);
     }
 
     public boolean isAberrant() {
@@ -237,6 +250,8 @@ public abstract class Alien extends Monster {
     @Override
     public void readAdditionalSaveData(CompoundTag compoundTag) {
         super.readAdditionalSaveData(compoundTag);
+        this.getEntityData().set(IS_POISONED, compoundTag.getBoolean("isPoisoned"));
+        this.getEntityData().set(JELLY_COUNT, compoundTag.getInt("jellyCount"));
         geneManager.load(compoundTag);
         hiveManager.load(compoundTag);
         setAberrant(compoundTag.getBoolean(IS_ABERRANT_KEY));
@@ -246,6 +261,8 @@ public abstract class Alien extends Monster {
     @Override
     public void addAdditionalSaveData(CompoundTag compoundTag) {
         super.addAdditionalSaveData(compoundTag);
+        compoundTag.putBoolean("isPoisoned", this.getEntityData().get(IS_POISONED));
+        compoundTag.putInt("jellyCount", this.getEntityData().get(JELLY_COUNT));
         geneManager.save(compoundTag);
         hiveManager.save(compoundTag);
         compoundTag.putBoolean(IS_ABERRANT_KEY, isAberrant());
@@ -262,5 +279,9 @@ public abstract class Alien extends Monster {
 
     public int lastHurtTimeInTicks() {
         return lastHurtTimeInTicks;
+    }
+
+    public int maxJellyToGrowth() {
+        return 10;
     }
 }

@@ -1,5 +1,7 @@
 package com.avp.common.entity.living.alien.chestburster;
 
+import com.avp.common.entity.living.alien.xenomorph.Xenomorph;
+import com.avp.common.lifecycle.registry.AlienLifecycleRegistry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -87,10 +89,19 @@ public class Chestburster extends Alien implements ResinProducer {
         moveAnalysis.tick();
         growthManager.tick();
         resinManager.tick();
+        if (!this.level().isClientSide()) {
+            var type = this.getType();
+            var growthStage = AlienLifecycleRegistry.getOrNull(null, type);
+
+            if (growthStage != null && !this.getEntityData().get(Xenomorph.IS_POISONED) && this.getEntityData().get(Xenomorph.JELLY_COUNT) == this.maxJellyToGrowth()) {
+                this.growthManager().grow(growthStage);
+            }
+        }
     }
 
     protected @NotNull ResinData createResinData() {
-        return new ResinData(0, 8, 1, 750);
+        var container = AVP.STATS_CONFIG.properties();
+        return new ResinData(0, 8, 1, container.getOrDefault(ConfigProperties.CHESTBURSTER_NEST_TICKRATE, 750));
     }
 
     public void runPassiveAnimations() {
@@ -131,6 +142,10 @@ public class Chestburster extends Alien implements ResinProducer {
         return resinManager;
     }
 
+    public GrowthManager growthManager() {
+        return growthManager;
+    }
+
     @Override
     public @Nullable ItemStack getPickResult() {
         SpawnEggItem spawnEggItem = null;
@@ -144,5 +159,10 @@ public class Chestburster extends Alien implements ResinProducer {
         }
 
         return spawnEggItem == null ? super.getPickResult() : new ItemStack(spawnEggItem);
+    }
+
+    @Override
+    public int maxJellyToGrowth() {
+        return 1;
     }
 }

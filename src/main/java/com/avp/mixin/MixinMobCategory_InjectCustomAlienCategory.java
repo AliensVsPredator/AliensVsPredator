@@ -54,11 +54,15 @@ public abstract class MixinMobCategory_InjectCustomAlienCategory {
         }
 
         var alienSpawnLimit = properties.getOrThrow(ConfigProperties.ALIEN_CUSTOM_MOB_CATEGORY_SPAWN_LIMIT);
+        var predatorSpawnLimit = properties.getOrThrow(ConfigProperties.ALIEN_CUSTOM_MOB_CATEGORY_SPAWN_LIMIT);
         var categories = new ArrayList<>(Arrays.asList(field_6301));
         var last = categories.get(categories.size() - 1);
         var alien = newMobCategory("ALIENS", last.ordinal() + 1, "alien", alienSpawnLimit, false, false, 128);
+        var predator = newMobCategory("PREDATOR", last.ordinal() + 1, "predator", predatorSpawnLimit, false, false, 128);
         AVPMobCategories.ALIENS = alien;
+        AVPMobCategories.PREDATOR = predator;
         categories.add(alien);
+        categories.add(predator);
         field_6301 = categories.toArray(new MobCategory[0]);
     }
 }

@@ -1,5 +1,6 @@
 package com.avp.common.manager;
 
+import com.avp.common.entity.living.alien.xenomorph.Xenomorph;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -38,6 +39,10 @@ public class GrowthManager {
 
     public void tick() {
         if (entity.level().isClientSide || !growOverTime) {
+            return;
+        }
+
+        if (entity instanceof Xenomorph xenomorph && xenomorph.getEntityData().get(Xenomorph.IS_POISONED) ) {
             return;
         }
 
@@ -105,6 +110,7 @@ public class GrowthManager {
 
     private void swapOldStageWithNewStage(LivingEntity nextForm, Level level) {
         copyEntityTagData(entity, nextForm);
+        nextForm.getEntityData().set(Xenomorph.JELLY_COUNT, 0);
 
         // Move the next form to the entity's current position. Set rotation angles as well.
         nextForm.moveTo(entity.position(), entity.getYRot(), entity.getXRot());

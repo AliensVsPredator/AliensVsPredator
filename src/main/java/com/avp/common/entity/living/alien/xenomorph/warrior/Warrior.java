@@ -35,7 +35,8 @@ public class Warrior extends Xenomorph {
 
     @Override
     protected @NotNull ResinData createResinData() {
-        return new ResinData(0, 32, 1, 2 * 20);
+        var container = AVP.STATS_CONFIG.properties();
+        return new ResinData(0, 32, 1, container.getOrDefault(ConfigProperties.WARRIOR_NEST_TICKRATE, 40));
     }
 
     @Override
@@ -103,5 +104,10 @@ public class Warrior extends Xenomorph {
         }
 
         return super.getDefaultLootTable();
+    }
+
+    @Override
+    public int maxJellyToGrowth() {
+        return 4;
     }
 }

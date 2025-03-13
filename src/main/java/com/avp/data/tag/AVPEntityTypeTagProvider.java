@@ -61,7 +61,8 @@ public class AVPEntityTypeTagProvider extends FabricTagProvider.EntityTypeTagPro
                 EntityType.PLAYER,
                 EntityType.VILLAGER,
                 EntityType.WANDERING_TRADER,
-                EntityType.WITCH
+                EntityType.WITCH,
+                AVPEntityTypes.MARINE
             );
 
         getOrCreateTagBuilder(AVPEntityTypeTags.NETHER_CREATURES)
@@ -205,7 +206,8 @@ public class AVPEntityTypeTagProvider extends FabricTagProvider.EntityTypeTagPro
                 EntityType.VILLAGER,
                 EntityType.WANDERING_TRADER,
                 EntityType.WITCH,
-                EntityType.WOLF
+                EntityType.WOLF,
+                AVPEntityTypes.MARINE
             );
     }
 
