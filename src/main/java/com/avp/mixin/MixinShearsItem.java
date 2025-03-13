@@ -35,6 +35,10 @@ public class MixinShearsItem {
     @Inject(method = "mineBlock", at = @At("RETURN"), cancellable = true)
     private void avp$mineBlock(ItemStack itemStack, Level level, BlockState blockState, BlockPos blockPos, LivingEntity livingEntity, CallbackInfoReturnable<Boolean> cir)
     {
-        cir.setReturnValue(blockState.is(AVPBlocks.RAZOR_WIRE));
+        boolean originReturnVal = cir.getReturnValue();
+        if(originReturnVal){
+            cir.setReturnValue(blockState.is(AVPBlocks.RAZOR_WIRE));
+        }
+
     }
 }

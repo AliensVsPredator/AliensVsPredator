@@ -50,6 +50,39 @@ public class BlocksCreativeModeTabInitializer {
             entries.accept(AVPBlocks.FERROALUMINUM_STANDING);
             entries.accept(AVPBlocks.FERROALUMINUM_TRAP_DOOR);
             entries.accept(AVPBlocks.FERROALUMINUM_TREAD);
+
+            // Basic slabs and stairs
+            entries.accept(AVPBlocks.FERROALUMINUM_SLAB);
+            entries.accept(AVPBlocks.FERROALUMINUM_STAIRS);
+
+            // Siding slabs and stairs
+            entries.accept(AVPBlocks.FERROALUMINUM_SIDING_SLAB);
+            entries.accept(AVPBlocks.FERROALUMINUM_SIDING_STAIRS);
+
+            // Standing slabs and stairs
+            entries.accept(AVPBlocks.FERROALUMINUM_STANDING_SLAB);
+            entries.accept(AVPBlocks.FERROALUMINUM_STANDING_STAIRS);
+
+            // Fastened siding slabs and stairs
+            entries.accept(AVPBlocks.FERROALUMINUM_FASTENED_SIDING_SLAB);
+            entries.accept(AVPBlocks.FERROALUMINUM_FASTENED_SIDING_STAIRS);
+
+            // Fastened standing slabs and stairs
+            entries.accept(AVPBlocks.FERROALUMINUM_FASTENED_STANDING_SLAB);
+            entries.accept(AVPBlocks.FERROALUMINUM_FASTENED_STANDING_STAIRS);
+
+            // Plating slabs and stairs
+            entries.accept(AVPBlocks.FERROALUMINUM_PLATING_SLAB);
+            entries.accept(AVPBlocks.FERROALUMINUM_PLATING_STAIRS);
+
+            // Tread slabs and stairs
+            entries.accept(AVPBlocks.FERROALUMINUM_TREAD_SLAB);
+            entries.accept(AVPBlocks.FERROALUMINUM_TREAD_STAIRS);
+
+            // Grate slabs and stairs
+            entries.accept(AVPBlocks.FERROALUMINUM_GRATE_SLAB);
+            entries.accept(AVPBlocks.FERROALUMINUM_GRATE_STAIRS);
+
             entries.accept(AVPBlocks.LEAD_BLOCK);
             entries.accept(AVPBlocks.NUKE_BLOCK);
             entries.accept(AVPBlocks.STEEL_BLOCK);
@@ -71,6 +104,39 @@ public class BlocksCreativeModeTabInitializer {
             entries.accept(AVPBlocks.STEEL_STANDING);
             entries.accept(AVPBlocks.STEEL_TRAP_DOOR);
             entries.accept(AVPBlocks.STEEL_TREAD);
+
+            // Basic slabs and stairs
+            entries.accept(AVPBlocks.STEEL_SLAB);
+            entries.accept(AVPBlocks.STEEL_STAIRS);
+
+            // Siding slabs and stairs
+            entries.accept(AVPBlocks.STEEL_SIDING_SLAB);
+            entries.accept(AVPBlocks.STEEL_SIDING_STAIRS);
+
+            // Standing slabs and stairs
+            entries.accept(AVPBlocks.STEEL_STANDING_SLAB);
+            entries.accept(AVPBlocks.STEEL_STANDING_STAIRS);
+
+            // Fastened siding slabs and stairs
+            entries.accept(AVPBlocks.STEEL_FASTENED_SIDING_SLAB);
+            entries.accept(AVPBlocks.STEEL_FASTENED_SIDING_STAIRS);
+
+            // Fastened standing slabs and stairs
+            entries.accept(AVPBlocks.STEEL_FASTENED_STANDING_SLAB);
+            entries.accept(AVPBlocks.STEEL_FASTENED_STANDING_STAIRS);
+
+            // Plating slabs and stairs
+            entries.accept(AVPBlocks.STEEL_PLATING_SLAB);
+            entries.accept(AVPBlocks.STEEL_PLATING_STAIRS);
+
+            // Tread slabs and stairs
+            entries.accept(AVPBlocks.STEEL_TREAD_SLAB);
+            entries.accept(AVPBlocks.STEEL_TREAD_STAIRS);
+
+            // Grate slabs and stairs
+            entries.accept(AVPBlocks.STEEL_GRATE_SLAB);
+            entries.accept(AVPBlocks.STEEL_GRATE_STAIRS);
+
             entries.accept(AVPBlocks.TITANIUM_BLOCK);
             entries.accept(AVPBlocks.TITANIUM_CHAIN_FENCE);
             entries.accept(AVPBlocks.CHISELED_TITANIUM);
@@ -89,6 +155,39 @@ public class BlocksCreativeModeTabInitializer {
             entries.accept(AVPBlocks.TITANIUM_STANDING);
             entries.accept(AVPBlocks.TITANIUM_TRAP_DOOR);
             entries.accept(AVPBlocks.TITANIUM_TREAD);
+
+            // Basic slabs and stairs
+            entries.accept(AVPBlocks.TITANIUM_SLAB);
+            entries.accept(AVPBlocks.TITANIUM_STAIRS);
+
+            // Siding slabs and stairs
+            entries.accept(AVPBlocks.TITANIUM_SIDING_SLAB);
+            entries.accept(AVPBlocks.TITANIUM_SIDING_STAIRS);
+
+            // Standing slabs and stairs
+            entries.accept(AVPBlocks.TITANIUM_STANDING_SLAB);
+            entries.accept(AVPBlocks.TITANIUM_STANDING_STAIRS);
+
+            // Fastened siding slabs and stairs
+            entries.accept(AVPBlocks.TITANIUM_FASTENED_SIDING_SLAB);
+            entries.accept(AVPBlocks.TITANIUM_FASTENED_SIDING_STAIRS);
+
+            // Fastened standing slabs and stairs
+            entries.accept(AVPBlocks.TITANIUM_FASTENED_STANDING_SLAB);
+            entries.accept(AVPBlocks.TITANIUM_FASTENED_STANDING_STAIRS);
+
+            // Plating slabs and stairs
+            entries.accept(AVPBlocks.TITANIUM_PLATING_SLAB);
+            entries.accept(AVPBlocks.TITANIUM_PLATING_STAIRS);
+
+            // Tread slabs and stairs
+            entries.accept(AVPBlocks.TITANIUM_TREAD_SLAB);
+            entries.accept(AVPBlocks.TITANIUM_TREAD_STAIRS);
+
+            // Grate slabs and stairs
+            entries.accept(AVPBlocks.TITANIUM_GRATE_SLAB);
+            entries.accept(AVPBlocks.TITANIUM_GRATE_STAIRS);
+
             entries.accept(AVPBlocks.URANIUM_BLOCK);
             entries.accept(AVPBlocks.ZINC_BLOCK);
             entries.accept(AVPBlocks.RAZOR_WIRE);
