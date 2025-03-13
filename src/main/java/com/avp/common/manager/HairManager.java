@@ -14,18 +14,21 @@ public class HairManager {
 
     protected int maxFemaleHairTextures;
 
+    protected int maxFemaleHairTypes;
+
     protected final AbstractHumanMob entity;
 
-    public HairManager(AbstractHumanMob entity, int maxMaleHairTextures, int maxFemaleHairTextures) {
+    public HairManager(AbstractHumanMob entity, int maxMaleHairTextures, int maxFemaleHairTextures, int maxFemaleHairTypes) {
         this.entity = entity;
         this.maxMaleHairTextures = maxMaleHairTextures;
         this.maxFemaleHairTextures = maxFemaleHairTextures;
+        this.maxFemaleHairTypes = maxFemaleHairTypes;
     }
 
     public ResourceLocation getMaleHairTexture(String humanType) {
         if (cachedMaleHairTexture == null) {
             var random1 = entity.getRandom().nextIntBetweenInclusive(1, this.maxMaleHairTextures);
-            var random2 = entity.getSharedSecondRandomValue();
+            var random2 = entity.getSharedSecondRandomValue(6);
             cachedMaleHairTexture = AVPResources.entityTextureLocation(humanType + "_male_hair" + random1 + "_" + random2);
         }
         return cachedMaleHairTexture;
@@ -33,9 +36,9 @@ public class HairManager {
 
     public ResourceLocation getFemaleHairTexture(String humanType) {
         if (cachedFemaleHairTexture == null) {
-            cachedFemaleHairTexture = AVPResources.entityTextureLocation(humanType + "_female_hair" +
-                    entity.getRandom().nextIntBetweenInclusive(1, this.maxFemaleHairTextures) + "_" +
-                    entity.getRandom().nextIntBetweenInclusive(1, 6));
+            var random1 = entity.getRandom().nextIntBetweenInclusive(1, this.maxFemaleHairTextures);
+            var random2 = entity.getSharedSecondRandomValue(maxFemaleHairTypes);
+            cachedFemaleHairTexture = AVPResources.entityTextureLocation(humanType + "_female_hair" + random1 + "_" + random2);
         }
         return cachedFemaleHairTexture;
     }

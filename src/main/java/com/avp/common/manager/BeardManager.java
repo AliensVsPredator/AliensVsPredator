@@ -24,7 +24,7 @@ public class BeardManager {
             if (random1 == 3) {
                 random2 = 6;
             } else {
-                random2 = this.entity.getSharedSecondRandomValue();
+                random2 = this.entity.getSharedSecondRandomValue(6);
             }
             cachedMaleBeardTexture = AVPResources.entityTextureLocation(humanType + "_male_beard" + random1 + "_" + random2);
         }

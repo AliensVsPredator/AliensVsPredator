@@ -170,9 +170,9 @@ public abstract class AbstractHumanMob extends PathfinderMob {
         this.getGenderManager().save(compoundTag);
     }
 
-    public int getSharedSecondRandomValue() {
+    public int getSharedSecondRandomValue(int maxValue) {
         if (cachedSecondRandomValue == null) {
-            cachedSecondRandomValue = getRandom().nextIntBetweenInclusive(1, 6);
+            cachedSecondRandomValue = getRandom().nextIntBetweenInclusive(1, maxValue);
         }
         return cachedSecondRandomValue;
     }
