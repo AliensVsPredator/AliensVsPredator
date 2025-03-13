@@ -23,11 +23,11 @@ public class MarineRenderer extends AzEntityRenderer<MarineMob> {
     public MarineRenderer(EntityRendererProvider.Context context) {
         super(AzEntityRendererConfig.builder(MarineRenderer::getModel, MarineRenderer::getTexture)
                 .setAnimatorProvider(MarineAnimator::new)
+                .addRenderLayer(new HumanArmorLayer<>())
                 .addRenderLayer(new HumanHairLayer(NAME))
                 .addRenderLayer(new HumanEyesLayer(NAME))
                 .addRenderLayer(new HumanBeardLayer(NAME))
                 .addRenderLayer(new HumanOutfitLayer(NAME))
-                .addRenderLayer(new HumanArmorLayer<>())
                 .addRenderLayer(new HumanItemLayer<>())
                 .build(), context);
     }

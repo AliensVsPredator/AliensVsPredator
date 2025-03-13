@@ -11,11 +11,14 @@ import net.minecraft.world.item.ItemStack;
 
 public class HumanItemLayer<T extends AbstractHumanMob> extends AzBlockAndItemLayer<T> {
 
+    private static final String LEFT_HAND = "leftHand_Item";
+    private static final String RIGHT_HAND = "rightHand_Item";
+
     @Override
     public ItemStack itemStackForBone(AzBone bone, T animatable) {
         return switch (bone.getName()) {
-            case "rightHand_Item" -> animatable.getItemBySlot(EquipmentSlot.MAINHAND);
-            case "leftHand_Item" -> animatable.getItemBySlot(EquipmentSlot.OFFHAND);
+            case RIGHT_HAND -> animatable.getItemBySlot(EquipmentSlot.MAINHAND);
+            case LEFT_HAND -> animatable.getItemBySlot(EquipmentSlot.OFFHAND);
             default -> null;
         };
     }

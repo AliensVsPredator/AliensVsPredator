@@ -26,7 +26,7 @@ public class HairManager {
         if (cachedMaleHairTexture == null) {
             var random1 = entity.getRandom().nextIntBetweenInclusive(1, this.maxMaleHairTextures);
             var random2 = entity.getSharedSecondRandomValue();
-            cachedMaleHairTexture = AVPResources.entityTextureLocation("marine_male_hair" + random1 + "_" + random2);
+            cachedMaleHairTexture = AVPResources.entityTextureLocation(humanType + "_male_hair" + random1 + "_" + random2);
         }
         return cachedMaleHairTexture;
     }
