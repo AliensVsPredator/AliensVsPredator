@@ -9,6 +9,7 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -19,6 +20,15 @@ import net.minecraft.world.level.block.state.properties.BlockSetType;
 
 public class AVPBlocks {
 
+    public static final Map<String, Block> BLOCKS = new HashMap<>();
+    private static final String[] MATERIALS = {
+            "ferroaluminum", "steel", "titanium"
+    };
+
+    private static final String[] BLOCK_TYPES = {
+            "siding", "fastened_siding", "fastened_standing",
+            "plating", "tread", "grate"
+    };
     public static final Block NUKE_BLOCK = register(BlockProperties.NUKE, "nuke");
 
     public static final Block ROYAL_JELLY_BLOCK = register(BlockProperties.JELLY, "royal_jelly_block");
@@ -122,6 +132,8 @@ public class AVPBlocks {
         new IronBarsBlock(BlockProperties.INDUSTRIAL_GLASS_PANE),
         "industrial_glass_pane"
     );
+
+    public static final Block INDUSTRIAL_FURNACE = register(new IndustrialFurnaceBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.FURNACE)),"industrial_furnace_block");
 
     public static final Block LEAD_BLOCK = register(BlockProperties.LEAD, "lead_block");
 
@@ -232,22 +244,94 @@ public class AVPBlocks {
 
     public static final Block ZINC_ORE = register(BlockProperties.ZINC_ORE, "zinc_ore");
 
-    //Doors And Trapdoors
-    public static final Block FERROALUMINUM_DOOR = register(new DoorBlock(BlockSetType.COPPER,BlockProperties.FERROALUMINUM),"ferroaluminum_door");
-    public static final Block FERROALUMINUM_TRAP_DOOR = register(new TrapDoorBlock(BlockSetType.COPPER,BlockProperties.FERROALUMINUM.noOcclusion()),"ferroaluminum_trapdoor");
-    public static final Block STEEL_DOOR = register(new DoorBlock(BlockSetType.COPPER,BlockProperties.STEEL),"steel_door");
-    public static final Block STEEL_TRAP_DOOR = register(new TrapDoorBlock(BlockSetType.COPPER,BlockProperties.STEEL),"steel_trapdoor");
-    public static final Block TITANIUM_DOOR = register(new DoorBlock(BlockSetType.COPPER,BlockProperties.TITANIUM),"titanium_door");
-    public static final Block TITANIUM_TRAP_DOOR = register(new TrapDoorBlock(BlockSetType.COPPER,BlockProperties.TITANIUM),"titanium_trapdoor");
+    // Doors And Trapdoors
+    public static final Block FERROALUMINUM_DOOR = register(new DoorBlock(BlockSetType.COPPER, BlockProperties.FERROALUMINUM), "ferroaluminum_door");
+    public static final Block FERROALUMINUM_TRAP_DOOR = register(new TrapDoorBlock(BlockSetType.COPPER, BlockProperties.FERROALUMINUM.noOcclusion()), "ferroaluminum_trapdoor");
+    public static final Block STEEL_DOOR = register(new DoorBlock(BlockSetType.COPPER, BlockProperties.STEEL), "steel_door");
+    public static final Block STEEL_TRAP_DOOR = register(new TrapDoorBlock(BlockSetType.COPPER, BlockProperties.STEEL), "steel_trapdoor");
+    public static final Block TITANIUM_DOOR = register(new DoorBlock(BlockSetType.COPPER, BlockProperties.TITANIUM), "titanium_door");
+    public static final Block TITANIUM_TRAP_DOOR = register(new TrapDoorBlock(BlockSetType.COPPER, BlockProperties.TITANIUM), "titanium_trapdoor");
 
-    //Pressure plates And Buttons
-    public static final Block FERROALUMINUM_BUTTON = register(new ButtonBlock(AVPBlockSetTypes.FERROALUMINUM,20,BlockProperties.FERROALUMINUM),"ferroaluminum_button");
-    public static final Block STEEL_BUTTON = register(new ButtonBlock(AVPBlockSetTypes.STEEL,20,BlockProperties.STEEL),"steel_button");
-    public static final Block TITANIUM_BUTTON = register(new ButtonBlock(AVPBlockSetTypes.TITANIUM,20,BlockProperties.TITANIUM),"titanium_button");
+    // Pressure Plates And Buttons
+    public static final Block FERROALUMINUM_BUTTON = register(new ButtonBlock(AVPBlockSetTypes.FERROALUMINUM, 20, BlockProperties.FERROALUMINUM), "ferroaluminum_button");
+    public static final Block STEEL_BUTTON = register(new ButtonBlock(AVPBlockSetTypes.STEEL, 20, BlockProperties.STEEL), "steel_button");
+    public static final Block TITANIUM_BUTTON = register(new ButtonBlock(AVPBlockSetTypes.TITANIUM, 20, BlockProperties.TITANIUM), "titanium_button");
 
-    public static final Block FERROALUMINUM_PRESSURE_PLATE = register(new PressurePlateBlock(BlockSetType.COPPER,BlockProperties.FERROALUMINUM),"ferroaluminum_pressure_plate");
-    public static final Block STEEL_PRESSURE_PLATE = register(new PressurePlateBlock(BlockSetType.COPPER,BlockProperties.STEEL),"steel_pressure_plate");
-    public static final Block TITANIUM_PRESSURE_PLATE = register(new PressurePlateBlock(BlockSetType.COPPER,BlockProperties.TITANIUM),"titanium_pressure_plate");
+    public static final Block FERROALUMINUM_PRESSURE_PLATE = register(new PressurePlateBlock(BlockSetType.COPPER, BlockProperties.FERROALUMINUM), "ferroaluminum_pressure_plate");
+    public static final Block STEEL_PRESSURE_PLATE = register(new PressurePlateBlock(BlockSetType.COPPER, BlockProperties.STEEL), "steel_pressure_plate");
+    public static final Block TITANIUM_PRESSURE_PLATE = register(new PressurePlateBlock(BlockSetType.COPPER, BlockProperties.TITANIUM), "titanium_pressure_plate");
+
+    // Slabs And Stairs
+    public static final Block FERROALUMINUM_SLAB = register(new SlabBlock(BlockBehaviour.Properties.ofFullCopy(FERROALUMINUM_BLOCK)), "ferroaluminum_slab");
+    public static final Block FERROALUMINUM_STAIRS = register(new StairBlock(FERROALUMINUM_BLOCK.defaultBlockState(), BlockBehaviour.Properties.ofFullCopy(FERROALUMINUM_BLOCK)), "ferroaluminum_stairs");
+
+    public static final Block STEEL_SLAB = register(new SlabBlock(BlockBehaviour.Properties.ofFullCopy(STEEL_BLOCK)), "steel_slab");
+    public static final Block STEEL_STAIRS = register(new StairBlock(STEEL_BLOCK.defaultBlockState(), BlockBehaviour.Properties.ofFullCopy(STEEL_BLOCK)), "steel_stairs");
+
+    public static final Block TITANIUM_SLAB = register(new SlabBlock(BlockBehaviour.Properties.ofFullCopy(TITANIUM_BLOCK)), "titanium_slab");
+    public static final Block TITANIUM_STAIRS = register(new StairBlock(TITANIUM_BLOCK.defaultBlockState(), BlockBehaviour.Properties.ofFullCopy(TITANIUM_BLOCK)), "titanium_stairs");
+
+    // Siding Blocks - Slabs and Stairs
+    public static final Block FERROALUMINUM_SIDING_SLAB = register(new SlabBlock(BlockProperties.FERROALUMINUM), "ferroaluminum_siding_slab");
+    public static final Block FERROALUMINUM_SIDING_STAIRS = register(new StairBlock(FERROALUMINUM_SIDING.defaultBlockState(), BlockProperties.FERROALUMINUM), "ferroaluminum_siding_stairs");
+
+    public static final Block STEEL_SIDING_SLAB = register(new SlabBlock(BlockProperties.STEEL), "steel_siding_slab");
+    public static final Block STEEL_SIDING_STAIRS = register(new StairBlock(STEEL_SIDING.defaultBlockState(), BlockProperties.STEEL), "steel_siding_stairs");
+
+    public static final Block TITANIUM_SIDING_SLAB = register(new SlabBlock(BlockProperties.TITANIUM), "titanium_siding_slab");
+    public static final Block TITANIUM_SIDING_STAIRS = register(new StairBlock(TITANIUM_SIDING.defaultBlockState(), BlockProperties.TITANIUM), "titanium_siding_stairs");
+
+
+    // Fastened Siding - Slabs and Stairs
+    public static final Block FERROALUMINUM_FASTENED_SIDING_SLAB = register(new SlabBlock(BlockProperties.FERROALUMINUM), "ferroaluminum_fastened_siding_slab");
+    public static final Block FERROALUMINUM_FASTENED_SIDING_STAIRS = register(new StairBlock(FERROALUMINUM_FASTENED_SIDING.defaultBlockState(), BlockProperties.FERROALUMINUM), "ferroaluminum_fastened_siding_stairs");
+
+    public static final Block STEEL_FASTENED_SIDING_SLAB = register(new SlabBlock(BlockProperties.STEEL), "steel_fastened_siding_slab");
+    public static final Block STEEL_FASTENED_SIDING_STAIRS = register(new StairBlock(STEEL_FASTENED_SIDING.defaultBlockState(), BlockProperties.STEEL), "steel_fastened_siding_stairs");
+
+    public static final Block TITANIUM_FASTENED_SIDING_SLAB = register(new SlabBlock(BlockProperties.TITANIUM), "titanium_fastened_siding_slab");
+    public static final Block TITANIUM_FASTENED_SIDING_STAIRS = register(new StairBlock(TITANIUM_FASTENED_SIDING.defaultBlockState(), BlockProperties.TITANIUM), "titanium_fastened_siding_stairs");
+
+    // Fastened Standing - Slabs and Stairs
+    public static final Block FERROALUMINUM_FASTENED_STANDING_SLAB = register(new SlabBlock(BlockProperties.FERROALUMINUM), "ferroaluminum_fastened_standing_slab");
+    public static final Block FERROALUMINUM_FASTENED_STANDING_STAIRS = register(new StairBlock(FERROALUMINUM_FASTENED_STANDING.defaultBlockState(), BlockProperties.FERROALUMINUM), "ferroaluminum_fastened_standing_stairs");
+
+    public static final Block STEEL_FASTENED_STANDING_SLAB = register(new SlabBlock(BlockProperties.STEEL), "steel_fastened_standing_slab");
+    public static final Block STEEL_FASTENED_STANDING_STAIRS = register(new StairBlock(STEEL_FASTENED_STANDING.defaultBlockState(), BlockProperties.STEEL), "steel_fastened_standing_stairs");
+
+    public static final Block TITANIUM_FASTENED_STANDING_SLAB = register(new SlabBlock(BlockProperties.TITANIUM), "titanium_fastened_standing_slab");
+    public static final Block TITANIUM_FASTENED_STANDING_STAIRS = register(new StairBlock(TITANIUM_FASTENED_STANDING.defaultBlockState(), BlockProperties.TITANIUM), "titanium_fastened_standing_stairs");
+
+    // Plating - Slabs and Stairs
+    public static final Block FERROALUMINUM_PLATING_SLAB = register(new SlabBlock(BlockProperties.FERROALUMINUM), "ferroaluminum_plating_slab");
+    public static final Block FERROALUMINUM_PLATING_STAIRS = register(new StairBlock(FERROALUMINUM_PLATING.defaultBlockState(), BlockProperties.FERROALUMINUM), "ferroaluminum_plating_stairs");
+
+    public static final Block STEEL_PLATING_SLAB = register(new SlabBlock(BlockProperties.STEEL), "steel_plating_slab");
+    public static final Block STEEL_PLATING_STAIRS = register(new StairBlock(STEEL_PLATING.defaultBlockState(), BlockProperties.STEEL), "steel_plating_stairs");
+
+    public static final Block TITANIUM_PLATING_SLAB = register(new SlabBlock(BlockProperties.TITANIUM), "titanium_plating_slab");
+    public static final Block TITANIUM_PLATING_STAIRS = register(new StairBlock(TITANIUM_PLATING.defaultBlockState(), BlockProperties.TITANIUM), "titanium_plating_stairs");
+
+    // Tread - Slabs and Stairs
+    public static final Block FERROALUMINUM_TREAD_SLAB = register(new SlabBlock(BlockProperties.FERROALUMINUM), "ferroaluminum_tread_slab");
+    public static final Block FERROALUMINUM_TREAD_STAIRS = register(new StairBlock(FERROALUMINUM_TREAD.defaultBlockState(), BlockProperties.FERROALUMINUM), "ferroaluminum_tread_stairs");
+
+    public static final Block STEEL_TREAD_SLAB = register(new SlabBlock(BlockProperties.STEEL), "steel_tread_slab");
+    public static final Block STEEL_TREAD_STAIRS = register(new StairBlock(STEEL_TREAD.defaultBlockState(), BlockProperties.STEEL), "steel_tread_stairs");
+
+    public static final Block TITANIUM_TREAD_SLAB = register(new SlabBlock(BlockProperties.TITANIUM), "titanium_tread_slab");
+    public static final Block TITANIUM_TREAD_STAIRS = register(new StairBlock(TITANIUM_TREAD.defaultBlockState(), BlockProperties.TITANIUM), "titanium_tread_stairs");
+
+    // Grate - Slabs and Stairs
+    public static final Block FERROALUMINUM_GRATE_SLAB = register(new SlabBlock(BlockProperties.FERROALUMINUM), "ferroaluminum_grate_slab");
+    public static final Block FERROALUMINUM_GRATE_STAIRS = register(new StairBlock(FERROALUMINUM_GRATE.defaultBlockState(), BlockProperties.FERROALUMINUM), "ferroaluminum_grate_stairs");
+
+    public static final Block STEEL_GRATE_SLAB = register(new SlabBlock(BlockProperties.STEEL), "steel_grate_slab");
+    public static final Block STEEL_GRATE_STAIRS = register(new StairBlock(STEEL_GRATE.defaultBlockState(), BlockProperties.STEEL), "steel_grate_stairs");
+
+    public static final Block TITANIUM_GRATE_SLAB = register(new SlabBlock(BlockProperties.TITANIUM), "titanium_grate_slab");
+    public static final Block TITANIUM_GRATE_STAIRS = register(new StairBlock(TITANIUM_GRATE.defaultBlockState(), BlockProperties.TITANIUM), "titanium_grate_stairs");
+
     public static final Map<DyeColor, Block> DYE_COLOR_TO_CONCRETE_SLAB =
         Collections.unmodifiableMap(
             Arrays.stream(DyeColor.values())
@@ -594,7 +678,9 @@ public class AVPBlocks {
     public static Block register(BlockBehaviour.Properties properties, String id) {
         return register(new Block(properties), id);
     }
-
+    private static void registerBlock(String name, Block block) {
+        BLOCKS.put(name, register(block, name));
+    }
     public static Block register(Block block, String id) {
         var resourceLocation = AVPResources.location(id);
         return Registry.register(BuiltInRegistries.BLOCK, resourceLocation, block);

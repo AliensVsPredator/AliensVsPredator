@@ -1,5 +1,6 @@
 package com.avp.common.block.entity;
 
+import com.avp.common.block.IndustrialFurnaceBlock;
 import net.minecraft.Util;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -17,6 +18,10 @@ public class BlockEntityTypes {
         "resin_node",
         BlockEntityType.Builder.of(ResinNodeBlockEntity::new, AVPBlocks.NETHER_RESIN_NODE, AVPBlocks.RESIN_NODE)
     );
+
+    public static final BlockEntityType<IndustrialFurnaceBE> INDUSTRIAL_FURNACE_BE = register(
+            "industrial_furnace_be",
+            BlockEntityType.Builder.of(IndustrialFurnaceBE::new,AVPBlocks.INDUSTRIAL_FURNACE));
 
     private static <T extends BlockEntity> BlockEntityType<T> register(String id, BlockEntityType.Builder<T> builder) {
         var type = Util.fetchChoiceType(References.BLOCK_ENTITY, id);

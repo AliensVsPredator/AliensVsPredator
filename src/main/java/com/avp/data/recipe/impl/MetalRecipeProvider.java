@@ -1,6 +1,8 @@
 package com.avp.data.recipe.impl;
 
 import com.avp.common.block_item.AVPBlockItems;
+import com.avp.data.recipe.builder.ShapedRecipeBuilder;
+import com.avp.data.recipe.builder.ShapelessRecipeBuilder;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.ItemLike;
@@ -48,6 +50,8 @@ public class MetalRecipeProvider {
             .pattern("ATA")
             .pattern(" A ")
             .into(1, AVPItems.URANIUM_INGOT);
+
+
 
         createSmeltAndBlastRecipes(builder, AVPBlocks.BAUXITE_ORE, AVPItems.ALUMINUM_INGOT);
         createSmeltAndBlastRecipes(builder, AVPBlocks.GALENA_ORE, AVPItems.LEAD_INGOT);
@@ -141,6 +145,26 @@ public class MetalRecipeProvider {
         createFerroaluminumBlockVariantRecipes(builder);
         createSteelBlockVariantRecipes(builder);
         createTitaniumBlockVariantRecipes(builder);
+
+        // Nugget to ingot recipes
+        nuggetToIngot(builder.shaped(), AVPItems.FERROALUMINUM_NUGGET, AVPItems.FERROALUMINUM_INGOT);
+        nuggetToIngot(builder.shaped(), AVPItems.STEEL_NUGGET, AVPItems.STEEL_INGOT);
+        nuggetToIngot(builder.shaped(), AVPItems.BRASS_NUGGET, AVPItems.BRASS_INGOT);
+        nuggetToIngot(builder.shaped(), AVPItems.TITANIUM_NUGGET, AVPItems.TITANIUM_INGOT);
+        nuggetToIngot(builder.shaped(), AVPItems.LEAD_NUGGET, AVPItems.LEAD_INGOT);
+        //nuggetToIngot(builder.shaped(), AVPItems.URANIUM_NUGGET, AVPItems.URANIUM_INGOT);
+        nuggetToIngot(builder.shaped(), AVPItems.ZINC_NUGGET, AVPItems.ZINC_INGOT);
+        nuggetToIngot(builder.shaped(), AVPItems.ALUMINUM_NUGGET, AVPItems.ALUMINUM_INGOT);
+
+        // Ingot to nugget recipes
+        ingotToNugget(builder.shapeless(), AVPItems.FERROALUMINUM_INGOT, AVPItems.FERROALUMINUM_NUGGET);
+        ingotToNugget(builder.shapeless(), AVPItems.STEEL_INGOT, AVPItems.STEEL_NUGGET);
+        ingotToNugget(builder.shapeless(), AVPItems.BRASS_INGOT, AVPItems.BRASS_NUGGET);
+        ingotToNugget(builder.shapeless(), AVPItems.TITANIUM_INGOT, AVPItems.TITANIUM_NUGGET);
+        ingotToNugget(builder.shapeless(), AVPItems.LEAD_INGOT, AVPItems.LEAD_NUGGET);
+        //ingotToNugget(builder.shapeless(), AVPItems.URANIUM_INGOT, AVPItems.URANIUM_NUGGET);
+        ingotToNugget(builder.shapeless(), AVPItems.ZINC_INGOT, AVPItems.ZINC_NUGGET);
+        ingotToNugget(builder.shapeless(), AVPItems.ALUMINUM_INGOT, AVPItems.ALUMINUM_NUGGET);
     }
 
     private static void createFerroaluminumBlockVariantRecipes(RecipeBuilder builder) {
@@ -228,5 +252,22 @@ public class MetalRecipeProvider {
             .withCategory(RecipeCategory.MISC)
             .withExperience(RecipeConstants.RARE_SMELT_EXPERIENCE)
             .into(output);
+    }
+
+    private static void nuggetToIngot(ShapedRecipeBuilder builder, ItemLike input, ItemLike output)
+    {
+        builder.withCategory(RecipeCategory.BUILDING_BLOCKS)
+                .define('N',input)
+                .pattern("NNN")
+                .pattern("NNN")
+                .pattern("NNN")
+                .into(1,output);
+    }
+
+    private static void ingotToNugget(ShapelessRecipeBuilder builder, ItemLike input, ItemLike output)
+    {
+        builder.withCategory(RecipeCategory.BUILDING_BLOCKS)
+                .requires(1,input)
+                .into(9,output);
     }
 }
