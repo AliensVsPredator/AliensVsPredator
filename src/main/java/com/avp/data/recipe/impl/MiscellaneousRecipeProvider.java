@@ -8,7 +8,6 @@ import com.avp.common.block.AVPBlocks;
 import com.avp.common.item.AVPItems;
 import com.avp.data.recipe.RecipeConstants;
 import com.avp.data.recipe.builder.RecipeBuilder;
-import net.minecraft.world.level.block.Blocks;
 
 public class MiscellaneousRecipeProvider {
 
@@ -92,13 +91,13 @@ public class MiscellaneousRecipeProvider {
 
         builder.shaped()
                 .withCategory(RecipeCategory.MISC)
-                .define('S', Blocks.SMOOTH_STONE)
-                .define('F', Blocks.FURNACE)
+                .define('S', Items.SMOOTH_STONE)
+                .define('F', Items.FURNACE)
                 .define('I', Items.IRON_INGOT)
                 .pattern("SSS")
                 .pattern("SFS")
                 .pattern("III")
-                .into(1, AVPBlocks.INDUSTRIAL_FURNACE);
+                .into(1, AVPBlocks.INDUSTRIAL_FURNACE)
 
     }
 }

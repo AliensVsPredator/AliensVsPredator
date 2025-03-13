@@ -7,7 +7,13 @@ import mod.azure.azurelib.rewrite.render.AzRendererPipelineContext;
 import mod.azure.azurelib.rewrite.render.layer.AzRenderLayer;
 import net.minecraft.client.renderer.RenderType;
 
-public class HumanEyes implements AzRenderLayer<MarineMob> {
+public class HumanEyesLayer implements AzRenderLayer<MarineMob> {
+
+    private final String HUMAN_TYPE;
+
+    public HumanEyesLayer(String humanType) {
+        HUMAN_TYPE = humanType;
+    }
 
     @Override
     public void preRender(AzRendererPipelineContext<MarineMob> context) {
@@ -18,9 +24,9 @@ public class HumanEyes implements AzRenderLayer<MarineMob> {
         var animatable = context.animatable();
         var renderPipeline = context.rendererPipeline();
         if (Boolean.TRUE.equals(animatable.getEntityData().get(AbstractHumanMob.SET_GENDER))) {
-            context.setVertexConsumer(context.multiBufferSource().getBuffer(RenderType.entityCutout(animatable.getMaleEyeTexture())));
+            context.setVertexConsumer(context.multiBufferSource().getBuffer(RenderType.entityCutout(animatable.getEyeManager().getMaleEyeTexture(HUMAN_TYPE))));
         } else {
-            context.setVertexConsumer(context.multiBufferSource().getBuffer(RenderType.entityCutout(animatable.getFemaleEyeTexture())));
+            context.setVertexConsumer(context.multiBufferSource().getBuffer(RenderType.entityCutout(animatable.getEyeManager().getFemaleEyeTexture(HUMAN_TYPE))));
         }
         renderPipeline.reRender(context);
     }

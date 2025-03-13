@@ -65,70 +65,32 @@ public class EnglishLanguageProvider extends FabricLanguageProvider {
         translationBuilder.add(AVPBlocks.INDUSTRIAL_GLASS, "Industrial Glass");
         translationBuilder.add(AVPBlocks.INDUSTRIAL_GLASS_PANE, "Industrial Glass Pane");
         translationBuilder.add(AVPBlocks.LEAD_BLOCK, "Block of Lead");
-
-        // Basic blocks
-        translationBuilder.add("block.avp.ferroaluminum_slab", "Ferroaluminum Slab");
-        translationBuilder.add("block.avp.ferroaluminum_stairs", "Ferroaluminum Stairs");
-        translationBuilder.add("block.avp.steel_slab", "Steel Slab");
-        translationBuilder.add("block.avp.steel_stairs", "Steel Stairs");
-        translationBuilder.add("block.avp.titanium_slab", "Titanium Slab");
-        translationBuilder.add("block.avp.titanium_stairs", "Titanium Stairs");
-
-        // Siding blocks
-        translationBuilder.add("block.avp.ferroaluminum_siding_slab", "Ferroaluminum Siding Slab");
-        translationBuilder.add("block.avp.ferroaluminum_siding_stairs", "Ferroaluminum Siding Stairs");
-        translationBuilder.add("block.avp.steel_siding_slab", "Steel Siding Slab");
-        translationBuilder.add("block.avp.steel_siding_stairs", "Steel Siding Stairs");
-        translationBuilder.add("block.avp.titanium_siding_slab", "Titanium Siding Slab");
-        translationBuilder.add("block.avp.titanium_siding_stairs", "Titanium Siding Stairs");
-
-        // Standing blocks
-        translationBuilder.add("block.avp.ferroaluminum_standing_slab", "Ferroaluminum Standing Slab");
-        translationBuilder.add("block.avp.ferroaluminum_standing_stairs", "Ferroaluminum Standing Stairs");
-        translationBuilder.add("block.avp.steel_standing_slab", "Steel Standing Slab");
-        translationBuilder.add("block.avp.steel_standing_stairs", "Steel Standing Stairs");
-        translationBuilder.add("block.avp.titanium_standing_slab", "Titanium Standing Slab");
-        translationBuilder.add("block.avp.titanium_standing_stairs", "Titanium Standing Stairs");
-
-        // Fastened Siding
-        translationBuilder.add("block.avp.ferroaluminum_fastened_siding_slab", "Ferroaluminum Fastened Siding Slab");
-        translationBuilder.add("block.avp.ferroaluminum_fastened_siding_stairs", "Ferroaluminum Fastened Siding Stairs");
-        translationBuilder.add("block.avp.steel_fastened_siding_slab", "Steel Fastened Siding Slab");
-        translationBuilder.add("block.avp.steel_fastened_siding_stairs", "Steel Fastened Siding Stairs");
-        translationBuilder.add("block.avp.titanium_fastened_siding_slab", "Titanium Fastened Siding Slab");
-        translationBuilder.add("block.avp.titanium_fastened_siding_stairs", "Titanium Fastened Siding Stairs");
-
-        // Fastened Standing
-        translationBuilder.add("block.avp.ferroaluminum_fastened_standing_slab", "Ferroaluminum Fastened Standing Slab");
-        translationBuilder.add("block.avp.ferroaluminum_fastened_standing_stairs", "Ferroaluminum Fastened Standing Stairs");
-        translationBuilder.add("block.avp.steel_fastened_standing_slab", "Steel Fastened Standing Slab");
-        translationBuilder.add("block.avp.steel_fastened_standing_stairs", "Steel Fastened Standing Stairs");
-        translationBuilder.add("block.avp.titanium_fastened_standing_slab", "Titanium Fastened Standing Slab");
-        translationBuilder.add("block.avp.titanium_fastened_standing_stairs", "Titanium Fastened Standing Stairs");
-
-        // Plating
-        translationBuilder.add("block.avp.ferroaluminum_plating_slab", "Ferroaluminum Plating Slab");
-        translationBuilder.add("block.avp.ferroaluminum_plating_stairs", "Ferroaluminum Plating Stairs");
-        translationBuilder.add("block.avp.steel_plating_slab", "Steel Plating Slab");
-        translationBuilder.add("block.avp.steel_plating_stairs", "Steel Plating Stairs");
-        translationBuilder.add("block.avp.titanium_plating_slab", "Titanium Plating Slab");
-        translationBuilder.add("block.avp.titanium_plating_stairs", "Titanium Plating Stairs");
-
-        // Tread
-        translationBuilder.add("block.avp.ferroaluminum_tread_slab", "Ferroaluminum Tread Slab");
-        translationBuilder.add("block.avp.ferroaluminum_tread_stairs", "Ferroaluminum Tread Stairs");
-        translationBuilder.add("block.avp.steel_tread_slab", "Steel Tread Slab");
-        translationBuilder.add("block.avp.steel_tread_stairs", "Steel Tread Stairs");
-        translationBuilder.add("block.avp.titanium_tread_slab", "Titanium Tread Slab");
-        translationBuilder.add("block.avp.titanium_tread_stairs", "Titanium Tread Stairs");
-
-        // Grate
-        translationBuilder.add("block.avp.ferroaluminum_grate_slab", "Ferroaluminum Grate Slab");
-        translationBuilder.add("block.avp.ferroaluminum_grate_stairs", "Ferroaluminum Grate Stairs");
-        translationBuilder.add("block.avp.steel_grate_slab", "Steel Grate Slab");
-        translationBuilder.add("block.avp.steel_grate_stairs", "Steel Grate Stairs");
-        translationBuilder.add("block.avp.titanium_grate_slab", "Titanium Grate Slab");
-        translationBuilder.add("block.avp.titanium_grate_stairs", "Titanium Grate Stairs");
+        translationBuilder.add(AVPBlocks.FERROALUMINUM_FASTENED_STANDING_SLAB, "Ferroaluminum Fastened Standing Slab");
+        translationBuilder.add(AVPBlocks.FERROALUMINUM_FASTENED_STANDING_STAIRS, "Ferroaluminum Fastened Standing Stairs");
+        translationBuilder.add(AVPBlocks.FERROALUMINUM_GRATE_SLAB, "Ferroaluminum Grate Slab");
+        translationBuilder.add(AVPBlocks.FERROALUMINUM_GRATE_STAIRS, "Ferroaluminum Grate Stairs");
+        translationBuilder.add(AVPBlocks.FERROALUMINUM_PLATING_SLAB, "Ferroaluminum Plating Slab");
+        translationBuilder.add(AVPBlocks.FERROALUMINUM_PLATING_STAIRS, "Ferroaluminum Plating Stairs");
+        translationBuilder.add(AVPBlocks.FERROALUMINUM_STANDING_SLAB, "Ferroaluminum Standing Slab");
+        translationBuilder.add(AVPBlocks.FERROALUMINUM_STANDING_STAIRS, "Ferroaluminum Standing Stairs");
+        translationBuilder.add(AVPBlocks.FERROALUMINUM_TREAD_SLAB, "Ferroaluminum Tread Slab");
+        translationBuilder.add(AVPBlocks.FERROALUMINUM_TREAD_STAIRS, "Ferroaluminum Tread Stairs");
+        translationBuilder.add(AVPBlocks.STEEL_FASTENED_STANDING_SLAB, "Steel Fastened Standing Slab");
+        translationBuilder.add(AVPBlocks.STEEL_FASTENED_STANDING_STAIRS, "Steel Fastened Standing Stairs");
+        translationBuilder.add(AVPBlocks.STEEL_GRATE_SLAB, "Steel Grate Slab");
+        translationBuilder.add(AVPBlocks.STEEL_GRATE_STAIRS, "Steel Grate Stairs");
+        translationBuilder.add(AVPBlocks.STEEL_PLATING_SLAB, "Steel Plating Slab");
+        translationBuilder.add(AVPBlocks.STEEL_PLATING_STAIRS, "Steel Plating Stairs");
+        translationBuilder.add(AVPBlocks.STEEL_TREAD_SLAB, "Steel Tread Slab");
+        translationBuilder.add(AVPBlocks.STEEL_TREAD_STAIRS, "Steel Tread Stairs");
+        translationBuilder.add(AVPBlocks.TITANIUM_FASTENED_STANDING_SLAB, "Titanium Fastened Standing Slab");
+        translationBuilder.add(AVPBlocks.TITANIUM_FASTENED_STANDING_STAIRS, "Titanium Fastened Standing Stairs");
+        translationBuilder.add(AVPBlocks.TITANIUM_GRATE_SLAB, "Titanium Grate Slab");
+        translationBuilder.add(AVPBlocks.TITANIUM_GRATE_STAIRS, "Titanium Grate Stairs");
+        translationBuilder.add(AVPBlocks.TITANIUM_PLATING_SLAB, "Titanium Plating Slab");
+        translationBuilder.add(AVPBlocks.TITANIUM_PLATING_STAIRS, "Titanium Plating Stairs");
+        translationBuilder.add(AVPBlocks.TITANIUM_TREAD_SLAB, "Titanium Tread Slab");
+        translationBuilder.add(AVPBlocks.TITANIUM_TREAD_STAIRS, "Titanium Tread Stairs");
 
         AVPBlocks.DYE_COLOR_TO_CONCRETE_SLAB.forEach(
             (key, value) -> translationBuilder.add(value, format(key.getName()) + " Concrete Slab")
@@ -259,6 +221,28 @@ public class EnglishLanguageProvider extends FabricLanguageProvider {
         translationBuilder.add(AVPBlocks.ZINC_BLOCK, "Block of Zinc");
         translationBuilder.add(AVPBlocks.ZINC_ORE, "Zinc Ore");
         translationBuilder.add(AVPBlocks.INDUSTRIAL_FURNACE, "Industrial Furnace");
+        translationBuilder.add(AVPBlocks.FERROALUMINUM_SLAB, "Ferroaluminum Slab");
+        translationBuilder.add(AVPBlocks.FERROALUMINUM_STAIRS, "Ferroaluminum Stairs");
+        translationBuilder.add(AVPBlocks.STEEL_SLAB, "Steel Slab");
+        translationBuilder.add(AVPBlocks.STEEL_STAIRS, "Steel Stairs");
+        translationBuilder.add(AVPBlocks.TITANIUM_SLAB, "Titanium Slab");
+        translationBuilder.add(AVPBlocks.TITANIUM_STAIRS, "Titanium Stairs");
+        translationBuilder.add(AVPBlocks.FERROALUMINUM_SIDING_SLAB, "Ferroaluminum Siding Slab");
+        translationBuilder.add(AVPBlocks.FERROALUMINUM_SIDING_STAIRS, "Ferroaluminum Siding Stairs");
+        translationBuilder.add(AVPBlocks.STEEL_SIDING_SLAB, "Steel Siding Slab");
+        translationBuilder.add(AVPBlocks.STEEL_SIDING_STAIRS, "Titanium Siding Stairs");
+        translationBuilder.add(AVPBlocks.TITANIUM_SIDING_SLAB, "Titanium Siding Slab");
+        translationBuilder.add(AVPBlocks.TITANIUM_SIDING_STAIRS, "Titanium Siding Stairs");
+        translationBuilder.add(AVPBlocks.STEEL_STANDING_SLAB, "Steel Standing Slab");
+        translationBuilder.add(AVPBlocks.STEEL_STANDING_STAIRS, "Steel Standing Stairs");
+        translationBuilder.add(AVPBlocks.TITANIUM_STANDING_SLAB, "Titanium Standing Slab");
+        translationBuilder.add(AVPBlocks.TITANIUM_STANDING_STAIRS, "Titanium Standing Stairs");
+        translationBuilder.add(AVPBlocks.FERROALUMINUM_FASTENED_SIDING_SLAB, "Ferroaluminum Fastened Siding Slab");
+        translationBuilder.add(AVPBlocks.FERROALUMINUM_FASTENED_SIDING_STAIRS, "Ferroaluminum Fastened Siding Stairs");
+        translationBuilder.add(AVPBlocks.STEEL_FASTENED_SIDING_SLAB, "Steel Fastened Siding Slab");
+        translationBuilder.add(AVPBlocks.STEEL_FASTENED_SIDING_STAIRS, "Steel Fastened Siding Stairs");
+        translationBuilder.add(AVPBlocks.TITANIUM_FASTENED_SIDING_SLAB, "Titanium Fastened Siding Slab");
+        translationBuilder.add(AVPBlocks.TITANIUM_FASTENED_SIDING_STAIRS, "Titanium Fastened Siding Stairs");
 
         // Creative Mode Tabs
         translationBuilder.add(CreativeModeTabs.BLOCKS_KEY, "AVP Blocks");
