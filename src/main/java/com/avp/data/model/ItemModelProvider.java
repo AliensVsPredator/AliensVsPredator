@@ -75,6 +75,10 @@ public class ItemModelProvider extends FabricModelProvider {
         generateStandardItem(generators, ArmorItems.TACTICAL_CHESTPLATE);
         generateStandardItem(generators, ArmorItems.TACTICAL_HELMET);
         generateStandardItem(generators, ArmorItems.TACTICAL_LEGGINGS);
+        generateStandardItem(generators, ArmorItems.TACTICAL_CAMO_BOOTS);
+        generateStandardItem(generators, ArmorItems.TACTICAL_CAMO_CHESTPLATE);
+        generateStandardItem(generators, ArmorItems.TACTICAL_CAMO_HELMET);
+        generateStandardItem(generators, ArmorItems.TACTICAL_CAMO_LEGGINGS);
         generateStandardItem(generators, ArmorItems.TITANIUM_BOOTS);
         generateStandardItem(generators, ArmorItems.TITANIUM_CHESTPLATE);
         generateStandardItem(generators, ArmorItems.TITANIUM_HELMET);

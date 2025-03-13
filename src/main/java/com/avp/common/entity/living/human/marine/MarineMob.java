@@ -42,13 +42,21 @@ public class MarineMob extends AbstractHumanMob {
     @Override
     public @Nullable SpawnGroupData finalizeSpawn(@NotNull ServerLevelAccessor level, @NotNull DifficultyInstance difficulty, @NotNull MobSpawnType spawnType, @Nullable SpawnGroupData spawnGroupData) {
         setItemSlot(EquipmentSlot.MAINHAND, makeInitialWeapon());
-        if ( random.nextInt( 100 ) <= 10) 
-            setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(AVPItems.GRENADE));
-        if ( random.nextInt( 100 ) <= 60) {
-            setItemSlot(EquipmentSlot.HEAD, new ItemStack(ArmorItems.TACTICAL_HELMET));
-            setItemSlot(EquipmentSlot.CHEST, new ItemStack(ArmorItems.TACTICAL_CHESTPLATE));
-            setItemSlot(EquipmentSlot.LEGS, new ItemStack(ArmorItems.TACTICAL_LEGGINGS));
-            setItemSlot(EquipmentSlot.FEET, new ItemStack(ArmorItems.TACTICAL_BOOTS));
+        if (random.nextInt( 100 ) <= 10) {
+            setItemSlot(EquipmentSlot.OFFHAND, new ItemStack(AVPItems.GRENADE));
+        }
+        if (random.nextInt( 100 ) <= 60) {
+            if (this.getRandom().nextIntBetweenInclusive( 1, 2) == 1) {
+                setItemSlot(EquipmentSlot.HEAD, new ItemStack(ArmorItems.TACTICAL_HELMET));
+                setItemSlot(EquipmentSlot.CHEST, new ItemStack(ArmorItems.TACTICAL_CHESTPLATE));
+                setItemSlot(EquipmentSlot.LEGS, new ItemStack(ArmorItems.TACTICAL_LEGGINGS));
+                setItemSlot(EquipmentSlot.FEET, new ItemStack(ArmorItems.TACTICAL_BOOTS));
+            } else {
+                setItemSlot(EquipmentSlot.HEAD, new ItemStack(ArmorItems.TACTICAL_CAMO_HELMET));
+                setItemSlot(EquipmentSlot.CHEST, new ItemStack(ArmorItems.TACTICAL_CAMO_CHESTPLATE));
+                setItemSlot(EquipmentSlot.LEGS, new ItemStack(ArmorItems.TACTICAL_CAMO_LEGGINGS));
+                setItemSlot(EquipmentSlot.FEET, new ItemStack(ArmorItems.TACTICAL_CAMO_BOOTS));
+            }
         }
         return super.finalizeSpawn(level, difficulty, spawnType, spawnGroupData);
     }

@@ -53,6 +53,11 @@ public class CombatCreativeModeTabInitializer {
             entries.accept(ArmorItems.TACTICAL_LEGGINGS);
             entries.accept(ArmorItems.TACTICAL_BOOTS);
 
+            entries.accept(ArmorItems.TACTICAL_CAMO_HELMET);
+            entries.accept(ArmorItems.TACTICAL_CAMO_CHESTPLATE);
+            entries.accept(ArmorItems.TACTICAL_CAMO_LEGGINGS);
+            entries.accept(ArmorItems.TACTICAL_CAMO_BOOTS);
+
             entries.accept(ArmorItems.TITANIUM_HELMET);
             entries.accept(ArmorItems.TITANIUM_CHESTPLATE);
             entries.accept(ArmorItems.TITANIUM_LEGGINGS);

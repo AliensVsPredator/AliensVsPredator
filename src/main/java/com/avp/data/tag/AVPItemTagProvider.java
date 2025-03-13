@@ -143,6 +143,7 @@ public class AVPItemTagProvider extends FabricTagProvider.ItemTagProvider {
                 ArmorItems.PRESSURE_HELMET,
                 ArmorItems.STEEL_HELMET,
                 ArmorItems.TACTICAL_HELMET,
+                ArmorItems.TACTICAL_CAMO_HELMET,
                 ArmorItems.TITANIUM_HELMET
             );
         getOrCreateTagBuilder(ItemTags.CHEST_ARMOR)
@@ -156,6 +157,7 @@ public class AVPItemTagProvider extends FabricTagProvider.ItemTagProvider {
                 ArmorItems.PRESSURE_CHESTPLATE,
                 ArmorItems.STEEL_CHESTPLATE,
                 ArmorItems.TACTICAL_CHESTPLATE,
+                ArmorItems.TACTICAL_CAMO_CHESTPLATE,
                 ArmorItems.TITANIUM_CHESTPLATE
             );
         getOrCreateTagBuilder(ItemTags.LEG_ARMOR)
@@ -169,6 +171,7 @@ public class AVPItemTagProvider extends FabricTagProvider.ItemTagProvider {
                 ArmorItems.PRESSURE_LEGGINGS,
                 ArmorItems.STEEL_LEGGINGS,
                 ArmorItems.TACTICAL_LEGGINGS,
+                ArmorItems.TACTICAL_CAMO_LEGGINGS,
                 ArmorItems.TITANIUM_LEGGINGS
             );
         getOrCreateTagBuilder(ItemTags.FOOT_ARMOR)
@@ -182,6 +185,7 @@ public class AVPItemTagProvider extends FabricTagProvider.ItemTagProvider {
                 ArmorItems.PRESSURE_BOOTS,
                 ArmorItems.STEEL_BOOTS,
                 ArmorItems.TACTICAL_BOOTS,
+                ArmorItems.TACTICAL_CAMO_BOOTS,
                 ArmorItems.TITANIUM_BOOTS
             );
 

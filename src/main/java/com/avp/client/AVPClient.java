@@ -1,5 +1,6 @@
 package com.avp.client;
 
+import com.avp.client.render.armor.*;
 import com.avp.client.render.entity.*;
 import mod.azure.azurelib.rewrite.render.armor.AzArmorRendererRegistry;
 import mod.azure.azurelib.rewrite.render.item.AzItemRenderer;
@@ -21,14 +22,6 @@ import com.avp.client.input.keybind.AVPKeybindingRegistry;
 import com.avp.client.network.AVPClientPacketHandlerRegistry;
 import com.avp.client.particle.AcidParticleProvider;
 import com.avp.client.particle.BlueAcidParticleProvider;
-import com.avp.client.render.armor.ChitinArmorRenderer;
-import com.avp.client.render.armor.JunglePredatorArmorRenderer;
-import com.avp.client.render.armor.MK50ArmorRenderer;
-import com.avp.client.render.armor.NetherChitinArmorRenderer;
-import com.avp.client.render.armor.PlatedChitinArmorRenderer;
-import com.avp.client.render.armor.PlatedNetherChitinArmorRenderer;
-import com.avp.client.render.armor.PressureArmorRenderer;
-import com.avp.client.render.armor.TacticalArmorRenderer;
 import com.avp.client.render.entity.parasite.facehugger.FacehuggerRenderer;
 import com.avp.client.render.item.OldPainlessItemRenderer;
 import com.avp.client.render.item.SimpleItemRenderer;
@@ -138,6 +131,13 @@ public class AVPClient implements ClientModInitializer {
             ArmorItems.TACTICAL_CHESTPLATE,
             ArmorItems.TACTICAL_LEGGINGS,
             ArmorItems.TACTICAL_BOOTS
+        );
+        AzArmorRendererRegistry.register(
+                TacticalCamoArmorRenderer::new,
+                ArmorItems.TACTICAL_CAMO_HELMET,
+                ArmorItems.TACTICAL_CAMO_CHESTPLATE,
+                ArmorItems.TACTICAL_CAMO_LEGGINGS,
+                ArmorItems.TACTICAL_CAMO_BOOTS
         );
 
         // Items

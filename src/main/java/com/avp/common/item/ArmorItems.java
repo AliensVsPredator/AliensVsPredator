@@ -294,6 +294,34 @@ public class ArmorItems {
         TACTICAL_DURABILITY_MULTIPLIER
     );
 
+    public static final Item TACTICAL_CAMO_BOOTS = register(
+            "tactical_camo_boots",
+            ArmorMaterials.TACTICAL,
+            ArmorItem.Type.BOOTS,
+            TACTICAL_DURABILITY_MULTIPLIER
+    );
+
+    public static final Item TACTICAL_CAMO_CHESTPLATE = register(
+            "tactical_camo_chestplate",
+            ArmorMaterials.TACTICAL,
+            ArmorItem.Type.CHESTPLATE,
+            TACTICAL_DURABILITY_MULTIPLIER
+    );
+
+    public static final Item TACTICAL_CAMO_HELMET = register(
+            "tactical_camo_helmet",
+            ArmorMaterials.TACTICAL,
+            ArmorItem.Type.HELMET,
+            TACTICAL_DURABILITY_MULTIPLIER
+    );
+
+    public static final Item TACTICAL_CAMO_LEGGINGS = register(
+            "tactical_camo_leggings",
+            ArmorMaterials.TACTICAL,
+            ArmorItem.Type.LEGGINGS,
+            TACTICAL_DURABILITY_MULTIPLIER
+    );
+
     public static final Item TITANIUM_BOOTS = register(
         "titanium_boots",
         ArmorMaterials.TITANIUM,

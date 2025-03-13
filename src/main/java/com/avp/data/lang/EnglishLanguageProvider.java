@@ -274,6 +274,10 @@ public class EnglishLanguageProvider extends FabricLanguageProvider {
         translationBuilder.add(ArmorItems.TACTICAL_CHESTPLATE, "Tactical Chestplate");
         translationBuilder.add(ArmorItems.TACTICAL_HELMET, "Tactical Helmet");
         translationBuilder.add(ArmorItems.TACTICAL_LEGGINGS, "Tactical Leggings");
+        translationBuilder.add(ArmorItems.TACTICAL_CAMO_BOOTS, "Tactical Camo Boots");
+        translationBuilder.add(ArmorItems.TACTICAL_CAMO_CHESTPLATE, "Tactical Camo Chestplate");
+        translationBuilder.add(ArmorItems.TACTICAL_CAMO_HELMET, "Tactical Camo Helmet");
+        translationBuilder.add(ArmorItems.TACTICAL_CAMO_LEGGINGS, "Tactical Camo Leggings");
         translationBuilder.add(ArmorItems.TITANIUM_BOOTS, "Titanium Boots");
         translationBuilder.add(ArmorItems.TITANIUM_CHESTPLATE, "Titanium Chestplate");
         translationBuilder.add(ArmorItems.TITANIUM_HELMET, "Titanium Helmet");
