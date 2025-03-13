@@ -1,14 +1,20 @@
 package com.avp.common.entity.living.human.marine;
 
 import com.avp.AVP;
+import com.avp.AVPResources;
 import com.avp.common.config.ConfigProperties;
+import com.avp.common.entity.living.alien.Alien;
 import com.avp.common.entity.living.human.AbstractHumanMob;
 import com.avp.common.item.AVPItems;
 import com.avp.common.item.ArmorItems;
+import com.avp.common.manager.*;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
+import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
@@ -25,6 +31,11 @@ public class MarineMob extends AbstractHumanMob {
     public MarineMob(EntityType<? extends PathfinderMob> entityType, Level level) {
         super(entityType, level);
         this.animationDispatcher = new MarineAnimationDispatcher(this);
+        this.outfitManager = new MarineOutfitManager(this);
+        this.beardManager = new BeardManager(this, 3);
+        this.hairManager = new HairManager(this, 5, 5);
+        this.eyeManager = new EyeManager(this, 5, 5);
+        this.skinManager = new SkinManager(this, 6, 6);
     }
 
     public static AttributeSupplier.Builder createMarineAttributes() {
@@ -46,6 +57,16 @@ public class MarineMob extends AbstractHumanMob {
     @Override
     protected void registerGoals() {
         super.registerGoals();
+        targetSelector.addGoal(1, (new HurtByTargetGoal(this)).setAlertOthers(AbstractHumanMob.class));
+        targetSelector.addGoal(
+                2,
+                new NearestAttackableTargetGoal<>(
+                        this,
+                        LivingEntity.class,
+                        false,
+                        target -> (this.getLastAttacker() != null && this.getLastAttacker().is(target)) || target instanceof Alien
+                )
+        );
     }
 
     @Override
@@ -73,14 +94,20 @@ public class MarineMob extends AbstractHumanMob {
                                 ArmorItems.TACTICAL_CAMO_BOOTS
                         )
                 )
-                .get(this.getRandom().nextIntBetweenInclusive(0, 1)) // Randomly choose one set
+                .get(this.getRandom().nextIntBetweenInclusive(0, 1))
                 .stream()
                 .map(ItemStack::new)
                 .toArray(ItemStack[]::new);
 
-        var slots = EquipmentSlot.values();
-        for (var i = 0; i < selectedArmor.length; i++) {
-            setItemSlot(slots[i], selectedArmor[i]);
+        var armorSlots = List.of(
+                EquipmentSlot.HEAD,
+                EquipmentSlot.CHEST,
+                EquipmentSlot.LEGS,
+                EquipmentSlot.FEET
+        );
+
+        for (var i = 0; i < armorSlots.size(); i++) {
+            setItemSlot(armorSlots.get(i), selectedArmor[i]);
         }
     }
 
