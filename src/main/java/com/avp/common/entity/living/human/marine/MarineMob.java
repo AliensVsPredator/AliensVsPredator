@@ -16,6 +16,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
+import java.util.List;
 
 public class MarineMob extends AbstractHumanMob {
 
@@ -39,24 +40,41 @@ public class MarineMob extends AbstractHumanMob {
         //TODO: Attack animations
     }
 
+    /**
+     * TODO: Add attack goals for using hands when empty handed and using main/offhand items.
+     */
+    @Override
+    protected void registerGoals() {
+        super.registerGoals();
+    }
+
     @Override
     public @Nullable SpawnGroupData finalizeSpawn(@NotNull ServerLevelAccessor level, @NotNull DifficultyInstance difficulty, @NotNull MobSpawnType spawnType, @Nullable SpawnGroupData spawnGroupData) {
         setItemSlot(EquipmentSlot.MAINHAND, makeInitialWeapon());
         if (random.nextInt( 100 ) <= 10) {
             setItemSlot(EquipmentSlot.OFFHAND, new ItemStack(AVPItems.GRENADE));
         }
-        if (random.nextInt( 100 ) <= 60) {
-            if (this.getRandom().nextIntBetweenInclusive( 1, 2) == 1) {
-                setItemSlot(EquipmentSlot.HEAD, new ItemStack(ArmorItems.TACTICAL_HELMET));
-                setItemSlot(EquipmentSlot.CHEST, new ItemStack(ArmorItems.TACTICAL_CHESTPLATE));
-                setItemSlot(EquipmentSlot.LEGS, new ItemStack(ArmorItems.TACTICAL_LEGGINGS));
-                setItemSlot(EquipmentSlot.FEET, new ItemStack(ArmorItems.TACTICAL_BOOTS));
-            } else {
-                setItemSlot(EquipmentSlot.HEAD, new ItemStack(ArmorItems.TACTICAL_CAMO_HELMET));
-                setItemSlot(EquipmentSlot.CHEST, new ItemStack(ArmorItems.TACTICAL_CAMO_CHESTPLATE));
-                setItemSlot(EquipmentSlot.LEGS, new ItemStack(ArmorItems.TACTICAL_CAMO_LEGGINGS));
-                setItemSlot(EquipmentSlot.FEET, new ItemStack(ArmorItems.TACTICAL_CAMO_BOOTS));
-            }
+        var selectedArmor = List.of(
+                        List.of(
+                                ArmorItems.TACTICAL_HELMET,
+                                ArmorItems.TACTICAL_CHESTPLATE,
+                                ArmorItems.TACTICAL_LEGGINGS,
+                                ArmorItems.TACTICAL_BOOTS
+                        ),
+                        List.of(
+                                ArmorItems.TACTICAL_CAMO_HELMET,
+                                ArmorItems.TACTICAL_CAMO_CHESTPLATE,
+                                ArmorItems.TACTICAL_CAMO_LEGGINGS,
+                                ArmorItems.TACTICAL_CAMO_BOOTS
+                        )
+                ).get(this.getRandom().nextIntBetweenInclusive(0, 1))
+                .stream()
+                .map(ItemStack::new)
+                .toArray(ItemStack[]::new);
+
+        var slots = EquipmentSlot.values();
+        for (var i = 0; i < selectedArmor.length; i++) {
+            setItemSlot(slots[i], selectedArmor[i]);
         }
         return super.finalizeSpawn(level, difficulty, spawnType, spawnGroupData);
     }
