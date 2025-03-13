@@ -2,6 +2,7 @@ package com.avp.client.render.entity;
 
 import com.avp.AVPResources;
 import com.avp.client.animation.MarineAnimator;
+import com.avp.client.render.layer.HumanBeard;
 import com.avp.client.render.layer.HumanEyes;
 import com.avp.client.render.layer.HumanHair;
 import com.avp.client.render.layer.MarineOutfit;
@@ -14,7 +15,6 @@ import mod.azure.azurelib.rewrite.render.entity.AzEntityRenderer;
 import mod.azure.azurelib.rewrite.render.entity.AzEntityRendererConfig;
 import mod.azure.azurelib.rewrite.render.layer.AzArmorLayer;
 import mod.azure.azurelib.rewrite.render.layer.AzBlockAndItemLayer;
-import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -28,20 +28,15 @@ public class MarineRenderer extends AzEntityRenderer<MarineMob> {
 
     private static final ResourceLocation FEMALE_MODEL = AVPResources.entityGeoModelLocation(NAME + "_female");
 
-    private static final ResourceLocation MALE_TEXTURE = AVPResources.entityTextureLocation(NAME + "_male");
-
-    private static final ResourceLocation FEMALE_TEXTURE = AVPResources.entityTextureLocation(NAME + "_female");
-
     /**
      * TODO: Change texture to choose a random one when all are completed.
      */
     public MarineRenderer(EntityRendererProvider.Context context) {
-        super(AzEntityRendererConfig.<MarineMob>builder(
-                marineMob -> Boolean.TRUE.equals(marineMob.getEntityData().get(AbstractHumanMob.SET_GENDER)) ? MALE_MODEL : FEMALE_MODEL,
-                marineMob -> Boolean.TRUE.equals(marineMob.getEntityData().get(AbstractHumanMob.SET_GENDER)) ? MALE_TEXTURE : FEMALE_TEXTURE
-                ).setAnimatorProvider(MarineAnimator::new)
+        super(AzEntityRendererConfig.builder(MarineRenderer::getModel, MarineRenderer::getTexture)
+                .setAnimatorProvider(MarineAnimator::new)
                 .addRenderLayer(new HumanHair())
                 .addRenderLayer(new HumanEyes())
+                .addRenderLayer(new HumanBeard())
                 .addRenderLayer(new MarineOutfit())
                 .addRenderLayer(new AzArmorLayer<>() {
                     /**
@@ -82,5 +77,19 @@ public class MarineRenderer extends AzEntityRenderer<MarineMob> {
                         super.renderItemForBone(context, bone, itemStack, animatable);
                     }
                 }).build(), context);
+    }
+
+    public static ResourceLocation getModel(MarineMob entity) {
+        if (Boolean.TRUE.equals(entity.getEntityData().get(AbstractHumanMob.SET_GENDER))) {
+            return MALE_MODEL;
+        }
+        return FEMALE_MODEL;
+    }
+
+    public static ResourceLocation getTexture(MarineMob entity) {
+        if (Boolean.TRUE.equals(entity.getEntityData().get(AbstractHumanMob.SET_GENDER))) {
+            return entity.getMaleTexture();
+        }
+        return entity.getFemaleTexture();
     }
 }

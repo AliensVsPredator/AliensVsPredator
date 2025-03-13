@@ -1,10 +1,8 @@
 package com.avp.client.render.layer;
 
-import com.avp.AVPResources;
 import com.avp.common.entity.living.human.AbstractHumanMob;
 import com.avp.common.entity.living.human.marine.MarineMob;
 import mod.azure.azurelib.rewrite.model.AzBone;
-import mod.azure.azurelib.rewrite.render.AzRendererPipeline;
 import mod.azure.azurelib.rewrite.render.AzRendererPipelineContext;
 import mod.azure.azurelib.rewrite.render.layer.AzRenderLayer;
 import net.minecraft.client.renderer.RenderType;
@@ -18,13 +16,11 @@ public class HumanEyes implements AzRenderLayer<MarineMob> {
     @Override
     public void render(AzRendererPipelineContext<MarineMob> context) {
         var animatable = context.animatable();
-        AzRendererPipeline<MarineMob> renderPipeline = context.rendererPipeline();
-        var textureMaleLocation = AVPResources.entityTextureLocation("marine_male_eyes");
-        var textureFemaleLocation = AVPResources.entityTextureLocation("marine_female_eyes");
+        var renderPipeline = context.rendererPipeline();
         if (Boolean.TRUE.equals(animatable.getEntityData().get(AbstractHumanMob.SET_GENDER))) {
-            context.setVertexConsumer(context.multiBufferSource().getBuffer(RenderType.entityCutout(textureMaleLocation)));
+            context.setVertexConsumer(context.multiBufferSource().getBuffer(RenderType.entityCutout(animatable.getMaleEyeTexture())));
         } else {
-            context.setVertexConsumer(context.multiBufferSource().getBuffer(RenderType.entityCutout(textureFemaleLocation)));
+            context.setVertexConsumer(context.multiBufferSource().getBuffer(RenderType.entityCutout(animatable.getFemaleEyeTexture())));
         }
         renderPipeline.reRender(context);
     }

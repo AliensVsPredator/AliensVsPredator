@@ -1,5 +1,6 @@
 package com.avp.common.entity.living.human;
 
+import com.avp.AVPResources;
 import com.avp.common.MoveAnalysis;
 import com.avp.common.ai.goal.StrollAroundInWaterGoal;
 import com.avp.common.entity.living.alien.Alien;
@@ -7,6 +8,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.DifficultyInstance;
@@ -29,6 +31,22 @@ public abstract class AbstractHumanMob extends PathfinderMob {
             AbstractHumanMob.class,
             EntityDataSerializers.BOOLEAN
     );
+
+    private Integer cachedSecondRandomValue;
+
+    private ResourceLocation cachedMaleTexture;
+
+    private ResourceLocation cachedMaleHairTexture;
+
+    private ResourceLocation cachedMaleEyeTexture;
+
+    private ResourceLocation cachedMaleBeardTexture;
+
+    private ResourceLocation cachedFemaleTexture;
+
+    private ResourceLocation cachedFemaleHairTexture;
+
+    private ResourceLocation cachedFemaleEyeTexture;
 
     private static final String GENDER_TAG_KEY = "gender";
 
@@ -144,4 +162,72 @@ public abstract class AbstractHumanMob extends PathfinderMob {
         super.addAdditionalSaveData(compoundTag);
         compoundTag.putBoolean(GENDER_TAG_KEY, this.getEntityData().get(SET_GENDER));
     }
+
+    public ResourceLocation getMaleHairTexture() {
+        if (cachedMaleHairTexture == null) {
+            int random1 = getRandom().nextIntBetweenInclusive(1, 5); // Generate first random value
+            int random2 = getSharedSecondRandomValue();
+            cachedMaleHairTexture = AVPResources.entityTextureLocation("marine_male_hair" + random1 + "_" + random2);
+        }
+        return cachedMaleHairTexture;
+    }
+
+    public ResourceLocation getMaleEyeTexture() {
+        if (cachedMaleEyeTexture == null) {
+            cachedMaleEyeTexture = AVPResources.entityTextureLocation("marine_male_eyes_" + this.getRandom().nextIntBetweenInclusive(1, 5));
+        }
+        return cachedMaleEyeTexture;
+    }
+
+    public ResourceLocation getMaleBeardTexture() {
+        if (cachedMaleBeardTexture == null) {
+            int random1 = getRandom().nextIntBetweenInclusive(1, 3);
+            int random2;
+            if (getRandom().nextIntBetweenInclusive(1, 3) == 3) {
+                random2 = 6;
+            } else {
+                random2 = getSharedSecondRandomValue();
+            }
+            cachedMaleBeardTexture = AVPResources.entityTextureLocation("marine_male_beard" + random1 + "_" + random2);
+        }
+        return cachedMaleBeardTexture;
+    }
+
+    public ResourceLocation getMaleTexture() {
+        if (cachedMaleTexture == null) {
+            cachedMaleTexture = AVPResources.entityTextureLocation("marine_male_" + this.getRandom().nextIntBetweenInclusive(1, 6));
+        }
+        return cachedMaleTexture;
+    }
+
+    public ResourceLocation getFemaleHairTexture() {
+        if (cachedFemaleHairTexture == null) {
+            cachedFemaleHairTexture = AVPResources.entityTextureLocation("marine_female_hair" +
+                    getRandom().nextIntBetweenInclusive(1, 5) + "_" +
+                    getRandom().nextIntBetweenInclusive(1, 6));
+        }
+        return cachedFemaleHairTexture;
+    }
+
+    public ResourceLocation getFemaleEyeTexture() {
+        if (cachedFemaleEyeTexture == null) {
+            cachedFemaleEyeTexture = AVPResources.entityTextureLocation("marine_female_eyes_" + this.getRandom().nextIntBetweenInclusive(1, 5));
+        }
+        return cachedFemaleEyeTexture;
+    }
+
+    public ResourceLocation getFemaleTexture() {
+        if (cachedFemaleTexture == null) {
+            cachedFemaleTexture = AVPResources.entityTextureLocation("marine_female_" + this.getRandom().nextIntBetweenInclusive(1, 6));
+        }
+        return cachedFemaleTexture;
+    }
+
+    private int getSharedSecondRandomValue() {
+        if (cachedSecondRandomValue == null) {
+            cachedSecondRandomValue = getRandom().nextIntBetweenInclusive(1, 6); // Generate once and reuse
+        }
+        return cachedSecondRandomValue;
+    }
+
 }

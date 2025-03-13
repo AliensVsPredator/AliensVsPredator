@@ -7,7 +7,7 @@ import mod.azure.azurelib.rewrite.render.AzRendererPipelineContext;
 import mod.azure.azurelib.rewrite.render.layer.AzRenderLayer;
 import net.minecraft.client.renderer.RenderType;
 
-public class HumanHair implements AzRenderLayer<MarineMob> {
+public class HumanBeard implements AzRenderLayer<MarineMob> {
 
     @Override
     public void preRender(AzRendererPipelineContext<MarineMob> context) {
@@ -17,10 +17,11 @@ public class HumanHair implements AzRenderLayer<MarineMob> {
     public void render(AzRendererPipelineContext<MarineMob> context) {
         var animatable = context.animatable();
         var renderPipeline = context.rendererPipeline();
+        if (Boolean.FALSE.equals(animatable.getEntityData().get(AbstractHumanMob.SET_GENDER))) {
+            return;
+        }
         if (Boolean.TRUE.equals(animatable.getEntityData().get(AbstractHumanMob.SET_GENDER))) {
-            context.setVertexConsumer(context.multiBufferSource().getBuffer(RenderType.entityCutout(animatable.getMaleHairTexture())));
-        } else {
-            context.setVertexConsumer(context.multiBufferSource().getBuffer(RenderType.entityCutout(animatable.getFemaleHairTexture())));
+            context.setVertexConsumer(context.multiBufferSource().getBuffer(RenderType.entityCutout(animatable.getMaleBeardTexture())));
         }
         renderPipeline.reRender(context);
     }
