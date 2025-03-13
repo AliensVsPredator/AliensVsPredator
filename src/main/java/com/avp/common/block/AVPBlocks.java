@@ -332,14 +332,14 @@ public class AVPBlocks {
     public static final Block TITANIUM_TREAD_STAIRS = register(new StairBlock(TITANIUM_TREAD.defaultBlockState(), BlockProperties.TITANIUM), "titanium_tread_stairs");
 
     // Grate - Slabs and Stairs
-    public static final Block FERROALUMINUM_GRATE_SLAB = register(new SlabBlock(BlockProperties.FERROALUMINUM), "ferroaluminum_grate_slab");
-    public static final Block FERROALUMINUM_GRATE_STAIRS = register(new StairBlock(FERROALUMINUM_GRATE.defaultBlockState(), BlockProperties.FERROALUMINUM), "ferroaluminum_grate_stairs");
+    public static final Block FERROALUMINUM_GRATE_SLAB = register(new SlabBlock(BlockProperties.FERROALUMINUM.noOcclusion()), "ferroaluminum_grate_slab");
+    public static final Block FERROALUMINUM_GRATE_STAIRS = register(new StairBlock(FERROALUMINUM_GRATE.defaultBlockState(), BlockProperties.FERROALUMINUM.noOcclusion()), "ferroaluminum_grate_stairs");
 
-    public static final Block STEEL_GRATE_SLAB = register(new SlabBlock(BlockProperties.STEEL), "steel_grate_slab");
-    public static final Block STEEL_GRATE_STAIRS = register(new StairBlock(STEEL_GRATE.defaultBlockState(), BlockProperties.STEEL), "steel_grate_stairs");
+    public static final Block STEEL_GRATE_SLAB = register(new SlabBlock(BlockProperties.STEEL.noOcclusion()), "steel_grate_slab");
+    public static final Block STEEL_GRATE_STAIRS = register(new StairBlock(STEEL_GRATE.defaultBlockState(), BlockProperties.STEEL.noOcclusion()), "steel_grate_stairs");
 
-    public static final Block TITANIUM_GRATE_SLAB = register(new SlabBlock(BlockProperties.TITANIUM), "titanium_grate_slab");
-    public static final Block TITANIUM_GRATE_STAIRS = register(new StairBlock(TITANIUM_GRATE.defaultBlockState(), BlockProperties.TITANIUM), "titanium_grate_stairs");
+    public static final Block TITANIUM_GRATE_SLAB = register(new SlabBlock(BlockProperties.TITANIUM.noOcclusion()), "titanium_grate_slab");
+    public static final Block TITANIUM_GRATE_STAIRS = register(new StairBlock(TITANIUM_GRATE.defaultBlockState(), BlockProperties.TITANIUM.noOcclusion()), "titanium_grate_stairs");
 
     public static final Map<DyeColor, Block> DYE_COLOR_TO_CONCRETE_SLAB =
         Collections.unmodifiableMap(
