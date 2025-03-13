@@ -97,7 +97,7 @@ public class MiscellaneousRecipeProvider {
                 .pattern("SSS")
                 .pattern("SFS")
                 .pattern("III")
-                .into(1, AVPBlocks.INDUSTRIAL_FURNACE)
+                .into(1, AVPBlocks.INDUSTRIAL_FURNACE);
 
     }
 }
