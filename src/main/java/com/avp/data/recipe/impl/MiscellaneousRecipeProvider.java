@@ -89,5 +89,15 @@ public class MiscellaneousRecipeProvider {
                 .pattern("TTT")
                 .into(1, AVPBlocks.NUKE_BLOCK);
 
+        builder.shaped()
+                .withCategory(RecipeCategory.MISC)
+                .define('S', Items.SMOOTH_STONE)
+                .define('F', Items.FURNACE)
+                .define('I', Items.IRON_INGOT)
+                .pattern("SSS")
+                .pattern("SFS")
+                .pattern("III")
+                .into(1, AVPBlocks.INDUSTRIAL_FURNACE);
+
     }
 }
