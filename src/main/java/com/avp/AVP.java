@@ -1,6 +1,7 @@
 package com.avp;
 
 import com.avp.common.recipe.AVPRecipes;
+import com.avp.common.effect.AVPEffects;
 import net.fabricmc.api.ModInitializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -94,7 +95,8 @@ public class AVP implements ModInitializer {
         AVPGameEvents.initialize();
         CommonPacketRegistry.initialize();
         ServerPacketHandlerRegistry.initialize();
-        AVPRecipes.init();
+        AVPRecipes.initialize();
+        AVPEffects.initialize();
 
         // Creative Tabs
         BlocksCreativeModeTabInitializer.initialize();

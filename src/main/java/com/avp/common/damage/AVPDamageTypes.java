@@ -16,6 +16,8 @@ public class AVPDamageTypes {
 
     public static final ResourceKey<DamageType> RAZOR_WIRE = create("razor_wire");
 
+    public static final ResourceKey<DamageType> RADIATION = create("radiation");
+
     private static ResourceKey<DamageType> create(String id) {
         return ResourceKey.create(Registries.DAMAGE_TYPE, AVPResources.location(id));
     }

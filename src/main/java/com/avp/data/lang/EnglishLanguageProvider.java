@@ -518,6 +518,8 @@ public class EnglishLanguageProvider extends FabricLanguageProvider {
 
         // Death messages
         translationBuilder.add("death.attack.acid", "%1$s vaporized in acid");
+        translationBuilder.add("death.attack.radiation", "%1$s surrendered to radiation");
+        translationBuilder.add("death.attack.razor_wire", "%1$s was struck by razor wire");
 
         translationBuilder.add("advancements.aliens.root.title", "AVP: Aliens");
         translationBuilder.add("advancements.aliens.root.description", "In Minecraft, no one can hear you scream");
@@ -544,6 +546,7 @@ public class EnglishLanguageProvider extends FabricLanguageProvider {
         translationBuilder.add("bossbar.avp.hive.title", "Hive");
 
         translationBuilder.add("avp.industrialfurnace.displayName", "Industrial Furance");
+        translationBuilder.add("effect.avp.radiation", "Radiation");
     }
 
     private void addSound(TranslationBuilder translationBuilder, SoundEvent soundEvent, String value) {

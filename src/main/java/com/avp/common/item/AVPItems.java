@@ -80,7 +80,7 @@ public class AVPItems {
     // Material Items
     public static final Item ALUMINUM_INGOT = register("aluminum_ingot");
 
-    public static final Item AUTUNITE_DUST = register("autunite_dust");
+    public static final Item AUTUNITE_DUST = register(new RadiatedItem(), "autunite_dust");
 
     public static final Item BARREL = register("barrel");
 
@@ -204,7 +204,7 @@ public class AVPItems {
 
     public static final Item TRANSISTOR = register("transistor");
 
-    public static final Item URANIUM_INGOT = register("uranium_ingot");
+    public static final Item URANIUM_INGOT = register(new RadiatedItem(), "uranium_ingot");
 
     public static final Item VERITANIUM_SHARD = register(new Item.Properties().fireResistant(), "veritanium_shard");
 
@@ -216,7 +216,7 @@ public class AVPItems {
     public static final Item BRASS_NUGGET = register("brass_nugget");
     public static final Item TITANIUM_NUGGET = register("titanium_nugget");
     public static final Item LEAD_NUGGET = register("lead_nugget");
-    public static final Item URANIUM_NUGGET = register("uranium_nugget");
+    public static final Item URANIUM_NUGGET = register(new RadiatedItem(), "uranium_nugget");
     public static final Item ZINC_NUGGET = register("zinc_nugget");
     public static final Item ALUMINUM_NUGGET = register("aluminum_nugget");
 

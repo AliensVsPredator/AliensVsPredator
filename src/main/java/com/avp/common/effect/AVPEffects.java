@@ -1,0 +1,20 @@
+package com.avp.common.effect;
+
+import com.avp.AVPResources;
+import net.minecraft.core.Holder;
+import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.world.effect.MobEffect;
+
+public class AVPEffects {
+
+    public static final Holder<MobEffect> RADIATION_EFFECT = create("radiation", new RadiationStatusEffect());
+
+    private static Holder<MobEffect> create(String id, MobEffect mobEffect) {
+        return Registry.registerForHolder(BuiltInRegistries.MOB_EFFECT, AVPResources.location(id), mobEffect);
+    }
+
+    public static void initialize() {
+
+    }
+}

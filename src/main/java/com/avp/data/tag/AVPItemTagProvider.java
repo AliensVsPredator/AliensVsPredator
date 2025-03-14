@@ -22,6 +22,13 @@ public class AVPItemTagProvider extends FabricTagProvider.ItemTagProvider {
 
     @Override
     protected void addTags(HolderLookup.Provider wrapperLookup) {
+        getOrCreateTagBuilder(AVPItemTags.RADIATION_RESISTANT_ARMOR)
+            .add(
+                ArmorItems.MK50_HELMET,
+                ArmorItems.MK50_CHESTPLATE,
+                ArmorItems.MK50_LEGGINGS,
+                ArmorItems.MK50_BOOTS);
+
         // Acid-resistant items
         getOrCreateTagBuilder(AVPItemTags.ACID_IMMUNE)
             .add(

@@ -41,7 +41,8 @@ public class AVPDamageTypeTagProvider extends FabricTagProvider<DamageType> {
                 AVPDamageTypes.ACID,
                 AVPDamageTypes.BULLET,
                 AVPDamageTypes.FLAMETHROW,
-                AVPDamageTypes.RAZOR_WIRE
+                AVPDamageTypes.RAZOR_WIRE,
+                AVPDamageTypes.RADIATION
             );
     }
 }

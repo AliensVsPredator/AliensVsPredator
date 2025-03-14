@@ -1,10 +1,13 @@
 package com.avp.common.entity.projectile;
 
+import com.avp.common.effect.AVPEffects;
 import com.avp.common.entity.type.AVPEntityTypes;
 import com.avp.common.item.AVPItems;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.entity.AreaEffectCloud;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.projectile.ThrowableItemProjectile;
@@ -70,8 +73,16 @@ public class ThrownGrenade extends BouncingItemProjectile {
     @Override
     protected void onDeath() {
         level().explode(this, getX(), getY(), getZ(),  isIrradiated ? 9F : 3F, isIncendiary, Level.ExplosionInteraction.BLOCK);
-        if (isIrradiated) {
-            // TODO: Do radiation here, if effect, do an AoECloudEntity honestly.
+        if (isIrradiated && this.level() instanceof Level serverLevel) {
+            var areaEffectCloudEntity = new AreaEffectCloud(serverLevel, this.blockPosition().getX(), this.blockPosition().getY(), this.blockPosition().getZ());
+            areaEffectCloudEntity.setRadius(10.0F);
+            areaEffectCloudEntity.setDuration(100);
+            areaEffectCloudEntity.setRadiusPerTick(
+                    -areaEffectCloudEntity.getRadius() / areaEffectCloudEntity.getDuration()
+            );
+            areaEffectCloudEntity.setParticle(ParticleTypes.ASH);
+            areaEffectCloudEntity.addEffect(new MobEffectInstance(AVPEffects.RADIATION_EFFECT, Integer.MAX_VALUE, 0));
+            serverLevel.addFreshEntity(areaEffectCloudEntity);
         }
     }
 
@@ -90,10 +101,10 @@ public class ThrownGrenade extends BouncingItemProjectile {
     }
 
     public void setIncendiary(boolean incendiary) {
-        isIncendiary = incendiary;
+        this.isIncendiary = incendiary;
     }
 
     public void setIrradiated(boolean isIrradiated) {
-        isIrradiated = isIrradiated;
+        this.isIrradiated = isIrradiated;
     }
 }

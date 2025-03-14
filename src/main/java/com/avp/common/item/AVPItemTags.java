@@ -26,6 +26,8 @@ public class AVPItemTags {
 
     public static final TagKey<Item> LITHIUM = create("lithium");
 
+    public static final TagKey<Item> RADIATION_RESISTANT_ARMOR = create("radiation_resistant_armor");
+
     private static TagKey<Item> create(String name) {
         return TagKey.create(Registries.ITEM, AVPResources.location(name));
     }

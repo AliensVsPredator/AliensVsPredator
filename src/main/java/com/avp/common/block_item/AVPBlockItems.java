@@ -1,5 +1,6 @@
 package com.avp.common.block_item;
 
+import com.avp.common.item.RadiatedBlockItem;
 import com.avp.common.item.RoyalJellyBlockItem;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -19,7 +20,7 @@ import com.avp.common.block.AVPBlocks;
 
 public class AVPBlockItems {
 
-    public static final BlockItem TRINITITE_BLOCK = register(AVPBlocks.TRINITITE_BLOCK);
+    public static final BlockItem TRINITITE_BLOCK = registerCustomBlockItem(new RadiatedBlockItem(AVPBlocks.TRINITITE_BLOCK), AVPBlocks.TRINITITE_BLOCK);
 
     public static final BlockItem NUKE_BLOCK = register(AVPBlocks.NUKE_BLOCK);
 
@@ -27,9 +28,9 @@ public class AVPBlockItems {
 
     public static final BlockItem ALUMINUM_BLOCK = register(AVPBlocks.ALUMINUM_BLOCK);
 
-    public static final BlockItem AUTUNITE_BLOCK = register(AVPBlocks.AUTUNITE_BLOCK);
+    public static final BlockItem AUTUNITE_BLOCK = registerCustomBlockItem(new RadiatedBlockItem(AVPBlocks.AUTUNITE_BLOCK), AVPBlocks.AUTUNITE_BLOCK);
 
-    public static final BlockItem AUTUNITE_ORE = register(AVPBlocks.AUTUNITE_ORE);
+    public static final BlockItem AUTUNITE_ORE = registerCustomBlockItem(new RadiatedBlockItem(AVPBlocks.AUTUNITE_ORE), AVPBlocks.AUTUNITE_ORE);
 
     public static final BlockItem BAUXITE_ORE = register(AVPBlocks.BAUXITE_ORE);
 
@@ -205,7 +206,7 @@ public class AVPBlockItems {
 
     public static final BlockItem TITANIUM_TREAD = register(AVPBlocks.TITANIUM_TREAD);
 
-    public static final BlockItem URANIUM_BLOCK = register(AVPBlocks.URANIUM_BLOCK);
+    public static final BlockItem URANIUM_BLOCK = registerCustomBlockItem(new RadiatedBlockItem(AVPBlocks.URANIUM_BLOCK), AVPBlocks.URANIUM_BLOCK);
 
     public static final BlockItem ZINC_BLOCK = register(AVPBlocks.ZINC_BLOCK);
 

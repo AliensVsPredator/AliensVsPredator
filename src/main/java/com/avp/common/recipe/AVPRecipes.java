@@ -14,6 +14,7 @@ public class AVPRecipes
     public static final RecipeSerializer<IndustrialFurnaceRecipe> INDUSTRIAL_FURNACE_RECIPE_SERIALIZER = Registry.register(
             BuiltInRegistries.RECIPE_SERIALIZER, ResourceLocation.fromNamespaceAndPath(AVP.MOD_ID, "industrial_furnace"),
             new SimpleCookingSerializer<>(IndustrialFurnaceRecipe::new,100));
+
     public static final RecipeType<IndustrialFurnaceRecipe> INDUSTRIAL_FURNACE_RECIPE_TYPE = Registry.register(
             BuiltInRegistries.RECIPE_TYPE, ResourceLocation.fromNamespaceAndPath(AVP.MOD_ID, "industrial_furnace"), new RecipeType<IndustrialFurnaceRecipe>() {
                 @Override
@@ -22,5 +23,5 @@ public class AVPRecipes
                 }
             });
 
-    public static void init(){};
+    public static void initialize(){};
 }

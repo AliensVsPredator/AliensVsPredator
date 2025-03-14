@@ -21,6 +21,7 @@ import net.minecraft.world.level.block.state.properties.BlockSetType;
 public class AVPBlocks {
 
     public static final Map<String, Block> BLOCKS = new HashMap<>();
+
     private static final String[] MATERIALS = {
             "ferroaluminum", "steel", "titanium"
     };
@@ -29,17 +30,18 @@ public class AVPBlocks {
             "siding", "fastened_siding", "fastened_standing",
             "plating", "tread", "grate"
     };
+
     public static final Block NUKE_BLOCK = register(BlockProperties.NUKE, "nuke");
 
     public static final Block ROYAL_JELLY_BLOCK = register(BlockProperties.JELLY, "royal_jelly_block");
 
-    public static final Block TRINITITE_BLOCK = register(BlockProperties.TRINITITE, "trinitite_block");
+    public static final Block TRINITITE_BLOCK = registerRadiatedBlock(BlockProperties.TRINITITE, "trinitite_block");
 
     public static final Block ALUMINUM_BLOCK = register(BlockProperties.ALUMINUM, "aluminum_block");
 
-    public static final Block AUTUNITE_BLOCK = register(BlockProperties.AUTUNITE_ORE, "autunite_block");
+    public static final Block AUTUNITE_BLOCK = registerRadiatedBlock(BlockProperties.AUTUNITE_ORE, "autunite_block");
 
-    public static final Block AUTUNITE_ORE = register(BlockProperties.AUTUNITE_ORE, "autunite_ore");
+    public static final Block AUTUNITE_ORE = registerRadiatedBlock(BlockProperties.AUTUNITE_ORE, "autunite_ore");
 
     public static final Block BAUXITE_ORE = register(BlockProperties.BAUXITE_ORE, "bauxite_ore");
 
@@ -238,7 +240,7 @@ public class AVPBlocks {
 
     public static final Block TITANIUM_TREAD = register(BlockProperties.TITANIUM, "titanium_tread");
 
-    public static final Block URANIUM_BLOCK = register(BlockProperties.URANIUM, "uranium_block");
+    public static final Block URANIUM_BLOCK = registerRadiatedBlock(BlockProperties.URANIUM, "uranium_block");
 
     public static final Block ZINC_BLOCK = register(BlockProperties.ZINC, "zinc_block");
 
@@ -683,6 +685,10 @@ public class AVPBlocks {
                     )
                 )
         );
+
+    public static Block registerRadiatedBlock(BlockBehaviour.Properties properties, String id) {
+        return register(new RadiatedBlock(properties), id);
+    }
 
     public static Block register(BlockBehaviour.Properties properties, String id) {
         return register(new Block(properties), id);
