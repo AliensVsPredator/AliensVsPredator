@@ -133,7 +133,7 @@ public class AVPBlocks {
         "industrial_glass_pane"
     );
 
-    public static final Block INDUSTRIAL_FURNACE = register(new IndustrialFurnaceBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.FURNACE)),"industrial_furnace_block");
+    public static final Block INDUSTRIAL_FURNACE = register(new IndustrialFurnaceBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.STONE)),"industrial_furnace_block");
 
     public static final Block LEAD_BLOCK = register(BlockProperties.LEAD, "lead_block");
 

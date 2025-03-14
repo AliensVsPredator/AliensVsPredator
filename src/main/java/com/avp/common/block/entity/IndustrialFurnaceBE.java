@@ -1,5 +1,6 @@
 package com.avp.common.block.entity;
 
+import com.avp.common.recipe.AVPRecipes;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
@@ -20,7 +21,7 @@ import org.jetbrains.annotations.NotNull;
 public class IndustrialFurnaceBE extends AbstractFurnaceBlockEntity {
 
     public IndustrialFurnaceBE(BlockPos blockPos, BlockState blockState) {
-        super(BlockEntityTypes.INDUSTRIAL_FURNACE_BE, blockPos, blockState, RecipeType.BLASTING);
+        super(BlockEntityTypes.INDUSTRIAL_FURNACE_BE, blockPos, blockState, AVPRecipes.INDUSTRIAL_FURNACE_RECIPE_TYPE);
     }
 
     @Override

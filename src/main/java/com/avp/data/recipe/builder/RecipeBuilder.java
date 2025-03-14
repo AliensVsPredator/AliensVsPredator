@@ -1,7 +1,12 @@
 package com.avp.data.recipe.builder;
 
+import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
+import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
+
+import static net.minecraft.data.recipes.RecipeProvider.getHasName;
+import static net.minecraft.data.recipes.RecipeProvider.has;
 
 public class RecipeBuilder {
 
@@ -34,7 +39,19 @@ public class RecipeBuilder {
     public StonecutterRecipeBuilder stonecut(ItemLike source) {
         return new StonecutterRecipeBuilder(this, source);
     }
+    public IndustrialFurnaceRecipeBuilder industrialFurnaceSmelting(ItemLike item) {
+        IndustrialFurnaceRecipeBuilder builder = IndustrialFurnaceRecipeBuilder.smelting(
+                Ingredient.of(item),
+                RecipeCategory.MISC,
+                item,
+                0.1f,
+                100
+        );
 
+        builder.unlockedBy(getHasName(item), has(item));
+
+        return builder;
+    }
     public RecipeOutput getRecipeOutput() {
         return recipeOutput;
     }

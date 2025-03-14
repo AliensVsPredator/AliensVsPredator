@@ -1,5 +1,6 @@
 package com.avp.data.recipe;
 
+import com.avp.data.recipe.builder.IndustrialFurnaceRecipeBuilder;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricRecipeProvider;
 import net.minecraft.core.HolderLookup;
@@ -32,7 +33,7 @@ public class RecipeProvider extends FabricRecipeProvider {
     @Override
     public void buildRecipes(RecipeOutput recipeOutput) {
         var builder = RecipeBuilder.with(recipeOutput);
-
+        IndustrialFurnaceRecipeBuilder.ensureRegistration(recipeOutput);
         ArmorRecipeProvider.provide(builder);
         ElectronicItemRecipeProvider.provide(builder);
         GlassRecipeProvider.provide(builder);
@@ -49,4 +50,5 @@ public class RecipeProvider extends FabricRecipeProvider {
         VanillaIronLikeRecipeProvider.provide(builder);
         VanillaMiscellaneousRecipeProvider.provide(builder);
     }
+
 }
