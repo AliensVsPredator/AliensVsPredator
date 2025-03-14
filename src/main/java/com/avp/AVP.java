@@ -2,6 +2,7 @@ package com.avp;
 
 import com.avp.common.recipe.AVPRecipes;
 import com.avp.common.effect.AVPEffects;
+import com.avp.common.worldgen.biome.AVPBiomes;
 import net.fabricmc.api.ModInitializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -97,6 +98,7 @@ public class AVP implements ModInitializer {
         ServerPacketHandlerRegistry.initialize();
         AVPRecipes.initialize();
         AVPEffects.initialize();
+        AVPBiomes.initialize();
 
         // Creative Tabs
         BlocksCreativeModeTabInitializer.initialize();
