@@ -99,6 +99,7 @@ public class NukeBE extends Entity {
                     var explosion = ExplosionUtil.createNuclearExplosion((ServerLevel) this.level(), this.blockPosition().getCenter(), 16 * 8, 5);;
                     explosion.explode();
                 }, Duration.ofSeconds(1));
+                this.discard();
             }
         } else if (tickCount % 20 == 0) {
             // TODO: Change to custom sound
