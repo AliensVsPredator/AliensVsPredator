@@ -31,7 +31,7 @@ public class AVPBlocks {
             "plating", "tread", "grate"
     };
 
-    public static final Block NUKE_BLOCK = register(BlockProperties.NUKE, "nuke");
+    public static final Block NUKE_BLOCK = register(new NukeBlock(BlockProperties.NUKE), "nuke");
 
     public static final Block ROYAL_JELLY_BLOCK = register(BlockProperties.JELLY, "royal_jelly_block");
 
@@ -693,9 +693,11 @@ public class AVPBlocks {
     public static Block register(BlockBehaviour.Properties properties, String id) {
         return register(new Block(properties), id);
     }
+
     private static void registerBlock(String name, Block block) {
         BLOCKS.put(name, register(block, name));
     }
+
     public static Block register(Block block, String id) {
         var resourceLocation = AVPResources.location(id);
         return Registry.register(BuiltInRegistries.BLOCK, resourceLocation, block);

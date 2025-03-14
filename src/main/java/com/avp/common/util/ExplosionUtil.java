@@ -1,5 +1,8 @@
 package com.avp.common.util;
 
+import com.avp.AVP;
+import com.avp.common.command.nuke.ExplosionProgressTracker;
+import com.avp.common.explosion.nuke.NuclearExplosionEffects;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
@@ -59,5 +62,48 @@ public class ExplosionUtil {
 
         entity.setDeltaMovement(knockbackVelocity);
         entity.hurtMarked = true; // Ensure physics applies immediately
+    }
+
+    public static Explosion createNuclearExplosion(ServerLevel level, Vec3 center, int radius, int maxKnockback) {
+        var progressTracker = new ExplosionProgressTracker();
+        var nuclearExplosionEffects = new NuclearExplosionEffects();
+
+        return Explosion.builder(level, center)
+                .withRadius(Direction.Plane.HORIZONTAL, radius)
+                .withRadius(Direction.UP, radius / 2)
+                .withRadius(Direction.DOWN, 16 * 2)
+                .onExplosionStart(() -> {
+                    progressTracker.startTimer();
+
+                    var entities = ExplosionUtil.getEntitiesInRadius(level, center, radius);
+
+                    for (var entity : entities) {
+                        var distance = entity.distanceToSqr(center);
+                        var damage = ExplosionUtil.computeDamage(radius, 5, 1000, distance);
+
+                        entity.igniteForSeconds(15);
+                        entity.hurt(level.damageSources().explosion(null), (float) damage);
+                        ExplosionUtil.applyKnockback(center, radius, entity, maxKnockback, distance);
+                    }
+                })
+                .onBlockSample(($, pos) -> {
+                    nuclearExplosionEffects.apply($, pos);
+                    progressTracker.incrementBlockDestroyCounter();
+                })
+                .onExplosionFinish(() -> {
+                    progressTracker.stopTimer();
+
+                    var timeTakenInMillis = progressTracker.timeTaken();
+                    var timeTakenInTicks = timeTakenInMillis / 50;
+
+                    AVP.LOGGER.info(
+                            "Explosion @ {} completed in {}ms ({} ticks), destroying {} blocks!",
+                            center,
+                            timeTakenInMillis,
+                            timeTakenInTicks,
+                            progressTracker.blocksDestroyed()
+                    );
+                })
+                .build();
     }
 }

@@ -1,5 +1,6 @@
 package com.avp.common.entity.type;
 
+import com.avp.common.block.entity.NukeBE;
 import com.avp.common.entity.living.human.marine.MarineMob;
 import com.avp.common.entity.projectile.ThrownGrenade;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry;
@@ -48,6 +49,11 @@ public class AVPEntityTypes {
 
         return MobCategory.MONSTER;
     }).get();
+
+    public static final EntityType<Entity> NUKE_BE = register(
+            "nuke_be",
+            EntityType.Builder.of(NukeBE::new, MobCategory.MISC).sized(0.1F, 0.1F).noSummon()
+    );
 
     public static final EntityType<Acid> ACID = register(
         "acid",
