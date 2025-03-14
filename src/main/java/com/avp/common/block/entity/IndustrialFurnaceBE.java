@@ -1,116 +1,124 @@
 package com.avp.common.block.entity;
 
-import com.avp.common.block.entity.base.BaseTickingBE;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.core.NonNullList;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.SimpleContainer;
+import net.minecraft.network.chat.Component;
+import net.minecraft.util.Mth;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.BlastFurnaceMenu;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.crafting.SingleRecipeInput;
-import net.minecraft.world.item.crafting.SmeltingRecipe;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.AbstractFurnaceBlock;
+import net.minecraft.world.level.block.entity.AbstractFurnaceBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.NotNull;
 
-import java.util.HashSet;
-import java.util.Optional;
-import java.util.Set;
-
-public class IndustrialFurnaceBE extends BaseTickingBE {
-
-    public static Set<Item> fasterSmeltableItems = new HashSet<>();
-    public static Set<Item> fasterSmeltableBlocks = new HashSet<>();
-
-    private static int smeltTime = 0;
-    private static final int BASE_SMELT_TIME = 200; // Vanilla Furnace time
-    public static NonNullList<ItemStack> items = NonNullList.withSize(3, ItemStack.EMPTY);
+public class IndustrialFurnaceBE extends AbstractFurnaceBlockEntity {
 
     public IndustrialFurnaceBE(BlockPos blockPos, BlockState blockState) {
-        super(BlockEntityTypes.INDUSTRIAL_FURNACE_BE, blockPos, blockState);
+        super(BlockEntityTypes.INDUSTRIAL_FURNACE_BE, blockPos, blockState, RecipeType.BLASTING);
     }
 
     @Override
-    public void tick(Level level, BlockPos pos, BlockState state) {
+    public int getBurnDuration(ItemStack itemStack) {
+        return super.getBurnDuration(itemStack) / 4;
+    }
 
+    public static int getTotalCookTime(Level level, AbstractFurnaceBlockEntity abstractFurnaceBlockEntity) {
+        SingleRecipeInput singleRecipeInput = new SingleRecipeInput(abstractFurnaceBlockEntity.getItem(0));
+        return abstractFurnaceBlockEntity.quickCheck.getRecipeFor(singleRecipeInput, level).map(recipeHolder -> recipeHolder.value().getCookingTime() / 2).orElse(200);
     }
 
     @Override
-    protected void loadAdditional(CompoundTag compoundTag, HolderLookup.Provider provider) {
-        super.loadAdditional(compoundTag, provider);
-        smeltTime = compoundTag.getInt("smeltTime");
+    public void setItem(int i, ItemStack itemStack) {
+        ItemStack itemStack2 = this.items.get(i);
+        boolean bl = !itemStack.isEmpty() && ItemStack.isSameItemSameComponents(itemStack2, itemStack);
+        this.items.set(i, itemStack);
+        itemStack.limitSize(this.getMaxStackSize(itemStack));
+        if (i == 0 && !bl) {
+            this.cookingTotalTime = getTotalCookTime(this.level, this);
+            this.cookingProgress = 0;
+            this.setChanged();
+        }
     }
 
-    @Override
-    protected void saveAdditional(CompoundTag compoundTag, HolderLookup.Provider provider) {
-        super.saveAdditional(compoundTag, provider);
-        compoundTag.putInt("smeltTime", smeltTime);
-    }
+    public static void serverTick(Level level, BlockPos blockPos, BlockState blockState, AbstractFurnaceBlockEntity abstractFurnaceBlockEntity) {
+        boolean bl = abstractFurnaceBlockEntity.isLit();
+        boolean bl2 = false;
+        if (abstractFurnaceBlockEntity.isLit()) {
+            --abstractFurnaceBlockEntity.litTime;
+        }
 
-    public void registerFasterSmeltables() {
-        fasterSmeltableBlocks.add(Blocks.COBBLESTONE.asItem());
-        fasterSmeltableBlocks.add(Blocks.COBBLED_DEEPSLATE.asItem());
-        fasterSmeltableBlocks.add(Blocks.TERRACOTTA.asItem());
-        fasterSmeltableBlocks.add(Blocks.QUARTZ_BLOCK.asItem());
-        fasterSmeltableBlocks.add(Blocks.SANDSTONE.asItem());
-        fasterSmeltableBlocks.add(Blocks.STONE.asItem());
-        fasterSmeltableBlocks.add(Blocks.BASALT.asItem());
-        fasterSmeltableBlocks.add(Blocks.RED_SANDSTONE.asItem());
-        fasterSmeltableBlocks.add(Blocks.STONE_BRICKS.asItem());
-        fasterSmeltableBlocks.add(Blocks.DEEPSLATE_BRICKS.asItem());
-        fasterSmeltableBlocks.add(Blocks.DEEPSLATE_TILES.asItem());
-        fasterSmeltableBlocks.add(Blocks.POLISHED_BLACKSTONE_BRICKS.asItem());
-        fasterSmeltableBlocks.add(Blocks.NETHER_BRICKS.asItem());
-        fasterSmeltableBlocks.add(Blocks.WET_SPONGE.asItem());
-        fasterSmeltableBlocks.add(Blocks.SAND.asItem());
-        fasterSmeltableBlocks.add(Blocks.RED_SAND.asItem());
-        fasterSmeltableBlocks.add(Blocks.MUD.asItem());
-        fasterSmeltableBlocks.add(Blocks.CLAY.asItem());
-    }
+        ItemStack itemStack = abstractFurnaceBlockEntity.items.get(1);
+        ItemStack itemStack2 = abstractFurnaceBlockEntity.items.get(0);
+        boolean bl3 = !itemStack2.isEmpty();
+        boolean bl4 = !itemStack.isEmpty();
+        if (abstractFurnaceBlockEntity.isLit() || bl4 && bl3) {
+            RecipeHolder<?> recipeHolder;
+            if (bl3) {
+                recipeHolder = abstractFurnaceBlockEntity.quickCheck.getRecipeFor(new SingleRecipeInput(itemStack2), level).orElse(null);
+            } else {
+                recipeHolder = null;
+            }
 
-    public static <T extends BlockEntity> void tick(Level level, BlockPos pos, BlockState state, T t)
-    {
-        if (level.isClientSide) return;
-
-        ItemStack input = items.get(0);
-        ItemStack fuel = items.get(1);
-        ItemStack output = items.get(2);
-
-        if (!input.isEmpty()) {
-            Optional<RecipeHolder<SmeltingRecipe>> recipeOpt = level.getRecipeManager().getRecipeFor(RecipeType.SMELTING, new SingleRecipeInput(input), level);
-
-            if (recipeOpt.isPresent()) {
-                SmeltingRecipe recipe = recipeOpt.get().value();
-                ItemStack result = recipe.getResultItem(level.registryAccess());
-
-                if (!result.isEmpty()) {
-                    int smeltTimeTotal = BASE_SMELT_TIME / 2;
-                    if (!fasterSmeltableBlocks.contains(input.getItem())) {
-                        smeltTimeTotal = BASE_SMELT_TIME;
-                    }
-
-                    smeltTime++;
-
-                    if (smeltTime >= smeltTimeTotal) {
-                        input.shrink(1);
-                        smeltTime = 0;
-
-                        if (output.isEmpty()) {
-                            items.set(2, result.copy());
-                        } else if (output.is(result.getItem())) {
-                            output.grow(result.getCount());
+            int i = abstractFurnaceBlockEntity.getMaxStackSize();
+            if (!abstractFurnaceBlockEntity.isLit() && canBurn(level.registryAccess(), recipeHolder, abstractFurnaceBlockEntity.items, i)) {
+                abstractFurnaceBlockEntity.litTime = abstractFurnaceBlockEntity.getBurnDuration(itemStack);
+                abstractFurnaceBlockEntity.litDuration = abstractFurnaceBlockEntity.litTime;
+                if (abstractFurnaceBlockEntity.isLit()) {
+                    bl2 = true;
+                    if (bl4) {
+                        Item item = itemStack.getItem();
+                        itemStack.shrink(1);
+                        if (itemStack.isEmpty()) {
+                            Item item2 = item.getCraftingRemainingItem();
+                            abstractFurnaceBlockEntity.items.set(1, item2 == null ? ItemStack.EMPTY : new ItemStack(item2));
                         }
                     }
                 }
             }
-        } else {
-            smeltTime = 0;
+
+            if (abstractFurnaceBlockEntity.isLit() && canBurn(level.registryAccess(), recipeHolder, abstractFurnaceBlockEntity.items, i)) {
+                ++abstractFurnaceBlockEntity.cookingProgress;
+                if (abstractFurnaceBlockEntity.cookingProgress == abstractFurnaceBlockEntity.cookingTotalTime) {
+                    abstractFurnaceBlockEntity.cookingProgress = 0;
+                    abstractFurnaceBlockEntity.cookingTotalTime = getTotalCookTime(level, abstractFurnaceBlockEntity);
+                    if (burn(level.registryAccess(), recipeHolder, abstractFurnaceBlockEntity.items, i)) {
+                        abstractFurnaceBlockEntity.setRecipeUsed(recipeHolder);
+                    }
+
+                    bl2 = true;
+                }
+            } else {
+                abstractFurnaceBlockEntity.cookingProgress = 0;
+            }
+        } else if (!abstractFurnaceBlockEntity.isLit() && abstractFurnaceBlockEntity.cookingProgress > 0) {
+            abstractFurnaceBlockEntity.cookingProgress = Mth.clamp(abstractFurnaceBlockEntity.cookingProgress - 2, 0, abstractFurnaceBlockEntity.cookingTotalTime);
         }
+
+        if (bl != abstractFurnaceBlockEntity.isLit()) {
+            bl2 = true;
+            blockState = blockState.setValue(AbstractFurnaceBlock.LIT, abstractFurnaceBlockEntity.isLit());
+            level.setBlock(blockPos, blockState, 3);
+        }
+
+        if (bl2) {
+            setChanged(level, blockPos, blockState);
+        }
+
+    }
+
+    @Override
+    protected @NotNull Component getDefaultName() {
+        return Component.translatable("avp.industrialfurnace.displayName");
+    }
+
+    @Override
+    protected @NotNull AbstractContainerMenu createMenu(int i, Inventory inventory) {
+        return new BlastFurnaceMenu(i, inventory, this, this.dataAccess);
     }
 }
