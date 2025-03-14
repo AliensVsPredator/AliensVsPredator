@@ -43,6 +43,7 @@ public class MetalRecipeProvider {
                 .into(2, AVPItems.RAW_BRASS);
 
         builder.shaped()
+                .withCustomName(name -> "uranium_ignot_normal")
                 .withCategory(RecipeCategory.MISC)
                 .define('A', AVPItems.AUTUNITE_DUST)
                 .define('T', AVPItems.TITANIUM_INGOT)
