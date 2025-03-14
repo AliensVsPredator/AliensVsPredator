@@ -202,6 +202,38 @@ public class SpawnPlacements {
                 maxGroupSize
             );
         }
+
+        if (properties.getOrThrow(ConfigProperties.NETHER_QUEEN_SPAWNING.mobSpawning().enabled())) {
+            var maxGroupSize = properties.getOrThrow(ConfigProperties.NETHER_QUEEN_SPAWNING.mobSpawning().maxGroupSize());
+            var minGroupSize = properties.getOrThrow(ConfigProperties.NETHER_QUEEN_SPAWNING.mobSpawning().minGroupSize());
+            var weight = properties.getOrThrow(ConfigProperties.NETHER_QUEEN_SPAWNING.mobSpawning().weight());
+
+            net.minecraft.world.entity.SpawnPlacements.register(AVPEntityTypes.NETHER_QUEEN, placement, heightMap, QueenSpawning.NETHER_PREDICATE);
+            BiomeModifications.addSpawn(
+                    AVPPredicates.alwaysTrue(),
+                    AVPEntityTypes.ALIEN_CATEGORY,
+                    AVPEntityTypes.NETHER_QUEEN,
+                    weight,
+                    minGroupSize,
+                    maxGroupSize
+            );
+        }
+
+//        if (properties.getOrThrow(ConfigProperties.QUEEN_SPAWNING.mobSpawning().enabled())) {
+//            var maxGroupSize = properties.getOrThrow(ConfigProperties.QUEEN_SPAWNING.mobSpawning().maxGroupSize());
+//            var minGroupSize = properties.getOrThrow(ConfigProperties.QUEEN_SPAWNING.mobSpawning().minGroupSize());
+//            var weight = properties.getOrThrow(ConfigProperties.QUEEN_SPAWNING.mobSpawning().weight());
+//
+//            net.minecraft.world.entity.SpawnPlacements.register(AVPEntityTypes.ABERRANT_QUEEN, placement, heightMap, QueenSpawning.PREDICATE);
+//            BiomeModifications.addSpawn(
+//                    AVPPredicates.alwaysTrue(),
+//                    AVPEntityTypes.ALIEN_CATEGORY,
+//                    AVPEntityTypes.ABERRANT_QUEEN,
+//                    weight,
+//                    minGroupSize,
+//                    maxGroupSize
+//            );
+//        }
     }
 
     private static void registerYoungXenomorphSpawns(ConfigPropertyContainer properties) {

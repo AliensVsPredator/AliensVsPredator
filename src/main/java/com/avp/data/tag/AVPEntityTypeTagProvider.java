@@ -82,10 +82,12 @@ public class AVPEntityTypeTagProvider extends FabricTagProvider.EntityTypeTagPro
                 AVPEntityTypes.ABERRANT_DRONE,
                 AVPEntityTypes.ABERRANT_PRAETORIAN,
                 AVPEntityTypes.ABERRANT_WARRIOR,
+                AVPEntityTypes.ABERRANT_QUEEN,
                 AVPEntityTypes.DRONE,
                 AVPEntityTypes.NETHER_DRONE,
                 AVPEntityTypes.NETHER_PRAETORIAN,
                 AVPEntityTypes.NETHER_WARRIOR,
+                AVPEntityTypes.NETHER_QUEEN,
                 AVPEntityTypes.PRAETORIAN,
                 AVPEntityTypes.QUEEN,
                 AVPEntityTypes.WARRIOR
@@ -126,7 +128,9 @@ public class AVPEntityTypeTagProvider extends FabricTagProvider.EntityTypeTagPro
                 AVPEntityTypes.CHESTBURSTER_QUEEN,
                 AVPEntityTypes.NETHER_PRAETORIAN,
                 AVPEntityTypes.PRAETORIAN,
-                AVPEntityTypes.QUEEN
+                AVPEntityTypes.QUEEN,
+                AVPEntityTypes.ABERRANT_QUEEN,
+                AVPEntityTypes.NETHER_QUEEN
             );
     }
 
@@ -143,7 +147,8 @@ public class AVPEntityTypeTagProvider extends FabricTagProvider.EntityTypeTagPro
                 AVPEntityTypes.ABERRANT_FACEHUGGER,
                 AVPEntityTypes.ABERRANT_OVAMORPH,
                 AVPEntityTypes.ABERRANT_PRAETORIAN,
-                AVPEntityTypes.ABERRANT_WARRIOR
+                AVPEntityTypes.ABERRANT_WARRIOR,
+                AVPEntityTypes.ABERRANT_QUEEN
             );
     }
 
@@ -155,7 +160,8 @@ public class AVPEntityTypeTagProvider extends FabricTagProvider.EntityTypeTagPro
                 AVPEntityTypes.NETHER_FACEHUGGER,
                 AVPEntityTypes.NETHER_OVAMORPH,
                 AVPEntityTypes.NETHER_PRAETORIAN,
-                AVPEntityTypes.NETHER_WARRIOR
+                AVPEntityTypes.NETHER_WARRIOR,
+                AVPEntityTypes.NETHER_QUEEN
             );
     }
 

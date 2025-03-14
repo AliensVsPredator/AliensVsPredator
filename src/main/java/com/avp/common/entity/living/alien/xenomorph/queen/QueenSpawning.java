@@ -1,5 +1,7 @@
 package com.avp.common.entity.living.alien.xenomorph.queen;
 
+import com.avp.common.entity.living.alien.AlienSpawning;
+import com.avp.common.entity.living.alien.xenomorph.warrior.Warrior;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.EntityType;
@@ -31,6 +33,23 @@ public class QueenSpawning {
         return blockPos.getY() <= maxY &&
             isValidSpawn &&
             checkSpawnRules(entityType, serverLevelAccessor, mobSpawnType, blockPos, randomSource);
+    };
+
+    public static final SpawnPlacements.SpawnPredicate<Queen> NETHER_PREDICATE = (
+            entityType,
+            serverLevelAccessor,
+            mobSpawnType,
+            blockPos,
+            randomSource
+    ) -> {
+        var properties = AVP.SPAWNING_CONFIG.properties();
+        var maxY = properties.getOrThrow(ConfigProperties.NETHER_QUEEN_SPAWNING.mobSpawning().maxY());
+        var requiresResin = properties.getOrThrow(ConfigProperties.NETHER_QUEEN_SPAWNING.requiresResin());
+        var isValidSpawn = !requiresResin || serverLevelAccessor.getBlockState(blockPos.below()).is(AVPBlockTags.RESIN);
+
+        return blockPos.getY() <= maxY &&
+                isValidSpawn &&
+                checkSpawnRules(entityType, serverLevelAccessor, mobSpawnType, blockPos, randomSource);
     };
 
     public static boolean checkSpawnRules(

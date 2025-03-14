@@ -99,6 +99,14 @@ public class Configs {
         .property(ConfigProperties.NETHER_WARRIOR_SPAWNING.mobSpawning().weight(), 25)
         .property(ConfigProperties.NETHER_WARRIOR_SPAWNING.requiresResin(), false)
 
+        .property(ConfigProperties.NETHER_QUEEN_SPAWNING.mobSpawning().enabled(), true)
+        .property(ConfigProperties.NETHER_QUEEN_SPAWNING.mobSpawning().maxGroupSize(), 1)
+        .property(ConfigProperties.NETHER_QUEEN_SPAWNING.mobSpawning().maxY(), NETHER_TOP_Y_LEVEL)
+        .property(ConfigProperties.NETHER_QUEEN_SPAWNING.mobSpawning().minGroupSize(), 1)
+        .property(ConfigProperties.NETHER_QUEEN_SPAWNING.mobSpawning().minY(), NETHER_BOTTOM_Y_LEVEL)
+        .property(ConfigProperties.NETHER_QUEEN_SPAWNING.mobSpawning().weight(), 5)
+        .property(ConfigProperties.NETHER_QUEEN_SPAWNING.requiresResin(), false)
+
         .property(ConfigProperties.OVAMORPH_SPAWNING.mobSpawning().enabled(), true)
         .property(ConfigProperties.OVAMORPH_SPAWNING.mobSpawning().maxGroupSize(), 3)
         .property(ConfigProperties.OVAMORPH_SPAWNING.mobSpawning().maxY(), -24)

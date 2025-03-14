@@ -36,6 +36,8 @@ public class SpawnEggItems {
 
     public static final Item ABERRANT_WARRIOR_SPAWN_EGG = register(AVPEntityTypes.ABERRANT_WARRIOR, 0xF3CE07, 0xD7D7DF);
 
+    public static final Item ABERRANT_QUEEN_SPAWN_EGG = register(AVPEntityTypes.ABERRANT_QUEEN, 0xF3CE07, 0xD7D7DF);
+
     public static final Item CHESTBURSTER_SPAWN_EGG = register(AVPEntityTypes.CHESTBURSTER, 0xD8B877, 0xF7E2B4);
 
     public static final Item DRONE_SPAWN_EGG = register(AVPEntityTypes.DRONE, 0x010202, 0xDFE2E4);
@@ -53,6 +55,8 @@ public class SpawnEggItems {
     public static final Item NETHER_PRAETORIAN_SPAWN_EGG = register(AVPEntityTypes.NETHER_PRAETORIAN, 0x310808, 0x5d1f1f);
 
     public static final Item NETHER_WARRIOR_SPAWN_EGG = register(AVPEntityTypes.NETHER_WARRIOR, 0x2b0000, 0x67261f);
+
+    public static final Item NETHER_QUEEN_SPAWN_EGG = register(AVPEntityTypes.NETHER_QUEEN, 0x2b0000, 0x67261f);
 
     public static final Item OVAMORPH_SPAWN_EGG = register(AVPEntityTypes.OVAMORPH, 0x615B45, 0xBF7872);
 

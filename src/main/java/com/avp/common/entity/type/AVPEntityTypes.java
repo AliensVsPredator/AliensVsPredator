@@ -161,6 +161,11 @@ public class AVPEntityTypes {
         EntityType.Builder.of(aberrantFactory(AVPEntityTypes.WARRIOR, Warrior::new), AVPEntityTypes.ALIEN_CATEGORY)
     );
 
+    public static final EntityType<Queen> ABERRANT_QUEEN = register(
+            "aberrant_queen",
+            EntityType.Builder.of(aberrantFactory(AVPEntityTypes.QUEEN, Queen::new), AVPEntityTypes.ALIEN_CATEGORY)
+    );
+
     public static final EntityType<Chestburster> NETHER_CHESTBURSTER = register(
         "nether_chestburster",
         EntityType.Builder.of(nethermorphFactory(AVPEntityTypes.CHESTBURSTER, Chestburster::new), AVPEntityTypes.ALIEN_CATEGORY)
@@ -189,6 +194,11 @@ public class AVPEntityTypes {
     public static final EntityType<Warrior> NETHER_WARRIOR = register(
         "nether_warrior",
         EntityType.Builder.of(nethermorphFactory(AVPEntityTypes.WARRIOR, Warrior::new), AVPEntityTypes.ALIEN_CATEGORY)
+    );
+
+    public static final EntityType<Queen> NETHER_QUEEN = register(
+            "nether_queen",
+            EntityType.Builder.of(nethermorphFactory(AVPEntityTypes.QUEEN, Queen::new), AVPEntityTypes.ALIEN_CATEGORY)
     );
 
     private static <T extends Alien> EntityType.EntityFactory<T> aberrantFactory(

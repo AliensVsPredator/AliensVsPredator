@@ -91,6 +91,8 @@ public class ConfigProperties {
 
     public static final ConfigAlienSpawningContainer NETHER_WARRIOR_SPAWNING = registerAlienSpawning("nether_warrior");
 
+    public static final ConfigAlienSpawningContainer NETHER_QUEEN_SPAWNING = registerAlienSpawning("nether_queen");
+
     public static final ConfigMobAttributesContainer OVAMORPH_ATTRIBUTES = registerAttributes("ovamorph");
 
     public static final ConfigAlienSpawningContainer OVAMORPH_SPAWNING = registerAlienSpawning("ovamorph");

@@ -19,8 +19,12 @@ public class QueenRenderer extends AzEntityRenderer<Queen> {
 
     private static final ResourceLocation TEXTURE = AVPResources.entityTextureLocation(NAME);
 
+    private static final ResourceLocation ABERRANT_TEXTURE = AVPResources.entityTextureLocation("aberrant_" + NAME);
+
+    private static final ResourceLocation NETHER_TEXTURE = AVPResources.entityTextureLocation("nether_" + NAME);
+
     public QueenRenderer(EntityRendererProvider.Context context) {
-        super(AzEntityRendererConfig.<Queen>builder(MODEL, TEXTURE).build(), context);
+        super(AzEntityRendererConfig.<Queen>builder($ -> MODEL, QueenRenderer::textureLocation).build(), context);
         this.shadowRadius = 1F;
     }
 
@@ -35,5 +39,17 @@ public class QueenRenderer extends AzEntityRenderer<Queen> {
     ) {
         entity.runPassiveAnimations();
         super.render(entity, entityYaw, partialTick, poseStack, bufferSource, packedLight);
+    }
+
+    private static ResourceLocation textureLocation(Queen queen) {
+        if (queen.isNetherAfflicted()) {
+            return NETHER_TEXTURE;
+        }
+
+        if (queen.isAberrant()) {
+            return ABERRANT_TEXTURE;
+        }
+        
+        return TEXTURE;
     }
 }

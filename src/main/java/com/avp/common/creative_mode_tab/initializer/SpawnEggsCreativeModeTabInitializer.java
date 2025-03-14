@@ -25,6 +25,7 @@ public class SpawnEggsCreativeModeTabInitializer {
             entries.accept(SpawnEggItems.NETHER_OVAMORPH_SPAWN_EGG);
             entries.accept(SpawnEggItems.NETHER_PRAETORIAN_SPAWN_EGG);
             entries.accept(SpawnEggItems.NETHER_WARRIOR_SPAWN_EGG);
+            entries.accept(SpawnEggItems.NETHER_QUEEN_SPAWN_EGG);
 
             entries.accept(SpawnEggItems.ABERRANT_CHESTBURSTER_SPAWN_EGG);
             entries.accept(SpawnEggItems.ABERRANT_DRONE_SPAWN_EGG);
@@ -32,6 +33,7 @@ public class SpawnEggsCreativeModeTabInitializer {
             entries.accept(SpawnEggItems.ABERRANT_OVAMORPH_SPAWN_EGG);
             entries.accept(SpawnEggItems.ABERRANT_PRAETORIAN_SPAWN_EGG);
             entries.accept(SpawnEggItems.ABERRANT_WARRIOR_SPAWN_EGG);
+            entries.accept(SpawnEggItems.ABERRANT_QUEEN_SPAWN_EGG);
 
             entries.accept(SpawnEggItems.YAUTJA_SPAWN_EGG);
         });
