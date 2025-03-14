@@ -1,6 +1,7 @@
 package com.avp.common.effect;
 
 import com.avp.common.damage.AVPDamageTypes;
+import com.avp.common.entity.AVPEntityTypeTags;
 import com.avp.common.item.AVPItemTags;
 import com.avp.common.util.AVPPredicates;
 import mod.azure.azurelib.core.object.Color;
@@ -39,8 +40,9 @@ public class RadiationStatusEffect extends MobEffect {
                 livingEntity.getItemBySlot(EquipmentSlot.FEET).is(AVPItemTags.RADIATION_RESISTANT_ARMOR);
         var currentDuration = effectTracker.getOrDefault(livingEntity, 0);
 
-        if (AVPPredicates.IS_IMMORTAL.test(livingEntity)) {
+        if (AVPPredicates.IS_IMMORTAL.test(livingEntity) || livingEntity.getType().is(AVPEntityTypeTags.RADIATION_RESISTANT)) {
             livingEntity.removeEffect(AVPEffects.RADIATION_EFFECT);
+            return false;
         }
 
         if (!armorCheck && !AVPPredicates.IS_IMMORTAL.test(livingEntity)) {
