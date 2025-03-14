@@ -1,6 +1,7 @@
 package com.avp.common.entity.living.alien;
 
 import com.avp.common.entity.living.alien.xenomorph.Xenomorph;
+import com.avp.common.worldgen.biome.AVPBiomes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -147,6 +148,11 @@ public abstract class Alien extends Monster {
         if (!level().isClientSide) {
             updateStateBasedOnGenetics();
             healPassively();
+            // 10% chance when in Nuked Biome to become Aberrant
+            if (Boolean.FALSE.equals(this.entityData.get(IS_ABERRANT)) && this.level().getBiome(this.blockPosition()).is(
+                    AVPBiomes.NUKED_BIOME) && this.getRandom().nextIntBetweenInclusive(1, 100) >= 90) {
+                this.setAberrant(true);
+            }
         }
     }
 

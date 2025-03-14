@@ -74,7 +74,7 @@ public class AVPEntityTypeTagProvider extends FabricTagProvider.EntityTypeTagPro
             );
 
         getOrCreateTagBuilder(AVPEntityTypeTags.RADIATION_RESISTANT)
-            .addTag(AVPEntityTypeTags.ABERRANT_ALIENS)
+            .addTag(AVPEntityTypeTags.XENOMORPHS)
             .add(
                 EntityType.CREEPER,
                 EntityType.STRAY,
