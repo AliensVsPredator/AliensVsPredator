@@ -1,5 +1,7 @@
 package com.avp.common.explosion.nuke;
 
+import com.avp.common.block.AVPBlocks;
+import com.avp.common.worldgen.biome.AVPBiomes;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
@@ -69,12 +71,12 @@ public class NuclearExplosionEffects {
                 var blockState = level.getBlockState(pos);
 
                 if (blockState.is(BlockTags.DIRT)) {
-                    transformedBlock = Blocks.COARSE_DIRT;
+                    transformedBlock = Blocks.BASALT;
                 } else if (blockState.is(BlockTags.SAND) || blockState.is(Blocks.SANDSTONE) || blockState.is(Blocks.RED_SANDSTONE)) {
                     var rand2 = level.random.nextInt(100);
 
                     if (rand2 < 33) {
-                        transformedBlock = Blocks.GLASS;
+                        transformedBlock = AVPBlocks.TRINITITE_BLOCK;
                     } else {
                         transformedBlock = Blocks.MAGMA_BLOCK;
                     }
@@ -103,7 +105,7 @@ public class NuclearExplosionEffects {
         if (!visitedChunks.contains(chunkPos)) {
             var biome = level.registryAccess()
                 .registryOrThrow(Registries.BIOME)
-                .getHolderOrThrow(Biomes.BASALT_DELTAS);
+                .getHolderOrThrow(AVPBiomes.NUKED_BIOME);
 
             setBiome(level, pos, biome);
             level.getChunkSource().chunkMap.resendBiomesForChunks(List.of(level.getChunk(chunkPos.x, chunkPos.z)));
