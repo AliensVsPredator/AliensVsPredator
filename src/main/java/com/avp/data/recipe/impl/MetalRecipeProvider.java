@@ -165,7 +165,7 @@ public class MetalRecipeProvider {
         nuggetToIngot(builder.shaped(), AVPItems.BRASS_NUGGET, AVPItems.BRASS_INGOT);
         nuggetToIngot(builder.shaped(), AVPItems.TITANIUM_NUGGET, AVPItems.TITANIUM_INGOT);
         nuggetToIngot(builder.shaped(), AVPItems.LEAD_NUGGET, AVPItems.LEAD_INGOT);
-        //nuggetToIngot(builder.shaped(), AVPItems.URANIUM_NUGGET, AVPItems.URANIUM_INGOT);
+        nuggetToIngot(builder.shaped(), AVPItems.URANIUM_NUGGET, AVPItems.URANIUM_INGOT);
         nuggetToIngot(builder.shaped(), AVPItems.ZINC_NUGGET, AVPItems.ZINC_INGOT);
         nuggetToIngot(builder.shaped(), AVPItems.ALUMINUM_NUGGET, AVPItems.ALUMINUM_INGOT);
 
