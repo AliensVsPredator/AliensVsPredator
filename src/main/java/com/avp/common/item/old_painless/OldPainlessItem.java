@@ -21,18 +21,25 @@ public class OldPainlessItem extends GunItem {
 
     private final AzCommand idle;
 
-    private final AzCommand spin;
+    private final AzCommand spinup = AzCommand.create(
+            OldPainlessAnimationRefs.MAIN_CONTROLLER_NAME,
+            OldPainlessAnimationRefs.SPIN_ANIMATION_NAME,
+            AzPlayBehaviors.PLAY_ONCE
+    );
+
+    private final AzCommand spin = AzCommand.create(
+            OldPainlessAnimationRefs.MAIN_CONTROLLER_NAME,
+            OldPainlessAnimationRefs.SPIN_LOOP_ANIMATION_NAME,
+            AzPlayBehaviors.LOOP
+    );
+
+    private final AzCommand shoot = AzCommand.compose(spinup, spin);
 
     public OldPainlessItem() {
         super(GunData.OLD_PAINLESS);
         idle = AzCommand.create(
             OldPainlessAnimationRefs.MAIN_CONTROLLER_NAME,
             OldPainlessAnimationRefs.IDLE_ANIMATION_NAME,
-            AzPlayBehaviors.LOOP
-        );
-        spin = AzCommand.create(
-            OldPainlessAnimationRefs.MAIN_CONTROLLER_NAME,
-            OldPainlessAnimationRefs.SPIN_ANIMATION_NAME,
             AzPlayBehaviors.LOOP
         );
     }

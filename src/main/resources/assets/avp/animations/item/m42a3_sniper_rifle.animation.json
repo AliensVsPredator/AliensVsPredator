@@ -1,0 +1,52 @@
+{
+	"format_version": "1.8.0",
+	"animations": {
+		"animation.shoot": {
+			"animation_length": 0.2917,
+			"bones": {
+				"root": {
+					"rotation": {
+						"0.0": {
+							"vector": [0, 0, 0]
+						},
+						"0.0417": {
+							"vector": [7.47178, -0.65182, 4.95744],
+							"easing": "step"
+						},
+						"0.0833": {
+							"vector": [-12.2127, 2.68507, 12.2127],
+							"easing": "easeInBack"
+						},
+						"0.1667": {
+							"vector": [-5, 0, 0]
+						},
+						"0.2083": {
+							"vector": [5, 0, 0]
+						},
+						"0.2917": {
+							"vector": [0, 0, 0]
+						}
+					},
+					"position": {
+						"0.0": {
+							"vector": [0, 0, 0]
+						},
+						"0.0417": {
+							"vector": [0, 0, 1]
+						},
+						"0.0833": {
+							"vector": [0, 0, 1.4]
+						},
+						"0.1667": {
+							"vector": [0, -1, 0.4]
+						},
+						"0.2917": {
+							"vector": [0, 0, 0]
+						}
+					}
+				}
+			}
+		}
+	},
+	"azurelib_format_version": 2
+}

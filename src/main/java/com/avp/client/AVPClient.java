@@ -2,6 +2,7 @@ package com.avp.client;
 
 import com.avp.client.render.armor.*;
 import com.avp.client.render.entity.*;
+import com.avp.client.render.item.*;
 import mod.azure.azurelib.rewrite.render.armor.AzArmorRendererRegistry;
 import mod.azure.azurelib.rewrite.render.item.AzItemRenderer;
 import mod.azure.azurelib.rewrite.render.item.AzItemRendererRegistry;
@@ -23,8 +24,6 @@ import com.avp.client.network.AVPClientPacketHandlerRegistry;
 import com.avp.client.particle.AcidParticleProvider;
 import com.avp.client.particle.BlueAcidParticleProvider;
 import com.avp.client.render.entity.parasite.facehugger.FacehuggerRenderer;
-import com.avp.client.render.item.OldPainlessItemRenderer;
-import com.avp.client.render.item.SimpleItemRenderer;
 import com.avp.client.screen.ArmorCaseScreen;
 import com.avp.common.block.AVPBlocks;
 import com.avp.common.config.Config;
@@ -148,17 +147,17 @@ public class AVPClient implements ClientModInitializer {
 
         // Items
         registerItemRenderer(AVPItems.ARMOR_CASE);
-        registerItemRenderer(AVPItems.F903WE_RIFLE);
-        registerItemRenderer(AVPItems.FLAMETHROWER_SEVASTOPOL);
-        registerItemRenderer(AVPItems.M37_12_SHOTGUN);
-        registerItemRenderer(AVPItems.M41A_PULSE_RIFLE);
-        registerItemRenderer(AVPItems.M42A3_SNIPER_RIFLE);
-        registerItemRenderer(AVPItems.M4RA_BATTLE_RIFLE);
-        registerItemRenderer(AVPItems.M56_SMARTGUN);
-        registerItemRenderer(AVPItems.M6B_ROCKET_LAUNCHER);
-        registerItemRenderer(AVPItems.M88_MOD_4_COMBAT_PISTOL);
+        registerItemRenderer(AVPItems.F903WE_RIFLE, name -> () -> new F903weItemRenderer(name));
+        registerItemRenderer(AVPItems.FLAMETHROWER_SEVASTOPOL, name -> () -> new FlameThrowerItemRenderer(name));
+        registerItemRenderer(AVPItems.M37_12_SHOTGUN, name -> () -> new M3712ShotgunItemRenderer(name));
+        registerItemRenderer(AVPItems.M41A_PULSE_RIFLE, name -> () -> new M41APulseRifleItemRenderer(name));
+        registerItemRenderer(AVPItems.M42A3_SNIPER_RIFLE, name -> () -> new M42a3SniperRifleItemRenderer(name));
+        registerItemRenderer(AVPItems.M4RA_BATTLE_RIFLE, name -> () -> new M4raBattleRifileItemRenderer(name));
+        registerItemRenderer(AVPItems.M56_SMARTGUN, name -> () -> new M56SmartgunItemRenderer(name));
+        registerItemRenderer(AVPItems.M6B_ROCKET_LAUNCHER, name -> () -> new M6BRLItemRenderer(name));
+        registerItemRenderer(AVPItems.M88_MOD_4_COMBAT_PISTOL, name -> () -> new M88Mod4CombatPistolItemRenderer(name));
         registerItemRenderer(AVPItems.OLD_PAINLESS, name -> () -> new OldPainlessItemRenderer(name));
-        registerItemRenderer(AVPItems.ZX_76_SHOTGUN);
+        registerItemRenderer(AVPItems.ZX_76_SHOTGUN, name -> () -> new  ZX76ShotgunItemRenderer(name));
 
         // Entities
         EntityRendererRegistry.register(AVPEntityTypes.ACID, AcidRenderer::new);

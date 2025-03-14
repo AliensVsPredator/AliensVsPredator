@@ -1,5 +1,7 @@
-package com.avp.client.animation;
+package com.avp.client.animation.guns;
 
+import com.avp.AVPResources;
+import com.avp.common.item.old_painless.OldPainlessAnimationRefs;
 import mod.azure.azurelib.rewrite.animation.AzAnimatorConfig;
 import mod.azure.azurelib.rewrite.animation.controller.AzAnimationController;
 import mod.azure.azurelib.rewrite.animation.controller.AzAnimationControllerContainer;
@@ -8,16 +10,13 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
-import com.avp.AVPResources;
-import com.avp.common.item.old_painless.OldPainlessAnimationRefs;
+public class M88Mod4CombatPistolAnimator extends AzItemAnimator {
 
-public class OldPainlessAnimator extends AzItemAnimator {
-
-    private static final String NAME = "old_painless";
+    private static final String NAME = "m88mod4_combat_pistol";
 
     private static final ResourceLocation ANIMATION = AVPResources.itemAnimationLocation(NAME);
 
-    public OldPainlessAnimator() {
+    public M88Mod4CombatPistolAnimator() {
         super(AzAnimatorConfig.defaultConfig());
     }
 
@@ -25,7 +24,7 @@ public class OldPainlessAnimator extends AzItemAnimator {
     public void registerControllers(AzAnimationControllerContainer<ItemStack> animationControllerContainer) {
         animationControllerContainer.add(
             AzAnimationController.builder(this, OldPainlessAnimationRefs.MAIN_CONTROLLER_NAME)
-                .setTransitionLength(5)
+                .setTransitionLength(1)
                 .build()
         );
     }

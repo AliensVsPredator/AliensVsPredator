@@ -1,5 +1,8 @@
 package com.avp.common.item;
 
+import com.avp.common.item.old_painless.OldPainlessAnimationRefs;
+import mod.azure.azurelib.rewrite.animation.dispatch.command.AzCommand;
+import mod.azure.azurelib.rewrite.animation.play_behavior.AzPlayBehaviors;
 import net.fabricmc.fabric.api.item.v1.EnchantingContext;
 import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
@@ -46,9 +49,15 @@ public class GunItem extends Item {
 
     public final GunConfig gunConfig;
 
+    private final AzCommand shoot;
+
     public GunItem(GunConfig gunConfig) {
         super(new Item.Properties().stacksTo(1).durability(gunConfig.durability()).attributes(createAttributes()));
         this.gunConfig = gunConfig;
+        shoot = AzCommand.create(
+                OldPainlessAnimationRefs.MAIN_CONTROLLER_NAME,
+                OldPainlessAnimationRefs.SHOOT_ANIMATION_NAME,
+                AzPlayBehaviors.PLAY_ONCE);
     }
 
     private static ItemAttributeModifiers createAttributes() {
@@ -63,7 +72,9 @@ public class GunItem extends Item {
 
     protected void playReleaseUsingAnimations(Entity shooter, ItemStack itemStack) {}
 
-    protected void playUseAnimations(Entity shooter, ItemStack itemStack) {}
+    protected void playUseAnimations(Entity shooter, ItemStack itemStack) {
+        shoot.sendForItem(shooter, itemStack);
+    }
 
     @Override
     public boolean isValidRepairItem(@NotNull ItemStack toRepair, ItemStack repairIngredient) {
