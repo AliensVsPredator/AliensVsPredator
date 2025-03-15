@@ -263,9 +263,13 @@ public class RussianLanguageProvider extends FabricLanguageProvider {
         translationBuilder.add(AVPEntityTypes.YAUTJA, "Yautja");
         translationBuilder.add(AVPEntityTypes.ROCKET, "Rocket");
         translationBuilder.add(AVPEntityTypes.GRENADE_THROWN, "Grenade");
+        translationBuilder.add(AVPEntityTypes.SHURIKEN, "Shuriken");
+        translationBuilder.add(AVPEntityTypes.SMART_DISC, "Smart Disc");
         translationBuilder.add(AVPEntityTypes.MARINE, "Marine");
 
         // Combat Items
+        translationBuilder.add(AVPItems.SHURIKEN, "Shuriken");
+        translationBuilder.add(AVPItems.SMART_DISC, "Smart Disc");
         translationBuilder.add(AVPItems.GRENADE, "Grenade");
         translationBuilder.add(AVPItems.GRENADE_INCENDIARY, "Incendiary Grenade");
         translationBuilder.add(AVPItems.GRENADE_IRRADIATED, "Iradiated Grenade");

@@ -33,6 +33,9 @@ public class CombatCreativeModeTabInitializer {
             entries.accept(AVPItems.OLD_PAINLESS);
             entries.accept(AVPItems.ZX_76_SHOTGUN);
 
+            entries.accept(AVPItems.SHURIKEN);
+            entries.accept(AVPItems.SMART_DISC);
+
             entries.accept(ArmorItems.MK50_HELMET);
             entries.accept(ArmorItems.MK50_CHESTPLATE);
             entries.accept(ArmorItems.MK50_LEGGINGS);

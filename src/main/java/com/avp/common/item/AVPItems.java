@@ -1,6 +1,8 @@
 package com.avp.common.item;
 
 import com.avp.common.item.grenades.GrendeItem;
+import com.avp.common.item.yautja_items.ShurikenItem;
+import com.avp.common.item.yautja_items.SmartDiscItem;
 import mod.azure.azurelib.rewrite.animation.cache.AzIdentityRegistry;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -20,6 +22,10 @@ import com.avp.common.item.old_painless.OldPainlessItem;
 public class AVPItems {
 
     // Combat Items
+    public static final Item SMART_DISC = register(new SmartDiscItem(), "smart_disc");
+
+    public static final Item SHURIKEN = register(new ShurikenItem(), "shuriken");
+
     public static final Item GRENADE = register(new GrendeItem(false, false),"grenade_standard");
 
     public static final Item GRENADE_INCENDIARY = register(new GrendeItem(true, false),"grenade_incendiary");

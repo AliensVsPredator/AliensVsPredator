@@ -1,6 +1,8 @@
 package com.avp.common.ai.goal.combat;
 
 import com.avp.common.item.GunItem;
+import com.avp.common.item.yautja_items.ShurikenItem;
+import com.avp.common.item.yautja_items.SmartDiscItem;
 import com.avp.common.util.ItemGoalUtil;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.EntitySelector;
@@ -107,6 +109,14 @@ public class UseItemGoal extends Goal {
                 entity.swing(InteractionHand.MAIN_HAND);
                 if (entity.getMainHandItem().getItem() instanceof GunItem) {
                     ItemGoalUtil.shootBullet(entity);
+                }
+
+                if (entity.getMainHandItem().getItem() instanceof ShurikenItem) {
+                    ItemGoalUtil.shootShuriken(entity);
+                }
+
+                if (entity.getMainHandItem().getItem() instanceof SmartDiscItem) {
+                    ItemGoalUtil.shootSmartDisc(entity);
                 }
                 this.triggeredAttackAnimation = false;
             }

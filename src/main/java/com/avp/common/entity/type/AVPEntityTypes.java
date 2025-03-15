@@ -2,8 +2,7 @@ package com.avp.common.entity.type;
 
 import com.avp.common.block.entity.NukeBE;
 import com.avp.common.entity.living.human.marine.MarineMob;
-import com.avp.common.entity.projectile.BulletProjectile;
-import com.avp.common.entity.projectile.ThrownGrenade;
+import com.avp.common.entity.projectile.*;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -29,8 +28,6 @@ import com.avp.common.entity.living.alien.xenomorph.praetorian.Praetorian;
 import com.avp.common.entity.living.alien.xenomorph.queen.Queen;
 import com.avp.common.entity.living.alien.xenomorph.warrior.Warrior;
 import com.avp.common.entity.living.yautja.Yautja;
-import com.avp.common.entity.projectile.Flamethrow;
-import com.avp.common.entity.projectile.Rocket;
 import com.avp.common.gene.GeneKeys;
 
 public class AVPEntityTypes {
@@ -80,6 +77,18 @@ public class AVPEntityTypes {
     public static final EntityType<Facehugger> FACEHUGGER = register(
         "facehugger",
         EntityType.Builder.of(Facehugger::new, ALIEN_CATEGORY).sized(0.8f, 0.25f)
+    );
+
+    public static final EntityType<ShurikenItemEntity> SHURIKEN = register(
+            "shuriken",
+            EntityType.Builder.<ShurikenItemEntity>of(ShurikenItemEntity::new, MobCategory.MISC)
+                    .sized(0.25F, 0.25F)
+    );
+
+    public static final EntityType<SmartDiscItemEntity> SMART_DISC = register(
+            "smart_disc",
+            EntityType.Builder.<SmartDiscItemEntity>of(SmartDiscItemEntity::new, MobCategory.MISC)
+                    .sized(0.25F, 0.25F)
     );
 
     public static final EntityType<BulletProjectile> BULLET = register(
