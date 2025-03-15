@@ -246,5 +246,6 @@ public class Configs {
 
     public static final Config WEAPONS = ConfigBuilder.create("weapons")
         .property(ConfigProperties.BULLETS_DAMAGE_BLOCKS_ENABLED, true)
+        .property(ConfigProperties.ENABLE_NUKE_BLOCK_MECHS, false)
         .build();
 }

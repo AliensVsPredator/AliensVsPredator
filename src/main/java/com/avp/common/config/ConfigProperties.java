@@ -53,6 +53,8 @@ public class ConfigProperties {
 
     public static final ConfigAlienSpawningContainer DRONE_SPAWNING = registerAlienSpawning("drone");
 
+    public static final ConfigPropertyKey<Boolean> ENABLE_NUKE_BLOCK_MECHS = registerBoolean("enable.nuke_block.mechs");
+
     public static final ConfigPropertyKey<Boolean> HIVE_DEBUG_ENABLED = registerBoolean("hive.debug.enabled");
 
     public static final ConfigPropertyKey<Boolean> HIVE_DEBUG_HIGHLIGHT_LEADER = registerBoolean("hive.debug.highlight_leader");

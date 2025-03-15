@@ -1,6 +1,8 @@
 package com.avp.common.block.entity;
 
+import com.avp.AVP;
 import com.avp.common.block.AVPBlocks;
+import com.avp.common.config.ConfigProperties;
 import com.avp.common.entity.type.AVPEntityTypes;
 import com.avp.common.util.ExplosionUtil;
 import com.avp.server.ServerScheduler;
@@ -95,15 +97,21 @@ public class NukeBE extends Entity {
         this.setFuse(fuseValue);
         if (fuseValue <= 0) {
             if (!this.level().isClientSide) {
-                ServerScheduler.schedule(() -> {
-                    var explosion = ExplosionUtil.createNuclearExplosion((ServerLevel) this.level(), this.blockPosition().getCenter(), 16 * 8, 5);
-                    explosion.explode();
-                }, Duration.ofSeconds(1));
+                if (isNukeEnabled())
+                    ServerScheduler.schedule(() -> {
+                        var explosion = ExplosionUtil.createNuclearExplosion((ServerLevel) this.level(), this.blockPosition().getCenter(), 16 * 8, 5);
+                        explosion.explode();
+                    }, Duration.ofSeconds(1));
                 this.discard();
             }
         } else if (tickCount % 20 == 0) {
             // TODO: Change to custom sound
             this.level().playSound(null, this.blockPosition(), SoundEvents.SMOKER_SMOKE, SoundSource.BLOCKS, 1.0F, 1.0F);
         }
+    }
+
+    public boolean isNukeEnabled() {
+        var properties = AVP.WEAPONS_CONFIG.properties();
+        return properties.getOrThrow(ConfigProperties.ENABLE_NUKE_BLOCK_MECHS);
     }
 }

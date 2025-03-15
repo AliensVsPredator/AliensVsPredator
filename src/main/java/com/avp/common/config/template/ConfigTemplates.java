@@ -156,5 +156,8 @@ public class ConfigTemplates {
         // Block breaking properties
         .comment("If enabled, bullets from guns will damage blocks.")
         .property(ConfigProperties.BULLETS_DAMAGE_BLOCKS_ENABLED)
+        // Nuke on/off config
+        .comment("If enabled, nukes will work explode.")
+        .property(ConfigProperties.ENABLE_NUKE_BLOCK_MECHS)
         .build();
 }
