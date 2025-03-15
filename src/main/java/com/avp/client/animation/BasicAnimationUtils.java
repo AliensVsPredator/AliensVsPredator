@@ -32,7 +32,8 @@ public class BasicAnimationUtils {
         String leftLegName,
         String rightLegName,
         float armOffset,
-        float legOffset
+        float legOffset,
+        boolean isAggressive
     ) {
         var bakedModel = context.boneCache().getBakedModel();
         var constant = 0.6662F;
@@ -49,7 +50,7 @@ public class BasicAnimationUtils {
             leftArm.setRotX(Mth.cos(walkPosition * constant) * 2 * walkSpeed * 0.5F + armOffset);
         }
 
-        if (rightArm != null) {
+        if (rightArm != null && isAggressive) {
             rightArm.setRotX(Mth.cos(walkPosition * constant + Mth.PI) * 2 * walkSpeed * 0.5F + armOffset);
         }
 

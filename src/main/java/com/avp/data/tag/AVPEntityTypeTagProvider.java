@@ -81,6 +81,9 @@ public class AVPEntityTypeTagProvider extends FabricTagProvider.EntityTypeTagPro
                 EntityType.HUSK
             );
 
+        getOrCreateTagBuilder(AVPEntityTypeTags.PREDATORS)
+            .add(AVPEntityTypes.YAUTJA);
+
         addCompatibilityTags();
     }
 

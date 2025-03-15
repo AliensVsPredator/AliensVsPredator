@@ -38,6 +38,8 @@ public class AVPEntityTypeTags {
 
     public static final TagKey<EntityType<?>> RADIATION_RESISTANT = create("radiation_resistant");
 
+    public static final TagKey<EntityType<?>> PREDATORS = create("predators");
+
     private static TagKey<EntityType<?>> create(String name) {
         return TagKey.create(Registries.ENTITY_TYPE, AVPResources.location(name));
     }
