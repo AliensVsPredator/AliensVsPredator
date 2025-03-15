@@ -143,13 +143,16 @@ public abstract class Alien extends Monster {
 
     public void updateStateBasedOnGenetics() {
         var hasMinimumGeneIntegrity = geneManager.isMinimized(GeneKeys.GENETIC_INTEGRITY);
-        if (!isAberrant())
+        if (!isNetherAfflicted() && !isIrraiated()) {
             setAberrant(hasMinimumGeneIntegrity);
+        }
 
         var hasMaximumFireResistance = geneManager.isMinimized(GeneKeys.COLD_RESISTANCE) && geneManager.isMaximized(
             GeneKeys.FIRE_RESISTANCE
         );
-        setNetherAfflicted(hasMaximumFireResistance);
+        if (!isAberrant() && !isIrraiated()) {
+            setNetherAfflicted(hasMaximumFireResistance);
+        }
     }
 
     @Override
