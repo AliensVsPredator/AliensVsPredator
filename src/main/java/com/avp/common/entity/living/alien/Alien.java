@@ -92,6 +92,7 @@ public abstract class Alien extends Monster {
         super.defineSynchedData(builder);
         builder.define(IS_ABERRANT, false);
         builder.define(IS_NETHER_AFFLICTED, false);
+        builder.define(IS_IRRADIATED, false);
         builder.define(IS_POISONED, false);
         builder.define(JELLY_COUNT, 0);
     }
