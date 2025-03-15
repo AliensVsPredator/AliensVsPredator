@@ -96,7 +96,7 @@ public class NukeBE extends Entity {
         if (fuseValue <= 0) {
             if (!this.level().isClientSide) {
                 ServerScheduler.schedule(() -> {
-                    var explosion = ExplosionUtil.createNuclearExplosion((ServerLevel) this.level(), this.blockPosition().getCenter(), 16 * 8, 5);;
+                    var explosion = ExplosionUtil.createNuclearExplosion((ServerLevel) this.level(), this.blockPosition().getCenter(), 16 * 8, 5);
                     explosion.explode();
                 }, Duration.ofSeconds(1));
                 this.discard();
