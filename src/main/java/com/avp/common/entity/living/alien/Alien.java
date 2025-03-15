@@ -150,7 +150,7 @@ public abstract class Alien extends Monster {
             updateStateBasedOnGenetics();
             healPassively();
             // 10% chance when in Nuked Biome to become Aberrant
-            if (this.level().getBiome(this.blockPosition()).is(AVPBiomes.NUKED_BIOME) && this.getRandom().nextIntBetweenInclusive(1, 100) >= 90) {
+            if (this.tickCount % 60 == 0 && this.level().getBiome(this.blockPosition()).is(AVPBiomes.NUKED_BIOME) && this.getRandom().nextIntBetweenInclusive(1, 100) >= 90) {
                 this.setAberrant(true);
             }
         }
