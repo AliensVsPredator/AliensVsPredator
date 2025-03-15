@@ -3,6 +3,7 @@ package com.avp.common.util;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ambient.Bat;
+import net.minecraft.world.entity.monster.Creeper;
 import net.minecraft.world.entity.player.Player;
 import org.jetbrains.annotations.NotNull;
 
@@ -30,8 +31,9 @@ public class AlienPredicates {
     }
 
     public static boolean isValidTarget(@NotNull LivingEntity potentialTarget) {
-        // Bats are annoying for aliens to target.
+        // Bats and Creepers are annoying for aliens to target.
         return !(potentialTarget instanceof Bat)
+            && !(potentialTarget instanceof Creeper)
             && potentialTarget.isAlive()
             && potentialTarget.attackable()
             && (!(potentialTarget instanceof Player) || !AVPPredicates.IS_IMMORTAL.test(potentialTarget))
@@ -60,6 +62,10 @@ public class AlienPredicates {
         var belowPos = basePos.below();
         var baseBlockState = potentialTarget.level().getBlockState(basePos);
         var belowBlockState = potentialTarget.level().getBlockState(belowPos);
+
+        if (potentialTarget instanceof Creeper && baseBlockState.is(AVPBlockTags.RESIN) || belowBlockState.is(AVPBlockTags.RESIN)) {
+            return false;
+        }
 
         // Attack targets that are standing on resin.
         // TODO: Eventually remove this once hive mechanics are added.
