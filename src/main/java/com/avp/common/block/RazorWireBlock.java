@@ -1,5 +1,7 @@
 package com.avp.common.block;
 
+import com.avp.common.entity.living.human.marine.MarineMob;
+import com.avp.common.entity.type.AVPEntityTypes;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.damagesource.DamageSource;
@@ -51,7 +53,8 @@ public class RazorWireBlock extends Block {
 
         entity.makeStuckInBlock(blockState, MOVEMENT_MODIFIER);
 
-        if (!level.isClientSide && (entity.xOld != entity.getX() || entity.yOld != entity.getY() || entity.zOld != entity.getZ())) {
+        if (!level.isClientSide && (entity.xOld != entity.getX() || entity.yOld != entity.getY() || entity.zOld != entity.getZ())
+                && !(entity instanceof MarineMob)) {
             var deltaX = Math.abs(entity.getX() - entity.xOld);
             var deltaY = Math.abs(entity.getY() - entity.yOld);
             var deltaZ = Math.abs(entity.getZ() - entity.zOld);
