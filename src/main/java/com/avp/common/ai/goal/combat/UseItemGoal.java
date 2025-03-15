@@ -48,6 +48,11 @@ public class UseItemGoal extends Goal {
             if (entity.getTarget() != null) {
                 this.path = entity.getNavigation().createPath(entity.getTarget(), 0);
             }
+
+            if (entity.getTarget() != null && entity.isWithinMeleeAttackRange(entity.getTarget())) {
+                return false;
+            }
+
             return !entity.getMainHandItem().isEmpty() && entity.getTarget() != null && entity.hasLineOfSight(
                     entity.getTarget());
         }
@@ -55,6 +60,10 @@ public class UseItemGoal extends Goal {
 
     @Override
     public boolean canContinueToUse() {
+        if (entity.getTarget() != null && entity.isWithinMeleeAttackRange(entity.getTarget())) {
+            return false;
+        }
+
         return !entity.getMainHandItem().isEmpty() && entity.getTarget() != null && entity.hasLineOfSight(entity.getTarget());
     }
 
