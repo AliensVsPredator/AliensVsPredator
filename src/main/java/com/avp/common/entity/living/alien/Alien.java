@@ -132,7 +132,8 @@ public abstract class Alien extends Monster {
 
     public void updateStateBasedOnGenetics() {
         var hasMinimumGeneIntegrity = geneManager.isMinimized(GeneKeys.GENETIC_INTEGRITY);
-        setAberrant(hasMinimumGeneIntegrity);
+        if (!isAberrant())
+            setAberrant(hasMinimumGeneIntegrity);
 
         var hasMaximumFireResistance = geneManager.isMinimized(GeneKeys.COLD_RESISTANCE) && geneManager.isMaximized(
             GeneKeys.FIRE_RESISTANCE
@@ -149,8 +150,7 @@ public abstract class Alien extends Monster {
             updateStateBasedOnGenetics();
             healPassively();
             // 10% chance when in Nuked Biome to become Aberrant
-            if (Boolean.FALSE.equals(this.entityData.get(IS_ABERRANT)) && this.level().getBiome(this.blockPosition()).is(
-                    AVPBiomes.NUKED_BIOME) && this.getRandom().nextIntBetweenInclusive(1, 100) >= 90) {
+            if (this.level().getBiome(this.blockPosition()).is(AVPBiomes.NUKED_BIOME) && this.getRandom().nextIntBetweenInclusive(1, 100) >= 90) {
                 this.setAberrant(true);
             }
         }
