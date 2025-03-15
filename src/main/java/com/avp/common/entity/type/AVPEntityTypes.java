@@ -94,7 +94,7 @@ public class AVPEntityTypes {
     public static final EntityType<BulletProjectile> BULLET = register(
             "bullet",
             EntityType.Builder.<BulletProjectile>of(BulletProjectile::new, MobCategory.MISC)
-                    .sized(0.1F, 0.1F)
+                    .sized(0.25F, 0.25F)
     );
 
     public static final EntityType<Flamethrow> FLAMETHROW = register(
