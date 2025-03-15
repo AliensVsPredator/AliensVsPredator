@@ -1,6 +1,7 @@
 package com.avp.common.entity.living.human.marine;
 
 import com.avp.AVP;
+import com.avp.common.ai.goal.combat.DelayedAttackGoal;
 import com.avp.common.ai.goal.combat.UseItemGoal;
 import com.avp.common.config.ConfigProperties;
 import com.avp.common.entity.living.alien.Alien;
@@ -51,12 +52,10 @@ public class MarineMob extends AbstractHumanMob {
         animationDispatcher.rightShoot();
     }
 
-    /**
-     * TODO: Add attack goals for using hands when empty handed and using main/offhand items.
-     */
     @Override
     protected void registerGoals() {
         super.registerGoals();
+        goalSelector.addGoal(1, new DelayedAttackGoal(this, 1.0, true, 5, this::runAttackAnimations));
         targetSelector.addGoal(1, (new HurtByTargetGoal(this)).setAlertOthers(AbstractHumanMob.class));
         targetSelector.addGoal(
                 2,
