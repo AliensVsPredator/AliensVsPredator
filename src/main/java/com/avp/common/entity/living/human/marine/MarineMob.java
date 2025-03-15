@@ -15,6 +15,7 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import org.jetbrains.annotations.NotNull;
@@ -74,24 +75,36 @@ public class MarineMob extends AbstractHumanMob {
         setItemSlot(EquipmentSlot.MAINHAND, makeInitialWeapon());
         if (random.nextInt( 100 ) <= 10) {
             setItemSlot(EquipmentSlot.OFFHAND, new ItemStack(AVPItems.GRENADE));
+            this.makeInitialArmor();
         }
-        this.makeInitialArmor();
         return super.finalizeSpawn(level, difficulty, spawnType, spawnGroupData);
     }
 
     private void makeInitialArmor() {
         var selectedArmor = List.of(
+//                        List.of(
+//                                ArmorItems.TACTICAL_HELMET,
+//                                ArmorItems.TACTICAL_CHESTPLATE,
+//                                ArmorItems.TACTICAL_LEGGINGS,
+//                                ArmorItems.TACTICAL_BOOTS
+//                        ),
+//                        List.of(
+//                                ArmorItems.TACTICAL_CAMO_HELMET,
+//                                ArmorItems.TACTICAL_CAMO_CHESTPLATE,
+//                                ArmorItems.TACTICAL_CAMO_LEGGINGS,
+//                                ArmorItems.TACTICAL_CAMO_BOOTS
+//                        )
                         List.of(
-                                ArmorItems.TACTICAL_HELMET,
-                                ArmorItems.TACTICAL_CHESTPLATE,
-                                ArmorItems.TACTICAL_LEGGINGS,
-                                ArmorItems.TACTICAL_BOOTS
+                                Items.IRON_HELMET,
+                                Items.IRON_CHESTPLATE,
+                                Items.IRON_LEGGINGS,
+                                Items.IRON_BOOTS
                         ),
                         List.of(
-                                ArmorItems.TACTICAL_CAMO_HELMET,
-                                ArmorItems.TACTICAL_CAMO_CHESTPLATE,
-                                ArmorItems.TACTICAL_CAMO_LEGGINGS,
-                                ArmorItems.TACTICAL_CAMO_BOOTS
+                                Items.IRON_HELMET,
+                                Items.IRON_CHESTPLATE,
+                                Items.IRON_LEGGINGS,
+                                Items.IRON_BOOTS
                         )
                 )
                 .get(this.getRandom().nextIntBetweenInclusive(0, 1))
