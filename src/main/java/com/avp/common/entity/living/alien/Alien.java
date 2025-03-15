@@ -1,6 +1,5 @@
 package com.avp.common.entity.living.alien;
 
-import com.avp.common.entity.living.alien.xenomorph.Xenomorph;
 import com.avp.common.worldgen.biome.AVPBiomes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -31,11 +30,15 @@ import com.avp.common.util.AlienHurtUtil;
 
 public abstract class Alien extends Monster {
 
+    private static final String IS_IRRADIATED_KEY = "isIrradiated";
+
     private static final String IS_ABERRANT_KEY = "isAberrant";
 
     private static final String IS_NETHER_AFFLICTED_KEY = "isNetherAfflicted";
 
     private static final EntityDataAccessor<Boolean> IS_ABERRANT = SynchedEntityData.defineId(Alien.class, EntityDataSerializers.BOOLEAN);
+
+    private static final EntityDataAccessor<Boolean> IS_IRRADIATED = SynchedEntityData.defineId(Alien.class, EntityDataSerializers.BOOLEAN);
 
     private static final EntityDataAccessor<Boolean> IS_NETHER_AFFLICTED = SynchedEntityData.defineId(
         Alien.class,
@@ -91,6 +94,14 @@ public abstract class Alien extends Monster {
         builder.define(IS_NETHER_AFFLICTED, false);
         builder.define(IS_POISONED, false);
         builder.define(JELLY_COUNT, 0);
+    }
+
+    public boolean isIrraiated() {
+        return entityData.get(IS_IRRADIATED);
+    }
+
+    public void setIrraiated(boolean isIrraiated) {
+        entityData.set(IS_IRRADIATED, isIrraiated);
     }
 
     public boolean isAberrant() {
@@ -151,7 +162,7 @@ public abstract class Alien extends Monster {
             healPassively();
             // 10% chance when in Nuked Biome to become Aberrant
             if (this.tickCount % 60 == 0 && this.level().getBiome(this.blockPosition()).is(AVPBiomes.NUKED_BIOME) && this.getRandom().nextIntBetweenInclusive(1, 100) >= 90) {
-                this.setAberrant(true);
+                this.setIrraiated(true);
             }
         }
     }
@@ -261,6 +272,7 @@ public abstract class Alien extends Monster {
         geneManager.load(compoundTag);
         hiveManager.load(compoundTag);
         setAberrant(compoundTag.getBoolean(IS_ABERRANT_KEY));
+        setIrraiated(compoundTag.getBoolean(IS_IRRADIATED_KEY));
         setNetherAfflicted(compoundTag.getBoolean(IS_NETHER_AFFLICTED_KEY));
     }
 
@@ -272,6 +284,7 @@ public abstract class Alien extends Monster {
         geneManager.save(compoundTag);
         hiveManager.save(compoundTag);
         compoundTag.putBoolean(IS_ABERRANT_KEY, isAberrant());
+        compoundTag.putBoolean(IS_IRRADIATED_KEY, isIrraiated());
         compoundTag.putBoolean(IS_NETHER_AFFLICTED_KEY, isNetherAfflicted());
     }
 

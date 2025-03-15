@@ -22,6 +22,8 @@ public class DroneRenderer extends AzEntityRenderer<Drone> {
 
     private static final ResourceLocation ABERRANT_TEXTURE = AVPResources.entityTextureLocation("aberrant_" + NAME);
 
+    private static final ResourceLocation IRRADIATED_TEXTURE = AVPResources.entityTextureLocation("irradiated_" + NAME);
+
     private static final ResourceLocation NETHER_TEXTURE = AVPResources.entityTextureLocation("nether_" + NAME);
 
     public DroneRenderer(EntityRendererProvider.Context context) {
@@ -39,7 +41,15 @@ public class DroneRenderer extends AzEntityRenderer<Drone> {
             return NETHER_TEXTURE;
         }
 
-        return drone.isAberrant() ? ABERRANT_TEXTURE : TEXTURE;
+        if (drone.isIrraiated()) {
+            return IRRADIATED_TEXTURE;
+        }
+
+        if (drone.isAberrant()) {
+            return ABERRANT_TEXTURE;
+        }
+
+        return TEXTURE;
     }
 
     @Override
