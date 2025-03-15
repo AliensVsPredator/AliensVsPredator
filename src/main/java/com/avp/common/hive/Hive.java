@@ -1,5 +1,6 @@
 package com.avp.common.hive;
 
+import com.avp.common.entity.living.alien.xenomorph.queen.Queen;
 import com.mojang.serialization.Dynamic;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -99,6 +100,10 @@ public class Hive {
     public boolean requestToJoin(Entity requestingEntity) {
         var isAlien = requestingEntity instanceof Alien;
 
+        if (requestingEntity instanceof Queen && hiveLeader().isPresent()) {
+            return false;
+        }
+
         if (isAlien) {
             var hivePos = centerPosition();
             int leashDistance = AVP.HIVES_CONFIG.properties().getOrThrow(ConfigProperties.HIVE_LEASH_RADIUS_IN_BLOCKS);
@@ -106,7 +111,6 @@ public class Hive {
             var distanceFromHiveSquared = requestingEntity.distanceToSqr(hivePos.getX(), hivePos.getY(), hivePos.getZ());
 
             if (distanceFromHiveSquared > leashDistanceSquared) {
-                // if the alien is too far away, then they can't join.
                 return false;
             }
 

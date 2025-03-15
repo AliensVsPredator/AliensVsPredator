@@ -1,5 +1,6 @@
 package com.avp.common.manager;
 
+import com.avp.common.entity.living.alien.xenomorph.queen.Queen;
 import net.minecraft.nbt.CompoundTag;
 import org.jetbrains.annotations.Nullable;
 
@@ -71,6 +72,13 @@ public class HiveManager {
 
     private void tryCreateAndAssignHive(HiveLevelData hiveLevelData, @Nullable Hive nearestHive) {
         if (!alien.getType().is(AVPEntityTypeTags.XENOMORPHS)) {
+            return;
+        }
+        if (alien instanceof Queen) {
+            var newHive = hiveLevelData.createHive();
+            newHive.moveCenter(alien.blockPosition());
+            newHive.ping(alien);
+            hive = newHive;
             return;
         }
 
