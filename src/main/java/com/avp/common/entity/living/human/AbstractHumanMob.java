@@ -14,8 +14,10 @@ import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.control.MoveControl;
+import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
 import net.minecraft.world.entity.ai.goal.WaterAvoidingRandomStrollGoal;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.phys.Vec3;
@@ -107,6 +109,8 @@ public abstract class AbstractHumanMob extends PathfinderMob {
         goalSelector.addGoal(1, new FleeFightGoal(this));
         goalSelector.addGoal(7, new StrollAroundInWaterGoal(this, 0.5));
         goalSelector.addGoal(7, new WaterAvoidingRandomStrollGoal(this, 0.5));
+        goalSelector.addGoal(9, new LookAtPlayerGoal(this, Player.class, 15.0F, 1.0F));
+        goalSelector.addGoal(10, new LookAtPlayerGoal(this, LivingEntity.class, 15.0F));
     }
 
     @Override
