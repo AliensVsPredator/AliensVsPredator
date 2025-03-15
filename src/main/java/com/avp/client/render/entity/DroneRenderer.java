@@ -1,5 +1,6 @@
 package com.avp.client.render.entity;
 
+import com.avp.client.render.layer.RadiationGlowLayer;
 import com.mojang.blaze3d.vertex.PoseStack;
 import mod.azure.azurelib.rewrite.render.entity.AzEntityRenderer;
 import mod.azure.azurelib.rewrite.render.entity.AzEntityRendererConfig;
@@ -30,6 +31,7 @@ public class DroneRenderer extends AzEntityRenderer<Drone> {
         super(
             AzEntityRendererConfig.<Drone>builder($ -> MODEL, DroneRenderer::textureLocation)
                 .setAnimatorProvider(DroneAnimator::new)
+                .addRenderLayer(new RadiationGlowLayer<>())
                 .build(),
             context
         );
