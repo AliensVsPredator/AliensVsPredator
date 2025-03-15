@@ -2,6 +2,7 @@ package com.avp.common.entity.living.human;
 
 import com.avp.common.MoveAnalysis;
 import com.avp.common.ai.goal.StrollAroundInWaterGoal;
+import com.avp.common.ai.goal.combat.FleeFightGoal;
 import com.avp.common.manager.*;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -103,6 +104,7 @@ public abstract class AbstractHumanMob extends PathfinderMob {
 
     @Override
     protected void registerGoals() {
+        goalSelector.addGoal(1, new FleeFightGoal(this));
         goalSelector.addGoal(7, new StrollAroundInWaterGoal(this, 0.5));
         goalSelector.addGoal(7, new WaterAvoidingRandomStrollGoal(this, 0.5));
     }

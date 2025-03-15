@@ -57,6 +57,10 @@ public class DigToTargetGoal extends Goal {
             return false;
         }
 
+        if (mob.getHealth() < (mob.getMaxHealth() / 2)) {
+            return false;
+        }
+
         return mob.onGround()
             && isStuck(target)
             && (mob.distanceToSqr(target) > 2d || !mob.hasLineOfSight(target))
@@ -68,6 +72,10 @@ public class DigToTargetGoal extends Goal {
         var target = mob.getTarget();
 
         if (target == null || !target.isAlive() || targetBlocks.isEmpty()) {
+            return false;
+        }
+
+        if (mob.getHealth() < (mob.getMaxHealth() / 2)) {
             return false;
         }
 
