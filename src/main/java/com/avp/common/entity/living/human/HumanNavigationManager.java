@@ -2,6 +2,7 @@ package com.avp.common.entity.living.human;
 
 import com.avp.common.ai.goal.WaterMoveControl;
 import com.avp.common.ai.goal.combat.DelayedAttackGoal;
+import com.avp.common.ai.goal.combat.UseItemGoal;
 import com.avp.common.ai.path.CrawlPathNodeEvaluator;
 import com.avp.common.entity.living.alien.xenomorph.Xenomorph;
 import mod.azure.azurelib.common.api.common.ai.pathing.AzureNavigation;
@@ -29,13 +30,13 @@ public class HumanNavigationManager {
     private final Goal waterAttackGoal;
 
     public HumanNavigationManager(AbstractHumanMob humanMob, MoveControl moveControl) {
-        this.groundAttackGoal = new DelayedAttackGoal(humanMob, 1, false, 7, humanMob::runAttackAnimations);
+        this.groundAttackGoal = new UseItemGoal(humanMob,  humanMob::runAttackAnimations);
         this.groundMoveControl = moveControl;
         this.groundNavigation = new AzureNavigation(humanMob, humanMob.level());
 
         // Water navigation.
         humanMob.setPathfindingMalus(PathType.WATER, 0.0F);
-        this.waterAttackGoal = new DelayedAttackGoal(humanMob, 2, false, 7, humanMob::runAttackAnimations);
+        this.waterAttackGoal = new UseItemGoal(humanMob, humanMob::runAttackAnimations);
         this.waterMoveControl = new WaterMoveControl(humanMob);
         this.waterNavigation = new WaterBoundPathNavigation(humanMob, humanMob.level());
     }

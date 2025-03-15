@@ -2,6 +2,7 @@ package com.avp.common.entity.type;
 
 import com.avp.common.block.entity.NukeBE;
 import com.avp.common.entity.living.human.marine.MarineMob;
+import com.avp.common.entity.projectile.BulletProjectile;
 import com.avp.common.entity.projectile.ThrownGrenade;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry;
 import net.minecraft.core.Registry;
@@ -79,6 +80,12 @@ public class AVPEntityTypes {
     public static final EntityType<Facehugger> FACEHUGGER = register(
         "facehugger",
         EntityType.Builder.of(Facehugger::new, ALIEN_CATEGORY).sized(0.8f, 0.25f)
+    );
+
+    public static final EntityType<BulletProjectile> BULLET = register(
+            "bullet",
+            EntityType.Builder.<BulletProjectile>of(BulletProjectile::new, MobCategory.MISC)
+                    .sized(0.1F, 0.1F)
     );
 
     public static final EntityType<Flamethrow> FLAMETHROW = register(

@@ -12,6 +12,12 @@ public class MarineAnimationDispatcher {
             AzPlayBehaviors.LOOP
     );
 
+    private static final AzCommand RIGHT_SHOOT = AzCommand.create(
+            MarineAnimationRefs.FULL_BODY_CONTROLLER_NAME,
+            MarineAnimationRefs.RIGHT_SHOOT_ANIMATION_NAME,
+            AzPlayBehaviors.PLAY_ONCE
+    );
+
     private static final AzCommand SWIM = AzCommand.create(
             MarineAnimationRefs.FULL_BODY_CONTROLLER_NAME,
             MarineAnimationRefs.SWIM_ANIMATION_NAME,
@@ -40,5 +46,9 @@ public class MarineAnimationDispatcher {
 
     public void walk() {
         WALK.sendForEntity(abstractHumanMob);
+    }
+
+    public void rightShoot() {
+        RIGHT_SHOOT.sendForEntity(abstractHumanMob);
     }
 }
