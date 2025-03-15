@@ -57,7 +57,6 @@ public class MarineMob extends AbstractHumanMob {
     @Override
     protected void registerGoals() {
         super.registerGoals();
-        new UseItemGoal(this,  this::runAttackAnimations);
         targetSelector.addGoal(1, (new HurtByTargetGoal(this)).setAlertOthers(AbstractHumanMob.class));
         targetSelector.addGoal(
                 2,
