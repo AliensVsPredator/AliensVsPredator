@@ -15,6 +15,18 @@ public class ResinRecipeProvider {
     }
 
     private static void createResinRecipes(RecipeBuilder builder) {
+        RecipeUtil.createCompressedBlockRecipes2x2(builder, AVPItems.ABERRANT_RESIN_BALL, AVPBlocks.ABERRANT_RESIN);
+
+        builder.shaped()
+                .withCategory(RecipeCategory.BUILDING_BLOCKS)
+                .apply(RecipeTemplates.PLUS_CROSS.apply(AVPItems.ABERRANT_RESIN_BALL))
+                .into(5, AVPBlocks.ABERRANT_RESIN_VEIN);
+
+        builder.shaped()
+                .withCategory(RecipeCategory.BUILDING_BLOCKS)
+                .apply(RecipeTemplates.X_CROSS.apply(AVPItems.ABERRANT_RESIN_BALL))
+                .into(1, AVPBlocks.ABERRANT_RESIN_WEB);
+
         RecipeUtil.createCompressedBlockRecipes2x2(builder, AVPItems.NETHER_RESIN_BALL, AVPBlocks.NETHER_RESIN);
 
         builder.shaped()

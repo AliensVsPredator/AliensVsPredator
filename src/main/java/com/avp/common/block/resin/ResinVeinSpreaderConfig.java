@@ -30,7 +30,7 @@ class ResinVeinSpreaderConfig extends MultifaceSpreader.DefaultSpreaderConfig {
         BlockState blockState
     ) {
         var blockState2 = blockGetter.getBlockState(blockPos2.relative(direction));
-        var isNotResinNode = !blockState2.is(AVPBlocks.NETHER_RESIN_NODE) && !blockState2.is(AVPBlocks.RESIN_NODE);
+        var isNotResinNode = !blockState2.is(AVPBlocks.ABERRANT_RESIN_NODE) && !blockState2.is(AVPBlocks.NETHER_RESIN_NODE) && !blockState2.is(AVPBlocks.RESIN_NODE);
         var canReplace = !blockState2.is(AVPBlocks.RESIN) && isNotResinNode && !blockState2.is(Blocks.MOVING_PISTON);
 
         if (!canReplace) {

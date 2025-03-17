@@ -32,7 +32,9 @@ public interface SpreadBehavior {
     ) {
         var block = levelAccessor.getBlockState(nodePos).getBlock();
         // TODO: Try not to hardcode this.
-        var resinBlock = block == AVPBlocks.NETHER_RESIN_NODE ? AVPBlocks.NETHER_RESIN_VEIN : AVPBlocks.RESIN_VEIN;
+        var resinBlock = block == AVPBlocks.NETHER_RESIN_NODE ? AVPBlocks.NETHER_RESIN_VEIN
+                : block == AVPBlocks.ABERRANT_RESIN_NODE ? AVPBlocks.ABERRANT_RESIN_VEIN
+                : AVPBlocks.RESIN_VEIN;
 
         return ((MultifaceBlock) resinBlock).getSpreader().spreadAll(blockState, levelAccessor, blockPos, bl) > 0L;
     }

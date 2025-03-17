@@ -108,6 +108,14 @@ public class AVPBlockTagProvider extends FabricTagProvider.BlockTagProvider {
         AVPBlocks.DYE_COLOR_TO_PLASTIC_SLAB.values().forEach(plasticTagBuilder::add);
         AVPBlocks.DYE_COLOR_TO_PLASTIC_STAIRS.values().forEach(plasticTagBuilder::add);
 
+        getOrCreateTagBuilder(AVPBlockTags.ABERRANT_RESIN)
+            .add(
+                    AVPBlocks.ABERRANT_RESIN,
+                    AVPBlocks.ABERRANT_RESIN_NODE,
+                    AVPBlocks.ABERRANT_RESIN_VEIN,
+                    AVPBlocks.ABERRANT_RESIN_WEB
+            );
+
         getOrCreateTagBuilder(AVPBlockTags.NETHER_RESIN)
             .add(
                 AVPBlocks.NETHER_RESIN,
@@ -286,6 +294,8 @@ public class AVPBlockTagProvider extends FabricTagProvider.BlockTagProvider {
                 AVPBlocks.MONAZITE_ORE,
                 AVPBlocks.NETHER_RESIN,
                 AVPBlocks.NETHER_RESIN_NODE,
+                AVPBlocks.ABERRANT_RESIN,
+                AVPBlocks.ABERRANT_RESIN_NODE,
                 AVPBlocks.RAW_BAUXITE_BLOCK,
                 AVPBlocks.RAW_GALENA_BLOCK,
                 AVPBlocks.RAW_MONAZITE_BLOCK,

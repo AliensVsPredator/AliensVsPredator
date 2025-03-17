@@ -124,6 +124,10 @@ public class UkrainianLanguageProvider extends FabricLanguageProvider {
         translationBuilder.add(AVPBlocks.NETHER_RESIN_NODE, "Вузол пекельної смоли");
         translationBuilder.add(AVPBlocks.NETHER_RESIN_VEIN, "Жила пекельної смоли");
         translationBuilder.add(AVPBlocks.NETHER_RESIN_WEB, "Сплетення пекельної смоли");
+        translationBuilder.add(AVPBlocks.ABERRANT_RESIN, "Aberrant Resin");
+        translationBuilder.add(AVPBlocks.ABERRANT_RESIN_NODE, "Aberrant Resin");
+        translationBuilder.add(AVPBlocks.ABERRANT_RESIN_VEIN, "Aberrant Resin Vein");
+        translationBuilder.add(AVPBlocks.ABERRANT_RESIN_WEB, "Aberrant Resin Web");
 
         AVPBlocks.DYE_COLOR_TO_PADDING.forEach(
             (key, value) -> translationBuilder.add(value, format(key.getName()) + " набивка")
@@ -411,6 +415,9 @@ public class UkrainianLanguageProvider extends FabricLanguageProvider {
         translationBuilder.add(AVPItems.TITANIUM_NUGGET, "Титановий самородок");
         translationBuilder.add(AVPItems.URANIUM_NUGGET, "Самородок урану");
         translationBuilder.add(AVPItems.ZINC_NUGGET, "Цинковий самородок");
+        translationBuilder.add(AVPItems.ABERRANT_RESIN_BALL, "Aberant Resin Ball");
+        translationBuilder.add(AVPItems.ABERRANT_CHITIN, "Aberant Chitin");
+        translationBuilder.add(AVPItems.PLATED_ABERRANT_CHITIN, "Plated Aberant Chitin");
 
         // Tools & Utilities Items
         translationBuilder.add(AVPItems.ARMOR_CASE, "Кейс для броні");

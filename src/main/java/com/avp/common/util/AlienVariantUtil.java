@@ -8,6 +8,10 @@ import com.avp.common.item.AVPItems;
 public class AlienVariantUtil {
 
     public static Item getResinBallFor(Alien alien) {
-        return alien.isNetherAfflicted() ? AVPItems.NETHER_RESIN_BALL : AVPItems.RESIN_BALL;
+        return switch (alien) {
+            case Alien netherAlien when netherAlien.isNetherAfflicted() -> AVPItems.NETHER_RESIN_BALL;
+            case Alien aberrantAlien when aberrantAlien.isAberrant() -> AVPItems.ABERRANT_RESIN_BALL;
+            default -> AVPItems.RESIN_BALL;
+        };
     }
 }

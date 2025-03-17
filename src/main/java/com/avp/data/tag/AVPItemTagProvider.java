@@ -54,8 +54,10 @@ public class AVPItemTagProvider extends FabricTagProvider.ItemTagProvider {
 
                 AVPItems.CHITIN,
                 AVPItems.NETHER_CHITIN,
+                AVPItems.ABERRANT_CHITIN,
                 AVPItems.PLATED_CHITIN,
-                AVPItems.PLATED_NETHER_CHITIN
+                AVPItems.PLATED_NETHER_CHITIN,
+                AVPItems.PLATED_ABERRANT_CHITIN
             );
 
         getOrCreateTagBuilder(AVPItemTags.DECORATIVE_POT_SHERDS)

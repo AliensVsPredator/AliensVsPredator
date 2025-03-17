@@ -112,6 +112,14 @@ public class AVPBlockItems {
 
     public static final BlockItem NETHER_RESIN_WEB = register(new Item.Properties().fireResistant(), AVPBlocks.NETHER_RESIN_WEB);
 
+    public static final BlockItem ABERRANT_RESIN = register(new Item.Properties().fireResistant(), AVPBlocks.ABERRANT_RESIN);
+
+    public static final BlockItem ABERRANT_RESIN_NODE = register(new Item.Properties().fireResistant(), AVPBlocks.ABERRANT_RESIN_NODE);
+
+    public static final BlockItem ABERRANT_RESIN_VEIN = register(new Item.Properties().fireResistant(), AVPBlocks.ABERRANT_RESIN_VEIN);
+
+    public static final BlockItem ABERRANT_RESIN_WEB = register(new Item.Properties().fireResistant(), AVPBlocks.ABERRANT_RESIN_WEB);
+
     public static final BlockItem RAW_BAUXITE_BLOCK = register(AVPBlocks.RAW_BAUXITE_BLOCK);
 
     public static final BlockItem RAW_GALENA_BLOCK = register(AVPBlocks.RAW_GALENA_BLOCK);

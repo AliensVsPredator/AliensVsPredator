@@ -67,6 +67,10 @@ public class BlockLootTableProvider extends FabricBlockLootTableProvider {
         dropOther(AVPBlocks.NETHER_RESIN_NODE, AVPBlocks.NETHER_RESIN);
         dropOther(AVPBlocks.NETHER_RESIN_VEIN, AVPItems.NETHER_RESIN_BALL);
         dropOther(AVPBlocks.NETHER_RESIN_WEB, AVPItems.NETHER_RESIN_BALL);
+        dropSelf(AVPBlocks.ABERRANT_RESIN);
+        dropOther(AVPBlocks.ABERRANT_RESIN_NODE, AVPBlocks.ABERRANT_RESIN);
+        dropOther(AVPBlocks.ABERRANT_RESIN_VEIN, AVPItems.ABERRANT_RESIN_BALL);
+        dropOther(AVPBlocks.ABERRANT_RESIN_WEB, AVPItems.ABERRANT_RESIN_BALL);
 
         AVPBlocks.DYE_COLOR_TO_CONCRETE_SLAB.values().forEach((block) -> add(block, createSlabItemTable(block)));
         AVPBlocks.DYE_COLOR_TO_CONCRETE_STAIRS.values().forEach(this::dropSelf);

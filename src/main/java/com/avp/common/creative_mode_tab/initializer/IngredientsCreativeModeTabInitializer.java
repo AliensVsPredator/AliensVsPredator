@@ -91,6 +91,9 @@ public class IngredientsCreativeModeTabInitializer {
             entries.accept(AVPItems.NETHER_RESIN_BALL);
             entries.accept(AVPItems.NETHER_CHITIN);
             entries.accept(AVPItems.PLATED_NETHER_CHITIN);
+            entries.accept(AVPItems.ABERRANT_RESIN_BALL);
+            entries.accept(AVPItems.ABERRANT_CHITIN);
+            entries.accept(AVPItems.PLATED_ABERRANT_CHITIN);
             entries.accept(AVPItems.RAW_ROYAL_JELLY);
             entries.accept(AVPItems.POISON_JELLY);
 

@@ -156,6 +156,12 @@ public class AVPItems {
 
     public static final Item NETHER_RESIN_BALL = register(new Item.Properties().fireResistant(), "nether_resin_ball");
 
+    public static final Item ABERRANT_CHITIN = register(new Item.Properties().fireResistant(), "aberrant_chitin");
+
+    public static final Item PLATED_ABERRANT_CHITIN = register(new Item.Properties().fireResistant(), "plated_aberrant_chitin");
+
+    public static final Item ABERRANT_RESIN_BALL = register(new Item.Properties().fireResistant(), "aberrant_resin_ball");
+
     public static final Item PLATED_CHITIN = register("plated_chitin");
 
     public static final Item PLATED_NETHER_CHITIN = register(new Item.Properties().fireResistant(), "plated_nether_chitin");

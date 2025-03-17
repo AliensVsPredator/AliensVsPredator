@@ -128,6 +128,10 @@ public class MexicanSpanishLanguageProvider extends FabricLanguageProvider {
         translationBuilder.add(AVPBlocks.NETHER_RESIN_NODE, "Nether Resin");
         translationBuilder.add(AVPBlocks.NETHER_RESIN_VEIN, "Nether Resin Vein");
         translationBuilder.add(AVPBlocks.NETHER_RESIN_WEB, "Nether Resin Web");
+        translationBuilder.add(AVPBlocks.ABERRANT_RESIN, "Aberrant Resin");
+        translationBuilder.add(AVPBlocks.ABERRANT_RESIN_NODE, "Aberrant Resin");
+        translationBuilder.add(AVPBlocks.ABERRANT_RESIN_VEIN, "Aberrant Resin Vein");
+        translationBuilder.add(AVPBlocks.ABERRANT_RESIN_WEB, "Aberrant Resin Web");
 
         AVPBlocks.DYE_COLOR_TO_PADDING.forEach(
             (key, value) -> translationBuilder.add(value, format(key.getName()) + " Padding")
@@ -420,6 +424,9 @@ public class MexicanSpanishLanguageProvider extends FabricLanguageProvider {
         translationBuilder.add(AVPItems.TITANIUM_NUGGET, "Titanium Nugget");
         translationBuilder.add(AVPItems.URANIUM_NUGGET, "Uranium Nugget");
         translationBuilder.add(AVPItems.ZINC_NUGGET, "Zinc Nugget");
+        translationBuilder.add(AVPItems.ABERRANT_RESIN_BALL, "Aberant Resin Ball");
+        translationBuilder.add(AVPItems.ABERRANT_CHITIN, "Aberant Chitin");
+        translationBuilder.add(AVPItems.PLATED_ABERRANT_CHITIN, "Plated Aberant Chitin");
 
         // Tools & Utilities Items
         translationBuilder.add(AVPItems.ARMOR_CASE, "Armor Case");
