@@ -53,7 +53,7 @@ public class NuclearExplosionEffects {
         var radiusYUp = explosion.config().radius(Direction.UP);
 
         // Scale Y contribution to better balance vertical vs horizontal edge checks
-        var yScaleFactor = (radiusX + radiusZ) / 2.0 / (double) Math.max(radiusYUp, radiusYDown);
+        var yScaleFactor = (radiusX + radiusZ) / 2.0 / Math.max(radiusYUp, radiusYDown);
 
         var horizontalDistance = ExplosionUtil.getNormalizedHorizontalDistance(explosion, x, z);
         var verticalDistance = ExplosionUtil.getNormalizedVerticalDistance(explosion, y) * yScaleFactor;
