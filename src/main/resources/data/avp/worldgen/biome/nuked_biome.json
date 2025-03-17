@@ -5,13 +5,13 @@
   "temperature_modifier": "frozen",
   "creature_spawn_probability": 0.1,
   "effects": {
-    "sky_color": 0,
+    "sky_color": 12237498,
     "fog_color": 12632256,
-    "water_color": 4227200,
-    "water_fog_color": 4227200,
-    "grass_color": 3098696,
-    "foliage_color": 8405056,
-    "grass_color_modifier": "swamp",
+    "water_color": 10944384,
+    "water_fog_color": 6666343,
+    "grass_color": 7237230,
+    "foliage_color": 9453889,
+    "grass_color_modifier": "none",
     "particle": {
       "options": {
         "type": "minecraft:ash"
