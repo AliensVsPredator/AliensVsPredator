@@ -104,4 +104,8 @@ public class IndustrialFurnaceRecipe extends AbstractCookingRecipe {
         return AVPRecipes.INDUSTRIAL_FURNACE_RECIPE_SERIALIZER;
     }
 
+    @Override
+    public boolean isSpecial() {
+        return true;
+    }
 }
