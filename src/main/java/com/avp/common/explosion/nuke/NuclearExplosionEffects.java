@@ -102,17 +102,25 @@ public class NuclearExplosionEffects {
     private void tryTransformChunkBiome(ServerLevel level, BlockPos pos) {
         var chunkPos = new ChunkPos(pos);
 
-        if (!visitedChunks.contains(chunkPos)) {
-            var biome = level.registryAccess()
-                .registryOrThrow(Registries.BIOME)
-                .getHolderOrThrow(AVPBiomes.NUKED_BIOME);
+        for (var dx = -2; dx <= 2; dx++) {
+            for (var dz = -2; dz <= 2; dz++) {
+                var expandedChunkPos = new ChunkPos(chunkPos.x + dx, chunkPos.z + dz);
 
-            setBiome(level, pos, biome);
-            level.getChunkSource().chunkMap.resendBiomesForChunks(List.of(level.getChunk(chunkPos.x, chunkPos.z)));
+                if (!visitedChunks.contains(expandedChunkPos)) {
+                    var biome = level.registryAccess()
+                            .registryOrThrow(Registries.BIOME)
+                            .getHolderOrThrow(AVPBiomes.NUKED_BIOME);
 
-            visitedChunks.add(chunkPos);
+                    setBiome(level, new BlockPos(expandedChunkPos.getMinBlockX(), 0, expandedChunkPos.getMinBlockZ()),
+                            biome);
+                    level.getChunkSource().chunkMap.resendBiomesForChunks(
+                            List.of(level.getChunk(expandedChunkPos.x, expandedChunkPos.z)));
+
+                    visitedChunks.add(expandedChunkPos);
+                }
+            }
         }
-    }
+        }
 
     private void setBiome(ServerLevel level, BlockPos pos, Holder<Biome> holder) {
         var chunk = level.getChunkAt(pos);
