@@ -1,5 +1,6 @@
 package com.avp.client.render.entity;
 
+import com.avp.client.render.layer.RadiationGlowLayer;
 import com.mojang.blaze3d.vertex.PoseStack;
 import mod.azure.azurelib.rewrite.render.entity.AzEntityRenderer;
 import mod.azure.azurelib.rewrite.render.entity.AzEntityRendererConfig;
@@ -22,24 +23,35 @@ public class PraetorianRenderer extends AzEntityRenderer<Praetorian> {
 
     private static final ResourceLocation ABERRANT_TEXTURE = AVPResources.entityTextureLocation("aberrant_" + NAME);
 
+    private static final ResourceLocation IRRADIATED_TEXTURE = AVPResources.entityTextureLocation("irradiated_" + NAME);
+
     private static final ResourceLocation NETHER_TEXTURE = AVPResources.entityTextureLocation("nether_" + NAME);
 
     public PraetorianRenderer(EntityRendererProvider.Context context) {
         super(
             AzEntityRendererConfig.builder($ -> MODEL, PraetorianRenderer::textureLocation)
                 .setAnimatorProvider(PraetorianAnimator::new)
+                .addRenderLayer(new RadiationGlowLayer<>())
                 .build(),
             context
         );
         this.shadowRadius = 0.5F;
     }
 
-    public static ResourceLocation textureLocation(Praetorian praetorian) {
-        if (praetorian.isNetherAfflicted()) {
+    public static ResourceLocation textureLocation(Praetorian drone) {
+        if (drone.isNetherAfflicted()) {
             return NETHER_TEXTURE;
         }
 
-        return praetorian.isAberrant() ? ABERRANT_TEXTURE : TEXTURE;
+        if (drone.isIrraiated()) {
+            return IRRADIATED_TEXTURE;
+        }
+
+        if (drone.isAberrant()) {
+            return ABERRANT_TEXTURE;
+        }
+
+        return TEXTURE;
     }
 
     @Override
