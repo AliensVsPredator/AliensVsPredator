@@ -1,5 +1,6 @@
 package com.avp.common.hive.ai.task.impl;
 
+import com.avp.common.entity.living.alien.Alien;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.EntityType;
@@ -133,6 +134,10 @@ public class BalanceHiveTask extends HiveTask {
         var growthStage = AlienLifecycleRegistry.getOrNull(null, type);
 
         if (growthStage == null || xenomorph.getEntityData().get(Xenomorph.IS_POISONED)) {
+            return;
+        }
+
+        if (xenomorph.getEntityData().get(Alien.IS_IRRADIATED)) {
             return;
         }
 

@@ -1,5 +1,6 @@
 package com.avp.common.manager;
 
+import com.avp.common.entity.living.alien.Alien;
 import com.avp.common.entity.living.alien.xenomorph.Xenomorph;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.Entity;
@@ -42,7 +43,11 @@ public class GrowthManager {
             return;
         }
 
-        if (entity instanceof Xenomorph xenomorph && xenomorph.getEntityData().get(Xenomorph.IS_POISONED) ) {
+        if (entity instanceof Xenomorph xenomorph && Boolean.TRUE.equals(xenomorph.getEntityData().get(Alien.IS_POISONED)) ) {
+            return;
+        }
+
+        if (entity instanceof Xenomorph xenomorph && Boolean.TRUE.equals(xenomorph.getEntityData().get(Alien.IS_IRRADIATED)) ) {
             return;
         }
 
