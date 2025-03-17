@@ -12,7 +12,9 @@ import com.avp.common.menu.armor_case.ArmorCaseMenu;
 public class MenuTypes {
 
     public static final MenuType<ArmorCaseMenu> ARMOR_CASE = register(ArmorCaseMenu::new, "armor_case");
+
     public static final MenuType<IndustrialFurnaceMenu> INDUSTRIAL_FURNACE_MENU = register(IndustrialFurnaceMenu::new,"industrial_furnace_menu");
+
     public static <T extends AbstractContainerMenu> MenuType<T> register(MenuType.MenuSupplier<T> supplier, String id) {
         var resourceLocation = AVPResources.location(id);
         var menuType = new MenuType<>(supplier, FeatureFlagSet.of());

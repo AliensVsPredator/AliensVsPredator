@@ -19,8 +19,9 @@ public class BlockEntityTypes {
     );
 
     public static final BlockEntityType<IndustrialFurnaceBE> INDUSTRIAL_FURNACE_BE = register(
-            "industrial_furnace_be",
-            BlockEntityType.Builder.of(IndustrialFurnaceBE::new, AVPBlocks.INDUSTRIAL_FURNACE));
+       "industrial_furnace_be",
+       BlockEntityType.Builder.of(IndustrialFurnaceBE::new, AVPBlocks.INDUSTRIAL_FURNACE)
+    );
 
     private static <T extends BlockEntity> BlockEntityType<T> register(String id, BlockEntityType.Builder<T> builder) {
         var type = Util.fetchChoiceType(References.BLOCK_ENTITY, id);
