@@ -15,7 +15,7 @@ import org.jetbrains.annotations.NotNull;
 public class ShurikenItemEntity extends ThrowableItemProjectile {
 
     public ShurikenItemEntity(EntityType<? extends ThrowableItemProjectile> entityType, Level level) {
-        super(AVPEntityTypes.SHURIKEN, level);
+        super(entityType, level);
     }
 
     public ShurikenItemEntity(Level level, LivingEntity livingEntity) {
