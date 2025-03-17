@@ -56,12 +56,14 @@ public class SmartDiscItemEntity extends ThrowableItemProjectile {
 
     @Override
     protected void onHitBlock(@NotNull BlockHitResult result) {
-        BlockBreakProgressManager.damage(
-                level(),
-                result.getBlockPos(),
-                8.0F
-        );
-        this.dealtDamage = true;
+        if (this.level().isClientSide) {
+            BlockBreakProgressManager.damage(
+                    level(),
+                    result.getBlockPos(),
+                    2.0F
+            );
+            this.dealtDamage = true;
+        }
         super.onHitBlock(result);
     }
 

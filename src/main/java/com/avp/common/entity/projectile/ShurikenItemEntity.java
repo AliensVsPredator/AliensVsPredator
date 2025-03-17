@@ -36,12 +36,14 @@ public class ShurikenItemEntity extends ThrowableItemProjectile {
 
     @Override
     protected void onHitBlock(@NotNull BlockHitResult result) {
-        BlockBreakProgressManager.damage(
-                level(),
-                result.getBlockPos(),
-                2.0F
-        );
-        this.discard();
+        if (this.level().isClientSide) {
+            BlockBreakProgressManager.damage(
+                    level(),
+                    result.getBlockPos(),
+                    2.0F
+            );
+            this.discard();
+        }
         super.onHitBlock(result);
     }
 
