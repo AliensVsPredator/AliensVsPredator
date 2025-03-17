@@ -3,6 +3,7 @@ package com.avp.client;
 import com.avp.client.render.armor.*;
 import com.avp.client.render.entity.*;
 import com.avp.client.render.item.*;
+import com.avp.client.screen.IndustrialFurnaceScreen;
 import mod.azure.azurelib.rewrite.render.armor.AzArmorRendererRegistry;
 import mod.azure.azurelib.rewrite.render.item.AzItemRenderer;
 import mod.azure.azurelib.rewrite.render.item.AzItemRendererRegistry;
@@ -184,6 +185,7 @@ public class AVPClient implements ClientModInitializer {
 
         // GUI (aka Screens)
         MenuScreens.register(MenuTypes.ARMOR_CASE, ArmorCaseScreen::new);
+        MenuScreens.register(MenuTypes.INDUSTRIAL_FURNACE_MENU, IndustrialFurnaceScreen::new);
 
         // Keybindings
         AVPKeybindingRegistry.initialize();
