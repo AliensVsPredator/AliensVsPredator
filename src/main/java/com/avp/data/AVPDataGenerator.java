@@ -1,5 +1,7 @@
 package com.avp.data;
 
+import com.avp.data.lang.RussianLanguageProvider;
+import com.avp.data.lang.UkrainianLanguageProvider;
 import net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 import net.minecraft.core.RegistrySetBuilder;
@@ -34,6 +36,8 @@ public class AVPDataGenerator implements DataGeneratorEntrypoint {
         var pack = fabricDataGenerator.createPack();
         pack.addProvider(AdvancementProvider::new);
         pack.addProvider(EnglishLanguageProvider::new);
+        pack.addProvider(RussianLanguageProvider::new);
+        pack.addProvider(UkrainianLanguageProvider::new);
         pack.addProvider(BlockModelProvider::new);
         pack.addProvider(ItemModelProvider::new);
         pack.addProvider(RecipeProvider::new);
