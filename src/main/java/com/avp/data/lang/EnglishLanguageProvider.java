@@ -456,6 +456,9 @@ public class EnglishLanguageProvider extends FabricLanguageProvider {
         translationBuilder.add(SpawnEggItems.NETHER_PRAETORIAN_SPAWN_EGG, "Nether Praetorian Spawn Egg");
         translationBuilder.add(SpawnEggItems.NETHER_WARRIOR_SPAWN_EGG, "Nether Warrior Spawn Egg");
         translationBuilder.add(SpawnEggItems.NETHER_QUEEN_SPAWN_EGG, "Nether Queen Spawn Egg");
+        translationBuilder.add(SpawnEggItems.IRRAIATED_DRONE_SPAWN_EGG, "Irraiated Drone Spawn Egg");
+        translationBuilder.add(SpawnEggItems.IRRAIATED_WARRIOR_SPAWN_EGG, "Irraiated Warrior Spawn Egg");
+        translationBuilder.add(SpawnEggItems.IRRAIATED_PRAETORIAN_SPAWN_EGG, "Irraiated Praetorian Spawn Egg");
         translationBuilder.add(SpawnEggItems.OVAMORPH_SPAWN_EGG, "Ovamorph Spawn Egg");
         translationBuilder.add(SpawnEggItems.PRAETORIAN_SPAWN_EGG, "Praetorian Spawn Egg");
         translationBuilder.add(SpawnEggItems.QUEEN_SPAWN_EGG, "Queen Spawn Egg");

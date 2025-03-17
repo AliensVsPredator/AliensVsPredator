@@ -21,6 +21,7 @@ public class AVPEntityTypeTagProvider extends FabricTagProvider.EntityTypeTagPro
     @Override
     protected void addTags(HolderLookup.Provider wrapperLookup) {
         addHosts();
+        addIrraiatedAliens();
         addAberrantAliens();
         addNetherAliens();
         addNormalAliens();
@@ -91,6 +92,9 @@ public class AVPEntityTypeTagProvider extends FabricTagProvider.EntityTypeTagPro
     private void addXenomorphs() {
         getOrCreateTagBuilder(AVPEntityTypeTags.XENOMORPHS)
             .add(
+                AVPEntityTypes.IRRAIATED_DRONE,
+                AVPEntityTypes.IRRAIATED_PRAETORIAN,
+                AVPEntityTypes.IRRAIATED_WARRIOR,
                 AVPEntityTypes.ABERRANT_DRONE,
                 AVPEntityTypes.ABERRANT_PRAETORIAN,
                 AVPEntityTypes.ABERRANT_WARRIOR,
@@ -136,6 +140,7 @@ public class AVPEntityTypeTagProvider extends FabricTagProvider.EntityTypeTagPro
     private void addRoyalAliens() {
         getOrCreateTagBuilder(AVPEntityTypeTags.ROYAL_ALIENS)
             .add(
+                AVPEntityTypes.IRRAIATED_DRONE,
                 AVPEntityTypes.ABERRANT_PRAETORIAN,
                 AVPEntityTypes.CHESTBURSTER_QUEEN,
                 AVPEntityTypes.NETHER_PRAETORIAN,
@@ -149,6 +154,19 @@ public class AVPEntityTypeTagProvider extends FabricTagProvider.EntityTypeTagPro
     private void addHiveAliens() {
         getOrCreateTagBuilder(AVPEntityTypeTags.HIVE_ALIENS)
             .addTag(AVPEntityTypeTags.XENOMORPHS);
+    }
+
+    private void addIrraiatedAliens() {
+        getOrCreateTagBuilder(AVPEntityTypeTags.IRRAIATED_ALIENS)
+                .add(
+                        AVPEntityTypes.IRRAIATED_DRONE,
+                        AVPEntityTypes.IRRAIATED_WARRIOR,
+                        AVPEntityTypes.IRRAIATED_PRAETORIAN,
+                        AVPEntityTypes.ABERRANT_OVAMORPH,
+                        AVPEntityTypes.ABERRANT_PRAETORIAN,
+                        AVPEntityTypes.ABERRANT_WARRIOR,
+                        AVPEntityTypes.ABERRANT_QUEEN
+                );
     }
 
     private void addAberrantAliens() {
@@ -193,6 +211,7 @@ public class AVPEntityTypeTagProvider extends FabricTagProvider.EntityTypeTagPro
 
     private void addAliens() {
         getOrCreateTagBuilder(AVPEntityTypeTags.ALIENS)
+            .addTag(AVPEntityTypeTags.IRRAIATED_ALIENS)
             .addTag(AVPEntityTypeTags.ABERRANT_ALIENS)
             .addTag(AVPEntityTypeTags.NORMAL_ALIENS)
             .addTag(AVPEntityTypeTags.NETHER_ALIENS);

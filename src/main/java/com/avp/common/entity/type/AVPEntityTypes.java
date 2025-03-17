@@ -223,6 +223,32 @@ public class AVPEntityTypes {
             EntityType.Builder.of(nethermorphFactory(AVPEntityTypes.QUEEN, Queen::new), AVPEntityTypes.ALIEN_CATEGORY)
     );
 
+    public static final EntityType<Drone> IRRAIATED_DRONE = register(
+        "irraiated_drone",
+        EntityType.Builder.of(irraiatedFactory(AVPEntityTypes.DRONE, Drone::new), AVPEntityTypes.ALIEN_CATEGORY)
+    );
+
+    public static final EntityType<Warrior> IRRAIATED_WARRIOR = register(
+        "irraiated_warrior",
+        EntityType.Builder.of(irraiatedFactory(AVPEntityTypes.WARRIOR, Warrior::new), AVPEntityTypes.ALIEN_CATEGORY)
+    );
+
+    public static final EntityType<Praetorian> IRRAIATED_PRAETORIAN = register(
+        "irraiated_praetorian",
+        EntityType.Builder.of(irraiatedFactory(AVPEntityTypes.PRAETORIAN, Praetorian::new), AVPEntityTypes.ALIEN_CATEGORY)
+    );
+
+    private static <T extends Alien> EntityType.EntityFactory<T> irraiatedFactory(
+            EntityType<T> overridingEntityType,
+            BiFunction<EntityType<T>, Level, T> entityFactory
+    ) {
+        return (entityType, level) -> {
+            var entity = entityFactory.apply(overridingEntityType, level);
+            entity.setIrraiated(true);
+            return entity;
+        };
+    }
+
     private static <T extends Alien> EntityType.EntityFactory<T> aberrantFactory(
         EntityType<T> overridingEntityType,
         BiFunction<EntityType<T>, Level, T> entityFactory

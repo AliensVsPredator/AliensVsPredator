@@ -8,6 +8,8 @@ import com.avp.AVPResources;
 
 public class AVPEntityTypeTags {
 
+    public static final TagKey<EntityType<?>> IRRAIATED_ALIENS = create("irraiated_aliens");
+
     public static final TagKey<EntityType<?>> ABERRANT_ALIENS = create("aberrant_aliens");
 
     public static final TagKey<EntityType<?>> ACID_IMMUNE = create("acid_immune");
