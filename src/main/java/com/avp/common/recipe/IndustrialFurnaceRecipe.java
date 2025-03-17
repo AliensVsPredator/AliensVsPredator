@@ -1,23 +1,12 @@
 package com.avp.common.recipe;
 
-import com.avp.AVP;
-import com.avp.AVPResources;
-import com.avp.common.recipe.input.IndustrialFurnaceRecipeInput;
-
-import com.mojang.serialization.MapCodec;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.*;
-import net.minecraft.world.level.Level;
 
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -75,14 +64,14 @@ public class IndustrialFurnaceRecipe extends AbstractCookingRecipe {
      * Creates a recipe from an item if it has a registered melting recipe
      */
     public static IndustrialFurnaceRecipe fromItem(Item input) {
-        Item output = MELTING_RECIPES.get(input);
+        var output = MELTING_RECIPES.get(input);
         if (output == null) {
             return null;
         }
 
-        int vanillaTime = 200;
-        int processTime = (int)(vanillaTime * SPEED_MULTIPLIER);
-        String recipeId = BuiltInRegistries.ITEM.getKey(input).getPath() + "_to_" +
+        var vanillaTime = 200;
+        var processTime = (int)(vanillaTime * SPEED_MULTIPLIER);
+        var recipeId = BuiltInRegistries.ITEM.getKey(input).getPath() + "_to_" +
                 BuiltInRegistries.ITEM.getKey(output).getPath();
 
         return new IndustrialFurnaceRecipe(
@@ -100,7 +89,7 @@ public class IndustrialFurnaceRecipe extends AbstractCookingRecipe {
     }
 
     @Override
-    public RecipeSerializer<?> getSerializer() {
+    public @NotNull RecipeSerializer<?> getSerializer() {
         return AVPRecipes.INDUSTRIAL_FURNACE_RECIPE_SERIALIZER;
     }
 
