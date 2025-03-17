@@ -75,7 +75,7 @@ public class NuclearExplosionEffects {
                 } else if (blockState.is(BlockTags.SAND) || blockState.is(Blocks.SANDSTONE) || blockState.is(Blocks.RED_SANDSTONE)) {
                     var rand2 = level.random.nextInt(100);
 
-                    if (rand2 < 33) {
+                    if (rand2 < 66) {
                         transformedBlock = AVPBlocks.TRINITITE_BLOCK;
                     } else {
                         transformedBlock = Blocks.MAGMA_BLOCK;
