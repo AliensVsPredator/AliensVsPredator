@@ -38,16 +38,16 @@ public class PraetorianRenderer extends AzEntityRenderer<Praetorian> {
         this.shadowRadius = 0.5F;
     }
 
-    public static ResourceLocation textureLocation(Praetorian drone) {
-        if (drone.isNetherAfflicted()) {
+    public static ResourceLocation textureLocation(Praetorian praetorian) {
+        if (praetorian.isNetherAfflicted()) {
             return NETHER_TEXTURE;
         }
 
-        if (drone.isIrraiated()) {
+        if (praetorian.isIrraiated()) {
             return IRRADIATED_TEXTURE;
         }
 
-        if (drone.isAberrant()) {
+        if (praetorian.isAberrant()) {
             return ABERRANT_TEXTURE;
         }
 

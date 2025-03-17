@@ -38,16 +38,16 @@ public class WarriorRenderer extends AzEntityRenderer<Warrior> {
         this.shadowRadius = 0.5F;
     }
 
-    public static ResourceLocation textureLocation(Warrior drone) {
-        if (drone.isNetherAfflicted()) {
+    public static ResourceLocation textureLocation(Warrior warrior) {
+        if (warrior.isNetherAfflicted()) {
             return NETHER_TEXTURE;
         }
 
-        if (drone.isIrraiated()) {
+        if (warrior.isIrraiated()) {
             return IRRADIATED_TEXTURE;
         }
 
-        if (drone.isAberrant()) {
+        if (warrior.isAberrant()) {
             return ABERRANT_TEXTURE;
         }
 
