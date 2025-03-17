@@ -37,12 +37,7 @@
 		]
 	},
 	"mixins": [
-		"avp.mixins.json",
-		"avp.server.mixins.json",
-		{
-			"config": "avp.client.mixins.json",
-			"environment": "client"
-		}
+		"avp.mixins.json"
 	],
 	"depends": {
 		"fabricloader": ">=0.16.9",

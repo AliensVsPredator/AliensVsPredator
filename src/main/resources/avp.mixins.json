@@ -16,6 +16,14 @@
     "MixinShearsItem",
     "MixinVillagerHostilesSensor_RunAwayFromAVPMonsters"
   ],
+  "client": [
+    "client.MixinGui_CrosshairPickEntityWithinGunRange",
+    "client.MixinItemInHandRenderer_AdjustHandRenderingForGun",
+    "client.MixinPlayerRenderer_AdjustArmPoseForGun"
+  ],
+  "server": [
+    "server.MixinServerLevel_RunTickRoutines"
+  ],
   "injectors": {
     "defaultRequire": 1
 	}
