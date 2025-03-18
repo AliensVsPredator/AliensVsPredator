@@ -13,7 +13,7 @@ import net.minecraft.world.level.Level;
 public class RadiatedItem extends Item {
 
     public RadiatedItem() {
-        super(new Item.Properties().stacksTo(64));
+        super(new Item.Properties().stacksTo(64).fireResistant());
     }
 
     @Override

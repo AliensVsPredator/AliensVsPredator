@@ -86,6 +86,9 @@ public class ItemModelProvider extends FabricModelProvider {
         generateStandardItem(generators, ArmorItems.TITANIUM_HELMET);
         generateStandardItem(generators, ArmorItems.TITANIUM_LEGGINGS);
 
+        generateStandardItem(generators, AVPItems.IRRADIATED_CHITIN);
+        generateStandardItem(generators, AVPItems.PLATED_IRRADIATED_CHITIN);
+        generateStandardItem(generators, AVPItems.IRRADIATED_RESIN_BALL);
         generateStandardItem(generators, AVPItems.ABERRANT_CHITIN);
         generateStandardItem(generators, AVPItems.ABERRANT_RESIN_BALL);
         generateStandardItem(generators, AVPItems.PLATED_ABERRANT_CHITIN);

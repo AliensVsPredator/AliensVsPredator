@@ -132,6 +132,10 @@ public class ChineseSimplifiiedLanguageProvider extends FabricLanguageProvider {
         translationBuilder.add(AVPBlocks.ABERRANT_RESIN_NODE, "Aberrant Resin");
         translationBuilder.add(AVPBlocks.ABERRANT_RESIN_VEIN, "Aberrant Resin Vein");
         translationBuilder.add(AVPBlocks.ABERRANT_RESIN_WEB, "Aberrant Resin Web");
+        translationBuilder.add(AVPBlocks.IRRADIATED_RESIN, "Irradiated Resin");
+        translationBuilder.add(AVPBlocks.IRRADIATED_RESIN_NODE, "Irradiated Resin");
+        translationBuilder.add(AVPBlocks.IRRADIATED_RESIN_VEIN, "Irradiated Resin Vein");
+        translationBuilder.add(AVPBlocks.IRRADIATED_RESIN_WEB, "Irradiated Resin Web");
 
         AVPBlocks.DYE_COLOR_TO_PADDING.forEach(
             (key, value) -> translationBuilder.add(value, format(key.getName()) + " Padding")
@@ -427,6 +431,9 @@ public class ChineseSimplifiiedLanguageProvider extends FabricLanguageProvider {
         translationBuilder.add(AVPItems.ABERRANT_RESIN_BALL, "Aberant Resin Ball");
         translationBuilder.add(AVPItems.ABERRANT_CHITIN, "Aberant Chitin");
         translationBuilder.add(AVPItems.PLATED_ABERRANT_CHITIN, "Plated Aberant Chitin");
+        translationBuilder.add(AVPItems.IRRADIATED_RESIN_BALL, "Irradiated Resin Ball");
+        translationBuilder.add(AVPItems.IRRADIATED_CHITIN, "Irradiated Chitin");
+        translationBuilder.add(AVPItems.PLATED_IRRADIATED_CHITIN, "Plated Irradiated Chitin");
 
         // Tools & Utilities Items
         translationBuilder.add(AVPItems.ARMOR_CASE, "Armor Case");

@@ -78,6 +78,11 @@ public class BlockModelProvider extends FabricModelProvider {
             (dyeColor, block) -> createGlassBlocks(generators, AVPBlocks.DYE_COLOR_TO_INDUSTRIAL_GLASS.get(dyeColor), block)
         );
 
+        generators.createRotatedVariantBlock(AVPBlocks.IRRADIATED_RESIN);
+        generators.createRotatedVariantBlock(AVPBlocks.IRRADIATED_RESIN_NODE);
+        MultiFaceGenerator.generate(generators, AVPBlocks.IRRADIATED_RESIN_VEIN);
+        generators.createCrossBlock(AVPBlocks.IRRADIATED_RESIN_WEB, BlockModelGenerators.TintState.NOT_TINTED);
+
         generators.createRotatedVariantBlock(AVPBlocks.ABERRANT_RESIN);
         generators.createRotatedVariantBlock(AVPBlocks.ABERRANT_RESIN_NODE);
         MultiFaceGenerator.generate(generators, AVPBlocks.ABERRANT_RESIN_VEIN);

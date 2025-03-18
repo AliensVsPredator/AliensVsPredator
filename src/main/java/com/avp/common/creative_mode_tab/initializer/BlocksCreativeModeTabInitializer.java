@@ -153,6 +153,7 @@ public class BlocksCreativeModeTabInitializer {
             entries.accept(AVPBlocks.NUKE_BLOCK);
             entries.accept(AVPBlocks.LEAD_BLOCK);
             entries.accept(AVPBlocks.RAZOR_WIRE);
+            entries.accept(AVPBlocks.IRRADIATED_RESIN_NODE);
             entries.accept(AVPBlocks.ABERRANT_RESIN_NODE);
             entries.accept(AVPBlocks.NETHER_RESIN_NODE);
             entries.accept(AVPBlocks.RESIN_NODE);
@@ -169,6 +170,9 @@ public class BlocksCreativeModeTabInitializer {
             entries.accept(AVPBlocks.ABERRANT_RESIN);
             entries.accept(AVPBlocks.ABERRANT_RESIN_VEIN);
             entries.accept(AVPBlocks.ABERRANT_RESIN_WEB);
+            entries.accept(AVPBlocks.IRRADIATED_RESIN);
+            entries.accept(AVPBlocks.IRRADIATED_RESIN_VEIN);
+            entries.accept(AVPBlocks.IRRADIATED_RESIN_WEB);
             entries.accept(AVPBlocks.ROYAL_JELLY_BLOCK);
         });
     }

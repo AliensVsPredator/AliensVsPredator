@@ -14,7 +14,7 @@ import net.minecraft.world.level.block.Block;
 public class RadiatedBlockItem extends BlockItem {
 
     public RadiatedBlockItem(Block block) {
-        super(block, new Properties().stacksTo(64));
+        super(block, new Properties().stacksTo(64).fireResistant());
     }
 
     @Override

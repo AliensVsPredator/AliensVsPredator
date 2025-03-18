@@ -160,6 +160,14 @@ public class AVPBlocks {
 
     public static final Block ABERRANT_RESIN_WEB = register(new ResinWebBlock(BlockProperties.NETHER_RESIN_WEB), "aberrant_resin_web");
 
+    public static final Block IRRADIATED_RESIN = register(new ResinBlock(BlockProperties.NETHER_RESIN), "irradiated_resin");
+
+    public static final Block IRRADIATED_RESIN_NODE = register(new ResinNodeBlock(BlockProperties.RESIN), "irradiated_resin_node");
+
+    public static final Block IRRADIATED_RESIN_VEIN = register(new ResinVeinBlock(BlockProperties.NETHER_RESIN_VEIN), "irradiated_resin_vein");
+
+    public static final Block IRRADIATED_RESIN_WEB = register(new ResinWebBlock(BlockProperties.NETHER_RESIN_WEB), "irradiated_resin_web");
+
     public static final Block RAW_BAUXITE_BLOCK = register(BlockProperties.BAUXITE_ORE, "raw_bauxite_block");
 
     public static final Block RAW_GALENA_BLOCK = register(BlockProperties.GALENA_ORE, "raw_galena_block");

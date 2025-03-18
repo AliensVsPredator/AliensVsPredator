@@ -29,6 +29,11 @@ public class MiscellaneousRecipeProvider {
             .pattern("ABA")
             .into(1, AVPItems.ARMOR_CASE);
 
+        builder.smelt(AVPItems.IRRADIATED_RESIN_BALL)
+                .withCategory(RecipeCategory.MISC)
+                .withExperience(RecipeConstants.VERY_COMMON_SMELT_EXPERIENCE)
+                .into(Items.SLIME_BALL);
+
         builder.smelt(AVPItems.ABERRANT_RESIN_BALL)
                 .withCategory(RecipeCategory.MISC)
                 .withExperience(RecipeConstants.VERY_COMMON_SMELT_EXPERIENCE)

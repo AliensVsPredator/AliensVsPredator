@@ -120,6 +120,14 @@ public class AVPBlockItems {
 
     public static final BlockItem ABERRANT_RESIN_WEB = register(new Item.Properties().fireResistant(), AVPBlocks.ABERRANT_RESIN_WEB);
 
+    public static final BlockItem IRRADIATED_RESIN = registerCustomBlockItem(new RadiatedBlockItem(AVPBlocks.IRRADIATED_RESIN), AVPBlocks.IRRADIATED_RESIN);
+
+    public static final BlockItem IRRADIATED_RESIN_NODE = registerCustomBlockItem(new RadiatedBlockItem(AVPBlocks.IRRADIATED_RESIN_NODE), AVPBlocks.IRRADIATED_RESIN_NODE);
+
+    public static final BlockItem IRRADIATED_RESIN_VEIN = registerCustomBlockItem(new RadiatedBlockItem(AVPBlocks.IRRADIATED_RESIN_VEIN), AVPBlocks.IRRADIATED_RESIN_VEIN);
+
+    public static final BlockItem IRRADIATED_RESIN_WEB = registerCustomBlockItem(new RadiatedBlockItem(AVPBlocks.IRRADIATED_RESIN_WEB), AVPBlocks.IRRADIATED_RESIN_WEB);
+
     public static final BlockItem RAW_BAUXITE_BLOCK = register(AVPBlocks.RAW_BAUXITE_BLOCK);
 
     public static final BlockItem RAW_GALENA_BLOCK = register(AVPBlocks.RAW_GALENA_BLOCK);

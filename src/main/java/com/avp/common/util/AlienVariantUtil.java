@@ -11,6 +11,7 @@ public class AlienVariantUtil {
         return switch (alien) {
             case Alien netherAlien when netherAlien.isNetherAfflicted() -> AVPItems.NETHER_RESIN_BALL;
             case Alien aberrantAlien when aberrantAlien.isAberrant() -> AVPItems.ABERRANT_RESIN_BALL;
+            case Alien irradiatedAlien when irradiatedAlien.isIrraiated() -> AVPItems.IRRADIATED_RESIN_BALL;
             default -> AVPItems.RESIN_BALL;
         };
     }

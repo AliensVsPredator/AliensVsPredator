@@ -166,6 +166,12 @@ public class AVPItems {
 
     public static final Item PLATED_NETHER_CHITIN = register(new Item.Properties().fireResistant(), "plated_nether_chitin");
 
+    public static final Item IRRADIATED_CHITIN = register(new RadiatedItem(), "irradiated_chitin");
+
+    public static final Item PLATED_IRRADIATED_CHITIN = register(new RadiatedItem(), "plated_irradiated_chitin");
+
+    public static final Item IRRADIATED_RESIN_BALL = register(new RadiatedItem(), "irradiated_resin_ball");
+
     public static final Item POLYMER = register("polymer");
 
     public static final Item RAW_BAUXITE = register("raw_bauxite");

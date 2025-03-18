@@ -44,6 +44,8 @@ public class AVPClient implements ClientModInitializer {
         // Blocks
         BlockRenderLayerMap.INSTANCE.putBlock(AVPBlocks.FERROALUMINUM_CHAIN_FENCE, RenderType.cutout());
         BlockRenderLayerMap.INSTANCE.putBlock(AVPBlocks.FERROALUMINUM_GRATE, RenderType.cutout());
+        BlockRenderLayerMap.INSTANCE.putBlock(AVPBlocks.IRRADIATED_RESIN_VEIN, RenderType.cutout());
+        BlockRenderLayerMap.INSTANCE.putBlock(AVPBlocks.IRRADIATED_RESIN_WEB, RenderType.cutout());
         BlockRenderLayerMap.INSTANCE.putBlock(AVPBlocks.ABERRANT_RESIN_VEIN, RenderType.cutout());
         BlockRenderLayerMap.INSTANCE.putBlock(AVPBlocks.ABERRANT_RESIN_WEB, RenderType.cutout());
         BlockRenderLayerMap.INSTANCE.putBlock(AVPBlocks.NETHER_RESIN_VEIN, RenderType.cutout());
