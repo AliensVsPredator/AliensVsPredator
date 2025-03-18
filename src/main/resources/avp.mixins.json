@@ -2,6 +2,7 @@
   "required": true,
   "package": "com.avp.mixin",
   "compatibilityLevel": "JAVA_21",
+  "plugin": "com.avp.mixin.AVPMixinPlugin",
   "mixins": [
     "MixinArmorStand_EquipArmorFromArmorCase",
     "MixinDecoratedPotPatterns_GetPatternForCustomSherds",
@@ -12,7 +13,6 @@
     "MixinLivingEntity_GrowEmbryo",
     "MixinLivingEntity_NukedRadation",
     "MixinMob_IncapacitateHost",
-    "MixinMobCategory_InjectCustomAlienCategory",
     "MixinShearsItem",
     "MixinVillagerHostilesSensor_RunAwayFromAVPMonsters",
     "server.MixinServerLevel_RunTickRoutines"

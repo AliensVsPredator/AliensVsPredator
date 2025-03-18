@@ -3,6 +3,7 @@ package com.avp.common.entity.living.human;
 import com.avp.common.MoveAnalysis;
 import com.avp.common.ai.goal.StrollAroundInWaterGoal;
 import com.avp.common.ai.goal.combat.FleeFightGoal;
+import com.avp.common.config.AVPConfig;
 import com.avp.common.manager.*;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -13,6 +14,8 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.control.MoveControl;
 import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
 import net.minecraft.world.entity.ai.goal.WaterAvoidingRandomStrollGoal;
@@ -181,6 +184,18 @@ public abstract class AbstractHumanMob extends PathfinderMob {
             cachedSecondRandomValue = getRandom().nextIntBetweenInclusive(1, maxValue);
         }
         return cachedSecondRandomValue;
+    }
+
+    public static AttributeSupplier.Builder applyFrom(AVPConfig.StatsConfigs.AdvancedStats config, AttributeSupplier.Builder builder) {
+        builder.add(Attributes.ARMOR, config.armor);
+        builder.add(Attributes.ARMOR_TOUGHNESS, config.armorToughness);
+        builder.add(Attributes.ATTACK_DAMAGE, config.attackDamage);
+        builder.add(Attributes.FOLLOW_RANGE, config.followRange);
+        builder.add(Attributes.KNOCKBACK_RESISTANCE, config.knockbackResistance);
+        builder.add(Attributes.MAX_HEALTH, config.health);
+        builder.add(Attributes.MOVEMENT_SPEED, config.moveSpeed);
+
+        return builder;
     }
 
 }

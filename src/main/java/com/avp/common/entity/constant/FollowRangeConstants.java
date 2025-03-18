@@ -1,20 +1,18 @@
 package com.avp.common.entity.constant;
 
-public class FollowRangeConstants {
+public record FollowRangeConstants() {
 
-    public static final double DRONE_FOLLOW_RANGE = 35;
+    public static final float FACEHUGGER_FOLLOW_RANGE = 35F;
 
-    public static final double PRAETORIAN_FOLLOW_RANGE = 35;
+    public static final float DRONE_FOLLOW_RANGE = 35F;
 
-    public static final double QUEEN_FOLLOW_RANGE = 35;
+    public static final float PRAETORIAN_FOLLOW_RANGE = 35F;
 
-    public static final double WARRIOR_FOLLOW_RANGE = 35;
+    public static final float QUEEN_FOLLOW_RANGE = 35F;
 
-    public static final double YAUTJA_FOLLOW_RANGE = 35;
+    public static final float WARRIOR_FOLLOW_RANGE = 35F;
 
-    public static final double MARINE_FOLLOW_RANGE = 20;
+    public static final float YAUTJA_FOLLOW_RANGE = 35F;
 
-    private FollowRangeConstants() {
-        throw new UnsupportedOperationException();
-    }
+    public static final float MARINE_FOLLOW_RANGE = 20F;
 }

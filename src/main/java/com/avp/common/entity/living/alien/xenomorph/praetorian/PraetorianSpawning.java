@@ -1,17 +1,17 @@
 package com.avp.common.entity.living.alien.xenomorph.praetorian;
 
+import com.avp.AVP;
 import net.minecraft.world.entity.SpawnPlacements;
 
-import com.avp.common.config.ConfigProperties;
 import com.avp.common.entity.living.alien.AlienSpawning;
 
 public class PraetorianSpawning {
 
     public static final SpawnPlacements.SpawnPredicate<Praetorian> PREDICATE = AlienSpawning.createPredicate(
-        ConfigProperties.PRAETORIAN_SPAWNING
+        AVP.config.spawnConfigs.PRAETORIAN_SPAWN
     );
 
     public static final SpawnPlacements.SpawnPredicate<Praetorian> NETHER_PREDICATE = AlienSpawning.createPredicate(
-        ConfigProperties.NETHER_PRAETORIAN_SPAWNING
+        AVP.config.spawnConfigs.NETHER_PRAETORIAN_SPAWN
     );
 }

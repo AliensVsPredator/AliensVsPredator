@@ -9,7 +9,6 @@ import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.level.ServerLevelAccessor;
 
 import com.avp.AVP;
-import com.avp.common.config.ConfigProperties;
 
 public class YautjaSpawning {
 
@@ -20,9 +19,8 @@ public class YautjaSpawning {
         blockPos,
         randomSource
     ) -> {
-        var properties = AVP.SPAWNING_CONFIG.properties();
-        var maxY = properties.getOrThrow(ConfigProperties.YAUTJA_SPAWNING.maxY());
-        var minY = properties.getOrThrow(ConfigProperties.YAUTJA_SPAWNING.minY());
+        var maxY = AVP.config.spawnConfigs.YAUTJA_SPAWN.maxY;
+        var minY = AVP.config.spawnConfigs.YAUTJA_SPAWN.minY;
 
         return blockPos.getY() <= maxY &&
             blockPos.getY() >= minY &&

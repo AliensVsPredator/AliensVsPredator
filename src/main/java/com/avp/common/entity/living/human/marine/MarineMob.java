@@ -2,12 +2,9 @@ package com.avp.common.entity.living.human.marine;
 
 import com.avp.AVP;
 import com.avp.common.ai.goal.combat.DelayedAttackGoal;
-import com.avp.common.ai.goal.combat.UseItemGoal;
-import com.avp.common.config.ConfigProperties;
 import com.avp.common.entity.living.alien.Alien;
 import com.avp.common.entity.living.human.AbstractHumanMob;
 import com.avp.common.item.AVPItems;
-import com.avp.common.item.ArmorItems;
 import com.avp.common.manager.*;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.entity.*;
@@ -40,8 +37,7 @@ public class MarineMob extends AbstractHumanMob {
     }
 
     public static AttributeSupplier.Builder createMarineAttributes() {
-        var container = ConfigProperties.MARINE_ATTRIBUTES;
-        return container.applyFrom(AVP.STATS_CONFIG, Mob.createMobAttributes().add(Attributes.ATTACK_DAMAGE));
+        return applyFrom(AVP.config.statsConfigs.MARINE_STATS, Mob.createMobAttributes().add(Attributes.ATTACK_DAMAGE));
     }
 
     @Override

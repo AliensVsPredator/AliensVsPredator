@@ -4,15 +4,11 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import com.avp.AVP;
-import com.avp.common.config.ConfigProperties;
-import com.avp.common.config.property.ConfigPropertyContainer;
 import com.avp.common.entity.type.AVPEntityTypes;
 import com.avp.common.lifecycle.growth.GrowthStage;
 import com.avp.common.lifecycle.registry.AlienLifecycleRegistry;
 
 public class Lifecycles {
-
-    private static ConfigPropertyContainer properties = AVP.HIVES_CONFIG.properties();
 
     public static final AlienLifecycle DEFAULT = register(
         new AlienLifecycle(
@@ -21,22 +17,22 @@ public class Lifecycles {
                 new GrowthStage(
                     AVPEntityTypes.CHESTBURSTER,
                     AVPEntityTypes.DRONE,
-                    (int) TimeUnit.MINUTES.toSeconds(properties.getOrDefault(ConfigProperties.CHESTBURSTER_MAX_GROWTH_TIMER_SECONDS, 1200))
+                    (int) TimeUnit.MINUTES.toSeconds(AVP.config.hiveConfigs.CHESTBURSTER_MAX_GROWTH_TIMER_SECONDS)
                 ),
                 new GrowthStage(
                     AVPEntityTypes.DRONE,
                     AVPEntityTypes.WARRIOR,
-                    (int) TimeUnit.MINUTES.toSeconds(properties.getOrDefault(ConfigProperties.DRONE_MAX_GROWTH_TIMER_SECONDS, 800))
+                    (int) TimeUnit.MINUTES.toSeconds(AVP.config.hiveConfigs.DRONE_MAX_GROWTH_TIMER_SECONDS)
                 ),
                 new GrowthStage(
                     AVPEntityTypes.WARRIOR,
                     AVPEntityTypes.PRAETORIAN,
-                    (int) TimeUnit.MINUTES.toSeconds(properties.getOrDefault(ConfigProperties.WARRIOR_MAX_GROWTH_TIMER_SECONDS, 1600))
+                    (int) TimeUnit.MINUTES.toSeconds(AVP.config.hiveConfigs.WARRIOR_MAX_GROWTH_TIMER_SECONDS)
                 ),
                 new GrowthStage(
                     AVPEntityTypes.PRAETORIAN,
                     AVPEntityTypes.QUEEN,
-                    (int) TimeUnit.MINUTES.toSeconds(properties.getOrDefault(ConfigProperties.PRAETORIAN_MAX_GROWTH_TIMER_SECONDS, 3200))
+                    (int) TimeUnit.MINUTES.toSeconds(AVP.config.hiveConfigs.PRAETORIAN_MAX_GROWTH_TIMER_SECONDS)
                 )
             )
         )
@@ -49,11 +45,13 @@ public class Lifecycles {
                 new GrowthStage(
                     AVPEntityTypes.CHESTBURSTER_QUEEN,
                     AVPEntityTypes.PRAETORIAN,
-                    (int) TimeUnit.MINUTES.toSeconds(properties.getOrDefault(ConfigProperties.PRAETORIAN_SHORTCUT_TIMER_SECONDS, 600))
+                    (int) TimeUnit.MINUTES.toSeconds(AVP.config.hiveConfigs.PRAETORIAN_SHORTCUT_TIMER_SECONDS)
                 )
             )
         )
     );
+
+    private Lifecycles() {}
 
     private static AlienLifecycle register(AlienLifecycle lifecycle) {
         return AlienLifecycleRegistry.register(lifecycle);

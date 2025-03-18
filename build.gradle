@@ -55,6 +55,8 @@ dependencies {
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 
 	modImplementation "mod.azure.azurelib:azurelib-fabric-${project.minecraft_version}:${project.azurelib_version}"
+
+	modApi "com.terraformersmc:modmenu:${modmenu_version}"
 }
 
 processResources {

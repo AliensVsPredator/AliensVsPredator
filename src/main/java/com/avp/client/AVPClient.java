@@ -27,8 +27,6 @@ import com.avp.client.particle.BlueAcidParticleProvider;
 import com.avp.client.render.entity.parasite.facehugger.FacehuggerRenderer;
 import com.avp.client.screen.ArmorCaseScreen;
 import com.avp.common.block.AVPBlocks;
-import com.avp.common.config.Config;
-import com.avp.common.config.io.ConfigLoader;
 import com.avp.common.entity.type.AVPEntityTypes;
 import com.avp.common.item.AVPItems;
 import com.avp.common.item.ArmorItems;
@@ -37,17 +35,12 @@ import com.avp.common.particle.AVPParticleTypes;
 
 public class AVPClient implements ClientModInitializer {
 
-    public static Config CLIENT_CONFIG;
-
     private static final Function<String, Supplier<AzItemRenderer>> ITEM_RENDERER_SUPPLIER_FACTORY = name -> () -> new SimpleItemRenderer(
         name
     );
 
     @Override
     public void onInitializeClient() {
-        var commonConfigName = "client";
-        CLIENT_CONFIG = ConfigLoader.load(commonConfigName).orElse(Config.empty(commonConfigName));
-
         // Blocks
         BlockRenderLayerMap.INSTANCE.putBlock(AVPBlocks.FERROALUMINUM_CHAIN_FENCE, RenderType.cutout());
         BlockRenderLayerMap.INSTANCE.putBlock(AVPBlocks.FERROALUMINUM_GRATE, RenderType.cutout());

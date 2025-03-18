@@ -2,7 +2,6 @@ package com.avp.common.block.entity;
 
 import com.avp.AVP;
 import com.avp.common.block.AVPBlocks;
-import com.avp.common.config.ConfigProperties;
 import com.avp.common.entity.type.AVPEntityTypes;
 import com.avp.common.util.ExplosionUtil;
 import com.avp.server.ServerScheduler;
@@ -26,6 +25,7 @@ import java.time.Duration;
 
 public class NukeBE extends Entity {
     private static final EntityDataAccessor<Integer> DATA_FUSE_ID = SynchedEntityData.defineId(NukeBE.class, EntityDataSerializers.INT);
+
     private static final EntityDataAccessor<BlockState> DATA_BLOCK_STATE_ID = SynchedEntityData.defineId(NukeBE.class, EntityDataSerializers.BLOCK_STATE);
 
     public NukeBE(EntityType<? extends Entity> entityType, Level level) {
@@ -97,11 +97,13 @@ public class NukeBE extends Entity {
         this.setFuse(fuseValue);
         if (fuseValue <= 0) {
             if (!this.level().isClientSide) {
-                if (isNukeEnabled())
+                if (isNukeEnabled()) {
                     ServerScheduler.schedule(() -> {
-                        var explosion = ExplosionUtil.createNuclearExplosion((ServerLevel) this.level(), this.blockPosition().getCenter(), 16 * 8, 5);
+                        var explosion = ExplosionUtil.createNuclearExplosion((ServerLevel) this.level(),
+                                this.blockPosition().getCenter(), 16 * 8, 5);
                         explosion.explode();
                     }, Duration.ofSeconds(1));
+                }
                 this.discard();
             }
         } else if (tickCount % 20 == 0) {
@@ -111,7 +113,6 @@ public class NukeBE extends Entity {
     }
 
     public boolean isNukeEnabled() {
-        var properties = AVP.WEAPONS_CONFIG.properties();
-        return properties.getOrThrow(ConfigProperties.ENABLE_NUKE_BLOCK_MECHS);
+        return AVP.config.weaponConfigs.ENABLE_NUKE_BLOCK_MECHS;
     }
 }

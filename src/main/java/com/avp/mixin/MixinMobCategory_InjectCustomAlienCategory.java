@@ -15,7 +15,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 import com.avp.AVP;
-import com.avp.common.config.ConfigProperties;
 import com.avp.common.entity.AVPMobCategories;
 
 @Mixin(MobCategory.class)
@@ -35,11 +34,9 @@ public abstract class MixinMobCategory_InjectCustomAlienCategory {
         throw new AssertionError();
     }
 
-    @SuppressWarnings("ShadowTarget")
     @Shadow
-    private static @Final @Mutable MobCategory[] field_6301;
+    private static @Final @Mutable MobCategory[] $VALUES;
 
-    @SuppressWarnings("UnresolvedMixinReference")
     @Inject(
         method = "<clinit>", at = @At(
             value = "FIELD", opcode = Opcodes.PUTSTATIC,
@@ -47,15 +44,13 @@ public abstract class MixinMobCategory_InjectCustomAlienCategory {
         )
     )
     private static void addCustomMobCategory(CallbackInfo ci) {
-        var properties = AVP.SPAWNING_CONFIG.properties();
-
-        if (!properties.getOrThrow(ConfigProperties.ALIEN_CUSTOM_MOB_CATEGORY_ENABLED)) {
+        if (!AVP.config.spawnConfigs.ALIEN_CUSTOM_MOB_CATEGORY_ENABLED) {
             return;
         }
 
-        var alienSpawnLimit = properties.getOrThrow(ConfigProperties.ALIEN_CUSTOM_MOB_CATEGORY_SPAWN_LIMIT);
-        var predatorSpawnLimit = properties.getOrThrow(ConfigProperties.ALIEN_CUSTOM_MOB_CATEGORY_SPAWN_LIMIT);
-        var categories = new ArrayList<>(Arrays.asList(field_6301));
+        var alienSpawnLimit = AVP.config.spawnConfigs.ALIEN_CUSTOM_MOB_CATEGORY_LIMIT;
+        var predatorSpawnLimit = AVP.config.spawnConfigs.PREDATOR_CUSTOM_MOB_CATEGORY_LIMIT;
+        var categories = new ArrayList<>(Arrays.asList($VALUES));
         var last = categories.get(categories.size() - 1);
         var alien = newMobCategory("ALIENS", last.ordinal() + 1, "alien", alienSpawnLimit, false, false, 128);
         var predator = newMobCategory("PREDATOR", last.ordinal() + 1, "predator", predatorSpawnLimit, false, false, 128);
@@ -63,6 +58,6 @@ public abstract class MixinMobCategory_InjectCustomAlienCategory {
         AVPMobCategories.PREDATOR = predator;
         categories.add(alien);
         categories.add(predator);
-        field_6301 = categories.toArray(new MobCategory[0]);
+        $VALUES = categories.toArray(new MobCategory[0]);
     }
 }

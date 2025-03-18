@@ -1,5 +1,6 @@
 package com.avp.common.entity.living.alien;
 
+import com.avp.common.config.AVPConfig;
 import net.minecraft.core.BlockPos;
 import net.minecraft.tags.BiomeTags;
 import net.minecraft.util.RandomSource;
@@ -10,15 +11,13 @@ import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.biome.Biomes;
 
-import com.avp.AVP;
 import com.avp.common.block.AVPBlockTags;
-import com.avp.common.config.ConfigAlienSpawningContainer;
 import com.avp.common.entity.AVPEntityTypeTags;
 
 public class AlienSpawning {
 
     public static <T extends Alien> SpawnPlacements.SpawnPredicate<T> createPredicate(
-        ConfigAlienSpawningContainer container
+        AVPConfig.SpawnConfigs.SpawnSettings container
     ) {
         return (
             entityType,
@@ -27,10 +26,9 @@ public class AlienSpawning {
             blockPos,
             randomSource
         ) -> {
-            var properties = AVP.SPAWNING_CONFIG.properties();
-            var maxY = properties.getOrThrow(container.mobSpawning().maxY());
-            var minY = properties.getOrThrow(container.mobSpawning().minY());
-            var requiresResin = properties.getOrThrow(container.requiresResin());
+            var maxY = container.maxY;
+            var minY = container.minY;
+            var requiresResin = container.requiresResin;
             var belowState = serverLevelAccessor.getBlockState(blockPos.below());
             var resinBlock = entityType.is(AVPEntityTypeTags.NETHER_ALIENS) ? AVPBlockTags.NETHER_RESIN : AVPBlockTags.NORMAL_RESIN;
             var isValidResinPos = belowState.is(resinBlock);

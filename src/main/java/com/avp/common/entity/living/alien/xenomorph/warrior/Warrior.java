@@ -13,18 +13,12 @@ import org.jetbrains.annotations.Nullable;
 
 import com.avp.AVP;
 import com.avp.common.ai.goal.combat.LungeAtTargetGoal;
-import com.avp.common.config.ConfigProperties;
 import com.avp.common.entity.living.alien.xenomorph.Xenomorph;
 import com.avp.common.entity.type.AVPEntityTypes;
 import com.avp.common.sound.AVPSoundEvents;
 import com.avp.common.util.resin.ResinData;
 
 public class Warrior extends Xenomorph {
-
-    public static AttributeSupplier.Builder createWarriorAttributes() {
-        var container = ConfigProperties.WARRIOR_ATTRIBUTES;
-        return container.applyFrom(AVP.STATS_CONFIG, Monster.createMonsterAttributes());
-    }
 
     private final WarriorAnimationDispatcher animationDispatcher;
 
@@ -33,10 +27,18 @@ public class Warrior extends Xenomorph {
         this.animationDispatcher = new WarriorAnimationDispatcher(this);
     }
 
+    public static AttributeSupplier.Builder createWarriorAttributes() {
+        return applyFrom(AVP.config.statsConfigs.WARRIOR_STATS, Monster.createMonsterAttributes());
+    }
+
+    @Override
+    protected float getHealthRegenPerSecond() {
+        return AVP.config.statsConfigs.WARRIOR_STATS.healthRegenPerSecond;
+    }
+
     @Override
     protected @NotNull ResinData createResinData() {
-        var container = AVP.STATS_CONFIG.properties();
-        return new ResinData(0, 32, 1, container.getOrDefault(ConfigProperties.WARRIOR_NEST_TICKRATE, 40));
+        return new ResinData(0, 32, 1, AVP.config.statsConfigs.WARRIOR_STATS.nestTickrate);
     }
 
     @Override

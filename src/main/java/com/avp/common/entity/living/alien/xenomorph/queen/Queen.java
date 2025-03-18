@@ -10,17 +10,11 @@ import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
 import com.avp.AVP;
-import com.avp.common.config.ConfigProperties;
 import com.avp.common.entity.living.alien.xenomorph.Xenomorph;
 import com.avp.common.util.resin.ResinData;
 import org.jetbrains.annotations.Nullable;
 
 public class Queen extends Xenomorph {
-
-    public static AttributeSupplier.Builder createQueenAttributes() {
-        var container = ConfigProperties.QUEEN_ATTRIBUTES;
-        return container.applyFrom(AVP.STATS_CONFIG, Monster.createMonsterAttributes());
-    }
 
     public Queen(EntityType<? extends Queen> entityType, Level level) {
         super(entityType, level);
@@ -41,10 +35,18 @@ public class Queen extends Xenomorph {
         return spawnEggItem == null ? super.getPickResult() : new ItemStack(spawnEggItem);
     }
 
+    public static AttributeSupplier.Builder createQueenAttributes() {
+        return applyFrom(AVP.config.statsConfigs.QUEEN_STATS, Monster.createMonsterAttributes());
+    }
+
+    @Override
+    protected float getHealthRegenPerSecond() {
+        return AVP.config.statsConfigs.QUEEN_STATS.healthRegenPerSecond;
+    }
+
     @Override
     protected @NotNull ResinData createResinData() {
-        var container = AVP.STATS_CONFIG.properties();
-        return new ResinData(0, 128, 1, container.getOrDefault(ConfigProperties.QUEEN_NEST_TICKRATE, 160));
+        return new ResinData(0, 128, 1, AVP.config.statsConfigs.QUEEN_STATS.nestTickrate);
     }
 
     @Override

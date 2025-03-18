@@ -13,7 +13,6 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Shearable;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
-import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -25,9 +24,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import com.avp.AVP;
-import com.avp.common.config.ConfigProperties;
-import com.avp.common.entity.constant.HealthConstants;
-import com.avp.common.entity.constant.KnockbackResistanceConstants;
 import com.avp.common.entity.living.alien.Alien;
 import com.avp.common.entity.type.AVPEntityTypes;
 import com.avp.common.item.AVPItems;
@@ -46,11 +42,7 @@ public class Ovamorph extends Alien implements Shearable {
     private static final String IS_ROOTED_KEY = "isRooted";
 
     public static AttributeSupplier.Builder createOvamorphAttributes() {
-        return Monster.createMonsterAttributes()
-            .add(Attributes.ATTACK_DAMAGE, 0)
-            .add(Attributes.KNOCKBACK_RESISTANCE, KnockbackResistanceConstants.OVAMORPH_KNOCKBACK_RESISTANCE)
-            .add(Attributes.MAX_HEALTH, HealthConstants.OVAMORPH_HEALTH)
-            .add(Attributes.MOVEMENT_SPEED, 0);
+        return applyFrom(AVP.config.statsConfigs.OVAMORPH_STATS, Monster.createMonsterAttributes());
     }
 
     private final OvamorphAnimationDispatcher animationDispatcher;
@@ -190,7 +182,7 @@ public class Ovamorph extends Alien implements Shearable {
 
     @Override
     protected float getHealthRegenPerSecond() {
-        return AVP.STATS_CONFIG.properties().getOrThrow(ConfigProperties.OVAMORPH_ATTRIBUTES.healthRegenPerSecond());
+        return AVP.config.statsConfigs.OVAMORPH_STATS.healthRegenPerSecond;
     }
 
     @Override

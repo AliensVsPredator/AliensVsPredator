@@ -16,7 +16,6 @@ import java.util.function.Supplier;
 
 import com.avp.AVP;
 import com.avp.AVPResources;
-import com.avp.common.config.ConfigProperties;
 import com.avp.common.entity.AVPMobCategories;
 import com.avp.common.entity.acid.Acid;
 import com.avp.common.entity.living.alien.Alien;
@@ -33,7 +32,7 @@ import com.avp.common.gene.GeneKeys;
 public class AVPEntityTypes {
 
     public static final MobCategory ALIEN_CATEGORY = ((Supplier<MobCategory>) () -> {
-        if (AVP.SPAWNING_CONFIG.properties().getOrThrow(ConfigProperties.ALIEN_CUSTOM_MOB_CATEGORY_ENABLED)) {
+        if (AVP.config.spawnConfigs.ALIEN_CUSTOM_MOB_CATEGORY_ENABLED) {
             return AVPMobCategories.ALIENS;
         }
 
@@ -41,7 +40,7 @@ public class AVPEntityTypes {
     }).get();
 
     public static final MobCategory PREDATOR_CATEGORY = ((Supplier<MobCategory>) () -> {
-        if (AVP.SPAWNING_CONFIG.properties().getOrThrow(ConfigProperties.ALIEN_CUSTOM_MOB_CATEGORY_ENABLED)) {
+        if (AVP.config.spawnConfigs.ALIEN_CUSTOM_MOB_CATEGORY_ENABLED) {
             return AVPMobCategories.PREDATOR;
         }
 

@@ -19,7 +19,6 @@ import java.util.Objects;
 
 import com.avp.AVP;
 import com.avp.common.MoveAnalysis;
-import com.avp.common.config.ConfigProperties;
 import com.avp.common.entity.living.alien.Alien;
 import com.avp.common.entity.type.AVPEntityTypes;
 import com.avp.common.gene.GeneKeys;
@@ -34,8 +33,7 @@ import com.avp.common.util.resin.ResinProducer;
 public class Chestburster extends Alien implements ResinProducer {
 
     public static AttributeSupplier.Builder createChestbursterAttributes() {
-        var container = ConfigProperties.CHESTBURSTER_ATTRIBUTES;
-        return container.applyFrom(AVP.STATS_CONFIG, Monster.createMonsterAttributes());
+        return applyFrom(AVP.config.statsConfigs.CHESTBURSTER_STATS, Monster.createMonsterAttributes());
     }
 
     protected final MoveAnalysis moveAnalysis;
@@ -99,9 +97,13 @@ public class Chestburster extends Alien implements ResinProducer {
         }
     }
 
+    @Override
+    protected float getHealthRegenPerSecond() {
+        return AVP.config.statsConfigs.CHESTBURSTER_STATS.healthRegenPerSecond;
+    }
+
     protected @NotNull ResinData createResinData() {
-        var container = AVP.STATS_CONFIG.properties();
-        return new ResinData(0, 8, 1, container.getOrDefault(ConfigProperties.CHESTBURSTER_NEST_TICKRATE, 750));
+        return new ResinData(0, 8, 1, AVP.config.statsConfigs.CHESTBURSTER_STATS.nestTickrate);
     }
 
     public void runPassiveAnimations() {

@@ -1,5 +1,6 @@
 package com.avp.common.entity.living.alien;
 
+import com.avp.common.config.AVPConfig;
 import com.avp.common.worldgen.biome.AVPBiomes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -13,14 +14,14 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.SpawnGroupData;
+import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.pathfinder.PathType;
 import org.jetbrains.annotations.Nullable;
 
-import com.avp.AVP;
-import com.avp.common.config.ConfigPropertyMappings;
 import com.avp.common.gene.GeneKeys;
 import com.avp.common.level.effect.AVPMobEffectTags;
 import com.avp.common.manager.GeneManager;
@@ -200,12 +201,7 @@ public abstract class Alien extends Monster {
         return isHurt;
     }
 
-    protected float getHealthRegenPerSecond() {
-        var properties = AVP.STATS_CONFIG.properties();
-        var container = ConfigPropertyMappings.BY_ENTITY_TYPE.get(getType());
-
-        return container == null ? 1F : properties.getOrThrow(container.healthRegenPerSecond());
-    }
+    protected abstract float getHealthRegenPerSecond();
 
     // Prevent the chestburster from drowning or otherwise running out of air.
     @Override
@@ -306,5 +302,17 @@ public abstract class Alien extends Monster {
 
     public int maxJellyToGrowth() {
         return 10;
+    }
+
+    public static AttributeSupplier.Builder applyFrom(AVPConfig.StatsConfigs.AdvancedStats config, AttributeSupplier.Builder builder) {
+        builder.add(Attributes.ARMOR, config.armor);
+        builder.add(Attributes.ARMOR_TOUGHNESS, config.armorToughness);
+        builder.add(Attributes.ATTACK_DAMAGE, config.attackDamage);
+        builder.add(Attributes.FOLLOW_RANGE, config.followRange);
+        builder.add(Attributes.KNOCKBACK_RESISTANCE, config.knockbackResistance);
+        builder.add(Attributes.MAX_HEALTH, config.health);
+        builder.add(Attributes.MOVEMENT_SPEED, config.moveSpeed);
+
+        return builder;
     }
 }

@@ -1,11 +1,11 @@
 package com.avp.common.entity.living.alien.parasite.facehugger;
 
+import com.avp.AVP;
 import net.minecraft.core.BlockPos;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
-import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.MeleeAttackGoal;
 import net.minecraft.world.entity.ai.goal.WaterAvoidingRandomStrollGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
@@ -18,21 +18,10 @@ import org.jetbrains.annotations.Nullable;
 
 import com.avp.common.MoveAnalysis;
 import com.avp.common.ai.goal.combat.LungeAtTargetGoal;
-import com.avp.common.entity.constant.HealthConstants;
-import com.avp.common.entity.constant.KnockbackResistanceConstants;
-import com.avp.common.entity.constant.MoveSpeedConstants;
 import com.avp.common.entity.living.alien.parasite.Parasite;
 import com.avp.common.entity.type.AVPEntityTypes;
 
 public class Facehugger extends Parasite {
-
-    public static AttributeSupplier.Builder createFacehuggerAttributes() {
-        return Monster.createMonsterAttributes()
-            .add(Attributes.ATTACK_DAMAGE)
-            .add(Attributes.KNOCKBACK_RESISTANCE, KnockbackResistanceConstants.FACEHUGGER_KNOCKBACK_RESISTANCE)
-            .add(Attributes.MAX_HEALTH, HealthConstants.FACEHUGGER_HEALTH)
-            .add(Attributes.MOVEMENT_SPEED, MoveSpeedConstants.FACEHUGGER_SPEED);
-    }
 
     private final FacehuggerAnimationDispatcher animationDispatcher;
 
@@ -112,5 +101,14 @@ public class Facehugger extends Parasite {
         }
 
         return spawnEggItem == null ? super.getPickResult() : new ItemStack(spawnEggItem);
+    }
+
+    public static AttributeSupplier.Builder createFacehuggerAttributes() {
+        return applyFrom(AVP.config.statsConfigs.FACEHUGGER_STATS, Monster.createMonsterAttributes());
+    }
+
+    @Override
+    protected float getHealthRegenPerSecond() {
+        return 0;
     }
 }

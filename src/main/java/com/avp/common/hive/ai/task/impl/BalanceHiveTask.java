@@ -13,7 +13,6 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import com.avp.AVP;
-import com.avp.common.config.ConfigProperties;
 import com.avp.common.entity.living.alien.xenomorph.Xenomorph;
 import com.avp.common.entity.type.AVPEntityTypes;
 import com.avp.common.hive.Hive;
@@ -80,9 +79,8 @@ public class BalanceHiveTask extends HiveTask {
         var praetorians = membersByType.getOrDefault(AVPEntityTypes.PRAETORIAN, List.of());
         var queens = membersByType.getOrDefault(AVPEntityTypes.QUEEN, List.of());
 
-        var properties = AVP.HIVES_CONFIG.properties();
-        int hiveMembersRequiredForPraetorian = properties.getOrThrow(ConfigProperties.HIVE_MEMBERS_REQUIRED_FOR_PRAETORIAN);
-        int maxPraetorianCount = properties.getOrThrow(ConfigProperties.HIVE_MAX_PRAETORIAN_COUNT);
+        int hiveMembersRequiredForPraetorian = AVP.config.hiveConfigs.HIVE_MEMBERS_REQUIRED_FOR_PRAETORIAN;
+        int maxPraetorianCount = AVP.config.hiveConfigs.HIVE_MAX_PRAETORIAN_COUNT;
         var desiredPraetorianCount = hiveMembersRequiredForPraetorian > 0
             ? Math.max(0, Math.clamp(hiveMemberCount / hiveMembersRequiredForPraetorian, 0, maxPraetorianCount) - praetorians.size())
             : 0;

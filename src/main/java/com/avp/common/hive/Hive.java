@@ -24,7 +24,6 @@ import java.util.Optional;
 import java.util.UUID;
 
 import com.avp.AVP;
-import com.avp.common.config.ConfigProperties;
 import com.avp.common.entity.living.alien.Alien;
 import com.avp.common.hive.ai.task.Task;
 import com.avp.common.hive.ai.task.impl.BalanceHiveTask;
@@ -49,7 +48,7 @@ public class Hive {
         Component.translatable("bossbar.avp.hive.title"),
         BossEvent.BossBarColor.GREEN,
         BossEvent.BossBarOverlay.PROGRESS
-    ).setDarkenScreen(AVP.HIVES_CONFIG.properties().getOrThrow(ConfigProperties.HIVE_DARKEN_SCREEN));
+    ).setDarkenScreen(AVP.config.hiveConfigs.HIVE_DARKEN_SCREEN);
 
     private final List<Task> tasks;
 
@@ -106,7 +105,7 @@ public class Hive {
 
         if (isAlien) {
             var hivePos = centerPosition();
-            int leashDistance = AVP.HIVES_CONFIG.properties().getOrThrow(ConfigProperties.HIVE_LEASH_RADIUS_IN_BLOCKS);
+            int leashDistance = AVP.config.hiveConfigs.HIVE_LEASH_RADIUS_IN_BLOCKS;
             var leashDistanceSquared = leashDistance * leashDistance;
             var distanceFromHiveSquared = requestingEntity.distanceToSqr(hivePos.getX(), hivePos.getY(), hivePos.getZ());
 
@@ -171,8 +170,7 @@ public class Hive {
 
     public boolean isEntityWithinHive(Entity entity) {
         var centerPos = centerPosition();
-        var properties = AVP.HIVES_CONFIG.properties();
-        var hiveRadius = properties.getOrThrow(ConfigProperties.HIVE_RADIUS_IN_BLOCKS);
+        var hiveRadius = AVP.config.hiveConfigs.HIVE_RADIUS_IN_BLOCKS;
         var hiveRadiusSquared = hiveRadius * hiveRadius;
         var distanceSquared = entity.distanceToSqr(centerPos.getX(), centerPos.getY(), centerPos.getZ());
 
@@ -273,22 +271,18 @@ public class Hive {
     }
 
     public boolean isDebugEnabled() {
-        var properties = AVP.HIVES_CONFIG.properties();
-        return properties.getOrThrow(ConfigProperties.HIVE_DEBUG_ENABLED);
+        return AVP.config.hiveConfigs.HIVE_DEBUG_ENABLED;
     }
 
     public boolean isDebugHiveMemberHighlightEnabled() {
-        var properties = AVP.HIVES_CONFIG.properties();
-        return properties.getOrThrow(ConfigProperties.HIVE_DEBUG_HIGHLIGHT_ALL_MEMBERS);
+        return AVP.config.hiveConfigs.HIVE_DEBUG_HIGHLIGHT_ALL_MEMBERS;
     }
 
     public boolean isDebugLeaderHighlightEnabled() {
-        var properties = AVP.HIVES_CONFIG.properties();
-        return properties.getOrThrow(ConfigProperties.HIVE_DEBUG_HIGHLIGHT_LEADER);
+        return AVP.config.hiveConfigs.HIVE_DEBUG_HIGHLIGHT_LEADER;
     }
 
     public boolean isDebugMarkHiveCenterEnabled() {
-        var properties = AVP.HIVES_CONFIG.properties();
-        return properties.getOrThrow(ConfigProperties.HIVE_DEBUG_MARK_HIVE_CENTER);
+        return AVP.config.hiveConfigs.HIVE_DEBUG_MARK_HIVE_CENTER;
     }
 }

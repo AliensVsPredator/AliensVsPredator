@@ -2,7 +2,7 @@ package com.avp.common.entity;
 
 import net.minecraft.world.entity.MobCategory;
 
-public class AVPMobCategories {
+public record AVPMobCategories() {
 
     static {
         // Ensure class is loaded before the category is accessed.

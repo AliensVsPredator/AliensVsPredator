@@ -1,20 +1,16 @@
 package com.avp.common.entity.constant;
 
-public class ArmorConstants {
+public record ArmorConstants() {
 
-    public static final double DRONE_ARMOR = 4.0;
+    public static final float DRONE_ARMOR = 4.0F;
 
-    public static final double PRAETORIAN_ARMOR = 12.0;
+    public static final float PRAETORIAN_ARMOR = 12.0F;
 
-    public static final double QUEEN_ARMOR = 16.0;
+    public static final float QUEEN_ARMOR = 16.0F;
 
-    public static final double WARRIOR_ARMOR = 8.0;
+    public static final float WARRIOR_ARMOR = 8.0F;
 
-    public static final double YAUTJA_ARMOR = 16.0;
+    public static final float YAUTJA_ARMOR = 16.0F;
 
-    public static final double MARINE_ARMOR = 2.0;
-
-    private ArmorConstants() {
-        throw new UnsupportedOperationException();
-    }
+    public static final float MARINE_ARMOR = 2.0F;
 }

@@ -1,28 +1,24 @@
 package com.avp.common.entity.constant;
 
-public class HealthConstants {
+public record HealthConstants() {
 
     // Basic measurements (in terms of half-hearts).
-    public static final double PLAYER_HEALTH = 20;
+    public static final float PLAYER_HEALTH = 20F;
 
     // Alien measurements (in terms of half-hearts).
-    public static final double CHESTBURSTER_HEALTH = PLAYER_HEALTH * 0.25;
+    public static final float CHESTBURSTER_HEALTH = PLAYER_HEALTH * 0.25F;
 
-    public static final double DRONE_HEALTH = PLAYER_HEALTH * 2;
+    public static final float DRONE_HEALTH = PLAYER_HEALTH * 2F;
 
-    public static final double FACEHUGGER_HEALTH = PLAYER_HEALTH * 0.15;
+    public static final float FACEHUGGER_HEALTH = PLAYER_HEALTH * 0.15F;
 
-    public static final double OVAMORPH_HEALTH = PLAYER_HEALTH * 1.5;
+    public static final float OVAMORPH_HEALTH = PLAYER_HEALTH * 1.5F;
 
-    public static final double PRAETORIAN_HEALTH = PLAYER_HEALTH * 5;
+    public static final float PRAETORIAN_HEALTH = PLAYER_HEALTH * 5F;
 
-    public static final double QUEEN_HEALTH = PLAYER_HEALTH * 10;
+    public static final float QUEEN_HEALTH = PLAYER_HEALTH * 10F;
 
-    public static final double WARRIOR_HEALTH = PLAYER_HEALTH * 3;
+    public static final float WARRIOR_HEALTH = PLAYER_HEALTH * 3F;
 
-    public static final double YAUTJA_HEALTH = PLAYER_HEALTH * 10;
-
-    private HealthConstants() {
-        throw new UnsupportedOperationException();
-    }
+    public static final float YAUTJA_HEALTH = PLAYER_HEALTH * 10F;
 }

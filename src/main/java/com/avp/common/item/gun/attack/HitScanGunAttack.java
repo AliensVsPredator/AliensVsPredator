@@ -24,7 +24,6 @@ import java.util.ArrayList;
 
 import com.avp.AVP;
 import com.avp.common.block.AVPBlockTags;
-import com.avp.common.config.ConfigProperties;
 import com.avp.common.damage.AVPDamageTypes;
 import com.avp.common.network.ServerNetworking;
 import com.avp.common.network.packet.S2CBulletHitBlockPayload;
@@ -161,7 +160,7 @@ public class HitScanGunAttack extends AbstractGunAttack {
     }
 
     private void damageBlock(@NotNull Level level, BlockPos blockPos) {
-        if (!AVP.WEAPONS_CONFIG.properties().getOrThrow(ConfigProperties.BULLETS_DAMAGE_BLOCKS_ENABLED)) {
+        if (!AVP.config.weaponConfigs.BULLETS_DAMAGE_BLOCKS_ENABLED) {
             return;
         }
 

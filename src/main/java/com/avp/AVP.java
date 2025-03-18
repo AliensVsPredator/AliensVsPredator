@@ -1,14 +1,19 @@
 package com.avp;
 
+import com.avp.common.config.*;
 import com.avp.common.recipe.AVPRecipes;
 import com.avp.common.effect.AVPEffects;
 import com.avp.common.worldgen.biome.AVPBiomes;
+import mod.azure.azurelib.common.api.common.config.Config;
+import mod.azure.azurelib.common.internal.common.AzureLib;
+import mod.azure.azurelib.common.internal.common.config.ConfigHolder;
+import mod.azure.azurelib.common.internal.common.config.ConfigHolderRegistry;
+import mod.azure.azurelib.common.internal.common.config.format.ConfigFormats;
+import mod.azure.azurelib.common.internal.common.config.format.IConfigFormatHandler;
+import mod.azure.azurelib.common.internal.common.config.io.ConfigIO;
 import net.fabricmc.api.ModInitializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.HashMap;
-import java.util.Map;
 
 import com.avp.common.block.AVPBlocks;
 import com.avp.common.block.CompostingChanceRegistry;
@@ -19,14 +24,6 @@ import com.avp.common.block.entity.BlockEntityTypes;
 import com.avp.common.block_item.AVPBlockItems;
 import com.avp.common.command.Commands;
 import com.avp.common.component.DataComponents;
-import com.avp.common.config.Config;
-import com.avp.common.config.ConfigContainer;
-import com.avp.common.config.ConfigProperties;
-import com.avp.common.config.Configs;
-import com.avp.common.config.io.ConfigLoader;
-import com.avp.common.config.io.ConfigSaver;
-import com.avp.common.config.template.ConfigTemplate;
-import com.avp.common.config.template.ConfigTemplates;
 import com.avp.common.creative_mode_tab.initializer.BlocksCreativeModeTabInitializer;
 import com.avp.common.creative_mode_tab.initializer.ColoredBlocksCreativeModeTabInitializer;
 import com.avp.common.creative_mode_tab.initializer.CombatCreativeModeTabInitializer;
@@ -56,26 +53,12 @@ public class AVP implements ModInitializer {
 
     public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
 
-    public static final Map<String, ConfigContainer> CONFIGS = new HashMap<>();
-
-    public static final Config HIVES_CONFIG;
-
-    public static final Config SPAWNING_CONFIG;
-
-    public static final Config STATS_CONFIG;
-
-    public static final Config WEAPONS_CONFIG;
-
-    static {
-        HIVES_CONFIG = loadConfig(Configs.HIVES, ConfigTemplates.HIVES);
-        SPAWNING_CONFIG = loadConfig(Configs.SPAWNING, ConfigTemplates.SPAWNING);
-        STATS_CONFIG = loadConfig(Configs.STATS, ConfigTemplates.STATS);
-        WEAPONS_CONFIG = loadConfig(Configs.WEAPONS, ConfigTemplates.WEAPONS);
-    }
+    public static AVPConfig config;
 
     @Override
     public void onInitialize() {
-        ConfigProperties.initialize();
+        AzureLib.initialize();
+        config = registerConfig(AVPConfig.class, ConfigFormats.json()).getConfigInstance();
 
         // Core
         BlockEntityTypes.initialize();
@@ -118,16 +101,35 @@ public class AVP implements ModInitializer {
         Commands.initialize();
     }
 
-    private static Config loadConfig(Config base, ConfigTemplate template) {
-        var name = base.name();
-        var loadedConfig = ConfigLoader.load(name)
-            .orElse(Config.empty(name));
-        var mergedConfig = base.merge(loadedConfig);
-
-        ConfigSaver.save(mergedConfig, template);
-
-        CONFIGS.put(mergedConfig.name(), new ConfigContainer(base, mergedConfig, template));
-
-        return mergedConfig;
+    /**
+     * Registers your config class. Config will be immediately loaded upon calling.
+     *
+     * @param configClass   Your config class
+     * @param formatFactory File format to be used by this config class. You can use values from {@link ConfigFormats}
+     *                      for example.
+     * @param <C>           Config type
+     * @return Config holder containing your config instance. You obtain it by calling
+     *         {@link ConfigHolder#getConfigInstance()} method.
+     */
+    public static <C> ConfigHolder<C> registerConfig(Class<C> configClass, IConfigFormatHandler formatFactory) {
+        var config = configClass.getAnnotation(Config.class);
+        if (config == null) {
+            throw new IllegalArgumentException("Config class must be annotated with '@Config' annotation");
+        }
+        var id = config.id();
+        var filename = config.filename();
+        if (filename.isEmpty()) {
+            filename = id;
+        }
+        var group = config.group();
+        if (group.isEmpty()) {
+            group = id;
+        }
+        var holder = new ConfigHolder<>(configClass, id, filename, group, formatFactory);
+        ConfigHolderRegistry.registerConfig(holder);
+        if (configClass.getAnnotation(Config.NoAutoSync.class) == null) {
+            ConfigIO.FILE_WATCH_MANAGER.addTrackedConfig(holder);
+        }
+        return holder;
     }
 }

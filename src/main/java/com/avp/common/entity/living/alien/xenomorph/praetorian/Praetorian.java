@@ -12,17 +12,11 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import com.avp.AVP;
-import com.avp.common.config.ConfigProperties;
 import com.avp.common.entity.living.alien.xenomorph.Xenomorph;
 import com.avp.common.entity.type.AVPEntityTypes;
 import com.avp.common.util.resin.ResinData;
 
 public class Praetorian extends Xenomorph {
-
-    public static AttributeSupplier.Builder createPraetorianAttributes() {
-        var container = ConfigProperties.PRAETORIAN_ATTRIBUTES;
-        return container.applyFrom(AVP.STATS_CONFIG, Monster.createMonsterAttributes());
-    }
 
     private final PraetorianAnimationDispatcher animationDispatcher;
 
@@ -31,10 +25,18 @@ public class Praetorian extends Xenomorph {
         this.animationDispatcher = new PraetorianAnimationDispatcher(this);
     }
 
+    public static AttributeSupplier.Builder createPraetorianAttributes() {
+        return applyFrom(AVP.config.statsConfigs.PRAETORIAN_STATS, Monster.createMonsterAttributes());
+    }
+
     @Override
     protected @NotNull ResinData createResinData() {
-        var container = AVP.STATS_CONFIG.properties();
-        return new ResinData(0, 64, 1, container.getOrDefault(ConfigProperties.PRAETORIAN_NEST_TICKRATE, 80));
+        return new ResinData(0, 64, 1, AVP.config.statsConfigs.PRAETORIAN_STATS.nestTickrate);
+    }
+
+    @Override
+    protected float getHealthRegenPerSecond() {
+        return AVP.config.statsConfigs.PRAETORIAN_STATS.healthRegenPerSecond;
     }
 
     @Override

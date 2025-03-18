@@ -3,12 +3,12 @@ package com.avp.common.entity.living.yautja;
 import com.avp.common.ai.goal.combat.DelayedAttackGoal;
 import com.avp.common.ai.goal.combat.FleeFightGoal;
 import com.avp.common.ai.goal.combat.UseItemGoal;
-import com.avp.common.entity.living.human.marine.MarineAnimationDispatcher;
+import com.avp.common.config.AVPConfig;
 import com.avp.common.item.AVPItems;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
-import net.minecraft.world.entity.ai.goal.MeleeAttackGoal;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.WaterAvoidingRandomStrollGoal;
 import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
@@ -20,7 +20,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
 import com.avp.AVP;
-import com.avp.common.config.ConfigProperties;
 import com.avp.common.entity.living.alien.Alien;
 import net.minecraft.world.level.ServerLevelAccessor;
 import org.jetbrains.annotations.Nullable;
@@ -30,8 +29,7 @@ public class Yautja extends Monster {
     private final YautjaAnimationDispatcher animationDispatcher;
 
     public static AttributeSupplier.Builder createYautjaAttributes() {
-        var container = ConfigProperties.YAUTJA_ATTRIBUTES;
-        return container.applyFrom(AVP.STATS_CONFIG, Monster.createMonsterAttributes());
+        return applyFrom(AVP.config.statsConfigs.YAUTJA_STATS, Monster.createMonsterAttributes());
     }
 
     public Yautja(EntityType<? extends Yautja> entityType, Level level) {
@@ -52,16 +50,14 @@ public class Yautja extends Monster {
 
     public void runAttackAnimations() {
         animationDispatcher.rightShoot();
-    };
+    }
 
     @Override
     public void tick() {
         super.tick();
 
-        if (!level().isClientSide) {
-            if (getVehicle() instanceof Boat || getVehicle() instanceof Minecart) {
-                stopRiding();
-            }
+        if (!level().isClientSide && (getVehicle() instanceof Boat || getVehicle() instanceof Minecart)) {
+            stopRiding();
         }
     }
 
@@ -83,5 +79,17 @@ public class Yautja extends Monster {
         }
 
         return super.finalizeSpawn(serverLevelAccessor, difficultyInstance, mobSpawnType, spawnGroupData);
+    }
+
+    public static AttributeSupplier.Builder applyFrom(AVPConfig.StatsConfigs.AdvancedStats config, AttributeSupplier.Builder builder) {
+        builder.add(Attributes.ARMOR, config.armor);
+        builder.add(Attributes.ARMOR_TOUGHNESS, config.armorToughness);
+        builder.add(Attributes.ATTACK_DAMAGE, config.attackDamage);
+        builder.add(Attributes.FOLLOW_RANGE, config.followRange);
+        builder.add(Attributes.KNOCKBACK_RESISTANCE, config.knockbackResistance);
+        builder.add(Attributes.MAX_HEALTH, config.health);
+        builder.add(Attributes.MOVEMENT_SPEED, config.moveSpeed);
+
+        return builder;
     }
 }

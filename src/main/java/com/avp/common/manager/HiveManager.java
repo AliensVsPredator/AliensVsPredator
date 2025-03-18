@@ -7,7 +7,6 @@ import org.jetbrains.annotations.Nullable;
 import java.util.UUID;
 
 import com.avp.AVP;
-import com.avp.common.config.ConfigProperties;
 import com.avp.common.entity.AVPEntityTypeTags;
 import com.avp.common.entity.living.alien.Alien;
 import com.avp.common.hive.Hive;
@@ -83,8 +82,7 @@ public class HiveManager {
         }
 
         if (nearestHive != null) {
-            var properties = AVP.HIVES_CONFIG.properties();
-            var minimumDistance = properties.getOrThrow(ConfigProperties.MINIMUM_DISTANCE_BETWEEN_HIVES_IN_BLOCKS);
+            var minimumDistance = AVP.config.hiveConfigs.MINIMUM_DISTANCE_BETWEEN_HIVES_IN_BLOCKS;
             var minimumDistanceSquared = minimumDistance * minimumDistance;
             var hivePos = nearestHive.centerPosition();
             var distanceFromHiveCenterSquared = alien.distanceToSqr(hivePos.getX(), hivePos.getY(), hivePos.getZ());

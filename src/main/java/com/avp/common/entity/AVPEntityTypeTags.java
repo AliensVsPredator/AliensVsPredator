@@ -6,7 +6,7 @@ import net.minecraft.world.entity.EntityType;
 
 import com.avp.AVPResources;
 
-public class AVPEntityTypeTags {
+public record AVPEntityTypeTags() {
 
     public static final TagKey<EntityType<?>> IRRAIATED_ALIENS = create("irraiated_aliens");
 

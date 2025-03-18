@@ -1,25 +1,21 @@
 package com.avp.common.entity.constant;
 
-public class KnockbackResistanceConstants {
+public record KnockbackResistanceConstants() {
 
     // Alien measurements (normalized values).
-    public static final double CHESTBURSTER_KNOCKBACK_RESISTANCE = 0;
+    public static final float CHESTBURSTER_KNOCKBACK_RESISTANCE = 0;
 
-    public static final double DRONE_KNOCKBACK_RESISTANCE = 0.3;
+    public static final float DRONE_KNOCKBACK_RESISTANCE = 0.3f;
 
-    public static final double FACEHUGGER_KNOCKBACK_RESISTANCE = 0;
+    public static final float FACEHUGGER_KNOCKBACK_RESISTANCE = 0f;
 
-    public static final double OVAMORPH_KNOCKBACK_RESISTANCE = 1;
+    public static final float OVAMORPH_KNOCKBACK_RESISTANCE = 1f;
 
-    public static final double PRAETORIAN_KNOCKBACK_RESISTANCE = 0.7;
+    public static final float PRAETORIAN_KNOCKBACK_RESISTANCE = 0.7f;
 
-    public static final double QUEEN_KNOCKBACK_RESISTANCE = 1;
+    public static final float QUEEN_KNOCKBACK_RESISTANCE = 1f;
 
-    public static final double WARRIOR_KNOCKBACK_RESISTANCE = 0.5;
+    public static final float WARRIOR_KNOCKBACK_RESISTANCE = 0.5f;
 
-    public static final double YAUTJA_KNOCKBACK_RESISTANCE = 1;
-
-    private KnockbackResistanceConstants() {
-        throw new UnsupportedOperationException();
-    }
+    public static final float YAUTJA_KNOCKBACK_RESISTANCE = 1f;
 }

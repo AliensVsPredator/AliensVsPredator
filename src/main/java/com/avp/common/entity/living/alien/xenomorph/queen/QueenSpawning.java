@@ -1,7 +1,5 @@
 package com.avp.common.entity.living.alien.xenomorph.queen;
 
-import com.avp.common.entity.living.alien.AlienSpawning;
-import com.avp.common.entity.living.alien.xenomorph.warrior.Warrior;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.EntityType;
@@ -13,7 +11,6 @@ import net.minecraft.world.level.entity.EntityTypeTest;
 
 import com.avp.AVP;
 import com.avp.common.block.AVPBlockTags;
-import com.avp.common.config.ConfigProperties;
 import com.avp.common.util.AVPPredicates;
 
 public class QueenSpawning {
@@ -25,9 +22,8 @@ public class QueenSpawning {
         blockPos,
         randomSource
     ) -> {
-        var properties = AVP.SPAWNING_CONFIG.properties();
-        var maxY = properties.getOrThrow(ConfigProperties.QUEEN_SPAWNING.mobSpawning().maxY());
-        var requiresResin = properties.getOrThrow(ConfigProperties.QUEEN_SPAWNING.requiresResin());
+        var maxY = AVP.config.spawnConfigs.QUEEN_SPAWN.maxY;
+        var requiresResin = AVP.config.spawnConfigs.QUEEN_SPAWN.requiresResin;
         var isValidSpawn = !requiresResin || serverLevelAccessor.getBlockState(blockPos.below()).is(AVPBlockTags.RESIN);
 
         return blockPos.getY() <= maxY &&
@@ -42,9 +38,8 @@ public class QueenSpawning {
             blockPos,
             randomSource
     ) -> {
-        var properties = AVP.SPAWNING_CONFIG.properties();
-        var maxY = properties.getOrThrow(ConfigProperties.NETHER_QUEEN_SPAWNING.mobSpawning().maxY());
-        var requiresResin = properties.getOrThrow(ConfigProperties.NETHER_QUEEN_SPAWNING.requiresResin());
+        var maxY = AVP.config.spawnConfigs.NETHER_QUEEN_SPAWN.maxY;
+        var requiresResin = AVP.config.spawnConfigs.NETHER_QUEEN_SPAWN.requiresResin;
         var isValidSpawn = !requiresResin || serverLevelAccessor.getBlockState(blockPos.below()).is(AVPBlockTags.RESIN);
 
         return blockPos.getY() <= maxY &&
@@ -59,8 +54,7 @@ public class QueenSpawning {
         BlockPos blockPos,
         RandomSource randomSource
     ) {
-        var properties = AVP.HIVES_CONFIG.properties();
-        var minimumDistanceBetweenHivesInBlocks = properties.getOrThrow(ConfigProperties.MINIMUM_DISTANCE_BETWEEN_HIVES_IN_BLOCKS);
+        var minimumDistanceBetweenHivesInBlocks = AVP.config.hiveConfigs.MINIMUM_DISTANCE_BETWEEN_HIVES_IN_BLOCKS;
 
         return Monster.checkMonsterSpawnRules(
             entityType,
