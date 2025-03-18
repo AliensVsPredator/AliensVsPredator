@@ -21,7 +21,7 @@ public class Commands {
                             .then(NearestHiveCommand.create())
                     )
                     .then(
-                        net.minecraft.commands.Commands.literal("test")
+                        net.minecraft.commands.Commands.literal("nuke")
                             .requires(
                                 commandSourceStack -> commandSourceStack.hasPermission(net.minecraft.commands.Commands.LEVEL_GAMEMASTERS)
                             )
