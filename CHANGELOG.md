@@ -10,6 +10,41 @@
     - Armor Toughness
     - Attack Damage
     - Move Speed
+- Added Ferroaluminum, Steel, Titanium Doors, Trapdoors, buttons, pressure plates, slabs, and stairs  (Credit to Small_chubby)
+- Added in Royal Jelly block.
+- Added in Royal Jelly block recipes. 9 raw Royal Jelly to 1 block and 1 block is 9 raw Royal Jelly.
+- Added in Royal Jelly can now evolve the aliens.
+- Added in Poison Jelly, this can stop aliens from evolving.
+- Added base nuke block with config to enable TNT like system.
+- Added Trinitite block.
+- Added Grenades
+  - Normal
+  - Incendiary
+  - Irradiated
+- Added Marines
+  - Can spawn with Iron Armor
+  - Can spawn with Weapons and grenades (grenades not yet useable by Marines)
+- Added in Marine camp that generates in grassy biomes and spawns marines.
+- Marines added as vaild Humonaid host.
+- Added lifecycle growth timer configs.
+- Predators now can get their own Mob Category/spawn cap.
+- Added camo variant of Tactical Camo.
+- Added in Industrial Furance, that is 2x faster and has extra recipes.
+- Added in Nether and Aberrant Queen variants.
+- Added in Radiation effect that damages and affects in stages, getting worse the higher the stage.
+- Added in Nuked Biome.
+  - Creepers spawn in powered.
+  - 10% chance Aliens (not Queens) can be mutated if in nuked biomes, turning irradiated.
+  - Can spawn Husks and Strays.
+- Radiation now added to nuke biomes.
+- Added in Shurkien.
+- Added in Smart disc.
+- Added in mostly finished Russian/Ukrainian langs (Credit to GræyBMW)
+- Added in templates for Chinese, French, Korean, and Spanish, with PRs welcomes for those.
+- Irradiated aliens don't evolve.
+- Added in default tag for aliens to not need oxygen with the mod Stellaris
+- Added in Aberrant and Irradiated resin blocks and items.
+- Irradiated items and blocks give off radiation now.
 
 ## Changes
 - Acid's maximum multiplier has been reduced from 10 to 5.
@@ -18,9 +53,31 @@
 - LEDs now only accept industrial glass panes and not industrial glass blocks in recipe.
 - LED Displays now only accept industrial glass panes and not industrial glass blocks in recipe.
 - Transistors now only accept industrial glass panes and not industrial glass blocks in recipe.
+- Ammo now takes nuggets instead of ingots.
+- Facehugger death animation changed.
+- Configuration system rewritten, now supports Mod Menu for changing in game and syncing from servers.
+- Casing textures updated.
+- Hives can only generate 1 Queen
+- Queens that aren't hive leaders make a new hive.
+- Weapon animations started (Heavy WIP).
+- Now requires latest Azurelib 3.0.9.
+- Nukes now make an area a Nuked Biome.
+- Aliens, Yautja, and Marines flee a fight at half health.
+- Yautja now spawn with a Shurkien or Smart disc and use them.
+- Hives/Aliens now ignore creepers.
+- Nuked biomes now extend 2 chunks past the crater.
+- New textures/models for Drones, Warriors, and Praetorians.
+- Renamed nuke command from `test` to `nuke`.
+- Removed config command, no longer needed.
+- Aliens no longer require resin for targeting mobs.
 
 ## Fixes
-- N/A.
+- Steel bars have proper block properties.
+- Chain fences have proper block properties.
+- Razor wire missing tool (Shears).
+- Facehuggers jumping between hosts.
+- 3rd person view fixed on Flamethrower, Smartgun, Old Painless.
+- Xenos can't spawn between Aberrant and Irraiated now.
 
 ## Data Pack
 - Added `industrial_glass_block` block tag.
@@ -29,6 +86,8 @@
 - Added `industrial_glass_block` item tag.
 - Added `industrial_glass_pane` item tag.
 - The `industrial_glass` item tag is now composed of `industrial_glass_block` and `industrial_glass_pane` item tags.
+- Added `radiation_resistant` entity tag.
+- Added `radiation_resistant_armor` item tag for armor that can keep you from getting radiation effect. Currently just MK50.
 
 # v0.0.17-beta
 
