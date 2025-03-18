@@ -4,8 +4,6 @@ import com.avp.common.effect.AVPEffects;
 import com.avp.common.item.AVPItemTags;
 import com.avp.common.util.AVPPredicates;
 import net.minecraft.core.BlockPos;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.util.RandomSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
