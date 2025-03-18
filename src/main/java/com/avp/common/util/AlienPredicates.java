@@ -25,9 +25,7 @@ public class AlienPredicates {
             return AVPPredicates.areAliensEnemies(alien, potentialAlienTarget);
         }
 
-        var resinStanceCheck = potentialTarget instanceof Player || isStandingOnResin(potentialTarget);
-
-        return potentialTarget instanceof Yautja || resinStanceCheck || isTargetingHiveMember(alien, potentialTarget);
+        return potentialTarget instanceof Yautja || isTargetingHiveMember(alien, potentialTarget) || isValidTarget(potentialTarget);
     }
 
     public static boolean isValidTarget(@NotNull LivingEntity potentialTarget) {
