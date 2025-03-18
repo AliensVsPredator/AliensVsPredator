@@ -29,7 +29,7 @@ public class ItemGoalUtil {
                 );
         if (!entity.level().isClientSide && entity.getTarget() != null) {
             var targetX = entity.getTarget().getX();
-            var targetY = entity.getTarget().getY(0.5);
+            var targetY = entity.getTarget().getY(1.0);
             var targetZ = entity.getTarget().getZ();
             var sourceX = entity.getX();
             var sourceY = entity.getY(0.5);
