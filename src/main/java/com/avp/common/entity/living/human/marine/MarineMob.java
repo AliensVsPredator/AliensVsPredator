@@ -59,7 +59,9 @@ public class MarineMob extends AbstractHumanMob {
                         this,
                         LivingEntity.class,
                         false,
-                        target -> (this.getLastAttacker() != null && this.getLastAttacker().is(target)) || target instanceof Alien
+                        target -> (this.getLastAttacker() != null && (this.getLastAttacker().is(target)
+                                || !(this.getLastAttacker() instanceof MarineMob)))
+                                || target instanceof Alien
                 )
         );
     }
