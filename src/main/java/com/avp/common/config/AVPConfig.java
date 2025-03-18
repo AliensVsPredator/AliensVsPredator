@@ -351,7 +351,7 @@ public class AVPConfig {
             @Configurable
             @Configurable.Synchronized
             @Configurable.Comment("The entity's armor value.")
-            public Float armor;
+            public float armor;
 
             @Configurable
             @Configurable.Synchronized
