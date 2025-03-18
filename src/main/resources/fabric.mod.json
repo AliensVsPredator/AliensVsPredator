@@ -2,7 +2,7 @@
 	"schemaVersion": 1,
 	"id": "avp",
 	"version": "${version}",
-	"name": "avp",
+	"name": "Alien VS Predator",
 	"description": "Adds a variety of content from both the Alien and Predator franchises!",
 	"accessWidener": "avp.accesswidener",
 	"authors": [
@@ -19,8 +19,8 @@
 		"Xavier"
 	],
 	"contact": {
-		"homepage": "https://fabricmc.net/",
-		"sources": "https://github.com/FabricMC/fabric-example-mod"
+		"homepage": "https://www.curseforge.com/minecraft/mc-mods/avp-regenesis",
+		"sources": "https://github.com/AliensVsPredator/AliensVsPredator"
 	},
 	"license": "CC0-1.0",
 	"icon": "assets/avp/icon.png",
@@ -44,9 +44,6 @@
 		"minecraft": "~1.21.1",
 		"java": ">=21",
 		"fabric-api": "*",
-		"azurelib": "~3.0.6"
-	},
-	"suggests": {
-		"another-mod": "*"
+		"azurelib": ">=3.0.6"
 	}
 }
