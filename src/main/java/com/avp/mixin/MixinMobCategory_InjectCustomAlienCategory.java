@@ -1,5 +1,6 @@
 package com.avp.mixin;
 
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.world.entity.MobCategory;
 import org.objectweb.asm.Opcodes;
 import org.spongepowered.asm.mixin.Final;
@@ -44,20 +45,23 @@ public abstract class MixinMobCategory_InjectCustomAlienCategory {
         )
     )
     private static void addCustomMobCategory(CallbackInfo ci) {
-        if (!AVP.config.spawnConfigs.ALIEN_CUSTOM_MOB_CATEGORY_ENABLED) {
-            return;
-        }
+        if (FabricLoader.getInstance().isModLoaded("AzureLib")) {
+            if (!AVP.config.spawnConfigs.ALIEN_CUSTOM_MOB_CATEGORY_ENABLED) {
+                return;
+            }
 
-        var alienSpawnLimit = AVP.config.spawnConfigs.ALIEN_CUSTOM_MOB_CATEGORY_LIMIT;
-        var predatorSpawnLimit = AVP.config.spawnConfigs.PREDATOR_CUSTOM_MOB_CATEGORY_LIMIT;
-        var categories = new ArrayList<>(Arrays.asList($VALUES));
-        var last = categories.get(categories.size() - 1);
-        var alien = newMobCategory("ALIENS", last.ordinal() + 1, "alien", alienSpawnLimit, false, false, 128);
-        var predator = newMobCategory("PREDATOR", last.ordinal() + 1, "predator", predatorSpawnLimit, false, false, 128);
-        AVPMobCategories.ALIENS = alien;
-        AVPMobCategories.PREDATOR = predator;
-        categories.add(alien);
-        categories.add(predator);
-        $VALUES = categories.toArray(new MobCategory[0]);
+            var alienSpawnLimit = AVP.config.spawnConfigs.ALIEN_CUSTOM_MOB_CATEGORY_LIMIT;
+            var predatorSpawnLimit = AVP.config.spawnConfigs.PREDATOR_CUSTOM_MOB_CATEGORY_LIMIT;
+            var categories = new ArrayList<>(Arrays.asList($VALUES));
+            var last = categories.get(categories.size() - 1);
+            var alien = newMobCategory("ALIENS", last.ordinal() + 1, "alien", alienSpawnLimit, false, false, 128);
+            var predator = newMobCategory("PREDATOR", last.ordinal() + 1, "predator", predatorSpawnLimit, false, false,
+                    128);
+            AVPMobCategories.ALIENS = alien;
+            AVPMobCategories.PREDATOR = predator;
+            categories.add(alien);
+            categories.add(predator);
+            $VALUES = categories.toArray(new MobCategory[0]);
+        }
     }
 }
