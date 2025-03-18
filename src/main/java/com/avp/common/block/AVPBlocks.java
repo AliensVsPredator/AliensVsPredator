@@ -96,8 +96,7 @@ public class AVPBlocks {
     public static final Block FERROALUMINUM_BLOCK = register(BlockProperties.FERROALUMINUM, "ferroaluminum_block");
 
     public static final Block FERROALUMINUM_CHAIN_FENCE = register(
-        // FIXME:
-        new IronBarsBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_BARS).sound(SoundType.CHAIN)),
+        new IronBarsBlock(BlockProperties.FERROALUMINUM_BARS.sound(SoundType.CHAIN)),
         "ferroaluminum_chain_fence"
     );
 
@@ -192,16 +191,14 @@ public class AVPBlocks {
     );
 
     public static final Block STEEL_BARS = register(
-        // FIXME:
-        new IronBarsBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_BARS)),
+        new IronBarsBlock(BlockProperties.STEEL_BARS),
         "steel_bars"
     );
 
     public static final Block STEEL_BLOCK = register(BlockProperties.STEEL, "steel_block");
 
     public static final Block STEEL_CHAIN_FENCE = register(
-        // FIXME:
-        new IronBarsBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_BARS).sound(SoundType.CHAIN)),
+        new IronBarsBlock(BlockProperties.STEEL_BARS.sound(SoundType.CHAIN)),
         "steel_chain_fence"
     );
 
@@ -224,8 +221,7 @@ public class AVPBlocks {
     public static final Block TITANIUM_BLOCK = register(BlockProperties.TITANIUM, "titanium_block");
 
     public static final Block TITANIUM_CHAIN_FENCE = register(
-        // FIXME:
-        new IronBarsBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_BARS).sound(SoundType.CHAIN)),
+        new IronBarsBlock(BlockProperties.TITANIUM_BARS.sound(SoundType.CHAIN)),
         "titanium_chain_fence"
     );
 

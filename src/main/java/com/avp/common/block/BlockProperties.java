@@ -19,6 +19,30 @@ import com.avp.common.entity.AVPEntityTypeTags;
 
 public class BlockProperties {
 
+    public static final BlockBehaviour.Properties STEEL_BARS = BlockBehaviour.Properties.of()
+            .instrument(NoteBlockInstrument.IRON_XYLOPHONE)
+            .mapColor(MapColor.COLOR_GRAY)
+            .requiresCorrectToolForDrops()
+            .sound(SoundType.COPPER)
+            .strength(6, 7)
+            .noOcclusion();
+
+    public static final BlockBehaviour.Properties TITANIUM_BARS = BlockBehaviour.Properties.of()
+            .instrument(NoteBlockInstrument.IRON_XYLOPHONE)
+            .mapColor(MapColor.SAND)
+            .requiresCorrectToolForDrops()
+            .sound(SoundType.COPPER)
+            .strength(7, 8)
+            .noOcclusion();
+
+    public static final BlockBehaviour.Properties FERROALUMINUM_BARS = BlockBehaviour.Properties.of()
+            .instrument(NoteBlockInstrument.IRON_XYLOPHONE)
+            .mapColor(MapColor.COLOR_GRAY)
+            .requiresCorrectToolForDrops()
+            .sound(SoundType.COPPER)
+            .strength(5.5F, 5.5F)
+            .noOcclusion();
+
     public static final BlockBehaviour.Properties TRINITITE = BlockBehaviour.Properties.of()
             .instrument(NoteBlockInstrument.HAT)
             .strength(0.3F)
