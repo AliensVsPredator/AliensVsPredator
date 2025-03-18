@@ -14,15 +14,13 @@
     "MixinMob_IncapacitateHost",
     "MixinMobCategory_InjectCustomAlienCategory",
     "MixinShearsItem",
-    "MixinVillagerHostilesSensor_RunAwayFromAVPMonsters"
+    "MixinVillagerHostilesSensor_RunAwayFromAVPMonsters",
+    "server.MixinServerLevel_RunTickRoutines"
   ],
   "client": [
     "client.MixinGui_CrosshairPickEntityWithinGunRange",
     "client.MixinItemInHandRenderer_AdjustHandRenderingForGun",
     "client.MixinPlayerRenderer_AdjustArmPoseForGun"
-  ],
-  "server": [
-    "server.MixinServerLevel_RunTickRoutines"
   ],
   "injectors": {
     "defaultRequire": 1
