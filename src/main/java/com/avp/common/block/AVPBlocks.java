@@ -1,5 +1,6 @@
 package com.avp.common.block;
 
+import com.avp.common.block.resin.*;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.util.ColorRGBA;
@@ -15,7 +16,6 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import com.avp.AVPResources;
-import com.avp.common.block.resin.ResinVeinBlock;
 import net.minecraft.world.level.block.state.properties.BlockSetType;
 
 public class AVPBlocks {
@@ -160,13 +160,13 @@ public class AVPBlocks {
 
     public static final Block ABERRANT_RESIN_WEB = register(new ResinWebBlock(BlockProperties.NETHER_RESIN_WEB), "aberrant_resin_web");
 
-    public static final Block IRRADIATED_RESIN = register(new ResinBlock(BlockProperties.NETHER_RESIN), "irradiated_resin");
+    public static final Block IRRADIATED_RESIN = register(new IrradiatedResinBlock(BlockProperties.NETHER_RESIN), "irradiated_resin");
 
-    public static final Block IRRADIATED_RESIN_NODE = register(new ResinNodeBlock(BlockProperties.RESIN), "irradiated_resin_node");
+    public static final Block IRRADIATED_RESIN_NODE = register(new IrradiatedResinNodeBlock(BlockProperties.RESIN), "irradiated_resin_node");
 
-    public static final Block IRRADIATED_RESIN_VEIN = register(new ResinVeinBlock(BlockProperties.NETHER_RESIN_VEIN), "irradiated_resin_vein");
+    public static final Block IRRADIATED_RESIN_VEIN = register(new IrradiatedResinVeinBlock(BlockProperties.NETHER_RESIN_VEIN), "irradiated_resin_vein");
 
-    public static final Block IRRADIATED_RESIN_WEB = register(new ResinWebBlock(BlockProperties.NETHER_RESIN_WEB), "irradiated_resin_web");
+    public static final Block IRRADIATED_RESIN_WEB = register(new IrradiatedResinWebBlock(BlockProperties.NETHER_RESIN_WEB), "irradiated_resin_web");
 
     public static final Block RAW_BAUXITE_BLOCK = register(BlockProperties.BAUXITE_ORE, "raw_bauxite_block");
 

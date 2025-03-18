@@ -1,4 +1,4 @@
-package com.avp.common.block;
+package com.avp.common.block.resin;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;

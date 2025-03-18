@@ -1,4 +1,4 @@
-package com.avp.common.block;
+package com.avp.common.block.resin;
 
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
