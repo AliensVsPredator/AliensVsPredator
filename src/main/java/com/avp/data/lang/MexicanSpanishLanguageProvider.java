@@ -241,7 +241,7 @@ public class MexicanSpanishLanguageProvider extends FabricLanguageProvider {
         translationBuilder.add(AVPBlocks.FERROALUMINUM_SIDING_SLAB, "Ferroaluminum Siding Slab");
         translationBuilder.add(AVPBlocks.FERROALUMINUM_SIDING_STAIRS, "Ferroaluminum Siding Stairs");
         translationBuilder.add(AVPBlocks.STEEL_SIDING_SLAB, "Steel Siding Slab");
-        translationBuilder.add(AVPBlocks.STEEL_SIDING_STAIRS, "Titanium Siding Stairs");
+        translationBuilder.add(AVPBlocks.STEEL_SIDING_STAIRS, "Steel Siding Stairs");
         translationBuilder.add(AVPBlocks.TITANIUM_SIDING_SLAB, "Titanium Siding Slab");
         translationBuilder.add(AVPBlocks.TITANIUM_SIDING_STAIRS, "Titanium Siding Stairs");
         translationBuilder.add(AVPBlocks.STEEL_STANDING_SLAB, "Steel Standing Slab");

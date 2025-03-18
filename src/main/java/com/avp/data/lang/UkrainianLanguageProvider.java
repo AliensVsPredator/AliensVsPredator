@@ -237,7 +237,7 @@ public class UkrainianLanguageProvider extends FabricLanguageProvider {
         translationBuilder.add(AVPBlocks.FERROALUMINUM_SIDING_SLAB, "Фероалюмінієва бокова плита");
         translationBuilder.add(AVPBlocks.FERROALUMINUM_SIDING_STAIRS, "Фероалюмінієві бокові сходи");
         translationBuilder.add(AVPBlocks.STEEL_SIDING_SLAB, "Сталева бокова плита");
-        translationBuilder.add(AVPBlocks.STEEL_SIDING_STAIRS, "Сталеві бокові сходи");
+        translationBuilder.add(AVPBlocks.STEEL_SIDING_STAIRS, "Сталева бокові сходи");
         translationBuilder.add(AVPBlocks.TITANIUM_SIDING_SLAB, "Титанова бокова плита");
         translationBuilder.add(AVPBlocks.TITANIUM_SIDING_STAIRS, "Титанові бокові сходи");
         translationBuilder.add(AVPBlocks.STEEL_STANDING_SLAB, "Сталева стояча плита");
