@@ -562,6 +562,80 @@ public class EnglishLanguageProvider extends FabricLanguageProvider {
 
         translationBuilder.add("avp.industrialfurnace.displayName", "Industrial Furance");
         translationBuilder.add("effect.avp.radiation", "Radiation");
+
+        // Configs
+        translationBuilder.add("config.screen.avp", "AVP Config");
+
+        translationBuilder.add("config.avp.option.hiveConfigs", "Hive Configs");
+        translationBuilder.add("config.avp.option.MINIMUM_DISTANCE_BETWEEN_HIVES_IN_BLOCKS", "Minimum distance between hive centers in blocks");
+        translationBuilder.add("config.avp.option.HIVE_RADIUS_IN_BLOCKS", "The radius of hives in blocks");
+        translationBuilder.add("config.avp.option.HIVE_LEASH_RADIUS_IN_BLOCKS", "Maximum distance away from a hive that Xenomorphs can join or remain as a member");
+        translationBuilder.add("config.avp.option.HIVE_MAX_PRAETORIAN_COUNT", "Maximum number of Praetorians allowed within a hive");
+        translationBuilder.add("config.avp.option.HIVE_MEMBERS_REQUIRED_FOR_PRAETORIAN", "Number of hive members required to spawn a Praetorian");
+        translationBuilder.add("config.avp.option.HIVE_DARKEN_SCREEN", "Determines if the screen should darken when the hive boss bar appears");
+        translationBuilder.add("config.avp.option.HIVE_DEBUG_ENABLED", "Enables hive debugging");
+        translationBuilder.add("config.avp.option.HIVE_DEBUG_HIGHLIGHT_LEADER", "Applies a glow effect to the hive leader");
+        translationBuilder.add("config.avp.option.HIVE_DEBUG_HIGHLIGHT_ALL_MEMBERS", "Applies a glow effect to all hive members");
+        translationBuilder.add("config.avp.option.HIVE_DEBUG_MARK_HIVE_CENTER", "Marks the hive center with a block");
+        translationBuilder.add("config.avp.option.CHESTBURSTER_MAX_GROWTH_TIMER_SECONDS", "Chestburster Max Growth Timer Seconds");
+        translationBuilder.add("config.avp.option.DRONE_MAX_GROWTH_TIMER_SECONDS", "Drone Max Growth Timer Seconds");
+        translationBuilder.add("config.avp.option.WARRIOR_MAX_GROWTH_TIMER_SECONDS", "Warrior Max Growth Timer Seconds");
+        translationBuilder.add("config.avp.option.PRAETORIAN_MAX_GROWTH_TIMER_SECONDS", "Praetorian Max Growth Timer Seconds");
+        translationBuilder.add("config.avp.option.PRAETORIAN_SHORTCUT_TIMER_SECONDS", "Praetorian Shortcut Timer Seconds");
+
+        translationBuilder.add("config.avp.option.spawnConfigs", "Mob Spawn Configs");
+        translationBuilder.add("config.avp.option.NATURAL_SPAWNING_ENABLED", "Enable natural spawning for Xenomorphs in the overworld.");
+        translationBuilder.add("config.avp.option.ADULT_SPAWNING_ENABLED", "Enable natural spawning for adult Xenomorphs in the overworld.");
+        translationBuilder.add("config.avp.option.YOUNG_SPAWNING_ENABLED", "Enable natural spawning for young Xenomorphs (eggs, facehuggers, bursters, etc.) in the overworld.");
+        translationBuilder.add("config.avp.option.REMOVE_VANILLA_SPAWNS", "Removes certain hostile monster spawns, allowing others like Xenomorphs to spawn more frequently.");
+        translationBuilder.add("config.avp.option.ALIEN_CUSTOM_MOB_CATEGORY_ENABLED", "Enable separate spawn cap for aliens and predators.");
+        translationBuilder.add("config.avp.option.ALIEN_CUSTOM_MOB_CATEGORY_LIMIT", "Maximum spawn count for aliens in the custom mob category.");
+        translationBuilder.add("config.avp.option.PREDATOR_CUSTOM_MOB_CATEGORY_LIMIT", "Maximum spawn count for predators in the custom mob category.");
+        translationBuilder.add("config.avp.option.CHESTBURSTER_SPAWN", "Chestburster spawn settings");
+        translationBuilder.add("config.avp.option.DRONE_SPAWN", "Drone spawn settings");
+        translationBuilder.add("config.avp.option.NETHER_CHESTBURSTER_SPAWN", "Nether Chestburster spawn settings");
+        translationBuilder.add("config.avp.option.NETHER_DRONE_SPAWN", "Nether Drone spawn settings");
+        translationBuilder.add("config.avp.option.NETHER_OVAMORPH_SPAWN", "Nether Ovamorph spawn settings");
+        translationBuilder.add("config.avp.option.NETHER_PRAETORIAN_SPAWN", "Nether Praetorian spawn settings");
+        translationBuilder.add("config.avp.option.NETHER_WARRIOR_SPAWN", "Nether Warrior spawn settings");
+        translationBuilder.add("config.avp.option.NETHER_QUEEN_SPAWN", "Nether Queen spawn settings");
+        translationBuilder.add("config.avp.option.OVAMORPH_SPAWN", "Ovamorph spawn settings");
+        translationBuilder.add("config.avp.option.PRAETORIAN_SPAWN", "Praetorian spawn settings");
+        translationBuilder.add("config.avp.option.QUEEN_SPAWN", "Queen spawn settings");
+        translationBuilder.add("config.avp.option.WARRIOR_SPAWN", "Warrior spawn settings");
+        translationBuilder.add("config.avp.option.YAUTJA_SPAWN", "Yautja spawn settings");
+        translationBuilder.add("config.avp.option.enabled", "Enable spawning");
+        translationBuilder.add("config.avp.option.maxY", "Maximum Y-level at for spawn");
+        translationBuilder.add("config.avp.option.minY", "Minimum Y-level at for spawn");
+        translationBuilder.add("config.avp.option.minGroupSize", "Minimum group size for spawns");
+        translationBuilder.add("config.avp.option.maxGroupSize", "Maximum group size for spawns");
+        translationBuilder.add("config.avp.option.weight", "Spawn weight");
+        translationBuilder.add("config.avp.option.requiresResin", "Requires resin for Nether Ovamorph spawning");
+
+        translationBuilder.add("config.avp.option.statsConfigs", "Mob Stat Configs");
+        translationBuilder.add("config.avp.option.ACID_ATTACK_DAMAGE", "Acid Damage per tick");
+        translationBuilder.add("config.avp.option.CHESTBURSTER_STATS", "Chestburster stats");
+        translationBuilder.add("config.avp.option.health", "Health value");
+        translationBuilder.add("config.avp.option.attackDamage", "Attack damage");
+        translationBuilder.add("config.avp.option.healthRegenPerSecond", "Health regeneration per second");
+        translationBuilder.add("config.avp.option.knockbackResistance", "Knockback resistance");
+        translationBuilder.add("config.avp.option.moveSpeed", "Movement speed");
+        translationBuilder.add("config.avp.option.armorToughness", "Armor toughness.");
+        translationBuilder.add("config.avp.option.armor", "Armor value");
+        translationBuilder.add("config.avp.option.nestTickrate", "Nest tickrate");
+        translationBuilder.add("config.avp.option.followRange", "Follow range");
+        translationBuilder.add("config.avp.option.DRONE_STATS", "Drone stats");
+        translationBuilder.add("config.avp.option.OVAMORPH_STATS", "Ovamorph stats");
+        translationBuilder.add("config.avp.option.PRAETORIAN_STATS", "Praetorian stats");
+        translationBuilder.add("config.avp.option.QUEEN_STATS", "Queen stats");
+        translationBuilder.add("config.avp.option.WARRIOR_STATS", "Warrior stats");
+        translationBuilder.add("config.avp.option.YAUTJA_STATS", "Yautja stats");
+        translationBuilder.add("config.avp.option.MARINE_STATS", "Marine stats");
+        translationBuilder.add("config.avp.option.FACEHUGGER_STATS", "Facehugger stats");
+
+        translationBuilder.add("config.avp.option.weaponConfigs", "Weapon Options");
+        translationBuilder.add("config.avp.option.BULLETS_DAMAGE_BLOCKS_ENABLED", "Enable bullet collision damage to blocks");
+        translationBuilder.add("config.avp.option.ENABLE_NUKE_BLOCK_MECHS", "Allow nukes to work");
     }
 
     private void addSound(TranslationBuilder translationBuilder, SoundEvent soundEvent, String value) {
