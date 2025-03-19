@@ -45,4 +45,9 @@ public class BulletProjectile extends AbstractHurtingProjectile {
             discard();
         }
     }
+
+    @Override
+    protected boolean shouldBurn() {
+        return false;
+    }
 }
