@@ -77,12 +77,15 @@ public class AVPEntityTypeTagProvider extends FabricTagProvider.EntityTypeTagPro
         getOrCreateTagBuilder(AVPEntityTypeTags.RADIATION_RESISTANT)
             .addTag(AVPEntityTypeTags.XENOMORPHS)
             .addTag(AVPEntityTypeTags.PREDATORS)
-            .addTag(EntityTypeTags.SKELETONS)
-            .addTag(EntityTypeTags.ZOMBIES)
             .add(
                 EntityType.CREEPER,
                 EntityType.STRAY,
-                EntityType.HUSK
+                EntityType.HUSK,
+                EntityType.SKELETON,
+                EntityType.SKELETON_HORSE,
+                EntityType.ZOMBIE,
+                EntityType.ZOMBIE_HORSE,
+                EntityType.ZOMBIE_VILLAGER
             );
 
         getOrCreateTagBuilder(AVPEntityTypeTags.PREDATORS)
@@ -160,15 +163,15 @@ public class AVPEntityTypeTagProvider extends FabricTagProvider.EntityTypeTagPro
 
     private void addIrraiatedAliens() {
         getOrCreateTagBuilder(AVPEntityTypeTags.IRRAIATED_ALIENS)
-                .add(
-                        AVPEntityTypes.IRRAIATED_DRONE,
-                        AVPEntityTypes.IRRAIATED_WARRIOR,
-                        AVPEntityTypes.IRRAIATED_PRAETORIAN,
-                        AVPEntityTypes.ABERRANT_OVAMORPH,
-                        AVPEntityTypes.ABERRANT_PRAETORIAN,
-                        AVPEntityTypes.ABERRANT_WARRIOR,
-                        AVPEntityTypes.ABERRANT_QUEEN
-                );
+            .add(
+                AVPEntityTypes.IRRAIATED_DRONE,
+                AVPEntityTypes.IRRAIATED_WARRIOR,
+                AVPEntityTypes.IRRAIATED_PRAETORIAN,
+                AVPEntityTypes.ABERRANT_OVAMORPH,
+                AVPEntityTypes.ABERRANT_PRAETORIAN,
+                AVPEntityTypes.ABERRANT_WARRIOR,
+                AVPEntityTypes.ABERRANT_QUEEN
+            );
     }
 
     private void addAberrantAliens() {
