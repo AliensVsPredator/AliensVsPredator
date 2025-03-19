@@ -19,8 +19,8 @@
         {
           "type": "avp:marine",
           "weight": 10,
-          "minCount": 2,
-          "maxCount": 6
+          "minCount": 1,
+          "maxCount": 3
         }
       ]
     }
