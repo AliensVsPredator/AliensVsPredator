@@ -9,6 +9,9 @@
 - Adjusts how many Marines spawn at Camps.
 - Marines now target all monsters, not just aliens.
 - Updates Trinitite block texture.
+- Nuked Biomes are no longer cold.
+- Nuked Biome monster spawns adjusted.
+- Marine Camp spawns adjusted again.
 
 ## Fixes
 - Fixes crash related to custom mob category, due to how early it loads, configuration not possible, so removed and enabled by default.
