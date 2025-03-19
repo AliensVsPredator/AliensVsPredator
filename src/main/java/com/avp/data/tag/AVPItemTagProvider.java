@@ -30,6 +30,15 @@ public class AVPItemTagProvider extends FabricTagProvider.ItemTagProvider {
                 ArmorItems.MK50_BOOTS
             );
 
+        getOrCreateTagBuilder(AVPItemTags.HOSTILE_WEAPON)
+            .addTag(AVPItemTags.GUNS)
+            .addTag(ItemTags.AXES)
+            .addTag(ItemTags.SWORDS)
+            .add(
+                Items.BOW,
+                Items.CROSSBOW
+        );
+
         // Acid-resistant items
         getOrCreateTagBuilder(AVPItemTags.ACID_IMMUNE)
             .add(

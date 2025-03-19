@@ -1,5 +1,6 @@
 package com.avp.common.entity.living.yautja;
 
+import com.avp.common.util.YautjaPredicates;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
@@ -8,7 +9,6 @@ import net.minecraft.world.entity.ai.goal.WaterAvoidingRandomStrollGoal;
 import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.monster.Monster;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.vehicle.Boat;
 import net.minecraft.world.entity.vehicle.Minecart;
 import net.minecraft.world.item.ItemStack;
@@ -21,7 +21,6 @@ import com.avp.common.ai.goal.combat.DelayedAttackGoal;
 import com.avp.common.ai.goal.combat.FleeFightGoal;
 import com.avp.common.ai.goal.combat.UseItemGoal;
 import com.avp.common.config.AVPConfig;
-import com.avp.common.entity.living.alien.Alien;
 import com.avp.common.item.AVPItems;
 
 public class Yautja extends Monster {
@@ -43,9 +42,16 @@ public class Yautja extends Monster {
         goalSelector.addGoal(1, new DelayedAttackGoal(this, 1.0, true, 5, this::runAttackAnimations));
         goalSelector.addGoal(1, new UseItemGoal(this, this::runAttackAnimations));
         goalSelector.addGoal(7, new WaterAvoidingRandomStrollGoal(this, 1.0));
-        targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Player.class, true));
-        targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, Alien.class, true));
         targetSelector.addGoal(1, new HurtByTargetGoal(this).setAlertOthers(Yautja.class));
+        targetSelector.addGoal(
+                2,
+                new NearestAttackableTargetGoal<>(
+                        this,
+                        LivingEntity.class,
+                        false,
+                        target -> YautjaPredicates.isThreateningTarget(this, target)
+                )
+        );
     }
 
     public void runAttackAnimations() {
