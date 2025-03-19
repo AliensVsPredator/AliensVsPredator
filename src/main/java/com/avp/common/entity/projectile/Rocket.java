@@ -1,5 +1,6 @@
 package com.avp.common.entity.projectile;
 
+import com.avp.AVP;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
@@ -78,86 +79,12 @@ public class Rocket extends ThrowableProjectile {
     protected void onHit(@NotNull HitResult hitResult) {
         super.onHit(hitResult);
         var level = level();
+        var explosionInteraction = AVP.config.weaponConfigs.BULLETS_DAMAGE_BLOCKS_ENABLED ? Level.ExplosionInteraction.BLOCK : Level.ExplosionInteraction.NONE;
 
         if (!level.isClientSide) {
-            explode((ServerLevel) level);
+            level.explode(this, this.getX(), this.getY(0.0625D), this.getZ(), 5.0F, false, explosionInteraction);
             discard();
         }
-    }
-
-    private void explode(ServerLevel level) {
-        var center = position();
-        var x = center.x;
-        var y = center.y;
-        var z = center.z;
-        var radius = 5;
-        var maxKnockback = 2;
-        var minDamage = 10;
-        var maxDamage = 40;
-
-        var explosion = Explosion.builder(level, center)
-            .withRadius(radius)
-            .onBlockSample(($, pos) -> {
-                var blockState = level.getBlockState(pos);
-
-                if (!doesBlockSurviveExplosion(center, blockState, pos, 10F)) {
-                    level.setBlockAndUpdate(pos, Blocks.AIR.defaultBlockState());
-                }
-            })
-            .onCycleFinish(sampledBlockPositions -> {
-
-                var entities = ExplosionUtil.getEntitiesInRadius(level, center, radius);
-
-                entities.forEach(entity -> {
-                    var distance = entity.distanceToSqr(center);
-                    var damage = ExplosionUtil.computeDamage(radius, minDamage, maxDamage, distance);
-
-                    entity.hurt(level.damageSources().explosion(null), (float) damage);
-                    ExplosionUtil.applyKnockback(center, radius, entity, maxKnockback, distance);
-                });
-
-                for (var serverPlayer : level.players()) {
-                    if (serverPlayer.distanceToSqr(x, y, z) >= 64 * 64) {
-                        continue;
-                    }
-
-                    serverPlayer.connection
-                        .send(
-                            new ClientboundExplodePacket(
-                                x,
-                                y,
-                                z,
-                                5F,
-                                sampledBlockPositions,
-                                Vec3.ZERO,
-                                net.minecraft.world.level.Explosion.BlockInteraction.DESTROY_WITH_DECAY,
-                                ParticleTypes.EXPLOSION,
-                                ParticleTypes.EXPLOSION_EMITTER,
-                                SoundEvents.GENERIC_EXPLODE
-                            )
-                        );
-                }
-            })
-            .onExplosionFinish(() -> playSound(SoundEvents.GENERIC_EXPLODE.value(), 1F, 1F))
-            .build();
-
-        explosion.explode();
-    }
-
-    public static boolean doesBlockSurviveExplosion(
-        Vec3 explosionCenter,
-        BlockState blockState,
-        BlockPos blockPos,
-        float explosionPower
-    ) {
-        var resistance = blockState.getBlock().getExplosionResistance();
-        var distance = explosionCenter.distanceTo(blockPos.getBottomCenter());
-
-        // Simplified blast force calculation (Minecraft uses a more complex method)
-        var attenuationFactor = 0.5F; // Adjust this to fit Minecraft's attenuation model
-        var appliedForce = explosionPower - (float) (distance * attenuationFactor);
-
-        return appliedForce < resistance;
     }
 
     @Override
