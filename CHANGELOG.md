@@ -34,6 +34,32 @@
 - Aliens only prioritizing one thing until it's killed rather than killing stuff near it.
 - Missing Radiation icon.
 - Predator Smart Disc aim against players off?
+- Weapon animations need tweaking.
+
+## TODO
+- Add Queen Animations
+- Add Queen sack that then lays eggs
+- Apply genetics of Queen to eggspawned by Queen
+- Add Queen egg
+- Add Queen facehugger
+- Add Queen burster
+- Poison jelly on queen eggs turn it into an Aberrant Queen egg
+- Sentry turret
+- Ammo chest + have sentry turret use it
+- Battery items
+- Charging system (likely redstone) for batteries
+- Make turrets use batteries
+- Lead chest
+- Compression item?
+- Blueprint table
+- Commisionary Villager type
+- Irradiated rockets
+- Predator Spawn mechanics
+- Predator difficulty adjustments
+- Predator Combi stick
+- Predator Proximity mines
+- More Marine structures
+- Wondering Marine teams
 
 # v0.0.18-beta
 
