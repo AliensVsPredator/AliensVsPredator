@@ -1,3 +1,33 @@
+# v0.0.19-beta
+
+## What's New
+No Changes At This Time.
+
+## Changes
+- Adjusts how Marine Camps spawn in the world, will only apply to new ones.
+- Adjusts how many Marines spawn at Camps.
+- Marines now target all monsters, not just aliens.
+
+## Fixes
+- Fixes crash related to custom mob category, due to how early it loads, configuration not possible, so removed and enabled by default.
+- Fixes Irradiated Resin node crash.
+- Fixes Nether Queen not requiring resin by default.
+- Fixes rockets leaving water holes.
+- Fixes Nuke block entity render distance.
+- Fixes Death rotation of Facehuggers.
+- Fixes Marines being a valid target at all for other Marines.
+- Fixes Aberrant/Nether Queens don't drop chitin of their type.
+- Fixes Marine projectile is on fire.
+- Fixes Marine Facehugger placement broke with model change.
+
+## Data Pack
+No Changes At This Time.
+
+## Known Issues
+- Aliens only prioritizing one thing until it's killed rather than killing stuff near it.
+- Missing Radiation icon.
+- Predator Smart Disc aim against players off?
+
 # v0.0.18-beta
 
 ## What's New
