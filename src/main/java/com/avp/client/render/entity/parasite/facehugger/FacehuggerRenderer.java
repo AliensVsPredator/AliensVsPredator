@@ -73,6 +73,10 @@ public class FacehuggerRenderer extends AzEntityRenderer<Facehugger> {
             return NETHER_TEXTURE;
         }
 
-        return facehugger.isAberrant() ? ABERRANT_TEXTURE : TEXTURE;
+        if (facehugger.isAberrant()) {
+            return ABERRANT_TEXTURE;
+        }
+
+        return TEXTURE;
     }
 }
