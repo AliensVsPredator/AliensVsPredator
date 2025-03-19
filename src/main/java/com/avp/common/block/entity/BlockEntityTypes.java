@@ -15,7 +15,7 @@ public class BlockEntityTypes {
 
     public static final BlockEntityType<ResinNodeBlockEntity> RESIN_NODE = register(
         "resin_node",
-        BlockEntityType.Builder.of(ResinNodeBlockEntity::new, AVPBlocks.ABERRANT_RESIN_NODE, AVPBlocks.NETHER_RESIN_NODE, AVPBlocks.RESIN_NODE)
+        BlockEntityType.Builder.of(ResinNodeBlockEntity::new, AVPBlocks.IRRADIATED_RESIN_NODE, AVPBlocks.ABERRANT_RESIN_NODE, AVPBlocks.NETHER_RESIN_NODE, AVPBlocks.RESIN_NODE)
     );
 
     public static final BlockEntityType<IndustrialFurnaceBE> INDUSTRIAL_FURNACE_BE = register(
