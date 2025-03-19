@@ -2,6 +2,7 @@ package com.avp.common.util;
 
 import com.avp.AVP;
 import com.avp.common.command.nuke.ExplosionProgressTracker;
+import com.avp.common.entity.living.alien.Alien;
 import com.avp.common.explosion.nuke.NuclearExplosionEffects;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
@@ -80,7 +81,9 @@ public class ExplosionUtil {
                     for (var entity : entities) {
                         var distance = entity.distanceToSqr(center);
                         var damage = ExplosionUtil.computeDamage(radius, 5, 1000, distance);
-
+                        if (entity instanceof Alien alien) {
+                            alien.setIrraiated(true);
+                        }
                         entity.igniteForSeconds(15);
                         entity.hurt(level.damageSources().explosion(null), (float) damage);
                         ExplosionUtil.applyKnockback(center, radius, entity, maxKnockback, distance);
