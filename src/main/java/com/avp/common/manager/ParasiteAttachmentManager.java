@@ -61,6 +61,11 @@ public class ParasiteAttachmentManager {
             return;
         }
 
+        if (parasite.isDeadOrDying()) {
+            parasite.unRide();
+            return;
+        }
+
         host.addEffect(new MobEffectInstance(MobEffects.BLINDNESS, 40, 3, true, false, true));
         host.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 40, 3, true, false, true));
         host.addEffect(new MobEffectInstance(MobEffects.DIG_SLOWDOWN, 40, 3, true, false, true));
@@ -120,7 +125,7 @@ public class ParasiteAttachmentManager {
     }
 
     public boolean isAttachedToHost() {
-        return getHost() != null;
+        return getHost() != null && parasite.isAlive();
     }
 
     public boolean isFertile() {

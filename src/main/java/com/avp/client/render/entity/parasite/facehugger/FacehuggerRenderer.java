@@ -32,6 +32,7 @@ public class FacehuggerRenderer extends AzEntityRenderer<Facehugger> {
         super(
             AzEntityRendererConfig.builder($ -> MODEL, FacehuggerRenderer::textureLocation)
                 .setAnimatorProvider(FacehuggerAnimator::new)
+                .setDeathMaxRotation(0F)
                 .build(),
             context
         );
@@ -47,7 +48,7 @@ public class FacehuggerRenderer extends AzEntityRenderer<Facehugger> {
         @NotNull MultiBufferSource bufferSource,
         int packedLight
     ) {
-        if (!entity.attachmentManager().isFertile() && entity.attachmentManager().getHost() == null) {
+        if (!entity.attachmentManager().isFertile() && entity.attachmentManager().getHost() == null && entity.isAlive()) {
             poseStack.translate(0, entity.getBbHeight(), 0);
             poseStack.mulPose(Axis.ZP.rotationDegrees(180f));
         }

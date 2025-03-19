@@ -32,6 +32,11 @@ public class FacehuggerModelRenderer extends AzEntityModelRenderer<Facehugger> {
             return;
         }
 
+        if (facehugger.isDeadOrDying()) {
+            super.applyRotations(facehugger, poseStack, ageInTicks, rotationYaw, partialTick, 1);
+            return;
+        }
+
         var host = (LivingEntity) facehugger.getVehicle();
 
         if (host == null) {

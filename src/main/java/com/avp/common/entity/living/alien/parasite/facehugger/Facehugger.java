@@ -53,13 +53,13 @@ public class Facehugger extends Parasite {
     public void runPassiveAnimations() {
         var dispatcher = animationDispatcher;
 
-        if (attachmentManager.isAttachedToHost()) {
-            dispatcher.hug();
+        if (!attachmentManager.isFertile() || isDeadOrDying()) {
+            dispatcher.infertile();
             return;
         }
 
-        if (!attachmentManager.isFertile()) {
-            dispatcher.infertile();
+        if (attachmentManager.isAttachedToHost() && isAlive()) {
+            dispatcher.hug();
             return;
         }
 
