@@ -150,7 +150,7 @@ public class SpawnPlacements {
                 DroneSpawning.NETHER_PREDICATE
             );
             BiomeModifications.addSpawn(
-                AVPPredicates.alwaysTrue(),
+                    biomeSelectionContext -> biomeSelectionContext.hasTag(BiomeTags.IS_NETHER),
                 AVPEntityTypes.ALIEN_CATEGORY,
                 AVPEntityTypes.NETHER_DRONE,
                 weight,
@@ -171,7 +171,7 @@ public class SpawnPlacements {
                 PraetorianSpawning.NETHER_PREDICATE
             );
             BiomeModifications.addSpawn(
-                AVPPredicates.alwaysTrue(),
+                    biomeSelectionContext -> biomeSelectionContext.hasTag(BiomeTags.IS_NETHER),
                 AVPEntityTypes.ALIEN_CATEGORY,
                 AVPEntityTypes.NETHER_PRAETORIAN,
                 weight,
@@ -192,7 +192,7 @@ public class SpawnPlacements {
                 WarriorSpawning.NETHER_PREDICATE
             );
             BiomeModifications.addSpawn(
-                AVPPredicates.alwaysTrue(),
+                biomeSelectionContext -> biomeSelectionContext.hasTag(BiomeTags.IS_NETHER),
                 AVPEntityTypes.ALIEN_CATEGORY,
                 AVPEntityTypes.NETHER_WARRIOR,
                 weight,
@@ -208,7 +208,7 @@ public class SpawnPlacements {
 
             net.minecraft.world.entity.SpawnPlacements.register(AVPEntityTypes.NETHER_QUEEN, placement, heightMap, QueenSpawning.NETHER_PREDICATE);
             BiomeModifications.addSpawn(
-                    AVPPredicates.alwaysTrue(),
+                    biomeSelectionContext -> biomeSelectionContext.hasTag(BiomeTags.IS_NETHER),
                     AVPEntityTypes.ALIEN_CATEGORY,
                     AVPEntityTypes.NETHER_QUEEN,
                     weight,
@@ -271,7 +271,7 @@ public class SpawnPlacements {
                 ChestbursterSpawning.NETHER_PREDICATE
             );
             BiomeModifications.addSpawn(
-                AVPPredicates.alwaysTrue(),
+                    biomeSelectionContext -> biomeSelectionContext.hasTag(BiomeTags.IS_NETHER),
                 AVPEntityTypes.ALIEN_CATEGORY,
                 AVPEntityTypes.NETHER_CHESTBURSTER,
                 weight,
@@ -292,7 +292,7 @@ public class SpawnPlacements {
                 OvamorphSpawning.NETHER_PREDICATE
             );
             BiomeModifications.addSpawn(
-                AVPPredicates.alwaysTrue(),
+                    biomeSelectionContext -> biomeSelectionContext.hasTag(BiomeTags.IS_NETHER),
                 AVPEntityTypes.ALIEN_CATEGORY,
                 AVPEntityTypes.NETHER_OVAMORPH,
                 weight,
