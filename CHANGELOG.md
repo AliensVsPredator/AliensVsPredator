@@ -1,12 +1,14 @@
 # v0.0.19-beta
 
 ## What's New
-- Nukes will now turn any aliens that have an Irraiated form into that form.
+- Nukes will now turn any aliens that have an Irradiated form into that form.
+- Adds ash block that appears when a nuke goes off and spreads over time.
 
 ## Changes
 - Adjusts how Marine Camps spawn in the world, will only apply to new ones.
 - Adjusts how many Marines spawn at Camps.
 - Marines now target all monsters, not just aliens.
+- Updates Trinitite block texture.
 
 ## Fixes
 - Fixes crash related to custom mob category, due to how early it loads, configuration not possible, so removed and enabled by default.
@@ -23,7 +25,7 @@
 - Fixes Nether aliens spawning everywhere instead of the nether.
 
 ## Data Pack
-No Changes At This Time.
+- Adds Undead tag to `radiation_resistant` entity tag.
 
 ## Known Issues
 - Aliens only prioritizing one thing until it's killed rather than killing stuff near it.
