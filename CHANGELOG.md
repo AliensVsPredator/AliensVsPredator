@@ -12,6 +12,10 @@
 - Nuked Biomes are no longer cold.
 - Nuked Biome monster spawns adjusted.
 - Marine Camp spawns adjusted again.
+- Tweaks done to marine firing.
+- Tweaks done to Predator throwing items.
+- Predators will call for help from nearby predators if attacked.
+- Predators will now target all aliens, any mob holding a `hostile_weapon` tagged item, or any entity that hurts them.
 
 ## Fixes
 - Fixes crash related to custom mob category, due to how early it loads, configuration not possible, so removed and enabled by default.
@@ -26,40 +30,41 @@
 - Fixes Marine Facehugger placement broke with model change.
 - Fixes block outline on Trinitite blocks.
 - Fixes Nether aliens spawning everywhere instead of the nether.
+- Fixes Marines spawnin on roofs.
+- Fixes Aliens only prioritizing one thing until it's killed rather than killing stuff near it.
 
 ## Data Pack
 - Adds Undead tag to `radiation_resistant` entity tag.
 - Added block tag `marine_spawn_blocks` to limit what blocks in a structure marines can spawn on
+- Added item tag `hostile_weapon` to tag items that Predators find hostile to them.
 
 ## Known Issues
-- Aliens only prioritizing one thing until it's killed rather than killing stuff near it.
-- Missing Radiation icon.
-- Predator Smart Disc aim against players off?
-- Weapon animations need tweaking.
+- Missing Radiation icon. *
+- Weapon animations need tweaking. *
 
 ## TODO
-- Add Queen Animations
-- Add Queen sack that then lays eggs
-- Apply genetics of Queen to eggspawned by Queen
-- Add Queen egg
-- Add Queen facehugger
-- Add Queen burster
-- Poison jelly on queen eggs turn it into an Aberrant Queen egg
+- Add Queen Animations *
+- Add Queen sack that then lays eggs *
+- Apply genetics of Queen to eggspawned by Queen *
+- Add Queen egg *
+- Add Queen facehugger *
+- Add Queen burster *
+- Poison jelly on queen eggs turn it into an Aberrant Queen egg *
 - Sentry turret
 - Ammo chest + have sentry turret use it
 - Battery items
-- Charging system (likely redstone) for batteries
+- Charging system (likely redstone?) for batteries
 - Make turrets use batteries
 - Lead chest
 - Compression item?
 - Blueprint table
 - Commisionary Villager type
-- Irradiated rockets
+- Irradiated rockets *
 - Predator Spawn mechanics
-- Predator difficulty adjustments
-- Predator Combi stick
-- Predator Proximity mines
-- More Marine structures
+- Predator difficulty adjustments (unsure what this means?)
+- Predator Combi stick *
+- Predator Proximity mines *
+- More Marine structures *
 - Wondering Marine teams
 
 # v0.0.18-beta
