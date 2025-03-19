@@ -31,21 +31,9 @@ import com.avp.common.gene.GeneKeys;
 
 public class AVPEntityTypes {
 
-    public static final MobCategory ALIEN_CATEGORY = ((Supplier<MobCategory>) () -> {
-        if (AVP.config.spawnConfigs.ALIEN_CUSTOM_MOB_CATEGORY_ENABLED) {
-            return AVPMobCategories.ALIENS;
-        }
+    public static final MobCategory ALIEN_CATEGORY = AVPMobCategories.ALIENS;
 
-        return MobCategory.MONSTER;
-    }).get();
-
-    public static final MobCategory PREDATOR_CATEGORY = ((Supplier<MobCategory>) () -> {
-        if (AVP.config.spawnConfigs.ALIEN_CUSTOM_MOB_CATEGORY_ENABLED) {
-            return AVPMobCategories.PREDATOR;
-        }
-
-        return MobCategory.MONSTER;
-    }).get();
+    public static final MobCategory PREDATOR_CATEGORY = AVPMobCategories.PREDATOR;
 
     public static final EntityType<Entity> NUKE_BE = register(
             "nuke_be",

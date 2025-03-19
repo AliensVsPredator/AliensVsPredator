@@ -42,25 +42,6 @@ public class AVPConfig {
 
         @Configurable
         @Configurable.Synchronized
-        @Configurable.Comment({
-                "WARNING: This might break mob farms.",
-                "If set to true, aliens will have a separate spawn cap from hostile monsters. Modifying this requires restarting the game.",
-                "THIS MAY BREAK YOUR GAME IF YOU HAVE OTHER MODS INSTALLED. Enable at your own risk, you have been warned!"
-        })
-        public boolean ALIEN_CUSTOM_MOB_CATEGORY_ENABLED = false;
-
-        @Configurable
-        @Configurable.Synchronized
-        @Configurable.Comment("The maximum spawn count for aliens within the custom alien mob category. Modifying this requires restarting the game. Changing this value will only work if the custom mob category for aliens is enabled.")
-        public int ALIEN_CUSTOM_MOB_CATEGORY_LIMIT = 70;
-
-        @Configurable
-        @Configurable.Synchronized
-        @Configurable.Comment("The maximum spawn count for predator within the custom alien mob category. Modifying this requires restarting the game. Changing this value will only work if the custom mob category for aliens is enabled.")
-        public int PREDATOR_CUSTOM_MOB_CATEGORY_LIMIT = 70;
-
-        @Configurable
-        @Configurable.Synchronized
         @Configurable.Comment("Modifying these will require restarting the game.")
         public SpawnSettings CHESTBURSTER_SPAWN = new SpawnSettings(true, -24, -64, 1, 2, 10, true);
 
