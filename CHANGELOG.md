@@ -30,7 +30,7 @@
 - Fixes Marine Facehugger placement broke with model change.
 - Fixes block outline on Trinitite blocks.
 - Fixes Nether aliens spawning everywhere instead of the nether.
-- Fixes Marines spawnin on roofs.
+- Fixes Marines spawning on roofs.
 - Fixes Aliens only prioritizing one thing until it's killed rather than killing stuff near it.
 
 ## Data Pack
