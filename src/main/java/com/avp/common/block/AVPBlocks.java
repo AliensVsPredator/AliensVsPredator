@@ -1,6 +1,7 @@
 package com.avp.common.block;
 
 import com.avp.common.block.resin.*;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.util.ColorRGBA;
@@ -30,6 +31,8 @@ public class AVPBlocks {
             "siding", "fastened_siding", "fastened_standing",
             "plating", "tread", "grate"
     };
+
+    public static final Block ASH_BLOCK = register(new AshBlock(BlockProperties.ASH_BLOCK), "ash_block");
 
     public static final Block NUKE_BLOCK = register(new NukeBlock(BlockProperties.NUKE), "nuke");
 

@@ -20,6 +20,8 @@ import com.avp.common.block.AVPBlocks;
 
 public class AVPBlockItems {
 
+    public static final BlockItem ASH_BLOCK = register(AVPBlocks.ASH_BLOCK);
+
     public static final BlockItem TRINITITE_BLOCK = registerCustomBlockItem(new RadiatedBlockItem(AVPBlocks.TRINITITE_BLOCK), AVPBlocks.TRINITITE_BLOCK);
 
     public static final BlockItem NUKE_BLOCK = register(AVPBlocks.NUKE_BLOCK);

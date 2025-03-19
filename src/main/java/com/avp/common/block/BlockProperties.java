@@ -3,6 +3,7 @@ package com.avp.common.block;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.SnowLayerBlock;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
@@ -18,6 +19,18 @@ import java.util.stream.Collectors;
 import com.avp.common.entity.AVPEntityTypeTags;
 
 public class BlockProperties {
+
+    public static final BlockBehaviour.Properties ASH_BLOCK = BlockBehaviour.Properties.of()
+            .mapColor(MapColor.SNOW)
+            .replaceable()
+            .forceSolidOff()
+            .randomTicks()
+            .strength(0.1F)
+            .requiresCorrectToolForDrops()
+            .sound(SoundType.SNOW)
+            .isViewBlocking((blockStatex, blockGetter, blockPos) -> blockStatex.getValue(
+                    SnowLayerBlock.LAYERS) >= 8)
+            .pushReaction(PushReaction.DESTROY);
 
     public static final BlockBehaviour.Properties STEEL_BARS = BlockBehaviour.Properties.of()
             .instrument(NoteBlockInstrument.IRON_XYLOPHONE)

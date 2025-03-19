@@ -24,6 +24,7 @@ public class RussianLanguageProvider extends FabricLanguageProvider {
     @Override
     public void generateTranslations(HolderLookup.Provider registryLookup, TranslationBuilder translationBuilder) {
         // Blocks
+        translationBuilder.add(AVPBlocks.ASH_BLOCK, "Ash Block");
         translationBuilder.add(AVPBlocks.NUKE_BLOCK, "Яедрная бомба");
         translationBuilder.add(AVPBlocks.ROYAL_JELLY_BLOCK, "Блок королевской слизи");
         translationBuilder.add(AVPBlocks.TRINITITE_BLOCK, "Блок тринитита");

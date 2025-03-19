@@ -151,6 +151,7 @@ public class BlocksCreativeModeTabInitializer {
 
             // Miscellaneous
             entries.accept(AVPBlocks.NUKE_BLOCK);
+            entries.accept(AVPBlocks.ASH_BLOCK);
             entries.accept(AVPBlocks.LEAD_BLOCK);
             entries.accept(AVPBlocks.RAZOR_WIRE);
             entries.accept(AVPBlocks.IRRADIATED_RESIN_NODE);

@@ -22,7 +22,7 @@ public class AshBlock extends SnowLayerBlock {
 
     @Override
     protected void randomTick(BlockState blockState, ServerLevel serverLevel, BlockPos blockPos, RandomSource randomSource) {
-        if (randomSource.nextInt(1) == 0) {
+        if (randomSource.nextInt(10) == 0) {
             if (blockState.getValue(LAYERS) < 8) {
                 serverLevel.setBlockAndUpdate(blockPos,
                         this.defaultBlockState().setValue(LAYERS, blockState.getValue(LAYERS) + 1));
@@ -33,7 +33,8 @@ public class AshBlock extends SnowLayerBlock {
                         var targetPosBelow = targetPos.below();
 
                         if (serverLevel.getBlockState(targetPos).isAir() &&
-                                serverLevel.getBlockState(targetPosBelow).isSolidRender(serverLevel, targetPosBelow)) {
+                                serverLevel.getBlockState(targetPosBelow).isSolidRender(serverLevel, targetPosBelow)
+                                && !serverLevel.getBlockState(targetPosBelow).is(AVPBlocks.ASH_BLOCK)) {
                             serverLevel.setBlockAndUpdate(targetPos,
                                     this.defaultBlockState().setValue(LAYERS, 1));
                             return;

@@ -6,6 +6,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
 import net.minecraft.core.QuartPos;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.BlockTags;
@@ -22,6 +23,7 @@ import java.util.Set;
 
 import com.avp.common.explosion.Explosion;
 import com.avp.common.util.ExplosionUtil;
+import net.minecraft.world.level.block.SnowLayerBlock;
 
 public class NuclearExplosionEffects {
 
@@ -60,6 +62,8 @@ public class NuclearExplosionEffects {
         var distance = horizontalDistance + verticalDistance;
         var flags = Block.UPDATE_CLIENTS | Block.UPDATE_SUPPRESS_DROPS;
         var rand = level.random.nextFloat();
+        var posBelow = pos.below();
+        var blockState = level.getBlockState(pos);
 
         if (distance > 0.98) {
 
@@ -68,8 +72,6 @@ public class NuclearExplosionEffects {
             if (rand > horizontalDistance) {
                 transformedBlock = Blocks.BLACKSTONE;
             } else {
-                var blockState = level.getBlockState(pos);
-
                 if (blockState.is(BlockTags.DIRT)) {
                     transformedBlock = Blocks.BASALT;
                 } else if (blockState.is(BlockTags.SAND) || blockState.is(Blocks.SANDSTONE) || blockState.is(Blocks.RED_SANDSTONE)) {
@@ -85,6 +87,10 @@ public class NuclearExplosionEffects {
                 }
             }
 
+            if (blockState.isSolidRender(level, pos) && level.getRandom().nextInt(10) < 2) {
+                level.setBlock(pos.above(), AVPBlocks.ASH_BLOCK.defaultBlockState().setValue(SnowLayerBlock.LAYERS, 1),
+                        flags);
+            }
             level.setBlock(pos, transformedBlock.defaultBlockState(), flags);
         } else if (distance > 0.75) {
             if (rand > horizontalDistance) {
@@ -96,6 +102,9 @@ public class NuclearExplosionEffects {
             level.setBlock(pos, Blocks.AIR.defaultBlockState(), flags);
         }
 
+        level.sendParticles(ParticleTypes.FLASH, centerPos.getX(), centerPos.getY(), centerPos.getZ(), 1, 0, 0, 0, 0);
+        level.sendParticles(ParticleTypes.SMOKE, centerPos.getX(), centerPos.getY(), centerPos.getZ(), 1, 0, 0, 0, 0);
+        
         tryTransformChunkBiome(level, pos);
     }
 

@@ -24,6 +24,7 @@ public class UkrainianLanguageProvider extends FabricLanguageProvider {
     @Override
     public void generateTranslations(HolderLookup.Provider registryLookup, TranslationBuilder translationBuilder) {
         // Blocks
+        translationBuilder.add(AVPBlocks.ASH_BLOCK, "Ash Block");
         translationBuilder.add(AVPBlocks.NUKE_BLOCK, "Ядерна бомба");
         translationBuilder.add(AVPBlocks.ROYAL_JELLY_BLOCK, "Блок королівського слизу");
         translationBuilder.add(AVPBlocks.TRINITITE_BLOCK, "Блок тринітиту");

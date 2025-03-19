@@ -320,7 +320,8 @@ public class AVPBlockTagProvider extends FabricTagProvider.BlockTagProvider {
 
         getOrCreateTagBuilder(BlockTags.MINEABLE_WITH_SHOVEL)
             .add(
-                AVPBlocks.SILICA_GRAVEL
+                AVPBlocks.SILICA_GRAVEL,
+                AVPBlocks.ASH_BLOCK
             );
 
         getOrCreateTagBuilder(BlockTags.NEEDS_STONE_TOOL)
