@@ -1,5 +1,7 @@
 package com.avp.common.ai.goal.combat;
 
+import com.avp.common.entity.living.alien.Alien;
+import com.avp.common.util.AlienPredicates;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.PathfinderMob;
@@ -60,7 +62,13 @@ public class DelayedAttackGoal extends MeleeAttackGoal {
             } else {
                 resetAttackCooldown();
                 mob.swing(InteractionHand.MAIN_HAND);
-                mob.doHurtTarget(target);
+
+                if (mob instanceof Alien alien) {
+                    var detectionRange = 5.0;
+                    AlienPredicates.prioritizeAndAttack(alien, detectionRange);
+                } else {
+                    mob.doHurtTarget(target);
+                }
                 this.triggeredAttackAnimation = false;
             }
         } else {
