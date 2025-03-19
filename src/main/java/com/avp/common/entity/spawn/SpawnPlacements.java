@@ -43,7 +43,14 @@ public class SpawnPlacements {
             var weight = AVP.config.spawnConfigs.YAUTJA_SPAWN.weight;
 
             net.minecraft.world.entity.SpawnPlacements.register(AVPEntityTypes.YAUTJA, placement, heightMap, YautjaSpawning.PREDICATE);
-            BiomeModifications.addSpawn(IS_JUNGLE, AVPEntityTypes.PREDATOR_CATEGORY, AVPEntityTypes.YAUTJA, weight, minGroupSize, maxGroupSize);
+            BiomeModifications.addSpawn(
+                IS_JUNGLE,
+                AVPEntityTypes.PREDATOR_CATEGORY,
+                AVPEntityTypes.YAUTJA,
+                weight,
+                minGroupSize,
+                maxGroupSize
+            );
         }
 
         if (adultSpawningEnabled) {
@@ -150,7 +157,7 @@ public class SpawnPlacements {
                 DroneSpawning.NETHER_PREDICATE
             );
             BiomeModifications.addSpawn(
-                    biomeSelectionContext -> biomeSelectionContext.hasTag(BiomeTags.IS_NETHER),
+                biomeSelectionContext -> biomeSelectionContext.hasTag(BiomeTags.IS_NETHER),
                 AVPEntityTypes.ALIEN_CATEGORY,
                 AVPEntityTypes.NETHER_DRONE,
                 weight,
@@ -171,7 +178,7 @@ public class SpawnPlacements {
                 PraetorianSpawning.NETHER_PREDICATE
             );
             BiomeModifications.addSpawn(
-                    biomeSelectionContext -> biomeSelectionContext.hasTag(BiomeTags.IS_NETHER),
+                biomeSelectionContext -> biomeSelectionContext.hasTag(BiomeTags.IS_NETHER),
                 AVPEntityTypes.ALIEN_CATEGORY,
                 AVPEntityTypes.NETHER_PRAETORIAN,
                 weight,
@@ -206,14 +213,19 @@ public class SpawnPlacements {
             var minGroupSize = AVP.config.spawnConfigs.NETHER_QUEEN_SPAWN.minGroupSize;
             var weight = AVP.config.spawnConfigs.NETHER_QUEEN_SPAWN.weight;
 
-            net.minecraft.world.entity.SpawnPlacements.register(AVPEntityTypes.NETHER_QUEEN, placement, heightMap, QueenSpawning.NETHER_PREDICATE);
+            net.minecraft.world.entity.SpawnPlacements.register(
+                AVPEntityTypes.NETHER_QUEEN,
+                placement,
+                heightMap,
+                QueenSpawning.NETHER_PREDICATE
+            );
             BiomeModifications.addSpawn(
-                    biomeSelectionContext -> biomeSelectionContext.hasTag(BiomeTags.IS_NETHER),
-                    AVPEntityTypes.ALIEN_CATEGORY,
-                    AVPEntityTypes.NETHER_QUEEN,
-                    weight,
-                    minGroupSize,
-                    maxGroupSize
+                biomeSelectionContext -> biomeSelectionContext.hasTag(BiomeTags.IS_NETHER),
+                AVPEntityTypes.ALIEN_CATEGORY,
+                AVPEntityTypes.NETHER_QUEEN,
+                weight,
+                minGroupSize,
+                maxGroupSize
             );
         }
     }
@@ -271,7 +283,7 @@ public class SpawnPlacements {
                 ChestbursterSpawning.NETHER_PREDICATE
             );
             BiomeModifications.addSpawn(
-                    biomeSelectionContext -> biomeSelectionContext.hasTag(BiomeTags.IS_NETHER),
+                biomeSelectionContext -> biomeSelectionContext.hasTag(BiomeTags.IS_NETHER),
                 AVPEntityTypes.ALIEN_CATEGORY,
                 AVPEntityTypes.NETHER_CHESTBURSTER,
                 weight,
@@ -292,7 +304,7 @@ public class SpawnPlacements {
                 OvamorphSpawning.NETHER_PREDICATE
             );
             BiomeModifications.addSpawn(
-                    biomeSelectionContext -> biomeSelectionContext.hasTag(BiomeTags.IS_NETHER),
+                biomeSelectionContext -> biomeSelectionContext.hasTag(BiomeTags.IS_NETHER),
                 AVPEntityTypes.ALIEN_CATEGORY,
                 AVPEntityTypes.NETHER_OVAMORPH,
                 weight,

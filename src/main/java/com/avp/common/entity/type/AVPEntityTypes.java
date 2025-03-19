@@ -1,8 +1,5 @@
 package com.avp.common.entity.type;
 
-import com.avp.common.block.entity.NukeBE;
-import com.avp.common.entity.living.human.marine.MarineMob;
-import com.avp.common.entity.projectile.*;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -12,10 +9,9 @@ import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.level.Level;
 
 import java.util.function.BiFunction;
-import java.util.function.Supplier;
 
-import com.avp.AVP;
 import com.avp.AVPResources;
+import com.avp.common.block.entity.NukeBE;
 import com.avp.common.entity.AVPMobCategories;
 import com.avp.common.entity.acid.Acid;
 import com.avp.common.entity.living.alien.Alien;
@@ -26,7 +22,9 @@ import com.avp.common.entity.living.alien.xenomorph.drone.Drone;
 import com.avp.common.entity.living.alien.xenomorph.praetorian.Praetorian;
 import com.avp.common.entity.living.alien.xenomorph.queen.Queen;
 import com.avp.common.entity.living.alien.xenomorph.warrior.Warrior;
+import com.avp.common.entity.living.human.marine.MarineMob;
 import com.avp.common.entity.living.yautja.Yautja;
+import com.avp.common.entity.projectile.*;
 import com.avp.common.gene.GeneKeys;
 
 public class AVPEntityTypes {
@@ -36,8 +34,8 @@ public class AVPEntityTypes {
     public static final MobCategory PREDATOR_CATEGORY = AVPMobCategories.PREDATOR;
 
     public static final EntityType<Entity> NUKE_BE = register(
-            "nuke_be",
-            EntityType.Builder.of(NukeBE::new, MobCategory.MISC).sized(0.1F, 0.1F).noSummon().clientTrackingRange(20).updateInterval(10)
+        "nuke_be",
+        EntityType.Builder.of(NukeBE::new, MobCategory.MISC).sized(0.1F, 0.1F).noSummon().clientTrackingRange(20).updateInterval(10)
     );
 
     public static final EntityType<Acid> ACID = register(
@@ -67,21 +65,21 @@ public class AVPEntityTypes {
     );
 
     public static final EntityType<ShurikenItemEntity> SHURIKEN = register(
-            "shuriken",
-            EntityType.Builder.<ShurikenItemEntity>of(ShurikenItemEntity::new, MobCategory.MISC)
-                    .sized(0.25F, 0.25F)
+        "shuriken",
+        EntityType.Builder.<ShurikenItemEntity>of(ShurikenItemEntity::new, MobCategory.MISC)
+            .sized(0.25F, 0.25F)
     );
 
     public static final EntityType<SmartDiscItemEntity> SMART_DISC = register(
-            "smart_disc",
-            EntityType.Builder.<SmartDiscItemEntity>of(SmartDiscItemEntity::new, MobCategory.MISC)
-                    .sized(0.25F, 0.25F)
+        "smart_disc",
+        EntityType.Builder.<SmartDiscItemEntity>of(SmartDiscItemEntity::new, MobCategory.MISC)
+            .sized(0.25F, 0.25F)
     );
 
     public static final EntityType<BulletProjectile> BULLET = register(
-            "bullet",
-            EntityType.Builder.<BulletProjectile>of(BulletProjectile::new, MobCategory.MISC)
-                    .sized(0.25F, 0.25F)
+        "bullet",
+        EntityType.Builder.<BulletProjectile>of(BulletProjectile::new, MobCategory.MISC)
+            .sized(0.25F, 0.25F)
     );
 
     public static final EntityType<Flamethrow> FLAMETHROW = register(
@@ -116,9 +114,9 @@ public class AVPEntityTypes {
     );
 
     public static final EntityType<ThrownGrenade> GRENADE_THROWN = register(
-            "grenade_thrown",
-            EntityType.Builder.<ThrownGrenade>of(ThrownGrenade::new, MobCategory.MISC)
-                    .sized(0.25F, 0.25F)
+        "grenade_thrown",
+        EntityType.Builder.<ThrownGrenade>of(ThrownGrenade::new, MobCategory.MISC)
+            .sized(0.25F, 0.25F)
     );
 
     public static final EntityType<Warrior> WARRIOR = register(
@@ -132,8 +130,8 @@ public class AVPEntityTypes {
     );
 
     public static final EntityType<MarineMob> MARINE = register(
-            "marine",
-            EntityType.Builder.of(MarineMob::new, MobCategory.CREATURE).sized(0.7F, 1.95F)
+        "marine",
+        EntityType.Builder.of(MarineMob::new, MobCategory.CREATURE).sized(0.7F, 1.95F)
     );
 
     // These are "deferred" entity types for our existing entities. We want different spawn colors for these spawn eggs,
@@ -171,8 +169,8 @@ public class AVPEntityTypes {
     );
 
     public static final EntityType<Queen> ABERRANT_QUEEN = register(
-            "aberrant_queen",
-            EntityType.Builder.of(aberrantFactory(AVPEntityTypes.QUEEN, Queen::new), AVPEntityTypes.ALIEN_CATEGORY)
+        "aberrant_queen",
+        EntityType.Builder.of(aberrantFactory(AVPEntityTypes.QUEEN, Queen::new), AVPEntityTypes.ALIEN_CATEGORY)
     );
 
     public static final EntityType<Chestburster> NETHER_CHESTBURSTER = register(
@@ -206,8 +204,8 @@ public class AVPEntityTypes {
     );
 
     public static final EntityType<Queen> NETHER_QUEEN = register(
-            "nether_queen",
-            EntityType.Builder.of(nethermorphFactory(AVPEntityTypes.QUEEN, Queen::new), AVPEntityTypes.ALIEN_CATEGORY)
+        "nether_queen",
+        EntityType.Builder.of(nethermorphFactory(AVPEntityTypes.QUEEN, Queen::new), AVPEntityTypes.ALIEN_CATEGORY)
     );
 
     public static final EntityType<Drone> IRRAIATED_DRONE = register(
@@ -226,8 +224,8 @@ public class AVPEntityTypes {
     );
 
     private static <T extends Alien> EntityType.EntityFactory<T> irraiatedFactory(
-            EntityType<T> overridingEntityType,
-            BiFunction<EntityType<T>, Level, T> entityFactory
+        EntityType<T> overridingEntityType,
+        BiFunction<EntityType<T>, Level, T> entityFactory
     ) {
         return (entityType, level) -> {
             var entity = entityFactory.apply(overridingEntityType, level);

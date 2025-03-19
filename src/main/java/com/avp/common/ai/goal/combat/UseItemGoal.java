@@ -1,9 +1,5 @@
 package com.avp.common.ai.goal.combat;
 
-import com.avp.common.item.GunItem;
-import com.avp.common.item.yautja_items.ShurikenItem;
-import com.avp.common.item.yautja_items.SmartDiscItem;
-import com.avp.common.util.ItemGoalUtil;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.EntitySelector;
 import net.minecraft.world.entity.LivingEntity;
@@ -13,6 +9,11 @@ import net.minecraft.world.entity.projectile.ProjectileUtil;
 import net.minecraft.world.level.pathfinder.Path;
 
 import java.util.EnumSet;
+
+import com.avp.common.item.GunItem;
+import com.avp.common.item.yautja_items.ShurikenItem;
+import com.avp.common.item.yautja_items.SmartDiscItem;
+import com.avp.common.util.ItemGoalUtil;
 
 public class UseItemGoal extends Goal {
 
@@ -54,7 +55,8 @@ public class UseItemGoal extends Goal {
             }
 
             return !entity.getMainHandItem().isEmpty() && entity.getTarget() != null && entity.hasLineOfSight(
-                    entity.getTarget());
+                entity.getTarget()
+            );
         }
     }
 

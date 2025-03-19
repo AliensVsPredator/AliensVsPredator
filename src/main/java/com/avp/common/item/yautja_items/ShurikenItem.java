@@ -1,6 +1,5 @@
 package com.avp.common.item.yautja_items;
 
-import com.avp.common.entity.projectile.ShurikenItemEntity;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.stats.Stats;
@@ -12,6 +11,8 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
+
+import com.avp.common.entity.projectile.ShurikenItemEntity;
 
 public class ShurikenItem extends Item {
 
@@ -32,14 +33,14 @@ public class ShurikenItem extends Item {
             player.getCooldowns().addCooldown(this, 5);
             // TODO: Change sound effect here.
             level.playSound(
-                    null,
-                    player.getX(),
-                    player.getY(),
-                    player.getZ(),
-                    SoundEvents.TRIDENT_THROW,
-                    SoundSource.PLAYERS,
-                    0.5F,
-                    0.4F / (level.getRandom().nextFloat() * 0.4F + 0.8F)
+                null,
+                player.getX(),
+                player.getY(),
+                player.getZ(),
+                SoundEvents.TRIDENT_THROW,
+                SoundSource.PLAYERS,
+                0.5F,
+                0.4F / (level.getRandom().nextFloat() * 0.4F + 0.8F)
             );
 
             if (!level.isClientSide) {

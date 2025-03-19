@@ -1,7 +1,5 @@
 package com.avp.common.entity.living.alien.chestburster;
 
-import com.avp.common.entity.living.alien.xenomorph.Xenomorph;
-import com.avp.common.lifecycle.registry.AlienLifecycleRegistry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -20,9 +18,11 @@ import java.util.Objects;
 import com.avp.AVP;
 import com.avp.common.MoveAnalysis;
 import com.avp.common.entity.living.alien.Alien;
+import com.avp.common.entity.living.alien.xenomorph.Xenomorph;
 import com.avp.common.entity.type.AVPEntityTypes;
 import com.avp.common.gene.GeneKeys;
 import com.avp.common.gene.behavior.GeneDecoders;
+import com.avp.common.lifecycle.registry.AlienLifecycleRegistry;
 import com.avp.common.manager.GrowthManager;
 import com.avp.common.util.AVPPredicates;
 import com.avp.common.util.XenomorphGrowthUtil;
@@ -91,7 +91,10 @@ public class Chestburster extends Alien implements ResinProducer {
             var type = this.getType();
             var growthStage = AlienLifecycleRegistry.getOrNull(null, type);
 
-            if (growthStage != null && !this.getEntityData().get(Xenomorph.IS_POISONED) && this.getEntityData().get(Xenomorph.JELLY_COUNT) == this.maxJellyToGrowth()) {
+            if (
+                growthStage != null && !this.getEntityData().get(Xenomorph.IS_POISONED) && this.getEntityData()
+                    .get(Xenomorph.JELLY_COUNT) == this.maxJellyToGrowth()
+            ) {
                 this.growthManager().grow(growthStage);
             }
         }

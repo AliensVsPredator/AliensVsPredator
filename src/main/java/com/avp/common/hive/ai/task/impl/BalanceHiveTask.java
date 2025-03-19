@@ -1,6 +1,5 @@
 package com.avp.common.hive.ai.task.impl;
 
-import com.avp.common.entity.living.alien.Alien;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.EntityType;
@@ -13,6 +12,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import com.avp.AVP;
+import com.avp.common.entity.living.alien.Alien;
 import com.avp.common.entity.living.alien.xenomorph.Xenomorph;
 import com.avp.common.entity.type.AVPEntityTypes;
 import com.avp.common.hive.Hive;

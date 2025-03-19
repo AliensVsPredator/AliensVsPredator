@@ -32,19 +32,19 @@ public class QueenSpawning {
     };
 
     public static final SpawnPlacements.SpawnPredicate<Queen> NETHER_PREDICATE = (
-            entityType,
-            serverLevelAccessor,
-            mobSpawnType,
-            blockPos,
-            randomSource
+        entityType,
+        serverLevelAccessor,
+        mobSpawnType,
+        blockPos,
+        randomSource
     ) -> {
         var maxY = AVP.config.spawnConfigs.NETHER_QUEEN_SPAWN.maxY;
         var requiresResin = AVP.config.spawnConfigs.NETHER_QUEEN_SPAWN.requiresResin;
         var isValidSpawn = !requiresResin || serverLevelAccessor.getBlockState(blockPos.below()).is(AVPBlockTags.RESIN);
 
         return blockPos.getY() <= maxY &&
-                isValidSpawn &&
-                checkSpawnRules(entityType, serverLevelAccessor, mobSpawnType, blockPos, randomSource);
+            isValidSpawn &&
+            checkSpawnRules(entityType, serverLevelAccessor, mobSpawnType, blockPos, randomSource);
     };
 
     public static boolean checkSpawnRules(

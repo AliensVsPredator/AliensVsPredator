@@ -1,6 +1,5 @@
 package com.avp.common.item;
 
-import com.avp.common.item.old_painless.OldPainlessAnimationRefs;
 import mod.azure.azurelib.rewrite.animation.dispatch.command.AzCommand;
 import mod.azure.azurelib.rewrite.animation.play_behavior.AzPlayBehaviors;
 import net.fabricmc.fabric.api.item.v1.EnchantingContext;
@@ -38,6 +37,7 @@ import com.avp.common.item.gun.FireModeConfig;
 import com.avp.common.item.gun.GunConfig;
 import com.avp.common.item.gun.GunData;
 import com.avp.common.item.gun.attack.GunAttackConfig;
+import com.avp.common.item.old_painless.OldPainlessAnimationRefs;
 import com.avp.common.util.EnchantmentUtil;
 import com.avp.common.util.GunLightUtil;
 import com.avp.common.util.TooltipUtil;
@@ -55,9 +55,10 @@ public class GunItem extends Item {
         super(new Item.Properties().stacksTo(1).durability(gunConfig.durability()).attributes(createAttributes()));
         this.gunConfig = gunConfig;
         shoot = AzCommand.create(
-                OldPainlessAnimationRefs.MAIN_CONTROLLER_NAME,
-                OldPainlessAnimationRefs.SHOOT_ANIMATION_NAME,
-                AzPlayBehaviors.PLAY_ONCE);
+            OldPainlessAnimationRefs.MAIN_CONTROLLER_NAME,
+            OldPainlessAnimationRefs.SHOOT_ANIMATION_NAME,
+            AzPlayBehaviors.PLAY_ONCE
+        );
     }
 
     private static ItemAttributeModifiers createAttributes() {

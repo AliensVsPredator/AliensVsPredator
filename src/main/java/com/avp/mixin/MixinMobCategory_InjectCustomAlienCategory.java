@@ -1,6 +1,5 @@
 package com.avp.mixin;
 
-import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.world.entity.MobCategory;
 import org.objectweb.asm.Opcodes;
 import org.spongepowered.asm.mixin.Final;
@@ -15,7 +14,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import com.avp.AVP;
 import com.avp.common.entity.AVPMobCategories;
 
 @Mixin(MobCategory.class)

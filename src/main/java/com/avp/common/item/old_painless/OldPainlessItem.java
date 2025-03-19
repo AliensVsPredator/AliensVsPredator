@@ -22,15 +22,15 @@ public class OldPainlessItem extends GunItem {
     private final AzCommand idle;
 
     private final AzCommand spinup = AzCommand.create(
-            OldPainlessAnimationRefs.MAIN_CONTROLLER_NAME,
-            OldPainlessAnimationRefs.SPIN_ANIMATION_NAME,
-            AzPlayBehaviors.PLAY_ONCE
+        OldPainlessAnimationRefs.MAIN_CONTROLLER_NAME,
+        OldPainlessAnimationRefs.SPIN_ANIMATION_NAME,
+        AzPlayBehaviors.PLAY_ONCE
     );
 
     private final AzCommand spin = AzCommand.create(
-            OldPainlessAnimationRefs.MAIN_CONTROLLER_NAME,
-            OldPainlessAnimationRefs.SPIN_LOOP_ANIMATION_NAME,
-            AzPlayBehaviors.LOOP
+        OldPainlessAnimationRefs.MAIN_CONTROLLER_NAME,
+        OldPainlessAnimationRefs.SPIN_LOOP_ANIMATION_NAME,
+        AzPlayBehaviors.LOOP
     );
 
     private final AzCommand shoot = AzCommand.compose(spinup, spin);

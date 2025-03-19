@@ -160,7 +160,6 @@ public class BlocksCreativeModeTabInitializer {
             entries.accept(AVPBlocks.RESIN_NODE);
             entries.accept(AVPBlocks.INDUSTRIAL_FURNACE);
 
-
             // Alien blocks
             entries.accept(AVPBlocks.RESIN);
             entries.accept(AVPBlocks.RESIN_VEIN);

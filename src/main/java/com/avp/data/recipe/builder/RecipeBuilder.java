@@ -39,19 +39,21 @@ public class RecipeBuilder {
     public StonecutterRecipeBuilder stonecut(ItemLike source) {
         return new StonecutterRecipeBuilder(this, source);
     }
+
     public IndustrialFurnaceRecipeBuilder industrialFurnaceSmelting(ItemLike item) {
         IndustrialFurnaceRecipeBuilder builder = IndustrialFurnaceRecipeBuilder.smelting(
-                Ingredient.of(item),
-                RecipeCategory.MISC,
-                item,
-                0.1f,
-                100
+            Ingredient.of(item),
+            RecipeCategory.MISC,
+            item,
+            0.1f,
+            100
         );
 
         builder.unlockedBy(getHasName(item), has(item));
 
         return builder;
     }
+
     public RecipeOutput getRecipeOutput() {
         return recipeOutput;
     }

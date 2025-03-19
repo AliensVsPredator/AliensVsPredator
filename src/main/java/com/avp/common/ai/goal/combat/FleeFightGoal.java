@@ -5,6 +5,7 @@ import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.phys.Vec3;
 
 public class FleeFightGoal extends Goal {
+
     protected final PathfinderMob mob;
 
     public FleeFightGoal(PathfinderMob mob) {
@@ -26,8 +27,7 @@ public class FleeFightGoal extends Goal {
     }
 
     @Override
-    public void stop() {
-    }
+    public void stop() {}
 
     @Override
     public void tick() {

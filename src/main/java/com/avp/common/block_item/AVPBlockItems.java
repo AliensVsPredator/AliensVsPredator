@@ -1,7 +1,5 @@
 package com.avp.common.block_item;
 
-import com.avp.common.item.RadiatedBlockItem;
-import com.avp.common.item.RoyalJellyBlockItem;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.BlockItem;
@@ -17,22 +15,36 @@ import java.util.stream.Collectors;
 
 import com.avp.AVPResources;
 import com.avp.common.block.AVPBlocks;
+import com.avp.common.item.RadiatedBlockItem;
+import com.avp.common.item.RoyalJellyBlockItem;
 
 public class AVPBlockItems {
 
     public static final BlockItem ASH_BLOCK = register(AVPBlocks.ASH_BLOCK);
 
-    public static final BlockItem TRINITITE_BLOCK = registerCustomBlockItem(new RadiatedBlockItem(AVPBlocks.TRINITITE_BLOCK), AVPBlocks.TRINITITE_BLOCK);
+    public static final BlockItem TRINITITE_BLOCK = registerCustomBlockItem(
+        new RadiatedBlockItem(AVPBlocks.TRINITITE_BLOCK),
+        AVPBlocks.TRINITITE_BLOCK
+    );
 
     public static final BlockItem NUKE_BLOCK = register(AVPBlocks.NUKE_BLOCK);
 
-    public static final BlockItem ROYAL_JELLY_BLOCK = registerCustomBlockItem(new RoyalJellyBlockItem(AVPBlocks.ROYAL_JELLY_BLOCK), AVPBlocks.ROYAL_JELLY_BLOCK);
+    public static final BlockItem ROYAL_JELLY_BLOCK = registerCustomBlockItem(
+        new RoyalJellyBlockItem(AVPBlocks.ROYAL_JELLY_BLOCK),
+        AVPBlocks.ROYAL_JELLY_BLOCK
+    );
 
     public static final BlockItem ALUMINUM_BLOCK = register(AVPBlocks.ALUMINUM_BLOCK);
 
-    public static final BlockItem AUTUNITE_BLOCK = registerCustomBlockItem(new RadiatedBlockItem(AVPBlocks.AUTUNITE_BLOCK), AVPBlocks.AUTUNITE_BLOCK);
+    public static final BlockItem AUTUNITE_BLOCK = registerCustomBlockItem(
+        new RadiatedBlockItem(AVPBlocks.AUTUNITE_BLOCK),
+        AVPBlocks.AUTUNITE_BLOCK
+    );
 
-    public static final BlockItem AUTUNITE_ORE = registerCustomBlockItem(new RadiatedBlockItem(AVPBlocks.AUTUNITE_ORE), AVPBlocks.AUTUNITE_ORE);
+    public static final BlockItem AUTUNITE_ORE = registerCustomBlockItem(
+        new RadiatedBlockItem(AVPBlocks.AUTUNITE_ORE),
+        AVPBlocks.AUTUNITE_ORE
+    );
 
     public static final BlockItem BAUXITE_ORE = register(AVPBlocks.BAUXITE_ORE);
 
@@ -122,13 +134,25 @@ public class AVPBlockItems {
 
     public static final BlockItem ABERRANT_RESIN_WEB = register(new Item.Properties().fireResistant(), AVPBlocks.ABERRANT_RESIN_WEB);
 
-    public static final BlockItem IRRADIATED_RESIN = registerCustomBlockItem(new RadiatedBlockItem(AVPBlocks.IRRADIATED_RESIN), AVPBlocks.IRRADIATED_RESIN);
+    public static final BlockItem IRRADIATED_RESIN = registerCustomBlockItem(
+        new RadiatedBlockItem(AVPBlocks.IRRADIATED_RESIN),
+        AVPBlocks.IRRADIATED_RESIN
+    );
 
-    public static final BlockItem IRRADIATED_RESIN_NODE = registerCustomBlockItem(new RadiatedBlockItem(AVPBlocks.IRRADIATED_RESIN_NODE), AVPBlocks.IRRADIATED_RESIN_NODE);
+    public static final BlockItem IRRADIATED_RESIN_NODE = registerCustomBlockItem(
+        new RadiatedBlockItem(AVPBlocks.IRRADIATED_RESIN_NODE),
+        AVPBlocks.IRRADIATED_RESIN_NODE
+    );
 
-    public static final BlockItem IRRADIATED_RESIN_VEIN = registerCustomBlockItem(new RadiatedBlockItem(AVPBlocks.IRRADIATED_RESIN_VEIN), AVPBlocks.IRRADIATED_RESIN_VEIN);
+    public static final BlockItem IRRADIATED_RESIN_VEIN = registerCustomBlockItem(
+        new RadiatedBlockItem(AVPBlocks.IRRADIATED_RESIN_VEIN),
+        AVPBlocks.IRRADIATED_RESIN_VEIN
+    );
 
-    public static final BlockItem IRRADIATED_RESIN_WEB = registerCustomBlockItem(new RadiatedBlockItem(AVPBlocks.IRRADIATED_RESIN_WEB), AVPBlocks.IRRADIATED_RESIN_WEB);
+    public static final BlockItem IRRADIATED_RESIN_WEB = registerCustomBlockItem(
+        new RadiatedBlockItem(AVPBlocks.IRRADIATED_RESIN_WEB),
+        AVPBlocks.IRRADIATED_RESIN_WEB
+    );
 
     public static final BlockItem RAW_BAUXITE_BLOCK = register(AVPBlocks.RAW_BAUXITE_BLOCK);
 
@@ -170,12 +194,15 @@ public class AVPBlockItems {
 
     // Metal Block - Slabs and Stairs
     public static final BlockItem FERROALUMINUM_SLAB = register(AVPBlocks.FERROALUMINUM_SLAB);
+
     public static final BlockItem FERROALUMINUM_STAIRS = register(AVPBlocks.FERROALUMINUM_STAIRS);
 
     public static final BlockItem STEEL_SLAB = register(AVPBlocks.STEEL_SLAB);
+
     public static final BlockItem STEEL_STAIRS = register(AVPBlocks.STEEL_STAIRS);
 
     public static final BlockItem TITANIUM_SLAB = register(AVPBlocks.TITANIUM_SLAB);
+
     public static final BlockItem TITANIUM_STAIRS = register(AVPBlocks.TITANIUM_STAIRS);
 
     public static final BlockItem STEEL_FASTENED_SIDING = register(AVPBlocks.STEEL_FASTENED_SIDING);
@@ -224,7 +251,10 @@ public class AVPBlockItems {
 
     public static final BlockItem TITANIUM_TREAD = register(AVPBlocks.TITANIUM_TREAD);
 
-    public static final BlockItem URANIUM_BLOCK = registerCustomBlockItem(new RadiatedBlockItem(AVPBlocks.URANIUM_BLOCK), AVPBlocks.URANIUM_BLOCK);
+    public static final BlockItem URANIUM_BLOCK = registerCustomBlockItem(
+        new RadiatedBlockItem(AVPBlocks.URANIUM_BLOCK),
+        AVPBlocks.URANIUM_BLOCK
+    );
 
     public static final BlockItem ZINC_BLOCK = register(AVPBlocks.ZINC_BLOCK);
 
@@ -234,69 +264,92 @@ public class AVPBlockItems {
 
     // Siding - Slabs and Stairs
     public static final BlockItem FERROALUMINUM_SIDING_SLAB = register(AVPBlocks.FERROALUMINUM_SIDING_SLAB);
+
     public static final BlockItem FERROALUMINUM_SIDING_STAIRS = register(AVPBlocks.FERROALUMINUM_SIDING_STAIRS);
+
     public static final BlockItem STEEL_SIDING_SLAB = register(AVPBlocks.STEEL_SIDING_SLAB);
+
     public static final BlockItem STEEL_SIDING_STAIRS = register(AVPBlocks.STEEL_SIDING_STAIRS);
 
     public static final BlockItem TITANIUM_SIDING_SLAB = register(AVPBlocks.TITANIUM_SIDING_SLAB);
+
     public static final BlockItem TITANIUM_SIDING_STAIRS = register(AVPBlocks.TITANIUM_SIDING_STAIRS);
 
     public static final BlockItem FERROALUMINUM_STANDING_SLAB = register(AVPBlocks.FERROALUMINUM_STANDING_SLAB);
+
     public static final BlockItem FERROALUMINUM_STANDING_STAIRS = register(AVPBlocks.FERROALUMINUM_STANDING_STAIRS);
+
     public static final BlockItem STEEL_STANDING_SLAB = register(AVPBlocks.STEEL_STANDING_SLAB);
+
     public static final BlockItem STEEL_STANDING_STAIRS = register(AVPBlocks.STEEL_STANDING_STAIRS);
 
     public static final BlockItem TITANIUM_STANDING_SLAB = register(AVPBlocks.TITANIUM_STANDING_SLAB);
+
     public static final BlockItem TITANIUM_STANDING_STAIRS = register(AVPBlocks.TITANIUM_STANDING_STAIRS);
 
     // Fastened Siding - Slabs and Stairs
     public static final BlockItem FERROALUMINUM_FASTENED_SIDING_SLAB = register(AVPBlocks.FERROALUMINUM_FASTENED_SIDING_SLAB);
+
     public static final BlockItem FERROALUMINUM_FASTENED_SIDING_STAIRS = register(AVPBlocks.FERROALUMINUM_FASTENED_SIDING_STAIRS);
 
     public static final BlockItem STEEL_FASTENED_SIDING_SLAB = register(AVPBlocks.STEEL_FASTENED_SIDING_SLAB);
+
     public static final BlockItem STEEL_FASTENED_SIDING_STAIRS = register(AVPBlocks.STEEL_FASTENED_SIDING_STAIRS);
 
     public static final BlockItem TITANIUM_FASTENED_SIDING_SLAB = register(AVPBlocks.TITANIUM_FASTENED_SIDING_SLAB);
+
     public static final BlockItem TITANIUM_FASTENED_SIDING_STAIRS = register(AVPBlocks.TITANIUM_FASTENED_SIDING_STAIRS);
 
     // Fastened Standing - Slabs and Stairs
     public static final BlockItem FERROALUMINUM_FASTENED_STANDING_SLAB = register(AVPBlocks.FERROALUMINUM_FASTENED_STANDING_SLAB);
+
     public static final BlockItem FERROALUMINUM_FASTENED_STANDING_STAIRS = register(AVPBlocks.FERROALUMINUM_FASTENED_STANDING_STAIRS);
 
     public static final BlockItem STEEL_FASTENED_STANDING_SLAB = register(AVPBlocks.STEEL_FASTENED_STANDING_SLAB);
+
     public static final BlockItem STEEL_FASTENED_STANDING_STAIRS = register(AVPBlocks.STEEL_FASTENED_STANDING_STAIRS);
 
     public static final BlockItem TITANIUM_FASTENED_STANDING_SLAB = register(AVPBlocks.TITANIUM_FASTENED_STANDING_SLAB);
+
     public static final BlockItem TITANIUM_FASTENED_STANDING_STAIRS = register(AVPBlocks.TITANIUM_FASTENED_STANDING_STAIRS);
 
     // Plating - Slabs and Stairs
     public static final BlockItem FERROALUMINUM_PLATING_SLAB = register(AVPBlocks.FERROALUMINUM_PLATING_SLAB);
+
     public static final BlockItem FERROALUMINUM_PLATING_STAIRS = register(AVPBlocks.FERROALUMINUM_PLATING_STAIRS);
 
     public static final BlockItem STEEL_PLATING_SLAB = register(AVPBlocks.STEEL_PLATING_SLAB);
+
     public static final BlockItem STEEL_PLATING_STAIRS = register(AVPBlocks.STEEL_PLATING_STAIRS);
 
     public static final BlockItem TITANIUM_PLATING_SLAB = register(AVPBlocks.TITANIUM_PLATING_SLAB);
+
     public static final BlockItem TITANIUM_PLATING_STAIRS = register(AVPBlocks.TITANIUM_PLATING_STAIRS);
 
     // Tread - Slabs and Stairs
     public static final BlockItem FERROALUMINUM_TREAD_SLAB = register(AVPBlocks.FERROALUMINUM_TREAD_SLAB);
+
     public static final BlockItem FERROALUMINUM_TREAD_STAIRS = register(AVPBlocks.FERROALUMINUM_TREAD_STAIRS);
 
     public static final BlockItem STEEL_TREAD_SLAB = register(AVPBlocks.STEEL_TREAD_SLAB);
+
     public static final BlockItem STEEL_TREAD_STAIRS = register(AVPBlocks.STEEL_TREAD_STAIRS);
 
     public static final BlockItem TITANIUM_TREAD_SLAB = register(AVPBlocks.TITANIUM_TREAD_SLAB);
+
     public static final BlockItem TITANIUM_TREAD_STAIRS = register(AVPBlocks.TITANIUM_TREAD_STAIRS);
 
     // Grate - Slabs and Stairs
     public static final BlockItem FERROALUMINUM_GRATE_SLAB = register(AVPBlocks.FERROALUMINUM_GRATE_SLAB);
+
     public static final BlockItem FERROALUMINUM_GRATE_STAIRS = register(AVPBlocks.FERROALUMINUM_GRATE_STAIRS);
 
     public static final BlockItem STEEL_GRATE_SLAB = register(AVPBlocks.STEEL_GRATE_SLAB);
+
     public static final BlockItem STEEL_GRATE_STAIRS = register(AVPBlocks.STEEL_GRATE_STAIRS);
 
     public static final BlockItem TITANIUM_GRATE_SLAB = register(AVPBlocks.TITANIUM_GRATE_SLAB);
+
     public static final BlockItem TITANIUM_GRATE_STAIRS = register(AVPBlocks.TITANIUM_GRATE_STAIRS);
 
     public static final Map<DyeColor, BlockItem> DYE_COLOR_TO_CONCRETE_SLAB =

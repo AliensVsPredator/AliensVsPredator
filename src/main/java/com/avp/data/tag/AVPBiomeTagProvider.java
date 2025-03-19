@@ -4,7 +4,6 @@ import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.tags.BiomeTags;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.Biomes;
 
@@ -23,7 +22,9 @@ public class AVPBiomeTagProvider extends FabricTagProvider<Biome> {
         getOrCreateTagBuilder(AVPBiomeTags.HAS_ALTAR)
             .add(Biomes.DESERT);
         getOrCreateTagBuilder(AVPBiomeTags.HAS_MARINE_CAMP_GRASS)
-                .add(Biomes.MEADOW).add(Biomes.PLAINS)
-                .add(Biomes.FOREST).add(Biomes.BIRCH_FOREST);
+            .add(Biomes.MEADOW)
+            .add(Biomes.PLAINS)
+            .add(Biomes.FOREST)
+            .add(Biomes.BIRCH_FOREST);
     }
 }

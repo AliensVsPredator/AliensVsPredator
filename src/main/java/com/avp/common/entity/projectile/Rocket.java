@@ -1,28 +1,19 @@
 package com.avp.common.entity.projectile;
 
-import com.avp.AVP;
-import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.protocol.game.ClientboundExplodePacket;
 import net.minecraft.network.syncher.SynchedEntityData;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.projectile.ProjectileUtil;
 import net.minecraft.world.entity.projectile.ThrowableProjectile;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.HitResult;
-import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 
+import com.avp.AVP;
 import com.avp.common.entity.type.AVPEntityTypes;
-import com.avp.common.explosion.Explosion;
-import com.avp.common.util.ExplosionUtil;
 
 public class Rocket extends ThrowableProjectile {
 
@@ -79,7 +70,9 @@ public class Rocket extends ThrowableProjectile {
     protected void onHit(@NotNull HitResult hitResult) {
         super.onHit(hitResult);
         var level = level();
-        var explosionInteraction = AVP.config.weaponConfigs.BULLETS_DAMAGE_BLOCKS_ENABLED ? Level.ExplosionInteraction.BLOCK : Level.ExplosionInteraction.NONE;
+        var explosionInteraction = AVP.config.weaponConfigs.BULLETS_DAMAGE_BLOCKS_ENABLED
+            ? Level.ExplosionInteraction.BLOCK
+            : Level.ExplosionInteraction.NONE;
 
         if (!level.isClientSide) {
             level.explode(this, this.getX(), this.getY(0.0625D), this.getZ(), 5.0F, false, explosionInteraction);

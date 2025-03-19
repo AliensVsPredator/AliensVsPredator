@@ -1,6 +1,5 @@
 package com.avp.mixin;
 
-import com.avp.common.worldgen.biome.AVPBiomes;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.monster.Creeper;
 import net.minecraft.world.entity.monster.Monster;
@@ -10,6 +9,8 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+import com.avp.common.worldgen.biome.AVPBiomes;
+
 @Mixin(Creeper.class)
 public abstract class MixinCreeper_Nuked extends Monster {
 
@@ -18,7 +19,7 @@ public abstract class MixinCreeper_Nuked extends Monster {
     }
 
     @Inject(method = "isPowered", at = @At("HEAD"), cancellable = true)
-    private void setCharged(CallbackInfoReturnable<Boolean> cir){
+    private void setCharged(CallbackInfoReturnable<Boolean> cir) {
         if (this.level().getBiome(this.blockPosition()).is(AVPBiomes.NUKED_BIOME)) {
             cir.setReturnValue(true);
             cir.cancel();

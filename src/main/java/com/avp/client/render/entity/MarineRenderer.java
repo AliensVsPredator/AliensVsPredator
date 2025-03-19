@@ -1,16 +1,18 @@
 package com.avp.client.render.entity;
 
-import com.avp.AVPResources;
-import com.avp.client.animation.MarineAnimator;
-import com.avp.client.render.layer.*;
-import com.avp.common.entity.living.human.AbstractHumanMob;
-import com.avp.common.entity.living.human.marine.MarineMob;
 import mod.azure.azurelib.rewrite.render.entity.AzEntityRenderer;
 import mod.azure.azurelib.rewrite.render.entity.AzEntityRendererConfig;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
 
+import com.avp.AVPResources;
+import com.avp.client.animation.MarineAnimator;
+import com.avp.client.render.layer.*;
+import com.avp.common.entity.living.human.AbstractHumanMob;
+import com.avp.common.entity.living.human.marine.MarineMob;
+
 public class MarineRenderer extends AzEntityRenderer<MarineMob> {
+
     private static final String NAME = "marine";
 
     private static final ResourceLocation MALE_MODEL = AVPResources.entityGeoModelLocation(NAME + "_male");
@@ -21,7 +23,8 @@ public class MarineRenderer extends AzEntityRenderer<MarineMob> {
      * TODO: Change texture to choose a random one when all are completed.
      */
     public MarineRenderer(EntityRendererProvider.Context context) {
-        super(AzEntityRendererConfig.builder(MarineRenderer::getModel, MarineRenderer::getTexture)
+        super(
+            AzEntityRendererConfig.builder(MarineRenderer::getModel, MarineRenderer::getTexture)
                 .setAnimatorProvider(MarineAnimator::new)
                 .addRenderLayer(new HumanArmorLayer<>())
                 .addRenderLayer(new HumanHairLayer(NAME))
@@ -29,7 +32,9 @@ public class MarineRenderer extends AzEntityRenderer<MarineMob> {
                 .addRenderLayer(new HumanBeardLayer(NAME))
                 .addRenderLayer(new HumanOutfitLayer(NAME))
                 .addRenderLayer(new HumanItemLayer<>())
-                .build(), context);
+                .build(),
+            context
+        );
     }
 
     public static ResourceLocation getModel(MarineMob entity) {

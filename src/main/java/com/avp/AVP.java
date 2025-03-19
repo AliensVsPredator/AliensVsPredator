@@ -1,9 +1,5 @@
 package com.avp;
 
-import com.avp.common.config.*;
-import com.avp.common.recipe.AVPRecipes;
-import com.avp.common.effect.AVPEffects;
-import com.avp.common.worldgen.biome.AVPBiomes;
 import mod.azure.azurelib.common.api.common.config.Config;
 import mod.azure.azurelib.common.internal.common.AzureLib;
 import mod.azure.azurelib.common.internal.common.config.ConfigHolder;
@@ -24,12 +20,14 @@ import com.avp.common.block.entity.BlockEntityTypes;
 import com.avp.common.block_item.AVPBlockItems;
 import com.avp.common.command.Commands;
 import com.avp.common.component.DataComponents;
+import com.avp.common.config.*;
 import com.avp.common.creative_mode_tab.initializer.BlocksCreativeModeTabInitializer;
 import com.avp.common.creative_mode_tab.initializer.ColoredBlocksCreativeModeTabInitializer;
 import com.avp.common.creative_mode_tab.initializer.CombatCreativeModeTabInitializer;
 import com.avp.common.creative_mode_tab.initializer.IngredientsCreativeModeTabInitializer;
 import com.avp.common.creative_mode_tab.initializer.SpawnEggsCreativeModeTabInitializer;
 import com.avp.common.creative_mode_tab.initializer.ToolsAndUtilitiesCreativeModeTabInitializer;
+import com.avp.common.effect.AVPEffects;
 import com.avp.common.entity.spawn.SpawnPlacements;
 import com.avp.common.entity.type.AVPEntityTypes;
 import com.avp.common.fuel.AVPFuelRegistry;
@@ -43,8 +41,10 @@ import com.avp.common.menu.MenuTypes;
 import com.avp.common.network.CommonPacketRegistry;
 import com.avp.common.network.ServerPacketHandlerRegistry;
 import com.avp.common.particle.AVPParticleTypes;
+import com.avp.common.recipe.AVPRecipes;
 import com.avp.common.sound.AVPSoundEvents;
 import com.avp.common.worldgen.WorldGen;
+import com.avp.common.worldgen.biome.AVPBiomes;
 import com.avp.data.loot.LootTableModifier;
 
 public class AVP implements ModInitializer {

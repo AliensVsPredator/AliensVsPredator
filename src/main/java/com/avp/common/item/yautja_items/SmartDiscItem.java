@@ -1,6 +1,5 @@
 package com.avp.common.item.yautja_items;
 
-import com.avp.common.entity.projectile.SmartDiscItemEntity;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.stats.Stats;
@@ -12,6 +11,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
+import com.avp.common.entity.projectile.SmartDiscItemEntity;
+
 public class SmartDiscItem extends Item {
 
     public SmartDiscItem() {
@@ -20,23 +21,23 @@ public class SmartDiscItem extends Item {
 
     @Override
     public @NotNull InteractionResultHolder<ItemStack> use(
-            @NotNull Level level,
-            @NotNull Player player,
-            @NotNull InteractionHand usedHand
+        @NotNull Level level,
+        @NotNull Player player,
+        @NotNull InteractionHand usedHand
     ) {
         var itemInHand = player.getItemInHand(usedHand);
         if (!player.getCooldowns().isOnCooldown(this)) {
             player.getCooldowns().addCooldown(this, 5);
             // TODO: Change sound effect here.
             level.playSound(
-                    null,
-                    player.getX(),
-                    player.getY(),
-                    player.getZ(),
-                    SoundEvents.TRIDENT_THROW,
-                    SoundSource.PLAYERS,
-                    0.5F,
-                    0.4F / (level.getRandom().nextFloat() * 0.4F + 0.8F)
+                null,
+                player.getX(),
+                player.getY(),
+                player.getZ(),
+                SoundEvents.TRIDENT_THROW,
+                SoundSource.PLAYERS,
+                0.5F,
+                0.4F / (level.getRandom().nextFloat() * 0.4F + 0.8F)
             );
 
             if (!level.isClientSide) {

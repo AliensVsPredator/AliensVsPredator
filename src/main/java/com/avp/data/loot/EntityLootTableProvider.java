@@ -1,6 +1,5 @@
 package com.avp.data.loot;
 
-import com.avp.common.entity.living.human.marine.MarineLootTable;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.SimpleFabricLootTableProvider;
 import net.minecraft.core.HolderLookup;
@@ -15,6 +14,7 @@ import com.avp.common.entity.living.alien.xenomorph.drone.DroneLootTable;
 import com.avp.common.entity.living.alien.xenomorph.praetorian.PraetorianLootTable;
 import com.avp.common.entity.living.alien.xenomorph.queen.QueenLootTable;
 import com.avp.common.entity.living.alien.xenomorph.warrior.WarriorLootTable;
+import com.avp.common.entity.living.human.marine.MarineLootTable;
 import com.avp.common.entity.living.yautja.YautjaLootTable;
 import com.avp.common.entity.type.AVPEntityTypes;
 import com.avp.common.item.AVPItems;
@@ -36,7 +36,10 @@ public class EntityLootTableProvider extends SimpleFabricLootTableProvider {
         biConsumer.accept(AVPEntityTypes.IRRAIATED_DRONE.getDefaultLootTable(), DroneLootTable.create(provider, AVPItems.CHITIN));
         biConsumer.accept(AVPEntityTypes.WARRIOR.getDefaultLootTable(), WarriorLootTable.create(provider, AVPItems.CHITIN));
         biConsumer.accept(AVPEntityTypes.NETHER_WARRIOR.getDefaultLootTable(), WarriorLootTable.create(provider, AVPItems.NETHER_CHITIN));
-        biConsumer.accept(AVPEntityTypes.ABERRANT_WARRIOR.getDefaultLootTable(), WarriorLootTable.create(provider, AVPItems.ABERRANT_CHITIN));
+        biConsumer.accept(
+            AVPEntityTypes.ABERRANT_WARRIOR.getDefaultLootTable(),
+            WarriorLootTable.create(provider, AVPItems.ABERRANT_CHITIN)
+        );
         biConsumer.accept(AVPEntityTypes.IRRAIATED_WARRIOR.getDefaultLootTable(), WarriorLootTable.create(provider, AVPItems.CHITIN));
         biConsumer.accept(
             AVPEntityTypes.PRAETORIAN.getDefaultLootTable(),

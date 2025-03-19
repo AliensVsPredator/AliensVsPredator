@@ -1,6 +1,5 @@
 package com.avp.client.render.entity;
 
-import com.avp.client.render.layer.RadiationGlowLayer;
 import com.mojang.blaze3d.vertex.PoseStack;
 import mod.azure.azurelib.rewrite.render.entity.AzEntityRenderer;
 import mod.azure.azurelib.rewrite.render.entity.AzEntityRendererConfig;
@@ -11,6 +10,7 @@ import org.jetbrains.annotations.NotNull;
 
 import com.avp.AVPResources;
 import com.avp.client.animation.DroneAnimator;
+import com.avp.client.render.layer.RadiationGlowLayer;
 import com.avp.common.entity.living.alien.xenomorph.drone.Drone;
 
 public class DroneRenderer extends AzEntityRenderer<Drone> {

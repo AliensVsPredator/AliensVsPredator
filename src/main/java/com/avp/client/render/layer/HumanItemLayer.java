@@ -1,6 +1,5 @@
 package com.avp.client.render.layer;
 
-import com.avp.common.entity.living.human.AbstractHumanMob;
 import com.mojang.math.Axis;
 import mod.azure.azurelib.rewrite.model.AzBone;
 import mod.azure.azurelib.rewrite.render.AzRendererPipelineContext;
@@ -9,9 +8,12 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 
+import com.avp.common.entity.living.human.AbstractHumanMob;
+
 public class HumanItemLayer<T extends AbstractHumanMob> extends AzBlockAndItemLayer<T> {
 
     private static final String LEFT_HAND = "leftHand_Item";
+
     private static final String RIGHT_HAND = "rightHand_Item";
 
     @Override

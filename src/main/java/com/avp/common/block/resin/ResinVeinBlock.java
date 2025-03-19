@@ -130,9 +130,9 @@ public class ResinVeinBlock extends MultifaceBlock implements SpreadBehavior {
             }
 
             // TODO: Try not to hardcode this.
-            var resinBlock = this == AVPBlocks.RESIN_VEIN ? AVPBlocks.RESIN :
-                    this == AVPBlocks.NETHER_RESIN_VEIN ? AVPBlocks.NETHER_RESIN :
-                            AVPBlocks.ABERRANT_RESIN;
+            var resinBlock = this == AVPBlocks.RESIN_VEIN
+                ? AVPBlocks.RESIN
+                : this == AVPBlocks.NETHER_RESIN_VEIN ? AVPBlocks.NETHER_RESIN : AVPBlocks.ABERRANT_RESIN;
             var resinBlockState = resinBlock.defaultBlockState();
 
             levelAccessor.setBlock(blockPos2, resinBlockState, 3);

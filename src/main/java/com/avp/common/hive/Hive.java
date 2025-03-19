@@ -1,6 +1,5 @@
 package com.avp.common.hive;
 
-import com.avp.common.entity.living.alien.xenomorph.queen.Queen;
 import com.mojang.serialization.Dynamic;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -25,6 +24,7 @@ import java.util.UUID;
 
 import com.avp.AVP;
 import com.avp.common.entity.living.alien.Alien;
+import com.avp.common.entity.living.alien.xenomorph.queen.Queen;
 import com.avp.common.hive.ai.task.Task;
 import com.avp.common.hive.ai.task.impl.BalanceHiveTask;
 import com.avp.common.hive.ai.task.impl.DebugHiveTask;

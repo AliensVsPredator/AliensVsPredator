@@ -1,10 +1,5 @@
 package com.avp.common.entity.living.yautja;
 
-import com.avp.common.ai.goal.combat.DelayedAttackGoal;
-import com.avp.common.ai.goal.combat.FleeFightGoal;
-import com.avp.common.ai.goal.combat.UseItemGoal;
-import com.avp.common.config.AVPConfig;
-import com.avp.common.item.AVPItems;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
@@ -18,11 +13,16 @@ import net.minecraft.world.entity.vehicle.Boat;
 import net.minecraft.world.entity.vehicle.Minecart;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-
-import com.avp.AVP;
-import com.avp.common.entity.living.alien.Alien;
 import net.minecraft.world.level.ServerLevelAccessor;
 import org.jetbrains.annotations.Nullable;
+
+import com.avp.AVP;
+import com.avp.common.ai.goal.combat.DelayedAttackGoal;
+import com.avp.common.ai.goal.combat.FleeFightGoal;
+import com.avp.common.ai.goal.combat.UseItemGoal;
+import com.avp.common.config.AVPConfig;
+import com.avp.common.entity.living.alien.Alien;
+import com.avp.common.item.AVPItems;
 
 public class Yautja extends Monster {
 
@@ -41,7 +41,7 @@ public class Yautja extends Monster {
     protected void registerGoals() {
         goalSelector.addGoal(1, new FleeFightGoal(this));
         goalSelector.addGoal(1, new DelayedAttackGoal(this, 1.0, true, 5, this::runAttackAnimations));
-        goalSelector.addGoal(1, new UseItemGoal(this,  this::runAttackAnimations));
+        goalSelector.addGoal(1, new UseItemGoal(this, this::runAttackAnimations));
         goalSelector.addGoal(7, new WaterAvoidingRandomStrollGoal(this, 1.0));
         targetSelector.addGoal(1, new HurtByTargetGoal(this));
         targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Player.class, true));
@@ -71,10 +71,15 @@ public class Yautja extends Monster {
     }
 
     @Override
-    public @Nullable SpawnGroupData finalizeSpawn(ServerLevelAccessor serverLevelAccessor, DifficultyInstance difficultyInstance, MobSpawnType mobSpawnType, @Nullable SpawnGroupData spawnGroupData) {
-        if (random.nextInt( 100 ) <= 10) {
+    public @Nullable SpawnGroupData finalizeSpawn(
+        ServerLevelAccessor serverLevelAccessor,
+        DifficultyInstance difficultyInstance,
+        MobSpawnType mobSpawnType,
+        @Nullable SpawnGroupData spawnGroupData
+    ) {
+        if (random.nextInt(100) <= 10) {
             setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(AVPItems.SHURIKEN));
-        } else if (random.nextInt( 100 ) <= 90) {
+        } else if (random.nextInt(100) <= 90) {
             setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(AVPItems.SMART_DISC));
         }
 

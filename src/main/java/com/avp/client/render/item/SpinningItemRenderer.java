@@ -41,12 +41,12 @@ public class SpinningItemRenderer<T extends Entity & ItemSupplier> extends Entit
 
     @Override
     public void render(
-            T entity,
-            float entityYaw,
-            float partialTicks,
-            @NotNull PoseStack poseStack,
-            @NotNull MultiBufferSource buffer,
-            int packedLight
+        T entity,
+        float entityYaw,
+        float partialTicks,
+        @NotNull PoseStack poseStack,
+        @NotNull MultiBufferSource buffer,
+        int packedLight
     ) {
         if (entity.tickCount >= 2 || this.entityRenderDispatcher.camera.getEntity().distanceToSqr(entity) > 12.25) {
             poseStack.pushPose();
@@ -55,14 +55,14 @@ public class SpinningItemRenderer<T extends Entity & ItemSupplier> extends Entit
             float rotation = (entity.tickCount + partialTicks) * 15.0F;
             poseStack.mulPose(Axis.ZP.rotation(rotation));
             this.itemRenderer.renderStatic(
-                    entity.getItem(),
-                    ItemDisplayContext.GROUND,
-                    packedLight,
-                    OverlayTexture.NO_OVERLAY,
-                    poseStack,
-                    buffer,
-                    entity.level(),
-                    entity.getId()
+                entity.getItem(),
+                ItemDisplayContext.GROUND,
+                packedLight,
+                OverlayTexture.NO_OVERLAY,
+                poseStack,
+                buffer,
+                entity.level(),
+                entity.getId()
             );
             poseStack.popPose();
             super.render(entity, entityYaw, partialTicks, poseStack, buffer, packedLight);

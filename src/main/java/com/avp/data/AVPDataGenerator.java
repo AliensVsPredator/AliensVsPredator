@@ -1,7 +1,5 @@
 package com.avp.data;
 
-import com.avp.data.lang.RussianLanguageProvider;
-import com.avp.data.lang.UkrainianLanguageProvider;
 import net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 import net.minecraft.core.RegistrySetBuilder;
@@ -11,6 +9,8 @@ import com.avp.data.advancement.AdvancementProvider;
 import com.avp.data.damage_type.DamageTypeBootstrapper;
 import com.avp.data.damage_type.DamageTypeProvider;
 import com.avp.data.lang.EnglishLanguageProvider;
+import com.avp.data.lang.RussianLanguageProvider;
+import com.avp.data.lang.UkrainianLanguageProvider;
 import com.avp.data.loot.BlockLootTableProvider;
 import com.avp.data.loot.EntityLootTableProvider;
 import com.avp.data.model.BlockModelProvider;

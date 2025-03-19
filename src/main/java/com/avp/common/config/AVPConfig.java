@@ -1,9 +1,10 @@
 package com.avp.common.config;
 
-import com.avp.common.entity.constant.*;
 import mod.azure.azurelib.common.api.common.config.Config;
-import com.avp.AVP;
 import mod.azure.azurelib.common.internal.common.config.Configurable;
+
+import com.avp.AVP;
+import com.avp.common.entity.constant.*;
 
 @Config(id = AVP.MOD_ID)
 public class AVPConfig {
@@ -17,27 +18,35 @@ public class AVPConfig {
 
         @Configurable
         @Configurable.Synchronized
-        @Configurable.Comment("If set to true, xenomorphs will spawn in the overworld naturally along with other monsters. Modifying this requires restarting the game.")
+        @Configurable.Comment(
+            "If set to true, xenomorphs will spawn in the overworld naturally along with other monsters. Modifying this requires restarting the game."
+        )
         public boolean NATURAL_SPAWNING_ENABLED = true;
 
         @Configurable
         @Configurable.Synchronized
-        @Configurable.Comment("If set to true, *ADULT* xenomorphs will spawn in the overworld naturally along with other monsters. Modifying this requires restarting the game.")
+        @Configurable.Comment(
+            "If set to true, *ADULT* xenomorphs will spawn in the overworld naturally along with other monsters. Modifying this requires restarting the game."
+        )
         public boolean ADULT_SPAWNING_ENABLED = true;
 
         @Configurable
         @Configurable.Synchronized
-        @Configurable.Comment("If set to true, *YOUNG* xenomorphs (eggs, facehuggers, bursters, etc.) will spawn in the overworld naturally along with other monsters. Modifying this requires restarting the game.")
+        @Configurable.Comment(
+            "If set to true, *YOUNG* xenomorphs (eggs, facehuggers, bursters, etc.) will spawn in the overworld naturally along with other monsters. Modifying this requires restarting the game."
+        )
         public boolean YOUNG_SPAWNING_ENABLED = true;
 
         @Configurable
         @Configurable.Synchronized
-        @Configurable.Comment({
+        @Configurable.Comment(
+            {
                 "WARNING: This might break mob farms.",
                 "If set to true, certain hostile monster spawns will be removed. This will allow other hostile monsters (xenomorphs, for example) to spawn more frequently. Modifying this requires restarting the game.",
                 "The list of mobs that have their spawns removed can be viewed (and modified) with the avp:tags/entity/remove_vanilla_spawns tag.",
                 "ENABLING THIS MAY BREAK CERTAIN FARMS THAT RELY ON MOB SPAWNS. Enable at your own risk, you have been warned!"
-        })
+            }
+        )
         public boolean REMOVE_VANILLA_SPAWNS = false;
 
         @Configurable
@@ -105,7 +114,6 @@ public class AVPConfig {
         @Configurable.Comment("Yautja spawn settings. Modifying these will require restarting the game.")
         public SpawnSettings YAUTJA_SPAWN = new SpawnSettings(true, 100, 62, 1, 1, 10, false);
 
-
         public static class SpawnSettings {
 
             @Configurable
@@ -143,7 +151,15 @@ public class AVPConfig {
             @Configurable.Comment("If true, spawning requires the entity to be near resin.")
             public boolean requiresResin;
 
-            public SpawnSettings(boolean enabled, int maxY, int minY, int minGroupSize, int maxGroupSize, int weight, boolean requiresResin) {
+            public SpawnSettings(
+                boolean enabled,
+                int maxY,
+                int minY,
+                int minGroupSize,
+                int maxGroupSize,
+                int weight,
+                boolean requiresResin
+            ) {
                 this.enabled = enabled;
                 this.maxY = maxY;
                 this.minY = minY;
@@ -171,135 +187,135 @@ public class AVPConfig {
         @Configurable.Synchronized
         @Configurable.Comment("Modifying any of these will require restarting the game.")
         public AdvancedStats FACEHUGGER_STATS = new AdvancedStats(
-                HealthConstants.FACEHUGGER_HEALTH,
-                0,
-                0,
-                KnockbackResistanceConstants.FACEHUGGER_KNOCKBACK_RESISTANCE,
-                MoveSpeedConstants.FACEHUGGER_SPEED,
-                0f,
-                0f,
-                0,
-                FollowRangeConstants.FACEHUGGER_FOLLOW_RANGE
+            HealthConstants.FACEHUGGER_HEALTH,
+            0,
+            0,
+            KnockbackResistanceConstants.FACEHUGGER_KNOCKBACK_RESISTANCE,
+            MoveSpeedConstants.FACEHUGGER_SPEED,
+            0f,
+            0f,
+            0,
+            FollowRangeConstants.FACEHUGGER_FOLLOW_RANGE
         );
 
         @Configurable
         @Configurable.Synchronized
         @Configurable.Comment("Modifying any of these will require restarting the game.")
         public AdvancedStats CHESTBURSTER_STATS = new AdvancedStats(
-                HealthConstants.CHESTBURSTER_HEALTH,
-                AttackDamageConstants.CHESTBURSTER_ATTACK_DAMAGE,
-                HealthRegenConstants.CHESTBURSTER_HEALTH_REGEN,
-                KnockbackResistanceConstants.CHESTBURSTER_KNOCKBACK_RESISTANCE,
-                MoveSpeedConstants.CHESTBURSTER_SPEED,
-                0.0F,
-                0.0f,
-                750,
-                0
+            HealthConstants.CHESTBURSTER_HEALTH,
+            AttackDamageConstants.CHESTBURSTER_ATTACK_DAMAGE,
+            HealthRegenConstants.CHESTBURSTER_HEALTH_REGEN,
+            KnockbackResistanceConstants.CHESTBURSTER_KNOCKBACK_RESISTANCE,
+            MoveSpeedConstants.CHESTBURSTER_SPEED,
+            0.0F,
+            0.0f,
+            750,
+            0
         );
 
         @Configurable
         @Configurable.Synchronized
         @Configurable.Comment("Modifying any of these will require restarting the game.")
         public AdvancedStats DRONE_STATS = new AdvancedStats(
-                HealthConstants.DRONE_HEALTH,
-                AttackDamageConstants.DRONE_ATTACK_DAMAGE,
-                HealthRegenConstants.DRONE_HEALTH_REGEN,
-                KnockbackResistanceConstants.DRONE_KNOCKBACK_RESISTANCE,
-                MoveSpeedConstants.DRONE_SPEED,
-                ArmorConstants.DRONE_ARMOR,
-                0.0f,
-                20,
-                FollowRangeConstants.DRONE_FOLLOW_RANGE
+            HealthConstants.DRONE_HEALTH,
+            AttackDamageConstants.DRONE_ATTACK_DAMAGE,
+            HealthRegenConstants.DRONE_HEALTH_REGEN,
+            KnockbackResistanceConstants.DRONE_KNOCKBACK_RESISTANCE,
+            MoveSpeedConstants.DRONE_SPEED,
+            ArmorConstants.DRONE_ARMOR,
+            0.0f,
+            20,
+            FollowRangeConstants.DRONE_FOLLOW_RANGE
         );
 
         @Configurable
         @Configurable.Synchronized
         @Configurable.Comment("Modifying any of these will require restarting the game.")
         public AdvancedStats OVAMORPH_STATS = new AdvancedStats(
-                HealthConstants.OVAMORPH_HEALTH,
-                0,
-                HealthRegenConstants.OVAMORPH_HEALTH_REGEN,
-                KnockbackResistanceConstants.OVAMORPH_KNOCKBACK_RESISTANCE,
-                0,
-                0,
-                0,
-                0,
-                0
+            HealthConstants.OVAMORPH_HEALTH,
+            0,
+            HealthRegenConstants.OVAMORPH_HEALTH_REGEN,
+            KnockbackResistanceConstants.OVAMORPH_KNOCKBACK_RESISTANCE,
+            0,
+            0,
+            0,
+            0,
+            0
         );
 
         @Configurable
         @Configurable.Synchronized
         @Configurable.Comment("Modifying any of these will require restarting the game.")
         public AdvancedStats PRAETORIAN_STATS = new AdvancedStats(
-                HealthConstants.PRAETORIAN_HEALTH,
-                AttackDamageConstants.PRAETORIAN_ATTACK_DAMAGE,
-                HealthRegenConstants.PRAETORIAN_HEALTH_REGEN,
-                KnockbackResistanceConstants.PRAETORIAN_KNOCKBACK_RESISTANCE,
-                MoveSpeedConstants.PRAETORIAN_SPEED,
-                ArmorConstants.PRAETORIAN_ARMOR,
-                ArmorToughnessConstants.PRAETORIAN_ARMOR_TOUGHNESS,
-                80,
-                FollowRangeConstants.PRAETORIAN_FOLLOW_RANGE
+            HealthConstants.PRAETORIAN_HEALTH,
+            AttackDamageConstants.PRAETORIAN_ATTACK_DAMAGE,
+            HealthRegenConstants.PRAETORIAN_HEALTH_REGEN,
+            KnockbackResistanceConstants.PRAETORIAN_KNOCKBACK_RESISTANCE,
+            MoveSpeedConstants.PRAETORIAN_SPEED,
+            ArmorConstants.PRAETORIAN_ARMOR,
+            ArmorToughnessConstants.PRAETORIAN_ARMOR_TOUGHNESS,
+            80,
+            FollowRangeConstants.PRAETORIAN_FOLLOW_RANGE
         );
 
         @Configurable
         @Configurable.Synchronized
         @Configurable.Comment("Modifying any of these will require restarting the game.")
         public AdvancedStats QUEEN_STATS = new AdvancedStats(
-                HealthConstants.QUEEN_HEALTH,
-                AttackDamageConstants.QUEEN_ATTACK_DAMAGE,
-                HealthRegenConstants.QUEEN_HEALTH_REGEN,
-                KnockbackResistanceConstants.QUEEN_KNOCKBACK_RESISTANCE,
-                MoveSpeedConstants.QUEEN_SPEED,
-                ArmorConstants.QUEEN_ARMOR,
-                ArmorToughnessConstants.QUEEN_ARMOR_TOUGHNESS,
-                160,
-                FollowRangeConstants.QUEEN_FOLLOW_RANGE
+            HealthConstants.QUEEN_HEALTH,
+            AttackDamageConstants.QUEEN_ATTACK_DAMAGE,
+            HealthRegenConstants.QUEEN_HEALTH_REGEN,
+            KnockbackResistanceConstants.QUEEN_KNOCKBACK_RESISTANCE,
+            MoveSpeedConstants.QUEEN_SPEED,
+            ArmorConstants.QUEEN_ARMOR,
+            ArmorToughnessConstants.QUEEN_ARMOR_TOUGHNESS,
+            160,
+            FollowRangeConstants.QUEEN_FOLLOW_RANGE
         );
 
         @Configurable
         @Configurable.Synchronized
         @Configurable.Comment("Modifying any of these will require restarting the game.")
         public AdvancedStats WARRIOR_STATS = new AdvancedStats(
-                HealthConstants.WARRIOR_HEALTH,
-                AttackDamageConstants.WARRIOR_ATTACK_DAMAGE,
-                HealthRegenConstants.WARRIOR_HEALTH_REGEN,
-                KnockbackResistanceConstants.WARRIOR_KNOCKBACK_RESISTANCE,
-                MoveSpeedConstants.WARRIOR_SPEED,
-                ArmorConstants.WARRIOR_ARMOR,
-                0.0f,
-                40,
-                FollowRangeConstants.WARRIOR_FOLLOW_RANGE
+            HealthConstants.WARRIOR_HEALTH,
+            AttackDamageConstants.WARRIOR_ATTACK_DAMAGE,
+            HealthRegenConstants.WARRIOR_HEALTH_REGEN,
+            KnockbackResistanceConstants.WARRIOR_KNOCKBACK_RESISTANCE,
+            MoveSpeedConstants.WARRIOR_SPEED,
+            ArmorConstants.WARRIOR_ARMOR,
+            0.0f,
+            40,
+            FollowRangeConstants.WARRIOR_FOLLOW_RANGE
         );
 
         @Configurable
         @Configurable.Synchronized
         @Configurable.Comment("Modifying any of these will require restarting the game.")
         public AdvancedStats YAUTJA_STATS = new AdvancedStats(
-                HealthConstants.YAUTJA_HEALTH,
-                AttackDamageConstants.YAUTJA_ATTACK_DAMAGE,
-        0.0f,
-                KnockbackResistanceConstants.YAUTJA_KNOCKBACK_RESISTANCE,
-                MoveSpeedConstants.YAUTJA_SPEED,
-                ArmorConstants.YAUTJA_ARMOR,
-                ArmorToughnessConstants.YAUTJA_ARMOR_TOUGHNESS,
-                0,
-                FollowRangeConstants.YAUTJA_FOLLOW_RANGE
+            HealthConstants.YAUTJA_HEALTH,
+            AttackDamageConstants.YAUTJA_ATTACK_DAMAGE,
+            0.0f,
+            KnockbackResistanceConstants.YAUTJA_KNOCKBACK_RESISTANCE,
+            MoveSpeedConstants.YAUTJA_SPEED,
+            ArmorConstants.YAUTJA_ARMOR,
+            ArmorToughnessConstants.YAUTJA_ARMOR_TOUGHNESS,
+            0,
+            FollowRangeConstants.YAUTJA_FOLLOW_RANGE
         );
 
         @Configurable
         @Configurable.Synchronized
         @Configurable.Comment("Modifying any of these will require restarting the game.")
         public AdvancedStats MARINE_STATS = new AdvancedStats(
-                HealthConstants.PLAYER_HEALTH,
-                AttackDamageConstants.MARINE_ATTACK_DAMAGE,
-                0.0f,
-                0.0f,
-                MoveSpeedConstants.PLAYER_SPRINT_JUMP_SPEED,
-                ArmorConstants.MARINE_ARMOR,
-                0.0f,
-                0,
-                FollowRangeConstants.MARINE_FOLLOW_RANGE
+            HealthConstants.PLAYER_HEALTH,
+            AttackDamageConstants.MARINE_ATTACK_DAMAGE,
+            0.0f,
+            0.0f,
+            MoveSpeedConstants.PLAYER_SPRINT_JUMP_SPEED,
+            ArmorConstants.MARINE_ARMOR,
+            0.0f,
+            0,
+            FollowRangeConstants.MARINE_FOLLOW_RANGE
         );
 
         public static class AdvancedStats {
@@ -349,7 +365,17 @@ public class AVPConfig {
             @Configurable.Comment("The entity's max follow range.")
             public float followRange;
 
-            public AdvancedStats(float health, float attackDamage, float healthRegenPerSecond, float knockbackResistance, float moveSpeed, float armor, float armorToughness, int nestTickrate, float followRange) {
+            public AdvancedStats(
+                float health,
+                float attackDamage,
+                float healthRegenPerSecond,
+                float knockbackResistance,
+                float moveSpeed,
+                float armor,
+                float armorToughness,
+                int nestTickrate,
+                float followRange
+            ) {
                 this.health = health;
                 this.attackDamage = attackDamage;
                 this.healthRegenPerSecond = healthRegenPerSecond;
@@ -372,16 +398,22 @@ public class AVPConfig {
 
         @Configurable
         @Configurable.Synchronized
-        @Configurable.Comment({"The minimum distance between hive centers in blocks. This controls how far apart hives are.",
+        @Configurable.Comment(
+            {
+                "The minimum distance between hive centers in blocks. This controls how far apart hives are.",
                 "If this value is less than 2x the hive radius, hives will begin to overlap.",
-                "If this value is more than 2x the hive radius, then there will be buffer zones between hives where no hives will form."})
+                "If this value is more than 2x the hive radius, then there will be buffer zones between hives where no hives will form." }
+        )
         public int MINIMUM_DISTANCE_BETWEEN_HIVES_IN_BLOCKS = 1024;
 
         @Configurable
         @Configurable.Synchronized
-        @Configurable.Comment({"The minimum distance between hive centers in blocks. This controls how far apart hives are.",
+        @Configurable.Comment(
+            {
+                "The minimum distance between hive centers in blocks. This controls how far apart hives are.",
                 "If this value is less than 2x the hive radius, hives will begin to overlap.",
-                "If this value is more than 2x the hive radius, then there will be buffer zones between hives where no hives will form."})
+                "If this value is more than 2x the hive radius, then there will be buffer zones between hives where no hives will form." }
+        )
         public int HIVE_RADIUS_IN_BLOCKS = 64;
 
         @Configurable
@@ -396,10 +428,12 @@ public class AVPConfig {
 
         @Configurable
         @Configurable.Synchronized
-        @Configurable.Comment({
+        @Configurable.Comment(
+            {
                 "The number of hive members required for a single praetorian to appear.",
                 "For example, if set to 8, then there will be a praetorian for every 8 hive members."
-        })
+            }
+        )
         public int HIVE_MEMBERS_REQUIRED_FOR_PRAETORIAN = 8;
 
         @Configurable
@@ -453,6 +487,7 @@ public class AVPConfig {
     public WeaponConfigs weaponConfigs = new WeaponConfigs();
 
     public static class WeaponConfigs {
+
         @Configurable
         @Configurable.Synchronized
         @Configurable.Comment("If enabled, bullets from guns will damage blocks.")

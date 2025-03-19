@@ -33,10 +33,13 @@ public class ResinSpreadBehavior implements SpreadBehavior {
     ) {
         var nodeBlock = levelAccessor.getBlockState(nodePos).getBlock();
         // TODO: Try not to hardcode this.
-        var resinBlock = (ResinVeinBlock) (nodeBlock == AVPBlocks.NETHER_RESIN_NODE ? AVPBlocks.NETHER_RESIN_VEIN
-                : nodeBlock == AVPBlocks.ABERRANT_RESIN_NODE ? AVPBlocks.ABERRANT_RESIN_VEIN
-                : nodeBlock == AVPBlocks.IRRADIATED_RESIN_NODE ? AVPBlocks.IRRADIATED_RESIN_VEIN
-                : AVPBlocks.RESIN_VEIN);
+        var resinBlock = (ResinVeinBlock) (nodeBlock == AVPBlocks.NETHER_RESIN_NODE
+            ? AVPBlocks.NETHER_RESIN_VEIN
+            : nodeBlock == AVPBlocks.ABERRANT_RESIN_NODE
+                ? AVPBlocks.ABERRANT_RESIN_VEIN
+                : nodeBlock == AVPBlocks.IRRADIATED_RESIN_NODE
+                    ? AVPBlocks.IRRADIATED_RESIN_VEIN
+                    : AVPBlocks.RESIN_VEIN);
 
         if (facings == null) {
             var spreader = resinBlock.getSameSpaceSpreader();

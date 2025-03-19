@@ -1,8 +1,9 @@
 package com.avp.common.manager;
 
+import net.minecraft.resources.ResourceLocation;
+
 import com.avp.AVPResources;
 import com.avp.common.entity.living.human.AbstractHumanMob;
-import net.minecraft.resources.ResourceLocation;
 
 public class BeardManager {
 

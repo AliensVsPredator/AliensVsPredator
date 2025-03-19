@@ -1,10 +1,12 @@
 package com.avp.common.manager;
 
-import com.avp.common.entity.living.human.AbstractHumanMob;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 
+import com.avp.common.entity.living.human.AbstractHumanMob;
+
 public class GenderManager {
+
     private static final String GENDER_TAG_KEY = "gender";
 
     private final AbstractHumanMob entity;

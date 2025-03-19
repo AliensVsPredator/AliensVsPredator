@@ -1,9 +1,5 @@
 package com.avp.common.entity.projectile;
 
-import com.avp.common.entity.type.AVPEntityTypes;
-import com.avp.common.item.AVPItems;
-import com.avp.common.util.ItemGoalUtil;
-import com.avp.server.BlockBreakProgressManager;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -13,6 +9,11 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import org.jetbrains.annotations.NotNull;
+
+import com.avp.common.entity.type.AVPEntityTypes;
+import com.avp.common.item.AVPItems;
+import com.avp.common.util.ItemGoalUtil;
+import com.avp.server.BlockBreakProgressManager;
 
 public class SmartDiscItemEntity extends ThrowableItemProjectile {
 
@@ -58,9 +59,9 @@ public class SmartDiscItemEntity extends ThrowableItemProjectile {
     protected void onHitBlock(@NotNull BlockHitResult result) {
         if (!this.level().isClientSide) {
             BlockBreakProgressManager.damage(
-                    level(),
-                    result.getBlockPos(),
-                    2.0F
+                level(),
+                result.getBlockPos(),
+                2.0F
             );
             this.dealtDamage = true;
         }
@@ -71,8 +72,8 @@ public class SmartDiscItemEntity extends ThrowableItemProjectile {
     protected void onHitEntity(@NotNull EntityHitResult result) {
         if (result.getEntity() instanceof LivingEntity livingEntity && getOwner() != null && livingEntity != getOwner()) {
             livingEntity.hurt(
-                    damageSources().thrown(getOwner(), livingEntity),
-                    5.0F
+                damageSources().thrown(getOwner(), livingEntity),
+                5.0F
             );
             this.dealtDamage = true;
         }

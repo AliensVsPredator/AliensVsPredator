@@ -1,6 +1,5 @@
 package com.avp.client.render.layer;
 
-import com.avp.common.entity.living.human.AbstractHumanMob;
 import mod.azure.azurelib.rewrite.model.AzBone;
 import mod.azure.azurelib.rewrite.render.AzRendererPipelineContext;
 import mod.azure.azurelib.rewrite.render.layer.AzArmorLayer;
@@ -10,15 +9,24 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
+import com.avp.common.entity.living.human.AbstractHumanMob;
+
 public class HumanArmorLayer<T extends AbstractHumanMob> extends AzArmorLayer<T> {
 
     private static final String LEFT_BOOT = "armorBipedLeftFoot";
+
     private static final String RIGHT_BOOT = "armorBipedRightFoot";
+
     private static final String LEFT_ARMOR_LEG = "armorBipedLeftLeg";
+
     private static final String RIGHT_ARMOR_LEG = "armorBipedRightLeg";
+
     private static final String CHESTPLATE = "armorBipedBody";
+
     private static final String RIGHT_SLEEVE = "armorBipedRightArm";
+
     private static final String LEFT_SLEEVE = "armorBipedLeftArm";
+
     private static final String HELMET = "armorBipedHead";
 
     @Override
@@ -49,7 +57,7 @@ public class HumanArmorLayer<T extends AbstractHumanMob> extends AzArmorLayer<T>
     @Override
     protected @NotNull ModelPart getModelPartForBone(AzRendererPipelineContext<T> context, AzBone bone, HumanoidModel<?> baseModel) {
         return switch (bone.getName()) {
-            case HELMET ->  baseModel.head;
+            case HELMET -> baseModel.head;
             case CHESTPLATE -> baseModel.body;
             case LEFT_BOOT, LEFT_ARMOR_LEG -> baseModel.leftLeg;
             case RIGHT_BOOT, RIGHT_ARMOR_LEG -> baseModel.rightLeg;

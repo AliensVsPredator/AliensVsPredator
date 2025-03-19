@@ -1,9 +1,10 @@
 package com.avp.client.render.armor;
 
-import com.avp.AVPResources;
 import mod.azure.azurelib.rewrite.render.armor.AzArmorRenderer;
 import mod.azure.azurelib.rewrite.render.armor.AzArmorRendererConfig;
 import net.minecraft.resources.ResourceLocation;
+
+import com.avp.AVPResources;
 
 public class TacticalCamoArmorRenderer extends AzArmorRenderer {
 

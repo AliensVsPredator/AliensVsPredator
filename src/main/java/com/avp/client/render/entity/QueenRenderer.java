@@ -49,7 +49,7 @@ public class QueenRenderer extends AzEntityRenderer<Queen> {
         if (queen.isAberrant()) {
             return ABERRANT_TEXTURE;
         }
-        
+
         return TEXTURE;
     }
 }

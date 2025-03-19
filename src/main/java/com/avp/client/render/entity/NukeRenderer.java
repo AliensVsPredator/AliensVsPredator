@@ -1,6 +1,5 @@
 package com.avp.client.render.entity;
 
-import com.avp.common.block.entity.NukeBE;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -13,7 +12,10 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import org.jetbrains.annotations.NotNull;
 
+import com.avp.common.block.entity.NukeBE;
+
 public class NukeRenderer<T extends Entity> extends EntityRenderer<T> {
+
     private final BlockRenderDispatcher blockRenderer;
 
     public NukeRenderer(EntityRendererProvider.Context context) {
@@ -22,7 +24,14 @@ public class NukeRenderer<T extends Entity> extends EntityRenderer<T> {
     }
 
     @Override
-    public void render(T nukeEntity, float partialTicks, float animationProgress, PoseStack poseStack, MultiBufferSource bufferSource, int lightLevel) {
+    public void render(
+        T nukeEntity,
+        float partialTicks,
+        float animationProgress,
+        PoseStack poseStack,
+        MultiBufferSource bufferSource,
+        int lightLevel
+    ) {
         if (nukeEntity instanceof NukeBE nukeBE) {
             poseStack.pushPose();
             poseStack.mulPose(Axis.YP.rotationDegrees(-90.0F));
@@ -31,12 +40,12 @@ public class NukeRenderer<T extends Entity> extends EntityRenderer<T> {
             // Render the Nuke Block with alternating white "flashes" when the fuse is running
             var shouldFlash = nukeBE.getFuse() / 5 % 2 == 0;
             TntMinecartRenderer.renderWhiteSolidBlock(
-                    this.blockRenderer,
-                    nukeBE.getBlockState(),
-                    poseStack,
-                    bufferSource,
-                    lightLevel,
-                    shouldFlash
+                this.blockRenderer,
+                nukeBE.getBlockState(),
+                poseStack,
+                bufferSource,
+                lightLevel,
+                shouldFlash
             );
 
             poseStack.popPose();

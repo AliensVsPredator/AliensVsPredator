@@ -1,10 +1,5 @@
 package com.avp.common.entity.living.human;
 
-import com.avp.common.MoveAnalysis;
-import com.avp.common.ai.goal.StrollAroundInWaterGoal;
-import com.avp.common.ai.goal.combat.FleeFightGoal;
-import com.avp.common.config.AVPConfig;
-import com.avp.common.manager.*;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -27,11 +22,17 @@ import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import com.avp.common.MoveAnalysis;
+import com.avp.common.ai.goal.StrollAroundInWaterGoal;
+import com.avp.common.ai.goal.combat.FleeFightGoal;
+import com.avp.common.config.AVPConfig;
+import com.avp.common.manager.*;
+
 public abstract class AbstractHumanMob extends PathfinderMob {
 
     public static final EntityDataAccessor<Boolean> SET_GENDER = SynchedEntityData.defineId(
-            AbstractHumanMob.class,
-            EntityDataSerializers.BOOLEAN
+        AbstractHumanMob.class,
+        EntityDataSerializers.BOOLEAN
     );
 
     protected Integer cachedSecondRandomValue;
@@ -156,7 +157,12 @@ public abstract class AbstractHumanMob extends PathfinderMob {
 
     @Nullable
     @Override
-    public SpawnGroupData finalizeSpawn(@NotNull ServerLevelAccessor level, @NotNull DifficultyInstance difficulty, @NotNull MobSpawnType spawnType, @Nullable SpawnGroupData spawnGroupData) {
+    public SpawnGroupData finalizeSpawn(
+        @NotNull ServerLevelAccessor level,
+        @NotNull DifficultyInstance difficulty,
+        @NotNull MobSpawnType spawnType,
+        @Nullable SpawnGroupData spawnGroupData
+    ) {
         this.getGenderManager().tick();
         return super.finalizeSpawn(level, difficulty, spawnType, spawnGroupData);
     }

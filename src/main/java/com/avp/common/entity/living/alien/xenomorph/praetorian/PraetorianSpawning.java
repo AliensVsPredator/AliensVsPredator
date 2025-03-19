@@ -1,8 +1,8 @@
 package com.avp.common.entity.living.alien.xenomorph.praetorian;
 
-import com.avp.AVP;
 import net.minecraft.world.entity.SpawnPlacements;
 
+import com.avp.AVP;
 import com.avp.common.entity.living.alien.AlienSpawning;
 
 public class PraetorianSpawning {

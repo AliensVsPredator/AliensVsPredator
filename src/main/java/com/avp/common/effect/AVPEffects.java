@@ -1,10 +1,11 @@
 package com.avp.common.effect;
 
-import com.avp.AVPResources;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.effect.MobEffect;
+
+import com.avp.AVPResources;
 
 public class AVPEffects {
 
@@ -14,7 +15,5 @@ public class AVPEffects {
         return Registry.registerForHolder(BuiltInRegistries.MOB_EFFECT, AVPResources.location(id), mobEffect);
     }
 
-    public static void initialize() {
-
-    }
+    public static void initialize() {}
 }

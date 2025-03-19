@@ -1,6 +1,5 @@
 package com.avp.common.entity.living.alien;
 
-import com.avp.common.config.AVPConfig;
 import net.minecraft.core.BlockPos;
 import net.minecraft.tags.BiomeTags;
 import net.minecraft.util.RandomSource;
@@ -12,6 +11,7 @@ import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.biome.Biomes;
 
 import com.avp.common.block.AVPBlockTags;
+import com.avp.common.config.AVPConfig;
 import com.avp.common.entity.AVPEntityTypeTags;
 
 public class AlienSpawning {

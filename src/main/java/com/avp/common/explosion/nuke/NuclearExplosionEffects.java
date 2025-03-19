@@ -1,7 +1,5 @@
 package com.avp.common.explosion.nuke;
 
-import com.avp.common.block.AVPBlocks;
-import com.avp.common.worldgen.biome.AVPBiomes;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
@@ -12,18 +10,19 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.biome.Biome;
-import net.minecraft.world.level.biome.Biomes;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.SnowLayerBlock;
 
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.avp.common.block.AVPBlocks;
 import com.avp.common.explosion.Explosion;
 import com.avp.common.util.ExplosionUtil;
-import net.minecraft.world.level.block.SnowLayerBlock;
+import com.avp.common.worldgen.biome.AVPBiomes;
 
 public class NuclearExplosionEffects {
 
@@ -88,8 +87,11 @@ public class NuclearExplosionEffects {
             }
 
             if (blockState.isSolidRender(level, pos) && level.getRandom().nextInt(10) < 2) {
-                level.setBlock(pos.above(), AVPBlocks.ASH_BLOCK.defaultBlockState().setValue(SnowLayerBlock.LAYERS, 1),
-                        flags);
+                level.setBlock(
+                    pos.above(),
+                    AVPBlocks.ASH_BLOCK.defaultBlockState().setValue(SnowLayerBlock.LAYERS, 1),
+                    flags
+                );
             }
             level.setBlock(pos, transformedBlock.defaultBlockState(), flags);
         } else if (distance > 0.75) {
@@ -104,7 +106,7 @@ public class NuclearExplosionEffects {
 
         level.sendParticles(ParticleTypes.FLASH, centerPos.getX(), centerPos.getY(), centerPos.getZ(), 1, 0, 0, 0, 0);
         level.sendParticles(ParticleTypes.SMOKE, centerPos.getX(), centerPos.getY(), centerPos.getZ(), 1, 0, 0, 0, 0);
-        
+
         tryTransformChunkBiome(level, pos);
     }
 
@@ -117,19 +119,23 @@ public class NuclearExplosionEffects {
 
                 if (!visitedChunks.contains(expandedChunkPos)) {
                     var biome = level.registryAccess()
-                            .registryOrThrow(Registries.BIOME)
-                            .getHolderOrThrow(AVPBiomes.NUKED_BIOME);
+                        .registryOrThrow(Registries.BIOME)
+                        .getHolderOrThrow(AVPBiomes.NUKED_BIOME);
 
-                    setBiome(level, new BlockPos(expandedChunkPos.getMinBlockX(), 0, expandedChunkPos.getMinBlockZ()),
-                            biome);
+                    setBiome(
+                        level,
+                        new BlockPos(expandedChunkPos.getMinBlockX(), 0, expandedChunkPos.getMinBlockZ()),
+                        biome
+                    );
                     level.getChunkSource().chunkMap.resendBiomesForChunks(
-                            List.of(level.getChunk(expandedChunkPos.x, expandedChunkPos.z)));
+                        List.of(level.getChunk(expandedChunkPos.x, expandedChunkPos.z))
+                    );
 
                     visitedChunks.add(expandedChunkPos);
                 }
             }
         }
-        }
+    }
 
     private void setBiome(ServerLevel level, BlockPos pos, Holder<Biome> holder) {
         var chunk = level.getChunkAt(pos);

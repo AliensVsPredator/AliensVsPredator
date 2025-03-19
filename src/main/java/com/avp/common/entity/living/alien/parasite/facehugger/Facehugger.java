@@ -1,6 +1,5 @@
 package com.avp.common.entity.living.alien.parasite.facehugger;
 
-import com.avp.AVP;
 import net.minecraft.core.BlockPos;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.EntityType;
@@ -16,6 +15,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
 
+import com.avp.AVP;
 import com.avp.common.MoveAnalysis;
 import com.avp.common.ai.goal.combat.LungeAtTargetGoal;
 import com.avp.common.entity.living.alien.parasite.Parasite;

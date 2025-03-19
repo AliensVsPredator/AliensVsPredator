@@ -5,14 +5,15 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.*;
-
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class IndustrialFurnaceRecipe extends AbstractCookingRecipe {
+
     public static final Map<Item, Item> MELTING_RECIPES = new HashMap<>();
+
     private static final float SPEED_MULTIPLIER = 0.5f; // 50% faster than regular furnace
 
     static {
@@ -56,7 +57,14 @@ public class IndustrialFurnaceRecipe extends AbstractCookingRecipe {
         MELTING_RECIPES.put(input, output);
     }
 
-    public IndustrialFurnaceRecipe(String group, CookingBookCategory cookingBookCategory, Ingredient ingredient, ItemStack result, float experience, int cookingTime) {
+    public IndustrialFurnaceRecipe(
+        String group,
+        CookingBookCategory cookingBookCategory,
+        Ingredient ingredient,
+        ItemStack result,
+        float experience,
+        int cookingTime
+    ) {
         super(AVPRecipes.INDUSTRIAL_FURNACE_RECIPE_TYPE, group, cookingBookCategory, ingredient, result, experience, cookingTime);
     }
 
@@ -70,17 +78,17 @@ public class IndustrialFurnaceRecipe extends AbstractCookingRecipe {
         }
 
         var vanillaTime = 200;
-        var processTime = (int)(vanillaTime * SPEED_MULTIPLIER);
+        var processTime = (int) (vanillaTime * SPEED_MULTIPLIER);
         var recipeId = BuiltInRegistries.ITEM.getKey(input).getPath() + "_to_" +
-                BuiltInRegistries.ITEM.getKey(output).getPath();
+            BuiltInRegistries.ITEM.getKey(output).getPath();
 
         return new IndustrialFurnaceRecipe(
-                recipeId,
-                determineRecipeCategory(input),
-                Ingredient.of(input),
-                new ItemStack(output),
-                0.1f, // Default experience
-                processTime
+            recipeId,
+            determineRecipeCategory(input),
+            Ingredient.of(input),
+            new ItemStack(output),
+            0.1f, // Default experience
+            processTime
         );
     }
 

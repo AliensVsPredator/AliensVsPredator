@@ -1,7 +1,5 @@
 package com.avp.common.entity.living.alien;
 
-import com.avp.common.config.AVPConfig;
-import com.avp.common.worldgen.biome.AVPBiomes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -22,12 +20,14 @@ import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.pathfinder.PathType;
 import org.jetbrains.annotations.Nullable;
 
+import com.avp.common.config.AVPConfig;
 import com.avp.common.gene.GeneKeys;
 import com.avp.common.level.effect.AVPMobEffectTags;
 import com.avp.common.manager.GeneManager;
 import com.avp.common.manager.HiveManager;
 import com.avp.common.util.AcidBleedUtil;
 import com.avp.common.util.AlienHurtUtil;
+import com.avp.common.worldgen.biome.AVPBiomes;
 
 public abstract class Alien extends Monster {
 
@@ -47,13 +47,13 @@ public abstract class Alien extends Monster {
     );
 
     public static final EntityDataAccessor<Integer> JELLY_COUNT = SynchedEntityData.defineId(
-            Alien.class,
-            EntityDataSerializers.INT
+        Alien.class,
+        EntityDataSerializers.INT
     );
 
     public static final EntityDataAccessor<Boolean> IS_POISONED = SynchedEntityData.defineId(
-            Alien.class,
-            EntityDataSerializers.BOOLEAN
+        Alien.class,
+        EntityDataSerializers.BOOLEAN
     );
 
     protected final GeneManager geneManager;
@@ -166,7 +166,10 @@ public abstract class Alien extends Monster {
             updateStateBasedOnGenetics();
             healPassively();
             // 10% chance when in Nuked Biome to become Aberrant
-            if (this.tickCount % 60 == 0 && this.level().getBiome(this.blockPosition()).is(AVPBiomes.NUKED_BIOME) && this.getRandom().nextIntBetweenInclusive(1, 100) >= 90) {
+            if (
+                this.tickCount % 60 == 0 && this.level().getBiome(this.blockPosition()).is(AVPBiomes.NUKED_BIOME) && this.getRandom()
+                    .nextIntBetweenInclusive(1, 100) >= 90
+            ) {
                 this.setIrraiated(true);
             }
         }

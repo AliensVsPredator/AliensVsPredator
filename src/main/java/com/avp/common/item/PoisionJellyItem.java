@@ -1,6 +1,5 @@
 package com.avp.common.item;
 
-import com.avp.common.entity.living.alien.Alien;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.LivingEntity;
@@ -9,6 +8,8 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
+import com.avp.common.entity.living.alien.Alien;
+
 public class PoisionJellyItem extends Item {
 
     public PoisionJellyItem() {
@@ -16,7 +17,12 @@ public class PoisionJellyItem extends Item {
     }
 
     @Override
-    public @NotNull InteractionResult interactLivingEntity(ItemStack itemStack, Player player, LivingEntity livingEntity, InteractionHand interactionHand) {
+    public @NotNull InteractionResult interactLivingEntity(
+        ItemStack itemStack,
+        Player player,
+        LivingEntity livingEntity,
+        InteractionHand interactionHand
+    ) {
         if (livingEntity instanceof Alien xenomorph) {
             xenomorph.getEntityData().set(Alien.IS_POISONED, true);
         }

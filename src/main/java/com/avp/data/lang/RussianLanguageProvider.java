@@ -1,12 +1,5 @@
 package com.avp.data.lang;
 
-import com.avp.common.block.AVPBlocks;
-import com.avp.common.creative_mode_tab.CreativeModeTabs;
-import com.avp.common.entity.type.AVPEntityTypes;
-import com.avp.common.item.AVPItems;
-import com.avp.common.item.ArmorItems;
-import com.avp.common.item.SpawnEggItems;
-import com.avp.common.sound.AVPSoundEvents;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricLanguageProvider;
 import net.minecraft.core.HolderLookup;
@@ -14,6 +7,14 @@ import net.minecraft.sounds.SoundEvent;
 
 import java.util.Arrays;
 import java.util.concurrent.CompletableFuture;
+
+import com.avp.common.block.AVPBlocks;
+import com.avp.common.creative_mode_tab.CreativeModeTabs;
+import com.avp.common.entity.type.AVPEntityTypes;
+import com.avp.common.item.AVPItems;
+import com.avp.common.item.ArmorItems;
+import com.avp.common.item.SpawnEggItems;
+import com.avp.common.sound.AVPSoundEvents;
 
 public class RussianLanguageProvider extends FabricLanguageProvider {
 
@@ -519,9 +520,21 @@ public class RussianLanguageProvider extends FabricLanguageProvider {
         addSound(translationBuilder, AVPSoundEvents.WEAPON_M88_MOD_4_COMBAT_PISTOL_RELOAD, "M88 Mod 4 боевой пистолет перезаряжается");
         addSound(translationBuilder, AVPSoundEvents.WEAPON_M88_MOD_4_COMBAT_PISTOL_SHOOT, "M88 Mod 4 боевой пистолет стреляет");
         addSound(translationBuilder, AVPSoundEvents.WEAPON_OLD_PAINLESS_SHOOT, "Старый безболезненный (миниган) стреляет");
-        addSound(translationBuilder, AVPSoundEvents.WEAPON_OLD_PAINLESS_SHOOT_FINISH, "Старый безболезненный (миниган) прекращает стрельбу");
-        addSound(translationBuilder, AVPSoundEvents.WEAPON_OLD_PAINLESS_SHOOT_SPINNING, "Корпус старого безболезненного (минигана) вращается");
-        addSound(translationBuilder, AVPSoundEvents.WEAPON_OLD_PAINLESS_SHOOT_START, "Корпус старого безболезненного (минигана) начинает вращаться");
+        addSound(
+            translationBuilder,
+            AVPSoundEvents.WEAPON_OLD_PAINLESS_SHOOT_FINISH,
+            "Старый безболезненный (миниган) прекращает стрельбу"
+        );
+        addSound(
+            translationBuilder,
+            AVPSoundEvents.WEAPON_OLD_PAINLESS_SHOOT_SPINNING,
+            "Корпус старого безболезненного (минигана) вращается"
+        );
+        addSound(
+            translationBuilder,
+            AVPSoundEvents.WEAPON_OLD_PAINLESS_SHOOT_START,
+            "Корпус старого безболезненного (минигана) начинает вращаться"
+        );
         addSound(translationBuilder, AVPSoundEvents.WEAPON_ZX_76_SHOTGUN_SHOOT, "ZX-76 дробовик стреляет");
 
         // Tooltips
@@ -574,12 +587,24 @@ public class RussianLanguageProvider extends FabricLanguageProvider {
         translationBuilder.add("config.screen.avp", "AVP Config");
 
         translationBuilder.add("config.avp.option.hiveConfigs", "Hive Configs");
-        translationBuilder.add("config.avp.option.MINIMUM_DISTANCE_BETWEEN_HIVES_IN_BLOCKS", "Minimum distance between hive centers in blocks");
+        translationBuilder.add(
+            "config.avp.option.MINIMUM_DISTANCE_BETWEEN_HIVES_IN_BLOCKS",
+            "Minimum distance between hive centers in blocks"
+        );
         translationBuilder.add("config.avp.option.HIVE_RADIUS_IN_BLOCKS", "The radius of hives in blocks");
-        translationBuilder.add("config.avp.option.HIVE_LEASH_RADIUS_IN_BLOCKS", "Maximum distance away from a hive that Xenomorphs can join or remain as a member");
+        translationBuilder.add(
+            "config.avp.option.HIVE_LEASH_RADIUS_IN_BLOCKS",
+            "Maximum distance away from a hive that Xenomorphs can join or remain as a member"
+        );
         translationBuilder.add("config.avp.option.HIVE_MAX_PRAETORIAN_COUNT", "Maximum number of Praetorians allowed within a hive");
-        translationBuilder.add("config.avp.option.HIVE_MEMBERS_REQUIRED_FOR_PRAETORIAN", "Number of hive members required to spawn a Praetorian");
-        translationBuilder.add("config.avp.option.HIVE_DARKEN_SCREEN", "Determines if the screen should darken when the hive boss bar appears");
+        translationBuilder.add(
+            "config.avp.option.HIVE_MEMBERS_REQUIRED_FOR_PRAETORIAN",
+            "Number of hive members required to spawn a Praetorian"
+        );
+        translationBuilder.add(
+            "config.avp.option.HIVE_DARKEN_SCREEN",
+            "Determines if the screen should darken when the hive boss bar appears"
+        );
         translationBuilder.add("config.avp.option.HIVE_DEBUG_ENABLED", "Enables hive debugging");
         translationBuilder.add("config.avp.option.HIVE_DEBUG_HIGHLIGHT_LEADER", "Applies a glow effect to the hive leader");
         translationBuilder.add("config.avp.option.HIVE_DEBUG_HIGHLIGHT_ALL_MEMBERS", "Applies a glow effect to all hive members");
@@ -592,12 +617,30 @@ public class RussianLanguageProvider extends FabricLanguageProvider {
 
         translationBuilder.add("config.avp.option.spawnConfigs", "Mob Spawn Configs");
         translationBuilder.add("config.avp.option.NATURAL_SPAWNING_ENABLED", "Enable natural spawning for Xenomorphs in the overworld.");
-        translationBuilder.add("config.avp.option.ADULT_SPAWNING_ENABLED", "Enable natural spawning for adult Xenomorphs in the overworld.");
-        translationBuilder.add("config.avp.option.YOUNG_SPAWNING_ENABLED", "Enable natural spawning for young Xenomorphs (eggs, facehuggers, bursters, etc.) in the overworld.");
-        translationBuilder.add("config.avp.option.REMOVE_VANILLA_SPAWNS", "Removes certain hostile monster spawns, allowing others like Xenomorphs to spawn more frequently.");
-        translationBuilder.add("config.avp.option.ALIEN_CUSTOM_MOB_CATEGORY_ENABLED", "Enable separate spawn cap for aliens and predators.");
-        translationBuilder.add("config.avp.option.ALIEN_CUSTOM_MOB_CATEGORY_LIMIT", "Maximum spawn count for aliens in the custom mob category.");
-        translationBuilder.add("config.avp.option.PREDATOR_CUSTOM_MOB_CATEGORY_LIMIT", "Maximum spawn count for predators in the custom mob category.");
+        translationBuilder.add(
+            "config.avp.option.ADULT_SPAWNING_ENABLED",
+            "Enable natural spawning for adult Xenomorphs in the overworld."
+        );
+        translationBuilder.add(
+            "config.avp.option.YOUNG_SPAWNING_ENABLED",
+            "Enable natural spawning for young Xenomorphs (eggs, facehuggers, bursters, etc.) in the overworld."
+        );
+        translationBuilder.add(
+            "config.avp.option.REMOVE_VANILLA_SPAWNS",
+            "Removes certain hostile monster spawns, allowing others like Xenomorphs to spawn more frequently."
+        );
+        translationBuilder.add(
+            "config.avp.option.ALIEN_CUSTOM_MOB_CATEGORY_ENABLED",
+            "Enable separate spawn cap for aliens and predators."
+        );
+        translationBuilder.add(
+            "config.avp.option.ALIEN_CUSTOM_MOB_CATEGORY_LIMIT",
+            "Maximum spawn count for aliens in the custom mob category."
+        );
+        translationBuilder.add(
+            "config.avp.option.PREDATOR_CUSTOM_MOB_CATEGORY_LIMIT",
+            "Maximum spawn count for predators in the custom mob category."
+        );
         translationBuilder.add("config.avp.option.CHESTBURSTER_SPAWN", "Chestburster spawn settings");
         translationBuilder.add("config.avp.option.DRONE_SPAWN", "Drone spawn settings");
         translationBuilder.add("config.avp.option.NETHER_CHESTBURSTER_SPAWN", "Nether Chestburster spawn settings");

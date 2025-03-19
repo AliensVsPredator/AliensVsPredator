@@ -1,6 +1,5 @@
 package com.avp.common.block;
 
-import com.avp.common.block.entity.NukeBE;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.player.Player;
@@ -15,8 +14,12 @@ import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.NotNull;
 
+import com.avp.common.block.entity.NukeBE;
+
 public class NukeBlock extends Block {
+
     public static final MapCodec<NukeBlock> CODEC = simpleCodec(NukeBlock::new);
+
     public static final BooleanProperty UNSTABLE = BlockStateProperties.UNSTABLE;
 
     public NukeBlock(Properties properties) {
@@ -44,7 +47,6 @@ public class NukeBlock extends Block {
         if (level.hasNeighborSignal(blockPos)) {
             this.summonNukeBE(level, blockPos);
         }
-
     }
 
     @Override
@@ -70,7 +72,7 @@ public class NukeBlock extends Block {
             if (projectile.isOnFire() && projectile.mayInteract(level, blockPos)) {
                 this.summonNukeBE(level, blockPos);
             } else if (projectile.mayInteract(level, blockPos)) {
-               blockState.setValue(UNSTABLE, true);
+                blockState.setValue(UNSTABLE, true);
             }
         }
     }

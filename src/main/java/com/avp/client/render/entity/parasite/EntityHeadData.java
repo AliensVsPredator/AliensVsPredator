@@ -1,11 +1,12 @@
 package com.avp.client.render.entity.parasite;
 
-import com.avp.common.entity.type.AVPEntityTypes;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import com.avp.common.entity.type.AVPEntityTypes;
 
 public record EntityHeadData(
     Vec3 size,

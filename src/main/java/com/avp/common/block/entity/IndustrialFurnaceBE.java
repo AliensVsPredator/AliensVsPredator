@@ -1,6 +1,5 @@
 package com.avp.common.block.entity;
 
-import com.avp.common.recipe.AVPRecipes;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
@@ -17,6 +16,8 @@ import net.minecraft.world.level.block.entity.AbstractFurnaceBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
 
+import com.avp.common.recipe.AVPRecipes;
+
 public class IndustrialFurnaceBE extends AbstractFurnaceBlockEntity {
 
     public IndustrialFurnaceBE(BlockPos blockPos, BlockState blockState) {
@@ -30,7 +31,9 @@ public class IndustrialFurnaceBE extends AbstractFurnaceBlockEntity {
 
     public static int getTotalCookTime(Level level, AbstractFurnaceBlockEntity abstractFurnaceBlockEntity) {
         SingleRecipeInput singleRecipeInput = new SingleRecipeInput(abstractFurnaceBlockEntity.getItem(0));
-        return abstractFurnaceBlockEntity.quickCheck.getRecipeFor(singleRecipeInput, level).map(recipeHolder -> recipeHolder.value().getCookingTime() / 2).orElse(200);
+        return abstractFurnaceBlockEntity.quickCheck.getRecipeFor(singleRecipeInput, level)
+            .map(recipeHolder -> recipeHolder.value().getCookingTime() / 2)
+            .orElse(200);
     }
 
     @Override
@@ -46,7 +49,12 @@ public class IndustrialFurnaceBE extends AbstractFurnaceBlockEntity {
         }
     }
 
-    public static void serverTick(Level level, BlockPos blockPos, BlockState blockState, AbstractFurnaceBlockEntity abstractFurnaceBlockEntity) {
+    public static void serverTick(
+        Level level,
+        BlockPos blockPos,
+        BlockState blockState,
+        AbstractFurnaceBlockEntity abstractFurnaceBlockEntity
+    ) {
         boolean bl = abstractFurnaceBlockEntity.isLit();
         boolean bl2 = false;
         if (abstractFurnaceBlockEntity.isLit()) {
@@ -97,7 +105,11 @@ public class IndustrialFurnaceBE extends AbstractFurnaceBlockEntity {
                 abstractFurnaceBlockEntity.cookingProgress = 0;
             }
         } else if (!abstractFurnaceBlockEntity.isLit() && abstractFurnaceBlockEntity.cookingProgress > 0) {
-            abstractFurnaceBlockEntity.cookingProgress = Mth.clamp(abstractFurnaceBlockEntity.cookingProgress - 2, 0, abstractFurnaceBlockEntity.cookingTotalTime);
+            abstractFurnaceBlockEntity.cookingProgress = Mth.clamp(
+                abstractFurnaceBlockEntity.cookingProgress - 2,
+                0,
+                abstractFurnaceBlockEntity.cookingTotalTime
+            );
         }
 
         if (bl != abstractFurnaceBlockEntity.isLit()) {
@@ -109,7 +121,6 @@ public class IndustrialFurnaceBE extends AbstractFurnaceBlockEntity {
         if (bl2) {
             setChanged(level, blockPos, blockState);
         }
-
     }
 
     @Override

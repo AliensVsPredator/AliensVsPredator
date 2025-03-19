@@ -1,8 +1,5 @@
 package com.avp.common.entity.projectile;
 
-import com.avp.common.effect.AVPEffects;
-import com.avp.common.entity.type.AVPEntityTypes;
-import com.avp.common.item.AVPItems;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.sounds.SoundEvents;
@@ -14,6 +11,10 @@ import net.minecraft.world.entity.projectile.ThrowableItemProjectile;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
+
+import com.avp.common.effect.AVPEffects;
+import com.avp.common.entity.type.AVPEntityTypes;
+import com.avp.common.item.AVPItems;
 
 public class ThrownGrenade extends BouncingItemProjectile {
 
@@ -36,7 +37,6 @@ public class ThrownGrenade extends BouncingItemProjectile {
         this.shouldBounce = true;
         this.maxLife = 5 * 20;
     }
-
 
     @Override
     public void tick() {
@@ -72,13 +72,18 @@ public class ThrownGrenade extends BouncingItemProjectile {
 
     @Override
     protected void onDeath() {
-        level().explode(this, getX(), getY(), getZ(),  isIrradiated ? 9F : 3F, isIncendiary, Level.ExplosionInteraction.BLOCK);
+        level().explode(this, getX(), getY(), getZ(), isIrradiated ? 9F : 3F, isIncendiary, Level.ExplosionInteraction.BLOCK);
         if (isIrradiated && this.level() instanceof Level serverLevel) {
-            var areaEffectCloudEntity = new AreaEffectCloud(serverLevel, this.blockPosition().getX(), this.blockPosition().getY(), this.blockPosition().getZ());
+            var areaEffectCloudEntity = new AreaEffectCloud(
+                serverLevel,
+                this.blockPosition().getX(),
+                this.blockPosition().getY(),
+                this.blockPosition().getZ()
+            );
             areaEffectCloudEntity.setRadius(10.0F);
             areaEffectCloudEntity.setDuration(100);
             areaEffectCloudEntity.setRadiusPerTick(
-                    -areaEffectCloudEntity.getRadius() / areaEffectCloudEntity.getDuration()
+                -areaEffectCloudEntity.getRadius() / areaEffectCloudEntity.getDuration()
             );
             areaEffectCloudEntity.setParticle(ParticleTypes.ASH);
             areaEffectCloudEntity.addEffect(new MobEffectInstance(AVPEffects.RADIATION_EFFECT, Integer.MAX_VALUE, 0));

@@ -1,12 +1,13 @@
 package com.avp.client.render.entity.parasite;
 
-import com.avp.common.entity.type.AVPEntityTypes;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.BiFunction;
+
+import com.avp.common.entity.type.AVPEntityTypes;
 
 public record EntityHeadOffsetData(
     BiFunction<EntityHeadData, Entity, Double> verticalOffsetSupplier,
@@ -103,8 +104,8 @@ public record EntityHeadOffsetData(
                 new EntityHeadOffsetData(EntityHeadOffsetData::wolfVerticalOffset, EntityHeadOffsetData::wolfFaceOffset)
             ),
             Map.entry(
-                    AVPEntityTypes.MARINE,
-                    new EntityHeadOffsetData(EntityHeadOffsetData::marineVerticalOffset, EntityHeadOffsetData::marineFaceOffset)
+                AVPEntityTypes.MARINE,
+                new EntityHeadOffsetData(EntityHeadOffsetData::marineVerticalOffset, EntityHeadOffsetData::marineFaceOffset)
             )
         )
     );

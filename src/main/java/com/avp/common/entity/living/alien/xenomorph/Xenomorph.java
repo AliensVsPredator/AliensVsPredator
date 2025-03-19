@@ -1,7 +1,5 @@
 package com.avp.common.entity.living.alien.xenomorph;
 
-import com.avp.common.ai.goal.combat.FleeFightGoal;
-import com.avp.common.lifecycle.registry.AlienLifecycleRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -39,9 +37,11 @@ import java.util.function.BiConsumer;
 import com.avp.common.MoveAnalysis;
 import com.avp.common.ai.goal.DigToTargetGoal;
 import com.avp.common.ai.goal.StrollAroundInWaterGoal;
+import com.avp.common.ai.goal.combat.FleeFightGoal;
 import com.avp.common.entity.living.alien.Alien;
 import com.avp.common.gene.GeneKeys;
 import com.avp.common.gene.behavior.GeneDecoders;
+import com.avp.common.lifecycle.registry.AlienLifecycleRegistry;
 import com.avp.common.manager.CrawlingManager;
 import com.avp.common.manager.GrowthManager;
 import com.avp.common.manager.VibrationSystemManager;
@@ -149,7 +149,10 @@ public abstract class Xenomorph extends Alien implements ResinProducer {
             var type = this.getType();
             var growthStage = AlienLifecycleRegistry.getOrNull(null, type);
 
-            if (growthStage != null && !this.getEntityData().get(Xenomorph.IS_POISONED) && this.getEntityData().get(Xenomorph.JELLY_COUNT) >= this.maxJellyToGrowth()) {
+            if (
+                growthStage != null && !this.getEntityData().get(Xenomorph.IS_POISONED) && this.getEntityData()
+                    .get(Xenomorph.JELLY_COUNT) >= this.maxJellyToGrowth()
+            ) {
                 this.growthManager().grow(growthStage);
             }
         }

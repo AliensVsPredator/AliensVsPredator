@@ -1,9 +1,5 @@
 package com.avp.common.util;
 
-import com.avp.AVP;
-import com.avp.common.command.nuke.ExplosionProgressTracker;
-import com.avp.common.entity.living.alien.Alien;
-import com.avp.common.explosion.nuke.NuclearExplosionEffects;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
@@ -12,7 +8,11 @@ import net.minecraft.world.phys.Vec3;
 
 import java.util.List;
 
+import com.avp.AVP;
+import com.avp.common.command.nuke.ExplosionProgressTracker;
+import com.avp.common.entity.living.alien.Alien;
 import com.avp.common.explosion.Explosion;
+import com.avp.common.explosion.nuke.NuclearExplosionEffects;
 
 public class ExplosionUtil {
 
@@ -70,43 +70,43 @@ public class ExplosionUtil {
         var nuclearExplosionEffects = new NuclearExplosionEffects();
 
         return Explosion.builder(level, center)
-                .withRadius(Direction.Plane.HORIZONTAL, radius)
-                .withRadius(Direction.UP, radius / 2)
-                .withRadius(Direction.DOWN, 16 * 2)
-                .onExplosionStart(() -> {
-                    progressTracker.startTimer();
+            .withRadius(Direction.Plane.HORIZONTAL, radius)
+            .withRadius(Direction.UP, radius / 2)
+            .withRadius(Direction.DOWN, 16 * 2)
+            .onExplosionStart(() -> {
+                progressTracker.startTimer();
 
-                    var entities = ExplosionUtil.getEntitiesInRadius(level, center, radius);
+                var entities = ExplosionUtil.getEntitiesInRadius(level, center, radius);
 
-                    for (var entity : entities) {
-                        var distance = entity.distanceToSqr(center);
-                        var damage = ExplosionUtil.computeDamage(radius, 5, 1000, distance);
-                        if (entity instanceof Alien alien) {
-                            alien.setIrraiated(true);
-                        }
-                        entity.igniteForSeconds(15);
-                        entity.hurt(level.damageSources().explosion(null), (float) damage);
-                        ExplosionUtil.applyKnockback(center, radius, entity, maxKnockback, distance);
+                for (var entity : entities) {
+                    var distance = entity.distanceToSqr(center);
+                    var damage = ExplosionUtil.computeDamage(radius, 5, 1000, distance);
+                    if (entity instanceof Alien alien) {
+                        alien.setIrraiated(true);
                     }
-                })
-                .onBlockSample(($, pos) -> {
-                    nuclearExplosionEffects.apply($, pos);
-                    progressTracker.incrementBlockDestroyCounter();
-                })
-                .onExplosionFinish(() -> {
-                    progressTracker.stopTimer();
+                    entity.igniteForSeconds(15);
+                    entity.hurt(level.damageSources().explosion(null), (float) damage);
+                    ExplosionUtil.applyKnockback(center, radius, entity, maxKnockback, distance);
+                }
+            })
+            .onBlockSample(($, pos) -> {
+                nuclearExplosionEffects.apply($, pos);
+                progressTracker.incrementBlockDestroyCounter();
+            })
+            .onExplosionFinish(() -> {
+                progressTracker.stopTimer();
 
-                    var timeTakenInMillis = progressTracker.timeTaken();
-                    var timeTakenInTicks = timeTakenInMillis / 50;
+                var timeTakenInMillis = progressTracker.timeTaken();
+                var timeTakenInTicks = timeTakenInMillis / 50;
 
-                    AVP.LOGGER.info(
-                            "Explosion @ {} completed in {}ms ({} ticks), destroying {} blocks!",
-                            center,
-                            timeTakenInMillis,
-                            timeTakenInTicks,
-                            progressTracker.blocksDestroyed()
-                    );
-                })
-                .build();
+                AVP.LOGGER.info(
+                    "Explosion @ {} completed in {}ms ({} ticks), destroying {} blocks!",
+                    center,
+                    timeTakenInMillis,
+                    timeTakenInTicks,
+                    progressTracker.blocksDestroyed()
+                );
+            })
+            .build();
     }
 }

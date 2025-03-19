@@ -1,8 +1,5 @@
 package com.avp.common.item;
 
-import com.avp.common.item.grenades.GrendeItem;
-import com.avp.common.item.yautja_items.ShurikenItem;
-import com.avp.common.item.yautja_items.SmartDiscItem;
 import mod.azure.azurelib.rewrite.animation.cache.AzIdentityRegistry;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -16,8 +13,11 @@ import net.minecraft.world.item.SwordItem;
 import java.util.function.Function;
 
 import com.avp.AVPResources;
+import com.avp.common.item.grenades.GrendeItem;
 import com.avp.common.item.gun.GunData;
 import com.avp.common.item.old_painless.OldPainlessItem;
+import com.avp.common.item.yautja_items.ShurikenItem;
+import com.avp.common.item.yautja_items.SmartDiscItem;
 
 public class AVPItems {
 
@@ -26,11 +26,11 @@ public class AVPItems {
 
     public static final Item SHURIKEN = register(new ShurikenItem(), "shuriken");
 
-    public static final Item GRENADE = register(new GrendeItem(false, false),"grenade_standard");
+    public static final Item GRENADE = register(new GrendeItem(false, false), "grenade_standard");
 
-    public static final Item GRENADE_INCENDIARY = register(new GrendeItem(true, false),"grenade_incendiary");
+    public static final Item GRENADE_INCENDIARY = register(new GrendeItem(true, false), "grenade_incendiary");
 
-    public static final Item GRENADE_IRRADIATED = register(new GrendeItem(false, true),"grenade_irradiated");
+    public static final Item GRENADE_IRRADIATED = register(new GrendeItem(false, true), "grenade_irradiated");
 
     public static final Item CASELESS_BULLET = register("caseless_bullet");
 
@@ -228,16 +228,22 @@ public class AVPItems {
 
     public static final Item ZINC_INGOT = register("zinc_ingot");
 
-    //Nuggets
+    // Nuggets
     public static final Item FERROALUMINUM_NUGGET = register("ferroaluminum_nugget");
-    public static final Item STEEL_NUGGET = register("steel_nugget");
-    public static final Item BRASS_NUGGET = register("brass_nugget");
-    public static final Item TITANIUM_NUGGET = register("titanium_nugget");
-    public static final Item LEAD_NUGGET = register("lead_nugget");
-    public static final Item URANIUM_NUGGET = register(new RadiatedItem(), "uranium_nugget");
-    public static final Item ZINC_NUGGET = register("zinc_nugget");
-    public static final Item ALUMINUM_NUGGET = register("aluminum_nugget");
 
+    public static final Item STEEL_NUGGET = register("steel_nugget");
+
+    public static final Item BRASS_NUGGET = register("brass_nugget");
+
+    public static final Item TITANIUM_NUGGET = register("titanium_nugget");
+
+    public static final Item LEAD_NUGGET = register("lead_nugget");
+
+    public static final Item URANIUM_NUGGET = register(new RadiatedItem(), "uranium_nugget");
+
+    public static final Item ZINC_NUGGET = register("zinc_nugget");
+
+    public static final Item ALUMINUM_NUGGET = register("aluminum_nugget");
 
     // Tools & Utilities
     public static final Item ARMOR_CASE = register(new ArmorCaseItem(new Item.Properties().stacksTo(1)), "armor_case");
@@ -354,7 +360,18 @@ public class AVPItems {
     }
 
     public static void initialize() {
-        AzIdentityRegistry.register(OLD_PAINLESS, F903WE_RIFLE, FLAMETHROWER_SEVASTOPOL, M4RA_BATTLE_RIFLE, M6B_ROCKET_LAUNCHER, M37_12_SHOTGUN,
-                M41A_PULSE_RIFLE, M42A3_SNIPER_RIFLE, M56_SMARTGUN, M88_MOD_4_COMBAT_PISTOL, ZX_76_SHOTGUN);
+        AzIdentityRegistry.register(
+            OLD_PAINLESS,
+            F903WE_RIFLE,
+            FLAMETHROWER_SEVASTOPOL,
+            M4RA_BATTLE_RIFLE,
+            M6B_ROCKET_LAUNCHER,
+            M37_12_SHOTGUN,
+            M41A_PULSE_RIFLE,
+            M42A3_SNIPER_RIFLE,
+            M56_SMARTGUN,
+            M88_MOD_4_COMBAT_PISTOL,
+            ZX_76_SHOTGUN
+        );
     }
 }

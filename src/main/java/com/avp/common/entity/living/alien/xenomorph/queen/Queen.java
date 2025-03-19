@@ -1,6 +1,5 @@
 package com.avp.common.entity.living.alien.xenomorph.queen;
 
-import com.avp.common.entity.type.AVPEntityTypes;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.monster.Monster;
@@ -8,11 +7,12 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.SpawnEggItem;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import com.avp.AVP;
 import com.avp.common.entity.living.alien.xenomorph.Xenomorph;
+import com.avp.common.entity.type.AVPEntityTypes;
 import com.avp.common.util.resin.ResinData;
-import org.jetbrains.annotations.Nullable;
 
 public class Queen extends Xenomorph {
 

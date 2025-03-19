@@ -27,7 +27,8 @@ public class AVPItemTagProvider extends FabricTagProvider.ItemTagProvider {
                 ArmorItems.MK50_HELMET,
                 ArmorItems.MK50_CHESTPLATE,
                 ArmorItems.MK50_LEGGINGS,
-                ArmorItems.MK50_BOOTS);
+                ArmorItems.MK50_BOOTS
+            );
 
         // Acid-resistant items
         getOrCreateTagBuilder(AVPItemTags.ACID_IMMUNE)

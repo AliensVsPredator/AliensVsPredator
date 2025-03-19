@@ -1,9 +1,5 @@
 package com.avp.common.effect;
 
-import com.avp.common.damage.AVPDamageTypes;
-import com.avp.common.entity.AVPEntityTypeTags;
-import com.avp.common.item.AVPItemTags;
-import com.avp.common.util.AVPPredicates;
 import mod.azure.azurelib.core.object.Color;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
@@ -18,6 +14,11 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
 import java.util.WeakHashMap;
+
+import com.avp.common.damage.AVPDamageTypes;
+import com.avp.common.entity.AVPEntityTypeTags;
+import com.avp.common.item.AVPItemTags;
+import com.avp.common.util.AVPPredicates;
 
 public class RadiationStatusEffect extends MobEffect {
 
@@ -35,9 +36,9 @@ public class RadiationStatusEffect extends MobEffect {
     @Override
     public boolean applyEffectTick(LivingEntity livingEntity, int amplifier) {
         var armorCheck = livingEntity.getItemBySlot(EquipmentSlot.HEAD).is(AVPItemTags.RADIATION_RESISTANT_ARMOR) &&
-                livingEntity.getItemBySlot(EquipmentSlot.CHEST).is(AVPItemTags.RADIATION_RESISTANT_ARMOR) &&
-                livingEntity.getItemBySlot(EquipmentSlot.LEGS).is(AVPItemTags.RADIATION_RESISTANT_ARMOR) &&
-                livingEntity.getItemBySlot(EquipmentSlot.FEET).is(AVPItemTags.RADIATION_RESISTANT_ARMOR);
+            livingEntity.getItemBySlot(EquipmentSlot.CHEST).is(AVPItemTags.RADIATION_RESISTANT_ARMOR) &&
+            livingEntity.getItemBySlot(EquipmentSlot.LEGS).is(AVPItemTags.RADIATION_RESISTANT_ARMOR) &&
+            livingEntity.getItemBySlot(EquipmentSlot.FEET).is(AVPItemTags.RADIATION_RESISTANT_ARMOR);
         var currentDuration = effectTracker.getOrDefault(livingEntity, 0);
 
         if (AVPPredicates.IS_IMMORTAL.test(livingEntity) || livingEntity.getType().is(AVPEntityTypeTags.RADIATION_RESISTANT)) {
@@ -56,15 +57,28 @@ public class RadiationStatusEffect extends MobEffect {
                     break;
 
                 case 1:
-                    this.handleStatusEffects(livingEntity, 100, amplifier, MobEffects.WEAKNESS, MobEffects.HUNGER,
-                            MobEffects.MOVEMENT_SLOWDOWN);
+                    this.handleStatusEffects(
+                        livingEntity,
+                        100,
+                        amplifier,
+                        MobEffects.WEAKNESS,
+                        MobEffects.HUNGER,
+                        MobEffects.MOVEMENT_SLOWDOWN
+                    );
                     if (livingEntity.tickCount % 40 == 0)
                         livingEntity.hurt(damageSource, 2.1F);
                     break;
 
                 default:
-                    this.handleStatusEffects(livingEntity, 100, amplifier, MobEffects.WEAKNESS, MobEffects.HUNGER,
-                            MobEffects.MOVEMENT_SLOWDOWN, MobEffects.BLINDNESS);
+                    this.handleStatusEffects(
+                        livingEntity,
+                        100,
+                        amplifier,
+                        MobEffects.WEAKNESS,
+                        MobEffects.HUNGER,
+                        MobEffects.MOVEMENT_SLOWDOWN,
+                        MobEffects.BLINDNESS
+                    );
                     if (livingEntity.tickCount % 20 == 0)
                         livingEntity.hurt(damageSource, 5.0F);
                     break;

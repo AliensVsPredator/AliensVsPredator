@@ -1,19 +1,15 @@
 package com.avp.common.entity.living.human;
 
-import com.avp.common.ai.goal.WaterMoveControl;
-import com.avp.common.ai.goal.combat.DelayedAttackGoal;
-import com.avp.common.ai.goal.combat.UseItemGoal;
-import com.avp.common.ai.path.CrawlPathNodeEvaluator;
-import com.avp.common.entity.living.alien.xenomorph.Xenomorph;
 import mod.azure.azurelib.common.api.common.ai.pathing.AzureNavigation;
 import net.minecraft.world.entity.ai.control.MoveControl;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.ai.goal.GoalSelector;
 import net.minecraft.world.entity.ai.navigation.GroundPathNavigation;
 import net.minecraft.world.entity.ai.navigation.WaterBoundPathNavigation;
-import net.minecraft.world.level.pathfinder.PathFinder;
 import net.minecraft.world.level.pathfinder.PathType;
-import org.jetbrains.annotations.NotNull;
+
+import com.avp.common.ai.goal.WaterMoveControl;
+import com.avp.common.ai.goal.combat.UseItemGoal;
 
 public class HumanNavigationManager {
 
@@ -30,7 +26,7 @@ public class HumanNavigationManager {
     private final Goal waterAttackGoal;
 
     public HumanNavigationManager(AbstractHumanMob humanMob, MoveControl moveControl) {
-        this.groundAttackGoal = new UseItemGoal(humanMob,  humanMob::runAttackAnimations);
+        this.groundAttackGoal = new UseItemGoal(humanMob, humanMob::runAttackAnimations);
         this.groundMoveControl = moveControl;
         this.groundNavigation = new AzureNavigation(humanMob, humanMob.level());
 

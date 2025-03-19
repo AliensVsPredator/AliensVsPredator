@@ -1,10 +1,5 @@
 package com.avp.common.block.entity;
 
-import com.avp.AVP;
-import com.avp.common.block.AVPBlocks;
-import com.avp.common.entity.type.AVPEntityTypes;
-import com.avp.common.util.ExplosionUtil;
-import com.avp.server.ServerScheduler;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
@@ -23,10 +18,20 @@ import org.jetbrains.annotations.NotNull;
 
 import java.time.Duration;
 
+import com.avp.AVP;
+import com.avp.common.block.AVPBlocks;
+import com.avp.common.entity.type.AVPEntityTypes;
+import com.avp.common.util.ExplosionUtil;
+import com.avp.server.ServerScheduler;
+
 public class NukeBE extends Entity {
+
     private static final EntityDataAccessor<Integer> DATA_FUSE_ID = SynchedEntityData.defineId(NukeBE.class, EntityDataSerializers.INT);
 
-    private static final EntityDataAccessor<BlockState> DATA_BLOCK_STATE_ID = SynchedEntityData.defineId(NukeBE.class, EntityDataSerializers.BLOCK_STATE);
+    private static final EntityDataAccessor<BlockState> DATA_BLOCK_STATE_ID = SynchedEntityData.defineId(
+        NukeBE.class,
+        EntityDataSerializers.BLOCK_STATE
+    );
 
     public NukeBE(EntityType<? extends Entity> entityType, Level level) {
         super(entityType, level);
@@ -63,13 +68,15 @@ public class NukeBE extends Entity {
     protected void readAdditionalSaveData(CompoundTag compoundTag) {
         this.setFuse(compoundTag.getShort("fuse"));
         if (compoundTag.contains("block_state", 10)) {
-            this.setBlockState(NbtUtils.readBlockState(this.level().holderLookup(Registries.BLOCK), compoundTag.getCompound("block_state")));
+            this.setBlockState(
+                NbtUtils.readBlockState(this.level().holderLookup(Registries.BLOCK), compoundTag.getCompound("block_state"))
+            );
         }
     }
 
     @Override
     protected void addAdditionalSaveData(CompoundTag compoundTag) {
-        compoundTag.putShort("fuse", (short)this.getFuse());
+        compoundTag.putShort("fuse", (short) this.getFuse());
         compoundTag.put("block_state", NbtUtils.writeBlockState(this.getBlockState()));
     }
 
@@ -100,8 +107,12 @@ public class NukeBE extends Entity {
             if (!this.level().isClientSide) {
                 if (isNukeEnabled()) {
                     ServerScheduler.schedule(() -> {
-                        var explosion = ExplosionUtil.createNuclearExplosion((ServerLevel) this.level(),
-                                this.blockPosition().getCenter(), 16 * 8, 5);
+                        var explosion = ExplosionUtil.createNuclearExplosion(
+                            (ServerLevel) this.level(),
+                            this.blockPosition().getCenter(),
+                            16 * 8,
+                            5
+                        );
                         explosion.explode();
                     }, Duration.ofSeconds(1));
                 }
