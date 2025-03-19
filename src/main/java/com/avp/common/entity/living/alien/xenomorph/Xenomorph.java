@@ -139,6 +139,13 @@ public abstract class Xenomorph extends Alien implements ResinProducer {
                 stopRiding();
             }
 
+            var target = getTarget();
+
+            if (target != null && !AlienPredicates.isThreateningTarget(this, target)) {
+                // If the target is no longer valid, stop targeting them.
+                setTarget(null);
+            }
+
             var type = this.getType();
             var growthStage = AlienLifecycleRegistry.getOrNull(null, type);
 
