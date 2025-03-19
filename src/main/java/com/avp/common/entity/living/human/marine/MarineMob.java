@@ -49,6 +49,14 @@ public class MarineMob extends AbstractHumanMob {
     }
 
     @Override
+    public void tick() {
+        super.tick();
+        if (this.getTarget() != null && this.getTarget() instanceof MarineMob) {
+            this.setTarget(null);
+        }
+    }
+
+    @Override
     protected void registerGoals() {
         super.registerGoals();
         goalSelector.addGoal(1, new DelayedAttackGoal(this, 1.0, true, 5, this::runAttackAnimations));
