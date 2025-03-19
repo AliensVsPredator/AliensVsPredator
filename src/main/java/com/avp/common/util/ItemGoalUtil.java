@@ -56,7 +56,7 @@ public class ItemGoalUtil {
         }
     }
 
-    public static void shootShuriken(LivingEntity entity) {
+    public static void shootShuriken(PathfinderMob entity) {
         // TODO: Change sound effect here.
         entity.level()
             .playSound(
@@ -69,16 +69,33 @@ public class ItemGoalUtil {
                 0.5F,
                 0.4F / (entity.level().getRandom().nextFloat() * 0.4F + 0.8F)
             );
-        if (!entity.level().isClientSide) {
+
+        if (!entity.level().isClientSide && entity.getTarget() != null) {
+            var targetX = entity.getTarget().getX();
+            var targetY = entity.getTarget().getY(1.0);
+            var targetZ = entity.getTarget().getZ();
+            var sourceX = entity.getX();
+            var sourceY = entity.getY(0.5);
+            var sourceZ = entity.getZ();
+            var directionX = targetX - sourceX;
+            var directionY = targetY - sourceY;
+            var directionZ = targetZ - sourceZ;
+            var length = Math.sqrt(directionX * directionX + directionY * directionY + directionZ * directionZ);
+            directionX /= length;
+            directionY /= length;
+            directionZ /= length;
+
             var shurikenItemEntity = new ShurikenItemEntity(entity.level(), entity);
-            shurikenItemEntity.setItem(entity.getUseItem());
             shurikenItemEntity.setOwner(entity);
-            shurikenItemEntity.shootFromRotation(entity, entity.getXRot(), entity.getYRot(), 0.0F, 1.5F, 1.0F);
+            shurikenItemEntity.setPos(sourceX, sourceY, sourceZ);
+            var velocity = 1.5F;
+            shurikenItemEntity.setDeltaMovement(directionX * velocity, directionY * velocity, directionZ * velocity);
+
             entity.level().addFreshEntity(shurikenItemEntity);
         }
     }
 
-    public static void shootSmartDisc(LivingEntity entity) {
+    public static void shootSmartDisc(PathfinderMob entity) {
         // TODO: Change sound effect here.
         entity.level()
             .playSound(
@@ -92,11 +109,26 @@ public class ItemGoalUtil {
                 0.4F / (entity.level().getRandom().nextFloat() * 0.4F + 0.8F)
             );
 
-        if (!entity.level().isClientSide) {
+        if (!entity.level().isClientSide && entity.getTarget() != null) {
+            var targetX = entity.getTarget().getX();
+            var targetY = entity.getTarget().getY(1.0);
+            var targetZ = entity.getTarget().getZ();
+            var sourceX = entity.getX();
+            var sourceY = entity.getY(0.5);
+            var sourceZ = entity.getZ();
+            var directionX = targetX - sourceX;
+            var directionY = targetY - sourceY;
+            var directionZ = targetZ - sourceZ;
+            var length = Math.sqrt(directionX * directionX + directionY * directionY + directionZ * directionZ);
+            directionX /= length;
+            directionY /= length;
+            directionZ /= length;
+
             var smartDiscItemEntity = new SmartDiscItemEntity(entity.level(), entity);
-            smartDiscItemEntity.setItem(entity.getUseItem());
             smartDiscItemEntity.setOwner(entity);
-            smartDiscItemEntity.shootFromRotation(entity, entity.getXRot(), entity.getYRot(), 0.0F, 3.5F, 1.0F);
+            smartDiscItemEntity.setPos(sourceX, sourceY, sourceZ);
+            var velocity = 3.5F;
+            smartDiscItemEntity.setDeltaMovement(directionX * velocity, directionY * velocity, directionZ * velocity);
             entity.level().addFreshEntity(smartDiscItemEntity);
         }
     }
