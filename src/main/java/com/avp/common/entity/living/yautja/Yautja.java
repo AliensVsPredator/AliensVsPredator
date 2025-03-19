@@ -43,9 +43,9 @@ public class Yautja extends Monster {
         goalSelector.addGoal(1, new DelayedAttackGoal(this, 1.0, true, 5, this::runAttackAnimations));
         goalSelector.addGoal(1, new UseItemGoal(this, this::runAttackAnimations));
         goalSelector.addGoal(7, new WaterAvoidingRandomStrollGoal(this, 1.0));
-        targetSelector.addGoal(1, new HurtByTargetGoal(this));
         targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Player.class, true));
         targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, Alien.class, true));
+        targetSelector.addGoal(1, new HurtByTargetGoal(this).setAlertOthers(Yautja.class));
     }
 
     public void runAttackAnimations() {
