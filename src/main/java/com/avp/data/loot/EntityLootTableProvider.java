@@ -54,9 +54,9 @@ public class EntityLootTableProvider extends SimpleFabricLootTableProvider {
             AVPEntityTypes.IRRAIATED_PRAETORIAN.getDefaultLootTable(),
             PraetorianLootTable.create(provider, AVPItems.ABERRANT_CHITIN, AVPItems.PLATED_ABERRANT_CHITIN)
         );
-        biConsumer.accept(AVPEntityTypes.QUEEN.getDefaultLootTable(), QueenLootTable.LOOT_TABLE.apply(provider));
-        biConsumer.accept(AVPEntityTypes.ABERRANT_QUEEN.getDefaultLootTable(), QueenLootTable.LOOT_TABLE.apply(provider));
-        biConsumer.accept(AVPEntityTypes.NETHER_QUEEN.getDefaultLootTable(), QueenLootTable.LOOT_TABLE.apply(provider));
+        biConsumer.accept(AVPEntityTypes.QUEEN.getDefaultLootTable(), QueenLootTable.NORMAL_LOOT_TABLE.apply(provider));
+        biConsumer.accept(AVPEntityTypes.ABERRANT_QUEEN.getDefaultLootTable(), QueenLootTable.ABERRANT_LOOT_TABLE.apply(provider));
+        biConsumer.accept(AVPEntityTypes.NETHER_QUEEN.getDefaultLootTable(), QueenLootTable.NETHER_LOOT_TABLE.apply(provider));
         biConsumer.accept(AVPEntityTypes.YAUTJA.getDefaultLootTable(), YautjaLootTable.LOOT_TABLE.apply(provider));
         biConsumer.accept(AVPEntityTypes.MARINE.getDefaultLootTable(), MarineLootTable.LOOT_TABLE.apply(provider));
     }
