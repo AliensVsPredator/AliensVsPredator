@@ -78,7 +78,7 @@ public class AVPConfig {
         @Configurable
         @Configurable.Synchronized
         @Configurable.Comment("Nether Queen spawn settings. Modifying these will require restarting the game.")
-        public SpawnSettings NETHER_QUEEN_SPAWN = new SpawnSettings(true, 128, 0, 1, 1, 5, false);
+        public SpawnSettings NETHER_QUEEN_SPAWN = new SpawnSettings(true, 128, 0, 1, 1, 5, true);
 
         @Configurable
         @Configurable.Synchronized
