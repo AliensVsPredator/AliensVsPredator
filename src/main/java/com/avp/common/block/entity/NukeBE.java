@@ -30,6 +30,7 @@ public class NukeBE extends Entity {
 
     public NukeBE(EntityType<? extends Entity> entityType, Level level) {
         super(entityType, level);
+        this.noCulling = true;
     }
 
     public NukeBE(Level level) {
