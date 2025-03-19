@@ -34,6 +34,8 @@ public class AVPBlockTags {
 
     public static final TagKey<Block> NORMAL_RESIN = create("normal_resin");
 
+    public static final TagKey<Block> MARINE_SPAWN_BLOCKS = create("marine_spawn_blocks");
+
     public static final TagKey<Block> PADDING = create("padding");
 
     public static final TagKey<Block> PLASTIC = create("plastic");

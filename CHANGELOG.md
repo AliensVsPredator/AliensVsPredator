@@ -29,6 +29,7 @@
 
 ## Data Pack
 - Adds Undead tag to `radiation_resistant` entity tag.
+- Added block tag `marine_spawn_blocks` to limit what blocks in a structure marines can spawn on
 
 ## Known Issues
 - Aliens only prioritizing one thing until it's killed rather than killing stuff near it.

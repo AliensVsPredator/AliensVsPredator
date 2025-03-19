@@ -4,6 +4,7 @@ import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.tags.BlockTags;
+import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.block.Blocks;
 
 import java.util.concurrent.CompletableFuture;
@@ -472,6 +473,14 @@ public class AVPBlockTagProvider extends FabricTagProvider.BlockTagProvider {
         var wallTagBuilder = getOrCreateTagBuilder(BlockTags.WALLS);
 
         AVPBlocks.DYE_COLOR_TO_INDUSTRIAL_CONCRETE_WALL.values().forEach(wallTagBuilder::add);
+
+        getOrCreateTagBuilder(AVPBlockTags.MARINE_SPAWN_BLOCKS).add(
+            Blocks.DIRT_PATH,
+            AVPBlocks.FERROALUMINUM_TREAD,
+            AVPBlocks.TITANIUM_TREAD,
+            AVPBlocks.STEEL_TREAD,
+            AVPBlocks.DYE_COLOR_TO_PANEL_PADDING.get(DyeColor.BLACK)
+        );
 
         addCompatibilityTags();
     }

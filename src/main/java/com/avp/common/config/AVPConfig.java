@@ -114,6 +114,8 @@ public class AVPConfig {
         @Configurable.Comment("Yautja spawn settings. Modifying these will require restarting the game.")
         public SpawnSettings YAUTJA_SPAWN = new SpawnSettings(true, 100, 62, 1, 1, 10, false);
 
+        public SpawnSettings MARINE_SPAWN = new SpawnSettings(true, 120, 64, 1, 1, 1, false);
+
         public static class SpawnSettings {
 
             @Configurable

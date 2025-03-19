@@ -1,5 +1,6 @@
 package com.avp.common.entity.spawn;
 
+import com.avp.common.entity.living.human.marine.MarineSpawning;
 import net.fabricmc.fabric.api.biome.v1.BiomeModifications;
 import net.fabricmc.fabric.api.biome.v1.BiomeSelectionContext;
 import net.fabricmc.fabric.api.biome.v1.ModificationPhase;
@@ -60,6 +61,8 @@ public class SpawnPlacements {
         if (youngSpawningEnabled) {
             registerYoungXenomorphSpawns();
         }
+
+        net.minecraft.world.entity.SpawnPlacements.register(AVPEntityTypes.MARINE, placement, heightMap, MarineSpawning.PREDICATE);
 
         if (removableSpawnsEnabled) {
             BiomeModifications.create(AVPResources.location("remove_entity_spawns"))
