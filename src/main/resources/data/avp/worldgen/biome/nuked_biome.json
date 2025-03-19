@@ -23,19 +23,19 @@
     "monster": [
       {
         "type": "minecraft:husk",
-        "weight": 10,
+        "weight": 1,
         "minCount": 1,
         "maxCount": 3
       },
       {
         "type": "minecraft:stray",
-        "weight": 5,
+        "weight": 1,
         "minCount": 1,
         "maxCount": 1
       },
       {
         "type": "minecraft:creeper",
-        "weight": 10,
+        "weight": 1,
         "minCount": 1,
         "maxCount": 1
       }
