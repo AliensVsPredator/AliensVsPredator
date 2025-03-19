@@ -1,5 +1,6 @@
 package com.avp.common.entity.projectile;
 
+import com.avp.common.util.ItemGoalUtil;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -31,6 +32,7 @@ public class BulletProjectile extends AbstractHurtingProjectile {
     @Override
     public void tick() {
         super.tick();
+        ItemGoalUtil.trackToLivingEntity(this, 1.5, false);
         if (tickCount >= 80)
             remove(RemovalReason.DISCARDED);
     }
