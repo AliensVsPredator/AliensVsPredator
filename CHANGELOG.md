@@ -1,7 +1,7 @@
 # v0.0.19-beta
 
 ## What's New
-No Changes At This Time.
+- Nukes will now turn any aliens that have an Irraiated form into that form.
 
 ## Changes
 - Adjusts how Marine Camps spawn in the world, will only apply to new ones.
@@ -19,6 +19,8 @@ No Changes At This Time.
 - Fixes Aberrant/Nether Queens don't drop chitin of their type.
 - Fixes Marine projectile is on fire.
 - Fixes Marine Facehugger placement broke with model change.
+- Fixes block outline on Trinitite blocks.
+- Fixes Nether aliens spawning everywhere instead of the nether.
 
 ## Data Pack
 No Changes At This Time.
