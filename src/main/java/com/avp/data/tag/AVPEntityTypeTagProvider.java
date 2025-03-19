@@ -77,6 +77,7 @@ public class AVPEntityTypeTagProvider extends FabricTagProvider.EntityTypeTagPro
         getOrCreateTagBuilder(AVPEntityTypeTags.RADIATION_RESISTANT)
             .addTag(AVPEntityTypeTags.XENOMORPHS)
             .addTag(AVPEntityTypeTags.PREDATORS)
+            .addTag(EntityTypeTags.UNDEAD)
             .add(
                 EntityType.CREEPER,
                 EntityType.STRAY,
