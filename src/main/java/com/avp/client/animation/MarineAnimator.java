@@ -39,6 +39,8 @@ public class MarineAnimator extends AzEntityAnimator<MarineMob>  {
         var rightArm = boneCache.getBakedModel().getBone("gRightArm");
         var leftLeg = boneCache.getBakedModel().getBone("gLeftLeg");
         var rightLeg = boneCache.getBakedModel().getBone("gRightLeg");
+
+        BasicAnimationUtils.applyHeadRotations(animatable, context(), partialTicks, "gHead", -0.2F);
         if (leftArm.isPresent() && !animatable.isAggressive())
             leftArm.get().setRotX(Mth.cos(animatable.walkAnimation.position(
                 partialTicks) * 0.6662F) * 2.0F * animatable.walkAnimation.speed() * 0.9F);
