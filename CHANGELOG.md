@@ -16,6 +16,7 @@
 - Tweaks done to Predator throwing items.
 - Predators will call for help from nearby predators if attacked.
 - Predators will now target all aliens, any mob holding a `hostile_weapon` tagged item, or any entity that hurts them.
+- Adds reload animations to all guns.
 
 ## Fixes
 - Fixes crash related to custom mob category, due to how early it loads, configuration not possible, so removed and enabled by default.
@@ -32,6 +33,9 @@
 - Fixes Nether aliens spawning everywhere instead of the nether.
 - Fixes Marines spawning on roofs.
 - Fixes Aliens only prioritizing one thing until it's killed rather than killing stuff near it.
+- Fixes gun firing animation playing when empty.
+- Fixes grenades ghost blocks and such.
+- Fixes all guns firing animations.
 
 ## Data Pack
 - Adds Undead tag to `radiation_resistant` entity tag.
