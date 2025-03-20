@@ -324,7 +324,8 @@ public class GunItem extends Item {
 
         consumeItemAmountFromInventory(ammunitionCountToConsume, playerInventory, ammunitionItem);
 
-        reload.sendForItem(player, itemStack);
+        if (gunConfig != GunData.M6B_ROCKET_LAUNCHER || gunConfig != GunData.M42A3_SNIPER_RIFLE)
+            reload.sendForItem(player, itemStack);
 
         if (reloadStartSoundEvent != null) {
             level.playSound(null, player.blockPosition(), reloadStartSoundEvent, SoundSource.PLAYERS);

@@ -185,7 +185,7 @@ public class GunData {
     public static final GunConfig ZX_76_SHOTGUN = GunConfig.builder()
         .withDurability(1024)
         .withMaximumAmmunition(12)
-        .withReloadTimeInTicks(20 * 6)
+        .withReloadTimeInTicks(20 * 3)
         .withAmmunitionItemSupplier(() -> AVPItems.SHOTGUN_BULLET)
         .withFireMode(
             FireModeConfig.builder()
