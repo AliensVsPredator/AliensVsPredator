@@ -120,8 +120,6 @@ public class GunItem extends Item {
             return;
         }
 
-        playUseAnimations(player, itemStack);
-
         var tickProgress = START_TICK_PROGRESS - tickCountdown;
         var positiveTickProgress = Math.abs(tickProgress);
         var isFirstTick = positiveTickProgress == 0;
@@ -177,6 +175,7 @@ public class GunItem extends Item {
             .gunAttackSupplier()
             .apply(gunAttackConfig);
 
+        playUseAnimations(player, itemStack);
         gunAttack.shoot();
 
         if (!isPlayerCreative) {
