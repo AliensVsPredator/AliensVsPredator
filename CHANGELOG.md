@@ -44,7 +44,6 @@
 
 ## Known Issues
 - Missing Radiation icon. *
-- Weapon animations need tweaking. *
 
 ## TODO
 - Add Queen Animations *
