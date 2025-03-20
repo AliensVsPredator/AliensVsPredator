@@ -49,7 +49,13 @@ public class GunItem extends Item {
 
     public final GunConfig gunConfig;
 
-    private final AzCommand shoot;
+    public final AzCommand shoot;
+
+    public static final AzCommand reload = AzCommand.create(
+            OldPainlessAnimationRefs.MAIN_CONTROLLER_NAME,
+            OldPainlessAnimationRefs.RELOAD_ANIMATION_NAME,
+            AzPlayBehaviors.PLAY_ONCE
+    );
 
     public GunItem(GunConfig gunConfig) {
         super(new Item.Properties().stacksTo(1).durability(gunConfig.durability()).attributes(createAttributes()));
@@ -317,6 +323,8 @@ public class GunItem extends Item {
         }
 
         consumeItemAmountFromInventory(ammunitionCountToConsume, playerInventory, ammunitionItem);
+
+        reload.sendForItem(player, itemStack);
 
         if (reloadStartSoundEvent != null) {
             level.playSound(null, player.blockPosition(), reloadStartSoundEvent, SoundSource.PLAYERS);
