@@ -57,6 +57,7 @@ public class Chestburster extends Alien implements ResinProducer {
             .setBonusResinProvider(
                 () -> geneManager.get(GeneKeys.BONUS_RESIN_PRODUCTION, GeneDecoders.BONUS_RESIN_PRODUCTION).intValue()
             );
+        this.config = AVP.config.statsConfigs.CHESTBURSTER_STATS;
     }
 
     @Override

@@ -219,7 +219,7 @@ public class AVPBlockItems {
 
     public static final BlockItem STEEL_STANDING = register(AVPBlocks.STEEL_STANDING);
 
-    public static final BlockItem STEEl_TRAP_DOOR = register(AVPBlocks.STEEL_TRAP_DOOR);
+    public static final BlockItem STEEL_TRAP_DOOR = register(AVPBlocks.STEEL_TRAP_DOOR);
 
     public static final BlockItem STEEL_TREAD = register(AVPBlocks.STEEL_TREAD);
 

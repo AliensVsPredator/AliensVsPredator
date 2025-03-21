@@ -5,6 +5,7 @@ import mod.azure.azurelib.rewrite.render.item.AzItemRendererConfig;
 
 import com.avp.AVPResources;
 import com.avp.client.animation.guns.OldPainlessAnimator;
+import mod.azure.azurelib.rewrite.render.layer.AzAutoGlowingLayer;
 
 public class OldPainlessItemRenderer extends AzItemRenderer {
 
@@ -15,6 +16,7 @@ public class OldPainlessItemRenderer extends AzItemRenderer {
                 AVPResources.itemTextureLocation(name)
             )
                 .setAnimatorProvider(OldPainlessAnimator::new)
+                .addRenderLayer(new AzAutoGlowingLayer<>())
                 .useNewOffset(true)
                 .build()
         );

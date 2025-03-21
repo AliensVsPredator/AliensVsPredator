@@ -31,6 +31,7 @@ public class Facehugger extends Parasite {
         super(entityType, level);
         this.animationDispatcher = new FacehuggerAnimationDispatcher(this);
         this.moveAnalysis = new MoveAnalysis(this);
+        this.config = AVP.config.statsConfigs.FACEHUGGER_STATS;
     }
 
     @Override

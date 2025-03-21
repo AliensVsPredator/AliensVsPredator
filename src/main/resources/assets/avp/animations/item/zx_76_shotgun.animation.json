@@ -2,7 +2,7 @@
 	"format_version": "1.8.0",
 	"animations": {
 		"animation.shoot": {
-			"loop": "hold_on_last_frame",
+			"loop": true,
 			"animation_length": 0.0833,
 			"bones": {
 				"root": {
@@ -30,6 +30,26 @@
 						},
 						"0.0833": {
 							"vector": [0, 0, 1.7]
+						}
+					}
+				},
+				"gFlash1": {
+					"scale": {
+						"0.0": {
+							"vector": [0, 0, 0]
+						},
+						"0.0833": {
+							"vector": [1, 1, 1]
+						}
+					}
+				},
+				"gFlash2": {
+					"scale": {
+						"0.0": {
+							"vector": [0, 0, 0]
+						},
+						"0.0833": {
+							"vector": [1, 1, 1]
 						}
 					}
 				}
@@ -73,6 +93,31 @@
 						"1.0": {
 							"vector": [1, 1, 1]
 						}
+					}
+				},
+				"gFlash1": {
+					"scale": {
+						"vector": [0, 0, 0]
+					}
+				},
+				"gFlash2": {
+					"scale": {
+						"vector": [0, 0, 0]
+					}
+				}
+			}
+		},
+		"animation.idle": {
+			"loop": true,
+			"bones": {
+				"gFlash1": {
+					"scale": {
+						"vector": [0, 0, 0]
+					}
+				},
+				"gFlash2": {
+					"scale": {
+						"vector": [0, 0, 0]
 					}
 				}
 			}

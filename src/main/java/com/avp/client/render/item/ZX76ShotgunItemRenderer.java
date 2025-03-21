@@ -5,6 +5,7 @@ import mod.azure.azurelib.rewrite.render.item.AzItemRendererConfig;
 
 import com.avp.AVPResources;
 import com.avp.client.animation.guns.ZX76ShotgunAnimator;
+import mod.azure.azurelib.rewrite.render.layer.AzAutoGlowingLayer;
 
 public class ZX76ShotgunItemRenderer extends AzItemRenderer {
 
@@ -15,6 +16,7 @@ public class ZX76ShotgunItemRenderer extends AzItemRenderer {
                 AVPResources.itemTextureLocation(name)
             )
                 .setAnimatorProvider(ZX76ShotgunAnimator::new)
+                .addRenderLayer(new AzAutoGlowingLayer<>())
                 .useNewOffset(true)
                 .build()
         );

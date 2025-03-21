@@ -20,15 +20,16 @@ import com.avp.common.util.resin.ResinData;
 
 public class Drone extends Xenomorph {
 
-    public static AttributeSupplier.Builder createDroneAttributes() {
-        return applyFrom(AVP.config.statsConfigs.DRONE_STATS, Monster.createMonsterAttributes());
-    }
-
     private final DroneAnimationDispatcher animationDispatcher;
 
     public Drone(EntityType<? extends Drone> entityType, Level level) {
         super(entityType, level);
         this.animationDispatcher = new DroneAnimationDispatcher(this);
+        this.config = AVP.config.statsConfigs.DRONE_STATS;
+    }
+
+    public static AttributeSupplier.Builder createDroneAttributes() {
+        return applyFrom(AVP.config.statsConfigs.DRONE_STATS, Monster.createMonsterAttributes());
     }
 
     @Override
@@ -113,4 +114,5 @@ public class Drone extends Xenomorph {
     public int maxJellyToGrowth() {
         return 2;
     }
+
 }

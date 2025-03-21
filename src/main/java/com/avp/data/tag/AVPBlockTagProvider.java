@@ -143,7 +143,9 @@ public class AVPBlockTagProvider extends FabricTagProvider.BlockTagProvider {
 
         getOrCreateTagBuilder(AVPBlockTags.RESIN)
             .addTag(AVPBlockTags.NETHER_RESIN)
-            .addTag(AVPBlockTags.NORMAL_RESIN);
+            .addTag(AVPBlockTags.NORMAL_RESIN)
+            .addTag(AVPBlockTags.ABERRANT_RESIN)
+            .addTag(AVPBlockTags.IRRADIATED_RESIN);
 
         getOrCreateTagBuilder(AVPBlockTags.STEEL)
             .add(
@@ -273,7 +275,11 @@ public class AVPBlockTagProvider extends FabricTagProvider.BlockTagProvider {
                 AVPBlocks.NETHER_RESIN_VEIN,
                 AVPBlocks.NETHER_RESIN_WEB,
                 AVPBlocks.RESIN_VEIN,
-                AVPBlocks.RESIN_WEB
+                AVPBlocks.RESIN_WEB,
+                AVPBlocks.ABERRANT_RESIN,
+                AVPBlocks.ABERRANT_RESIN_WEB,
+                AVPBlocks.IRRADIATED_RESIN,
+                AVPBlocks.IRRADIATED_RESIN_WEB
             );
 
         getOrCreateTagBuilder(BlockTags.MINEABLE_WITH_PICKAXE)

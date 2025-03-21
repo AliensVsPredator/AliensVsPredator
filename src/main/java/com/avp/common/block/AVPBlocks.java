@@ -280,7 +280,7 @@ public class AVPBlocks {
 
     // Doors And Trapdoors
     public static final Block FERROALUMINUM_DOOR = register(
-        new DoorBlock(BlockSetType.COPPER, BlockProperties.FERROALUMINUM),
+        new DoorBlock(BlockSetType.COPPER, BlockProperties.FERROALUMINUM.noOcclusion()),
         "ferroaluminum_door"
     );
 
@@ -289,11 +289,11 @@ public class AVPBlocks {
         "ferroaluminum_trapdoor"
     );
 
-    public static final Block STEEL_DOOR = register(new DoorBlock(BlockSetType.COPPER, BlockProperties.STEEL), "steel_door");
+    public static final Block STEEL_DOOR = register(new DoorBlock(BlockSetType.COPPER, BlockProperties.STEEL.noOcclusion()), "steel_door");
 
     public static final Block STEEL_TRAP_DOOR = register(new TrapDoorBlock(BlockSetType.COPPER, BlockProperties.STEEL), "steel_trapdoor");
 
-    public static final Block TITANIUM_DOOR = register(new DoorBlock(BlockSetType.COPPER, BlockProperties.TITANIUM), "titanium_door");
+    public static final Block TITANIUM_DOOR = register(new DoorBlock(BlockSetType.COPPER, BlockProperties.TITANIUM.noOcclusion()), "titanium_door");
 
     public static final Block TITANIUM_TRAP_DOOR = register(
         new TrapDoorBlock(BlockSetType.COPPER, BlockProperties.TITANIUM),

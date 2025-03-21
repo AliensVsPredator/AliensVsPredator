@@ -68,7 +68,7 @@ public class GunData {
         .withFireMode(
             FireModeConfig.builder()
                 .withConsumedAmmunitionPerShot(4)
-                .withCooldownInTicks(10)
+                .withCooldownInTicks(4)
                 .withDamage(2F * 2 * 4) // 4 bullets per shot in burst mode
                 .withRange(64)
                 .withRecoil(2.25F)
@@ -151,7 +151,7 @@ public class GunData {
         .withAmmunitionItemSupplier(() -> AVPItems.SMALL_BULLET)
         .withFireMode(
             FireModeConfig.builder()
-                .withCooldownInTicks(6)
+                .withCooldownInTicks(4)
                 .withDamage(5F * 1)
                 .withRange(32)
                 .withRecoil(0.35F)

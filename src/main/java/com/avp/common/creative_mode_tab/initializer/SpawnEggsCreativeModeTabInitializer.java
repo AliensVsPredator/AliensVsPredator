@@ -35,9 +35,9 @@ public class SpawnEggsCreativeModeTabInitializer {
             entries.accept(SpawnEggItems.ABERRANT_WARRIOR_SPAWN_EGG);
             entries.accept(SpawnEggItems.ABERRANT_QUEEN_SPAWN_EGG);
 
-            entries.accept(SpawnEggItems.IRRAIATED_DRONE_SPAWN_EGG);
-            entries.accept(SpawnEggItems.IRRAIATED_WARRIOR_SPAWN_EGG);
-            entries.accept(SpawnEggItems.IRRAIATED_PRAETORIAN_SPAWN_EGG);
+            entries.accept(SpawnEggItems.IRRADIATED_DRONE_SPAWN_EGG);
+            entries.accept(SpawnEggItems.IRRADIATED_WARRIOR_SPAWN_EGG);
+            entries.accept(SpawnEggItems.IRRADIATED_PRAETORIAN_SPAWN_EGG);
 
             entries.accept(SpawnEggItems.YAUTJA_SPAWN_EGG);
         });

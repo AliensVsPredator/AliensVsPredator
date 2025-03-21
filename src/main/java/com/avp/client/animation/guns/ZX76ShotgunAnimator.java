@@ -13,7 +13,7 @@ import com.avp.common.item.old_painless.OldPainlessAnimationRefs;
 
 public class ZX76ShotgunAnimator extends AzItemAnimator {
 
-    private static final String NAME = "m37_12_shotgun";
+    private static final String NAME = "zx_76_shotgun";
 
     private static final ResourceLocation ANIMATION = AVPResources.itemAnimationLocation(NAME);
 

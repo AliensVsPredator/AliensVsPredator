@@ -229,7 +229,7 @@ public class AVPEntityTypes {
     ) {
         return (entityType, level) -> {
             var entity = entityFactory.apply(overridingEntityType, level);
-            entity.setIrraiated(true);
+            entity.setIrradiated(true);
             return entity;
         };
     }

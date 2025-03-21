@@ -103,7 +103,7 @@ public class ResinVeinBlock extends MultifaceBlock implements SpreadBehavior {
             return chargeCursor.getCharge() - 1;
         } else {
             return randomSource.nextInt(resinSpreader.chargeDecayRate()) == 0
-                ? Mth.floor((float) chargeCursor.getCharge() * 0.5F)
+                ? Mth.floor(chargeCursor.getCharge() * 0.5F)
                 : chargeCursor.getCharge();
         }
     }
@@ -129,11 +129,7 @@ public class ResinVeinBlock extends MultifaceBlock implements SpreadBehavior {
                 continue;
             }
 
-            // TODO: Try not to hardcode this.
-            var resinBlock = this == AVPBlocks.RESIN_VEIN
-                ? AVPBlocks.RESIN
-                : this == AVPBlocks.NETHER_RESIN_VEIN ? AVPBlocks.NETHER_RESIN : AVPBlocks.ABERRANT_RESIN;
-            var resinBlockState = resinBlock.defaultBlockState();
+            var resinBlockState = getResinBlock().defaultBlockState();
 
             levelAccessor.setBlock(blockPos2, resinBlockState, 3);
             Block.pushEntitiesUp(blockState2, resinBlockState, levelAccessor, blockPos2);
@@ -173,4 +169,17 @@ public class ResinVeinBlock extends MultifaceBlock implements SpreadBehavior {
             this.onDischarged(levelAccessor, blockState4, blockPos3, randomSource);
         }
     }
+
+    private Block getResinBlock() {
+        if (this == AVPBlocks.ABERRANT_RESIN_VEIN) {
+            return AVPBlocks.ABERRANT_RESIN;
+        } else if (this == AVPBlocks.NETHER_RESIN_VEIN) {
+            return AVPBlocks.NETHER_RESIN;
+        } else if (this == AVPBlocks.IRRADIATED_RESIN_VEIN) {
+            return AVPBlocks.IRRADIATED_RESIN;
+        } else {
+            return AVPBlocks.RESIN;
+        }
+    }
+
 }

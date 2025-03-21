@@ -5,6 +5,7 @@ import mod.azure.azurelib.rewrite.render.item.AzItemRendererConfig;
 
 import com.avp.AVPResources;
 import com.avp.client.animation.guns.F903weAnimator;
+import mod.azure.azurelib.rewrite.render.layer.AzAutoGlowingLayer;
 
 public class F903weItemRenderer extends AzItemRenderer {
 
@@ -15,6 +16,7 @@ public class F903weItemRenderer extends AzItemRenderer {
                 AVPResources.itemTextureLocation(name)
             )
                 .setAnimatorProvider(F903weAnimator::new)
+                .addRenderLayer(new AzAutoGlowingLayer<>())
                 .useNewOffset(true)
                 .build()
         );

@@ -43,7 +43,7 @@ public class WarriorRenderer extends AzEntityRenderer<Warrior> {
             return NETHER_TEXTURE;
         }
 
-        if (warrior.isIrraiated()) {
+        if (warrior.isIrradiated()) {
             return IRRADIATED_TEXTURE;
         }
 

@@ -53,6 +53,7 @@ public class Ovamorph extends Alien implements Shearable {
         super(entityType, level);
         this.animationDispatcher = new OvamorphAnimationDispatcher(this);
         this.hatchManager = new HatchManager(this, HATCHED, MAX_SPAWN_COUNT, 3 * 20, 3 * 20);
+        this.config = AVP.config.statsConfigs.OVAMORPH_STATS;
     }
 
     @Override

@@ -22,11 +22,41 @@
 							"vector": [0, 0, 0.6]
 						}
 					}
+				},
+				"gFlash": {
+					"position": {
+						"vector": [0, 0, 0]
+					},
+					"scale": {
+						"0.0": {
+							"vector": [0, 0, 0]
+						},
+						"0.0833": {
+							"vector": [1, 1, 1]
+						}
+					}
 				}
 			}
 		},
 		"animation.reload": {
-			"loop": true
+			"loop": true,
+			"bones": {
+				"gFlash": {
+					"scale": {
+						"vector": [0, 0, 0]
+					}
+				}
+			}
+		},
+		"animation.idle": {
+			"loop": true,
+			"bones": {
+				"gFlash": {
+					"scale": {
+						"vector": [0, 0, 0]
+					}
+				}
+			}
 		}
 	},
 	"azurelib_format_version": 2

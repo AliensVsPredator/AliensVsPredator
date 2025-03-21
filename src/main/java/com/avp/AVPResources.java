@@ -43,4 +43,16 @@ public class AVPResources {
     public static ResourceLocation itemTextureLocation(String name) {
         return location("textures/item/" + name + ".png");
     }
+
+    public static ResourceLocation blockAnimationLocation(String name) {
+        return location("animations/block/" + name + ".animation.json");
+    }
+
+    public static ResourceLocation blockGeoModelLocation(String name) {
+        return location("geo/block/" + name + ".geo.json");
+    }
+
+    public static ResourceLocation blockTextureLocation(String name) {
+        return location("textures/block/" + name + ".png");
+    }
 }

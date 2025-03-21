@@ -18,7 +18,6 @@ import org.jetbrains.annotations.Nullable;
 
 import com.avp.AVP;
 import com.avp.common.ai.goal.combat.DelayedAttackGoal;
-import com.avp.common.ai.goal.combat.FleeFightGoal;
 import com.avp.common.ai.goal.combat.UseItemGoal;
 import com.avp.common.config.AVPConfig;
 import com.avp.common.item.AVPItems;
@@ -38,7 +37,7 @@ public class Yautja extends Monster {
 
     @Override
     protected void registerGoals() {
-        goalSelector.addGoal(1, new FleeFightGoal(this));
+//        goalSelector.addGoal(1, new FleeFightGoal(this));
         goalSelector.addGoal(1, new DelayedAttackGoal(this, 1.0, true, 5, this::runAttackAnimations));
         goalSelector.addGoal(1, new UseItemGoal(this, this::runAttackAnimations));
         goalSelector.addGoal(7, new WaterAvoidingRandomStrollGoal(this, 1.0));

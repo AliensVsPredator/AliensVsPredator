@@ -39,17 +39,18 @@ import com.avp.common.item.gun.GunData;
 import com.avp.common.item.gun.attack.GunAttackConfig;
 import com.avp.common.item.old_painless.OldPainlessAnimationRefs;
 import com.avp.common.util.EnchantmentUtil;
-import com.avp.common.util.GunLightUtil;
 import com.avp.common.util.TooltipUtil;
 import com.avp.server.ServerScheduler;
 
 public class GunItem extends Item {
 
-    private static final int START_TICK_PROGRESS = Integer.MAX_VALUE;
+    protected static final int START_TICK_PROGRESS = Integer.MAX_VALUE;
 
     public final GunConfig gunConfig;
 
-    public final AzCommand shoot;
+    public AzCommand idle;
+
+    public AzCommand shoot;
 
     public static final AzCommand reload = AzCommand.create(
             OldPainlessAnimationRefs.MAIN_CONTROLLER_NAME,
@@ -60,6 +61,11 @@ public class GunItem extends Item {
     public GunItem(GunConfig gunConfig) {
         super(new Item.Properties().stacksTo(1).durability(gunConfig.durability()).attributes(createAttributes()));
         this.gunConfig = gunConfig;
+        idle = AzCommand.create(
+            OldPainlessAnimationRefs.MAIN_CONTROLLER_NAME,
+            OldPainlessAnimationRefs.IDLE_ANIMATION_NAME,
+            AzPlayBehaviors.LOOP
+        );
         shoot = AzCommand.create(
             OldPainlessAnimationRefs.MAIN_CONTROLLER_NAME,
             OldPainlessAnimationRefs.SHOOT_ANIMATION_NAME,
@@ -77,7 +83,9 @@ public class GunItem extends Item {
             .build();
     }
 
-    protected void playReleaseUsingAnimations(Entity shooter, ItemStack itemStack) {}
+    protected void playReleaseUsingAnimations(Entity shooter, ItemStack itemStack) {
+        idle.sendForItem(shooter, itemStack);
+    }
 
     protected void playUseAnimations(Entity shooter, ItemStack itemStack) {
         shoot.sendForItem(shooter, itemStack);
@@ -143,17 +151,20 @@ public class GunItem extends Item {
             return;
         }
 
-        tryShoot(
-            level,
-            itemStack,
-            player,
-            fireModeConfig,
-            positiveTickProgress,
-            shootDelayInTicks,
-            secondaryShootSoundFrequencyInTicks,
-            primaryShootSoundFrequencyInTicks,
-            tickProgress
-        );
+        if (!player.getCooldowns().isOnCooldown(this)) {
+            tryShoot(
+                    level,
+                    itemStack,
+                    player,
+                    fireModeConfig,
+                    positiveTickProgress,
+                    shootDelayInTicks,
+                    secondaryShootSoundFrequencyInTicks,
+                    primaryShootSoundFrequencyInTicks,
+                    tickProgress
+            );
+            player.getCooldowns().addCooldown(this, fireModeConfig.cooldownInTicks());
+        }
     }
 
     protected void tryShoot(
@@ -206,9 +217,7 @@ public class GunItem extends Item {
             level.playSound(null, player.blockPosition(), fireModeConfig.primaryShootSoundEvent(), SoundSource.PLAYERS);
         }
 
-        player.getCooldowns().addCooldown(this, fireModeConfig.cooldownInTicks());
-
-        GunLightUtil.spawnLightSource(player);
+//        GunLightUtil.spawnLightSource(player);
     }
 
     @Override
@@ -324,8 +333,7 @@ public class GunItem extends Item {
 
         consumeItemAmountFromInventory(ammunitionCountToConsume, playerInventory, ammunitionItem);
 
-        if (gunConfig != GunData.M6B_ROCKET_LAUNCHER || gunConfig != GunData.M42A3_SNIPER_RIFLE)
-            reload.sendForItem(player, itemStack);
+        reload.sendForItem(player, itemStack);
 
         if (reloadStartSoundEvent != null) {
             level.playSound(null, player.blockPosition(), reloadStartSoundEvent, SoundSource.PLAYERS);
@@ -374,5 +382,13 @@ public class GunItem extends Item {
         }
 
         return consumeTracker < ammunitionCountToConsume;
+    }
+
+    @Override
+    public void inventoryTick(ItemStack itemStack, Level level, Entity entity, int i, boolean bl) {
+        if (bl && entity instanceof LivingEntity livingEntity && !livingEntity.isUsingItem()) {
+            playReleaseUsingAnimations(livingEntity, itemStack);
+        }
+        super.inventoryTick(itemStack, level, entity, i, bl);
     }
 }

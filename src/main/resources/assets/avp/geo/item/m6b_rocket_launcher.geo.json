@@ -1,5 +1,5 @@
 {
-	"format_version": "1.12.0",
+	"format_version": "1.21.20",
 	"minecraft:geometry": [
 		{
 			"description": {
@@ -119,6 +119,15 @@
 						{"origin": [-2, 4.56667, -7.53333], "size": [1, 5, 9], "inflate": -1.6, "pivot": [-1.5, 7.06667, -3.03333], "rotation": [0, 180, 0], "uv": [2, 47], "mirror": true},
 						{"origin": [3.0177, 4.56667, -7.53333], "size": [1, 5, 9], "inflate": -1.6, "uv": [2, 47]},
 						{"origin": [-3, 9.82, -8.05], "size": [6, 2, 11], "inflate": -1.9, "uv": [24, 48]}
+					]
+				},
+				{
+					"name": "gFlash",
+					"parent": "gGun",
+					"pivot": [0, 5.9, -12],
+					"cubes": [
+						{"origin": [0, 1.9, -20], "size": [0, 8, 8], "pivot": [0, 5.9, -16], "rotation": [-90, 0, 45], "uv": [15, 36]},
+						{"origin": [0, 1.9, -20], "size": [0, 8, 8], "pivot": [0, 5.9, -16], "rotation": [-90, 0, -45], "uv": [15, 36]}
 					]
 				}
 			]

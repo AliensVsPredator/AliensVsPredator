@@ -104,28 +104,28 @@ public class MetalRecipeProvider {
         builder.shaped()
             .withCategory(RecipeCategory.BUILDING_BLOCKS)
             .apply(RecipeTemplates.DOOR_BLOCK.apply(AVPItems.FERROALUMINUM_INGOT))
-            .into(1, AVPBlocks.FERROALUMINUM_DOOR);
+            .into(3, AVPBlocks.FERROALUMINUM_DOOR);
         builder.shaped()
             .withCategory(RecipeCategory.BUILDING_BLOCKS)
             .apply(RecipeTemplates.DOOR_BLOCK.apply(AVPItems.STEEL_INGOT))
-            .into(1, AVPBlocks.STEEL_DOOR);
+            .into(3, AVPBlocks.STEEL_DOOR);
         builder.shaped()
             .withCategory(RecipeCategory.BUILDING_BLOCKS)
             .apply(RecipeTemplates.DOOR_BLOCK.apply(AVPItems.TITANIUM_INGOT))
-            .into(1, AVPBlocks.TITANIUM_DOOR);
+            .into(3, AVPBlocks.TITANIUM_DOOR);
 
         builder.shaped()
             .withCategory(RecipeCategory.BUILDING_BLOCKS)
             .apply(RecipeTemplates.TRAP_DOOR_BLOCK.apply(AVPItems.FERROALUMINUM_INGOT))
-            .into(1, AVPBlocks.FERROALUMINUM_TRAP_DOOR);
+            .into(2, AVPBlocks.FERROALUMINUM_TRAP_DOOR);
         builder.shaped()
             .withCategory(RecipeCategory.BUILDING_BLOCKS)
             .apply(RecipeTemplates.TRAP_DOOR_BLOCK.apply(AVPItems.STEEL_INGOT))
-            .into(1, AVPBlocks.STEEL_TRAP_DOOR);
+            .into(2, AVPBlocks.STEEL_TRAP_DOOR);
         builder.shaped()
             .withCategory(RecipeCategory.BUILDING_BLOCKS)
             .apply(RecipeTemplates.TRAP_DOOR_BLOCK.apply(AVPItems.TITANIUM_INGOT))
-            .into(1, AVPBlocks.TITANIUM_TRAP_DOOR);
+            .into(2, AVPBlocks.TITANIUM_TRAP_DOOR);
 
         builder.shaped()
             .withCategory(RecipeCategory.BUILDING_BLOCKS)

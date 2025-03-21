@@ -43,7 +43,7 @@ public class DroneRenderer extends AzEntityRenderer<Drone> {
             return NETHER_TEXTURE;
         }
 
-        if (drone.isIrraiated()) {
+        if (drone.isIrradiated()) {
             return IRRADIATED_TEXTURE;
         }
 

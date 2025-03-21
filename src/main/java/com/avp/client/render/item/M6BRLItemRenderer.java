@@ -5,6 +5,7 @@ import mod.azure.azurelib.rewrite.render.item.AzItemRendererConfig;
 
 import com.avp.AVPResources;
 import com.avp.client.animation.guns.M6BRLAnimator;
+import mod.azure.azurelib.rewrite.render.layer.AzAutoGlowingLayer;
 
 public class M6BRLItemRenderer extends AzItemRenderer {
 
@@ -15,6 +16,7 @@ public class M6BRLItemRenderer extends AzItemRenderer {
                 AVPResources.itemTextureLocation(name)
             )
                 .setAnimatorProvider(M6BRLAnimator::new)
+                .addRenderLayer(new AzAutoGlowingLayer<>())
                 .useNewOffset(true)
                 .build()
         );

@@ -1,11 +1,13 @@
 package com.avp.common.entity.living.alien.xenomorph.queen;
 
+import com.avp.common.block.AVPBlocks;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.SpawnEggItem;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -18,6 +20,7 @@ public class Queen extends Xenomorph {
 
     public Queen(EntityType<? extends Queen> entityType, Level level) {
         super(entityType, level);
+        this.config = AVP.config.statsConfigs.QUEEN_STATS;
     }
 
     @Override
@@ -72,5 +75,30 @@ public class Queen extends Xenomorph {
     @Override
     public int maxJellyToGrowth() {
         return Integer.MAX_VALUE;
+    }
+
+    @Override
+    public void tick() {
+        super.tick();
+        if (!level().isClientSide() && tickCount < 2) {
+            var belowBlockPos = blockPosition().below();
+            if (!level().getBlockState(belowBlockPos).is(getResinNodeForType().getBlock())) {
+                level().setBlockAndUpdate(belowBlockPos, getResinNodeForType());
+            }
+        }
+    }
+
+    private BlockState getResinNodeForType() {
+        if (isAberrant()) {
+            return AVPBlocks.ABERRANT_RESIN_NODE.defaultBlockState();
+        }
+        if (isIrradiated()) {
+            return AVPBlocks.IRRADIATED_RESIN_NODE.defaultBlockState();
+        }
+        if (isNetherAfflicted()) {
+            return AVPBlocks.NETHER_RESIN_NODE.defaultBlockState();
+        }
+
+        return AVPBlocks.RESIN_NODE.defaultBlockState();
     }
 }

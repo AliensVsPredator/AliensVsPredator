@@ -1,0 +1,324 @@
+{
+	"format_version": "1.8.0",
+	"animations": {
+		"animation.opening": {
+			"loop": "hold_on_last_frame",
+			"animation_length": 0.25,
+			"bones": {
+				"gTopSpear": {
+					"position": {
+						"0.0417": {
+							"vector": [0, -9, 0]
+						},
+						"0.0833": {
+							"vector": [0, 0, 0]
+						}
+					}
+				},
+				"gTopSpearBlades": {
+					"scale": {
+						"0.0833": {
+							"vector": [0.4, 1, 0.4]
+						},
+						"0.125": {
+							"vector": [1, 1, 1]
+						}
+					}
+				},
+				"gTopSpearEnd": {
+					"position": {
+						"0.0833": {
+							"vector": [0, -8, 0]
+						},
+						"0.125": {
+							"vector": [0, 0, 0]
+						}
+					}
+				},
+				"gTopSpearEndBlades": {
+					"scale": {
+						"0.125": {
+							"vector": [0.3, 1, 0.3]
+						},
+						"0.1667": {
+							"vector": [1, 1, 1]
+						}
+					}
+				},
+				"gTopSpearBlade": {
+					"position": {
+						"0.1667": {
+							"vector": [0, -6, 0]
+						},
+						"0.2083": {
+							"vector": [0, 0, 0]
+						}
+					},
+					"scale": {
+						"0.1667": {
+							"vector": [0.6, 1, 0.6]
+						},
+						"0.2083": {
+							"vector": [1, 1, 1]
+						}
+					}
+				},
+				"gBottomSpear": {
+					"position": {
+						"0.0417": {
+							"vector": [0, 9, 0]
+						},
+						"0.0833": {
+							"vector": [0, 0, 0]
+						}
+					}
+				},
+				"gBottomSpearBlades": {
+					"scale": {
+						"0.0833": {
+							"vector": [0.4, 1, 0.4]
+						},
+						"0.125": {
+							"vector": [1, 1, 1]
+						}
+					}
+				},
+				"gBottomSpearEnd": {
+					"position": {
+						"0.0833": {
+							"vector": [0, 8, 0]
+						},
+						"0.125": {
+							"vector": [0, 0, 0]
+						}
+					}
+				},
+				"gBottomSpearEndBlades": {
+					"scale": {
+						"0.125": {
+							"vector": [0.3, 1, 0.3]
+						},
+						"0.1667": {
+							"vector": [1, 1, 1]
+						}
+					}
+				},
+				"gBottomSpearBlade": {
+					"position": {
+						"0.1667": {
+							"vector": [0, 6.5, 0]
+						},
+						"0.2083": {
+							"vector": [0, 0, 0]
+						}
+					},
+					"scale": {
+						"0.1667": {
+							"vector": [0.6, 1, 0.6]
+						},
+						"0.2083": {
+							"vector": [1, 1, 1]
+						}
+					}
+				},
+				"gSpearBlades": {
+					"scale": {
+						"0.0": {
+							"vector": [0.6, 1, 0.6]
+						},
+						"0.0417": {
+							"vector": [1, 1, 1]
+						}
+					}
+				}
+			}
+		},
+		"animation.opened": {
+			"loop": true
+		},
+		"animation.closing": {
+			"loop": "hold_on_last_frame",
+			"animation_length": 0.1667,
+			"bones": {
+				"gTopSpear": {
+					"position": {
+						"0.125": {
+							"vector": [0, 0, 0]
+						},
+						"0.1667": {
+							"vector": [0, -9, 0]
+						}
+					}
+				},
+				"gTopSpearBlades": {
+					"scale": {
+						"0.0833": {
+							"vector": [1, 1, 1]
+						},
+						"0.125": {
+							"vector": [0.4, 1, 0.4]
+						}
+					}
+				},
+				"gTopSpearEnd": {
+					"position": {
+						"0.0833": {
+							"vector": [0, 0, 0]
+						},
+						"0.125": {
+							"vector": [0, -8, 0]
+						}
+					}
+				},
+				"gTopSpearEndBlades": {
+					"scale": {
+						"0.0417": {
+							"vector": [1, 1, 1]
+						},
+						"0.0833": {
+							"vector": [0.3, 1, 0.3]
+						}
+					}
+				},
+				"gTopSpearBlade": {
+					"position": {
+						"0.0": {
+							"vector": [0, 0, 0]
+						},
+						"0.0417": {
+							"vector": [0, -6, 0]
+						}
+					},
+					"scale": {
+						"0.0": {
+							"vector": [1, 1, 1]
+						},
+						"0.0417": {
+							"vector": [0.6, 1, 0.6]
+						}
+					}
+				},
+				"gBottomSpear": {
+					"position": {
+						"0.125": {
+							"vector": [0, 0, 0]
+						},
+						"0.1667": {
+							"vector": [0, 9, 0]
+						}
+					}
+				},
+				"gBottomSpearBlades": {
+					"scale": {
+						"0.0833": {
+							"vector": [1, 1, 1]
+						},
+						"0.125": {
+							"vector": [0.4, 1, 0.4]
+						}
+					}
+				},
+				"gBottomSpearEnd": {
+					"position": {
+						"0.0833": {
+							"vector": [0, 0, 0]
+						},
+						"0.125": {
+							"vector": [0, 8, 0]
+						}
+					}
+				},
+				"gBottomSpearEndBlades": {
+					"scale": {
+						"0.0417": {
+							"vector": [1, 1, 1]
+						},
+						"0.0833": {
+							"vector": [0.3, 1, 0.3]
+						}
+					}
+				},
+				"gBottomSpearBlade": {
+					"position": {
+						"0.0": {
+							"vector": [0, 0, 0]
+						},
+						"0.0417": {
+							"vector": [0, 6.5, 0]
+						}
+					},
+					"scale": {
+						"0.0": {
+							"vector": [1, 1, 1]
+						},
+						"0.0417": {
+							"vector": [0.6, 1, 0.6]
+						}
+					}
+				}
+			}
+		},
+		"animation.closed": {
+			"animation_length": 0.0417,
+			"bones": {
+				"gTopSpear": {
+					"position": {
+						"vector": [0, -9, 0]
+					}
+				},
+				"gTopSpearBlades": {
+					"scale": {
+						"vector": [0.4, 1, 0.4]
+					}
+				},
+				"gTopSpearEnd": {
+					"position": {
+						"vector": [0, -8, 0]
+					}
+				},
+				"gTopSpearEndBlades": {
+					"scale": {
+						"vector": [0.3, 1, 0.3]
+					}
+				},
+				"gTopSpearBlade": {
+					"position": {
+						"vector": [0, -6, 0]
+					},
+					"scale": {
+						"vector": [0.6, 1, 0.6]
+					}
+				},
+				"gBottomSpear": {
+					"position": {
+						"vector": [0, 9, 0]
+					}
+				},
+				"gBottomSpearBlades": {
+					"scale": {
+						"vector": [0.4, 1, 0.4]
+					}
+				},
+				"gBottomSpearEnd": {
+					"position": {
+						"vector": [0, 8, 0]
+					}
+				},
+				"gBottomSpearEndBlades": {
+					"scale": {
+						"vector": [0.3, 1, 0.3]
+					}
+				},
+				"gBottomSpearBlade": {
+					"position": {
+						"vector": [0, 6.5, 0]
+					},
+					"scale": {
+						"vector": [0.6, 1, 0.6]
+					}
+				}
+			}
+		}
+	},
+	"azurelib_format_version": 2
+}

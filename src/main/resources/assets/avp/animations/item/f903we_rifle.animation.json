@@ -30,6 +30,19 @@
 							"vector": [0, 0.4, 2]
 						}
 					}
+				},
+				"gFlash": {
+					"position": {
+						"vector": [0, 0, -2]
+					},
+					"scale": {
+						"0.0": {
+							"vector": [0, 0, 0]
+						},
+						"0.0833": {
+							"vector": [1, 1, 1]
+						}
+					}
 				}
 			}
 		},
@@ -88,6 +101,16 @@
 						"2.3333": {
 							"vector": [1, 1, 1]
 						}
+					}
+				}
+			}
+		},
+		"animation.idle": {
+			"loop": true,
+			"bones": {
+				"gFlash": {
+					"scale": {
+						"vector": [0, 0, 0]
 					}
 				}
 			}

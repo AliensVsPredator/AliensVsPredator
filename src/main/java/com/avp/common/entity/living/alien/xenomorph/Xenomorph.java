@@ -37,7 +37,6 @@ import java.util.function.BiConsumer;
 import com.avp.common.MoveAnalysis;
 import com.avp.common.ai.goal.DigToTargetGoal;
 import com.avp.common.ai.goal.StrollAroundInWaterGoal;
-import com.avp.common.ai.goal.combat.FleeFightGoal;
 import com.avp.common.entity.living.alien.Alien;
 import com.avp.common.gene.GeneKeys;
 import com.avp.common.gene.behavior.GeneDecoders;
@@ -109,7 +108,7 @@ public abstract class Xenomorph extends Alien implements ResinProducer {
 
     @Override
     protected void registerGoals() {
-        goalSelector.addGoal(1, new FleeFightGoal(this));
+//        goalSelector.addGoal(1, new FleeFightGoal(this));
         goalSelector.addGoal(5, new DigToTargetGoal(this, 32));
         goalSelector.addGoal(7, new StrollAroundInWaterGoal(this, 0.5));
         goalSelector.addGoal(7, new WaterAvoidingRandomStrollGoal(this, 0.5));

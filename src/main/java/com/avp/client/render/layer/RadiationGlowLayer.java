@@ -10,7 +10,7 @@ public class RadiationGlowLayer<T> extends AzAutoGlowingLayer<T> {
     @Override
     public void render(AzRendererPipelineContext<T> context) {
         var animatable = context.animatable();
-        if (animatable instanceof Alien alien && alien.isIrraiated()) {
+        if (animatable instanceof Alien alien && alien.isIrradiated()) {
             super.render(context);
         }
     }

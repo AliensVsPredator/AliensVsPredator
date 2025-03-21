@@ -5,6 +5,7 @@ import mod.azure.azurelib.rewrite.render.item.AzItemRendererConfig;
 
 import com.avp.AVPResources;
 import com.avp.client.animation.guns.M88Mod4CombatPistolAnimator;
+import mod.azure.azurelib.rewrite.render.layer.AzAutoGlowingLayer;
 
 public class M88Mod4CombatPistolItemRenderer extends AzItemRenderer {
 
@@ -15,6 +16,7 @@ public class M88Mod4CombatPistolItemRenderer extends AzItemRenderer {
                 AVPResources.itemTextureLocation(name)
             )
                 .setAnimatorProvider(M88Mod4CombatPistolAnimator::new)
+                .addRenderLayer(new AzAutoGlowingLayer<>())
                 .useNewOffset(true)
                 .build()
         );

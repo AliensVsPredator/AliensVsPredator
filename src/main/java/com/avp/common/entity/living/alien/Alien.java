@@ -1,5 +1,6 @@
 package com.avp.common.entity.living.alien;
 
+import net.minecraft.core.Holder;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -12,6 +13,7 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.SpawnGroupData;
+import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.monster.Monster;
@@ -62,6 +64,8 @@ public abstract class Alien extends Monster {
 
     private int lastHurtTimeInTicks;
 
+    protected AVPConfig.StatsConfigs.AdvancedStats config;
+
     protected Alien(EntityType<? extends Monster> entityType, Level level) {
         super(entityType, level);
         this.geneManager = new GeneManager(this);
@@ -98,12 +102,12 @@ public abstract class Alien extends Monster {
         builder.define(JELLY_COUNT, 0);
     }
 
-    public boolean isIrraiated() {
+    public boolean isIrradiated() {
         return entityData.get(IS_IRRADIATED);
     }
 
-    public void setIrraiated(boolean isIrraiated) {
-        entityData.set(IS_IRRADIATED, isIrraiated);
+    public void setIrradiated(boolean isIrradiated) {
+        entityData.set(IS_IRRADIATED, isIrradiated);
     }
 
     public boolean isAberrant() {
@@ -145,14 +149,14 @@ public abstract class Alien extends Monster {
 
     public void updateStateBasedOnGenetics() {
         var hasMinimumGeneIntegrity = geneManager.isMinimized(GeneKeys.GENETIC_INTEGRITY);
-        if (!isNetherAfflicted() && !isIrraiated()) {
+        if (!isNetherAfflicted() && !isIrradiated()) {
             setAberrant(hasMinimumGeneIntegrity);
         }
 
         var hasMaximumFireResistance = geneManager.isMinimized(GeneKeys.COLD_RESISTANCE) && geneManager.isMaximized(
             GeneKeys.FIRE_RESISTANCE
         );
-        if (!isAberrant() && !isIrraiated()) {
+        if (!isAberrant() && !isIrradiated()) {
             setNetherAfflicted(hasMaximumFireResistance);
         }
     }
@@ -165,13 +169,24 @@ public abstract class Alien extends Monster {
         if (!level().isClientSide) {
             updateStateBasedOnGenetics();
             healPassively();
-            // 10% chance when in Nuked Biome to become Aberrant
-            if (
-                this.tickCount % 60 == 0 && this.level().getBiome(this.blockPosition()).is(AVPBiomes.NUKED_BIOME) && this.getRandom()
-                    .nextIntBetweenInclusive(1, 100) >= 90
-            ) {
-                this.setIrraiated(true);
-            }
+            becomeIrradiated();
+            applyDynamicAttributes(config);
+        }
+    }
+
+    /**
+     * 10% chance when in Nuked Biome to become Irradiated
+     */
+    private void becomeIrradiated() {
+        if (tickCount % 60 != 0)
+            return;
+        if (!this.level().getBiome(this.blockPosition()).is(AVPBiomes.NUKED_BIOME))
+            return;
+        if (!isAlive())
+            return;
+
+        if (this.getRandom().nextIntBetweenInclusive(1, 100) >= 90) {
+            this.setIrradiated(true);
         }
     }
 
@@ -275,7 +290,7 @@ public abstract class Alien extends Monster {
         geneManager.load(compoundTag);
         hiveManager.load(compoundTag);
         setAberrant(compoundTag.getBoolean(IS_ABERRANT_KEY));
-        setIrraiated(compoundTag.getBoolean(IS_IRRADIATED_KEY));
+        setIrradiated(compoundTag.getBoolean(IS_IRRADIATED_KEY));
         setNetherAfflicted(compoundTag.getBoolean(IS_NETHER_AFFLICTED_KEY));
     }
 
@@ -287,7 +302,7 @@ public abstract class Alien extends Monster {
         geneManager.save(compoundTag);
         hiveManager.save(compoundTag);
         compoundTag.putBoolean(IS_ABERRANT_KEY, isAberrant());
-        compoundTag.putBoolean(IS_IRRADIATED_KEY, isIrraiated());
+        compoundTag.putBoolean(IS_IRRADIATED_KEY, isIrradiated());
         compoundTag.putBoolean(IS_NETHER_AFFLICTED_KEY, isNetherAfflicted());
     }
 
@@ -318,4 +333,30 @@ public abstract class Alien extends Monster {
 
         return builder;
     }
+
+    public void applyDynamicAttributes(AVPConfig.StatsConfigs.AdvancedStats config) {
+        if (isAberrant()) {
+            applyAttributes(config, 0.5F); // Halve the attributes for Aberrant
+        } else if (isIrradiated()) {
+            applyAttributes(config, 2.0F); // Double the attributes for Irradiated
+        }
+    }
+
+    private void applyAttributes(AVPConfig.StatsConfigs.AdvancedStats config, float scaleFactor) {
+        setAttribute(Attributes.MAX_HEALTH, config.health * scaleFactor);
+        setAttribute(Attributes.ATTACK_DAMAGE, config.attackDamage * scaleFactor);
+        setAttribute(Attributes.MOVEMENT_SPEED, config.moveSpeed * scaleFactor);
+        setAttribute(Attributes.FOLLOW_RANGE, config.followRange * scaleFactor);
+        setAttribute(Attributes.KNOCKBACK_RESISTANCE, config.knockbackResistance * scaleFactor);
+        setAttribute(Attributes.ARMOR, config.armor * scaleFactor);
+        setAttribute(Attributes.ARMOR_TOUGHNESS, config.armorToughness * scaleFactor);
+    }
+
+    private void setAttribute(Holder<Attribute> attribute, float value) {
+        var instance = getAttribute(attribute);
+        if (instance != null) {
+            instance.setBaseValue(value);
+        }
+    }
+
 }

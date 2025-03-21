@@ -471,9 +471,9 @@ public class RussianLanguageProvider extends FabricLanguageProvider {
         translationBuilder.add(SpawnEggItems.NETHER_PRAETORIAN_SPAWN_EGG, "Яйцо призыва адского ксеноморфа-преторианца");
         translationBuilder.add(SpawnEggItems.NETHER_WARRIOR_SPAWN_EGG, "Яйцо призыва адского ксеноморфа-воина");
         translationBuilder.add(SpawnEggItems.NETHER_QUEEN_SPAWN_EGG, "Яйцо призыва адской королевы ксеноморфов");
-        translationBuilder.add(SpawnEggItems.IRRAIATED_DRONE_SPAWN_EGG, "Irraiated Drone Spawn Egg");
-        translationBuilder.add(SpawnEggItems.IRRAIATED_WARRIOR_SPAWN_EGG, "Irraiated Warrior Spawn Egg");
-        translationBuilder.add(SpawnEggItems.IRRAIATED_PRAETORIAN_SPAWN_EGG, "Irraiated Praetorian Spawn Egg");
+        translationBuilder.add(SpawnEggItems.IRRADIATED_DRONE_SPAWN_EGG, "Irraiated Drone Spawn Egg");
+        translationBuilder.add(SpawnEggItems.IRRADIATED_WARRIOR_SPAWN_EGG, "Irraiated Warrior Spawn Egg");
+        translationBuilder.add(SpawnEggItems.IRRADIATED_PRAETORIAN_SPAWN_EGG, "Irraiated Praetorian Spawn Egg");
         translationBuilder.add(SpawnEggItems.OVAMORPH_SPAWN_EGG, "Яйцо призыва оваморфа");
         translationBuilder.add(SpawnEggItems.PRAETORIAN_SPAWN_EGG, "Яйцо призыва ксеноморфа-преторианца");
         translationBuilder.add(SpawnEggItems.QUEEN_SPAWN_EGG, "Яйцо призыва королевы ксеноморфов");

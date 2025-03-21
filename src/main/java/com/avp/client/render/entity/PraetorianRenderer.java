@@ -43,7 +43,7 @@ public class PraetorianRenderer extends AzEntityRenderer<Praetorian> {
             return NETHER_TEXTURE;
         }
 
-        if (praetorian.isIrraiated()) {
+        if (praetorian.isIrradiated()) {
             return IRRADIATED_TEXTURE;
         }
 

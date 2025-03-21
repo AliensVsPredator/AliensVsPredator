@@ -14,5 +14,7 @@ public class OldPainlessAnimationRefs {
 
     public static final String SPIN_ANIMATION_NAME = "animation.barrelspinup";
 
+    public static final String SPIN_DOWN_ANIMATION_NAME = "animation.barrelspindown";
+
     public static final String SPIN_LOOP_ANIMATION_NAME = "animation.barrelspinloop";
 }

@@ -114,13 +114,10 @@ public class ResinManager implements GameEventListener.Provider<ResinSpreadListe
                     }
 
                     // If the resin holder still has more resin, then we place a resin node manually.
-                    var resinNodeBlock = alien.isNetherAfflicted()
-                        ? AVPBlocks.NETHER_RESIN_NODE
-                        : alien.isAberrant()
-                            ? AVPBlocks.ABERRANT_RESIN_NODE
-                            : alien.isIrraiated()
-                                ? AVPBlocks.IRRADIATED_RESIN_NODE
-                                : AVPBlocks.RESIN_NODE;
+                    var resinNodeBlock = alien.isNetherAfflicted() ? AVPBlocks.NETHER_RESIN_NODE :
+                                    alien.isAberrant() ? AVPBlocks.ABERRANT_RESIN_NODE :
+                                            alien.isIrradiated() ? AVPBlocks.IRRADIATED_RESIN_NODE :
+                                                    AVPBlocks.RESIN_NODE;
                     alien.level().setBlockAndUpdate(belowPos, resinNodeBlock.defaultBlockState());
                 }
             }

@@ -22,6 +22,16 @@
 							"vector": [0, 0, 0.6]
 						}
 					}
+				},
+				"gFlash": {
+					"scale": {
+						"0.0": {
+							"vector": [0, 0, 0]
+						},
+						"0.0833": {
+							"vector": [1, 1, 1]
+						}
+					}
 				}
 			}
 		},
@@ -85,6 +95,21 @@
 						"1.0": {
 							"vector": [1, 1, 1]
 						}
+					}
+				},
+				"gFlash": {
+					"scale": {
+						"vector": [0, 0, 0]
+					}
+				}
+			}
+		},
+		"animation.idle": {
+			"loop": true,
+			"bones": {
+				"gFlash": {
+					"scale": {
+						"vector": [0, 0, 0]
 					}
 				}
 			}

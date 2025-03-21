@@ -82,7 +82,7 @@ public class ExplosionUtil {
                     var distance = entity.distanceToSqr(center);
                     var damage = ExplosionUtil.computeDamage(radius, 5, 1000, distance);
                     if (entity instanceof Alien alien) {
-                        alien.setIrraiated(true);
+                        alien.setIrradiated(true);
                     }
                     entity.igniteForSeconds(15);
                     entity.hurt(level.damageSources().explosion(null), (float) damage);
