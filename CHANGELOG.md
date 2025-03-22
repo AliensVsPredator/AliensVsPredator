@@ -3,6 +3,9 @@
 ## What's New
 - Nukes will now turn any aliens that have an Irradiated form into that form.
 - Adds ash block that appears when a nuke goes off and spreads over time.
+- Makes MK50 dyeable, which only changes the color of the rendered armor, not the item. Uses the vanilla tooltip for that.
+- Queens now place a resin node under them when first spawned.
+- Added Gun flashes to most guns.
 
 ## Changes
 - Adjusts how Marine Camps spawn in the world, will only apply to new ones.
@@ -17,6 +20,9 @@
 - Predators will call for help from nearby predators if attacked.
 - Predators will now target all aliens, any mob holding a `hostile_weapon` tagged item, or any entity that hurts them.
 - Adds reload animations to all guns.
+- Nuked Biomes temperature increased.
+- Disables fleeing goal for now.
+- Reimplements attacking only on resin.
 
 ## Fixes
 - Fixes crash related to custom mob category, due to how early it loads, configuration not possible, so removed and enabled by default.
@@ -36,14 +42,23 @@
 - Fixes gun firing animation playing when empty.
 - Fixes grenades ghost blocks and such.
 - Fixes all guns firing animations.
+- Fixes doors not giving 3 in the recipe.
+- Fixes trapdoors not giving 2 in the recipe.
+- Fixes doors see through issue when against a block.
+- Fixes Female Marines texture hole.
+- Fixes Female Marines left cuff being grouped wrong.
+- Fixes missing Radiation effect icon.
+- Fixes Aberrant/Irradiated resin not mineable with axes.
+- Fixes hives somes time spreading the wrong resin.
+- Fixes Old Painless spin animation not playing.
+- Fixes ZX76 Shotgun not animating properly.
+- Fixes lang issues with Irradiated.
 
 ## Data Pack
 - Adds Undead tag to `radiation_resistant` entity tag.
 - Added block tag `marine_spawn_blocks` to limit what blocks in a structure marines can spawn on
 - Added item tag `hostile_weapon` to tag items that Predators find hostile to them.
-
-## Known Issues
-- Missing Radiation icon. *
+- Fixes missing tags for items of `fences`, `doors`, `trapdoors`, `slabs`, `buttons`, `stairs`, `walls`, `freeze_immune_wearables`
 
 ## TODO
 - Add Queen Animations *
