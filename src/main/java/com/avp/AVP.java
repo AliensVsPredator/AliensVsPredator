@@ -1,6 +1,7 @@
 package com.avp;
 
 import com.avp.common.patrols.MarinePatrolSpawner;
+import com.avp.common.worldgen.NukedAshPlacement;
 import mod.azure.azurelib.common.api.common.config.Config;
 import mod.azure.azurelib.common.internal.common.AzureLib;
 import mod.azure.azurelib.common.internal.common.config.ConfigHolder;
@@ -61,6 +62,8 @@ public class AVP implements ModInitializer {
 
     private final MarinePatrolSpawner customSpawner = new MarinePatrolSpawner();
 
+    private final NukedAshPlacement nukedAshPlacement = new NukedAshPlacement();
+
     @Override
     public void onInitialize() {
         AzureLib.initialize();
@@ -110,6 +113,7 @@ public class AVP implements ModInitializer {
 
     private void onWorldTick(ServerLevel serverLevel) {
         customSpawner.tick(serverLevel, serverLevel.getGameRules().getBoolean(GameRules.RULE_DOMOBSPAWNING), true);
+        nukedAshPlacement.tick(serverLevel);
     }
 
     /**
