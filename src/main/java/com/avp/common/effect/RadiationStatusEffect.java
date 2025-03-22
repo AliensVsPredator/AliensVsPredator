@@ -8,7 +8,6 @@ import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
-import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import org.jetbrains.annotations.NotNull;
 
@@ -17,7 +16,6 @@ import java.util.WeakHashMap;
 
 import com.avp.common.damage.AVPDamageTypes;
 import com.avp.common.entity.AVPEntityTypeTags;
-import com.avp.common.item.AVPItemTags;
 import com.avp.common.util.AVPPredicates;
 
 public class RadiationStatusEffect extends MobEffect {
@@ -35,10 +33,6 @@ public class RadiationStatusEffect extends MobEffect {
 
     @Override
     public boolean applyEffectTick(LivingEntity livingEntity, int amplifier) {
-        var armorCheck = livingEntity.getItemBySlot(EquipmentSlot.HEAD).is(AVPItemTags.RADIATION_RESISTANT_ARMOR) &&
-            livingEntity.getItemBySlot(EquipmentSlot.CHEST).is(AVPItemTags.RADIATION_RESISTANT_ARMOR) &&
-            livingEntity.getItemBySlot(EquipmentSlot.LEGS).is(AVPItemTags.RADIATION_RESISTANT_ARMOR) &&
-            livingEntity.getItemBySlot(EquipmentSlot.FEET).is(AVPItemTags.RADIATION_RESISTANT_ARMOR);
         var currentDuration = effectTracker.getOrDefault(livingEntity, 0);
 
         if (AVPPredicates.IS_IMMORTAL.test(livingEntity) || livingEntity.getType().is(AVPEntityTypeTags.RADIATION_RESISTANT)) {
@@ -46,61 +40,57 @@ public class RadiationStatusEffect extends MobEffect {
             return false;
         }
 
-        if (!armorCheck && !AVPPredicates.IS_IMMORTAL.test(livingEntity)) {
-            var registry = livingEntity.registryAccess().registryOrThrow(Registries.DAMAGE_TYPE);
-            var damageSource = new DamageSource(registry.getHolderOrThrow(AVPDamageTypes.RADIATION));
-            switch (amplifier) {
-                case 0:
-                    this.handleStatusEffects(livingEntity, 100, amplifier, MobEffects.WEAKNESS, MobEffects.HUNGER);
-                    if (livingEntity.tickCount % 80 == 0)
-                        livingEntity.hurt(damageSource, 0.1F);
-                    break;
+        var registry = livingEntity.registryAccess().registryOrThrow(Registries.DAMAGE_TYPE);
+        var damageSource = new DamageSource(registry.getHolderOrThrow(AVPDamageTypes.RADIATION));
+        switch (amplifier) {
+            case 0:
+                this.handleStatusEffects(livingEntity, 100, amplifier, MobEffects.WEAKNESS, MobEffects.HUNGER);
+                if (livingEntity.tickCount % 80 == 0)
+                    livingEntity.hurt(damageSource, 0.1F);
+                break;
 
-                case 1:
-                    this.handleStatusEffects(
-                        livingEntity,
-                        100,
-                        amplifier,
-                        MobEffects.WEAKNESS,
-                        MobEffects.HUNGER,
-                        MobEffects.MOVEMENT_SLOWDOWN
-                    );
-                    if (livingEntity.tickCount % 40 == 0)
-                        livingEntity.hurt(damageSource, 2.1F);
-                    break;
+            case 1:
+                this.handleStatusEffects(
+                    livingEntity,
+                    100,
+                    amplifier,
+                    MobEffects.WEAKNESS,
+                    MobEffects.HUNGER,
+                    MobEffects.MOVEMENT_SLOWDOWN
+                );
+                if (livingEntity.tickCount % 40 == 0)
+                    livingEntity.hurt(damageSource, 2.1F);
+                break;
 
-                default:
-                    this.handleStatusEffects(
-                        livingEntity,
-                        100,
-                        amplifier,
-                        MobEffects.WEAKNESS,
-                        MobEffects.HUNGER,
-                        MobEffects.MOVEMENT_SLOWDOWN,
-                        MobEffects.BLINDNESS
-                    );
-                    if (livingEntity.tickCount % 20 == 0)
-                        livingEntity.hurt(damageSource, 5.0F);
-                    break;
-            }
-
-            var threshold = switch (amplifier) {
-                case 0 -> 20 * 60 * 8; // 8 minutes in ticks
-                case 1 -> 20 * 60 * 16; // 16 minutes in ticks
-                default -> Integer.MAX_VALUE;
-            };
-
-            if (currentDuration >= threshold && amplifier < 2) {
-                effectTracker.put(livingEntity, 0);
-                livingEntity.addEffect(new MobEffectInstance(AVPEffects.RADIATION_EFFECT, Integer.MAX_VALUE, amplifier + 1));
-            } else {
-                effectTracker.put(livingEntity, currentDuration + 1);
-            }
-        } else {
-            effectTracker.remove(livingEntity);
+            default:
+                this.handleStatusEffects(
+                    livingEntity,
+                    100,
+                    amplifier,
+                    MobEffects.WEAKNESS,
+                    MobEffects.HUNGER,
+                    MobEffects.MOVEMENT_SLOWDOWN,
+                    MobEffects.BLINDNESS
+                );
+                if (livingEntity.tickCount % 20 == 0)
+                    livingEntity.hurt(damageSource, 5.0F);
+                break;
         }
 
-        return !armorCheck;
+        var threshold = switch (amplifier) {
+            case 0 -> 20 * 60 * 8; // 8 minutes in ticks
+            case 1 -> 20 * 60 * 16; // 16 minutes in ticks
+            default -> Integer.MAX_VALUE;
+        };
+
+        if (currentDuration >= threshold && amplifier < 2) {
+            effectTracker.put(livingEntity, 0);
+            livingEntity.addEffect(new MobEffectInstance(AVPEffects.RADIATION_EFFECT, Integer.MAX_VALUE, amplifier + 1));
+        } else {
+            effectTracker.put(livingEntity, currentDuration + 1);
+        }
+
+        return livingEntity.isAlive();
     }
 
     @SafeVarargs
