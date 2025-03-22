@@ -23,3 +23,6 @@ accessible method net/minecraft/world/level/block/entity/AbstractFurnaceBlockEnt
 accessible field net/minecraft/world/level/block/entity/AbstractFurnaceBlockEntity litDuration I
 accessible method net/minecraft/world/level/block/entity/AbstractFurnaceBlockEntity getBurnDuration (Lnet/minecraft/world/item/ItemStack;)I
 accessible method net/minecraft/world/level/block/entity/AbstractFurnaceBlockEntity burn (Lnet/minecraft/core/RegistryAccess;Lnet/minecraft/world/item/crafting/RecipeHolder;Lnet/minecraft/core/NonNullList;I)Z
+accessible method net/minecraft/core/Vec3i setX (I)Lnet/minecraft/core/Vec3i;
+accessible method net/minecraft/core/Vec3i setY (I)Lnet/minecraft/core/Vec3i;
+accessible method net/minecraft/core/Vec3i setZ (I)Lnet/minecraft/core/Vec3i;

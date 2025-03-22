@@ -1,5 +1,6 @@
 package com.avp;
 
+import com.avp.common.patrols.MarinePatrolSpawner;
 import mod.azure.azurelib.common.api.common.config.Config;
 import mod.azure.azurelib.common.internal.common.AzureLib;
 import mod.azure.azurelib.common.internal.common.config.ConfigHolder;
@@ -8,6 +9,9 @@ import mod.azure.azurelib.common.internal.common.config.format.ConfigFormats;
 import mod.azure.azurelib.common.internal.common.config.format.IConfigFormatHandler;
 import mod.azure.azurelib.common.internal.common.config.io.ConfigIO;
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.GameRules;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -55,6 +59,8 @@ public class AVP implements ModInitializer {
 
     public static AVPConfig config;
 
+    private final MarinePatrolSpawner customSpawner = new MarinePatrolSpawner();
+
     @Override
     public void onInitialize() {
         AzureLib.initialize();
@@ -99,6 +105,11 @@ public class AVP implements ModInitializer {
         FlammableBlockRegistry.initialize();
         AVPFuelRegistry.initialize();
         Commands.initialize();
+        ServerTickEvents.START_WORLD_TICK.register(this::onWorldTick);
+    }
+
+    private void onWorldTick(ServerLevel serverLevel) {
+        customSpawner.tick(serverLevel, serverLevel.getGameRules().getBoolean(GameRules.RULE_DOMOBSPAWNING), true);
     }
 
     /**
