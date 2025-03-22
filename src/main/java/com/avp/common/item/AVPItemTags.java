@@ -30,6 +30,8 @@ public class AVPItemTags {
 
     public static final TagKey<Item> RADIATION_RESISTANT_ARMOR = create("radiation_resistant_armor");
 
+    public static final TagKey<Item> RADIATION_CURE_ITEMS = create("radiation_cure_items");
+
     private static TagKey<Item> create(String name) {
         return TagKey.create(Registries.ITEM, AVPResources.location(name));
     }
