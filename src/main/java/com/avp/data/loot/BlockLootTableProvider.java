@@ -26,6 +26,7 @@ public class BlockLootTableProvider extends FabricBlockLootTableProvider {
 
     @Override
     public void generate() {
+        dropSelf(AVPBlocks.SENTRY_TURRET);
         dropSelf(AVPBlocks.TRINITITE_BLOCK);
         dropSelf(AVPBlocks.ASH_BLOCK);
         dropSelf(AVPBlocks.NUKE_BLOCK);
@@ -145,6 +146,35 @@ public class BlockLootTableProvider extends FabricBlockLootTableProvider {
         dropSelf(AVPBlocks.URANIUM_BLOCK);
         dropSelf(AVPBlocks.ZINC_BLOCK);
         add(AVPBlocks.ZINC_ORE, block -> createOreMultiDrop(block, AVPItems.RAW_ZINC, 2, 5));
+
+        dropSelf(AVPBlocks.STEEL_DOOR);
+        dropSelf(AVPBlocks.TITANIUM_DOOR);
+        dropSelf(AVPBlocks.FERROALUMINUM_DOOR);
+
+        dropSelf(AVPBlocks.FERROALUMINUM_TRAP_DOOR);
+        dropSelf(AVPBlocks.STEEL_TRAP_DOOR);
+        dropSelf(AVPBlocks.TITANIUM_TRAP_DOOR);
+
+        dropSelf(AVPBlocks.STEEL_PRESSURE_PLATE);
+        dropSelf(AVPBlocks.TITANIUM_PRESSURE_PLATE);
+        dropSelf(AVPBlocks.FERROALUMINUM_PRESSURE_PLATE);
+
+        dropSelf(AVPBlocks.STEEL_BUTTON);
+        dropSelf(AVPBlocks.TITANIUM_BUTTON);
+        dropSelf(AVPBlocks.FERROALUMINUM_BUTTON);
+
+        dropSelf(AVPBlocks.FERROALUMINUM_FASTENED_SIDING_SLAB);
+        dropSelf(AVPBlocks.FERROALUMINUM_FASTENED_STANDING_SLAB);
+        dropSelf(AVPBlocks.FERROALUMINUM_SIDING_SLAB);
+        dropSelf(AVPBlocks.FERROALUMINUM_STANDING_SLAB);
+        dropSelf(AVPBlocks.STEEL_SIDING_SLAB);
+        dropSelf(AVPBlocks.STEEL_STANDING_SLAB);
+        dropSelf(AVPBlocks.STEEL_FASTENED_SIDING_SLAB);
+        dropSelf(AVPBlocks.STEEL_FASTENED_STANDING_SLAB);
+        dropSelf(AVPBlocks.TITANIUM_SIDING_SLAB);
+        dropSelf(AVPBlocks.TITANIUM_STANDING_SLAB);
+        dropSelf(AVPBlocks.TITANIUM_FASTENED_SIDING_SLAB);
+        dropSelf(AVPBlocks.TITANIUM_FASTENED_STANDING_SLAB);
     }
 
     public LootTable.Builder createOreMultiDrop(Block block, Item item, int min, int max) {
