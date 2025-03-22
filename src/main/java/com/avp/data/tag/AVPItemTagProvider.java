@@ -7,6 +7,7 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 
 import java.util.concurrent.CompletableFuture;
@@ -26,6 +27,12 @@ public class AVPItemTagProvider extends FabricTagProvider.ItemTagProvider {
 
     @Override
     protected void addTags(HolderLookup.Provider wrapperLookup) {
+        getOrCreateTagBuilder(AVPItemTags.RADIATION_CURE_ITEMS)
+            .add(
+                Items.GOLDEN_APPLE,
+                Items.ENCHANTED_GOLDEN_APPLE
+            );
+
         getOrCreateTagBuilder(AVPItemTags.RADIATION_RESISTANT_ARMOR)
             .add(
                 ArmorItems.MK50_HELMET,
