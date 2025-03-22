@@ -20,6 +20,8 @@ import com.avp.common.item.RoyalJellyBlockItem;
 
 public class AVPBlockItems {
 
+    public static final BlockItem SENTRY_TURRET = register(AVPBlocks.SENTRY_TURRET);
+
     public static final BlockItem ASH_BLOCK = register(AVPBlocks.ASH_BLOCK);
 
     public static final BlockItem TRINITITE_BLOCK = registerCustomBlockItem(

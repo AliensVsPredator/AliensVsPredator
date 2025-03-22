@@ -1,7 +1,7 @@
 {
 	"format_version": "1.8.0",
 	"animations": {
-		"turret.unpowered": {
+		"animation.unpowered": {
 			"loop": true,
 			"bones": {
 				"gRotationJoint": {
@@ -21,7 +21,7 @@
 				}
 			}
 		},
-		"turret.idle": {
+		"animation.idle": {
 			"loop": true,
 			"animation_length": 3,
 			"bones": {
@@ -51,7 +51,7 @@
 				}
 			}
 		},
-		"turret.firing": {
+		"animation.firing": {
 			"loop": true,
 			"animation_length": 0.1667,
 			"bones": {

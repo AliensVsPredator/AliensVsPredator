@@ -37,6 +37,8 @@ public class AVPBlocks {
         "grate"
     };
 
+    public static final Block SENTRY_TURRET = register(new SentryTurretBlock(BlockProperties.STEEL.noOcclusion()), "sentry_turret");
+
     public static final Block ASH_BLOCK = register(new AshBlock(BlockProperties.ASH_BLOCK), "ash_block");
 
     public static final Block NUKE_BLOCK = register(new NukeBlock(BlockProperties.NUKE), "nuke");

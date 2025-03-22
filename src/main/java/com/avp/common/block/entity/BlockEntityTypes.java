@@ -29,6 +29,11 @@ public class BlockEntityTypes {
         BlockEntityType.Builder.of(IndustrialFurnaceBE::new, AVPBlocks.INDUSTRIAL_FURNACE)
     );
 
+    public static final BlockEntityType<SentryTurretBE> SENTRY_TURRET_BE = register(
+            "sentry_turret_be",
+            BlockEntityType.Builder.of(SentryTurretBE::new, AVPBlocks.SENTRY_TURRET)
+    );
+
     private static <T extends BlockEntity> BlockEntityType<T> register(String id, BlockEntityType.Builder<T> builder) {
         var type = Util.fetchChoiceType(References.BLOCK_ENTITY, id);
         var resourceLocation = AVPResources.location(id);

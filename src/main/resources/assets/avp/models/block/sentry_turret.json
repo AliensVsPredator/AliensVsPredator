@@ -1,6 +1,9 @@
 {
   "credit": "Made with Blockbench",
   "parent": "builtin/entity",
+  "textures": {
+    "particle": "avp:block/sentry_turret"
+  },
   "texture_size": [
     64,
     64

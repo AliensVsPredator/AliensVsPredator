@@ -1,5 +1,7 @@
 package com.avp.client;
 
+import com.avp.client.render.block.SentryTurretRenderer;
+import com.avp.common.block.entity.BlockEntityTypes;
 import mod.azure.azurelib.rewrite.render.armor.AzArmorRendererRegistry;
 import mod.azure.azurelib.rewrite.render.item.AzItemRenderer;
 import mod.azure.azurelib.rewrite.render.item.AzItemRendererRegistry;
@@ -9,6 +11,8 @@ import net.fabricmc.fabric.api.client.particle.v1.ParticleFactoryRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraft.client.renderer.entity.ThrownItemRenderer;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.Item;
@@ -175,6 +179,10 @@ public class AVPClient implements ClientModInitializer {
         EntityRendererRegistry.register(AVPEntityTypes.BULLET, EmptyRenderer::new);
         EntityRendererRegistry.register(AVPEntityTypes.SHURIKEN, SpinningItemRenderer::new);
         EntityRendererRegistry.register(AVPEntityTypes.SMART_DISC, SpinningItemRenderer::new);
+
+        // Block Entities
+        BlockEntityRenderers.register(BlockEntityTypes.SENTRY_TURRET_BE,
+                (BlockEntityRendererProvider.Context rendererDispatcherIn) -> new SentryTurretRenderer());
 
         // Particles
         ParticleFactoryRegistry.getInstance().register(AVPParticleTypes.ACID, AcidParticleProvider::new);
