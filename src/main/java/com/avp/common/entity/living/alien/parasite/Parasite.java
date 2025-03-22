@@ -60,6 +60,10 @@ public abstract class Parasite extends Alien {
             if (currentTarget != null && !isValidHost(currentTarget)) {
                 setTarget(null);
             }
+
+            if (!attachmentManager.isFertile()) {
+                this.kill();
+            }
         }
     }
 
