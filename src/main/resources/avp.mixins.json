@@ -7,6 +7,7 @@
     "MixinCreeper_Nuked",
     "MixinDecoratedPotPatterns_GetPatternForCustomSherds",
     "MixinEntityTypeBuilder_SilenceDataFixerError",
+    "MixinItem_ChorusEmbryo",
     "MixinItem_RemoveRads",
     "MixinItemEntity_LithiumExplode",
     "MixinLivingEntity_ApplyArmorEffects",

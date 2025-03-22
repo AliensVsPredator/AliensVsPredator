@@ -181,4 +181,9 @@ public abstract class MixinLivingEntity_GrowEmbryo extends Entity implements Hos
             mob.setPersistenceRequired();
         }
     }
+
+    @Override
+    public void clearParasiteSourceType() {
+        this.parasiteSourceType = null;
+    }
 }

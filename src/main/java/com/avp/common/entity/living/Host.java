@@ -16,4 +16,6 @@ public interface Host {
     EntityType<?> parasiteType();
 
     void injectEmbryo(Parasite parasite);
+
+    void clearParasiteSourceType();
 }
