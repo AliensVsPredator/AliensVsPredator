@@ -6,6 +6,17 @@
 - Makes MK50 dyeable, which only changes the color of the rendered armor, not the item. Uses the vanilla tooltip for that.
 - Queens now place a resin node under them when first spawned.
 - Added Gun flashes to most guns.
+- Golden Apples (normal/enchanted) can now be used to cure the Radiation effect.
+- Adds basic Sentry Turret.
+  - Currently does not use ammo. (Waiting on ammo box)
+  - Currently requires Redstone power. (Will need it's GUI implemented)
+  - Currently only targets monsters. (Will need it's GUI implemented for different targeting) 
+  - Will break blocks to damage monsters in it's FOV (75 degrees in front of itself where it's facing). (Will need it's GUI implemented for different FOV range)
+  - Currently, it does not rotate to target the monster it's trying to get.
+  - Currently has a range of 32 blocks.
+- Adds in Marine Patrols in the same biomes that the camps can spawn in.
+- Ash blocks will generate in Nuked biomes if an active player is in one.
+- Chorus Fruit can now remove embryos instead of teleporting entity, leaving the host alive.
 
 ## Changes
 - Adjusts how Marine Camps spawn in the world, will only apply to new ones.
@@ -23,6 +34,9 @@
 - Nuked Biomes temperature increased.
 - Disables fleeing goal for now.
 - Reimplements attacking only on resin.
+- MK50 no longer removes the Radiation effect.
+- Kills Parasites when no longer fertile.
+- More tweaks to Marine spawn camp spawning limits.
 
 ## Fixes
 - Fixes crash related to custom mob category, due to how early it loads, configuration not possible, so removed and enabled by default.
@@ -53,12 +67,14 @@
 - Fixes Old Painless spin animation not playing.
 - Fixes ZX76 Shotgun not animating properly.
 - Fixes lang issues with Irradiated.
+- Fixes missing drops for doors, trapdoors, buttons, and slabs.
 
 ## Data Pack
 - Adds Undead tag to `radiation_resistant` entity tag.
 - Added block tag `marine_spawn_blocks` to limit what blocks in a structure marines can spawn on
 - Added item tag `hostile_weapon` to tag items that Predators find hostile to them.
 - Fixes missing tags for items of `fences`, `doors`, `trapdoors`, `slabs`, `buttons`, `stairs`, `walls`, `freeze_immune_wearables`
+- Added item tag `radiation_cure_items` to tag items that when used can cure the Radiation effect.
 
 ## TODO
 - Add Queen Animations *
@@ -68,22 +84,19 @@
 - Add Queen facehugger *
 - Add Queen burster *
 - Poison jelly on queen eggs turn it into an Aberrant Queen egg *
-- Sentry turret
 - Ammo chest + have sentry turret use it
-- Battery items
-- Charging system (likely redstone?) for batteries
-- Make turrets use batteries
+- Battery items + have sentry turret run off it
+- Charging system (likely Redstone?) for batteries
 - Lead chest
 - Compression item?
 - Blueprint table
-- Commisionary Villager type
+- Commissary Villager type
 - Irradiated rockets *
 - Predator Spawn mechanics
 - Predator difficulty adjustments (unsure what this means?)
 - Predator Combi stick *
 - Predator Proximity mines *
 - More Marine structures *
-- Wondering Marine teams
 
 # v0.0.18-beta
 
