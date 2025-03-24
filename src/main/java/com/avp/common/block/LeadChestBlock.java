@@ -3,17 +3,26 @@ package com.avp.common.block;
 import com.avp.common.block.entity.BlockEntityTypes;
 import com.avp.common.block.entity.LeadChestBE;
 import com.mojang.serialization.MapCodec;
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.monster.piglin.PiglinAi;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.ItemContainerContents;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
@@ -33,6 +42,8 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.List;
+
 public class LeadChestBlock extends AbstractChestBlock<LeadChestBE> implements SimpleWaterloggedBlock {
     public static final MapCodec<LeadChestBlock> CODEC = simpleCodec(LeadChestBlock::new);
     public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
@@ -42,6 +53,26 @@ public class LeadChestBlock extends AbstractChestBlock<LeadChestBE> implements S
     protected LeadChestBlock(Properties properties) {
         super(properties, () -> BlockEntityTypes.LEAD_CHEST_BE);
         this.registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.NORTH).setValue(WATERLOGGED, Boolean.FALSE));
+    }
+
+    @Override
+    public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag) {
+        super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
+
+        int i = 0;
+        int j = 0;
+
+        for (ItemStack itemStack : stack.getOrDefault(DataComponents.CONTAINER, ItemContainerContents.EMPTY).nonEmptyItems()) {
+            j++;
+            if (i <= 4) {
+                i++;
+                tooltipComponents.add(Component.translatable("container.shulkerBox.itemCount", itemStack.getHoverName(), itemStack.getCount()));
+            }
+        }
+
+        if (j - i > 0) {
+            tooltipComponents.add(Component.translatable("container.shulkerBox.more", j - i).withStyle(ChatFormatting.ITALIC));
+        }
     }
 
     @Override
@@ -94,6 +125,29 @@ public class LeadChestBlock extends AbstractChestBlock<LeadChestBE> implements S
             return InteractionResult.CONSUME;
         }
         return InteractionResult.PASS;
+    }
+
+    @Override
+    public @NotNull BlockState playerWillDestroy(Level level, BlockPos pos, BlockState state, Player player) {
+        BlockEntity blockEntity = level.getBlockEntity(pos);
+        if (blockEntity instanceof LeadChestBE leadChestBE) {
+            if (!level.isClientSide && !leadChestBE.isEmpty()) {
+                ItemStack itemStack = this.asItem().getDefaultInstance();
+                itemStack.applyComponents(blockEntity.collectComponents());
+                ItemEntity itemEntity = new ItemEntity(level, (double)pos.getX() + 0.5, (double)pos.getY() + 0.5, (double)pos.getZ() + 0.5, itemStack);
+                itemEntity.setDefaultPickUpDelay();
+                level.addFreshEntity(itemEntity);
+            }
+        }
+
+        return super.playerWillDestroy(level, pos, state, player);
+    }
+
+    @Override
+    public @NotNull ItemStack getCloneItemStack(LevelReader level, BlockPos pos, BlockState state) {
+        ItemStack itemStack = super.getCloneItemStack(level, pos, state);
+        level.getBlockEntity(pos, BlockEntityTypes.LEAD_CHEST_BE).ifPresent(leadChestBE -> leadChestBE.saveToItem(itemStack, level.registryAccess()));
+        return itemStack;
     }
 
     @Override
