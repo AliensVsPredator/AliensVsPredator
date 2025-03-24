@@ -131,7 +131,7 @@ public class LeadChestBlock extends AbstractChestBlock<LeadChestBE> implements S
     public @NotNull BlockState playerWillDestroy(Level level, BlockPos pos, BlockState state, Player player) {
         BlockEntity blockEntity = level.getBlockEntity(pos);
         if (blockEntity instanceof LeadChestBE leadChestBE) {
-            if (!level.isClientSide && !leadChestBE.isEmpty()) {
+            if (!level.isClientSide && player.isCreative() && !leadChestBE.isEmpty()) {
                 ItemStack itemStack = this.asItem().getDefaultInstance();
                 itemStack.applyComponents(blockEntity.collectComponents());
                 ItemEntity itemEntity = new ItemEntity(level, (double)pos.getX() + 0.5, (double)pos.getY() + 0.5, (double)pos.getZ() + 0.5, itemStack);

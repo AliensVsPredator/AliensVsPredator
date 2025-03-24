@@ -61,6 +61,7 @@ public class BlockLootTableProvider extends FabricBlockLootTableProvider {
         dropSelf(AVPBlocks.FERROALUMINUM_TREAD);
         add(AVPBlocks.GALENA_ORE, block -> createOreDrop(block, AVPItems.RAW_GALENA));
         dropSelf(AVPBlocks.LEAD_BLOCK);
+        add(AVPBlocks.LEAD_CHEST, this::createShulkerBoxDrop);
         dropSelf(AVPBlocks.LITHIUM_BLOCK);
         add(AVPBlocks.LITHIUM_ORE, block -> createOreMultiDrop(block, AVPItems.LITHIUM_DUST, 2, 4));
         add(AVPBlocks.MONAZITE_ORE, block -> createOreDrop(block, AVPItems.RAW_MONAZITE));
