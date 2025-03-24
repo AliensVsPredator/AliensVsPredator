@@ -1,5 +1,7 @@
 package com.avp.common.block;
 
+import com.avp.AVPResources;
+import com.avp.common.block.resin.*;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.util.ColorRGBA;
@@ -14,9 +16,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-
-import com.avp.AVPResources;
-import com.avp.common.block.resin.*;
 
 public class AVPBlocks {
 
@@ -150,6 +149,8 @@ public class AVPBlocks {
     );
 
     public static final Block LEAD_BLOCK = register(BlockProperties.LEAD, "lead_block");
+
+    public static final Block LEAD_CHEST = register(new LeadChestBlock(BlockProperties.LEAD), "lead_chest");
 
     public static final Block LITHIUM_BLOCK = register(new LithiumBlock(BlockProperties.LITHIUM_ORE), "lithium_block");
 

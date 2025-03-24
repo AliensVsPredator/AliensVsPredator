@@ -1,13 +1,5 @@
 package com.avp.data.lang;
 
-import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
-import net.fabricmc.fabric.api.datagen.v1.provider.FabricLanguageProvider;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.sounds.SoundEvent;
-
-import java.util.Arrays;
-import java.util.concurrent.CompletableFuture;
-
 import com.avp.common.block.AVPBlocks;
 import com.avp.common.creative_mode_tab.CreativeModeTabs;
 import com.avp.common.entity.type.AVPEntityTypes;
@@ -15,6 +7,13 @@ import com.avp.common.item.AVPItems;
 import com.avp.common.item.ArmorItems;
 import com.avp.common.item.SpawnEggItems;
 import com.avp.common.sound.AVPSoundEvents;
+import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
+import net.fabricmc.fabric.api.datagen.v1.provider.FabricLanguageProvider;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.sounds.SoundEvent;
+
+import java.util.Arrays;
+import java.util.concurrent.CompletableFuture;
 
 public class EnglishLanguageProvider extends FabricLanguageProvider {
 
@@ -67,6 +66,7 @@ public class EnglishLanguageProvider extends FabricLanguageProvider {
         translationBuilder.add(AVPBlocks.INDUSTRIAL_GLASS, "Industrial Glass");
         translationBuilder.add(AVPBlocks.INDUSTRIAL_GLASS_PANE, "Industrial Glass Pane");
         translationBuilder.add(AVPBlocks.LEAD_BLOCK, "Block of Lead");
+        translationBuilder.add(AVPBlocks.LEAD_CHEST, "Lead Chest");
         translationBuilder.add(AVPBlocks.FERROALUMINUM_FASTENED_STANDING_SLAB, "Ferroaluminum Fastened Standing Slab");
         translationBuilder.add(AVPBlocks.FERROALUMINUM_FASTENED_STANDING_STAIRS, "Ferroaluminum Fastened Standing Stairs");
         translationBuilder.add(AVPBlocks.FERROALUMINUM_GRATE_SLAB, "Ferroaluminum Grate Slab");
@@ -539,6 +539,9 @@ public class EnglishLanguageProvider extends FabricLanguageProvider {
         // Keybinds
         translationBuilder.add("key.avp.reload", "Reload");
         translationBuilder.add("keybind.category.avp.weapons", "AVP Weapons");
+
+        // Containers
+        translationBuilder.add("container.lead_chest", "Lead Chest");
 
         // Death messages
         translationBuilder.add("death.attack.acid", "%1$s vaporized in acid");

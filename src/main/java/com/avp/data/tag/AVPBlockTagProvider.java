@@ -1,5 +1,8 @@
 package com.avp.data.tag;
 
+import com.avp.common.block.AVPBlockTags;
+import com.avp.common.block.AVPBlocks;
+import com.avp.data.compatibility.gigeresque.GigeresqueConstants;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
 import net.minecraft.core.HolderLookup;
@@ -8,10 +11,6 @@ import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.block.Blocks;
 
 import java.util.concurrent.CompletableFuture;
-
-import com.avp.common.block.AVPBlockTags;
-import com.avp.common.block.AVPBlocks;
-import com.avp.data.compatibility.gigeresque.GigeresqueConstants;
 
 public class AVPBlockTagProvider extends FabricTagProvider.BlockTagProvider {
 
@@ -305,6 +304,7 @@ public class AVPBlockTagProvider extends FabricTagProvider.BlockTagProvider {
                 AVPBlocks.DEEPSLATE_ZINC_ORE,
                 AVPBlocks.GALENA_ORE,
                 AVPBlocks.LEAD_BLOCK,
+                AVPBlocks.LEAD_CHEST,
                 AVPBlocks.LITHIUM_BLOCK,
                 AVPBlocks.LITHIUM_ORE,
                 AVPBlocks.MONAZITE_ORE,

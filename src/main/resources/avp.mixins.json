@@ -22,7 +22,8 @@
   "client": [
     "client.MixinGui_CrosshairPickEntityWithinGunRange",
     "client.MixinItemInHandRenderer_AdjustHandRenderingForGun",
-    "client.MixinPlayerRenderer_AdjustArmPoseForGun"
+    "client.MixinPlayerRenderer_AdjustArmPoseForGun",
+    "client.MixinSheets_AdjustLeadChestTexture"
   ],
   "injectors": {
     "defaultRequire": 1

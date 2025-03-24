@@ -1,7 +1,23 @@
 package com.avp.client;
 
+import com.avp.client.input.keybind.AVPKeybindingRegistry;
+import com.avp.client.network.AVPClientPacketHandlerRegistry;
+import com.avp.client.particle.AcidParticleProvider;
+import com.avp.client.particle.BlueAcidParticleProvider;
+import com.avp.client.render.armor.*;
 import com.avp.client.render.block.SentryTurretRenderer;
+import com.avp.client.render.entity.*;
+import com.avp.client.render.entity.parasite.facehugger.FacehuggerRenderer;
+import com.avp.client.render.item.*;
+import com.avp.client.screen.ArmorCaseScreen;
+import com.avp.client.screen.IndustrialFurnaceScreen;
+import com.avp.common.block.AVPBlocks;
 import com.avp.common.block.entity.BlockEntityTypes;
+import com.avp.common.entity.type.AVPEntityTypes;
+import com.avp.common.item.AVPItems;
+import com.avp.common.item.ArmorItems;
+import com.avp.common.menu.MenuTypes;
+import com.avp.common.particle.AVPParticleTypes;
 import mod.azure.azurelib.rewrite.render.armor.AzArmorRendererRegistry;
 import mod.azure.azurelib.rewrite.render.item.AzItemRenderer;
 import mod.azure.azurelib.rewrite.render.item.AzItemRendererRegistry;
@@ -13,29 +29,13 @@ import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
+import net.minecraft.client.renderer.blockentity.ChestRenderer;
 import net.minecraft.client.renderer.entity.ThrownItemRenderer;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.Item;
 
 import java.util.function.Function;
 import java.util.function.Supplier;
-
-import com.avp.client.input.keybind.AVPKeybindingRegistry;
-import com.avp.client.network.AVPClientPacketHandlerRegistry;
-import com.avp.client.particle.AcidParticleProvider;
-import com.avp.client.particle.BlueAcidParticleProvider;
-import com.avp.client.render.armor.*;
-import com.avp.client.render.entity.*;
-import com.avp.client.render.entity.parasite.facehugger.FacehuggerRenderer;
-import com.avp.client.render.item.*;
-import com.avp.client.screen.ArmorCaseScreen;
-import com.avp.client.screen.IndustrialFurnaceScreen;
-import com.avp.common.block.AVPBlocks;
-import com.avp.common.entity.type.AVPEntityTypes;
-import com.avp.common.item.AVPItems;
-import com.avp.common.item.ArmorItems;
-import com.avp.common.menu.MenuTypes;
-import com.avp.common.particle.AVPParticleTypes;
 
 public class AVPClient implements ClientModInitializer {
 
@@ -183,6 +183,8 @@ public class AVPClient implements ClientModInitializer {
         // Block Entities
         BlockEntityRenderers.register(BlockEntityTypes.SENTRY_TURRET_BE,
                 (BlockEntityRendererProvider.Context rendererDispatcherIn) -> new SentryTurretRenderer());
+
+        BlockEntityRenderers.register(BlockEntityTypes.LEAD_CHEST_BE, ChestRenderer::new);
 
         // Particles
         ParticleFactoryRegistry.getInstance().register(AVPParticleTypes.ACID, AcidParticleProvider::new);

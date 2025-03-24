@@ -29,6 +29,11 @@ public class BlockEntityTypes {
         BlockEntityType.Builder.of(IndustrialFurnaceBE::new, AVPBlocks.INDUSTRIAL_FURNACE)
     );
 
+    public static final BlockEntityType<LeadChestBE> LEAD_CHEST_BE = register(
+            "lead_chest_be",
+            BlockEntityType.Builder.of(LeadChestBE::new, AVPBlocks.LEAD_CHEST)
+    );
+
     public static final BlockEntityType<SentryTurretBE> SENTRY_TURRET_BE = register(
             "sentry_turret_be",
             BlockEntityType.Builder.of(SentryTurretBE::new, AVPBlocks.SENTRY_TURRET)

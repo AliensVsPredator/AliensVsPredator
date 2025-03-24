@@ -1,5 +1,7 @@
 package com.avp.data.loot;
 
+import com.avp.common.block.AVPBlocks;
+import com.avp.common.item.AVPItems;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricBlockLootTableProvider;
 import net.minecraft.core.HolderLookup;
@@ -14,9 +16,6 @@ import net.minecraft.world.level.storage.loot.functions.SetItemCountFunction;
 import net.minecraft.world.level.storage.loot.providers.number.UniformGenerator;
 
 import java.util.concurrent.CompletableFuture;
-
-import com.avp.common.block.AVPBlocks;
-import com.avp.common.item.AVPItems;
 
 public class BlockLootTableProvider extends FabricBlockLootTableProvider {
 
@@ -62,6 +61,7 @@ public class BlockLootTableProvider extends FabricBlockLootTableProvider {
         dropSelf(AVPBlocks.FERROALUMINUM_TREAD);
         add(AVPBlocks.GALENA_ORE, block -> createOreDrop(block, AVPItems.RAW_GALENA));
         dropSelf(AVPBlocks.LEAD_BLOCK);
+        dropSelf(AVPBlocks.LEAD_CHEST);
         dropSelf(AVPBlocks.LITHIUM_BLOCK);
         add(AVPBlocks.LITHIUM_ORE, block -> createOreMultiDrop(block, AVPItems.LITHIUM_DUST, 2, 4));
         add(AVPBlocks.MONAZITE_ORE, block -> createOreDrop(block, AVPItems.RAW_MONAZITE));
