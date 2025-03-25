@@ -117,7 +117,7 @@ public class AVPBlockItems {
 
     public static final BlockItem LEAD_BLOCK = register(AVPBlocks.LEAD_BLOCK);
 
-    public static final BlockItem LEAD_CHEST = register(new Item.Properties().component(DataComponents.CONTAINER, ItemContainerContents.EMPTY), AVPBlocks.LEAD_CHEST);
+    public static final BlockItem LEAD_CHEST = register(new Item.Properties().component(DataComponents.CONTAINER, ItemContainerContents.EMPTY).component(DataComponents.MAX_STACK_SIZE, 1), AVPBlocks.LEAD_CHEST);
 
     public static final BlockItem LITHIUM_ORE = register(AVPBlocks.LITHIUM_ORE);
 

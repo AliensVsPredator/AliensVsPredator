@@ -1,23 +1,17 @@
 package com.avp.data.tag;
 
-import com.avp.common.block.AVPBlockTags;
-import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
-import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.tags.BlockTags;
-import net.minecraft.tags.ItemTags;
-import net.minecraft.world.item.DyeColor;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.Items;
-
-import java.util.concurrent.CompletableFuture;
-
 import com.avp.common.block.AVPBlocks;
 import com.avp.common.block_item.AVPBlockItems;
 import com.avp.common.item.AVPItemTags;
 import com.avp.common.item.AVPItems;
 import com.avp.common.item.ArmorItems;
-import net.minecraft.world.level.block.Blocks;
+import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
+import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.tags.ItemTags;
+import net.minecraft.world.item.Items;
+
+import java.util.concurrent.CompletableFuture;
 
 public class AVPItemTagProvider extends FabricTagProvider.ItemTagProvider {
 
@@ -39,6 +33,16 @@ public class AVPItemTagProvider extends FabricTagProvider.ItemTagProvider {
                 ArmorItems.MK50_CHESTPLATE,
                 ArmorItems.MK50_LEGGINGS,
                 ArmorItems.MK50_BOOTS
+            );
+
+        getOrCreateTagBuilder(AVPItemTags.RADIATION_ITEMS)
+            .add(
+                AVPItems.AUTUNITE_DUST,
+                AVPItems.URANIUM_NUGGET,
+                AVPItems.URANIUM_INGOT,
+                AVPBlockItems.AUTUNITE_BLOCK,
+                AVPBlockItems.URANIUM_BLOCK,
+                AVPBlockItems.TRINITITE_BLOCK
             );
 
         getOrCreateTagBuilder(AVPItemTags.HOSTILE_WEAPON)
