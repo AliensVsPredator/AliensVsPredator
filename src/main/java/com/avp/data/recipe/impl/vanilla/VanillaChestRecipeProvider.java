@@ -4,6 +4,7 @@ import com.avp.common.block_item.AVPBlockItems;
 import com.avp.common.item.AVPItems;
 import com.avp.data.recipe.builder.RecipeBuilder;
 import net.minecraft.data.recipes.RecipeCategory;
+import net.minecraft.world.item.Items;
 
 public class VanillaChestRecipeProvider {
 
@@ -15,8 +16,9 @@ public class VanillaChestRecipeProvider {
         builder.shaped()
                 .withCategory(RecipeCategory.DECORATIONS)
                 .define('#', AVPItems.LEAD_INGOT)
+                .define('C', Items.CHEST)
                 .pattern("###")
-                .pattern("# #")
+                .pattern("#C#")
                 .pattern("###")
                 .into(1, AVPBlockItems.LEAD_CHEST);
     }
