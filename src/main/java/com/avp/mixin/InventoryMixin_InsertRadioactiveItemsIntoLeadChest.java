@@ -2,9 +2,11 @@ package com.avp.mixin;
 
 import com.avp.common.block_item.AVPBlockItems;
 import com.avp.common.item.AVPItemTags;
+import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.core.component.DataComponents;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -73,8 +75,12 @@ public class InventoryMixin_InsertRadioactiveItemsIntoLeadChest {
             newLeadChestItems.add(oldLeadChestItem);
         }
 
-        if (remainingToAdd > 0 && newLeadChestItems.size() < 27)
-            newLeadChestItems.add(toAddItemStack.copyAndClear());
+        if (remainingToAdd > 0 && newLeadChestItems.size() < 27) {
+            ItemStack copyToAdd = toAddItemStack.copyAndClear();
+
+            if (newLeadChestItems.add(copyToAdd) && player instanceof ServerPlayer serverPlayer)
+                CriteriaTriggers.INVENTORY_CHANGED.trigger(serverPlayer, serverPlayer.getInventory(), copyToAdd);
+        }
 
         leadChestItemStack.applyComponents(DataComponentPatch.builder()
                 .set(DataComponents.CONTAINER, ItemContainerContents.fromItems(newLeadChestItems))
