@@ -41,6 +41,7 @@ public class AVPItemTagProvider extends FabricTagProvider.ItemTagProvider {
                 AVPItems.URANIUM_NUGGET,
                 AVPItems.URANIUM_INGOT,
                 AVPBlockItems.AUTUNITE_BLOCK,
+                AVPBlockItems.AUTUNITE_ORE,
                 AVPBlockItems.URANIUM_BLOCK,
                 AVPBlockItems.TRINITITE_BLOCK
             );
