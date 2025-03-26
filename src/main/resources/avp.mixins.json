@@ -3,7 +3,7 @@
   "package": "com.avp.mixin",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
-    "ItemEntityMixin_InsertRadioactiveItemsIntoLeadChest",
+    "InventoryMixin_InsertRadioactiveItemsIntoLeadChest",
     "MixinArmorStand_EquipArmorFromArmorCase",
     "MixinCreeper_Nuked",
     "MixinDecoratedPotPatterns_GetPatternForCustomSherds",
