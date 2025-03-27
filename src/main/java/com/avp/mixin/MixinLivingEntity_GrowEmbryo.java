@@ -1,13 +1,17 @@
 package com.avp.mixin;
 
+import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.monster.Witch;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import org.spongepowered.asm.mixin.Mixin;
@@ -16,6 +20,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import com.avp.common.entity.living.Host;
@@ -137,7 +142,17 @@ public abstract class MixinLivingEntity_GrowEmbryo extends Entity implements Hos
                         parasite.moveTo(position(), getYRot(), getXRot());
                         parasite.setYRot(getYRot());
                         parasite.setXRot(getXRot());
-
+                        if (self instanceof Witch) {
+                            var effects = List.of(
+                                    MobEffects.DAMAGE_BOOST,
+                                    MobEffects.MOVEMENT_SPEED,
+                                    MobEffects.REGENERATION,
+                                    MobEffects.DIG_SPEED,
+                                    MobEffects.JUMP
+                            );
+                            var randomEffect = effects.get(self.getRandom().nextInt(effects.size()));
+                            parasite.addEffect(new MobEffectInstance(randomEffect, Integer.MAX_VALUE, 0, false, false));
+                        }
                         // Copies effects from previous entity to the next
                         for (var effect : self.getActiveEffects()) {
                             parasite.addEffect(new MobEffectInstance(effect));
