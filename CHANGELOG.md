@@ -3,7 +3,7 @@
 ## What's New
 - Nukes will now turn any aliens that have an Irradiated form into that form.
 - Adds ash block that appears when a nuke goes off and spreads over time.
-- Makes MK50 dyeable, which only changes the color of the rendered armor, not the item. Uses the vanilla tooltip for that.
+- Makes MK50 dyeable.
 - Queens now place a resin node under them when first spawned.
 - Added Gun flashes to most guns.
 - Golden Apples (normal/enchanted) can now be used to cure the Radiation effect.
@@ -17,6 +17,9 @@
 - Adds in Marine Patrols in the same biomes that the camps can spawn in.
 - Ash blocks will generate in Nuked biomes if an active player is in one.
 - Chorus Fruit can now remove embryos instead of teleporting entity, leaving the host alive.
+- Mob Effects now are inherited.
+- Witches that generate a burster will now pass 1 random effect.
+- Adds Outpost Comms structure, needs tags.
 
 ## Changes
 - Adjusts how Marine Camps spawn in the world, will only apply to new ones.
@@ -37,6 +40,10 @@
 - MK50 no longer removes the Radiation effect.
 - Kills Parasites when no longer fertile.
 - More tweaks to Marine spawn camp spawning limits.
+- Predators no longer do a light a check to spawn.
+- Aberrant is now a 10% stat decrease.
+- Irradiated is a 20% stat boost.
+- Xenos now jump out of 1 block deep water.
 
 ## Fixes
 - Fixes crash related to custom mob category, due to how early it loads, configuration not possible, so removed and enabled by default.
@@ -68,6 +75,8 @@
 - Fixes ZX76 Shotgun not animating properly.
 - Fixes lang issues with Irradiated.
 - Fixes missing drops for doors, trapdoors, buttons, and slabs.
+- Fixes Yautja not swimming/floating.
+- Fixes Marines not swimming/floating.
 
 ## Data Pack
 - Adds Undead tag to `radiation_resistant` entity tag.
