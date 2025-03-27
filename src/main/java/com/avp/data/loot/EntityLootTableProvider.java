@@ -33,7 +33,7 @@ public class EntityLootTableProvider extends SimpleFabricLootTableProvider {
         biConsumer.accept(AVPEntityTypes.DRONE.getDefaultLootTable(), DroneLootTable.create(provider, AVPItems.CHITIN));
         biConsumer.accept(AVPEntityTypes.NETHER_DRONE.getDefaultLootTable(), DroneLootTable.create(provider, AVPItems.NETHER_CHITIN));
         biConsumer.accept(AVPEntityTypes.ABERRANT_DRONE.getDefaultLootTable(), DroneLootTable.create(provider, AVPItems.ABERRANT_CHITIN));
-        biConsumer.accept(AVPEntityTypes.IRRAIATED_DRONE.getDefaultLootTable(), DroneLootTable.create(provider, AVPItems.CHITIN));
+        biConsumer.accept(AVPEntityTypes.IRRAIATED_DRONE.getDefaultLootTable(), DroneLootTable.create(provider, AVPItems.IRRADIATED_CHITIN));
         biConsumer.accept(AVPEntityTypes.WARRIOR.getDefaultLootTable(), WarriorLootTable.create(provider, AVPItems.CHITIN));
         biConsumer.accept(AVPEntityTypes.NETHER_WARRIOR.getDefaultLootTable(), WarriorLootTable.create(provider, AVPItems.NETHER_CHITIN));
         biConsumer.accept(
@@ -43,7 +43,7 @@ public class EntityLootTableProvider extends SimpleFabricLootTableProvider {
         biConsumer.accept(AVPEntityTypes.IRRAIATED_WARRIOR.getDefaultLootTable(), WarriorLootTable.create(provider, AVPItems.CHITIN));
         biConsumer.accept(
             AVPEntityTypes.PRAETORIAN.getDefaultLootTable(),
-            PraetorianLootTable.create(provider, AVPItems.CHITIN, AVPItems.PLATED_CHITIN)
+            PraetorianLootTable.create(provider, AVPItems.IRRADIATED_CHITIN, AVPItems.PLATED_IRRADIATED_CHITIN)
         );
         biConsumer.accept(
             AVPEntityTypes.NETHER_PRAETORIAN.getDefaultLootTable(),
@@ -55,7 +55,7 @@ public class EntityLootTableProvider extends SimpleFabricLootTableProvider {
         );
         biConsumer.accept(
             AVPEntityTypes.IRRAIATED_PRAETORIAN.getDefaultLootTable(),
-            PraetorianLootTable.create(provider, AVPItems.ABERRANT_CHITIN, AVPItems.PLATED_ABERRANT_CHITIN)
+            PraetorianLootTable.create(provider, AVPItems.IRRADIATED_CHITIN, AVPItems.PLATED_IRRADIATED_CHITIN)
         );
         biConsumer.accept(AVPEntityTypes.QUEEN.getDefaultLootTable(), QueenLootTable.NORMAL_LOOT_TABLE.apply(provider));
         biConsumer.accept(AVPEntityTypes.ABERRANT_QUEEN.getDefaultLootTable(), QueenLootTable.ABERRANT_LOOT_TABLE.apply(provider));
