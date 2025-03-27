@@ -93,7 +93,7 @@ public class Flamethrow extends ThrowableProjectile {
                     var firePos = blockPos.offset(x, y, z);
                     var state = level().getBlockState(firePos);
 
-                    if (state.canBeReplaced() && state.getFluidState().isEmpty()) {
+                    if (state.canBeReplaced() && state.getFluidState().isEmpty() && random.nextInt(1, 10) < 5) {
                         level().setBlock(firePos, Blocks.FIRE.defaultBlockState(), 3);
                     }
                 }
