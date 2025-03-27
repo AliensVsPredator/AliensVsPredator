@@ -26,6 +26,8 @@ public class AVPBlockTags {
 
     public static final TagKey<Block> NETHER_ACID_IMMUNE = create("nether_acid_immune");
 
+    public static final TagKey<Block> IRRADIATED_ACID_IMMUNE = create("irradiated_acid_immune");
+
     public static final TagKey<Block> IRRADIATED_RESIN = create("irradiated_resin");
 
     public static final TagKey<Block> ABERRANT_RESIN = create("aberrant_resin");

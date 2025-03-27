@@ -21,7 +21,10 @@ public class AcidBleedUtil {
             return;
         }
 
-        acidEntity.setNetherAfflicted(livingEntity instanceof Alien alien && alien.isNetherAfflicted());
+        if (livingEntity instanceof Alien alien) {
+            acidEntity.setNetherAfflicted(alien.isNetherAfflicted());
+            acidEntity.setIrradiated(alien.isIrradiated());
+        }
 
         var quarterHealth = Math.max(livingEntity.getMaxHealth() / 4, 1);
         var factor = damage / quarterHealth;

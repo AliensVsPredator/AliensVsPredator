@@ -1,5 +1,6 @@
 package com.avp.client;
 
+import com.avp.client.particle.IrradiatedAcidParticleProvider;
 import mod.azure.azurelib.rewrite.render.armor.AzArmorRendererRegistry;
 import mod.azure.azurelib.rewrite.render.item.AzItemRenderer;
 import mod.azure.azurelib.rewrite.render.item.AzItemRendererRegistry;
@@ -207,6 +208,7 @@ public class AVPClient implements ClientModInitializer {
         // Particles
         ParticleFactoryRegistry.getInstance().register(AVPParticleTypes.ACID, AcidParticleProvider::new);
         ParticleFactoryRegistry.getInstance().register(AVPParticleTypes.BLUE_ACID, BlueAcidParticleProvider::new);
+        ParticleFactoryRegistry.getInstance().register(AVPParticleTypes.IRRADIATED_ACID, IrradiatedAcidParticleProvider::new);
 
         // GUI (aka Screens)
         MenuScreens.register(MenuTypes.ARMOR_CASE, ArmorCaseScreen::new);

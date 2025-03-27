@@ -1,5 +1,6 @@
 package com.avp.common.entity.acid;
 
+import com.avp.common.util.AlienVariantUtil;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -13,7 +14,6 @@ import net.minecraft.world.entity.Pose;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
-import com.avp.common.particle.AVPParticleTypes;
 import com.avp.common.util.GravityUtil;
 
 public class Acid extends Entity {
@@ -25,6 +25,8 @@ public class Acid extends Entity {
     private static final int MIN_TICKS_UNTIL_PARTICLES = 5;
 
     private static final String IS_NETHER_AFFLICTED_KEY = "isNetherAfflicted";
+
+    private static final String IS_IRRADIATED_KEY = "isIrradiated";
 
     private static final String MULTIPLIER_KEY = "Multiplier";
 
@@ -38,6 +40,11 @@ public class Acid extends Entity {
     private static final EntityDataAccessor<Integer> MULTIPLIER = SynchedEntityData.defineId(
         Acid.class,
         EntityDataSerializers.INT
+    );
+
+    public static final EntityDataAccessor<Boolean> IS_IRRADIATED = SynchedEntityData.defineId(
+            Acid.class,
+            EntityDataSerializers.BOOLEAN
     );
 
     private int particleTickCounter = 0;
@@ -54,6 +61,7 @@ public class Acid extends Entity {
     protected void defineSynchedData(SynchedEntityData.Builder builder) {
         builder.define(MULTIPLIER, 1);
         builder.define(IS_NETHER_AFFLICTED, false);
+        builder.define(IS_IRRADIATED, false);
     }
 
     @Override
@@ -96,6 +104,14 @@ public class Acid extends Entity {
         entityData.set(IS_NETHER_AFFLICTED, isNetherAfflicted);
     }
 
+    public boolean isIrradiated() {
+        return entityData.get(IS_IRRADIATED);
+    }
+
+    public void setIrradiated(boolean isIrradiated) {
+        entityData.set(IS_IRRADIATED, isIrradiated);
+    }
+
     @Override
     protected void readAdditionalSaveData(@NotNull CompoundTag compoundTag) {
         if (compoundTag.contains(MULTIPLIER_KEY)) {
@@ -105,6 +121,7 @@ public class Acid extends Entity {
         tickCountForCurrentMultiplier = compoundTag.getInt(TICK_COUNT_FOR_CURRENT_MULTIPLIER);
 
         setNetherAfflicted(compoundTag.getBoolean(IS_NETHER_AFFLICTED_KEY));
+        setIrradiated(compoundTag.getBoolean(IS_IRRADIATED_KEY));
     }
 
     @Override
@@ -112,6 +129,7 @@ public class Acid extends Entity {
         compoundTag.putInt(MULTIPLIER_KEY, getMultiplier());
         compoundTag.putInt(TICK_COUNT_FOR_CURRENT_MULTIPLIER, tickCountForCurrentMultiplier);
         compoundTag.putBoolean(IS_NETHER_AFFLICTED_KEY, isNetherAfflicted());
+        compoundTag.putBoolean(IS_IRRADIATED_KEY, isIrradiated());
     }
 
     public void decreaseMultiplier() {
@@ -135,7 +153,7 @@ public class Acid extends Entity {
             }
 
             level.addAlwaysVisibleParticle(
-                isNetherAfflicted() ? AVPParticleTypes.BLUE_ACID : AVPParticleTypes.ACID,
+                AlienVariantUtil.getParticleFor(this),
                 getRandomX(0.5),
                 getRandomY(),
                 getRandomZ(0.5),

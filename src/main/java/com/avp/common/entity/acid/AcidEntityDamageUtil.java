@@ -58,7 +58,7 @@ public class AcidEntityDamageUtil {
                 return;
             }
 
-            if (!itemStack.isEmpty()) {
+            if (!itemStack.isEmpty() && !acid.isIrradiated()) {
                 damageFootwear(acid, itemStack);
                 return;
             }
@@ -76,7 +76,12 @@ public class AcidEntityDamageUtil {
             entity.igniteForTicks(5 * 20);
         }
 
-        entity.hurt(damageSource, damage * acid.getMultiplier());
+        if (acid.isIrradiated()) {
+            entity.setIsInPowderSnow(true);
+        }
+
+        if (!acid.isIrradiated())
+            entity.hurt(damageSource, damage * acid.getMultiplier());
     }
 
     private static void damageFootwear(Acid acid, ItemStack itemStack) {

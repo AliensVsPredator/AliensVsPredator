@@ -7,6 +7,7 @@ import net.minecraft.sounds.SoundSource;
 import com.avp.common.block.AVPBlockTags;
 import com.avp.common.sound.AVPSoundEvents;
 import com.avp.server.BlockBreakProgressManager;
+import net.minecraft.world.level.block.Blocks;
 
 public class AcidBlockDamageUtil {
 
@@ -20,14 +21,24 @@ public class AcidBlockDamageUtil {
         BlockPos.betweenClosedStream(acid.getBoundingBox().inflate(0, 0.1, 0))
             .filter(blockPos -> {
                 var blockState = level.getBlockState(blockPos);
-                var netherCheck = acid.isNetherAfflicted() && blockState.is(AVPBlockTags.NETHER_ACID_IMMUNE);
 
-                return !blockState.is(AVPBlockTags.ACID_IMMUNE)
-                    && !netherCheck;
+                if (acid.isNetherAfflicted()) {
+                    return !blockState.is(AVPBlockTags.NETHER_ACID_IMMUNE);
+                }
+
+                if (acid.isIrradiated()) {
+                    return blockState.canBeReplaced();
+                }
+
+                return !blockState.is(AVPBlockTags.ACID_IMMUNE);
             })
             .forEach(blockPos -> {
                 if (!level.isClientSide) {
-                    BlockBreakProgressManager.damage(level, blockPos, acid.getMultiplier());
+                    if (acid.isIrradiated()) {
+                        level.setBlockAndUpdate(blockPos.below(), Blocks.BLUE_ICE.defaultBlockState());
+                    } else {
+                        BlockBreakProgressManager.damage(level, blockPos, acid.getMultiplier());
+                    }
 
                     if (acid.tickCount % (acid.getRandom().nextInt(100) + 10) == 0) {
                         level.playSound(null, acid, AVPSoundEvents.BLOCK_ACID_BURN, SoundSource.NEUTRAL, 1F, 1F);
@@ -36,6 +47,9 @@ public class AcidBlockDamageUtil {
                     // Acid disappears twice as fast when in water.
                     acid.age();
                 } else {
+                    if (acid.isIrradiated()) {
+                        return;
+                    }
                     level.addAlwaysVisibleParticle(
                         ParticleTypes.SMOKE,
                         acid.getRandomX(0.5),

@@ -13,6 +13,8 @@ public class AVPParticleTypes {
 
     public static final SimpleParticleType BLUE_ACID = register("blue_acid");
 
+    public static final SimpleParticleType IRRADIATED_ACID = register("irradiated_acid");
+
     public static SimpleParticleType register(String id) {
         var resourceLocation = AVPResources.location(id);
         return Registry.register(BuiltInRegistries.PARTICLE_TYPE, resourceLocation, FabricParticleTypes.simple());

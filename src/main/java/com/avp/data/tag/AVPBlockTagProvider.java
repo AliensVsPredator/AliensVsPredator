@@ -239,6 +239,9 @@ public class AVPBlockTagProvider extends FabricTagProvider.BlockTagProvider {
         getOrCreateTagBuilder(AVPBlockTags.NETHER_ACID_IMMUNE)
             .addOptionalTag(BlockTags.INFINIBURN_NETHER);
 
+        getOrCreateTagBuilder(AVPBlockTags.IRRADIATED_ACID_IMMUNE)
+            .addTag(AVPBlockTags.IRRADIATED_RESIN);
+
         getOrCreateTagBuilder(AVPBlockTags.SHOULD_NOT_BE_DESTROYED)
             .addOptionalTag(BlockTags.FEATURES_CANNOT_REPLACE)
             .add(
