@@ -51,7 +51,7 @@ public class ArmorMaterials {
         () -> Ingredient.of(AVPItems.LEAD_INGOT),
         0,
         0,
-        false
+        true
     );
 
     public static final Holder<ArmorMaterial> NETHER_CHITIN = register(

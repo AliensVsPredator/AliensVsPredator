@@ -8,7 +8,9 @@ import mod.azure.azurelib.rewrite.render.item.AzItemRendererRegistry;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import net.fabricmc.fabric.api.client.particle.v1.ParticleFactoryRegistry;
+import net.fabricmc.fabric.api.client.rendering.v1.ColorProviderRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
+import net.minecraft.client.color.item.ItemColors;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
@@ -36,6 +38,7 @@ import com.avp.common.item.AVPItems;
 import com.avp.common.item.ArmorItems;
 import com.avp.common.menu.MenuTypes;
 import com.avp.common.particle.AVPParticleTypes;
+import net.minecraft.world.item.component.DyedItemColor;
 
 public class AVPClient implements ClientModInitializer {
 
@@ -160,6 +163,14 @@ public class AVPClient implements ClientModInitializer {
         registerItemRenderer(AVPItems.M88_MOD_4_COMBAT_PISTOL, name -> () -> new M88Mod4CombatPistolItemRenderer(name));
         registerItemRenderer(AVPItems.OLD_PAINLESS, name -> () -> new OldPainlessItemRenderer(name));
         registerItemRenderer(AVPItems.ZX_76_SHOTGUN, name -> () -> new ZX76ShotgunItemRenderer(name));
+        ColorProviderRegistry.ITEM.register((itemStack, i) -> i > 0 ? -1 :
+                DyedItemColor.getOrDefault(itemStack, -1), ArmorItems.MK50_HELMET);
+        ColorProviderRegistry.ITEM.register((itemStack, i) -> i > 0 ? -1 :
+                DyedItemColor.getOrDefault(itemStack, -1), ArmorItems.MK50_CHESTPLATE);
+        ColorProviderRegistry.ITEM.register((itemStack, i) -> i > 0 ? -1 :
+                DyedItemColor.getOrDefault(itemStack, -1), ArmorItems.MK50_LEGGINGS);
+        ColorProviderRegistry.ITEM.register((itemStack, i) -> i > 0 ? -1 :
+                DyedItemColor.getOrDefault(itemStack, -1), ArmorItems.MK50_BOOTS);
 
         // Entities
         EntityRendererRegistry.register(AVPEntityTypes.ACID, AcidRenderer::new);
