@@ -38,6 +38,7 @@ public class XenomorphNavigationManager {
                 this.nodeEvaluator = new CrawlPathNodeEvaluator();
                 this.nodeEvaluator.setCanPassDoors(true);
                 this.nodeEvaluator.setCanOpenDoors(true);
+                this.nodeEvaluator.setCanWalkOverFences(true);
                 return new PathFinder(this.nodeEvaluator, i);
             }
         };
