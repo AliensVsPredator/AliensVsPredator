@@ -330,6 +330,7 @@ public abstract class Alien extends Monster {
         builder.add(Attributes.KNOCKBACK_RESISTANCE, config.knockbackResistance);
         builder.add(Attributes.MAX_HEALTH, config.health);
         builder.add(Attributes.MOVEMENT_SPEED, config.moveSpeed);
+        builder.add(Attributes.JUMP_STRENGTH, 0.1F);
 
         return builder;
     }
