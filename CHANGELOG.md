@@ -8,12 +8,12 @@
 - Added Gun flashes to most guns.
 - Golden Apples (normal/enchanted) can now be used to cure the Radiation effect.
 - Adds basic Sentry Turret.
-  - Currently does not use ammo. (Waiting on ammo box)
-  - Currently requires Redstone power. (Will need it's GUI implemented)
-  - Currently only targets monsters. (Will need it's GUI implemented for different targeting) 
+  - Currently, does not use ammo. (Waiting on ammo box)
+  - Currently, requires Redstone power. (Will need its GUI implemented)
+  - Currently only targets monsters. (Will need its GUI implemented for different targeting) 
   - Will break blocks to damage monsters in it's FOV (75 degrees in front of itself where it's facing). (Will need it's GUI implemented for different FOV range)
   - Currently, it does not rotate to target the monster it's trying to get.
-  - Currently has a range of 32 blocks.
+  - Currently, has a range of 32 blocks.
 - Adds in Marine Patrols in the same biomes that the camps can spawn in.
 - Ash blocks will generate in Nuked biomes if an active player is in one.
 - Chorus Fruit can now remove embryos instead of teleporting entity, leaving the host alive.
@@ -44,6 +44,8 @@
 - Aberrant is now a 10% stat decrease.
 - Irradiated is a 20% stat boost.
 - Xenos now jump out of 1 block deep water.
+- Marines, Yautja, and Xenos can open doors now.
+- Xenos can walk over fences.
 
 ## Fixes
 - Fixes crash related to custom mob category, due to how early it loads, configuration not possible, so removed and enabled by default.

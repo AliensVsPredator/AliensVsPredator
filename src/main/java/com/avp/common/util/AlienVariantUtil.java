@@ -1,9 +1,11 @@
 package com.avp.common.util;
 
+import com.avp.common.block.AVPBlocks;
 import net.minecraft.world.item.Item;
 
 import com.avp.common.entity.living.alien.Alien;
 import com.avp.common.item.AVPItems;
+import net.minecraft.world.level.block.Block;
 
 public class AlienVariantUtil {
 
@@ -13,6 +15,15 @@ public class AlienVariantUtil {
             case Alien aberrantAlien when aberrantAlien.isAberrant() -> AVPItems.ABERRANT_RESIN_BALL;
             case Alien irradiatedAlien when irradiatedAlien.isIrradiated() -> AVPItems.IRRADIATED_RESIN_BALL;
             default -> AVPItems.RESIN_BALL;
+        };
+    }
+
+    public static Block getResinNodeFor(Alien alien) {
+        return switch (alien) {
+            case Alien netherAlien when netherAlien.isNetherAfflicted() -> AVPBlocks.NETHER_RESIN_NODE;
+            case Alien aberrantAlien when aberrantAlien.isAberrant() -> AVPBlocks.ABERRANT_RESIN_NODE;
+            case Alien irradiatedAlien when irradiatedAlien.isIrradiated() -> AVPBlocks.IRRADIATED_RESIN_NODE;
+            default -> AVPBlocks.RESIN_NODE;
         };
     }
 }

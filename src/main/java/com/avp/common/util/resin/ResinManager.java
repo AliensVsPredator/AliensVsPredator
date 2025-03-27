@@ -1,5 +1,6 @@
 package com.avp.common.util.resin;
 
+import com.avp.common.util.AlienVariantUtil;
 import com.mojang.serialization.Dynamic;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
@@ -17,7 +18,6 @@ import java.util.function.Supplier;
 
 import com.avp.AVP;
 import com.avp.common.block.AVPBlockTags;
-import com.avp.common.block.AVPBlocks;
 import com.avp.common.entity.living.alien.Alien;
 import com.avp.common.level.gameevent.AVPGameEvents;
 import com.avp.common.level.gameevent.listener.ResinSpreadListener;
@@ -114,11 +114,8 @@ public class ResinManager implements GameEventListener.Provider<ResinSpreadListe
                     }
 
                     // If the resin holder still has more resin, then we place a resin node manually.
-                    var resinNodeBlock = alien.isNetherAfflicted()
-                        ? AVPBlocks.NETHER_RESIN_NODE
-                        : alien.isAberrant()
-                            ? AVPBlocks.ABERRANT_RESIN_NODE
-                            : alien.isIrradiated() ? AVPBlocks.IRRADIATED_RESIN_NODE : AVPBlocks.RESIN_NODE;
+                    var resinNodeBlock = AlienVariantUtil.getResinNodeFor(alien);
+
                     alien.level().setBlockAndUpdate(belowPos, resinNodeBlock.defaultBlockState());
                 }
             }
