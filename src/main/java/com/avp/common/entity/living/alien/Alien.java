@@ -1,5 +1,6 @@
 package com.avp.common.entity.living.alien;
 
+import com.avp.AVP;
 import net.minecraft.core.Holder;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -358,4 +359,8 @@ public abstract class Alien extends Monster {
         }
     }
 
+    @Override
+    public boolean fireImmune() {
+        return this.isNetherAfflicted();
+    }
 }
