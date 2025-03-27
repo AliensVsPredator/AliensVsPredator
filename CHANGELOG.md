@@ -20,6 +20,7 @@
 - Mob Effects now are inherited.
 - Witches that generate a burster will now pass 1 random effect.
 - Adds Outpost Comms structure, needs tags.
+- Adds Irradiated acid that is blue/white and turns blocks to blue ice instead of eating them.
 
 ## Changes
 - Adjusts how Marine Camps spawn in the world, will only apply to new ones.
@@ -46,6 +47,7 @@
 - Xenos now jump out of 1 block deep water.
 - Marines, Yautja, and Xenos can open doors now.
 - Xenos can walk over fences.
+- Nether acid now sets blocks on fire.
 
 ## Fixes
 - Fixes crash related to custom mob category, due to how early it loads, configuration not possible, so removed and enabled by default.
