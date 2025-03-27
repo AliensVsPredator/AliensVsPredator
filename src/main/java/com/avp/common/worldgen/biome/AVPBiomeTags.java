@@ -12,6 +12,8 @@ public class AVPBiomeTags {
 
     public static final TagKey<Biome> HAS_MARINE_CAMP_GRASS = create("marine_camp_grass");
 
+    public static final TagKey<Biome> HAS_OUTPOST_COMMS = create("has_outpost_comms");
+
     private static TagKey<Biome> create(String name) {
         return TagKey.create(Registries.BIOME, AVPResources.location(name));
     }

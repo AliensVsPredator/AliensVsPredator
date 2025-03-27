@@ -21,7 +21,14 @@ public class AVPBiomeTagProvider extends FabricTagProvider<Biome> {
     protected void addTags(HolderLookup.Provider wrapperLookup) {
         getOrCreateTagBuilder(AVPBiomeTags.HAS_ALTAR)
             .add(Biomes.DESERT);
+
         getOrCreateTagBuilder(AVPBiomeTags.HAS_MARINE_CAMP_GRASS)
+            .add(Biomes.MEADOW)
+            .add(Biomes.PLAINS)
+            .add(Biomes.FOREST)
+            .add(Biomes.BIRCH_FOREST);
+
+        getOrCreateTagBuilder(AVPBiomeTags.HAS_OUTPOST_COMMS)
             .add(Biomes.MEADOW)
             .add(Biomes.PLAINS)
             .add(Biomes.FOREST)
