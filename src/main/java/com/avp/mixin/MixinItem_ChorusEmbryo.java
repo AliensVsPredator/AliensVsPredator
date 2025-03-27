@@ -8,6 +8,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
+import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -43,6 +44,10 @@ public class MixinItem_ChorusEmbryo {
                 parasite.setPos(randomX, randomY, randomZ);
                 copyEntityTagData(livingEntity, parasite);
                 level.addFreshEntity(parasite);
+                // Copies effects from previous entity to the next
+                for (var effect : livingEntity.getActiveEffects()) {
+                    parasite.addEffect(new MobEffectInstance(effect));
+                }
                 if (livingEntity instanceof Player player) {
                     player.resetCurrentImpulseContext();
                     player.getCooldowns().addCooldown(stack.getItem(), 20);

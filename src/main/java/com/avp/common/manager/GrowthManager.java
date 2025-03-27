@@ -1,6 +1,7 @@
 package com.avp.common.manager;
 
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
@@ -81,7 +82,6 @@ public class GrowthManager {
         var level = entity.level();
         var nextFormType = growthStage.to();
         var nextForm = nextFormType.create(level);
-
         if (nextForm == null) {
             return nextForm;
         }
@@ -129,6 +129,11 @@ public class GrowthManager {
         nextForm.yHeadRot = entity.yHeadRot; // Head rotation
 
         nextForm.setDeltaMovement(entity.getDeltaMovement());
+
+        // Copies effects from previous entity to the next
+        for (var effect : entity.getActiveEffects()) {
+            nextForm.addEffect(new MobEffectInstance(effect));
+        }
 
         // Add the new form to the level.
         level.addFreshEntity(nextForm);

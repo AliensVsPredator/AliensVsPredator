@@ -3,6 +3,7 @@ package com.avp.mixin;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -136,6 +137,11 @@ public abstract class MixinLivingEntity_GrowEmbryo extends Entity implements Hos
                         parasite.moveTo(position(), getYRot(), getXRot());
                         parasite.setYRot(getYRot());
                         parasite.setXRot(getXRot());
+
+                        // Copies effects from previous entity to the next
+                        for (var effect : self.getActiveEffects()) {
+                            parasite.addEffect(new MobEffectInstance(effect));
+                        }
 
                         // TODO: Adjust parasite's base attributes based on genes.
 
