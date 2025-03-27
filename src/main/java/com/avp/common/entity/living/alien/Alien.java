@@ -336,17 +336,15 @@ public abstract class Alien extends Monster {
 
     public void applyDynamicAttributes(AVPConfig.StatsConfigs.AdvancedStats config) {
         if (isAberrant()) {
-            applyAttributes(config, 0.5F); // Halve the attributes for Aberrant
+            applyAttributes(config, 0.9F);
         } else if (isIrradiated()) {
-            applyAttributes(config, 2.0F); // Double the attributes for Irradiated
+            applyAttributes(config, 1.2F);
         }
     }
 
     private void applyAttributes(AVPConfig.StatsConfigs.AdvancedStats config, float scaleFactor) {
         setAttribute(Attributes.MAX_HEALTH, config.health * scaleFactor);
         setAttribute(Attributes.ATTACK_DAMAGE, config.attackDamage * scaleFactor);
-        setAttribute(Attributes.MOVEMENT_SPEED, config.moveSpeed * scaleFactor);
-        setAttribute(Attributes.FOLLOW_RANGE, config.followRange * scaleFactor);
         setAttribute(Attributes.KNOCKBACK_RESISTANCE, config.knockbackResistance * scaleFactor);
         setAttribute(Attributes.ARMOR, config.armor * scaleFactor);
         setAttribute(Attributes.ARMOR_TOUGHNESS, config.armorToughness * scaleFactor);
