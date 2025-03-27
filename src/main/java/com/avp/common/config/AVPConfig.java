@@ -182,6 +182,16 @@ public class AVPConfig {
 
         @Configurable
         @Configurable.Synchronized
+        @Configurable.Comment("Aberrant stats multiplier.")
+        public float ABERRANT_STATS_MULTIPLIER = 0.9f;
+
+        @Configurable
+        @Configurable.Synchronized
+        @Configurable.Comment("Irradiated stats multiplier.")
+        public float IRRADIATED_STATS_MULTIPLIER = 1.2f;
+
+        @Configurable
+        @Configurable.Synchronized
         @Configurable.Comment("The acid stats for attack damage.")
         public float ACID_ATTACK_DAMAGE = 1.0f;
 

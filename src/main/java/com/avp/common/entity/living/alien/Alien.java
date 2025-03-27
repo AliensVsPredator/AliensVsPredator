@@ -337,9 +337,9 @@ public abstract class Alien extends Monster {
 
     public void applyDynamicAttributes(AVPConfig.StatsConfigs.AdvancedStats config) {
         if (isAberrant()) {
-            applyAttributes(config, 0.9F);
+            applyAttributes(config, AVP.config.statsConfigs.ABERRANT_STATS_MULTIPLIER);
         } else if (isIrradiated()) {
-            applyAttributes(config, 1.2F);
+            applyAttributes(config, AVP.config.statsConfigs.IRRADIATED_STATS_MULTIPLIER);
         }
     }
 

@@ -647,6 +647,8 @@ public class UkrainianLanguageProvider extends FabricLanguageProvider {
         translationBuilder.add("config.avp.option.requiresResin", "Requires resin for Nether Ovamorph spawning");
 
         translationBuilder.add("config.avp.option.statsConfigs", "Mob Stat Configs");
+        translationBuilder.add("config.avp.option.ABERRANT_STATS_MULTIPLIER", "Aberrant Stats Multiplier");
+        translationBuilder.add("config.avp.option.IRRADIATED_STATS_MULTIPLIER", "Irradiated Stats Multiplier");
         translationBuilder.add("config.avp.option.ACID_ATTACK_DAMAGE", "Acid Damage per tick");
         translationBuilder.add("config.avp.option.CHESTBURSTER_STATS", "Chestburster stats");
         translationBuilder.add("config.avp.option.health", "Health value");
