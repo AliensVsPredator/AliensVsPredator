@@ -12,6 +12,7 @@ import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.control.MoveControl;
+import net.minecraft.world.entity.ai.goal.FloatGoal;
 import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
 import net.minecraft.world.entity.ai.goal.WaterAvoidingRandomStrollGoal;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
@@ -110,7 +111,7 @@ public abstract class AbstractHumanMob extends PathfinderMob {
     @Override
     protected void registerGoals() {
 //        goalSelector.addGoal(1, new FleeFightGoal(this));
-        goalSelector.addGoal(7, new StrollAroundInWaterGoal(this, 0.5));
+        goalSelector.addGoal(0, new FloatGoal(this));
         goalSelector.addGoal(7, new WaterAvoidingRandomStrollGoal(this, 0.5));
         goalSelector.addGoal(9, new LookAtPlayerGoal(this, Player.class, 15.0F, 1.0F));
         goalSelector.addGoal(10, new LookAtPlayerGoal(this, LivingEntity.class, 15.0F));
@@ -127,7 +128,7 @@ public abstract class AbstractHumanMob extends PathfinderMob {
         if (isControlledByLocalInstance() && isUnderWater()) {
             moveRelative(0.01F, vec3);
             move(MoverType.SELF, getDeltaMovement());
-            setDeltaMovement(getDeltaMovement().scale(0.4));
+            setDeltaMovement(getDeltaMovement().scale(0.8));
         } else {
             super.travel(vec3);
         }
