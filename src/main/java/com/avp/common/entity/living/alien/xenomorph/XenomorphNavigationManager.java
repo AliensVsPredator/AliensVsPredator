@@ -37,6 +37,7 @@ public class XenomorphNavigationManager {
             protected @NotNull PathFinder createPathFinder(int i) {
                 this.nodeEvaluator = new CrawlPathNodeEvaluator();
                 this.nodeEvaluator.setCanPassDoors(true);
+                this.nodeEvaluator.setCanOpenDoors(true);
                 return new PathFinder(this.nodeEvaluator, i);
             }
         };

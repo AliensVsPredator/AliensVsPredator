@@ -38,6 +38,7 @@ public class YautjaNavigationManager {
             protected @NotNull PathFinder createPathFinder(int maxVisitedNodes) {
                 this.nodeEvaluator = new WalkNodeEvaluator();
                 this.nodeEvaluator.setCanPassDoors(true);
+                this.nodeEvaluator.setCanOpenDoors(true);
                 this.nodeEvaluator.setCanFloat(true);
                 return new AzurePathFinder(this.nodeEvaluator, maxVisitedNodes);
             }
