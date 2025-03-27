@@ -52,6 +52,8 @@ public class GunItem extends Item {
 
     public AzCommand shoot;
 
+    public boolean isFiring = false;
+
     public static final AzCommand reload = AzCommand.create(
         OldPainlessAnimationRefs.MAIN_CONTROLLER_NAME,
         OldPainlessAnimationRefs.RELOAD_ANIMATION_NAME,
@@ -193,6 +195,7 @@ public class GunItem extends Item {
             .apply(gunAttackConfig);
 
         playUseAnimations(player, itemStack);
+        isFiring = true;
         gunAttack.shoot();
 
         if (!isPlayerCreative) {

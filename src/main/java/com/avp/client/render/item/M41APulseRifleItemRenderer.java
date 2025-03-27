@@ -1,5 +1,6 @@
 package com.avp.client.render.item;
 
+import com.avp.common.item.GunItem;
 import mod.azure.azurelib.rewrite.render.item.AzItemRenderer;
 import mod.azure.azurelib.rewrite.render.item.AzItemRendererConfig;
 import mod.azure.azurelib.rewrite.render.layer.AzAutoGlowingLayer;
@@ -18,6 +19,12 @@ public class M41APulseRifleItemRenderer extends AzItemRenderer {
                 .setAnimatorProvider(M41APulseRifleAnimator::new)
                 .addRenderLayer(new AzAutoGlowingLayer<>())
                 .useNewOffset(true)
+                .setPrerenderEntry(context -> {
+                    if (context.bakedModel().getBone("gFlash").isPresent() && context.animatable().getItem() instanceof GunItem gunItem) {
+                        context.bakedModel().getBone("gFlash").get().setHidden(!gunItem.isFiring);
+                    }
+                    return context;
+                })
                 .build()
         );
     }
