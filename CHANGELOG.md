@@ -48,6 +48,7 @@
 - Marines, Yautja, and Xenos can open doors now.
 - Xenos can walk over fences.
 - Nether acid now sets blocks on fire.
+- Made fire placement from flamethrower a bit more random.
 
 ## Fixes
 - Fixes crash related to custom mob category, due to how early it loads, configuration not possible, so removed and enabled by default.
@@ -81,6 +82,7 @@
 - Fixes missing drops for doors, trapdoors, buttons, and slabs.
 - Fixes Yautja not swimming/floating.
 - Fixes Marines not swimming/floating.
+- Fixes gun flashes appearing when not firing.
 
 ## Data Pack
 - Adds Undead tag to `radiation_resistant` entity tag.
