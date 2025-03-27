@@ -19,14 +19,15 @@ public class XenoFloatGoal extends FloatGoal {
         var belowState = this.mob.level().getBlockState(belowPos);
         return this.mob.isInWater() && belowState.isSolidRender(this.mob.level(), belowPos);
     }
-    
+
     @Override
     public void tick() {
         if (this.mob.getRandom().nextFloat() < 0.8F) {
             var deltaMovement = mob.getDeltaMovement().scale(0.2);
-            var vectorDifference = mob.getEyePosition().normalize()
-                    .scale(0.2)
-                    .add(deltaMovement.x, 0, deltaMovement.z);
+            var vectorDifference = mob.getEyePosition()
+                .normalize()
+                .scale(0.2)
+                .add(deltaMovement.x, 0, deltaMovement.z);
 
             mob.setDeltaMovement(vectorDifference.x, Math.max(0.6, vectorDifference.y), vectorDifference.z);
         }

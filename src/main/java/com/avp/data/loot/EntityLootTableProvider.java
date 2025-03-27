@@ -33,7 +33,10 @@ public class EntityLootTableProvider extends SimpleFabricLootTableProvider {
         biConsumer.accept(AVPEntityTypes.DRONE.getDefaultLootTable(), DroneLootTable.create(provider, AVPItems.CHITIN));
         biConsumer.accept(AVPEntityTypes.NETHER_DRONE.getDefaultLootTable(), DroneLootTable.create(provider, AVPItems.NETHER_CHITIN));
         biConsumer.accept(AVPEntityTypes.ABERRANT_DRONE.getDefaultLootTable(), DroneLootTable.create(provider, AVPItems.ABERRANT_CHITIN));
-        biConsumer.accept(AVPEntityTypes.IRRAIATED_DRONE.getDefaultLootTable(), DroneLootTable.create(provider, AVPItems.IRRADIATED_CHITIN));
+        biConsumer.accept(
+            AVPEntityTypes.IRRAIATED_DRONE.getDefaultLootTable(),
+            DroneLootTable.create(provider, AVPItems.IRRADIATED_CHITIN)
+        );
         biConsumer.accept(AVPEntityTypes.WARRIOR.getDefaultLootTable(), WarriorLootTable.create(provider, AVPItems.CHITIN));
         biConsumer.accept(AVPEntityTypes.NETHER_WARRIOR.getDefaultLootTable(), WarriorLootTable.create(provider, AVPItems.NETHER_CHITIN));
         biConsumer.accept(

@@ -2,10 +2,10 @@ package com.avp.client.render.item;
 
 import mod.azure.azurelib.rewrite.render.item.AzItemRenderer;
 import mod.azure.azurelib.rewrite.render.item.AzItemRendererConfig;
+import mod.azure.azurelib.rewrite.render.layer.AzAutoGlowingLayer;
 
 import com.avp.AVPResources;
 import com.avp.client.animation.guns.ZX76ShotgunAnimator;
-import mod.azure.azurelib.rewrite.render.layer.AzAutoGlowingLayer;
 
 public class ZX76ShotgunItemRenderer extends AzItemRenderer {
 

@@ -37,6 +37,6 @@ public class YautjaSpawning {
         RandomSource randomSource
     ) {
         return serverLevelAccessor.getDifficulty() != Difficulty.PEACEFUL
-                && Mob.checkMobSpawnRules(entityType, serverLevelAccessor, mobSpawnType, blockPos, randomSource);
+            && Mob.checkMobSpawnRules(entityType, serverLevelAccessor, mobSpawnType, blockPos, randomSource);
     }
 }

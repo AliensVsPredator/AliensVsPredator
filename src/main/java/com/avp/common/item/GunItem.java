@@ -53,9 +53,9 @@ public class GunItem extends Item {
     public AzCommand shoot;
 
     public static final AzCommand reload = AzCommand.create(
-            OldPainlessAnimationRefs.MAIN_CONTROLLER_NAME,
-            OldPainlessAnimationRefs.RELOAD_ANIMATION_NAME,
-            AzPlayBehaviors.PLAY_ONCE
+        OldPainlessAnimationRefs.MAIN_CONTROLLER_NAME,
+        OldPainlessAnimationRefs.RELOAD_ANIMATION_NAME,
+        AzPlayBehaviors.PLAY_ONCE
     );
 
     public GunItem(GunConfig gunConfig) {
@@ -153,15 +153,15 @@ public class GunItem extends Item {
 
         if (!player.getCooldowns().isOnCooldown(this)) {
             tryShoot(
-                    level,
-                    itemStack,
-                    player,
-                    fireModeConfig,
-                    positiveTickProgress,
-                    shootDelayInTicks,
-                    secondaryShootSoundFrequencyInTicks,
-                    primaryShootSoundFrequencyInTicks,
-                    tickProgress
+                level,
+                itemStack,
+                player,
+                fireModeConfig,
+                positiveTickProgress,
+                shootDelayInTicks,
+                secondaryShootSoundFrequencyInTicks,
+                primaryShootSoundFrequencyInTicks,
+                tickProgress
             );
             player.getCooldowns().addCooldown(this, fireModeConfig.cooldownInTicks());
         }
@@ -217,7 +217,7 @@ public class GunItem extends Item {
             level.playSound(null, player.blockPosition(), fireModeConfig.primaryShootSoundEvent(), SoundSource.PLAYERS);
         }
 
-//        GunLightUtil.spawnLightSource(player);
+        // GunLightUtil.spawnLightSource(player);
     }
 
     @Override

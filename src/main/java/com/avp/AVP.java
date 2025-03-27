@@ -1,7 +1,5 @@
 package com.avp;
 
-import com.avp.common.patrols.MarinePatrolSpawner;
-import com.avp.common.worldgen.NukedAshPlacement;
 import mod.azure.azurelib.common.api.common.config.Config;
 import mod.azure.azurelib.common.internal.common.AzureLib;
 import mod.azure.azurelib.common.internal.common.config.ConfigHolder;
@@ -46,8 +44,10 @@ import com.avp.common.menu.MenuTypes;
 import com.avp.common.network.CommonPacketRegistry;
 import com.avp.common.network.ServerPacketHandlerRegistry;
 import com.avp.common.particle.AVPParticleTypes;
+import com.avp.common.patrols.MarinePatrolSpawner;
 import com.avp.common.recipe.AVPRecipes;
 import com.avp.common.sound.AVPSoundEvents;
+import com.avp.common.worldgen.NukedAshPlacement;
 import com.avp.common.worldgen.WorldGen;
 import com.avp.common.worldgen.biome.AVPBiomes;
 import com.avp.data.loot.LootTableModifier;

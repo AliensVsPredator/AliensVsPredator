@@ -1,6 +1,5 @@
 package com.avp.common.entity.living.alien.xenomorph;
 
-import com.avp.common.ai.goal.XenoFloatGoal;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -38,6 +37,7 @@ import java.util.function.BiConsumer;
 import com.avp.common.MoveAnalysis;
 import com.avp.common.ai.goal.DigToTargetGoal;
 import com.avp.common.ai.goal.StrollAroundInWaterGoal;
+import com.avp.common.ai.goal.XenoFloatGoal;
 import com.avp.common.entity.living.alien.Alien;
 import com.avp.common.gene.GeneKeys;
 import com.avp.common.gene.behavior.GeneDecoders;
@@ -109,7 +109,7 @@ public abstract class Xenomorph extends Alien implements ResinProducer {
 
     @Override
     protected void registerGoals() {
-//        goalSelector.addGoal(1, new FleeFightGoal(this));
+        // goalSelector.addGoal(1, new FleeFightGoal(this));
         goalSelector.addGoal(0, new XenoFloatGoal(this));
         goalSelector.addGoal(5, new DigToTargetGoal(this, 32));
         goalSelector.addGoal(7, new StrollAroundInWaterGoal(this, 0.5));

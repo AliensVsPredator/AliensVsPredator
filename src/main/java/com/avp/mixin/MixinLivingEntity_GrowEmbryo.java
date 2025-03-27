@@ -1,10 +1,8 @@
 package com.avp.mixin;
 
-import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
@@ -144,11 +142,11 @@ public abstract class MixinLivingEntity_GrowEmbryo extends Entity implements Hos
                         parasite.setXRot(getXRot());
                         if (self instanceof Witch) {
                             var effects = List.of(
-                                    MobEffects.DAMAGE_BOOST,
-                                    MobEffects.MOVEMENT_SPEED,
-                                    MobEffects.REGENERATION,
-                                    MobEffects.DIG_SPEED,
-                                    MobEffects.JUMP
+                                MobEffects.DAMAGE_BOOST,
+                                MobEffects.MOVEMENT_SPEED,
+                                MobEffects.REGENERATION,
+                                MobEffects.DIG_SPEED,
+                                MobEffects.JUMP
                             );
                             var randomEffect = effects.get(self.getRandom().nextInt(effects.size()));
                             parasite.addEffect(new MobEffectInstance(randomEffect, Integer.MAX_VALUE, 0, false, false));

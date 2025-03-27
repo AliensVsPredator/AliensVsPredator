@@ -295,7 +295,10 @@ public class AVPBlocks {
 
     public static final Block STEEL_TRAP_DOOR = register(new TrapDoorBlock(BlockSetType.COPPER, BlockProperties.STEEL), "steel_trapdoor");
 
-    public static final Block TITANIUM_DOOR = register(new DoorBlock(BlockSetType.COPPER, BlockProperties.TITANIUM.noOcclusion()), "titanium_door");
+    public static final Block TITANIUM_DOOR = register(
+        new DoorBlock(BlockSetType.COPPER, BlockProperties.TITANIUM.noOcclusion()),
+        "titanium_door"
+    );
 
     public static final Block TITANIUM_TRAP_DOOR = register(
         new TrapDoorBlock(BlockSetType.COPPER, BlockProperties.TITANIUM),

@@ -27,9 +27,9 @@ public class OldPainlessItem extends GunItem {
     );
 
     private final AzCommand spinDown = AzCommand.create(
-            OldPainlessAnimationRefs.MAIN_CONTROLLER_NAME,
-            OldPainlessAnimationRefs.SPIN_DOWN_ANIMATION_NAME,
-            AzPlayBehaviors.HOLD_ON_LAST_FRAME
+        OldPainlessAnimationRefs.MAIN_CONTROLLER_NAME,
+        OldPainlessAnimationRefs.SPIN_DOWN_ANIMATION_NAME,
+        AzPlayBehaviors.HOLD_ON_LAST_FRAME
     );
 
     private final AzCommand spin = AzCommand.create(

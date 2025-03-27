@@ -1,6 +1,5 @@
 package com.avp.common.entity.projectile;
 
-import com.avp.common.util.ItemGoalUtil;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -11,6 +10,7 @@ import net.minecraft.world.phys.HitResult;
 import org.jetbrains.annotations.NotNull;
 
 import com.avp.common.entity.type.AVPEntityTypes;
+import com.avp.common.util.ItemGoalUtil;
 
 public class BulletProjectile extends AbstractHurtingProjectile {
 

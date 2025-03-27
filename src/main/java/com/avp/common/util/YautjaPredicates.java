@@ -1,14 +1,14 @@
 package com.avp.common.util;
 
-import com.avp.common.entity.living.alien.Alien;
-import com.avp.common.entity.living.yautja.Yautja;
-import com.avp.common.item.AVPItemTags;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.monster.Creeper;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
 import org.jetbrains.annotations.NotNull;
+
+import com.avp.common.entity.living.yautja.Yautja;
+import com.avp.common.item.AVPItemTags;
 
 public class YautjaPredicates {
 
@@ -29,13 +29,13 @@ public class YautjaPredicates {
 
         if (potentialTarget instanceof Player player) {
             return !AVPPredicates.IS_IMMORTAL.test(player)
-                    && (player.getMainHandItem().is(AVPItemTags.HOSTILE_WEAPON)
+                && (player.getMainHandItem().is(AVPItemTags.HOSTILE_WEAPON)
                     || (yautja.getLastAttacker() != null && yautja.getLastAttacker().is(player)));
         }
 
         if (potentialTarget instanceof Mob || potentialTarget instanceof Monster) {
             return potentialTarget.getMainHandItem().is(AVPItemTags.HOSTILE_WEAPON)
-                    || (yautja.getLastAttacker() != null && yautja.getLastAttacker().is(potentialTarget));
+                || (yautja.getLastAttacker() != null && yautja.getLastAttacker().is(potentialTarget));
         }
 
         return yautja.getLastAttacker() != null && yautja.getLastAttacker().is(potentialTarget);

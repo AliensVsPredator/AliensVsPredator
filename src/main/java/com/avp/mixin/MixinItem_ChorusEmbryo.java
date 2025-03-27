@@ -1,8 +1,5 @@
 package com.avp.mixin;
 
-import com.avp.common.entity.living.Host;
-import com.avp.common.entity.type.AVPEntityTypes;
-import com.avp.common.util.AVPPredicates;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
@@ -21,6 +18,10 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+import com.avp.common.entity.living.Host;
+import com.avp.common.entity.type.AVPEntityTypes;
+import com.avp.common.util.AVPPredicates;
+
 @Mixin(ChorusFruitItem.class)
 public class MixinItem_ChorusEmbryo {
 
@@ -36,9 +37,9 @@ public class MixinItem_ChorusEmbryo {
             if (parasite != null) {
                 var randomX = livingEntity.getX() + (livingEntity.getRandom().nextDouble() - 0.5) * 16.0;
                 var randomY = Mth.clamp(
-                        livingEntity.getY() + (livingEntity.getRandom().nextInt(16) - 8),
-                        level.getMinBuildHeight(),
-                        (level.getMinBuildHeight() + ((ServerLevel)level).getLogicalHeight() - 1)
+                    livingEntity.getY() + (livingEntity.getRandom().nextInt(16) - 8),
+                    level.getMinBuildHeight(),
+                    (level.getMinBuildHeight() + ((ServerLevel) level).getLogicalHeight() - 1)
                 );
                 var randomZ = livingEntity.getZ() + (livingEntity.getRandom().nextDouble() - 0.5) * 16.0;
                 parasite.setPos(randomX, randomY, randomZ);
@@ -53,7 +54,14 @@ public class MixinItem_ChorusEmbryo {
                     player.getCooldowns().addCooldown(stack.getItem(), 20);
                 }
                 host.clearParasiteSourceType();
-                level.playSound(null, livingEntity.getX(), livingEntity.getY(), livingEntity.getZ(), SoundEvents.CHORUS_FRUIT_TELEPORT, SoundSource.PLAYERS);
+                level.playSound(
+                    null,
+                    livingEntity.getX(),
+                    livingEntity.getY(),
+                    livingEntity.getZ(),
+                    SoundEvents.CHORUS_FRUIT_TELEPORT,
+                    SoundSource.PLAYERS
+                );
                 cir.setReturnValue(stack);
             }
         }

@@ -1,6 +1,5 @@
 package com.avp.common.entity.spawn;
 
-import com.avp.common.entity.living.human.marine.MarineSpawning;
 import net.fabricmc.fabric.api.biome.v1.BiomeModifications;
 import net.fabricmc.fabric.api.biome.v1.BiomeSelectionContext;
 import net.fabricmc.fabric.api.biome.v1.ModificationPhase;
@@ -19,6 +18,7 @@ import com.avp.common.entity.living.alien.xenomorph.drone.DroneSpawning;
 import com.avp.common.entity.living.alien.xenomorph.praetorian.PraetorianSpawning;
 import com.avp.common.entity.living.alien.xenomorph.queen.QueenSpawning;
 import com.avp.common.entity.living.alien.xenomorph.warrior.WarriorSpawning;
+import com.avp.common.entity.living.human.marine.MarineSpawning;
 import com.avp.common.entity.living.yautja.YautjaSpawning;
 import com.avp.common.entity.type.AVPEntityTypes;
 import com.avp.common.util.AVPPredicates;

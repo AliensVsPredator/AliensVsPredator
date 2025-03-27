@@ -1,13 +1,9 @@
 package com.avp.data.tag;
 
-import com.avp.common.block.AVPBlockTags;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.ItemTags;
-import net.minecraft.world.item.DyeColor;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 
 import java.util.concurrent.CompletableFuture;
@@ -17,7 +13,6 @@ import com.avp.common.block_item.AVPBlockItems;
 import com.avp.common.item.AVPItemTags;
 import com.avp.common.item.AVPItems;
 import com.avp.common.item.ArmorItems;
-import net.minecraft.world.level.block.Blocks;
 
 public class AVPItemTagProvider extends FabricTagProvider.ItemTagProvider {
 
@@ -48,7 +43,7 @@ public class AVPItemTagProvider extends FabricTagProvider.ItemTagProvider {
             .add(
                 Items.BOW,
                 Items.CROSSBOW
-        );
+            );
 
         // Acid-resistant items
         getOrCreateTagBuilder(AVPItemTags.ACID_IMMUNE)
@@ -247,57 +242,57 @@ public class AVPItemTagProvider extends FabricTagProvider.ItemTagProvider {
         var fenceTagProvider = getOrCreateTagBuilder(ItemTags.FENCES);
 
         fenceTagProvider.add(
-             AVPBlockItems.FERROALUMINUM_CHAIN_FENCE,
-             AVPBlockItems.STEEL_CHAIN_FENCE,
-             AVPBlockItems.TITANIUM_CHAIN_FENCE
+            AVPBlockItems.FERROALUMINUM_CHAIN_FENCE,
+            AVPBlockItems.STEEL_CHAIN_FENCE,
+            AVPBlockItems.TITANIUM_CHAIN_FENCE
         );
 
         var doorTagProvider = getOrCreateTagBuilder(ItemTags.DOORS);
 
         doorTagProvider.add(
-             AVPBlockItems.FERROALUMINUM_DOOR,
-             AVPBlockItems.STEEL_DOOR,
-             AVPBlockItems.TITANIUM_DOOR
+            AVPBlockItems.FERROALUMINUM_DOOR,
+            AVPBlockItems.STEEL_DOOR,
+            AVPBlockItems.TITANIUM_DOOR
         );
 
         var trapdoorTagProvider = getOrCreateTagBuilder(ItemTags.TRAPDOORS);
 
         trapdoorTagProvider.add(
-             AVPBlockItems.FERROALUMINUM_TRAP_DOOR,
-             AVPBlockItems.STEEL_TRAP_DOOR,
-             AVPBlockItems.TITANIUM_TRAP_DOOR
+            AVPBlockItems.FERROALUMINUM_TRAP_DOOR,
+            AVPBlockItems.STEEL_TRAP_DOOR,
+            AVPBlockItems.TITANIUM_TRAP_DOOR
         );
 
         var slabTagProvider = getOrCreateTagBuilder(ItemTags.SLABS);
 
         slabTagProvider.add(
-             AVPBlockItems.CUT_FERROALUMINUM_SLAB,
-             AVPBlockItems.CUT_STEEL_SLAB,
-             AVPBlockItems.CUT_TITANIUM_SLAB,
-             AVPBlockItems.FERROALUMINUM_FASTENED_SIDING_SLAB,
-             AVPBlockItems.FERROALUMINUM_FASTENED_STANDING_SLAB,
-             AVPBlockItems.FERROALUMINUM_GRATE_SLAB,
-             AVPBlockItems.FERROALUMINUM_PLATING_SLAB,
-             AVPBlockItems.FERROALUMINUM_SIDING_SLAB,
-             AVPBlockItems.FERROALUMINUM_SLAB,
-             AVPBlockItems.FERROALUMINUM_STANDING_SLAB,
-             AVPBlockItems.FERROALUMINUM_TREAD_SLAB,
-             AVPBlockItems.STEEL_FASTENED_SIDING_SLAB,
-             AVPBlockItems.STEEL_FASTENED_STANDING_SLAB,
-             AVPBlockItems.STEEL_GRATE_SLAB,
-             AVPBlockItems.STEEL_PLATING_SLAB,
-             AVPBlockItems.STEEL_SIDING_SLAB,
-             AVPBlockItems.STEEL_SLAB,
-             AVPBlockItems.STEEL_STANDING_SLAB,
-             AVPBlockItems.STEEL_TREAD_SLAB,
-             AVPBlockItems.TITANIUM_FASTENED_SIDING_SLAB,
-             AVPBlockItems.TITANIUM_FASTENED_STANDING_SLAB,
-             AVPBlockItems.TITANIUM_GRATE_SLAB,
-             AVPBlockItems.TITANIUM_PLATING_SLAB,
-             AVPBlockItems.TITANIUM_SIDING_SLAB,
-             AVPBlockItems.TITANIUM_SLAB,
-             AVPBlockItems.TITANIUM_STANDING_SLAB,
-             AVPBlockItems.TITANIUM_TREAD_SLAB
+            AVPBlockItems.CUT_FERROALUMINUM_SLAB,
+            AVPBlockItems.CUT_STEEL_SLAB,
+            AVPBlockItems.CUT_TITANIUM_SLAB,
+            AVPBlockItems.FERROALUMINUM_FASTENED_SIDING_SLAB,
+            AVPBlockItems.FERROALUMINUM_FASTENED_STANDING_SLAB,
+            AVPBlockItems.FERROALUMINUM_GRATE_SLAB,
+            AVPBlockItems.FERROALUMINUM_PLATING_SLAB,
+            AVPBlockItems.FERROALUMINUM_SIDING_SLAB,
+            AVPBlockItems.FERROALUMINUM_SLAB,
+            AVPBlockItems.FERROALUMINUM_STANDING_SLAB,
+            AVPBlockItems.FERROALUMINUM_TREAD_SLAB,
+            AVPBlockItems.STEEL_FASTENED_SIDING_SLAB,
+            AVPBlockItems.STEEL_FASTENED_STANDING_SLAB,
+            AVPBlockItems.STEEL_GRATE_SLAB,
+            AVPBlockItems.STEEL_PLATING_SLAB,
+            AVPBlockItems.STEEL_SIDING_SLAB,
+            AVPBlockItems.STEEL_SLAB,
+            AVPBlockItems.STEEL_STANDING_SLAB,
+            AVPBlockItems.STEEL_TREAD_SLAB,
+            AVPBlockItems.TITANIUM_FASTENED_SIDING_SLAB,
+            AVPBlockItems.TITANIUM_FASTENED_STANDING_SLAB,
+            AVPBlockItems.TITANIUM_GRATE_SLAB,
+            AVPBlockItems.TITANIUM_PLATING_SLAB,
+            AVPBlockItems.TITANIUM_SIDING_SLAB,
+            AVPBlockItems.TITANIUM_SLAB,
+            AVPBlockItems.TITANIUM_STANDING_SLAB,
+            AVPBlockItems.TITANIUM_TREAD_SLAB
         );
 
         AVPBlockItems.DYE_COLOR_TO_CONCRETE_SLAB.values().forEach(slabTagProvider::add);
@@ -311,41 +306,41 @@ public class AVPItemTagProvider extends FabricTagProvider.ItemTagProvider {
         var buttonTagProvider = getOrCreateTagBuilder(ItemTags.BUTTONS);
 
         buttonTagProvider.add(
-                AVPBlockItems.FERROALUMINUM_BUTTON,
-                AVPBlockItems.STEEL_BUTTON,
-                AVPBlockItems.TITANIUM_BUTTON
+            AVPBlockItems.FERROALUMINUM_BUTTON,
+            AVPBlockItems.STEEL_BUTTON,
+            AVPBlockItems.TITANIUM_BUTTON
         );
 
         var stairsTagProvider = getOrCreateTagBuilder(ItemTags.STAIRS);
 
         stairsTagProvider.add(
-                AVPBlockItems.CUT_FERROALUMINUM_STAIRS,
-                AVPBlockItems.CUT_STEEL_STAIRS,
-                AVPBlockItems.CUT_TITANIUM_STAIRS,
-                AVPBlockItems.FERROALUMINUM_FASTENED_SIDING_STAIRS,
-                AVPBlockItems.FERROALUMINUM_FASTENED_STANDING_STAIRS,
-                AVPBlockItems.FERROALUMINUM_GRATE_STAIRS,
-                AVPBlockItems.FERROALUMINUM_PLATING_STAIRS,
-                AVPBlockItems.FERROALUMINUM_SIDING_STAIRS,
-                AVPBlockItems.FERROALUMINUM_STAIRS,
-                AVPBlockItems.FERROALUMINUM_STANDING_STAIRS,
-                AVPBlockItems.FERROALUMINUM_TREAD_STAIRS,
-                AVPBlockItems.STEEL_FASTENED_SIDING_STAIRS,
-                AVPBlockItems.STEEL_FASTENED_STANDING_STAIRS,
-                AVPBlockItems.STEEL_GRATE_STAIRS,
-                AVPBlockItems.STEEL_PLATING_STAIRS,
-                AVPBlockItems.STEEL_SIDING_STAIRS,
-                AVPBlockItems.STEEL_STAIRS,
-                AVPBlockItems.STEEL_STANDING_STAIRS,
-                AVPBlockItems.STEEL_TREAD_STAIRS,
-                AVPBlockItems.TITANIUM_FASTENED_SIDING_STAIRS,
-                AVPBlockItems.TITANIUM_FASTENED_STANDING_STAIRS,
-                AVPBlockItems.TITANIUM_GRATE_STAIRS,
-                AVPBlockItems.TITANIUM_PLATING_STAIRS,
-                AVPBlockItems.TITANIUM_SIDING_STAIRS,
-                AVPBlockItems.TITANIUM_STAIRS,
-                AVPBlockItems.TITANIUM_STANDING_STAIRS,
-                AVPBlockItems.TITANIUM_TREAD_STAIRS
+            AVPBlockItems.CUT_FERROALUMINUM_STAIRS,
+            AVPBlockItems.CUT_STEEL_STAIRS,
+            AVPBlockItems.CUT_TITANIUM_STAIRS,
+            AVPBlockItems.FERROALUMINUM_FASTENED_SIDING_STAIRS,
+            AVPBlockItems.FERROALUMINUM_FASTENED_STANDING_STAIRS,
+            AVPBlockItems.FERROALUMINUM_GRATE_STAIRS,
+            AVPBlockItems.FERROALUMINUM_PLATING_STAIRS,
+            AVPBlockItems.FERROALUMINUM_SIDING_STAIRS,
+            AVPBlockItems.FERROALUMINUM_STAIRS,
+            AVPBlockItems.FERROALUMINUM_STANDING_STAIRS,
+            AVPBlockItems.FERROALUMINUM_TREAD_STAIRS,
+            AVPBlockItems.STEEL_FASTENED_SIDING_STAIRS,
+            AVPBlockItems.STEEL_FASTENED_STANDING_STAIRS,
+            AVPBlockItems.STEEL_GRATE_STAIRS,
+            AVPBlockItems.STEEL_PLATING_STAIRS,
+            AVPBlockItems.STEEL_SIDING_STAIRS,
+            AVPBlockItems.STEEL_STAIRS,
+            AVPBlockItems.STEEL_STANDING_STAIRS,
+            AVPBlockItems.STEEL_TREAD_STAIRS,
+            AVPBlockItems.TITANIUM_FASTENED_SIDING_STAIRS,
+            AVPBlockItems.TITANIUM_FASTENED_STANDING_STAIRS,
+            AVPBlockItems.TITANIUM_GRATE_STAIRS,
+            AVPBlockItems.TITANIUM_PLATING_STAIRS,
+            AVPBlockItems.TITANIUM_SIDING_STAIRS,
+            AVPBlockItems.TITANIUM_STAIRS,
+            AVPBlockItems.TITANIUM_STANDING_STAIRS,
+            AVPBlockItems.TITANIUM_TREAD_STAIRS
         );
 
         AVPBlockItems.DYE_COLOR_TO_CONCRETE_STAIRS.values().forEach(stairsTagProvider::add);
@@ -363,50 +358,50 @@ public class AVPItemTagProvider extends FabricTagProvider.ItemTagProvider {
         var freezeImmuneTagBuilder = getOrCreateTagBuilder(ItemTags.FREEZE_IMMUNE_WEARABLES);
 
         freezeImmuneTagBuilder.add(
-                ArmorItems.CHITIN_HELMET,
-                ArmorItems.JUNGLE_PREDATOR_HELMET,
-                ArmorItems.NETHER_CHITIN_HELMET,
-                ArmorItems.MK50_HELMET,
-                ArmorItems.PLATED_CHITIN_HELMET,
-                ArmorItems.PLATED_NETHER_CHITIN_HELMET,
-                ArmorItems.PRESSURE_HELMET,
-                ArmorItems.STEEL_HELMET,
-                ArmorItems.TACTICAL_HELMET,
-                ArmorItems.TACTICAL_CAMO_HELMET,
-                ArmorItems.TITANIUM_HELMET,
-                ArmorItems.CHITIN_CHESTPLATE,
-                ArmorItems.JUNGLE_PREDATOR_CHESTPLATE,
-                ArmorItems.NETHER_CHITIN_CHESTPLATE,
-                ArmorItems.MK50_CHESTPLATE,
-                ArmorItems.PLATED_CHITIN_CHESTPLATE,
-                ArmorItems.PLATED_NETHER_CHITIN_CHESTPLATE,
-                ArmorItems.PRESSURE_CHESTPLATE,
-                ArmorItems.STEEL_CHESTPLATE,
-                ArmorItems.TACTICAL_CHESTPLATE,
-                ArmorItems.TACTICAL_CAMO_CHESTPLATE,
-                ArmorItems.TITANIUM_CHESTPLATE,
-                ArmorItems.CHITIN_LEGGINGS,
-                ArmorItems.JUNGLE_PREDATOR_LEGGINGS,
-                ArmorItems.NETHER_CHITIN_LEGGINGS,
-                ArmorItems.MK50_LEGGINGS,
-                ArmorItems.PLATED_CHITIN_LEGGINGS,
-                ArmorItems.PLATED_NETHER_CHITIN_LEGGINGS,
-                ArmorItems.PRESSURE_LEGGINGS,
-                ArmorItems.STEEL_LEGGINGS,
-                ArmorItems.TACTICAL_LEGGINGS,
-                ArmorItems.TACTICAL_CAMO_LEGGINGS,
-                ArmorItems.TITANIUM_LEGGINGS,
-                ArmorItems.CHITIN_BOOTS,
-                ArmorItems.JUNGLE_PREDATOR_BOOTS,
-                ArmorItems.NETHER_CHITIN_BOOTS,
-                ArmorItems.MK50_BOOTS,
-                ArmorItems.PLATED_CHITIN_BOOTS,
-                ArmorItems.PLATED_NETHER_CHITIN_BOOTS,
-                ArmorItems.PRESSURE_BOOTS,
-                ArmorItems.STEEL_BOOTS,
-                ArmorItems.TACTICAL_BOOTS,
-                ArmorItems.TACTICAL_CAMO_BOOTS,
-                ArmorItems.TITANIUM_BOOTS
+            ArmorItems.CHITIN_HELMET,
+            ArmorItems.JUNGLE_PREDATOR_HELMET,
+            ArmorItems.NETHER_CHITIN_HELMET,
+            ArmorItems.MK50_HELMET,
+            ArmorItems.PLATED_CHITIN_HELMET,
+            ArmorItems.PLATED_NETHER_CHITIN_HELMET,
+            ArmorItems.PRESSURE_HELMET,
+            ArmorItems.STEEL_HELMET,
+            ArmorItems.TACTICAL_HELMET,
+            ArmorItems.TACTICAL_CAMO_HELMET,
+            ArmorItems.TITANIUM_HELMET,
+            ArmorItems.CHITIN_CHESTPLATE,
+            ArmorItems.JUNGLE_PREDATOR_CHESTPLATE,
+            ArmorItems.NETHER_CHITIN_CHESTPLATE,
+            ArmorItems.MK50_CHESTPLATE,
+            ArmorItems.PLATED_CHITIN_CHESTPLATE,
+            ArmorItems.PLATED_NETHER_CHITIN_CHESTPLATE,
+            ArmorItems.PRESSURE_CHESTPLATE,
+            ArmorItems.STEEL_CHESTPLATE,
+            ArmorItems.TACTICAL_CHESTPLATE,
+            ArmorItems.TACTICAL_CAMO_CHESTPLATE,
+            ArmorItems.TITANIUM_CHESTPLATE,
+            ArmorItems.CHITIN_LEGGINGS,
+            ArmorItems.JUNGLE_PREDATOR_LEGGINGS,
+            ArmorItems.NETHER_CHITIN_LEGGINGS,
+            ArmorItems.MK50_LEGGINGS,
+            ArmorItems.PLATED_CHITIN_LEGGINGS,
+            ArmorItems.PLATED_NETHER_CHITIN_LEGGINGS,
+            ArmorItems.PRESSURE_LEGGINGS,
+            ArmorItems.STEEL_LEGGINGS,
+            ArmorItems.TACTICAL_LEGGINGS,
+            ArmorItems.TACTICAL_CAMO_LEGGINGS,
+            ArmorItems.TITANIUM_LEGGINGS,
+            ArmorItems.CHITIN_BOOTS,
+            ArmorItems.JUNGLE_PREDATOR_BOOTS,
+            ArmorItems.NETHER_CHITIN_BOOTS,
+            ArmorItems.MK50_BOOTS,
+            ArmorItems.PLATED_CHITIN_BOOTS,
+            ArmorItems.PLATED_NETHER_CHITIN_BOOTS,
+            ArmorItems.PRESSURE_BOOTS,
+            ArmorItems.STEEL_BOOTS,
+            ArmorItems.TACTICAL_BOOTS,
+            ArmorItems.TACTICAL_CAMO_BOOTS,
+            ArmorItems.TITANIUM_BOOTS
         );
     }
 }

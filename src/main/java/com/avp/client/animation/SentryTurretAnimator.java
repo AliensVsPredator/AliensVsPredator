@@ -1,15 +1,15 @@
 package com.avp.client.animation;
 
-import com.avp.AVPResources;
-import com.avp.common.block.entity.SentryTurretBE;
 import mod.azure.azurelib.rewrite.animation.AzAnimatorConfig;
 import mod.azure.azurelib.rewrite.animation.controller.AzAnimationController;
 import mod.azure.azurelib.rewrite.animation.controller.AzAnimationControllerContainer;
 import mod.azure.azurelib.rewrite.animation.impl.AzBlockAnimator;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
+
+import com.avp.AVPResources;
+import com.avp.common.block.entity.SentryTurretBE;
 
 public class SentryTurretAnimator extends AzBlockAnimator<SentryTurretBE> {
 
@@ -22,8 +22,8 @@ public class SentryTurretAnimator extends AzBlockAnimator<SentryTurretBE> {
     @Override
     public void registerControllers(AzAnimationControllerContainer<SentryTurretBE> animationControllerContainer) {
         animationControllerContainer.add(
-                AzAnimationController.builder(this, "base_controller")
-                        .build()
+            AzAnimationController.builder(this, "base_controller")
+                .build()
         );
     }
 

@@ -1,7 +1,5 @@
 package com.avp.common.entity.living.yautja;
 
-import com.avp.common.ai.goal.WaterMoveControl;
-import com.avp.common.ai.goal.combat.UseItemGoal;
 import mod.azure.azurelib.common.api.common.ai.pathing.AzureNavigation;
 import mod.azure.azurelib.common.internal.common.ai.pathing.AzurePathFinder;
 import net.minecraft.world.entity.ai.control.MoveControl;
@@ -13,6 +11,9 @@ import net.minecraft.world.level.pathfinder.PathFinder;
 import net.minecraft.world.level.pathfinder.PathType;
 import net.minecraft.world.level.pathfinder.WalkNodeEvaluator;
 import org.jetbrains.annotations.NotNull;
+
+import com.avp.common.ai.goal.WaterMoveControl;
+import com.avp.common.ai.goal.combat.UseItemGoal;
 
 public class YautjaNavigationManager {
 
@@ -32,6 +33,7 @@ public class YautjaNavigationManager {
         this.groundAttackGoal = new UseItemGoal(yautja, yautja::runAttackAnimations);
         this.groundMoveControl = moveControl;
         this.groundNavigation = new AzureNavigation(yautja, yautja.level()) {
+
             @Override
             protected @NotNull PathFinder createPathFinder(int maxVisitedNodes) {
                 this.nodeEvaluator = new WalkNodeEvaluator();

@@ -1,13 +1,6 @@
 package com.avp.common.block.entity;
 
-import com.avp.AVP;
-import com.avp.common.block.AVPBlockTags;
-import com.avp.common.block.SentryTurretBlock;
-import com.avp.common.damage.AVPDamageTypes;
-import com.avp.common.sound.AVPSoundEvents;
-import com.avp.server.BlockBreakProgressManager;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
@@ -26,6 +19,13 @@ import net.minecraft.world.phys.*;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.UUID;
+
+import com.avp.AVP;
+import com.avp.common.block.AVPBlockTags;
+import com.avp.common.block.SentryTurretBlock;
+import com.avp.common.damage.AVPDamageTypes;
+import com.avp.common.sound.AVPSoundEvents;
+import com.avp.server.BlockBreakProgressManager;
 
 public class SentryTurretBE extends BlockEntity {
 
@@ -48,7 +48,10 @@ public class SentryTurretBE extends BlockEntity {
 
     public Monster getTargetedMonster() {
         if (this.targetedMonster == null && this.targetedMonsterUUID != null) {
-            var entities = level.getEntitiesOfClass(Monster.class, new AABB(this.worldPosition).inflate(32)); // Adjust range if needed
+            var entities = level.getEntitiesOfClass(Monster.class, new AABB(this.worldPosition).inflate(32)); // Adjust
+                                                                                                              // range
+                                                                                                              // if
+                                                                                                              // needed
             for (var entity : entities) {
                 if (entity.getUUID().equals(this.targetedMonsterUUID)) {
                     this.targetedMonster = entity;
@@ -92,8 +95,8 @@ public class SentryTurretBE extends BlockEntity {
         var currentTarget = blockEntity.getTargetedMonster();
         if (currentTarget != null) {
             boolean validTarget = currentTarget.isAlive() &&
-                    currentTarget.blockPosition().closerThan(pos, range) &&
-                    isFacingMonster(level, pos, facingVec, currentTarget);
+                currentTarget.blockPosition().closerThan(pos, range) &&
+                isFacingMonster(level, pos, facingVec, currentTarget);
 
             if (validTarget) {
                 if (blockEntity.fireCooldown == 0) {
@@ -114,8 +117,8 @@ public class SentryTurretBE extends BlockEntity {
 
         if (currentTarget != null) {
             boolean validTarget = currentTarget.isAlive() &&
-                    currentTarget.blockPosition().closerThan(pos, range) &&
-                    isFacingMonster(level, pos, facingVec, currentTarget);
+                currentTarget.blockPosition().closerThan(pos, range) &&
+                isFacingMonster(level, pos, facingVec, currentTarget);
             if (validTarget) {
                 if (blockEntity.fireCooldown == 0) {
                     if (canTargetMonster(level, pos, facingVec, currentTarget, range, blockEntity)) {
@@ -132,7 +135,6 @@ public class SentryTurretBE extends BlockEntity {
                 blockEntity.setTargetedMonster(null);
             }
         }
-
 
         if (blockEntity.getTargetedMonster() == null) {
             for (var monster : monsters) {
@@ -157,7 +159,14 @@ public class SentryTurretBE extends BlockEntity {
         return dotProduct > Math.cos(Math.toRadians(75));
     }
 
-    private static boolean canTargetMonster(Level level, BlockPos turretPos, Vec3 facingVec, Monster monster, double maxRange, SentryTurretBE blockEntity) {
+    private static boolean canTargetMonster(
+        Level level,
+        BlockPos turretPos,
+        Vec3 facingVec,
+        Monster monster,
+        double maxRange,
+        SentryTurretBE blockEntity
+    ) {
         var facing = blockEntity.getBlockState().getValue(SentryTurretBlock.FACING);
         var offsetPosition = turretPos.relative(facing);
         var turretCenter = Vec3.atCenterOf(offsetPosition);
@@ -178,13 +187,15 @@ public class SentryTurretBE extends BlockEntity {
             return false;
         }
 
-        var result = level.clip(new ClipContext(
+        var result = level.clip(
+            new ClipContext(
                 turretCenter,
                 entityPos,
                 ClipContext.Block.COLLIDER,
                 ClipContext.Fluid.NONE,
                 monster
-        ));
+            )
+        );
 
         if (result.getType() == HitResult.Type.BLOCK) {
             var blockPos = result.getBlockPos();

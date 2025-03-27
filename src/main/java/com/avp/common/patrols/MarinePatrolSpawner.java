@@ -1,8 +1,5 @@
 package com.avp.common.patrols;
 
-import com.avp.common.block.AVPBlockTags;
-import com.avp.common.entity.type.AVPEntityTypes;
-import com.avp.common.worldgen.biome.AVPBiomeTags;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
@@ -13,7 +10,12 @@ import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.levelgen.Heightmap;
 
+import com.avp.common.block.AVPBlockTags;
+import com.avp.common.entity.type.AVPEntityTypes;
+import com.avp.common.worldgen.biome.AVPBiomeTags;
+
 public class MarinePatrolSpawner implements CustomSpawner {
+
     private int nextTick;
 
     public MarinePatrolSpawner() {}

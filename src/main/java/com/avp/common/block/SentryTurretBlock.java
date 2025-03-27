@@ -1,8 +1,5 @@
 package com.avp.common.block;
 
-import com.avp.common.block.base.BaseBlockEntity;
-import com.avp.common.block.entity.BlockEntityTypes;
-import com.avp.common.block.entity.SentryTurretBE;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -25,6 +22,10 @@ import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import com.avp.common.block.base.BaseBlockEntity;
+import com.avp.common.block.entity.BlockEntityTypes;
+import com.avp.common.block.entity.SentryTurretBE;
 
 public class SentryTurretBlock extends BaseBlockEntity {
 
@@ -62,10 +63,12 @@ public class SentryTurretBlock extends BaseBlockEntity {
 
     @Nullable
     protected static <T extends BlockEntity> BlockEntityTicker<T> createSentryTicker(
-            Level level,
-            BlockEntityType<T> blockEntityType
+        Level level,
+        BlockEntityType<T> blockEntityType
     ) {
-        return level.isClientSide ? null : createTickerHelper(blockEntityType, BlockEntityTypes.SENTRY_TURRET_BE, SentryTurretBE::serverTick);
+        return level.isClientSide
+            ? null
+            : createTickerHelper(blockEntityType, BlockEntityTypes.SENTRY_TURRET_BE, SentryTurretBE::serverTick);
     }
 
     protected void openContainer(Level level, BlockPos blockPos, Player player) {
@@ -101,7 +104,14 @@ public class SentryTurretBlock extends BaseBlockEntity {
     }
 
     @Override
-    protected void neighborChanged(BlockState state, Level level, BlockPos pos, Block neighborBlock, BlockPos neighborPos, boolean movedByPiston) {
+    protected void neighborChanged(
+        BlockState state,
+        Level level,
+        BlockPos pos,
+        Block neighborBlock,
+        BlockPos neighborPos,
+        boolean movedByPiston
+    ) {
         var hasSignal = level.hasNeighborSignal(pos) || level.hasNeighborSignal(pos.above());
         var triggeredValue = state.getValue(TRIGGERED);
         if (hasSignal && Boolean.TRUE.equals(!triggeredValue)) {

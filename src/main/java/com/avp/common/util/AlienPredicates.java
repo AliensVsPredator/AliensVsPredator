@@ -5,7 +5,6 @@ import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ambient.Bat;
 import net.minecraft.world.entity.monster.Creeper;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.phys.AABB;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Comparator;
@@ -30,7 +29,9 @@ public class AlienPredicates {
 
         var resinStanceCheck = potentialTarget instanceof Player || isStandingOnResin(potentialTarget);
 
-        return potentialTarget instanceof Yautja || resinStanceCheck || isTargetingHiveMember(alien, potentialTarget) || isValidTarget(potentialTarget);
+        return potentialTarget instanceof Yautja || resinStanceCheck || isTargetingHiveMember(alien, potentialTarget) || isValidTarget(
+            potentialTarget
+        );
     }
 
     public static boolean isValidTarget(@NotNull LivingEntity potentialTarget) {
@@ -85,11 +86,12 @@ public class AlienPredicates {
     public static List<LivingEntity> findThreateningTargets(Alien alien, double range) {
         var searchArea = alien.getBoundingBox().inflate(range);
 
-        List<LivingEntity> targetsInRange = alien.level().getEntitiesOfClass(
+        List<LivingEntity> targetsInRange = alien.level()
+            .getEntitiesOfClass(
                 LivingEntity.class,
                 searchArea,
                 potentialTarget -> isThreateningTarget(alien, potentialTarget)
-        );
+            );
 
         targetsInRange.sort(Comparator.comparingDouble(alien::distanceTo));
 

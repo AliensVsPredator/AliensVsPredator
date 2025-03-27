@@ -73,23 +73,31 @@ public class ThrownGrenade extends BouncingItemProjectile {
     @Override
     protected void onDeath() {
         if (this.level() instanceof Level serverLevel) {
-            level().explode(this, getX(), getY(), getZ(), isIrradiated ? 9F : 3F, isIncendiary,
-                    Level.ExplosionInteraction.BLOCK);
+            level().explode(
+                this,
+                getX(),
+                getY(),
+                getZ(),
+                isIrradiated ? 9F : 3F,
+                isIncendiary,
+                Level.ExplosionInteraction.BLOCK
+            );
             if (isIrradiated) {
                 var areaEffectCloudEntity = new AreaEffectCloud(
-                        serverLevel,
-                        this.blockPosition().getX(),
-                        this.blockPosition().getY(),
-                        this.blockPosition().getZ()
+                    serverLevel,
+                    this.blockPosition().getX(),
+                    this.blockPosition().getY(),
+                    this.blockPosition().getZ()
                 );
                 areaEffectCloudEntity.setRadius(10.0F);
                 areaEffectCloudEntity.setDuration(100);
                 areaEffectCloudEntity.setRadiusPerTick(
-                        -areaEffectCloudEntity.getRadius() / areaEffectCloudEntity.getDuration()
+                    -areaEffectCloudEntity.getRadius() / areaEffectCloudEntity.getDuration()
                 );
                 areaEffectCloudEntity.setParticle(ParticleTypes.ASH);
                 areaEffectCloudEntity.addEffect(
-                        new MobEffectInstance(AVPEffects.RADIATION_EFFECT, Integer.MAX_VALUE, 0));
+                    new MobEffectInstance(AVPEffects.RADIATION_EFFECT, Integer.MAX_VALUE, 0)
+                );
                 serverLevel.addFreshEntity(areaEffectCloudEntity);
             }
         }

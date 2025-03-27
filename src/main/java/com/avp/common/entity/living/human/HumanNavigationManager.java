@@ -9,11 +9,11 @@ import net.minecraft.world.entity.ai.navigation.GroundPathNavigation;
 import net.minecraft.world.entity.ai.navigation.WaterBoundPathNavigation;
 import net.minecraft.world.level.pathfinder.PathFinder;
 import net.minecraft.world.level.pathfinder.PathType;
+import net.minecraft.world.level.pathfinder.WalkNodeEvaluator;
+import org.jetbrains.annotations.NotNull;
 
 import com.avp.common.ai.goal.WaterMoveControl;
 import com.avp.common.ai.goal.combat.UseItemGoal;
-import net.minecraft.world.level.pathfinder.WalkNodeEvaluator;
-import org.jetbrains.annotations.NotNull;
 
 public class HumanNavigationManager {
 
@@ -33,6 +33,7 @@ public class HumanNavigationManager {
         this.groundAttackGoal = new UseItemGoal(humanMob, humanMob::runAttackAnimations);
         this.groundMoveControl = moveControl;
         this.groundNavigation = new AzureNavigation(humanMob, humanMob.level()) {
+
             @Override
             protected @NotNull PathFinder createPathFinder(int maxVisitedNodes) {
                 this.nodeEvaluator = new WalkNodeEvaluator();

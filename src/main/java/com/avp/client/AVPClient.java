@@ -1,7 +1,5 @@
 package com.avp.client;
 
-import com.avp.client.render.block.SentryTurretRenderer;
-import com.avp.common.block.entity.BlockEntityTypes;
 import mod.azure.azurelib.rewrite.render.armor.AzArmorRendererRegistry;
 import mod.azure.azurelib.rewrite.render.item.AzItemRenderer;
 import mod.azure.azurelib.rewrite.render.item.AzItemRendererRegistry;
@@ -10,7 +8,6 @@ import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import net.fabricmc.fabric.api.client.particle.v1.ParticleFactoryRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.ColorProviderRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
-import net.minecraft.client.color.item.ItemColors;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
@@ -18,6 +15,7 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraft.client.renderer.entity.ThrownItemRenderer;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.component.DyedItemColor;
 
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -27,18 +25,19 @@ import com.avp.client.network.AVPClientPacketHandlerRegistry;
 import com.avp.client.particle.AcidParticleProvider;
 import com.avp.client.particle.BlueAcidParticleProvider;
 import com.avp.client.render.armor.*;
+import com.avp.client.render.block.SentryTurretRenderer;
 import com.avp.client.render.entity.*;
 import com.avp.client.render.entity.parasite.facehugger.FacehuggerRenderer;
 import com.avp.client.render.item.*;
 import com.avp.client.screen.ArmorCaseScreen;
 import com.avp.client.screen.IndustrialFurnaceScreen;
 import com.avp.common.block.AVPBlocks;
+import com.avp.common.block.entity.BlockEntityTypes;
 import com.avp.common.entity.type.AVPEntityTypes;
 import com.avp.common.item.AVPItems;
 import com.avp.common.item.ArmorItems;
 import com.avp.common.menu.MenuTypes;
 import com.avp.common.particle.AVPParticleTypes;
-import net.minecraft.world.item.component.DyedItemColor;
 
 public class AVPClient implements ClientModInitializer {
 
@@ -163,14 +162,22 @@ public class AVPClient implements ClientModInitializer {
         registerItemRenderer(AVPItems.M88_MOD_4_COMBAT_PISTOL, name -> () -> new M88Mod4CombatPistolItemRenderer(name));
         registerItemRenderer(AVPItems.OLD_PAINLESS, name -> () -> new OldPainlessItemRenderer(name));
         registerItemRenderer(AVPItems.ZX_76_SHOTGUN, name -> () -> new ZX76ShotgunItemRenderer(name));
-        ColorProviderRegistry.ITEM.register((itemStack, i) -> i > 0 ? -1 :
-                DyedItemColor.getOrDefault(itemStack, -1), ArmorItems.MK50_HELMET);
-        ColorProviderRegistry.ITEM.register((itemStack, i) -> i > 0 ? -1 :
-                DyedItemColor.getOrDefault(itemStack, -1), ArmorItems.MK50_CHESTPLATE);
-        ColorProviderRegistry.ITEM.register((itemStack, i) -> i > 0 ? -1 :
-                DyedItemColor.getOrDefault(itemStack, -1), ArmorItems.MK50_LEGGINGS);
-        ColorProviderRegistry.ITEM.register((itemStack, i) -> i > 0 ? -1 :
-                DyedItemColor.getOrDefault(itemStack, -1), ArmorItems.MK50_BOOTS);
+        ColorProviderRegistry.ITEM.register(
+            (itemStack, i) -> i > 0 ? -1 : DyedItemColor.getOrDefault(itemStack, -1),
+            ArmorItems.MK50_HELMET
+        );
+        ColorProviderRegistry.ITEM.register(
+            (itemStack, i) -> i > 0 ? -1 : DyedItemColor.getOrDefault(itemStack, -1),
+            ArmorItems.MK50_CHESTPLATE
+        );
+        ColorProviderRegistry.ITEM.register(
+            (itemStack, i) -> i > 0 ? -1 : DyedItemColor.getOrDefault(itemStack, -1),
+            ArmorItems.MK50_LEGGINGS
+        );
+        ColorProviderRegistry.ITEM.register(
+            (itemStack, i) -> i > 0 ? -1 : DyedItemColor.getOrDefault(itemStack, -1),
+            ArmorItems.MK50_BOOTS
+        );
 
         // Entities
         EntityRendererRegistry.register(AVPEntityTypes.ACID, AcidRenderer::new);
@@ -192,8 +199,10 @@ public class AVPClient implements ClientModInitializer {
         EntityRendererRegistry.register(AVPEntityTypes.SMART_DISC, SpinningItemRenderer::new);
 
         // Block Entities
-        BlockEntityRenderers.register(BlockEntityTypes.SENTRY_TURRET_BE,
-                (BlockEntityRendererProvider.Context rendererDispatcherIn) -> new SentryTurretRenderer());
+        BlockEntityRenderers.register(
+            BlockEntityTypes.SENTRY_TURRET_BE,
+            (BlockEntityRendererProvider.Context rendererDispatcherIn) -> new SentryTurretRenderer()
+        );
 
         // Particles
         ParticleFactoryRegistry.getInstance().register(AVPParticleTypes.ACID, AcidParticleProvider::new);

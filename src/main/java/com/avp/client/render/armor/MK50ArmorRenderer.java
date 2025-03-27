@@ -1,11 +1,11 @@
 package com.avp.client.render.armor;
 
-import com.avp.client.render.layer.MKOuterLayer;
 import mod.azure.azurelib.rewrite.render.armor.AzArmorRenderer;
 import mod.azure.azurelib.rewrite.render.armor.AzArmorRendererConfig;
 import net.minecraft.resources.ResourceLocation;
 
 import com.avp.AVPResources;
+import com.avp.client.render.layer.MKOuterLayer;
 
 public class MK50ArmorRenderer extends AzArmorRenderer {
 
@@ -16,8 +16,10 @@ public class MK50ArmorRenderer extends AzArmorRenderer {
     private static final ResourceLocation TEXTURE = AVPResources.armorTextureLocation(NAME + "_inner");
 
     public MK50ArmorRenderer() {
-        super(AzArmorRendererConfig.builder(MODEL, TEXTURE)
+        super(
+            AzArmorRendererConfig.builder(MODEL, TEXTURE)
                 .addRenderLayer(new MKOuterLayer())
-                .build());
+                .build()
+        );
     }
 }

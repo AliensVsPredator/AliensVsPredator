@@ -30,8 +30,8 @@ public class BlockEntityTypes {
     );
 
     public static final BlockEntityType<SentryTurretBE> SENTRY_TURRET_BE = register(
-            "sentry_turret_be",
-            BlockEntityType.Builder.of(SentryTurretBE::new, AVPBlocks.SENTRY_TURRET)
+        "sentry_turret_be",
+        BlockEntityType.Builder.of(SentryTurretBE::new, AVPBlocks.SENTRY_TURRET)
     );
 
     private static <T extends BlockEntity> BlockEntityType<T> register(String id, BlockEntityType.Builder<T> builder) {

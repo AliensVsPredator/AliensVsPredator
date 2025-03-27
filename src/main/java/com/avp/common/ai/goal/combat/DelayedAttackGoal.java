@@ -1,13 +1,14 @@
 package com.avp.common.ai.goal.combat;
 
-import com.avp.common.entity.living.alien.Alien;
-import com.avp.common.util.AlienPredicates;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.ai.goal.MeleeAttackGoal;
 
 import java.util.EnumSet;
+
+import com.avp.common.entity.living.alien.Alien;
+import com.avp.common.util.AlienPredicates;
 
 public class DelayedAttackGoal extends MeleeAttackGoal {
 
