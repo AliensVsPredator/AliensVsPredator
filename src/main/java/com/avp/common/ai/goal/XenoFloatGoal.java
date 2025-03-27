@@ -19,6 +19,7 @@ public class XenoFloatGoal extends FloatGoal {
         var belowState = this.mob.level().getBlockState(belowPos);
         return this.mob.isInWater() && belowState.isSolidRender(this.mob.level(), belowPos);
     }
+    
     @Override
     public void tick() {
         if (this.mob.getRandom().nextFloat() < 0.8F) {
