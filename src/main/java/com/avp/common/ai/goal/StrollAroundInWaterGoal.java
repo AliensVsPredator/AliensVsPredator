@@ -32,9 +32,7 @@ public class StrollAroundInWaterGoal extends Goal {
 
     @Override
     public boolean canUse() {
-        if (mob.getTarget() != null) {
-            return false;
-        } else if (!mob.isUnderWater()) {
+        if (mob.getTarget() != null || !mob.isUnderWater()) {
             return false;
         }
 
