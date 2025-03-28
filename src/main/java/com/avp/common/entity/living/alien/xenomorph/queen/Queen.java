@@ -82,23 +82,9 @@ public class Queen extends Xenomorph {
         super.tick();
         if (!level().isClientSide() && tickCount < 2) {
             var belowBlockPos = blockPosition().below();
-            if (!level().getBlockState(belowBlockPos).is(getResinNodeForType().getBlock())) {
-                level().setBlockAndUpdate(belowBlockPos, getResinNodeForType());
+            if (!level().getBlockState(belowBlockPos).is(AlienVariantUtil.getResinNodeForType(this).getBlock())) {
+                level().setBlockAndUpdate(belowBlockPos, AlienVariantUtil.getResinNodeForType(this));
             }
         }
-    }
-
-    private BlockState getResinNodeForType() {
-        if (isAberrant()) {
-            return AVPBlocks.ABERRANT_RESIN_NODE.defaultBlockState();
-        }
-        if (isIrradiated()) {
-            return AVPBlocks.IRRADIATED_RESIN_NODE.defaultBlockState();
-        }
-        if (isNetherAfflicted()) {
-            return AVPBlocks.NETHER_RESIN_NODE.defaultBlockState();
-        }
-
-        return AVPBlocks.RESIN_NODE.defaultBlockState();
     }
 }

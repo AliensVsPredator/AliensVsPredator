@@ -9,6 +9,7 @@ import net.minecraft.world.item.Item;
 import com.avp.common.entity.living.alien.Alien;
 import com.avp.common.item.AVPItems;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
 
 public class AlienVariantUtil {
 
@@ -36,5 +37,21 @@ public class AlienVariantUtil {
             case Acid netherAcid when netherAcid.isNetherAfflicted() -> AVPParticleTypes.BLUE_ACID;
             default -> AVPParticleTypes.ACID;
         };
+    }
+
+
+
+    public static BlockState getResinNodeForType(Alien alien) {
+        if (alien.isAberrant()) {
+            return AVPBlocks.ABERRANT_RESIN_NODE.defaultBlockState();
+        }
+        if (alien.isIrradiated()) {
+            return AVPBlocks.IRRADIATED_RESIN_NODE.defaultBlockState();
+        }
+        if (alien.isNetherAfflicted()) {
+            return AVPBlocks.NETHER_RESIN_NODE.defaultBlockState();
+        }
+
+        return AVPBlocks.RESIN_NODE.defaultBlockState();
     }
 }
