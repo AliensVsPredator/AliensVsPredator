@@ -275,6 +275,7 @@ public class AVPBlockTagProvider extends FabricTagProvider.BlockTagProvider {
 
         getOrCreateTagBuilder(BlockTags.MINEABLE_WITH_AXE)
             .add(
+                AVPBlocks.BLUEPRINT_BLOCK,
                 AVPBlocks.NETHER_RESIN_VEIN,
                 AVPBlocks.NETHER_RESIN_WEB,
                 AVPBlocks.RESIN_VEIN,
@@ -347,6 +348,7 @@ public class AVPBlockTagProvider extends FabricTagProvider.BlockTagProvider {
             .addTag(AVPBlockTags.PLASTIC)
             .addTag(AVPBlockTags.RESIN)
             .add(
+                AVPBlocks.BLUEPRINT_BLOCK,
                 AVPBlocks.BAUXITE_ORE,
                 AVPBlocks.GALENA_ORE,
                 AVPBlocks.RAW_BAUXITE_BLOCK

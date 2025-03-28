@@ -21,6 +21,8 @@ import com.avp.common.item.RoyalJellyBlockItem;
 
 public class AVPBlockItems {
 
+    public static final BlockItem BLUEPRINT_BLOCK = register(AVPBlocks.BLUEPRINT_BLOCK);
+
     public static final BlockItem REDSTONE_GENERATOR = register(AVPBlocks.REDSTONE_GENERATOR);
 
     public static final BlockItem DESK_TERMINAL_BLOCK = register(AVPBlocks.DESK_TERMINAL_BLOCK);

@@ -1,6 +1,7 @@
 package com.avp.data.recipe.impl;
 
 import net.minecraft.data.recipes.RecipeCategory;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.Items;
 
@@ -17,6 +18,16 @@ public class MiscellaneousRecipeProvider {
                 .withCategory(RecipeCategory.MISC)
                 .withExperience(RecipeConstants.VERY_COMMON_SMELT_EXPERIENCE)
                 .into(AVPItems.REDSTONE_CRYSTAL);
+
+        builder.shaped()
+                .withCategory(RecipeCategory.MISC)
+                .define('A', Items.LAPIS_LAZULI)
+                .define('G', AVPItems.POLYMER)
+                .define('D', ItemTags.PLANKS)
+                .pattern("A A")
+                .pattern("P P")
+                .pattern("D D")
+                .into(1, AVPBlocks.BLUEPRINT_BLOCK);
 
         builder.shaped()
                 .withCategory(RecipeCategory.MISC)

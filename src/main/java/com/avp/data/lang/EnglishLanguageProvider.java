@@ -28,6 +28,7 @@ public class EnglishLanguageProvider extends FabricLanguageProvider {
         translationBuilder.add("entity.minecraft.villager.commissary", "Commissary Villager");
 
         // Blocks
+        translationBuilder.add(AVPBlocks.BLUEPRINT_BLOCK, "Blueprint Block");
         translationBuilder.add(AVPBlocks.REDSTONE_GENERATOR, "Redstone Generator");
         translationBuilder.add(AVPBlocks.DESK_TERMINAL_BLOCK, "Desk Terminal");
         translationBuilder.add(AVPBlocks.TRIP_MINE_BLOCK, "Trip Mine");

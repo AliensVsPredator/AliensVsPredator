@@ -17,8 +17,7 @@ import net.minecraft.world.level.block.Block;
 public class AVPProfessions {
     public static final ResourceKey<PoiType> COMMISAARY_KEY = poiKey("commissary_poi");
 
-    // TODO: Use blueprint block when added
-    public static final PoiType COMMISAARY_POI = registerPoi("commissary_poi", AVPBlocks.AMMO_CHEST);
+    public static final PoiType COMMISAARY_POI = registerPoi("commissary_poi", AVPBlocks.BLUEPRINT_BLOCK);
 
     public static final VillagerProfession COMMISAARY = registerProfession("commissary", COMMISAARY_KEY);
 

@@ -160,6 +160,7 @@ public class BlocksCreativeModeTabInitializer {
             entries.accept(AVPBlocks.ABERRANT_RESIN_NODE);
             entries.accept(AVPBlocks.NETHER_RESIN_NODE);
             entries.accept(AVPBlocks.RESIN_NODE);
+            entries.accept(AVPBlocks.BLUEPRINT_BLOCK);
             entries.accept(AVPBlocks.REDSTONE_GENERATOR);
             entries.accept(AVPBlocks.INDUSTRIAL_FURNACE);
             entries.accept(AVPBlocks.DESK_TERMINAL_BLOCK);
