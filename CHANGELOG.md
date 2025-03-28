@@ -42,6 +42,8 @@
 - Adds Redstone Generator dummy block.
 - Adds Desk Terminal dummy block.
 - Adds Trip Mine dummy block.
+  - Explodes when a non Yautja entity is near it for more than 5 seconds.
+  - Plays a sound every second as a count down.
 - Adds Resonator dummy block.
 - Adds Nuclear Battery dummy item.
 - Add Blueprint Block
@@ -109,6 +111,7 @@
 - Fixes Marines not swimming/floating.
 - Fixes gun flashes appearing when not firing.
 - Fixes Industrial Furnace display name.
+- Fixes Queens, Facehuggers, Ovamorphs, and Chestbursters from be coming Irradiated.
 
 ## Data Pack
 - Adds Undead tag to `radiation_resistant` entity tag.
@@ -150,7 +153,6 @@
   - Turn to target when firing.
   - GUI Option to changing targeting type
   - Make it see the player that placed it as the owner.
-- Make trip mine explode when whatever requires for it are met (assuming anything living coming near it safe for the owner?)
 
 # v0.0.18-beta
 
