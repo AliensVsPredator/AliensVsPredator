@@ -36,6 +36,16 @@
 - Poison jelly on Royal eggs turn them into an Aberrant Royal Egg.
 - Add Commissary Villager type
 - Adds in REI support
+- Adds Redstone Crystal dummy item.
+- Adds Servo item. 
+- Adds Speaker item.
+- Adds Redstone Generator dummy block.
+- Adds Desk Terminal dummy block.
+- Adds Trip Mine dummy block.
+- Adds Resonator dummy block.
+- Adds Nuclear Battery dummy item.
+- Add Blueprint Block
+  - Villager now uses it
 
 ## Changes
 - Adjusts how Marine Camps spawn in the world, will only apply to new ones.
@@ -113,16 +123,34 @@
 - Add Queen Animations *
 - Add Queen sack that then lays eggs
 - Apply genetics of Queen to eggs spawned by Queen
-- Battery items + have sentry turret run off it
+- Have sentry turret run off batteries
 - Charging system (likely Redstone?) for batteries
+- Batteries hold charges that machines use.
 - Compression item?
-- Blueprint table
 - Irradiated rockets
 - Predator Spawn mechanics
 - Predator difficulty adjustments (unsure what this means?)
 - Predator Combi stick
-- Predator Proximity mines
 - More Structures
+- Make Redstone generator give power.
+- Make Resonator do:
+  - Run on batteries.
+  - Prevent resin placement/spreading
+  - Give a radius of it's effect of 25 blocks.
+  - Converts each resin 1 by 1 in it's radius to stone/deepstone based on y value
+  - Converts resin viens to air.
+  - Give storage to hold resin balls from converted resin blocks.
+  - Make xenos target it.
+- Make terminal do: 
+  - Use power.
+  - Program chips (once added)
+- Make Blueprint block do blueprint related things.
+- Make Turret do:
+  - Run of batteries
+  - Turn to target when firing.
+  - GUI Option to changing targeting type
+  - Make it see the player that placed it as the owner.
+- Make trip mine explode when whatever requires for it are met (assuming anything living coming near it safe for the owner?)
 
 # v0.0.18-beta
 
