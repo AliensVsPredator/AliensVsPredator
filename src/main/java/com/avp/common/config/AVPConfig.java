@@ -529,5 +529,10 @@ public class AVPConfig {
         @Configurable.Synchronized
         @Configurable.Comment("Block radius that a turret looks for an ammo chest")
         public int TURRET_AMMOCHEST_SEARCH_RANGE = 5;
+
+        @Configurable
+        @Configurable.Synchronized
+        @Configurable.Comment("Block radius that a trip mine looks for a living entity")
+        public double TRIP_MINE_SEARCH_RADIUS = 2;
     }
 }
