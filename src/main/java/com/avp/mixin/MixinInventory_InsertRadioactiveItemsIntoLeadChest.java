@@ -35,10 +35,6 @@ public class MixinInventory_InsertRadioactiveItemsIntoLeadChest {
             return;
         }
 
-        if (AVPPredicates.IS_IMMORTAL.test(player)) {
-            return;
-        }
-
         for (ItemStack inventoryItemStack : items) {
             if (!inventoryItemStack.is(AVPBlockItems.LEAD_CHEST)) continue;
 
@@ -69,6 +65,10 @@ public class MixinInventory_InsertRadioactiveItemsIntoLeadChest {
         NonNullList<ItemStack> newLeadChestItems = NonNullList.create();
 
         int remainingToAdd = toAddItemStack.getCount();
+
+        if (AVPPredicates.IS_IMMORTAL.test(player)) {
+            return;
+        }
 
         for (var oldLeadChestItem : oldLeadChestItems) {
             if (oldLeadChestItem.isStackable() && net.minecraft.world.item.ItemStack.isSameItemSameComponents(oldLeadChestItem, toAddItemStack)) {
