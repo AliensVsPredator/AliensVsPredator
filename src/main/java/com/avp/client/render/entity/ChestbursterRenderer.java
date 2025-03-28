@@ -20,15 +20,23 @@ public class ChestbursterRenderer extends AzEntityRenderer<Chestburster> {
 
     private static final ResourceLocation MODEL = AVPResources.entityGeoModelLocation(NAME);
 
+    private static final ResourceLocation ROYAL_MODEL = AVPResources.entityGeoModelLocation("royal_" + NAME);
+
     private static final ResourceLocation TEXTURE = AVPResources.entityTextureLocation(NAME);
 
     private static final ResourceLocation ABERRANT_TEXTURE = AVPResources.entityTextureLocation("aberrant_" + NAME);
 
     private static final ResourceLocation NETHER_TEXTURE = AVPResources.entityTextureLocation("nether_" + NAME);
 
+    private static final ResourceLocation ROYAL_TEXTURE = AVPResources.entityTextureLocation("royal_" + NAME);
+
+    private static final ResourceLocation ABERRANT_ROYAL_TEXTURE = AVPResources.entityTextureLocation("royal_aberrant_" + NAME);
+
+    private static final ResourceLocation NETHER_ROYAL_TEXTURE = AVPResources.entityTextureLocation("royal_nether_" + NAME);
+
     public ChestbursterRenderer(EntityRendererProvider.Context context) {
         super(
-            AzEntityRendererConfig.builder($ -> MODEL, ChestbursterRenderer::textureLocation)
+            AzEntityRendererConfig.builder(ChestbursterRenderer::modelLocation, ChestbursterRenderer::textureLocation)
                 .setAnimatorProvider(ChestbursterAnimator::new)
                 .build(),
             context
@@ -55,11 +63,35 @@ public class ChestbursterRenderer extends AzEntityRenderer<Chestburster> {
         poseStack.popPose();
     }
 
-    public static ResourceLocation textureLocation(Chestburster chestburster) {
-        if (chestburster.isNetherAfflicted()) {
-            return NETHER_TEXTURE;
+    public static ResourceLocation modelLocation(Chestburster chestburster) {
+        if (chestburster.isRoyal()) {
+            return ROYAL_MODEL;
         }
 
-        return chestburster.isAberrant() ? ABERRANT_TEXTURE : TEXTURE;
+        return MODEL;
+    }
+
+    public static ResourceLocation textureLocation(Chestburster chestburster) {
+        if (chestburster.isRoyal()) {
+            if (chestburster.isNetherAfflicted()) {
+                return NETHER_ROYAL_TEXTURE;
+            }
+            if (chestburster.isAberrant()) {
+                return ABERRANT_ROYAL_TEXTURE;
+            }
+            return ROYAL_TEXTURE;
+        }
+
+        if (!chestburster.isRoyal()) {
+            if (chestburster.isNetherAfflicted()) {
+                return NETHER_TEXTURE;
+            }
+
+            if (chestburster.isAberrant()) {
+                return ABERRANT_TEXTURE;
+            }
+        }
+
+        return TEXTURE;
     }
 }

@@ -22,15 +22,23 @@ public class FacehuggerRenderer extends AzEntityRenderer<Facehugger> {
 
     private static final ResourceLocation MODEL = AVPResources.entityGeoModelLocation(NAME);
 
+    private static final ResourceLocation ROYAL_MODEL = AVPResources.entityGeoModelLocation("royal_" + NAME);
+
     private static final ResourceLocation TEXTURE = AVPResources.entityTextureLocation(NAME);
 
     private static final ResourceLocation ABERRANT_TEXTURE = AVPResources.entityTextureLocation("aberrant_" + NAME);
 
     private static final ResourceLocation NETHER_TEXTURE = AVPResources.entityTextureLocation("nether_" + NAME);
 
+    private static final ResourceLocation ROYAL_TEXTURE = AVPResources.entityTextureLocation("royal_" + NAME);
+
+    private static final ResourceLocation ABERRANT_ROYAL_TEXTURE = AVPResources.entityTextureLocation("royal_aberrant_" + NAME);
+
+    private static final ResourceLocation NETHER_ROYAL_TEXTURE = AVPResources.entityTextureLocation("royal_nether_" + NAME);
+
     public FacehuggerRenderer(EntityRendererProvider.Context context) {
         super(
-            AzEntityRendererConfig.builder($ -> MODEL, FacehuggerRenderer::textureLocation)
+            AzEntityRendererConfig.builder(FacehuggerRenderer::modelLocation, FacehuggerRenderer::textureLocation)
                 .setAnimatorProvider(FacehuggerAnimator::new)
                 .setDeathMaxRotation(0F)
                 .build(),
@@ -68,13 +76,33 @@ public class FacehuggerRenderer extends AzEntityRenderer<Facehugger> {
         };
     }
 
-    public static ResourceLocation textureLocation(Facehugger facehugger) {
-        if (facehugger.isNetherAfflicted()) {
-            return NETHER_TEXTURE;
+    public static ResourceLocation modelLocation(Facehugger facehugger) {
+        if (facehugger.isRoyal()) {
+            return ROYAL_MODEL;
         }
 
-        if (facehugger.isAberrant()) {
-            return ABERRANT_TEXTURE;
+        return MODEL;
+    }
+
+    public static ResourceLocation textureLocation(Facehugger facehugger) {
+        if (facehugger.isRoyal()) {
+            if (facehugger.isNetherAfflicted()) {
+                return NETHER_ROYAL_TEXTURE;
+            }
+            if (facehugger.isAberrant()) {
+                return ABERRANT_ROYAL_TEXTURE;
+            }
+            return ROYAL_TEXTURE;
+        }
+
+        if (!facehugger.isRoyal()) {
+            if (facehugger.isNetherAfflicted()) {
+                return NETHER_TEXTURE;
+            }
+
+            if (facehugger.isAberrant()) {
+                return ABERRANT_TEXTURE;
+            }
         }
 
         return TEXTURE;

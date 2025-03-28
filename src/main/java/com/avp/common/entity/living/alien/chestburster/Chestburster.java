@@ -1,6 +1,10 @@
 package com.avp.common.entity.living.alien.chestburster;
 
+import com.avp.common.entity.living.alien.RoyalAlien;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
@@ -30,11 +34,11 @@ import com.avp.common.util.resin.ResinData;
 import com.avp.common.util.resin.ResinManager;
 import com.avp.common.util.resin.ResinProducer;
 
-public class Chestburster extends Alien implements ResinProducer {
+public class Chestburster extends RoyalAlien implements ResinProducer {
 
-    public static AttributeSupplier.Builder createChestbursterAttributes() {
-        return applyFrom(AVP.config.statsConfigs.CHESTBURSTER_STATS, Monster.createMonsterAttributes());
-    }
+    private static final String IS_ROYAL_AFFLICTED_KEY = "isRoyalAfflicted";
+
+    private static final EntityDataAccessor<Boolean> IS_ROYAL = SynchedEntityData.defineId(Chestburster.class, EntityDataSerializers.BOOLEAN);
 
     protected final MoveAnalysis moveAnalysis;
 
@@ -58,6 +62,10 @@ public class Chestburster extends Alien implements ResinProducer {
                 () -> geneManager.get(GeneKeys.BONUS_RESIN_PRODUCTION, GeneDecoders.BONUS_RESIN_PRODUCTION).intValue()
             );
         this.config = AVP.config.statsConfigs.CHESTBURSTER_STATS;
+    }
+
+    public static AttributeSupplier.Builder createChestbursterAttributes() {
+        return applyFrom(AVP.config.statsConfigs.CHESTBURSTER_STATS, Monster.createMonsterAttributes());
     }
 
     @Override
@@ -88,7 +96,7 @@ public class Chestburster extends Alien implements ResinProducer {
         moveAnalysis.tick();
         growthManager.tick();
         resinManager.tick();
-        if (!this.level().isClientSide()) {
+        if (!this.level().isClientSide() && !this.isIrradiated()) {
             var type = this.getType();
             var growthStage = AlienLifecycleRegistry.getOrNull(null, type);
 
@@ -130,10 +138,17 @@ public class Chestburster extends Alien implements ResinProducer {
     }
 
     @Override
+    protected void defineSynchedData(SynchedEntityData.Builder builder) {
+        super.defineSynchedData(builder);
+        builder.define(IS_ROYAL, false);
+    }
+
+    @Override
     public void readAdditionalSaveData(CompoundTag compoundTag) {
         super.readAdditionalSaveData(compoundTag);
         growthManager.load(compoundTag);
         resinManager.load(compoundTag);
+        setIsRoyal(compoundTag.getBoolean(IS_ROYAL_AFFLICTED_KEY));
     }
 
     @Override
@@ -141,6 +156,15 @@ public class Chestburster extends Alien implements ResinProducer {
         super.addAdditionalSaveData(compoundTag);
         growthManager.save(compoundTag);
         resinManager.save(compoundTag);
+        compoundTag.putBoolean(IS_ROYAL_AFFLICTED_KEY, isRoyal());
+    }
+
+    public boolean isRoyal() {
+        return entityData.get(IS_ROYAL);
+    }
+
+    public void setIsRoyal(boolean isRoyal) {
+        entityData.set(IS_ROYAL, isRoyal);
     }
 
     @Override

@@ -64,6 +64,24 @@ public class SpawnEggItems {
 
     public static final Item IRRADIATED_PRAETORIAN_SPAWN_EGG = register(AVPEntityTypes.IRRAIATED_PRAETORIAN, 0x4c9ca8, 0x4ca7b1);
 
+    public static final Item ROYAL_CHESTBURSTER_SPAWN_EGG = register(AVPEntityTypes.ROYAL_CHESTBURSTER, 0x29140a, 0xe6b57b);
+
+    public static final Item ROYAL_OVAMORPH_SPAWN_EGG = register(AVPEntityTypes.ROYAL_OVAMORPH, 0x2a2918, 0x34341f);
+
+    public static final Item ROYAL_FACEHUGGER_SPAWN_EGG = register(AVPEntityTypes.ROYAL_FACEHUGGER, 0x4b4946, 0x292729);
+
+    public static final Item ROYAL_NETHER_CHESTBURSTER_SPAWN_EGG = register(AVPEntityTypes.ROYAL_NETHER_CHESTBURSTER, 0x331715, 0xfcee4b);
+
+    public static final Item ROYAL_NETHER_FACEHUGGER_SPAWN_EGG = register(AVPEntityTypes.ROYAL_NETHER_FACEHUGGER, 0x331715, 0xfcee4b);
+
+    public static final Item ROYAL_NETHER_OVAMORPH_SPAWN_EGG = register(AVPEntityTypes.ROYAL_NETHER_OVAMORPH, 0x331715, 0xfcee4b);
+
+    public static final Item ROYAL_ABERRANT_CHESTBURSTER_SPAWN_EGG = register(AVPEntityTypes.ROYAL_ABERRANT_CHESTBURSTER, 0x706c36, 0xd3cf51);
+
+    public static final Item ROYAL_ABERRANT_FACEHUGGER_SPAWN_EGG = register(AVPEntityTypes.ROYAL_ABERRANT_FACEHUGGER, 0x706c36, 0xd3cf51);
+
+    public static final Item ROYAL_ABERRANT_OVAMORPH_SPAWN_EGG = register(AVPEntityTypes.ROYAL_ABERRANT_OVAMORPH, 0x706c36, 0xd3cf51);
+
     public static final Item OVAMORPH_SPAWN_EGG = register(AVPEntityTypes.OVAMORPH, 0x615B45, 0xBF7872);
 
     public static final Item PRAETORIAN_SPAWN_EGG = register(AVPEntityTypes.PRAETORIAN, 0x010202, 0x363534);

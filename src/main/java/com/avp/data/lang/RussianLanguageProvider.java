@@ -483,6 +483,15 @@ public class RussianLanguageProvider extends FabricLanguageProvider {
         translationBuilder.add(SpawnEggItems.WARRIOR_SPAWN_EGG, "Яйцо призыва ксеноморфа-воина");
         translationBuilder.add(SpawnEggItems.YAUTJA_SPAWN_EGG, "Яйцо призыва якутзы (хищника)");
         translationBuilder.add(SpawnEggItems.MARINE_SPAWN_EGG, "Яйцо призыва морского котика");
+        translationBuilder.add(SpawnEggItems.ROYAL_OVAMORPH_SPAWN_EGG, "Royal Ovamorph Spawn Egg");
+        translationBuilder.add(SpawnEggItems.ROYAL_FACEHUGGER_SPAWN_EGG, "Royal Facehugger Spawn Egg");
+        translationBuilder.add(SpawnEggItems.ROYAL_CHESTBURSTER_SPAWN_EGG, "Royal Chestburster Spawn Egg");
+        translationBuilder.add(SpawnEggItems.ROYAL_NETHER_OVAMORPH_SPAWN_EGG, "Royal Nether Ovamorph Spawn Egg");
+        translationBuilder.add(SpawnEggItems.ROYAL_NETHER_FACEHUGGER_SPAWN_EGG, "Royal Nether Facehugger Spawn Egg");
+        translationBuilder.add(SpawnEggItems.ROYAL_NETHER_CHESTBURSTER_SPAWN_EGG, "Royal Nether Chestburster Spawn Egg");
+        translationBuilder.add(SpawnEggItems.ROYAL_ABERRANT_OVAMORPH_SPAWN_EGG, "Royal Aberrant Ovamorph Spawn Egg");
+        translationBuilder.add(SpawnEggItems.ROYAL_ABERRANT_FACEHUGGER_SPAWN_EGG, "Royal Aberrant Facehugger Spawn Egg");
+        translationBuilder.add(SpawnEggItems.ROYAL_ABERRANT_CHESTBURSTER_SPAWN_EGG, "Royal Aberrant Chestburster Spawn Egg");
 
         // Sounds
         addSound(translationBuilder, AVPSoundEvents.BLOCK_ACID_BURN, "Кислота расщепляет материал");

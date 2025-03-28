@@ -1,5 +1,6 @@
 package com.avp.common.entity.type;
 
+import com.avp.common.entity.living.alien.RoyalAlien;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -223,6 +224,51 @@ public class AVPEntityTypes {
         EntityType.Builder.of(irraiatedFactory(AVPEntityTypes.PRAETORIAN, Praetorian::new), AVPEntityTypes.ALIEN_CATEGORY)
     );
 
+    public static final EntityType<Facehugger> ROYAL_ABERRANT_FACEHUGGER = register(
+        "royal_facehugger",
+        EntityType.Builder.of(royalAberrantFactory(AVPEntityTypes.FACEHUGGER, Facehugger::new), AVPEntityTypes.ALIEN_CATEGORY)
+    );
+
+    public static final EntityType<Ovamorph> ROYAL_ABERRANT_OVAMORPH = register(
+        "royal_ovamorph",
+        EntityType.Builder.of(royalAberrantFactory(AVPEntityTypes.OVAMORPH, Ovamorph::new), AVPEntityTypes.ALIEN_CATEGORY)
+    );
+
+    public static final EntityType<Chestburster> ROYAL_ABERRANT_CHESTBURSTER = register(
+        "royal_chestburster",
+        EntityType.Builder.of(royalAberrantFactory(AVPEntityTypes.CHESTBURSTER, Chestburster::new), AVPEntityTypes.ALIEN_CATEGORY)
+    );
+
+    public static final EntityType<Facehugger> ROYAL_FACEHUGGER = register(
+            "royal_aberrant_facehugger",
+            EntityType.Builder.of(royalFactory(AVPEntityTypes.FACEHUGGER, Facehugger::new), AVPEntityTypes.ALIEN_CATEGORY)
+    );
+
+    public static final EntityType<Ovamorph> ROYAL_OVAMORPH = register(
+            "royal_aberrant_ovamorph",
+            EntityType.Builder.of(royalFactory(AVPEntityTypes.OVAMORPH, Ovamorph::new), AVPEntityTypes.ALIEN_CATEGORY)
+    );
+
+    public static final EntityType<Chestburster> ROYAL_CHESTBURSTER = register(
+            "royal_aberrant_chestburster",
+            EntityType.Builder.of(royalFactory(AVPEntityTypes.CHESTBURSTER, Chestburster::new), AVPEntityTypes.ALIEN_CATEGORY)
+    );
+
+    public static final EntityType<Facehugger> ROYAL_NETHER_FACEHUGGER = register(
+            "royal_nether_facehugger",
+            EntityType.Builder.of(royalNethermorphFactory(AVPEntityTypes.FACEHUGGER, Facehugger::new), AVPEntityTypes.ALIEN_CATEGORY)
+    );
+
+    public static final EntityType<Ovamorph> ROYAL_NETHER_OVAMORPH = register(
+            "royal_nether_ovamorph",
+            EntityType.Builder.of(royalNethermorphFactory(AVPEntityTypes.OVAMORPH, Ovamorph::new), AVPEntityTypes.ALIEN_CATEGORY)
+    );
+
+    public static final EntityType<Chestburster> ROYAL_NETHER_CHESTBURSTER = register(
+            "royal_nether_chestburster",
+            EntityType.Builder.of(royalNethermorphFactory(AVPEntityTypes.CHESTBURSTER, Chestburster::new), AVPEntityTypes.ALIEN_CATEGORY)
+    );
+
     private static <T extends Alien> EntityType.EntityFactory<T> irraiatedFactory(
         EntityType<T> overridingEntityType,
         BiFunction<EntityType<T>, Level, T> entityFactory
@@ -251,6 +297,42 @@ public class AVPEntityTypes {
     ) {
         return (entityType, level) -> {
             var entity = entityFactory.apply(overridingEntityType, level);
+            entity.geneManager().minimize(GeneKeys.COLD_RESISTANCE);
+            entity.geneManager().maximize(GeneKeys.FIRE_RESISTANCE);
+            return entity;
+        };
+    }
+
+    private static <T extends RoyalAlien> EntityType.EntityFactory<T> royalFactory(
+            EntityType<T> overridingEntityType,
+            BiFunction<EntityType<T>, Level, T> entityFactory
+    ) {
+        return (entityType, level) -> {
+            var entity = entityFactory.apply(overridingEntityType, level);
+            entity.setIsRoyal(true);
+            return entity;
+        };
+    }
+
+    private static <T extends RoyalAlien> EntityType.EntityFactory<T> royalAberrantFactory(
+            EntityType<T> overridingEntityType,
+            BiFunction<EntityType<T>, Level, T> entityFactory
+    ) {
+        return (entityType, level) -> {
+            var entity = entityFactory.apply(overridingEntityType, level);
+            entity.setIsRoyal(true);
+            entity.geneManager().minimize(GeneKeys.GENETIC_INTEGRITY);
+            return entity;
+        };
+    }
+
+    private static <T extends RoyalAlien> EntityType.EntityFactory<T> royalNethermorphFactory(
+            EntityType<T> overridingEntityType,
+            BiFunction<EntityType<T>, Level, T> entityFactory
+    ) {
+        return (entityType, level) -> {
+            var entity = entityFactory.apply(overridingEntityType, level);
+            entity.setIsRoyal(true);
             entity.geneManager().minimize(GeneKeys.COLD_RESISTANCE);
             entity.geneManager().maximize(GeneKeys.FIRE_RESISTANCE);
             return entity;

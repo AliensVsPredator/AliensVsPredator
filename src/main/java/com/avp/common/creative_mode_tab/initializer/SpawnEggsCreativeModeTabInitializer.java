@@ -39,6 +39,18 @@ public class SpawnEggsCreativeModeTabInitializer {
             entries.accept(SpawnEggItems.IRRADIATED_WARRIOR_SPAWN_EGG);
             entries.accept(SpawnEggItems.IRRADIATED_PRAETORIAN_SPAWN_EGG);
 
+            entries.accept(SpawnEggItems.ROYAL_OVAMORPH_SPAWN_EGG);
+            entries.accept(SpawnEggItems.ROYAL_FACEHUGGER_SPAWN_EGG);
+            entries.accept(SpawnEggItems.ROYAL_CHESTBURSTER_SPAWN_EGG);
+
+            entries.accept(SpawnEggItems.ROYAL_NETHER_OVAMORPH_SPAWN_EGG);
+            entries.accept(SpawnEggItems.ROYAL_NETHER_FACEHUGGER_SPAWN_EGG);
+            entries.accept(SpawnEggItems.ROYAL_NETHER_CHESTBURSTER_SPAWN_EGG);
+
+            entries.accept(SpawnEggItems.ROYAL_ABERRANT_OVAMORPH_SPAWN_EGG);
+            entries.accept(SpawnEggItems.ROYAL_ABERRANT_FACEHUGGER_SPAWN_EGG);
+            entries.accept(SpawnEggItems.ROYAL_ABERRANT_CHESTBURSTER_SPAWN_EGG);
+
             entries.accept(SpawnEggItems.YAUTJA_SPAWN_EGG);
         });
     }
