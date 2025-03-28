@@ -25,6 +25,7 @@ public class EnglishLanguageProvider extends FabricLanguageProvider {
     @Override
     public void generateTranslations(HolderLookup.Provider registryLookup, TranslationBuilder translationBuilder) {
         // Blocks
+        translationBuilder.add(AVPBlocks.AMMO_CHEST, "Ammo Chest");
         translationBuilder.add(AVPBlocks.SENTRY_TURRET, "Sentry Turret");
         translationBuilder.add(AVPBlocks.ASH_BLOCK, "Ash Block");
         translationBuilder.add(AVPBlocks.NUKE_BLOCK, "Nuke Block");
@@ -543,6 +544,7 @@ public class EnglishLanguageProvider extends FabricLanguageProvider {
 
         // Containers
         translationBuilder.add("container.lead_chest", "Lead Chest");
+        translationBuilder.add("container.ammo_chest", "Ammo Chest");
 
         // Death messages
         translationBuilder.add("death.attack.acid", "%1$s vaporized in acid");

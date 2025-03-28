@@ -55,6 +55,17 @@ public class AVPItemTagProvider extends FabricTagProvider.ItemTagProvider {
                 AVPBlockItems.IRRADIATED_RESIN_WEB
             );
 
+        getOrCreateTagBuilder(AVPItemTags.AMMO_ITEMS)
+            .add(
+                AVPItems.CASELESS_BULLET,
+                AVPItems.HEAVY_BULLET,
+                AVPItems.SMALL_BULLET,
+                AVPItems.MEDIUM_BULLET,
+                AVPItems.SHOTGUN_BULLET,
+                AVPItems.ROCKET,
+                AVPItems.FUEL_TANK
+            );
+
         getOrCreateTagBuilder(AVPItemTags.HOSTILE_WEAPON)
             .addTag(AVPItemTags.GUNS)
             .addTag(ItemTags.AXES)

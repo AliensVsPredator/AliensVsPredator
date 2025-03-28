@@ -309,6 +309,7 @@ public class AVPBlockTagProvider extends FabricTagProvider.BlockTagProvider {
                 AVPBlocks.GALENA_ORE,
                 AVPBlocks.LEAD_BLOCK,
                 AVPBlocks.LEAD_CHEST,
+                AVPBlocks.AMMO_CHEST,
                 AVPBlocks.LITHIUM_BLOCK,
                 AVPBlocks.LITHIUM_ORE,
                 AVPBlocks.MONAZITE_ORE,
@@ -360,7 +361,8 @@ public class AVPBlockTagProvider extends FabricTagProvider.BlockTagProvider {
                 AVPBlocks.DEEPSLATE_TITANIUM_ORE,
                 AVPBlocks.RAW_TITANIUM_BLOCK,
                 AVPBlocks.URANIUM_BLOCK,
-                AVPBlocks.LEAD_CHEST
+                AVPBlocks.LEAD_CHEST,
+                AVPBlocks.AMMO_CHEST
             );
 
         var slabTagProvider = getOrCreateTagBuilder(BlockTags.SLABS);

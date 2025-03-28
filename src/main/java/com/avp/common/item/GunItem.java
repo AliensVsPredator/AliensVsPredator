@@ -1,12 +1,17 @@
 package com.avp.common.item;
 
+import com.avp.common.block.AVPBlocks;
+import com.avp.common.block_item.AVPBlockItems;
 import mod.azure.azurelib.rewrite.animation.dispatch.command.AzCommand;
 import mod.azure.azurelib.rewrite.animation.play_behavior.AzPlayBehaviors;
 import net.fabricmc.fabric.api.item.v1.EnchantingContext;
 import net.minecraft.core.Holder;
+import net.minecraft.core.NonNullList;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.Entity;
@@ -327,14 +332,34 @@ public class GunItem extends Item {
         var ammunitionItem = ammunitionItemSupplier.get();
         var neededAmmunition = (int) Math.ceil((maximumAmmunition - currentAmmunition) / ((float) reloadAmount));
         var playerInventory = player.getInventory();
-        var ammunitionCount = playerInventory.countItem(ammunitionItem.asItem());
+        final int[] ammunitionCountWrapper = {0};
+        for (var itemStack2 : playerInventory.items) {
+            if (itemStack2.is(ammunitionItem.asItem())) {
+                ammunitionCountWrapper[0] += itemStack2.getCount();
+            }
+
+            if (itemStack2.is(AVPBlocks.AMMO_CHEST.asItem())) {
+                var container = itemStack2.get(net.minecraft.core.component.DataComponents.CONTAINER);
+                if (container != null) {
+                    var chestContents = container.nonEmptyItems();
+
+                    var iterator = chestContents.spliterator();
+                    iterator.forEachRemaining(chestStack -> {
+                        if (chestStack.is(ammunitionItem.asItem())) {
+                            ammunitionCountWrapper[0] += chestStack.getCount();
+                        }
+                    });
+                }
+            }
+        }
+        var ammunitionCount = ammunitionCountWrapper[0];
         var ammunitionCountToConsume = Math.min(neededAmmunition, ammunitionCount);
 
         if (ammunitionCountToConsume == 0) {
             return;
         }
 
-        consumeItemAmountFromInventory(ammunitionCountToConsume, playerInventory, ammunitionItem);
+        consumeItemAmountFromInventory(ammunitionCountToConsume, playerInventory, ammunitionItem, player);
 
         reload.sendForItem(player, itemStack);
 
@@ -366,9 +391,29 @@ public class GunItem extends Item {
     protected static boolean consumeItemAmountFromInventory(
         int ammunitionCountToConsume,
         Inventory playerInventory,
-        ItemLike ammunitionItem
+        ItemLike ammunitionItem,
+        Player player
     ) {
         var consumeTracker = ammunitionCountToConsume;
+
+        for (var i = 0; i < playerInventory.items.size(); i++) {
+            var playerItemStack = playerInventory.items.get(i);
+
+            var isAmmoChest = playerItemStack.is(AVPBlockItems.AMMO_CHEST);
+
+            if (isAmmoChest) {
+                consumeTracker = consumeFromAmmoChestItem(playerItemStack, consumeTracker, ammunitionItem);
+
+                if (player instanceof ServerPlayer serverPlayer) {
+                    serverPlayer.getInventory().setChanged();
+                    serverPlayer.containerMenu.broadcastChanges();
+                }
+
+                if (consumeTracker == 0) {
+                    break;
+                }
+            }
+        }
 
         for (var i = 0; i < playerInventory.items.size(); i++) {
             var playerItemStack = playerInventory.items.get(i);
@@ -385,6 +430,33 @@ public class GunItem extends Item {
         }
 
         return consumeTracker < ammunitionCountToConsume;
+    }
+
+    private static int consumeFromAmmoChestItem(ItemStack ammoChestStack, int amountToConsume, ItemLike ammunitionItem) {
+        final int[] consumeTracker = {amountToConsume};
+
+        var container = ammoChestStack.get(net.minecraft.core.component.DataComponents.CONTAINER);
+        if (container == null) {
+            return consumeTracker[0];
+        }
+
+        var chestContents = container.nonEmptyItems();
+
+        var iterator = chestContents.spliterator();
+        iterator.forEachRemaining(itemStack -> {
+            if (consumeTracker[0] == 0) {
+                return;
+            }
+
+            if (itemStack.is(ammunitionItem.asItem())) {
+                var consumeCount = Math.min(itemStack.getCount(), consumeTracker[0]);
+                itemStack.shrink(consumeCount);
+
+                consumeTracker[0] -= consumeCount;
+            }
+        });
+
+        return consumeTracker[0];
     }
 
     @Override

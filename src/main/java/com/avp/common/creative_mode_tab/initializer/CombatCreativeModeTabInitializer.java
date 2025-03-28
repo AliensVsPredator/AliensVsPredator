@@ -1,5 +1,6 @@
 package com.avp.common.creative_mode_tab.initializer;
 
+import com.avp.common.block.AVPBlocks;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 
 import com.avp.common.creative_mode_tab.CreativeModeTabs;
@@ -10,6 +11,7 @@ public class CombatCreativeModeTabInitializer {
 
     public static void initialize() {
         ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.COMBAT_KEY).register(entries -> {
+            entries.accept(AVPBlocks.AMMO_CHEST);
             entries.accept(AVPItems.GRENADE);
             entries.accept(AVPItems.GRENADE_INCENDIARY);
             entries.accept(AVPItems.GRENADE_IRRADIATED);

@@ -206,6 +206,7 @@ public class AVPClient implements ClientModInitializer {
             (BlockEntityRendererProvider.Context rendererDispatcherIn) -> new SentryTurretRenderer()
         );
         BlockEntityRenderers.register(BlockEntityTypes.LEAD_CHEST_BE, ChestRenderer::new);
+        BlockEntityRenderers.register(BlockEntityTypes.AMMO_CHEST_BE, ChestRenderer::new);
 
         // Particles
         ParticleFactoryRegistry.getInstance().register(AVPParticleTypes.ACID, AcidParticleProvider::new);

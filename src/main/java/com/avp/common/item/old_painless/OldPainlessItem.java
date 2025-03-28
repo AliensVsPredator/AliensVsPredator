@@ -89,7 +89,8 @@ public class OldPainlessItem extends GunItem {
         var didConsume = isPlayerCreative || hasInfinity || consumeItemAmountFromInventory(
             1,
             player.getInventory(),
-            gunConfig.ammunitionItemSupplier().get()
+            gunConfig.ammunitionItemSupplier().get(),
+            player
         );
 
         if (didConsume) {

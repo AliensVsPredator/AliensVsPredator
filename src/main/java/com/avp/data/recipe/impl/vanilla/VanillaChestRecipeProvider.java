@@ -21,5 +21,14 @@ public class VanillaChestRecipeProvider {
                 .pattern("#C#")
                 .pattern("###")
                 .into(1, AVPBlockItems.LEAD_CHEST);
+
+        builder.shaped()
+                .withCategory(RecipeCategory.DECORATIONS)
+                .define('#', AVPItems.STEEL_INGOT)
+                .define('C', Items.CHEST)
+                .pattern("###")
+                .pattern("#C#")
+                .pattern("###")
+                .into(1, AVPBlockItems.AMMO_CHEST);
     }
 }

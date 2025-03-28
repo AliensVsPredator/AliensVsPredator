@@ -10,6 +10,7 @@
     "MixinCreeper_Nuked",
     "MixinDecoratedPotPatterns_GetPatternForCustomSherds",
     "MixinEntityTypeBuilder_SilenceDataFixerError",
+    "MixinInventory_InsertAmmoItemsIntoAmmoChest",
     "MixinInventory_InsertRadioactiveItemsIntoLeadChest",
     "MixinItem_ChorusEmbryo",
     "MixinItem_GiveRads",
