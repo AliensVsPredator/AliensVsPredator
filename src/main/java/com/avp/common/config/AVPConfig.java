@@ -510,5 +510,19 @@ public class AVPConfig {
         @Configurable.Comment("If enabled, nukes will explode.")
         public boolean ENABLE_NUKE_BLOCK_MECHS = false;
 
+        @Configurable
+        @Configurable.Synchronized
+        @Configurable.Comment("FOV range that turrets can target")
+        public int TURRET_FOV = 45;
+
+        @Configurable
+        @Configurable.Synchronized
+        @Configurable.Comment("Block range that turrets can target")
+        public int TURRET_RANGE = 32;
+
+        @Configurable
+        @Configurable.Synchronized
+        @Configurable.Comment("Turret damage value")
+        public float TURRET_DAMAGE = 4F;
     }
 }

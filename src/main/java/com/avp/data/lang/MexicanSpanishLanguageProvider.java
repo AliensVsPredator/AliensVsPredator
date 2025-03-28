@@ -696,6 +696,9 @@ public class MexicanSpanishLanguageProvider extends FabricLanguageProvider {
         translationBuilder.add("config.avp.option.weaponConfigs", "Weapon Options");
         translationBuilder.add("config.avp.option.BULLETS_DAMAGE_BLOCKS_ENABLED", "Enable bullet collision damage to blocks");
         translationBuilder.add("config.avp.option.ENABLE_NUKE_BLOCK_MECHS", "Allow nukes to work");
+        translationBuilder.add("config.avp.option.TURRET_FOV", "Turret FOV");
+        translationBuilder.add("config.avp.option.TURRET_RANGE", "Turret range");
+        translationBuilder.add("config.avp.option.TURRET_DAMAGE", "Turret damage");
     }
 
     private void addSound(TranslationBuilder translationBuilder, SoundEvent soundEvent, String value) {

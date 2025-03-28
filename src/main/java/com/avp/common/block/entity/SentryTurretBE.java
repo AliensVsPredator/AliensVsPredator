@@ -37,11 +37,11 @@ public class SentryTurretBE extends BlockEntity {
 
     protected int fireCooldown = 0;
 
-    protected static int fov = 45;
+    protected static int fov = AVP.config.weaponConfigs.TURRET_FOV;
 
-    protected static int range = 32;
+    protected static int range = AVP.config.weaponConfigs.TURRET_RANGE;
 
-    protected static float damage = 1F;
+    protected static float damage = AVP.config.weaponConfigs.TURRET_DAMAGE;
 
     public SentryTurretBE(BlockPos pos, BlockState blockState) {
         super(BlockEntityTypes.SENTRY_TURRET_BE, pos, blockState);
