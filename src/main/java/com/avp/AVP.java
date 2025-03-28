@@ -1,5 +1,6 @@
 package com.avp;
 
+import com.avp.common.profession.AVPProfessions;
 import mod.azure.azurelib.common.api.common.config.Config;
 import mod.azure.azurelib.common.internal.common.AzureLib;
 import mod.azure.azurelib.common.internal.common.config.ConfigHolder;
@@ -9,7 +10,12 @@ import mod.azure.azurelib.common.internal.common.config.format.IConfigFormatHand
 import mod.azure.azurelib.common.internal.common.config.io.ConfigIO;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
+import net.fabricmc.fabric.api.object.builder.v1.trade.TradeOfferHelper;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.trading.ItemCost;
+import net.minecraft.world.item.trading.MerchantOffer;
 import net.minecraft.world.level.GameRules;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -91,6 +97,7 @@ public class AVP implements ModInitializer {
         AVPRecipes.initialize();
         AVPEffects.initialize();
         AVPBiomes.initialize();
+        AVPProfessions.initialize();
 
         // Creative Tabs
         BlocksCreativeModeTabInitializer.initialize();
@@ -109,6 +116,86 @@ public class AVP implements ModInitializer {
         AVPFuelRegistry.initialize();
         Commands.initialize();
         ServerTickEvents.START_WORLD_TICK.register(this::onWorldTick);
+
+        // TODO
+        TradeOfferHelper.registerVillagerOffers(AVPProfessions.COMMISAARY, 1, factories -> {
+            factories.add((entity, random) -> new MerchantOffer(
+                    new ItemCost(Items.EMERALD, 10),
+                    new ItemStack(AVPItems.SMALL_CASING, 1),
+                    4,
+                    7,
+                    0.04f));
+            factories.add((entity, random) -> new MerchantOffer(
+                    new ItemCost(Items.EMERALD, 16),
+                    new ItemStack(AVPItems.MEDIUM_CASING, 1),
+                    3,
+                    12,
+                    0.09f));
+        });
+
+        // TODO
+        TradeOfferHelper.registerVillagerOffers(AVPProfessions.COMMISAARY, 2, factories -> {
+            factories.add((entity, random) -> new MerchantOffer(
+                    new ItemCost(Items.EMERALD, 10),
+                    new ItemStack(AVPItems.SMALL_CASING, 1),
+                    4,
+                    7,
+                    0.04f));
+            factories.add((entity, random) -> new MerchantOffer(
+                    new ItemCost(Items.EMERALD, 16),
+                    new ItemStack(AVPItems.MEDIUM_CASING, 1),
+                    3,
+                    12,
+                    0.09f));
+        });
+
+        // TODO
+        TradeOfferHelper.registerVillagerOffers(AVPProfessions.COMMISAARY, 3, factories -> {
+            factories.add((entity, random) -> new MerchantOffer(
+                    new ItemCost(Items.EMERALD, 10),
+                    new ItemStack(AVPItems.SMALL_CASING, 1),
+                    4,
+                    7,
+                    0.04f));
+            factories.add((entity, random) -> new MerchantOffer(
+                    new ItemCost(Items.EMERALD, 16),
+                    new ItemStack(AVPItems.MEDIUM_CASING, 1),
+                    3,
+                    12,
+                    0.09f));
+        });
+
+        // TODO
+        TradeOfferHelper.registerVillagerOffers(AVPProfessions.COMMISAARY, 4, factories -> {
+            factories.add((entity, random) -> new MerchantOffer(
+                    new ItemCost(Items.EMERALD, 10),
+                    new ItemStack(AVPItems.SMALL_CASING, 1),
+                    4,
+                    7,
+                    0.04f));
+            factories.add((entity, random) -> new MerchantOffer(
+                    new ItemCost(Items.EMERALD, 16),
+                    new ItemStack(AVPItems.MEDIUM_CASING, 1),
+                    3,
+                    12,
+                    0.09f));
+        });
+
+        // TODO
+        TradeOfferHelper.registerVillagerOffers(AVPProfessions.COMMISAARY, 5, factories -> {
+            factories.add((entity, random) -> new MerchantOffer(
+                    new ItemCost(Items.EMERALD, 10),
+                    new ItemStack(AVPItems.SMALL_CASING, 1),
+                    4,
+                    7,
+                    0.04f));
+            factories.add((entity, random) -> new MerchantOffer(
+                    new ItemCost(Items.EMERALD, 16),
+                    new ItemStack(AVPItems.MEDIUM_CASING, 1),
+                    3,
+                    12,
+                    0.09f));
+        });
     }
 
     private void onWorldTick(ServerLevel serverLevel) {

@@ -24,6 +24,9 @@ public class RussianLanguageProvider extends FabricLanguageProvider {
 
     @Override
     public void generateTranslations(HolderLookup.Provider registryLookup, TranslationBuilder translationBuilder) {
+        // Villagers
+        translationBuilder.add("entity.minecraft.villager.commissary", "Commissary Villager");
+
         // Blocks
         translationBuilder.add(AVPBlocks.AMMO_CHEST, "Ammo Chest");
         translationBuilder.add(AVPBlocks.SENTRY_TURRET, "Sentry Turret");

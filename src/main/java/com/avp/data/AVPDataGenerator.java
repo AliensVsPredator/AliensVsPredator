@@ -1,5 +1,6 @@
 package com.avp.data;
 
+import com.avp.data.tag.*;
 import net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 import net.minecraft.core.RegistrySetBuilder;
@@ -16,13 +17,6 @@ import com.avp.data.loot.EntityLootTableProvider;
 import com.avp.data.model.BlockModelProvider;
 import com.avp.data.model.ItemModelProvider;
 import com.avp.data.recipe.RecipeProvider;
-import com.avp.data.tag.AVPBiomeTagProvider;
-import com.avp.data.tag.AVPBlockTagProvider;
-import com.avp.data.tag.AVPDamageTypeTagProvider;
-import com.avp.data.tag.AVPEnchantmentTagProvider;
-import com.avp.data.tag.AVPEntityTypeTagProvider;
-import com.avp.data.tag.AVPItemTagProvider;
-import com.avp.data.tag.AVPMobEffectTagProvider;
 import com.avp.data.worldgen.AVPCaveConfigurations;
 import com.avp.data.worldgen.AVPCavePlacements;
 import com.avp.data.worldgen.AVPOreConfigurations;
@@ -34,12 +28,19 @@ public class AVPDataGenerator implements DataGeneratorEntrypoint {
     @Override
     public void onInitializeDataGenerator(FabricDataGenerator fabricDataGenerator) {
         var pack = fabricDataGenerator.createPack();
+        // Advancement providers
         pack.addProvider(AdvancementProvider::new);
+
+        // Language providers
         pack.addProvider(EnglishLanguageProvider::new);
         pack.addProvider(RussianLanguageProvider::new);
         pack.addProvider(UkrainianLanguageProvider::new);
+
+        // Model providers
         pack.addProvider(BlockModelProvider::new);
         pack.addProvider(ItemModelProvider::new);
+
+        // Recipe providers
         pack.addProvider(RecipeProvider::new);
 
         // Tag providers
@@ -50,6 +51,7 @@ public class AVPDataGenerator implements DataGeneratorEntrypoint {
         pack.addProvider(AVPEntityTypeTagProvider::new);
         pack.addProvider(AVPItemTagProvider::new);
         pack.addProvider(AVPMobEffectTagProvider::new);
+        pack.addProvider(AVPPoiTagProvider::new);
 
         // Loot providers
         pack.addProvider(BlockLootTableProvider::new);
@@ -58,6 +60,7 @@ public class AVPDataGenerator implements DataGeneratorEntrypoint {
         // Worldgen providers
         pack.addProvider(AVPWorldGenProvider::new);
 
+        // Damage Type providers
         pack.addProvider(DamageTypeProvider::new);
     }
 
