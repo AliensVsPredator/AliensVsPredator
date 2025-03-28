@@ -154,6 +154,7 @@ public class BlocksCreativeModeTabInitializer {
             entries.accept(AVPBlocks.SENTRY_TURRET);
             entries.accept(AVPBlocks.ASH_BLOCK);
             entries.accept(AVPBlocks.LEAD_BLOCK);
+            entries.accept(AVPBlocks.LEAD_CHEST);
             entries.accept(AVPBlocks.RAZOR_WIRE);
             entries.accept(AVPBlocks.IRRADIATED_RESIN_NODE);
             entries.accept(AVPBlocks.ABERRANT_RESIN_NODE);

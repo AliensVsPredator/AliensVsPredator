@@ -67,6 +67,7 @@ public class RussianLanguageProvider extends FabricLanguageProvider {
         translationBuilder.add(AVPBlocks.INDUSTRIAL_GLASS, "Индустриальное стекло");
         translationBuilder.add(AVPBlocks.INDUSTRIAL_GLASS_PANE, "Индустриальная стеклянная панель");
         translationBuilder.add(AVPBlocks.LEAD_BLOCK, "Блок свинца");
+        translationBuilder.add(AVPBlocks.LEAD_CHEST, "Lead Chest");
         translationBuilder.add(AVPBlocks.FERROALUMINUM_FASTENED_STANDING_SLAB, "Фероалюминиевая креплённая прямо плита");
         translationBuilder.add(AVPBlocks.FERROALUMINUM_FASTENED_STANDING_STAIRS, "Фероалюминиевые креплённые прямо ступеньки");
         translationBuilder.add(AVPBlocks.FERROALUMINUM_GRATE_SLAB, "Фероалюминиевая решётчастая плита");
@@ -551,6 +552,9 @@ public class RussianLanguageProvider extends FabricLanguageProvider {
         // Keybinds
         translationBuilder.add("key.avp.reload", "Перезарядиться");
         translationBuilder.add("keybind.category.avp.weapons", "ЧПХ оружие");
+
+        // Containers
+        translationBuilder.add("container.lead_chest", "Lead Chest");
 
         // Death messages
         translationBuilder.add("death.attack.acid", "%1$s расчинился в кислоте");

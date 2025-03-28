@@ -1,10 +1,12 @@
 package com.avp.common.block_item;
 
 import net.minecraft.core.Registry;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.component.ItemContainerContents;
 import net.minecraft.world.level.block.Block;
 
 import java.util.Arrays;
@@ -115,6 +117,9 @@ public class AVPBlockItems {
     public static final BlockItem INDUSTRIAL_GLASS_PANE = register(AVPBlocks.INDUSTRIAL_GLASS_PANE);
 
     public static final BlockItem LEAD_BLOCK = register(AVPBlocks.LEAD_BLOCK);
+
+    public static final BlockItem LEAD_CHEST = register(new Item.Properties().component(DataComponents.CONTAINER, ItemContainerContents.EMPTY).component(
+            DataComponents.MAX_STACK_SIZE, 1), AVPBlocks.LEAD_CHEST);
 
     public static final BlockItem LITHIUM_ORE = register(AVPBlocks.LITHIUM_ORE);
 

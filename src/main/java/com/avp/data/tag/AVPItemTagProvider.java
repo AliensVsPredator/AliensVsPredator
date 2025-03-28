@@ -36,6 +36,17 @@ public class AVPItemTagProvider extends FabricTagProvider.ItemTagProvider {
                 ArmorItems.MK50_BOOTS
             );
 
+        getOrCreateTagBuilder(AVPItemTags.RADIATION_ITEMS)
+            .add(
+                AVPItems.AUTUNITE_DUST,
+                AVPItems.URANIUM_NUGGET,
+                AVPItems.URANIUM_INGOT,
+                AVPBlockItems.AUTUNITE_BLOCK,
+                AVPBlockItems.AUTUNITE_ORE,
+                AVPBlockItems.URANIUM_BLOCK,
+                AVPBlockItems.TRINITITE_BLOCK
+            );
+
         getOrCreateTagBuilder(AVPItemTags.HOSTILE_WEAPON)
             .addTag(AVPItemTags.GUNS)
             .addTag(ItemTags.AXES)

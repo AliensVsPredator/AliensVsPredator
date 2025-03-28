@@ -1,5 +1,6 @@
 package com.avp.data.recipe;
 
+import com.avp.data.recipe.impl.vanilla.VanillaChestRecipeProvider;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricRecipeProvider;
 import net.minecraft.core.HolderLookup;
@@ -46,6 +47,7 @@ public class RecipeProvider extends FabricRecipeProvider {
         ResinRecipeProvider.provide(builder);
         ToolRecipeProvider.provide(builder);
 
+        VanillaChestRecipeProvider.provide(builder);
         VanillaConcreteRecipeProvider.provide(builder);
         VanillaIronLikeRecipeProvider.provide(builder);
         VanillaMiscellaneousRecipeProvider.provide(builder);

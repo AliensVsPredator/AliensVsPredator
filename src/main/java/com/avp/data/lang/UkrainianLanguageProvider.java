@@ -67,6 +67,7 @@ public class UkrainianLanguageProvider extends FabricLanguageProvider {
         translationBuilder.add(AVPBlocks.INDUSTRIAL_GLASS, "Індустріальне скло");
         translationBuilder.add(AVPBlocks.INDUSTRIAL_GLASS_PANE, "Індустріальна скляна плита");
         translationBuilder.add(AVPBlocks.LEAD_BLOCK, "Блок свинцю");
+        translationBuilder.add(AVPBlocks.LEAD_CHEST, "Lead Chest");
         translationBuilder.add(AVPBlocks.FERROALUMINUM_FASTENED_STANDING_SLAB, "Фероалюмінієва кріплена стоячи плита");
         translationBuilder.add(AVPBlocks.FERROALUMINUM_FASTENED_STANDING_STAIRS, "Фероалюмінієві кріплені стоячи сходи");
         translationBuilder.add(AVPBlocks.FERROALUMINUM_GRATE_SLAB, "Фероалюмінєва решітчаста плита");
@@ -534,6 +535,9 @@ public class UkrainianLanguageProvider extends FabricLanguageProvider {
         // Keybinds
         translationBuilder.add("key.avp.reload", "Перезарядитися");
         translationBuilder.add("keybind.category.avp.weapons", "ЧПХ зброя");
+
+        // Containers
+        translationBuilder.add("container.lead_chest", "Lead Chest");
 
         // Death messages
         translationBuilder.add("death.attack.acid", "%1$s розчинився у кислоті");

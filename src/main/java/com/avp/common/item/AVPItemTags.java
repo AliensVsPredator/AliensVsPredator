@@ -32,6 +32,8 @@ public class AVPItemTags {
 
     public static final TagKey<Item> RADIATION_CURE_ITEMS = create("radiation_cure_items");
 
+    public static final TagKey<Item> RADIATION_ITEMS = create("radiation_items");
+
     private static TagKey<Item> create(String name) {
         return TagKey.create(Registries.ITEM, AVPResources.location(name));
     }

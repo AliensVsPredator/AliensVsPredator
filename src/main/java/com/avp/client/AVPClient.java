@@ -13,6 +13,7 @@ import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
+import net.minecraft.client.renderer.blockentity.ChestRenderer;
 import net.minecraft.client.renderer.entity.ThrownItemRenderer;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.Item;
@@ -204,6 +205,7 @@ public class AVPClient implements ClientModInitializer {
             BlockEntityTypes.SENTRY_TURRET_BE,
             (BlockEntityRendererProvider.Context rendererDispatcherIn) -> new SentryTurretRenderer()
         );
+        BlockEntityRenderers.register(BlockEntityTypes.LEAD_CHEST_BE, ChestRenderer::new);
 
         // Particles
         ParticleFactoryRegistry.getInstance().register(AVPParticleTypes.ACID, AcidParticleProvider::new);

@@ -151,6 +151,8 @@ public class AVPBlocks {
 
     public static final Block LEAD_BLOCK = register(BlockProperties.LEAD, "lead_block");
 
+    public static final Block LEAD_CHEST = register(new LeadChestBlock(BlockProperties.LEAD), "lead_chest");
+
     public static final Block LITHIUM_BLOCK = register(new LithiumBlock(BlockProperties.LITHIUM_ORE), "lithium_block");
 
     public static final Block LITHIUM_ORE = register(new LithiumBlock(BlockProperties.LITHIUM_ORE), "lithium_ore");

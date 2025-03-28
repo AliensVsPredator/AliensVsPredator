@@ -67,6 +67,7 @@ public class EnglishLanguageProvider extends FabricLanguageProvider {
         translationBuilder.add(AVPBlocks.INDUSTRIAL_GLASS, "Industrial Glass");
         translationBuilder.add(AVPBlocks.INDUSTRIAL_GLASS_PANE, "Industrial Glass Pane");
         translationBuilder.add(AVPBlocks.LEAD_BLOCK, "Block of Lead");
+        translationBuilder.add(AVPBlocks.LEAD_CHEST, "Lead Chest");
         translationBuilder.add(AVPBlocks.FERROALUMINUM_FASTENED_STANDING_SLAB, "Ferroaluminum Fastened Standing Slab");
         translationBuilder.add(AVPBlocks.FERROALUMINUM_FASTENED_STANDING_STAIRS, "Ferroaluminum Fastened Standing Stairs");
         translationBuilder.add(AVPBlocks.FERROALUMINUM_GRATE_SLAB, "Ferroaluminum Grate Slab");
@@ -539,6 +540,9 @@ public class EnglishLanguageProvider extends FabricLanguageProvider {
         // Keybinds
         translationBuilder.add("key.avp.reload", "Reload");
         translationBuilder.add("keybind.category.avp.weapons", "AVP Weapons");
+
+        // Containers
+        translationBuilder.add("container.lead_chest", "Lead Chest");
 
         // Death messages
         translationBuilder.add("death.attack.acid", "%1$s vaporized in acid");
