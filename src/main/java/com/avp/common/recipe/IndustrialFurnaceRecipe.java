@@ -1,6 +1,8 @@
 package com.avp.common.recipe;
 
+import com.avp.common.block_item.AVPBlockItems;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -51,6 +53,14 @@ public class IndustrialFurnaceRecipe extends AbstractCookingRecipe {
         registerMeltingRecipe(Items.RED_SAND, Items.GLASS);
         registerMeltingRecipe(Items.MUD, Items.CLAY);
         registerMeltingRecipe(Items.CLAY, Items.TERRACOTTA);
+        registerMeltingRecipe(AVPBlockItems.RESIN, AVPBlockItems.DYE_COLOR_TO_PLASTIC.get(DyeColor.GREEN));
+        registerMeltingRecipe(AVPBlockItems.RESIN_NODE, AVPBlockItems.DYE_COLOR_TO_PLASTIC.get(DyeColor.GREEN));
+        registerMeltingRecipe(AVPBlockItems.NETHER_RESIN, AVPBlockItems.DYE_COLOR_TO_PLASTIC.get(DyeColor.GREEN));
+        registerMeltingRecipe(AVPBlockItems.NETHER_RESIN_NODE, AVPBlockItems.DYE_COLOR_TO_PLASTIC.get(DyeColor.GREEN));
+        registerMeltingRecipe(AVPBlockItems.IRRADIATED_RESIN, AVPBlockItems.DYE_COLOR_TO_PLASTIC.get(DyeColor.GREEN));
+        registerMeltingRecipe(AVPBlockItems.IRRADIATED_RESIN_NODE, AVPBlockItems.DYE_COLOR_TO_PLASTIC.get(DyeColor.GREEN));
+        registerMeltingRecipe(AVPBlockItems.ABERRANT_RESIN, AVPBlockItems.DYE_COLOR_TO_PLASTIC.get(DyeColor.GREEN));
+        registerMeltingRecipe(AVPBlockItems.ABERRANT_RESIN_NODE, AVPBlockItems.DYE_COLOR_TO_PLASTIC.get(DyeColor.GREEN));
     }
 
     private static void registerMeltingRecipe(Item input, Item output) {
