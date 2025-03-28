@@ -25,7 +25,7 @@ public class MixinItem_GiveRads {
                     livingEntity.getItemBySlot(EquipmentSlot.CHEST).is(AVPItemTags.RADIATION_RESISTANT_ARMOR) &&
                     livingEntity.getItemBySlot(EquipmentSlot.LEGS).is(AVPItemTags.RADIATION_RESISTANT_ARMOR) &&
                     livingEntity.getItemBySlot(EquipmentSlot.FEET).is(AVPItemTags.RADIATION_RESISTANT_ARMOR);
-            if (!armorCheck || !AVPPredicates.IS_IMMORTAL.test(livingEntity)) {
+            if (!armorCheck && !AVPPredicates.IS_IMMORTAL.test(livingEntity)) {
                 livingEntity.addEffect(new net.minecraft.world.effect.MobEffectInstance(
                         com.avp.common.effect.AVPEffects.RADIATION_EFFECT,
                         Integer.MAX_VALUE,
