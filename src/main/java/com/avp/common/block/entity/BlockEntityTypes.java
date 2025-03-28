@@ -44,6 +44,21 @@ public class BlockEntityTypes {
         BlockEntityType.Builder.of(SentryTurretBE::new, AVPBlocks.SENTRY_TURRET)
     );
 
+    public static final BlockEntityType<DeskTerminalBE> DESK_TERMINAL_BE = register(
+        "desk_terminal_be",
+        BlockEntityType.Builder.of(DeskTerminalBE::new, AVPBlocks.DESK_TERMINAL_BLOCK)
+    );
+
+    public static final BlockEntityType<TripMineBE> TRIP_MINE_BE = register(
+        "trip_mine_be",
+        BlockEntityType.Builder.of(TripMineBE::new, AVPBlocks.TRIP_MINE_BLOCK)
+    );
+
+    public static final BlockEntityType<ResonatorBE> RESONATOR_BE = register(
+        "resonator_be",
+        BlockEntityType.Builder.of(ResonatorBE::new, AVPBlocks.RESONATOR_BLOCK)
+    );
+
     private static <T extends BlockEntity> BlockEntityType<T> register(String id, BlockEntityType.Builder<T> builder) {
         var type = Util.fetchChoiceType(References.BLOCK_ENTITY, id);
         var resourceLocation = AVPResources.location(id);

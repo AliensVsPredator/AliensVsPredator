@@ -28,6 +28,10 @@ public class UkrainianLanguageProvider extends FabricLanguageProvider {
         translationBuilder.add("entity.minecraft.villager.commissary", "Commissary Villager");
 
         // Blocks
+        translationBuilder.add(AVPBlocks.REDSTONE_GENERATOR, "Redstone Generator");
+        translationBuilder.add(AVPBlocks.DESK_TERMINAL_BLOCK, "Desk Terminal");
+        translationBuilder.add(AVPBlocks.TRIP_MINE_BLOCK, "Trip Mine");
+        translationBuilder.add(AVPBlocks.RESONATOR_BLOCK, "Resonator");
         translationBuilder.add(AVPBlocks.AMMO_CHEST, "Ammo Chest");
         translationBuilder.add(AVPBlocks.SENTRY_TURRET, "Sentry Turret");
         translationBuilder.add(AVPBlocks.ASH_BLOCK, "Ash Block");
@@ -349,8 +353,9 @@ public class UkrainianLanguageProvider extends FabricLanguageProvider {
         translationBuilder.add(AVPItems.ZX_76_SHOTGUN, "ZX-76 Дробовик");
 
         // Ingredient Items
+        translationBuilder.add(AVPItems.NUCLEAR_BATTERY, "Nuclear Battery");
         translationBuilder.add(AVPItems.REDSTONE_CRYSTAL, "Redstone Crystal");
-        translationBuilder.add(AVPItems.SERVOR, "Servor");
+        translationBuilder.add(AVPItems.SERVO, "Servo");
         translationBuilder.add(AVPItems.SPEAKER, "Speaker");
         translationBuilder.add(AVPItems.ALUMINUM_INGOT, "Алюмінієвий злиток");
         translationBuilder.add(AVPItems.AUTUNITE_DUST, "Аутинітовий пил");

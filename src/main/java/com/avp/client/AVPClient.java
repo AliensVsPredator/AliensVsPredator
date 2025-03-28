@@ -1,6 +1,10 @@
 package com.avp.client;
 
 import com.avp.client.particle.IrradiatedAcidParticleProvider;
+import com.avp.client.render.block.DeskTerminalRenderer;
+import com.avp.client.render.block.ResonatorRenderer;
+import com.avp.client.render.block.TripMineRenderer;
+import com.avp.common.block_item.AVPBlockItems;
 import mod.azure.azurelib.rewrite.render.armor.AzArmorRendererRegistry;
 import mod.azure.azurelib.rewrite.render.item.AzItemRenderer;
 import mod.azure.azurelib.rewrite.render.item.AzItemRendererRegistry;
@@ -164,6 +168,9 @@ public class AVPClient implements ClientModInitializer {
         registerItemRenderer(AVPItems.M88_MOD_4_COMBAT_PISTOL, name -> () -> new M88Mod4CombatPistolItemRenderer(name));
         registerItemRenderer(AVPItems.OLD_PAINLESS, name -> () -> new OldPainlessItemRenderer(name));
         registerItemRenderer(AVPItems.ZX_76_SHOTGUN, name -> () -> new ZX76ShotgunItemRenderer(name));
+        registerItemRenderer(AVPBlockItems.DESK_TERMINAL_BLOCK, name -> DeskTerminalItemRenderer::new);
+        registerItemRenderer(AVPBlockItems.TRIP_MINE_BLOCK, name -> TripMineItemRenderer::new);
+        registerItemRenderer(AVPBlockItems.RESONATOR_BLOCK, name -> ResonatorItemRenderer::new);
         ColorProviderRegistry.ITEM.register(
             (itemStack, i) -> i > 0 ? -1 : DyedItemColor.getOrDefault(itemStack, -1),
             ArmorItems.MK50_HELMET
@@ -207,6 +214,18 @@ public class AVPClient implements ClientModInitializer {
         );
         BlockEntityRenderers.register(BlockEntityTypes.LEAD_CHEST_BE, ChestRenderer::new);
         BlockEntityRenderers.register(BlockEntityTypes.AMMO_CHEST_BE, ChestRenderer::new);
+        BlockEntityRenderers.register(
+                BlockEntityTypes.DESK_TERMINAL_BE,
+                (BlockEntityRendererProvider.Context rendererDispatcherIn) -> new DeskTerminalRenderer()
+        );
+        BlockEntityRenderers.register(
+                BlockEntityTypes.RESONATOR_BE,
+                (BlockEntityRendererProvider.Context rendererDispatcherIn) -> new ResonatorRenderer()
+        );
+        BlockEntityRenderers.register(
+                BlockEntityTypes.TRIP_MINE_BE,
+                (BlockEntityRendererProvider.Context rendererDispatcherIn) -> new TripMineRenderer()
+        );
 
         // Particles
         ParticleFactoryRegistry.getInstance().register(AVPParticleTypes.ACID, AcidParticleProvider::new);

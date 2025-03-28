@@ -21,6 +21,14 @@ import com.avp.common.item.RoyalJellyBlockItem;
 
 public class AVPBlockItems {
 
+    public static final BlockItem REDSTONE_GENERATOR = register(AVPBlocks.REDSTONE_GENERATOR);
+
+    public static final BlockItem DESK_TERMINAL_BLOCK = register(AVPBlocks.DESK_TERMINAL_BLOCK);
+
+    public static final BlockItem TRIP_MINE_BLOCK = register(AVPBlocks.TRIP_MINE_BLOCK);
+
+    public static final BlockItem RESONATOR_BLOCK = register(AVPBlocks.RESONATOR_BLOCK);
+
     public static final BlockItem SENTRY_TURRET = register(AVPBlocks.SENTRY_TURRET);
 
     public static final BlockItem ASH_BLOCK = register(AVPBlocks.ASH_BLOCK);

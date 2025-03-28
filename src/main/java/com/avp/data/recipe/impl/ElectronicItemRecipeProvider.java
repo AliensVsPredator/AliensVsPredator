@@ -34,7 +34,7 @@ public class ElectronicItemRecipeProvider {
                 .pattern("BCB")
                 .pattern("NIN")
                 .pattern("BCB")
-                .into(8, AVPItems.SERVOR);
+                .into(8, AVPItems.SERVO);
 
         builder.shaped()
             .withCategory(RecipeCategory.MISC)

@@ -21,9 +21,11 @@ import com.avp.common.item.yautja_items.SmartDiscItem;
 
 public class AVPItems {
 
+    public static final Item NUCLEAR_BATTERY = register("nuclear_battery");
+
     public static final Item REDSTONE_CRYSTAL = register("redstone_crystal");
 
-    public static final Item SERVOR = register("servor");
+    public static final Item SERVO = register("servo");
 
     public static final Item SPEAKER = register("speaker");
 

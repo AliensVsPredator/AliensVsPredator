@@ -1,0 +1,449 @@
+{
+	"format_version": "1.8.0",
+	"animations": {
+		"animation.activate": {
+			"loop": "hold_on_last_frame",
+			"animation_length": 0.75,
+			"bones": {
+				"gSoundSpinner": {
+					"rotation": {
+						"0.25": {
+							"vector": [0, 0, 0]
+						},
+						"0.75": {
+							"vector": [0, -180, 0]
+						}
+					},
+					"position": {
+						"0.125": {
+							"vector": [0, 0, 0]
+						},
+						"0.25": {
+							"vector": [0, 3, 0]
+						}
+					}
+				},
+				"gSoundSpeakerHinge1": {
+					"rotation": {
+						"0.125": {
+							"vector": [0, 0, 0]
+						},
+						"0.25": {
+							"vector": [0, 0, -45]
+						}
+					},
+					"position": {
+						"0.0": {
+							"vector": [0, 0, 0]
+						},
+						"0.125": {
+							"vector": [3, 0, 0]
+						}
+					}
+				},
+				"gSoundSpeaker1": {
+					"position": {
+						"0.125": {
+							"vector": [0, 0, 0]
+						},
+						"0.25": {
+							"vector": [0, -3, 0]
+						}
+					}
+				},
+				"gSpeakerCage1": {
+					"position": {
+						"0.0": {
+							"vector": [0, 0, 0]
+						},
+						"0.125": {
+							"vector": [1, 0, 0]
+						}
+					}
+				},
+				"gSoundSpeakerHinge2": {
+					"rotation": {
+						"0.125": {
+							"vector": [0, 0, 0]
+						},
+						"0.25": {
+							"vector": [0, 0, 45]
+						}
+					},
+					"position": {
+						"0.0": {
+							"vector": [0, 0, 0]
+						},
+						"0.125": {
+							"vector": [-3, 0, 0]
+						}
+					}
+				},
+				"gSoundSpeaker2": {
+					"position": {
+						"0.125": {
+							"vector": [0, 0, 0]
+						},
+						"0.25": {
+							"vector": [0, -3, 0]
+						}
+					}
+				},
+				"gSpeakerCage2": {
+					"position": {
+						"0.0": {
+							"vector": [0, 0, 0]
+						},
+						"0.125": {
+							"vector": [-1, 0, 0]
+						}
+					}
+				},
+				"gSoundSpeakerHinge3": {
+					"rotation": {
+						"0.125": {
+							"vector": [0, 0, 0]
+						},
+						"0.25": {
+							"vector": [0, 0, -45]
+						}
+					},
+					"position": {
+						"0.0": {
+							"vector": [0, 0, 0]
+						},
+						"0.125": {
+							"vector": [3, 0, 0]
+						}
+					}
+				},
+				"gSoundSpeaker3": {
+					"position": {
+						"0.125": {
+							"vector": [0, 0, 0]
+						},
+						"0.25": {
+							"vector": [0, -3, 0]
+						}
+					}
+				},
+				"gSpeakerCage3": {
+					"position": {
+						"0.0": {
+							"vector": [0, 0, 0]
+						},
+						"0.125": {
+							"vector": [1, 0, 0]
+						}
+					}
+				},
+				"gSoundSpeakerHinge4": {
+					"rotation": {
+						"0.125": {
+							"vector": [0, 0, 0]
+						},
+						"0.25": {
+							"vector": [0, 0, 45]
+						}
+					},
+					"position": {
+						"0.0": {
+							"vector": [0, 0, 0]
+						},
+						"0.125": {
+							"vector": [-3, 0, 0]
+						}
+					}
+				},
+				"gSoundSpeaker4": {
+					"position": {
+						"0.125": {
+							"vector": [0, 0, 0]
+						},
+						"0.25": {
+							"vector": [0, -3, 0]
+						}
+					}
+				},
+				"gSpeakerCage4": {
+					"position": {
+						"0.0": {
+							"vector": [0, 0, 0]
+						},
+						"0.125": {
+							"vector": [-1, 0, 0]
+						}
+					}
+				}
+			}
+		},
+		"animation.spinning": {
+			"loop": true,
+			"animation_length": 1,
+			"bones": {
+				"gSoundSpinner": {
+					"rotation": {
+						"0.0": {
+							"vector": [0, 0, 0]
+						},
+						"1.0": {
+							"vector": [0, -360, 0]
+						}
+					},
+					"position": {
+						"vector": [0, 3, 0]
+					}
+				},
+				"gSoundSpeakerHinge1": {
+					"rotation": {
+						"vector": [0, 0, -45]
+					},
+					"position": {
+						"vector": [3, 0, 0]
+					}
+				},
+				"gSoundSpeaker1": {
+					"position": {
+						"vector": [0, -3, 0]
+					}
+				},
+				"gSpeakerCage1": {
+					"position": {
+						"vector": [1, 0, 0]
+					}
+				},
+				"gSoundSpeakerHinge2": {
+					"rotation": {
+						"vector": [0, 0, 45]
+					},
+					"position": {
+						"vector": [-3, 0, 0]
+					}
+				},
+				"gSoundSpeaker2": {
+					"position": {
+						"vector": [0, -3, 0]
+					}
+				},
+				"gSpeakerCage2": {
+					"position": {
+						"vector": [-1, 0, 0]
+					}
+				},
+				"gSoundSpeakerHinge3": {
+					"rotation": {
+						"vector": [0, 0, -45]
+					},
+					"position": {
+						"vector": [3, 0, 0]
+					}
+				},
+				"gSoundSpeaker3": {
+					"position": {
+						"vector": [0, -3, 0]
+					}
+				},
+				"gSpeakerCage3": {
+					"position": {
+						"vector": [1, 0, 0]
+					}
+				},
+				"gSoundSpeakerHinge4": {
+					"rotation": {
+						"vector": [0, 0, 45]
+					},
+					"position": {
+						"vector": [-3, 0, 0]
+					}
+				},
+				"gSoundSpeaker4": {
+					"position": {
+						"vector": [0, -3, 0]
+					}
+				},
+				"gSpeakerCage4": {
+					"position": {
+						"vector": [-1, 0, 0]
+					}
+				}
+			}
+		},
+		"animation.deactivate": {
+			"loop": "hold_on_last_frame",
+			"animation_length": 0.75,
+			"bones": {
+				"gSoundSpinner": {
+					"rotation": {
+						"0.0": {
+							"vector": [0, 0, 0]
+						},
+						"0.5": {
+							"vector": [0, -180, 0]
+						}
+					},
+					"position": {
+						"0.625": {
+							"vector": [0, 3, 0]
+						},
+						"0.75": {
+							"vector": [0, 0, 0]
+						}
+					}
+				},
+				"gSoundSpeakerHinge1": {
+					"rotation": {
+						"0.5": {
+							"vector": [0, 0, -45]
+						},
+						"0.625": {
+							"vector": [0, 0, 0]
+						}
+					},
+					"position": {
+						"0.625": {
+							"vector": [3, 0, 0]
+						},
+						"0.75": {
+							"vector": [0, 0, 0]
+						}
+					}
+				},
+				"gSoundSpeaker1": {
+					"position": {
+						"0.625": {
+							"vector": [0, -3, 0]
+						},
+						"0.75": {
+							"vector": [0, 0, 0]
+						}
+					}
+				},
+				"gSpeakerCage1": {
+					"position": {
+						"0.625": {
+							"vector": [1, 0, 0]
+						},
+						"0.75": {
+							"vector": [0, 0, 0]
+						}
+					}
+				},
+				"gSoundSpeakerHinge2": {
+					"rotation": {
+						"0.5": {
+							"vector": [0, 0, 45]
+						},
+						"0.625": {
+							"vector": [0, 0, 0]
+						}
+					},
+					"position": {
+						"0.625": {
+							"vector": [-3, 0, 0]
+						},
+						"0.75": {
+							"vector": [0, 0, 0]
+						}
+					}
+				},
+				"gSoundSpeaker2": {
+					"position": {
+						"0.625": {
+							"vector": [0, -3, 0]
+						},
+						"0.75": {
+							"vector": [0, 0, 0]
+						}
+					}
+				},
+				"gSpeakerCage2": {
+					"position": {
+						"0.625": {
+							"vector": [-1, 0, 0]
+						},
+						"0.75": {
+							"vector": [0, 0, 0]
+						}
+					}
+				},
+				"gSoundSpeakerHinge3": {
+					"rotation": {
+						"0.5": {
+							"vector": [0, 0, -45]
+						},
+						"0.625": {
+							"vector": [0, 0, 0]
+						}
+					},
+					"position": {
+						"0.625": {
+							"vector": [3, 0, 0]
+						},
+						"0.75": {
+							"vector": [0, 0, 0]
+						}
+					}
+				},
+				"gSoundSpeaker3": {
+					"position": {
+						"0.625": {
+							"vector": [0, -3, 0]
+						},
+						"0.75": {
+							"vector": [0, 0, 0]
+						}
+					}
+				},
+				"gSpeakerCage3": {
+					"position": {
+						"0.625": {
+							"vector": [1, 0, 0]
+						},
+						"0.75": {
+							"vector": [0, 0, 0]
+						}
+					}
+				},
+				"gSoundSpeakerHinge4": {
+					"rotation": {
+						"0.5": {
+							"vector": [0, 0, 45]
+						},
+						"0.625": {
+							"vector": [0, 0, 0]
+						}
+					},
+					"position": {
+						"0.625": {
+							"vector": [-3, 0, 0]
+						},
+						"0.75": {
+							"vector": [0, 0, 0]
+						}
+					}
+				},
+				"gSoundSpeaker4": {
+					"position": {
+						"0.625": {
+							"vector": [0, -3, 0]
+						},
+						"0.75": {
+							"vector": [0, 0, 0]
+						}
+					}
+				},
+				"gSpeakerCage4": {
+					"position": {
+						"0.625": {
+							"vector": [-1, 0, 0]
+						},
+						"0.75": {
+							"vector": [0, 0, 0]
+						}
+					}
+				}
+			}
+		}
+	},
+	"azurelib_format_version": 2
+}

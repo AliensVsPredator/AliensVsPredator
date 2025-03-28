@@ -26,6 +26,10 @@ public class BlockLootTableProvider extends FabricBlockLootTableProvider {
 
     @Override
     public void generate() {
+        dropSelf(AVPBlocks.REDSTONE_GENERATOR);
+        dropSelf(AVPBlocks.DESK_TERMINAL_BLOCK);
+        dropSelf(AVPBlocks.TRIP_MINE_BLOCK);
+        dropSelf(AVPBlocks.RESONATOR_BLOCK);
         dropSelf(AVPBlocks.SENTRY_TURRET);
         dropSelf(AVPBlocks.TRINITITE_BLOCK);
         dropSelf(AVPBlocks.ASH_BLOCK);

@@ -1,0 +1,147 @@
+{
+	"format_version": "1.12.0",
+	"minecraft:geometry": [
+		{
+			"description": {
+				"identifier": "geometry.unknown",
+				"texture_width": 64,
+				"texture_height": 128,
+				"visible_bounds_width": 2,
+				"visible_bounds_height": 2.5,
+				"visible_bounds_offset": [0, 0.75, 0]
+			},
+			"bones": [
+				{
+					"name": "root",
+					"pivot": [0, 0, 0],
+					"cubes": [
+						{"origin": [-3.5, 12, -3.5], "size": [7, 1, 7], "uv": [25, 88]},
+						{"origin": [-2.5, 1, -2.5], "size": [5, 13, 5], "uv": [30, 97]},
+						{"origin": [-5.5, 0, -5.5], "size": [11, 1, 11], "uv": [18, 116]}
+					]
+				},
+				{
+					"name": "gSoundSpinner",
+					"parent": "root",
+					"pivot": [0, 12.5, 0],
+					"cubes": [
+						{"origin": [-1.5, 5.25, -1.5], "size": [3, 10, 3], "uv": [34, 72]}
+					]
+				},
+				{
+					"name": "base",
+					"parent": "gSoundSpinner",
+					"pivot": [0, 7, 0],
+					"cubes": [
+						{"origin": [-4.5, 6, -2], "size": [9, 2, 4], "uv": [25, 65]}
+					]
+				},
+				{
+					"name": "gSoundSpeakerHinge1",
+					"parent": "base",
+					"pivot": [1.5, 7, 0],
+					"cubes": [
+						{"origin": [0.5, 6, -1.5], "size": [3, 2, 3], "inflate": 0.2, "uv": [34, 47], "mirror": true}
+					]
+				},
+				{
+					"name": "gSoundSpeaker1",
+					"parent": "gSoundSpeakerHinge1",
+					"pivot": [4.5, 6.5, 0],
+					"cubes": [
+						{"origin": [3.5, 1, -4.5], "size": [2, 11, 9], "uv": [41, 44], "mirror": true}
+					]
+				},
+				{
+					"name": "gSpeakerCage1",
+					"parent": "gSoundSpeaker1",
+					"pivot": [5, 6.5, 0],
+					"cubes": [
+						{"origin": [4.5, 2, -3.5], "size": [1, 9, 7], "uv": [23, 48], "mirror": true}
+					]
+				},
+				{
+					"name": "gSoundSpeakerHinge2",
+					"parent": "base",
+					"pivot": [-1.5, 7, 0],
+					"cubes": [
+						{"origin": [-3.5, 6, -1.5], "size": [3, 2, 3], "inflate": 0.2, "uv": [34, 47]}
+					]
+				},
+				{
+					"name": "gSoundSpeaker2",
+					"parent": "gSoundSpeakerHinge2",
+					"pivot": [-4.5, 6.5, 0],
+					"cubes": [
+						{"origin": [-5.5, 1, -4.5], "size": [2, 11, 9], "uv": [41, 44]}
+					]
+				},
+				{
+					"name": "gSpeakerCage2",
+					"parent": "gSoundSpeaker2",
+					"pivot": [-5, 6.5, 0],
+					"cubes": [
+						{"origin": [-5.5, 2, -3.5], "size": [1, 9, 7], "uv": [23, 48]}
+					]
+				},
+				{
+					"name": "base2",
+					"parent": "gSoundSpinner",
+					"pivot": [0, 7, 0],
+					"rotation": [0, 90, 0],
+					"cubes": [
+						{"origin": [-4.5, 6, -2], "size": [9, 2, 4], "uv": [25, 65]}
+					]
+				},
+				{
+					"name": "gSoundSpeakerHinge3",
+					"parent": "base2",
+					"pivot": [1.5, 7, 0],
+					"cubes": [
+						{"origin": [0.5, 6, -1.5], "size": [3, 2, 3], "inflate": 0.2, "uv": [34, 47], "mirror": true}
+					]
+				},
+				{
+					"name": "gSoundSpeaker3",
+					"parent": "gSoundSpeakerHinge3",
+					"pivot": [4.5, 6.5, 0],
+					"cubes": [
+						{"origin": [3.5, 1, -4.5], "size": [2, 11, 9], "uv": [41, 44], "mirror": true}
+					]
+				},
+				{
+					"name": "gSpeakerCage3",
+					"parent": "gSoundSpeaker3",
+					"pivot": [5, 6.5, 0],
+					"cubes": [
+						{"origin": [4.5, 2, -3.5], "size": [1, 9, 7], "uv": [23, 48], "mirror": true}
+					]
+				},
+				{
+					"name": "gSoundSpeakerHinge4",
+					"parent": "base2",
+					"pivot": [-1.5, 7, 0],
+					"cubes": [
+						{"origin": [-3.5, 6, -1.5], "size": [3, 2, 3], "inflate": 0.2, "uv": [34, 47]}
+					]
+				},
+				{
+					"name": "gSoundSpeaker4",
+					"parent": "gSoundSpeakerHinge4",
+					"pivot": [-4.5, 6.5, 0],
+					"cubes": [
+						{"origin": [-5.5, 1, -4.5], "size": [2, 11, 9], "uv": [41, 44]}
+					]
+				},
+				{
+					"name": "gSpeakerCage4",
+					"parent": "gSoundSpeaker4",
+					"pivot": [-5, 6.5, 0],
+					"cubes": [
+						{"origin": [-5.5, 2, -3.5], "size": [1, 9, 7], "uv": [23, 48]}
+					]
+				}
+			]
+		}
+	]
+}

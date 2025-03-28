@@ -53,8 +53,9 @@ public class IngredientsCreativeModeTabInitializer {
             entries.accept(AVPItems.REGULATOR);
             entries.accept(AVPItems.RESISTOR);
             entries.accept(AVPItems.TRANSISTOR);
-            entries.accept(AVPItems.SERVOR);
+            entries.accept(AVPItems.SERVO);
             entries.accept(AVPItems.SPEAKER);
+            entries.accept(AVPItems.NUCLEAR_BATTERY);
 
             // Blueprint materials
             entries.accept(AVPItems.BLUEPRINT_F903WE_RIFLE);

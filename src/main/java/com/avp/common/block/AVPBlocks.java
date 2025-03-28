@@ -37,6 +37,14 @@ public class AVPBlocks {
         "grate"
     };
 
+    public static final Block REDSTONE_GENERATOR = register(BlockProperties.STEEL, "redstone_generator");
+
+    public static final Block DESK_TERMINAL_BLOCK = register(new DeskTerminalBlock(BlockProperties.STEEL.noOcclusion()), "desk_terminal");
+
+    public static final Block TRIP_MINE_BLOCK = register(new TripMineBlock(BlockProperties.TITANIUM.noOcclusion()), "trip_mine");
+
+    public static final Block RESONATOR_BLOCK = register(new ResonatorBlock(BlockProperties.STEEL.noOcclusion()), "resonator");
+
     public static final Block SENTRY_TURRET = register(new SentryTurretBlock(BlockProperties.STEEL.noOcclusion()), "sentry_turret");
 
     public static final Block ASH_BLOCK = register(new AshBlock(BlockProperties.ASH_BLOCK), "ash_block");

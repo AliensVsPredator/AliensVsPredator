@@ -19,6 +19,26 @@ public class MiscellaneousRecipeProvider {
                 .into(AVPItems.REDSTONE_CRYSTAL);
 
         builder.shaped()
+                .withCategory(RecipeCategory.MISC)
+                .define('A', AVPItems.AUTUNITE_DUST)
+                .define('G', Items.GOLD_INGOT)
+                .define('D', Items.DIAMOND)
+                .pattern("GDG")
+                .pattern("AAA")
+                .pattern("GDG")
+                .into(1, AVPItems.NUCLEAR_BATTERY);
+
+        builder.shaped()
+                .withCategory(RecipeCategory.MISC)
+                .define('S', AVPItems.SPEAKER)
+                .define('D', AVPItems.SERVO)
+                .define('A', AVPItems.STEEL_INGOT)
+                .pattern("SAS")
+                .pattern("SDS")
+                .pattern("AAA")
+                .into(1, AVPBlocks.RESONATOR_BLOCK);
+
+        builder.shaped()
             .withCategory(RecipeCategory.MISC)
             .define('A', ItemTags.COALS)
             .pattern("A")
