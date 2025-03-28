@@ -7,12 +7,10 @@ import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.SpawnEggItem;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import com.avp.AVP;
-import com.avp.common.block.AVPBlocks;
 import com.avp.common.entity.living.alien.xenomorph.Xenomorph;
 import com.avp.common.entity.type.AVPEntityTypes;
 import com.avp.common.util.resin.ResinData;
@@ -60,17 +58,16 @@ public class Queen extends Xenomorph {
     public void runPassiveAnimations() {
 //        var dispatcher = animationDispatcher;
 //        var isMovingOnGround = moveAnalysis.isMovingHorizontally() && onGround();
-//        var isCrawling = crawlingManager.isCrawling();
 //        Runnable animFunction;
 //
 //        if (isUnderWater()) {
 //            // TODO: idle swim
 //            animFunction = dispatcher::swim;
 //        } else if (isMovingOnGround) {
-//            animFunction = isCrawling ? dispatcher::crawl : dispatcher::walk;
+//            animFunction = dispatcher::walk;
 //        } else {
 //            // TODO: idle crawl
-//            animFunction = isCrawling ? dispatcher::crawlHold : dispatcher::idle;
+//            animFunction = dispatcher::idle;
 //        }
 //
 //        animFunction.run();

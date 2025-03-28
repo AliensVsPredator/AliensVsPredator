@@ -1,5 +1,6 @@
 package com.avp.common.manager;
 
+import com.avp.common.entity.living.alien.xenomorph.queen.Queen;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -20,6 +21,10 @@ public class CrawlingManager {
 
     public void tick() {
         if (entity.level().isClientSide) {
+            return;
+        }
+
+        if (entity instanceof Queen) {
             return;
         }
 
