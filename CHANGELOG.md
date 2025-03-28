@@ -34,6 +34,8 @@
 - Add Royal Facehugger.
 - Add Royal Burster.
 - Poison jelly on Royal eggs turn them into an Aberrant Royal Egg.
+- Add Commissary Villager type
+- Adds in REI support
 
 ## Changes
 - Adjusts how Marine Camps spawn in the world, will only apply to new ones.
@@ -96,6 +98,7 @@
 - Fixes Yautja not swimming/floating.
 - Fixes Marines not swimming/floating.
 - Fixes gun flashes appearing when not firing.
+- Fixes Industrial Furnace display name.
 
 ## Data Pack
 - Adds Undead tag to `radiation_resistant` entity tag.
@@ -114,7 +117,6 @@
 - Charging system (likely Redstone?) for batteries
 - Compression item?
 - Blueprint table
-- Commissary Villager type
 - Irradiated rockets
 - Predator Spawn mechanics
 - Predator difficulty adjustments (unsure what this means?)
