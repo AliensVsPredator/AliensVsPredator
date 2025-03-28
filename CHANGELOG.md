@@ -21,6 +21,17 @@
 - Witches that generate a burster will now pass 1 random effect.
 - Adds Outpost Comms structure, needs tags.
 - Adds Irradiated acid that is blue/white and turns blocks to blue ice instead of eating them.
+- Adds Lead Chest
+  - Blocks radation effect from items in it.
+  - When in inventory, picks up radiation giving items until full.
+- Chests, Shulkers, Minecarts with Chests, Boats with Chests that have radiation giving items now give off radiation in a 3 block radius.
+- Adds Ammo Chest
+  - Only takes ammo tagged items.
+  - Guns will pull from it's inventory first.
+- Industrial furnaces will now melt resin full blocks into green plastic blocks.
+- Add Royal Ovamorph
+- Add Queen Facehugger
+- Add Queen Burster
 
 ## Changes
 - Adjusts how Marine Camps spawn in the world, will only apply to new ones.
@@ -90,27 +101,25 @@
 - Added item tag `hostile_weapon` to tag items that Predators find hostile to them.
 - Fixes missing tags for items of `fences`, `doors`, `trapdoors`, `slabs`, `buttons`, `stairs`, `walls`, `freeze_immune_wearables`
 - Added item tag `radiation_cure_items` to tag items that when used can cure the Radiation effect.
+- Added item tag `radiation_items` to tag items that will give off radiation.
+- Added item tag `ammo_items` to tag items that the ammo block will accept and use.
 
 ## TODO
 - Add Queen Animations *
 - Add Queen sack that then lays eggs *
-- Apply genetics of Queen to eggspawned by Queen *
-- Add Queen egg *
-- Add Queen facehugger *
-- Add Queen burster *
+- Apply genetics of Queen to eggs spawned by Queen *
 - Poison jelly on queen eggs turn it into an Aberrant Queen egg *
-- Ammo chest + have sentry turret use it
+- Have sentry turret use ammo chest.
 - Battery items + have sentry turret run off it
 - Charging system (likely Redstone?) for batteries
-- Lead chest
 - Compression item?
 - Blueprint table
 - Commissary Villager type
 - Irradiated rockets *
 - Predator Spawn mechanics
 - Predator difficulty adjustments (unsure what this means?)
-- Predator Combi stick *
-- Predator Proximity mines *
+- Predator Combi stick
+- Predator Proximity mines
 - More Marine structures *
 
 # v0.0.18-beta
