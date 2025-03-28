@@ -8,12 +8,13 @@
 - Added Gun flashes to most guns.
 - Golden Apples (normal/enchanted) can now be used to cure the Radiation effect.
 - Adds basic Sentry Turret.
-  - Currently, does not use ammo. (Waiting on ammo box)
+  - Currently, requires ammo chest within a configurable 5 block radius with Medium bullets.
   - Currently, requires Redstone power. (Will need its GUI implemented)
   - Currently only targets monsters. (Will need its GUI implemented for different targeting) 
-  - Will break blocks to damage monsters in it's FOV (75 degrees in front of itself where it's facing). (Will need it's GUI implemented for different FOV range)
+  - Will break blocks to damage monsters in it's FOV (45 degrees in front of itself where it's facing). (Will need it's GUI implemented for different FOV range)
   - Currently, it does not rotate to target the monster it's trying to get.
-  - Currently, has a range of 32 blocks.
+  - Currently, has a range of 32 blocks, configurable.
+  - Turrets now require an ammo chest with Medium Bullets
 - Adds in Marine Patrols in the same biomes that the camps can spawn in.
 - Ash blocks will generate in Nuked biomes if an active player is in one.
 - Chorus Fruit can now remove embryos instead of teleporting entity, leaving the host alive.
@@ -29,9 +30,10 @@
   - Only takes ammo tagged items.
   - Guns will pull from it's inventory first.
 - Industrial furnaces will now melt resin full blocks into green plastic blocks.
-- Add Royal Ovamorph
-- Add Queen Facehugger
-- Add Queen Burster
+- Add Royal Ovamorph.
+- Add Royal Facehugger.
+- Add Royal Burster.
+- Poison jelly on Royal eggs turn them into an Aberrant Royal Egg.
 
 ## Changes
 - Adjusts how Marine Camps spawn in the world, will only apply to new ones.
@@ -106,21 +108,19 @@
 
 ## TODO
 - Add Queen Animations *
-- Add Queen sack that then lays eggs *
-- Apply genetics of Queen to eggs spawned by Queen *
-- Poison jelly on queen eggs turn it into an Aberrant Queen egg *
-- Have sentry turret use ammo chest.
+- Add Queen sack that then lays eggs
+- Apply genetics of Queen to eggs spawned by Queen
 - Battery items + have sentry turret run off it
 - Charging system (likely Redstone?) for batteries
 - Compression item?
 - Blueprint table
 - Commissary Villager type
-- Irradiated rockets *
+- Irradiated rockets
 - Predator Spawn mechanics
 - Predator difficulty adjustments (unsure what this means?)
 - Predator Combi stick
 - Predator Proximity mines
-- More Marine structures *
+- More Structures
 
 # v0.0.18-beta
 
