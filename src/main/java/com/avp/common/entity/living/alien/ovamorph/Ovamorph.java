@@ -235,12 +235,26 @@ public class Ovamorph extends RoyalAlien implements Shearable {
     public @Nullable ItemStack getPickResult() {
         SpawnEggItem spawnEggItem = null;
 
-        if (isNetherAfflicted()) {
-            spawnEggItem = SpawnEggItem.byId(AVPEntityTypes.NETHER_OVAMORPH);
-        }
+        if (isRoyal()) {
+            if (isNetherAfflicted()) {
+                spawnEggItem = SpawnEggItem.byId(AVPEntityTypes.ROYAL_NETHER_OVAMORPH);
+            }
 
-        if (isAberrant()) {
-            spawnEggItem = SpawnEggItem.byId(AVPEntityTypes.ABERRANT_OVAMORPH);
+            if (isAberrant()) {
+                spawnEggItem = SpawnEggItem.byId(AVPEntityTypes.ROYAL_ABERRANT_OVAMORPH);
+            }
+
+            if (!isNetherAfflicted() && !isAberrant()) {
+                spawnEggItem = SpawnEggItem.byId(AVPEntityTypes.ROYAL_OVAMORPH);
+            }
+        } else {
+            if (isNetherAfflicted()) {
+                spawnEggItem = SpawnEggItem.byId(AVPEntityTypes.NETHER_OVAMORPH);
+            }
+
+            if (isAberrant()) {
+                spawnEggItem = SpawnEggItem.byId(AVPEntityTypes.ABERRANT_OVAMORPH);
+            }
         }
 
         return spawnEggItem == null ? super.getPickResult() : new ItemStack(spawnEggItem);

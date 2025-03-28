@@ -180,12 +180,26 @@ public class Chestburster extends RoyalAlien implements ResinProducer {
     public @Nullable ItemStack getPickResult() {
         SpawnEggItem spawnEggItem = null;
 
-        if (isNetherAfflicted()) {
-            spawnEggItem = SpawnEggItem.byId(AVPEntityTypes.NETHER_CHESTBURSTER);
-        }
+        if (isRoyal()) {
+            if (isNetherAfflicted()) {
+                spawnEggItem = SpawnEggItem.byId(AVPEntityTypes.ROYAL_NETHER_CHESTBURSTER);
+            }
 
-        if (isAberrant()) {
-            spawnEggItem = SpawnEggItem.byId(AVPEntityTypes.ABERRANT_CHESTBURSTER);
+            if (isAberrant()) {
+                spawnEggItem = SpawnEggItem.byId(AVPEntityTypes.ROYAL_ABERRANT_CHESTBURSTER);
+            }
+
+            if (!isNetherAfflicted() && !isAberrant()) {
+                spawnEggItem = SpawnEggItem.byId(AVPEntityTypes.ROYAL_CHESTBURSTER);
+            }
+        } else {
+            if (isNetherAfflicted()) {
+                spawnEggItem = SpawnEggItem.byId(AVPEntityTypes.NETHER_CHESTBURSTER);
+            }
+
+            if (isAberrant()) {
+                spawnEggItem = SpawnEggItem.byId(AVPEntityTypes.ABERRANT_CHESTBURSTER);
+            }
         }
 
         return spawnEggItem == null ? super.getPickResult() : new ItemStack(spawnEggItem);

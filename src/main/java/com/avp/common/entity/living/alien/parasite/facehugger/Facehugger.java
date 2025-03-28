@@ -93,12 +93,26 @@ public class Facehugger extends Parasite {
     public @Nullable ItemStack getPickResult() {
         SpawnEggItem spawnEggItem = null;
 
-        if (isNetherAfflicted()) {
-            spawnEggItem = SpawnEggItem.byId(AVPEntityTypes.NETHER_FACEHUGGER);
-        }
+        if (isRoyal()) {
+            if (isNetherAfflicted()) {
+                spawnEggItem = SpawnEggItem.byId(AVPEntityTypes.ROYAL_NETHER_FACEHUGGER);
+            }
 
-        if (isAberrant()) {
-            spawnEggItem = SpawnEggItem.byId(AVPEntityTypes.ABERRANT_FACEHUGGER);
+            if (isAberrant()) {
+                spawnEggItem = SpawnEggItem.byId(AVPEntityTypes.ROYAL_ABERRANT_FACEHUGGER);
+            }
+
+            if (!isNetherAfflicted() && !isAberrant()) {
+                spawnEggItem = SpawnEggItem.byId(AVPEntityTypes.ROYAL_FACEHUGGER);
+            }
+        } else {
+            if (isNetherAfflicted()) {
+                spawnEggItem = SpawnEggItem.byId(AVPEntityTypes.NETHER_FACEHUGGER);
+            }
+
+            if (isAberrant()) {
+                spawnEggItem = SpawnEggItem.byId(AVPEntityTypes.ABERRANT_FACEHUGGER);
+            }
         }
 
         return spawnEggItem == null ? super.getPickResult() : new ItemStack(spawnEggItem);
