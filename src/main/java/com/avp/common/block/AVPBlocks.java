@@ -39,7 +39,7 @@ public class AVPBlocks {
 
     public static final Block BLUEPRINT_BLOCK = register(BlockProperties.STEEL, "blueprint_block");
 
-    public static final Block REDSTONE_GENERATOR = register(BlockProperties.STEEL, "redstone_generator");
+    public static final Block REDSTONE_GENERATOR = register(new RedstoneGeneratorBlock(BlockProperties.STEEL.randomTicks()), "redstone_generator");
 
     public static final Block DESK_TERMINAL_BLOCK = register(new DeskTerminalBlock(BlockProperties.STEEL.noOcclusion()), "desk_terminal");
 
