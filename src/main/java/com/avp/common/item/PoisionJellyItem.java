@@ -1,5 +1,8 @@
 package com.avp.common.item;
 
+import com.avp.common.entity.living.alien.RoyalAlien;
+import com.avp.common.entity.living.alien.ovamorph.Ovamorph;
+import com.avp.common.gene.GeneKeys;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.LivingEntity;
@@ -25,6 +28,9 @@ public class PoisionJellyItem extends Item {
     ) {
         if (livingEntity instanceof Alien xenomorph) {
             xenomorph.getEntityData().set(Alien.IS_POISONED, true);
+        }
+        if (livingEntity instanceof Ovamorph ovamorph && ovamorph.isRoyal() && !ovamorph.isAberrant() && !ovamorph.isNetherAfflicted()) {
+            ovamorph.geneManager().minimize(GeneKeys.GENETIC_INTEGRITY);
         }
         return super.interactLivingEntity(itemStack, player, livingEntity, interactionHand);
     }
