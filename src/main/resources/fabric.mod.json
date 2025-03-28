@@ -34,6 +34,9 @@
 		],
 		"fabric-datagen": [
 			"com.avp.data.AVPDataGenerator"
+		],
+		"rei_client": [
+			"com.avp.client.rei.AVPREIClient"
 		]
 	},
 	"mixins": [
