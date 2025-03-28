@@ -22,7 +22,7 @@ public class MiscellaneousRecipeProvider {
         builder.shaped()
                 .withCategory(RecipeCategory.MISC)
                 .define('A', Items.LAPIS_LAZULI)
-                .define('G', AVPItems.POLYMER)
+                .define('P', AVPItems.POLYMER)
                 .define('D', ItemTags.PLANKS)
                 .pattern("A A")
                 .pattern("P P")
