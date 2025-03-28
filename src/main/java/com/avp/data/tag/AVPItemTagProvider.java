@@ -41,10 +41,18 @@ public class AVPItemTagProvider extends FabricTagProvider.ItemTagProvider {
                 AVPItems.AUTUNITE_DUST,
                 AVPItems.URANIUM_NUGGET,
                 AVPItems.URANIUM_INGOT,
+                AVPItems.IRRADIATED_CHITIN,
+                AVPItems.PLATED_IRRADIATED_CHITIN,
+                AVPItems.IRRADIATED_RESIN_BALL,
+                AVPItems.GRENADE_IRRADIATED,
                 AVPBlockItems.AUTUNITE_BLOCK,
                 AVPBlockItems.AUTUNITE_ORE,
                 AVPBlockItems.URANIUM_BLOCK,
-                AVPBlockItems.TRINITITE_BLOCK
+                AVPBlockItems.TRINITITE_BLOCK,
+                AVPBlockItems.IRRADIATED_RESIN,
+                AVPBlockItems.IRRADIATED_RESIN_NODE,
+                AVPBlockItems.IRRADIATED_RESIN_VEIN,
+                AVPBlockItems.IRRADIATED_RESIN_WEB
             );
 
         getOrCreateTagBuilder(AVPItemTags.HOSTILE_WEAPON)

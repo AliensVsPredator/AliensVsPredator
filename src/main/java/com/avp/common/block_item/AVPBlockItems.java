@@ -17,7 +17,6 @@ import java.util.stream.Collectors;
 
 import com.avp.AVPResources;
 import com.avp.common.block.AVPBlocks;
-import com.avp.common.item.RadiatedBlockItem;
 import com.avp.common.item.RoyalJellyBlockItem;
 
 public class AVPBlockItems {
@@ -26,10 +25,7 @@ public class AVPBlockItems {
 
     public static final BlockItem ASH_BLOCK = register(AVPBlocks.ASH_BLOCK);
 
-    public static final BlockItem TRINITITE_BLOCK = registerCustomBlockItem(
-        new RadiatedBlockItem(AVPBlocks.TRINITITE_BLOCK),
-        AVPBlocks.TRINITITE_BLOCK
-    );
+    public static final BlockItem TRINITITE_BLOCK = register(AVPBlocks.TRINITITE_BLOCK);
 
     public static final BlockItem NUKE_BLOCK = register(AVPBlocks.NUKE_BLOCK);
 
@@ -40,15 +36,9 @@ public class AVPBlockItems {
 
     public static final BlockItem ALUMINUM_BLOCK = register(AVPBlocks.ALUMINUM_BLOCK);
 
-    public static final BlockItem AUTUNITE_BLOCK = registerCustomBlockItem(
-        new RadiatedBlockItem(AVPBlocks.AUTUNITE_BLOCK),
-        AVPBlocks.AUTUNITE_BLOCK
-    );
+    public static final BlockItem AUTUNITE_BLOCK = register(AVPBlocks.AUTUNITE_BLOCK);
 
-    public static final BlockItem AUTUNITE_ORE = registerCustomBlockItem(
-        new RadiatedBlockItem(AVPBlocks.AUTUNITE_ORE),
-        AVPBlocks.AUTUNITE_ORE
-    );
+    public static final BlockItem AUTUNITE_ORE = register(AVPBlocks.AUTUNITE_ORE);
 
     public static final BlockItem BAUXITE_ORE = register(AVPBlocks.BAUXITE_ORE);
 
@@ -141,25 +131,13 @@ public class AVPBlockItems {
 
     public static final BlockItem ABERRANT_RESIN_WEB = register(new Item.Properties().fireResistant(), AVPBlocks.ABERRANT_RESIN_WEB);
 
-    public static final BlockItem IRRADIATED_RESIN = registerCustomBlockItem(
-        new RadiatedBlockItem(AVPBlocks.IRRADIATED_RESIN),
-        AVPBlocks.IRRADIATED_RESIN
-    );
+    public static final BlockItem IRRADIATED_RESIN = register(AVPBlocks.IRRADIATED_RESIN);
 
-    public static final BlockItem IRRADIATED_RESIN_NODE = registerCustomBlockItem(
-        new RadiatedBlockItem(AVPBlocks.IRRADIATED_RESIN_NODE),
-        AVPBlocks.IRRADIATED_RESIN_NODE
-    );
+    public static final BlockItem IRRADIATED_RESIN_NODE = register(AVPBlocks.IRRADIATED_RESIN_NODE);
 
-    public static final BlockItem IRRADIATED_RESIN_VEIN = registerCustomBlockItem(
-        new RadiatedBlockItem(AVPBlocks.IRRADIATED_RESIN_VEIN),
-        AVPBlocks.IRRADIATED_RESIN_VEIN
-    );
+    public static final BlockItem IRRADIATED_RESIN_VEIN = register(AVPBlocks.IRRADIATED_RESIN_VEIN);
 
-    public static final BlockItem IRRADIATED_RESIN_WEB = registerCustomBlockItem(
-        new RadiatedBlockItem(AVPBlocks.IRRADIATED_RESIN_WEB),
-        AVPBlocks.IRRADIATED_RESIN_WEB
-    );
+    public static final BlockItem IRRADIATED_RESIN_WEB = register(AVPBlocks.IRRADIATED_RESIN_WEB);
 
     public static final BlockItem RAW_BAUXITE_BLOCK = register(AVPBlocks.RAW_BAUXITE_BLOCK);
 
@@ -258,10 +236,7 @@ public class AVPBlockItems {
 
     public static final BlockItem TITANIUM_TREAD = register(AVPBlocks.TITANIUM_TREAD);
 
-    public static final BlockItem URANIUM_BLOCK = registerCustomBlockItem(
-        new RadiatedBlockItem(AVPBlocks.URANIUM_BLOCK),
-        AVPBlocks.URANIUM_BLOCK
-    );
+    public static final BlockItem URANIUM_BLOCK = register(AVPBlocks.URANIUM_BLOCK);
 
     public static final BlockItem ZINC_BLOCK = register(AVPBlocks.ZINC_BLOCK);
 
