@@ -591,7 +591,7 @@ public class EuropeanFrenchLanguageProvider extends FabricLanguageProvider {
         // Hive boss bar
         translationBuilder.add("bossbar.avp.hive.title", "Hive");
 
-        translationBuilder.add("avp.industrialfurnace.displayName", "Industrial Furance");
+        translationBuilder.add("avp.industrialfurnace.displayName", "Industrial Furnace");
         translationBuilder.add("effect.avp.radiation", "Radiation");
 
         // Configs
