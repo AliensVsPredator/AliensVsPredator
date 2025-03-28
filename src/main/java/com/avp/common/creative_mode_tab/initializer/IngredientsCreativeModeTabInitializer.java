@@ -41,6 +41,7 @@ public class IngredientsCreativeModeTabInitializer {
             entries.accept(AVPItems.URANIUM_INGOT);
             entries.accept(AVPItems.ZINC_INGOT);
             entries.accept(AVPItems.POLYMER);
+            entries.accept(AVPItems.REDSTONE_CRYSTAL);
             // Electronic materials
             entries.accept(AVPItems.BATTERY_PACK);
             entries.accept(AVPItems.CAPACITOR);
@@ -52,6 +53,8 @@ public class IngredientsCreativeModeTabInitializer {
             entries.accept(AVPItems.REGULATOR);
             entries.accept(AVPItems.RESISTOR);
             entries.accept(AVPItems.TRANSISTOR);
+            entries.accept(AVPItems.SERVOR);
+            entries.accept(AVPItems.SPEAKER);
 
             // Blueprint materials
             entries.accept(AVPItems.BLUEPRINT_F903WE_RIFLE);

@@ -354,6 +354,9 @@ public class RussianLanguageProvider extends FabricLanguageProvider {
         translationBuilder.add(AVPItems.ZX_76_SHOTGUN, "ZX-76 Дробовик");
 
         // Ingredient Items
+        translationBuilder.add(AVPItems.REDSTONE_CRYSTAL, "Redstone Crystal");
+        translationBuilder.add(AVPItems.SERVOR, "Servor");
+        translationBuilder.add(AVPItems.SPEAKER, "Speaker");
         translationBuilder.add(AVPItems.ALUMINUM_INGOT, "Алюминиевый слиток");
         translationBuilder.add(AVPItems.AUTUNITE_DUST, "Аутинитовая пыль");
         translationBuilder.add(AVPItems.BARREL, "Корпус");

@@ -349,6 +349,9 @@ public class UkrainianLanguageProvider extends FabricLanguageProvider {
         translationBuilder.add(AVPItems.ZX_76_SHOTGUN, "ZX-76 Дробовик");
 
         // Ingredient Items
+        translationBuilder.add(AVPItems.REDSTONE_CRYSTAL, "Redstone Crystal");
+        translationBuilder.add(AVPItems.SERVOR, "Servor");
+        translationBuilder.add(AVPItems.SPEAKER, "Speaker");
         translationBuilder.add(AVPItems.ALUMINUM_INGOT, "Алюмінієвий злиток");
         translationBuilder.add(AVPItems.AUTUNITE_DUST, "Аутинітовий пил");
         translationBuilder.add(AVPItems.BARREL, "Корпус");

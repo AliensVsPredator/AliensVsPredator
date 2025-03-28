@@ -8,10 +8,16 @@ import com.avp.common.block.AVPBlocks;
 import com.avp.common.item.AVPItems;
 import com.avp.data.recipe.RecipeConstants;
 import com.avp.data.recipe.builder.RecipeBuilder;
+import net.minecraft.world.level.block.Blocks;
 
 public class MiscellaneousRecipeProvider {
 
     public static void provide(RecipeBuilder builder) {
+        builder.blast(Blocks.REDSTONE_BLOCK)
+                .withCategory(RecipeCategory.MISC)
+                .withExperience(RecipeConstants.VERY_COMMON_SMELT_EXPERIENCE)
+                .into(AVPItems.REDSTONE_CRYSTAL);
+
         builder.shaped()
             .withCategory(RecipeCategory.MISC)
             .define('A', ItemTags.COALS)

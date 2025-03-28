@@ -15,6 +15,28 @@ public class ElectronicItemRecipeProvider {
 
     private static void createElectronicItemRecipes(RecipeBuilder builder) {
         builder.shaped()
+                .withCategory(RecipeCategory.MISC)
+                .define('A', AVPItems.ALUMINUM_INGOT)
+                .define('N', AVPItems.NEODYMIUM_MAGNET)
+                .define('R', AVPItems.REGULATOR)
+                .define('P', AVPItems.POLYMER)
+                .pattern("PAP")
+                .pattern("ANA")
+                .pattern("PRP")
+                .into(8, AVPItems.SPEAKER);
+
+        builder.shaped()
+                .withCategory(RecipeCategory.MISC)
+                .define('B', AVPItems.BRASS_NUGGET)
+                .define('C', Items.COPPER_INGOT)
+                .define('N', AVPItems.NEODYMIUM_MAGNET)
+                .define('I', AVPItems.INTEGRATED_CIRCUIT)
+                .pattern("BCB")
+                .pattern("NIN")
+                .pattern("BCB")
+                .into(8, AVPItems.SERVOR);
+
+        builder.shaped()
             .withCategory(RecipeCategory.MISC)
             .define('A', Items.GOLD_NUGGET)
             .define('B', Items.REDSTONE)

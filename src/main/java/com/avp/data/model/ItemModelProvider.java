@@ -111,6 +111,9 @@ public class ItemModelProvider extends FabricModelProvider {
         generateStandardItem(generators, AVPItems.BULLET_TIP);
         generateStandardItem(generators, AVPItems.CANISTER);
         generateStandardItem(generators, AVPItems.CAPACITOR);
+        generateStandardItem(generators, AVPItems.REDSTONE_CRYSTAL);
+        generateStandardItem(generators, AVPItems.SERVOR);
+        generateStandardItem(generators, AVPItems.SPEAKER);
         generateStandardItem(generators, AVPItems.CARBON_DUST);
         generateStandardItem(generators, AVPItems.CASELESS_CASING);
         generateStandardItem(generators, AVPItems.CHITIN);

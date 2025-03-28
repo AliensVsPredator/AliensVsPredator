@@ -354,6 +354,9 @@ public class EnglishLanguageProvider extends FabricLanguageProvider {
         translationBuilder.add(AVPItems.ZX_76_SHOTGUN, "ZX-76 Shotgun");
 
         // Ingredient Items
+        translationBuilder.add(AVPItems.REDSTONE_CRYSTAL, "Redstone Crystal");
+        translationBuilder.add(AVPItems.SERVOR, "Servor");
+        translationBuilder.add(AVPItems.SPEAKER, "Speaker");
         translationBuilder.add(AVPItems.ALUMINUM_INGOT, "Aluminum Ingot");
         translationBuilder.add(AVPItems.AUTUNITE_DUST, "Autunite Dust");
         translationBuilder.add(AVPItems.BARREL, "Barrel");
