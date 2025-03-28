@@ -187,4 +187,22 @@ public class AmmoChestBE extends BaseContainerBlockEntity implements LidBlockEnt
     public int getContainerSize() {
         return this.itemStacks.size();
     }
+
+    public boolean hasAmmo() {
+        return !this.itemStacks.isEmpty() && this.itemStacks.stream().anyMatch(item -> item.is(AVPItems.MEDIUM_BULLET));
+    }
+
+    public boolean consumeAmmo(int count) {
+        for (ItemStack itemStack : this.itemStacks) {
+            if (itemStack.is(AVPItems.MEDIUM_BULLET)) {
+                var available = itemStack.getCount();
+                if (available >= count) {
+                    itemStack.shrink(count);
+                    this.setChanged();
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
 }

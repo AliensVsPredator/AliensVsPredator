@@ -699,6 +699,7 @@ public class EuropeanFrenchLanguageProvider extends FabricLanguageProvider {
         translationBuilder.add("config.avp.option.TURRET_FOV", "Turret FOV");
         translationBuilder.add("config.avp.option.TURRET_RANGE", "Turret range");
         translationBuilder.add("config.avp.option.TURRET_DAMAGE", "Turret damage");
+        translationBuilder.add("config.avp.option.TURRET_AMMOCHEST_SEARCH_RANGE", "Turret ammo chest search range");
     }
 
     private void addSound(TranslationBuilder translationBuilder, SoundEvent soundEvent, String value) {

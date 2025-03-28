@@ -524,5 +524,10 @@ public class AVPConfig {
         @Configurable.Synchronized
         @Configurable.Comment("Turret damage value")
         public float TURRET_DAMAGE = 4F;
+
+        @Configurable
+        @Configurable.Synchronized
+        @Configurable.Comment("Block radius that a turret looks for an ammo chest")
+        public int TURRET_AMMOCHEST_SEARCH_RANGE = 5;
     }
 }

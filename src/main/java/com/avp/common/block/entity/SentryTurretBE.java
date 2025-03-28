@@ -26,6 +26,7 @@ import com.avp.common.block.SentryTurretBlock;
 import com.avp.common.damage.AVPDamageTypes;
 import com.avp.common.sound.AVPSoundEvents;
 import com.avp.server.BlockBreakProgressManager;
+import org.jetbrains.annotations.Nullable;
 
 public class SentryTurretBE extends BlockEntity {
 
@@ -42,6 +43,8 @@ public class SentryTurretBE extends BlockEntity {
     protected static int range = AVP.config.weaponConfigs.TURRET_RANGE;
 
     protected static float damage = AVP.config.weaponConfigs.TURRET_DAMAGE;
+
+    protected static int ammoChestRange = AVP.config.weaponConfigs.TURRET_AMMOCHEST_SEARCH_RANGE;
 
     public SentryTurretBE(BlockPos pos, BlockState blockState) {
         super(BlockEntityTypes.SENTRY_TURRET_BE, pos, blockState);
@@ -89,6 +92,15 @@ public class SentryTurretBE extends BlockEntity {
         var facingVec = new Vec3(facing.getX(), facing.getY(), facing.getZ());
         var monsters = level.getEntitiesOfClass(Monster.class, new AABB(pos).inflate(range), Entity::isAlive);
 
+        // Locate an ammo chest within range
+        AmmoChestBE ammoChest = findNearbyAmmoChest(blockEntity, pos);
+        if (ammoChest == null || !ammoChest.hasAmmo()) {
+            // If no ammo chest is found or it is empty
+            blockEntity.setTargetedMonster(null);
+            blockEntity.animDispatcher.idle(blockEntity);
+            return;
+        }
+
         var currentTarget = blockEntity.getTargetedMonster();
         if (currentTarget != null) {
             boolean validTarget = currentTarget.isAlive() &&
@@ -101,9 +113,19 @@ public class SentryTurretBE extends BlockEntity {
                         blockEntity.setTargetedMonster(currentTarget);
                         blockEntity.animDispatcher.firing(blockEntity);
                         blockEntity.fireCooldown = 2;
+                        if (ammoChest.consumeAmmo(1)) {
+                            blockEntity.fireCooldown = 2;
+                        } else {
+                            blockEntity.setTargetedMonster(null);
+                        }
+
                         return;
                     }
-                    blockEntity.fireCooldown = 2;
+                    if (ammoChest.consumeAmmo(1)) {
+                        blockEntity.fireCooldown = 2;
+                    } else {
+                        blockEntity.setTargetedMonster(null);
+                    }
                     blockEntity.animDispatcher.firing(blockEntity);
                 }
                 return;
@@ -262,4 +284,26 @@ public class SentryTurretBE extends BlockEntity {
             this.targetedMonsterUUID = tag.getUUID("TargetedMonster");
         }
     }
+
+    @Nullable
+    private static AmmoChestBE findNearbyAmmoChest(SentryTurretBE blockEntity, BlockPos pos) {
+        var level = blockEntity.level;
+
+        if (level == null) {
+            return null;
+        }
+
+        for (var searchRadius : BlockPos.betweenClosed(
+                pos.offset(-ammoChestRange, -ammoChestRange, -ammoChestRange),
+                pos.offset(ammoChestRange, ammoChestRange, ammoChestRange)
+        )) {
+            var ammoEntity = level.getBlockEntity(searchRadius);
+            if (ammoEntity instanceof AmmoChestBE ammoChest) {
+                return ammoChest;
+            }
+        }
+
+        return null;
+    }
+
 }
