@@ -37,21 +37,20 @@ public class SentryTurretBE extends BlockEntity {
 
     protected int fireCooldown = 0;
 
+    protected static int fov = 45;
+
+    protected static int range = 32;
+
+    protected static float damage = 1F;
+
     public SentryTurretBE(BlockPos pos, BlockState blockState) {
         super(BlockEntityTypes.SENTRY_TURRET_BE, pos, blockState);
         animDispatcher = new SentryTurretAnimDispatcher();
     }
 
-    public UUID getTargetedMonsterUUID() {
-        return targetedMonsterUUID;
-    }
-
     public Monster getTargetedMonster() {
-        if (this.targetedMonster == null && this.targetedMonsterUUID != null) {
-            var entities = level.getEntitiesOfClass(Monster.class, new AABB(this.worldPosition).inflate(32)); // Adjust
-                                                                                                              // range
-                                                                                                              // if
-                                                                                                              // needed
+        if (this.targetedMonster == null && this.targetedMonsterUUID != null && level != null) {
+            var entities = level.getEntitiesOfClass(Monster.class, new AABB(this.worldPosition).inflate(range));
             for (var entity : entities) {
                 if (entity.getUUID().equals(this.targetedMonsterUUID)) {
                     this.targetedMonster = entity;
@@ -86,8 +85,6 @@ public class SentryTurretBE extends BlockEntity {
             blockEntity.fireCooldown--;
             return;
         }
-
-        var range = 32;
         var facing = state.getValue(BlockStateProperties.FACING).getNormal();
         var facingVec = new Vec3(facing.getX(), facing.getY(), facing.getZ());
         var monsters = level.getEntitiesOfClass(Monster.class, new AABB(pos).inflate(range), Entity::isAlive);
@@ -96,7 +93,7 @@ public class SentryTurretBE extends BlockEntity {
         if (currentTarget != null) {
             boolean validTarget = currentTarget.isAlive() &&
                 currentTarget.blockPosition().closerThan(pos, range) &&
-                isFacingMonster(level, pos, facingVec, currentTarget);
+                isFacingMonster(pos, facingVec, currentTarget);
 
             if (validTarget) {
                 if (blockEntity.fireCooldown == 0) {
@@ -118,7 +115,7 @@ public class SentryTurretBE extends BlockEntity {
         if (currentTarget != null) {
             boolean validTarget = currentTarget.isAlive() &&
                 currentTarget.blockPosition().closerThan(pos, range) &&
-                isFacingMonster(level, pos, facingVec, currentTarget);
+                isFacingMonster(pos, facingVec, currentTarget);
             if (validTarget) {
                 if (blockEntity.fireCooldown == 0) {
                     if (canTargetMonster(level, pos, facingVec, currentTarget, range, blockEntity)) {
@@ -150,13 +147,13 @@ public class SentryTurretBE extends BlockEntity {
         blockEntity.animDispatcher.idle(blockEntity);
     }
 
-    private static boolean isFacingMonster(Level level, BlockPos turretPos, Vec3 facingVec, Monster monster) {
+    private static boolean isFacingMonster(BlockPos turretPos, Vec3 facingVec, Monster monster) {
         var turretCenter = Vec3.atCenterOf(turretPos);
         var entityPos = Vec3.atCenterOf(monster.blockPosition());
         var directionToEntity = entityPos.subtract(turretCenter).normalize();
 
         var dotProduct = directionToEntity.dot(facingVec.normalize());
-        return dotProduct > Math.cos(Math.toRadians(75));
+        return dotProduct > Math.cos(Math.toRadians(fov));
     }
 
     private static boolean canTargetMonster(
@@ -183,7 +180,7 @@ public class SentryTurretBE extends BlockEntity {
         }
 
         var dotProduct = directionToEntity.dot(facingVec.normalize());
-        if (dotProduct <= Math.cos(Math.toRadians(75))) {
+        if (dotProduct <= Math.cos(Math.toRadians(fov))) {
             return false;
         }
 
@@ -199,7 +196,7 @@ public class SentryTurretBE extends BlockEntity {
 
         if (result.getType() == HitResult.Type.BLOCK) {
             var blockPos = result.getBlockPos();
-            if (isMonsterBehindBlock(level, turretPos, monster, blockPos)) {
+            if (isMonsterBehindBlock(turretPos, monster, blockPos)) {
                 onBlockHit(level, blockPos, blockEntity);
                 blockEntity.fireCooldown = 2;
             }
@@ -210,7 +207,7 @@ public class SentryTurretBE extends BlockEntity {
         return true;
     }
 
-    private static boolean isMonsterBehindBlock(Level level, BlockPos turretPos, Monster monster, BlockPos blockPos) {
+    private static boolean isMonsterBehindBlock(BlockPos turretPos, Monster monster, BlockPos blockPos) {
         var turretCenter = Vec3.atCenterOf(turretPos);
         var blockCenter = Vec3.atCenterOf(blockPos);
         var monsterPos = monster.position();
@@ -235,14 +232,14 @@ public class SentryTurretBE extends BlockEntity {
 
         blockEntity.animDispatcher.firing(blockEntity);
         level.playSound(null, blockPos, AVPSoundEvents.WEAPON_GENERIC_SHOOT, SoundSource.BLOCKS, 1.0F, 1.0F);
-        BlockBreakProgressManager.damage(level, blockPos, 1F);
+        BlockBreakProgressManager.damage(level, blockPos, damage);
     }
 
     private static void onEntityHit(@NotNull Level level, Entity hitEntity, @NotNull BlockPos blockPos) {
         var registry = hitEntity.registryAccess().registryOrThrow(Registries.DAMAGE_TYPE);
         var damageSource = new DamageSource(registry.getHolderOrThrow(AVPDamageTypes.BULLET), hitEntity);
 
-        hitEntity.hurt(damageSource, 1F);
+        hitEntity.hurt(damageSource, damage);
         level.playSound(null, blockPos, AVPSoundEvents.WEAPON_GENERIC_SHOOT, SoundSource.BLOCKS, 1.0F, 1.0F);
         if (hitEntity instanceof LivingEntity livingEntity) {
             livingEntity.invulnerableTime = 0;

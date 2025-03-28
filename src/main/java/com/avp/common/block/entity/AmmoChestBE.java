@@ -2,6 +2,7 @@ package com.avp.common.block.entity;
 
 import com.avp.common.block.AVPBlocks;
 import com.avp.common.item.AVPItemTags;
+import com.avp.common.item.AVPItems;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
@@ -27,6 +28,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class AmmoChestBE extends BaseContainerBlockEntity implements LidBlockEntity {
     private final ChestLidController chestLidController = new ChestLidController();
+
     private final ContainerOpenersCounter openersCounter;
 
     private NonNullList<ItemStack> itemStacks = NonNullList.withSize(27, ItemStack.EMPTY);
@@ -91,6 +93,7 @@ public class AmmoChestBE extends BaseContainerBlockEntity implements LidBlockEnt
             ContainerHelper.loadAllItems(tag, this.itemStacks, registries);
     }
 
+    @SuppressWarnings("unused")
     public static void lidAnimateTick(Level level, BlockPos pos, BlockState state, AmmoChestBE blockEntity) {
         blockEntity.chestLidController.tickLid();
     }
@@ -105,9 +108,9 @@ public class AmmoChestBE extends BaseContainerBlockEntity implements LidBlockEnt
         if (id == 1) {
             this.chestLidController.shouldBeOpen(type > 0);
             return true;
-        } else {
-            return super.triggerEvent(id, type);
         }
+
+        return super.triggerEvent(id, type);
     }
 
     @Override
