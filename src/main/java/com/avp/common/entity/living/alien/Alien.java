@@ -170,7 +170,6 @@ public abstract class Alien extends Monster {
         if (!level().isClientSide) {
             updateStateBasedOnGenetics();
             healPassively();
-            becomeIrradiated();
             applyDynamicAttributes(config);
         }
     }
@@ -178,13 +177,18 @@ public abstract class Alien extends Monster {
     /**
      * 10% chance when in Nuked Biome to become Irradiated
      */
-    private void becomeIrradiated() {
-        if (tickCount % 60 != 0)
+    protected void becomeIrradiated() {
+        if (tickCount % 60 != 0) {
             return;
-        if (!this.level().getBiome(this.blockPosition()).is(AVPBiomes.NUKED_BIOME))
+        }
+
+        if (!this.level().getBiome(this.blockPosition()).is(AVPBiomes.NUKED_BIOME)) {
             return;
-        if (!isAlive())
+        }
+
+        if (!isAlive()) {
             return;
+        }
 
         if (this.getRandom().nextIntBetweenInclusive(1, 100) >= 90) {
             this.setIrradiated(true);

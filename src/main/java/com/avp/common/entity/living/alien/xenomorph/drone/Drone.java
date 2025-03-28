@@ -115,4 +115,12 @@ public class Drone extends Xenomorph {
         return 2;
     }
 
+    @Override
+    public void tick() {
+        super.tick();
+        if (!level().isClientSide()) {
+            becomeIrradiated();
+        }
+    }
+
 }

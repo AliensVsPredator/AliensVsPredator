@@ -113,4 +113,12 @@ public class Warrior extends Xenomorph {
     public int maxJellyToGrowth() {
         return 4;
     }
+
+    @Override
+    public void tick() {
+        super.tick();
+        if (!level().isClientSide()) {
+            becomeIrradiated();
+        }
+    }
 }

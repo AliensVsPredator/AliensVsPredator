@@ -111,4 +111,12 @@ public class Praetorian extends Xenomorph {
     public int maxJellyToGrowth() {
         return 9;
     }
+
+    @Override
+    public void tick() {
+        super.tick();
+        if (!level().isClientSide()) {
+            becomeIrradiated();
+        }
+    }
 }
