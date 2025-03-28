@@ -4,6 +4,9 @@
   "compatibilityLevel": "JAVA_21",
   "mixins": [
     "MixinArmorStand_EquipArmorFromArmorCase",
+    "MixinBlockItem_ApplyRads",
+    "MixinBoatChest_ApplyRads",
+    "MixinChestBlock_RadioactiveChest",
     "MixinCreeper_Nuked",
     "MixinDecoratedPotPatterns_GetPatternForCustomSherds",
     "MixinEntityTypeBuilder_SilenceDataFixerError",
@@ -14,9 +17,11 @@
     "MixinLivingEntity_ApplyArmorEffects",
     "MixinLivingEntity_GrowEmbryo",
     "MixinLivingEntity_NukedRadation",
+    "MixinMinecartChest_ApplyRads",
     "MixinMob_IncapacitateHost",
     "MixinMobCategory_InjectCustomAlienCategory",
     "MixinShearsItem",
+    "MixinShulkerBlockEntity_RadioactiveItems",
     "MixinVillagerHostilesSensor_RunAwayFromAVPMonsters",
     "server.MixinServerLevel_RunTickRoutines"
   ],
