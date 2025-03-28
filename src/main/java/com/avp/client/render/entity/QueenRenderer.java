@@ -1,5 +1,6 @@
 package com.avp.client.render.entity;
 
+import com.avp.client.animation.QueenAnimator;
 import com.mojang.blaze3d.vertex.PoseStack;
 import mod.azure.azurelib.rewrite.render.entity.AzEntityRenderer;
 import mod.azure.azurelib.rewrite.render.entity.AzEntityRendererConfig;
@@ -24,7 +25,8 @@ public class QueenRenderer extends AzEntityRenderer<Queen> {
     private static final ResourceLocation NETHER_TEXTURE = AVPResources.entityTextureLocation("nether_" + NAME);
 
     public QueenRenderer(EntityRendererProvider.Context context) {
-        super(AzEntityRendererConfig.<Queen>builder($ -> MODEL, QueenRenderer::textureLocation).build(), context);
+        super(AzEntityRendererConfig.<Queen>builder($ -> MODEL, QueenRenderer::textureLocation)
+                .setAnimatorProvider(QueenAnimator::new).build(), context);
         this.shadowRadius = 1F;
     }
 

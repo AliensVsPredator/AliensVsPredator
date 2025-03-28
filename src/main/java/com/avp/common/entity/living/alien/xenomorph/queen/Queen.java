@@ -1,5 +1,6 @@
 package com.avp.common.entity.living.alien.xenomorph.queen;
 
+import com.avp.common.util.AlienVariantUtil;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.monster.Monster;
@@ -18,8 +19,11 @@ import com.avp.common.util.resin.ResinData;
 
 public class Queen extends Xenomorph {
 
+    private final QueenAnimationDispatcher animationDispatcher;
+
     public Queen(EntityType<? extends Queen> entityType, Level level) {
         super(entityType, level);
+        this.animationDispatcher = new QueenAnimationDispatcher(this);
         this.config = AVP.config.statsConfigs.QUEEN_STATS;
     }
 
@@ -53,11 +57,34 @@ public class Queen extends Xenomorph {
     }
 
     @Override
-    public void runPassiveAnimations() {}
+    public void runPassiveAnimations() {
+//        var dispatcher = animationDispatcher;
+//        var isMovingOnGround = moveAnalysis.isMovingHorizontally() && onGround();
+//        var isCrawling = crawlingManager.isCrawling();
+//        Runnable animFunction;
+//
+//        if (isUnderWater()) {
+//            // TODO: idle swim
+//            animFunction = dispatcher::swim;
+//        } else if (isMovingOnGround) {
+//            animFunction = isCrawling ? dispatcher::crawl : dispatcher::walk;
+//        } else {
+//            // TODO: idle crawl
+//            animFunction = isCrawling ? dispatcher::crawlHold : dispatcher::idle;
+//        }
+//
+//        animFunction.run();
+    }
 
     @Override
     public void runAttackAnimations() {
-        // TODO:
+//        var isClawAttack = random.nextBoolean();
+//
+//        if (isClawAttack) {
+//            animationDispatcher.clawAttack();
+//        } else {
+//            animationDispatcher.tailAttack();
+//        }
     }
 
     // Queens are too large to be pushed by fluids.
