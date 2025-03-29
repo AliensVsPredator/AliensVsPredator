@@ -2,6 +2,7 @@ package com.avp.common.item;
 
 import com.avp.common.block.AVPBlocks;
 import com.avp.common.block_item.AVPBlockItems;
+import com.avp.common.util.GunLightUtil;
 import mod.azure.azurelib.rewrite.animation.dispatch.command.AzCommand;
 import mod.azure.azurelib.rewrite.animation.play_behavior.AzPlayBehaviors;
 import net.fabricmc.fabric.api.item.v1.EnchantingContext;
@@ -202,6 +203,7 @@ public class GunItem extends Item {
         playUseAnimations(player, itemStack);
         isFiring = true;
         gunAttack.shoot();
+        GunLightUtil.spawnLightSource(player);
 
         if (!isPlayerCreative) {
             if (!hasInfinity) {
