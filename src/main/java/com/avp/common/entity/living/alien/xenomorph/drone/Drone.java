@@ -24,6 +24,7 @@ public class Drone extends Xenomorph {
 
     public Drone(EntityType<? extends Drone> entityType, Level level) {
         super(entityType, level);
+        this.attackDelayTicks = 7;
         this.animationDispatcher = new DroneAnimationDispatcher(this);
         this.config = AVP.config.statsConfigs.DRONE_STATS;
     }

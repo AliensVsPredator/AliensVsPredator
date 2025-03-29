@@ -76,6 +76,8 @@ public abstract class Xenomorph extends Alien implements ResinProducer {
 
     private final VibrationSystemManager vibrationSystemManager;
 
+    public int attackDelayTicks;
+
     public Xenomorph(EntityType<? extends Xenomorph> entityType, Level level) {
         super(entityType, level);
         this.crawlingManager = new CrawlingManager(this, IS_CRAWLING);
