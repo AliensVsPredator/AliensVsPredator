@@ -25,6 +25,12 @@ public class YautjaMaskManager {
     }
 
     public void checkMask() {
+        var hasMask = yautja.getEntityData().get(hasMaskEDA);
+
+        if (!hasMask) {
+            return;
+        }
+
         var overHalfHealth = yautja.getHealth() > yautja.getMaxHealth() / 2;
         yautja.getEntityData().set(hasMaskEDA, overHalfHealth);
     }
