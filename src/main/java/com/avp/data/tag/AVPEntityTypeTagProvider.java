@@ -276,7 +276,8 @@ public class AVPEntityTypeTagProvider extends FabricTagProvider.EntityTypeTagPro
                 EntityType.WANDERING_TRADER,
                 EntityType.WITCH,
                 EntityType.WOLF,
-                AVPEntityTypes.MARINE
+                AVPEntityTypes.MARINE,
+                AVPEntityTypes.YAUTJA
             );
     }
 

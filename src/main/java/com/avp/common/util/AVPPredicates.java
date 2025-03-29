@@ -1,5 +1,6 @@
 package com.avp.common.util;
 
+import com.avp.common.entity.living.yautja.Yautja;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -54,7 +55,8 @@ public class AVPPredicates {
         return isLiving(hostTarget) &&
             isHost(hostTarget) &&
             !hasEmbryo(hostTarget) &&
-            !isSelfOrOtherParasiteAttached(parasite, hostTarget);
+            !isSelfOrOtherParasiteAttached(parasite, hostTarget)
+            && !HAS_MASK.test((LivingEntity) hostTarget);
     }
 
     public static boolean isHost(Entity target) {
@@ -80,4 +82,6 @@ public class AVPPredicates {
 
     public static final Predicate<LivingEntity> IS_IMMORTAL = livingEntity -> livingEntity instanceof Player player && (player.isCreative()
         || player.isSpectator());
+
+    public static final Predicate<LivingEntity> HAS_MASK = livingEntity -> livingEntity instanceof Yautja yautja && yautja.yautjaMaskManager.hasMask();
 }
