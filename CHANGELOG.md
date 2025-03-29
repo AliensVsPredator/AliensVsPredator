@@ -48,6 +48,11 @@
 - Adds Nuclear Battery dummy item.
 - Add Blueprint Block
   - Villager now uses it
+- Adds Queen animations.
+- Yautja now lose mask at 50% health.
+- Yautja blades now show when not holding an item and is aggressive.
+- Yautja can be facehugged when mask less.
+- Yautja can not regain mask if healed over half heath again.
 
 ## Changes
 - Adjusts how Marine Camps spawn in the world, will only apply to new ones.
@@ -76,6 +81,7 @@
 - Xenos can walk over fences.
 - Nether acid now sets blocks on fire.
 - Made fire placement from flamethrower a bit more random.
+- Adjusts Yautja head yaw offset
 
 ## Fixes
 - Fixes crash related to custom mob category, due to how early it loads, configuration not possible, so removed and enabled by default.
@@ -123,8 +129,15 @@
 - Added item tag `ammo_items` to tag items that the ammo block will accept and use.
 
 ## TODO
-- Add Queen Animations *
 - Add Queen sack that then lays eggs
+- Add Queen scream attack at half health
+  - Freezes player for 2 seconds
+  - Stops Queen moving during it.
+  - Summons 2 Praetorians and 2 Warriors 
+- Add Queen charge attack.
+  - AOE attack that breaks blocks when hitting them.
+- Adjust Queen `ATTACK_CLAW_DOWN` attack to do:
+  - Massive knockback of about 8 blocks
 - Apply genetics of Queen to eggs spawned by Queen
 - Have sentry turret run off batteries
 - Charging system (likely Redstone?) for batteries
