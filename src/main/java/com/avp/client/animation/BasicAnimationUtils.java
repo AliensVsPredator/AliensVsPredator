@@ -1,10 +1,24 @@
 package com.avp.client.animation;
 
+import com.avp.common.entity.living.yautja.Yautja;
 import mod.azure.azurelib.rewrite.animation.AzAnimationContext;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
 
 public class BasicAnimationUtils {
+
+    public static void showHelmet(
+        Yautja entity,
+        AzAnimationContext<?> context,
+        String helmetName
+    ) {
+        var bakedModel = context.boneCache().getBakedModel();
+        var helmet = bakedModel.getBoneOrNull(helmetName);
+
+        if (helmet != null) {
+            helmet.setHidden(!entity.yautjaMaskManager.hasMask());
+        }
+    }
 
     public static void applyHeadRotations(
         LivingEntity entity,

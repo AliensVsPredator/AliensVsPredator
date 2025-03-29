@@ -1,5 +1,9 @@
 package com.avp.common.entity.living.yautja;
 
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
@@ -33,14 +37,22 @@ public class Yautja extends Monster {
 
     private final YautjaNavigationManager navigationManager;
 
-    public static AttributeSupplier.Builder createYautjaAttributes() {
-        return applyFrom(AVP.config.statsConfigs.YAUTJA_STATS, Monster.createMonsterAttributes());
-    }
+    public final YautjaMaskManager yautjaMaskManager;
+
+    private static final EntityDataAccessor<Boolean> HAS_MASK = SynchedEntityData.defineId(
+            Yautja.class,
+            EntityDataSerializers.BOOLEAN
+    );
 
     public Yautja(EntityType<? extends Yautja> entityType, Level level) {
         super(entityType, level);
+        this.yautjaMaskManager = new YautjaMaskManager(this, HAS_MASK);
         this.animationDispatcher = new YautjaAnimationDispatcher(this);
         this.navigationManager = new YautjaNavigationManager(this, moveControl);
+    }
+
+    public static AttributeSupplier.Builder createYautjaAttributes() {
+        return applyFrom(AVP.config.statsConfigs.YAUTJA_STATS, Monster.createMonsterAttributes());
     }
 
     @Override
@@ -70,6 +82,7 @@ public class Yautja extends Monster {
     @Override
     public void tick() {
         super.tick();
+        yautjaMaskManager.tick();
 
         if (!level().isClientSide && (getVehicle() instanceof Boat || getVehicle() instanceof Minecart)) {
             stopRiding();
@@ -92,10 +105,12 @@ public class Yautja extends Monster {
         MobSpawnType mobSpawnType,
         @Nullable SpawnGroupData spawnGroupData
     ) {
-        if (random.nextInt(100) <= 10) {
-            setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(AVPItems.SHURIKEN));
-        } else if (random.nextInt(100) <= 90) {
-            setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(AVPItems.SMART_DISC));
+        if (random.nextDouble() <= 0.5) {
+            if (random.nextDouble() <= 0.7) {
+                setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(AVPItems.SHURIKEN));
+            } else {
+                setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(AVPItems.SMART_DISC));
+            }
         }
 
         return super.finalizeSpawn(serverLevelAccessor, difficultyInstance, mobSpawnType, spawnGroupData);
@@ -143,5 +158,25 @@ public class Yautja extends Monster {
         } else {
             super.travel(vec3);
         }
+    }
+
+    @Override
+    protected void defineSynchedData(SynchedEntityData.Builder builder) {
+        super.defineSynchedData(builder);
+        builder.define(HAS_MASK, true);
+    }
+
+    @Override
+    public void readAdditionalSaveData(CompoundTag compoundTag) {
+        super.readAdditionalSaveData(compoundTag);
+        yautjaMaskManager.load(compoundTag);
+    }
+
+
+
+    @Override
+    public void addAdditionalSaveData(CompoundTag compoundTag) {
+        super.addAdditionalSaveData(compoundTag);
+        yautjaMaskManager.save(compoundTag);
     }
 }
