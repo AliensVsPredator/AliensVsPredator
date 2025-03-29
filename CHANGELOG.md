@@ -53,6 +53,7 @@
 - Yautja blades now show when not holding an item and is aggressive.
 - Yautja can be facehugged when mask less.
 - Yautja can not regain mask if healed over half heath again.
+- Players wearing helmets tagged in `facehugger_protection_helmet` can't be facehugged now.
 
 ## Changes
 - Adjusts how Marine Camps spawn in the world, will only apply to new ones.
@@ -127,6 +128,7 @@
 - Added item tag `radiation_cure_items` to tag items that when used can cure the Radiation effect.
 - Added item tag `radiation_items` to tag items that will give off radiation.
 - Added item tag `ammo_items` to tag items that the ammo block will accept and use.
+- Added item tag `facehugger_protection_helmet` to tag helmets that will block facehuggers, default to only `jungle_predator_helmet`.
 
 ## TODO
 - Add Queen sack that then lays eggs
