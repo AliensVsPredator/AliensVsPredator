@@ -1,3 +1,56 @@
+# v0.0.20-beta
+
+## What's New
+- Full set of Predator armor gives jump boost now.
+
+## Changes
+- None at this time.
+
+## Fixes
+- Removes all but predator armor from `FREEZE_IMMUNE_WEARABLES` tag.
+
+## Data Pack
+- None at this time.
+
+## TODO
+- Add Queen sack that then lays eggs
+- Add Queen scream attack at half health
+  - Freezes player for 2 seconds
+  - Stops Queen moving during it.
+  - Summons 2 Praetorians and 2 Warriors
+- Add Queen charge attack.
+  - AOE attack that breaks blocks when hitting them.
+- Adjust Queen `ATTACK_CLAW_DOWN` attack to do:
+  - Massive knockback of about 8 blocks
+- Apply genetics of Queen to eggs spawned by Queen
+- Have sentry turret run off batteries
+- Charging system (likely Redstone?) for batteries
+- Batteries hold charges that machines use.
+- Compression item?
+- Irradiated rockets
+- Predator Spawn mechanics
+- Predator difficulty adjustments (unsure what this means?)
+- Predator Combi stick
+- More Structures
+- Make Redstone generator give power.
+- Make Resonator do:
+  - Run on batteries.
+  - Prevent resin placement/spreading
+  - Give a radius of it's effect of 25 blocks.
+  - Converts each resin 1 by 1 in it's radius to stone/deepstone based on y value
+  - Converts resin viens to air.
+  - Give storage to hold resin balls from converted resin blocks.
+  - Make xenos target it.
+- Make terminal do:
+  - Use power.
+  - Program chips (once added)
+- Make Blueprint block do blueprint related things.
+- Make Turret do:
+  - Run of batteries
+  - Turn to target when firing.
+  - GUI Option to changing targeting type
+  - Make it see the player that placed it as the owner.
+
 # v0.0.19-beta
 
 ## What's New
@@ -129,45 +182,6 @@
 - Added item tag `radiation_items` to tag items that will give off radiation.
 - Added item tag `ammo_items` to tag items that the ammo block will accept and use.
 - Added item tag `facehugger_protection_helmet` to tag helmets that will block facehuggers, default to only `jungle_predator_helmet`.
-
-## TODO
-- Add Queen sack that then lays eggs
-- Add Queen scream attack at half health
-  - Freezes player for 2 seconds
-  - Stops Queen moving during it.
-  - Summons 2 Praetorians and 2 Warriors 
-- Add Queen charge attack.
-  - AOE attack that breaks blocks when hitting them.
-- Adjust Queen `ATTACK_CLAW_DOWN` attack to do:
-  - Massive knockback of about 8 blocks
-- Apply genetics of Queen to eggs spawned by Queen
-- Have sentry turret run off batteries
-- Charging system (likely Redstone?) for batteries
-- Batteries hold charges that machines use.
-- Compression item?
-- Irradiated rockets
-- Predator Spawn mechanics
-- Predator difficulty adjustments (unsure what this means?)
-- Predator Combi stick
-- More Structures
-- Make Redstone generator give power.
-- Make Resonator do:
-  - Run on batteries.
-  - Prevent resin placement/spreading
-  - Give a radius of it's effect of 25 blocks.
-  - Converts each resin 1 by 1 in it's radius to stone/deepstone based on y value
-  - Converts resin viens to air.
-  - Give storage to hold resin balls from converted resin blocks.
-  - Make xenos target it.
-- Make terminal do: 
-  - Use power.
-  - Program chips (once added)
-- Make Blueprint block do blueprint related things.
-- Make Turret do:
-  - Run of batteries
-  - Turn to target when firing.
-  - GUI Option to changing targeting type
-  - Make it see the player that placed it as the owner.
 
 # v0.0.18-beta
 
