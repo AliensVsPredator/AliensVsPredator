@@ -39,6 +39,8 @@ public abstract class MixinLivingEntity_ApplyArmorEffects extends Entity {
             supplyAir = true;
         } else if (isWearingFullNetherChitinArmor(self)) {
             self.addEffect(new MobEffectInstance(MobEffects.FIRE_RESISTANCE, 5, 0, true, false, true));
+        } else if (isWearingFullPredatorArmor(self)) {
+            self.addEffect(new MobEffectInstance(MobEffects.JUMP, 5, 0, true, false, true));
         }
 
         if (supplyAir) {
@@ -57,6 +59,14 @@ public abstract class MixinLivingEntity_ApplyArmorEffects extends Entity {
             && (chest.is(ArmorItems.NETHER_CHITIN_CHESTPLATE) || chest.is(ArmorItems.PLATED_NETHER_CHITIN_CHESTPLATE))
             && (legs.is(ArmorItems.NETHER_CHITIN_LEGGINGS) || legs.is(ArmorItems.PLATED_NETHER_CHITIN_LEGGINGS))
             && (feet.is(ArmorItems.NETHER_CHITIN_BOOTS) || feet.is(ArmorItems.PLATED_NETHER_CHITIN_BOOTS));
+    }
+
+    @Unique
+    private boolean isWearingFullPredatorArmor(LivingEntity self) {
+        return self.getItemBySlot(EquipmentSlot.HEAD).is(ArmorItems.JUNGLE_PREDATOR_HELMET) &&
+                self.getItemBySlot(EquipmentSlot.CHEST).is(ArmorItems.JUNGLE_PREDATOR_CHESTPLATE) &&
+                self.getItemBySlot(EquipmentSlot.LEGS).is(ArmorItems.JUNGLE_PREDATOR_LEGGINGS) &&
+                self.getItemBySlot(EquipmentSlot.FEET).is(ArmorItems.JUNGLE_PREDATOR_BOOTS);
     }
 
     @Unique
