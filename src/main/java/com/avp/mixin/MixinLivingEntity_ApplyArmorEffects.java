@@ -41,6 +41,7 @@ public abstract class MixinLivingEntity_ApplyArmorEffects extends Entity {
             self.addEffect(new MobEffectInstance(MobEffects.FIRE_RESISTANCE, 5, 0, true, false, true));
         } else if (isWearingFullPredatorArmor(self)) {
             self.addEffect(new MobEffectInstance(MobEffects.JUMP, 5, 0, true, false, true));
+            self.addEffect(new MobEffectInstance(MobEffects.DAMAGE_BOOST, 5, 0, true, false, true));
         }
 
         if (supplyAir) {
