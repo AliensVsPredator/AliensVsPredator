@@ -5,16 +5,20 @@
 - Full set of Predator armor gives damage boost now.
 
 ## Changes
-- None at this time.
+- Desk Terminal now has facing values set.
+- Adds light source back to guns, this can cause lag.
 
 ## Fixes
 - Removes all but predator armor from `FREEZE_IMMUNE_WEARABLES` tag.
+- Fixes walking up blocks issue.
+- Fixes Nether acid breaking bedrock with it's fire.
 
 ## Data Pack
-- None at this time.
+- Adds missing `acid_immune` tag to `nether_acid_immune`
 
 ## TODO
 - Add Queen sack that then lays eggs
+  - Once added, add royal line growth
 - Add Queen scream attack at half health
   - Freezes player for 2 seconds
   - Stops Queen moving during it.
