@@ -2,6 +2,7 @@
 
 ## What's New
 - Full set of Predator armor gives jump boost now.
+- Full set of Predator armor gives damage boost now.
 
 ## Changes
 - None at this time.
