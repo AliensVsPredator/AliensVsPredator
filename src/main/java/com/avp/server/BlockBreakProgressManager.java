@@ -3,6 +3,7 @@ package com.avp.server;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Blocks;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -51,6 +52,10 @@ public class BlockBreakProgressManager {
 
             if (defaultDestroyTimeInSeconds < 0) {
                 // This block cannot be destroyed, so abort.
+                return null;
+            }
+
+            if (blockState.is(Blocks.FIRE)) {
                 return null;
             }
 

@@ -37,7 +37,7 @@ public class AcidBlockDamageUtil {
                     if (acid.isIrradiated()) {
                         level.setBlockAndUpdate(blockPos.below(), Blocks.BLUE_ICE.defaultBlockState());
                     } else {
-                        if (acid.isNetherAfflicted()) {
+                        if (acid.isNetherAfflicted() && level.getBlockState(blockPos).isAir()) {
                             level.setBlockAndUpdate(blockPos, Blocks.FIRE.defaultBlockState());
                         }
 
