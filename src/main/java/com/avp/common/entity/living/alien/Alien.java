@@ -73,6 +73,11 @@ public abstract class Alien extends Monster {
         this.hiveManager = new HiveManager(this);
     }
 
+    @Override
+    public float maxUpStep() {
+        return 1.5F;
+    }
+
     protected boolean canBleedAcid() {
         return true;
     }
