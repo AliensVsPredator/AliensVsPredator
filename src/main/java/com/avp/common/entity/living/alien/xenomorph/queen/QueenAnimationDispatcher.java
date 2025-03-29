@@ -10,21 +10,24 @@ public class QueenAnimationDispatcher {
         QueenAnimationRefs.ATTACK_CLAW_ANIMATION_NAME
     );
 
+    private static final AzCommand ATTACK_CLAW_DOWN = AzCommand.create(
+            QueenAnimationRefs.FULL_BODY_CONTROLLER_NAME,
+            QueenAnimationRefs.ATTACK_CLAW_DOWN_ANIMATION_NAME
+    );
+
     private static final AzCommand ATTACK_TAIL = AzCommand.create(
         QueenAnimationRefs.FULL_BODY_CONTROLLER_NAME,
         QueenAnimationRefs.ATTACK_TAIL_ANIMATION_NAME
     );
 
-    private static final AzCommand CRAWL = AzCommand.create(
-        QueenAnimationRefs.FULL_BODY_CONTROLLER_NAME,
-        QueenAnimationRefs.CRAWL_ANIMATION_NAME,
-        AzPlayBehaviors.LOOP
+    private static final AzCommand ATTACK_SCREAM = AzCommand.create(
+            QueenAnimationRefs.FULL_BODY_CONTROLLER_NAME,
+            QueenAnimationRefs.SCREAM_ANIMATION_NAME
     );
 
-    private static final AzCommand CRAWL_HOLD = AzCommand.create(
-        QueenAnimationRefs.FULL_BODY_CONTROLLER_NAME,
-        QueenAnimationRefs.CRAWL_ANIMATION_NAME,
-        AzPlayBehaviors.HOLD_ON_LAST_FRAME
+    private static final AzCommand ATTACK_CHARGE = AzCommand.create(
+            QueenAnimationRefs.FULL_BODY_CONTROLLER_NAME,
+            QueenAnimationRefs.CHARGE_ANIMATION_NAME
     );
 
     private static final AzCommand FLAIL_TAIL = AzCommand.create(
@@ -77,14 +80,6 @@ public class QueenAnimationDispatcher {
         this.queen = queen;
     }
 
-    public void crawl() {
-        CRAWL.sendForEntity(queen);
-    }
-
-    public void crawlHold() {
-        CRAWL_HOLD.sendForEntity(queen);
-    }
-
     public void idle() {
         IDLE.sendForEntity(queen);
     }
@@ -102,10 +97,22 @@ public class QueenAnimationDispatcher {
     }
 
     public void clawAttack() {
-        ATTACK_CLAW.sendForEntity(queen);
+        if (queen.getRandom().nextInt(1, 10) >= 8) {
+            ATTACK_CLAW_DOWN.sendForEntity(queen);
+        } else {
+            ATTACK_CLAW.sendForEntity(queen);
+        }
     }
 
     public void tailAttack() {
         ATTACK_TAIL.sendForEntity(queen);
+    }
+
+    public void screamAttack() {
+        ATTACK_SCREAM.sendForEntity(queen);
+    }
+
+    public void chargeAttack() {
+        ATTACK_CHARGE.sendForEntity(queen);
     }
 }

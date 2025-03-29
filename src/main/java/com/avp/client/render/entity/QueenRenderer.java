@@ -25,7 +25,7 @@ public class QueenRenderer extends AzEntityRenderer<Queen> {
     private static final ResourceLocation NETHER_TEXTURE = AVPResources.entityTextureLocation("nether_" + NAME);
 
     public QueenRenderer(EntityRendererProvider.Context context) {
-        super(AzEntityRendererConfig.<Queen>builder($ -> MODEL, QueenRenderer::textureLocation)
+        super(AzEntityRendererConfig.builder($ -> MODEL, QueenRenderer::textureLocation)
                 .setAnimatorProvider(QueenAnimator::new).build(), context);
         this.shadowRadius = 1F;
     }

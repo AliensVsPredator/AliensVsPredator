@@ -37,4 +37,14 @@ public class QueenAnimator extends AzEntityAnimator<Queen> {
         return ANIMATION;
     }
 
+    @Override
+    public void setCustomAnimations(Queen animatable, float partialTicks) {
+        super.setCustomAnimations(animatable, partialTicks);
+
+        var bakedModel = context().boneCache().getBakedModel();
+        var eggSack = bakedModel.getBoneOrNull("root2");
+        if (eggSack != null) {
+            eggSack.setHidden(true);
+        }
+    }
 }
