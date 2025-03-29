@@ -7,6 +7,19 @@ import net.minecraft.world.entity.LivingEntity;
 
 public class BasicAnimationUtils {
 
+    public static void showWristblades(
+        Yautja entity,
+        AzAnimationContext<?> context,
+        String bladeName
+    ) {
+        var bakedModel = context.boneCache().getBakedModel();
+        var blade = bakedModel.getBoneOrNull(bladeName);
+
+        if (blade != null) {
+            blade.setHidden(!entity.getMainHandItem().isEmpty() && !entity.isAggressive());
+        }
+    }
+
     public static void showHelmet(
         Yautja entity,
         AzAnimationContext<?> context,
