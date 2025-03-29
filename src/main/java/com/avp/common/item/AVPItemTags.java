@@ -8,6 +8,8 @@ import com.avp.AVPResources;
 
 public class AVPItemTags {
 
+    public static final TagKey<Item> FACEHUGGER_PROTECTION_HELMET = create("facehugger_protection_helmet");
+
     public static final TagKey<Item> HOSTILE_WEAPON = create("hostile_weapon");
 
     public static final TagKey<Item> ACID_IMMUNE = create("acid_immune");

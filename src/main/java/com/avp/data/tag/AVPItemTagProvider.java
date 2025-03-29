@@ -66,6 +66,11 @@ public class AVPItemTagProvider extends FabricTagProvider.ItemTagProvider {
                 AVPItems.FUEL_TANK
             );
 
+        getOrCreateTagBuilder(AVPItemTags.FACEHUGGER_PROTECTION_HELMET)
+            .add(
+                ArmorItems.JUNGLE_PREDATOR_HELMET
+            );
+
         getOrCreateTagBuilder(AVPItemTags.HOSTILE_WEAPON)
             .addTag(AVPItemTags.GUNS)
             .addTag(ItemTags.AXES)
