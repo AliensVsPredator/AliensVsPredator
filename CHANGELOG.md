@@ -16,6 +16,7 @@
 - Refactored Turret and Trip mine configs to new Block Config section.
 - Redid how Xenos should float in 1 block deep water, meaning they just walk in it now.
 - Queens now can go up 2 blocks.
+- Get rid of shitty item texture on Sentry Turret
 
 ## Fixes
 - Removes all but predator armor from `FREEZE_IMMUNE_WEARABLES` tag.
