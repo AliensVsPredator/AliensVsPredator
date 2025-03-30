@@ -5,7 +5,7 @@ import mod.azure.azurelib.rewrite.animation.play_behavior.AzPlayBehaviors;
 
 public class ResonatorAnimDispatcher {
 
-    private static final AzCommand IDLE_COMMAND = AzCommand.create(
+    private static final AzCommand POWER_UP_COMMAND = AzCommand.create(
             "base_controller",
             "animation.activate",
             AzPlayBehaviors.PLAY_ONCE
@@ -23,8 +23,6 @@ public class ResonatorAnimDispatcher {
             AzPlayBehaviors.LOOP
     );
 
-    private static final AzCommand POWERED_COMMAND = AzCommand.compose(IDLE_COMMAND, SPINNING_COMMAND);
-
     public ResonatorAnimDispatcher() {}
 
     public void unpowered(ResonatorBE entity) {
@@ -32,6 +30,10 @@ public class ResonatorAnimDispatcher {
     }
 
     public void powered(ResonatorBE entity) {
-        POWERED_COMMAND.sendForBlockEntity(entity);
+        SPINNING_COMMAND.sendForBlockEntity(entity);
+    }
+
+    public void powerUp(ResonatorBE entity) {
+        POWER_UP_COMMAND.sendForBlockEntity(entity);
     }
 }

@@ -22,6 +22,8 @@ public class ResonatorBE extends BlockEntity {
 
     private int tickCounter = 0;
 
+    private static int animationTickCounter = 0;
+
     private static boolean isAnimating = false;
 
     protected final ResonatorAnimDispatcher animDispatcher;
@@ -47,12 +49,20 @@ public class ResonatorBE extends BlockEntity {
         if (!(level.hasNeighborSignal(blockPos) || level.hasNeighborSignal(blockPos.above()))) {
             resonatorBE.animDispatcher.unpowered(resonatorBE);
             isAnimating = false;
+            animationTickCounter = 0;
             return;
         }
 
         if (!isAnimating) {
-            resonatorBE.animDispatcher.powered(resonatorBE);
-            isAnimating = true;
+            if (animationTickCounter == 0) {
+                resonatorBE.animDispatcher.powerUp(resonatorBE);
+            }
+            if (animationTickCounter >= 15) {
+                resonatorBE.animDispatcher.powered(resonatorBE);
+                isAnimating = true;
+            } else {
+                animationTickCounter++;
+            }
         }
 
         resonatorBE.incrementTickCounter();

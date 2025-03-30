@@ -1,5 +1,6 @@
 package com.avp.common.block_item;
 
+import mod.azure.azurelib.rewrite.animation.cache.AzIdentityRegistry;
 import net.minecraft.core.Registry;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -621,5 +622,7 @@ public class AVPBlockItems {
         return Registry.register(BuiltInRegistries.ITEM, resourceLocation, blockItem);
     }
 
-    public static void initialize() {}
+    public static void initialize() {
+        AzIdentityRegistry.register(RESONATOR_BLOCK);
+    }
 }
