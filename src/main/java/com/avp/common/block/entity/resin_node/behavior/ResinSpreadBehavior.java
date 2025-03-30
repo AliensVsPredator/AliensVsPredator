@@ -1,5 +1,6 @@
 package com.avp.common.block.entity.resin_node.behavior;
 
+import com.avp.common.util.AlienVariantUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
@@ -32,14 +33,7 @@ public class ResinSpreadBehavior implements SpreadBehavior {
         boolean bl
     ) {
         var nodeBlock = levelAccessor.getBlockState(nodePos).getBlock();
-        // TODO: Try not to hardcode this.
-        var resinBlock = (ResinVeinBlock) (nodeBlock == AVPBlocks.NETHER_RESIN_NODE
-            ? AVPBlocks.NETHER_RESIN_VEIN
-            : nodeBlock == AVPBlocks.ABERRANT_RESIN_NODE
-                ? AVPBlocks.ABERRANT_RESIN_VEIN
-                : nodeBlock == AVPBlocks.IRRADIATED_RESIN_NODE
-                    ? AVPBlocks.IRRADIATED_RESIN_VEIN
-                    : AVPBlocks.RESIN_VEIN);
+        var resinBlock = AlienVariantUtil.getResinVeinFor(nodeBlock);
 
         if (facings == null) {
             var spreader = resinBlock.getSameSpaceSpreader();

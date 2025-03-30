@@ -1,6 +1,7 @@
 package com.avp.common.util;
 
 import com.avp.common.block.AVPBlocks;
+import com.avp.common.block.resin.ResinVeinBlock;
 import com.avp.common.entity.acid.Acid;
 import com.avp.common.particle.AVPParticleTypes;
 import net.minecraft.core.particles.ParticleOptions;
@@ -30,6 +31,12 @@ public class AlienVariantUtil {
             Map.entry(AVPBlocks.NETHER_RESIN_VEIN, AVPItems.NETHER_RESIN_BALL)
     );
 
+    private static final Map<Block, Block> RESIN_VEIN_MAPPING = Map.ofEntries(
+            Map.entry(AVPBlocks.NETHER_RESIN_NODE, AVPBlocks.NETHER_RESIN_VEIN),
+            Map.entry(AVPBlocks.ABERRANT_RESIN_NODE, AVPBlocks.ABERRANT_RESIN_VEIN),
+            Map.entry(AVPBlocks.IRRADIATED_RESIN_NODE, AVPBlocks.IRRADIATED_RESIN_VEIN)
+    );
+
     public static Item getResinBallFor(Alien alien) {
         return switch (alien) {
             case Alien netherAlien when netherAlien.isNetherAfflicted() -> AVPItems.NETHER_RESIN_BALL;
@@ -46,6 +53,10 @@ public class AlienVariantUtil {
             case Alien irradiatedAlien when irradiatedAlien.isIrradiated() -> AVPBlocks.IRRADIATED_RESIN_NODE;
             default -> AVPBlocks.RESIN_NODE;
         };
+    }
+
+    public static ResinVeinBlock getResinVeinFor(Block block) {
+        return (ResinVeinBlock) RESIN_VEIN_MAPPING.getOrDefault(block, AVPBlocks.RESIN_VEIN);
     }
 
     public static ParticleOptions getParticleFor(Acid acid) {
