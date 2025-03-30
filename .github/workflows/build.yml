@@ -2,7 +2,7 @@ name: Java CI with Gradle
 
 on:
   pull_request:
-    branches: [ "*" ]
+    branches: [ "1.21.1-Fabric" ]
   push:
     branches: [ "1.21.1-Fabric" ]
 
@@ -30,9 +30,3 @@ jobs:
           name: Fabric
           path: |
             build/libs/*.jar
-#      - name: Upload a Build Artifact
-#        uses: actions/upload-artifact@v4
-#        with:
-#          name: NeoForge
-#          path: |
-#            neoforge/build/libs/*.jar
