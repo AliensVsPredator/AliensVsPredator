@@ -171,6 +171,7 @@ public class AVPClient implements ClientModInitializer {
         registerItemRenderer(AVPBlockItems.DESK_TERMINAL_BLOCK, name -> DeskTerminalItemRenderer::new);
         registerItemRenderer(AVPBlockItems.TRIP_MINE_BLOCK, name -> TripMineItemRenderer::new);
         registerItemRenderer(AVPBlockItems.RESONATOR_BLOCK, name -> ResonatorItemRenderer::new);
+        registerItemRenderer(AVPBlockItems.SENTRY_TURRET, name -> SentryItemtemRenderer::new);
         ColorProviderRegistry.ITEM.register(
             (itemStack, i) -> i > 0 ? -1 : DyedItemColor.getOrDefault(itemStack, -1),
             ArmorItems.MK50_HELMET

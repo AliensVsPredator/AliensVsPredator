@@ -1,6 +1,3 @@
 {
-  "parent": "minecraft:item/generated",
-  "textures": {
-    "layer0": "avp:item/sentry_turret"
-  }
+  "parent": "avp:block/sentry_turret"
 }

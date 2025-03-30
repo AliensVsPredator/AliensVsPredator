@@ -623,6 +623,6 @@ public class AVPBlockItems {
     }
 
     public static void initialize() {
-        AzIdentityRegistry.register(RESONATOR_BLOCK);
+        AzIdentityRegistry.register(RESONATOR_BLOCK, SENTRY_TURRET);
     }
 }
