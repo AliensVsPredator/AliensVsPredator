@@ -606,6 +606,10 @@ public class MexicanSpanishLanguageProvider extends FabricLanguageProvider {
         // Configs
         translationBuilder.add("config.screen.avp", "AVP Config");
 
+        translationBuilder.add("config.avp.option.blockConfigs", "Block Setting Configs");
+        translationBuilder.add("config.avp.option.RESONATOR_REPLACE_TICKS", "Resonator Replace Ticks");
+        translationBuilder.add("config.avp.option.RESONATOR_REPLACE_RADIUS", "Resonator Replace Radius");
+
         translationBuilder.add("config.avp.option.hiveConfigs", "Hive Configs");
         translationBuilder.add(
             "config.avp.option.MINIMUM_DISTANCE_BETWEEN_HIVES_IN_BLOCKS",

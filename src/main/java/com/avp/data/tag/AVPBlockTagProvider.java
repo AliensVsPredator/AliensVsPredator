@@ -147,6 +147,14 @@ public class AVPBlockTagProvider extends FabricTagProvider.BlockTagProvider {
             .addTag(AVPBlockTags.ABERRANT_RESIN)
             .addTag(AVPBlockTags.IRRADIATED_RESIN);
 
+        getOrCreateTagBuilder(AVPBlockTags.RESIN_VEINS)
+            .add(
+                AVPBlocks.NETHER_RESIN_VEIN,
+                AVPBlocks.RESIN_VEIN,
+                AVPBlocks.ABERRANT_RESIN_VEIN,
+                AVPBlocks.IRRADIATED_RESIN_VEIN
+            );
+
         getOrCreateTagBuilder(AVPBlockTags.STEEL)
             .add(
                 AVPBlocks.CHISELED_STEEL,

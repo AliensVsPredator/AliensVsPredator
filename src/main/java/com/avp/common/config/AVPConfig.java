@@ -11,6 +11,24 @@ public class AVPConfig {
 
     @Configurable
     @Configurable.Synchronized
+    @Configurable.Comment("Controls the settings of the various blocks")
+    public BlockConfigs blockConfigs = new BlockConfigs();
+
+    public static class BlockConfigs {
+
+        @Configurable
+        @Configurable.Synchronized
+        @Configurable.Comment({"Resonator will replace every time this value is met", "1 second is 20 ticks. Default of 30 seconds"})
+        public int RESONATOR_REPLACE_TICKS = 600;
+
+        @Configurable
+        @Configurable.Synchronized
+        @Configurable.Comment("Radius in blocks a Resonator will look for resin blocks")
+        public int RESONATOR_REPLACE_RADIUS = 25;
+    }
+
+    @Configurable
+    @Configurable.Synchronized
     @Configurable.Comment("Controls the Mobs Spawn Settings")
     public SpawnConfigs spawnConfigs = new SpawnConfigs();
 

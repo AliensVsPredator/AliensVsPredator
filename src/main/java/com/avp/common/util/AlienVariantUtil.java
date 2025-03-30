@@ -11,7 +11,24 @@ import com.avp.common.item.AVPItems;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 
+import java.util.Map;
+
 public class AlienVariantUtil {
+
+    private static final Map<Block, Item> RESIN_BALL_MAPPING = Map.ofEntries(
+            Map.entry(AVPBlocks.ABERRANT_RESIN_NODE, AVPItems.ABERRANT_RESIN_BALL),
+            Map.entry(AVPBlocks.ABERRANT_RESIN, AVPItems.ABERRANT_RESIN_BALL),
+            Map.entry(AVPBlocks.ABERRANT_RESIN_WEB, AVPItems.ABERRANT_RESIN_BALL),
+            Map.entry(AVPBlocks.ABERRANT_RESIN_VEIN, AVPItems.ABERRANT_RESIN_BALL),
+            Map.entry(AVPBlocks.IRRADIATED_RESIN_NODE, AVPItems.IRRADIATED_RESIN_BALL),
+            Map.entry(AVPBlocks.IRRADIATED_RESIN, AVPItems.IRRADIATED_RESIN_BALL),
+            Map.entry(AVPBlocks.IRRADIATED_RESIN_WEB, AVPItems.IRRADIATED_RESIN_BALL),
+            Map.entry(AVPBlocks.IRRADIATED_RESIN_VEIN, AVPItems.IRRADIATED_RESIN_BALL),
+            Map.entry(AVPBlocks.NETHER_RESIN_NODE, AVPItems.NETHER_RESIN_BALL),
+            Map.entry(AVPBlocks.NETHER_RESIN, AVPItems.NETHER_RESIN_BALL),
+            Map.entry(AVPBlocks.NETHER_RESIN_WEB, AVPItems.NETHER_RESIN_BALL),
+            Map.entry(AVPBlocks.NETHER_RESIN_VEIN, AVPItems.NETHER_RESIN_BALL)
+    );
 
     public static Item getResinBallFor(Alien alien) {
         return switch (alien) {
@@ -53,5 +70,8 @@ public class AlienVariantUtil {
         }
 
         return AVPBlocks.RESIN_NODE.defaultBlockState();
+
+    public static Item getResinBallForType(BlockState blockState) {
+        return RESIN_BALL_MAPPING.getOrDefault(blockState.getBlock(), AVPItems.RESIN_BALL);
     }
 }

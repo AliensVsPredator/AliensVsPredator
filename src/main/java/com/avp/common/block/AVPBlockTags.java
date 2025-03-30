@@ -44,6 +44,8 @@ public class AVPBlockTags {
 
     public static final TagKey<Block> RESIN = create("resin");
 
+    public static final TagKey<Block> RESIN_VEINS = create("resin_veins");
+
     public static final TagKey<Block> SHOULD_NOT_BE_DESTROYED = create("should_not_be_destroyed");
 
     public static final TagKey<Block> STEEL = create("steel");

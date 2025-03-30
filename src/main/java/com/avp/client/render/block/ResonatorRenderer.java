@@ -1,6 +1,7 @@
 package com.avp.client.render.block;
 
 import com.avp.AVPResources;
+import com.avp.client.animation.blocks.ResonatorAnimator;
 import com.avp.common.block.entity.ResonatorBE;
 import mod.azure.azurelib.rewrite.render.block.AzBlockEntityRenderer;
 import mod.azure.azurelib.rewrite.render.block.AzBlockEntityRendererConfig;
@@ -16,6 +17,7 @@ public class ResonatorRenderer extends AzBlockEntityRenderer<ResonatorBE> {
 
     public ResonatorRenderer() {
         super(AzBlockEntityRendererConfig.<ResonatorBE>builder(GEO, TEX)
+                .setAnimatorProvider(ResonatorAnimator::new)
                 .build());
     }
 }
