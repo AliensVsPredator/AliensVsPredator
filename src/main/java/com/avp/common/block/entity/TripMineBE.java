@@ -34,7 +34,7 @@ public class TripMineBE extends BlockEntity {
             return;
         }
 
-        var detectionArea = new AABB(blockPos).inflate(AVP.config.weaponConfigs.TRIP_MINE_SEARCH_RADIUS);
+        var detectionArea = new AABB(blockPos).inflate(AVP.config.blockConfigs.TRIP_MINE_SEARCH_RADIUS);
         var entities = level.getEntitiesOfClass(LivingEntity.class, detectionArea, entity -> {
             if (entity instanceof Player player) {
                 return !AVPPredicates.IS_IMMORTAL.test(player);

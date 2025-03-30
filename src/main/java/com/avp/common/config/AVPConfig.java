@@ -25,6 +25,36 @@ public class AVPConfig {
         @Configurable.Synchronized
         @Configurable.Comment("Radius in blocks a Resonator will look for resin blocks")
         public int RESONATOR_REPLACE_RADIUS = 25;
+
+        @Configurable
+        @Configurable.Synchronized
+        @Configurable.Comment("If enabled, nukes will explode.")
+        public boolean ENABLE_NUKE_BLOCK_MECHS = false;
+
+        @Configurable
+        @Configurable.Synchronized
+        @Configurable.Comment("FOV range that turrets can target")
+        public int TURRET_FOV = 45;
+
+        @Configurable
+        @Configurable.Synchronized
+        @Configurable.Comment("Block range that turrets can target")
+        public int TURRET_RANGE = 32;
+
+        @Configurable
+        @Configurable.Synchronized
+        @Configurable.Comment("Turret damage value")
+        public float TURRET_DAMAGE = 4F;
+
+        @Configurable
+        @Configurable.Synchronized
+        @Configurable.Comment("Block radius that a turret looks for an ammo chest")
+        public int TURRET_AMMOCHEST_SEARCH_RANGE = 5;
+
+        @Configurable
+        @Configurable.Synchronized
+        @Configurable.Comment("Block radius that a trip mine looks for a living entity")
+        public double TRIP_MINE_SEARCH_RADIUS = 2;
     }
 
     @Configurable
@@ -522,35 +552,5 @@ public class AVPConfig {
         @Configurable.Synchronized
         @Configurable.Comment("If enabled, bullets from guns will damage blocks.")
         public boolean BULLETS_DAMAGE_BLOCKS_ENABLED = true;
-
-        @Configurable
-        @Configurable.Synchronized
-        @Configurable.Comment("If enabled, nukes will explode.")
-        public boolean ENABLE_NUKE_BLOCK_MECHS = false;
-
-        @Configurable
-        @Configurable.Synchronized
-        @Configurable.Comment("FOV range that turrets can target")
-        public int TURRET_FOV = 45;
-
-        @Configurable
-        @Configurable.Synchronized
-        @Configurable.Comment("Block range that turrets can target")
-        public int TURRET_RANGE = 32;
-
-        @Configurable
-        @Configurable.Synchronized
-        @Configurable.Comment("Turret damage value")
-        public float TURRET_DAMAGE = 4F;
-
-        @Configurable
-        @Configurable.Synchronized
-        @Configurable.Comment("Block radius that a turret looks for an ammo chest")
-        public int TURRET_AMMOCHEST_SEARCH_RANGE = 5;
-
-        @Configurable
-        @Configurable.Synchronized
-        @Configurable.Comment("Block radius that a trip mine looks for a living entity")
-        public double TRIP_MINE_SEARCH_RADIUS = 2;
     }
 }

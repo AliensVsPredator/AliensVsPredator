@@ -125,6 +125,6 @@ public class NukeBE extends Entity {
     }
 
     public boolean isNukeEnabled() {
-        return AVP.config.weaponConfigs.ENABLE_NUKE_BLOCK_MECHS;
+        return AVP.config.blockConfigs.ENABLE_NUKE_BLOCK_MECHS;
     }
 }
