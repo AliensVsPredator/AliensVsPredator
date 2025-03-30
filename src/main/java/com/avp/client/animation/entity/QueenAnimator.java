@@ -1,4 +1,4 @@
-package com.avp.client.animation;
+package com.avp.client.animation.entity;
 
 import com.avp.AVPResources;
 import com.avp.common.entity.living.alien.xenomorph.queen.Queen;

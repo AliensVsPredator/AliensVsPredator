@@ -1,4 +1,4 @@
-package com.avp.client.animation.blocks;
+package com.avp.client.animation.block;
 
 import com.avp.AVPResources;
 import com.avp.common.block.entity.ResonatorBE;

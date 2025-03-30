@@ -1,4 +1,4 @@
-package com.avp.client.render.layer;
+package com.avp.client.render.layer.human;
 
 import mod.azure.azurelib.rewrite.model.AzBone;
 import mod.azure.azurelib.rewrite.render.AzRendererPipelineContext;
@@ -8,11 +8,11 @@ import net.minecraft.client.renderer.RenderType;
 import com.avp.common.entity.living.human.AbstractHumanMob;
 import com.avp.common.entity.living.human.marine.MarineMob;
 
-public class HumanEyesLayer implements AzRenderLayer<MarineMob> {
+public class HumanHairLayer implements AzRenderLayer<MarineMob> {
 
     private final String HUMAN_TYPE;
 
-    public HumanEyesLayer(String humanType) {
+    public HumanHairLayer(String humanType) {
         HUMAN_TYPE = humanType;
     }
 
@@ -25,11 +25,11 @@ public class HumanEyesLayer implements AzRenderLayer<MarineMob> {
         var renderPipeline = context.rendererPipeline();
         if (Boolean.TRUE.equals(animatable.getEntityData().get(AbstractHumanMob.SET_GENDER))) {
             context.setVertexConsumer(
-                context.multiBufferSource().getBuffer(RenderType.entityCutout(animatable.getEyeManager().getMaleEyeTexture(HUMAN_TYPE)))
+                context.multiBufferSource().getBuffer(RenderType.entityCutout(animatable.getHairManager().getMaleHairTexture(HUMAN_TYPE)))
             );
         } else {
             context.setVertexConsumer(
-                context.multiBufferSource().getBuffer(RenderType.entityCutout(animatable.getEyeManager().getFemaleEyeTexture(HUMAN_TYPE)))
+                context.multiBufferSource().getBuffer(RenderType.entityCutout(animatable.getHairManager().getFemaleHairTexture(HUMAN_TYPE)))
             );
         }
         renderPipeline.reRender(context);

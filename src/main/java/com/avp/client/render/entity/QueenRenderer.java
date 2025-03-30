@@ -1,6 +1,6 @@
 package com.avp.client.render.entity;
 
-import com.avp.client.animation.QueenAnimator;
+import com.avp.client.animation.entity.QueenAnimator;
 import com.mojang.blaze3d.vertex.PoseStack;
 import mod.azure.azurelib.rewrite.render.entity.AzEntityRenderer;
 import mod.azure.azurelib.rewrite.render.entity.AzEntityRendererConfig;

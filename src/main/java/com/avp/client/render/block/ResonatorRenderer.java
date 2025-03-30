@@ -1,7 +1,7 @@
 package com.avp.client.render.block;
 
 import com.avp.AVPResources;
-import com.avp.client.animation.blocks.ResonatorAnimator;
+import com.avp.client.animation.block.ResonatorAnimator;
 import com.avp.common.block.entity.ResonatorBE;
 import mod.azure.azurelib.rewrite.render.block.AzBlockEntityRenderer;
 import mod.azure.azurelib.rewrite.render.block.AzBlockEntityRendererConfig;

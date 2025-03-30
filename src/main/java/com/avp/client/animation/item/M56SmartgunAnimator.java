@@ -1,4 +1,4 @@
-package com.avp.client.animation.guns;
+package com.avp.client.animation.item;
 
 import mod.azure.azurelib.rewrite.animation.AzAnimatorConfig;
 import mod.azure.azurelib.rewrite.animation.controller.AzAnimationController;
@@ -11,13 +11,13 @@ import org.jetbrains.annotations.NotNull;
 import com.avp.AVPResources;
 import com.avp.common.item.old_painless.OldPainlessAnimationRefs;
 
-public class OldPainlessAnimator extends AzItemAnimator {
+public class M56SmartgunAnimator extends AzItemAnimator {
 
-    private static final String NAME = "old_painless";
+    private static final String NAME = "m56_smartgun";
 
     private static final ResourceLocation ANIMATION = AVPResources.itemAnimationLocation(NAME);
 
-    public OldPainlessAnimator() {
+    public M56SmartgunAnimator() {
         super(AzAnimatorConfig.defaultConfig());
     }
 
@@ -25,7 +25,7 @@ public class OldPainlessAnimator extends AzItemAnimator {
     public void registerControllers(AzAnimationControllerContainer<ItemStack> animationControllerContainer) {
         animationControllerContainer.add(
             AzAnimationController.builder(this, OldPainlessAnimationRefs.MAIN_CONTROLLER_NAME)
-                .setTransitionLength(5)
+                .setTransitionLength(1)
                 .build()
         );
     }

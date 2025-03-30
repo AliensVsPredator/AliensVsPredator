@@ -1,6 +1,7 @@
-package com.avp.client.render.layer;
+package com.avp.client.render.layer.human;
 
 import mod.azure.azurelib.rewrite.model.AzBone;
+import mod.azure.azurelib.rewrite.render.AzRendererPipeline;
 import mod.azure.azurelib.rewrite.render.AzRendererPipelineContext;
 import mod.azure.azurelib.rewrite.render.layer.AzRenderLayer;
 import net.minecraft.client.renderer.RenderType;
@@ -8,11 +9,11 @@ import net.minecraft.client.renderer.RenderType;
 import com.avp.common.entity.living.human.AbstractHumanMob;
 import com.avp.common.entity.living.human.marine.MarineMob;
 
-public class HumanHairLayer implements AzRenderLayer<MarineMob> {
+public class HumanOutfitLayer implements AzRenderLayer<MarineMob> {
 
     private final String HUMAN_TYPE;
 
-    public HumanHairLayer(String humanType) {
+    public HumanOutfitLayer(String humanType) {
         HUMAN_TYPE = humanType;
     }
 
@@ -22,14 +23,16 @@ public class HumanHairLayer implements AzRenderLayer<MarineMob> {
     @Override
     public void render(AzRendererPipelineContext<MarineMob> context) {
         var animatable = context.animatable();
-        var renderPipeline = context.rendererPipeline();
+        AzRendererPipeline<MarineMob> renderPipeline = context.rendererPipeline();
         if (Boolean.TRUE.equals(animatable.getEntityData().get(AbstractHumanMob.SET_GENDER))) {
             context.setVertexConsumer(
-                context.multiBufferSource().getBuffer(RenderType.entityCutout(animatable.getHairManager().getMaleHairTexture(HUMAN_TYPE)))
+                context.multiBufferSource()
+                    .getBuffer(RenderType.entityCutout(animatable.getOutfitManager().getMaleOutfitTexture(HUMAN_TYPE)))
             );
         } else {
             context.setVertexConsumer(
-                context.multiBufferSource().getBuffer(RenderType.entityCutout(animatable.getHairManager().getFemaleHairTexture(HUMAN_TYPE)))
+                context.multiBufferSource()
+                    .getBuffer(RenderType.entityCutout(animatable.getOutfitManager().getFemaleOutfitTexture(HUMAN_TYPE)))
             );
         }
         renderPipeline.reRender(context);

@@ -9,7 +9,7 @@ import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 
 import com.avp.AVPResources;
-import com.avp.client.animation.DroneAnimator;
+import com.avp.client.animation.entity.DroneAnimator;
 import com.avp.client.render.layer.RadiationGlowLayer;
 import com.avp.common.entity.living.alien.xenomorph.drone.Drone;
 

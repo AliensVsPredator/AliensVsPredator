@@ -1,4 +1,4 @@
-package com.avp.client.render.layer;
+package com.avp.client.render.layer.human;
 
 import mod.azure.azurelib.rewrite.model.AzBone;
 import mod.azure.azurelib.rewrite.render.AzRendererPipelineContext;

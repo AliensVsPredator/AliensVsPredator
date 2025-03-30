@@ -17,7 +17,6 @@ public class MKOuterLayer implements AzRenderLayer {
 
     @Override
     public void render(AzRendererPipelineContext context) {
-        var animatable = context.animatable();
         var renderPipeline = context.rendererPipeline();
         context.setRenderColor(-1);
         context.setVertexConsumer(

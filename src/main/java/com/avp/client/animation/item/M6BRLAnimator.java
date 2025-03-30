@@ -1,4 +1,4 @@
-package com.avp.client.animation.guns;
+package com.avp.client.animation.item;
 
 import mod.azure.azurelib.rewrite.animation.AzAnimatorConfig;
 import mod.azure.azurelib.rewrite.animation.controller.AzAnimationController;
@@ -11,13 +11,13 @@ import org.jetbrains.annotations.NotNull;
 import com.avp.AVPResources;
 import com.avp.common.item.old_painless.OldPainlessAnimationRefs;
 
-public class M56SmartgunAnimator extends AzItemAnimator {
+public class M6BRLAnimator extends AzItemAnimator {
 
-    private static final String NAME = "m56_smartgun";
+    private static final String NAME = "m6b_rocket_launcher";
 
     private static final ResourceLocation ANIMATION = AVPResources.itemAnimationLocation(NAME);
 
-    public M56SmartgunAnimator() {
+    public M6BRLAnimator() {
         super(AzAnimatorConfig.defaultConfig());
     }
 

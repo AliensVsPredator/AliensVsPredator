@@ -9,7 +9,7 @@ import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 
 import com.avp.AVPResources;
-import com.avp.client.animation.ChestbursterAnimator;
+import com.avp.client.animation.entity.ChestbursterAnimator;
 import com.avp.common.entity.living.alien.chestburster.Chestburster;
 
 public class ChestbursterRenderer extends AzEntityRenderer<Chestburster> {

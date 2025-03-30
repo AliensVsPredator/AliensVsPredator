@@ -1,4 +1,4 @@
-package com.avp.client.animation.guns;
+package com.avp.client.animation.item;
 
 import mod.azure.azurelib.rewrite.animation.AzAnimatorConfig;
 import mod.azure.azurelib.rewrite.animation.controller.AzAnimationController;
@@ -11,13 +11,13 @@ import org.jetbrains.annotations.NotNull;
 import com.avp.AVPResources;
 import com.avp.common.item.old_painless.OldPainlessAnimationRefs;
 
-public class M4raBattleRifileAnimator extends AzItemAnimator {
+public class M3712ShotgunAnimator extends AzItemAnimator {
 
-    private static final String NAME = "m4ra_battle_rifle";
+    private static final String NAME = "m37_12_shotgun";
 
     private static final ResourceLocation ANIMATION = AVPResources.itemAnimationLocation(NAME);
 
-    public M4raBattleRifileAnimator() {
+    public M3712ShotgunAnimator() {
         super(AzAnimatorConfig.defaultConfig());
     }
 

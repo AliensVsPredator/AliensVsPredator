@@ -1,4 +1,4 @@
-package com.avp.client.animation.guns;
+package com.avp.client.animation.item;
 
 import mod.azure.azurelib.rewrite.animation.AzAnimatorConfig;
 import mod.azure.azurelib.rewrite.animation.controller.AzAnimationController;
@@ -11,13 +11,13 @@ import org.jetbrains.annotations.NotNull;
 import com.avp.AVPResources;
 import com.avp.common.item.old_painless.OldPainlessAnimationRefs;
 
-public class FlameThrowerAnimator extends AzItemAnimator {
+public class M42A3SniperRifleAnimator extends AzItemAnimator {
 
-    private static final String NAME = "flamethrower_sevastopol";
+    private static final String NAME = "m42a3_sniper_rifle";
 
     private static final ResourceLocation ANIMATION = AVPResources.itemAnimationLocation(NAME);
 
-    public FlameThrowerAnimator() {
+    public M42A3SniperRifleAnimator() {
         super(AzAnimatorConfig.defaultConfig());
     }
 

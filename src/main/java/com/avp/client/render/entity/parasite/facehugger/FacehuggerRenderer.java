@@ -13,7 +13,7 @@ import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 
 import com.avp.AVPResources;
-import com.avp.client.animation.FacehuggerAnimator;
+import com.avp.client.animation.entity.FacehuggerAnimator;
 import com.avp.common.entity.living.alien.parasite.facehugger.Facehugger;
 
 public class FacehuggerRenderer extends AzEntityRenderer<Facehugger> {

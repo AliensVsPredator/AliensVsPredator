@@ -6,7 +6,7 @@ import mod.azure.azurelib.rewrite.render.item.AzItemRendererConfig;
 import mod.azure.azurelib.rewrite.render.layer.AzAutoGlowingLayer;
 
 import com.avp.AVPResources;
-import com.avp.client.animation.guns.M88Mod4CombatPistolAnimator;
+import com.avp.client.animation.item.M88Mod4CombatPistolAnimator;
 
 public class M88Mod4CombatPistolItemRenderer extends AzItemRenderer {
 

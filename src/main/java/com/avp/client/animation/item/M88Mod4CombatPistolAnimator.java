@@ -1,4 +1,4 @@
-package com.avp.client.animation.guns;
+package com.avp.client.animation.item;
 
 import mod.azure.azurelib.rewrite.animation.AzAnimatorConfig;
 import mod.azure.azurelib.rewrite.animation.controller.AzAnimationController;

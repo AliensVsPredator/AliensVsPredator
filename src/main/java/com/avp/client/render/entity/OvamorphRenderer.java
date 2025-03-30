@@ -10,7 +10,7 @@ import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 
 import com.avp.AVPResources;
-import com.avp.client.animation.OvamorphAnimator;
+import com.avp.client.animation.entity.OvamorphAnimator;
 import com.avp.common.entity.living.alien.ovamorph.Ovamorph;
 
 public class OvamorphRenderer extends AzEntityRenderer<Ovamorph> {

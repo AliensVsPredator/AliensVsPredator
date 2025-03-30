@@ -6,7 +6,7 @@ import mod.azure.azurelib.rewrite.render.item.AzItemRendererConfig;
 import mod.azure.azurelib.rewrite.render.layer.AzAutoGlowingLayer;
 
 import com.avp.AVPResources;
-import com.avp.client.animation.guns.M4raBattleRifileAnimator;
+import com.avp.client.animation.item.M4raBattleRifileAnimator;
 
 public class M4raBattleRifileItemRenderer extends AzItemRenderer {
 

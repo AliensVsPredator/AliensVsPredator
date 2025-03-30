@@ -1,4 +1,4 @@
-package com.avp.client.animation;
+package com.avp.client.animation.entity;
 
 import mod.azure.azurelib.rewrite.animation.AzAnimatorConfig;
 import mod.azure.azurelib.rewrite.animation.controller.AzAnimationController;
@@ -8,33 +8,33 @@ import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 
 import com.avp.AVPResources;
-import com.avp.common.entity.living.alien.xenomorph.praetorian.Praetorian;
-import com.avp.common.entity.living.alien.xenomorph.praetorian.PraetorianAnimationRefs;
+import com.avp.common.entity.living.alien.chestburster.Chestburster;
+import com.avp.common.entity.living.alien.chestburster.ChestbursterAnimationRefs;
 
-public class PraetorianAnimator extends AzEntityAnimator<Praetorian> {
+public class ChestbursterAnimator extends AzEntityAnimator<Chestburster> {
 
-    private static final String NAME = "praetorian";
+    private static final String NAME = "chestburster";
 
     private static final ResourceLocation ANIMATION = AVPResources.entityAnimationLocation(NAME);
 
-    public PraetorianAnimator() {
+    public ChestbursterAnimator() {
         super(AzAnimatorConfig.defaultConfig());
     }
 
     @Override
-    public void registerControllers(AzAnimationControllerContainer<Praetorian> animationControllerContainer) {
+    public void registerControllers(AzAnimationControllerContainer<Chestburster> animationControllerContainer) {
         animationControllerContainer.add(
-            AzAnimationController.builder(this, PraetorianAnimationRefs.FULL_BODY_CONTROLLER_NAME)
+            AzAnimationController.builder(this, ChestbursterAnimationRefs.HEAD_CONTROLLER_NAME)
                 .setTransitionLength(5)
                 .build(),
-            AzAnimationController.builder(this, PraetorianAnimationRefs.TAIL_CONTROLLER_NAME)
+            AzAnimationController.builder(this, ChestbursterAnimationRefs.TAIL_CONTROLLER_NAME)
                 .setTransitionLength(5)
                 .build()
         );
     }
 
     @Override
-    public @NotNull ResourceLocation getAnimationLocation(Praetorian animatable) {
+    public @NotNull ResourceLocation getAnimationLocation(Chestburster animatable) {
         return ANIMATION;
     }
 

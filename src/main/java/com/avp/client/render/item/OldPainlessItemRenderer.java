@@ -6,7 +6,7 @@ import mod.azure.azurelib.rewrite.render.item.AzItemRendererConfig;
 import mod.azure.azurelib.rewrite.render.layer.AzAutoGlowingLayer;
 
 import com.avp.AVPResources;
-import com.avp.client.animation.guns.OldPainlessAnimator;
+import com.avp.client.animation.item.OldPainlessAnimator;
 
 public class OldPainlessItemRenderer extends AzItemRenderer {
 

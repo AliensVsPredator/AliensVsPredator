@@ -16,7 +16,7 @@ public class AcidRenderer extends EntityRenderer<Acid> {
     }
 
     @Override
-    public void render(Acid a, float $$1, float $$2, PoseStack $$3, MultiBufferSource $$4, int $$5) {
+    public void render(Acid entity, float entityYaw, float partialTick, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight) {
         /* Do nothing */
     }
 

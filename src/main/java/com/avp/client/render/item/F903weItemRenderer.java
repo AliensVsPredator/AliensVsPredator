@@ -6,8 +6,7 @@ import mod.azure.azurelib.rewrite.render.item.AzItemRendererConfig;
 import mod.azure.azurelib.rewrite.render.layer.AzAutoGlowingLayer;
 
 import com.avp.AVPResources;
-import com.avp.client.animation.guns.F903weAnimator;
-import net.minecraft.client.renderer.RenderType;
+import com.avp.client.animation.item.F903weAnimator;
 
 public class F903weItemRenderer extends AzItemRenderer {
 

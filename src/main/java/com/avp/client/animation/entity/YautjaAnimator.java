@@ -1,5 +1,6 @@
-package com.avp.client.animation;
+package com.avp.client.animation.entity;
 
+import com.avp.client.animation.BasicAnimationUtils;
 import mod.azure.azurelib.rewrite.animation.AzAnimatorConfig;
 import mod.azure.azurelib.rewrite.animation.controller.AzAnimationController;
 import mod.azure.azurelib.rewrite.animation.controller.AzAnimationControllerContainer;

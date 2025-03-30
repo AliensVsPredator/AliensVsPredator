@@ -1,5 +1,6 @@
 package com.avp.client.render.layer;
 
+import com.avp.common.entity.living.yautja.Yautja;
 import com.mojang.math.Axis;
 import mod.azure.azurelib.rewrite.model.AzBone;
 import mod.azure.azurelib.rewrite.render.AzRendererPipelineContext;
@@ -8,30 +9,30 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 
-import com.avp.common.entity.living.human.AbstractHumanMob;
-
-public class HumanItemLayer<T extends AbstractHumanMob> extends AzBlockAndItemLayer<T> {
-
-    private static final String LEFT_HAND = "leftHand_Item";
+public class YautjaItemLayer extends AzBlockAndItemLayer<Yautja> {
 
     private static final String RIGHT_HAND = "rightHand_Item";
 
     @Override
-    public ItemStack itemStackForBone(AzBone bone, T animatable) {
+    public ItemStack itemStackForBone(AzBone bone, Yautja animatable) {
         return switch (bone.getName()) {
             case RIGHT_HAND -> animatable.getItemBySlot(EquipmentSlot.MAINHAND);
-            case LEFT_HAND -> animatable.getItemBySlot(EquipmentSlot.OFFHAND);
             default -> null;
         };
     }
 
     @Override
-    protected ItemDisplayContext getTransformTypeForStack(AzBone bone, ItemStack stack, T animatable) {
+    protected ItemDisplayContext getTransformTypeForStack(AzBone bone, ItemStack stack, Yautja animatable) {
         return ItemDisplayContext.THIRD_PERSON_RIGHT_HAND;
     }
 
     @Override
-    protected void renderItemForBone(AzRendererPipelineContext<T> context, AzBone bone, ItemStack itemStack, T animatable) {
+    protected void renderItemForBone(
+            AzRendererPipelineContext<Yautja> context,
+            AzBone bone,
+            ItemStack itemStack,
+            Yautja animatable
+    ) {
         context.poseStack().mulPose(Axis.XP.rotationDegrees(270));
         context.poseStack().mulPose(Axis.YP.rotationDegrees(0));
         context.poseStack().mulPose(Axis.ZP.rotationDegrees(0f));

@@ -6,7 +6,7 @@ import mod.azure.azurelib.rewrite.render.item.AzItemRendererConfig;
 import mod.azure.azurelib.rewrite.render.layer.AzAutoGlowingLayer;
 
 import com.avp.AVPResources;
-import com.avp.client.animation.guns.M6BRLAnimator;
+import com.avp.client.animation.item.M6BRLAnimator;
 
 public class M6BRLItemRenderer extends AzItemRenderer {
 
