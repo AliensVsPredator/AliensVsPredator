@@ -43,7 +43,7 @@ public class EntityLootTableProvider extends SimpleFabricLootTableProvider {
             AVPEntityTypes.ABERRANT_WARRIOR.getDefaultLootTable(),
             WarriorLootTable.create(provider, AVPItems.ABERRANT_CHITIN)
         );
-        biConsumer.accept(AVPEntityTypes.IRRAIATED_WARRIOR.getDefaultLootTable(), WarriorLootTable.create(provider, AVPItems.CHITIN));
+        biConsumer.accept(AVPEntityTypes.IRRAIATED_WARRIOR.getDefaultLootTable(), WarriorLootTable.create(provider, AVPItems.IRRADIATED_CHITIN));
         biConsumer.accept(
             AVPEntityTypes.PRAETORIAN.getDefaultLootTable(),
             PraetorianLootTable.create(provider, AVPItems.CHITIN, AVPItems.PLATED_CHITIN)
