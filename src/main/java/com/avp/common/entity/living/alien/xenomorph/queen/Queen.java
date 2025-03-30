@@ -29,6 +29,11 @@ public class Queen extends Xenomorph {
     }
 
     @Override
+    public float maxUpStep() {
+        return 2.5F;
+    }
+
+    @Override
     public @Nullable ItemStack getPickResult() {
         SpawnEggItem spawnEggItem = null;
 
