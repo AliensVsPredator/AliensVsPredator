@@ -58,11 +58,11 @@ public class SpawnEggItems {
 
     public static final Item NETHER_QUEEN_SPAWN_EGG = register(AVPEntityTypes.NETHER_QUEEN, 0x2b0000, 0x67261f);
 
-    public static final Item IRRADIATED_DRONE_SPAWN_EGG = register(AVPEntityTypes.IRRAIATED_DRONE, 0x4c9ca8, 0x4ca7b1);
+    public static final Item IRRADIATED_DRONE_SPAWN_EGG = register(AVPEntityTypes.IRRADIATED_DRONE, 0x4c9ca8, 0x4ca7b1);
 
-    public static final Item IRRADIATED_WARRIOR_SPAWN_EGG = register(AVPEntityTypes.IRRAIATED_WARRIOR, 0x4c9ca8, 0x4ca7b1);
+    public static final Item IRRADIATED_WARRIOR_SPAWN_EGG = register(AVPEntityTypes.IRRADIATED_WARRIOR, 0x4c9ca8, 0x4ca7b1);
 
-    public static final Item IRRADIATED_PRAETORIAN_SPAWN_EGG = register(AVPEntityTypes.IRRAIATED_PRAETORIAN, 0x4c9ca8, 0x4ca7b1);
+    public static final Item IRRADIATED_PRAETORIAN_SPAWN_EGG = register(AVPEntityTypes.IRRADIATED_PRAETORIAN, 0x4c9ca8, 0x4ca7b1);
 
     public static final Item ROYAL_CHESTBURSTER_SPAWN_EGG = register(AVPEntityTypes.ROYAL_CHESTBURSTER, 0x29140a, 0xe6b57b);
 

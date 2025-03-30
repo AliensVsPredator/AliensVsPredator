@@ -209,17 +209,17 @@ public class AVPEntityTypes {
         EntityType.Builder.of(nethermorphFactory(AVPEntityTypes.QUEEN, Queen::new), AVPEntityTypes.ALIEN_CATEGORY)
     );
 
-    public static final EntityType<Drone> IRRAIATED_DRONE = register(
+    public static final EntityType<Drone> IRRADIATED_DRONE = register(
         "irraiated_drone",
         EntityType.Builder.of(irraiatedFactory(AVPEntityTypes.DRONE, Drone::new), AVPEntityTypes.ALIEN_CATEGORY)
     );
 
-    public static final EntityType<Warrior> IRRAIATED_WARRIOR = register(
+    public static final EntityType<Warrior> IRRADIATED_WARRIOR = register(
         "irraiated_warrior",
         EntityType.Builder.of(irraiatedFactory(AVPEntityTypes.WARRIOR, Warrior::new), AVPEntityTypes.ALIEN_CATEGORY)
     );
 
-    public static final EntityType<Praetorian> IRRAIATED_PRAETORIAN = register(
+    public static final EntityType<Praetorian> IRRADIATED_PRAETORIAN = register(
         "irraiated_praetorian",
         EntityType.Builder.of(irraiatedFactory(AVPEntityTypes.PRAETORIAN, Praetorian::new), AVPEntityTypes.ALIEN_CATEGORY)
     );
