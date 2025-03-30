@@ -2,8 +2,8 @@
 	"schemaVersion": 1,
 	"id": "avp",
 	"version": "${version}",
-	"name": "Alien VS Predator",
-	"description": "Adds a variety of content from both the Alien and Predator franchises!",
+	"name": "${mod_name}",
+	"description": "${mod_description}",
 	"accessWidener": "avp.accesswidener",
 	"authors": [
 		"AzureDoom",
@@ -22,8 +22,8 @@
 		"homepage": "https://www.curseforge.com/minecraft/mc-mods/avp-regenesis",
 		"sources": "https://github.com/AliensVsPredator/AliensVsPredator"
 	},
-	"license": "CC0-1.0",
-	"icon": "assets/avp/icon.png",
+	"license": "${mod_license}",
+	"icon": "${mod_icon}",
 	"environment": "*",
 	"entrypoints": {
 		"main": [

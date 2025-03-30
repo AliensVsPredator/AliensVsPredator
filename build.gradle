@@ -17,16 +17,9 @@ base {
 }
 
 repositories {
-	// Add repositories to retrieve artifacts from in here.
-	// You should only use this when depending on other mods because
-	// Loom adds the essential maven repositories to download Minecraft and libraries from automatically.
-	// See https://docs.gradle.org/current/userguide/declaring_repositories.html
-	// for more information about repositories.
-
-	// The Maven with the mods source
-	maven { url 'https://maven.azuredoom.com/mods' }
+	maven { url = "https://maven.azuredoom.com/mods" }
 	// Needed for Fabric only at the moment
-	maven { url "https://maven.terraformersmc.com/releases" }
+	maven { url = "https://maven.terraformersmc.com/releases" }
 	maven { url = "https://maven.parchmentmc.org" }
 	maven { url = "https://maven.shedaniel.me" }
 }
@@ -50,15 +43,12 @@ fabricApi {
 }
 
 dependencies {
-	// To change the versions see the gradle.properties file
 	minecraft "com.mojang:minecraft:${project.minecraft_version}"
 	mappings loom.layered() {
 		officialMojangMappings()
 		parchment("org.parchmentmc.data:parchment-${project.minecraft_version}:${parchment_version}@zip")
 	}
 	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
-
-	// Fabric API. This is technically optional, but you probably want it anyway.
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 
 	modImplementation "mod.azure.azurelib:azurelib-fabric-${project.minecraft_version}:${project.azurelib_version}"
@@ -73,11 +63,18 @@ dependencies {
 }
 
 processResources {
-	inputs.property "version", project.version
+	def expandProps = [
+		"version": version,
+		"name": mod_name,
+		"description": mod_description,
+		"license": mod_license,
+		"icon": mod_icon
+	]
 
 	filesMatching("fabric.mod.json") {
-		expand "version": project.version
+		expand expandProps
 	}
+	inputs.properties(expandProps)
 
 	doLast {
 		def jsonMinifyStart = System.currentTimeMillis()
@@ -145,7 +142,6 @@ publishing {
 		}
 	}
 
-	// See https://docs.gradle.org/current/userguide/publishing_maven.html for information on how to set up publishing.
 	repositories {
 	}
 }
