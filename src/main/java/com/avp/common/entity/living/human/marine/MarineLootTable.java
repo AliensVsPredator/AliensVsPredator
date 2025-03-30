@@ -16,6 +16,7 @@ import com.avp.common.item.AVPItems;
 
 public class MarineLootTable {
 
+    // TODO: Update with changes when Pheonix has them
     public static final Function<HolderLookup.Provider, LootTable.Builder> LOOT_TABLE = provider -> LootTable.lootTable()
         .withPool(
             LootPool.lootPool()
