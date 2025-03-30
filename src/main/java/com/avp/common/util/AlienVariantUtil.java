@@ -56,20 +56,14 @@ public class AlienVariantUtil {
         };
     }
 
-
-
     public static BlockState getResinNodeForType(Alien alien) {
-        if (alien.isAberrant()) {
-            return AVPBlocks.ABERRANT_RESIN_NODE.defaultBlockState();
-        }
-        if (alien.isIrradiated()) {
-            return AVPBlocks.IRRADIATED_RESIN_NODE.defaultBlockState();
-        }
-        if (alien.isNetherAfflicted()) {
-            return AVPBlocks.NETHER_RESIN_NODE.defaultBlockState();
-        }
-
-        return AVPBlocks.RESIN_NODE.defaultBlockState();
+        return switch (alien) {
+            case Alien netherAlien when netherAlien.isNetherAfflicted() -> AVPBlocks.NETHER_RESIN_NODE.defaultBlockState();
+            case Alien aberrantAlien when aberrantAlien.isAberrant() -> AVPBlocks.ABERRANT_RESIN_NODE.defaultBlockState();
+            case Alien irradiatedAlien when irradiatedAlien.isIrradiated() -> AVPBlocks.IRRADIATED_RESIN_NODE.defaultBlockState();
+            default -> AVPBlocks.RESIN_NODE.defaultBlockState();
+        };
+    }
 
     public static Item getResinBallForType(BlockState blockState) {
         return RESIN_BALL_MAPPING.getOrDefault(blockState.getBlock(), AVPItems.RESIN_BALL);
