@@ -1,5 +1,7 @@
 package com.avp.common.entity.living.alien.xenomorph.queen;
 
+import com.avp.common.block.AVPBlockTags;
+import com.avp.common.block.AVPBlocks;
 import com.avp.common.util.AlienVariantUtil;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
@@ -107,7 +109,10 @@ public class Queen extends Xenomorph {
         super.tick();
         if (!level().isClientSide() && tickCount < 2) {
             var belowBlockPos = blockPosition().below();
-            if (!level().getBlockState(belowBlockPos).is(AlienVariantUtil.getResinNodeForType(this).getBlock())) {
+            var blockState = level().getBlockState(belowBlockPos);
+            var resinNode = AlienVariantUtil.getResinNodeForType(this).getBlock();
+
+            if (!blockState.is(resinNode) && !blockState.is(AVPBlockTags.ACID_IMMUNE)) {
                 level().setBlockAndUpdate(belowBlockPos, AlienVariantUtil.getResinNodeForType(this));
             }
         }
