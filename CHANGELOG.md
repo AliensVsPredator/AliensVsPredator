@@ -20,6 +20,7 @@
 - Fixes walking up blocks issue.
 - Fixes Nether acid breaking bedrock with its fire.
 - Fixes normal Praetorian loot table.
+- Fixes Irradiated Warriors loot table.
 
 ## Data Pack
 - Adds missing `acid_immune` tag to `nether_acid_immune`
