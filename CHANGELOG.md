@@ -3,18 +3,27 @@
 ## What's New
 - Full set of Predator armor gives jump boost now.
 - Full set of Predator armor gives damage boost now.
+- Resonator is powered by Redstone now.
+- Resonator when powered will remove 1 resin block in a 25 block radius.
+  - It will then store in itself 1 resin ball of the type of resin it removed.
+  - Resin veins are replaced with air.
+  - All other resin blocks are replace with stone or deepslate depending on the y value (0 and lower deepslate, higher stone)
+  - Can be right-clicked to get all resin balls but will also drop them if the block is broken.
 
 ## Changes
 - Desk Terminal now has facing values set.
 - Adds light source back to guns, this can cause lag.
+- Refactored Turret and Trip mine configs to new Block Config section.
 
 ## Fixes
 - Removes all but predator armor from `FREEZE_IMMUNE_WEARABLES` tag.
 - Fixes walking up blocks issue.
-- Fixes Nether acid breaking bedrock with it's fire.
+- Fixes Nether acid breaking bedrock with its fire.
+- Fixes normal Praetorian loot table.
 
 ## Data Pack
 - Adds missing `acid_immune` tag to `nether_acid_immune`
+- Adds `resin_veins` tag to track all resin veins.
 
 ## TODO
 - Add Queen sack that then lays eggs
@@ -39,13 +48,9 @@
 - More Structures
 - Make Redstone generator give power.
 - Make Resonator do:
-  - Run on batteries.
+  - Run on batteries
   - Prevent resin placement/spreading
-  - Give a radius of it's effect of 25 blocks.
-  - Converts each resin 1 by 1 in it's radius to stone/deepstone based on y value
-  - Converts resin viens to air.
-  - Give storage to hold resin balls from converted resin blocks.
-  - Make xenos target it.
+  - Make xenos target it
 - Make terminal do:
   - Use power.
   - Program chips (once added)
