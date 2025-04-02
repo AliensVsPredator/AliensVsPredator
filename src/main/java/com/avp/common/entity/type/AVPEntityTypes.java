@@ -42,7 +42,7 @@ public class AVPEntityTypes {
 
     public static final EntityType<Entity> NUKE_BE = register(
         "nuke_be",
-        EntityType.Builder.of(NukeBE::new, MobCategory.MISC).sized(0.1F, 0.1F).noSummon().clientTrackingRange(20).updateInterval(10)
+        EntityType.Builder.of(NukeBE::new, MobCategory.MISC).sized(0.1F, 0.1F).noSummon().clientTrackingRange(100).updateInterval(100)
     );
 
     public static final EntityType<Acid> ACID = register(

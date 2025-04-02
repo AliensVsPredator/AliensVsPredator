@@ -4,6 +4,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.block.BlockRenderDispatcher;
+import net.minecraft.client.renderer.culling.Frustum;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.TntMinecartRenderer;
@@ -51,6 +52,11 @@ public class NukeRenderer<T extends Entity> extends EntityRenderer<T> {
             poseStack.popPose();
         }
         super.render(nukeEntity, partialTicks, animationProgress, poseStack, bufferSource, lightLevel);
+    }
+
+    @Override
+    public boolean shouldRender(T livingEntity, Frustum camera, double camX, double camY, double camZ) {
+        return true;
     }
 
     @SuppressWarnings("deprecation")
