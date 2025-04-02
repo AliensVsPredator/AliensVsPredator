@@ -7,6 +7,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import mod.azure.azurelib.rewrite.render.entity.AzEntityRenderer;
 import mod.azure.azurelib.rewrite.render.entity.AzEntityRendererConfig;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.culling.Frustum;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
@@ -35,5 +36,10 @@ public class MushroomCloudRenderer extends AzEntityRenderer<MushroomCloudEntity>
         poseStack.scale(scale, scale, scale);
 
         super.render(entity, entityYaw, partialTick, poseStack, bufferSource, packedLight);
+    }
+
+    @Override
+    public boolean shouldRender(MushroomCloudEntity livingEntity, Frustum camera, double camX, double camY, double camZ) {
+        return true;
     }
 }
