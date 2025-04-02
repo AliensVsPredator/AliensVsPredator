@@ -27,7 +27,7 @@
 AVP: Regenesis
 =============
 
-<img src="https://github.com/AliensVsPredator/AVP-Regenesis/blob/1.21.x/common/src/main/resources/icon.png?raw=true" alt="Gigeresque"/>
+<img src="https://github.com/AliensVsPredator/AVP-Regenesis/blob/1.21.x/common/src/main/resources/icon.png?raw=true" alt="AVP"/>
 <br><br>
 <a href="https://modrinth.com/mod/azurelib"> <img src="https://azuredoom.com/cozy_64h.png" alt="logo" height="64"  width="170" /> </a>
 <a href="https://modrinth.com/mod/fabric-api"> <img src="https://github.com/intergrav/devins-badges/blob/v2/assets/cozy/requires/fabric-api_64h.png?raw=true" alt="logo" height="64"  width="186"/> </a>
