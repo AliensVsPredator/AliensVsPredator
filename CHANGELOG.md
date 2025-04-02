@@ -9,6 +9,7 @@
   - Resin veins are replaced with air.
   - All other resin blocks are replace with stone or deepslate depending on the y value (0 and lower deepslate, higher stone)
   - Can be right-clicked to get all resin balls but will also drop them if the block is broken.
+- Adds start of Nuke cloud that playes when a nuke block is used.
 
 ## Changes
 - Desk Terminal now has facing values set.
@@ -17,6 +18,7 @@
 - Redid how Xenos should float in 1 block deep water, meaning they just walk in it now.
 - Queens now can go up 2 blocks.
 - Get rid of shitty item texture on Sentry Turret
+- Adjusts voxel shape of Desk Terminal.
 
 ## Fixes
 - Removes all but predator armor from `FREEZE_IMMUNE_WEARABLES` tag.
@@ -25,6 +27,8 @@
 - Fixes normal Praetorian loot table.
 - Fixes Irradiated Warriors loot table.
 - Fixes Queens not respecting the do not replace tag.
+- Fixes jelly item not being used up.
+- Fully fixes nuke not rendering at a far distances.
 
 ## Data Pack
 - Adds missing `acid_immune` tag to `nether_acid_immune`
