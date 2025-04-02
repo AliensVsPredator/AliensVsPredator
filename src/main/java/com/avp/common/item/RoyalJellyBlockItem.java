@@ -1,5 +1,6 @@
 package com.avp.common.item;
 
+import com.avp.common.util.AVPPredicates;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.LivingEntity;
@@ -26,6 +27,9 @@ public class RoyalJellyBlockItem extends BlockItem {
     ) {
         if (livingEntity instanceof Praetorian praetorian) {
             praetorian.getEntityData().set(Xenomorph.JELLY_COUNT, 10);
+        }
+        if (!AVPPredicates.IS_IMMORTAL.test(player)) {
+            itemStack.shrink(1);
         }
         return super.interactLivingEntity(itemStack, player, livingEntity, interactionHand);
     }
