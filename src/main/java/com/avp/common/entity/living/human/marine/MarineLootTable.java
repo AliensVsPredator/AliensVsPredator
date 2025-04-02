@@ -87,11 +87,6 @@ public class MarineLootTable {
                         .apply(SetItemCountFunction.setCount(ConstantValue.exactly(1)))
                         .setWeight(1)
                 )
-                .add(
-                    LootItem.lootTableItem(AVPItems.AMMO_CHEST)
-                        .apply(SetItemCountFunction.setCount(ConstantValue.exactly(1)))
-                        .setWeight(1)
-                )
         );
 
     private MarineLootTable() {
