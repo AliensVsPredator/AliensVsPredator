@@ -8,6 +8,7 @@ plugins {
 	id 'com.github.ben-manes.versions'
 	id 'idea'
 	id "me.modmuss50.mod-publish-plugin" version "0.8.4"
+	id 'org.moddedmc.wiki.toolkit' version '0.2.5'
 }
 
 version = project.mod_version
@@ -60,6 +61,8 @@ dependencies {
 
 	modApi "dev.architectury:architectury-fabric:${project.architectury_version}"
 	modApi "me.shedaniel.cloth:cloth-config-fabric:${project.cloth_version}"
+
+	modRuntimeOnly "org.sinytra:item-asset-export-fabric:${project.asset_export}"
 }
 
 processResources {
@@ -178,6 +181,21 @@ if (file('key.properties').exists()) {
 			requires {
 				slug = "azurelib"
 			}
+		}
+	}
+}
+
+wiki {
+	if (file('key.properties').exists()) {
+		def releaseProp = new Properties()
+		File secretPropsFile = file("key.properties")
+		releaseProp.load(secretPropsFile.newInputStream())
+		wikiAccessToken = releaseProp.getProperty("wikiKey")
+	}
+	docs {
+		avp {
+			root = file('docs/avp')
+			exportedAssetNamespaces = ['avp']
 		}
 	}
 }
