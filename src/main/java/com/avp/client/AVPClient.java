@@ -207,6 +207,7 @@ public class AVPClient implements ClientModInitializer {
         EntityRendererRegistry.register(AVPEntityTypes.BULLET, EmptyRenderer::new);
         EntityRendererRegistry.register(AVPEntityTypes.SHURIKEN, SpinningItemRenderer::new);
         EntityRendererRegistry.register(AVPEntityTypes.SMART_DISC, SpinningItemRenderer::new);
+        EntityRendererRegistry.register(AVPEntityTypes.MUSHROOM_CLOUD, MushroomCloudRenderer::new);
 
         // Block Entities
         BlockEntityRenderers.register(

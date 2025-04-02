@@ -1,6 +1,7 @@
 package com.avp.common.entity.type;
 
 import com.avp.common.entity.living.alien.RoyalAlien;
+import com.avp.common.entity.nukecloud.MushroomCloudEntity;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -33,6 +34,11 @@ public class AVPEntityTypes {
     public static final MobCategory ALIEN_CATEGORY = AVPMobCategories.ALIENS;
 
     public static final MobCategory PREDATOR_CATEGORY = AVPMobCategories.PREDATOR;
+
+    public static final EntityType<MushroomCloudEntity> MUSHROOM_CLOUD = register(
+        "mushroom_cloud",
+        EntityType.Builder.of(MushroomCloudEntity::new, MobCategory.MISC)
+    );
 
     public static final EntityType<Entity> NUKE_BE = register(
         "nuke_be",

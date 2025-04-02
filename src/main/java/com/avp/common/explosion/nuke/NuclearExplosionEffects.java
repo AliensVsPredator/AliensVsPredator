@@ -1,5 +1,6 @@
 package com.avp.common.explosion.nuke;
 
+import com.avp.common.entity.nukecloud.MushroomCloudEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
@@ -104,8 +105,8 @@ public class NuclearExplosionEffects {
             level.setBlock(pos, Blocks.AIR.defaultBlockState(), flags);
         }
 
-        level.sendParticles(ParticleTypes.FLASH, centerPos.getX(), centerPos.getY(), centerPos.getZ(), 1, 0, 0, 0, 0);
-        level.sendParticles(ParticleTypes.SMOKE, centerPos.getX(), centerPos.getY(), centerPos.getZ(), 1, 0, 0, 0, 0);
+        level.sendParticles(ParticleTypes.FLASH, pos.getX(), pos.getY(), pos.getZ(), 1, 0, 0, 0, 0);
+        level.sendParticles(ParticleTypes.SMOKE, pos.getX(), pos.getY(), pos.getZ(), 1, 0, 0, 0, 0);
 
         tryTransformChunkBiome(level, pos);
     }

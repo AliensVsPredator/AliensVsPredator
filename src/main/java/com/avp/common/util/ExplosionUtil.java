@@ -1,8 +1,10 @@
 package com.avp.common.util;
 
+import com.avp.common.entity.nukecloud.MushroomCloudEntity;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
@@ -60,7 +62,9 @@ public class ExplosionUtil {
         var knockbackStrength = maxKnockback * (1.0 - (distance / (radius * radius)));
         // Prevent excessive knockback (cap velocity)
         var knockbackVelocity = direction.scale(Math.max(maxKnockback, knockbackStrength));
-
+        if (entity instanceof LivingEntity livingEntity && AVPPredicates.IS_IMMORTAL.test(livingEntity)) {
+            return;
+        }
         entity.setDeltaMovement(knockbackVelocity);
         entity.hurtMarked = true; // Ensure physics applies immediately
     }
@@ -88,6 +92,8 @@ public class ExplosionUtil {
                     entity.hurt(level.damageSources().explosion(null), (float) damage);
                     ExplosionUtil.applyKnockback(center, radius, entity, maxKnockback, distance);
                 }
+                var mushroomCloud = new MushroomCloudEntity(level, center.x(), center.y() - 23, center.z());
+                level.addFreshEntity(mushroomCloud);
             })
             .onBlockSample(($, pos) -> {
                 nuclearExplosionEffects.apply($, pos);
