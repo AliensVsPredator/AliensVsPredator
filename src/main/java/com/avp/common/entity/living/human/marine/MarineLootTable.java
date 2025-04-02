@@ -51,19 +51,19 @@ public class MarineLootTable {
                 )
                 .add(
                     LootItem.lootTableItem(AVPItems.STEEL_INGOT)
-                        .apply(SetItemCountFunction.setCount(UniformGenerator.between(2, 3)))
+                        .apply(SetItemCountFunction.setCount(UniformGenerator.between(1, 2)))
                         .apply(EnchantedCountIncreaseFunction.lootingMultiplier(provider, UniformGenerator.between(0, 1)))
                         .setWeight(20)
                 )
                 .add(
                     LootItem.lootTableItem(AVPItems.BRASS_INGOT)
-                        .apply(SetItemCountFunction.setCount(UniformGenerator.between(2, 3)))
+                        .apply(SetItemCountFunction.setCount(UniformGenerator.between(1, 2)))
                         .apply(EnchantedCountIncreaseFunction.lootingMultiplier(provider, UniformGenerator.between(0, 1)))
                         .setWeight(19)
                 )
                 .add(
                     LootItem.lootTableItem(AVPItems.LEAD_INGOT)
-                        .apply(SetItemCountFunction.setCount(UniformGenerator.between(2, 3)))
+                        .apply(SetItemCountFunction.setCount(UniformGenerator.between(1, 2)))
                         .apply(EnchantedCountIncreaseFunction.lootingMultiplier(provider, UniformGenerator.between(0, 1)))
                         .setWeight(18)
                 )
