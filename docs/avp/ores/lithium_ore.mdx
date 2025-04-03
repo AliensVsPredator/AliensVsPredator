@@ -1,0 +1,71 @@
+---
+title: Lithium Ore
+icon: avp:lithium_ore
+type: block
+---
+
+<Callout variant="danger">
+**Be mindful of mindful Lithium Ore blocks near water sources, as their explosive nature could cause unintended destruction.**
+</Callout>
+
+## Description
+
+**Lithium Ore** can be mined and processed to obtain lithium. This ore is reactive in certain situations and serves as a key resource for advanced crafting within the game.
+
+### Behavior
+
+Lithium Ore has a unique interaction with water. If water comes in contact with Lithium Ore, the block explodes with a strength of `2F`.
+
+### Crafting
+
+1. **Lithium Block (3x3 Compression)**:
+Combine **9 Lithium ores** to craft **1 Lithium Block**.
+
+    <CraftingRecipe
+        slots={[
+            'avp:lithium_ore',
+            'avp:lithium_ore',
+            'avp:lithium_ore',
+            'avp:lithium_ore',
+            'avp:lithium_ore',
+            'avp:lithium_ore',
+            'avp:lithium_ore',
+            'avp:lithium_ore',
+            'avp:lithium_ore'
+        ]}
+        result="avp:lithium_block"
+        count={1}
+    />
+
+2. **Decompressing Lithium Block**:
+   Place **1 Lithium Block** in a crafting grid to yield **9 Lithium Items**.
+
+   <CraftingRecipe
+       slots={[
+           '',
+           '',
+           '',
+           '',
+           'avp:lithium_block',
+           '',
+           '',
+           '',
+           ''
+       ]}
+       result="avp:lithium_ore"
+       count={9}
+   />
+
+### Features/Generation
+
+Lithium Ore generates in the Overworld, with larger ore groups in deserts. Default values are as follows:
+
+#### Normal
+- **Feature ID**: `avp:lithium_ore`
+- **Count**: 8
+- **Generation Height Range**: Uniform (9 to 40)
+
+#### Desert
+- **Feature ID**: `avp:lithium_ore_desert`
+- **Count**: 20
+- **Generation Height Range**: Uniform (9 to 64)
