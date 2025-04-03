@@ -60,9 +60,8 @@ public class BlockEntityTypes {
     );
 
     private static <T extends BlockEntity> BlockEntityType<T> register(String id, BlockEntityType.Builder<T> builder) {
-        var type = Util.fetchChoiceType(References.BLOCK_ENTITY, id);
         var resourceLocation = AVPResources.location(id);
-        return Registry.register(BuiltInRegistries.BLOCK_ENTITY_TYPE, resourceLocation, builder.build(type));
+        return Registry.register(BuiltInRegistries.BLOCK_ENTITY_TYPE, resourceLocation, builder.build(null));
     }
 
     public static void initialize() {}
