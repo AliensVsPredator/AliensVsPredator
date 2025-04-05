@@ -19,6 +19,7 @@
 - Queens now can go up 2 blocks.
 - Get rid of shitty item texture on Sentry Turret
 - Adjusts voxel shape of Desk Terminal.
+- Block entities data fix spam fixed.
 
 ## Fixes
 - Removes all but predator armor from `FREEZE_IMMUNE_WEARABLES` tag.
