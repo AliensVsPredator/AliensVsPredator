@@ -22,6 +22,7 @@
 - Fixed the following entities dropping the wrong items on death:
   - Aberrant Drone
   - Aberrant Praetorian
+  - Aberrant Queen
   - Aberrant Warrior
   - Nether Queen
 - Fixed typos:

@@ -55,6 +55,10 @@ public class Queen extends Xenomorph {
             return AVPEntityTypes.NETHER_QUEEN.getDefaultLootTable();
         }
 
+        if (isAberrant()) {
+            return AVPEntityTypes.ABERRANT_QUEEN.getDefaultLootTable();
+        }
+
         return super.getDefaultLootTable();
     }
 
