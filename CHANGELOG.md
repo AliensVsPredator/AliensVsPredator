@@ -16,6 +16,7 @@
   - Previously it spread fire in a box, now it spreads fire in a sphere.
 
 ## 🐞 Fixes
+- Fixed gun side effects hurting players when pvp is off.
 - Fixed random holes in flamethrower flames.
 - Fixed dyed industrial glass blocks not changing beacon colors.
 - Fixed flamethrower spreading fire through walls.

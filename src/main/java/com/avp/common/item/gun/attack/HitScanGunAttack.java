@@ -3,6 +3,7 @@ package com.avp.common.item.gun.attack;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
@@ -11,6 +12,7 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.ProjectileUtil;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.GameRules;
@@ -99,7 +101,12 @@ public class HitScanGunAttack extends AbstractGunAttack {
     @Override
     public void onEntityHit(Entity hitEntity) {
         var shooter = gunAttackConfig.shooter();
-        var level = shooter.level();
+        var level = (ServerLevel) shooter.level();
+
+        if (shooter instanceof Player && hitEntity instanceof Player && !level.getServer().isPvpAllowed()) {
+            // Do not hurt entities if shooter was a player, target was a player and if PVP is not allowed.
+            return;
+        }
 
         var powerLevel = EnchantmentUtil.getLevel(level, gunAttackConfig.gunItemStack(), Enchantments.POWER);
         var damage = gunAttackConfig.fireModeConfig().damage() * (1 + (0.25F * powerLevel));
