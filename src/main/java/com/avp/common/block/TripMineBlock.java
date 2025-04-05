@@ -1,8 +1,5 @@
 package com.avp.common.block;
 
-import com.avp.common.block.base.BaseBlockEntity;
-import com.avp.common.block.entity.BlockEntityTypes;
-import com.avp.common.block.entity.TripMineBE;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.BlockGetter;
@@ -18,6 +15,10 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import com.avp.common.block.base.BaseBlockEntity;
+import com.avp.common.block.entity.BlockEntityTypes;
+import com.avp.common.block.entity.TripMineBE;
 
 public class TripMineBlock extends BaseBlockEntity {
 
@@ -55,11 +56,16 @@ public class TripMineBlock extends BaseBlockEntity {
 
     @Nullable
     protected static <T extends BlockEntity> BlockEntityTicker<T> createServerTicker(
-            Level level,
-            BlockEntityType<T> blockEntityType
+        Level level,
+        BlockEntityType<T> blockEntityType
     ) {
-        return level.isClientSide ? null : createTickerHelper(blockEntityType,
-                (BlockEntityType<? extends TripMineBE>) BlockEntityTypes.TRIP_MINE_BE, TripMineBE::serverTick);
+        return level.isClientSide
+            ? null
+            : createTickerHelper(
+                blockEntityType,
+                (BlockEntityType<? extends TripMineBE>) BlockEntityTypes.TRIP_MINE_BE,
+                TripMineBE::serverTick
+            );
     }
 
     @Override

@@ -1,6 +1,5 @@
 package com.avp.common.entity.living.alien.parasite;
 
-import com.avp.common.entity.living.alien.RoyalAlien;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.game.ClientboundSetPassengersPacket;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -20,6 +19,7 @@ import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
 import com.avp.common.entity.living.FreeMob;
+import com.avp.common.entity.living.alien.RoyalAlien;
 import com.avp.common.item.AVPItems;
 import com.avp.common.manager.ParasiteAttachmentManager;
 import com.avp.common.util.AVPPredicates;

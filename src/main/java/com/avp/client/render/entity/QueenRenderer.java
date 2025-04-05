@@ -1,6 +1,5 @@
 package com.avp.client.render.entity;
 
-import com.avp.client.animation.entity.QueenAnimator;
 import com.mojang.blaze3d.vertex.PoseStack;
 import mod.azure.azurelib.rewrite.render.entity.AzEntityRenderer;
 import mod.azure.azurelib.rewrite.render.entity.AzEntityRendererConfig;
@@ -10,6 +9,7 @@ import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 
 import com.avp.AVPResources;
+import com.avp.client.animation.entity.QueenAnimator;
 import com.avp.common.entity.living.alien.xenomorph.queen.Queen;
 
 public class QueenRenderer extends AzEntityRenderer<Queen> {
@@ -25,8 +25,12 @@ public class QueenRenderer extends AzEntityRenderer<Queen> {
     private static final ResourceLocation NETHER_TEXTURE = AVPResources.entityTextureLocation("nether_" + NAME);
 
     public QueenRenderer(EntityRendererProvider.Context context) {
-        super(AzEntityRendererConfig.builder($ -> MODEL, QueenRenderer::textureLocation)
-                .setAnimatorProvider(QueenAnimator::new).build(), context);
+        super(
+            AzEntityRendererConfig.builder($ -> MODEL, QueenRenderer::textureLocation)
+                .setAnimatorProvider(QueenAnimator::new)
+                .build(),
+            context
+        );
         this.shadowRadius = 1F;
     }
 

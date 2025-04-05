@@ -1,6 +1,5 @@
 package com.avp.client.render.entity;
 
-import com.avp.client.render.layer.human.*;
 import mod.azure.azurelib.rewrite.render.entity.AzEntityRenderer;
 import mod.azure.azurelib.rewrite.render.entity.AzEntityRendererConfig;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
@@ -8,6 +7,7 @@ import net.minecraft.resources.ResourceLocation;
 
 import com.avp.AVPResources;
 import com.avp.client.animation.entity.MarineAnimator;
+import com.avp.client.render.layer.human.*;
 import com.avp.common.entity.living.human.AbstractHumanMob;
 import com.avp.common.entity.living.human.marine.MarineMob;
 

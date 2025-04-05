@@ -1,20 +1,13 @@
 package com.avp.client.render.entity;
 
-import com.avp.client.render.layer.YautjaItemLayer;
-import com.mojang.math.Axis;
-import mod.azure.azurelib.rewrite.model.AzBone;
-import mod.azure.azurelib.rewrite.render.AzRendererPipelineContext;
 import mod.azure.azurelib.rewrite.render.entity.AzEntityRenderer;
 import mod.azure.azurelib.rewrite.render.entity.AzEntityRendererConfig;
-import mod.azure.azurelib.rewrite.render.layer.AzBlockAndItemLayer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.item.ItemDisplayContext;
-import net.minecraft.world.item.ItemStack;
 
 import com.avp.AVPResources;
 import com.avp.client.animation.entity.YautjaAnimator;
+import com.avp.client.render.layer.YautjaItemLayer;
 import com.avp.common.entity.living.yautja.Yautja;
 
 public class YautjaRenderer extends AzEntityRenderer<Yautja> {

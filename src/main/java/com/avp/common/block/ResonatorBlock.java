@@ -1,11 +1,7 @@
 package com.avp.common.block;
 
-import com.avp.common.block.base.BaseBlockEntity;
-import com.avp.common.block.entity.BlockEntityTypes;
-import com.avp.common.block.entity.ResonatorBE;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
@@ -23,6 +19,10 @@ import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import com.avp.common.block.base.BaseBlockEntity;
+import com.avp.common.block.entity.BlockEntityTypes;
+import com.avp.common.block.entity.ResonatorBE;
 
 public class ResonatorBlock extends BaseBlockEntity {
 
@@ -63,15 +63,26 @@ public class ResonatorBlock extends BaseBlockEntity {
 
     @Nullable
     protected static <T extends BlockEntity> BlockEntityTicker<T> createServerTicker(
-            Level level,
-            BlockEntityType<T> blockEntityType
+        Level level,
+        BlockEntityType<T> blockEntityType
     ) {
-        return level.isClientSide ? null : createTickerHelper(blockEntityType,
-                (BlockEntityType<? extends ResonatorBE>) BlockEntityTypes.RESONATOR_BE, ResonatorBE::serverTick);
+        return level.isClientSide
+            ? null
+            : createTickerHelper(
+                blockEntityType,
+                (BlockEntityType<? extends ResonatorBE>) BlockEntityTypes.RESONATOR_BE,
+                ResonatorBE::serverTick
+            );
     }
 
     @Override
-    protected @NotNull InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult) {
+    protected @NotNull InteractionResult useWithoutItem(
+        BlockState state,
+        Level level,
+        BlockPos pos,
+        Player player,
+        BlockHitResult hitResult
+    ) {
         if (!level.isClientSide) {
             var be = level.getBlockEntity(pos);
             if (be instanceof ResonatorBE resonatorBE) {
@@ -88,12 +99,12 @@ public class ResonatorBlock extends BaseBlockEntity {
 
     @Override
     protected void neighborChanged(
-            BlockState state,
-            Level level,
-            BlockPos pos,
-            Block neighborBlock,
-            BlockPos neighborPos,
-            boolean movedByPiston
+        BlockState state,
+        Level level,
+        BlockPos pos,
+        Block neighborBlock,
+        BlockPos neighborPos,
+        boolean movedByPiston
     ) {
         var hasSignal = level.hasNeighborSignal(pos) || level.hasNeighborSignal(pos.above());
         var triggeredValue = state.getValue(TRIGGERED);

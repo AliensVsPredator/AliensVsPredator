@@ -21,7 +21,16 @@ public class IrradiatedAcidParticle extends TextureSheetParticle {
 
     protected boolean reachedGround;
 
-    public IrradiatedAcidParticle(ClientLevel clientWorld, double d, double e, double f, double g, double h, double i, SpriteSet spriteProvider) {
+    public IrradiatedAcidParticle(
+        ClientLevel clientWorld,
+        double d,
+        double e,
+        double f,
+        double g,
+        double h,
+        double i,
+        SpriteSet spriteProvider
+    ) {
         super(clientWorld, d, e, f);
         xd = g;
         yd = h;

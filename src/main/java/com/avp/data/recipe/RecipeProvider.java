@@ -1,6 +1,5 @@
 package com.avp.data.recipe;
 
-import com.avp.data.recipe.impl.vanilla.VanillaChestRecipeProvider;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricRecipeProvider;
 import net.minecraft.core.HolderLookup;
@@ -21,6 +20,7 @@ import com.avp.data.recipe.impl.PaddingRecipeProvider;
 import com.avp.data.recipe.impl.PlasticRecipeProvider;
 import com.avp.data.recipe.impl.ResinRecipeProvider;
 import com.avp.data.recipe.impl.ToolRecipeProvider;
+import com.avp.data.recipe.impl.vanilla.VanillaChestRecipeProvider;
 import com.avp.data.recipe.impl.vanilla.VanillaConcreteRecipeProvider;
 import com.avp.data.recipe.impl.vanilla.VanillaIronLikeRecipeProvider;
 import com.avp.data.recipe.impl.vanilla.VanillaMiscellaneousRecipeProvider;

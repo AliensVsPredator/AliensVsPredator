@@ -1,11 +1,12 @@
 package com.avp.client.render.block;
 
-import com.avp.AVPResources;
-import com.avp.client.animation.block.ResonatorAnimator;
-import com.avp.common.block.entity.ResonatorBE;
 import mod.azure.azurelib.rewrite.render.block.AzBlockEntityRenderer;
 import mod.azure.azurelib.rewrite.render.block.AzBlockEntityRendererConfig;
 import net.minecraft.resources.ResourceLocation;
+
+import com.avp.AVPResources;
+import com.avp.client.animation.block.ResonatorAnimator;
+import com.avp.common.block.entity.ResonatorBE;
 
 public class ResonatorRenderer extends AzBlockEntityRenderer<ResonatorBE> {
 
@@ -16,8 +17,10 @@ public class ResonatorRenderer extends AzBlockEntityRenderer<ResonatorBE> {
     private static final ResourceLocation TEX = AVPResources.blockTextureLocation(NAME);
 
     public ResonatorRenderer() {
-        super(AzBlockEntityRendererConfig.<ResonatorBE>builder(GEO, TEX)
+        super(
+            AzBlockEntityRendererConfig.<ResonatorBE>builder(GEO, TEX)
                 .setAnimatorProvider(ResonatorAnimator::new)
-                .build());
+                .build()
+        );
     }
 }

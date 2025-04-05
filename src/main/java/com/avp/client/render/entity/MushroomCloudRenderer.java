@@ -1,8 +1,5 @@
 package com.avp.client.render.entity;
 
-import com.avp.AVPResources;
-import com.avp.client.animation.entity.MushroomCloudAnimator;
-import com.avp.common.entity.nukecloud.MushroomCloudEntity;
 import com.mojang.blaze3d.vertex.PoseStack;
 import mod.azure.azurelib.rewrite.render.entity.AzEntityRenderer;
 import mod.azure.azurelib.rewrite.render.entity.AzEntityRendererConfig;
@@ -11,6 +8,10 @@ import net.minecraft.client.renderer.culling.Frustum;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
+
+import com.avp.AVPResources;
+import com.avp.client.animation.entity.MushroomCloudAnimator;
+import com.avp.common.entity.nukecloud.MushroomCloudEntity;
 
 public class MushroomCloudRenderer extends AzEntityRenderer<MushroomCloudEntity> {
 
@@ -21,13 +22,23 @@ public class MushroomCloudRenderer extends AzEntityRenderer<MushroomCloudEntity>
     private static final ResourceLocation TEXTURE = AVPResources.entityTextureLocation(NAME);
 
     public MushroomCloudRenderer(EntityRendererProvider.Context context) {
-        super(AzEntityRendererConfig.<MushroomCloudEntity>builder(MODEL, TEXTURE)
-                .setAnimatorProvider(MushroomCloudAnimator::new).build(),
-                context);
+        super(
+            AzEntityRendererConfig.<MushroomCloudEntity>builder(MODEL, TEXTURE)
+                .setAnimatorProvider(MushroomCloudAnimator::new)
+                .build(),
+            context
+        );
     }
 
     @Override
-    public void render(@NotNull MushroomCloudEntity entity, float entityYaw, float partialTick, @NotNull PoseStack poseStack, @NotNull MultiBufferSource bufferSource, int packedLight) {
+    public void render(
+        @NotNull MushroomCloudEntity entity,
+        float entityYaw,
+        float partialTick,
+        @NotNull PoseStack poseStack,
+        @NotNull MultiBufferSource bufferSource,
+        int packedLight
+    ) {
         var progress = entity.tickCount / 300.0f;
         progress = Math.min(progress, 1.0f);
         var scale = 1.0f + (progress * 80.0f);

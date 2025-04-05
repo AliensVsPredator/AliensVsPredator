@@ -1,6 +1,5 @@
 package com.avp.common.entity.living.alien;
 
-import com.avp.AVP;
 import net.minecraft.core.Holder;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -23,6 +22,7 @@ import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.pathfinder.PathType;
 import org.jetbrains.annotations.Nullable;
 
+import com.avp.AVP;
 import com.avp.common.config.AVPConfig;
 import com.avp.common.gene.GeneKeys;
 import com.avp.common.level.effect.AVPMobEffectTags;

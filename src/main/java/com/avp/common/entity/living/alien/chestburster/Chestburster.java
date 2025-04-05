@@ -1,6 +1,5 @@
 package com.avp.common.entity.living.alien.chestburster;
 
-import com.avp.common.entity.living.alien.RoyalAlien;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -22,6 +21,7 @@ import java.util.Objects;
 import com.avp.AVP;
 import com.avp.common.MoveAnalysis;
 import com.avp.common.entity.living.alien.Alien;
+import com.avp.common.entity.living.alien.RoyalAlien;
 import com.avp.common.entity.living.alien.xenomorph.Xenomorph;
 import com.avp.common.entity.type.AVPEntityTypes;
 import com.avp.common.gene.GeneKeys;
@@ -38,7 +38,10 @@ public class Chestburster extends RoyalAlien implements ResinProducer {
 
     private static final String IS_ROYAL_AFFLICTED_KEY = "isRoyalAfflicted";
 
-    private static final EntityDataAccessor<Boolean> IS_ROYAL = SynchedEntityData.defineId(Chestburster.class, EntityDataSerializers.BOOLEAN);
+    private static final EntityDataAccessor<Boolean> IS_ROYAL = SynchedEntityData.defineId(
+        Chestburster.class,
+        EntityDataSerializers.BOOLEAN
+    );
 
     protected final MoveAnalysis moveAnalysis;
 

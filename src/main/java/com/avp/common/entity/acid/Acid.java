@@ -1,6 +1,5 @@
 package com.avp.common.entity.acid;
 
-import com.avp.common.util.AlienVariantUtil;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -14,6 +13,7 @@ import net.minecraft.world.entity.Pose;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
+import com.avp.common.util.AlienVariantUtil;
 import com.avp.common.util.GravityUtil;
 
 public class Acid extends Entity {
@@ -43,8 +43,8 @@ public class Acid extends Entity {
     );
 
     public static final EntityDataAccessor<Boolean> IS_IRRADIATED = SynchedEntityData.defineId(
-            Acid.class,
-            EntityDataSerializers.BOOLEAN
+        Acid.class,
+        EntityDataSerializers.BOOLEAN
     );
 
     private int particleTickCounter = 0;

@@ -65,9 +65,9 @@ public abstract class MixinLivingEntity_ApplyArmorEffects extends Entity {
     @Unique
     private boolean isWearingFullPredatorArmor(LivingEntity self) {
         return self.getItemBySlot(EquipmentSlot.HEAD).is(ArmorItems.JUNGLE_PREDATOR_HELMET) &&
-                self.getItemBySlot(EquipmentSlot.CHEST).is(ArmorItems.JUNGLE_PREDATOR_CHESTPLATE) &&
-                self.getItemBySlot(EquipmentSlot.LEGS).is(ArmorItems.JUNGLE_PREDATOR_LEGGINGS) &&
-                self.getItemBySlot(EquipmentSlot.FEET).is(ArmorItems.JUNGLE_PREDATOR_BOOTS);
+            self.getItemBySlot(EquipmentSlot.CHEST).is(ArmorItems.JUNGLE_PREDATOR_CHESTPLATE) &&
+            self.getItemBySlot(EquipmentSlot.LEGS).is(ArmorItems.JUNGLE_PREDATOR_LEGGINGS) &&
+            self.getItemBySlot(EquipmentSlot.FEET).is(ArmorItems.JUNGLE_PREDATOR_BOOTS);
     }
 
     @Unique

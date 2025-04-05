@@ -40,8 +40,8 @@ public class Yautja extends Monster {
     public final YautjaMaskManager yautjaMaskManager;
 
     private static final EntityDataAccessor<Boolean> HAS_MASK = SynchedEntityData.defineId(
-            Yautja.class,
-            EntityDataSerializers.BOOLEAN
+        Yautja.class,
+        EntityDataSerializers.BOOLEAN
     );
 
     public Yautja(EntityType<? extends Yautja> entityType, Level level) {
@@ -171,8 +171,6 @@ public class Yautja extends Monster {
         super.readAdditionalSaveData(compoundTag);
         yautjaMaskManager.load(compoundTag);
     }
-
-
 
     @Override
     public void addAdditionalSaveData(CompoundTag compoundTag) {

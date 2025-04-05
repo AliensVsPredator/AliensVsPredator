@@ -1,6 +1,5 @@
 package com.avp.client.animation.entity;
 
-import com.avp.client.animation.BasicAnimationUtils;
 import mod.azure.azurelib.rewrite.animation.AzAnimatorConfig;
 import mod.azure.azurelib.rewrite.animation.controller.AzAnimationController;
 import mod.azure.azurelib.rewrite.animation.controller.AzAnimationControllerContainer;
@@ -9,6 +8,7 @@ import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 
 import com.avp.AVPResources;
+import com.avp.client.animation.BasicAnimationUtils;
 import com.avp.common.entity.living.yautja.Yautja;
 import com.avp.common.entity.living.yautja.YautjaAnimationRefs;
 

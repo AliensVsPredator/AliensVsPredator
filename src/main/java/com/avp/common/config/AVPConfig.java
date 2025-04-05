@@ -18,7 +18,7 @@ public class AVPConfig {
 
         @Configurable
         @Configurable.Synchronized
-        @Configurable.Comment({"Resonator will replace every time this value is met", "1 second is 20 ticks. Default of 30 seconds"})
+        @Configurable.Comment({ "Resonator will replace every time this value is met", "1 second is 20 ticks. Default of 30 seconds" })
         public int RESONATOR_REPLACE_TICKS = 600;
 
         @Configurable

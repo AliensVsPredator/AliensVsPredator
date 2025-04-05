@@ -1,6 +1,5 @@
 package com.avp.common.entity.living.alien.ovamorph;
 
-import com.avp.common.entity.living.alien.RoyalAlien;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -25,6 +24,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import com.avp.AVP;
+import com.avp.common.entity.living.alien.RoyalAlien;
 import com.avp.common.entity.type.AVPEntityTypes;
 import com.avp.common.item.AVPItems;
 import com.avp.common.manager.HatchManager;

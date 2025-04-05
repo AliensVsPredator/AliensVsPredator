@@ -1,10 +1,11 @@
 package com.avp.common.manager;
 
-import com.avp.common.entity.living.alien.xenomorph.queen.Queen;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.world.entity.PathfinderMob;
+
+import com.avp.common.entity.living.alien.xenomorph.queen.Queen;
 
 public class CrawlingManager {
 

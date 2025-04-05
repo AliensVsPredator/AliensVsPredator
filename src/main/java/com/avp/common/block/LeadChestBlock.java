@@ -1,7 +1,5 @@
 package com.avp.common.block;
 
-import com.avp.common.block.entity.BlockEntityTypes;
-import com.avp.common.block.entity.LeadChestBE;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
@@ -44,10 +42,17 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
+import com.avp.common.block.entity.BlockEntityTypes;
+import com.avp.common.block.entity.LeadChestBE;
+
 public class LeadChestBlock extends AbstractChestBlock<LeadChestBE> implements SimpleWaterloggedBlock {
+
     public static final MapCodec<LeadChestBlock> CODEC = simpleCodec(LeadChestBlock::new);
+
     public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
+
     public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
+
     protected static final VoxelShape SHAPE = Block.box(1.0, 0.0, 1.0, 15.0, 14.0, 15.0);
 
     protected LeadChestBlock(Properties properties) {
@@ -66,7 +71,9 @@ public class LeadChestBlock extends AbstractChestBlock<LeadChestBE> implements S
             j++;
             if (i <= 4) {
                 i++;
-                tooltipComponents.add(Component.translatable("container.shulkerBox.itemCount", itemStack.getHoverName(), itemStack.getCount()));
+                tooltipComponents.add(
+                    Component.translatable("container.shulkerBox.itemCount", itemStack.getHoverName(), itemStack.getCount())
+                );
             }
         }
 
@@ -81,7 +88,12 @@ public class LeadChestBlock extends AbstractChestBlock<LeadChestBE> implements S
     }
 
     @Override
-    public DoubleBlockCombiner.@NotNull NeighborCombineResult<? extends ChestBlockEntity> combine(BlockState state, Level level, BlockPos pos, boolean override) {
+    public DoubleBlockCombiner.@NotNull NeighborCombineResult<? extends ChestBlockEntity> combine(
+        BlockState state,
+        Level level,
+        BlockPos pos,
+        boolean override
+    ) {
         return DoubleBlockCombiner.Combiner::acceptNone;
     }
 
@@ -111,13 +123,20 @@ public class LeadChestBlock extends AbstractChestBlock<LeadChestBE> implements S
     public BlockState getStateForPlacement(BlockPlaceContext context) {
         var fluidState = context.getLevel().getFluidState(context.getClickedPos());
         return this.defaultBlockState()
-                .setValue(FACING, context.getHorizontalDirection().getOpposite())
-                .setValue(WATERLOGGED, fluidState.getType() == Fluids.WATER);
+            .setValue(FACING, context.getHorizontalDirection().getOpposite())
+            .setValue(WATERLOGGED, fluidState.getType() == Fluids.WATER);
     }
 
     @Override
-    protected @NotNull InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult) {
-        if (level.isClientSide) return InteractionResult.SUCCESS;
+    protected @NotNull InteractionResult useWithoutItem(
+        BlockState state,
+        Level level,
+        BlockPos pos,
+        Player player,
+        BlockHitResult hitResult
+    ) {
+        if (level.isClientSide)
+            return InteractionResult.SUCCESS;
 
         if (!ChestBlock.isChestBlockedAt(level, pos) && level.getBlockEntity(pos) instanceof LeadChestBE leadChestBE) {
             player.openMenu(leadChestBE);
@@ -144,7 +163,8 @@ public class LeadChestBlock extends AbstractChestBlock<LeadChestBE> implements S
     @Override
     public @NotNull ItemStack getCloneItemStack(LevelReader level, BlockPos pos, BlockState state) {
         var itemStack = super.getCloneItemStack(level, pos, state);
-        level.getBlockEntity(pos, BlockEntityTypes.LEAD_CHEST_BE).ifPresent(leadChestBE -> leadChestBE.saveToItem(itemStack, level.registryAccess()));
+        level.getBlockEntity(pos, BlockEntityTypes.LEAD_CHEST_BE)
+            .ifPresent(leadChestBE -> leadChestBE.saveToItem(itemStack, level.registryAccess()));
         return itemStack;
     }
 
@@ -169,7 +189,14 @@ public class LeadChestBlock extends AbstractChestBlock<LeadChestBE> implements S
     }
 
     @Override
-    protected @NotNull BlockState updateShape(BlockState state, Direction direction, BlockState neighborState, LevelAccessor level, BlockPos pos, BlockPos neighborPos) {
+    protected @NotNull BlockState updateShape(
+        BlockState state,
+        Direction direction,
+        BlockState neighborState,
+        LevelAccessor level,
+        BlockPos pos,
+        BlockPos neighborPos
+    ) {
         if (Boolean.TRUE.equals(state.getValue(WATERLOGGED))) {
             level.scheduleTick(pos, Fluids.WATER, Fluids.WATER.getTickDelay(level));
         }

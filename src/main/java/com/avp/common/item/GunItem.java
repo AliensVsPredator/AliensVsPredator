@@ -1,18 +1,12 @@
 package com.avp.common.item;
 
-import com.avp.common.block.AVPBlocks;
-import com.avp.common.block_item.AVPBlockItems;
-import com.avp.common.util.GunLightUtil;
 import mod.azure.azurelib.rewrite.animation.dispatch.command.AzCommand;
 import mod.azure.azurelib.rewrite.animation.play_behavior.AzPlayBehaviors;
 import net.fabricmc.fabric.api.item.v1.EnchantingContext;
 import net.minecraft.core.Holder;
-import net.minecraft.core.NonNullList;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.Entity;
@@ -38,6 +32,8 @@ import java.time.Duration;
 import java.util.List;
 import java.util.Objects;
 
+import com.avp.common.block.AVPBlocks;
+import com.avp.common.block_item.AVPBlockItems;
 import com.avp.common.component.DataComponents;
 import com.avp.common.item.gun.FireModeConfig;
 import com.avp.common.item.gun.GunConfig;
@@ -45,6 +41,7 @@ import com.avp.common.item.gun.GunData;
 import com.avp.common.item.gun.attack.GunAttackConfig;
 import com.avp.common.item.old_painless.OldPainlessAnimationRefs;
 import com.avp.common.util.EnchantmentUtil;
+import com.avp.common.util.GunLightUtil;
 import com.avp.common.util.TooltipUtil;
 import com.avp.server.ServerScheduler;
 
@@ -334,7 +331,7 @@ public class GunItem extends Item {
         var ammunitionItem = ammunitionItemSupplier.get();
         var neededAmmunition = (int) Math.ceil((maximumAmmunition - currentAmmunition) / ((float) reloadAmount));
         var playerInventory = player.getInventory();
-        final int[] ammunitionCountWrapper = {0};
+        final int[] ammunitionCountWrapper = { 0 };
         for (var itemStack2 : playerInventory.items) {
             if (itemStack2.is(ammunitionItem.asItem())) {
                 ammunitionCountWrapper[0] += itemStack2.getCount();
@@ -435,7 +432,7 @@ public class GunItem extends Item {
     }
 
     private static int consumeFromAmmoChestItem(ItemStack ammoChestStack, int amountToConsume, ItemLike ammunitionItem) {
-        final int[] consumeTracker = {amountToConsume};
+        final int[] consumeTracker = { amountToConsume };
 
         var container = ammoChestStack.get(net.minecraft.core.component.DataComponents.CONTAINER);
         if (container == null) {
