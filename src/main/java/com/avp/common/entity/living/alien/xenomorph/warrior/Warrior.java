@@ -115,6 +115,10 @@ public class Warrior extends Xenomorph {
             return AVPEntityTypes.ABERRANT_WARRIOR.getDefaultLootTable();
         }
 
+        if (isIrradiated()) {
+            return AVPEntityTypes.IRRADIATED_WARRIOR.getDefaultLootTable();
+        }
+
         return super.getDefaultLootTable();
     }
 
