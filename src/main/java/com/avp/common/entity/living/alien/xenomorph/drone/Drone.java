@@ -94,6 +94,10 @@ public class Drone extends Xenomorph {
             spawnEggItem = SpawnEggItem.byId(AVPEntityTypes.ABERRANT_DRONE);
         }
 
+        if (isIrradiated()) {
+            spawnEggItem = SpawnEggItem.byId(AVPEntityTypes.IRRADIATED_DRONE);
+        }
+
         return spawnEggItem == null ? super.getPickResult() : new ItemStack(spawnEggItem);
     }
 
