@@ -111,6 +111,10 @@ public class Warrior extends Xenomorph {
             return AVPEntityTypes.NETHER_WARRIOR.getDefaultLootTable();
         }
 
+        if (isAberrant()) {
+            return AVPEntityTypes.ABERRANT_WARRIOR.getDefaultLootTable();
+        }
+
         return super.getDefaultLootTable();
     }
 
