@@ -73,7 +73,7 @@ public abstract class MixinChestBlock_RadioactiveChest {
                 livingEntity.getItemBySlot(EquipmentSlot.CHEST).is(AVPItemTags.RADIATION_RESISTANT_ARMOR) &&
                 livingEntity.getItemBySlot(EquipmentSlot.LEGS).is(AVPItemTags.RADIATION_RESISTANT_ARMOR) &&
                 livingEntity.getItemBySlot(EquipmentSlot.FEET).is(AVPItemTags.RADIATION_RESISTANT_ARMOR);
-            if (!armorCheck || !AVPPredicates.IS_IMMORTAL.test(livingEntity)) {
+            if (!armorCheck && !AVPPredicates.IS_IMMORTAL.test(livingEntity)) {
                 livingEntity.addEffect(new MobEffectInstance(AVPEffects.RADIATION_EFFECT, Integer.MAX_VALUE, 0));
             }
         }
