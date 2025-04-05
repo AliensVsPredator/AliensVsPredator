@@ -10,8 +10,6 @@ import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.goal.AvoidEntityGoal;
 import net.minecraft.world.entity.ai.goal.WaterAvoidingRandomStrollGoal;
 import net.minecraft.world.entity.monster.Monster;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.SpawnEggItem;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -43,6 +41,10 @@ public class Chestburster extends RoyalAlien implements ResinProducer {
         EntityDataSerializers.BOOLEAN
     );
 
+    public static AttributeSupplier.Builder createChestbursterAttributes() {
+        return applyFrom(AVP.config.statsConfigs.CHESTBURSTER_STATS, Monster.createMonsterAttributes());
+    }
+
     protected final MoveAnalysis moveAnalysis;
 
     private final ChestbursterAnimationDispatcher animationDispatcher;
@@ -67,8 +69,19 @@ public class Chestburster extends RoyalAlien implements ResinProducer {
         this.config = AVP.config.statsConfigs.CHESTBURSTER_STATS;
     }
 
-    public static AttributeSupplier.Builder createChestbursterAttributes() {
-        return applyFrom(AVP.config.statsConfigs.CHESTBURSTER_STATS, Monster.createMonsterAttributes());
+    @Override
+    public @Nullable EntityType<? extends Alien> getAberrantType() {
+        return isRoyal() ? AVPEntityTypes.ROYAL_ABERRANT_CHESTBURSTER : AVPEntityTypes.ABERRANT_CHESTBURSTER;
+    }
+
+    @Override
+    public @Nullable EntityType<? extends Alien> getIrradiatedType() {
+        return null;
+    }
+
+    @Override
+    public @Nullable EntityType<? extends Alien> getNetherType() {
+        return isRoyal() ? AVPEntityTypes.ROYAL_NETHER_CHESTBURSTER : AVPEntityTypes.NETHER_CHESTBURSTER;
     }
 
     @Override
@@ -177,35 +190,6 @@ public class Chestburster extends RoyalAlien implements ResinProducer {
 
     public GrowthManager growthManager() {
         return growthManager;
-    }
-
-    @Override
-    public @Nullable ItemStack getPickResult() {
-        SpawnEggItem spawnEggItem = null;
-
-        if (isRoyal()) {
-            if (isNetherAfflicted()) {
-                spawnEggItem = SpawnEggItem.byId(AVPEntityTypes.ROYAL_NETHER_CHESTBURSTER);
-            }
-
-            if (isAberrant()) {
-                spawnEggItem = SpawnEggItem.byId(AVPEntityTypes.ROYAL_ABERRANT_CHESTBURSTER);
-            }
-
-            if (!isNetherAfflicted() && !isAberrant()) {
-                spawnEggItem = SpawnEggItem.byId(AVPEntityTypes.ROYAL_CHESTBURSTER);
-            }
-        } else {
-            if (isNetherAfflicted()) {
-                spawnEggItem = SpawnEggItem.byId(AVPEntityTypes.NETHER_CHESTBURSTER);
-            }
-
-            if (isAberrant()) {
-                spawnEggItem = SpawnEggItem.byId(AVPEntityTypes.ABERRANT_CHESTBURSTER);
-            }
-        }
-
-        return spawnEggItem == null ? super.getPickResult() : new ItemStack(spawnEggItem);
     }
 
     @Override

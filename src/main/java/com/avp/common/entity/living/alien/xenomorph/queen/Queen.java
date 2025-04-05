@@ -1,24 +1,25 @@
 package com.avp.common.entity.living.alien.xenomorph.queen;
 
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.monster.Monster;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.SpawnEggItem;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.storage.loot.LootTable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import com.avp.AVP;
 import com.avp.common.block.AVPBlockTags;
+import com.avp.common.entity.living.alien.Alien;
 import com.avp.common.entity.living.alien.xenomorph.Xenomorph;
 import com.avp.common.entity.type.AVPEntityTypes;
 import com.avp.common.util.AlienVariantUtil;
 import com.avp.common.util.resin.ResinData;
 
 public class Queen extends Xenomorph {
+
+    public static AttributeSupplier.Builder createQueenAttributes() {
+        return applyFrom(AVP.config.statsConfigs.QUEEN_STATS, Monster.createMonsterAttributes());
+    }
 
     private final QueenAnimationDispatcher animationDispatcher;
 
@@ -30,40 +31,23 @@ public class Queen extends Xenomorph {
     }
 
     @Override
+    public @Nullable EntityType<? extends Alien> getAberrantType() {
+        return AVPEntityTypes.ABERRANT_QUEEN;
+    }
+
+    @Override
+    public @Nullable EntityType<? extends Alien> getIrradiatedType() {
+        return null;
+    }
+
+    @Override
+    public @Nullable EntityType<? extends Alien> getNetherType() {
+        return AVPEntityTypes.NETHER_QUEEN;
+    }
+
+    @Override
     public float maxUpStep() {
         return 2.5F;
-    }
-
-    @Override
-    public @Nullable ItemStack getPickResult() {
-        SpawnEggItem spawnEggItem = null;
-
-        if (isNetherAfflicted()) {
-            spawnEggItem = SpawnEggItem.byId(AVPEntityTypes.NETHER_QUEEN);
-        }
-
-        if (isAberrant()) {
-            spawnEggItem = SpawnEggItem.byId(AVPEntityTypes.ABERRANT_QUEEN);
-        }
-
-        return spawnEggItem == null ? super.getPickResult() : new ItemStack(spawnEggItem);
-    }
-
-    @Override
-    protected @NotNull ResourceKey<LootTable> getDefaultLootTable() {
-        if (isNetherAfflicted()) {
-            return AVPEntityTypes.NETHER_QUEEN.getDefaultLootTable();
-        }
-
-        if (isAberrant()) {
-            return AVPEntityTypes.ABERRANT_QUEEN.getDefaultLootTable();
-        }
-
-        return super.getDefaultLootTable();
-    }
-
-    public static AttributeSupplier.Builder createQueenAttributes() {
-        return applyFrom(AVP.config.statsConfigs.QUEEN_STATS, Monster.createMonsterAttributes());
     }
 
     @Override

@@ -1,9 +1,13 @@
 package com.avp.common.util;
 
 import net.minecraft.core.particles.ParticleOptions;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.loot.LootTable;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
 
@@ -36,6 +40,20 @@ public class AlienVariantUtil {
         Map.entry(AVPBlocks.ABERRANT_RESIN_NODE, AVPBlocks.ABERRANT_RESIN_VEIN),
         Map.entry(AVPBlocks.IRRADIATED_RESIN_NODE, AVPBlocks.IRRADIATED_RESIN_VEIN)
     );
+
+    public static @Nullable EntityType<? extends Alien> getVariantTypeFor(Alien alien) {
+        return switch (alien) {
+            case Alien netherAlien when netherAlien.isNetherAfflicted() -> alien.getNetherType();
+            case Alien aberrantAlien when aberrantAlien.isAberrant() -> alien.getAberrantType();
+            case Alien irradiatedAlien when irradiatedAlien.isIrradiated() -> alien.getIrradiatedType();
+            default -> null;
+        };
+    }
+
+    public static ResourceKey<LootTable> getLootTableFor(Alien alien) {
+        var type = getVariantTypeFor(alien);
+        return type == null ? alien.getType().getDefaultLootTable() : type.getDefaultLootTable();
+    }
 
     public static Item getResinBallFor(Alien alien) {
         return switch (alien) {

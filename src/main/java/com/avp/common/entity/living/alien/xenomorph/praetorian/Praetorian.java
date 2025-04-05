@@ -1,22 +1,23 @@
 package com.avp.common.entity.living.alien.xenomorph.praetorian;
 
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.monster.Monster;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.SpawnEggItem;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.storage.loot.LootTable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import com.avp.AVP;
+import com.avp.common.entity.living.alien.Alien;
 import com.avp.common.entity.living.alien.xenomorph.Xenomorph;
 import com.avp.common.entity.type.AVPEntityTypes;
 import com.avp.common.util.resin.ResinData;
 
 public class Praetorian extends Xenomorph {
+
+    public static AttributeSupplier.Builder createPraetorianAttributes() {
+        return applyFrom(AVP.config.statsConfigs.PRAETORIAN_STATS, Monster.createMonsterAttributes());
+    }
 
     private final PraetorianAnimationDispatcher animationDispatcher;
 
@@ -27,8 +28,19 @@ public class Praetorian extends Xenomorph {
         this.config = AVP.config.statsConfigs.PRAETORIAN_STATS;
     }
 
-    public static AttributeSupplier.Builder createPraetorianAttributes() {
-        return applyFrom(AVP.config.statsConfigs.PRAETORIAN_STATS, Monster.createMonsterAttributes());
+    @Override
+    public @Nullable EntityType<? extends Alien> getAberrantType() {
+        return AVPEntityTypes.ABERRANT_PRAETORIAN;
+    }
+
+    @Override
+    public @Nullable EntityType<? extends Alien> getIrradiatedType() {
+        return AVPEntityTypes.IRRADIATED_PRAETORIAN;
+    }
+
+    @Override
+    public @Nullable EntityType<? extends Alien> getNetherType() {
+        return AVPEntityTypes.NETHER_PRAETORIAN;
     }
 
     @Override
@@ -82,42 +94,6 @@ public class Praetorian extends Xenomorph {
     @Override
     public boolean isPushable() {
         return false;
-    }
-
-    @Override
-    public @Nullable ItemStack getPickResult() {
-        SpawnEggItem spawnEggItem = null;
-
-        if (isNetherAfflicted()) {
-            spawnEggItem = SpawnEggItem.byId(AVPEntityTypes.NETHER_PRAETORIAN);
-        }
-
-        if (isAberrant()) {
-            spawnEggItem = SpawnEggItem.byId(AVPEntityTypes.ABERRANT_PRAETORIAN);
-        }
-
-        if (isIrradiated()) {
-            spawnEggItem = SpawnEggItem.byId(AVPEntityTypes.IRRADIATED_PRAETORIAN);
-        }
-
-        return spawnEggItem == null ? super.getPickResult() : new ItemStack(spawnEggItem);
-    }
-
-    @Override
-    protected @NotNull ResourceKey<LootTable> getDefaultLootTable() {
-        if (isNetherAfflicted()) {
-            return AVPEntityTypes.NETHER_PRAETORIAN.getDefaultLootTable();
-        }
-
-        if (isAberrant()) {
-            return AVPEntityTypes.ABERRANT_PRAETORIAN.getDefaultLootTable();
-        }
-
-        if (isIrradiated()) {
-            return AVPEntityTypes.IRRADIATED_PRAETORIAN.getDefaultLootTable();
-        }
-
-        return super.getDefaultLootTable();
     }
 
     @Override

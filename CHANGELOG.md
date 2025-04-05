@@ -35,6 +35,9 @@
 ## 🛠 Data Pack
 - N/A
 
+## 🔬 Technical Changes
+- Rewrote alien variant handling to prevent future bugs with drops and spawn egg picking.
+
 # v0.0.20-beta
 
 ## What's New

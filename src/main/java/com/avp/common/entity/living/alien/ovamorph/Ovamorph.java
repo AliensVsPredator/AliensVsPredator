@@ -15,15 +15,14 @@ import net.minecraft.world.entity.Shearable;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.item.SpawnEggItem;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.gameevent.GameEvent;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import com.avp.AVP;
+import com.avp.common.entity.living.alien.Alien;
 import com.avp.common.entity.living.alien.RoyalAlien;
 import com.avp.common.entity.type.AVPEntityTypes;
 import com.avp.common.item.AVPItems;
@@ -58,6 +57,21 @@ public class Ovamorph extends RoyalAlien implements Shearable {
         this.animationDispatcher = new OvamorphAnimationDispatcher(this);
         this.hatchManager = new HatchManager(this, HATCHED, MAX_SPAWN_COUNT, 3 * 20, 3 * 20);
         this.config = AVP.config.statsConfigs.OVAMORPH_STATS;
+    }
+
+    @Override
+    public @Nullable EntityType<? extends Alien> getAberrantType() {
+        return isRoyal() ? AVPEntityTypes.ROYAL_ABERRANT_OVAMORPH : AVPEntityTypes.ABERRANT_OVAMORPH;
+    }
+
+    @Override
+    public @Nullable EntityType<? extends Alien> getIrradiatedType() {
+        return null;
+    }
+
+    @Override
+    public @Nullable EntityType<? extends Alien> getNetherType() {
+        return isRoyal() ? AVPEntityTypes.ROYAL_NETHER_OVAMORPH : AVPEntityTypes.NETHER_OVAMORPH;
     }
 
     @Override
@@ -229,34 +243,5 @@ public class Ovamorph extends RoyalAlien implements Shearable {
 
     public void setRooted(boolean isRooted) {
         entityData.set(ROOTED, isRooted);
-    }
-
-    @Override
-    public @Nullable ItemStack getPickResult() {
-        SpawnEggItem spawnEggItem = null;
-
-        if (isRoyal()) {
-            if (isNetherAfflicted()) {
-                spawnEggItem = SpawnEggItem.byId(AVPEntityTypes.ROYAL_NETHER_OVAMORPH);
-            }
-
-            if (isAberrant()) {
-                spawnEggItem = SpawnEggItem.byId(AVPEntityTypes.ROYAL_ABERRANT_OVAMORPH);
-            }
-
-            if (!isNetherAfflicted() && !isAberrant()) {
-                spawnEggItem = SpawnEggItem.byId(AVPEntityTypes.ROYAL_OVAMORPH);
-            }
-        } else {
-            if (isNetherAfflicted()) {
-                spawnEggItem = SpawnEggItem.byId(AVPEntityTypes.NETHER_OVAMORPH);
-            }
-
-            if (isAberrant()) {
-                spawnEggItem = SpawnEggItem.byId(AVPEntityTypes.ABERRANT_OVAMORPH);
-            }
-        }
-
-        return spawnEggItem == null ? super.getPickResult() : new ItemStack(spawnEggItem);
     }
 }

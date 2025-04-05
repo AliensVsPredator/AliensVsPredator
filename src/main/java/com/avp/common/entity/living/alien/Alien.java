@@ -5,6 +5,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.damagesource.DamageSource;
@@ -17,9 +18,13 @@ import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.monster.Monster;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.SpawnEggItem;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.pathfinder.PathType;
+import net.minecraft.world.level.storage.loot.LootTable;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import com.avp.AVP;
@@ -30,6 +35,7 @@ import com.avp.common.manager.GeneManager;
 import com.avp.common.manager.HiveManager;
 import com.avp.common.util.AcidBleedUtil;
 import com.avp.common.util.AlienHurtUtil;
+import com.avp.common.util.AlienVariantUtil;
 import com.avp.common.worldgen.biome.AVPBiomes;
 
 public abstract class Alien extends Monster {
@@ -72,6 +78,12 @@ public abstract class Alien extends Monster {
         this.geneManager = new GeneManager(this);
         this.hiveManager = new HiveManager(this);
     }
+
+    public abstract @Nullable EntityType<? extends Alien> getAberrantType();
+
+    public abstract @Nullable EntityType<? extends Alien> getIrradiatedType();
+
+    public abstract @Nullable EntityType<? extends Alien> getNetherType();
 
     @Override
     public float maxUpStep() {
@@ -290,6 +302,24 @@ public abstract class Alien extends Monster {
             }
             case UNLOADED_TO_CHUNK, UNLOADED_WITH_PLAYER, CHANGED_DIMENSION -> { /* NO-OP */ }
         }
+    }
+
+    @Override
+    public final @Nullable ItemStack getPickResult() {
+        SpawnEggItem spawnEggItem = null;
+
+        var variantType = AlienVariantUtil.getVariantTypeFor(this);
+
+        if (variantType != null) {
+            spawnEggItem = SpawnEggItem.byId(variantType);
+        }
+
+        return spawnEggItem == null ? super.getPickResult() : new ItemStack(spawnEggItem);
+    }
+
+    @Override
+    protected final @NotNull ResourceKey<LootTable> getDefaultLootTable() {
+        return AlienVariantUtil.getLootTableFor(this);
     }
 
     @Override
