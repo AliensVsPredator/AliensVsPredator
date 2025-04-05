@@ -31,7 +31,7 @@ public class CombatCreativeModeTabInitializer {
             entries.accept(AVPItems.M4RA_BATTLE_RIFLE);
             entries.accept(AVPItems.M56_SMARTGUN);
             entries.accept(AVPItems.M6B_ROCKET_LAUNCHER);
-            entries.accept(AVPItems.M88_MOD_4_COMBAT_PISTOL);
+            entries.accept(AVPItems.M88MOD4_COMBAT_PISTOL);
             entries.accept(AVPItems.OLD_PAINLESS);
             entries.accept(AVPItems.ZX_76_SHOTGUN);
 

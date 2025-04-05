@@ -314,7 +314,7 @@ public class RussianLanguageProvider extends FabricLanguageProvider {
         translationBuilder.add(AVPItems.M4RA_BATTLE_RIFLE, "M4RA Боевая винтовка");
         translationBuilder.add(AVPItems.M56_SMARTGUN, "M56 Умная пушка");
         translationBuilder.add(AVPItems.M6B_ROCKET_LAUNCHER, "M6B Ракетомёт");
-        translationBuilder.add(AVPItems.M88_MOD_4_COMBAT_PISTOL, "88 Mod 4 Боевой пистолет");
+        translationBuilder.add(AVPItems.M88MOD4_COMBAT_PISTOL, "88 Mod 4 Боевой пистолет");
         translationBuilder.add(AVPItems.MEDIUM_BULLET, "Средный патрон");
         translationBuilder.add(ArmorItems.MK50_BOOTS, "MK50 ботинки");
         translationBuilder.add(ArmorItems.MK50_CHESTPLATE, "MK50 нагрудник");

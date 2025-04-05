@@ -261,7 +261,7 @@ public class AVPItemTagProvider extends FabricTagProvider.ItemTagProvider {
                 AVPItems.M4RA_BATTLE_RIFLE,
                 AVPItems.M56_SMARTGUN,
                 AVPItems.M6B_ROCKET_LAUNCHER,
-                AVPItems.M88_MOD_4_COMBAT_PISTOL,
+                AVPItems.M88MOD4_COMBAT_PISTOL,
                 AVPItems.OLD_PAINLESS,
                 AVPItems.ZX_76_SHOTGUN
             );

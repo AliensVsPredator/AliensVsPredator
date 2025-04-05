@@ -165,7 +165,7 @@ public class AVPClient implements ClientModInitializer {
         registerItemRenderer(AVPItems.M4RA_BATTLE_RIFLE, name -> () -> new M4raBattleRifileItemRenderer(name));
         registerItemRenderer(AVPItems.M56_SMARTGUN, name -> () -> new M56SmartgunItemRenderer(name));
         registerItemRenderer(AVPItems.M6B_ROCKET_LAUNCHER, name -> () -> new M6BRLItemRenderer(name));
-        registerItemRenderer(AVPItems.M88_MOD_4_COMBAT_PISTOL, name -> () -> new M88Mod4CombatPistolItemRenderer(name));
+        registerItemRenderer(AVPItems.M88MOD4_COMBAT_PISTOL, name -> () -> new M88Mod4CombatPistolItemRenderer(name));
         registerItemRenderer(AVPItems.OLD_PAINLESS, name -> () -> new OldPainlessItemRenderer(name));
         registerItemRenderer(AVPItems.ZX_76_SHOTGUN, name -> () -> new ZX76ShotgunItemRenderer(name));
         registerItemRenderer(AVPBlockItems.DESK_TERMINAL_BLOCK, name -> DeskTerminalItemRenderer::new);

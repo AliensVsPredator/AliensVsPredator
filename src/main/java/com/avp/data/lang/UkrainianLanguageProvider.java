@@ -309,7 +309,7 @@ public class UkrainianLanguageProvider extends FabricLanguageProvider {
         translationBuilder.add(AVPItems.M4RA_BATTLE_RIFLE, "M4RA Бойова гвинтівка");
         translationBuilder.add(AVPItems.M56_SMARTGUN, "M56 Розумна гармата");
         translationBuilder.add(AVPItems.M6B_ROCKET_LAUNCHER, "M6B Ракетомет");
-        translationBuilder.add(AVPItems.M88_MOD_4_COMBAT_PISTOL, "88 Mod 4 Бойовий пістолет");
+        translationBuilder.add(AVPItems.M88MOD4_COMBAT_PISTOL, "88 Mod 4 Бойовий пістолет");
         translationBuilder.add(AVPItems.MEDIUM_BULLET, "Середній патрон");
         translationBuilder.add(ArmorItems.MK50_BOOTS, "MK50 чоботи");
         translationBuilder.add(ArmorItems.MK50_CHESTPLATE, "MK50 нагрудник");
