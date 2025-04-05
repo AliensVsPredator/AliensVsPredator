@@ -33,7 +33,7 @@
   - Irraiated -> Irradiated
 
 ## 🛠 Data Pack
-- N/A
+- Renamed `irraiated_aliens` entity type tag to `irradiated_aliens`.
 
 ## 🔬 Technical Changes
 - Rewrote alien variant handling to prevent future bugs with drops and spawn egg picking.
