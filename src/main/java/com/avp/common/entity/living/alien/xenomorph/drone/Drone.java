@@ -111,6 +111,10 @@ public class Drone extends Xenomorph {
             return AVPEntityTypes.ABERRANT_DRONE.getDefaultLootTable();
         }
 
+        if (isIrradiated()) {
+            return AVPEntityTypes.IRRADIATED_DRONE.getDefaultLootTable();
+        }
+
         return super.getDefaultLootTable();
     }
 
