@@ -653,7 +653,7 @@ public class AVPBlocks {
                     Collectors.toMap(
                         Function.identity(),
                         dyeColor -> register(
-                            new CustomTransparentBlock(BlockProperties.DYE_COLOR_TO_INDUSTRIAL_GLASS_PROPERTIES.get(dyeColor)),
+                            new StainedGlassBlock(dyeColor, BlockProperties.DYE_COLOR_TO_INDUSTRIAL_GLASS_PROPERTIES.get(dyeColor)),
                             dyeColor.getName() + "_industrial_glass"
                         )
                     )
