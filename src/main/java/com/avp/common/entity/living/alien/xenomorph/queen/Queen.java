@@ -1,11 +1,13 @@
 package com.avp.common.entity.living.alien.xenomorph.queen;
 
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.SpawnEggItem;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.storage.loot.LootTable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -45,6 +47,15 @@ public class Queen extends Xenomorph {
         }
 
         return spawnEggItem == null ? super.getPickResult() : new ItemStack(spawnEggItem);
+    }
+
+    @Override
+    protected @NotNull ResourceKey<LootTable> getDefaultLootTable() {
+        if (isNetherAfflicted()) {
+            return AVPEntityTypes.NETHER_QUEEN.getDefaultLootTable();
+        }
+
+        return super.getDefaultLootTable();
     }
 
     public static AttributeSupplier.Builder createQueenAttributes() {

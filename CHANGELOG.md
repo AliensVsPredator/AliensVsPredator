@@ -23,6 +23,7 @@
   - Aberrant Drone
   - Aberrant Praetorian
   - Aberrant Warrior
+  - Nether Queen
 - Fixed typos:
   - Aberant -> Aberrant
   - Irraiated -> Irradiated
