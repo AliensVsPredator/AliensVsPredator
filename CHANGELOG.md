@@ -15,6 +15,7 @@
 - N/A
 
 ## 🐞 Fixes
+- Fixed pulse rifle recipe not requiring a stock as an ingredient.
 - Fixed the following doors duplicating when dropped:
   - Ferroaluminum Door
   - Steel Door

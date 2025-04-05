@@ -160,6 +160,7 @@ public class GunRecipeProvider {
             .requires(1, AVPItems.BARREL)
             .requires(1, AVPItems.GRIP)
             .requires(1, AVPItems.SMART_RECEIVER)
+            .requires(1, AVPItems.STOCK)
             .into(1, AVPItems.M41A_PULSE_RIFLE);
 
         builder.shapeless()
