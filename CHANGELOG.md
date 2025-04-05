@@ -24,6 +24,7 @@
   - Aberrant Praetorian
   - Aberrant Queen
   - Aberrant Warrior
+  - Irradiated Praetorian
   - Nether Queen
 - Fixed typos:
   - Aberant -> Aberrant
