@@ -441,9 +441,9 @@ public class RussianLanguageProvider extends FabricLanguageProvider {
         translationBuilder.add(AVPItems.TITANIUM_NUGGET, "Титановы самородок");
         translationBuilder.add(AVPItems.URANIUM_NUGGET, "Урановый самородок");
         translationBuilder.add(AVPItems.ZINC_NUGGET, "Цинковый самородок");
-        translationBuilder.add(AVPItems.ABERRANT_RESIN_BALL, "Aberant Resin Ball");
-        translationBuilder.add(AVPItems.ABERRANT_CHITIN, "Aberant Chitin");
-        translationBuilder.add(AVPItems.PLATED_ABERRANT_CHITIN, "Plated Aberant Chitin");
+        translationBuilder.add(AVPItems.ABERRANT_RESIN_BALL, "Aberrant Resin Ball");
+        translationBuilder.add(AVPItems.ABERRANT_CHITIN, "Aberrant Chitin");
+        translationBuilder.add(AVPItems.PLATED_ABERRANT_CHITIN, "Plated Aberrant Chitin");
         translationBuilder.add(AVPItems.IRRADIATED_RESIN_BALL, "Irradiated Resin Ball");
         translationBuilder.add(AVPItems.IRRADIATED_CHITIN, "Irradiated Chitin");
         translationBuilder.add(AVPItems.PLATED_IRRADIATED_CHITIN, "Plated Irradiated Chitin");

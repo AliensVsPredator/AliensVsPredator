@@ -436,9 +436,9 @@ public class UkrainianLanguageProvider extends FabricLanguageProvider {
         translationBuilder.add(AVPItems.TITANIUM_NUGGET, "Титановий самородок");
         translationBuilder.add(AVPItems.URANIUM_NUGGET, "Самородок урану");
         translationBuilder.add(AVPItems.ZINC_NUGGET, "Цинковий самородок");
-        translationBuilder.add(AVPItems.ABERRANT_RESIN_BALL, "Aberant Resin Ball");
-        translationBuilder.add(AVPItems.ABERRANT_CHITIN, "Aberant Chitin");
-        translationBuilder.add(AVPItems.PLATED_ABERRANT_CHITIN, "Plated Aberant Chitin");
+        translationBuilder.add(AVPItems.ABERRANT_RESIN_BALL, "Aberrant Resin Ball");
+        translationBuilder.add(AVPItems.ABERRANT_CHITIN, "Aberrant Chitin");
+        translationBuilder.add(AVPItems.PLATED_ABERRANT_CHITIN, "Plated Aberrant Chitin");
         translationBuilder.add(AVPItems.IRRADIATED_RESIN_BALL, "Irradiated Resin Ball");
         translationBuilder.add(AVPItems.IRRADIATED_CHITIN, "Irradiated Chitin");
         translationBuilder.add(AVPItems.PLATED_IRRADIATED_CHITIN, "Plated Irradiated Chitin");

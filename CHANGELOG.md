@@ -1,3 +1,18 @@
+# v0.0.21-beta
+
+## What's New
+- N/A
+
+## Changes
+- N/A
+
+## Fixes
+- Fixed typos:
+  - Aberant -> Aberrant
+
+## Data Pack
+- N/A
+
 # v0.0.20-beta
 
 ## What's New
