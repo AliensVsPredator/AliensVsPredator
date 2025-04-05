@@ -17,6 +17,7 @@
 
 ## 🐞 Fixes
 - Fixed gun side effects hurting players when pvp is off.
+- Fixed gun side effects not happening in the correct order.
 - Fixed random holes in flamethrower flames.
 - Fixed dyed industrial glass blocks not changing beacon colors.
 - Fixed flamethrower spreading fire through walls.

@@ -108,18 +108,23 @@ public class HitScanGunAttack extends AbstractGunAttack {
             return;
         }
 
+        // Apply pre-effects.
+        if (hitEntity instanceof LivingEntity livingEntity) {
+            applyFlameEffects(livingEntity);
+        }
+
         var powerLevel = EnchantmentUtil.getLevel(level, gunAttackConfig.gunItemStack(), Enchantments.POWER);
         var damage = gunAttackConfig.fireModeConfig().damage() * (1 + (0.25F * powerLevel));
         var registry = shooter.registryAccess().registryOrThrow(Registries.DAMAGE_TYPE);
         var damageSource = new DamageSource(registry.getHolderOrThrow(AVPDamageTypes.BULLET), shooter);
 
-        hitEntity.hurt(damageSource, damage);
+        var wasHurt = hitEntity.hurt(damageSource, damage);
 
-        if (hitEntity instanceof LivingEntity livingEntity) {
+        // Apply post-effects.
+        if (wasHurt && hitEntity instanceof LivingEntity livingEntity) {
             livingEntity.invulnerableTime = 0;
             livingEntity.setLastHurtByMob(shooter);
 
-            applyFlameEffects(livingEntity);
             applyKnockbackEffects(livingEntity, shooter);
         }
     }
