@@ -96,6 +96,10 @@ public class Praetorian extends Xenomorph {
             spawnEggItem = SpawnEggItem.byId(AVPEntityTypes.ABERRANT_PRAETORIAN);
         }
 
+        if (isIrradiated()) {
+            spawnEggItem = SpawnEggItem.byId(AVPEntityTypes.IRRADIATED_PRAETORIAN);
+        }
+
         return spawnEggItem == null ? super.getPickResult() : new ItemStack(spawnEggItem);
     }
 
