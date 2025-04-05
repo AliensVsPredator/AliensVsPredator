@@ -20,6 +20,7 @@
 - Fixed picking irradiated praetorians giving the wrong spawn egg.
 - Fixed typos:
   - Aberant -> Aberrant
+  - Irraiated -> Irradiated
 
 ## 🛠 Data Pack
 - N/A
