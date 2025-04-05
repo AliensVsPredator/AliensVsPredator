@@ -1,6 +1,7 @@
 package com.avp.common.entity.projectile;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
@@ -16,6 +17,9 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.ArrayDeque;
+import java.util.HashSet;
 
 import com.avp.common.damage.AVPDamageTypes;
 import com.avp.common.entity.type.AVPEntityTypes;
@@ -66,7 +70,16 @@ public class Flamethrow extends ThrowableProjectile {
         if (!level.isClientSide) {
             switch (hitResult) {
                 case EntityHitResult entityHitResult -> firebomb(entityHitResult.getEntity().blockPosition());
-                case BlockHitResult blockHitResult -> firebomb(blockHitResult.getBlockPos());
+                case BlockHitResult blockHitResult -> {
+                    var hit = blockHitResult.getBlockPos();
+                    // Direction the fireball came from.
+                    var impactSide = blockHitResult.getDirection();
+
+                    // Start fire on the "outside" of the block that was hit.
+                    var airStart = hit.relative(impactSide);
+
+                    firebomb(airStart);
+                }
                 default -> { /* NO-OP */ }
             }
 
@@ -87,18 +100,49 @@ public class Flamethrow extends ThrowableProjectile {
             entity.igniteForTicks(10 * 20);
         });
 
-        for (var x = -radius; x <= radius; x++) {
-            for (var y = -radius; y <= radius; y++) {
-                for (var z = -radius; z <= radius; z++) {
-                    var firePos = blockPos.offset(x, y, z);
-                    var state = level().getBlockState(firePos);
+        bfsFireSpread(blockPos, radius);
+    }
 
-                    if (state.canBeReplaced() && state.getFluidState().isEmpty() && random.nextInt(1, 10) < 5) {
-                        level().setBlock(firePos, Blocks.FIRE.defaultBlockState(), 3);
-                    }
+    public void bfsFireSpread(BlockPos origin, int maxRadius) {
+        var visited = new HashSet<BlockPos>();
+        var queue = new ArrayDeque<BlockPos>();
+
+        visited.add(origin);
+        queue.add(origin);
+
+        while (!queue.isEmpty()) {
+            var current = queue.poll();
+
+            if (shouldPlaceFireAt(current)) {
+                var randomChance = random.nextInt(1, 10);
+
+                if (randomChance < 11) {
+                    level().setBlock(current, Blocks.FIRE.defaultBlockState(), 3);
+                }
+            }
+
+            for (var direction : Direction.values()) {
+                var neighbor = current.relative(direction);
+
+                if (visited.contains(neighbor)) {
+                    continue;
+                }
+
+                if (origin.distManhattan(neighbor) > maxRadius + 1) {
+                    continue;
+                }
+
+                if (shouldPlaceFireAt(neighbor)) {
+                    visited.add(neighbor);
+                    queue.add(neighbor);
                 }
             }
         }
+    }
+
+    private boolean shouldPlaceFireAt(BlockPos pos) {
+        var state = level().getBlockState(pos);
+        return state.canBeReplaced() && state.getFluidState().isEmpty();
     }
 
     @Override

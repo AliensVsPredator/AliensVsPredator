@@ -12,9 +12,11 @@
 - N/A
 
 ## ♻️ Changes
-- N/A
+- Flamethrower now spreads fire in a more natural shape.
+  - Previously it spread fire in a box, now it spreads fire in a sphere.
 
 ## 🐞 Fixes
+- Fixed flamethrower spreading fire through walls.
 - Fixed pulse rifle recipe not requiring a stock as an ingredient.
 - Fixed the following doors duplicating when dropped:
   - Ferroaluminum Door
