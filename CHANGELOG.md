@@ -15,9 +15,12 @@
 - N/A
 
 ## 🐞 Fixes
-- Fixed picking irradiated drones giving the wrong spawn egg.
-- Fixed picking irradiated warriors giving the wrong spawn egg.
-- Fixed picking irradiated praetorians giving the wrong spawn egg.
+- Fixed the following entities giving the wrong picked spawn egg result in creative mode:
+  - Irradiated Drone
+  - Irradiated Praetorian
+  - Irradiated Warrior
+- Fixed the following entities dropping the wrong items on death:
+  - Aberrant Drone
 - Fixed typos:
   - Aberant -> Aberrant
   - Irraiated -> Irradiated
