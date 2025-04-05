@@ -98,6 +98,10 @@ public class Warrior extends Xenomorph {
             spawnEggItem = SpawnEggItem.byId(AVPEntityTypes.ABERRANT_WARRIOR);
         }
 
+        if (isIrradiated()) {
+            spawnEggItem = SpawnEggItem.byId(AVPEntityTypes.IRRADIATED_WARRIOR);
+        }
+
         return spawnEggItem == null ? super.getPickResult() : new ItemStack(spawnEggItem);
     }
 
