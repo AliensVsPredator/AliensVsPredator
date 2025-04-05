@@ -11,8 +11,8 @@ public class QueenAnimationDispatcher {
     );
 
     private static final AzCommand ATTACK_CLAW_DOWN = AzCommand.create(
-            QueenAnimationRefs.FULL_BODY_CONTROLLER_NAME,
-            QueenAnimationRefs.ATTACK_CLAW_DOWN_ANIMATION_NAME
+        QueenAnimationRefs.FULL_BODY_CONTROLLER_NAME,
+        QueenAnimationRefs.ATTACK_CLAW_DOWN_ANIMATION_NAME
     );
 
     private static final AzCommand ATTACK_TAIL = AzCommand.create(
@@ -21,13 +21,13 @@ public class QueenAnimationDispatcher {
     );
 
     private static final AzCommand ATTACK_SCREAM = AzCommand.create(
-            QueenAnimationRefs.FULL_BODY_CONTROLLER_NAME,
-            QueenAnimationRefs.SCREAM_ANIMATION_NAME
+        QueenAnimationRefs.FULL_BODY_CONTROLLER_NAME,
+        QueenAnimationRefs.SCREAM_ANIMATION_NAME
     );
 
     private static final AzCommand ATTACK_CHARGE = AzCommand.create(
-            QueenAnimationRefs.FULL_BODY_CONTROLLER_NAME,
-            QueenAnimationRefs.CHARGE_ANIMATION_NAME
+        QueenAnimationRefs.FULL_BODY_CONTROLLER_NAME,
+        QueenAnimationRefs.CHARGE_ANIMATION_NAME
     );
 
     private static final AzCommand FLAIL_TAIL = AzCommand.create(

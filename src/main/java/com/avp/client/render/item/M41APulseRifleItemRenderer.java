@@ -1,12 +1,12 @@
 package com.avp.client.render.item;
 
-import com.avp.common.item.GunItem;
 import mod.azure.azurelib.rewrite.render.item.AzItemRenderer;
 import mod.azure.azurelib.rewrite.render.item.AzItemRendererConfig;
 import mod.azure.azurelib.rewrite.render.layer.AzAutoGlowingLayer;
 
 import com.avp.AVPResources;
 import com.avp.client.animation.item.M41APulseRifleAnimator;
+import com.avp.common.item.GunItem;
 
 public class M41APulseRifleItemRenderer extends AzItemRenderer {
 

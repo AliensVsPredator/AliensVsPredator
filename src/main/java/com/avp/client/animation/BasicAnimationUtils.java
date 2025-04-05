@@ -1,9 +1,10 @@
 package com.avp.client.animation;
 
-import com.avp.common.entity.living.yautja.Yautja;
 import mod.azure.azurelib.rewrite.animation.AzAnimationContext;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
+
+import com.avp.common.entity.living.yautja.Yautja;
 
 public class BasicAnimationUtils {
 

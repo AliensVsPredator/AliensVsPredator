@@ -17,6 +17,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.phys.*;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.UUID;
 
@@ -26,7 +27,6 @@ import com.avp.common.block.SentryTurretBlock;
 import com.avp.common.damage.AVPDamageTypes;
 import com.avp.common.sound.AVPSoundEvents;
 import com.avp.server.BlockBreakProgressManager;
-import org.jetbrains.annotations.Nullable;
 
 public class SentryTurretBE extends BlockEntity {
 
@@ -293,10 +293,12 @@ public class SentryTurretBE extends BlockEntity {
             return null;
         }
 
-        for (var searchRadius : BlockPos.betweenClosed(
+        for (
+            var searchRadius : BlockPos.betweenClosed(
                 pos.offset(-ammoChestRange, -ammoChestRange, -ammoChestRange),
                 pos.offset(ammoChestRange, ammoChestRange, ammoChestRange)
-        )) {
+            )
+        ) {
             var ammoEntity = level.getBlockEntity(searchRadius);
             if (ammoEntity instanceof AmmoChestBE ammoChest) {
                 return ammoChest;

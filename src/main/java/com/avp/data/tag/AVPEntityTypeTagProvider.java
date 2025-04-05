@@ -21,7 +21,7 @@ public class AVPEntityTypeTagProvider extends FabricTagProvider.EntityTypeTagPro
     @Override
     protected void addTags(HolderLookup.Provider wrapperLookup) {
         addHosts();
-        addIrraiatedAliens();
+        addIrradiatedAliens();
         addAberrantAliens();
         addNetherAliens();
         addNormalAliens();
@@ -182,8 +182,8 @@ public class AVPEntityTypeTagProvider extends FabricTagProvider.EntityTypeTagPro
             .addTag(AVPEntityTypeTags.XENOMORPHS);
     }
 
-    private void addIrraiatedAliens() {
-        getOrCreateTagBuilder(AVPEntityTypeTags.IRRAIATED_ALIENS)
+    private void addIrradiatedAliens() {
+        getOrCreateTagBuilder(AVPEntityTypeTags.IRRADIATED_ALIENS)
             .add(
                 AVPEntityTypes.IRRADIATED_DRONE,
                 AVPEntityTypes.IRRADIATED_WARRIOR,
@@ -243,7 +243,7 @@ public class AVPEntityTypeTagProvider extends FabricTagProvider.EntityTypeTagPro
 
     private void addAliens() {
         getOrCreateTagBuilder(AVPEntityTypeTags.ALIENS)
-            .addTag(AVPEntityTypeTags.IRRAIATED_ALIENS)
+            .addTag(AVPEntityTypeTags.IRRADIATED_ALIENS)
             .addTag(AVPEntityTypeTags.ABERRANT_ALIENS)
             .addTag(AVPEntityTypeTags.NORMAL_ALIENS)
             .addTag(AVPEntityTypeTags.NETHER_ALIENS);

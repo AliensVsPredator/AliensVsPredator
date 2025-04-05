@@ -6,9 +6,9 @@ import mod.azure.azurelib.rewrite.animation.play_behavior.AzPlayBehaviors;
 public class MushroomCloudAnimDispatcher {
 
     private static final AzCommand EXPLODE_COMMAND = AzCommand.create(
-            "base_controller",
-            "animation.explode",
-            AzPlayBehaviors.HOLD_ON_LAST_FRAME
+        "base_controller",
+        "animation.explode",
+        AzPlayBehaviors.HOLD_ON_LAST_FRAME
     );
 
     private MushroomCloudEntity mushroomCloudEntity;

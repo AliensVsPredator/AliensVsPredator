@@ -309,7 +309,7 @@ public class UkrainianLanguageProvider extends FabricLanguageProvider {
         translationBuilder.add(AVPItems.M4RA_BATTLE_RIFLE, "M4RA Бойова гвинтівка");
         translationBuilder.add(AVPItems.M56_SMARTGUN, "M56 Розумна гармата");
         translationBuilder.add(AVPItems.M6B_ROCKET_LAUNCHER, "M6B Ракетомет");
-        translationBuilder.add(AVPItems.M88_MOD_4_COMBAT_PISTOL, "88 Mod 4 Бойовий пістолет");
+        translationBuilder.add(AVPItems.M88MOD4_COMBAT_PISTOL, "88 Mod 4 Бойовий пістолет");
         translationBuilder.add(AVPItems.MEDIUM_BULLET, "Середній патрон");
         translationBuilder.add(ArmorItems.MK50_BOOTS, "MK50 чоботи");
         translationBuilder.add(ArmorItems.MK50_CHESTPLATE, "MK50 нагрудник");
@@ -436,9 +436,9 @@ public class UkrainianLanguageProvider extends FabricLanguageProvider {
         translationBuilder.add(AVPItems.TITANIUM_NUGGET, "Титановий самородок");
         translationBuilder.add(AVPItems.URANIUM_NUGGET, "Самородок урану");
         translationBuilder.add(AVPItems.ZINC_NUGGET, "Цинковий самородок");
-        translationBuilder.add(AVPItems.ABERRANT_RESIN_BALL, "Aberant Resin Ball");
-        translationBuilder.add(AVPItems.ABERRANT_CHITIN, "Aberant Chitin");
-        translationBuilder.add(AVPItems.PLATED_ABERRANT_CHITIN, "Plated Aberant Chitin");
+        translationBuilder.add(AVPItems.ABERRANT_RESIN_BALL, "Aberrant Resin Ball");
+        translationBuilder.add(AVPItems.ABERRANT_CHITIN, "Aberrant Chitin");
+        translationBuilder.add(AVPItems.PLATED_ABERRANT_CHITIN, "Plated Aberrant Chitin");
         translationBuilder.add(AVPItems.IRRADIATED_RESIN_BALL, "Irradiated Resin Ball");
         translationBuilder.add(AVPItems.IRRADIATED_CHITIN, "Irradiated Chitin");
         translationBuilder.add(AVPItems.PLATED_IRRADIATED_CHITIN, "Plated Irradiated Chitin");
@@ -481,9 +481,9 @@ public class UkrainianLanguageProvider extends FabricLanguageProvider {
         translationBuilder.add(SpawnEggItems.NETHER_PRAETORIAN_SPAWN_EGG, "Яйце призову пекельного ксеноморфа-преторіанця");
         translationBuilder.add(SpawnEggItems.NETHER_WARRIOR_SPAWN_EGG, "Яйце призову пекельного ксеноморфа-воїна");
         translationBuilder.add(SpawnEggItems.NETHER_QUEEN_SPAWN_EGG, "Яйце призову пекельної королеви ксеноморфів");
-        translationBuilder.add(SpawnEggItems.IRRADIATED_DRONE_SPAWN_EGG, "Irraiated Drone Spawn Egg");
-        translationBuilder.add(SpawnEggItems.IRRADIATED_WARRIOR_SPAWN_EGG, "Irraiated Warrior Spawn Egg");
-        translationBuilder.add(SpawnEggItems.IRRADIATED_PRAETORIAN_SPAWN_EGG, "Irraiated Praetorian Spawn Egg");
+        translationBuilder.add(SpawnEggItems.IRRADIATED_DRONE_SPAWN_EGG, "Irradiated Drone Spawn Egg");
+        translationBuilder.add(SpawnEggItems.IRRADIATED_WARRIOR_SPAWN_EGG, "Irradiated Warrior Spawn Egg");
+        translationBuilder.add(SpawnEggItems.IRRADIATED_PRAETORIAN_SPAWN_EGG, "Irradiated Praetorian Spawn Egg");
         translationBuilder.add(SpawnEggItems.OVAMORPH_SPAWN_EGG, "Яйце призову оваморфа");
         translationBuilder.add(SpawnEggItems.PRAETORIAN_SPAWN_EGG, "Яйце призову ксеноморфа-преторіанця");
         translationBuilder.add(SpawnEggItems.QUEEN_SPAWN_EGG, "Яйце призову королеви ксеноморфів");

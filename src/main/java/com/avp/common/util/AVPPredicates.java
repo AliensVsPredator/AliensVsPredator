@@ -1,7 +1,5 @@
 package com.avp.common.util;
 
-import com.avp.common.entity.living.yautja.Yautja;
-import com.avp.common.item.AVPItemTags;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
@@ -14,6 +12,8 @@ import java.util.function.Predicate;
 import com.avp.common.entity.AVPEntityTypeTags;
 import com.avp.common.entity.living.Host;
 import com.avp.common.entity.living.alien.Alien;
+import com.avp.common.entity.living.yautja.Yautja;
+import com.avp.common.item.AVPItemTags;
 
 public class AVPPredicates {
 
@@ -87,7 +87,9 @@ public class AVPPredicates {
         || player.isSpectator());
 
     public static final Predicate<LivingEntity> HAS_FACE_MASK = livingEntity -> livingEntity.getItemBySlot(
-            EquipmentSlot.HEAD).is(AVPItemTags.FACEHUGGER_PROTECTION_HELMET);
+        EquipmentSlot.HEAD
+    ).is(AVPItemTags.FACEHUGGER_PROTECTION_HELMET);
 
-    public static final Predicate<LivingEntity> HAS_MASK = livingEntity -> livingEntity instanceof Yautja yautja && yautja.yautjaMaskManager.hasMask();
+    public static final Predicate<LivingEntity> HAS_MASK = livingEntity -> livingEntity instanceof Yautja yautja && yautja.yautjaMaskManager
+        .hasMask();
 }

@@ -144,7 +144,7 @@ public class MarineMob extends AbstractHumanMob {
 
     private ItemStack makeInitialWeapon() {
         final var givenList = Arrays.asList(
-            AVPItems.M88_MOD_4_COMBAT_PISTOL,
+            AVPItems.M88MOD4_COMBAT_PISTOL,
             AVPItems.M37_12_SHOTGUN,
             AVPItems.F903WE_RIFLE,
             AVPItems.M41A_PULSE_RIFLE,

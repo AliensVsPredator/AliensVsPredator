@@ -6,21 +6,21 @@ import mod.azure.azurelib.rewrite.animation.play_behavior.AzPlayBehaviors;
 public class ResonatorAnimDispatcher {
 
     private static final AzCommand POWER_UP_COMMAND = AzCommand.create(
-            "base_controller",
-            "animation.activate",
-            AzPlayBehaviors.PLAY_ONCE
+        "base_controller",
+        "animation.activate",
+        AzPlayBehaviors.PLAY_ONCE
     );
 
     private static final AzCommand UNPOWERED_COMMAND = AzCommand.create(
-            "base_controller",
-            "animation.deactivate",
-            AzPlayBehaviors.HOLD_ON_LAST_FRAME
+        "base_controller",
+        "animation.deactivate",
+        AzPlayBehaviors.HOLD_ON_LAST_FRAME
     );
 
     private static final AzCommand SPINNING_COMMAND = AzCommand.create(
-            "base_controller",
-            "animation.spinning",
-            AzPlayBehaviors.LOOP
+        "base_controller",
+        "animation.spinning",
+        AzPlayBehaviors.LOOP
     );
 
     public ResonatorAnimDispatcher() {}

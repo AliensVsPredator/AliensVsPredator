@@ -1,9 +1,5 @@
 package com.avp.mixin;
 
-import com.avp.common.effect.AVPEffects;
-import com.avp.common.entity.AVPEntityTypeTags;
-import com.avp.common.item.AVPItemTags;
-import com.avp.common.util.AVPPredicates;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -22,11 +18,21 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+import com.avp.common.effect.AVPEffects;
+import com.avp.common.entity.AVPEntityTypeTags;
+import com.avp.common.item.AVPItemTags;
+import com.avp.common.util.AVPPredicates;
+
 @Mixin(ChestBlock.class)
 public abstract class MixinChestBlock_RadioactiveChest {
 
     @Inject(method = "getTicker", at = @At("RETURN"), cancellable = true)
-    private <T extends BlockEntity> void injectGetTicker(Level level, BlockState state, BlockEntityType<T> blockEntityType, CallbackInfoReturnable<BlockEntityTicker<T>> cir) {
+    private <T extends BlockEntity> void injectGetTicker(
+        Level level,
+        BlockState state,
+        BlockEntityType<T> blockEntityType,
+        CallbackInfoReturnable<BlockEntityTicker<T>> cir
+    ) {
         if (!level.isClientSide) {
             cir.setReturnValue(createServerTicker(blockEntityType));
         }
@@ -57,16 +63,16 @@ public abstract class MixinChestBlock_RadioactiveChest {
         var effectRadius = new AABB(pos).inflate(3);
 
         var nearbyEntities = level.getEntitiesOfClass(
-                LivingEntity.class,
-                effectRadius,
-                entity -> entity.isAlive() && !entity.getType().is(AVPEntityTypeTags.RADIATION_RESISTANT)
+            LivingEntity.class,
+            effectRadius,
+            entity -> entity.isAlive() && !entity.getType().is(AVPEntityTypeTags.RADIATION_RESISTANT)
         );
 
         for (var livingEntity : nearbyEntities) {
             var armorCheck = livingEntity.getItemBySlot(EquipmentSlot.HEAD).is(AVPItemTags.RADIATION_RESISTANT_ARMOR) &&
-                    livingEntity.getItemBySlot(EquipmentSlot.CHEST).is(AVPItemTags.RADIATION_RESISTANT_ARMOR) &&
-                    livingEntity.getItemBySlot(EquipmentSlot.LEGS).is(AVPItemTags.RADIATION_RESISTANT_ARMOR) &&
-                    livingEntity.getItemBySlot(EquipmentSlot.FEET).is(AVPItemTags.RADIATION_RESISTANT_ARMOR);
+                livingEntity.getItemBySlot(EquipmentSlot.CHEST).is(AVPItemTags.RADIATION_RESISTANT_ARMOR) &&
+                livingEntity.getItemBySlot(EquipmentSlot.LEGS).is(AVPItemTags.RADIATION_RESISTANT_ARMOR) &&
+                livingEntity.getItemBySlot(EquipmentSlot.FEET).is(AVPItemTags.RADIATION_RESISTANT_ARMOR);
             if (!armorCheck || !AVPPredicates.IS_IMMORTAL.test(livingEntity)) {
                 livingEntity.addEffect(new MobEffectInstance(AVPEffects.RADIATION_EFFECT, Integer.MAX_VALUE, 0));
             }

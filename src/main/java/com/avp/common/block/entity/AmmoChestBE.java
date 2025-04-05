@@ -1,8 +1,5 @@
 package com.avp.common.block.entity;
 
-import com.avp.common.block.AVPBlocks;
-import com.avp.common.item.AVPItemTags;
-import com.avp.common.item.AVPItems;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
@@ -26,7 +23,12 @@ import net.minecraft.world.level.block.entity.LidBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
 
+import com.avp.common.block.AVPBlocks;
+import com.avp.common.item.AVPItemTags;
+import com.avp.common.item.AVPItems;
+
 public class AmmoChestBE extends BaseContainerBlockEntity implements LidBlockEntity {
+
     private final ChestLidController chestLidController = new ChestLidController();
 
     private final ContainerOpenersCounter openersCounter;
@@ -37,31 +39,32 @@ public class AmmoChestBE extends BaseContainerBlockEntity implements LidBlockEnt
         super(BlockEntityTypes.AMMO_CHEST_BE, pos, blockState);
 
         this.openersCounter = new ContainerOpenersCounter() {
+
             @Override
             protected void onOpen(Level level, BlockPos pos, BlockState state) {
                 level.playSound(
-                        null,
-                        pos.getX() + 0.5,
-                        pos.getY() + 0.5,
-                        pos.getZ() + 0.5,
-                        SoundEvents.CHEST_OPEN,
-                        SoundSource.BLOCKS,
-                        0.5F,
-                        level.random.nextFloat() * 0.1F + 0.9F
+                    null,
+                    pos.getX() + 0.5,
+                    pos.getY() + 0.5,
+                    pos.getZ() + 0.5,
+                    SoundEvents.CHEST_OPEN,
+                    SoundSource.BLOCKS,
+                    0.5F,
+                    level.random.nextFloat() * 0.1F + 0.9F
                 );
             }
 
             @Override
             protected void onClose(Level level, BlockPos pos, BlockState state) {
                 level.playSound(
-                        null,
-                        pos.getX() + 0.5,
-                        pos.getY() + 0.5,
-                        pos.getZ() + 0.5,
-                        SoundEvents.CHEST_CLOSE,
-                        SoundSource.BLOCKS,
-                        0.5F,
-                        level.random.nextFloat() * 0.1F + 0.9F
+                    null,
+                    pos.getX() + 0.5,
+                    pos.getY() + 0.5,
+                    pos.getZ() + 0.5,
+                    SoundEvents.CHEST_CLOSE,
+                    SoundSource.BLOCKS,
+                    0.5F,
+                    level.random.nextFloat() * 0.1F + 0.9F
                 );
             }
 
@@ -72,7 +75,8 @@ public class AmmoChestBE extends BaseContainerBlockEntity implements LidBlockEnt
 
             @Override
             protected boolean isOwnContainer(Player player) {
-                if (!(player.containerMenu instanceof ChestMenu)) return false;
+                if (!(player.containerMenu instanceof ChestMenu))
+                    return false;
                 Container container = ((ChestMenu) player.containerMenu).getContainer();
                 return container == AmmoChestBE.this;
             }
@@ -163,13 +167,13 @@ public class AmmoChestBE extends BaseContainerBlockEntity implements LidBlockEnt
     private void dropItem(ItemStack stack) {
         if (this.level != null && !this.level.isClientSide) {
             this.level.addFreshEntity(
-                    new ItemEntity(
-                            this.level,
-                            this.worldPosition.getX() + 0.5,
-                            this.worldPosition.getY() + 0.5,
-                            this.worldPosition.getZ() + 0.5,
-                            stack
-                    )
+                new ItemEntity(
+                    this.level,
+                    this.worldPosition.getX() + 0.5,
+                    this.worldPosition.getY() + 0.5,
+                    this.worldPosition.getZ() + 0.5,
+                    stack
+                )
             );
         }
     }

@@ -1,8 +1,5 @@
 package com.avp.common.block.entity;
 
-import com.avp.AVP;
-import com.avp.common.block.AVPBlockTags;
-import com.avp.common.util.AlienVariantUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
@@ -17,6 +14,10 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
+
+import com.avp.AVP;
+import com.avp.common.block.AVPBlockTags;
+import com.avp.common.util.AlienVariantUtil;
 
 public class ResonatorBE extends BlockEntity {
 
@@ -37,10 +38,10 @@ public class ResonatorBE extends BlockEntity {
 
     @SuppressWarnings("unused")
     public static void serverTick(
-            Level level,
-            BlockPos blockPos,
-            BlockState blockState,
-            ResonatorBE resonatorBE
+        Level level,
+        BlockPos blockPos,
+        BlockState blockState,
+        ResonatorBE resonatorBE
     ) {
         if (level.isClientSide()) {
             return;
@@ -78,43 +79,43 @@ public class ResonatorBE extends BlockEntity {
         var resinBallsGained = new AtomicInteger(0);
 
         BlockPos.betweenClosedStream(blockPos.offset(-radius, -radius, -radius), blockPos.offset(radius, radius, radius))
-                .filter(currentPos -> {
-                    var currentState = level.getBlockState(currentPos);
+            .filter(currentPos -> {
+                var currentState = level.getBlockState(currentPos);
 
-                    if (currentState.is(AVPBlockTags.RESIN_VEINS)) {
-                        level.setBlockAndUpdate(currentPos, Blocks.AIR.defaultBlockState());
+                if (currentState.is(AVPBlockTags.RESIN_VEINS)) {
+                    level.setBlockAndUpdate(currentPos, Blocks.AIR.defaultBlockState());
 
-                        var resinBallItem = AlienVariantUtil.getResinBallForType(currentState);
-                        resonatorBE.addResinBallItem(resinBallItem);
+                    var resinBallItem = AlienVariantUtil.getResinBallForType(currentState);
+                    resonatorBE.addResinBallItem(resinBallItem);
 
-                        resinBallsGained.incrementAndGet();
+                    resinBallsGained.incrementAndGet();
 
-                        if (resinBallsGained.get() > 0) {
-                            resonatorBE.setChanged();
-                        }
-                        return true;
+                    if (resinBallsGained.get() > 0) {
+                        resonatorBE.setChanged();
                     }
+                    return true;
+                }
 
-                    if (currentState.is(AVPBlockTags.RESIN)) {
-                        var isDeepstone = currentPos.getY() <= 0;
-                        var replacementBlock = isDeepstone ? Blocks.DEEPSLATE : Blocks.STONE;
+                if (currentState.is(AVPBlockTags.RESIN)) {
+                    var isDeepstone = currentPos.getY() <= 0;
+                    var replacementBlock = isDeepstone ? Blocks.DEEPSLATE : Blocks.STONE;
 
-                        level.setBlockAndUpdate(currentPos, replacementBlock.defaultBlockState());
+                    level.setBlockAndUpdate(currentPos, replacementBlock.defaultBlockState());
 
-                        var resinBallItem = AlienVariantUtil.getResinBallForType(currentState);
-                        resonatorBE.addResinBallItem(resinBallItem);
+                    var resinBallItem = AlienVariantUtil.getResinBallForType(currentState);
+                    resonatorBE.addResinBallItem(resinBallItem);
 
-                        resinBallsGained.incrementAndGet();
+                    resinBallsGained.incrementAndGet();
 
-                        if (resinBallsGained.get() > 0) {
-                            resonatorBE.setChanged();
-                        }
-                        return true;
+                    if (resinBallsGained.get() > 0) {
+                        resonatorBE.setChanged();
                     }
+                    return true;
+                }
 
-                    return false;
-                })
-                .findFirst();
+                return false;
+            })
+            .findFirst();
     }
 
     public void addResinBallItem(Item resinBallItem) {

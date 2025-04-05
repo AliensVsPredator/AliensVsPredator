@@ -1,3 +1,51 @@
+# v0.0.21-beta
+
+## 🔥 Breaking Changes
+- Corrected irradiated xenomorph registry names:
+  - `irraiated_drone` -> `irradiated_drone`
+  - `irraiated_warrior` -> `irradiated_warrior`
+  - `irraiated_praetorian` -> `irradiated_praetorian`
+- Corrected irradiated aliens tag naming:
+  - `irraiated_aliens` -> `irradiated_aliens`
+
+## ✨ What's New
+- N/A
+
+## ♻️ Changes
+- Flamethrower now spreads fire in a more natural shape.
+  - Previously it spread fire in a box, now it spreads fire in a sphere.
+
+## 🐞 Fixes
+- Fixed dyed industrial glass blocks not changing beacon colors.
+- Fixed flamethrower spreading fire through walls.
+- Fixed pulse rifle recipe not requiring a stock as an ingredient.
+- Fixed the following doors duplicating when dropped:
+  - Ferroaluminum Door
+  - Steel Door
+  - Titanium Door
+- Fixed the following entities giving the wrong picked spawn egg result in creative mode:
+  - Irradiated Drone
+  - Irradiated Praetorian
+  - Irradiated Warrior
+- Fixed the following entities dropping the wrong items on death:
+  - Aberrant Drone
+  - Aberrant Praetorian
+  - Aberrant Queen
+  - Aberrant Warrior
+  - Irradiated Drone
+  - Irradiated Praetorian
+  - Irradiated Warrior
+  - Nether Queen
+- Fixed typos:
+  - Aberant -> Aberrant
+  - Irraiated -> Irradiated
+
+## 🛠 Data Pack
+- Renamed `irraiated_aliens` entity type tag to `irradiated_aliens`.
+
+## 🔬 Technical Changes
+- Rewrote alien variant handling to prevent future bugs with drops and spawn egg picking.
+
 # v0.0.20-beta
 
 ## What's New

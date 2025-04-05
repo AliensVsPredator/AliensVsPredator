@@ -1,8 +1,5 @@
 package com.avp.mixin;
 
-import com.avp.common.block_item.AVPBlockItems;
-import com.avp.common.item.AVPItemTags;
-import com.avp.common.util.AVPPredicates;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.component.DataComponentPatch;
@@ -21,13 +18,20 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+import com.avp.common.block_item.AVPBlockItems;
+import com.avp.common.item.AVPItemTags;
+import com.avp.common.util.AVPPredicates;
+
 @Mixin(Inventory.class)
 public class MixinInventory_InsertRadioactiveItemsIntoLeadChest {
+
     @Shadow
     @Final
     public Player player;
 
-    @Shadow @Final public NonNullList<ItemStack> items;
+    @Shadow
+    @Final
+    public NonNullList<ItemStack> items;
 
     @Inject(method = "add(ILnet/minecraft/world/item/ItemStack;)Z", at = @At("HEAD"), cancellable = true)
     private void onAddItem(int slot, ItemStack stack, CallbackInfoReturnable<Boolean> cir) {
@@ -36,7 +40,8 @@ public class MixinInventory_InsertRadioactiveItemsIntoLeadChest {
         }
 
         for (ItemStack inventoryItemStack : items) {
-            if (!inventoryItemStack.is(AVPBlockItems.LEAD_CHEST)) continue;
+            if (!inventoryItemStack.is(AVPBlockItems.LEAD_CHEST))
+                continue;
 
             insertItemIntoLeadChest(inventoryItemStack, stack);
 
@@ -47,10 +52,12 @@ public class MixinInventory_InsertRadioactiveItemsIntoLeadChest {
 
     @Inject(method = "setItem", at = @At("HEAD"), cancellable = true)
     private void onSetItem(int slot, ItemStack stack, CallbackInfo ci) {
-        if (!stack.is(AVPItemTags.RADIATION_ITEMS)) return;
+        if (!stack.is(AVPItemTags.RADIATION_ITEMS))
+            return;
 
         for (ItemStack inventoryItemStack : items) {
-            if (!inventoryItemStack.is(AVPBlockItems.LEAD_CHEST)) continue;
+            if (!inventoryItemStack.is(AVPBlockItems.LEAD_CHEST))
+                continue;
 
             insertItemIntoLeadChest(inventoryItemStack, stack);
 
@@ -71,7 +78,12 @@ public class MixinInventory_InsertRadioactiveItemsIntoLeadChest {
         }
 
         for (var oldLeadChestItem : oldLeadChestItems) {
-            if (oldLeadChestItem.isStackable() && net.minecraft.world.item.ItemStack.isSameItemSameComponents(oldLeadChestItem, toAddItemStack)) {
+            if (
+                oldLeadChestItem.isStackable() && net.minecraft.world.item.ItemStack.isSameItemSameComponents(
+                    oldLeadChestItem,
+                    toAddItemStack
+                )
+            ) {
                 var remainingToStack = oldLeadChestItem.getMaxStackSize() - oldLeadChestItem.getCount();
                 if (remainingToStack > 0 && remainingToAdd > 0) {
                     var toAdd = Math.min(remainingToStack, remainingToAdd);
@@ -90,7 +102,8 @@ public class MixinInventory_InsertRadioactiveItemsIntoLeadChest {
                 CriteriaTriggers.INVENTORY_CHANGED.trigger(serverPlayer, serverPlayer.getInventory(), copyToAdd);
         }
 
-        leadChestItemStack.applyComponents(DataComponentPatch.builder()
+        leadChestItemStack.applyComponents(
+            DataComponentPatch.builder()
                 .set(DataComponents.CONTAINER, ItemContainerContents.fromItems(newLeadChestItems))
                 .build()
         );

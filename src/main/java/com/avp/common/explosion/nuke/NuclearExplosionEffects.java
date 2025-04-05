@@ -1,6 +1,5 @@
 package com.avp.common.explosion.nuke;
 
-import com.avp.common.entity.nukecloud.MushroomCloudEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;

@@ -1,13 +1,9 @@
 package com.avp.common.entity.living.alien.xenomorph.warrior;
 
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.monster.Monster;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.SpawnEggItem;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.storage.loot.LootTable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -20,6 +16,10 @@ import com.avp.common.util.resin.ResinData;
 
 public class Warrior extends Xenomorph {
 
+    public static AttributeSupplier.Builder createWarriorAttributes() {
+        return applyFrom(AVP.config.statsConfigs.WARRIOR_STATS, Monster.createMonsterAttributes());
+    }
+
     private final WarriorAnimationDispatcher animationDispatcher;
 
     public Warrior(EntityType<? extends Warrior> entityType, Level level) {
@@ -29,8 +29,19 @@ public class Warrior extends Xenomorph {
         this.config = AVP.config.statsConfigs.WARRIOR_STATS;
     }
 
-    public static AttributeSupplier.Builder createWarriorAttributes() {
-        return applyFrom(AVP.config.statsConfigs.WARRIOR_STATS, Monster.createMonsterAttributes());
+    @Override
+    public @Nullable EntityType<? extends Xenomorph> getAberrantType() {
+        return AVPEntityTypes.ABERRANT_WARRIOR;
+    }
+
+    @Override
+    public @Nullable EntityType<? extends Xenomorph> getIrradiatedType() {
+        return AVPEntityTypes.IRRADIATED_WARRIOR;
+    }
+
+    @Override
+    public @Nullable EntityType<? extends Xenomorph> getNetherType() {
+        return AVPEntityTypes.NETHER_WARRIOR;
     }
 
     @Override
@@ -84,30 +95,6 @@ public class Warrior extends Xenomorph {
     private void runLungeAnimation() {
         playSound(AVPSoundEvents.ENTITY_XENOMORPH_LUNGE, getSoundVolume(), (random.nextFloat() - random.nextFloat()) * 0.2F + 1.0F);
         animationDispatcher.lunge();
-    }
-
-    @Override
-    public @Nullable ItemStack getPickResult() {
-        SpawnEggItem spawnEggItem = null;
-
-        if (isNetherAfflicted()) {
-            spawnEggItem = SpawnEggItem.byId(AVPEntityTypes.NETHER_WARRIOR);
-        }
-
-        if (isAberrant()) {
-            spawnEggItem = SpawnEggItem.byId(AVPEntityTypes.ABERRANT_WARRIOR);
-        }
-
-        return spawnEggItem == null ? super.getPickResult() : new ItemStack(spawnEggItem);
-    }
-
-    @Override
-    protected @NotNull ResourceKey<LootTable> getDefaultLootTable() {
-        if (isNetherAfflicted()) {
-            return AVPEntityTypes.NETHER_WARRIOR.getDefaultLootTable();
-        }
-
-        return super.getDefaultLootTable();
     }
 
     @Override

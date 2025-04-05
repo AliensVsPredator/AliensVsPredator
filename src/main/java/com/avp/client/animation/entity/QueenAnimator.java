@@ -1,14 +1,15 @@
 package com.avp.client.animation.entity;
 
-import com.avp.AVPResources;
-import com.avp.common.entity.living.alien.xenomorph.queen.Queen;
-import com.avp.common.entity.living.alien.xenomorph.queen.QueenAnimationRefs;
 import mod.azure.azurelib.rewrite.animation.AzAnimatorConfig;
 import mod.azure.azurelib.rewrite.animation.controller.AzAnimationController;
 import mod.azure.azurelib.rewrite.animation.controller.AzAnimationControllerContainer;
 import mod.azure.azurelib.rewrite.animation.impl.AzEntityAnimator;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
+
+import com.avp.AVPResources;
+import com.avp.common.entity.living.alien.xenomorph.queen.Queen;
+import com.avp.common.entity.living.alien.xenomorph.queen.QueenAnimationRefs;
 
 public class QueenAnimator extends AzEntityAnimator<Queen> {
 

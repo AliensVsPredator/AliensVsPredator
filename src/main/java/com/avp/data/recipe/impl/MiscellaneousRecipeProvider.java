@@ -1,53 +1,52 @@
 package com.avp.data.recipe.impl;
 
 import net.minecraft.data.recipes.RecipeCategory;
-import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.level.block.Blocks;
 
 import com.avp.common.block.AVPBlocks;
 import com.avp.common.item.AVPItems;
 import com.avp.data.recipe.RecipeConstants;
 import com.avp.data.recipe.builder.RecipeBuilder;
-import net.minecraft.world.level.block.Blocks;
 
 public class MiscellaneousRecipeProvider {
 
     public static void provide(RecipeBuilder builder) {
         builder.blast(Blocks.REDSTONE_BLOCK)
-                .withCategory(RecipeCategory.MISC)
-                .withExperience(RecipeConstants.VERY_COMMON_SMELT_EXPERIENCE)
-                .into(AVPItems.REDSTONE_CRYSTAL);
+            .withCategory(RecipeCategory.MISC)
+            .withExperience(RecipeConstants.VERY_COMMON_SMELT_EXPERIENCE)
+            .into(AVPItems.REDSTONE_CRYSTAL);
 
         builder.shaped()
-                .withCategory(RecipeCategory.MISC)
-                .define('A', Items.LAPIS_LAZULI)
-                .define('P', AVPItems.POLYMER)
-                .define('D', ItemTags.PLANKS)
-                .pattern("A A")
-                .pattern("P P")
-                .pattern("D D")
-                .into(1, AVPBlocks.BLUEPRINT_BLOCK);
+            .withCategory(RecipeCategory.MISC)
+            .define('A', Items.LAPIS_LAZULI)
+            .define('P', AVPItems.POLYMER)
+            .define('D', ItemTags.PLANKS)
+            .pattern("A A")
+            .pattern("P P")
+            .pattern("D D")
+            .into(1, AVPBlocks.BLUEPRINT_BLOCK);
 
         builder.shaped()
-                .withCategory(RecipeCategory.MISC)
-                .define('A', AVPItems.AUTUNITE_DUST)
-                .define('G', Items.GOLD_INGOT)
-                .define('D', Items.DIAMOND)
-                .pattern("GDG")
-                .pattern("AAA")
-                .pattern("GDG")
-                .into(1, AVPItems.NUCLEAR_BATTERY);
+            .withCategory(RecipeCategory.MISC)
+            .define('A', AVPItems.AUTUNITE_DUST)
+            .define('G', Items.GOLD_INGOT)
+            .define('D', Items.DIAMOND)
+            .pattern("GDG")
+            .pattern("AAA")
+            .pattern("GDG")
+            .into(1, AVPItems.NUCLEAR_BATTERY);
 
         builder.shaped()
-                .withCategory(RecipeCategory.MISC)
-                .define('S', AVPItems.SPEAKER)
-                .define('D', AVPItems.SERVO)
-                .define('A', AVPItems.STEEL_INGOT)
-                .pattern("SAS")
-                .pattern("SDS")
-                .pattern("AAA")
-                .into(1, AVPBlocks.RESONATOR_BLOCK);
+            .withCategory(RecipeCategory.MISC)
+            .define('S', AVPItems.SPEAKER)
+            .define('D', AVPItems.SERVO)
+            .define('A', AVPItems.STEEL_INGOT)
+            .pattern("SAS")
+            .pattern("SDS")
+            .pattern("AAA")
+            .into(1, AVPBlocks.RESONATOR_BLOCK);
 
         builder.shaped()
             .withCategory(RecipeCategory.MISC)

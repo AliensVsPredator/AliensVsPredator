@@ -150,7 +150,7 @@ public class GunRecipeProvider {
         createGenericGunRecipe(builder, AVPItems.BLUEPRINT_FLAMETHROWER_SEVASTOPOL, AVPItems.FLAMETHROWER_SEVASTOPOL, false);
         createGenericGunRecipe(builder, AVPItems.BLUEPRINT_M37_12_SHOTGUN, AVPItems.M37_12_SHOTGUN, true);
         createGenericGunRecipe(builder, AVPItems.BLUEPRINT_ZX_76_SHOTGUN, AVPItems.ZX_76_SHOTGUN, true);
-        createGenericGunRecipe(builder, AVPItems.BLUEPRINT_M88MOD4_COMBAT_PISTOL, AVPItems.M88_MOD_4_COMBAT_PISTOL, false);
+        createGenericGunRecipe(builder, AVPItems.BLUEPRINT_M88MOD4_COMBAT_PISTOL, AVPItems.M88MOD4_COMBAT_PISTOL, false);
         createGenericGunRecipe(builder, AVPItems.BLUEPRINT_M42A3_SNIPER_RIFLE, AVPItems.M42A3_SNIPER_RIFLE, true);
         createGenericGunRecipe(builder, AVPItems.BLUEPRINT_M4RA_BATTLE_RIFLE, AVPItems.M4RA_BATTLE_RIFLE, true);
 
@@ -160,6 +160,7 @@ public class GunRecipeProvider {
             .requires(1, AVPItems.BARREL)
             .requires(1, AVPItems.GRIP)
             .requires(1, AVPItems.SMART_RECEIVER)
+            .requires(1, AVPItems.STOCK)
             .into(1, AVPItems.M41A_PULSE_RIFLE);
 
         builder.shapeless()

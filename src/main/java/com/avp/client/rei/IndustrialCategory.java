@@ -1,9 +1,5 @@
 package com.avp.client.rei;
 
-import com.avp.AVP;
-import com.avp.AVPResources;
-import com.avp.common.block_item.AVPBlockItems;
-import com.google.common.collect.Lists;
 import me.shedaniel.math.Point;
 import me.shedaniel.math.Rectangle;
 import me.shedaniel.rei.api.client.gui.Renderer;
@@ -15,14 +11,19 @@ import me.shedaniel.rei.api.common.util.EntryStacks;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.avp.AVP;
+import com.avp.AVPResources;
+import com.avp.common.block_item.AVPBlockItems;
+
 public class IndustrialCategory implements DisplayCategory<IndustrialDisplay> {
+
     public static final ResourceLocation TEXTURE = AVPResources.location("textures/gui/container/industrial_furnace_gui.png");
+
     public static final CategoryIdentifier<IndustrialDisplay> INDUSTRIAL_FURNACE =
-            CategoryIdentifier.of(AVP.MOD_ID, "industrial_furnace_gui");
+        CategoryIdentifier.of(AVP.MOD_ID, "industrial_furnace_gui");
 
     @Override
     public CategoryIdentifier<? extends IndustrialDisplay> getCategoryIdentifier() {
@@ -52,18 +53,24 @@ public class IndustrialCategory implements DisplayCategory<IndustrialDisplay> {
         var slotY = centerY - 9;
 
         // Input slot
-        widgets.add(Widgets.createSlot(new Point(inputX, slotY))
+        widgets.add(
+            Widgets.createSlot(new Point(inputX, slotY))
                 .entries(display.getInputEntries().get(0))
-                .markInput());
+                .markInput()
+        );
 
         // Output slot
-        widgets.add(Widgets.createSlot(new Point(outputX, slotY))
+        widgets.add(
+            Widgets.createSlot(new Point(outputX, slotY))
                 .entries(display.getOutputEntries().get(0))
-                .markOutput());
+                .markOutput()
+        );
 
         // Progress arrow
-        widgets.add(Widgets.createArrow(new Point(centerX - 9, slotY))
-                .animationDurationTicks(40));
+        widgets.add(
+            Widgets.createArrow(new Point(centerX - 9, slotY))
+                .animationDurationTicks(40)
+        );
 
         return widgets;
     }

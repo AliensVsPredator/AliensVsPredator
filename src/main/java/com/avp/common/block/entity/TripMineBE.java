@@ -1,8 +1,5 @@
 package com.avp.common.block.entity;
 
-import com.avp.AVP;
-import com.avp.common.entity.living.yautja.Yautja;
-import com.avp.common.util.AVPPredicates;
 import net.minecraft.core.BlockPos;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -12,6 +9,10 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
+
+import com.avp.AVP;
+import com.avp.common.entity.living.yautja.Yautja;
+import com.avp.common.util.AVPPredicates;
 
 public class TripMineBE extends BlockEntity {
 
@@ -25,10 +26,10 @@ public class TripMineBE extends BlockEntity {
 
     @SuppressWarnings("unused")
     public static void serverTick(
-            Level level,
-            BlockPos blockPos,
-            BlockState blockState,
-            TripMineBE tripMineBE
+        Level level,
+        BlockPos blockPos,
+        BlockState blockState,
+        TripMineBE tripMineBE
     ) {
         if (level.isClientSide) {
             return;
@@ -52,21 +53,23 @@ public class TripMineBE extends BlockEntity {
 
                 if (tripMineBE.getCountdown() % 20 == 0) {
                     level.playSound(
-                            null,
-                            blockPos,
-                            SoundEvents.METAL_PRESSURE_PLATE_CLICK_ON,
-                            SoundSource.BLOCKS,
-                            1.0F,
-                            0.8F + level.random.nextFloat() * 0.4F
+                        null,
+                        blockPos,
+                        SoundEvents.METAL_PRESSURE_PLATE_CLICK_ON,
+                        SoundSource.BLOCKS,
+                        1.0F,
+                        0.8F + level.random.nextFloat() * 0.4F
                     );
                 }
 
                 if (tripMineBE.getCountdown() <= 0) {
                     level.explode(
-                            null,
-                            blockPos.getX() + 0.5, blockPos.getY() + 0.5, blockPos.getZ() + 0.5,
-                            4.0F, // Explosion power (adjust as needed)
-                            Level.ExplosionInteraction.TNT
+                        null,
+                        blockPos.getX() + 0.5,
+                        blockPos.getY() + 0.5,
+                        blockPos.getZ() + 0.5,
+                        4.0F, // Explosion power (adjust as needed)
+                        Level.ExplosionInteraction.TNT
                     );
                     level.removeBlock(blockPos, false);
                 }

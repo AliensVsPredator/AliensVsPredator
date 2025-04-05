@@ -3,11 +3,11 @@ package com.avp.common.entity.acid;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.level.block.Blocks;
 
 import com.avp.common.block.AVPBlockTags;
 import com.avp.common.sound.AVPSoundEvents;
 import com.avp.server.BlockBreakProgressManager;
-import net.minecraft.world.level.block.Blocks;
 
 public class AcidBlockDamageUtil {
 

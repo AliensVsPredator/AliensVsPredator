@@ -7,6 +7,7 @@ import net.minecraft.world.entity.ai.goal.FloatGoal;
 public class XenoFloatGoal extends FloatGoal {
 
     private Mob mob;
+
     private BlockPos targetPos;
 
     public XenoFloatGoal(Mob mob) {
@@ -45,10 +46,10 @@ public class XenoFloatGoal extends FloatGoal {
         if (this.targetPos != null) {
             var deltaMovement = mob.getDeltaMovement().scale(0.2);
             var vectorToTarget = mob.position()
-                    .vectorTo(this.targetPos.getCenter())
-                    .normalize()
-                    .scale(0.2)
-                    .add(deltaMovement.x, 0, deltaMovement.z);
+                .vectorTo(this.targetPos.getCenter())
+                .normalize()
+                .scale(0.2)
+                .add(deltaMovement.x, 0, deltaMovement.z);
 
             mob.setDeltaMovement(vectorToTarget.x, Math.max(0.6, vectorToTarget.y), vectorToTarget.z);
         }

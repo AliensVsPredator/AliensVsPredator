@@ -1,9 +1,10 @@
 package com.avp.client.render.item;
 
-import com.avp.AVPResources;
 import mod.azure.azurelib.rewrite.render.item.AzItemRenderer;
 import mod.azure.azurelib.rewrite.render.item.AzItemRendererConfig;
 import net.minecraft.resources.ResourceLocation;
+
+import com.avp.AVPResources;
 
 public class SentryItemtemRenderer extends AzItemRenderer {
 

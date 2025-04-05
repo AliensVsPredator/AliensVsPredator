@@ -1,6 +1,5 @@
 package com.avp.common.util.resin;
 
-import com.avp.common.util.AlienVariantUtil;
 import com.mojang.serialization.Dynamic;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
@@ -21,6 +20,7 @@ import com.avp.common.block.AVPBlockTags;
 import com.avp.common.entity.living.alien.Alien;
 import com.avp.common.level.gameevent.AVPGameEvents;
 import com.avp.common.level.gameevent.listener.ResinSpreadListener;
+import com.avp.common.util.AlienVariantUtil;
 
 public class ResinManager implements GameEventListener.Provider<ResinSpreadListener> {
 

@@ -1,9 +1,7 @@
 package com.avp.common.block.entity;
 
-import net.minecraft.Util;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.util.datafix.fixes.References;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 
@@ -30,13 +28,13 @@ public class BlockEntityTypes {
     );
 
     public static final BlockEntityType<LeadChestBE> LEAD_CHEST_BE = register(
-            "lead_chest_be",
-            BlockEntityType.Builder.of(LeadChestBE::new, AVPBlocks.LEAD_CHEST)
+        "lead_chest_be",
+        BlockEntityType.Builder.of(LeadChestBE::new, AVPBlocks.LEAD_CHEST)
     );
 
     public static final BlockEntityType<AmmoChestBE> AMMO_CHEST_BE = register(
-            "ammo_chest_be",
-            BlockEntityType.Builder.of(AmmoChestBE::new, AVPBlocks.AMMO_CHEST)
+        "ammo_chest_be",
+        BlockEntityType.Builder.of(AmmoChestBE::new, AVPBlocks.AMMO_CHEST)
     );
 
     public static final BlockEntityType<SentryTurretBE> SENTRY_TURRET_BE = register(

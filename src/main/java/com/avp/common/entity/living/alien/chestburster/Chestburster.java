@@ -1,6 +1,5 @@
 package com.avp.common.entity.living.alien.chestburster;
 
-import com.avp.common.entity.living.alien.RoyalAlien;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -11,8 +10,6 @@ import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.goal.AvoidEntityGoal;
 import net.minecraft.world.entity.ai.goal.WaterAvoidingRandomStrollGoal;
 import net.minecraft.world.entity.monster.Monster;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.SpawnEggItem;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -22,6 +19,7 @@ import java.util.Objects;
 import com.avp.AVP;
 import com.avp.common.MoveAnalysis;
 import com.avp.common.entity.living.alien.Alien;
+import com.avp.common.entity.living.alien.RoyalAlien;
 import com.avp.common.entity.living.alien.xenomorph.Xenomorph;
 import com.avp.common.entity.type.AVPEntityTypes;
 import com.avp.common.gene.GeneKeys;
@@ -38,7 +36,14 @@ public class Chestburster extends RoyalAlien implements ResinProducer {
 
     private static final String IS_ROYAL_AFFLICTED_KEY = "isRoyalAfflicted";
 
-    private static final EntityDataAccessor<Boolean> IS_ROYAL = SynchedEntityData.defineId(Chestburster.class, EntityDataSerializers.BOOLEAN);
+    private static final EntityDataAccessor<Boolean> IS_ROYAL = SynchedEntityData.defineId(
+        Chestburster.class,
+        EntityDataSerializers.BOOLEAN
+    );
+
+    public static AttributeSupplier.Builder createChestbursterAttributes() {
+        return applyFrom(AVP.config.statsConfigs.CHESTBURSTER_STATS, Monster.createMonsterAttributes());
+    }
 
     protected final MoveAnalysis moveAnalysis;
 
@@ -64,8 +69,19 @@ public class Chestburster extends RoyalAlien implements ResinProducer {
         this.config = AVP.config.statsConfigs.CHESTBURSTER_STATS;
     }
 
-    public static AttributeSupplier.Builder createChestbursterAttributes() {
-        return applyFrom(AVP.config.statsConfigs.CHESTBURSTER_STATS, Monster.createMonsterAttributes());
+    @Override
+    public @Nullable EntityType<? extends Alien> getAberrantType() {
+        return isRoyal() ? AVPEntityTypes.ROYAL_ABERRANT_CHESTBURSTER : AVPEntityTypes.ABERRANT_CHESTBURSTER;
+    }
+
+    @Override
+    public @Nullable EntityType<? extends Alien> getIrradiatedType() {
+        return null;
+    }
+
+    @Override
+    public @Nullable EntityType<? extends Alien> getNetherType() {
+        return isRoyal() ? AVPEntityTypes.ROYAL_NETHER_CHESTBURSTER : AVPEntityTypes.NETHER_CHESTBURSTER;
     }
 
     @Override
@@ -174,35 +190,6 @@ public class Chestburster extends RoyalAlien implements ResinProducer {
 
     public GrowthManager growthManager() {
         return growthManager;
-    }
-
-    @Override
-    public @Nullable ItemStack getPickResult() {
-        SpawnEggItem spawnEggItem = null;
-
-        if (isRoyal()) {
-            if (isNetherAfflicted()) {
-                spawnEggItem = SpawnEggItem.byId(AVPEntityTypes.ROYAL_NETHER_CHESTBURSTER);
-            }
-
-            if (isAberrant()) {
-                spawnEggItem = SpawnEggItem.byId(AVPEntityTypes.ROYAL_ABERRANT_CHESTBURSTER);
-            }
-
-            if (!isNetherAfflicted() && !isAberrant()) {
-                spawnEggItem = SpawnEggItem.byId(AVPEntityTypes.ROYAL_CHESTBURSTER);
-            }
-        } else {
-            if (isNetherAfflicted()) {
-                spawnEggItem = SpawnEggItem.byId(AVPEntityTypes.NETHER_CHESTBURSTER);
-            }
-
-            if (isAberrant()) {
-                spawnEggItem = SpawnEggItem.byId(AVPEntityTypes.ABERRANT_CHESTBURSTER);
-            }
-        }
-
-        return spawnEggItem == null ? super.getPickResult() : new ItemStack(spawnEggItem);
     }
 
     @Override

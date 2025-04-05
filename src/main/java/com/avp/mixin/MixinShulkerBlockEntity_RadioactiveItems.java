@@ -1,9 +1,5 @@
 package com.avp.mixin;
 
-import com.avp.common.effect.AVPEffects;
-import com.avp.common.entity.AVPEntityTypeTags;
-import com.avp.common.item.AVPItemTags;
-import com.avp.common.util.AVPPredicates;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -18,6 +14,11 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import com.avp.common.effect.AVPEffects;
+import com.avp.common.entity.AVPEntityTypeTags;
+import com.avp.common.item.AVPItemTags;
+import com.avp.common.util.AVPPredicates;
+
 @Mixin(ShulkerBoxBlockEntity.class)
 public abstract class MixinShulkerBlockEntity_RadioactiveItems extends BlockEntity {
 
@@ -26,8 +27,16 @@ public abstract class MixinShulkerBlockEntity_RadioactiveItems extends BlockEnti
     }
 
     @Inject(method = "tick", at = @At("RETURN"), cancellable = true)
-    private static <T extends BlockEntity> void injectGetTicker(Level level, BlockPos pos, BlockState state, ShulkerBoxBlockEntity blockEntity, CallbackInfo ci) {
-        if (!level.isClientSide && blockEntity instanceof ShulkerBoxBlockEntity chestBlockEntity && containsRadiationItems(chestBlockEntity)) {
+    private static <T extends BlockEntity> void injectGetTicker(
+        Level level,
+        BlockPos pos,
+        BlockState state,
+        ShulkerBoxBlockEntity blockEntity,
+        CallbackInfo ci
+    ) {
+        if (
+            !level.isClientSide && blockEntity instanceof ShulkerBoxBlockEntity chestBlockEntity && containsRadiationItems(chestBlockEntity)
+        ) {
             applyRadiationEffect(level, pos);
         }
     }
@@ -48,16 +57,16 @@ public abstract class MixinShulkerBlockEntity_RadioactiveItems extends BlockEnti
         var effectRadius = new AABB(pos).inflate(3);
 
         var nearbyEntities = level.getEntitiesOfClass(
-                LivingEntity.class,
-                effectRadius,
-                entity -> entity.isAlive() && !entity.getType().is(AVPEntityTypeTags.RADIATION_RESISTANT)
+            LivingEntity.class,
+            effectRadius,
+            entity -> entity.isAlive() && !entity.getType().is(AVPEntityTypeTags.RADIATION_RESISTANT)
         );
 
         for (var livingEntity : nearbyEntities) {
             var armorCheck = livingEntity.getItemBySlot(EquipmentSlot.HEAD).is(AVPItemTags.RADIATION_RESISTANT_ARMOR) &&
-                    livingEntity.getItemBySlot(EquipmentSlot.CHEST).is(AVPItemTags.RADIATION_RESISTANT_ARMOR) &&
-                    livingEntity.getItemBySlot(EquipmentSlot.LEGS).is(AVPItemTags.RADIATION_RESISTANT_ARMOR) &&
-                    livingEntity.getItemBySlot(EquipmentSlot.FEET).is(AVPItemTags.RADIATION_RESISTANT_ARMOR);
+                livingEntity.getItemBySlot(EquipmentSlot.CHEST).is(AVPItemTags.RADIATION_RESISTANT_ARMOR) &&
+                livingEntity.getItemBySlot(EquipmentSlot.LEGS).is(AVPItemTags.RADIATION_RESISTANT_ARMOR) &&
+                livingEntity.getItemBySlot(EquipmentSlot.FEET).is(AVPItemTags.RADIATION_RESISTANT_ARMOR);
             if (!armorCheck || !AVPPredicates.IS_IMMORTAL.test(livingEntity)) {
                 livingEntity.addEffect(new MobEffectInstance(AVPEffects.RADIATION_EFFECT, Integer.MAX_VALUE, 0));
             }

@@ -1,7 +1,5 @@
 package com.avp.common.block;
 
-import com.avp.common.block.base.BaseBlockEntity;
-import com.avp.common.block.entity.DeskTerminalBE;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -23,7 +21,8 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.List;
+import com.avp.common.block.base.BaseBlockEntity;
+import com.avp.common.block.entity.DeskTerminalBE;
 
 public class DeskTerminalBlock extends BaseBlockEntity {
 
@@ -55,9 +54,9 @@ public class DeskTerminalBlock extends BaseBlockEntity {
     protected @NotNull VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
         var facing = state.getValue(FACING);
         var southShape = Shapes.join(
-                Block.box(1, 0, 6, 15, 13, 17),
-                Block.box(2, 0, 1, 14, 2, 7),
-                BooleanOp.OR
+            Block.box(1, 0, 6, 15, 13, 17),
+            Block.box(2, 0, 1, 14, 2, 7),
+            BooleanOp.OR
         );
 
         return switch (facing) {
@@ -71,9 +70,9 @@ public class DeskTerminalBlock extends BaseBlockEntity {
     public static VoxelShape rotateShape(VoxelShape shape, Rotation rotation) {
         var aabbList = shape.toAabbs();
         var rotatedShapes = aabbList.stream()
-                .map(box -> rotateBox(box, rotation))
-                .map(Shapes::create)
-                .toArray(VoxelShape[]::new);
+            .map(box -> rotateBox(box, rotation))
+            .map(Shapes::create)
+            .toArray(VoxelShape[]::new);
         var combined = Shapes.empty();
 
         for (var rotatedShape : rotatedShapes) {
@@ -98,7 +97,6 @@ public class DeskTerminalBlock extends BaseBlockEntity {
             default -> box;
         };
     }
-
 
     @Override
     protected @NotNull MapCodec<? extends BaseEntityBlock> codec() {

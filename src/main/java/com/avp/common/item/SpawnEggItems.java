@@ -76,7 +76,11 @@ public class SpawnEggItems {
 
     public static final Item ROYAL_NETHER_OVAMORPH_SPAWN_EGG = register(AVPEntityTypes.ROYAL_NETHER_OVAMORPH, 0x331715, 0xfcee4b);
 
-    public static final Item ROYAL_ABERRANT_CHESTBURSTER_SPAWN_EGG = register(AVPEntityTypes.ROYAL_ABERRANT_CHESTBURSTER, 0x706c36, 0xd3cf51);
+    public static final Item ROYAL_ABERRANT_CHESTBURSTER_SPAWN_EGG = register(
+        AVPEntityTypes.ROYAL_ABERRANT_CHESTBURSTER,
+        0x706c36,
+        0xd3cf51
+    );
 
     public static final Item ROYAL_ABERRANT_FACEHUGGER_SPAWN_EGG = register(AVPEntityTypes.ROYAL_ABERRANT_FACEHUGGER, 0x706c36, 0xd3cf51);
 

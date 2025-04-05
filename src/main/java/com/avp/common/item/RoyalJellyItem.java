@@ -1,6 +1,5 @@
 package com.avp.common.item;
 
-import com.avp.common.util.AVPPredicates;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.LivingEntity;
@@ -11,6 +10,7 @@ import org.jetbrains.annotations.NotNull;
 
 import com.avp.common.entity.living.alien.Alien;
 import com.avp.common.entity.living.alien.xenomorph.praetorian.Praetorian;
+import com.avp.common.util.AVPPredicates;
 
 public class RoyalJellyItem extends Item {
 

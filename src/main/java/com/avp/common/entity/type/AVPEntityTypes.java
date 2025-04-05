@@ -1,7 +1,5 @@
 package com.avp.common.entity.type;
 
-import com.avp.common.entity.living.alien.RoyalAlien;
-import com.avp.common.entity.nukecloud.MushroomCloudEntity;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -17,6 +15,7 @@ import com.avp.common.block.entity.NukeBE;
 import com.avp.common.entity.AVPMobCategories;
 import com.avp.common.entity.acid.Acid;
 import com.avp.common.entity.living.alien.Alien;
+import com.avp.common.entity.living.alien.RoyalAlien;
 import com.avp.common.entity.living.alien.chestburster.Chestburster;
 import com.avp.common.entity.living.alien.ovamorph.Ovamorph;
 import com.avp.common.entity.living.alien.parasite.facehugger.Facehugger;
@@ -26,6 +25,7 @@ import com.avp.common.entity.living.alien.xenomorph.queen.Queen;
 import com.avp.common.entity.living.alien.xenomorph.warrior.Warrior;
 import com.avp.common.entity.living.human.marine.MarineMob;
 import com.avp.common.entity.living.yautja.Yautja;
+import com.avp.common.entity.nukecloud.MushroomCloudEntity;
 import com.avp.common.entity.projectile.*;
 import com.avp.common.gene.GeneKeys;
 
@@ -180,6 +180,21 @@ public class AVPEntityTypes {
         EntityType.Builder.of(aberrantFactory(AVPEntityTypes.QUEEN, Queen::new), AVPEntityTypes.ALIEN_CATEGORY)
     );
 
+    public static final EntityType<Drone> IRRADIATED_DRONE = register(
+        "irradiated_drone",
+        EntityType.Builder.of(irradiatedFactory(AVPEntityTypes.DRONE, Drone::new), AVPEntityTypes.ALIEN_CATEGORY)
+    );
+
+    public static final EntityType<Warrior> IRRADIATED_WARRIOR = register(
+        "irradiated_warrior",
+        EntityType.Builder.of(irradiatedFactory(AVPEntityTypes.WARRIOR, Warrior::new), AVPEntityTypes.ALIEN_CATEGORY)
+    );
+
+    public static final EntityType<Praetorian> IRRADIATED_PRAETORIAN = register(
+        "irradiated_praetorian",
+        EntityType.Builder.of(irradiatedFactory(AVPEntityTypes.PRAETORIAN, Praetorian::new), AVPEntityTypes.ALIEN_CATEGORY)
+    );
+
     public static final EntityType<Chestburster> NETHER_CHESTBURSTER = register(
         "nether_chestburster",
         EntityType.Builder.of(nethermorphFactory(AVPEntityTypes.CHESTBURSTER, Chestburster::new), AVPEntityTypes.ALIEN_CATEGORY)
@@ -215,21 +230,6 @@ public class AVPEntityTypes {
         EntityType.Builder.of(nethermorphFactory(AVPEntityTypes.QUEEN, Queen::new), AVPEntityTypes.ALIEN_CATEGORY)
     );
 
-    public static final EntityType<Drone> IRRADIATED_DRONE = register(
-        "irraiated_drone",
-        EntityType.Builder.of(irraiatedFactory(AVPEntityTypes.DRONE, Drone::new), AVPEntityTypes.ALIEN_CATEGORY)
-    );
-
-    public static final EntityType<Warrior> IRRADIATED_WARRIOR = register(
-        "irraiated_warrior",
-        EntityType.Builder.of(irraiatedFactory(AVPEntityTypes.WARRIOR, Warrior::new), AVPEntityTypes.ALIEN_CATEGORY)
-    );
-
-    public static final EntityType<Praetorian> IRRADIATED_PRAETORIAN = register(
-        "irraiated_praetorian",
-        EntityType.Builder.of(irraiatedFactory(AVPEntityTypes.PRAETORIAN, Praetorian::new), AVPEntityTypes.ALIEN_CATEGORY)
-    );
-
     public static final EntityType<Facehugger> ROYAL_ABERRANT_FACEHUGGER = register(
         "royal_facehugger",
         EntityType.Builder.of(royalAberrantFactory(AVPEntityTypes.FACEHUGGER, Facehugger::new), AVPEntityTypes.ALIEN_CATEGORY)
@@ -246,36 +246,36 @@ public class AVPEntityTypes {
     );
 
     public static final EntityType<Facehugger> ROYAL_FACEHUGGER = register(
-            "royal_aberrant_facehugger",
-            EntityType.Builder.of(royalFactory(AVPEntityTypes.FACEHUGGER, Facehugger::new), AVPEntityTypes.ALIEN_CATEGORY)
+        "royal_aberrant_facehugger",
+        EntityType.Builder.of(royalFactory(AVPEntityTypes.FACEHUGGER, Facehugger::new), AVPEntityTypes.ALIEN_CATEGORY)
     );
 
     public static final EntityType<Ovamorph> ROYAL_OVAMORPH = register(
-            "royal_aberrant_ovamorph",
-            EntityType.Builder.of(royalFactory(AVPEntityTypes.OVAMORPH, Ovamorph::new), AVPEntityTypes.ALIEN_CATEGORY)
+        "royal_aberrant_ovamorph",
+        EntityType.Builder.of(royalFactory(AVPEntityTypes.OVAMORPH, Ovamorph::new), AVPEntityTypes.ALIEN_CATEGORY)
     );
 
     public static final EntityType<Chestburster> ROYAL_CHESTBURSTER = register(
-            "royal_aberrant_chestburster",
-            EntityType.Builder.of(royalFactory(AVPEntityTypes.CHESTBURSTER, Chestburster::new), AVPEntityTypes.ALIEN_CATEGORY)
+        "royal_aberrant_chestburster",
+        EntityType.Builder.of(royalFactory(AVPEntityTypes.CHESTBURSTER, Chestburster::new), AVPEntityTypes.ALIEN_CATEGORY)
     );
 
     public static final EntityType<Facehugger> ROYAL_NETHER_FACEHUGGER = register(
-            "royal_nether_facehugger",
-            EntityType.Builder.of(royalNethermorphFactory(AVPEntityTypes.FACEHUGGER, Facehugger::new), AVPEntityTypes.ALIEN_CATEGORY)
+        "royal_nether_facehugger",
+        EntityType.Builder.of(royalNethermorphFactory(AVPEntityTypes.FACEHUGGER, Facehugger::new), AVPEntityTypes.ALIEN_CATEGORY)
     );
 
     public static final EntityType<Ovamorph> ROYAL_NETHER_OVAMORPH = register(
-            "royal_nether_ovamorph",
-            EntityType.Builder.of(royalNethermorphFactory(AVPEntityTypes.OVAMORPH, Ovamorph::new), AVPEntityTypes.ALIEN_CATEGORY)
+        "royal_nether_ovamorph",
+        EntityType.Builder.of(royalNethermorphFactory(AVPEntityTypes.OVAMORPH, Ovamorph::new), AVPEntityTypes.ALIEN_CATEGORY)
     );
 
     public static final EntityType<Chestburster> ROYAL_NETHER_CHESTBURSTER = register(
-            "royal_nether_chestburster",
-            EntityType.Builder.of(royalNethermorphFactory(AVPEntityTypes.CHESTBURSTER, Chestburster::new), AVPEntityTypes.ALIEN_CATEGORY)
+        "royal_nether_chestburster",
+        EntityType.Builder.of(royalNethermorphFactory(AVPEntityTypes.CHESTBURSTER, Chestburster::new), AVPEntityTypes.ALIEN_CATEGORY)
     );
 
-    private static <T extends Alien> EntityType.EntityFactory<T> irraiatedFactory(
+    private static <T extends Alien> EntityType.EntityFactory<T> irradiatedFactory(
         EntityType<T> overridingEntityType,
         BiFunction<EntityType<T>, Level, T> entityFactory
     ) {
@@ -310,8 +310,8 @@ public class AVPEntityTypes {
     }
 
     private static <T extends RoyalAlien> EntityType.EntityFactory<T> royalFactory(
-            EntityType<T> overridingEntityType,
-            BiFunction<EntityType<T>, Level, T> entityFactory
+        EntityType<T> overridingEntityType,
+        BiFunction<EntityType<T>, Level, T> entityFactory
     ) {
         return (entityType, level) -> {
             var entity = entityFactory.apply(overridingEntityType, level);
@@ -321,8 +321,8 @@ public class AVPEntityTypes {
     }
 
     private static <T extends RoyalAlien> EntityType.EntityFactory<T> royalAberrantFactory(
-            EntityType<T> overridingEntityType,
-            BiFunction<EntityType<T>, Level, T> entityFactory
+        EntityType<T> overridingEntityType,
+        BiFunction<EntityType<T>, Level, T> entityFactory
     ) {
         return (entityType, level) -> {
             var entity = entityFactory.apply(overridingEntityType, level);
@@ -333,8 +333,8 @@ public class AVPEntityTypes {
     }
 
     private static <T extends RoyalAlien> EntityType.EntityFactory<T> royalNethermorphFactory(
-            EntityType<T> overridingEntityType,
-            BiFunction<EntityType<T>, Level, T> entityFactory
+        EntityType<T> overridingEntityType,
+        BiFunction<EntityType<T>, Level, T> entityFactory
     ) {
         return (entityType, level) -> {
             var entity = entityFactory.apply(overridingEntityType, level);

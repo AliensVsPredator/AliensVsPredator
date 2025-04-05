@@ -9,8 +9,6 @@ import net.minecraft.world.entity.ai.goal.MeleeAttackGoal;
 import net.minecraft.world.entity.ai.goal.WaterAvoidingRandomStrollGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.monster.Monster;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.SpawnEggItem;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
@@ -18,10 +16,15 @@ import org.jetbrains.annotations.Nullable;
 import com.avp.AVP;
 import com.avp.common.MoveAnalysis;
 import com.avp.common.ai.goal.combat.LungeAtTargetGoal;
+import com.avp.common.entity.living.alien.Alien;
 import com.avp.common.entity.living.alien.parasite.Parasite;
 import com.avp.common.entity.type.AVPEntityTypes;
 
 public class Facehugger extends Parasite {
+
+    public static AttributeSupplier.Builder createFacehuggerAttributes() {
+        return applyFrom(AVP.config.statsConfigs.FACEHUGGER_STATS, Monster.createMonsterAttributes());
+    }
 
     private final FacehuggerAnimationDispatcher animationDispatcher;
 
@@ -32,6 +35,21 @@ public class Facehugger extends Parasite {
         this.animationDispatcher = new FacehuggerAnimationDispatcher(this);
         this.moveAnalysis = new MoveAnalysis(this);
         this.config = AVP.config.statsConfigs.FACEHUGGER_STATS;
+    }
+
+    @Override
+    public @Nullable EntityType<? extends Alien> getAberrantType() {
+        return isRoyal() ? AVPEntityTypes.ROYAL_ABERRANT_FACEHUGGER : AVPEntityTypes.ABERRANT_FACEHUGGER;
+    }
+
+    @Override
+    public @Nullable EntityType<? extends Alien> getIrradiatedType() {
+        return null;
+    }
+
+    @Override
+    public @Nullable EntityType<? extends Alien> getNetherType() {
+        return isRoyal() ? AVPEntityTypes.ROYAL_NETHER_FACEHUGGER : AVPEntityTypes.NETHER_FACEHUGGER;
     }
 
     @Override
@@ -87,39 +105,6 @@ public class Facehugger extends Parasite {
     @Override
     public boolean isPersistenceRequired() {
         return super.isPersistenceRequired() || attachmentManager.isAttachedToHost();
-    }
-
-    @Override
-    public @Nullable ItemStack getPickResult() {
-        SpawnEggItem spawnEggItem = null;
-
-        if (isRoyal()) {
-            if (isNetherAfflicted()) {
-                spawnEggItem = SpawnEggItem.byId(AVPEntityTypes.ROYAL_NETHER_FACEHUGGER);
-            }
-
-            if (isAberrant()) {
-                spawnEggItem = SpawnEggItem.byId(AVPEntityTypes.ROYAL_ABERRANT_FACEHUGGER);
-            }
-
-            if (!isNetherAfflicted() && !isAberrant()) {
-                spawnEggItem = SpawnEggItem.byId(AVPEntityTypes.ROYAL_FACEHUGGER);
-            }
-        } else {
-            if (isNetherAfflicted()) {
-                spawnEggItem = SpawnEggItem.byId(AVPEntityTypes.NETHER_FACEHUGGER);
-            }
-
-            if (isAberrant()) {
-                spawnEggItem = SpawnEggItem.byId(AVPEntityTypes.ABERRANT_FACEHUGGER);
-            }
-        }
-
-        return spawnEggItem == null ? super.getPickResult() : new ItemStack(spawnEggItem);
-    }
-
-    public static AttributeSupplier.Builder createFacehuggerAttributes() {
-        return applyFrom(AVP.config.statsConfigs.FACEHUGGER_STATS, Monster.createMonsterAttributes());
     }
 
     @Override

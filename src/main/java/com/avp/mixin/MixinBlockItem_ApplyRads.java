@@ -1,9 +1,5 @@
 package com.avp.mixin;
 
-import com.avp.common.block.AVPBlocks;
-import com.avp.common.effect.AVPEffects;
-import com.avp.common.item.AVPItemTags;
-import com.avp.common.util.AVPPredicates;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
@@ -19,8 +15,14 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 
+import com.avp.common.block.AVPBlocks;
+import com.avp.common.effect.AVPEffects;
+import com.avp.common.item.AVPItemTags;
+import com.avp.common.util.AVPPredicates;
+
 @Mixin(BlockItem.class)
 public abstract class MixinBlockItem_ApplyRads extends Item {
+
     @Shadow
     private Block block;
 
@@ -45,9 +47,9 @@ public abstract class MixinBlockItem_ApplyRads extends Item {
 
         if (containsRadiationItems(container)) {
             var armorCheck = livingEntity.getItemBySlot(EquipmentSlot.HEAD).is(AVPItemTags.RADIATION_RESISTANT_ARMOR) &&
-                    livingEntity.getItemBySlot(EquipmentSlot.CHEST).is(AVPItemTags.RADIATION_RESISTANT_ARMOR) &&
-                    livingEntity.getItemBySlot(EquipmentSlot.LEGS).is(AVPItemTags.RADIATION_RESISTANT_ARMOR) &&
-                    livingEntity.getItemBySlot(EquipmentSlot.FEET).is(AVPItemTags.RADIATION_RESISTANT_ARMOR);
+                livingEntity.getItemBySlot(EquipmentSlot.CHEST).is(AVPItemTags.RADIATION_RESISTANT_ARMOR) &&
+                livingEntity.getItemBySlot(EquipmentSlot.LEGS).is(AVPItemTags.RADIATION_RESISTANT_ARMOR) &&
+                livingEntity.getItemBySlot(EquipmentSlot.FEET).is(AVPItemTags.RADIATION_RESISTANT_ARMOR);
             if (!armorCheck || !AVPPredicates.IS_IMMORTAL.test(livingEntity)) {
                 livingEntity.addEffect(new MobEffectInstance(AVPEffects.RADIATION_EFFECT, Integer.MAX_VALUE, 0));
             }
@@ -58,9 +60,10 @@ public abstract class MixinBlockItem_ApplyRads extends Item {
 
     @Unique
     private boolean containsRadiationItems(ItemContainerContents containerContents) {
-        return containerContents.nonEmptyStream().anyMatch(itemStack ->
-                !itemStack.isEmpty() && itemStack.is(AVPItemTags.RADIATION_ITEMS)
-        );
+        return containerContents.nonEmptyStream()
+            .anyMatch(
+                itemStack -> !itemStack.isEmpty() && itemStack.is(AVPItemTags.RADIATION_ITEMS)
+            );
     }
 
 }

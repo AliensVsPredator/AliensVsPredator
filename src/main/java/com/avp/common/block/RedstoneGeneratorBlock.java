@@ -24,11 +24,13 @@ public class RedstoneGeneratorBlock extends Block {
             return;
         }
         level.addParticle(
-                DustParticleOptions.REDSTONE,
-                pos.getX() + 0.5,
-                pos.getY() + 1.0,
-                pos.getZ() + 0.5,
-                1.0, 0.0, 0.0
+            DustParticleOptions.REDSTONE,
+            pos.getX() + 0.5,
+            pos.getY() + 1.0,
+            pos.getZ() + 0.5,
+            1.0,
+            0.0,
+            0.0
         );
     }
 }

@@ -245,7 +245,7 @@ public abstract class Xenomorph extends Alien implements ResinProducer {
 
     @Override
     public int getAmbientSoundInterval() {
-        return 120;
+        return 6 * 20;
     }
 
     @Override
@@ -254,12 +254,12 @@ public abstract class Xenomorph extends Alien implements ResinProducer {
     }
 
     @Override
-    protected SoundEvent getDeathSound() {
+    protected @NotNull SoundEvent getDeathSound() {
         return AVPSoundEvents.ENTITY_XENOMORPH_DEATH;
     }
 
     @Override
-    protected SoundEvent getHurtSound(DamageSource damageSource) {
+    protected @NotNull SoundEvent getHurtSound(DamageSource damageSource) {
         return AVPSoundEvents.ENTITY_XENOMORPH_HURT;
     }
 

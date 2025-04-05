@@ -1,6 +1,5 @@
 package com.avp.common.block.entity.resin_node.behavior;
 
-import com.avp.common.util.AlienVariantUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
@@ -11,11 +10,10 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
 
-import com.avp.common.block.AVPBlocks;
 import com.avp.common.block.entity.resin_node.ChargeCursor;
 import com.avp.common.block.entity.resin_node.ResinSpreader;
-import com.avp.common.block.resin.ResinVeinBlock;
 import com.avp.common.block.resin.ResinVeinRegrowUtil;
+import com.avp.common.util.AlienVariantUtil;
 
 public class ResinSpreadBehavior implements SpreadBehavior {
 

@@ -1,10 +1,5 @@
 package com.avp.client;
 
-import com.avp.client.particle.IrradiatedAcidParticleProvider;
-import com.avp.client.render.block.DeskTerminalRenderer;
-import com.avp.client.render.block.ResonatorRenderer;
-import com.avp.client.render.block.TripMineRenderer;
-import com.avp.common.block_item.AVPBlockItems;
 import mod.azure.azurelib.rewrite.render.armor.AzArmorRendererRegistry;
 import mod.azure.azurelib.rewrite.render.item.AzItemRenderer;
 import mod.azure.azurelib.rewrite.render.item.AzItemRendererRegistry;
@@ -30,8 +25,12 @@ import com.avp.client.input.keybind.AVPKeybindingRegistry;
 import com.avp.client.network.AVPClientPacketHandlerRegistry;
 import com.avp.client.particle.AcidParticleProvider;
 import com.avp.client.particle.BlueAcidParticleProvider;
+import com.avp.client.particle.IrradiatedAcidParticleProvider;
 import com.avp.client.render.armor.*;
+import com.avp.client.render.block.DeskTerminalRenderer;
+import com.avp.client.render.block.ResonatorRenderer;
 import com.avp.client.render.block.SentryTurretRenderer;
+import com.avp.client.render.block.TripMineRenderer;
 import com.avp.client.render.entity.*;
 import com.avp.client.render.entity.parasite.facehugger.FacehuggerRenderer;
 import com.avp.client.render.item.*;
@@ -39,6 +38,7 @@ import com.avp.client.screen.ArmorCaseScreen;
 import com.avp.client.screen.IndustrialFurnaceScreen;
 import com.avp.common.block.AVPBlocks;
 import com.avp.common.block.entity.BlockEntityTypes;
+import com.avp.common.block_item.AVPBlockItems;
 import com.avp.common.entity.type.AVPEntityTypes;
 import com.avp.common.item.AVPItems;
 import com.avp.common.item.ArmorItems;
@@ -165,7 +165,7 @@ public class AVPClient implements ClientModInitializer {
         registerItemRenderer(AVPItems.M4RA_BATTLE_RIFLE, name -> () -> new M4raBattleRifileItemRenderer(name));
         registerItemRenderer(AVPItems.M56_SMARTGUN, name -> () -> new M56SmartgunItemRenderer(name));
         registerItemRenderer(AVPItems.M6B_ROCKET_LAUNCHER, name -> () -> new M6BRLItemRenderer(name));
-        registerItemRenderer(AVPItems.M88_MOD_4_COMBAT_PISTOL, name -> () -> new M88Mod4CombatPistolItemRenderer(name));
+        registerItemRenderer(AVPItems.M88MOD4_COMBAT_PISTOL, name -> () -> new M88Mod4CombatPistolItemRenderer(name));
         registerItemRenderer(AVPItems.OLD_PAINLESS, name -> () -> new OldPainlessItemRenderer(name));
         registerItemRenderer(AVPItems.ZX_76_SHOTGUN, name -> () -> new ZX76ShotgunItemRenderer(name));
         registerItemRenderer(AVPBlockItems.DESK_TERMINAL_BLOCK, name -> DeskTerminalItemRenderer::new);
@@ -217,16 +217,16 @@ public class AVPClient implements ClientModInitializer {
         BlockEntityRenderers.register(BlockEntityTypes.LEAD_CHEST_BE, ChestRenderer::new);
         BlockEntityRenderers.register(BlockEntityTypes.AMMO_CHEST_BE, ChestRenderer::new);
         BlockEntityRenderers.register(
-                BlockEntityTypes.DESK_TERMINAL_BE,
-                (BlockEntityRendererProvider.Context rendererDispatcherIn) -> new DeskTerminalRenderer()
+            BlockEntityTypes.DESK_TERMINAL_BE,
+            (BlockEntityRendererProvider.Context rendererDispatcherIn) -> new DeskTerminalRenderer()
         );
         BlockEntityRenderers.register(
-                BlockEntityTypes.RESONATOR_BE,
-                (BlockEntityRendererProvider.Context rendererDispatcherIn) -> new ResonatorRenderer()
+            BlockEntityTypes.RESONATOR_BE,
+            (BlockEntityRendererProvider.Context rendererDispatcherIn) -> new ResonatorRenderer()
         );
         BlockEntityRenderers.register(
-                BlockEntityTypes.TRIP_MINE_BE,
-                (BlockEntityRendererProvider.Context rendererDispatcherIn) -> new TripMineRenderer()
+            BlockEntityTypes.TRIP_MINE_BE,
+            (BlockEntityRendererProvider.Context rendererDispatcherIn) -> new TripMineRenderer()
         );
 
         // Particles

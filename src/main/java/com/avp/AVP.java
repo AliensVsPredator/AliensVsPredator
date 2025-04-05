@@ -1,6 +1,5 @@
 package com.avp;
 
-import com.avp.common.profession.AVPProfessions;
 import mod.azure.azurelib.common.api.common.config.Config;
 import mod.azure.azurelib.common.internal.common.AzureLib;
 import mod.azure.azurelib.common.internal.common.config.ConfigHolder;
@@ -51,6 +50,7 @@ import com.avp.common.network.CommonPacketRegistry;
 import com.avp.common.network.ServerPacketHandlerRegistry;
 import com.avp.common.particle.AVPParticleTypes;
 import com.avp.common.patrols.MarinePatrolSpawner;
+import com.avp.common.profession.AVPProfessions;
 import com.avp.common.recipe.AVPRecipes;
 import com.avp.common.sound.AVPSoundEvents;
 import com.avp.common.worldgen.NukedAshPlacement;
@@ -118,108 +118,153 @@ public class AVP implements ModInitializer {
         ServerTickEvents.START_WORLD_TICK.register(this::onWorldTick);
 
         TradeOfferHelper.registerVillagerOffers(AVPProfessions.COMMISAARY, 1, factories -> {
-            factories.add((entity, random) -> new MerchantOffer(
+            factories.add(
+                (entity, random) -> new MerchantOffer(
                     new ItemCost(Items.EMERALD, 1),
                     new ItemStack(AVPItems.SMALL_BULLET, 8),
                     4,
                     7,
-                    0.04f));
-            factories.add((entity, random) -> new MerchantOffer(
+                    0.04f
+                )
+            );
+            factories.add(
+                (entity, random) -> new MerchantOffer(
                     new ItemCost(Items.EMERALD, 2),
                     new ItemStack(AVPItems.MEDIUM_BULLET, 16),
                     3,
                     12,
-                    0.09f));
-            factories.add((entity, random) -> new MerchantOffer(
+                    0.09f
+                )
+            );
+            factories.add(
+                (entity, random) -> new MerchantOffer(
                     new ItemCost(Items.GUNPOWDER, 16),
                     new ItemStack(Items.EMERALD, 4),
                     3,
                     12,
-                    0.09f));
+                    0.09f
+                )
+            );
         });
 
         TradeOfferHelper.registerVillagerOffers(AVPProfessions.COMMISAARY, 2, factories -> {
-            factories.add((entity, random) -> new MerchantOffer(
+            factories.add(
+                (entity, random) -> new MerchantOffer(
                     new ItemCost(Items.EMERALD, 5),
                     new ItemStack(ArmorItems.TACTICAL_CAMO_HELMET, 1),
                     4,
                     7,
-                    0.04f));
-            factories.add((entity, random) -> new MerchantOffer(
+                    0.04f
+                )
+            );
+            factories.add(
+                (entity, random) -> new MerchantOffer(
                     new ItemCost(Items.CLAY_BALL, 12),
                     new ItemStack(Items.EMERALD, 2),
                     3,
                     12,
-                    0.09f));
-            factories.add((entity, random) -> new MerchantOffer(
+                    0.09f
+                )
+            );
+            factories.add(
+                (entity, random) -> new MerchantOffer(
                     new ItemCost(Items.EMERALD, 8),
                     new ItemStack(ArmorItems.TACTICAL_CAMO_CHESTPLATE, 1),
                     3,
                     12,
-                    0.09f));
+                    0.09f
+                )
+            );
         });
 
         TradeOfferHelper.registerVillagerOffers(AVPProfessions.COMMISAARY, 3, factories -> {
-            factories.add((entity, random) -> new MerchantOffer(
+            factories.add(
+                (entity, random) -> new MerchantOffer(
                     new ItemCost(Items.EMERALD, 15),
                     new ItemStack(AVPItems.BLUEPRINT_M88MOD4_COMBAT_PISTOL, 1),
                     4,
                     7,
-                    0.04f));
-            factories.add((entity, random) -> new MerchantOffer(
+                    0.04f
+                )
+            );
+            factories.add(
+                (entity, random) -> new MerchantOffer(
                     new ItemCost(Items.EMERALD, 10),
                     new ItemStack(ArmorItems.TACTICAL_CAMO_LEGGINGS, 1),
                     3,
                     12,
-                    0.09f));
-            factories.add((entity, random) -> new MerchantOffer(
+                    0.09f
+                )
+            );
+            factories.add(
+                (entity, random) -> new MerchantOffer(
                     new ItemCost(AVPItems.STEEL_INGOT, 8),
                     new ItemStack(Items.EMERALD, 8),
                     3,
                     12,
-                    0.09f));
+                    0.09f
+                )
+            );
         });
 
         TradeOfferHelper.registerVillagerOffers(AVPProfessions.COMMISAARY, 4, factories -> {
-            factories.add((entity, random) -> new MerchantOffer(
+            factories.add(
+                (entity, random) -> new MerchantOffer(
                     new ItemCost(Items.EMERALD, 8),
                     new ItemStack(ArmorItems.TACTICAL_CAMO_BOOTS, 1),
                     4,
                     7,
-                    0.04f));
-            factories.add((entity, random) -> new MerchantOffer(
+                    0.04f
+                )
+            );
+            factories.add(
+                (entity, random) -> new MerchantOffer(
                     new ItemCost(Items.EMERALD, 10),
                     new ItemStack(AVPItems.BLUEPRINT_M4RA_BATTLE_RIFLE, 1),
                     3,
                     12,
-                    0.09f));
-            factories.add((entity, random) -> new MerchantOffer(
+                    0.09f
+                )
+            );
+            factories.add(
+                (entity, random) -> new MerchantOffer(
                     new ItemCost(AVPItems.BRASS_INGOT, 12),
                     new ItemStack(Items.EMERALD, 10),
                     3,
                     12,
-                    0.09f));
+                    0.09f
+                )
+            );
         });
 
         TradeOfferHelper.registerVillagerOffers(AVPProfessions.COMMISAARY, 5, factories -> {
-            factories.add((entity, random) -> new MerchantOffer(
+            factories.add(
+                (entity, random) -> new MerchantOffer(
                     new ItemCost(Items.EMERALD, 25),
                     new ItemStack(AVPBlocks.SENTRY_TURRET, 1),
                     4,
                     7,
-                    0.04f));
-            factories.add((entity, random) -> new MerchantOffer(
+                    0.04f
+                )
+            );
+            factories.add(
+                (entity, random) -> new MerchantOffer(
                     new ItemCost(Items.EMERALD, 10),
                     new ItemStack(AVPItems.GRENADE, 3),
                     3,
                     12,
-                    0.09f));
-            factories.add((entity, random) -> new MerchantOffer(
+                    0.09f
+                )
+            );
+            factories.add(
+                (entity, random) -> new MerchantOffer(
                     new ItemCost(Items.EMERALD, 50),
                     new ItemStack(AVPItems.BLUEPRINT_M6B_ROCKET_LAUNCHER, 1),
                     3,
                     12,
-                    0.09f));
+                    0.09f
+                )
+            );
         });
     }
 
@@ -240,23 +285,31 @@ public class AVP implements ModInitializer {
      */
     public static <C> ConfigHolder<C> registerConfig(Class<C> configClass, IConfigFormatHandler formatFactory) {
         var config = configClass.getAnnotation(Config.class);
+
         if (config == null) {
             throw new IllegalArgumentException("Config class must be annotated with '@Config' annotation");
         }
+
         var id = config.id();
         var filename = config.filename();
+
         if (filename.isEmpty()) {
             filename = id;
         }
+
         var group = config.group();
+
         if (group.isEmpty()) {
             group = id;
         }
+
         var holder = new ConfigHolder<>(configClass, id, filename, group, formatFactory);
         ConfigHolderRegistry.registerConfig(holder);
+
         if (configClass.getAnnotation(Config.NoAutoSync.class) == null) {
             ConfigIO.FILE_WATCH_MANAGER.addTrackedConfig(holder);
         }
+
         return holder;
     }
 }

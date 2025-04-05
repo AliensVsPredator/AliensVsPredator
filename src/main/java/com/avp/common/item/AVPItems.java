@@ -65,7 +65,7 @@ public class AVPItems {
 
     public static final Item M6B_ROCKET_LAUNCHER = register(new GunItem(GunData.M6B_ROCKET_LAUNCHER), "m6b_rocket_launcher");
 
-    public static final Item M88_MOD_4_COMBAT_PISTOL = register(
+    public static final Item M88MOD4_COMBAT_PISTOL = register(
         new GunItem(GunData.M88_MOD_4_COMBAT_PISTOL),
         "m88mod4_combat_pistol"
     );
@@ -378,7 +378,7 @@ public class AVPItems {
             M41A_PULSE_RIFLE,
             M42A3_SNIPER_RIFLE,
             M56_SMARTGUN,
-            M88_MOD_4_COMBAT_PISTOL,
+            M88MOD4_COMBAT_PISTOL,
             ZX_76_SHOTGUN
         );
     }
