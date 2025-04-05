@@ -180,6 +180,21 @@ public class AVPEntityTypes {
         EntityType.Builder.of(aberrantFactory(AVPEntityTypes.QUEEN, Queen::new), AVPEntityTypes.ALIEN_CATEGORY)
     );
 
+    public static final EntityType<Drone> IRRADIATED_DRONE = register(
+        "irradiated_drone",
+        EntityType.Builder.of(irradiatedFactory(AVPEntityTypes.DRONE, Drone::new), AVPEntityTypes.ALIEN_CATEGORY)
+    );
+
+    public static final EntityType<Warrior> IRRADIATED_WARRIOR = register(
+        "irradiated_warrior",
+        EntityType.Builder.of(irradiatedFactory(AVPEntityTypes.WARRIOR, Warrior::new), AVPEntityTypes.ALIEN_CATEGORY)
+    );
+
+    public static final EntityType<Praetorian> IRRADIATED_PRAETORIAN = register(
+        "irradiated_praetorian",
+        EntityType.Builder.of(irradiatedFactory(AVPEntityTypes.PRAETORIAN, Praetorian::new), AVPEntityTypes.ALIEN_CATEGORY)
+    );
+
     public static final EntityType<Chestburster> NETHER_CHESTBURSTER = register(
         "nether_chestburster",
         EntityType.Builder.of(nethermorphFactory(AVPEntityTypes.CHESTBURSTER, Chestburster::new), AVPEntityTypes.ALIEN_CATEGORY)
@@ -213,21 +228,6 @@ public class AVPEntityTypes {
     public static final EntityType<Queen> NETHER_QUEEN = register(
         "nether_queen",
         EntityType.Builder.of(nethermorphFactory(AVPEntityTypes.QUEEN, Queen::new), AVPEntityTypes.ALIEN_CATEGORY)
-    );
-
-    public static final EntityType<Drone> IRRADIATED_DRONE = register(
-        "irraiated_drone",
-        EntityType.Builder.of(irraiatedFactory(AVPEntityTypes.DRONE, Drone::new), AVPEntityTypes.ALIEN_CATEGORY)
-    );
-
-    public static final EntityType<Warrior> IRRADIATED_WARRIOR = register(
-        "irraiated_warrior",
-        EntityType.Builder.of(irraiatedFactory(AVPEntityTypes.WARRIOR, Warrior::new), AVPEntityTypes.ALIEN_CATEGORY)
-    );
-
-    public static final EntityType<Praetorian> IRRADIATED_PRAETORIAN = register(
-        "irraiated_praetorian",
-        EntityType.Builder.of(irraiatedFactory(AVPEntityTypes.PRAETORIAN, Praetorian::new), AVPEntityTypes.ALIEN_CATEGORY)
     );
 
     public static final EntityType<Facehugger> ROYAL_ABERRANT_FACEHUGGER = register(
@@ -275,7 +275,7 @@ public class AVPEntityTypes {
         EntityType.Builder.of(royalNethermorphFactory(AVPEntityTypes.CHESTBURSTER, Chestburster::new), AVPEntityTypes.ALIEN_CATEGORY)
     );
 
-    private static <T extends Alien> EntityType.EntityFactory<T> irraiatedFactory(
+    private static <T extends Alien> EntityType.EntityFactory<T> irradiatedFactory(
         EntityType<T> overridingEntityType,
         BiFunction<EntityType<T>, Level, T> entityFactory
     ) {

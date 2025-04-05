@@ -1,5 +1,11 @@
 # v0.0.21-beta
 
+## 🔥 Breaking Changes
+- Corrected irradiated xenomorph registry names:
+  - `irraiated_drone` -> `irradiated_drone`
+  - `irraiated_warrior` -> `irradiated_warrior`
+  - `irraiated_praetorian` -> `irradiated_praetorian`
+
 ## ✨ What's New
 - N/A
 
