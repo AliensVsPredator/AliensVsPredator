@@ -21,6 +21,8 @@
   - Irradiated Warrior
 - Fixed the following entities dropping the wrong items on death:
   - Aberrant Drone
+  - Aberrant Praetorian
+  - Aberrant Warrior
 - Fixed typos:
   - Aberant -> Aberrant
   - Irraiated -> Irradiated

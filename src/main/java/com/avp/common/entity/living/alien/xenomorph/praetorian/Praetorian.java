@@ -109,6 +109,10 @@ public class Praetorian extends Xenomorph {
             return AVPEntityTypes.NETHER_PRAETORIAN.getDefaultLootTable();
         }
 
+        if (isAberrant()) {
+            return AVPEntityTypes.ABERRANT_PRAETORIAN.getDefaultLootTable();
+        }
+
         return super.getDefaultLootTable();
     }
 
