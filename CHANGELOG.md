@@ -1,16 +1,19 @@
 # v0.0.21-beta
 
-## What's New
+## ✨ What's New
 - N/A
 
-## Changes
+## ♻️ Changes
 - N/A
 
-## Fixes
+## 🐞 Fixes
+- Fixed picking irradiated drones giving the wrong spawn egg.
+- Fixed picking irradiated warriors giving the wrong spawn egg.
+- Fixed picking irradiated praetorians giving the wrong spawn egg.
 - Fixed typos:
   - Aberant -> Aberrant
 
-## Data Pack
+## 🛠 Data Pack
 - N/A
 
 # v0.0.20-beta
