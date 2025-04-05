@@ -15,6 +15,10 @@
 - N/A
 
 ## 🐞 Fixes
+- Fixed the following doors duplicating when dropped:
+  - Ferroaluminum Door
+  - Steel Door
+  - Titanium Door
 - Fixed the following entities giving the wrong picked spawn egg result in creative mode:
   - Irradiated Drone
   - Irradiated Praetorian
