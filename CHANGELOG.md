@@ -16,6 +16,7 @@
   - Previously it spread fire in a box, now it spreads fire in a sphere.
 
 ## 🐞 Fixes
+- Fixed random holes in flamethrower flames.
 - Fixed dyed industrial glass blocks not changing beacon colors.
 - Fixed flamethrower spreading fire through walls.
 - Fixed pulse rifle recipe not requiring a stock as an ingredient.

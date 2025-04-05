@@ -114,11 +114,7 @@ public class Flamethrow extends ThrowableProjectile {
             var current = queue.poll();
 
             if (shouldPlaceFireAt(current)) {
-                var randomChance = random.nextInt(1, 10);
-
-                if (randomChance < 11) {
-                    level().setBlock(current, Blocks.FIRE.defaultBlockState(), 3);
-                }
+                level().setBlock(current, Blocks.FIRE.defaultBlockState(), 3);
             }
 
             for (var direction : Direction.values()) {
