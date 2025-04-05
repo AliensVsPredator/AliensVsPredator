@@ -16,12 +16,20 @@
   - Previously it spread fire in a box, now it spreads fire in a sphere.
 
 ## 🐞 Fixes
+- Fixed commissary villager's texture layer not respecting custom villager textures.
+- Fixed commissary villager's zombie form missing a texture.
+- Fixed MK50 rendering brown instead of white when undyed.
+- Fixed MK50 armor not blocking radiation effect from chests.
 - Fixed gun side effects hurting players when pvp is off.
 - Fixed gun side effects not happening in the correct order.
 - Fixed random holes in flamethrower flames.
 - Fixed dyed industrial glass blocks not changing beacon colors.
 - Fixed flamethrower spreading fire through walls.
 - Fixed pulse rifle recipe not requiring a stock as an ingredient.
+- Fixed the following slabs not dropping their items correctly:
+  - Ferroaluminum Grate Slab
+  - Steel Slab
+  - Titanium Slab
 - Fixed the following doors duplicating when dropped:
   - Ferroaluminum Door
   - Steel Door

@@ -45,13 +45,13 @@ public class BlockLootTableProvider extends FabricBlockLootTableProvider {
         dropSelf(AVPBlocks.CHISELED_STEEL);
         dropSelf(AVPBlocks.CHISELED_TITANIUM);
         dropSelf(AVPBlocks.CUT_FERROALUMINUM);
-        add(AVPBlocks.CUT_FERROALUMINUM_SLAB, createSlabItemTable(AVPBlocks.CUT_FERROALUMINUM_SLAB));
+        dropSlab(AVPBlocks.CUT_FERROALUMINUM_SLAB);
         dropSelf(AVPBlocks.CUT_FERROALUMINUM_STAIRS);
         dropSelf(AVPBlocks.CUT_STEEL);
-        add(AVPBlocks.CUT_STEEL_SLAB, createSlabItemTable(AVPBlocks.CUT_STEEL_SLAB));
+        dropSlab(AVPBlocks.CUT_STEEL_SLAB);
         dropSelf(AVPBlocks.CUT_STEEL_STAIRS);
         dropSelf(AVPBlocks.CUT_TITANIUM);
-        add(AVPBlocks.CUT_TITANIUM_SLAB, createSlabItemTable(AVPBlocks.CUT_TITANIUM_SLAB));
+        dropSlab(AVPBlocks.CUT_TITANIUM_SLAB);
         dropSelf(AVPBlocks.CUT_TITANIUM_STAIRS);
         add(AVPBlocks.DEEPSLATE_TITANIUM_ORE, block -> createOreDrop(block, AVPItems.RAW_TITANIUM));
         add(AVPBlocks.DEEPSLATE_ZINC_ORE, block -> createOreMultiDrop(block, AVPItems.RAW_ZINC, 2, 5));
@@ -85,11 +85,11 @@ public class BlockLootTableProvider extends FabricBlockLootTableProvider {
         dropOther(AVPBlocks.IRRADIATED_RESIN_VEIN, AVPItems.IRRADIATED_RESIN_BALL);
         dropOther(AVPBlocks.IRRADIATED_RESIN_WEB, AVPItems.IRRADIATED_RESIN_BALL);
 
-        AVPBlocks.DYE_COLOR_TO_CONCRETE_SLAB.values().forEach((block) -> add(block, createSlabItemTable(block)));
+        AVPBlocks.DYE_COLOR_TO_CONCRETE_SLAB.values().forEach(this::dropSlab);
         AVPBlocks.DYE_COLOR_TO_CONCRETE_STAIRS.values().forEach(this::dropSelf);
 
         AVPBlocks.DYE_COLOR_TO_INDUSTRIAL_CONCRETE.values().forEach(this::dropSelf);
-        AVPBlocks.DYE_COLOR_TO_INDUSTRIAL_CONCRETE_SLAB.values().forEach((block) -> add(block, createSlabItemTable(block)));
+        AVPBlocks.DYE_COLOR_TO_INDUSTRIAL_CONCRETE_SLAB.values().forEach(this::dropSlab);
         AVPBlocks.DYE_COLOR_TO_INDUSTRIAL_CONCRETE_STAIRS.values().forEach(this::dropSelf);
         AVPBlocks.DYE_COLOR_TO_INDUSTRIAL_CONCRETE_WALL.values().forEach(this::dropSelf);
         dropSelf(AVPBlocks.INDUSTRIAL_GLASS);
@@ -98,23 +98,23 @@ public class BlockLootTableProvider extends FabricBlockLootTableProvider {
         AVPBlocks.DYE_COLOR_TO_INDUSTRIAL_GLASS_PANE.values().forEach(this::dropSelf);
 
         AVPBlocks.DYE_COLOR_TO_PADDING.values().forEach(this::dropSelf);
-        AVPBlocks.DYE_COLOR_TO_PADDING_SLAB.values().forEach((block) -> add(block, createSlabItemTable(block)));
+        AVPBlocks.DYE_COLOR_TO_PADDING_SLAB.values().forEach(this::dropSlab);
         AVPBlocks.DYE_COLOR_TO_PADDING_STAIRS.values().forEach(this::dropSelf);
 
         AVPBlocks.DYE_COLOR_TO_PANEL_PADDING.values().forEach(this::dropSelf);
-        AVPBlocks.DYE_COLOR_TO_PANEL_PADDING_SLAB.values().forEach((block) -> add(block, createSlabItemTable(block)));
+        AVPBlocks.DYE_COLOR_TO_PANEL_PADDING_SLAB.values().forEach(this::dropSlab);
         AVPBlocks.DYE_COLOR_TO_PANEL_PADDING_STAIRS.values().forEach(this::dropSelf);
 
         AVPBlocks.DYE_COLOR_TO_PIPE_PADDING.values().forEach(this::dropSelf);
-        AVPBlocks.DYE_COLOR_TO_PIPE_PADDING_SLAB.values().forEach((block) -> add(block, createSlabItemTable(block)));
+        AVPBlocks.DYE_COLOR_TO_PIPE_PADDING_SLAB.values().forEach(this::dropSlab);
         AVPBlocks.DYE_COLOR_TO_PIPE_PADDING_STAIRS.values().forEach(this::dropSelf);
 
         AVPBlocks.DYE_COLOR_TO_CUT_PLASTIC.values().forEach(this::dropSelf);
-        AVPBlocks.DYE_COLOR_TO_CUT_PLASTIC_SLAB.values().forEach((block) -> add(block, createSlabItemTable(block)));
+        AVPBlocks.DYE_COLOR_TO_CUT_PLASTIC_SLAB.values().forEach(this::dropSlab);
         AVPBlocks.DYE_COLOR_TO_CUT_PLASTIC_STAIRS.values().forEach(this::dropSelf);
 
         AVPBlocks.DYE_COLOR_TO_PLASTIC.values().forEach(this::dropSelf);
-        AVPBlocks.DYE_COLOR_TO_PLASTIC_SLAB.values().forEach((block) -> add(block, createSlabItemTable(block)));
+        AVPBlocks.DYE_COLOR_TO_PLASTIC_SLAB.values().forEach(this::dropSlab);
         AVPBlocks.DYE_COLOR_TO_PLASTIC_STAIRS.values().forEach(this::dropSelf);
 
         dropSelf(AVPBlocks.RAW_BAUXITE_BLOCK);
@@ -172,16 +172,23 @@ public class BlockLootTableProvider extends FabricBlockLootTableProvider {
 
         dropSelf(AVPBlocks.FERROALUMINUM_FASTENED_SIDING_SLAB);
         dropSelf(AVPBlocks.FERROALUMINUM_FASTENED_STANDING_SLAB);
+        dropSlab(AVPBlocks.FERROALUMINUM_GRATE_SLAB);
         dropSelf(AVPBlocks.FERROALUMINUM_SIDING_SLAB);
         dropSelf(AVPBlocks.FERROALUMINUM_STANDING_SLAB);
+        dropSlab(AVPBlocks.STEEL_GRATE_SLAB);
         dropSelf(AVPBlocks.STEEL_SIDING_SLAB);
         dropSelf(AVPBlocks.STEEL_STANDING_SLAB);
         dropSelf(AVPBlocks.STEEL_FASTENED_SIDING_SLAB);
         dropSelf(AVPBlocks.STEEL_FASTENED_STANDING_SLAB);
+        dropSlab(AVPBlocks.TITANIUM_GRATE_SLAB);
         dropSelf(AVPBlocks.TITANIUM_SIDING_SLAB);
         dropSelf(AVPBlocks.TITANIUM_STANDING_SLAB);
         dropSelf(AVPBlocks.TITANIUM_FASTENED_SIDING_SLAB);
         dropSelf(AVPBlocks.TITANIUM_FASTENED_STANDING_SLAB);
+    }
+
+    public void dropSlab(Block block) {
+        add(block, createSlabItemTable(block));
     }
 
     public LootTable.Builder createOreMultiDrop(Block block, Item item, int min, int max) {
