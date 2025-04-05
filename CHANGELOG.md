@@ -5,6 +5,8 @@
   - `irraiated_drone` -> `irradiated_drone`
   - `irraiated_warrior` -> `irradiated_warrior`
   - `irraiated_praetorian` -> `irradiated_praetorian`
+- Corrected irradiated aliens tag naming:
+  - `irraiated_aliens` -> `irradiated_aliens`
 
 ## ✨ What's New
 - N/A

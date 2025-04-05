@@ -8,8 +8,6 @@ import com.avp.AVPResources;
 
 public record AVPEntityTypeTags() {
 
-    public static final TagKey<EntityType<?>> IRRAIATED_ALIENS = create("irraiated_aliens");
-
     public static final TagKey<EntityType<?>> ABERRANT_ALIENS = create("aberrant_aliens");
 
     public static final TagKey<EntityType<?>> ACID_IMMUNE = create("acid_immune");
@@ -24,6 +22,8 @@ public record AVPEntityTypeTags() {
 
     public static final TagKey<EntityType<?>> HUMANOIDS = create("humanoids");
 
+    public static final TagKey<EntityType<?>> IRRADIATED_ALIENS = create("irradiated_aliens");
+
     public static final TagKey<EntityType<?>> NETHER_ALIENS = create("nether_aliens");
 
     public static final TagKey<EntityType<?>> NETHER_CREATURES = create("nether_creatures");
@@ -32,15 +32,15 @@ public record AVPEntityTypeTags() {
 
     public static final TagKey<EntityType<?>> PARASITES = create("parasites");
 
+    public static final TagKey<EntityType<?>> PREDATORS = create("predators");
+
+    public static final TagKey<EntityType<?>> RADIATION_RESISTANT = create("radiation_resistant");
+
     public static final TagKey<EntityType<?>> REMOVE_VANILLA_SPAWNS = create("remove_vanilla_spawns");
 
     public static final TagKey<EntityType<?>> ROYAL_ALIENS = create("royal_aliens");
 
     public static final TagKey<EntityType<?>> XENOMORPHS = create("xenomorphs");
-
-    public static final TagKey<EntityType<?>> RADIATION_RESISTANT = create("radiation_resistant");
-
-    public static final TagKey<EntityType<?>> PREDATORS = create("predators");
 
     private static TagKey<EntityType<?>> create(String name) {
         return TagKey.create(Registries.ENTITY_TYPE, AVPResources.location(name));
