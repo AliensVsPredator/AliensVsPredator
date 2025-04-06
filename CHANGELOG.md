@@ -53,6 +53,22 @@
   - Titanium Slab
   - Titanium Siding Slab
   - Titanium Standing Slab
+- Fixed the following stairs not dropping at all:
+  - Ferroaluminum Fastened Siding Stairs
+  - Ferroaluminum Fastened Standing Stairs
+  - Ferroaluminum Grate Stairs
+  - Ferroaluminum Siding Stairs
+  - Ferroaluminum Standing Stairs
+  - Steel Fastened Siding Stairs
+  - Steel Fastened Standing Stairs
+  - Steel Stairs
+  - Steel Siding Stairs
+  - Steel Standing Stairs
+  - Titanium Fastened Siding Stairs
+  - Titanium Fastened Standing Stairs
+  - Titanium Stairs
+  - Titanium Siding Stairs
+  - Titanium Standing Stairs
 - Fixed the following doors duplicating when dropped:
   - Ferroaluminum Door
   - Steel Door
