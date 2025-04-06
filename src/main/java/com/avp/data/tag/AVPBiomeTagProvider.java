@@ -33,5 +33,8 @@ public class AVPBiomeTagProvider extends FabricTagProvider<Biome> {
             .add(Biomes.PLAINS)
             .add(Biomes.FOREST)
             .add(Biomes.BIRCH_FOREST);
+
+        getOrCreateTagBuilder(AVPBiomeTags.HAS_BADLANDS_ALTAR)
+            .add(Biomes.BADLANDS);
     }
 }

@@ -10,6 +10,8 @@ public class AVPBiomeTags {
 
     public static final TagKey<Biome> HAS_ALTAR = create("has_altar");
 
+    public static final TagKey<Biome> HAS_BADLANDS_ALTAR = create("has_badlands_altar");
+
     public static final TagKey<Biome> HAS_MARINE_CAMP_GRASS = create("marine_camp_grass");
 
     public static final TagKey<Biome> HAS_OUTPOST_COMMS = create("has_outpost_comms");
