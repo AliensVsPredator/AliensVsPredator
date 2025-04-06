@@ -4,7 +4,7 @@
 - N/A
 
 ## ✨ What's New
-- N/A
+- Added new structure in badlands, `badlands_royal_altar`
 
 ## ♻️ Changes
 - N/A
@@ -13,7 +13,7 @@
 - Fixed Smart Disc duplication for creative players.
 
 ## 🛠 Data Pack
-- N/A
+- Added `has_badlands_altar` tag for biomes that the badlands altar can spawn in.
 
 ## 🔬 Technical Changes
 - Refactor smart disc return to owner code.
