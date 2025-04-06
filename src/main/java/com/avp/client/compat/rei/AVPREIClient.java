@@ -1,4 +1,4 @@
-package com.avp.client.rei;
+package com.avp.client.compat.rei;
 
 import me.shedaniel.math.Rectangle;
 import me.shedaniel.rei.api.client.plugins.REIClientPlugin;

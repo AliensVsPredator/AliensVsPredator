@@ -36,7 +36,7 @@
 			"com.avp.data.AVPDataGenerator"
 		],
 		"rei_client": [
-			"com.avp.client.rei.AVPREIClient"
+			"com.avp.client.compat.rei.AVPREIClient"
 		]
 	},
 	"mixins": [
