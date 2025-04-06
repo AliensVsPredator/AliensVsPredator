@@ -37,6 +37,9 @@
 		],
 		"rei_client": [
 			"com.avp.client.compat.rei.AVPREIClient"
+		],
+		"jei_mod_plugin": [
+			"com.avp.client.compat.jei.AVPJEIPlugin"
 		]
 	},
 	"mixins": [
