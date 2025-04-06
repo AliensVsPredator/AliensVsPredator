@@ -1,14 +1,17 @@
 package com.avp.common.util;
 
+import net.minecraft.world.Container;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 
 import java.util.Objects;
 import java.util.function.Predicate;
 
+import com.avp.common.effect.AVPEffects;
 import com.avp.common.entity.AVPEntityTypeTags;
 import com.avp.common.entity.living.Host;
 import com.avp.common.entity.living.alien.Alien;
@@ -41,8 +44,53 @@ public class AVPPredicates {
         return !Objects.equals(first.hiveManager().signatureOrNull(), secondHiveSignature);
     }
 
+    public static boolean canBeIrradiated(Entity entity) {
+        if (
+            // If this is not a living entity...
+            !(entity instanceof LivingEntity livingEntity)
+                // Or if the entity is radiation-resistant...
+                || livingEntity.getType().is(AVPEntityTypeTags.RADIATION_RESISTANT)
+                // Or if the living entity is immortal...
+                || AVPPredicates.IS_IMMORTAL.test(livingEntity)
+                // Or if the living entity already has the radiation effect...
+                || livingEntity.hasEffect(AVPEffects.RADIATION_EFFECT)
+                // Or if the entity is no longer alive...
+                || !livingEntity.isAlive()
+        ) {
+            // Then we don't want to or can't reasonably apply the radiation effect. Abort.
+            return false;
+        }
+
+        var hasFullRadiationResistantArmor = AVPPredicates.hasFullArmorSetMatching(
+            livingEntity,
+            itemStack -> itemStack.is(AVPItemTags.RADIATION_RESISTANT_ARMOR)
+        );
+
+        // Entity should not have a full set of radiation-resistant armor.
+        return !hasFullRadiationResistantArmor;
+    }
+
+    public static boolean containsIrradiatedItems(Container container) {
+        for (var i = 0; i < container.getContainerSize(); i++) {
+            var itemStack = container.getItem(i);
+
+            if (!itemStack.isEmpty() && itemStack.is(AVPItemTags.RADIATION_ITEMS)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     public static boolean hasEmbryo(Entity target) {
         return target instanceof Host host && host.parasiteType() != null;
+    }
+
+    public static boolean hasFullArmorSetMatching(LivingEntity livingEntity, Predicate<ItemStack> itemStackPredicate) {
+        return itemStackPredicate.test(livingEntity.getItemBySlot(EquipmentSlot.HEAD))
+            && itemStackPredicate.test(livingEntity.getItemBySlot(EquipmentSlot.CHEST))
+            && itemStackPredicate.test(livingEntity.getItemBySlot(EquipmentSlot.LEGS))
+            && itemStackPredicate.test(livingEntity.getItemBySlot(EquipmentSlot.FEET));
     }
 
     public static boolean hasShield(Entity target) {

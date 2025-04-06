@@ -26,6 +26,17 @@
 - Fixed dyed industrial glass blocks not changing beacon colors.
 - Fixed flamethrower spreading fire through walls.
 - Fixed pulse rifle recipe not requiring a stock as an ingredient.
+- Fixed numerous bugs with radiation effects being applied:
+  - Fixed irradiated boat chests irradiating radiation-resistant entities.
+  - Fixed irradiated minecart chests irradiating radiation-resistant entities.
+  - Fixed irradiated resin block irradiating dead entities.
+  - Fixed irradiated resin block irradiating radiation-resistant entities.
+  - Fixed irradiated resin node block irradiating dead entities.
+  - Fixed irradiated resin node block irradiating radiation-resistant entities.
+  - Fixed irradiated resin vein irradiating dead entities.
+  - Fixed irradiated resin vein irradiating radiation-resistant entities.
+  - Fixed irradiated resin web irradiating dead entities.
+  - Fixed irradiated resin web irradiating radiation-resistant entities.
 - Fixed the following slabs not dropping their items correctly:
   - Ferroaluminum Grate Slab
   - Steel Slab
@@ -56,6 +67,8 @@
 
 ## 🔬 Technical Changes
 - Rewrote alien variant handling to prevent future bugs with drops and spawn egg picking.
+- Cleaned up radiation effect code.
+- Fixed class typo (`MixinLivingEntity_NukedRadation` -> `MixinLivingEntity_NukedRadiation`).
 
 # v0.0.20-beta
 

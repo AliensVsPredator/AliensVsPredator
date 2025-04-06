@@ -3,7 +3,6 @@ package com.avp.mixin;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
@@ -32,27 +31,19 @@ public abstract class MixinBlockItem_ApplyRads extends Item {
 
     @Override
     public void inventoryTick(ItemStack stack, Level level, Entity entity, int slotId, boolean isSelected) {
-        if (level.isClientSide || !(entity instanceof LivingEntity livingEntity)) {
-            return;
-        }
-
-        if (stack.is(AVPBlocks.LEAD_CHEST.asItem())) {
+        if (level.isClientSide || !(entity instanceof LivingEntity livingEntity) || stack.is(AVPBlocks.LEAD_CHEST.asItem())) {
             return;
         }
 
         var container = stack.get(DataComponents.CONTAINER);
+
         if (container == null) {
             return;
         }
 
-        if (containsRadiationItems(container)) {
-            var armorCheck = livingEntity.getItemBySlot(EquipmentSlot.HEAD).is(AVPItemTags.RADIATION_RESISTANT_ARMOR) &&
-                livingEntity.getItemBySlot(EquipmentSlot.CHEST).is(AVPItemTags.RADIATION_RESISTANT_ARMOR) &&
-                livingEntity.getItemBySlot(EquipmentSlot.LEGS).is(AVPItemTags.RADIATION_RESISTANT_ARMOR) &&
-                livingEntity.getItemBySlot(EquipmentSlot.FEET).is(AVPItemTags.RADIATION_RESISTANT_ARMOR);
-            if (!armorCheck || !AVPPredicates.IS_IMMORTAL.test(livingEntity)) {
-                livingEntity.addEffect(new MobEffectInstance(AVPEffects.RADIATION_EFFECT, Integer.MAX_VALUE, 0));
-            }
+        if (AVPPredicates.canBeIrradiated(livingEntity) && containsRadiationItems(container)) {
+            var mobEffectInstance = new MobEffectInstance(AVPEffects.RADIATION_EFFECT, Integer.MAX_VALUE, 0);
+            livingEntity.addEffect(mobEffectInstance);
         }
 
         super.inventoryTick(stack, level, entity, slotId, isSelected);
