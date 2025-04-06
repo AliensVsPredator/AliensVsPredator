@@ -2,7 +2,6 @@ package com.avp.common.entity.projectile;
 
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.ThrowableItemProjectile;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.Level;
@@ -35,24 +34,15 @@ public class SmartDiscItemEntity extends ThrowableItemProjectile {
     @Override
     public void tick() {
         super.tick();
-        if (this.tickCount > 300)
-            this.kill();
-        if (!this.dealtDamage)
-            ItemGoalUtil.trackToLivingEntity(this, 0.5, false);
-        if (this.dealtDamage && this.getOwner() != null) {
-            var vec3 = this.getOwner().getEyePosition().subtract(this.position());
-            this.setPosRaw(this.getX(), this.getY() + vec3.y * 0.015, this.getZ());
-            if (this.level().isClientSide)
-                this.yOld = this.getY();
-            this.setDeltaMovement(this.getDeltaMovement().scale(0.95).add(vec3.normalize().scale(0.5)));
-            if (this.getOwner() instanceof Player player && this.getBoundingBox().intersects(this.getOwner().getBoundingBox())) {
-                player.getInventory().add(AVPItems.SMART_DISC.getDefaultInstance());
-                this.kill();
-            } else if (this.getBoundingBox().intersects(this.getOwner().getBoundingBox()))
-                this.kill();
-        }
         if (this.getOwner() == null)
             this.kill();
+        if (this.tickCount > 300)
+            this.kill();
+        if (!this.dealtDamage) {
+            ItemGoalUtil.trackToLivingEntity(this, 0.5, false);
+        } else {
+            ItemGoalUtil.trackToOwnerEntity(this);
+        }
     }
 
     @Override

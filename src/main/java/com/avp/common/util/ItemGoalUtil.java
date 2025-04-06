@@ -1,9 +1,11 @@
 package com.avp.common.util;
 
+import com.avp.common.item.AVPItems;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.PathfinderMob;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.phys.Vec3;
 
@@ -152,6 +154,29 @@ public class ItemGoalUtil {
             var newVelocity = directionToTarget.scale(bulletSpeed);
 
             projectile.setDeltaMovement(newVelocity);
+        }
+    }
+
+    public static void trackToOwnerEntity(Projectile projectile) {
+        if (projectile.getOwner() == null) {
+            return;
+        }
+
+        var vec3 = projectile.getOwner().getEyePosition().subtract(projectile.position());
+
+        projectile.setPosRaw(projectile.getX(), projectile.getY() + vec3.y * 0.015, projectile.getZ());
+
+        if (projectile.level().isClientSide) {
+            projectile.yOld = projectile.getY();
+        }
+
+        projectile.setDeltaMovement(projectile.getDeltaMovement().scale(0.95).add(vec3.normalize().scale(0.5)));
+
+        if (projectile.getOwner() instanceof Player player && projectile.getBoundingBox().intersects(projectile.getOwner().getBoundingBox())) {
+            player.getInventory().add(AVPItems.SMART_DISC.getDefaultInstance());
+            projectile.kill();
+        } else if (projectile.getBoundingBox().intersects(projectile.getOwner().getBoundingBox())) {
+            projectile.kill();
         }
     }
 }
