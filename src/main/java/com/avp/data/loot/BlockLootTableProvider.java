@@ -170,21 +170,21 @@ public class BlockLootTableProvider extends FabricBlockLootTableProvider {
         dropSelf(AVPBlocks.TITANIUM_BUTTON);
         dropSelf(AVPBlocks.FERROALUMINUM_BUTTON);
 
-        dropSelf(AVPBlocks.FERROALUMINUM_FASTENED_SIDING_SLAB);
-        dropSelf(AVPBlocks.FERROALUMINUM_FASTENED_STANDING_SLAB);
+        dropSlab(AVPBlocks.FERROALUMINUM_FASTENED_SIDING_SLAB);
+        dropSlab(AVPBlocks.FERROALUMINUM_FASTENED_STANDING_SLAB);
         dropSlab(AVPBlocks.FERROALUMINUM_GRATE_SLAB);
-        dropSelf(AVPBlocks.FERROALUMINUM_SIDING_SLAB);
-        dropSelf(AVPBlocks.FERROALUMINUM_STANDING_SLAB);
+        dropSlab(AVPBlocks.FERROALUMINUM_SIDING_SLAB);
+        dropSlab(AVPBlocks.FERROALUMINUM_STANDING_SLAB);
         dropSlab(AVPBlocks.STEEL_GRATE_SLAB);
-        dropSelf(AVPBlocks.STEEL_SIDING_SLAB);
-        dropSelf(AVPBlocks.STEEL_STANDING_SLAB);
-        dropSelf(AVPBlocks.STEEL_FASTENED_SIDING_SLAB);
-        dropSelf(AVPBlocks.STEEL_FASTENED_STANDING_SLAB);
+        dropSlab(AVPBlocks.STEEL_SIDING_SLAB);
+        dropSlab(AVPBlocks.STEEL_STANDING_SLAB);
+        dropSlab(AVPBlocks.STEEL_FASTENED_SIDING_SLAB);
+        dropSlab(AVPBlocks.STEEL_FASTENED_STANDING_SLAB);
         dropSlab(AVPBlocks.TITANIUM_GRATE_SLAB);
-        dropSelf(AVPBlocks.TITANIUM_SIDING_SLAB);
-        dropSelf(AVPBlocks.TITANIUM_STANDING_SLAB);
-        dropSelf(AVPBlocks.TITANIUM_FASTENED_SIDING_SLAB);
-        dropSelf(AVPBlocks.TITANIUM_FASTENED_STANDING_SLAB);
+        dropSlab(AVPBlocks.TITANIUM_SIDING_SLAB);
+        dropSlab(AVPBlocks.TITANIUM_STANDING_SLAB);
+        dropSlab(AVPBlocks.TITANIUM_FASTENED_SIDING_SLAB);
+        dropSlab(AVPBlocks.TITANIUM_FASTENED_STANDING_SLAB);
     }
 
     public void dropSlab(Block block) {

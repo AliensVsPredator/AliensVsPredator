@@ -38,9 +38,21 @@
   - Fixed irradiated resin web irradiating dead entities.
   - Fixed irradiated resin web irradiating radiation-resistant entities.
 - Fixed the following slabs not dropping their items correctly:
+  - Ferroaluminum Fastened Siding Slab
+  - Ferroaluminum Fastened Standing Slab
   - Ferroaluminum Grate Slab
+  - Ferroaluminum Siding Slab
+  - Ferroaluminum Standing Slab
+  - Steel Fastened Siding Slab
+  - Steel Fastened Standing Slab
   - Steel Slab
+  - Steel Siding Slab
+  - Steel Standing Slab
+  - Titanium Fastened Siding Slab
+  - Titanium Fastened Standing Slab
   - Titanium Slab
+  - Titanium Siding Slab
+  - Titanium Standing Slab
 - Fixed the following doors duplicating when dropped:
   - Ferroaluminum Door
   - Steel Door
