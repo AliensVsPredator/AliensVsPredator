@@ -173,7 +173,9 @@ public class ItemGoalUtil {
         projectile.setDeltaMovement(projectile.getDeltaMovement().scale(0.95).add(vec3.normalize().scale(0.5)));
 
         if (projectile.getOwner() instanceof Player player && projectile.getBoundingBox().intersects(projectile.getOwner().getBoundingBox())) {
-            player.getInventory().add(AVPItems.SMART_DISC.getDefaultInstance());
+            if (!AVPPredicates.IS_IMMORTAL.test(player)) {
+                player.getInventory().add(AVPItems.SMART_DISC.getDefaultInstance());
+            }
             projectile.kill();
         } else if (projectile.getBoundingBox().intersects(projectile.getOwner().getBoundingBox())) {
             projectile.kill();
