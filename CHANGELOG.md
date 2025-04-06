@@ -1,3 +1,24 @@
+# v0.0.22-beta
+
+## 🔥 Breaking Changes
+- N/A
+
+## ✨ What's New
+- N/A
+
+## ♻️ Changes
+- N/A
+
+## 🐞 Fixes
+- Fixed Smart Disc duplication for creative players.
+
+## 🛠 Data Pack
+- N/A
+
+## 🔬 Technical Changes
+- Refactor smart disc return to owner code.
+- Refactor REI support to new `com.avp.client.compat.rei` location.
+
 # v0.0.21-beta
 
 ## 🔥 Breaking Changes
