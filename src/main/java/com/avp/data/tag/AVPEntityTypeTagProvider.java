@@ -187,11 +187,7 @@ public class AVPEntityTypeTagProvider extends FabricTagProvider.EntityTypeTagPro
             .add(
                 AVPEntityTypes.IRRADIATED_DRONE,
                 AVPEntityTypes.IRRADIATED_WARRIOR,
-                AVPEntityTypes.IRRADIATED_PRAETORIAN,
-                AVPEntityTypes.ABERRANT_OVAMORPH,
-                AVPEntityTypes.ABERRANT_PRAETORIAN,
-                AVPEntityTypes.ABERRANT_WARRIOR,
-                AVPEntityTypes.ABERRANT_QUEEN
+                AVPEntityTypes.IRRADIATED_PRAETORIAN
             );
     }
 

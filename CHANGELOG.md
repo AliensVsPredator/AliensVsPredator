@@ -11,6 +11,11 @@
 
 ## 🐞 Fixes
 - Fixed Smart Disc duplication for creative players.
+- Fixed the following aberrant aliens being incorrectly marked as irradiated aliens:
+  - Aberrant Ovamorph
+  - Aberrant Praetorian
+  - Aberrant Queen
+  - Aberrant Warrior
 
 ## 🛠 Data Pack
 - Added `has_badlands_altar` tag for biomes that the badlands altar can spawn in.
