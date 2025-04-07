@@ -19,7 +19,10 @@ public class AVPBiomeTagProvider extends FabricTagProvider<Biome> {
 
     @Override
     protected void addTags(HolderLookup.Provider wrapperLookup) {
-        getOrCreateTagBuilder(AVPBiomeTags.HAS_ALTAR)
+        getOrCreateTagBuilder(AVPBiomeTags.HAS_BADLANDS_ALTAR)
+            .add(Biomes.BADLANDS);
+
+        getOrCreateTagBuilder(AVPBiomeTags.HAS_DESERT_ALTAR)
             .add(Biomes.DESERT);
 
         getOrCreateTagBuilder(AVPBiomeTags.HAS_MARINE_CAMP_GRASS)
@@ -34,7 +37,8 @@ public class AVPBiomeTagProvider extends FabricTagProvider<Biome> {
             .add(Biomes.FOREST)
             .add(Biomes.BIRCH_FOREST);
 
-        getOrCreateTagBuilder(AVPBiomeTags.HAS_BADLANDS_ALTAR)
-            .add(Biomes.BADLANDS);
+        getOrCreateTagBuilder(AVPBiomeTags.HAS_ALTAR)
+            .addTag(AVPBiomeTags.HAS_BADLANDS_ALTAR)
+            .addTag(AVPBiomeTags.HAS_DESERT_ALTAR);
     }
 }

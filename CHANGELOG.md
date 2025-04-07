@@ -23,6 +23,8 @@
 - Added `has_badlands_altar` tag for biomes that the badlands altar can spawn in.
 - Removed aberrant aliens from `#avp:irradiated_aliens` tag.
 - Added `#minecraft:undead` tag to `#avp:radiation_resistant` tag.
+- Added `#avp:has_desert_altar` biome tag.
+- `#avp:has_altar` biome tag is now composed of `#avp:has_badlands_altar` and `#avp:has_desert_altar`.
 
 ## 🔬 Technical Changes
 - Refactor smart disc return to owner code.
