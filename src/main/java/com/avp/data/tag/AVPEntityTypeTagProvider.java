@@ -75,18 +75,10 @@ public class AVPEntityTypeTagProvider extends FabricTagProvider.EntityTypeTagPro
             );
 
         getOrCreateTagBuilder(AVPEntityTypeTags.RADIATION_RESISTANT)
+            .addOptionalTag(EntityTypeTags.UNDEAD)
             .addTag(AVPEntityTypeTags.XENOMORPHS)
             .addTag(AVPEntityTypeTags.PREDATORS)
-            .add(
-                EntityType.CREEPER,
-                EntityType.STRAY,
-                EntityType.HUSK,
-                EntityType.SKELETON,
-                EntityType.SKELETON_HORSE,
-                EntityType.ZOMBIE,
-                EntityType.ZOMBIE_HORSE,
-                EntityType.ZOMBIE_VILLAGER
-            );
+            .add(EntityType.CREEPER);
 
         getOrCreateTagBuilder(AVPEntityTypeTags.PREDATORS)
             .add(AVPEntityTypes.YAUTJA);
