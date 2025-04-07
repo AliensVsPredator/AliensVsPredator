@@ -44,7 +44,6 @@ public class AVPItemTagProvider extends FabricTagProvider.ItemTagProvider {
                 AVPItems.IRRADIATED_CHITIN,
                 AVPItems.PLATED_IRRADIATED_CHITIN,
                 AVPItems.IRRADIATED_RESIN_BALL,
-                AVPItems.GRENADE_IRRADIATED,
                 AVPBlockItems.AUTUNITE_BLOCK,
                 AVPBlockItems.AUTUNITE_ORE,
                 AVPBlockItems.URANIUM_BLOCK,

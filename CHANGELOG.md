@@ -11,6 +11,7 @@
 
 ## 🐞 Fixes
 - Fixed Smart Disc duplication for creative players.
+- Fixed irradiated grenade items passively irradiating entities.
 - Fixed the following aberrant aliens being incorrectly marked as irradiated aliens:
   - Aberrant Ovamorph
   - Aberrant Praetorian
