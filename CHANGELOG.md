@@ -10,6 +10,7 @@
 - N/A
 
 ## 🐞 Fixes
+- Fixed irradiated praetorians having incorrect textures.
 - Fixed Smart Disc duplication for creative players.
 - Fixed irradiated grenade items passively irradiating entities.
 - Fixed z-fighting on predator's mandible membranes.
