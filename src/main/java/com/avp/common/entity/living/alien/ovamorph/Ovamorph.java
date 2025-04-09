@@ -75,6 +75,11 @@ public class Ovamorph extends RoyalAlien implements Shearable {
     }
 
     @Override
+    public @Nullable EntityType<? extends Alien> getDefaultType() {
+        return isRoyal() ? AVPEntityTypes.ROYAL_OVAMORPH : AVPEntityTypes.OVAMORPH;
+    }
+
+    @Override
     protected void defineSynchedData(SynchedEntityData.Builder builder) {
         super.defineSynchedData(builder);
         builder.define(IS_ROYAL, false);

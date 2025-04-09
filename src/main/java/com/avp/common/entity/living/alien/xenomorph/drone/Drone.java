@@ -46,6 +46,11 @@ public class Drone extends Xenomorph {
     }
 
     @Override
+    public @Nullable EntityType<? extends Alien> getDefaultType() {
+        return AVPEntityTypes.DRONE;
+    }
+
+    @Override
     protected @NotNull ResinData createResinData() {
         return new ResinData(0, 16, 1, AVP.config.statsConfigs.DRONE_STATS.nestTickrate);
     }

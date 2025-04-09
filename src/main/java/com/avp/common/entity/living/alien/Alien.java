@@ -85,6 +85,8 @@ public abstract class Alien extends Monster {
 
     public abstract @Nullable EntityType<? extends Alien> getNetherType();
 
+    public abstract @Nullable EntityType<? extends Alien> getDefaultType();
+
     @Override
     public float maxUpStep() {
         return 1.5F;

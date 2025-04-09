@@ -232,6 +232,14 @@ public class AVPBlocks {
 
     public static final Block RESIN_WEB = register(new ResinWebBlock(BlockProperties.RESIN_WEB), "resin_web");
 
+    public static final Block RESIN_BRICKS = register(BlockProperties.BRASS, "resin_bricks");
+
+    public static final Block RESIN_O = register(BlockProperties.BRASS, "resin_o");
+
+    public static final Block RESIN_RIBBED = register(BlockProperties.BRASS, "resin_ribbed");
+
+    public static final Block RESIN_SMOOTH = register(BlockProperties.BRASS, "resin_smooth");
+
     public static final Block SILICA_GRAVEL = register(
         new ColoredFallingBlock(new ColorRGBA(-8356741), BlockBehaviour.Properties.ofFullCopy(Blocks.GRAVEL)),
         "silica_gravel"
