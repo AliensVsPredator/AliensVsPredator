@@ -1,23 +1,18 @@
 package com.avp.common.item;
 
-import mod.azure.azurelib.rewrite.animation.cache.AzIdentityRegistry;
-import net.minecraft.core.Registry;
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.world.item.AxeItem;
-import net.minecraft.world.item.HoeItem;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.PickaxeItem;
-import net.minecraft.world.item.ShovelItem;
-import net.minecraft.world.item.SwordItem;
-
-import java.util.function.Function;
-
 import com.avp.AVPResources;
 import com.avp.common.item.grenades.GrendeItem;
 import com.avp.common.item.gun.GunData;
 import com.avp.common.item.old_painless.OldPainlessItem;
 import com.avp.common.item.yautja_items.ShurikenItem;
 import com.avp.common.item.yautja_items.SmartDiscItem;
+import mod.azure.azurelib.rewrite.animation.cache.AzIdentityRegistry;
+import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.world.item.*;
+import net.minecraft.world.level.material.Fluids;
+
+import java.util.function.Function;
 
 public class AVPItems {
 
@@ -256,7 +251,11 @@ public class AVPItems {
     // Tools & Utilities
     public static final Item ARMOR_CASE = register(new ArmorCaseItem(new Item.Properties().stacksTo(1)), "armor_case");
 
-    public static final Item CANISTER = register("canister");
+    public static final Item CANISTER = register(new CanisterItem(Fluids.EMPTY, new Item.Properties().stacksTo(16)),"canister");
+
+    public static final Item WATER_CANISTER = register(new CanisterItem(Fluids.WATER, new Item.Properties().stacksTo(1).craftRemainder(CANISTER)), "water_canister");
+
+    public static final Item LAVA_CANISTER = register(new CanisterItem(Fluids.LAVA, new Item.Properties().stacksTo(1).craftRemainder(CANISTER)), "lava_canister");
 
     public static final Item ROYAL_JELLY_CANISTER = register("royal_jelly_canister");
 

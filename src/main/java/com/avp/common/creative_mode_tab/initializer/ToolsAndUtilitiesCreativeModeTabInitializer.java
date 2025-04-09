@@ -11,6 +11,8 @@ public class ToolsAndUtilitiesCreativeModeTabInitializer {
         ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.TOOLS_AND_UTILITIES_KEY).register(entries -> {
             entries.accept(AVPItems.ARMOR_CASE);
             entries.accept(AVPItems.CANISTER);
+            entries.accept(AVPItems.WATER_CANISTER);
+            entries.accept(AVPItems.LAVA_CANISTER);
             entries.accept(AVPItems.ROYAL_JELLY_CANISTER);
             entries.accept(AVPItems.STEEL_AXE);
             entries.accept(AVPItems.STEEL_HOE);
