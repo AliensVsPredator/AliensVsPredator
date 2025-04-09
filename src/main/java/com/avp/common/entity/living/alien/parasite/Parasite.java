@@ -12,7 +12,6 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -33,7 +32,7 @@ public abstract class Parasite extends RoyalAlien {
 
     protected final ParasiteAttachmentManager attachmentManager;
 
-    protected Parasite(EntityType<? extends Monster> entityType, Level level) {
+    protected Parasite(EntityType<? extends Parasite> entityType, Level level) {
         super(entityType, level);
         this.attachmentManager = new ParasiteAttachmentManager(this, IS_FERTILE);
     }
