@@ -22,7 +22,6 @@ public class AmmoChestBulletsLootTable {
                 .add(
                     LootItem.lootTableItem(AVPItems.SMALL_BULLET)
                         .apply(SetItemCountFunction.setCount(UniformGenerator.between(3, 6)))
-                        .apply(EnchantedCountIncreaseFunction.lootingMultiplier(provider, UniformGenerator.between(0, 1)))
                         .setWeight(60)
                 )
         )
@@ -32,7 +31,6 @@ public class AmmoChestBulletsLootTable {
                 .add(
                     LootItem.lootTableItem(AVPItems.MEDIUM_BULLET)
                         .apply(SetItemCountFunction.setCount(UniformGenerator.between(1, 8)))
-                        .apply(EnchantedCountIncreaseFunction.lootingMultiplier(provider, UniformGenerator.between(0, 1)))
                         .setWeight(50)
                 )
         )
@@ -42,7 +40,6 @@ public class AmmoChestBulletsLootTable {
                 .add(
                     LootItem.lootTableItem(AVPItems.CASELESS_BULLET)
                         .apply(SetItemCountFunction.setCount(UniformGenerator.between(2, 6)))
-                        .apply(EnchantedCountIncreaseFunction.lootingMultiplier(provider, UniformGenerator.between(0, 1)))
                         .setWeight(45)
                 )
         )
@@ -52,7 +49,6 @@ public class AmmoChestBulletsLootTable {
                 .add(
                     LootItem.lootTableItem(AVPItems.HEAVY_BULLET)
                         .apply(SetItemCountFunction.setCount(UniformGenerator.between(3, 8)))
-                        .apply(EnchantedCountIncreaseFunction.lootingMultiplier(provider, UniformGenerator.between(0, 1)))
                         .setWeight(30)
                 )
         )
@@ -62,7 +58,6 @@ public class AmmoChestBulletsLootTable {
                 .add(
                     LootItem.lootTableItem(AVPItems.SHOTGUN_BULLET)
                         .apply(SetItemCountFunction.setCount(UniformGenerator.between(2, 6)))
-                        .apply(EnchantedCountIncreaseFunction.lootingMultiplier(provider, UniformGenerator.between(0, 1)))
                         .setWeight(25)
                 )
         )
@@ -72,7 +67,6 @@ public class AmmoChestBulletsLootTable {
                 .add(
                     LootItem.lootTableItem(AVPItems.FUEL_TANK)
                         .apply(SetItemCountFunction.setCount(UniformGenerator.between(1, 3)))
-                        .apply(EnchantedCountIncreaseFunction.lootingMultiplier(provider, UniformGenerator.between(0, 1)))
                         .setWeight(15)
                 )
         );

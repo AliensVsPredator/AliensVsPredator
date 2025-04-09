@@ -23,7 +23,6 @@ public class BarrelBulletMaterialLootTable {
                 .add(
                     LootItem.lootTableItem(AVPItems.BULLET_TIP)
                         .apply(SetItemCountFunction.setCount(UniformGenerator.between(3, 6)))
-                        .apply(EnchantedCountIncreaseFunction.lootingMultiplier(provider, UniformGenerator.between(0, 1)))
                         .setWeight(50)
                 )
         )
@@ -33,7 +32,6 @@ public class BarrelBulletMaterialLootTable {
                 .add(
                     LootItem.lootTableItem(Items.GUNPOWDER)
                         .apply(SetItemCountFunction.setCount(UniformGenerator.between(1, 4)))
-                        .apply(EnchantedCountIncreaseFunction.lootingMultiplier(provider, UniformGenerator.between(0, 1)))
                         .setWeight(40)
                 )
         )
@@ -43,7 +41,6 @@ public class BarrelBulletMaterialLootTable {
                 .add(
                     LootItem.lootTableItem(AVPItems.POLYMER)
                         .apply(SetItemCountFunction.setCount(UniformGenerator.between(2, 5)))
-                        .apply(EnchantedCountIncreaseFunction.lootingMultiplier(provider, UniformGenerator.between(0, 1)))
                         .setWeight(35)
                 )
         )
@@ -53,7 +50,6 @@ public class BarrelBulletMaterialLootTable {
                 .add(
                     LootItem.lootTableItem(AVPItems.HEAVY_CASING)
                         .apply(SetItemCountFunction.setCount(UniformGenerator.between(4, 10)))
-                        .apply(EnchantedCountIncreaseFunction.lootingMultiplier(provider, UniformGenerator.between(0, 1)))
                         .setWeight(30)
                 )
         );

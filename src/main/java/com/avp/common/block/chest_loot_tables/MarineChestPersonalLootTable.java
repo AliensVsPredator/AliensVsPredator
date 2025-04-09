@@ -21,7 +21,6 @@ public class MarineChestPersonalLootTable {
                 .add(
                     LootItem.lootTableItem(Items.COOKED_BEEF)
                         .apply(SetItemCountFunction.setCount(UniformGenerator.between(3, 6)))
-                        .apply(EnchantedCountIncreaseFunction.lootingMultiplier(provider, UniformGenerator.between(0, 1)))
                         .setWeight(45)
                 )
         )
@@ -31,7 +30,6 @@ public class MarineChestPersonalLootTable {
                 .add(
                     LootItem.lootTableItem(Items.COOKED_MUTTON)
                         .apply(SetItemCountFunction.setCount(UniformGenerator.between(1, 8)))
-                        .apply(EnchantedCountIncreaseFunction.lootingMultiplier(provider, UniformGenerator.between(0, 1)))
                         .setWeight(40)
                 )
         )
@@ -41,7 +39,6 @@ public class MarineChestPersonalLootTable {
                 .add(
                     LootItem.lootTableItem(Items.BOWL)
                         .apply(SetItemCountFunction.setCount(UniformGenerator.between(1, 2)))
-                        .apply(EnchantedCountIncreaseFunction.lootingMultiplier(provider, UniformGenerator.between(0, 1)))
                         .setWeight(35)
                 )
         )
@@ -51,7 +48,6 @@ public class MarineChestPersonalLootTable {
                 .add(
                     LootItem.lootTableItem(Items.BOOK)
                         .apply(SetItemCountFunction.setCount(UniformGenerator.between(3, 6)))
-                        .apply(EnchantedCountIncreaseFunction.lootingMultiplier(provider, UniformGenerator.between(0, 1)))
                         .setWeight(30)
                 )
         )
@@ -61,7 +57,6 @@ public class MarineChestPersonalLootTable {
                 .add(
                     LootItem.lootTableItem(Items.TORCH)
                         .apply(SetItemCountFunction.setCount(UniformGenerator.between(4, 12)))
-                        .apply(EnchantedCountIncreaseFunction.lootingMultiplier(provider, UniformGenerator.between(0, 1)))
                         .setWeight(20)
                 )
         )
@@ -71,7 +66,6 @@ public class MarineChestPersonalLootTable {
                 .add(
                     LootItem.lootTableItem(Items.MAP)
                         .apply(SetItemCountFunction.setCount(ConstantValue.exactly(1)))
-                        .apply(EnchantedCountIncreaseFunction.lootingMultiplier(provider, UniformGenerator.between(0, 1)))
                         .setWeight(2)
                 )
         )
@@ -81,7 +75,6 @@ public class MarineChestPersonalLootTable {
                 .add(
                     LootItem.lootTableItem(Items.EMERALD)
                         .apply(SetItemCountFunction.setCount(UniformGenerator.between(1, 6)))
-                        .apply(EnchantedCountIncreaseFunction.lootingMultiplier(provider, UniformGenerator.between(0, 1)))
                         .setWeight(10)
                 )
         );
