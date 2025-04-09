@@ -10,6 +10,7 @@
 - N/A
 
 ## 🐞 Fixes
+- Fixed marine's head being slightly tilted.
 - Fixed irradiated praetorians having incorrect textures.
 - Fixed Smart Disc duplication for creative players.
 - Fixed irradiated grenade items passively irradiating entities.
@@ -31,6 +32,7 @@
 - Refactor smart disc return to owner code.
 - Refactor REI support to new `com.avp.client.compat.rei` location.
 - Removed unnecessary code in RadiatedBlock.java.
+- Cleaned up marine animation code, slightly more optimal.
 
 # v0.0.21-beta
 
