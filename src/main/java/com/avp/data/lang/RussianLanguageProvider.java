@@ -508,6 +508,17 @@ public class RussianLanguageProvider extends FabricLanguageProvider {
         // Sounds
         addSound(translationBuilder, AVPSoundEvents.BLOCK_ACID_BURN, "Кислота расщепляет материал");
 
+        addSound(translationBuilder, AVPSoundEvents.ENTITY_QUEEN_ARM_ATTACK, "Queen attacks");
+        addSound(translationBuilder, AVPSoundEvents.ENTITY_QUEEN_BACK_HAND_ATTACK, "Queen back hand attacks");
+        addSound(translationBuilder, AVPSoundEvents.ENTITY_QUEEN_RAM_ATTACK, "Queen ram attacks");
+        addSound(translationBuilder, AVPSoundEvents.ENTITY_QUEEN_SCREAM, "Queen screams");
+        addSound(translationBuilder, AVPSoundEvents.ENTITY_QUEEN_TAIL_ATTACK, "Queen tail attacks");
+        addSound(translationBuilder, AVPSoundEvents.ENTITY_QUEEN_DEATH, "Queen dies");
+        addSound(translationBuilder, AVPSoundEvents.ENTITY_QUEEN_PAIN, "Queen hurts");
+        addSound(translationBuilder, AVPSoundEvents.ENTITY_QUEEN_IDLE, "Queen breaths");
+        addSound(translationBuilder, AVPSoundEvents.ENTITY_QUEEN_STEP_THUMP, "Queen steps");
+        addSound(translationBuilder, AVPSoundEvents.ENTITY_QUEEN_STEP_THUMP_ROCK, "Queen steps");
+
         addSound(translationBuilder, AVPSoundEvents.ENTITY_XENOMORPH_ATTACK, "Ксеноморф нападает");
         addSound(translationBuilder, AVPSoundEvents.ENTITY_XENOMORPH_DEATH, "Ксеноморф погибает");
         addSound(translationBuilder, AVPSoundEvents.ENTITY_XENOMORPH_HISS, "Ксеноморф шипит");
