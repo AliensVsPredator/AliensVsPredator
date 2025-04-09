@@ -44,6 +44,11 @@ public class Praetorian extends Xenomorph {
     }
 
     @Override
+    public @Nullable EntityType<? extends Alien> getDefaultType() {
+        return AVPEntityTypes.PRAETORIAN;
+    }
+
+    @Override
     protected @NotNull ResinData createResinData() {
         return new ResinData(0, 64, 1, AVP.config.statsConfigs.PRAETORIAN_STATS.nestTickrate);
     }

@@ -1,5 +1,6 @@
 package com.avp.common.entity.living.alien.xenomorph.warrior;
 
+import com.avp.common.entity.living.alien.Alien;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.monster.Monster;
@@ -42,6 +43,11 @@ public class Warrior extends Xenomorph {
     @Override
     public @Nullable EntityType<? extends Xenomorph> getNetherType() {
         return AVPEntityTypes.NETHER_WARRIOR;
+    }
+
+    @Override
+    public @Nullable EntityType<? extends Alien> getDefaultType() {
+        return AVPEntityTypes.WARRIOR;
     }
 
     @Override

@@ -46,6 +46,11 @@ public class Queen extends Xenomorph {
     }
 
     @Override
+    public @Nullable EntityType<? extends Alien> getDefaultType() {
+        return AVPEntityTypes.QUEEN;
+    }
+
+    @Override
     public float maxUpStep() {
         return 2.5F;
     }

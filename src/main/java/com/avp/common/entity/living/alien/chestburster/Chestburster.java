@@ -85,6 +85,11 @@ public class Chestburster extends RoyalAlien implements ResinProducer {
     }
 
     @Override
+    public @Nullable EntityType<? extends Alien> getDefaultType() {
+        return isRoyal() ? AVPEntityTypes.ROYAL_CHESTBURSTER : AVPEntityTypes.CHESTBURSTER;
+    }
+
+    @Override
     protected void registerGoals() {
         this.goalSelector.addGoal(3, new AvoidEntityGoal<>(this, LivingEntity.class, 8, 1, 1.2, entity -> {
             if (!(entity instanceof Alien alien)) {
