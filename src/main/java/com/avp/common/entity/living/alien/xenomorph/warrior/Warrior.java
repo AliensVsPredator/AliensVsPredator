@@ -1,6 +1,5 @@
 package com.avp.common.entity.living.alien.xenomorph.warrior;
 
-import com.avp.common.entity.living.alien.Alien;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.monster.Monster;
@@ -10,6 +9,7 @@ import org.jetbrains.annotations.Nullable;
 
 import com.avp.AVP;
 import com.avp.common.ai.goal.combat.LungeAtTargetGoal;
+import com.avp.common.entity.living.alien.Alien;
 import com.avp.common.entity.living.alien.xenomorph.Xenomorph;
 import com.avp.common.entity.type.AVPEntityTypes;
 import com.avp.common.sound.AVPSoundEvents;

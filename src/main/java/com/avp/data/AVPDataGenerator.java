@@ -1,6 +1,5 @@
 package com.avp.data;
 
-import com.avp.data.loot.ChestLootTableProvider;
 import net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 import net.minecraft.core.RegistrySetBuilder;
@@ -13,6 +12,7 @@ import com.avp.data.lang.EnglishLanguageProvider;
 import com.avp.data.lang.RussianLanguageProvider;
 import com.avp.data.lang.UkrainianLanguageProvider;
 import com.avp.data.loot.BlockLootTableProvider;
+import com.avp.data.loot.ChestLootTableProvider;
 import com.avp.data.loot.EntityLootTableProvider;
 import com.avp.data.model.BlockModelProvider;
 import com.avp.data.model.ItemModelProvider;
