@@ -5,6 +5,10 @@
 
 ## ✨ What's New
 - Added new structure in badlands, `badlands_royal_altar`
+- Added Chest loot tables for Marine structures.
+- Queen sounds registered.
+- Added Desert, deepslate, jungle and nether Royal Atlars.
+- Added Crafted Resin Blocks.
 
 ## ♻️ Changes
 - N/A
@@ -19,6 +23,10 @@
   - Aberrant Praetorian
   - Aberrant Queen
   - Aberrant Warrior
+- Fixed the following entities giving the wrong picked spawn egg result in creative mode:
+  - Royal Ovamorph
+  - Royal Facehugger
+  - Royal Chestburster
 
 ## 🛠 Data Pack
 - Added `has_badlands_altar` tag for biomes that the badlands altar can spawn in.
@@ -30,6 +38,7 @@
 ## 🔬 Technical Changes
 - Refactor smart disc return to owner code.
 - Refactor REI support to new `com.avp.client.compat.rei` location.
+- Refactor Trades to dedicated class.
 
 # v0.0.21-beta
 
