@@ -36,7 +36,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-// Most of the code were copied from BucketItem
 public class CanisterItem extends Item implements DispensibleContainerItem {
     public final Fluid content;
 
@@ -60,7 +59,7 @@ public class CanisterItem extends Item implements DispensibleContainerItem {
     @Override
     public @NotNull InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand usedHand) {
         ItemStack canisterStack = player.getItemInHand(usedHand);
-        BlockHitResult hitResult = getPlayerPOVHitResult(level, player, ClipContext.Fluid.SOURCE_ONLY);
+        BlockHitResult hitResult = getPlayerPOVHitResult(level, player, isFluidPlacementAction(player) ? ClipContext.Fluid.NONE : ClipContext.Fluid.SOURCE_ONLY);
 
         if (isInvalidHitResult(hitResult))
             return InteractionResultHolder.pass(canisterStack);
