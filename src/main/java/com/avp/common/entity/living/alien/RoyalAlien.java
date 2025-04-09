@@ -5,7 +5,6 @@ import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.level.Level;
 
 public abstract class RoyalAlien extends Alien {
@@ -14,7 +13,7 @@ public abstract class RoyalAlien extends Alien {
 
     private static final EntityDataAccessor<Boolean> IS_ROYAL = SynchedEntityData.defineId(RoyalAlien.class, EntityDataSerializers.BOOLEAN);
 
-    protected RoyalAlien(EntityType<? extends Monster> entityType, Level level) {
+    protected RoyalAlien(EntityType<? extends RoyalAlien> entityType, Level level) {
         super(entityType, level);
     }
 
