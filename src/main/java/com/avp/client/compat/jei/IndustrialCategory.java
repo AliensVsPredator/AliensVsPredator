@@ -62,5 +62,6 @@ public class IndustrialCategory implements IRecipeCategory<IndustrialFurnaceReci
     @Override
     public void setRecipe(IRecipeLayoutBuilder builder, IndustrialFurnaceRecipe recipe, IFocusGroup focuses) {
         builder.addSlot(RecipeIngredientRole.INPUT, 1, 18).addIngredients(recipe.getIngredients().getFirst());
+        builder.addSlot(RecipeIngredientRole.OUTPUT, 1, 36).addIngredients(recipe.getIngredients().getFirst());
     }
 }
