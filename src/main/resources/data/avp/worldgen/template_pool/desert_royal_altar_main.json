@@ -1,0 +1,15 @@
+{
+  "name": "avp:desert_royal_altar",
+  "fallback": "minecraft:empty",
+  "elements": [
+    {
+      "weight": 1,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "projection": "rigid",
+        "location": "avp:desert_royal_altar",
+        "processors": "minecraft:empty"
+      }
+    }
+  ]
+}
