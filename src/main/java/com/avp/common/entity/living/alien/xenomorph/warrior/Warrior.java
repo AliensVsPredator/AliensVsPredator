@@ -9,7 +9,6 @@ import org.jetbrains.annotations.Nullable;
 
 import com.avp.AVP;
 import com.avp.common.ai.goal.combat.LungeAtTargetGoal;
-import com.avp.common.entity.living.alien.Alien;
 import com.avp.common.entity.living.alien.xenomorph.Xenomorph;
 import com.avp.common.entity.type.AVPEntityTypes;
 import com.avp.common.sound.AVPSoundEvents;
@@ -43,11 +42,6 @@ public class Warrior extends Xenomorph {
     @Override
     public @Nullable EntityType<? extends Xenomorph> getNetherType() {
         return AVPEntityTypes.NETHER_WARRIOR;
-    }
-
-    @Override
-    public @Nullable EntityType<? extends Alien> getDefaultType() {
-        return AVPEntityTypes.WARRIOR;
     }
 
     @Override

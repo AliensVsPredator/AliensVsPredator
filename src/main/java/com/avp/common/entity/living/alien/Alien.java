@@ -73,7 +73,7 @@ public abstract class Alien extends Monster {
 
     protected AVPConfig.StatsConfigs.AdvancedStats config;
 
-    protected Alien(EntityType<? extends Monster> entityType, Level level) {
+    protected Alien(EntityType<? extends Alien> entityType, Level level) {
         super(entityType, level);
         this.geneManager = new GeneManager(this);
         this.hiveManager = new HiveManager(this);
@@ -85,7 +85,16 @@ public abstract class Alien extends Monster {
 
     public abstract @Nullable EntityType<? extends Alien> getNetherType();
 
-    public abstract @Nullable EntityType<? extends Alien> getDefaultType();
+    @SuppressWarnings("unchecked")
+    public @Nullable EntityType<? extends Alien> getDefaultType() {
+        return (EntityType<? extends Alien>) getType();
+    }
+
+    // This override is just to mark getType as final.
+    @Override
+    public final @NotNull EntityType<?> getType() {
+        return super.getType();
+    }
 
     @Override
     public float maxUpStep() {
