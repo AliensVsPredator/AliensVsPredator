@@ -7,7 +7,7 @@
 - Added new structure in badlands, `badlands_royal_altar`
 
 ## ♻️ Changes
-- N/A
+- Cut nuke's default block sample count in half to improve performance.
 
 ## 🐞 Fixes
 - Fixed marine's head being slightly tilted.
