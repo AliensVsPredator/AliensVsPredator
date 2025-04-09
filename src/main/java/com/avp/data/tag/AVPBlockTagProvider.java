@@ -141,11 +141,20 @@ public class AVPBlockTagProvider extends FabricTagProvider.BlockTagProvider {
                 AVPBlocks.RESIN_WEB
             );
 
+        getOrCreateTagBuilder(AVPBlockTags.CRAFTED_RESIN)
+            .add(
+                AVPBlocks.RESIN_BRICKS,
+                AVPBlocks.RESIN_O,
+                AVPBlocks.RESIN_RIBBED,
+                AVPBlocks.RESIN_SMOOTH
+            );
+
         getOrCreateTagBuilder(AVPBlockTags.RESIN)
             .addTag(AVPBlockTags.NETHER_RESIN)
             .addTag(AVPBlockTags.NORMAL_RESIN)
             .addTag(AVPBlockTags.ABERRANT_RESIN)
-            .addTag(AVPBlockTags.IRRADIATED_RESIN);
+            .addTag(AVPBlockTags.IRRADIATED_RESIN)
+            .addTag(AVPBlockTags.CRAFTED_RESIN);
 
         getOrCreateTagBuilder(AVPBlockTags.RESIN_VEINS)
             .add(
@@ -340,6 +349,10 @@ public class AVPBlockTagProvider extends FabricTagProvider.BlockTagProvider {
                 AVPBlocks.RAW_ZINC_BLOCK,
                 AVPBlocks.RESIN,
                 AVPBlocks.RESIN_NODE,
+                AVPBlocks.RESIN_BRICKS,
+                AVPBlocks.RESIN_O,
+                AVPBlocks.RESIN_RIBBED,
+                AVPBlocks.RESIN_SMOOTH,
                 AVPBlocks.URANIUM_BLOCK,
                 AVPBlocks.ZINC_BLOCK,
                 AVPBlocks.ZINC_ORE

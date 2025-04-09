@@ -162,6 +162,10 @@ public class BlockModelProvider extends FabricModelProvider {
         generators.createTrivialCube(AVPBlocks.CHISELED_FERROALUMINUM);
         generators.createTrivialCube(AVPBlocks.CHISELED_STEEL);
         generators.createTrivialCube(AVPBlocks.CHISELED_TITANIUM);
+        generators.createTrivialCube(AVPBlocks.RESIN_BRICKS);
+        generators.createTrivialCube(AVPBlocks.RESIN_O);
+        generators.createTrivialCube(AVPBlocks.RESIN_RIBBED);
+        generators.createTrivialCube(AVPBlocks.RESIN_SMOOTH);
 
         generators.family(AVPBlocks.CUT_FERROALUMINUM)
             .slab(AVPBlocks.CUT_FERROALUMINUM_SLAB)

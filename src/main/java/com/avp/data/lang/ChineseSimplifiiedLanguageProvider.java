@@ -149,6 +149,10 @@ public class ChineseSimplifiiedLanguageProvider extends FabricLanguageProvider {
         translationBuilder.add(AVPBlocks.IRRADIATED_RESIN_NODE, "Irradiated Resin");
         translationBuilder.add(AVPBlocks.IRRADIATED_RESIN_VEIN, "Irradiated Resin Vein");
         translationBuilder.add(AVPBlocks.IRRADIATED_RESIN_WEB, "Irradiated Resin Web");
+        translationBuilder.add(AVPBlocks.RESIN_BRICKS, "Resin Bricks");
+        translationBuilder.add(AVPBlocks.RESIN_O, "Resin O");
+        translationBuilder.add(AVPBlocks.RESIN_RIBBED, "Resin Ribbed");
+        translationBuilder.add(AVPBlocks.RESIN_SMOOTH, "Resin Smooth");
 
         AVPBlocks.DYE_COLOR_TO_PADDING.forEach(
             (key, value) -> translationBuilder.add(value, format(key.getName()) + " Padding")

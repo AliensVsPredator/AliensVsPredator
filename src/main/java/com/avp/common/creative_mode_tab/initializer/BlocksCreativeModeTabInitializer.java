@@ -181,6 +181,10 @@ public class BlocksCreativeModeTabInitializer {
             entries.accept(AVPBlocks.IRRADIATED_RESIN_VEIN);
             entries.accept(AVPBlocks.IRRADIATED_RESIN_WEB);
             entries.accept(AVPBlocks.ROYAL_JELLY_BLOCK);
+            entries.accept(AVPBlocks.RESIN_BRICKS);
+            entries.accept(AVPBlocks.RESIN_O);
+            entries.accept(AVPBlocks.RESIN_RIBBED);
+            entries.accept(AVPBlocks.RESIN_SMOOTH);
         });
     }
 }
