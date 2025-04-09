@@ -11,6 +11,7 @@
 
 ## 🐞 Fixes
 - Fixed marine's head being slightly tilted.
+- Fixed trinitite blocks having broken transparency.
 - Fixed irradiated praetorians having incorrect textures.
 - Fixed Smart Disc duplication for creative players.
 - Fixed irradiated grenade items passively irradiating entities.
