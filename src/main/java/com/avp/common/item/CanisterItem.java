@@ -1,15 +1,19 @@
 package com.avp.common.item;
 
+import com.avp.common.component.DataComponents;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.stats.Stats;
 import net.minecraft.tags.FluidTags;
+import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
@@ -30,9 +34,13 @@ import net.minecraft.world.phys.HitResult;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.List;
+
 // Most of the code were copied from BucketItem
 public class CanisterItem extends Item implements DispensibleContainerItem {
-    private final Fluid content;
+    public final Fluid content;
+
+    public static final int MAX_CONTENT_AMOUNT = 8;
 
     public CanisterItem(Fluid content, Properties properties) {
         super(properties);
@@ -40,58 +48,103 @@ public class CanisterItem extends Item implements DispensibleContainerItem {
     }
 
     @Override
+    public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag) {
+        super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
+
+        int currentContentAmount = stack.getOrDefault(DataComponents.CANISTER_CONTENT_AMOUNT, 0);
+        if (currentContentAmount == 0) return;
+
+        tooltipComponents.add(Component.literal("Content Amount: " + currentContentAmount));
+    }
+
+    @Override
     public @NotNull InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand usedHand) {
         ItemStack canisterStack = player.getItemInHand(usedHand);
-        BlockHitResult blockHitResult = getPlayerPOVHitResult(level, player, this.content == Fluids.EMPTY ? ClipContext.Fluid.SOURCE_ONLY : ClipContext.Fluid.NONE);
+        BlockHitResult hitResult = getPlayerPOVHitResult(level, player, this.content == Fluids.EMPTY ? ClipContext.Fluid.SOURCE_ONLY : ClipContext.Fluid.NONE);
 
-        if (blockHitResult.getType() == HitResult.Type.MISS || blockHitResult.getType() != HitResult.Type.BLOCK)
+        if (isInvalidHitResult(hitResult))
             return InteractionResultHolder.pass(canisterStack);
 
-        BlockPos blockHitPos = blockHitResult.getBlockPos();
-        Direction blockHitDirection = blockHitResult.getDirection();
-        BlockPos blockHitRelative = blockHitPos.relative(blockHitDirection);
+        BlockPos hitPos = hitResult.getBlockPos();
+        Direction hitDir = hitResult.getDirection();
+        BlockPos relativePos = hitPos.relative(hitDir);
 
-        if (!level.mayInteract(player, blockHitPos) || !player.mayUseItemAt(blockHitRelative, blockHitDirection, canisterStack))
+        if (!canPlayerInteract(level, player, hitPos, relativePos, hitDir, canisterStack))
             return InteractionResultHolder.fail(canisterStack);
 
-        BlockState blockHitState = level.getBlockState(blockHitPos);
+        BlockState hitState = level.getBlockState(hitPos);
 
-        if (this.content == Fluids.EMPTY && blockHitState.getBlock() instanceof BucketPickup bucketPickup) {
-            ItemStack filledCanisterStack = pickupBlock(player, level, bucketPickup, blockHitPos, blockHitState);
+        if (isFluidPickupAction(player, hitState))
+            return handleFluidPickup(player, level, canisterStack, hitPos, hitState);
 
-            if (!filledCanisterStack.isEmpty()) {
-                player.awardStat(Stats.ITEM_USED.get(this));
-                bucketPickup.getPickupSound().ifPresent(soundEvent -> player.playSound(soundEvent, 1.0F, 1.0F));
-                level.gameEvent(player, GameEvent.FLUID_PICKUP, blockHitPos);
+        else if (isFluidPlacementAction(player))
+            return handleFluidPlacement(player, level, canisterStack, hitResult, hitPos, hitState, relativePos);
 
-                ItemStack filledCanisterResult = ItemUtils.createFilledResult(canisterStack, player, filledCanisterStack);
+        return InteractionResultHolder.fail(canisterStack);
+    }
 
-                if (!level.isClientSide)
-                    CriteriaTriggers.FILLED_BUCKET.trigger((ServerPlayer)player, filledCanisterStack);
+    private boolean isInvalidHitResult(BlockHitResult hitResult) {
+        return hitResult.getType() == HitResult.Type.MISS || hitResult.getType() != HitResult.Type.BLOCK;
+    }
 
-                return InteractionResultHolder.sidedSuccess(filledCanisterResult, level.isClientSide());
-            }
+    private boolean canPlayerInteract(Level level, Player player, BlockPos hitPos, BlockPos relativePos, Direction hitDir, ItemStack stack) {
+        return level.mayInteract(player, hitPos) && player.mayUseItemAt(relativePos, hitDir, stack);
+    }
 
+    private boolean isFluidPickupAction(Player player, BlockState hitState) {
+        return !player.isShiftKeyDown() && hitState.getBlock() instanceof BucketPickup;
+    }
+
+    private boolean isFluidPlacementAction(Player player) {
+        return player.isShiftKeyDown();
+    }
+
+    private InteractionResultHolder<ItemStack> handleFluidPickup(Player player, Level level, ItemStack canisterStack, BlockPos hitPos, BlockState hitState) {
+        BucketPickup bucketPickup = (BucketPickup) hitState.getBlock();
+        ItemStack filledStack = pickupBlock(player, level, bucketPickup, hitPos, hitState);
+
+        if (!filledStack.isEmpty()) {
+            player.awardStat(Stats.ITEM_USED.get(this));
+            bucketPickup.getPickupSound().ifPresent(sound -> player.playSound(sound, 1.0F, 1.0F));
+            level.gameEvent(player, GameEvent.FLUID_PICKUP, hitPos);
+
+            ItemStack resultStack = ItemUtils.createFilledResult(canisterStack, player, filledStack);
+
+            if (!level.isClientSide)
+                CriteriaTriggers.FILLED_BUCKET.trigger((ServerPlayer) player, filledStack);
+
+            return InteractionResultHolder.sidedSuccess(resultStack, level.isClientSide());
         }
-        else {
-            BlockPos blockPos3 = blockHitState.getBlock() instanceof LiquidBlockContainer && this.content == Fluids.WATER ? blockHitPos : blockHitRelative;
+        return InteractionResultHolder.fail(canisterStack);
+    }
 
-            if (this.emptyContents(player, level, blockPos3, blockHitResult)) {
-                this.checkExtraContent(player, level, canisterStack, blockPos3);
+    private InteractionResultHolder<ItemStack> handleFluidPlacement(Player player, Level level, ItemStack canisterStack, BlockHitResult hitResult, BlockPos hitPos, BlockState hitState, BlockPos relativePos) {
+        BlockPos targetPos = hitState.getBlock() instanceof LiquidBlockContainer && this.content == Fluids.WATER ? hitPos : relativePos;
 
-                if (player instanceof ServerPlayer)
-                    CriteriaTriggers.PLACED_BLOCK.trigger((ServerPlayer)player, blockPos3, canisterStack);
+        if (emptyContents(player, level, targetPos, hitResult)) {
+            checkExtraContent(player, level, canisterStack, targetPos);
 
-                player.awardStat(Stats.ITEM_USED.get(this));
+            if (player instanceof ServerPlayer)
+                CriteriaTriggers.PLACED_BLOCK.trigger((ServerPlayer) player, targetPos, canisterStack);
 
-                ItemStack filledCanisterResult = ItemUtils.createFilledResult(canisterStack, player, getEmptySuccessItem(canisterStack, player));
+            player.awardStat(Stats.ITEM_USED.get(this));
 
-                return InteractionResultHolder.sidedSuccess(filledCanisterResult, level.isClientSide());
-            }
-            else return InteractionResultHolder.fail(canisterStack);
+            ItemStack resultStack = ItemUtils.createFilledResult(canisterStack, player, getEmptySuccessItem(canisterStack, player));
+            return InteractionResultHolder.sidedSuccess(resultStack, level.isClientSide());
         }
+        return InteractionResultHolder.fail(canisterStack);
+    }
 
-        return super.use(level, player, usedHand);
+    public static ItemStack updateContentAmount(ItemStack stack, int amount) {
+        int currentContentAmount = stack.getOrDefault(DataComponents.CANISTER_CONTENT_AMOUNT, 0);
+        int newAmount = Mth.clamp(currentContentAmount + amount, 0, MAX_CONTENT_AMOUNT);
+
+        stack.applyComponents(DataComponentPatch.builder()
+                .set(DataComponents.CANISTER_CONTENT_AMOUNT, newAmount)
+                .build()
+        );
+
+        return stack;
     }
 
     private ItemStack pickupBlock(Player player, Level level, BucketPickup bucketPickup, BlockPos blockPos, BlockState blockState) {

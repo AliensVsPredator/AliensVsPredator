@@ -1,6 +1,7 @@
 package com.avp.common.item;
 
 import com.avp.AVPResources;
+import com.avp.common.component.DataComponents;
 import com.avp.common.item.grenades.GrendeItem;
 import com.avp.common.item.gun.GunData;
 import com.avp.common.item.old_painless.OldPainlessItem;
@@ -251,11 +252,20 @@ public class AVPItems {
     // Tools & Utilities
     public static final Item ARMOR_CASE = register(new ArmorCaseItem(new Item.Properties().stacksTo(1)), "armor_case");
 
-    public static final Item CANISTER = register(new CanisterItem(Fluids.EMPTY, new Item.Properties().stacksTo(16)),"canister");
+    public static final Item CANISTER = register(
+            new CanisterItem(Fluids.EMPTY, new Item.Properties().stacksTo(16)),
+            "canister"
+    );
 
-    public static final Item WATER_CANISTER = register(new CanisterItem(Fluids.WATER, new Item.Properties().stacksTo(1).craftRemainder(CANISTER)), "water_canister");
+    public static final Item WATER_CANISTER = register(
+            new CanisterItem(Fluids.WATER, new Item.Properties().stacksTo(1).craftRemainder(CANISTER).component(DataComponents.CANISTER_CONTENT_AMOUNT, 1)),
+            "water_canister"
+    );
 
-    public static final Item LAVA_CANISTER = register(new CanisterItem(Fluids.LAVA, new Item.Properties().stacksTo(1).craftRemainder(CANISTER)), "lava_canister");
+    public static final Item LAVA_CANISTER = register(
+            new CanisterItem(Fluids.LAVA, new Item.Properties().stacksTo(1).craftRemainder(CANISTER).component(DataComponents.CANISTER_CONTENT_AMOUNT, 1)),
+            "lava_canister"
+    );
 
     public static final Item ROYAL_JELLY_CANISTER = register("royal_jelly_canister");
 
