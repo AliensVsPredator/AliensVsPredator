@@ -112,6 +112,7 @@ public class ItemModelProvider extends FabricModelProvider {
         generateStandardItem(generators, AVPItems.CANISTER);
         generateStandardItem(generators, AVPItems.WATER_CANISTER);
         generateStandardItem(generators, AVPItems.LAVA_CANISTER);
+        generateStandardItem(generators, AVPItems.MILK_CANISTER);
         generateStandardItem(generators, AVPItems.CAPACITOR);
         generateStandardItem(generators, AVPItems.NUCLEAR_BATTERY);
         generateStandardItem(generators, AVPItems.REDSTONE_CRYSTAL);

@@ -267,6 +267,11 @@ public class AVPItems {
             "lava_canister"
     );
 
+    public static final Item MILK_CANISTER = register(
+            new MilkCanisterItem(new Item.Properties().craftRemainder(CANISTER).stacksTo(1).component(DataComponents.CANISTER_CONTENT_AMOUNT, 1)),
+            "milk_canister"
+    );
+
     public static final Item ROYAL_JELLY_CANISTER = register("royal_jelly_canister");
 
     public static final Item STEEL_AXE = register(
