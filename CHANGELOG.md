@@ -20,6 +20,9 @@
 - Fixed Smart Disc duplication for creative players.
 - Fixed irradiated grenade items passively irradiating entities.
 - Fixed z-fighting on predator's mandible membranes.
+- Fixed the following blocks missing the `mineable_with_axe` tag:
+  - Aberrant Resin
+  - Irradiated Resin
 - Fixed the following aberrant aliens being incorrectly marked as irradiated aliens:
   - Aberrant Ovamorph
   - Aberrant Praetorian
@@ -43,6 +46,7 @@
 - Refactor Trades to dedicated class.
 - Removed unnecessary code in RadiatedBlock.java.
 - Cleaned up marine animation code, slightly more optimal.
+- Alphabetically sorted block tag contents.
 
 # v0.0.21-beta
 

@@ -33,33 +33,33 @@ public class AVPBlockTagProvider extends FabricTagProvider.BlockTagProvider {
                 AVPBlocks.CUT_FERROALUMINUM_SLAB,
                 AVPBlocks.CUT_FERROALUMINUM_STAIRS,
                 AVPBlocks.FERROALUMINUM_BLOCK,
+                AVPBlocks.FERROALUMINUM_BUTTON,
                 AVPBlocks.FERROALUMINUM_CHAIN_FENCE,
                 AVPBlocks.FERROALUMINUM_COLUMN,
-                AVPBlocks.FERROALUMINUM_FASTENED_SIDING,
-                AVPBlocks.FERROALUMINUM_FASTENED_STANDING,
-                AVPBlocks.FERROALUMINUM_GRATE,
-                AVPBlocks.FERROALUMINUM_PLATING,
-                AVPBlocks.FERROALUMINUM_SIDING,
-                AVPBlocks.FERROALUMINUM_STANDING,
-                AVPBlocks.FERROALUMINUM_TREAD,
                 AVPBlocks.FERROALUMINUM_DOOR,
-                AVPBlocks.FERROALUMINUM_TRAP_DOOR,
-                AVPBlocks.FERROALUMINUM_PRESSURE_PLATE,
-                AVPBlocks.FERROALUMINUM_BUTTON,
+                AVPBlocks.FERROALUMINUM_FASTENED_SIDING,
                 AVPBlocks.FERROALUMINUM_FASTENED_SIDING_SLAB,
                 AVPBlocks.FERROALUMINUM_FASTENED_SIDING_STAIRS,
+                AVPBlocks.FERROALUMINUM_FASTENED_STANDING,
                 AVPBlocks.FERROALUMINUM_FASTENED_STANDING_SLAB,
                 AVPBlocks.FERROALUMINUM_FASTENED_STANDING_STAIRS,
+                AVPBlocks.FERROALUMINUM_GRATE,
                 AVPBlocks.FERROALUMINUM_GRATE_SLAB,
                 AVPBlocks.FERROALUMINUM_GRATE_STAIRS,
+                AVPBlocks.FERROALUMINUM_PLATING,
                 AVPBlocks.FERROALUMINUM_PLATING_SLAB,
                 AVPBlocks.FERROALUMINUM_PLATING_STAIRS,
+                AVPBlocks.FERROALUMINUM_PRESSURE_PLATE,
+                AVPBlocks.FERROALUMINUM_SIDING,
                 AVPBlocks.FERROALUMINUM_SIDING_SLAB,
                 AVPBlocks.FERROALUMINUM_SIDING_STAIRS,
                 AVPBlocks.FERROALUMINUM_SLAB,
                 AVPBlocks.FERROALUMINUM_STAIRS,
+                AVPBlocks.FERROALUMINUM_STANDING,
                 AVPBlocks.FERROALUMINUM_STANDING_SLAB,
                 AVPBlocks.FERROALUMINUM_STANDING_STAIRS,
+                AVPBlocks.FERROALUMINUM_TRAP_DOOR,
+                AVPBlocks.FERROALUMINUM_TREAD,
                 AVPBlocks.FERROALUMINUM_TREAD_SLAB,
                 AVPBlocks.FERROALUMINUM_TREAD_STAIRS
             );
@@ -150,18 +150,26 @@ public class AVPBlockTagProvider extends FabricTagProvider.BlockTagProvider {
             );
 
         getOrCreateTagBuilder(AVPBlockTags.RESIN)
-            .addTag(AVPBlockTags.NETHER_RESIN)
-            .addTag(AVPBlockTags.NORMAL_RESIN)
             .addTag(AVPBlockTags.ABERRANT_RESIN)
+            .addTag(AVPBlockTags.CRAFTED_RESIN)
             .addTag(AVPBlockTags.IRRADIATED_RESIN)
-            .addTag(AVPBlockTags.CRAFTED_RESIN);
+            .addTag(AVPBlockTags.NETHER_RESIN)
+            .addTag(AVPBlockTags.NORMAL_RESIN);
 
         getOrCreateTagBuilder(AVPBlockTags.RESIN_VEINS)
             .add(
-                AVPBlocks.NETHER_RESIN_VEIN,
-                AVPBlocks.RESIN_VEIN,
                 AVPBlocks.ABERRANT_RESIN_VEIN,
-                AVPBlocks.IRRADIATED_RESIN_VEIN
+                AVPBlocks.IRRADIATED_RESIN_VEIN,
+                AVPBlocks.NETHER_RESIN_VEIN,
+                AVPBlocks.RESIN_VEIN
+            );
+
+        getOrCreateTagBuilder(AVPBlockTags.RESIN_WEBS)
+            .add(
+                AVPBlocks.ABERRANT_RESIN_WEB,
+                AVPBlocks.IRRADIATED_RESIN_WEB,
+                AVPBlocks.NETHER_RESIN_WEB,
+                AVPBlocks.RESIN_WEB
             );
 
         getOrCreateTagBuilder(AVPBlockTags.STEEL)
@@ -172,8 +180,10 @@ public class AVPBlockTagProvider extends FabricTagProvider.BlockTagProvider {
                 AVPBlocks.CUT_STEEL_STAIRS,
                 AVPBlocks.STEEL_BARS,
                 AVPBlocks.STEEL_BLOCK,
+                AVPBlocks.STEEL_BUTTON,
                 AVPBlocks.STEEL_CHAIN_FENCE,
                 AVPBlocks.STEEL_COLUMN,
+                AVPBlocks.STEEL_DOOR,
                 AVPBlocks.STEEL_FASTENED_SIDING,
                 AVPBlocks.STEEL_FASTENED_SIDING_SLAB,
                 AVPBlocks.STEEL_FASTENED_SIDING_STAIRS,
@@ -195,12 +205,10 @@ public class AVPBlockTagProvider extends FabricTagProvider.BlockTagProvider {
                 AVPBlocks.STEEL_STANDING,
                 AVPBlocks.STEEL_STANDING_SLAB,
                 AVPBlocks.STEEL_STANDING_STAIRS,
+                AVPBlocks.STEEL_TRAP_DOOR,
                 AVPBlocks.STEEL_TREAD,
                 AVPBlocks.STEEL_TREAD_SLAB,
-                AVPBlocks.STEEL_TREAD_STAIRS,
-                AVPBlocks.STEEL_BUTTON,
-                AVPBlocks.STEEL_DOOR,
-                AVPBlocks.STEEL_TRAP_DOOR
+                AVPBlocks.STEEL_TREAD_STAIRS
             );
 
         getOrCreateTagBuilder(AVPBlockTags.TITANIUM)
@@ -209,9 +217,13 @@ public class AVPBlockTagProvider extends FabricTagProvider.BlockTagProvider {
                 AVPBlocks.CUT_TITANIUM,
                 AVPBlocks.CUT_TITANIUM_SLAB,
                 AVPBlocks.CUT_TITANIUM_STAIRS,
+                AVPBlocks.DEEPSLATE_TITANIUM_ORE,
+                AVPBlocks.RAW_TITANIUM_BLOCK,
                 AVPBlocks.TITANIUM_BLOCK,
+                AVPBlocks.TITANIUM_BUTTON,
                 AVPBlocks.TITANIUM_CHAIN_FENCE,
                 AVPBlocks.TITANIUM_COLUMN,
+                AVPBlocks.TITANIUM_DOOR,
                 AVPBlocks.TITANIUM_FASTENED_SIDING,
                 AVPBlocks.TITANIUM_FASTENED_SIDING_SLAB,
                 AVPBlocks.TITANIUM_FASTENED_SIDING_STAIRS,
@@ -233,14 +245,10 @@ public class AVPBlockTagProvider extends FabricTagProvider.BlockTagProvider {
                 AVPBlocks.TITANIUM_STANDING,
                 AVPBlocks.TITANIUM_STANDING_SLAB,
                 AVPBlocks.TITANIUM_STANDING_STAIRS,
+                AVPBlocks.TITANIUM_TRAP_DOOR,
                 AVPBlocks.TITANIUM_TREAD,
                 AVPBlocks.TITANIUM_TREAD_SLAB,
-                AVPBlocks.TITANIUM_TREAD_STAIRS,
-                AVPBlocks.TITANIUM_BUTTON,
-                AVPBlocks.TITANIUM_DOOR,
-                AVPBlocks.TITANIUM_TRAP_DOOR,
-                AVPBlocks.DEEPSLATE_TITANIUM_ORE,
-                AVPBlocks.RAW_TITANIUM_BLOCK
+                AVPBlocks.TITANIUM_TREAD_STAIRS
             );
 
         // Acid-immune blocks
@@ -265,24 +273,24 @@ public class AVPBlockTagProvider extends FabricTagProvider.BlockTagProvider {
             .add(
                 Blocks.BARRIER,
                 Blocks.BEDROCK,
+                Blocks.CHAIN_COMMAND_BLOCK,
+                Blocks.COMMAND_BLOCK,
+                Blocks.END_GATEWAY,
                 Blocks.END_PORTAL,
                 Blocks.END_PORTAL_FRAME,
-                Blocks.END_GATEWAY,
-                Blocks.COMMAND_BLOCK,
-                Blocks.REPEATING_COMMAND_BLOCK,
-                Blocks.CHAIN_COMMAND_BLOCK,
-                Blocks.STRUCTURE_BLOCK,
                 Blocks.JIGSAW,
-                Blocks.MOVING_PISTON,
                 Blocks.LIGHT,
-                Blocks.REINFORCED_DEEPSLATE
+                Blocks.MOVING_PISTON,
+                Blocks.REINFORCED_DEEPSLATE,
+                Blocks.REPEATING_COMMAND_BLOCK,
+                Blocks.STRUCTURE_BLOCK
             );
 
         getOrCreateTagBuilder(AVPBlockTags.XENOMORPH_IMMUNE)
-            .addTag(AVPBlockTags.SHOULD_NOT_BE_DESTROYED)
             .addTag(AVPBlockTags.INDUSTRIAL_CONCRETE)
             .addTag(AVPBlockTags.INDUSTRIAL_GLASS)
-            .addTag(AVPBlockTags.PLASTIC);
+            .addTag(AVPBlockTags.PLASTIC)
+            .addTag(AVPBlockTags.SHOULD_NOT_BE_DESTROYED);
 
         getOrCreateTagBuilder(BlockTags.CLIMBABLE)
             .add(
@@ -293,14 +301,11 @@ public class AVPBlockTagProvider extends FabricTagProvider.BlockTagProvider {
 
         getOrCreateTagBuilder(BlockTags.MINEABLE_WITH_AXE)
             .addTag(AVPBlockTags.RESIN_VEINS)
+            .addTag(AVPBlockTags.RESIN_WEBS)
             .add(
-                AVPBlocks.BLUEPRINT_BLOCK,
-                AVPBlocks.NETHER_RESIN_WEB,
-                AVPBlocks.RESIN_WEB,
                 AVPBlocks.ABERRANT_RESIN,
-                AVPBlocks.ABERRANT_RESIN_WEB,
-                AVPBlocks.IRRADIATED_RESIN,
-                AVPBlocks.IRRADIATED_RESIN_WEB
+                AVPBlocks.BLUEPRINT_BLOCK,
+                AVPBlocks.IRRADIATED_RESIN
             );
 
         getOrCreateTagBuilder(BlockTags.MINEABLE_WITH_PICKAXE)
@@ -313,45 +318,45 @@ public class AVPBlockTagProvider extends FabricTagProvider.BlockTagProvider {
             .addTag(AVPBlockTags.STEEL)
             .addTag(AVPBlockTags.TITANIUM)
             .add(
-                AVPBlocks.INDUSTRIAL_FURNACE,
-                AVPBlocks.NUKE_BLOCK,
-                AVPBlocks.DESK_TERMINAL_BLOCK,
-                AVPBlocks.TRIP_MINE_BLOCK,
-                AVPBlocks.REDSTONE_GENERATOR,
-                AVPBlocks.RESONATOR_BLOCK,
-                AVPBlocks.SENTRY_TURRET,
-                AVPBlocks.TRINITITE_BLOCK,
+                AVPBlocks.ABERRANT_RESIN,
+                AVPBlocks.ABERRANT_RESIN_NODE,
                 AVPBlocks.ALUMINUM_BLOCK,
+                AVPBlocks.AMMO_CHEST,
                 AVPBlocks.AUTUNITE_BLOCK,
                 AVPBlocks.AUTUNITE_ORE,
                 AVPBlocks.BAUXITE_ORE,
                 AVPBlocks.BRASS_BLOCK,
                 AVPBlocks.DEEPSLATE_TITANIUM_ORE,
                 AVPBlocks.DEEPSLATE_ZINC_ORE,
+                AVPBlocks.DESK_TERMINAL_BLOCK,
                 AVPBlocks.GALENA_ORE,
+                AVPBlocks.INDUSTRIAL_FURNACE,
+                AVPBlocks.IRRADIATED_RESIN,
+                AVPBlocks.IRRADIATED_RESIN_NODE,
                 AVPBlocks.LEAD_BLOCK,
                 AVPBlocks.LEAD_CHEST,
-                AVPBlocks.AMMO_CHEST,
                 AVPBlocks.LITHIUM_BLOCK,
                 AVPBlocks.LITHIUM_ORE,
                 AVPBlocks.MONAZITE_ORE,
                 AVPBlocks.NETHER_RESIN,
                 AVPBlocks.NETHER_RESIN_NODE,
-                AVPBlocks.IRRADIATED_RESIN,
-                AVPBlocks.IRRADIATED_RESIN_NODE,
-                AVPBlocks.ABERRANT_RESIN,
-                AVPBlocks.ABERRANT_RESIN_NODE,
+                AVPBlocks.NUKE_BLOCK,
                 AVPBlocks.RAW_BAUXITE_BLOCK,
                 AVPBlocks.RAW_GALENA_BLOCK,
                 AVPBlocks.RAW_MONAZITE_BLOCK,
                 AVPBlocks.RAW_SILICA_BLOCK,
                 AVPBlocks.RAW_ZINC_BLOCK,
+                AVPBlocks.REDSTONE_GENERATOR,
                 AVPBlocks.RESIN,
                 AVPBlocks.RESIN_NODE,
                 AVPBlocks.RESIN_BRICKS,
                 AVPBlocks.RESIN_O,
                 AVPBlocks.RESIN_RIBBED,
                 AVPBlocks.RESIN_SMOOTH,
+                AVPBlocks.RESONATOR_BLOCK,
+                AVPBlocks.SENTRY_TURRET,
+                AVPBlocks.TRINITITE_BLOCK,
+                AVPBlocks.TRIP_MINE_BLOCK,
                 AVPBlocks.URANIUM_BLOCK,
                 AVPBlocks.ZINC_BLOCK,
                 AVPBlocks.ZINC_ORE
@@ -359,8 +364,8 @@ public class AVPBlockTagProvider extends FabricTagProvider.BlockTagProvider {
 
         getOrCreateTagBuilder(BlockTags.MINEABLE_WITH_SHOVEL)
             .add(
-                AVPBlocks.SILICA_GRAVEL,
-                AVPBlocks.ASH_BLOCK
+                AVPBlocks.ASH_BLOCK,
+                AVPBlocks.SILICA_GRAVEL
             );
 
         getOrCreateTagBuilder(BlockTags.NEEDS_STONE_TOOL)
@@ -369,8 +374,8 @@ public class AVPBlockTagProvider extends FabricTagProvider.BlockTagProvider {
             .addTag(AVPBlockTags.PLASTIC)
             .addTag(AVPBlockTags.RESIN)
             .add(
-                AVPBlocks.BLUEPRINT_BLOCK,
                 AVPBlocks.BAUXITE_ORE,
+                AVPBlocks.BLUEPRINT_BLOCK,
                 AVPBlocks.GALENA_ORE,
                 AVPBlocks.RAW_BAUXITE_BLOCK
             );
@@ -381,19 +386,19 @@ public class AVPBlockTagProvider extends FabricTagProvider.BlockTagProvider {
             .addTag(AVPBlockTags.STEEL)
             .addTag(AVPBlockTags.TITANIUM)
             .add(
-                AVPBlocks.INDUSTRIAL_FURNACE,
-                AVPBlocks.NUKE_BLOCK,
-                AVPBlocks.SENTRY_TURRET,
-                AVPBlocks.DESK_TERMINAL_BLOCK,
-                AVPBlocks.REDSTONE_GENERATOR,
-                AVPBlocks.TRIP_MINE_BLOCK,
-                AVPBlocks.RESONATOR_BLOCK,
-                AVPBlocks.TRINITITE_BLOCK,
+                AVPBlocks.AMMO_CHEST,
                 AVPBlocks.DEEPSLATE_TITANIUM_ORE,
-                AVPBlocks.RAW_TITANIUM_BLOCK,
-                AVPBlocks.URANIUM_BLOCK,
+                AVPBlocks.DESK_TERMINAL_BLOCK,
+                AVPBlocks.INDUSTRIAL_FURNACE,
                 AVPBlocks.LEAD_CHEST,
-                AVPBlocks.AMMO_CHEST
+                AVPBlocks.NUKE_BLOCK,
+                AVPBlocks.RAW_TITANIUM_BLOCK,
+                AVPBlocks.REDSTONE_GENERATOR,
+                AVPBlocks.RESONATOR_BLOCK,
+                AVPBlocks.SENTRY_TURRET,
+                AVPBlocks.TRINITITE_BLOCK,
+                AVPBlocks.TRIP_MINE_BLOCK,
+                AVPBlocks.URANIUM_BLOCK
             );
 
         var slabTagProvider = getOrCreateTagBuilder(BlockTags.SLABS);
@@ -521,11 +526,11 @@ public class AVPBlockTagProvider extends FabricTagProvider.BlockTagProvider {
         AVPBlocks.DYE_COLOR_TO_INDUSTRIAL_CONCRETE_WALL.values().forEach(wallTagBuilder::add);
 
         getOrCreateTagBuilder(AVPBlockTags.MARINE_SPAWN_BLOCKS).add(
+            AVPBlocks.DYE_COLOR_TO_PANEL_PADDING.get(DyeColor.BLACK),
             Blocks.DIRT_PATH,
             AVPBlocks.FERROALUMINUM_TREAD,
-            AVPBlocks.TITANIUM_TREAD,
             AVPBlocks.STEEL_TREAD,
-            AVPBlocks.DYE_COLOR_TO_PANEL_PADDING.get(DyeColor.BLACK)
+            AVPBlocks.TITANIUM_TREAD
         );
 
         addCompatibilityTags();
