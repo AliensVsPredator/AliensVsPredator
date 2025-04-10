@@ -14,6 +14,7 @@
 - Cut nuke's default block sample count in half to improve performance.
 
 ## 🐞 Fixes
+- Fixed damage source instances being allocated every radiation effect tick.
 - Fixed marine's head being slightly tilted.
 - Fixed trinitite blocks having broken transparency.
 - Fixed irradiated praetorians having incorrect textures.
