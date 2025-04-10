@@ -292,11 +292,10 @@ public class AVPBlockTagProvider extends FabricTagProvider.BlockTagProvider {
             );
 
         getOrCreateTagBuilder(BlockTags.MINEABLE_WITH_AXE)
+            .addTag(AVPBlockTags.RESIN_VEINS)
             .add(
                 AVPBlocks.BLUEPRINT_BLOCK,
-                AVPBlocks.NETHER_RESIN_VEIN,
                 AVPBlocks.NETHER_RESIN_WEB,
-                AVPBlocks.RESIN_VEIN,
                 AVPBlocks.RESIN_WEB,
                 AVPBlocks.ABERRANT_RESIN,
                 AVPBlocks.ABERRANT_RESIN_WEB,
