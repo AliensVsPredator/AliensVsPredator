@@ -53,7 +53,7 @@ public class CanisterItem extends Item implements DispensibleContainerItem {
         int currentContentAmount = stack.getOrDefault(DataComponents.CANISTER_CONTENT_AMOUNT, 0);
         if (currentContentAmount == 0) return;
 
-        tooltipComponents.add(Component.literal("Content Amount: " + currentContentAmount));
+        tooltipComponents.add(Component.translatable("tooltip.avp.capacity").append(currentContentAmount + "/" + MAX_CONTENT_AMOUNT));
     }
 
     @Override

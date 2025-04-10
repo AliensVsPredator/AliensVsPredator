@@ -559,6 +559,7 @@ public class EnglishLanguageProvider extends FabricLanguageProvider {
         translationBuilder.add("tooltip.avp.fire_rate", "Fire Rate: ");
         translationBuilder.add("tooltip.avp.knockback", "Knockback: ");
         translationBuilder.add("tooltip.avp.recoil", "Recoil: ");
+        translationBuilder.add("tooltip.avp.capacity", "Capacity: ");
 
         // Keybinds
         translationBuilder.add("key.avp.reload", "Reload");
