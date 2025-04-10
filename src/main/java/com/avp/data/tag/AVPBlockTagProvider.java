@@ -26,6 +26,24 @@ public class AVPBlockTagProvider extends FabricTagProvider.BlockTagProvider {
         AVPBlocks.DYE_COLOR_TO_CONCRETE_SLAB.values().forEach(concreteTagBuilder::add);
         AVPBlocks.DYE_COLOR_TO_CONCRETE_STAIRS.values().forEach(concreteTagBuilder::add);
 
+        getOrCreateTagBuilder(AVPBlockTags.SHOULD_NOT_BE_DESTROYED)
+            .addOptionalTag(BlockTags.FEATURES_CANNOT_REPLACE)
+            .add(
+                Blocks.BARRIER,
+                Blocks.BEDROCK,
+                Blocks.CHAIN_COMMAND_BLOCK,
+                Blocks.COMMAND_BLOCK,
+                Blocks.END_GATEWAY,
+                Blocks.END_PORTAL,
+                Blocks.END_PORTAL_FRAME,
+                Blocks.JIGSAW,
+                Blocks.LIGHT,
+                Blocks.MOVING_PISTON,
+                Blocks.REINFORCED_DEEPSLATE,
+                Blocks.REPEATING_COMMAND_BLOCK,
+                Blocks.STRUCTURE_BLOCK
+            );
+
         getOrCreateTagBuilder(AVPBlockTags.FERROALUMINUM)
             .add(
                 AVPBlocks.CHISELED_FERROALUMINUM,
@@ -253,10 +271,10 @@ public class AVPBlockTagProvider extends FabricTagProvider.BlockTagProvider {
 
         // Acid-immune blocks
         getOrCreateTagBuilder(AVPBlockTags.ACID_IMMUNE)
-            .addOptionalTag(AVPBlockTags.SHOULD_NOT_BE_DESTROYED)
             .addTag(AVPBlockTags.INDUSTRIAL_GLASS)
             .addTag(AVPBlockTags.PLASTIC)
             .addTag(AVPBlockTags.RESIN)
+            .addTag(AVPBlockTags.SHOULD_NOT_BE_DESTROYED)
             .add(Blocks.AIR)
             .add(Blocks.FIRE)
             .add(Blocks.SOUL_FIRE);
@@ -266,25 +284,8 @@ public class AVPBlockTagProvider extends FabricTagProvider.BlockTagProvider {
             .addTag(AVPBlockTags.ACID_IMMUNE);
 
         getOrCreateTagBuilder(AVPBlockTags.IRRADIATED_ACID_IMMUNE)
-            .addTag(AVPBlockTags.IRRADIATED_RESIN);
-
-        getOrCreateTagBuilder(AVPBlockTags.SHOULD_NOT_BE_DESTROYED)
-            .addOptionalTag(BlockTags.FEATURES_CANNOT_REPLACE)
-            .add(
-                Blocks.BARRIER,
-                Blocks.BEDROCK,
-                Blocks.CHAIN_COMMAND_BLOCK,
-                Blocks.COMMAND_BLOCK,
-                Blocks.END_GATEWAY,
-                Blocks.END_PORTAL,
-                Blocks.END_PORTAL_FRAME,
-                Blocks.JIGSAW,
-                Blocks.LIGHT,
-                Blocks.MOVING_PISTON,
-                Blocks.REINFORCED_DEEPSLATE,
-                Blocks.REPEATING_COMMAND_BLOCK,
-                Blocks.STRUCTURE_BLOCK
-            );
+            .addTag(AVPBlockTags.IRRADIATED_RESIN)
+            .addTag(AVPBlockTags.SHOULD_NOT_BE_DESTROYED);
 
         getOrCreateTagBuilder(AVPBlockTags.XENOMORPH_IMMUNE)
             .addTag(AVPBlockTags.INDUSTRIAL_CONCRETE)

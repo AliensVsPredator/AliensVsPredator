@@ -21,6 +21,23 @@
 - Fixed Smart Disc duplication for creative players.
 - Fixed irradiated grenade items passively irradiating entities.
 - Fixed z-fighting on predator's mandible membranes.
+- Fixed irradiated acid replacing the following blocks:
+  - Barrier Block
+  - Bedrock
+  - Chain Command Block
+  - Chest
+  - End Gateway
+  - End Portal
+  - End Portal Frame
+  - Jigsaw Block
+  - Light Block
+  - Moving Piston Block
+  - Reinforced Deepslate
+  - Repeating Command Block
+  - Spawner Block
+  - Structure Block
+  - Trial Spawner Block
+  - Vault Block
 - Fixed the following blocks showing in creative tabs when they shouldn't:
   - Aberrant Resin Node
   - Irradiated Resin Node
