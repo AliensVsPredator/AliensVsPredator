@@ -29,21 +29,24 @@ public abstract class MixinCow_FillMilkCanister extends Animal {
     private void mobInteractMixin(Player player, InteractionHand hand, CallbackInfoReturnable<InteractionResult> cir) {
         ItemStack itemStack = player.getItemInHand(hand);
 
-        if (itemStack.is(AVPItems.CANISTER) || itemStack.is(AVPItems.MILK_CANISTER) && !this.isBaby()) {
+        if (itemStack.is(AVPItems.CANISTER) || (itemStack.is(AVPItems.MILK_CANISTER) && !this.isBaby())) {
+            int contentAmount = itemStack.getOrDefault(DataComponents.CANISTER_CONTENT_AMOUNT, 0);
 
-            if (itemStack.getOrDefault(DataComponents.CANISTER_CONTENT_AMOUNT, 0) == 0) {
-                player.playSound(SoundEvents.COW_MILK, 1.0F, 1.0F);
-                player.setItemInHand(hand, ItemUtils.createFilledResult(itemStack, player, AVPItems.MILK_CANISTER.getDefaultInstance()));
-                cir.setReturnValue(InteractionResult.sidedSuccess(this.level().isClientSide));
+            ItemStack updatedStack;
+            if (contentAmount == 0)
+                updatedStack = ItemUtils.createFilledResult(itemStack, player, AVPItems.MILK_CANISTER.getDefaultInstance());
+
+            else if (contentAmount < 8)
+                updatedStack = CanisterItem.updateContentAmount(itemStack, 1);
+
+            else {
+                cir.setReturnValue(InteractionResult.PASS);
+                return;
             }
 
-            else if (itemStack.getOrDefault(DataComponents.CANISTER_CONTENT_AMOUNT, 0) < 8) {
-                player.playSound(SoundEvents.COW_MILK, 1.0F, 1.0F);
-                player.setItemInHand(hand, CanisterItem.updateContentAmount(itemStack, 1));
-                cir.setReturnValue(InteractionResult.sidedSuccess(this.level().isClientSide));
-            }
-
-            else cir.setReturnValue(InteractionResult.PASS);
+            player.playSound(SoundEvents.COW_MILK, 1.0F, 1.0F);
+            player.setItemInHand(hand, updatedStack);
+            cir.setReturnValue(InteractionResult.sidedSuccess(this.level().isClientSide));
         }
     }
 }
