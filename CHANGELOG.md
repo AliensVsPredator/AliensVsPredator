@@ -20,9 +20,14 @@
 - Fixed Smart Disc duplication for creative players.
 - Fixed irradiated grenade items passively irradiating entities.
 - Fixed z-fighting on predator's mandible membranes.
+- Fixed the following blocks showing in creative tabs when they shouldn't:
+  - Aberrant Resin Node
+  - Irradiated Resin Node
+  - Nether Resin Node
+  - Resin Node
 - Fixed the following blocks missing the `mineable_with_axe` tag:
-  - Aberrant Resin
-  - Irradiated Resin
+  - Aberrant Resin Vein
+  - Irradiated Resin Vein
 - Fixed the following aberrant aliens being incorrectly marked as irradiated aliens:
   - Aberrant Ovamorph
   - Aberrant Praetorian
