@@ -8,13 +8,17 @@ import com.avp.AVPResources;
 
 public class AVPItemTags {
 
+    public static final TagKey<Item> ACID_IMMUNE = create("acid_immune");
+
+    public static final TagKey<Item> AMMO_ITEMS = create("ammo_items");
+
     public static final TagKey<Item> FACEHUGGER_PROTECTION_HELMET = create("facehugger_protection_helmet");
 
     public static final TagKey<Item> HOSTILE_WEAPON = create("hostile_weapon");
 
-    public static final TagKey<Item> ACID_IMMUNE = create("acid_immune");
-
     public static final TagKey<Item> DECORATIVE_POT_SHERDS = create("decorative_pot_sherds");
+
+    public static final TagKey<Item> FIRE_RESISTANT_ARMOR = create("fire_resistant_armor");
 
     public static final TagKey<Item> GUNS = create("guns");
 
@@ -28,15 +32,25 @@ public class AVPItemTags {
 
     public static final TagKey<Item> IRON_INGOT_LIKE = create("iron_ingot_like");
 
+    public static final TagKey<Item> JUNGLE_PREDATOR_ARMOR = create("jungle_predator_armor");
+
     public static final TagKey<Item> LITHIUM = create("lithium");
 
-    public static final TagKey<Item> RADIATION_RESISTANT_ARMOR = create("radiation_resistant_armor");
+    public static final TagKey<Item> MK50_ARMOR = create("mk50_armor");
+
+    public static final TagKey<Item> NETHER_CHITIN_ARMOR = create("nether_chitin_armor");
+
+    public static final TagKey<Item> PLATED_NETHER_CHITIN_ARMOR = create("plated_nether_chitin_armor");
+
+    public static final TagKey<Item> PREDATOR_ARMOR = create("predator_armor");
+
+    public static final TagKey<Item> PRESSURE_ARMOR = create("pressure_armor");
 
     public static final TagKey<Item> RADIATION_CURE_ITEMS = create("radiation_cure_items");
 
-    public static final TagKey<Item> RADIATION_ITEMS = create("radiation_items");
+    public static final TagKey<Item> RADIATION_RESISTANT_ARMOR = create("radiation_resistant_armor");
 
-    public static final TagKey<Item> AMMO_ITEMS = create("ammo_items");
+    public static final TagKey<Item> RADIATION_ITEMS = create("radiation_items");
 
     private static TagKey<Item> create(String name) {
         return TagKey.create(Registries.ITEM, AVPResources.location(name));

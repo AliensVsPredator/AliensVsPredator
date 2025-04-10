@@ -36,6 +36,57 @@ public class AVPItemTagProvider extends FabricTagProvider.ItemTagProvider {
                 ArmorItems.MK50_BOOTS
             );
 
+        getOrCreateTagBuilder(AVPItemTags.JUNGLE_PREDATOR_ARMOR)
+            .add(
+                ArmorItems.JUNGLE_PREDATOR_BOOTS,
+                ArmorItems.JUNGLE_PREDATOR_CHESTPLATE,
+                ArmorItems.JUNGLE_PREDATOR_HELMET,
+                ArmorItems.JUNGLE_PREDATOR_LEGGINGS
+            );
+
+        getOrCreateTagBuilder(AVPItemTags.MK50_ARMOR)
+            .add(
+                ArmorItems.MK50_BOOTS,
+                ArmorItems.MK50_CHESTPLATE,
+                ArmorItems.MK50_HELMET,
+                ArmorItems.MK50_LEGGINGS
+            );
+
+        getOrCreateTagBuilder(AVPItemTags.NETHER_CHITIN_ARMOR)
+            .add(
+                ArmorItems.NETHER_CHITIN_BOOTS,
+                ArmorItems.NETHER_CHITIN_CHESTPLATE,
+                ArmorItems.NETHER_CHITIN_HELMET,
+                ArmorItems.NETHER_CHITIN_LEGGINGS
+            );
+
+        getOrCreateTagBuilder(AVPItemTags.PLATED_NETHER_CHITIN_ARMOR)
+            .add(
+                ArmorItems.PLATED_NETHER_CHITIN_BOOTS,
+                ArmorItems.PLATED_NETHER_CHITIN_CHESTPLATE,
+                ArmorItems.PLATED_NETHER_CHITIN_HELMET,
+                ArmorItems.PLATED_NETHER_CHITIN_LEGGINGS
+            );
+
+        getOrCreateTagBuilder(AVPItemTags.PRESSURE_ARMOR)
+            .add(
+                ArmorItems.PRESSURE_BOOTS,
+                ArmorItems.PRESSURE_CHESTPLATE,
+                ArmorItems.PRESSURE_HELMET,
+                ArmorItems.PRESSURE_LEGGINGS
+            );
+
+        // Start composite tags
+
+        getOrCreateTagBuilder(AVPItemTags.FIRE_RESISTANT_ARMOR)
+            .addTag(AVPItemTags.NETHER_CHITIN_ARMOR)
+            .addTag(AVPItemTags.PLATED_NETHER_CHITIN_ARMOR);
+
+        getOrCreateTagBuilder(AVPItemTags.PREDATOR_ARMOR)
+            .addTag(AVPItemTags.JUNGLE_PREDATOR_ARMOR);
+
+        // End composite tags
+
         getOrCreateTagBuilder(AVPItemTags.RADIATION_ITEMS)
             .add(
                 AVPItems.AUTUNITE_DUST,

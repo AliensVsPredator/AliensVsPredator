@@ -25,7 +25,7 @@
   - Irradiated Resin Node
   - Nether Resin Node
   - Resin Node
-- Fixed the following blocks missing the `mineable_with_axe` tag:
+- Fixed the following blocks missing the `#minecraft:mineable_with_axe` tag:
   - Aberrant Resin Vein
   - Irradiated Resin Vein
 - Fixed the following aberrant aliens being incorrectly marked as irradiated aliens:
@@ -44,6 +44,15 @@
 - Added `#minecraft:undead` tag to `#avp:radiation_resistant` tag.
 - Added `#avp:has_desert_altar` biome tag.
 - `#avp:has_altar` biome tag is now composed of `#avp:has_badlands_altar` and `#avp:has_desert_altar`.
+- Added `#avp:jungle_predator_armor` item tag.
+- Added `#avp:mk50_armor` item tag.
+- Added `#avp:nether_chitin_armor` item tag.
+- Added `#avp:plated_nether_chitin_armor` item tag.
+- Added `#avp:pressure_armor` item tag.
+- Added `#avp:fire_resistant_armor` item tag.
+  - Composed of `#avp:nether_chitin_armor` and `#avp:plated_nether_chitin_armor` item tags.
+- Added `#avp:predator_armor` item tag (future-proofing).
+  - Composed of `#avp:jungle_predator_armor` item tag.
 
 ## 🔬 Technical Changes
 - Refactor smart disc return to owner code.
