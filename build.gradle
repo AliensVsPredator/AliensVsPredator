@@ -55,7 +55,7 @@ dependencies {
 	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 
-	implementation 'com.github.bvanseg:just:-SNAPSHOT'
+	implementation "com.github.bvanseg:just:${project.just_version}"
 
 	modImplementation "mod.azure.azurelib:azurelib-fabric-${project.minecraft_version}:${project.azurelib_version}"
 
