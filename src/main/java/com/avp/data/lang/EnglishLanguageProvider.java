@@ -1,6 +1,5 @@
 package com.avp.data.lang;
 
-import com.avp.AVP;
 import com.avp.common.block.AVPBlocks;
 import com.avp.common.creative_mode_tab.CreativeModeTabs;
 import com.avp.common.entity.type.AVPEntityTypes;
@@ -454,6 +453,7 @@ public class EnglishLanguageProvider extends FabricLanguageProvider {
         translationBuilder.add(AVPItems.WATER_CANISTER, "Water Canister");
         translationBuilder.add(AVPItems.LAVA_CANISTER, "Lava Canister");
         translationBuilder.add(AVPItems.MILK_CANISTER, "Milk Canister");
+        translationBuilder.add(AVPItems.POWDER_SNOW_CANISTER, "Powder Snow Canister");
         translationBuilder.add(AVPItems.ROYAL_JELLY_CANISTER, "Royal Jelly Canister");
         translationBuilder.add(AVPItems.STEEL_AXE, "Steel Axe");
         translationBuilder.add(AVPItems.STEEL_HOE, "Steel Hoe");

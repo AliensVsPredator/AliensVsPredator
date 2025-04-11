@@ -82,15 +82,15 @@ public class CanisterItem extends Item implements DispensibleContainerItem {
         return InteractionResultHolder.fail(canisterStack);
     }
 
-    private boolean isInvalidHitResult(BlockHitResult hitResult) {
+    public static boolean isInvalidHitResult(BlockHitResult hitResult) {
         return hitResult.getType() == HitResult.Type.MISS || hitResult.getType() != HitResult.Type.BLOCK;
     }
 
-    private boolean canPlayerInteract(Level level, Player player, BlockPos hitPos, BlockPos relativePos, Direction hitDir, ItemStack stack) {
+    public static boolean canPlayerInteract(Level level, Player player, BlockPos hitPos, BlockPos relativePos, Direction hitDir, ItemStack stack) {
         return level.mayInteract(player, hitPos) && player.mayUseItemAt(relativePos, hitDir, stack);
     }
 
-    private boolean isFluidPickupAction(Player player, BlockState hitState) {
+    public static boolean isFluidPickupAction(Player player, BlockState hitState) {
         return !player.isShiftKeyDown() && hitState.getBlock() instanceof BucketPickup;
     }
 
@@ -167,6 +167,9 @@ public class CanisterItem extends Item implements DispensibleContainerItem {
 
             else if (bucketItem.is(Items.LAVA_BUCKET))
                 return new ItemStack(AVPItems.LAVA_CANISTER);
+
+            else if (bucketItem.is(Items.POWDER_SNOW_BUCKET))
+                return new ItemStack(AVPItems.POWDER_SNOW_CANISTER);
         }
 
         return canisterStack;
