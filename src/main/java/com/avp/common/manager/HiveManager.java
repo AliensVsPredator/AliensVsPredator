@@ -1,6 +1,8 @@
 package com.avp.common.manager;
 
+import com.bvanseg.just.functional.option.Option;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.util.Tuple;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.UUID;
@@ -19,10 +21,11 @@ public class HiveManager {
 
     private final Alien alien;
 
-    private Hive hive;
+    private Option<Hive> hiveOption;
 
     public HiveManager(Alien alien) {
         this.alien = alien;
+        this.hiveOption = Option.none();
     }
 
     public void tick() {
@@ -32,41 +35,33 @@ public class HiveManager {
             return;
         }
 
-        if (hive == null && alien.tickCount % (20 * 10) == 0) {
-            var hiveLevelDataOptional = HiveLevelData.getOrCreate(level);
+        if (hiveOption.isNone() && alien.tickCount % (20 * 10) == 0) {
+            HiveLevelData.getOrCreate(level)
+                .map(hiveLevelData -> new Tuple<>(hiveLevelData, hiveLevelData.findNearestHive(alien.blockPosition())))
+                .ifSome(tuple -> {
+                    var hiveLevelData = tuple.getA();
 
-            hiveLevelDataOptional.ifPresent(hiveLevelData -> {
-                var nearestHiveOptional = hiveLevelData.findNearestHive(alien.blockPosition());
+                    tuple.getB()
+                        .inspect(nearestHive -> {
+                            var joinedHiveSuccessfully = nearestHive.requestToJoin(alien);
 
-                if (nearestHiveOptional.isEmpty()) {
-                    tryCreateAndAssignHive(hiveLevelData, null);
-                    return;
-                }
-
-                var nearestHive = nearestHiveOptional.get();
-
-                var joinedHiveSuccessfully = nearestHive.requestToJoin(alien);
-
-                if (joinedHiveSuccessfully) {
-                    hive = nearestHive;
-                } else {
-                    tryCreateAndAssignHive(hiveLevelData, nearestHive);
-                }
-            });
+                            if (joinedHiveSuccessfully) {
+                                this.hiveOption = Option.some(nearestHive);
+                            } else {
+                                tryCreateAndAssignHive(hiveLevelData, nearestHive);
+                            }
+                        })
+                        .ifNone(() -> tryCreateAndAssignHive(hiveLevelData, null));
+                });
         }
 
         // TODO: hasHiveLeader should change once we have actual strength comparisons.
-        if (hive != null) {
-
-            if (!hive.isAlive()) {
-                hive = null;
-                return;
-            }
-
-            if (alien.tickCount % (20 * 30) == 0) {
-                hive.ping(alien);
-            }
-        }
+        hiveOption = hiveOption.filter(Hive::isAlive)
+            .inspect(hive -> {
+                if (alien.tickCount % (20 * 30) == 0) {
+                    hive.ping(alien);
+                }
+            });
     }
 
     private void tryCreateAndAssignHive(HiveLevelData hiveLevelData, @Nullable Hive nearestHive) {
@@ -77,7 +72,7 @@ public class HiveManager {
             var newHive = hiveLevelData.createHive();
             newHive.moveCenter(alien.blockPosition());
             newHive.ping(alien);
-            hive = newHive;
+            hiveOption = Option.some(newHive);
             return;
         }
 
@@ -96,34 +91,32 @@ public class HiveManager {
         var newHive = hiveLevelData.createHive();
         newHive.moveCenter(alien.blockPosition());
         newHive.ping(alien);
-        hive = newHive;
+        hiveOption = Option.some(newHive);
     }
 
     public void load(CompoundTag compoundTag) {
-        var hiveDataOptional = HiveLevelData.getOrCreate(alien.level());
+        if (!compoundTag.contains(HIVE_SIGNATURE_KEY)) {
+            return;
+        }
 
-        hiveDataOptional.ifPresent(hiveLevelData -> {
-            if (!compoundTag.contains(HIVE_SIGNATURE_KEY)) {
-                return;
-            }
-
-            var hiveSignature = CompoundTagUtil.getUUIDOrNull(compoundTag, HIVE_SIGNATURE_KEY);
-
-            this.hive = hiveLevelData.hiveOrNull(hiveSignature);
-        });
+        this.hiveOption = HiveLevelData.getOrCreate(alien.level())
+            .andThen(hiveLevelData -> {
+                var hiveSignature = CompoundTagUtil.getUUIDOrNull(compoundTag, HIVE_SIGNATURE_KEY);
+                return hiveSignature == null
+                    ? Option.none()
+                    : hiveLevelData.hive(hiveSignature);
+            });
     }
 
     public void save(CompoundTag compoundTag) {
-        if (hive != null) {
-            compoundTag.putUUID(HIVE_SIGNATURE_KEY, hive.id());
-        }
+        hiveOption.ifSome(hive -> compoundTag.putUUID(HIVE_SIGNATURE_KEY, hive.id()));
     }
 
-    public @Nullable Hive hiveOrNull() {
-        return hive;
+    public Option<Hive> hive() {
+        return hiveOption;
     }
 
-    public @Nullable UUID signatureOrNull() {
-        return hive == null ? null : hive.id();
+    public Option<UUID> signature() {
+        return hiveOption.map(Hive::id);
     }
 }

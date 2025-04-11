@@ -69,19 +69,17 @@ public class GeneManager {
 
     public void load(CompoundTag compoundTag) {
         var level = entity.level();
-        var genePaletteOptional = GenePaletteLevelData.getOrCreate(level);
+        var genePaletteOption = GenePaletteLevelData.getOrCreate(level);
 
-        genePaletteOptional.ifPresent(genePalette -> {
+        genePaletteOption.ifSome(genePalette -> {
             var geneArray = compoundTag.getByteArray(GENE_KEY);
 
-            for (int i = 0; i < geneArray.length; i += 2) {
+            for (var i = 0; i < geneArray.length; i += 2) {
                 var id = geneArray[i];
                 var value = geneArray[i + 1];
-                var geneKey = genePalette.getKeyOrNull(id);
 
-                if (geneKey != null) {
-                    geneKeyToValueMap.put(geneKey, value);
-                }
+                genePalette.getKey(id)
+                    .ifSome(geneKey -> geneKeyToValueMap.put(geneKey, value));
             }
         });
     }
@@ -90,7 +88,7 @@ public class GeneManager {
         var level = entity.level();
         var genePaletteOptional = GenePaletteLevelData.getOrCreate(level);
 
-        genePaletteOptional.ifPresent(genePalette -> {
+        genePaletteOptional.ifSome(genePalette -> {
             var geneArray = new byte[geneKeyToValueMap.size() * 2];
 
             var i = 0;

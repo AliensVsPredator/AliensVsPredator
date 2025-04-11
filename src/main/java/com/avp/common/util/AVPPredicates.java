@@ -27,7 +27,8 @@ public class AVPPredicates {
     public static boolean areAliensEnemies(Alien first, Alien second) {
         var isSecondAberrant = second.isAberrant();
         var isSecondNetherAfflicted = second.isNetherAfflicted();
-        var secondHiveSignature = second.hiveManager().signatureOrNull();
+        var firstHiveSignatureOption = first.hiveManager().signature();
+        var secondHiveSignatureOption = second.hiveManager().signature();
 
         if (
             !Objects.equals(first.isNetherAfflicted(), isSecondNetherAfflicted) ||
@@ -36,12 +37,12 @@ public class AVPPredicates {
             return true;
         }
 
-        if (first.hiveManager().signatureOrNull() == null || secondHiveSignature == null) {
+        if (firstHiveSignatureOption.isNone() || secondHiveSignatureOption.isNone()) {
             return false;
         }
 
         // Only attack other aliens under these conditions.
-        return !Objects.equals(first.hiveManager().signatureOrNull(), secondHiveSignature);
+        return !Objects.equals(firstHiveSignatureOption, secondHiveSignatureOption);
     }
 
     public static boolean canBeIrradiated(Entity entity) {

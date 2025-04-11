@@ -1,11 +1,11 @@
 package com.avp.common.lifecycle.registry;
 
+import com.bvanseg.just.functional.option.Option;
 import net.minecraft.world.entity.EntityType;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 
 import com.avp.common.lifecycle.infection.AlienInfectionKey;
 import com.avp.common.lifecycle.infection.Infection;
@@ -25,8 +25,8 @@ public class AlienInfectionRegistry {
         return maybeInfection;
     }
 
-    public static Optional<Infection> get(EntityType<?> host, EntityType<?> parasite) {
-        return Optional.ofNullable(getOrNull(host, parasite));
+    public static Option<Infection> get(EntityType<?> host, EntityType<?> parasite) {
+        return Option.ofNullable(getOrNull(host, parasite));
     }
 
     public static Infection register(Infection infection) {

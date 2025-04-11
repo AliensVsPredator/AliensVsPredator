@@ -21,7 +21,7 @@ public abstract class MixinServerLevel_RunTickRoutines {
         var serverLevel = ServerLevel.class.cast(this);
         var hiveLevelDataOptional = HiveLevelData.getOrCreate(serverLevel);
 
-        hiveLevelDataOptional.ifPresent(HiveLevelData::tick);
+        hiveLevelDataOptional.ifSome(HiveLevelData::tick);
 
         BlockBreakProgressManager.tick(serverLevel);
     }

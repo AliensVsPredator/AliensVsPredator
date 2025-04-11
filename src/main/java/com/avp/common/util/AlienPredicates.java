@@ -53,12 +53,12 @@ public class AlienPredicates {
     }
 
     public static boolean areAliensSameHive(@NotNull Alien alien, @NotNull Alien otherAlien) {
-        var hiveSignature = alien.hiveManager().signatureOrNull();
-        var otherHiveSignature = otherAlien.hiveManager().signatureOrNull();
+        var hiveSignatureOption = alien.hiveManager().signature();
+        var otherHiveSignatureOption = otherAlien.hiveManager().signature();
 
-        return hiveSignature != null
-            && otherHiveSignature != null
-            && Objects.equals(hiveSignature, otherHiveSignature);
+        return hiveSignatureOption.isSome()
+            && otherHiveSignatureOption.isSome()
+            && Objects.equals(hiveSignatureOption, otherHiveSignatureOption);
     }
 
     public static boolean isStandingOnResin(@NotNull LivingEntity potentialTarget) {

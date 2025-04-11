@@ -103,10 +103,13 @@ public class Chestburster extends RoyalAlien implements ResinProducer {
                 return true;
             }
 
-            var hiveSignature = hiveManager.signatureOrNull();
-            var alienHiveSignature = alien.hiveManager().signatureOrNull();
+            var hiveSignatureOption = hiveManager.signature();
+            var alienHiveSignatureOption = alien.hiveManager().signature();
 
-            return hiveSignature != null && alienHiveSignature != null && !Objects.equals(hiveSignature, alienHiveSignature);
+            return hiveSignatureOption.isSome() && alienHiveSignatureOption.isSome() && !Objects.equals(
+                hiveSignatureOption,
+                alienHiveSignatureOption
+            );
         }));
         goalSelector.addGoal(7, new WaterAvoidingRandomStrollGoal(this, 0.5));
     }

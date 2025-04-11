@@ -104,13 +104,16 @@ public abstract class MixinLivingEntity_GrowEmbryo extends Entity implements Hos
 
             // FIXME: Make time configurable
             if (parasiteGrowthTimeInTicks > TimeUnit.MINUTES.toSeconds(5) * 20) {
-                var infectionOptional = AlienInfectionRegistry.get(getType(), parasiteSourceType);
 
-                infectionOptional.ifPresent(infection -> {
-                    var parasiteType = infection.parasiteType();
-                    var parasite = parasiteType.create(level);
+                AlienInfectionRegistry.get(getType(), parasiteSourceType)
+                    .ifSome(infection -> {
+                        var parasiteType = infection.parasiteType();
+                        var parasite = parasiteType.create(level);
 
-                    if (parasite != null) {
+                        if (parasite == null) {
+                            return;
+                        }
+
                         if (parasite instanceof Mob mob) {
                             mob.setPersistenceRequired();
                         }
@@ -140,6 +143,8 @@ public abstract class MixinLivingEntity_GrowEmbryo extends Entity implements Hos
                         parasite.moveTo(position(), getYRot(), getXRot());
                         parasite.setYRot(getYRot());
                         parasite.setXRot(getXRot());
+
+                        // TODO: This shouldn't be here at all.
                         if (self instanceof Witch) {
                             var effects = List.of(
                                 MobEffects.DAMAGE_BOOST,
@@ -149,8 +154,11 @@ public abstract class MixinLivingEntity_GrowEmbryo extends Entity implements Hos
                                 MobEffects.JUMP
                             );
                             var randomEffect = effects.get(self.getRandom().nextInt(effects.size()));
+                            // TODO: Prefer genes over effects, effects can be removed by milk / other factors, genes
+                            // can't.
                             parasite.addEffect(new MobEffectInstance(randomEffect, Integer.MAX_VALUE, 0, false, false));
                         }
+
                         // Copies effects from previous entity to the next
                         for (var effect : self.getActiveEffects()) {
                             parasite.addEffect(new MobEffectInstance(effect));
@@ -159,8 +167,7 @@ public abstract class MixinLivingEntity_GrowEmbryo extends Entity implements Hos
                         // TODO: Adjust parasite's base attributes based on genes.
 
                         level.addFreshEntity(parasite);
-                    }
-                });
+                    });
 
                 this.parasiteSourceType = null;
                 kill();
