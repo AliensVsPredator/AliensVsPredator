@@ -46,40 +46,51 @@ public class SolidCanisterItem extends BlockItem {
 
     @Override
     public @NotNull InteractionResult useOn(UseOnContext context) {
-        InteractionResult interactionResult = super.useOn(new UseOnContext(context.getLevel(), context.getPlayer(), context.getHand(), context.getItemInHand().copy(), getPlayerPOVHitResult(context.getLevel(), context.getPlayer(), ClipContext.Fluid.NONE)));
-
         Player player = context.getPlayer();
-        if (interactionResult.consumesAction() && player != null && player.isShiftKeyDown()) {
-            if (context.getItemInHand().getOrDefault(DataComponents.CANISTER_CONTENT_AMOUNT, 0) > 1 && !player.isCreative()) {
+        if (player == null) return InteractionResult.FAIL;
+
+        UseOnContext modifiedContext = new UseOnContext(
+                context.getLevel(),
+                player,
+                context.getHand(),
+                context.getItemInHand().copy(),
+                getPlayerPOVHitResult(context.getLevel(), player, ClipContext.Fluid.NONE)
+        );
+        InteractionResult result = super.useOn(modifiedContext);
+
+        if (result.consumesAction() && player.isShiftKeyDown()) {
+            int contentAmount = context.getItemInHand().getOrDefault(DataComponents.CANISTER_CONTENT_AMOUNT, 0);
+
+            if (contentAmount > 1 && !player.isCreative()) {
                 CanisterItem.updateContentAmount(context.getItemInHand(), -1);
-                return interactionResult;
+                return result;
             }
 
             player.setItemInHand(context.getHand(), CanisterItem.getEmptySuccessItem(context.getItemInHand(), player));
             return InteractionResult.SUCCESS;
         }
-        else if (player != null) {
-            ItemStack canisterStack = context.getItemInHand();
-            BlockHitResult hitResult = getPlayerPOVHitResult(context.getLevel(), player, ClipContext.Fluid.SOURCE_ONLY);
 
-            if (CanisterItem.isInvalidHitResult(hitResult))
-                return InteractionResult.PASS;
+        BlockHitResult hitResult = getPlayerPOVHitResult(context.getLevel(), player, ClipContext.Fluid.SOURCE_ONLY);
 
-            BlockPos hitPos = hitResult.getBlockPos();
-            Direction hitDir = hitResult.getDirection();
-            BlockPos relativePos = hitPos.relative(hitDir);
+        if (CanisterItem.isInvalidHitResult(hitResult))
+            return InteractionResult.PASS;
 
-            if (!CanisterItem.canPlayerInteract(context.getLevel(), player, hitPos, relativePos, hitDir, canisterStack))
-                return InteractionResult.FAIL;
+        BlockPos hitPos = hitResult.getBlockPos();
+        Direction hitDir = hitResult.getDirection();
+        BlockPos relativePos = hitPos.relative(hitDir);
 
-            BlockState hitState = context.getLevel().getBlockState(hitPos);
-
-            if (CanisterItem.isFluidPickupAction(player, hitState))
-                return handlePowderSnowPickup(player, context.getLevel(), canisterStack, hitPos, hitState);
+        if (!CanisterItem.canPlayerInteract(context.getLevel(), player, hitPos, relativePos, hitDir,  context.getItemInHand())) {
+            return InteractionResult.FAIL;
         }
+
+        BlockState hitState = context.getLevel().getBlockState(hitPos);
+
+        if (CanisterItem.isFluidPickupAction(player, hitState))
+            return handlePowderSnowPickup(player, context.getLevel(),  context.getItemInHand(), hitPos, hitState);
 
         return InteractionResult.FAIL;
     }
+
 
     private InteractionResult handlePowderSnowPickup(Player player, Level level, ItemStack canisterStack, BlockPos hitPos, BlockState hitState) {
         BucketPickup bucketPickup = (BucketPickup) hitState.getBlock();
