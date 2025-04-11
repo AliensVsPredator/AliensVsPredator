@@ -14,6 +14,7 @@
 - Cut nuke's default block sample count in half to improve performance.
 
 ## 🐞 Fixes
+- Fixed grenade explosions leaving ghost blocks behind.
 - Fixed damage source instances being allocated every radiation effect tick.
 - Fixed marine's head being slightly tilted.
 - Fixed trinitite blocks having broken transparency.
@@ -79,6 +80,7 @@
 - Removed unnecessary code in RadiatedBlock.java.
 - Cleaned up marine animation code, slightly more optimal.
 - Alphabetically sorted block tag contents.
+- Cleaned up acid damage code.
 
 # v0.0.21-beta
 
