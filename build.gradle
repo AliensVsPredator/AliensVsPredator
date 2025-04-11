@@ -18,6 +18,7 @@ base {
 }
 
 repositories {
+	maven { url = "https://jitpack.io" }
 	maven { url = "https://maven.azuredoom.com/mods" }
 	// Needed for Fabric only at the moment
 	maven { url = "https://maven.terraformersmc.com/releases" }
@@ -53,6 +54,8 @@ dependencies {
 	}
 	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
+
+	implementation 'com.github.bvanseg:just:-SNAPSHOT'
 
 	modImplementation "mod.azure.azurelib:azurelib-fabric-${project.minecraft_version}:${project.azurelib_version}"
 

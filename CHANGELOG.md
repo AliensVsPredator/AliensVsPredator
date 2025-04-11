@@ -81,6 +81,7 @@
 - Cleaned up marine animation code, slightly more optimal.
 - Alphabetically sorted block tag contents.
 - Cleaned up acid damage code.
+- Added Just library dependency.
 
 # v0.0.21-beta
 
