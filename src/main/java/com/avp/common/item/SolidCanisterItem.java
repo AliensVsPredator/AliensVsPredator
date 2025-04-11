@@ -46,7 +46,7 @@ public class SolidCanisterItem extends BlockItem {
 
     @Override
     public @NotNull InteractionResult useOn(UseOnContext context) {
-        InteractionResult interactionResult = super.useOn(context);
+        InteractionResult interactionResult = super.useOn(new UseOnContext(context.getLevel(), context.getPlayer(), context.getHand(), context.getItemInHand().copy(), getPlayerPOVHitResult(context.getLevel(), context.getPlayer(), ClipContext.Fluid.NONE)));
 
         Player player = context.getPlayer();
         if (interactionResult.consumesAction() && player != null && player.isShiftKeyDown()) {
@@ -56,6 +56,7 @@ public class SolidCanisterItem extends BlockItem {
             }
 
             player.setItemInHand(context.getHand(), CanisterItem.getEmptySuccessItem(context.getItemInHand(), player));
+            return InteractionResult.SUCCESS;
         }
         else if (player != null) {
             ItemStack canisterStack = context.getItemInHand();
