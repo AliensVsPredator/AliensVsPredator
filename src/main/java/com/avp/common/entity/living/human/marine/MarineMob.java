@@ -32,7 +32,6 @@ public class MarineMob extends AbstractHumanMob {
         this.animationDispatcher = new MarineAnimationDispatcher(this);
         this.outfitManager = new MarineOutfitManager(this);
         this.beardManager = new BeardManager(this, 3);
-        this.hairManager = new HairManager(this, 5, 5, 5);
         this.eyeManager = new EyeManager(this, 5, 5);
         this.skinManager = new SkinManager(this, 6, 6);
     }

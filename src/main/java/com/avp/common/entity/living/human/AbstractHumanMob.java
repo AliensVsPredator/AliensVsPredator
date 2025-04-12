@@ -1,5 +1,10 @@
 package com.avp.common.entity.living.human;
 
+import com.avp.common.manager.BeardManager;
+import com.avp.common.manager.EyeManager;
+import com.avp.common.manager.GenderManager;
+import com.avp.common.manager.OutfitManager;
+import com.avp.common.manager.SkinManager;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -25,7 +30,6 @@ import org.jetbrains.annotations.Nullable;
 
 import com.avp.common.MoveAnalysis;
 import com.avp.common.config.AVPConfig;
-import com.avp.common.manager.*;
 
 public abstract class AbstractHumanMob extends PathfinderMob {
 
@@ -44,8 +48,6 @@ public abstract class AbstractHumanMob extends PathfinderMob {
 
     public OutfitManager outfitManager;
 
-    public HairManager hairManager;
-
     public BeardManager beardManager;
 
     public EyeManager eyeManager;
@@ -61,10 +63,6 @@ public abstract class AbstractHumanMob extends PathfinderMob {
 
     public OutfitManager getOutfitManager() {
         return outfitManager;
-    }
-
-    public HairManager getHairManager() {
-        return hairManager;
     }
 
     public BeardManager getBeardManager() {
