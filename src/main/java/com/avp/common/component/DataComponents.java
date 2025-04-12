@@ -1,6 +1,5 @@
 package com.avp.common.component;
 
-import com.avp.AVPResources;
 import com.mojang.serialization.Codec;
 import net.minecraft.core.Registry;
 import net.minecraft.core.component.DataComponentType;
@@ -9,6 +8,8 @@ import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.util.ExtraCodecs;
 
 import java.util.function.UnaryOperator;
+
+import com.avp.AVPResources;
 
 public class DataComponents {
 

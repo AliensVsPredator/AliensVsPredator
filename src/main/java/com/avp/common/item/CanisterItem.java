@@ -1,6 +1,5 @@
 package com.avp.common.item;
 
-import com.avp.common.component.DataComponents;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -36,7 +35,10 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
+import com.avp.common.component.DataComponents;
+
 public class CanisterItem extends Item implements DispensibleContainerItem {
+
     public final Fluid content;
 
     public static final int MAX_CONTENT_AMOUNT = 8;
@@ -51,7 +53,8 @@ public class CanisterItem extends Item implements DispensibleContainerItem {
         super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
 
         int currentContentAmount = stack.getOrDefault(DataComponents.CANISTER_CONTENT_AMOUNT, 0);
-        if (currentContentAmount == 0) return;
+        if (currentContentAmount == 0)
+            return;
 
         tooltipComponents.add(Component.translatable("tooltip.avp.capacity").append(currentContentAmount + "/" + MAX_CONTENT_AMOUNT));
     }
@@ -59,7 +62,11 @@ public class CanisterItem extends Item implements DispensibleContainerItem {
     @Override
     public @NotNull InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand usedHand) {
         ItemStack canisterStack = player.getItemInHand(usedHand);
-        BlockHitResult hitResult = getPlayerPOVHitResult(level, player, isFluidPlacementAction(player) ? ClipContext.Fluid.NONE : ClipContext.Fluid.SOURCE_ONLY);
+        BlockHitResult hitResult = getPlayerPOVHitResult(
+            level,
+            player,
+            isFluidPlacementAction(player) ? ClipContext.Fluid.NONE : ClipContext.Fluid.SOURCE_ONLY
+        );
 
         if (isInvalidHitResult(hitResult))
             return InteractionResultHolder.pass(canisterStack);
@@ -86,7 +93,14 @@ public class CanisterItem extends Item implements DispensibleContainerItem {
         return hitResult.getType() == HitResult.Type.MISS || hitResult.getType() != HitResult.Type.BLOCK;
     }
 
-    public static boolean canPlayerInteract(Level level, Player player, BlockPos hitPos, BlockPos relativePos, Direction hitDir, ItemStack stack) {
+    public static boolean canPlayerInteract(
+        Level level,
+        Player player,
+        BlockPos hitPos,
+        BlockPos relativePos,
+        Direction hitDir,
+        ItemStack stack
+    ) {
         return level.mayInteract(player, hitPos) && player.mayUseItemAt(relativePos, hitDir, stack);
     }
 
@@ -98,7 +112,13 @@ public class CanisterItem extends Item implements DispensibleContainerItem {
         return player.isShiftKeyDown() && this.content != Fluids.EMPTY;
     }
 
-    private InteractionResultHolder<ItemStack> handleFluidPickup(Player player, Level level, ItemStack canisterStack, BlockPos hitPos, BlockState hitState) {
+    private InteractionResultHolder<ItemStack> handleFluidPickup(
+        Player player,
+        Level level,
+        ItemStack canisterStack,
+        BlockPos hitPos,
+        BlockState hitState
+    ) {
         BucketPickup bucketPickup = (BucketPickup) hitState.getBlock();
 
         if (canisterStack.getOrDefault(DataComponents.CANISTER_CONTENT_AMOUNT, 0) < MAX_CONTENT_AMOUNT) {
@@ -124,7 +144,15 @@ public class CanisterItem extends Item implements DispensibleContainerItem {
         return InteractionResultHolder.fail(canisterStack);
     }
 
-    private InteractionResultHolder<ItemStack> handleFluidPlacement(Player player, Level level, ItemStack canisterStack, BlockHitResult hitResult, BlockPos hitPos, BlockState hitState, BlockPos relativePos) {
+    private InteractionResultHolder<ItemStack> handleFluidPlacement(
+        Player player,
+        Level level,
+        ItemStack canisterStack,
+        BlockHitResult hitResult,
+        BlockPos hitPos,
+        BlockState hitState,
+        BlockPos relativePos
+    ) {
         BlockPos targetPos = hitState.getBlock() instanceof LiquidBlockContainer && this.content == Fluids.WATER ? hitPos : relativePos;
 
         if (emptyContents(player, level, targetPos, hitResult)) {
@@ -150,7 +178,8 @@ public class CanisterItem extends Item implements DispensibleContainerItem {
         int currentContentAmount = stack.getOrDefault(DataComponents.CANISTER_CONTENT_AMOUNT, 0);
         int newAmount = Mth.clamp(currentContentAmount + amount, 0, MAX_CONTENT_AMOUNT);
 
-        stack.applyComponents(DataComponentPatch.builder()
+        stack.applyComponents(
+            DataComponentPatch.builder()
                 .set(DataComponents.CANISTER_CONTENT_AMOUNT, newAmount)
                 .build()
         );
@@ -158,7 +187,14 @@ public class CanisterItem extends Item implements DispensibleContainerItem {
         return stack;
     }
 
-    private ItemStack pickupBlock(Player player, Level level, ItemStack canisterStack, BucketPickup bucketPickup, BlockPos blockPos, BlockState blockState) {
+    private ItemStack pickupBlock(
+        Player player,
+        Level level,
+        ItemStack canisterStack,
+        BucketPickup bucketPickup,
+        BlockPos blockPos,
+        BlockState blockState
+    ) {
         ItemStack bucketItem = bucketPickup.pickupBlock(player, level, blockPos, blockState);
 
         if (this.content == Fluids.EMPTY) {
@@ -181,7 +217,8 @@ public class CanisterItem extends Item implements DispensibleContainerItem {
 
     @Override
     public boolean emptyContents(@Nullable Player player, Level level, BlockPos pos, @Nullable BlockHitResult result) {
-        if (!(this.content instanceof FlowingFluid flowingFluid)) return false;
+        if (!(this.content instanceof FlowingFluid flowingFluid))
+            return false;
 
         BlockState blockState = level.getBlockState(pos);
         Block block = blockState.getBlock();
@@ -189,7 +226,13 @@ public class CanisterItem extends Item implements DispensibleContainerItem {
 
         boolean canEmptyHere;
         if (!blockState.isAir() && !isReplaceable)
-            canEmptyHere = block instanceof LiquidBlockContainer liquidBlockContainer && liquidBlockContainer.canPlaceLiquid(player, level, pos, blockState, this.content);
+            canEmptyHere = block instanceof LiquidBlockContainer liquidBlockContainer && liquidBlockContainer.canPlaceLiquid(
+                player,
+                level,
+                pos,
+                blockState,
+                this.content
+            );
         else
             canEmptyHere = true;
 
@@ -200,13 +243,24 @@ public class CanisterItem extends Item implements DispensibleContainerItem {
             int x = pos.getX();
             int y = pos.getY();
             int z = pos.getZ();
-            level.playSound(player, pos, SoundEvents.FIRE_EXTINGUISH, SoundSource.BLOCKS, 0.5F, 2.6F + (level.random.nextFloat() - level.random.nextFloat()) * 0.8F);
+            level.playSound(
+                player,
+                pos,
+                SoundEvents.FIRE_EXTINGUISH,
+                SoundSource.BLOCKS,
+                0.5F,
+                2.6F + (level.random.nextFloat() - level.random.nextFloat()) * 0.8F
+            );
 
             for (int i = 0; i < 8; i++) {
                 level.addParticle(
-                        ParticleTypes.LARGE_SMOKE,
-                        x + Math.random(), y + Math.random(), z + Math.random(),
-                        0.0, 0.0, 0.0
+                    ParticleTypes.LARGE_SMOKE,
+                    x + Math.random(),
+                    y + Math.random(),
+                    z + Math.random(),
+                    0.0,
+                    0.0,
+                    0.0
                 );
             }
             return true;

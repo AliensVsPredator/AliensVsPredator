@@ -1,6 +1,5 @@
 package com.avp.common.item;
 
-import com.avp.common.component.DataComponents;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -26,7 +25,10 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
+import com.avp.common.component.DataComponents;
+
 public class SolidCanisterItem extends BlockItem {
+
     private final SoundEvent placeSound;
 
     public SolidCanisterItem(Block block, SoundEvent placeSound, Properties properties) {
@@ -39,22 +41,26 @@ public class SolidCanisterItem extends BlockItem {
         super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
 
         int currentContentAmount = stack.getOrDefault(DataComponents.CANISTER_CONTENT_AMOUNT, 0);
-        if (currentContentAmount == 0) return;
+        if (currentContentAmount == 0)
+            return;
 
-        tooltipComponents.add(Component.translatable("tooltip.avp.capacity").append(currentContentAmount + "/" + CanisterItem.MAX_CONTENT_AMOUNT));
+        tooltipComponents.add(
+            Component.translatable("tooltip.avp.capacity").append(currentContentAmount + "/" + CanisterItem.MAX_CONTENT_AMOUNT)
+        );
     }
 
     @Override
     public @NotNull InteractionResult useOn(UseOnContext context) {
         Player player = context.getPlayer();
-        if (player == null) return InteractionResult.FAIL;
+        if (player == null)
+            return InteractionResult.FAIL;
 
         UseOnContext modifiedContext = new UseOnContext(
-                context.getLevel(),
-                player,
-                context.getHand(),
-                context.getItemInHand().copy(),
-                getPlayerPOVHitResult(context.getLevel(), player, ClipContext.Fluid.NONE)
+            context.getLevel(),
+            player,
+            context.getHand(),
+            context.getItemInHand().copy(),
+            getPlayerPOVHitResult(context.getLevel(), player, ClipContext.Fluid.NONE)
         );
         InteractionResult result = super.useOn(modifiedContext);
 
@@ -79,20 +85,25 @@ public class SolidCanisterItem extends BlockItem {
         Direction hitDir = hitResult.getDirection();
         BlockPos relativePos = hitPos.relative(hitDir);
 
-        if (!CanisterItem.canPlayerInteract(context.getLevel(), player, hitPos, relativePos, hitDir,  context.getItemInHand())) {
+        if (!CanisterItem.canPlayerInteract(context.getLevel(), player, hitPos, relativePos, hitDir, context.getItemInHand())) {
             return InteractionResult.FAIL;
         }
 
         BlockState hitState = context.getLevel().getBlockState(hitPos);
 
         if (CanisterItem.isFluidPickupAction(player, hitState))
-            return handlePowderSnowPickup(player, context.getLevel(),  context.getItemInHand(), hitPos, hitState);
+            return handlePowderSnowPickup(player, context.getLevel(), context.getItemInHand(), hitPos, hitState);
 
         return InteractionResult.FAIL;
     }
 
-
-    private InteractionResult handlePowderSnowPickup(Player player, Level level, ItemStack canisterStack, BlockPos hitPos, BlockState hitState) {
+    private InteractionResult handlePowderSnowPickup(
+        Player player,
+        Level level,
+        ItemStack canisterStack,
+        BlockPos hitPos,
+        BlockState hitState
+    ) {
         BucketPickup bucketPickup = (BucketPickup) hitState.getBlock();
 
         if (canisterStack.getOrDefault(DataComponents.CANISTER_CONTENT_AMOUNT, 0) < CanisterItem.MAX_CONTENT_AMOUNT) {

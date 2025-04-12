@@ -1,12 +1,5 @@
 package com.avp.common.item;
 
-import com.avp.AVPResources;
-import com.avp.common.component.DataComponents;
-import com.avp.common.item.grenades.GrendeItem;
-import com.avp.common.item.gun.GunData;
-import com.avp.common.item.old_painless.OldPainlessItem;
-import com.avp.common.item.yautja_items.ShurikenItem;
-import com.avp.common.item.yautja_items.SmartDiscItem;
 import mod.azure.azurelib.rewrite.animation.cache.AzIdentityRegistry;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -16,6 +9,14 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.material.Fluids;
 
 import java.util.function.Function;
+
+import com.avp.AVPResources;
+import com.avp.common.component.DataComponents;
+import com.avp.common.item.grenades.GrendeItem;
+import com.avp.common.item.gun.GunData;
+import com.avp.common.item.old_painless.OldPainlessItem;
+import com.avp.common.item.yautja_items.ShurikenItem;
+import com.avp.common.item.yautja_items.SmartDiscItem;
 
 public class AVPItems {
 
@@ -255,28 +256,40 @@ public class AVPItems {
     public static final Item ARMOR_CASE = register(new ArmorCaseItem(new Item.Properties().stacksTo(1)), "armor_case");
 
     public static final Item CANISTER = register(
-            new CanisterItem(Fluids.EMPTY, new Item.Properties().stacksTo(16)),
-            "canister"
+        new CanisterItem(Fluids.EMPTY, new Item.Properties().stacksTo(16)),
+        "canister"
     );
 
     public static final Item WATER_CANISTER = register(
-            new CanisterItem(Fluids.WATER, new Item.Properties().stacksTo(1).craftRemainder(CANISTER).component(DataComponents.CANISTER_CONTENT_AMOUNT, 1)),
-            "water_canister"
+        new CanisterItem(
+            Fluids.WATER,
+            new Item.Properties().stacksTo(1).craftRemainder(CANISTER).component(DataComponents.CANISTER_CONTENT_AMOUNT, 1)
+        ),
+        "water_canister"
     );
 
     public static final Item LAVA_CANISTER = register(
-            new CanisterItem(Fluids.LAVA, new Item.Properties().stacksTo(1).craftRemainder(CANISTER).component(DataComponents.CANISTER_CONTENT_AMOUNT, 1)),
-            "lava_canister"
+        new CanisterItem(
+            Fluids.LAVA,
+            new Item.Properties().stacksTo(1).craftRemainder(CANISTER).component(DataComponents.CANISTER_CONTENT_AMOUNT, 1)
+        ),
+        "lava_canister"
     );
 
     public static final Item MILK_CANISTER = register(
-            new MilkCanisterItem(new Item.Properties().craftRemainder(CANISTER).stacksTo(1).component(DataComponents.CANISTER_CONTENT_AMOUNT, 1)),
-            "milk_canister"
+        new MilkCanisterItem(
+            new Item.Properties().craftRemainder(CANISTER).stacksTo(1).component(DataComponents.CANISTER_CONTENT_AMOUNT, 1)
+        ),
+        "milk_canister"
     );
 
     public static final Item POWDER_SNOW_CANISTER = register(
-            new SolidCanisterItem(Blocks.POWDER_SNOW, SoundEvents.BUCKET_EMPTY_POWDER_SNOW, new Item.Properties().stacksTo(1).component(DataComponents.CANISTER_CONTENT_AMOUNT, 1)),
-            "powder_snow_canister"
+        new SolidCanisterItem(
+            Blocks.POWDER_SNOW,
+            SoundEvents.BUCKET_EMPTY_POWDER_SNOW,
+            new Item.Properties().stacksTo(1).component(DataComponents.CANISTER_CONTENT_AMOUNT, 1)
+        ),
+        "powder_snow_canister"
     );
 
     public static final Item ROYAL_JELLY_CANISTER = register("royal_jelly_canister");

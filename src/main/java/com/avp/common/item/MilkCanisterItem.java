@@ -1,6 +1,5 @@
 package com.avp.common.item;
 
-import com.avp.common.component.DataComponents;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
@@ -15,6 +14,8 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
+import com.avp.common.component.DataComponents;
+
 public class MilkCanisterItem extends Item {
 
     public MilkCanisterItem(Properties properties) {
@@ -26,9 +27,12 @@ public class MilkCanisterItem extends Item {
         super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
 
         int currentContentAmount = stack.getOrDefault(DataComponents.CANISTER_CONTENT_AMOUNT, 0);
-        if (currentContentAmount == 0) return;
+        if (currentContentAmount == 0)
+            return;
 
-        tooltipComponents.add(Component.translatable("tooltip.avp.capacity").append(currentContentAmount + "/" + CanisterItem.MAX_CONTENT_AMOUNT));
+        tooltipComponents.add(
+            Component.translatable("tooltip.avp.capacity").append(currentContentAmount + "/" + CanisterItem.MAX_CONTENT_AMOUNT)
+        );
     }
 
     @Override
