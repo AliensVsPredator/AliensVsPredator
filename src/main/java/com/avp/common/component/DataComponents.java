@@ -1,14 +1,14 @@
 package com.avp.common.component;
 
+import com.avp.AVPResources;
 import com.mojang.serialization.Codec;
 import net.minecraft.core.Registry;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.util.ExtraCodecs;
 
 import java.util.function.UnaryOperator;
-
-import com.avp.AVPResources;
 
 public class DataComponents {
 
@@ -23,6 +23,13 @@ public class DataComponents {
         "armor_case_container",
         builder -> builder.persistent(ArmorCaseContainerContents.CODEC)
             .networkSynchronized(ArmorCaseContainerContents.STREAM_CODEC)
+            .cacheEncoding()
+    );
+
+    public static final DataComponentType<Integer> CANISTER_CONTENT_AMOUNT = register(
+        "canister_content_amount",
+        builder -> builder.persistent(ExtraCodecs.NON_NEGATIVE_INT)
+            .networkSynchronized(ByteBufCodecs.VAR_INT)
             .cacheEncoding()
     );
 

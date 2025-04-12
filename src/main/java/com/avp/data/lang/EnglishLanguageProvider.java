@@ -1,13 +1,5 @@
 package com.avp.data.lang;
 
-import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
-import net.fabricmc.fabric.api.datagen.v1.provider.FabricLanguageProvider;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.sounds.SoundEvent;
-
-import java.util.Arrays;
-import java.util.concurrent.CompletableFuture;
-
 import com.avp.common.block.AVPBlocks;
 import com.avp.common.creative_mode_tab.CreativeModeTabs;
 import com.avp.common.entity.type.AVPEntityTypes;
@@ -15,6 +7,13 @@ import com.avp.common.item.AVPItems;
 import com.avp.common.item.ArmorItems;
 import com.avp.common.item.SpawnEggItems;
 import com.avp.common.sound.AVPSoundEvents;
+import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
+import net.fabricmc.fabric.api.datagen.v1.provider.FabricLanguageProvider;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.sounds.SoundEvent;
+
+import java.util.Arrays;
+import java.util.concurrent.CompletableFuture;
 
 public class EnglishLanguageProvider extends FabricLanguageProvider {
 
@@ -451,6 +450,10 @@ public class EnglishLanguageProvider extends FabricLanguageProvider {
         // Tools & Utilities Items
         translationBuilder.add(AVPItems.ARMOR_CASE, "Armor Case");
         translationBuilder.add(AVPItems.CANISTER, "Canister");
+        translationBuilder.add(AVPItems.WATER_CANISTER, "Water Canister");
+        translationBuilder.add(AVPItems.LAVA_CANISTER, "Lava Canister");
+        translationBuilder.add(AVPItems.MILK_CANISTER, "Milk Canister");
+        translationBuilder.add(AVPItems.POWDER_SNOW_CANISTER, "Powder Snow Canister");
         translationBuilder.add(AVPItems.ROYAL_JELLY_CANISTER, "Royal Jelly Canister");
         translationBuilder.add(AVPItems.STEEL_AXE, "Steel Axe");
         translationBuilder.add(AVPItems.STEEL_HOE, "Steel Hoe");
@@ -558,6 +561,7 @@ public class EnglishLanguageProvider extends FabricLanguageProvider {
         translationBuilder.add("tooltip.avp.fire_rate", "Fire Rate: ");
         translationBuilder.add("tooltip.avp.knockback", "Knockback: ");
         translationBuilder.add("tooltip.avp.recoil", "Recoil: ");
+        translationBuilder.add("tooltip.avp.capacity", "Capacity: ");
 
         // Keybinds
         translationBuilder.add("key.avp.reload", "Reload");
