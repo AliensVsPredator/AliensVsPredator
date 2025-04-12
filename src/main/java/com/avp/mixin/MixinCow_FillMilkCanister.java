@@ -30,7 +30,7 @@ public abstract class MixinCow_FillMilkCanister extends Animal {
     private void mobInteractMixin(Player player, InteractionHand hand, CallbackInfoReturnable<InteractionResult> cir) {
         var itemStack = player.getItemInHand(hand);
 
-        if (!this.isBaby()) {
+        if (this.isBaby()) {
             // Cow is a baby, can't be milked regardless of canister item.
             return;
         }
