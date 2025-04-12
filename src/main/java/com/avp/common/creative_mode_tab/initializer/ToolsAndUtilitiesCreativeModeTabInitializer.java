@@ -15,7 +15,6 @@ public class ToolsAndUtilitiesCreativeModeTabInitializer {
             entries.accept(AVPItems.LAVA_CANISTER);
             entries.accept(AVPItems.MILK_CANISTER);
             entries.accept(AVPItems.POWDER_SNOW_CANISTER);
-            entries.accept(AVPItems.ROYAL_JELLY_CANISTER);
             entries.accept(AVPItems.STEEL_AXE);
             entries.accept(AVPItems.STEEL_HOE);
             entries.accept(AVPItems.STEEL_PICKAXE);

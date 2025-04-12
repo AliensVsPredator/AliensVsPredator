@@ -292,8 +292,6 @@ public class AVPItems {
         "powder_snow_canister"
     );
 
-    public static final Item ROYAL_JELLY_CANISTER = register("royal_jelly_canister");
-
     public static final Item STEEL_AXE = register(
         new AxeItem(AVPTiers.STEEL, new Item.Properties().attributes(AxeItem.createAttributes(AVPTiers.STEEL, 6.0F, -3.1F))),
         "steel_axe"
