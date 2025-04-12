@@ -1,8 +1,5 @@
 package com.avp.mixin;
 
-import com.avp.common.component.DataComponents;
-import com.avp.common.item.AVPItems;
-import com.avp.common.item.CanisterItem;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -18,6 +15,10 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+import com.avp.common.component.DataComponents;
+import com.avp.common.item.AVPItems;
+import com.avp.common.item.CanisterItem;
+
 @Mixin(Cow.class)
 public abstract class MixinCow_FillMilkCanister extends Animal {
 
@@ -27,19 +28,23 @@ public abstract class MixinCow_FillMilkCanister extends Animal {
 
     @Inject(method = "mobInteract", at = @At("HEAD"), cancellable = true)
     private void mobInteractMixin(Player player, InteractionHand hand, CallbackInfoReturnable<InteractionResult> cir) {
-        ItemStack itemStack = player.getItemInHand(hand);
+        var itemStack = player.getItemInHand(hand);
 
-        if (itemStack.is(AVPItems.CANISTER) || (itemStack.is(AVPItems.MILK_CANISTER) && !this.isBaby())) {
+        if (!this.isBaby()) {
+            // Cow is a baby, can't be milked regardless of canister item.
+            return;
+        }
+
+        if (itemStack.is(AVPItems.CANISTER) || (itemStack.is(AVPItems.MILK_CANISTER))) {
             int contentAmount = itemStack.getOrDefault(DataComponents.CANISTER_CONTENT_AMOUNT, 0);
 
             ItemStack updatedStack;
-            if (contentAmount == 0)
+
+            if (contentAmount == 0) {
                 updatedStack = ItemUtils.createFilledResult(itemStack, player, AVPItems.MILK_CANISTER.getDefaultInstance());
-
-            else if (contentAmount < 8)
+            } else if (contentAmount < 8) {
                 updatedStack = CanisterItem.updateContentAmount(itemStack, 1);
-
-            else {
+            } else {
                 cir.setReturnValue(InteractionResult.PASS);
                 return;
             }
