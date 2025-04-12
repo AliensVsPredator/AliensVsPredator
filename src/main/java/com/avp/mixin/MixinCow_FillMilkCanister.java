@@ -11,6 +11,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemUtils;
 import net.minecraft.world.level.Level;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
@@ -30,28 +31,31 @@ public abstract class MixinCow_FillMilkCanister extends Animal {
     private void mobInteractMixin(Player player, InteractionHand hand, CallbackInfoReturnable<InteractionResult> cir) {
         var itemStack = player.getItemInHand(hand);
 
-        if (this.isBaby()) {
+        if (this.isBaby() || !isMilkHoldingCanister(itemStack)) {
             // Cow is a baby, can't be milked regardless of canister item.
             return;
         }
 
-        if (itemStack.is(AVPItems.CANISTER) || (itemStack.is(AVPItems.MILK_CANISTER))) {
-            int contentAmount = itemStack.getOrDefault(DataComponents.CANISTER_CONTENT_AMOUNT, 0);
+        int contentAmount = itemStack.getOrDefault(DataComponents.CANISTER_CONTENT_AMOUNT, 0);
 
-            ItemStack updatedStack;
+        ItemStack updatedStack;
 
-            if (contentAmount == 0) {
-                updatedStack = ItemUtils.createFilledResult(itemStack, player, AVPItems.MILK_CANISTER.getDefaultInstance());
-            } else if (contentAmount < 8) {
-                updatedStack = CanisterItem.updateContentAmount(itemStack, 1);
-            } else {
-                cir.setReturnValue(InteractionResult.PASS);
-                return;
-            }
-
-            player.playSound(SoundEvents.COW_MILK, 1.0F, 1.0F);
-            player.setItemInHand(hand, updatedStack);
-            cir.setReturnValue(InteractionResult.sidedSuccess(this.level().isClientSide));
+        if (contentAmount == 0) {
+            updatedStack = ItemUtils.createFilledResult(itemStack, player, AVPItems.MILK_CANISTER.getDefaultInstance());
+        } else if (contentAmount < 8) {
+            updatedStack = CanisterItem.updateContentAmount(itemStack, 1);
+        } else {
+            cir.setReturnValue(InteractionResult.PASS);
+            return;
         }
+
+        player.playSound(SoundEvents.COW_MILK, 1.0F, 1.0F);
+        player.setItemInHand(hand, updatedStack);
+        cir.setReturnValue(InteractionResult.sidedSuccess(this.level().isClientSide));
+    }
+
+    @Unique
+    private static boolean isMilkHoldingCanister(ItemStack itemStack) {
+        return itemStack.is(AVPItems.CANISTER) || (itemStack.is(AVPItems.MILK_CANISTER));
     }
 }
