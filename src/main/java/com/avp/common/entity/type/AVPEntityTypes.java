@@ -185,14 +185,19 @@ public class AVPEntityTypes {
         EntityType.Builder.of(irradiatedFactory(AVPEntityTypes.DRONE, Drone::new), AVPEntityTypes.ALIEN_CATEGORY)
     );
 
-    public static final EntityType<Warrior> IRRADIATED_WARRIOR = register(
-        "irradiated_warrior",
-        EntityType.Builder.of(irradiatedFactory(AVPEntityTypes.WARRIOR, Warrior::new), AVPEntityTypes.ALIEN_CATEGORY)
-    );
-
     public static final EntityType<Praetorian> IRRADIATED_PRAETORIAN = register(
         "irradiated_praetorian",
         EntityType.Builder.of(irradiatedFactory(AVPEntityTypes.PRAETORIAN, Praetorian::new), AVPEntityTypes.ALIEN_CATEGORY)
+    );
+
+    public static final EntityType<Queen> IRRADIATED_QUEEN = register(
+        "irradiated_queen",
+        EntityType.Builder.of(irradiatedFactory(AVPEntityTypes.QUEEN, Queen::new), AVPEntityTypes.ALIEN_CATEGORY)
+    );
+
+    public static final EntityType<Warrior> IRRADIATED_WARRIOR = register(
+        "irradiated_warrior",
+        EntityType.Builder.of(irradiatedFactory(AVPEntityTypes.WARRIOR, Warrior::new), AVPEntityTypes.ALIEN_CATEGORY)
     );
 
     public static final EntityType<Chestburster> NETHER_CHESTBURSTER = register(

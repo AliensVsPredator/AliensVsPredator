@@ -100,6 +100,7 @@ public class AVPEntityTypeTagProvider extends FabricTagProvider.EntityTypeTagPro
                 AVPEntityTypes.ROYAL_NETHER_FACEHUGGER,
                 AVPEntityTypes.IRRADIATED_DRONE,
                 AVPEntityTypes.IRRADIATED_PRAETORIAN,
+                AVPEntityTypes.IRRADIATED_QUEEN,
                 AVPEntityTypes.IRRADIATED_WARRIOR,
                 AVPEntityTypes.ABERRANT_DRONE,
                 AVPEntityTypes.ABERRANT_PRAETORIAN,
@@ -159,6 +160,7 @@ public class AVPEntityTypeTagProvider extends FabricTagProvider.EntityTypeTagPro
                 AVPEntityTypes.ROYAL_NETHER_OVAMORPH,
                 AVPEntityTypes.ROYAL_NETHER_FACEHUGGER,
                 AVPEntityTypes.IRRADIATED_DRONE,
+                AVPEntityTypes.IRRADIATED_QUEEN,
                 AVPEntityTypes.ABERRANT_PRAETORIAN,
                 AVPEntityTypes.CHESTBURSTER_QUEEN,
                 AVPEntityTypes.NETHER_PRAETORIAN,
@@ -179,7 +181,8 @@ public class AVPEntityTypeTagProvider extends FabricTagProvider.EntityTypeTagPro
             .add(
                 AVPEntityTypes.IRRADIATED_DRONE,
                 AVPEntityTypes.IRRADIATED_WARRIOR,
-                AVPEntityTypes.IRRADIATED_PRAETORIAN
+                AVPEntityTypes.IRRADIATED_PRAETORIAN,
+                AVPEntityTypes.IRRADIATED_QUEEN
             );
     }
 
