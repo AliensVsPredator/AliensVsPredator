@@ -1,6 +1,14 @@
 {
-    "weapons.mdx": {
-        "name": "AVP Weapons",
-        "icon": "avp:shuriken"
+    "pistol.mdx": {
+        "name": "pistol",
+        "icon": "avp:pistol"
+    },
+    "submachine_gun.mdx": {
+        "name": "submachine_gun",
+        "icon": "avp:submachine_gun"
+    },
+    "rifle.mdx": {
+        "name": "rifle",
+        "icon": "avp:rifle"
     }
 }

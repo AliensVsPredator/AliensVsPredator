@@ -1,0 +1,14 @@
+{
+    "ovamorph.mdx": {
+        "name": "Ovamorph",
+        "icon": "avp:ovamorph"
+    },
+    "royal_ovamorph.mdx": {
+        "name": "Royal Ovamorph",
+        "icon": "avp:royal_ovamorph"
+    },
+    "facehugger.mdx": {
+        "name": "Facehugger",
+        "icon": "avp:facehugger"
+    }
+}
