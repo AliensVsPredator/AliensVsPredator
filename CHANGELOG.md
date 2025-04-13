@@ -10,10 +10,10 @@
   - Shift-right-click fluids to pick fluids up.
   - Right-click replaceable blocks (air, vines, tall grass, etc.) to place fluids down.
   - Canisters support the following fluids:
-    - Water
     - Lava
     - Milk
-    - Powdered Snow
+    - Powder Snow
+    - Water
   - Credits to [Cerbon](https://github.com/CerbonXD) for implementation.
 
 ## ♻️ Changes

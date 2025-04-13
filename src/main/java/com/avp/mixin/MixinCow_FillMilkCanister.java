@@ -33,7 +33,7 @@ public abstract class MixinCow_FillMilkCanister extends Animal {
 
         if (this.isBaby() || !isMilkHoldingCanister(itemStack)) {
             // Cow is a baby, can't be milked regardless of canister item.
-            // OR is some canister type other than an empty canister or milk canister.
+            // OR is some canister type other than an empty canister or milk canister, then can't fill with milk.
             return;
         }
 
