@@ -455,7 +455,6 @@ public class RussianLanguageProvider extends FabricLanguageProvider {
         // Tools & Utilities Items
         translationBuilder.add(AVPItems.ARMOR_CASE, "Кейс для брони");
         translationBuilder.add(AVPItems.CANISTER, "Канистра");
-        translationBuilder.add(AVPItems.ROYAL_JELLY_CANISTER, "Канистра наполненная королевской слизью");
         translationBuilder.add(AVPItems.STEEL_AXE, "Стальной топор");
         translationBuilder.add(AVPItems.STEEL_HOE, "Стальная мотыка");
         translationBuilder.add(AVPItems.STEEL_PICKAXE, "Стальная кирка");

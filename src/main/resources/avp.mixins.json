@@ -7,6 +7,7 @@
     "MixinBlockItem_ApplyRads",
     "MixinBoatChest_ApplyRads",
     "MixinChestBlock_RadioactiveChest",
+    "MixinCow_FillMilkCanister",
     "MixinCreeper_Nuked",
     "MixinDecoratedPotPatterns_GetPatternForCustomSherds",
     "MixinEntityTypeBuilder_SilenceDataFixerError",

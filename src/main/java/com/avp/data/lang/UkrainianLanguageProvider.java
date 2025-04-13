@@ -450,7 +450,6 @@ public class UkrainianLanguageProvider extends FabricLanguageProvider {
         // Tools & Utilities Items
         translationBuilder.add(AVPItems.ARMOR_CASE, "Кейс для броні");
         translationBuilder.add(AVPItems.CANISTER, "Каністра");
-        translationBuilder.add(AVPItems.ROYAL_JELLY_CANISTER, "Каністра з королівським слизом");
         translationBuilder.add(AVPItems.STEEL_AXE, "Сталева сокира");
         translationBuilder.add(AVPItems.STEEL_HOE, "Сталева мотика");
         translationBuilder.add(AVPItems.STEEL_PICKAXE, "Сталеве кайло");

@@ -110,6 +110,10 @@ public class ItemModelProvider extends FabricModelProvider {
         generateStandardItem(generators, AVPItems.BRASS_INGOT);
         generateStandardItem(generators, AVPItems.BULLET_TIP);
         generateStandardItem(generators, AVPItems.CANISTER);
+        generateStandardItem(generators, AVPItems.WATER_CANISTER);
+        generateStandardItem(generators, AVPItems.LAVA_CANISTER);
+        generateStandardItem(generators, AVPItems.MILK_CANISTER);
+        generateStandardItem(generators, AVPItems.POWDER_SNOW_CANISTER);
         generateStandardItem(generators, AVPItems.CAPACITOR);
         generateStandardItem(generators, AVPItems.NUCLEAR_BATTERY);
         generateStandardItem(generators, AVPItems.REDSTONE_CRYSTAL);
@@ -153,7 +157,6 @@ public class ItemModelProvider extends FabricModelProvider {
         generateStandardItem(generators, AVPItems.RESIN_BALL);
         generateStandardItem(generators, AVPItems.RESISTOR);
         generateStandardItem(generators, AVPItems.ROCKET_BARREL);
-        generateStandardItem(generators, AVPItems.ROYAL_JELLY_CANISTER);
         generateStandardItem(generators, AVPItems.ROYALTY_POTTERY_SHERD);
         generateStandardItem(generators, AVPItems.SHOTGUN_CASING);
         generateStandardItem(generators, AVPItems.SMALL_CASING);
