@@ -31,6 +31,8 @@
 ## ♻️ Changes
 - Marines can now spawn on grass blocks.
   - This only affects their spawns within camp structures, at the moment.
+- Reduced spawn weight of marines in marine camps (25 -> 15).
+- Reduced spawn weight of marines in communication outposts (25 -> 15).
 - Cut nuke's default block sample count in half to improve performance.
 
 ## 🐞 Fixes
