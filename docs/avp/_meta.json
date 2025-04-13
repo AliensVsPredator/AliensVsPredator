@@ -1,9 +1,11 @@
 {
     "armor.mdx": "AVP Armors",
-    "items": "AVP Items",
-    "machines": "AVP Machines",
-    "ores": "AVP Ores",
     "ores.mdx": "AVP Ores",
     "power.mdx": "AVP Power",
-    "weapons/weapons.mdx": "AVP Weapons"
+    "mobs.mdx": "AVP Mobs",
+    "weapons.mdx": "AVP Weapons",
+    "items.mdx": "AVP Items",
+    "items": "AVP Items",
+    "machines": "AVP Machines",
+    "ores": "AVP Ores"
 }

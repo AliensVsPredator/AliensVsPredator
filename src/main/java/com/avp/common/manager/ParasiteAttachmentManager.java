@@ -112,7 +112,9 @@ public class ParasiteAttachmentManager {
             setIsFertile(compoundTag.getBoolean(IS_FERTILE_KEY));
         }
 
-        this.ticksAttachedToHost = compoundTag.getInt(TICKS_ATTACHED_TO_HOST_KEY);
+        if (compoundTag.contains(TICKS_ATTACHED_TO_HOST_KEY)) {
+            this.ticksAttachedToHost = compoundTag.getInt(TICKS_ATTACHED_TO_HOST_KEY);
+        }
     }
 
     public void save(CompoundTag compoundTag) {

@@ -10,6 +10,7 @@ import org.jetbrains.annotations.NotNull;
 
 import com.avp.AVPResources;
 import com.avp.client.animation.entity.QueenAnimator;
+import com.avp.client.render.layer.RadiationGlowLayer;
 import com.avp.common.entity.living.alien.xenomorph.queen.Queen;
 
 public class QueenRenderer extends AzEntityRenderer<Queen> {
@@ -22,12 +23,15 @@ public class QueenRenderer extends AzEntityRenderer<Queen> {
 
     private static final ResourceLocation ABERRANT_TEXTURE = AVPResources.entityTextureLocation("aberrant_" + NAME);
 
+    private static final ResourceLocation IRRADIATED_TEXTURE = AVPResources.entityTextureLocation("irradiated_" + NAME);
+
     private static final ResourceLocation NETHER_TEXTURE = AVPResources.entityTextureLocation("nether_" + NAME);
 
     public QueenRenderer(EntityRendererProvider.Context context) {
         super(
             AzEntityRendererConfig.builder($ -> MODEL, QueenRenderer::textureLocation)
                 .setAnimatorProvider(QueenAnimator::new)
+                .addRenderLayer(new RadiationGlowLayer<>())
                 .build(),
             context
         );
@@ -50,6 +54,10 @@ public class QueenRenderer extends AzEntityRenderer<Queen> {
     private static ResourceLocation textureLocation(Queen queen) {
         if (queen.isNetherAfflicted()) {
             return NETHER_TEXTURE;
+        }
+
+        if (queen.isIrradiated()) {
+            return IRRADIATED_TEXTURE;
         }
 
         if (queen.isAberrant()) {

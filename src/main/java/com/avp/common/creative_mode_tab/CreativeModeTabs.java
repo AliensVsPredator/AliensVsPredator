@@ -49,7 +49,7 @@ public class CreativeModeTabs {
 
     public static final CreativeModeTab TOOLS_AND_UTILITIES = register(
         TOOLS_AND_UTILITIES_KEY,
-        () -> new ItemStack(AVPItems.ROYAL_JELLY_CANISTER)
+        () -> new ItemStack(AVPItems.CANISTER)
     );
 
     public static ResourceKey<CreativeModeTab> createResourceKey(String name) {

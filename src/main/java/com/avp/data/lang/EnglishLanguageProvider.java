@@ -455,7 +455,10 @@ public class EnglishLanguageProvider extends FabricLanguageProvider {
         // Tools & Utilities Items
         translationBuilder.add(AVPItems.ARMOR_CASE, "Armor Case");
         translationBuilder.add(AVPItems.CANISTER, "Canister");
-        translationBuilder.add(AVPItems.ROYAL_JELLY_CANISTER, "Royal Jelly Canister");
+        translationBuilder.add(AVPItems.WATER_CANISTER, "Water Canister");
+        translationBuilder.add(AVPItems.LAVA_CANISTER, "Lava Canister");
+        translationBuilder.add(AVPItems.MILK_CANISTER, "Milk Canister");
+        translationBuilder.add(AVPItems.POWDER_SNOW_CANISTER, "Powder Snow Canister");
         translationBuilder.add(AVPItems.STEEL_AXE, "Steel Axe");
         translationBuilder.add(AVPItems.STEEL_HOE, "Steel Hoe");
         translationBuilder.add(AVPItems.STEEL_PICKAXE, "Steel Pickaxe");
@@ -491,8 +494,9 @@ public class EnglishLanguageProvider extends FabricLanguageProvider {
         translationBuilder.add(SpawnEggItems.NETHER_WARRIOR_SPAWN_EGG, "Nether Warrior Spawn Egg");
         translationBuilder.add(SpawnEggItems.NETHER_QUEEN_SPAWN_EGG, "Nether Queen Spawn Egg");
         translationBuilder.add(SpawnEggItems.IRRADIATED_DRONE_SPAWN_EGG, "Irradiated Drone Spawn Egg");
-        translationBuilder.add(SpawnEggItems.IRRADIATED_WARRIOR_SPAWN_EGG, "Irradiated Warrior Spawn Egg");
         translationBuilder.add(SpawnEggItems.IRRADIATED_PRAETORIAN_SPAWN_EGG, "Irradiated Praetorian Spawn Egg");
+        translationBuilder.add(SpawnEggItems.IRRADIATED_QUEEN_SPAWN_EGG, "Irradiated Queen Spawn Egg");
+        translationBuilder.add(SpawnEggItems.IRRADIATED_WARRIOR_SPAWN_EGG, "Irradiated Warrior Spawn Egg");
         translationBuilder.add(SpawnEggItems.OVAMORPH_SPAWN_EGG, "Ovamorph Spawn Egg");
         translationBuilder.add(SpawnEggItems.PRAETORIAN_SPAWN_EGG, "Praetorian Spawn Egg");
         translationBuilder.add(SpawnEggItems.QUEEN_SPAWN_EGG, "Queen Spawn Egg");
@@ -573,6 +577,7 @@ public class EnglishLanguageProvider extends FabricLanguageProvider {
         translationBuilder.add("tooltip.avp.fire_rate", "Fire Rate: ");
         translationBuilder.add("tooltip.avp.knockback", "Knockback: ");
         translationBuilder.add("tooltip.avp.recoil", "Recoil: ");
+        translationBuilder.add("tooltip.avp.capacity", "Capacity: ");
 
         // Keybinds
         translationBuilder.add("key.avp.reload", "Reload");

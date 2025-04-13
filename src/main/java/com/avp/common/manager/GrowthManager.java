@@ -96,7 +96,9 @@ public class GrowthManager {
     }
 
     public void load(CompoundTag compoundTag) {
-        this.growthTimeInTicks = compoundTag.getInt(GROWTH_TIME_IN_TICKS_TAG_KEY);
+        if (compoundTag.contains(GROWTH_TIME_IN_TICKS_TAG_KEY)) {
+            this.growthTimeInTicks = compoundTag.getInt(GROWTH_TIME_IN_TICKS_TAG_KEY);
+        }
     }
 
     public void save(CompoundTag compoundTag) {

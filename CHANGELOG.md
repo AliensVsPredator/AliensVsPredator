@@ -1,19 +1,45 @@
 # v0.0.22-beta
 
-## 🔥 Breaking Changes
-- N/A
+## ☢️ Breaking Changes
+- Removed Royal Jelly Canister item.
+  - May be re-added at some point in the future.
 
 ## ✨ What's New
+- Added irradiated queens.
 - Added new structure in badlands, `badlands_royal_altar`
 - Added Chest loot tables for Marine structures.
 - Queen sounds registered.
 - Added Desert, deepslate, jungle and nether Royal Atlars.
 - Added Crafted Resin Blocks.
+- Added new textures for the queen's following forms:
+  - Aberrant
+  - Base
+  - Irradiated
+  - Nether
+- Added new, fully-functional canister items:
+    - Function like buckets, but have a capacity of 8 instead of 1.
+    - Shift-right-click fluids to pick fluids up.
+    - Right-click replaceable blocks (air, vines, tall grass, etc.) to place fluids down.
+    - Canisters support the following fluids:
+        - Lava
+        - Milk
+        - Powder Snow
+        - Water
+    - Credits to [Cerbon](https://github.com/CerbonXD) for implementation.
+
 
 ## ♻️ Changes
+- Marines can now spawn on grass blocks.
+  - This only affects their spawns within camp structures, at the moment.
+- Reduced spawn weight of marines in marine camps (25 -> 15).
+- Reduced spawn weight of marines in communication outposts (25 -> 15).
 - Cut nuke's default block sample count in half to improve performance.
 
 ## 🐞 Fixes
+- Fixed drone being considered as a royal alien.
+- Fixed irradiated praetorian not being considered a royal alien.
+- Fixed boats spawning underneath marine camps.
+- Fixed ovamorphs spawning with altar structures despawning when they shouldn't.
 - Fixed grenade explosions leaving ghost blocks behind.
 - Fixed damage source instances being allocated every radiation effect tick.
 - Fixed marine's head being slightly tilted.
@@ -22,6 +48,33 @@
 - Fixed Smart Disc duplication for creative players.
 - Fixed irradiated grenade items passively irradiating entities.
 - Fixed z-fighting on predator's mandible membranes.
+- Fixed the following royal ovamorphs not producing royal facehuggers:
+  - Royal Aberrant Ovamorph
+  - Royal Nether Ovamorph
+  - Royal Ovamorph
+- Fixed artificial spawning issues with AVP entities:
+  - Fixed `/summon` command summoning AVP entities with incorrect data.
+  - Fixed spawner blocks spawning AVP entities with incorrect data.
+  - This affected entities in multiple ways. Such as:
+    - Royal chestbursters, facehuggers and ovamorphs not spawning as royal.
+    - Ovamorphs spawning with no facehugger inside.
+    - Ovamorphs spawning with a tiny size.
+    - Facehuggers spawning infertile.
+    - ...and potentially other entity data bugs that were fixed but not discovered prior to the fix.
+- Fixed the following alien entity types being inverted:
+  - Royal Chestburster (inverted with Aberrant Royal Chestburster).
+  - Royal Facehugger (inverted with Aberrant Royal Facehugger).
+  - Royal Ovamorph (inverted with Aberrant Royal Ovamorph).
+- Fixed the following aliens being improperly tagged as `#avp:xenomorphs`:
+  - Royal Aberrant Chestburster
+  - Royal Aberrant Facehugger
+  - Royal Aberrant Ovamorph
+  - Royal Nether Chestburster
+  - Royal Nether Facehugger
+  - Royal Nether Ovamorph
+  - Royal Chestburster
+  - Royal Facehugger
+  - Royal Ovamorph
 - Fixed irradiated acid replacing the following blocks:
   - Barrier Block
   - Bedrock
@@ -72,20 +125,34 @@
   - Composed of `#avp:nether_chitin_armor` and `#avp:plated_nether_chitin_armor` item tags.
 - Added `#avp:predator_armor` item tag (future-proofing).
   - Composed of `#avp:jungle_predator_armor` item tag.
+- Corrected multiple data pack tagging mistakes:
+  - Drones are no longer tagged as `#avp:royal_aliens`.
+  - Irradiated praetorians are now tagged as `#avp:royal_aliens`.
+  - Fixed the following aliens being improperly tagged as `#avp:xenomorphs`:
+    - Royal Aberrant Chestburster
+    - Royal Aberrant Facehugger
+    - Royal Aberrant Ovamorph
+    - Royal Nether Chestburster
+    - Royal Nether Facehugger
+    - Royal Nether Ovamorph
+    - Royal Chestburster
+    - Royal Facehugger
+    - Royal Ovamorph
 
 ## 🔬 Technical Changes
-- Refactor smart disc return to owner code.
-- Refactor REI support to new `com.avp.client.compat.rei` location.
-- Refactor Trades to dedicated class.
+- Refactored smart disc return to owner code.
+- Refactored REI support to new `com.avp.client.compat.rei` location.
+- Refactored Trades to dedicated class.
 - Removed unnecessary code in RadiatedBlock.java.
 - Cleaned up marine animation code, slightly more optimal.
 - Alphabetically sorted block tag contents.
 - Cleaned up acid damage code.
 - Added Just library dependency.
+- Refactored hive code to use Just types.
 
 # v0.0.21-beta
 
-## 🔥 Breaking Changes
+## ☢️ Breaking Changes
 - Corrected irradiated xenomorph registry names:
   - `irraiated_drone` -> `irradiated_drone`
   - `irraiated_warrior` -> `irradiated_warrior`
@@ -93,7 +160,7 @@
 - Corrected irradiated aliens tag naming:
   - `irraiated_aliens` -> `irradiated_aliens`
 
-## ✨ What's New
+## ✨️ What's New
 - N/A
 
 ## ♻️ Changes
@@ -219,42 +286,6 @@
 ## Data Pack
 - Adds missing `acid_immune` tag to `nether_acid_immune`
 - Adds `resin_veins` tag to track all resin veins.
-
-## TODO
-- Add Queen sack that then lays eggs
-  - Once added, add royal line growth
-- Add Queen scream attack at half health
-  - Freezes player for 2 seconds
-  - Stops Queen moving during it.
-  - Summons 2 Praetorians and 2 Warriors
-- Add Queen charge attack.
-  - AOE attack that breaks blocks when hitting them.
-- Adjust Queen `ATTACK_CLAW_DOWN` attack to do:
-  - Massive knockback of about 8 blocks
-- Apply genetics of Queen to eggs spawned by Queen
-- Have sentry turret run off batteries
-- Charging system (likely Redstone?) for batteries
-- Batteries hold charges that machines use.
-- Compression item?
-- Irradiated rockets
-- Predator Spawn mechanics
-- Predator difficulty adjustments (unsure what this means?)
-- Predator Combi stick
-- More Structures
-- Make Redstone generator give power.
-- Make Resonator do:
-  - Run on batteries
-  - Prevent resin placement/spreading
-  - Make xenos target it
-- Make terminal do:
-  - Use power.
-  - Program chips (once added)
-- Make Blueprint block do blueprint related things.
-- Make Turret do:
-  - Run of batteries
-  - Turn to target when firing.
-  - GUI Option to changing targeting type
-  - Make it see the player that placed it as the owner.
 
 # v0.0.19-beta
 

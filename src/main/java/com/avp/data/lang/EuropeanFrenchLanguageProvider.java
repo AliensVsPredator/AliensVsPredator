@@ -459,7 +459,6 @@ public class EuropeanFrenchLanguageProvider extends FabricLanguageProvider {
         // Tools & Utilities Items
         translationBuilder.add(AVPItems.ARMOR_CASE, "Armor Case");
         translationBuilder.add(AVPItems.CANISTER, "Canister");
-        translationBuilder.add(AVPItems.ROYAL_JELLY_CANISTER, "Royal Jelly Canister");
         translationBuilder.add(AVPItems.STEEL_AXE, "Steel Axe");
         translationBuilder.add(AVPItems.STEEL_HOE, "Steel Hoe");
         translationBuilder.add(AVPItems.STEEL_PICKAXE, "Steel Pickaxe");

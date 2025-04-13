@@ -530,6 +530,7 @@ public class AVPBlockTagProvider extends FabricTagProvider.BlockTagProvider {
             AVPBlocks.DYE_COLOR_TO_PANEL_PADDING.get(DyeColor.BLACK),
             Blocks.DIRT_PATH,
             AVPBlocks.FERROALUMINUM_TREAD,
+            Blocks.GRASS_BLOCK,
             AVPBlocks.STEEL_TREAD,
             AVPBlocks.TITANIUM_TREAD
         );
