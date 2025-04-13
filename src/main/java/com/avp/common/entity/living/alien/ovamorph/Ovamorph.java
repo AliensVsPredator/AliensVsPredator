@@ -23,18 +23,13 @@ import org.jetbrains.annotations.Nullable;
 
 import com.avp.AVP;
 import com.avp.common.entity.living.alien.Alien;
-import com.avp.common.entity.living.alien.RoyalAlien;
 import com.avp.common.entity.type.AVPEntityTypes;
 import com.avp.common.item.AVPItems;
 import com.avp.common.manager.HatchManager;
 import com.avp.common.util.AVPPredicates;
 import com.avp.common.util.AlienVariantUtil;
 
-public class Ovamorph extends RoyalAlien implements Shearable {
-
-    private static final String IS_ROYAL_AFFLICTED_KEY = "isRoyalAfflicted";
-
-    private static final EntityDataAccessor<Boolean> IS_ROYAL = SynchedEntityData.defineId(Ovamorph.class, EntityDataSerializers.BOOLEAN);
+public class Ovamorph extends Alien implements Shearable {
 
     private static final EntityDataAccessor<Boolean> HATCHED = SynchedEntityData.defineId(Ovamorph.class, EntityDataSerializers.BOOLEAN);
 
@@ -82,18 +77,9 @@ public class Ovamorph extends RoyalAlien implements Shearable {
     @Override
     protected void defineSynchedData(SynchedEntityData.Builder builder) {
         super.defineSynchedData(builder);
-        builder.define(IS_ROYAL, false);
         builder.define(HATCHED, false);
         builder.define(MAX_SPAWN_COUNT, (byte) 1);
         builder.define(ROOTED, true);
-    }
-
-    public boolean isRoyal() {
-        return entityData.get(IS_ROYAL);
-    }
-
-    public void setIsRoyal(boolean isRoyal) {
-        entityData.set(IS_ROYAL, isRoyal);
     }
 
     @Override
@@ -103,7 +89,7 @@ public class Ovamorph extends RoyalAlien implements Shearable {
     }
 
     public void tryHatch() {
-        if (!level().isClientSide && !hatchManager.hatched() && !this.isIrradiated()) {
+        if (!level().isClientSide && !hatchManager.hatched() && !isIrradiated()) {
             hatchManager.hatch();
             animationDispatcher.open();
         }
@@ -226,7 +212,6 @@ public class Ovamorph extends RoyalAlien implements Shearable {
         if (compoundTag.contains(IS_ROOTED_KEY)) {
             setRooted(compoundTag.getBoolean(IS_ROOTED_KEY));
         }
-        setIsRoyal(compoundTag.getBoolean(IS_ROYAL_AFFLICTED_KEY));
     }
 
     @Override
@@ -235,7 +220,6 @@ public class Ovamorph extends RoyalAlien implements Shearable {
         hatchManager.save(compoundTag);
 
         compoundTag.putBoolean(IS_ROOTED_KEY, isRooted());
-        compoundTag.putBoolean(IS_ROYAL_AFFLICTED_KEY, isRoyal());
     }
 
     public HatchManager hatchManager() {

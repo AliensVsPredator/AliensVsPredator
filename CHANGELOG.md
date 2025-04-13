@@ -48,6 +48,23 @@
 - Fixed Smart Disc duplication for creative players.
 - Fixed irradiated grenade items passively irradiating entities.
 - Fixed z-fighting on predator's mandible membranes.
+- Fixed the following royal ovamorphs not producing royal facehuggers:
+  - Royal Aberrant Ovamorph
+  - Royal Nether Ovamorph
+  - Royal Ovamorph
+- Fixed artificial spawning issues with AVP entities:
+  - Fixed `/summon` command summoning AVP entities with incorrect data.
+  - Fixed spawner blocks spawning AVP entities with incorrect data.
+  - This affected entities in multiple ways. Such as:
+    - Royal chestbursters, facehuggers and ovamorphs not spawning as royal.
+    - Ovamorphs spawning with no facehugger inside.
+    - Ovamorphs spawning with a tiny size.
+    - Facehuggers spawning infertile.
+    - ...and potentially other entity data bugs that were fixed but not discovered prior to the fix.
+- Fixed the following alien entity types being inverted:
+  - Royal Chestburster (inverted with Aberrant Royal Chestburster).
+  - Royal Facehugger (inverted with Aberrant Royal Facehugger).
+  - Royal Ovamorph (inverted with Aberrant Royal Ovamorph).
 - Fixed the following aliens being improperly tagged as `#avp:xenomorphs`:
   - Royal Aberrant Chestburster
   - Royal Aberrant Facehugger

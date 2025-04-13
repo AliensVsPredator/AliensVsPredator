@@ -40,7 +40,9 @@ public class YautjaMaskManager {
     }
 
     public void load(CompoundTag compoundTag) {
-        yautja.getEntityData().set(hasMaskEDA, compoundTag.getBoolean(MASK_KEY));
+        if (compoundTag.contains(MASK_KEY)) {
+            yautja.getEntityData().set(hasMaskEDA, compoundTag.getBoolean(MASK_KEY));
+        }
     }
 
     public void save(CompoundTag compoundTag) {

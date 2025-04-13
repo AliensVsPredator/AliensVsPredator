@@ -1,9 +1,6 @@
 package com.avp.common.entity.living.alien.chestburster;
 
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.syncher.EntityDataAccessor;
-import net.minecraft.network.syncher.EntityDataSerializers;
-import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
@@ -19,7 +16,6 @@ import java.util.Objects;
 import com.avp.AVP;
 import com.avp.common.MoveAnalysis;
 import com.avp.common.entity.living.alien.Alien;
-import com.avp.common.entity.living.alien.RoyalAlien;
 import com.avp.common.entity.living.alien.xenomorph.Xenomorph;
 import com.avp.common.entity.type.AVPEntityTypes;
 import com.avp.common.gene.GeneKeys;
@@ -32,14 +28,7 @@ import com.avp.common.util.resin.ResinData;
 import com.avp.common.util.resin.ResinManager;
 import com.avp.common.util.resin.ResinProducer;
 
-public class Chestburster extends RoyalAlien implements ResinProducer {
-
-    private static final String IS_ROYAL_AFFLICTED_KEY = "isRoyalAfflicted";
-
-    private static final EntityDataAccessor<Boolean> IS_ROYAL = SynchedEntityData.defineId(
-        Chestburster.class,
-        EntityDataSerializers.BOOLEAN
-    );
+public class Chestburster extends Alien implements ResinProducer {
 
     public static AttributeSupplier.Builder createChestbursterAttributes() {
         return applyFrom(AVP.config.statsConfigs.CHESTBURSTER_STATS, Monster.createMonsterAttributes());
@@ -162,17 +151,10 @@ public class Chestburster extends RoyalAlien implements ResinProducer {
     }
 
     @Override
-    protected void defineSynchedData(SynchedEntityData.Builder builder) {
-        super.defineSynchedData(builder);
-        builder.define(IS_ROYAL, false);
-    }
-
-    @Override
     public void readAdditionalSaveData(CompoundTag compoundTag) {
         super.readAdditionalSaveData(compoundTag);
         growthManager.load(compoundTag);
         resinManager.load(compoundTag);
-        setIsRoyal(compoundTag.getBoolean(IS_ROYAL_AFFLICTED_KEY));
     }
 
     @Override
@@ -180,15 +162,6 @@ public class Chestburster extends RoyalAlien implements ResinProducer {
         super.addAdditionalSaveData(compoundTag);
         growthManager.save(compoundTag);
         resinManager.save(compoundTag);
-        compoundTag.putBoolean(IS_ROYAL_AFFLICTED_KEY, isRoyal());
-    }
-
-    public boolean isRoyal() {
-        return entityData.get(IS_ROYAL);
-    }
-
-    public void setIsRoyal(boolean isRoyal) {
-        entityData.set(IS_ROYAL, isRoyal);
     }
 
     @Override
