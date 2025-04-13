@@ -5,6 +5,7 @@ import net.minecraft.core.Registry;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.util.ExtraCodecs;
 
 import java.util.function.UnaryOperator;
 
@@ -23,6 +24,13 @@ public class DataComponents {
         "armor_case_container",
         builder -> builder.persistent(ArmorCaseContainerContents.CODEC)
             .networkSynchronized(ArmorCaseContainerContents.STREAM_CODEC)
+            .cacheEncoding()
+    );
+
+    public static final DataComponentType<Integer> CANISTER_CAPACITY = register(
+        "canister_capacity",
+        builder -> builder.persistent(ExtraCodecs.NON_NEGATIVE_INT)
+            .networkSynchronized(ByteBufCodecs.VAR_INT)
             .cacheEncoding()
     );
 

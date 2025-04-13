@@ -1,6 +1,5 @@
 package com.avp.common.util;
 
-import com.avp.common.item.AVPItems;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.LivingEntity;
@@ -13,6 +12,7 @@ import com.avp.common.entity.AVPEntityTypeTags;
 import com.avp.common.entity.projectile.BulletProjectile;
 import com.avp.common.entity.projectile.ShurikenItemEntity;
 import com.avp.common.entity.projectile.SmartDiscItemEntity;
+import com.avp.common.item.AVPItems;
 import com.avp.common.sound.AVPSoundEvents;
 
 public class ItemGoalUtil {
@@ -172,7 +172,9 @@ public class ItemGoalUtil {
 
         projectile.setDeltaMovement(projectile.getDeltaMovement().scale(0.95).add(vec3.normalize().scale(0.5)));
 
-        if (projectile.getOwner() instanceof Player player && projectile.getBoundingBox().intersects(projectile.getOwner().getBoundingBox())) {
+        if (
+            projectile.getOwner() instanceof Player player && projectile.getBoundingBox().intersects(projectile.getOwner().getBoundingBox())
+        ) {
             if (!AVPPredicates.IS_IMMORTAL.test(player)) {
                 player.getInventory().add(AVPItems.SMART_DISC.getDefaultInstance());
             }

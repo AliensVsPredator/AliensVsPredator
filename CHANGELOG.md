@@ -1,10 +1,20 @@
 # v0.0.22-beta
 
-## 🔥 Breaking Changes
-- N/A
+## ☢️ Breaking Changes
+- Removed Royal Jelly Canister item.
+  - May be re-added at some point in the future.
 
-## ✨ What's New
-- N/A
+## ✨️ What's New
+- Added new, fully-functional canister items:
+  - Function like buckets, but have a capacity of 8 instead of 1.
+  - Shift-right-click fluids to pick fluids up.
+  - Right-click replaceable blocks (air, vines, tall grass, etc.) to place fluids down.
+  - Canisters support the following fluids:
+    - Lava
+    - Milk
+    - Powder Snow
+    - Water
+  - Credits to [Cerbon](https://github.com/CerbonXD) for implementation.
 
 ## ♻️ Changes
 - N/A
@@ -21,7 +31,7 @@
 
 # v0.0.21-beta
 
-## 🔥 Breaking Changes
+## ☢️ Breaking Changes
 - Corrected irradiated xenomorph registry names:
   - `irraiated_drone` -> `irradiated_drone`
   - `irraiated_warrior` -> `irradiated_warrior`
@@ -29,7 +39,7 @@
 - Corrected irradiated aliens tag naming:
   - `irraiated_aliens` -> `irradiated_aliens`
 
-## ✨ What's New
+## ✨️ What's New
 - N/A
 
 ## ♻️ Changes
@@ -155,42 +165,6 @@
 ## Data Pack
 - Adds missing `acid_immune` tag to `nether_acid_immune`
 - Adds `resin_veins` tag to track all resin veins.
-
-## TODO
-- Add Queen sack that then lays eggs
-  - Once added, add royal line growth
-- Add Queen scream attack at half health
-  - Freezes player for 2 seconds
-  - Stops Queen moving during it.
-  - Summons 2 Praetorians and 2 Warriors
-- Add Queen charge attack.
-  - AOE attack that breaks blocks when hitting them.
-- Adjust Queen `ATTACK_CLAW_DOWN` attack to do:
-  - Massive knockback of about 8 blocks
-- Apply genetics of Queen to eggs spawned by Queen
-- Have sentry turret run off batteries
-- Charging system (likely Redstone?) for batteries
-- Batteries hold charges that machines use.
-- Compression item?
-- Irradiated rockets
-- Predator Spawn mechanics
-- Predator difficulty adjustments (unsure what this means?)
-- Predator Combi stick
-- More Structures
-- Make Redstone generator give power.
-- Make Resonator do:
-  - Run on batteries
-  - Prevent resin placement/spreading
-  - Make xenos target it
-- Make terminal do:
-  - Use power.
-  - Program chips (once added)
-- Make Blueprint block do blueprint related things.
-- Make Turret do:
-  - Run of batteries
-  - Turn to target when firing.
-  - GUI Option to changing targeting type
-  - Make it see the player that placed it as the owner.
 
 # v0.0.19-beta
 

@@ -116,6 +116,17 @@ public class MiscellaneousRecipeProvider {
             .requires(1, AVPBlocks.ROYAL_JELLY_BLOCK)
             .into(9, AVPItems.RAW_ROYAL_JELLY);
 
+        builder.shaped()
+            .withCategory(RecipeCategory.MISC)
+            .define('T', AVPItems.TITANIUM_INGOT)
+            .define('R', AVPItems.REDSTONE_CRYSTAL)
+            .define('P', Items.PISTON)
+            .define('B', Items.BUCKET)
+            .pattern("TRT")
+            .pattern("TPT")
+            .pattern("TBT")
+            .into(1, AVPItems.CANISTER);
+
         builder.shapeless()
             .withCategory(RecipeCategory.MISC)
             .requires(1, Items.POISONOUS_POTATO)
