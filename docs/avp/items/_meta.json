@@ -1,6 +1,18 @@
 {
-    "items.mdx": {
-        "name": "AVP Items",
-        "icon": "avp:blueprint_old_painless"
+    "resin.mdx": {
+        "name": "Resin",
+        "icon": "avp:resin"
+    },
+    "poison_jelly.mdx": {
+        "name": "Poison Jelly",
+        "icon": "avp:poison_jelly"
+    },
+    "resin_ball.mdx": {
+        "name": "Resin",
+        "icon": "avp:resin"
+    },
+    "royal_jelly.mdx": {
+        "name": "Royal Jelly",
+        "icon": "avp:royal_jelly"
     }
 }
