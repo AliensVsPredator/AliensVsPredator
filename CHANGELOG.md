@@ -44,6 +44,16 @@
 - Fixed Smart Disc duplication for creative players.
 - Fixed irradiated grenade items passively irradiating entities.
 - Fixed z-fighting on predator's mandible membranes.
+- Fixed the following aliens being improperly tagged as `#avp:xenomorphs`:
+  - Royal Aberrant Chestburster
+  - Royal Aberrant Facehugger
+  - Royal Aberrant Ovamorph
+  - Royal Nether Chestburster
+  - Royal Nether Facehugger
+  - Royal Nether Ovamorph
+  - Royal Chestburster
+  - Royal Facehugger
+  - Royal Ovamorph
 - Fixed irradiated acid replacing the following blocks:
   - Barrier Block
   - Bedrock
@@ -97,6 +107,16 @@
 - Corrected multiple data pack tagging mistakes:
   - Drones are no longer tagged as `#avp:royal_aliens`.
   - Irradiated praetorians are now tagged as `#avp:royal_aliens`.
+  - Fixed the following aliens being improperly tagged as `#avp:xenomorphs`:
+    - Royal Aberrant Chestburster
+    - Royal Aberrant Facehugger
+    - Royal Aberrant Ovamorph
+    - Royal Nether Chestburster
+    - Royal Nether Facehugger
+    - Royal Nether Ovamorph
+    - Royal Chestburster
+    - Royal Facehugger
+    - Royal Ovamorph
 
 ## 🔬 Technical Changes
 - Refactored smart disc return to owner code.
