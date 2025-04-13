@@ -1,10 +1,20 @@
 # v0.0.22-beta
 
-## 🔥 Breaking Changes
-- N/A
+## ☢️ Breaking Changes
+- Removed Royal Jelly Canister item.
+  - May be re-added at some point in the future.
 
-## ✨ What's New
-- N/A
+## ✨️ What's New
+- Added new, fully-functional canister items:
+  - Function like buckets, but have a capacity of 8 instead of 1.
+  - Shift-right-click fluids to pick fluids up.
+  - Right-click replaceable blocks (air, vines, tall grass, etc.) to place fluids down.
+  - Canisters support the following fluids:
+    - Water
+    - Lava
+    - Milk
+    - Powdered Snow
+  - Credits to [Cerbon](https://github.com/CerbonXD) for implementation.
 
 ## ♻️ Changes
 - N/A
@@ -21,7 +31,7 @@
 
 # v0.0.21-beta
 
-## 🔥 Breaking Changes
+## ☢️ Breaking Changes
 - Corrected irradiated xenomorph registry names:
   - `irraiated_drone` -> `irradiated_drone`
   - `irraiated_warrior` -> `irradiated_warrior`
@@ -29,7 +39,7 @@
 - Corrected irradiated aliens tag naming:
   - `irraiated_aliens` -> `irradiated_aliens`
 
-## ✨ What's New
+## ✨️ What's New
 - N/A
 
 ## ♻️ Changes

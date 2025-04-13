@@ -263,7 +263,7 @@ public class AVPItems {
     public static final Item WATER_CANISTER = register(
         new CanisterItem(
             Fluids.WATER,
-            new Item.Properties().stacksTo(1).craftRemainder(CANISTER).component(DataComponents.CANISTER_CONTENT_AMOUNT, 1)
+            new Item.Properties().stacksTo(1).craftRemainder(CANISTER).component(DataComponents.CANISTER_CAPACITY, 1)
         ),
         "water_canister"
     );
@@ -271,14 +271,14 @@ public class AVPItems {
     public static final Item LAVA_CANISTER = register(
         new CanisterItem(
             Fluids.LAVA,
-            new Item.Properties().stacksTo(1).craftRemainder(CANISTER).component(DataComponents.CANISTER_CONTENT_AMOUNT, 1)
+            new Item.Properties().stacksTo(1).craftRemainder(CANISTER).component(DataComponents.CANISTER_CAPACITY, 1)
         ),
         "lava_canister"
     );
 
     public static final Item MILK_CANISTER = register(
         new MilkCanisterItem(
-            new Item.Properties().craftRemainder(CANISTER).stacksTo(1).component(DataComponents.CANISTER_CONTENT_AMOUNT, 1)
+            new Item.Properties().craftRemainder(CANISTER).stacksTo(1).component(DataComponents.CANISTER_CAPACITY, 1)
         ),
         "milk_canister"
     );
@@ -287,7 +287,7 @@ public class AVPItems {
         new SolidCanisterItem(
             Blocks.POWDER_SNOW,
             SoundEvents.BUCKET_EMPTY_POWDER_SNOW,
-            new Item.Properties().stacksTo(1).component(DataComponents.CANISTER_CONTENT_AMOUNT, 1)
+            new Item.Properties().stacksTo(1).component(DataComponents.CANISTER_CAPACITY, 1)
         ),
         "powder_snow_canister"
     );

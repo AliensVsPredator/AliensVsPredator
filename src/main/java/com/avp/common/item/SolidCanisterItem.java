@@ -2,7 +2,6 @@ package com.avp.common.item;
 
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
@@ -20,7 +19,6 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.BucketPickup;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
-import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -40,35 +38,39 @@ public class SolidCanisterItem extends BlockItem {
     public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag) {
         super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
 
-        int currentContentAmount = stack.getOrDefault(DataComponents.CANISTER_CONTENT_AMOUNT, 0);
-        if (currentContentAmount == 0)
+        int currentContentAmount = stack.getOrDefault(DataComponents.CANISTER_CAPACITY, 0);
+
+        if (currentContentAmount == 0) {
             return;
+        }
 
         tooltipComponents.add(
-            Component.translatable("tooltip.avp.capacity").append(currentContentAmount + "/" + CanisterItem.MAX_CONTENT_AMOUNT)
+            Component.translatable("tooltip.avp.capacity").append(currentContentAmount + "/" + CanisterItem.MAX_CAPACITY)
         );
     }
 
     @Override
     public @NotNull InteractionResult useOn(UseOnContext context) {
-        Player player = context.getPlayer();
-        if (player == null)
-            return InteractionResult.FAIL;
+        var player = context.getPlayer();
 
-        UseOnContext modifiedContext = new UseOnContext(
+        if (player == null) {
+            return InteractionResult.FAIL;
+        }
+
+        var modifiedContext = new UseOnContext(
             context.getLevel(),
             player,
             context.getHand(),
             context.getItemInHand().copy(),
             getPlayerPOVHitResult(context.getLevel(), player, ClipContext.Fluid.NONE)
         );
-        InteractionResult result = super.useOn(modifiedContext);
+        var result = super.useOn(modifiedContext);
 
         if (result.consumesAction() && player.isShiftKeyDown()) {
-            int contentAmount = context.getItemInHand().getOrDefault(DataComponents.CANISTER_CONTENT_AMOUNT, 0);
+            int contentAmount = context.getItemInHand().getOrDefault(DataComponents.CANISTER_CAPACITY, 0);
 
             if (contentAmount > 1 && !player.isCreative()) {
-                CanisterItem.updateContentAmount(context.getItemInHand(), -1);
+                CanisterItem.updateCapacity(context.getItemInHand(), -1);
                 return result;
             }
 
@@ -76,23 +78,25 @@ public class SolidCanisterItem extends BlockItem {
             return InteractionResult.SUCCESS;
         }
 
-        BlockHitResult hitResult = getPlayerPOVHitResult(context.getLevel(), player, ClipContext.Fluid.SOURCE_ONLY);
+        var hitResult = getPlayerPOVHitResult(context.getLevel(), player, ClipContext.Fluid.SOURCE_ONLY);
 
-        if (CanisterItem.isInvalidHitResult(hitResult))
+        if (CanisterItem.isInvalidHitResult(hitResult)) {
             return InteractionResult.PASS;
+        }
 
-        BlockPos hitPos = hitResult.getBlockPos();
-        Direction hitDir = hitResult.getDirection();
-        BlockPos relativePos = hitPos.relative(hitDir);
+        var hitPos = hitResult.getBlockPos();
+        var hitDir = hitResult.getDirection();
+        var relativePos = hitPos.relative(hitDir);
 
         if (!CanisterItem.canPlayerInteract(context.getLevel(), player, hitPos, relativePos, hitDir, context.getItemInHand())) {
             return InteractionResult.FAIL;
         }
 
-        BlockState hitState = context.getLevel().getBlockState(hitPos);
+        var hitState = context.getLevel().getBlockState(hitPos);
 
-        if (CanisterItem.isFluidPickupAction(player, hitState))
+        if (CanisterItem.isFluidPickupAction(player, hitState)) {
             return handlePowderSnowPickup(player, context.getLevel(), context.getItemInHand(), hitPos, hitState);
+        }
 
         return InteractionResult.FAIL;
     }
@@ -104,23 +108,25 @@ public class SolidCanisterItem extends BlockItem {
         BlockPos hitPos,
         BlockState hitState
     ) {
-        BucketPickup bucketPickup = (BucketPickup) hitState.getBlock();
+        var bucketPickup = (BucketPickup) hitState.getBlock();
 
-        if (canisterStack.getOrDefault(DataComponents.CANISTER_CONTENT_AMOUNT, 0) < CanisterItem.MAX_CONTENT_AMOUNT) {
-            bucketPickup.pickupBlock(player, level, hitPos, hitState);
-
-            player.awardStat(Stats.ITEM_USED.get(this));
-            bucketPickup.getPickupSound().ifPresent(sound -> player.playSound(sound, 1.0F, 1.0F));
-            level.gameEvent(player, GameEvent.FLUID_PICKUP, hitPos);
-
-            CanisterItem.updateContentAmount(canisterStack, 1);
-
-            if (!level.isClientSide)
-                CriteriaTriggers.FILLED_BUCKET.trigger((ServerPlayer) player, canisterStack);
-
-            return InteractionResult.sidedSuccess(level.isClientSide);
+        if (canisterStack.getOrDefault(DataComponents.CANISTER_CAPACITY, 0) >= CanisterItem.MAX_CAPACITY) {
+            return InteractionResult.FAIL;
         }
-        return InteractionResult.FAIL;
+
+        bucketPickup.pickupBlock(player, level, hitPos, hitState);
+
+        player.awardStat(Stats.ITEM_USED.get(this));
+        bucketPickup.getPickupSound().ifPresent(sound -> player.playSound(sound, 1.0F, 1.0F));
+        level.gameEvent(player, GameEvent.FLUID_PICKUP, hitPos);
+
+        CanisterItem.updateCapacity(canisterStack, 1);
+
+        if (!level.isClientSide) {
+            CriteriaTriggers.FILLED_BUCKET.trigger((ServerPlayer) player, canisterStack);
+        }
+
+        return InteractionResult.sidedSuccess(level.isClientSide);
     }
 
     @Override

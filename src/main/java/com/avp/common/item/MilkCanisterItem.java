@@ -26,12 +26,14 @@ public class MilkCanisterItem extends Item {
     public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag) {
         super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
 
-        int currentContentAmount = stack.getOrDefault(DataComponents.CANISTER_CONTENT_AMOUNT, 0);
-        if (currentContentAmount == 0)
+        int currentContentAmount = stack.getOrDefault(DataComponents.CANISTER_CAPACITY, 0);
+
+        if (currentContentAmount == 0) {
             return;
+        }
 
         tooltipComponents.add(
-            Component.translatable("tooltip.avp.capacity").append(currentContentAmount + "/" + CanisterItem.MAX_CONTENT_AMOUNT)
+            Component.translatable("tooltip.avp.capacity").append(currentContentAmount + "/" + CanisterItem.MAX_CAPACITY)
         );
     }
 
@@ -42,18 +44,22 @@ public class MilkCanisterItem extends Item {
             serverPlayer.awardStat(Stats.ITEM_USED.get(this));
         }
 
-        if (!level.isClientSide)
+        if (!level.isClientSide) {
             livingEntity.removeAllEffects();
+        }
+
+        var canDeplete = stack.getOrDefault(DataComponents.CANISTER_CAPACITY, 0) > 1;
 
         if (livingEntity instanceof Player player) {
-            if (stack.getOrDefault(DataComponents.CANISTER_CONTENT_AMOUNT, 0) > 1 && !player.isCreative())
-                return CanisterItem.updateContentAmount(stack, -1);
+            if (canDeplete && !player.isCreative()) {
+                return CanisterItem.updateCapacity(stack, -1);
+            }
 
             return ItemUtils.createFilledResult(stack, player, new ItemStack(AVPItems.CANISTER), false);
-
         } else {
-            if (stack.getOrDefault(DataComponents.CANISTER_CONTENT_AMOUNT, 0) > 1)
-                return CanisterItem.updateContentAmount(stack, -1);
+            if (canDeplete) {
+                return CanisterItem.updateCapacity(stack, -1);
+            }
 
             stack.consume(1, livingEntity);
             return stack;

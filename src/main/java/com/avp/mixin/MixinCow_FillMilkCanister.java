@@ -33,17 +33,18 @@ public abstract class MixinCow_FillMilkCanister extends Animal {
 
         if (this.isBaby() || !isMilkHoldingCanister(itemStack)) {
             // Cow is a baby, can't be milked regardless of canister item.
+            // OR is some canister type other than an empty canister or milk canister.
             return;
         }
 
-        int contentAmount = itemStack.getOrDefault(DataComponents.CANISTER_CONTENT_AMOUNT, 0);
+        int contentAmount = itemStack.getOrDefault(DataComponents.CANISTER_CAPACITY, 0);
 
         ItemStack updatedStack;
 
         if (contentAmount == 0) {
             updatedStack = ItemUtils.createFilledResult(itemStack, player, AVPItems.MILK_CANISTER.getDefaultInstance());
         } else if (contentAmount < 8) {
-            updatedStack = CanisterItem.updateContentAmount(itemStack, 1);
+            updatedStack = CanisterItem.updateCapacity(itemStack, 1);
         } else {
             cir.setReturnValue(InteractionResult.PASS);
             return;
