@@ -29,6 +29,8 @@
 
 
 ## ♻️ Changes
+- Marines can now spawn on grass blocks.
+  - This only affects their spawns within camp structures, at the moment.
 - Cut nuke's default block sample count in half to improve performance.
 
 ## 🐞 Fixes
