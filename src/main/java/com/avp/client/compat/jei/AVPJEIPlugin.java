@@ -35,9 +35,10 @@ public class AVPJEIPlugin implements IModPlugin {
         }
 
         var recipeManager = Minecraft.getInstance().level.getRecipeManager();
-        var recipes = recipeManager.getAllRecipesFor(AVPRecipes.INDUSTRIAL_FURNACE_RECIPE_TYPE).stream()
-                .map(RecipeHolder::value)
-                .toList();
+        var recipes = recipeManager.getAllRecipesFor(AVPRecipes.INDUSTRIAL_FURNACE_RECIPE_TYPE)
+            .stream()
+            .map(RecipeHolder::value)
+            .toList();
         AVP.LOGGER.info("Found {} Industrial Furnace recipes", recipes.size());
         registration.addRecipes(IndustrialCategory.RECIPE_TYPE, recipes);
     }
