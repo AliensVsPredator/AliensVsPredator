@@ -32,6 +32,7 @@
 - Cut nuke's default block sample count in half to improve performance.
 
 ## 🐞 Fixes
+- Fixed ovamorphs spawning with altar structures despawning when they shouldn't.
 - Fixed grenade explosions leaving ghost blocks behind.
 - Fixed damage source instances being allocated every radiation effect tick.
 - Fixed marine's head being slightly tilted.
