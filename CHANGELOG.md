@@ -5,11 +5,17 @@
   - May be re-added at some point in the future.
 
 ## ✨ What's New
+- Added irradiated queens.
 - Added new structure in badlands, `badlands_royal_altar`
 - Added Chest loot tables for Marine structures.
 - Queen sounds registered.
 - Added Desert, deepslate, jungle and nether Royal Atlars.
 - Added Crafted Resin Blocks.
+- Added new textures for the queen's following forms:
+  - Aberrant
+  - Base
+  - Irradiated
+  - Nether
 - Added new, fully-functional canister items:
     - Function like buckets, but have a capacity of 8 instead of 1.
     - Shift-right-click fluids to pick fluids up.
@@ -86,14 +92,15 @@
   - Composed of `#avp:jungle_predator_armor` item tag.
 
 ## 🔬 Technical Changes
-- Refactor smart disc return to owner code.
-- Refactor REI support to new `com.avp.client.compat.rei` location.
-- Refactor Trades to dedicated class.
+- Refactored smart disc return to owner code.
+- Refactored REI support to new `com.avp.client.compat.rei` location.
+- Refactored Trades to dedicated class.
 - Removed unnecessary code in RadiatedBlock.java.
 - Cleaned up marine animation code, slightly more optimal.
 - Alphabetically sorted block tag contents.
 - Cleaned up acid damage code.
 - Added Just library dependency.
+- Refactored hive code to use Just types.
 
 # v0.0.21-beta
 
