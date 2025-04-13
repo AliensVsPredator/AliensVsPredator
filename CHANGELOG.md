@@ -32,6 +32,8 @@
 - Cut nuke's default block sample count in half to improve performance.
 
 ## 🐞 Fixes
+- Fixed drone being considered as a royal alien.
+- Fixed irradiated praetorian not being considered a royal alien.
 - Fixed boats spawning underneath marine camps.
 - Fixed ovamorphs spawning with altar structures despawning when they shouldn't.
 - Fixed grenade explosions leaving ghost blocks behind.
@@ -92,6 +94,9 @@
   - Composed of `#avp:nether_chitin_armor` and `#avp:plated_nether_chitin_armor` item tags.
 - Added `#avp:predator_armor` item tag (future-proofing).
   - Composed of `#avp:jungle_predator_armor` item tag.
+- Corrected multiple data pack tagging mistakes:
+  - Drones are no longer tagged as `#avp:royal_aliens`.
+  - Irradiated praetorians are now tagged as `#avp:royal_aliens`.
 
 ## 🔬 Technical Changes
 - Refactored smart disc return to owner code.

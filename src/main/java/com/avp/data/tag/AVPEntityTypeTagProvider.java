@@ -150,24 +150,24 @@ public class AVPEntityTypeTagProvider extends FabricTagProvider.EntityTypeTagPro
     private void addRoyalAliens() {
         getOrCreateTagBuilder(AVPEntityTypeTags.ROYAL_ALIENS)
             .add(
-                AVPEntityTypes.ROYAL_CHESTBURSTER,
-                AVPEntityTypes.ROYAL_OVAMORPH,
-                AVPEntityTypes.ROYAL_FACEHUGGER,
+                AVPEntityTypes.ABERRANT_PRAETORIAN,
+                AVPEntityTypes.ABERRANT_QUEEN,
+                AVPEntityTypes.IRRADIATED_PRAETORIAN,
+                AVPEntityTypes.IRRADIATED_QUEEN,
+                AVPEntityTypes.CHESTBURSTER_QUEEN,
                 AVPEntityTypes.ROYAL_ABERRANT_FACEHUGGER,
                 AVPEntityTypes.ROYAL_ABERRANT_CHESTBURSTER,
                 AVPEntityTypes.ROYAL_ABERRANT_OVAMORPH,
+                AVPEntityTypes.ROYAL_CHESTBURSTER,
+                AVPEntityTypes.ROYAL_FACEHUGGER,
                 AVPEntityTypes.ROYAL_NETHER_CHESTBURSTER,
-                AVPEntityTypes.ROYAL_NETHER_OVAMORPH,
                 AVPEntityTypes.ROYAL_NETHER_FACEHUGGER,
-                AVPEntityTypes.IRRADIATED_DRONE,
-                AVPEntityTypes.IRRADIATED_QUEEN,
-                AVPEntityTypes.ABERRANT_PRAETORIAN,
-                AVPEntityTypes.CHESTBURSTER_QUEEN,
+                AVPEntityTypes.ROYAL_NETHER_OVAMORPH,
+                AVPEntityTypes.ROYAL_OVAMORPH,
                 AVPEntityTypes.NETHER_PRAETORIAN,
+                AVPEntityTypes.NETHER_QUEEN,
                 AVPEntityTypes.PRAETORIAN,
-                AVPEntityTypes.QUEEN,
-                AVPEntityTypes.ABERRANT_QUEEN,
-                AVPEntityTypes.NETHER_QUEEN
+                AVPEntityTypes.QUEEN
             );
     }
 
