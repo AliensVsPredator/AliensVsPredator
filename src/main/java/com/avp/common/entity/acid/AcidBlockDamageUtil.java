@@ -33,8 +33,8 @@ public class AcidBlockDamageUtil {
     }
 
     private static void damageBlock(Acid acid, BlockPos blockPos, Level level) {
-        if (acid.isIrradiated()) {
-            level.setBlockAndUpdate(blockPos.below(), Blocks.BLUE_ICE.defaultBlockState());
+        if (acid.isIrradiated() && !level.getBlockState(blockPos).is(AVPBlockTags.IRRADIATED_ACID_IMMUNE)) {
+            level.setBlockAndUpdate(blockPos, Blocks.BLUE_ICE.defaultBlockState());
         } else {
             if (acid.isNetherAfflicted() && level.getBlockState(blockPos).isAir()) {
                 level.setBlockAndUpdate(blockPos, Blocks.FIRE.defaultBlockState());
@@ -68,6 +68,10 @@ public class AcidBlockDamageUtil {
 
     private static boolean canAcidDestroyBlock(Acid acid, BlockPos blockPos, Level level) {
         var blockState = level.getBlockState(blockPos);
+
+        if (blockState.isAir()) {
+            return false;
+        }
 
         if (acid.isNetherAfflicted()) {
             return !blockState.is(AVPBlockTags.NETHER_ACID_IMMUNE);
