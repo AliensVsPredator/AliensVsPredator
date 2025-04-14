@@ -44,6 +44,7 @@
 - Xenomorphs will now continue to pursue targets that move off of resin.
 
 ## 🐞 Fixes
+- Fixed xenomorph, marine and predator AI freezing up when their health is below 50%.
 - Fixed irradiated xenomorphs turning blocks at incorrect positions into blue ice blocks when hurt.
 - Fixed xenomorphs attacking targets off of resin when they shouldn't.
 - Fixed irradiated xenomorphs not attacking xenomorphs that were the irradiated xenomorph's original variant type.
