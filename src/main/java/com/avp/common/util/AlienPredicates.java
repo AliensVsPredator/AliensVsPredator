@@ -27,11 +27,15 @@ public class AlienPredicates {
             return AVPPredicates.areAliensEnemies(alien, potentialAlienTarget);
         }
 
-        var resinStanceCheck = potentialTarget instanceof Player || isStandingOnResin(potentialTarget);
+        if (
+            (potentialTarget instanceof Player && !AVPPredicates.IS_IMMORTAL.test(potentialTarget))
+                || potentialTarget instanceof Yautja
+                || isTargetingHiveMember(alien, potentialTarget)
+        ) {
+            return true;
+        }
 
-        return potentialTarget instanceof Yautja || resinStanceCheck || isTargetingHiveMember(alien, potentialTarget) || isValidTarget(
-            potentialTarget
-        );
+        return isStandingOnResin(potentialTarget);
     }
 
     public static boolean isValidTarget(@NotNull LivingEntity potentialTarget) {
@@ -66,10 +70,6 @@ public class AlienPredicates {
         var belowPos = basePos.below();
         var baseBlockState = potentialTarget.level().getBlockState(basePos);
         var belowBlockState = potentialTarget.level().getBlockState(belowPos);
-
-        if (potentialTarget instanceof Creeper && baseBlockState.is(AVPBlockTags.RESIN) || belowBlockState.is(AVPBlockTags.RESIN)) {
-            return false;
-        }
 
         // Attack targets that are standing on resin.
         // TODO: Eventually remove this once hive mechanics are added.

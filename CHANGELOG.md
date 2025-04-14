@@ -41,6 +41,7 @@
 - Increased royal chestburster's growth time into a praetorian 3x (600 seconds -> 1800 seconds).
 
 ## 🐞 Fixes
+- Fixed xenomorphs attacking targets off of resin when they shouldn't.
 - Fixed irradiated xenomorphs not attacking xenomorphs that were the irradiated xenomorph's original variant type.
 - Fixed drone being considered as a royal alien.
 - Fixed irradiated praetorian not being considered a royal alien.
