@@ -10,8 +10,6 @@ import net.minecraft.world.entity.SpawnPlacements;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.level.ServerLevelAccessor;
 
-import com.avp.AVP;
-
 public class YautjaSpawning {
 
     private static final int MIN_Y_LEVEL = 62;
