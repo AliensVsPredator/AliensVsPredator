@@ -40,6 +40,7 @@
 - Cut nuke's default block sample count in half to improve performance.
 
 ## 🐞 Fixes
+- Fixed irradiated xenomorphs not attacking xenomorphs that were the irradiated xenomorph's original variant type.
 - Fixed drone being considered as a royal alien.
 - Fixed irradiated praetorian not being considered a royal alien.
 - Fixed boats spawning underneath marine camps.

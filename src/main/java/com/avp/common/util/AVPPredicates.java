@@ -26,13 +26,15 @@ public class AVPPredicates {
 
     public static boolean areAliensEnemies(Alien first, Alien second) {
         var isSecondAberrant = second.isAberrant();
+        var isSecondIrradiated = second.isIrradiated();
         var isSecondNetherAfflicted = second.isNetherAfflicted();
         var firstHiveSignatureOption = first.hiveManager().signature();
         var secondHiveSignatureOption = second.hiveManager().signature();
 
         if (
-            !Objects.equals(first.isNetherAfflicted(), isSecondNetherAfflicted) ||
-                !Objects.equals(first.isAberrant(), isSecondAberrant)
+            !Objects.equals(first.isAberrant(), isSecondAberrant)
+                || !Objects.equals(first.isIrradiated(), isSecondIrradiated)
+                || !Objects.equals(first.isNetherAfflicted(), isSecondNetherAfflicted)
         ) {
             return true;
         }
