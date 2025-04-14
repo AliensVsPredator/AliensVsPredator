@@ -41,6 +41,7 @@
 - Increased royal chestburster's growth time into a praetorian 3x (600 seconds -> 1800 seconds).
 - Villagers now only run away from adult xenomorphs instead of all aliens.
 - Updated marine camp loot tables.
+- Xenomorphs will now continue to pursue targets that move off of resin.
 
 ## 🐞 Fixes
 - Fixed irradiated xenomorphs turning blocks at incorrect positions into blue ice blocks when hurt.
@@ -166,6 +167,7 @@
 - Added Just library dependency.
 - Refactored hive code to use Just types.
 - Refactored embryo growth code (cleanup / code-splitting).
+- Refactored alien targeting checks to make the code more readable and easier to maintain.
 - Removed Chestburster Queen entity type.
   - Was never fully implemented as an entity.
 

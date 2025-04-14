@@ -124,7 +124,7 @@ public abstract class Xenomorph extends Alien implements ResinProducer {
                 this,
                 LivingEntity.class,
                 false,
-                target -> AlienPredicates.isThreateningTarget(this, target)
+                target -> AlienPredicates.canTarget(this, target)
             )
         );
     }
@@ -145,7 +145,7 @@ public abstract class Xenomorph extends Alien implements ResinProducer {
 
             var target = getTarget();
 
-            if (target != null && !AlienPredicates.isThreateningTarget(this, target)) {
+            if (target != null && !AlienPredicates.canContinueTargeting(this, target)) {
                 // If the target is no longer valid, stop targeting them.
                 setTarget(null);
             }
