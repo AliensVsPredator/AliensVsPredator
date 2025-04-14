@@ -137,14 +137,14 @@ public class AlienPredicates {
      * @param range The range to search for targets.
      * @return A sorted list of valid targets, closest first.
      */
-    public static List<LivingEntity> findThreateningTargets(Alien alien, double range) {
+    public static List<LivingEntity> findTargets(Alien alien, double range) {
         var searchArea = alien.getBoundingBox().inflate(range);
 
         List<LivingEntity> targetsInRange = alien.level()
             .getEntitiesOfClass(
                 LivingEntity.class,
                 searchArea,
-                potentialTarget -> isAlienTarget(alien, potentialTarget)
+                potentialTarget -> canTarget(alien, potentialTarget)
             );
 
         targetsInRange.sort(Comparator.comparingDouble(alien::distanceTo));
@@ -159,7 +159,7 @@ public class AlienPredicates {
      * @param range The range to detect threats.
      */
     public static void prioritizeAndAttack(Alien alien, double range) {
-        var targets = findThreateningTargets(alien, range);
+        var targets = findTargets(alien, range);
 
         if (targets.isEmpty()) {
             alien.setTarget(null);
