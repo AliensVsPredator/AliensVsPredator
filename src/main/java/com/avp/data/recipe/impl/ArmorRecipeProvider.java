@@ -22,8 +22,18 @@ public class ArmorRecipeProvider {
         createPressureArmorSetRecipes(builder);
         createTacticalArmorSetRecipes(builder);
         createPlatedChitinArmorSetRecipes(builder);
+        createPlatedAberrantChitinArmorSetRecipes(builder);
+        createPlatedIrradiatedChitinArmorSetRecipes(builder);
         createPlatedNetherChitinArmorSetRecipes(builder);
 
+        createStandardArmorSetRecipes(
+            builder,
+            AVPItems.ABERRANT_CHITIN,
+            ArmorItems.ABERRANT_CHITIN_HELMET,
+            ArmorItems.ABERRANT_CHITIN_CHESTPLATE,
+            ArmorItems.ABERRANT_CHITIN_LEGGINGS,
+            ArmorItems.ABERRANT_CHITIN_BOOTS
+        );
         createStandardArmorSetRecipes(
             builder,
             AVPItems.CHITIN,
@@ -31,6 +41,14 @@ public class ArmorRecipeProvider {
             ArmorItems.CHITIN_CHESTPLATE,
             ArmorItems.CHITIN_LEGGINGS,
             ArmorItems.CHITIN_BOOTS
+        );
+        createStandardArmorSetRecipes(
+            builder,
+            AVPItems.IRRADIATED_CHITIN,
+            ArmorItems.IRRADIATED_CHITIN_HELMET,
+            ArmorItems.IRRADIATED_CHITIN_CHESTPLATE,
+            ArmorItems.IRRADIATED_CHITIN_LEGGINGS,
+            ArmorItems.IRRADIATED_CHITIN_BOOTS
         );
         createStandardArmorSetRecipes(
             builder,
@@ -56,6 +74,52 @@ public class ArmorRecipeProvider {
             ArmorItems.TITANIUM_LEGGINGS,
             ArmorItems.TITANIUM_BOOTS
         );
+    }
+
+    private static void createPlatedAberrantChitinArmorSetRecipes(RecipeBuilder builder) {
+        builder.shapeless()
+            .withCategory(RecipeCategory.COMBAT)
+            .requires(1, ArmorItems.ABERRANT_CHITIN_HELMET)
+            .requires(1, AVPItems.PLATED_ABERRANT_CHITIN)
+            .into(1, ArmorItems.PLATED_ABERRANT_CHITIN_HELMET);
+        builder.shapeless()
+            .withCategory(RecipeCategory.COMBAT)
+            .requires(1, ArmorItems.ABERRANT_CHITIN_CHESTPLATE)
+            .requires(1, AVPItems.PLATED_ABERRANT_CHITIN)
+            .into(1, ArmorItems.PLATED_ABERRANT_CHITIN_CHESTPLATE);
+        builder.shapeless()
+            .withCategory(RecipeCategory.COMBAT)
+            .requires(1, ArmorItems.ABERRANT_CHITIN_LEGGINGS)
+            .requires(1, AVPItems.PLATED_ABERRANT_CHITIN)
+            .into(1, ArmorItems.PLATED_ABERRANT_CHITIN_LEGGINGS);
+        builder.shapeless()
+            .withCategory(RecipeCategory.COMBAT)
+            .requires(1, ArmorItems.ABERRANT_CHITIN_BOOTS)
+            .requires(1, AVPItems.PLATED_ABERRANT_CHITIN)
+            .into(1, ArmorItems.PLATED_ABERRANT_CHITIN_BOOTS);
+    }
+
+    private static void createPlatedIrradiatedChitinArmorSetRecipes(RecipeBuilder builder) {
+        builder.shapeless()
+            .withCategory(RecipeCategory.COMBAT)
+            .requires(1, ArmorItems.IRRADIATED_CHITIN_HELMET)
+            .requires(1, AVPItems.PLATED_IRRADIATED_CHITIN)
+            .into(1, ArmorItems.PLATED_IRRADIATED_CHITIN_HELMET);
+        builder.shapeless()
+            .withCategory(RecipeCategory.COMBAT)
+            .requires(1, ArmorItems.IRRADIATED_CHITIN_CHESTPLATE)
+            .requires(1, AVPItems.PLATED_IRRADIATED_CHITIN)
+            .into(1, ArmorItems.PLATED_IRRADIATED_CHITIN_CHESTPLATE);
+        builder.shapeless()
+            .withCategory(RecipeCategory.COMBAT)
+            .requires(1, ArmorItems.IRRADIATED_CHITIN_LEGGINGS)
+            .requires(1, AVPItems.PLATED_IRRADIATED_CHITIN)
+            .into(1, ArmorItems.PLATED_IRRADIATED_CHITIN_LEGGINGS);
+        builder.shapeless()
+            .withCategory(RecipeCategory.COMBAT)
+            .requires(1, ArmorItems.IRRADIATED_CHITIN_BOOTS)
+            .requires(1, AVPItems.PLATED_IRRADIATED_CHITIN)
+            .into(1, ArmorItems.PLATED_IRRADIATED_CHITIN_BOOTS);
     }
 
     private static void createPlatedNetherChitinArmorSetRecipes(RecipeBuilder builder) {

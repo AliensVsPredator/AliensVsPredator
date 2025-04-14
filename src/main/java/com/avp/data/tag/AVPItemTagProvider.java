@@ -133,20 +133,40 @@ public class AVPItemTagProvider extends FabricTagProvider.ItemTagProvider {
         // Acid-resistant items
         getOrCreateTagBuilder(AVPItemTags.ACID_IMMUNE)
             .add(
+                ArmorItems.ABERRANT_CHITIN_HELMET,
+                ArmorItems.ABERRANT_CHITIN_CHESTPLATE,
+                ArmorItems.ABERRANT_CHITIN_LEGGINGS,
+                ArmorItems.ABERRANT_CHITIN_BOOTS,
+
                 ArmorItems.CHITIN_HELMET,
                 ArmorItems.CHITIN_CHESTPLATE,
                 ArmorItems.CHITIN_LEGGINGS,
                 ArmorItems.CHITIN_BOOTS,
+
+                ArmorItems.IRRADIATED_CHITIN_HELMET,
+                ArmorItems.IRRADIATED_CHITIN_CHESTPLATE,
+                ArmorItems.IRRADIATED_CHITIN_LEGGINGS,
+                ArmorItems.IRRADIATED_CHITIN_BOOTS,
 
                 ArmorItems.NETHER_CHITIN_HELMET,
                 ArmorItems.NETHER_CHITIN_CHESTPLATE,
                 ArmorItems.NETHER_CHITIN_LEGGINGS,
                 ArmorItems.NETHER_CHITIN_BOOTS,
 
+                ArmorItems.PLATED_ABERRANT_CHITIN_HELMET,
+                ArmorItems.PLATED_ABERRANT_CHITIN_CHESTPLATE,
+                ArmorItems.PLATED_ABERRANT_CHITIN_LEGGINGS,
+                ArmorItems.PLATED_ABERRANT_CHITIN_BOOTS,
+
                 ArmorItems.PLATED_CHITIN_HELMET,
                 ArmorItems.PLATED_CHITIN_CHESTPLATE,
                 ArmorItems.PLATED_CHITIN_LEGGINGS,
                 ArmorItems.PLATED_CHITIN_BOOTS,
+
+                ArmorItems.PLATED_IRRADIATED_CHITIN_HELMET,
+                ArmorItems.PLATED_IRRADIATED_CHITIN_CHESTPLATE,
+                ArmorItems.PLATED_IRRADIATED_CHITIN_LEGGINGS,
+                ArmorItems.PLATED_IRRADIATED_CHITIN_BOOTS,
 
                 ArmorItems.PLATED_NETHER_CHITIN_HELMET,
                 ArmorItems.PLATED_NETHER_CHITIN_CHESTPLATE,
@@ -246,11 +266,15 @@ public class AVPItemTagProvider extends FabricTagProvider.ItemTagProvider {
 
         getOrCreateTagBuilder(ItemTags.HEAD_ARMOR)
             .add(
+                ArmorItems.ABERRANT_CHITIN_HELMET,
                 ArmorItems.CHITIN_HELMET,
+                ArmorItems.IRRADIATED_CHITIN_HELMET,
                 ArmorItems.JUNGLE_PREDATOR_HELMET,
                 ArmorItems.NETHER_CHITIN_HELMET,
                 ArmorItems.MK50_HELMET,
+                ArmorItems.PLATED_ABERRANT_CHITIN_HELMET,
                 ArmorItems.PLATED_CHITIN_HELMET,
+                ArmorItems.PLATED_IRRADIATED_CHITIN_HELMET,
                 ArmorItems.PLATED_NETHER_CHITIN_HELMET,
                 ArmorItems.PRESSURE_HELMET,
                 ArmorItems.STEEL_HELMET,
@@ -260,11 +284,15 @@ public class AVPItemTagProvider extends FabricTagProvider.ItemTagProvider {
             );
         getOrCreateTagBuilder(ItemTags.CHEST_ARMOR)
             .add(
+                ArmorItems.ABERRANT_CHITIN_CHESTPLATE,
                 ArmorItems.CHITIN_CHESTPLATE,
+                ArmorItems.IRRADIATED_CHITIN_CHESTPLATE,
                 ArmorItems.JUNGLE_PREDATOR_CHESTPLATE,
                 ArmorItems.NETHER_CHITIN_CHESTPLATE,
                 ArmorItems.MK50_CHESTPLATE,
+                ArmorItems.PLATED_ABERRANT_CHITIN_CHESTPLATE,
                 ArmorItems.PLATED_CHITIN_CHESTPLATE,
+                ArmorItems.PLATED_IRRADIATED_CHITIN_CHESTPLATE,
                 ArmorItems.PLATED_NETHER_CHITIN_CHESTPLATE,
                 ArmorItems.PRESSURE_CHESTPLATE,
                 ArmorItems.STEEL_CHESTPLATE,
@@ -274,11 +302,15 @@ public class AVPItemTagProvider extends FabricTagProvider.ItemTagProvider {
             );
         getOrCreateTagBuilder(ItemTags.LEG_ARMOR)
             .add(
+                ArmorItems.ABERRANT_CHITIN_LEGGINGS,
                 ArmorItems.CHITIN_LEGGINGS,
+                ArmorItems.IRRADIATED_CHITIN_LEGGINGS,
                 ArmorItems.JUNGLE_PREDATOR_LEGGINGS,
                 ArmorItems.NETHER_CHITIN_LEGGINGS,
                 ArmorItems.MK50_LEGGINGS,
+                ArmorItems.PLATED_ABERRANT_CHITIN_LEGGINGS,
                 ArmorItems.PLATED_CHITIN_LEGGINGS,
+                ArmorItems.PLATED_IRRADIATED_CHITIN_LEGGINGS,
                 ArmorItems.PLATED_NETHER_CHITIN_LEGGINGS,
                 ArmorItems.PRESSURE_LEGGINGS,
                 ArmorItems.STEEL_LEGGINGS,
@@ -288,11 +320,15 @@ public class AVPItemTagProvider extends FabricTagProvider.ItemTagProvider {
             );
         getOrCreateTagBuilder(ItemTags.FOOT_ARMOR)
             .add(
+                ArmorItems.ABERRANT_CHITIN_BOOTS,
                 ArmorItems.CHITIN_BOOTS,
+                ArmorItems.IRRADIATED_CHITIN_BOOTS,
                 ArmorItems.JUNGLE_PREDATOR_BOOTS,
                 ArmorItems.NETHER_CHITIN_BOOTS,
                 ArmorItems.MK50_BOOTS,
+                ArmorItems.PLATED_ABERRANT_CHITIN_BOOTS,
                 ArmorItems.PLATED_CHITIN_BOOTS,
+                ArmorItems.PLATED_IRRADIATED_CHITIN_BOOTS,
                 ArmorItems.PLATED_NETHER_CHITIN_BOOTS,
                 ArmorItems.PRESSURE_BOOTS,
                 ArmorItems.STEEL_BOOTS,

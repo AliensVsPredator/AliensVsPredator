@@ -5,6 +5,10 @@
   - May be re-added at some point in the future.
 
 ## ✨ What's New
+- Added aberrant chitin armor set.
+- Added irradiated chitin armor set.
+- Added plated aberrant chitin armor set.
+- Added plated irradiated chitin armor set.
 - Added irradiated queens.
 - Added new structure in badlands, `badlands_royal_altar`
 - Added Chest loot tables for Marine structures.
