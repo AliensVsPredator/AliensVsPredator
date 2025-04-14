@@ -23,6 +23,7 @@ import com.avp.common.gene.behavior.GeneDecoders;
 import com.avp.common.lifecycle.registry.AlienLifecycleRegistry;
 import com.avp.common.manager.GrowthManager;
 import com.avp.common.util.AVPPredicates;
+import com.avp.common.util.AlienVariantUtil;
 import com.avp.common.util.XenomorphGrowthUtil;
 import com.avp.common.util.resin.ResinData;
 import com.avp.common.util.resin.ResinManager;
@@ -109,8 +110,9 @@ public class Chestburster extends Alien implements ResinProducer {
         moveAnalysis.tick();
         growthManager.tick();
         resinManager.tick();
+
         if (!this.level().isClientSide() && !this.isIrradiated()) {
-            var type = this.getType();
+            var type = AlienVariantUtil.getVariantTypeFor(this);
             var growthStage = AlienLifecycleRegistry.getOrNull(null, type);
 
             if (

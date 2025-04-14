@@ -48,6 +48,11 @@
 - Fixed Smart Disc duplication for creative players.
 - Fixed irradiated grenade items passively irradiating entities.
 - Fixed z-fighting on predator's mandible membranes.
+- Fixed royal chestbursters not growing up directly into their respective praetorian types.
+- Fixed the following royal facehuggers not producing their respective royal chestbursters:
+  - Royal Facehugger
+  - Royal Aberrant Facehugger
+  - Royal Nether Facehugger
 - Fixed the following royal ovamorphs not producing royal facehuggers:
   - Royal Aberrant Ovamorph
   - Royal Nether Ovamorph
@@ -149,6 +154,9 @@
 - Cleaned up acid damage code.
 - Added Just library dependency.
 - Refactored hive code to use Just types.
+- Refactored embryo growth code (cleanup / code-splitting).
+- Removed Chestburster Queen entity type.
+  - Was never fully implemented as an entity.
 
 # v0.0.21-beta
 

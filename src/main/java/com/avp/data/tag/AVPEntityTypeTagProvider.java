@@ -145,7 +145,6 @@ public class AVPEntityTypeTagProvider extends FabricTagProvider.EntityTypeTagPro
                 AVPEntityTypes.ABERRANT_QUEEN,
                 AVPEntityTypes.IRRADIATED_PRAETORIAN,
                 AVPEntityTypes.IRRADIATED_QUEEN,
-                AVPEntityTypes.CHESTBURSTER_QUEEN,
                 AVPEntityTypes.NETHER_PRAETORIAN,
                 AVPEntityTypes.NETHER_QUEEN,
                 AVPEntityTypes.PRAETORIAN,
@@ -213,7 +212,6 @@ public class AVPEntityTypeTagProvider extends FabricTagProvider.EntityTypeTagPro
         getOrCreateTagBuilder(AVPEntityTypeTags.NORMAL_ALIENS)
             .add(
                 AVPEntityTypes.CHESTBURSTER,
-                AVPEntityTypes.CHESTBURSTER_QUEEN,
                 AVPEntityTypes.DRONE,
                 AVPEntityTypes.FACEHUGGER,
                 AVPEntityTypes.OVAMORPH,

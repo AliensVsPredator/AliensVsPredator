@@ -47,6 +47,7 @@ import com.avp.common.manager.GrowthManager;
 import com.avp.common.manager.VibrationSystemManager;
 import com.avp.common.sound.AVPSoundEvents;
 import com.avp.common.util.AlienPredicates;
+import com.avp.common.util.AlienVariantUtil;
 import com.avp.common.util.XenomorphGrowthUtil;
 import com.avp.common.util.resin.ResinData;
 import com.avp.common.util.resin.ResinManager;
@@ -149,7 +150,7 @@ public abstract class Xenomorph extends Alien implements ResinProducer {
                 setTarget(null);
             }
 
-            var type = this.getType();
+            var type = AlienVariantUtil.getVariantTypeFor(this);
             var growthStage = AlienLifecycleRegistry.getOrNull(null, type);
 
             if (

@@ -1,6 +1,5 @@
 package com.avp.mixin;
 
-import com.avp.common.lifecycle.infection.Infection;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
@@ -26,8 +25,10 @@ import com.avp.common.entity.living.Host;
 import com.avp.common.entity.living.alien.Alien;
 import com.avp.common.entity.living.alien.parasite.Parasite;
 import com.avp.common.gene.GeneProviders;
+import com.avp.common.lifecycle.infection.Infection;
 import com.avp.common.lifecycle.registry.AlienInfectionRegistry;
 import com.avp.common.manager.GeneManager;
+import com.avp.common.util.AlienVariantUtil;
 
 @Mixin(LivingEntity.class)
 public abstract class MixinLivingEntity_GrowEmbryo extends Entity implements Host {
@@ -117,14 +118,19 @@ public abstract class MixinLivingEntity_GrowEmbryo extends Entity implements Hos
         }
 
         AlienInfectionRegistry.get(getType(), parasiteSourceType)
-            .ifSome(infection -> giveBirth(level, self, infection));
+            .ifSome(infection -> {
+                @SuppressWarnings("unchecked")
+                var typedInfection = (Infection<LivingEntity, LivingEntity>) infection;
+
+                giveBirth(level, self, typedInfection);
+            });
 
         this.parasiteSourceType = null;
         kill();
     }
 
     @Unique
-    private void giveBirth(Level level, LivingEntity self, Infection infection) {
+    private void giveBirth(Level level, LivingEntity self, Infection<LivingEntity, LivingEntity> infection) {
         var parasiteType = infection.parasiteType();
         var parasite = parasiteType.create(level);
 
@@ -213,7 +219,7 @@ public abstract class MixinLivingEntity_GrowEmbryo extends Entity implements Hos
 
     @Override
     public void injectEmbryo(Parasite parasite) {
-        this.parasiteSourceType = parasite.getType();
+        this.parasiteSourceType = AlienVariantUtil.getVariantTypeFor(parasite);
         getOrCreateGeneManager().setAll(parasite.geneManager().getAll());
 
         var self = LivingEntity.class.cast(this);
