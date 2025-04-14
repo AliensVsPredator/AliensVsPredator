@@ -539,7 +539,7 @@ public class AVPConfig {
 
         @Configurable
         @Configurable.Synchronized
-        public int PRAETORIAN_SHORTCUT_TIMER_SECONDS = 600;
+        public int PRAETORIAN_SHORTCUT_TIMER_SECONDS = 1800;
     }
 
     @Configurable

@@ -38,6 +38,7 @@
 - Reduced spawn weight of marines in marine camps (25 -> 15).
 - Reduced spawn weight of marines in communication outposts (25 -> 15).
 - Cut nuke's default block sample count in half to improve performance.
+- Increased royal chestburster's growth time into a praetorian 3x (600 seconds -> 1800 seconds).
 
 ## 🐞 Fixes
 - Fixed irradiated xenomorphs not attacking xenomorphs that were the irradiated xenomorph's original variant type.
