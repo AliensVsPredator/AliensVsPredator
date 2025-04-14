@@ -13,7 +13,7 @@
 - Added new structure in badlands, `badlands_royal_altar`
 - Added Chest loot tables for Marine structures.
 - Queen sounds registered.
-- Added Desert, deepslate, jungle and nether Royal Atlars.
+- Added Desert, deepslate, jungle and nether Royal Altars.
 - Added Crafted Resin Blocks.
 - Added new textures for the queen's following forms:
   - Aberrant
@@ -39,6 +39,8 @@
 - Reduced spawn weight of marines in communication outposts (25 -> 15).
 - Cut nuke's default block sample count in half to improve performance.
 - Increased royal chestburster's growth time into a praetorian 3x (600 seconds -> 1800 seconds).
+- Villagers now only run away from adult xenomorphs instead of all aliens.
+- Updated marine camp loot tables.
 
 ## 🐞 Fixes
 - Fixed irradiated xenomorphs turning blocks at incorrect positions into blue ice blocks when hurt.

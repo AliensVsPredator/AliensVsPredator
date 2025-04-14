@@ -15,8 +15,9 @@ public abstract class MixinVillagerHostilesSensor_RunAwayFromAVPMonsters extends
 
     @Inject(at = @At("HEAD"), method = "isClose", cancellable = true)
     void isClose(LivingEntity livingEntity, LivingEntity livingEntity2, CallbackInfoReturnable<Boolean> callbackInfoReturnable) {
-        if (!livingEntity2.getType().is(AVPEntityTypeTags.ALIENS))
+        if (!livingEntity2.getType().is(AVPEntityTypeTags.XENOMORPHS)) {
             return;
+        }
 
         var distance = 12F;
         var returnValue = livingEntity2.distanceToSqr(livingEntity) <= (distance * distance);
@@ -25,7 +26,7 @@ public abstract class MixinVillagerHostilesSensor_RunAwayFromAVPMonsters extends
 
     @Inject(at = @At("HEAD"), method = "isHostile", cancellable = true)
     void isHostile(LivingEntity livingEntity, CallbackInfoReturnable<Boolean> callbackInfoReturnable) {
-        if (livingEntity.getType().is(AVPEntityTypeTags.ALIENS)) {
+        if (livingEntity.getType().is(AVPEntityTypeTags.XENOMORPHS)) {
             callbackInfoReturnable.setReturnValue(true);
         }
     }
