@@ -3,6 +3,10 @@
 ## ☢️ Breaking Changes
 - Removed Royal Jelly Canister item.
   - May be re-added at some point in the future.
+- Removed minY/maxY spawn level properties from config.
+  - After further consideration, these properties only ended up confusing players as to why certain aliens weren't spawning in hives.
+  - The default values were too strict, and there's no reason a Praetorian can't spawn in a hive that's on the surface.
+  - The queen and predator max/min Y level limits remain unchanged, but are currently hardcoded. We may make them configurable in a future update.
 
 ## ✨ What's New
 - Added aberrant chitin armor set.

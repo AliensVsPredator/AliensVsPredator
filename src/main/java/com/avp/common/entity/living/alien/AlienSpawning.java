@@ -26,8 +26,6 @@ public class AlienSpawning {
             blockPos,
             randomSource
         ) -> {
-            var maxY = container.maxY;
-            var minY = container.minY;
             var requiresResin = container.requiresResin;
             var belowState = serverLevelAccessor.getBlockState(blockPos.below());
             var resinBlock = entityType.is(AVPEntityTypeTags.NETHER_ALIENS) ? AVPBlockTags.NETHER_RESIN : AVPBlockTags.NORMAL_RESIN;
@@ -51,9 +49,7 @@ public class AlienSpawning {
                 }
             }
 
-            return blockPos.getY() <= maxY
-                && blockPos.getY() >= minY
-                && isValidBiome
+            return isValidBiome
                 && checkSpawnRules(entityType, serverLevelAccessor, mobSpawnType, blockPos, randomSource);
         };
     }

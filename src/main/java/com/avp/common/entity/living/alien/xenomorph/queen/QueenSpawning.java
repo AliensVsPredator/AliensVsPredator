@@ -15,6 +15,8 @@ import com.avp.common.util.AVPPredicates;
 
 public class QueenSpawning {
 
+    private static final int MAX_Y_LEVEL = -24;
+
     public static final SpawnPlacements.SpawnPredicate<Queen> PREDICATE = (
         entityType,
         serverLevelAccessor,
@@ -22,11 +24,10 @@ public class QueenSpawning {
         blockPos,
         randomSource
     ) -> {
-        var maxY = AVP.config.spawnConfigs.QUEEN_SPAWN.maxY;
         var requiresResin = AVP.config.spawnConfigs.QUEEN_SPAWN.requiresResin;
         var isValidSpawn = !requiresResin || serverLevelAccessor.getBlockState(blockPos.below()).is(AVPBlockTags.RESIN);
 
-        return blockPos.getY() <= maxY &&
+        return blockPos.getY() <= MAX_Y_LEVEL &&
             isValidSpawn &&
             checkSpawnRules(entityType, serverLevelAccessor, mobSpawnType, blockPos, randomSource);
     };
@@ -38,11 +39,10 @@ public class QueenSpawning {
         blockPos,
         randomSource
     ) -> {
-        var maxY = AVP.config.spawnConfigs.NETHER_QUEEN_SPAWN.maxY;
         var requiresResin = AVP.config.spawnConfigs.NETHER_QUEEN_SPAWN.requiresResin;
         var isValidSpawn = !requiresResin || serverLevelAccessor.getBlockState(blockPos.below()).is(AVPBlockTags.RESIN);
 
-        return blockPos.getY() <= maxY &&
+        return blockPos.getY() <= MAX_Y_LEVEL &&
             isValidSpawn &&
             checkSpawnRules(entityType, serverLevelAccessor, mobSpawnType, blockPos, randomSource);
     };
