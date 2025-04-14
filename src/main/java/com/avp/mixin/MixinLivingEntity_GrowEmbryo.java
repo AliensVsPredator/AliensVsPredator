@@ -1,5 +1,6 @@
 package com.avp.mixin;
 
+import com.avp.common.lifecycle.infection.Infection;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
@@ -52,7 +53,7 @@ public abstract class MixinLivingEntity_GrowEmbryo extends Entity implements Hos
 
     @Inject(at = @At("HEAD"), method = "tick")
     public void tick(CallbackInfo callbackInfo) {
-        tickParasiteGrowth();
+        runParasiteRoutines();
     }
 
     @Inject(at = @At("HEAD"), method = "readAdditionalSaveData")
@@ -83,7 +84,7 @@ public abstract class MixinLivingEntity_GrowEmbryo extends Entity implements Hos
     }
 
     @Unique
-    private void tickParasiteGrowth() {
+    private void runParasiteRoutines() {
         var level = level();
 
         if (level.isClientSide) {
@@ -100,81 +101,95 @@ public abstract class MixinLivingEntity_GrowEmbryo extends Entity implements Hos
         }
 
         if (parasiteSourceType != null) {
-            parasiteGrowthTimeInTicks++;
-
-            // FIXME: Make time configurable
-            if (parasiteGrowthTimeInTicks > TimeUnit.MINUTES.toSeconds(5) * 20) {
-
-                AlienInfectionRegistry.get(getType(), parasiteSourceType)
-                    .ifSome(infection -> {
-                        var parasiteType = infection.parasiteType();
-                        var parasite = parasiteType.create(level);
-
-                        if (parasite == null) {
-                            return;
-                        }
-
-                        if (parasite instanceof Mob mob) {
-                            mob.setPersistenceRequired();
-                        }
-
-                        if (parasite instanceof Alien alien) {
-                            var geneManager = alien.geneManager();
-                            geneManager.setAll(getOrCreateGeneManager().getAll());
-                            alien.updateStateBasedOnGenetics();
-
-                            // Transfer genetics from parasite source to parasite.
-                            var hostType = self.getType();
-                            var hostSpecificBonusGenesMap = GeneProviders.GENE_MAPS_BY_ENTITY_TYPE.get(hostType);
-
-                            if (hostSpecificBonusGenesMap != null) {
-                                hostSpecificBonusGenesMap.forEach(geneManager::add);
-                            }
-
-                            // Should be safe since this is a LivingEntity mixin, would only break if some other mod
-                            // is modifying getType to NOT return a living entity type.
-                            @SuppressWarnings("unchecked")
-                            var commonBonusGenesMap = GeneProviders.computeInheritedGeneAdditiveValues(
-                                (EntityType<? extends LivingEntity>) hostType
-                            );
-                            commonBonusGenesMap.forEach(geneManager::add);
-                        }
-
-                        parasite.moveTo(position(), getYRot(), getXRot());
-                        parasite.setYRot(getYRot());
-                        parasite.setXRot(getXRot());
-
-                        // TODO: This shouldn't be here at all.
-                        if (self instanceof Witch) {
-                            var effects = List.of(
-                                MobEffects.DAMAGE_BOOST,
-                                MobEffects.MOVEMENT_SPEED,
-                                MobEffects.REGENERATION,
-                                MobEffects.DIG_SPEED,
-                                MobEffects.JUMP
-                            );
-                            var randomEffect = effects.get(self.getRandom().nextInt(effects.size()));
-                            // TODO: Prefer genes over effects, effects can be removed by milk / other factors, genes
-                            // can't.
-                            parasite.addEffect(new MobEffectInstance(randomEffect, Integer.MAX_VALUE, 0, false, false));
-                        }
-
-                        // Copies effects from previous entity to the next
-                        for (var effect : self.getActiveEffects()) {
-                            parasite.addEffect(new MobEffectInstance(effect));
-                        }
-
-                        // TODO: Adjust parasite's base attributes based on genes.
-
-                        level.addFreshEntity(parasite);
-                    });
-
-                this.parasiteSourceType = null;
-                kill();
-            }
+            tickParasiteGrowth(level, self);
         } else {
             parasiteGrowthTimeInTicks = 0;
         }
+    }
+
+    @Unique
+    private void tickParasiteGrowth(Level level, LivingEntity self) {
+        parasiteGrowthTimeInTicks++;
+
+        // FIXME: Make time configurable
+        if (parasiteGrowthTimeInTicks <= TimeUnit.MINUTES.toSeconds(5) * 20) {
+            return;
+        }
+
+        AlienInfectionRegistry.get(getType(), parasiteSourceType)
+            .ifSome(infection -> giveBirth(level, self, infection));
+
+        this.parasiteSourceType = null;
+        kill();
+    }
+
+    @Unique
+    private void giveBirth(Level level, LivingEntity self, Infection infection) {
+        var parasiteType = infection.parasiteType();
+        var parasite = parasiteType.create(level);
+
+        if (parasite == null) {
+            return;
+        }
+
+        if (parasite instanceof Mob mob) {
+            mob.setPersistenceRequired();
+        }
+
+        if (parasite instanceof Alien alien) {
+            applyGenesToParasite(self, alien);
+        }
+
+        parasite.moveTo(position(), getYRot(), getXRot());
+        parasite.setYRot(getYRot());
+        parasite.setXRot(getXRot());
+
+        // TODO: This shouldn't be here at all.
+        if (self instanceof Witch) {
+            var effects = List.of(
+                MobEffects.DAMAGE_BOOST,
+                MobEffects.MOVEMENT_SPEED,
+                MobEffects.REGENERATION,
+                MobEffects.DIG_SPEED,
+                MobEffects.JUMP
+            );
+            var randomEffect = effects.get(self.getRandom().nextInt(effects.size()));
+            // TODO: Prefer genes over effects, effects can be removed by milk / other factors, genes
+            // can't.
+            parasite.addEffect(new MobEffectInstance(randomEffect, Integer.MAX_VALUE, 0, false, false));
+        }
+
+        // Copies effects from previous entity to the next
+        for (var effect : self.getActiveEffects()) {
+            parasite.addEffect(new MobEffectInstance(effect));
+        }
+
+        // TODO: Adjust parasite's base attributes based on genes.
+
+        level.addFreshEntity(parasite);
+    }
+
+    @Unique
+    private void applyGenesToParasite(LivingEntity self, Alien alien) {
+        var geneManager = alien.geneManager();
+        geneManager.setAll(getOrCreateGeneManager().getAll());
+        alien.updateStateBasedOnGenetics();
+
+        // Transfer genetics from parasite source to parasite.
+        var hostType = self.getType();
+        var hostSpecificBonusGenesMap = GeneProviders.GENE_MAPS_BY_ENTITY_TYPE.get(hostType);
+
+        if (hostSpecificBonusGenesMap != null) {
+            hostSpecificBonusGenesMap.forEach(geneManager::add);
+        }
+
+        // Should be safe since this is a LivingEntity mixin, would only break if some other mod
+        // is modifying getType to NOT return a living entity type.
+        @SuppressWarnings("unchecked")
+        var commonBonusGenesMap = GeneProviders.computeInheritedGeneAdditiveValues(
+            (EntityType<? extends LivingEntity>) hostType
+        );
+        commonBonusGenesMap.forEach(geneManager::add);
     }
 
     @Override
