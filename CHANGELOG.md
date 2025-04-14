@@ -44,6 +44,7 @@
 - Xenomorphs will now continue to pursue targets that move off of resin.
 
 ## 🐞 Fixes
+- Fixed irradiated xenomorph spawn egg colors.
 - Fixed xenomorphs lunging even when they do not have line-of-sight to their target.
 - Fixed xenomorph, marine and predator AI freezing up when their health is below 50%.
 - Fixed irradiated xenomorphs turning blocks at incorrect positions into blue ice blocks when hurt.
