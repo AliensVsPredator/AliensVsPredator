@@ -5,10 +5,10 @@ import net.minecraft.world.entity.LivingEntity;
 
 import java.util.Set;
 
-public record Infection(
-    EntityType<?> parasiteSourceType,
+public record Infection<S extends LivingEntity, P extends LivingEntity>(
+    EntityType<S> parasiteSourceType,
     Set<EntityType<?>> hosts,
-    EntityType<? extends LivingEntity> parasiteType,
+    EntityType<P> parasiteType,
     int impregnationDelay,
     int detachDelay,
     int gestationTime

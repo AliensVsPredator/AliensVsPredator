@@ -3,13 +3,21 @@
 ## ☢️ Breaking Changes
 - Removed Royal Jelly Canister item.
   - May be re-added at some point in the future.
+- Removed minY/maxY spawn level properties from config.
+  - After further consideration, these properties only ended up confusing players as to why certain aliens weren't spawning in hives.
+  - The default values were too strict, and there's no reason a Praetorian can't spawn in a hive that's on the surface.
+  - The queen and predator max/min Y level limits remain unchanged, but are currently hardcoded. We may make them configurable in a future update.
 
 ## ✨ What's New
+- Added aberrant chitin armor set.
+- Added irradiated chitin armor set.
+- Added plated aberrant chitin armor set.
+- Added plated irradiated chitin armor set.
 - Added irradiated queens.
 - Added new structure in badlands, `badlands_royal_altar`
 - Added Chest loot tables for Marine structures.
 - Queen sounds registered.
-- Added Desert, deepslate, jungle and nether Royal Atlars.
+- Added Desert, deepslate, jungle and nether Royal Altars.
 - Added Crafted Resin Blocks.
 - Added new textures for the queen's following forms:
   - Aberrant
@@ -34,8 +42,18 @@
 - Reduced spawn weight of marines in marine camps (25 -> 15).
 - Reduced spawn weight of marines in communication outposts (25 -> 15).
 - Cut nuke's default block sample count in half to improve performance.
+- Increased royal chestburster's growth time into a praetorian 3x (600 seconds -> 1800 seconds).
+- Villagers now only run away from adult xenomorphs instead of all aliens.
+- Updated marine camp loot tables.
+- Xenomorphs will now continue to pursue targets that move off of resin.
 
 ## 🐞 Fixes
+- Fixed irradiated xenomorph spawn egg colors.
+- Fixed xenomorphs lunging even when they do not have line-of-sight to their target.
+- Fixed xenomorph, marine and predator AI freezing up when their health is below 50%.
+- Fixed irradiated xenomorphs turning blocks at incorrect positions into blue ice blocks when hurt.
+- Fixed xenomorphs attacking targets off of resin when they shouldn't.
+- Fixed irradiated xenomorphs not attacking xenomorphs that were the irradiated xenomorph's original variant type.
 - Fixed drone being considered as a royal alien.
 - Fixed irradiated praetorian not being considered a royal alien.
 - Fixed boats spawning underneath marine camps.
@@ -48,6 +66,11 @@
 - Fixed Smart Disc duplication for creative players.
 - Fixed irradiated grenade items passively irradiating entities.
 - Fixed z-fighting on predator's mandible membranes.
+- Fixed royal chestbursters not growing up directly into their respective praetorian types.
+- Fixed the following royal facehuggers not producing their respective royal chestbursters:
+  - Royal Facehugger
+  - Royal Aberrant Facehugger
+  - Royal Nether Facehugger
 - Fixed the following royal ovamorphs not producing royal facehuggers:
   - Royal Aberrant Ovamorph
   - Royal Nether Ovamorph
@@ -76,6 +99,7 @@
   - Royal Facehugger
   - Royal Ovamorph
 - Fixed irradiated acid replacing the following blocks:
+  - Air
   - Barrier Block
   - Bedrock
   - Chain Command Block
@@ -149,6 +173,10 @@
 - Cleaned up acid damage code.
 - Added Just library dependency.
 - Refactored hive code to use Just types.
+- Refactored embryo growth code (cleanup / code-splitting).
+- Refactored alien targeting checks to make the code more readable and easier to maintain.
+- Removed Chestburster Queen entity type.
+  - Was never fully implemented as an entity.
 
 # v0.0.21-beta
 

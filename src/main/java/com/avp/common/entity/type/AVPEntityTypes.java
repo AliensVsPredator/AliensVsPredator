@@ -54,12 +54,6 @@ public class AVPEntityTypes {
         EntityType.Builder.of(Chestburster::new, ALIEN_CATEGORY).sized(0.35f, 0.35f)
     );
 
-    public static final EntityType<Queen> CHESTBURSTER_QUEEN = register(
-        "chestburster_queen",
-        // TODO:
-        EntityType.Builder.of(Queen::new, ALIEN_CATEGORY).sized(1.98f, 3.98f)
-    );
-
     public static final EntityType<Drone> DRONE = register(
         "drone",
         EntityType.Builder.of(Drone::new, ALIEN_CATEGORY).sized(0.8f, 1.98f)
