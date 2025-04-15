@@ -205,6 +205,8 @@ public class BlockLootTableProvider extends FabricBlockLootTableProvider {
         dropSelf(AVPBlocks.TITANIUM_STANDING_STAIRS);
         dropSelf(AVPBlocks.TITANIUM_FASTENED_SIDING_STAIRS);
         dropSelf(AVPBlocks.TITANIUM_FASTENED_STANDING_STAIRS);
+
+        add(AVPBlocks.INDUSTRIAL_FURNACE, this::createNameableBlockEntityTable);
     }
 
     public void dropSlab(Block block) {
