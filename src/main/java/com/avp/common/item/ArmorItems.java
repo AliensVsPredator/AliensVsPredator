@@ -30,6 +30,34 @@ public class ArmorItems {
 
     private static final int VERITANIUM_DURABILITY_MULTIPLIER = 40;
 
+    public static final Item ABERRANT_CHITIN_BOOTS = register(
+        "aberrant_chitin_boots",
+        ArmorMaterials.ABERRANT_CHITIN,
+        ArmorItem.Type.BOOTS,
+        CHITIN_DURABILITY_MULTIPLIER
+    );
+
+    public static final Item ABERRANT_CHITIN_CHESTPLATE = register(
+        "aberrant_chitin_chestplate",
+        ArmorMaterials.ABERRANT_CHITIN,
+        ArmorItem.Type.CHESTPLATE,
+        CHITIN_DURABILITY_MULTIPLIER
+    );
+
+    public static final Item ABERRANT_CHITIN_HELMET = register(
+        "aberrant_chitin_helmet",
+        ArmorMaterials.ABERRANT_CHITIN,
+        ArmorItem.Type.HELMET,
+        CHITIN_DURABILITY_MULTIPLIER
+    );
+
+    public static final Item ABERRANT_CHITIN_LEGGINGS = register(
+        "aberrant_chitin_leggings",
+        ArmorMaterials.ABERRANT_CHITIN,
+        ArmorItem.Type.LEGGINGS,
+        CHITIN_DURABILITY_MULTIPLIER
+    );
+
     public static final Item CHITIN_BOOTS = register(
         "chitin_boots",
         ArmorMaterials.CHITIN,
@@ -54,6 +82,34 @@ public class ArmorItems {
     public static final Item CHITIN_LEGGINGS = register(
         "chitin_leggings",
         ArmorMaterials.CHITIN,
+        ArmorItem.Type.LEGGINGS,
+        CHITIN_DURABILITY_MULTIPLIER
+    );
+
+    public static final Item IRRADIATED_CHITIN_BOOTS = register(
+        "irradiated_chitin_boots",
+        ArmorMaterials.IRRADIATED_CHITIN,
+        ArmorItem.Type.BOOTS,
+        CHITIN_DURABILITY_MULTIPLIER
+    );
+
+    public static final Item IRRADIATED_CHITIN_CHESTPLATE = register(
+        "irradiated_chitin_chestplate",
+        ArmorMaterials.IRRADIATED_CHITIN,
+        ArmorItem.Type.CHESTPLATE,
+        CHITIN_DURABILITY_MULTIPLIER
+    );
+
+    public static final Item IRRADIATED_CHITIN_HELMET = register(
+        "irradiated_chitin_helmet",
+        ArmorMaterials.IRRADIATED_CHITIN,
+        ArmorItem.Type.HELMET,
+        CHITIN_DURABILITY_MULTIPLIER
+    );
+
+    public static final Item IRRADIATED_CHITIN_LEGGINGS = register(
+        "irradiated_chitin_leggings",
+        ArmorMaterials.IRRADIATED_CHITIN,
         ArmorItem.Type.LEGGINGS,
         CHITIN_DURABILITY_MULTIPLIER
     );
@@ -150,6 +206,34 @@ public class ArmorItems {
         Item.Properties::fireResistant
     );
 
+    public static final Item PLATED_ABERRANT_CHITIN_BOOTS = register(
+        "plated_aberrant_chitin_boots",
+        ArmorMaterials.PLATED_ABERRANT_CHITIN,
+        ArmorItem.Type.BOOTS,
+        PLATED_CHITIN_DURABILITY_MULTIPLIER
+    );
+
+    public static final Item PLATED_ABERRANT_CHITIN_CHESTPLATE = register(
+        "plated_aberrant_chitin_chestplate",
+        ArmorMaterials.PLATED_ABERRANT_CHITIN,
+        ArmorItem.Type.CHESTPLATE,
+        PLATED_CHITIN_DURABILITY_MULTIPLIER
+    );
+
+    public static final Item PLATED_ABERRANT_CHITIN_HELMET = register(
+        "plated_aberrant_chitin_helmet",
+        ArmorMaterials.PLATED_ABERRANT_CHITIN,
+        ArmorItem.Type.HELMET,
+        PLATED_CHITIN_DURABILITY_MULTIPLIER
+    );
+
+    public static final Item PLATED_ABERRANT_CHITIN_LEGGINGS = register(
+        "plated_aberrant_chitin_leggings",
+        ArmorMaterials.PLATED_ABERRANT_CHITIN,
+        ArmorItem.Type.LEGGINGS,
+        PLATED_CHITIN_DURABILITY_MULTIPLIER
+    );
+
     public static final Item PLATED_CHITIN_BOOTS = register(
         "plated_chitin_boots",
         ArmorMaterials.PLATED_CHITIN,
@@ -174,6 +258,34 @@ public class ArmorItems {
     public static final Item PLATED_CHITIN_LEGGINGS = register(
         "plated_chitin_leggings",
         ArmorMaterials.PLATED_CHITIN,
+        ArmorItem.Type.LEGGINGS,
+        PLATED_CHITIN_DURABILITY_MULTIPLIER
+    );
+
+    public static final Item PLATED_IRRADIATED_CHITIN_BOOTS = register(
+        "plated_irradiated_chitin_boots",
+        ArmorMaterials.PLATED_IRRADIATED_CHITIN,
+        ArmorItem.Type.BOOTS,
+        PLATED_CHITIN_DURABILITY_MULTIPLIER
+    );
+
+    public static final Item PLATED_IRRADIATED_CHITIN_CHESTPLATE = register(
+        "plated_irradiated_chitin_chestplate",
+        ArmorMaterials.PLATED_IRRADIATED_CHITIN,
+        ArmorItem.Type.CHESTPLATE,
+        PLATED_CHITIN_DURABILITY_MULTIPLIER
+    );
+
+    public static final Item PLATED_IRRADIATED_CHITIN_HELMET = register(
+        "plated_irradiated_chitin_helmet",
+        ArmorMaterials.PLATED_IRRADIATED_CHITIN,
+        ArmorItem.Type.HELMET,
+        PLATED_CHITIN_DURABILITY_MULTIPLIER
+    );
+
+    public static final Item PLATED_IRRADIATED_CHITIN_LEGGINGS = register(
+        "plated_irradiated_chitin_leggings",
+        ArmorMaterials.PLATED_IRRADIATED_CHITIN,
         ArmorItem.Type.LEGGINGS,
         PLATED_CHITIN_DURABILITY_MULTIPLIER
     );

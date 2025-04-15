@@ -46,7 +46,7 @@ public class AlienVariantUtil {
             case Alien netherAlien when netherAlien.isNetherAfflicted() -> alien.getNetherType();
             case Alien aberrantAlien when aberrantAlien.isAberrant() -> alien.getAberrantType();
             case Alien irradiatedAlien when irradiatedAlien.isIrradiated() -> alien.getIrradiatedType();
-            default -> null;
+            default -> alien.getDefaultType();
         };
     }
 

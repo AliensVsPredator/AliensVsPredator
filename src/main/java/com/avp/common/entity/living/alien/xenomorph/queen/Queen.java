@@ -37,7 +37,7 @@ public class Queen extends Xenomorph {
 
     @Override
     public @Nullable EntityType<? extends Alien> getIrradiatedType() {
-        return null;
+        return AVPEntityTypes.IRRADIATED_QUEEN;
     }
 
     @Override
@@ -110,13 +110,18 @@ public class Queen extends Xenomorph {
     @Override
     public void tick() {
         super.tick();
-        if (!level().isClientSide() && tickCount < 2) {
-            var belowBlockPos = blockPosition().below();
-            var blockState = level().getBlockState(belowBlockPos);
-            var resinNode = AlienVariantUtil.getResinNodeForType(this).getBlock();
 
-            if (!blockState.is(resinNode) && !blockState.is(AVPBlockTags.ACID_IMMUNE)) {
-                level().setBlockAndUpdate(belowBlockPos, AlienVariantUtil.getResinNodeForType(this));
+        if (!level().isClientSide()) {
+            becomeIrradiated();
+
+            if (tickCount < 2) {
+                var belowBlockPos = blockPosition().below();
+                var blockState = level().getBlockState(belowBlockPos);
+                var resinNode = AlienVariantUtil.getResinNodeForType(this).getBlock();
+
+                if (!blockState.is(resinNode) && !blockState.is(AVPBlockTags.ACID_IMMUNE)) {
+                    level().setBlockAndUpdate(belowBlockPos, AlienVariantUtil.getResinNodeForType(this));
+                }
             }
         }
     }

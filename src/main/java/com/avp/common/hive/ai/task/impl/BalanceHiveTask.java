@@ -114,7 +114,7 @@ public class BalanceHiveTask extends HiveTask {
             return;
         }
 
-        hive.hiveLeader().ifPresent(hiveLeader -> {
+        hive.hiveLeader().ifSome(hiveLeader -> {
             if (!Objects.equals(hiveLeader.getType(), AVPEntityTypes.PRAETORIAN) || !(hiveLeader instanceof Xenomorph xenomorph)) {
                 return;
             }

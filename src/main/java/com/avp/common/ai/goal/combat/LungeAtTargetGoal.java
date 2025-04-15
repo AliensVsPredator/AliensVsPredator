@@ -51,15 +51,26 @@ public class LungeAtTargetGoal extends Goal {
 
         var canUse = !isOnCooldown() && mob.getRandom().nextFloat() < normalizedChance;
 
-        return mob.getTarget() != null &&
-            mob.onGround() &&
-            isInRange() &&
-            canUse;
+        // Target is not null (duh).
+        return mob.getTarget() != null
+            // AND on solid ground, we can't lunge off of nothing.
+            && mob.onGround()
+            // AND is within range to lunge at the target.
+            && isInRange()
+            // AND cooldown has passed.
+            && canUse
+            // AND has line of sight, we need to see what we want to lunge at.
+            && mob.getSensing().hasLineOfSight(mob.getTarget());
     }
 
     @Override
     public boolean canContinueToUse() {
-        return mob.getTarget() != null && mob.onGround();
+        // Target is not null (duh).
+        return mob.getTarget() != null
+            // AND on solid ground, we can't lunge off of nothing.
+            && mob.onGround()
+            // AND has line of sight, we need to see what we're lunging at.
+            && mob.getSensing().hasLineOfSight(mob.getTarget());
     }
 
     @Override

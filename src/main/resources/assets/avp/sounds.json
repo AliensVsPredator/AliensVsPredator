@@ -8,6 +8,71 @@
     ],
     "subtitle": "subtitles.block.acid.burn"
   },
+  "entity.queen.arm_attack": {
+    "sounds": [
+      "avp:entity/queen/attack/arm_attack"
+    ],
+    "subtitle": "subtitles.entity.queen.arm_attack"
+  },
+  "entity.queen.back_hand_attack": {
+    "sounds": [
+      "avp:entity/queen/attack/back_hand_attack"
+    ],
+    "subtitle": "subtitles.entity.queen.back_hand_attack"
+  },
+  "entity.queen.ram_attack": {
+    "sounds": [
+      "avp:entity/queen/attack/ram_attack"
+    ],
+    "subtitle": "subtitles.entity.queen.ram_attack"
+  },
+  "entity.queen.scream": {
+    "sounds": [
+      "avp:entity/queen/attack/scream"
+    ],
+    "subtitle": "subtitles.entity.queen.scream"
+  },
+  "entity.queen.tail_attack": {
+    "sounds": [
+      "avp:entity/queen/attack/tail_attack"
+    ],
+    "subtitle": "subtitles.entity.queen.tail_attack"
+  },
+  "entity.queen.death": {
+    "sounds": [
+      "avp:entity/queen/death/death"
+    ],
+    "subtitle": "subtitles.entity.queen.death"
+  },
+  "entity.queen.pain": {
+    "sounds": [
+      "avp:entity/queen/hurt/pain_0",
+      "avp:entity/queen/hurt/pain_1",
+      "avp:entity/queen/hurt/pain_2",
+      "avp:entity/queen/hurt/pain_3",
+      "avp:entity/queen/hurt/pain_4"
+    ],
+    "subtitle": "subtitles.entity.queen.pain"
+  },
+  "entity.queen.idle": {
+    "sounds": [
+      "avp:entity/queen/idle/idle1",
+      "avp:entity/queen/idle/idle2"
+    ],
+    "subtitle": "subtitles.entity.queen.idle"
+  },
+  "entity.queen.step_thump": {
+    "sounds": [
+      "avp:entity/queen/movement/step_thump"
+    ],
+    "subtitle": "subtitles.entity.queen.step_thump"
+  },
+  "entity.queen.step_thump_rock": {
+    "sounds": [
+      "avp:entity/queen/movement/step_thump_rock"
+    ],
+    "subtitle": "subtitles.entity.queen.step_thump_rock"
+  },
   "entity.xenomorph.attack": {
     "sounds": [
       "avp:entity/xenomorph/attack/attack0",

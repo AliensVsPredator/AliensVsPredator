@@ -145,6 +145,10 @@ public class EnglishLanguageProvider extends FabricLanguageProvider {
         translationBuilder.add(AVPBlocks.IRRADIATED_RESIN_NODE, "Irradiated Resin");
         translationBuilder.add(AVPBlocks.IRRADIATED_RESIN_VEIN, "Irradiated Resin Vein");
         translationBuilder.add(AVPBlocks.IRRADIATED_RESIN_WEB, "Irradiated Resin Web");
+        translationBuilder.add(AVPBlocks.RESIN_BRICKS, "Resin Bricks");
+        translationBuilder.add(AVPBlocks.RESIN_O, "Resin O");
+        translationBuilder.add(AVPBlocks.RESIN_RIBBED, "Resin Ribbed");
+        translationBuilder.add(AVPBlocks.RESIN_SMOOTH, "Resin Smooth");
 
         AVPBlocks.DYE_COLOR_TO_PADDING.forEach(
             (key, value) -> translationBuilder.add(value, format(key.getName()) + " Padding")
@@ -296,10 +300,18 @@ public class EnglishLanguageProvider extends FabricLanguageProvider {
         translationBuilder.add(AVPItems.GRENADE_INCENDIARY, "Incendiary Grenade");
         translationBuilder.add(AVPItems.GRENADE_IRRADIATED, "Irradiated Grenade");
         translationBuilder.add(AVPItems.CASELESS_BULLET, "Caseless Bullet");
+        translationBuilder.add(ArmorItems.ABERRANT_CHITIN_BOOTS, "Aberrant Chitin Boots");
+        translationBuilder.add(ArmorItems.ABERRANT_CHITIN_CHESTPLATE, "Aberrant Chitin Chestplate");
+        translationBuilder.add(ArmorItems.ABERRANT_CHITIN_HELMET, "Aberrant Chitin Helmet");
+        translationBuilder.add(ArmorItems.ABERRANT_CHITIN_LEGGINGS, "Aberrant Chitin Leggings");
         translationBuilder.add(ArmorItems.CHITIN_BOOTS, "Chitin Boots");
         translationBuilder.add(ArmorItems.CHITIN_CHESTPLATE, "Chitin Chestplate");
         translationBuilder.add(ArmorItems.CHITIN_HELMET, "Chitin Helmet");
         translationBuilder.add(ArmorItems.CHITIN_LEGGINGS, "Chitin Leggings");
+        translationBuilder.add(ArmorItems.IRRADIATED_CHITIN_BOOTS, "Irradiated Chitin Boots");
+        translationBuilder.add(ArmorItems.IRRADIATED_CHITIN_CHESTPLATE, "Irradiated Chitin Chestplate");
+        translationBuilder.add(ArmorItems.IRRADIATED_CHITIN_HELMET, "Irradiated Chitin Helmet");
+        translationBuilder.add(ArmorItems.IRRADIATED_CHITIN_LEGGINGS, "Irradiated Chitin Leggings");
         translationBuilder.add(AVPItems.F903WE_RIFLE, "F903WE Rifle");
         translationBuilder.add(AVPItems.FLAMETHROWER_SEVASTOPOL, "Flamethrower (Sevastopol)");
         translationBuilder.add(AVPItems.FUEL_TANK, "Fuel Tank");
@@ -325,10 +337,18 @@ public class EnglishLanguageProvider extends FabricLanguageProvider {
         translationBuilder.add(ArmorItems.NETHER_CHITIN_HELMET, "Nether Chitin Helmet");
         translationBuilder.add(ArmorItems.NETHER_CHITIN_LEGGINGS, "Nether Chitin Leggings");
         translationBuilder.add(AVPItems.OLD_PAINLESS, "Old Painless");
+        translationBuilder.add(ArmorItems.PLATED_ABERRANT_CHITIN_BOOTS, "Plated Aberrant Chitin Boots");
+        translationBuilder.add(ArmorItems.PLATED_ABERRANT_CHITIN_CHESTPLATE, "Plated Aberrant Chitin Chestplate");
+        translationBuilder.add(ArmorItems.PLATED_ABERRANT_CHITIN_HELMET, "Plated Aberrant Chitin Helmet");
+        translationBuilder.add(ArmorItems.PLATED_ABERRANT_CHITIN_LEGGINGS, "Plated Aberrant Chitin Leggings");
         translationBuilder.add(ArmorItems.PLATED_CHITIN_BOOTS, "Plated Chitin Boots");
         translationBuilder.add(ArmorItems.PLATED_CHITIN_CHESTPLATE, "Plated Chitin Chestplate");
         translationBuilder.add(ArmorItems.PLATED_CHITIN_HELMET, "Plated Chitin Helmet");
         translationBuilder.add(ArmorItems.PLATED_CHITIN_LEGGINGS, "Plated Chitin Leggings");
+        translationBuilder.add(ArmorItems.PLATED_IRRADIATED_CHITIN_BOOTS, "Plated Irradiated Chitin Boots");
+        translationBuilder.add(ArmorItems.PLATED_IRRADIATED_CHITIN_CHESTPLATE, "Plated Irradiated Chitin Chestplate");
+        translationBuilder.add(ArmorItems.PLATED_IRRADIATED_CHITIN_HELMET, "Plated Irradiated Chitin Helmet");
+        translationBuilder.add(ArmorItems.PLATED_IRRADIATED_CHITIN_LEGGINGS, "Plated Irradiated Chitin Leggings");
         translationBuilder.add(ArmorItems.PLATED_NETHER_CHITIN_BOOTS, "Plated Nether Chitin Boots");
         translationBuilder.add(ArmorItems.PLATED_NETHER_CHITIN_CHESTPLATE, "Plated Nether Chitin Chestplate");
         translationBuilder.add(ArmorItems.PLATED_NETHER_CHITIN_HELMET, "Plated Nether Chitin Helmet");
@@ -490,8 +510,9 @@ public class EnglishLanguageProvider extends FabricLanguageProvider {
         translationBuilder.add(SpawnEggItems.NETHER_WARRIOR_SPAWN_EGG, "Nether Warrior Spawn Egg");
         translationBuilder.add(SpawnEggItems.NETHER_QUEEN_SPAWN_EGG, "Nether Queen Spawn Egg");
         translationBuilder.add(SpawnEggItems.IRRADIATED_DRONE_SPAWN_EGG, "Irradiated Drone Spawn Egg");
-        translationBuilder.add(SpawnEggItems.IRRADIATED_WARRIOR_SPAWN_EGG, "Irradiated Warrior Spawn Egg");
         translationBuilder.add(SpawnEggItems.IRRADIATED_PRAETORIAN_SPAWN_EGG, "Irradiated Praetorian Spawn Egg");
+        translationBuilder.add(SpawnEggItems.IRRADIATED_QUEEN_SPAWN_EGG, "Irradiated Queen Spawn Egg");
+        translationBuilder.add(SpawnEggItems.IRRADIATED_WARRIOR_SPAWN_EGG, "Irradiated Warrior Spawn Egg");
         translationBuilder.add(SpawnEggItems.OVAMORPH_SPAWN_EGG, "Ovamorph Spawn Egg");
         translationBuilder.add(SpawnEggItems.PRAETORIAN_SPAWN_EGG, "Praetorian Spawn Egg");
         translationBuilder.add(SpawnEggItems.QUEEN_SPAWN_EGG, "Queen Spawn Egg");
@@ -510,6 +531,17 @@ public class EnglishLanguageProvider extends FabricLanguageProvider {
 
         // Sounds
         addSound(translationBuilder, AVPSoundEvents.BLOCK_ACID_BURN, "Acid burns");
+
+        addSound(translationBuilder, AVPSoundEvents.ENTITY_QUEEN_ARM_ATTACK, "Queen attacks");
+        addSound(translationBuilder, AVPSoundEvents.ENTITY_QUEEN_BACK_HAND_ATTACK, "Queen back hand attacks");
+        addSound(translationBuilder, AVPSoundEvents.ENTITY_QUEEN_RAM_ATTACK, "Queen ram attacks");
+        addSound(translationBuilder, AVPSoundEvents.ENTITY_QUEEN_SCREAM, "Queen screams");
+        addSound(translationBuilder, AVPSoundEvents.ENTITY_QUEEN_TAIL_ATTACK, "Queen tail attacks");
+        addSound(translationBuilder, AVPSoundEvents.ENTITY_QUEEN_DEATH, "Queen dies");
+        addSound(translationBuilder, AVPSoundEvents.ENTITY_QUEEN_PAIN, "Queen hurts");
+        addSound(translationBuilder, AVPSoundEvents.ENTITY_QUEEN_IDLE, "Queen breaths");
+        addSound(translationBuilder, AVPSoundEvents.ENTITY_QUEEN_STEP_THUMP, "Queen steps");
+        addSound(translationBuilder, AVPSoundEvents.ENTITY_QUEEN_STEP_THUMP_ROCK, "Queen steps");
 
         addSound(translationBuilder, AVPSoundEvents.ENTITY_XENOMORPH_ATTACK, "Xenomorph attacks");
         addSound(translationBuilder, AVPSoundEvents.ENTITY_XENOMORPH_DEATH, "Xenomorph dies");

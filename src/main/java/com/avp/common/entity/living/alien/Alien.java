@@ -30,6 +30,7 @@ import org.jetbrains.annotations.Nullable;
 import com.avp.AVP;
 import com.avp.common.config.AVPConfig;
 import com.avp.common.gene.GeneKeys;
+import com.avp.common.hive.Hive;
 import com.avp.common.level.effect.AVPMobEffectTags;
 import com.avp.common.manager.GeneManager;
 import com.avp.common.manager.HiveManager;
@@ -40,11 +41,17 @@ import com.avp.common.worldgen.biome.AVPBiomes;
 
 public abstract class Alien extends Monster {
 
-    private static final String IS_IRRADIATED_KEY = "isIrradiated";
-
     private static final String IS_ABERRANT_KEY = "isAberrant";
 
+    private static final String IS_IRRADIATED_KEY = "isIrradiated";
+
     private static final String IS_NETHER_AFFLICTED_KEY = "isNetherAfflicted";
+
+    private static final String IS_POISONED_KEY = "isPoisoned";
+
+    private static final String IS_ROYAL_KEY = "isRoyal";
+
+    private static final String JELLY_COUNT_KEY = "jellyCount";
 
     public static final EntityDataAccessor<Boolean> IS_ABERRANT = SynchedEntityData.defineId(Alien.class, EntityDataSerializers.BOOLEAN);
 
@@ -55,14 +62,16 @@ public abstract class Alien extends Monster {
         EntityDataSerializers.BOOLEAN
     );
 
-    public static final EntityDataAccessor<Integer> JELLY_COUNT = SynchedEntityData.defineId(
-        Alien.class,
-        EntityDataSerializers.INT
-    );
-
     public static final EntityDataAccessor<Boolean> IS_POISONED = SynchedEntityData.defineId(
         Alien.class,
         EntityDataSerializers.BOOLEAN
+    );
+
+    private static final EntityDataAccessor<Boolean> IS_ROYAL = SynchedEntityData.defineId(Alien.class, EntityDataSerializers.BOOLEAN);
+
+    public static final EntityDataAccessor<Integer> JELLY_COUNT = SynchedEntityData.defineId(
+        Alien.class,
+        EntityDataSerializers.INT
     );
 
     protected final GeneManager geneManager;
@@ -73,7 +82,7 @@ public abstract class Alien extends Monster {
 
     protected AVPConfig.StatsConfigs.AdvancedStats config;
 
-    protected Alien(EntityType<? extends Monster> entityType, Level level) {
+    protected Alien(EntityType<? extends Alien> entityType, Level level) {
         super(entityType, level);
         this.geneManager = new GeneManager(this);
         this.hiveManager = new HiveManager(this);
@@ -84,6 +93,17 @@ public abstract class Alien extends Monster {
     public abstract @Nullable EntityType<? extends Alien> getIrradiatedType();
 
     public abstract @Nullable EntityType<? extends Alien> getNetherType();
+
+    @SuppressWarnings("unchecked")
+    public @Nullable EntityType<? extends Alien> getDefaultType() {
+        return (EntityType<? extends Alien>) getType();
+    }
+
+    // This override is just to mark getType as final.
+    @Override
+    public final @NotNull EntityType<?> getType() {
+        return super.getType();
+    }
 
     @Override
     public float maxUpStep() {
@@ -103,10 +123,10 @@ public abstract class Alien extends Monster {
     public void setTarget(@Nullable LivingEntity livingEntity) {
         super.setTarget(livingEntity);
 
-        var hive = hiveManager.hiveOrNull();
-
-        if (hive != null && livingEntity instanceof ServerPlayer player && hive.isEntityWithinHive(player)) {
-            hive.bossEvent().addPlayer(player);
+        if (livingEntity instanceof ServerPlayer player) {
+            hiveManager.hive()
+                .filter(hive -> hive.isEntityWithinHive(player))
+                .ifSome(hive -> hive.bossEvent().addPlayer(player));
         }
     }
 
@@ -117,6 +137,7 @@ public abstract class Alien extends Monster {
         builder.define(IS_NETHER_AFFLICTED, false);
         builder.define(IS_IRRADIATED, false);
         builder.define(IS_POISONED, false);
+        builder.define(IS_ROYAL, false);
         builder.define(JELLY_COUNT, 0);
     }
 
@@ -154,6 +175,14 @@ public abstract class Alien extends Monster {
         }
     }
 
+    public boolean isRoyal() {
+        return entityData.get(IS_ROYAL);
+    }
+
+    public void setRoyal(boolean isRoyal) {
+        entityData.set(IS_ROYAL, isRoyal);
+    }
+
     @Override
     public @Nullable SpawnGroupData finalizeSpawn(
         ServerLevelAccessor serverLevelAccessor,
@@ -167,6 +196,7 @@ public abstract class Alien extends Monster {
 
     public void updateStateBasedOnGenetics() {
         var hasMinimumGeneIntegrity = geneManager.isMinimized(GeneKeys.GENETIC_INTEGRITY);
+
         if (!isNetherAfflicted() && !isIrradiated()) {
             setAberrant(hasMinimumGeneIntegrity);
         }
@@ -174,6 +204,7 @@ public abstract class Alien extends Monster {
         var hasMaximumFireResistance = geneManager.isMinimized(GeneKeys.COLD_RESISTANCE) && geneManager.isMaximized(
             GeneKeys.FIRE_RESISTANCE
         );
+
         if (!isAberrant() && !isIrradiated()) {
             setNetherAfflicted(hasMaximumFireResistance);
         }
@@ -283,9 +314,10 @@ public abstract class Alien extends Monster {
 
     @Override
     public boolean isPersistenceRequired() {
-        var hive = hiveManager.hiveOrNull();
-        var isHiveLeader = hive != null && hive.hiveLeader().filter(leader -> leader.getUUID().equals(getUUID())).isPresent();
-        return super.isPersistenceRequired() || isHiveLeader;
+        return super.isPersistenceRequired() || hiveManager.hive()
+            .andThen(Hive::hiveLeader)
+            .filter(leader -> leader.getUUID().equals(getUUID()))
+            .isSome();
     }
 
     @Override
@@ -293,13 +325,7 @@ public abstract class Alien extends Monster {
         super.remove(removalReason);
 
         switch (removalReason) {
-            case KILLED, DISCARDED -> {
-                var hive = hiveManager.hiveOrNull();
-
-                if (hive != null) {
-                    hive.removeHiveMember(this);
-                }
-            }
+            case KILLED, DISCARDED -> hiveManager.hive().ifSome(hive -> hive.removeHiveMember(this));
             case UNLOADED_TO_CHUNK, UNLOADED_WITH_PLAYER, CHANGED_DIMENSION -> { /* NO-OP */ }
         }
     }
@@ -325,25 +351,45 @@ public abstract class Alien extends Monster {
     @Override
     public void readAdditionalSaveData(CompoundTag compoundTag) {
         super.readAdditionalSaveData(compoundTag);
-        this.getEntityData().set(IS_POISONED, compoundTag.getBoolean("isPoisoned"));
-        this.getEntityData().set(JELLY_COUNT, compoundTag.getInt("jellyCount"));
         geneManager.load(compoundTag);
         hiveManager.load(compoundTag);
-        setAberrant(compoundTag.getBoolean(IS_ABERRANT_KEY));
-        setIrradiated(compoundTag.getBoolean(IS_IRRADIATED_KEY));
-        setNetherAfflicted(compoundTag.getBoolean(IS_NETHER_AFFLICTED_KEY));
+
+        if (compoundTag.contains(IS_ABERRANT_KEY)) {
+            setNetherAfflicted(compoundTag.getBoolean(IS_ABERRANT_KEY));
+        }
+
+        if (compoundTag.contains(IS_IRRADIATED_KEY)) {
+            setNetherAfflicted(compoundTag.getBoolean(IS_IRRADIATED_KEY));
+        }
+
+        if (compoundTag.contains(IS_NETHER_AFFLICTED_KEY)) {
+            setNetherAfflicted(compoundTag.getBoolean(IS_NETHER_AFFLICTED_KEY));
+        }
+
+        if (compoundTag.contains(IS_POISONED_KEY)) {
+            getEntityData().set(IS_POISONED, compoundTag.getBoolean(IS_POISONED_KEY));
+        }
+
+        if (compoundTag.contains(IS_ROYAL_KEY)) {
+            setRoyal(compoundTag.getBoolean(IS_ROYAL_KEY));
+        }
+
+        if (compoundTag.contains(JELLY_COUNT_KEY)) {
+            getEntityData().set(JELLY_COUNT, compoundTag.getInt(JELLY_COUNT_KEY));
+        }
     }
 
     @Override
     public void addAdditionalSaveData(CompoundTag compoundTag) {
         super.addAdditionalSaveData(compoundTag);
-        compoundTag.putBoolean("isPoisoned", this.getEntityData().get(IS_POISONED));
-        compoundTag.putInt("jellyCount", this.getEntityData().get(JELLY_COUNT));
         geneManager.save(compoundTag);
         hiveManager.save(compoundTag);
         compoundTag.putBoolean(IS_ABERRANT_KEY, isAberrant());
         compoundTag.putBoolean(IS_IRRADIATED_KEY, isIrradiated());
         compoundTag.putBoolean(IS_NETHER_AFFLICTED_KEY, isNetherAfflicted());
+        compoundTag.putBoolean(IS_POISONED_KEY, getEntityData().get(IS_POISONED));
+        compoundTag.putBoolean(IS_ROYAL_KEY, isRoyal());
+        compoundTag.putInt(JELLY_COUNT_KEY, getEntityData().get(JELLY_COUNT));
     }
 
     public GeneManager geneManager() {

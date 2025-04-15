@@ -12,6 +12,8 @@ public class AVPBlockTags {
 
     public static final TagKey<Block> CONCRETE = create("concrete");
 
+    public static final TagKey<Block> CRAFTED_RESIN = create("crafted_resin");
+
     public static final TagKey<Block> XENOMORPH_IMMUNE = create("xenomorph_immune");
 
     public static final TagKey<Block> FERROALUMINUM = create("ferroaluminum");
@@ -45,6 +47,8 @@ public class AVPBlockTags {
     public static final TagKey<Block> RESIN = create("resin");
 
     public static final TagKey<Block> RESIN_VEINS = create("resin_veins");
+
+    public static final TagKey<Block> RESIN_WEBS = create("resin_webs");
 
     public static final TagKey<Block> SHOULD_NOT_BE_DESTROYED = create("should_not_be_destroyed");
 

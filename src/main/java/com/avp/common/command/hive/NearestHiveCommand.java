@@ -22,24 +22,22 @@ public class NearestHiveCommand {
                     .requires(CommandSourceStack::isPlayer)
                     .executes(context -> {
                         HiveLevelData.getOrCreate(context.getSource().getLevel())
-                            .flatMap(
+                            .andThen(
                                 hiveLevelData -> hiveLevelData.findNearestHive(
                                     Objects.requireNonNull(context.getSource().getPlayer()).blockPosition()
                                 )
                             )
-                            .ifPresentOrElse(
-                                hive -> {
-                                    var pos = hive.centerPosition();
-                                    context.getSource()
-                                        .sendSuccess(
-                                            () -> Component.literal(
-                                                "Nearest hive: x " + pos.getX() + " y " + pos.getY() + " z " + pos.getZ()
-                                            ),
-                                            false
-                                        );
-                                },
-                                () -> context.getSource().sendSuccess(() -> Component.literal("No nearby hive found."), false)
-                            );
+                            .inspect(hive -> {
+                                var pos = hive.centerPosition();
+                                context.getSource()
+                                    .sendSuccess(
+                                        () -> Component.literal(
+                                            "Nearest hive: x " + pos.getX() + " y " + pos.getY() + " z " + pos.getZ()
+                                        ),
+                                        false
+                                    );
+                            })
+                            .ifNone(() -> context.getSource().sendSuccess(() -> Component.literal("No nearby hive found."), false));
 
                         return 1;
                     })

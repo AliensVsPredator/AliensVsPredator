@@ -8,7 +8,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 
-import java.util.Objects;
 import java.util.function.Predicate;
 
 import com.avp.common.effect.AVPEffects;
@@ -22,26 +21,6 @@ public class AVPPredicates {
 
     public static <T> Predicate<T> alwaysTrue() {
         return $ -> true;
-    }
-
-    public static boolean areAliensEnemies(Alien first, Alien second) {
-        var isSecondAberrant = second.isAberrant();
-        var isSecondNetherAfflicted = second.isNetherAfflicted();
-        var secondHiveSignature = second.hiveManager().signatureOrNull();
-
-        if (
-            !Objects.equals(first.isNetherAfflicted(), isSecondNetherAfflicted) ||
-                !Objects.equals(first.isAberrant(), isSecondAberrant)
-        ) {
-            return true;
-        }
-
-        if (first.hiveManager().signatureOrNull() == null || secondHiveSignature == null) {
-            return false;
-        }
-
-        // Only attack other aliens under these conditions.
-        return !Objects.equals(first.hiveManager().signatureOrNull(), secondHiveSignature);
     }
 
     public static boolean canBeIrradiated(Entity entity) {

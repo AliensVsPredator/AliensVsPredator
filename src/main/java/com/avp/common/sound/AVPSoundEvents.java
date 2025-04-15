@@ -10,6 +10,26 @@ public class AVPSoundEvents {
 
     public static final SoundEvent BLOCK_ACID_BURN = register("block.acid.burn");
 
+    public static final SoundEvent ENTITY_QUEEN_ARM_ATTACK = register("entity.queen.arm_attack");
+
+    public static final SoundEvent ENTITY_QUEEN_BACK_HAND_ATTACK = register("entity.queen.back_hand_attack");
+
+    public static final SoundEvent ENTITY_QUEEN_RAM_ATTACK = register("entity.queen.ram_attack");
+
+    public static final SoundEvent ENTITY_QUEEN_SCREAM = register("entity.queen.scream");
+
+    public static final SoundEvent ENTITY_QUEEN_TAIL_ATTACK = register("entity.queen.tail_attack");
+
+    public static final SoundEvent ENTITY_QUEEN_DEATH = register("entity.queen.death");
+
+    public static final SoundEvent ENTITY_QUEEN_PAIN = register("entity.queen.pain");
+
+    public static final SoundEvent ENTITY_QUEEN_IDLE = register("entity.queen.idle");
+
+    public static final SoundEvent ENTITY_QUEEN_STEP_THUMP = register("entity.queen.step_thump");
+
+    public static final SoundEvent ENTITY_QUEEN_STEP_THUMP_ROCK = register("entity.queen.step_thump_rock");
+
     public static final SoundEvent ENTITY_XENOMORPH_ATTACK = register("entity.xenomorph.attack");
 
     public static final SoundEvent ENTITY_XENOMORPH_DEATH = register("entity.xenomorph.death");

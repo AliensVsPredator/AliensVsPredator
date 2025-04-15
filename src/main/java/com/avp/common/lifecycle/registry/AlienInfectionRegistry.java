@@ -1,21 +1,21 @@
 package com.avp.common.lifecycle.registry;
 
+import com.bvanseg.just.functional.option.Option;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 
 import com.avp.common.lifecycle.infection.AlienInfectionKey;
 import com.avp.common.lifecycle.infection.Infection;
 
 public class AlienInfectionRegistry {
 
-    private static final Map<AlienInfectionKey, Infection> ALIEN_INFECTION_LOOKUP_MAP = new HashMap<>();
+    private static final Map<AlienInfectionKey, Infection<?, ?>> ALIEN_INFECTION_LOOKUP_MAP = new HashMap<>();
 
-    // TODO: Reduce garbage created in this function.
-    public static @Nullable Infection getOrNull(EntityType<?> host, EntityType<?> parasite) {
+    public static @Nullable Infection<?, ?> getOrNull(EntityType<?> host, EntityType<?> parasite) {
         var maybeInfection = ALIEN_INFECTION_LOOKUP_MAP.get(new AlienInfectionKey(host, parasite));
 
         if (maybeInfection == null) {
@@ -25,11 +25,11 @@ public class AlienInfectionRegistry {
         return maybeInfection;
     }
 
-    public static Optional<Infection> get(EntityType<?> host, EntityType<?> parasite) {
-        return Optional.ofNullable(getOrNull(host, parasite));
+    public static Option<Infection<?, ?>> get(EntityType<?> host, EntityType<?> parasite) {
+        return Option.ofNullable(getOrNull(host, parasite));
     }
 
-    public static Infection register(Infection infection) {
+    public static <S extends LivingEntity, P extends LivingEntity> Infection<S, P> register(Infection<S, P> infection) {
         var hosts = infection.hosts();
 
         if (hosts == null) {

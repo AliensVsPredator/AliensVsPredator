@@ -88,19 +88,14 @@ public class ResinManager implements GameEventListener.Provider<ResinSpreadListe
                 var belowPos = alien.blockPosition().below();
                 var belowState = level.getBlockState(belowPos);
 
-                if (alien.level().getBrightness(LightLayer.SKY, alien.blockPosition()) > 0) {
-                    return;
-                }
-
-                var hive = alien.hiveManager().hiveOrNull();
-
-                if (hive == null) {
-                    return;
-                }
-
                 if (
-                    alien.getTarget() != null || alien.tickCount <= alien.lastHurtTimeInTicks() + (10 * 20) || hive.isAngry() || !hive
-                        .isEntityWithinHive(alien)
+                    alien.level().getBrightness(LightLayer.SKY, alien.blockPosition()) > 0
+                        || alien.getTarget() != null
+                        || alien.tickCount <= alien.lastHurtTimeInTicks() + (10 * 20)
+                        || alien.hiveManager()
+                            .hive()
+                            .filter(hive -> hive.isAngry() || !hive.isEntityWithinHive(alien))
+                            .isSome()
                 ) {
                     return;
                 }

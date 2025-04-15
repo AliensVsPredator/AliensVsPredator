@@ -189,6 +189,14 @@ public class AVPBlockItems {
 
     public static final BlockItem RESIN_WEB = register(AVPBlocks.RESIN_WEB);
 
+    public static final BlockItem RESIN_BRICKS = register(AVPBlocks.RESIN_BRICKS);
+
+    public static final BlockItem RESIN_O = register(AVPBlocks.RESIN_O);
+
+    public static final BlockItem RESIN_RIBBED = register(AVPBlocks.RESIN_RIBBED);
+
+    public static final BlockItem RESIN_SMOOTH = register(AVPBlocks.RESIN_SMOOTH);
+
     public static final BlockItem SILICA_GRAVEL = register(AVPBlocks.SILICA_GRAVEL);
 
     public static final BlockItem STEEL_BARS = register(AVPBlocks.STEEL_BARS);

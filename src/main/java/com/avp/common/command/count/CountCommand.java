@@ -40,7 +40,7 @@ public class CountCommand {
                     .executes(context -> {
                         int count = HiveLevelData.getOrCreate(context.getSource().getLevel())
                             .map(hiveLevelData -> hiveLevelData.allHives().size())
-                            .orElse(0);
+                            .unwrapOr(0);
 
                         context.getSource().sendSuccess(() -> {
                             var areOrIs = count == 1 ? "is" : "are";

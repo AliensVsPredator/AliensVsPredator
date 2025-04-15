@@ -101,12 +101,25 @@ public class HatchManager {
     }
 
     public void load(CompoundTag compoundTag) {
-        this.remainingHatchDurationInTicks = compoundTag.getInt(HATCH_DURATION_IN_TICKS_KEY);
-        this.remainingSpawnDelayInTicks = compoundTag.getInt(REMAINING_SPAWN_DELAY_IN_TICKS_KEY);
-        this.spawnCount = compoundTag.getInt(SPAWN_COUNT_KEY);
+        if (compoundTag.contains(HATCH_DURATION_IN_TICKS_KEY)) {
+            this.remainingHatchDurationInTicks = compoundTag.getInt(HATCH_DURATION_IN_TICKS_KEY);
+        }
 
-        ovamorph.getEntityData().set(hatchedEDA, compoundTag.getBoolean(HATCHED_KEY));
-        ovamorph.getEntityData().set(maximumSpawnCountEDA, compoundTag.getByte(MAXIMUM_SPAWN_COUNT_KEY));
+        if (compoundTag.contains(REMAINING_SPAWN_DELAY_IN_TICKS_KEY)) {
+            this.remainingSpawnDelayInTicks = compoundTag.getInt(REMAINING_SPAWN_DELAY_IN_TICKS_KEY);
+        }
+
+        if (compoundTag.contains(SPAWN_COUNT_KEY)) {
+            this.spawnCount = compoundTag.getInt(SPAWN_COUNT_KEY);
+        }
+
+        if (compoundTag.contains(HATCHED_KEY)) {
+            ovamorph.getEntityData().set(hatchedEDA, compoundTag.getBoolean(HATCHED_KEY));
+        }
+
+        if (compoundTag.contains(MAXIMUM_SPAWN_COUNT_KEY)) {
+            ovamorph.getEntityData().set(maximumSpawnCountEDA, compoundTag.getByte(MAXIMUM_SPAWN_COUNT_KEY));
+        }
     }
 
     public void save(CompoundTag compoundTag) {
@@ -119,7 +132,7 @@ public class HatchManager {
     }
 
     private void spawnFacehugger(Level level) {
-        var facehugger = AVPEntityTypes.FACEHUGGER.create(level);
+        var facehugger = (ovamorph.isRoyal() ? AVPEntityTypes.ROYAL_FACEHUGGER : AVPEntityTypes.FACEHUGGER).create(level);
 
         if (facehugger == null) {
             // TODO: Log.

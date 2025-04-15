@@ -68,7 +68,9 @@ public class CrawlingManager {
     }
 
     public void load(CompoundTag compoundTag) {
-        entity.getEntityData().set(isCrawlingEDA, compoundTag.getBoolean(CRAWLING_TAG_KEY));
+        if (compoundTag.contains(CRAWLING_TAG_KEY)) {
+            entity.getEntityData().set(isCrawlingEDA, compoundTag.getBoolean(CRAWLING_TAG_KEY));
+        }
     }
 
     public void save(CompoundTag compoundTag) {

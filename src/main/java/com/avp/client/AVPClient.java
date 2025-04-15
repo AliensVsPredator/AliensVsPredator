@@ -92,11 +92,25 @@ public class AVPClient implements ClientModInitializer {
 
         // Armors
         AzArmorRendererRegistry.register(
+            AberrantChitinArmorRenderer::new,
+            ArmorItems.ABERRANT_CHITIN_HELMET,
+            ArmorItems.ABERRANT_CHITIN_CHESTPLATE,
+            ArmorItems.ABERRANT_CHITIN_LEGGINGS,
+            ArmorItems.ABERRANT_CHITIN_BOOTS
+        );
+        AzArmorRendererRegistry.register(
             ChitinArmorRenderer::new,
             ArmorItems.CHITIN_HELMET,
             ArmorItems.CHITIN_CHESTPLATE,
             ArmorItems.CHITIN_LEGGINGS,
             ArmorItems.CHITIN_BOOTS
+        );
+        AzArmorRendererRegistry.register(
+            IrradiatedChitinArmorRenderer::new,
+            ArmorItems.IRRADIATED_CHITIN_HELMET,
+            ArmorItems.IRRADIATED_CHITIN_CHESTPLATE,
+            ArmorItems.IRRADIATED_CHITIN_LEGGINGS,
+            ArmorItems.IRRADIATED_CHITIN_BOOTS
         );
         AzArmorRendererRegistry.register(
             JunglePredatorArmorRenderer::new,
@@ -120,11 +134,25 @@ public class AVPClient implements ClientModInitializer {
             ArmorItems.NETHER_CHITIN_BOOTS
         );
         AzArmorRendererRegistry.register(
+            PlatedAberrantChitinArmorRenderer::new,
+            ArmorItems.PLATED_ABERRANT_CHITIN_HELMET,
+            ArmorItems.PLATED_ABERRANT_CHITIN_CHESTPLATE,
+            ArmorItems.PLATED_ABERRANT_CHITIN_LEGGINGS,
+            ArmorItems.PLATED_ABERRANT_CHITIN_BOOTS
+        );
+        AzArmorRendererRegistry.register(
             PlatedChitinArmorRenderer::new,
             ArmorItems.PLATED_CHITIN_HELMET,
             ArmorItems.PLATED_CHITIN_CHESTPLATE,
             ArmorItems.PLATED_CHITIN_LEGGINGS,
             ArmorItems.PLATED_CHITIN_BOOTS
+        );
+        AzArmorRendererRegistry.register(
+            PlatedIrradiatedChitinArmorRenderer::new,
+            ArmorItems.PLATED_IRRADIATED_CHITIN_HELMET,
+            ArmorItems.PLATED_IRRADIATED_CHITIN_CHESTPLATE,
+            ArmorItems.PLATED_IRRADIATED_CHITIN_LEGGINGS,
+            ArmorItems.PLATED_IRRADIATED_CHITIN_BOOTS
         );
         AzArmorRendererRegistry.register(
             PlatedNetherChitinArmorRenderer::new,

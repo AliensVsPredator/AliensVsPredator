@@ -78,6 +78,26 @@ public class CombatCreativeModeTabInitializer {
             entries.accept(ArmorItems.PLATED_CHITIN_LEGGINGS);
             entries.accept(ArmorItems.PLATED_CHITIN_BOOTS);
 
+            entries.accept(ArmorItems.ABERRANT_CHITIN_HELMET);
+            entries.accept(ArmorItems.ABERRANT_CHITIN_CHESTPLATE);
+            entries.accept(ArmorItems.ABERRANT_CHITIN_LEGGINGS);
+            entries.accept(ArmorItems.ABERRANT_CHITIN_BOOTS);
+
+            entries.accept(ArmorItems.IRRADIATED_CHITIN_HELMET);
+            entries.accept(ArmorItems.IRRADIATED_CHITIN_CHESTPLATE);
+            entries.accept(ArmorItems.IRRADIATED_CHITIN_LEGGINGS);
+            entries.accept(ArmorItems.IRRADIATED_CHITIN_BOOTS);
+
+            entries.accept(ArmorItems.PLATED_ABERRANT_CHITIN_HELMET);
+            entries.accept(ArmorItems.PLATED_ABERRANT_CHITIN_CHESTPLATE);
+            entries.accept(ArmorItems.PLATED_ABERRANT_CHITIN_LEGGINGS);
+            entries.accept(ArmorItems.PLATED_ABERRANT_CHITIN_BOOTS);
+
+            entries.accept(ArmorItems.PLATED_IRRADIATED_CHITIN_HELMET);
+            entries.accept(ArmorItems.PLATED_IRRADIATED_CHITIN_CHESTPLATE);
+            entries.accept(ArmorItems.PLATED_IRRADIATED_CHITIN_LEGGINGS);
+            entries.accept(ArmorItems.PLATED_IRRADIATED_CHITIN_BOOTS);
+
             entries.accept(ArmorItems.NETHER_CHITIN_HELMET);
             entries.accept(ArmorItems.NETHER_CHITIN_CHESTPLATE);
             entries.accept(ArmorItems.NETHER_CHITIN_LEGGINGS);
