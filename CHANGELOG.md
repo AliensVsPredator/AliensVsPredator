@@ -11,6 +11,7 @@
 
 ## 🐞 Fixes
 - Fixed royal ovamorph spawns not being royal for all royal altar structures.
+- Fixed industrial furnace blocks not dropping themselves as an item when mined.
 
 ## 🛠 Data Pack
 - N/A
