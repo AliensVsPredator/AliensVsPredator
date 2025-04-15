@@ -10,7 +10,7 @@
 - N/A
 
 ## 🐞 Fixes
-- N/A
+- Fixed royal ovamorph spawns not being royal for all royal altar structures.
 
 ## 🛠 Data Pack
 - N/A
