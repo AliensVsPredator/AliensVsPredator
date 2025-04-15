@@ -1,3 +1,23 @@
+# v0.0.23-beta
+
+## ☢️ Breaking Changes
+- N/A
+
+## ✨ What's New
+- N/A
+
+## ♻️ Changes
+- N/A
+
+## 🐞 Fixes
+- N/A
+
+## 🛠 Data Pack
+- N/A
+
+## 🔬 Technical Changes
+- Bumped gradle version from 8.12 to 8.13.
+
 # v0.0.22-beta
 
 ## ☢️ Breaking Changes
