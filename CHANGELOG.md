@@ -26,6 +26,7 @@
 
 ## 🔬 Technical Changes
 - Bumped gradle version from 8.12 to 8.13.
+- Updated Just version from a7d374ee33 to 7edae6d449.
 - Rewrote marine rendering code to use dynamic coloring, reducing the number of asset files considerably.
 
 # v0.0.22-beta
