@@ -4,7 +4,11 @@
 - N/A
 
 ## ✨ What's New
-- N/A
+- Added new item textures for the following armor sets:
+  - Aberrant Chitin Armor
+  - Irradiated Chitin Armor
+  - Plated Aberrant Chitin Armor
+  - Plated Irradiated Chitin Armor
 
 ## ♻️ Changes
 - N/A
