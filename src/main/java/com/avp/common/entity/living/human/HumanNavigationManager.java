@@ -29,7 +29,7 @@ public class HumanNavigationManager {
 
     private final Goal waterAttackGoal;
 
-    public HumanNavigationManager(AbstractHumanMob humanMob, MoveControl moveControl) {
+    public HumanNavigationManager(AbstractHuman humanMob, MoveControl moveControl) {
         this.groundAttackGoal = new UseItemGoal(humanMob, humanMob::runAttackAnimations);
         this.groundMoveControl = moveControl;
         this.groundNavigation = new AzureNavigation(humanMob, humanMob.level()) {
@@ -51,14 +51,14 @@ public class HumanNavigationManager {
         this.waterNavigation = new WaterBoundPathNavigation(humanMob, humanMob.level());
     }
 
-    public void switchToGround(AbstractHumanMob humanMob, int priority, GoalSelector goalSelector) {
+    public void switchToGround(AbstractHuman humanMob, int priority, GoalSelector goalSelector) {
         goalSelector.removeGoal(waterAttackGoal);
         goalSelector.addGoal(priority, groundAttackGoal);
         humanMob.setMoveControl(groundMoveControl);
         humanMob.setNavigation(groundNavigation);
     }
 
-    public void switchToWater(AbstractHumanMob humanMob, int priority, GoalSelector goalSelector) {
+    public void switchToWater(AbstractHuman humanMob, int priority, GoalSelector goalSelector) {
         goalSelector.removeGoal(groundAttackGoal);
         goalSelector.addGoal(priority, waterAttackGoal);
         humanMob.setMoveControl(waterMoveControl);

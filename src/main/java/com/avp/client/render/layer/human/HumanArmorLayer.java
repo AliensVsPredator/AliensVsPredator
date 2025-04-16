@@ -9,9 +9,9 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
-import com.avp.common.entity.living.human.AbstractHumanMob;
+import com.avp.common.entity.living.human.AbstractHuman;
 
-public class HumanArmorLayer<T extends AbstractHumanMob> extends AzArmorLayer<T> {
+public class HumanArmorLayer<T extends AbstractHuman> extends AzArmorLayer<T> {
 
     private static final String LEFT_BOOT = "armorBipedLeftFoot";
 

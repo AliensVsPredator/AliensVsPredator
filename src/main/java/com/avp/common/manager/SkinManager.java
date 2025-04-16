@@ -3,8 +3,9 @@ package com.avp.common.manager;
 import net.minecraft.resources.ResourceLocation;
 
 import com.avp.AVPResources;
-import com.avp.common.entity.living.human.AbstractHumanMob;
+import com.avp.common.entity.living.human.AbstractHuman;
 
+@Deprecated(forRemoval = true)
 public class SkinManager {
 
     protected ResourceLocation cachedMaleTexture;
@@ -15,9 +16,9 @@ public class SkinManager {
 
     protected int maxFemaleTextures;
 
-    protected final AbstractHumanMob entity;
+    protected final AbstractHuman entity;
 
-    public SkinManager(AbstractHumanMob entity, int maxMaleTextures, int maxFemaleTextures) {
+    public SkinManager(AbstractHuman entity, int maxMaleTextures, int maxFemaleTextures) {
         this.entity = entity;
         this.maxMaleTextures = maxMaleTextures;
         this.maxFemaleTextures = maxFemaleTextures;

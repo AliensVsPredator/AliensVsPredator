@@ -1,58 +1,40 @@
 package com.avp.client.render.layer.human;
 
-import com.avp.AVPResources;
 import mod.azure.azurelib.rewrite.model.AzBone;
 import mod.azure.azurelib.rewrite.render.AzRendererPipelineContext;
 import mod.azure.azurelib.rewrite.render.layer.AzRenderLayer;
 import net.minecraft.client.renderer.RenderType;
 
-import com.avp.common.entity.living.human.AbstractHumanMob;
-import com.avp.common.entity.living.human.marine.MarineMob;
-import net.minecraft.resources.ResourceLocation;
+import com.avp.common.entity.living.human.AbstractHuman;
 
-public class HumanBeardLayer implements AzRenderLayer<MarineMob> {
-
-    private final String HUMAN_TYPE;
-
-    public HumanBeardLayer(String humanType) {
-        HUMAN_TYPE = humanType;
-    }
+public class HumanBeardLayer<T extends AbstractHuman> implements AzRenderLayer<T> {
 
     @Override
-    public void preRender(AzRendererPipelineContext<MarineMob> context) {}
+    public void preRender(AzRendererPipelineContext<T> context) {}
 
     @Override
-    public void render(AzRendererPipelineContext<MarineMob> context) {
+    public void render(AzRendererPipelineContext<T> context) {
         var animatable = context.animatable();
         var renderPipeline = context.rendererPipeline();
-        if (Boolean.FALSE.equals(animatable.getEntityData().get(AbstractHumanMob.SET_GENDER))) {
-            return;
-        }
-        if (Boolean.TRUE.equals(animatable.getEntityData().get(AbstractHumanMob.SET_GENDER))) {
-            context.setVertexConsumer(
-                context.multiBufferSource().getBuffer(RenderType.entityCutout(animatable.getBeardManager().getMaleBeardTexture(HUMAN_TYPE)))
-            );
-        }
-        renderPipeline.reRender(context);
+
+        // TODO: Option usage here is suboptimal, null usage is preferred in hot paths like rendering code.
+        animatable.getHumanFeatureManager()
+            .getBeardTexture()
+            .ifSome(beardTexture -> {
+                var renderType = RenderType.entityCutout(beardTexture);
+                var vertexConsumer = context.multiBufferSource().getBuffer(renderType);
+                var previousColor = context.renderColor();
+
+                context.setRenderColor(animatable.getHairColor());
+                context.setVertexConsumer(vertexConsumer);
+
+                renderPipeline.reRender(context);
+
+                // make sure to reset the color at the end.
+                context.setRenderColor(previousColor);
+            });
     }
 
     @Override
-    public void renderForBone(AzRendererPipelineContext<MarineMob> context, AzBone bone) {}
-
-    public ResourceLocation getMaleBeardTexture(String humanType) {
-        if (cachedMaleBeardTexture == null) {
-            var random1 = this.entity.getRandom().nextIntBetweenInclusive(1, this.maxBeardTextures);
-            int random2;
-
-            if (random1 == 3) {
-                random2 = 6;
-            } else {
-                random2 = this.entity.getSharedSecondRandomValue(6);
-            }
-
-            cachedMaleBeardTexture = AVPResources.entityTextureLocation(humanType + "_male_beard" + random1 + "_" + random2);
-        }
-
-        return cachedMaleBeardTexture;
-    }
+    public void renderForBone(AzRendererPipelineContext<T> context, AzBone bone) {}
 }

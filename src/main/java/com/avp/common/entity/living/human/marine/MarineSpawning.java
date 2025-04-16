@@ -5,15 +5,15 @@ import net.minecraft.world.entity.SpawnPlacements;
 import com.avp.AVP;
 import com.avp.common.block.AVPBlockTags;
 import com.avp.common.config.AVPConfig;
-import com.avp.common.entity.living.human.AbstractHumanMob;
+import com.avp.common.entity.living.human.AbstractHuman;
 
 public class MarineSpawning {
 
-    public static final SpawnPlacements.SpawnPredicate<MarineMob> PREDICATE = createPredicate(
+    public static final SpawnPlacements.SpawnPredicate<Marine> PREDICATE = createPredicate(
         AVP.config.spawnConfigs.MARINE_SPAWN
     );
 
-    public static <T extends AbstractHumanMob> SpawnPlacements.SpawnPredicate<T> createPredicate(
+    public static <T extends AbstractHuman> SpawnPlacements.SpawnPredicate<T> createPredicate(
         AVPConfig.SpawnConfigs.SpawnSettings container
     ) {
         return (

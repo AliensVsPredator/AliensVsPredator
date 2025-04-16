@@ -1,63 +1,36 @@
 package com.avp.client.render.layer.human;
 
-import com.avp.AVPResources;
 import mod.azure.azurelib.rewrite.model.AzBone;
 import mod.azure.azurelib.rewrite.render.AzRendererPipelineContext;
 import mod.azure.azurelib.rewrite.render.layer.AzRenderLayer;
 import net.minecraft.client.renderer.RenderType;
 
-import com.avp.common.entity.living.human.AbstractHumanMob;
-import com.avp.common.entity.living.human.marine.MarineMob;
-import net.minecraft.resources.ResourceLocation;
+import com.avp.common.entity.living.human.AbstractHuman;
 
-public class HumanHairLayer implements AzRenderLayer<MarineMob> {
-
-    private final String HUMAN_TYPE;
-
-    public HumanHairLayer(String humanType) {
-        HUMAN_TYPE = humanType;
-    }
+public class HumanHairLayer<T extends AbstractHuman> implements AzRenderLayer<T> {
 
     @Override
-    public void preRender(AzRendererPipelineContext<MarineMob> context) {}
+    public void preRender(AzRendererPipelineContext<T> context) {}
 
     @Override
-    public void render(AzRendererPipelineContext<MarineMob> context) {
+    public void render(AzRendererPipelineContext<T> context) {
         var animatable = context.animatable();
         var renderPipeline = context.rendererPipeline();
 
-        if (Boolean.TRUE.equals(animatable.getEntityData().get(AbstractHumanMob.SET_GENDER))) {
-            context.setVertexConsumer(
-                context.multiBufferSource().getBuffer(RenderType.entityCutout(animatable.getHairManager().getMaleHairTexture(HUMAN_TYPE)))
-            );
-        } else {
-            context.setVertexConsumer(
-                context.multiBufferSource().getBuffer(RenderType.entityCutout(animatable.getHairManager().getFemaleHairTexture(HUMAN_TYPE)))
-            );
-        }
+        var textureLocation = animatable.getHumanFeatureManager().getHairTexture();
+        var renderType = RenderType.entityCutout(textureLocation);
+        var vertexConsumer = context.multiBufferSource().getBuffer(renderType);
+        var previousColor = context.renderColor();
+
+        context.setRenderColor(animatable.getHairColor());
+        context.setVertexConsumer(vertexConsumer);
 
         renderPipeline.reRender(context);
+
+        // make sure to reset the color at the end.
+        context.setRenderColor(previousColor);
     }
 
     @Override
-    public void renderForBone(AzRendererPipelineContext<MarineMob> context, AzBone bone) {}
-
-    private ResourceLocation getMaleHairTexture(String humanType) {
-        if (cachedMaleHairTexture == null) {
-            var random1 = entity.getRandom().nextIntBetweenInclusive(1, this.maxMaleHairTextures);
-            var random2 = entity.getSharedSecondRandomValue(6);
-            cachedMaleHairTexture = AVPResources.entityTextureLocation(humanType + "_male_hair" + random1 + "_" + random2);
-        }
-
-        return cachedMaleHairTexture;
-    }
-
-    private ResourceLocation getFemaleHairTexture(String humanType) {
-        if (cachedFemaleHairTexture == null) {
-            var random1 = entity.getRandom().nextIntBetweenInclusive(1, this.maxFemaleHairTextures);
-            var random2 = entity.getSharedSecondRandomValue(maxFemaleHairTypes);
-            cachedFemaleHairTexture = AVPResources.entityTextureLocation(humanType + "_female_hair" + random1 + "_" + random2);
-        }
-        return cachedFemaleHairTexture;
-    }
+    public void renderForBone(AzRendererPipelineContext<T> context, AzBone bone) {}
 }

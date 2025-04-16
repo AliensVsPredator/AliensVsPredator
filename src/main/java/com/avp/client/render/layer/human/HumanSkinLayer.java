@@ -7,7 +7,7 @@ import net.minecraft.client.renderer.RenderType;
 
 import com.avp.common.entity.living.human.AbstractHuman;
 
-public class HumanEyesLayer<T extends AbstractHuman> implements AzRenderLayer<T> {
+public class HumanSkinLayer<T extends AbstractHuman> implements AzRenderLayer<T> {
 
     @Override
     public void preRender(AzRendererPipelineContext<T> context) {}
@@ -17,12 +17,12 @@ public class HumanEyesLayer<T extends AbstractHuman> implements AzRenderLayer<T>
         var animatable = context.animatable();
         var renderPipeline = context.rendererPipeline();
 
-        var textureLocation = animatable.getHumanFeatureManager().getEyesTexture();
+        var textureLocation = animatable.getHumanFeatureManager().getSkinTexture();
         var renderType = RenderType.entityCutout(textureLocation);
         var vertexConsumer = context.multiBufferSource().getBuffer(renderType);
         var previousColor = context.renderColor();
 
-        context.setRenderColor(animatable.getEyeColor());
+        context.setRenderColor(animatable.getSkinColor());
         context.setVertexConsumer(vertexConsumer);
 
         renderPipeline.reRender(context);

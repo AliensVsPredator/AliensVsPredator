@@ -3,8 +3,9 @@ package com.avp.common.manager;
 import net.minecraft.resources.ResourceLocation;
 
 import com.avp.AVPResources;
-import com.avp.common.entity.living.human.AbstractHumanMob;
+import com.avp.common.entity.living.human.AbstractHuman;
 
+@Deprecated(forRemoval = true)
 public class EyeManager {
 
     protected ResourceLocation cachedMaleEyeTexture;
@@ -15,9 +16,9 @@ public class EyeManager {
 
     protected int maxFemaleEyesTextures;
 
-    protected final AbstractHumanMob entity;
+    protected final AbstractHuman entity;
 
-    public EyeManager(AbstractHumanMob entity, int maxMaleEyesTextures, int maxFemaleEyesTextures) {
+    public EyeManager(AbstractHuman entity, int maxMaleEyesTextures, int maxFemaleEyesTextures) {
         this.entity = entity;
         this.maxMaleEyesTextures = maxMaleEyesTextures;
         this.maxFemaleEyesTextures = maxFemaleEyesTextures;
