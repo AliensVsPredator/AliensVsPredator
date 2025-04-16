@@ -22,7 +22,10 @@ import com.avp.common.entity.living.alien.xenomorph.drone.Drone;
 import com.avp.common.entity.living.alien.xenomorph.praetorian.Praetorian;
 import com.avp.common.entity.living.alien.xenomorph.queen.Queen;
 import com.avp.common.entity.living.alien.xenomorph.warrior.Warrior;
-import com.avp.common.entity.living.human.marine.MarineMob;
+import com.avp.common.entity.living.human.EyeColorGenerator;
+import com.avp.common.entity.living.human.HairColorGenerator;
+import com.avp.common.entity.living.human.SkinColorGenerator;
+import com.avp.common.entity.living.human.marine.Marine;
 import com.avp.common.entity.living.yautja.Yautja;
 import com.avp.common.entity.nukecloud.MushroomCloudEntity;
 import com.avp.common.entity.projectile.*;
@@ -129,9 +132,26 @@ public class AVPEntityTypes {
         EntityType.Builder.of(Yautja::new, PREDATOR_CATEGORY).sized(0.98f, 2.48f)
     );
 
-    public static final EntityType<MarineMob> MARINE = register(
+    public static final EntityType<Marine> MARINE = register(
         "marine",
-        EntityType.Builder.of(MarineMob::new, MobCategory.CREATURE).sized(0.7F, 1.95F)
+        EntityType.Builder.<Marine>of((entityType, level) -> {
+            var entity = new Marine(entityType, level);
+
+            var random = entity.getRandom();
+            entity.setMale(random.nextBoolean());
+            var isMale = entity.isMale();
+
+            if (isMale) {
+                entity.setBeardVariant(random.nextInt(3));
+            }
+
+            entity.setEyeColor(EyeColorGenerator.random(random));
+            entity.setHairColor(HairColorGenerator.random(random));
+            entity.setHairVariant(random.nextInt(isMale ? 5 : 6));
+            entity.setSkinColor(SkinColorGenerator.random(random));
+
+            return entity;
+        }, MobCategory.CREATURE).sized(0.7F, 1.95F)
     );
 
     // These are "deferred" entity types for our existing entities. We want different spawn colors for these spawn eggs,
@@ -359,6 +379,6 @@ public class AVPEntityTypes {
         FabricDefaultAttributeRegistry.register(QUEEN, Queen.createQueenAttributes());
         FabricDefaultAttributeRegistry.register(WARRIOR, Warrior.createWarriorAttributes());
         FabricDefaultAttributeRegistry.register(YAUTJA, Yautja.createYautjaAttributes());
-        FabricDefaultAttributeRegistry.register(MARINE, MarineMob.createMarineAttributes());
+        FabricDefaultAttributeRegistry.register(MARINE, Marine.createMarineAttributes());
     }
 }

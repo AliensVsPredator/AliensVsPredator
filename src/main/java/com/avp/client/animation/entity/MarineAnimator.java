@@ -8,17 +8,17 @@ import net.minecraft.util.Mth;
 import org.jetbrains.annotations.NotNull;
 
 import com.avp.AVPResources;
+import com.avp.common.entity.living.human.marine.Marine;
 import com.avp.common.entity.living.human.marine.MarineAnimationRefs;
-import com.avp.common.entity.living.human.marine.MarineMob;
 
-public class MarineAnimator extends AzEntityAnimator<MarineMob> {
+public class MarineAnimator extends AzEntityAnimator<Marine> {
 
     private static final String NAME = "marine";
 
     private static final ResourceLocation ANIMATION = AVPResources.entityAnimationLocation(NAME);
 
     @Override
-    public void registerControllers(AzAnimationControllerContainer<MarineMob> animationControllerContainer) {
+    public void registerControllers(AzAnimationControllerContainer<Marine> animationControllerContainer) {
         animationControllerContainer.add(
             AzAnimationController.builder(this, MarineAnimationRefs.FULL_BODY_CONTROLLER_NAME)
                 .setTransitionLength(5)
@@ -27,12 +27,12 @@ public class MarineAnimator extends AzEntityAnimator<MarineMob> {
     }
 
     @Override
-    public @NotNull ResourceLocation getAnimationLocation(MarineMob animatable) {
+    public @NotNull ResourceLocation getAnimationLocation(Marine animatable) {
         return ANIMATION;
     }
 
     @Override
-    public void setCustomAnimations(MarineMob animatable, float partialTicks) {
+    public void setCustomAnimations(Marine animatable, float partialTicks) {
         super.setCustomAnimations(animatable, partialTicks);
 
         var boneCache = this.context().boneCache();

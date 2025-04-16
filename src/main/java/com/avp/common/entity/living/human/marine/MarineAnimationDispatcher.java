@@ -3,7 +3,7 @@ package com.avp.common.entity.living.human.marine;
 import mod.azure.azurelib.rewrite.animation.dispatch.command.AzCommand;
 import mod.azure.azurelib.rewrite.animation.play_behavior.AzPlayBehaviors;
 
-import com.avp.common.entity.living.human.AbstractHumanMob;
+import com.avp.common.entity.living.human.AbstractHuman;
 
 public class MarineAnimationDispatcher {
 
@@ -31,25 +31,25 @@ public class MarineAnimationDispatcher {
         AzPlayBehaviors.LOOP
     );
 
-    private final AbstractHumanMob abstractHumanMob;
+    private final AbstractHuman abstractHuman;
 
-    public MarineAnimationDispatcher(AbstractHumanMob abstractHumanMob) {
-        this.abstractHumanMob = abstractHumanMob;
+    public MarineAnimationDispatcher(AbstractHuman abstractHuman) {
+        this.abstractHuman = abstractHuman;
     }
 
     public void idle() {
-        IDLE.sendForEntity(abstractHumanMob);
+        IDLE.sendForEntity(abstractHuman);
     }
 
     public void swim() {
-        SWIM.sendForEntity(abstractHumanMob);
+        SWIM.sendForEntity(abstractHuman);
     }
 
     public void walk() {
-        WALK.sendForEntity(abstractHumanMob);
+        WALK.sendForEntity(abstractHuman);
     }
 
     public void rightShoot() {
-        RIGHT_SHOOT.sendForEntity(abstractHumanMob);
+        RIGHT_SHOOT.sendForEntity(abstractHuman);
     }
 }

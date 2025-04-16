@@ -1,3 +1,34 @@
+# v0.0.23-beta
+
+## ☢️ Breaking Changes
+- N/A
+
+## ✨ What's New
+- N/A
+
+## ♻️ Changes
+- N/A
+
+## 🐞 Fixes
+- Fixed royal ovamorph spawns not being royal for all royal altar structures.
+- Fixed industrial furnace blocks not dropping themselves as an item when mined.
+- Fixed marines not storing the following features to their entity data:
+  - Beard color
+  - Beard variant
+  - Eye color
+  - Gender
+  - Hair color
+  - Hair variant
+  - Skin color
+
+## 🛠 Data Pack
+- N/A
+
+## 🔬 Technical Changes
+- Bumped gradle version from 8.12 to 8.13.
+- Updated Just version from a7d374ee33 to 7edae6d449.
+- Rewrote marine rendering code to use dynamic coloring, reducing the number of asset files considerably.
+
 # v0.0.22-beta
 
 ## ☢️ Breaking Changes

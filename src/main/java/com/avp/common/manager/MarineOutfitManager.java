@@ -3,11 +3,11 @@ package com.avp.common.manager;
 import net.minecraft.resources.ResourceLocation;
 
 import com.avp.AVPResources;
-import com.avp.common.entity.living.human.marine.MarineMob;
+import com.avp.common.entity.living.human.marine.Marine;
 
 public class MarineOutfitManager extends OutfitManager {
 
-    public MarineOutfitManager(MarineMob entity) {
+    public MarineOutfitManager(Marine entity) {
         super(entity, 0, 0);
     }
 

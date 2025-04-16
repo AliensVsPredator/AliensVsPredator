@@ -2,33 +2,19 @@ package com.avp.common.manager;
 
 import net.minecraft.resources.ResourceLocation;
 
-import com.avp.AVPResources;
-import com.avp.common.entity.living.human.AbstractHumanMob;
+import com.avp.common.entity.living.human.AbstractHuman;
 
+@Deprecated(forRemoval = true)
 public class BeardManager {
 
-    protected final AbstractHumanMob entity;
+    protected final AbstractHuman entity;
 
     protected int maxBeardTextures;
 
     protected ResourceLocation cachedMaleBeardTexture;
 
-    public BeardManager(AbstractHumanMob entity, int maxBeardTextures) {
+    public BeardManager(AbstractHuman entity, int maxBeardTextures) {
         this.entity = entity;
         this.maxBeardTextures = maxBeardTextures;
-    }
-
-    public ResourceLocation getMaleBeardTexture(String humanType) {
-        if (cachedMaleBeardTexture == null) {
-            var random1 = this.entity.getRandom().nextIntBetweenInclusive(1, this.maxBeardTextures);
-            int random2;
-            if (random1 == 3) {
-                random2 = 6;
-            } else {
-                random2 = this.entity.getSharedSecondRandomValue(6);
-            }
-            cachedMaleBeardTexture = AVPResources.entityTextureLocation(humanType + "_male_beard" + random1 + "_" + random2);
-        }
-        return cachedMaleBeardTexture;
     }
 }

@@ -8,9 +8,9 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 
-import com.avp.common.entity.living.human.AbstractHumanMob;
+import com.avp.common.entity.living.human.AbstractHuman;
 
-public class HumanItemLayer<T extends AbstractHumanMob> extends AzBlockAndItemLayer<T> {
+public class HumanItemLayer<T extends AbstractHuman> extends AzBlockAndItemLayer<T> {
 
     private static final String LEFT_HAND = "leftHand_Item";
 
