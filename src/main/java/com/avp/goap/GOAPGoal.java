@@ -1,8 +1,25 @@
 package com.avp.goap;
 
-public interface GOAPGoal {
+import com.avp.goap.state.GOAPWorldState;
 
-    GOAPWorldState getDesiredWorldState();
+public abstract class GOAPGoal {
 
-    String getName();
+    private final GOAPWorldState desiredWorldState;
+
+    private final String name;
+
+    protected GOAPGoal() {
+        this.desiredWorldState = createDesiredWorldState();
+        this.name = this.getClass().getSimpleName();
+    }
+
+    public abstract GOAPWorldState createDesiredWorldState();
+
+    public GOAPWorldState getDesiredWorldState() {
+        return desiredWorldState;
+    }
+
+    public String getName() {
+        return name;
+    }
 }

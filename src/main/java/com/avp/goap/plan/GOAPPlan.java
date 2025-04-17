@@ -1,8 +1,12 @@
-package com.avp.goap;
+package com.avp.goap.plan;
 
 import com.bvanseg.just.functional.option.Option;
 
 import java.util.List;
+
+import com.avp.goap.GOAPAction;
+import com.avp.goap.GOAPGoal;
+import com.avp.goap.state.GOAPBlackboard;
 
 public class GOAPPlan<T> {
 

@@ -4,11 +4,19 @@ import com.bvanseg.just.functional.option.Option;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class GOAP<T> {
+import com.avp.goap.plan.GOAPPlan;
+import com.avp.goap.plan.GOAPPlanner;
+import com.avp.goap.state.GOAPMutableWorldState;
+import com.avp.goap.state.GOAPWorldState;
+
+public abstract class GOAP<T> {
+
+    private final Set<GOAPAction<T>> actions;
 
     private final Set<GOAPGoal> goals;
 
@@ -18,11 +26,16 @@ public class GOAP<T> {
 
     private @NotNull Option<GOAPPlan<T>> currentPlanOption;
 
-    public GOAP() {
+    protected GOAP() {
+        this.planner = new GOAPPlanner<>(this);
+        this.actions = new HashSet<>();
         this.goals = new HashSet<>();
-        this.planner = new GOAPPlanner<>();
         this.sensors = new ArrayList<>();
         this.currentPlanOption = Option.none();
+    }
+
+    public void addAction(GOAPAction<T> action) {
+        actions.add(action);
     }
 
     public void addGoal(GOAPGoal goal) {
@@ -34,7 +47,7 @@ public class GOAP<T> {
     }
 
     public GOAPWorldState sense(T context) {
-        var state = new GOAPWorldState();
+        var state = new GOAPMutableWorldState();
 
         for (var sensor : sensors) {
             sensor.sense(context, state);
@@ -61,5 +74,9 @@ public class GOAP<T> {
                 case GOAPPlan.State.InProgress inProgress -> {}
             }
         });
+    }
+
+    public Collection<GOAPAction<T>> getAvailableActions() {
+        return actions;
     }
 }

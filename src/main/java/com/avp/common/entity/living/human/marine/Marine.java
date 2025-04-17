@@ -20,6 +20,7 @@ import java.util.List;
 import com.avp.AVP;
 import com.avp.common.ai.goal.combat.DelayedAttackGoal;
 import com.avp.common.entity.living.human.AbstractHuman;
+import com.avp.common.entity.living.human.marine.ai.MarineGOAP;
 import com.avp.common.item.AVPItems;
 import com.avp.common.manager.*;
 
@@ -42,9 +43,12 @@ public class Marine extends AbstractHuman {
 
     private final MarineAnimationDispatcher animationDispatcher;
 
+    private final MarineGOAP goap;
+
     public Marine(EntityType<? extends PathfinderMob> entityType, Level level) {
         super(entityType, level);
         this.animationDispatcher = new MarineAnimationDispatcher(this);
+        this.goap = new MarineGOAP(this);
     }
 
     public static AttributeSupplier.Builder createMarineAttributes() {
@@ -62,6 +66,10 @@ public class Marine extends AbstractHuman {
     @Override
     public void tick() {
         super.tick();
+
+        if (!level().isClientSide) {
+            goap.update(this);
+        }
 
         if (this.getTarget() != null && this.getTarget() instanceof Marine) {
             this.setTarget(null);
