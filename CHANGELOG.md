@@ -20,6 +20,8 @@
   - Hair color
   - Hair variant
   - Skin color
+- Fixed JEI crash, no longer supported. Use REI for recipe viewing.
+- Fixed Irradiated Queen showing as black texture.
 
 ## 🛠 Data Pack
 - N/A
