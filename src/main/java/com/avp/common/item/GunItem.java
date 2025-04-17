@@ -223,8 +223,6 @@ public class GunItem extends Item {
         if (primaryShootSoundFrequencyInTicks <= 0 || tickProgress % primaryShootSoundFrequencyInTicks == 0) {
             level.playSound(null, player.blockPosition(), fireModeConfig.primaryShootSoundEvent(), SoundSource.PLAYERS);
         }
-
-        // GunLightUtil.spawnLightSource(player);
     }
 
     @Override

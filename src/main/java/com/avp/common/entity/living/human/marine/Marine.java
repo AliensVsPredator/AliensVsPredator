@@ -45,7 +45,6 @@ public class Marine extends AbstractHuman {
     public Marine(EntityType<? extends PathfinderMob> entityType, Level level) {
         super(entityType, level);
         this.animationDispatcher = new MarineAnimationDispatcher(this);
-        // this.outfitManager = new MarineOutfitManager(this);
     }
 
     public static AttributeSupplier.Builder createMarineAttributes() {
@@ -63,6 +62,7 @@ public class Marine extends AbstractHuman {
     @Override
     public void tick() {
         super.tick();
+
         if (this.getTarget() != null && this.getTarget() instanceof Marine) {
             this.setTarget(null);
         }
@@ -84,9 +84,7 @@ public class Marine extends AbstractHuman {
                         return true;
                     }
 
-                    if (this.getLastAttacker() != null) {
-                        return this.getLastAttacker().is(target) && !(this.getLastAttacker() instanceof Marine);
-                    }
+                    // TODO: More sophisticated checks here.
 
                     return false;
                 }
