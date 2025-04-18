@@ -11,6 +11,7 @@
   - Plated Irradiated Chitin Armor
 - Added Alien and Predator music discs added and play in jukeboxs.
 - Added Mobile Lab structure.
+- Adds Commissary house to all vanilla villages.
 
 ## ♻️ Changes
 - N/A
@@ -28,6 +29,7 @@
   - Skin color
 - Fixed JEI crash, no longer supported. Use REI for recipe viewing.
 - Fixed Irradiated Queen showing as black texture.
+- Fixes Ammo Chest not loading loot tables.
 
 ## 🛠 Data Pack
 - Rename tag `mobile_lab` to `has_mobile_lab`
