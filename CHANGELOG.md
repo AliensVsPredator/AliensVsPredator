@@ -9,6 +9,8 @@
   - Irradiated Chitin Armor
   - Plated Aberrant Chitin Armor
   - Plated Irradiated Chitin Armor
+- Added Alien and Predator music discs added and play in jukeboxs.
+- Added Mobile Lab structure.
 
 ## ♻️ Changes
 - N/A
@@ -28,7 +30,8 @@
 - Fixed Irradiated Queen showing as black texture.
 
 ## 🛠 Data Pack
-- N/A
+- Rename tag `mobile_lab` to `has_mobile_lab`
+- Rename tag `marine_camp_grass` to `has_marine_camp_grass`
 
 ## 🔬 Technical Changes
 - Bumped gradle version from 8.12 to 8.13.
