@@ -1,12 +1,17 @@
 package com.avp.common.entity.living.human.marine;
 
+import com.avp.common.util.ItemUtil;
+import com.bvanseg.just.functional.option.Option;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.DifficultyInstance;
+import net.minecraft.world.SimpleContainer;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
-import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
-import net.minecraft.world.entity.monster.Monster;
+import net.minecraft.world.entity.npc.InventoryCarrier;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -18,13 +23,11 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 
 import com.avp.AVP;
-import com.avp.common.ai.goal.combat.DelayedAttackGoal;
 import com.avp.common.entity.living.human.AbstractHuman;
 import com.avp.common.entity.living.human.marine.ai.MarineGOAP;
 import com.avp.common.item.AVPItems;
-import com.avp.common.manager.*;
 
-public class Marine extends AbstractHuman {
+public class Marine extends AbstractHuman implements InventoryCarrier {
 
     private static final List<Item> USABLE_WEAPON_ITEMS = List.of(
         AVPItems.M88MOD4_COMBAT_PISTOL,
@@ -41,14 +44,19 @@ public class Marine extends AbstractHuman {
         EquipmentSlot.FEET
     );
 
+    private static final String INVENTORY_KEY = "inventory";
+
     private final MarineAnimationDispatcher animationDispatcher;
 
     private final MarineGOAP goap;
+
+    private final SimpleContainer inventory;
 
     public Marine(EntityType<? extends PathfinderMob> entityType, Level level) {
         super(entityType, level);
         this.animationDispatcher = new MarineAnimationDispatcher(this);
         this.goap = new MarineGOAP(this);
+        this.inventory = new SimpleContainer(27);
     }
 
     public static AttributeSupplier.Builder createMarineAttributes() {
@@ -77,27 +85,14 @@ public class Marine extends AbstractHuman {
     }
 
     @Override
-    protected void registerGoals() {
-        super.registerGoals();
-        goalSelector.addGoal(1, new DelayedAttackGoal(this, 1.0, true, 5, this::runAttackAnimations));
-        targetSelector.addGoal(1, (new HurtByTargetGoal(this)).setAlertOthers(AbstractHuman.class));
-        targetSelector.addGoal(
-            2,
-            new NearestAttackableTargetGoal<>(
-                this,
-                LivingEntity.class,
-                false,
-                target -> {
-                    if (target instanceof Monster) {
-                        return true;
-                    }
-
-                    // TODO: More sophisticated checks here.
-
-                    return false;
-                }
-            )
-        );
+    protected void dropEquipment() {
+        super.dropEquipment();
+        // Drops the marine's equipment when they die.
+        inventory.removeAllItems()
+            .stream()
+            .map(itemStack -> ItemUtil.drop(this, itemStack, true, false))
+            .flatMap(Option::toStream)
+            .forEach(itemEntity -> level().addFreshEntity(itemEntity));
     }
 
     @Override
@@ -107,30 +102,35 @@ public class Marine extends AbstractHuman {
         @NotNull MobSpawnType spawnType,
         @Nullable SpawnGroupData spawnGroupData
     ) {
-        setItemSlot(EquipmentSlot.MAINHAND, makeInitialWeapon());
+        inventory.addItem(makeInitialWeapon());
 
         if (random.nextInt(100) <= 10) {
-            setItemSlot(EquipmentSlot.OFFHAND, new ItemStack(AVPItems.GRENADE));
-            this.makeInitialArmor();
+            inventory.addItem(new ItemStack(AVPItems.GRENADE));
+            makeInitialArmor();
         }
 
         return super.finalizeSpawn(level, difficulty, spawnType, spawnGroupData);
     }
 
+    @Override
+    public void readAdditionalSaveData(CompoundTag compoundTag) {
+        super.readAdditionalSaveData(compoundTag);
+        compoundTag.put(INVENTORY_KEY, inventory.createTag(level().registryAccess()));
+    }
+
+    @Override
+    public void addAdditionalSaveData(CompoundTag compoundTag) {
+        super.addAdditionalSaveData(compoundTag);
+        inventory.fromTag(compoundTag.getList(INVENTORY_KEY, Tag.TAG_COMPOUND), level().registryAccess());
+    }
+
+    @Override
+    public @NotNull SimpleContainer getInventory() {
+        return inventory;
+    }
+
     private void makeInitialArmor() {
         var selectedArmor = List.of(
-            // List.of(
-            // ArmorItems.TACTICAL_HELMET,
-            // ArmorItems.TACTICAL_CHESTPLATE,
-            // ArmorItems.TACTICAL_LEGGINGS,
-            // ArmorItems.TACTICAL_BOOTS
-            // ),
-            // List.of(
-            // ArmorItems.TACTICAL_CAMO_HELMET,
-            // ArmorItems.TACTICAL_CAMO_CHESTPLATE,
-            // ArmorItems.TACTICAL_CAMO_LEGGINGS,
-            // ArmorItems.TACTICAL_CAMO_BOOTS
-            // )
             List.of(
                 Items.IRON_HELMET,
                 Items.IRON_CHESTPLATE,
@@ -150,13 +150,14 @@ public class Marine extends AbstractHuman {
             .toArray(ItemStack[]::new);
 
         for (var i = 0; i < ARMOR_EQUIPMENT_SLOTS.size(); i++) {
-            setItemSlot(ARMOR_EQUIPMENT_SLOTS.get(i), selectedArmor[i]);
+            inventory.addItem(selectedArmor[i]);
         }
     }
 
     private ItemStack makeInitialWeapon() {
         var randomIndex = random.nextInt(USABLE_WEAPON_ITEMS.size());
         var randomWeaponItem = USABLE_WEAPON_ITEMS.get(randomIndex);
+
         return new ItemStack(randomWeaponItem);
     }
 }
