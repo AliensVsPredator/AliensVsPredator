@@ -92,6 +92,7 @@ public class AVPItems {
 
     // Music Disc Items
     public static final Item ALIEN_MUSIC_DISC_1 = register(new Item.Properties().stacksTo(1).rarity(Rarity.RARE),"alien_music_disc_1");
+    public static final Item PREDATOR_MUSIC_DISC_1 = register(new Item.Properties().stacksTo(1).rarity(Rarity.RARE),"predator_music_disc_1");
 
     // Material Items
     public static final Item ALUMINUM_INGOT = register("aluminum_ingot");

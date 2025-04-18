@@ -31,6 +31,8 @@ public class ToolsAndUtilitiesCreativeModeTabInitializer {
             entries.accept(AVPItems.VERITANIUM_SHOVEL);
             entries.accept(AVPItems.VERITANIUM_SWORD);
             entries.accept(AVPItems.ALIEN_MUSIC_DISC_1);
+            entries.accept(AVPItems.PREDATOR_MUSIC_DISC_1);
+
         });
     }
 }
