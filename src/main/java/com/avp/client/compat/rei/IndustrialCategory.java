@@ -55,14 +55,14 @@ public class IndustrialCategory implements DisplayCategory<IndustrialDisplay> {
         // Input slot
         widgets.add(
             Widgets.createSlot(new Point(inputX, slotY))
-                .entries(display.getInputEntries().get(0))
+                .entries(display.getInputEntries().getFirst())
                 .markInput()
         );
 
         // Output slot
         widgets.add(
             Widgets.createSlot(new Point(outputX, slotY))
-                .entries(display.getOutputEntries().get(0))
+                .entries(display.getOutputEntries().getFirst())
                 .markOutput()
         );
 

@@ -1,33 +1,213 @@
-# v0.0.22-beta
+# v0.0.23-beta
 
 ## ☢️ Breaking Changes
-- Removed Royal Jelly Canister item.
-  - May be re-added at some point in the future.
+- N/A
 
-## ✨️ What's New
-- Added new, fully-functional canister items:
-  - Function like buckets, but have a capacity of 8 instead of 1.
-  - Shift-right-click fluids to pick fluids up.
-  - Right-click replaceable blocks (air, vines, tall grass, etc.) to place fluids down.
-  - Canisters support the following fluids:
-    - Lava
-    - Milk
-    - Powder Snow
-    - Water
-  - Credits to [Cerbon](https://github.com/CerbonXD) for implementation.
+## ✨ What's New
+- N/A
 
 ## ♻️ Changes
 - N/A
 
 ## 🐞 Fixes
-- Fixed Smart Disc duplication for creative players.
+- Fixed royal ovamorph spawns not being royal for all royal altar structures.
+- Fixed industrial furnace blocks not dropping themselves as an item when mined.
+- Fixed marines not storing the following features to their entity data:
+  - Beard color
+  - Beard variant
+  - Eye color
+  - Gender
+  - Hair color
+  - Hair variant
+  - Skin color
 
 ## 🛠 Data Pack
 - N/A
 
 ## 🔬 Technical Changes
-- Refactor smart disc return to owner code.
-- Refactor REI support to new `com.avp.client.compat.rei` location.
+- Bumped gradle version from 8.12 to 8.13.
+- Updated Just version from a7d374ee33 to 7edae6d449.
+- Rewrote marine rendering code to use dynamic coloring, reducing the number of asset files considerably.
+
+# v0.0.22-beta
+
+## ☢️ Breaking Changes
+- Removed Royal Jelly Canister item.
+  - May be re-added at some point in the future.
+- Removed minY/maxY spawn level properties from config.
+  - After further consideration, these properties only ended up confusing players as to why certain aliens weren't spawning in hives.
+  - The default values were too strict, and there's no reason a Praetorian can't spawn in a hive that's on the surface.
+  - The queen and predator max/min Y level limits remain unchanged, but are currently hardcoded. We may make them configurable in a future update.
+
+## ✨ What's New
+- Added aberrant chitin armor set.
+- Added irradiated chitin armor set.
+- Added plated aberrant chitin armor set.
+- Added plated irradiated chitin armor set.
+- Added irradiated queens.
+- Added new structure in badlands, `badlands_royal_altar`
+- Added Chest loot tables for Marine structures.
+- Queen sounds registered.
+- Added Desert, deepslate, jungle and nether Royal Altars.
+- Added Crafted Resin Blocks.
+- Added new textures for the queen's following forms:
+  - Aberrant
+  - Base
+  - Irradiated
+  - Nether
+- Added new, fully-functional canister items:
+    - Function like buckets, but have a capacity of 8 instead of 1.
+    - Shift-right-click fluids to pick fluids up.
+    - Right-click replaceable blocks (air, vines, tall grass, etc.) to place fluids down.
+    - Canisters support the following fluids:
+        - Lava
+        - Milk
+        - Powder Snow
+        - Water
+    - Credits to [Cerbon](https://github.com/CerbonXD) for implementation.
+
+
+## ♻️ Changes
+- Marines can now spawn on grass blocks.
+  - This only affects their spawns within camp structures, at the moment.
+- Reduced spawn weight of marines in marine camps (25 -> 15).
+- Reduced spawn weight of marines in communication outposts (25 -> 15).
+- Cut nuke's default block sample count in half to improve performance.
+- Increased royal chestburster's growth time into a praetorian 3x (600 seconds -> 1800 seconds).
+- Villagers now only run away from adult xenomorphs instead of all aliens.
+- Updated marine camp loot tables.
+- Xenomorphs will now continue to pursue targets that move off of resin.
+
+## 🐞 Fixes
+- Fixed irradiated xenomorph spawn egg colors.
+- Fixed xenomorphs lunging even when they do not have line-of-sight to their target.
+- Fixed xenomorph, marine and predator AI freezing up when their health is below 50%.
+- Fixed irradiated xenomorphs turning blocks at incorrect positions into blue ice blocks when hurt.
+- Fixed xenomorphs attacking targets off of resin when they shouldn't.
+- Fixed irradiated xenomorphs not attacking xenomorphs that were the irradiated xenomorph's original variant type.
+- Fixed drone being considered as a royal alien.
+- Fixed irradiated praetorian not being considered a royal alien.
+- Fixed boats spawning underneath marine camps.
+- Fixed ovamorphs spawning with altar structures despawning when they shouldn't.
+- Fixed grenade explosions leaving ghost blocks behind.
+- Fixed damage source instances being allocated every radiation effect tick.
+- Fixed marine's head being slightly tilted.
+- Fixed trinitite blocks having broken transparency.
+- Fixed irradiated praetorians having incorrect textures.
+- Fixed Smart Disc duplication for creative players.
+- Fixed irradiated grenade items passively irradiating entities.
+- Fixed z-fighting on predator's mandible membranes.
+- Fixed royal chestbursters not growing up directly into their respective praetorian types.
+- Fixed the following royal facehuggers not producing their respective royal chestbursters:
+  - Royal Facehugger
+  - Royal Aberrant Facehugger
+  - Royal Nether Facehugger
+- Fixed the following royal ovamorphs not producing royal facehuggers:
+  - Royal Aberrant Ovamorph
+  - Royal Nether Ovamorph
+  - Royal Ovamorph
+- Fixed artificial spawning issues with AVP entities:
+  - Fixed `/summon` command summoning AVP entities with incorrect data.
+  - Fixed spawner blocks spawning AVP entities with incorrect data.
+  - This affected entities in multiple ways. Such as:
+    - Royal chestbursters, facehuggers and ovamorphs not spawning as royal.
+    - Ovamorphs spawning with no facehugger inside.
+    - Ovamorphs spawning with a tiny size.
+    - Facehuggers spawning infertile.
+    - ...and potentially other entity data bugs that were fixed but not discovered prior to the fix.
+- Fixed the following alien entity types being inverted:
+  - Royal Chestburster (inverted with Aberrant Royal Chestburster).
+  - Royal Facehugger (inverted with Aberrant Royal Facehugger).
+  - Royal Ovamorph (inverted with Aberrant Royal Ovamorph).
+- Fixed the following aliens being improperly tagged as `#avp:xenomorphs`:
+  - Royal Aberrant Chestburster
+  - Royal Aberrant Facehugger
+  - Royal Aberrant Ovamorph
+  - Royal Nether Chestburster
+  - Royal Nether Facehugger
+  - Royal Nether Ovamorph
+  - Royal Chestburster
+  - Royal Facehugger
+  - Royal Ovamorph
+- Fixed irradiated acid replacing the following blocks:
+  - Air
+  - Barrier Block
+  - Bedrock
+  - Chain Command Block
+  - Chest
+  - End Gateway
+  - End Portal
+  - End Portal Frame
+  - Jigsaw Block
+  - Light Block
+  - Moving Piston Block
+  - Reinforced Deepslate
+  - Repeating Command Block
+  - Spawner Block
+  - Structure Block
+  - Trial Spawner Block
+  - Vault Block
+- Fixed the following blocks showing in creative tabs when they shouldn't:
+  - Aberrant Resin Node
+  - Irradiated Resin Node
+  - Nether Resin Node
+  - Resin Node
+- Fixed the following blocks missing the `#minecraft:mineable_with_axe` tag:
+  - Aberrant Resin Vein
+  - Irradiated Resin Vein
+- Fixed the following aberrant aliens being incorrectly marked as irradiated aliens:
+  - Aberrant Ovamorph
+  - Aberrant Praetorian
+  - Aberrant Queen
+  - Aberrant Warrior
+- Fixed the following entities giving the wrong picked spawn egg result in creative mode:
+  - Royal Ovamorph
+  - Royal Facehugger
+  - Royal Chestburster
+
+## 🛠 Data Pack
+- Added `has_badlands_altar` tag for biomes that the badlands altar can spawn in.
+- Removed aberrant aliens from `#avp:irradiated_aliens` tag.
+- Added `#minecraft:undead` tag to `#avp:radiation_resistant` tag.
+- Added `#avp:has_desert_altar` biome tag.
+- `#avp:has_altar` biome tag is now composed of `#avp:has_badlands_altar` and `#avp:has_desert_altar`.
+- Added `#avp:jungle_predator_armor` item tag.
+- Added `#avp:mk50_armor` item tag.
+- Added `#avp:nether_chitin_armor` item tag.
+- Added `#avp:plated_nether_chitin_armor` item tag.
+- Added `#avp:pressure_armor` item tag.
+- Added `#avp:fire_resistant_armor` item tag.
+  - Composed of `#avp:nether_chitin_armor` and `#avp:plated_nether_chitin_armor` item tags.
+- Added `#avp:predator_armor` item tag (future-proofing).
+  - Composed of `#avp:jungle_predator_armor` item tag.
+- Corrected multiple data pack tagging mistakes:
+  - Drones are no longer tagged as `#avp:royal_aliens`.
+  - Irradiated praetorians are now tagged as `#avp:royal_aliens`.
+  - Fixed the following aliens being improperly tagged as `#avp:xenomorphs`:
+    - Royal Aberrant Chestburster
+    - Royal Aberrant Facehugger
+    - Royal Aberrant Ovamorph
+    - Royal Nether Chestburster
+    - Royal Nether Facehugger
+    - Royal Nether Ovamorph
+    - Royal Chestburster
+    - Royal Facehugger
+    - Royal Ovamorph
+
+## 🔬 Technical Changes
+- Refactored smart disc return to owner code.
+- Refactored REI support to new `com.avp.client.compat.rei` location.
+- Refactored Trades to dedicated class.
+- Removed unnecessary code in RadiatedBlock.java.
+- Cleaned up marine animation code, slightly more optimal.
+- Alphabetically sorted block tag contents.
+- Cleaned up acid damage code.
+- Added Just library dependency.
+- Refactored hive code to use Just types.
+- Refactored embryo growth code (cleanup / code-splitting).
+- Refactored alien targeting checks to make the code more readable and easier to maintain.
+- Removed Chestburster Queen entity type.
+  - Was never fully implemented as an entity.
 
 # v0.0.21-beta
 

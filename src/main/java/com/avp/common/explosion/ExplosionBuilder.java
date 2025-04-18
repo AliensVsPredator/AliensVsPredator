@@ -31,7 +31,7 @@ public class ExplosionBuilder {
         this.callbacksBuilder = ExplosionCallbacks.builder();
         this.center = center;
         this.directionToRadiusMap = new EnumMap<>(Direction.class);
-        this.blockSampleCountPerCycle = 65535;
+        this.blockSampleCountPerCycle = 65535 / 2;
         this.cycleDelayInTicks = 1;
         this.samplerPredicate = ExplosionBlockSamplerPredicate.DEFAULT;
     }

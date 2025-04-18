@@ -20,7 +20,7 @@ import com.avp.common.util.AVPPredicates;
 
 public class RadiationStatusEffect extends MobEffect {
 
-    private static final Map<LivingEntity, Integer> effectTracker = new WeakHashMap<>();
+    private static final Map<LivingEntity, Integer> EFFECT_TRACKER = new WeakHashMap<>();
 
     protected RadiationStatusEffect() {
         super(MobEffectCategory.HARMFUL, Color.GREEN.getColor());
@@ -33,70 +33,85 @@ public class RadiationStatusEffect extends MobEffect {
 
     @Override
     public boolean applyEffectTick(LivingEntity livingEntity, int amplifier) {
-        var currentDuration = effectTracker.getOrDefault(livingEntity, 0);
+        var currentDuration = EFFECT_TRACKER.getOrDefault(livingEntity, 0);
 
         if (AVPPredicates.IS_IMMORTAL.test(livingEntity) || livingEntity.getType().is(AVPEntityTypeTags.RADIATION_RESISTANT)) {
             livingEntity.removeEffect(AVPEffects.RADIATION_EFFECT);
             return false;
         }
 
-        var registry = livingEntity.registryAccess().registryOrThrow(Registries.DAMAGE_TYPE);
-        var damageSource = new DamageSource(registry.getHolderOrThrow(AVPDamageTypes.RADIATION));
         switch (amplifier) {
             case 0:
-                this.handleStatusEffects(livingEntity, 100, amplifier, MobEffects.WEAKNESS, MobEffects.HUNGER);
-                if (livingEntity.tickCount % 80 == 0)
-                    livingEntity.hurt(damageSource, 0.1F);
+                applyLevel1RadiationSideEffects(livingEntity, amplifier);
                 break;
-
             case 1:
-                this.handleStatusEffects(
-                    livingEntity,
-                    100,
-                    amplifier,
-                    MobEffects.WEAKNESS,
-                    MobEffects.HUNGER,
-                    MobEffects.MOVEMENT_SLOWDOWN
-                );
-                if (livingEntity.tickCount % 40 == 0)
-                    livingEntity.hurt(damageSource, 2.1F);
+                applyLevel2RadiationSideEffects(livingEntity, amplifier);
                 break;
-
             default:
-                this.handleStatusEffects(
-                    livingEntity,
-                    100,
-                    amplifier,
-                    MobEffects.WEAKNESS,
-                    MobEffects.HUNGER,
-                    MobEffects.MOVEMENT_SLOWDOWN,
-                    MobEffects.BLINDNESS
-                );
-                if (livingEntity.tickCount % 20 == 0)
-                    livingEntity.hurt(damageSource, 5.0F);
+                applyDefaultRadiationSideEffects(livingEntity, amplifier);
                 break;
         }
 
         var threshold = switch (amplifier) {
-            case 0 -> 20 * 60 * 8; // 8 minutes in ticks
-            case 1 -> 20 * 60 * 16; // 16 minutes in ticks
+            case 0 -> 8 * 60 * 20; // 8 minutes in ticks
+            case 1 -> 16 * 60 * 20; // 16 minutes in ticks
             default -> Integer.MAX_VALUE;
         };
 
         if (currentDuration >= threshold && amplifier < 2) {
-            effectTracker.put(livingEntity, 0);
+            EFFECT_TRACKER.put(livingEntity, 0);
             livingEntity.addEffect(new MobEffectInstance(AVPEffects.RADIATION_EFFECT, Integer.MAX_VALUE, amplifier + 1));
         } else {
-            effectTracker.put(livingEntity, currentDuration + 1);
+            EFFECT_TRACKER.put(livingEntity, currentDuration + 1);
         }
 
         return livingEntity.isAlive();
     }
 
+    private void applyLevel1RadiationSideEffects(LivingEntity livingEntity, int amplifier) {
+        handleStatusEffects(livingEntity, 5 * 20, amplifier, MobEffects.WEAKNESS, MobEffects.HUNGER);
+
+        if (livingEntity.tickCount % (4 * 20) == 0) {
+            livingEntity.hurt(createRadiationDamageSource(livingEntity), 0.1F);
+        }
+    }
+
+    private void applyLevel2RadiationSideEffects(LivingEntity livingEntity, int amplifier) {
+        handleStatusEffects(livingEntity, 5 * 20, amplifier, MobEffects.WEAKNESS, MobEffects.HUNGER, MobEffects.MOVEMENT_SLOWDOWN);
+
+        if (livingEntity.tickCount % (2 * 20) == 0) {
+            livingEntity.hurt(createRadiationDamageSource(livingEntity), 2.1F);
+        }
+    }
+
+    private void applyDefaultRadiationSideEffects(LivingEntity livingEntity, int amplifier) {
+        handleStatusEffects(
+            livingEntity,
+            5 * 20,
+            amplifier,
+            MobEffects.WEAKNESS,
+            MobEffects.HUNGER,
+            MobEffects.MOVEMENT_SLOWDOWN,
+            MobEffects.BLINDNESS
+        );
+
+        if (livingEntity.tickCount % 20 == 0) {
+            livingEntity.hurt(createRadiationDamageSource(livingEntity), 5.0F);
+        }
+    }
+
     @SafeVarargs
     private void handleStatusEffects(@NotNull LivingEntity livingEntity, int ticks, int amplifier, Holder<MobEffect>... statusEffects) {
-        for (Holder<MobEffect> effect : statusEffects)
-            if (!livingEntity.hasEffect(effect))
+        for (var effect : statusEffects) {
+            if (!livingEntity.hasEffect(effect)) {
                 livingEntity.addEffect(new MobEffectInstance(effect, ticks, amplifier, true, true));
+            }
+        }
+    }
+
+    private static DamageSource createRadiationDamageSource(LivingEntity livingEntity) {
+        return new DamageSource(
+            livingEntity.registryAccess().registryOrThrow(Registries.DAMAGE_TYPE).getHolderOrThrow(AVPDamageTypes.RADIATION)
+        );
     }
 }

@@ -14,12 +14,13 @@ import com.avp.common.entity.living.alien.Alien;
 import com.avp.common.entity.living.alien.xenomorph.Xenomorph;
 import com.avp.common.lifecycle.growth.GrowthStage;
 import com.avp.common.lifecycle.registry.AlienLifecycleRegistry;
+import com.avp.common.util.AlienVariantUtil;
 
 public class GrowthManager {
 
     private static final String GROWTH_TIME_IN_TICKS_TAG_KEY = "growthTimeInTicks";
 
-    private final LivingEntity entity;
+    private final Alien entity;
 
     private final @Nullable Consumer<LivingEntity> onGrowUpCallback;
 
@@ -29,11 +30,11 @@ public class GrowthManager {
 
     private @Nullable Supplier<Float> growthTimeReductionMultiplierProvider;
 
-    public GrowthManager(LivingEntity entity) {
+    public GrowthManager(Alien entity) {
         this(entity, null);
     }
 
-    public GrowthManager(LivingEntity entity, @Nullable Consumer<LivingEntity> onGrowUpCallback) {
+    public GrowthManager(Alien entity, @Nullable Consumer<LivingEntity> onGrowUpCallback) {
         this.entity = entity;
         this.onGrowUpCallback = onGrowUpCallback;
         this.growOverTime = true;
@@ -52,7 +53,7 @@ public class GrowthManager {
             return;
         }
 
-        var type = entity.getType();
+        var type = AlienVariantUtil.getVariantTypeFor(entity);
         var growthStage = AlienLifecycleRegistry.getOrNull(null, type);
         this.growthTimeInTicks++;
 
@@ -96,7 +97,9 @@ public class GrowthManager {
     }
 
     public void load(CompoundTag compoundTag) {
-        this.growthTimeInTicks = compoundTag.getInt(GROWTH_TIME_IN_TICKS_TAG_KEY);
+        if (compoundTag.contains(GROWTH_TIME_IN_TICKS_TAG_KEY)) {
+            this.growthTimeInTicks = compoundTag.getInt(GROWTH_TIME_IN_TICKS_TAG_KEY);
+        }
     }
 
     public void save(CompoundTag compoundTag) {

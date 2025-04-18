@@ -53,6 +53,11 @@ public class Facehugger extends Parasite {
     }
 
     @Override
+    public @Nullable EntityType<? extends Alien> getDefaultType() {
+        return isRoyal() ? AVPEntityTypes.ROYAL_FACEHUGGER : AVPEntityTypes.FACEHUGGER;
+    }
+
+    @Override
     protected void registerGoals() {
         this.goalSelector.addGoal(3, new LungeAtTargetGoal(this, 0.75F, 20 * 3, 1, 12).setOnLungeCallback(this::runLungeAnimation));
         this.goalSelector.addGoal(4, new MeleeAttackGoal(this, 1.0, false));

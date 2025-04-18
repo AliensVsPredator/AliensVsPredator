@@ -1,43 +1,31 @@
 package com.avp.client.render.layer.human;
 
 import mod.azure.azurelib.rewrite.model.AzBone;
-import mod.azure.azurelib.rewrite.render.AzRendererPipeline;
 import mod.azure.azurelib.rewrite.render.AzRendererPipelineContext;
 import mod.azure.azurelib.rewrite.render.layer.AzRenderLayer;
 import net.minecraft.client.renderer.RenderType;
 
-import com.avp.common.entity.living.human.AbstractHumanMob;
-import com.avp.common.entity.living.human.marine.MarineMob;
+import com.avp.common.entity.living.human.AbstractHuman;
 
-public class HumanOutfitLayer implements AzRenderLayer<MarineMob> {
-
-    private final String HUMAN_TYPE;
-
-    public HumanOutfitLayer(String humanType) {
-        HUMAN_TYPE = humanType;
-    }
+public class HumanOutfitLayer<T extends AbstractHuman> implements AzRenderLayer<T> {
 
     @Override
-    public void preRender(AzRendererPipelineContext<MarineMob> context) {}
+    public void preRender(AzRendererPipelineContext<T> context) {}
 
     @Override
-    public void render(AzRendererPipelineContext<MarineMob> context) {
+    public void render(AzRendererPipelineContext<T> context) {
         var animatable = context.animatable();
-        AzRendererPipeline<MarineMob> renderPipeline = context.rendererPipeline();
-        if (Boolean.TRUE.equals(animatable.getEntityData().get(AbstractHumanMob.SET_GENDER))) {
-            context.setVertexConsumer(
-                context.multiBufferSource()
-                    .getBuffer(RenderType.entityCutout(animatable.getOutfitManager().getMaleOutfitTexture(HUMAN_TYPE)))
-            );
-        } else {
-            context.setVertexConsumer(
-                context.multiBufferSource()
-                    .getBuffer(RenderType.entityCutout(animatable.getOutfitManager().getFemaleOutfitTexture(HUMAN_TYPE)))
-            );
-        }
+        var renderPipeline = context.rendererPipeline();
+
+        var textureLocation = animatable.getHumanFeatureManager().getOutfitTexture();
+        var renderType = RenderType.entityCutout(textureLocation);
+        var vertexConsumer = context.multiBufferSource().getBuffer(renderType);
+
+        context.setVertexConsumer(vertexConsumer);
+
         renderPipeline.reRender(context);
     }
 
     @Override
-    public void renderForBone(AzRendererPipelineContext<MarineMob> context, AzBone bone) {}
+    public void renderForBone(AzRendererPipelineContext<T> context, AzBone bone) {}
 }

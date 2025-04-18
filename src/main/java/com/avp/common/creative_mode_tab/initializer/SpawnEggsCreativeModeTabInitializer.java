@@ -38,6 +38,7 @@ public class SpawnEggsCreativeModeTabInitializer {
             entries.accept(SpawnEggItems.IRRADIATED_DRONE_SPAWN_EGG);
             entries.accept(SpawnEggItems.IRRADIATED_WARRIOR_SPAWN_EGG);
             entries.accept(SpawnEggItems.IRRADIATED_PRAETORIAN_SPAWN_EGG);
+            entries.accept(SpawnEggItems.IRRADIATED_QUEEN_SPAWN_EGG);
 
             entries.accept(SpawnEggItems.ROYAL_OVAMORPH_SPAWN_EGG);
             entries.accept(SpawnEggItems.ROYAL_FACEHUGGER_SPAWN_EGG);

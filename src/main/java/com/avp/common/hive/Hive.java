@@ -1,5 +1,6 @@
 package com.avp.common.hive;
 
+import com.bvanseg.just.functional.option.Option;
 import com.mojang.serialization.Dynamic;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -19,7 +20,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.UUID;
 
 import com.avp.AVP;
@@ -99,7 +99,7 @@ public class Hive {
     public boolean requestToJoin(Entity requestingEntity) {
         var isAlien = requestingEntity instanceof Alien;
 
-        if (requestingEntity instanceof Queen && hiveLeader().isPresent()) {
+        if (requestingEntity instanceof Queen && hiveLeader().isSome()) {
             return false;
         }
 
@@ -149,7 +149,7 @@ public class Hive {
     public boolean isAlive() {
         return !hiveMemberDataMap.isEmpty() && HiveLevelData.getOrCreate(level)
             .filter(data -> data.hasHive(this))
-            .isPresent();
+            .isSome();
     }
 
     public void onRemove() {
@@ -197,8 +197,8 @@ public class Hive {
         return null;
     }
 
-    public Optional<Alien> hiveLeader() {
-        return Optional.ofNullable(hiveLeaderOrNull());
+    public Option<Alien> hiveLeader() {
+        return Option.ofNullable(hiveLeaderOrNull());
     }
 
     public void setHiveLeaderId(@Nullable UUID id) {

@@ -3,8 +3,9 @@ package com.avp.common.manager;
 import net.minecraft.resources.ResourceLocation;
 
 import com.avp.AVPResources;
-import com.avp.common.entity.living.human.AbstractHumanMob;
+import com.avp.common.entity.living.human.AbstractHuman;
 
+@Deprecated(forRemoval = true)
 public class OutfitManager {
 
     protected ResourceLocation cachedMaleOutfitTexture;
@@ -15,9 +16,9 @@ public class OutfitManager {
 
     protected int maxFemaleOutfitTextures;
 
-    protected final AbstractHumanMob entity;
+    protected final AbstractHuman entity;
 
-    public OutfitManager(AbstractHumanMob entity, int maxMaleOutfitTextures, int maxFemaleOutfitTextures) {
+    public OutfitManager(AbstractHuman entity, int maxMaleOutfitTextures, int maxFemaleOutfitTextures) {
         this.entity = entity;
         this.maxMaleOutfitTextures = maxMaleOutfitTextures;
         this.maxFemaleOutfitTextures = maxFemaleOutfitTextures;

@@ -1,5 +1,6 @@
 package com.avp.common.level.saveddata;
 
+import com.bvanseg.just.functional.option.Option;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
@@ -7,12 +8,10 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.saveddata.SavedData;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Predicate;
 
@@ -55,11 +54,11 @@ public class HiveLevelData extends SavedData {
         setDirty();
     }
 
-    public Optional<Hive> findNearestHive(BlockPos blockPos) {
+    public Option<Hive> findNearestHive(BlockPos blockPos) {
         return findNearestHive(blockPos, AVPPredicates.alwaysTrue());
     }
 
-    public Optional<Hive> findNearestHive(BlockPos blockPos, Predicate<Hive> hivePredicate) {
+    public Option<Hive> findNearestHive(BlockPos blockPos, Predicate<Hive> hivePredicate) {
         var distanceSquared = Double.MAX_VALUE;
         Hive closestHive = null;
 
@@ -73,7 +72,7 @@ public class HiveLevelData extends SavedData {
             }
         }
 
-        return Optional.ofNullable(closestHive);
+        return Option.ofNullable(closestHive);
     }
 
     public Hive createHive() {
@@ -88,12 +87,12 @@ public class HiveLevelData extends SavedData {
         return hiveByIdMap.values();
     }
 
-    public @Nullable Hive hiveOrNull(UUID id) {
-        return hiveByIdMap.get(id);
+    public Option<Hive> hive(@NotNull UUID id) {
+        return Option.ofNullable(hiveByIdMap.get(id));
     }
 
     public boolean hasHive(Hive hive) {
-        return hiveOrNull(hive.id()) != null;
+        return hive(hive.id()).isSome();
     }
 
     public static HiveLevelData load(Level level, CompoundTag compoundTag, HolderLookup.Provider provider) {
@@ -128,13 +127,10 @@ public class HiveLevelData extends SavedData {
         return compoundTag;
     }
 
-    public static Optional<HiveLevelData> getOrCreate(Level level) {
-        if (level.isClientSide) {
-            return Optional.empty();
-        }
-
-        var manager = ((ServerLevel) level).getDataStorage();
-        return Optional.of(manager.computeIfAbsent(HiveLevelData.factory(level), DATA_NAME));
+    public static Option<HiveLevelData> getOrCreate(Level level) {
+        return level.isClientSide
+            ? Option.none()
+            : Option.some(((ServerLevel) level).getDataStorage().computeIfAbsent(HiveLevelData.factory(level), DATA_NAME));
     }
 
     public static Factory<HiveLevelData> factory(Level level) {

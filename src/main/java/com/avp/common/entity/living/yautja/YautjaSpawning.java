@@ -10,9 +10,9 @@ import net.minecraft.world.entity.SpawnPlacements;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.level.ServerLevelAccessor;
 
-import com.avp.AVP;
-
 public class YautjaSpawning {
+
+    private static final int MIN_Y_LEVEL = 62;
 
     public static final SpawnPlacements.SpawnPredicate<Yautja> PREDICATE = (
         entityType,
@@ -20,14 +20,8 @@ public class YautjaSpawning {
         mobSpawnType,
         blockPos,
         randomSource
-    ) -> {
-        var maxY = AVP.config.spawnConfigs.YAUTJA_SPAWN.maxY;
-        var minY = AVP.config.spawnConfigs.YAUTJA_SPAWN.minY;
-
-        return blockPos.getY() <= maxY &&
-            blockPos.getY() >= minY &&
-            checkSpawnRules(entityType, serverLevelAccessor, mobSpawnType, blockPos, randomSource);
-    };
+    ) -> blockPos.getY() >= MIN_Y_LEVEL &&
+        checkSpawnRules(entityType, serverLevelAccessor, mobSpawnType, blockPos, randomSource);
 
     public static boolean checkSpawnRules(
         EntityType<? extends Monster> entityType,

@@ -8,18 +8,17 @@ import net.minecraft.util.Mth;
 import org.jetbrains.annotations.NotNull;
 
 import com.avp.AVPResources;
-import com.avp.client.animation.BasicAnimationUtils;
+import com.avp.common.entity.living.human.marine.Marine;
 import com.avp.common.entity.living.human.marine.MarineAnimationRefs;
-import com.avp.common.entity.living.human.marine.MarineMob;
 
-public class MarineAnimator extends AzEntityAnimator<MarineMob> {
+public class MarineAnimator extends AzEntityAnimator<Marine> {
 
     private static final String NAME = "marine";
 
     private static final ResourceLocation ANIMATION = AVPResources.entityAnimationLocation(NAME);
 
     @Override
-    public void registerControllers(AzAnimationControllerContainer<MarineMob> animationControllerContainer) {
+    public void registerControllers(AzAnimationControllerContainer<Marine> animationControllerContainer) {
         animationControllerContainer.add(
             AzAnimationController.builder(this, MarineAnimationRefs.FULL_BODY_CONTROLLER_NAME)
                 .setTransitionLength(5)
@@ -28,56 +27,58 @@ public class MarineAnimator extends AzEntityAnimator<MarineMob> {
     }
 
     @Override
-    public @NotNull ResourceLocation getAnimationLocation(MarineMob animatable) {
+    public @NotNull ResourceLocation getAnimationLocation(Marine animatable) {
         return ANIMATION;
     }
 
     @Override
-    public void setCustomAnimations(MarineMob animatable, float partialTicks) {
+    public void setCustomAnimations(Marine animatable, float partialTicks) {
         super.setCustomAnimations(animatable, partialTicks);
 
         var boneCache = this.context().boneCache();
-        var leftArm = boneCache.getBakedModel().getBone("gLeftArm");
-        var rightArm = boneCache.getBakedModel().getBone("gRightArm");
-        var leftLeg = boneCache.getBakedModel().getBone("gLeftLeg");
-        var rightLeg = boneCache.getBakedModel().getBone("gRightLeg");
+        var leftArm = boneCache.getBakedModel().getBoneOrNull("gLeftArm");
+        var rightArm = boneCache.getBakedModel().getBoneOrNull("gRightArm");
+        var leftLeg = boneCache.getBakedModel().getBoneOrNull("gLeftLeg");
+        var rightLeg = boneCache.getBakedModel().getBoneOrNull("gRightLeg");
 
-        BasicAnimationUtils.applyHeadRotations(animatable, context(), partialTicks, "gHead", -0.2F);
-        if (leftArm.isPresent() && !animatable.isAggressive())
-            leftArm.get()
-                .setRotX(
-                    Mth.cos(
-                        animatable.walkAnimation.position(
-                            partialTicks
-                        ) * 0.6662F
-                    ) * 2.0F * animatable.walkAnimation.speed() * 0.9F
-                );
-        if (rightArm.isPresent() && !animatable.isAggressive())
-            rightArm.get()
-                .setRotX(
-                    Mth.cos(
-                        animatable.walkAnimation.position(
-                            partialTicks
-                        ) * 0.6662F + 3.1415927F
-                    ) * 2.0F * animatable.walkAnimation.speed() * 0.9F
-                );
-        leftLeg.ifPresent(
-            azBone -> azBone.setRotX(
+        if (leftArm != null && !animatable.isAggressive()) {
+            leftArm.setRotX(
                 Mth.cos(
                     animatable.walkAnimation.position(
                         partialTicks
-                    ) * 0.6662F + 3.1415927F
+                    ) * 0.6662F
+                ) * 2.0F * animatable.walkAnimation.speed() * 0.9F
+            );
+        }
+
+        if (rightArm != null && !animatable.isAggressive()) {
+            rightArm.setRotX(
+                Mth.cos(
+                    animatable.walkAnimation.position(
+                        partialTicks
+                    ) * 0.6662F + ((float) Math.PI)
+                ) * 2.0F * animatable.walkAnimation.speed() * 0.9F
+            );
+        }
+
+        if (leftLeg != null) {
+            leftLeg.setRotX(
+                Mth.cos(
+                    animatable.walkAnimation.position(
+                        partialTicks
+                    ) * 0.6662F + ((float) Math.PI)
                 ) * 1.4F * animatable.walkAnimation.speed() * 0.9F
-            )
-        );
-        rightLeg.ifPresent(
-            azBone -> azBone.setRotX(
+            );
+        }
+
+        if (rightLeg != null) {
+            rightLeg.setRotX(
                 Mth.cos(
                     animatable.walkAnimation.position(
                         partialTicks
                     ) * 0.6662F
                 ) * 1.4F * animatable.walkAnimation.speed() * 0.9F
-            )
-        );
+            );
+        }
     }
 }

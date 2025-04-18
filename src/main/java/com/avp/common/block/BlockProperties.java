@@ -63,6 +63,7 @@ public class BlockProperties {
         .instrument(NoteBlockInstrument.HAT)
         .strength(0.3F)
         .sound(SoundType.GLASS)
+        .noOcclusion()
         .isValidSpawn(Blocks::never)
         .isRedstoneConductor(Blocks::never)
         .isSuffocating(Blocks::never)

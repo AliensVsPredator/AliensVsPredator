@@ -35,15 +35,6 @@ public class DelayedAttackGoal extends MeleeAttackGoal {
     }
 
     @Override
-    public boolean canContinueToUse() {
-        if (mob.getHealth() < (mob.getMaxHealth() / 2)) {
-            return false;
-        }
-
-        return super.canContinueToUse();
-    }
-
-    @Override
     public void start() {
         super.start();
         this.delayBeforeAttack = 0;

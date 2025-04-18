@@ -1,16 +1,15 @@
 package com.avp.common.level.saveddata;
 
+import com.bvanseg.just.functional.option.Option;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.saveddata.SavedData;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
-import java.util.Optional;
 
 import com.avp.common.gene.GeneKey;
 
@@ -42,8 +41,8 @@ public class GenePaletteLevelData extends SavedData {
         });
     }
 
-    public @Nullable GeneKey getKeyOrNull(Byte id) {
-        return geneKeyToIdMap.inverse().get(id);
+    public Option<GeneKey> getKey(Byte id) {
+        return Option.ofNullable(geneKeyToIdMap.inverse().get(id));
     }
 
     public static GenePaletteLevelData load(CompoundTag compoundTag, HolderLookup.Provider provider) {
@@ -72,13 +71,13 @@ public class GenePaletteLevelData extends SavedData {
         return compoundTag;
     }
 
-    public static Optional<GenePaletteLevelData> getOrCreate(Level level) {
-        if (level.isClientSide) {
-            return Optional.empty();
-        }
-
-        var manager = level.getServer().overworld().getDataStorage();
-        return Optional.of(manager.computeIfAbsent(GenePaletteLevelData.factory(), DATA_NAME));
+    public static Option<GenePaletteLevelData> getOrCreate(Level level) {
+        return level.isClientSide
+            ? Option.none()
+            : Option.some(level.getServer())
+                // overworld could be null here, so we map which safely handles null as Option.none.
+                .map(MinecraftServer::overworld)
+                .map(serverLevel -> serverLevel.getDataStorage().computeIfAbsent(GenePaletteLevelData.factory(), DATA_NAME));
     }
 
     public static SavedData.Factory<GenePaletteLevelData> factory() {

@@ -12,6 +12,7 @@ import com.avp.data.lang.EnglishLanguageProvider;
 import com.avp.data.lang.RussianLanguageProvider;
 import com.avp.data.lang.UkrainianLanguageProvider;
 import com.avp.data.loot.BlockLootTableProvider;
+import com.avp.data.loot.ChestLootTableProvider;
 import com.avp.data.loot.EntityLootTableProvider;
 import com.avp.data.model.BlockModelProvider;
 import com.avp.data.model.ItemModelProvider;
@@ -56,6 +57,7 @@ public class AVPDataGenerator implements DataGeneratorEntrypoint {
         // Loot providers
         pack.addProvider(BlockLootTableProvider::new);
         pack.addProvider(EntityLootTableProvider::new);
+        pack.addProvider(ChestLootTableProvider::new);
 
         // Worldgen providers
         pack.addProvider(AVPWorldGenProvider::new);

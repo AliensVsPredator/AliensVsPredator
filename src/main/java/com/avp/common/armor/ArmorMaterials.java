@@ -20,6 +20,24 @@ import com.avp.common.sound.AVPSoundEvents;
 public class ArmorMaterials {
 
     // Should be slightly stronger than iron.
+    public static final Holder<ArmorMaterial> ABERRANT_CHITIN = register(
+        "aberrant_chitin",
+        relativeDefense(
+            net.minecraft.world.item.ArmorMaterials.IRON,
+            Map.ofEntries(
+                Map.entry(ArmorItem.Type.CHESTPLATE, 1),
+                Map.entry(ArmorItem.Type.BOOTS, 1)
+            )
+        ),
+        7,
+        Holder.direct(AVPSoundEvents.ITEM_ARMOR_EQUIP_CHITIN),
+        () -> Ingredient.of(AVPItems.ABERRANT_CHITIN),
+        0,
+        0,
+        false
+    );
+
+    // Should be slightly stronger than iron.
     public static final Holder<ArmorMaterial> CHITIN = register(
         "chitin",
         relativeDefense(
@@ -32,6 +50,24 @@ public class ArmorMaterials {
         7,
         Holder.direct(AVPSoundEvents.ITEM_ARMOR_EQUIP_CHITIN),
         () -> Ingredient.of(AVPItems.CHITIN),
+        0,
+        0,
+        false
+    );
+
+    // Should be slightly stronger than iron.
+    public static final Holder<ArmorMaterial> IRRADIATED_CHITIN = register(
+        "irradiated_chitin",
+        relativeDefense(
+            net.minecraft.world.item.ArmorMaterials.IRON,
+            Map.ofEntries(
+                Map.entry(ArmorItem.Type.CHESTPLATE, 1),
+                Map.entry(ArmorItem.Type.BOOTS, 1)
+            )
+        ),
+        7,
+        Holder.direct(AVPSoundEvents.ITEM_ARMOR_EQUIP_CHITIN),
+        () -> Ingredient.of(AVPItems.IRRADIATED_CHITIN),
         0,
         0,
         false
@@ -71,12 +107,34 @@ public class ArmorMaterials {
         false
     );
 
+    public static final Holder<ArmorMaterial> PLATED_ABERRANT_CHITIN = register(
+        "plated_aberrant_chitin",
+        relativeDefense(net.minecraft.world.item.ArmorMaterials.DIAMOND, Map.of()),
+        7,
+        Holder.direct(AVPSoundEvents.ITEM_ARMOR_EQUIP_CHITIN),
+        () -> Ingredient.of(AVPItems.PLATED_ABERRANT_CHITIN),
+        1,
+        0,
+        false
+    );
+
     public static final Holder<ArmorMaterial> PLATED_CHITIN = register(
         "plated_chitin",
         relativeDefense(net.minecraft.world.item.ArmorMaterials.DIAMOND, Map.of()),
         7,
         Holder.direct(AVPSoundEvents.ITEM_ARMOR_EQUIP_CHITIN),
         () -> Ingredient.of(AVPItems.PLATED_CHITIN),
+        1,
+        0,
+        false
+    );
+
+    public static final Holder<ArmorMaterial> PLATED_IRRADIATED_CHITIN = register(
+        "plated_irradiated_chitin",
+        relativeDefense(net.minecraft.world.item.ArmorMaterials.DIAMOND, Map.of()),
+        7,
+        Holder.direct(AVPSoundEvents.ITEM_ARMOR_EQUIP_CHITIN),
+        () -> Ingredient.of(AVPItems.PLATED_IRRADIATED_CHITIN),
         1,
         0,
         false

@@ -1,11 +1,11 @@
 package com.avp.common.lifecycle.registry;
 
+import com.bvanseg.just.functional.option.Option;
 import net.minecraft.world.entity.EntityType;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 
 import com.avp.common.lifecycle.AlienLifecycle;
 import com.avp.common.lifecycle.growth.AlienGrowthStageKey;
@@ -24,8 +24,8 @@ public class AlienLifecycleRegistry {
             : directMapping;
     }
 
-    public static Optional<GrowthStage> get(EntityType<?> host, EntityType<?> currentForm) {
-        return Optional.ofNullable(getOrNull(host, currentForm));
+    public static Option<GrowthStage> get(EntityType<?> host, EntityType<?> currentForm) {
+        return Option.ofNullable(getOrNull(host, currentForm));
     }
 
     public static AlienLifecycle register(AlienLifecycle lifecycle) {
