@@ -1,5 +1,7 @@
 package com.avp.goap.state;
 
+import org.jetbrains.annotations.Nullable;
+
 import java.util.Map;
 
 import com.avp.goap.TypedIdentifier;
@@ -13,7 +15,7 @@ public abstract class GOAPStateCache {
     }
 
     @SuppressWarnings("unchecked")
-    public <T> T get(TypedIdentifier<T> key) {
+    public <T> @Nullable T get(TypedIdentifier<T> key) {
         return (T) stateMap.get(key);
     }
 
