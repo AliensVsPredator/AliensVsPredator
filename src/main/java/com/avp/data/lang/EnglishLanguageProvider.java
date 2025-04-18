@@ -384,6 +384,7 @@ public class EnglishLanguageProvider extends FabricLanguageProvider {
         translationBuilder.add(AVPItems.SERVO, "Servo");
         translationBuilder.add(AVPItems.SPEAKER, "Speaker");
         translationBuilder.add(AVPItems.ALUMINUM_INGOT, "Aluminum Ingot");
+        translationBuilder.add(AVPItems.ALIEN_MUSIC_DISC_1, "Music Disc");
         translationBuilder.add(AVPItems.AUTUNITE_DUST, "Autunite Dust");
         translationBuilder.add(AVPItems.BARREL, "Barrel");
         translationBuilder.add(AVPItems.BATTERY_PACK, "Battery Pack");
