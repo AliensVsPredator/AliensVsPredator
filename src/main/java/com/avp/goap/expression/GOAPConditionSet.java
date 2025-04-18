@@ -18,19 +18,12 @@ public class GOAPConditionSet {
         this.conditions = conditions;
     }
 
+    public Set<GOAPCondition<?>> getConditions() {
+        return conditions;
+    }
+
     public boolean satisfiedBy(GOAPWorldState worldState) {
-        for (var condition : conditions) {
-            var identifier = condition.identifier();
-            @SuppressWarnings("unchecked")
-            var expression = (GOAPExpression<Object>) condition.expression();
-            var actual = worldState.get(identifier);
-
-            if (!expression.evaluate(actual)) {
-                return false;
-            }
-        }
-
-        return true;
+        return conditions.stream().allMatch(condition -> condition.satisfiedBy(worldState));
     }
 
 }
