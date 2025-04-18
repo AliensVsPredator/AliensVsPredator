@@ -1,6 +1,7 @@
 package com.avp.goap.expression;
 
 import com.bvanseg.just.functional.option.Option;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
 
@@ -34,7 +35,7 @@ public sealed interface GOAPExpression<T> {
         return new IsNone<>();
     }
 
-    boolean evaluate(T actual);
+    boolean evaluate(@NotNull T actual);
 
     final class Equals<T> implements GOAPExpression<T> {
 
@@ -45,7 +46,7 @@ public sealed interface GOAPExpression<T> {
         }
 
         @Override
-        public boolean evaluate(T actual) {
+        public boolean evaluate(@NotNull T actual) {
             return Objects.equals(expected, actual);
         }
 
@@ -64,8 +65,8 @@ public sealed interface GOAPExpression<T> {
         }
 
         @Override
-        public boolean evaluate(T actual) {
-            return actual != null && actual.compareTo(threshold) < 0;
+        public boolean evaluate(@NotNull T actual) {
+            return actual.compareTo(threshold) < 0;
         }
 
         @Override
@@ -83,8 +84,8 @@ public sealed interface GOAPExpression<T> {
         }
 
         @Override
-        public boolean evaluate(T actual) {
-            return actual != null && actual.compareTo(threshold) > 0;
+        public boolean evaluate(@NotNull T actual) {
+            return actual.compareTo(threshold) > 0;
         }
 
         @Override
@@ -98,7 +99,7 @@ public sealed interface GOAPExpression<T> {
         private IsSome() {}
 
         @Override
-        public boolean evaluate(T actual) {
+        public boolean evaluate(@NotNull T actual) {
             return actual.isSome();
         }
 
@@ -113,7 +114,7 @@ public sealed interface GOAPExpression<T> {
         private IsNone() {}
 
         @Override
-        public boolean evaluate(T actual) {
+        public boolean evaluate(@NotNull T actual) {
             return actual.isNone();
         }
 
