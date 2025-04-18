@@ -1,5 +1,6 @@
 package com.avp.common.entity.living.human.marine.ai;
 
+import net.minecraft.commands.arguments.EntityAnchorArgument;
 import net.minecraft.world.entity.LivingEntity;
 
 import com.avp.common.entity.ai.action.RangedAttackAction;
@@ -10,6 +11,7 @@ import com.avp.goap.state.GOAPBlackboard;
 
 public class MarineRangedAttackAction extends RangedAttackAction<Marine> {
 
+    // Controls whether the marine can fire right the gun.
     private static final TypedIdentifier<Integer> COOLDOWN = new TypedIdentifier<>("cooldown");
 
     // Controls sound queues and other time-based gun effects.
@@ -21,19 +23,24 @@ public class MarineRangedAttackAction extends RangedAttackAction<Marine> {
 
         if (itemStack.getItem() instanceof GunItem gunItem) {
             var fireMode = gunItem.gunConfig().getDefaultFireMode();
-            var cooldownTicks = fireMode.cooldownInTicks();
             // Decrement cooldown on every access/tick.
             var currentCooldown = blackboard.getOrDefault(COOLDOWN, 0) - 1;
             // Get current tick progress.
             var tickProgress = blackboard.getOrDefault(TICK_PROGRESS, 0);
 
+            // Update the cooldown.
             blackboard.set(COOLDOWN, currentCooldown);
+            // Always look at the target while shooting.
+            context.lookAt(EntityAnchorArgument.Anchor.EYES, target.getEyePosition());
+            context.getLookControl().setLookAt(target);
 
             if (currentCooldown <= 0) {
                 gunItem.tryShoot(context, itemStack, fireMode, tickProgress, tickProgress);
-                blackboard.set(COOLDOWN, cooldownTicks);
+                // Reset the cooldown.
+                blackboard.set(COOLDOWN, fireMode.cooldownInTicks() * fireMode.consumedAmmunitionPerShot());
             }
 
+            // Increase tick progress.
             blackboard.set(TICK_PROGRESS, tickProgress + 1);
         }
     }
