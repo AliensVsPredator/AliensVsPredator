@@ -10,7 +10,7 @@
     "spacing": 40,
     "separation": 15,
     "spread_type": "triangular",
-    "salt": 1234767890,
+    "salt": 1287767890,
     "frequency_reduction_method": "default",
     "frequency": 1
   }
