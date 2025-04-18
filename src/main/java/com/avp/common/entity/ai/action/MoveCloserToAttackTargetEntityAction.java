@@ -2,9 +2,9 @@ package com.avp.common.entity.ai.action;
 
 import com.bvanseg.just.functional.option.Option;
 import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 
 import java.util.Map;
-import java.util.function.BiPredicate;
 
 import com.avp.common.entity.ai.GOAPConstants;
 import com.avp.goap.GOAPAction;
@@ -13,7 +13,6 @@ import com.avp.goap.expression.GOAPConditionSet;
 import com.avp.goap.expression.GOAPExpression;
 import com.avp.goap.state.GOAPBlackboard;
 import com.avp.goap.state.GOAPWorldState;
-import net.minecraft.world.entity.ai.attributes.Attributes;
 
 public class MoveCloserToAttackTargetEntityAction<T extends Mob> extends GOAPAction<T> {
 
@@ -67,14 +66,14 @@ public class MoveCloserToAttackTargetEntityAction<T extends Mob> extends GOAPAct
     public float getCost(T context, GOAPWorldState worldState) {
         return worldState.getOrDefault(GOAPConstants.NEAREST_ATTACK_TARGET_ENTITY, Option.none())
             .match(
-            target -> {
-                var distSqr = (float) context.distanceToSqr(target);
-                var attribute = context.getAttribute(Attributes.FOLLOW_RANGE);
-                // TODO: Use constant for default max distance value here.
-                var maxDistance = attribute == null ? 16F : (float) attribute.getValue();
-                return Math.clamp(distSqr / (maxDistance * maxDistance), 0F, 1F);
-            },
-            () -> 1F
-        );
+                target -> {
+                    var distSqr = (float) context.distanceToSqr(target);
+                    var attribute = context.getAttribute(Attributes.FOLLOW_RANGE);
+                    // TODO: Use constant for default max distance value here.
+                    var maxDistance = attribute == null ? 16F : (float) attribute.getValue();
+                    return Math.clamp(distSqr / (maxDistance * maxDistance), 0F, 1F);
+                },
+                () -> 1F
+            );
     }
 }

@@ -1,6 +1,5 @@
 package com.avp.common.item.old_painless;
 
-import com.avp.common.util.AVPPredicates;
 import mod.azure.azurelib.rewrite.animation.dispatch.command.AzCommand;
 import mod.azure.azurelib.rewrite.animation.play_behavior.AzPlayBehaviors;
 import net.minecraft.sounds.SoundSource;
@@ -16,6 +15,7 @@ import com.avp.common.item.GunItem;
 import com.avp.common.item.gun.FireModeConfig;
 import com.avp.common.item.gun.GunData;
 import com.avp.common.item.gun.attack.GunAttackConfig;
+import com.avp.common.util.AVPPredicates;
 import com.avp.common.util.EnchantmentUtil;
 import com.avp.common.util.GunLightUtil;
 
@@ -88,12 +88,13 @@ public class OldPainlessItem extends GunItem {
         var hasInfinity = EnchantmentUtil.getLevel(level, itemStack, Enchantments.INFINITY) > 0;
 
         // TODO: Revisit this.
-        var didConsume = shooter instanceof Player player && (AVPPredicates.IS_IMMORTAL.test(player) || hasInfinity || consumeItemAmountFromInventory(
-            1,
-            player.getInventory(),
-            gunConfig.ammunitionItemSupplier().get(),
-            player
-        ));
+        var didConsume = shooter instanceof Player player && (AVPPredicates.IS_IMMORTAL.test(player) || hasInfinity
+            || consumeItemAmountFromInventory(
+                1,
+                player.getInventory(),
+                gunConfig.ammunitionItemSupplier().get(),
+                player
+            ));
 
         if (didConsume) {
             var gunAttackConfig = new GunAttackConfig(gunConfig, fireModeConfig, shooter, itemStack);

@@ -8,7 +8,13 @@ import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
 
 public class ItemUtil {
-    public static Option<ItemEntity> drop(LivingEntity livingEntity, ItemStack itemStackToDrop, boolean dropAround, boolean includeThrowerName) {
+
+    public static Option<ItemEntity> drop(
+        LivingEntity livingEntity,
+        ItemStack itemStackToDrop,
+        boolean dropAround,
+        boolean includeThrowerName
+    ) {
         if (itemStackToDrop.isEmpty()) {
             return Option.none();
         } else {

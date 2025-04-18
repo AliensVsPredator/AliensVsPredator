@@ -1,9 +1,5 @@
 package com.avp.common.entity.living.human.marine.ai;
 
-import com.avp.common.entity.ai.action.MoveCloserToFoodItemAction;
-import com.avp.common.entity.ai.action.PickUpFoodAction;
-import com.avp.common.entity.ai.goal.PickUpFoodGoal;
-import com.avp.common.entity.ai.sensor.inventory.HasFreeInventorySlotSensor;
 import net.minecraft.world.entity.monster.Monster;
 
 import com.avp.common.entity.ai.EntityGOAP;
@@ -11,8 +7,11 @@ import com.avp.common.entity.ai.action.EatFoodToHealAction;
 import com.avp.common.entity.ai.action.EquipRangedWeaponAction;
 import com.avp.common.entity.ai.action.MeleeAttackAction;
 import com.avp.common.entity.ai.action.MoveCloserToAttackTargetEntityAction;
+import com.avp.common.entity.ai.action.MoveCloserToFoodItemAction;
+import com.avp.common.entity.ai.action.PickUpFoodAction;
 import com.avp.common.entity.ai.goal.HealthyGoal;
 import com.avp.common.entity.ai.goal.NoTargetGoal;
+import com.avp.common.entity.ai.goal.PickUpFoodGoal;
 import com.avp.common.entity.ai.sensor.combat.AttackTargetInRangeSensor;
 import com.avp.common.entity.ai.sensor.combat.CombatResponseSensor;
 import com.avp.common.entity.ai.sensor.combat.NearbyAttackTargetEntitiesSensor;
@@ -24,6 +23,7 @@ import com.avp.common.entity.ai.sensor.entity.NearbyItemEntitiesSensor;
 import com.avp.common.entity.ai.sensor.entity.NearbyLivingEntitiesSensor;
 import com.avp.common.entity.ai.sensor.entity.NearestFoodItemEntitySensor;
 import com.avp.common.entity.ai.sensor.inventory.HasFoodInInventorySensor;
+import com.avp.common.entity.ai.sensor.inventory.HasFreeInventorySlotSensor;
 import com.avp.common.entity.ai.sensor.inventory.HasRangedWeaponEquippedSensor;
 import com.avp.common.entity.ai.sensor.inventory.HasRangedWeaponInInventorySensor;
 import com.avp.common.entity.ai.sensor.stats.IsHealthySensor;

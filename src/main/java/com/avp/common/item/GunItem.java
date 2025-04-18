@@ -1,6 +1,5 @@
 package com.avp.common.item;
 
-import com.avp.common.util.AVPPredicates;
 import mod.azure.azurelib.rewrite.animation.dispatch.command.AzCommand;
 import mod.azure.azurelib.rewrite.animation.play_behavior.AzPlayBehaviors;
 import net.fabricmc.fabric.api.item.v1.EnchantingContext;
@@ -41,6 +40,7 @@ import com.avp.common.item.gun.GunConfig;
 import com.avp.common.item.gun.GunData;
 import com.avp.common.item.gun.attack.GunAttackConfig;
 import com.avp.common.item.old_painless.OldPainlessAnimationRefs;
+import com.avp.common.util.AVPPredicates;
 import com.avp.common.util.EnchantmentUtil;
 import com.avp.common.util.GunLightUtil;
 import com.avp.common.util.TooltipUtil;

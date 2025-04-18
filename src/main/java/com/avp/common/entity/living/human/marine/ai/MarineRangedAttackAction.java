@@ -1,16 +1,17 @@
 package com.avp.common.entity.living.human.marine.ai;
 
-import com.avp.goap.TypedIdentifier;
-import com.avp.goap.state.GOAPBlackboard;
 import net.minecraft.world.entity.LivingEntity;
 
 import com.avp.common.entity.ai.action.RangedAttackAction;
 import com.avp.common.entity.living.human.marine.Marine;
 import com.avp.common.item.GunItem;
+import com.avp.goap.TypedIdentifier;
+import com.avp.goap.state.GOAPBlackboard;
 
 public class MarineRangedAttackAction extends RangedAttackAction<Marine> {
 
     private static final TypedIdentifier<Integer> COOLDOWN = new TypedIdentifier<>("cooldown");
+
     // Controls sound queues and other time-based gun effects.
     private static final TypedIdentifier<Integer> TICK_PROGRESS = new TypedIdentifier<>("tickProgress");
 

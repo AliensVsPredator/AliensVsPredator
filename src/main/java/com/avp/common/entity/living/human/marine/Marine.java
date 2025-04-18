@@ -1,13 +1,10 @@
 package com.avp.common.entity.living.human.marine;
 
-import com.avp.common.util.ItemUtil;
 import com.bvanseg.just.functional.option.Option;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.SimpleContainer;
-import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -26,6 +23,7 @@ import com.avp.AVP;
 import com.avp.common.entity.living.human.AbstractHuman;
 import com.avp.common.entity.living.human.marine.ai.MarineGOAP;
 import com.avp.common.item.AVPItems;
+import com.avp.common.util.ItemUtil;
 
 public class Marine extends AbstractHuman implements InventoryCarrier {
 
