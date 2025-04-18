@@ -26,6 +26,7 @@
     "MixinShearsItem",
     "MixinShulkerBlockEntity_RadioactiveItems",
     "MixinVillagerHostilesSensor_RunAwayFromAVPMonsters",
+    "StructurePoolAccessor",
     "server.MixinServerLevel_RunTickRoutines"
   ],
   "client": [

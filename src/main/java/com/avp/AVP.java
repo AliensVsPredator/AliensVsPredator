@@ -1,6 +1,8 @@
 package com.avp;
 
 import com.avp.common.sound.AVPJukeboxSongs;
+import com.avp.mixin.StructurePoolAccessor;
+import com.mojang.datafixers.util.Pair;
 import mod.azure.azurelib.common.api.common.config.Config;
 import mod.azure.azurelib.common.internal.common.AzureLib;
 import mod.azure.azurelib.common.internal.common.config.ConfigHolder;
@@ -9,9 +11,21 @@ import mod.azure.azurelib.common.internal.common.config.format.ConfigFormats;
 import mod.azure.azurelib.common.internal.common.config.format.IConfigFormatHandler;
 import mod.azure.azurelib.common.internal.common.config.io.ConfigIO;
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
+import net.minecraft.core.Holder;
+import net.minecraft.core.Registry;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.GameRules;
+import net.minecraft.world.level.levelgen.structure.pools.SinglePoolElement;
+import net.minecraft.world.level.levelgen.structure.pools.StructurePoolElement;
+import net.minecraft.world.level.levelgen.structure.pools.StructureTemplatePool;
+import net.minecraft.world.level.levelgen.structure.templatesystem.StructureProcessorList;
+import org.intellij.lang.annotations.Identifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -55,6 +69,9 @@ import com.avp.common.worldgen.WorldGen;
 import com.avp.common.worldgen.biome.AVPBiomes;
 import com.avp.data.loot.LootTableModifier;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class AVP implements ModInitializer {
 
     public static final String MOD_ID = "avp";
@@ -66,6 +83,9 @@ public class AVP implements ModInitializer {
     private final MarinePatrolSpawner customSpawner = new MarinePatrolSpawner();
 
     private final NukedAshPlacement nukedAshPlacement = new NukedAshPlacement();
+
+    private static final ResourceKey<StructureProcessorList> EMPTY_PROCESSOR_LIST_KEY = ResourceKey.create(
+            Registries.PROCESSOR_LIST, ResourceLocation.withDefaultNamespace("empty"));
 
     @Override
     public void onInitialize() {
@@ -114,6 +134,7 @@ public class AVP implements ModInitializer {
         AVPFuelRegistry.initialize();
         Commands.initialize();
         ServerTickEvents.START_WORLD_TICK.register(this::onWorldTick);
+        ServerLifecycleEvents.SERVER_STARTING.register(this::addNewVillageBuilding);
         AVPTrades.initialize();
     }
 
@@ -160,5 +181,57 @@ public class AVP implements ModInitializer {
         }
 
         return holder;
+    }
+
+    private static void addBuildingToPool(Registry<StructureTemplatePool> templatePoolRegistry,
+                                          Registry<StructureProcessorList> processorListRegistry,
+                                          ResourceLocation poolRL,
+                                          String nbtPieceRL,
+                                          int weight) {
+        if (processorListRegistry.getHolder(EMPTY_PROCESSOR_LIST_KEY).isEmpty()) {
+            return;
+        }
+
+        var emptyProcessorList = processorListRegistry.getHolder(EMPTY_PROCESSOR_LIST_KEY).get();
+        var pool = templatePoolRegistry.get(poolRL);
+
+        if (pool == null) {
+            return;
+        }
+
+        var piece = StructurePoolElement.legacy(nbtPieceRL, emptyProcessorList).apply(StructureTemplatePool.Projection.RIGID);
+
+        for (var i = 0; i < weight; i++) {
+            ((StructurePoolAccessor)pool).getElements().add(piece);
+        }
+
+        var listOfPieceEntries = new ArrayList<>(((StructurePoolAccessor)pool).getElementCounts());
+        listOfPieceEntries.add(new Pair<>(piece, weight));
+        ((StructurePoolAccessor)pool).setElementCounts(listOfPieceEntries);
+    }
+
+    public void addNewVillageBuilding(final MinecraftServer event) {
+        var templatePoolRegistry = event.registryAccess().registryOrThrow(Registries.TEMPLATE_POOL);
+        var processorListRegistry = event.registryAccess().registryOrThrow(Registries.PROCESSOR_LIST);
+
+        addBuildingToPool(templatePoolRegistry, processorListRegistry,
+                ResourceLocation.withDefaultNamespace("village/plains/houses"),
+                "avp:village/plains/houses/plains_commissary", 5);
+
+        addBuildingToPool(templatePoolRegistry, processorListRegistry,
+                ResourceLocation.withDefaultNamespace("village/snowy/houses"),
+                "avp:village/snowy/houses/snowy_commissary", 5);
+
+        addBuildingToPool(templatePoolRegistry, processorListRegistry,
+                ResourceLocation.withDefaultNamespace("village/savanna/houses"),
+                "avp:village/savanna/houses/savanna_commissary", 5);
+
+        addBuildingToPool(templatePoolRegistry, processorListRegistry,
+                ResourceLocation.withDefaultNamespace("village/taiga/houses"),
+                "avp:village/taiga/houses/taiga_commissary", 5);
+
+        addBuildingToPool(templatePoolRegistry, processorListRegistry,
+                ResourceLocation.withDefaultNamespace("village/desert/houses"),
+                "avp:village/desert/houses/desert_commissary", 5);
     }
 }
