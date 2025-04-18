@@ -3,6 +3,7 @@
   "package": "com.avp.mixin",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
+    "GiveGiftToHeroAccessor",
     "MixinArmorStand_EquipArmorFromArmorCase",
     "MixinBlockItem_ApplyRads",
     "MixinBoatChest_ApplyRads",

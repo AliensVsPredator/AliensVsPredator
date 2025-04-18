@@ -1,6 +1,7 @@
 package com.avp;
 
 import com.avp.common.sound.AVPJukeboxSongs;
+import com.avp.mixin.GiveGiftToHeroAccessor;
 import com.avp.mixin.StructurePoolAccessor;
 import com.mojang.datafixers.util.Pair;
 import mod.azure.azurelib.common.api.common.config.Config;
@@ -13,19 +14,19 @@ import mod.azure.azurelib.common.internal.common.config.io.ConfigIO;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
-import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.npc.VillagerProfession;
 import net.minecraft.world.level.GameRules;
-import net.minecraft.world.level.levelgen.structure.pools.SinglePoolElement;
 import net.minecraft.world.level.levelgen.structure.pools.StructurePoolElement;
 import net.minecraft.world.level.levelgen.structure.pools.StructureTemplatePool;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureProcessorList;
-import org.intellij.lang.annotations.Identifier;
+import net.minecraft.world.level.storage.loot.BuiltInLootTables;
+import net.minecraft.world.level.storage.loot.LootTable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -70,7 +71,7 @@ import com.avp.common.worldgen.biome.AVPBiomes;
 import com.avp.data.loot.LootTableModifier;
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Map;
 
 public class AVP implements ModInitializer {
 
@@ -141,6 +142,7 @@ public class AVP implements ModInitializer {
     private void onWorldTick(ServerLevel serverLevel) {
         customSpawner.tick(serverLevel, serverLevel.getGameRules().getBoolean(GameRules.RULE_DOMOBSPAWNING), true);
         nukedAshPlacement.tick(serverLevel);
+        modifyGifts();
     }
 
     /**
@@ -182,6 +184,13 @@ public class AVP implements ModInitializer {
 
         return holder;
     }
+
+    public static void modifyGifts() {
+        var gifts = GiveGiftToHeroAccessor.getGifts();
+
+        gifts.put(AVPProfessions.COMMISAARY, BuiltInLootTables.ARMORER_GIFT);
+    }
+
 
     private static void addBuildingToPool(Registry<StructureTemplatePool> templatePoolRegistry,
                                           Registry<StructureProcessorList> processorListRegistry,
