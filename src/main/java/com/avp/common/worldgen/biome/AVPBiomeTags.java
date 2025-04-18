@@ -22,7 +22,7 @@ public class AVPBiomeTags {
 
     public static final TagKey<Biome> HAS_MARINE_CAMP_GRASS = create("marine_camp_grass");
 
-    public static final TagKey<Biome> HAS_MOBILE_LAB = create("mobile_lab");
+    public static final TagKey<Biome> HAS_MOBILE_LAB = create("has_mobile_lab");
 
     public static final TagKey<Biome> HAS_OUTPOST_COMMS = create("has_outpost_comms");
 

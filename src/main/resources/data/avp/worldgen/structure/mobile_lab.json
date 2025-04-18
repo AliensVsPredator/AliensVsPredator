@@ -1,5 +1,5 @@
 {
-  "biomes": "#avp:mobile_lab",
+  "biomes": "#avp:has_mobile_lab",
   "adapt_noise": false,
   "type": "minecraft:jigsaw",
   "start_pool": "avp:mobile_lab",
