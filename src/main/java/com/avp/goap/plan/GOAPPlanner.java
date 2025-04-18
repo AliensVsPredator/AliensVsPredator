@@ -4,14 +4,13 @@ import com.bvanseg.just.functional.option.Option;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Comparator;
-import java.util.HashSet;
 import java.util.List;
-import java.util.PriorityQueue;
 
 import com.avp.goap.GOAP;
 import com.avp.goap.GOAPAction;
 import com.avp.goap.GOAPGoal;
+import com.avp.goap.expression.GOAPConditionSet;
+import com.avp.goap.state.GOAPMutableWorldState;
 import com.avp.goap.state.GOAPWorldState;
 
 public class GOAPPlanner<T> {
@@ -27,69 +26,66 @@ public class GOAPPlanner<T> {
         float bestCost = Float.MAX_VALUE;
 
         for (var goal : goals) {
-            if (currentState.satisfies(goal.getDesiredWorldState())) {
-                // No plan needed — already satisfied.
-                continue;
-            }
+            // We need to find actions that satisfy these conditions.
+            var desiredConditions = goal.getDesiredConditions();
 
-            var plan = buildPlan(context, currentState, goal);
+            var planOption = buildPlanForConditions(desiredConditions, currentState);
 
-            if (plan == null) {
-                continue;
-            }
+            if (planOption.isSomeAnd(plan -> !plan.isEmpty())) {
+                var plan = planOption.unwrap();
 
-            var cost = plan.stream()
-                .map(action -> action.getCost(context, currentState))
-                .reduce(0.0f, Float::sum);
+                var cost = plan.stream()
+                    .map(action -> action.getCost(context, currentState))
+                    .reduce(0.0f, Float::sum);
 
-            if (cost < bestCost) {
-                bestCost = cost;
-                bestPlan = new GOAPPlan<>(goal, plan);
+                if (cost < bestCost) {
+                    bestCost = cost;
+                    bestPlan = new GOAPPlan<>(goal, plan);
+                }
             }
         }
 
         return Option.ofNullable(bestPlan);
     }
 
-    private List<GOAPAction<T>> buildPlan(T context, GOAPWorldState currentState, GOAPGoal goal) {
-        var openSet = new PriorityQueue<Node<T>>(Comparator.comparingDouble(n -> n.cost));
-        var closedSet = new HashSet<GOAPWorldState>();
+    private Option<List<GOAPAction<T>>> buildPlanForConditions(GOAPConditionSet desiredConditions, GOAPWorldState currentState) {
+        if (currentState.satisfies(desiredConditions)) {
+            return Option.some(List.of());
+        }
 
-        openSet.add(new Node<>(currentState, new ArrayList<>(), 0.0f));
+        var plan = new ArrayList<GOAPAction<T>>();
+        var workingState = new GOAPMutableWorldState(currentState);
 
-        while (!openSet.isEmpty()) {
-            var node = openSet.poll();
-
-            if (!node.plan.isEmpty() && node.state.satisfies(goal.getDesiredWorldState())) {
-                return node.plan;
+        for (var condition : desiredConditions.getConditions()) {
+            if (condition.satisfiedBy(workingState)) {
+                continue;
             }
 
-            closedSet.add(node.state);
+            var satisfyingActions = goap.getAvailableActions()
+                .stream()
+                .filter(action -> condition.satisfiedBy(action.getEffects()))
+                .toList();
 
-            for (var action : goap.getAvailableActions()) {
-                if (!action.getPreconditions().satisfiedBy(node.state)) {
-                    continue;
+            var satisfied = false;
+
+            for (var action : satisfyingActions) {
+                var subPlanOption = buildPlanForConditions(action.getPreconditions(), workingState);
+
+                if (subPlanOption.isSome()) {
+                    var subPlan = subPlanOption.unwrap();
+                    plan.addAll(subPlan);
+                    plan.add(action);
+                    workingState.apply(action.getEffects());
+                    satisfied = true;
+                    break;
                 }
+            }
 
-                var newState = node.state.applyEffects(action.getEffects());
-
-                if (closedSet.contains(newState)) {
-                    continue;
-                }
-
-                var newPlan = new ArrayList<>(node.plan);
-
-                newPlan.add(action);
-                openSet.add(new Node<>(newState, newPlan, node.cost + action.getCost(context, currentState)));
+            if (!satisfied) {
+                return Option.none();
             }
         }
 
-        return null;
+        return Option.some(plan);
     }
-
-    private record Node<T>(
-        GOAPWorldState state,
-        List<GOAPAction<T>> plan,
-        float cost
-    ) {}
 }
