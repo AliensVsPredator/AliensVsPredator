@@ -22,7 +22,7 @@ public abstract class GOAP<T> {
 
     private final GOAPPlanner<T> planner;
 
-    private final List<GOAPSensor<T>> sensors;
+    private final List<GOAPSensor<? super T>> sensors;
 
     private @NotNull Option<GOAPPlan<T>> currentPlanOption;
 
@@ -42,7 +42,7 @@ public abstract class GOAP<T> {
         goals.add(goal);
     }
 
-    public void addSensor(GOAPSensor<T> sensor) {
+    public void addSensor(GOAPSensor<? super T> sensor) {
         sensors.add(sensor);
     }
 
@@ -61,11 +61,11 @@ public abstract class GOAP<T> {
         var worldState = sense(context);
 
         if (currentPlanOption.isNone()) {
-            this.currentPlanOption = planner.createPlan(worldState, goals);
+            this.currentPlanOption = planner.createPlan(context, worldState, goals);
         }
 
         currentPlanOption.ifSome(plan -> {
-            var planState = plan.update(context);
+            var planState = plan.update(context, worldState);
 
             switch (planState) {
                 case GOAPPlan.State.Failed failed -> this.currentPlanOption = Option.none();

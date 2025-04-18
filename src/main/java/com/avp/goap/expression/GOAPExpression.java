@@ -1,0 +1,125 @@
+package com.avp.goap.expression;
+
+import com.bvanseg.just.functional.option.Option;
+
+import java.util.Objects;
+
+public sealed interface GOAPExpression<T> {
+
+    static Equals<Boolean> isFalse() {
+        return equalTo(false);
+    }
+
+    static Equals<Boolean> isTrue() {
+        return equalTo(true);
+    }
+
+    static <T> Equals<T> equalTo(T expected) {
+        return new Equals<>(expected);
+    }
+
+    static <T extends Comparable<T>> LessThan<T> lessThan(T expected) {
+        return new LessThan<>(expected);
+    }
+
+    static <T extends Comparable<T>> GreaterThan<T> greaterThan(T expected) {
+        return new GreaterThan<>(expected);
+    }
+
+    static <T extends Option<?>> IsSome<T> isSome() {
+        return new IsSome<>();
+    }
+
+    static <T extends Option<?>> IsNone<T> isNone() {
+        return new IsNone<>();
+    }
+
+    boolean evaluate(T actual);
+
+    final class Equals<T> implements GOAPExpression<T> {
+
+        private final T expected;
+
+        private Equals(T expected) {
+            this.expected = expected;
+        }
+
+        @Override
+        public boolean evaluate(T actual) {
+            return Objects.equals(expected, actual);
+        }
+
+        @Override
+        public String toString() {
+            return "equals " + expected;
+        }
+    }
+
+    final class LessThan<T extends Comparable<T>> implements GOAPExpression<T> {
+
+        private final T threshold;
+
+        private LessThan(T threshold) {
+            this.threshold = threshold;
+        }
+
+        @Override
+        public boolean evaluate(T actual) {
+            return actual != null && actual.compareTo(threshold) < 0;
+        }
+
+        @Override
+        public String toString() {
+            return "less than " + threshold;
+        }
+    }
+
+    final class GreaterThan<T extends Comparable<T>> implements GOAPExpression<T> {
+
+        private final T threshold;
+
+        private GreaterThan(T threshold) {
+            this.threshold = threshold;
+        }
+
+        @Override
+        public boolean evaluate(T actual) {
+            return actual != null && actual.compareTo(threshold) > 0;
+        }
+
+        @Override
+        public String toString() {
+            return "greater than " + threshold;
+        }
+    }
+
+    final class IsSome<T extends Option<?>> implements GOAPExpression<T> {
+
+        private IsSome() {}
+
+        @Override
+        public boolean evaluate(T actual) {
+            return actual.isSome();
+        }
+
+        @Override
+        public String toString() {
+            return "is some";
+        }
+    }
+
+    final class IsNone<T extends Option<?>> implements GOAPExpression<T> {
+
+        private IsNone() {}
+
+        @Override
+        public boolean evaluate(T actual) {
+            return actual.isNone();
+        }
+
+        @Override
+        public String toString() {
+            return "is none";
+        }
+    }
+}

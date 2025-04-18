@@ -1,15 +1,15 @@
 package com.avp.common.entity.ai.goal;
 
-import java.util.Map;
-
 import com.avp.common.entity.ai.GOAPConstants;
 import com.avp.goap.GOAPGoal;
-import com.avp.goap.state.GOAPWorldState;
+import com.avp.goap.expression.GOAPCondition;
+import com.avp.goap.expression.GOAPConditionSet;
+import com.avp.goap.expression.GOAPExpression;
 
 public class HealthyGoal extends GOAPGoal {
 
     @Override
-    public GOAPWorldState createDesiredWorldState() {
-        return new GOAPWorldState(Map.of(GOAPConstants.IS_HEALTHY, true));
+    public GOAPConditionSet createDesiredConditions() {
+        return GOAPConditionSet.of(new GOAPCondition<>(GOAPConstants.IS_HEALTHY, GOAPExpression.isTrue()));
     }
 }

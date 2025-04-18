@@ -8,6 +8,9 @@ import java.util.Map;
 import com.avp.common.entity.ai.GOAPConstants;
 import com.avp.goap.GOAPAction;
 import com.avp.goap.TypedIdentifier;
+import com.avp.goap.expression.GOAPCondition;
+import com.avp.goap.expression.GOAPConditionSet;
+import com.avp.goap.expression.GOAPExpression;
 import com.avp.goap.state.GOAPBlackboard;
 import com.avp.goap.state.GOAPWorldState;
 
@@ -22,12 +25,10 @@ public class EatFoodToHealAction<T extends LivingEntity> extends GOAPAction<T> {
     }
 
     @Override
-    public GOAPWorldState createPreconditions() {
-        return new GOAPWorldState(
-            Map.ofEntries(
-                Map.entry(GOAPConstants.HAS_FOOD, true),
-                Map.entry(GOAPConstants.IS_HEALTHY, false)
-            )
+    public GOAPConditionSet createPreconditions() {
+        return GOAPConditionSet.of(
+            new GOAPCondition<>(GOAPConstants.HAS_FOOD_IN_INVENTORY, GOAPExpression.isTrue()),
+            new GOAPCondition<>(GOAPConstants.IS_HEALTHY, GOAPExpression.isFalse())
         );
     }
 
@@ -37,11 +38,12 @@ public class EatFoodToHealAction<T extends LivingEntity> extends GOAPAction<T> {
     }
 
     @Override
-    public boolean perform(T context, GOAPBlackboard blackboard) {
+    public boolean perform(T context, GOAPWorldState worldState, GOAPBlackboard blackboard) {
         var eatingTickDuration = blackboard.getOrDefault(EATING_TICK_DURATION, 0);
         blackboard.set(EATING_TICK_DURATION, eatingTickDuration + 1);
 
         if (eatingTickDuration % 4 == 0) {
+            // Throttles the eating sound so the sound isn't being spammed.
             context.playSound(SoundEvents.GENERIC_EAT);
         }
 
@@ -53,5 +55,10 @@ public class EatFoodToHealAction<T extends LivingEntity> extends GOAPAction<T> {
 
         // Not finished eating, yet.
         return false;
+    }
+
+    @Override
+    public float getCost(T context, GOAPWorldState worldState) {
+        return context.getHealth() / context.getMaxHealth();
     }
 }

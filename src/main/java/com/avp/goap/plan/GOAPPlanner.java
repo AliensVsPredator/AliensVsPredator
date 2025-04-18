@@ -22,19 +22,24 @@ public class GOAPPlanner<T> {
         this.goap = goap;
     }
 
-    public Option<GOAPPlan<T>> createPlan(GOAPWorldState currentState, Collection<GOAPGoal> goals) {
+    public Option<GOAPPlan<T>> createPlan(T context, GOAPWorldState currentState, Collection<GOAPGoal> goals) {
         GOAPPlan<T> bestPlan = null;
         float bestCost = Float.MAX_VALUE;
 
         for (var goal : goals) {
-            var plan = buildPlan(currentState, goal);
+            if (currentState.satisfies(goal.getDesiredWorldState())) {
+                // No plan needed — already satisfied.
+                continue;
+            }
+
+            var plan = buildPlan(context, currentState, goal);
 
             if (plan == null) {
                 continue;
             }
 
             var cost = plan.stream()
-                .map(GOAPAction::getCost)
+                .map(action -> action.getCost(context, currentState))
                 .reduce(0.0f, Float::sum);
 
             if (cost < bestCost) {
@@ -46,7 +51,7 @@ public class GOAPPlanner<T> {
         return Option.ofNullable(bestPlan);
     }
 
-    private List<GOAPAction<T>> buildPlan(GOAPWorldState currentState, GOAPGoal goal) {
+    private List<GOAPAction<T>> buildPlan(T context, GOAPWorldState currentState, GOAPGoal goal) {
         var openSet = new PriorityQueue<Node<T>>(Comparator.comparingDouble(n -> n.cost));
         var closedSet = new HashSet<GOAPWorldState>();
 
@@ -55,7 +60,7 @@ public class GOAPPlanner<T> {
         while (!openSet.isEmpty()) {
             var node = openSet.poll();
 
-            if (node.state.satisfies(goal.getDesiredWorldState())) {
+            if (!node.plan.isEmpty() && node.state.satisfies(goal.getDesiredWorldState())) {
                 return node.plan;
             }
 
@@ -75,7 +80,7 @@ public class GOAPPlanner<T> {
                 var newPlan = new ArrayList<>(node.plan);
 
                 newPlan.add(action);
-                openSet.add(new Node<>(newState, newPlan, node.cost + action.getCost()));
+                openSet.add(new Node<>(newState, newPlan, node.cost + action.getCost(context, currentState)));
             }
         }
 

@@ -1,4 +1,4 @@
-package com.avp.common.entity.ai.sensor;
+package com.avp.common.entity.ai.sensor.stats;
 
 import net.minecraft.world.entity.LivingEntity;
 
@@ -16,7 +16,6 @@ public class IsHealthySensor<T extends LivingEntity> implements GOAPSensor<T> {
 
     @Override
     public void sense(T context, GOAPMutableWorldState worldState) {
-        // TODO: Allow the threshold here to be customizable.
         worldState.set(GOAPConstants.IS_HEALTHY, context.getHealth() > context.getMaxHealth() * normalizedPercentThreshold);
     }
 }

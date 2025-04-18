@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.avp.goap.TypedIdentifier;
+import com.avp.goap.expression.GOAPConditionSet;
 
 public class GOAPWorldState extends GOAPStateCache {
 
@@ -24,15 +25,11 @@ public class GOAPWorldState extends GOAPStateCache {
     }
 
     public boolean satisfies(GOAPWorldState other) {
-        for (var entry : other.stateMap.entrySet()) {
-            var thisValue = this.get(entry.getKey());
+        return other.satisfiedBy(this);
+    }
 
-            if (!entry.getValue().equals(thisValue)) {
-                return false;
-            }
-        }
-
-        return true;
+    public boolean satisfies(GOAPConditionSet conditionSet) {
+        return conditionSet.satisfiedBy(this);
     }
 
     public GOAPWorldState applyEffects(GOAPWorldState effects) {

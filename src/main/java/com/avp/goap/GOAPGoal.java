@@ -1,21 +1,21 @@
 package com.avp.goap;
 
-import com.avp.goap.state.GOAPWorldState;
+import com.avp.goap.expression.GOAPConditionSet;
 
 public abstract class GOAPGoal {
 
-    private final GOAPWorldState desiredWorldState;
+    private final GOAPConditionSet desiredWorldState;
 
     private final String name;
 
     protected GOAPGoal() {
-        this.desiredWorldState = createDesiredWorldState();
+        this.desiredWorldState = createDesiredConditions();
         this.name = this.getClass().getSimpleName();
     }
 
-    public abstract GOAPWorldState createDesiredWorldState();
+    public abstract GOAPConditionSet createDesiredConditions();
 
-    public GOAPWorldState getDesiredWorldState() {
+    public GOAPConditionSet getDesiredWorldState() {
         return desiredWorldState;
     }
 
