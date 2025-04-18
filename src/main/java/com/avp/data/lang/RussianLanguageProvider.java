@@ -574,6 +574,12 @@ public class RussianLanguageProvider extends FabricLanguageProvider {
             "Корпус старого безболезненного (минигана) начинает вращаться"
         );
         addSound(translationBuilder, AVPSoundEvents.WEAPON_ZX_76_SHOTGUN_SHOOT, "ZX-76 дробовик стреляет");
+        addSound(translationBuilder, AVPSoundEvents.JUKEBOX_SOUNDS_ALIEN_MUSIC, "Alien music plays");
+        addSound(translationBuilder, AVPSoundEvents.JUKEBOX_SOUNDS_PREDATOR_MUSIC, "Predator music plays");
+
+        // Jukebox Sounds
+        translationBuilder.add("jukebox_song.avp.alien_music", "Rotch Gwylt - Silver Smile");
+        translationBuilder.add("jukebox_song.avp.predator_music", "Rotch Gwylt - Hunter");
 
         // Tooltips
         translationBuilder.add("tooltip.avp.accuracy", "Точность: ");

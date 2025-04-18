@@ -1,5 +1,6 @@
 package com.avp;
 
+import com.avp.common.sound.AVPJukeboxSongs;
 import mod.azure.azurelib.common.api.common.config.Config;
 import mod.azure.azurelib.common.internal.common.AzureLib;
 import mod.azure.azurelib.common.internal.common.config.ConfigHolder;
@@ -87,6 +88,7 @@ public class AVP implements ModInitializer {
         DecoratedPotPatterns.initialize();
         WorldGen.initialize();
         AVPSoundEvents.initialize();
+        AVPJukeboxSongs.initialize();
         AVPGameEvents.initialize();
         CommonPacketRegistry.initialize();
         ServerPacketHandlerRegistry.initialize();
