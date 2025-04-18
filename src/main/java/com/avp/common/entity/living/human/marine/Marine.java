@@ -113,13 +113,13 @@ public class Marine extends AbstractHuman implements InventoryCarrier {
     @Override
     public void readAdditionalSaveData(CompoundTag compoundTag) {
         super.readAdditionalSaveData(compoundTag);
-        compoundTag.put(INVENTORY_KEY, inventory.createTag(level().registryAccess()));
+        inventory.fromTag(compoundTag.getList(INVENTORY_KEY, Tag.TAG_COMPOUND), level().registryAccess());
     }
 
     @Override
     public void addAdditionalSaveData(CompoundTag compoundTag) {
         super.addAdditionalSaveData(compoundTag);
-        inventory.fromTag(compoundTag.getList(INVENTORY_KEY, Tag.TAG_COMPOUND), level().registryAccess());
+        compoundTag.put(INVENTORY_KEY, inventory.createTag(level().registryAccess()));
     }
 
     @Override
