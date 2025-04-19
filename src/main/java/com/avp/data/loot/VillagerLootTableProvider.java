@@ -1,7 +1,5 @@
 package com.avp.data.loot;
 
-import com.avp.common.block.chest_loot_tables.*;
-import com.avp.common.profession.AVPGifts;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.SimpleFabricLootTableProvider;
 import net.minecraft.core.HolderLookup;
@@ -11,6 +9,9 @@ import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.function.BiConsumer;
+
+import com.avp.common.block.chest_loot_tables.*;
+import com.avp.common.profession.AVPGifts;
 
 public class VillagerLootTableProvider extends SimpleFabricLootTableProvider {
 
@@ -23,6 +24,6 @@ public class VillagerLootTableProvider extends SimpleFabricLootTableProvider {
 
     @Override
     public void generate(BiConsumer<ResourceKey<LootTable>, LootTable.Builder> biConsumer) {
-        biConsumer.accept(AVPGifts.COMMISAARY_GIFT_LOOT_TABLE, BarrelCasingsLootTable.LOOT_TABLE.apply(provider));
+        biConsumer.accept(AVPGifts.COMMISSARY_GIFT_LOOT_TABLE, BarrelCasingsLootTable.LOOT_TABLE.apply(provider));
     }
 }

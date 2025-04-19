@@ -1,9 +1,5 @@
 package com.avp;
 
-import com.avp.common.profession.AVPGifts;
-import com.avp.common.sound.AVPJukeboxSongs;
-import com.avp.mixin.GiveGiftToHeroAccessor;
-import com.avp.mixin.StructurePoolAccessor;
 import com.mojang.datafixers.util.Pair;
 import mod.azure.azurelib.common.api.common.config.Config;
 import mod.azure.azurelib.common.internal.common.AzureLib;
@@ -25,7 +21,6 @@ import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.levelgen.structure.pools.StructurePoolElement;
 import net.minecraft.world.level.levelgen.structure.pools.StructureTemplatePool;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureProcessorList;
-import net.minecraft.world.level.storage.loot.BuiltInLootTables;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -62,6 +57,7 @@ import com.avp.common.network.CommonPacketRegistry;
 import com.avp.common.network.ServerPacketHandlerRegistry;
 import com.avp.common.particle.AVPParticleTypes;
 import com.avp.common.patrols.MarinePatrolSpawner;
+import com.avp.common.profession.AVPGifts;
 import com.avp.common.profession.AVPProfessions;
 import com.avp.common.profession.AVPTrades;
 import com.avp.common.recipe.AVPRecipes;
@@ -191,7 +187,7 @@ public class AVP implements ModInitializer {
     public static void modifyGifts() {
         var gifts = GiveGiftToHeroAccessor.getGifts();
 
-        gifts.put(AVPProfessions.COMMISSARY, AVPGifts.COMMISAARY_GIFT_LOOT_TABLE);
+        gifts.put(AVPProfessions.COMMISSARY, AVPGifts.COMMISSARY_GIFT_LOOT_TABLE);
     }
 
     private static void addBuildingToPool(
