@@ -27,6 +27,7 @@
 - Fixed parasites removed via eating chorus fruit always producing a regular chestburster.
 - Fixed parasites removed via eating chorus fruit having host data incorrectly attached to them.
 - Fixed aberrant ovamorph texture having regular resin instead of aberrant resin.
+- Fixed chestbursters not running (slithering?) away from irradiated xenomorphs.
 - Fixed chestbursters not moving due to their follow range defaulting to 0 in the config.
   - NOTE: This is not a backwards-compatible fix because once attributes are applied to an entity, they're stuck like that. This fix only applies to new chestbursters.
 - Fixed commissary villagers throwing wheat seeds at players with the Hero of the Village effect.
