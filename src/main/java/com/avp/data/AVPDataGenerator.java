@@ -1,5 +1,6 @@
 package com.avp.data;
 
+import com.avp.data.worldgen.*;
 import net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 import net.minecraft.core.RegistrySetBuilder;
@@ -19,11 +20,6 @@ import com.avp.data.model.BlockModelProvider;
 import com.avp.data.model.ItemModelProvider;
 import com.avp.data.recipe.RecipeProvider;
 import com.avp.data.tag.*;
-import com.avp.data.worldgen.AVPCaveConfigurations;
-import com.avp.data.worldgen.AVPCavePlacements;
-import com.avp.data.worldgen.AVPOreConfigurations;
-import com.avp.data.worldgen.AVPOrePlacements;
-import com.avp.data.worldgen.AVPWorldGenProvider;
 
 public class AVPDataGenerator implements DataGeneratorEntrypoint {
 
@@ -63,6 +59,7 @@ public class AVPDataGenerator implements DataGeneratorEntrypoint {
 
         // Worldgen providers
         pack.addProvider(AVPWorldGenProvider::new);
+        pack.addProvider(AVPBiomeProvider::new);
 
         // Damage Type providers
         pack.addProvider(DamageTypeProvider::new);
