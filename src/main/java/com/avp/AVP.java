@@ -1,5 +1,9 @@
 package com.avp;
 
+import com.avp.common.profession.AVPGifts;
+import com.avp.common.sound.AVPJukeboxSongs;
+import com.avp.mixin.GiveGiftToHeroAccessor;
+import com.avp.mixin.StructurePoolAccessor;
 import com.mojang.datafixers.util.Pair;
 import mod.azure.azurelib.common.api.common.config.Config;
 import mod.azure.azurelib.common.internal.common.AzureLib;
@@ -187,7 +191,7 @@ public class AVP implements ModInitializer {
     public static void modifyGifts() {
         var gifts = GiveGiftToHeroAccessor.getGifts();
 
-        gifts.put(AVPProfessions.COMMISSARY, BuiltInLootTables.ARMORER_GIFT);
+        gifts.put(AVPProfessions.COMMISSARY, AVPGifts.COMMISAARY_GIFT_LOOT_TABLE);
     }
 
     private static void addBuildingToPool(
