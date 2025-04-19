@@ -13,7 +13,7 @@ import com.avp.common.item.ArmorItems;
 public class AVPTrades {
 
     public static void initialize() {
-        TradeOfferHelper.registerVillagerOffers(AVPProfessions.COMMISAARY, 1, factories -> {
+        TradeOfferHelper.registerVillagerOffers(AVPProfessions.COMMISSARY, 1, factories -> {
             factories.add(
                 (entity, random) -> new MerchantOffer(
                     new ItemCost(Items.EMERALD, 1),
@@ -43,7 +43,7 @@ public class AVPTrades {
             );
         });
 
-        TradeOfferHelper.registerVillagerOffers(AVPProfessions.COMMISAARY, 2, factories -> {
+        TradeOfferHelper.registerVillagerOffers(AVPProfessions.COMMISSARY, 2, factories -> {
             factories.add(
                 (entity, random) -> new MerchantOffer(
                     new ItemCost(Items.EMERALD, 5),
@@ -73,7 +73,7 @@ public class AVPTrades {
             );
         });
 
-        TradeOfferHelper.registerVillagerOffers(AVPProfessions.COMMISAARY, 3, factories -> {
+        TradeOfferHelper.registerVillagerOffers(AVPProfessions.COMMISSARY, 3, factories -> {
             factories.add(
                 (entity, random) -> new MerchantOffer(
                     new ItemCost(Items.EMERALD, 15),
@@ -103,7 +103,7 @@ public class AVPTrades {
             );
         });
 
-        TradeOfferHelper.registerVillagerOffers(AVPProfessions.COMMISAARY, 4, factories -> {
+        TradeOfferHelper.registerVillagerOffers(AVPProfessions.COMMISSARY, 4, factories -> {
             factories.add(
                 (entity, random) -> new MerchantOffer(
                     new ItemCost(Items.EMERALD, 8),
@@ -133,7 +133,7 @@ public class AVPTrades {
             );
         });
 
-        TradeOfferHelper.registerVillagerOffers(AVPProfessions.COMMISAARY, 5, factories -> {
+        TradeOfferHelper.registerVillagerOffers(AVPProfessions.COMMISSARY, 5, factories -> {
             factories.add(
                 (entity, random) -> new MerchantOffer(
                     new ItemCost(Items.EMERALD, 25),

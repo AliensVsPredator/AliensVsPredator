@@ -11,9 +11,9 @@ import java.util.Map;
 
 @Mixin(GiveGiftToHero.class)
 public interface GiveGiftToHeroAccessor {
+
     @Accessor("GIFTS")
     static Map<VillagerProfession, ResourceKey<LootTable>> getGifts() {
         throw new AssertionError();
     }
 }
-

@@ -1,6 +1,5 @@
 package com.avp.common.item;
 
-import com.avp.common.sound.AVPJukeboxSongs;
 import mod.azure.azurelib.rewrite.animation.cache.AzIdentityRegistry;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -18,6 +17,7 @@ import com.avp.common.item.gun.GunData;
 import com.avp.common.item.old_painless.OldPainlessItem;
 import com.avp.common.item.yautja_items.ShurikenItem;
 import com.avp.common.item.yautja_items.SmartDiscItem;
+import com.avp.common.sound.AVPJukeboxSongs;
 
 public class AVPItems {
 
@@ -92,8 +92,15 @@ public class AVPItems {
     public static final Item VECTOR_POTTERY_SHERD = register("vector_pottery_sherd");
 
     // Music Disc Items
-    public static final Item ALIEN_MUSIC_DISC_1 = register(new Item.Properties().stacksTo(1).rarity(Rarity.RARE).jukeboxPlayable(AVPJukeboxSongs.ALIEN_MUSIC),"alien_music_disc_1");
-    public static final Item PREDATOR_MUSIC_DISC_1 = register(new Item.Properties().stacksTo(1).rarity(Rarity.RARE).jukeboxPlayable(AVPJukeboxSongs.PREDATOR_MUSIC),"predator_music_disc_1");
+    public static final Item ALIEN_MUSIC_DISC_1 = register(
+        new Item.Properties().stacksTo(1).rarity(Rarity.RARE).jukeboxPlayable(AVPJukeboxSongs.ALIEN_MUSIC),
+        "alien_music_disc_1"
+    );
+
+    public static final Item PREDATOR_MUSIC_DISC_1 = register(
+        new Item.Properties().stacksTo(1).rarity(Rarity.RARE).jukeboxPlayable(AVPJukeboxSongs.PREDATOR_MUSIC),
+        "predator_music_disc_1"
+    );
 
     // Material Items
     public static final Item ALUMINUM_INGOT = register("aluminum_ingot");
