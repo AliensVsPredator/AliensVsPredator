@@ -6,7 +6,6 @@ import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.entries.LootItem;
 import net.minecraft.world.level.storage.loot.functions.SetItemCountFunction;
 import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
-import net.minecraft.world.level.storage.loot.providers.number.UniformGenerator;
 
 import java.util.function.Function;
 
@@ -20,13 +19,13 @@ public class CommissaryGiftLootTable {
                 .setRolls(ConstantValue.exactly(1))
                 .add(
                     LootItem.lootTableItem(AVPItems.SMALL_BULLET)
-                        .apply(SetItemCountFunction.setCount(UniformGenerator.between(1, 2)))
-                        .setWeight(20)
+                        .apply(SetItemCountFunction.setCount(ConstantValue.exactly(1)))
+                        .setWeight(1)
                 )
                 .add(
                     LootItem.lootTableItem(AVPItems.MEDIUM_BULLET)
-                        .apply(SetItemCountFunction.setCount(UniformGenerator.between(1, 2)))
-                        .setWeight(20)
+                        .apply(SetItemCountFunction.setCount(ConstantValue.exactly(1)))
+                        .setWeight(2)
                 )
         );
 }
