@@ -1,5 +1,6 @@
 package com.avp;
 
+import com.avp.common.profession.AVPGifts;
 import com.avp.common.sound.AVPJukeboxSongs;
 import com.avp.mixin.GiveGiftToHeroAccessor;
 import com.avp.mixin.StructurePoolAccessor;
@@ -188,7 +189,7 @@ public class AVP implements ModInitializer {
     public static void modifyGifts() {
         var gifts = GiveGiftToHeroAccessor.getGifts();
 
-        gifts.put(AVPProfessions.COMMISAARY, BuiltInLootTables.ARMORER_GIFT);
+        gifts.put(AVPProfessions.COMMISAARY, AVPGifts.COMMISAARY_GIFT_LOOT_TABLE);
     }
 
 

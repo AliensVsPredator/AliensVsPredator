@@ -1,5 +1,6 @@
 package com.avp.data;
 
+import com.avp.data.loot.VillagerLootTableProvider;
 import net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 import net.minecraft.core.RegistrySetBuilder;
@@ -58,6 +59,7 @@ public class AVPDataGenerator implements DataGeneratorEntrypoint {
         pack.addProvider(BlockLootTableProvider::new);
         pack.addProvider(EntityLootTableProvider::new);
         pack.addProvider(ChestLootTableProvider::new);
+        pack.addProvider(VillagerLootTableProvider::new);
 
         // Worldgen providers
         pack.addProvider(AVPWorldGenProvider::new);
