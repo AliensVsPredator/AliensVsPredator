@@ -16,10 +16,7 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ChestMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.entity.BaseContainerBlockEntity;
-import net.minecraft.world.level.block.entity.ChestLidController;
-import net.minecraft.world.level.block.entity.ContainerOpenersCounter;
-import net.minecraft.world.level.block.entity.LidBlockEntity;
+import net.minecraft.world.level.block.entity.*;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
 
@@ -27,7 +24,7 @@ import com.avp.common.block.AVPBlocks;
 import com.avp.common.item.AVPItemTags;
 import com.avp.common.item.AVPItems;
 
-public class AmmoChestBE extends BaseContainerBlockEntity implements LidBlockEntity {
+public class AmmoChestBE extends RandomizableContainerBlockEntity implements LidBlockEntity {
 
     private final ChestLidController chestLidController = new ChestLidController();
 
@@ -75,8 +72,10 @@ public class AmmoChestBE extends BaseContainerBlockEntity implements LidBlockEnt
 
             @Override
             protected boolean isOwnContainer(Player player) {
-                if (!(player.containerMenu instanceof ChestMenu))
+                if (!(player.containerMenu instanceof ChestMenu)) {
                     return false;
+                }
+
                 Container container = ((ChestMenu) player.containerMenu).getContainer();
                 return container == AmmoChestBE.this;
             }
@@ -86,15 +85,20 @@ public class AmmoChestBE extends BaseContainerBlockEntity implements LidBlockEnt
     @Override
     protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
         super.saveAdditional(tag, registries);
-        ContainerHelper.saveAllItems(tag, this.itemStacks, false, registries);
+
+        if (!this.trySaveLootTable(tag)) {
+            ContainerHelper.saveAllItems(tag, this.itemStacks, registries);
+        }
     }
 
     @Override
     protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
         super.loadAdditional(tag, registries);
         this.itemStacks = NonNullList.withSize(this.getContainerSize(), ItemStack.EMPTY);
-        if (tag.contains("Items", 9))
+
+        if (!this.tryLoadLootTable(tag)) {
             ContainerHelper.loadAllItems(tag, this.itemStacks, registries);
+        }
     }
 
     @SuppressWarnings("unused")

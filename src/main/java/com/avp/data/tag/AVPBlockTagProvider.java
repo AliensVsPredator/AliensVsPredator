@@ -528,10 +528,15 @@ public class AVPBlockTagProvider extends FabricTagProvider.BlockTagProvider {
 
         getOrCreateTagBuilder(AVPBlockTags.MARINE_SPAWN_BLOCKS).add(
             AVPBlocks.DYE_COLOR_TO_PANEL_PADDING.get(DyeColor.BLACK),
-            Blocks.DIRT_PATH,
+            AVPBlocks.DYE_COLOR_TO_CUT_PLASTIC_SLAB.get(DyeColor.LIGHT_GRAY),
+            AVPBlocks.DYE_COLOR_TO_CUT_PLASTIC_SLAB.get(DyeColor.GRAY),
+            AVPBlocks.DYE_COLOR_TO_INDUSTRIAL_CONCRETE.get(DyeColor.BLACK),
+            Blocks.CYAN_TERRACOTTA,
+            Blocks.MOSS_BLOCK,
             AVPBlocks.FERROALUMINUM_TREAD,
-            Blocks.GRASS_BLOCK,
             AVPBlocks.STEEL_TREAD,
+            Blocks.GRAVEL,
+            AVPBlocks.STEEL_GRATE,
             AVPBlocks.TITANIUM_TREAD
         );
 

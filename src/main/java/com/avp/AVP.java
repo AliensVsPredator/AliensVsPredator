@@ -1,5 +1,6 @@
 package com.avp;
 
+import com.mojang.datafixers.util.Pair;
 import mod.azure.azurelib.common.api.common.config.Config;
 import mod.azure.azurelib.common.internal.common.AzureLib;
 import mod.azure.azurelib.common.internal.common.config.ConfigHolder;
@@ -8,11 +9,22 @@ import mod.azure.azurelib.common.internal.common.config.format.ConfigFormats;
 import mod.azure.azurelib.common.internal.common.config.format.IConfigFormatHandler;
 import mod.azure.azurelib.common.internal.common.config.io.ConfigIO;
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
+import net.minecraft.core.Registry;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.GameRules;
+import net.minecraft.world.level.levelgen.structure.pools.StructurePoolElement;
+import net.minecraft.world.level.levelgen.structure.pools.StructureTemplatePool;
+import net.minecraft.world.level.levelgen.structure.templatesystem.StructureProcessorList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.ArrayList;
 
 import com.avp.common.block.AVPBlocks;
 import com.avp.common.block.CompostingChanceRegistry;
@@ -45,14 +57,18 @@ import com.avp.common.network.CommonPacketRegistry;
 import com.avp.common.network.ServerPacketHandlerRegistry;
 import com.avp.common.particle.AVPParticleTypes;
 import com.avp.common.patrols.MarinePatrolSpawner;
+import com.avp.common.profession.AVPGifts;
 import com.avp.common.profession.AVPProfessions;
 import com.avp.common.profession.AVPTrades;
 import com.avp.common.recipe.AVPRecipes;
+import com.avp.common.sound.AVPJukeboxSongs;
 import com.avp.common.sound.AVPSoundEvents;
 import com.avp.common.worldgen.NukedAshPlacement;
 import com.avp.common.worldgen.WorldGen;
 import com.avp.common.worldgen.biome.AVPBiomes;
 import com.avp.data.loot.LootTableModifier;
+import com.avp.mixin.GiveGiftToHeroAccessor;
+import com.avp.mixin.StructurePoolAccessor;
 
 public class AVP implements ModInitializer {
 
@@ -65,6 +81,11 @@ public class AVP implements ModInitializer {
     private final MarinePatrolSpawner customSpawner = new MarinePatrolSpawner();
 
     private final NukedAshPlacement nukedAshPlacement = new NukedAshPlacement();
+
+    private static final ResourceKey<StructureProcessorList> EMPTY_PROCESSOR_LIST_KEY = ResourceKey.create(
+        Registries.PROCESSOR_LIST,
+        ResourceLocation.withDefaultNamespace("empty")
+    );
 
     @Override
     public void onInitialize() {
@@ -87,6 +108,7 @@ public class AVP implements ModInitializer {
         DecoratedPotPatterns.initialize();
         WorldGen.initialize();
         AVPSoundEvents.initialize();
+        AVPJukeboxSongs.initialize();
         AVPGameEvents.initialize();
         CommonPacketRegistry.initialize();
         ServerPacketHandlerRegistry.initialize();
@@ -112,12 +134,14 @@ public class AVP implements ModInitializer {
         AVPFuelRegistry.initialize();
         Commands.initialize();
         ServerTickEvents.START_WORLD_TICK.register(this::onWorldTick);
+        ServerLifecycleEvents.SERVER_STARTING.register(this::addNewVillageBuilding);
         AVPTrades.initialize();
     }
 
     private void onWorldTick(ServerLevel serverLevel) {
         customSpawner.tick(serverLevel, serverLevel.getGameRules().getBoolean(GameRules.RULE_DOMOBSPAWNING), true);
         nukedAshPlacement.tick(serverLevel);
+        modifyGifts();
     }
 
     /**
@@ -158,5 +182,85 @@ public class AVP implements ModInitializer {
         }
 
         return holder;
+    }
+
+    public static void modifyGifts() {
+        var gifts = GiveGiftToHeroAccessor.getGifts();
+
+        gifts.put(AVPProfessions.COMMISSARY, AVPGifts.COMMISSARY_GIFT_LOOT_TABLE);
+    }
+
+    private static void addBuildingToPool(
+        Registry<StructureTemplatePool> templatePoolRegistry,
+        Registry<StructureProcessorList> processorListRegistry,
+        ResourceLocation poolRL,
+        String nbtPieceRL,
+        int weight
+    ) {
+        if (processorListRegistry.getHolder(EMPTY_PROCESSOR_LIST_KEY).isEmpty()) {
+            return;
+        }
+
+        var emptyProcessorList = processorListRegistry.getHolder(EMPTY_PROCESSOR_LIST_KEY).get();
+        var pool = templatePoolRegistry.get(poolRL);
+
+        if (pool == null) {
+            return;
+        }
+
+        var piece = StructurePoolElement.legacy(nbtPieceRL, emptyProcessorList).apply(StructureTemplatePool.Projection.RIGID);
+
+        for (var i = 0; i < weight; i++) {
+            ((StructurePoolAccessor) pool).getElements().add(piece);
+        }
+
+        var listOfPieceEntries = new ArrayList<>(((StructurePoolAccessor) pool).getElementCounts());
+        listOfPieceEntries.add(new Pair<>(piece, weight));
+        ((StructurePoolAccessor) pool).setElementCounts(listOfPieceEntries);
+    }
+
+    public void addNewVillageBuilding(final MinecraftServer event) {
+        var templatePoolRegistry = event.registryAccess().registryOrThrow(Registries.TEMPLATE_POOL);
+        var processorListRegistry = event.registryAccess().registryOrThrow(Registries.PROCESSOR_LIST);
+
+        addBuildingToPool(
+            templatePoolRegistry,
+            processorListRegistry,
+            ResourceLocation.withDefaultNamespace("village/plains/houses"),
+            "avp:village/plains/houses/plains_commissary",
+            5
+        );
+
+        addBuildingToPool(
+            templatePoolRegistry,
+            processorListRegistry,
+            ResourceLocation.withDefaultNamespace("village/snowy/houses"),
+            "avp:village/snowy/houses/snowy_commissary",
+            5
+        );
+
+        addBuildingToPool(
+            templatePoolRegistry,
+            processorListRegistry,
+            ResourceLocation.withDefaultNamespace("village/savanna/houses"),
+            "avp:village/savanna/houses/savanna_commissary",
+            5
+        );
+
+        addBuildingToPool(
+            templatePoolRegistry,
+            processorListRegistry,
+            ResourceLocation.withDefaultNamespace("village/taiga/houses"),
+            "avp:village/taiga/houses/taiga_commissary",
+            5
+        );
+
+        addBuildingToPool(
+            templatePoolRegistry,
+            processorListRegistry,
+            ResourceLocation.withDefaultNamespace("village/desert/houses"),
+            "avp:village/desert/houses/desert_commissary",
+            5
+        );
     }
 }
