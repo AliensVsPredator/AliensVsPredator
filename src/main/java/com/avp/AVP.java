@@ -1,6 +1,5 @@
 package com.avp;
 
-import com.avp.mixin.ParrotSoundMapAccessor;
 import com.mojang.datafixers.util.Pair;
 import mod.azure.azurelib.common.api.common.config.Config;
 import mod.azure.azurelib.common.internal.common.AzureLib;
@@ -70,6 +69,7 @@ import com.avp.common.worldgen.WorldGen;
 import com.avp.common.worldgen.biome.AVPBiomes;
 import com.avp.data.loot.LootTableModifier;
 import com.avp.mixin.GiveGiftToHeroAccessor;
+import com.avp.mixin.ParrotSoundMapAccessor;
 import com.avp.mixin.StructurePoolAccessor;
 
 public class AVP implements ModInitializer {
