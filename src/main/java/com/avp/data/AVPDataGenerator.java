@@ -1,8 +1,5 @@
 package com.avp.data;
 
-import com.avp.common.sound.AVPJukeboxSongs;
-import com.avp.data.jukebox_song.AVPJukeboxSongsProvider;
-import com.avp.data.worldgen.*;
 import net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 import net.minecraft.core.RegistrySetBuilder;
@@ -11,6 +8,7 @@ import net.minecraft.core.registries.Registries;
 import com.avp.data.advancement.AdvancementProvider;
 import com.avp.data.damage_type.DamageTypeBootstrapper;
 import com.avp.data.damage_type.DamageTypeProvider;
+import com.avp.data.jukebox_song.AVPJukeboxSongsProvider;
 import com.avp.data.lang.EnglishLanguageProvider;
 import com.avp.data.lang.RussianLanguageProvider;
 import com.avp.data.lang.UkrainianLanguageProvider;
@@ -22,6 +20,7 @@ import com.avp.data.model.BlockModelProvider;
 import com.avp.data.model.ItemModelProvider;
 import com.avp.data.recipe.RecipeProvider;
 import com.avp.data.tag.*;
+import com.avp.data.worldgen.*;
 
 public class AVPDataGenerator implements DataGeneratorEntrypoint {
 

@@ -1,6 +1,5 @@
 package com.avp.data.loot;
 
-import com.avp.common.profession.CommissaryGiftLootTable;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.SimpleFabricLootTableProvider;
 import net.minecraft.core.HolderLookup;
@@ -12,6 +11,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.function.BiConsumer;
 
 import com.avp.common.profession.AVPGifts;
+import com.avp.common.profession.CommissaryGiftLootTable;
 
 public class VillagerLootTableProvider extends SimpleFabricLootTableProvider {
 

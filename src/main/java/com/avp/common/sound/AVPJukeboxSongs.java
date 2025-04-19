@@ -15,11 +15,21 @@ public class AVPJukeboxSongs {
     public static final ResourceKey<JukeboxSong> PREDATOR_MUSIC_1 = register("predator_music_1");
 
     public static JukeboxSong createAlienSong() {
-        return new JukeboxSong(Holder.direct(AVPSoundEvents.JUKEBOX_SOUNDS_ALIEN_MUSIC_1), Component.translatable("jukebox_song.avp.alien_music_1"), 180, 12);
+        return new JukeboxSong(
+            Holder.direct(AVPSoundEvents.JUKEBOX_SOUNDS_ALIEN_MUSIC_1),
+            Component.translatable("jukebox_song.avp.alien_music_1"),
+            180,
+            12
+        );
     }
 
     public static JukeboxSong createPredatorSong() {
-        return new JukeboxSong(Holder.direct(AVPSoundEvents.JUKEBOX_SOUNDS_PREDATOR_MUSIC_1), Component.translatable("jukebox_song.avp.predator_music_1"), 184, 12);
+        return new JukeboxSong(
+            Holder.direct(AVPSoundEvents.JUKEBOX_SOUNDS_PREDATOR_MUSIC_1),
+            Component.translatable("jukebox_song.avp.predator_music_1"),
+            184,
+            12
+        );
     }
 
     private static ResourceKey<JukeboxSong> register(String id) {

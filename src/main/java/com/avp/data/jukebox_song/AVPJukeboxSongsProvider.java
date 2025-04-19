@@ -1,12 +1,13 @@
 package com.avp.data.jukebox_song;
 
-import com.avp.common.sound.AVPJukeboxSongs;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricDynamicRegistryProvider;
 import net.minecraft.core.HolderLookup;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.concurrent.CompletableFuture;
+
+import com.avp.common.sound.AVPJukeboxSongs;
 
 public class AVPJukeboxSongsProvider extends FabricDynamicRegistryProvider {
 
