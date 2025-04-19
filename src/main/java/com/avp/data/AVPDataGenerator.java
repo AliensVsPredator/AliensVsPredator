@@ -8,21 +8,19 @@ import net.minecraft.core.registries.Registries;
 import com.avp.data.advancement.AdvancementProvider;
 import com.avp.data.damage_type.DamageTypeBootstrapper;
 import com.avp.data.damage_type.DamageTypeProvider;
+import com.avp.data.jukebox_song.AVPJukeboxSongsProvider;
 import com.avp.data.lang.EnglishLanguageProvider;
 import com.avp.data.lang.RussianLanguageProvider;
 import com.avp.data.lang.UkrainianLanguageProvider;
 import com.avp.data.loot.BlockLootTableProvider;
 import com.avp.data.loot.ChestLootTableProvider;
 import com.avp.data.loot.EntityLootTableProvider;
+import com.avp.data.loot.VillagerLootTableProvider;
 import com.avp.data.model.BlockModelProvider;
 import com.avp.data.model.ItemModelProvider;
 import com.avp.data.recipe.RecipeProvider;
 import com.avp.data.tag.*;
-import com.avp.data.worldgen.AVPCaveConfigurations;
-import com.avp.data.worldgen.AVPCavePlacements;
-import com.avp.data.worldgen.AVPOreConfigurations;
-import com.avp.data.worldgen.AVPOrePlacements;
-import com.avp.data.worldgen.AVPWorldGenProvider;
+import com.avp.data.worldgen.*;
 
 public class AVPDataGenerator implements DataGeneratorEntrypoint {
 
@@ -58,12 +56,17 @@ public class AVPDataGenerator implements DataGeneratorEntrypoint {
         pack.addProvider(BlockLootTableProvider::new);
         pack.addProvider(EntityLootTableProvider::new);
         pack.addProvider(ChestLootTableProvider::new);
+        pack.addProvider(VillagerLootTableProvider::new);
 
         // Worldgen providers
         pack.addProvider(AVPWorldGenProvider::new);
+        pack.addProvider(AVPBiomeProvider::new);
 
         // Damage Type providers
         pack.addProvider(DamageTypeProvider::new);
+
+        // Jukebox Song Providers
+        pack.addProvider(AVPJukeboxSongsProvider::new);
     }
 
     @Override

@@ -256,7 +256,7 @@ public class AVPConfig {
             0.0F,
             0.0f,
             750,
-            0
+            FollowRangeConstants.CHESTBURSTER_FOLLOW_RANGE
         );
 
         @Configurable

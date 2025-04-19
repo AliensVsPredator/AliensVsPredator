@@ -3,6 +3,7 @@
   "adapt_noise": false,
   "type": "minecraft:jigsaw",
   "start_pool": "avp:outpost_comm_bottom",
+  "placement": "on_land_surface",
   "size": 4,
   "step": "surface_structures",
   "start_height": {

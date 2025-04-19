@@ -384,6 +384,8 @@ public class EnglishLanguageProvider extends FabricLanguageProvider {
         translationBuilder.add(AVPItems.SERVO, "Servo");
         translationBuilder.add(AVPItems.SPEAKER, "Speaker");
         translationBuilder.add(AVPItems.ALUMINUM_INGOT, "Aluminum Ingot");
+        translationBuilder.add(AVPItems.ALIEN_MUSIC_DISC_1, "Music Disc");
+        translationBuilder.add(AVPItems.PREDATOR_MUSIC_DISC_1, "Music Disc");
         translationBuilder.add(AVPItems.AUTUNITE_DUST, "Autunite Dust");
         translationBuilder.add(AVPItems.BARREL, "Barrel");
         translationBuilder.add(AVPItems.BATTERY_PACK, "Battery Pack");
@@ -583,6 +585,12 @@ public class EnglishLanguageProvider extends FabricLanguageProvider {
         addSound(translationBuilder, AVPSoundEvents.WEAPON_OLD_PAINLESS_SHOOT_SPINNING, "Old Painless barrel spins");
         addSound(translationBuilder, AVPSoundEvents.WEAPON_OLD_PAINLESS_SHOOT_START, "Old Painless barrel starts spinning");
         addSound(translationBuilder, AVPSoundEvents.WEAPON_ZX_76_SHOTGUN_SHOOT, "ZX-76 Shotgun shoots");
+        addSound(translationBuilder, AVPSoundEvents.JUKEBOX_SOUNDS_ALIEN_MUSIC_1, "Silver Smile plays");
+        addSound(translationBuilder, AVPSoundEvents.JUKEBOX_SOUNDS_PREDATOR_MUSIC_1, "Hunter plays");
+
+        // Jukebox Sounds
+        translationBuilder.add("jukebox_song.avp.alien_music_1", "Rotch Gwylt - Silver Smile");
+        translationBuilder.add("jukebox_song.avp.predator_music_1", "Rotch Gwylt - Hunter");
 
         // Tooltips
         translationBuilder.add("tooltip.avp.accuracy", "Accuracy: ");

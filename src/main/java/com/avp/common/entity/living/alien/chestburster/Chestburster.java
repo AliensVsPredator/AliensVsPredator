@@ -11,8 +11,6 @@ import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Objects;
-
 import com.avp.AVP;
 import com.avp.common.MoveAnalysis;
 import com.avp.common.entity.living.alien.Alien;
@@ -23,6 +21,7 @@ import com.avp.common.gene.behavior.GeneDecoders;
 import com.avp.common.lifecycle.registry.AlienLifecycleRegistry;
 import com.avp.common.manager.GrowthManager;
 import com.avp.common.util.AVPPredicates;
+import com.avp.common.util.AlienPredicates;
 import com.avp.common.util.AlienVariantUtil;
 import com.avp.common.util.XenomorphGrowthUtil;
 import com.avp.common.util.resin.ResinData;
@@ -81,26 +80,19 @@ public class Chestburster extends Alien implements ResinProducer {
 
     @Override
     protected void registerGoals() {
-        this.goalSelector.addGoal(3, new AvoidEntityGoal<>(this, LivingEntity.class, 8, 1, 1.2, entity -> {
-            if (!(entity instanceof Alien alien)) {
-                return !AVPPredicates.IS_IMMORTAL.test(entity);
-            }
-
-            var isAlienAberrant = alien.isAberrant();
-            var isAlienNetherAfflicted = alien.isNetherAfflicted();
-
-            if (!Objects.equals(isAberrant(), isAlienAberrant) || !Objects.equals(isNetherAfflicted(), isAlienNetherAfflicted)) {
-                return true;
-            }
-
-            var hiveSignatureOption = hiveManager.signature();
-            var alienHiveSignatureOption = alien.hiveManager().signature();
-
-            return hiveSignatureOption.isSome() && alienHiveSignatureOption.isSome() && !Objects.equals(
-                hiveSignatureOption,
-                alienHiveSignatureOption
-            );
-        }));
+        this.goalSelector.addGoal(
+            3,
+            new AvoidEntityGoal<>(
+                this,
+                LivingEntity.class,
+                8,
+                1,
+                1.2,
+                entity -> entity instanceof Alien alien
+                    ? AlienPredicates.areAliensEnemies(this, alien)
+                    : !AVPPredicates.IS_IMMORTAL.test(entity)
+            )
+        );
         goalSelector.addGoal(7, new WaterAvoidingRandomStrollGoal(this, 0.5));
     }
 

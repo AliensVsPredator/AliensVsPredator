@@ -4,6 +4,11 @@
 - N/A
 
 ## ✨ What's New
+- Added alien music disc 1 "Silver Smile" by Rotch Gwylt.
+- Added predator music disc 1 "Hunter" by Rotch Gwylt.
+- Added mobile lab structure.
+- Added commissary house to all vanilla villages.
+- Added outpost munition structure.
 - Added new item textures for the following armor sets:
   - Aberrant Chitin Armor
   - Irradiated Chitin Armor
@@ -11,11 +16,23 @@
   - Plated Irradiated Chitin Armor
 
 ## ♻️ Changes
-- N/A
+- Updated ash block texture.
 
 ## 🐞 Fixes
+- Fixed JEI crash, no longer supported. Use REI for recipe viewing.
+- Fixed irradiated queen rendering with a black texture due to missing glow layer texture.
+- Fixes ammo chest not loading loot tables.
 - Fixed royal ovamorph spawns not being royal for all royal altar structures.
 - Fixed industrial furnace blocks not dropping themselves as an item when mined.
+- Fixed parasites removed via eating chorus fruit being teleported into walls.
+- Fixed parasites removed via eating chorus fruit always producing a regular chestburster.
+- Fixed parasites removed via eating chorus fruit having host data incorrectly attached to them.
+- Fixed aberrant ovamorph texture having regular resin instead of aberrant resin.
+- Fixed chestbursters not running (slithering?) away from irradiated xenomorphs.
+- Fixed chestbursters not moving due to their follow range defaulting to 0 in the config.
+  - NOTE: This is not a backwards-compatible fix because once attributes are applied to an entity, they're stuck like that. This fix only applies to new chestbursters.
+- Fixed commissary villagers throwing wheat seeds at players with the Hero of the Village effect.
+  - They now instead throw either 1 small or 1 medium bullet at the player.
 - Fixed marines not storing the following features to their entity data:
   - Beard color
   - Beard variant
@@ -24,11 +41,10 @@
   - Hair color
   - Hair variant
   - Skin color
-- Fixed JEI crash, no longer supported. Use REI for recipe viewing.
-- Fixed Irradiated Queen showing as black texture.
 
 ## 🛠 Data Pack
-- N/A
+- Rename tag `#avp:mobile_lab` to `#avp:has_mobile_lab`.
+- Rename tag `#avp:marine_camp_grass` to `#avp:has_marine_camp_grass`.
 
 ## 🔬 Technical Changes
 - Bumped gradle version from 8.12 to 8.13.

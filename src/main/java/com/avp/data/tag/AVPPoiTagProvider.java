@@ -21,7 +21,7 @@ public class AVPPoiTagProvider extends FabricTagProvider<PoiType> {
     protected void addTags(HolderLookup.Provider wrapperLookup) {
         getOrCreateTagBuilder(PoiTypeTags.ACQUIRABLE_JOB_SITE)
             .addOptional(
-                AVPProfessions.COMMISAARY_KEY
+                AVPProfessions.COMMISSARY_KEY
             );
     }
 }

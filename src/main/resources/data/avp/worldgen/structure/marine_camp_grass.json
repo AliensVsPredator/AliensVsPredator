@@ -1,8 +1,9 @@
 {
-  "biomes": "#avp:marine_camp_grass",
+  "biomes": "#avp:has_marine_camp_grass",
   "adapt_noise": false,
   "type": "minecraft:jigsaw",
   "start_pool": "avp:marine_camp_grass",
+  "placement": "on_land_surface",
   "size": 1,
   "step": "surface_structures",
   "start_height": {

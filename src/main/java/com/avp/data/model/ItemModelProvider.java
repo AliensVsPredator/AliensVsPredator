@@ -109,6 +109,8 @@ public class ItemModelProvider extends FabricModelProvider {
         generateStandardItem(generators, AVPItems.ABERRANT_RESIN_BALL);
         generateStandardItem(generators, AVPItems.PLATED_ABERRANT_CHITIN);
         generateStandardItem(generators, AVPItems.ALUMINUM_INGOT);
+        generateStandardItem(generators, AVPItems.ALIEN_MUSIC_DISC_1);
+        generateStandardItem(generators, AVPItems.PREDATOR_MUSIC_DISC_1);
         generateStandardItem(generators, AVPItems.AUTUNITE_DUST);
         generateStandardItem(generators, AVPItems.BARREL);
         generateStandardItem(generators, AVPItems.BATTERY_PACK);
