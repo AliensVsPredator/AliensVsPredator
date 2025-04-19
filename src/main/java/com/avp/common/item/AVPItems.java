@@ -93,12 +93,12 @@ public class AVPItems {
 
     // Music Disc Items
     public static final Item ALIEN_MUSIC_DISC_1 = register(
-        new Item.Properties().stacksTo(1).rarity(Rarity.RARE).jukeboxPlayable(AVPJukeboxSongs.ALIEN_MUSIC),
+        new Item.Properties().stacksTo(1).rarity(Rarity.RARE).jukeboxPlayable(AVPJukeboxSongs.ALIEN_MUSIC_1),
         "alien_music_disc_1"
     );
 
     public static final Item PREDATOR_MUSIC_DISC_1 = register(
-        new Item.Properties().stacksTo(1).rarity(Rarity.RARE).jukeboxPlayable(AVPJukeboxSongs.PREDATOR_MUSIC),
+        new Item.Properties().stacksTo(1).rarity(Rarity.RARE).jukeboxPlayable(AVPJukeboxSongs.PREDATOR_MUSIC_1),
         "predator_music_disc_1"
     );
 

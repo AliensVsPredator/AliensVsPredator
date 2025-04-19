@@ -110,9 +110,9 @@ public class AVPSoundEvents {
 
     public static final SoundEvent WEAPON_ZX_76_SHOTGUN_SHOOT = register("item.weapon.zx_76_shotgun.shoot");
 
-    public static final SoundEvent JUKEBOX_SOUNDS_ALIEN_MUSIC = register("jukebox_sounds.alien_music");
+    public static final SoundEvent JUKEBOX_SOUNDS_ALIEN_MUSIC_1 = register("jukebox_sounds.alien_music_1");
 
-    public static final SoundEvent JUKEBOX_SOUNDS_PREDATOR_MUSIC = register("jukebox_sounds.predator_music");
+    public static final SoundEvent JUKEBOX_SOUNDS_PREDATOR_MUSIC_1 = register("jukebox_sounds.predator_music_1");
 
     private static SoundEvent register(String id) {
         var resourceLocation = AVPResources.location(id);

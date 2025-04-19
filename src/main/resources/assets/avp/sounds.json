@@ -386,16 +386,16 @@
     ],
     "subtitle": "subtitles.item.weapon.zx_76_shotgun.shoot"
   },
-  "jukebox_sounds.alien_music": {
+  "jukebox_sounds.alien_music_1": {
     "sounds": [
-      "avp:jukebox_sounds/alien_music"
+      "avp:jukebox_sounds/alien_music_1"
     ],
-    "subtitle": "subtitles.jukebox_sounds.alien_music"
+    "subtitle": "subtitles.jukebox_sounds.alien_music_1"
   },
-  "jukebox_sounds.predator_music": {
+  "jukebox_sounds.predator_music_1": {
     "sounds": [
-      "avp:jukebox_sounds/predator_music"
+      "avp:jukebox_sounds/predator_music_1"
     ],
-    "subtitle": "subtitles.jukebox_sounds.predator_music"
+    "subtitle": "subtitles.jukebox_sounds.predator_music_1"
   }
 }

@@ -557,12 +557,12 @@ public class UkrainianLanguageProvider extends FabricLanguageProvider {
         addSound(translationBuilder, AVPSoundEvents.WEAPON_OLD_PAINLESS_SHOOT_SPINNING, "Бочка старого безболісного (мінігану) крутиться");
         addSound(translationBuilder, AVPSoundEvents.WEAPON_OLD_PAINLESS_SHOOT_START, "Старий безболісний (мініган) починає стріляти");
         addSound(translationBuilder, AVPSoundEvents.WEAPON_ZX_76_SHOTGUN_SHOOT, "ZX-76 Дробовик стріляє");
-        addSound(translationBuilder, AVPSoundEvents.JUKEBOX_SOUNDS_ALIEN_MUSIC, "Alien music plays");
-        addSound(translationBuilder, AVPSoundEvents.JUKEBOX_SOUNDS_PREDATOR_MUSIC, "Predator music plays");
+        addSound(translationBuilder, AVPSoundEvents.JUKEBOX_SOUNDS_ALIEN_MUSIC_1, "Silver Smile plays");
+        addSound(translationBuilder, AVPSoundEvents.JUKEBOX_SOUNDS_PREDATOR_MUSIC_1, "Hunter plays");
 
         // Jukebox Sounds
-        translationBuilder.add("jukebox_song.avp.alien_music", "Rotch Gwylt - Silver Smile");
-        translationBuilder.add("jukebox_song.avp.predator_music", "Rotch Gwylt - Hunter");
+        translationBuilder.add("jukebox_song.avp.alien_music_1", "Rotch Gwylt - Silver Smile");
+        translationBuilder.add("jukebox_song.avp.predator_music_1", "Rotch Gwylt - Hunter");
 
         // Tooltips
         translationBuilder.add("tooltip.avp.accuracy", "Точність: ");
