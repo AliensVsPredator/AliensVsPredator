@@ -58,6 +58,10 @@ public class AVPBiomeTagProvider extends FabricTagProvider<Biome> {
             .add(Biomes.FLOWER_FOREST)
             .add(Biomes.SUNFLOWER_PLAINS);
 
+        getOrCreateTagBuilder(AVPBiomeTags.HAS_OUTPOST_MUNITION)
+            .add(Biomes.TAIGA)
+            .add(Biomes.SNOWY_TAIGA);
+
         getOrCreateTagBuilder(AVPBiomeTags.HAS_ALTAR)
             .addTag(AVPBiomeTags.HAS_BADLANDS_ALTAR)
             .addTag(AVPBiomeTags.HAS_DESERT_ALTAR);
