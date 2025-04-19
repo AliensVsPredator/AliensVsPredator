@@ -20,12 +20,12 @@ public class CommissaryGiftLootTable {
                 .add(
                     LootItem.lootTableItem(AVPItems.SMALL_BULLET)
                         .apply(SetItemCountFunction.setCount(ConstantValue.exactly(1)))
-                        .setWeight(1)
+                        .setWeight(2)
                 )
                 .add(
                     LootItem.lootTableItem(AVPItems.MEDIUM_BULLET)
                         .apply(SetItemCountFunction.setCount(ConstantValue.exactly(1)))
-                        .setWeight(2)
+                        .setWeight(1)
                 )
         );
 }

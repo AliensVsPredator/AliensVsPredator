@@ -72,8 +72,10 @@ public class AmmoChestBE extends RandomizableContainerBlockEntity implements Lid
 
             @Override
             protected boolean isOwnContainer(Player player) {
-                if (!(player.containerMenu instanceof ChestMenu))
+                if (!(player.containerMenu instanceof ChestMenu)) {
                     return false;
+                }
+
                 Container container = ((ChestMenu) player.containerMenu).getContainer();
                 return container == AmmoChestBE.this;
             }
@@ -83,16 +85,20 @@ public class AmmoChestBE extends RandomizableContainerBlockEntity implements Lid
     @Override
     protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
         super.saveAdditional(tag, registries);
-        if (!this.trySaveLootTable(tag))
+
+        if (!this.trySaveLootTable(tag)) {
             ContainerHelper.saveAllItems(tag, this.itemStacks, registries);
+        }
     }
 
     @Override
     protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
         super.loadAdditional(tag, registries);
         this.itemStacks = NonNullList.withSize(this.getContainerSize(), ItemStack.EMPTY);
-        if (!this.tryLoadLootTable(tag))
+
+        if (!this.tryLoadLootTable(tag)) {
             ContainerHelper.loadAllItems(tag, this.itemStacks, registries);
+        }
     }
 
     @SuppressWarnings("unused")
