@@ -8,6 +8,7 @@
 - Added predator music disc 1 "Hunter" by Rotch Gwylt.
 - Added mobile lab structure.
 - Added commissary house to all vanilla villages.
+- Added outpost munition structure.
 - Added new item textures for the following armor sets:
   - Aberrant Chitin Armor
   - Irradiated Chitin Armor
