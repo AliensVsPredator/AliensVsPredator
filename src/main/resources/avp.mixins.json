@@ -27,6 +27,7 @@
     "MixinShearsItem",
     "MixinShulkerBlockEntity_RadioactiveItems",
     "MixinVillagerHostilesSensor_RunAwayFromAVPMonsters",
+    "ParrotSoundMapAccessor",
     "StructurePoolAccessor",
     "server.MixinServerLevel_RunTickRoutines"
   ],

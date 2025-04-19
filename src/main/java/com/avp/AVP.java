@@ -1,5 +1,6 @@
 package com.avp;
 
+import com.avp.mixin.ParrotSoundMapAccessor;
 import com.mojang.datafixers.util.Pair;
 import mod.azure.azurelib.common.api.common.config.Config;
 import mod.azure.azurelib.common.internal.common.AzureLib;
@@ -17,6 +18,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.levelgen.structure.pools.StructurePoolElement;
 import net.minecraft.world.level.levelgen.structure.pools.StructureTemplatePool;
@@ -142,6 +144,7 @@ public class AVP implements ModInitializer {
         customSpawner.tick(serverLevel, serverLevel.getGameRules().getBoolean(GameRules.RULE_DOMOBSPAWNING), true);
         nukedAshPlacement.tick(serverLevel);
         modifyGifts();
+        modifyParrotSounds();
     }
 
     /**
@@ -182,6 +185,15 @@ public class AVP implements ModInitializer {
         }
 
         return holder;
+    }
+
+    public static void modifyParrotSounds() {
+        var sounds = ParrotSoundMapAccessor.getSoundMap();
+
+        /*
+         * TODO: Use Yautja sound when added
+         */
+        sounds.put(AVPEntityTypes.YAUTJA, SoundEvents.ALLAY_AMBIENT_WITH_ITEM);
     }
 
     public static void modifyGifts() {
