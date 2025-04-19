@@ -1,8 +1,0 @@
-{
-  "comparator_output": 12,
-  "description": {
-    "translate": "jukebox_song.avp.alien_music"
-  },
-  "length_in_seconds": 180,
-  "sound_event": "avp:jukebox_sounds.alien_music"
-}

@@ -1,5 +1,7 @@
 package com.avp.data;
 
+import com.avp.common.sound.AVPJukeboxSongs;
+import com.avp.data.jukebox_song.AVPJukeboxSongsProvider;
 import com.avp.data.worldgen.*;
 import net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
@@ -63,6 +65,9 @@ public class AVPDataGenerator implements DataGeneratorEntrypoint {
 
         // Damage Type providers
         pack.addProvider(DamageTypeProvider::new);
+
+        // Jukebox Song Providers
+        pack.addProvider(AVPJukeboxSongsProvider::new);
     }
 
     @Override
