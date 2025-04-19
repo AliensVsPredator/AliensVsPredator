@@ -14,7 +14,7 @@ public class AVPJukeboxSongs {
 
     public static final ResourceKey<JukeboxSong> PREDATOR_MUSIC_1 = register("predator_music_1");
 
-    public static JukeboxSong createAlienSong() {
+    public static JukeboxSong createAlienMusic1Song() {
         return new JukeboxSong(
             Holder.direct(AVPSoundEvents.JUKEBOX_SOUNDS_ALIEN_MUSIC_1),
             Component.translatable("jukebox_song.avp.alien_music_1"),
@@ -23,7 +23,7 @@ public class AVPJukeboxSongs {
         );
     }
 
-    public static JukeboxSong createPredatorSong() {
+    public static JukeboxSong createPredatorMusic1Song() {
         return new JukeboxSong(
             Holder.direct(AVPSoundEvents.JUKEBOX_SOUNDS_PREDATOR_MUSIC_1),
             Component.translatable("jukebox_song.avp.predator_music_1"),

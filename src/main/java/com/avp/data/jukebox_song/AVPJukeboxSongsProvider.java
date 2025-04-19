@@ -17,8 +17,8 @@ public class AVPJukeboxSongsProvider extends FabricDynamicRegistryProvider {
 
     @Override
     protected void configure(HolderLookup.Provider registries, Entries entries) {
-        entries.add(AVPJukeboxSongs.ALIEN_MUSIC_1, AVPJukeboxSongs.createAlienSong());
-        entries.add(AVPJukeboxSongs.PREDATOR_MUSIC_1, AVPJukeboxSongs.createPredatorSong());
+        entries.add(AVPJukeboxSongs.ALIEN_MUSIC_1, AVPJukeboxSongs.createAlienMusic1Song());
+        entries.add(AVPJukeboxSongs.PREDATOR_MUSIC_1, AVPJukeboxSongs.createPredatorMusic1Song());
     }
 
     @Override
