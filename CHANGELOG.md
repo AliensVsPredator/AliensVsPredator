@@ -15,7 +15,7 @@
   - Plated Irradiated Chitin Armor
 
 ## ♻️ Changes
-- N/A
+- Updated ash block texture.
 
 ## 🐞 Fixes
 - Fixed JEI crash, no longer supported. Use REI for recipe viewing.
