@@ -15,6 +15,7 @@ import com.avp.common.item.GunItem;
 import com.avp.common.item.gun.FireModeConfig;
 import com.avp.common.item.gun.GunData;
 import com.avp.common.item.gun.attack.GunAttackConfig;
+import com.avp.common.util.AVPPredicates;
 import com.avp.common.util.EnchantmentUtil;
 import com.avp.common.util.GunLightUtil;
 
@@ -73,42 +74,44 @@ public class OldPainlessItem extends GunItem {
     }
 
     @Override
-    protected void tryShoot(
-        Level level,
+    public void tryShoot(
+        LivingEntity shooter,
         ItemStack itemStack,
-        Player player,
         FireModeConfig fireModeConfig,
         int positiveTickProgress,
-        int shootDelayInTicks,
-        int secondaryShootSoundFrequencyInTicks,
-        int primaryShootSoundFrequencyInTicks,
         int tickProgress
     ) {
+        var level = shooter.level();
+        var shootDelayInTicks = fireModeConfig.shootDelayInTicks();
+        var primaryShootSoundFrequencyInTicks = fireModeConfig.primaryShootSoundFrequencyInTicks();
+        var secondaryShootSoundFrequencyInTicks = fireModeConfig.secondaryShootSoundFrequencyInTicks();
         var hasInfinity = EnchantmentUtil.getLevel(level, itemStack, Enchantments.INFINITY) > 0;
-        var isPlayerCreative = player.isCreative() || player.isSpectator();
-        var didConsume = isPlayerCreative || hasInfinity || consumeItemAmountFromInventory(
-            1,
-            player.getInventory(),
-            gunConfig.ammunitionItemSupplier().get(),
-            player
-        );
+
+        // TODO: Revisit this.
+        var didConsume = shooter instanceof Player player && (AVPPredicates.IS_IMMORTAL.test(player) || hasInfinity
+            || consumeItemAmountFromInventory(
+                1,
+                player.getInventory(),
+                gunConfig.ammunitionItemSupplier().get(),
+                player
+            ));
 
         if (didConsume) {
-            var gunAttackConfig = new GunAttackConfig(gunConfig, fireModeConfig, player, itemStack);
+            var gunAttackConfig = new GunAttackConfig(gunConfig, fireModeConfig, shooter, itemStack);
             var gunAttack = fireModeConfig
                 .gunAttackSupplier()
                 .apply(gunAttackConfig);
 
-            playUseAnimations(player, itemStack);
+            playUseAnimations(shooter, itemStack);
             gunAttack.shoot();
 
-            itemStack.hurtAndBreak(1, player, EquipmentSlot.MAINHAND);
+            itemStack.hurtAndBreak(1, shooter, EquipmentSlot.MAINHAND);
 
             if (primaryShootSoundFrequencyInTicks <= 0 || tickProgress % primaryShootSoundFrequencyInTicks == 0) {
-                level.playSound(null, player.blockPosition(), fireModeConfig.primaryShootSoundEvent(), SoundSource.PLAYERS);
+                level.playSound(null, shooter.blockPosition(), fireModeConfig.primaryShootSoundEvent(), SoundSource.PLAYERS);
             }
 
-            GunLightUtil.spawnLightSource(player);
+            GunLightUtil.spawnLightSource(shooter);
         }
 
         var secondaryShootSoundEvent = fireModeConfig.secondaryShootSoundEvent();
@@ -118,7 +121,7 @@ public class OldPainlessItem extends GunItem {
                 (positiveTickProgress == shootDelayInTicks || (positiveTickProgress + shootDelayInTicks)
                     % secondaryShootSoundFrequencyInTicks == 0)
         ) {
-            level.playSound(null, player.blockPosition(), secondaryShootSoundEvent, SoundSource.PLAYERS);
+            level.playSound(null, shooter.blockPosition(), secondaryShootSoundEvent, SoundSource.PLAYERS);
         }
     }
 

@@ -40,6 +40,7 @@ import com.avp.common.item.gun.GunConfig;
 import com.avp.common.item.gun.GunData;
 import com.avp.common.item.gun.attack.GunAttackConfig;
 import com.avp.common.item.old_painless.OldPainlessAnimationRefs;
+import com.avp.common.util.AVPPredicates;
 import com.avp.common.util.EnchantmentUtil;
 import com.avp.common.util.GunLightUtil;
 import com.avp.common.util.TooltipUtil;
@@ -145,8 +146,6 @@ public class GunItem extends Item {
         var fireModeConfig = gunConfig.getDefaultFireMode();
         var shootStartSoundEvent = fireModeConfig.shootStartSoundEvent();
         var shootDelayInTicks = fireModeConfig.shootDelayInTicks();
-        var primaryShootSoundFrequencyInTicks = fireModeConfig.primaryShootSoundFrequencyInTicks();
-        var secondaryShootSoundFrequencyInTicks = fireModeConfig.secondaryShootSoundFrequencyInTicks();
 
         if (shootStartSoundEvent != null && isFirstTick) {
             level.playSound(null, player.blockPosition(), shootStartSoundEvent, SoundSource.PLAYERS);
@@ -157,57 +156,48 @@ public class GunItem extends Item {
         }
 
         if (!player.getCooldowns().isOnCooldown(this)) {
-            tryShoot(
-                level,
-                itemStack,
-                player,
-                fireModeConfig,
-                positiveTickProgress,
-                shootDelayInTicks,
-                secondaryShootSoundFrequencyInTicks,
-                primaryShootSoundFrequencyInTicks,
-                tickProgress
-            );
+            tryShoot(player, itemStack, fireModeConfig, positiveTickProgress, tickProgress);
             player.getCooldowns().addCooldown(this, fireModeConfig.cooldownInTicks());
         }
     }
 
-    protected void tryShoot(
-        Level level,
+    public void tryShoot(
+        LivingEntity shooter,
         ItemStack itemStack,
-        Player player,
         FireModeConfig fireModeConfig,
         int positiveTickProgress,
-        int shootDelayInTicks,
-        int secondaryShootSoundFrequencyInTicks,
-        int primaryShootSoundFrequencyInTicks,
         int tickProgress
     ) {
+        var level = shooter.level();
+        var shootDelayInTicks = fireModeConfig.shootDelayInTicks();
+        var primaryShootSoundFrequencyInTicks = fireModeConfig.primaryShootSoundFrequencyInTicks();
+        var secondaryShootSoundFrequencyInTicks = fireModeConfig.secondaryShootSoundFrequencyInTicks();
         int currentAmmunition = itemStack.getOrDefault(DataComponents.AMMUNITION, 0);
-        var isPlayerCreative = player.isCreative() || player.isSpectator();
+        var isShooterImmortal = AVPPredicates.IS_IMMORTAL.test(shooter);
         var hasInfinity = EnchantmentUtil.getLevel(level, itemStack, Enchantments.INFINITY) > 0;
 
-        if (!isPlayerCreative && !hasInfinity && currentAmmunition <= 0) {
-            reload((ServerPlayer) player);
+        // TODO: Revisit this.
+        if (shooter instanceof Player && !isShooterImmortal && !hasInfinity && currentAmmunition <= 0) {
+            reload((ServerPlayer) shooter);
             return;
         }
 
-        var gunAttackConfig = new GunAttackConfig(gunConfig, fireModeConfig, player, itemStack);
+        var gunAttackConfig = new GunAttackConfig(gunConfig, fireModeConfig, shooter, itemStack);
         var gunAttack = fireModeConfig
             .gunAttackSupplier()
             .apply(gunAttackConfig);
 
-        playUseAnimations(player, itemStack);
+        playUseAnimations(shooter, itemStack);
         isFiring = true;
         gunAttack.shoot();
-        GunLightUtil.spawnLightSource(player);
+        GunLightUtil.spawnLightSource(shooter);
 
-        if (!isPlayerCreative) {
+        if (!isShooterImmortal) {
             if (!hasInfinity) {
                 itemStack.set(DataComponents.AMMUNITION, Math.max(currentAmmunition - fireModeConfig.consumedAmmunitionPerShot(), 0));
             }
 
-            itemStack.hurtAndBreak(1, player, EquipmentSlot.MAINHAND);
+            itemStack.hurtAndBreak(1, shooter, EquipmentSlot.MAINHAND);
         }
 
         var secondaryShootSoundEvent = fireModeConfig.secondaryShootSoundEvent();
@@ -217,14 +207,12 @@ public class GunItem extends Item {
                 (positiveTickProgress == shootDelayInTicks || (positiveTickProgress + shootDelayInTicks)
                     % secondaryShootSoundFrequencyInTicks == 0)
         ) {
-            level.playSound(null, player.blockPosition(), secondaryShootSoundEvent, SoundSource.PLAYERS);
+            level.playSound(null, shooter.blockPosition(), secondaryShootSoundEvent, SoundSource.PLAYERS);
         }
 
         if (primaryShootSoundFrequencyInTicks <= 0 || tickProgress % primaryShootSoundFrequencyInTicks == 0) {
-            level.playSound(null, player.blockPosition(), fireModeConfig.primaryShootSoundEvent(), SoundSource.PLAYERS);
+            level.playSound(null, shooter.blockPosition(), fireModeConfig.primaryShootSoundEvent(), SoundSource.PLAYERS);
         }
-
-        // GunLightUtil.spawnLightSource(player);
     }
 
     @Override

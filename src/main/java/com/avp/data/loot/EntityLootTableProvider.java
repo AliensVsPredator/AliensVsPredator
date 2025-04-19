@@ -14,7 +14,6 @@ import com.avp.common.entity.living.alien.xenomorph.drone.DroneLootTable;
 import com.avp.common.entity.living.alien.xenomorph.praetorian.PraetorianLootTable;
 import com.avp.common.entity.living.alien.xenomorph.queen.QueenLootTable;
 import com.avp.common.entity.living.alien.xenomorph.warrior.WarriorLootTable;
-import com.avp.common.entity.living.human.marine.MarineLootTable;
 import com.avp.common.entity.living.yautja.YautjaLootTable;
 import com.avp.common.entity.type.AVPEntityTypes;
 import com.avp.common.item.AVPItems;
@@ -79,7 +78,5 @@ public class EntityLootTableProvider extends SimpleFabricLootTableProvider {
         );
 
         biConsumer.accept(AVPEntityTypes.YAUTJA.getDefaultLootTable(), YautjaLootTable.LOOT_TABLE.apply(provider));
-
-        biConsumer.accept(AVPEntityTypes.MARINE.getDefaultLootTable(), MarineLootTable.LOOT_TABLE.apply(provider));
     }
 }
