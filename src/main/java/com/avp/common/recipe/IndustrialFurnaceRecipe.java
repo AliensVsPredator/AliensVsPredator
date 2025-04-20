@@ -55,13 +55,9 @@ public class IndustrialFurnaceRecipe extends AbstractCookingRecipe {
         registerMeltingRecipe(Items.MUD, Items.CLAY);
         registerMeltingRecipe(Items.CLAY, Items.TERRACOTTA);
         registerMeltingRecipe(AVPBlockItems.RESIN, AVPBlockItems.DYE_COLOR_TO_PLASTIC.get(DyeColor.GREEN));
-        registerMeltingRecipe(AVPBlockItems.RESIN_NODE, AVPBlockItems.DYE_COLOR_TO_PLASTIC.get(DyeColor.GREEN));
         registerMeltingRecipe(AVPBlockItems.NETHER_RESIN, AVPBlockItems.DYE_COLOR_TO_PLASTIC.get(DyeColor.GREEN));
-        registerMeltingRecipe(AVPBlockItems.NETHER_RESIN_NODE, AVPBlockItems.DYE_COLOR_TO_PLASTIC.get(DyeColor.GREEN));
         registerMeltingRecipe(AVPBlockItems.IRRADIATED_RESIN, AVPBlockItems.DYE_COLOR_TO_PLASTIC.get(DyeColor.GREEN));
-        registerMeltingRecipe(AVPBlockItems.IRRADIATED_RESIN_NODE, AVPBlockItems.DYE_COLOR_TO_PLASTIC.get(DyeColor.GREEN));
         registerMeltingRecipe(AVPBlockItems.ABERRANT_RESIN, AVPBlockItems.DYE_COLOR_TO_PLASTIC.get(DyeColor.GREEN));
-        registerMeltingRecipe(AVPBlockItems.ABERRANT_RESIN_NODE, AVPBlockItems.DYE_COLOR_TO_PLASTIC.get(DyeColor.GREEN));
     }
 
     private static void registerMeltingRecipe(Item input, Item output) {
