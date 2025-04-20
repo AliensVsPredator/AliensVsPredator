@@ -33,6 +33,7 @@
   - NOTE: This is not a backwards-compatible fix because once attributes are applied to an entity, they're stuck like that. This fix only applies to new chestbursters.
 - Fixed commissary villagers throwing wheat seeds at players with the Hero of the Village effect.
   - They now instead throw either 1 small or 1 medium bullet at the player.
+- Fixed Industrial Recipes including resin nodes.
 - Fixed marines not storing the following features to their entity data:
   - Beard color
   - Beard variant
