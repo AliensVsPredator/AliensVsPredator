@@ -3,6 +3,7 @@ package com.avp.common.entity.living.human.marine.ai;
 import net.minecraft.world.entity.monster.Monster;
 
 import com.avp.common.entity.ai.EntityGOAP;
+import com.avp.common.entity.ai.action.AvoidAction;
 import com.avp.common.entity.ai.action.EatFoodToHealAction;
 import com.avp.common.entity.ai.action.EquipRangedWeaponAction;
 import com.avp.common.entity.ai.action.MeleeAttackAction;
@@ -91,6 +92,8 @@ public class MarineGOAP extends EntityGOAP<Marine> {
         // Ranged attack action that the marine can choose if range is preferable.
         addAction(new EquipRangedWeaponAction<>());
         addAction(new MarineRangedAttackAction());
+        // Avoid action to allow the marine to run away from an avoid target.
+        addAction(new AvoidAction<>(8, 1.2F));
     }
 
     // Routines that allow the marine to try and heal itself and/or help the marine avoid danger.
