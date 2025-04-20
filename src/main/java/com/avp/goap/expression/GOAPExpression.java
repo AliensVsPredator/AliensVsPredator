@@ -4,6 +4,7 @@ import com.bvanseg.just.functional.option.Option;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
+import java.util.function.Predicate;
 
 public sealed interface GOAPExpression<T> {
 
@@ -35,7 +36,33 @@ public sealed interface GOAPExpression<T> {
         return new IsNone<>();
     }
 
+    static <T> GOAPExpression<T> where(Predicate<? super T> predicate, String description) {
+        return new Where<>(predicate, description);
+    }
+
     boolean evaluate(@NotNull T actual);
+
+    final class Where<T> implements GOAPExpression<T> {
+
+        private final Predicate<? super T> predicate;
+
+        private final String description;
+
+        private Where(Predicate<? super T> predicate, String description) {
+            this.predicate = predicate;
+            this.description = description;
+        }
+
+        @Override
+        public boolean evaluate(@NotNull T actual) {
+            return predicate.test(actual);
+        }
+
+        @Override
+        public String toString() {
+            return "where " + description;
+        }
+    }
 
     final class Equals<T> implements GOAPExpression<T> {
 
