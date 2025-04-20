@@ -9,6 +9,8 @@
   - Resonator (`avp:resonator_be` -> `avp:resonator`)
   - Sentry Turret (`avp:sentry_turret_be` -> `avp:sentry_turret`)
   - Trip Mine (`avp:trip_mine_be` -> `avp:trip_mine`)
+- Changed alien variants to have their own standalone entity types.
+  - This didn't seem to break anything in our dev environment, but it's a significant change, so we've marked it as breaking to be safe.
 
 ## ✨ What's New
 - Added alien music disc 1 "Silver Smile" by Rotch Gwylt.
