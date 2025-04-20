@@ -9,6 +9,7 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.monster.Creeper;
 
 import java.util.Objects;
+import java.util.Set;
 
 import com.avp.common.entity.ai.GOAPConstants;
 import com.avp.common.entity.ai.util.CombatResponse;
@@ -20,12 +21,12 @@ public class CombatResponseSensor<T extends LivingEntity> implements GOAPSensor<
 
     @Override
     public void sense(T context, GOAPMutableWorldState worldState) {
-        var hasRangedWeapon = worldState.getOrDefault(GOAPConstants.HAS_RANGED_WEAPON_IN_INVENTORY, false)
+        var hasRangedWeapon = worldState.getOrDefault(GOAPConstants.ITEM_TYPES_IN_INVENTORY, Set.of()).contains(ItemType.rangedWeapon())
             || isRangedWeaponEquippedInMainHand(worldState);
         var nearestTargetOption = worldState.getOrDefault(GOAPConstants.NEAREST_ATTACK_TARGET_ENTITY, Option.none());
 
         switch (nearestTargetOption) {
-            case None<? extends LivingEntity> none -> { /* NO-OP */ }
+            case None<? extends LivingEntity> none -> worldState.set(GOAPConstants.COMBAT_RESPONSE, CombatResponse.rest());
             case Some<? extends LivingEntity> some -> {
                 var target = some.unwrap();
 
@@ -58,9 +59,6 @@ public class CombatResponseSensor<T extends LivingEntity> implements GOAPSensor<
     }
 
     private boolean isRangedWeaponEquippedInMainHand(GOAPMutableWorldState worldState) {
-        return worldState.getOrDefault(
-            GOAPConstants.MAIN_HAND_ITEM_TYPE,
-            ItemType.none()
-        ) instanceof ItemType.Weapon(CombatResponse.FightType fightType) && fightType == CombatResponse.FightType.RANGED;
+        return worldState.getOrDefault(GOAPConstants.MAIN_HAND_ITEM_TYPE, ItemType.none()) == ItemType.rangedWeapon();
     }
 }

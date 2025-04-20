@@ -9,7 +9,7 @@ import java.util.List;
 import com.avp.goap.GOAP;
 import com.avp.goap.GOAPAction;
 import com.avp.goap.GOAPGoal;
-import com.avp.goap.expression.GOAPConditionSet;
+import com.avp.goap.condition.GOAPConditionContainer;
 import com.avp.goap.state.GOAPMutableWorldState;
 import com.avp.goap.state.GOAPWorldState;
 
@@ -48,7 +48,7 @@ public class GOAPPlanner<T> {
         return Option.ofNullable(bestPlan);
     }
 
-    private Option<List<GOAPAction<T>>> buildPlanForConditions(GOAPConditionSet desiredConditions, GOAPWorldState currentState) {
+    private Option<List<GOAPAction<T>>> buildPlanForConditions(GOAPConditionContainer desiredConditions, GOAPWorldState currentState) {
         if (currentState.satisfies(desiredConditions)) {
             return Option.some(List.of());
         }

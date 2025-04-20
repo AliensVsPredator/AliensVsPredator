@@ -4,21 +4,24 @@ import com.bvanseg.just.functional.option.Option;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.npc.InventoryCarrier;
 
-import java.util.Map;
-
 import com.avp.common.entity.ai.GOAPConstants;
+import com.avp.common.entity.ai.util.CombatResponse;
 import com.avp.goap.GOAPAction;
-import com.avp.goap.expression.GOAPCondition;
-import com.avp.goap.expression.GOAPConditionSet;
-import com.avp.goap.expression.GOAPExpression;
+import com.avp.goap.condition.GOAPCondition;
+import com.avp.goap.condition.GOAPConditionContainer;
+import com.avp.goap.condition.expression.GOAPExpression;
+import com.avp.goap.effect.GOAPEffect;
+import com.avp.goap.effect.GOAPEffectContainer;
 import com.avp.goap.state.GOAPBlackboard;
 import com.avp.goap.state.GOAPWorldState;
 
 public class PickUpFoodAction<T extends Mob & InventoryCarrier> extends GOAPAction<T> {
 
     @Override
-    public GOAPConditionSet createPreconditions() {
-        return GOAPConditionSet.of(
+    public GOAPConditionContainer createPreconditions() {
+        return GOAPConditionContainer.of(
+            // Entity must be out of combat.
+            new GOAPCondition<>(GOAPConstants.COMBAT_RESPONSE, GOAPExpression.equalTo(CombatResponse.rest())),
             // Must be a food item nearby.
             new GOAPCondition<>(GOAPConstants.NEAREST_FOOD_ITEM_ENTITY, GOAPExpression.isSome()),
             // Must have a free inventory slot to pick up the food item.
@@ -29,8 +32,10 @@ public class PickUpFoodAction<T extends Mob & InventoryCarrier> extends GOAPActi
     }
 
     @Override
-    public GOAPWorldState createEffects() {
-        return new GOAPWorldState(Map.of(GOAPConstants.NEAREST_FOOD_ITEM_ENTITY, Option.none()));
+    public GOAPEffectContainer createEffects() {
+        return GOAPEffectContainer.of(
+            new GOAPEffect.Value<>(GOAPConstants.NEAREST_FOOD_ITEM_ENTITY, Option.none())
+        );
     }
 
     @Override

@@ -1,12 +1,17 @@
-package com.avp.goap.expression;
+package com.avp.goap.condition.expression;
 
 import com.bvanseg.just.functional.option.Option;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Collection;
 import java.util.Objects;
 import java.util.function.Predicate;
 
 public sealed interface GOAPExpression<T> {
+
+    static <T> Contains<T> contains(T expected) {
+        return new Contains<>(expected);
+    }
 
     static Equals<Boolean> isFalse() {
         return equalTo(false);
@@ -42,25 +47,22 @@ public sealed interface GOAPExpression<T> {
 
     boolean evaluate(@NotNull T actual);
 
-    final class Where<T> implements GOAPExpression<T> {
+    final class Contains<T> implements GOAPExpression<Collection<T>> {
 
-        private final Predicate<? super T> predicate;
+        private final T expected;
 
-        private final String description;
-
-        private Where(Predicate<? super T> predicate, String description) {
-            this.predicate = predicate;
-            this.description = description;
+        private Contains(T expected) {
+            this.expected = expected;
         }
 
         @Override
-        public boolean evaluate(@NotNull T actual) {
-            return predicate.test(actual);
+        public boolean evaluate(@NotNull Collection<T> actual) {
+            return actual.contains(expected);
         }
 
         @Override
         public String toString() {
-            return "where " + description;
+            return "contains " + expected;
         }
     }
 
@@ -80,25 +82,6 @@ public sealed interface GOAPExpression<T> {
         @Override
         public String toString() {
             return "equals " + expected;
-        }
-    }
-
-    final class LessThan<T extends Comparable<T>> implements GOAPExpression<T> {
-
-        private final T threshold;
-
-        private LessThan(T threshold) {
-            this.threshold = threshold;
-        }
-
-        @Override
-        public boolean evaluate(@NotNull T actual) {
-            return actual.compareTo(threshold) < 0;
-        }
-
-        @Override
-        public String toString() {
-            return "less than " + threshold;
         }
     }
 
@@ -148,6 +131,47 @@ public sealed interface GOAPExpression<T> {
         @Override
         public String toString() {
             return "is none";
+        }
+    }
+
+    final class LessThan<T extends Comparable<T>> implements GOAPExpression<T> {
+
+        private final T threshold;
+
+        private LessThan(T threshold) {
+            this.threshold = threshold;
+        }
+
+        @Override
+        public boolean evaluate(@NotNull T actual) {
+            return actual.compareTo(threshold) < 0;
+        }
+
+        @Override
+        public String toString() {
+            return "less than " + threshold;
+        }
+    }
+
+    final class Where<T> implements GOAPExpression<T> {
+
+        private final Predicate<? super T> predicate;
+
+        private final String description;
+
+        private Where(Predicate<? super T> predicate, String description) {
+            this.predicate = predicate;
+            this.description = description;
+        }
+
+        @Override
+        public boolean evaluate(@NotNull T actual) {
+            return predicate.test(actual);
+        }
+
+        @Override
+        public String toString() {
+            return "where " + description;
         }
     }
 }

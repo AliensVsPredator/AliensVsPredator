@@ -16,17 +16,17 @@ import com.avp.goap.effect.GOAPEffectContainer;
 import com.avp.goap.state.GOAPBlackboard;
 import com.avp.goap.state.GOAPWorldState;
 
-public class EquipRangedWeaponAction<T extends LivingEntity & InventoryCarrier> extends GOAPAction<T> {
+public class EquipMeleeWeaponAction<T extends LivingEntity & InventoryCarrier> extends GOAPAction<T> {
 
     @Override
     public GOAPConditionContainer createPreconditions() {
         return GOAPConditionContainer.of(
-            new GOAPCondition<>(GOAPConstants.ITEM_TYPES_IN_INVENTORY, GOAPExpression.contains(ItemType.rangedWeapon())),
+            new GOAPCondition<>(GOAPConstants.ITEM_TYPES_IN_INVENTORY, GOAPExpression.contains(ItemType.meleeWeapon())),
             new GOAPCondition<>(
                 GOAPConstants.MAIN_HAND_ITEM_TYPE,
                 GOAPExpression.where(
-                    mainHandItemType -> mainHandItemType != ItemType.rangedWeapon(),
-                    "main hand item is not a ranged weapon"
+                    mainHandItemType -> mainHandItemType != ItemType.meleeWeapon(),
+                    "main hand item is not a melee weapon"
                 )
             )
         );
@@ -35,20 +35,20 @@ public class EquipRangedWeaponAction<T extends LivingEntity & InventoryCarrier> 
     @Override
     public GOAPEffectContainer createEffects() {
         return GOAPEffectContainer.of(
-            new GOAPEffect.Value<>(GOAPConstants.MAIN_HAND_ITEM_TYPE, ItemType.rangedWeapon())
+            new GOAPEffect.Value<>(GOAPConstants.MAIN_HAND_ITEM_TYPE, ItemType.meleeWeapon())
         );
     }
 
     @Override
     public boolean perform(T context, GOAPWorldState worldState, GOAPBlackboard blackboard) {
-        var rangedWeapon = context.getInventory().items
+        var meleeWeapon = context.getInventory().items
             .stream()
-            .filter(item -> item.is(AVPItemTags.RANGED_WEAPONS))
+            .filter(item -> item.is(AVPItemTags.MELEE_WEAPONS))
             .findFirst();
 
         // TODO: Need to remove weapon from inventory here.
-        rangedWeapon.ifPresent(itemStack -> context.setItemSlot(EquipmentSlot.MAINHAND, itemStack));
+        meleeWeapon.ifPresent(itemStack -> context.setItemSlot(EquipmentSlot.MAINHAND, itemStack));
 
-        return context.getItemBySlot(EquipmentSlot.MAINHAND).is(AVPItemTags.RANGED_WEAPONS);
+        return context.getItemBySlot(EquipmentSlot.MAINHAND).is(AVPItemTags.MELEE_WEAPONS);
     }
 }

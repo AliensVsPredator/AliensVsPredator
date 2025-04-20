@@ -3,14 +3,15 @@ package com.avp.common.entity.ai.action;
 import com.bvanseg.just.functional.option.Option;
 import net.minecraft.world.entity.Mob;
 
-import java.util.Map;
 import java.util.function.BiPredicate;
 
 import com.avp.common.entity.ai.GOAPConstants;
 import com.avp.goap.GOAPAction;
-import com.avp.goap.expression.GOAPCondition;
-import com.avp.goap.expression.GOAPConditionSet;
-import com.avp.goap.expression.GOAPExpression;
+import com.avp.goap.condition.GOAPCondition;
+import com.avp.goap.condition.GOAPConditionContainer;
+import com.avp.goap.condition.expression.GOAPExpression;
+import com.avp.goap.effect.GOAPEffect;
+import com.avp.goap.effect.GOAPEffectContainer;
 import com.avp.goap.state.GOAPBlackboard;
 import com.avp.goap.state.GOAPWorldState;
 
@@ -23,16 +24,18 @@ public class MoveCloserToFoodItemAction<T extends Mob> extends GOAPAction<T> {
     }
 
     @Override
-    public GOAPConditionSet createPreconditions() {
-        return GOAPConditionSet.of(
+    public GOAPConditionContainer createPreconditions() {
+        return GOAPConditionContainer.of(
             new GOAPCondition<>(GOAPConstants.NEAREST_FOOD_ITEM_ENTITY, GOAPExpression.isSome()),
             new GOAPCondition<>(GOAPConstants.IS_FOOD_TARGET_ITEM_ENTITY_IN_RANGE, GOAPExpression.isFalse())
         );
     }
 
     @Override
-    public GOAPWorldState createEffects() {
-        return new GOAPWorldState(Map.of(GOAPConstants.IS_FOOD_TARGET_ITEM_ENTITY_IN_RANGE, true));
+    public GOAPEffectContainer createEffects() {
+        return GOAPEffectContainer.of(
+            new GOAPEffect.Value<>(GOAPConstants.IS_FOOD_TARGET_ITEM_ENTITY_IN_RANGE, true)
+        );
     }
 
     @Override

@@ -19,12 +19,12 @@ public sealed interface ItemType {
 
         // Melee weapon checks
         if (itemStack.is(AVPItemTags.MELEE_WEAPONS)) {
-            return new ItemType.Weapon(CombatResponse.FightType.MELEE);
+            return MeleeWeapon.INSTANCE;
         }
 
         // Ranged weapon checks
         if (itemStack.is(AVPItemTags.RANGED_WEAPONS)) {
-            return new ItemType.Weapon(CombatResponse.FightType.RANGED);
+            return RangedWeapon.INSTANCE;
         }
 
         return new Other(itemStack.getItem());
@@ -34,25 +34,33 @@ public sealed interface ItemType {
         return Food.INSTANCE;
     }
 
+    static ItemType meleeWeapon() {
+        return MeleeWeapon.INSTANCE;
+    }
+
     static ItemType none() {
         return None.INSTANCE;
     }
 
-    final class Food implements ItemType {
-
-        private static final Food INSTANCE = new Food();
-
-        private Food() {}
+    static ItemType rangedWeapon() {
+        return RangedWeapon.INSTANCE;
     }
 
-    final class None implements ItemType {
-
-        private static final None INSTANCE = new None();
-
-        private None() {}
+    enum Food implements ItemType {
+        INSTANCE
     }
 
-    record Weapon(CombatResponse.FightType fightType) implements ItemType {}
+    enum None implements ItemType {
+        INSTANCE
+    }
+
+    enum MeleeWeapon implements ItemType {
+        INSTANCE
+    }
+
+    enum RangedWeapon implements ItemType {
+        INSTANCE
+    }
 
     record Other(Item item) implements ItemType {}
 }

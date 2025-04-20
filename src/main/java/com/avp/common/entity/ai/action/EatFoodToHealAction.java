@@ -3,14 +3,16 @@ package com.avp.common.entity.ai.action;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.LivingEntity;
 
-import java.util.Map;
-
 import com.avp.common.entity.ai.GOAPConstants;
+import com.avp.common.entity.ai.util.CombatResponse;
+import com.avp.common.entity.ai.util.ItemType;
 import com.avp.goap.GOAPAction;
 import com.avp.goap.TypedIdentifier;
-import com.avp.goap.expression.GOAPCondition;
-import com.avp.goap.expression.GOAPConditionSet;
-import com.avp.goap.expression.GOAPExpression;
+import com.avp.goap.condition.GOAPCondition;
+import com.avp.goap.condition.GOAPConditionContainer;
+import com.avp.goap.condition.expression.GOAPExpression;
+import com.avp.goap.effect.GOAPEffect;
+import com.avp.goap.effect.GOAPEffectContainer;
 import com.avp.goap.state.GOAPBlackboard;
 import com.avp.goap.state.GOAPWorldState;
 
@@ -25,16 +27,19 @@ public class EatFoodToHealAction<T extends LivingEntity> extends GOAPAction<T> {
     }
 
     @Override
-    public GOAPConditionSet createPreconditions() {
-        return GOAPConditionSet.of(
-            new GOAPCondition<>(GOAPConstants.HAS_FOOD_IN_INVENTORY, GOAPExpression.isTrue()),
+    public GOAPConditionContainer createPreconditions() {
+        return GOAPConditionContainer.of(
+            new GOAPCondition<>(GOAPConstants.COMBAT_RESPONSE, GOAPExpression.equalTo(CombatResponse.rest())),
+            new GOAPCondition<>(GOAPConstants.ITEM_TYPES_IN_INVENTORY, GOAPExpression.contains(ItemType.food())),
             new GOAPCondition<>(GOAPConstants.IS_HEALTHY, GOAPExpression.isFalse())
         );
     }
 
     @Override
-    public GOAPWorldState createEffects() {
-        return new GOAPWorldState(Map.of(GOAPConstants.IS_HEALTHY, true));
+    public GOAPEffectContainer createEffects() {
+        return GOAPEffectContainer.of(
+            new GOAPEffect.Value<>(GOAPConstants.IS_HEALTHY, true)
+        );
     }
 
     @Override

@@ -10,12 +10,13 @@ import java.util.function.BiPredicate;
 import com.avp.common.entity.ai.GOAPConstants;
 import com.avp.goap.GOAPSensor;
 import com.avp.goap.state.GOAPMutableWorldState;
+import com.avp.goap.state.GOAPWorldState;
 
 public class AttackTargetInRangeSensor<T extends LivingEntity> implements GOAPSensor<T> {
 
-    private final BiPredicate<T, Double> distanceSqrToTargetPredicate;
+    private final BiPredicate<GOAPWorldState, Double> distanceSqrToTargetPredicate;
 
-    public AttackTargetInRangeSensor(BiPredicate<T, Double> distanceSqrToTargetPredicate) {
+    public AttackTargetInRangeSensor(BiPredicate<GOAPWorldState, Double> distanceSqrToTargetPredicate) {
         this.distanceSqrToTargetPredicate = distanceSqrToTargetPredicate;
     }
 
@@ -27,7 +28,7 @@ public class AttackTargetInRangeSensor<T extends LivingEntity> implements GOAPSe
             case None<? extends LivingEntity> target -> { /* NO-OP */ }
             case Some<? extends LivingEntity> some -> worldState.set(
                 GOAPConstants.IS_ATTACK_TARGET_ENTITY_IN_RANGE,
-                distanceSqrToTargetPredicate.test(context, context.distanceToSqr(some.unwrap()))
+                distanceSqrToTargetPredicate.test(worldState, context.distanceToSqr(some.unwrap()))
             );
         }
     }

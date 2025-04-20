@@ -4,7 +4,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 
 import java.util.List;
-import java.util.function.BiPredicate;
+import java.util.function.Predicate;
 
 import com.avp.common.entity.ai.GOAPConstants;
 import com.avp.goap.GOAPSensor;
@@ -12,9 +12,9 @@ import com.avp.goap.state.GOAPMutableWorldState;
 
 public class NearbyAttackTargetEntitiesSensor<T extends Mob> implements GOAPSensor<T> {
 
-    private final BiPredicate<T, LivingEntity> nearbyTargetPredicate;
+    private final Predicate<LivingEntity> nearbyTargetPredicate;
 
-    public NearbyAttackTargetEntitiesSensor(BiPredicate<T, LivingEntity> nearbyTargetPredicate) {
+    public NearbyAttackTargetEntitiesSensor(Predicate<LivingEntity> nearbyTargetPredicate) {
         this.nearbyTargetPredicate = nearbyTargetPredicate;
     }
 
@@ -27,7 +27,7 @@ public class NearbyAttackTargetEntitiesSensor<T extends Mob> implements GOAPSens
             nearbyLivingEntities.stream()
                 .filter(
                     livingEntity -> livingEntity.isAlive()
-                        && nearbyTargetPredicate.test(context, livingEntity)
+                        && nearbyTargetPredicate.test(livingEntity)
                         && context.getSensing().hasLineOfSight(livingEntity)
                 )
                 .toList()

@@ -6,6 +6,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.ItemEntity;
 
 import java.util.List;
+import java.util.Set;
 
 import com.avp.common.entity.ai.util.CombatResponse;
 import com.avp.common.entity.ai.util.ItemType;
@@ -20,7 +21,7 @@ public class GOAPConstants {
 
     // Inventory state
 
-    public static final TypedIdentifier<Boolean> HAS_FOOD_IN_INVENTORY = new TypedIdentifier<>("hasFoodInInventory");
+    public static final TypedIdentifier<Set<ItemType>> ITEM_TYPES_IN_INVENTORY = new TypedIdentifier<>("itemTypesInInventory");
 
     public static final TypedIdentifier<Boolean> HAS_FREE_INVENTORY_SLOT = new TypedIdentifier<>("hasFreeInventorySlot");
 

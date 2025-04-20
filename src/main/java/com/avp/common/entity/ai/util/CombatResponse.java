@@ -11,10 +11,17 @@ public sealed interface CombatResponse {
         return Flight.INSTANCE;
     }
 
+    static Rest rest() {
+        return Rest.INSTANCE;
+    }
+
     record Fight(FightType fightType) implements CombatResponse {}
 
-    final class Flight implements CombatResponse {
+    enum Flight implements CombatResponse {
+        INSTANCE;
+    }
 
-        private static final Flight INSTANCE = new Flight();
+    enum Rest implements CombatResponse {
+        INSTANCE;
     }
 }

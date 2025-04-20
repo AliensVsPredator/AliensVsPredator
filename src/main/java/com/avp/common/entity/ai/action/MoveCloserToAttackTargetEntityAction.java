@@ -4,13 +4,13 @@ import com.bvanseg.just.functional.option.Option;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 
-import java.util.Map;
-
 import com.avp.common.entity.ai.GOAPConstants;
 import com.avp.goap.GOAPAction;
-import com.avp.goap.expression.GOAPCondition;
-import com.avp.goap.expression.GOAPConditionSet;
-import com.avp.goap.expression.GOAPExpression;
+import com.avp.goap.condition.GOAPCondition;
+import com.avp.goap.condition.GOAPConditionContainer;
+import com.avp.goap.condition.expression.GOAPExpression;
+import com.avp.goap.effect.GOAPEffect;
+import com.avp.goap.effect.GOAPEffectContainer;
 import com.avp.goap.state.GOAPBlackboard;
 import com.avp.goap.state.GOAPWorldState;
 
@@ -23,16 +23,18 @@ public class MoveCloserToAttackTargetEntityAction<T extends Mob> extends GOAPAct
     }
 
     @Override
-    public GOAPConditionSet createPreconditions() {
-        return GOAPConditionSet.of(
+    public GOAPConditionContainer createPreconditions() {
+        return GOAPConditionContainer.of(
             new GOAPCondition<>(GOAPConstants.NEAREST_ATTACK_TARGET_ENTITY, GOAPExpression.isSome()),
             new GOAPCondition<>(GOAPConstants.IS_ATTACK_TARGET_ENTITY_IN_RANGE, GOAPExpression.isFalse())
         );
     }
 
     @Override
-    public GOAPWorldState createEffects() {
-        return new GOAPWorldState(Map.of(GOAPConstants.IS_ATTACK_TARGET_ENTITY_IN_RANGE, true));
+    public GOAPEffectContainer createEffects() {
+        return GOAPEffectContainer.of(
+            new GOAPEffect.Value<>(GOAPConstants.IS_ATTACK_TARGET_ENTITY_IN_RANGE, true)
+        );
     }
 
     @Override

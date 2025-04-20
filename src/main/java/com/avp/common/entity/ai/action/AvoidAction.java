@@ -7,15 +7,15 @@ import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.ai.util.DefaultRandomPos;
 import net.minecraft.world.level.pathfinder.Path;
 
-import java.util.Map;
-
 import com.avp.common.entity.ai.GOAPConstants;
 import com.avp.common.entity.ai.util.CombatResponse;
 import com.avp.goap.GOAPAction;
 import com.avp.goap.TypedIdentifier;
-import com.avp.goap.expression.GOAPCondition;
-import com.avp.goap.expression.GOAPConditionSet;
-import com.avp.goap.expression.GOAPExpression;
+import com.avp.goap.condition.GOAPCondition;
+import com.avp.goap.condition.GOAPConditionContainer;
+import com.avp.goap.condition.expression.GOAPExpression;
+import com.avp.goap.effect.GOAPEffect;
+import com.avp.goap.effect.GOAPEffectContainer;
 import com.avp.goap.state.GOAPBlackboard;
 import com.avp.goap.state.GOAPWorldState;
 
@@ -35,8 +35,8 @@ public class AvoidAction<T extends PathfinderMob> extends GOAPAction<T> {
     }
 
     @Override
-    public GOAPConditionSet createPreconditions() {
-        return GOAPConditionSet.of(
+    public GOAPConditionContainer createPreconditions() {
+        return GOAPConditionContainer.of(
             new GOAPCondition<>(GOAPConstants.COMBAT_RESPONSE, GOAPExpression.equalTo(CombatResponse.flight())),
             new GOAPCondition<>(GOAPConstants.NEAREST_ATTACK_TARGET_ENTITY, GOAPExpression.isSome()),
             new GOAPCondition<>(GOAPConstants.IS_ATTACK_TARGET_ENTITY_IN_RANGE, GOAPExpression.isTrue())
@@ -44,8 +44,10 @@ public class AvoidAction<T extends PathfinderMob> extends GOAPAction<T> {
     }
 
     @Override
-    public GOAPWorldState createEffects() {
-        return new GOAPWorldState(Map.of(GOAPConstants.NEAREST_ATTACK_TARGET_ENTITY, Option.none()));
+    public GOAPEffectContainer createEffects() {
+        return GOAPEffectContainer.of(
+            new GOAPEffect.Value<>(GOAPConstants.NEAREST_ATTACK_TARGET_ENTITY, Option.none())
+        );
     }
 
     @Override

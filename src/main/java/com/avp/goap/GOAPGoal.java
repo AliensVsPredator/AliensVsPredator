@@ -1,10 +1,10 @@
 package com.avp.goap;
 
-import com.avp.goap.expression.GOAPConditionSet;
+import com.avp.goap.condition.GOAPConditionContainer;
 
 public abstract class GOAPGoal {
 
-    private final GOAPConditionSet desiredConditions;
+    private final GOAPConditionContainer desiredConditions;
 
     private final String name;
 
@@ -13,9 +13,9 @@ public abstract class GOAPGoal {
         this.name = this.getClass().getSimpleName();
     }
 
-    protected abstract GOAPConditionSet createDesiredConditions();
+    protected abstract GOAPConditionContainer createDesiredConditions();
 
-    public GOAPConditionSet getDesiredConditions() {
+    public GOAPConditionContainer getDesiredConditions() {
         return desiredConditions;
     }
 

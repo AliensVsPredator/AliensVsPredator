@@ -1,10 +1,10 @@
 package com.avp.goap.state;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import com.avp.goap.TypedIdentifier;
-import com.avp.goap.expression.GOAPConditionSet;
+import com.avp.goap.condition.GOAPConditionContainer;
+import com.avp.goap.effect.GOAPEffectContainer;
 
 public class GOAPWorldState extends GOAPStateCache {
 
@@ -24,24 +24,12 @@ public class GOAPWorldState extends GOAPStateCache {
         return true;
     }
 
-    public boolean satisfies(GOAPWorldState other) {
-        return other.satisfiedBy(this);
+    public boolean satisfies(GOAPEffectContainer effectContainer) {
+        return effectContainer.toWorldState()
+            .satisfiedBy(this);
     }
 
-    public boolean satisfies(GOAPConditionSet conditionSet) {
-        return conditionSet.satisfiedBy(this);
-    }
-
-    public GOAPWorldState applyEffects(GOAPWorldState effects) {
-        var newState = new GOAPMutableWorldState(new HashMap<>(stateMap));
-
-        for (var entry : effects.stateMap.entrySet()) {
-            @SuppressWarnings("unchecked")
-            var key = (TypedIdentifier<Object>) entry.getKey();
-
-            newState.set(key, entry.getValue());
-        }
-
-        return newState;
+    public boolean satisfies(GOAPConditionContainer conditionContainer) {
+        return conditionContainer.satisfiedBy(this);
     }
 }

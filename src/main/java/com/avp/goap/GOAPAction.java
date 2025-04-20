@@ -1,16 +1,17 @@
 package com.avp.goap;
 
-import com.avp.goap.expression.GOAPConditionSet;
+import com.avp.goap.condition.GOAPConditionContainer;
+import com.avp.goap.effect.GOAPEffectContainer;
 import com.avp.goap.state.GOAPBlackboard;
 import com.avp.goap.state.GOAPWorldState;
 
 public abstract class GOAPAction<T> {
 
-    private final GOAPWorldState effects;
+    private final GOAPEffectContainer effects;
 
     private final String name;
 
-    private final GOAPConditionSet preconditions;
+    private final GOAPConditionContainer preconditions;
 
     protected float cost;
 
@@ -21,9 +22,9 @@ public abstract class GOAPAction<T> {
         this.cost = 1.0f;
     }
 
-    public abstract GOAPConditionSet createPreconditions();
+    public abstract GOAPConditionContainer createPreconditions();
 
-    public abstract GOAPWorldState createEffects();
+    public abstract GOAPEffectContainer createEffects();
 
     public abstract boolean perform(T context, GOAPWorldState worldState, GOAPBlackboard blackboard);
 
@@ -33,7 +34,7 @@ public abstract class GOAPAction<T> {
         return cost;
     }
 
-    public GOAPWorldState getEffects() {
+    public GOAPEffectContainer getEffects() {
         return effects;
     }
 
@@ -41,7 +42,7 @@ public abstract class GOAPAction<T> {
         return name;
     }
 
-    public GOAPConditionSet getPreconditions() {
+    public GOAPConditionContainer getPreconditions() {
         return preconditions;
     }
 }
