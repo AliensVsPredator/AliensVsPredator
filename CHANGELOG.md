@@ -28,6 +28,8 @@
 - Updated ash block texture.
 
 ## 🐞 Fixes
+- Fixed aliens variants not rendering correctly in monster spawners.
+- Fixed aliens losing their variants when being picked up with the Carry-On mod.
 - Fixed JEI crash, no longer supported. Use REI for recipe viewing.
 - Fixed irradiated queen rendering with a black texture due to missing glow layer texture.
 - Fixes ammo chest not loading loot tables.
