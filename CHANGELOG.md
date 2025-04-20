@@ -18,6 +18,19 @@
 - Added mobile lab structure.
 - Added commissary house to all vanilla villages.
 - Added outpost munition structure.
+- Overhauled marines:
+  - Introduced new AI system for marines (GOAP - Goal-Oriented Action Planning).
+    - Marines will plan on-the-fly picking the best goal to accomplish, and will pick from a pool of actions to satisfy that goal.
+  - Marines now have a dedicated inventory (technically 2, 1 primary inventory and 1 hidden inventory).
+    - Items that the marines pick up go in their primary inventory.
+    - Marines drop all items in their primary inventory on death.
+    - Items that the marine spawns in with go in their hidden inventory.
+    - Marines do NOT drop items in their hidden inventory.
+  - Marine gun attacks are now consistent with player gun attacks (making them far more deadly).
+  - Marines shooting sound effects now match their held gun type.
+  - Marines now start off with their weapon unequipped, and equip it when they spot a target.
+  - Marines now pick up food items that are on the ground.
+  - Marines eat food items in their inventory if their health is < 50%.
 - Added new item textures for the following armor sets:
   - Aberrant Chitin Armor
   - Irradiated Chitin Armor
@@ -57,10 +70,11 @@
 ## 🛠 Data Pack
 - Rename tag `#avp:mobile_lab` to `#avp:has_mobile_lab`.
 - Rename tag `#avp:marine_camp_grass` to `#avp:has_marine_camp_grass`.
+- Added `#avp:melee_weapons` and `#avp:ranged_weapons` item tags.
 
 ## 🔬 Technical Changes
-- Bumped gradle version from 8.12 to 8.13.
-- Updated Just version from a7d374ee33 to 7edae6d449.
+- Bumped gradle version from `8.12` to `8.13`.
+- Updated Just version from `a7d374ee33` to `7edae6d449`.
 - Rewrote marine rendering code to use dynamic coloring, reducing the number of asset files considerably.
 
 # v0.0.22-beta

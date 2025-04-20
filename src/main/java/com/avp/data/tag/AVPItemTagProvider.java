@@ -484,5 +484,19 @@ public class AVPItemTagProvider extends FabricTagProvider.ItemTagProvider {
             ArmorItems.JUNGLE_PREDATOR_LEGGINGS,
             ArmorItems.JUNGLE_PREDATOR_BOOTS
         );
+
+        getOrCreateTagBuilder(AVPItemTags.MELEE_WEAPONS)
+            .addOptionalTag(ItemTags.AXES)
+            .addOptionalTag(ItemTags.SWORDS)
+            .add(
+                Items.MACE
+            );
+
+        getOrCreateTagBuilder(AVPItemTags.RANGED_WEAPONS)
+            .addTag(AVPItemTags.GUNS)
+            .add(
+                Items.BOW,
+                Items.CROSSBOW
+            );
     }
 }
