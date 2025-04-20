@@ -41,6 +41,7 @@
 - Updated ash block texture.
 
 ## 🐞 Fixes
+- Fixed marines swinging their arms too far when running.
 - Fixed aliens variants not rendering correctly in monster spawners.
 - Fixed aliens losing their variants when being picked up with the Carry-On mod.
 - Fixed JEI crash, no longer supported. Use REI for recipe viewing.
