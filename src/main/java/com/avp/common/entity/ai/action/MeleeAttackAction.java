@@ -8,6 +8,7 @@ import java.util.Map;
 
 import com.avp.common.entity.ai.GOAPConstants;
 import com.avp.common.entity.ai.util.CombatResponse;
+import com.avp.common.entity.ai.util.ItemType;
 import com.avp.goap.GOAPAction;
 import com.avp.goap.expression.GOAPCondition;
 import com.avp.goap.expression.GOAPConditionSet;
@@ -23,6 +24,10 @@ public class MeleeAttackAction<T extends Mob> extends GOAPAction<T> {
             new GOAPCondition<>(
                 GOAPConstants.COMBAT_RESPONSE,
                 GOAPExpression.equalTo(new CombatResponse.Fight(CombatResponse.FightType.MELEE))
+            ),
+            new GOAPCondition<>(
+                GOAPConstants.MAIN_HAND_ITEM_TYPE,
+                GOAPExpression.equalTo(new ItemType.Weapon(CombatResponse.FightType.MELEE))
             ),
             new GOAPCondition<>(GOAPConstants.NEAREST_ATTACK_TARGET_ENTITY, GOAPExpression.isSome()),
             new GOAPCondition<>(GOAPConstants.IS_ATTACK_TARGET_ENTITY_IN_RANGE, GOAPExpression.equalTo(true))

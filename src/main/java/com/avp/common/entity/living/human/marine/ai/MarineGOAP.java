@@ -24,8 +24,8 @@ import com.avp.common.entity.ai.sensor.entity.NearbyLivingEntitiesSensor;
 import com.avp.common.entity.ai.sensor.entity.NearestFoodItemEntitySensor;
 import com.avp.common.entity.ai.sensor.inventory.HasFoodInInventorySensor;
 import com.avp.common.entity.ai.sensor.inventory.HasFreeInventorySlotSensor;
-import com.avp.common.entity.ai.sensor.inventory.HasRangedWeaponEquippedSensor;
 import com.avp.common.entity.ai.sensor.inventory.HasRangedWeaponInInventorySensor;
+import com.avp.common.entity.ai.sensor.inventory.MainHandItemTypeSensor;
 import com.avp.common.entity.ai.sensor.stats.IsHealthySensor;
 import com.avp.common.entity.living.human.marine.Marine;
 
@@ -52,7 +52,7 @@ public class MarineGOAP extends EntityGOAP<Marine> {
         // Sensors
         addSensor(new HasFreeInventorySlotSensor<>());
         addSensor(new HasFoodInInventorySensor<>());
-        addSensor(new HasRangedWeaponEquippedSensor<>());
+        addSensor(new MainHandItemTypeSensor<>());
         addSensor(new HasRangedWeaponInInventorySensor<>());
     }
 

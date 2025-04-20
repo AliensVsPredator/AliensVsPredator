@@ -7,6 +7,8 @@ import net.minecraft.world.entity.npc.InventoryCarrier;
 import java.util.Map;
 
 import com.avp.common.entity.ai.GOAPConstants;
+import com.avp.common.entity.ai.util.CombatResponse;
+import com.avp.common.entity.ai.util.ItemType;
 import com.avp.common.item.GunItem;
 import com.avp.goap.GOAPAction;
 import com.avp.goap.expression.GOAPCondition;
@@ -21,13 +23,20 @@ public class EquipRangedWeaponAction<T extends LivingEntity & InventoryCarrier> 
     public GOAPConditionSet createPreconditions() {
         return GOAPConditionSet.of(
             new GOAPCondition<>(GOAPConstants.HAS_RANGED_WEAPON_IN_INVENTORY, GOAPExpression.isTrue()),
-            new GOAPCondition<>(GOAPConstants.HAS_RANGED_WEAPON_EQUIPPED, GOAPExpression.isFalse())
+            new GOAPCondition<>(
+                GOAPConstants.MAIN_HAND_ITEM_TYPE,
+                GOAPExpression.where(
+                    mainHandItemType -> !(mainHandItemType instanceof ItemType.Weapon(CombatResponse.FightType fightType))
+                        || fightType != CombatResponse.FightType.RANGED,
+                    "main hand item is not a ranged weapon"
+                )
+            )
         );
     }
 
     @Override
     public GOAPWorldState createEffects() {
-        return new GOAPWorldState(Map.of(GOAPConstants.HAS_RANGED_WEAPON_EQUIPPED, true));
+        return new GOAPWorldState(Map.of(GOAPConstants.MAIN_HAND_ITEM_TYPE, new ItemType.Weapon(CombatResponse.FightType.RANGED)));
     }
 
     @Override

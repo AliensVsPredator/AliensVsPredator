@@ -7,7 +7,14 @@ public sealed interface CombatResponse {
         RANGED
     }
 
+    static Flight flight() {
+        return Flight.INSTANCE;
+    }
+
     record Fight(FightType fightType) implements CombatResponse {}
 
-    record Flight() implements CombatResponse {}
+    final class Flight implements CombatResponse {
+
+        private static final Flight INSTANCE = new Flight();
+    }
 }

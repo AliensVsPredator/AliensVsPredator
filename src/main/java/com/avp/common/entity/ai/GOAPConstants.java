@@ -8,6 +8,7 @@ import net.minecraft.world.entity.item.ItemEntity;
 import java.util.List;
 
 import com.avp.common.entity.ai.util.CombatResponse;
+import com.avp.common.entity.ai.util.ItemType;
 import com.avp.goap.TypedIdentifier;
 
 // TODO: There should be a registry here to guard against accidental duplicate identifiers.
@@ -23,17 +24,13 @@ public class GOAPConstants {
 
     public static final TypedIdentifier<Boolean> HAS_FREE_INVENTORY_SLOT = new TypedIdentifier<>("hasFreeInventorySlot");
 
-    public static final TypedIdentifier<Boolean> HAS_RANGED_WEAPON_EQUIPPED = new TypedIdentifier<>("hasRangedWeaponEquipped");
+    public static final TypedIdentifier<ItemType> MAIN_HAND_ITEM_TYPE = new TypedIdentifier<>("mainHandItemType");
 
     public static final TypedIdentifier<Boolean> HAS_RANGED_WEAPON_IN_INVENTORY = new TypedIdentifier<>("hasRangedWeaponInInventory");
 
     // Combat state
 
     public static final TypedIdentifier<? super CombatResponse> COMBAT_RESPONSE = new TypedIdentifier<>("combatResponse");
-
-    public static final TypedIdentifier<Boolean> HAS_WEAPON = new TypedIdentifier<>("hasWeapon");
-
-    public static final TypedIdentifier<Boolean> HAS_MELEE_WEAPON = new TypedIdentifier<>("hasMeleeWeapon");
 
     // Surrounding entity state
 
