@@ -37,7 +37,7 @@ body:
     id: modloader_version
     attributes:
       label: Mod Loader Version
-      description: hat version of Fabric Loader are you running?
+      description: What version of Fabric Loader are you running?
       placeholder: DO NOT PUT LATEST! ex. Fabric Loader x.x.x
     validations:
       required: true
