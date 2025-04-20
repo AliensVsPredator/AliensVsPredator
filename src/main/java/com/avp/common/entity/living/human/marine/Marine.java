@@ -32,7 +32,9 @@ public class Marine extends AbstractHuman implements InventoryCarrier {
         AVPItems.M37_12_SHOTGUN,
         AVPItems.F903WE_RIFLE,
         AVPItems.M41A_PULSE_RIFLE,
-        AVPItems.M4RA_BATTLE_RIFLE
+        AVPItems.M4RA_BATTLE_RIFLE,
+        Items.IRON_AXE,
+        Items.IRON_SWORD
     );
 
     private static final List<EquipmentSlot> ARMOR_EQUIPMENT_SLOTS = List.of(

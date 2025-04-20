@@ -31,6 +31,7 @@
   - Marines now start off with their weapon unequipped, and equip it when they spot a target.
   - Marines now pick up food items that are on the ground.
   - Marines eat food items in their inventory if their health is < 50%.
+  - Marines can now spawn with iron axes or iron swords.
 - Added new item textures for the following armor sets:
   - Aberrant Chitin Armor
   - Irradiated Chitin Armor
