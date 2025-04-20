@@ -19,7 +19,7 @@ import com.avp.AVP;
 import com.avp.common.block.AVPBlockTags;
 import com.avp.common.util.AlienVariantUtil;
 
-public class ResonatorBE extends BlockEntity {
+public class ResonatorBlockEntity extends BlockEntity {
 
     private int tickCounter = 0;
 
@@ -31,8 +31,8 @@ public class ResonatorBE extends BlockEntity {
 
     private final Map<Item, Integer> resinBallCounts = new HashMap<>();
 
-    public ResonatorBE(BlockPos pos, BlockState blockState) {
-        super(BlockEntityTypes.RESONATOR_BE, pos, blockState);
+    public ResonatorBlockEntity(BlockPos pos, BlockState blockState) {
+        super(AVPBlockEntityTypes.RESONATOR, pos, blockState);
         this.animDispatcher = new ResonatorAnimDispatcher();
     }
 
@@ -41,14 +41,14 @@ public class ResonatorBE extends BlockEntity {
         Level level,
         BlockPos blockPos,
         BlockState blockState,
-        ResonatorBE resonatorBE
+        ResonatorBlockEntity resonatorBlockEntity
     ) {
         if (level.isClientSide()) {
             return;
         }
 
         if (!(level.hasNeighborSignal(blockPos) || level.hasNeighborSignal(blockPos.above()))) {
-            resonatorBE.animDispatcher.unpowered(resonatorBE);
+            resonatorBlockEntity.animDispatcher.unpowered(resonatorBlockEntity);
             isAnimating = false;
             animationTickCounter = 0;
             return;
@@ -56,21 +56,21 @@ public class ResonatorBE extends BlockEntity {
 
         if (!isAnimating) {
             if (animationTickCounter == 0) {
-                resonatorBE.animDispatcher.powerUp(resonatorBE);
+                resonatorBlockEntity.animDispatcher.powerUp(resonatorBlockEntity);
             }
             if (animationTickCounter >= 15) {
-                resonatorBE.animDispatcher.powered(resonatorBE);
+                resonatorBlockEntity.animDispatcher.powered(resonatorBlockEntity);
                 isAnimating = true;
             } else {
                 animationTickCounter++;
             }
         }
 
-        resonatorBE.incrementTickCounter();
+        resonatorBlockEntity.incrementTickCounter();
 
         var tickValue = AVP.config.blockConfigs.RESONATOR_REPLACE_TICKS;
 
-        if (resonatorBE.getTickCounter() % tickValue != 0) {
+        if (resonatorBlockEntity.getTickCounter() % tickValue != 0) {
             return;
         }
 
@@ -86,12 +86,12 @@ public class ResonatorBE extends BlockEntity {
                     level.setBlockAndUpdate(currentPos, Blocks.AIR.defaultBlockState());
 
                     var resinBallItem = AlienVariantUtil.getResinBallForType(currentState);
-                    resonatorBE.addResinBallItem(resinBallItem);
+                    resonatorBlockEntity.addResinBallItem(resinBallItem);
 
                     resinBallsGained.incrementAndGet();
 
                     if (resinBallsGained.get() > 0) {
-                        resonatorBE.setChanged();
+                        resonatorBlockEntity.setChanged();
                     }
                     return true;
                 }
@@ -103,12 +103,12 @@ public class ResonatorBE extends BlockEntity {
                     level.setBlockAndUpdate(currentPos, replacementBlock.defaultBlockState());
 
                     var resinBallItem = AlienVariantUtil.getResinBallForType(currentState);
-                    resonatorBE.addResinBallItem(resinBallItem);
+                    resonatorBlockEntity.addResinBallItem(resinBallItem);
 
                     resinBallsGained.incrementAndGet();
 
                     if (resinBallsGained.get() > 0) {
-                        resonatorBE.setChanged();
+                        resonatorBlockEntity.setChanged();
                     }
                     return true;
                 }

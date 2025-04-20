@@ -6,9 +6,9 @@ import mod.azure.azurelib.rewrite.render.layer.AzAutoGlowingLayer;
 import net.minecraft.resources.ResourceLocation;
 
 import com.avp.AVPResources;
-import com.avp.common.block.entity.TripMineBE;
+import com.avp.common.block.entity.TripMineBlockEntity;
 
-public class TripMineRenderer extends AzBlockEntityRenderer<TripMineBE> {
+public class TripMineRenderer extends AzBlockEntityRenderer<TripMineBlockEntity> {
 
     public static final String NAME = "trip_mine";
 
@@ -18,7 +18,7 @@ public class TripMineRenderer extends AzBlockEntityRenderer<TripMineBE> {
 
     public TripMineRenderer() {
         super(
-            AzBlockEntityRendererConfig.<TripMineBE>builder(GEO, TEX)
+            AzBlockEntityRendererConfig.<TripMineBlockEntity>builder(GEO, TEX)
                 .addRenderLayer(new AzAutoGlowingLayer<>())
                 .build()
         );

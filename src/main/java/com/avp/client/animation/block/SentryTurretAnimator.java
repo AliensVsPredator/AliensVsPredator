@@ -9,9 +9,9 @@ import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 
 import com.avp.AVPResources;
-import com.avp.common.block.entity.SentryTurretBE;
+import com.avp.common.block.entity.SentryTurretBlockEntity;
 
-public class SentryTurretAnimator extends AzBlockAnimator<SentryTurretBE> {
+public class SentryTurretAnimator extends AzBlockAnimator<SentryTurretBlockEntity> {
 
     private static final ResourceLocation ANIMATIONS = AVPResources.blockAnimationLocation("sentry_turret");
 
@@ -20,7 +20,7 @@ public class SentryTurretAnimator extends AzBlockAnimator<SentryTurretBE> {
     }
 
     @Override
-    public void registerControllers(AzAnimationControllerContainer<SentryTurretBE> animationControllerContainer) {
+    public void registerControllers(AzAnimationControllerContainer<SentryTurretBlockEntity> animationControllerContainer) {
         animationControllerContainer.add(
             AzAnimationController.builder(this, "base_controller")
                 .build()
@@ -28,12 +28,12 @@ public class SentryTurretAnimator extends AzBlockAnimator<SentryTurretBE> {
     }
 
     @Override
-    public @NotNull ResourceLocation getAnimationLocation(SentryTurretBE animatable) {
+    public @NotNull ResourceLocation getAnimationLocation(SentryTurretBlockEntity animatable) {
         return ANIMATIONS;
     }
 
     @Override
-    public void setCustomAnimations(SentryTurretBE animatable, float partialTicks) {
+    public void setCustomAnimations(SentryTurretBlockEntity animatable, float partialTicks) {
         super.setCustomAnimations(animatable, partialTicks);
 
         var monster = animatable.getTargetedMonster();

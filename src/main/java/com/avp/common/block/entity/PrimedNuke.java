@@ -24,22 +24,22 @@ import com.avp.common.entity.type.AVPEntityTypes;
 import com.avp.common.util.ExplosionUtil;
 import com.avp.server.ServerScheduler;
 
-public class NukeBE extends Entity {
+public class PrimedNuke extends Entity {
 
-    private static final EntityDataAccessor<Integer> DATA_FUSE_ID = SynchedEntityData.defineId(NukeBE.class, EntityDataSerializers.INT);
+    private static final EntityDataAccessor<Integer> DATA_FUSE_ID = SynchedEntityData.defineId(PrimedNuke.class, EntityDataSerializers.INT);
 
     private static final EntityDataAccessor<BlockState> DATA_BLOCK_STATE_ID = SynchedEntityData.defineId(
-        NukeBE.class,
+        PrimedNuke.class,
         EntityDataSerializers.BLOCK_STATE
     );
 
-    public NukeBE(EntityType<? extends Entity> entityType, Level level) {
+    public PrimedNuke(EntityType<? extends Entity> entityType, Level level) {
         super(entityType, level);
         this.noCulling = true;
     }
 
-    public NukeBE(Level level) {
-        this(AVPEntityTypes.NUKE_BE, level);
+    public PrimedNuke(Level level) {
+        this(AVPEntityTypes.NUKE, level);
     }
 
     public void setFuse(int i) {

@@ -13,7 +13,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import com.avp.common.block.entity.BlockEntityTypes;
+import com.avp.common.block.entity.AVPBlockEntityTypes;
 import com.avp.common.block.entity.resin_node.ResinNodeBlockEntity;
 import com.avp.common.util.BlockPosUtil;
 
@@ -50,7 +50,7 @@ public class ResinNodeBlock extends BaseEntityBlock {
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState blockState, BlockEntityType<T> blockEntityType) {
         return level.isClientSide
             ? null
-            : createTickerHelper(blockEntityType, BlockEntityTypes.RESIN_NODE, ResinNodeBlockEntity::serverTick);
+            : createTickerHelper(blockEntityType, AVPBlockEntityTypes.RESIN_NODE, ResinNodeBlockEntity::serverTick);
     }
 
     @Override

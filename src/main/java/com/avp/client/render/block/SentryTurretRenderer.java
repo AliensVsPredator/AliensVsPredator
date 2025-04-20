@@ -7,9 +7,9 @@ import net.minecraft.resources.ResourceLocation;
 
 import com.avp.AVPResources;
 import com.avp.client.animation.block.SentryTurretAnimator;
-import com.avp.common.block.entity.SentryTurretBE;
+import com.avp.common.block.entity.SentryTurretBlockEntity;
 
-public class SentryTurretRenderer extends AzBlockEntityRenderer<SentryTurretBE> {
+public class SentryTurretRenderer extends AzBlockEntityRenderer<SentryTurretBlockEntity> {
 
     public static final String NAME = "sentry_turret";
 
@@ -19,7 +19,7 @@ public class SentryTurretRenderer extends AzBlockEntityRenderer<SentryTurretBE> 
 
     public SentryTurretRenderer() {
         super(
-            AzBlockEntityRendererConfig.<SentryTurretBE>builder(GEO, TEX)
+            AzBlockEntityRendererConfig.<SentryTurretBlockEntity>builder(GEO, TEX)
                 .setAnimatorProvider(SentryTurretAnimator::new)
                 .addRenderLayer(new AzAutoGlowingLayer<>())
                 .build()

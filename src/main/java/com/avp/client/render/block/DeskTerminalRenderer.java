@@ -6,9 +6,9 @@ import mod.azure.azurelib.rewrite.render.layer.AzAutoGlowingLayer;
 import net.minecraft.resources.ResourceLocation;
 
 import com.avp.AVPResources;
-import com.avp.common.block.entity.DeskTerminalBE;
+import com.avp.common.block.entity.DeskTerminalBlockEntity;
 
-public class DeskTerminalRenderer extends AzBlockEntityRenderer<DeskTerminalBE> {
+public class DeskTerminalRenderer extends AzBlockEntityRenderer<DeskTerminalBlockEntity> {
 
     public static final String NAME = "desk_terminal";
 
@@ -18,7 +18,7 @@ public class DeskTerminalRenderer extends AzBlockEntityRenderer<DeskTerminalBE> 
 
     public DeskTerminalRenderer() {
         super(
-            AzBlockEntityRendererConfig.<DeskTerminalBE>builder(GEO, TEX)
+            AzBlockEntityRendererConfig.<DeskTerminalBlockEntity>builder(GEO, TEX)
                 .addRenderLayer(new AzAutoGlowingLayer<>())
                 .build()
         );

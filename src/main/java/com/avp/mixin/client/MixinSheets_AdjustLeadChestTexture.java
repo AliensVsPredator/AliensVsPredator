@@ -11,8 +11,8 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import com.avp.common.block.entity.AmmoChestBE;
-import com.avp.common.block.entity.LeadChestBE;
+import com.avp.common.block.entity.AmmoChestBlockEntity;
+import com.avp.common.block.entity.LeadChestBlockEntity;
 
 @Mixin(Sheets.class)
 public class MixinSheets_AdjustLeadChestTexture {
@@ -38,10 +38,10 @@ public class MixinSheets_AdjustLeadChestTexture {
         boolean christmas,
         CallbackInfoReturnable<Material> info
     ) {
-        if (blockEntity instanceof LeadChestBE) {
+        if (blockEntity instanceof LeadChestBlockEntity) {
             info.setReturnValue(LEAD_CHEST);
         }
-        if (blockEntity instanceof AmmoChestBE) {
+        if (blockEntity instanceof AmmoChestBlockEntity) {
             info.setReturnValue(AMMO_CHEST);
         }
     }

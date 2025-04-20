@@ -9,22 +9,22 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.Container;
 import net.minecraft.world.ContainerHelper;
+import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ChestMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.entity.BaseContainerBlockEntity;
-import net.minecraft.world.level.block.entity.ChestLidController;
-import net.minecraft.world.level.block.entity.ContainerOpenersCounter;
-import net.minecraft.world.level.block.entity.LidBlockEntity;
+import net.minecraft.world.level.block.entity.*;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
 
 import com.avp.common.block.AVPBlocks;
+import com.avp.common.item.AVPItemTags;
+import com.avp.common.item.AVPItems;
 
-public class LeadChestBE extends BaseContainerBlockEntity implements LidBlockEntity {
+public class AmmoChestBlockEntity extends RandomizableContainerBlockEntity implements LidBlockEntity {
 
     private final ChestLidController chestLidController = new ChestLidController();
 
@@ -32,8 +32,8 @@ public class LeadChestBE extends BaseContainerBlockEntity implements LidBlockEnt
 
     private NonNullList<ItemStack> itemStacks = NonNullList.withSize(27, ItemStack.EMPTY);
 
-    public LeadChestBE(BlockPos pos, BlockState blockState) {
-        super(BlockEntityTypes.LEAD_CHEST_BE, pos, blockState);
+    public AmmoChestBlockEntity(BlockPos pos, BlockState blockState) {
+        super(AVPBlockEntityTypes.AMMO_CHEST, pos, blockState);
 
         this.openersCounter = new ContainerOpenersCounter() {
 
@@ -67,15 +67,17 @@ public class LeadChestBE extends BaseContainerBlockEntity implements LidBlockEnt
 
             @Override
             protected void openerCountChanged(Level level, BlockPos pos, BlockState state, int count, int openCount) {
-                level.blockEvent(LeadChestBE.this.worldPosition, AVPBlocks.LEAD_CHEST, 1, openCount);
+                level.blockEvent(AmmoChestBlockEntity.this.worldPosition, AVPBlocks.AMMO_CHEST, 1, openCount);
             }
 
             @Override
             protected boolean isOwnContainer(Player player) {
-                if (!(player.containerMenu instanceof ChestMenu))
+                if (!(player.containerMenu instanceof ChestMenu)) {
                     return false;
+                }
+
                 Container container = ((ChestMenu) player.containerMenu).getContainer();
-                return container == LeadChestBE.this;
+                return container == AmmoChestBlockEntity.this;
             }
         };
     }
@@ -83,18 +85,24 @@ public class LeadChestBE extends BaseContainerBlockEntity implements LidBlockEnt
     @Override
     protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
         super.saveAdditional(tag, registries);
-        ContainerHelper.saveAllItems(tag, this.itemStacks, false, registries);
+
+        if (!this.trySaveLootTable(tag)) {
+            ContainerHelper.saveAllItems(tag, this.itemStacks, registries);
+        }
     }
 
     @Override
     protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
         super.loadAdditional(tag, registries);
         this.itemStacks = NonNullList.withSize(this.getContainerSize(), ItemStack.EMPTY);
-        if (tag.contains("Items", 9))
+
+        if (!this.tryLoadLootTable(tag)) {
             ContainerHelper.loadAllItems(tag, this.itemStacks, registries);
+        }
     }
 
-    public static void lidAnimateTick(Level level, BlockPos pos, BlockState state, LeadChestBE blockEntity) {
+    @SuppressWarnings("unused")
+    public static void lidAnimateTick(Level level, BlockPos pos, BlockState state, AmmoChestBlockEntity blockEntity) {
         blockEntity.chestLidController.tickLid();
     }
 
@@ -108,9 +116,9 @@ public class LeadChestBE extends BaseContainerBlockEntity implements LidBlockEnt
         if (id == 1) {
             this.chestLidController.shouldBeOpen(type > 0);
             return true;
-        } else {
-            return super.triggerEvent(id, type);
         }
+
+        return super.triggerEvent(id, type);
     }
 
     @Override
@@ -135,7 +143,7 @@ public class LeadChestBE extends BaseContainerBlockEntity implements LidBlockEnt
 
     @Override
     protected @NotNull Component getDefaultName() {
-        return Component.translatable("container.lead_chest");
+        return Component.translatable("container.ammo_chest");
     }
 
     @Override
@@ -149,6 +157,36 @@ public class LeadChestBE extends BaseContainerBlockEntity implements LidBlockEnt
     }
 
     @Override
+    public void setItem(int slot, ItemStack stack) {
+        if (isValidForChest(stack)) {
+            super.setItem(slot, stack);
+            this.setChanged();
+        } else {
+            if (!stack.isEmpty() && this.level != null) {
+                this.dropItem(stack);
+            }
+        }
+    }
+
+    private void dropItem(ItemStack stack) {
+        if (this.level != null && !this.level.isClientSide) {
+            this.level.addFreshEntity(
+                new ItemEntity(
+                    this.level,
+                    this.worldPosition.getX() + 0.5,
+                    this.worldPosition.getY() + 0.5,
+                    this.worldPosition.getZ() + 0.5,
+                    stack
+                )
+            );
+        }
+    }
+
+    private boolean isValidForChest(ItemStack stack) {
+        return stack.isEmpty() || stack.is(AVPItemTags.AMMO_ITEMS);
+    }
+
+    @Override
     protected @NotNull AbstractContainerMenu createMenu(int containerId, Inventory inventory) {
         return ChestMenu.threeRows(containerId, inventory, this);
     }
@@ -156,5 +194,23 @@ public class LeadChestBE extends BaseContainerBlockEntity implements LidBlockEnt
     @Override
     public int getContainerSize() {
         return this.itemStacks.size();
+    }
+
+    public boolean hasAmmo() {
+        return !this.itemStacks.isEmpty() && this.itemStacks.stream().anyMatch(item -> item.is(AVPItems.MEDIUM_BULLET));
+    }
+
+    public boolean consumeAmmo(int count) {
+        for (ItemStack itemStack : this.itemStacks) {
+            if (itemStack.is(AVPItems.MEDIUM_BULLET)) {
+                var available = itemStack.getCount();
+                if (available >= count) {
+                    itemStack.shrink(count);
+                    this.setChanged();
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 }

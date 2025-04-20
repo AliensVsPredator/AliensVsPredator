@@ -42,10 +42,10 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-import com.avp.common.block.entity.BlockEntityTypes;
-import com.avp.common.block.entity.LeadChestBE;
+import com.avp.common.block.entity.AVPBlockEntityTypes;
+import com.avp.common.block.entity.LeadChestBlockEntity;
 
-public class LeadChestBlock extends AbstractChestBlock<LeadChestBE> implements SimpleWaterloggedBlock {
+public class LeadChestBlock extends AbstractChestBlock<LeadChestBlockEntity> implements SimpleWaterloggedBlock {
 
     public static final MapCodec<LeadChestBlock> CODEC = simpleCodec(LeadChestBlock::new);
 
@@ -56,7 +56,7 @@ public class LeadChestBlock extends AbstractChestBlock<LeadChestBE> implements S
     protected static final VoxelShape SHAPE = Block.box(1.0, 0.0, 1.0, 15.0, 14.0, 15.0);
 
     protected LeadChestBlock(Properties properties) {
-        super(properties, () -> BlockEntityTypes.LEAD_CHEST_BE);
+        super(properties, () -> AVPBlockEntityTypes.LEAD_CHEST);
         this.registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.NORTH).setValue(WATERLOGGED, Boolean.FALSE));
     }
 
@@ -83,7 +83,7 @@ public class LeadChestBlock extends AbstractChestBlock<LeadChestBE> implements S
     }
 
     @Override
-    protected @NotNull MapCodec<? extends AbstractChestBlock<LeadChestBE>> codec() {
+    protected @NotNull MapCodec<? extends AbstractChestBlock<LeadChestBlockEntity>> codec() {
         return CODEC;
     }
 
@@ -105,13 +105,15 @@ public class LeadChestBlock extends AbstractChestBlock<LeadChestBE> implements S
     @Nullable
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
-        return new LeadChestBE(pos, state);
+        return new LeadChestBlockEntity(pos, state);
     }
 
     @Nullable
     @Override
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> blockEntityType) {
-        return level.isClientSide ? createTickerHelper(blockEntityType, BlockEntityTypes.LEAD_CHEST_BE, LeadChestBE::lidAnimateTick) : null;
+        return level.isClientSide
+            ? createTickerHelper(blockEntityType, AVPBlockEntityTypes.LEAD_CHEST, LeadChestBlockEntity::lidAnimateTick)
+            : null;
     }
 
     @Override
@@ -138,8 +140,8 @@ public class LeadChestBlock extends AbstractChestBlock<LeadChestBE> implements S
         if (level.isClientSide)
             return InteractionResult.SUCCESS;
 
-        if (!ChestBlock.isChestBlockedAt(level, pos) && level.getBlockEntity(pos) instanceof LeadChestBE leadChestBE) {
-            player.openMenu(leadChestBE);
+        if (!ChestBlock.isChestBlockedAt(level, pos) && level.getBlockEntity(pos) instanceof LeadChestBlockEntity leadChestBlockEntity) {
+            player.openMenu(leadChestBlockEntity);
             PiglinAi.angerNearbyPiglins(player, true);
             return InteractionResult.CONSUME;
         }
@@ -149,7 +151,10 @@ public class LeadChestBlock extends AbstractChestBlock<LeadChestBE> implements S
     @Override
     public @NotNull BlockState playerWillDestroy(Level level, BlockPos pos, BlockState state, Player player) {
         var blockEntity = level.getBlockEntity(pos);
-        if (blockEntity instanceof LeadChestBE leadChestBE && !level.isClientSide && player.isCreative() && !leadChestBE.isEmpty()) {
+        if (
+            blockEntity instanceof LeadChestBlockEntity leadChestBlockEntity && !level.isClientSide && player.isCreative()
+                && !leadChestBlockEntity.isEmpty()
+        ) {
             var itemStack = this.asItem().getDefaultInstance();
             itemStack.applyComponents(blockEntity.collectComponents());
             var itemEntity = new ItemEntity(level, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, itemStack);
@@ -163,8 +168,8 @@ public class LeadChestBlock extends AbstractChestBlock<LeadChestBE> implements S
     @Override
     public @NotNull ItemStack getCloneItemStack(LevelReader level, BlockPos pos, BlockState state) {
         var itemStack = super.getCloneItemStack(level, pos, state);
-        level.getBlockEntity(pos, BlockEntityTypes.LEAD_CHEST_BE)
-            .ifPresent(leadChestBE -> leadChestBE.saveToItem(itemStack, level.registryAccess()));
+        level.getBlockEntity(pos, AVPBlockEntityTypes.LEAD_CHEST)
+            .ifPresent(leadChestBlockEntity -> leadChestBlockEntity.saveToItem(itemStack, level.registryAccess()));
         return itemStack;
     }
 
@@ -212,8 +217,8 @@ public class LeadChestBlock extends AbstractChestBlock<LeadChestBE> implements S
     @Override
     protected void tick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
         var blockEntity = level.getBlockEntity(pos);
-        if (blockEntity instanceof LeadChestBE leadChestBE) {
-            leadChestBE.recheckOpen();
+        if (blockEntity instanceof LeadChestBlockEntity leadChestBlockEntity) {
+            leadChestBlockEntity.recheckOpen();
         }
     }
 }

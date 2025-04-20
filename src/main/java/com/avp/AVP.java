@@ -32,7 +32,7 @@ import com.avp.common.block.CompostingChanceRegistry;
 import com.avp.common.block.DecoratedPotPatterns;
 import com.avp.common.block.DispenserBlockBehaviors;
 import com.avp.common.block.FlammableBlockRegistry;
-import com.avp.common.block.entity.BlockEntityTypes;
+import com.avp.common.block.entity.AVPBlockEntityTypes;
 import com.avp.common.block_item.AVPBlockItems;
 import com.avp.common.command.Commands;
 import com.avp.common.component.DataComponents;
@@ -95,7 +95,7 @@ public class AVP implements ModInitializer {
         config = registerConfig(AVPConfig.class, ConfigFormats.json()).getConfigInstance();
 
         // Core
-        BlockEntityTypes.initialize();
+        AVPBlockEntityTypes.initialize();
         AVPBlocks.initialize();
         AVPItems.initialize();
         AVPBlockItems.initialize();

@@ -14,14 +14,14 @@ import com.avp.AVP;
 import com.avp.common.entity.living.yautja.Yautja;
 import com.avp.common.util.AVPPredicates;
 
-public class TripMineBE extends BlockEntity {
+public class TripMineBlockEntity extends BlockEntity {
 
     private boolean triggered = false;
 
     private int countdown = 0;
 
-    public TripMineBE(BlockPos pos, BlockState blockState) {
-        super(BlockEntityTypes.TRIP_MINE_BE, pos, blockState);
+    public TripMineBlockEntity(BlockPos pos, BlockState blockState) {
+        super(AVPBlockEntityTypes.TRIP_MINE, pos, blockState);
     }
 
     @SuppressWarnings("unused")
@@ -29,7 +29,7 @@ public class TripMineBE extends BlockEntity {
         Level level,
         BlockPos blockPos,
         BlockState blockState,
-        TripMineBE tripMineBE
+        TripMineBlockEntity tripMineBlockEntity
     ) {
         if (level.isClientSide) {
             return;
@@ -45,13 +45,13 @@ public class TripMineBE extends BlockEntity {
         });
 
         if (!entities.isEmpty()) {
-            if (!tripMineBE.isTriggered()) {
-                tripMineBE.setTriggered(true);
-                tripMineBE.setCountdown(100);
+            if (!tripMineBlockEntity.isTriggered()) {
+                tripMineBlockEntity.setTriggered(true);
+                tripMineBlockEntity.setCountdown(100);
             } else {
-                tripMineBE.decrementCountdown();
+                tripMineBlockEntity.decrementCountdown();
 
-                if (tripMineBE.getCountdown() % 20 == 0) {
+                if (tripMineBlockEntity.getCountdown() % 20 == 0) {
                     level.playSound(
                         null,
                         blockPos,
@@ -62,7 +62,7 @@ public class TripMineBE extends BlockEntity {
                     );
                 }
 
-                if (tripMineBE.getCountdown() <= 0) {
+                if (tripMineBlockEntity.getCountdown() <= 0) {
                     level.explode(
                         null,
                         blockPos.getX() + 0.5,
@@ -75,9 +75,9 @@ public class TripMineBE extends BlockEntity {
                 }
             }
         } else {
-            if (tripMineBE.isTriggered()) {
-                tripMineBE.setTriggered(false);
-                tripMineBE.setCountdown(0);
+            if (tripMineBlockEntity.isTriggered()) {
+                tripMineBlockEntity.setTriggered(false);
+                tripMineBlockEntity.setCountdown(0);
             }
         }
     }

@@ -21,10 +21,9 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import com.avp.common.block.base.BaseBlockEntity;
-import com.avp.common.block.entity.DeskTerminalBE;
+import com.avp.common.block.entity.DeskTerminalBlockEntity;
 
-public class DeskTerminalBlock extends BaseBlockEntity {
+public class DeskTerminalBlock extends BaseEntityBlock {
 
     public static final MapCodec<DeskTerminalBlock> CODEC = simpleCodec(DeskTerminalBlock::new);
 
@@ -105,11 +104,6 @@ public class DeskTerminalBlock extends BaseBlockEntity {
 
     @Override
     public @Nullable BlockEntity newBlockEntity(BlockPos blockPos, BlockState blockState) {
-        return new DeskTerminalBE(blockPos, blockState);
-    }
-
-    @Override
-    protected boolean isTickingBE() {
-        return false;
+        return new DeskTerminalBlockEntity(blockPos, blockState);
     }
 }

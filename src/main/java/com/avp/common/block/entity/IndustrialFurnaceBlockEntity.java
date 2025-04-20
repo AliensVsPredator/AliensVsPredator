@@ -18,10 +18,10 @@ import org.jetbrains.annotations.NotNull;
 
 import com.avp.common.recipe.AVPRecipes;
 
-public class IndustrialFurnaceBE extends AbstractFurnaceBlockEntity {
+public class IndustrialFurnaceBlockEntity extends AbstractFurnaceBlockEntity {
 
-    public IndustrialFurnaceBE(BlockPos blockPos, BlockState blockState) {
-        super(BlockEntityTypes.INDUSTRIAL_FURNACE_BE, blockPos, blockState, AVPRecipes.INDUSTRIAL_FURNACE_RECIPE_TYPE);
+    public IndustrialFurnaceBlockEntity(BlockPos blockPos, BlockState blockState) {
+        super(AVPBlockEntityTypes.INDUSTRIAL_FURNACE, blockPos, blockState, AVPRecipes.INDUSTRIAL_FURNACE_RECIPE_TYPE);
     }
 
     @Override

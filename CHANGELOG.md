@@ -1,7 +1,14 @@
 # v0.0.23-beta
 
 ## ☢️ Breaking Changes
-- N/A
+- Updated registry names for the following blocks:
+  - Ammo Chest (`avp:ammo_chest_be` -> `avp:ammo_chest`)
+  - Desk Terminal (`avp:desk_terminal_be` -> `avp:desk_terminal`)
+  - Industrial Furnace (`avp:industrial_furnace_be` -> `avp:industrial_furnace`)
+  - Lead Chest (`avp:lead_chest_be` -> `avp:lead_chest`)
+  - Resonator (`avp:resonator_be` -> `avp:resonator`)
+  - Sentry Turret (`avp:sentry_turret_be` -> `avp:sentry_turret`)
+  - Trip Mine (`avp:trip_mine_be` -> `avp:trip_mine`)
 
 ## ✨ What's New
 - Added alien music disc 1 "Silver Smile" by Rotch Gwylt.

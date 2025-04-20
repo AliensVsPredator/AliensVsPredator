@@ -23,11 +23,10 @@ import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import com.avp.common.block.base.BaseBlockEntity;
-import com.avp.common.block.entity.BlockEntityTypes;
-import com.avp.common.block.entity.SentryTurretBE;
+import com.avp.common.block.entity.AVPBlockEntityTypes;
+import com.avp.common.block.entity.SentryTurretBlockEntity;
 
-public class SentryTurretBlock extends BaseBlockEntity {
+public class SentryTurretBlock extends BaseEntityBlock {
 
     public static final DirectionProperty FACING = DirectionalBlock.FACING;
 
@@ -52,7 +51,7 @@ public class SentryTurretBlock extends BaseBlockEntity {
 
     @Override
     public @Nullable BlockEntity newBlockEntity(BlockPos blockPos, BlockState blockState) {
-        return new SentryTurretBE(blockPos, blockState);
+        return new SentryTurretBlockEntity(blockPos, blockState);
     }
 
     @Override
@@ -68,19 +67,14 @@ public class SentryTurretBlock extends BaseBlockEntity {
     ) {
         return level.isClientSide
             ? null
-            : createTickerHelper(blockEntityType, BlockEntityTypes.SENTRY_TURRET_BE, SentryTurretBE::serverTick);
+            : createTickerHelper(blockEntityType, AVPBlockEntityTypes.SENTRY_TURRET, SentryTurretBlockEntity::serverTick);
     }
 
     protected void openContainer(Level level, BlockPos blockPos, Player player) {
         BlockEntity blockEntity = level.getBlockEntity(blockPos);
-        if (blockEntity instanceof SentryTurretBE) {
+        if (blockEntity instanceof SentryTurretBlockEntity) {
             player.openMenu((MenuProvider) (blockEntity));
         }
-    }
-
-    @Override
-    protected boolean isTickingBE() {
-        return true;
     }
 
     @Override

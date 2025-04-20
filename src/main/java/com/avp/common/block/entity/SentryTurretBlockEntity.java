@@ -28,7 +28,8 @@ import com.avp.common.damage.AVPDamageTypes;
 import com.avp.common.sound.AVPSoundEvents;
 import com.avp.server.BlockBreakProgressManager;
 
-public class SentryTurretBE extends BlockEntity {
+@Deprecated(forRemoval = true)
+public class SentryTurretBlockEntity extends BlockEntity {
 
     public Monster targetedMonster;
 
@@ -46,8 +47,8 @@ public class SentryTurretBE extends BlockEntity {
 
     protected static int ammoChestRange = AVP.config.blockConfigs.TURRET_AMMOCHEST_SEARCH_RANGE;
 
-    public SentryTurretBE(BlockPos pos, BlockState blockState) {
-        super(BlockEntityTypes.SENTRY_TURRET_BE, pos, blockState);
+    public SentryTurretBlockEntity(BlockPos pos, BlockState blockState) {
+        super(AVPBlockEntityTypes.SENTRY_TURRET, pos, blockState);
         animDispatcher = new SentryTurretAnimDispatcher();
     }
 
@@ -73,7 +74,7 @@ public class SentryTurretBE extends BlockEntity {
         this.targetedMonsterUUID = (monster != null) ? monster.getUUID() : null;
     }
 
-    public static void serverTick(Level level, BlockPos pos, BlockState state, SentryTurretBE blockEntity) {
+    public static void serverTick(Level level, BlockPos pos, BlockState state, SentryTurretBlockEntity blockEntity) {
         if (level.isClientSide) {
             return;
         }
@@ -93,8 +94,8 @@ public class SentryTurretBE extends BlockEntity {
         var monsters = level.getEntitiesOfClass(Monster.class, new AABB(pos).inflate(range), Entity::isAlive);
 
         // Locate an ammo chest within range
-        AmmoChestBE ammoChest = findNearbyAmmoChest(blockEntity, pos);
-        if (ammoChest == null || !ammoChest.hasAmmo()) {
+        AmmoChestBlockEntity ammoChestBlockEntity = findNearbyAmmoChest(blockEntity, pos);
+        if (ammoChestBlockEntity == null || !ammoChestBlockEntity.hasAmmo()) {
             // If no ammo chest is found or it is empty
             blockEntity.setTargetedMonster(null);
             blockEntity.animDispatcher.idle(blockEntity);
@@ -113,7 +114,7 @@ public class SentryTurretBE extends BlockEntity {
                         blockEntity.setTargetedMonster(currentTarget);
                         blockEntity.animDispatcher.firing(blockEntity);
                         blockEntity.fireCooldown = 2;
-                        if (ammoChest.consumeAmmo(1)) {
+                        if (ammoChestBlockEntity.consumeAmmo(1)) {
                             blockEntity.fireCooldown = 2;
                         } else {
                             blockEntity.setTargetedMonster(null);
@@ -121,7 +122,7 @@ public class SentryTurretBE extends BlockEntity {
 
                         return;
                     }
-                    if (ammoChest.consumeAmmo(1)) {
+                    if (ammoChestBlockEntity.consumeAmmo(1)) {
                         blockEntity.fireCooldown = 2;
                     } else {
                         blockEntity.setTargetedMonster(null);
@@ -184,7 +185,7 @@ public class SentryTurretBE extends BlockEntity {
         Vec3 facingVec,
         Monster monster,
         double maxRange,
-        SentryTurretBE blockEntity
+        SentryTurretBlockEntity blockEntity
     ) {
         var facing = blockEntity.getBlockState().getValue(SentryTurretBlock.FACING);
         var offsetPosition = turretPos.relative(facing);
@@ -237,7 +238,7 @@ public class SentryTurretBE extends BlockEntity {
         return blockCenter.distanceTo(turretCenter) < monsterPos.distanceTo(turretCenter);
     }
 
-    private static void onBlockHit(@NotNull Level level, @NotNull BlockPos blockPos, @NotNull SentryTurretBE blockEntity) {
+    private static void onBlockHit(@NotNull Level level, @NotNull BlockPos blockPos, @NotNull SentryTurretBlockEntity blockEntity) {
         if (!AVP.config.weaponConfigs.BULLETS_DAMAGE_BLOCKS_ENABLED) {
             return;
         }
@@ -286,7 +287,7 @@ public class SentryTurretBE extends BlockEntity {
     }
 
     @Nullable
-    private static AmmoChestBE findNearbyAmmoChest(SentryTurretBE blockEntity, BlockPos pos) {
+    private static AmmoChestBlockEntity findNearbyAmmoChest(SentryTurretBlockEntity blockEntity, BlockPos pos) {
         var level = blockEntity.level;
 
         if (level == null) {
@@ -300,8 +301,8 @@ public class SentryTurretBE extends BlockEntity {
             )
         ) {
             var ammoEntity = level.getBlockEntity(searchRadius);
-            if (ammoEntity instanceof AmmoChestBE ammoChest) {
-                return ammoChest;
+            if (ammoEntity instanceof AmmoChestBlockEntity ammoChestBlockEntity) {
+                return ammoChestBlockEntity;
             }
         }
 

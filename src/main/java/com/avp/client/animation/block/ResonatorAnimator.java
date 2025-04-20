@@ -8,9 +8,9 @@ import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 
 import com.avp.AVPResources;
-import com.avp.common.block.entity.ResonatorBE;
+import com.avp.common.block.entity.ResonatorBlockEntity;
 
-public class ResonatorAnimator extends AzBlockAnimator<ResonatorBE> {
+public class ResonatorAnimator extends AzBlockAnimator<ResonatorBlockEntity> {
 
     private static final ResourceLocation ANIMATIONS = AVPResources.blockAnimationLocation("resonator");
 
@@ -19,7 +19,7 @@ public class ResonatorAnimator extends AzBlockAnimator<ResonatorBE> {
     }
 
     @Override
-    public void registerControllers(AzAnimationControllerContainer<ResonatorBE> animationControllerContainer) {
+    public void registerControllers(AzAnimationControllerContainer<ResonatorBlockEntity> animationControllerContainer) {
         animationControllerContainer.add(
             AzAnimationController.builder(this, "base_controller")
                 .build()
@@ -27,7 +27,7 @@ public class ResonatorAnimator extends AzBlockAnimator<ResonatorBE> {
     }
 
     @Override
-    public @NotNull ResourceLocation getAnimationLocation(ResonatorBE animatable) {
+    public @NotNull ResourceLocation getAnimationLocation(ResonatorBlockEntity animatable) {
         return ANIMATIONS;
     }
 }

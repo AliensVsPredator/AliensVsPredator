@@ -14,11 +14,11 @@ import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.NotNull;
 
-import com.avp.common.block.entity.NukeBE;
+import com.avp.common.block.entity.PrimedNuke;
 
 public class NukeBlock extends Block {
 
-    public static final MapCodec<NukeBlock> CODEC = simpleCodec(NukeBlock::new);
+    public static final MapCodec<NukeBlock> CODEC = simpleCodec(com.avp.common.block.NukeBlock::new);
 
     public static final BooleanProperty UNSTABLE = BlockStateProperties.UNSTABLE;
 
@@ -45,21 +45,21 @@ public class NukeBlock extends Block {
     @Override
     protected void neighborChanged(BlockState blockState, Level level, BlockPos blockPos, Block block, BlockPos blockPos2, boolean bl) {
         if (level.hasNeighborSignal(blockPos)) {
-            this.summonNukeBE(level, blockPos);
+            this.summonNuke(level, blockPos);
         }
     }
 
     @Override
     protected void onPlace(BlockState blockState, Level level, BlockPos blockPos, BlockState blockState2, boolean bl) {
         if (!blockState2.is(blockState.getBlock()) && level.hasNeighborSignal(blockPos)) {
-            this.summonNukeBE(level, blockPos);
+            this.summonNuke(level, blockPos);
         }
     }
 
     @Override
     public @NotNull BlockState playerWillDestroy(Level level, BlockPos blockPos, BlockState blockState, Player player) {
         if (!level.isClientSide() && !player.isCreative() && Boolean.TRUE.equals(blockState.getValue(UNSTABLE))) {
-            this.summonNukeBE(level, blockPos);
+            this.summonNuke(level, blockPos);
         }
 
         return super.playerWillDestroy(level, blockPos, blockState, player);
@@ -70,18 +70,18 @@ public class NukeBlock extends Block {
         if (!level.isClientSide) {
             var blockPos = blockHitResult.getBlockPos();
             if (projectile.isOnFire() && projectile.mayInteract(level, blockPos)) {
-                this.summonNukeBE(level, blockPos);
+                this.summonNuke(level, blockPos);
             } else if (projectile.mayInteract(level, blockPos)) {
                 blockState.setValue(UNSTABLE, true);
             }
         }
     }
 
-    private void summonNukeBE(Level level, BlockPos blockPos) {
-        var nukeBE = new NukeBE(level);
-        nukeBE.setPos(blockPos.getX(), blockPos.getY(), blockPos.getZ());
-        nukeBE.setFuse(300);
-        level.addFreshEntity(nukeBE);
+    private void summonNuke(Level level, BlockPos blockPos) {
+        var nuke = new PrimedNuke(level);
+        nuke.setPos(blockPos.getX(), blockPos.getY(), blockPos.getZ());
+        nuke.setFuse(300);
+        level.addFreshEntity(nuke);
         level.removeBlock(blockPos, false);
     }
 }
