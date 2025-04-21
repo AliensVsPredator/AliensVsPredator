@@ -1,7 +1,5 @@
 package com.avp.common.entity.living.human.marine;
 
-import com.avp.common.util.AVPInventory;
-import com.avp.common.util.AVPInventoryBearer;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.entity.*;
@@ -21,6 +19,8 @@ import com.avp.AVP;
 import com.avp.common.entity.living.human.AbstractHuman;
 import com.avp.common.entity.living.human.marine.ai.MarineGOAP;
 import com.avp.common.item.AVPItems;
+import com.avp.common.util.AVPInventory;
+import com.avp.common.util.AVPInventoryBearer;
 
 public class Marine extends AbstractHuman implements AVPInventoryBearer {
 

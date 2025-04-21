@@ -2,10 +2,10 @@ package com.avp.common.entity.ai.action;
 
 import com.bvanseg.just.functional.option.Option;
 import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.npc.InventoryCarrier;
 
 import com.avp.common.entity.ai.GOAPConstants;
 import com.avp.common.entity.ai.util.CombatResponse;
+import com.avp.common.util.AVPInventoryBearer;
 import com.avp.goap.GOAPAction;
 import com.avp.goap.condition.GOAPCondition;
 import com.avp.goap.condition.GOAPConditionContainer;
@@ -15,7 +15,7 @@ import com.avp.goap.effect.GOAPEffectContainer;
 import com.avp.goap.state.GOAPBlackboard;
 import com.avp.goap.state.GOAPWorldState;
 
-public class PickUpFoodAction<T extends Mob & InventoryCarrier> extends GOAPAction<T> {
+public class PickUpFoodAction<T extends Mob & AVPInventoryBearer> extends GOAPAction<T> {
 
     @Override
     public GOAPConditionContainer createPreconditions() {
@@ -43,7 +43,7 @@ public class PickUpFoodAction<T extends Mob & InventoryCarrier> extends GOAPActi
         var nearestFoodItemEntityOption = worldState.getOrDefault(GOAPConstants.NEAREST_FOOD_ITEM_ENTITY, Option.none());
 
         nearestFoodItemEntityOption.ifSome(
-            nearestFoodItemEntity -> InventoryCarrier.pickUpItem(context, context, nearestFoodItemEntityOption.unwrap())
+            nearestFoodItemEntity -> context.getInventory().pickUpItem(nearestFoodItemEntityOption.unwrap())
         );
 
         return true;

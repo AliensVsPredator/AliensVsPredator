@@ -1,6 +1,5 @@
 package com.avp.common.entity.living.human.marine;
 
-import com.avp.common.util.AVPInventory;
 import com.bvanseg.just.functional.option.Option;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
@@ -9,12 +8,13 @@ import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.npc.InventoryCarrier;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-
-import com.avp.common.util.ItemUtil;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Consumer;
 import java.util.stream.Stream;
+
+import com.avp.common.util.AVPInventory;
+import com.avp.common.util.ItemUtil;
 
 public class MarineInventory implements AVPInventory, InventoryCarrier {
 

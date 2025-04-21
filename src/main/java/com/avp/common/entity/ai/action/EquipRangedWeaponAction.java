@@ -2,11 +2,11 @@ package com.avp.common.entity.ai.action;
 
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.npc.InventoryCarrier;
 
 import com.avp.common.entity.ai.GOAPConstants;
 import com.avp.common.entity.ai.util.ItemType;
 import com.avp.common.item.AVPItemTags;
+import com.avp.common.util.AVPInventoryBearer;
 import com.avp.goap.GOAPAction;
 import com.avp.goap.condition.GOAPCondition;
 import com.avp.goap.condition.GOAPConditionContainer;
@@ -16,7 +16,7 @@ import com.avp.goap.effect.GOAPEffectContainer;
 import com.avp.goap.state.GOAPBlackboard;
 import com.avp.goap.state.GOAPWorldState;
 
-public class EquipRangedWeaponAction<T extends LivingEntity & InventoryCarrier> extends GOAPAction<T> {
+public class EquipRangedWeaponAction<T extends LivingEntity & AVPInventoryBearer> extends GOAPAction<T> {
 
     @Override
     public GOAPConditionContainer createPreconditions() {
@@ -41,7 +41,7 @@ public class EquipRangedWeaponAction<T extends LivingEntity & InventoryCarrier> 
 
     @Override
     public boolean perform(T context, GOAPWorldState worldState, GOAPBlackboard blackboard) {
-        var rangedWeapon = context.getInventory().items
+        var rangedWeapon = context.getInventory()
             .stream()
             .filter(item -> item.is(AVPItemTags.RANGED_WEAPONS))
             .findFirst();

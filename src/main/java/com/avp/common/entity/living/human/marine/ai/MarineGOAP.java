@@ -6,6 +6,7 @@ import com.avp.common.entity.ai.EntityGOAP;
 import com.avp.common.entity.ai.GOAPConstants;
 import com.avp.common.entity.ai.action.AvoidAction;
 import com.avp.common.entity.ai.action.EatFoodToHealAction;
+import com.avp.common.entity.ai.action.EquipFoodAction;
 import com.avp.common.entity.ai.action.EquipMeleeWeaponAction;
 import com.avp.common.entity.ai.action.EquipRangedWeaponAction;
 import com.avp.common.entity.ai.action.MeleeAttackAction;
@@ -103,12 +104,15 @@ public class MarineGOAP extends EntityGOAP<Marine> {
         // Actions
         // An action that allows the marine to move closer to the attack target so that the attack target is in range.
         addAction(new MoveCloserToAttackTargetEntityAction<>(1.0));
+
         // Melee attack action that the marine can choose if melee is preferable.
         addAction(new EquipMeleeWeaponAction<>());
         addAction(new MeleeAttackAction<>());
+
         // Ranged attack action that the marine can choose if range is preferable.
         addAction(new EquipRangedWeaponAction<>());
         addAction(new MarineRangedAttackAction());
+
         // Avoid action to allow the marine to run away from an avoid target.
         addAction(new AvoidAction<>(8, 1.2F));
     }
@@ -122,6 +126,9 @@ public class MarineGOAP extends EntityGOAP<Marine> {
         addGoal(new HealthyGoal());
 
         // Actions
+        // Marines need to equip food in order to eat it.
+        addAction(new EquipFoodAction<>());
+        // Marines must eat the equipped food in order to heal.
         addAction(new EatFoodToHealAction<>(marine.getMaxHealth() * 0.2F));
     }
 }

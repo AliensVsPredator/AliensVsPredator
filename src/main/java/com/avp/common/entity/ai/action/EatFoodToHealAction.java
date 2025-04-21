@@ -1,11 +1,14 @@
 package com.avp.common.entity.ai.action;
 
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.ItemStack;
 
 import com.avp.common.entity.ai.GOAPConstants;
 import com.avp.common.entity.ai.util.CombatResponse;
 import com.avp.common.entity.ai.util.ItemType;
+import com.avp.common.util.AVPInventoryBearer;
 import com.avp.goap.GOAPAction;
 import com.avp.goap.TypedIdentifier;
 import com.avp.goap.condition.GOAPCondition;
@@ -16,7 +19,7 @@ import com.avp.goap.effect.GOAPEffectContainer;
 import com.avp.goap.state.GOAPBlackboard;
 import com.avp.goap.state.GOAPWorldState;
 
-public class EatFoodToHealAction<T extends LivingEntity> extends GOAPAction<T> {
+public class EatFoodToHealAction<T extends LivingEntity & AVPInventoryBearer> extends GOAPAction<T> {
 
     private static final TypedIdentifier<Integer> EATING_TICK_DURATION = new TypedIdentifier<>("eatingTickDuration");
 
@@ -30,8 +33,8 @@ public class EatFoodToHealAction<T extends LivingEntity> extends GOAPAction<T> {
     public GOAPConditionContainer createPreconditions() {
         return GOAPConditionContainer.of(
             new GOAPCondition<>(GOAPConstants.COMBAT_RESPONSE, GOAPExpression.equalTo(CombatResponse.rest())),
-            new GOAPCondition<>(GOAPConstants.ITEM_TYPES_IN_INVENTORY, GOAPExpression.contains(ItemType.food())),
-            new GOAPCondition<>(GOAPConstants.IS_HEALTHY, GOAPExpression.isFalse())
+            new GOAPCondition<>(GOAPConstants.IS_HEALTHY, GOAPExpression.isFalse()),
+            new GOAPCondition<>(GOAPConstants.OFF_HAND_ITEM_TYPE, GOAPExpression.equalTo(ItemType.food()))
         );
     }
 
@@ -52,8 +55,9 @@ public class EatFoodToHealAction<T extends LivingEntity> extends GOAPAction<T> {
             context.playSound(SoundEvents.GENERIC_EAT);
         }
 
-        if (eatingTickDuration > 20) {
-            // TODO: Make the entity eat food from its inventory.
+        if (eatingTickDuration > 32) {
+            context.getInventory().removeItemType(context.getOffhandItem().getItem(), 1);
+            context.setItemInHand(InteractionHand.OFF_HAND, ItemStack.EMPTY);
             context.setHealth(context.getHealth() + healAmount);
             return true;
         }

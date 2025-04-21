@@ -1,9 +1,7 @@
 package com.avp.common.entity.ai.sensor.inventory;
 
-import com.avp.common.util.AVPInventoryBearer;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.npc.InventoryCarrier;
 import net.minecraft.world.item.ItemStack;
 
 import java.util.HashSet;
@@ -11,6 +9,7 @@ import java.util.HashSet;
 import com.avp.common.entity.ai.GOAPConstants;
 import com.avp.common.entity.ai.util.ItemType;
 import com.avp.common.item.AVPItemTags;
+import com.avp.common.util.AVPInventoryBearer;
 import com.avp.goap.GOAPSensor;
 import com.avp.goap.state.GOAPMutableWorldState;
 
