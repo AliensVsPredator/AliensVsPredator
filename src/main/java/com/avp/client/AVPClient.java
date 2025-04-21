@@ -271,12 +271,9 @@ public class AVPClient implements ClientModInitializer {
         EntityRendererRegistry.register(AVPEntityTypes.ROCKET, RocketRenderer::new);
         EntityRendererRegistry.register(AVPEntityTypes.SHURIKEN, SpinningItemRenderer::new);
         EntityRendererRegistry.register(AVPEntityTypes.SMART_DISC, SpinningItemRenderer::new);
+        EntityRendererRegistry.register(AVPEntityTypes.SENTRY_TURRET, SentryTurretRenderer::new);
 
         // Block Entities
-        BlockEntityRenderers.register(
-            AVPBlockEntityTypes.SENTRY_TURRET,
-            (BlockEntityRendererProvider.Context rendererDispatcherIn) -> new SentryTurretRenderer()
-        );
         BlockEntityRenderers.register(AVPBlockEntityTypes.LEAD_CHEST, ChestRenderer::new);
         BlockEntityRenderers.register(AVPBlockEntityTypes.AMMO_CHEST, ChestRenderer::new);
         BlockEntityRenderers.register(

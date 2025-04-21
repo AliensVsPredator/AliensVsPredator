@@ -1,5 +1,6 @@
 package com.avp.common.entity.type;
 
+import com.avp.common.entity.machine.SentryTurret;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -36,6 +37,11 @@ public class AVPEntityTypes {
     public static final MobCategory ALIEN_CATEGORY = AVPMobCategories.ALIENS;
 
     public static final MobCategory PREDATOR_CATEGORY = AVPMobCategories.PREDATOR;
+
+    public static final EntityType<SentryTurret> SENTRY_TURRET = register(
+        "sentry_turret",
+        EntityType.Builder.of(SentryTurret::new, MobCategory.MISC).sized(0.5F, 0.5F).noSummon()
+    );
 
     public static final EntityType<MushroomCloudEntity> MUSHROOM_CLOUD = register(
         "mushroom_cloud",
