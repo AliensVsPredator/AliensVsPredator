@@ -1,5 +1,7 @@
 package com.avp.common.util;
 
+import com.avp.common.entity.living.alien.xenomorph.queen.Queen;
+import com.avp.common.entity.type.AVPEntityTypes;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.entity.EntityType;
@@ -21,25 +23,27 @@ import com.avp.common.particle.AVPParticleTypes;
 public class AlienVariantUtil {
 
     private static final Map<Block, Item> RESIN_BALL_MAPPING = Map.ofEntries(
-        Map.entry(AVPBlocks.ABERRANT_RESIN_NODE, AVPItems.ABERRANT_RESIN_BALL),
-        Map.entry(AVPBlocks.ABERRANT_RESIN, AVPItems.ABERRANT_RESIN_BALL),
-        Map.entry(AVPBlocks.ABERRANT_RESIN_WEB, AVPItems.ABERRANT_RESIN_BALL),
-        Map.entry(AVPBlocks.ABERRANT_RESIN_VEIN, AVPItems.ABERRANT_RESIN_BALL),
-        Map.entry(AVPBlocks.IRRADIATED_RESIN_NODE, AVPItems.IRRADIATED_RESIN_BALL),
-        Map.entry(AVPBlocks.IRRADIATED_RESIN, AVPItems.IRRADIATED_RESIN_BALL),
-        Map.entry(AVPBlocks.IRRADIATED_RESIN_WEB, AVPItems.IRRADIATED_RESIN_BALL),
-        Map.entry(AVPBlocks.IRRADIATED_RESIN_VEIN, AVPItems.IRRADIATED_RESIN_BALL),
-        Map.entry(AVPBlocks.NETHER_RESIN_NODE, AVPItems.NETHER_RESIN_BALL),
-        Map.entry(AVPBlocks.NETHER_RESIN, AVPItems.NETHER_RESIN_BALL),
-        Map.entry(AVPBlocks.NETHER_RESIN_WEB, AVPItems.NETHER_RESIN_BALL),
-        Map.entry(AVPBlocks.NETHER_RESIN_VEIN, AVPItems.NETHER_RESIN_BALL)
+            Map.entry(AVPBlocks.ABERRANT_RESIN_NODE, AVPItems.ABERRANT_RESIN_BALL),
+            Map.entry(AVPBlocks.ABERRANT_RESIN, AVPItems.ABERRANT_RESIN_BALL),
+            Map.entry(AVPBlocks.ABERRANT_RESIN_WEB, AVPItems.ABERRANT_RESIN_BALL),
+            Map.entry(AVPBlocks.ABERRANT_RESIN_VEIN, AVPItems.ABERRANT_RESIN_BALL),
+            Map.entry(AVPBlocks.IRRADIATED_RESIN_NODE, AVPItems.IRRADIATED_RESIN_BALL),
+            Map.entry(AVPBlocks.IRRADIATED_RESIN, AVPItems.IRRADIATED_RESIN_BALL),
+            Map.entry(AVPBlocks.IRRADIATED_RESIN_WEB, AVPItems.IRRADIATED_RESIN_BALL),
+            Map.entry(AVPBlocks.IRRADIATED_RESIN_VEIN, AVPItems.IRRADIATED_RESIN_BALL),
+            Map.entry(AVPBlocks.NETHER_RESIN_NODE, AVPItems.NETHER_RESIN_BALL),
+            Map.entry(AVPBlocks.NETHER_RESIN, AVPItems.NETHER_RESIN_BALL),
+            Map.entry(AVPBlocks.NETHER_RESIN_WEB, AVPItems.NETHER_RESIN_BALL),
+            Map.entry(AVPBlocks.NETHER_RESIN_VEIN, AVPItems.NETHER_RESIN_BALL)
     );
 
     private static final Map<Block, Block> RESIN_VEIN_MAPPING = Map.ofEntries(
-        Map.entry(AVPBlocks.NETHER_RESIN_NODE, AVPBlocks.NETHER_RESIN_VEIN),
-        Map.entry(AVPBlocks.ABERRANT_RESIN_NODE, AVPBlocks.ABERRANT_RESIN_VEIN),
-        Map.entry(AVPBlocks.IRRADIATED_RESIN_NODE, AVPBlocks.IRRADIATED_RESIN_VEIN)
+            Map.entry(AVPBlocks.NETHER_RESIN_NODE, AVPBlocks.NETHER_RESIN_VEIN),
+            Map.entry(AVPBlocks.ABERRANT_RESIN_NODE, AVPBlocks.ABERRANT_RESIN_VEIN),
+            Map.entry(AVPBlocks.IRRADIATED_RESIN_NODE, AVPBlocks.IRRADIATED_RESIN_VEIN)
     );
+
+    private AlienVariantUtil() {}
 
     public static @Nullable EntityType<? extends Alien> getVariantTypeFor(Alien alien) {
         return switch (alien) {
@@ -87,14 +91,29 @@ public class AlienVariantUtil {
 
     public static BlockState getResinNodeForType(Alien alien) {
         return switch (alien) {
-            case Alien netherAlien when netherAlien.isNetherAfflicted() -> AVPBlocks.NETHER_RESIN_NODE.defaultBlockState();
-            case Alien aberrantAlien when aberrantAlien.isAberrant() -> AVPBlocks.ABERRANT_RESIN_NODE.defaultBlockState();
-            case Alien irradiatedAlien when irradiatedAlien.isIrradiated() -> AVPBlocks.IRRADIATED_RESIN_NODE.defaultBlockState();
+            case Alien netherAlien when netherAlien.isNetherAfflicted() ->
+                    AVPBlocks.NETHER_RESIN_NODE.defaultBlockState();
+            case Alien aberrantAlien when aberrantAlien.isAberrant() ->
+                    AVPBlocks.ABERRANT_RESIN_NODE.defaultBlockState();
+            case Alien irradiatedAlien when irradiatedAlien.isIrradiated() ->
+                    AVPBlocks.IRRADIATED_RESIN_NODE.defaultBlockState();
             default -> AVPBlocks.RESIN_NODE.defaultBlockState();
         };
     }
 
     public static Item getResinBallForType(BlockState blockState) {
         return RESIN_BALL_MAPPING.getOrDefault(blockState.getBlock(), AVPItems.RESIN_BALL);
+    }
+
+    public static EntityType<?> getOvamorphTypeFor(Queen queen, boolean isRoyal) {
+        return switch (queen) {
+            case Queen netherQueen when netherQueen.isNetherAfflicted() && isRoyal ->
+                    AVPEntityTypes.ROYAL_NETHER_OVAMORPH;
+            case Queen netherQueen when netherQueen.isNetherAfflicted() -> AVPEntityTypes.NETHER_OVAMORPH;
+            case Queen aberrantQueen when aberrantQueen.isAberrant() && isRoyal ->
+                    AVPEntityTypes.ROYAL_ABERRANT_OVAMORPH;
+            case Queen aberrantQueen when aberrantQueen.isAberrant() -> AVPEntityTypes.ABERRANT_OVAMORPH;
+            default -> isRoyal ? AVPEntityTypes.ROYAL_OVAMORPH : AVPEntityTypes.OVAMORPH;
+        };
     }
 }

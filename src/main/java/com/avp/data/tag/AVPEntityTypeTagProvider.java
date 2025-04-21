@@ -29,6 +29,7 @@ public class AVPEntityTypeTagProvider extends FabricTagProvider.EntityTypeTagPro
         addHiveAliens();
         addRoyalAliens();
         addParasites();
+        addOvamorph();
         addXenomorphs();
         addAcidImmune();
         addRemovableVanillaSpawns();
@@ -258,6 +259,18 @@ public class AVPEntityTypeTagProvider extends FabricTagProvider.EntityTypeTagPro
                 EntityType.WOLF,
                 AVPEntityTypes.MARINE,
                 AVPEntityTypes.YAUTJA
+            );
+    }
+
+    private void addOvamorph() {
+        getOrCreateTagBuilder(AVPEntityTypeTags.OVAMORPHS)
+            .add(
+                AVPEntityTypes.ABERRANT_OVAMORPH,
+                AVPEntityTypes.NETHER_OVAMORPH,
+                AVPEntityTypes.OVAMORPH,
+                AVPEntityTypes.ROYAL_ABERRANT_OVAMORPH,
+                AVPEntityTypes.ROYAL_NETHER_OVAMORPH,
+                AVPEntityTypes.ROYAL_OVAMORPH
             );
     }
 

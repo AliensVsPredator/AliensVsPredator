@@ -1,5 +1,6 @@
 package com.avp.common.entity.living.alien.xenomorph.queen;
 
+import com.avp.common.ai.goal.QueenLayEggGoal;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.monster.Monster;
@@ -124,5 +125,11 @@ public class Queen extends Xenomorph {
                 }
             }
         }
+    }
+
+    @Override
+    protected void registerGoals() {
+        super.registerGoals();
+        goalSelector.addGoal(5, new QueenLayEggGoal(this));
     }
 }
