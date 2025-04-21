@@ -29,7 +29,7 @@ public class AVPEntityTypeTagProvider extends FabricTagProvider.EntityTypeTagPro
         addHiveAliens();
         addRoyalAliens();
         addParasites();
-        addOvamorph();
+        addOvamorphs();
         addXenomorphs();
         addAcidImmune();
         addRemovableVanillaSpawns();
@@ -262,7 +262,7 @@ public class AVPEntityTypeTagProvider extends FabricTagProvider.EntityTypeTagPro
             );
     }
 
-    private void addOvamorph() {
+    private void addOvamorphs() {
         getOrCreateTagBuilder(AVPEntityTypeTags.OVAMORPHS)
             .add(
                 AVPEntityTypes.ABERRANT_OVAMORPH,

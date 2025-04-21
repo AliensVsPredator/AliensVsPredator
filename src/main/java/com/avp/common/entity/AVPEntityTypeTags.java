@@ -30,7 +30,7 @@ public record AVPEntityTypeTags() {
 
     public static final TagKey<EntityType<?>> NORMAL_ALIENS = create("normal_aliens");
 
-    public static final TagKey<EntityType<?>> OVAMORPHS = create("ovamorph");
+    public static final TagKey<EntityType<?>> OVAMORPHS = create("ovamorphs");
 
     public static final TagKey<EntityType<?>> PARASITES = create("parasites");
 
