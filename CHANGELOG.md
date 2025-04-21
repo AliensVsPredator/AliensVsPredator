@@ -32,6 +32,7 @@
   - Marines now pick up food items that are on the ground.
   - Marines eat food items in their inventory if their health is < 50%.
   - Marines can now spawn with iron axes or iron swords.
+  - Fixed incorrect positioning of items for both male and female marine models.
 - Added new item textures for the following armor sets:
   - Aberrant Chitin Armor
   - Irradiated Chitin Armor
@@ -40,6 +41,13 @@
 
 ## ♻️ Changes
 - Updated ash block texture.
+- Updated the following textures for male marines:
+  - Beard 0
+  - Beard 1
+  - Beard 2
+  - Hair 0
+  - Hair 1
+  - Hair 3
 
 ## 🐞 Fixes
 - Fixed marines swinging their arms too far when running.
