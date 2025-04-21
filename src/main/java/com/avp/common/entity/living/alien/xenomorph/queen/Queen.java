@@ -1,6 +1,5 @@
 package com.avp.common.entity.living.alien.xenomorph.queen;
 
-import com.avp.common.ai.goal.QueenLayEggGoal;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.monster.Monster;
@@ -9,6 +8,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import com.avp.AVP;
+import com.avp.common.ai.goal.QueenLayEggGoal;
 import com.avp.common.block.AVPBlockTags;
 import com.avp.common.entity.living.alien.Alien;
 import com.avp.common.entity.living.alien.xenomorph.Xenomorph;
@@ -47,6 +47,36 @@ public class Queen extends Xenomorph {
     }
 
     @Override
+    protected @NotNull ResinData createResinData() {
+        return new ResinData(0, 128, 1, AVP.config.statsConfigs.QUEEN_STATS.nestTickrate);
+    }
+
+    @Override
+    protected void registerGoals() {
+        super.registerGoals();
+        goalSelector.addGoal(5, new QueenLayEggGoal(this));
+    }
+
+    @Override
+    public void tick() {
+        super.tick();
+
+        if (!level().isClientSide()) {
+            becomeIrradiated();
+
+            if (tickCount < 2) {
+                var belowBlockPos = blockPosition().below();
+                var blockState = level().getBlockState(belowBlockPos);
+                var resinNode = AlienVariantUtil.getResinNodeForType(this).getBlock();
+
+                if (!blockState.is(resinNode) && !blockState.is(AVPBlockTags.ACID_IMMUNE)) {
+                    level().setBlockAndUpdate(belowBlockPos, AlienVariantUtil.getResinNodeForType(this));
+                }
+            }
+        }
+    }
+
+    @Override
     public float maxUpStep() {
         return 2.5F;
     }
@@ -54,11 +84,6 @@ public class Queen extends Xenomorph {
     @Override
     protected float getHealthRegenPerSecond() {
         return AVP.config.statsConfigs.QUEEN_STATS.healthRegenPerSecond;
-    }
-
-    @Override
-    protected @NotNull ResinData createResinData() {
-        return new ResinData(0, 128, 1, AVP.config.statsConfigs.QUEEN_STATS.nestTickrate);
     }
 
     @Override
@@ -106,30 +131,5 @@ public class Queen extends Xenomorph {
     @Override
     public int maxJellyToGrowth() {
         return Integer.MAX_VALUE;
-    }
-
-    @Override
-    public void tick() {
-        super.tick();
-
-        if (!level().isClientSide()) {
-            becomeIrradiated();
-
-            if (tickCount < 2) {
-                var belowBlockPos = blockPosition().below();
-                var blockState = level().getBlockState(belowBlockPos);
-                var resinNode = AlienVariantUtil.getResinNodeForType(this).getBlock();
-
-                if (!blockState.is(resinNode) && !blockState.is(AVPBlockTags.ACID_IMMUNE)) {
-                    level().setBlockAndUpdate(belowBlockPos, AlienVariantUtil.getResinNodeForType(this));
-                }
-            }
-        }
-    }
-
-    @Override
-    protected void registerGoals() {
-        super.registerGoals();
-        goalSelector.addGoal(5, new QueenLayEggGoal(this));
     }
 }

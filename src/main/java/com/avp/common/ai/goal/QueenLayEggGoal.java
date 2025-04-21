@@ -1,59 +1,104 @@
 package com.avp.common.ai.goal;
 
+import net.minecraft.world.entity.ai.goal.Goal;
+
+import java.util.concurrent.TimeUnit;
+
 import com.avp.common.entity.AVPEntityTypeTags;
 import com.avp.common.entity.living.alien.ovamorph.Ovamorph;
 import com.avp.common.entity.living.alien.xenomorph.queen.Queen;
+import com.avp.common.util.AlienPredicates;
 import com.avp.common.util.AlienVariantUtil;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.entity.MobSpawnType;
-import net.minecraft.world.entity.ai.goal.Goal;
-
-import java.util.Random;
 
 public class QueenLayEggGoal extends Goal {
 
+    private static final int MAX_EGG_LAY_COOLDOWN_IN_TICKS = (int) TimeUnit.MINUTES.toSeconds(1) * 20;
+
+    private static final int MAX_EGG_SCAN_COOLDOWN_IN_TICKS = 20;
+
     private final Queen queen;
-    private static final int cooldownTicks = 1200;
-    private int timer;
-    private final Random random;
+
+    private int eggLayCooldownInTicks;
+
+    private int eggScanCooldownInTicks;
 
     public QueenLayEggGoal(Queen queen) {
         this.queen = queen;
-        this.random = new Random();
-        this.timer = cooldownTicks;
+        this.eggLayCooldownInTicks = MAX_EGG_LAY_COOLDOWN_IN_TICKS;
+        this.eggScanCooldownInTicks = MAX_EGG_SCAN_COOLDOWN_IN_TICKS;
     }
 
     @Override
     public boolean canUse() {
-        var nearbyEggs = queen.level().getEntitiesOfClass(
+        if (eggLayCooldownInTicks > 0) {
+            // Egg laying is currently under cooldown, decrement and return.
+            eggLayCooldownInTicks--;
+            return false;
+        }
+
+        if (eggScanCooldownInTicks > 0) {
+            // Egg scanning is currently under cooldown, decrement and return.
+            eggScanCooldownInTicks--;
+            return false;
+        }
+
+        // Queen must be alive to lay eggs.
+        return queen.isAlive()
+            // AND Queen must not be in an aggressive state.
+            && !queen.isAggressive()
+            // AND Queen must have no target before she lays an egg.
+            && queen.getTarget() == null
+            && queen.hiveManager()
+                .hive()
+                // AND Queen must have a hive...
+                .isSomeAnd(
+                    // And that hive must be alive...
+                    hive -> hive.isAlive()
+                        // AND chunk loaded...
+                        && hive.isChunkLoaded()
+                        // AND the queen must be within the hive to lay eggs there.
+                        && hive.isEntityWithinHive(queen)
+                )
+            // AND there must be no other friendly eggs nearby already.
+            && noFriendlyEggsNearby();
+    }
+
+    private boolean noFriendlyEggsNearby() {
+        // Reset scanning cooldown regardless of scanner outcome.
+        eggScanCooldownInTicks = MAX_EGG_SCAN_COOLDOWN_IN_TICKS;
+        // Scan for friendly ovamorphs.
+        return queen.level()
+            .getEntitiesOfClass(
                 Ovamorph.class,
-                queen.getBoundingBox().inflate(4), // 4 block radius
+                // 4 block radius
+                queen.getBoundingBox().inflate(4),
+                // Must be tagged as an ovamorph...
                 entity -> entity.getType().is(AVPEntityTypeTags.OVAMORPHS)
-        );
-        return nearbyEggs.isEmpty() && queen.isAlive() && !queen.isAggressive();
+                    // AND must NOT be an enemy alien to the queen (so either a neutral egg, or same strain and same
+                    // hive).
+                    && !AlienPredicates.areAliensEnemies(queen, entity)
+            )
+            // If the list of FRIENDLY eggs is empty, then the queen is good to lay an egg.
+            .isEmpty();
     }
 
     @Override
     public void start() {
-        timer = cooldownTicks;
-        var queenPosition = queen.blockPosition();
-        var isRoyal = random.nextInt(100) < 5;
+        // Reset egg lay cooldown since it's (almost) guaranteed that the queen is about to lay an egg.
+        eggLayCooldownInTicks = MAX_EGG_LAY_COOLDOWN_IN_TICKS;
+        var level = queen.level();
+        // Egg has a 5% chance of being royal.
+        var isRoyal = queen.getRandom().nextInt(100) < 5;
         var ovamorphType = AlienVariantUtil.getOvamorphTypeFor(queen, isRoyal);
 
-        if (queen.level() instanceof ServerLevel serverLevel) {
-            ovamorphType.spawn(serverLevel, null, null, queenPosition, MobSpawnType.MOB_SUMMONED, false, false);
-        }
-    }
+        var ovamorph = ovamorphType.create(level);
 
-    @Override
-    public void tick() {
-        if (timer > 0) {
-            timer--;
+        if (ovamorph == null) {
+            return;
         }
-    }
 
-    @Override
-    public boolean canContinueToUse() {
-        return false;
+        ovamorph.setPos(queen.position());
+
+        level.addFreshEntity(ovamorph);
     }
 }
