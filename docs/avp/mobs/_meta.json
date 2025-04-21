@@ -7,6 +7,10 @@
         "name": "Royal Ovamorph",
         "icon": "avp:royal_ovamorph"
     },
+    "drone.mdx": {
+        "name": "Drone",
+        "icon": "avp:drone_icon"
+    },
     "facehugger.mdx": {
         "name": "Facehugger",
         "icon": "avp:facehugger"
