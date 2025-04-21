@@ -11,11 +11,8 @@ import com.avp.common.entity.ai.GOAPConstants;
 import com.avp.common.entity.ai.util.CombatResponse;
 import com.avp.goap.GOAPAction;
 import com.avp.goap.TypedIdentifier;
-import com.avp.goap.condition.GOAPCondition;
-import com.avp.goap.condition.GOAPConditionContainer;
 import com.avp.goap.condition.expression.GOAPExpression;
 import com.avp.goap.effect.GOAPEffect;
-import com.avp.goap.effect.GOAPEffectContainer;
 import com.avp.goap.state.GOAPBlackboard;
 import com.avp.goap.state.GOAPWorldState;
 
@@ -32,22 +29,12 @@ public class AvoidAction<T extends PathfinderMob> extends GOAPAction<T> {
     public AvoidAction(int avoidRange, float avoidSpeedModifier) {
         this.avoidRange = avoidRange;
         this.avoidSpeedModifier = avoidSpeedModifier;
-    }
 
-    @Override
-    public GOAPConditionContainer createPreconditions() {
-        return GOAPConditionContainer.of(
-            new GOAPCondition<>(GOAPConstants.COMBAT_RESPONSE, GOAPExpression.equalTo(CombatResponse.flight())),
-            new GOAPCondition<>(GOAPConstants.NEAREST_ATTACK_TARGET_ENTITY, GOAPExpression.isSome()),
-            new GOAPCondition<>(GOAPConstants.IS_ATTACK_TARGET_ENTITY_IN_RANGE, GOAPExpression.isTrue())
-        );
-    }
+        addPrecondition(GOAPConstants.COMBAT_RESPONSE, GOAPExpression.equalTo(CombatResponse.flight()));
+        addPrecondition(GOAPConstants.NEAREST_ATTACK_TARGET_ENTITY, GOAPExpression.isSome());
+        addPrecondition(GOAPConstants.IS_ATTACK_TARGET_ENTITY_IN_RANGE, GOAPExpression.isTrue());
 
-    @Override
-    public GOAPEffectContainer createEffects() {
-        return GOAPEffectContainer.of(
-            new GOAPEffect.Value<>(GOAPConstants.NEAREST_ATTACK_TARGET_ENTITY, Option.none())
-        );
+        addEffect(new GOAPEffect.Value<>(GOAPConstants.NEAREST_ATTACK_TARGET_ENTITY, Option.none()));
     }
 
     @Override

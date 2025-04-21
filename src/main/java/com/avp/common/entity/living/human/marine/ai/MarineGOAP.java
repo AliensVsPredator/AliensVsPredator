@@ -1,14 +1,13 @@
 package com.avp.common.entity.living.human.marine.ai;
 
+import com.avp.common.entity.ai.action.EquipItemAction;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.monster.Monster;
 
 import com.avp.common.entity.ai.EntityGOAP;
 import com.avp.common.entity.ai.GOAPConstants;
 import com.avp.common.entity.ai.action.AvoidAction;
 import com.avp.common.entity.ai.action.EatFoodToHealAction;
-import com.avp.common.entity.ai.action.EquipFoodAction;
-import com.avp.common.entity.ai.action.EquipMeleeWeaponAction;
-import com.avp.common.entity.ai.action.EquipRangedWeaponAction;
 import com.avp.common.entity.ai.action.MeleeAttackAction;
 import com.avp.common.entity.ai.action.MoveCloserToAttackTargetEntityAction;
 import com.avp.common.entity.ai.action.MoveCloserToFoodItemAction;
@@ -106,11 +105,11 @@ public class MarineGOAP extends EntityGOAP<Marine> {
         addAction(new MoveCloserToAttackTargetEntityAction<>(1.0));
 
         // Melee attack action that the marine can choose if melee is preferable.
-        addAction(new EquipMeleeWeaponAction<>());
+        addAction(new EquipItemAction<>(InteractionHand.MAIN_HAND, ItemType.meleeWeapon()));
         addAction(new MeleeAttackAction<>());
 
         // Ranged attack action that the marine can choose if range is preferable.
-        addAction(new EquipRangedWeaponAction<>());
+        addAction(new EquipItemAction<>(InteractionHand.MAIN_HAND, ItemType.rangedWeapon()));
         addAction(new MarineRangedAttackAction());
 
         // Avoid action to allow the marine to run away from an avoid target.
@@ -127,7 +126,7 @@ public class MarineGOAP extends EntityGOAP<Marine> {
 
         // Actions
         // Marines need to equip food in order to eat it.
-        addAction(new EquipFoodAction<>());
+        addAction(new EquipItemAction<>(InteractionHand.OFF_HAND, ItemType.food()));
         // Marines must eat the equipped food in order to heal.
         addAction(new EatFoodToHealAction<>(marine.getMaxHealth() * 0.2F));
     }

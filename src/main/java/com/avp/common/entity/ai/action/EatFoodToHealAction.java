@@ -11,11 +11,8 @@ import com.avp.common.entity.ai.util.ItemType;
 import com.avp.common.util.AVPInventoryBearer;
 import com.avp.goap.GOAPAction;
 import com.avp.goap.TypedIdentifier;
-import com.avp.goap.condition.GOAPCondition;
-import com.avp.goap.condition.GOAPConditionContainer;
 import com.avp.goap.condition.expression.GOAPExpression;
 import com.avp.goap.effect.GOAPEffect;
-import com.avp.goap.effect.GOAPEffectContainer;
 import com.avp.goap.state.GOAPBlackboard;
 import com.avp.goap.state.GOAPWorldState;
 
@@ -27,22 +24,12 @@ public class EatFoodToHealAction<T extends LivingEntity & AVPInventoryBearer> ex
 
     public EatFoodToHealAction(float healAmount) {
         this.healAmount = healAmount;
-    }
 
-    @Override
-    public GOAPConditionContainer createPreconditions() {
-        return GOAPConditionContainer.of(
-            new GOAPCondition<>(GOAPConstants.COMBAT_RESPONSE, GOAPExpression.equalTo(CombatResponse.rest())),
-            new GOAPCondition<>(GOAPConstants.IS_HEALTHY, GOAPExpression.isFalse()),
-            new GOAPCondition<>(GOAPConstants.OFF_HAND_ITEM_TYPE, GOAPExpression.equalTo(ItemType.food()))
-        );
-    }
+        addPrecondition(GOAPConstants.COMBAT_RESPONSE, GOAPExpression.equalTo(CombatResponse.rest()));
+        addPrecondition(GOAPConstants.IS_HEALTHY, GOAPExpression.isFalse());
+        addPrecondition(GOAPConstants.OFF_HAND_ITEM_TYPE, GOAPExpression.equalTo(ItemType.food()));
 
-    @Override
-    public GOAPEffectContainer createEffects() {
-        return GOAPEffectContainer.of(
-            new GOAPEffect.Value<>(GOAPConstants.IS_HEALTHY, true)
-        );
+        addEffect(new GOAPEffect.Value<>(GOAPConstants.IS_HEALTHY, true));
     }
 
     @Override

@@ -11,9 +11,9 @@ public class GOAPConditionContainer {
         return new GOAPConditionContainer(Arrays.stream(conditions).toList());
     }
 
-    private final List<GOAPCondition<?>> conditions;
+    protected final List<GOAPCondition<?>> conditions;
 
-    private GOAPConditionContainer(List<GOAPCondition<?>> conditions) {
+    protected GOAPConditionContainer(List<GOAPCondition<?>> conditions) {
         this.conditions = conditions;
     }
 

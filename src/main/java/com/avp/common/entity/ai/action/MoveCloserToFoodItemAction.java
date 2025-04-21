@@ -7,11 +7,8 @@ import java.util.function.BiPredicate;
 
 import com.avp.common.entity.ai.GOAPConstants;
 import com.avp.goap.GOAPAction;
-import com.avp.goap.condition.GOAPCondition;
-import com.avp.goap.condition.GOAPConditionContainer;
 import com.avp.goap.condition.expression.GOAPExpression;
 import com.avp.goap.effect.GOAPEffect;
-import com.avp.goap.effect.GOAPEffectContainer;
 import com.avp.goap.state.GOAPBlackboard;
 import com.avp.goap.state.GOAPWorldState;
 
@@ -21,21 +18,11 @@ public class MoveCloserToFoodItemAction<T extends Mob> extends GOAPAction<T> {
 
     public MoveCloserToFoodItemAction(BiPredicate<T, Double> distanceSqrToTargetPredicate) {
         this.distanceSqrToTargetPredicate = distanceSqrToTargetPredicate;
-    }
 
-    @Override
-    public GOAPConditionContainer createPreconditions() {
-        return GOAPConditionContainer.of(
-            new GOAPCondition<>(GOAPConstants.NEAREST_FOOD_ITEM_ENTITY, GOAPExpression.isSome()),
-            new GOAPCondition<>(GOAPConstants.IS_FOOD_TARGET_ITEM_ENTITY_IN_RANGE, GOAPExpression.isFalse())
-        );
-    }
+        addPrecondition(GOAPConstants.NEAREST_FOOD_ITEM_ENTITY, GOAPExpression.isSome());
+        addPrecondition(GOAPConstants.IS_FOOD_TARGET_ITEM_ENTITY_IN_RANGE, GOAPExpression.isFalse());
 
-    @Override
-    public GOAPEffectContainer createEffects() {
-        return GOAPEffectContainer.of(
-            new GOAPEffect.Value<>(GOAPConstants.IS_FOOD_TARGET_ITEM_ENTITY_IN_RANGE, true)
-        );
+        addEffect(new GOAPEffect.Value<>(GOAPConstants.IS_FOOD_TARGET_ITEM_ENTITY_IN_RANGE, true));
     }
 
     @Override

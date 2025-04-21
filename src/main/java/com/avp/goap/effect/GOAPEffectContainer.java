@@ -12,9 +12,9 @@ public class GOAPEffectContainer {
         return new GOAPEffectContainer(Arrays.stream(effects).toList());
     }
 
-    private final List<GOAPEffect<?>> effects;
+    protected final List<GOAPEffect<?>> effects;
 
-    private GOAPEffectContainer(List<GOAPEffect<?>> effects) {
+    protected GOAPEffectContainer(List<GOAPEffect<?>> effects) {
         this.effects = effects;
     }
 

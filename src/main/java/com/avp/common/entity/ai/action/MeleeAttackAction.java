@@ -8,37 +8,26 @@ import com.avp.common.entity.ai.GOAPConstants;
 import com.avp.common.entity.ai.util.CombatResponse;
 import com.avp.common.entity.ai.util.ItemType;
 import com.avp.goap.GOAPAction;
-import com.avp.goap.condition.GOAPCondition;
-import com.avp.goap.condition.GOAPConditionContainer;
 import com.avp.goap.condition.expression.GOAPExpression;
 import com.avp.goap.effect.GOAPEffect;
-import com.avp.goap.effect.GOAPEffectContainer;
 import com.avp.goap.state.GOAPBlackboard;
 import com.avp.goap.state.GOAPWorldState;
 
 public class MeleeAttackAction<T extends Mob> extends GOAPAction<T> {
 
-    @Override
-    public GOAPConditionContainer createPreconditions() {
-        return GOAPConditionContainer.of(
-            new GOAPCondition<>(
-                GOAPConstants.COMBAT_RESPONSE,
-                GOAPExpression.equalTo(new CombatResponse.Fight(CombatResponse.FightType.MELEE))
-            ),
-            new GOAPCondition<>(
-                GOAPConstants.MAIN_HAND_ITEM_TYPE,
-                GOAPExpression.equalTo(ItemType.meleeWeapon())
-            ),
-            new GOAPCondition<>(GOAPConstants.NEAREST_ATTACK_TARGET_ENTITY, GOAPExpression.isSome()),
-            new GOAPCondition<>(GOAPConstants.IS_ATTACK_TARGET_ENTITY_IN_RANGE, GOAPExpression.equalTo(true))
+    public MeleeAttackAction() {
+        addPrecondition(
+            GOAPConstants.COMBAT_RESPONSE,
+            GOAPExpression.equalTo(new CombatResponse.Fight(CombatResponse.FightType.MELEE))
         );
-    }
+        addPrecondition(
+            GOAPConstants.MAIN_HAND_ITEM_TYPE,
+            GOAPExpression.equalTo(ItemType.meleeWeapon())
+        );
+        addPrecondition(GOAPConstants.NEAREST_ATTACK_TARGET_ENTITY, GOAPExpression.isSome());
+        addPrecondition(GOAPConstants.IS_ATTACK_TARGET_ENTITY_IN_RANGE, GOAPExpression.equalTo(true));
 
-    @Override
-    public GOAPEffectContainer createEffects() {
-        return GOAPEffectContainer.of(
-            new GOAPEffect.Value<>(GOAPConstants.NEAREST_ATTACK_TARGET_ENTITY, Option.none())
-        );
+        addEffect(new GOAPEffect.Value<>(GOAPConstants.NEAREST_ATTACK_TARGET_ENTITY, Option.none()));
     }
 
     @Override
