@@ -27,7 +27,7 @@ public class GOAPConstants {
 
     public static final TypedIdentifier<ItemType> MAIN_HAND_ITEM_TYPE = new TypedIdentifier<>("mainHandItemType");
 
-    public static final TypedIdentifier<Boolean> HAS_RANGED_WEAPON_IN_INVENTORY = new TypedIdentifier<>("hasRangedWeaponInInventory");
+    public static final TypedIdentifier<ItemType> OFF_HAND_ITEM_TYPE = new TypedIdentifier<>("offHandItemType");
 
     // Combat state
 
