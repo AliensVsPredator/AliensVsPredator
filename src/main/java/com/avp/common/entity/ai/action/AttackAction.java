@@ -13,16 +13,16 @@ import com.avp.goap.effect.GOAPEffect;
 import com.avp.goap.state.GOAPBlackboard;
 import com.avp.goap.state.GOAPWorldState;
 
-public class MeleeAttackAction<T extends Mob> extends GOAPAction<T> {
+public class AttackAction<T extends Mob> extends GOAPAction<T> {
 
-    public MeleeAttackAction() {
+    public AttackAction(CombatResponse.FightType fightType) {
         addPrecondition(
             GOAPConstants.COMBAT_RESPONSE,
-            GOAPExpression.equalTo(new CombatResponse.Fight(CombatResponse.FightType.MELEE))
+            GOAPExpression.equalTo(new CombatResponse.Fight(fightType))
         );
         addPrecondition(
             GOAPConstants.MAIN_HAND_ITEM_TYPE,
-            GOAPExpression.equalTo(ItemType.meleeWeapon())
+            GOAPExpression.equalTo(fightType == CombatResponse.FightType.MELEE ? ItemType.meleeWeapon() : ItemType.rangedWeapon())
         );
         addPrecondition(GOAPConstants.NEAREST_ATTACK_TARGET_ENTITY, GOAPExpression.isSome());
         addPrecondition(GOAPConstants.IS_ATTACK_TARGET_ENTITY_IN_RANGE, GOAPExpression.equalTo(true));
@@ -46,12 +46,12 @@ public class MeleeAttackAction<T extends Mob> extends GOAPAction<T> {
             return true;
         }
 
-        performMeleeAttack(context, target);
+        performAttack(context, target, blackboard);
 
         return false;
     }
 
-    protected void performMeleeAttack(T context, LivingEntity target) {
+    protected void performAttack(T context, LivingEntity target, GOAPBlackboard blackboard) {
         context.doHurtTarget(target);
     }
 }

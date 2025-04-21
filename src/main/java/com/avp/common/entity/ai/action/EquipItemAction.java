@@ -1,19 +1,17 @@
 package com.avp.common.entity.ai.action;
 
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.ItemStack;
+
 import com.avp.common.entity.ai.GOAPConstants;
 import com.avp.common.entity.ai.util.ItemType;
 import com.avp.common.util.AVPInventoryBearer;
 import com.avp.goap.GOAPAction;
-import com.avp.goap.TypedIdentifier;
 import com.avp.goap.condition.expression.GOAPExpression;
 import com.avp.goap.effect.GOAPEffect;
 import com.avp.goap.state.GOAPBlackboard;
 import com.avp.goap.state.GOAPWorldState;
-import net.minecraft.core.component.DataComponents;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.item.ItemStack;
 
 public class EquipItemAction<T extends LivingEntity & AVPInventoryBearer> extends GOAPAction<T> {
 

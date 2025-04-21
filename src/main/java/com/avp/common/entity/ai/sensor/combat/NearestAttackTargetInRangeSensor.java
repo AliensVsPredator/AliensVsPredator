@@ -12,11 +12,11 @@ import com.avp.goap.GOAPSensor;
 import com.avp.goap.state.GOAPMutableWorldState;
 import com.avp.goap.state.GOAPWorldState;
 
-public class AttackTargetInRangeSensor<T extends LivingEntity> implements GOAPSensor<T> {
+public class NearestAttackTargetInRangeSensor<T extends LivingEntity> implements GOAPSensor<T> {
 
     private final BiPredicate<GOAPWorldState, Double> distanceSqrToTargetPredicate;
 
-    public AttackTargetInRangeSensor(BiPredicate<GOAPWorldState, Double> distanceSqrToTargetPredicate) {
+    public NearestAttackTargetInRangeSensor(BiPredicate<GOAPWorldState, Double> distanceSqrToTargetPredicate) {
         this.distanceSqrToTargetPredicate = distanceSqrToTargetPredicate;
     }
 

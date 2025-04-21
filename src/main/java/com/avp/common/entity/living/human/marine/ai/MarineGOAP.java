@@ -1,24 +1,23 @@
 package com.avp.common.entity.living.human.marine.ai;
 
-import com.avp.common.entity.ai.action.EquipItemAction;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.monster.Monster;
 
 import com.avp.common.entity.ai.EntityGOAP;
 import com.avp.common.entity.ai.GOAPConstants;
+import com.avp.common.entity.ai.action.AttackAction;
 import com.avp.common.entity.ai.action.AvoidAction;
 import com.avp.common.entity.ai.action.EatFoodToHealAction;
-import com.avp.common.entity.ai.action.MeleeAttackAction;
-import com.avp.common.entity.ai.action.MoveCloserToAttackTargetEntityAction;
-import com.avp.common.entity.ai.action.MoveCloserToFoodItemAction;
-import com.avp.common.entity.ai.action.PickUpFoodAction;
+import com.avp.common.entity.ai.action.EquipItemAction;
+import com.avp.common.entity.ai.action.MoveToTargetEntityAction;
+import com.avp.common.entity.ai.action.PickUpItemAction;
 import com.avp.common.entity.ai.goal.HealthyGoal;
 import com.avp.common.entity.ai.goal.NoTargetGoal;
 import com.avp.common.entity.ai.goal.PickUpFoodGoal;
-import com.avp.common.entity.ai.sensor.combat.AttackTargetInRangeSensor;
 import com.avp.common.entity.ai.sensor.combat.CombatResponseSensor;
 import com.avp.common.entity.ai.sensor.combat.NearbyAttackTargetEntitiesSensor;
 import com.avp.common.entity.ai.sensor.combat.NearestAttackTargetEntitySensor;
+import com.avp.common.entity.ai.sensor.combat.NearestAttackTargetInRangeSensor;
 import com.avp.common.entity.ai.sensor.entity.FoodTargetEntityInRangeSensor;
 import com.avp.common.entity.ai.sensor.entity.NearbyEntitiesSensor;
 import com.avp.common.entity.ai.sensor.entity.NearbyFoodItemEntitiesSensor;
@@ -27,9 +26,11 @@ import com.avp.common.entity.ai.sensor.entity.NearbyLivingEntitiesSensor;
 import com.avp.common.entity.ai.sensor.entity.NearestFoodItemEntitySensor;
 import com.avp.common.entity.ai.sensor.inventory.InventorySensor;
 import com.avp.common.entity.ai.sensor.stats.IsHealthySensor;
+import com.avp.common.entity.ai.util.CombatResponse;
 import com.avp.common.entity.ai.util.ItemType;
 import com.avp.common.entity.living.human.marine.Marine;
 import com.avp.common.item.GunItem;
+import com.avp.goap.state.GOAPWorldState;
 
 public class MarineGOAP extends EntityGOAP<Marine> {
 
@@ -38,7 +39,7 @@ public class MarineGOAP extends EntityGOAP<Marine> {
         // TODO: Organize sensors automatically based on dependencies.
         addBaseRoutines();
         addInventoryRoutines();
-        addFoodPickupRoutines();
+        addFoodPickupRoutines(marine);
         addCombatRoutines(marine);
         addSelfCareRoutines(marine);
     }
@@ -56,7 +57,7 @@ public class MarineGOAP extends EntityGOAP<Marine> {
     }
 
     // Routines that enable the marine to target utility items and pick them up.
-    public void addFoodPickupRoutines() {
+    public void addFoodPickupRoutines(Marine marine) {
         // Sensors
         addSensor(NearbyFoodItemEntitiesSensor.INSTANCE);
         addSensor(NearestFoodItemEntitySensor.INSTANCE);
@@ -66,8 +67,21 @@ public class MarineGOAP extends EntityGOAP<Marine> {
         addGoal(new PickUpFoodGoal());
 
         // Actions
-        addAction(new MoveCloserToFoodItemAction<>((self, distanceSqr) -> distanceSqr < 1));
-        addAction(new PickUpFoodAction<>());
+        addAction(
+            new MoveToTargetEntityAction<>(
+                GOAPConstants.NEAREST_FOOD_ITEM_ENTITY,
+                GOAPConstants.IS_FOOD_TARGET_ITEM_ENTITY_IN_RANGE,
+                1.0,
+                (self, distanceSqr) -> distanceSqr < 1
+            )
+        );
+        addAction(
+            new PickUpItemAction<>(
+                GOAPConstants.NEAREST_FOOD_ITEM_ENTITY,
+                GOAPConstants.IS_FOOD_TARGET_ITEM_ENTITY_IN_RANGE,
+                worldState -> marine.getHealth() / marine.getMaxHealth()
+            )
+        );
     }
 
     // Routines that enable the marine to fight target entities.
@@ -76,23 +90,7 @@ public class MarineGOAP extends EntityGOAP<Marine> {
         addSensor(new NearbyAttackTargetEntitiesSensor<>(target -> target instanceof Monster));
         addSensor(NearestAttackTargetEntitySensor.INSTANCE);
         addSensor(
-            new AttackTargetInRangeSensor<>(
-                (worldState, distanceSqr) -> switch (worldState.getOrDefault(GOAPConstants.MAIN_HAND_ITEM_TYPE, ItemType.none())) {
-                    case ItemType.MeleeWeapon meleeWeapon -> distanceSqr <= 2 * 2;
-                    case ItemType.RangedWeapon rangedWeapon -> {
-                        if (marine.getMainHandItem().getItem() instanceof GunItem gunItem) {
-                            var fireMode = gunItem.gunConfig.getDefaultFireMode();
-                            var range = fireMode.range();
-                            yield distanceSqr < range * range;
-                        }
-
-                        yield distanceSqr < 16 * 16;
-                    }
-                    case ItemType.Food food -> false;
-                    case ItemType.None none -> false;
-                    case ItemType.Other other -> false;
-                }
-            )
+            new NearestAttackTargetInRangeSensor<>(((worldState, distanceSqr) -> isTargetInRange(marine, worldState, distanceSqr)))
         );
         addSensor(new CombatResponseSensor<>());
 
@@ -102,11 +100,18 @@ public class MarineGOAP extends EntityGOAP<Marine> {
 
         // Actions
         // An action that allows the marine to move closer to the attack target so that the attack target is in range.
-        addAction(new MoveCloserToAttackTargetEntityAction<>(1.0));
+        addAction(
+            new MoveToTargetEntityAction<>(
+                GOAPConstants.NEAREST_ATTACK_TARGET_ENTITY,
+                GOAPConstants.IS_ATTACK_TARGET_ENTITY_IN_RANGE,
+                1.0,
+                (worldState, distanceSqr) -> isTargetInRange(marine, worldState, distanceSqr)
+            )
+        );
 
         // Melee attack action that the marine can choose if melee is preferable.
         addAction(new EquipItemAction<>(InteractionHand.MAIN_HAND, ItemType.meleeWeapon()));
-        addAction(new MeleeAttackAction<>());
+        addAction(new AttackAction<>(CombatResponse.FightType.MELEE));
 
         // Ranged attack action that the marine can choose if range is preferable.
         addAction(new EquipItemAction<>(InteractionHand.MAIN_HAND, ItemType.rangedWeapon()));
@@ -129,5 +134,23 @@ public class MarineGOAP extends EntityGOAP<Marine> {
         addAction(new EquipItemAction<>(InteractionHand.OFF_HAND, ItemType.food()));
         // Marines must eat the equipped food in order to heal.
         addAction(new EatFoodToHealAction<>(marine.getMaxHealth() * 0.2F));
+    }
+
+    private boolean isTargetInRange(Marine marine, GOAPWorldState worldState, double distanceSqr) {
+        return switch (worldState.getOrDefault(GOAPConstants.MAIN_HAND_ITEM_TYPE, ItemType.none())) {
+            case ItemType.MeleeWeapon meleeWeapon -> distanceSqr <= 2 * 2;
+            case ItemType.RangedWeapon rangedWeapon -> {
+                if (marine.getMainHandItem().getItem() instanceof GunItem gunItem) {
+                    var fireMode = gunItem.gunConfig.getDefaultFireMode();
+                    var range = fireMode.range();
+                    yield distanceSqr < range * range;
+                }
+
+                yield distanceSqr < 16 * 16;
+            }
+            case ItemType.Food food -> false;
+            case ItemType.None none -> false;
+            case ItemType.Other other -> false;
+        };
     }
 }

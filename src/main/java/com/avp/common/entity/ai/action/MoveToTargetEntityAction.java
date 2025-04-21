@@ -1,38 +1,56 @@
 package com.avp.common.entity.ai.action;
 
 import com.bvanseg.just.functional.option.Option;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 
-import com.avp.common.entity.ai.GOAPConstants;
+import java.util.function.BiPredicate;
+
 import com.avp.goap.GOAPAction;
+import com.avp.goap.TypedIdentifier;
 import com.avp.goap.condition.expression.GOAPExpression;
 import com.avp.goap.effect.GOAPEffect;
 import com.avp.goap.state.GOAPBlackboard;
 import com.avp.goap.state.GOAPWorldState;
 
-public class MoveCloserToAttackTargetEntityAction<T extends Mob> extends GOAPAction<T> {
+public class MoveToTargetEntityAction<T extends Mob, E extends Entity> extends GOAPAction<T> {
+
+    private final BiPredicate<GOAPWorldState, Double> distanceSqrIsInRangePredicate;
+
+    private final TypedIdentifier<Option<? extends E>> nearestTargetIdentifier;
 
     private final double speedMultiplier;
 
-    public MoveCloserToAttackTargetEntityAction(double speedMultiplier) {
+    public MoveToTargetEntityAction(
+        TypedIdentifier<Option<? extends E>> nearestTargetIdentifier,
+        TypedIdentifier<Boolean> isInRangeIdentifier,
+        double speedMultiplier,
+        BiPredicate<GOAPWorldState, Double> distanceSqrIsInRangePredicate
+    ) {
+        this.distanceSqrIsInRangePredicate = distanceSqrIsInRangePredicate;
+        this.nearestTargetIdentifier = nearestTargetIdentifier;
         this.speedMultiplier = speedMultiplier;
 
-        addPrecondition(GOAPConstants.NEAREST_ATTACK_TARGET_ENTITY, GOAPExpression.isSome());
-        addPrecondition(GOAPConstants.IS_ATTACK_TARGET_ENTITY_IN_RANGE, GOAPExpression.isFalse());
+        addPrecondition(nearestTargetIdentifier, GOAPExpression.isSome());
+        addPrecondition(isInRangeIdentifier, GOAPExpression.isFalse());
 
-        addEffect(new GOAPEffect.Value<>(GOAPConstants.IS_ATTACK_TARGET_ENTITY_IN_RANGE, true));
+        addEffect(new GOAPEffect.Value<>(isInRangeIdentifier, true));
     }
 
     @Override
     public boolean perform(T context, GOAPWorldState worldState, GOAPBlackboard blackboard) {
-        var targetEntityOption = worldState.getOrDefault(GOAPConstants.NEAREST_ATTACK_TARGET_ENTITY, Option.none());
+        var targetEntityOption = worldState.getOrDefault(nearestTargetIdentifier, Option.none());
 
         if (targetEntityOption.isNone()) {
             return true;
         }
 
         var target = targetEntityOption.unwrap();
+
+        if (distanceSqrIsInRangePredicate.test(worldState, context.distanceToSqr(target))) {
+            return true;
+        }
 
         var targetPos = target.blockPosition().below();
         var state = context.level().getBlockState(targetPos);
@@ -53,7 +71,7 @@ public class MoveCloserToAttackTargetEntityAction<T extends Mob> extends GOAPAct
 
     @Override
     public float getCost(T context, GOAPWorldState worldState) {
-        return worldState.getOrDefault(GOAPConstants.NEAREST_ATTACK_TARGET_ENTITY, Option.none())
+        return worldState.getOrDefault(nearestTargetIdentifier, Option.none())
             .match(
                 target -> {
                     var distSqr = (float) context.distanceToSqr(target);
