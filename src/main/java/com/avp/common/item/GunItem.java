@@ -5,17 +5,14 @@ import mod.azure.azurelib.rewrite.animation.play_behavior.AzPlayBehaviors;
 import net.fabricmc.fabric.api.item.v1.EnchantingContext;
 import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.EquipmentSlotGroup;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -23,28 +20,15 @@ import net.minecraft.world.item.ItemUtils;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.ItemAttributeModifiers;
 import net.minecraft.world.item.enchantment.Enchantment;
-import net.minecraft.world.item.enchantment.Enchantments;
-import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
-import java.time.Duration;
 import java.util.List;
-import java.util.Objects;
 
-import com.avp.common.block.AVPBlocks;
-import com.avp.common.block_item.AVPBlockItems;
 import com.avp.common.component.DataComponents;
-import com.avp.common.item.gun.FireModeConfig;
 import com.avp.common.item.gun.GunConfig;
-import com.avp.common.item.gun.GunData;
-import com.avp.common.item.gun.attack.GunAttackConfig;
 import com.avp.common.item.old_painless.OldPainlessAnimationRefs;
-import com.avp.common.util.AVPPredicates;
-import com.avp.common.util.EnchantmentUtil;
-import com.avp.common.util.GunLightUtil;
 import com.avp.common.util.TooltipUtil;
-import com.avp.server.ServerScheduler;
 
 public class GunItem extends Item {
 
@@ -128,91 +112,25 @@ public class GunItem extends Item {
 
     @Override
     public void onUseTick(Level level, LivingEntity livingEntity, ItemStack itemStack, int tickCountdown) {
-        if (level.isClientSide) {
+        if (level.isClientSide || !(livingEntity instanceof Player player)) {
             return;
         }
 
-        if (!(livingEntity instanceof Player player)) {
-            return;
-        }
+        var tickProgress = Math.abs(START_TICK_PROGRESS - tickCountdown);
 
-        if (player.getCooldowns().isOnCooldown(this)) {
-            return;
-        }
-
-        var tickProgress = START_TICK_PROGRESS - tickCountdown;
-        var positiveTickProgress = Math.abs(tickProgress);
-        var isFirstTick = positiveTickProgress == 0;
-        var fireModeConfig = gunConfig.getDefaultFireMode();
-        var shootStartSoundEvent = fireModeConfig.shootStartSoundEvent();
-        var shootDelayInTicks = fireModeConfig.shootDelayInTicks();
-
-        if (shootStartSoundEvent != null && isFirstTick) {
-            level.playSound(null, player.blockPosition(), shootStartSoundEvent, SoundSource.PLAYERS);
-        }
-
-        if (positiveTickProgress < shootDelayInTicks) {
-            return;
-        }
-
-        if (!player.getCooldowns().isOnCooldown(this)) {
-            tryShoot(player, itemStack, fireModeConfig, positiveTickProgress, tickProgress);
-            player.getCooldowns().addCooldown(this, fireModeConfig.cooldownInTicks());
-        }
-    }
-
-    public void tryShoot(
-        LivingEntity shooter,
-        ItemStack itemStack,
-        FireModeConfig fireModeConfig,
-        int positiveTickProgress,
-        int tickProgress
-    ) {
-        var level = shooter.level();
-        var shootDelayInTicks = fireModeConfig.shootDelayInTicks();
-        var primaryShootSoundFrequencyInTicks = fireModeConfig.primaryShootSoundFrequencyInTicks();
-        var secondaryShootSoundFrequencyInTicks = fireModeConfig.secondaryShootSoundFrequencyInTicks();
-        int currentAmmunition = itemStack.getOrDefault(DataComponents.AMMUNITION, 0);
-        var isShooterImmortal = AVPPredicates.IS_IMMORTAL.test(shooter);
-        var hasInfinity = EnchantmentUtil.getLevel(level, itemStack, Enchantments.INFINITY) > 0;
-
-        // TODO: Revisit this.
-        if (shooter instanceof Player && !isShooterImmortal && !hasInfinity && currentAmmunition <= 0) {
-            reload((ServerPlayer) shooter);
-            return;
-        }
-
-        var gunAttackConfig = new GunAttackConfig(gunConfig, fireModeConfig, shooter, itemStack);
-        var gunAttack = fireModeConfig
-            .gunAttackSupplier()
-            .apply(gunAttackConfig);
-
-        playUseAnimations(shooter, itemStack);
-        isFiring = true;
-        gunAttack.shoot();
-        GunLightUtil.spawnLightSource(shooter);
-
-        if (!isShooterImmortal) {
-            if (!hasInfinity) {
-                itemStack.set(DataComponents.AMMUNITION, Math.max(currentAmmunition - fireModeConfig.consumedAmmunitionPerShot(), 0));
-            }
-
-            itemStack.hurtAndBreak(1, shooter, EquipmentSlot.MAINHAND);
-        }
-
-        var secondaryShootSoundEvent = fireModeConfig.secondaryShootSoundEvent();
-
-        if (
-            secondaryShootSoundEvent != null &&
-                (positiveTickProgress == shootDelayInTicks || (positiveTickProgress + shootDelayInTicks)
-                    % secondaryShootSoundFrequencyInTicks == 0)
-        ) {
-            level.playSound(null, shooter.blockPosition(), secondaryShootSoundEvent, SoundSource.PLAYERS);
-        }
-
-        if (primaryShootSoundFrequencyInTicks <= 0 || tickProgress % primaryShootSoundFrequencyInTicks == 0) {
-            level.playSound(null, shooter.blockPosition(), fireModeConfig.primaryShootSoundEvent(), SoundSource.PLAYERS);
-        }
+        GunShootContext.create(player, itemStack, tickProgress)
+            .map(GunShootContext::shoot)
+            .ifSome(result -> {
+                switch (result) {
+                    // No side effects to run for these results at the time of writing.
+                    case COOLDOWN, DELAYED, RELOADING -> { /* NO-OP */ }
+                    case SHOT -> {
+                        playUseAnimations(livingEntity, itemStack);
+                        // TODO: Fix this, this should not be on the item class itself but rather the item stack.
+                        isFiring = true;
+                    }
+                }
+            });
     }
 
     @Override
@@ -223,6 +141,19 @@ public class GunItem extends Item {
     @Override
     public @NotNull InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand interactionHand) {
         return ItemUtils.startUsingInstantly(level, player, interactionHand);
+    }
+
+    @Override
+    public void inventoryTick(ItemStack itemStack, Level level, Entity entity, int i, boolean bl) {
+        if (bl && entity instanceof LivingEntity livingEntity && !livingEntity.isUsingItem()) {
+            playReleaseUsingAnimations(livingEntity, itemStack);
+        }
+
+        super.inventoryTick(itemStack, level, entity, i, bl);
+    }
+
+    public GunConfig getGunConfig() {
+        return gunConfig;
     }
 
     @Override
@@ -272,185 +203,5 @@ public class GunItem extends Item {
                 ItemAttributeModifiers.ATTRIBUTE_MODIFIER_FORMAT.format(fireMode.cooldownInTicks() / 20D) + " / Sec"
             )
         );
-    }
-
-    public GunConfig gunConfig() {
-        return gunConfig;
-    }
-
-    public static void reload(ServerPlayer player) {
-        if (player == null) {
-            return;
-        }
-
-        var level = player.level();
-        var usedItemHand = player.getUsedItemHand();
-        var itemStack = player.getItemInHand(usedItemHand);
-        var item = itemStack.getItem();
-        int currentAmmunition = itemStack.getOrDefault(DataComponents.AMMUNITION, 0);
-
-        if (!(item instanceof GunItem gunItem)) {
-            return;
-        }
-
-        var gunConfig = gunItem.gunConfig();
-        var maximumAmmunition = gunConfig.maximumAmmunition();
-
-        // TODO: Kinda hacky, find a better way to do this.
-        if (gunConfig == GunData.OLD_PAINLESS) {
-            return;
-        }
-
-        if (currentAmmunition >= maximumAmmunition) {
-            return;
-        }
-
-        var fireModeConfig = gunConfig.getDefaultFireMode();
-        var reloadStartSoundEvent = fireModeConfig.reloadStartSoundEvent();
-        var reloadTimeModifier = EnchantmentUtil.getLevel(level, itemStack, Enchantments.QUICK_CHARGE) * 0.2;
-        var reloadAmount = gunConfig.reloadAmount();
-        var reloadTimeInTicks = (int) (gunConfig.reloadTimeInTicks() * (1 - reloadTimeModifier));
-        var ammunitionItemSupplier = gunConfig.ammunitionItemSupplier();
-
-        if (ammunitionItemSupplier == null) {
-            return;
-        }
-
-        var ammunitionItem = ammunitionItemSupplier.get();
-        var neededAmmunition = (int) Math.ceil((maximumAmmunition - currentAmmunition) / ((float) reloadAmount));
-        var playerInventory = player.getInventory();
-        final int[] ammunitionCountWrapper = { 0 };
-        for (var itemStack2 : playerInventory.items) {
-            if (itemStack2.is(ammunitionItem.asItem())) {
-                ammunitionCountWrapper[0] += itemStack2.getCount();
-            }
-
-            if (itemStack2.is(AVPBlocks.AMMO_CHEST.asItem())) {
-                var container = itemStack2.get(net.minecraft.core.component.DataComponents.CONTAINER);
-                if (container != null) {
-                    var chestContents = container.nonEmptyItems();
-
-                    var iterator = chestContents.spliterator();
-                    iterator.forEachRemaining(chestStack -> {
-                        if (chestStack.is(ammunitionItem.asItem())) {
-                            ammunitionCountWrapper[0] += chestStack.getCount();
-                        }
-                    });
-                }
-            }
-        }
-        var ammunitionCount = ammunitionCountWrapper[0];
-        var ammunitionCountToConsume = Math.min(neededAmmunition, ammunitionCount);
-
-        if (ammunitionCountToConsume == 0) {
-            return;
-        }
-
-        consumeItemAmountFromInventory(ammunitionCountToConsume, playerInventory, ammunitionItem, player);
-
-        reload.sendForItem(player, itemStack);
-
-        if (reloadStartSoundEvent != null) {
-            level.playSound(null, player.blockPosition(), reloadStartSoundEvent, SoundSource.PLAYERS);
-        }
-
-        player.getCooldowns().addCooldown(itemStack.getItem(), reloadTimeInTicks);
-
-        itemStack.set(
-            DataComponents.AMMUNITION,
-            Math.min(currentAmmunition + (ammunitionCountToConsume * reloadAmount), maximumAmmunition)
-        );
-
-        ServerScheduler.schedule(() -> {
-            var reloadFinishSoundEvent = fireModeConfig.reloadFinishSoundEvent();
-
-            if (reloadFinishSoundEvent != null) {
-                var interactionHand = player.getUsedItemHand();
-                var itemInHand = player.getItemInHand(interactionHand);
-
-                if (Objects.equals(itemStack, itemInHand)) {
-                    level.playSound(null, player.blockPosition(), reloadFinishSoundEvent, SoundSource.PLAYERS);
-                }
-            }
-        }, Duration.ofMillis(reloadTimeInTicks * 50L));
-    }
-
-    protected static boolean consumeItemAmountFromInventory(
-        int ammunitionCountToConsume,
-        Inventory playerInventory,
-        ItemLike ammunitionItem,
-        Player player
-    ) {
-        var consumeTracker = ammunitionCountToConsume;
-
-        for (var i = 0; i < playerInventory.items.size(); i++) {
-            var playerItemStack = playerInventory.items.get(i);
-
-            var isAmmoChest = playerItemStack.is(AVPBlockItems.AMMO_CHEST);
-
-            if (isAmmoChest) {
-                consumeTracker = consumeFromAmmoChestItem(playerItemStack, consumeTracker, ammunitionItem);
-
-                if (player instanceof ServerPlayer serverPlayer) {
-                    serverPlayer.getInventory().setChanged();
-                    serverPlayer.containerMenu.broadcastChanges();
-                }
-
-                if (consumeTracker == 0) {
-                    break;
-                }
-            }
-        }
-
-        for (var i = 0; i < playerInventory.items.size(); i++) {
-            var playerItemStack = playerInventory.items.get(i);
-
-            if (playerItemStack.is(ammunitionItem.asItem())) {
-                var consumeCount = Math.min(playerItemStack.getCount(), consumeTracker);
-                playerItemStack.shrink(consumeCount);
-                consumeTracker -= consumeCount;
-
-                if (consumeTracker == 0) {
-                    break;
-                }
-            }
-        }
-
-        return consumeTracker < ammunitionCountToConsume;
-    }
-
-    private static int consumeFromAmmoChestItem(ItemStack ammoChestStack, int amountToConsume, ItemLike ammunitionItem) {
-        final int[] consumeTracker = { amountToConsume };
-
-        var container = ammoChestStack.get(net.minecraft.core.component.DataComponents.CONTAINER);
-        if (container == null) {
-            return consumeTracker[0];
-        }
-
-        var chestContents = container.nonEmptyItems();
-
-        var iterator = chestContents.spliterator();
-        iterator.forEachRemaining(itemStack -> {
-            if (consumeTracker[0] == 0) {
-                return;
-            }
-
-            if (itemStack.is(ammunitionItem.asItem())) {
-                var consumeCount = Math.min(itemStack.getCount(), consumeTracker[0]);
-                itemStack.shrink(consumeCount);
-
-                consumeTracker[0] -= consumeCount;
-            }
-        });
-
-        return consumeTracker[0];
-    }
-
-    @Override
-    public void inventoryTick(ItemStack itemStack, Level level, Entity entity, int i, boolean bl) {
-        if (bl && entity instanceof LivingEntity livingEntity && !livingEntity.isUsingItem()) {
-            playReleaseUsingAnimations(livingEntity, itemStack);
-        }
-        super.inventoryTick(itemStack, level, entity, i, bl);
     }
 }
