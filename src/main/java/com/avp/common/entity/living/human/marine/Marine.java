@@ -1,14 +1,12 @@
 package com.avp.common.entity.living.human.marine;
 
-import com.bvanseg.just.functional.option.Option;
+import com.avp.common.util.AVPInventory;
+import com.avp.common.util.AVPInventoryBearer;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.world.DifficultyInstance;
-import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.npc.InventoryCarrier;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -23,9 +21,17 @@ import com.avp.AVP;
 import com.avp.common.entity.living.human.AbstractHuman;
 import com.avp.common.entity.living.human.marine.ai.MarineGOAP;
 import com.avp.common.item.AVPItems;
-import com.avp.common.util.ItemUtil;
 
-public class Marine extends AbstractHuman implements InventoryCarrier {
+public class Marine extends AbstractHuman implements AVPInventoryBearer {
+
+    private static final List<List<Item>> USABLE_ARMOR_ITEMS = List.of(
+        List.of(
+            Items.IRON_HELMET,
+            Items.IRON_CHESTPLATE,
+            Items.IRON_LEGGINGS,
+            Items.IRON_BOOTS
+        )
+    );
 
     private static final List<Item> USABLE_WEAPON_ITEMS = List.of(
         AVPItems.M88MOD4_COMBAT_PISTOL,
@@ -44,19 +50,17 @@ public class Marine extends AbstractHuman implements InventoryCarrier {
         EquipmentSlot.FEET
     );
 
-    private static final String INVENTORY_KEY = "inventory";
-
     private final MarineAnimationDispatcher animationDispatcher;
 
     private final MarineGOAP goap;
 
-    private final SimpleContainer inventory;
+    private final MarineInventory marineInventory;
 
     public Marine(EntityType<? extends PathfinderMob> entityType, Level level) {
         super(entityType, level);
         this.animationDispatcher = new MarineAnimationDispatcher(this);
         this.goap = new MarineGOAP(this);
-        this.inventory = new SimpleContainer(27);
+        this.marineInventory = new MarineInventory(this);
     }
 
     public static AttributeSupplier.Builder createMarineAttributes() {
@@ -78,21 +82,12 @@ public class Marine extends AbstractHuman implements InventoryCarrier {
         if (!level().isClientSide) {
             goap.update(this);
         }
-
-        if (this.getTarget() != null && this.getTarget() instanceof Marine) {
-            this.setTarget(null);
-        }
     }
 
     @Override
     protected void dropEquipment() {
         super.dropEquipment();
-        // Drops the marine's equipment when they die.
-        inventory.removeAllItems()
-            .stream()
-            .map(itemStack -> ItemUtil.drop(this, itemStack, true, false))
-            .flatMap(Option::toStream)
-            .forEach(itemEntity -> level().addFreshEntity(itemEntity));
+        marineInventory.dropItems();
     }
 
     @Override
@@ -102,62 +97,46 @@ public class Marine extends AbstractHuman implements InventoryCarrier {
         @NotNull MobSpawnType spawnType,
         @Nullable SpawnGroupData spawnGroupData
     ) {
-        inventory.addItem(makeInitialWeapon());
+        addInitialWeapon();
 
         if (random.nextInt(100) <= 10) {
-            inventory.addItem(new ItemStack(AVPItems.GRENADE));
-            makeInitialArmor();
+            marineInventory.addPersonalItem(new ItemStack(AVPItems.GRENADE));
+            addInitialArmor();
         }
 
         return super.finalizeSpawn(level, difficulty, spawnType, spawnGroupData);
     }
 
     @Override
+    public AVPInventory getInventory() {
+        return marineInventory;
+    }
+
+    @Override
     public void readAdditionalSaveData(CompoundTag compoundTag) {
         super.readAdditionalSaveData(compoundTag);
-        inventory.fromTag(compoundTag.getList(INVENTORY_KEY, Tag.TAG_COMPOUND), level().registryAccess());
+        marineInventory.load(compoundTag);
     }
 
     @Override
     public void addAdditionalSaveData(CompoundTag compoundTag) {
         super.addAdditionalSaveData(compoundTag);
-        compoundTag.put(INVENTORY_KEY, inventory.createTag(level().registryAccess()));
+        marineInventory.save(compoundTag);
     }
 
-    @Override
-    public @NotNull SimpleContainer getInventory() {
-        return inventory;
-    }
-
-    private void makeInitialArmor() {
-        var selectedArmor = List.of(
-            List.of(
-                Items.IRON_HELMET,
-                Items.IRON_CHESTPLATE,
-                Items.IRON_LEGGINGS,
-                Items.IRON_BOOTS
-            ),
-            List.of(
-                Items.IRON_HELMET,
-                Items.IRON_CHESTPLATE,
-                Items.IRON_LEGGINGS,
-                Items.IRON_BOOTS
-            )
-        )
-            .get(this.getRandom().nextIntBetweenInclusive(0, 1))
+    private void addInitialArmor() {
+        var randomArmorSetIndex = getRandom().nextInt(USABLE_ARMOR_ITEMS.size());
+        var selectedArmor = USABLE_ARMOR_ITEMS.get(randomArmorSetIndex)
             .stream()
             .map(ItemStack::new)
             .toArray(ItemStack[]::new);
 
         for (var i = 0; i < ARMOR_EQUIPMENT_SLOTS.size(); i++) {
-            inventory.addItem(selectedArmor[i]);
+            marineInventory.addPersonalItem(selectedArmor[i]);
         }
     }
 
-    private ItemStack makeInitialWeapon() {
-        var randomIndex = random.nextInt(USABLE_WEAPON_ITEMS.size());
-        var randomWeaponItem = USABLE_WEAPON_ITEMS.get(randomIndex);
-
-        return new ItemStack(randomWeaponItem);
+    private void addInitialWeapon() {
+        marineInventory.addPersonalItem(new ItemStack(USABLE_WEAPON_ITEMS.get(random.nextInt(USABLE_WEAPON_ITEMS.size()))));
     }
 }
