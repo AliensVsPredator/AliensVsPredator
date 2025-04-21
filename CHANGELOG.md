@@ -18,6 +18,17 @@
 - Added mobile lab structure.
 - Added commissary house to all vanilla villages.
 - Added outpost munition structure.
+- Queens now lay eggs:
+  - No eggsack yet, that's still a work in progress.
+  - There is a 5% chance the egg will be a royal ovamorph every time she lays and egg.
+  - Queens can lay eggs under the following conditions:
+    - It's been more than 1 minute since she last laid an egg.
+    - There are no other FRIENDLY eggs near her within a 4 block radius. Enemy eggs do not count.
+    - She is not aggro'd towards any mob.
+    - She has a hive.
+    - Her hive is alive.
+    - Her hive is chunk loaded.
+    - She is within her hive boundaries.
 - Overhauled marines:
   - Introduced new AI system for marines (GOAP - Goal-Oriented Action Planning).
     - Marines will plan on-the-fly picking the best goal to accomplish, and will pick from a pool of actions to satisfy that goal.
@@ -81,6 +92,7 @@
 - Rename tag `#avp:mobile_lab` to `#avp:has_mobile_lab`.
 - Rename tag `#avp:marine_camp_grass` to `#avp:has_marine_camp_grass`.
 - Added `#avp:melee_weapons` and `#avp:ranged_weapons` item tags.
+- Added `#avp:ovamorphs` entity type tag.
 
 ## 🔬 Technical Changes
 - Bumped gradle version from `8.12` to `8.13`.
