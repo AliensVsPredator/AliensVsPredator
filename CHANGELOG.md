@@ -61,6 +61,7 @@
   - Hair 3
 
 ## 🐞 Fixes
+- Fixed aliens not targeting marines correctly.
 - Fixed marines swinging their arms too far when running.
 - Fixed aliens variants not rendering correctly in monster spawners.
 - Fixed aliens losing their variants when being picked up with the Carry-On mod.

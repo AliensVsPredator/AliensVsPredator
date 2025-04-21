@@ -14,6 +14,7 @@ import java.util.Objects;
 import com.avp.common.block.AVPBlockTags;
 import com.avp.common.entity.AVPEntityTypeTags;
 import com.avp.common.entity.living.alien.Alien;
+import com.avp.common.entity.living.human.marine.Marine;
 import com.avp.common.entity.living.yautja.Yautja;
 
 public class AlienPredicates {
@@ -127,6 +128,7 @@ public class AlienPredicates {
     private static boolean isHated(@NotNull Alien alien, @NotNull LivingEntity potentialTarget) {
         return (potentialTarget instanceof Player && !AVPPredicates.IS_IMMORTAL.test(potentialTarget))
             || potentialTarget instanceof Yautja
+            || potentialTarget instanceof Marine
             || isTargetingHiveMember(alien, potentialTarget);
     }
 
@@ -169,7 +171,7 @@ public class AlienPredicates {
         var closestTarget = targets.get(0);
         alien.setTarget(closestTarget);
 
-        for (LivingEntity target : targets) {
+        for (var target : targets) {
             if (alien.isWithinMeleeAttackRange(target)) {
                 alien.doHurtTarget(target);
             }
