@@ -11,7 +11,6 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -35,17 +34,21 @@ public class SentryTurret extends Mob implements TraceableEntity {
 
     public static int RANGE = AVP.config.blockConfigs.TURRET_RANGE;
 
-    protected static int AMMO_CHEST_RANGE = AVP.config.blockConfigs.TURRET_AMMOCHEST_SEARCH_RANGE;
+    protected static int AMMO_CHEST_RANGE = AVP.config.blockConfigs.TURRET_AMMO_CHEST_SEARCH_RANGE;
 
     protected static int FOV = AVP.config.blockConfigs.TURRET_FOV;
+
+    private static final int MAX_TURRET_FIRE_COOLDOWN_IN_TICKS = 2;
+
+    private static final String FIRE_COOLDOWN_KEY = "FireCooldown";
+
+    private static final String OWNER_KEY = "Owner";
 
     @Nullable
     private UUID ownerUUID;
 
     @Nullable
     private Entity cachedOwner;
-
-    private Monster targetedMonster;
 
     private int fireCooldown = 0;
 
@@ -66,11 +69,11 @@ public class SentryTurret extends Mob implements TraceableEntity {
     @Nullable
     @Override
     public Entity getOwner() {
-        if (this.cachedOwner != null && !this.cachedOwner.isRemoved()) {
-            return this.cachedOwner;
-        } else if (this.ownerUUID != null && this.level() instanceof ServerLevel serverLevel) {
-            this.cachedOwner = serverLevel.getEntity(this.ownerUUID);
-            return this.cachedOwner;
+        if (cachedOwner != null && !cachedOwner.isRemoved()) {
+            return cachedOwner;
+        } else if (ownerUUID != null && level() instanceof ServerLevel serverLevel) {
+            cachedOwner = serverLevel.getEntity(ownerUUID);
+            return cachedOwner;
         } else {
             return null;
         }
@@ -85,47 +88,36 @@ public class SentryTurret extends Mob implements TraceableEntity {
     }
 
     @Override
-    protected void registerGoals() {
-        super.registerGoals();
-        goalSelector.addGoal(1, new LookAtPlayerGoal(this, Monster.class, 8.0F));
-    }
-
-    @Override
-    public float getPreciseBodyRotation(float partialTick) {
-        return 0.0F;
-    }
-
-    @Override
     public void tick() {
         super.tick();
 
-        if (fireCooldown > 0) {
-            fireCooldown--;
-            return;
-        }
-
-        if (!this.level().isClientSide) {
+        if (!level().isClientSide) {
             if (!isPoweredByRedstone()) {
                 animDispatcher.unpowered();
                 return;
-            } else if (getTargetedMonster() == null) {
+            } else if (getTarget() == null) {
                 animDispatcher.idle();
             }
 
             var ammoChestBlockEntity = findNearbyAmmoChest(this, blockPosition());
             if (ammoChestBlockEntity == null || !ammoChestBlockEntity.hasAmmo()) {
-                setTargetedMonster(null);
+                setTarget(null);
                 animDispatcher.idle();
                 return;
             }
 
-            if (getTargetedMonster() != null && !getTargetedMonster().isAlive()) {
-                setTargetedMonster(null);
+            if (getTarget() != null && !getTarget().isAlive()) {
+                setTarget(null);
                 animDispatcher.idle();
                 return;
             }
 
-            if (ammoChestBlockEntity.hasAmmo() && tickCount % 10 == 0) {
+            if (fireCooldown > 0) {
+                fireCooldown--;
+                return;
+            }
+
+            if (ammoChestBlockEntity.hasAmmo()) {
                 targetAndFire(ammoChestBlockEntity);
             }
         }
@@ -133,25 +125,21 @@ public class SentryTurret extends Mob implements TraceableEntity {
 
     @Override
     public void readAdditionalSaveData(CompoundTag compound) {
-        if (compound.hasUUID("Owner")) {
-            this.ownerUUID = compound.getUUID("Owner");
+        if (compound.hasUUID(OWNER_KEY)) {
+            this.ownerUUID = compound.getUUID(OWNER_KEY);
             this.cachedOwner = null;
         }
-        if (compound.hasUUID("Target")) {
-            this.targetedMonster = null;
-        }
-        this.fireCooldown = compound.getInt("FireCooldown");
+
+        this.fireCooldown = compound.getInt(FIRE_COOLDOWN_KEY);
     }
 
     @Override
     public void addAdditionalSaveData(CompoundTag compound) {
-        if (this.ownerUUID != null) {
-            compound.putUUID("Owner", this.ownerUUID);
+        if (ownerUUID != null) {
+            compound.putUUID(OWNER_KEY, ownerUUID);
         }
-        if (this.targetedMonster != null) {
-            compound.putUUID("Target", this.targetedMonster.getUUID());
-        }
-        compound.putInt("FireCooldown", this.fireCooldown);
+
+        compound.putInt(FIRE_COOLDOWN_KEY, fireCooldown);
     }
 
     @Override
@@ -176,6 +164,7 @@ public class SentryTurret extends Mob implements TraceableEntity {
         if (source.is((AVPDamageTypesTags.DOES_NOT_HURT_SENTRY_TURRETS))) {
             return false;
         }
+
         return super.hurt(source, amount);
     }
 
@@ -186,17 +175,23 @@ public class SentryTurret extends Mob implements TraceableEntity {
 
     @Override
     protected @NotNull InteractionResult mobInteract(Player player, InteractionHand hand) {
-        if (!this.level().isClientSide && this.getOwner() != null && this.getOwner().is(player)) {
-            this.dropTurretItem();
-            this.discard();
+        if (!level().isClientSide && getOwner() != null && getOwner().is(player)) {
+            dropTurretItem();
+            discard();
             return InteractionResult.SUCCESS;
         }
+
         return InteractionResult.PASS;
     }
 
     @Override
     public boolean canBeCollidedWith() {
-        return this.isAlive();
+        return isAlive();
+    }
+
+    @Override
+    public boolean isPushable() {
+        return false;
     }
 
     @Override
@@ -205,80 +200,77 @@ public class SentryTurret extends Mob implements TraceableEntity {
     }
 
     private void dropTurretItem() {
-        var turretItem = this.getPickResult();
+        var turretItem = getPickResult();
         if (turretItem != null) {
-            this.spawnAtLocation(turretItem, 0.5f);
+            spawnAtLocation(turretItem, 0.5f);
         }
     }
 
     private boolean isPoweredByRedstone() {
-        return this.level().hasNeighborSignal(this.blockPosition());
+        return level().hasNeighborSignal(blockPosition());
     }
 
     private void targetAndFire(AmmoChestBlockEntity ammoChestBlockEntity) {
-        if (this.targetedMonster != null && (!this.targetedMonster.isAlive() || this.targetedMonster.isRemoved())) {
-            setTargetedMonster(null);
+        var target = getTarget();
+
+        if (target != null && (!target.isAlive() || target.isRemoved())) {
+            setTarget(null);
             this.fireCooldown = 0;
-            this.animDispatcher.idle();
+            animDispatcher.idle();
             return;
         }
-        if (this.getTargetedMonster() == null) {
+
+        if (getTarget() == null) {
             findTarget();
         }
 
-        if (this.getTargetedMonster() != null) {
+        if (getTarget() != null) {
             fireAtTarget(ammoChestBlockEntity);
         }
     }
 
     private void findTarget() {
-        var monsters = this.level()
+        var monsters = level()
             .getEntitiesOfClass(
                 Monster.class,
-                this.getBoundingBox().inflate(RANGE),
+                getBoundingBox().inflate(RANGE),
                 this::canTargetMonster
             );
 
         if (!monsters.isEmpty()) {
-            this.setTargetedMonster(monsters.getFirst());
+            setTarget(monsters.getFirst());
         }
     }
 
     private void fireAtTarget(AmmoChestBlockEntity ammoChestBlockEntity) {
-        var target = getTargetedMonster();
+        var target = getTarget();
+
         if (
-            target != null && target.isAlive() && isFacingMonster(blockPosition(), getLookAngle(), target) && this.getSensing()
+            target != null && target.isAlive() && isFacingTarget(blockPosition(), getLookAngle(), target) && getSensing()
                 .hasLineOfSight(target)
         ) {
             animDispatcher.firing();
             level().playSound(null, blockPosition(), AVPSoundEvents.WEAPON_GENERIC_SHOOT, SoundSource.BLOCKS, 1.0F, 1.0F);
-            target.hurt(this.damageSources().source(AVPDamageTypes.BULLET, this), DAMAGE);
+            target.hurt(damageSources().source(AVPDamageTypes.BULLET, this), DAMAGE);
             target.setLastHurtMob(this);
             ammoChestBlockEntity.consumeAmmo(1);
-            fireCooldown = 20;
+            fireCooldown = MAX_TURRET_FIRE_COOLDOWN_IN_TICKS;
+            target.invulnerableTime = 0;
         } else {
-            setTargetedMonster(null);
+            setTarget(null);
         }
-    }
-
-    public Monster getTargetedMonster() {
-        return this.targetedMonster;
-    }
-
-    public void setTargetedMonster(@Nullable Monster monster) {
-        this.targetedMonster = monster;
     }
 
     private boolean canTargetMonster(Monster monster) {
         return monster.isAlive()
-            && this.distanceTo(monster) <= RANGE
-            && isFacingMonster(this.blockPosition(), this.getLookAngle(), monster)
-            && this.getSensing().hasLineOfSight(monster);
+            && distanceTo(monster) <= RANGE
+            && isFacingTarget(blockPosition(), getLookAngle(), monster)
+            && getSensing().hasLineOfSight(monster);
     }
 
-    private static boolean isFacingMonster(BlockPos turretPos, Vec3 facingVec, Monster monster) {
+    private static boolean isFacingTarget(BlockPos turretPos, Vec3 facingVec, LivingEntity target) {
         var turretCenter = Vec3.atCenterOf(turretPos);
-        var entityPos = Vec3.atCenterOf(monster.blockPosition());
+        var entityPos = Vec3.atCenterOf(target.blockPosition());
         var directionToEntity = entityPos.subtract(turretCenter).normalize();
 
         var dotProduct = directionToEntity.dot(facingVec.normalize());
