@@ -1,7 +1,6 @@
 package com.avp.client.render.entity.parasite.facehugger;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Axis;
 import mod.azure.azurelib.rewrite.render.AzLayerRenderer;
 import mod.azure.azurelib.rewrite.render.AzModelRenderer;
 import mod.azure.azurelib.rewrite.render.entity.AzEntityRenderer;
@@ -56,13 +55,34 @@ public class FacehuggerRenderer extends AzEntityRenderer<Facehugger> {
         @NotNull MultiBufferSource bufferSource,
         int packedLight
     ) {
-        if (!entity.attachmentManager().isFertile() && entity.attachmentManager().getHost() == null && entity.isAlive()) {
-            poseStack.translate(0, entity.getBbHeight(), 0);
-            poseStack.mulPose(Axis.ZP.rotationDegrees(180f));
+        runPassiveAnimations(entity);
+        super.render(entity, entityYaw, partialTick, poseStack, bufferSource, packedLight);
+    }
+
+    public void runPassiveAnimations(Facehugger facehugger) {
+        var attachmentManager = facehugger.getAttachmentManager();
+        var dispatcher = facehugger.getAnimationDispatcher();
+
+        if ((!attachmentManager.isFertile() && !attachmentManager.isAttachedToHost()) || facehugger.isDeadOrDying()) {
+            dispatcher.infertile();
+            return;
         }
 
-        entity.runPassiveAnimations();
-        super.render(entity, entityYaw, partialTick, poseStack, bufferSource, packedLight);
+        if (attachmentManager.isAttachedToHost() && facehugger.isAlive()) {
+            dispatcher.hug();
+            return;
+        }
+
+        var moveAnalysis = facehugger.getMoveAnalysis();
+        var isMovingOnGround = moveAnalysis.isMovingHorizontally() && facehugger.onGround();
+
+        if (facehugger.isUnderWater()) {
+            // TODO: swim
+        } else if (isMovingOnGround) {
+            dispatcher.run();
+        } else {
+            dispatcher.idle();
+        }
     }
 
     @Override

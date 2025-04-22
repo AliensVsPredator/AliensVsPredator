@@ -165,7 +165,7 @@ public abstract class Parasite extends Alien {
         attachmentManager.save(compoundTag);
     }
 
-    public ParasiteAttachmentManager attachmentManager() {
+    public ParasiteAttachmentManager getAttachmentManager() {
         return attachmentManager;
     }
 }

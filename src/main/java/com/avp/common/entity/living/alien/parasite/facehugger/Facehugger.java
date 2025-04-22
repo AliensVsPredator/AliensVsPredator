@@ -74,30 +74,6 @@ public class Facehugger extends Parasite {
         moveAnalysis.tick();
     }
 
-    public void runPassiveAnimations() {
-        var dispatcher = animationDispatcher;
-
-        if (!attachmentManager.isFertile() || isDeadOrDying()) {
-            dispatcher.infertile();
-            return;
-        }
-
-        if (attachmentManager.isAttachedToHost() && isAlive()) {
-            dispatcher.hug();
-            return;
-        }
-
-        var isMovingOnGround = moveAnalysis.isMovingHorizontally() && onGround();
-
-        if (isUnderWater()) {
-            // TODO: swim
-        } else if (isMovingOnGround) {
-            dispatcher.run();
-        } else {
-            dispatcher.idle();
-        }
-    }
-
     private void runLungeAnimation() {
         animationDispatcher.lunge();
     }
@@ -115,5 +91,13 @@ public class Facehugger extends Parasite {
     @Override
     protected float getHealthRegenPerSecond() {
         return 0;
+    }
+
+    public FacehuggerAnimationDispatcher getAnimationDispatcher() {
+        return animationDispatcher;
+    }
+
+    public MoveAnalysis getMoveAnalysis() {
+        return moveAnalysis;
     }
 }
