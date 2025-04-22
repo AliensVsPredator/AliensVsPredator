@@ -1,8 +1,5 @@
 package com.avp.common.effect;
 
-import com.avp.common.damage.AVPDamageTypes;
-import com.avp.common.entity.AVPEntityTypeTags;
-import com.avp.common.util.AVPPredicates;
 import mod.azure.azurelib.core.object.Color;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
@@ -16,6 +13,10 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
 import java.util.WeakHashMap;
+
+import com.avp.common.damage.AVPDamageTypes;
+import com.avp.common.entity.AVPEntityTypeTags;
+import com.avp.common.util.AVPPredicates;
 
 public class RadiationStatusEffect extends MobEffect {
 
@@ -34,8 +35,12 @@ public class RadiationStatusEffect extends MobEffect {
     public boolean applyEffectTick(LivingEntity livingEntity, int amplifier) {
         var currentDuration = EFFECT_TRACKER.getOrDefault(livingEntity, 0);
 
-        if (AVPPredicates.IS_IMMORTAL.test(livingEntity) || livingEntity.getType().is(
-                AVPEntityTypeTags.RADIATION_RESISTANT)) {
+        if (
+            AVPPredicates.IS_IMMORTAL.test(livingEntity) || livingEntity.getType()
+                .is(
+                    AVPEntityTypeTags.RADIATION_RESISTANT
+                )
+        ) {
             livingEntity.removeEffect(AVPEffects.RADIATION_EFFECT);
             return false;
         }
@@ -61,7 +66,8 @@ public class RadiationStatusEffect extends MobEffect {
         if (currentDuration >= threshold && amplifier < 2) {
             EFFECT_TRACKER.put(livingEntity, 0);
             livingEntity.addEffect(
-                    new MobEffectInstance(AVPEffects.RADIATION_EFFECT, Integer.MAX_VALUE, amplifier + 1));
+                new MobEffectInstance(AVPEffects.RADIATION_EFFECT, Integer.MAX_VALUE, amplifier + 1)
+            );
         } else {
             EFFECT_TRACKER.put(livingEntity, currentDuration + 1);
         }
@@ -78,8 +84,14 @@ public class RadiationStatusEffect extends MobEffect {
     }
 
     private void applyLevel2RadiationSideEffects(LivingEntity livingEntity, int amplifier) {
-        handleStatusEffects(livingEntity, 5 * 20, amplifier, MobEffects.WEAKNESS, MobEffects.HUNGER,
-                MobEffects.MOVEMENT_SLOWDOWN);
+        handleStatusEffects(
+            livingEntity,
+            5 * 20,
+            amplifier,
+            MobEffects.WEAKNESS,
+            MobEffects.HUNGER,
+            MobEffects.MOVEMENT_SLOWDOWN
+        );
 
         if (livingEntity.tickCount % (2 * 20) == 0) {
             livingEntity.hurt(createRadiationDamageSource(livingEntity), 2.1F);
@@ -87,8 +99,15 @@ public class RadiationStatusEffect extends MobEffect {
     }
 
     private void applyDefaultRadiationSideEffects(LivingEntity livingEntity, int amplifier) {
-        handleStatusEffects(livingEntity, 5 * 20, amplifier, MobEffects.WEAKNESS, MobEffects.HUNGER,
-                MobEffects.MOVEMENT_SLOWDOWN, MobEffects.BLINDNESS);
+        handleStatusEffects(
+            livingEntity,
+            5 * 20,
+            amplifier,
+            MobEffects.WEAKNESS,
+            MobEffects.HUNGER,
+            MobEffects.MOVEMENT_SLOWDOWN,
+            MobEffects.BLINDNESS
+        );
 
         if (livingEntity.tickCount % 20 == 0) {
             livingEntity.hurt(createRadiationDamageSource(livingEntity), 5.0F);
@@ -105,7 +124,12 @@ public class RadiationStatusEffect extends MobEffect {
     }
 
     private static DamageSource createRadiationDamageSource(LivingEntity livingEntity) {
-        return new DamageSource(livingEntity.registryAccess().registryOrThrow(Registries.DAMAGE_TYPE).getHolderOrThrow(
-                AVPDamageTypes.RADIATION));
+        return new DamageSource(
+            livingEntity.registryAccess()
+                .registryOrThrow(Registries.DAMAGE_TYPE)
+                .getHolderOrThrow(
+                    AVPDamageTypes.RADIATION
+                )
+        );
     }
 }
