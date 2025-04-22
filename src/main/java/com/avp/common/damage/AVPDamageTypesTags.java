@@ -1,9 +1,10 @@
 package com.avp.common.damage;
 
-import com.avp.AVPResources;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.damagesource.DamageType;
+
+import com.avp.AVPResources;
 
 public class AVPDamageTypesTags {
 

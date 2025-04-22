@@ -1,6 +1,5 @@
 package com.avp.client.render.block;
 
-import com.avp.common.entity.machine.SentryTurret;
 import mod.azure.azurelib.rewrite.render.entity.AzEntityRenderer;
 import mod.azure.azurelib.rewrite.render.entity.AzEntityRendererConfig;
 import mod.azure.azurelib.rewrite.render.layer.AzAutoGlowingLayer;
@@ -9,6 +8,7 @@ import net.minecraft.resources.ResourceLocation;
 
 import com.avp.AVPResources;
 import com.avp.client.animation.entity.SentryTurretAnimator;
+import com.avp.common.entity.machine.SentryTurret;
 
 public class SentryTurretRenderer extends AzEntityRenderer<SentryTurret> {
 
@@ -23,7 +23,8 @@ public class SentryTurretRenderer extends AzEntityRenderer<SentryTurret> {
             AzEntityRendererConfig.<SentryTurret>builder(GEO, TEX)
                 .setAnimatorProvider(SentryTurretAnimator::new)
                 .addRenderLayer(new AzAutoGlowingLayer<>())
-                .build(), context
+                .build(),
+            context
         );
     }
 }

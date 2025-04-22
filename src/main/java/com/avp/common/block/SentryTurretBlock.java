@@ -1,6 +1,5 @@
 package com.avp.common.block;
 
-import com.avp.common.entity.type.AVPEntityTypes;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.LivingEntity;
@@ -9,6 +8,8 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
+
+import com.avp.common.entity.type.AVPEntityTypes;
 
 public class SentryTurretBlock extends Block {
 

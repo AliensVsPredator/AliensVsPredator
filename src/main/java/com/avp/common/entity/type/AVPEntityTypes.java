@@ -1,6 +1,5 @@
 package com.avp.common.entity.type;
 
-import com.avp.common.entity.machine.SentryTurret;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -28,6 +27,7 @@ import com.avp.common.entity.living.human.HairColorGenerator;
 import com.avp.common.entity.living.human.SkinColorGenerator;
 import com.avp.common.entity.living.human.marine.Marine;
 import com.avp.common.entity.living.yautja.Yautja;
+import com.avp.common.entity.machine.SentryTurret;
 import com.avp.common.entity.nukecloud.MushroomCloudEntity;
 import com.avp.common.entity.projectile.*;
 import com.avp.common.gene.GeneKeys;
