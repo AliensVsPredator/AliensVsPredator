@@ -19,21 +19,33 @@ public class SentryTurretBlock extends Block {
 
     @Override
     public void setPlacedBy(Level level, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack stack) {
-        if (!level.isClientSide() && level instanceof ServerLevel serverLevel) {
-            var sentryTurret = AVPEntityTypes.SENTRY_TURRET.create(serverLevel);
-            if (sentryTurret != null) {
-                sentryTurret.setPos(pos.getCenter());
-                if (placer != null) {
-                    sentryTurret.setOwner(placer);
-                    var yaw = placer.getYRot();
-                    sentryTurret.setYRot(yaw);
-                    sentryTurret.setYBodyRot(yaw);
-                }
-                serverLevel.addFreshEntity(sentryTurret);
-                level.removeBlock(pos, false);
-            }
+        if (level.isClientSide() || !(level instanceof ServerLevel serverLevel)) {
+            super.setPlacedBy(level, pos, state, placer, stack);
+            return;
         }
-        super.setPlacedBy(level, pos, state, placer, stack);
+
+        var sentryTurret = AVPEntityTypes.SENTRY_TURRET.create(serverLevel);
+
+        if (sentryTurret == null) {
+            return;
+        }
+
+        sentryTurret.setPos(pos.getCenter());
+
+        if (placer != null) {
+            sentryTurret.setOwner(placer);
+
+            // Orient the turret opposite of where the player is looking.
+            var placerYaw = placer.getYRot();
+            var turretYaw = (placerYaw + 180.0F) % 360.0F;
+
+            sentryTurret.setYRot(turretYaw);
+            sentryTurret.setYHeadRot(turretYaw);
+            sentryTurret.setYBodyRot(turretYaw);
+        }
+
+        serverLevel.addFreshEntity(sentryTurret);
+        level.removeBlock(pos, false);
     }
 
 }
