@@ -1,0 +1,17 @@
+{
+  "structures": [
+    {
+      "structure": "avp:outpost_supply_badland",
+      "weight": 1
+    }
+  ],
+  "placement": {
+    "type": "minecraft:random_spread",
+    "spacing": 40,
+    "separation": 15,
+    "spread_type": "triangular",
+    "salt": 1787767890,
+    "frequency_reduction_method": "default",
+    "frequency": 1
+  }
+}
