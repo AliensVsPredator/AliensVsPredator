@@ -1,18 +1,17 @@
 package com.avp.data.tag;
 
-import com.avp.AVP;
-import com.avp.common.damage.AVPDamageTypesTags;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.world.damagesource.DamageType;
+import net.minecraft.world.damagesource.DamageTypes;
 
 import java.util.concurrent.CompletableFuture;
 
 import com.avp.common.damage.AVPDamageTypes;
-import net.minecraft.world.damagesource.DamageTypes;
+import com.avp.common.damage.AVPDamageTypesTags;
 
 public class AVPDamageTypeTagProvider extends FabricTagProvider<DamageType> {
 
@@ -44,26 +43,32 @@ public class AVPDamageTypeTagProvider extends FabricTagProvider<DamageType> {
                 AVPDamageTypes.ACID,
                 AVPDamageTypes.BULLET,
                 AVPDamageTypes.FLAMETHROW,
-                AVPDamageTypes.RAZOR_WIRE,
-                AVPDamageTypes.RADIATION
+                AVPDamageTypes.RADIATION,
+                AVPDamageTypes.RAZOR_WIRE
             );
 
+        // All missing damage types here were excluded on purpose. Yes, including lava. Lava melts machinery.
         getOrCreateTagBuilder(AVPDamageTypesTags.DOES_NOT_HURT_SENTRY_TURRETS)
             .add(
                 DamageTypes.FREEZE,
-                DamageTypes.ON_FIRE,
-                DamageTypes.WITHER,
-                DamageTypes.SWEET_BERRY_BUSH,
                 DamageTypes.CACTUS,
-                DamageTypes.DROWN,
+                DamageTypes.CAMPFIRE,
                 DamageTypes.CRAMMING,
-                DamageTypes.LAVA,
-                DamageTypes.STING,
-                DamageTypes.WIND_CHARGE,
+                DamageTypes.DROWN,
+                DamageTypes.FALL,
+                DamageTypes.HOT_FLOOR,
+                DamageTypes.IN_FIRE,
+                DamageTypes.IN_WALL,
                 DamageTypes.FIREWORKS,
-                DamageTypes.THORNS,
+                DamageTypes.ON_FIRE,
+                AVPDamageTypes.RADIATION,
                 AVPDamageTypes.RAZOR_WIRE,
-                AVPDamageTypes.RADIATION
+                DamageTypes.STARVE,
+                DamageTypes.STING,
+                DamageTypes.SWEET_BERRY_BUSH,
+                DamageTypes.THORNS,
+                DamageTypes.WIND_CHARGE,
+                DamageTypes.WITHER
             );
     }
 }
