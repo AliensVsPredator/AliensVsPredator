@@ -72,6 +72,7 @@
 
 ## 🐞 Fixes
 - Fixed the drone's inner jaw clipping through their head.
+- Fixed the warrior's inner jaw clipping through their head.
 - Fixed aliens not targeting marines correctly.
 - Fixed marines swinging their arms too far when running.
 - Fixed aliens variants not rendering correctly in monster spawners.
