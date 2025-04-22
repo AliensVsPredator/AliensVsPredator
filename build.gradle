@@ -187,7 +187,6 @@ if (file('key.properties').exists()) {
 			style {
 				look = "MODERN"
 				thumbnailUrl = "https://cdn.modrinth.com/data/Uqo0H9FX/8ffabe2f364c34e6b0f13019664c5fe4989c2f95_96.webp"
-				link = "BUTTON"
 			}
 		}
 		curseforge {
