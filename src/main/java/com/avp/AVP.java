@@ -2,7 +2,6 @@ package com.avp;
 
 import com.mojang.datafixers.util.Pair;
 import mod.azure.azurelib.common.api.common.config.Config;
-import mod.azure.azurelib.common.internal.common.AzureLib;
 import mod.azure.azurelib.common.internal.common.config.ConfigHolder;
 import mod.azure.azurelib.common.internal.common.config.ConfigHolderRegistry;
 import mod.azure.azurelib.common.internal.common.config.format.ConfigFormats;
@@ -91,7 +90,6 @@ public class AVP implements ModInitializer {
 
     @Override
     public void onInitialize() {
-        AzureLib.initialize();
         config = registerConfig(AVPConfig.class, ConfigFormats.json()).getConfigInstance();
 
         // Core
