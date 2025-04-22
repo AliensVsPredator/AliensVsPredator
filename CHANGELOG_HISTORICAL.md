@@ -88,6 +88,7 @@
   - Hair 3
 
 ## 🐞 Fixes
+- Fixed facehuggers immediately dying when becoming infertile while attached to a host.
 - Fixed `/avp nuke nuke` command, it is now `/avp test nuke`.
 - Fixed facehuggers staying on invalid hosts (thanks, carry-on mod).
 - Fixed the drone's inner jaw clipping through their head.
