@@ -175,6 +175,7 @@ if (file('key.properties').exists()) {
 		file = jar.archiveFile
 		changelog = rootProject.file("CHANGELOG.md").text
 		type = STABLE
+		file = remapJar.archiveFile
 		modLoaders.add("fabric")
 
 		discord {
