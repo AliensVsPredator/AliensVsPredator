@@ -24,6 +24,9 @@ public class SentryTurretBlock extends Block {
                 sentryTurret.setPos(pos.getCenter());
                 if (placer != null) {
                     sentryTurret.setOwner(placer);
+                    var yaw = placer.getYRot();
+                    sentryTurret.setYRot(yaw);
+                    sentryTurret.setYBodyRot(yaw);
                 }
                 serverLevel.addFreshEntity(sentryTurret);
                 level.removeBlock(pos, false);

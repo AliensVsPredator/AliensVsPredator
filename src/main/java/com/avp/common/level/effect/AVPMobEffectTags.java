@@ -10,6 +10,8 @@ public class AVPMobEffectTags {
 
     public static final TagKey<MobEffect> DOES_NOT_AFFECT_ALIENS = create("does_not_affect_aliens");
 
+    public static final TagKey<MobEffect> DOES_NOT_SENTRY_TURRETS = create("does_not_affect_sentry_turrets");
+
     private static TagKey<MobEffect> create(String name) {
         return TagKey.create(Registries.MOB_EFFECT, AVPResources.location(name));
     }

@@ -8,7 +8,7 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
 
 import com.avp.AVPResources;
-import com.avp.client.animation.block.SentryTurretAnimator;
+import com.avp.client.animation.entity.SentryTurretAnimator;
 
 public class SentryTurretRenderer extends AzEntityRenderer<SentryTurret> {
 

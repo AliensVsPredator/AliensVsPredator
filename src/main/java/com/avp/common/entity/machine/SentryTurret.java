@@ -4,18 +4,21 @@ import com.avp.AVP;
 import com.avp.common.block.AVPBlocks;
 import com.avp.common.block.entity.AmmoChestBlockEntity;
 import com.avp.common.damage.AVPDamageTypes;
+import com.avp.common.damage.AVPDamageTypesTags;
+import com.avp.common.level.effect.AVPMobEffectTags;
 import com.avp.common.sound.AVPSoundEvents;
-import com.avp.common.util.GravityUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.TraceableEntity;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -26,15 +29,8 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.UUID;
 
-/**
- * TODO:
- * - Fix a missing block appearing for a second when placed.
- * - Right click turret as owner and have it drop as item.
- * - Have it go back to powered/unpowered state when target is dead.
- * - Have it placed and facing whatever horizontal direction the player is looking at.
- * - Turn turret towards target when firing.
- */
-public class SentryTurret extends Entity implements TraceableEntity {
+public class SentryTurret extends Mob implements TraceableEntity {
+
     @Nullable
     private UUID ownerUUID;
 
@@ -45,17 +41,17 @@ public class SentryTurret extends Entity implements TraceableEntity {
 
     private int fireCooldown = 0;
 
+    protected static int fov = AVP.config.blockConfigs.TURRET_FOV;
+
     public static int range = AVP.config.blockConfigs.TURRET_RANGE;
 
     public static float damage = AVP.config.blockConfigs.TURRET_DAMAGE;
 
     protected static int ammoChestRange = AVP.config.blockConfigs.TURRET_AMMOCHEST_SEARCH_RANGE;
 
-    private UUID targetedMonsterUUID;
-
     protected final SentryTurretAnimDispatcher animDispatcher;
 
-    public SentryTurret(EntityType<?> entityType, Level level) {
+    public SentryTurret(EntityType<? extends Mob> entityType, Level level) {
         super(entityType, level);
         animDispatcher = new SentryTurretAnimDispatcher(this);
     }
@@ -80,31 +76,39 @@ public class SentryTurret extends Entity implements TraceableEntity {
         }
     }
 
+    public static AttributeSupplier.Builder createSentryTurretAttributes() {
+        return LivingEntity.createLivingAttributes().add(Attributes.MAX_HEALTH, 16.0F)
+                .add(Attributes.MOVEMENT_SPEED, 0.0F)
+                .add(Attributes.KNOCKBACK_RESISTANCE, 100.0D)
+                .add(Attributes.FOLLOW_RANGE, range);
+    }
+
+    @Override
+    protected void registerGoals() {
+        super.registerGoals();
+        goalSelector.addGoal(1, new LookAtPlayerGoal(this, Monster.class, 8.0F));
+    }
+
+    @Override
+    public float getPreciseBodyRotation(float partialTick) {
+        return 0.0F;
+    }
+
     @Override
     public void tick() {
         super.tick();
 
-        if (tickCount % 20 == 0) {
+        if (fireCooldown > 0) {
+            fireCooldown--;
             return;
         }
 
         if (!this.level().isClientSide) {
-            if (this.targetedMonsterUUID != null && this.targetedMonster == null) {
-                this.targetedMonster = (Monster) ((ServerLevel) this.level()).getEntity(this.targetedMonsterUUID);
-            }
-
-            if (!horizontalCollision) {
-                GravityUtil.apply(this);
-            }
-
-            if (fireCooldown > 0) {
-                fireCooldown--;
-                return;
-            }
-
             if (!isPoweredByRedstone()) {
                 animDispatcher.unpowered();
                 return;
+            } else if (getTargetedMonster() == null) {
+                animDispatcher.idle();
             }
 
             var ammoChestBlockEntity = findNearbyAmmoChest(this, blockPosition());
@@ -116,30 +120,30 @@ public class SentryTurret extends Entity implements TraceableEntity {
 
             if (getTargetedMonster() != null && !getTargetedMonster().isAlive()) {
                 setTargetedMonster(null);
+                animDispatcher.idle();
+                return;
             }
 
-            targetAndFire();
+            if (ammoChestBlockEntity.hasAmmo() && tickCount % 10 == 0) {
+                targetAndFire(ammoChestBlockEntity);
+            }
         }
     }
 
     @Override
-    protected void defineSynchedData(SynchedEntityData.Builder builder) { /* NONE */}
-
-    @Override
-    protected void readAdditionalSaveData(CompoundTag compound) {
+    public void readAdditionalSaveData(CompoundTag compound) {
         if (compound.hasUUID("Owner")) {
             this.ownerUUID = compound.getUUID("Owner");
             this.cachedOwner = null;
         }
         if (compound.hasUUID("Target")) {
-            this.targetedMonsterUUID = compound.getUUID("Target");
             this.targetedMonster = null;
         }
         this.fireCooldown = compound.getInt("FireCooldown");
     }
 
     @Override
-    protected void addAdditionalSaveData(CompoundTag compound) {
+    public void addAdditionalSaveData(CompoundTag compound) {
         if (this.ownerUUID != null) {
             compound.putUUID("Owner", this.ownerUUID);
         }
@@ -156,13 +160,49 @@ public class SentryTurret extends Entity implements TraceableEntity {
     }
 
     @Override
-    public @NotNull InteractionResult interactAt(Player player, Vec3 vec, InteractionHand hand) {
-        if (!this.level().isClientSide && player.getUUID().equals(this.ownerUUID)) {
+    public boolean fireImmune() {
+        return true;
+    }
+
+    @Override
+    public boolean canBeAffected(MobEffectInstance effectInstance) {
+        if (effectInstance.getEffect().is(AVPMobEffectTags.DOES_NOT_SENTRY_TURRETS)) {
+            return false;
+        }
+        return super.canBeAffected(effectInstance);
+    }
+
+    @Override
+    public boolean hurt(DamageSource source, float amount) {
+        if (source.is((AVPDamageTypesTags.DOES_NOT_HURT_SENTRY_TURRETS))) {
+            return false;
+        }
+        return super.hurt(source, amount);
+    }
+
+    @Override
+    public boolean isPersistenceRequired() {
+        return true;
+    }
+
+    @Override
+    protected @NotNull InteractionResult mobInteract(Player player, InteractionHand hand) {
+        if (!this.level().isClientSide && this.getOwner() != null && this.getOwner().is(player)) {
             this.dropTurretItem();
             this.discard();
             return InteractionResult.SUCCESS;
         }
         return InteractionResult.PASS;
+    }
+
+    @Override
+    public boolean canBeCollidedWith() {
+        return this.isAlive();
+    }
+
+    @Override
+    public boolean isPushedByFluid() {
+        return false;
     }
 
     private void dropTurretItem() {
@@ -176,13 +216,19 @@ public class SentryTurret extends Entity implements TraceableEntity {
         return this.level().hasNeighborSignal(this.blockPosition());
     }
 
-    private void targetAndFire() {
+    private void targetAndFire(AmmoChestBlockEntity ammoChestBlockEntity) {
+        if (this.targetedMonster != null && (!this.targetedMonster.isAlive() || this.targetedMonster.isRemoved())) {
+            setTargetedMonster(null);
+            this.fireCooldown = 0;
+            this.animDispatcher.idle();
+            return;
+        }
         if (this.getTargetedMonster() == null) {
             findTarget();
         }
 
         if (this.getTargetedMonster() != null) {
-            fireAtTarget();
+            fireAtTarget(ammoChestBlockEntity);
         }
     }
 
@@ -198,12 +244,14 @@ public class SentryTurret extends Entity implements TraceableEntity {
         }
     }
 
-    private void fireAtTarget() {
+    private void fireAtTarget(AmmoChestBlockEntity ammoChestBlockEntity) {
         var target = getTargetedMonster();
-        if (target != null && target.isAlive()) {
+        if (target != null && target.isAlive() && isFacingMonster(blockPosition(), getLookAngle(), target) && this.getSensing().hasLineOfSight(target)) {
             animDispatcher.firing();
             level().playSound(null, blockPosition(), AVPSoundEvents.WEAPON_GENERIC_SHOOT, SoundSource.BLOCKS, 1.0F, 1.0F);
-            target.hurt(this.damageSources().source(AVPDamageTypes.BULLET, this.getOwner()), damage);
+            target.hurt(this.damageSources().source(AVPDamageTypes.BULLET, this), damage);
+            target.setLastHurtMob(this);
+            ammoChestBlockEntity.consumeAmmo(1);
             fireCooldown = 20;
         } else {
             setTargetedMonster(null);
@@ -219,7 +267,19 @@ public class SentryTurret extends Entity implements TraceableEntity {
     }
 
     private boolean canTargetMonster(Monster monster) {
-        return monster.isAlive() && monster.distanceTo(this) <= range;
+        return monster.isAlive()
+                && this.distanceTo(monster) <= range
+                && isFacingMonster(this.blockPosition(), this.getLookAngle(), monster)
+                && this.getSensing().hasLineOfSight(monster);
+    }
+
+    private static boolean isFacingMonster(BlockPos turretPos, Vec3 facingVec, Monster monster) {
+        var turretCenter = Vec3.atCenterOf(turretPos);
+        var entityPos = Vec3.atCenterOf(monster.blockPosition());
+        var directionToEntity = entityPos.subtract(turretCenter).normalize();
+
+        var dotProduct = directionToEntity.dot(facingVec.normalize());
+        return dotProduct > Math.cos(Math.toRadians(fov));
     }
 
     @Nullable
@@ -227,9 +287,9 @@ public class SentryTurret extends Entity implements TraceableEntity {
         var level = sentryTurret.level();
 
         for (
-                var searchRadius : BlockPos.betweenClosed(
-                pos.offset(-ammoChestRange, -ammoChestRange, -ammoChestRange),
-                pos.offset(ammoChestRange, ammoChestRange, ammoChestRange)
+            var searchRadius : BlockPos.betweenClosed(
+            pos.offset(-ammoChestRange, -ammoChestRange, -ammoChestRange),
+            pos.offset(ammoChestRange, ammoChestRange, ammoChestRange)
         )
         ) {
             var ammoEntity = level.getBlockEntity(searchRadius);

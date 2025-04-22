@@ -40,7 +40,7 @@ public class AVPEntityTypes {
 
     public static final EntityType<SentryTurret> SENTRY_TURRET = register(
         "sentry_turret",
-        EntityType.Builder.of(SentryTurret::new, MobCategory.MISC).sized(0.5F, 0.5F).noSummon()
+        EntityType.Builder.of(SentryTurret::new, MobCategory.MISC).sized(1.0F, 1.0F).noSummon()
     );
 
     public static final EntityType<MushroomCloudEntity> MUSHROOM_CLOUD = register(
@@ -503,5 +503,6 @@ public class AVPEntityTypes {
 
         FabricDefaultAttributeRegistry.register(YAUTJA, Yautja.createYautjaAttributes());
         FabricDefaultAttributeRegistry.register(MARINE, Marine.createMarineAttributes());
+        FabricDefaultAttributeRegistry.register(SENTRY_TURRET, SentryTurret.createSentryTurretAttributes());
     }
 }

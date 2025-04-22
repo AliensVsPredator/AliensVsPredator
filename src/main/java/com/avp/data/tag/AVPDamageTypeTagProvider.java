@@ -1,5 +1,7 @@
 package com.avp.data.tag;
 
+import com.avp.AVP;
+import com.avp.common.damage.AVPDamageTypesTags;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
 import net.minecraft.core.HolderLookup;
@@ -10,6 +12,7 @@ import net.minecraft.world.damagesource.DamageType;
 import java.util.concurrent.CompletableFuture;
 
 import com.avp.common.damage.AVPDamageTypes;
+import net.minecraft.world.damagesource.DamageTypes;
 
 public class AVPDamageTypeTagProvider extends FabricTagProvider<DamageType> {
 
@@ -41,6 +44,24 @@ public class AVPDamageTypeTagProvider extends FabricTagProvider<DamageType> {
                 AVPDamageTypes.ACID,
                 AVPDamageTypes.BULLET,
                 AVPDamageTypes.FLAMETHROW,
+                AVPDamageTypes.RAZOR_WIRE,
+                AVPDamageTypes.RADIATION
+            );
+
+        getOrCreateTagBuilder(AVPDamageTypesTags.DOES_NOT_HURT_SENTRY_TURRETS)
+            .add(
+                DamageTypes.FREEZE,
+                DamageTypes.ON_FIRE,
+                DamageTypes.WITHER,
+                DamageTypes.SWEET_BERRY_BUSH,
+                DamageTypes.CACTUS,
+                DamageTypes.DROWN,
+                DamageTypes.CRAMMING,
+                DamageTypes.LAVA,
+                DamageTypes.STING,
+                DamageTypes.WIND_CHARGE,
+                DamageTypes.FIREWORKS,
+                DamageTypes.THORNS,
                 AVPDamageTypes.RAZOR_WIRE,
                 AVPDamageTypes.RADIATION
             );
