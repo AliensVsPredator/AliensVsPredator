@@ -27,6 +27,7 @@ import com.avp.common.entity.living.human.HairColorGenerator;
 import com.avp.common.entity.living.human.SkinColorGenerator;
 import com.avp.common.entity.living.human.marine.Marine;
 import com.avp.common.entity.living.yautja.Yautja;
+import com.avp.common.entity.machine.SentryTurret;
 import com.avp.common.entity.nukecloud.MushroomCloudEntity;
 import com.avp.common.entity.projectile.*;
 import com.avp.common.gene.GeneKeys;
@@ -36,6 +37,11 @@ public class AVPEntityTypes {
     public static final MobCategory ALIEN_CATEGORY = AVPMobCategories.ALIENS;
 
     public static final MobCategory PREDATOR_CATEGORY = AVPMobCategories.PREDATOR;
+
+    public static final EntityType<SentryTurret> SENTRY_TURRET = register(
+        "sentry_turret",
+        EntityType.Builder.of(SentryTurret::new, MobCategory.MISC).sized(1.0F, 1.0F).noSummon()
+    );
 
     public static final EntityType<MushroomCloudEntity> MUSHROOM_CLOUD = register(
         "mushroom_cloud",
@@ -497,5 +503,6 @@ public class AVPEntityTypes {
 
         FabricDefaultAttributeRegistry.register(YAUTJA, Yautja.createYautjaAttributes());
         FabricDefaultAttributeRegistry.register(MARINE, Marine.createMarineAttributes());
+        FabricDefaultAttributeRegistry.register(SENTRY_TURRET, SentryTurret.createSentryTurretAttributes());
     }
 }

@@ -1,8 +1,8 @@
-package com.avp.common.block.entity;
+package com.avp.common.entity.machine;
 
 import mod.azure.azurelib.rewrite.animation.dispatch.command.AzCommand;
 import mod.azure.azurelib.rewrite.animation.play_behavior.AzPlayBehaviors;
-import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.entity.Entity;
 
 public class SentryTurretAnimDispatcher {
 
@@ -24,16 +24,22 @@ public class SentryTurretAnimDispatcher {
         AzPlayBehaviors.LOOP
     );
 
-    public void idle(BlockEntity entity) {
-        IDLE_COMMAND.sendForBlockEntity(entity);
+    private final Entity entity;
+
+    public SentryTurretAnimDispatcher(Entity entity) {
+        this.entity = entity;
     }
 
-    public void unpowered(BlockEntity entity) {
-        UNPOWERED_COMMAND.sendForBlockEntity(entity);
+    public void idle() {
+        IDLE_COMMAND.sendForEntity(entity);
     }
 
-    public void firing(BlockEntity entity) {
-        FIRING_COMMAND.sendForBlockEntity(entity);
+    public void unpowered() {
+        UNPOWERED_COMMAND.sendForEntity(entity);
+    }
+
+    public void firing() {
+        FIRING_COMMAND.sendForEntity(entity);
     }
 
 }

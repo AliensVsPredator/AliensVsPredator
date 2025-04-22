@@ -1,6 +1,23 @@
 # v0.0.23-beta
 
 ## ☢️ Breaking Changes
+- Rewrote turret to be an entity instead of a block entity.
+  - Works mostly the same as when it was a block entity regarding ammo chest usage, redstone power, etc.
+  - This change allows mobs to target and attack the turret.
+  - Sentry turrets are unaffected by all mob effects, positive or negative.
+  - Since they are a machine entity, sentry turrets are immune to most forms of environmental damage, including but not limited to:
+    - Burning (Camp Fire blocks, Fire blocks, Magma Blocks, etc.)
+    - Cactus (Cactus is currently too OP and needed a nerf)
+    - Drowning
+    - Falling
+    - Fireworks
+    - Freezing
+    - Poison
+    - Radiation
+    - Razor Wire
+    - Suffocation (No breathing)
+    - Withering
+    - And more like Bee stings, Starvation, etc.
 - Updated registry names for the following blocks:
   - Ammo Chest (`avp:ammo_chest_be` -> `avp:ammo_chest`)
   - Desk Terminal (`avp:desk_terminal_be` -> `avp:desk_terminal`)
@@ -108,6 +125,7 @@
 - Rename tag `#avp:marine_camp_grass` to `#avp:has_marine_camp_grass`.
 - Added `#avp:melee_weapons` and `#avp:ranged_weapons` item tags.
 - Added `#avp:ovamorphs` entity type tag.
+- Added `#avp:does_not_hurt_sentry_turrets` damage type tag.
 
 ## 🔬 Technical Changes
 - Bumped gradle version from `8.12` to `8.13`.
