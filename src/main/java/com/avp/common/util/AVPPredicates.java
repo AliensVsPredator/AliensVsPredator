@@ -49,18 +49,6 @@ public class AVPPredicates {
         return !hasFullRadiationResistantArmor;
     }
 
-    public static boolean containsIrradiatedItems(Container container) {
-        for (var i = 0; i < container.getContainerSize(); i++) {
-            var itemStack = container.getItem(i);
-
-            if (!itemStack.isEmpty() && itemStack.is(AVPItemTags.RADIATION_ITEMS)) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
     public static boolean hasEmbryo(Entity target) {
         return target instanceof Host host && host.parasiteType() != null;
     }

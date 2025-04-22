@@ -52,6 +52,16 @@
 
 ## ♻️ Changes
 - Updated ash block texture.
+- Changed radiation mechanics:
+  - Container blocks and block items will no longer emit radiation passively.
+    - After further testing, we found that this functionality hurt game performance too much for it to be worthwhile.
+    - We also found that it wasn't intuitive where radiation effects were coming from.
+    - The following containers are affected:
+      - Block Item containers (Chest item entities with radioactive items inside of them)
+      - Boat Chests
+      - Chests
+      - Minecart Chests
+      - Shulker Boxes
 - Updated the following textures for male marines:
   - Beard 0
   - Beard 1
