@@ -1,12 +1,5 @@
 package com.avp.common.entity.machine;
 
-import com.avp.AVP;
-import com.avp.common.block.AVPBlocks;
-import com.avp.common.block.entity.AmmoChestBlockEntity;
-import com.avp.common.damage.AVPDamageTypes;
-import com.avp.common.damage.AVPDamageTypesTags;
-import com.avp.common.level.effect.AVPMobEffectTags;
-import com.avp.common.sound.AVPSoundEvents;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
@@ -29,7 +22,22 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.UUID;
 
+import com.avp.AVP;
+import com.avp.common.block.AVPBlocks;
+import com.avp.common.block.entity.AmmoChestBlockEntity;
+import com.avp.common.damage.AVPDamageTypes;
+import com.avp.common.damage.AVPDamageTypesTags;
+import com.avp.common.sound.AVPSoundEvents;
+
 public class SentryTurret extends Mob implements TraceableEntity {
+
+    public static float DAMAGE = AVP.config.blockConfigs.TURRET_DAMAGE;
+
+    public static int RANGE = AVP.config.blockConfigs.TURRET_RANGE;
+
+    protected static int AMMO_CHEST_RANGE = AVP.config.blockConfigs.TURRET_AMMOCHEST_SEARCH_RANGE;
+
+    protected static int FOV = AVP.config.blockConfigs.TURRET_FOV;
 
     @Nullable
     private UUID ownerUUID;
@@ -40,14 +48,6 @@ public class SentryTurret extends Mob implements TraceableEntity {
     private Monster targetedMonster;
 
     private int fireCooldown = 0;
-
-    protected static int fov = AVP.config.blockConfigs.TURRET_FOV;
-
-    public static int range = AVP.config.blockConfigs.TURRET_RANGE;
-
-    public static float damage = AVP.config.blockConfigs.TURRET_DAMAGE;
-
-    protected static int ammoChestRange = AVP.config.blockConfigs.TURRET_AMMOCHEST_SEARCH_RANGE;
 
     protected final SentryTurretAnimDispatcher animDispatcher;
 
@@ -77,10 +77,11 @@ public class SentryTurret extends Mob implements TraceableEntity {
     }
 
     public static AttributeSupplier.Builder createSentryTurretAttributes() {
-        return LivingEntity.createLivingAttributes().add(Attributes.MAX_HEALTH, 16.0F)
-                .add(Attributes.MOVEMENT_SPEED, 0.0F)
-                .add(Attributes.KNOCKBACK_RESISTANCE, 100.0D)
-                .add(Attributes.FOLLOW_RANGE, range);
+        return LivingEntity.createLivingAttributes()
+            .add(Attributes.MAX_HEALTH, 16.0F)
+            .add(Attributes.MOVEMENT_SPEED, 0.0F)
+            .add(Attributes.KNOCKBACK_RESISTANCE, 100.0D)
+            .add(Attributes.FOLLOW_RANGE, RANGE);
     }
 
     @Override
@@ -151,7 +152,6 @@ public class SentryTurret extends Mob implements TraceableEntity {
             compound.putUUID("Target", this.targetedMonster.getUUID());
         }
         compound.putInt("FireCooldown", this.fireCooldown);
-
     }
 
     @Override
@@ -160,16 +160,15 @@ public class SentryTurret extends Mob implements TraceableEntity {
     }
 
     @Override
-    public boolean fireImmune() {
-        return true;
+    public boolean displayFireAnimation() {
+        return false;
     }
 
     @Override
     public boolean canBeAffected(MobEffectInstance effectInstance) {
-        if (effectInstance.getEffect().is(AVPMobEffectTags.DOES_NOT_SENTRY_TURRETS)) {
-            return false;
-        }
-        return super.canBeAffected(effectInstance);
+        // Sentry turrets aren't affected by any effects, even positive ones. It doesn't make sense for a turret
+        // to have regeneration or absorption as much as it doesn't make sense for them to have nausea or wither.
+        return false;
     }
 
     @Override
@@ -233,11 +232,12 @@ public class SentryTurret extends Mob implements TraceableEntity {
     }
 
     private void findTarget() {
-        var monsters = this.level().getEntitiesOfClass(
+        var monsters = this.level()
+            .getEntitiesOfClass(
                 Monster.class,
-                this.getBoundingBox().inflate(range),
+                this.getBoundingBox().inflate(RANGE),
                 this::canTargetMonster
-        );
+            );
 
         if (!monsters.isEmpty()) {
             this.setTargetedMonster(monsters.getFirst());
@@ -246,10 +246,13 @@ public class SentryTurret extends Mob implements TraceableEntity {
 
     private void fireAtTarget(AmmoChestBlockEntity ammoChestBlockEntity) {
         var target = getTargetedMonster();
-        if (target != null && target.isAlive() && isFacingMonster(blockPosition(), getLookAngle(), target) && this.getSensing().hasLineOfSight(target)) {
+        if (
+            target != null && target.isAlive() && isFacingMonster(blockPosition(), getLookAngle(), target) && this.getSensing()
+                .hasLineOfSight(target)
+        ) {
             animDispatcher.firing();
             level().playSound(null, blockPosition(), AVPSoundEvents.WEAPON_GENERIC_SHOOT, SoundSource.BLOCKS, 1.0F, 1.0F);
-            target.hurt(this.damageSources().source(AVPDamageTypes.BULLET, this), damage);
+            target.hurt(this.damageSources().source(AVPDamageTypes.BULLET, this), DAMAGE);
             target.setLastHurtMob(this);
             ammoChestBlockEntity.consumeAmmo(1);
             fireCooldown = 20;
@@ -268,9 +271,9 @@ public class SentryTurret extends Mob implements TraceableEntity {
 
     private boolean canTargetMonster(Monster monster) {
         return monster.isAlive()
-                && this.distanceTo(monster) <= range
-                && isFacingMonster(this.blockPosition(), this.getLookAngle(), monster)
-                && this.getSensing().hasLineOfSight(monster);
+            && this.distanceTo(monster) <= RANGE
+            && isFacingMonster(this.blockPosition(), this.getLookAngle(), monster)
+            && this.getSensing().hasLineOfSight(monster);
     }
 
     private static boolean isFacingMonster(BlockPos turretPos, Vec3 facingVec, Monster monster) {
@@ -279,7 +282,7 @@ public class SentryTurret extends Mob implements TraceableEntity {
         var directionToEntity = entityPos.subtract(turretCenter).normalize();
 
         var dotProduct = directionToEntity.dot(facingVec.normalize());
-        return dotProduct > Math.cos(Math.toRadians(fov));
+        return dotProduct > Math.cos(Math.toRadians(FOV));
     }
 
     @Nullable
@@ -288,9 +291,9 @@ public class SentryTurret extends Mob implements TraceableEntity {
 
         for (
             var searchRadius : BlockPos.betweenClosed(
-            pos.offset(-ammoChestRange, -ammoChestRange, -ammoChestRange),
-            pos.offset(ammoChestRange, ammoChestRange, ammoChestRange)
-        )
+                pos.offset(-AMMO_CHEST_RANGE, -AMMO_CHEST_RANGE, -AMMO_CHEST_RANGE),
+                pos.offset(AMMO_CHEST_RANGE, AMMO_CHEST_RANGE, AMMO_CHEST_RANGE)
+            )
         ) {
             var ammoEntity = level.getBlockEntity(searchRadius);
             if (ammoEntity instanceof AmmoChestBlockEntity ammoChestBlockEntity) {

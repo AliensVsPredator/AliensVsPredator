@@ -32,19 +32,5 @@ public class AVPMobEffectTagProvider extends FabricTagProvider<MobEffect> {
                 MobEffects.WEAKNESS.value(),
                 MobEffects.WITHER.value()
             );
-
-        getOrCreateTagBuilder(AVPMobEffectTags.DOES_NOT_SENTRY_TURRETS)
-            .add(
-                MobEffects.BLINDNESS.value(),
-                MobEffects.CONFUSION.value(),
-                MobEffects.DARKNESS.value(),
-                MobEffects.DIG_SLOWDOWN.value(),
-                MobEffects.HARM.value(),
-                MobEffects.INFESTED.value(),
-                MobEffects.MOVEMENT_SLOWDOWN.value(),
-                MobEffects.POISON.value(),
-                MobEffects.WEAKNESS.value(),
-                MobEffects.WITHER.value()
-            );
     }
 }
