@@ -71,6 +71,8 @@
   - Hair 3
 
 ## 🐞 Fixes
+- Fixed `/avp nuke nuke` command, it is now `/avp test nuke`.
+- Fixed facehuggers staying on invalid hosts (thanks, carry-on mod).
 - Fixed the drone's inner jaw clipping through their head.
 - Fixed the warrior's inner jaw clipping through their head.
 - Fixed aliens not targeting marines correctly.

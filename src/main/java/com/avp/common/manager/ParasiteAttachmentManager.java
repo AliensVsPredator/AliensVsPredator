@@ -55,9 +55,12 @@ public class ParasiteAttachmentManager {
 
         Objects.requireNonNull(host);
 
-        if (host instanceof ServerPlayer player && AVPPredicates.IS_IMMORTAL.test(player)) {
+        if (!AVPPredicates.isHost(host)) {
             parasite.unRide();
-            player.connection.send(new ClientboundSetPassengersPacket(host));
+
+            if (host instanceof ServerPlayer serverPlayer) {
+                serverPlayer.connection.send(new ClientboundSetPassengersPacket(host));
+            }
             return;
         }
 
