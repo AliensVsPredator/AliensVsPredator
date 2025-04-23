@@ -306,6 +306,16 @@ public class AVPBlocks {
     public static final Block ZINC_ORE = register(BlockProperties.ZINC_ORE, "zinc_ore");
 
     // Doors And Trapdoors
+    public static final Block INDUSTRIAL_GLASS_DOOR = register(
+            new DoorBlock(BlockSetType.COPPER, BlockProperties.INDUSTRIAL_GLASS.noOcclusion()),
+            "industrial_glass_door"
+    );
+
+    public static final Block INDUSTRIAL_GLASS_TRAP_DOOR = register(
+            new TrapDoorBlock(BlockSetType.COPPER, BlockProperties.INDUSTRIAL_GLASS.noOcclusion()),
+            "industrial_glass_trapdoor"
+    );
+
     public static final Block FERROALUMINUM_DOOR = register(
         new DoorBlock(BlockSetType.COPPER, BlockProperties.FERROALUMINUM.noOcclusion()),
         "ferroaluminum_door"

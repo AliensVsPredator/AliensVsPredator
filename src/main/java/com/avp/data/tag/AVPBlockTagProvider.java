@@ -100,8 +100,12 @@ public class AVPBlockTagProvider extends FabricTagProvider.BlockTagProvider {
         AVPBlocks.DYE_COLOR_TO_INDUSTRIAL_GLASS_PANE.values().forEach(industrialGlassPaneTagBuilder::add);
 
         getOrCreateTagBuilder(AVPBlockTags.INDUSTRIAL_GLASS)
+            .add(
+                AVPBlocks.INDUSTRIAL_GLASS_DOOR,
+                AVPBlocks.INDUSTRIAL_GLASS_TRAP_DOOR)
             .addTag(AVPBlockTags.INDUSTRIAL_GLASS_BLOCK)
             .addTag(AVPBlockTags.INDUSTRIAL_GLASS_PANE);
+
 
         var paddingTagBuilder = getOrCreateTagBuilder(AVPBlockTags.PADDING);
 
@@ -453,6 +457,7 @@ public class AVPBlockTagProvider extends FabricTagProvider.BlockTagProvider {
         var doorTagProvider = getOrCreateTagBuilder(BlockTags.DOORS);
 
         doorTagProvider.add(
+            AVPBlocks.INDUSTRIAL_GLASS_DOOR,
             AVPBlocks.FERROALUMINUM_DOOR,
             AVPBlocks.STEEL_DOOR,
             AVPBlocks.TITANIUM_DOOR
@@ -461,6 +466,7 @@ public class AVPBlockTagProvider extends FabricTagProvider.BlockTagProvider {
         var trapdoorTagProvider = getOrCreateTagBuilder(BlockTags.TRAPDOORS);
 
         trapdoorTagProvider.add(
+            AVPBlocks.INDUSTRIAL_GLASS_TRAP_DOOR,
             AVPBlocks.FERROALUMINUM_TRAP_DOOR,
             AVPBlocks.STEEL_TRAP_DOOR,
             AVPBlocks.TITANIUM_TRAP_DOOR

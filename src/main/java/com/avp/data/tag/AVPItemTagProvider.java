@@ -377,6 +377,7 @@ public class AVPItemTagProvider extends FabricTagProvider.ItemTagProvider {
         var doorTagProvider = getOrCreateTagBuilder(ItemTags.DOORS);
 
         doorTagProvider.add(
+            AVPBlockItems.INDUSTRIAL_GLASS_DOOR,
             AVPBlockItems.FERROALUMINUM_DOOR,
             AVPBlockItems.STEEL_DOOR,
             AVPBlockItems.TITANIUM_DOOR
@@ -385,6 +386,7 @@ public class AVPItemTagProvider extends FabricTagProvider.ItemTagProvider {
         var trapdoorTagProvider = getOrCreateTagBuilder(ItemTags.TRAPDOORS);
 
         trapdoorTagProvider.add(
+            AVPBlockItems.INDUSTRIAL_GLASS_TRAP_DOOR,
             AVPBlockItems.FERROALUMINUM_TRAP_DOOR,
             AVPBlockItems.STEEL_TRAP_DOOR,
             AVPBlockItems.TITANIUM_TRAP_DOOR

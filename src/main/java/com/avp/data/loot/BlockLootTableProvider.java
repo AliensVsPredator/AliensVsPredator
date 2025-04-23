@@ -158,10 +158,12 @@ public class BlockLootTableProvider extends FabricBlockLootTableProvider {
         dropSelf(AVPBlocks.ZINC_BLOCK);
         add(AVPBlocks.ZINC_ORE, block -> createOreMultiDrop(block, AVPItems.RAW_ZINC, 2, 5));
 
+        add(AVPBlocks.INDUSTRIAL_GLASS_DOOR, this::createDoorTable);
         add(AVPBlocks.FERROALUMINUM_DOOR, this::createDoorTable);
         add(AVPBlocks.STEEL_DOOR, this::createDoorTable);
         add(AVPBlocks.TITANIUM_DOOR, this::createDoorTable);
 
+        dropSelf(AVPBlocks.INDUSTRIAL_GLASS_TRAP_DOOR);
         dropSelf(AVPBlocks.FERROALUMINUM_TRAP_DOOR);
         dropSelf(AVPBlocks.STEEL_TRAP_DOOR);
         dropSelf(AVPBlocks.TITANIUM_TRAP_DOOR);

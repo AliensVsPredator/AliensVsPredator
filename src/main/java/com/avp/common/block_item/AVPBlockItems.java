@@ -117,6 +117,10 @@ public class AVPBlockItems {
 
     public static final BlockItem INDUSTRIAL_GLASS_PANE = register(AVPBlocks.INDUSTRIAL_GLASS_PANE);
 
+    public static final BlockItem INDUSTRIAL_GLASS_DOOR = register(AVPBlocks.INDUSTRIAL_GLASS_DOOR);
+
+    public static final BlockItem INDUSTRIAL_GLASS_TRAP_DOOR = register(AVPBlocks.INDUSTRIAL_GLASS_TRAP_DOOR);
+
     public static final BlockItem LEAD_BLOCK = register(AVPBlocks.LEAD_BLOCK);
 
     public static final BlockItem LEAD_CHEST = register(

@@ -1,5 +1,7 @@
 package com.avp.data.recipe.impl;
 
+import com.avp.common.item.AVPItems;
+import com.avp.data.recipe.RecipeTemplates;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.world.item.DyeItem;
 import net.minecraft.world.level.block.Blocks;
@@ -24,6 +26,16 @@ public class GlassRecipeProvider {
             .pattern("AAA")
             .pattern("AAA")
             .into(16, AVPBlocks.INDUSTRIAL_GLASS_PANE);
+
+        builder.shaped()
+                .withCategory(RecipeCategory.BUILDING_BLOCKS)
+                .apply(RecipeTemplates.DOOR_BLOCK.apply(AVPBlocks.INDUSTRIAL_GLASS))
+                .into(3, AVPBlocks.INDUSTRIAL_GLASS_DOOR);
+
+        builder.shaped()
+                .withCategory(RecipeCategory.BUILDING_BLOCKS)
+                .apply(RecipeTemplates.TRAP_DOOR_BLOCK.apply(AVPBlocks.INDUSTRIAL_GLASS))
+                .into(2, AVPBlocks.INDUSTRIAL_GLASS_TRAP_DOOR);
 
         AVPBlocks.DYE_COLOR_TO_INDUSTRIAL_GLASS.forEach((dyeColor, block) -> {
             var dyeItem = DyeItem.byColor(dyeColor);
