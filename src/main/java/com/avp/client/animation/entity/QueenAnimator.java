@@ -42,10 +42,32 @@ public class QueenAnimator extends AzEntityAnimator<Queen> {
     public void setCustomAnimations(Queen animatable, float partialTicks) {
         super.setCustomAnimations(animatable, partialTicks);
 
+        runPassiveAnimations(animatable);
+
         var bakedModel = context().boneCache().getBakedModel();
         var eggSack = bakedModel.getBoneOrNull("root2");
+
         if (eggSack != null) {
             eggSack.setHidden(true);
         }
+    }
+
+    private void runPassiveAnimations(Queen queen) {
+        var dispatcher = queen.getAnimationDispatcher();
+        var movementAnalyzer = queen.getMovementAnalyzer();
+        var isMovingOnGround = movementAnalyzer.isMovingHorizontally() && queen.onGround();
+        Runnable animFunction;
+
+        if (queen.isUnderWater()) {
+            // TODO: idle swim
+            animFunction = dispatcher::swim;
+        } else if (isMovingOnGround) {
+            animFunction = dispatcher::walk;
+        } else {
+            // TODO: idle crawl
+            animFunction = dispatcher::idle;
+        }
+
+        animFunction.run();
     }
 }

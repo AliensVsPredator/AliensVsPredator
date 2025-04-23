@@ -4,7 +4,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.game.ClientboundSetPassengersPacket;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.LivingEntity;
@@ -13,6 +12,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
 
+import com.avp.common.damage.AVPDamageTypes;
 import com.avp.common.entity.living.FreeMob;
 import com.avp.common.entity.living.Host;
 import com.avp.common.entity.living.alien.parasite.Parasite;
@@ -77,9 +77,8 @@ public class ParasiteAttachmentManager {
 
         // FIXME: Make time configurable
         if (ticksAttachedToHost() < 20 * 10) {
-            // FIXME: Use custom damage type here
             // FIXME: Make damage configurable
-            host.hurt(parasite.damageSources().source(DamageTypes.IN_WALL), 0.01F);
+            host.hurt(parasite.damageSources().source(AVPDamageTypes.SMOTHERING), 0.01F);
         } else if (ticksAttachedToHost() > falloffTimeInTicks) {
             parasite.stopRiding();
 

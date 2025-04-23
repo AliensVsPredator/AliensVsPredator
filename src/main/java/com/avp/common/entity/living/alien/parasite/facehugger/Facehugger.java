@@ -14,7 +14,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
 
 import com.avp.AVP;
-import com.avp.common.MoveAnalysis;
 import com.avp.common.ai.goal.combat.LungeAtTargetGoal;
 import com.avp.common.entity.living.alien.Alien;
 import com.avp.common.entity.living.alien.parasite.Parasite;
@@ -28,12 +27,9 @@ public class Facehugger extends Parasite {
 
     private final FacehuggerAnimationDispatcher animationDispatcher;
 
-    private final MoveAnalysis moveAnalysis;
-
     public Facehugger(EntityType<? extends Facehugger> entityType, Level level) {
         super(entityType, level);
         this.animationDispatcher = new FacehuggerAnimationDispatcher(this);
-        this.moveAnalysis = new MoveAnalysis(this);
         this.config = AVP.config.statsConfigs.FACEHUGGER_STATS;
     }
 
@@ -68,36 +64,6 @@ public class Facehugger extends Parasite {
         );
     }
 
-    @Override
-    public void tick() {
-        super.tick();
-        moveAnalysis.tick();
-    }
-
-    public void runPassiveAnimations() {
-        var dispatcher = animationDispatcher;
-
-        if (!attachmentManager.isFertile() || isDeadOrDying()) {
-            dispatcher.infertile();
-            return;
-        }
-
-        if (attachmentManager.isAttachedToHost() && isAlive()) {
-            dispatcher.hug();
-            return;
-        }
-
-        var isMovingOnGround = moveAnalysis.isMovingHorizontally() && onGround();
-
-        if (isUnderWater()) {
-            // TODO: swim
-        } else if (isMovingOnGround) {
-            dispatcher.run();
-        } else {
-            dispatcher.idle();
-        }
-    }
-
     private void runLungeAnimation() {
         animationDispatcher.lunge();
     }
@@ -115,5 +81,9 @@ public class Facehugger extends Parasite {
     @Override
     protected float getHealthRegenPerSecond() {
         return 0;
+    }
+
+    public FacehuggerAnimationDispatcher getAnimationDispatcher() {
+        return animationDispatcher;
     }
 }

@@ -142,7 +142,7 @@ public class BalanceHiveTask extends HiveTask {
         var nextFormType = growthStage.to();
         var resourceLocation = BuiltInRegistries.ENTITY_TYPE.getKey(nextFormType);
 
-        var nextFormEntity = xenomorph.growthManager().grow(growthStage);
+        var nextFormEntity = xenomorph.getGrowthManager().grow(growthStage);
 
         if (nextFormEntity != null) {
             var isLeader = Objects.equals(xenomorph.getUUID(), hive.hiveLeaderId());

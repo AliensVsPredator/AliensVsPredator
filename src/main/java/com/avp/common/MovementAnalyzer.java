@@ -3,7 +3,7 @@ package com.avp.common;
 import net.minecraft.world.entity.Entity;
 import org.joml.Vector3d;
 
-public class MoveAnalysis {
+public class MovementAnalyzer {
 
     private final Entity entity;
 
@@ -13,7 +13,7 @@ public class MoveAnalysis {
 
     private int lastTick;
 
-    public MoveAnalysis(Entity entity) {
+    public MovementAnalyzer(Entity entity) {
         this.entity = entity;
         this.lastPosition = new Vector3d(entity.position().toVector3f());
         this.deltaPosition = new Vector3d();

@@ -18,6 +18,8 @@ public class AVPDamageTypes {
 
     public static final ResourceKey<DamageType> RADIATION = create("radiation");
 
+    public static final ResourceKey<DamageType> SMOTHERING = create("smothering");
+
     private static ResourceKey<DamageType> create(String id) {
         return ResourceKey.create(Registries.DAMAGE_TYPE, AVPResources.location(id));
     }

@@ -44,7 +44,8 @@ public class AVPDamageTypeTagProvider extends FabricTagProvider<DamageType> {
                 AVPDamageTypes.BULLET,
                 AVPDamageTypes.FLAMETHROW,
                 AVPDamageTypes.RADIATION,
-                AVPDamageTypes.RAZOR_WIRE
+                AVPDamageTypes.RAZOR_WIRE,
+                AVPDamageTypes.SMOTHERING
             );
 
         // All missing damage types here were excluded on purpose. Yes, including lava. Lava melts machinery.
@@ -68,7 +69,8 @@ public class AVPDamageTypeTagProvider extends FabricTagProvider<DamageType> {
                 DamageTypes.SWEET_BERRY_BUSH,
                 DamageTypes.THORNS,
                 DamageTypes.WIND_CHARGE,
-                DamageTypes.WITHER
+                DamageTypes.WITHER,
+                AVPDamageTypes.SMOTHERING
             );
     }
 }

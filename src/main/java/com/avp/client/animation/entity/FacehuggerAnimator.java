@@ -41,4 +41,36 @@ public class FacehuggerAnimator extends AzEntityAnimator<Facehugger> {
         return ANIMATION;
     }
 
+    @Override
+    public void setCustomAnimations(Facehugger animatable, float partialTicks) {
+        super.setCustomAnimations(animatable, partialTicks);
+
+        runPassiveAnimations(animatable);
+    }
+
+    private void runPassiveAnimations(Facehugger facehugger) {
+        var attachmentManager = facehugger.getAttachmentManager();
+        var dispatcher = facehugger.getAnimationDispatcher();
+
+        if ((!attachmentManager.isFertile() && !attachmentManager.isAttachedToHost()) || facehugger.isDeadOrDying()) {
+            dispatcher.infertile();
+            return;
+        }
+
+        if (attachmentManager.isAttachedToHost() && facehugger.isAlive()) {
+            dispatcher.hug();
+            return;
+        }
+
+        var movementAnalyzer = facehugger.getMovementAnalyzer();
+        var isMovingOnGround = movementAnalyzer.isMovingHorizontally() && facehugger.onGround();
+
+        if (facehugger.isUnderWater()) {
+            // TODO: swim
+        } else if (isMovingOnGround) {
+            dispatcher.run();
+        } else {
+            dispatcher.idle();
+        }
+    }
 }

@@ -621,6 +621,7 @@ public class EnglishLanguageProvider extends FabricLanguageProvider {
         translationBuilder.add("death.attack.acid", "%1$s vaporized in acid");
         translationBuilder.add("death.attack.radiation", "%1$s surrendered to radiation");
         translationBuilder.add("death.attack.razor_wire", "%1$s was struck by razor wire");
+        translationBuilder.add("death.attack.smothering", "%1$s was smothered to death");
 
         translationBuilder.add("advancements.aliens.root.title", "AVP: Aliens");
         translationBuilder.add("advancements.aliens.root.description", "In Minecraft, no one can hear you scream");

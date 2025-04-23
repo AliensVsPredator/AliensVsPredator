@@ -34,7 +34,6 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Objects;
 import java.util.function.BiConsumer;
 
-import com.avp.common.MoveAnalysis;
 import com.avp.common.ai.goal.DigToTargetGoal;
 import com.avp.common.ai.goal.StrollAroundInWaterGoal;
 import com.avp.common.ai.goal.XenoFloatGoal;
@@ -67,8 +66,6 @@ public abstract class Xenomorph extends Alien implements ResinProducer {
 
     protected final CrawlingManager crawlingManager;
 
-    protected final MoveAnalysis moveAnalysis;
-
     private final XenomorphNavigationManager navigationManager;
 
     private final GrowthManager growthManager;
@@ -87,7 +84,6 @@ public abstract class Xenomorph extends Alien implements ResinProducer {
             .setGrowthTimeReductionMultiplierProvider(
                 () -> geneManager.get(GeneKeys.GROWTH_SPEED, GeneDecoders.GROWTH_SPEED)
             );
-        this.moveAnalysis = new MoveAnalysis(this);
         this.navigationManager = new XenomorphNavigationManager(this, moveControl);
         this.resinManager = new ResinManager(this, createResinData())
             .setBonusResinProvider(
@@ -98,8 +94,6 @@ public abstract class Xenomorph extends Alien implements ResinProducer {
     }
 
     protected abstract @NotNull ResinData createResinData();
-
-    protected abstract void runPassiveAnimations();
 
     public abstract void runAttackAnimations();
 
@@ -132,7 +126,6 @@ public abstract class Xenomorph extends Alien implements ResinProducer {
     @Override
     public void tick() {
         super.tick();
-        moveAnalysis.tick();
         crawlingManager.tick();
         growthManager.tick();
         resinManager.tick();
@@ -157,7 +150,7 @@ public abstract class Xenomorph extends Alien implements ResinProducer {
                 growthStage != null && !this.getEntityData().get(Xenomorph.IS_POISONED) && this.getEntityData()
                     .get(Xenomorph.JELLY_COUNT) >= this.maxJellyToGrowth()
             ) {
-                this.growthManager().grow(growthStage);
+                this.getGrowthManager().grow(growthStage);
             }
         }
     }
@@ -293,13 +286,17 @@ public abstract class Xenomorph extends Alien implements ResinProducer {
         this.entityData.set(CLIENT_ANGER_LEVEL, vibrationSystemManager.getActiveAnger());
     }
 
-    public GrowthManager growthManager() {
+    public GrowthManager getGrowthManager() {
         return growthManager;
     }
 
     @Override
-    public ResinManager resinManager() {
+    public ResinManager getResinManager() {
         return resinManager;
+    }
+
+    public CrawlingManager getCrawlingManager() {
+        return crawlingManager;
     }
 
     void setMoveControl(MoveControl moveControl) {
