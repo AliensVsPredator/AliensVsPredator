@@ -102,6 +102,8 @@ public class AVPBlockTagProvider extends FabricTagProvider.BlockTagProvider {
         getOrCreateTagBuilder(AVPBlockTags.INDUSTRIAL_GLASS)
             .add(
                 AVPBlocks.INDUSTRIAL_GLASS_DOOR,
+                AVPBlocks.INDUSTRIAL_GLASS_SLAB,
+                AVPBlocks.INDUSTRIAL_GLASS_STAIRS,
                 AVPBlocks.INDUSTRIAL_GLASS_TRAP_DOOR)
             .addTag(AVPBlockTags.INDUSTRIAL_GLASS_BLOCK)
             .addTag(AVPBlockTags.INDUSTRIAL_GLASS_PANE);
