@@ -102,6 +102,16 @@ public class AVPItems {
         "predator_music_disc_1"
     );
 
+    public static final Item ALIEN_MUSIC_DISC_1_FRAGMENT = register(
+        new DiscFragmentItem(new Item.Properties()),
+        "alien_music_disc_1_fragment"
+    );
+
+    public static final Item PREDATOR_MUSIC_DISC_1_FRAGMENT = register(
+        new DiscFragmentItem(new Item.Properties()),
+        "predator_music_disc_1_fragment"
+    );
+
     // Material Items
     public static final Item ALUMINUM_INGOT = register("aluminum_ingot");
 
