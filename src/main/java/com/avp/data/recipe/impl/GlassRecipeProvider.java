@@ -2,12 +2,14 @@ package com.avp.data.recipe.impl;
 
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.world.item.DyeItem;
+import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Blocks;
 
 import java.util.Set;
 
 import com.avp.common.block.AVPBlocks;
 import com.avp.data.recipe.RecipeConstants;
+import com.avp.data.recipe.RecipeTemplates;
 import com.avp.data.recipe.builder.RecipeBuilder;
 
 public class GlassRecipeProvider {
@@ -24,6 +26,22 @@ public class GlassRecipeProvider {
             .pattern("AAA")
             .pattern("AAA")
             .into(16, AVPBlocks.INDUSTRIAL_GLASS_PANE);
+
+        builder.shaped()
+            .withCategory(RecipeCategory.BUILDING_BLOCKS)
+            .apply(RecipeTemplates.DOOR_BLOCK.apply(AVPBlocks.INDUSTRIAL_GLASS))
+            .into(3, AVPBlocks.INDUSTRIAL_GLASS_DOOR);
+
+        builder.shaped()
+            .withCategory(RecipeCategory.BUILDING_BLOCKS)
+            .apply(RecipeTemplates.TRAP_DOOR_BLOCK.apply(AVPBlocks.INDUSTRIAL_GLASS))
+            .into(2, AVPBlocks.INDUSTRIAL_GLASS_TRAP_DOOR);
+
+        // Add standard slab and stair crafting recipes
+        createStandardSlabRecipe(builder, AVPBlocks.INDUSTRIAL_GLASS, AVPBlocks.INDUSTRIAL_GLASS_SLAB);
+        createStandardStairRecipe(builder, AVPBlocks.INDUSTRIAL_GLASS, AVPBlocks.INDUSTRIAL_GLASS_STAIRS);
+
+        createIndustrialGlassBlockVariantRecipes(builder);
 
         AVPBlocks.DYE_COLOR_TO_INDUSTRIAL_GLASS.forEach((dyeColor, block) -> {
             var dyeItem = DyeItem.byColor(dyeColor);
@@ -83,5 +101,29 @@ public class GlassRecipeProvider {
             .withExperience(RecipeConstants.VERY_COMMON_SMELT_EXPERIENCE)
             .into(AVPBlocks.INDUSTRIAL_GLASS)
         );
+    }
+
+    private static void createIndustrialGlassBlockVariantRecipes(RecipeBuilder builder) {
+        var industrialGlassBaseBuilder = builder.stonecut(AVPBlocks.INDUSTRIAL_GLASS)
+            .withCategory(RecipeCategory.BUILDING_BLOCKS);
+
+        industrialGlassBaseBuilder.into(2, AVPBlocks.INDUSTRIAL_GLASS_SLAB);
+        industrialGlassBaseBuilder.into(1, AVPBlocks.INDUSTRIAL_GLASS_STAIRS);
+    }
+
+    // TODO: Duplicate function, unify at some point.
+    private static void createStandardSlabRecipe(RecipeBuilder builder, ItemLike input, ItemLike output) {
+        builder.shaped()
+            .withCategory(RecipeCategory.BUILDING_BLOCKS)
+            .apply(RecipeTemplates.SLAB_BLOCK.apply(input))
+            .into(6, output);
+    }
+
+    // TODO: Duplicate function, unify at some point.
+    private static void createStandardStairRecipe(RecipeBuilder builder, ItemLike input, ItemLike output) {
+        builder.shaped()
+            .withCategory(RecipeCategory.BUILDING_BLOCKS)
+            .apply(RecipeTemplates.STAIR_BLOCK.apply(input))
+            .into(4, output);
     }
 }

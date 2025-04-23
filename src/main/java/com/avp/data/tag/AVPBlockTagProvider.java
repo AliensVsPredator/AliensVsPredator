@@ -101,7 +101,13 @@ public class AVPBlockTagProvider extends FabricTagProvider.BlockTagProvider {
 
         getOrCreateTagBuilder(AVPBlockTags.INDUSTRIAL_GLASS)
             .addTag(AVPBlockTags.INDUSTRIAL_GLASS_BLOCK)
-            .addTag(AVPBlockTags.INDUSTRIAL_GLASS_PANE);
+            .addTag(AVPBlockTags.INDUSTRIAL_GLASS_PANE)
+            .add(
+                AVPBlocks.INDUSTRIAL_GLASS_DOOR,
+                AVPBlocks.INDUSTRIAL_GLASS_SLAB,
+                AVPBlocks.INDUSTRIAL_GLASS_STAIRS,
+                AVPBlocks.INDUSTRIAL_GLASS_TRAP_DOOR
+            );
 
         var paddingTagBuilder = getOrCreateTagBuilder(AVPBlockTags.PADDING);
 
@@ -405,6 +411,7 @@ public class AVPBlockTagProvider extends FabricTagProvider.BlockTagProvider {
         var slabTagProvider = getOrCreateTagBuilder(BlockTags.SLABS);
 
         slabTagProvider.add(
+            AVPBlocks.INDUSTRIAL_GLASS_SLAB,
             AVPBlocks.CUT_FERROALUMINUM_SLAB,
             AVPBlocks.CUT_STEEL_SLAB,
             AVPBlocks.CUT_TITANIUM_SLAB,
@@ -453,6 +460,7 @@ public class AVPBlockTagProvider extends FabricTagProvider.BlockTagProvider {
         var doorTagProvider = getOrCreateTagBuilder(BlockTags.DOORS);
 
         doorTagProvider.add(
+            AVPBlocks.INDUSTRIAL_GLASS_DOOR,
             AVPBlocks.FERROALUMINUM_DOOR,
             AVPBlocks.STEEL_DOOR,
             AVPBlocks.TITANIUM_DOOR
@@ -461,6 +469,7 @@ public class AVPBlockTagProvider extends FabricTagProvider.BlockTagProvider {
         var trapdoorTagProvider = getOrCreateTagBuilder(BlockTags.TRAPDOORS);
 
         trapdoorTagProvider.add(
+            AVPBlocks.INDUSTRIAL_GLASS_TRAP_DOOR,
             AVPBlocks.FERROALUMINUM_TRAP_DOOR,
             AVPBlocks.STEEL_TRAP_DOOR,
             AVPBlocks.TITANIUM_TRAP_DOOR
@@ -485,6 +494,7 @@ public class AVPBlockTagProvider extends FabricTagProvider.BlockTagProvider {
         var stairsTagProvider = getOrCreateTagBuilder(BlockTags.STAIRS);
 
         stairsTagProvider.add(
+            AVPBlocks.INDUSTRIAL_GLASS_STAIRS,
             AVPBlocks.CUT_FERROALUMINUM_STAIRS,
             AVPBlocks.CUT_STEEL_STAIRS,
             AVPBlocks.CUT_TITANIUM_STAIRS,

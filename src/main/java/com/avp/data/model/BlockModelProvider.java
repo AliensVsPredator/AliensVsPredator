@@ -70,7 +70,11 @@ public class BlockModelProvider extends FabricModelProvider {
             }
         );
 
-        generators.createTrivialCube(AVPBlocks.INDUSTRIAL_GLASS);
+        generators.family(AVPBlocks.INDUSTRIAL_GLASS)
+            .door(AVPBlocks.INDUSTRIAL_GLASS_DOOR)
+            .slab(AVPBlocks.INDUSTRIAL_GLASS_SLAB)
+            .stairs(AVPBlocks.INDUSTRIAL_GLASS_STAIRS)
+            .trapdoor(AVPBlocks.INDUSTRIAL_GLASS_TRAP_DOOR);
         AVPBlocks.DYE_COLOR_TO_INDUSTRIAL_GLASS.forEach((dyeColor, block) -> generators.createTrivialCube(block));
         createGlassBlocks(generators, AVPBlocks.INDUSTRIAL_GLASS, AVPBlocks.INDUSTRIAL_GLASS_PANE);
         AVPBlocks.DYE_COLOR_TO_INDUSTRIAL_GLASS_PANE.forEach(

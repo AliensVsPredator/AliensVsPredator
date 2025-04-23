@@ -18,6 +18,11 @@ public class MiscellaneousRecipeProvider {
             .withExperience(RecipeConstants.VERY_COMMON_SMELT_EXPERIENCE)
             .into(AVPItems.REDSTONE_CRYSTAL);
 
+        builder.blast(AVPItems.IRRADIATED_CHITIN)
+            .withCategory(RecipeCategory.MISC)
+            .withExperience(RecipeConstants.UNCOMMON_MATERIAL_SMELT_EXPERIENCE)
+            .into(AVPItems.CHITIN);
+
         builder.shaped()
             .withCategory(RecipeCategory.MISC)
             .define('A', Items.LAPIS_LAZULI)

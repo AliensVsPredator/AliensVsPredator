@@ -9,8 +9,6 @@ import com.avp.common.item.AVPItems;
 import com.avp.data.recipe.RecipeConstants;
 import com.avp.data.recipe.RecipeTemplates;
 import com.avp.data.recipe.builder.RecipeBuilder;
-import com.avp.data.recipe.builder.ShapedRecipeBuilder;
-import com.avp.data.recipe.builder.ShapelessRecipeBuilder;
 import com.avp.data.recipe.util.RecipeUtil;
 
 public class MetalRecipeProvider {
@@ -141,14 +139,14 @@ public class MetalRecipeProvider {
             .into(1, AVPBlocks.TITANIUM_PRESSURE_PLATE);
 
         // Add standard slab and stair crafting recipes
-        createStandardSlabRecipe(builder.shaped(), AVPBlocks.FERROALUMINUM_BLOCK, AVPBlocks.FERROALUMINUM_SLAB);
-        createStandardStairRecipe(builder.shaped(), AVPBlocks.FERROALUMINUM_BLOCK, AVPBlocks.FERROALUMINUM_STAIRS);
+        createStandardSlabRecipe(builder, AVPBlocks.FERROALUMINUM_BLOCK, AVPBlocks.FERROALUMINUM_SLAB);
+        createStandardStairRecipe(builder, AVPBlocks.FERROALUMINUM_BLOCK, AVPBlocks.FERROALUMINUM_STAIRS);
 
-        createStandardSlabRecipe(builder.shaped(), AVPBlocks.STEEL_BLOCK, AVPBlocks.STEEL_SLAB);
-        createStandardStairRecipe(builder.shaped(), AVPBlocks.STEEL_BLOCK, AVPBlocks.STEEL_STAIRS);
+        createStandardSlabRecipe(builder, AVPBlocks.STEEL_BLOCK, AVPBlocks.STEEL_SLAB);
+        createStandardStairRecipe(builder, AVPBlocks.STEEL_BLOCK, AVPBlocks.STEEL_STAIRS);
 
-        createStandardSlabRecipe(builder.shaped(), AVPBlocks.TITANIUM_BLOCK, AVPBlocks.TITANIUM_SLAB);
-        createStandardStairRecipe(builder.shaped(), AVPBlocks.TITANIUM_BLOCK, AVPBlocks.TITANIUM_STAIRS);
+        createStandardSlabRecipe(builder, AVPBlocks.TITANIUM_BLOCK, AVPBlocks.TITANIUM_SLAB);
+        createStandardStairRecipe(builder, AVPBlocks.TITANIUM_BLOCK, AVPBlocks.TITANIUM_STAIRS);
 
         createFerroaluminumBlockVariantRecipes(builder);
         createSteelBlockVariantRecipes(builder);
@@ -158,24 +156,24 @@ public class MetalRecipeProvider {
         createVariantSlabAndStairRecipes(builder);
 
         // Nugget to ingot recipes
-        nuggetToIngot(builder.shaped(), AVPItems.FERROALUMINUM_NUGGET, AVPItems.FERROALUMINUM_INGOT);
-        nuggetToIngot(builder.shaped(), AVPItems.STEEL_NUGGET, AVPItems.STEEL_INGOT);
-        nuggetToIngot(builder.shaped(), AVPItems.BRASS_NUGGET, AVPItems.BRASS_INGOT);
-        nuggetToIngot(builder.shaped(), AVPItems.TITANIUM_NUGGET, AVPItems.TITANIUM_INGOT);
-        nuggetToIngot(builder.shaped(), AVPItems.LEAD_NUGGET, AVPItems.LEAD_INGOT);
-        nuggetToIngot(builder.shaped(), AVPItems.URANIUM_NUGGET, AVPItems.URANIUM_INGOT);
-        nuggetToIngot(builder.shaped(), AVPItems.ZINC_NUGGET, AVPItems.ZINC_INGOT);
-        nuggetToIngot(builder.shaped(), AVPItems.ALUMINUM_NUGGET, AVPItems.ALUMINUM_INGOT);
+        nuggetToIngot(builder, AVPItems.FERROALUMINUM_NUGGET, AVPItems.FERROALUMINUM_INGOT);
+        nuggetToIngot(builder, AVPItems.STEEL_NUGGET, AVPItems.STEEL_INGOT);
+        nuggetToIngot(builder, AVPItems.BRASS_NUGGET, AVPItems.BRASS_INGOT);
+        nuggetToIngot(builder, AVPItems.TITANIUM_NUGGET, AVPItems.TITANIUM_INGOT);
+        nuggetToIngot(builder, AVPItems.LEAD_NUGGET, AVPItems.LEAD_INGOT);
+        nuggetToIngot(builder, AVPItems.URANIUM_NUGGET, AVPItems.URANIUM_INGOT);
+        nuggetToIngot(builder, AVPItems.ZINC_NUGGET, AVPItems.ZINC_INGOT);
+        nuggetToIngot(builder, AVPItems.ALUMINUM_NUGGET, AVPItems.ALUMINUM_INGOT);
 
         // Ingot to nugget recipes
-        ingotToNugget(builder.shapeless(), AVPItems.FERROALUMINUM_INGOT, AVPItems.FERROALUMINUM_NUGGET);
-        ingotToNugget(builder.shapeless(), AVPItems.STEEL_INGOT, AVPItems.STEEL_NUGGET);
-        ingotToNugget(builder.shapeless(), AVPItems.BRASS_INGOT, AVPItems.BRASS_NUGGET);
-        ingotToNugget(builder.shapeless(), AVPItems.TITANIUM_INGOT, AVPItems.TITANIUM_NUGGET);
-        ingotToNugget(builder.shapeless(), AVPItems.LEAD_INGOT, AVPItems.LEAD_NUGGET);
-        ingotToNugget(builder.shapeless(), AVPItems.URANIUM_INGOT, AVPItems.URANIUM_NUGGET);
-        ingotToNugget(builder.shapeless(), AVPItems.ZINC_INGOT, AVPItems.ZINC_NUGGET);
-        ingotToNugget(builder.shapeless(), AVPItems.ALUMINUM_INGOT, AVPItems.ALUMINUM_NUGGET);
+        ingotToNugget(builder, AVPItems.FERROALUMINUM_INGOT, AVPItems.FERROALUMINUM_NUGGET);
+        ingotToNugget(builder, AVPItems.STEEL_INGOT, AVPItems.STEEL_NUGGET);
+        ingotToNugget(builder, AVPItems.BRASS_INGOT, AVPItems.BRASS_NUGGET);
+        ingotToNugget(builder, AVPItems.TITANIUM_INGOT, AVPItems.TITANIUM_NUGGET);
+        ingotToNugget(builder, AVPItems.LEAD_INGOT, AVPItems.LEAD_NUGGET);
+        ingotToNugget(builder, AVPItems.URANIUM_INGOT, AVPItems.URANIUM_NUGGET);
+        ingotToNugget(builder, AVPItems.ZINC_INGOT, AVPItems.ZINC_NUGGET);
+        ingotToNugget(builder, AVPItems.ALUMINUM_INGOT, AVPItems.ALUMINUM_NUGGET);
     }
 
     private static void createFerroaluminumBlockVariantRecipes(RecipeBuilder builder) {
@@ -422,23 +420,22 @@ public class MetalRecipeProvider {
             .into(1, stairs);
 
         // Add shaped crafting recipes
-        createStandardSlabRecipe(builder.shaped(), baseBlock, slab);
-        createStandardStairRecipe(builder.shaped(), baseBlock, stairs);
+        createStandardSlabRecipe(builder, baseBlock, slab);
+        createStandardStairRecipe(builder, baseBlock, stairs);
     }
 
-    private static void createStandardSlabRecipe(ShapedRecipeBuilder builder, ItemLike input, ItemLike output) {
-        builder.withCategory(RecipeCategory.BUILDING_BLOCKS)
-            .define('#', input)
-            .pattern("###")
+    private static void createStandardSlabRecipe(RecipeBuilder builder, ItemLike input, ItemLike output) {
+        builder.shaped()
+            .withCategory(RecipeCategory.BUILDING_BLOCKS)
+            .apply(RecipeTemplates.SLAB_BLOCK.apply(input))
             .into(6, output);
     }
 
-    private static void createStandardStairRecipe(ShapedRecipeBuilder builder, ItemLike input, ItemLike output) {
-        builder.withCategory(RecipeCategory.BUILDING_BLOCKS)
-            .define('#', input)
-            .pattern("#  ")
-            .pattern("## ")
-            .pattern("###")
+    private static void createStandardStairRecipe(RecipeBuilder builder, ItemLike input, ItemLike output) {
+        builder
+            .shaped()
+            .withCategory(RecipeCategory.BUILDING_BLOCKS)
+            .apply(RecipeTemplates.STAIR_BLOCK.apply(input))
             .into(4, output);
     }
 
@@ -454,8 +451,9 @@ public class MetalRecipeProvider {
             .into(output);
     }
 
-    private static void nuggetToIngot(ShapedRecipeBuilder builder, ItemLike input, ItemLike output) {
-        builder.withCategory(RecipeCategory.BUILDING_BLOCKS)
+    private static void nuggetToIngot(RecipeBuilder builder, ItemLike input, ItemLike output) {
+        builder.shaped()
+            .withCategory(RecipeCategory.BUILDING_BLOCKS)
             .define('N', input)
             .pattern("NNN")
             .pattern("NNN")
@@ -463,8 +461,9 @@ public class MetalRecipeProvider {
             .into(1, output);
     }
 
-    private static void ingotToNugget(ShapelessRecipeBuilder builder, ItemLike input, ItemLike output) {
-        builder.withCategory(RecipeCategory.BUILDING_BLOCKS)
+    private static void ingotToNugget(RecipeBuilder builder, ItemLike input, ItemLike output) {
+        builder.shapeless()
+            .withCategory(RecipeCategory.BUILDING_BLOCKS)
             .requires(1, input)
             .into(9, output);
     }

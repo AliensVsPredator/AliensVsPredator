@@ -324,6 +324,16 @@ public class AVPBlocks {
     public static final Block ZINC_ORE = register(BlockProperties.ZINC_ORE, "zinc_ore");
 
     // Doors And Trapdoors
+    public static final Block INDUSTRIAL_GLASS_DOOR = register(
+        new DoorBlock(BlockSetType.COPPER, BlockProperties.INDUSTRIAL_GLASS.build().noOcclusion()),
+        "industrial_glass_door"
+    );
+
+    public static final Block INDUSTRIAL_GLASS_TRAP_DOOR = register(
+        new TrapDoorBlock(BlockSetType.COPPER, BlockProperties.INDUSTRIAL_GLASS.build().noOcclusion()),
+        "industrial_glass_trapdoor"
+    );
+
     public static final Block FERROALUMINUM_DOOR = register(
         new DoorBlock(BlockSetType.COPPER, BlockProperties.FERROALUMINUM.build().noOcclusion()),
         "ferroaluminum_door"
@@ -386,6 +396,16 @@ public class AVPBlocks {
     );
 
     // Slabs And Stairs
+    public static final Block INDUSTRIAL_GLASS_SLAB = register(
+        new SlabBlock(BlockProperties.INDUSTRIAL_GLASS.build()),
+        "industrial_glass_slab"
+    );
+
+    public static final Block INDUSTRIAL_GLASS_STAIRS = register(
+        new StairBlock(INDUSTRIAL_GLASS.defaultBlockState(), BlockProperties.INDUSTRIAL_GLASS.build()),
+        "industrial_glass_stairs"
+    );
+
     public static final Block FERROALUMINUM_SLAB = register(
         new SlabBlock(BlockBehaviour.Properties.ofFullCopy(FERROALUMINUM_BLOCK)),
         "ferroaluminum_slab"

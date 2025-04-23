@@ -32,6 +32,8 @@ public class AVPItemTags {
 
     public static final TagKey<Item> IRON_INGOT_LIKE = create("iron_ingot_like");
 
+    public static final TagKey<Item> URANIUM_NUGGET_LIKE = create("uranium_nugget_like");
+
     public static final TagKey<Item> JUNGLE_PREDATOR_ARMOR = create("jungle_predator_armor");
 
     public static final TagKey<Item> LITHIUM = create("lithium");
