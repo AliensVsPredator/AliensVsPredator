@@ -176,6 +176,7 @@ public class BlockLootTableProvider extends FabricBlockLootTableProvider {
         dropSelf(AVPBlocks.TITANIUM_BUTTON);
         dropSelf(AVPBlocks.FERROALUMINUM_BUTTON);
 
+        dropSlab(AVPBlocks.INDUSTRIAL_GLASS_SLAB);
         dropSlab(AVPBlocks.FERROALUMINUM_FASTENED_SIDING_SLAB);
         dropSlab(AVPBlocks.FERROALUMINUM_FASTENED_STANDING_SLAB);
         dropSlab(AVPBlocks.FERROALUMINUM_GRATE_SLAB);
@@ -192,6 +193,7 @@ public class BlockLootTableProvider extends FabricBlockLootTableProvider {
         dropSlab(AVPBlocks.TITANIUM_FASTENED_SIDING_SLAB);
         dropSlab(AVPBlocks.TITANIUM_FASTENED_STANDING_SLAB);
 
+        dropSelf(AVPBlocks.INDUSTRIAL_GLASS_STAIRS);
         dropSelf(AVPBlocks.FERROALUMINUM_FASTENED_SIDING_STAIRS);
         dropSelf(AVPBlocks.FERROALUMINUM_FASTENED_STANDING_STAIRS);
         dropSelf(AVPBlocks.FERROALUMINUM_GRATE_STAIRS);

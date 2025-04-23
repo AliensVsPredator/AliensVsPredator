@@ -216,6 +216,10 @@ public class AVPBlockItems {
     public static final BlockItem STEEL_DOOR = register(AVPBlocks.STEEL_DOOR);
 
     // Metal Block - Slabs and Stairs
+    public static final BlockItem INDUSTRIAL_GLASS_SLAB = register(AVPBlocks.INDUSTRIAL_GLASS_SLAB);
+
+    public static final BlockItem INDUSTRIAL_GLASS_STAIRS = register(AVPBlocks.INDUSTRIAL_GLASS_STAIRS);
+
     public static final BlockItem FERROALUMINUM_SLAB = register(AVPBlocks.FERROALUMINUM_SLAB);
 
     public static final BlockItem FERROALUMINUM_STAIRS = register(AVPBlocks.FERROALUMINUM_STAIRS);

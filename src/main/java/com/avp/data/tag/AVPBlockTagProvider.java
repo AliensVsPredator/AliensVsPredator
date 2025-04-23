@@ -409,6 +409,7 @@ public class AVPBlockTagProvider extends FabricTagProvider.BlockTagProvider {
         var slabTagProvider = getOrCreateTagBuilder(BlockTags.SLABS);
 
         slabTagProvider.add(
+            AVPBlocks.INDUSTRIAL_GLASS_SLAB,
             AVPBlocks.CUT_FERROALUMINUM_SLAB,
             AVPBlocks.CUT_STEEL_SLAB,
             AVPBlocks.CUT_TITANIUM_SLAB,
@@ -491,6 +492,7 @@ public class AVPBlockTagProvider extends FabricTagProvider.BlockTagProvider {
         var stairsTagProvider = getOrCreateTagBuilder(BlockTags.STAIRS);
 
         stairsTagProvider.add(
+            AVPBlocks.INDUSTRIAL_GLASS_STAIRS,
             AVPBlocks.CUT_FERROALUMINUM_STAIRS,
             AVPBlocks.CUT_STEEL_STAIRS,
             AVPBlocks.CUT_TITANIUM_STAIRS,

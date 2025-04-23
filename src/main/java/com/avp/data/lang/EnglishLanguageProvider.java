@@ -77,6 +77,8 @@ public class EnglishLanguageProvider extends FabricLanguageProvider {
         translationBuilder.add(AVPBlocks.INDUSTRIAL_GLASS_PANE, "Industrial Glass Pane");
         translationBuilder.add(AVPBlocks.INDUSTRIAL_GLASS_DOOR, "Industrial Glass Door");
         translationBuilder.add(AVPBlocks.INDUSTRIAL_GLASS_TRAP_DOOR, "Industrial Glass Trap Door");
+        translationBuilder.add(AVPBlocks.INDUSTRIAL_GLASS_SLAB, "Industrial Glass Slab");
+        translationBuilder.add(AVPBlocks.INDUSTRIAL_GLASS_STAIRS, "Industrial Glass Stairs");
         translationBuilder.add(AVPBlocks.LEAD_BLOCK, "Block of Lead");
         translationBuilder.add(AVPBlocks.LEAD_CHEST, "Lead Chest");
         translationBuilder.add(AVPBlocks.FERROALUMINUM_FASTENED_STANDING_SLAB, "Ferroaluminum Fastened Standing Slab");

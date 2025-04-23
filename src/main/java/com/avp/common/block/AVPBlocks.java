@@ -369,6 +369,15 @@ public class AVPBlocks {
     );
 
     // Slabs And Stairs
+    public static final Block INDUSTRIAL_GLASS_SLAB = register(
+            new SlabBlock(BlockProperties.INDUSTRIAL_GLASS),
+            "industrial_glass_slab"
+    );
+
+    public static final Block INDUSTRIAL_GLASS_STAIRS = register(
+            new StairBlock(INDUSTRIAL_GLASS.defaultBlockState(), BlockProperties.INDUSTRIAL_GLASS),
+            "industrial_glass_stairs"
+    );
     public static final Block FERROALUMINUM_SLAB = register(
         new SlabBlock(BlockBehaviour.Properties.ofFullCopy(FERROALUMINUM_BLOCK)),
         "ferroaluminum_slab"
