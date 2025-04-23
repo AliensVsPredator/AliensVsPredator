@@ -109,6 +109,8 @@ public class IngredientsCreativeModeTabInitializer {
             entries.accept(AVPItems.PARASITE_POTTERY_SHERD);
             entries.accept(AVPItems.ROYALTY_POTTERY_SHERD);
             entries.accept(AVPItems.VECTOR_POTTERY_SHERD);
+            entries.accept(AVPItems.ALIEN_MUSIC_DISC_1_FRAGMENT);
+            entries.accept(AVPItems.PREDATOR_MUSIC_DISC_1_FRAGMENT);
 
             entries.accept(AVPItems.VERITANIUM_SHARD);
         });
