@@ -28,7 +28,6 @@ public class MarineChestPersonalLootTable {
         .withPool(
             LootPool.lootPool()
                 .setRolls(ConstantValue.exactly(1))
-                .add(LootItem.lootTableItem(Items.AIR).setWeight(55))
                 .add(
                     LootItem.lootTableItem(Items.COOKED_MUTTON)
                         .apply(SetItemCountFunction.setCount(UniformGenerator.between(1, 8)))
