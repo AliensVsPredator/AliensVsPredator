@@ -1,5 +1,6 @@
 package com.avp.data.recipe.impl;
 
+import com.avp.common.item.AVPItemTags;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
@@ -46,7 +47,7 @@ public class GunRecipeProvider {
             .withCategory(RecipeCategory.COMBAT)
             .define('A', AVPItems.STEEL_NUGGET)
             .define('B', Items.GUNPOWDER)
-            .define('C', AVPItems.URANIUM_NUGGET)
+            .define('C', AVPItemTags.URANIUM_NUGGET_LIKE)
             .pattern("ACA")
             .pattern("ABA")
             .into(4, AVPItems.GRENADE_IRRADIATED);

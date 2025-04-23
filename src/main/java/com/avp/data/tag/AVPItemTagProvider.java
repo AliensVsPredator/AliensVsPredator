@@ -212,6 +212,12 @@ public class AVPItemTagProvider extends FabricTagProvider.ItemTagProvider {
                 AVPItems.ZINC_INGOT
             );
 
+        getOrCreateTagBuilder(AVPItemTags.URANIUM_NUGGET_LIKE)
+                .add(
+                        AVPItems.URANIUM_NUGGET,
+                        AVPItems.IRRADIATED_CHITIN
+            );
+
         var industrialGlassBlockTagBuilder = getOrCreateTagBuilder(AVPItemTags.INDUSTRIAL_GLASS_BLOCK);
 
         industrialGlassBlockTagBuilder.add(AVPBlockItems.INDUSTRIAL_GLASS);
