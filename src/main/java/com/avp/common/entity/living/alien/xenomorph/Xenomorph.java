@@ -95,8 +95,6 @@ public abstract class Xenomorph extends Alien implements ResinProducer {
 
     protected abstract @NotNull ResinData createResinData();
 
-    protected abstract void runPassiveAnimations();
-
     public abstract void runAttackAnimations();
 
     @Override
@@ -152,7 +150,7 @@ public abstract class Xenomorph extends Alien implements ResinProducer {
                 growthStage != null && !this.getEntityData().get(Xenomorph.IS_POISONED) && this.getEntityData()
                     .get(Xenomorph.JELLY_COUNT) >= this.maxJellyToGrowth()
             ) {
-                this.growthManager().grow(growthStage);
+                this.getGrowthManager().grow(growthStage);
             }
         }
     }
@@ -288,13 +286,17 @@ public abstract class Xenomorph extends Alien implements ResinProducer {
         this.entityData.set(CLIENT_ANGER_LEVEL, vibrationSystemManager.getActiveAnger());
     }
 
-    public GrowthManager growthManager() {
+    public GrowthManager getGrowthManager() {
         return growthManager;
     }
 
     @Override
-    public ResinManager resinManager() {
+    public ResinManager getResinManager() {
         return resinManager;
+    }
+
+    public CrawlingManager getCrawlingManager() {
+        return crawlingManager;
     }
 
     void setMoveControl(MoveControl moveControl) {

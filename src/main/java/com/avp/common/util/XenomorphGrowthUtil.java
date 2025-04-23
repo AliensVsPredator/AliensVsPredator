@@ -10,7 +10,7 @@ public class XenomorphGrowthUtil {
 
     public static final Consumer<LivingEntity> GROW_UP_CALLBACK = (newForm) -> {
         if (newForm instanceof ResinProducer resinProducer) {
-            var resinManager = resinProducer.resinManager();
+            var resinManager = resinProducer.getResinManager();
             var baseResinData = resinManager.baseResinData();
             var resinData = resinManager.resinData();
             // Growing up consumes all the resin the xenomorph has.

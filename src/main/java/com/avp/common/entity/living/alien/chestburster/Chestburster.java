@@ -120,25 +120,6 @@ public class Chestburster extends Alien implements ResinProducer {
         return new ResinData(0, 8, 1, AVP.config.statsConfigs.CHESTBURSTER_STATS.nestTickrate);
     }
 
-    public void runPassiveAnimations() {
-        var dispatcher = animationDispatcher;
-        var isMovingOnGround = movementAnalyzer.isMovingHorizontally() && onGround();
-        Runnable animFunction;
-
-        // if (isUnderWater()) {
-        // // TODO: idle swim
-        // animFunction = dispatcher::swim;
-        // } else
-
-        if (isMovingOnGround) {
-            animFunction = dispatcher::slowSlither;
-        } else {
-            animFunction = dispatcher::idle;
-        }
-
-        animFunction.run();
-    }
-
     @Override
     public void readAdditionalSaveData(CompoundTag compoundTag) {
         super.readAdditionalSaveData(compoundTag);
@@ -154,7 +135,7 @@ public class Chestburster extends Alien implements ResinProducer {
     }
 
     @Override
-    public ResinManager resinManager() {
+    public ResinManager getResinManager() {
         return resinManager;
     }
 
@@ -165,5 +146,9 @@ public class Chestburster extends Alien implements ResinProducer {
     @Override
     public int maxJellyToGrowth() {
         return 1;
+    }
+
+    public ChestbursterAnimationDispatcher getAnimationDispatcher() {
+        return animationDispatcher;
     }
 }

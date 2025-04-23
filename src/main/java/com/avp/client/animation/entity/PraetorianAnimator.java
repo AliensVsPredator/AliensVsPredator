@@ -38,4 +38,30 @@ public class PraetorianAnimator extends AzEntityAnimator<Praetorian> {
         return ANIMATION;
     }
 
+    @Override
+    public void setCustomAnimations(Praetorian animatable, float partialTicks) {
+        super.setCustomAnimations(animatable, partialTicks);
+
+        runPassiveAnimations(animatable);
+    }
+
+    private void runPassiveAnimations(Praetorian praetorian) {
+        var dispatcher = praetorian.getAnimationDispatcher();
+        var movementAnalyzer = praetorian.getMovementAnalyzer();
+        var isMovingOnGround = movementAnalyzer.isMovingHorizontally() && praetorian.onGround();
+        var isCrawling = praetorian.getCrawlingManager().isCrawling();
+        Runnable animFunction;
+
+        if (praetorian.isUnderWater()) {
+            // TODO: idle swim
+            animFunction = dispatcher::swim;
+        } else if (isMovingOnGround) {
+            animFunction = isCrawling ? dispatcher::crawl : dispatcher::walk;
+        } else {
+            // TODO: idle crawl
+            animFunction = isCrawling ? dispatcher::crawlHold : dispatcher::idle;
+        }
+
+        animFunction.run();
+    }
 }

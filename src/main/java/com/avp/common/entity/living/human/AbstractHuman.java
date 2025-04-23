@@ -100,8 +100,6 @@ public abstract class AbstractHuman extends PathfinderMob {
         return SoundEvents.GENERIC_HURT;
     }
 
-    protected abstract void runPassiveAnimations();
-
     public abstract void runAttackAnimations();
 
     @Override

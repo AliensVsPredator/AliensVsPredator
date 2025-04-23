@@ -87,25 +87,6 @@ public class Queen extends Xenomorph {
     }
 
     @Override
-    public void runPassiveAnimations() {
-        var dispatcher = animationDispatcher;
-        var isMovingOnGround = movementAnalyzer.isMovingHorizontally() && onGround();
-        Runnable animFunction;
-
-        if (isUnderWater()) {
-            // TODO: idle swim
-            animFunction = dispatcher::swim;
-        } else if (isMovingOnGround) {
-            animFunction = dispatcher::walk;
-        } else {
-            // TODO: idle crawl
-            animFunction = dispatcher::idle;
-        }
-
-        animFunction.run();
-    }
-
-    @Override
     public void runAttackAnimations() {
         var isClawAttack = random.nextBoolean();
 
@@ -131,5 +112,9 @@ public class Queen extends Xenomorph {
     @Override
     public int maxJellyToGrowth() {
         return Integer.MAX_VALUE;
+    }
+
+    public QueenAnimationDispatcher getAnimationDispatcher() {
+        return animationDispatcher;
     }
 }
