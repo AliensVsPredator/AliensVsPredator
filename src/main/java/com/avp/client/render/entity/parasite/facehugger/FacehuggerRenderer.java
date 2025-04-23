@@ -73,8 +73,8 @@ public class FacehuggerRenderer extends AzEntityRenderer<Facehugger> {
             return;
         }
 
-        var moveAnalysis = facehugger.getMoveAnalysis();
-        var isMovingOnGround = moveAnalysis.isMovingHorizontally() && facehugger.onGround();
+        var movementAnalyzer = facehugger.getMovementAnalyzer();
+        var isMovingOnGround = movementAnalyzer.isMovingHorizontally() && facehugger.onGround();
 
         if (facehugger.isUnderWater()) {
             // TODO: swim

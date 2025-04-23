@@ -62,7 +62,7 @@ public class Warrior extends Xenomorph {
 
     public void runPassiveAnimations() {
         var dispatcher = animationDispatcher;
-        var isMovingOnGround = moveAnalysis.isMovingHorizontally() && onGround();
+        var isMovingOnGround = movementAnalyzer.isMovingHorizontally() && onGround();
         var isCrawling = crawlingManager.isCrawling();
         Runnable animFunction;
 

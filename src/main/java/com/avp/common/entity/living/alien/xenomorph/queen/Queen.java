@@ -89,7 +89,7 @@ public class Queen extends Xenomorph {
     @Override
     public void runPassiveAnimations() {
         var dispatcher = animationDispatcher;
-        var isMovingOnGround = moveAnalysis.isMovingHorizontally() && onGround();
+        var isMovingOnGround = movementAnalyzer.isMovingHorizontally() && onGround();
         Runnable animFunction;
 
         if (isUnderWater()) {

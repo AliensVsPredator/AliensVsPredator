@@ -28,6 +28,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import com.avp.AVP;
+import com.avp.common.MovementAnalyzer;
 import com.avp.common.config.AVPConfig;
 import com.avp.common.gene.GeneKeys;
 import com.avp.common.hive.Hive;
@@ -78,6 +79,8 @@ public abstract class Alien extends Monster {
 
     protected final HiveManager hiveManager;
 
+    protected final MovementAnalyzer movementAnalyzer;
+
     private int lastHurtTimeInTicks;
 
     protected AVPConfig.StatsConfigs.AdvancedStats config;
@@ -86,6 +89,7 @@ public abstract class Alien extends Monster {
         super(entityType, level);
         this.geneManager = new GeneManager(this);
         this.hiveManager = new HiveManager(this);
+        this.movementAnalyzer = new MovementAnalyzer(this);
     }
 
     public abstract @Nullable EntityType<? extends Alien> getAberrantType();
@@ -213,6 +217,7 @@ public abstract class Alien extends Monster {
     @Override
     public void tick() {
         super.tick();
+        movementAnalyzer.tick();
         hiveManager.tick();
 
         if (!level().isClientSide) {
@@ -447,5 +452,9 @@ public abstract class Alien extends Monster {
     @Override
     public boolean fireImmune() {
         return this.isNetherAfflicted();
+    }
+
+    public MovementAnalyzer getMovementAnalyzer() {
+        return movementAnalyzer;
     }
 }

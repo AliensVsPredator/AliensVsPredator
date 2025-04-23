@@ -19,7 +19,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 
-import com.avp.common.MoveAnalysis;
+import com.avp.common.MovementAnalyzer;
 import com.avp.common.config.AVPConfig;
 import com.avp.common.manager.HumanFeatureManager;
 
@@ -67,7 +67,7 @@ public abstract class AbstractHuman extends PathfinderMob {
         EntityDataSerializers.INT
     );
 
-    protected final MoveAnalysis moveAnalysis;
+    protected final MovementAnalyzer movementAnalyzer;
 
     private final HumanNavigationManager navigationManager;
 
@@ -75,7 +75,7 @@ public abstract class AbstractHuman extends PathfinderMob {
 
     public AbstractHuman(EntityType<? extends PathfinderMob> entityType, Level level) {
         super(entityType, level);
-        this.moveAnalysis = new MoveAnalysis(this);
+        this.movementAnalyzer = new MovementAnalyzer(this);
         this.navigationManager = new HumanNavigationManager(this, moveControl);
         this.humanFeatureManager = new HumanFeatureManager(this);
     }
@@ -107,7 +107,7 @@ public abstract class AbstractHuman extends PathfinderMob {
     @Override
     public void tick() {
         super.tick();
-        moveAnalysis.tick();
+        movementAnalyzer.tick();
     }
 
     @Override

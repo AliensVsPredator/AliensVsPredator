@@ -34,7 +34,6 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Objects;
 import java.util.function.BiConsumer;
 
-import com.avp.common.MoveAnalysis;
 import com.avp.common.ai.goal.DigToTargetGoal;
 import com.avp.common.ai.goal.StrollAroundInWaterGoal;
 import com.avp.common.ai.goal.XenoFloatGoal;
@@ -67,8 +66,6 @@ public abstract class Xenomorph extends Alien implements ResinProducer {
 
     protected final CrawlingManager crawlingManager;
 
-    protected final MoveAnalysis moveAnalysis;
-
     private final XenomorphNavigationManager navigationManager;
 
     private final GrowthManager growthManager;
@@ -87,7 +84,6 @@ public abstract class Xenomorph extends Alien implements ResinProducer {
             .setGrowthTimeReductionMultiplierProvider(
                 () -> geneManager.get(GeneKeys.GROWTH_SPEED, GeneDecoders.GROWTH_SPEED)
             );
-        this.moveAnalysis = new MoveAnalysis(this);
         this.navigationManager = new XenomorphNavigationManager(this, moveControl);
         this.resinManager = new ResinManager(this, createResinData())
             .setBonusResinProvider(
@@ -132,7 +128,6 @@ public abstract class Xenomorph extends Alien implements ResinProducer {
     @Override
     public void tick() {
         super.tick();
-        moveAnalysis.tick();
         crawlingManager.tick();
         growthManager.tick();
         resinManager.tick();

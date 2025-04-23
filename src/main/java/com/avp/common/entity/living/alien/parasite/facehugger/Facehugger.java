@@ -14,7 +14,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
 
 import com.avp.AVP;
-import com.avp.common.MoveAnalysis;
 import com.avp.common.ai.goal.combat.LungeAtTargetGoal;
 import com.avp.common.entity.living.alien.Alien;
 import com.avp.common.entity.living.alien.parasite.Parasite;
@@ -28,12 +27,9 @@ public class Facehugger extends Parasite {
 
     private final FacehuggerAnimationDispatcher animationDispatcher;
 
-    private final MoveAnalysis moveAnalysis;
-
     public Facehugger(EntityType<? extends Facehugger> entityType, Level level) {
         super(entityType, level);
         this.animationDispatcher = new FacehuggerAnimationDispatcher(this);
-        this.moveAnalysis = new MoveAnalysis(this);
         this.config = AVP.config.statsConfigs.FACEHUGGER_STATS;
     }
 
@@ -68,12 +64,6 @@ public class Facehugger extends Parasite {
         );
     }
 
-    @Override
-    public void tick() {
-        super.tick();
-        moveAnalysis.tick();
-    }
-
     private void runLungeAnimation() {
         animationDispatcher.lunge();
     }
@@ -95,9 +85,5 @@ public class Facehugger extends Parasite {
 
     public FacehuggerAnimationDispatcher getAnimationDispatcher() {
         return animationDispatcher;
-    }
-
-    public MoveAnalysis getMoveAnalysis() {
-        return moveAnalysis;
     }
 }

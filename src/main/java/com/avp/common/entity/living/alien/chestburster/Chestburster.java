@@ -12,7 +12,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import com.avp.AVP;
-import com.avp.common.MoveAnalysis;
 import com.avp.common.entity.living.alien.Alien;
 import com.avp.common.entity.living.alien.xenomorph.Xenomorph;
 import com.avp.common.entity.type.AVPEntityTypes;
@@ -34,8 +33,6 @@ public class Chestburster extends Alien implements ResinProducer {
         return applyFrom(AVP.config.statsConfigs.CHESTBURSTER_STATS, Monster.createMonsterAttributes());
     }
 
-    protected final MoveAnalysis moveAnalysis;
-
     private final ChestbursterAnimationDispatcher animationDispatcher;
 
     private final GrowthManager growthManager;
@@ -50,7 +47,6 @@ public class Chestburster extends Alien implements ResinProducer {
             .setGrowthTimeReductionMultiplierProvider(
                 () -> geneManager.get(GeneKeys.GROWTH_SPEED, GeneDecoders.GROWTH_SPEED)
             );
-        this.moveAnalysis = new MoveAnalysis(this);
         this.resinManager = new ResinManager(this, createResinData())
             .setBonusResinProvider(
                 () -> geneManager.get(GeneKeys.BONUS_RESIN_PRODUCTION, GeneDecoders.BONUS_RESIN_PRODUCTION).intValue()
@@ -99,7 +95,6 @@ public class Chestburster extends Alien implements ResinProducer {
     @Override
     public void tick() {
         super.tick();
-        moveAnalysis.tick();
         growthManager.tick();
         resinManager.tick();
 
@@ -127,7 +122,7 @@ public class Chestburster extends Alien implements ResinProducer {
 
     public void runPassiveAnimations() {
         var dispatcher = animationDispatcher;
-        var isMovingOnGround = moveAnalysis.isMovingHorizontally() && onGround();
+        var isMovingOnGround = movementAnalyzer.isMovingHorizontally() && onGround();
         Runnable animFunction;
 
         // if (isUnderWater()) {
