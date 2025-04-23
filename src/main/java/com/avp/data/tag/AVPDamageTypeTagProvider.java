@@ -6,10 +6,12 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.world.damagesource.DamageType;
+import net.minecraft.world.damagesource.DamageTypes;
 
 import java.util.concurrent.CompletableFuture;
 
 import com.avp.common.damage.AVPDamageTypes;
+import com.avp.common.damage.AVPDamageTypesTags;
 
 public class AVPDamageTypeTagProvider extends FabricTagProvider<DamageType> {
 
@@ -41,8 +43,34 @@ public class AVPDamageTypeTagProvider extends FabricTagProvider<DamageType> {
                 AVPDamageTypes.ACID,
                 AVPDamageTypes.BULLET,
                 AVPDamageTypes.FLAMETHROW,
+                AVPDamageTypes.RADIATION,
                 AVPDamageTypes.RAZOR_WIRE,
-                AVPDamageTypes.RADIATION
+                AVPDamageTypes.SMOTHERING
+            );
+
+        // All missing damage types here were excluded on purpose. Yes, including lava. Lava melts machinery.
+        getOrCreateTagBuilder(AVPDamageTypesTags.DOES_NOT_HURT_SENTRY_TURRETS)
+            .add(
+                DamageTypes.FREEZE,
+                DamageTypes.CACTUS,
+                DamageTypes.CAMPFIRE,
+                DamageTypes.CRAMMING,
+                DamageTypes.DROWN,
+                DamageTypes.FALL,
+                DamageTypes.HOT_FLOOR,
+                DamageTypes.IN_FIRE,
+                DamageTypes.IN_WALL,
+                DamageTypes.FIREWORKS,
+                DamageTypes.ON_FIRE,
+                AVPDamageTypes.RADIATION,
+                AVPDamageTypes.RAZOR_WIRE,
+                DamageTypes.STARVE,
+                DamageTypes.STING,
+                DamageTypes.SWEET_BERRY_BUSH,
+                DamageTypes.THORNS,
+                DamageTypes.WIND_CHARGE,
+                DamageTypes.WITHER,
+                AVPDamageTypes.SMOTHERING
             );
     }
 }

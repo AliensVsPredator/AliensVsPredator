@@ -1,6 +1,5 @@
 package com.avp.common.util;
 
-import net.minecraft.world.Container;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
@@ -47,18 +46,6 @@ public class AVPPredicates {
 
         // Entity should not have a full set of radiation-resistant armor.
         return !hasFullRadiationResistantArmor;
-    }
-
-    public static boolean containsIrradiatedItems(Container container) {
-        for (var i = 0; i < container.getContainerSize(); i++) {
-            var itemStack = container.getItem(i);
-
-            if (!itemStack.isEmpty() && itemStack.is(AVPItemTags.RADIATION_ITEMS)) {
-                return true;
-            }
-        }
-
-        return false;
     }
 
     public static boolean hasEmbryo(Entity target) {

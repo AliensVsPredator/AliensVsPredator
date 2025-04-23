@@ -386,6 +386,10 @@ public class EnglishLanguageProvider extends FabricLanguageProvider {
         translationBuilder.add(AVPItems.ALUMINUM_INGOT, "Aluminum Ingot");
         translationBuilder.add(AVPItems.ALIEN_MUSIC_DISC_1, "Music Disc");
         translationBuilder.add(AVPItems.PREDATOR_MUSIC_DISC_1, "Music Disc");
+        translationBuilder.add(AVPItems.ALIEN_MUSIC_DISC_1_FRAGMENT, "Disc Fragment");
+        translationBuilder.add(AVPItems.PREDATOR_MUSIC_DISC_1_FRAGMENT, "Disc Fragment");
+        translationBuilder.add(AVPItems.ALIEN_MUSIC_DISC_1_FRAGMENT.getDescriptionId() + ".desc", "Music Disc - Silver Smile");
+        translationBuilder.add(AVPItems.PREDATOR_MUSIC_DISC_1_FRAGMENT.getDescriptionId() + ".desc", "Music Disc - Hunter");
         translationBuilder.add(AVPItems.AUTUNITE_DUST, "Autunite Dust");
         translationBuilder.add(AVPItems.BARREL, "Barrel");
         translationBuilder.add(AVPItems.BATTERY_PACK, "Battery Pack");
@@ -615,6 +619,7 @@ public class EnglishLanguageProvider extends FabricLanguageProvider {
         translationBuilder.add("death.attack.acid", "%1$s vaporized in acid");
         translationBuilder.add("death.attack.radiation", "%1$s surrendered to radiation");
         translationBuilder.add("death.attack.razor_wire", "%1$s was struck by razor wire");
+        translationBuilder.add("death.attack.smothering", "%1$s was smothered to death");
 
         translationBuilder.add("advancements.aliens.root.title", "AVP: Aliens");
         translationBuilder.add("advancements.aliens.root.description", "In Minecraft, no one can hear you scream");

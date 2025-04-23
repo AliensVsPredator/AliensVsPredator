@@ -358,5 +358,15 @@ public class MiscellaneousRecipeProvider {
             .withExperience(0.35f)
             .withCookingTime(100)
             .into(Items.TERRACOTTA);
+
+        builder.shapeless()
+            .withCategory(RecipeCategory.MISC)
+            .requires(9, AVPItems.ALIEN_MUSIC_DISC_1_FRAGMENT)
+            .into(1, AVPItems.ALIEN_MUSIC_DISC_1);
+
+        builder.shapeless()
+            .withCategory(RecipeCategory.MISC)
+            .requires(9, AVPItems.PREDATOR_MUSIC_DISC_1_FRAGMENT)
+            .into(1, AVPItems.PREDATOR_MUSIC_DISC_1);
     }
 }

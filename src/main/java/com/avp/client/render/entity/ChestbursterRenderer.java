@@ -58,7 +58,6 @@ public class ChestbursterRenderer extends AzEntityRenderer<Chestburster> {
 
         poseStack.pushPose();
         poseStack.scale(scale, scale, scale);
-        entity.runPassiveAnimations();
         super.render(entity, entityYaw, partialTick, poseStack, bufferSource, packedLight);
         poseStack.popPose();
     }

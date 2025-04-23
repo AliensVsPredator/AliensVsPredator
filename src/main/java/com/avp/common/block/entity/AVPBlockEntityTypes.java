@@ -37,11 +37,6 @@ public class AVPBlockEntityTypes {
         BlockEntityType.Builder.of(AmmoChestBlockEntity::new, AVPBlocks.AMMO_CHEST)
     );
 
-    public static final BlockEntityType<SentryTurretBlockEntity> SENTRY_TURRET = register(
-        "sentry_turret",
-        BlockEntityType.Builder.of(SentryTurretBlockEntity::new, AVPBlocks.SENTRY_TURRET)
-    );
-
     public static final BlockEntityType<DeskTerminalBlockEntity> DESK_TERMINAL = register(
         "desk_terminal",
         BlockEntityType.Builder.of(DeskTerminalBlockEntity::new, AVPBlocks.DESK_TERMINAL_BLOCK)

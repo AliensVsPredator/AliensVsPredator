@@ -60,25 +60,6 @@ public class Warrior extends Xenomorph {
         goalSelector.addGoal(3, new LungeAtTargetGoal(this, 0.1F, 20 * 5, 1, 15).setOnLungeCallback(this::runLungeAnimation));
     }
 
-    public void runPassiveAnimations() {
-        var dispatcher = animationDispatcher;
-        var isMovingOnGround = moveAnalysis.isMovingHorizontally() && onGround();
-        var isCrawling = crawlingManager.isCrawling();
-        Runnable animFunction;
-
-        if (isUnderWater()) {
-            // TODO: idle swim
-            animFunction = dispatcher::swim;
-        } else if (isMovingOnGround) {
-            animFunction = isCrawling ? dispatcher::crawl : dispatcher::walk;
-        } else {
-            // TODO: idle crawl
-            animFunction = isCrawling ? dispatcher::crawlHold : dispatcher::idle;
-        }
-
-        animFunction.run();
-    }
-
     @Override
     public void runAttackAnimations() {
         var isClawAttack = random.nextBoolean();
@@ -105,8 +86,13 @@ public class Warrior extends Xenomorph {
     @Override
     public void tick() {
         super.tick();
+
         if (!level().isClientSide()) {
             becomeIrradiated();
         }
+    }
+
+    public WarriorAnimationDispatcher getAnimationDispatcher() {
+        return animationDispatcher;
     }
 }

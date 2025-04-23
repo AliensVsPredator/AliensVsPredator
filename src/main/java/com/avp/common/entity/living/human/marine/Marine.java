@@ -68,9 +68,6 @@ public class Marine extends AbstractHuman implements AVPInventoryBearer {
     }
 
     @Override
-    protected void runPassiveAnimations() {}
-
-    @Override
     public void runAttackAnimations() {
         animationDispatcher.rightShoot();
     }

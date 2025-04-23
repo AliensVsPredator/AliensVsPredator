@@ -175,13 +175,30 @@ if (file('key.properties').exists()) {
 		file = jar.archiveFile
 		changelog = rootProject.file("CHANGELOG.md").text
 		type = STABLE
+		file = remapJar.archiveFile
 		modLoaders.add("fabric")
 
+		discord {
+			webhookUrl = releaseProp.getProperty("discordKey")
+			dryRunWebhookUrl = releaseProp.getProperty("discordKey")
+			username = "MU/TH/UR"
+			avatarUrl = "https://i.imgur.com/5Y0EZ9x.jpeg"
+			content = changelog.map { "# A new version of AVP has been released! \n" + it}
+			setPlatforms(publishMods.platforms.curseforge, publishMods.platforms.modrinth)
+			style {
+				look = "MODERN"
+				thumbnailUrl = "https://cdn.modrinth.com/data/Uqo0H9FX/8ffabe2f364c34e6b0f13019664c5fe4989c2f95_96.webp"
+			}
+		}
 		curseforge {
 			projectId = project.cf_id
 			projectSlug = project.cf_project_slug
 			accessToken = releaseProp.getProperty("curseKey")
 			minecraftVersions.add(project.minecraft_version)
+			announcementTitle = "Download from CurseForge"
+			javaVersions.add(JavaVersion.VERSION_21)
+			clientRequired = true
+			serverRequired = true
 			requires {
 				slug = "fabric-api"
 			}
@@ -193,6 +210,7 @@ if (file('key.properties').exists()) {
 			projectId = project.modrinth_id
 			accessToken = releaseProp.getProperty('modrinthKey')
 			minecraftVersions.add(project.minecraft_version)
+			announcementTitle = "Download from Modrinth"
 			requires {
 				slug = "fabric-api"
 			}
