@@ -1,9 +1,11 @@
 package com.avp.common.block.chest_loot_tables;
 
+import com.avp.common.item.AVPItems;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.storage.loot.LootPool;
 import net.minecraft.world.level.storage.loot.LootTable;
+import net.minecraft.world.level.storage.loot.entries.EmptyLootItem;
 import net.minecraft.world.level.storage.loot.entries.LootItem;
 import net.minecraft.world.level.storage.loot.functions.SetItemCountFunction;
 import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
@@ -75,6 +77,22 @@ public class MarineChestPersonalLootTable {
                     LootItem.lootTableItem(Items.EMERALD)
                         .apply(SetItemCountFunction.setCount(UniformGenerator.between(1, 6)))
                         .setWeight(10)
+                )
+        )
+        .withPool(
+            LootPool.lootPool()
+                .setRolls(ConstantValue.exactly(1))
+                .add(EmptyLootItem.emptyItem().setWeight(1)
+                )
+                .add(
+                    LootItem.lootTableItem(AVPItems.ALIEN_MUSIC_DISC_1_FRAGMENT)
+                        .apply(SetItemCountFunction.setCount(UniformGenerator.between(1, 2)))
+                        .setWeight(1)
+                )
+                .add(
+                        LootItem.lootTableItem(AVPItems.PREDATOR_MUSIC_DISC_1_FRAGMENT)
+                                .apply(SetItemCountFunction.setCount(UniformGenerator.between(1, 2)))
+                                .setWeight(1)
                 )
         );
 }

@@ -65,6 +65,24 @@ public class ChestRawMaterialLootTable {
             LootPool.lootPool()
                 .setRolls(ConstantValue.exactly(1))
                 .add(
+                    LootItem.lootTableItem(AVPItems.ALIEN_MUSIC_DISC_1_FRAGMENT)
+                        .apply(SetItemCountFunction.setCount(UniformGenerator.between(2, 4)))
+                        .setWeight(5)
+                )
+        )
+        .withPool(
+            LootPool.lootPool()
+                .setRolls(ConstantValue.exactly(1))
+                .add(
+                    LootItem.lootTableItem(AVPItems.PREDATOR_MUSIC_DISC_1_FRAGMENT)
+                        .apply(SetItemCountFunction.setCount(UniformGenerator.between(2, 4)))
+                        .setWeight(5)
+                )
+        )
+        .withPool(
+            LootPool.lootPool()
+                .setRolls(ConstantValue.exactly(1))
+                .add(
                     LootItem.lootTableItem(AVPItems.RAW_MONAZITE)
                         .apply(SetItemCountFunction.setCount(UniformGenerator.between(1, 6)))
                         .setWeight(5)
