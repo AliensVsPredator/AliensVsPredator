@@ -43,15 +43,15 @@ public class MiscellaneousRecipeProvider {
             .pattern("GDG")
             .into(1, AVPItems.NUCLEAR_BATTERY);
 
-        builder.shaped()
-            .withCategory(RecipeCategory.MISC)
-            .define('S', AVPItems.SPEAKER)
-            .define('D', AVPItems.SERVO)
-            .define('A', AVPItems.STEEL_INGOT)
-            .pattern("SAS")
-            .pattern("SDS")
-            .pattern("AAA")
-            .into(1, AVPBlocks.RESONATOR_BLOCK);
+        // builder.shaped()
+        // .withCategory(RecipeCategory.MISC)
+        // .define('S', AVPItems.SPEAKER)
+        // .define('D', AVPItems.SERVO)
+        // .define('A', AVPItems.STEEL_INGOT)
+        // .pattern("SAS")
+        // .pattern("SDS")
+        // .pattern("AAA")
+        // .into(1, AVPBlocks.RESONATOR_BLOCK);
 
         builder.shaped()
             .withCategory(RecipeCategory.MISC)
