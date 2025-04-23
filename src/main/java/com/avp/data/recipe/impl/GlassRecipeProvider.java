@@ -11,7 +11,6 @@ import com.avp.common.block.AVPBlocks;
 import com.avp.data.recipe.RecipeConstants;
 import com.avp.data.recipe.RecipeTemplates;
 import com.avp.data.recipe.builder.RecipeBuilder;
-import com.avp.data.recipe.builder.ShapedRecipeBuilder;
 
 public class GlassRecipeProvider {
 
@@ -39,8 +38,8 @@ public class GlassRecipeProvider {
             .into(2, AVPBlocks.INDUSTRIAL_GLASS_TRAP_DOOR);
 
         // Add standard slab and stair crafting recipes
-        createStandardSlabRecipe(builder.shaped(), AVPBlocks.INDUSTRIAL_GLASS, AVPBlocks.INDUSTRIAL_GLASS_SLAB);
-        createStandardStairRecipe(builder.shaped(), AVPBlocks.INDUSTRIAL_GLASS, AVPBlocks.INDUSTRIAL_GLASS_STAIRS);
+        createStandardSlabRecipe(builder, AVPBlocks.INDUSTRIAL_GLASS, AVPBlocks.INDUSTRIAL_GLASS_SLAB);
+        createStandardStairRecipe(builder, AVPBlocks.INDUSTRIAL_GLASS, AVPBlocks.INDUSTRIAL_GLASS_STAIRS);
 
         createIndustrialGlassBlockVariantRecipes(builder);
 
@@ -105,26 +104,26 @@ public class GlassRecipeProvider {
     }
 
     private static void createIndustrialGlassBlockVariantRecipes(RecipeBuilder builder) {
-        var industrialglassBaseBuilder = builder.stonecut(AVPBlocks.INDUSTRIAL_GLASS)
+        var industrialGlassBaseBuilder = builder.stonecut(AVPBlocks.INDUSTRIAL_GLASS)
             .withCategory(RecipeCategory.BUILDING_BLOCKS);
 
-        industrialglassBaseBuilder.into(2, AVPBlocks.INDUSTRIAL_GLASS_SLAB);
-        industrialglassBaseBuilder.into(1, AVPBlocks.INDUSTRIAL_GLASS_STAIRS);
+        industrialGlassBaseBuilder.into(2, AVPBlocks.INDUSTRIAL_GLASS_SLAB);
+        industrialGlassBaseBuilder.into(1, AVPBlocks.INDUSTRIAL_GLASS_STAIRS);
     }
 
-    private static void createStandardSlabRecipe(ShapedRecipeBuilder builder, ItemLike input, ItemLike output) {
-        builder.withCategory(RecipeCategory.BUILDING_BLOCKS)
-            .define('#', input)
-            .pattern("###")
+    // TODO: Duplicate function, unify at some point.
+    private static void createStandardSlabRecipe(RecipeBuilder builder, ItemLike input, ItemLike output) {
+        builder.shaped()
+            .withCategory(RecipeCategory.BUILDING_BLOCKS)
+            .apply(RecipeTemplates.SLAB_BLOCK.apply(input))
             .into(6, output);
     }
 
-    private static void createStandardStairRecipe(ShapedRecipeBuilder builder, ItemLike input, ItemLike output) {
-        builder.withCategory(RecipeCategory.BUILDING_BLOCKS)
-            .define('#', input)
-            .pattern("#  ")
-            .pattern("## ")
-            .pattern("###")
+    // TODO: Duplicate function, unify at some point.
+    private static void createStandardStairRecipe(RecipeBuilder builder, ItemLike input, ItemLike output) {
+        builder.shaped()
+            .withCategory(RecipeCategory.BUILDING_BLOCKS)
+            .apply(RecipeTemplates.STAIR_BLOCK.apply(input))
             .into(4, output);
     }
 }

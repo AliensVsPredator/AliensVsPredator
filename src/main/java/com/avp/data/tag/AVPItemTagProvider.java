@@ -377,8 +377,8 @@ public class AVPItemTagProvider extends FabricTagProvider.ItemTagProvider {
         var doorTagProvider = getOrCreateTagBuilder(ItemTags.DOORS);
 
         doorTagProvider.add(
-            AVPBlockItems.INDUSTRIAL_GLASS_DOOR,
             AVPBlockItems.FERROALUMINUM_DOOR,
+            AVPBlockItems.INDUSTRIAL_GLASS_DOOR,
             AVPBlockItems.STEEL_DOOR,
             AVPBlockItems.TITANIUM_DOOR
         );
@@ -386,8 +386,8 @@ public class AVPItemTagProvider extends FabricTagProvider.ItemTagProvider {
         var trapdoorTagProvider = getOrCreateTagBuilder(ItemTags.TRAPDOORS);
 
         trapdoorTagProvider.add(
-            AVPBlockItems.INDUSTRIAL_GLASS_TRAP_DOOR,
             AVPBlockItems.FERROALUMINUM_TRAP_DOOR,
+            AVPBlockItems.INDUSTRIAL_GLASS_TRAP_DOOR,
             AVPBlockItems.STEEL_TRAP_DOOR,
             AVPBlockItems.TITANIUM_TRAP_DOOR
         );
@@ -395,7 +395,6 @@ public class AVPItemTagProvider extends FabricTagProvider.ItemTagProvider {
         var slabTagProvider = getOrCreateTagBuilder(ItemTags.SLABS);
 
         slabTagProvider.add(
-            AVPBlockItems.INDUSTRIAL_GLASS_SLAB,
             AVPBlockItems.CUT_FERROALUMINUM_SLAB,
             AVPBlockItems.CUT_STEEL_SLAB,
             AVPBlockItems.CUT_TITANIUM_SLAB,
@@ -407,6 +406,7 @@ public class AVPItemTagProvider extends FabricTagProvider.ItemTagProvider {
             AVPBlockItems.FERROALUMINUM_SLAB,
             AVPBlockItems.FERROALUMINUM_STANDING_SLAB,
             AVPBlockItems.FERROALUMINUM_TREAD_SLAB,
+            AVPBlockItems.INDUSTRIAL_GLASS_SLAB,
             AVPBlockItems.STEEL_FASTENED_SIDING_SLAB,
             AVPBlockItems.STEEL_FASTENED_STANDING_SLAB,
             AVPBlockItems.STEEL_GRATE_SLAB,
@@ -444,7 +444,7 @@ public class AVPItemTagProvider extends FabricTagProvider.ItemTagProvider {
         var stairsTagProvider = getOrCreateTagBuilder(ItemTags.STAIRS);
 
         stairsTagProvider.add(
-            AVPBlockItems.INDUSTRIAL_GLASS_STAIRS,
+            AVPBlockItems.CUT_FERROALUMINUM_STAIRS,
             AVPBlockItems.CUT_STEEL_STAIRS,
             AVPBlockItems.CUT_TITANIUM_STAIRS,
             AVPBlockItems.FERROALUMINUM_FASTENED_SIDING_STAIRS,
@@ -455,6 +455,7 @@ public class AVPItemTagProvider extends FabricTagProvider.ItemTagProvider {
             AVPBlockItems.FERROALUMINUM_STAIRS,
             AVPBlockItems.FERROALUMINUM_STANDING_STAIRS,
             AVPBlockItems.FERROALUMINUM_TREAD_STAIRS,
+            AVPBlockItems.INDUSTRIAL_GLASS_STAIRS,
             AVPBlockItems.STEEL_FASTENED_SIDING_STAIRS,
             AVPBlockItems.STEEL_FASTENED_STANDING_STAIRS,
             AVPBlockItems.STEEL_GRATE_STAIRS,
