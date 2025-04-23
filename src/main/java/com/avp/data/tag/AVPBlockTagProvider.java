@@ -100,14 +100,14 @@ public class AVPBlockTagProvider extends FabricTagProvider.BlockTagProvider {
         AVPBlocks.DYE_COLOR_TO_INDUSTRIAL_GLASS_PANE.values().forEach(industrialGlassPaneTagBuilder::add);
 
         getOrCreateTagBuilder(AVPBlockTags.INDUSTRIAL_GLASS)
+            .addTag(AVPBlockTags.INDUSTRIAL_GLASS_BLOCK)
+            .addTag(AVPBlockTags.INDUSTRIAL_GLASS_PANE)
             .add(
                 AVPBlocks.INDUSTRIAL_GLASS_DOOR,
                 AVPBlocks.INDUSTRIAL_GLASS_SLAB,
                 AVPBlocks.INDUSTRIAL_GLASS_STAIRS,
-                AVPBlocks.INDUSTRIAL_GLASS_TRAP_DOOR)
-            .addTag(AVPBlockTags.INDUSTRIAL_GLASS_BLOCK)
-            .addTag(AVPBlockTags.INDUSTRIAL_GLASS_PANE);
-
+                AVPBlocks.INDUSTRIAL_GLASS_TRAP_DOOR
+            );
 
         var paddingTagBuilder = getOrCreateTagBuilder(AVPBlockTags.PADDING);
 

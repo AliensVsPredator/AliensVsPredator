@@ -19,9 +19,9 @@ public class MiscellaneousRecipeProvider {
             .into(AVPItems.REDSTONE_CRYSTAL);
 
         builder.blast(AVPItems.IRRADIATED_CHITIN)
-                .withCategory(RecipeCategory.MISC)
-                .withExperience(RecipeConstants.UNCOMMON_MATERIAL_SMELT_EXPERIENCE)
-                .into(AVPItems.CHITIN);
+            .withCategory(RecipeCategory.MISC)
+            .withExperience(RecipeConstants.UNCOMMON_MATERIAL_SMELT_EXPERIENCE)
+            .into(AVPItems.CHITIN);
 
         builder.shaped()
             .withCategory(RecipeCategory.MISC)

@@ -1,8 +1,5 @@
 package com.avp.data.recipe.impl;
 
-import com.avp.common.item.AVPItems;
-import com.avp.data.recipe.RecipeTemplates;
-import com.avp.data.recipe.builder.ShapedRecipeBuilder;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.world.item.DyeItem;
 import net.minecraft.world.level.ItemLike;
@@ -12,7 +9,9 @@ import java.util.Set;
 
 import com.avp.common.block.AVPBlocks;
 import com.avp.data.recipe.RecipeConstants;
+import com.avp.data.recipe.RecipeTemplates;
 import com.avp.data.recipe.builder.RecipeBuilder;
+import com.avp.data.recipe.builder.ShapedRecipeBuilder;
 
 public class GlassRecipeProvider {
 
@@ -30,14 +29,14 @@ public class GlassRecipeProvider {
             .into(16, AVPBlocks.INDUSTRIAL_GLASS_PANE);
 
         builder.shaped()
-                .withCategory(RecipeCategory.BUILDING_BLOCKS)
-                .apply(RecipeTemplates.DOOR_BLOCK.apply(AVPBlocks.INDUSTRIAL_GLASS))
-                .into(3, AVPBlocks.INDUSTRIAL_GLASS_DOOR);
+            .withCategory(RecipeCategory.BUILDING_BLOCKS)
+            .apply(RecipeTemplates.DOOR_BLOCK.apply(AVPBlocks.INDUSTRIAL_GLASS))
+            .into(3, AVPBlocks.INDUSTRIAL_GLASS_DOOR);
 
         builder.shaped()
-                .withCategory(RecipeCategory.BUILDING_BLOCKS)
-                .apply(RecipeTemplates.TRAP_DOOR_BLOCK.apply(AVPBlocks.INDUSTRIAL_GLASS))
-                .into(2, AVPBlocks.INDUSTRIAL_GLASS_TRAP_DOOR);
+            .withCategory(RecipeCategory.BUILDING_BLOCKS)
+            .apply(RecipeTemplates.TRAP_DOOR_BLOCK.apply(AVPBlocks.INDUSTRIAL_GLASS))
+            .into(2, AVPBlocks.INDUSTRIAL_GLASS_TRAP_DOOR);
 
         // Add standard slab and stair crafting recipes
         createStandardSlabRecipe(builder.shaped(), AVPBlocks.INDUSTRIAL_GLASS, AVPBlocks.INDUSTRIAL_GLASS_SLAB);
@@ -107,7 +106,7 @@ public class GlassRecipeProvider {
 
     private static void createIndustrialGlassBlockVariantRecipes(RecipeBuilder builder) {
         var industrialglassBaseBuilder = builder.stonecut(AVPBlocks.INDUSTRIAL_GLASS)
-                .withCategory(RecipeCategory.BUILDING_BLOCKS);
+            .withCategory(RecipeCategory.BUILDING_BLOCKS);
 
         industrialglassBaseBuilder.into(2, AVPBlocks.INDUSTRIAL_GLASS_SLAB);
         industrialglassBaseBuilder.into(1, AVPBlocks.INDUSTRIAL_GLASS_STAIRS);
@@ -115,17 +114,17 @@ public class GlassRecipeProvider {
 
     private static void createStandardSlabRecipe(ShapedRecipeBuilder builder, ItemLike input, ItemLike output) {
         builder.withCategory(RecipeCategory.BUILDING_BLOCKS)
-                .define('#', input)
-                .pattern("###")
-                .into(6, output);
+            .define('#', input)
+            .pattern("###")
+            .into(6, output);
     }
 
     private static void createStandardStairRecipe(ShapedRecipeBuilder builder, ItemLike input, ItemLike output) {
         builder.withCategory(RecipeCategory.BUILDING_BLOCKS)
-                .define('#', input)
-                .pattern("#  ")
-                .pattern("## ")
-                .pattern("###")
-                .into(4, output);
+            .define('#', input)
+            .pattern("#  ")
+            .pattern("## ")
+            .pattern("###")
+            .into(4, output);
     }
 }

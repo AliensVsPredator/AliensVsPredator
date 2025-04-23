@@ -1,10 +1,10 @@
 package com.avp.data.recipe.impl;
 
-import com.avp.common.item.AVPItemTags;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 
+import com.avp.common.item.AVPItemTags;
 import com.avp.common.item.AVPItems;
 import com.avp.data.recipe.builder.RecipeBuilder;
 

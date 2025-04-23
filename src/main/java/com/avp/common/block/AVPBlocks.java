@@ -325,13 +325,13 @@ public class AVPBlocks {
 
     // Doors And Trapdoors
     public static final Block INDUSTRIAL_GLASS_DOOR = register(
-            new DoorBlock(BlockSetType.COPPER, BlockProperties.INDUSTRIAL_GLASS.noOcclusion()),
-            "industrial_glass_door"
+        new DoorBlock(BlockSetType.COPPER, BlockProperties.INDUSTRIAL_GLASS.build().noOcclusion()),
+        "industrial_glass_door"
     );
 
     public static final Block INDUSTRIAL_GLASS_TRAP_DOOR = register(
-            new TrapDoorBlock(BlockSetType.COPPER, BlockProperties.INDUSTRIAL_GLASS.noOcclusion()),
-            "industrial_glass_trapdoor"
+        new TrapDoorBlock(BlockSetType.COPPER, BlockProperties.INDUSTRIAL_GLASS.build().noOcclusion()),
+        "industrial_glass_trapdoor"
     );
 
     public static final Block FERROALUMINUM_DOOR = register(
@@ -397,14 +397,15 @@ public class AVPBlocks {
 
     // Slabs And Stairs
     public static final Block INDUSTRIAL_GLASS_SLAB = register(
-            new SlabBlock(BlockProperties.INDUSTRIAL_GLASS),
-            "industrial_glass_slab"
+        new SlabBlock(BlockProperties.INDUSTRIAL_GLASS.build()),
+        "industrial_glass_slab"
     );
 
     public static final Block INDUSTRIAL_GLASS_STAIRS = register(
-            new StairBlock(INDUSTRIAL_GLASS.defaultBlockState(), BlockProperties.INDUSTRIAL_GLASS),
-            "industrial_glass_stairs"
+        new StairBlock(INDUSTRIAL_GLASS.defaultBlockState(), BlockProperties.INDUSTRIAL_GLASS.build()),
+        "industrial_glass_stairs"
     );
+
     public static final Block FERROALUMINUM_SLAB = register(
         new SlabBlock(BlockBehaviour.Properties.ofFullCopy(FERROALUMINUM_BLOCK)),
         "ferroaluminum_slab"
