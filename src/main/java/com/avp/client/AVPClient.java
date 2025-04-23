@@ -70,6 +70,8 @@ public class AVPClient implements ClientModInitializer {
         BlockRenderLayerMap.INSTANCE.putBlock(AVPBlocks.TITANIUM_CHAIN_FENCE, RenderType.cutout());
         BlockRenderLayerMap.INSTANCE.putBlock(AVPBlocks.TITANIUM_GRATE, RenderType.cutout());
         BlockRenderLayerMap.INSTANCE.putBlock(AVPBlocks.RAZOR_WIRE, RenderType.cutout());
+        BlockRenderLayerMap.INSTANCE.putBlock(AVPBlocks.INDUSTRIAL_GLASS_DOOR, RenderType.cutout());
+        BlockRenderLayerMap.INSTANCE.putBlock(AVPBlocks.INDUSTRIAL_GLASS_TRAP_DOOR, RenderType.cutout());
         BlockRenderLayerMap.INSTANCE.putBlock(AVPBlocks.FERROALUMINUM_DOOR, RenderType.cutout());
         BlockRenderLayerMap.INSTANCE.putBlock(AVPBlocks.STEEL_DOOR, RenderType.cutout());
         BlockRenderLayerMap.INSTANCE.putBlock(AVPBlocks.TITANIUM_DOOR, RenderType.cutout());
@@ -84,6 +86,8 @@ public class AVPClient implements ClientModInitializer {
         BlockRenderLayerMap.INSTANCE.putBlock(AVPBlocks.TITANIUM_GRATE_STAIRS, RenderType.cutout());
 
         BlockRenderLayerMap.INSTANCE.putBlock(AVPBlocks.INDUSTRIAL_GLASS, RenderType.cutout());
+        BlockRenderLayerMap.INSTANCE.putBlock(AVPBlocks.INDUSTRIAL_GLASS_SLAB, RenderType.cutout());
+        BlockRenderLayerMap.INSTANCE.putBlock(AVPBlocks.INDUSTRIAL_GLASS_STAIRS, RenderType.cutout());
         AVPBlocks.DYE_COLOR_TO_INDUSTRIAL_GLASS.values()
             .forEach(block -> BlockRenderLayerMap.INSTANCE.putBlock(block, RenderType.translucent()));
         BlockRenderLayerMap.INSTANCE.putBlock(AVPBlocks.INDUSTRIAL_GLASS_PANE, RenderType.cutout());

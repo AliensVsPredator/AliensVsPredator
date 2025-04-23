@@ -36,6 +36,12 @@ public class BlocksCreativeModeTabInitializer {
             // Brass
             entries.accept(AVPBlocks.BRASS_BLOCK);
 
+            // Industrial Glass
+            entries.accept(AVPBlocks.INDUSTRIAL_GLASS_DOOR);
+            entries.accept(AVPBlocks.INDUSTRIAL_GLASS_TRAP_DOOR);
+            entries.accept(AVPBlocks.INDUSTRIAL_GLASS_SLAB);
+            entries.accept(AVPBlocks.INDUSTRIAL_GLASS_STAIRS);
+
             // Ferroaluminum
             entries.accept(AVPBlocks.FERROALUMINUM_BLOCK);
             entries.accept(AVPBlocks.FERROALUMINUM_CHAIN_FENCE);

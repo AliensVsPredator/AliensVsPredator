@@ -158,10 +158,12 @@ public class BlockLootTableProvider extends FabricBlockLootTableProvider {
         dropSelf(AVPBlocks.ZINC_BLOCK);
         add(AVPBlocks.ZINC_ORE, block -> createOreMultiDrop(block, AVPItems.RAW_ZINC, 2, 5));
 
+        add(AVPBlocks.INDUSTRIAL_GLASS_DOOR, this::createDoorTable);
         add(AVPBlocks.FERROALUMINUM_DOOR, this::createDoorTable);
         add(AVPBlocks.STEEL_DOOR, this::createDoorTable);
         add(AVPBlocks.TITANIUM_DOOR, this::createDoorTable);
 
+        dropSelf(AVPBlocks.INDUSTRIAL_GLASS_TRAP_DOOR);
         dropSelf(AVPBlocks.FERROALUMINUM_TRAP_DOOR);
         dropSelf(AVPBlocks.STEEL_TRAP_DOOR);
         dropSelf(AVPBlocks.TITANIUM_TRAP_DOOR);
@@ -174,6 +176,7 @@ public class BlockLootTableProvider extends FabricBlockLootTableProvider {
         dropSelf(AVPBlocks.TITANIUM_BUTTON);
         dropSelf(AVPBlocks.FERROALUMINUM_BUTTON);
 
+        dropSlab(AVPBlocks.INDUSTRIAL_GLASS_SLAB);
         dropSlab(AVPBlocks.FERROALUMINUM_FASTENED_SIDING_SLAB);
         dropSlab(AVPBlocks.FERROALUMINUM_FASTENED_STANDING_SLAB);
         dropSlab(AVPBlocks.FERROALUMINUM_GRATE_SLAB);
@@ -190,6 +193,7 @@ public class BlockLootTableProvider extends FabricBlockLootTableProvider {
         dropSlab(AVPBlocks.TITANIUM_FASTENED_SIDING_SLAB);
         dropSlab(AVPBlocks.TITANIUM_FASTENED_STANDING_SLAB);
 
+        dropSelf(AVPBlocks.INDUSTRIAL_GLASS_STAIRS);
         dropSelf(AVPBlocks.FERROALUMINUM_FASTENED_SIDING_STAIRS);
         dropSelf(AVPBlocks.FERROALUMINUM_FASTENED_STANDING_STAIRS);
         dropSelf(AVPBlocks.FERROALUMINUM_GRATE_STAIRS);
