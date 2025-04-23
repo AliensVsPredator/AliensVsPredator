@@ -74,8 +74,6 @@ public class CommanderChestPersonalLootTable {
             .withPool(
                     LootPool.lootPool()
                             .setRolls(ConstantValue.exactly(1))
-                            .add(EmptyLootItem.emptyItem().setWeight(1)
-                            )
                             .add(
                                     LootItem.lootTableItem(AVPItems.ALIEN_MUSIC_DISC_1_FRAGMENT)
                                             .apply(SetItemCountFunction.setCount(UniformGenerator.between(2, 4)))
