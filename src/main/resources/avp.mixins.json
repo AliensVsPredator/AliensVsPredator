@@ -20,6 +20,7 @@
     "MixinLivingEntity_NukedRadiation",
     "MixinMob_IncapacitateHost",
     "MixinMobCategory_InjectCustomAlienCategory",
+    "MixinPlayerEntity_LowAmmoMsg",
     "MixinShearsItem",
     "MixinVillagerHostilesSensor_RunAwayFromAVPMonsters",
     "ParrotSoundMapAccessor",

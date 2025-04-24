@@ -590,6 +590,9 @@ public class RussianLanguageProvider extends FabricLanguageProvider {
         translationBuilder.add("tooltip.avp.fire_rate", "Скорость стрельбы: ");
         translationBuilder.add("tooltip.avp.knockback", "Отбрасывание противника: ");
         translationBuilder.add("tooltip.avp.recoil", "Отдача: ");
+        translationBuilder.add("tooltip.avp.capacity", "Capacity: ");
+        translationBuilder.add("tooltip.avp.no_ammo_warning", "Warning: No Ammo");
+        translationBuilder.add("tooltip.avp.low_ammo_warning", "Warning Low Ammo");
 
         // Keybinds
         translationBuilder.add("key.avp.reload", "Перезарядиться");
