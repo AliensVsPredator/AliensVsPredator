@@ -86,6 +86,8 @@
 - Removed gun reload cooldown in creative mode.
 - Irradiated chitin can now be blast smelted into regular chitin.
 - Updated ash block texture.
+- Removed item recipes and creative mode tab entries for both irradiated chitin armor sets.
+  - They will be added back once they've been more refined.
 - Removed resonator recipe.
   - It will be added back once the block is more refined.
 - Changed radiation mechanics:
