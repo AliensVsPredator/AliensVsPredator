@@ -34,7 +34,7 @@ public class GunItem extends Item {
 
     protected static final int START_TICK_PROGRESS = Integer.MAX_VALUE;
 
-    public final GunConfig gunConfig;
+    private final GunConfig gunConfig;
 
     public AzCommand idle;
 

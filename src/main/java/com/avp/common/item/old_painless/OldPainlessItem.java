@@ -54,7 +54,7 @@ public class OldPainlessItem extends GunItem {
 
     @Override
     public void releaseUsing(ItemStack itemStack, Level level, LivingEntity livingEntity, int i) {
-        var fireModeConfig = gunConfig.getDefaultFireMode();
+        var fireModeConfig = getGunConfig().getDefaultFireMode();
         var shootFinishSoundEvent = fireModeConfig.shootFinishSoundEvent();
 
         if (shootFinishSoundEvent != null) {

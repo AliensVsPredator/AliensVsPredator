@@ -141,7 +141,7 @@ public class MarineGOAP extends EntityGOAP<Marine> {
             case ItemType.MeleeWeapon meleeWeapon -> distanceSqr <= 2 * 2;
             case ItemType.RangedWeapon rangedWeapon -> {
                 if (marine.getMainHandItem().getItem() instanceof GunItem gunItem) {
-                    var fireMode = gunItem.gunConfig.getDefaultFireMode();
+                    var fireMode = gunItem.getGunConfig().getDefaultFireMode();
                     var range = fireMode.range();
                     yield distanceSqr < range * range;
                 }
