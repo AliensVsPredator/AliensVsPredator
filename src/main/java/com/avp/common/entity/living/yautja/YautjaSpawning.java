@@ -9,10 +9,15 @@ import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.SpawnPlacements;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.level.ServerLevelAccessor;
+import net.minecraft.world.level.entity.EntityTypeTest;
+
+import com.avp.common.util.AVPPredicates;
 
 public class YautjaSpawning {
 
     private static final int MIN_Y_LEVEL = 62;
+
+    private static final int MINIMUM_DISTANCE_BETWEEN_YAUTJA_IN_BLOCKS = 32 * 16; // 32 chunks * 16 blocks each chunk.
 
     public static final SpawnPlacements.SpawnPredicate<Yautja> PREDICATE = (
         entityType,
@@ -31,6 +36,14 @@ public class YautjaSpawning {
         RandomSource randomSource
     ) {
         return serverLevelAccessor.getDifficulty() != Difficulty.PEACEFUL
-            && Mob.checkMobSpawnRules(entityType, serverLevelAccessor, mobSpawnType, blockPos, randomSource);
+            && Mob.checkMobSpawnRules(entityType, serverLevelAccessor, mobSpawnType, blockPos, randomSource)
+            && !anyNearbyYautja(serverLevelAccessor, blockPos, MINIMUM_DISTANCE_BETWEEN_YAUTJA_IN_BLOCKS);
+    }
+
+    public static boolean anyNearbyYautja(ServerLevelAccessor serverLevelAccessor, BlockPos blockPos, int requiredDistanceInBlocks) {
+        var allYautja = serverLevelAccessor.getLevel().getEntities(EntityTypeTest.forClass(Yautja.class), AVPPredicates.alwaysTrue());
+        var requiredDistanceSquared = requiredDistanceInBlocks * requiredDistanceInBlocks;
+        return allYautja.stream()
+            .anyMatch(yautja -> yautja.distanceToSqr(blockPos.getX(), blockPos.getY(), blockPos.getZ()) < requiredDistanceSquared);
     }
 }

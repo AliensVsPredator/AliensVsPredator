@@ -41,6 +41,10 @@
 - Added mobile lab structure.
 - Added commissary house to all vanilla villages.
 - Added outpost munition structure.
+- Added ammunition indicator mechanic:
+  - A message will show to the player when they are low on or out of ammunition.
+  - The low ammunition threshold is less than 20% ammunition remaining.
+  - The ammunition indicator only goes based on ammunition already loaded into the gun.
 - Added new industrial glass blocks:
   - Industrial Glass Slab
   - Industrial Glass Stairs
@@ -103,6 +107,7 @@
   - Hair 3
 
 ## 🐞 Fixes
+- Fixed more than 1 predator spawning within jungles.
 - Fixed players consuming ammunition while reloading guns in creative.
 - Fixed old painless showing bogus ammo capacity tooltip values.
 - Fixed the mod not working with Sinytra Connector on NeoForge.
