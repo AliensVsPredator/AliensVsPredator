@@ -5,6 +5,8 @@
   - Works mostly the same as when it was a block entity regarding ammo chest usage, redstone power, etc.
   - This change allows mobs to target and attack the turret.
   - Sentry turrets are unaffected by all mob effects, positive or negative.
+  - Sentry turrets now fire at a much faster rate.
+  - Sentry turret damage has been reduced 50% (4 half-hearts -> 2 half-hearts).
   - Since they are a machine entity, sentry turrets are immune to most forms of environmental damage, including but not limited to:
     - Burning (Camp Fire blocks, Fire blocks, Magma Blocks, etc.)
     - Cactus (Cactus is currently too OP and needed a nerf)
@@ -31,10 +33,19 @@
 
 ## ✨ What's New
 - Added alien music disc 1 "Silver Smile" by Rotch Gwylt.
+  - Find all 9 fragments across all marine structures to craft the disc!
 - Added predator music disc 1 "Hunter" by Rotch Gwylt.
+  - Find all 9 fragments across all marine structures to craft the disc!
+- Added alien music disc 1 fragment item.
+- Added predator music disc 1 fragment item.
 - Added mobile lab structure.
 - Added commissary house to all vanilla villages.
 - Added outpost munition structure.
+- Added new industrial glass blocks:
+  - Industrial Glass Slab
+  - Industrial Glass Stairs
+  - Industrial Glass Door
+  - Industrial Glass Trap Door
 - Queens now lay eggs:
   - No eggsack yet, that's still a work in progress.
   - There is a 5% chance the egg will be a royal ovamorph every time she lays and egg.
@@ -68,7 +79,11 @@
   - Plated Irradiated Chitin Armor
 
 ## ♻️ Changes
+- Removed gun reload cooldown in creative mode.
+- Irradiated chitin can now be blast smelted into regular chitin.
 - Updated ash block texture.
+- Removed resonator recipe.
+  - It will be added back once the block is more refined.
 - Changed radiation mechanics:
   - Container blocks and block items will no longer emit radiation passively.
     - After further testing, we found that this functionality hurt game performance too much for it to be worthwhile.
@@ -88,6 +103,8 @@
   - Hair 3
 
 ## 🐞 Fixes
+- Fixed players consuming ammunition while reloading guns in creative.
+- Fixed old painless showing bogus ammo capacity tooltip values.
 - Fixed the mod not working with Sinytra Connector on NeoForge.
 - Fixed facehuggers immediately dying when becoming infertile while attached to a host.
 - Fixed facehugger infertile animation not playing correctly.

@@ -36,7 +36,7 @@ public abstract class MixinGui_CrosshairPickEntityWithinGunRange {
         var hitResult = ProjectileUtil.getHitResultOnViewVector(
             player,
             entity -> entity.getType() == EntityType.END_CRYSTAL || AVPPredicates.isLiving(entity),
-            gun.gunConfig().getDefaultFireMode().range()
+            gun.getGunConfig().getDefaultFireMode().range()
         );
 
         if (hitResult instanceof EntityHitResult entityHitResult) {
