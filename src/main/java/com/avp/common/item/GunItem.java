@@ -182,11 +182,15 @@ public class GunItem extends Item {
             );
         }
 
-        TooltipUtil.appendLabel(
-            list,
-            "tooltip.avp.ammunition",
-            Component.literal(currentAmmunition + " / " + gunConfig.maximumAmmunition())
-        );
+        // TODO: Don't hardcode old painless here.
+        if (this != AVPItems.OLD_PAINLESS) {
+            TooltipUtil.appendLabel(
+                list,
+                "tooltip.avp.ammunition",
+                Component.literal(currentAmmunition + " / " + gunConfig.maximumAmmunition())
+            );
+        }
+
         TooltipUtil.appendLabel(
             list,
             "tooltip.avp.damage",
