@@ -79,6 +79,7 @@
   - Plated Irradiated Chitin Armor
 
 ## ♻️ Changes
+- Removed gun reload cooldown in creative mode.
 - Irradiated chitin can now be blast smelted into regular chitin.
 - Updated ash block texture.
 - Removed resonator recipe.

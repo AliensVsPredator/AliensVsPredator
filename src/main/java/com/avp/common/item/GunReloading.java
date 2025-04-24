@@ -58,8 +58,9 @@ public class GunReloading {
         var reloadAmount = gunConfig.reloadAmount();
         var neededAmmunition = (int) Math.ceil((maximumAmmunition - currentAmmunition) / ((float) reloadAmount));
 
+        var isPlayerImmortal = AVPPredicates.IS_IMMORTAL.test(player);
         // Result is how much we DIDN'T consume.
-        var result = AVPPredicates.IS_IMMORTAL.test(player)
+        var result = isPlayerImmortal
             // If the player is immortal, then assume they can get a full reload.
             ? ItemConsumptionResult.Full.INSTANCE
             // Otherwise, the player needs to use actual ammunition.
@@ -96,23 +97,25 @@ public class GunReloading {
             Math.min(currentAmmunition + (ammunitionToRestore * reloadAmount), maximumAmmunition)
         );
 
-        var reloadTimeModifier = EnchantmentUtil.getLevel(level, itemStack, Enchantments.QUICK_CHARGE) * 0.2;
-        var reloadTimeInTicks = (int) (gunConfig.reloadTimeInTicks() * (1 - reloadTimeModifier));
+        if (!isPlayerImmortal) {
+            var reloadTimeModifier = EnchantmentUtil.getLevel(level, itemStack, Enchantments.QUICK_CHARGE) * 0.2;
+            var reloadTimeInTicks = (int) (gunConfig.reloadTimeInTicks() * (1 - reloadTimeModifier));
 
-        player.getCooldowns().addCooldown(itemStack.getItem(), reloadTimeInTicks);
+            player.getCooldowns().addCooldown(itemStack.getItem(), reloadTimeInTicks);
 
-        ServerScheduler.schedule(() -> {
-            var reloadFinishSoundEvent = fireModeConfig.reloadFinishSoundEvent();
+            ServerScheduler.schedule(() -> {
+                var reloadFinishSoundEvent = fireModeConfig.reloadFinishSoundEvent();
 
-            if (reloadFinishSoundEvent != null) {
-                var interactionHand = player.getUsedItemHand();
-                var itemInHand = player.getItemInHand(interactionHand);
+                if (reloadFinishSoundEvent != null) {
+                    var interactionHand = player.getUsedItemHand();
+                    var itemInHand = player.getItemInHand(interactionHand);
 
-                if (Objects.equals(itemStack, itemInHand)) {
-                    level.playSound(null, player.blockPosition(), reloadFinishSoundEvent, SoundSource.PLAYERS);
+                    if (Objects.equals(itemStack, itemInHand)) {
+                        level.playSound(null, player.blockPosition(), reloadFinishSoundEvent, SoundSource.PLAYERS);
+                    }
                 }
-            }
-        }, Duration.ofMillis(reloadTimeInTicks * 50L));
+            }, Duration.ofMillis(reloadTimeInTicks * 50L));
+        }
     }
 
     public static ItemConsumptionResult consumeItemAmountFromInventory(
