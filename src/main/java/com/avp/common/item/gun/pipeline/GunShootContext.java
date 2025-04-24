@@ -1,7 +1,6 @@
-package com.avp.common.item;
+package com.avp.common.item.gun.pipeline;
 
 import com.bvanseg.just.functional.option.Option;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
@@ -9,15 +8,33 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantments;
 
+import java.util.List;
+
 import com.avp.common.component.DataComponents;
+import com.avp.common.item.GunItem;
 import com.avp.common.item.gun.FireModeConfig;
 import com.avp.common.item.gun.GunConfig;
 import com.avp.common.item.gun.attack.GunAttackConfig;
+import com.avp.common.item.gun.pipeline.step.GunShootStep;
+import com.avp.common.item.gun.pipeline.step.impl.CheckCooldownStep;
+import com.avp.common.item.gun.pipeline.step.impl.CheckReloadingStep;
+import com.avp.common.item.gun.pipeline.step.impl.CheckShootDelayStep;
 import com.avp.common.util.AVPPredicates;
 import com.avp.common.util.EnchantmentUtil;
 import com.avp.common.util.GunLightUtil;
 
-public final class GunShootContext {
+public record GunShootContext(
+    int currentAmmunition,
+    FireModeConfig fireModeConfig,
+    GunConfig gunConfig,
+    GunItem gunItem,
+    boolean hasInfinity,
+    boolean isFirstTick,
+    boolean isShooterImmortal,
+    ItemStack itemStack,
+    LivingEntity shooter,
+    int tickProgress
+) {
 
     public static Option<GunShootContext> create(
         LivingEntity shooter,
@@ -29,63 +46,35 @@ public final class GunShootContext {
             : Option.some(new GunShootContext(shooter, gunItem, itemStack, tickProgress));
     }
 
-    private final int currentAmmunition;
+    // TODO: Maybe the cooldown step should come before the shoot delay step?
+    private static final List<GunShootStep> STEPS = List.of(
+        CheckShootDelayStep.INSTANCE,
+        CheckCooldownStep.INSTANCE,
+        CheckReloadingStep.INSTANCE
+    );
 
-    private final FireModeConfig fireModeConfig;
-
-    private final GunConfig gunConfig;
-
-    private final GunItem gunItem;
-
-    private final boolean hasInfinity;
-
-    private final boolean isFirstTick;
-
-    private final boolean isShooterImmortal;
-
-    private final ItemStack itemStack;
-
-    private final LivingEntity shooter;
-
-    private final int tickProgress;
-
-    private GunShootContext(LivingEntity shooter, GunItem gunItem, ItemStack itemStack, int tickProgress) {
-        this.currentAmmunition = itemStack.getOrDefault(DataComponents.AMMUNITION, 0);
-        this.fireModeConfig = gunItem.getGunConfig().getDefaultFireMode();
-        this.gunConfig = gunItem.getGunConfig();
-        this.gunItem = gunItem;
-        this.hasInfinity = EnchantmentUtil.getLevel(shooter.level(), itemStack, Enchantments.INFINITY) > 0;
-        this.isFirstTick = tickProgress == 0;
-        this.isShooterImmortal = AVPPredicates.IS_IMMORTAL.test(shooter);
-        this.itemStack = itemStack;
-        this.shooter = shooter;
-        this.tickProgress = tickProgress;
+    public GunShootContext(LivingEntity shooter, GunItem gunItem, ItemStack itemStack, int tickProgress) {
+        this(
+            itemStack.getOrDefault(DataComponents.AMMUNITION, 0),
+            gunItem.getGunConfig().getDefaultFireMode(),
+            gunItem.getGunConfig(),
+            gunItem,
+            EnchantmentUtil.getLevel(shooter.level(), itemStack, Enchantments.INFINITY) > 0,
+            tickProgress == 0,
+            AVPPredicates.IS_IMMORTAL.test(shooter),
+            itemStack,
+            shooter,
+            tickProgress
+        );
     }
 
-    public Result shoot() {
-        var shootDelayInTicks = fireModeConfig.shootDelayInTicks();
+    public GunShootResult shoot() {
+        for (var step : STEPS) {
+            var result = step.apply(this);
 
-        playShootStartSoundEffect();
-
-        if (tickProgress < shootDelayInTicks) {
-            return Result.DELAYED;
-        }
-
-        if (shooter instanceof Player player && player.getCooldowns().isOnCooldown(itemStack.getItem())) {
-            return Result.COOLDOWN;
-        }
-
-        // TODO: Revisit this.
-        var supplier = gunConfig.ammunitionItemSupplier();
-        var hasAmmunitionStream = gunItem == AVPItems.OLD_PAINLESS
-            && supplier != null
-            && shooter instanceof ServerPlayer serverPlayer
-            && GunReloading.consumeItemAmountFromInventory(serverPlayer, supplier.get(), 1) == GunReloading.ItemConsumptionResult.Full.INSTANCE;
-        var hasAmmunition = hasAmmunitionStream || currentAmmunition > 0;
-
-        if (shooter instanceof Player && !isShooterImmortal && !hasInfinity && currentAmmunition <= 0 && !hasAmmunition) {
-            GunReloading.reload((ServerPlayer) shooter);
-            return Result.RELOADING;
+            if (result != GunShootResult.CONTINUE) {
+                return result;
+            }
         }
 
         var gunAttackConfig = new GunAttackConfig(gunConfig, fireModeConfig, shooter, itemStack);
@@ -97,15 +86,7 @@ public final class GunShootContext {
 
         runPostEffects();
 
-        return Result.SHOT;
-    }
-
-    private void playShootStartSoundEffect() {
-        var shootStartSoundEvent = fireModeConfig.shootStartSoundEvent();
-
-        if (shootStartSoundEvent != null && isFirstTick) {
-            shooter.level().playSound(null, shooter.blockPosition(), shootStartSoundEvent, SoundSource.PLAYERS);
-        }
+        return GunShootResult.SHOT;
     }
 
     private void runPostEffects() {
@@ -160,10 +141,4 @@ public final class GunShootContext {
         }
     }
 
-    public enum Result {
-        COOLDOWN,
-        DELAYED,
-        RELOADING,
-        SHOT
-    }
 }

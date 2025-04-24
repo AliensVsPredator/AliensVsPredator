@@ -27,6 +27,7 @@ import java.util.List;
 
 import com.avp.common.component.DataComponents;
 import com.avp.common.item.gun.GunConfig;
+import com.avp.common.item.gun.pipeline.GunShootContext;
 import com.avp.common.item.old_painless.OldPainlessAnimationRefs;
 import com.avp.common.util.TooltipUtil;
 

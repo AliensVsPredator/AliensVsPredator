@@ -25,7 +25,9 @@ public class MixinPlayerRenderer_AdjustArmPoseForGun {
                     gunItem.getGunConfig() == GunData.M56_SMARTGUN)
         ) {
             ci.setReturnValue(HumanoidModel.ArmPose.BOW_AND_ARROW);
-        } else if (itemstack.getItem() instanceof GunItem gunItem && gunItem.getGunConfig() != GunData.OLD_PAINLESS && player.isUsingItem()) {
+        } else if (
+            itemstack.getItem() instanceof GunItem gunItem && gunItem.getGunConfig() != GunData.OLD_PAINLESS && player.isUsingItem()
+        ) {
             ci.setReturnValue(HumanoidModel.ArmPose.CROSSBOW_HOLD);
         }
     }

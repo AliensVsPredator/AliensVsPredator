@@ -8,7 +8,8 @@ import com.avp.common.entity.ai.action.AttackAction;
 import com.avp.common.entity.ai.util.CombatResponse;
 import com.avp.common.entity.living.human.marine.Marine;
 import com.avp.common.item.GunItem;
-import com.avp.common.item.GunShootContext;
+import com.avp.common.item.gun.pipeline.GunShootContext;
+import com.avp.common.item.gun.pipeline.GunShootResult;
 import com.avp.goap.TypedIdentifier;
 import com.avp.goap.state.GOAPBlackboard;
 
@@ -49,7 +50,7 @@ public class MarineRangedAttackAction extends AttackAction<Marine> {
         if (currentCooldown <= 0) {
             GunShootContext.create(context, itemStack, tickProgress)
                 .map(GunShootContext::shoot)
-                .filter(result -> result == GunShootContext.Result.SHOT)
+                .filter(result -> result == GunShootResult.SHOT)
                 // Reset the cooldown.
                 .ifSome($ -> blackboard.set(COOLDOWN, fireMode.cooldownInTicks() * fireMode.consumedAmmunitionPerShot()));
         }
