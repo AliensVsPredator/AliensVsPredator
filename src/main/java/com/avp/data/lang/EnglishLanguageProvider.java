@@ -610,8 +610,6 @@ public class EnglishLanguageProvider extends FabricLanguageProvider {
         translationBuilder.add("tooltip.avp.knockback", "Knockback: ");
         translationBuilder.add("tooltip.avp.recoil", "Recoil: ");
         translationBuilder.add("tooltip.avp.capacity", "Capacity: ");
-        translationBuilder.add("tooltip.avp.no_ammo_warning", "Warning: No Ammo");
-        translationBuilder.add("tooltip.avp.low_ammo_warning", "Warning Low Ammo");
 
         // Keybinds
         translationBuilder.add("key.avp.reload", "Reload");
@@ -767,6 +765,9 @@ public class EnglishLanguageProvider extends FabricLanguageProvider {
         translationBuilder.add("config.avp.option.TURRET_RANGE", "Turret range");
         translationBuilder.add("config.avp.option.TURRET_DAMAGE", "Turret damage");
         translationBuilder.add("config.avp.option.TURRET_AMMOCHEST_SEARCH_RANGE", "Turret ammo chest search range");
+
+        translationBuilder.add("display.avp.low_ammunition_warning", "Low Ammo");
+        translationBuilder.add("display.avp.no_ammunition_warning", "Out of Ammo");
     }
 
     private void addSound(TranslationBuilder translationBuilder, SoundEvent soundEvent, String value) {

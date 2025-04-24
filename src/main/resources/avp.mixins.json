@@ -20,7 +20,6 @@
     "MixinLivingEntity_NukedRadiation",
     "MixinMob_IncapacitateHost",
     "MixinMobCategory_InjectCustomAlienCategory",
-    "MixinPlayerEntity_LowAmmoMsg",
     "MixinShearsItem",
     "MixinVillagerHostilesSensor_RunAwayFromAVPMonsters",
     "ParrotSoundMapAccessor",
@@ -30,6 +29,7 @@
   "client": [
     "client.MixinGui_CrosshairPickEntityWithinGunRange",
     "client.MixinItemInHandRenderer_AdjustHandRenderingForGun",
+    "client.MixinPlayerEntity_LowAmmunitionIndicator",
     "client.MixinPlayerRenderer_AdjustArmPoseForGun",
     "client.MixinSheets_AdjustLeadChestTexture"
   ],
