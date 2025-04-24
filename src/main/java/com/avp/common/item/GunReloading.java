@@ -12,6 +12,7 @@ import java.util.Objects;
 import com.avp.common.block_item.AVPBlockItems;
 import com.avp.common.component.DataComponents;
 import com.avp.common.item.gun.GunData;
+import com.avp.common.util.AVPPredicates;
 import com.avp.common.util.EnchantmentUtil;
 import com.avp.server.ServerScheduler;
 
@@ -58,7 +59,11 @@ public class GunReloading {
         var neededAmmunition = (int) Math.ceil((maximumAmmunition - currentAmmunition) / ((float) reloadAmount));
 
         // Result is how much we DIDN'T consume.
-        var result = consumeItemAmountFromInventory(player, ammunitionItem, neededAmmunition);
+        var result = AVPPredicates.IS_IMMORTAL.test(player)
+            // If the player is immortal, then assume they can get a full reload.
+            ? ItemConsumptionResult.Full.INSTANCE
+            // Otherwise, the player needs to use actual ammunition.
+            : consumeItemAmountFromInventory(player, ammunitionItem, neededAmmunition);
 
         var ammunitionToRestore = switch (result) {
             // We successfully consumed all ammunition we needed, so this is just an identity assignment.

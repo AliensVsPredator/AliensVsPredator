@@ -102,6 +102,7 @@
   - Hair 3
 
 ## 🐞 Fixes
+- Fixed players consuming ammunition while reloading guns in creative.
 - Fixed old painless showing bogus ammo capacity tooltip values.
 - Fixed the mod not working with Sinytra Connector on NeoForge.
 - Fixed facehuggers immediately dying when becoming infertile while attached to a host.
