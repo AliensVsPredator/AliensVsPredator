@@ -20,9 +20,9 @@
       "spawns": [
         {
           "type": "avp:marine",
-          "weight": 15,
-          "minCount": 2,
-          "maxCount": 5
+          "weight": 20,
+          "minCount": 1,
+          "maxCount": 3
         }
       ]
     }

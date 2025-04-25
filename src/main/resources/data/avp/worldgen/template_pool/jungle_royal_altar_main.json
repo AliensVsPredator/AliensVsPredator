@@ -7,7 +7,7 @@
       "element": {
         "element_type": "minecraft:single_pool_element",
         "projection": "rigid",
-        "location": "avp:jungle_royal_altar",
+        "location": "avp:altar/jungle/jungle_royal_altar",
         "processors": "minecraft:empty"
       }
     }
