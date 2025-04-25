@@ -7,6 +7,7 @@
   "size": 1,
   "step": "surface_structures",
   "is_beached": true,
+  "cannot_spawn_in_liquid": true,
   "start_height": {
     "absolute": 0
   },
@@ -20,7 +21,7 @@
       "spawns": [
         {
           "type": "minecraft:villager",
-          "weight": 15,
+          "weight": 10,
           "minCount": 1,
           "maxCount": 1
         }

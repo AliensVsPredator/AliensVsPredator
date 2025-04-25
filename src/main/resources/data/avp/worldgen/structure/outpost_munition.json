@@ -5,8 +5,8 @@
   "start_pool": "avp:outpost_munition",
   "placement": "on_land_surface",
   "size": 1,
-  "step": "surface_structures",
-  "is_beached": true,
+  "step": "top_layer_modification",
+  "cannot_spawn_in_liquid": true,
   "start_height": {
     "absolute": 0
   },
@@ -20,9 +20,9 @@
       "spawns": [
         {
           "type": "avp:marine",
-          "weight": 15,
-          "minCount": 10,
-          "maxCount": 15
+          "weight": 25,
+          "minCount": 2,
+          "maxCount": 5
         }
       ]
     }
