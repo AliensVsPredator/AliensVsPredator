@@ -346,7 +346,7 @@ public class KoreanLanguageProvider extends FabricLanguageProvider {
         translationBuilder.add(ArmorItems.PRESSURE_HELMET, "Pressure Helmet");
         translationBuilder.add(ArmorItems.PRESSURE_LEGGINGS, "Pressure Leggings");
         translationBuilder.add(AVPItems.ROCKET, "Rocket");
-        translationBuilder.add(AVPItems.SHOTGUN_BULLET, "Shotgun Bullet");
+        translationBuilder.add(AVPItems.SHOTGUN_SHELL, "Shotgun Shell");
         translationBuilder.add(AVPItems.SMALL_BULLET, "Small Bullet");
         translationBuilder.add(ArmorItems.STEEL_BOOTS, "Steel Boots");
         translationBuilder.add(ArmorItems.STEEL_CHESTPLATE, "Steel Chestplate");

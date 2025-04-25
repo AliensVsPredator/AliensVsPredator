@@ -76,7 +76,7 @@ public class AVPItems {
 
     public static final Item ROCKET = register("rocket");
 
-    public static final Item SHOTGUN_BULLET = register("shotgun_bullet");
+    public static final Item SHOTGUN_SHELL = register("shotgun_shell");
 
     public static final Item SMALL_BULLET = register("small_bullet");
 

@@ -342,7 +342,7 @@ public class RussianLanguageProvider extends FabricLanguageProvider {
         translationBuilder.add(ArmorItems.PRESSURE_HELMET, "Тяжёлый шлем");
         translationBuilder.add(ArmorItems.PRESSURE_LEGGINGS, "Тяжёлые штаны");
         translationBuilder.add(AVPItems.ROCKET, "Ракета");
-        translationBuilder.add(AVPItems.SHOTGUN_BULLET, "Патрон от дробовика");
+        translationBuilder.add(AVPItems.SHOTGUN_SHELL, "Патрон от дробовика");
         translationBuilder.add(AVPItems.SMALL_BULLET, "Мелкий патрон");
         translationBuilder.add(ArmorItems.STEEL_BOOTS, "Стальные ботинки");
         translationBuilder.add(ArmorItems.STEEL_CHESTPLATE, "Стальной нагрудник");

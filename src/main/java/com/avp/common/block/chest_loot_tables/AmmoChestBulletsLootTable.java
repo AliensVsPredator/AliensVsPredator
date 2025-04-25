@@ -55,7 +55,7 @@ public class AmmoChestBulletsLootTable {
             LootPool.lootPool()
                 .setRolls(ConstantValue.exactly(1))
                 .add(
-                    LootItem.lootTableItem(AVPItems.SHOTGUN_BULLET)
+                    LootItem.lootTableItem(AVPItems.SHOTGUN_SHELL)
                         .apply(SetItemCountFunction.setCount(UniformGenerator.between(2, 6)))
                         .setWeight(25)
                 )

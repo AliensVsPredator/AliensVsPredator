@@ -19,7 +19,7 @@ public class CombatCreativeModeTabInitializer {
             entries.accept(AVPItems.HEAVY_BULLET);
             entries.accept(AVPItems.SMALL_BULLET);
             entries.accept(AVPItems.MEDIUM_BULLET);
-            entries.accept(AVPItems.SHOTGUN_BULLET);
+            entries.accept(AVPItems.SHOTGUN_SHELL);
             entries.accept(AVPItems.ROCKET);
             entries.accept(AVPItems.FUEL_TANK);
 

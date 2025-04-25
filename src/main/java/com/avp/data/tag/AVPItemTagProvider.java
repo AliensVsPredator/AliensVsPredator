@@ -111,7 +111,7 @@ public class AVPItemTagProvider extends FabricTagProvider.ItemTagProvider {
                 AVPItems.HEAVY_BULLET,
                 AVPItems.SMALL_BULLET,
                 AVPItems.MEDIUM_BULLET,
-                AVPItems.SHOTGUN_BULLET,
+                AVPItems.SHOTGUN_SHELL,
                 AVPItems.ROCKET,
                 AVPItems.FUEL_TANK
             );

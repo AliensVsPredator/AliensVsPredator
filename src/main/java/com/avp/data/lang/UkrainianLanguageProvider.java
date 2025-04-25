@@ -337,7 +337,7 @@ public class UkrainianLanguageProvider extends FabricLanguageProvider {
         translationBuilder.add(ArmorItems.PRESSURE_HELMET, "Тисковий шолом");
         translationBuilder.add(ArmorItems.PRESSURE_LEGGINGS, "Тискові штани");
         translationBuilder.add(AVPItems.ROCKET, "Ракета");
-        translationBuilder.add(AVPItems.SHOTGUN_BULLET, "Патрон від дробовика");
+        translationBuilder.add(AVPItems.SHOTGUN_SHELL, "Патрон від дробовика");
         translationBuilder.add(AVPItems.SMALL_BULLET, "Малий патрон");
         translationBuilder.add(ArmorItems.STEEL_BOOTS, "Сталеві чоботи");
         translationBuilder.add(ArmorItems.STEEL_CHESTPLATE, "Сталевий нагрудник");
