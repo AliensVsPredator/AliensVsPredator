@@ -7,7 +7,7 @@
       "element": {
         "element_type": "minecraft:single_pool_element",
         "projection": "rigid",
-        "location": "avp:outpost_supply_badland",
+        "location": "avp:outpost/supply/outpost_supply_badland",
         "processors": "minecraft:empty"
       }
     }

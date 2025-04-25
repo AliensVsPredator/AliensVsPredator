@@ -7,7 +7,7 @@
       "element": {
         "element_type": "minecraft:single_pool_element",
         "projection": "rigid",
-        "location": "avp:outpost_munition",
+        "location": "avp:outpost/munition/outpost_munition",
         "processors": "minecraft:empty"
       }
     }

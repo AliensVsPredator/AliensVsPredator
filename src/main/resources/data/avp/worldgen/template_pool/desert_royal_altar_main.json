@@ -7,7 +7,7 @@
       "element": {
         "element_type": "minecraft:single_pool_element",
         "projection": "rigid",
-        "location": "avp:desert_royal_altar",
+        "location": "avp:altar/desert/desert_royal_altar",
         "processors": "minecraft:empty"
       }
     }
