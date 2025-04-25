@@ -20,8 +20,8 @@ public record EntityHeadOffsetData(
     );
 
     private static final EntityHeadOffsetData HOGLIN = new EntityHeadOffsetData(
-            EntityHeadOffsetData::hoglinVerticalOffset,
-            EntityHeadOffsetData::hoglinFaceOffset
+        EntityHeadOffsetData::hoglinVerticalOffset,
+        EntityHeadOffsetData::hoglinFaceOffset
     );
 
     private static final EntityHeadOffsetData LLAMA = new EntityHeadOffsetData(

@@ -3,6 +3,8 @@
 ## ☢️ Breaking Changes
 - Renamed `shotgun_bullet` item ID to `shotgun_shell`.
   - Shotgun bullet items will disappear in pre-existing worlds.
+- Renamed `caseless_casing` item ID to `caseless_cartridge`.
+  - Caseless casing items will disappear in pre-existing worlds.
 - Rewrote turret to be an entity instead of a block entity.
   - Works mostly the same as when it was a block entity regarding ammo chest usage, redstone power, etc.
   - This change allows mobs to target and attack the turret.

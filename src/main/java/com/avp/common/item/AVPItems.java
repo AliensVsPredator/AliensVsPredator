@@ -151,7 +151,7 @@ public class AVPItems {
 
     public static final Item CARBON_DUST = register("carbon_dust");
 
-    public static final Item CASELESS_CASING = register("caseless_casing");
+    public static final Item CASELESS_CARTRIDGE = register("caseless_cartridge");
 
     public static final Item CHITIN = register("chitin");
 

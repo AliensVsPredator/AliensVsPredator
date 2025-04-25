@@ -86,7 +86,7 @@ public class IngredientsCreativeModeTabInitializer {
             entries.accept(AVPItems.MEDIUM_CASING);
             entries.accept(AVPItems.HEAVY_CASING);
             entries.accept(AVPItems.SHOTGUN_CASING);
-            entries.accept(AVPItems.CASELESS_CASING);
+            entries.accept(AVPItems.CASELESS_CARTRIDGE);
 
             // Alien materials
             entries.accept(AVPItems.RESIN_BALL);

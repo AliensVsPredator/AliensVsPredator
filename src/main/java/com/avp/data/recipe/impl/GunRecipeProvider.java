@@ -92,7 +92,7 @@ public class GunRecipeProvider {
             .pattern(" A ")
             .pattern("BAB")
             .pattern(" B ")
-            .into(1, AVPItems.CASELESS_CASING);
+            .into(1, AVPItems.CASELESS_CARTRIDGE);
     }
 
     private static void createBulletRecipes(RecipeBuilder builder) {
@@ -132,7 +132,7 @@ public class GunRecipeProvider {
         builder.shaped()
             .withCategory(RecipeCategory.COMBAT)
             .define('A', AVPItems.BULLET_TIP)
-            .define('B', AVPItems.CASELESS_CASING)
+            .define('B', AVPItems.CASELESS_CARTRIDGE)
             .pattern("A")
             .pattern("B")
             .into(8, AVPItems.CASELESS_BULLET);

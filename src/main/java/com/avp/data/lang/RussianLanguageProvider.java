@@ -386,7 +386,7 @@ public class RussianLanguageProvider extends FabricLanguageProvider {
         translationBuilder.add(AVPItems.BULLET_TIP, "Наконечник пули");
         translationBuilder.add(AVPItems.CAPACITOR, "Конденсатор");
         translationBuilder.add(AVPItems.CARBON_DUST, "Карбоновая пыль");
-        translationBuilder.add(AVPItems.CASELESS_CASING, "Безкорпусный корпус");
+        translationBuilder.add(AVPItems.CASELESS_CARTRIDGE, "Безкорпусный корпус");
         translationBuilder.add(AVPItems.CHITIN, "Хитин");
         translationBuilder.add(AVPItems.CPU, "Процессор");
         translationBuilder.add(AVPItems.DIODE, "Диод");

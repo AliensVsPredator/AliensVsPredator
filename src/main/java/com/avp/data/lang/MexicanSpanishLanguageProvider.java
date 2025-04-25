@@ -390,7 +390,7 @@ public class MexicanSpanishLanguageProvider extends FabricLanguageProvider {
         translationBuilder.add(AVPItems.BULLET_TIP, "Bullet Tip");
         translationBuilder.add(AVPItems.CAPACITOR, "Capacitor");
         translationBuilder.add(AVPItems.CARBON_DUST, "Carbon Dust");
-        translationBuilder.add(AVPItems.CASELESS_CASING, "Caseless Casing");
+        translationBuilder.add(AVPItems.CASELESS_CARTRIDGE, "Caseless Cartridge");
         translationBuilder.add(AVPItems.CHITIN, "Chitin");
         translationBuilder.add(AVPItems.CPU, "CPU");
         translationBuilder.add(AVPItems.DIODE, "Diode");

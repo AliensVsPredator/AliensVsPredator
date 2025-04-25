@@ -381,7 +381,7 @@ public class UkrainianLanguageProvider extends FabricLanguageProvider {
         translationBuilder.add(AVPItems.BULLET_TIP, "Наконечник кулі");
         translationBuilder.add(AVPItems.CAPACITOR, "Конденсатор");
         translationBuilder.add(AVPItems.CARBON_DUST, "Карбоновий пил");
-        translationBuilder.add(AVPItems.CASELESS_CASING, "Безкорпусний корпус");
+        translationBuilder.add(AVPItems.CASELESS_CARTRIDGE, "Безкорпусний корпус");
         translationBuilder.add(AVPItems.CHITIN, "Хітин");
         translationBuilder.add(AVPItems.CPU, "Процессор");
         translationBuilder.add(AVPItems.DIODE, "Діод");
