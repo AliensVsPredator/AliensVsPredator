@@ -25,15 +25,15 @@ public class ResonatorAnimDispatcher {
 
     public ResonatorAnimDispatcher() {}
 
-    public void unpowered(ResonatorBE entity) {
+    public void unpowered(ResonatorBlockEntity entity) {
         UNPOWERED_COMMAND.sendForBlockEntity(entity);
     }
 
-    public void powered(ResonatorBE entity) {
+    public void powered(ResonatorBlockEntity entity) {
         SPINNING_COMMAND.sendForBlockEntity(entity);
     }
 
-    public void powerUp(ResonatorBE entity) {
+    public void powerUp(ResonatorBlockEntity entity) {
         POWER_UP_COMMAND.sendForBlockEntity(entity);
     }
 }

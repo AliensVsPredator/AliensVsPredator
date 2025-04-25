@@ -17,6 +17,7 @@ import com.avp.common.item.gun.GunData;
 import com.avp.common.item.old_painless.OldPainlessItem;
 import com.avp.common.item.yautja_items.ShurikenItem;
 import com.avp.common.item.yautja_items.SmartDiscItem;
+import com.avp.common.sound.AVPJukeboxSongs;
 
 public class AVPItems {
 
@@ -75,7 +76,7 @@ public class AVPItems {
 
     public static final Item ROCKET = register("rocket");
 
-    public static final Item SHOTGUN_BULLET = register("shotgun_bullet");
+    public static final Item SHOTGUN_SHELL = register("shotgun_shell");
 
     public static final Item SMALL_BULLET = register("small_bullet");
 
@@ -89,6 +90,27 @@ public class AVPItems {
     public static final Item ROYALTY_POTTERY_SHERD = register("royalty_pottery_sherd");
 
     public static final Item VECTOR_POTTERY_SHERD = register("vector_pottery_sherd");
+
+    // Music Disc Items
+    public static final Item ALIEN_MUSIC_DISC_1 = register(
+        new Item.Properties().stacksTo(1).rarity(Rarity.RARE).jukeboxPlayable(AVPJukeboxSongs.ALIEN_MUSIC_1),
+        "alien_music_disc_1"
+    );
+
+    public static final Item PREDATOR_MUSIC_DISC_1 = register(
+        new Item.Properties().stacksTo(1).rarity(Rarity.RARE).jukeboxPlayable(AVPJukeboxSongs.PREDATOR_MUSIC_1),
+        "predator_music_disc_1"
+    );
+
+    public static final Item ALIEN_MUSIC_DISC_1_FRAGMENT = register(
+        new DiscFragmentItem(new Item.Properties()),
+        "alien_music_disc_1_fragment"
+    );
+
+    public static final Item PREDATOR_MUSIC_DISC_1_FRAGMENT = register(
+        new DiscFragmentItem(new Item.Properties()),
+        "predator_music_disc_1_fragment"
+    );
 
     // Material Items
     public static final Item ALUMINUM_INGOT = register("aluminum_ingot");
@@ -129,7 +151,7 @@ public class AVPItems {
 
     public static final Item CARBON_DUST = register("carbon_dust");
 
-    public static final Item CASELESS_CASING = register("caseless_casing");
+    public static final Item CASELESS_CARTRIDGE = register("caseless_cartridge");
 
     public static final Item CHITIN = register("chitin");
 

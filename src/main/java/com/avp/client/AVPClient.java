@@ -37,7 +37,7 @@ import com.avp.client.render.item.*;
 import com.avp.client.screen.ArmorCaseScreen;
 import com.avp.client.screen.IndustrialFurnaceScreen;
 import com.avp.common.block.AVPBlocks;
-import com.avp.common.block.entity.BlockEntityTypes;
+import com.avp.common.block.entity.AVPBlockEntityTypes;
 import com.avp.common.block_item.AVPBlockItems;
 import com.avp.common.entity.type.AVPEntityTypes;
 import com.avp.common.item.AVPItems;
@@ -70,6 +70,8 @@ public class AVPClient implements ClientModInitializer {
         BlockRenderLayerMap.INSTANCE.putBlock(AVPBlocks.TITANIUM_CHAIN_FENCE, RenderType.cutout());
         BlockRenderLayerMap.INSTANCE.putBlock(AVPBlocks.TITANIUM_GRATE, RenderType.cutout());
         BlockRenderLayerMap.INSTANCE.putBlock(AVPBlocks.RAZOR_WIRE, RenderType.cutout());
+        BlockRenderLayerMap.INSTANCE.putBlock(AVPBlocks.INDUSTRIAL_GLASS_DOOR, RenderType.cutout());
+        BlockRenderLayerMap.INSTANCE.putBlock(AVPBlocks.INDUSTRIAL_GLASS_TRAP_DOOR, RenderType.cutout());
         BlockRenderLayerMap.INSTANCE.putBlock(AVPBlocks.FERROALUMINUM_DOOR, RenderType.cutout());
         BlockRenderLayerMap.INSTANCE.putBlock(AVPBlocks.STEEL_DOOR, RenderType.cutout());
         BlockRenderLayerMap.INSTANCE.putBlock(AVPBlocks.TITANIUM_DOOR, RenderType.cutout());
@@ -84,6 +86,8 @@ public class AVPClient implements ClientModInitializer {
         BlockRenderLayerMap.INSTANCE.putBlock(AVPBlocks.TITANIUM_GRATE_STAIRS, RenderType.cutout());
 
         BlockRenderLayerMap.INSTANCE.putBlock(AVPBlocks.INDUSTRIAL_GLASS, RenderType.cutout());
+        BlockRenderLayerMap.INSTANCE.putBlock(AVPBlocks.INDUSTRIAL_GLASS_SLAB, RenderType.cutout());
+        BlockRenderLayerMap.INSTANCE.putBlock(AVPBlocks.INDUSTRIAL_GLASS_STAIRS, RenderType.cutout());
         AVPBlocks.DYE_COLOR_TO_INDUSTRIAL_GLASS.values()
             .forEach(block -> BlockRenderLayerMap.INSTANCE.putBlock(block, RenderType.translucent()));
         BlockRenderLayerMap.INSTANCE.putBlock(AVPBlocks.INDUSTRIAL_GLASS_PANE, RenderType.cutout());
@@ -219,41 +223,73 @@ public class AVPClient implements ClientModInitializer {
 
         // Entities
         EntityRendererRegistry.register(AVPEntityTypes.ACID, AcidRenderer::new);
+
         EntityRendererRegistry.register(AVPEntityTypes.CHESTBURSTER, ChestbursterRenderer::new);
         EntityRendererRegistry.register(AVPEntityTypes.DRONE, DroneRenderer::new);
         EntityRendererRegistry.register(AVPEntityTypes.FACEHUGGER, FacehuggerRenderer::new);
-        EntityRendererRegistry.register(AVPEntityTypes.FLAMETHROW, FlamethrowRenderer::new);
-        EntityRendererRegistry.register(AVPEntityTypes.GRENADE_THROWN, ThrownItemRenderer::new);
         EntityRendererRegistry.register(AVPEntityTypes.OVAMORPH, OvamorphRenderer::new);
         EntityRendererRegistry.register(AVPEntityTypes.PRAETORIAN, PraetorianRenderer::new);
         EntityRendererRegistry.register(AVPEntityTypes.QUEEN, QueenRenderer::new);
-        EntityRendererRegistry.register(AVPEntityTypes.ROCKET, RocketRenderer::new);
         EntityRendererRegistry.register(AVPEntityTypes.WARRIOR, WarriorRenderer::new);
+        EntityRendererRegistry.register(AVPEntityTypes.ROYAL_CHESTBURSTER, ChestbursterRenderer::new);
+        EntityRendererRegistry.register(AVPEntityTypes.ROYAL_FACEHUGGER, FacehuggerRenderer::new);
+        EntityRendererRegistry.register(AVPEntityTypes.ROYAL_OVAMORPH, OvamorphRenderer::new);
+
+        EntityRendererRegistry.register(AVPEntityTypes.ABERRANT_CHESTBURSTER, ChestbursterRenderer::new);
+        EntityRendererRegistry.register(AVPEntityTypes.ABERRANT_DRONE, DroneRenderer::new);
+        EntityRendererRegistry.register(AVPEntityTypes.ABERRANT_FACEHUGGER, FacehuggerRenderer::new);
+        EntityRendererRegistry.register(AVPEntityTypes.ABERRANT_OVAMORPH, OvamorphRenderer::new);
+        EntityRendererRegistry.register(AVPEntityTypes.ABERRANT_PRAETORIAN, PraetorianRenderer::new);
+        EntityRendererRegistry.register(AVPEntityTypes.ABERRANT_QUEEN, QueenRenderer::new);
+        EntityRendererRegistry.register(AVPEntityTypes.ABERRANT_WARRIOR, WarriorRenderer::new);
+        EntityRendererRegistry.register(AVPEntityTypes.ROYAL_ABERRANT_CHESTBURSTER, ChestbursterRenderer::new);
+        EntityRendererRegistry.register(AVPEntityTypes.ROYAL_ABERRANT_FACEHUGGER, FacehuggerRenderer::new);
+        EntityRendererRegistry.register(AVPEntityTypes.ROYAL_ABERRANT_OVAMORPH, OvamorphRenderer::new);
+
+        EntityRendererRegistry.register(AVPEntityTypes.IRRADIATED_DRONE, DroneRenderer::new);
+        EntityRendererRegistry.register(AVPEntityTypes.IRRADIATED_PRAETORIAN, PraetorianRenderer::new);
+        EntityRendererRegistry.register(AVPEntityTypes.IRRADIATED_QUEEN, QueenRenderer::new);
+        EntityRendererRegistry.register(AVPEntityTypes.IRRADIATED_WARRIOR, WarriorRenderer::new);
+
+        EntityRendererRegistry.register(AVPEntityTypes.NETHER_CHESTBURSTER, ChestbursterRenderer::new);
+        EntityRendererRegistry.register(AVPEntityTypes.NETHER_DRONE, DroneRenderer::new);
+        EntityRendererRegistry.register(AVPEntityTypes.NETHER_FACEHUGGER, FacehuggerRenderer::new);
+        EntityRendererRegistry.register(AVPEntityTypes.NETHER_OVAMORPH, OvamorphRenderer::new);
+        EntityRendererRegistry.register(AVPEntityTypes.NETHER_PRAETORIAN, PraetorianRenderer::new);
+        EntityRendererRegistry.register(AVPEntityTypes.NETHER_QUEEN, QueenRenderer::new);
+        EntityRendererRegistry.register(AVPEntityTypes.NETHER_WARRIOR, WarriorRenderer::new);
+        EntityRendererRegistry.register(AVPEntityTypes.ROYAL_NETHER_CHESTBURSTER, ChestbursterRenderer::new);
+        EntityRendererRegistry.register(AVPEntityTypes.ROYAL_NETHER_FACEHUGGER, FacehuggerRenderer::new);
+        EntityRendererRegistry.register(AVPEntityTypes.ROYAL_NETHER_OVAMORPH, OvamorphRenderer::new);
+
         EntityRendererRegistry.register(AVPEntityTypes.YAUTJA, YautjaRenderer::new);
         EntityRendererRegistry.register(AVPEntityTypes.MARINE, MarineRenderer::new);
-        EntityRendererRegistry.register(AVPEntityTypes.NUKE_BE, NukeRenderer::new);
+
+        // Block-like entities (like primed TNT)
+        EntityRendererRegistry.register(AVPEntityTypes.NUKE, NukeRenderer::new);
+
         EntityRendererRegistry.register(AVPEntityTypes.BULLET, EmptyRenderer::new);
+        EntityRendererRegistry.register(AVPEntityTypes.FLAMETHROW, FlamethrowRenderer::new);
+        EntityRendererRegistry.register(AVPEntityTypes.GRENADE_THROWN, ThrownItemRenderer::new);
+        EntityRendererRegistry.register(AVPEntityTypes.MUSHROOM_CLOUD, MushroomCloudRenderer::new);
+        EntityRendererRegistry.register(AVPEntityTypes.ROCKET, RocketRenderer::new);
         EntityRendererRegistry.register(AVPEntityTypes.SHURIKEN, SpinningItemRenderer::new);
         EntityRendererRegistry.register(AVPEntityTypes.SMART_DISC, SpinningItemRenderer::new);
-        EntityRendererRegistry.register(AVPEntityTypes.MUSHROOM_CLOUD, MushroomCloudRenderer::new);
+        EntityRendererRegistry.register(AVPEntityTypes.SENTRY_TURRET, SentryTurretRenderer::new);
 
         // Block Entities
+        BlockEntityRenderers.register(AVPBlockEntityTypes.LEAD_CHEST, ChestRenderer::new);
+        BlockEntityRenderers.register(AVPBlockEntityTypes.AMMO_CHEST, ChestRenderer::new);
         BlockEntityRenderers.register(
-            BlockEntityTypes.SENTRY_TURRET_BE,
-            (BlockEntityRendererProvider.Context rendererDispatcherIn) -> new SentryTurretRenderer()
-        );
-        BlockEntityRenderers.register(BlockEntityTypes.LEAD_CHEST_BE, ChestRenderer::new);
-        BlockEntityRenderers.register(BlockEntityTypes.AMMO_CHEST_BE, ChestRenderer::new);
-        BlockEntityRenderers.register(
-            BlockEntityTypes.DESK_TERMINAL_BE,
+            AVPBlockEntityTypes.DESK_TERMINAL,
             (BlockEntityRendererProvider.Context rendererDispatcherIn) -> new DeskTerminalRenderer()
         );
         BlockEntityRenderers.register(
-            BlockEntityTypes.RESONATOR_BE,
+            AVPBlockEntityTypes.RESONATOR,
             (BlockEntityRendererProvider.Context rendererDispatcherIn) -> new ResonatorRenderer()
         );
         BlockEntityRenderers.register(
-            BlockEntityTypes.TRIP_MINE_BE,
+            AVPBlockEntityTypes.TRIP_MINE,
             (BlockEntityRendererProvider.Context rendererDispatcherIn) -> new TripMineRenderer()
         );
 

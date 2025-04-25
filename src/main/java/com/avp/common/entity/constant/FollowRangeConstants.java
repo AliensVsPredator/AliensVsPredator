@@ -2,6 +2,8 @@ package com.avp.common.entity.constant;
 
 public record FollowRangeConstants() {
 
+    public static final float CHESTBURSTER_FOLLOW_RANGE = 16F;
+
     public static final float FACEHUGGER_FOLLOW_RANGE = 35F;
 
     public static final float DRONE_FOLLOW_RANGE = 35F;

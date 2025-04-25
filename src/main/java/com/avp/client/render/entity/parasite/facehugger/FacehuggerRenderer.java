@@ -1,16 +1,12 @@
 package com.avp.client.render.entity.parasite.facehugger;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Axis;
 import mod.azure.azurelib.rewrite.render.AzLayerRenderer;
 import mod.azure.azurelib.rewrite.render.AzModelRenderer;
 import mod.azure.azurelib.rewrite.render.entity.AzEntityRenderer;
 import mod.azure.azurelib.rewrite.render.entity.AzEntityRendererConfig;
 import mod.azure.azurelib.rewrite.render.entity.AzEntityRendererPipeline;
-import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
-import org.jetbrains.annotations.NotNull;
 
 import com.avp.AVPResources;
 import com.avp.client.animation.entity.FacehuggerAnimator;
@@ -45,24 +41,6 @@ public class FacehuggerRenderer extends AzEntityRenderer<Facehugger> {
             context
         );
         this.shadowRadius = 0.25F;
-    }
-
-    @Override
-    public void render(
-        @NotNull Facehugger entity,
-        float entityYaw,
-        float partialTick,
-        @NotNull PoseStack poseStack,
-        @NotNull MultiBufferSource bufferSource,
-        int packedLight
-    ) {
-        if (!entity.attachmentManager().isFertile() && entity.attachmentManager().getHost() == null && entity.isAlive()) {
-            poseStack.translate(0, entity.getBbHeight(), 0);
-            poseStack.mulPose(Axis.ZP.rotationDegrees(180f));
-        }
-
-        entity.runPassiveAnimations();
-        super.render(entity, entityYaw, partialTick, poseStack, bufferSource, packedLight);
     }
 
     @Override

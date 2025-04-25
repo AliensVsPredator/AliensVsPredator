@@ -27,7 +27,7 @@ public class FacehuggerModelRenderer extends AzEntityModelRenderer<Facehugger> {
         float partialTick,
         float nativeScale
     ) {
-        if (!facehugger.attachmentManager().isAttachedToHost()) {
+        if (!facehugger.getAttachmentManager().isAttachedToHost()) {
             super.applyRotations(facehugger, poseStack, ageInTicks, rotationYaw, partialTick, 1);
             return;
         }

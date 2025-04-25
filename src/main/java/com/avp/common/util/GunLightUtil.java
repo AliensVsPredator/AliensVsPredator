@@ -9,11 +9,7 @@ public class GunLightUtil {
     public static void spawnLightSource(Entity entity) {
         var lightBlockPos = AzureLibUtil.findFreeSpace(entity.level(), entity.blockPosition(), 2);
 
-        if (entity.level().isClientSide()) {
-            return;
-        }
-
-        if (lightBlockPos == null) {
+        if (entity.level().isClientSide() || lightBlockPos == null) {
             return;
         }
 

@@ -70,7 +70,11 @@ public class BlockModelProvider extends FabricModelProvider {
             }
         );
 
-        generators.createTrivialCube(AVPBlocks.INDUSTRIAL_GLASS);
+        createIndustrialGlassSlab(generators);
+        generators.family(AVPBlocks.INDUSTRIAL_GLASS)
+            .door(AVPBlocks.INDUSTRIAL_GLASS_DOOR)
+            .stairs(AVPBlocks.INDUSTRIAL_GLASS_STAIRS)
+            .trapdoor(AVPBlocks.INDUSTRIAL_GLASS_TRAP_DOOR);
         AVPBlocks.DYE_COLOR_TO_INDUSTRIAL_GLASS.forEach((dyeColor, block) -> generators.createTrivialCube(block));
         createGlassBlocks(generators, AVPBlocks.INDUSTRIAL_GLASS, AVPBlocks.INDUSTRIAL_GLASS_PANE);
         AVPBlocks.DYE_COLOR_TO_INDUSTRIAL_GLASS_PANE.forEach(
@@ -511,6 +515,28 @@ public class BlockModelProvider extends FabricModelProvider {
             generators.modelOutput
         );
         generators.delegateItemModel(wallBlock, inventoryResourceLocation);
+    }
+
+    private void createIndustrialGlassSlab(BlockModelGenerators generators) {
+        var block = AVPBlocks.INDUSTRIAL_GLASS;
+        var slabBlock = AVPBlocks.INDUSTRIAL_GLASS_SLAB;
+        var textureMapping = TextureMapping.cube(block);
+        var textureMapping2 = TextureMapping.column(
+            TextureMapping.getBlockTexture(slabBlock, "_side"),
+            textureMapping.get(TextureSlot.TOP)
+        );
+        var bottomResourceLocation = ModelTemplates.SLAB_BOTTOM.create(slabBlock, textureMapping2, generators.modelOutput);
+        var topResourceLocation = ModelTemplates.SLAB_TOP.create(slabBlock, textureMapping2, generators.modelOutput);
+        var columnResourceLocation = ModelTemplates.CUBE_COLUMN.createWithOverride(
+            slabBlock,
+            "_double",
+            textureMapping2,
+            generators.modelOutput
+        );
+
+        generators.blockStateOutput.accept(
+            BlockModelGenerators.createSlab(slabBlock, bottomResourceLocation, topResourceLocation, columnResourceLocation)
+        );
     }
 
     @Override

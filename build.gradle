@@ -26,6 +26,7 @@ repositories {
 	maven { url = "https://maven.shedaniel.me" }
 	maven { url = "https://maven.blamejared.com/" }
 	maven { url = "https://modmaven.dev" }
+	maven { url = "https://api.modrinth.com/maven" }
 }
 
 loom {
@@ -70,8 +71,10 @@ dependencies {
 
 	modRuntimeOnly "org.sinytra:item-asset-export-fabric:${project.asset_export}"
 
-	modCompileOnlyApi("mezz.jei:jei-${project.minecraft_version}-fabric-api:${project.jei_version}")
-	modRuntimeOnly("mezz.jei:jei-${project.minecraft_version}-fabric:${project.jei_version}")
+	// https://modrinth.com/mod/building-wands/version/2.8.3_beta_fabric_1.21
+	modImplementation "maven.modrinth:building-wands:2.8.3_beta_fabric_1.21"
+	// https://modrinth.com/mod/carry-on/version/TuSZSQeB
+	modImplementation "maven.modrinth:carry-on:TuSZSQeB"
 }
 
 processResources {
@@ -172,13 +175,30 @@ if (file('key.properties').exists()) {
 		file = jar.archiveFile
 		changelog = rootProject.file("CHANGELOG.md").text
 		type = STABLE
+		file = remapJar.archiveFile
 		modLoaders.add("fabric")
 
+		discord {
+			webhookUrl = releaseProp.getProperty("discordKey")
+			dryRunWebhookUrl = releaseProp.getProperty("discordKey")
+			username = "MU/TH/UR"
+			avatarUrl = "https://i.imgur.com/5Y0EZ9x.jpeg"
+			content = changelog.map { "# A new version of AVP has been released! \n" + it}
+			setPlatforms(publishMods.platforms.curseforge, publishMods.platforms.modrinth)
+			style {
+				look = "MODERN"
+				thumbnailUrl = "https://cdn.modrinth.com/data/Uqo0H9FX/8ffabe2f364c34e6b0f13019664c5fe4989c2f95_96.webp"
+			}
+		}
 		curseforge {
 			projectId = project.cf_id
 			projectSlug = project.cf_project_slug
 			accessToken = releaseProp.getProperty("curseKey")
 			minecraftVersions.add(project.minecraft_version)
+			announcementTitle = "Download from CurseForge"
+			javaVersions.add(JavaVersion.VERSION_21)
+			clientRequired = true
+			serverRequired = true
 			requires {
 				slug = "fabric-api"
 			}
@@ -190,6 +210,7 @@ if (file('key.properties').exists()) {
 			projectId = project.modrinth_id
 			accessToken = releaseProp.getProperty('modrinthKey')
 			minecraftVersions.add(project.minecraft_version)
+			announcementTitle = "Download from Modrinth"
 			requires {
 				slug = "fabric-api"
 			}

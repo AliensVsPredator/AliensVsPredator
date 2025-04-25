@@ -6,9 +6,9 @@ import net.minecraft.resources.ResourceLocation;
 
 import com.avp.AVPResources;
 import com.avp.client.animation.block.ResonatorAnimator;
-import com.avp.common.block.entity.ResonatorBE;
+import com.avp.common.block.entity.ResonatorBlockEntity;
 
-public class ResonatorRenderer extends AzBlockEntityRenderer<ResonatorBE> {
+public class ResonatorRenderer extends AzBlockEntityRenderer<ResonatorBlockEntity> {
 
     public static final String NAME = "resonator";
 
@@ -18,7 +18,7 @@ public class ResonatorRenderer extends AzBlockEntityRenderer<ResonatorBE> {
 
     public ResonatorRenderer() {
         super(
-            AzBlockEntityRendererConfig.<ResonatorBE>builder(GEO, TEX)
+            AzBlockEntityRendererConfig.<ResonatorBlockEntity>builder(GEO, TEX)
                 .setAnimatorProvider(ResonatorAnimator::new)
                 .build()
         );

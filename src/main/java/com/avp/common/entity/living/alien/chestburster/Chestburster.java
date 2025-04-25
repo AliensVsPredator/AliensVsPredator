@@ -11,10 +11,7 @@ import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Objects;
-
 import com.avp.AVP;
-import com.avp.common.MoveAnalysis;
 import com.avp.common.entity.living.alien.Alien;
 import com.avp.common.entity.living.alien.xenomorph.Xenomorph;
 import com.avp.common.entity.type.AVPEntityTypes;
@@ -23,6 +20,7 @@ import com.avp.common.gene.behavior.GeneDecoders;
 import com.avp.common.lifecycle.registry.AlienLifecycleRegistry;
 import com.avp.common.manager.GrowthManager;
 import com.avp.common.util.AVPPredicates;
+import com.avp.common.util.AlienPredicates;
 import com.avp.common.util.AlienVariantUtil;
 import com.avp.common.util.XenomorphGrowthUtil;
 import com.avp.common.util.resin.ResinData;
@@ -34,8 +32,6 @@ public class Chestburster extends Alien implements ResinProducer {
     public static AttributeSupplier.Builder createChestbursterAttributes() {
         return applyFrom(AVP.config.statsConfigs.CHESTBURSTER_STATS, Monster.createMonsterAttributes());
     }
-
-    protected final MoveAnalysis moveAnalysis;
 
     private final ChestbursterAnimationDispatcher animationDispatcher;
 
@@ -51,7 +47,6 @@ public class Chestburster extends Alien implements ResinProducer {
             .setGrowthTimeReductionMultiplierProvider(
                 () -> geneManager.get(GeneKeys.GROWTH_SPEED, GeneDecoders.GROWTH_SPEED)
             );
-        this.moveAnalysis = new MoveAnalysis(this);
         this.resinManager = new ResinManager(this, createResinData())
             .setBonusResinProvider(
                 () -> geneManager.get(GeneKeys.BONUS_RESIN_PRODUCTION, GeneDecoders.BONUS_RESIN_PRODUCTION).intValue()
@@ -81,33 +76,25 @@ public class Chestburster extends Alien implements ResinProducer {
 
     @Override
     protected void registerGoals() {
-        this.goalSelector.addGoal(3, new AvoidEntityGoal<>(this, LivingEntity.class, 8, 1, 1.2, entity -> {
-            if (!(entity instanceof Alien alien)) {
-                return !AVPPredicates.IS_IMMORTAL.test(entity);
-            }
-
-            var isAlienAberrant = alien.isAberrant();
-            var isAlienNetherAfflicted = alien.isNetherAfflicted();
-
-            if (!Objects.equals(isAberrant(), isAlienAberrant) || !Objects.equals(isNetherAfflicted(), isAlienNetherAfflicted)) {
-                return true;
-            }
-
-            var hiveSignatureOption = hiveManager.signature();
-            var alienHiveSignatureOption = alien.hiveManager().signature();
-
-            return hiveSignatureOption.isSome() && alienHiveSignatureOption.isSome() && !Objects.equals(
-                hiveSignatureOption,
-                alienHiveSignatureOption
-            );
-        }));
+        this.goalSelector.addGoal(
+            3,
+            new AvoidEntityGoal<>(
+                this,
+                LivingEntity.class,
+                8,
+                1,
+                1.2,
+                entity -> entity instanceof Alien alien
+                    ? AlienPredicates.areAliensEnemies(this, alien)
+                    : !AVPPredicates.IS_IMMORTAL.test(entity)
+            )
+        );
         goalSelector.addGoal(7, new WaterAvoidingRandomStrollGoal(this, 0.5));
     }
 
     @Override
     public void tick() {
         super.tick();
-        moveAnalysis.tick();
         growthManager.tick();
         resinManager.tick();
 
@@ -133,25 +120,6 @@ public class Chestburster extends Alien implements ResinProducer {
         return new ResinData(0, 8, 1, AVP.config.statsConfigs.CHESTBURSTER_STATS.nestTickrate);
     }
 
-    public void runPassiveAnimations() {
-        var dispatcher = animationDispatcher;
-        var isMovingOnGround = moveAnalysis.isMovingHorizontally() && onGround();
-        Runnable animFunction;
-
-        // if (isUnderWater()) {
-        // // TODO: idle swim
-        // animFunction = dispatcher::swim;
-        // } else
-
-        if (isMovingOnGround) {
-            animFunction = dispatcher::slowSlither;
-        } else {
-            animFunction = dispatcher::idle;
-        }
-
-        animFunction.run();
-    }
-
     @Override
     public void readAdditionalSaveData(CompoundTag compoundTag) {
         super.readAdditionalSaveData(compoundTag);
@@ -167,7 +135,7 @@ public class Chestburster extends Alien implements ResinProducer {
     }
 
     @Override
-    public ResinManager resinManager() {
+    public ResinManager getResinManager() {
         return resinManager;
     }
 
@@ -178,5 +146,9 @@ public class Chestburster extends Alien implements ResinProducer {
     @Override
     public int maxJellyToGrowth() {
         return 1;
+    }
+
+    public ChestbursterAnimationDispatcher getAnimationDispatcher() {
+        return animationDispatcher;
     }
 }

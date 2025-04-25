@@ -3,8 +3,9 @@
   "adapt_noise": false,
   "type": "minecraft:jigsaw",
   "start_pool": "avp:outpost_comm_bottom",
+  "placement": "on_land_surface",
   "size": 4,
-  "step": "surface_structures",
+  "step": "top_layer_modification",
   "start_height": {
     "absolute": -1
   },
@@ -18,9 +19,9 @@
       "spawns": [
         {
           "type": "avp:marine",
-          "weight": 15,
+          "weight": 20,
           "minCount": 1,
-          "maxCount": 3
+          "maxCount": 2
         }
       ]
     }

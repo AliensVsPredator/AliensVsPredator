@@ -35,4 +35,30 @@ public class WarriorAnimator extends AzEntityAnimator<Warrior> {
         return ANIMATION;
     }
 
+    @Override
+    public void setCustomAnimations(Warrior animatable, float partialTicks) {
+        super.setCustomAnimations(animatable, partialTicks);
+
+        runPassiveAnimations(animatable);
+    }
+
+    private void runPassiveAnimations(Warrior warrior) {
+        var dispatcher = warrior.getAnimationDispatcher();
+        var movementAnalyzer = warrior.getMovementAnalyzer();
+        var isMovingOnGround = movementAnalyzer.isMovingHorizontally() && warrior.onGround();
+        var isCrawling = warrior.getCrawlingManager().isCrawling();
+        Runnable animFunction;
+
+        if (warrior.isUnderWater()) {
+            // TODO: idle swim
+            animFunction = dispatcher::swim;
+        } else if (isMovingOnGround) {
+            animFunction = isCrawling ? dispatcher::crawl : dispatcher::walk;
+        } else {
+            // TODO: idle crawl
+            animFunction = isCrawling ? dispatcher::crawlHold : dispatcher::idle;
+        }
+
+        animFunction.run();
+    }
 }

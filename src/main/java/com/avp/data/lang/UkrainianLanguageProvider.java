@@ -337,7 +337,7 @@ public class UkrainianLanguageProvider extends FabricLanguageProvider {
         translationBuilder.add(ArmorItems.PRESSURE_HELMET, "Тисковий шолом");
         translationBuilder.add(ArmorItems.PRESSURE_LEGGINGS, "Тискові штани");
         translationBuilder.add(AVPItems.ROCKET, "Ракета");
-        translationBuilder.add(AVPItems.SHOTGUN_BULLET, "Патрон від дробовика");
+        translationBuilder.add(AVPItems.SHOTGUN_SHELL, "Патрон від дробовика");
         translationBuilder.add(AVPItems.SMALL_BULLET, "Малий патрон");
         translationBuilder.add(ArmorItems.STEEL_BOOTS, "Сталеві чоботи");
         translationBuilder.add(ArmorItems.STEEL_CHESTPLATE, "Сталевий нагрудник");
@@ -381,7 +381,7 @@ public class UkrainianLanguageProvider extends FabricLanguageProvider {
         translationBuilder.add(AVPItems.BULLET_TIP, "Наконечник кулі");
         translationBuilder.add(AVPItems.CAPACITOR, "Конденсатор");
         translationBuilder.add(AVPItems.CARBON_DUST, "Карбоновий пил");
-        translationBuilder.add(AVPItems.CASELESS_CASING, "Безкорпусний корпус");
+        translationBuilder.add(AVPItems.CASELESS_CARTRIDGE, "Безкорпусний корпус");
         translationBuilder.add(AVPItems.CHITIN, "Хітин");
         translationBuilder.add(AVPItems.CPU, "Процессор");
         translationBuilder.add(AVPItems.DIODE, "Діод");
@@ -557,6 +557,12 @@ public class UkrainianLanguageProvider extends FabricLanguageProvider {
         addSound(translationBuilder, AVPSoundEvents.WEAPON_OLD_PAINLESS_SHOOT_SPINNING, "Бочка старого безболісного (мінігану) крутиться");
         addSound(translationBuilder, AVPSoundEvents.WEAPON_OLD_PAINLESS_SHOOT_START, "Старий безболісний (мініган) починає стріляти");
         addSound(translationBuilder, AVPSoundEvents.WEAPON_ZX_76_SHOTGUN_SHOOT, "ZX-76 Дробовик стріляє");
+        addSound(translationBuilder, AVPSoundEvents.JUKEBOX_SOUNDS_ALIEN_MUSIC_1, "Silver Smile plays");
+        addSound(translationBuilder, AVPSoundEvents.JUKEBOX_SOUNDS_PREDATOR_MUSIC_1, "Hunter plays");
+
+        // Jukebox Sounds
+        translationBuilder.add("jukebox_song.avp.alien_music_1", "Rotch Gwylt - Silver Smile");
+        translationBuilder.add("jukebox_song.avp.predator_music_1", "Rotch Gwylt - Hunter");
 
         // Tooltips
         translationBuilder.add("tooltip.avp.accuracy", "Точність: ");
@@ -567,6 +573,9 @@ public class UkrainianLanguageProvider extends FabricLanguageProvider {
         translationBuilder.add("tooltip.avp.fire_rate", "Швидкість стрільби: ");
         translationBuilder.add("tooltip.avp.knockback", "Відкидання противника: ");
         translationBuilder.add("tooltip.avp.recoil", "Віддача: ");
+        translationBuilder.add("tooltip.avp.capacity", "Capacity: ");
+        translationBuilder.add("tooltip.avp.no_ammo_warning", "Warning: No Ammo");
+        translationBuilder.add("tooltip.avp.low_ammo_warning", "Warning Low Ammo");
 
         // Keybinds
         translationBuilder.add("key.avp.reload", "Перезарядитися");

@@ -111,7 +111,7 @@ public class AVPItemTagProvider extends FabricTagProvider.ItemTagProvider {
                 AVPItems.HEAVY_BULLET,
                 AVPItems.SMALL_BULLET,
                 AVPItems.MEDIUM_BULLET,
-                AVPItems.SHOTGUN_BULLET,
+                AVPItems.SHOTGUN_SHELL,
                 AVPItems.ROCKET,
                 AVPItems.FUEL_TANK
             );
@@ -210,6 +210,12 @@ public class AVPItemTagProvider extends FabricTagProvider.ItemTagProvider {
                 AVPItems.FERROALUMINUM_INGOT,
                 AVPItems.STEEL_INGOT,
                 AVPItems.ZINC_INGOT
+            );
+
+        getOrCreateTagBuilder(AVPItemTags.URANIUM_NUGGET_LIKE)
+            .add(
+                AVPItems.URANIUM_NUGGET,
+                AVPItems.IRRADIATED_CHITIN
             );
 
         var industrialGlassBlockTagBuilder = getOrCreateTagBuilder(AVPItemTags.INDUSTRIAL_GLASS_BLOCK);
@@ -372,6 +378,7 @@ public class AVPItemTagProvider extends FabricTagProvider.ItemTagProvider {
 
         doorTagProvider.add(
             AVPBlockItems.FERROALUMINUM_DOOR,
+            AVPBlockItems.INDUSTRIAL_GLASS_DOOR,
             AVPBlockItems.STEEL_DOOR,
             AVPBlockItems.TITANIUM_DOOR
         );
@@ -380,6 +387,7 @@ public class AVPItemTagProvider extends FabricTagProvider.ItemTagProvider {
 
         trapdoorTagProvider.add(
             AVPBlockItems.FERROALUMINUM_TRAP_DOOR,
+            AVPBlockItems.INDUSTRIAL_GLASS_TRAP_DOOR,
             AVPBlockItems.STEEL_TRAP_DOOR,
             AVPBlockItems.TITANIUM_TRAP_DOOR
         );
@@ -398,6 +406,7 @@ public class AVPItemTagProvider extends FabricTagProvider.ItemTagProvider {
             AVPBlockItems.FERROALUMINUM_SLAB,
             AVPBlockItems.FERROALUMINUM_STANDING_SLAB,
             AVPBlockItems.FERROALUMINUM_TREAD_SLAB,
+            AVPBlockItems.INDUSTRIAL_GLASS_SLAB,
             AVPBlockItems.STEEL_FASTENED_SIDING_SLAB,
             AVPBlockItems.STEEL_FASTENED_STANDING_SLAB,
             AVPBlockItems.STEEL_GRATE_SLAB,
@@ -446,6 +455,7 @@ public class AVPItemTagProvider extends FabricTagProvider.ItemTagProvider {
             AVPBlockItems.FERROALUMINUM_STAIRS,
             AVPBlockItems.FERROALUMINUM_STANDING_STAIRS,
             AVPBlockItems.FERROALUMINUM_TREAD_STAIRS,
+            AVPBlockItems.INDUSTRIAL_GLASS_STAIRS,
             AVPBlockItems.STEEL_FASTENED_SIDING_STAIRS,
             AVPBlockItems.STEEL_FASTENED_STANDING_STAIRS,
             AVPBlockItems.STEEL_GRATE_STAIRS,
@@ -484,5 +494,19 @@ public class AVPItemTagProvider extends FabricTagProvider.ItemTagProvider {
             ArmorItems.JUNGLE_PREDATOR_LEGGINGS,
             ArmorItems.JUNGLE_PREDATOR_BOOTS
         );
+
+        getOrCreateTagBuilder(AVPItemTags.MELEE_WEAPONS)
+            .addOptionalTag(ItemTags.AXES)
+            .addOptionalTag(ItemTags.SWORDS)
+            .add(
+                Items.MACE
+            );
+
+        getOrCreateTagBuilder(AVPItemTags.RANGED_WEAPONS)
+            .addTag(AVPItemTags.GUNS)
+            .add(
+                Items.BOW,
+                Items.CROSSBOW
+            );
     }
 }

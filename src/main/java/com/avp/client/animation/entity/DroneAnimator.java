@@ -35,4 +35,30 @@ public class DroneAnimator extends AzEntityAnimator<Drone> {
         return ANIMATION;
     }
 
+    @Override
+    public void setCustomAnimations(Drone animatable, float partialTicks) {
+        super.setCustomAnimations(animatable, partialTicks);
+
+        runPassiveAnimations(animatable);
+    }
+
+    private void runPassiveAnimations(Drone drone) {
+        var dispatcher = drone.getAnimationDispatcher();
+        var movementAnalyzer = drone.getMovementAnalyzer();
+        var isMovingOnGround = movementAnalyzer.isMovingHorizontally() && drone.onGround();
+        var isCrawling = drone.getCrawlingManager().isCrawling();
+        Runnable animFunction;
+
+        if (drone.isUnderWater()) {
+            // TODO: idle swim
+            animFunction = dispatcher::swim;
+        } else if (isMovingOnGround) {
+            animFunction = isCrawling ? dispatcher::crawl : dispatcher::walk;
+        } else {
+            // TODO: idle crawl
+            animFunction = isCrawling ? dispatcher::crawlHold : dispatcher::idle;
+        }
+
+        animFunction.run();
+    }
 }

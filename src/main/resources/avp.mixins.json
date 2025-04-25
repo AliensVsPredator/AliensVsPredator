@@ -3,10 +3,8 @@
   "package": "com.avp.mixin",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
+    "GiveGiftToHeroAccessor",
     "MixinArmorStand_EquipArmorFromArmorCase",
-    "MixinBlockItem_ApplyRads",
-    "MixinBoatChest_ApplyRads",
-    "MixinChestBlock_RadioactiveChest",
     "MixinCow_FillMilkCanister",
     "MixinCreeper_Nuked",
     "MixinDecoratedPotPatterns_GetPatternForCustomSherds",
@@ -20,17 +18,18 @@
     "MixinLivingEntity_ApplyArmorEffects",
     "MixinLivingEntity_GrowEmbryo",
     "MixinLivingEntity_NukedRadiation",
-    "MixinMinecartChest_ApplyRads",
     "MixinMob_IncapacitateHost",
     "MixinMobCategory_InjectCustomAlienCategory",
     "MixinShearsItem",
-    "MixinShulkerBlockEntity_RadioactiveItems",
     "MixinVillagerHostilesSensor_RunAwayFromAVPMonsters",
+    "ParrotSoundMapAccessor",
+    "StructurePoolAccessor",
     "server.MixinServerLevel_RunTickRoutines"
   ],
   "client": [
     "client.MixinGui_CrosshairPickEntityWithinGunRange",
     "client.MixinItemInHandRenderer_AdjustHandRenderingForGun",
+    "client.MixinPlayerEntity_LowAmmunitionIndicator",
     "client.MixinPlayerRenderer_AdjustArmPoseForGun",
     "client.MixinSheets_AdjustLeadChestTexture"
   ],

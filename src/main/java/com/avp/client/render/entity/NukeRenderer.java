@@ -13,7 +13,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import org.jetbrains.annotations.NotNull;
 
-import com.avp.common.block.entity.NukeBE;
+import com.avp.common.block.entity.PrimedNuke;
 
 public class NukeRenderer<T extends Entity> extends EntityRenderer<T> {
 
@@ -33,16 +33,16 @@ public class NukeRenderer<T extends Entity> extends EntityRenderer<T> {
         MultiBufferSource bufferSource,
         int lightLevel
     ) {
-        if (nukeEntity instanceof NukeBE nukeBE) {
+        if (nukeEntity instanceof PrimedNuke primedNuke) {
             poseStack.pushPose();
             poseStack.mulPose(Axis.YP.rotationDegrees(-90.0F));
             poseStack.mulPose(Axis.YP.rotationDegrees(90.0F));
 
             // Render the Nuke Block with alternating white "flashes" when the fuse is running
-            var shouldFlash = nukeBE.getFuse() / 5 % 2 == 0;
+            var shouldFlash = primedNuke.getFuse() / 5 % 2 == 0;
             TntMinecartRenderer.renderWhiteSolidBlock(
                 this.blockRenderer,
-                nukeBE.getBlockState(),
+                primedNuke.getBlockState(),
                 poseStack,
                 bufferSource,
                 lightLevel,

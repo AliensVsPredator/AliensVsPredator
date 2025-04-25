@@ -44,11 +44,29 @@ public class AVPBiomeTagProvider extends FabricTagProvider<Biome> {
             .add(Biomes.FOREST)
             .add(Biomes.BIRCH_FOREST);
 
+        getOrCreateTagBuilder(AVPBiomeTags.HAS_MOBILE_LAB)
+            .add(Biomes.SAVANNA)
+            .add(Biomes.STONY_SHORE)
+            .add(Biomes.SNOWY_PLAINS)
+            .add(Biomes.BADLANDS)
+            .add(Biomes.CHERRY_GROVE)
+            .add(Biomes.DESERT);
+
         getOrCreateTagBuilder(AVPBiomeTags.HAS_OUTPOST_COMMS)
-            .add(Biomes.MEADOW)
-            .add(Biomes.PLAINS)
-            .add(Biomes.FOREST)
-            .add(Biomes.BIRCH_FOREST);
+            .add(Biomes.WINDSWEPT_SAVANNA)
+            .add(Biomes.WINDSWEPT_HILLS)
+            .add(Biomes.FLOWER_FOREST)
+            .add(Biomes.SUNFLOWER_PLAINS);
+
+        getOrCreateTagBuilder(AVPBiomeTags.HAS_OUTPOST_MUNITION)
+            .add(Biomes.TAIGA)
+            .add(Biomes.SNOWY_TAIGA);
+
+        getOrCreateTagBuilder(AVPBiomeTags.HAS_OUTPOST_SUPPLY_BADLAND)
+            .add(Biomes.BADLANDS);
+
+        getOrCreateTagBuilder(AVPBiomeTags.HAS_OUTPOST_SUPPLY_DESERT)
+            .add(Biomes.DESERT);
 
         getOrCreateTagBuilder(AVPBiomeTags.HAS_ALTAR)
             .addTag(AVPBiomeTags.HAS_BADLANDS_ALTAR)

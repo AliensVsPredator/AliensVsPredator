@@ -1,15 +1,16 @@
 package com.avp.client.render.block;
 
-import mod.azure.azurelib.rewrite.render.block.AzBlockEntityRenderer;
-import mod.azure.azurelib.rewrite.render.block.AzBlockEntityRendererConfig;
+import mod.azure.azurelib.rewrite.render.entity.AzEntityRenderer;
+import mod.azure.azurelib.rewrite.render.entity.AzEntityRendererConfig;
 import mod.azure.azurelib.rewrite.render.layer.AzAutoGlowingLayer;
+import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
 
 import com.avp.AVPResources;
-import com.avp.client.animation.block.SentryTurretAnimator;
-import com.avp.common.block.entity.SentryTurretBE;
+import com.avp.client.animation.entity.SentryTurretAnimator;
+import com.avp.common.entity.machine.SentryTurret;
 
-public class SentryTurretRenderer extends AzBlockEntityRenderer<SentryTurretBE> {
+public class SentryTurretRenderer extends AzEntityRenderer<SentryTurret> {
 
     public static final String NAME = "sentry_turret";
 
@@ -17,12 +18,13 @@ public class SentryTurretRenderer extends AzBlockEntityRenderer<SentryTurretBE> 
 
     private static final ResourceLocation TEX = AVPResources.blockTextureLocation(NAME);
 
-    public SentryTurretRenderer() {
+    public SentryTurretRenderer(EntityRendererProvider.Context context) {
         super(
-            AzBlockEntityRendererConfig.<SentryTurretBE>builder(GEO, TEX)
+            AzEntityRendererConfig.<SentryTurret>builder(GEO, TEX)
                 .setAnimatorProvider(SentryTurretAnimator::new)
                 .addRenderLayer(new AzAutoGlowingLayer<>())
-                .build()
+                .build(),
+            context
         );
     }
 }

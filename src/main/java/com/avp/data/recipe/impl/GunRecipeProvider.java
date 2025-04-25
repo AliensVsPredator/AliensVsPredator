@@ -4,6 +4,7 @@ import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 
+import com.avp.common.item.AVPItemTags;
 import com.avp.common.item.AVPItems;
 import com.avp.data.recipe.builder.RecipeBuilder;
 
@@ -46,7 +47,7 @@ public class GunRecipeProvider {
             .withCategory(RecipeCategory.COMBAT)
             .define('A', AVPItems.STEEL_NUGGET)
             .define('B', Items.GUNPOWDER)
-            .define('C', AVPItems.URANIUM_NUGGET)
+            .define('C', AVPItemTags.URANIUM_NUGGET_LIKE)
             .pattern("ACA")
             .pattern("ABA")
             .into(4, AVPItems.GRENADE_IRRADIATED);
@@ -91,7 +92,7 @@ public class GunRecipeProvider {
             .pattern(" A ")
             .pattern("BAB")
             .pattern(" B ")
-            .into(1, AVPItems.CASELESS_CASING);
+            .into(1, AVPItems.CASELESS_CARTRIDGE);
     }
 
     private static void createBulletRecipes(RecipeBuilder builder) {
@@ -127,11 +128,11 @@ public class GunRecipeProvider {
             .define('B', AVPItems.SHOTGUN_CASING)
             .pattern("A")
             .pattern("B")
-            .into(8, AVPItems.SHOTGUN_BULLET);
+            .into(8, AVPItems.SHOTGUN_SHELL);
         builder.shaped()
             .withCategory(RecipeCategory.COMBAT)
             .define('A', AVPItems.BULLET_TIP)
-            .define('B', AVPItems.CASELESS_CASING)
+            .define('B', AVPItems.CASELESS_CARTRIDGE)
             .pattern("A")
             .pattern("B")
             .into(8, AVPItems.CASELESS_BULLET);

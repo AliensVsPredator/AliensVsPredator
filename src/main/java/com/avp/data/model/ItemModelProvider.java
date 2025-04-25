@@ -38,7 +38,7 @@ public class ItemModelProvider extends FabricModelProvider {
         generateStandardItem(generators, AVPItems.HEAVY_BULLET);
         generateStandardItem(generators, AVPItems.SMALL_BULLET);
         generateStandardItem(generators, AVPItems.MEDIUM_BULLET);
-        generateStandardItem(generators, AVPItems.SHOTGUN_BULLET);
+        generateStandardItem(generators, AVPItems.SHOTGUN_SHELL);
         generateStandardItem(generators, ArmorItems.ABERRANT_CHITIN_BOOTS);
         generateStandardItem(generators, ArmorItems.ABERRANT_CHITIN_CHESTPLATE);
         generateStandardItem(generators, ArmorItems.ABERRANT_CHITIN_HELMET);
@@ -109,6 +109,10 @@ public class ItemModelProvider extends FabricModelProvider {
         generateStandardItem(generators, AVPItems.ABERRANT_RESIN_BALL);
         generateStandardItem(generators, AVPItems.PLATED_ABERRANT_CHITIN);
         generateStandardItem(generators, AVPItems.ALUMINUM_INGOT);
+        generateStandardItem(generators, AVPItems.ALIEN_MUSIC_DISC_1);
+        generateStandardItem(generators, AVPItems.PREDATOR_MUSIC_DISC_1);
+        generateStandardItem(generators, AVPItems.ALIEN_MUSIC_DISC_1_FRAGMENT);
+        generateStandardItem(generators, AVPItems.PREDATOR_MUSIC_DISC_1_FRAGMENT);
         generateStandardItem(generators, AVPItems.AUTUNITE_DUST);
         generateStandardItem(generators, AVPItems.BARREL);
         generateStandardItem(generators, AVPItems.BATTERY_PACK);
@@ -136,7 +140,7 @@ public class ItemModelProvider extends FabricModelProvider {
         generateStandardItem(generators, AVPItems.SERVO);
         generateStandardItem(generators, AVPItems.SPEAKER);
         generateStandardItem(generators, AVPItems.CARBON_DUST);
-        generateStandardItem(generators, AVPItems.CASELESS_CASING);
+        generateStandardItem(generators, AVPItems.CASELESS_CARTRIDGE);
         generateStandardItem(generators, AVPItems.CHITIN);
         generateStandardItem(generators, AVPItems.CPU);
         generateStandardItem(generators, AVPItems.DIODE);

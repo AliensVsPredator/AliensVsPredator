@@ -20,11 +20,10 @@ import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import com.avp.common.block.base.BaseBlockEntity;
-import com.avp.common.block.entity.BlockEntityTypes;
-import com.avp.common.block.entity.ResonatorBE;
+import com.avp.common.block.entity.AVPBlockEntityTypes;
+import com.avp.common.block.entity.ResonatorBlockEntity;
 
-public class ResonatorBlock extends BaseBlockEntity {
+public class ResonatorBlock extends BaseEntityBlock {
 
     public static final MapCodec<ResonatorBlock> CODEC = simpleCodec(ResonatorBlock::new);
 
@@ -47,12 +46,7 @@ public class ResonatorBlock extends BaseBlockEntity {
 
     @Override
     public @Nullable BlockEntity newBlockEntity(BlockPos blockPos, BlockState blockState) {
-        return new ResonatorBE(blockPos, blockState);
-    }
-
-    @Override
-    protected boolean isTickingBE() {
-        return true;
+        return new ResonatorBlockEntity(blockPos, blockState);
     }
 
     @Override
@@ -70,8 +64,8 @@ public class ResonatorBlock extends BaseBlockEntity {
             ? null
             : createTickerHelper(
                 blockEntityType,
-                (BlockEntityType<? extends ResonatorBE>) BlockEntityTypes.RESONATOR_BE,
-                ResonatorBE::serverTick
+                (BlockEntityType<? extends ResonatorBlockEntity>) AVPBlockEntityTypes.RESONATOR,
+                ResonatorBlockEntity::serverTick
             );
     }
 
@@ -85,8 +79,8 @@ public class ResonatorBlock extends BaseBlockEntity {
     ) {
         if (!level.isClientSide) {
             var be = level.getBlockEntity(pos);
-            if (be instanceof ResonatorBE resonatorBE) {
-                resonatorBE.onRightClick(player);
+            if (be instanceof ResonatorBlockEntity resonatorBlockEntity) {
+                resonatorBlockEntity.onRightClick(player);
             }
         }
         return InteractionResult.SUCCESS;
@@ -120,8 +114,8 @@ public class ResonatorBlock extends BaseBlockEntity {
     public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean isMoving) {
         if (!state.is(newState.getBlock())) {
             var blockEntity = level.getBlockEntity(pos);
-            if (blockEntity instanceof ResonatorBE resonatorBE) {
-                resonatorBE.getResinBallCounts().forEach((resinBallItem, count) -> {
+            if (blockEntity instanceof ResonatorBlockEntity resonatorBlockEntity) {
+                resonatorBlockEntity.getResinBallCounts().forEach((resinBallItem, count) -> {
                     if (count > 0) {
                         var resinBallStack = new ItemStack(resinBallItem, count);
                         var resinBallEntity = new ItemEntity(level, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, resinBallStack);

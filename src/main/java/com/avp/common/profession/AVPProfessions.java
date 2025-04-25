@@ -16,11 +16,11 @@ import com.avp.common.block.AVPBlocks;
 
 public class AVPProfessions {
 
-    public static final ResourceKey<PoiType> COMMISAARY_KEY = poiKey("commissary_poi");
+    public static final ResourceKey<PoiType> COMMISSARY_KEY = poiKey("commissary_poi");
 
-    public static final PoiType COMMISAARY_POI = registerPoi("commissary_poi", AVPBlocks.BLUEPRINT_BLOCK);
+    public static final PoiType COMMISSARY_POI = registerPoi("commissary_poi", AVPBlocks.BLUEPRINT_BLOCK);
 
-    public static final VillagerProfession COMMISAARY = registerProfession("commissary", COMMISAARY_KEY);
+    public static final VillagerProfession COMMISSARY = registerProfession("commissary", COMMISSARY_KEY);
 
     private static VillagerProfession registerProfession(String name, ResourceKey<PoiType> type) {
         return Registry.register(

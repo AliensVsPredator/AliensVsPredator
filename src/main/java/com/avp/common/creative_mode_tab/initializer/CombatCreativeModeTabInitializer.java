@@ -19,7 +19,7 @@ public class CombatCreativeModeTabInitializer {
             entries.accept(AVPItems.HEAVY_BULLET);
             entries.accept(AVPItems.SMALL_BULLET);
             entries.accept(AVPItems.MEDIUM_BULLET);
-            entries.accept(AVPItems.SHOTGUN_BULLET);
+            entries.accept(AVPItems.SHOTGUN_SHELL);
             entries.accept(AVPItems.ROCKET);
             entries.accept(AVPItems.FUEL_TANK);
 
@@ -83,20 +83,22 @@ public class CombatCreativeModeTabInitializer {
             entries.accept(ArmorItems.ABERRANT_CHITIN_LEGGINGS);
             entries.accept(ArmorItems.ABERRANT_CHITIN_BOOTS);
 
-            entries.accept(ArmorItems.IRRADIATED_CHITIN_HELMET);
-            entries.accept(ArmorItems.IRRADIATED_CHITIN_CHESTPLATE);
-            entries.accept(ArmorItems.IRRADIATED_CHITIN_LEGGINGS);
-            entries.accept(ArmorItems.IRRADIATED_CHITIN_BOOTS);
+            // TODO: Re-implement these at some point in the future.
+            // entries.accept(ArmorItems.IRRADIATED_CHITIN_HELMET);
+            // entries.accept(ArmorItems.IRRADIATED_CHITIN_CHESTPLATE);
+            // entries.accept(ArmorItems.IRRADIATED_CHITIN_LEGGINGS);
+            // entries.accept(ArmorItems.IRRADIATED_CHITIN_BOOTS);
 
             entries.accept(ArmorItems.PLATED_ABERRANT_CHITIN_HELMET);
             entries.accept(ArmorItems.PLATED_ABERRANT_CHITIN_CHESTPLATE);
             entries.accept(ArmorItems.PLATED_ABERRANT_CHITIN_LEGGINGS);
             entries.accept(ArmorItems.PLATED_ABERRANT_CHITIN_BOOTS);
 
-            entries.accept(ArmorItems.PLATED_IRRADIATED_CHITIN_HELMET);
-            entries.accept(ArmorItems.PLATED_IRRADIATED_CHITIN_CHESTPLATE);
-            entries.accept(ArmorItems.PLATED_IRRADIATED_CHITIN_LEGGINGS);
-            entries.accept(ArmorItems.PLATED_IRRADIATED_CHITIN_BOOTS);
+            // TODO: Re-implement these at some point in the future.
+            // entries.accept(ArmorItems.PLATED_IRRADIATED_CHITIN_HELMET);
+            // entries.accept(ArmorItems.PLATED_IRRADIATED_CHITIN_CHESTPLATE);
+            // entries.accept(ArmorItems.PLATED_IRRADIATED_CHITIN_LEGGINGS);
+            // entries.accept(ArmorItems.PLATED_IRRADIATED_CHITIN_BOOTS);
 
             entries.accept(ArmorItems.NETHER_CHITIN_HELMET);
             entries.accept(ArmorItems.NETHER_CHITIN_CHESTPLATE);

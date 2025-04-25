@@ -13,5 +13,6 @@ public class DamageTypeBootstrapper {
         registry.register(AVPDamageTypes.FLAMETHROW, new DamageType("flamethrow", 0.1F));
         registry.register(AVPDamageTypes.RAZOR_WIRE, new DamageType("razor_wire", 0.1F));
         registry.register(AVPDamageTypes.RADIATION, new DamageType("radiation", 0.1F));
+        registry.register(AVPDamageTypes.SMOTHERING, new DamageType("smothering", 0.1F));
     }
 }

@@ -342,7 +342,7 @@ public class RussianLanguageProvider extends FabricLanguageProvider {
         translationBuilder.add(ArmorItems.PRESSURE_HELMET, "Тяжёлый шлем");
         translationBuilder.add(ArmorItems.PRESSURE_LEGGINGS, "Тяжёлые штаны");
         translationBuilder.add(AVPItems.ROCKET, "Ракета");
-        translationBuilder.add(AVPItems.SHOTGUN_BULLET, "Патрон от дробовика");
+        translationBuilder.add(AVPItems.SHOTGUN_SHELL, "Патрон от дробовика");
         translationBuilder.add(AVPItems.SMALL_BULLET, "Мелкий патрон");
         translationBuilder.add(ArmorItems.STEEL_BOOTS, "Стальные ботинки");
         translationBuilder.add(ArmorItems.STEEL_CHESTPLATE, "Стальной нагрудник");
@@ -386,7 +386,7 @@ public class RussianLanguageProvider extends FabricLanguageProvider {
         translationBuilder.add(AVPItems.BULLET_TIP, "Наконечник пули");
         translationBuilder.add(AVPItems.CAPACITOR, "Конденсатор");
         translationBuilder.add(AVPItems.CARBON_DUST, "Карбоновая пыль");
-        translationBuilder.add(AVPItems.CASELESS_CASING, "Безкорпусный корпус");
+        translationBuilder.add(AVPItems.CASELESS_CARTRIDGE, "Безкорпусный корпус");
         translationBuilder.add(AVPItems.CHITIN, "Хитин");
         translationBuilder.add(AVPItems.CPU, "Процессор");
         translationBuilder.add(AVPItems.DIODE, "Диод");
@@ -574,6 +574,12 @@ public class RussianLanguageProvider extends FabricLanguageProvider {
             "Корпус старого безболезненного (минигана) начинает вращаться"
         );
         addSound(translationBuilder, AVPSoundEvents.WEAPON_ZX_76_SHOTGUN_SHOOT, "ZX-76 дробовик стреляет");
+        addSound(translationBuilder, AVPSoundEvents.JUKEBOX_SOUNDS_ALIEN_MUSIC_1, "Silver Smile plays");
+        addSound(translationBuilder, AVPSoundEvents.JUKEBOX_SOUNDS_PREDATOR_MUSIC_1, "Hunter plays");
+
+        // Jukebox Sounds
+        translationBuilder.add("jukebox_song.avp.alien_music_1", "Rotch Gwylt - Silver Smile");
+        translationBuilder.add("jukebox_song.avp.predator_music_1", "Rotch Gwylt - Hunter");
 
         // Tooltips
         translationBuilder.add("tooltip.avp.accuracy", "Точность: ");
@@ -584,6 +590,9 @@ public class RussianLanguageProvider extends FabricLanguageProvider {
         translationBuilder.add("tooltip.avp.fire_rate", "Скорость стрельбы: ");
         translationBuilder.add("tooltip.avp.knockback", "Отбрасывание противника: ");
         translationBuilder.add("tooltip.avp.recoil", "Отдача: ");
+        translationBuilder.add("tooltip.avp.capacity", "Capacity: ");
+        translationBuilder.add("tooltip.avp.no_ammo_warning", "Warning: No Ammo");
+        translationBuilder.add("tooltip.avp.low_ammo_warning", "Warning Low Ammo");
 
         // Keybinds
         translationBuilder.add("key.avp.reload", "Перезарядиться");

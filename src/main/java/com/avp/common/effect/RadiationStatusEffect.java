@@ -35,7 +35,12 @@ public class RadiationStatusEffect extends MobEffect {
     public boolean applyEffectTick(LivingEntity livingEntity, int amplifier) {
         var currentDuration = EFFECT_TRACKER.getOrDefault(livingEntity, 0);
 
-        if (AVPPredicates.IS_IMMORTAL.test(livingEntity) || livingEntity.getType().is(AVPEntityTypeTags.RADIATION_RESISTANT)) {
+        if (
+            AVPPredicates.IS_IMMORTAL.test(livingEntity) || livingEntity.getType()
+                .is(
+                    AVPEntityTypeTags.RADIATION_RESISTANT
+                )
+        ) {
             livingEntity.removeEffect(AVPEffects.RADIATION_EFFECT);
             return false;
         }
@@ -53,14 +58,16 @@ public class RadiationStatusEffect extends MobEffect {
         }
 
         var threshold = switch (amplifier) {
-            case 0 -> 8 * 60 * 20; // 8 minutes in ticks
-            case 1 -> 16 * 60 * 20; // 16 minutes in ticks
+            case 0 -> 4 * 60 * 20; // 4 minutes in ticks
+            case 1 -> 8 * 60 * 20; // 8 minutes in ticks
             default -> Integer.MAX_VALUE;
         };
 
         if (currentDuration >= threshold && amplifier < 2) {
             EFFECT_TRACKER.put(livingEntity, 0);
-            livingEntity.addEffect(new MobEffectInstance(AVPEffects.RADIATION_EFFECT, Integer.MAX_VALUE, amplifier + 1));
+            livingEntity.addEffect(
+                new MobEffectInstance(AVPEffects.RADIATION_EFFECT, Integer.MAX_VALUE, amplifier + 1)
+            );
         } else {
             EFFECT_TRACKER.put(livingEntity, currentDuration + 1);
         }
@@ -77,7 +84,14 @@ public class RadiationStatusEffect extends MobEffect {
     }
 
     private void applyLevel2RadiationSideEffects(LivingEntity livingEntity, int amplifier) {
-        handleStatusEffects(livingEntity, 5 * 20, amplifier, MobEffects.WEAKNESS, MobEffects.HUNGER, MobEffects.MOVEMENT_SLOWDOWN);
+        handleStatusEffects(
+            livingEntity,
+            5 * 20,
+            amplifier,
+            MobEffects.WEAKNESS,
+            MobEffects.HUNGER,
+            MobEffects.MOVEMENT_SLOWDOWN
+        );
 
         if (livingEntity.tickCount % (2 * 20) == 0) {
             livingEntity.hurt(createRadiationDamageSource(livingEntity), 2.1F);
@@ -111,7 +125,11 @@ public class RadiationStatusEffect extends MobEffect {
 
     private static DamageSource createRadiationDamageSource(LivingEntity livingEntity) {
         return new DamageSource(
-            livingEntity.registryAccess().registryOrThrow(Registries.DAMAGE_TYPE).getHolderOrThrow(AVPDamageTypes.RADIATION)
+            livingEntity.registryAccess()
+                .registryOrThrow(Registries.DAMAGE_TYPE)
+                .getHolderOrThrow(
+                    AVPDamageTypes.RADIATION
+                )
         );
     }
 }

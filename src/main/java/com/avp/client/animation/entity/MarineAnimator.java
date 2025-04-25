@@ -47,7 +47,7 @@ public class MarineAnimator extends AzEntityAnimator<Marine> {
                     animatable.walkAnimation.position(
                         partialTicks
                     ) * 0.6662F
-                ) * 2.0F * animatable.walkAnimation.speed() * 0.9F
+                ) * 1.0F * animatable.walkAnimation.speed() * 0.9F
             );
         }
 
@@ -57,7 +57,7 @@ public class MarineAnimator extends AzEntityAnimator<Marine> {
                     animatable.walkAnimation.position(
                         partialTicks
                     ) * 0.6662F + ((float) Math.PI)
-                ) * 2.0F * animatable.walkAnimation.speed() * 0.9F
+                ) * 1.0F * animatable.walkAnimation.speed() * 0.9F
             );
         }
 

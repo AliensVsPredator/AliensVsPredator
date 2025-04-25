@@ -10,7 +10,7 @@ import net.minecraft.world.level.gameevent.BlockPositionSource;
 import net.minecraft.world.level.gameevent.GameEventListener;
 import org.jetbrains.annotations.NotNull;
 
-import com.avp.common.block.entity.BlockEntityTypes;
+import com.avp.common.block.entity.AVPBlockEntityTypes;
 import com.avp.common.level.gameevent.listener.ResinSpreadListener;
 
 public class ResinNodeBlockEntity extends BlockEntity implements GameEventListener.Provider<ResinSpreadListener> {
@@ -18,7 +18,7 @@ public class ResinNodeBlockEntity extends BlockEntity implements GameEventListen
     private final ResinSpreadListener resinSpreadListener;
 
     public ResinNodeBlockEntity(BlockPos blockPos, BlockState blockState) {
-        super(BlockEntityTypes.RESIN_NODE, blockPos, blockState);
+        super(AVPBlockEntityTypes.RESIN_NODE, blockPos, blockState);
 
         var positionSource = new BlockPositionSource(blockPos);
         var spreaderType = new ResinSpreadListener.SpreaderType.Block(blockPos);

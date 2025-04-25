@@ -1,26 +1,9 @@
 {
   "variants": {
-    "facing=down": {
-      "model": "avp:block/sentry_turret",
-      "x": 180
-    },
-    "facing=east": {
-      "model": "avp:block/sentry_turret",
-      "y": 90
-    },
-    "facing=north": {
-      "model": "avp:block/sentry_turret"
-    },
-    "facing=south": {
-      "model": "avp:block/sentry_turret",
-      "y": 180
-    },
-    "facing=up": {
-      "model": "avp:block/sentry_turret"
-    },
-    "facing=west": {
-      "model": "avp:block/sentry_turret",
-      "y": 270
-    }
+    "": [
+      {
+        "model": "avp:block/sentry_turret"
+      }
+    ]
   }
 }

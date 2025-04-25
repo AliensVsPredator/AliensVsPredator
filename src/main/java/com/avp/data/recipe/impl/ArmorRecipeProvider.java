@@ -23,7 +23,8 @@ public class ArmorRecipeProvider {
         createTacticalArmorSetRecipes(builder);
         createPlatedChitinArmorSetRecipes(builder);
         createPlatedAberrantChitinArmorSetRecipes(builder);
-        createPlatedIrradiatedChitinArmorSetRecipes(builder);
+        // TODO: Re-implement these at some point in the future.
+        // createPlatedIrradiatedChitinArmorSetRecipes(builder);
         createPlatedNetherChitinArmorSetRecipes(builder);
 
         createStandardArmorSetRecipes(
@@ -42,14 +43,15 @@ public class ArmorRecipeProvider {
             ArmorItems.CHITIN_LEGGINGS,
             ArmorItems.CHITIN_BOOTS
         );
-        createStandardArmorSetRecipes(
-            builder,
-            AVPItems.IRRADIATED_CHITIN,
-            ArmorItems.IRRADIATED_CHITIN_HELMET,
-            ArmorItems.IRRADIATED_CHITIN_CHESTPLATE,
-            ArmorItems.IRRADIATED_CHITIN_LEGGINGS,
-            ArmorItems.IRRADIATED_CHITIN_BOOTS
-        );
+        // TODO: Re-implement these at some point in the future.
+        // createStandardArmorSetRecipes(
+        // builder,
+        // AVPItems.IRRADIATED_CHITIN,
+        // ArmorItems.IRRADIATED_CHITIN_HELMET,
+        // ArmorItems.IRRADIATED_CHITIN_CHESTPLATE,
+        // ArmorItems.IRRADIATED_CHITIN_LEGGINGS,
+        // ArmorItems.IRRADIATED_CHITIN_BOOTS
+        // );
         createStandardArmorSetRecipes(
             builder,
             AVPItems.NETHER_CHITIN,

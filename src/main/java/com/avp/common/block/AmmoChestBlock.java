@@ -42,10 +42,10 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-import com.avp.common.block.entity.AmmoChestBE;
-import com.avp.common.block.entity.BlockEntityTypes;
+import com.avp.common.block.entity.AVPBlockEntityTypes;
+import com.avp.common.block.entity.AmmoChestBlockEntity;
 
-public class AmmoChestBlock extends AbstractChestBlock<AmmoChestBE> implements SimpleWaterloggedBlock {
+public class AmmoChestBlock extends AbstractChestBlock<AmmoChestBlockEntity> implements SimpleWaterloggedBlock {
 
     public static final MapCodec<AmmoChestBlock> CODEC = simpleCodec(AmmoChestBlock::new);
 
@@ -56,7 +56,7 @@ public class AmmoChestBlock extends AbstractChestBlock<AmmoChestBE> implements S
     protected static final VoxelShape SHAPE = Block.box(1.0, 0.0, 1.0, 15.0, 14.0, 15.0);
 
     protected AmmoChestBlock(Properties properties) {
-        super(properties, () -> BlockEntityTypes.AMMO_CHEST_BE);
+        super(properties, () -> AVPBlockEntityTypes.AMMO_CHEST);
         this.registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.NORTH).setValue(WATERLOGGED, Boolean.FALSE));
     }
 
@@ -83,7 +83,7 @@ public class AmmoChestBlock extends AbstractChestBlock<AmmoChestBE> implements S
     }
 
     @Override
-    protected @NotNull MapCodec<? extends AbstractChestBlock<AmmoChestBE>> codec() {
+    protected @NotNull MapCodec<? extends AbstractChestBlock<AmmoChestBlockEntity>> codec() {
         return CODEC;
     }
 
@@ -105,13 +105,15 @@ public class AmmoChestBlock extends AbstractChestBlock<AmmoChestBE> implements S
     @Nullable
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
-        return new AmmoChestBE(pos, state);
+        return new AmmoChestBlockEntity(pos, state);
     }
 
     @Nullable
     @Override
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> blockEntityType) {
-        return level.isClientSide ? createTickerHelper(blockEntityType, BlockEntityTypes.AMMO_CHEST_BE, AmmoChestBE::lidAnimateTick) : null;
+        return level.isClientSide
+            ? createTickerHelper(blockEntityType, AVPBlockEntityTypes.AMMO_CHEST, AmmoChestBlockEntity::lidAnimateTick)
+            : null;
     }
 
     @Override
@@ -138,8 +140,8 @@ public class AmmoChestBlock extends AbstractChestBlock<AmmoChestBE> implements S
         if (level.isClientSide)
             return InteractionResult.SUCCESS;
 
-        if (!ChestBlock.isChestBlockedAt(level, pos) && level.getBlockEntity(pos) instanceof AmmoChestBE ammoChestBE) {
-            player.openMenu(ammoChestBE);
+        if (!ChestBlock.isChestBlockedAt(level, pos) && level.getBlockEntity(pos) instanceof AmmoChestBlockEntity ammoChestBlockEntity) {
+            player.openMenu(ammoChestBlockEntity);
             PiglinAi.angerNearbyPiglins(player, true);
             return InteractionResult.CONSUME;
         }
@@ -149,7 +151,10 @@ public class AmmoChestBlock extends AbstractChestBlock<AmmoChestBE> implements S
     @Override
     public @NotNull BlockState playerWillDestroy(Level level, BlockPos pos, BlockState state, Player player) {
         var blockEntity = level.getBlockEntity(pos);
-        if (blockEntity instanceof AmmoChestBE ammoChestBE && !level.isClientSide && player.isCreative() && !ammoChestBE.isEmpty()) {
+        if (
+            blockEntity instanceof AmmoChestBlockEntity ammoChestBlockEntity && !level.isClientSide && player.isCreative()
+                && !ammoChestBlockEntity.isEmpty()
+        ) {
             var itemStack = this.asItem().getDefaultInstance();
             itemStack.applyComponents(blockEntity.collectComponents());
             var itemEntity = new ItemEntity(level, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, itemStack);
@@ -163,8 +168,8 @@ public class AmmoChestBlock extends AbstractChestBlock<AmmoChestBE> implements S
     @Override
     public @NotNull ItemStack getCloneItemStack(LevelReader level, BlockPos pos, BlockState state) {
         var itemStack = super.getCloneItemStack(level, pos, state);
-        level.getBlockEntity(pos, BlockEntityTypes.AMMO_CHEST_BE)
-            .ifPresent(ammoChestBE -> ammoChestBE.saveToItem(itemStack, level.registryAccess()));
+        level.getBlockEntity(pos, AVPBlockEntityTypes.AMMO_CHEST)
+            .ifPresent(ammoChest -> ammoChest.saveToItem(itemStack, level.registryAccess()));
         return itemStack;
     }
 
@@ -212,8 +217,8 @@ public class AmmoChestBlock extends AbstractChestBlock<AmmoChestBE> implements S
     @Override
     protected void tick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
         var blockEntity = level.getBlockEntity(pos);
-        if (blockEntity instanceof AmmoChestBE ammoChestBE) {
-            ammoChestBE.recheckOpen();
+        if (blockEntity instanceof AmmoChestBlockEntity ammoChestBlockEntity) {
+            ammoChestBlockEntity.recheckOpen();
         }
     }
 }

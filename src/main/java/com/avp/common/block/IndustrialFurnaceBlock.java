@@ -18,8 +18,8 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
 
-import com.avp.common.block.entity.BlockEntityTypes;
-import com.avp.common.block.entity.IndustrialFurnaceBE;
+import com.avp.common.block.entity.AVPBlockEntityTypes;
+import com.avp.common.block.entity.IndustrialFurnaceBlockEntity;
 
 public class IndustrialFurnaceBlock extends AbstractFurnaceBlock {
 
@@ -37,13 +37,13 @@ public class IndustrialFurnaceBlock extends AbstractFurnaceBlock {
     @Override
     @Nullable
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState blockState, BlockEntityType<T> blockEntityType) {
-        return IndustrialFurnaceBlock.createFurnaceTicker(level, blockEntityType, BlockEntityTypes.INDUSTRIAL_FURNACE_BE);
+        return IndustrialFurnaceBlock.createFurnaceTicker(level, blockEntityType, AVPBlockEntityTypes.INDUSTRIAL_FURNACE);
     }
 
     @Override
     protected void openContainer(Level level, BlockPos blockPos, Player player) {
         BlockEntity blockEntity = level.getBlockEntity(blockPos);
-        if (blockEntity instanceof IndustrialFurnaceBE) {
+        if (blockEntity instanceof IndustrialFurnaceBlockEntity) {
             player.openMenu((MenuProvider) (blockEntity));
         }
     }
@@ -54,12 +54,12 @@ public class IndustrialFurnaceBlock extends AbstractFurnaceBlock {
         BlockEntityType<T> blockEntityType,
         BlockEntityType<? extends AbstractFurnaceBlockEntity> blockEntityType2
     ) {
-        return level.isClientSide ? null : createTickerHelper(blockEntityType, blockEntityType2, IndustrialFurnaceBE::serverTick);
+        return level.isClientSide ? null : createTickerHelper(blockEntityType, blockEntityType2, IndustrialFurnaceBlockEntity::serverTick);
     }
 
     @Override
     public @Nullable BlockEntity newBlockEntity(BlockPos blockPos, BlockState blockState) {
-        return new IndustrialFurnaceBE(blockPos, blockState);
+        return new IndustrialFurnaceBlockEntity(blockPos, blockState);
     }
 
     @Override

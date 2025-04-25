@@ -15,6 +15,7 @@ import com.avp.common.entity.projectile.SmartDiscItemEntity;
 import com.avp.common.item.AVPItems;
 import com.avp.common.sound.AVPSoundEvents;
 
+@Deprecated(forRemoval = true)
 public class ItemGoalUtil {
 
     public static void shootBullet(PathfinderMob entity) {

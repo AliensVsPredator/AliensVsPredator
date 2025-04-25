@@ -346,7 +346,7 @@ public class ChineseSimplifiiedLanguageProvider extends FabricLanguageProvider {
         translationBuilder.add(ArmorItems.PRESSURE_HELMET, "Pressure Helmet");
         translationBuilder.add(ArmorItems.PRESSURE_LEGGINGS, "Pressure Leggings");
         translationBuilder.add(AVPItems.ROCKET, "Rocket");
-        translationBuilder.add(AVPItems.SHOTGUN_BULLET, "Shotgun Bullet");
+        translationBuilder.add(AVPItems.SHOTGUN_SHELL, "Shotgun Shell");
         translationBuilder.add(AVPItems.SMALL_BULLET, "Small Bullet");
         translationBuilder.add(ArmorItems.STEEL_BOOTS, "Steel Boots");
         translationBuilder.add(ArmorItems.STEEL_CHESTPLATE, "Steel Chestplate");
@@ -390,7 +390,7 @@ public class ChineseSimplifiiedLanguageProvider extends FabricLanguageProvider {
         translationBuilder.add(AVPItems.BULLET_TIP, "Bullet Tip");
         translationBuilder.add(AVPItems.CAPACITOR, "Capacitor");
         translationBuilder.add(AVPItems.CARBON_DUST, "Carbon Dust");
-        translationBuilder.add(AVPItems.CASELESS_CASING, "Caseless Casing");
+        translationBuilder.add(AVPItems.CASELESS_CARTRIDGE, "Caseless Cartridge");
         translationBuilder.add(AVPItems.CHITIN, "Chitin");
         translationBuilder.add(AVPItems.CPU, "CPU");
         translationBuilder.add(AVPItems.DIODE, "Diode");
@@ -566,6 +566,12 @@ public class ChineseSimplifiiedLanguageProvider extends FabricLanguageProvider {
         addSound(translationBuilder, AVPSoundEvents.WEAPON_OLD_PAINLESS_SHOOT_SPINNING, "Old Painless barrel spins");
         addSound(translationBuilder, AVPSoundEvents.WEAPON_OLD_PAINLESS_SHOOT_START, "Old Painless barrel starts spinning");
         addSound(translationBuilder, AVPSoundEvents.WEAPON_ZX_76_SHOTGUN_SHOOT, "ZX-76 Shotgun shoots");
+        addSound(translationBuilder, AVPSoundEvents.JUKEBOX_SOUNDS_ALIEN_MUSIC_1, "Silver Smile plays");
+        addSound(translationBuilder, AVPSoundEvents.JUKEBOX_SOUNDS_PREDATOR_MUSIC_1, "Hunter plays");
+
+        // Jukebox Sounds
+        translationBuilder.add("jukebox_song.avp.alien_music_1", "Rotch Gwylt - Silver Smile");
+        translationBuilder.add("jukebox_song.avp.predator_music_1", "Rotch Gwylt - Hunter");
 
         // Tooltips
         translationBuilder.add("tooltip.avp.accuracy", "Accuracy: ");
@@ -576,6 +582,9 @@ public class ChineseSimplifiiedLanguageProvider extends FabricLanguageProvider {
         translationBuilder.add("tooltip.avp.fire_rate", "Fire Rate: ");
         translationBuilder.add("tooltip.avp.knockback", "Knockback: ");
         translationBuilder.add("tooltip.avp.recoil", "Recoil: ");
+        translationBuilder.add("tooltip.avp.capacity", "Capacity: ");
+        translationBuilder.add("tooltip.avp.no_ammo_warning", "Warning: No Ammo");
+        translationBuilder.add("tooltip.avp.low_ammo_warning", "Warning: Low Ammo");
 
         // Keybinds
         translationBuilder.add("key.avp.reload", "Reload");
@@ -589,6 +598,7 @@ public class ChineseSimplifiiedLanguageProvider extends FabricLanguageProvider {
         translationBuilder.add("death.attack.acid", "%1$s vaporized in acid");
         translationBuilder.add("death.attack.radiation", "%1$s surrendered to radiation");
         translationBuilder.add("death.attack.razor_wire", "%1$s was struck by razor wire");
+        translationBuilder.add("death.attack.smothering", "%1$s was smothered to death");
 
         translationBuilder.add("advancements.aliens.root.title", "AVP: Aliens");
         translationBuilder.add("advancements.aliens.root.description", "In Minecraft, no one can hear you scream");

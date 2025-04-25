@@ -32,9 +32,13 @@ public class AVPItemTags {
 
     public static final TagKey<Item> IRON_INGOT_LIKE = create("iron_ingot_like");
 
+    public static final TagKey<Item> URANIUM_NUGGET_LIKE = create("uranium_nugget_like");
+
     public static final TagKey<Item> JUNGLE_PREDATOR_ARMOR = create("jungle_predator_armor");
 
     public static final TagKey<Item> LITHIUM = create("lithium");
+
+    public static final TagKey<Item> MELEE_WEAPONS = create("melee_weapons");
 
     public static final TagKey<Item> MK50_ARMOR = create("mk50_armor");
 
@@ -51,6 +55,8 @@ public class AVPItemTags {
     public static final TagKey<Item> RADIATION_RESISTANT_ARMOR = create("radiation_resistant_armor");
 
     public static final TagKey<Item> RADIATION_ITEMS = create("radiation_items");
+
+    public static final TagKey<Item> RANGED_WEAPONS = create("ranged_weapons");
 
     private static TagKey<Item> create(String name) {
         return TagKey.create(Registries.ITEM, AVPResources.location(name));

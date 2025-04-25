@@ -86,7 +86,7 @@ public class IngredientsCreativeModeTabInitializer {
             entries.accept(AVPItems.MEDIUM_CASING);
             entries.accept(AVPItems.HEAVY_CASING);
             entries.accept(AVPItems.SHOTGUN_CASING);
-            entries.accept(AVPItems.CASELESS_CASING);
+            entries.accept(AVPItems.CASELESS_CARTRIDGE);
 
             // Alien materials
             entries.accept(AVPItems.RESIN_BALL);
@@ -109,6 +109,8 @@ public class IngredientsCreativeModeTabInitializer {
             entries.accept(AVPItems.PARASITE_POTTERY_SHERD);
             entries.accept(AVPItems.ROYALTY_POTTERY_SHERD);
             entries.accept(AVPItems.VECTOR_POTTERY_SHERD);
+            entries.accept(AVPItems.ALIEN_MUSIC_DISC_1_FRAGMENT);
+            entries.accept(AVPItems.PREDATOR_MUSIC_DISC_1_FRAGMENT);
 
             entries.accept(AVPItems.VERITANIUM_SHARD);
         });

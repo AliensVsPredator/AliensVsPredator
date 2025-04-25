@@ -16,11 +16,10 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import com.avp.common.block.base.BaseBlockEntity;
-import com.avp.common.block.entity.BlockEntityTypes;
-import com.avp.common.block.entity.TripMineBE;
+import com.avp.common.block.entity.AVPBlockEntityTypes;
+import com.avp.common.block.entity.TripMineBlockEntity;
 
-public class TripMineBlock extends BaseBlockEntity {
+public class TripMineBlock extends BaseEntityBlock {
 
     public static final MapCodec<TripMineBlock> CODEC = simpleCodec(TripMineBlock::new);
 
@@ -35,12 +34,7 @@ public class TripMineBlock extends BaseBlockEntity {
 
     @Override
     public @Nullable BlockEntity newBlockEntity(BlockPos blockPos, BlockState blockState) {
-        return new TripMineBE(blockPos, blockState);
-    }
-
-    @Override
-    protected boolean isTickingBE() {
-        return true;
+        return new TripMineBlockEntity(blockPos, blockState);
     }
 
     @Override
@@ -63,8 +57,8 @@ public class TripMineBlock extends BaseBlockEntity {
             ? null
             : createTickerHelper(
                 blockEntityType,
-                (BlockEntityType<? extends TripMineBE>) BlockEntityTypes.TRIP_MINE_BE,
-                TripMineBE::serverTick
+                (BlockEntityType<? extends TripMineBlockEntity>) AVPBlockEntityTypes.TRIP_MINE,
+                TripMineBlockEntity::serverTick
             );
     }
 

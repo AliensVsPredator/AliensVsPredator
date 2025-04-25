@@ -14,7 +14,6 @@ import com.avp.common.entity.living.alien.xenomorph.drone.DroneLootTable;
 import com.avp.common.entity.living.alien.xenomorph.praetorian.PraetorianLootTable;
 import com.avp.common.entity.living.alien.xenomorph.queen.QueenLootTable;
 import com.avp.common.entity.living.alien.xenomorph.warrior.WarriorLootTable;
-import com.avp.common.entity.living.human.marine.MarineLootTable;
 import com.avp.common.entity.living.yautja.YautjaLootTable;
 import com.avp.common.entity.type.AVPEntityTypes;
 import com.avp.common.item.AVPItems;
@@ -37,7 +36,10 @@ public class EntityLootTableProvider extends SimpleFabricLootTableProvider {
             AVPEntityTypes.PRAETORIAN.getDefaultLootTable(),
             PraetorianLootTable.create(provider, AVPItems.CHITIN, AVPItems.PLATED_CHITIN)
         );
-        biConsumer.accept(AVPEntityTypes.QUEEN.getDefaultLootTable(), QueenLootTable.NORMAL_LOOT_TABLE.apply(provider));
+        biConsumer.accept(
+            AVPEntityTypes.QUEEN.getDefaultLootTable(),
+            QueenLootTable.createLootTableBuilder(provider, AVPItems.CHITIN, AVPItems.PLATED_CHITIN)
+        );
 
         // Nether
         biConsumer.accept(AVPEntityTypes.NETHER_DRONE.getDefaultLootTable(), DroneLootTable.create(provider, AVPItems.NETHER_CHITIN));
@@ -46,7 +48,10 @@ public class EntityLootTableProvider extends SimpleFabricLootTableProvider {
             AVPEntityTypes.NETHER_PRAETORIAN.getDefaultLootTable(),
             PraetorianLootTable.create(provider, AVPItems.NETHER_CHITIN, AVPItems.PLATED_NETHER_CHITIN)
         );
-        biConsumer.accept(AVPEntityTypes.NETHER_QUEEN.getDefaultLootTable(), QueenLootTable.NETHER_LOOT_TABLE.apply(provider));
+        biConsumer.accept(
+            AVPEntityTypes.NETHER_QUEEN.getDefaultLootTable(),
+            QueenLootTable.createLootTableBuilder(provider, AVPItems.NETHER_CHITIN, AVPItems.PLATED_NETHER_CHITIN)
+        );
 
         // Aberrant
         biConsumer.accept(AVPEntityTypes.ABERRANT_DRONE.getDefaultLootTable(), DroneLootTable.create(provider, AVPItems.ABERRANT_CHITIN));
@@ -58,7 +63,10 @@ public class EntityLootTableProvider extends SimpleFabricLootTableProvider {
             AVPEntityTypes.ABERRANT_PRAETORIAN.getDefaultLootTable(),
             PraetorianLootTable.create(provider, AVPItems.ABERRANT_CHITIN, AVPItems.PLATED_ABERRANT_CHITIN)
         );
-        biConsumer.accept(AVPEntityTypes.ABERRANT_QUEEN.getDefaultLootTable(), QueenLootTable.ABERRANT_LOOT_TABLE.apply(provider));
+        biConsumer.accept(
+            AVPEntityTypes.ABERRANT_QUEEN.getDefaultLootTable(),
+            QueenLootTable.createLootTableBuilder(provider, AVPItems.ABERRANT_CHITIN, AVPItems.PLATED_ABERRANT_CHITIN)
+        );
 
         // Irradiated
         biConsumer.accept(
@@ -75,11 +83,9 @@ public class EntityLootTableProvider extends SimpleFabricLootTableProvider {
         );
         biConsumer.accept(
             AVPEntityTypes.IRRADIATED_QUEEN.getDefaultLootTable(),
-            PraetorianLootTable.create(provider, AVPItems.IRRADIATED_CHITIN, AVPItems.PLATED_IRRADIATED_CHITIN)
+            QueenLootTable.createLootTableBuilder(provider, AVPItems.IRRADIATED_CHITIN, AVPItems.PLATED_IRRADIATED_CHITIN)
         );
 
         biConsumer.accept(AVPEntityTypes.YAUTJA.getDefaultLootTable(), YautjaLootTable.LOOT_TABLE.apply(provider));
-
-        biConsumer.accept(AVPEntityTypes.MARINE.getDefaultLootTable(), MarineLootTable.LOOT_TABLE.apply(provider));
     }
 }

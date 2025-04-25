@@ -7,7 +7,7 @@
       "element": {
         "element_type": "minecraft:single_pool_element",
         "projection": "rigid",
-        "location": "avp:deepslate_royal_ovamorph",
+        "location": "avp:altar/deepslate/deepslate_royal_ovamorph",
         "processors": "minecraft:empty"
       }
     }
