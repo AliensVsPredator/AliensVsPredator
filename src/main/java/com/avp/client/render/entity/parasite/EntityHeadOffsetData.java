@@ -19,6 +19,11 @@ public record EntityHeadOffsetData(
         EntityHeadOffsetData::cowFaceOffset
     );
 
+    private static final EntityHeadOffsetData HOGLIN = new EntityHeadOffsetData(
+            EntityHeadOffsetData::hoglinVerticalOffset,
+            EntityHeadOffsetData::hoglinFaceOffset
+    );
+
     private static final EntityHeadOffsetData LLAMA = new EntityHeadOffsetData(
         EntityHeadOffsetData::llamaVerticalOffset,
         EntityHeadOffsetData::llamaFaceOffset
@@ -40,6 +45,10 @@ public record EntityHeadOffsetData(
                 EntityType.DONKEY,
                 new EntityHeadOffsetData(EntityHeadOffsetData::donkeyVerticalOffset, EntityHeadOffsetData::donkeyFaceOffset)
             ),
+            Map.entry(
+                EntityType.DOLPHIN,
+                new EntityHeadOffsetData(EntityHeadOffsetData::dolphinVerticalOffset, EntityHeadOffsetData::dolphinFaceOffset)
+            ),
             Map.entry(EntityType.EVOKER, VILLAGER),
             Map.entry(
                 EntityType.FOX,
@@ -49,6 +58,7 @@ public record EntityHeadOffsetData(
                 EntityType.GOAT,
                 new EntityHeadOffsetData(EntityHeadOffsetData::goatVerticalOffset, EntityHeadOffsetData::goatFaceOffset)
             ),
+            Map.entry(EntityType.HOGLIN, HOGLIN),
             Map.entry(
                 EntityType.HORSE,
                 new EntityHeadOffsetData(EntityHeadOffsetData::horseVerticalOffset, EntityHeadOffsetData::horseFaceOffset)
@@ -103,12 +113,26 @@ public record EntityHeadOffsetData(
                 EntityType.WOLF,
                 new EntityHeadOffsetData(EntityHeadOffsetData::wolfVerticalOffset, EntityHeadOffsetData::wolfFaceOffset)
             ),
+            Map.entry(EntityType.ZOGLIN, HOGLIN),
+            Map.entry(EntityType.ZOMBIE_VILLAGER, VILLAGER),
             Map.entry(
                 AVPEntityTypes.MARINE,
                 new EntityHeadOffsetData(EntityHeadOffsetData::marineVerticalOffset, EntityHeadOffsetData::marineFaceOffset)
+            ),
+            Map.entry(
+                AVPEntityTypes.YAUTJA,
+                new EntityHeadOffsetData(EntityHeadOffsetData::yautjaVerticalOffset, EntityHeadOffsetData::yautjaFaceOffset)
             )
         )
     );
+
+    private static double yautjaVerticalOffset(EntityHeadData data, Entity parasite) {
+        return -data.size().y - (data.size().y * 2);
+    }
+
+    private static double yautjaFaceOffset(EntityHeadData data, Entity parasite) {
+        return data.size().z - (data.size().z / 24);
+    }
 
     private static double marineVerticalOffset(EntityHeadData data, Entity parasite) {
         return -data.size().y - (data.size().y / 4);
@@ -142,6 +166,14 @@ public record EntityHeadOffsetData(
         return data.size().z * 2 + data.size().z / 1.4;
     }
 
+    private static double dolphinVerticalOffset(EntityHeadData data, Entity parasite) {
+        return data.size().z - data.size().z - 0.7;
+    }
+
+    private static double dolphinFaceOffset(EntityHeadData data, Entity parasite) {
+        return data.size().z * 2 + data.size().z + 0.1;
+    }
+
     private static double foxVerticalOffset(EntityHeadData data, Entity parasite) {
         return -data.size().y - (data.size().y / 1.3);
     }
@@ -156,6 +188,14 @@ public record EntityHeadOffsetData(
 
     private static double goatFaceOffset(EntityHeadData data, Entity parasite) {
         return data.size().z + (data.size().z / 3) + parasite.getBbHeight() / 4;
+    }
+
+    private static double hoglinVerticalOffset(EntityHeadData data, Entity parasite) {
+        return -data.size().y - data.size().y * 2.3;
+    }
+
+    private static double hoglinFaceOffset(EntityHeadData data, Entity parasite) {
+        return data.size().z + (data.size().z / 10) + parasite.getBbHeight();
     }
 
     private static double horseVerticalOffset(EntityHeadData data, Entity parasite) {
