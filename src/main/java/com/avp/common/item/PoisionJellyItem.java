@@ -29,12 +29,15 @@ public class PoisionJellyItem extends Item {
         if (livingEntity instanceof Alien xenomorph) {
             xenomorph.getEntityData().set(Alien.IS_POISONED, true);
         }
+
         if (livingEntity instanceof Ovamorph ovamorph && ovamorph.isRoyal() && !ovamorph.isAberrant() && !ovamorph.isNetherAfflicted()) {
             ovamorph.geneManager().minimize(GeneKeys.GENETIC_INTEGRITY);
         }
+
         if (!AVPPredicates.IS_IMMORTAL.test(player)) {
             itemStack.shrink(1);
         }
+
         return super.interactLivingEntity(itemStack, player, livingEntity, interactionHand);
     }
 }
