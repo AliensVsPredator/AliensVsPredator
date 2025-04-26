@@ -11,6 +11,8 @@ import com.avp.common.entity.ai.action.EatFoodToHealAction;
 import com.avp.common.entity.ai.action.EquipItemAction;
 import com.avp.common.entity.ai.action.MoveToTargetEntityAction;
 import com.avp.common.entity.ai.action.PickUpItemAction;
+import com.avp.common.entity.ai.action.WanderToLandPosAction;
+import com.avp.common.entity.ai.goal.EntertainedGoal;
 import com.avp.common.entity.ai.goal.HealthyGoal;
 import com.avp.common.entity.ai.goal.NoTargetGoal;
 import com.avp.common.entity.ai.goal.PickUpFoodGoal;
@@ -25,6 +27,7 @@ import com.avp.common.entity.ai.sensor.entity.NearbyItemEntitiesSensor;
 import com.avp.common.entity.ai.sensor.entity.NearbyLivingEntitiesSensor;
 import com.avp.common.entity.ai.sensor.entity.NearestFoodItemEntitySensor;
 import com.avp.common.entity.ai.sensor.inventory.InventorySensor;
+import com.avp.common.entity.ai.sensor.stats.IsBoredSensor;
 import com.avp.common.entity.ai.sensor.stats.IsHealthySensor;
 import com.avp.common.entity.ai.util.CombatResponse;
 import com.avp.common.entity.ai.util.ItemType;
@@ -49,6 +52,12 @@ public class MarineGOAP extends EntityGOAP<Marine> {
         addSensor(NearbyEntitiesSensor.INSTANCE);
         addSensor(NearbyLivingEntitiesSensor.INSTANCE);
         addSensor(NearbyItemEntitiesSensor.INSTANCE);
+
+        addSensor(new IsBoredSensor());
+
+        addAction(new WanderToLandPosAction<>(1));
+
+        addGoal(new EntertainedGoal());
     }
 
     public void addInventoryRoutines() {

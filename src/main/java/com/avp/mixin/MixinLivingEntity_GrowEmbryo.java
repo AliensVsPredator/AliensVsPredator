@@ -160,8 +160,7 @@ public abstract class MixinLivingEntity_GrowEmbryo extends Entity implements Hos
                 MobEffects.JUMP
             );
             var randomEffect = effects.get(self.getRandom().nextInt(effects.size()));
-            // TODO: Prefer genes over effects, effects can be removed by milk / other factors, genes
-            // can't.
+            // TODO: Prefer genes over effects, effects can be removed by milk / other factors, genes can't.
             parasite.addEffect(new MobEffectInstance(randomEffect, Integer.MAX_VALUE, 0, false, false));
         }
 

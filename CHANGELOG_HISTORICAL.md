@@ -1,3 +1,23 @@
+# v0.1.0
+
+## ☢️ Breaking Changes
+- N/A
+
+## ✨ What's New
+- Marines now wander around.
+
+## ♻️ Changes
+- N/A
+
+## 🐞 Fixes
+- N/A
+
+## 🛠 Data Pack
+- N/A
+
+## 🔬 Technical Changes
+- N/A
+
 # v0.0.23-beta
 
 ## ☢️ Breaking Changes
