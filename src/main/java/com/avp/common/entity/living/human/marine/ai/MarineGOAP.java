@@ -55,7 +55,7 @@ public class MarineGOAP extends EntityGOAP<Marine> {
 
         addSensor(new IsBoredSensor());
 
-        addAction(new WanderToLandPosAction<>(1));
+        addAction(new WanderToLandPosAction<>(0.75));
 
         addGoal(new EntertainedGoal());
     }
