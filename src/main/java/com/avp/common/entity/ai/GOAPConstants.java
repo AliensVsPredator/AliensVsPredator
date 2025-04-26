@@ -17,6 +17,9 @@ public class GOAPConstants {
 
     // Self state
 
+    // Used for wandering logic.
+    public static final TypedIdentifier<Boolean> IS_BORED = new TypedIdentifier<>("isBored");
+
     public static final TypedIdentifier<Boolean> IS_HEALTHY = new TypedIdentifier<>("isHealthy");
 
     // Inventory state

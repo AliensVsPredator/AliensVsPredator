@@ -8,6 +8,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 
 import com.avp.common.effect.AVPEffects;
+import com.avp.common.effect.RadiationStatusEffect;
 import com.avp.common.util.AVPPredicates;
 
 public class IrradiatedResinNodeBlock extends ResinNodeBlock {
@@ -20,7 +21,7 @@ public class IrradiatedResinNodeBlock extends ResinNodeBlock {
     public void stepOn(Level level, BlockPos blockPos, BlockState blockState, Entity entity) {
         if (AVPPredicates.canBeIrradiated(entity) && entity instanceof LivingEntity livingEntity) {
             // Apply radiation effect.
-            livingEntity.addEffect(new MobEffectInstance(AVPEffects.RADIATION_EFFECT, Integer.MAX_VALUE, 0));
+            livingEntity.addEffect(new MobEffectInstance(AVPEffects.RADIATION_EFFECT, RadiationStatusEffect.EFFECT_DURATION_IN_TICKS, 0));
         }
 
         super.stepOn(level, blockPos, blockState, entity);
