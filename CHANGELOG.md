@@ -10,7 +10,10 @@
 - N/A
 
 ## 🐞 Fixes
-- N/A
+- Fixed radiation damaging regular armor on mobs and players (armor is now ignored).
+- Fixed radiation damaging wolf armor on wolves (armor is now ignored).
+- Fixed radiation damage being reduced by protection 4.
+- Fixed radiation damage being reduced by resistance.
 
 ## 🛠 Data Pack
 - N/A

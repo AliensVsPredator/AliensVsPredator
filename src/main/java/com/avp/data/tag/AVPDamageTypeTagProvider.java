@@ -27,6 +27,26 @@ public class AVPDamageTypeTagProvider extends FabricTagProvider<DamageType> {
                 AVPDamageTypes.FLAMETHROW
             );
 
+        getOrCreateTagBuilder(DamageTypeTags.BYPASSES_ARMOR)
+            .add(
+                AVPDamageTypes.RADIATION
+            );
+
+        getOrCreateTagBuilder(DamageTypeTags.BYPASSES_WOLF_ARMOR)
+            .add(
+                AVPDamageTypes.RADIATION
+            );
+
+        getOrCreateTagBuilder(DamageTypeTags.BYPASSES_ENCHANTMENTS)
+            .add(
+                AVPDamageTypes.RADIATION
+            );
+
+        getOrCreateTagBuilder(DamageTypeTags.BYPASSES_RESISTANCE)
+            .add(
+                AVPDamageTypes.RADIATION
+            );
+
         getOrCreateTagBuilder(DamageTypeTags.IS_PROJECTILE)
             .add(
                 AVPDamageTypes.BULLET,
