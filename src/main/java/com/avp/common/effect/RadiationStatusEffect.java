@@ -13,12 +13,15 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
 import java.util.WeakHashMap;
+import java.util.concurrent.TimeUnit;
 
 import com.avp.common.damage.AVPDamageTypes;
 import com.avp.common.entity.AVPEntityTypeTags;
 import com.avp.common.util.AVPPredicates;
 
 public class RadiationStatusEffect extends MobEffect {
+
+    public static final int EFFECT_DURATION_IN_TICKS = (int) TimeUnit.MINUTES.toSeconds(16) * 20;
 
     private static final Map<LivingEntity, Integer> EFFECT_TRACKER = new WeakHashMap<>();
 
@@ -60,13 +63,13 @@ public class RadiationStatusEffect extends MobEffect {
         var threshold = switch (amplifier) {
             case 0 -> 4 * 60 * 20; // 4 minutes in ticks
             case 1 -> 8 * 60 * 20; // 8 minutes in ticks
-            default -> Integer.MAX_VALUE;
+            default -> RadiationStatusEffect.EFFECT_DURATION_IN_TICKS;
         };
 
         if (currentDuration >= threshold && amplifier < 2) {
             EFFECT_TRACKER.put(livingEntity, 0);
             livingEntity.addEffect(
-                new MobEffectInstance(AVPEffects.RADIATION_EFFECT, Integer.MAX_VALUE, amplifier + 1)
+                new MobEffectInstance(AVPEffects.RADIATION_EFFECT, RadiationStatusEffect.EFFECT_DURATION_IN_TICKS, amplifier + 1)
             );
         } else {
             EFFECT_TRACKER.put(livingEntity, currentDuration + 1);

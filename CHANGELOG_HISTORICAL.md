@@ -10,7 +10,7 @@
 - N/A
 
 ## 🐞 Fixes
-- N/A
+- Fixed radiation effect applying forever.
 
 ## 🛠 Data Pack
 - N/A

@@ -12,6 +12,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import com.avp.common.effect.AVPEffects;
+import com.avp.common.effect.RadiationStatusEffect;
 import com.avp.common.util.AVPPredicates;
 import com.avp.common.worldgen.biome.AVPBiomes;
 
@@ -36,7 +37,7 @@ public abstract class MixinLivingEntity_NukedRadiation extends Entity {
         }
 
         // Apply radiation effect.
-        self.addEffect(new MobEffectInstance(AVPEffects.RADIATION_EFFECT, Integer.MAX_VALUE, 0));
+        self.addEffect(new MobEffectInstance(AVPEffects.RADIATION_EFFECT, RadiationStatusEffect.EFFECT_DURATION_IN_TICKS, 0));
     }
 
     @Unique
