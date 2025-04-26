@@ -1,5 +1,6 @@
 package com.avp.data.tag;
 
+import com.avp.data.compatibility.stellaris.StellarisConstants;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
 import net.minecraft.core.HolderLookup;
@@ -277,5 +278,8 @@ public class AVPEntityTypeTagProvider extends FabricTagProvider.EntityTypeTagPro
     private void addCompatibilityTags() {
         getOrCreateTagBuilder(AVPEntityTypeTags.ACID_IMMUNE)
             .addOptionalTag(GigeresqueConstants.ACID_RESISTANT_ENTITY_TYPE_TAG);
+        getOrCreateTagBuilder(StellarisConstants.NO_OXYGEN_NEEDED)
+            .setReplace(false)
+            .addTag(AVPEntityTypeTags.ALIENS);
     }
 }
