@@ -7,7 +7,10 @@
 - Marines now wander around.
 
 ## ♻️ Changes
-- N/A
+- Rebalanced radiation effect levels:
+  - Level 1 Radiation now deals 0.5 damage (in half-hearts) every 4 seconds (was previously 0.1 damage every 4 seconds).
+  - Level 2 Radiation now deals 1 damage (in half-hearts) every 2 seconds (was previously 2.1 damage every 2 seconds).
+  - Level 3 Radiation now deals 2 damage (in half-hearts) every 1 second (was previously 5 damage every 1 second).
 
 ## 🐞 Fixes
 - Fixed radiation effect applying forever.
