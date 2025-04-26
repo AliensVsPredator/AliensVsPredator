@@ -611,6 +611,14 @@ public class EnglishLanguageProvider extends FabricLanguageProvider {
         translationBuilder.add("tooltip.avp.recoil", "Recoil: ");
         translationBuilder.add("tooltip.avp.capacity", "Capacity: ");
 
+        translationBuilder.add("tooltip.avp.mk50_suit.full_set_bonus", "Full Set Bonus:");
+        translationBuilder.add("tooltip.avp.mk50_suit.radiation_resistance", "+ Radiation Resistance");
+        translationBuilder.add("tooltip.avp.mk50_suit.water_breathing", "+ Water Breathing");
+        translationBuilder.add("tooltip.avp.mk50_suit.slowness", "- Slowness");
+
+        translationBuilder.add("tooltip.avp.pressure_suit.full_set_bonus", "Full Set Bonus:");
+        translationBuilder.add("tooltip.avp.pressure_suit.water_breathing", "+ Water Breathing");
+
         // Keybinds
         translationBuilder.add("key.avp.reload", "Reload");
         translationBuilder.add("keybind.category.avp.weapons", "AVP Weapons");

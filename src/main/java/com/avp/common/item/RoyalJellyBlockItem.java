@@ -7,11 +7,11 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
+import org.jetbrains.annotations.NotNull;
 
 import com.avp.common.entity.living.alien.xenomorph.Xenomorph;
 import com.avp.common.entity.living.alien.xenomorph.praetorian.Praetorian;
 import com.avp.common.util.AVPPredicates;
-import org.jetbrains.annotations.NotNull;
 
 public class RoyalJellyBlockItem extends BlockItem {
 
