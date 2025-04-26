@@ -1,5 +1,6 @@
 package com.avp.data.tag;
 
+import com.avp.data.compatibility.common.CommonConstants;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
 import net.minecraft.core.HolderLookup;
@@ -556,5 +557,35 @@ public class AVPBlockTagProvider extends FabricTagProvider.BlockTagProvider {
     private void addCompatibilityTags() {
         getOrCreateTagBuilder(AVPBlockTags.ACID_IMMUNE)
             .addOptionalTag(GigeresqueConstants.ACID_RESISTANT_BLOCK_TAG);
+        getOrCreateTagBuilder(CommonConstants.CHESTS)
+                .setReplace(false)
+            .add(
+                AVPBlocks.AMMO_CHEST,
+                AVPBlocks.LEAD_CHEST
+            );
+        getOrCreateTagBuilder(CommonConstants.CHESTS)
+            .setReplace(false)
+            .add(
+                    AVPBlocks.AMMO_CHEST,
+                    AVPBlocks.LEAD_CHEST
+            );
+        getOrCreateTagBuilder(CommonConstants.CHESTS)
+            .setReplace(false)
+            .add(
+                    AVPBlocks.AMMO_CHEST,
+                    AVPBlocks.LEAD_CHEST
+            );
+        getOrCreateTagBuilder(CommonConstants.ORES_BLOCKS)
+            .setReplace(false)
+            .add(
+                AVPBlocks.AUTUNITE_ORE,
+                AVPBlocks.BAUXITE_ORE,
+                AVPBlocks.DEEPSLATE_TITANIUM_ORE,
+                AVPBlocks.DEEPSLATE_ZINC_ORE,
+                AVPBlocks.GALENA_ORE,
+                AVPBlocks.LITHIUM_ORE,
+                AVPBlocks.MONAZITE_ORE,
+                AVPBlocks.ZINC_ORE
+            );
     }
 }
