@@ -1,4 +1,19 @@
-# v0.1.0
+# v0.1.1
+
+## ☢️ Breaking Changes
+- N/A
 
 ## ✨ What's New
-- Initial release. Happy Alien Day! :)
+- N/A
+
+## ♻️ Changes
+- N/A
+
+## 🐞 Fixes
+- N/A
+
+## 🛠 Data Pack
+- N/A
+
+## 🔬 Technical Changes
+- N/A
