@@ -44,15 +44,15 @@
     ],
     "subtitle": "subtitles.entity.queen.death"
   },
-  "entity.queen.pain": {
+  "entity.queen.hurt": {
     "sounds": [
-      "avp:entity/queen/hurt/pain_0",
-      "avp:entity/queen/hurt/pain_1",
-      "avp:entity/queen/hurt/pain_2",
-      "avp:entity/queen/hurt/pain_3",
-      "avp:entity/queen/hurt/pain_4"
+      "avp:entity/queen/hurt/hurt_0",
+      "avp:entity/queen/hurt/hurt_1",
+      "avp:entity/queen/hurt/hurt_2",
+      "avp:entity/queen/hurt/hurt_3",
+      "avp:entity/queen/hurt/hurt_4"
     ],
-    "subtitle": "subtitles.entity.queen.pain"
+    "subtitle": "subtitles.entity.queen.hurt"
   },
   "entity.queen.idle": {
     "sounds": [

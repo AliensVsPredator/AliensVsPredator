@@ -7,6 +7,10 @@
 - Added tooltip for ammo chest item.
 - Added tooltip for lead chest item.
 - Added tooltip for sentry turret item.
+- Implemented new queen sound effects:
+  - Idle
+  - Hurt
+  - Death
 - Added tooltips for armor items that have full set bonuses.
   - Full set buffs are colored green.
   - Full set debuffs are colored red.
