@@ -2,6 +2,7 @@ package com.avp.common.manager;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.util.Mth;
 import net.minecraft.world.level.Level;
 
 import com.avp.common.entity.living.alien.ovamorph.Ovamorph;
@@ -142,7 +143,8 @@ public class HatchManager {
         facehugger.geneManager().setAll(ovamorph.geneManager().getAll());
         facehugger.updateStateBasedOnGenetics();
 
-        facehugger.moveTo(ovamorph.blockPosition(), ovamorph.getYRot(), ovamorph.getXRot());
+        // Spawns it at the top of the ovamorph
+        facehugger.setPos(ovamorph.position().x, ovamorph.position().y + 1, ovamorph.position().z);
 
         // Explicitly set the yaw and pitch to ensure accurate orientation
         facehugger.setYRot(ovamorph.getYRot());
@@ -151,6 +153,13 @@ public class HatchManager {
         // Synchronize the visual body rotation (if applicable for mobs)
         facehugger.yBodyRot = ovamorph.yBodyRot; // Body rotation
         facehugger.yHeadRot = ovamorph.yHeadRot; // Head rotation
+
+        // Gives the facehugger a jump like movement
+        facehugger.setDeltaMovement(
+            Mth.nextFloat(facehugger.getRandom(), -0.5f, 0.5f),
+            0.7,
+            Mth.nextFloat(facehugger.getRandom(), -0.5f, 0.5f)
+        );
 
         level.addFreshEntity(facehugger);
     }
