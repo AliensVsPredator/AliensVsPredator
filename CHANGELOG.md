@@ -19,7 +19,7 @@
     - Pressure Suit
 
 ## ♻️ Changes
-- N/A
+- Facehuggers now spawn on top of ovamorph and then jump towards to a random direction to get off.
 
 ## 🐞 Fixes
 - Fixed radiation damaging regular armor on mobs and players (armor is now ignored).
@@ -88,3 +88,4 @@
 
 ## 🔬 Technical Changes
 - Moved Stellaris compatibility tags to datagen.
+- Added a logger in the event a ovamorph is unable to spawn a facehugger.

@@ -2,8 +2,10 @@ package com.avp.common.manager;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.util.Mth;
 import net.minecraft.world.level.Level;
 
+import com.avp.AVP;
 import com.avp.common.entity.living.alien.ovamorph.Ovamorph;
 import com.avp.common.entity.type.AVPEntityTypes;
 
@@ -135,22 +137,30 @@ public class HatchManager {
         var facehugger = (ovamorph.isRoyal() ? AVPEntityTypes.ROYAL_FACEHUGGER : AVPEntityTypes.FACEHUGGER).create(level);
 
         if (facehugger == null) {
-            // TODO: Log.
+            AVP.LOGGER.warn("Failed to create facehugger entity.");
             return;
         }
 
         facehugger.geneManager().setAll(ovamorph.geneManager().getAll());
         facehugger.updateStateBasedOnGenetics();
 
-        facehugger.moveTo(ovamorph.blockPosition(), ovamorph.getYRot(), ovamorph.getXRot());
+        // Spawns it at the top of the ovamorph
+        facehugger.setPos(ovamorph.position().x, ovamorph.position().y + ovamorph.getBbHeight(), ovamorph.position().z);
 
         // Explicitly set the yaw and pitch to ensure accurate orientation
         facehugger.setYRot(ovamorph.getYRot());
         facehugger.setXRot(ovamorph.getXRot());
 
-        // Synchronize the visual body rotation (if applicable for mobs)
+        // Synchronize the visual body rotation.
         facehugger.yBodyRot = ovamorph.yBodyRot; // Body rotation
         facehugger.yHeadRot = ovamorph.yHeadRot; // Head rotation
+
+        // Gives the facehugger a jump like movement
+        facehugger.setDeltaMovement(
+            Mth.nextFloat(facehugger.getRandom(), -0.5f, 0.5f),
+            0.7,
+            Mth.nextFloat(facehugger.getRandom(), -0.5f, 0.5f)
+        );
 
         level.addFreshEntity(facehugger);
     }
