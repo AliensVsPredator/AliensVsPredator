@@ -1,5 +1,6 @@
 package com.avp.common.manager;
 
+import com.avp.AVP;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.util.Mth;
@@ -136,7 +137,7 @@ public class HatchManager {
         var facehugger = (ovamorph.isRoyal() ? AVPEntityTypes.ROYAL_FACEHUGGER : AVPEntityTypes.FACEHUGGER).create(level);
 
         if (facehugger == null) {
-            // TODO: Log.
+            AVP.LOGGER.warn("Failed to create facehugger entity.");
             return;
         }
 
