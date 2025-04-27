@@ -364,7 +364,7 @@ public abstract class Alien extends Monster {
         }
 
         if (compoundTag.contains(IS_IRRADIATED_KEY)) {
-            setNetherAfflicted(compoundTag.getBoolean(IS_IRRADIATED_KEY));
+            setIrradiated(compoundTag.getBoolean(IS_IRRADIATED_KEY));
         }
 
         if (compoundTag.contains(IS_NETHER_AFFLICTED_KEY)) {

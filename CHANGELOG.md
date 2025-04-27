@@ -20,6 +20,7 @@
 - Fixed radiation damage being reduced by protection 4.
 - Fixed radiation damage being reduced by resistance.
 - Fixed aberrant xenomorphs becoming nether afflicted when the world reloads.
+- Fixed irradiated xenomorphs becoming nether afflicted when the world reloads.
 
 ## 🛠 Data Pack
 - N/A
