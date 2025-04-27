@@ -28,6 +28,7 @@
 - Fixed radiation damage being reduced by resistance.
 - Fixed aberrant xenomorphs becoming nether afflicted when the world reloads.
 - Fixed irradiated xenomorphs becoming nether afflicted when the world reloads.
+- Fixed sentry turret pitch being slightly offset from where it should be.
 
 ## 🛠 Data Pack
 - Added the following chests to the `#c:chests` block tag:
