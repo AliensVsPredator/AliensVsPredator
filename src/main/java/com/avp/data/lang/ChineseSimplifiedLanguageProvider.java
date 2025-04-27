@@ -20,9 +20,9 @@ import com.avp.data.AVPDataGenerator;
 /**
  * TODO: Making this for any PRs, this will just need registered in {@link AVPDataGenerator#onInitializeDataGenerator}
  */
-public class ChineseSimplifiiedLanguageProvider extends FabricLanguageProvider {
+public class ChineseSimplifiedLanguageProvider extends FabricLanguageProvider {
 
-    public ChineseSimplifiiedLanguageProvider(FabricDataOutput dataOutput, CompletableFuture<HolderLookup.Provider> registryLookup) {
+    public ChineseSimplifiedLanguageProvider(FabricDataOutput dataOutput, CompletableFuture<HolderLookup.Provider> registryLookup) {
         super(dataOutput, "zh_cn", registryLookup);
     }
 
@@ -521,7 +521,7 @@ public class ChineseSimplifiiedLanguageProvider extends FabricLanguageProvider {
         addSound(translationBuilder, AVPSoundEvents.ENTITY_QUEEN_SCREAM, "Queen screams");
         addSound(translationBuilder, AVPSoundEvents.ENTITY_QUEEN_TAIL_ATTACK, "Queen tail attacks");
         addSound(translationBuilder, AVPSoundEvents.ENTITY_QUEEN_DEATH, "Queen dies");
-        addSound(translationBuilder, AVPSoundEvents.ENTITY_QUEEN_PAIN, "Queen hurts");
+        addSound(translationBuilder, AVPSoundEvents.ENTITY_QUEEN_HURT, "Queen hurts");
         addSound(translationBuilder, AVPSoundEvents.ENTITY_QUEEN_IDLE, "Queen breaths");
         addSound(translationBuilder, AVPSoundEvents.ENTITY_QUEEN_STEP_THUMP, "Queen steps");
         addSound(translationBuilder, AVPSoundEvents.ENTITY_QUEEN_STEP_THUMP_ROCK, "Queen steps");

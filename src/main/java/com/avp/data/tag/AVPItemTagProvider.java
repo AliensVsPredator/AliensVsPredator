@@ -1,6 +1,5 @@
 package com.avp.data.tag;
 
-import com.avp.data.compatibility.common.CommonConstants;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
 import net.minecraft.core.HolderLookup;
@@ -14,6 +13,7 @@ import com.avp.common.block_item.AVPBlockItems;
 import com.avp.common.item.AVPItemTags;
 import com.avp.common.item.AVPItems;
 import com.avp.common.item.ArmorItems;
+import com.avp.data.compatibility.common.CommonConstants;
 
 public class AVPItemTagProvider extends FabricTagProvider.ItemTagProvider {
 
@@ -527,36 +527,43 @@ public class AVPItemTagProvider extends FabricTagProvider.ItemTagProvider {
                 AVPItems.URANIUM_INGOT,
                 AVPItems.ZINC_INGOT
             );
+
         getOrCreateTagBuilder(CommonConstants.INGOTS_ALUMINUM)
             .setReplace(false)
             .add(
                 AVPItems.ALUMINUM_INGOT
             );
+
         getOrCreateTagBuilder(CommonConstants.INGOTS_BRASS)
             .setReplace(false)
             .add(
                 AVPItems.BRASS_INGOT
             );
+
         getOrCreateTagBuilder(CommonConstants.INGOTS_LEAD)
             .setReplace(false)
             .add(
                 AVPItems.LEAD_INGOT
             );
+
         getOrCreateTagBuilder(CommonConstants.INGOTS_STEEL)
             .setReplace(false)
             .add(
                 AVPItems.STEEL_INGOT
             );
+
         getOrCreateTagBuilder(CommonConstants.INGOTS_TITANIUM)
             .setReplace(false)
             .add(
                 AVPItems.TITANIUM_INGOT
             );
+
         getOrCreateTagBuilder(CommonConstants.INGOTS_ZINC)
             .setReplace(false)
             .add(
                 AVPItems.ZINC_INGOT
             );
+
         getOrCreateTagBuilder(CommonConstants.NUGGETS)
             .setReplace(false)
             .add(
@@ -569,36 +576,43 @@ public class AVPItemTagProvider extends FabricTagProvider.ItemTagProvider {
                 AVPItems.URANIUM_NUGGET,
                 AVPItems.ZINC_NUGGET
             );
+
         getOrCreateTagBuilder(CommonConstants.NUGGETS_ALUMINUM)
             .setReplace(false)
             .add(
                 AVPItems.ALUMINUM_NUGGET
             );
+
         getOrCreateTagBuilder(CommonConstants.NUGGETS_BRASS)
             .setReplace(false)
             .add(
                 AVPItems.BRASS_NUGGET
             );
+
         getOrCreateTagBuilder(CommonConstants.NUGGETS_LEAD)
             .setReplace(false)
             .add(
                 AVPItems.LEAD_NUGGET
             );
+
         getOrCreateTagBuilder(CommonConstants.NUGGETS_STEEL)
             .setReplace(false)
             .add(
                 AVPItems.STEEL_NUGGET
             );
+
         getOrCreateTagBuilder(CommonConstants.NUGGETS_TITANIUM)
             .setReplace(false)
             .add(
                 AVPItems.TITANIUM_NUGGET
             );
+
         getOrCreateTagBuilder(CommonConstants.NUGGETS_ZINC)
             .setReplace(false)
             .add(
                 AVPItems.ZINC_NUGGET
             );
+
         getOrCreateTagBuilder(CommonConstants.ORES)
             .setReplace(false)
             .add(
