@@ -23,6 +23,18 @@
 - Fixed irradiated xenomorphs becoming nether afflicted when the world reloads.
 
 ## 🛠 Data Pack
+- Added the following chests to the `#c:chests` block tag:
+  - Ammo Chest
+  - Lead Chest
+- Added the following ores to the `#c:ores` block tag:
+  - Autunite Ore
+  - Bauxite Ore
+  - Deepslate Titanium Ore
+  - Deepslate Zinc Ore
+  - Galena Ore
+  - Lithium Ore
+  - Monazite Ore
+  - Zinc Ore
 - Added the following ingots to the `#c:ingots` item tag:
   - Aluminum Ingot
   - Brass Ingot
@@ -66,4 +78,4 @@
   - Zinc Ore
 
 ## 🔬 Technical Changes
-- N/A
+- Moved Stellaris compatibility tags to datagen.
