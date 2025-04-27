@@ -22,6 +22,7 @@
 - Facehuggers now spawn on top of ovamorph and then jump towards to a random direction to get off.
 
 ## 🐞 Fixes
+- Fixed world crash caused by ModernFix.
 - Fixed radiation damaging regular armor on mobs and players (armor is now ignored).
 - Fixed radiation damaging wolf armor on wolves (armor is now ignored).
 - Fixed radiation damage being reduced by protection 4.
