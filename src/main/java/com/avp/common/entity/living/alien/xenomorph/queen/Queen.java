@@ -1,5 +1,7 @@
 package com.avp.common.entity.living.alien.xenomorph.queen;
 
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.monster.Monster;
@@ -13,6 +15,7 @@ import com.avp.common.block.AVPBlockTags;
 import com.avp.common.entity.living.alien.Alien;
 import com.avp.common.entity.living.alien.xenomorph.Xenomorph;
 import com.avp.common.entity.type.AVPEntityTypes;
+import com.avp.common.sound.AVPSoundEvents;
 import com.avp.common.util.AlienVariantUtil;
 import com.avp.common.util.resin.ResinData;
 
@@ -79,6 +82,21 @@ public class Queen extends Xenomorph {
     @Override
     public float maxUpStep() {
         return 2.5F;
+    }
+
+    @Override
+    protected @Nullable SoundEvent getAmbientSound() {
+        return AVPSoundEvents.ENTITY_QUEEN_IDLE;
+    }
+
+    @Override
+    protected @NotNull SoundEvent getDeathSound() {
+        return AVPSoundEvents.ENTITY_QUEEN_DEATH;
+    }
+
+    @Override
+    protected @NotNull SoundEvent getHurtSound(DamageSource damageSource) {
+        return AVPSoundEvents.ENTITY_QUEEN_HURT;
     }
 
     @Override
