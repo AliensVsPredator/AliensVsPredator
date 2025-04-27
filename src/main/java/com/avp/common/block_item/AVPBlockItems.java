@@ -31,7 +31,7 @@ public class AVPBlockItems {
 
     public static final BlockItem RESONATOR_BLOCK = register(AVPBlocks.RESONATOR_BLOCK);
 
-    public static final BlockItem SENTRY_TURRET = register(AVPBlocks.SENTRY_TURRET);
+    public static final BlockItem SENTRY_TURRET = register("sentry_turret", SentryTurretBlockItem::new);
 
     public static final BlockItem ASH_BLOCK = register(AVPBlocks.ASH_BLOCK);
 
@@ -122,9 +122,9 @@ public class AVPBlockItems {
 
     public static final BlockItem LEAD_BLOCK = register(AVPBlocks.LEAD_BLOCK);
 
-    public static final BlockItem LEAD_CHEST = register("lead_chest", LeadChestItem::new);
+    public static final BlockItem LEAD_CHEST = register("lead_chest", LeadChestBlockItem::new);
 
-    public static final BlockItem AMMO_CHEST = register("ammo_chest", AmmoChestItem::new);
+    public static final BlockItem AMMO_CHEST = register("ammo_chest", AmmoChestBlockItem::new);
 
     public static final BlockItem LITHIUM_ORE = register(AVPBlocks.LITHIUM_ORE);
 

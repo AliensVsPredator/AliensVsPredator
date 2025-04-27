@@ -13,11 +13,11 @@ import java.util.List;
 
 import com.avp.common.block.AVPBlocks;
 
-public class AmmoChestItem extends BlockItem {
+public class LeadChestBlockItem extends BlockItem {
 
-    public AmmoChestItem() {
+    public LeadChestBlockItem() {
         super(
-            AVPBlocks.AMMO_CHEST,
+            AVPBlocks.LEAD_CHEST,
             new Item.Properties().component(DataComponents.CONTAINER, ItemContainerContents.EMPTY)
                 .component(DataComponents.MAX_STACK_SIZE, 1)
         );
@@ -28,19 +28,11 @@ public class AmmoChestItem extends BlockItem {
         super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
 
         tooltipComponents.add(
-            Component.translatable("tooltip.avp.ammo_chest.in_inventory")
+            Component.translatable("tooltip.avp.lead_chest.in_inventory")
                 .withStyle(ChatFormatting.YELLOW)
         );
         tooltipComponents.add(
-            Component.translatable("tooltip.avp.ammo_chest.reload_from_chest")
-                .withStyle(ChatFormatting.GREEN)
-        );
-        tooltipComponents.add(
-            Component.translatable("tooltip.avp.ammo_chest.placed")
-                .withStyle(ChatFormatting.YELLOW)
-        );
-        tooltipComponents.add(
-            Component.translatable("tooltip.avp.ammo_chest.turret_load_from_chest")
+            Component.translatable("tooltip.avp.lead_chest.auto_store_irradiated_items")
                 .withStyle(ChatFormatting.GREEN)
         );
     }

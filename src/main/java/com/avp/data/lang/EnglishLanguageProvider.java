@@ -627,6 +627,13 @@ public class EnglishLanguageProvider extends FabricLanguageProvider {
         translationBuilder.add("tooltip.avp.lead_chest.in_inventory", "When In Inventory:");
         translationBuilder.add("tooltip.avp.lead_chest.auto_store_irradiated_items", "+ Irradiated Items Auto-Stored in Chest");
 
+        translationBuilder.add("tooltip.avp.sentry_turret.requires", "Requires:");
+        translationBuilder.add("tooltip.avp.sentry_turret.redstone_power_requirement", "- Redstone Power");
+        translationBuilder.add(
+            "tooltip.avp.sentry_turret.nearby_ammo_chest_with_ammo_requirement",
+            "- Nearby Ammo Chest with Medium Bullets"
+        );
+
         // Keybinds
         translationBuilder.add("key.avp.reload", "Reload");
         translationBuilder.add("keybind.category.avp.weapons", "AVP Weapons");
