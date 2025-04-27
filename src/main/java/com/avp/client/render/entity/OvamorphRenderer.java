@@ -102,11 +102,4 @@ public class OvamorphRenderer extends AzEntityRenderer<Ovamorph> {
 
         return RenderType.entityCutoutNoCull(textureLocation(ovamorph));
     }
-
-    // TODO:
-    // @Override
-    // public RenderType getRenderType(Ovamorph animatable, ResourceLocation texture, @Nullable MultiBufferSource
-    // bufferSource, float partialTick) {
-    // return RenderType.entityTranslucent(texture);
-    // }
 }
