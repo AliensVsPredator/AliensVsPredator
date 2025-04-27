@@ -14,6 +14,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Map;
 import java.util.function.Function;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import com.avp.AVPResources;
@@ -132,14 +133,7 @@ public class AVPBlockItems {
         AVPBlocks.LEAD_CHEST
     );
 
-    public static final BlockItem AMMO_CHEST = register(
-        new Item.Properties().component(DataComponents.CONTAINER, ItemContainerContents.EMPTY)
-            .component(
-                DataComponents.MAX_STACK_SIZE,
-                1
-            ),
-        AVPBlocks.AMMO_CHEST
-    );
+    public static final BlockItem AMMO_CHEST = register("ammo_chest", AmmoChestItem::new);
 
     public static final BlockItem LITHIUM_ORE = register(AVPBlocks.LITHIUM_ORE);
 
@@ -629,14 +623,17 @@ public class AVPBlockItems {
                 )
         );
 
+    @Deprecated
     public static BlockItem register(Block block) {
         return register(new Item.Properties(), block);
     }
 
+    @Deprecated
     public static BlockItem register(Item.Properties properties, Block block) {
         return register(properties, block, BuiltInRegistries.BLOCK.getKey(block).getPath());
     }
 
+    @Deprecated
     public static BlockItem register(Item.Properties properties, Block block, String id) {
         var resourceLocation = AVPResources.location(id);
         var blockItem = new BlockItem(block, properties);
@@ -644,10 +641,17 @@ public class AVPBlockItems {
         return Registry.register(BuiltInRegistries.ITEM, resourceLocation, blockItem);
     }
 
+    @Deprecated
     public static BlockItem registerCustomBlockItem(BlockItem blockItem, Block block) {
         var resourceLocation = AVPResources.location(BuiltInRegistries.BLOCK.getKey(block).getPath());
 
         return Registry.register(BuiltInRegistries.ITEM, resourceLocation, blockItem);
+    }
+
+    public static BlockItem register(String id, Supplier<BlockItem> blockItemSupplier) {
+        var resourceLocation = AVPResources.location(id);
+
+        return Registry.register(BuiltInRegistries.ITEM, resourceLocation, blockItemSupplier.get());
     }
 
     public static void initialize() {

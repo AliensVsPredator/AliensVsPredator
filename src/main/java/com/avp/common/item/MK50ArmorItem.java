@@ -20,22 +20,22 @@ public class MK50ArmorItem extends ArmorItem {
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> list, TooltipFlag tooltipFlag) {
-        super.appendHoverText(stack, context, list, tooltipFlag);
+    public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag) {
+        super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
 
-        list.add(
+        tooltipComponents.add(
             Component.translatable("tooltip.avp.mk50_suit.full_set_bonus")
                 .withStyle(ChatFormatting.YELLOW)
         );
-        list.add(
+        tooltipComponents.add(
             Component.translatable("tooltip.avp.mk50_suit.radiation_resistance")
                 .withStyle(ChatFormatting.GREEN)
         );
-        list.add(
+        tooltipComponents.add(
             Component.translatable("tooltip.avp.mk50_suit.water_breathing")
                 .withStyle(ChatFormatting.GREEN)
         );
-        list.add(
+        tooltipComponents.add(
             Component.translatable("tooltip.avp.mk50_suit.slowness")
                 .withStyle(ChatFormatting.RED)
         );

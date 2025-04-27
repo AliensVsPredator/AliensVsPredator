@@ -619,6 +619,11 @@ public class EnglishLanguageProvider extends FabricLanguageProvider {
         translationBuilder.add("tooltip.avp.pressure_suit.full_set_bonus", "Full Set Bonus:");
         translationBuilder.add("tooltip.avp.pressure_suit.water_breathing", "+ Water Breathing");
 
+        translationBuilder.add("tooltip.avp.ammo_chest.in_inventory", "When In Inventory:");
+        translationBuilder.add("tooltip.avp.ammo_chest.reload_from_chest", "+ Guns Auto-Reload Ammo from Chest");
+        translationBuilder.add("tooltip.avp.ammo_chest.placed", "When Placed:");
+        translationBuilder.add("tooltip.avp.ammo_chest.turret_load_from_chest", "+ Nearby Turrets use Ammo from Chest");
+
         // Keybinds
         translationBuilder.add("key.avp.reload", "Reload");
         translationBuilder.add("keybind.category.avp.weapons", "AVP Weapons");
