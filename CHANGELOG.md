@@ -19,6 +19,7 @@
 - Fixed radiation damaging wolf armor on wolves (armor is now ignored).
 - Fixed radiation damage being reduced by protection 4.
 - Fixed radiation damage being reduced by resistance.
+- Fixed aberrant xenomorphs becoming nether afflicted when the world reloads.
 
 ## 🛠 Data Pack
 - N/A
