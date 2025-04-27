@@ -4,7 +4,7 @@
 - N/A
 
 ## ✨ What's New
-- N/A
+- Facehuggers now spawn on top of ovamorph and then jump towards to a random direction to get off.
 
 ## ♻️ Changes
 - N/A
@@ -19,4 +19,4 @@
 - N/A
 
 ## 🔬 Technical Changes
-- N/A
+- Added a logger in the event a ovamorph is unable to spawn a facehugger.
