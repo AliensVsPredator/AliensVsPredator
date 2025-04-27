@@ -23,7 +23,47 @@
 - Fixed irradiated xenomorphs becoming nether afflicted when the world reloads.
 
 ## 🛠 Data Pack
-- N/A
+- Added the following ingots to the `#c:ingots` item tag:
+  - Aluminum Ingot
+  - Brass Ingot
+  - Ferroaluminum Ingot
+  - Lead Ingot
+  - Steel Ingot
+  - Titanium Ingot
+  - Uranium Ingot
+  - Zinc Ingot
+- Added the following ingots to their respective individual ingot item tags:
+  - Aluminum Ingot to `#c:ingots/aluminum` item tag.
+  - Brass Ingot to `#c:ingots/brass` item tag.
+  - Lead Ingot to `#c:ingots/lead` item tag.
+  - Steel Ingot to `#c:ingots/steel` item tag.
+  - Titanium Ingot to `#c:ingots/titanium` item tag.
+  - Zinc Ingot to `#c:ingots/zinc` item tag.
+- Added the following nuggets to the `#c:nuggets` item tag:
+  - Aluminum Nugget
+  - Brass Nugget
+  - Ferroaluminum Nugget
+  - Lead Nugget
+  - Steel Nugget
+  - Titanium Nugget
+  - Uranium Nugget
+  - Zinc Nugget
+- Added the following nuggets to their respective individual nugget item tags:
+  - Aluminum Nugget to `#c:nuggets/aluminum` item tag.
+  - Brass Nugget to `#c:nuggets/brass` item tag.
+  - Lead Nugget to `#c:nuggets/lead` item tag.
+  - Steel Nugget to `#c:nuggets/steel` item tag.
+  - Titanium Nugget to `#c:nuggets/titanium` item tag.
+  - Zinc Nugget to `#c:nuggets/zinc` item tag.
+- Added the following ores to the `#c:ores` item tag:
+  - Autunite Ore
+  - Bauxite Ore
+  - Lithium Ore
+  - Deepslate Titanium Ore
+  - Galena Ore
+  - Deepslate Zinc Ore
+  - Monazite Ore
+  - Zinc Ore
 
 ## 🔬 Technical Changes
 - N/A
