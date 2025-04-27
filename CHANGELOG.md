@@ -5,6 +5,7 @@
 
 ## ✨ What's New
 - Added tooltip for ammo chest item.
+- Added tooltip for lead chest item.
 - Added tooltips for armor items that have full set bonuses.
   - Full set buffs are colored green.
   - Full set debuffs are colored red.
