@@ -24,6 +24,7 @@
     - Pressure Suit
 
 ## ♻️ Changes
+- Added a sound effect for when royal jelly is used on ovamorphs.
 - Facehuggers now spawn on top of ovamorphs if no obstructing block present.
 - Facehuggers now jump towards a random direction when leaving ovamorphs.
 - Facehuggers now move 10% faster after targets.
@@ -109,4 +110,4 @@
 
 ## 🔬 Technical Changes
 - Moved Stellaris compatibility tags to datagen.
-- Added a logger in the event a ovamorph is unable to spawn a facehugger.
+- Added a log for when an ovamorph is unable to spawn a facehugger.

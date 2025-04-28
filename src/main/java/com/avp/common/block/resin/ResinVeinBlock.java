@@ -133,7 +133,6 @@ public class ResinVeinBlock extends MultifaceBlock implements SpreadBehavior {
 
             levelAccessor.setBlock(blockPos2, resinBlockState, 3);
             Block.pushEntitiesUp(blockState2, resinBlockState, levelAccessor, blockPos2);
-            // TODO:
             levelAccessor.playSound(null, blockPos2, AVPSoundEvents.BLOCK_RESIN_SPREAD, SoundSource.BLOCKS, 1.0F, 1.0F);
             this.veinSpreader.spreadAll(resinBlockState, levelAccessor, blockPos2, resinSpreader.isWorldGeneration());
             var direction2 = direction.getOpposite();
