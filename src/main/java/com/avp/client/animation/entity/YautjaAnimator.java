@@ -40,7 +40,7 @@ public class YautjaAnimator extends AzEntityAnimator<Yautja> {
     public void setCustomAnimations(Yautja animatable, float partialTick) {
         BasicAnimationUtils.showHelmet(animatable, context(), "gArmorMask");
         BasicAnimationUtils.showWristblades(animatable, context(), "gWristBlade");
-        BasicAnimationUtils.applyHeadRotations(animatable, context(), partialTick, "gNeckUpper", 0.2F);
+        BasicAnimationUtils.applyHeadRotations(animatable, context(), partialTick, "gNeckUpper", 0F);
         BasicAnimationUtils.applyLimbRotations(
             animatable,
             context(),

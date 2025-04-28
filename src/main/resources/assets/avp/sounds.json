@@ -8,6 +8,39 @@
     ],
     "subtitle": "subtitles.block.acid.burn"
   },
+  "block.resin.spread": {
+    "sounds": [
+      {
+        "name": "minecraft:block.sculk.spread",
+        "type": "event"
+      }
+    ],
+    "subtitle": "subtitles.block.resin.spread"
+  },
+  "entity.ovamorph.hatch": {
+    "sounds": [
+      "avp:entity/ovamorph/hatch/hatch"
+    ],
+    "subtitle": "subtitles.entity.ovamorph.hatch"
+  },
+  "entity.ovamorph.laid": {
+    "sounds": [
+      "avp:entity/ovamorph/laid/laid"
+    ],
+    "subtitle": "subtitles.entity.ovamorph.laid"
+  },
+  "entity.ovamorph.root": {
+    "sounds": [
+      "avp:entity/ovamorph/root/root"
+    ],
+    "subtitle": "subtitles.entity.ovamorph.root"
+  },
+  "entity.ovamorph.shear": {
+    "sounds": [
+      "avp:entity/ovamorph/shear/shear"
+    ],
+    "subtitle": "subtitles.entity.ovamorph.shear"
+  },
   "entity.queen.arm_attack": {
     "sounds": [
       "avp:entity/queen/attack/arm_attack"
@@ -44,15 +77,15 @@
     ],
     "subtitle": "subtitles.entity.queen.death"
   },
-  "entity.queen.pain": {
+  "entity.queen.hurt": {
     "sounds": [
-      "avp:entity/queen/hurt/pain_0",
-      "avp:entity/queen/hurt/pain_1",
-      "avp:entity/queen/hurt/pain_2",
-      "avp:entity/queen/hurt/pain_3",
-      "avp:entity/queen/hurt/pain_4"
+      "avp:entity/queen/hurt/hurt_0",
+      "avp:entity/queen/hurt/hurt_1",
+      "avp:entity/queen/hurt/hurt_2",
+      "avp:entity/queen/hurt/hurt_3",
+      "avp:entity/queen/hurt/hurt_4"
     ],
-    "subtitle": "subtitles.entity.queen.pain"
+    "subtitle": "subtitles.entity.queen.hurt"
   },
   "entity.queen.idle": {
     "sounds": [

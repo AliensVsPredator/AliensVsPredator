@@ -2,18 +2,17 @@ package com.avp.common.block_item;
 
 import mod.azure.azurelib.rewrite.animation.cache.AzIdentityRegistry;
 import net.minecraft.core.Registry;
-import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.component.ItemContainerContents;
 import net.minecraft.world.level.block.Block;
 
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Map;
 import java.util.function.Function;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import com.avp.AVPResources;
@@ -32,7 +31,7 @@ public class AVPBlockItems {
 
     public static final BlockItem RESONATOR_BLOCK = register(AVPBlocks.RESONATOR_BLOCK);
 
-    public static final BlockItem SENTRY_TURRET = register(AVPBlocks.SENTRY_TURRET);
+    public static final BlockItem SENTRY_TURRET = register("sentry_turret", SentryTurretBlockItem::new);
 
     public static final BlockItem ASH_BLOCK = register(AVPBlocks.ASH_BLOCK);
 
@@ -123,23 +122,9 @@ public class AVPBlockItems {
 
     public static final BlockItem LEAD_BLOCK = register(AVPBlocks.LEAD_BLOCK);
 
-    public static final BlockItem LEAD_CHEST = register(
-        new Item.Properties().component(DataComponents.CONTAINER, ItemContainerContents.EMPTY)
-            .component(
-                DataComponents.MAX_STACK_SIZE,
-                1
-            ),
-        AVPBlocks.LEAD_CHEST
-    );
+    public static final BlockItem LEAD_CHEST = register("lead_chest", LeadChestBlockItem::new);
 
-    public static final BlockItem AMMO_CHEST = register(
-        new Item.Properties().component(DataComponents.CONTAINER, ItemContainerContents.EMPTY)
-            .component(
-                DataComponents.MAX_STACK_SIZE,
-                1
-            ),
-        AVPBlocks.AMMO_CHEST
-    );
+    public static final BlockItem AMMO_CHEST = register("ammo_chest", AmmoChestBlockItem::new);
 
     public static final BlockItem LITHIUM_ORE = register(AVPBlocks.LITHIUM_ORE);
 
@@ -629,14 +614,17 @@ public class AVPBlockItems {
                 )
         );
 
+    @Deprecated
     public static BlockItem register(Block block) {
         return register(new Item.Properties(), block);
     }
 
+    @Deprecated
     public static BlockItem register(Item.Properties properties, Block block) {
         return register(properties, block, BuiltInRegistries.BLOCK.getKey(block).getPath());
     }
 
+    @Deprecated
     public static BlockItem register(Item.Properties properties, Block block, String id) {
         var resourceLocation = AVPResources.location(id);
         var blockItem = new BlockItem(block, properties);
@@ -644,10 +632,17 @@ public class AVPBlockItems {
         return Registry.register(BuiltInRegistries.ITEM, resourceLocation, blockItem);
     }
 
+    @Deprecated
     public static BlockItem registerCustomBlockItem(BlockItem blockItem, Block block) {
         var resourceLocation = AVPResources.location(BuiltInRegistries.BLOCK.getKey(block).getPath());
 
         return Registry.register(BuiltInRegistries.ITEM, resourceLocation, blockItem);
+    }
+
+    public static BlockItem register(String id, Supplier<BlockItem> blockItemSupplier) {
+        var resourceLocation = AVPResources.location(id);
+
+        return Registry.register(BuiltInRegistries.ITEM, resourceLocation, blockItemSupplier.get());
     }
 
     public static void initialize() {
