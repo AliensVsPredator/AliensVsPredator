@@ -33,6 +33,9 @@
 
 ## 🐞 Fixes
 - Fixed world crash caused by ModernFix.
+- Fixed shearing ovamorphs causing damage to shears while in creative mode.
+- Fixed rooting ovamorphs consuming resin balls while in creative mode.
+- Fixed royal jellying ovamorphs consuming royal jelly while in creative mode.
 - Fixed xenomorphs periodically getting stuck while digging.
 - Fixed radiation damaging regular armor on mobs and players (armor is now ignored).
 - Fixed radiation damaging wolf armor on wolves (armor is now ignored).

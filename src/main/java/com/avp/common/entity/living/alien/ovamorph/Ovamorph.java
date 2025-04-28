@@ -104,7 +104,11 @@ public class Ovamorph extends Alien implements Shearable {
             if (itemStack.is(AVPItems.RAW_ROYAL_JELLY)) {
                 if (hatchManager.hatched()) {
                     hatchManager.restore();
-                    player.getItemInHand(interactionHand).shrink(1);
+
+                    if (!AVPPredicates.IS_IMMORTAL.test(player)) {
+                        player.getItemInHand(interactionHand).shrink(1);
+                    }
+
                     return InteractionResult.SUCCESS;
                 } else {
                     return InteractionResult.CONSUME;
@@ -112,12 +116,19 @@ public class Ovamorph extends Alien implements Shearable {
             } else if (isRooted() && itemStack.is(Items.SHEARS)) {
                 shear(SoundSource.PLAYERS);
                 gameEvent(GameEvent.SHEAR, player);
-                itemStack.hurtAndBreak(1, player, getSlotForHand(interactionHand));
+
+                if (!AVPPredicates.IS_IMMORTAL.test(player)) {
+                    itemStack.hurtAndBreak(1, player, getSlotForHand(interactionHand));
+                }
+
                 return InteractionResult.SUCCESS;
             } else if (!isRooted() && itemStack.is(resinBallItem)) {
                 level().playSound(null, this, SoundEvents.HONEY_BLOCK_PLACE, SoundSource.PLAYERS, 1.0F, 1.0F);
                 setRooted(true);
-                itemStack.shrink(1);
+
+                if (!AVPPredicates.IS_IMMORTAL.test(player)) {
+                    itemStack.shrink(1);
+                }
             }
         }
 
