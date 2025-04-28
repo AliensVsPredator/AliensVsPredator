@@ -59,22 +59,26 @@ public class AVPEntityTypes {
 
     public static final EntityType<Acid> ACID = register(
         "acid",
-        EntityType.Builder.of(Acid::new, MobCategory.MISC).sized(0.66F, 0.05F)
+        EntityType.Builder.of(Acid::new, MobCategory.MISC)
+            .sized(0.66F, 0.05F)
     );
 
     public static final EntityType<Chestburster> CHESTBURSTER = register(
         "chestburster",
-        EntityType.Builder.of(Chestburster::new, ALIEN_CATEGORY).sized(0.35f, 0.35f)
+        EntityType.Builder.of(Chestburster::new, ALIEN_CATEGORY)
+            .sized(0.35f, 0.35f)
     );
 
     public static final EntityType<Drone> DRONE = register(
         "drone",
-        EntityType.Builder.of(Drone::new, ALIEN_CATEGORY).sized(0.8f, 1.98f)
+        EntityType.Builder.of(Drone::new, ALIEN_CATEGORY)
+            .sized(0.8f, 1.98f)
     );
 
     public static final EntityType<Facehugger> FACEHUGGER = register(
         "facehugger",
-        EntityType.Builder.of(Facehugger::new, ALIEN_CATEGORY).sized(0.8f, 0.25f)
+        EntityType.Builder.of(Facehugger::new, ALIEN_CATEGORY)
+            .sized(0.8f, 0.25f)
     );
 
     public static final EntityType<ShurikenItemEntity> SHURIKEN = register(
@@ -105,17 +109,20 @@ public class AVPEntityTypes {
 
     public static final EntityType<Ovamorph> OVAMORPH = register(
         "ovamorph",
-        EntityType.Builder.of(Ovamorph::new, ALIEN_CATEGORY).sized(0.65f, 0.8f)
+        EntityType.Builder.of(Ovamorph::new, ALIEN_CATEGORY)
+            .sized(0.65f, 0.8f)
     );
 
     public static final EntityType<Praetorian> PRAETORIAN = register(
         "praetorian",
-        EntityType.Builder.of(Praetorian::new, ALIEN_CATEGORY).sized(0.98f, 3.98f)
+        EntityType.Builder.of(Praetorian::new, ALIEN_CATEGORY)
+            .sized(0.98f, 3.98f)
     );
 
     public static final EntityType<Queen> QUEEN = register(
         "queen",
-        EntityType.Builder.of(Queen::new, ALIEN_CATEGORY).sized(1.98f, 3.98f)
+        EntityType.Builder.of(Queen::new, ALIEN_CATEGORY)
+            .sized(1.98f, 3.98f)
     );
 
     public static final EntityType<Rocket> ROCKET = register(
@@ -134,12 +141,14 @@ public class AVPEntityTypes {
 
     public static final EntityType<Warrior> WARRIOR = register(
         "warrior",
-        EntityType.Builder.of(Warrior::new, ALIEN_CATEGORY).sized(0.8f, 1.98f)
+        EntityType.Builder.of(Warrior::new, ALIEN_CATEGORY)
+            .sized(0.8f, 1.98f)
     );
 
     public static final EntityType<Yautja> YAUTJA = register(
         "yautja",
-        EntityType.Builder.of(Yautja::new, PREDATOR_CATEGORY).sized(0.98f, 2.48f)
+        EntityType.Builder.of(Yautja::new, PREDATOR_CATEGORY)
+            .sized(0.98f, 2.48f)
     );
 
     public static final EntityType<Marine> MARINE = register(
@@ -170,218 +179,245 @@ public class AVPEntityTypes {
 
     public static final EntityType<Chestburster> ABERRANT_CHESTBURSTER = register(
         "aberrant_chestburster",
-        EntityType.Builder.of(
+        EntityType.Builder.<Chestburster>of(
             (type, level) -> aberrantFactory(Chestburster::new, type, level),
             AVPEntityTypes.ALIEN_CATEGORY
         )
+            .sized(0.35f, 0.35f)
     );
 
     public static final EntityType<Drone> ABERRANT_DRONE = register(
         "aberrant_drone",
-        EntityType.Builder.of(
+        EntityType.Builder.<Drone>of(
             (type, level) -> aberrantFactory(Drone::new, type, level),
             AVPEntityTypes.ALIEN_CATEGORY
         )
+            .sized(0.8f, 1.98f)
     );
 
     public static final EntityType<Facehugger> ABERRANT_FACEHUGGER = register(
         "aberrant_facehugger",
-        EntityType.Builder.of(
+        EntityType.Builder.<Facehugger>of(
             (type, level) -> aberrantFactory(Facehugger::new, type, level),
             AVPEntityTypes.ALIEN_CATEGORY
         )
+            .sized(0.8f, 0.25f)
     );
 
     public static final EntityType<Ovamorph> ABERRANT_OVAMORPH = register(
         "aberrant_ovamorph",
-        EntityType.Builder.of(
+        EntityType.Builder.<Ovamorph>of(
             (type, level) -> aberrantFactory(Ovamorph::new, type, level),
             AVPEntityTypes.ALIEN_CATEGORY
         )
+            .sized(0.65f, 0.8f)
     );
 
     public static final EntityType<Praetorian> ABERRANT_PRAETORIAN = register(
         "aberrant_praetorian",
-        EntityType.Builder.of(
+        EntityType.Builder.<Praetorian>of(
             (type, level) -> aberrantFactory(Praetorian::new, type, level),
             AVPEntityTypes.ALIEN_CATEGORY
         )
+            .sized(0.98f, 3.98f)
     );
 
     public static final EntityType<Warrior> ABERRANT_WARRIOR = register(
         "aberrant_warrior",
-        EntityType.Builder.of(
+        EntityType.Builder.<Warrior>of(
             (type, level) -> aberrantFactory(Warrior::new, type, level),
             AVPEntityTypes.ALIEN_CATEGORY
         )
+            .sized(0.8f, 1.98f)
     );
 
     public static final EntityType<Queen> ABERRANT_QUEEN = register(
         "aberrant_queen",
-        EntityType.Builder.of(
+        EntityType.Builder.<Queen>of(
             (type, level) -> aberrantFactory(Queen::new, type, level),
             AVPEntityTypes.ALIEN_CATEGORY
         )
+            .sized(1.98f, 3.98f)
     );
 
     public static final EntityType<Drone> IRRADIATED_DRONE = register(
         "irradiated_drone",
-        EntityType.Builder.of(
+        EntityType.Builder.<Drone>of(
             (type, level) -> irradiatedFactory(Drone::new, type, level),
             AVPEntityTypes.ALIEN_CATEGORY
         )
+            .sized(0.8f, 1.98f)
     );
 
     public static final EntityType<Praetorian> IRRADIATED_PRAETORIAN = register(
         "irradiated_praetorian",
-        EntityType.Builder.of(
+        EntityType.Builder.<Praetorian>of(
             (type, level) -> irradiatedFactory(Praetorian::new, type, level),
             AVPEntityTypes.ALIEN_CATEGORY
         )
+            .sized(0.98f, 3.98f)
     );
 
     public static final EntityType<Queen> IRRADIATED_QUEEN = register(
         "irradiated_queen",
-        EntityType.Builder.of(
+        EntityType.Builder.<Queen>of(
             (type, level) -> irradiatedFactory(Queen::new, type, level),
             AVPEntityTypes.ALIEN_CATEGORY
         )
+            .sized(1.98f, 3.98f)
     );
 
     public static final EntityType<Warrior> IRRADIATED_WARRIOR = register(
         "irradiated_warrior",
-        EntityType.Builder.of(
+        EntityType.Builder.<Warrior>of(
             (type, level) -> irradiatedFactory(Warrior::new, type, level),
             AVPEntityTypes.ALIEN_CATEGORY
         )
+            .sized(0.8f, 1.98f)
     );
 
     public static final EntityType<Chestburster> NETHER_CHESTBURSTER = register(
         "nether_chestburster",
-        EntityType.Builder.of(
+        EntityType.Builder.<Chestburster>of(
             (type, level) -> nethermorphFactory(Chestburster::new, type, level),
             AVPEntityTypes.ALIEN_CATEGORY
         )
+            .sized(0.35f, 0.35f)
     );
 
     public static final EntityType<Drone> NETHER_DRONE = register(
         "nether_drone",
-        EntityType.Builder.of(
+        EntityType.Builder.<Drone>of(
             (type, level) -> nethermorphFactory(Drone::new, type, level),
             AVPEntityTypes.ALIEN_CATEGORY
         )
+            .sized(0.8f, 1.98f)
     );
 
     public static final EntityType<Facehugger> NETHER_FACEHUGGER = register(
         "nether_facehugger",
-        EntityType.Builder.of(
+        EntityType.Builder.<Facehugger>of(
             (type, level) -> nethermorphFactory(Facehugger::new, type, level),
             AVPEntityTypes.ALIEN_CATEGORY
         )
+            .sized(0.8f, 0.25f)
     );
 
     public static final EntityType<Ovamorph> NETHER_OVAMORPH = register(
         "nether_ovamorph",
-        EntityType.Builder.of(
+        EntityType.Builder.<Ovamorph>of(
             (type, level) -> nethermorphFactory(Ovamorph::new, type, level),
             AVPEntityTypes.ALIEN_CATEGORY
         )
+            .sized(0.65f, 0.8f)
     );
 
     public static final EntityType<Praetorian> NETHER_PRAETORIAN = register(
         "nether_praetorian",
-        EntityType.Builder.of(
+        EntityType.Builder.<Praetorian>of(
             (type, level) -> nethermorphFactory(Praetorian::new, type, level),
             AVPEntityTypes.ALIEN_CATEGORY
         )
+            .sized(0.98f, 3.98f)
     );
 
     public static final EntityType<Warrior> NETHER_WARRIOR = register(
         "nether_warrior",
-        EntityType.Builder.of(
+        EntityType.Builder.<Warrior>of(
             (type, level) -> nethermorphFactory(Warrior::new, type, level),
             AVPEntityTypes.ALIEN_CATEGORY
         )
+            .sized(0.8f, 1.98f)
     );
 
     public static final EntityType<Queen> NETHER_QUEEN = register(
         "nether_queen",
-        EntityType.Builder.of(
+        EntityType.Builder.<Queen>of(
             (type, level) -> nethermorphFactory(Queen::new, type, level),
             AVPEntityTypes.ALIEN_CATEGORY
         )
+            .sized(1.98f, 3.98f)
     );
 
     public static final EntityType<Chestburster> ROYAL_ABERRANT_CHESTBURSTER = register(
         "royal_aberrant_chestburster",
-        EntityType.Builder.of(
+        EntityType.Builder.<Chestburster>of(
             (type, level) -> royalAberrantFactory(Chestburster::new, type, level),
             AVPEntityTypes.ALIEN_CATEGORY
         )
+            .sized(0.35f, 0.35f)
     );
 
     public static final EntityType<Facehugger> ROYAL_ABERRANT_FACEHUGGER = register(
         "royal_aberrant_facehugger",
-        EntityType.Builder.of(
+        EntityType.Builder.<Facehugger>of(
             (type, level) -> royalAberrantFactory(Facehugger::new, type, level),
             AVPEntityTypes.ALIEN_CATEGORY
         )
+            .sized(0.8f, 0.25f)
     );
 
     public static final EntityType<Ovamorph> ROYAL_ABERRANT_OVAMORPH = register(
         "royal_aberrant_ovamorph",
-        EntityType.Builder.of(
+        EntityType.Builder.<Ovamorph>of(
             (type, level) -> royalAberrantFactory(Ovamorph::new, type, level),
             AVPEntityTypes.ALIEN_CATEGORY
         )
+            .sized(0.65f, 0.8f)
     );
 
     public static final EntityType<Chestburster> ROYAL_CHESTBURSTER = register(
         "royal_chestburster",
-        EntityType.Builder.of(
+        EntityType.Builder.<Chestburster>of(
             (type, level) -> royalFactory(Chestburster::new, type, level),
             AVPEntityTypes.ALIEN_CATEGORY
         )
+            .sized(0.35f, 0.35f)
     );
 
     public static final EntityType<Facehugger> ROYAL_FACEHUGGER = register(
         "royal_facehugger",
-        EntityType.Builder.of(
+        EntityType.Builder.<Facehugger>of(
             (type, level) -> royalFactory(Facehugger::new, type, level),
             AVPEntityTypes.ALIEN_CATEGORY
         )
+            .sized(0.8f, 0.25f)
     );
 
     public static final EntityType<Ovamorph> ROYAL_OVAMORPH = register(
         "royal_ovamorph",
-        EntityType.Builder.of(
+        EntityType.Builder.<Ovamorph>of(
             (type, level) -> royalFactory(Ovamorph::new, type, level),
             AVPEntityTypes.ALIEN_CATEGORY
         )
+            .sized(0.65f, 0.8f)
     );
 
     public static final EntityType<Chestburster> ROYAL_NETHER_CHESTBURSTER = register(
         "royal_nether_chestburster",
-        EntityType.Builder.of(
+        EntityType.Builder.<Chestburster>of(
             (type, level) -> royalNethermorphFactory(Chestburster::new, type, level),
             AVPEntityTypes.ALIEN_CATEGORY
         )
+            .sized(0.35f, 0.35f)
     );
 
     public static final EntityType<Facehugger> ROYAL_NETHER_FACEHUGGER = register(
         "royal_nether_facehugger",
-        EntityType.Builder.of(
+        EntityType.Builder.<Facehugger>of(
             (type, level) -> royalNethermorphFactory(Facehugger::new, type, level),
             AVPEntityTypes.ALIEN_CATEGORY
         )
+            .sized(0.8f, 0.25f)
     );
 
     public static final EntityType<Ovamorph> ROYAL_NETHER_OVAMORPH = register(
         "royal_nether_ovamorph",
-        EntityType.Builder.of(
+        EntityType.Builder.<Ovamorph>of(
             (type, level) -> royalNethermorphFactory(Ovamorph::new, type, level),
             AVPEntityTypes.ALIEN_CATEGORY
         )
+            .sized(0.65f, 0.8f)
     );
 
     private static <T extends Alien> T irradiatedFactory(
