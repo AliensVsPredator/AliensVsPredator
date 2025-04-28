@@ -2,14 +2,13 @@
   "biomes": "#avp:has_marine_camp_grass",
   "adapt_noise": false,
   "type": "minecraft:jigsaw",
-  "start_pool": "avp:marine_camp_grass",
+  "start_pool": "avp:marine_camp_grass_summon",
   "placement": "on_land_surface",
   "size": 1,
   "step": "top_layer_modification",
   "start_height": {
     "absolute": -1
   },
-  "cannot_spawn_in_liquid": true,
   "max_distance_from_center": 116,
   "project_start_to_heightmap": "WORLD_SURFACE_WG",
   "terrain_adaptation": "beard_box",
@@ -20,7 +19,7 @@
       "spawns": [
         {
           "type": "avp:marine",
-          "weight": 30,
+          "weight": 5,
           "minCount": 1,
           "maxCount": 1
         }

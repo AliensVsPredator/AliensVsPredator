@@ -1,0 +1,78 @@
+{
+  "name": "avp:marine",
+  "fallback": "minecraft:empty",
+  "elements": [
+    {
+      "weight": 1,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "projection": "rigid",
+        "location": "avp:marine_spawn/marine_1",
+        "processors": "minecraft:empty"
+      }
+    },
+        {
+      "weight": 1,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "projection": "rigid",
+        "location": "avp:marine_spawn/marine_2",
+        "processors": "minecraft:empty"
+      }
+    },
+       {
+      "weight": 1,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "projection": "rigid",
+        "location": "avp:marine_spawn/marine_3",
+        "processors": "minecraft:empty"
+      }
+    },
+        {
+      "weight": 1,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "projection": "rigid",
+        "location": "avp:marine_spawn/marine_4",
+        "processors": "minecraft:empty"
+      }
+    },
+        {
+      "weight": 1,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "projection": "rigid",
+        "location": "avp:marine_spawn/marine_5",
+        "processors": "minecraft:empty"
+      }
+    },
+        {
+      "weight": 1,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "projection": "rigid",
+        "location": "avp:marine_spawn/marine_6",
+        "processors": "minecraft:empty"
+      }
+    },
+        {
+      "weight": 1,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "projection": "rigid",
+        "location": "avp:marine_spawn/marine_7",
+        "processors": "minecraft:empty"
+      }
+    },
+        {
+      "weight": 1,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "projection": "rigid",
+        "location": "avp:marine_spawn/marine_8",
+        "processors": "minecraft:empty"
+      }
+    }
+  ]
+}

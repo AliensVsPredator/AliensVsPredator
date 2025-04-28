@@ -1,5 +1,5 @@
 {
-  "name": "avp:marine_camp_grass",
+  "name": "avp:marine_summon",
   "fallback": "minecraft:empty",
   "elements": [
     {
@@ -8,6 +8,15 @@
         "element_type": "minecraft:single_pool_element",
         "projection": "rigid",
         "location": "avp:marine_camp_grass",
+        "processors": "minecraft:empty"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "projection": "rigid",
+        "location": "avp:outpost/comm/outpost_comm_bottom",
         "processors": "minecraft:empty"
       }
     }
