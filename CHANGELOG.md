@@ -32,6 +32,7 @@
     - Praetorians dig a single block 3.33x faster (15 -> 50 block damage).
 
 ## 🐞 Fixes
+- Fixed world crash caused by ModernFix.
 - Fixed xenomorphs periodically getting stuck while digging.
 - Fixed radiation damaging regular armor on mobs and players (armor is now ignored).
 - Fixed radiation damaging wolf armor on wolves (armor is now ignored).
