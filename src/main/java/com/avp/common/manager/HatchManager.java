@@ -145,8 +145,11 @@ public class HatchManager {
         facehugger.updateStateBasedOnGenetics();
 
         var ovamorphAbovePos = ovamorph.blockPosition().above();
-        var ovamorphSuffocatingAboveCheck = ovamorph.level().getBlockState(ovamorphAbovePos).isSuffocating(ovamorph.level(), ovamorphAbovePos);
-        // Spawns it at the top of the ovamorph if the above block is not a suffocating block, else spawn at the bottom of ovamorph.
+        var ovamorphSuffocatingAboveCheck = ovamorph.level()
+            .getBlockState(ovamorphAbovePos)
+            .isSuffocating(ovamorph.level(), ovamorphAbovePos);
+        // Spawns it at the top of the ovamorph if the above block is not a suffocating block, else spawn at the bottom
+        // of ovamorph.
         var ovamorphYPos = ovamorphSuffocatingAboveCheck ? ovamorph.position().y : ovamorph.position().y + ovamorph.getBbHeight();
         facehugger.setPos(ovamorph.position().x, ovamorphYPos, ovamorph.position().z);
 
@@ -161,9 +164,9 @@ public class HatchManager {
         // Gives the facehugger a jump like movement if the block above is not a suffocating block.
         if (!ovamorphSuffocatingAboveCheck) {
             facehugger.setDeltaMovement(
-                    Mth.nextFloat(facehugger.getRandom(), -0.5f, 0.5f),
-                    0.7,
-                    Mth.nextFloat(facehugger.getRandom(), -0.5f, 0.5f)
+                Mth.nextFloat(facehugger.getRandom(), -0.5f, 0.5f),
+                0.7,
+                Mth.nextFloat(facehugger.getRandom(), -0.5f, 0.5f)
             );
         }
 

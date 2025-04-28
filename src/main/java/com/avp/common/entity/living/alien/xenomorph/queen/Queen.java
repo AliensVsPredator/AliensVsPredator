@@ -10,6 +10,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import com.avp.AVP;
+import com.avp.common.ai.goal.DigToTargetGoal;
 import com.avp.common.ai.goal.QueenLayEggGoal;
 import com.avp.common.block.AVPBlockTags;
 import com.avp.common.entity.living.alien.Alien;
@@ -58,6 +59,11 @@ public class Queen extends Xenomorph {
     protected void registerGoals() {
         super.registerGoals();
         goalSelector.addGoal(5, new QueenLayEggGoal(this));
+    }
+
+    @Override
+    protected void addDigToTargetGoal() {
+        goalSelector.addGoal(5, new DigToTargetGoal(this, 32, 4));
     }
 
     @Override

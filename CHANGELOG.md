@@ -19,10 +19,21 @@
     - Pressure Suit
 
 ## ♻️ Changes
-- Facehuggers now spawn on top of ovamorph and then jump towards to a random direction to get off.
+- Facehuggers now spawn on top of ovamorphs if no obstructing block present.
+- Facehuggers now jump towards a random direction when leaving ovamorphs.
+- Facehuggers now move 10% faster after targets.
+- Xenomorphs now move 20% faster after targets.
+- Improved xenomorph(and their variants) digging capabilities:
+  - Xenomorphs now dig 2x as many blocks at a single time.
+  - Queens now dig 4x as many blocks at a single time.
+  - Xenomorphs now dig a single block faster:
+    - Drones dig a single block 10x faster (5 -> 50 block damage).
+    - Warriors dig a single block 5x faster (10 -> 50 block damage).
+    - Praetorians dig a single block 3.33x faster (15 -> 50 block damage).
 
 ## 🐞 Fixes
 - Fixed world crash caused by ModernFix.
+- Fixed xenomorphs periodically getting stuck while digging.
 - Fixed radiation damaging regular armor on mobs and players (armor is now ignored).
 - Fixed radiation damaging wolf armor on wolves (armor is now ignored).
 - Fixed radiation damage being reduced by protection 4.

@@ -108,7 +108,7 @@ public abstract class Xenomorph extends Alien implements ResinProducer {
     protected void registerGoals() {
         // goalSelector.addGoal(1, new FleeFightGoal(this));
         goalSelector.addGoal(1, new XenoFloatGoal(this));
-        goalSelector.addGoal(5, new DigToTargetGoal(this, 32));
+        addDigToTargetGoal();
         goalSelector.addGoal(7, new StrollAroundInWaterGoal(this, 0.5));
         goalSelector.addGoal(7, new WaterAvoidingRandomStrollGoal(this, 0.5));
         targetSelector.addGoal(1, (new HurtByTargetGoal(this)).setAlertOthers(Xenomorph.class));
@@ -121,6 +121,10 @@ public abstract class Xenomorph extends Alien implements ResinProducer {
                 target -> AlienPredicates.canTarget(this, target)
             )
         );
+    }
+
+    protected void addDigToTargetGoal() {
+        goalSelector.addGoal(5, new DigToTargetGoal(this, 32, 2));
     }
 
     @Override
