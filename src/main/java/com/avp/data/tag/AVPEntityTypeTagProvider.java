@@ -11,6 +11,7 @@ import java.util.concurrent.CompletableFuture;
 import com.avp.common.entity.AVPEntityTypeTags;
 import com.avp.common.entity.type.AVPEntityTypes;
 import com.avp.data.compatibility.gigeresque.GigeresqueConstants;
+import com.avp.data.compatibility.stellaris.StellarisConstants;
 
 public class AVPEntityTypeTagProvider extends FabricTagProvider.EntityTypeTagProvider {
 
@@ -277,5 +278,9 @@ public class AVPEntityTypeTagProvider extends FabricTagProvider.EntityTypeTagPro
     private void addCompatibilityTags() {
         getOrCreateTagBuilder(AVPEntityTypeTags.ACID_IMMUNE)
             .addOptionalTag(GigeresqueConstants.ACID_RESISTANT_ENTITY_TYPE_TAG);
+
+        getOrCreateTagBuilder(StellarisConstants.NO_OXYGEN_NEEDED)
+            .setReplace(false)
+            .addTag(AVPEntityTypeTags.ALIENS);
     }
 }

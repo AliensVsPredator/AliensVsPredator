@@ -71,6 +71,7 @@ public class OvamorphRenderer extends AzEntityRenderer<Ovamorph> {
         return MODEL;
     }
 
+    // TODO: Add textures with transparency to so the ovamorph will be transparent when hatched.
     public static ResourceLocation textureLocation(Ovamorph ovamorph) {
         if (ovamorph.isRoyal()) {
             if (ovamorph.isNetherAfflicted()) {
@@ -102,11 +103,4 @@ public class OvamorphRenderer extends AzEntityRenderer<Ovamorph> {
 
         return RenderType.entityCutoutNoCull(textureLocation(ovamorph));
     }
-
-    // TODO:
-    // @Override
-    // public RenderType getRenderType(Ovamorph animatable, ResourceLocation texture, @Nullable MultiBufferSource
-    // bufferSource, float partialTick) {
-    // return RenderType.entityTranslucent(texture);
-    // }
 }

@@ -541,6 +541,12 @@ public class EnglishLanguageProvider extends FabricLanguageProvider {
 
         // Sounds
         addSound(translationBuilder, AVPSoundEvents.BLOCK_ACID_BURN, "Acid burns");
+        addSound(translationBuilder, AVPSoundEvents.BLOCK_RESIN_SPREAD, "Xenomorph spreads resin");
+
+        addSound(translationBuilder, AVPSoundEvents.ENTITY_OVAMORPH_HATCH, "Ovamorph hatches");
+        addSound(translationBuilder, AVPSoundEvents.ENTITY_OVAMORPH_LAID, "Queen lays egg");
+        addSound(translationBuilder, AVPSoundEvents.ENTITY_OVAMORPH_ROOT, "Ovamorph takes root");
+        addSound(translationBuilder, AVPSoundEvents.ENTITY_OVAMORPH_SHEAR, "Ovamorph de-roots");
 
         addSound(translationBuilder, AVPSoundEvents.ENTITY_QUEEN_ARM_ATTACK, "Queen attacks");
         addSound(translationBuilder, AVPSoundEvents.ENTITY_QUEEN_BACK_HAND_ATTACK, "Queen back hand attacks");
@@ -548,8 +554,8 @@ public class EnglishLanguageProvider extends FabricLanguageProvider {
         addSound(translationBuilder, AVPSoundEvents.ENTITY_QUEEN_SCREAM, "Queen screams");
         addSound(translationBuilder, AVPSoundEvents.ENTITY_QUEEN_TAIL_ATTACK, "Queen tail attacks");
         addSound(translationBuilder, AVPSoundEvents.ENTITY_QUEEN_DEATH, "Queen dies");
-        addSound(translationBuilder, AVPSoundEvents.ENTITY_QUEEN_PAIN, "Queen hurts");
-        addSound(translationBuilder, AVPSoundEvents.ENTITY_QUEEN_IDLE, "Queen breaths");
+        addSound(translationBuilder, AVPSoundEvents.ENTITY_QUEEN_HURT, "Queen hurts");
+        addSound(translationBuilder, AVPSoundEvents.ENTITY_QUEEN_IDLE, "Queen breathes");
         addSound(translationBuilder, AVPSoundEvents.ENTITY_QUEEN_STEP_THUMP, "Queen steps");
         addSound(translationBuilder, AVPSoundEvents.ENTITY_QUEEN_STEP_THUMP_ROCK, "Queen steps");
 
@@ -610,6 +616,29 @@ public class EnglishLanguageProvider extends FabricLanguageProvider {
         translationBuilder.add("tooltip.avp.knockback", "Knockback: ");
         translationBuilder.add("tooltip.avp.recoil", "Recoil: ");
         translationBuilder.add("tooltip.avp.capacity", "Capacity: ");
+
+        translationBuilder.add("tooltip.avp.mk50_suit.full_set_bonus", "Full Set Bonus:");
+        translationBuilder.add("tooltip.avp.mk50_suit.radiation_resistance", "+ Radiation Resistance");
+        translationBuilder.add("tooltip.avp.mk50_suit.water_breathing", "+ Water Breathing");
+        translationBuilder.add("tooltip.avp.mk50_suit.slowness", "- Slowness");
+
+        translationBuilder.add("tooltip.avp.pressure_suit.full_set_bonus", "Full Set Bonus:");
+        translationBuilder.add("tooltip.avp.pressure_suit.water_breathing", "+ Water Breathing");
+
+        translationBuilder.add("tooltip.avp.ammo_chest.in_inventory", "When In Inventory:");
+        translationBuilder.add("tooltip.avp.ammo_chest.reload_from_chest", "+ Guns Auto-Reload Ammo from Chest");
+        translationBuilder.add("tooltip.avp.ammo_chest.placed", "When Placed:");
+        translationBuilder.add("tooltip.avp.ammo_chest.turret_load_from_chest", "+ Nearby Turrets use Ammo from Chest");
+
+        translationBuilder.add("tooltip.avp.lead_chest.in_inventory", "When In Inventory:");
+        translationBuilder.add("tooltip.avp.lead_chest.auto_store_irradiated_items", "+ Irradiated Items Auto-Stored in Chest");
+
+        translationBuilder.add("tooltip.avp.sentry_turret.requires", "Requires:");
+        translationBuilder.add("tooltip.avp.sentry_turret.redstone_power_requirement", "- Redstone Power");
+        translationBuilder.add(
+            "tooltip.avp.sentry_turret.nearby_ammo_chest_with_ammo_requirement",
+            "- Nearby Ammo Chest with Medium Bullets"
+        );
 
         // Keybinds
         translationBuilder.add("key.avp.reload", "Reload");

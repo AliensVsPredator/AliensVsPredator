@@ -5,7 +5,6 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.GameRules;
@@ -25,28 +24,39 @@ import com.avp.server.BlockBreakProgressManager;
 
 public class DigToTargetGoal extends Goal {
 
+    private static final float BREAKING_SPEED = 50F;
+
     private final Mob mob;
 
     private final double reachDistance;
 
     private final double maxDistanceFromTarget;
 
-    private final List<BlockPos> targetBlocks = new ArrayList<>();
+    private final List<BlockPos> targetBlockPositions = new ArrayList<>();
+
+    private final int parallelBlockBreakCount;
 
     private BlockState blockState = null;
 
     private Vec3 lastPosition = null;
 
-    private int lastPositionTickstamp = 0;
+    private int lastProgressTick = 0;
+
+    private double lastDistanceToTarget = Double.MAX_VALUE;
 
     public DigToTargetGoal(Mob mob) {
         this(mob, 16);
     }
 
     public DigToTargetGoal(Mob mob, double maxDistanceFromTarget) {
+        this(mob, maxDistanceFromTarget, 1);
+    }
+
+    public DigToTargetGoal(Mob mob, double maxDistanceFromTarget, int parallelBlockBreakCount) {
         this.mob = mob;
         this.reachDistance = 4;
         this.maxDistanceFromTarget = maxDistanceFromTarget * maxDistanceFromTarget;
+        this.parallelBlockBreakCount = parallelBlockBreakCount;
     }
 
     @Override
@@ -63,7 +73,7 @@ public class DigToTargetGoal extends Goal {
 
         return mob.onGround()
             && isStuck(target)
-            && (mob.distanceToSqr(target) > 2d || !mob.hasLineOfSight(target))
+            && (mob.distanceToSqr(target) > 2d || !mob.getSensing().hasLineOfSight(target))
             && mob.distanceToSqr(target) < maxDistanceFromTarget;
     }
 
@@ -71,7 +81,7 @@ public class DigToTargetGoal extends Goal {
     public boolean canContinueToUse() {
         var target = mob.getTarget();
 
-        if (target == null || !target.isAlive() || targetBlocks.isEmpty()) {
+        if (target == null || !target.isAlive() || targetBlockPositions.isEmpty()) {
             return false;
         }
 
@@ -80,8 +90,8 @@ public class DigToTargetGoal extends Goal {
         }
 
         return mob.onGround()
-            && !mob.level().getBlockState(targetBlocks.getFirst()).isAir()
-            && targetBlocks.getFirst().distSqr(mob.blockPosition()) < reachDistance * reachDistance;
+            && !mob.level().getBlockState(targetBlockPositions.getFirst()).isAir()
+            && targetBlockPositions.getFirst().distSqr(mob.blockPosition()) < reachDistance * reachDistance;
     }
 
     @Override
@@ -94,7 +104,7 @@ public class DigToTargetGoal extends Goal {
 
         gatherTargetBlocks(target);
 
-        if (!targetBlocks.isEmpty()) {
+        if (!targetBlockPositions.isEmpty()) {
             initBlockBreak();
             mob.setAggressive(true);
         }
@@ -102,8 +112,8 @@ public class DigToTargetGoal extends Goal {
 
     @Override
     public void stop() {
-        if (!targetBlocks.isEmpty()) {
-            targetBlocks.clear();
+        if (!targetBlockPositions.isEmpty()) {
+            targetBlockPositions.clear();
         }
 
         this.blockState = null;
@@ -115,36 +125,38 @@ public class DigToTargetGoal extends Goal {
     public void tick() {
         var target = mob.getTarget();
 
-        if (target == null || targetBlocks.isEmpty()) {
+        if (target == null || targetBlockPositions.isEmpty()) {
             return;
         }
 
-        var pos = targetBlocks.getFirst();
+        if (mob.tickCount % 4 == 0) {
+            for (int i = 0; i < targetBlockPositions.size() && i < parallelBlockBreakCount; i++) {
+                breakBlockAtPosition(targetBlockPositions.get(i), target);
+            }
+        }
+    }
+
+    private void breakBlockAtPosition(BlockPos pos, LivingEntity target) {
         mob.getLookControl().setLookAt(pos.getX() + 0.5d, pos.getY() + 0.5d, pos.getZ() + 0.5d);
 
-        var attackAttribute = mob.getAttribute(Attributes.ATTACK_DAMAGE);
-        var damage = attackAttribute == null ? 10F : ((float) attackAttribute.getValue());
+        BlockBreakProgressManager.damage(mob.level(), pos, BREAKING_SPEED);
 
-        if (mob.tickCount % 4 == 0) {
-            BlockBreakProgressManager.damage(mob.level(), pos, damage);
+        var soundType = blockState.getSoundType();
 
-            var soundType = blockState.getSoundType();
-
-            mob.level()
-                .playSound(
-                    null,
-                    pos,
-                    soundType.getHitSound(),
-                    SoundSource.BLOCKS,
-                    (soundType.getVolume() + 1.0F) / 8.0F,
-                    soundType.getPitch() * 0.5F
-                );
-        }
+        mob.level()
+            .playSound(
+                null,
+                pos,
+                soundType.getHitSound(),
+                SoundSource.BLOCKS,
+                (soundType.getVolume() + 1.0F) / 8.0F,
+                soundType.getPitch() * 0.5F
+            );
 
         if (mob.level().getBlockState(pos).is(Blocks.AIR)) {
-            targetBlocks.removeFirst();
+            targetBlockPositions.removeFirst();
 
-            if (!targetBlocks.isEmpty()) {
+            if (!targetBlockPositions.isEmpty()) {
                 initBlockBreak();
             } else if (mob.distanceToSqr(target) > 2d && !mob.getSensing().hasLineOfSight(target)) {
                 start();
@@ -153,7 +165,7 @@ public class DigToTargetGoal extends Goal {
     }
 
     private void initBlockBreak() {
-        this.blockState = mob.level().getBlockState(targetBlocks.getFirst());
+        this.blockState = mob.level().getBlockState(targetBlockPositions.getFirst());
     }
 
     private void gatherTargetBlocks(@NotNull LivingEntity target) {
@@ -170,7 +182,7 @@ public class DigToTargetGoal extends Goal {
 
                     if (
                         rayTraceResult.getType() == HitResult.Type.MISS
-                            || targetBlocks.contains(rayTraceResult.getBlockPos())
+                            || targetBlockPositions.contains(rayTraceResult.getBlockPos())
                             || rayTraceResult.getBlockPos().getY() > 320
                     ) { // TODO: The max y level mobs can mine up to
                         continue;
@@ -199,12 +211,12 @@ public class DigToTargetGoal extends Goal {
 
                     // TODO: Check if block is below walkable path and exclude.
 
-                    targetBlocks.add(rayTraceResult.getBlockPos());
+                    targetBlockPositions.add(rayTraceResult.getBlockPos());
                 }
             }
         }
 
-        Collections.reverse(targetBlocks);
+        Collections.reverse(targetBlockPositions);
     }
 
     @Override
@@ -212,19 +224,39 @@ public class DigToTargetGoal extends Goal {
         return true;
     }
 
-    /**
-     * Returns true if the mob has been stuck in the same spot (radius 1.5 blocks) for more than 3 seconds
-     */
     public boolean isStuck(@NotNull LivingEntity target) {
-        if (mob.distanceTo(target) <= mob.getBbWidth()) {
+        double currentDistanceToTarget = mob.distanceToSqr(target);
+
+        // If very close, no need to consider stuck.
+        if (currentDistanceToTarget <= mob.getBbWidth() * mob.getBbWidth()) {
+            resetProgress();
             return false;
         }
 
-        if (lastPosition == null || mob.distanceToSqr(lastPosition) > 2.25d) {
+        if (lastPosition == null) {
+            // First call: record initial info.
             this.lastPosition = mob.position();
-            this.lastPositionTickstamp = mob.tickCount;
+            this.lastProgressTick = mob.tickCount;
+            this.lastDistanceToTarget = currentDistanceToTarget;
+            return false;
         }
 
-        return mob.getNavigation().isDone() || mob.tickCount - lastPositionTickstamp >= 60;
+        // If mob moved meaningfully closer to target, update progress .
+        if (currentDistanceToTarget < lastDistanceToTarget - 0.5d) {
+            // must be significantly closer (0.5 blocks^2).
+            this.lastPosition = mob.position();
+            this.lastProgressTick = mob.tickCount;
+            this.lastDistanceToTarget = currentDistanceToTarget;
+            return false;
+        }
+
+        // If no meaningful progress in 4 ticks, consider stuck.
+        return mob.tickCount - lastProgressTick >= 4;
+    }
+
+    private void resetProgress() {
+        lastPosition = null;
+        lastProgressTick = 0;
+        lastDistanceToTarget = Double.MAX_VALUE;
     }
 }

@@ -82,7 +82,7 @@ public class RadiationStatusEffect extends MobEffect {
         handleStatusEffects(livingEntity, 5 * 20, amplifier, MobEffects.WEAKNESS, MobEffects.HUNGER);
 
         if (livingEntity.tickCount % (4 * 20) == 0) {
-            livingEntity.hurt(createRadiationDamageSource(livingEntity), 0.1F);
+            livingEntity.hurt(createRadiationDamageSource(livingEntity), 0.5F);
         }
     }
 
@@ -97,7 +97,7 @@ public class RadiationStatusEffect extends MobEffect {
         );
 
         if (livingEntity.tickCount % (2 * 20) == 0) {
-            livingEntity.hurt(createRadiationDamageSource(livingEntity), 2.1F);
+            livingEntity.hurt(createRadiationDamageSource(livingEntity), 1.0F);
         }
     }
 
@@ -113,7 +113,7 @@ public class RadiationStatusEffect extends MobEffect {
         );
 
         if (livingEntity.tickCount % 20 == 0) {
-            livingEntity.hurt(createRadiationDamageSource(livingEntity), 5.0F);
+            livingEntity.hurt(createRadiationDamageSource(livingEntity), 2.0F);
         }
     }
 

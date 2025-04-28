@@ -34,6 +34,6 @@ public class SentryTurretAnimator extends AzEntityAnimator<SentryTurret> {
 
     @Override
     public void setCustomAnimations(SentryTurret animatable, float partialTicks) {
-        BasicAnimationUtils.applyHeadRotations(animatable, context(), partialTicks, "gRotationJoint", 0.2F);
+        BasicAnimationUtils.applyHeadRotations(animatable, context(), partialTicks, "gRotationJoint", 0F);
     }
 }
