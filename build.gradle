@@ -179,7 +179,7 @@ if (file('key.properties').exists()) {
 		type = STABLE
 		file = remapJar.archiveFile
 		modLoaders.add("fabric")
-
+		dryRun = false
 		discord {
 			webhookUrl = releaseProp.getProperty("discordKey")
 			dryRunWebhookUrl = releaseProp.getProperty("discordKey")
