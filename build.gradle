@@ -185,7 +185,31 @@ if (file('key.properties').exists()) {
 			dryRunWebhookUrl = releaseProp.getProperty("discordKey")
 			username = "MU/TH/UR"
 			avatarUrl = "https://i.imgur.com/5Y0EZ9x.jpeg"
-			content = changelog.map { "# A new version of AVP for Fabric has been released! <@&1113972507360362576> \n" + it}
+			content = changelog.map { text ->
+				def maxEmbedCharacterCount = 4096
+				def header = "# A new version of AVP for Fabric has been released!\n"
+				def footer = "\n...and more! Check the mod page for more details."
+
+				def needsTruncation = (header.length() + text.length()) > maxEmbedCharacterCount
+				def maxContentLength = maxEmbedCharacterCount - header.length() - (needsTruncation ? footer.length() : 0)
+
+				def truncatedText = text
+
+				if (needsTruncation) {
+					if (text.length() > maxContentLength) {
+						// First, take up to maxContentLength.
+						def candidate = text.take(maxContentLength)
+						// Then find the last newline before the cut.
+						def lastNewline = candidate.lastIndexOf('\n')
+						if (lastNewline != -1) {
+							candidate = candidate.take(lastNewline)
+						}
+						truncatedText = candidate
+					}
+				}
+
+				header + truncatedText + (needsTruncation ? footer : "")
+			}
 			setPlatforms(publishMods.platforms.curseforge, publishMods.platforms.modrinth)
 			style {
 				look = "MODERN"
