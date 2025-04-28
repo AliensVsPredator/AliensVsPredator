@@ -38,6 +38,7 @@
 
 ## 🐞 Fixes
 - Fixed world crash caused by ModernFix.
+- Fixed incorrect resin spreading subtitles.
 - Fixed shearing ovamorphs causing damage to shears while in creative mode.
 - Fixed rooting ovamorphs consuming resin balls while in creative mode.
 - Fixed royal jellying ovamorphs consuming royal jelly while in creative mode.

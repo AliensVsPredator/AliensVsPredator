@@ -10,6 +10,8 @@ public class AVPSoundEvents {
 
     public static final SoundEvent BLOCK_ACID_BURN = register("block.acid.burn");
 
+    public static final SoundEvent BLOCK_RESIN_SPREAD = register("block.resin.spread");
+
     public static final SoundEvent ENTITY_OVAMORPH_HATCH = register("entity.ovamorph.hatch");
 
     public static final SoundEvent ENTITY_OVAMORPH_LAID = register("entity.ovamorph.laid");

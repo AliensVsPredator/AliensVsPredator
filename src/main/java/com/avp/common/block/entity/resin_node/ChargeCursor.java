@@ -8,7 +8,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.LevelAccessor;
@@ -19,6 +18,7 @@ import java.util.Optional;
 import java.util.Set;
 
 import com.avp.common.block.entity.resin_node.behavior.SpreadBehavior;
+import com.avp.common.sound.AVPSoundEvents;
 
 public class ChargeCursor {
 
@@ -110,7 +110,7 @@ public class ChargeCursor {
                 resinBehavior = ChargeCursorUtil.getSpreadBehavior(blockState);
             }
 
-            levelAccessor.playSound(null, pos, SoundEvents.SCULK_BLOCK_SPREAD, SoundSource.BLOCKS, 1.0F, 1.0F);
+            levelAccessor.playSound(null, pos, AVPSoundEvents.BLOCK_RESIN_SPREAD, SoundSource.BLOCKS, 1.0F, 1.0F);
         }
 
         this.charge = resinBehavior.attemptUseCharge(this, levelAccessor, nodePos, randomSource, resinSpreader, bl);

@@ -541,6 +541,7 @@ public class EnglishLanguageProvider extends FabricLanguageProvider {
 
         // Sounds
         addSound(translationBuilder, AVPSoundEvents.BLOCK_ACID_BURN, "Acid burns");
+        addSound(translationBuilder, AVPSoundEvents.BLOCK_RESIN_SPREAD, "Xenomorph spreads resin");
 
         addSound(translationBuilder, AVPSoundEvents.ENTITY_OVAMORPH_HATCH, "Ovamorph hatches");
         addSound(translationBuilder, AVPSoundEvents.ENTITY_OVAMORPH_LAID, "Queen lays egg");

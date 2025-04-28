@@ -3,7 +3,6 @@ package com.avp.common.block.resin;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
@@ -24,6 +23,7 @@ import com.avp.common.block.AVPBlocks;
 import com.avp.common.block.entity.resin_node.ChargeCursor;
 import com.avp.common.block.entity.resin_node.ResinSpreader;
 import com.avp.common.block.entity.resin_node.behavior.SpreadBehavior;
+import com.avp.common.sound.AVPSoundEvents;
 
 public class ResinVeinBlock extends MultifaceBlock implements SpreadBehavior {
 
@@ -134,7 +134,7 @@ public class ResinVeinBlock extends MultifaceBlock implements SpreadBehavior {
             levelAccessor.setBlock(blockPos2, resinBlockState, 3);
             Block.pushEntitiesUp(blockState2, resinBlockState, levelAccessor, blockPos2);
             // TODO:
-            levelAccessor.playSound(null, blockPos2, SoundEvents.SCULK_BLOCK_SPREAD, SoundSource.BLOCKS, 1.0F, 1.0F);
+            levelAccessor.playSound(null, blockPos2, AVPSoundEvents.BLOCK_RESIN_SPREAD, SoundSource.BLOCKS, 1.0F, 1.0F);
             this.veinSpreader.spreadAll(resinBlockState, levelAccessor, blockPos2, resinSpreader.isWorldGeneration());
             var direction2 = direction.getOpposite();
 

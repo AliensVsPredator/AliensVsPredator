@@ -8,6 +8,15 @@
     ],
     "subtitle": "subtitles.block.acid.burn"
   },
+  "block.resin.spread": {
+    "sounds": [
+      {
+        "name": "minecraft:block.sculk.spread",
+        "type": "event"
+      }
+    ],
+    "subtitle": "subtitles.block.resin.spread"
+  },
   "entity.ovamorph.hatch": {
     "sounds": [
       "avp:entity/ovamorph/hatch/hatch"
