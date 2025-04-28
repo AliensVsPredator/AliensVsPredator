@@ -7,7 +7,8 @@
 - N/A
 
 ## ♻️ Changes
-- N/A
+- Doubled range of M37-12 Shotgun (6 blocks -> 12 blocks).
+- Doubled range of ZX-76 Shotgun (6 blocks -> 12 blocks).
 
 ## 🐞 Fixes
 - Fixed hitboxes for the following entities being incorrectly sized:
