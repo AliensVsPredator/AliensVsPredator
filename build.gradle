@@ -185,7 +185,7 @@ if (file('key.properties').exists()) {
 			dryRunWebhookUrl = releaseProp.getProperty("discordKey")
 			username = "MU/TH/UR"
 			avatarUrl = "https://i.imgur.com/5Y0EZ9x.jpeg"
-			content = changelog.map { "# A new version of AVP has been released! \n" + it}
+			content = changelog.map { "# A new version of AVP for Fabric has been released! <@&1113972507360362576> \n" + it}
 			setPlatforms(publishMods.platforms.curseforge, publishMods.platforms.modrinth)
 			style {
 				look = "MODERN"
