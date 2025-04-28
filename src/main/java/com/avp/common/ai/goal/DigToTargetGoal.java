@@ -63,7 +63,7 @@ public class DigToTargetGoal extends Goal {
 
         return mob.onGround()
             && isStuck(target)
-            && (mob.distanceToSqr(target) > 2d || !mob.hasLineOfSight(target))
+            && (mob.distanceToSqr(target) > 2d || !mob.getSensing().hasLineOfSight(target))
             && mob.distanceToSqr(target) < maxDistanceFromTarget;
     }
 
