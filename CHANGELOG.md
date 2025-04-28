@@ -7,6 +7,11 @@
 - Added tooltip for ammo chest item.
 - Added tooltip for lead chest item.
 - Added tooltip for sentry turret item.
+- Added new sound effects:
+  - Ovamorph hatching sfx
+  - Ovamorph rooting sfx
+  - Ovamorph shearing sfx
+  - Queen egg-laying sfx
 - Implemented new queen sound effects:
   - Idle
   - Hurt
@@ -19,6 +24,7 @@
     - Pressure Suit
 
 ## ♻️ Changes
+- Added a sound effect for when royal jelly is used on ovamorphs.
 - Facehuggers now spawn on top of ovamorphs if no obstructing block present.
 - Facehuggers now jump towards a random direction when leaving ovamorphs.
 - Facehuggers now move 10% faster after targets.
@@ -33,6 +39,10 @@
 
 ## 🐞 Fixes
 - Fixed world crash caused by ModernFix.
+- Fixed incorrect resin spreading subtitles.
+- Fixed shearing ovamorphs causing damage to shears while in creative mode.
+- Fixed rooting ovamorphs consuming resin balls while in creative mode.
+- Fixed royal jellying ovamorphs consuming royal jelly while in creative mode.
 - Fixed xenomorphs periodically getting stuck while digging.
 - Fixed radiation damaging regular armor on mobs and players (armor is now ignored).
 - Fixed radiation damaging wolf armor on wolves (armor is now ignored).
@@ -100,4 +110,4 @@
 
 ## 🔬 Technical Changes
 - Moved Stellaris compatibility tags to datagen.
-- Added a logger in the event a ovamorph is unable to spawn a facehugger.
+- Added a log for when an ovamorph is unable to spawn a facehugger.

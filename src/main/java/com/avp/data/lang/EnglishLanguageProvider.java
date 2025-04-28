@@ -541,6 +541,12 @@ public class EnglishLanguageProvider extends FabricLanguageProvider {
 
         // Sounds
         addSound(translationBuilder, AVPSoundEvents.BLOCK_ACID_BURN, "Acid burns");
+        addSound(translationBuilder, AVPSoundEvents.BLOCK_RESIN_SPREAD, "Xenomorph spreads resin");
+
+        addSound(translationBuilder, AVPSoundEvents.ENTITY_OVAMORPH_HATCH, "Ovamorph hatches");
+        addSound(translationBuilder, AVPSoundEvents.ENTITY_OVAMORPH_LAID, "Queen lays egg");
+        addSound(translationBuilder, AVPSoundEvents.ENTITY_OVAMORPH_ROOT, "Ovamorph takes root");
+        addSound(translationBuilder, AVPSoundEvents.ENTITY_OVAMORPH_SHEAR, "Ovamorph de-roots");
 
         addSound(translationBuilder, AVPSoundEvents.ENTITY_QUEEN_ARM_ATTACK, "Queen attacks");
         addSound(translationBuilder, AVPSoundEvents.ENTITY_QUEEN_BACK_HAND_ATTACK, "Queen back hand attacks");
@@ -549,7 +555,7 @@ public class EnglishLanguageProvider extends FabricLanguageProvider {
         addSound(translationBuilder, AVPSoundEvents.ENTITY_QUEEN_TAIL_ATTACK, "Queen tail attacks");
         addSound(translationBuilder, AVPSoundEvents.ENTITY_QUEEN_DEATH, "Queen dies");
         addSound(translationBuilder, AVPSoundEvents.ENTITY_QUEEN_HURT, "Queen hurts");
-        addSound(translationBuilder, AVPSoundEvents.ENTITY_QUEEN_IDLE, "Queen breaths");
+        addSound(translationBuilder, AVPSoundEvents.ENTITY_QUEEN_IDLE, "Queen breathes");
         addSound(translationBuilder, AVPSoundEvents.ENTITY_QUEEN_STEP_THUMP, "Queen steps");
         addSound(translationBuilder, AVPSoundEvents.ENTITY_QUEEN_STEP_THUMP_ROCK, "Queen steps");
 
