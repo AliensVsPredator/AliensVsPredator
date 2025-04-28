@@ -52,7 +52,7 @@ public class GunData {
                 .withCooldownInTicks(20)
                 .withDamage(8F * 2)
                 .withKnockback(0.75F)
-                .withRange(6)
+                .withRange(12)
                 .withRecoil(8F)
                 .withPrimaryShootSound(AVPSoundEvents.WEAPON_M37_12_SHOTGUN_SHOOT)
                 .build()
