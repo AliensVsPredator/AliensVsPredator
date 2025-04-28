@@ -1,5 +1,6 @@
 package com.avp.common.ai.goal;
 
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.ai.goal.Goal;
 
 import java.util.concurrent.TimeUnit;
@@ -7,6 +8,7 @@ import java.util.concurrent.TimeUnit;
 import com.avp.common.entity.AVPEntityTypeTags;
 import com.avp.common.entity.living.alien.ovamorph.Ovamorph;
 import com.avp.common.entity.living.alien.xenomorph.queen.Queen;
+import com.avp.common.sound.AVPSoundEvents;
 import com.avp.common.util.AlienPredicates;
 import com.avp.common.util.AlienVariantUtil;
 
@@ -99,6 +101,7 @@ public class QueenLayEggGoal extends Goal {
 
         ovamorph.setPos(queen.position());
 
+        level.playSound(null, queen, AVPSoundEvents.ENTITY_OVAMORPH_LAID, SoundSource.HOSTILE, 1.0F, 1.0F);
         level.addFreshEntity(ovamorph);
     }
 }

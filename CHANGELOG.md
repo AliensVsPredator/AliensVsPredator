@@ -7,6 +7,11 @@
 - Added tooltip for ammo chest item.
 - Added tooltip for lead chest item.
 - Added tooltip for sentry turret item.
+- Added new sound effects:
+  - Ovamorph hatching sfx
+  - Ovamorph rooting sfx
+  - Ovamorph shearing sfx
+  - Queen egg-laying sfx
 - Implemented new queen sound effects:
   - Idle
   - Hurt

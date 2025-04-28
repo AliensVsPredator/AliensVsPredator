@@ -2,12 +2,14 @@ package com.avp.common.manager;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.Level;
 
 import com.avp.AVP;
 import com.avp.common.entity.living.alien.ovamorph.Ovamorph;
 import com.avp.common.entity.type.AVPEntityTypes;
+import com.avp.common.sound.AVPSoundEvents;
 
 public class HatchManager {
 
@@ -89,6 +91,7 @@ public class HatchManager {
 
     public void hatch() {
         ovamorph.getEntityData().set(hatchedEDA, true);
+        ovamorph.level().playSound(null, ovamorph, AVPSoundEvents.ENTITY_OVAMORPH_HATCH, SoundSource.HOSTILE, 1.0F, 1.0F);
     }
 
     public byte maximumSpawnCount() {
