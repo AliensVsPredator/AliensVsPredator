@@ -56,7 +56,7 @@ public class Facehugger extends Parasite {
     @Override
     protected void registerGoals() {
         this.goalSelector.addGoal(3, new LungeAtTargetGoal(this, 0.75F, 20 * 3, 1, 12).setOnLungeCallback(this::runLungeAnimation));
-        this.goalSelector.addGoal(4, new MeleeAttackGoal(this, 1.0, false));
+        this.goalSelector.addGoal(4, new MeleeAttackGoal(this, 1.1, false));
         this.goalSelector.addGoal(7, new WaterAvoidingRandomStrollGoal(this, 0.5));
         this.targetSelector.addGoal(
             1,
