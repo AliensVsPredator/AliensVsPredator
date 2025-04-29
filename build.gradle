@@ -75,9 +75,6 @@ dependencies {
 	modImplementation "maven.modrinth:building-wands:2.8.3_beta_fabric_1.21"
 	// https://modrinth.com/mod/carry-on/version/TuSZSQeB
 	modImplementation "maven.modrinth:carry-on:TuSZSQeB"
-
-	// https://modrinth.com/mod/modernfix/version/5.21.0+mc1.21.1
-	modImplementation "maven.modrinth:modernfix:5.21.0+mc1.21.1"
 }
 
 processResources {
