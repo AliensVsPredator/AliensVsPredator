@@ -979,20 +979,7 @@ public class AVPBlocks {
     }
 
     public static Block register(Block block, String id) {
-        var resourceLocation = AVPResources.location(id);
-
-        var registeredBlock = Registry.register(BuiltInRegistries.BLOCK, resourceLocation, block);
-
-        // Fixes an issue with ModernFix where (for some reason) our modded block's block states do not get added
-        // to Mojang's BLOCK_STATE_REGISTRY map. If that map is missing our block states, placing our blocks in the
-        // world will cause the game to back out to the main menu due to a missing mapping error during packet decoding.
-        // TODO: Figure out exactly why ModernFix is causing our block states to be missing from BLOCK_STATE_REGISTRY.
-        for (var blockState : registeredBlock.getStateDefinition().getPossibleStates()) {
-            Block.BLOCK_STATE_REGISTRY.add(blockState);
-            blockState.initCache();
-        }
-
-        return registeredBlock;
+        return Registry.register(BuiltInRegistries.BLOCK, AVPResources.location(id), block);
     }
 
     public static void initialize() {}
