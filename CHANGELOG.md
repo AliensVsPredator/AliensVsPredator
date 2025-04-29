@@ -1,4 +1,4 @@
-# v0.1.2
+# v0.1.3
 
 ## ☢️ Breaking Changes
 - N/A
@@ -7,38 +7,11 @@
 - N/A
 
 ## ♻️ Changes
-- Doubled range of M37-12 Shotgun (6 blocks -> 12 blocks).
-- Doubled range of ZX-76 Shotgun (6 blocks -> 12 blocks).
+- N/A
 
 ## 🐞 Fixes
-- Fixed hitboxes for the following entities being incorrectly sized:
-  - Aberrant Chestburster
-  - Aberrant Drone
-  - Aberrant Facehugger
-  - Aberrant Ovamorph
-  - Aberrant Praetorian
-  - Aberrant Queen
-  - Aberrant Warrior
-  - Irradiated Drone
-  - Irradiated Praetorian
-  - Irradiated Queen
-  - Irradiated Warrior
-  - Nether Chestburster
-  - Nether Drone
-  - Nether Facehugger
-  - Nether Ovamorph
-  - Nether Praetorian
-  - Nether Queen
-  - Nether Warrior
-  - Royal Aberrant Chestburster
-  - Royal Aberrant Facehugger
-  - Royal Aberrant Ovamorph
-  - Royal Nether Chestburster
-  - Royal Nether Facehugger
-  - Royal Nether Ovamorph
-  - Royal Chestburster
-  - Royal Facehugger
-  - Royal Ovamorph
+- Fixed block corruption occurring in servers caused by the previous attempt to fix a world crash caused by ModernFix.
+  - Please note that this means ModernFix will cease to work with AVP, again - we're looking into why exactly ModernFix isn't playing nice with AVP and hope to have the issue fixed soon.
 
 ## 🛠 Data Pack
 - N/A
