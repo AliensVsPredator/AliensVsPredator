@@ -2,6 +2,7 @@ plugins {
     id 'com.diffplug.spotless'
     id 'multiloader-loader'
     id 'net.neoforged.moddev'
+    id 'me.modmuss50.mod-publish-plugin'
 }
 
 neoForge {
@@ -46,4 +47,76 @@ neoForge {
 dependencies {
     implementation "com.github.bvanseg:just:${project.just_version}"
     implementation "mod.azure.azurelib:azurelib-neo-${project.minecraft_version}:${project.azurelib_version}"
+}
+
+
+if (project.rootDir.toPath().resolve("key.properties").toFile().exists()) {
+    publishMods {
+        def releaseProp = new Properties()
+        File secretPropsFile = rootProject.file("key.properties")
+        releaseProp.load(secretPropsFile.newInputStream())
+        changelog = rootProject.file("CHANGELOG.md").text
+        type = STABLE
+        file = jar.archiveFile
+        modLoaders.add("fabric")
+        dryRun = false
+        discord {
+            webhookUrl = releaseProp.getProperty("discordKey")
+            dryRunWebhookUrl = releaseProp.getProperty("discordKey")
+            username = "MU/TH/UR"
+            avatarUrl = "https://i.imgur.com/5Y0EZ9x.jpeg"
+            content = changelog.map { text ->
+                def maxEmbedCharacterCount = 4096
+                def header = "# A new version of AVP for NeoForge has been released!\n"
+                def footer = "\n...and more! Check the mod page for more details."
+
+                def needsTruncation = (header.length() + text.length()) > maxEmbedCharacterCount
+                def maxContentLength = maxEmbedCharacterCount - header.length() - (needsTruncation ? footer.length() : 0)
+
+                def truncatedText = text
+
+                if (needsTruncation) {
+                    if (text.length() > maxContentLength) {
+                        // First, take up to maxContentLength.
+                        def candidate = text.take(maxContentLength)
+                        // Then find the last newline before the cut.
+                        def lastNewline = candidate.lastIndexOf('\n')
+                        if (lastNewline != -1) {
+                            candidate = candidate.take(lastNewline)
+                        }
+                        truncatedText = candidate
+                    }
+                }
+
+                header + truncatedText + (needsTruncation ? footer : "")
+            }
+            setPlatforms(publishMods.platforms.curseforge, publishMods.platforms.modrinth)
+            style {
+                look = "MODERN"
+                thumbnailUrl = "https://cdn.modrinth.com/data/Uqo0H9FX/8ffabe2f364c34e6b0f13019664c5fe4989c2f95_96.webp"
+            }
+        }
+        curseforge {
+            projectId = project.cf_id
+            projectSlug = project.cf_project_slug
+            accessToken = releaseProp.getProperty("curseKey")
+            minecraftVersions.add(project.minecraft_version)
+            announcementTitle = "Download from CurseForge"
+            javaVersions.add(JavaVersion.VERSION_21)
+            clientRequired = true
+            serverRequired = true
+            requires {
+                slug = "azurelib"
+            }
+        }
+        modrinth {
+            projectId = project.modrinth_id
+            accessToken = releaseProp.getProperty('modrinthKey')
+            minecraftVersions.add(project.minecraft_version)
+            announcementTitle = "Download from Modrinth"
+            requires {
+                slug = "azurelib"
+            }
+        }
+    }
 }
