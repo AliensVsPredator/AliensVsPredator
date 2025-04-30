@@ -5,8 +5,8 @@ import net.minecraft.world.item.DyeItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 
+import com.avp.common.block.BlockProperties;
 import com.avp.fabric.common.block.AVPBlocks;
-import com.avp.fabric.common.block.BlockProperties;
 import com.avp.fabric.data.recipe.builder.RecipeBuilder;
 import com.avp.fabric.data.recipe.util.RecipeUtil;
 

@@ -15,6 +15,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import com.avp.AVPResources;
+import com.avp.common.block.BlockProperties;
 import com.avp.common.block.BlockPropertyBuilder;
 import com.avp.fabric.common.block.resin.IrradiatedResinBlock;
 import com.avp.fabric.common.block.resin.IrradiatedResinNodeBlock;

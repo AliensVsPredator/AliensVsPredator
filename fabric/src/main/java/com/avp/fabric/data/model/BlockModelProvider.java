@@ -20,8 +20,8 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import org.jetbrains.annotations.NotNull;
 
+import com.avp.common.block.BlockProperties;
 import com.avp.fabric.common.block.AVPBlocks;
-import com.avp.fabric.common.block.BlockProperties;
 import com.avp.fabric.common.item.SpawnEggItems;
 import com.avp.fabric.data.model.generator.BarsGenerator;
 import com.avp.fabric.data.model.generator.MultiFaceGenerator;
