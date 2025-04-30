@@ -6,5 +6,5 @@ import java.util.function.Supplier;
 
 public interface RegistryService {
 
-    <T> Supplier<T> register(Registry<T> registry, String id, Supplier<T> supplier);
+    <T> Supplier<T> register(Registry<? super T> registry, String id, Supplier<? extends T> supplier);
 }

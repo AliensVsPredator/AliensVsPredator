@@ -10,7 +10,7 @@ import com.avp.service.RegistryService;
 public class FabricRegistryService implements RegistryService {
 
     @Override
-    public <T> Supplier<T> register(Registry<T> registry, String id, Supplier<T> supplier) {
+    public <T> Supplier<T> register(Registry<? super T> registry, String id, Supplier<? extends T> supplier) {
         var registeredElement = Registry.register(registry, AVPResources.location(id), supplier.get());
         return () -> registeredElement;
     }
