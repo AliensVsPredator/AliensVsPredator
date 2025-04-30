@@ -1,0 +1,27 @@
+package com.avp.fabric.client.compat.rei;
+
+import me.shedaniel.rei.api.common.category.CategoryIdentifier;
+import me.shedaniel.rei.api.common.display.basic.BasicDisplay;
+import me.shedaniel.rei.api.common.entry.EntryIngredient;
+import me.shedaniel.rei.api.common.util.EntryIngredients;
+import me.shedaniel.rei.api.common.util.EntryStacks;
+import net.minecraft.world.item.crafting.RecipeHolder;
+
+import java.util.List;
+
+import com.avp.fabric.common.recipe.IndustrialFurnaceRecipe;
+
+public class IndustrialDisplay extends BasicDisplay {
+
+    public IndustrialDisplay(RecipeHolder<IndustrialFurnaceRecipe> recipe) {
+        super(
+            List.of(EntryIngredients.ofIngredient(recipe.value().getIngredients().get(0))),
+            List.of(EntryIngredient.of(EntryStacks.of(recipe.value().getResultItem(null))))
+        );
+    }
+
+    @Override
+    public CategoryIdentifier<?> getCategoryIdentifier() {
+        return IndustrialCategory.INDUSTRIAL_FURNACE;
+    }
+}

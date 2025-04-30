@@ -27,16 +27,16 @@
 	"environment": "*",
 	"entrypoints": {
 		"main": [
-			"com.avp.AVP"
+			"com.avp.fabric.AVP"
 		],
 		"client": [
-			"com.avp.client.AVPClient"
+			"com.avp.fabric.client.AVPClient"
 		],
 		"fabric-datagen": [
-			"com.avp.data.AVPDataGenerator"
+			"com.avp.fabric.data.AVPDataGenerator"
 		],
 		"rei_client": [
-			"com.avp.client.compat.rei.AVPREIClient"
+			"com.avp.fabric.client.compat.rei.AVPREIClient"
 		]
 	},
 	"mixins": [
