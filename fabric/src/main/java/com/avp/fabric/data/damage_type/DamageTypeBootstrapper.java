@@ -3,7 +3,7 @@ package com.avp.fabric.data.damage_type;
 import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.world.damagesource.DamageType;
 
-import com.avp.fabric.common.damage.AVPDamageTypes;
+import com.avp.common.damage.AVPDamageTypes;
 
 public class DamageTypeBootstrapper {
 

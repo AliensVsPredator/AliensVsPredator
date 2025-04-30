@@ -12,7 +12,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
 
-import com.avp.fabric.common.damage.AVPDamageTypes;
+import com.avp.common.damage.AVPDamageTypes;
 import com.avp.fabric.common.entity.living.FreeMob;
 import com.avp.fabric.common.entity.living.Host;
 import com.avp.fabric.common.entity.living.alien.parasite.Parasite;

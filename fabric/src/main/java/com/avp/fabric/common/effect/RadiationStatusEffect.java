@@ -15,8 +15,8 @@ import java.util.Map;
 import java.util.WeakHashMap;
 import java.util.concurrent.TimeUnit;
 
+import com.avp.common.damage.AVPDamageTypes;
 import com.avp.common.entity.AVPEntityTypeTags;
-import com.avp.fabric.common.damage.AVPDamageTypes;
 import com.avp.fabric.common.util.AVPPredicates;
 
 public class RadiationStatusEffect extends MobEffect {

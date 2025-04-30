@@ -16,7 +16,7 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
 
-import com.avp.fabric.common.damage.AVPDamageTypes;
+import com.avp.common.damage.AVPDamageTypes;
 import com.avp.fabric.common.entity.living.human.marine.Marine;
 
 public class RazorWireBlock extends Block {

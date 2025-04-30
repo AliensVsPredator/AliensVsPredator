@@ -1,4 +1,4 @@
-package com.avp.fabric.common.damage;
+package com.avp.common.damage;
 
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;

@@ -21,7 +21,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayDeque;
 import java.util.HashSet;
 
-import com.avp.fabric.common.damage.AVPDamageTypes;
+import com.avp.common.damage.AVPDamageTypes;
 import com.avp.fabric.common.entity.type.AVPEntityTypes;
 
 public class Flamethrow extends ThrowableProjectile {
