@@ -76,10 +76,10 @@ loom {
     }
 }
 
-if (file('key.properties').exists()) {
+if (rootProject.file('key.properties').exists()) {
     publishMods {
         def releaseProp = new Properties()
-        File secretPropsFile = file("key.properties")
+        File secretPropsFile = rootProject.file("key.properties")
         releaseProp.load(secretPropsFile.newInputStream())
         changelog = rootProject.file("CHANGELOG.md").text
         type = STABLE
