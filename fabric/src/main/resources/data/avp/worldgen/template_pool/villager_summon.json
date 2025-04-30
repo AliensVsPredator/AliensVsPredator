@@ -1,5 +1,5 @@
 {
-  "name": "avp:marine_camp_grass",
+  "name": "avp:villager_summon",
   "fallback": "minecraft:empty",
   "elements": [
     {
@@ -7,7 +7,7 @@
       "element": {
         "element_type": "minecraft:single_pool_element",
         "projection": "rigid",
-        "location": "avp:marine_camp_grass",
+        "location": "avp:outpost/munition/outpost_munition",
         "processors": "minecraft:empty"
       }
     }
