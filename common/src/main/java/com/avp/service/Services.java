@@ -8,6 +8,8 @@ public class Services {
 
     public static final PlatformService PLATFORM = load(PlatformService.class);
 
+    public static final RegistryService REGISTRY = load(RegistryService.class);
+
     public static <T> T load(Class<T> clazz) {
         var loadedService = ServiceLoader.load(clazz)
             .findFirst()
