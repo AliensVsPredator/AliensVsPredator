@@ -47,6 +47,14 @@ neoForge {
 dependencies {
     implementation "com.github.bvanseg:just:${project.just_version}"
     implementation "mod.azure.azurelib:azurelib-neo-${project.minecraft_version}:${project.azurelib_version}"
+
+    compileOnly "me.shedaniel:RoughlyEnoughItems-api-neoforge:${project.rei_version}"
+    compileOnly "me.shedaniel:RoughlyEnoughItems-neoforge:${project.rei_version}"
+
+    implementation "dev.architectury:architectury-neoforge:${project.architectury_version}"
+    implementation "me.shedaniel.cloth:cloth-config-neoforge:${project.cloth_version}"
+
+    compileOnly "org.sinytra:item-asset-export-neoforge:${project.asset_export}"
 }
 
 
