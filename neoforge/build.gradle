@@ -42,6 +42,3 @@ neoForge {
         }
     }
 }
-
-// TODO: Point this to where Fabric emits data gen files.
-sourceSets.main.resources { srcDir 'src/generated/resources' }
