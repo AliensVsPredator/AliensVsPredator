@@ -44,5 +44,6 @@ neoForge {
 }
 
 dependencies {
-    implementation "com.github.bvanseg:just:${project.just_version}"
+    jarJar(implementation("com.github.bvanseg:just:${project.just_version}"))
+    additionalRuntimeClasspath "com.github.bvanseg:just:${project.just_version}"
 }
