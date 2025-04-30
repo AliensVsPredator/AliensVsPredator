@@ -1,4 +1,4 @@
-package com.avp.fabric.common.entity.constant;
+package com.avp.common.entity.constant;
 
 public record AttackDamageConstants() {
 

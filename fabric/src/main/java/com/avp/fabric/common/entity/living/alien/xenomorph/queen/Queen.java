@@ -9,8 +9,8 @@ import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import com.avp.AVP;
 import com.avp.common.block.AVPBlockTags;
-import com.avp.fabric.AVPFabric;
 import com.avp.fabric.common.ai.goal.DigToTargetGoal;
 import com.avp.fabric.common.ai.goal.QueenLayEggGoal;
 import com.avp.fabric.common.entity.living.alien.Alien;
@@ -23,7 +23,7 @@ import com.avp.fabric.common.util.resin.ResinData;
 public class Queen extends Xenomorph {
 
     public static AttributeSupplier.Builder createQueenAttributes() {
-        return applyFrom(AVPFabric.config.statsConfigs.QUEEN_STATS, Monster.createMonsterAttributes());
+        return applyFrom(AVP.config.statsConfigs.QUEEN_STATS, Monster.createMonsterAttributes());
     }
 
     private final QueenAnimationDispatcher animationDispatcher;
@@ -32,7 +32,7 @@ public class Queen extends Xenomorph {
         super(entityType, level);
         this.attackDelayTicks = 20;
         this.animationDispatcher = new QueenAnimationDispatcher(this);
-        this.config = AVPFabric.config.statsConfigs.QUEEN_STATS;
+        this.config = AVP.config.statsConfigs.QUEEN_STATS;
     }
 
     @Override
@@ -52,7 +52,7 @@ public class Queen extends Xenomorph {
 
     @Override
     protected @NotNull ResinData createResinData() {
-        return new ResinData(0, 128, 1, AVPFabric.config.statsConfigs.QUEEN_STATS.nestTickrate);
+        return new ResinData(0, 128, 1, AVP.config.statsConfigs.QUEEN_STATS.nestTickrate);
     }
 
     @Override
@@ -107,7 +107,7 @@ public class Queen extends Xenomorph {
 
     @Override
     protected float getHealthRegenPerSecond() {
-        return AVPFabric.config.statsConfigs.QUEEN_STATS.healthRegenPerSecond;
+        return AVP.config.statsConfigs.QUEEN_STATS.healthRegenPerSecond;
     }
 
     @Override

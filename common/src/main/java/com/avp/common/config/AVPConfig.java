@@ -1,17 +1,17 @@
-package com.avp.fabric.common.config;
+package com.avp.common.config;
 
 import mod.azure.azurelib.common.api.common.config.Config;
 import mod.azure.azurelib.common.internal.common.config.Configurable;
 
 import com.avp.AVP;
-import com.avp.fabric.common.entity.constant.ArmorConstants;
-import com.avp.fabric.common.entity.constant.ArmorToughnessConstants;
-import com.avp.fabric.common.entity.constant.AttackDamageConstants;
-import com.avp.fabric.common.entity.constant.FollowRangeConstants;
-import com.avp.fabric.common.entity.constant.HealthConstants;
-import com.avp.fabric.common.entity.constant.HealthRegenConstants;
-import com.avp.fabric.common.entity.constant.KnockbackResistanceConstants;
-import com.avp.fabric.common.entity.constant.MoveSpeedConstants;
+import com.avp.common.entity.constant.ArmorConstants;
+import com.avp.common.entity.constant.ArmorToughnessConstants;
+import com.avp.common.entity.constant.AttackDamageConstants;
+import com.avp.common.entity.constant.FollowRangeConstants;
+import com.avp.common.entity.constant.HealthConstants;
+import com.avp.common.entity.constant.HealthRegenConstants;
+import com.avp.common.entity.constant.KnockbackResistanceConstants;
+import com.avp.common.entity.constant.MoveSpeedConstants;
 
 @Config(id = AVP.MOD_ID)
 public class AVPConfig {

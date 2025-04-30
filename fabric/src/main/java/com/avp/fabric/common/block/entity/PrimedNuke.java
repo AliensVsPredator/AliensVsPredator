@@ -18,7 +18,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.time.Duration;
 
-import com.avp.fabric.AVPFabric;
+import com.avp.AVP;
 import com.avp.fabric.common.block.AVPBlocks;
 import com.avp.fabric.common.entity.type.AVPEntityTypes;
 import com.avp.fabric.common.util.ExplosionUtil;
@@ -125,6 +125,6 @@ public class PrimedNuke extends Entity {
     }
 
     public boolean isNukeEnabled() {
-        return AVPFabric.config.blockConfigs.ENABLE_NUKE_BLOCK_MECHS;
+        return AVP.config.blockConfigs.ENABLE_NUKE_BLOCK_MECHS;
     }
 }

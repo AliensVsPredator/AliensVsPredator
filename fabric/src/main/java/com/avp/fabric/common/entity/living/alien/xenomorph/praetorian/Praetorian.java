@@ -7,7 +7,7 @@ import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import com.avp.fabric.AVPFabric;
+import com.avp.AVP;
 import com.avp.fabric.common.entity.living.alien.Alien;
 import com.avp.fabric.common.entity.living.alien.xenomorph.Xenomorph;
 import com.avp.fabric.common.entity.type.AVPEntityTypes;
@@ -16,7 +16,7 @@ import com.avp.fabric.common.util.resin.ResinData;
 public class Praetorian extends Xenomorph {
 
     public static AttributeSupplier.Builder createPraetorianAttributes() {
-        return applyFrom(AVPFabric.config.statsConfigs.PRAETORIAN_STATS, Monster.createMonsterAttributes());
+        return applyFrom(AVP.config.statsConfigs.PRAETORIAN_STATS, Monster.createMonsterAttributes());
     }
 
     private final PraetorianAnimationDispatcher animationDispatcher;
@@ -25,7 +25,7 @@ public class Praetorian extends Xenomorph {
         super(entityType, level);
         this.attackDelayTicks = 10;
         this.animationDispatcher = new PraetorianAnimationDispatcher(this);
-        this.config = AVPFabric.config.statsConfigs.PRAETORIAN_STATS;
+        this.config = AVP.config.statsConfigs.PRAETORIAN_STATS;
     }
 
     @Override
@@ -45,12 +45,12 @@ public class Praetorian extends Xenomorph {
 
     @Override
     protected @NotNull ResinData createResinData() {
-        return new ResinData(0, 64, 1, AVPFabric.config.statsConfigs.PRAETORIAN_STATS.nestTickrate);
+        return new ResinData(0, 64, 1, AVP.config.statsConfigs.PRAETORIAN_STATS.nestTickrate);
     }
 
     @Override
     protected float getHealthRegenPerSecond() {
-        return AVPFabric.config.statsConfigs.PRAETORIAN_STATS.healthRegenPerSecond;
+        return AVP.config.statsConfigs.PRAETORIAN_STATS.healthRegenPerSecond;
     }
 
     @Override

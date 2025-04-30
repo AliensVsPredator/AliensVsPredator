@@ -23,11 +23,11 @@ import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 
-import com.avp.fabric.AVPFabric;
+import com.avp.AVP;
+import com.avp.common.config.AVPConfig;
 import com.avp.fabric.common.ai.goal.StrollAroundInWaterGoal;
 import com.avp.fabric.common.ai.goal.combat.DelayedAttackGoal;
 import com.avp.fabric.common.ai.goal.combat.UseItemGoal;
-import com.avp.fabric.common.config.AVPConfig;
 import com.avp.fabric.common.item.AVPItems;
 import com.avp.fabric.common.util.YautjaPredicates;
 
@@ -52,7 +52,7 @@ public class Yautja extends Monster {
     }
 
     public static AttributeSupplier.Builder createYautjaAttributes() {
-        return applyFrom(AVPFabric.config.statsConfigs.YAUTJA_STATS, Monster.createMonsterAttributes());
+        return applyFrom(AVP.config.statsConfigs.YAUTJA_STATS, Monster.createMonsterAttributes());
     }
 
     @Override

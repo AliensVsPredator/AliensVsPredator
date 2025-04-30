@@ -27,13 +27,13 @@ import net.minecraft.world.level.storage.loot.LootTable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import com.avp.AVP;
+import com.avp.common.config.AVPConfig;
 import com.avp.common.effect.AVPMobEffectTags;
 import com.avp.common.entity.gene.GeneKeys;
 import com.avp.common.manager.GeneManager;
 import com.avp.common.util.MovementAnalyzer;
 import com.avp.common.worldgen.biome.AVPBiomes;
-import com.avp.fabric.AVPFabric;
-import com.avp.fabric.common.config.AVPConfig;
 import com.avp.fabric.common.hive.Hive;
 import com.avp.fabric.common.manager.HiveManager;
 import com.avp.fabric.common.util.AcidBleedUtil;
@@ -428,9 +428,9 @@ public abstract class Alien extends Monster {
 
     public void applyDynamicAttributes(AVPConfig.StatsConfigs.AdvancedStats config) {
         if (isAberrant()) {
-            applyAttributes(config, AVPFabric.config.statsConfigs.ABERRANT_STATS_MULTIPLIER);
+            applyAttributes(config, AVP.config.statsConfigs.ABERRANT_STATS_MULTIPLIER);
         } else if (isIrradiated()) {
-            applyAttributes(config, AVPFabric.config.statsConfigs.IRRADIATED_STATS_MULTIPLIER);
+            applyAttributes(config, AVP.config.statsConfigs.IRRADIATED_STATS_MULTIPLIER);
         }
     }
 

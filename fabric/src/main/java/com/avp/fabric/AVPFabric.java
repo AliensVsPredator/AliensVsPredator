@@ -1,12 +1,6 @@
 package com.avp.fabric;
 
 import com.mojang.datafixers.util.Pair;
-import mod.azure.azurelib.common.api.common.config.Config;
-import mod.azure.azurelib.common.internal.common.config.ConfigHolder;
-import mod.azure.azurelib.common.internal.common.config.ConfigHolderRegistry;
-import mod.azure.azurelib.common.internal.common.config.format.ConfigFormats;
-import mod.azure.azurelib.common.internal.common.config.format.IConfigFormatHandler;
-import mod.azure.azurelib.common.internal.common.config.io.ConfigIO;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
@@ -35,7 +29,6 @@ import com.avp.fabric.common.block.entity.AVPBlockEntityTypes;
 import com.avp.fabric.common.block_item.AVPBlockItems;
 import com.avp.fabric.common.command.Commands;
 import com.avp.fabric.common.component.DataComponents;
-import com.avp.fabric.common.config.AVPConfig;
 import com.avp.fabric.common.creative_mode_tab.initializer.BlocksCreativeModeTabInitializer;
 import com.avp.fabric.common.creative_mode_tab.initializer.ColoredBlocksCreativeModeTabInitializer;
 import com.avp.fabric.common.creative_mode_tab.initializer.CombatCreativeModeTabInitializer;
@@ -72,8 +65,6 @@ import com.avp.fabric.mixin.StructurePoolAccessor;
 
 public class AVPFabric implements ModInitializer {
 
-    public static AVPConfig config;
-
     private final MarinePatrolSpawner customSpawner = new MarinePatrolSpawner();
 
     private final NukedAshPlacement nukedAshPlacement = new NukedAshPlacement();
@@ -85,8 +76,6 @@ public class AVPFabric implements ModInitializer {
 
     @Override
     public void onInitialize() {
-        config = registerConfig(AVPConfig.class, ConfigFormats.json()).getConfigInstance();
-
         AVP.initialize();
 
         // Core
@@ -140,46 +129,6 @@ public class AVPFabric implements ModInitializer {
         nukedAshPlacement.tick(serverLevel);
         modifyGifts();
         modifyParrotSounds();
-    }
-
-    /**
-     * Registers your config class. Config will be immediately loaded upon calling.
-     *
-     * @param configClass   Your config class
-     * @param formatFactory File format to be used by this config class. You can use values from {@link ConfigFormats}
-     *                      for example.
-     * @param <C>           Config type
-     * @return Config holder containing your config instance. You obtain it by calling
-     *         {@link ConfigHolder#getConfigInstance()} method.
-     */
-    public static <C> ConfigHolder<C> registerConfig(Class<C> configClass, IConfigFormatHandler formatFactory) {
-        var config = configClass.getAnnotation(Config.class);
-
-        if (config == null) {
-            throw new IllegalArgumentException("Config class must be annotated with '@Config' annotation");
-        }
-
-        var id = config.id();
-        var filename = config.filename();
-
-        if (filename.isEmpty()) {
-            filename = id;
-        }
-
-        var group = config.group();
-
-        if (group.isEmpty()) {
-            group = id;
-        }
-
-        var holder = new ConfigHolder<>(configClass, id, filename, group, formatFactory);
-        ConfigHolderRegistry.registerConfig(holder);
-
-        if (configClass.getAnnotation(Config.NoAutoSync.class) == null) {
-            ConfigIO.FILE_WATCH_MANAGER.addTrackedConfig(holder);
-        }
-
-        return holder;
     }
 
     public static void modifyParrotSounds() {

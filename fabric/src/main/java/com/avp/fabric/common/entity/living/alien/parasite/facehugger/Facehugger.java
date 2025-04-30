@@ -13,7 +13,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
 
-import com.avp.fabric.AVPFabric;
+import com.avp.AVP;
 import com.avp.fabric.common.ai.goal.combat.LungeAtTargetGoal;
 import com.avp.fabric.common.entity.living.alien.Alien;
 import com.avp.fabric.common.entity.living.alien.parasite.Parasite;
@@ -22,7 +22,7 @@ import com.avp.fabric.common.entity.type.AVPEntityTypes;
 public class Facehugger extends Parasite {
 
     public static AttributeSupplier.Builder createFacehuggerAttributes() {
-        return applyFrom(AVPFabric.config.statsConfigs.FACEHUGGER_STATS, Monster.createMonsterAttributes());
+        return applyFrom(AVP.config.statsConfigs.FACEHUGGER_STATS, Monster.createMonsterAttributes());
     }
 
     private final FacehuggerAnimationDispatcher animationDispatcher;
@@ -30,7 +30,7 @@ public class Facehugger extends Parasite {
     public Facehugger(EntityType<? extends Facehugger> entityType, Level level) {
         super(entityType, level);
         this.animationDispatcher = new FacehuggerAnimationDispatcher(this);
-        this.config = AVPFabric.config.statsConfigs.FACEHUGGER_STATS;
+        this.config = AVP.config.statsConfigs.FACEHUGGER_STATS;
     }
 
     @Override

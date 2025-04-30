@@ -24,10 +24,10 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 
+import com.avp.AVP;
 import com.avp.common.block.AVPBlockTags;
 import com.avp.common.damage.AVPDamageTypes;
 import com.avp.common.util.EnchantmentUtil;
-import com.avp.fabric.AVPFabric;
 import com.avp.fabric.common.network.ServerNetworking;
 import com.avp.fabric.common.network.packet.S2CBulletHitBlockPayload;
 import com.avp.fabric.common.network.packet.S2CGunRecoilPayload;
@@ -172,7 +172,7 @@ public class HitScanGunAttack extends AbstractGunAttack {
     }
 
     private void damageBlock(@NotNull Level level, BlockPos blockPos) {
-        if (!AVPFabric.config.weaponConfigs.BULLETS_DAMAGE_BLOCKS_ENABLED) {
+        if (!AVP.config.weaponConfigs.BULLETS_DAMAGE_BLOCKS_ENABLED) {
             return;
         }
 

@@ -11,8 +11,8 @@ import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.biome.Biomes;
 
 import com.avp.common.block.AVPBlockTags;
+import com.avp.common.config.AVPConfig;
 import com.avp.common.entity.AVPEntityTypeTags;
-import com.avp.fabric.common.config.AVPConfig;
 
 public class AlienSpawning {
 

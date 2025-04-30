@@ -12,7 +12,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.HitResult;
 import org.jetbrains.annotations.NotNull;
 
-import com.avp.fabric.AVPFabric;
+import com.avp.AVP;
 import com.avp.fabric.common.entity.type.AVPEntityTypes;
 
 public class Rocket extends ThrowableProjectile {
@@ -70,7 +70,7 @@ public class Rocket extends ThrowableProjectile {
     protected void onHit(@NotNull HitResult hitResult) {
         super.onHit(hitResult);
         var level = level();
-        var explosionInteraction = AVPFabric.config.weaponConfigs.BULLETS_DAMAGE_BLOCKS_ENABLED
+        var explosionInteraction = AVP.config.weaponConfigs.BULLETS_DAMAGE_BLOCKS_ENABLED
             ? Level.ExplosionInteraction.BLOCK
             : Level.ExplosionInteraction.NONE;
 

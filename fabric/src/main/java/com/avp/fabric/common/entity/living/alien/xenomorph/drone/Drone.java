@@ -7,7 +7,7 @@ import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import com.avp.fabric.AVPFabric;
+import com.avp.AVP;
 import com.avp.fabric.common.ai.goal.combat.LungeAtTargetGoal;
 import com.avp.fabric.common.entity.living.alien.Alien;
 import com.avp.fabric.common.entity.living.alien.xenomorph.Xenomorph;
@@ -18,7 +18,7 @@ import com.avp.fabric.common.util.resin.ResinData;
 public class Drone extends Xenomorph {
 
     public static AttributeSupplier.Builder createDroneAttributes() {
-        return applyFrom(AVPFabric.config.statsConfigs.DRONE_STATS, Monster.createMonsterAttributes());
+        return applyFrom(AVP.config.statsConfigs.DRONE_STATS, Monster.createMonsterAttributes());
     }
 
     private final DroneAnimationDispatcher animationDispatcher;
@@ -27,7 +27,7 @@ public class Drone extends Xenomorph {
         super(entityType, level);
         this.attackDelayTicks = 7;
         this.animationDispatcher = new DroneAnimationDispatcher(this);
-        this.config = AVPFabric.config.statsConfigs.DRONE_STATS;
+        this.config = AVP.config.statsConfigs.DRONE_STATS;
     }
 
     @Override
@@ -47,7 +47,7 @@ public class Drone extends Xenomorph {
 
     @Override
     protected @NotNull ResinData createResinData() {
-        return new ResinData(0, 16, 1, AVPFabric.config.statsConfigs.DRONE_STATS.nestTickrate);
+        return new ResinData(0, 16, 1, AVP.config.statsConfigs.DRONE_STATS.nestTickrate);
     }
 
     @Override
@@ -76,7 +76,7 @@ public class Drone extends Xenomorph {
 
     @Override
     protected float getHealthRegenPerSecond() {
-        return AVPFabric.config.statsConfigs.DRONE_STATS.healthRegenPerSecond;
+        return AVP.config.statsConfigs.DRONE_STATS.healthRegenPerSecond;
     }
 
     @Override

@@ -11,10 +11,10 @@ import net.minecraft.world.item.ItemStack;
 
 import java.util.Objects;
 
+import com.avp.AVP;
 import com.avp.common.damage.AVPDamageTypes;
 import com.avp.common.entity.AVPEntityTypeTags;
 import com.avp.common.item.AVPItemTags;
-import com.avp.fabric.AVPFabric;
 import com.avp.fabric.common.util.AVPPredicates;
 
 public class AcidEntityDamageUtil {
@@ -68,7 +68,7 @@ public class AcidEntityDamageUtil {
             return;
         }
 
-        var damage = AVPFabric.config.statsConfigs.ACID_ATTACK_DAMAGE;
+        var damage = AVP.config.statsConfigs.ACID_ATTACK_DAMAGE;
         var registry = acid.registryAccess().registryOrThrow(Registries.DAMAGE_TYPE);
         var damageSource = new DamageSource(registry.getHolderOrThrow(AVPDamageTypes.ACID));
 
