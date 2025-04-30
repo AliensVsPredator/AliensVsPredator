@@ -98,7 +98,7 @@ loom {
     }
 }
 
-if (rootProject.file('key.properties').exists()) {
+if (project.rootDir.toPath().resolve("key.properties").toFile().exists()) {
     publishMods {
         def releaseProp = new Properties()
         File secretPropsFile = rootProject.file("key.properties")

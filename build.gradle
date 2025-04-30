@@ -24,7 +24,7 @@ processResources {
 
 // TODO: Wiki preview is broken when ran from Intellij's gradle panel, use ./gradlew ... commands to run tasks, instead.
 wiki {
-	if (file('key.properties').exists()) {
+	if (project.rootDir.toPath().resolve("key.properties").toFile().exists()) {
 		def releaseProp = new Properties()
 		File secretPropsFile = file("key.properties")
 		releaseProp.load(secretPropsFile.newInputStream())
