@@ -10,8 +10,6 @@ import com.avp.fabric.data.damage_type.DamageTypeBootstrapper;
 import com.avp.fabric.data.damage_type.DamageTypeProvider;
 import com.avp.fabric.data.jukebox_song.AVPJukeboxSongsProvider;
 import com.avp.fabric.data.lang.EnglishLanguageProvider;
-import com.avp.fabric.data.lang.RussianLanguageProvider;
-import com.avp.fabric.data.lang.UkrainianLanguageProvider;
 import com.avp.fabric.data.loot.BlockLootTableProvider;
 import com.avp.fabric.data.loot.ChestLootTableProvider;
 import com.avp.fabric.data.loot.EntityLootTableProvider;
@@ -44,8 +42,6 @@ public class AVPDataGenerator implements DataGeneratorEntrypoint {
 
         // Language providers
         pack.addProvider(EnglishLanguageProvider::new);
-        pack.addProvider(RussianLanguageProvider::new);
-        pack.addProvider(UkrainianLanguageProvider::new);
 
         // Model providers
         pack.addProvider(BlockModelProvider::new);
