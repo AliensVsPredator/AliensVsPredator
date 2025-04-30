@@ -4,7 +4,7 @@ import mod.azure.azurelib.rewrite.render.armor.AzArmorRenderer;
 import mod.azure.azurelib.rewrite.render.armor.AzArmorRendererConfig;
 import net.minecraft.resources.ResourceLocation;
 
-import com.avp.common.AVPResources;
+import com.avp.AVPResources;
 
 public class PlatedChitinArmorRenderer extends AzArmorRenderer {
 

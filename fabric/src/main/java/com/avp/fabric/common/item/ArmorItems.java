@@ -9,7 +9,7 @@ import net.minecraft.world.item.Item;
 
 import java.util.function.Supplier;
 
-import com.avp.common.AVPResources;
+import com.avp.AVPResources;
 import com.avp.fabric.common.armor.ArmorMaterials;
 
 public class ArmorItems {

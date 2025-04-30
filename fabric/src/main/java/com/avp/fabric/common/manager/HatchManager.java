@@ -1,6 +1,6 @@
 package com.avp.fabric.common.manager;
 
-import com.avp.common.AVP;
+import com.avp.AVP;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.sounds.SoundSource;

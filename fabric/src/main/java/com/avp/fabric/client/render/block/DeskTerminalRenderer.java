@@ -5,7 +5,7 @@ import mod.azure.azurelib.rewrite.render.block.AzBlockEntityRendererConfig;
 import mod.azure.azurelib.rewrite.render.layer.AzAutoGlowingLayer;
 import net.minecraft.resources.ResourceLocation;
 
-import com.avp.common.AVPResources;
+import com.avp.AVPResources;
 import com.avp.fabric.common.block.entity.DeskTerminalBlockEntity;
 
 public class DeskTerminalRenderer extends AzBlockEntityRenderer<DeskTerminalBlockEntity> {

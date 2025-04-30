@@ -15,7 +15,7 @@ import net.minecraft.world.level.levelgen.placement.RarityFilter;
 
 import java.util.ArrayList;
 
-import com.avp.common.AVPResources;
+import com.avp.AVPResources;
 
 public class AVPCavePlacements {
 

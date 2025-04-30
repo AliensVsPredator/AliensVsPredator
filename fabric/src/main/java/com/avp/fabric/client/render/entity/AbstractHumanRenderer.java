@@ -5,7 +5,7 @@ import mod.azure.azurelib.rewrite.render.entity.AzEntityRendererConfig;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
 
-import com.avp.common.AVPResources;
+import com.avp.AVPResources;
 import com.avp.fabric.client.render.layer.human.HumanArmorLayer;
 import com.avp.fabric.client.render.layer.human.HumanBeardLayer;
 import com.avp.fabric.client.render.layer.human.HumanEyesLayer;

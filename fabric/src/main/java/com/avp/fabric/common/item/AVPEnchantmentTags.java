@@ -4,7 +4,7 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.enchantment.Enchantment;
 
-import com.avp.common.AVPResources;
+import com.avp.AVPResources;
 
 public class AVPEnchantmentTags {
 

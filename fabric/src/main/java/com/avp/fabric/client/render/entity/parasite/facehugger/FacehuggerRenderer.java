@@ -8,7 +8,7 @@ import mod.azure.azurelib.rewrite.render.entity.AzEntityRendererPipeline;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
 
-import com.avp.common.AVPResources;
+import com.avp.AVPResources;
 import com.avp.fabric.client.animation.entity.FacehuggerAnimator;
 import com.avp.fabric.common.entity.living.alien.parasite.facehugger.Facehugger;
 

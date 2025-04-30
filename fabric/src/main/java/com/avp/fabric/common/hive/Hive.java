@@ -1,6 +1,6 @@
 package com.avp.fabric.common.hive;
 
-import com.avp.common.AVP;
+import com.avp.AVP;
 import com.bvanseg.just.functional.option.Option;
 import com.mojang.serialization.Dynamic;
 import net.minecraft.core.BlockPos;

@@ -1,6 +1,6 @@
 package com.avp.fabric.common.level.saveddata;
 
-import com.avp.common.AVP;
+import com.avp.AVP;
 import com.bvanseg.just.functional.option.Option;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;

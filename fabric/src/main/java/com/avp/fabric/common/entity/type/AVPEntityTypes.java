@@ -16,7 +16,7 @@ import net.minecraft.world.level.Level;
 
 import java.util.function.BiFunction;
 
-import com.avp.common.AVPResources;
+import com.avp.AVPResources;
 import com.avp.fabric.common.block.entity.PrimedNuke;
 import com.avp.fabric.common.entity.AVPMobCategories;
 import com.avp.fabric.common.entity.acid.Acid;

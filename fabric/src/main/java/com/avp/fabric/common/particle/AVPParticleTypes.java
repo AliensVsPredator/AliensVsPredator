@@ -5,7 +5,7 @@ import net.minecraft.core.Registry;
 import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.core.registries.BuiltInRegistries;
 
-import com.avp.common.AVPResources;
+import com.avp.AVPResources;
 
 public class AVPParticleTypes {
 

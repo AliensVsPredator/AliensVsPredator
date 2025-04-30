@@ -4,7 +4,7 @@ import mod.azure.azurelib.rewrite.render.item.AzItemRenderer;
 import mod.azure.azurelib.rewrite.render.item.AzItemRendererConfig;
 import mod.azure.azurelib.rewrite.render.layer.AzAutoGlowingLayer;
 
-import com.avp.common.AVPResources;
+import com.avp.AVPResources;
 import com.avp.fabric.client.animation.item.M3712ShotgunAnimator;
 import com.avp.fabric.common.item.GunItem;
 

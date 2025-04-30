@@ -7,7 +7,7 @@ import mod.azure.azurelib.rewrite.animation.impl.AzEntityAnimator;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 
-import com.avp.common.AVPResources;
+import com.avp.AVPResources;
 import com.avp.fabric.client.animation.BasicAnimationUtils;
 import com.avp.fabric.common.entity.machine.SentryTurret;
 

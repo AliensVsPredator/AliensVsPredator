@@ -3,7 +3,7 @@ package com.avp.fabric.client.render.item;
 import mod.azure.azurelib.rewrite.render.item.AzItemRenderer;
 import mod.azure.azurelib.rewrite.render.item.AzItemRendererConfig;
 
-import com.avp.common.AVPResources;
+import com.avp.AVPResources;
 
 public class SimpleItemRenderer extends AzItemRenderer {
 

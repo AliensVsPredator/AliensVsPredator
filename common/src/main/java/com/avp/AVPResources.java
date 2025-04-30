@@ -1,4 +1,4 @@
-package com.avp.common;
+package com.avp;
 
 import net.minecraft.resources.ResourceLocation;
 

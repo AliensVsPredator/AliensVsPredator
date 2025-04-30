@@ -1,6 +1,6 @@
 package com.avp.fabric.common.config;
 
-import com.avp.common.AVP;
+import com.avp.AVP;
 import com.avp.fabric.common.entity.constant.ArmorConstants;
 import com.avp.fabric.common.entity.constant.ArmorToughnessConstants;
 import com.avp.fabric.common.entity.constant.AttackDamageConstants;

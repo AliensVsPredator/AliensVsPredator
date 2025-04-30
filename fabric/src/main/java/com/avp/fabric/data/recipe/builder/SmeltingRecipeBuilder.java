@@ -1,6 +1,6 @@
 package com.avp.fabric.data.recipe.builder;
 
-import com.avp.common.AVP;
+import com.avp.AVP;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.SimpleCookingRecipeBuilder;
 import net.minecraft.world.item.crafting.Ingredient;

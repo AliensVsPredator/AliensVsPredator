@@ -7,7 +7,7 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.level.biome.*;
 
-import com.avp.common.AVPResources;
+import com.avp.AVPResources;
 
 public class AVPBiomes {
 

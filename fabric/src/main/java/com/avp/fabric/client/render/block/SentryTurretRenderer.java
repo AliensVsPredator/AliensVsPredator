@@ -6,7 +6,7 @@ import mod.azure.azurelib.rewrite.render.layer.AzAutoGlowingLayer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
 
-import com.avp.common.AVPResources;
+import com.avp.AVPResources;
 import com.avp.fabric.client.animation.entity.SentryTurretAnimator;
 import com.avp.fabric.common.entity.machine.SentryTurret;
 

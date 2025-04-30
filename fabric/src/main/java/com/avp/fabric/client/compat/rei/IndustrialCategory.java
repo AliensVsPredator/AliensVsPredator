@@ -1,6 +1,6 @@
 package com.avp.fabric.client.compat.rei;
 
-import com.avp.common.AVP;
+import com.avp.AVP;
 import me.shedaniel.math.Point;
 import me.shedaniel.math.Rectangle;
 import me.shedaniel.rei.api.client.gui.Renderer;
@@ -15,7 +15,7 @@ import net.minecraft.resources.ResourceLocation;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.avp.common.AVPResources;
+import com.avp.AVPResources;
 import com.avp.fabric.common.block_item.AVPBlockItems;
 
 public class IndustrialCategory implements DisplayCategory<IndustrialDisplay> {

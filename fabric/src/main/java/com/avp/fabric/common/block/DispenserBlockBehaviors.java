@@ -1,6 +1,6 @@
 package com.avp.fabric.common.block;
 
-import com.avp.common.AVP;
+import com.avp.AVP;
 import net.minecraft.core.Direction;
 import net.minecraft.core.dispenser.BlockSource;
 import net.minecraft.core.dispenser.DefaultDispenseItemBehavior;

@@ -7,7 +7,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import org.jetbrains.annotations.NotNull;
 
-import com.avp.common.AVPResources;
+import com.avp.AVPResources;
 import com.avp.fabric.common.entity.living.human.marine.Marine;
 import com.avp.fabric.common.entity.living.human.marine.MarineAnimationRefs;
 

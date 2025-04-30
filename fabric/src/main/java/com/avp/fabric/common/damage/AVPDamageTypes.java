@@ -4,7 +4,7 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.damagesource.DamageType;
 
-import com.avp.common.AVPResources;
+import com.avp.AVPResources;
 
 public class AVPDamageTypes {
 

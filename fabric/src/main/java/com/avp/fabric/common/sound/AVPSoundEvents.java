@@ -4,7 +4,7 @@ import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.sounds.SoundEvent;
 
-import com.avp.common.AVPResources;
+import com.avp.AVPResources;
 
 public class AVPSoundEvents {
 

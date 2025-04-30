@@ -1,6 +1,6 @@
 package com.avp.fabric.common.command.nuke;
 
-import com.avp.common.AVP;
+import com.avp.AVP;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import net.minecraft.commands.CommandSourceStack;

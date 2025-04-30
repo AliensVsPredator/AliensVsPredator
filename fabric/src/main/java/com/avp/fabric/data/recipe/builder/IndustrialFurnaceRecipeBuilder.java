@@ -1,6 +1,6 @@
 package com.avp.fabric.data.recipe.builder;
 
-import com.avp.common.AVP;
+import com.avp.AVP;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementRequirements;
 import net.minecraft.advancements.AdvancementRewards;

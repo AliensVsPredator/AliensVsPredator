@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
 
-import com.avp.common.AVPResources;
+import com.avp.AVPResources;
 import com.avp.fabric.common.item.AVPItems;
 import com.avp.fabric.common.sound.AVPSoundEvents;
 

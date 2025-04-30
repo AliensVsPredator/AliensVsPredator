@@ -1,6 +1,6 @@
 package com.avp.fabric.common.util.resin;
 
-import com.avp.common.AVP;
+import com.avp.AVP;
 import com.mojang.serialization.Dynamic;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;

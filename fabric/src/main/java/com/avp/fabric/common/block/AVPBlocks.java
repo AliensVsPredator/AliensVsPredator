@@ -22,7 +22,7 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import com.avp.common.AVPResources;
+import com.avp.AVPResources;
 
 public class AVPBlocks {
 

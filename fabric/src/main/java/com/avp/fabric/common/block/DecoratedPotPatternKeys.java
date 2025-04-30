@@ -7,7 +7,7 @@ import net.minecraft.world.level.block.entity.DecoratedPotPattern;
 
 import java.util.Map;
 
-import com.avp.common.AVPResources;
+import com.avp.AVPResources;
 import com.avp.fabric.common.item.AVPItems;
 
 public class DecoratedPotPatternKeys {

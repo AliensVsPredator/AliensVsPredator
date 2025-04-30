@@ -1,6 +1,6 @@
 package com.avp.fabric.common.gene;
 
-import com.avp.common.AVPResources;
+import com.avp.AVPResources;
 
 public class GeneKeys {
 
