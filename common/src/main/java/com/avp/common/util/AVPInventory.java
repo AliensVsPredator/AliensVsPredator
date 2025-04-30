@@ -1,4 +1,4 @@
-package com.avp.fabric.common.util;
+package com.avp.common.util;
 
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.Item;

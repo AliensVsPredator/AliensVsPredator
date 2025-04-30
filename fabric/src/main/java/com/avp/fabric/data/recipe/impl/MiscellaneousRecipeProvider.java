@@ -5,6 +5,7 @@ import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
 
+import com.avp.common.item.TempAVPItems;
 import com.avp.fabric.common.block.AVPBlocks;
 import com.avp.fabric.common.item.AVPItems;
 import com.avp.fabric.data.recipe.RecipeConstants;
@@ -102,7 +103,7 @@ public class MiscellaneousRecipeProvider {
         builder.blast(AVPBlocks.SILICA_GRAVEL)
             .withCategory(RecipeCategory.MISC)
             .withExperience(RecipeConstants.RARE_SMELT_EXPERIENCE)
-            .into(AVPItems.RAW_SILICA);
+            .into(TempAVPItems.RAW_SILICA.get());
 
         builder.shaped()
             .withCategory(RecipeCategory.COMBAT)

@@ -24,6 +24,7 @@ import net.minecraft.world.level.levelgen.structure.templatesystem.StructureProc
 
 import java.util.ArrayList;
 
+import com.avp.AVP;
 import com.avp.fabric.common.block.AVPBlocks;
 import com.avp.fabric.common.block.CompostingChanceRegistry;
 import com.avp.fabric.common.block.DecoratedPotPatterns;
@@ -85,6 +86,8 @@ public class AVPFabric implements ModInitializer {
     @Override
     public void onInitialize() {
         config = registerConfig(AVPConfig.class, ConfigFormats.json()).getConfigInstance();
+
+        AVP.initialize();
 
         // Core
         AVPBlockEntityTypes.initialize();

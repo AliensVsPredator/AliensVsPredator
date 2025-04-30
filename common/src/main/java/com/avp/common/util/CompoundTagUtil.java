@@ -1,4 +1,4 @@
-package com.avp.fabric.common.util;
+package com.avp.common.util;
 
 import net.minecraft.nbt.CompoundTag;
 import org.jetbrains.annotations.Nullable;

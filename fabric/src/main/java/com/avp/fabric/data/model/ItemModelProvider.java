@@ -9,6 +9,7 @@ import net.minecraft.data.models.model.ModelTemplates;
 import net.minecraft.world.item.Item;
 import org.jetbrains.annotations.NotNull;
 
+import com.avp.common.item.TempAVPItems;
 import com.avp.fabric.common.block.AVPBlocks;
 import com.avp.fabric.common.block_item.AVPBlockItems;
 import com.avp.fabric.common.item.AVPItems;
@@ -169,7 +170,7 @@ public class ItemModelProvider extends FabricModelProvider {
         generateStandardItem(generators, AVPItems.RAW_GALENA);
         generateStandardItem(generators, AVPItems.RAW_MONAZITE);
         generateStandardItem(generators, AVPItems.RAW_ROYAL_JELLY);
-        generateStandardItem(generators, AVPItems.RAW_SILICA);
+        generateStandardItem(generators, TempAVPItems.RAW_SILICA.get());
         generateStandardItem(generators, AVPItems.RAW_TITANIUM);
         generateStandardItem(generators, AVPItems.RAW_ZINC);
         generateStandardItem(generators, AVPItems.RECEIVER);

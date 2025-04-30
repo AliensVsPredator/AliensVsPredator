@@ -6,7 +6,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 
-import com.avp.fabric.common.util.BlockPosUtil;
+import com.avp.common.util.BlockPosUtil;
 
 public class ResinBlock extends Block {
 

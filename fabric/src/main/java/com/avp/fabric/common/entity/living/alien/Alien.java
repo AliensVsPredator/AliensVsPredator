@@ -27,12 +27,12 @@ import net.minecraft.world.level.storage.loot.LootTable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import com.avp.common.effect.AVPMobEffectTags;
 import com.avp.common.entity.gene.GeneKeys;
 import com.avp.common.util.MovementAnalyzer;
 import com.avp.fabric.AVPFabric;
 import com.avp.fabric.common.config.AVPConfig;
 import com.avp.fabric.common.hive.Hive;
-import com.avp.fabric.common.level.effect.AVPMobEffectTags;
 import com.avp.fabric.common.manager.GeneManager;
 import com.avp.fabric.common.manager.HiveManager;
 import com.avp.fabric.common.util.AcidBleedUtil;

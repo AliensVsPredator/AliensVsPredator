@@ -13,9 +13,9 @@ import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import com.avp.common.util.BlockPosUtil;
 import com.avp.fabric.common.block.entity.AVPBlockEntityTypes;
 import com.avp.fabric.common.block.entity.resin_node.ResinNodeBlockEntity;
-import com.avp.fabric.common.util.BlockPosUtil;
 
 public class ResinNodeBlock extends BaseEntityBlock {
 

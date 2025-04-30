@@ -26,13 +26,13 @@ import java.util.ArrayList;
 
 import com.avp.common.block.AVPBlockTags;
 import com.avp.common.damage.AVPDamageTypes;
+import com.avp.common.util.EnchantmentUtil;
 import com.avp.fabric.AVPFabric;
 import com.avp.fabric.common.network.ServerNetworking;
 import com.avp.fabric.common.network.packet.S2CBulletHitBlockPayload;
 import com.avp.fabric.common.network.packet.S2CGunRecoilPayload;
 import com.avp.fabric.common.sound.AVPSoundEvents;
 import com.avp.fabric.common.util.AVPPredicates;
-import com.avp.fabric.common.util.EnchantmentUtil;
 import com.avp.server.BlockBreakProgressManager;
 
 public class HitScanGunAttack extends AbstractGunAttack {

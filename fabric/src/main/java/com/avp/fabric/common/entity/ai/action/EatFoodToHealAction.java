@@ -11,10 +11,10 @@ import com.avp.common.goap.condition.expression.GOAPExpression;
 import com.avp.common.goap.effect.GOAPEffect;
 import com.avp.common.goap.state.GOAPBlackboard;
 import com.avp.common.goap.state.GOAPWorldState;
+import com.avp.common.util.AVPInventoryBearer;
 import com.avp.fabric.common.entity.ai.GOAPConstants;
 import com.avp.fabric.common.entity.ai.util.CombatResponse;
 import com.avp.fabric.common.entity.ai.util.ItemType;
-import com.avp.fabric.common.util.AVPInventoryBearer;
 
 public class EatFoodToHealAction<T extends LivingEntity & AVPInventoryBearer> extends GOAPAction<T> {
 

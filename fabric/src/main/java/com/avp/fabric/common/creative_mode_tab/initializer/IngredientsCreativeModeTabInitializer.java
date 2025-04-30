@@ -1,5 +1,6 @@
 package com.avp.fabric.common.creative_mode_tab.initializer;
 
+import com.avp.common.item.TempAVPItems;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 
 import com.avp.fabric.common.creative_mode_tab.CreativeModeTabs;
@@ -18,7 +19,7 @@ public class IngredientsCreativeModeTabInitializer {
             entries.accept(AVPItems.RAW_FERROBAUXITE);
             entries.accept(AVPItems.RAW_GALENA);
             entries.accept(AVPItems.RAW_MONAZITE);
-            entries.accept(AVPItems.RAW_SILICA);
+            entries.accept(TempAVPItems.RAW_SILICA.get());
             entries.accept(AVPItems.RAW_TITANIUM);
             entries.accept(AVPItems.RAW_ZINC);
             entries.accept(AVPItems.ALUMINUM_NUGGET);
