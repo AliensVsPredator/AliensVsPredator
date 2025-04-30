@@ -10,34 +10,14 @@ import net.minecraft.world.phys.Vec3;
 import java.util.List;
 
 import com.avp.AVP;
+import com.avp.common.explosion.Explosion;
 import com.avp.fabric.common.command.nuke.ExplosionProgressTracker;
 import com.avp.fabric.common.entity.living.alien.Alien;
 import com.avp.fabric.common.entity.nukecloud.MushroomCloudEntity;
-import com.avp.fabric.common.explosion.Explosion;
 import com.avp.fabric.common.explosion.nuke.NuclearExplosionEffects;
 
+// FIXME: Merge with ExplosionDistanceUtil in common.
 public class ExplosionUtil {
-
-    public static double getNormalizedHorizontalDistance(Explosion explosion, int x, int z) {
-        var radiusX = explosion.config().largestRadius(Direction.Axis.X);
-        var radiusZ = explosion.config().largestRadius(Direction.Axis.Z);
-
-        return (x * x) / (double) (radiusX * radiusX) +
-            (z * z) / (double) (radiusZ * radiusZ);
-    }
-
-    public static double getNormalizedVerticalDistance(Explosion explosion, int y) {
-        var radiusYDown = explosion.config().radius(Direction.DOWN);
-        var radiusYUp = explosion.config().radius(Direction.UP);
-
-        return (y < 0
-            ? (y * y) / (double) (radiusYDown * radiusYDown)
-            : (y * y) / (double) (radiusYUp * radiusYUp));
-    }
-
-    public static double getNormalizedDistance(Explosion explosion, int x, int y, int z) {
-        return getNormalizedHorizontalDistance(explosion, x, z) + getNormalizedVerticalDistance(explosion, y);
-    }
 
     public static List<Entity> getEntitiesInRadius(ServerLevel level, Vec3 center, double radius) {
         var boundingBox = new AABB(

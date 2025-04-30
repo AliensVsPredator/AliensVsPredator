@@ -1,4 +1,4 @@
-package com.avp.fabric.common.explosion;
+package com.avp.common.explosion;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;

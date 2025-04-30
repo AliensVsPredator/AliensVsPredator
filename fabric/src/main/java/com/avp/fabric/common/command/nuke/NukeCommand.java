@@ -9,7 +9,7 @@ import net.minecraft.core.Direction;
 import java.time.Duration;
 
 import com.avp.AVP;
-import com.avp.fabric.common.explosion.Explosion;
+import com.avp.common.explosion.Explosion;
 import com.avp.fabric.common.explosion.nuke.NuclearExplosionEffects;
 import com.avp.fabric.common.util.ExplosionUtil;
 import com.avp.server.ServerScheduler;

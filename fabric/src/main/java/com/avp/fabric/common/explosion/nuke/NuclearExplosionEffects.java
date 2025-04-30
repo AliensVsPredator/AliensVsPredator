@@ -19,10 +19,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.avp.common.explosion.Explosion;
+import com.avp.common.util.ExplosionDistanceUtil;
 import com.avp.common.worldgen.biome.AVPBiomes;
 import com.avp.fabric.common.block.AVPBlocks;
-import com.avp.fabric.common.explosion.Explosion;
-import com.avp.fabric.common.util.ExplosionUtil;
 
 public class NuclearExplosionEffects {
 
@@ -56,8 +56,8 @@ public class NuclearExplosionEffects {
         // Scale Y contribution to better balance vertical vs horizontal edge checks
         var yScaleFactor = (radiusX + radiusZ) / 2.0 / Math.max(radiusYUp, radiusYDown);
 
-        var horizontalDistance = ExplosionUtil.getNormalizedHorizontalDistance(explosion, x, z);
-        var verticalDistance = ExplosionUtil.getNormalizedVerticalDistance(explosion, y) * yScaleFactor;
+        var horizontalDistance = ExplosionDistanceUtil.getNormalizedHorizontalDistance(explosion, x, z);
+        var verticalDistance = ExplosionDistanceUtil.getNormalizedVerticalDistance(explosion, y) * yScaleFactor;
         var distance = horizontalDistance + verticalDistance;
         var flags = Block.UPDATE_CLIENTS | Block.UPDATE_SUPPRESS_DROPS;
         var rand = level.random.nextFloat();
