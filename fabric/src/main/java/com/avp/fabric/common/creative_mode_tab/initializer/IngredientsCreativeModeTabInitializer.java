@@ -1,8 +1,8 @@
 package com.avp.fabric.common.creative_mode_tab.initializer;
 
-import com.avp.common.item.TempAVPItems;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 
+import com.avp.common.item.TempAVPItems;
 import com.avp.fabric.common.creative_mode_tab.CreativeModeTabs;
 import com.avp.fabric.common.item.AVPItems;
 
