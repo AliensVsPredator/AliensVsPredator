@@ -98,16 +98,19 @@ loom {
     }
 }
 
-if (project.rootDir.toPath().resolve("key.properties").toFile().exists()) {
+def keyPropsFile = new File(rootProject.projectDir, "key.properties")
+if (keyPropsFile.exists()) {
     publishMods {
         def releaseProp = new Properties()
-        File secretPropsFile = rootProject.file("key.properties")
-        releaseProp.load(secretPropsFile.newInputStream())
-        changelog = rootProject.file("CHANGELOG.md").text
+        releaseProp.load(new FileInputStream(keyPropsFile))
+
+        //Settings
+        changelog = new File(rootProject.projectDir, "CHANGELOG.md").text
         type = STABLE
         file = remapJar.archiveFile
         modLoaders.add("fabric")
         dryRun = false
+
         discord {
             webhookUrl = releaseProp.getProperty("discordKey")
             dryRunWebhookUrl = releaseProp.getProperty("discordKey")
@@ -138,12 +141,15 @@ if (project.rootDir.toPath().resolve("key.properties").toFile().exists()) {
 
                 header + truncatedText + (needsTruncation ? footer : "")
             }
+
             setPlatforms(publishMods.platforms.curseforge, publishMods.platforms.modrinth)
+
             style {
                 look = "MODERN"
                 thumbnailUrl = "https://cdn.modrinth.com/data/Uqo0H9FX/8ffabe2f364c34e6b0f13019664c5fe4989c2f95_96.webp"
             }
         }
+
         curseforge {
             projectId = project.cf_id
             projectSlug = project.cf_project_slug
@@ -160,9 +166,10 @@ if (project.rootDir.toPath().resolve("key.properties").toFile().exists()) {
                 slug = "azurelib"
             }
         }
+
         modrinth {
             projectId = project.modrinth_id
-            accessToken = releaseProp.getProperty('modrinthKey')
+            accessToken = releaseProp.getProperty("modrinthKey")
             minecraftVersions.add(project.minecraft_version)
             announcementTitle = "Download from Modrinth"
             requires {
