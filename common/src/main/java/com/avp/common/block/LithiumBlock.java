@@ -1,4 +1,4 @@
-package com.avp.fabric.common.block;
+package com.avp.common.block;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
@@ -27,7 +27,7 @@ public class LithiumBlock extends Block {
         var newBlockState = level.getBlockState(updatedPos);
 
         if (newBlockState.is(Blocks.WATER)) {
-            var strength = blockState.is(AVPBlocks.LITHIUM_ORE) ? 2F : 4F;
+            var strength = blockState.is(TempAVPBlocks.LITHIUM_ORE.get()) ? 2F : 4F;
             level.removeBlock(blockPos, false);
             level.explode(null, blockPos.getX(), blockPos.getY(), blockPos.getZ(), strength, Level.ExplosionInteraction.BLOCK);
         }

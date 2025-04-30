@@ -52,11 +52,11 @@ public class MetalRecipeProvider {
             .into(1, AVPItems.URANIUM_INGOT);
 
         createSmeltAndBlastRecipes(builder, TempAVPBlocks.BAUXITE_ORE.get(), AVPItems.ALUMINUM_INGOT);
-        createSmeltAndBlastRecipes(builder, AVPBlocks.GALENA_ORE, AVPItems.LEAD_INGOT);
-        createSmeltAndBlastRecipes(builder, AVPBlocks.MONAZITE_ORE, AVPItems.NEODYMIUM_MAGNET);
-        createSmeltAndBlastRecipes(builder, AVPBlocks.DEEPSLATE_TITANIUM_ORE, AVPItems.TITANIUM_INGOT);
-        createSmeltAndBlastRecipes(builder, AVPBlocks.ZINC_ORE, AVPItems.ZINC_INGOT);
-        createSmeltAndBlastRecipes(builder, AVPBlocks.DEEPSLATE_ZINC_ORE, AVPItems.ZINC_INGOT);
+        createSmeltAndBlastRecipes(builder, TempAVPBlocks.GALENA_ORE.get(), AVPItems.LEAD_INGOT);
+        createSmeltAndBlastRecipes(builder, TempAVPBlocks.MONAZITE_ORE.get(), AVPItems.NEODYMIUM_MAGNET);
+        createSmeltAndBlastRecipes(builder, TempAVPBlocks.DEEPSLATE_TITANIUM_ORE.get(), AVPItems.TITANIUM_INGOT);
+        createSmeltAndBlastRecipes(builder, TempAVPBlocks.ZINC_ORE.get(), AVPItems.ZINC_INGOT);
+        createSmeltAndBlastRecipes(builder, TempAVPBlocks.DEEPSLATE_ZINC_ORE.get(), AVPItems.ZINC_INGOT);
 
         createSmeltAndBlastRecipes(builder, AVPItems.RAW_BAUXITE, AVPItems.ALUMINUM_INGOT);
         createSmeltAndBlastRecipes(builder, AVPItems.RAW_BRASS, AVPItems.BRASS_INGOT);

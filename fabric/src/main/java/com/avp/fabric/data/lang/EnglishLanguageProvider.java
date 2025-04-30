@@ -43,7 +43,7 @@ public class EnglishLanguageProvider extends FabricLanguageProvider {
         translationBuilder.add(AVPBlocks.TRINITITE_BLOCK, "Block of Trinitite");
         translationBuilder.add(AVPBlocks.ALUMINUM_BLOCK, "Block of Aluminum");
         translationBuilder.add(AVPBlocks.AUTUNITE_BLOCK, "Autunite Block");
-        translationBuilder.add(AVPBlocks.AUTUNITE_ORE, "Autunite Ore");
+        translationBuilder.add(TempAVPBlocks.AUTUNITE_ORE.get(), "Autunite Ore");
         translationBuilder.add(TempAVPBlocks.BAUXITE_ORE.get(), "Bauxite Ore");
         translationBuilder.add(AVPBlocks.BRASS_BLOCK, "Block of Brass");
         translationBuilder.add(AVPBlocks.CHISELED_FERROALUMINUM, "Chiseled Ferroaluminum");
@@ -58,8 +58,8 @@ public class EnglishLanguageProvider extends FabricLanguageProvider {
         translationBuilder.add(AVPBlocks.CUT_TITANIUM, "Cut Titanium");
         translationBuilder.add(AVPBlocks.CUT_TITANIUM_SLAB, "Cut Titanium Slab");
         translationBuilder.add(AVPBlocks.CUT_TITANIUM_STAIRS, "Cut Titanium Stairs");
-        translationBuilder.add(AVPBlocks.DEEPSLATE_TITANIUM_ORE, "Deepslate Titanium Ore");
-        translationBuilder.add(AVPBlocks.DEEPSLATE_ZINC_ORE, "Deepslate Zinc Ore");
+        translationBuilder.add(TempAVPBlocks.DEEPSLATE_TITANIUM_ORE.get(), "Deepslate Titanium Ore");
+        translationBuilder.add(TempAVPBlocks.DEEPSLATE_ZINC_ORE.get(), "Deepslate Zinc Ore");
         translationBuilder.add(AVPBlocks.FERROALUMINUM_BLOCK, "Block of Ferroaluminum");
         translationBuilder.add(AVPBlocks.FERROALUMINUM_BUTTON, "Ferroaluminum Button");
         translationBuilder.add(AVPBlocks.FERROALUMINUM_CHAIN_FENCE, "Ferroaluminum Chain Fence");
@@ -74,7 +74,7 @@ public class EnglishLanguageProvider extends FabricLanguageProvider {
         translationBuilder.add(AVPBlocks.FERROALUMINUM_STANDING, "Ferroaluminum Standing");
         translationBuilder.add(AVPBlocks.FERROALUMINUM_TRAP_DOOR, "Ferroaluminum Trapdoor");
         translationBuilder.add(AVPBlocks.FERROALUMINUM_TREAD, "Ferroaluminum Tread");
-        translationBuilder.add(AVPBlocks.GALENA_ORE, "Galena Ore");
+        translationBuilder.add(TempAVPBlocks.GALENA_ORE.get(), "Galena Ore");
         translationBuilder.add(AVPBlocks.INDUSTRIAL_GLASS, "Industrial Glass");
         translationBuilder.add(AVPBlocks.INDUSTRIAL_GLASS_PANE, "Industrial Glass Pane");
         translationBuilder.add(AVPBlocks.INDUSTRIAL_GLASS_DOOR, "Industrial Glass Door");
@@ -137,8 +137,8 @@ public class EnglishLanguageProvider extends FabricLanguageProvider {
         );
 
         translationBuilder.add(AVPBlocks.LITHIUM_BLOCK, "Block of Lithium");
-        translationBuilder.add(AVPBlocks.LITHIUM_ORE, "Lithium Ore");
-        translationBuilder.add(AVPBlocks.MONAZITE_ORE, "Monazite Ore");
+        translationBuilder.add(TempAVPBlocks.LITHIUM_ORE.get(), "Lithium Ore");
+        translationBuilder.add(TempAVPBlocks.MONAZITE_ORE.get(), "Monazite Ore");
         translationBuilder.add(AVPBlocks.NETHER_RESIN, "Nether Resin");
         translationBuilder.add(AVPBlocks.NETHER_RESIN_NODE, "Nether Resin");
         translationBuilder.add(AVPBlocks.NETHER_RESIN_VEIN, "Nether Resin Vein");
@@ -249,7 +249,7 @@ public class EnglishLanguageProvider extends FabricLanguageProvider {
         translationBuilder.add(AVPBlocks.TITANIUM_TREAD, "Titanium Tread");
         translationBuilder.add(AVPBlocks.URANIUM_BLOCK, "Block of Uranium");
         translationBuilder.add(AVPBlocks.ZINC_BLOCK, "Block of Zinc");
-        translationBuilder.add(AVPBlocks.ZINC_ORE, "Zinc Ore");
+        translationBuilder.add(TempAVPBlocks.ZINC_ORE.get(), "Zinc Ore");
         translationBuilder.add(AVPBlocks.INDUSTRIAL_FURNACE, "Industrial Furnace");
         translationBuilder.add(AVPBlocks.FERROALUMINUM_SLAB, "Ferroaluminum Slab");
         translationBuilder.add(AVPBlocks.FERROALUMINUM_STAIRS, "Ferroaluminum Stairs");

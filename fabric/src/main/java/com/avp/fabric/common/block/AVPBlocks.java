@@ -17,6 +17,7 @@ import java.util.stream.Collectors;
 import com.avp.AVPResources;
 import com.avp.common.block.BlockProperties;
 import com.avp.common.block.BlockPropertyBuilder;
+import com.avp.common.block.LithiumBlock;
 import com.avp.fabric.common.block.resin.IrradiatedResinBlock;
 import com.avp.fabric.common.block.resin.IrradiatedResinNodeBlock;
 import com.avp.fabric.common.block.resin.IrradiatedResinVeinBlock;
@@ -73,8 +74,6 @@ public class AVPBlocks {
 
     public static final Block AUTUNITE_BLOCK = registerRadiatedBlock(BlockProperties.AUTUNITE_ORE.build(), "autunite_block");
 
-    public static final Block AUTUNITE_ORE = registerRadiatedBlock(BlockProperties.AUTUNITE_ORE.build(), "autunite_ore");
-
     public static final Block BRASS_BLOCK = register(BlockProperties.BRASS, "brass_block");
 
     public static final Block CHISELED_FERROALUMINUM = register(BlockProperties.FERROALUMINUM, "chiseled_ferroaluminum");
@@ -122,10 +121,6 @@ public class AVPBlocks {
         "cut_titanium_stairs"
     );
 
-    public static final Block DEEPSLATE_TITANIUM_ORE = register(BlockProperties.DEEPSLATE_TITANIUM_ORE, "deepslate_titanium_ore");
-
-    public static final Block DEEPSLATE_ZINC_ORE = register(BlockProperties.DEEPSLATE_ZINC_ORE, "deepslate_zinc_ore");
-
     public static final Block FERROALUMINUM_BLOCK = register(BlockProperties.FERROALUMINUM, "ferroaluminum_block");
 
     public static final Block FERROALUMINUM_CHAIN_FENCE = register(
@@ -158,8 +153,6 @@ public class AVPBlocks {
 
     public static final Block FERROALUMINUM_TREAD = register(BlockProperties.FERROALUMINUM, "ferroaluminum_tread");
 
-    public static final Block GALENA_ORE = register(BlockProperties.GALENA_ORE, "galena_ore");
-
     public static final Block INDUSTRIAL_GLASS = register(
         new TransparentBlock(BlockProperties.INDUSTRIAL_GLASS.build()),
         "industrial_glass"
@@ -182,10 +175,6 @@ public class AVPBlocks {
     public static final Block AMMO_CHEST = register(new AmmoChestBlock(BlockProperties.LEAD.build()), "ammo_chest");
 
     public static final Block LITHIUM_BLOCK = register(new LithiumBlock(BlockProperties.LITHIUM_ORE.build()), "lithium_block");
-
-    public static final Block LITHIUM_ORE = register(new LithiumBlock(BlockProperties.LITHIUM_ORE.build()), "lithium_ore");
-
-    public static final Block MONAZITE_ORE = register(BlockProperties.MONAZITE_ORE, "monazite_ore");
 
     public static final Block NETHER_RESIN = register(new ResinBlock(BlockProperties.NETHER_RESIN.build()), "nether_resin");
 
@@ -327,8 +316,6 @@ public class AVPBlocks {
     public static final Block URANIUM_BLOCK = registerRadiatedBlock(BlockProperties.URANIUM.build(), "uranium_block");
 
     public static final Block ZINC_BLOCK = register(BlockProperties.ZINC, "zinc_block");
-
-    public static final Block ZINC_ORE = register(BlockProperties.ZINC_ORE, "zinc_ore");
 
     // Doors And Trapdoors
     public static final Block INDUSTRIAL_GLASS_DOOR = register(

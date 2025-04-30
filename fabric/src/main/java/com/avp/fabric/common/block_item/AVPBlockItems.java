@@ -48,8 +48,6 @@ public class AVPBlockItems {
 
     public static final BlockItem AUTUNITE_BLOCK = register(AVPBlocks.AUTUNITE_BLOCK);
 
-    public static final BlockItem AUTUNITE_ORE = register(AVPBlocks.AUTUNITE_ORE);
-
     public static final BlockItem BRASS_BLOCK = register(AVPBlocks.BRASS_BLOCK);
 
     public static final BlockItem CHISELED_FERROALUMINUM = register(AVPBlocks.CHISELED_FERROALUMINUM);
@@ -75,10 +73,6 @@ public class AVPBlockItems {
     public static final BlockItem CUT_TITANIUM_SLAB = register(AVPBlocks.CUT_TITANIUM_SLAB);
 
     public static final BlockItem CUT_TITANIUM_STAIRS = register(AVPBlocks.CUT_TITANIUM_STAIRS);
-
-    public static final BlockItem DEEPSLATE_TITANIUM_ORE = register(AVPBlocks.DEEPSLATE_TITANIUM_ORE);
-
-    public static final BlockItem DEEPSLATE_ZINC_ORE = register(AVPBlocks.DEEPSLATE_ZINC_ORE);
 
     public static final BlockItem FERROALUMINUM_BUTTON = register(AVPBlocks.FERROALUMINUM_BUTTON);
 
@@ -108,8 +102,6 @@ public class AVPBlockItems {
 
     public static final BlockItem FERROALUMINUM_TREAD = register(AVPBlocks.FERROALUMINUM_TREAD);
 
-    public static final BlockItem GALENA_ORE = register(AVPBlocks.GALENA_ORE);
-
     public static final BlockItem INDUSTRIAL_GLASS = register(AVPBlocks.INDUSTRIAL_GLASS);
 
     public static final BlockItem INDUSTRIAL_GLASS_PANE = register(AVPBlocks.INDUSTRIAL_GLASS_PANE);
@@ -123,10 +115,6 @@ public class AVPBlockItems {
     public static final BlockItem LEAD_CHEST = register("lead_chest", LeadChestBlockItem::new);
 
     public static final BlockItem AMMO_CHEST = register("ammo_chest", AmmoChestBlockItem::new);
-
-    public static final BlockItem LITHIUM_ORE = register(AVPBlocks.LITHIUM_ORE);
-
-    public static final BlockItem MONAZITE_ORE = register(AVPBlocks.MONAZITE_ORE);
 
     public static final BlockItem NETHER_RESIN = register(new Item.Properties().fireResistant(), AVPBlocks.NETHER_RESIN);
 
@@ -264,8 +252,6 @@ public class AVPBlockItems {
     public static final BlockItem URANIUM_BLOCK = register(AVPBlocks.URANIUM_BLOCK);
 
     public static final BlockItem ZINC_BLOCK = register(AVPBlocks.ZINC_BLOCK);
-
-    public static final BlockItem ZINC_ORE = register(AVPBlocks.ZINC_ORE);
 
     public static final BlockItem INDUSTRIAL_FURNACE_BLOCK = register(AVPBlocks.INDUSTRIAL_FURNACE);
 

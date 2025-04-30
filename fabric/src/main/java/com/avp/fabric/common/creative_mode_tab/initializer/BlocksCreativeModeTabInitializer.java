@@ -11,16 +11,16 @@ public class BlocksCreativeModeTabInitializer {
     public static void initialize() {
         ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.BLOCKS_KEY).register(entries -> {
             // Worldgen (natural) blocks
-            entries.accept(AVPBlocks.AUTUNITE_ORE);
+            entries.accept(TempAVPBlocks.AUTUNITE_ORE.get());
             entries.accept(TempAVPBlocks.BAUXITE_ORE.get());
-            entries.accept(AVPBlocks.DEEPSLATE_ZINC_ORE);
-            entries.accept(AVPBlocks.GALENA_ORE);
+            entries.accept(TempAVPBlocks.DEEPSLATE_ZINC_ORE.get());
+            entries.accept(TempAVPBlocks.GALENA_ORE.get());
             entries.accept(AVPBlocks.LITHIUM_BLOCK);
-            entries.accept(AVPBlocks.LITHIUM_ORE);
-            entries.accept(AVPBlocks.MONAZITE_ORE);
+            entries.accept(TempAVPBlocks.LITHIUM_ORE.get());
+            entries.accept(TempAVPBlocks.MONAZITE_ORE.get());
             entries.accept(AVPBlocks.SILICA_GRAVEL);
-            entries.accept(AVPBlocks.DEEPSLATE_TITANIUM_ORE);
-            entries.accept(AVPBlocks.ZINC_ORE);
+            entries.accept(TempAVPBlocks.DEEPSLATE_TITANIUM_ORE.get());
+            entries.accept(TempAVPBlocks.ZINC_ORE.get());
             entries.accept(AVPBlocks.AUTUNITE_BLOCK);
             entries.accept(AVPBlocks.RAW_BAUXITE_BLOCK);
             entries.accept(AVPBlocks.RAW_GALENA_BLOCK);

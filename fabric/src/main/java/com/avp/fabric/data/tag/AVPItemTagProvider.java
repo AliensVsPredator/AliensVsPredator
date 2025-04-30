@@ -8,6 +8,7 @@ import net.minecraft.world.item.Items;
 
 import java.util.concurrent.CompletableFuture;
 
+import com.avp.common.block.TempAVPBlocks;
 import com.avp.common.item.AVPItemTags;
 import com.avp.common.item.TempAVPBlockItems;
 import com.avp.fabric.common.block.AVPBlocks;
@@ -98,7 +99,7 @@ public class AVPItemTagProvider extends FabricTagProvider.ItemTagProvider {
                 AVPItems.PLATED_IRRADIATED_CHITIN,
                 AVPItems.IRRADIATED_RESIN_BALL,
                 AVPBlockItems.AUTUNITE_BLOCK,
-                AVPBlockItems.AUTUNITE_ORE,
+                TempAVPBlockItems.AUTUNITE_ORE.get(),
                 AVPBlockItems.URANIUM_BLOCK,
                 AVPBlockItems.TRINITITE_BLOCK,
                 AVPBlockItems.IRRADIATED_RESIN,
@@ -238,7 +239,7 @@ public class AVPItemTagProvider extends FabricTagProvider.ItemTagProvider {
         getOrCreateTagBuilder(AVPItemTags.LITHIUM)
             .add(
                 AVPBlocks.LITHIUM_BLOCK.asItem(),
-                AVPBlocks.LITHIUM_ORE.asItem(),
+                TempAVPBlocks.LITHIUM_ORE.get().asItem(),
                 AVPItems.LITHIUM_DUST
             );
 
@@ -617,14 +618,14 @@ public class AVPItemTagProvider extends FabricTagProvider.ItemTagProvider {
         getOrCreateTagBuilder(CommonConstants.ORES)
             .setReplace(false)
             .add(
-                AVPBlockItems.AUTUNITE_ORE,
+                TempAVPBlockItems.AUTUNITE_ORE.get(),
                 TempAVPBlockItems.BAUXITE_ORE.get(),
-                AVPBlockItems.LITHIUM_ORE,
-                AVPBlockItems.DEEPSLATE_TITANIUM_ORE,
-                AVPBlockItems.GALENA_ORE,
-                AVPBlockItems.DEEPSLATE_ZINC_ORE,
-                AVPBlockItems.MONAZITE_ORE,
-                AVPBlockItems.ZINC_ORE
+                TempAVPBlockItems.DEEPSLATE_TITANIUM_ORE.get(),
+                TempAVPBlockItems.DEEPSLATE_ZINC_ORE.get(),
+                TempAVPBlockItems.GALENA_ORE.get(),
+                TempAVPBlockItems.LITHIUM_ORE.get(),
+                TempAVPBlockItems.MONAZITE_ORE.get(),
+                TempAVPBlockItems.ZINC_ORE.get()
             );
     }
 }

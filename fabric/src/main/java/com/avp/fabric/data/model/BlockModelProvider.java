@@ -161,7 +161,7 @@ public class BlockModelProvider extends FabricModelProvider {
         generators.createTrivialCube(AVPBlocks.ALUMINUM_BLOCK);
         generators.createTrivialCube(AVPBlocks.TRINITITE_BLOCK);
         generators.createTrivialCube(AVPBlocks.AUTUNITE_BLOCK);
-        generators.createTrivialCube(AVPBlocks.AUTUNITE_ORE);
+        generators.createTrivialCube(TempAVPBlocks.AUTUNITE_ORE.get());
         generators.createTrivialCube(TempAVPBlocks.BAUXITE_ORE.get());
         generators.createTrivialCube(AVPBlocks.BRASS_BLOCK);
         generators.createTrivialCube(AVPBlocks.CHISELED_FERROALUMINUM);
@@ -184,8 +184,8 @@ public class BlockModelProvider extends FabricModelProvider {
             .slab(AVPBlocks.CUT_TITANIUM_SLAB)
             .stairs(AVPBlocks.CUT_TITANIUM_STAIRS);
 
-        generators.createTrivialCube(AVPBlocks.DEEPSLATE_TITANIUM_ORE);
-        generators.createTrivialCube(AVPBlocks.DEEPSLATE_ZINC_ORE);
+        generators.createTrivialCube(TempAVPBlocks.DEEPSLATE_TITANIUM_ORE.get());
+        generators.createTrivialCube(TempAVPBlocks.DEEPSLATE_ZINC_ORE.get());
         BarsGenerator.generate(generators, AVPBlocks.FERROALUMINUM_CHAIN_FENCE);
         generators.createRotatedPillarWithHorizontalVariant(
             AVPBlocks.FERROALUMINUM_COLUMN,
@@ -199,11 +199,11 @@ public class BlockModelProvider extends FabricModelProvider {
         // generators.createTrivialCube(AVPBlocks.FERROALUMINUM_SIDING);
         // generators.createTrivialCube(AVPBlocks.FERROALUMINUM_STANDING);
         // generators.createTrivialCube(AVPBlocks.FERROALUMINUM_TREAD);
-        generators.createTrivialCube(AVPBlocks.GALENA_ORE);
+        generators.createTrivialCube(TempAVPBlocks.GALENA_ORE.get());
         generators.createTrivialCube(AVPBlocks.LEAD_BLOCK);
         generators.createTrivialCube(AVPBlocks.LITHIUM_BLOCK);
-        generators.createTrivialCube(AVPBlocks.LITHIUM_ORE);
-        generators.createTrivialCube(AVPBlocks.MONAZITE_ORE);
+        generators.createTrivialCube(TempAVPBlocks.LITHIUM_ORE.get());
+        generators.createTrivialCube(TempAVPBlocks.MONAZITE_ORE.get());
         generators.createTrivialCube(AVPBlocks.RAW_BAUXITE_BLOCK);
         generators.createTrivialCube(AVPBlocks.RAW_GALENA_BLOCK);
         generators.createTrivialCube(AVPBlocks.RAW_MONAZITE_BLOCK);
@@ -241,7 +241,7 @@ public class BlockModelProvider extends FabricModelProvider {
         // generators.createTrivialCube(AVPBlocks.TITANIUM_TREAD);
         generators.createTrivialCube(AVPBlocks.URANIUM_BLOCK);
         generators.createTrivialCube(AVPBlocks.ZINC_BLOCK);
-        generators.createTrivialCube(AVPBlocks.ZINC_ORE);
+        generators.createTrivialCube(TempAVPBlocks.ZINC_ORE.get());
 
         generators.family(AVPBlocks.FERROALUMINUM_BLOCK)
             .slab(AVPBlocks.FERROALUMINUM_SLAB)

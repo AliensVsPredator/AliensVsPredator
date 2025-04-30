@@ -243,7 +243,7 @@ public class AVPBlockTagProvider extends FabricTagProvider.BlockTagProvider {
                 AVPBlocks.CUT_TITANIUM,
                 AVPBlocks.CUT_TITANIUM_SLAB,
                 AVPBlocks.CUT_TITANIUM_STAIRS,
-                AVPBlocks.DEEPSLATE_TITANIUM_ORE,
+                TempAVPBlocks.DEEPSLATE_TITANIUM_ORE.get(),
                 AVPBlocks.RAW_TITANIUM_BLOCK,
                 AVPBlocks.TITANIUM_BLOCK,
                 AVPBlocks.TITANIUM_BUTTON,
@@ -332,21 +332,21 @@ public class AVPBlockTagProvider extends FabricTagProvider.BlockTagProvider {
                 AVPBlocks.ALUMINUM_BLOCK,
                 AVPBlocks.AMMO_CHEST,
                 AVPBlocks.AUTUNITE_BLOCK,
-                AVPBlocks.AUTUNITE_ORE,
+                TempAVPBlocks.AUTUNITE_ORE.get(),
                 TempAVPBlocks.BAUXITE_ORE.get(),
                 AVPBlocks.BRASS_BLOCK,
-                AVPBlocks.DEEPSLATE_TITANIUM_ORE,
-                AVPBlocks.DEEPSLATE_ZINC_ORE,
+                TempAVPBlocks.DEEPSLATE_TITANIUM_ORE.get(),
+                TempAVPBlocks.DEEPSLATE_ZINC_ORE.get(),
                 AVPBlocks.DESK_TERMINAL_BLOCK,
-                AVPBlocks.GALENA_ORE,
+                TempAVPBlocks.GALENA_ORE.get(),
                 AVPBlocks.INDUSTRIAL_FURNACE,
                 AVPBlocks.IRRADIATED_RESIN,
                 AVPBlocks.IRRADIATED_RESIN_NODE,
                 AVPBlocks.LEAD_BLOCK,
                 AVPBlocks.LEAD_CHEST,
                 AVPBlocks.LITHIUM_BLOCK,
-                AVPBlocks.LITHIUM_ORE,
-                AVPBlocks.MONAZITE_ORE,
+                TempAVPBlocks.LITHIUM_ORE.get(),
+                TempAVPBlocks.MONAZITE_ORE.get(),
                 AVPBlocks.NETHER_RESIN,
                 AVPBlocks.NETHER_RESIN_NODE,
                 AVPBlocks.NUKE_BLOCK,
@@ -368,7 +368,7 @@ public class AVPBlockTagProvider extends FabricTagProvider.BlockTagProvider {
                 AVPBlocks.TRIP_MINE_BLOCK,
                 AVPBlocks.URANIUM_BLOCK,
                 AVPBlocks.ZINC_BLOCK,
-                AVPBlocks.ZINC_ORE
+                TempAVPBlocks.ZINC_ORE.get()
             );
 
         getOrCreateTagBuilder(BlockTags.MINEABLE_WITH_SHOVEL)
@@ -385,7 +385,7 @@ public class AVPBlockTagProvider extends FabricTagProvider.BlockTagProvider {
             .add(
                 TempAVPBlocks.BAUXITE_ORE.get(),
                 AVPBlocks.BLUEPRINT_BLOCK,
-                AVPBlocks.GALENA_ORE,
+                TempAVPBlocks.GALENA_ORE.get(),
                 AVPBlocks.RAW_BAUXITE_BLOCK
             );
 
@@ -396,7 +396,7 @@ public class AVPBlockTagProvider extends FabricTagProvider.BlockTagProvider {
             .addTag(AVPBlockTags.TITANIUM)
             .add(
                 AVPBlocks.AMMO_CHEST,
-                AVPBlocks.DEEPSLATE_TITANIUM_ORE,
+                TempAVPBlocks.DEEPSLATE_TITANIUM_ORE.get(),
                 AVPBlocks.DESK_TERMINAL_BLOCK,
                 AVPBlocks.INDUSTRIAL_FURNACE,
                 AVPBlocks.LEAD_CHEST,
@@ -569,14 +569,14 @@ public class AVPBlockTagProvider extends FabricTagProvider.BlockTagProvider {
         getOrCreateTagBuilder(CommonConstants.ORES_BLOCKS)
             .setReplace(false)
             .add(
-                AVPBlocks.AUTUNITE_ORE,
+                TempAVPBlocks.AUTUNITE_ORE.get(),
                 TempAVPBlocks.BAUXITE_ORE.get(),
-                AVPBlocks.DEEPSLATE_TITANIUM_ORE,
-                AVPBlocks.DEEPSLATE_ZINC_ORE,
-                AVPBlocks.GALENA_ORE,
-                AVPBlocks.LITHIUM_ORE,
-                AVPBlocks.MONAZITE_ORE,
-                AVPBlocks.ZINC_ORE
+                TempAVPBlocks.DEEPSLATE_TITANIUM_ORE.get(),
+                TempAVPBlocks.DEEPSLATE_ZINC_ORE.get(),
+                TempAVPBlocks.GALENA_ORE.get(),
+                TempAVPBlocks.LITHIUM_ORE.get(),
+                TempAVPBlocks.MONAZITE_ORE.get(),
+                TempAVPBlocks.ZINC_ORE.get()
             );
     }
 }

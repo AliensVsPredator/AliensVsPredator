@@ -55,7 +55,7 @@ public class AVPOres {
     );
 
     public static final AVPOreData GALENA = create(
-        builder("galena_ore", OreConfiguration.target(STONE_ORE_REPLACEABLES_RULE, AVPBlocks.GALENA_ORE.defaultBlockState()))
+        builder("galena_ore", OreConfiguration.target(STONE_ORE_REPLACEABLES_RULE, TempAVPBlocks.GALENA_ORE.get().defaultBlockState()))
             .count(36)
             .heightRange(HeightRangePlacement.uniform(VerticalAnchor.absolute(9), VerticalAnchor.absolute(96)))
             .veinSize(9)
@@ -63,7 +63,7 @@ public class AVPOres {
     );
 
     public static final AVPOreData LEAD_SWAMP = create(
-        builder("lead_ore_swamp", OreConfiguration.target(STONE_ORE_REPLACEABLES_RULE, AVPBlocks.GALENA_ORE.defaultBlockState()))
+        builder("lead_ore_swamp", OreConfiguration.target(STONE_ORE_REPLACEABLES_RULE, TempAVPBlocks.GALENA_ORE.get().defaultBlockState()))
             .count(40)
             .heightRange(HeightRangePlacement.triangle(VerticalAnchor.absolute(-64), VerticalAnchor.absolute(64)))
             .veinSize(9)
@@ -71,7 +71,7 @@ public class AVPOres {
     );
 
     public static final AVPOreData LITHIUM = create(
-        builder("lithium_ore", OreConfiguration.target(STONE_ORE_REPLACEABLES_RULE, AVPBlocks.LITHIUM_ORE.defaultBlockState()))
+        builder("lithium_ore", OreConfiguration.target(STONE_ORE_REPLACEABLES_RULE, TempAVPBlocks.LITHIUM_ORE.get().defaultBlockState()))
             .count(8)
             .heightRange(HeightRangePlacement.uniform(VerticalAnchor.absolute(9), VerticalAnchor.absolute(40)))
             .veinSize(9)
@@ -79,7 +79,10 @@ public class AVPOres {
     );
 
     public static final AVPOreData LITHIUM_DESERT = create(
-        builder("lithium_ore_desert", OreConfiguration.target(STONE_ORE_REPLACEABLES_RULE, AVPBlocks.LITHIUM_ORE.defaultBlockState()))
+        builder(
+            "lithium_ore_desert",
+            OreConfiguration.target(STONE_ORE_REPLACEABLES_RULE, TempAVPBlocks.LITHIUM_ORE.get().defaultBlockState())
+        )
             .count(20)
             .heightRange(HeightRangePlacement.uniform(VerticalAnchor.absolute(9), VerticalAnchor.absolute(64)))
             .veinSize(6)
@@ -87,7 +90,7 @@ public class AVPOres {
     );
 
     public static final AVPOreData MONAZITE = create(
-        builder("monazite_ore", OreConfiguration.target(STONE_ORE_REPLACEABLES_RULE, AVPBlocks.MONAZITE_ORE.defaultBlockState()))
+        builder("monazite_ore", OreConfiguration.target(STONE_ORE_REPLACEABLES_RULE, TempAVPBlocks.MONAZITE_ORE.get().defaultBlockState()))
             .count(2)
             .heightRange(HeightRangePlacement.uniform(VerticalAnchor.absolute(0), VerticalAnchor.absolute(16)))
             .veinSize(6)
@@ -95,7 +98,10 @@ public class AVPOres {
     );
 
     public static final AVPOreData MONAZITE_JUNGLE = create(
-        builder("monazite_ore_jungle", OreConfiguration.target(STONE_ORE_REPLACEABLES_RULE, AVPBlocks.MONAZITE_ORE.defaultBlockState()))
+        builder(
+            "monazite_ore_jungle",
+            OreConfiguration.target(STONE_ORE_REPLACEABLES_RULE, TempAVPBlocks.MONAZITE_ORE.get().defaultBlockState())
+        )
             .count(15)
             .heightRange(HeightRangePlacement.triangle(VerticalAnchor.absolute(-48), VerticalAnchor.absolute(48)))
             .veinSize(6)
@@ -113,7 +119,7 @@ public class AVPOres {
     public static final AVPOreData TITANIUM_LOWER = create(
         builder(
             "titanium_ore_lower",
-            OreConfiguration.target(DEEPSLATE_ORE_REPLACEABLES_RULE, AVPBlocks.DEEPSLATE_TITANIUM_ORE.defaultBlockState())
+            OreConfiguration.target(DEEPSLATE_ORE_REPLACEABLES_RULE, TempAVPBlocks.DEEPSLATE_TITANIUM_ORE.get().defaultBlockState())
         )
             .count(10)
             .heightRange(HeightRangePlacement.triangle(VerticalAnchor.absolute(-128), VerticalAnchor.absolute(0)))
@@ -122,8 +128,8 @@ public class AVPOres {
     );
 
     private static final List<OreConfiguration.TargetBlockState> ZINC_TARGETS = List.of(
-        OreConfiguration.target(DEEPSLATE_ORE_REPLACEABLES_RULE, AVPBlocks.DEEPSLATE_ZINC_ORE.defaultBlockState()),
-        OreConfiguration.target(STONE_ORE_REPLACEABLES_RULE, AVPBlocks.ZINC_ORE.defaultBlockState())
+        OreConfiguration.target(DEEPSLATE_ORE_REPLACEABLES_RULE, TempAVPBlocks.DEEPSLATE_ZINC_ORE.get().defaultBlockState()),
+        OreConfiguration.target(STONE_ORE_REPLACEABLES_RULE, TempAVPBlocks.ZINC_ORE.get().defaultBlockState())
     );
 
     public static final AVPOreData ZINC = create(
