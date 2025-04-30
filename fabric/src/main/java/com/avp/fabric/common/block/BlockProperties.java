@@ -1,5 +1,6 @@
 package com.avp.fabric.common.block;
 
+import com.avp.common.block.BlockPropertyBuilder;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;

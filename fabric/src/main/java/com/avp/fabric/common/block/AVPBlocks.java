@@ -1,5 +1,6 @@
 package com.avp.fabric.common.block;
 
+import com.avp.common.block.BlockPropertyBuilder;
 import com.avp.fabric.common.block.resin.IrradiatedResinBlock;
 import com.avp.fabric.common.block.resin.IrradiatedResinNodeBlock;
 import com.avp.fabric.common.block.resin.IrradiatedResinVeinBlock;

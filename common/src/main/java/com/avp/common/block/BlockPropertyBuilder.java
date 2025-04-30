@@ -1,4 +1,4 @@
-package com.avp.fabric.common.block;
+package com.avp.common.block;
 
 import com.bvanseg.just.functional.option.Option;
 import net.minecraft.world.entity.EntityType;
