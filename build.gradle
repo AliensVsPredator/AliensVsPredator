@@ -7,7 +7,7 @@ plugins {
 	// Manual plugins added here
 	id 'java'
 	id "me.modmuss50.mod-publish-plugin" version "0.8.4"
-	id 'org.moddedmc.wiki.toolkit' version '0.2.5'
+	id 'org.moddedmc.wiki.toolkit' version '0.2.7'
 }
 
 // TODO: Figure out if this is still processing resources correctly.
@@ -19,21 +19,5 @@ processResources {
 
 	doLast {
 		println "processResources executed: wiki folder copied into assets/avp"
-	}
-}
-
-// TODO: Wiki preview is broken when ran from Intellij's gradle panel, use ./gradlew ... commands to run tasks, instead.
-wiki {
-	if (file('key.properties').exists()) {
-		def releaseProp = new Properties()
-		File secretPropsFile = file("key.properties")
-		releaseProp.load(secretPropsFile.newInputStream())
-		wikiAccessToken = releaseProp.getProperty("wikiKey")
-	}
-	docs {
-		avp {
-			root = file('docs/avp')
-			exportedAssetNamespaces = ['avp']
-		}
 	}
 }
