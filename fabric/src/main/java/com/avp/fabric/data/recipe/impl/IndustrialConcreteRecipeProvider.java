@@ -1,5 +1,6 @@
 package com.avp.fabric.data.recipe.impl;
 
+import com.avp.common.block.TempAVPBlocks;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.world.item.DyeItem;
 import net.minecraft.world.item.ItemStack;
@@ -10,6 +11,8 @@ import com.avp.fabric.common.block.AVPBlocks;
 import com.avp.fabric.data.recipe.builder.RecipeBuilder;
 import com.avp.fabric.data.recipe.util.RecipeUtil;
 
+import java.util.function.Supplier;
+
 public class IndustrialConcreteRecipeProvider {
 
     public static void provide(RecipeBuilder builder) {
@@ -17,7 +20,8 @@ public class IndustrialConcreteRecipeProvider {
     }
 
     private static void createIndustrialConcreteBlockRecipes(RecipeBuilder builder) {
-        AVPBlocks.DYE_COLOR_TO_INDUSTRIAL_CONCRETE.forEach(((dyeColor, block) -> {
+        TempAVPBlocks.DYE_COLOR_TO_INDUSTRIAL_CONCRETE.forEach(((dyeColor, blockSupplier) -> {
+            var block = blockSupplier.get();
             var dyeItem = DyeItem.byColor(dyeColor);
 
             builder.shapeless()
@@ -27,8 +31,9 @@ public class IndustrialConcreteRecipeProvider {
                 .into(1, block);
 
             var ingredient = Ingredient.of(
-                AVPBlocks.DYE_COLOR_TO_INDUSTRIAL_CONCRETE.values()
+                TempAVPBlocks.DYE_COLOR_TO_INDUSTRIAL_CONCRETE.values()
                     .stream()
+                    .map(Supplier::get)
                     .filter(industrialConcreteBlock -> !industrialConcreteBlock.equals(block))
                     .map(ItemStack::new)
             );
@@ -40,13 +45,13 @@ public class IndustrialConcreteRecipeProvider {
                 .withCustomName((outputItem) -> "dye_" + outputItem)
                 .into(1, block);
 
-            var slabBlock = AVPBlocks.DYE_COLOR_TO_INDUSTRIAL_CONCRETE_SLAB.get(dyeColor);
+            var slabBlock = TempAVPBlocks.DYE_COLOR_TO_INDUSTRIAL_CONCRETE_SLAB.get(dyeColor).get();
             RecipeUtil.createSlabBlockManualAndStonecutterRecipes(builder, block, slabBlock);
 
-            var stairBlock = AVPBlocks.DYE_COLOR_TO_INDUSTRIAL_CONCRETE_STAIRS.get(dyeColor);
+            var stairBlock = TempAVPBlocks.DYE_COLOR_TO_INDUSTRIAL_CONCRETE_STAIRS.get(dyeColor).get();
             RecipeUtil.createStairBlockManualAndStonecutterRecipes(builder, block, stairBlock);
 
-            var wallBlock = AVPBlocks.DYE_COLOR_TO_INDUSTRIAL_CONCRETE_WALL.get(dyeColor);
+            var wallBlock = TempAVPBlocks.DYE_COLOR_TO_INDUSTRIAL_CONCRETE_WALL.get(dyeColor).get();
             RecipeUtil.createWallBlockManualAndStonecutterRecipes(builder, block, wallBlock);
         }));
     }

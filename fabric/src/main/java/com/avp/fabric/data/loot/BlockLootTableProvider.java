@@ -93,36 +93,42 @@ public class BlockLootTableProvider extends FabricBlockLootTableProvider {
 
         // TODO: Use stream concat here.
         TempAVPBlocks.DYE_COLOR_TO_CONCRETE_SLAB.values().stream().map(Supplier::get).forEach(this::dropSlab);
-        AVPBlocks.DYE_COLOR_TO_CONCRETE_STAIRS.values().forEach(this::dropSelf);
+        TempAVPBlocks.DYE_COLOR_TO_CONCRETE_STAIRS.values().stream().map(Supplier::get).forEach(this::dropSelf);
 
-        AVPBlocks.DYE_COLOR_TO_INDUSTRIAL_CONCRETE.values().forEach(this::dropSelf);
-        AVPBlocks.DYE_COLOR_TO_INDUSTRIAL_CONCRETE_SLAB.values().forEach(this::dropSlab);
-        AVPBlocks.DYE_COLOR_TO_INDUSTRIAL_CONCRETE_STAIRS.values().forEach(this::dropSelf);
-        AVPBlocks.DYE_COLOR_TO_INDUSTRIAL_CONCRETE_WALL.values().forEach(this::dropSelf);
+        // TODO: Use stream concat here.
+        TempAVPBlocks.DYE_COLOR_TO_INDUSTRIAL_CONCRETE.values().stream().map(Supplier::get).forEach(this::dropSelf);
+        TempAVPBlocks.DYE_COLOR_TO_INDUSTRIAL_CONCRETE_SLAB.values().stream().map(Supplier::get).forEach(this::dropSlab);
+        TempAVPBlocks.DYE_COLOR_TO_INDUSTRIAL_CONCRETE_STAIRS.values().stream().map(Supplier::get).forEach(this::dropSelf);
+        TempAVPBlocks.DYE_COLOR_TO_INDUSTRIAL_CONCRETE_WALL.values().stream().map(Supplier::get).forEach(this::dropSelf);
         dropSelf(AVPBlocks.INDUSTRIAL_GLASS);
         dropSelf(AVPBlocks.INDUSTRIAL_GLASS_PANE);
-        AVPBlocks.DYE_COLOR_TO_INDUSTRIAL_GLASS.values().forEach(this::dropSelf);
-        AVPBlocks.DYE_COLOR_TO_INDUSTRIAL_GLASS_PANE.values().forEach(this::dropSelf);
+        TempAVPBlocks.DYE_COLOR_TO_INDUSTRIAL_GLASS.values().stream().map(Supplier::get).forEach(this::dropSelf);
+        TempAVPBlocks.DYE_COLOR_TO_INDUSTRIAL_GLASS_PANE.values().stream().map(Supplier::get).forEach(this::dropSelf);
 
-        AVPBlocks.DYE_COLOR_TO_PADDING.values().forEach(this::dropSelf);
-        AVPBlocks.DYE_COLOR_TO_PADDING_SLAB.values().forEach(this::dropSlab);
-        AVPBlocks.DYE_COLOR_TO_PADDING_STAIRS.values().forEach(this::dropSelf);
+        // TODO: Use stream concat here.
+        TempAVPBlocks.DYE_COLOR_TO_PADDING.values().stream().map(Supplier::get).forEach(this::dropSelf);
+        TempAVPBlocks.DYE_COLOR_TO_PADDING_SLAB.values().stream().map(Supplier::get).forEach(this::dropSlab);
+        TempAVPBlocks.DYE_COLOR_TO_PADDING_STAIRS.values().stream().map(Supplier::get).forEach(this::dropSelf);
 
-        AVPBlocks.DYE_COLOR_TO_PANEL_PADDING.values().forEach(this::dropSelf);
-        AVPBlocks.DYE_COLOR_TO_PANEL_PADDING_SLAB.values().forEach(this::dropSlab);
-        AVPBlocks.DYE_COLOR_TO_PANEL_PADDING_STAIRS.values().forEach(this::dropSelf);
+        // TODO: Use stream concat here.
+        TempAVPBlocks.DYE_COLOR_TO_PANEL_PADDING.values().stream().map(Supplier::get).forEach(this::dropSelf);
+        TempAVPBlocks.DYE_COLOR_TO_PANEL_PADDING_SLAB.values().stream().map(Supplier::get).forEach(this::dropSlab);
+        TempAVPBlocks.DYE_COLOR_TO_PANEL_PADDING_STAIRS.values().stream().map(Supplier::get).forEach(this::dropSelf);
 
-        AVPBlocks.DYE_COLOR_TO_PIPE_PADDING.values().forEach(this::dropSelf);
-        AVPBlocks.DYE_COLOR_TO_PIPE_PADDING_SLAB.values().forEach(this::dropSlab);
-        AVPBlocks.DYE_COLOR_TO_PIPE_PADDING_STAIRS.values().forEach(this::dropSelf);
+        // TODO: Use stream concat here.
+        TempAVPBlocks.DYE_COLOR_TO_PIPE_PADDING.values().stream().map(Supplier::get).forEach(this::dropSelf);
+        TempAVPBlocks.DYE_COLOR_TO_PIPE_PADDING_SLAB.values().stream().map(Supplier::get).forEach(this::dropSlab);
+        TempAVPBlocks.DYE_COLOR_TO_PIPE_PADDING_STAIRS.values().stream().map(Supplier::get).forEach(this::dropSelf);
 
-        AVPBlocks.DYE_COLOR_TO_CUT_PLASTIC.values().forEach(this::dropSelf);
-        AVPBlocks.DYE_COLOR_TO_CUT_PLASTIC_SLAB.values().forEach(this::dropSlab);
-        AVPBlocks.DYE_COLOR_TO_CUT_PLASTIC_STAIRS.values().forEach(this::dropSelf);
+        // TODO: Use stream concat here.
+        TempAVPBlocks.DYE_COLOR_TO_CUT_PLASTIC.values().stream().map(Supplier::get).forEach(this::dropSelf);
+        TempAVPBlocks.DYE_COLOR_TO_CUT_PLASTIC_SLAB.values().stream().map(Supplier::get).forEach(this::dropSlab);
+        TempAVPBlocks.DYE_COLOR_TO_CUT_PLASTIC_STAIRS.values().stream().map(Supplier::get).forEach(this::dropSelf);
 
-        AVPBlocks.DYE_COLOR_TO_PLASTIC.values().forEach(this::dropSelf);
-        AVPBlocks.DYE_COLOR_TO_PLASTIC_SLAB.values().forEach(this::dropSlab);
-        AVPBlocks.DYE_COLOR_TO_PLASTIC_STAIRS.values().forEach(this::dropSelf);
+        // TODO: Use stream concat here.
+        TempAVPBlocks.DYE_COLOR_TO_PLASTIC.values().stream().map(Supplier::get).forEach(this::dropSelf);
+        TempAVPBlocks.DYE_COLOR_TO_PLASTIC_SLAB.values().stream().map(Supplier::get).forEach(this::dropSlab);
+        TempAVPBlocks.DYE_COLOR_TO_PLASTIC_STAIRS.values().stream().map(Supplier::get).forEach(this::dropSelf);
 
         dropSelf(AVPBlocks.RAW_BAUXITE_BLOCK);
         dropSelf(AVPBlocks.RAW_GALENA_BLOCK);

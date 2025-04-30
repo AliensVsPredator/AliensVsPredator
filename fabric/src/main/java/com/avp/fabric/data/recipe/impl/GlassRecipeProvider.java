@@ -1,5 +1,6 @@
 package com.avp.fabric.data.recipe.impl;
 
+import com.avp.common.block.TempAVPBlocks;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.world.item.DyeItem;
 import net.minecraft.world.level.ItemLike;
@@ -43,7 +44,8 @@ public class GlassRecipeProvider {
 
         createIndustrialGlassBlockVariantRecipes(builder);
 
-        AVPBlocks.DYE_COLOR_TO_INDUSTRIAL_GLASS.forEach((dyeColor, block) -> {
+        TempAVPBlocks.DYE_COLOR_TO_INDUSTRIAL_GLASS.forEach((dyeColor, blockSupplier) -> {
+            var block = blockSupplier.get();
             var dyeItem = DyeItem.byColor(dyeColor);
 
             // Industrial glass combined with dyes creates colored industrial glass.
@@ -61,7 +63,7 @@ public class GlassRecipeProvider {
                 .define('A', block)
                 .pattern("AAA")
                 .pattern("AAA")
-                .into(16, AVPBlocks.DYE_COLOR_TO_INDUSTRIAL_GLASS_PANE.get(dyeColor));
+                .into(16, TempAVPBlocks.DYE_COLOR_TO_INDUSTRIAL_GLASS_PANE.get(dyeColor).get());
 
             // All colored industrial glass blocks can be blasted again to remove dyed colors.
             builder.blast(block)

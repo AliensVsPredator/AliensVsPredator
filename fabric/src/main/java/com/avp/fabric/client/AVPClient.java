@@ -1,5 +1,6 @@
 package com.avp.fabric.client;
 
+import com.avp.common.block.TempAVPBlocks;
 import mod.azure.azurelib.rewrite.render.armor.AzArmorRendererRegistry;
 import mod.azure.azurelib.rewrite.render.item.AzItemRenderer;
 import mod.azure.azurelib.rewrite.render.item.AzItemRendererRegistry;
@@ -129,11 +130,11 @@ public class AVPClient implements ClientModInitializer {
         BlockRenderLayerMap.INSTANCE.putBlock(AVPBlocks.INDUSTRIAL_GLASS, RenderType.cutout());
         BlockRenderLayerMap.INSTANCE.putBlock(AVPBlocks.INDUSTRIAL_GLASS_SLAB, RenderType.cutout());
         BlockRenderLayerMap.INSTANCE.putBlock(AVPBlocks.INDUSTRIAL_GLASS_STAIRS, RenderType.cutout());
-        AVPBlocks.DYE_COLOR_TO_INDUSTRIAL_GLASS.values()
-            .forEach(block -> BlockRenderLayerMap.INSTANCE.putBlock(block, RenderType.translucent()));
+        TempAVPBlocks.DYE_COLOR_TO_INDUSTRIAL_GLASS.values()
+            .forEach(blockSupplier -> BlockRenderLayerMap.INSTANCE.putBlock(blockSupplier.get(), RenderType.translucent()));
         BlockRenderLayerMap.INSTANCE.putBlock(AVPBlocks.INDUSTRIAL_GLASS_PANE, RenderType.cutout());
-        AVPBlocks.DYE_COLOR_TO_INDUSTRIAL_GLASS_PANE.values()
-            .forEach(block -> BlockRenderLayerMap.INSTANCE.putBlock(block, RenderType.translucent()));
+        TempAVPBlocks.DYE_COLOR_TO_INDUSTRIAL_GLASS_PANE.values()
+            .forEach(blockSupplier -> BlockRenderLayerMap.INSTANCE.putBlock(blockSupplier.get(), RenderType.translucent()));
 
         // Armors
         AzArmorRendererRegistry.register(

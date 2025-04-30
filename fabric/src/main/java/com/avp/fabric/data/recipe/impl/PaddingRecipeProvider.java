@@ -1,5 +1,6 @@
 package com.avp.fabric.data.recipe.impl;
 
+import com.avp.common.block.TempAVPBlocks;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.DyeItem;
@@ -16,7 +17,9 @@ public class PaddingRecipeProvider {
     }
 
     private static void createPaddingRecipes(RecipeBuilder builder) {
-        AVPBlocks.DYE_COLOR_TO_PADDING.forEach((dyeColor, block) -> {
+        TempAVPBlocks.DYE_COLOR_TO_PADDING.forEach((dyeColor, blockSupplier) -> {
+            var block = blockSupplier.get();
+
             builder.shapeless()
                 .withCategory(RecipeCategory.BUILDING_BLOCKS)
                 .requires(1, DyeItem.byColor(dyeColor))
@@ -27,23 +30,23 @@ public class PaddingRecipeProvider {
             var stonecutBuilder = builder.stonecut(block)
                 .withCategory(RecipeCategory.BUILDING_BLOCKS);
 
-            var panelBlock = AVPBlocks.DYE_COLOR_TO_PANEL_PADDING.get(dyeColor);
-            var pipeBlock = AVPBlocks.DYE_COLOR_TO_PIPE_PADDING.get(dyeColor);
+            var panelBlock = TempAVPBlocks.DYE_COLOR_TO_PANEL_PADDING.get(dyeColor).get();
+            var pipeBlock = TempAVPBlocks.DYE_COLOR_TO_PIPE_PADDING.get(dyeColor).get();
             stonecutBuilder.into(1, panelBlock);
             stonecutBuilder.into(1, pipeBlock);
 
-            var slab = AVPBlocks.DYE_COLOR_TO_PADDING_SLAB.get(dyeColor);
-            var stair = AVPBlocks.DYE_COLOR_TO_PADDING_STAIRS.get(dyeColor);
+            var slab = TempAVPBlocks.DYE_COLOR_TO_PADDING_SLAB.get(dyeColor).get();
+            var stair = TempAVPBlocks.DYE_COLOR_TO_PADDING_STAIRS.get(dyeColor).get();
             RecipeUtil.createSlabBlockManualAndStonecutterRecipes(builder, block, slab);
             RecipeUtil.createStairBlockManualAndStonecutterRecipes(builder, block, stair);
 
-            var panelSlab = AVPBlocks.DYE_COLOR_TO_PANEL_PADDING_SLAB.get(dyeColor);
-            var panelStair = AVPBlocks.DYE_COLOR_TO_PANEL_PADDING_STAIRS.get(dyeColor);
+            var panelSlab = TempAVPBlocks.DYE_COLOR_TO_PANEL_PADDING_SLAB.get(dyeColor).get();
+            var panelStair = TempAVPBlocks.DYE_COLOR_TO_PANEL_PADDING_STAIRS.get(dyeColor).get();
             RecipeUtil.createSlabBlockManualAndStonecutterRecipes(builder, panelBlock, panelSlab);
             RecipeUtil.createStairBlockManualAndStonecutterRecipes(builder, panelBlock, panelStair);
 
-            var pipeSlab = AVPBlocks.DYE_COLOR_TO_PIPE_PADDING_SLAB.get(dyeColor);
-            var pipeStair = AVPBlocks.DYE_COLOR_TO_PIPE_PADDING_STAIRS.get(dyeColor);
+            var pipeSlab = TempAVPBlocks.DYE_COLOR_TO_PIPE_PADDING_SLAB.get(dyeColor).get();
+            var pipeStair = TempAVPBlocks.DYE_COLOR_TO_PIPE_PADDING_STAIRS.get(dyeColor).get();
             RecipeUtil.createSlabBlockManualAndStonecutterRecipes(builder, pipeBlock, pipeSlab);
             RecipeUtil.createStairBlockManualAndStonecutterRecipes(builder, pipeBlock, pipeStair);
         });

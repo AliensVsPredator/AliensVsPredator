@@ -12,7 +12,11 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import com.avp.service.Services;
+import net.minecraft.world.level.block.IronBarsBlock;
 import net.minecraft.world.level.block.SlabBlock;
+import net.minecraft.world.level.block.StainedGlassBlock;
+import net.minecraft.world.level.block.StairBlock;
+import net.minecraft.world.level.block.WallBlock;
 
 // TODO: Rename this once multi-loader migration is finished.
 public class TempAVPBlocks {
@@ -43,6 +47,335 @@ public class TempAVPBlocks {
                         dyeColor -> register(
                             dyeColor.getName() + "_concrete_slab",
                             () -> new SlabBlock(BlockProperties.DYE_COLOR_TO_CONCRETE_PROPERTIES.get(dyeColor).build())
+                        )
+                    )
+                )
+        );
+
+    public static final Map<DyeColor, Supplier<Block>> DYE_COLOR_TO_CONCRETE_STAIRS =
+        Collections.unmodifiableMap(
+            Arrays.stream(DyeColor.values())
+                .collect(
+                    Collectors.toMap(
+                        Function.identity(),
+                        dyeColor -> register(
+                            dyeColor.getName() + "_concrete_stairs",
+                            () -> new StairBlock(
+                                BlockProperties.DYE_COLOR_TO_CONCRETE_BLOCKS.get(dyeColor).defaultBlockState(),
+                                BlockProperties.DYE_COLOR_TO_CONCRETE_PROPERTIES.get(dyeColor).build()
+                            )
+                        )
+                    )
+                )
+        );
+
+    public static final Map<DyeColor, Supplier<Block>> DYE_COLOR_TO_INDUSTRIAL_CONCRETE =
+        Collections.unmodifiableMap(
+            Arrays.stream(DyeColor.values())
+                .collect(
+                    Collectors.toMap(
+                        Function.identity(),
+                        dyeColor -> register(
+                            dyeColor.getName() + "_industrial_concrete",
+                            () -> new Block(BlockProperties.DYE_COLOR_TO_INDUSTRIAL_CONCRETE_PROPERTIES.get(dyeColor).build())
+                        )
+                    )
+                )
+        );
+
+    public static final Map<DyeColor, Supplier<Block>> DYE_COLOR_TO_INDUSTRIAL_CONCRETE_SLAB =
+        Collections.unmodifiableMap(
+            Arrays.stream(DyeColor.values())
+                .collect(
+                    Collectors.toMap(
+                        Function.identity(),
+                        dyeColor -> register(
+                            dyeColor.getName() + "_industrial_concrete_slab",
+                            () -> new SlabBlock(BlockProperties.DYE_COLOR_TO_INDUSTRIAL_CONCRETE_PROPERTIES.get(dyeColor).build())
+                        )
+                    )
+                )
+        );
+
+    public static final Map<DyeColor, Supplier<Block>> DYE_COLOR_TO_INDUSTRIAL_CONCRETE_STAIRS =
+        Collections.unmodifiableMap(
+            Arrays.stream(DyeColor.values())
+                .collect(
+                    Collectors.toMap(
+                        Function.identity(),
+                        dyeColor -> register(
+                            dyeColor.getName() + "_industrial_concrete_stairs",
+                            () -> new StairBlock(
+                                DYE_COLOR_TO_INDUSTRIAL_CONCRETE.get(dyeColor).get().defaultBlockState(),
+                                BlockProperties.DYE_COLOR_TO_INDUSTRIAL_CONCRETE_PROPERTIES.get(dyeColor).build()
+                            )
+                        )
+                    )
+                )
+        );
+
+    public static final Map<DyeColor, Supplier<Block>> DYE_COLOR_TO_INDUSTRIAL_CONCRETE_WALL =
+        Collections.unmodifiableMap(
+            Arrays.stream(DyeColor.values())
+                .collect(
+                    Collectors.toMap(
+                        Function.identity(),
+                        dyeColor -> register(
+                            dyeColor.getName() + "_industrial_concrete_wall",
+                            () -> new WallBlock(BlockProperties.DYE_COLOR_TO_INDUSTRIAL_CONCRETE_PROPERTIES.get(dyeColor).build())
+                        )
+                    )
+                )
+        );
+
+    public static final Map<DyeColor, Supplier<Block>> DYE_COLOR_TO_INDUSTRIAL_GLASS =
+        Collections.unmodifiableMap(
+            Arrays.stream(DyeColor.values())
+                .collect(
+                    Collectors.toMap(
+                        Function.identity(),
+                        dyeColor -> register(
+                            dyeColor.getName() + "_industrial_glass",
+                            () -> new StainedGlassBlock(dyeColor, BlockProperties.DYE_COLOR_TO_INDUSTRIAL_GLASS_PROPERTIES.get(dyeColor).build())
+                        )
+                    )
+                )
+        );
+
+    public static final Map<DyeColor, Supplier<Block>> DYE_COLOR_TO_INDUSTRIAL_GLASS_PANE =
+        Collections.unmodifiableMap(
+            Arrays.stream(DyeColor.values())
+                .collect(
+                    Collectors.toMap(
+                        Function.identity(),
+                        dyeColor -> register(
+                            dyeColor.getName() + "_industrial_glass_pane",
+                            () -> new IronBarsBlock(BlockProperties.DYE_COLOR_TO_INDUSTRIAL_GLASS_PANE_PROPERTIES.get(dyeColor).build())
+                        )
+                    )
+                )
+        );
+
+    public static final Map<DyeColor, Supplier<Block>> DYE_COLOR_TO_PADDING =
+        Collections.unmodifiableMap(
+            Arrays.stream(DyeColor.values())
+                .collect(
+                    Collectors.toMap(
+                        Function.identity(),
+                        dyeColor -> register(
+                            dyeColor.getName() + "_padding",
+                            () -> new Block(BlockProperties.DYE_COLOR_TO_PADDING_PROPERTIES.get(dyeColor).build())
+                        )
+                    )
+                )
+        );
+
+    public static final Map<DyeColor, Supplier<Block>> DYE_COLOR_TO_PADDING_SLAB =
+        Collections.unmodifiableMap(
+            Arrays.stream(DyeColor.values())
+                .collect(
+                    Collectors.toMap(
+                        Function.identity(),
+                        dyeColor -> register(
+                            dyeColor.getName() + "_padding_slab",
+                            () -> new SlabBlock(BlockProperties.DYE_COLOR_TO_PADDING_PROPERTIES.get(dyeColor).build())
+                        )
+                    )
+                )
+        );
+
+    public static final Map<DyeColor, Supplier<Block>> DYE_COLOR_TO_PADDING_STAIRS =
+        Collections.unmodifiableMap(
+            Arrays.stream(DyeColor.values())
+                .collect(
+                    Collectors.toMap(
+                        Function.identity(),
+                        dyeColor -> register(
+                            dyeColor.getName() + "_padding_stairs",
+                            () -> new StairBlock(
+                                DYE_COLOR_TO_PADDING.get(dyeColor).get().defaultBlockState(),
+                                BlockProperties.DYE_COLOR_TO_PADDING_PROPERTIES.get(dyeColor).build()
+                            )
+                        )
+                    )
+                )
+        );
+
+    public static final Map<DyeColor, Supplier<Block>> DYE_COLOR_TO_PANEL_PADDING =
+        Collections.unmodifiableMap(
+            Arrays.stream(DyeColor.values())
+                .collect(
+                    Collectors.toMap(
+                        Function.identity(),
+                        dyeColor -> register(
+                            dyeColor.getName() + "_panel_padding",
+                            () -> new Block(BlockProperties.DYE_COLOR_TO_PADDING_PROPERTIES.get(dyeColor).build())
+                        )
+                    )
+                )
+        );
+
+    public static final Map<DyeColor, Supplier<Block>> DYE_COLOR_TO_PANEL_PADDING_SLAB =
+        Collections.unmodifiableMap(
+            Arrays.stream(DyeColor.values())
+                .collect(
+                    Collectors.toMap(
+                        Function.identity(),
+                        dyeColor -> register(
+                            dyeColor.getName() + "_panel_padding_slab",
+                            () -> new SlabBlock(BlockProperties.DYE_COLOR_TO_PADDING_PROPERTIES.get(dyeColor).build())
+                        )
+                    )
+                )
+        );
+
+    public static final Map<DyeColor, Supplier<Block>> DYE_COLOR_TO_PANEL_PADDING_STAIRS =
+        Collections.unmodifiableMap(
+            Arrays.stream(DyeColor.values())
+                .collect(
+                    Collectors.toMap(
+                        Function.identity(),
+                        dyeColor -> register(
+                            dyeColor.getName() + "_panel_padding_stairs",
+                            () -> new StairBlock(
+                                DYE_COLOR_TO_PANEL_PADDING.get(dyeColor).get().defaultBlockState(),
+                                BlockProperties.DYE_COLOR_TO_PADDING_PROPERTIES.get(dyeColor).build()
+                            )
+                        )
+                    )
+                )
+        );
+
+    public static final Map<DyeColor, Supplier<Block>> DYE_COLOR_TO_PIPE_PADDING =
+        Collections.unmodifiableMap(
+            Arrays.stream(DyeColor.values())
+                .collect(
+                    Collectors.toMap(
+                        Function.identity(),
+                        dyeColor -> register(
+                            dyeColor.getName() + "_pipe_padding",
+                            () -> new Block(BlockProperties.DYE_COLOR_TO_PADDING_PROPERTIES.get(dyeColor).build())
+                        )
+                    )
+                )
+        );
+
+    public static final Map<DyeColor, Supplier<Block>> DYE_COLOR_TO_PIPE_PADDING_SLAB =
+        Collections.unmodifiableMap(
+            Arrays.stream(DyeColor.values())
+                .collect(
+                    Collectors.toMap(
+                        Function.identity(),
+                        dyeColor -> register(
+                            dyeColor.getName() + "_pipe_padding_slab",
+                            () -> new SlabBlock(BlockProperties.DYE_COLOR_TO_PADDING_PROPERTIES.get(dyeColor).build())
+                        )
+                    )
+                )
+        );
+
+    public static final Map<DyeColor, Supplier<Block>> DYE_COLOR_TO_PIPE_PADDING_STAIRS =
+        Collections.unmodifiableMap(
+            Arrays.stream(DyeColor.values())
+                .collect(
+                    Collectors.toMap(
+                        Function.identity(),
+                        dyeColor -> register(
+                            dyeColor.getName() + "_pipe_padding_stairs",
+                            () -> new StairBlock(
+                                DYE_COLOR_TO_PIPE_PADDING.get(dyeColor).get().defaultBlockState(),
+                                BlockProperties.DYE_COLOR_TO_PADDING_PROPERTIES.get(dyeColor).build()
+                            )
+                        )
+                    )
+                )
+        );
+
+    public static final Map<DyeColor, Supplier<Block>> DYE_COLOR_TO_CUT_PLASTIC =
+        Collections.unmodifiableMap(
+            Arrays.stream(DyeColor.values())
+                .collect(
+                    Collectors.toMap(
+                        Function.identity(),
+                        dyeColor -> register(
+                            dyeColor.getName() + "_cut_plastic",
+                            () -> new Block(BlockProperties.DYE_COLOR_TO_PLASTIC_PROPERTIES.get(dyeColor).build())
+                        )
+                    )
+                )
+        );
+
+    public static final Map<DyeColor, Supplier<Block>> DYE_COLOR_TO_CUT_PLASTIC_SLAB =
+        Collections.unmodifiableMap(
+            Arrays.stream(DyeColor.values())
+                .collect(
+                    Collectors.toMap(
+                        Function.identity(),
+                        dyeColor -> register(
+                            dyeColor.getName() + "_cut_plastic_slab",
+                            () -> new SlabBlock(BlockProperties.DYE_COLOR_TO_PLASTIC_PROPERTIES.get(dyeColor).build())
+                        )
+                    )
+                )
+        );
+
+    public static final Map<DyeColor, Supplier<Block>> DYE_COLOR_TO_CUT_PLASTIC_STAIRS =
+        Collections.unmodifiableMap(
+            Arrays.stream(DyeColor.values())
+                .collect(
+                    Collectors.toMap(
+                        Function.identity(),
+                        dyeColor -> register(
+                            dyeColor.getName() + "_cut_plastic_stairs",
+                            () -> new StairBlock(
+                                DYE_COLOR_TO_CUT_PLASTIC.get(dyeColor).get().defaultBlockState(),
+                                BlockProperties.DYE_COLOR_TO_PLASTIC_PROPERTIES.get(dyeColor).build()
+                            )
+                        )
+                    )
+                )
+        );
+
+    public static final Map<DyeColor, Supplier<Block>> DYE_COLOR_TO_PLASTIC =
+        Collections.unmodifiableMap(
+            Arrays.stream(DyeColor.values())
+                .collect(
+                    Collectors.toMap(
+                        Function.identity(),
+                        dyeColor -> register(
+                            dyeColor.getName() + "_plastic",
+                            () -> new Block(BlockProperties.DYE_COLOR_TO_PLASTIC_PROPERTIES.get(dyeColor).build())
+                        )
+                    )
+                )
+        );
+
+    public static final Map<DyeColor, Supplier<Block>> DYE_COLOR_TO_PLASTIC_SLAB =
+        Collections.unmodifiableMap(
+            Arrays.stream(DyeColor.values())
+                .collect(
+                    Collectors.toMap(
+                        Function.identity(),
+                        dyeColor -> register(
+                            dyeColor.getName() + "_plastic_slab",
+                            () -> new SlabBlock(BlockProperties.DYE_COLOR_TO_PLASTIC_PROPERTIES.get(dyeColor).build())
+                        )
+                    )
+                )
+        );
+
+    public static final Map<DyeColor, Supplier<Block>> DYE_COLOR_TO_PLASTIC_STAIRS =
+        Collections.unmodifiableMap(
+            Arrays.stream(DyeColor.values())
+                .collect(
+                    Collectors.toMap(
+                        Function.identity(),
+                        dyeColor -> register(
+                            dyeColor.getName() + "_plastic_stairs",
+                            () -> new StairBlock(
+                                DYE_COLOR_TO_PLASTIC.get(dyeColor).get().defaultBlockState(),
+                                BlockProperties.DYE_COLOR_TO_PLASTIC_PROPERTIES.get(dyeColor).build()
+                            )
                         )
                     )
                 )

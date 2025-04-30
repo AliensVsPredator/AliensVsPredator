@@ -49,8 +49,9 @@ public class BlockModelProvider extends FabricModelProvider {
             }
         );
 
-        AVPBlocks.DYE_COLOR_TO_INDUSTRIAL_CONCRETE.forEach(
-            (dyeColor, block) -> {
+        TempAVPBlocks.DYE_COLOR_TO_INDUSTRIAL_CONCRETE.forEach(
+            (dyeColor, blockSupplier) -> {
+                var block = blockSupplier.get();
                 var resourceLocation = ModelLocationUtils.getModelLocation(block);
                 var topResourceLocation = TextureMapping.getBlockTexture(block, "_top");
 
@@ -76,10 +77,10 @@ public class BlockModelProvider extends FabricModelProvider {
             .door(AVPBlocks.INDUSTRIAL_GLASS_DOOR)
             .stairs(AVPBlocks.INDUSTRIAL_GLASS_STAIRS)
             .trapdoor(AVPBlocks.INDUSTRIAL_GLASS_TRAP_DOOR);
-        AVPBlocks.DYE_COLOR_TO_INDUSTRIAL_GLASS.forEach((dyeColor, block) -> generators.createTrivialCube(block));
+        TempAVPBlocks.DYE_COLOR_TO_INDUSTRIAL_GLASS.forEach((dyeColor, blockSupplier) -> generators.createTrivialCube(blockSupplier.get()));
         createGlassBlocks(generators, AVPBlocks.INDUSTRIAL_GLASS, AVPBlocks.INDUSTRIAL_GLASS_PANE);
-        AVPBlocks.DYE_COLOR_TO_INDUSTRIAL_GLASS_PANE.forEach(
-            (dyeColor, block) -> createGlassBlocks(generators, AVPBlocks.DYE_COLOR_TO_INDUSTRIAL_GLASS.get(dyeColor), block)
+        TempAVPBlocks.DYE_COLOR_TO_INDUSTRIAL_GLASS_PANE.forEach(
+            (dyeColor, blockSupplier) -> createGlassBlocks(generators, TempAVPBlocks.DYE_COLOR_TO_INDUSTRIAL_GLASS.get(dyeColor).get(), blockSupplier.get())
         );
 
         generators.createRotatedVariantBlock(AVPBlocks.IRRADIATED_RESIN);
@@ -102,10 +103,11 @@ public class BlockModelProvider extends FabricModelProvider {
         MultiFaceGenerator.generate(generators, AVPBlocks.RESIN_VEIN);
         generators.createCrossBlock(AVPBlocks.RESIN_WEB, BlockModelGenerators.TintState.NOT_TINTED);
 
-        AVPBlocks.DYE_COLOR_TO_PADDING.forEach(
-            (dyeColor, block) -> {
-                var slabBlock = AVPBlocks.DYE_COLOR_TO_PADDING_SLAB.get(dyeColor);
-                var stairBlock = AVPBlocks.DYE_COLOR_TO_PADDING_STAIRS.get(dyeColor);
+        TempAVPBlocks.DYE_COLOR_TO_PADDING.forEach(
+            (dyeColor, blockSupplier) -> {
+                var block = blockSupplier.get();
+                var slabBlock = TempAVPBlocks.DYE_COLOR_TO_PADDING_SLAB.get(dyeColor).get();
+                var stairBlock = TempAVPBlocks.DYE_COLOR_TO_PADDING_STAIRS.get(dyeColor).get();
 
                 generators.family(block)
                     .slab(slabBlock)
@@ -113,10 +115,11 @@ public class BlockModelProvider extends FabricModelProvider {
             }
         );
 
-        AVPBlocks.DYE_COLOR_TO_PANEL_PADDING.forEach(
-            (dyeColor, block) -> {
-                var slabBlock = AVPBlocks.DYE_COLOR_TO_PANEL_PADDING_SLAB.get(dyeColor);
-                var stairBlock = AVPBlocks.DYE_COLOR_TO_PANEL_PADDING_STAIRS.get(dyeColor);
+        TempAVPBlocks.DYE_COLOR_TO_PANEL_PADDING.forEach(
+            (dyeColor, blockSupplier) -> {
+                var block = blockSupplier.get();
+                var slabBlock = TempAVPBlocks.DYE_COLOR_TO_PANEL_PADDING_SLAB.get(dyeColor).get();
+                var stairBlock = TempAVPBlocks.DYE_COLOR_TO_PANEL_PADDING_STAIRS.get(dyeColor).get();
 
                 generators.family(block)
                     .slab(slabBlock)
@@ -124,10 +127,11 @@ public class BlockModelProvider extends FabricModelProvider {
             }
         );
 
-        AVPBlocks.DYE_COLOR_TO_PIPE_PADDING.forEach(
-            (dyeColor, block) -> {
-                var slabBlock = AVPBlocks.DYE_COLOR_TO_PIPE_PADDING_SLAB.get(dyeColor);
-                var stairBlock = AVPBlocks.DYE_COLOR_TO_PIPE_PADDING_STAIRS.get(dyeColor);
+        TempAVPBlocks.DYE_COLOR_TO_PIPE_PADDING.forEach(
+            (dyeColor, blockSupplier) -> {
+                var block = blockSupplier.get();
+                var slabBlock = TempAVPBlocks.DYE_COLOR_TO_PIPE_PADDING_SLAB.get(dyeColor).get();
+                var stairBlock = TempAVPBlocks.DYE_COLOR_TO_PIPE_PADDING_STAIRS.get(dyeColor).get();
 
                 generators.family(block)
                     .slab(slabBlock)
@@ -135,10 +139,11 @@ public class BlockModelProvider extends FabricModelProvider {
             }
         );
 
-        AVPBlocks.DYE_COLOR_TO_CUT_PLASTIC.forEach(
-            (dyeColor, block) -> {
-                var slabBlock = AVPBlocks.DYE_COLOR_TO_CUT_PLASTIC_SLAB.get(dyeColor);
-                var stairBlock = AVPBlocks.DYE_COLOR_TO_CUT_PLASTIC_STAIRS.get(dyeColor);
+        TempAVPBlocks.DYE_COLOR_TO_CUT_PLASTIC.forEach(
+            (dyeColor, blockSupplier) -> {
+                var block = blockSupplier.get();
+                var slabBlock = TempAVPBlocks.DYE_COLOR_TO_CUT_PLASTIC_SLAB.get(dyeColor).get();
+                var stairBlock = TempAVPBlocks.DYE_COLOR_TO_CUT_PLASTIC_STAIRS.get(dyeColor).get();
 
                 generators.family(block)
                     .slab(slabBlock)
@@ -146,10 +151,11 @@ public class BlockModelProvider extends FabricModelProvider {
             }
         );
 
-        AVPBlocks.DYE_COLOR_TO_PLASTIC.forEach(
-            (dyeColor, block) -> {
-                var slabBlock = AVPBlocks.DYE_COLOR_TO_PLASTIC_SLAB.get(dyeColor);
-                var stairBlock = AVPBlocks.DYE_COLOR_TO_PLASTIC_STAIRS.get(dyeColor);
+        TempAVPBlocks.DYE_COLOR_TO_PLASTIC.forEach(
+            (dyeColor, blockSupplier) -> {
+                var block = blockSupplier.get();
+                var slabBlock = TempAVPBlocks.DYE_COLOR_TO_PLASTIC_SLAB.get(dyeColor).get();
+                var stairBlock = TempAVPBlocks.DYE_COLOR_TO_PLASTIC_STAIRS.get(dyeColor).get();
 
                 generators.family(block)
                     .slab(slabBlock)
@@ -440,7 +446,7 @@ public class BlockModelProvider extends FabricModelProvider {
     }
 
     private void createConcreteStairs(BlockModelGenerators generators, DyeColor dyeColor, TextureMapping textureMapping) {
-        var stairBlock = AVPBlocks.DYE_COLOR_TO_CONCRETE_STAIRS.get(dyeColor);
+        var stairBlock = TempAVPBlocks.DYE_COLOR_TO_CONCRETE_STAIRS.get(dyeColor).get();
 
         var innerResourceLocation = ModelTemplates.STAIRS_INNER.create(stairBlock, textureMapping, generators.modelOutput);
         var straightResourceLocation = ModelTemplates.STAIRS_STRAIGHT.create(stairBlock, textureMapping, generators.modelOutput);
@@ -457,7 +463,7 @@ public class BlockModelProvider extends FabricModelProvider {
         TextureMapping textureMapping,
         ResourceLocation resourceLocation
     ) {
-        var slabBlock = AVPBlocks.DYE_COLOR_TO_INDUSTRIAL_CONCRETE_SLAB.get(dyeColor);
+        var slabBlock = TempAVPBlocks.DYE_COLOR_TO_INDUSTRIAL_CONCRETE_SLAB.get(dyeColor).get();
         var bottom = ModelTemplates.SLAB_BOTTOM.create(slabBlock, textureMapping, generators.modelOutput);
         var top = ModelTemplates.SLAB_TOP.create(slabBlock, textureMapping, generators.modelOutput);
 
@@ -467,7 +473,7 @@ public class BlockModelProvider extends FabricModelProvider {
     }
 
     private void createIndustrialConcreteStairs(BlockModelGenerators generators, DyeColor dyeColor, TextureMapping textureMapping) {
-        var stairBlock = AVPBlocks.DYE_COLOR_TO_INDUSTRIAL_CONCRETE_STAIRS.get(dyeColor);
+        var stairBlock = TempAVPBlocks.DYE_COLOR_TO_INDUSTRIAL_CONCRETE_STAIRS.get(dyeColor).get();
 
         var innerResourceLocation = ModelTemplates.STAIRS_INNER.create(stairBlock, textureMapping, generators.modelOutput);
         var straightResourceLocation = ModelTemplates.STAIRS_STRAIGHT.create(stairBlock, textureMapping, generators.modelOutput);
@@ -484,7 +490,7 @@ public class BlockModelProvider extends FabricModelProvider {
         Block block,
         ResourceLocation topResourceLocation
     ) {
-        var wallBlock = AVPBlocks.DYE_COLOR_TO_INDUSTRIAL_CONCRETE_WALL.get(dyeColor);
+        var wallBlock = TempAVPBlocks.DYE_COLOR_TO_INDUSTRIAL_CONCRETE_WALL.get(dyeColor).get();
 
         var wallTextureMapping = TextureMapping.cube(block)
             .put(TextureSlot.TOP, topResourceLocation);

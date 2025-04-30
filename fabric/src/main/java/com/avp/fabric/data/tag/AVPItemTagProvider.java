@@ -226,12 +226,12 @@ public class AVPItemTagProvider extends FabricTagProvider.ItemTagProvider {
         var industrialGlassBlockTagBuilder = getOrCreateTagBuilder(AVPItemTags.INDUSTRIAL_GLASS_BLOCK);
 
         industrialGlassBlockTagBuilder.add(AVPBlockItems.INDUSTRIAL_GLASS);
-        AVPBlockItems.DYE_COLOR_TO_INDUSTRIAL_GLASS.forEach(($, blockItem) -> industrialGlassBlockTagBuilder.add(blockItem));
+        TempAVPBlockItems.DYE_COLOR_TO_INDUSTRIAL_GLASS.forEach(($, blockItemSupplier) -> industrialGlassBlockTagBuilder.add(blockItemSupplier.get()));
 
         var industrialGlassPaneTagBuilder = getOrCreateTagBuilder(AVPItemTags.INDUSTRIAL_GLASS_PANE);
 
         industrialGlassPaneTagBuilder.add(AVPBlockItems.INDUSTRIAL_GLASS_PANE);
-        AVPBlockItems.DYE_COLOR_TO_INDUSTRIAL_GLASS_PANE.forEach(($, blockItem) -> industrialGlassPaneTagBuilder.add(blockItem));
+        TempAVPBlockItems.DYE_COLOR_TO_INDUSTRIAL_GLASS_PANE.forEach(($, blockItemSupplier) -> industrialGlassPaneTagBuilder.add(blockItemSupplier.get()));
 
         getOrCreateTagBuilder(AVPItemTags.INDUSTRIAL_GLASS)
             .addTag(AVPItemTags.INDUSTRIAL_GLASS_BLOCK)
@@ -431,16 +431,13 @@ public class AVPItemTagProvider extends FabricTagProvider.ItemTagProvider {
         );
 
         // TODO: Use a stream concat here.
-        TempAVPBlockItems.DYE_COLOR_TO_CONCRETE_SLAB.values()
-            .stream()
-            .map(Supplier::get)
-            .forEach(slabTagProvider::add);
-        AVPBlockItems.DYE_COLOR_TO_CUT_PLASTIC_SLAB.values().forEach(slabTagProvider::add);
-        AVPBlockItems.DYE_COLOR_TO_INDUSTRIAL_CONCRETE_SLAB.values().forEach(slabTagProvider::add);
-        AVPBlockItems.DYE_COLOR_TO_PADDING_SLAB.values().forEach(slabTagProvider::add);
-        AVPBlockItems.DYE_COLOR_TO_PANEL_PADDING_SLAB.values().forEach(slabTagProvider::add);
-        AVPBlockItems.DYE_COLOR_TO_PIPE_PADDING_SLAB.values().forEach(slabTagProvider::add);
-        AVPBlockItems.DYE_COLOR_TO_PLASTIC_SLAB.values().forEach(slabTagProvider::add);
+        TempAVPBlockItems.DYE_COLOR_TO_CONCRETE_SLAB.values().stream().map(Supplier::get).forEach(slabTagProvider::add);
+        TempAVPBlockItems.DYE_COLOR_TO_CUT_PLASTIC_SLAB.values().stream().map(Supplier::get).forEach(slabTagProvider::add);
+        TempAVPBlockItems.DYE_COLOR_TO_INDUSTRIAL_CONCRETE_SLAB.values().stream().map(Supplier::get).forEach(slabTagProvider::add);
+        TempAVPBlockItems.DYE_COLOR_TO_PADDING_SLAB.values().stream().map(Supplier::get).forEach(slabTagProvider::add);
+        TempAVPBlockItems.DYE_COLOR_TO_PANEL_PADDING_SLAB.values().stream().map(Supplier::get).forEach(slabTagProvider::add);
+        TempAVPBlockItems.DYE_COLOR_TO_PIPE_PADDING_SLAB.values().stream().map(Supplier::get).forEach(slabTagProvider::add);
+        TempAVPBlockItems.DYE_COLOR_TO_PLASTIC_SLAB.values().stream().map(Supplier::get).forEach(slabTagProvider::add);
 
         var buttonTagProvider = getOrCreateTagBuilder(ItemTags.BUTTONS);
 
@@ -483,17 +480,18 @@ public class AVPItemTagProvider extends FabricTagProvider.ItemTagProvider {
             AVPBlockItems.TITANIUM_TREAD_STAIRS
         );
 
-        AVPBlockItems.DYE_COLOR_TO_CONCRETE_STAIRS.values().forEach(stairsTagProvider::add);
-        AVPBlockItems.DYE_COLOR_TO_CUT_PLASTIC_STAIRS.values().forEach(stairsTagProvider::add);
-        AVPBlockItems.DYE_COLOR_TO_INDUSTRIAL_CONCRETE_STAIRS.values().forEach(stairsTagProvider::add);
-        AVPBlockItems.DYE_COLOR_TO_PADDING_STAIRS.values().forEach(stairsTagProvider::add);
-        AVPBlockItems.DYE_COLOR_TO_PANEL_PADDING_STAIRS.values().forEach(stairsTagProvider::add);
-        AVPBlockItems.DYE_COLOR_TO_PIPE_PADDING_STAIRS.values().forEach(stairsTagProvider::add);
-        AVPBlockItems.DYE_COLOR_TO_PLASTIC_STAIRS.values().forEach(stairsTagProvider::add);
+        // TODO: Use a stream concat here.
+        TempAVPBlockItems.DYE_COLOR_TO_CONCRETE_STAIRS.values().stream().map(Supplier::get).forEach(stairsTagProvider::add);
+        TempAVPBlockItems.DYE_COLOR_TO_CUT_PLASTIC_STAIRS.values().stream().map(Supplier::get).forEach(stairsTagProvider::add);
+        TempAVPBlockItems.DYE_COLOR_TO_INDUSTRIAL_CONCRETE_STAIRS.values().stream().map(Supplier::get).forEach(stairsTagProvider::add);
+        TempAVPBlockItems.DYE_COLOR_TO_PADDING_STAIRS.values().stream().map(Supplier::get).forEach(stairsTagProvider::add);
+        TempAVPBlockItems.DYE_COLOR_TO_PANEL_PADDING_STAIRS.values().stream().map(Supplier::get).forEach(stairsTagProvider::add);
+        TempAVPBlockItems.DYE_COLOR_TO_PIPE_PADDING_STAIRS.values().stream().map(Supplier::get).forEach(stairsTagProvider::add);
+        TempAVPBlockItems.DYE_COLOR_TO_PLASTIC_STAIRS.values().stream().map(Supplier::get).forEach(stairsTagProvider::add);
 
         var wallTagBuilder = getOrCreateTagBuilder(ItemTags.WALLS);
 
-        AVPBlockItems.DYE_COLOR_TO_INDUSTRIAL_CONCRETE_WALL.values().forEach(wallTagBuilder::add);
+        TempAVPBlockItems.DYE_COLOR_TO_INDUSTRIAL_CONCRETE_WALL.values().stream().map(Supplier::get).forEach(wallTagBuilder::add);
 
         var freezeImmuneTagBuilder = getOrCreateTagBuilder(ItemTags.FREEZE_IMMUNE_WEARABLES);
 

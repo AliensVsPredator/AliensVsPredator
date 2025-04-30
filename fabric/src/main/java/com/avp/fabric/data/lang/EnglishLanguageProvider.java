@@ -113,27 +113,27 @@ public class EnglishLanguageProvider extends FabricLanguageProvider {
         TempAVPBlocks.DYE_COLOR_TO_CONCRETE_SLAB.forEach(
             (key, value) -> translationBuilder.add(value.get(), format(key.getName()) + " Concrete Slab")
         );
-        AVPBlocks.DYE_COLOR_TO_CONCRETE_STAIRS.forEach(
-            (key, value) -> translationBuilder.add(value, format(key.getName()) + " Concrete Stairs")
+        TempAVPBlocks.DYE_COLOR_TO_CONCRETE_STAIRS.forEach(
+            (key, value) -> translationBuilder.add(value.get(), format(key.getName()) + " Concrete Stairs")
         );
 
-        AVPBlocks.DYE_COLOR_TO_INDUSTRIAL_CONCRETE.forEach(
-            (key, value) -> translationBuilder.add(value, format(key.getName()) + " Industrial Concrete")
+        TempAVPBlocks.DYE_COLOR_TO_INDUSTRIAL_CONCRETE.forEach(
+            (key, value) -> translationBuilder.add(value.get(), format(key.getName()) + " Industrial Concrete")
         );
-        AVPBlocks.DYE_COLOR_TO_INDUSTRIAL_CONCRETE_SLAB.forEach(
-            (key, value) -> translationBuilder.add(value, format(key.getName()) + " Industrial Concrete Slab")
+        TempAVPBlocks.DYE_COLOR_TO_INDUSTRIAL_CONCRETE_SLAB.forEach(
+            (key, value) -> translationBuilder.add(value.get(), format(key.getName()) + " Industrial Concrete Slab")
         );
-        AVPBlocks.DYE_COLOR_TO_INDUSTRIAL_CONCRETE_STAIRS.forEach(
-            (key, value) -> translationBuilder.add(value, format(key.getName()) + " Industrial Concrete Stairs")
+        TempAVPBlocks.DYE_COLOR_TO_INDUSTRIAL_CONCRETE_STAIRS.forEach(
+            (key, value) -> translationBuilder.add(value.get(), format(key.getName()) + " Industrial Concrete Stairs")
         );
-        AVPBlocks.DYE_COLOR_TO_INDUSTRIAL_CONCRETE_WALL.forEach(
-            (key, value) -> translationBuilder.add(value, format(key.getName()) + " Industrial Concrete Wall")
+        TempAVPBlocks.DYE_COLOR_TO_INDUSTRIAL_CONCRETE_WALL.forEach(
+            (key, value) -> translationBuilder.add(value.get(), format(key.getName()) + " Industrial Concrete Wall")
         );
-        AVPBlocks.DYE_COLOR_TO_INDUSTRIAL_GLASS.forEach(
-            (key, value) -> translationBuilder.add(value, format(key.getName()) + " Industrial Glass")
+        TempAVPBlocks.DYE_COLOR_TO_INDUSTRIAL_GLASS.forEach(
+            (key, value) -> translationBuilder.add(value.get(), format(key.getName()) + " Industrial Glass")
         );
-        AVPBlocks.DYE_COLOR_TO_INDUSTRIAL_GLASS_PANE.forEach(
-            (key, value) -> translationBuilder.add(value, format(key.getName()) + " Industrial Glass Pane")
+        TempAVPBlocks.DYE_COLOR_TO_INDUSTRIAL_GLASS_PANE.forEach(
+            (key, value) -> translationBuilder.add(value.get(), format(key.getName()) + " Industrial Glass Pane")
         );
 
         translationBuilder.add(AVPBlocks.LITHIUM_BLOCK, "Block of Lithium");
@@ -156,54 +156,54 @@ public class EnglishLanguageProvider extends FabricLanguageProvider {
         translationBuilder.add(AVPBlocks.RESIN_RIBBED, "Resin Ribbed");
         translationBuilder.add(AVPBlocks.RESIN_SMOOTH, "Resin Smooth");
 
-        AVPBlocks.DYE_COLOR_TO_PADDING.forEach(
-            (key, value) -> translationBuilder.add(value, format(key.getName()) + " Padding")
+        TempAVPBlocks.DYE_COLOR_TO_PADDING.forEach(
+            (key, value) -> translationBuilder.add(value.get(), format(key.getName()) + " Padding")
         );
-        AVPBlocks.DYE_COLOR_TO_PADDING_SLAB.forEach(
-            (key, value) -> translationBuilder.add(value, format(key.getName()) + " Padding Slab")
+        TempAVPBlocks.DYE_COLOR_TO_PADDING_SLAB.forEach(
+            (key, value) -> translationBuilder.add(value.get(), format(key.getName()) + " Padding Slab")
         );
-        AVPBlocks.DYE_COLOR_TO_PADDING_STAIRS.forEach(
-            (key, value) -> translationBuilder.add(value, format(key.getName()) + " Padding Stairs")
-        );
-
-        AVPBlocks.DYE_COLOR_TO_PANEL_PADDING.forEach(
-            (key, value) -> translationBuilder.add(value, format(key.getName()) + " Panel Padding")
-        );
-        AVPBlocks.DYE_COLOR_TO_PANEL_PADDING_SLAB.forEach(
-            (key, value) -> translationBuilder.add(value, format(key.getName()) + " Panel Padding Slab")
-        );
-        AVPBlocks.DYE_COLOR_TO_PANEL_PADDING_STAIRS.forEach(
-            (key, value) -> translationBuilder.add(value, format(key.getName()) + " Panel Padding Stairs")
+        TempAVPBlocks.DYE_COLOR_TO_PADDING_STAIRS.forEach(
+            (key, value) -> translationBuilder.add(value.get(), format(key.getName()) + " Padding Stairs")
         );
 
-        AVPBlocks.DYE_COLOR_TO_PIPE_PADDING.forEach(
-            (key, value) -> translationBuilder.add(value, format(key.getName()) + " Pipe Padding")
+        TempAVPBlocks.DYE_COLOR_TO_PANEL_PADDING.forEach(
+            (key, value) -> translationBuilder.add(value.get(), format(key.getName()) + " Panel Padding")
         );
-        AVPBlocks.DYE_COLOR_TO_PIPE_PADDING_SLAB.forEach(
-            (key, value) -> translationBuilder.add(value, format(key.getName()) + " Pipe Padding Slab")
+        TempAVPBlocks.DYE_COLOR_TO_PANEL_PADDING_SLAB.forEach(
+            (key, value) -> translationBuilder.add(value.get(), format(key.getName()) + " Panel Padding Slab")
         );
-        AVPBlocks.DYE_COLOR_TO_PIPE_PADDING_STAIRS.forEach(
-            (key, value) -> translationBuilder.add(value, format(key.getName()) + " Pipe Padding Stairs")
-        );
-
-        AVPBlocks.DYE_COLOR_TO_CUT_PLASTIC.forEach(
-            (key, value) -> translationBuilder.add(value, format(key.getName()) + " Cut Plastic")
-        );
-        AVPBlocks.DYE_COLOR_TO_CUT_PLASTIC_SLAB.forEach(
-            (key, value) -> translationBuilder.add(value, format(key.getName()) + " Cut Plastic Slab")
-        );
-        AVPBlocks.DYE_COLOR_TO_CUT_PLASTIC_STAIRS.forEach(
-            (key, value) -> translationBuilder.add(value, format(key.getName()) + " Cut Plastic Stairs")
+        TempAVPBlocks.DYE_COLOR_TO_PANEL_PADDING_STAIRS.forEach(
+            (key, value) -> translationBuilder.add(value.get(), format(key.getName()) + " Panel Padding Stairs")
         );
 
-        AVPBlocks.DYE_COLOR_TO_PLASTIC.forEach(
-            (key, value) -> translationBuilder.add(value, format(key.getName()) + " Plastic")
+        TempAVPBlocks.DYE_COLOR_TO_PIPE_PADDING.forEach(
+            (key, value) -> translationBuilder.add(value.get(), format(key.getName()) + " Pipe Padding")
         );
-        AVPBlocks.DYE_COLOR_TO_PLASTIC_SLAB.forEach(
-            (key, value) -> translationBuilder.add(value, format(key.getName()) + " Plastic Slab")
+        TempAVPBlocks.DYE_COLOR_TO_PIPE_PADDING_SLAB.forEach(
+            (key, value) -> translationBuilder.add(value.get(), format(key.getName()) + " Pipe Padding Slab")
         );
-        AVPBlocks.DYE_COLOR_TO_PLASTIC_STAIRS.forEach(
-            (key, value) -> translationBuilder.add(value, format(key.getName()) + " Plastic Stairs")
+        TempAVPBlocks.DYE_COLOR_TO_PIPE_PADDING_STAIRS.forEach(
+            (key, value) -> translationBuilder.add(value.get(), format(key.getName()) + " Pipe Padding Stairs")
+        );
+
+        TempAVPBlocks.DYE_COLOR_TO_CUT_PLASTIC.forEach(
+            (key, value) -> translationBuilder.add(value.get(), format(key.getName()) + " Cut Plastic")
+        );
+        TempAVPBlocks.DYE_COLOR_TO_CUT_PLASTIC_SLAB.forEach(
+            (key, value) -> translationBuilder.add(value.get(), format(key.getName()) + " Cut Plastic Slab")
+        );
+        TempAVPBlocks.DYE_COLOR_TO_CUT_PLASTIC_STAIRS.forEach(
+            (key, value) -> translationBuilder.add(value.get(), format(key.getName()) + " Cut Plastic Stairs")
+        );
+
+        TempAVPBlocks.DYE_COLOR_TO_PLASTIC.forEach(
+            (key, value) -> translationBuilder.add(value.get(), format(key.getName()) + " Plastic")
+        );
+        TempAVPBlocks.DYE_COLOR_TO_PLASTIC_SLAB.forEach(
+            (key, value) -> translationBuilder.add(value.get(), format(key.getName()) + " Plastic Slab")
+        );
+        TempAVPBlocks.DYE_COLOR_TO_PLASTIC_STAIRS.forEach(
+            (key, value) -> translationBuilder.add(value.get(), format(key.getName()) + " Plastic Stairs")
         );
 
         translationBuilder.add(AVPBlocks.RAW_BAUXITE_BLOCK, "Block of Raw Bauxite");

@@ -17,7 +17,7 @@ public class VanillaConcreteRecipeProvider {
             var slabBlock = TempAVPBlocks.DYE_COLOR_TO_CONCRETE_SLAB.get(dyeColor).get();
             RecipeUtil.createSlabBlockManualAndStonecutterRecipes(builder, block, slabBlock);
 
-            var stairBlock = AVPBlocks.DYE_COLOR_TO_CONCRETE_STAIRS.get(dyeColor);
+            var stairBlock = TempAVPBlocks.DYE_COLOR_TO_CONCRETE_STAIRS.get(dyeColor).get();
             RecipeUtil.createStairBlockManualAndStonecutterRecipes(builder, block, stairBlock);
         }));
     }

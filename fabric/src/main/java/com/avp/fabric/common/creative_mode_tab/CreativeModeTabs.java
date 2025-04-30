@@ -1,5 +1,7 @@
 package com.avp.fabric.common.creative_mode_tab;
 
+import com.avp.common.block.TempAVPBlocks;
+import com.avp.common.item.TempAVPBlockItems;
 import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -38,7 +40,7 @@ public class CreativeModeTabs {
 
     public static final CreativeModeTab COLORED_BLOCKS = register(
         COLORED_BLOCKS_KEY,
-        () -> new ItemStack(AVPBlocks.DYE_COLOR_TO_PLASTIC.get(DyeColor.WHITE))
+        () -> new ItemStack(TempAVPBlocks.DYE_COLOR_TO_PLASTIC.get(DyeColor.WHITE).get())
     );
 
     public static final CreativeModeTab COMBAT = register(COMBAT_KEY, () -> new ItemStack(ArmorItems.CHITIN_HELMET));
