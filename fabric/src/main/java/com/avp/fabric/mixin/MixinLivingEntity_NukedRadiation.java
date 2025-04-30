@@ -11,10 +11,10 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import com.avp.common.worldgen.biome.AVPBiomes;
 import com.avp.fabric.common.effect.AVPEffects;
 import com.avp.fabric.common.effect.RadiationStatusEffect;
 import com.avp.fabric.common.util.AVPPredicates;
-import com.avp.fabric.common.worldgen.biome.AVPBiomes;
 
 @Mixin(LivingEntity.class)
 public abstract class MixinLivingEntity_NukedRadiation extends Entity {

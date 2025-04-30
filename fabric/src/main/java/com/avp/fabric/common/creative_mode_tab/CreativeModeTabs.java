@@ -1,7 +1,5 @@
 package com.avp.fabric.common.creative_mode_tab;
 
-import com.avp.common.block.TempAVPBlocks;
-import com.avp.common.item.TempAVPBlockItems;
 import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -15,6 +13,7 @@ import java.util.function.Supplier;
 
 import com.avp.AVP;
 import com.avp.AVPResources;
+import com.avp.common.block.TempAVPBlocks;
 import com.avp.fabric.common.block.AVPBlocks;
 import com.avp.fabric.common.item.AVPItems;
 import com.avp.fabric.common.item.ArmorItems;

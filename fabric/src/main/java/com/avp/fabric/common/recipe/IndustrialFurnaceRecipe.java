@@ -1,6 +1,5 @@
 package com.avp.fabric.common.recipe;
 
-import com.avp.common.item.TempAVPBlockItems;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
@@ -12,6 +11,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.avp.common.item.TempAVPBlockItems;
 import com.avp.fabric.common.block_item.AVPBlockItems;
 
 public class IndustrialFurnaceRecipe extends AbstractCookingRecipe {

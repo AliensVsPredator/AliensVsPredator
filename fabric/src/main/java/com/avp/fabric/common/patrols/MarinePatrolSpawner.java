@@ -11,8 +11,8 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.levelgen.Heightmap;
 
 import com.avp.common.block.AVPBlockTags;
+import com.avp.common.worldgen.biome.AVPBiomeTags;
 import com.avp.fabric.common.entity.type.AVPEntityTypes;
-import com.avp.fabric.common.worldgen.biome.AVPBiomeTags;
 
 public class MarinePatrolSpawner implements CustomSpawner {
 

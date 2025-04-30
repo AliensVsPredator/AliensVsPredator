@@ -80,7 +80,11 @@ public class BlockModelProvider extends FabricModelProvider {
         TempAVPBlocks.DYE_COLOR_TO_INDUSTRIAL_GLASS.forEach((dyeColor, blockSupplier) -> generators.createTrivialCube(blockSupplier.get()));
         createGlassBlocks(generators, AVPBlocks.INDUSTRIAL_GLASS, AVPBlocks.INDUSTRIAL_GLASS_PANE);
         TempAVPBlocks.DYE_COLOR_TO_INDUSTRIAL_GLASS_PANE.forEach(
-            (dyeColor, blockSupplier) -> createGlassBlocks(generators, TempAVPBlocks.DYE_COLOR_TO_INDUSTRIAL_GLASS.get(dyeColor).get(), blockSupplier.get())
+            (dyeColor, blockSupplier) -> createGlassBlocks(
+                generators,
+                TempAVPBlocks.DYE_COLOR_TO_INDUSTRIAL_GLASS.get(dyeColor).get(),
+                blockSupplier.get()
+            )
         );
 
         generators.createRotatedVariantBlock(AVPBlocks.IRRADIATED_RESIN);

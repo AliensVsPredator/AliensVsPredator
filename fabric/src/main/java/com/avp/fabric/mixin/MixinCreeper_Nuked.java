@@ -9,7 +9,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import com.avp.fabric.common.worldgen.biome.AVPBiomes;
+import com.avp.common.worldgen.biome.AVPBiomes;
 
 @Mixin(Creeper.class)
 public abstract class MixinCreeper_Nuked extends Monster {

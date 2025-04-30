@@ -3,16 +3,9 @@ package com.avp.fabric.common.block;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.util.ColorRGBA;
-import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.properties.BlockSetType;
-
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Map;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 import com.avp.AVPResources;
 import com.avp.common.block.BlockProperties;

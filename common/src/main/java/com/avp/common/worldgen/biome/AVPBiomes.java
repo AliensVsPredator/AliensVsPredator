@@ -1,4 +1,4 @@
-package com.avp.fabric.common.worldgen.biome;
+package com.avp.common.worldgen.biome;
 
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.registries.Registries;

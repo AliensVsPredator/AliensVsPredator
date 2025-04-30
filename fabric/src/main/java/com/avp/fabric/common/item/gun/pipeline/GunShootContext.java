@@ -11,6 +11,7 @@ import net.minecraft.world.item.enchantment.Enchantments;
 import java.util.List;
 
 import com.avp.common.util.EnchantmentUtil;
+import com.avp.common.util.GunLightUtil;
 import com.avp.fabric.common.component.DataComponents;
 import com.avp.fabric.common.item.GunItem;
 import com.avp.fabric.common.item.gun.FireModeConfig;
@@ -21,7 +22,6 @@ import com.avp.fabric.common.item.gun.pipeline.step.impl.CheckCooldownStep;
 import com.avp.fabric.common.item.gun.pipeline.step.impl.CheckReloadingStep;
 import com.avp.fabric.common.item.gun.pipeline.step.impl.CheckShootDelayStep;
 import com.avp.fabric.common.util.AVPPredicates;
-import com.avp.fabric.common.util.GunLightUtil;
 
 public record GunShootContext(
     int currentAmmunition,

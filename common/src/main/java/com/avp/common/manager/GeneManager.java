@@ -1,4 +1,4 @@
-package com.avp.fabric.common.manager;
+package com.avp.common.manager;
 
 import it.unimi.dsi.fastutil.objects.Object2ByteArrayMap;
 import net.minecraft.nbt.CompoundTag;
@@ -9,7 +9,7 @@ import java.util.Map;
 
 import com.avp.common.entity.gene.GeneKey;
 import com.avp.common.entity.gene.behavior.GeneDecoder;
-import com.avp.fabric.common.level.saveddata.GenePaletteLevelData;
+import com.avp.common.level.saveddata.GenePaletteLevelData;
 
 public class GeneManager {
 

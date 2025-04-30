@@ -1,6 +1,5 @@
 package com.avp.fabric.data.recipe.impl;
 
-import com.avp.common.block.TempAVPBlocks;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.world.item.DyeItem;
 import net.minecraft.world.level.ItemLike;
@@ -8,6 +7,7 @@ import net.minecraft.world.level.block.Blocks;
 
 import java.util.Set;
 
+import com.avp.common.block.TempAVPBlocks;
 import com.avp.fabric.common.block.AVPBlocks;
 import com.avp.fabric.data.recipe.RecipeConstants;
 import com.avp.fabric.data.recipe.RecipeTemplates;

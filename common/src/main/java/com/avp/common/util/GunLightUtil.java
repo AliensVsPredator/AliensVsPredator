@@ -1,4 +1,4 @@
-package com.avp.fabric.common.util;
+package com.avp.common.util;
 
 import mod.azure.azurelib.common.internal.common.registry.AzureBlocksRegistry;
 import mod.azure.azurelib.common.internal.common.util.AzureLibUtil;

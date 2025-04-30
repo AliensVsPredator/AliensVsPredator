@@ -3,6 +3,11 @@ package com.avp.common.block;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.IronBarsBlock;
+import net.minecraft.world.level.block.SlabBlock;
+import net.minecraft.world.level.block.StainedGlassBlock;
+import net.minecraft.world.level.block.StairBlock;
+import net.minecraft.world.level.block.WallBlock;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -12,11 +17,6 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import com.avp.service.Services;
-import net.minecraft.world.level.block.IronBarsBlock;
-import net.minecraft.world.level.block.SlabBlock;
-import net.minecraft.world.level.block.StainedGlassBlock;
-import net.minecraft.world.level.block.StairBlock;
-import net.minecraft.world.level.block.WallBlock;
 
 // TODO: Rename this once multi-loader migration is finished.
 public class TempAVPBlocks {
@@ -136,7 +136,10 @@ public class TempAVPBlocks {
                         Function.identity(),
                         dyeColor -> register(
                             dyeColor.getName() + "_industrial_glass",
-                            () -> new StainedGlassBlock(dyeColor, BlockProperties.DYE_COLOR_TO_INDUSTRIAL_GLASS_PROPERTIES.get(dyeColor).build())
+                            () -> new StainedGlassBlock(
+                                dyeColor,
+                                BlockProperties.DYE_COLOR_TO_INDUSTRIAL_GLASS_PROPERTIES.get(dyeColor).build()
+                            )
                         )
                     )
                 )

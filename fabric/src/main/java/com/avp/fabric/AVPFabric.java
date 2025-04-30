@@ -25,6 +25,7 @@ import net.minecraft.world.level.levelgen.structure.templatesystem.StructureProc
 import java.util.ArrayList;
 
 import com.avp.AVP;
+import com.avp.common.worldgen.biome.AVPBiomes;
 import com.avp.fabric.common.block.AVPBlocks;
 import com.avp.fabric.common.block.CompostingChanceRegistry;
 import com.avp.fabric.common.block.DecoratedPotPatterns;
@@ -64,7 +65,6 @@ import com.avp.fabric.common.sound.AVPJukeboxSongs;
 import com.avp.fabric.common.sound.AVPSoundEvents;
 import com.avp.fabric.common.worldgen.NukedAshPlacement;
 import com.avp.fabric.common.worldgen.WorldGen;
-import com.avp.fabric.common.worldgen.biome.AVPBiomes;
 import com.avp.fabric.data.loot.LootTableModifier;
 import com.avp.fabric.mixin.GiveGiftToHeroAccessor;
 import com.avp.fabric.mixin.ParrotSoundMapAccessor;

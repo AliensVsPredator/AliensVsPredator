@@ -1,11 +1,11 @@
 package com.avp.fabric.common.creative_mode_tab.initializer;
 
-import com.avp.common.block.TempAVPBlocks;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.minecraft.world.item.DyeColor;
 
 import java.util.Arrays;
 
+import com.avp.common.block.TempAVPBlocks;
 import com.avp.fabric.common.block.AVPBlocks;
 import com.avp.fabric.common.creative_mode_tab.CreativeModeTabs;
 
@@ -24,7 +24,8 @@ public class ColoredBlocksCreativeModeTabInitializer {
             });
 
             entries.accept(AVPBlocks.INDUSTRIAL_GLASS);
-            Arrays.stream(DyeColor.values()).forEach(dyeColor -> entries.accept(TempAVPBlocks.DYE_COLOR_TO_INDUSTRIAL_GLASS.get(dyeColor).get()));
+            Arrays.stream(DyeColor.values())
+                .forEach(dyeColor -> entries.accept(TempAVPBlocks.DYE_COLOR_TO_INDUSTRIAL_GLASS.get(dyeColor).get()));
 
             entries.accept(AVPBlocks.INDUSTRIAL_GLASS_PANE);
             Arrays.stream(DyeColor.values())

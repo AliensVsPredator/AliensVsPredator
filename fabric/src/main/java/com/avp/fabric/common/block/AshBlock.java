@@ -7,7 +7,7 @@ import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.SnowLayerBlock;
 import net.minecraft.world.level.block.state.BlockState;
 
-import com.avp.fabric.common.worldgen.biome.AVPBiomes;
+import com.avp.common.worldgen.biome.AVPBiomes;
 
 public class AshBlock extends SnowLayerBlock {
 

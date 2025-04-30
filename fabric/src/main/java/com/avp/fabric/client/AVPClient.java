@@ -1,6 +1,5 @@
 package com.avp.fabric.client;
 
-import com.avp.common.block.TempAVPBlocks;
 import mod.azure.azurelib.rewrite.render.armor.AzArmorRendererRegistry;
 import mod.azure.azurelib.rewrite.render.item.AzItemRenderer;
 import mod.azure.azurelib.rewrite.render.item.AzItemRendererRegistry;
@@ -22,6 +21,7 @@ import net.minecraft.world.item.component.DyedItemColor;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+import com.avp.common.block.TempAVPBlocks;
 import com.avp.fabric.client.input.keybind.AVPKeybindingRegistry;
 import com.avp.fabric.client.network.AVPClientPacketHandlerRegistry;
 import com.avp.fabric.client.particle.AcidParticleProvider;

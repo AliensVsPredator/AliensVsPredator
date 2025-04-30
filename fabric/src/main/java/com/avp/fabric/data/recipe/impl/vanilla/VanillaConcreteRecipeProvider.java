@@ -2,7 +2,6 @@ package com.avp.fabric.data.recipe.impl.vanilla;
 
 import com.avp.common.block.BlockProperties;
 import com.avp.common.block.TempAVPBlocks;
-import com.avp.fabric.common.block.AVPBlocks;
 import com.avp.fabric.data.recipe.builder.RecipeBuilder;
 import com.avp.fabric.data.recipe.util.RecipeUtil;
 

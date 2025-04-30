@@ -7,7 +7,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.concurrent.CompletableFuture;
 
-import com.avp.fabric.common.worldgen.biome.AVPBiomes;
+import com.avp.common.worldgen.biome.AVPBiomes;
 
 public class AVPBiomeProvider extends FabricDynamicRegistryProvider {
 

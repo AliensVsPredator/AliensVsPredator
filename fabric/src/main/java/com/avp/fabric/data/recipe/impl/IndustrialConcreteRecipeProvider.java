@@ -1,17 +1,17 @@
 package com.avp.fabric.data.recipe.impl;
 
-import com.avp.common.block.TempAVPBlocks;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.world.item.DyeItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 
+import java.util.function.Supplier;
+
 import com.avp.common.block.BlockProperties;
+import com.avp.common.block.TempAVPBlocks;
 import com.avp.fabric.common.block.AVPBlocks;
 import com.avp.fabric.data.recipe.builder.RecipeBuilder;
 import com.avp.fabric.data.recipe.util.RecipeUtil;
-
-import java.util.function.Supplier;
 
 public class IndustrialConcreteRecipeProvider {
 

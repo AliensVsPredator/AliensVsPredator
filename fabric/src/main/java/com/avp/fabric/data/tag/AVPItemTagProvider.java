@@ -226,12 +226,16 @@ public class AVPItemTagProvider extends FabricTagProvider.ItemTagProvider {
         var industrialGlassBlockTagBuilder = getOrCreateTagBuilder(AVPItemTags.INDUSTRIAL_GLASS_BLOCK);
 
         industrialGlassBlockTagBuilder.add(AVPBlockItems.INDUSTRIAL_GLASS);
-        TempAVPBlockItems.DYE_COLOR_TO_INDUSTRIAL_GLASS.forEach(($, blockItemSupplier) -> industrialGlassBlockTagBuilder.add(blockItemSupplier.get()));
+        TempAVPBlockItems.DYE_COLOR_TO_INDUSTRIAL_GLASS.forEach(
+            ($, blockItemSupplier) -> industrialGlassBlockTagBuilder.add(blockItemSupplier.get())
+        );
 
         var industrialGlassPaneTagBuilder = getOrCreateTagBuilder(AVPItemTags.INDUSTRIAL_GLASS_PANE);
 
         industrialGlassPaneTagBuilder.add(AVPBlockItems.INDUSTRIAL_GLASS_PANE);
-        TempAVPBlockItems.DYE_COLOR_TO_INDUSTRIAL_GLASS_PANE.forEach(($, blockItemSupplier) -> industrialGlassPaneTagBuilder.add(blockItemSupplier.get()));
+        TempAVPBlockItems.DYE_COLOR_TO_INDUSTRIAL_GLASS_PANE.forEach(
+            ($, blockItemSupplier) -> industrialGlassPaneTagBuilder.add(blockItemSupplier.get())
+        );
 
         getOrCreateTagBuilder(AVPItemTags.INDUSTRIAL_GLASS)
             .addTag(AVPItemTags.INDUSTRIAL_GLASS_BLOCK)

@@ -1,4 +1,4 @@
-package com.avp.fabric.common.level.saveddata;
+package com.avp.common.level.saveddata;
 
 import com.bvanseg.just.functional.option.Option;
 import com.google.common.collect.BiMap;

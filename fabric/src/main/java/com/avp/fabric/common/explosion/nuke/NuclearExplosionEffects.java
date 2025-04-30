@@ -19,10 +19,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.avp.common.worldgen.biome.AVPBiomes;
 import com.avp.fabric.common.block.AVPBlocks;
 import com.avp.fabric.common.explosion.Explosion;
 import com.avp.fabric.common.util.ExplosionUtil;
-import com.avp.fabric.common.worldgen.biome.AVPBiomes;
 
 public class NuclearExplosionEffects {
 
