@@ -3,6 +3,7 @@ package com.avp.neoforge.service;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.Item;
+import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
 import java.util.function.Supplier;
@@ -22,5 +23,9 @@ public class NeoForgeRegistryService implements RegistryService {
         }
 
         throw new IllegalArgumentException("Received registration attempt for an unhandled registry. Registry: " + registry);
+    }
+
+    public void initialize(IEventBus modBus) {
+        ITEM_REGISTRY.register(modBus);
     }
 }
