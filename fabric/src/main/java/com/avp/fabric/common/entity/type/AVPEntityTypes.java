@@ -11,6 +11,7 @@ import net.minecraft.world.level.Level;
 import java.util.function.BiFunction;
 
 import com.avp.AVPResources;
+import com.avp.common.entity.gene.GeneKeys;
 import com.avp.fabric.common.block.entity.PrimedNuke;
 import com.avp.fabric.common.entity.AVPMobCategories;
 import com.avp.fabric.common.entity.acid.Acid;
@@ -35,7 +36,6 @@ import com.avp.fabric.common.entity.projectile.Rocket;
 import com.avp.fabric.common.entity.projectile.ShurikenItemEntity;
 import com.avp.fabric.common.entity.projectile.SmartDiscItemEntity;
 import com.avp.fabric.common.entity.projectile.ThrownGrenade;
-import com.avp.common.entity.gene.GeneKeys;
 
 public class AVPEntityTypes {
 

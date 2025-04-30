@@ -4,14 +4,14 @@ import net.minecraft.commands.arguments.EntityAnchorArgument;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 
+import com.avp.common.goap.TypedIdentifier;
+import com.avp.common.goap.state.GOAPBlackboard;
 import com.avp.fabric.common.entity.ai.action.AttackAction;
 import com.avp.fabric.common.entity.ai.util.CombatResponse;
 import com.avp.fabric.common.entity.living.human.marine.Marine;
 import com.avp.fabric.common.item.GunItem;
 import com.avp.fabric.common.item.gun.pipeline.GunShootContext;
 import com.avp.fabric.common.item.gun.pipeline.GunShootResult;
-import com.avp.fabric.goap.TypedIdentifier;
-import com.avp.fabric.goap.state.GOAPBlackboard;
 
 public class MarineRangedAttackAction extends AttackAction<Marine> {
 

@@ -34,12 +34,12 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Objects;
 import java.util.function.BiConsumer;
 
+import com.avp.common.entity.gene.GeneKeys;
+import com.avp.common.entity.gene.behavior.GeneDecoders;
 import com.avp.fabric.common.ai.goal.DigToTargetGoal;
 import com.avp.fabric.common.ai.goal.StrollAroundInWaterGoal;
 import com.avp.fabric.common.ai.goal.XenoFloatGoal;
 import com.avp.fabric.common.entity.living.alien.Alien;
-import com.avp.common.entity.gene.GeneKeys;
-import com.avp.common.entity.gene.behavior.GeneDecoders;
 import com.avp.fabric.common.lifecycle.registry.AlienLifecycleRegistry;
 import com.avp.fabric.common.manager.CrawlingManager;
 import com.avp.fabric.common.manager.GrowthManager;

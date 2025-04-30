@@ -2,7 +2,7 @@ package com.avp.fabric.common.entity.ai;
 
 import net.minecraft.world.entity.LivingEntity;
 
-import com.avp.fabric.goap.GOAP;
+import com.avp.common.goap.GOAP;
 
 public abstract class EntityGOAP<T extends LivingEntity> extends GOAP<T> {
 

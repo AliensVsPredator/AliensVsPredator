@@ -11,12 +11,12 @@ import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import com.avp.common.entity.gene.GeneKeys;
+import com.avp.common.entity.gene.behavior.GeneDecoders;
 import com.avp.fabric.AVPFabric;
 import com.avp.fabric.common.entity.living.alien.Alien;
 import com.avp.fabric.common.entity.living.alien.xenomorph.Xenomorph;
 import com.avp.fabric.common.entity.type.AVPEntityTypes;
-import com.avp.common.entity.gene.GeneKeys;
-import com.avp.common.entity.gene.behavior.GeneDecoders;
 import com.avp.fabric.common.lifecycle.registry.AlienLifecycleRegistry;
 import com.avp.fabric.common.manager.GrowthManager;
 import com.avp.fabric.common.util.AVPPredicates;

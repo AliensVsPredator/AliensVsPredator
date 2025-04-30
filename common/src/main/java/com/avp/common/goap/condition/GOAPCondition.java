@@ -1,9 +1,9 @@
-package com.avp.fabric.goap.condition;
+package com.avp.common.goap.condition;
 
-import com.avp.fabric.goap.TypedIdentifier;
-import com.avp.fabric.goap.condition.expression.GOAPExpression;
-import com.avp.fabric.goap.effect.GOAPEffectContainer;
-import com.avp.fabric.goap.state.GOAPWorldState;
+import com.avp.common.goap.TypedIdentifier;
+import com.avp.common.goap.condition.expression.GOAPExpression;
+import com.avp.common.goap.effect.GOAPEffectContainer;
+import com.avp.common.goap.state.GOAPWorldState;
 
 public record GOAPCondition<T>(
     TypedIdentifier<? extends T> identifier,

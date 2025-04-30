@@ -2,9 +2,9 @@ package com.avp.fabric.common.entity.ai.sensor.stats;
 
 import net.minecraft.world.entity.LivingEntity;
 
+import com.avp.common.goap.GOAPSensor;
+import com.avp.common.goap.state.GOAPMutableWorldState;
 import com.avp.fabric.common.entity.ai.GOAPConstants;
-import com.avp.fabric.goap.GOAPSensor;
-import com.avp.fabric.goap.state.GOAPMutableWorldState;
 
 public class IsBoredSensor implements GOAPSensor<LivingEntity> {
 

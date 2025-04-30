@@ -6,9 +6,9 @@ import net.minecraft.world.entity.Mob;
 import java.util.List;
 import java.util.function.Predicate;
 
+import com.avp.common.goap.GOAPSensor;
+import com.avp.common.goap.state.GOAPMutableWorldState;
 import com.avp.fabric.common.entity.ai.GOAPConstants;
-import com.avp.fabric.goap.GOAPSensor;
-import com.avp.fabric.goap.state.GOAPMutableWorldState;
 
 public class NearbyAttackTargetEntitiesSensor<T extends Mob> implements GOAPSensor<T> {
 

@@ -1,11 +1,11 @@
-package com.avp.fabric.goap.state;
+package com.avp.common.goap.state;
 
 import java.util.HashMap;
 import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
 
-import com.avp.fabric.goap.TypedIdentifier;
-import com.avp.fabric.goap.effect.GOAPEffectContainer;
+import com.avp.common.goap.TypedIdentifier;
+import com.avp.common.goap.effect.GOAPEffectContainer;
 
 public class GOAPMutableWorldState extends GOAPWorldState {
 

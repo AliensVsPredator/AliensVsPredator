@@ -1,4 +1,4 @@
-package com.avp.fabric.goap;
+package com.avp.common.goap;
 
 import com.bvanseg.just.functional.option.Option;
 import org.jetbrains.annotations.NotNull;
@@ -9,10 +9,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import com.avp.fabric.goap.plan.GOAPPlan;
-import com.avp.fabric.goap.plan.GOAPPlanner;
-import com.avp.fabric.goap.state.GOAPMutableWorldState;
-import com.avp.fabric.goap.state.GOAPWorldState;
+import com.avp.common.goap.plan.GOAPPlan;
+import com.avp.common.goap.plan.GOAPPlanner;
+import com.avp.common.goap.state.GOAPMutableWorldState;
+import com.avp.common.goap.state.GOAPWorldState;
 
 public abstract class GOAP<T> {
 

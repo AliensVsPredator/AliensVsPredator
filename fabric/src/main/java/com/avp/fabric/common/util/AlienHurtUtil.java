@@ -5,11 +5,11 @@ import net.minecraft.world.damagesource.DamageTypes;
 
 import java.util.function.BiFunction;
 
-import com.avp.fabric.common.entity.living.alien.Alien;
 import com.avp.common.entity.gene.GeneKey;
 import com.avp.common.entity.gene.GeneKeys;
 import com.avp.common.entity.gene.behavior.GeneDecoder;
 import com.avp.common.entity.gene.behavior.GeneDecoders;
+import com.avp.fabric.common.entity.living.alien.Alien;
 import com.avp.fabric.common.manager.GeneManager;
 
 public class AlienHurtUtil {

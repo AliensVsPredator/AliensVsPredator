@@ -1,6 +1,6 @@
-package com.avp.fabric.goap;
+package com.avp.common.goap;
 
-import com.avp.fabric.goap.state.GOAPMutableWorldState;
+import com.avp.common.goap.state.GOAPMutableWorldState;
 
 @FunctionalInterface
 public interface GOAPSensor<T> {

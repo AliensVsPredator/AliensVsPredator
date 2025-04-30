@@ -1,10 +1,10 @@
-package com.avp.fabric.goap.effect;
+package com.avp.common.goap.effect;
 
 import java.util.Arrays;
 import java.util.List;
 
-import com.avp.fabric.goap.state.GOAPMutableWorldState;
-import com.avp.fabric.goap.state.GOAPWorldState;
+import com.avp.common.goap.state.GOAPMutableWorldState;
+import com.avp.common.goap.state.GOAPWorldState;
 
 public class GOAPEffectContainer {
 

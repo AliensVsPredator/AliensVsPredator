@@ -11,11 +11,11 @@ import net.minecraft.world.entity.monster.Creeper;
 import java.util.Objects;
 import java.util.Set;
 
+import com.avp.common.goap.GOAPSensor;
+import com.avp.common.goap.state.GOAPMutableWorldState;
 import com.avp.fabric.common.entity.ai.GOAPConstants;
 import com.avp.fabric.common.entity.ai.util.CombatResponse;
 import com.avp.fabric.common.entity.ai.util.ItemType;
-import com.avp.fabric.goap.GOAPSensor;
-import com.avp.fabric.goap.state.GOAPMutableWorldState;
 
 public class CombatResponseSensor<T extends LivingEntity> implements GOAPSensor<T> {
 

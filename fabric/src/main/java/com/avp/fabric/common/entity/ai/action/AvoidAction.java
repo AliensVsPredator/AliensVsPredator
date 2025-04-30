@@ -7,14 +7,14 @@ import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.ai.util.DefaultRandomPos;
 import net.minecraft.world.level.pathfinder.Path;
 
+import com.avp.common.goap.GOAPAction;
+import com.avp.common.goap.TypedIdentifier;
+import com.avp.common.goap.condition.expression.GOAPExpression;
+import com.avp.common.goap.effect.GOAPEffect;
+import com.avp.common.goap.state.GOAPBlackboard;
+import com.avp.common.goap.state.GOAPWorldState;
 import com.avp.fabric.common.entity.ai.GOAPConstants;
 import com.avp.fabric.common.entity.ai.util.CombatResponse;
-import com.avp.fabric.goap.GOAPAction;
-import com.avp.fabric.goap.TypedIdentifier;
-import com.avp.fabric.goap.condition.expression.GOAPExpression;
-import com.avp.fabric.goap.effect.GOAPEffect;
-import com.avp.fabric.goap.state.GOAPBlackboard;
-import com.avp.fabric.goap.state.GOAPWorldState;
 
 public class AvoidAction<T extends PathfinderMob> extends GOAPAction<T> {
 

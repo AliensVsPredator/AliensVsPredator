@@ -8,9 +8,9 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
+import com.avp.common.entity.gene.GeneKeys;
 import com.avp.fabric.common.entity.living.alien.Alien;
 import com.avp.fabric.common.entity.living.alien.ovamorph.Ovamorph;
-import com.avp.common.entity.gene.GeneKeys;
 import com.avp.fabric.common.util.AVPPredicates;
 
 public class PoisionJellyItem extends Item {

@@ -7,10 +7,10 @@ import net.minecraft.world.entity.LivingEntity;
 
 import java.util.function.BiPredicate;
 
+import com.avp.common.goap.GOAPSensor;
+import com.avp.common.goap.state.GOAPMutableWorldState;
+import com.avp.common.goap.state.GOAPWorldState;
 import com.avp.fabric.common.entity.ai.GOAPConstants;
-import com.avp.fabric.goap.GOAPSensor;
-import com.avp.fabric.goap.state.GOAPMutableWorldState;
-import com.avp.fabric.goap.state.GOAPWorldState;
 
 public class NearestAttackTargetInRangeSensor<T extends LivingEntity> implements GOAPSensor<T> {
 

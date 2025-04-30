@@ -1,4 +1,4 @@
-package com.avp.fabric.goap.plan;
+package com.avp.common.goap.plan;
 
 import com.bvanseg.just.functional.option.Option;
 
@@ -6,12 +6,12 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import com.avp.fabric.goap.GOAP;
-import com.avp.fabric.goap.GOAPAction;
-import com.avp.fabric.goap.GOAPGoal;
-import com.avp.fabric.goap.condition.GOAPConditionContainer;
-import com.avp.fabric.goap.state.GOAPMutableWorldState;
-import com.avp.fabric.goap.state.GOAPWorldState;
+import com.avp.common.goap.GOAP;
+import com.avp.common.goap.GOAPAction;
+import com.avp.common.goap.GOAPGoal;
+import com.avp.common.goap.condition.GOAPConditionContainer;
+import com.avp.common.goap.state.GOAPMutableWorldState;
+import com.avp.common.goap.state.GOAPWorldState;
 
 public class GOAPPlanner<T> {
 

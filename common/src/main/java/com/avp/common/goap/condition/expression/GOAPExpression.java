@@ -1,4 +1,4 @@
-package com.avp.fabric.goap.condition.expression;
+package com.avp.common.goap.condition.expression;
 
 import com.bvanseg.just.functional.option.Option;
 import org.jetbrains.annotations.NotNull;

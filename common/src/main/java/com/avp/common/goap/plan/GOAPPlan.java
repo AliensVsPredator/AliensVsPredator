@@ -1,14 +1,14 @@
-package com.avp.fabric.goap.plan;
+package com.avp.common.goap.plan;
 
 import com.bvanseg.just.functional.option.Option;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-import com.avp.fabric.goap.GOAPAction;
-import com.avp.fabric.goap.GOAPGoal;
-import com.avp.fabric.goap.state.GOAPBlackboard;
-import com.avp.fabric.goap.state.GOAPWorldState;
+import com.avp.common.goap.GOAPAction;
+import com.avp.common.goap.GOAPGoal;
+import com.avp.common.goap.state.GOAPBlackboard;
+import com.avp.common.goap.state.GOAPWorldState;
 
 public class GOAPPlan<T> {
 

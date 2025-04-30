@@ -6,12 +6,12 @@ import net.minecraft.world.item.ItemStack;
 
 import java.util.HashSet;
 
+import com.avp.common.goap.GOAPSensor;
+import com.avp.common.goap.state.GOAPMutableWorldState;
 import com.avp.common.item.AVPItemTags;
 import com.avp.fabric.common.entity.ai.GOAPConstants;
 import com.avp.fabric.common.entity.ai.util.ItemType;
 import com.avp.fabric.common.util.AVPInventoryBearer;
-import com.avp.fabric.goap.GOAPSensor;
-import com.avp.fabric.goap.state.GOAPMutableWorldState;
 
 public class InventorySensor<T extends LivingEntity & AVPInventoryBearer> implements GOAPSensor<T> {
 

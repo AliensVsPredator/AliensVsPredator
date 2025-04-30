@@ -1,10 +1,10 @@
-package com.avp.fabric.goap.state;
+package com.avp.common.goap.state;
 
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
 
-import com.avp.fabric.goap.TypedIdentifier;
+import com.avp.common.goap.TypedIdentifier;
 
 public abstract class GOAPStateCache {
 

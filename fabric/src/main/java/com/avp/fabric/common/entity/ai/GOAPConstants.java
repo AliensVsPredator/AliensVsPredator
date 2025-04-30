@@ -8,9 +8,9 @@ import net.minecraft.world.entity.item.ItemEntity;
 import java.util.List;
 import java.util.Set;
 
+import com.avp.common.goap.TypedIdentifier;
 import com.avp.fabric.common.entity.ai.util.CombatResponse;
 import com.avp.fabric.common.entity.ai.util.ItemType;
-import com.avp.fabric.goap.TypedIdentifier;
 
 // TODO: There should be a registry here to guard against accidental duplicate identifiers.
 public class GOAPConstants {

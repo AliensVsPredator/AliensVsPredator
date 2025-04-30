@@ -4,14 +4,14 @@ import com.bvanseg.just.functional.option.Option;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 
+import com.avp.common.goap.GOAPAction;
+import com.avp.common.goap.condition.expression.GOAPExpression;
+import com.avp.common.goap.effect.GOAPEffect;
+import com.avp.common.goap.state.GOAPBlackboard;
+import com.avp.common.goap.state.GOAPWorldState;
 import com.avp.fabric.common.entity.ai.GOAPConstants;
 import com.avp.fabric.common.entity.ai.util.CombatResponse;
 import com.avp.fabric.common.entity.ai.util.ItemType;
-import com.avp.fabric.goap.GOAPAction;
-import com.avp.fabric.goap.condition.expression.GOAPExpression;
-import com.avp.fabric.goap.effect.GOAPEffect;
-import com.avp.fabric.goap.state.GOAPBlackboard;
-import com.avp.fabric.goap.state.GOAPWorldState;
 
 public class AttackAction<T extends Mob> extends GOAPAction<T> {
 

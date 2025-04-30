@@ -3,6 +3,7 @@ package com.avp.fabric.common.entity.living.human.marine.ai;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.monster.Monster;
 
+import com.avp.common.goap.state.GOAPWorldState;
 import com.avp.fabric.common.entity.ai.EntityGOAP;
 import com.avp.fabric.common.entity.ai.GOAPConstants;
 import com.avp.fabric.common.entity.ai.action.AttackAction;
@@ -33,7 +34,6 @@ import com.avp.fabric.common.entity.ai.util.CombatResponse;
 import com.avp.fabric.common.entity.ai.util.ItemType;
 import com.avp.fabric.common.entity.living.human.marine.Marine;
 import com.avp.fabric.common.item.GunItem;
-import com.avp.fabric.goap.state.GOAPWorldState;
 
 public class MarineGOAP extends EntityGOAP<Marine> {
 

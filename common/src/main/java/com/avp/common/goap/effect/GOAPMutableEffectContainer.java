@@ -1,4 +1,4 @@
-package com.avp.fabric.goap.effect;
+package com.avp.common.goap.effect;
 
 import java.util.ArrayList;
 

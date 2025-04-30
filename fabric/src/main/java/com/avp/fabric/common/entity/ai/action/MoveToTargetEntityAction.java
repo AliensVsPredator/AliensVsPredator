@@ -7,12 +7,12 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 
 import java.util.function.BiPredicate;
 
-import com.avp.fabric.goap.GOAPAction;
-import com.avp.fabric.goap.TypedIdentifier;
-import com.avp.fabric.goap.condition.expression.GOAPExpression;
-import com.avp.fabric.goap.effect.GOAPEffect;
-import com.avp.fabric.goap.state.GOAPBlackboard;
-import com.avp.fabric.goap.state.GOAPWorldState;
+import com.avp.common.goap.GOAPAction;
+import com.avp.common.goap.TypedIdentifier;
+import com.avp.common.goap.condition.expression.GOAPExpression;
+import com.avp.common.goap.effect.GOAPEffect;
+import com.avp.common.goap.state.GOAPBlackboard;
+import com.avp.common.goap.state.GOAPWorldState;
 
 public class MoveToTargetEntityAction<T extends Mob, E extends Entity> extends GOAPAction<T> {
 

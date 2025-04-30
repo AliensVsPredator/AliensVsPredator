@@ -1,9 +1,9 @@
-package com.avp.fabric.goap.effect;
+package com.avp.common.goap.effect;
 
 import java.util.function.UnaryOperator;
 
-import com.avp.fabric.goap.TypedIdentifier;
-import com.avp.fabric.goap.state.GOAPMutableWorldState;
+import com.avp.common.goap.TypedIdentifier;
+import com.avp.common.goap.state.GOAPMutableWorldState;
 
 public sealed interface GOAPEffect<T> {
 
