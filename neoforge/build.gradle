@@ -3,6 +3,7 @@ plugins {
     id 'multiloader-loader'
     id 'net.neoforged.moddev'
     id 'me.modmuss50.mod-publish-plugin'
+    id 'org.moddedmc.wiki.toolkit'
 }
 
 neoForge {
