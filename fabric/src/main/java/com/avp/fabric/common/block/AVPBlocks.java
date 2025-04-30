@@ -617,20 +617,6 @@ public class AVPBlocks {
         "titanium_grate_stairs"
     );
 
-    public static final Map<DyeColor, Block> DYE_COLOR_TO_CONCRETE_SLAB =
-        Collections.unmodifiableMap(
-            Arrays.stream(DyeColor.values())
-                .collect(
-                    Collectors.toMap(
-                        Function.identity(),
-                        dyeColor -> register(
-                            new SlabBlock(BlockProperties.DYE_COLOR_TO_CONCRETE_PROPERTIES.get(dyeColor).build()),
-                            dyeColor.getName() + "_concrete_slab"
-                        )
-                    )
-                )
-        );
-
     public static final Map<DyeColor, Block> DYE_COLOR_TO_CONCRETE_STAIRS =
         Collections.unmodifiableMap(
             Arrays.stream(DyeColor.values())

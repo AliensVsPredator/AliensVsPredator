@@ -14,6 +14,7 @@ import net.minecraft.world.level.storage.loot.functions.SetItemCountFunction;
 import net.minecraft.world.level.storage.loot.providers.number.UniformGenerator;
 
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Supplier;
 
 import com.avp.common.block.TempAVPBlocks;
 import com.avp.fabric.common.block.AVPBlocks;
@@ -90,7 +91,8 @@ public class BlockLootTableProvider extends FabricBlockLootTableProvider {
         dropSelf(AVPBlocks.RESIN_RIBBED);
         dropSelf(AVPBlocks.RESIN_SMOOTH);
 
-        AVPBlocks.DYE_COLOR_TO_CONCRETE_SLAB.values().forEach(this::dropSlab);
+        // TODO: Use stream concat here.
+        TempAVPBlocks.DYE_COLOR_TO_CONCRETE_SLAB.values().stream().map(Supplier::get).forEach(this::dropSlab);
         AVPBlocks.DYE_COLOR_TO_CONCRETE_STAIRS.values().forEach(this::dropSelf);
 
         AVPBlocks.DYE_COLOR_TO_INDUSTRIAL_CONCRETE.values().forEach(this::dropSelf);

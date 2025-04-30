@@ -110,8 +110,8 @@ public class EnglishLanguageProvider extends FabricLanguageProvider {
         translationBuilder.add(AVPBlocks.TITANIUM_TREAD_SLAB, "Titanium Tread Slab");
         translationBuilder.add(AVPBlocks.TITANIUM_TREAD_STAIRS, "Titanium Tread Stairs");
 
-        AVPBlocks.DYE_COLOR_TO_CONCRETE_SLAB.forEach(
-            (key, value) -> translationBuilder.add(value, format(key.getName()) + " Concrete Slab")
+        TempAVPBlocks.DYE_COLOR_TO_CONCRETE_SLAB.forEach(
+            (key, value) -> translationBuilder.add(value.get(), format(key.getName()) + " Concrete Slab")
         );
         AVPBlocks.DYE_COLOR_TO_CONCRETE_STAIRS.forEach(
             (key, value) -> translationBuilder.add(value, format(key.getName()) + " Concrete Stairs")

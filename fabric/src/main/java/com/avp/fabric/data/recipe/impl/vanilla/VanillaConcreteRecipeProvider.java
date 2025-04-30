@@ -1,6 +1,7 @@
 package com.avp.fabric.data.recipe.impl.vanilla;
 
 import com.avp.common.block.BlockProperties;
+import com.avp.common.block.TempAVPBlocks;
 import com.avp.fabric.common.block.AVPBlocks;
 import com.avp.fabric.data.recipe.builder.RecipeBuilder;
 import com.avp.fabric.data.recipe.util.RecipeUtil;
@@ -13,7 +14,7 @@ public class VanillaConcreteRecipeProvider {
 
     private static void createConcreteBlockRecipes(RecipeBuilder builder) {
         BlockProperties.DYE_COLOR_TO_CONCRETE_BLOCKS.forEach(((dyeColor, block) -> {
-            var slabBlock = AVPBlocks.DYE_COLOR_TO_CONCRETE_SLAB.get(dyeColor);
+            var slabBlock = TempAVPBlocks.DYE_COLOR_TO_CONCRETE_SLAB.get(dyeColor).get();
             RecipeUtil.createSlabBlockManualAndStonecutterRecipes(builder, block, slabBlock);
 
             var stairBlock = AVPBlocks.DYE_COLOR_TO_CONCRETE_STAIRS.get(dyeColor);

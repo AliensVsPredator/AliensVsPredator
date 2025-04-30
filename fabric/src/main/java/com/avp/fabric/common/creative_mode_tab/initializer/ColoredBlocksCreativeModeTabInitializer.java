@@ -1,5 +1,6 @@
 package com.avp.fabric.common.creative_mode_tab.initializer;
 
+import com.avp.common.block.TempAVPBlocks;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.minecraft.world.item.DyeColor;
 
@@ -14,7 +15,7 @@ public class ColoredBlocksCreativeModeTabInitializer {
         ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.COLORED_BLOCKS_KEY).register(entries -> {
             Arrays.stream(DyeColor.values()).forEach(dyeColor -> {
                 entries.accept(AVPBlocks.DYE_COLOR_TO_CONCRETE_STAIRS.get(dyeColor));
-                entries.accept(AVPBlocks.DYE_COLOR_TO_CONCRETE_SLAB.get(dyeColor));
+                entries.accept(TempAVPBlocks.DYE_COLOR_TO_CONCRETE_SLAB.get(dyeColor).get());
 
                 entries.accept(AVPBlocks.DYE_COLOR_TO_INDUSTRIAL_CONCRETE.get(dyeColor));
                 entries.accept(AVPBlocks.DYE_COLOR_TO_INDUSTRIAL_CONCRETE_STAIRS.get(dyeColor));

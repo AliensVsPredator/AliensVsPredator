@@ -345,17 +345,6 @@ public class AVPBlockItems {
 
     public static final BlockItem TITANIUM_GRATE_STAIRS = register(AVPBlocks.TITANIUM_GRATE_STAIRS);
 
-    public static final Map<DyeColor, BlockItem> DYE_COLOR_TO_CONCRETE_SLAB =
-        Collections.unmodifiableMap(
-            Arrays.stream(DyeColor.values())
-                .collect(
-                    Collectors.toMap(
-                        Function.identity(),
-                        dyeColor -> register(AVPBlocks.DYE_COLOR_TO_CONCRETE_SLAB.get(dyeColor))
-                    )
-                )
-        );
-
     public static final Map<DyeColor, BlockItem> DYE_COLOR_TO_CONCRETE_STAIRS =
         Collections.unmodifiableMap(
             Arrays.stream(DyeColor.values())

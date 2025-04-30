@@ -430,7 +430,7 @@ public class BlockModelProvider extends FabricModelProvider {
         TextureMapping textureMapping,
         ResourceLocation resourceLocation
     ) {
-        var slabBlock = AVPBlocks.DYE_COLOR_TO_CONCRETE_SLAB.get(dyeColor);
+        var slabBlock = TempAVPBlocks.DYE_COLOR_TO_CONCRETE_SLAB.get(dyeColor).get();
         var bottom = ModelTemplates.SLAB_BOTTOM.create(slabBlock, textureMapping, generators.modelOutput);
         var top = ModelTemplates.SLAB_TOP.create(slabBlock, textureMapping, generators.modelOutput);
 

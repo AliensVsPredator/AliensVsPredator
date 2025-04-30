@@ -2,10 +2,16 @@ package com.avp.common.item;
 
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Map;
+import java.util.function.Function;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 import com.avp.common.block.TempAVPBlocks;
 import com.avp.service.Services;
@@ -31,6 +37,20 @@ public class TempAVPBlockItems {
     public static final Supplier<BlockItem> MONAZITE_ORE = register("monazite_ore", TempAVPBlocks.MONAZITE_ORE);
 
     public static final Supplier<BlockItem> ZINC_ORE = register("zinc_ore", TempAVPBlocks.ZINC_ORE);
+
+    public static final Map<DyeColor, Supplier<BlockItem>> DYE_COLOR_TO_CONCRETE_SLAB =
+        Collections.unmodifiableMap(
+            Arrays.stream(DyeColor.values())
+                .collect(
+                    Collectors.toMap(
+                        Function.identity(),
+                        dyeColor -> register(
+                            dyeColor.getName() + "_concrete_slab",
+                            TempAVPBlocks.DYE_COLOR_TO_CONCRETE_SLAB.get(dyeColor)
+                        )
+                    )
+                )
+        );
 
     private static Supplier<BlockItem> register(String id, Supplier<Block> blockSupplier) {
         return Services.REGISTRY.register(BuiltInRegistries.ITEM, id, () -> new BlockItem(blockSupplier.get(), new Item.Properties()));

@@ -8,6 +8,7 @@ import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.block.Blocks;
 
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Supplier;
 
 import com.avp.common.block.AVPBlockTags;
 import com.avp.common.block.TempAVPBlocks;
@@ -25,7 +26,8 @@ public class AVPBlockTagProvider extends FabricTagProvider.BlockTagProvider {
     protected void addTags(HolderLookup.Provider wrapperLookup) {
         var concreteTagBuilder = getOrCreateTagBuilder(AVPBlockTags.CONCRETE);
 
-        AVPBlocks.DYE_COLOR_TO_CONCRETE_SLAB.values().forEach(concreteTagBuilder::add);
+        // TODO: Use a stream concat here.
+        TempAVPBlocks.DYE_COLOR_TO_CONCRETE_SLAB.values().stream().map(Supplier::get).forEach(concreteTagBuilder::add);
         AVPBlocks.DYE_COLOR_TO_CONCRETE_STAIRS.values().forEach(concreteTagBuilder::add);
 
         getOrCreateTagBuilder(AVPBlockTags.SHOULD_NOT_BE_DESTROYED)
@@ -443,7 +445,8 @@ public class AVPBlockTagProvider extends FabricTagProvider.BlockTagProvider {
             AVPBlocks.TITANIUM_TREAD_SLAB
         );
 
-        AVPBlocks.DYE_COLOR_TO_CONCRETE_SLAB.values().forEach(slabTagProvider::add);
+        // TODO: Use a stream concat here.
+        TempAVPBlocks.DYE_COLOR_TO_CONCRETE_SLAB.values().stream().map(Supplier::get).forEach(slabTagProvider::add);
         AVPBlocks.DYE_COLOR_TO_CUT_PLASTIC_SLAB.values().forEach(slabTagProvider::add);
         AVPBlocks.DYE_COLOR_TO_INDUSTRIAL_CONCRETE_SLAB.values().forEach(slabTagProvider::add);
         AVPBlocks.DYE_COLOR_TO_PADDING_SLAB.values().forEach(slabTagProvider::add);

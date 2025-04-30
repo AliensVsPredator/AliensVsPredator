@@ -7,6 +7,7 @@ import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.Items;
 
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Supplier;
 
 import com.avp.common.block.TempAVPBlocks;
 import com.avp.common.item.AVPItemTags;
@@ -429,7 +430,11 @@ public class AVPItemTagProvider extends FabricTagProvider.ItemTagProvider {
             AVPBlockItems.TITANIUM_TREAD_SLAB
         );
 
-        AVPBlockItems.DYE_COLOR_TO_CONCRETE_SLAB.values().forEach(slabTagProvider::add);
+        // TODO: Use a stream concat here.
+        TempAVPBlockItems.DYE_COLOR_TO_CONCRETE_SLAB.values()
+            .stream()
+            .map(Supplier::get)
+            .forEach(slabTagProvider::add);
         AVPBlockItems.DYE_COLOR_TO_CUT_PLASTIC_SLAB.values().forEach(slabTagProvider::add);
         AVPBlockItems.DYE_COLOR_TO_INDUSTRIAL_CONCRETE_SLAB.values().forEach(slabTagProvider::add);
         AVPBlockItems.DYE_COLOR_TO_PADDING_SLAB.values().forEach(slabTagProvider::add);
