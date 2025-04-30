@@ -4,6 +4,7 @@ import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.world.item.Items;
 
 import com.avp.common.item.AVPItemTags;
+import com.avp.common.item.TempAVPItems;
 import com.avp.fabric.common.item.AVPItems;
 import com.avp.fabric.data.recipe.builder.RecipeBuilder;
 
@@ -40,7 +41,7 @@ public class ElectronicItemRecipeProvider {
             .withCategory(RecipeCategory.MISC)
             .define('A', Items.GOLD_NUGGET)
             .define('B', Items.REDSTONE)
-            .define('C', AVPItems.RAW_SILICA)
+            .define('C', TempAVPItems.RAW_SILICA.get())
             .pattern("AB")
             .pattern(" C")
             .pattern("AB")
@@ -50,7 +51,7 @@ public class ElectronicItemRecipeProvider {
             .withCategory(RecipeCategory.MISC)
             .define('A', Items.GOLD_NUGGET)
             .define('B', Items.REDSTONE)
-            .define('C', AVPItems.RAW_SILICA)
+            .define('C', TempAVPItems.RAW_SILICA.get())
             .pattern(" A ")
             .pattern("BCB")
             .pattern(" A ")
@@ -61,7 +62,7 @@ public class ElectronicItemRecipeProvider {
             .define('G', Items.GOLD_NUGGET)
             .define('L', Items.LEVER)
             .define('R', Items.REDSTONE)
-            .define('S', AVPItems.RAW_SILICA)
+            .define('S', TempAVPItems.RAW_SILICA.get())
             .define('I', AVPItemTags.INDUSTRIAL_GLASS_PANE)
             .pattern("SSS")
             .pattern("ILI")
@@ -73,7 +74,7 @@ public class ElectronicItemRecipeProvider {
             .define('D', AVPItems.DIODE)
             .define('L', AVPItems.LEAD_INGOT)
             .define('R', AVPItems.RESISTOR)
-            .define('S', AVPItems.RAW_SILICA)
+            .define('S', TempAVPItems.RAW_SILICA.get())
             .pattern(" D ")
             .pattern("SLS")
             .pattern(" R ")
@@ -84,7 +85,7 @@ public class ElectronicItemRecipeProvider {
             .define('G', Items.GOLD_NUGGET)
             .define('L', AVPItems.LITHIUM_DUST)
             .define('R', Items.REDSTONE)
-            .define('S', AVPItems.RAW_SILICA)
+            .define('S', TempAVPItems.RAW_SILICA.get())
             .pattern("GSS")
             .pattern("RLL")
             .pattern("GSS")
@@ -97,7 +98,7 @@ public class ElectronicItemRecipeProvider {
             .define('G', AVPItems.REGULATOR)
             .define('O', Items.REDSTONE)
             .define('R', AVPItems.RESISTOR)
-            .define('S', AVPItems.RAW_SILICA)
+            .define('S', TempAVPItems.RAW_SILICA.get())
             .define('T', AVPItems.TRANSISTOR)
             .pattern("TSR")
             .pattern("LOL")
@@ -130,7 +131,7 @@ public class ElectronicItemRecipeProvider {
             .withCategory(RecipeCategory.MISC)
             .define('C', AVPItems.INTEGRATED_CIRCUIT)
             .define('R', Items.REDSTONE)
-            .define('S', AVPItems.RAW_SILICA)
+            .define('S', TempAVPItems.RAW_SILICA.get())
             .pattern("SCS")
             .pattern("CRC")
             .pattern("SCS")

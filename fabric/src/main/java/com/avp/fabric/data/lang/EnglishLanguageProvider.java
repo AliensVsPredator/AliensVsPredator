@@ -8,6 +8,7 @@ import net.minecraft.sounds.SoundEvent;
 import java.util.Arrays;
 import java.util.concurrent.CompletableFuture;
 
+import com.avp.common.item.TempAVPItems;
 import com.avp.fabric.common.block.AVPBlocks;
 import com.avp.fabric.common.creative_mode_tab.CreativeModeTabs;
 import com.avp.fabric.common.entity.type.AVPEntityTypes;
@@ -443,7 +444,7 @@ public class EnglishLanguageProvider extends FabricLanguageProvider {
         translationBuilder.add(AVPItems.RAW_MONAZITE, "Raw Monazite");
         translationBuilder.add(AVPItems.RAW_ROYAL_JELLY, "Raw Royal Jelly");
         translationBuilder.add(AVPItems.POISON_JELLY, "Poison Jelly");
-        translationBuilder.add(AVPItems.RAW_SILICA, "Raw Silica");
+        translationBuilder.add(TempAVPItems.RAW_SILICA.get(), "Raw Silica");
         translationBuilder.add(AVPItems.RAW_TITANIUM, "Raw Titanium");
         translationBuilder.add(AVPItems.RAW_ZINC, "Raw Zinc");
         translationBuilder.add(AVPItems.RECEIVER, "Receiver");

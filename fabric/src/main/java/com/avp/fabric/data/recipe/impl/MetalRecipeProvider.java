@@ -4,6 +4,7 @@ import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.ItemLike;
 
+import com.avp.common.item.TempAVPItems;
 import com.avp.fabric.common.block.AVPBlocks;
 import com.avp.fabric.common.item.AVPItems;
 import com.avp.fabric.data.recipe.RecipeConstants;
@@ -78,7 +79,7 @@ public class MetalRecipeProvider {
         RecipeUtil.createCompressedBlockRecipes3x3(builder, AVPItems.RAW_BAUXITE, AVPBlocks.RAW_BAUXITE_BLOCK);
         RecipeUtil.createCompressedBlockRecipes3x3(builder, AVPItems.RAW_GALENA, AVPBlocks.RAW_GALENA_BLOCK);
         RecipeUtil.createCompressedBlockRecipes3x3(builder, AVPItems.RAW_MONAZITE, AVPBlocks.RAW_MONAZITE_BLOCK);
-        RecipeUtil.createCompressedBlockRecipes3x3(builder, AVPItems.RAW_SILICA, AVPBlocks.RAW_SILICA_BLOCK);
+        RecipeUtil.createCompressedBlockRecipes3x3(builder, TempAVPItems.RAW_SILICA.get(), AVPBlocks.RAW_SILICA_BLOCK);
         RecipeUtil.createCompressedBlockRecipes3x3(builder, AVPItems.RAW_TITANIUM, AVPBlocks.RAW_TITANIUM_BLOCK);
         RecipeUtil.createCompressedBlockRecipes3x3(builder, AVPItems.RAW_ZINC, AVPBlocks.RAW_ZINC_BLOCK);
 

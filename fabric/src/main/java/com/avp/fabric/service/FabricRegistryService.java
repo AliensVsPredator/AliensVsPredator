@@ -11,6 +11,7 @@ public class FabricRegistryService implements RegistryService {
 
     @Override
     public <T> Supplier<T> register(Registry<T> registry, String id, Supplier<T> supplier) {
-        return () -> Registry.register(registry, AVPResources.location(id), supplier.get());
+        var registeredElement = Registry.register(registry, AVPResources.location(id), supplier.get());
+        return () -> registeredElement;
     }
 }

@@ -3,6 +3,7 @@ package com.avp;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.avp.common.item.TempAVPItems;
 import com.avp.service.Services;
 
 public class AVP {
@@ -13,5 +14,7 @@ public class AVP {
 
     public static void initialize() {
         LOGGER.info("Initializing AVP for platform '{}'", Services.PLATFORM.getPlatformName());
+
+        TempAVPItems.initialize();
     }
 }
