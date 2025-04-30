@@ -9,9 +9,9 @@ import net.minecraft.world.level.pathfinder.PathFinder;
 import net.minecraft.world.level.pathfinder.PathType;
 import org.jetbrains.annotations.NotNull;
 
+import com.avp.common.ai.path.CrawlPathNodeEvaluator;
 import com.avp.fabric.common.ai.goal.WaterMoveControl;
 import com.avp.fabric.common.ai.goal.combat.DelayedAttackGoal;
-import com.avp.fabric.common.ai.path.CrawlPathNodeEvaluator;
 
 public class XenomorphNavigationManager {
 
