@@ -90,7 +90,7 @@ wiki {
     }
     docs {
         avp {
-            root = file('docs/avp')
+            root = file('../docs/avp')
         }
     }
 }
