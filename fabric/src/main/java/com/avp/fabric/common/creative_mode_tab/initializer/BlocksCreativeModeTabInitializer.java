@@ -2,6 +2,7 @@ package com.avp.fabric.common.creative_mode_tab.initializer;
 
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 
+import com.avp.common.block.TempAVPBlocks;
 import com.avp.fabric.common.block.AVPBlocks;
 import com.avp.fabric.common.creative_mode_tab.CreativeModeTabs;
 
@@ -11,7 +12,7 @@ public class BlocksCreativeModeTabInitializer {
         ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.BLOCKS_KEY).register(entries -> {
             // Worldgen (natural) blocks
             entries.accept(AVPBlocks.AUTUNITE_ORE);
-            entries.accept(AVPBlocks.BAUXITE_ORE);
+            entries.accept(TempAVPBlocks.BAUXITE_ORE.get());
             entries.accept(AVPBlocks.DEEPSLATE_ZINC_ORE);
             entries.accept(AVPBlocks.GALENA_ORE);
             entries.accept(AVPBlocks.LITHIUM_BLOCK);

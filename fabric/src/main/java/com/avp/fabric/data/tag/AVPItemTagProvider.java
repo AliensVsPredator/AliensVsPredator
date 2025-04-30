@@ -9,6 +9,7 @@ import net.minecraft.world.item.Items;
 import java.util.concurrent.CompletableFuture;
 
 import com.avp.common.item.AVPItemTags;
+import com.avp.common.item.TempAVPBlockItems;
 import com.avp.fabric.common.block.AVPBlocks;
 import com.avp.fabric.common.block_item.AVPBlockItems;
 import com.avp.fabric.common.item.AVPItems;
@@ -617,7 +618,7 @@ public class AVPItemTagProvider extends FabricTagProvider.ItemTagProvider {
             .setReplace(false)
             .add(
                 AVPBlockItems.AUTUNITE_ORE,
-                AVPBlockItems.BAUXITE_ORE,
+                TempAVPBlockItems.BAUXITE_ORE.get(),
                 AVPBlockItems.LITHIUM_ORE,
                 AVPBlockItems.DEEPSLATE_TITANIUM_ORE,
                 AVPBlockItems.GALENA_ORE,

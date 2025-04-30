@@ -75,8 +75,6 @@ public class AVPBlocks {
 
     public static final Block AUTUNITE_ORE = registerRadiatedBlock(BlockProperties.AUTUNITE_ORE.build(), "autunite_ore");
 
-    public static final Block BAUXITE_ORE = register(BlockProperties.BAUXITE_ORE, "bauxite_ore");
-
     public static final Block BRASS_BLOCK = register(BlockProperties.BRASS, "brass_block");
 
     public static final Block CHISELED_FERROALUMINUM = register(BlockProperties.FERROALUMINUM, "chiseled_ferroaluminum");

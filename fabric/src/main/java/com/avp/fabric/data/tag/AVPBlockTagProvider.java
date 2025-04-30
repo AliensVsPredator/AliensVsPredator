@@ -10,6 +10,7 @@ import net.minecraft.world.level.block.Blocks;
 import java.util.concurrent.CompletableFuture;
 
 import com.avp.common.block.AVPBlockTags;
+import com.avp.common.block.TempAVPBlocks;
 import com.avp.fabric.common.block.AVPBlocks;
 import com.avp.fabric.data.compatibility.common.CommonConstants;
 import com.avp.fabric.data.compatibility.gigeresque.GigeresqueConstants;
@@ -332,7 +333,7 @@ public class AVPBlockTagProvider extends FabricTagProvider.BlockTagProvider {
                 AVPBlocks.AMMO_CHEST,
                 AVPBlocks.AUTUNITE_BLOCK,
                 AVPBlocks.AUTUNITE_ORE,
-                AVPBlocks.BAUXITE_ORE,
+                TempAVPBlocks.BAUXITE_ORE.get(),
                 AVPBlocks.BRASS_BLOCK,
                 AVPBlocks.DEEPSLATE_TITANIUM_ORE,
                 AVPBlocks.DEEPSLATE_ZINC_ORE,
@@ -382,7 +383,7 @@ public class AVPBlockTagProvider extends FabricTagProvider.BlockTagProvider {
             .addTag(AVPBlockTags.PLASTIC)
             .addTag(AVPBlockTags.RESIN)
             .add(
-                AVPBlocks.BAUXITE_ORE,
+                TempAVPBlocks.BAUXITE_ORE.get(),
                 AVPBlocks.BLUEPRINT_BLOCK,
                 AVPBlocks.GALENA_ORE,
                 AVPBlocks.RAW_BAUXITE_BLOCK
@@ -569,7 +570,7 @@ public class AVPBlockTagProvider extends FabricTagProvider.BlockTagProvider {
             .setReplace(false)
             .add(
                 AVPBlocks.AUTUNITE_ORE,
-                AVPBlocks.BAUXITE_ORE,
+                TempAVPBlocks.BAUXITE_ORE.get(),
                 AVPBlocks.DEEPSLATE_TITANIUM_ORE,
                 AVPBlocks.DEEPSLATE_ZINC_ORE,
                 AVPBlocks.GALENA_ORE,

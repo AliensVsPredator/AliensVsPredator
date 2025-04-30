@@ -21,6 +21,7 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import org.jetbrains.annotations.NotNull;
 
 import com.avp.common.block.BlockProperties;
+import com.avp.common.block.TempAVPBlocks;
 import com.avp.fabric.common.block.AVPBlocks;
 import com.avp.fabric.common.item.SpawnEggItems;
 import com.avp.fabric.data.model.generator.BarsGenerator;
@@ -161,7 +162,7 @@ public class BlockModelProvider extends FabricModelProvider {
         generators.createTrivialCube(AVPBlocks.TRINITITE_BLOCK);
         generators.createTrivialCube(AVPBlocks.AUTUNITE_BLOCK);
         generators.createTrivialCube(AVPBlocks.AUTUNITE_ORE);
-        generators.createTrivialCube(AVPBlocks.BAUXITE_ORE);
+        generators.createTrivialCube(TempAVPBlocks.BAUXITE_ORE.get());
         generators.createTrivialCube(AVPBlocks.BRASS_BLOCK);
         generators.createTrivialCube(AVPBlocks.CHISELED_FERROALUMINUM);
         generators.createTrivialCube(AVPBlocks.CHISELED_STEEL);

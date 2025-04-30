@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import com.avp.common.block.TempAVPBlocks;
 import com.avp.fabric.common.block.AVPBlocks;
 import com.avp.fabric.data.worldgen.builder.AVPOreData;
 
@@ -32,7 +33,10 @@ public class AVPOres {
     }
 
     public static final AVPOreData BAUXITE_UPPER = create(
-        builder("bauxite_ore_upper", OreConfiguration.target(STONE_ORE_REPLACEABLES_RULE, AVPBlocks.BAUXITE_ORE.defaultBlockState()))
+        builder(
+            "bauxite_ore_upper",
+            OreConfiguration.target(STONE_ORE_REPLACEABLES_RULE, TempAVPBlocks.BAUXITE_ORE.get().defaultBlockState())
+        )
             .count(75)
             .heightRange(HeightRangePlacement.triangle(VerticalAnchor.absolute(0), VerticalAnchor.absolute(512)))
             .veinSize(9)
@@ -40,7 +44,10 @@ public class AVPOres {
     );
 
     public static final AVPOreData BAUXITE_MIDDLE = create(
-        builder("bauxite_ore_middle", OreConfiguration.target(STONE_ORE_REPLACEABLES_RULE, AVPBlocks.BAUXITE_ORE.defaultBlockState()))
+        builder(
+            "bauxite_ore_middle",
+            OreConfiguration.target(STONE_ORE_REPLACEABLES_RULE, TempAVPBlocks.BAUXITE_ORE.get().defaultBlockState())
+        )
             .count(20)
             .heightRange(HeightRangePlacement.uniform(VerticalAnchor.absolute(9), VerticalAnchor.absolute(79)))
             .veinSize(9)

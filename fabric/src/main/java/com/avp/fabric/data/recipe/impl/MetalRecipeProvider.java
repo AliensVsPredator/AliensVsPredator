@@ -4,6 +4,7 @@ import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.ItemLike;
 
+import com.avp.common.block.TempAVPBlocks;
 import com.avp.common.item.TempAVPItems;
 import com.avp.fabric.common.block.AVPBlocks;
 import com.avp.fabric.common.item.AVPItems;
@@ -50,7 +51,7 @@ public class MetalRecipeProvider {
             .pattern(" A ")
             .into(1, AVPItems.URANIUM_INGOT);
 
-        createSmeltAndBlastRecipes(builder, AVPBlocks.BAUXITE_ORE, AVPItems.ALUMINUM_INGOT);
+        createSmeltAndBlastRecipes(builder, TempAVPBlocks.BAUXITE_ORE.get(), AVPItems.ALUMINUM_INGOT);
         createSmeltAndBlastRecipes(builder, AVPBlocks.GALENA_ORE, AVPItems.LEAD_INGOT);
         createSmeltAndBlastRecipes(builder, AVPBlocks.MONAZITE_ORE, AVPItems.NEODYMIUM_MAGNET);
         createSmeltAndBlastRecipes(builder, AVPBlocks.DEEPSLATE_TITANIUM_ORE, AVPItems.TITANIUM_INGOT);

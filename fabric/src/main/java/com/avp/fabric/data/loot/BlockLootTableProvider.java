@@ -15,6 +15,7 @@ import net.minecraft.world.level.storage.loot.providers.number.UniformGenerator;
 
 import java.util.concurrent.CompletableFuture;
 
+import com.avp.common.block.TempAVPBlocks;
 import com.avp.fabric.common.block.AVPBlocks;
 import com.avp.fabric.common.item.AVPItems;
 
@@ -39,7 +40,7 @@ public class BlockLootTableProvider extends FabricBlockLootTableProvider {
         dropSelf(AVPBlocks.ALUMINUM_BLOCK);
         dropSelf(AVPBlocks.AUTUNITE_BLOCK);
         add(AVPBlocks.AUTUNITE_ORE, block -> createOreMultiDrop(block, AVPItems.AUTUNITE_DUST, 2, 4));
-        add(AVPBlocks.BAUXITE_ORE, block -> createOreDrop(block, AVPItems.RAW_BAUXITE));
+        add(TempAVPBlocks.BAUXITE_ORE.get(), block -> createOreDrop(block, AVPItems.RAW_BAUXITE));
         dropSelf(AVPBlocks.BRASS_BLOCK);
         dropSelf(AVPBlocks.CHISELED_FERROALUMINUM);
         dropSelf(AVPBlocks.CHISELED_STEEL);

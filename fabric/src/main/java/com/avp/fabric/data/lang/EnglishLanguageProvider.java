@@ -8,6 +8,7 @@ import net.minecraft.sounds.SoundEvent;
 import java.util.Arrays;
 import java.util.concurrent.CompletableFuture;
 
+import com.avp.common.block.TempAVPBlocks;
 import com.avp.common.item.TempAVPItems;
 import com.avp.fabric.common.block.AVPBlocks;
 import com.avp.fabric.common.creative_mode_tab.CreativeModeTabs;
@@ -43,7 +44,7 @@ public class EnglishLanguageProvider extends FabricLanguageProvider {
         translationBuilder.add(AVPBlocks.ALUMINUM_BLOCK, "Block of Aluminum");
         translationBuilder.add(AVPBlocks.AUTUNITE_BLOCK, "Autunite Block");
         translationBuilder.add(AVPBlocks.AUTUNITE_ORE, "Autunite Ore");
-        translationBuilder.add(AVPBlocks.BAUXITE_ORE, "Bauxite Ore");
+        translationBuilder.add(TempAVPBlocks.BAUXITE_ORE.get(), "Bauxite Ore");
         translationBuilder.add(AVPBlocks.BRASS_BLOCK, "Block of Brass");
         translationBuilder.add(AVPBlocks.CHISELED_FERROALUMINUM, "Chiseled Ferroaluminum");
         translationBuilder.add(AVPBlocks.CHISELED_STEEL, "Chiseled Steel");

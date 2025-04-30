@@ -50,8 +50,6 @@ public class AVPBlockItems {
 
     public static final BlockItem AUTUNITE_ORE = register(AVPBlocks.AUTUNITE_ORE);
 
-    public static final BlockItem BAUXITE_ORE = register(AVPBlocks.BAUXITE_ORE);
-
     public static final BlockItem BRASS_BLOCK = register(AVPBlocks.BRASS_BLOCK);
 
     public static final BlockItem CHISELED_FERROALUMINUM = register(AVPBlocks.CHISELED_FERROALUMINUM);
