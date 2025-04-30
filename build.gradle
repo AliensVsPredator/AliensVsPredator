@@ -21,19 +21,3 @@ processResources {
 		println "processResources executed: wiki folder copied into assets/avp"
 	}
 }
-
-// TODO: Wiki preview is broken when ran from Intellij's gradle panel, use ./gradlew ... commands to run tasks, instead.
-wiki {
-	if (project.rootDir.toPath().resolve("key.properties").toFile().exists()) {
-		def releaseProp = new Properties()
-		File secretPropsFile = file("key.properties")
-		releaseProp.load(secretPropsFile.newInputStream())
-		wikiAccessToken = releaseProp.getProperty("wikiKey")
-	}
-	docs {
-		avp {
-			root = file('docs/avp')
-			exportedAssetNamespaces = ['avp']
-		}
-	}
-}
