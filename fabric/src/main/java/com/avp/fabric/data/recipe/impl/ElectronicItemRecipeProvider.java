@@ -3,7 +3,7 @@ package com.avp.fabric.data.recipe.impl;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.world.item.Items;
 
-import com.avp.fabric.common.item.AVPItemTags;
+import com.avp.common.item.AVPItemTags;
 import com.avp.fabric.common.item.AVPItems;
 import com.avp.fabric.data.recipe.builder.RecipeBuilder;
 

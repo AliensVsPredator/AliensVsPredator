@@ -21,7 +21,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
 
 import com.avp.fabric.common.block.AVPBlocks;
-import com.avp.fabric.common.item.AVPItemTags;
+import com.avp.common.item.AVPItemTags;
 import com.avp.fabric.common.item.AVPItems;
 
 public class AmmoChestBlockEntity extends RandomizableContainerBlockEntity implements LidBlockEntity {

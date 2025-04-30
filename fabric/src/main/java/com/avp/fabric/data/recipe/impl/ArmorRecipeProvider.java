@@ -8,7 +8,7 @@ import net.minecraft.world.level.ItemLike;
 
 import java.util.function.Supplier;
 
-import com.avp.fabric.common.item.AVPItemTags;
+import com.avp.common.item.AVPItemTags;
 import com.avp.fabric.common.item.AVPItems;
 import com.avp.fabric.common.item.ArmorItems;
 import com.avp.fabric.data.recipe.RecipeTemplates;

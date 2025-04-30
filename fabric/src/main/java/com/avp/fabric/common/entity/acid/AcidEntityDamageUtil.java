@@ -14,7 +14,7 @@ import java.util.Objects;
 import com.avp.fabric.AVPFabric;
 import com.avp.fabric.common.damage.AVPDamageTypes;
 import com.avp.fabric.common.entity.AVPEntityTypeTags;
-import com.avp.fabric.common.item.AVPItemTags;
+import com.avp.common.item.AVPItemTags;
 import com.avp.fabric.common.util.AVPPredicates;
 
 public class AcidEntityDamageUtil {

@@ -8,7 +8,7 @@ import java.util.HashSet;
 
 import com.avp.fabric.common.entity.ai.GOAPConstants;
 import com.avp.fabric.common.entity.ai.util.ItemType;
-import com.avp.fabric.common.item.AVPItemTags;
+import com.avp.common.item.AVPItemTags;
 import com.avp.fabric.common.util.AVPInventoryBearer;
 import com.avp.fabric.goap.GOAPSensor;
 import com.avp.fabric.goap.state.GOAPMutableWorldState;

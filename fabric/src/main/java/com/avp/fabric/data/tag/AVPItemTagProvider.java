@@ -10,7 +10,7 @@ import java.util.concurrent.CompletableFuture;
 
 import com.avp.fabric.common.block.AVPBlocks;
 import com.avp.fabric.common.block_item.AVPBlockItems;
-import com.avp.fabric.common.item.AVPItemTags;
+import com.avp.common.item.AVPItemTags;
 import com.avp.fabric.common.item.AVPItems;
 import com.avp.fabric.common.item.ArmorItems;
 import com.avp.fabric.data.compatibility.common.CommonConstants;

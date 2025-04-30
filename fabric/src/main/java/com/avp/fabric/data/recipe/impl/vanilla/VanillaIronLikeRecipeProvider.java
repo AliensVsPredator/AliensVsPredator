@@ -5,7 +5,7 @@ import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
 
-import com.avp.fabric.common.item.AVPItemTags;
+import com.avp.common.item.AVPItemTags;
 import com.avp.fabric.data.recipe.builder.RecipeBuilder;
 
 public class VanillaIronLikeRecipeProvider {

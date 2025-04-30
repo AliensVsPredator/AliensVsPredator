@@ -14,7 +14,7 @@ import com.avp.fabric.common.entity.AVPEntityTypeTags;
 import com.avp.fabric.common.entity.living.Host;
 import com.avp.fabric.common.entity.living.alien.Alien;
 import com.avp.fabric.common.entity.living.yautja.Yautja;
-import com.avp.fabric.common.item.AVPItemTags;
+import com.avp.common.item.AVPItemTags;
 
 public class AVPPredicates {
 

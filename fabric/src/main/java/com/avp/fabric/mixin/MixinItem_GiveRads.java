@@ -13,7 +13,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import com.avp.fabric.common.effect.AVPEffects;
 import com.avp.fabric.common.effect.RadiationStatusEffect;
-import com.avp.fabric.common.item.AVPItemTags;
+import com.avp.common.item.AVPItemTags;
 import com.avp.fabric.common.util.AVPPredicates;
 
 @Mixin(Item.class)
