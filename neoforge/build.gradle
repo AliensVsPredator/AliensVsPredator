@@ -42,3 +42,7 @@ neoForge {
         }
     }
 }
+
+dependencies {
+    implementation "com.github.bvanseg:just:${project.just_version}"
+}

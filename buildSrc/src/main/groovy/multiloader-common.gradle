@@ -47,6 +47,7 @@ repositories {
         name = 'BlameJared'
         url = 'https://maven.blamejared.com'
     }
+    maven { url = "https://jitpack.io" }
 }
 
 // Declare capabilities on the outgoing configurations.
