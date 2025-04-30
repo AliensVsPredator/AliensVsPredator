@@ -24,8 +24,8 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 
-import com.avp.fabric.AVPFabric;
 import com.avp.common.block.AVPBlockTags;
+import com.avp.fabric.AVPFabric;
 import com.avp.fabric.common.damage.AVPDamageTypes;
 import com.avp.fabric.common.network.ServerNetworking;
 import com.avp.fabric.common.network.packet.S2CBulletHitBlockPayload;

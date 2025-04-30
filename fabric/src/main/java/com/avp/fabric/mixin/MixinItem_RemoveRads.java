@@ -9,8 +9,8 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import com.avp.fabric.common.effect.AVPEffects;
 import com.avp.common.item.AVPItemTags;
+import com.avp.fabric.common.effect.AVPEffects;
 
 @Mixin(Item.class)
 public class MixinItem_RemoveRads {

@@ -2,8 +2,8 @@ package com.avp.fabric.common.entity.living.human.marine;
 
 import net.minecraft.world.entity.SpawnPlacements;
 
-import com.avp.fabric.AVPFabric;
 import com.avp.common.block.AVPBlockTags;
+import com.avp.fabric.AVPFabric;
 import com.avp.fabric.common.config.AVPConfig;
 import com.avp.fabric.common.entity.living.human.AbstractHuman;
 

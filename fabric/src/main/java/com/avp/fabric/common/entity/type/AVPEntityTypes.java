@@ -1,11 +1,5 @@
 package com.avp.fabric.common.entity.type;
 
-import com.avp.fabric.common.entity.projectile.BulletProjectile;
-import com.avp.fabric.common.entity.projectile.Flamethrow;
-import com.avp.fabric.common.entity.projectile.Rocket;
-import com.avp.fabric.common.entity.projectile.ShurikenItemEntity;
-import com.avp.fabric.common.entity.projectile.SmartDiscItemEntity;
-import com.avp.fabric.common.entity.projectile.ThrownGrenade;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -35,6 +29,12 @@ import com.avp.fabric.common.entity.living.human.marine.Marine;
 import com.avp.fabric.common.entity.living.yautja.Yautja;
 import com.avp.fabric.common.entity.machine.SentryTurret;
 import com.avp.fabric.common.entity.nukecloud.MushroomCloudEntity;
+import com.avp.fabric.common.entity.projectile.BulletProjectile;
+import com.avp.fabric.common.entity.projectile.Flamethrow;
+import com.avp.fabric.common.entity.projectile.Rocket;
+import com.avp.fabric.common.entity.projectile.ShurikenItemEntity;
+import com.avp.fabric.common.entity.projectile.SmartDiscItemEntity;
+import com.avp.fabric.common.entity.projectile.ThrownGrenade;
 import com.avp.fabric.common.gene.GeneKeys;
 
 public class AVPEntityTypes {

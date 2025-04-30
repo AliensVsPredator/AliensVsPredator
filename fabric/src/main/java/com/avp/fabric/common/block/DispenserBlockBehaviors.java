@@ -1,6 +1,5 @@
 package com.avp.fabric.common.block;
 
-import com.avp.AVP;
 import net.minecraft.core.Direction;
 import net.minecraft.core.dispenser.BlockSource;
 import net.minecraft.core.dispenser.DefaultDispenseItemBehavior;
@@ -11,6 +10,7 @@ import net.minecraft.world.level.block.DispenserBlock;
 import net.minecraft.world.level.gameevent.GameEvent;
 import org.jetbrains.annotations.NotNull;
 
+import com.avp.AVP;
 import com.avp.fabric.common.item.SpawnEggItems;
 
 public class DispenserBlockBehaviors {

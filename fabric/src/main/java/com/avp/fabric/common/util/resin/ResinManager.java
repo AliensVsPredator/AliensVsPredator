@@ -1,6 +1,5 @@
 package com.avp.fabric.common.util.resin;
 
-import com.avp.AVP;
 import com.mojang.serialization.Dynamic;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
@@ -16,6 +15,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.function.BiConsumer;
 import java.util.function.Supplier;
 
+import com.avp.AVP;
 import com.avp.common.block.AVPBlockTags;
 import com.avp.fabric.common.entity.living.alien.Alien;
 import com.avp.fabric.common.level.gameevent.AVPGameEvents;

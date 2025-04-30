@@ -10,8 +10,8 @@ import net.minecraft.world.damagesource.DamageTypes;
 
 import java.util.concurrent.CompletableFuture;
 
-import com.avp.fabric.common.damage.AVPDamageTypes;
 import com.avp.common.damage.AVPDamageTypesTags;
+import com.avp.fabric.common.damage.AVPDamageTypes;
 
 public class AVPDamageTypeTagProvider extends FabricTagProvider<DamageType> {
 

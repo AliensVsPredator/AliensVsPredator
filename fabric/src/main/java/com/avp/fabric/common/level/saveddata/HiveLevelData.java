@@ -1,6 +1,5 @@
 package com.avp.fabric.common.level.saveddata;
 
-import com.avp.AVP;
 import com.bvanseg.just.functional.option.Option;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
@@ -16,6 +15,7 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.function.Predicate;
 
+import com.avp.AVP;
 import com.avp.fabric.common.hive.Hive;
 import com.avp.fabric.common.util.AVPPredicates;
 

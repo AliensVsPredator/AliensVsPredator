@@ -7,8 +7,8 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.UUID;
 
-import com.avp.fabric.AVPFabric;
 import com.avp.common.entity.AVPEntityTypeTags;
+import com.avp.fabric.AVPFabric;
 import com.avp.fabric.common.entity.living.alien.Alien;
 import com.avp.fabric.common.entity.living.alien.xenomorph.queen.Queen;
 import com.avp.fabric.common.hive.Hive;

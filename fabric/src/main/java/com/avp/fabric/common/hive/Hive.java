@@ -1,6 +1,5 @@
 package com.avp.fabric.common.hive;
 
-import com.avp.AVP;
 import com.bvanseg.just.functional.option.Option;
 import com.mojang.serialization.Dynamic;
 import net.minecraft.core.BlockPos;
@@ -23,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import com.avp.AVP;
 import com.avp.fabric.AVPFabric;
 import com.avp.fabric.common.entity.living.alien.Alien;
 import com.avp.fabric.common.entity.living.alien.xenomorph.queen.Queen;

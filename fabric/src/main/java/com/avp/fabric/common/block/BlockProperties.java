@@ -1,6 +1,5 @@
 package com.avp.fabric.common.block;
 
-import com.avp.common.block.BlockPropertyBuilder;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -16,6 +15,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
+import com.avp.common.block.BlockPropertyBuilder;
 import com.avp.common.entity.AVPEntityTypeTags;
 
 public class BlockProperties {

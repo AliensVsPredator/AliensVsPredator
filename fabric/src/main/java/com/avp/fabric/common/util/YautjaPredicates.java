@@ -7,8 +7,8 @@ import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
 import org.jetbrains.annotations.NotNull;
 
-import com.avp.fabric.common.entity.living.yautja.Yautja;
 import com.avp.common.item.AVPItemTags;
+import com.avp.fabric.common.entity.living.yautja.Yautja;
 
 public class YautjaPredicates {
 

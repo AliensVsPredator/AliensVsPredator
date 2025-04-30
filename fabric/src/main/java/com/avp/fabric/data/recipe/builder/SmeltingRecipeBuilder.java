@@ -1,6 +1,5 @@
 package com.avp.fabric.data.recipe.builder;
 
-import com.avp.AVP;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.SimpleCookingRecipeBuilder;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -8,6 +7,7 @@ import net.minecraft.world.level.ItemLike;
 
 import java.util.function.UnaryOperator;
 
+import com.avp.AVP;
 import com.avp.fabric.data.recipe.util.RecipeProviderProxy;
 
 public class SmeltingRecipeBuilder {

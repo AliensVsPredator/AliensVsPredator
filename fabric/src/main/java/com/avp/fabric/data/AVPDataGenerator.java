@@ -1,19 +1,5 @@
 package com.avp.fabric.data;
 
-import com.avp.fabric.data.tag.AVPBiomeTagProvider;
-import com.avp.fabric.data.tag.AVPBlockTagProvider;
-import com.avp.fabric.data.tag.AVPDamageTypeTagProvider;
-import com.avp.fabric.data.tag.AVPEnchantmentTagProvider;
-import com.avp.fabric.data.tag.AVPEntityTypeTagProvider;
-import com.avp.fabric.data.tag.AVPItemTagProvider;
-import com.avp.fabric.data.tag.AVPMobEffectTagProvider;
-import com.avp.fabric.data.tag.AVPPoiTagProvider;
-import com.avp.fabric.data.worldgen.AVPBiomeProvider;
-import com.avp.fabric.data.worldgen.AVPCaveConfigurations;
-import com.avp.fabric.data.worldgen.AVPCavePlacements;
-import com.avp.fabric.data.worldgen.AVPOreConfigurations;
-import com.avp.fabric.data.worldgen.AVPOrePlacements;
-import com.avp.fabric.data.worldgen.AVPWorldGenProvider;
 import net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 import net.minecraft.core.RegistrySetBuilder;
@@ -33,6 +19,20 @@ import com.avp.fabric.data.loot.VillagerLootTableProvider;
 import com.avp.fabric.data.model.BlockModelProvider;
 import com.avp.fabric.data.model.ItemModelProvider;
 import com.avp.fabric.data.recipe.RecipeProvider;
+import com.avp.fabric.data.tag.AVPBiomeTagProvider;
+import com.avp.fabric.data.tag.AVPBlockTagProvider;
+import com.avp.fabric.data.tag.AVPDamageTypeTagProvider;
+import com.avp.fabric.data.tag.AVPEnchantmentTagProvider;
+import com.avp.fabric.data.tag.AVPEntityTypeTagProvider;
+import com.avp.fabric.data.tag.AVPItemTagProvider;
+import com.avp.fabric.data.tag.AVPMobEffectTagProvider;
+import com.avp.fabric.data.tag.AVPPoiTagProvider;
+import com.avp.fabric.data.worldgen.AVPBiomeProvider;
+import com.avp.fabric.data.worldgen.AVPCaveConfigurations;
+import com.avp.fabric.data.worldgen.AVPCavePlacements;
+import com.avp.fabric.data.worldgen.AVPOreConfigurations;
+import com.avp.fabric.data.worldgen.AVPOrePlacements;
+import com.avp.fabric.data.worldgen.AVPWorldGenProvider;
 
 public class AVPDataGenerator implements DataGeneratorEntrypoint {
 

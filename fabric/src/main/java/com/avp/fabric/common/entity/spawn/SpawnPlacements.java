@@ -9,9 +9,9 @@ import net.minecraft.world.level.levelgen.Heightmap;
 
 import java.util.function.Predicate;
 
-import com.avp.fabric.AVPFabric;
 import com.avp.AVPResources;
 import com.avp.common.entity.AVPEntityTypeTags;
+import com.avp.fabric.AVPFabric;
 import com.avp.fabric.common.entity.living.alien.chestburster.ChestbursterSpawning;
 import com.avp.fabric.common.entity.living.alien.ovamorph.OvamorphSpawning;
 import com.avp.fabric.common.entity.living.alien.xenomorph.drone.DroneSpawning;

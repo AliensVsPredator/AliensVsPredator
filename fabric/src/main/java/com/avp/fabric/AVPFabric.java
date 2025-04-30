@@ -1,6 +1,5 @@
 package com.avp.fabric;
 
-import com.avp.fabric.common.config.AVPConfig;
 import com.mojang.datafixers.util.Pair;
 import mod.azure.azurelib.common.api.common.config.Config;
 import mod.azure.azurelib.common.internal.common.config.ConfigHolder;
@@ -34,6 +33,7 @@ import com.avp.fabric.common.block.entity.AVPBlockEntityTypes;
 import com.avp.fabric.common.block_item.AVPBlockItems;
 import com.avp.fabric.common.command.Commands;
 import com.avp.fabric.common.component.DataComponents;
+import com.avp.fabric.common.config.AVPConfig;
 import com.avp.fabric.common.creative_mode_tab.initializer.BlocksCreativeModeTabInitializer;
 import com.avp.fabric.common.creative_mode_tab.initializer.ColoredBlocksCreativeModeTabInitializer;
 import com.avp.fabric.common.creative_mode_tab.initializer.CombatCreativeModeTabInitializer;

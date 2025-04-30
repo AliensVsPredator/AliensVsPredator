@@ -1,14 +1,5 @@
 package com.avp.fabric.common.block;
 
-import com.avp.common.block.BlockPropertyBuilder;
-import com.avp.fabric.common.block.resin.IrradiatedResinBlock;
-import com.avp.fabric.common.block.resin.IrradiatedResinNodeBlock;
-import com.avp.fabric.common.block.resin.IrradiatedResinVeinBlock;
-import com.avp.fabric.common.block.resin.IrradiatedResinWebBlock;
-import com.avp.fabric.common.block.resin.ResinBlock;
-import com.avp.fabric.common.block.resin.ResinNodeBlock;
-import com.avp.fabric.common.block.resin.ResinVeinBlock;
-import com.avp.fabric.common.block.resin.ResinWebBlock;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.util.ColorRGBA;
@@ -24,6 +15,15 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import com.avp.AVPResources;
+import com.avp.common.block.BlockPropertyBuilder;
+import com.avp.fabric.common.block.resin.IrradiatedResinBlock;
+import com.avp.fabric.common.block.resin.IrradiatedResinNodeBlock;
+import com.avp.fabric.common.block.resin.IrradiatedResinVeinBlock;
+import com.avp.fabric.common.block.resin.IrradiatedResinWebBlock;
+import com.avp.fabric.common.block.resin.ResinBlock;
+import com.avp.fabric.common.block.resin.ResinNodeBlock;
+import com.avp.fabric.common.block.resin.ResinVeinBlock;
+import com.avp.fabric.common.block.resin.ResinWebBlock;
 
 public class AVPBlocks {
 
