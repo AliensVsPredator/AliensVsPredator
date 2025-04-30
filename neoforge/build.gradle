@@ -45,4 +45,5 @@ neoForge {
 
 dependencies {
     implementation "com.github.bvanseg:just:${project.just_version}"
+    implementation "mod.azure.azurelib:azurelib-neo-${project.minecraft_version}:${project.azurelib_version}"
 }

@@ -26,6 +26,7 @@ dependencies {
 
     // Manually added dependencies
     compileOnly "com.github.bvanseg:just:${project.just_version}"
+    compileOnly "mod.azure.azurelib:azurelib-common-${project.minecraft_version}:${project.azurelib_version}"
 }
 
 configurations {
