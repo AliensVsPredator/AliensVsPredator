@@ -16,7 +16,7 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import com.avp.fabric.AVPFabric;
-import com.avp.fabric.common.block.AVPBlockTags;
+import com.avp.common.block.AVPBlockTags;
 import com.avp.fabric.common.util.AlienVariantUtil;
 
 public class ResonatorBlockEntity extends BlockEntity {

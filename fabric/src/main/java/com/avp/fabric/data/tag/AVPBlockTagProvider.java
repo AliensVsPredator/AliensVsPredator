@@ -9,7 +9,7 @@ import net.minecraft.world.level.block.Blocks;
 
 import java.util.concurrent.CompletableFuture;
 
-import com.avp.fabric.common.block.AVPBlockTags;
+import com.avp.common.block.AVPBlockTags;
 import com.avp.fabric.common.block.AVPBlocks;
 import com.avp.fabric.data.compatibility.common.CommonConstants;
 import com.avp.fabric.data.compatibility.gigeresque.GigeresqueConstants;

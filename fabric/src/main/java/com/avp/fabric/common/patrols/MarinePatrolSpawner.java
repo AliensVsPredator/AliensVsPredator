@@ -10,7 +10,7 @@ import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.levelgen.Heightmap;
 
-import com.avp.fabric.common.block.AVPBlockTags;
+import com.avp.common.block.AVPBlockTags;
 import com.avp.fabric.common.entity.type.AVPEntityTypes;
 import com.avp.fabric.common.worldgen.biome.AVPBiomeTags;
 

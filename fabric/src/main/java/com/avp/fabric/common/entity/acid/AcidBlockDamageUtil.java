@@ -6,7 +6,7 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 
-import com.avp.fabric.common.block.AVPBlockTags;
+import com.avp.common.block.AVPBlockTags;
 import com.avp.fabric.common.sound.AVPSoundEvents;
 import com.avp.fabric.server.BlockBreakProgressManager;
 

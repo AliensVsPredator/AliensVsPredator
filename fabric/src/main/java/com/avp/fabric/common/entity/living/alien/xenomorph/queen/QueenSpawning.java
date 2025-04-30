@@ -10,7 +10,7 @@ import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.entity.EntityTypeTest;
 
 import com.avp.fabric.AVPFabric;
-import com.avp.fabric.common.block.AVPBlockTags;
+import com.avp.common.block.AVPBlockTags;
 import com.avp.fabric.common.util.AVPPredicates;
 
 public class QueenSpawning {

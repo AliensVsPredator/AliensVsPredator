@@ -12,7 +12,7 @@ import org.jetbrains.annotations.Nullable;
 import com.avp.fabric.AVPFabric;
 import com.avp.fabric.common.ai.goal.DigToTargetGoal;
 import com.avp.fabric.common.ai.goal.QueenLayEggGoal;
-import com.avp.fabric.common.block.AVPBlockTags;
+import com.avp.common.block.AVPBlockTags;
 import com.avp.fabric.common.entity.living.alien.Alien;
 import com.avp.fabric.common.entity.living.alien.xenomorph.Xenomorph;
 import com.avp.fabric.common.entity.type.AVPEntityTypes;
