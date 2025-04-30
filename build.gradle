@@ -1,252 +1,28 @@
-import groovy.json.JsonOutput
-import groovy.json.JsonSlurper
-
 plugins {
-	id 'fabric-loom' version '1.10.1'
-	id 'maven-publish'
-	id 'com.diffplug.spotless'
-	id 'com.github.ben-manes.versions'
-	id 'idea'
+	// see https://fabricmc.net/develop/ for new versions
+	id 'fabric-loom' version '1.8-SNAPSHOT' apply false
+	// see https://projects.neoforged.net/neoforged/moddevgradle for new versions
+	id 'net.neoforged.moddev' version '2.0.49-beta' apply false
+
+	// Manual plugins added here
+	id 'java'
 	id "me.modmuss50.mod-publish-plugin" version "0.8.4"
 	id 'org.moddedmc.wiki.toolkit' version '0.2.5'
 }
 
-version = project.mod_version
-group = project.maven_group
-base {
-	archivesName = "${project.archives_base_name}-fabric-${project.minecraft_version}"
-}
-
-repositories {
-	maven { url = "https://jitpack.io" }
-	maven { url = "https://maven.azuredoom.com/mods" }
-	// Needed for Fabric only at the moment
-	maven { url = "https://maven.terraformersmc.com/releases" }
-	maven { url = "https://maven.parchmentmc.org" }
-	maven { url = "https://maven.shedaniel.me" }
-	maven { url = "https://maven.blamejared.com/" }
-	maven { url = "https://modmaven.dev" }
-	maven { url = "https://api.modrinth.com/maven" }
-}
-
-loom {
-	def aw = file("src/main/resources/avp.accesswidener")
-
-	if (aw.exists()) {
-		accessWidenerPath.set(aw)
-	}
-	mods {
-		"avp" {
-			sourceSet sourceSets.main
-		}
-	}
-
-}
-
-fabricApi {
-	configureDataGeneration()
-}
-
-dependencies {
-	minecraft "com.mojang:minecraft:${project.minecraft_version}"
-	mappings loom.layered() {
-		officialMojangMappings()
-		parchment("org.parchmentmc.data:parchment-${project.minecraft_version}:${parchment_version}@zip")
-	}
-	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
-	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
-
-	implementation "com.github.bvanseg:just:${project.just_version}"
-	include "com.github.bvanseg:just:${project.just_version}"
-
-	modImplementation "mod.azure.azurelib:azurelib-fabric-${project.minecraft_version}:${project.azurelib_version}"
-
-	modApi "com.terraformersmc:modmenu:${project.modmenu_version}"
-
-	modCompileOnly "me.shedaniel:RoughlyEnoughItems-api-fabric:${project.rei_version}"
-	modRuntimeOnly "me.shedaniel:RoughlyEnoughItems-fabric:${project.rei_version}"
-
-	modApi "dev.architectury:architectury-fabric:${project.architectury_version}"
-	modApi "me.shedaniel.cloth:cloth-config-fabric:${project.cloth_version}"
-
-	modRuntimeOnly "org.sinytra:item-asset-export-fabric:${project.asset_export}"
-
-	// https://modrinth.com/mod/building-wands/version/2.8.3_beta_fabric_1.21
-	modImplementation "maven.modrinth:building-wands:2.8.3_beta_fabric_1.21"
-	// https://modrinth.com/mod/carry-on/version/TuSZSQeB
-	modImplementation "maven.modrinth:carry-on:TuSZSQeB"
-
-	// https://modrinth.com/mod/modernfix/version/5.21.0+mc1.21.1
-	modImplementation "maven.modrinth:modernfix:5.21.0+mc1.21.1"
-}
-
+// TODO: Figure out if this is still processing resources correctly.
 processResources {
-	def expandProps = [
-		"version": version,
-		"mod_name": mod_name,
-		"mod_description": mod_description,
-		"mod_license": mod_license,
-		"mod_icon": mod_icon
-	]
-
-	filesMatching("fabric.mod.json") {
-		expand expandProps
-	}
-	inputs.properties(expandProps)
-
 	from("$rootDir/docs/avp/") {
 		into "assets/avp/books/avp/"
 		exclude '.assets/item/**'
 	}
 
 	doLast {
-		def jsonMinifyStart = System.currentTimeMillis()
-		def jsonMinified = 0
-		def jsonBytesSaved = 0
-		fileTree(dir: outputs.files.asPath, include: '**/*.json').each {
-			File file = it
-			jsonMinified++
-			def oldLength = file.length()
-			file.text = JsonOutput.toJson(new JsonSlurper().parse(file))
-			jsonBytesSaved += oldLength - file.length()
-		}
-		println('Minified ' + jsonMinified + ' json files. Saved ' + jsonBytesSaved + ' bytes. Took ' + (System.currentTimeMillis() - jsonMinifyStart) + 'ms.')
 		println "processResources executed: wiki folder copied into assets/avp"
 	}
 }
 
-spotless {
-	java {
-		eclipse().configFile("$rootDir/eclipse-formatter.xml")
-		endWithNewline()
-		importOrder("", "java", group.toString(), "\\#")
-		leadingTabsToSpaces(4)
-		removeUnusedImports()
-		trimTrailingWhitespace()
-	}
-}
-
-tasks.build {
-	dependsOn("spotlessApply")
-}
-
-tasks.named("dependencyUpdates").configure {
-	filterConfigurations {
-		it.name.equals("modImplementation")
-	}
-}
-
-tasks.withType(JavaCompile).configureEach {
-	it.options.release = 21
-}
-
-java {
-	sourceCompatibility = JavaVersion.VERSION_21
-	targetCompatibility = JavaVersion.VERSION_21
-}
-
-jar {
-	from("LICENSE") {
-		rename { "${it}_${project.base.archivesName.get()}"}
-	}
-}
-
-idea {
-	module {
-		downloadSources = true
-		downloadJavadoc = true
-	}
-}
-
-publishing {
-	publications {
-		create("mavenJava", MavenPublication) {
-			artifactId = project.archives_base_name
-			from components.java
-		}
-	}
-
-	repositories {
-	}
-}
-
-if (file('key.properties').exists()) {
-	publishMods {
-		def releaseProp = new Properties()
-		File secretPropsFile = file("key.properties")
-		releaseProp.load(secretPropsFile.newInputStream())
-		changelog = rootProject.file("CHANGELOG.md").text
-		type = STABLE
-		file = remapJar.archiveFile
-		modLoaders.add("fabric")
-		dryRun = false
-		discord {
-			webhookUrl = releaseProp.getProperty("discordKey")
-			dryRunWebhookUrl = releaseProp.getProperty("discordKey")
-			username = "MU/TH/UR"
-			avatarUrl = "https://i.imgur.com/5Y0EZ9x.jpeg"
-			content = changelog.map { text ->
-				def maxEmbedCharacterCount = 4096
-				def header = "# A new version of AVP for Fabric has been released!\n"
-				def footer = "\n...and more! Check the mod page for more details."
-
-				def needsTruncation = (header.length() + text.length()) > maxEmbedCharacterCount
-				def maxContentLength = maxEmbedCharacterCount - header.length() - (needsTruncation ? footer.length() : 0)
-
-				def truncatedText = text
-
-				if (needsTruncation) {
-					if (text.length() > maxContentLength) {
-						// First, take up to maxContentLength.
-						def candidate = text.take(maxContentLength)
-						// Then find the last newline before the cut.
-						def lastNewline = candidate.lastIndexOf('\n')
-						if (lastNewline != -1) {
-							candidate = candidate.take(lastNewline)
-						}
-						truncatedText = candidate
-					}
-				}
-
-				header + truncatedText + (needsTruncation ? footer : "")
-			}
-			setPlatforms(publishMods.platforms.curseforge, publishMods.platforms.modrinth)
-			style {
-				look = "MODERN"
-				thumbnailUrl = "https://cdn.modrinth.com/data/Uqo0H9FX/8ffabe2f364c34e6b0f13019664c5fe4989c2f95_96.webp"
-			}
-		}
-		curseforge {
-			projectId = project.cf_id
-			projectSlug = project.cf_project_slug
-			accessToken = releaseProp.getProperty("curseKey")
-			minecraftVersions.add(project.minecraft_version)
-			announcementTitle = "Download from CurseForge"
-			javaVersions.add(JavaVersion.VERSION_21)
-			clientRequired = true
-			serverRequired = true
-			requires {
-				slug = "fabric-api"
-			}
-			requires {
-				slug = "azurelib"
-			}
-		}
-		modrinth {
-			projectId = project.modrinth_id
-			accessToken = releaseProp.getProperty('modrinthKey')
-			minecraftVersions.add(project.minecraft_version)
-			announcementTitle = "Download from Modrinth"
-			requires {
-				slug = "fabric-api"
-			}
-			requires {
-				slug = "azurelib"
-			}
-		}
-	}
-}
-
+// TODO: Wiki preview is broken when ran from Intellij's gradle panel, use ./gradlew ... commands to run tasks, instead.
 wiki {
 	if (file('key.properties').exists()) {
 		def releaseProp = new Properties()

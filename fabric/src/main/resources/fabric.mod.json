@@ -3,7 +3,7 @@
 	"id": "avp",
 	"version": "${version}",
 	"name": "${mod_name}",
-	"description": "${mod_description}",
+	"description": "${description}",
 	"accessWidener": "avp.accesswidener",
 	"authors": [
 		"AzureDoom",
@@ -22,8 +22,8 @@
 		"homepage": "https://www.curseforge.com/minecraft/mc-mods/avp-regenesis",
 		"sources": "https://github.com/AliensVsPredator/AliensVsPredator"
 	},
-	"license": "${mod_license}",
-	"icon": "${mod_icon}",
+	"license": "${license}",
+	"icon": "${icon}",
 	"environment": "*",
 	"entrypoints": {
 		"main": [
@@ -40,7 +40,8 @@
 		]
 	},
 	"mixins": [
-		"avp.mixins.json"
+		"${mod_id}.mixins.json",
+		"${mod_id}.fabric.mixins.json"
 	],
 	"depends": {
 		"fabricloader": ">=0.16.9",
