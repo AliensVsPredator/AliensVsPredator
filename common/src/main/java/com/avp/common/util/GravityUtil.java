@@ -1,4 +1,4 @@
-package com.avp.fabric.common.util;
+package com.avp.common.util;
 
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.MoverType;

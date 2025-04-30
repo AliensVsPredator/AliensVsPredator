@@ -14,7 +14,7 @@ import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
 import com.avp.fabric.common.util.AlienVariantUtil;
-import com.avp.fabric.common.util.GravityUtil;
+import com.avp.common.util.GravityUtil;
 
 public class Acid extends Entity {
 
