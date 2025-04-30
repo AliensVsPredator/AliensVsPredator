@@ -11,7 +11,7 @@ import net.minecraft.world.entity.ai.village.poi.PoiType;
 import net.minecraft.world.entity.npc.VillagerProfession;
 import net.minecraft.world.level.block.Block;
 
-import com.avp.fabric.AVPResources;
+import com.avp.common.AVPResources;
 import com.avp.fabric.common.block.AVPBlocks;
 
 public class AVPProfessions {

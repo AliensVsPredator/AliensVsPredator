@@ -1,5 +1,6 @@
 package com.avp.fabric.data.advancement;
 
+import com.avp.common.AVP;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricAdvancementProvider;
 import net.minecraft.advancements.Advancement;
@@ -24,8 +25,7 @@ import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 
-import com.avp.fabric.AVP;
-import com.avp.fabric.AVPResources;
+import com.avp.common.AVPResources;
 import com.avp.fabric.common.block.AVPBlocks;
 import com.avp.fabric.common.entity.type.AVPEntityTypes;
 import com.avp.fabric.common.item.AVPItems;

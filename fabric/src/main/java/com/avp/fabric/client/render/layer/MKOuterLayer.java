@@ -6,7 +6,7 @@ import mod.azure.azurelib.rewrite.render.layer.AzRenderLayer;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
 
-import com.avp.fabric.AVPResources;
+import com.avp.common.AVPResources;
 
 public class MKOuterLayer implements AzRenderLayer {
 

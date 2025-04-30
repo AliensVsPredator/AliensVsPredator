@@ -5,7 +5,7 @@ import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.effect.MobEffect;
 
-import com.avp.fabric.AVPResources;
+import com.avp.common.AVPResources;
 
 public class AVPEffects {
 

@@ -6,7 +6,7 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 
-import com.avp.fabric.AVPResources;
+import com.avp.common.AVPResources;
 
 public class C2SGunReloadPayload implements CustomPacketPayload {
 

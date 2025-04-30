@@ -4,7 +4,7 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.block.Block;
 
-import com.avp.fabric.AVPResources;
+import com.avp.common.AVPResources;
 
 public class AVPBlockTags {
 

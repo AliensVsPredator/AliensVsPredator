@@ -9,7 +9,7 @@ import net.minecraft.util.ExtraCodecs;
 
 import java.util.function.UnaryOperator;
 
-import com.avp.fabric.AVPResources;
+import com.avp.common.AVPResources;
 
 public class DataComponents {
 

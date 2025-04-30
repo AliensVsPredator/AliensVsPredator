@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
-import com.avp.fabric.AVPResources;
+import com.avp.common.AVPResources;
 
 public record AVPOreData(
     String name,

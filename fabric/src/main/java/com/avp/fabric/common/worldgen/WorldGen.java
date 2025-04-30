@@ -12,7 +12,7 @@ import net.minecraft.world.level.levelgen.GenerationStep;
 
 import java.util.function.BiConsumer;
 
-import com.avp.fabric.AVPResources;
+import com.avp.common.AVPResources;
 import com.avp.fabric.data.worldgen.AVPCavePlacements;
 import com.avp.fabric.data.worldgen.AVPOres;
 

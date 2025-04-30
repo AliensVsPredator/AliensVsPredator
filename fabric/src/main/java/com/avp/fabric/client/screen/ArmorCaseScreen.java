@@ -6,7 +6,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 
-import com.avp.fabric.AVPResources;
+import com.avp.common.AVPResources;
 import com.avp.fabric.common.menu.armor_case.ArmorCaseMenu;
 
 public class ArmorCaseScreen extends AbstractContainerScreen<ArmorCaseMenu> {

@@ -6,7 +6,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.JukeboxSong;
 
-import com.avp.fabric.AVPResources;
+import com.avp.common.AVPResources;
 
 public class AVPJukeboxSongs {
 

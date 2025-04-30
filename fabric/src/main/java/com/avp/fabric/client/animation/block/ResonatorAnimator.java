@@ -7,7 +7,7 @@ import mod.azure.azurelib.rewrite.animation.impl.AzBlockAnimator;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 
-import com.avp.fabric.AVPResources;
+import com.avp.common.AVPResources;
 import com.avp.fabric.common.block.entity.ResonatorBlockEntity;
 
 public class ResonatorAnimator extends AzBlockAnimator<ResonatorBlockEntity> {

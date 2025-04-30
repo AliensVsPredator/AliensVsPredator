@@ -4,7 +4,7 @@ import mod.azure.azurelib.rewrite.render.block.AzBlockEntityRenderer;
 import mod.azure.azurelib.rewrite.render.block.AzBlockEntityRendererConfig;
 import net.minecraft.resources.ResourceLocation;
 
-import com.avp.fabric.AVPResources;
+import com.avp.common.AVPResources;
 import com.avp.fabric.client.animation.block.ResonatorAnimator;
 import com.avp.fabric.common.block.entity.ResonatorBlockEntity;
 

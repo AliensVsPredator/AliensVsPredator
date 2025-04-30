@@ -1,5 +1,6 @@
 package com.avp.fabric.data.recipe.builder;
 
+import com.avp.common.AVP;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementRequirements;
 import net.minecraft.advancements.AdvancementRewards;
@@ -21,7 +22,6 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
 
-import com.avp.fabric.AVP;
 import com.avp.fabric.common.recipe.IndustrialFurnaceRecipe;
 
 import static net.minecraft.data.recipes.RecipeProvider.has;

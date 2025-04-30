@@ -21,7 +21,7 @@ import net.minecraft.world.level.gameevent.GameEvent;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import com.avp.fabric.AVP;
+import com.avp.fabric.AVPFabric;
 import com.avp.fabric.common.entity.living.alien.Alien;
 import com.avp.fabric.common.entity.type.AVPEntityTypes;
 import com.avp.fabric.common.item.AVPItems;
@@ -41,7 +41,7 @@ public class Ovamorph extends Alien implements Shearable {
     private static final String IS_ROOTED_KEY = "isRooted";
 
     public static AttributeSupplier.Builder createOvamorphAttributes() {
-        return applyFrom(AVP.config.statsConfigs.OVAMORPH_STATS, Monster.createMonsterAttributes());
+        return applyFrom(AVPFabric.config.statsConfigs.OVAMORPH_STATS, Monster.createMonsterAttributes());
     }
 
     private final OvamorphAnimationDispatcher animationDispatcher;
@@ -52,7 +52,7 @@ public class Ovamorph extends Alien implements Shearable {
         super(entityType, level);
         this.animationDispatcher = new OvamorphAnimationDispatcher(this);
         this.hatchManager = new HatchManager(this, HATCHED, MAX_SPAWN_COUNT, 3 * 20, 3 * 20);
-        this.config = AVP.config.statsConfigs.OVAMORPH_STATS;
+        this.config = AVPFabric.config.statsConfigs.OVAMORPH_STATS;
     }
 
     @Override
@@ -215,7 +215,7 @@ public class Ovamorph extends Alien implements Shearable {
 
     @Override
     protected float getHealthRegenPerSecond() {
-        return AVP.config.statsConfigs.OVAMORPH_STATS.healthRegenPerSecond;
+        return AVPFabric.config.statsConfigs.OVAMORPH_STATS.healthRegenPerSecond;
     }
 
     @Override

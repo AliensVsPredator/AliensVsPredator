@@ -27,7 +27,7 @@
 	"environment": "*",
 	"entrypoints": {
 		"main": [
-			"com.avp.fabric.AVP"
+			"com.avp.fabric.AVPFabric"
 		],
 		"client": [
 			"com.avp.fabric.client.AVPClient"

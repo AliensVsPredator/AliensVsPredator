@@ -4,7 +4,7 @@ import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.level.block.entity.DecoratedPotPattern;
 
-import com.avp.fabric.AVPResources;
+import com.avp.common.AVPResources;
 
 public class DecoratedPotPatterns {
 

@@ -27,7 +27,7 @@ import net.minecraft.world.level.storage.loot.LootTable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import com.avp.fabric.AVP;
+import com.avp.fabric.AVPFabric;
 import com.avp.fabric.common.MovementAnalyzer;
 import com.avp.fabric.common.config.AVPConfig;
 import com.avp.fabric.common.gene.GeneKeys;
@@ -428,9 +428,9 @@ public abstract class Alien extends Monster {
 
     public void applyDynamicAttributes(AVPConfig.StatsConfigs.AdvancedStats config) {
         if (isAberrant()) {
-            applyAttributes(config, AVP.config.statsConfigs.ABERRANT_STATS_MULTIPLIER);
+            applyAttributes(config, AVPFabric.config.statsConfigs.ABERRANT_STATS_MULTIPLIER);
         } else if (isIrradiated()) {
-            applyAttributes(config, AVP.config.statsConfigs.IRRADIATED_STATS_MULTIPLIER);
+            applyAttributes(config, AVPFabric.config.statsConfigs.IRRADIATED_STATS_MULTIPLIER);
         }
     }
 

@@ -10,7 +10,7 @@ import net.minecraft.world.level.material.Fluids;
 
 import java.util.function.Function;
 
-import com.avp.fabric.AVPResources;
+import com.avp.common.AVPResources;
 import com.avp.fabric.common.component.DataComponents;
 import com.avp.fabric.common.item.grenades.GrendeItem;
 import com.avp.fabric.common.item.gun.GunData;

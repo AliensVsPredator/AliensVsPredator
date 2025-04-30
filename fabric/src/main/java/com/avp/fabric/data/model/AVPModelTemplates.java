@@ -6,7 +6,7 @@ import net.minecraft.resources.ResourceLocation;
 
 import java.util.Optional;
 
-import com.avp.fabric.AVPResources;
+import com.avp.common.AVPResources;
 
 public class AVPModelTemplates {
 

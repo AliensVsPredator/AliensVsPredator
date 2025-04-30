@@ -11,7 +11,7 @@ import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import com.avp.fabric.AVP;
+import com.avp.fabric.AVPFabric;
 import com.avp.fabric.common.entity.living.alien.Alien;
 import com.avp.fabric.common.entity.living.alien.xenomorph.Xenomorph;
 import com.avp.fabric.common.entity.type.AVPEntityTypes;
@@ -30,7 +30,7 @@ import com.avp.fabric.common.util.resin.ResinProducer;
 public class Chestburster extends Alien implements ResinProducer {
 
     public static AttributeSupplier.Builder createChestbursterAttributes() {
-        return applyFrom(AVP.config.statsConfigs.CHESTBURSTER_STATS, Monster.createMonsterAttributes());
+        return applyFrom(AVPFabric.config.statsConfigs.CHESTBURSTER_STATS, Monster.createMonsterAttributes());
     }
 
     private final ChestbursterAnimationDispatcher animationDispatcher;
@@ -51,7 +51,7 @@ public class Chestburster extends Alien implements ResinProducer {
             .setBonusResinProvider(
                 () -> geneManager.get(GeneKeys.BONUS_RESIN_PRODUCTION, GeneDecoders.BONUS_RESIN_PRODUCTION).intValue()
             );
-        this.config = AVP.config.statsConfigs.CHESTBURSTER_STATS;
+        this.config = AVPFabric.config.statsConfigs.CHESTBURSTER_STATS;
     }
 
     @Override
@@ -113,11 +113,11 @@ public class Chestburster extends Alien implements ResinProducer {
 
     @Override
     protected float getHealthRegenPerSecond() {
-        return AVP.config.statsConfigs.CHESTBURSTER_STATS.healthRegenPerSecond;
+        return AVPFabric.config.statsConfigs.CHESTBURSTER_STATS.healthRegenPerSecond;
     }
 
     protected @NotNull ResinData createResinData() {
-        return new ResinData(0, 8, 1, AVP.config.statsConfigs.CHESTBURSTER_STATS.nestTickrate);
+        return new ResinData(0, 8, 1, AVPFabric.config.statsConfigs.CHESTBURSTER_STATS.nestTickrate);
     }
 
     @Override

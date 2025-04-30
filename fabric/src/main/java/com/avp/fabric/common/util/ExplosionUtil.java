@@ -1,5 +1,6 @@
 package com.avp.fabric.common.util;
 
+import com.avp.common.AVP;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
@@ -9,7 +10,6 @@ import net.minecraft.world.phys.Vec3;
 
 import java.util.List;
 
-import com.avp.fabric.AVP;
 import com.avp.fabric.common.command.nuke.ExplosionProgressTracker;
 import com.avp.fabric.common.entity.living.alien.Alien;
 import com.avp.fabric.common.entity.nukecloud.MushroomCloudEntity;

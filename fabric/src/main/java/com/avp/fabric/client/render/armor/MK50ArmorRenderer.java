@@ -13,7 +13,7 @@ import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.DyedItemColor;
 
-import com.avp.fabric.AVPResources;
+import com.avp.common.AVPResources;
 import com.avp.fabric.client.render.layer.MKOuterLayer;
 
 public class MK50ArmorRenderer extends AzArmorRenderer {

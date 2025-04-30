@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import com.avp.fabric.AVPResources;
+import com.avp.common.AVPResources;
 import com.avp.fabric.common.entity.type.AVPEntityTypes;
 import com.avp.fabric.common.entity.type.SilencedEntityTypeBuilder;
 

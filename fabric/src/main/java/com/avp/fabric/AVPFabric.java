@@ -22,8 +22,6 @@ import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.levelgen.structure.pools.StructurePoolElement;
 import net.minecraft.world.level.levelgen.structure.pools.StructureTemplatePool;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureProcessorList;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 
@@ -71,11 +69,7 @@ import com.avp.fabric.mixin.GiveGiftToHeroAccessor;
 import com.avp.fabric.mixin.ParrotSoundMapAccessor;
 import com.avp.fabric.mixin.StructurePoolAccessor;
 
-public class AVP implements ModInitializer {
-
-    public static final String MOD_ID = "avp";
-
-    public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
+public class AVPFabric implements ModInitializer {
 
     public static AVPConfig config;
 

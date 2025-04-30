@@ -1,12 +1,12 @@
 package com.avp.fabric.common.manager;
 
+import com.avp.common.AVP;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.Level;
 
-import com.avp.fabric.AVP;
 import com.avp.fabric.common.entity.living.alien.ovamorph.Ovamorph;
 import com.avp.fabric.common.entity.type.AVPEntityTypes;
 import com.avp.fabric.common.sound.AVPSoundEvents;

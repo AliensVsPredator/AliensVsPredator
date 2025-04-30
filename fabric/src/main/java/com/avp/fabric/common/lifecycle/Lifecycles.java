@@ -3,7 +3,7 @@ package com.avp.fabric.common.lifecycle;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import com.avp.fabric.AVP;
+import com.avp.fabric.AVPFabric;
 import com.avp.fabric.common.entity.type.AVPEntityTypes;
 import com.avp.fabric.common.lifecycle.growth.GrowthStage;
 import com.avp.fabric.common.lifecycle.registry.AlienLifecycleRegistry;
@@ -17,22 +17,22 @@ public class Lifecycles {
                 new GrowthStage(
                     AVPEntityTypes.CHESTBURSTER,
                     AVPEntityTypes.DRONE,
-                    (int) TimeUnit.MINUTES.toSeconds(AVP.config.hiveConfigs.CHESTBURSTER_MAX_GROWTH_TIMER_SECONDS)
+                    (int) TimeUnit.MINUTES.toSeconds(AVPFabric.config.hiveConfigs.CHESTBURSTER_MAX_GROWTH_TIMER_SECONDS)
                 ),
                 new GrowthStage(
                     AVPEntityTypes.DRONE,
                     AVPEntityTypes.WARRIOR,
-                    (int) TimeUnit.MINUTES.toSeconds(AVP.config.hiveConfigs.DRONE_MAX_GROWTH_TIMER_SECONDS)
+                    (int) TimeUnit.MINUTES.toSeconds(AVPFabric.config.hiveConfigs.DRONE_MAX_GROWTH_TIMER_SECONDS)
                 ),
                 new GrowthStage(
                     AVPEntityTypes.WARRIOR,
                     AVPEntityTypes.PRAETORIAN,
-                    (int) TimeUnit.MINUTES.toSeconds(AVP.config.hiveConfigs.WARRIOR_MAX_GROWTH_TIMER_SECONDS)
+                    (int) TimeUnit.MINUTES.toSeconds(AVPFabric.config.hiveConfigs.WARRIOR_MAX_GROWTH_TIMER_SECONDS)
                 ),
                 new GrowthStage(
                     AVPEntityTypes.PRAETORIAN,
                     AVPEntityTypes.QUEEN,
-                    (int) TimeUnit.MINUTES.toSeconds(AVP.config.hiveConfigs.PRAETORIAN_MAX_GROWTH_TIMER_SECONDS)
+                    (int) TimeUnit.MINUTES.toSeconds(AVPFabric.config.hiveConfigs.PRAETORIAN_MAX_GROWTH_TIMER_SECONDS)
                 )
             )
         )
@@ -45,22 +45,22 @@ public class Lifecycles {
                 new GrowthStage(
                     AVPEntityTypes.ABERRANT_CHESTBURSTER,
                     AVPEntityTypes.ABERRANT_DRONE,
-                    (int) TimeUnit.MINUTES.toSeconds(AVP.config.hiveConfigs.CHESTBURSTER_MAX_GROWTH_TIMER_SECONDS)
+                    (int) TimeUnit.MINUTES.toSeconds(AVPFabric.config.hiveConfigs.CHESTBURSTER_MAX_GROWTH_TIMER_SECONDS)
                 ),
                 new GrowthStage(
                     AVPEntityTypes.ABERRANT_DRONE,
                     AVPEntityTypes.ABERRANT_WARRIOR,
-                    (int) TimeUnit.MINUTES.toSeconds(AVP.config.hiveConfigs.DRONE_MAX_GROWTH_TIMER_SECONDS)
+                    (int) TimeUnit.MINUTES.toSeconds(AVPFabric.config.hiveConfigs.DRONE_MAX_GROWTH_TIMER_SECONDS)
                 ),
                 new GrowthStage(
                     AVPEntityTypes.ABERRANT_WARRIOR,
                     AVPEntityTypes.ABERRANT_PRAETORIAN,
-                    (int) TimeUnit.MINUTES.toSeconds(AVP.config.hiveConfigs.WARRIOR_MAX_GROWTH_TIMER_SECONDS)
+                    (int) TimeUnit.MINUTES.toSeconds(AVPFabric.config.hiveConfigs.WARRIOR_MAX_GROWTH_TIMER_SECONDS)
                 ),
                 new GrowthStage(
                     AVPEntityTypes.ABERRANT_PRAETORIAN,
                     AVPEntityTypes.ABERRANT_QUEEN,
-                    (int) TimeUnit.MINUTES.toSeconds(AVP.config.hiveConfigs.PRAETORIAN_MAX_GROWTH_TIMER_SECONDS)
+                    (int) TimeUnit.MINUTES.toSeconds(AVPFabric.config.hiveConfigs.PRAETORIAN_MAX_GROWTH_TIMER_SECONDS)
                 )
             )
         )
@@ -73,22 +73,22 @@ public class Lifecycles {
                 new GrowthStage(
                     AVPEntityTypes.NETHER_CHESTBURSTER,
                     AVPEntityTypes.NETHER_DRONE,
-                    (int) TimeUnit.MINUTES.toSeconds(AVP.config.hiveConfigs.CHESTBURSTER_MAX_GROWTH_TIMER_SECONDS)
+                    (int) TimeUnit.MINUTES.toSeconds(AVPFabric.config.hiveConfigs.CHESTBURSTER_MAX_GROWTH_TIMER_SECONDS)
                 ),
                 new GrowthStage(
                     AVPEntityTypes.NETHER_DRONE,
                     AVPEntityTypes.NETHER_WARRIOR,
-                    (int) TimeUnit.MINUTES.toSeconds(AVP.config.hiveConfigs.DRONE_MAX_GROWTH_TIMER_SECONDS)
+                    (int) TimeUnit.MINUTES.toSeconds(AVPFabric.config.hiveConfigs.DRONE_MAX_GROWTH_TIMER_SECONDS)
                 ),
                 new GrowthStage(
                     AVPEntityTypes.NETHER_WARRIOR,
                     AVPEntityTypes.NETHER_PRAETORIAN,
-                    (int) TimeUnit.MINUTES.toSeconds(AVP.config.hiveConfigs.WARRIOR_MAX_GROWTH_TIMER_SECONDS)
+                    (int) TimeUnit.MINUTES.toSeconds(AVPFabric.config.hiveConfigs.WARRIOR_MAX_GROWTH_TIMER_SECONDS)
                 ),
                 new GrowthStage(
                     AVPEntityTypes.NETHER_PRAETORIAN,
                     AVPEntityTypes.NETHER_QUEEN,
-                    (int) TimeUnit.MINUTES.toSeconds(AVP.config.hiveConfigs.PRAETORIAN_MAX_GROWTH_TIMER_SECONDS)
+                    (int) TimeUnit.MINUTES.toSeconds(AVPFabric.config.hiveConfigs.PRAETORIAN_MAX_GROWTH_TIMER_SECONDS)
                 )
             )
         )
@@ -101,7 +101,7 @@ public class Lifecycles {
                 new GrowthStage(
                     AVPEntityTypes.ROYAL_CHESTBURSTER,
                     AVPEntityTypes.PRAETORIAN,
-                    (int) TimeUnit.MINUTES.toSeconds(AVP.config.hiveConfigs.PRAETORIAN_SHORTCUT_TIMER_SECONDS)
+                    (int) TimeUnit.MINUTES.toSeconds(AVPFabric.config.hiveConfigs.PRAETORIAN_SHORTCUT_TIMER_SECONDS)
                 )
             )
         )
@@ -114,7 +114,7 @@ public class Lifecycles {
                 new GrowthStage(
                     AVPEntityTypes.ROYAL_ABERRANT_CHESTBURSTER,
                     AVPEntityTypes.ABERRANT_PRAETORIAN,
-                    (int) TimeUnit.MINUTES.toSeconds(AVP.config.hiveConfigs.PRAETORIAN_SHORTCUT_TIMER_SECONDS)
+                    (int) TimeUnit.MINUTES.toSeconds(AVPFabric.config.hiveConfigs.PRAETORIAN_SHORTCUT_TIMER_SECONDS)
                 )
             )
         )
@@ -127,7 +127,7 @@ public class Lifecycles {
                 new GrowthStage(
                     AVPEntityTypes.ROYAL_NETHER_CHESTBURSTER,
                     AVPEntityTypes.NETHER_PRAETORIAN,
-                    (int) TimeUnit.MINUTES.toSeconds(AVP.config.hiveConfigs.PRAETORIAN_SHORTCUT_TIMER_SECONDS)
+                    (int) TimeUnit.MINUTES.toSeconds(AVPFabric.config.hiveConfigs.PRAETORIAN_SHORTCUT_TIMER_SECONDS)
                 )
             )
         )

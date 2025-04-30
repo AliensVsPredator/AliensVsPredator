@@ -4,7 +4,7 @@ import mod.azure.azurelib.rewrite.render.item.AzItemRenderer;
 import mod.azure.azurelib.rewrite.render.item.AzItemRendererConfig;
 import net.minecraft.resources.ResourceLocation;
 
-import com.avp.fabric.AVPResources;
+import com.avp.common.AVPResources;
 
 public class ResonatorItemRenderer extends AzItemRenderer {
 

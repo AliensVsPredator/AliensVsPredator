@@ -2,7 +2,7 @@ package com.avp.fabric.common.entity.living.human.marine;
 
 import net.minecraft.world.entity.SpawnPlacements;
 
-import com.avp.fabric.AVP;
+import com.avp.fabric.AVPFabric;
 import com.avp.fabric.common.block.AVPBlockTags;
 import com.avp.fabric.common.config.AVPConfig;
 import com.avp.fabric.common.entity.living.human.AbstractHuman;
@@ -10,7 +10,7 @@ import com.avp.fabric.common.entity.living.human.AbstractHuman;
 public class MarineSpawning {
 
     public static final SpawnPlacements.SpawnPredicate<Marine> PREDICATE = createPredicate(
-        AVP.config.spawnConfigs.MARINE_SPAWN
+        AVPFabric.config.spawnConfigs.MARINE_SPAWN
     );
 
     public static <T extends AbstractHuman> SpawnPlacements.SpawnPredicate<T> createPredicate(

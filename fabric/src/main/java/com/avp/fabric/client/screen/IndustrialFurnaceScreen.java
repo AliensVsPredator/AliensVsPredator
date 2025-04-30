@@ -1,11 +1,11 @@
 package com.avp.fabric.client.screen;
 
+import com.avp.common.AVP;
 import net.minecraft.client.gui.screens.inventory.AbstractFurnaceScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 
-import com.avp.fabric.AVP;
 import com.avp.fabric.common.menu.IndustrialFurnaceMenu;
 import com.avp.fabric.common.menu.IndustrialFurnaceRecipeBookComponent;
 

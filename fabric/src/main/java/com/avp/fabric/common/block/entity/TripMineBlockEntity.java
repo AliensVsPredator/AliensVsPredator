@@ -10,7 +10,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 
-import com.avp.fabric.AVP;
+import com.avp.fabric.AVPFabric;
 import com.avp.fabric.common.entity.living.yautja.Yautja;
 import com.avp.fabric.common.util.AVPPredicates;
 
@@ -35,7 +35,7 @@ public class TripMineBlockEntity extends BlockEntity {
             return;
         }
 
-        var detectionArea = new AABB(blockPos).inflate(AVP.config.blockConfigs.TRIP_MINE_SEARCH_RADIUS);
+        var detectionArea = new AABB(blockPos).inflate(AVPFabric.config.blockConfigs.TRIP_MINE_SEARCH_RADIUS);
         var entities = level.getEntitiesOfClass(LivingEntity.class, detectionArea, entity -> {
             if (entity instanceof Player player) {
                 return !AVPPredicates.IS_IMMORTAL.test(player);

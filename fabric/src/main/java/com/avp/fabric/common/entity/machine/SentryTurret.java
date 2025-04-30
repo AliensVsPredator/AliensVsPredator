@@ -21,7 +21,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.UUID;
 
-import com.avp.fabric.AVP;
+import com.avp.fabric.AVPFabric;
 import com.avp.fabric.common.block.AVPBlocks;
 import com.avp.fabric.common.block.entity.AmmoChestBlockEntity;
 import com.avp.fabric.common.damage.AVPDamageTypes;
@@ -30,13 +30,13 @@ import com.avp.fabric.common.sound.AVPSoundEvents;
 
 public class SentryTurret extends Mob implements TraceableEntity {
 
-    public static float DAMAGE = AVP.config.blockConfigs.TURRET_DAMAGE;
+    public static float DAMAGE = AVPFabric.config.blockConfigs.TURRET_DAMAGE;
 
-    public static int RANGE = AVP.config.blockConfigs.TURRET_RANGE;
+    public static int RANGE = AVPFabric.config.blockConfigs.TURRET_RANGE;
 
-    protected static int AMMO_CHEST_RANGE = AVP.config.blockConfigs.TURRET_AMMO_CHEST_SEARCH_RANGE;
+    protected static int AMMO_CHEST_RANGE = AVPFabric.config.blockConfigs.TURRET_AMMO_CHEST_SEARCH_RANGE;
 
-    protected static int FOV = AVP.config.blockConfigs.TURRET_FOV;
+    protected static int FOV = AVPFabric.config.blockConfigs.TURRET_FOV;
 
     private static final int MAX_TURRET_FIRE_COOLDOWN_IN_TICKS = 2;
 

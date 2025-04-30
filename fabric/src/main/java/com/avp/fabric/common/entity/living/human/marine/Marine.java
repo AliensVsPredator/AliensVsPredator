@@ -15,7 +15,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-import com.avp.fabric.AVP;
+import com.avp.fabric.AVPFabric;
 import com.avp.fabric.common.entity.living.human.AbstractHuman;
 import com.avp.fabric.common.entity.living.human.marine.ai.MarineGOAP;
 import com.avp.fabric.common.item.AVPItems;
@@ -64,7 +64,7 @@ public class Marine extends AbstractHuman implements AVPInventoryBearer {
     }
 
     public static AttributeSupplier.Builder createMarineAttributes() {
-        return applyFrom(AVP.config.statsConfigs.MARINE_STATS, Mob.createMobAttributes().add(Attributes.ATTACK_DAMAGE));
+        return applyFrom(AVPFabric.config.statsConfigs.MARINE_STATS, Mob.createMobAttributes().add(Attributes.ATTACK_DAMAGE));
     }
 
     @Override

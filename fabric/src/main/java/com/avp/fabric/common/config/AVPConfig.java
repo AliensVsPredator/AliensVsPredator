@@ -1,5 +1,6 @@
 package com.avp.fabric.common.config;
 
+import com.avp.common.AVP;
 import com.avp.fabric.common.entity.constant.ArmorConstants;
 import com.avp.fabric.common.entity.constant.ArmorToughnessConstants;
 import com.avp.fabric.common.entity.constant.AttackDamageConstants;
@@ -10,8 +11,6 @@ import com.avp.fabric.common.entity.constant.KnockbackResistanceConstants;
 import com.avp.fabric.common.entity.constant.MoveSpeedConstants;
 import mod.azure.azurelib.common.api.common.config.Config;
 import mod.azure.azurelib.common.internal.common.config.Configurable;
-
-import com.avp.fabric.AVP;
 
 @Config(id = AVP.MOD_ID)
 public class AVPConfig {

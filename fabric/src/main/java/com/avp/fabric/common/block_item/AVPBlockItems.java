@@ -15,7 +15,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
-import com.avp.fabric.AVPResources;
+import com.avp.common.AVPResources;
 import com.avp.fabric.common.block.AVPBlocks;
 import com.avp.fabric.common.item.RoyalJellyBlockItem;
 

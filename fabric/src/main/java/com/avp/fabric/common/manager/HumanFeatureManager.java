@@ -6,7 +6,7 @@ import com.bvanseg.just.functional.option.Option;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 
-import com.avp.fabric.AVPResources;
+import com.avp.common.AVPResources;
 import com.avp.fabric.common.entity.living.human.AbstractHuman;
 
 public class HumanFeatureManager {

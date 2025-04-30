@@ -7,7 +7,7 @@ import mod.azure.azurelib.rewrite.animation.impl.AzEntityAnimator;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 
-import com.avp.fabric.AVPResources;
+import com.avp.common.AVPResources;
 import com.avp.fabric.common.entity.living.alien.ovamorph.Ovamorph;
 import com.avp.fabric.common.entity.living.alien.ovamorph.OvamorphAnimationRefs;
 

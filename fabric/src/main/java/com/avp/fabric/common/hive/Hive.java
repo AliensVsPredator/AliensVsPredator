@@ -1,5 +1,6 @@
 package com.avp.fabric.common.hive;
 
+import com.avp.common.AVP;
 import com.bvanseg.just.functional.option.Option;
 import com.mojang.serialization.Dynamic;
 import net.minecraft.core.BlockPos;
@@ -22,7 +23,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import com.avp.fabric.AVP;
+import com.avp.fabric.AVPFabric;
 import com.avp.fabric.common.entity.living.alien.Alien;
 import com.avp.fabric.common.entity.living.alien.xenomorph.queen.Queen;
 import com.avp.fabric.common.hive.ai.task.Task;
@@ -48,7 +49,7 @@ public class Hive {
         Component.translatable("bossbar.avp.hive.title"),
         BossEvent.BossBarColor.GREEN,
         BossEvent.BossBarOverlay.PROGRESS
-    ).setDarkenScreen(AVP.config.hiveConfigs.HIVE_DARKEN_SCREEN);
+    ).setDarkenScreen(AVPFabric.config.hiveConfigs.HIVE_DARKEN_SCREEN);
 
     private final List<Task> tasks;
 
@@ -105,7 +106,7 @@ public class Hive {
 
         if (isAlien) {
             var hivePos = centerPosition();
-            int leashDistance = AVP.config.hiveConfigs.HIVE_LEASH_RADIUS_IN_BLOCKS;
+            int leashDistance = AVPFabric.config.hiveConfigs.HIVE_LEASH_RADIUS_IN_BLOCKS;
             var leashDistanceSquared = leashDistance * leashDistance;
             var distanceFromHiveSquared = requestingEntity.distanceToSqr(hivePos.getX(), hivePos.getY(), hivePos.getZ());
 
@@ -170,7 +171,7 @@ public class Hive {
 
     public boolean isEntityWithinHive(Entity entity) {
         var centerPos = centerPosition();
-        var hiveRadius = AVP.config.hiveConfigs.HIVE_RADIUS_IN_BLOCKS;
+        var hiveRadius = AVPFabric.config.hiveConfigs.HIVE_RADIUS_IN_BLOCKS;
         var hiveRadiusSquared = hiveRadius * hiveRadius;
         var distanceSquared = entity.distanceToSqr(centerPos.getX(), centerPos.getY(), centerPos.getZ());
 
@@ -271,18 +272,18 @@ public class Hive {
     }
 
     public boolean isDebugEnabled() {
-        return AVP.config.hiveConfigs.HIVE_DEBUG_ENABLED;
+        return AVPFabric.config.hiveConfigs.HIVE_DEBUG_ENABLED;
     }
 
     public boolean isDebugHiveMemberHighlightEnabled() {
-        return AVP.config.hiveConfigs.HIVE_DEBUG_HIGHLIGHT_ALL_MEMBERS;
+        return AVPFabric.config.hiveConfigs.HIVE_DEBUG_HIGHLIGHT_ALL_MEMBERS;
     }
 
     public boolean isDebugLeaderHighlightEnabled() {
-        return AVP.config.hiveConfigs.HIVE_DEBUG_HIGHLIGHT_LEADER;
+        return AVPFabric.config.hiveConfigs.HIVE_DEBUG_HIGHLIGHT_LEADER;
     }
 
     public boolean isDebugMarkHiveCenterEnabled() {
-        return AVP.config.hiveConfigs.HIVE_DEBUG_MARK_HIVE_CENTER;
+        return AVPFabric.config.hiveConfigs.HIVE_DEBUG_MARK_HIVE_CENTER;
     }
 }

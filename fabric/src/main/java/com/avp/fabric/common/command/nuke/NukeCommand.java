@@ -1,5 +1,6 @@
 package com.avp.fabric.common.command.nuke;
 
+import com.avp.common.AVP;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import net.minecraft.commands.CommandSourceStack;
@@ -8,7 +9,6 @@ import net.minecraft.core.Direction;
 
 import java.time.Duration;
 
-import com.avp.fabric.AVP;
 import com.avp.fabric.common.explosion.Explosion;
 import com.avp.fabric.common.explosion.nuke.NuclearExplosionEffects;
 import com.avp.fabric.common.util.ExplosionUtil;

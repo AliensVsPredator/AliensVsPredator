@@ -9,7 +9,7 @@ import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.entity.EntityTypeTest;
 
-import com.avp.fabric.AVP;
+import com.avp.fabric.AVPFabric;
 import com.avp.fabric.common.block.AVPBlockTags;
 import com.avp.fabric.common.util.AVPPredicates;
 
@@ -24,7 +24,7 @@ public class QueenSpawning {
         blockPos,
         randomSource
     ) -> {
-        var requiresResin = AVP.config.spawnConfigs.QUEEN_SPAWN.requiresResin;
+        var requiresResin = AVPFabric.config.spawnConfigs.QUEEN_SPAWN.requiresResin;
         var isValidSpawn = !requiresResin || serverLevelAccessor.getBlockState(blockPos.below()).is(AVPBlockTags.RESIN);
 
         return blockPos.getY() <= MAX_Y_LEVEL &&
@@ -39,7 +39,7 @@ public class QueenSpawning {
         blockPos,
         randomSource
     ) -> {
-        var requiresResin = AVP.config.spawnConfigs.NETHER_QUEEN_SPAWN.requiresResin;
+        var requiresResin = AVPFabric.config.spawnConfigs.NETHER_QUEEN_SPAWN.requiresResin;
         var isValidSpawn = !requiresResin || serverLevelAccessor.getBlockState(blockPos.below()).is(AVPBlockTags.RESIN);
 
         return blockPos.getY() <= MAX_Y_LEVEL &&
@@ -54,7 +54,7 @@ public class QueenSpawning {
         BlockPos blockPos,
         RandomSource randomSource
     ) {
-        var minimumDistanceBetweenHivesInBlocks = AVP.config.hiveConfigs.MINIMUM_DISTANCE_BETWEEN_HIVES_IN_BLOCKS;
+        var minimumDistanceBetweenHivesInBlocks = AVPFabric.config.hiveConfigs.MINIMUM_DISTANCE_BETWEEN_HIVES_IN_BLOCKS;
 
         return Monster.checkMonsterSpawnRules(
             entityType,

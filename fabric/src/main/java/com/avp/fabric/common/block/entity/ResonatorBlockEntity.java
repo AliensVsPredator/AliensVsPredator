@@ -15,7 +15,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import com.avp.fabric.AVP;
+import com.avp.fabric.AVPFabric;
 import com.avp.fabric.common.block.AVPBlockTags;
 import com.avp.fabric.common.util.AlienVariantUtil;
 
@@ -68,13 +68,13 @@ public class ResonatorBlockEntity extends BlockEntity {
 
         resonatorBlockEntity.incrementTickCounter();
 
-        var tickValue = AVP.config.blockConfigs.RESONATOR_REPLACE_TICKS;
+        var tickValue = AVPFabric.config.blockConfigs.RESONATOR_REPLACE_TICKS;
 
         if (resonatorBlockEntity.getTickCounter() % tickValue != 0) {
             return;
         }
 
-        var radius = AVP.config.blockConfigs.RESONATOR_REPLACE_RADIUS;
+        var radius = AVPFabric.config.blockConfigs.RESONATOR_REPLACE_RADIUS;
 
         var resinBallsGained = new AtomicInteger(0);
 

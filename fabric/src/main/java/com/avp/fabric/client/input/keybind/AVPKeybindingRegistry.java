@@ -1,5 +1,6 @@
 package com.avp.fabric.client.input.keybind;
 
+import com.avp.common.AVP;
 import com.mojang.blaze3d.platform.InputConstants;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
@@ -9,7 +10,6 @@ import org.lwjgl.glfw.GLFW;
 
 import java.util.function.Consumer;
 
-import com.avp.fabric.AVP;
 import com.avp.fabric.client.network.AVPClientNetworking;
 import com.avp.fabric.common.network.packet.C2SGunReloadPayload;
 

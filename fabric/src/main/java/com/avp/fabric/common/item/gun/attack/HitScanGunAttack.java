@@ -24,7 +24,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 
-import com.avp.fabric.AVP;
+import com.avp.fabric.AVPFabric;
 import com.avp.fabric.common.block.AVPBlockTags;
 import com.avp.fabric.common.damage.AVPDamageTypes;
 import com.avp.fabric.common.network.ServerNetworking;
@@ -172,7 +172,7 @@ public class HitScanGunAttack extends AbstractGunAttack {
     }
 
     private void damageBlock(@NotNull Level level, BlockPos blockPos) {
-        if (!AVP.config.weaponConfigs.BULLETS_DAMAGE_BLOCKS_ENABLED) {
+        if (!AVPFabric.config.weaponConfigs.BULLETS_DAMAGE_BLOCKS_ENABLED) {
             return;
         }
 

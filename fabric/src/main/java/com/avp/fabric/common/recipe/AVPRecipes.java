@@ -1,5 +1,6 @@
 package com.avp.fabric.common.recipe;
 
+import com.avp.common.AVP;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
@@ -7,8 +8,7 @@ import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.crafting.SimpleCookingSerializer;
 
-import com.avp.fabric.AVP;
-import com.avp.fabric.AVPResources;
+import com.avp.common.AVPResources;
 
 public class AVPRecipes {
 
