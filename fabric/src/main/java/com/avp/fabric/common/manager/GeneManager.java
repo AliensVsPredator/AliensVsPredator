@@ -7,8 +7,8 @@ import net.minecraft.world.entity.Entity;
 import java.util.Collections;
 import java.util.Map;
 
-import com.avp.fabric.common.gene.GeneKey;
-import com.avp.fabric.common.gene.behavior.GeneDecoder;
+import com.avp.common.entity.gene.GeneKey;
+import com.avp.common.entity.gene.behavior.GeneDecoder;
 import com.avp.fabric.common.level.saveddata.GenePaletteLevelData;
 
 public class GeneManager {

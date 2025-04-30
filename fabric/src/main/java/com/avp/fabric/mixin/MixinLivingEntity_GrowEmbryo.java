@@ -24,7 +24,7 @@ import java.util.concurrent.TimeUnit;
 import com.avp.fabric.common.entity.living.Host;
 import com.avp.fabric.common.entity.living.alien.Alien;
 import com.avp.fabric.common.entity.living.alien.parasite.Parasite;
-import com.avp.fabric.common.gene.GeneProviders;
+import com.avp.common.entity.gene.GeneProviders;
 import com.avp.fabric.common.lifecycle.infection.Infection;
 import com.avp.fabric.common.lifecycle.registry.AlienInfectionRegistry;
 import com.avp.fabric.common.manager.GeneManager;

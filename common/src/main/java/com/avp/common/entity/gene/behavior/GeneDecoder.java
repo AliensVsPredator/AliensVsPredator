@@ -1,4 +1,4 @@
-package com.avp.fabric.common.gene.behavior;
+package com.avp.common.entity.gene.behavior;
 
 public interface GeneDecoder<T> {
 

@@ -10,7 +10,7 @@ import org.jetbrains.annotations.NotNull;
 
 import com.avp.fabric.common.entity.living.alien.Alien;
 import com.avp.fabric.common.entity.living.alien.ovamorph.Ovamorph;
-import com.avp.fabric.common.gene.GeneKeys;
+import com.avp.common.entity.gene.GeneKeys;
 import com.avp.fabric.common.util.AVPPredicates;
 
 public class PoisionJellyItem extends Item {

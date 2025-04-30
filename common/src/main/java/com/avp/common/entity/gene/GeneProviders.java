@@ -1,4 +1,4 @@
-package com.avp.fabric.common.gene;
+package com.avp.common.entity.gene;
 
 import net.minecraft.core.Holder;
 import net.minecraft.world.entity.EntityType;

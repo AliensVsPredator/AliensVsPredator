@@ -35,7 +35,7 @@ import com.avp.fabric.common.entity.projectile.Rocket;
 import com.avp.fabric.common.entity.projectile.ShurikenItemEntity;
 import com.avp.fabric.common.entity.projectile.SmartDiscItemEntity;
 import com.avp.fabric.common.entity.projectile.ThrownGrenade;
-import com.avp.fabric.common.gene.GeneKeys;
+import com.avp.common.entity.gene.GeneKeys;
 
 public class AVPEntityTypes {
 
