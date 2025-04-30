@@ -8,7 +8,7 @@ import net.minecraft.world.level.block.Blocks;
 
 import com.avp.common.block.AVPBlockTags;
 import com.avp.fabric.common.sound.AVPSoundEvents;
-import com.avp.fabric.server.BlockBreakProgressManager;
+import com.avp.server.BlockBreakProgressManager;
 
 public class AcidBlockDamageUtil {
 

@@ -33,7 +33,7 @@ import com.avp.fabric.common.network.packet.S2CGunRecoilPayload;
 import com.avp.fabric.common.sound.AVPSoundEvents;
 import com.avp.fabric.common.util.AVPPredicates;
 import com.avp.fabric.common.util.EnchantmentUtil;
-import com.avp.fabric.server.BlockBreakProgressManager;
+import com.avp.server.BlockBreakProgressManager;
 
 public class HitScanGunAttack extends AbstractGunAttack {
 

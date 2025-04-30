@@ -11,7 +11,7 @@ import org.jetbrains.annotations.NotNull;
 
 import com.avp.fabric.common.entity.type.AVPEntityTypes;
 import com.avp.fabric.common.item.AVPItems;
-import com.avp.fabric.server.BlockBreakProgressManager;
+import com.avp.server.BlockBreakProgressManager;
 
 public class ShurikenItemEntity extends ThrowableItemProjectile {
 

@@ -20,7 +20,7 @@ import java.util.List;
 
 import com.avp.common.block.AVPBlockTags;
 import com.avp.fabric.common.block.AVPBlocks;
-import com.avp.fabric.server.BlockBreakProgressManager;
+import com.avp.server.BlockBreakProgressManager;
 
 public class DigToTargetGoal extends Goal {
 

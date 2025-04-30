@@ -8,8 +8,8 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import com.avp.fabric.common.level.saveddata.HiveLevelData;
-import com.avp.fabric.server.BlockBreakProgressManager;
-import com.avp.fabric.server.ServerScheduler;
+import com.avp.server.BlockBreakProgressManager;
+import com.avp.server.ServerScheduler;
 
 @Mixin(ServerLevel.class)
 public abstract class MixinServerLevel_RunTickRoutines {

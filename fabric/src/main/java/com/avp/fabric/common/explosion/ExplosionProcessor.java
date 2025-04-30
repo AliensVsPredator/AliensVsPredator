@@ -12,7 +12,7 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import com.avp.fabric.server.ServerScheduler;
+import com.avp.server.ServerScheduler;
 
 public class ExplosionProcessor {
 

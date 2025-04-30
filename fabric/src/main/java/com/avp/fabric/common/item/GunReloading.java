@@ -14,7 +14,7 @@ import com.avp.fabric.common.component.DataComponents;
 import com.avp.fabric.common.item.gun.GunData;
 import com.avp.fabric.common.util.AVPPredicates;
 import com.avp.fabric.common.util.EnchantmentUtil;
-import com.avp.fabric.server.ServerScheduler;
+import com.avp.server.ServerScheduler;
 
 public class GunReloading {
 

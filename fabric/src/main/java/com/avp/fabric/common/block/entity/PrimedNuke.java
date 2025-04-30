@@ -22,7 +22,7 @@ import com.avp.fabric.AVPFabric;
 import com.avp.fabric.common.block.AVPBlocks;
 import com.avp.fabric.common.entity.type.AVPEntityTypes;
 import com.avp.fabric.common.util.ExplosionUtil;
-import com.avp.fabric.server.ServerScheduler;
+import com.avp.server.ServerScheduler;
 
 public class PrimedNuke extends Entity {
 

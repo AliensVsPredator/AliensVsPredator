@@ -1,4 +1,4 @@
-package com.avp.fabric.server;
+package com.avp.server;
 
 import java.time.Duration;
 import java.util.Map;

@@ -12,7 +12,7 @@ import org.jetbrains.annotations.NotNull;
 import com.avp.fabric.common.entity.type.AVPEntityTypes;
 import com.avp.fabric.common.item.AVPItems;
 import com.avp.fabric.common.util.ItemGoalUtil;
-import com.avp.fabric.server.BlockBreakProgressManager;
+import com.avp.server.BlockBreakProgressManager;
 
 public class SmartDiscItemEntity extends ThrowableItemProjectile {
 

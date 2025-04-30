@@ -1,4 +1,4 @@
-package com.avp.fabric.server;
+package com.avp.server;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.Mth;

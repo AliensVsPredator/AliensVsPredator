@@ -13,8 +13,8 @@ import net.minecraft.world.entity.Pose;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
-import com.avp.fabric.common.util.AlienVariantUtil;
 import com.avp.common.util.GravityUtil;
+import com.avp.fabric.common.util.AlienVariantUtil;
 
 public class Acid extends Entity {
 
