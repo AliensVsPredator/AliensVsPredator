@@ -12,7 +12,7 @@ import net.minecraft.world.level.biome.Biomes;
 
 import com.avp.common.block.AVPBlockTags;
 import com.avp.fabric.common.config.AVPConfig;
-import com.avp.fabric.common.entity.AVPEntityTypeTags;
+import com.avp.common.entity.AVPEntityTypeTags;
 
 public class AlienSpawning {
 

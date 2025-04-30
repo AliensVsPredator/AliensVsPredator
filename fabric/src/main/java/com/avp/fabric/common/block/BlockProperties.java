@@ -15,7 +15,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
-import com.avp.fabric.common.entity.AVPEntityTypeTags;
+import com.avp.common.entity.AVPEntityTypeTags;
 
 public class BlockProperties {
 

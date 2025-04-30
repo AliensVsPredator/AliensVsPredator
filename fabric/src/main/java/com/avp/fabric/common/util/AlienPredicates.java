@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Objects;
 
 import com.avp.common.block.AVPBlockTags;
-import com.avp.fabric.common.entity.AVPEntityTypeTags;
+import com.avp.common.entity.AVPEntityTypeTags;
 import com.avp.fabric.common.entity.living.alien.Alien;
 import com.avp.fabric.common.entity.living.human.marine.Marine;
 import com.avp.fabric.common.entity.living.yautja.Yautja;

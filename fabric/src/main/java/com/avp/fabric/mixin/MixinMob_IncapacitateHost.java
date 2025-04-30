@@ -6,7 +6,7 @@ import net.minecraft.world.entity.Mob;
 import net.minecraft.world.level.Level;
 import org.spongepowered.asm.mixin.Mixin;
 
-import com.avp.fabric.common.entity.AVPEntityTypeTags;
+import com.avp.common.entity.AVPEntityTypeTags;
 import com.avp.fabric.common.entity.living.FreeMob;
 
 @Mixin(Mob.class)

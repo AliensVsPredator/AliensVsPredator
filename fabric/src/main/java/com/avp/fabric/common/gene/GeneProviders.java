@@ -12,7 +12,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.UnaryOperator;
 
-import com.avp.fabric.common.entity.AVPEntityTypeTags;
+import com.avp.common.entity.AVPEntityTypeTags;
 
 public class GeneProviders {
 

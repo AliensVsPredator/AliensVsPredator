@@ -6,7 +6,7 @@ import net.minecraft.world.entity.EntityType;
 
 import java.util.Map;
 
-import com.avp.fabric.common.entity.AVPEntityTypeTags;
+import com.avp.common.entity.AVPEntityTypeTags;
 import com.avp.fabric.common.entity.type.AVPEntityTypes;
 import com.avp.fabric.common.hive.Hive;
 import com.avp.fabric.common.hive.HiveMemberData;

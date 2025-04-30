@@ -5,7 +5,7 @@ import net.minecraft.world.entity.ai.goal.Goal;
 
 import java.util.concurrent.TimeUnit;
 
-import com.avp.fabric.common.entity.AVPEntityTypeTags;
+import com.avp.common.entity.AVPEntityTypeTags;
 import com.avp.fabric.common.entity.living.alien.ovamorph.Ovamorph;
 import com.avp.fabric.common.entity.living.alien.xenomorph.queen.Queen;
 import com.avp.fabric.common.sound.AVPSoundEvents;
