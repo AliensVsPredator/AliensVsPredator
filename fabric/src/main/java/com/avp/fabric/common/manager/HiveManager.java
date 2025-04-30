@@ -8,12 +8,12 @@ import org.jetbrains.annotations.Nullable;
 import java.util.UUID;
 
 import com.avp.common.entity.AVPEntityTypeTags;
+import com.avp.common.util.CompoundTagUtil;
 import com.avp.fabric.AVPFabric;
 import com.avp.fabric.common.entity.living.alien.Alien;
 import com.avp.fabric.common.entity.living.alien.xenomorph.queen.Queen;
 import com.avp.fabric.common.hive.Hive;
 import com.avp.fabric.common.level.saveddata.HiveLevelData;
-import com.avp.fabric.common.util.CompoundTagUtil;
 
 public class HiveManager {
 

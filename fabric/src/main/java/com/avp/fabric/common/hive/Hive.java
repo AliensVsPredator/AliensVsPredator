@@ -23,6 +23,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import com.avp.AVP;
+import com.avp.common.util.CompoundTagUtil;
 import com.avp.fabric.AVPFabric;
 import com.avp.fabric.common.entity.living.alien.Alien;
 import com.avp.fabric.common.entity.living.alien.xenomorph.queen.Queen;
@@ -33,7 +34,6 @@ import com.avp.fabric.common.hive.ai.task.impl.PickBestLeaderTask;
 import com.avp.fabric.common.hive.ai.task.impl.UpdateHiveBossBarTask;
 import com.avp.fabric.common.hive.ai.task.impl.UpdateHiveMembershipsTask;
 import com.avp.fabric.common.level.saveddata.HiveLevelData;
-import com.avp.fabric.common.util.CompoundTagUtil;
 
 public class Hive {
 

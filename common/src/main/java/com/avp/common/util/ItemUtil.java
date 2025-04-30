@@ -1,4 +1,4 @@
-package com.avp.fabric.common.util;
+package com.avp.common.util;
 
 import com.bvanseg.just.functional.option.Option;
 import net.minecraft.util.Mth;

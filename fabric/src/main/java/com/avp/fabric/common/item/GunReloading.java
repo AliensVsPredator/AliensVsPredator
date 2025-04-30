@@ -9,11 +9,11 @@ import net.minecraft.world.level.ItemLike;
 import java.time.Duration;
 import java.util.Objects;
 
+import com.avp.common.util.EnchantmentUtil;
 import com.avp.fabric.common.block_item.AVPBlockItems;
 import com.avp.fabric.common.component.DataComponents;
 import com.avp.fabric.common.item.gun.GunData;
 import com.avp.fabric.common.util.AVPPredicates;
-import com.avp.fabric.common.util.EnchantmentUtil;
 import com.avp.server.ServerScheduler;
 
 public class GunReloading {

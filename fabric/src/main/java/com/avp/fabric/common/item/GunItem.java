@@ -25,11 +25,11 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
+import com.avp.common.util.TooltipUtil;
 import com.avp.fabric.common.component.DataComponents;
 import com.avp.fabric.common.item.gun.GunConfig;
 import com.avp.fabric.common.item.gun.pipeline.GunShootContext;
 import com.avp.fabric.common.item.old_painless.OldPainlessAnimationRefs;
-import com.avp.fabric.common.util.TooltipUtil;
 
 public class GunItem extends Item {
 

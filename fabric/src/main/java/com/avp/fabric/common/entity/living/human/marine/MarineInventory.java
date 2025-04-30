@@ -13,8 +13,8 @@ import org.jetbrains.annotations.NotNull;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
 
-import com.avp.fabric.common.util.AVPInventory;
-import com.avp.fabric.common.util.ItemUtil;
+import com.avp.common.util.AVPInventory;
+import com.avp.common.util.ItemUtil;
 
 public class MarineInventory implements AVPInventory, InventoryCarrier {
 

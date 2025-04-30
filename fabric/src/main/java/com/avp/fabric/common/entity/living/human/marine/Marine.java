@@ -15,12 +15,12 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
+import com.avp.common.util.AVPInventory;
+import com.avp.common.util.AVPInventoryBearer;
 import com.avp.fabric.AVPFabric;
 import com.avp.fabric.common.entity.living.human.AbstractHuman;
 import com.avp.fabric.common.entity.living.human.marine.ai.MarineGOAP;
 import com.avp.fabric.common.item.AVPItems;
-import com.avp.fabric.common.util.AVPInventory;
-import com.avp.fabric.common.util.AVPInventoryBearer;
 
 public class Marine extends AbstractHuman implements AVPInventoryBearer {
 

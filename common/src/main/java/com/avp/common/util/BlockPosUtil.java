@@ -1,4 +1,4 @@
-package com.avp.fabric.common.util;
+package com.avp.common.util;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;

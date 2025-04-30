@@ -11,11 +11,11 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import com.avp.common.util.AmmunitionIndicatorUtil;
 import com.avp.fabric.common.component.DataComponents;
 import com.avp.fabric.common.item.AVPItems;
 import com.avp.fabric.common.item.GunItem;
 import com.avp.fabric.common.util.AVPPredicates;
-import com.avp.fabric.common.util.AmmunitionIndicatorUtil;
 
 @Mixin(Player.class)
 public abstract class MixinPlayerEntity_LowAmmunitionIndicator extends LivingEntity {
