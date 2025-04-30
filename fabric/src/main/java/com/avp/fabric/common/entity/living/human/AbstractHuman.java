@@ -19,7 +19,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 
-import com.avp.fabric.common.MovementAnalyzer;
+import com.avp.common.util.MovementAnalyzer;
 import com.avp.fabric.common.config.AVPConfig;
 import com.avp.fabric.common.manager.HumanFeatureManager;
 

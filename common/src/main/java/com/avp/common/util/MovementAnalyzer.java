@@ -1,4 +1,4 @@
-package com.avp.fabric.common;
+package com.avp.common.util;
 
 import net.minecraft.world.entity.Entity;
 import org.joml.Vector3d;
