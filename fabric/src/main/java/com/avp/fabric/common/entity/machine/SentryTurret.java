@@ -25,7 +25,7 @@ import com.avp.fabric.AVPFabric;
 import com.avp.fabric.common.block.AVPBlocks;
 import com.avp.fabric.common.block.entity.AmmoChestBlockEntity;
 import com.avp.fabric.common.damage.AVPDamageTypes;
-import com.avp.fabric.common.damage.AVPDamageTypesTags;
+import com.avp.common.damage.AVPDamageTypesTags;
 import com.avp.fabric.common.sound.AVPSoundEvents;
 
 public class SentryTurret extends Mob implements TraceableEntity {
