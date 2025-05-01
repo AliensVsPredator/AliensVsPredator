@@ -1,4 +1,4 @@
-package com.avp.fabric.common.block;
+package com.avp.common.block;
 
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.level.block.SoundType;

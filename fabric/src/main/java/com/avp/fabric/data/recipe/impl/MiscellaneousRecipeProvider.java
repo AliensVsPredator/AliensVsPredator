@@ -5,6 +5,7 @@ import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
 
+import com.avp.common.block.TempAVPBlocks;
 import com.avp.common.item.TempAVPItems;
 import com.avp.fabric.common.block.AVPBlocks;
 import com.avp.fabric.common.item.AVPItems;
@@ -37,7 +38,7 @@ public class MiscellaneousRecipeProvider {
             .pattern("A A")
             .pattern("P P")
             .pattern("D D")
-            .into(1, AVPBlocks.BLUEPRINT_BLOCK);
+            .into(1, TempAVPBlocks.BLUEPRINT_BLOCK);
 
         builder.shaped()
             .withCategory(RecipeCategory.MISC)
@@ -100,7 +101,7 @@ public class MiscellaneousRecipeProvider {
             .withExperience(RecipeConstants.VERY_COMMON_SMELT_EXPERIENCE)
             .into(TempAVPItems.POLYMER);
 
-        builder.blast(AVPBlocks.SILICA_GRAVEL)
+        builder.blast(TempAVPBlocks.SILICA_GRAVEL)
             .withCategory(RecipeCategory.MISC)
             .withExperience(RecipeConstants.RARE_SMELT_EXPERIENCE)
             .into(TempAVPItems.RAW_SILICA.get());
@@ -120,11 +121,11 @@ public class MiscellaneousRecipeProvider {
             .pattern("III")
             .pattern("III")
             .pattern("III")
-            .into(1, AVPBlocks.ROYAL_JELLY_BLOCK);
+            .into(1, TempAVPBlocks.ROYAL_JELLY_BLOCK);
 
         builder.shapeless()
             .withCategory(RecipeCategory.MISC)
-            .requires(1, AVPBlocks.ROYAL_JELLY_BLOCK)
+            .requires(1, TempAVPBlocks.ROYAL_JELLY_BLOCK)
             .into(9, TempAVPItems.RAW_ROYAL_JELLY);
 
         builder.shaped()

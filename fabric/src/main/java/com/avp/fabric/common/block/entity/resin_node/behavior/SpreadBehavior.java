@@ -10,7 +10,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
 
-import com.avp.fabric.common.block.AVPBlocks;
+import com.avp.common.block.TempAVPBlocks;
 import com.avp.fabric.common.block.entity.resin_node.ChargeCursor;
 import com.avp.fabric.common.block.entity.resin_node.ResinSpreader;
 
@@ -32,15 +32,15 @@ public interface SpreadBehavior {
     ) {
         var block = levelAccessor.getBlockState(nodePos).getBlock();
         // TODO: Try not to hardcode this.
-        var resinBlock = block == AVPBlocks.NETHER_RESIN_NODE
-            ? AVPBlocks.NETHER_RESIN_VEIN
-            : block == AVPBlocks.ABERRANT_RESIN_NODE
-                ? AVPBlocks.ABERRANT_RESIN_VEIN
-                : block == AVPBlocks.IRRADIATED_RESIN_NODE
-                    ? AVPBlocks.IRRADIATED_RESIN_VEIN
-                    : AVPBlocks.RESIN_VEIN;
+        var resinBlockSupplier = block == TempAVPBlocks.NETHER_RESIN_NODE
+            ? TempAVPBlocks.NETHER_RESIN_VEIN
+            : block == TempAVPBlocks.ABERRANT_RESIN_NODE
+                ? TempAVPBlocks.ABERRANT_RESIN_VEIN
+                : block == TempAVPBlocks.IRRADIATED_RESIN_NODE
+                    ? TempAVPBlocks.IRRADIATED_RESIN_VEIN
+                    : TempAVPBlocks.RESIN_VEIN;
 
-        return ((MultifaceBlock) resinBlock).getSpreader().spreadAll(blockState, levelAccessor, blockPos, bl) > 0L;
+        return ((MultifaceBlock) resinBlockSupplier.get()).getSpreader().spreadAll(blockState, levelAccessor, blockPos, bl) > 0L;
     }
 
     default boolean canChangeBlockStateOnSpread() {

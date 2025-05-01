@@ -19,7 +19,7 @@ import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
 import org.jetbrains.annotations.NotNull;
 
-import com.avp.fabric.common.block.AVPBlocks;
+import com.avp.common.block.TempAVPBlocks;
 import com.avp.fabric.common.block.entity.resin_node.ChargeCursor;
 import com.avp.fabric.common.block.entity.resin_node.ResinSpreader;
 import com.avp.fabric.common.block.entity.resin_node.behavior.SpreadBehavior;
@@ -73,7 +73,11 @@ public class ResinVeinBlock extends MultifaceBlock implements SpreadBehavior {
 
     @Override
     protected boolean canBeReplaced(BlockState blockState, BlockPlaceContext blockPlaceContext) {
-        return !blockPlaceContext.getItemInHand().is(AVPBlocks.RESIN_VEIN.asItem()) || super.canBeReplaced(blockState, blockPlaceContext);
+        // TODO: What about the other resin vein types here?
+        return !blockPlaceContext.getItemInHand().is(TempAVPBlocks.RESIN_VEIN.get().asItem()) || super.canBeReplaced(
+            blockState,
+            blockPlaceContext
+        );
     }
 
     @Override
@@ -170,14 +174,15 @@ public class ResinVeinBlock extends MultifaceBlock implements SpreadBehavior {
     }
 
     private Block getResinBlock() {
-        if (this == AVPBlocks.ABERRANT_RESIN_VEIN) {
-            return AVPBlocks.ABERRANT_RESIN;
-        } else if (this == AVPBlocks.NETHER_RESIN_VEIN) {
-            return AVPBlocks.NETHER_RESIN;
-        } else if (this == AVPBlocks.IRRADIATED_RESIN_VEIN) {
-            return AVPBlocks.IRRADIATED_RESIN;
+        // TODO: Use a variant map here.
+        if (this == TempAVPBlocks.ABERRANT_RESIN_VEIN.get()) {
+            return TempAVPBlocks.ABERRANT_RESIN.get();
+        } else if (this == TempAVPBlocks.NETHER_RESIN_VEIN.get()) {
+            return TempAVPBlocks.NETHER_RESIN.get();
+        } else if (this == TempAVPBlocks.IRRADIATED_RESIN_VEIN.get()) {
+            return TempAVPBlocks.IRRADIATED_RESIN.get();
         } else {
-            return AVPBlocks.RESIN;
+            return TempAVPBlocks.RESIN.get();
         }
     }
 

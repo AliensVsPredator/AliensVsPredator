@@ -10,7 +10,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluids;
 import org.jetbrains.annotations.NotNull;
 
-import com.avp.fabric.common.block.AVPBlocks;
+import com.avp.common.block.TempAVPBlocks;
 
 class ResinVeinSpreaderConfig extends MultifaceSpreader.DefaultSpreaderConfig {
 
@@ -30,9 +30,13 @@ class ResinVeinSpreaderConfig extends MultifaceSpreader.DefaultSpreaderConfig {
         BlockState blockState
     ) {
         var blockState2 = blockGetter.getBlockState(blockPos2.relative(direction));
-        var isNotResinNode = !blockState2.is(AVPBlocks.IRRADIATED_RESIN_NODE) && !blockState2.is(AVPBlocks.ABERRANT_RESIN_NODE)
-            && !blockState2.is(AVPBlocks.NETHER_RESIN_NODE) && !blockState2.is(AVPBlocks.RESIN_NODE);
-        var canReplace = !blockState2.is(AVPBlocks.RESIN) && isNotResinNode && !blockState2.is(Blocks.MOVING_PISTON);
+        // TODO: Use tag here for resin nodes.
+        var isNotResinNode = !blockState2.is(TempAVPBlocks.IRRADIATED_RESIN_NODE.get()) && !blockState2.is(
+            TempAVPBlocks.ABERRANT_RESIN_NODE.get()
+        )
+            && !blockState2.is(TempAVPBlocks.NETHER_RESIN_NODE.get()) && !blockState2.is(TempAVPBlocks.RESIN_NODE.get());
+        // TODO: What about the other resin vein types?
+        var canReplace = !blockState2.is(TempAVPBlocks.RESIN.get()) && isNotResinNode && !blockState2.is(Blocks.MOVING_PISTON);
 
         if (!canReplace) {
             return false;
@@ -62,6 +66,7 @@ class ResinVeinSpreaderConfig extends MultifaceSpreader.DefaultSpreaderConfig {
 
     @Override
     public boolean isOtherBlockValidAsSource(BlockState blockState) {
-        return !blockState.is(AVPBlocks.RESIN_VEIN);
+        // TODO: What about the other resin vein types?
+        return !blockState.is(TempAVPBlocks.RESIN_VEIN.get());
     }
 }

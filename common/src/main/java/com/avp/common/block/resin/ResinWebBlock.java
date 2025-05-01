@@ -1,4 +1,4 @@
-package com.avp.fabric.common.block.resin;
+package com.avp.common.block.resin;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.Entity;
@@ -25,16 +25,16 @@ public class ResinWebBlock extends Block {
 
     @Override
     protected @NotNull VoxelShape getShape(
-        BlockState blockState,
-        BlockGetter blockGetter,
-        BlockPos blockPos,
-        CollisionContext collisionContext
+        @NotNull BlockState blockState,
+        @NotNull BlockGetter blockGetter,
+        @NotNull BlockPos blockPos,
+        @NotNull CollisionContext collisionContext
     ) {
         return SHAPE;
     }
 
     @Override
-    protected void entityInside(BlockState blockState, Level level, BlockPos blockPos, Entity entity) {
+    protected void entityInside(@NotNull BlockState blockState, @NotNull Level level, @NotNull BlockPos blockPos, Entity entity) {
         if (!entity.getType().is(AVPEntityTypeTags.ALIENS)) {
             entity.makeStuckInBlock(blockState, MOVEMENT_MODIFIER);
         }

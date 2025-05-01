@@ -6,6 +6,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 
 import com.avp.AVPResources;
+import com.avp.common.block.TempAVPBlocks;
 import com.avp.fabric.common.block.AVPBlocks;
 import com.avp.fabric.common.block.entity.resin_node.ResinNodeBlockEntity;
 
@@ -15,10 +16,10 @@ public class AVPBlockEntityTypes {
         "resin_node",
         BlockEntityType.Builder.of(
             ResinNodeBlockEntity::new,
-            AVPBlocks.IRRADIATED_RESIN_NODE,
-            AVPBlocks.ABERRANT_RESIN_NODE,
-            AVPBlocks.NETHER_RESIN_NODE,
-            AVPBlocks.RESIN_NODE
+            TempAVPBlocks.IRRADIATED_RESIN_NODE.get(),
+            TempAVPBlocks.ABERRANT_RESIN_NODE.get(),
+            TempAVPBlocks.NETHER_RESIN_NODE.get(),
+            TempAVPBlocks.RESIN_NODE.get()
         )
     );
 

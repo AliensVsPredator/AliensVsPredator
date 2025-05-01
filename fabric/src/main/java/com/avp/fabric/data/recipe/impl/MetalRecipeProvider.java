@@ -4,6 +4,8 @@ import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.ItemLike;
 
+import java.util.function.Supplier;
+
 import com.avp.common.block.TempAVPBlocks;
 import com.avp.common.item.TempAVPItems;
 import com.avp.fabric.common.block.AVPBlocks;
@@ -11,8 +13,6 @@ import com.avp.fabric.data.recipe.RecipeConstants;
 import com.avp.fabric.data.recipe.RecipeTemplates;
 import com.avp.fabric.data.recipe.builder.RecipeBuilder;
 import com.avp.fabric.data.recipe.util.RecipeUtil;
-
-import java.util.function.Supplier;
 
 public class MetalRecipeProvider {
 
@@ -67,23 +67,27 @@ public class MetalRecipeProvider {
         createSmeltAndBlastRecipes(builder, TempAVPItems.RAW_TITANIUM.get(), TempAVPItems.TITANIUM_INGOT.get());
         createSmeltAndBlastRecipes(builder, TempAVPItems.RAW_ZINC.get(), TempAVPItems.ZINC_INGOT.get());
 
-        RecipeUtil.createCompressedBlockRecipes3x3(builder, TempAVPItems.ALUMINUM_INGOT.get(), AVPBlocks.ALUMINUM_BLOCK);
-        RecipeUtil.createCompressedBlockRecipes3x3(builder, TempAVPItems.BRASS_INGOT.get(), AVPBlocks.BRASS_BLOCK);
-        RecipeUtil.createCompressedBlockRecipes3x3(builder, TempAVPItems.FERROALUMINUM_INGOT.get(), TempAVPBlocks.FERROALUMINUM_BLOCK.get());
-        RecipeUtil.createCompressedBlockRecipes3x3(builder, TempAVPItems.LEAD_INGOT.get(), AVPBlocks.LEAD_BLOCK);
+        RecipeUtil.createCompressedBlockRecipes3x3(builder, TempAVPItems.ALUMINUM_INGOT.get(), TempAVPBlocks.ALUMINUM_BLOCK.get());
+        RecipeUtil.createCompressedBlockRecipes3x3(builder, TempAVPItems.BRASS_INGOT.get(), TempAVPBlocks.BRASS_BLOCK.get());
+        RecipeUtil.createCompressedBlockRecipes3x3(
+            builder,
+            TempAVPItems.FERROALUMINUM_INGOT.get(),
+            TempAVPBlocks.FERROALUMINUM_BLOCK.get()
+        );
+        RecipeUtil.createCompressedBlockRecipes3x3(builder, TempAVPItems.LEAD_INGOT.get(), TempAVPBlocks.LEAD_BLOCK.get());
         RecipeUtil.createCompressedBlockRecipes3x3(builder, TempAVPItems.STEEL_INGOT.get(), TempAVPBlocks.STEEL_BLOCK.get());
         RecipeUtil.createCompressedBlockRecipes3x3(builder, TempAVPItems.TITANIUM_INGOT.get(), TempAVPBlocks.TITANIUM_BLOCK.get());
         RecipeUtil.createCompressedBlockRecipes3x3(builder, TempAVPItems.URANIUM_INGOT.get(), TempAVPBlocks.URANIUM_BLOCK.get());
         RecipeUtil.createCompressedBlockRecipes3x3(builder, TempAVPItems.ZINC_INGOT.get(), TempAVPBlocks.ZINC_BLOCK.get());
 
         RecipeUtil.createCompressedBlockRecipes3x3(builder, TempAVPItems.AUTUNITE_DUST.get(), AVPBlocks.AUTUNITE_BLOCK);
-        RecipeUtil.createCompressedBlockRecipes3x3(builder, TempAVPItems.LITHIUM_DUST.get(), AVPBlocks.LITHIUM_BLOCK);
-        RecipeUtil.createCompressedBlockRecipes3x3(builder, TempAVPItems.RAW_BAUXITE.get(), AVPBlocks.RAW_BAUXITE_BLOCK);
-        RecipeUtil.createCompressedBlockRecipes3x3(builder, TempAVPItems.RAW_GALENA.get(), AVPBlocks.RAW_GALENA_BLOCK);
-        RecipeUtil.createCompressedBlockRecipes3x3(builder, TempAVPItems.RAW_MONAZITE.get(), AVPBlocks.RAW_MONAZITE_BLOCK);
-        RecipeUtil.createCompressedBlockRecipes3x3(builder, TempAVPItems.RAW_SILICA.get(), AVPBlocks.RAW_SILICA_BLOCK);
-        RecipeUtil.createCompressedBlockRecipes3x3(builder, TempAVPItems.RAW_TITANIUM.get(), AVPBlocks.RAW_TITANIUM_BLOCK);
-        RecipeUtil.createCompressedBlockRecipes3x3(builder, TempAVPItems.RAW_ZINC.get(), AVPBlocks.RAW_ZINC_BLOCK);
+        RecipeUtil.createCompressedBlockRecipes3x3(builder, TempAVPItems.LITHIUM_DUST.get(), TempAVPBlocks.LITHIUM_BLOCK.get());
+        RecipeUtil.createCompressedBlockRecipes3x3(builder, TempAVPItems.RAW_BAUXITE.get(), TempAVPBlocks.RAW_BAUXITE_BLOCK.get());
+        RecipeUtil.createCompressedBlockRecipes3x3(builder, TempAVPItems.RAW_GALENA.get(), TempAVPBlocks.RAW_GALENA_BLOCK.get());
+        RecipeUtil.createCompressedBlockRecipes3x3(builder, TempAVPItems.RAW_MONAZITE.get(), TempAVPBlocks.RAW_MONAZITE_BLOCK.get());
+        RecipeUtil.createCompressedBlockRecipes3x3(builder, TempAVPItems.RAW_SILICA.get(), TempAVPBlocks.RAW_SILICA_BLOCK.get());
+        RecipeUtil.createCompressedBlockRecipes3x3(builder, TempAVPItems.RAW_TITANIUM.get(), TempAVPBlocks.RAW_TITANIUM_BLOCK.get());
+        RecipeUtil.createCompressedBlockRecipes3x3(builder, TempAVPItems.RAW_ZINC.get(), TempAVPBlocks.RAW_ZINC_BLOCK.get());
 
         builder.shaped()
             .withCategory(RecipeCategory.BUILDING_BLOCKS)
@@ -93,45 +97,45 @@ public class MetalRecipeProvider {
         builder.shaped()
             .withCategory(RecipeCategory.BUILDING_BLOCKS)
             .apply(RecipeTemplates.BUTTON_BLOCK.apply(TempAVPItems.FERROALUMINUM_INGOT.get()))
-            .into(2, AVPBlocks.FERROALUMINUM_BUTTON);
+            .into(2, TempAVPBlocks.FERROALUMINUM_BUTTON);
         builder.shaped()
             .withCategory(RecipeCategory.BUILDING_BLOCKS)
             .apply(RecipeTemplates.BUTTON_BLOCK.apply(TempAVPItems.STEEL_INGOT.get()))
-            .into(2, AVPBlocks.STEEL_BUTTON);
+            .into(2, TempAVPBlocks.STEEL_BUTTON);
         builder.shaped()
             .withCategory(RecipeCategory.BUILDING_BLOCKS)
             .apply(RecipeTemplates.BUTTON_BLOCK.apply(TempAVPItems.TITANIUM_INGOT.get()))
-            .into(2, AVPBlocks.TITANIUM_BUTTON);
+            .into(2, TempAVPBlocks.TITANIUM_BUTTON);
         builder.shaped()
             .withCategory(RecipeCategory.BUILDING_BLOCKS)
             .apply(RecipeTemplates.DOOR_BLOCK.apply(TempAVPItems.FERROALUMINUM_INGOT.get()))
-            .into(3, AVPBlocks.FERROALUMINUM_DOOR);
+            .into(3, TempAVPBlocks.FERROALUMINUM_DOOR);
         builder.shaped()
             .withCategory(RecipeCategory.BUILDING_BLOCKS)
             .apply(RecipeTemplates.DOOR_BLOCK.apply(TempAVPItems.STEEL_INGOT.get()))
-            .into(3, AVPBlocks.STEEL_DOOR);
+            .into(3, TempAVPBlocks.STEEL_DOOR);
         builder.shaped()
             .withCategory(RecipeCategory.BUILDING_BLOCKS)
             .apply(RecipeTemplates.DOOR_BLOCK.apply(TempAVPItems.TITANIUM_INGOT.get()))
-            .into(3, AVPBlocks.TITANIUM_DOOR);
+            .into(3, TempAVPBlocks.TITANIUM_DOOR);
 
         builder.shaped()
             .withCategory(RecipeCategory.BUILDING_BLOCKS)
             .apply(RecipeTemplates.TRAP_DOOR_BLOCK.apply(TempAVPItems.FERROALUMINUM_INGOT.get()))
-            .into(2, AVPBlocks.FERROALUMINUM_TRAP_DOOR);
+            .into(2, TempAVPBlocks.FERROALUMINUM_TRAP_DOOR);
         builder.shaped()
             .withCategory(RecipeCategory.BUILDING_BLOCKS)
             .apply(RecipeTemplates.TRAP_DOOR_BLOCK.apply(TempAVPItems.STEEL_INGOT.get()))
-            .into(2, AVPBlocks.STEEL_TRAP_DOOR);
+            .into(2, TempAVPBlocks.STEEL_TRAP_DOOR);
         builder.shaped()
             .withCategory(RecipeCategory.BUILDING_BLOCKS)
             .apply(RecipeTemplates.TRAP_DOOR_BLOCK.apply(TempAVPItems.TITANIUM_INGOT.get()))
-            .into(2, AVPBlocks.TITANIUM_TRAP_DOOR);
+            .into(2, TempAVPBlocks.TITANIUM_TRAP_DOOR);
 
         builder.shaped()
             .withCategory(RecipeCategory.BUILDING_BLOCKS)
             .apply(RecipeTemplates.PRESSURE_PLATE_BLOCK.apply(TempAVPItems.FERROALUMINUM_INGOT.get()))
-            .into(1, AVPBlocks.FERROALUMINUM_PRESSURE_PLATE);
+            .into(1, TempAVPBlocks.FERROALUMINUM_PRESSURE_PLATE);
         builder.shaped()
             .withCategory(RecipeCategory.BUILDING_BLOCKS)
             .apply(RecipeTemplates.PRESSURE_PLATE_BLOCK.apply(TempAVPItems.STEEL_INGOT.get()))
@@ -139,7 +143,7 @@ public class MetalRecipeProvider {
         builder.shaped()
             .withCategory(RecipeCategory.BUILDING_BLOCKS)
             .apply(RecipeTemplates.PRESSURE_PLATE_BLOCK.apply(TempAVPItems.TITANIUM_INGOT.get()))
-            .into(1, AVPBlocks.TITANIUM_PRESSURE_PLATE);
+            .into(1, TempAVPBlocks.TITANIUM_PRESSURE_PLATE);
 
         // Add standard slab and stair crafting recipes
         createStandardSlabRecipe(builder, TempAVPBlocks.FERROALUMINUM_BLOCK.get(), TempAVPBlocks.FERROALUMINUM_SLAB.get());
@@ -183,10 +187,10 @@ public class MetalRecipeProvider {
         var ferroaluminumBaseBuilder = builder.stonecut(TempAVPBlocks.FERROALUMINUM_BLOCK)
             .withCategory(RecipeCategory.BUILDING_BLOCKS);
 
-        ferroaluminumBaseBuilder.into(4, AVPBlocks.CHISELED_FERROALUMINUM);
-        ferroaluminumBaseBuilder.into(4, AVPBlocks.CUT_FERROALUMINUM);
-        ferroaluminumBaseBuilder.into(8, AVPBlocks.CUT_FERROALUMINUM_SLAB);
-        ferroaluminumBaseBuilder.into(4, AVPBlocks.CUT_FERROALUMINUM_STAIRS);
+        ferroaluminumBaseBuilder.into(4, TempAVPBlocks.CHISELED_FERROALUMINUM);
+        ferroaluminumBaseBuilder.into(4, TempAVPBlocks.CUT_FERROALUMINUM);
+        ferroaluminumBaseBuilder.into(8, TempAVPBlocks.CUT_FERROALUMINUM_SLAB);
+        ferroaluminumBaseBuilder.into(4, TempAVPBlocks.CUT_FERROALUMINUM_STAIRS);
         ferroaluminumBaseBuilder.into(16, TempAVPBlocks.FERROALUMINUM_CHAIN_FENCE);
         ferroaluminumBaseBuilder.into(4, TempAVPBlocks.FERROALUMINUM_COLUMN);
         ferroaluminumBaseBuilder.into(4, TempAVPBlocks.FERROALUMINUM_FASTENED_SIDING);
@@ -199,21 +203,21 @@ public class MetalRecipeProvider {
         ferroaluminumBaseBuilder.into(2, TempAVPBlocks.FERROALUMINUM_SLAB);
         ferroaluminumBaseBuilder.into(1, TempAVPBlocks.FERROALUMINUM_STAIRS);
 
-        var cutFerroaluminumBuilder = builder.stonecut(AVPBlocks.CUT_FERROALUMINUM)
+        var cutFerroaluminumBuilder = builder.stonecut(TempAVPBlocks.CUT_FERROALUMINUM)
             .withCategory(RecipeCategory.BUILDING_BLOCKS);
 
-        cutFerroaluminumBuilder.into(2, AVPBlocks.CUT_FERROALUMINUM_SLAB);
-        cutFerroaluminumBuilder.into(1, AVPBlocks.CUT_FERROALUMINUM_STAIRS);
+        cutFerroaluminumBuilder.into(2, TempAVPBlocks.CUT_FERROALUMINUM_SLAB);
+        cutFerroaluminumBuilder.into(1, TempAVPBlocks.CUT_FERROALUMINUM_STAIRS);
     }
 
     private static void createSteelBlockVariantRecipes(RecipeBuilder builder) {
         var steelBaseBuilder = builder.stonecut(TempAVPBlocks.STEEL_BLOCK.get())
             .withCategory(RecipeCategory.BUILDING_BLOCKS);
 
-        steelBaseBuilder.into(4, AVPBlocks.CHISELED_STEEL);
-        steelBaseBuilder.into(4, AVPBlocks.CUT_STEEL);
-        steelBaseBuilder.into(8, AVPBlocks.CUT_STEEL_SLAB);
-        steelBaseBuilder.into(4, AVPBlocks.CUT_STEEL_STAIRS);
+        steelBaseBuilder.into(4, TempAVPBlocks.CHISELED_STEEL);
+        steelBaseBuilder.into(4, TempAVPBlocks.CUT_STEEL);
+        steelBaseBuilder.into(8, TempAVPBlocks.CUT_STEEL_SLAB);
+        steelBaseBuilder.into(4, TempAVPBlocks.CUT_STEEL_STAIRS);
         steelBaseBuilder.into(16, TempAVPBlocks.STEEL_CHAIN_FENCE);
         steelBaseBuilder.into(4, TempAVPBlocks.STEEL_COLUMN);
         steelBaseBuilder.into(4, TempAVPBlocks.STEEL_FASTENED_SIDING);
@@ -226,21 +230,21 @@ public class MetalRecipeProvider {
         steelBaseBuilder.into(2, TempAVPBlocks.STEEL_SLAB.get());
         steelBaseBuilder.into(1, TempAVPBlocks.STEEL_STAIRS.get());
 
-        var cutSteelBuilder = builder.stonecut(AVPBlocks.CUT_STEEL)
+        var cutSteelBuilder = builder.stonecut(TempAVPBlocks.CUT_STEEL)
             .withCategory(RecipeCategory.BUILDING_BLOCKS);
 
-        cutSteelBuilder.into(2, AVPBlocks.CUT_STEEL_SLAB);
-        cutSteelBuilder.into(1, AVPBlocks.CUT_STEEL_STAIRS);
+        cutSteelBuilder.into(2, TempAVPBlocks.CUT_STEEL_SLAB);
+        cutSteelBuilder.into(1, TempAVPBlocks.CUT_STEEL_STAIRS);
     }
 
     private static void createTitaniumBlockVariantRecipes(RecipeBuilder builder) {
         var titaniumBaseBuilder = builder.stonecut(TempAVPBlocks.TITANIUM_BLOCK)
             .withCategory(RecipeCategory.BUILDING_BLOCKS);
 
-        titaniumBaseBuilder.into(4, AVPBlocks.CHISELED_TITANIUM);
-        titaniumBaseBuilder.into(4, AVPBlocks.CUT_TITANIUM);
-        titaniumBaseBuilder.into(8, AVPBlocks.CUT_TITANIUM_SLAB);
-        titaniumBaseBuilder.into(4, AVPBlocks.CUT_TITANIUM_STAIRS);
+        titaniumBaseBuilder.into(4, TempAVPBlocks.CHISELED_TITANIUM);
+        titaniumBaseBuilder.into(4, TempAVPBlocks.CUT_TITANIUM);
+        titaniumBaseBuilder.into(8, TempAVPBlocks.CUT_TITANIUM_SLAB);
+        titaniumBaseBuilder.into(4, TempAVPBlocks.CUT_TITANIUM_STAIRS);
         titaniumBaseBuilder.into(16, TempAVPBlocks.TITANIUM_CHAIN_FENCE);
         titaniumBaseBuilder.into(4, TempAVPBlocks.TITANIUM_COLUMN);
         titaniumBaseBuilder.into(4, TempAVPBlocks.TITANIUM_FASTENED_SIDING);
@@ -253,11 +257,11 @@ public class MetalRecipeProvider {
         titaniumBaseBuilder.into(2, TempAVPBlocks.TITANIUM_SLAB);
         titaniumBaseBuilder.into(1, TempAVPBlocks.TITANIUM_STAIRS);
 
-        var cutTitaniumBuilder = builder.stonecut(AVPBlocks.CUT_TITANIUM)
+        var cutTitaniumBuilder = builder.stonecut(TempAVPBlocks.CUT_TITANIUM)
             .withCategory(RecipeCategory.BUILDING_BLOCKS);
 
-        cutTitaniumBuilder.into(2, AVPBlocks.CUT_TITANIUM_SLAB);
-        cutTitaniumBuilder.into(1, AVPBlocks.CUT_TITANIUM_STAIRS);
+        cutTitaniumBuilder.into(2, TempAVPBlocks.CUT_TITANIUM_SLAB);
+        cutTitaniumBuilder.into(1, TempAVPBlocks.CUT_TITANIUM_STAIRS);
     }
 
     private static void createVariantSlabAndStairRecipes(RecipeBuilder builder) {
@@ -412,7 +416,12 @@ public class MetalRecipeProvider {
         );
     }
 
-    private static void addVariantSlabAndStairRecipes(RecipeBuilder builder, Supplier<? extends ItemLike> baseBlockSupplier, Supplier<? extends ItemLike> slabSupplier, Supplier<? extends ItemLike> stairsSupplier) {
+    private static void addVariantSlabAndStairRecipes(
+        RecipeBuilder builder,
+        Supplier<? extends ItemLike> baseBlockSupplier,
+        Supplier<? extends ItemLike> slabSupplier,
+        Supplier<? extends ItemLike> stairsSupplier
+    ) {
         // Add stonecut recipes for the block variants
         builder.stonecut(baseBlockSupplier)
             .withCategory(RecipeCategory.BUILDING_BLOCKS)

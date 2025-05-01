@@ -3,9 +3,9 @@ package com.avp.fabric.data.recipe.builder;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.world.level.ItemLike;
 
-import com.avp.fabric.data.recipe.RecipeProvider;
-
 import java.util.function.Supplier;
+
+import com.avp.fabric.data.recipe.RecipeProvider;
 
 public class StonecutterRecipeBuilder {
 

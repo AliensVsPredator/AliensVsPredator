@@ -26,8 +26,8 @@ import java.util.function.Consumer;
 
 import com.avp.AVP;
 import com.avp.AVPResources;
+import com.avp.common.block.TempAVPBlocks;
 import com.avp.common.item.TempAVPItems;
-import com.avp.fabric.common.block.AVPBlocks;
 import com.avp.fabric.common.entity.type.AVPEntityTypes;
 import com.avp.fabric.common.item.ArmorItems;
 
@@ -56,7 +56,7 @@ public class AdvancementProvider extends FabricAdvancementProvider {
     public void generateAdvancement(HolderLookup.Provider registryLookup, Consumer<AdvancementHolder> consumer) {
         var root = Advancement.Builder.advancement()
             .display(
-                AVPBlocks.RESIN,
+                TempAVPBlocks.RESIN.get(),
                 Component.translatable("advancements.aliens.root.title"),
                 Component.translatable("advancements.aliens.root.description"),
                 AVPResources.location("textures/gui/advancements/backgrounds/resin.png"),

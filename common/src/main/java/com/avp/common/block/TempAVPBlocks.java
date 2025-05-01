@@ -1,8 +1,13 @@
 package com.avp.common.block;
 
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.util.ColorRGBA;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.ButtonBlock;
+import net.minecraft.world.level.block.ColoredFallingBlock;
+import net.minecraft.world.level.block.DoorBlock;
 import net.minecraft.world.level.block.IronBarsBlock;
 import net.minecraft.world.level.block.PressurePlateBlock;
 import net.minecraft.world.level.block.RotatedPillarBlock;
@@ -10,6 +15,8 @@ import net.minecraft.world.level.block.SlabBlock;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.StainedGlassBlock;
 import net.minecraft.world.level.block.StairBlock;
+import net.minecraft.world.level.block.TransparentBlock;
+import net.minecraft.world.level.block.TrapDoorBlock;
 import net.minecraft.world.level.block.WallBlock;
 import net.minecraft.world.level.block.WaterloggedTransparentBlock;
 import net.minecraft.world.level.block.state.BlockBehaviour;
@@ -22,21 +29,107 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
+import com.avp.common.block.resin.ResinWebBlock;
 import com.avp.service.Services;
 
 // TODO: Rename this once multi-loader migration is finished.
 public class TempAVPBlocks {
+
+    // FIXME: Make ResinBlock type.
+    // FIXME: Fix properties.
+    public static final Supplier<Block> ABERRANT_RESIN = register("aberrant_resin", () -> new Block(BlockProperties.NETHER_RESIN.build()));
+
+    // FIXME: Make ResinNodeBlock type.
+    // FIXME: Fix properties.
+    public static final Supplier<Block> ABERRANT_RESIN_NODE = register(
+        "aberrant_resin_node",
+        () -> new Block(BlockProperties.RESIN.build())
+    );
+
+    // FIXME: Make ResinVeinBlock type.
+    // FIXME: Fix properties.
+    public static final Supplier<Block> ABERRANT_RESIN_VEIN = register(
+        "aberrant_resin_vein",
+        () -> new Block(BlockProperties.NETHER_RESIN_VEIN.build())
+    );
+
+    // FIXME: Fix properties.
+    public static final Supplier<Block> ABERRANT_RESIN_WEB = register(
+        "aberrant_resin_web",
+        () -> new ResinWebBlock(BlockProperties.NETHER_RESIN_WEB.build())
+    );
+
+    public static final Supplier<Block> ALUMINUM_BLOCK = register("aluminum_block", BlockProperties.ALUMINUM);
+
+    public static final Supplier<Block> ASH_BLOCK = register("ash_block", () -> new AshBlock(BlockProperties.ASH_BLOCK.build()));
 
     // FIXME: Change this to new RadiatedBlock once RadiatedBlock is migrated.
     public static final Supplier<Block> AUTUNITE_ORE = register("autunite_ore", () -> new Block(BlockProperties.AUTUNITE_ORE.build()));
 
     public static final Supplier<Block> BAUXITE_ORE = register("bauxite_ore", BlockProperties.BAUXITE_ORE);
 
+    public static final Supplier<Block> BLUEPRINT_BLOCK = register("blueprint_block", BlockProperties.STEEL);
+
+    public static final Supplier<Block> BRASS_BLOCK = register("brass_block", BlockProperties.BRASS);
+
+    public static final Supplier<Block> CHISELED_FERROALUMINUM = register("chiseled_ferroaluminum", BlockProperties.FERROALUMINUM);
+
+    public static final Supplier<Block> CHISELED_STEEL = register("chiseled_steel", BlockProperties.STEEL);
+
+    public static final Supplier<Block> CHISELED_TITANIUM = register("chiseled_titanium", BlockProperties.TITANIUM);
+
+    public static final Supplier<Block> CUT_FERROALUMINUM = register("cut_ferroaluminum", BlockProperties.FERROALUMINUM);
+
+    public static final Supplier<Block> CUT_FERROALUMINUM_SLAB = register(
+        "cut_ferroaluminum_slab",
+        () -> new SlabBlock(BlockProperties.FERROALUMINUM.build())
+    );
+
+    public static final Supplier<Block> CUT_FERROALUMINUM_STAIRS = register(
+        "cut_ferroaluminum_stairs",
+        () -> new StairBlock(
+            CUT_FERROALUMINUM.get().defaultBlockState(),
+            BlockProperties.FERROALUMINUM.build()
+        )
+    );
+
+    public static final Supplier<Block> CUT_STEEL = register("cut_steel", BlockProperties.STEEL);
+
+    public static final Supplier<Block> CUT_STEEL_SLAB = register("cut_steel_slab", () -> new SlabBlock(BlockProperties.STEEL.build()));
+
+    public static final Supplier<Block> CUT_STEEL_STAIRS = register(
+        "cut_steel_stairs",
+        () -> new StairBlock(
+            CUT_STEEL.get().defaultBlockState(),
+            BlockProperties.STEEL.build()
+        )
+    );
+
+    public static final Supplier<Block> CUT_TITANIUM = register("cut_titanium", BlockProperties.TITANIUM);
+
+    public static final Supplier<Block> CUT_TITANIUM_SLAB = register(
+        "cut_titanium_slab",
+        () -> new SlabBlock(BlockProperties.TITANIUM.build())
+    );
+
+    public static final Supplier<Block> CUT_TITANIUM_STAIRS = register(
+        "cut_titanium_stairs",
+        () -> new StairBlock(
+            CUT_TITANIUM.get().defaultBlockState(),
+            BlockProperties.TITANIUM.build()
+        )
+    );
+
     public static final Supplier<Block> DEEPSLATE_TITANIUM_ORE = register("deepslate_titanium_ore", BlockProperties.DEEPSLATE_TITANIUM_ORE);
 
     public static final Supplier<Block> DEEPSLATE_ZINC_ORE = register("deepslate_zinc_ore", BlockProperties.DEEPSLATE_ZINC_ORE);
 
     public static final Supplier<Block> FERROALUMINUM_BLOCK = register("ferroaluminum_block", BlockProperties.FERROALUMINUM);
+
+    public static final Supplier<Block> FERROALUMINUM_BUTTON = register(
+        "ferroaluminum_button",
+        () -> new ButtonBlock(AVPBlockSetTypes.FERROALUMINUM, 20, BlockProperties.FERROALUMINUM.build())
+    );
 
     public static final Supplier<Block> FERROALUMINUM_CHAIN_FENCE = register(
         "ferroaluminum_chain_fence",
@@ -48,7 +141,15 @@ public class TempAVPBlocks {
         () -> new RotatedPillarBlock(BlockProperties.FERROALUMINUM.build())
     );
 
-    public static final Supplier<Block> FERROALUMINUM_FASTENED_SIDING = register("ferroaluminum_fastened_siding", BlockProperties.FERROALUMINUM);
+    public static final Supplier<Block> FERROALUMINUM_DOOR = register(
+        "ferroaluminum_door",
+        () -> new DoorBlock(BlockSetType.COPPER, BlockProperties.FERROALUMINUM.build().noOcclusion())
+    );
+
+    public static final Supplier<Block> FERROALUMINUM_FASTENED_SIDING = register(
+        "ferroaluminum_fastened_siding",
+        BlockProperties.FERROALUMINUM
+    );
 
     public static final Supplier<Block> FERROALUMINUM_FASTENED_SIDING_SLAB = register(
         "ferroaluminum_fastened_siding_slab",
@@ -102,6 +203,11 @@ public class TempAVPBlocks {
         () -> new StairBlock(FERROALUMINUM_PLATING.get().defaultBlockState(), BlockProperties.FERROALUMINUM.build())
     );
 
+    public static final Supplier<Block> FERROALUMINUM_PRESSURE_PLATE = register(
+        "ferroaluminum_pressure_plate",
+        () -> new PressurePlateBlock(BlockSetType.COPPER, BlockProperties.FERROALUMINUM.build())
+    );
+
     public static final Supplier<Block> FERROALUMINUM_SLAB = register(
         "ferroaluminum_slab",
         () -> new SlabBlock(BlockBehaviour.Properties.ofFullCopy(FERROALUMINUM_BLOCK.get()))
@@ -136,6 +242,11 @@ public class TempAVPBlocks {
         () -> new StairBlock(FERROALUMINUM_STANDING.get().defaultBlockState(), BlockProperties.FERROALUMINUM.build())
     );
 
+    public static final Supplier<Block> FERROALUMINUM_TRAP_DOOR = register(
+        "ferroaluminum_trapdoor",
+        () -> new TrapDoorBlock(BlockSetType.COPPER, BlockProperties.FERROALUMINUM.build().noOcclusion())
+    );
+
     public static final Supplier<Block> FERROALUMINUM_TREAD = register("ferroaluminum_tread", BlockProperties.FERROALUMINUM);
 
     public static final Supplier<Block> FERROALUMINUM_TREAD_SLAB = register(
@@ -150,11 +261,136 @@ public class TempAVPBlocks {
 
     public static final Supplier<Block> GALENA_ORE = register("galena_ore", BlockProperties.GALENA_ORE);
 
+    public static final Supplier<Block> INDUSTRIAL_GLASS = register(
+        "industrial_glass",
+        () -> new TransparentBlock(BlockProperties.INDUSTRIAL_GLASS.build())
+    );
+
+    public static final Supplier<Block> INDUSTRIAL_GLASS_DOOR = register(
+        "industrial_glass_door",
+        () -> new DoorBlock(BlockSetType.COPPER, BlockProperties.INDUSTRIAL_GLASS.build().noOcclusion())
+    );
+
+    public static final Supplier<Block> INDUSTRIAL_GLASS_TRAP_DOOR = register(
+        "industrial_glass_trapdoor",
+        () -> new TrapDoorBlock(BlockSetType.COPPER, BlockProperties.INDUSTRIAL_GLASS.build().noOcclusion())
+    );
+
+    public static final Supplier<Block> INDUSTRIAL_GLASS_PANE = register(
+        "industrial_glass_pane",
+        () -> new IronBarsBlock(BlockProperties.INDUSTRIAL_GLASS_PANE.build())
+    );
+
+    // Slabs And Stairs
+    public static final Supplier<Block> INDUSTRIAL_GLASS_SLAB = register(
+        "industrial_glass_slab",
+        () -> new SlabBlock(BlockProperties.INDUSTRIAL_GLASS.build())
+    );
+
+    public static final Supplier<Block> INDUSTRIAL_GLASS_STAIRS = register(
+        "industrial_glass_stairs",
+        () -> new StairBlock(INDUSTRIAL_GLASS.get().defaultBlockState(), BlockProperties.INDUSTRIAL_GLASS.build())
+    );
+
+    // FIXME: Make IrradiatedResinBlock type.
+    public static final Supplier<Block> IRRADIATED_RESIN = register(
+        "irradiated_resin",
+        () -> new Block(BlockProperties.NETHER_RESIN.build())
+    );
+
+    // FIXME: Make IrradiatedResinNodeBlock type.
+    public static final Supplier<Block> IRRADIATED_RESIN_NODE = register(
+        "irradiated_resin_node",
+        () -> new Block(BlockProperties.RESIN.build())
+    );
+
+    // FIXME: Make IrradiatedResinVeinBlock type.
+    public static final Supplier<Block> IRRADIATED_RESIN_VEIN = register(
+        "irradiated_resin_vein",
+        () -> new Block(BlockProperties.NETHER_RESIN_VEIN.build())
+    );
+
+    // FIXME: Make IrradiatedResinWebBlock type.
+    public static final Supplier<Block> IRRADIATED_RESIN_WEB = register(
+        "irradiated_resin_web",
+        () -> new Block(BlockProperties.NETHER_RESIN_WEB.build())
+    );
+
+    public static final Supplier<Block> LEAD_BLOCK = register("lead_block", BlockProperties.LEAD);
+
+    public static final Supplier<Block> LITHIUM_BLOCK = register(
+        "lithium_block",
+        () -> new LithiumBlock(BlockProperties.LITHIUM_ORE.build())
+    );
+
     public static final Supplier<Block> LITHIUM_ORE = register("lithium_ore", () -> new LithiumBlock(BlockProperties.LITHIUM_ORE.build()));
 
     public static final Supplier<Block> MONAZITE_ORE = register("monazite_ore", BlockProperties.MONAZITE_ORE);
 
+    // FIXME: Make ResinBlock type.
+    public static final Supplier<Block> NETHER_RESIN = register("nether_resin", () -> new Block(BlockProperties.NETHER_RESIN.build()));
+
+    // FIXME: Make ResinNodeBlock type.
+    public static final Supplier<Block> NETHER_RESIN_NODE = register("nether_resin_node", () -> new Block(BlockProperties.RESIN.build()));
+
+    // FIXME: Make ResinVeinBlock type.
+    public static final Supplier<Block> NETHER_RESIN_VEIN = register(
+        "nether_resin_vein",
+        () -> new Block(BlockProperties.NETHER_RESIN_VEIN.build())
+    );
+
+    public static final Supplier<Block> NETHER_RESIN_WEB = register(
+        "nether_resin_web",
+        () -> new ResinWebBlock(BlockProperties.NETHER_RESIN_WEB.build())
+    );
+
+    public static final Supplier<Block> RAW_BAUXITE_BLOCK = register("raw_bauxite_block", BlockProperties.BAUXITE_ORE);
+
+    public static final Supplier<Block> RAW_GALENA_BLOCK = register("raw_galena_block", BlockProperties.GALENA_ORE);
+
+    public static final Supplier<Block> RAW_MONAZITE_BLOCK = register("raw_monazite_block", BlockProperties.MONAZITE_ORE);
+
+    public static final Supplier<Block> RAW_SILICA_BLOCK = register(
+        "raw_silica_block",
+        () -> new Block(BlockBehaviour.Properties.ofFullCopy(Blocks.GRAVEL).strength(0.9F))
+    );
+
+    public static final Supplier<Block> RAW_TITANIUM_BLOCK = register("raw_titanium_block", BlockProperties.TITANIUM_ORE);
+
+    public static final Supplier<Block> RAW_ZINC_BLOCK = register("raw_zinc_block", BlockProperties.ZINC_ORE);
+
+    // FIXME: Make ResinBlock type.
+    public static final Supplier<Block> RESIN = register("resin", () -> new Block(BlockProperties.RESIN.build()));
+
+    public static final Supplier<Block> RESIN_BRICKS = register("resin_bricks", BlockProperties.BRASS);
+
+    // FIXME: Make ResinNodeBlock type.
+    public static final Supplier<Block> RESIN_NODE = register("resin_node", () -> new Block(BlockProperties.RESIN.build()));
+
+    public static final Supplier<Block> RESIN_O = register("resin_o", BlockProperties.BRASS);
+
+    public static final Supplier<Block> RESIN_RIBBED = register("resin_ribbed", BlockProperties.BRASS);
+
+    public static final Supplier<Block> RESIN_SMOOTH = register("resin_smooth", BlockProperties.BRASS);
+
+    // FIXME: Make ResinVeinBlock type.
+    public static final Supplier<Block> RESIN_VEIN = register("resin_vein", () -> new Block(BlockProperties.RESIN_VEIN.build()));
+
+    public static final Supplier<Block> RESIN_WEB = register("resin_web", () -> new ResinWebBlock(BlockProperties.RESIN_WEB.build()));
+
+    public static final Supplier<Block> ROYAL_JELLY_BLOCK = register("royal_jelly_block", BlockProperties.JELLY);
+
+    public static final Supplier<Block> SILICA_GRAVEL = register(
+        "silica_gravel",
+        () -> new ColoredFallingBlock(new ColorRGBA(-8356741), BlockBehaviour.Properties.ofFullCopy(Blocks.GRAVEL))
+    );
+
     public static final Supplier<Block> STEEL_BLOCK = register("steel_block", BlockProperties.STEEL);
+
+    public static final Supplier<Block> STEEL_BUTTON = register(
+        "steel_button",
+        () -> new ButtonBlock(AVPBlockSetTypes.STEEL, 20, BlockProperties.STEEL.build())
+    );
 
     public static final Supplier<Block> STEEL_BARS = register(
         "steel_bars",
@@ -166,7 +402,15 @@ public class TempAVPBlocks {
         () -> new IronBarsBlock(BlockProperties.STEEL_BARS.build().sound(SoundType.CHAIN))
     );
 
-    public static final Supplier<Block> STEEL_COLUMN = register("steel_column", () -> new RotatedPillarBlock(BlockProperties.STEEL.build()));
+    public static final Supplier<Block> STEEL_COLUMN = register(
+        "steel_column",
+        () -> new RotatedPillarBlock(BlockProperties.STEEL.build())
+    );
+
+    public static final Supplier<Block> STEEL_DOOR = register(
+        "steel_door",
+        () -> new DoorBlock(BlockSetType.COPPER, BlockProperties.STEEL.build().noOcclusion())
+    );
 
     public static final Supplier<Block> STEEL_FASTENED_SIDING = register("steel_fastened_siding", BlockProperties.STEEL);
 
@@ -197,7 +441,10 @@ public class TempAVPBlocks {
         () -> new WaterloggedTransparentBlock(BlockProperties.STEEL_GRATE.build())
     );
 
-    public static final Supplier<Block> STEEL_GRATE_SLAB = register("steel_grate_slab", () -> new SlabBlock(BlockProperties.STEEL.build().noOcclusion()));
+    public static final Supplier<Block> STEEL_GRATE_SLAB = register(
+        "steel_grate_slab",
+        () -> new SlabBlock(BlockProperties.STEEL.build().noOcclusion())
+    );
 
     public static final Supplier<Block> STEEL_GRATE_STAIRS = register(
         "steel_grate_stairs",
@@ -206,7 +453,10 @@ public class TempAVPBlocks {
 
     public static final Supplier<Block> STEEL_PLATING = register("steel_plating", BlockProperties.STEEL);
 
-    public static final Supplier<Block> STEEL_PLATING_SLAB = register("steel_plating_slab", () -> new SlabBlock(BlockProperties.STEEL.build()));
+    public static final Supplier<Block> STEEL_PLATING_SLAB = register(
+        "steel_plating_slab",
+        () -> new SlabBlock(BlockProperties.STEEL.build())
+    );
 
     public static final Supplier<Block> STEEL_PLATING_STAIRS = register(
         "steel_plating_stairs",
@@ -225,7 +475,10 @@ public class TempAVPBlocks {
 
     public static final Supplier<Block> STEEL_SIDING = register("steel_siding", BlockProperties.STEEL);
 
-    public static final Supplier<Block> STEEL_SIDING_SLAB = register("steel_siding_slab", () -> new SlabBlock(BlockProperties.STEEL.build()));
+    public static final Supplier<Block> STEEL_SIDING_SLAB = register(
+        "steel_siding_slab",
+        () -> new SlabBlock(BlockProperties.STEEL.build())
+    );
 
     public static final Supplier<Block> STEEL_SIDING_STAIRS = register(
         "steel_siding_stairs",
@@ -239,11 +492,19 @@ public class TempAVPBlocks {
 
     public static final Supplier<Block> STEEL_STANDING = register("steel_standing", BlockProperties.STEEL);
 
-    public static final Supplier<Block> STEEL_STANDING_SLAB = register("steel_standing_slab", () -> new SlabBlock(BlockProperties.STEEL.build()));
+    public static final Supplier<Block> STEEL_STANDING_SLAB = register(
+        "steel_standing_slab",
+        () -> new SlabBlock(BlockProperties.STEEL.build())
+    );
 
     public static final Supplier<Block> STEEL_STANDING_STAIRS = register(
         "steel_standing_stairs",
         () -> new StairBlock(STEEL_STANDING.get().defaultBlockState(), BlockProperties.STEEL.build())
+    );
+
+    public static final Supplier<Block> STEEL_TRAP_DOOR = register(
+        "steel_trapdoor",
+        () -> new TrapDoorBlock(BlockSetType.COPPER, BlockProperties.STEEL.build())
     );
 
     public static final Supplier<Block> STEEL_TREAD = register("steel_tread", BlockProperties.STEEL);
@@ -255,16 +516,29 @@ public class TempAVPBlocks {
         () -> new StairBlock(STEEL_TREAD.get().defaultBlockState(), BlockProperties.STEEL.build())
     );
 
-    public static final Supplier<Block>  TITANIUM_BLOCK = register("titanium_block", BlockProperties.TITANIUM);
+    public static final Supplier<Block> TITANIUM_BLOCK = register("titanium_block", BlockProperties.TITANIUM);
 
-    public static final Supplier<Block>  TITANIUM_CHAIN_FENCE = register(
+    public static final Supplier<Block> TITANIUM_BUTTON = register(
+        "titanium_button",
+        () -> new ButtonBlock(AVPBlockSetTypes.TITANIUM, 20, BlockProperties.TITANIUM.build())
+    );
+
+    public static final Supplier<Block> TITANIUM_CHAIN_FENCE = register(
         "titanium_chain_fence",
         () -> new IronBarsBlock(BlockProperties.TITANIUM_BARS.build().sound(SoundType.CHAIN))
     );
 
-    public static final Supplier<Block>  TITANIUM_COLUMN = register("titanium_column", () -> new RotatedPillarBlock(BlockProperties.TITANIUM.build()));
+    public static final Supplier<Block> TITANIUM_COLUMN = register(
+        "titanium_column",
+        () -> new RotatedPillarBlock(BlockProperties.TITANIUM.build())
+    );
 
-    public static final Supplier<Block>  TITANIUM_FASTENED_SIDING = register("titanium_fastened_siding", BlockProperties.TITANIUM);
+    public static final Supplier<Block> TITANIUM_DOOR = register(
+        "titanium_door",
+        () -> new DoorBlock(BlockSetType.COPPER, BlockProperties.TITANIUM.build().noOcclusion())
+    );
+
+    public static final Supplier<Block> TITANIUM_FASTENED_SIDING = register("titanium_fastened_siding", BlockProperties.TITANIUM);
 
     public static final Supplier<Block> TITANIUM_FASTENED_SIDING_SLAB = register(
         "titanium_fastened_siding_slab",
@@ -276,7 +550,7 @@ public class TempAVPBlocks {
         () -> new StairBlock(TITANIUM_FASTENED_SIDING.get().defaultBlockState(), BlockProperties.TITANIUM.build())
     );
 
-    public static final Supplier<Block>  TITANIUM_FASTENED_STANDING = register("titanium_fastened_standing", BlockProperties.TITANIUM);
+    public static final Supplier<Block> TITANIUM_FASTENED_STANDING = register("titanium_fastened_standing", BlockProperties.TITANIUM);
 
     public static final Supplier<Block> TITANIUM_FASTENED_STANDING_SLAB = register(
         "titanium_fastened_standing_slab",
@@ -288,7 +562,7 @@ public class TempAVPBlocks {
         () -> new StairBlock(TITANIUM_FASTENED_STANDING.get().defaultBlockState(), BlockProperties.TITANIUM.build())
     );
 
-    public static final Supplier<Block>  TITANIUM_GRATE = register(
+    public static final Supplier<Block> TITANIUM_GRATE = register(
         "titanium_grate",
         () -> new WaterloggedTransparentBlock(BlockProperties.TITANIUM_GRATE.build())
     );
@@ -303,18 +577,29 @@ public class TempAVPBlocks {
         () -> new StairBlock(TITANIUM_GRATE.get().defaultBlockState(), BlockProperties.TITANIUM.build().noOcclusion())
     );
 
-    public static final Supplier<Block>  TITANIUM_PLATING = register("titanium_plating", BlockProperties.TITANIUM);
+    public static final Supplier<Block> TITANIUM_PLATING = register("titanium_plating", BlockProperties.TITANIUM);
 
-    public static final Supplier<Block> TITANIUM_PLATING_SLAB = register("titanium_plating_slab", () -> new SlabBlock(BlockProperties.TITANIUM.build()));
+    public static final Supplier<Block> TITANIUM_PLATING_SLAB = register(
+        "titanium_plating_slab",
+        () -> new SlabBlock(BlockProperties.TITANIUM.build())
+    );
 
     public static final Supplier<Block> TITANIUM_PLATING_STAIRS = register(
         "titanium_plating_stairs",
         () -> new StairBlock(TITANIUM_PLATING.get().defaultBlockState(), BlockProperties.TITANIUM.build())
     );
 
-    public static final Supplier<Block>  TITANIUM_SIDING = register("titanium_siding", BlockProperties.TITANIUM);
+    public static final Supplier<Block> TITANIUM_PRESSURE_PLATE = register(
+        "titanium_pressure_plate",
+        () -> new PressurePlateBlock(BlockSetType.COPPER, BlockProperties.TITANIUM.build())
+    );
 
-    public static final Supplier<Block> TITANIUM_SIDING_SLAB = register("titanium_siding_slab", () -> new SlabBlock(BlockProperties.TITANIUM.build()));
+    public static final Supplier<Block> TITANIUM_SIDING = register("titanium_siding", BlockProperties.TITANIUM);
+
+    public static final Supplier<Block> TITANIUM_SIDING_SLAB = register(
+        "titanium_siding_slab",
+        () -> new SlabBlock(BlockProperties.TITANIUM.build())
+    );
 
     public static final Supplier<Block> TITANIUM_SIDING_STAIRS = register(
         "titanium_siding_stairs",
@@ -331,18 +616,29 @@ public class TempAVPBlocks {
         () -> new StairBlock(TITANIUM_BLOCK.get().defaultBlockState(), BlockBehaviour.Properties.ofFullCopy(TITANIUM_BLOCK.get()))
     );
 
-    public static final Supplier<Block>  TITANIUM_STANDING = register("titanium_standing", BlockProperties.TITANIUM);
+    public static final Supplier<Block> TITANIUM_STANDING = register("titanium_standing", BlockProperties.TITANIUM);
 
-    public static final Supplier<Block> TITANIUM_STANDING_SLAB = register("titanium_standing_slab", () -> new SlabBlock(BlockProperties.TITANIUM.build()));
+    public static final Supplier<Block> TITANIUM_STANDING_SLAB = register(
+        "titanium_standing_slab",
+        () -> new SlabBlock(BlockProperties.TITANIUM.build())
+    );
 
     public static final Supplier<Block> TITANIUM_STANDING_STAIRS = register(
         "titanium_standing_stairs",
         () -> new StairBlock(TITANIUM_STANDING.get().defaultBlockState(), BlockProperties.TITANIUM.build())
     );
 
-    public static final Supplier<Block>  TITANIUM_TREAD = register("titanium_tread", BlockProperties.TITANIUM);
+    public static final Supplier<Block> TITANIUM_TRAP_DOOR = register(
+        "titanium_trapdoor",
+        () -> new TrapDoorBlock(BlockSetType.COPPER, BlockProperties.TITANIUM.build())
+    );
 
-    public static final Supplier<Block> TITANIUM_TREAD_SLAB = register("titanium_tread_slab", () -> new SlabBlock(BlockProperties.TITANIUM.build()));
+    public static final Supplier<Block> TITANIUM_TREAD = register("titanium_tread", BlockProperties.TITANIUM);
+
+    public static final Supplier<Block> TITANIUM_TREAD_SLAB = register(
+        "titanium_tread_slab",
+        () -> new SlabBlock(BlockProperties.TITANIUM.build())
+    );
 
     public static final Supplier<Block> TITANIUM_TREAD_STAIRS = register(
         "titanium_tread_stairs",
@@ -350,9 +646,9 @@ public class TempAVPBlocks {
     );
 
     // FIXME: Change this to new RadiatedBlock once RadiatedBlock is migrated.
-    public static final Supplier<Block>  URANIUM_BLOCK = register("uranium_block", BlockProperties.URANIUM);
+    public static final Supplier<Block> URANIUM_BLOCK = register("uranium_block", BlockProperties.URANIUM);
 
-    public static final Supplier<Block>  ZINC_BLOCK = register("zinc_block", BlockProperties.ZINC);
+    public static final Supplier<Block> ZINC_BLOCK = register("zinc_block", BlockProperties.ZINC);
 
     public static final Supplier<Block> ZINC_ORE = register("zinc_ore", BlockProperties.ZINC_ORE);
 

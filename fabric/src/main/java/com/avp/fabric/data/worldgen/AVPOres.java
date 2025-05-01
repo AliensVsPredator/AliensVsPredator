@@ -15,7 +15,6 @@ import java.util.Collections;
 import java.util.List;
 
 import com.avp.common.block.TempAVPBlocks;
-import com.avp.fabric.common.block.AVPBlocks;
 import com.avp.fabric.data.worldgen.builder.AVPOreData;
 
 public class AVPOres {
@@ -109,7 +108,7 @@ public class AVPOres {
     );
 
     public static final AVPOreData SILICON_GRAVEL = create(
-        builder("silicon_gravel", OreConfiguration.target(GRAVEL_REPLACEABLES_RULE, AVPBlocks.SILICA_GRAVEL.defaultBlockState()))
+        builder("silicon_gravel", OreConfiguration.target(GRAVEL_REPLACEABLES_RULE, TempAVPBlocks.SILICA_GRAVEL.get().defaultBlockState()))
             .count(25)
             .heightRange(HeightRangePlacement.uniform(VerticalAnchor.absolute(0), VerticalAnchor.absolute(80)))
             .veinSize(13)

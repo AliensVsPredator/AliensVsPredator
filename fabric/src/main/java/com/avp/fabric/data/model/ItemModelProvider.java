@@ -11,9 +11,10 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Supplier;
 
+import com.avp.common.block.TempAVPBlocks;
+import com.avp.common.item.TempAVPBlockItems;
 import com.avp.common.item.TempAVPItems;
 import com.avp.fabric.common.block.AVPBlocks;
-import com.avp.fabric.common.block_item.AVPBlockItems;
 import com.avp.fabric.common.item.AVPItems;
 import com.avp.fabric.common.item.ArmorItems;
 
@@ -25,9 +26,9 @@ public class ItemModelProvider extends FabricModelProvider {
 
     @Override
     public void generateBlockStateModels(BlockModelGenerators generators) {
-        generators.createSimpleFlatItemModel(AVPBlocks.NETHER_RESIN_WEB);
+        generators.createSimpleFlatItemModel(TempAVPBlocks.NETHER_RESIN_WEB.get());
         generators.createSimpleFlatItemModel(AVPBlocks.RAZOR_WIRE);
-        generators.createSimpleFlatItemModel(AVPBlocks.RESIN_WEB);
+        generators.createSimpleFlatItemModel(TempAVPBlocks.RESIN_WEB.get());
     }
 
     @Override
@@ -218,9 +219,9 @@ public class ItemModelProvider extends FabricModelProvider {
         generateStandardItem(generators, TempAVPItems.URANIUM_NUGGET);
         generateStandardItem(generators, TempAVPItems.ALUMINUM_NUGGET);
 
-        generateHandheldItem(generators, AVPBlockItems.FERROALUMINUM_DOOR);
-        generateHandheldItem(generators, AVPBlockItems.STEEL_DOOR);
-        generateHandheldItem(generators, AVPBlockItems.TITANIUM_DOOR);
+        generateHandheldItem(generators, TempAVPBlockItems.FERROALUMINUM_DOOR.get());
+        generateHandheldItem(generators, TempAVPBlockItems.STEEL_DOOR.get());
+        generateHandheldItem(generators, TempAVPBlockItems.TITANIUM_DOOR.get());
 
         generateStandardItem(generators, AVPItems.POISON_JELLY);
     }

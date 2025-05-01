@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.avp.common.block.TempAVPBlocks;
 import com.avp.common.explosion.Explosion;
 import com.avp.common.util.ExplosionDistanceUtil;
 import com.avp.common.worldgen.biome.AVPBiomes;
@@ -89,7 +90,7 @@ public class NuclearExplosionEffects {
             if (blockState.isSolidRender(level, pos) && level.getRandom().nextInt(10) < 2) {
                 level.setBlock(
                     pos.above(),
-                    AVPBlocks.ASH_BLOCK.defaultBlockState().setValue(SnowLayerBlock.LAYERS, 1),
+                    TempAVPBlocks.ASH_BLOCK.get().defaultBlockState().setValue(SnowLayerBlock.LAYERS, 1),
                     flags
                 );
             }

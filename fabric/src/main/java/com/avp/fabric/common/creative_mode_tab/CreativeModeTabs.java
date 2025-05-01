@@ -15,7 +15,6 @@ import com.avp.AVP;
 import com.avp.AVPResources;
 import com.avp.common.block.TempAVPBlocks;
 import com.avp.common.item.TempAVPItems;
-import com.avp.fabric.common.block.AVPBlocks;
 import com.avp.fabric.common.item.AVPItems;
 import com.avp.fabric.common.item.ArmorItems;
 import com.avp.fabric.common.item.SpawnEggItems;
@@ -36,7 +35,7 @@ public class CreativeModeTabs {
 
     public static final ResourceKey<CreativeModeTab> TOOLS_AND_UTILITIES_KEY = createResourceKey("tools_and_utilities");
 
-    public static final CreativeModeTab BLOCKS = register(BLOCKS_KEY, () -> new ItemStack(AVPBlocks.RESIN));
+    public static final CreativeModeTab BLOCKS = register(BLOCKS_KEY, () -> new ItemStack(TempAVPBlocks.RESIN.get()));
 
     public static final CreativeModeTab COLORED_BLOCKS = register(
         COLORED_BLOCKS_KEY,

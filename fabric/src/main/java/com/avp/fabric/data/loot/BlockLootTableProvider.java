@@ -29,33 +29,33 @@ public class BlockLootTableProvider extends FabricBlockLootTableProvider {
 
     @Override
     public void generate() {
-        dropSelf(AVPBlocks.BLUEPRINT_BLOCK);
+        dropSelf(TempAVPBlocks.BLUEPRINT_BLOCK.get());
         dropSelf(AVPBlocks.REDSTONE_GENERATOR);
         dropSelf(AVPBlocks.DESK_TERMINAL_BLOCK);
         dropSelf(AVPBlocks.TRIP_MINE_BLOCK);
         dropSelf(AVPBlocks.RESONATOR_BLOCK);
         dropSelf(AVPBlocks.SENTRY_TURRET);
         dropSelf(AVPBlocks.TRINITITE_BLOCK);
-        dropSelf(AVPBlocks.ASH_BLOCK);
+        dropSelf(TempAVPBlocks.ASH_BLOCK.get());
         dropSelf(AVPBlocks.NUKE_BLOCK);
-        dropSelf(AVPBlocks.ROYAL_JELLY_BLOCK);
-        dropSelf(AVPBlocks.ALUMINUM_BLOCK);
+        dropSelf(TempAVPBlocks.ROYAL_JELLY_BLOCK.get());
+        dropSelf(TempAVPBlocks.ALUMINUM_BLOCK.get());
         dropSelf(AVPBlocks.AUTUNITE_BLOCK);
         add(TempAVPBlocks.AUTUNITE_ORE.get(), block -> createOreMultiDrop(block, TempAVPItems.AUTUNITE_DUST.get(), 2, 4));
         add(TempAVPBlocks.BAUXITE_ORE.get(), block -> createOreDrop(block, TempAVPItems.RAW_BAUXITE.get()));
-        dropSelf(AVPBlocks.BRASS_BLOCK);
-        dropSelf(AVPBlocks.CHISELED_FERROALUMINUM);
-        dropSelf(AVPBlocks.CHISELED_STEEL);
-        dropSelf(AVPBlocks.CHISELED_TITANIUM);
-        dropSelf(AVPBlocks.CUT_FERROALUMINUM);
-        dropSlab(AVPBlocks.CUT_FERROALUMINUM_SLAB);
-        dropSelf(AVPBlocks.CUT_FERROALUMINUM_STAIRS);
-        dropSelf(AVPBlocks.CUT_STEEL);
-        dropSlab(AVPBlocks.CUT_STEEL_SLAB);
-        dropSelf(AVPBlocks.CUT_STEEL_STAIRS);
-        dropSelf(AVPBlocks.CUT_TITANIUM);
-        dropSlab(AVPBlocks.CUT_TITANIUM_SLAB);
-        dropSelf(AVPBlocks.CUT_TITANIUM_STAIRS);
+        dropSelf(TempAVPBlocks.BRASS_BLOCK.get());
+        dropSelf(TempAVPBlocks.CHISELED_FERROALUMINUM.get());
+        dropSelf(TempAVPBlocks.CHISELED_STEEL.get());
+        dropSelf(TempAVPBlocks.CHISELED_TITANIUM.get());
+        dropSelf(TempAVPBlocks.CUT_FERROALUMINUM.get());
+        dropSlab(TempAVPBlocks.CUT_FERROALUMINUM_SLAB.get());
+        dropSelf(TempAVPBlocks.CUT_FERROALUMINUM_STAIRS.get());
+        dropSelf(TempAVPBlocks.CUT_STEEL.get());
+        dropSlab(TempAVPBlocks.CUT_STEEL_SLAB.get());
+        dropSelf(TempAVPBlocks.CUT_STEEL_STAIRS.get());
+        dropSelf(TempAVPBlocks.CUT_TITANIUM.get());
+        dropSlab(TempAVPBlocks.CUT_TITANIUM_SLAB.get());
+        dropSelf(TempAVPBlocks.CUT_TITANIUM_STAIRS.get());
         add(TempAVPBlocks.DEEPSLATE_TITANIUM_ORE.get(), block -> createOreDrop(block, TempAVPItems.RAW_TITANIUM.get()));
         add(TempAVPBlocks.DEEPSLATE_ZINC_ORE.get(), block -> createOreMultiDrop(block, TempAVPItems.RAW_ZINC.get(), 2, 5));
         dropSelf(TempAVPBlocks.FERROALUMINUM_BLOCK.get());
@@ -69,28 +69,28 @@ public class BlockLootTableProvider extends FabricBlockLootTableProvider {
         dropSelf(TempAVPBlocks.FERROALUMINUM_STANDING.get());
         dropSelf(TempAVPBlocks.FERROALUMINUM_TREAD.get());
         add(TempAVPBlocks.GALENA_ORE.get(), block -> createOreDrop(block, TempAVPItems.RAW_GALENA.get()));
-        dropSelf(AVPBlocks.LEAD_BLOCK);
+        dropSelf(TempAVPBlocks.LEAD_BLOCK.get());
         add(AVPBlocks.LEAD_CHEST, this::createShulkerBoxDrop);
         add(AVPBlocks.AMMO_CHEST, this::createShulkerBoxDrop);
-        dropSelf(AVPBlocks.LITHIUM_BLOCK);
+        dropSelf(TempAVPBlocks.LITHIUM_BLOCK.get());
         add(TempAVPBlocks.LITHIUM_ORE.get(), block -> createOreMultiDrop(block, TempAVPItems.LITHIUM_DUST.get(), 2, 4));
         add(TempAVPBlocks.MONAZITE_ORE.get(), block -> createOreDrop(block, TempAVPItems.RAW_MONAZITE.get()));
-        dropSelf(AVPBlocks.NETHER_RESIN);
-        dropOther(AVPBlocks.NETHER_RESIN_NODE, AVPBlocks.NETHER_RESIN);
-        dropOther(AVPBlocks.NETHER_RESIN_VEIN, AVPItems.NETHER_RESIN_BALL);
-        dropOther(AVPBlocks.NETHER_RESIN_WEB, AVPItems.NETHER_RESIN_BALL);
-        dropSelf(AVPBlocks.ABERRANT_RESIN);
-        dropOther(AVPBlocks.ABERRANT_RESIN_NODE, AVPBlocks.ABERRANT_RESIN);
-        dropOther(AVPBlocks.ABERRANT_RESIN_VEIN, AVPItems.ABERRANT_RESIN_BALL);
-        dropOther(AVPBlocks.ABERRANT_RESIN_WEB, AVPItems.ABERRANT_RESIN_BALL);
-        dropSelf(AVPBlocks.IRRADIATED_RESIN);
-        dropOther(AVPBlocks.IRRADIATED_RESIN_NODE, AVPBlocks.IRRADIATED_RESIN);
-        dropOther(AVPBlocks.IRRADIATED_RESIN_VEIN, TempAVPItems.IRRADIATED_RESIN_BALL.get());
-        dropOther(AVPBlocks.IRRADIATED_RESIN_WEB, TempAVPItems.IRRADIATED_RESIN_BALL.get());
-        dropSelf(AVPBlocks.RESIN_BRICKS);
-        dropSelf(AVPBlocks.RESIN_O);
-        dropSelf(AVPBlocks.RESIN_RIBBED);
-        dropSelf(AVPBlocks.RESIN_SMOOTH);
+        dropSelf(TempAVPBlocks.NETHER_RESIN.get());
+        dropOther(TempAVPBlocks.NETHER_RESIN_NODE.get(), TempAVPBlocks.NETHER_RESIN.get());
+        dropOther(TempAVPBlocks.NETHER_RESIN_VEIN.get(), AVPItems.NETHER_RESIN_BALL);
+        dropOther(TempAVPBlocks.NETHER_RESIN_WEB.get(), AVPItems.NETHER_RESIN_BALL);
+        dropSelf(TempAVPBlocks.ABERRANT_RESIN.get());
+        dropOther(TempAVPBlocks.ABERRANT_RESIN_NODE.get(), TempAVPBlocks.ABERRANT_RESIN.get());
+        dropOther(TempAVPBlocks.ABERRANT_RESIN_VEIN.get(), AVPItems.ABERRANT_RESIN_BALL);
+        dropOther(TempAVPBlocks.ABERRANT_RESIN_WEB.get(), AVPItems.ABERRANT_RESIN_BALL);
+        dropSelf(TempAVPBlocks.IRRADIATED_RESIN.get());
+        dropOther(TempAVPBlocks.IRRADIATED_RESIN_NODE.get(), TempAVPBlocks.IRRADIATED_RESIN.get());
+        dropOther(TempAVPBlocks.IRRADIATED_RESIN_VEIN.get(), TempAVPItems.IRRADIATED_RESIN_BALL.get());
+        dropOther(TempAVPBlocks.IRRADIATED_RESIN_WEB.get(), TempAVPItems.IRRADIATED_RESIN_BALL.get());
+        dropSelf(TempAVPBlocks.RESIN_BRICKS.get());
+        dropSelf(TempAVPBlocks.RESIN_O.get());
+        dropSelf(TempAVPBlocks.RESIN_RIBBED.get());
+        dropSelf(TempAVPBlocks.RESIN_SMOOTH.get());
 
         // TODO: Use stream concat here.
         TempAVPBlocks.DYE_COLOR_TO_CONCRETE_SLAB.values().stream().map(Supplier::get).forEach(this::dropSlab);
@@ -101,8 +101,8 @@ public class BlockLootTableProvider extends FabricBlockLootTableProvider {
         TempAVPBlocks.DYE_COLOR_TO_INDUSTRIAL_CONCRETE_SLAB.values().stream().map(Supplier::get).forEach(this::dropSlab);
         TempAVPBlocks.DYE_COLOR_TO_INDUSTRIAL_CONCRETE_STAIRS.values().stream().map(Supplier::get).forEach(this::dropSelf);
         TempAVPBlocks.DYE_COLOR_TO_INDUSTRIAL_CONCRETE_WALL.values().stream().map(Supplier::get).forEach(this::dropSelf);
-        dropSelf(AVPBlocks.INDUSTRIAL_GLASS);
-        dropSelf(AVPBlocks.INDUSTRIAL_GLASS_PANE);
+        dropSelf(TempAVPBlocks.INDUSTRIAL_GLASS.get());
+        dropSelf(TempAVPBlocks.INDUSTRIAL_GLASS_PANE.get());
         TempAVPBlocks.DYE_COLOR_TO_INDUSTRIAL_GLASS.values().stream().map(Supplier::get).forEach(this::dropSelf);
         TempAVPBlocks.DYE_COLOR_TO_INDUSTRIAL_GLASS_PANE.values().stream().map(Supplier::get).forEach(this::dropSelf);
 
@@ -131,18 +131,18 @@ public class BlockLootTableProvider extends FabricBlockLootTableProvider {
         TempAVPBlocks.DYE_COLOR_TO_PLASTIC_SLAB.values().stream().map(Supplier::get).forEach(this::dropSlab);
         TempAVPBlocks.DYE_COLOR_TO_PLASTIC_STAIRS.values().stream().map(Supplier::get).forEach(this::dropSelf);
 
-        dropSelf(AVPBlocks.RAW_BAUXITE_BLOCK);
-        dropSelf(AVPBlocks.RAW_GALENA_BLOCK);
-        dropSelf(AVPBlocks.RAW_MONAZITE_BLOCK);
-        dropSelf(AVPBlocks.RAW_SILICA_BLOCK);
-        dropSelf(AVPBlocks.RAW_TITANIUM_BLOCK);
-        dropSelf(AVPBlocks.RAW_ZINC_BLOCK);
+        dropSelf(TempAVPBlocks.RAW_BAUXITE_BLOCK.get());
+        dropSelf(TempAVPBlocks.RAW_GALENA_BLOCK.get());
+        dropSelf(TempAVPBlocks.RAW_MONAZITE_BLOCK.get());
+        dropSelf(TempAVPBlocks.RAW_SILICA_BLOCK.get());
+        dropSelf(TempAVPBlocks.RAW_TITANIUM_BLOCK.get());
+        dropSelf(TempAVPBlocks.RAW_ZINC_BLOCK.get());
         dropSelf(AVPBlocks.RAZOR_WIRE);
-        dropSelf(AVPBlocks.RESIN);
-        dropOther(AVPBlocks.RESIN_NODE, AVPBlocks.RESIN);
-        dropOther(AVPBlocks.RESIN_VEIN, TempAVPItems.RESIN_BALL.get());
-        dropOther(AVPBlocks.RESIN_WEB, TempAVPItems.RESIN_BALL.get());
-        dropSelf(AVPBlocks.SILICA_GRAVEL);
+        dropSelf(TempAVPBlocks.RESIN.get());
+        dropOther(TempAVPBlocks.RESIN_NODE.get(), TempAVPBlocks.RESIN.get());
+        dropOther(TempAVPBlocks.RESIN_VEIN.get(), TempAVPItems.RESIN_BALL.get());
+        dropOther(TempAVPBlocks.RESIN_WEB.get(), TempAVPItems.RESIN_BALL.get());
+        dropSelf(TempAVPBlocks.SILICA_GRAVEL.get());
         dropSelf(TempAVPBlocks.STEEL_BARS.get());
         dropSelf(TempAVPBlocks.STEEL_BLOCK.get());
         dropSelf(TempAVPBlocks.STEEL_CHAIN_FENCE.get());
@@ -168,25 +168,25 @@ public class BlockLootTableProvider extends FabricBlockLootTableProvider {
         dropSelf(TempAVPBlocks.ZINC_BLOCK.get());
         add(TempAVPBlocks.ZINC_ORE.get(), block -> createOreMultiDrop(block, TempAVPItems.RAW_ZINC.get(), 2, 5));
 
-        add(AVPBlocks.INDUSTRIAL_GLASS_DOOR, this::createDoorTable);
-        add(AVPBlocks.FERROALUMINUM_DOOR, this::createDoorTable);
-        add(AVPBlocks.STEEL_DOOR, this::createDoorTable);
-        add(AVPBlocks.TITANIUM_DOOR, this::createDoorTable);
+        add(TempAVPBlocks.INDUSTRIAL_GLASS_DOOR.get(), this::createDoorTable);
+        add(TempAVPBlocks.FERROALUMINUM_DOOR.get(), this::createDoorTable);
+        add(TempAVPBlocks.STEEL_DOOR.get(), this::createDoorTable);
+        add(TempAVPBlocks.TITANIUM_DOOR.get(), this::createDoorTable);
 
-        dropSelf(AVPBlocks.INDUSTRIAL_GLASS_TRAP_DOOR);
-        dropSelf(AVPBlocks.FERROALUMINUM_TRAP_DOOR);
-        dropSelf(AVPBlocks.STEEL_TRAP_DOOR);
-        dropSelf(AVPBlocks.TITANIUM_TRAP_DOOR);
+        dropSelf(TempAVPBlocks.INDUSTRIAL_GLASS_TRAP_DOOR.get());
+        dropSelf(TempAVPBlocks.FERROALUMINUM_TRAP_DOOR.get());
+        dropSelf(TempAVPBlocks.STEEL_TRAP_DOOR.get());
+        dropSelf(TempAVPBlocks.TITANIUM_TRAP_DOOR.get());
 
         dropSelf(TempAVPBlocks.STEEL_PRESSURE_PLATE.get());
-        dropSelf(AVPBlocks.TITANIUM_PRESSURE_PLATE);
-        dropSelf(AVPBlocks.FERROALUMINUM_PRESSURE_PLATE);
+        dropSelf(TempAVPBlocks.TITANIUM_PRESSURE_PLATE.get());
+        dropSelf(TempAVPBlocks.FERROALUMINUM_PRESSURE_PLATE.get());
 
-        dropSelf(AVPBlocks.STEEL_BUTTON);
-        dropSelf(AVPBlocks.TITANIUM_BUTTON);
-        dropSelf(AVPBlocks.FERROALUMINUM_BUTTON);
+        dropSelf(TempAVPBlocks.STEEL_BUTTON.get());
+        dropSelf(TempAVPBlocks.TITANIUM_BUTTON.get());
+        dropSelf(TempAVPBlocks.FERROALUMINUM_BUTTON.get());
 
-        dropSlab(AVPBlocks.INDUSTRIAL_GLASS_SLAB);
+        dropSlab(TempAVPBlocks.INDUSTRIAL_GLASS_SLAB.get());
         dropSlab(TempAVPBlocks.FERROALUMINUM_FASTENED_SIDING_SLAB.get());
         dropSlab(TempAVPBlocks.FERROALUMINUM_FASTENED_STANDING_SLAB.get());
         dropSlab(TempAVPBlocks.FERROALUMINUM_GRATE_SLAB.get());
@@ -203,7 +203,7 @@ public class BlockLootTableProvider extends FabricBlockLootTableProvider {
         dropSlab(TempAVPBlocks.TITANIUM_FASTENED_SIDING_SLAB.get());
         dropSlab(TempAVPBlocks.TITANIUM_FASTENED_STANDING_SLAB.get());
 
-        dropSelf(AVPBlocks.INDUSTRIAL_GLASS_STAIRS);
+        dropSelf(TempAVPBlocks.INDUSTRIAL_GLASS_STAIRS.get());
         dropSelf(TempAVPBlocks.FERROALUMINUM_FASTENED_SIDING_STAIRS.get());
         dropSelf(TempAVPBlocks.FERROALUMINUM_FASTENED_STANDING_STAIRS.get());
         dropSelf(TempAVPBlocks.FERROALUMINUM_GRATE_STAIRS.get());

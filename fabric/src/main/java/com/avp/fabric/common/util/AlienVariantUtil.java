@@ -12,8 +12,8 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
 
+import com.avp.common.block.TempAVPBlocks;
 import com.avp.common.item.TempAVPItems;
-import com.avp.fabric.common.block.AVPBlocks;
 import com.avp.fabric.common.block.resin.ResinVeinBlock;
 import com.avp.fabric.common.entity.acid.Acid;
 import com.avp.fabric.common.entity.living.alien.Alien;
@@ -27,25 +27,27 @@ public class AlienVariantUtil {
     // Made lazy so that the block/item access here doesn't cause NeoForge to crash during startup.
     private static final Lazy<Map<Block, Item>> RESIN_BALL_MAPPING = Lazy.of(
         () -> Map.ofEntries(
-            Map.entry(AVPBlocks.ABERRANT_RESIN_NODE, AVPItems.ABERRANT_RESIN_BALL),
-            Map.entry(AVPBlocks.ABERRANT_RESIN, AVPItems.ABERRANT_RESIN_BALL),
-            Map.entry(AVPBlocks.ABERRANT_RESIN_WEB, AVPItems.ABERRANT_RESIN_BALL),
-            Map.entry(AVPBlocks.ABERRANT_RESIN_VEIN, AVPItems.ABERRANT_RESIN_BALL),
-            Map.entry(AVPBlocks.IRRADIATED_RESIN_NODE, TempAVPItems.IRRADIATED_RESIN_BALL.get()),
-            Map.entry(AVPBlocks.IRRADIATED_RESIN, TempAVPItems.IRRADIATED_RESIN_BALL.get()),
-            Map.entry(AVPBlocks.IRRADIATED_RESIN_WEB, TempAVPItems.IRRADIATED_RESIN_BALL.get()),
-            Map.entry(AVPBlocks.IRRADIATED_RESIN_VEIN, TempAVPItems.IRRADIATED_RESIN_BALL.get()),
-            Map.entry(AVPBlocks.NETHER_RESIN_NODE, AVPItems.NETHER_RESIN_BALL),
-            Map.entry(AVPBlocks.NETHER_RESIN, AVPItems.NETHER_RESIN_BALL),
-            Map.entry(AVPBlocks.NETHER_RESIN_WEB, AVPItems.NETHER_RESIN_BALL),
-            Map.entry(AVPBlocks.NETHER_RESIN_VEIN, AVPItems.NETHER_RESIN_BALL)
+            Map.entry(TempAVPBlocks.ABERRANT_RESIN_NODE.get(), AVPItems.ABERRANT_RESIN_BALL),
+            Map.entry(TempAVPBlocks.ABERRANT_RESIN.get(), AVPItems.ABERRANT_RESIN_BALL),
+            Map.entry(TempAVPBlocks.ABERRANT_RESIN_WEB.get(), AVPItems.ABERRANT_RESIN_BALL),
+            Map.entry(TempAVPBlocks.ABERRANT_RESIN_VEIN.get(), AVPItems.ABERRANT_RESIN_BALL),
+            Map.entry(TempAVPBlocks.IRRADIATED_RESIN_NODE.get(), TempAVPItems.IRRADIATED_RESIN_BALL.get()),
+            Map.entry(TempAVPBlocks.IRRADIATED_RESIN.get(), TempAVPItems.IRRADIATED_RESIN_BALL.get()),
+            Map.entry(TempAVPBlocks.IRRADIATED_RESIN_WEB.get(), TempAVPItems.IRRADIATED_RESIN_BALL.get()),
+            Map.entry(TempAVPBlocks.IRRADIATED_RESIN_VEIN.get(), TempAVPItems.IRRADIATED_RESIN_BALL.get()),
+            Map.entry(TempAVPBlocks.NETHER_RESIN_NODE.get(), AVPItems.NETHER_RESIN_BALL),
+            Map.entry(TempAVPBlocks.NETHER_RESIN.get(), AVPItems.NETHER_RESIN_BALL),
+            Map.entry(TempAVPBlocks.NETHER_RESIN_WEB.get(), AVPItems.NETHER_RESIN_BALL),
+            Map.entry(TempAVPBlocks.NETHER_RESIN_VEIN.get(), AVPItems.NETHER_RESIN_BALL)
         )
     );
 
-    private static final Map<Block, Block> RESIN_VEIN_MAPPING = Map.ofEntries(
-        Map.entry(AVPBlocks.NETHER_RESIN_NODE, AVPBlocks.NETHER_RESIN_VEIN),
-        Map.entry(AVPBlocks.ABERRANT_RESIN_NODE, AVPBlocks.ABERRANT_RESIN_VEIN),
-        Map.entry(AVPBlocks.IRRADIATED_RESIN_NODE, AVPBlocks.IRRADIATED_RESIN_VEIN)
+    private static final Lazy<Map<Block, Block>> RESIN_VEIN_MAPPING = Lazy.of(
+        () -> Map.ofEntries(
+            Map.entry(TempAVPBlocks.NETHER_RESIN_NODE.get(), TempAVPBlocks.NETHER_RESIN_VEIN.get()),
+            Map.entry(TempAVPBlocks.ABERRANT_RESIN_NODE.get(), TempAVPBlocks.ABERRANT_RESIN_VEIN.get()),
+            Map.entry(TempAVPBlocks.IRRADIATED_RESIN_NODE.get(), TempAVPBlocks.IRRADIATED_RESIN_VEIN.get())
+        )
     );
 
     private AlienVariantUtil() {}
@@ -75,15 +77,15 @@ public class AlienVariantUtil {
 
     public static Block getResinNodeFor(Alien alien) {
         return switch (alien) {
-            case Alien netherAlien when netherAlien.isNetherAfflicted() -> AVPBlocks.NETHER_RESIN_NODE;
-            case Alien aberrantAlien when aberrantAlien.isAberrant() -> AVPBlocks.ABERRANT_RESIN_NODE;
-            case Alien irradiatedAlien when irradiatedAlien.isIrradiated() -> AVPBlocks.IRRADIATED_RESIN_NODE;
-            default -> AVPBlocks.RESIN_NODE;
+            case Alien netherAlien when netherAlien.isNetherAfflicted() -> TempAVPBlocks.NETHER_RESIN_NODE.get();
+            case Alien aberrantAlien when aberrantAlien.isAberrant() -> TempAVPBlocks.ABERRANT_RESIN_NODE.get();
+            case Alien irradiatedAlien when irradiatedAlien.isIrradiated() -> TempAVPBlocks.IRRADIATED_RESIN_NODE.get();
+            default -> TempAVPBlocks.RESIN_NODE.get();
         };
     }
 
     public static ResinVeinBlock getResinVeinFor(Block block) {
-        return (ResinVeinBlock) RESIN_VEIN_MAPPING.getOrDefault(block, AVPBlocks.RESIN_VEIN);
+        return (ResinVeinBlock) RESIN_VEIN_MAPPING.get().getOrDefault(block, TempAVPBlocks.RESIN_VEIN.get());
     }
 
     public static ParticleOptions getParticleFor(Acid acid) {
@@ -97,12 +99,12 @@ public class AlienVariantUtil {
     public static BlockState getResinNodeForType(Alien alien) {
         return switch (alien) {
             case Alien netherAlien when netherAlien.isNetherAfflicted() ->
-                AVPBlocks.NETHER_RESIN_NODE.defaultBlockState();
+                TempAVPBlocks.NETHER_RESIN_NODE.get().defaultBlockState();
             case Alien aberrantAlien when aberrantAlien.isAberrant() ->
-                AVPBlocks.ABERRANT_RESIN_NODE.defaultBlockState();
+                TempAVPBlocks.ABERRANT_RESIN_NODE.get().defaultBlockState();
             case Alien irradiatedAlien when irradiatedAlien.isIrradiated() ->
-                AVPBlocks.IRRADIATED_RESIN_NODE.defaultBlockState();
-            default -> AVPBlocks.RESIN_NODE.defaultBlockState();
+                TempAVPBlocks.IRRADIATED_RESIN_NODE.get().defaultBlockState();
+            default -> TempAVPBlocks.RESIN_NODE.get().defaultBlockState();
         };
     }
 

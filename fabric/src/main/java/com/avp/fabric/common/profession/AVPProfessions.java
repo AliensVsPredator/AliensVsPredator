@@ -12,13 +12,13 @@ import net.minecraft.world.entity.npc.VillagerProfession;
 import net.minecraft.world.level.block.Block;
 
 import com.avp.AVPResources;
-import com.avp.fabric.common.block.AVPBlocks;
+import com.avp.common.block.TempAVPBlocks;
 
 public class AVPProfessions {
 
     public static final ResourceKey<PoiType> COMMISSARY_KEY = poiKey("commissary_poi");
 
-    public static final PoiType COMMISSARY_POI = registerPoi("commissary_poi", AVPBlocks.BLUEPRINT_BLOCK);
+    public static final PoiType COMMISSARY_POI = registerPoi("commissary_poi", TempAVPBlocks.BLUEPRINT_BLOCK.get());
 
     public static final VillagerProfession COMMISSARY = registerProfession("commissary", COMMISSARY_KEY);
 

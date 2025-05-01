@@ -1,4 +1,4 @@
-package com.avp.fabric.common.block;
+package com.avp.common.block;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
@@ -38,7 +38,7 @@ public class AshBlock extends SnowLayerBlock {
                         if (
                             serverLevel.getBlockState(targetPos).isAir() &&
                                 serverLevel.getBlockState(targetPosBelow).isSolidRender(serverLevel, targetPosBelow)
-                                && !serverLevel.getBlockState(targetPosBelow).is(AVPBlocks.ASH_BLOCK)
+                                && !serverLevel.getBlockState(targetPosBelow).is(TempAVPBlocks.ASH_BLOCK.get())
                         ) {
                             serverLevel.setBlockAndUpdate(
                                 targetPos,

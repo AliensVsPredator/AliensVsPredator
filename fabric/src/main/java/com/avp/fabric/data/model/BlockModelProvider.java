@@ -73,12 +73,12 @@ public class BlockModelProvider extends FabricModelProvider {
         );
 
         createIndustrialGlassSlab(generators);
-        generators.family(AVPBlocks.INDUSTRIAL_GLASS)
-            .door(AVPBlocks.INDUSTRIAL_GLASS_DOOR)
-            .stairs(AVPBlocks.INDUSTRIAL_GLASS_STAIRS)
-            .trapdoor(AVPBlocks.INDUSTRIAL_GLASS_TRAP_DOOR);
+        generators.family(TempAVPBlocks.INDUSTRIAL_GLASS.get())
+            .door(TempAVPBlocks.INDUSTRIAL_GLASS_DOOR.get())
+            .stairs(TempAVPBlocks.INDUSTRIAL_GLASS_STAIRS.get())
+            .trapdoor(TempAVPBlocks.INDUSTRIAL_GLASS_TRAP_DOOR.get());
         TempAVPBlocks.DYE_COLOR_TO_INDUSTRIAL_GLASS.forEach((dyeColor, blockSupplier) -> generators.createTrivialCube(blockSupplier.get()));
-        createGlassBlocks(generators, AVPBlocks.INDUSTRIAL_GLASS, AVPBlocks.INDUSTRIAL_GLASS_PANE);
+        createGlassBlocks(generators, TempAVPBlocks.INDUSTRIAL_GLASS.get(), TempAVPBlocks.INDUSTRIAL_GLASS_PANE.get());
         TempAVPBlocks.DYE_COLOR_TO_INDUSTRIAL_GLASS_PANE.forEach(
             (dyeColor, blockSupplier) -> createGlassBlocks(
                 generators,
@@ -87,25 +87,25 @@ public class BlockModelProvider extends FabricModelProvider {
             )
         );
 
-        generators.createRotatedVariantBlock(AVPBlocks.IRRADIATED_RESIN);
-        generators.createRotatedVariantBlock(AVPBlocks.IRRADIATED_RESIN_NODE);
-        MultiFaceGenerator.generate(generators, AVPBlocks.IRRADIATED_RESIN_VEIN);
-        generators.createCrossBlock(AVPBlocks.IRRADIATED_RESIN_WEB, BlockModelGenerators.TintState.NOT_TINTED);
+        generators.createRotatedVariantBlock(TempAVPBlocks.IRRADIATED_RESIN.get());
+        generators.createRotatedVariantBlock(TempAVPBlocks.IRRADIATED_RESIN_NODE.get());
+        MultiFaceGenerator.generate(generators, TempAVPBlocks.IRRADIATED_RESIN_VEIN.get());
+        generators.createCrossBlock(TempAVPBlocks.IRRADIATED_RESIN_WEB.get(), BlockModelGenerators.TintState.NOT_TINTED);
 
-        generators.createRotatedVariantBlock(AVPBlocks.ABERRANT_RESIN);
-        generators.createRotatedVariantBlock(AVPBlocks.ABERRANT_RESIN_NODE);
-        MultiFaceGenerator.generate(generators, AVPBlocks.ABERRANT_RESIN_VEIN);
-        generators.createCrossBlock(AVPBlocks.ABERRANT_RESIN_WEB, BlockModelGenerators.TintState.NOT_TINTED);
+        generators.createRotatedVariantBlock(TempAVPBlocks.ABERRANT_RESIN.get());
+        generators.createRotatedVariantBlock(TempAVPBlocks.ABERRANT_RESIN_NODE.get());
+        MultiFaceGenerator.generate(generators, TempAVPBlocks.ABERRANT_RESIN_VEIN.get());
+        generators.createCrossBlock(TempAVPBlocks.ABERRANT_RESIN_WEB.get(), BlockModelGenerators.TintState.NOT_TINTED);
 
-        generators.createRotatedVariantBlock(AVPBlocks.NETHER_RESIN);
-        generators.createRotatedVariantBlock(AVPBlocks.NETHER_RESIN_NODE);
-        MultiFaceGenerator.generate(generators, AVPBlocks.NETHER_RESIN_VEIN);
-        generators.createCrossBlock(AVPBlocks.NETHER_RESIN_WEB, BlockModelGenerators.TintState.NOT_TINTED);
+        generators.createRotatedVariantBlock(TempAVPBlocks.NETHER_RESIN.get());
+        generators.createRotatedVariantBlock(TempAVPBlocks.NETHER_RESIN_NODE.get());
+        MultiFaceGenerator.generate(generators, TempAVPBlocks.NETHER_RESIN_VEIN.get());
+        generators.createCrossBlock(TempAVPBlocks.NETHER_RESIN_WEB.get(), BlockModelGenerators.TintState.NOT_TINTED);
 
-        generators.createRotatedVariantBlock(AVPBlocks.RESIN);
-        generators.createRotatedVariantBlock(AVPBlocks.RESIN_NODE);
-        MultiFaceGenerator.generate(generators, AVPBlocks.RESIN_VEIN);
-        generators.createCrossBlock(AVPBlocks.RESIN_WEB, BlockModelGenerators.TintState.NOT_TINTED);
+        generators.createRotatedVariantBlock(TempAVPBlocks.RESIN.get());
+        generators.createRotatedVariantBlock(TempAVPBlocks.RESIN_NODE.get());
+        MultiFaceGenerator.generate(generators, TempAVPBlocks.RESIN_VEIN.get());
+        generators.createCrossBlock(TempAVPBlocks.RESIN_WEB.get(), BlockModelGenerators.TintState.NOT_TINTED);
 
         TempAVPBlocks.DYE_COLOR_TO_PADDING.forEach(
             (dyeColor, blockSupplier) -> {
@@ -167,32 +167,32 @@ public class BlockModelProvider extends FabricModelProvider {
             }
         );
 
-        generators.createTrivialCube(AVPBlocks.ROYAL_JELLY_BLOCK);
-        generators.createTrivialCube(AVPBlocks.ALUMINUM_BLOCK);
+        generators.createTrivialCube(TempAVPBlocks.ROYAL_JELLY_BLOCK.get());
+        generators.createTrivialCube(TempAVPBlocks.ALUMINUM_BLOCK.get());
         generators.createTrivialCube(AVPBlocks.TRINITITE_BLOCK);
         generators.createTrivialCube(AVPBlocks.AUTUNITE_BLOCK);
         generators.createTrivialCube(TempAVPBlocks.AUTUNITE_ORE.get());
         generators.createTrivialCube(TempAVPBlocks.BAUXITE_ORE.get());
-        generators.createTrivialCube(AVPBlocks.BRASS_BLOCK);
-        generators.createTrivialCube(AVPBlocks.CHISELED_FERROALUMINUM);
-        generators.createTrivialCube(AVPBlocks.CHISELED_STEEL);
-        generators.createTrivialCube(AVPBlocks.CHISELED_TITANIUM);
-        generators.createTrivialCube(AVPBlocks.RESIN_BRICKS);
-        generators.createTrivialCube(AVPBlocks.RESIN_O);
-        generators.createTrivialCube(AVPBlocks.RESIN_RIBBED);
-        generators.createTrivialCube(AVPBlocks.RESIN_SMOOTH);
+        generators.createTrivialCube(TempAVPBlocks.BRASS_BLOCK.get());
+        generators.createTrivialCube(TempAVPBlocks.CHISELED_FERROALUMINUM.get());
+        generators.createTrivialCube(TempAVPBlocks.CHISELED_STEEL.get());
+        generators.createTrivialCube(TempAVPBlocks.CHISELED_TITANIUM.get());
+        generators.createTrivialCube(TempAVPBlocks.RESIN_BRICKS.get());
+        generators.createTrivialCube(TempAVPBlocks.RESIN_O.get());
+        generators.createTrivialCube(TempAVPBlocks.RESIN_RIBBED.get());
+        generators.createTrivialCube(TempAVPBlocks.RESIN_SMOOTH.get());
 
-        generators.family(AVPBlocks.CUT_FERROALUMINUM)
-            .slab(AVPBlocks.CUT_FERROALUMINUM_SLAB)
-            .stairs(AVPBlocks.CUT_FERROALUMINUM_STAIRS);
+        generators.family(TempAVPBlocks.CUT_FERROALUMINUM.get())
+            .slab(TempAVPBlocks.CUT_FERROALUMINUM_SLAB.get())
+            .stairs(TempAVPBlocks.CUT_FERROALUMINUM_STAIRS.get());
 
-        generators.family(AVPBlocks.CUT_STEEL)
-            .slab(AVPBlocks.CUT_STEEL_SLAB)
-            .stairs(AVPBlocks.CUT_STEEL_STAIRS);
+        generators.family(TempAVPBlocks.CUT_STEEL.get())
+            .slab(TempAVPBlocks.CUT_STEEL_SLAB.get())
+            .stairs(TempAVPBlocks.CUT_STEEL_STAIRS.get());
 
-        generators.family(AVPBlocks.CUT_TITANIUM)
-            .slab(AVPBlocks.CUT_TITANIUM_SLAB)
-            .stairs(AVPBlocks.CUT_TITANIUM_STAIRS);
+        generators.family(TempAVPBlocks.CUT_TITANIUM.get())
+            .slab(TempAVPBlocks.CUT_TITANIUM_SLAB.get())
+            .stairs(TempAVPBlocks.CUT_TITANIUM_STAIRS.get());
 
         generators.createTrivialCube(TempAVPBlocks.DEEPSLATE_TITANIUM_ORE.get());
         generators.createTrivialCube(TempAVPBlocks.DEEPSLATE_ZINC_ORE.get());
@@ -210,18 +210,18 @@ public class BlockModelProvider extends FabricModelProvider {
         // generators.createTrivialCube(AVPBlocks.FERROALUMINUM_STANDING);
         // generators.createTrivialCube(AVPBlocks.FERROALUMINUM_TREAD);
         generators.createTrivialCube(TempAVPBlocks.GALENA_ORE.get());
-        generators.createTrivialCube(AVPBlocks.LEAD_BLOCK);
-        generators.createTrivialCube(AVPBlocks.LITHIUM_BLOCK);
+        generators.createTrivialCube(TempAVPBlocks.LEAD_BLOCK.get());
+        generators.createTrivialCube(TempAVPBlocks.LITHIUM_BLOCK.get());
         generators.createTrivialCube(TempAVPBlocks.LITHIUM_ORE.get());
         generators.createTrivialCube(TempAVPBlocks.MONAZITE_ORE.get());
-        generators.createTrivialCube(AVPBlocks.RAW_BAUXITE_BLOCK);
-        generators.createTrivialCube(AVPBlocks.RAW_GALENA_BLOCK);
-        generators.createTrivialCube(AVPBlocks.RAW_MONAZITE_BLOCK);
-        generators.createTrivialCube(AVPBlocks.RAW_SILICA_BLOCK);
-        generators.createTrivialCube(AVPBlocks.RAW_TITANIUM_BLOCK);
-        generators.createTrivialCube(AVPBlocks.RAW_ZINC_BLOCK);
+        generators.createTrivialCube(TempAVPBlocks.RAW_BAUXITE_BLOCK.get());
+        generators.createTrivialCube(TempAVPBlocks.RAW_GALENA_BLOCK.get());
+        generators.createTrivialCube(TempAVPBlocks.RAW_MONAZITE_BLOCK.get());
+        generators.createTrivialCube(TempAVPBlocks.RAW_SILICA_BLOCK.get());
+        generators.createTrivialCube(TempAVPBlocks.RAW_TITANIUM_BLOCK.get());
+        generators.createTrivialCube(TempAVPBlocks.RAW_ZINC_BLOCK.get());
         generators.createCrossBlock(AVPBlocks.RAZOR_WIRE, BlockModelGenerators.TintState.NOT_TINTED);
-        generators.createTrivialCube(AVPBlocks.SILICA_GRAVEL);
+        generators.createTrivialCube(TempAVPBlocks.SILICA_GRAVEL.get());
         BarsGenerator.generate(generators, TempAVPBlocks.STEEL_BARS.get());
         BarsGenerator.generate(generators, TempAVPBlocks.STEEL_CHAIN_FENCE.get());
         generators.createRotatedPillarWithHorizontalVariant(
@@ -256,25 +256,25 @@ public class BlockModelProvider extends FabricModelProvider {
         generators.family(TempAVPBlocks.FERROALUMINUM_BLOCK.get())
             .slab(TempAVPBlocks.FERROALUMINUM_SLAB.get())
             .stairs(TempAVPBlocks.FERROALUMINUM_STAIRS.get())
-            .pressurePlate(AVPBlocks.FERROALUMINUM_PRESSURE_PLATE)
-            .button(AVPBlocks.FERROALUMINUM_BUTTON)
-            .door(AVPBlocks.FERROALUMINUM_DOOR)
-            .trapdoor(AVPBlocks.FERROALUMINUM_TRAP_DOOR);
+            .pressurePlate(TempAVPBlocks.FERROALUMINUM_PRESSURE_PLATE.get())
+            .button(TempAVPBlocks.FERROALUMINUM_BUTTON.get())
+            .door(TempAVPBlocks.FERROALUMINUM_DOOR.get())
+            .trapdoor(TempAVPBlocks.FERROALUMINUM_TRAP_DOOR.get());
 
         generators.family(TempAVPBlocks.STEEL_BLOCK.get())
             .slab(TempAVPBlocks.STEEL_SLAB.get())
             .stairs(TempAVPBlocks.STEEL_STAIRS.get())
             .pressurePlate(TempAVPBlocks.STEEL_PRESSURE_PLATE.get())
-            .button(AVPBlocks.STEEL_BUTTON)
-            .door(AVPBlocks.STEEL_DOOR)
-            .trapdoor(AVPBlocks.STEEL_TRAP_DOOR);
+            .button(TempAVPBlocks.STEEL_BUTTON.get())
+            .door(TempAVPBlocks.STEEL_DOOR.get())
+            .trapdoor(TempAVPBlocks.STEEL_TRAP_DOOR.get());
         generators.family(TempAVPBlocks.TITANIUM_BLOCK.get())
             .slab(TempAVPBlocks.TITANIUM_SLAB.get())
             .stairs(TempAVPBlocks.TITANIUM_STAIRS.get())
-            .pressurePlate(AVPBlocks.TITANIUM_PRESSURE_PLATE)
-            .button(AVPBlocks.TITANIUM_BUTTON)
-            .door(AVPBlocks.TITANIUM_DOOR)
-            .trapdoor(AVPBlocks.TITANIUM_TRAP_DOOR);
+            .pressurePlate(TempAVPBlocks.TITANIUM_PRESSURE_PLATE.get())
+            .button(TempAVPBlocks.TITANIUM_BUTTON.get())
+            .door(TempAVPBlocks.TITANIUM_DOOR.get())
+            .trapdoor(TempAVPBlocks.TITANIUM_TRAP_DOOR.get());
 
         generators.family(TempAVPBlocks.FERROALUMINUM_SIDING.get())
             .slab(TempAVPBlocks.FERROALUMINUM_SIDING_SLAB.get())
@@ -529,8 +529,8 @@ public class BlockModelProvider extends FabricModelProvider {
     }
 
     private void createIndustrialGlassSlab(BlockModelGenerators generators) {
-        var block = AVPBlocks.INDUSTRIAL_GLASS;
-        var slabBlock = AVPBlocks.INDUSTRIAL_GLASS_SLAB;
+        var block = TempAVPBlocks.INDUSTRIAL_GLASS.get();
+        var slabBlock = TempAVPBlocks.INDUSTRIAL_GLASS_SLAB.get();
         var textureMapping = TextureMapping.cube(block);
         var textureMapping2 = TextureMapping.column(
             TextureMapping.getBlockTexture(slabBlock, "_side"),
