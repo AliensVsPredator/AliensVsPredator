@@ -1,4 +1,4 @@
-package com.avp.fabric.common.item;
+package com.avp.common.item;
 
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
@@ -214,18 +214,18 @@ public class CanisterItem extends Item implements DispensibleContainerItem {
         }
 
         if (bucketItem.is(Items.WATER_BUCKET)) {
-            return new ItemStack(AVPItems.WATER_CANISTER);
+            return new ItemStack(TempAVPItems.WATER_CANISTER.get());
         } else if (bucketItem.is(Items.LAVA_BUCKET))
-            return new ItemStack(AVPItems.LAVA_CANISTER);
+            return new ItemStack(TempAVPItems.LAVA_CANISTER.get());
         else if (bucketItem.is(Items.POWDER_SNOW_BUCKET)) {
-            return new ItemStack(AVPItems.POWDER_SNOW_CANISTER);
+            return new ItemStack(TempAVPItems.POWDER_SNOW_CANISTER.get());
         }
 
         return canisterStack;
     }
 
     public static ItemStack getEmptySuccessItem(ItemStack canisterStack, Player player) {
-        return !player.hasInfiniteMaterials() ? new ItemStack(AVPItems.CANISTER) : canisterStack;
+        return !player.hasInfiniteMaterials() ? new ItemStack(TempAVPItems.CANISTER.get()) : canisterStack;
     }
 
     @Override

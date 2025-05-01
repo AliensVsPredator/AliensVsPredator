@@ -1,10 +1,14 @@
 package com.avp.common.item;
 
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.material.Fluids;
 
 import java.util.function.Supplier;
 
+import com.avp.common.component.AVPDataComponents;
 import com.avp.service.Services;
 
 // TODO: Rename this once multi-loader migration is finished.
@@ -48,6 +52,11 @@ public class TempAVPItems {
 
     public static final Supplier<Item> BULLET_TIP = register("bullet_tip");
 
+    public static final Supplier<Item> CANISTER = register(
+        "canister",
+        () -> new CanisterItem(Fluids.EMPTY, new Item.Properties().stacksTo(16))
+    );
+
     public static final Supplier<Item> CAPACITOR = register("capacitor");
 
     public static final Supplier<Item> CARBON_DUST = register("carbon_dust");
@@ -74,6 +83,14 @@ public class TempAVPItems {
 
     public static final Supplier<Item> IRRADIATED_RESIN_BALL = register("irradiated_resin_ball");
 
+    public static final Supplier<Item> LAVA_CANISTER = register(
+        "lava_canister",
+        () -> new CanisterItem(
+            Fluids.LAVA,
+            new Item.Properties().stacksTo(1).craftRemainder(CANISTER.get()).component(AVPDataComponents.CANISTER_CAPACITY.get(), 1)
+        )
+    );
+
     public static final Supplier<Item> LEAD_INGOT = register("lead_ingot");
 
     public static final Supplier<Item> LEAD_NUGGET = register("lead_nugget");
@@ -85,6 +102,13 @@ public class TempAVPItems {
     public static final Supplier<Item> LITHIUM_DUST = register("lithium_dust");
 
     public static final Supplier<Item> MEDIUM_CASING = register("medium_casing");
+
+    public static final Supplier<Item> MILK_CANISTER = register(
+        "milk_canister",
+        () -> new MilkCanisterItem(
+            new Item.Properties().craftRemainder(CANISTER.get()).stacksTo(1).component(AVPDataComponents.CANISTER_CAPACITY.get(), 1)
+        )
+    );
 
     public static final Supplier<Item> MINIGUN_BARREL = register("minigun_barrel");
 
@@ -99,6 +123,15 @@ public class TempAVPItems {
     public static final Supplier<Item> PLATED_NETHER_CHITIN = register("plated_nether_chitin", new Item.Properties().fireResistant());
 
     public static final Supplier<Item> POLYMER = register("polymer");
+
+    public static final Supplier<Item> POWDER_SNOW_CANISTER = register(
+        "powder_snow_canister",
+        () -> new SolidCanisterItem(
+            Blocks.POWDER_SNOW,
+            SoundEvents.BUCKET_EMPTY_POWDER_SNOW,
+            new Item.Properties().stacksTo(1).component(AVPDataComponents.CANISTER_CAPACITY.get(), 1)
+        )
+    );
 
     public static final Supplier<Item> RAW_BAUXITE = register("raw_bauxite");
 
@@ -166,6 +199,14 @@ public class TempAVPItems {
     public static final Supplier<Item> URANIUM_INGOT = register("uranium_ingot");
 
     public static final Supplier<Item> URANIUM_NUGGET = register("uranium_nugget");
+
+    public static final Supplier<Item> WATER_CANISTER = register(
+        "water_canister",
+        () -> new CanisterItem(
+            Fluids.WATER,
+            new Item.Properties().stacksTo(1).craftRemainder(CANISTER.get()).component(AVPDataComponents.CANISTER_CAPACITY.get(), 1)
+        )
+    );
 
     public static final Supplier<Item> ZINC_INGOT = register("zinc_ingot");
 

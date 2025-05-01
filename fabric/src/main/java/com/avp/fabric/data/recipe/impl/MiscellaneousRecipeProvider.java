@@ -137,7 +137,7 @@ public class MiscellaneousRecipeProvider {
             .pattern("TRT")
             .pattern("TPT")
             .pattern("TBT")
-            .into(1, AVPItems.CANISTER);
+            .into(1, TempAVPItems.CANISTER);
 
         builder.shapeless()
             .withCategory(RecipeCategory.MISC)

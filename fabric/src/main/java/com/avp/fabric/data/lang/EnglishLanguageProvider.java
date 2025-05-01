@@ -485,11 +485,11 @@ public class EnglishLanguageProvider extends FabricLanguageProvider {
 
         // Tools & Utilities Items
         addItem(builder, AVPItems.ARMOR_CASE, "Armor Case");
-        addItem(builder, AVPItems.CANISTER, "Canister");
-        addItem(builder, AVPItems.WATER_CANISTER, "Water Canister");
-        addItem(builder, AVPItems.LAVA_CANISTER, "Lava Canister");
-        addItem(builder, AVPItems.MILK_CANISTER, "Milk Canister");
-        addItem(builder, AVPItems.POWDER_SNOW_CANISTER, "Powder Snow Canister");
+        addItem(builder, TempAVPItems.CANISTER, "Canister");
+        addItem(builder, TempAVPItems.WATER_CANISTER, "Water Canister");
+        addItem(builder, TempAVPItems.LAVA_CANISTER, "Lava Canister");
+        addItem(builder, TempAVPItems.MILK_CANISTER, "Milk Canister");
+        addItem(builder, TempAVPItems.POWDER_SNOW_CANISTER, "Powder Snow Canister");
         addItem(builder, AVPItems.STEEL_AXE, "Steel Axe");
         addItem(builder, AVPItems.STEEL_HOE, "Steel Hoe");
         addItem(builder, AVPItems.STEEL_PICKAXE, "Steel Pickaxe");

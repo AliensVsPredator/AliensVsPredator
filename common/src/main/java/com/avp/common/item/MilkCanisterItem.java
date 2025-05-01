@@ -1,4 +1,4 @@
-package com.avp.fabric.common.item;
+package com.avp.common.item;
 
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.network.chat.Component;
@@ -55,7 +55,7 @@ public class MilkCanisterItem extends Item {
                 return CanisterItem.updateCapacity(stack, -1);
             }
 
-            return ItemUtils.createFilledResult(stack, player, new ItemStack(AVPItems.CANISTER), false);
+            return ItemUtils.createFilledResult(stack, player, new ItemStack(TempAVPItems.CANISTER.get()), false);
         } else {
             if (canDeplete) {
                 return CanisterItem.updateCapacity(stack, -1);

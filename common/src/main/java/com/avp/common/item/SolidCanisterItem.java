@@ -1,4 +1,4 @@
-package com.avp.fabric.common.item;
+package com.avp.common.item;
 
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
@@ -35,7 +35,12 @@ public class SolidCanisterItem extends BlockItem {
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag) {
+    public void appendHoverText(
+        @NotNull ItemStack stack,
+        @NotNull TooltipContext context,
+        @NotNull List<Component> tooltipComponents,
+        @NotNull TooltipFlag tooltipFlag
+    ) {
         super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
 
         int currentContentAmount = stack.getOrDefault(AVPDataComponents.CANISTER_CAPACITY.get(), 0);
@@ -130,7 +135,7 @@ public class SolidCanisterItem extends BlockItem {
     }
 
     @Override
-    protected boolean placeBlock(BlockPlaceContext context, BlockState state) {
+    protected boolean placeBlock(BlockPlaceContext context, @NotNull BlockState state) {
         return context.getPlayer() != null && context.getPlayer().isShiftKeyDown() && super.placeBlock(context, state);
     }
 
@@ -140,7 +145,7 @@ public class SolidCanisterItem extends BlockItem {
     }
 
     @Override
-    protected @NotNull SoundEvent getPlaceSound(BlockState state) {
+    protected @NotNull SoundEvent getPlaceSound(@NotNull BlockState state) {
         return this.placeSound;
     }
 }

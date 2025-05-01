@@ -2,6 +2,7 @@ package com.avp.fabric.common.creative_mode_tab.initializer;
 
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 
+import com.avp.common.item.TempAVPItems;
 import com.avp.fabric.common.creative_mode_tab.CreativeModeTabs;
 import com.avp.fabric.common.item.AVPItems;
 
@@ -9,30 +10,29 @@ public class ToolsAndUtilitiesCreativeModeTabInitializer {
 
     public static void initialize() {
         ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.TOOLS_AND_UTILITIES_KEY).register(entries -> {
-            entries.accept(AVPItems.ARMOR_CASE);
-            entries.accept(AVPItems.CANISTER);
-            entries.accept(AVPItems.WATER_CANISTER);
-            entries.accept(AVPItems.LAVA_CANISTER);
-            entries.accept(AVPItems.MILK_CANISTER);
-            entries.accept(AVPItems.POWDER_SNOW_CANISTER);
-            entries.accept(AVPItems.STEEL_AXE);
-            entries.accept(AVPItems.STEEL_HOE);
-            entries.accept(AVPItems.STEEL_PICKAXE);
-            entries.accept(AVPItems.STEEL_SHOVEL);
-            entries.accept(AVPItems.STEEL_SWORD);
-            entries.accept(AVPItems.TITANIUM_AXE);
-            entries.accept(AVPItems.TITANIUM_HOE);
-            entries.accept(AVPItems.TITANIUM_PICKAXE);
-            entries.accept(AVPItems.TITANIUM_SHOVEL);
-            entries.accept(AVPItems.TITANIUM_SWORD);
-            entries.accept(AVPItems.VERITANIUM_AXE);
-            entries.accept(AVPItems.VERITANIUM_HOE);
-            entries.accept(AVPItems.VERITANIUM_PICKAXE);
-            entries.accept(AVPItems.VERITANIUM_SHOVEL);
-            entries.accept(AVPItems.VERITANIUM_SWORD);
-            entries.accept(AVPItems.ALIEN_MUSIC_DISC_1);
-            entries.accept(AVPItems.PREDATOR_MUSIC_DISC_1);
-
+            CreativeModeTabUtil.accept(entries, AVPItems.ARMOR_CASE);
+            CreativeModeTabUtil.accept(entries, TempAVPItems.CANISTER);
+            CreativeModeTabUtil.accept(entries, TempAVPItems.WATER_CANISTER);
+            CreativeModeTabUtil.accept(entries, TempAVPItems.LAVA_CANISTER);
+            CreativeModeTabUtil.accept(entries, TempAVPItems.MILK_CANISTER);
+            CreativeModeTabUtil.accept(entries, TempAVPItems.POWDER_SNOW_CANISTER);
+            CreativeModeTabUtil.accept(entries, AVPItems.STEEL_AXE);
+            CreativeModeTabUtil.accept(entries, AVPItems.STEEL_HOE);
+            CreativeModeTabUtil.accept(entries, AVPItems.STEEL_PICKAXE);
+            CreativeModeTabUtil.accept(entries, AVPItems.STEEL_SHOVEL);
+            CreativeModeTabUtil.accept(entries, AVPItems.STEEL_SWORD);
+            CreativeModeTabUtil.accept(entries, AVPItems.TITANIUM_AXE);
+            CreativeModeTabUtil.accept(entries, AVPItems.TITANIUM_HOE);
+            CreativeModeTabUtil.accept(entries, AVPItems.TITANIUM_PICKAXE);
+            CreativeModeTabUtil.accept(entries, AVPItems.TITANIUM_SHOVEL);
+            CreativeModeTabUtil.accept(entries, AVPItems.TITANIUM_SWORD);
+            CreativeModeTabUtil.accept(entries, AVPItems.VERITANIUM_AXE);
+            CreativeModeTabUtil.accept(entries, AVPItems.VERITANIUM_HOE);
+            CreativeModeTabUtil.accept(entries, AVPItems.VERITANIUM_PICKAXE);
+            CreativeModeTabUtil.accept(entries, AVPItems.VERITANIUM_SHOVEL);
+            CreativeModeTabUtil.accept(entries, AVPItems.VERITANIUM_SWORD);
+            CreativeModeTabUtil.accept(entries, AVPItems.ALIEN_MUSIC_DISC_1);
+            CreativeModeTabUtil.accept(entries, AVPItems.PREDATOR_MUSIC_DISC_1);
         });
     }
 }

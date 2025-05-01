@@ -3,15 +3,11 @@ package com.avp.fabric.common.item;
 import mod.azure.azurelib.rewrite.animation.cache.AzIdentityRegistry;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.item.*;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.material.Fluids;
 
 import java.util.function.Function;
 
 import com.avp.AVPResources;
-import com.avp.common.component.AVPDataComponents;
 import com.avp.fabric.common.item.grenades.GrendeItem;
 import com.avp.fabric.common.item.gun.GunData;
 import com.avp.fabric.common.item.old_painless.OldPainlessItem;
@@ -116,43 +112,6 @@ public class AVPItems {
 
     // Tools & Utilities
     public static final Item ARMOR_CASE = register(new ArmorCaseItem(new Item.Properties().stacksTo(1)), "armor_case");
-
-    public static final Item CANISTER = register(
-        new CanisterItem(Fluids.EMPTY, new Item.Properties().stacksTo(16)),
-        "canister"
-    );
-
-    public static final Item WATER_CANISTER = register(
-        new CanisterItem(
-            Fluids.WATER,
-            new Item.Properties().stacksTo(1).craftRemainder(CANISTER).component(AVPDataComponents.CANISTER_CAPACITY.get(), 1)
-        ),
-        "water_canister"
-    );
-
-    public static final Item LAVA_CANISTER = register(
-        new CanisterItem(
-            Fluids.LAVA,
-            new Item.Properties().stacksTo(1).craftRemainder(CANISTER).component(AVPDataComponents.CANISTER_CAPACITY.get(), 1)
-        ),
-        "lava_canister"
-    );
-
-    public static final Item MILK_CANISTER = register(
-        new MilkCanisterItem(
-            new Item.Properties().craftRemainder(CANISTER).stacksTo(1).component(AVPDataComponents.CANISTER_CAPACITY.get(), 1)
-        ),
-        "milk_canister"
-    );
-
-    public static final Item POWDER_SNOW_CANISTER = register(
-        new SolidCanisterItem(
-            Blocks.POWDER_SNOW,
-            SoundEvents.BUCKET_EMPTY_POWDER_SNOW,
-            new Item.Properties().stacksTo(1).component(AVPDataComponents.CANISTER_CAPACITY.get(), 1)
-        ),
-        "powder_snow_canister"
-    );
 
     public static final Item STEEL_AXE = register(
         new AxeItem(AVPTiers.STEEL, new Item.Properties().attributes(AxeItem.createAttributes(AVPTiers.STEEL, 6.0F, -3.1F))),

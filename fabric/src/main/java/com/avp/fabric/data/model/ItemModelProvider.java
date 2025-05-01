@@ -133,11 +133,11 @@ public class ItemModelProvider extends FabricModelProvider {
         generateStandardItem(generators, TempAVPItems.BLUEPRINT_ZX_76_SHOTGUN);
         generateStandardItem(generators, TempAVPItems.BRASS_INGOT);
         generateStandardItem(generators, TempAVPItems.BULLET_TIP);
-        generateStandardItem(generators, AVPItems.CANISTER);
-        generateStandardItem(generators, AVPItems.WATER_CANISTER);
-        generateStandardItem(generators, AVPItems.LAVA_CANISTER);
-        generateStandardItem(generators, AVPItems.MILK_CANISTER);
-        generateStandardItem(generators, AVPItems.POWDER_SNOW_CANISTER);
+        generateStandardItem(generators, TempAVPItems.CANISTER);
+        generateStandardItem(generators, TempAVPItems.WATER_CANISTER);
+        generateStandardItem(generators, TempAVPItems.LAVA_CANISTER);
+        generateStandardItem(generators, TempAVPItems.MILK_CANISTER);
+        generateStandardItem(generators, TempAVPItems.POWDER_SNOW_CANISTER);
         generateStandardItem(generators, TempAVPItems.CAPACITOR);
         generateStandardItem(generators, TempAVPItems.NUCLEAR_BATTERY);
         generateStandardItem(generators, TempAVPItems.REDSTONE_CRYSTAL);

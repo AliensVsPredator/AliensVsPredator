@@ -17,8 +17,8 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import com.avp.common.component.AVPDataComponents;
-import com.avp.fabric.common.item.AVPItems;
-import com.avp.fabric.common.item.CanisterItem;
+import com.avp.common.item.CanisterItem;
+import com.avp.common.item.TempAVPItems;
 
 @Mixin(Cow.class)
 public abstract class MixinCow_FillMilkCanister extends Animal {
@@ -42,7 +42,7 @@ public abstract class MixinCow_FillMilkCanister extends Animal {
         ItemStack updatedStack;
 
         if (contentAmount == 0) {
-            updatedStack = ItemUtils.createFilledResult(itemStack, player, AVPItems.MILK_CANISTER.getDefaultInstance());
+            updatedStack = ItemUtils.createFilledResult(itemStack, player, TempAVPItems.MILK_CANISTER.get().getDefaultInstance());
         } else if (contentAmount < 8) {
             updatedStack = CanisterItem.updateCapacity(itemStack, 1);
         } else {
@@ -57,6 +57,6 @@ public abstract class MixinCow_FillMilkCanister extends Animal {
 
     @Unique
     private static boolean isMilkHoldingCanister(ItemStack itemStack) {
-        return itemStack.is(AVPItems.CANISTER) || (itemStack.is(AVPItems.MILK_CANISTER));
+        return itemStack.is(TempAVPItems.CANISTER.get()) || (itemStack.is(TempAVPItems.MILK_CANISTER.get()));
     }
 }

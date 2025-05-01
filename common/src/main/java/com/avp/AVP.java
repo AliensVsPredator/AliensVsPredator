@@ -1,6 +1,5 @@
 package com.avp;
 
-import com.avp.common.menu.AVPMenuTypes;
 import mod.azure.azurelib.common.api.common.config.Config;
 import mod.azure.azurelib.common.internal.common.config.ConfigHolder;
 import mod.azure.azurelib.common.internal.common.config.ConfigHolderRegistry;
@@ -15,6 +14,7 @@ import com.avp.common.component.AVPDataComponents;
 import com.avp.common.config.AVPConfig;
 import com.avp.common.item.TempAVPBlockItems;
 import com.avp.common.item.TempAVPItems;
+import com.avp.common.menu.AVPMenuTypes;
 import com.avp.service.Services;
 
 public class AVP {

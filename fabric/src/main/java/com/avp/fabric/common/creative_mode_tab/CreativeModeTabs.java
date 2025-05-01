@@ -15,7 +15,6 @@ import com.avp.AVP;
 import com.avp.AVPResources;
 import com.avp.common.block.TempAVPBlocks;
 import com.avp.common.item.TempAVPItems;
-import com.avp.fabric.common.item.AVPItems;
 import com.avp.fabric.common.item.ArmorItems;
 import com.avp.fabric.common.item.SpawnEggItems;
 
@@ -50,7 +49,7 @@ public class CreativeModeTabs {
 
     public static final CreativeModeTab TOOLS_AND_UTILITIES = register(
         TOOLS_AND_UTILITIES_KEY,
-        () -> new ItemStack(AVPItems.CANISTER)
+        () -> new ItemStack(TempAVPItems.CANISTER.get())
     );
 
     public static ResourceKey<CreativeModeTab> createResourceKey(String name) {
