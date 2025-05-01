@@ -96,8 +96,8 @@ public class AVPClient implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
         // Blocks
-        BlockRenderLayerMap.INSTANCE.putBlock(AVPBlocks.FERROALUMINUM_CHAIN_FENCE, RenderType.cutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(AVPBlocks.FERROALUMINUM_GRATE, RenderType.cutout());
+        BlockRenderLayerMap.INSTANCE.putBlock(TempAVPBlocks.FERROALUMINUM_CHAIN_FENCE.get(), RenderType.cutout());
+        BlockRenderLayerMap.INSTANCE.putBlock(TempAVPBlocks.FERROALUMINUM_GRATE.get(), RenderType.cutout());
         BlockRenderLayerMap.INSTANCE.putBlock(AVPBlocks.IRRADIATED_RESIN_VEIN, RenderType.cutout());
         BlockRenderLayerMap.INSTANCE.putBlock(AVPBlocks.IRRADIATED_RESIN_WEB, RenderType.cutout());
         BlockRenderLayerMap.INSTANCE.putBlock(AVPBlocks.ABERRANT_RESIN_VEIN, RenderType.cutout());
@@ -106,11 +106,11 @@ public class AVPClient implements ClientModInitializer {
         BlockRenderLayerMap.INSTANCE.putBlock(AVPBlocks.NETHER_RESIN_WEB, RenderType.cutout());
         BlockRenderLayerMap.INSTANCE.putBlock(AVPBlocks.RESIN_VEIN, RenderType.cutout());
         BlockRenderLayerMap.INSTANCE.putBlock(AVPBlocks.RESIN_WEB, RenderType.cutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(AVPBlocks.STEEL_BARS, RenderType.cutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(AVPBlocks.STEEL_CHAIN_FENCE, RenderType.cutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(AVPBlocks.STEEL_GRATE, RenderType.cutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(AVPBlocks.TITANIUM_CHAIN_FENCE, RenderType.cutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(AVPBlocks.TITANIUM_GRATE, RenderType.cutout());
+        BlockRenderLayerMap.INSTANCE.putBlock(TempAVPBlocks.STEEL_BARS.get(), RenderType.cutout());
+        BlockRenderLayerMap.INSTANCE.putBlock(TempAVPBlocks.STEEL_CHAIN_FENCE.get(), RenderType.cutout());
+        BlockRenderLayerMap.INSTANCE.putBlock(TempAVPBlocks.STEEL_GRATE.get(), RenderType.cutout());
+        BlockRenderLayerMap.INSTANCE.putBlock(TempAVPBlocks.TITANIUM_CHAIN_FENCE.get(), RenderType.cutout());
+        BlockRenderLayerMap.INSTANCE.putBlock(TempAVPBlocks.TITANIUM_GRATE.get(), RenderType.cutout());
         BlockRenderLayerMap.INSTANCE.putBlock(AVPBlocks.RAZOR_WIRE, RenderType.cutout());
         BlockRenderLayerMap.INSTANCE.putBlock(AVPBlocks.INDUSTRIAL_GLASS_DOOR, RenderType.cutout());
         BlockRenderLayerMap.INSTANCE.putBlock(AVPBlocks.INDUSTRIAL_GLASS_TRAP_DOOR, RenderType.cutout());
@@ -120,12 +120,12 @@ public class AVPClient implements ClientModInitializer {
         BlockRenderLayerMap.INSTANCE.putBlock(AVPBlocks.FERROALUMINUM_TRAP_DOOR, RenderType.cutout());
         BlockRenderLayerMap.INSTANCE.putBlock(AVPBlocks.ROYAL_JELLY_BLOCK, RenderType.translucent());
         BlockRenderLayerMap.INSTANCE.putBlock(AVPBlocks.TRINITITE_BLOCK, RenderType.translucent());
-        BlockRenderLayerMap.INSTANCE.putBlock(AVPBlocks.FERROALUMINUM_GRATE_SLAB, RenderType.cutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(AVPBlocks.FERROALUMINUM_GRATE_STAIRS, RenderType.cutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(AVPBlocks.STEEL_GRATE_SLAB, RenderType.cutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(AVPBlocks.STEEL_GRATE_STAIRS, RenderType.cutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(AVPBlocks.TITANIUM_GRATE_SLAB, RenderType.cutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(AVPBlocks.TITANIUM_GRATE_STAIRS, RenderType.cutout());
+        BlockRenderLayerMap.INSTANCE.putBlock(TempAVPBlocks.FERROALUMINUM_GRATE_SLAB.get(), RenderType.cutout());
+        BlockRenderLayerMap.INSTANCE.putBlock(TempAVPBlocks.FERROALUMINUM_GRATE_STAIRS.get(), RenderType.cutout());
+        BlockRenderLayerMap.INSTANCE.putBlock(TempAVPBlocks.STEEL_GRATE_SLAB.get(), RenderType.cutout());
+        BlockRenderLayerMap.INSTANCE.putBlock(TempAVPBlocks.STEEL_GRATE_STAIRS.get(), RenderType.cutout());
+        BlockRenderLayerMap.INSTANCE.putBlock(TempAVPBlocks.TITANIUM_GRATE_SLAB.get(), RenderType.cutout());
+        BlockRenderLayerMap.INSTANCE.putBlock(TempAVPBlocks.TITANIUM_GRATE_STAIRS.get(), RenderType.cutout());
 
         BlockRenderLayerMap.INSTANCE.putBlock(AVPBlocks.INDUSTRIAL_GLASS, RenderType.cutout());
         BlockRenderLayerMap.INSTANCE.putBlock(AVPBlocks.INDUSTRIAL_GLASS_SLAB, RenderType.cutout());

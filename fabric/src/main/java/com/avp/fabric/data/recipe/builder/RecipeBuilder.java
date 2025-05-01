@@ -46,6 +46,10 @@ public class RecipeBuilder {
         return new SmeltingRecipeBuilder(this, source);
     }
 
+    public StonecutterRecipeBuilder stonecut(Supplier<? extends ItemLike> sourceSupplier) {
+        return stonecut(sourceSupplier.get());
+    }
+
     public StonecutterRecipeBuilder stonecut(ItemLike source) {
         return new StonecutterRecipeBuilder(this, source);
     }

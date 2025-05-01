@@ -5,6 +5,8 @@ import net.minecraft.world.level.ItemLike;
 
 import com.avp.fabric.data.recipe.RecipeProvider;
 
+import java.util.function.Supplier;
+
 public class StonecutterRecipeBuilder {
 
     private final RecipeBuilder recipeBuilder;
@@ -22,6 +24,10 @@ public class StonecutterRecipeBuilder {
     public StonecutterRecipeBuilder withCategory(RecipeCategory recipeCategory) {
         this.recipeCategory = recipeCategory;
         return this;
+    }
+
+    public void into(int count, Supplier<? extends ItemLike> destinationSupplier) {
+        into(count, destinationSupplier.get());
     }
 
     public void into(int count, ItemLike destination) {

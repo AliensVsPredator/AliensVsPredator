@@ -102,7 +102,7 @@ public class AVPItemTagProvider extends FabricTagProvider.ItemTagProvider {
                 TempAVPItems.IRRADIATED_RESIN_BALL.get(),
                 AVPBlockItems.AUTUNITE_BLOCK,
                 TempAVPBlockItems.AUTUNITE_ORE.get(),
-                AVPBlockItems.URANIUM_BLOCK,
+                TempAVPBlockItems.URANIUM_BLOCK.get(),
                 AVPBlockItems.TRINITITE_BLOCK,
                 AVPBlockItems.IRRADIATED_RESIN,
                 AVPBlockItems.IRRADIATED_RESIN_NODE,
@@ -204,9 +204,9 @@ public class AVPItemTagProvider extends FabricTagProvider.ItemTagProvider {
             .add(
                 Items.IRON_BLOCK,
                 AVPBlockItems.ALUMINUM_BLOCK,
-                AVPBlockItems.FERROALUMINUM_BLOCK,
-                AVPBlockItems.STEEL_BLOCK,
-                AVPBlockItems.ZINC_BLOCK
+                TempAVPBlockItems.FERROALUMINUM_BLOCK.get(),
+                TempAVPBlockItems.STEEL_BLOCK.get(),
+                TempAVPBlockItems.ZINC_BLOCK.get()
             );
 
         getOrCreateTagBuilder(AVPItemTags.IRON_INGOT_LIKE)
@@ -379,9 +379,9 @@ public class AVPItemTagProvider extends FabricTagProvider.ItemTagProvider {
         var fenceTagProvider = getOrCreateTagBuilder(ItemTags.FENCES);
 
         fenceTagProvider.add(
-            AVPBlockItems.FERROALUMINUM_CHAIN_FENCE,
-            AVPBlockItems.STEEL_CHAIN_FENCE,
-            AVPBlockItems.TITANIUM_CHAIN_FENCE
+            TempAVPBlockItems.FERROALUMINUM_CHAIN_FENCE.get(),
+            TempAVPBlockItems.STEEL_CHAIN_FENCE.get(),
+            TempAVPBlockItems.TITANIUM_CHAIN_FENCE.get()
         );
 
         var doorTagProvider = getOrCreateTagBuilder(ItemTags.DOORS);
@@ -408,31 +408,31 @@ public class AVPItemTagProvider extends FabricTagProvider.ItemTagProvider {
             AVPBlockItems.CUT_FERROALUMINUM_SLAB,
             AVPBlockItems.CUT_STEEL_SLAB,
             AVPBlockItems.CUT_TITANIUM_SLAB,
-            AVPBlockItems.FERROALUMINUM_FASTENED_SIDING_SLAB,
-            AVPBlockItems.FERROALUMINUM_FASTENED_STANDING_SLAB,
-            AVPBlockItems.FERROALUMINUM_GRATE_SLAB,
-            AVPBlockItems.FERROALUMINUM_PLATING_SLAB,
-            AVPBlockItems.FERROALUMINUM_SIDING_SLAB,
-            AVPBlockItems.FERROALUMINUM_SLAB,
-            AVPBlockItems.FERROALUMINUM_STANDING_SLAB,
-            AVPBlockItems.FERROALUMINUM_TREAD_SLAB,
+            TempAVPBlockItems.FERROALUMINUM_FASTENED_SIDING_SLAB.get(),
+            TempAVPBlockItems.FERROALUMINUM_FASTENED_STANDING_SLAB.get(),
+            TempAVPBlockItems.FERROALUMINUM_GRATE_SLAB.get(),
+            TempAVPBlockItems.FERROALUMINUM_PLATING_SLAB.get(),
+            TempAVPBlockItems.FERROALUMINUM_SIDING_SLAB.get(),
+            TempAVPBlockItems.FERROALUMINUM_SLAB.get(),
+            TempAVPBlockItems.FERROALUMINUM_STANDING_SLAB.get(),
+            TempAVPBlockItems.FERROALUMINUM_TREAD_SLAB.get(),
             AVPBlockItems.INDUSTRIAL_GLASS_SLAB,
-            AVPBlockItems.STEEL_FASTENED_SIDING_SLAB,
-            AVPBlockItems.STEEL_FASTENED_STANDING_SLAB,
-            AVPBlockItems.STEEL_GRATE_SLAB,
-            AVPBlockItems.STEEL_PLATING_SLAB,
-            AVPBlockItems.STEEL_SIDING_SLAB,
-            AVPBlockItems.STEEL_SLAB,
-            AVPBlockItems.STEEL_STANDING_SLAB,
-            AVPBlockItems.STEEL_TREAD_SLAB,
-            AVPBlockItems.TITANIUM_FASTENED_SIDING_SLAB,
-            AVPBlockItems.TITANIUM_FASTENED_STANDING_SLAB,
-            AVPBlockItems.TITANIUM_GRATE_SLAB,
-            AVPBlockItems.TITANIUM_PLATING_SLAB,
-            AVPBlockItems.TITANIUM_SIDING_SLAB,
-            AVPBlockItems.TITANIUM_SLAB,
-            AVPBlockItems.TITANIUM_STANDING_SLAB,
-            AVPBlockItems.TITANIUM_TREAD_SLAB
+            TempAVPBlockItems.STEEL_FASTENED_SIDING_SLAB.get(),
+            TempAVPBlockItems.STEEL_FASTENED_STANDING_SLAB.get(),
+            TempAVPBlockItems.STEEL_GRATE_SLAB.get(),
+            TempAVPBlockItems.STEEL_PLATING_SLAB.get(),
+            TempAVPBlockItems.STEEL_SIDING_SLAB.get(),
+            TempAVPBlockItems.STEEL_SLAB.get(),
+            TempAVPBlockItems.STEEL_STANDING_SLAB.get(),
+            TempAVPBlockItems.STEEL_TREAD_SLAB.get(),
+            TempAVPBlockItems.TITANIUM_FASTENED_SIDING_SLAB.get(),
+            TempAVPBlockItems.TITANIUM_FASTENED_STANDING_SLAB.get(),
+            TempAVPBlockItems.TITANIUM_GRATE_SLAB.get(),
+            TempAVPBlockItems.TITANIUM_PLATING_SLAB.get(),
+            TempAVPBlockItems.TITANIUM_SIDING_SLAB.get(),
+            TempAVPBlockItems.TITANIUM_SLAB.get(),
+            TempAVPBlockItems.TITANIUM_STANDING_SLAB.get(),
+            TempAVPBlockItems.TITANIUM_TREAD_SLAB.get()
         );
 
         // TODO: Use a stream concat here.
@@ -458,31 +458,31 @@ public class AVPItemTagProvider extends FabricTagProvider.ItemTagProvider {
             AVPBlockItems.CUT_FERROALUMINUM_STAIRS,
             AVPBlockItems.CUT_STEEL_STAIRS,
             AVPBlockItems.CUT_TITANIUM_STAIRS,
-            AVPBlockItems.FERROALUMINUM_FASTENED_SIDING_STAIRS,
-            AVPBlockItems.FERROALUMINUM_FASTENED_STANDING_STAIRS,
-            AVPBlockItems.FERROALUMINUM_GRATE_STAIRS,
-            AVPBlockItems.FERROALUMINUM_PLATING_STAIRS,
-            AVPBlockItems.FERROALUMINUM_SIDING_STAIRS,
-            AVPBlockItems.FERROALUMINUM_STAIRS,
-            AVPBlockItems.FERROALUMINUM_STANDING_STAIRS,
-            AVPBlockItems.FERROALUMINUM_TREAD_STAIRS,
+            TempAVPBlockItems.FERROALUMINUM_FASTENED_SIDING_STAIRS.get(),
+            TempAVPBlockItems.FERROALUMINUM_FASTENED_STANDING_STAIRS.get(),
+            TempAVPBlockItems.FERROALUMINUM_GRATE_STAIRS.get(),
+            TempAVPBlockItems.FERROALUMINUM_PLATING_STAIRS.get(),
+            TempAVPBlockItems.FERROALUMINUM_SIDING_STAIRS.get(),
+            TempAVPBlockItems.FERROALUMINUM_STAIRS.get(),
+            TempAVPBlockItems.FERROALUMINUM_STANDING_STAIRS.get(),
+            TempAVPBlockItems.FERROALUMINUM_TREAD_STAIRS.get(),
             AVPBlockItems.INDUSTRIAL_GLASS_STAIRS,
-            AVPBlockItems.STEEL_FASTENED_SIDING_STAIRS,
-            AVPBlockItems.STEEL_FASTENED_STANDING_STAIRS,
-            AVPBlockItems.STEEL_GRATE_STAIRS,
-            AVPBlockItems.STEEL_PLATING_STAIRS,
-            AVPBlockItems.STEEL_SIDING_STAIRS,
-            AVPBlockItems.STEEL_STAIRS,
-            AVPBlockItems.STEEL_STANDING_STAIRS,
-            AVPBlockItems.STEEL_TREAD_STAIRS,
-            AVPBlockItems.TITANIUM_FASTENED_SIDING_STAIRS,
-            AVPBlockItems.TITANIUM_FASTENED_STANDING_STAIRS,
-            AVPBlockItems.TITANIUM_GRATE_STAIRS,
-            AVPBlockItems.TITANIUM_PLATING_STAIRS,
-            AVPBlockItems.TITANIUM_SIDING_STAIRS,
-            AVPBlockItems.TITANIUM_STAIRS,
-            AVPBlockItems.TITANIUM_STANDING_STAIRS,
-            AVPBlockItems.TITANIUM_TREAD_STAIRS
+            TempAVPBlockItems.STEEL_FASTENED_SIDING_STAIRS.get(),
+            TempAVPBlockItems.STEEL_FASTENED_STANDING_STAIRS.get(),
+            TempAVPBlockItems.STEEL_GRATE_STAIRS.get(),
+            TempAVPBlockItems.STEEL_PLATING_STAIRS.get(),
+            TempAVPBlockItems.STEEL_SIDING_STAIRS.get(),
+            TempAVPBlockItems.STEEL_STAIRS.get(),
+            TempAVPBlockItems.STEEL_STANDING_STAIRS.get(),
+            TempAVPBlockItems.STEEL_TREAD_STAIRS.get(),
+            TempAVPBlockItems.TITANIUM_FASTENED_SIDING_STAIRS.get(),
+            TempAVPBlockItems.TITANIUM_FASTENED_STANDING_STAIRS.get(),
+            TempAVPBlockItems.TITANIUM_GRATE_STAIRS.get(),
+            TempAVPBlockItems.TITANIUM_PLATING_STAIRS.get(),
+            TempAVPBlockItems.TITANIUM_SIDING_STAIRS.get(),
+            TempAVPBlockItems.TITANIUM_STAIRS.get(),
+            TempAVPBlockItems.TITANIUM_STANDING_STAIRS.get(),
+            TempAVPBlockItems.TITANIUM_TREAD_STAIRS.get()
         );
 
         // TODO: Use a stream concat here.

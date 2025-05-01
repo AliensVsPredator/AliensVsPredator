@@ -12,6 +12,8 @@ import com.avp.fabric.data.recipe.RecipeTemplates;
 import com.avp.fabric.data.recipe.builder.RecipeBuilder;
 import com.avp.fabric.data.recipe.util.RecipeUtil;
 
+import java.util.function.Supplier;
+
 public class MetalRecipeProvider {
 
     public static void provide(RecipeBuilder builder) {
@@ -67,12 +69,12 @@ public class MetalRecipeProvider {
 
         RecipeUtil.createCompressedBlockRecipes3x3(builder, TempAVPItems.ALUMINUM_INGOT.get(), AVPBlocks.ALUMINUM_BLOCK);
         RecipeUtil.createCompressedBlockRecipes3x3(builder, TempAVPItems.BRASS_INGOT.get(), AVPBlocks.BRASS_BLOCK);
-        RecipeUtil.createCompressedBlockRecipes3x3(builder, TempAVPItems.FERROALUMINUM_INGOT.get(), AVPBlocks.FERROALUMINUM_BLOCK);
+        RecipeUtil.createCompressedBlockRecipes3x3(builder, TempAVPItems.FERROALUMINUM_INGOT.get(), TempAVPBlocks.FERROALUMINUM_BLOCK.get());
         RecipeUtil.createCompressedBlockRecipes3x3(builder, TempAVPItems.LEAD_INGOT.get(), AVPBlocks.LEAD_BLOCK);
-        RecipeUtil.createCompressedBlockRecipes3x3(builder, TempAVPItems.STEEL_INGOT.get(), AVPBlocks.STEEL_BLOCK);
-        RecipeUtil.createCompressedBlockRecipes3x3(builder, TempAVPItems.TITANIUM_INGOT.get(), AVPBlocks.TITANIUM_BLOCK);
-        RecipeUtil.createCompressedBlockRecipes3x3(builder, TempAVPItems.URANIUM_INGOT.get(), AVPBlocks.URANIUM_BLOCK);
-        RecipeUtil.createCompressedBlockRecipes3x3(builder, TempAVPItems.ZINC_INGOT.get(), AVPBlocks.ZINC_BLOCK);
+        RecipeUtil.createCompressedBlockRecipes3x3(builder, TempAVPItems.STEEL_INGOT.get(), TempAVPBlocks.STEEL_BLOCK.get());
+        RecipeUtil.createCompressedBlockRecipes3x3(builder, TempAVPItems.TITANIUM_INGOT.get(), TempAVPBlocks.TITANIUM_BLOCK.get());
+        RecipeUtil.createCompressedBlockRecipes3x3(builder, TempAVPItems.URANIUM_INGOT.get(), TempAVPBlocks.URANIUM_BLOCK.get());
+        RecipeUtil.createCompressedBlockRecipes3x3(builder, TempAVPItems.ZINC_INGOT.get(), TempAVPBlocks.ZINC_BLOCK.get());
 
         RecipeUtil.createCompressedBlockRecipes3x3(builder, TempAVPItems.AUTUNITE_DUST.get(), AVPBlocks.AUTUNITE_BLOCK);
         RecipeUtil.createCompressedBlockRecipes3x3(builder, TempAVPItems.LITHIUM_DUST.get(), AVPBlocks.LITHIUM_BLOCK);
@@ -86,7 +88,7 @@ public class MetalRecipeProvider {
         builder.shaped()
             .withCategory(RecipeCategory.BUILDING_BLOCKS)
             .apply(RecipeTemplates.BARS_BLOCK.apply(TempAVPItems.STEEL_INGOT.get()))
-            .into(16, AVPBlocks.STEEL_BARS);
+            .into(16, TempAVPBlocks.STEEL_BARS);
 
         builder.shaped()
             .withCategory(RecipeCategory.BUILDING_BLOCKS)
@@ -133,21 +135,21 @@ public class MetalRecipeProvider {
         builder.shaped()
             .withCategory(RecipeCategory.BUILDING_BLOCKS)
             .apply(RecipeTemplates.PRESSURE_PLATE_BLOCK.apply(TempAVPItems.STEEL_INGOT.get()))
-            .into(1, AVPBlocks.STEEL_PRESSURE_PLATE);
+            .into(1, TempAVPBlocks.STEEL_PRESSURE_PLATE);
         builder.shaped()
             .withCategory(RecipeCategory.BUILDING_BLOCKS)
             .apply(RecipeTemplates.PRESSURE_PLATE_BLOCK.apply(TempAVPItems.TITANIUM_INGOT.get()))
             .into(1, AVPBlocks.TITANIUM_PRESSURE_PLATE);
 
         // Add standard slab and stair crafting recipes
-        createStandardSlabRecipe(builder, AVPBlocks.FERROALUMINUM_BLOCK, AVPBlocks.FERROALUMINUM_SLAB);
-        createStandardStairRecipe(builder, AVPBlocks.FERROALUMINUM_BLOCK, AVPBlocks.FERROALUMINUM_STAIRS);
+        createStandardSlabRecipe(builder, TempAVPBlocks.FERROALUMINUM_BLOCK.get(), TempAVPBlocks.FERROALUMINUM_SLAB.get());
+        createStandardStairRecipe(builder, TempAVPBlocks.FERROALUMINUM_BLOCK.get(), TempAVPBlocks.FERROALUMINUM_STAIRS.get());
 
-        createStandardSlabRecipe(builder, AVPBlocks.STEEL_BLOCK, AVPBlocks.STEEL_SLAB);
-        createStandardStairRecipe(builder, AVPBlocks.STEEL_BLOCK, AVPBlocks.STEEL_STAIRS);
+        createStandardSlabRecipe(builder, TempAVPBlocks.STEEL_BLOCK.get(), TempAVPBlocks.STEEL_SLAB.get());
+        createStandardStairRecipe(builder, TempAVPBlocks.STEEL_BLOCK.get(), TempAVPBlocks.STEEL_STAIRS.get());
 
-        createStandardSlabRecipe(builder, AVPBlocks.TITANIUM_BLOCK, AVPBlocks.TITANIUM_SLAB);
-        createStandardStairRecipe(builder, AVPBlocks.TITANIUM_BLOCK, AVPBlocks.TITANIUM_STAIRS);
+        createStandardSlabRecipe(builder, TempAVPBlocks.TITANIUM_BLOCK.get(), TempAVPBlocks.TITANIUM_SLAB.get());
+        createStandardStairRecipe(builder, TempAVPBlocks.TITANIUM_BLOCK.get(), TempAVPBlocks.TITANIUM_STAIRS.get());
 
         createFerroaluminumBlockVariantRecipes(builder);
         createSteelBlockVariantRecipes(builder);
@@ -178,24 +180,24 @@ public class MetalRecipeProvider {
     }
 
     private static void createFerroaluminumBlockVariantRecipes(RecipeBuilder builder) {
-        var ferroaluminumBaseBuilder = builder.stonecut(AVPBlocks.FERROALUMINUM_BLOCK)
+        var ferroaluminumBaseBuilder = builder.stonecut(TempAVPBlocks.FERROALUMINUM_BLOCK)
             .withCategory(RecipeCategory.BUILDING_BLOCKS);
 
         ferroaluminumBaseBuilder.into(4, AVPBlocks.CHISELED_FERROALUMINUM);
         ferroaluminumBaseBuilder.into(4, AVPBlocks.CUT_FERROALUMINUM);
         ferroaluminumBaseBuilder.into(8, AVPBlocks.CUT_FERROALUMINUM_SLAB);
         ferroaluminumBaseBuilder.into(4, AVPBlocks.CUT_FERROALUMINUM_STAIRS);
-        ferroaluminumBaseBuilder.into(16, AVPBlocks.FERROALUMINUM_CHAIN_FENCE);
-        ferroaluminumBaseBuilder.into(4, AVPBlocks.FERROALUMINUM_COLUMN);
-        ferroaluminumBaseBuilder.into(4, AVPBlocks.FERROALUMINUM_FASTENED_SIDING);
-        ferroaluminumBaseBuilder.into(4, AVPBlocks.FERROALUMINUM_FASTENED_STANDING);
-        ferroaluminumBaseBuilder.into(4, AVPBlocks.FERROALUMINUM_GRATE);
-        ferroaluminumBaseBuilder.into(4, AVPBlocks.FERROALUMINUM_PLATING);
-        ferroaluminumBaseBuilder.into(4, AVPBlocks.FERROALUMINUM_SIDING);
-        ferroaluminumBaseBuilder.into(4, AVPBlocks.FERROALUMINUM_STANDING);
-        ferroaluminumBaseBuilder.into(4, AVPBlocks.FERROALUMINUM_TREAD);
-        ferroaluminumBaseBuilder.into(2, AVPBlocks.FERROALUMINUM_SLAB);
-        ferroaluminumBaseBuilder.into(1, AVPBlocks.FERROALUMINUM_STAIRS);
+        ferroaluminumBaseBuilder.into(16, TempAVPBlocks.FERROALUMINUM_CHAIN_FENCE);
+        ferroaluminumBaseBuilder.into(4, TempAVPBlocks.FERROALUMINUM_COLUMN);
+        ferroaluminumBaseBuilder.into(4, TempAVPBlocks.FERROALUMINUM_FASTENED_SIDING);
+        ferroaluminumBaseBuilder.into(4, TempAVPBlocks.FERROALUMINUM_FASTENED_STANDING);
+        ferroaluminumBaseBuilder.into(4, TempAVPBlocks.FERROALUMINUM_GRATE);
+        ferroaluminumBaseBuilder.into(4, TempAVPBlocks.FERROALUMINUM_PLATING);
+        ferroaluminumBaseBuilder.into(4, TempAVPBlocks.FERROALUMINUM_SIDING);
+        ferroaluminumBaseBuilder.into(4, TempAVPBlocks.FERROALUMINUM_STANDING);
+        ferroaluminumBaseBuilder.into(4, TempAVPBlocks.FERROALUMINUM_TREAD);
+        ferroaluminumBaseBuilder.into(2, TempAVPBlocks.FERROALUMINUM_SLAB);
+        ferroaluminumBaseBuilder.into(1, TempAVPBlocks.FERROALUMINUM_STAIRS);
 
         var cutFerroaluminumBuilder = builder.stonecut(AVPBlocks.CUT_FERROALUMINUM)
             .withCategory(RecipeCategory.BUILDING_BLOCKS);
@@ -205,24 +207,24 @@ public class MetalRecipeProvider {
     }
 
     private static void createSteelBlockVariantRecipes(RecipeBuilder builder) {
-        var steelBaseBuilder = builder.stonecut(AVPBlocks.STEEL_BLOCK)
+        var steelBaseBuilder = builder.stonecut(TempAVPBlocks.STEEL_BLOCK.get())
             .withCategory(RecipeCategory.BUILDING_BLOCKS);
 
         steelBaseBuilder.into(4, AVPBlocks.CHISELED_STEEL);
         steelBaseBuilder.into(4, AVPBlocks.CUT_STEEL);
         steelBaseBuilder.into(8, AVPBlocks.CUT_STEEL_SLAB);
         steelBaseBuilder.into(4, AVPBlocks.CUT_STEEL_STAIRS);
-        steelBaseBuilder.into(16, AVPBlocks.STEEL_CHAIN_FENCE);
-        steelBaseBuilder.into(4, AVPBlocks.STEEL_COLUMN);
-        steelBaseBuilder.into(4, AVPBlocks.STEEL_FASTENED_SIDING);
-        steelBaseBuilder.into(4, AVPBlocks.STEEL_FASTENED_STANDING);
-        steelBaseBuilder.into(4, AVPBlocks.STEEL_GRATE);
-        steelBaseBuilder.into(4, AVPBlocks.STEEL_PLATING);
-        steelBaseBuilder.into(4, AVPBlocks.STEEL_SIDING);
-        steelBaseBuilder.into(4, AVPBlocks.STEEL_STANDING);
-        steelBaseBuilder.into(4, AVPBlocks.STEEL_TREAD);
-        steelBaseBuilder.into(2, AVPBlocks.STEEL_SLAB);
-        steelBaseBuilder.into(1, AVPBlocks.STEEL_STAIRS);
+        steelBaseBuilder.into(16, TempAVPBlocks.STEEL_CHAIN_FENCE);
+        steelBaseBuilder.into(4, TempAVPBlocks.STEEL_COLUMN);
+        steelBaseBuilder.into(4, TempAVPBlocks.STEEL_FASTENED_SIDING);
+        steelBaseBuilder.into(4, TempAVPBlocks.STEEL_FASTENED_STANDING);
+        steelBaseBuilder.into(4, TempAVPBlocks.STEEL_GRATE);
+        steelBaseBuilder.into(4, TempAVPBlocks.STEEL_PLATING);
+        steelBaseBuilder.into(4, TempAVPBlocks.STEEL_SIDING);
+        steelBaseBuilder.into(4, TempAVPBlocks.STEEL_STANDING);
+        steelBaseBuilder.into(4, TempAVPBlocks.STEEL_TREAD);
+        steelBaseBuilder.into(2, TempAVPBlocks.STEEL_SLAB.get());
+        steelBaseBuilder.into(1, TempAVPBlocks.STEEL_STAIRS.get());
 
         var cutSteelBuilder = builder.stonecut(AVPBlocks.CUT_STEEL)
             .withCategory(RecipeCategory.BUILDING_BLOCKS);
@@ -232,24 +234,24 @@ public class MetalRecipeProvider {
     }
 
     private static void createTitaniumBlockVariantRecipes(RecipeBuilder builder) {
-        var titaniumBaseBuilder = builder.stonecut(AVPBlocks.TITANIUM_BLOCK)
+        var titaniumBaseBuilder = builder.stonecut(TempAVPBlocks.TITANIUM_BLOCK)
             .withCategory(RecipeCategory.BUILDING_BLOCKS);
 
         titaniumBaseBuilder.into(4, AVPBlocks.CHISELED_TITANIUM);
         titaniumBaseBuilder.into(4, AVPBlocks.CUT_TITANIUM);
         titaniumBaseBuilder.into(8, AVPBlocks.CUT_TITANIUM_SLAB);
         titaniumBaseBuilder.into(4, AVPBlocks.CUT_TITANIUM_STAIRS);
-        titaniumBaseBuilder.into(16, AVPBlocks.TITANIUM_CHAIN_FENCE);
-        titaniumBaseBuilder.into(4, AVPBlocks.TITANIUM_COLUMN);
-        titaniumBaseBuilder.into(4, AVPBlocks.TITANIUM_FASTENED_SIDING);
-        titaniumBaseBuilder.into(4, AVPBlocks.TITANIUM_FASTENED_STANDING);
-        titaniumBaseBuilder.into(4, AVPBlocks.TITANIUM_GRATE);
-        titaniumBaseBuilder.into(4, AVPBlocks.TITANIUM_PLATING);
-        titaniumBaseBuilder.into(4, AVPBlocks.TITANIUM_SIDING);
-        titaniumBaseBuilder.into(4, AVPBlocks.TITANIUM_STANDING);
-        titaniumBaseBuilder.into(4, AVPBlocks.TITANIUM_TREAD);
-        titaniumBaseBuilder.into(2, AVPBlocks.TITANIUM_SLAB);
-        titaniumBaseBuilder.into(1, AVPBlocks.TITANIUM_STAIRS);
+        titaniumBaseBuilder.into(16, TempAVPBlocks.TITANIUM_CHAIN_FENCE);
+        titaniumBaseBuilder.into(4, TempAVPBlocks.TITANIUM_COLUMN);
+        titaniumBaseBuilder.into(4, TempAVPBlocks.TITANIUM_FASTENED_SIDING);
+        titaniumBaseBuilder.into(4, TempAVPBlocks.TITANIUM_FASTENED_STANDING);
+        titaniumBaseBuilder.into(4, TempAVPBlocks.TITANIUM_GRATE);
+        titaniumBaseBuilder.into(4, TempAVPBlocks.TITANIUM_PLATING);
+        titaniumBaseBuilder.into(4, TempAVPBlocks.TITANIUM_SIDING);
+        titaniumBaseBuilder.into(4, TempAVPBlocks.TITANIUM_STANDING);
+        titaniumBaseBuilder.into(4, TempAVPBlocks.TITANIUM_TREAD);
+        titaniumBaseBuilder.into(2, TempAVPBlocks.TITANIUM_SLAB);
+        titaniumBaseBuilder.into(1, TempAVPBlocks.TITANIUM_STAIRS);
 
         var cutTitaniumBuilder = builder.stonecut(AVPBlocks.CUT_TITANIUM)
             .withCategory(RecipeCategory.BUILDING_BLOCKS);
@@ -262,165 +264,168 @@ public class MetalRecipeProvider {
         // Ferroaluminum variant slabs and stairs
         addVariantSlabAndStairRecipes(
             builder,
-            AVPBlocks.FERROALUMINUM_SIDING,
-            AVPBlocks.FERROALUMINUM_SIDING_SLAB,
-            AVPBlocks.FERROALUMINUM_SIDING_STAIRS
+            TempAVPBlocks.FERROALUMINUM_SIDING,
+            TempAVPBlocks.FERROALUMINUM_SIDING_SLAB,
+            TempAVPBlocks.FERROALUMINUM_SIDING_STAIRS
         );
 
         addVariantSlabAndStairRecipes(
             builder,
-            AVPBlocks.FERROALUMINUM_STANDING,
-            AVPBlocks.FERROALUMINUM_STANDING_SLAB,
-            AVPBlocks.FERROALUMINUM_STANDING_STAIRS
+            TempAVPBlocks.FERROALUMINUM_STANDING,
+            TempAVPBlocks.FERROALUMINUM_STANDING_SLAB,
+            TempAVPBlocks.FERROALUMINUM_STANDING_STAIRS
         );
 
         addVariantSlabAndStairRecipes(
             builder,
-            AVPBlocks.FERROALUMINUM_FASTENED_SIDING,
-            AVPBlocks.FERROALUMINUM_FASTENED_SIDING_SLAB,
-            AVPBlocks.FERROALUMINUM_FASTENED_SIDING_STAIRS
+            TempAVPBlocks.FERROALUMINUM_FASTENED_SIDING,
+            TempAVPBlocks.FERROALUMINUM_FASTENED_SIDING_SLAB,
+            TempAVPBlocks.FERROALUMINUM_FASTENED_SIDING_STAIRS
         );
 
         addVariantSlabAndStairRecipes(
             builder,
-            AVPBlocks.FERROALUMINUM_FASTENED_STANDING,
-            AVPBlocks.FERROALUMINUM_FASTENED_STANDING_SLAB,
-            AVPBlocks.FERROALUMINUM_FASTENED_STANDING_STAIRS
+            TempAVPBlocks.FERROALUMINUM_FASTENED_STANDING,
+            TempAVPBlocks.FERROALUMINUM_FASTENED_STANDING_SLAB,
+            TempAVPBlocks.FERROALUMINUM_FASTENED_STANDING_STAIRS
         );
 
         addVariantSlabAndStairRecipes(
             builder,
-            AVPBlocks.FERROALUMINUM_PLATING,
-            AVPBlocks.FERROALUMINUM_PLATING_SLAB,
-            AVPBlocks.FERROALUMINUM_PLATING_STAIRS
+            TempAVPBlocks.FERROALUMINUM_PLATING,
+            TempAVPBlocks.FERROALUMINUM_PLATING_SLAB,
+            TempAVPBlocks.FERROALUMINUM_PLATING_STAIRS
         );
 
         addVariantSlabAndStairRecipes(
             builder,
-            AVPBlocks.FERROALUMINUM_TREAD,
-            AVPBlocks.FERROALUMINUM_TREAD_SLAB,
-            AVPBlocks.FERROALUMINUM_TREAD_STAIRS
+            TempAVPBlocks.FERROALUMINUM_TREAD,
+            TempAVPBlocks.FERROALUMINUM_TREAD_SLAB,
+            TempAVPBlocks.FERROALUMINUM_TREAD_STAIRS
         );
 
         addVariantSlabAndStairRecipes(
             builder,
-            AVPBlocks.FERROALUMINUM_GRATE,
-            AVPBlocks.FERROALUMINUM_GRATE_SLAB,
-            AVPBlocks.FERROALUMINUM_GRATE_STAIRS
+            TempAVPBlocks.FERROALUMINUM_GRATE,
+            TempAVPBlocks.FERROALUMINUM_GRATE_SLAB,
+            TempAVPBlocks.FERROALUMINUM_GRATE_STAIRS
         );
 
         // Steel variant slabs and stairs
         addVariantSlabAndStairRecipes(
             builder,
-            AVPBlocks.STEEL_SIDING,
-            AVPBlocks.STEEL_SIDING_SLAB,
-            AVPBlocks.STEEL_SIDING_STAIRS
+            TempAVPBlocks.STEEL_SIDING,
+            TempAVPBlocks.STEEL_SIDING_SLAB,
+            TempAVPBlocks.STEEL_SIDING_STAIRS
         );
 
         addVariantSlabAndStairRecipes(
             builder,
-            AVPBlocks.STEEL_STANDING,
-            AVPBlocks.STEEL_STANDING_SLAB,
-            AVPBlocks.STEEL_STANDING_STAIRS
+            TempAVPBlocks.STEEL_STANDING,
+            TempAVPBlocks.STEEL_STANDING_SLAB,
+            TempAVPBlocks.STEEL_STANDING_STAIRS
         );
 
         addVariantSlabAndStairRecipes(
             builder,
-            AVPBlocks.STEEL_FASTENED_SIDING,
-            AVPBlocks.STEEL_FASTENED_SIDING_SLAB,
-            AVPBlocks.STEEL_FASTENED_SIDING_STAIRS
+            TempAVPBlocks.STEEL_FASTENED_SIDING,
+            TempAVPBlocks.STEEL_FASTENED_SIDING_SLAB,
+            TempAVPBlocks.STEEL_FASTENED_SIDING_STAIRS
         );
 
         addVariantSlabAndStairRecipes(
             builder,
-            AVPBlocks.STEEL_FASTENED_STANDING,
-            AVPBlocks.STEEL_FASTENED_STANDING_SLAB,
-            AVPBlocks.STEEL_FASTENED_STANDING_STAIRS
+            TempAVPBlocks.STEEL_FASTENED_STANDING,
+            TempAVPBlocks.STEEL_FASTENED_STANDING_SLAB,
+            TempAVPBlocks.STEEL_FASTENED_STANDING_STAIRS
         );
 
         addVariantSlabAndStairRecipes(
             builder,
-            AVPBlocks.STEEL_PLATING,
-            AVPBlocks.STEEL_PLATING_SLAB,
-            AVPBlocks.STEEL_PLATING_STAIRS
+            TempAVPBlocks.STEEL_PLATING,
+            TempAVPBlocks.STEEL_PLATING_SLAB,
+            TempAVPBlocks.STEEL_PLATING_STAIRS
         );
 
         addVariantSlabAndStairRecipes(
             builder,
-            AVPBlocks.STEEL_TREAD,
-            AVPBlocks.STEEL_TREAD_SLAB,
-            AVPBlocks.STEEL_TREAD_STAIRS
+            TempAVPBlocks.STEEL_TREAD,
+            TempAVPBlocks.STEEL_TREAD_SLAB,
+            TempAVPBlocks.STEEL_TREAD_STAIRS
         );
 
         addVariantSlabAndStairRecipes(
             builder,
-            AVPBlocks.STEEL_GRATE,
-            AVPBlocks.STEEL_GRATE_SLAB,
-            AVPBlocks.STEEL_GRATE_STAIRS
+            TempAVPBlocks.STEEL_GRATE,
+            TempAVPBlocks.STEEL_GRATE_SLAB,
+            TempAVPBlocks.STEEL_GRATE_STAIRS
         );
 
         // Titanium variant slabs and stairs
         addVariantSlabAndStairRecipes(
             builder,
-            AVPBlocks.TITANIUM_SIDING,
-            AVPBlocks.TITANIUM_SIDING_SLAB,
-            AVPBlocks.TITANIUM_SIDING_STAIRS
+            TempAVPBlocks.TITANIUM_SIDING,
+            TempAVPBlocks.TITANIUM_SIDING_SLAB,
+            TempAVPBlocks.TITANIUM_SIDING_STAIRS
         );
 
         addVariantSlabAndStairRecipes(
             builder,
-            AVPBlocks.TITANIUM_STANDING,
-            AVPBlocks.TITANIUM_STANDING_SLAB,
-            AVPBlocks.TITANIUM_STANDING_STAIRS
+            TempAVPBlocks.TITANIUM_STANDING,
+            TempAVPBlocks.TITANIUM_STANDING_SLAB,
+            TempAVPBlocks.TITANIUM_STANDING_STAIRS
         );
 
         addVariantSlabAndStairRecipes(
             builder,
-            AVPBlocks.TITANIUM_FASTENED_SIDING,
-            AVPBlocks.TITANIUM_FASTENED_SIDING_SLAB,
-            AVPBlocks.TITANIUM_FASTENED_SIDING_STAIRS
+            TempAVPBlocks.TITANIUM_FASTENED_SIDING,
+            TempAVPBlocks.TITANIUM_FASTENED_SIDING_SLAB,
+            TempAVPBlocks.TITANIUM_FASTENED_SIDING_STAIRS
         );
 
         addVariantSlabAndStairRecipes(
             builder,
-            AVPBlocks.TITANIUM_FASTENED_STANDING,
-            AVPBlocks.TITANIUM_FASTENED_STANDING_SLAB,
-            AVPBlocks.TITANIUM_FASTENED_STANDING_STAIRS
+            TempAVPBlocks.TITANIUM_FASTENED_STANDING,
+            TempAVPBlocks.TITANIUM_FASTENED_STANDING_SLAB,
+            TempAVPBlocks.TITANIUM_FASTENED_STANDING_STAIRS
         );
 
         addVariantSlabAndStairRecipes(
             builder,
-            AVPBlocks.TITANIUM_PLATING,
-            AVPBlocks.TITANIUM_PLATING_SLAB,
-            AVPBlocks.TITANIUM_PLATING_STAIRS
+            TempAVPBlocks.TITANIUM_PLATING,
+            TempAVPBlocks.TITANIUM_PLATING_SLAB,
+            TempAVPBlocks.TITANIUM_PLATING_STAIRS
         );
 
         addVariantSlabAndStairRecipes(
             builder,
-            AVPBlocks.TITANIUM_TREAD,
-            AVPBlocks.TITANIUM_TREAD_SLAB,
-            AVPBlocks.TITANIUM_TREAD_STAIRS
+            TempAVPBlocks.TITANIUM_TREAD,
+            TempAVPBlocks.TITANIUM_TREAD_SLAB,
+            TempAVPBlocks.TITANIUM_TREAD_STAIRS
         );
 
         addVariantSlabAndStairRecipes(
             builder,
-            AVPBlocks.TITANIUM_GRATE,
-            AVPBlocks.TITANIUM_GRATE_SLAB,
-            AVPBlocks.TITANIUM_GRATE_STAIRS
+            TempAVPBlocks.TITANIUM_GRATE,
+            TempAVPBlocks.TITANIUM_GRATE_SLAB,
+            TempAVPBlocks.TITANIUM_GRATE_STAIRS
         );
     }
 
-    private static void addVariantSlabAndStairRecipes(RecipeBuilder builder, ItemLike baseBlock, ItemLike slab, ItemLike stairs) {
+    private static void addVariantSlabAndStairRecipes(RecipeBuilder builder, Supplier<? extends ItemLike> baseBlockSupplier, Supplier<? extends ItemLike> slabSupplier, Supplier<? extends ItemLike> stairsSupplier) {
         // Add stonecut recipes for the block variants
-        builder.stonecut(baseBlock)
+        builder.stonecut(baseBlockSupplier)
             .withCategory(RecipeCategory.BUILDING_BLOCKS)
-            .into(2, slab);
+            .into(2, slabSupplier);
 
-        builder.stonecut(baseBlock)
+        builder.stonecut(baseBlockSupplier)
             .withCategory(RecipeCategory.BUILDING_BLOCKS)
-            .into(1, stairs);
+            .into(1, stairsSupplier);
 
         // Add shaped crafting recipes
+        var baseBlock = baseBlockSupplier.get();
+        var slab = slabSupplier.get();
+        var stairs = stairsSupplier.get();
         createStandardSlabRecipe(builder, baseBlock, slab);
         createStandardStairRecipe(builder, baseBlock, stairs);
     }

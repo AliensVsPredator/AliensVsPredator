@@ -26,7 +26,7 @@ public class IndustrialConcreteRecipeProvider {
 
             builder.shapeless()
                 .withCategory(RecipeCategory.BUILDING_BLOCKS)
-                .requires(1, AVPBlocks.STEEL_BARS)
+                .requires(1, TempAVPBlocks.STEEL_BARS)
                 .requires(1, BlockProperties.DYE_COLOR_TO_CONCRETE_BLOCKS.get(dyeColor))
                 .into(1, block);
 

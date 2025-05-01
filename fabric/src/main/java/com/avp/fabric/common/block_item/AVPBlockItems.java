@@ -70,31 +70,11 @@ public class AVPBlockItems {
 
     public static final BlockItem FERROALUMINUM_BUTTON = register(AVPBlocks.FERROALUMINUM_BUTTON);
 
-    public static final BlockItem FERROALUMINUM_BLOCK = register(AVPBlocks.FERROALUMINUM_BLOCK);
-
-    public static final BlockItem FERROALUMINUM_CHAIN_FENCE = register(AVPBlocks.FERROALUMINUM_CHAIN_FENCE);
-
-    public static final BlockItem FERROALUMINUM_COLUMN = register(AVPBlocks.FERROALUMINUM_COLUMN);
-
     public static final BlockItem FERROALUMINUM_DOOR = register(AVPBlocks.FERROALUMINUM_DOOR);
-
-    public static final BlockItem FERROALUMINUM_FASTENED_SIDING = register(AVPBlocks.FERROALUMINUM_FASTENED_SIDING);
-
-    public static final BlockItem FERROALUMINUM_FASTENED_STANDING = register(AVPBlocks.FERROALUMINUM_FASTENED_STANDING);
-
-    public static final BlockItem FERROALUMINUM_GRATE = register(AVPBlocks.FERROALUMINUM_GRATE);
 
     public static final BlockItem FERROALUMINUM_PRESSURE_PLATE = register(AVPBlocks.FERROALUMINUM_PRESSURE_PLATE);
 
-    public static final BlockItem FERROALUMINUM_PLATING = register(AVPBlocks.FERROALUMINUM_PLATING);
-
-    public static final BlockItem FERROALUMINUM_SIDING = register(AVPBlocks.FERROALUMINUM_SIDING);
-
-    public static final BlockItem FERROALUMINUM_STANDING = register(AVPBlocks.FERROALUMINUM_STANDING);
-
     public static final BlockItem FERROALUMINUM_TRAP_DOOR = register(AVPBlocks.FERROALUMINUM_TRAP_DOOR);
-
-    public static final BlockItem FERROALUMINUM_TREAD = register(AVPBlocks.FERROALUMINUM_TREAD);
 
     public static final BlockItem INDUSTRIAL_GLASS = register(AVPBlocks.INDUSTRIAL_GLASS);
 
@@ -168,15 +148,7 @@ public class AVPBlockItems {
 
     public static final BlockItem SILICA_GRAVEL = register(AVPBlocks.SILICA_GRAVEL);
 
-    public static final BlockItem STEEL_BARS = register(AVPBlocks.STEEL_BARS);
-
     public static final BlockItem STEEL_BUTTON = register(AVPBlocks.STEEL_BUTTON);
-
-    public static final BlockItem STEEL_BLOCK = register(AVPBlocks.STEEL_BLOCK);
-
-    public static final BlockItem STEEL_CHAIN_FENCE = register(AVPBlocks.STEEL_CHAIN_FENCE);
-
-    public static final BlockItem STEEL_COLUMN = register(AVPBlocks.STEEL_COLUMN);
 
     public static final BlockItem STEEL_DOOR = register(AVPBlocks.STEEL_DOOR);
 
@@ -185,159 +157,32 @@ public class AVPBlockItems {
 
     public static final BlockItem INDUSTRIAL_GLASS_STAIRS = register(AVPBlocks.INDUSTRIAL_GLASS_STAIRS);
 
-    public static final BlockItem FERROALUMINUM_SLAB = register(AVPBlocks.FERROALUMINUM_SLAB);
-
-    public static final BlockItem FERROALUMINUM_STAIRS = register(AVPBlocks.FERROALUMINUM_STAIRS);
-
-    public static final BlockItem STEEL_SLAB = register(AVPBlocks.STEEL_SLAB);
-
-    public static final BlockItem STEEL_STAIRS = register(AVPBlocks.STEEL_STAIRS);
-
-    public static final BlockItem TITANIUM_SLAB = register(AVPBlocks.TITANIUM_SLAB);
-
-    public static final BlockItem TITANIUM_STAIRS = register(AVPBlocks.TITANIUM_STAIRS);
-
-    public static final BlockItem STEEL_FASTENED_SIDING = register(AVPBlocks.STEEL_FASTENED_SIDING);
-
-    public static final BlockItem STEEL_FASTENED_STANDING = register(AVPBlocks.STEEL_FASTENED_STANDING);
-
-    public static final BlockItem STEEL_GRATE = register(AVPBlocks.STEEL_GRATE);
-
-    public static final BlockItem STEEL_PRESSURE_PLATE = register(AVPBlocks.STEEL_PRESSURE_PLATE);
-
-    public static final BlockItem STEEL_PLATING = register(AVPBlocks.STEEL_PLATING);
-
-    public static final BlockItem STEEL_SIDING = register(AVPBlocks.STEEL_SIDING);
-
-    public static final BlockItem STEEL_STANDING = register(AVPBlocks.STEEL_STANDING);
-
     public static final BlockItem STEEL_TRAP_DOOR = register(AVPBlocks.STEEL_TRAP_DOOR);
-
-    public static final BlockItem STEEL_TREAD = register(AVPBlocks.STEEL_TREAD);
 
     public static final BlockItem TITANIUM_BUTTON = register(AVPBlocks.TITANIUM_BUTTON);
 
-    public static final BlockItem TITANIUM_BLOCK = register(AVPBlocks.TITANIUM_BLOCK);
-
-    public static final BlockItem TITANIUM_CHAIN_FENCE = register(AVPBlocks.TITANIUM_CHAIN_FENCE);
-
-    public static final BlockItem TITANIUM_COLUMN = register(AVPBlocks.TITANIUM_COLUMN);
-
     public static final BlockItem TITANIUM_DOOR = register(AVPBlocks.TITANIUM_DOOR);
-
-    public static final BlockItem TITANIUM_FASTENED_SIDING = register(AVPBlocks.TITANIUM_FASTENED_SIDING);
-
-    public static final BlockItem TITANIUM_FASTENED_STANDING = register(AVPBlocks.TITANIUM_FASTENED_STANDING);
-
-    public static final BlockItem TITANIUM_GRATE = register(AVPBlocks.TITANIUM_GRATE);
 
     public static final BlockItem TITANIUM_PRESSURE_PLATE = register(AVPBlocks.TITANIUM_PRESSURE_PLATE);
 
-    public static final BlockItem TITANIUM_PLATING = register(AVPBlocks.TITANIUM_PLATING);
-
-    public static final BlockItem TITANIUM_SIDING = register(AVPBlocks.TITANIUM_SIDING);
-
-    public static final BlockItem TITANIUM_STANDING = register(AVPBlocks.TITANIUM_STANDING);
-
     public static final BlockItem TITANIUM_TRAP_DOOR = register(AVPBlocks.TITANIUM_TRAP_DOOR);
-
-    public static final BlockItem TITANIUM_TREAD = register(AVPBlocks.TITANIUM_TREAD);
-
-    public static final BlockItem URANIUM_BLOCK = register(AVPBlocks.URANIUM_BLOCK);
-
-    public static final BlockItem ZINC_BLOCK = register(AVPBlocks.ZINC_BLOCK);
 
     public static final BlockItem INDUSTRIAL_FURNACE_BLOCK = register(AVPBlocks.INDUSTRIAL_FURNACE);
 
     // Siding - Slabs and Stairs
-    public static final BlockItem FERROALUMINUM_SIDING_SLAB = register(AVPBlocks.FERROALUMINUM_SIDING_SLAB);
 
-    public static final BlockItem FERROALUMINUM_SIDING_STAIRS = register(AVPBlocks.FERROALUMINUM_SIDING_STAIRS);
-
-    public static final BlockItem STEEL_SIDING_SLAB = register(AVPBlocks.STEEL_SIDING_SLAB);
-
-    public static final BlockItem STEEL_SIDING_STAIRS = register(AVPBlocks.STEEL_SIDING_STAIRS);
-
-    public static final BlockItem TITANIUM_SIDING_SLAB = register(AVPBlocks.TITANIUM_SIDING_SLAB);
-
-    public static final BlockItem TITANIUM_SIDING_STAIRS = register(AVPBlocks.TITANIUM_SIDING_STAIRS);
-
-    public static final BlockItem FERROALUMINUM_STANDING_SLAB = register(AVPBlocks.FERROALUMINUM_STANDING_SLAB);
-
-    public static final BlockItem FERROALUMINUM_STANDING_STAIRS = register(AVPBlocks.FERROALUMINUM_STANDING_STAIRS);
-
-    public static final BlockItem STEEL_STANDING_SLAB = register(AVPBlocks.STEEL_STANDING_SLAB);
-
-    public static final BlockItem STEEL_STANDING_STAIRS = register(AVPBlocks.STEEL_STANDING_STAIRS);
-
-    public static final BlockItem TITANIUM_STANDING_SLAB = register(AVPBlocks.TITANIUM_STANDING_SLAB);
-
-    public static final BlockItem TITANIUM_STANDING_STAIRS = register(AVPBlocks.TITANIUM_STANDING_STAIRS);
 
     // Fastened Siding - Slabs and Stairs
-    public static final BlockItem FERROALUMINUM_FASTENED_SIDING_SLAB = register(AVPBlocks.FERROALUMINUM_FASTENED_SIDING_SLAB);
-
-    public static final BlockItem FERROALUMINUM_FASTENED_SIDING_STAIRS = register(AVPBlocks.FERROALUMINUM_FASTENED_SIDING_STAIRS);
-
-    public static final BlockItem STEEL_FASTENED_SIDING_SLAB = register(AVPBlocks.STEEL_FASTENED_SIDING_SLAB);
-
-    public static final BlockItem STEEL_FASTENED_SIDING_STAIRS = register(AVPBlocks.STEEL_FASTENED_SIDING_STAIRS);
-
-    public static final BlockItem TITANIUM_FASTENED_SIDING_SLAB = register(AVPBlocks.TITANIUM_FASTENED_SIDING_SLAB);
-
-    public static final BlockItem TITANIUM_FASTENED_SIDING_STAIRS = register(AVPBlocks.TITANIUM_FASTENED_SIDING_STAIRS);
 
     // Fastened Standing - Slabs and Stairs
-    public static final BlockItem FERROALUMINUM_FASTENED_STANDING_SLAB = register(AVPBlocks.FERROALUMINUM_FASTENED_STANDING_SLAB);
-
-    public static final BlockItem FERROALUMINUM_FASTENED_STANDING_STAIRS = register(AVPBlocks.FERROALUMINUM_FASTENED_STANDING_STAIRS);
-
-    public static final BlockItem STEEL_FASTENED_STANDING_SLAB = register(AVPBlocks.STEEL_FASTENED_STANDING_SLAB);
-
-    public static final BlockItem STEEL_FASTENED_STANDING_STAIRS = register(AVPBlocks.STEEL_FASTENED_STANDING_STAIRS);
-
-    public static final BlockItem TITANIUM_FASTENED_STANDING_SLAB = register(AVPBlocks.TITANIUM_FASTENED_STANDING_SLAB);
-
-    public static final BlockItem TITANIUM_FASTENED_STANDING_STAIRS = register(AVPBlocks.TITANIUM_FASTENED_STANDING_STAIRS);
 
     // Plating - Slabs and Stairs
-    public static final BlockItem FERROALUMINUM_PLATING_SLAB = register(AVPBlocks.FERROALUMINUM_PLATING_SLAB);
-
-    public static final BlockItem FERROALUMINUM_PLATING_STAIRS = register(AVPBlocks.FERROALUMINUM_PLATING_STAIRS);
-
-    public static final BlockItem STEEL_PLATING_SLAB = register(AVPBlocks.STEEL_PLATING_SLAB);
-
-    public static final BlockItem STEEL_PLATING_STAIRS = register(AVPBlocks.STEEL_PLATING_STAIRS);
-
-    public static final BlockItem TITANIUM_PLATING_SLAB = register(AVPBlocks.TITANIUM_PLATING_SLAB);
-
-    public static final BlockItem TITANIUM_PLATING_STAIRS = register(AVPBlocks.TITANIUM_PLATING_STAIRS);
 
     // Tread - Slabs and Stairs
-    public static final BlockItem FERROALUMINUM_TREAD_SLAB = register(AVPBlocks.FERROALUMINUM_TREAD_SLAB);
-
-    public static final BlockItem FERROALUMINUM_TREAD_STAIRS = register(AVPBlocks.FERROALUMINUM_TREAD_STAIRS);
-
-    public static final BlockItem STEEL_TREAD_SLAB = register(AVPBlocks.STEEL_TREAD_SLAB);
-
-    public static final BlockItem STEEL_TREAD_STAIRS = register(AVPBlocks.STEEL_TREAD_STAIRS);
-
-    public static final BlockItem TITANIUM_TREAD_SLAB = register(AVPBlocks.TITANIUM_TREAD_SLAB);
-
-    public static final BlockItem TITANIUM_TREAD_STAIRS = register(AVPBlocks.TITANIUM_TREAD_STAIRS);
 
     // Grate - Slabs and Stairs
-    public static final BlockItem FERROALUMINUM_GRATE_SLAB = register(AVPBlocks.FERROALUMINUM_GRATE_SLAB);
 
-    public static final BlockItem FERROALUMINUM_GRATE_STAIRS = register(AVPBlocks.FERROALUMINUM_GRATE_STAIRS);
 
-    public static final BlockItem STEEL_GRATE_SLAB = register(AVPBlocks.STEEL_GRATE_SLAB);
-
-    public static final BlockItem STEEL_GRATE_STAIRS = register(AVPBlocks.STEEL_GRATE_STAIRS);
-
-    public static final BlockItem TITANIUM_GRATE_SLAB = register(AVPBlocks.TITANIUM_GRATE_SLAB);
-
-    public static final BlockItem TITANIUM_GRATE_STAIRS = register(AVPBlocks.TITANIUM_GRATE_STAIRS);
 
     @Deprecated
     public static BlockItem register(Block block) {

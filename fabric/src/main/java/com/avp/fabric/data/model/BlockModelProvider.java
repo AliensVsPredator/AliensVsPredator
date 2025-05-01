@@ -196,9 +196,9 @@ public class BlockModelProvider extends FabricModelProvider {
 
         generators.createTrivialCube(TempAVPBlocks.DEEPSLATE_TITANIUM_ORE.get());
         generators.createTrivialCube(TempAVPBlocks.DEEPSLATE_ZINC_ORE.get());
-        BarsGenerator.generate(generators, AVPBlocks.FERROALUMINUM_CHAIN_FENCE);
+        BarsGenerator.generate(generators, TempAVPBlocks.FERROALUMINUM_CHAIN_FENCE.get());
         generators.createRotatedPillarWithHorizontalVariant(
-            AVPBlocks.FERROALUMINUM_COLUMN,
+            TempAVPBlocks.FERROALUMINUM_COLUMN.get(),
             TexturedModel.COLUMN_ALT,
             TexturedModel.COLUMN_HORIZONTAL_ALT
         );
@@ -222,10 +222,10 @@ public class BlockModelProvider extends FabricModelProvider {
         generators.createTrivialCube(AVPBlocks.RAW_ZINC_BLOCK);
         generators.createCrossBlock(AVPBlocks.RAZOR_WIRE, BlockModelGenerators.TintState.NOT_TINTED);
         generators.createTrivialCube(AVPBlocks.SILICA_GRAVEL);
-        BarsGenerator.generate(generators, AVPBlocks.STEEL_BARS);
-        BarsGenerator.generate(generators, AVPBlocks.STEEL_CHAIN_FENCE);
+        BarsGenerator.generate(generators, TempAVPBlocks.STEEL_BARS.get());
+        BarsGenerator.generate(generators, TempAVPBlocks.STEEL_CHAIN_FENCE.get());
         generators.createRotatedPillarWithHorizontalVariant(
-            AVPBlocks.STEEL_COLUMN,
+            TempAVPBlocks.STEEL_COLUMN.get(),
             TexturedModel.COLUMN_ALT,
             TexturedModel.COLUMN_HORIZONTAL_ALT
         );
@@ -236,9 +236,9 @@ public class BlockModelProvider extends FabricModelProvider {
         // generators.createTrivialCube(AVPBlocks.STEEL_SIDING);
         // generators.createTrivialCube(AVPBlocks.STEEL_STANDING);
         // generators.createTrivialCube(AVPBlocks.STEEL_TREAD);
-        BarsGenerator.generate(generators, AVPBlocks.TITANIUM_CHAIN_FENCE);
+        BarsGenerator.generate(generators, TempAVPBlocks.TITANIUM_CHAIN_FENCE.get());
         generators.createRotatedPillarWithHorizontalVariant(
-            AVPBlocks.TITANIUM_COLUMN,
+            TempAVPBlocks.TITANIUM_COLUMN.get(),
             TexturedModel.COLUMN_ALT,
             TexturedModel.COLUMN_HORIZONTAL_ALT
         );
@@ -249,116 +249,116 @@ public class BlockModelProvider extends FabricModelProvider {
         // generators.createTrivialCube(AVPBlocks.TITANIUM_SIDING);
         // generators.createTrivialCube(AVPBlocks.TITANIUM_STANDING);
         // generators.createTrivialCube(AVPBlocks.TITANIUM_TREAD);
-        generators.createTrivialCube(AVPBlocks.URANIUM_BLOCK);
-        generators.createTrivialCube(AVPBlocks.ZINC_BLOCK);
+        generators.createTrivialCube(TempAVPBlocks.URANIUM_BLOCK.get());
+        generators.createTrivialCube(TempAVPBlocks.ZINC_BLOCK.get());
         generators.createTrivialCube(TempAVPBlocks.ZINC_ORE.get());
 
-        generators.family(AVPBlocks.FERROALUMINUM_BLOCK)
-            .slab(AVPBlocks.FERROALUMINUM_SLAB)
-            .stairs(AVPBlocks.FERROALUMINUM_STAIRS)
+        generators.family(TempAVPBlocks.FERROALUMINUM_BLOCK.get())
+            .slab(TempAVPBlocks.FERROALUMINUM_SLAB.get())
+            .stairs(TempAVPBlocks.FERROALUMINUM_STAIRS.get())
             .pressurePlate(AVPBlocks.FERROALUMINUM_PRESSURE_PLATE)
             .button(AVPBlocks.FERROALUMINUM_BUTTON)
             .door(AVPBlocks.FERROALUMINUM_DOOR)
             .trapdoor(AVPBlocks.FERROALUMINUM_TRAP_DOOR);
 
-        generators.family(AVPBlocks.STEEL_BLOCK)
-            .slab(AVPBlocks.STEEL_SLAB)
-            .stairs(AVPBlocks.STEEL_STAIRS)
-            .pressurePlate(AVPBlocks.STEEL_PRESSURE_PLATE)
+        generators.family(TempAVPBlocks.STEEL_BLOCK.get())
+            .slab(TempAVPBlocks.STEEL_SLAB.get())
+            .stairs(TempAVPBlocks.STEEL_STAIRS.get())
+            .pressurePlate(TempAVPBlocks.STEEL_PRESSURE_PLATE.get())
             .button(AVPBlocks.STEEL_BUTTON)
             .door(AVPBlocks.STEEL_DOOR)
             .trapdoor(AVPBlocks.STEEL_TRAP_DOOR);
-        generators.family(AVPBlocks.TITANIUM_BLOCK)
-            .slab(AVPBlocks.TITANIUM_SLAB)
-            .stairs(AVPBlocks.TITANIUM_STAIRS)
+        generators.family(TempAVPBlocks.TITANIUM_BLOCK.get())
+            .slab(TempAVPBlocks.TITANIUM_SLAB.get())
+            .stairs(TempAVPBlocks.TITANIUM_STAIRS.get())
             .pressurePlate(AVPBlocks.TITANIUM_PRESSURE_PLATE)
             .button(AVPBlocks.TITANIUM_BUTTON)
             .door(AVPBlocks.TITANIUM_DOOR)
             .trapdoor(AVPBlocks.TITANIUM_TRAP_DOOR);
 
-        generators.family(AVPBlocks.FERROALUMINUM_SIDING)
-            .slab(AVPBlocks.FERROALUMINUM_SIDING_SLAB)
-            .stairs(AVPBlocks.FERROALUMINUM_SIDING_STAIRS);
+        generators.family(TempAVPBlocks.FERROALUMINUM_SIDING.get())
+            .slab(TempAVPBlocks.FERROALUMINUM_SIDING_SLAB.get())
+            .stairs(TempAVPBlocks.FERROALUMINUM_SIDING_STAIRS.get());
 
-        generators.family(AVPBlocks.STEEL_SIDING)
-            .slab(AVPBlocks.STEEL_SIDING_SLAB)
-            .stairs(AVPBlocks.STEEL_SIDING_STAIRS);
+        generators.family(TempAVPBlocks.STEEL_SIDING.get())
+            .slab(TempAVPBlocks.STEEL_SIDING_SLAB.get())
+            .stairs(TempAVPBlocks.STEEL_SIDING_STAIRS.get());
 
-        generators.family(AVPBlocks.TITANIUM_SIDING)
-            .slab(AVPBlocks.TITANIUM_SIDING_SLAB)
-            .stairs(AVPBlocks.TITANIUM_SIDING_STAIRS);
+        generators.family(TempAVPBlocks.TITANIUM_SIDING.get())
+            .slab(TempAVPBlocks.TITANIUM_SIDING_SLAB.get())
+            .stairs(TempAVPBlocks.TITANIUM_SIDING_STAIRS.get());
 
-        generators.family(AVPBlocks.FERROALUMINUM_STANDING)
-            .slab(AVPBlocks.FERROALUMINUM_STANDING_SLAB)
-            .stairs(AVPBlocks.FERROALUMINUM_STANDING_STAIRS);
+        generators.family(TempAVPBlocks.FERROALUMINUM_STANDING.get())
+            .slab(TempAVPBlocks.FERROALUMINUM_STANDING_SLAB.get())
+            .stairs(TempAVPBlocks.FERROALUMINUM_STANDING_STAIRS.get());
 
-        generators.family(AVPBlocks.STEEL_STANDING)
-            .slab(AVPBlocks.STEEL_STANDING_SLAB)
-            .stairs(AVPBlocks.STEEL_STANDING_STAIRS);
+        generators.family(TempAVPBlocks.STEEL_STANDING.get())
+            .slab(TempAVPBlocks.STEEL_STANDING_SLAB.get())
+            .stairs(TempAVPBlocks.STEEL_STANDING_STAIRS.get());
 
-        generators.family(AVPBlocks.TITANIUM_STANDING)
-            .slab(AVPBlocks.TITANIUM_STANDING_SLAB)
-            .stairs(AVPBlocks.TITANIUM_STANDING_STAIRS);
+        generators.family(TempAVPBlocks.TITANIUM_STANDING.get())
+            .slab(TempAVPBlocks.TITANIUM_STANDING_SLAB.get())
+            .stairs(TempAVPBlocks.TITANIUM_STANDING_STAIRS.get());
 
-        generators.family(AVPBlocks.FERROALUMINUM_FASTENED_SIDING)
-            .slab(AVPBlocks.FERROALUMINUM_FASTENED_SIDING_SLAB)
-            .stairs(AVPBlocks.FERROALUMINUM_FASTENED_SIDING_STAIRS);
+        generators.family(TempAVPBlocks.FERROALUMINUM_FASTENED_SIDING.get())
+            .slab(TempAVPBlocks.FERROALUMINUM_FASTENED_SIDING_SLAB.get())
+            .stairs(TempAVPBlocks.FERROALUMINUM_FASTENED_SIDING_STAIRS.get());
 
-        generators.family(AVPBlocks.STEEL_FASTENED_SIDING)
-            .slab(AVPBlocks.STEEL_FASTENED_SIDING_SLAB)
-            .stairs(AVPBlocks.STEEL_FASTENED_SIDING_STAIRS);
+        generators.family(TempAVPBlocks.STEEL_FASTENED_SIDING.get())
+            .slab(TempAVPBlocks.STEEL_FASTENED_SIDING_SLAB.get())
+            .stairs(TempAVPBlocks.STEEL_FASTENED_SIDING_STAIRS.get());
 
-        generators.family(AVPBlocks.TITANIUM_FASTENED_SIDING)
-            .slab(AVPBlocks.TITANIUM_FASTENED_SIDING_SLAB)
-            .stairs(AVPBlocks.TITANIUM_FASTENED_SIDING_STAIRS);
+        generators.family(TempAVPBlocks.TITANIUM_FASTENED_SIDING.get())
+            .slab(TempAVPBlocks.TITANIUM_FASTENED_SIDING_SLAB.get())
+            .stairs(TempAVPBlocks.TITANIUM_FASTENED_SIDING_STAIRS.get());
 
-        generators.family(AVPBlocks.FERROALUMINUM_FASTENED_STANDING)
-            .slab(AVPBlocks.FERROALUMINUM_FASTENED_STANDING_SLAB)
-            .stairs(AVPBlocks.FERROALUMINUM_FASTENED_STANDING_STAIRS);
+        generators.family(TempAVPBlocks.FERROALUMINUM_FASTENED_STANDING.get())
+            .slab(TempAVPBlocks.FERROALUMINUM_FASTENED_STANDING_SLAB.get())
+            .stairs(TempAVPBlocks.FERROALUMINUM_FASTENED_STANDING_STAIRS.get());
 
-        generators.family(AVPBlocks.STEEL_FASTENED_STANDING)
-            .slab(AVPBlocks.STEEL_FASTENED_STANDING_SLAB)
-            .stairs(AVPBlocks.STEEL_FASTENED_STANDING_STAIRS);
+        generators.family(TempAVPBlocks.STEEL_FASTENED_STANDING.get())
+            .slab(TempAVPBlocks.STEEL_FASTENED_STANDING_SLAB.get())
+            .stairs(TempAVPBlocks.STEEL_FASTENED_STANDING_STAIRS.get());
 
-        generators.family(AVPBlocks.TITANIUM_FASTENED_STANDING)
-            .slab(AVPBlocks.TITANIUM_FASTENED_STANDING_SLAB)
-            .stairs(AVPBlocks.TITANIUM_FASTENED_STANDING_STAIRS);
+        generators.family(TempAVPBlocks.TITANIUM_FASTENED_STANDING.get())
+            .slab(TempAVPBlocks.TITANIUM_FASTENED_STANDING_SLAB.get())
+            .stairs(TempAVPBlocks.TITANIUM_FASTENED_STANDING_STAIRS.get());
 
-        generators.family(AVPBlocks.FERROALUMINUM_PLATING)
-            .slab(AVPBlocks.FERROALUMINUM_PLATING_SLAB)
-            .stairs(AVPBlocks.FERROALUMINUM_PLATING_STAIRS);
+        generators.family(TempAVPBlocks.FERROALUMINUM_PLATING.get())
+            .slab(TempAVPBlocks.FERROALUMINUM_PLATING_SLAB.get())
+            .stairs(TempAVPBlocks.FERROALUMINUM_PLATING_STAIRS.get());
 
-        generators.family(AVPBlocks.STEEL_PLATING)
-            .slab(AVPBlocks.STEEL_PLATING_SLAB)
-            .stairs(AVPBlocks.STEEL_PLATING_STAIRS);
+        generators.family(TempAVPBlocks.STEEL_PLATING.get())
+            .slab(TempAVPBlocks.STEEL_PLATING_SLAB.get())
+            .stairs(TempAVPBlocks.STEEL_PLATING_STAIRS.get());
 
-        generators.family(AVPBlocks.TITANIUM_PLATING)
-            .slab(AVPBlocks.TITANIUM_PLATING_SLAB)
-            .stairs(AVPBlocks.TITANIUM_PLATING_STAIRS);
+        generators.family(TempAVPBlocks.TITANIUM_PLATING.get())
+            .slab(TempAVPBlocks.TITANIUM_PLATING_SLAB.get())
+            .stairs(TempAVPBlocks.TITANIUM_PLATING_STAIRS.get());
 
-        generators.family(AVPBlocks.FERROALUMINUM_TREAD)
-            .slab(AVPBlocks.FERROALUMINUM_TREAD_SLAB)
-            .stairs(AVPBlocks.FERROALUMINUM_TREAD_STAIRS);
+        generators.family(TempAVPBlocks.FERROALUMINUM_TREAD.get())
+            .slab(TempAVPBlocks.FERROALUMINUM_TREAD_SLAB.get())
+            .stairs(TempAVPBlocks.FERROALUMINUM_TREAD_STAIRS.get());
 
-        generators.family(AVPBlocks.STEEL_TREAD)
-            .slab(AVPBlocks.STEEL_TREAD_SLAB)
-            .stairs(AVPBlocks.STEEL_TREAD_STAIRS);
+        generators.family(TempAVPBlocks.STEEL_TREAD.get())
+            .slab(TempAVPBlocks.STEEL_TREAD_SLAB.get())
+            .stairs(TempAVPBlocks.STEEL_TREAD_STAIRS.get());
 
-        generators.family(AVPBlocks.TITANIUM_TREAD)
-            .slab(AVPBlocks.TITANIUM_TREAD_SLAB)
-            .stairs(AVPBlocks.TITANIUM_TREAD_STAIRS);
+        generators.family(TempAVPBlocks.TITANIUM_TREAD.get())
+            .slab(TempAVPBlocks.TITANIUM_TREAD_SLAB.get())
+            .stairs(TempAVPBlocks.TITANIUM_TREAD_STAIRS.get());
 
-        generators.family(AVPBlocks.FERROALUMINUM_GRATE)
-            .slab(AVPBlocks.FERROALUMINUM_GRATE_SLAB)
-            .stairs(AVPBlocks.FERROALUMINUM_GRATE_STAIRS);
+        generators.family(TempAVPBlocks.FERROALUMINUM_GRATE.get())
+            .slab(TempAVPBlocks.FERROALUMINUM_GRATE_SLAB.get())
+            .stairs(TempAVPBlocks.FERROALUMINUM_GRATE_STAIRS.get());
 
-        generators.family(AVPBlocks.STEEL_GRATE)
-            .slab(AVPBlocks.STEEL_GRATE_SLAB)
-            .stairs(AVPBlocks.STEEL_GRATE_STAIRS);
+        generators.family(TempAVPBlocks.STEEL_GRATE.get())
+            .slab(TempAVPBlocks.STEEL_GRATE_SLAB.get())
+            .stairs(TempAVPBlocks.STEEL_GRATE_STAIRS.get());
 
-        generators.family(AVPBlocks.TITANIUM_GRATE)
-            .slab(AVPBlocks.TITANIUM_GRATE_SLAB)
-            .stairs(AVPBlocks.TITANIUM_GRATE_STAIRS);
+        generators.family(TempAVPBlocks.TITANIUM_GRATE.get())
+            .slab(TempAVPBlocks.TITANIUM_GRATE_SLAB.get())
+            .stairs(TempAVPBlocks.TITANIUM_GRATE_STAIRS.get());
 
         var spawnEggLocation = ModelLocationUtils.decorateItemModelLocation("template_spawn_egg");
 
