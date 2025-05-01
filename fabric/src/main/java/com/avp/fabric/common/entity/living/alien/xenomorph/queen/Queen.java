@@ -10,8 +10,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import com.avp.AVP;
+import com.avp.common.ai.goal.DigToTargetGoal;
 import com.avp.common.block.AVPBlockTags;
-import com.avp.fabric.common.ai.goal.DigToTargetGoal;
 import com.avp.fabric.common.ai.goal.QueenLayEggGoal;
 import com.avp.fabric.common.entity.living.alien.Alien;
 import com.avp.fabric.common.entity.living.alien.xenomorph.Xenomorph;

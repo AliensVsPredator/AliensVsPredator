@@ -1,4 +1,4 @@
-package com.avp.fabric.common.ai.goal.combat;
+package com.avp.common.ai.goal.combat;
 
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.goal.Goal;

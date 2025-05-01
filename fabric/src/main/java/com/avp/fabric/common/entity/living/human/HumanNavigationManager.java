@@ -12,7 +12,7 @@ import net.minecraft.world.level.pathfinder.PathType;
 import net.minecraft.world.level.pathfinder.WalkNodeEvaluator;
 import org.jetbrains.annotations.NotNull;
 
-import com.avp.fabric.common.ai.goal.WaterMoveControl;
+import com.avp.common.ai.goal.WaterMoveControl;
 import com.avp.fabric.common.ai.goal.combat.UseItemGoal;
 
 public class HumanNavigationManager {

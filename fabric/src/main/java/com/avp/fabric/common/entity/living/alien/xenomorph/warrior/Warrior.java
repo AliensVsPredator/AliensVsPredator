@@ -8,7 +8,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import com.avp.AVP;
-import com.avp.fabric.common.ai.goal.combat.LungeAtTargetGoal;
+import com.avp.common.ai.goal.combat.LungeAtTargetGoal;
 import com.avp.fabric.common.entity.living.alien.xenomorph.Xenomorph;
 import com.avp.fabric.common.entity.type.AVPEntityTypes;
 import com.avp.fabric.common.sound.AVPSoundEvents;

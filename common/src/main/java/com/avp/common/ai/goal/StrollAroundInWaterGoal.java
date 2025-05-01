@@ -1,4 +1,4 @@
-package com.avp.fabric.common.ai.goal;
+package com.avp.common.ai.goal;
 
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.ai.goal.Goal;
