@@ -6,8 +6,8 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 
 import com.avp.AVP;
-import com.avp.fabric.common.menu.IndustrialFurnaceMenu;
-import com.avp.fabric.common.menu.IndustrialFurnaceRecipeBookComponent;
+import com.avp.common.menu.IndustrialFurnaceMenu;
+import com.avp.common.menu.IndustrialFurnaceRecipeBookComponent;
 
 public class IndustrialFurnaceScreen extends AbstractFurnaceScreen<IndustrialFurnaceMenu> {
 

@@ -3,6 +3,7 @@ package com.avp.neoforge.service;
 import net.minecraft.core.Registry;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.neoforged.bus.api.IEventBus;
@@ -17,12 +18,14 @@ public class NeoForgeRegistryService implements RegistryService {
 
     private final DeferredRegister<Block> BLOCK_REGISTRY = DeferredRegister.create(BuiltInRegistries.BLOCK, AVP.MOD_ID);
 
-    private final DeferredRegister<DataComponentType<?>> DATA_COMPONENT_REGISTRY = DeferredRegister.create(
+    private final DeferredRegister<DataComponentType<?>> DATA_COMPONENT_TYPE_REGISTRY = DeferredRegister.create(
         BuiltInRegistries.DATA_COMPONENT_TYPE,
         AVP.MOD_ID
     );
 
     private final DeferredRegister<Item> ITEM_REGISTRY = DeferredRegister.create(BuiltInRegistries.ITEM, AVP.MOD_ID);
+
+    private final DeferredRegister<MenuType<?>> MENU_TYPE_REGISTRY = DeferredRegister.create(BuiltInRegistries.MENU, AVP.MOD_ID);
 
     @Override
     @SuppressWarnings("unchecked")
@@ -30,9 +33,11 @@ public class NeoForgeRegistryService implements RegistryService {
         if (registry == BuiltInRegistries.BLOCK) {
             return (Supplier<T>) BLOCK_REGISTRY.register(id, (Supplier<Block>) supplier);
         } else if (registry == BuiltInRegistries.DATA_COMPONENT_TYPE) {
-            return (Supplier<T>) DATA_COMPONENT_REGISTRY.register(id, (Supplier<DataComponentType<?>>) supplier);
+            return (Supplier<T>) DATA_COMPONENT_TYPE_REGISTRY.register(id, (Supplier<DataComponentType<?>>) supplier);
         } else if (registry == BuiltInRegistries.ITEM) {
             return (Supplier<T>) ITEM_REGISTRY.register(id, (Supplier<Item>) supplier);
+        } else if (registry == BuiltInRegistries.MENU) {
+            return (Supplier<T>) MENU_TYPE_REGISTRY.register(id, (Supplier<MenuType<?>>) supplier);
         }
 
         throw new IllegalArgumentException("Received registration attempt for an unhandled registry. Registry: " + registry);
@@ -40,7 +45,8 @@ public class NeoForgeRegistryService implements RegistryService {
 
     public void initialize(IEventBus modBus) {
         BLOCK_REGISTRY.register(modBus);
-        DATA_COMPONENT_REGISTRY.register(modBus);
+        DATA_COMPONENT_TYPE_REGISTRY.register(modBus);
         ITEM_REGISTRY.register(modBus);
+        MENU_TYPE_REGISTRY.register(modBus);
     }
 }

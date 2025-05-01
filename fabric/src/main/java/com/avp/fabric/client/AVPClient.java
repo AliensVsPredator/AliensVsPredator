@@ -22,6 +22,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 import com.avp.common.block.TempAVPBlocks;
+import com.avp.common.menu.AVPMenuTypes;
 import com.avp.fabric.client.input.keybind.AVPKeybindingRegistry;
 import com.avp.fabric.client.network.AVPClientPacketHandlerRegistry;
 import com.avp.fabric.client.particle.AcidParticleProvider;
@@ -84,7 +85,6 @@ import com.avp.fabric.common.block_item.AVPBlockItems;
 import com.avp.fabric.common.entity.type.AVPEntityTypes;
 import com.avp.fabric.common.item.AVPItems;
 import com.avp.fabric.common.item.ArmorItems;
-import com.avp.fabric.common.menu.MenuTypes;
 import com.avp.fabric.common.particle.AVPParticleTypes;
 
 public class AVPClient implements ClientModInitializer {
@@ -341,8 +341,8 @@ public class AVPClient implements ClientModInitializer {
         ParticleFactoryRegistry.getInstance().register(AVPParticleTypes.IRRADIATED_ACID, IrradiatedAcidParticleProvider::new);
 
         // GUI (aka Screens)
-        MenuScreens.register(MenuTypes.ARMOR_CASE, ArmorCaseScreen::new);
-        MenuScreens.register(MenuTypes.INDUSTRIAL_FURNACE_MENU, IndustrialFurnaceScreen::new);
+        MenuScreens.register(AVPMenuTypes.ARMOR_CASE.get(), ArmorCaseScreen::new);
+        MenuScreens.register(AVPMenuTypes.INDUSTRIAL_FURNACE_MENU.get(), IndustrialFurnaceScreen::new);
 
         // Keybindings
         AVPKeybindingRegistry.initialize();

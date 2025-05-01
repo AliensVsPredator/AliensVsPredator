@@ -22,7 +22,7 @@ import java.util.stream.Stream;
 
 import com.avp.common.component.AVPDataComponents;
 import com.avp.common.component.ArmorCaseContainerContents;
-import com.avp.fabric.common.menu.armor_case.ArmorCaseMenu;
+import com.avp.common.menu.armor_case.ArmorCaseMenu;
 
 public class ArmorCaseItem extends Item {
 

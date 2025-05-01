@@ -1,4 +1,4 @@
-package com.avp.fabric.common.menu.armor_case;
+package com.avp.common.menu.armor_case;
 
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.resources.ResourceLocation;

@@ -44,7 +44,6 @@ import com.avp.fabric.common.item.SpawnEggItems;
 import com.avp.fabric.common.level.gameevent.AVPGameEvents;
 import com.avp.fabric.common.lifecycle.Infections;
 import com.avp.fabric.common.lifecycle.Lifecycles;
-import com.avp.fabric.common.menu.MenuTypes;
 import com.avp.fabric.common.network.CommonPacketRegistry;
 import com.avp.fabric.common.network.ServerPacketHandlerRegistry;
 import com.avp.fabric.common.particle.AVPParticleTypes;
@@ -88,7 +87,6 @@ public class AVPFabric implements ModInitializer {
         Infections.initialize();
         Lifecycles.initialize();
         AVPParticleTypes.initialize();
-        MenuTypes.initialize();
         DecoratedPotPatterns.initialize();
         WorldGen.initialize();
         AVPSoundEvents.initialize();

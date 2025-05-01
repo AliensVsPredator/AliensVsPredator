@@ -1,4 +1,4 @@
-package com.avp.fabric.common.menu;
+package com.avp.common.menu;
 
 import net.minecraft.client.gui.screens.recipebook.AbstractFurnaceRecipeBookComponent;
 import net.minecraft.world.item.Item;

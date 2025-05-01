@@ -7,7 +7,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 
 import com.avp.AVPResources;
-import com.avp.fabric.common.menu.armor_case.ArmorCaseMenu;
+import com.avp.common.menu.armor_case.ArmorCaseMenu;
 
 public class ArmorCaseScreen extends AbstractContainerScreen<ArmorCaseMenu> {
 
