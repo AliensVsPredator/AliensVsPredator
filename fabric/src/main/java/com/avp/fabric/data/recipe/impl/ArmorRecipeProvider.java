@@ -9,6 +9,7 @@ import net.minecraft.world.level.ItemLike;
 import java.util.function.Supplier;
 
 import com.avp.common.item.AVPItemTags;
+import com.avp.common.item.TempAVPItems;
 import com.avp.fabric.common.item.AVPItems;
 import com.avp.fabric.common.item.ArmorItems;
 import com.avp.fabric.data.recipe.RecipeTemplates;
@@ -37,7 +38,7 @@ public class ArmorRecipeProvider {
         );
         createStandardArmorSetRecipes(
             builder,
-            AVPItems.CHITIN,
+            TempAVPItems.CHITIN.get(),
             ArmorItems.CHITIN_HELMET,
             ArmorItems.CHITIN_CHESTPLATE,
             ArmorItems.CHITIN_LEGGINGS,
@@ -62,7 +63,7 @@ public class ArmorRecipeProvider {
         );
         createStandardArmorSetRecipes(
             builder,
-            AVPItems.STEEL_INGOT,
+            TempAVPItems.STEEL_INGOT.get(),
             ArmorItems.STEEL_HELMET,
             ArmorItems.STEEL_CHESTPLATE,
             ArmorItems.STEEL_LEGGINGS,
@@ -70,7 +71,7 @@ public class ArmorRecipeProvider {
         );
         createStandardArmorSetRecipes(
             builder,
-            AVPItems.TITANIUM_INGOT,
+            TempAVPItems.TITANIUM_INGOT.get(),
             ArmorItems.TITANIUM_HELMET,
             ArmorItems.TITANIUM_CHESTPLATE,
             ArmorItems.TITANIUM_LEGGINGS,
@@ -105,22 +106,22 @@ public class ArmorRecipeProvider {
         builder.shapeless()
             .withCategory(RecipeCategory.COMBAT)
             .requires(1, ArmorItems.IRRADIATED_CHITIN_HELMET)
-            .requires(1, AVPItems.PLATED_IRRADIATED_CHITIN)
+            .requires(1, TempAVPItems.PLATED_IRRADIATED_CHITIN)
             .into(1, ArmorItems.PLATED_IRRADIATED_CHITIN_HELMET);
         builder.shapeless()
             .withCategory(RecipeCategory.COMBAT)
             .requires(1, ArmorItems.IRRADIATED_CHITIN_CHESTPLATE)
-            .requires(1, AVPItems.PLATED_IRRADIATED_CHITIN)
+            .requires(1, TempAVPItems.PLATED_IRRADIATED_CHITIN)
             .into(1, ArmorItems.PLATED_IRRADIATED_CHITIN_CHESTPLATE);
         builder.shapeless()
             .withCategory(RecipeCategory.COMBAT)
             .requires(1, ArmorItems.IRRADIATED_CHITIN_LEGGINGS)
-            .requires(1, AVPItems.PLATED_IRRADIATED_CHITIN)
+            .requires(1, TempAVPItems.PLATED_IRRADIATED_CHITIN)
             .into(1, ArmorItems.PLATED_IRRADIATED_CHITIN_LEGGINGS);
         builder.shapeless()
             .withCategory(RecipeCategory.COMBAT)
             .requires(1, ArmorItems.IRRADIATED_CHITIN_BOOTS)
-            .requires(1, AVPItems.PLATED_IRRADIATED_CHITIN)
+            .requires(1, TempAVPItems.PLATED_IRRADIATED_CHITIN)
             .into(1, ArmorItems.PLATED_IRRADIATED_CHITIN_BOOTS);
     }
 
@@ -128,22 +129,22 @@ public class ArmorRecipeProvider {
         builder.shapeless()
             .withCategory(RecipeCategory.COMBAT)
             .requires(1, ArmorItems.NETHER_CHITIN_HELMET)
-            .requires(1, AVPItems.PLATED_NETHER_CHITIN)
+            .requires(1, TempAVPItems.PLATED_NETHER_CHITIN)
             .into(1, ArmorItems.PLATED_NETHER_CHITIN_HELMET);
         builder.shapeless()
             .withCategory(RecipeCategory.COMBAT)
             .requires(1, ArmorItems.NETHER_CHITIN_CHESTPLATE)
-            .requires(1, AVPItems.PLATED_NETHER_CHITIN)
+            .requires(1, TempAVPItems.PLATED_NETHER_CHITIN)
             .into(1, ArmorItems.PLATED_NETHER_CHITIN_CHESTPLATE);
         builder.shapeless()
             .withCategory(RecipeCategory.COMBAT)
             .requires(1, ArmorItems.NETHER_CHITIN_LEGGINGS)
-            .requires(1, AVPItems.PLATED_NETHER_CHITIN)
+            .requires(1, TempAVPItems.PLATED_NETHER_CHITIN)
             .into(1, ArmorItems.PLATED_NETHER_CHITIN_LEGGINGS);
         builder.shapeless()
             .withCategory(RecipeCategory.COMBAT)
             .requires(1, ArmorItems.NETHER_CHITIN_BOOTS)
-            .requires(1, AVPItems.PLATED_NETHER_CHITIN)
+            .requires(1, TempAVPItems.PLATED_NETHER_CHITIN)
             .into(1, ArmorItems.PLATED_NETHER_CHITIN_BOOTS);
     }
 
@@ -151,34 +152,34 @@ public class ArmorRecipeProvider {
         builder.shapeless()
             .withCategory(RecipeCategory.COMBAT)
             .requires(1, ArmorItems.CHITIN_HELMET)
-            .requires(1, AVPItems.PLATED_CHITIN)
+            .requires(1, TempAVPItems.PLATED_CHITIN)
             .into(1, ArmorItems.PLATED_CHITIN_HELMET);
         builder.shapeless()
             .withCategory(RecipeCategory.COMBAT)
             .requires(1, ArmorItems.CHITIN_CHESTPLATE)
-            .requires(1, AVPItems.PLATED_CHITIN)
+            .requires(1, TempAVPItems.PLATED_CHITIN)
             .into(1, ArmorItems.PLATED_CHITIN_CHESTPLATE);
         builder.shapeless()
             .withCategory(RecipeCategory.COMBAT)
             .requires(1, ArmorItems.CHITIN_LEGGINGS)
-            .requires(1, AVPItems.PLATED_CHITIN)
+            .requires(1, TempAVPItems.PLATED_CHITIN)
             .into(1, ArmorItems.PLATED_CHITIN_LEGGINGS);
         builder.shapeless()
             .withCategory(RecipeCategory.COMBAT)
             .requires(1, ArmorItems.CHITIN_BOOTS)
-            .requires(1, AVPItems.PLATED_CHITIN)
+            .requires(1, TempAVPItems.PLATED_CHITIN)
             .into(1, ArmorItems.PLATED_CHITIN_BOOTS);
     }
 
     private static void createMk50ArmorSetRecipes(RecipeBuilder builder) {
         Supplier<ShapedRecipeBuilder> mk50ArmorBuilder = () -> builder.shaped()
             .withCategory(RecipeCategory.COMBAT)
-            .define('A', AVPItems.ALUMINUM_INGOT)
-            .define('C', AVPItems.LEAD_INGOT);
+            .define('A', TempAVPItems.ALUMINUM_INGOT)
+            .define('C', TempAVPItems.LEAD_INGOT);
 
         mk50ArmorBuilder.get()
             .define('B', AVPItemTags.INDUSTRIAL_GLASS_PANE)
-            .define('E', AVPItems.CARBON_DUST)
+            .define('E', TempAVPItems.CARBON_DUST)
             .pattern("CAC")
             .pattern("B B")
             .pattern("AEA")
@@ -207,11 +208,11 @@ public class ArmorRecipeProvider {
     private static void createPressureArmorSetRecipes(RecipeBuilder builder) {
         Supplier<ShapedRecipeBuilder> pressureArmorBuilder = () -> builder.shaped()
             .withCategory(RecipeCategory.COMBAT)
-            .define('A', AVPItems.ALUMINUM_INGOT);
+            .define('A', TempAVPItems.ALUMINUM_INGOT);
 
         pressureArmorBuilder.get()
             .define('B', AVPItemTags.INDUSTRIAL_GLASS_PANE)
-            .define('E', AVPItems.CARBON_DUST)
+            .define('E', TempAVPItems.CARBON_DUST)
             .pattern("AAA")
             .pattern("B B")
             .pattern("EEE")
@@ -241,24 +242,24 @@ public class ArmorRecipeProvider {
     private static void createTacticalArmorSetRecipes(RecipeBuilder builder) {
         Supplier<ShapedRecipeBuilder> tacticalArmorBuilder = () -> builder.shaped()
             .withCategory(RecipeCategory.COMBAT)
-            .define('A', AVPItems.STEEL_INGOT)
+            .define('A', TempAVPItems.STEEL_INGOT)
             .define('B', ItemTags.WOOL);
 
         tacticalArmorBuilder.get()
-            .define('C', AVPItems.POLYMER)
+            .define('C', TempAVPItems.POLYMER)
             .pattern("ABA")
             .pattern("C C")
             .into(1, ArmorItems.TACTICAL_HELMET);
 
         tacticalArmorBuilder.get()
-            .define('C', AVPItems.POLYMER)
+            .define('C', TempAVPItems.POLYMER)
             .pattern("C C")
             .pattern("ABA")
             .pattern("CAC")
             .into(1, ArmorItems.TACTICAL_CHESTPLATE);
 
         tacticalArmorBuilder.get()
-            .define('C', AVPItems.POLYMER)
+            .define('C', TempAVPItems.POLYMER)
             .pattern("CBC")
             .pattern("A A")
             .pattern("C C")

@@ -11,7 +11,7 @@ import net.minecraft.world.level.storage.loot.providers.number.UniformGenerator;
 
 import java.util.function.Function;
 
-import com.avp.fabric.common.item.AVPItems;
+import com.avp.common.item.TempAVPItems;
 
 public class BarrelBulletMaterialLootTable {
 
@@ -20,7 +20,7 @@ public class BarrelBulletMaterialLootTable {
             LootPool.lootPool()
                 .setRolls(ConstantValue.exactly(1))
                 .add(
-                    LootItem.lootTableItem(AVPItems.BULLET_TIP)
+                    LootItem.lootTableItem(TempAVPItems.BULLET_TIP.get())
                         .apply(SetItemCountFunction.setCount(UniformGenerator.between(3, 6)))
                         .setWeight(50)
                 )
@@ -38,7 +38,7 @@ public class BarrelBulletMaterialLootTable {
             LootPool.lootPool()
                 .setRolls(ConstantValue.exactly(1))
                 .add(
-                    LootItem.lootTableItem(AVPItems.POLYMER)
+                    LootItem.lootTableItem(TempAVPItems.POLYMER.get())
                         .apply(SetItemCountFunction.setCount(UniformGenerator.between(2, 5)))
                         .setWeight(35)
                 )
@@ -47,7 +47,7 @@ public class BarrelBulletMaterialLootTable {
             LootPool.lootPool()
                 .setRolls(ConstantValue.exactly(1))
                 .add(
-                    LootItem.lootTableItem(AVPItems.HEAVY_CASING)
+                    LootItem.lootTableItem(TempAVPItems.HEAVY_CASING.get())
                         .apply(SetItemCountFunction.setCount(UniformGenerator.between(4, 10)))
                         .setWeight(30)
                 )

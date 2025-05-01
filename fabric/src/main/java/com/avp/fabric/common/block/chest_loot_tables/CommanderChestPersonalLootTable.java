@@ -11,6 +11,7 @@ import net.minecraft.world.level.storage.loot.providers.number.UniformGenerator;
 
 import java.util.function.Function;
 
+import com.avp.common.item.TempAVPItems;
 import com.avp.fabric.common.item.AVPItems;
 
 public class CommanderChestPersonalLootTable {
@@ -47,7 +48,7 @@ public class CommanderChestPersonalLootTable {
             LootPool.lootPool()
                 .setRolls(ConstantValue.exactly(1))
                 .add(
-                    LootItem.lootTableItem(AVPItems.BLUEPRINT_FLAMETHROWER_SEVASTOPOL)
+                    LootItem.lootTableItem(TempAVPItems.BLUEPRINT_FLAMETHROWER_SEVASTOPOL.get())
                         .apply(SetItemCountFunction.setCount(ConstantValue.exactly(1)))
                         .setWeight(3)
                 )

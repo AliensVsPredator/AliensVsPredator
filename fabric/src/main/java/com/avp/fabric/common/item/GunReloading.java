@@ -10,10 +10,10 @@ import java.time.Duration;
 import java.util.Objects;
 
 import com.avp.common.util.EnchantmentUtil;
+import com.avp.common.util.TempAVPPredicates;
 import com.avp.fabric.common.block_item.AVPBlockItems;
 import com.avp.fabric.common.component.DataComponents;
 import com.avp.fabric.common.item.gun.GunData;
-import com.avp.fabric.common.util.AVPPredicates;
 import com.avp.server.ServerScheduler;
 
 public class GunReloading {
@@ -58,7 +58,7 @@ public class GunReloading {
         var reloadAmount = gunConfig.reloadAmount();
         var neededAmmunition = (int) Math.ceil((maximumAmmunition - currentAmmunition) / ((float) reloadAmount));
 
-        var isPlayerImmortal = AVPPredicates.IS_IMMORTAL.test(player);
+        var isPlayerImmortal = TempAVPPredicates.IS_IMMORTAL.test(player);
         // Result is how much we DIDN'T consume.
         var result = isPlayerImmortal
             // If the player is immortal, then assume they can get a full reload.

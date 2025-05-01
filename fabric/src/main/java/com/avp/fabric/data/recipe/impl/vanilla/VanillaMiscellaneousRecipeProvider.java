@@ -3,7 +3,7 @@ package com.avp.fabric.data.recipe.impl.vanilla;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.world.item.Items;
 
-import com.avp.fabric.common.item.AVPItems;
+import com.avp.common.item.TempAVPItems;
 import com.avp.fabric.data.recipe.builder.RecipeBuilder;
 
 public class VanillaMiscellaneousRecipeProvider {
@@ -11,7 +11,7 @@ public class VanillaMiscellaneousRecipeProvider {
     public static void provide(RecipeBuilder builder) {
         builder.shaped()
             .withCategory(RecipeCategory.MISC)
-            .define('A', AVPItems.CARBON_DUST)
+            .define('A', TempAVPItems.CARBON_DUST)
             .define('B', Items.BLAZE_POWDER)
             .pattern("AAA")
             .pattern("ABA")

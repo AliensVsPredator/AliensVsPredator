@@ -6,6 +6,7 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.trading.ItemCost;
 import net.minecraft.world.item.trading.MerchantOffer;
 
+import com.avp.common.item.TempAVPItems;
 import com.avp.fabric.common.block.AVPBlocks;
 import com.avp.fabric.common.item.AVPItems;
 import com.avp.fabric.common.item.ArmorItems;
@@ -17,7 +18,7 @@ public class AVPTrades {
             factories.add(
                 (entity, random) -> new MerchantOffer(
                     new ItemCost(Items.EMERALD, 1),
-                    new ItemStack(AVPItems.SMALL_BULLET, 8),
+                    new ItemStack(TempAVPItems.SMALL_BULLET.get(), 8),
                     4,
                     7,
                     0.04f
@@ -77,7 +78,7 @@ public class AVPTrades {
             factories.add(
                 (entity, random) -> new MerchantOffer(
                     new ItemCost(Items.EMERALD, 15),
-                    new ItemStack(AVPItems.BLUEPRINT_M88MOD4_COMBAT_PISTOL, 1),
+                    new ItemStack(TempAVPItems.BLUEPRINT_M88MOD4_COMBAT_PISTOL.get(), 1),
                     4,
                     7,
                     0.04f
@@ -94,7 +95,7 @@ public class AVPTrades {
             );
             factories.add(
                 (entity, random) -> new MerchantOffer(
-                    new ItemCost(AVPItems.STEEL_INGOT, 8),
+                    new ItemCost(TempAVPItems.STEEL_INGOT.get(), 8),
                     new ItemStack(Items.EMERALD, 8),
                     3,
                     12,
@@ -116,7 +117,7 @@ public class AVPTrades {
             factories.add(
                 (entity, random) -> new MerchantOffer(
                     new ItemCost(Items.EMERALD, 10),
-                    new ItemStack(AVPItems.BLUEPRINT_M4RA_BATTLE_RIFLE, 1),
+                    new ItemStack(TempAVPItems.BLUEPRINT_M4RA_BATTLE_RIFLE.get(), 1),
                     3,
                     12,
                     0.09f
@@ -124,7 +125,7 @@ public class AVPTrades {
             );
             factories.add(
                 (entity, random) -> new MerchantOffer(
-                    new ItemCost(AVPItems.BRASS_INGOT, 12),
+                    new ItemCost(TempAVPItems.BRASS_INGOT.get(), 12),
                     new ItemStack(Items.EMERALD, 10),
                     3,
                     12,
@@ -155,7 +156,7 @@ public class AVPTrades {
             factories.add(
                 (entity, random) -> new MerchantOffer(
                     new ItemCost(Items.EMERALD, 50),
-                    new ItemStack(AVPItems.BLUEPRINT_M6B_ROCKET_LAUNCHER, 1),
+                    new ItemStack(TempAVPItems.BLUEPRINT_M6B_ROCKET_LAUNCHER.get(), 1),
                     3,
                     12,
                     0.09f

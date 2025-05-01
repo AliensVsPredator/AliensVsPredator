@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
+import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
 
 import com.avp.fabric.data.recipe.util.RecipeProviderProxy;
@@ -57,6 +58,10 @@ public class ShapelessRecipeBuilder {
         return this;
     }
 
+    public ShapelessRecipeBuilder requires(int count, Supplier<? extends ItemLike> itemLikeSupplier) {
+        return requires(count, itemLikeSupplier.get());
+    }
+
     public ShapelessRecipeBuilder requires(int count, ItemLike itemLike) {
         transformations.add((shapelessRecipeBuilder -> {
             var itemName = RecipeProviderProxy.getNameForItem(itemLike.asItem());
@@ -74,6 +79,10 @@ public class ShapelessRecipeBuilder {
             return shapelessRecipeBuilder;
         }));
         return this;
+    }
+
+    public void into(int count, Supplier<? extends ItemLike> destinationSupplier) {
+        into(count, destinationSupplier.get());
     }
 
     public void into(int count, ItemLike destination) {

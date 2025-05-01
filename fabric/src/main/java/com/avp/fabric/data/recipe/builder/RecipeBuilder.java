@@ -5,6 +5,8 @@ import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
 
+import java.util.function.Supplier;
+
 import static net.minecraft.data.recipes.RecipeProvider.getHasName;
 import static net.minecraft.data.recipes.RecipeProvider.has;
 
@@ -20,6 +22,10 @@ public class RecipeBuilder {
         this.recipeOutput = recipeOutput;
     }
 
+    public BlastingRecipeBuilder blast(Supplier<? extends ItemLike> sourceSupplier) {
+        return blast(sourceSupplier.get());
+    }
+
     public BlastingRecipeBuilder blast(ItemLike source) {
         return new BlastingRecipeBuilder(this, source);
     }
@@ -30,6 +36,10 @@ public class RecipeBuilder {
 
     public ShapelessRecipeBuilder shapeless() {
         return new ShapelessRecipeBuilder(this);
+    }
+
+    public SmeltingRecipeBuilder smelt(Supplier<? extends ItemLike> sourceSupplier) {
+        return smelt(sourceSupplier.get());
     }
 
     public SmeltingRecipeBuilder smelt(ItemLike source) {

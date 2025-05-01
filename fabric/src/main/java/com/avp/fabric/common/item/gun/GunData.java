@@ -1,5 +1,6 @@
 package com.avp.fabric.common.item.gun;
 
+import com.avp.common.item.TempAVPItems;
 import com.avp.fabric.common.item.AVPItems;
 import com.avp.fabric.common.item.gun.attack.FlamethrowProjectileGunAttack;
 import com.avp.fabric.common.item.gun.attack.RocketProjectileGunAttack;
@@ -11,7 +12,7 @@ public class GunData {
         .withDurability(2048)
         .withMaximumAmmunition(32)
         .withReloadTimeInTicks(20 * 3)
-        .withAmmunitionItemSupplier(() -> AVPItems.SMALL_BULLET)
+        .withAmmunitionItemSupplier(TempAVPItems.SMALL_BULLET::get)
         .withFireMode(
             FireModeConfig.builder()
                 .withCooldownInTicks(2)
@@ -46,7 +47,7 @@ public class GunData {
         .withDurability(1024)
         .withMaximumAmmunition(6)
         .withReloadTimeInTicks(20 * 4)
-        .withAmmunitionItemSupplier(() -> AVPItems.SHOTGUN_SHELL)
+        .withAmmunitionItemSupplier(TempAVPItems.SHOTGUN_SHELL::get)
         .withFireMode(
             FireModeConfig.builder()
                 .withCooldownInTicks(20)
@@ -129,7 +130,7 @@ public class GunData {
         .withDurability(512)
         .withMaximumAmmunition(4)
         .withReloadTimeInTicks(20 * 4)
-        .withAmmunitionItemSupplier(() -> AVPItems.ROCKET)
+        .withAmmunitionItemSupplier(TempAVPItems.ROCKET::get)
         .withFireMode(
             FireModeConfig.builder()
                 .withCooldownInTicks(60)
@@ -148,7 +149,7 @@ public class GunData {
         .withDurability(1024)
         .withMaximumAmmunition(18)
         .withReloadTimeInTicks(10 * 2 + 10)
-        .withAmmunitionItemSupplier(() -> AVPItems.SMALL_BULLET)
+        .withAmmunitionItemSupplier(TempAVPItems.SMALL_BULLET::get)
         .withFireMode(
             FireModeConfig.builder()
                 .withCooldownInTicks(4)
@@ -186,7 +187,7 @@ public class GunData {
         .withDurability(1024)
         .withMaximumAmmunition(12)
         .withReloadTimeInTicks(20 * 3)
-        .withAmmunitionItemSupplier(() -> AVPItems.SHOTGUN_SHELL)
+        .withAmmunitionItemSupplier(TempAVPItems.SHOTGUN_SHELL::get)
         .withFireMode(
             FireModeConfig.builder()
                 .withCooldownInTicks(20)

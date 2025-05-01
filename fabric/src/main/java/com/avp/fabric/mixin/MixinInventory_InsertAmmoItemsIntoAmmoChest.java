@@ -19,8 +19,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import com.avp.common.item.AVPItemTags;
+import com.avp.common.util.TempAVPPredicates;
 import com.avp.fabric.common.block_item.AVPBlockItems;
-import com.avp.fabric.common.util.AVPPredicates;
 
 @Mixin(Inventory.class)
 public class MixinInventory_InsertAmmoItemsIntoAmmoChest {
@@ -73,7 +73,7 @@ public class MixinInventory_InsertAmmoItemsIntoAmmoChest {
 
         int remainingToAdd = toAddItemStack.getCount();
 
-        if (AVPPredicates.IS_IMMORTAL.test(player)) {
+        if (TempAVPPredicates.IS_IMMORTAL.test(player)) {
             return;
         }
 

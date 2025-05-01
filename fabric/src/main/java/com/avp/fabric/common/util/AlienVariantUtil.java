@@ -1,5 +1,6 @@
 package com.avp.fabric.common.util;
 
+import com.bvanseg.just.functional.function.Lazy;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.entity.EntityType;
@@ -11,6 +12,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
 
+import com.avp.common.item.TempAVPItems;
 import com.avp.fabric.common.block.AVPBlocks;
 import com.avp.fabric.common.block.resin.ResinVeinBlock;
 import com.avp.fabric.common.entity.acid.Acid;
@@ -22,19 +24,22 @@ import com.avp.fabric.common.particle.AVPParticleTypes;
 
 public class AlienVariantUtil {
 
-    private static final Map<Block, Item> RESIN_BALL_MAPPING = Map.ofEntries(
-        Map.entry(AVPBlocks.ABERRANT_RESIN_NODE, AVPItems.ABERRANT_RESIN_BALL),
-        Map.entry(AVPBlocks.ABERRANT_RESIN, AVPItems.ABERRANT_RESIN_BALL),
-        Map.entry(AVPBlocks.ABERRANT_RESIN_WEB, AVPItems.ABERRANT_RESIN_BALL),
-        Map.entry(AVPBlocks.ABERRANT_RESIN_VEIN, AVPItems.ABERRANT_RESIN_BALL),
-        Map.entry(AVPBlocks.IRRADIATED_RESIN_NODE, AVPItems.IRRADIATED_RESIN_BALL),
-        Map.entry(AVPBlocks.IRRADIATED_RESIN, AVPItems.IRRADIATED_RESIN_BALL),
-        Map.entry(AVPBlocks.IRRADIATED_RESIN_WEB, AVPItems.IRRADIATED_RESIN_BALL),
-        Map.entry(AVPBlocks.IRRADIATED_RESIN_VEIN, AVPItems.IRRADIATED_RESIN_BALL),
-        Map.entry(AVPBlocks.NETHER_RESIN_NODE, AVPItems.NETHER_RESIN_BALL),
-        Map.entry(AVPBlocks.NETHER_RESIN, AVPItems.NETHER_RESIN_BALL),
-        Map.entry(AVPBlocks.NETHER_RESIN_WEB, AVPItems.NETHER_RESIN_BALL),
-        Map.entry(AVPBlocks.NETHER_RESIN_VEIN, AVPItems.NETHER_RESIN_BALL)
+    // Made lazy so that the block/item access here doesn't cause NeoForge to crash during startup.
+    private static final Lazy<Map<Block, Item>> RESIN_BALL_MAPPING = Lazy.of(
+        () -> Map.ofEntries(
+            Map.entry(AVPBlocks.ABERRANT_RESIN_NODE, AVPItems.ABERRANT_RESIN_BALL),
+            Map.entry(AVPBlocks.ABERRANT_RESIN, AVPItems.ABERRANT_RESIN_BALL),
+            Map.entry(AVPBlocks.ABERRANT_RESIN_WEB, AVPItems.ABERRANT_RESIN_BALL),
+            Map.entry(AVPBlocks.ABERRANT_RESIN_VEIN, AVPItems.ABERRANT_RESIN_BALL),
+            Map.entry(AVPBlocks.IRRADIATED_RESIN_NODE, TempAVPItems.IRRADIATED_RESIN_BALL.get()),
+            Map.entry(AVPBlocks.IRRADIATED_RESIN, TempAVPItems.IRRADIATED_RESIN_BALL.get()),
+            Map.entry(AVPBlocks.IRRADIATED_RESIN_WEB, TempAVPItems.IRRADIATED_RESIN_BALL.get()),
+            Map.entry(AVPBlocks.IRRADIATED_RESIN_VEIN, TempAVPItems.IRRADIATED_RESIN_BALL.get()),
+            Map.entry(AVPBlocks.NETHER_RESIN_NODE, AVPItems.NETHER_RESIN_BALL),
+            Map.entry(AVPBlocks.NETHER_RESIN, AVPItems.NETHER_RESIN_BALL),
+            Map.entry(AVPBlocks.NETHER_RESIN_WEB, AVPItems.NETHER_RESIN_BALL),
+            Map.entry(AVPBlocks.NETHER_RESIN_VEIN, AVPItems.NETHER_RESIN_BALL)
+        )
     );
 
     private static final Map<Block, Block> RESIN_VEIN_MAPPING = Map.ofEntries(
@@ -63,8 +68,8 @@ public class AlienVariantUtil {
         return switch (alien) {
             case Alien netherAlien when netherAlien.isNetherAfflicted() -> AVPItems.NETHER_RESIN_BALL;
             case Alien aberrantAlien when aberrantAlien.isAberrant() -> AVPItems.ABERRANT_RESIN_BALL;
-            case Alien irradiatedAlien when irradiatedAlien.isIrradiated() -> AVPItems.IRRADIATED_RESIN_BALL;
-            default -> AVPItems.RESIN_BALL;
+            case Alien irradiatedAlien when irradiatedAlien.isIrradiated() -> TempAVPItems.IRRADIATED_RESIN_BALL.get();
+            default -> TempAVPItems.RESIN_BALL.get();
         };
     }
 
@@ -102,7 +107,7 @@ public class AlienVariantUtil {
     }
 
     public static Item getResinBallForType(BlockState blockState) {
-        return RESIN_BALL_MAPPING.getOrDefault(blockState.getBlock(), AVPItems.RESIN_BALL);
+        return RESIN_BALL_MAPPING.get().getOrDefault(blockState.getBlock(), TempAVPItems.RESIN_BALL.get());
     }
 
     public static EntityType<?> getOvamorphTypeFor(Queen queen, boolean isRoyal) {

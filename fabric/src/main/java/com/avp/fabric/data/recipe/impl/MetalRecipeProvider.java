@@ -7,7 +7,6 @@ import net.minecraft.world.level.ItemLike;
 import com.avp.common.block.TempAVPBlocks;
 import com.avp.common.item.TempAVPItems;
 import com.avp.fabric.common.block.AVPBlocks;
-import com.avp.fabric.common.item.AVPItems;
 import com.avp.fabric.data.recipe.RecipeConstants;
 import com.avp.fabric.data.recipe.RecipeTemplates;
 import com.avp.fabric.data.recipe.builder.RecipeBuilder;
@@ -18,126 +17,126 @@ public class MetalRecipeProvider {
     public static void provide(RecipeBuilder builder) {
         builder.shapeless()
             .withCategory(RecipeCategory.MISC)
-            .requires(1, AVPItems.CARBON_DUST)
+            .requires(1, TempAVPItems.CARBON_DUST.get())
             .requires(1, Items.RAW_IRON)
-            .into(1, AVPItems.RAW_CRUDE_IRON);
+            .into(1, TempAVPItems.RAW_CRUDE_IRON.get());
 
         builder.shapeless()
             .withCategory(RecipeCategory.MISC)
-            .requires(1, AVPItems.RAW_BAUXITE)
-            .requires(1, AVPItems.CARBON_DUST)
+            .requires(1, TempAVPItems.RAW_BAUXITE.get())
+            .requires(1, TempAVPItems.CARBON_DUST.get())
             .requires(1, Items.RAW_IRON)
-            .into(2, AVPItems.RAW_FERROBAUXITE);
+            .into(2, TempAVPItems.RAW_FERROBAUXITE.get());
 
         // Steel can only be blasted.
-        builder.blast(AVPItems.RAW_CRUDE_IRON)
+        builder.blast(TempAVPItems.RAW_CRUDE_IRON.get())
             .withCategory(RecipeCategory.MISC)
             .withExperience(RecipeConstants.RARE_SMELT_EXPERIENCE)
-            .into(AVPItems.STEEL_INGOT);
+            .into(TempAVPItems.STEEL_INGOT.get());
 
         builder.shapeless()
             .withCategory(RecipeCategory.MISC)
-            .requires(1, AVPItems.RAW_ZINC)
+            .requires(1, TempAVPItems.RAW_ZINC.get())
             .requires(1, Items.RAW_COPPER)
-            .into(2, AVPItems.RAW_BRASS);
+            .into(2, TempAVPItems.RAW_BRASS.get());
 
         builder.shaped()
             .withCustomName(name -> "uranium_ignot_normal")
             .withCategory(RecipeCategory.MISC)
-            .define('A', AVPItems.AUTUNITE_DUST)
-            .define('T', AVPItems.TITANIUM_INGOT)
+            .define('A', TempAVPItems.AUTUNITE_DUST.get())
+            .define('T', TempAVPItems.TITANIUM_INGOT.get())
             .pattern(" A ")
             .pattern("ATA")
             .pattern(" A ")
-            .into(1, AVPItems.URANIUM_INGOT);
+            .into(1, TempAVPItems.URANIUM_INGOT.get());
 
-        createSmeltAndBlastRecipes(builder, TempAVPBlocks.BAUXITE_ORE.get(), AVPItems.ALUMINUM_INGOT);
-        createSmeltAndBlastRecipes(builder, TempAVPBlocks.GALENA_ORE.get(), AVPItems.LEAD_INGOT);
-        createSmeltAndBlastRecipes(builder, TempAVPBlocks.MONAZITE_ORE.get(), AVPItems.NEODYMIUM_MAGNET);
-        createSmeltAndBlastRecipes(builder, TempAVPBlocks.DEEPSLATE_TITANIUM_ORE.get(), AVPItems.TITANIUM_INGOT);
-        createSmeltAndBlastRecipes(builder, TempAVPBlocks.ZINC_ORE.get(), AVPItems.ZINC_INGOT);
-        createSmeltAndBlastRecipes(builder, TempAVPBlocks.DEEPSLATE_ZINC_ORE.get(), AVPItems.ZINC_INGOT);
+        createSmeltAndBlastRecipes(builder, TempAVPBlocks.BAUXITE_ORE.get(), TempAVPItems.ALUMINUM_INGOT.get());
+        createSmeltAndBlastRecipes(builder, TempAVPBlocks.GALENA_ORE.get(), TempAVPItems.LEAD_INGOT.get());
+        createSmeltAndBlastRecipes(builder, TempAVPBlocks.MONAZITE_ORE.get(), TempAVPItems.NEODYMIUM_MAGNET.get());
+        createSmeltAndBlastRecipes(builder, TempAVPBlocks.DEEPSLATE_TITANIUM_ORE.get(), TempAVPItems.TITANIUM_INGOT.get());
+        createSmeltAndBlastRecipes(builder, TempAVPBlocks.ZINC_ORE.get(), TempAVPItems.ZINC_INGOT.get());
+        createSmeltAndBlastRecipes(builder, TempAVPBlocks.DEEPSLATE_ZINC_ORE.get(), TempAVPItems.ZINC_INGOT.get());
 
-        createSmeltAndBlastRecipes(builder, AVPItems.RAW_BAUXITE, AVPItems.ALUMINUM_INGOT);
-        createSmeltAndBlastRecipes(builder, AVPItems.RAW_BRASS, AVPItems.BRASS_INGOT);
-        createSmeltAndBlastRecipes(builder, AVPItems.RAW_FERROBAUXITE, AVPItems.FERROALUMINUM_INGOT);
-        createSmeltAndBlastRecipes(builder, AVPItems.RAW_GALENA, AVPItems.LEAD_INGOT);
-        createSmeltAndBlastRecipes(builder, AVPItems.RAW_MONAZITE, AVPItems.NEODYMIUM_MAGNET);
-        createSmeltAndBlastRecipes(builder, AVPItems.RAW_TITANIUM, AVPItems.TITANIUM_INGOT);
-        createSmeltAndBlastRecipes(builder, AVPItems.RAW_ZINC, AVPItems.ZINC_INGOT);
+        createSmeltAndBlastRecipes(builder, TempAVPItems.RAW_BAUXITE.get(), TempAVPItems.ALUMINUM_INGOT.get());
+        createSmeltAndBlastRecipes(builder, TempAVPItems.RAW_BRASS.get(), TempAVPItems.BRASS_INGOT.get());
+        createSmeltAndBlastRecipes(builder, TempAVPItems.RAW_FERROBAUXITE.get(), TempAVPItems.FERROALUMINUM_INGOT.get());
+        createSmeltAndBlastRecipes(builder, TempAVPItems.RAW_GALENA.get(), TempAVPItems.LEAD_INGOT.get());
+        createSmeltAndBlastRecipes(builder, TempAVPItems.RAW_MONAZITE.get(), TempAVPItems.NEODYMIUM_MAGNET.get());
+        createSmeltAndBlastRecipes(builder, TempAVPItems.RAW_TITANIUM.get(), TempAVPItems.TITANIUM_INGOT.get());
+        createSmeltAndBlastRecipes(builder, TempAVPItems.RAW_ZINC.get(), TempAVPItems.ZINC_INGOT.get());
 
-        RecipeUtil.createCompressedBlockRecipes3x3(builder, AVPItems.ALUMINUM_INGOT, AVPBlocks.ALUMINUM_BLOCK);
-        RecipeUtil.createCompressedBlockRecipes3x3(builder, AVPItems.BRASS_INGOT, AVPBlocks.BRASS_BLOCK);
-        RecipeUtil.createCompressedBlockRecipes3x3(builder, AVPItems.FERROALUMINUM_INGOT, AVPBlocks.FERROALUMINUM_BLOCK);
-        RecipeUtil.createCompressedBlockRecipes3x3(builder, AVPItems.LEAD_INGOT, AVPBlocks.LEAD_BLOCK);
-        RecipeUtil.createCompressedBlockRecipes3x3(builder, AVPItems.STEEL_INGOT, AVPBlocks.STEEL_BLOCK);
-        RecipeUtil.createCompressedBlockRecipes3x3(builder, AVPItems.TITANIUM_INGOT, AVPBlocks.TITANIUM_BLOCK);
-        RecipeUtil.createCompressedBlockRecipes3x3(builder, AVPItems.URANIUM_INGOT, AVPBlocks.URANIUM_BLOCK);
-        RecipeUtil.createCompressedBlockRecipes3x3(builder, AVPItems.ZINC_INGOT, AVPBlocks.ZINC_BLOCK);
+        RecipeUtil.createCompressedBlockRecipes3x3(builder, TempAVPItems.ALUMINUM_INGOT.get(), AVPBlocks.ALUMINUM_BLOCK);
+        RecipeUtil.createCompressedBlockRecipes3x3(builder, TempAVPItems.BRASS_INGOT.get(), AVPBlocks.BRASS_BLOCK);
+        RecipeUtil.createCompressedBlockRecipes3x3(builder, TempAVPItems.FERROALUMINUM_INGOT.get(), AVPBlocks.FERROALUMINUM_BLOCK);
+        RecipeUtil.createCompressedBlockRecipes3x3(builder, TempAVPItems.LEAD_INGOT.get(), AVPBlocks.LEAD_BLOCK);
+        RecipeUtil.createCompressedBlockRecipes3x3(builder, TempAVPItems.STEEL_INGOT.get(), AVPBlocks.STEEL_BLOCK);
+        RecipeUtil.createCompressedBlockRecipes3x3(builder, TempAVPItems.TITANIUM_INGOT.get(), AVPBlocks.TITANIUM_BLOCK);
+        RecipeUtil.createCompressedBlockRecipes3x3(builder, TempAVPItems.URANIUM_INGOT.get(), AVPBlocks.URANIUM_BLOCK);
+        RecipeUtil.createCompressedBlockRecipes3x3(builder, TempAVPItems.ZINC_INGOT.get(), AVPBlocks.ZINC_BLOCK);
 
-        RecipeUtil.createCompressedBlockRecipes3x3(builder, AVPItems.AUTUNITE_DUST, AVPBlocks.AUTUNITE_BLOCK);
-        RecipeUtil.createCompressedBlockRecipes3x3(builder, AVPItems.LITHIUM_DUST, AVPBlocks.LITHIUM_BLOCK);
-        RecipeUtil.createCompressedBlockRecipes3x3(builder, AVPItems.RAW_BAUXITE, AVPBlocks.RAW_BAUXITE_BLOCK);
-        RecipeUtil.createCompressedBlockRecipes3x3(builder, AVPItems.RAW_GALENA, AVPBlocks.RAW_GALENA_BLOCK);
-        RecipeUtil.createCompressedBlockRecipes3x3(builder, AVPItems.RAW_MONAZITE, AVPBlocks.RAW_MONAZITE_BLOCK);
+        RecipeUtil.createCompressedBlockRecipes3x3(builder, TempAVPItems.AUTUNITE_DUST.get(), AVPBlocks.AUTUNITE_BLOCK);
+        RecipeUtil.createCompressedBlockRecipes3x3(builder, TempAVPItems.LITHIUM_DUST.get(), AVPBlocks.LITHIUM_BLOCK);
+        RecipeUtil.createCompressedBlockRecipes3x3(builder, TempAVPItems.RAW_BAUXITE.get(), AVPBlocks.RAW_BAUXITE_BLOCK);
+        RecipeUtil.createCompressedBlockRecipes3x3(builder, TempAVPItems.RAW_GALENA.get(), AVPBlocks.RAW_GALENA_BLOCK);
+        RecipeUtil.createCompressedBlockRecipes3x3(builder, TempAVPItems.RAW_MONAZITE.get(), AVPBlocks.RAW_MONAZITE_BLOCK);
         RecipeUtil.createCompressedBlockRecipes3x3(builder, TempAVPItems.RAW_SILICA.get(), AVPBlocks.RAW_SILICA_BLOCK);
-        RecipeUtil.createCompressedBlockRecipes3x3(builder, AVPItems.RAW_TITANIUM, AVPBlocks.RAW_TITANIUM_BLOCK);
-        RecipeUtil.createCompressedBlockRecipes3x3(builder, AVPItems.RAW_ZINC, AVPBlocks.RAW_ZINC_BLOCK);
+        RecipeUtil.createCompressedBlockRecipes3x3(builder, TempAVPItems.RAW_TITANIUM.get(), AVPBlocks.RAW_TITANIUM_BLOCK);
+        RecipeUtil.createCompressedBlockRecipes3x3(builder, TempAVPItems.RAW_ZINC.get(), AVPBlocks.RAW_ZINC_BLOCK);
 
         builder.shaped()
             .withCategory(RecipeCategory.BUILDING_BLOCKS)
-            .apply(RecipeTemplates.BARS_BLOCK.apply(AVPItems.STEEL_INGOT))
+            .apply(RecipeTemplates.BARS_BLOCK.apply(TempAVPItems.STEEL_INGOT.get()))
             .into(16, AVPBlocks.STEEL_BARS);
 
         builder.shaped()
             .withCategory(RecipeCategory.BUILDING_BLOCKS)
-            .apply(RecipeTemplates.BUTTON_BLOCK.apply(AVPItems.FERROALUMINUM_INGOT))
+            .apply(RecipeTemplates.BUTTON_BLOCK.apply(TempAVPItems.FERROALUMINUM_INGOT.get()))
             .into(2, AVPBlocks.FERROALUMINUM_BUTTON);
         builder.shaped()
             .withCategory(RecipeCategory.BUILDING_BLOCKS)
-            .apply(RecipeTemplates.BUTTON_BLOCK.apply(AVPItems.STEEL_INGOT))
+            .apply(RecipeTemplates.BUTTON_BLOCK.apply(TempAVPItems.STEEL_INGOT.get()))
             .into(2, AVPBlocks.STEEL_BUTTON);
         builder.shaped()
             .withCategory(RecipeCategory.BUILDING_BLOCKS)
-            .apply(RecipeTemplates.BUTTON_BLOCK.apply(AVPItems.TITANIUM_INGOT))
+            .apply(RecipeTemplates.BUTTON_BLOCK.apply(TempAVPItems.TITANIUM_INGOT.get()))
             .into(2, AVPBlocks.TITANIUM_BUTTON);
         builder.shaped()
             .withCategory(RecipeCategory.BUILDING_BLOCKS)
-            .apply(RecipeTemplates.DOOR_BLOCK.apply(AVPItems.FERROALUMINUM_INGOT))
+            .apply(RecipeTemplates.DOOR_BLOCK.apply(TempAVPItems.FERROALUMINUM_INGOT.get()))
             .into(3, AVPBlocks.FERROALUMINUM_DOOR);
         builder.shaped()
             .withCategory(RecipeCategory.BUILDING_BLOCKS)
-            .apply(RecipeTemplates.DOOR_BLOCK.apply(AVPItems.STEEL_INGOT))
+            .apply(RecipeTemplates.DOOR_BLOCK.apply(TempAVPItems.STEEL_INGOT.get()))
             .into(3, AVPBlocks.STEEL_DOOR);
         builder.shaped()
             .withCategory(RecipeCategory.BUILDING_BLOCKS)
-            .apply(RecipeTemplates.DOOR_BLOCK.apply(AVPItems.TITANIUM_INGOT))
+            .apply(RecipeTemplates.DOOR_BLOCK.apply(TempAVPItems.TITANIUM_INGOT.get()))
             .into(3, AVPBlocks.TITANIUM_DOOR);
 
         builder.shaped()
             .withCategory(RecipeCategory.BUILDING_BLOCKS)
-            .apply(RecipeTemplates.TRAP_DOOR_BLOCK.apply(AVPItems.FERROALUMINUM_INGOT))
+            .apply(RecipeTemplates.TRAP_DOOR_BLOCK.apply(TempAVPItems.FERROALUMINUM_INGOT.get()))
             .into(2, AVPBlocks.FERROALUMINUM_TRAP_DOOR);
         builder.shaped()
             .withCategory(RecipeCategory.BUILDING_BLOCKS)
-            .apply(RecipeTemplates.TRAP_DOOR_BLOCK.apply(AVPItems.STEEL_INGOT))
+            .apply(RecipeTemplates.TRAP_DOOR_BLOCK.apply(TempAVPItems.STEEL_INGOT.get()))
             .into(2, AVPBlocks.STEEL_TRAP_DOOR);
         builder.shaped()
             .withCategory(RecipeCategory.BUILDING_BLOCKS)
-            .apply(RecipeTemplates.TRAP_DOOR_BLOCK.apply(AVPItems.TITANIUM_INGOT))
+            .apply(RecipeTemplates.TRAP_DOOR_BLOCK.apply(TempAVPItems.TITANIUM_INGOT.get()))
             .into(2, AVPBlocks.TITANIUM_TRAP_DOOR);
 
         builder.shaped()
             .withCategory(RecipeCategory.BUILDING_BLOCKS)
-            .apply(RecipeTemplates.PRESSURE_PLATE_BLOCK.apply(AVPItems.FERROALUMINUM_INGOT))
+            .apply(RecipeTemplates.PRESSURE_PLATE_BLOCK.apply(TempAVPItems.FERROALUMINUM_INGOT.get()))
             .into(1, AVPBlocks.FERROALUMINUM_PRESSURE_PLATE);
         builder.shaped()
             .withCategory(RecipeCategory.BUILDING_BLOCKS)
-            .apply(RecipeTemplates.PRESSURE_PLATE_BLOCK.apply(AVPItems.STEEL_INGOT))
+            .apply(RecipeTemplates.PRESSURE_PLATE_BLOCK.apply(TempAVPItems.STEEL_INGOT.get()))
             .into(1, AVPBlocks.STEEL_PRESSURE_PLATE);
         builder.shaped()
             .withCategory(RecipeCategory.BUILDING_BLOCKS)
-            .apply(RecipeTemplates.PRESSURE_PLATE_BLOCK.apply(AVPItems.TITANIUM_INGOT))
+            .apply(RecipeTemplates.PRESSURE_PLATE_BLOCK.apply(TempAVPItems.TITANIUM_INGOT.get()))
             .into(1, AVPBlocks.TITANIUM_PRESSURE_PLATE);
 
         // Add standard slab and stair crafting recipes
@@ -158,24 +157,24 @@ public class MetalRecipeProvider {
         createVariantSlabAndStairRecipes(builder);
 
         // Nugget to ingot recipes
-        nuggetToIngot(builder, AVPItems.FERROALUMINUM_NUGGET, AVPItems.FERROALUMINUM_INGOT);
-        nuggetToIngot(builder, AVPItems.STEEL_NUGGET, AVPItems.STEEL_INGOT);
-        nuggetToIngot(builder, AVPItems.BRASS_NUGGET, AVPItems.BRASS_INGOT);
-        nuggetToIngot(builder, AVPItems.TITANIUM_NUGGET, AVPItems.TITANIUM_INGOT);
-        nuggetToIngot(builder, AVPItems.LEAD_NUGGET, AVPItems.LEAD_INGOT);
-        nuggetToIngot(builder, AVPItems.URANIUM_NUGGET, AVPItems.URANIUM_INGOT);
-        nuggetToIngot(builder, AVPItems.ZINC_NUGGET, AVPItems.ZINC_INGOT);
-        nuggetToIngot(builder, AVPItems.ALUMINUM_NUGGET, AVPItems.ALUMINUM_INGOT);
+        nuggetToIngot(builder, TempAVPItems.FERROALUMINUM_NUGGET.get(), TempAVPItems.FERROALUMINUM_INGOT.get());
+        nuggetToIngot(builder, TempAVPItems.STEEL_NUGGET.get(), TempAVPItems.STEEL_INGOT.get());
+        nuggetToIngot(builder, TempAVPItems.BRASS_NUGGET.get(), TempAVPItems.BRASS_INGOT.get());
+        nuggetToIngot(builder, TempAVPItems.TITANIUM_NUGGET.get(), TempAVPItems.TITANIUM_INGOT.get());
+        nuggetToIngot(builder, TempAVPItems.LEAD_NUGGET.get(), TempAVPItems.LEAD_INGOT.get());
+        nuggetToIngot(builder, TempAVPItems.URANIUM_NUGGET.get(), TempAVPItems.URANIUM_INGOT.get());
+        nuggetToIngot(builder, TempAVPItems.ZINC_NUGGET.get(), TempAVPItems.ZINC_INGOT.get());
+        nuggetToIngot(builder, TempAVPItems.ALUMINUM_NUGGET.get(), TempAVPItems.ALUMINUM_INGOT.get());
 
         // Ingot to nugget recipes
-        ingotToNugget(builder, AVPItems.FERROALUMINUM_INGOT, AVPItems.FERROALUMINUM_NUGGET);
-        ingotToNugget(builder, AVPItems.STEEL_INGOT, AVPItems.STEEL_NUGGET);
-        ingotToNugget(builder, AVPItems.BRASS_INGOT, AVPItems.BRASS_NUGGET);
-        ingotToNugget(builder, AVPItems.TITANIUM_INGOT, AVPItems.TITANIUM_NUGGET);
-        ingotToNugget(builder, AVPItems.LEAD_INGOT, AVPItems.LEAD_NUGGET);
-        ingotToNugget(builder, AVPItems.URANIUM_INGOT, AVPItems.URANIUM_NUGGET);
-        ingotToNugget(builder, AVPItems.ZINC_INGOT, AVPItems.ZINC_NUGGET);
-        ingotToNugget(builder, AVPItems.ALUMINUM_INGOT, AVPItems.ALUMINUM_NUGGET);
+        ingotToNugget(builder, TempAVPItems.FERROALUMINUM_INGOT.get(), TempAVPItems.FERROALUMINUM_NUGGET.get());
+        ingotToNugget(builder, TempAVPItems.STEEL_INGOT.get(), TempAVPItems.STEEL_NUGGET.get());
+        ingotToNugget(builder, TempAVPItems.BRASS_INGOT.get(), TempAVPItems.BRASS_NUGGET.get());
+        ingotToNugget(builder, TempAVPItems.TITANIUM_INGOT.get(), TempAVPItems.TITANIUM_NUGGET.get());
+        ingotToNugget(builder, TempAVPItems.LEAD_INGOT.get(), TempAVPItems.LEAD_NUGGET.get());
+        ingotToNugget(builder, TempAVPItems.URANIUM_INGOT.get(), TempAVPItems.URANIUM_NUGGET.get());
+        ingotToNugget(builder, TempAVPItems.ZINC_INGOT.get(), TempAVPItems.ZINC_NUGGET.get());
+        ingotToNugget(builder, TempAVPItems.ALUMINUM_INGOT.get(), TempAVPItems.ALUMINUM_NUGGET.get());
     }
 
     private static void createFerroaluminumBlockVariantRecipes(RecipeBuilder builder) {

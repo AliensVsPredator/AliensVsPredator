@@ -17,6 +17,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.function.Supplier;
 
 import com.avp.common.block.TempAVPBlocks;
+import com.avp.common.item.TempAVPItems;
 import com.avp.fabric.common.block.AVPBlocks;
 import com.avp.fabric.common.item.AVPItems;
 
@@ -40,8 +41,8 @@ public class BlockLootTableProvider extends FabricBlockLootTableProvider {
         dropSelf(AVPBlocks.ROYAL_JELLY_BLOCK);
         dropSelf(AVPBlocks.ALUMINUM_BLOCK);
         dropSelf(AVPBlocks.AUTUNITE_BLOCK);
-        add(TempAVPBlocks.AUTUNITE_ORE.get(), block -> createOreMultiDrop(block, AVPItems.AUTUNITE_DUST, 2, 4));
-        add(TempAVPBlocks.BAUXITE_ORE.get(), block -> createOreDrop(block, AVPItems.RAW_BAUXITE));
+        add(TempAVPBlocks.AUTUNITE_ORE.get(), block -> createOreMultiDrop(block, TempAVPItems.AUTUNITE_DUST.get(), 2, 4));
+        add(TempAVPBlocks.BAUXITE_ORE.get(), block -> createOreDrop(block, TempAVPItems.RAW_BAUXITE.get()));
         dropSelf(AVPBlocks.BRASS_BLOCK);
         dropSelf(AVPBlocks.CHISELED_FERROALUMINUM);
         dropSelf(AVPBlocks.CHISELED_STEEL);
@@ -55,8 +56,8 @@ public class BlockLootTableProvider extends FabricBlockLootTableProvider {
         dropSelf(AVPBlocks.CUT_TITANIUM);
         dropSlab(AVPBlocks.CUT_TITANIUM_SLAB);
         dropSelf(AVPBlocks.CUT_TITANIUM_STAIRS);
-        add(TempAVPBlocks.DEEPSLATE_TITANIUM_ORE.get(), block -> createOreDrop(block, AVPItems.RAW_TITANIUM));
-        add(TempAVPBlocks.DEEPSLATE_ZINC_ORE.get(), block -> createOreMultiDrop(block, AVPItems.RAW_ZINC, 2, 5));
+        add(TempAVPBlocks.DEEPSLATE_TITANIUM_ORE.get(), block -> createOreDrop(block, TempAVPItems.RAW_TITANIUM.get()));
+        add(TempAVPBlocks.DEEPSLATE_ZINC_ORE.get(), block -> createOreMultiDrop(block, TempAVPItems.RAW_ZINC.get(), 2, 5));
         dropSelf(AVPBlocks.FERROALUMINUM_BLOCK);
         dropSelf(AVPBlocks.FERROALUMINUM_CHAIN_FENCE);
         dropSelf(AVPBlocks.FERROALUMINUM_COLUMN);
@@ -67,13 +68,13 @@ public class BlockLootTableProvider extends FabricBlockLootTableProvider {
         dropSelf(AVPBlocks.FERROALUMINUM_SIDING);
         dropSelf(AVPBlocks.FERROALUMINUM_STANDING);
         dropSelf(AVPBlocks.FERROALUMINUM_TREAD);
-        add(TempAVPBlocks.GALENA_ORE.get(), block -> createOreDrop(block, AVPItems.RAW_GALENA));
+        add(TempAVPBlocks.GALENA_ORE.get(), block -> createOreDrop(block, TempAVPItems.RAW_GALENA.get()));
         dropSelf(AVPBlocks.LEAD_BLOCK);
         add(AVPBlocks.LEAD_CHEST, this::createShulkerBoxDrop);
         add(AVPBlocks.AMMO_CHEST, this::createShulkerBoxDrop);
         dropSelf(AVPBlocks.LITHIUM_BLOCK);
-        add(TempAVPBlocks.LITHIUM_ORE.get(), block -> createOreMultiDrop(block, AVPItems.LITHIUM_DUST, 2, 4));
-        add(TempAVPBlocks.MONAZITE_ORE.get(), block -> createOreDrop(block, AVPItems.RAW_MONAZITE));
+        add(TempAVPBlocks.LITHIUM_ORE.get(), block -> createOreMultiDrop(block, TempAVPItems.LITHIUM_DUST.get(), 2, 4));
+        add(TempAVPBlocks.MONAZITE_ORE.get(), block -> createOreDrop(block, TempAVPItems.RAW_MONAZITE.get()));
         dropSelf(AVPBlocks.NETHER_RESIN);
         dropOther(AVPBlocks.NETHER_RESIN_NODE, AVPBlocks.NETHER_RESIN);
         dropOther(AVPBlocks.NETHER_RESIN_VEIN, AVPItems.NETHER_RESIN_BALL);
@@ -84,8 +85,8 @@ public class BlockLootTableProvider extends FabricBlockLootTableProvider {
         dropOther(AVPBlocks.ABERRANT_RESIN_WEB, AVPItems.ABERRANT_RESIN_BALL);
         dropSelf(AVPBlocks.IRRADIATED_RESIN);
         dropOther(AVPBlocks.IRRADIATED_RESIN_NODE, AVPBlocks.IRRADIATED_RESIN);
-        dropOther(AVPBlocks.IRRADIATED_RESIN_VEIN, AVPItems.IRRADIATED_RESIN_BALL);
-        dropOther(AVPBlocks.IRRADIATED_RESIN_WEB, AVPItems.IRRADIATED_RESIN_BALL);
+        dropOther(AVPBlocks.IRRADIATED_RESIN_VEIN, TempAVPItems.IRRADIATED_RESIN_BALL.get());
+        dropOther(AVPBlocks.IRRADIATED_RESIN_WEB, TempAVPItems.IRRADIATED_RESIN_BALL.get());
         dropSelf(AVPBlocks.RESIN_BRICKS);
         dropSelf(AVPBlocks.RESIN_O);
         dropSelf(AVPBlocks.RESIN_RIBBED);
@@ -139,8 +140,8 @@ public class BlockLootTableProvider extends FabricBlockLootTableProvider {
         dropSelf(AVPBlocks.RAZOR_WIRE);
         dropSelf(AVPBlocks.RESIN);
         dropOther(AVPBlocks.RESIN_NODE, AVPBlocks.RESIN);
-        dropOther(AVPBlocks.RESIN_VEIN, AVPItems.RESIN_BALL);
-        dropOther(AVPBlocks.RESIN_WEB, AVPItems.RESIN_BALL);
+        dropOther(AVPBlocks.RESIN_VEIN, TempAVPItems.RESIN_BALL.get());
+        dropOther(AVPBlocks.RESIN_WEB, TempAVPItems.RESIN_BALL.get());
         dropSelf(AVPBlocks.SILICA_GRAVEL);
         dropSelf(AVPBlocks.STEEL_BARS);
         dropSelf(AVPBlocks.STEEL_BLOCK);
@@ -165,7 +166,7 @@ public class BlockLootTableProvider extends FabricBlockLootTableProvider {
         dropSelf(AVPBlocks.TITANIUM_TREAD);
         dropSelf(AVPBlocks.URANIUM_BLOCK);
         dropSelf(AVPBlocks.ZINC_BLOCK);
-        add(TempAVPBlocks.ZINC_ORE.get(), block -> createOreMultiDrop(block, AVPItems.RAW_ZINC, 2, 5));
+        add(TempAVPBlocks.ZINC_ORE.get(), block -> createOreMultiDrop(block, TempAVPItems.RAW_ZINC.get(), 2, 5));
 
         add(AVPBlocks.INDUSTRIAL_GLASS_DOOR, this::createDoorTable);
         add(AVPBlocks.FERROALUMINUM_DOOR, this::createDoorTable);

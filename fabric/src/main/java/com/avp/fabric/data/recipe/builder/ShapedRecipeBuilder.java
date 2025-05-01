@@ -9,6 +9,7 @@ import net.minecraft.world.level.ItemLike;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
 
 import com.avp.fabric.data.recipe.util.RecipeProviderProxy;
@@ -41,6 +42,10 @@ public class ShapedRecipeBuilder {
 
     public ShapedRecipeBuilder apply(UnaryOperator<ShapedRecipeBuilder> unaryOperator) {
         return unaryOperator.apply(this);
+    }
+
+    public ShapedRecipeBuilder define(char key, Supplier<? extends ItemLike> itemLikeSupplier) {
+        return define(key, itemLikeSupplier.get());
     }
 
     public ShapedRecipeBuilder define(char key, ItemLike itemLike) {
@@ -82,6 +87,10 @@ public class ShapedRecipeBuilder {
             return shapedRecipeBuilder;
         }));
         return this;
+    }
+
+    public void into(int count, Supplier<? extends ItemLike> destinationSupplier) {
+        into(count, destinationSupplier.get());
     }
 
     public void into(int count, ItemLike destination) {

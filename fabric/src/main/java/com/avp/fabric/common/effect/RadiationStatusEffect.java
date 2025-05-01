@@ -17,7 +17,7 @@ import java.util.concurrent.TimeUnit;
 
 import com.avp.common.damage.AVPDamageTypes;
 import com.avp.common.entity.AVPEntityTypeTags;
-import com.avp.fabric.common.util.AVPPredicates;
+import com.avp.common.util.TempAVPPredicates;
 
 public class RadiationStatusEffect extends MobEffect {
 
@@ -39,7 +39,7 @@ public class RadiationStatusEffect extends MobEffect {
         var currentDuration = EFFECT_TRACKER.getOrDefault(livingEntity, 0);
 
         if (
-            AVPPredicates.IS_IMMORTAL.test(livingEntity) || livingEntity.getType()
+            TempAVPPredicates.IS_IMMORTAL.test(livingEntity) || livingEntity.getType()
                 .is(
                     AVPEntityTypeTags.RADIATION_RESISTANT
                 )

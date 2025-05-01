@@ -12,6 +12,7 @@ import java.util.function.Supplier;
 import com.avp.common.block.TempAVPBlocks;
 import com.avp.common.item.AVPItemTags;
 import com.avp.common.item.TempAVPBlockItems;
+import com.avp.common.item.TempAVPItems;
 import com.avp.fabric.common.block.AVPBlocks;
 import com.avp.fabric.common.block_item.AVPBlockItems;
 import com.avp.fabric.common.item.AVPItems;
@@ -93,12 +94,12 @@ public class AVPItemTagProvider extends FabricTagProvider.ItemTagProvider {
 
         getOrCreateTagBuilder(AVPItemTags.RADIATION_ITEMS)
             .add(
-                AVPItems.AUTUNITE_DUST,
-                AVPItems.URANIUM_NUGGET,
-                AVPItems.URANIUM_INGOT,
-                AVPItems.IRRADIATED_CHITIN,
-                AVPItems.PLATED_IRRADIATED_CHITIN,
-                AVPItems.IRRADIATED_RESIN_BALL,
+                TempAVPItems.AUTUNITE_DUST.get(),
+                TempAVPItems.URANIUM_NUGGET.get(),
+                TempAVPItems.URANIUM_INGOT.get(),
+                TempAVPItems.IRRADIATED_CHITIN.get(),
+                TempAVPItems.PLATED_IRRADIATED_CHITIN.get(),
+                TempAVPItems.IRRADIATED_RESIN_BALL.get(),
                 AVPBlockItems.AUTUNITE_BLOCK,
                 TempAVPBlockItems.AUTUNITE_ORE.get(),
                 AVPBlockItems.URANIUM_BLOCK,
@@ -114,10 +115,10 @@ public class AVPItemTagProvider extends FabricTagProvider.ItemTagProvider {
             .add(
                 AVPItems.CASELESS_BULLET,
                 AVPItems.HEAVY_BULLET,
-                AVPItems.SMALL_BULLET,
+                TempAVPItems.SMALL_BULLET.get(),
                 AVPItems.MEDIUM_BULLET,
-                AVPItems.SHOTGUN_SHELL,
-                AVPItems.ROCKET,
+                TempAVPItems.SHOTGUN_SHELL.get(),
+                TempAVPItems.ROCKET.get(),
                 AVPItems.FUEL_TANK
             );
 
@@ -178,14 +179,14 @@ public class AVPItemTagProvider extends FabricTagProvider.ItemTagProvider {
                 ArmorItems.PLATED_NETHER_CHITIN_LEGGINGS,
                 ArmorItems.PLATED_NETHER_CHITIN_BOOTS,
 
-                AVPItems.CHITIN,
+                TempAVPItems.CHITIN.get(),
                 AVPItems.NETHER_CHITIN,
                 AVPItems.ABERRANT_CHITIN,
-                AVPItems.IRRADIATED_CHITIN,
-                AVPItems.PLATED_CHITIN,
-                AVPItems.PLATED_NETHER_CHITIN,
+                TempAVPItems.IRRADIATED_CHITIN.get(),
+                TempAVPItems.PLATED_CHITIN.get(),
+                TempAVPItems.PLATED_NETHER_CHITIN.get(),
                 AVPItems.PLATED_ABERRANT_CHITIN,
-                AVPItems.PLATED_IRRADIATED_CHITIN
+                TempAVPItems.PLATED_IRRADIATED_CHITIN.get()
             );
 
         getOrCreateTagBuilder(AVPItemTags.DECORATIVE_POT_SHERDS)
@@ -211,16 +212,16 @@ public class AVPItemTagProvider extends FabricTagProvider.ItemTagProvider {
         getOrCreateTagBuilder(AVPItemTags.IRON_INGOT_LIKE)
             .add(
                 Items.IRON_INGOT,
-                AVPItems.ALUMINUM_INGOT,
-                AVPItems.FERROALUMINUM_INGOT,
-                AVPItems.STEEL_INGOT,
-                AVPItems.ZINC_INGOT
+                TempAVPItems.ALUMINUM_INGOT.get(),
+                TempAVPItems.FERROALUMINUM_INGOT.get(),
+                TempAVPItems.STEEL_INGOT.get(),
+                TempAVPItems.ZINC_INGOT.get()
             );
 
         getOrCreateTagBuilder(AVPItemTags.URANIUM_NUGGET_LIKE)
             .add(
-                AVPItems.URANIUM_NUGGET,
-                AVPItems.IRRADIATED_CHITIN
+                TempAVPItems.URANIUM_NUGGET.get(),
+                TempAVPItems.IRRADIATED_CHITIN.get()
             );
 
         var industrialGlassBlockTagBuilder = getOrCreateTagBuilder(AVPItemTags.INDUSTRIAL_GLASS_BLOCK);
@@ -245,7 +246,7 @@ public class AVPItemTagProvider extends FabricTagProvider.ItemTagProvider {
             .add(
                 AVPBlocks.LITHIUM_BLOCK.asItem(),
                 TempAVPBlocks.LITHIUM_ORE.get().asItem(),
-                AVPItems.LITHIUM_DUST
+                TempAVPItems.LITHIUM_DUST.get()
             );
 
         getOrCreateTagBuilder(ItemTags.AXES)
@@ -527,99 +528,99 @@ public class AVPItemTagProvider extends FabricTagProvider.ItemTagProvider {
         getOrCreateTagBuilder(CommonConstants.INGOTS)
             .setReplace(false)
             .add(
-                AVPItems.ALUMINUM_INGOT,
-                AVPItems.BRASS_INGOT,
-                AVPItems.FERROALUMINUM_INGOT,
-                AVPItems.LEAD_INGOT,
-                AVPItems.STEEL_INGOT,
-                AVPItems.TITANIUM_INGOT,
-                AVPItems.URANIUM_INGOT,
-                AVPItems.ZINC_INGOT
+                TempAVPItems.ALUMINUM_INGOT.get(),
+                TempAVPItems.BRASS_INGOT.get(),
+                TempAVPItems.FERROALUMINUM_INGOT.get(),
+                TempAVPItems.LEAD_INGOT.get(),
+                TempAVPItems.STEEL_INGOT.get(),
+                TempAVPItems.TITANIUM_INGOT.get(),
+                TempAVPItems.URANIUM_INGOT.get(),
+                TempAVPItems.ZINC_INGOT.get()
             );
 
         getOrCreateTagBuilder(CommonConstants.INGOTS_ALUMINUM)
             .setReplace(false)
             .add(
-                AVPItems.ALUMINUM_INGOT
+                TempAVPItems.ALUMINUM_INGOT.get()
             );
 
         getOrCreateTagBuilder(CommonConstants.INGOTS_BRASS)
             .setReplace(false)
             .add(
-                AVPItems.BRASS_INGOT
+                TempAVPItems.BRASS_INGOT.get()
             );
 
         getOrCreateTagBuilder(CommonConstants.INGOTS_LEAD)
             .setReplace(false)
             .add(
-                AVPItems.LEAD_INGOT
+                TempAVPItems.LEAD_INGOT.get()
             );
 
         getOrCreateTagBuilder(CommonConstants.INGOTS_STEEL)
             .setReplace(false)
             .add(
-                AVPItems.STEEL_INGOT
+                TempAVPItems.STEEL_INGOT.get()
             );
 
         getOrCreateTagBuilder(CommonConstants.INGOTS_TITANIUM)
             .setReplace(false)
             .add(
-                AVPItems.TITANIUM_INGOT
+                TempAVPItems.TITANIUM_INGOT.get()
             );
 
         getOrCreateTagBuilder(CommonConstants.INGOTS_ZINC)
             .setReplace(false)
             .add(
-                AVPItems.ZINC_INGOT
+                TempAVPItems.ZINC_INGOT.get()
             );
 
         getOrCreateTagBuilder(CommonConstants.NUGGETS)
             .setReplace(false)
             .add(
-                AVPItems.ALUMINUM_NUGGET,
-                AVPItems.BRASS_NUGGET,
-                AVPItems.FERROALUMINUM_NUGGET,
-                AVPItems.LEAD_NUGGET,
-                AVPItems.STEEL_NUGGET,
-                AVPItems.TITANIUM_NUGGET,
-                AVPItems.URANIUM_NUGGET,
-                AVPItems.ZINC_NUGGET
+                TempAVPItems.ALUMINUM_NUGGET.get(),
+                TempAVPItems.BRASS_NUGGET.get(),
+                TempAVPItems.FERROALUMINUM_NUGGET.get(),
+                TempAVPItems.LEAD_NUGGET.get(),
+                TempAVPItems.STEEL_NUGGET.get(),
+                TempAVPItems.TITANIUM_NUGGET.get(),
+                TempAVPItems.URANIUM_NUGGET.get(),
+                TempAVPItems.ZINC_NUGGET.get()
             );
 
         getOrCreateTagBuilder(CommonConstants.NUGGETS_ALUMINUM)
             .setReplace(false)
             .add(
-                AVPItems.ALUMINUM_NUGGET
+                TempAVPItems.ALUMINUM_NUGGET.get()
             );
 
         getOrCreateTagBuilder(CommonConstants.NUGGETS_BRASS)
             .setReplace(false)
             .add(
-                AVPItems.BRASS_NUGGET
+                TempAVPItems.BRASS_NUGGET.get()
             );
 
         getOrCreateTagBuilder(CommonConstants.NUGGETS_LEAD)
             .setReplace(false)
             .add(
-                AVPItems.LEAD_NUGGET
+                TempAVPItems.LEAD_NUGGET.get()
             );
 
         getOrCreateTagBuilder(CommonConstants.NUGGETS_STEEL)
             .setReplace(false)
             .add(
-                AVPItems.STEEL_NUGGET
+                TempAVPItems.STEEL_NUGGET.get()
             );
 
         getOrCreateTagBuilder(CommonConstants.NUGGETS_TITANIUM)
             .setReplace(false)
             .add(
-                AVPItems.TITANIUM_NUGGET
+                TempAVPItems.TITANIUM_NUGGET.get()
             );
 
         getOrCreateTagBuilder(CommonConstants.NUGGETS_ZINC)
             .setReplace(false)
             .add(
-                AVPItems.ZINC_NUGGET
+                TempAVPItems.ZINC_NUGGET.get()
             );
 
         getOrCreateTagBuilder(CommonConstants.ORES)

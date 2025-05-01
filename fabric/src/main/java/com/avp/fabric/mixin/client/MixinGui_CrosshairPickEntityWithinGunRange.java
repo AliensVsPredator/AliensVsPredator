@@ -12,8 +12,8 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import com.avp.common.util.TempAVPPredicates;
 import com.avp.fabric.common.item.GunItem;
-import com.avp.fabric.common.util.AVPPredicates;
 
 @Mixin(Gui.class)
 public abstract class MixinGui_CrosshairPickEntityWithinGunRange {
@@ -35,7 +35,7 @@ public abstract class MixinGui_CrosshairPickEntityWithinGunRange {
 
         var hitResult = ProjectileUtil.getHitResultOnViewVector(
             player,
-            entity -> entity.getType() == EntityType.END_CRYSTAL || AVPPredicates.isLiving(entity),
+            entity -> entity.getType() == EntityType.END_CRYSTAL || TempAVPPredicates.isLiving(entity),
             gun.getGunConfig().getDefaultFireMode().range()
         );
 

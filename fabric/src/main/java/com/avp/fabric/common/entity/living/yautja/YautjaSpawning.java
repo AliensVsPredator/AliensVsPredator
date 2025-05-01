@@ -11,7 +11,7 @@ import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.entity.EntityTypeTest;
 
-import com.avp.fabric.common.util.AVPPredicates;
+import com.avp.common.util.TempAVPPredicates;
 
 public class YautjaSpawning {
 
@@ -41,7 +41,7 @@ public class YautjaSpawning {
     }
 
     public static boolean anyNearbyYautja(ServerLevelAccessor serverLevelAccessor, BlockPos blockPos, int requiredDistanceInBlocks) {
-        var allYautja = serverLevelAccessor.getLevel().getEntities(EntityTypeTest.forClass(Yautja.class), AVPPredicates.alwaysTrue());
+        var allYautja = serverLevelAccessor.getLevel().getEntities(EntityTypeTest.forClass(Yautja.class), TempAVPPredicates.alwaysTrue());
         var requiredDistanceSquared = requiredDistanceInBlocks * requiredDistanceInBlocks;
         return allYautja.stream()
             .anyMatch(yautja -> yautja.distanceToSqr(blockPos.getX(), blockPos.getY(), blockPos.getZ()) < requiredDistanceSquared);

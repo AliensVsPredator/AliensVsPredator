@@ -5,6 +5,8 @@ import net.minecraft.data.recipes.SimpleCookingRecipeBuilder;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
 
+import java.util.function.Supplier;
+
 import com.avp.AVP;
 import com.avp.fabric.data.recipe.util.RecipeProviderProxy;
 
@@ -40,6 +42,10 @@ public class BlastingRecipeBuilder {
     public BlastingRecipeBuilder withCookTime(int cookTime) {
         this.cookTime = cookTime;
         return this;
+    }
+
+    public void into(Supplier<? extends ItemLike> destinationSupplier) {
+        into(destinationSupplier.get());
     }
 
     public void into(ItemLike destination) {

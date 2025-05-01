@@ -10,7 +10,7 @@ import net.minecraft.world.level.storage.loot.providers.number.UniformGenerator;
 
 import java.util.function.Function;
 
-import com.avp.fabric.common.item.AVPItems;
+import com.avp.common.item.TempAVPItems;
 
 public class BarrelCasingsLootTable {
 
@@ -19,7 +19,7 @@ public class BarrelCasingsLootTable {
             LootPool.lootPool()
                 .setRolls(ConstantValue.exactly(1))
                 .add(
-                    LootItem.lootTableItem(AVPItems.SMALL_CASING)
+                    LootItem.lootTableItem(TempAVPItems.SMALL_CASING.get())
                         .apply(SetItemCountFunction.setCount(UniformGenerator.between(2, 6)))
                         .setWeight(20)
                 )
@@ -28,7 +28,7 @@ public class BarrelCasingsLootTable {
             LootPool.lootPool()
                 .setRolls(ConstantValue.exactly(1))
                 .add(
-                    LootItem.lootTableItem(AVPItems.HEAVY_CASING)
+                    LootItem.lootTableItem(TempAVPItems.HEAVY_CASING.get())
                         .apply(SetItemCountFunction.setCount(UniformGenerator.between(4, 8)))
                         .setWeight(35)
                 )

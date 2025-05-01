@@ -2,11 +2,11 @@ package com.avp.fabric.common.fuel;
 
 import net.fabricmc.fabric.api.registry.FuelRegistry;
 
-import com.avp.fabric.common.item.AVPItems;
+import com.avp.common.item.TempAVPItems;
 
 public class AVPFuelRegistry {
 
     public static void initialize() {
-        FuelRegistry.INSTANCE.add(AVPItems.CARBON_DUST, 800);
+        FuelRegistry.INSTANCE.add(TempAVPItems.CARBON_DUST.get(), 800);
     }
 }

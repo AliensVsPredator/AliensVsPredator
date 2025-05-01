@@ -9,9 +9,9 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import org.jetbrains.annotations.NotNull;
 
+import com.avp.common.util.TempAVPPredicates;
 import com.avp.fabric.common.entity.living.alien.xenomorph.Xenomorph;
 import com.avp.fabric.common.entity.living.alien.xenomorph.praetorian.Praetorian;
-import com.avp.fabric.common.util.AVPPredicates;
 
 public class RoyalJellyBlockItem extends BlockItem {
 
@@ -30,7 +30,7 @@ public class RoyalJellyBlockItem extends BlockItem {
             praetorian.getEntityData().set(Xenomorph.JELLY_COUNT, 10);
         }
 
-        if (!AVPPredicates.IS_IMMORTAL.test(player)) {
+        if (!TempAVPPredicates.IS_IMMORTAL.test(player)) {
             itemStack.shrink(1);
         }
 

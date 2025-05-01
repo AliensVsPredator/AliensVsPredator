@@ -17,9 +17,10 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
+import com.avp.common.item.TempAVPItems;
+import com.avp.common.util.TempAVPPredicates;
 import com.avp.fabric.common.entity.living.FreeMob;
 import com.avp.fabric.common.entity.living.alien.Alien;
-import com.avp.fabric.common.item.AVPItems;
 import com.avp.fabric.common.manager.ParasiteAttachmentManager;
 import com.avp.fabric.common.util.AVPPredicates;
 
@@ -38,7 +39,7 @@ public abstract class Parasite extends Alien {
     }
 
     public void restoreAllGoals() {
-        removeAllGoals(AVPPredicates.alwaysTrue());
+        removeAllGoals(TempAVPPredicates.alwaysTrue());
         registerGoals();
     }
 
@@ -65,7 +66,7 @@ public abstract class Parasite extends Alien {
     @Override
     public @NotNull InteractionResult mobInteract(Player player, InteractionHand interactionHand) {
         ItemStack itemStack = player.getItemInHand(interactionHand);
-        if (itemStack.is(AVPItems.RAW_ROYAL_JELLY)) {
+        if (itemStack.is(TempAVPItems.RAW_ROYAL_JELLY.get())) {
             if (!level().isClientSide && !attachmentManager.isFertile()) {
                 attachmentManager.restore();
                 player.getItemInHand(interactionHand).shrink(1);
@@ -90,7 +91,7 @@ public abstract class Parasite extends Alien {
     protected boolean canAttachToHost(Entity entity) {
         return entity instanceof LivingEntity livingEntity &&
             isValidHost(livingEntity) &&
-            !AVPPredicates.hasShield(entity) && !(this.isPassenger() || this.isVehicle());
+            !TempAVPPredicates.hasShield(entity) && !(this.isPassenger() || this.isVehicle());
     }
 
     protected boolean isValidHost(LivingEntity target) {

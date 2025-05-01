@@ -12,6 +12,7 @@ import java.util.function.Predicate;
 import com.avp.AVP;
 import com.avp.AVPResources;
 import com.avp.common.entity.AVPEntityTypeTags;
+import com.avp.common.util.TempAVPPredicates;
 import com.avp.fabric.common.entity.living.alien.chestburster.ChestbursterSpawning;
 import com.avp.fabric.common.entity.living.alien.ovamorph.OvamorphSpawning;
 import com.avp.fabric.common.entity.living.alien.xenomorph.drone.DroneSpawning;
@@ -21,7 +22,6 @@ import com.avp.fabric.common.entity.living.alien.xenomorph.warrior.WarriorSpawni
 import com.avp.fabric.common.entity.living.human.marine.MarineSpawning;
 import com.avp.fabric.common.entity.living.yautja.YautjaSpawning;
 import com.avp.fabric.common.entity.type.AVPEntityTypes;
-import com.avp.fabric.common.util.AVPPredicates;
 
 public class SpawnPlacements {
 
@@ -86,7 +86,7 @@ public class SpawnPlacements {
 
             net.minecraft.world.entity.SpawnPlacements.register(AVPEntityTypes.DRONE, placement, heightMap, DroneSpawning.PREDICATE);
             BiomeModifications.addSpawn(
-                AVPPredicates.alwaysTrue(),
+                TempAVPPredicates.alwaysTrue(),
                 AVPEntityTypes.ALIEN_CATEGORY,
                 AVPEntityTypes.DRONE,
                 weight,
@@ -107,7 +107,7 @@ public class SpawnPlacements {
                 PraetorianSpawning.PREDICATE
             );
             BiomeModifications.addSpawn(
-                AVPPredicates.alwaysTrue(),
+                TempAVPPredicates.alwaysTrue(),
                 AVPEntityTypes.ALIEN_CATEGORY,
                 AVPEntityTypes.PRAETORIAN,
                 weight,
@@ -123,7 +123,7 @@ public class SpawnPlacements {
 
             net.minecraft.world.entity.SpawnPlacements.register(AVPEntityTypes.QUEEN, placement, heightMap, QueenSpawning.PREDICATE);
             BiomeModifications.addSpawn(
-                AVPPredicates.alwaysTrue(),
+                TempAVPPredicates.alwaysTrue(),
                 AVPEntityTypes.ALIEN_CATEGORY,
                 AVPEntityTypes.QUEEN,
                 weight,
@@ -139,7 +139,7 @@ public class SpawnPlacements {
 
             net.minecraft.world.entity.SpawnPlacements.register(AVPEntityTypes.WARRIOR, placement, heightMap, WarriorSpawning.PREDICATE);
             BiomeModifications.addSpawn(
-                AVPPredicates.alwaysTrue(),
+                TempAVPPredicates.alwaysTrue(),
                 AVPEntityTypes.ALIEN_CATEGORY,
                 AVPEntityTypes.WARRIOR,
                 weight,
@@ -249,7 +249,7 @@ public class SpawnPlacements {
                 ChestbursterSpawning.PREDICATE
             );
             BiomeModifications.addSpawn(
-                AVPPredicates.alwaysTrue(),
+                TempAVPPredicates.alwaysTrue(),
                 AVPEntityTypes.ALIEN_CATEGORY,
                 AVPEntityTypes.CHESTBURSTER,
                 weight,
@@ -265,7 +265,7 @@ public class SpawnPlacements {
 
             net.minecraft.world.entity.SpawnPlacements.register(AVPEntityTypes.OVAMORPH, placement, heightMap, OvamorphSpawning.PREDICATE);
             BiomeModifications.addSpawn(
-                AVPPredicates.alwaysTrue(),
+                TempAVPPredicates.alwaysTrue(),
                 AVPEntityTypes.ALIEN_CATEGORY,
                 AVPEntityTypes.OVAMORPH,
                 weight,

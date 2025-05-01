@@ -13,6 +13,7 @@ import java.util.Objects;
 
 import com.avp.common.block.AVPBlockTags;
 import com.avp.common.entity.AVPEntityTypeTags;
+import com.avp.common.util.TempAVPPredicates;
 import com.avp.fabric.common.entity.living.alien.Alien;
 import com.avp.fabric.common.entity.living.human.marine.Marine;
 import com.avp.fabric.common.entity.living.yautja.Yautja;
@@ -83,7 +84,7 @@ public class AlienPredicates {
             // AND can't attack what can't be attacked (duh).
             && potentialTarget.attackable()
             // AND can't attack immortal players.
-            && (!(potentialTarget instanceof Player) || !AVPPredicates.IS_IMMORTAL.test(potentialTarget))
+            && (!(potentialTarget instanceof Player) || !TempAVPPredicates.IS_IMMORTAL.test(potentialTarget))
             // AND *shouldn't* attack entities with an embryo inside of them.
             // TODO: There's a bug here, what if it's an embryo from an enemy hive or enemy strain?
             && !AVPPredicates.hasEmbryo(potentialTarget)
@@ -126,7 +127,7 @@ public class AlienPredicates {
     }
 
     private static boolean isHated(@NotNull Alien alien, @NotNull LivingEntity potentialTarget) {
-        return (potentialTarget instanceof Player && !AVPPredicates.IS_IMMORTAL.test(potentialTarget))
+        return (potentialTarget instanceof Player && !TempAVPPredicates.IS_IMMORTAL.test(potentialTarget))
             || potentialTarget instanceof Yautja
             || potentialTarget instanceof Marine
             || isTargetingHiveMember(alien, potentialTarget);

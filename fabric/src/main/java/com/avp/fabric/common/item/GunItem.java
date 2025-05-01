@@ -25,6 +25,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
+import com.avp.common.item.TempAVPItems;
 import com.avp.common.util.TooltipUtil;
 import com.avp.fabric.common.component.DataComponents;
 import com.avp.fabric.common.item.gun.GunConfig;
@@ -84,7 +85,7 @@ public class GunItem extends Item {
 
     @Override
     public boolean isValidRepairItem(@NotNull ItemStack toRepair, ItemStack repairIngredient) {
-        return repairIngredient.is(AVPItems.STEEL_INGOT);
+        return repairIngredient.is(TempAVPItems.STEEL_INGOT.get());
     }
 
     @Override

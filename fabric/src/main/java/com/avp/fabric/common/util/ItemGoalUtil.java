@@ -9,6 +9,7 @@ import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.phys.Vec3;
 
 import com.avp.common.entity.AVPEntityTypeTags;
+import com.avp.common.util.TempAVPPredicates;
 import com.avp.fabric.common.entity.projectile.BulletProjectile;
 import com.avp.fabric.common.entity.projectile.ShurikenItemEntity;
 import com.avp.fabric.common.entity.projectile.SmartDiscItemEntity;
@@ -144,7 +145,7 @@ public class ItemGoalUtil {
                 livingEntity -> !livingEntity.getType()
                     .is(
                         AVPEntityTypeTags.PREDATORS
-                    ) && !AVPPredicates.IS_IMMORTAL.test(livingEntity) && livingEntity != projectile.getOwner()
+                    ) && !TempAVPPredicates.IS_IMMORTAL.test(livingEntity) && livingEntity != projectile.getOwner()
             );
         if (!livingEntities.isEmpty()) {
             var first = livingEntities.getFirst();
@@ -176,7 +177,7 @@ public class ItemGoalUtil {
         if (
             projectile.getOwner() instanceof Player player && projectile.getBoundingBox().intersects(projectile.getOwner().getBoundingBox())
         ) {
-            if (!AVPPredicates.IS_IMMORTAL.test(player)) {
+            if (!TempAVPPredicates.IS_IMMORTAL.test(player)) {
                 player.getInventory().add(AVPItems.SMART_DISC.getDefaultInstance());
             }
             projectile.kill();

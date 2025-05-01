@@ -14,12 +14,12 @@ import org.jetbrains.annotations.Nullable;
 import com.avp.AVP;
 import com.avp.common.entity.gene.GeneKeys;
 import com.avp.common.entity.gene.behavior.GeneDecoders;
+import com.avp.common.util.TempAVPPredicates;
 import com.avp.fabric.common.entity.living.alien.Alien;
 import com.avp.fabric.common.entity.living.alien.xenomorph.Xenomorph;
 import com.avp.fabric.common.entity.type.AVPEntityTypes;
 import com.avp.fabric.common.lifecycle.registry.AlienLifecycleRegistry;
 import com.avp.fabric.common.manager.GrowthManager;
-import com.avp.fabric.common.util.AVPPredicates;
 import com.avp.fabric.common.util.AlienPredicates;
 import com.avp.fabric.common.util.AlienVariantUtil;
 import com.avp.fabric.common.util.XenomorphGrowthUtil;
@@ -86,7 +86,7 @@ public class Chestburster extends Alien implements ResinProducer {
                 1.2,
                 entity -> entity instanceof Alien alien
                     ? AlienPredicates.areAliensEnemies(this, alien)
-                    : !AVPPredicates.IS_IMMORTAL.test(entity)
+                    : !TempAVPPredicates.IS_IMMORTAL.test(entity)
             )
         );
         goalSelector.addGoal(7, new WaterAvoidingRandomStrollGoal(this, 0.5));

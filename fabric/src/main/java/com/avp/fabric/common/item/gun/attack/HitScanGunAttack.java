@@ -28,11 +28,11 @@ import com.avp.AVP;
 import com.avp.common.block.AVPBlockTags;
 import com.avp.common.damage.AVPDamageTypes;
 import com.avp.common.util.EnchantmentUtil;
+import com.avp.common.util.TempAVPPredicates;
 import com.avp.fabric.common.network.ServerNetworking;
 import com.avp.fabric.common.network.packet.S2CBulletHitBlockPayload;
 import com.avp.fabric.common.network.packet.S2CGunRecoilPayload;
 import com.avp.fabric.common.sound.AVPSoundEvents;
-import com.avp.fabric.common.util.AVPPredicates;
 import com.avp.server.BlockBreakProgressManager;
 
 public class HitScanGunAttack extends AbstractGunAttack {
@@ -57,7 +57,9 @@ public class HitScanGunAttack extends AbstractGunAttack {
         for (int i = 0; i < piercingLevel + 1; i++) {
             var hitResult = ProjectileUtil.getHitResultOnViewVector(
                 shooter,
-                entity -> !hitEntities.contains(entity) && (entity.getType() == EntityType.END_CRYSTAL || AVPPredicates.isLiving(entity)),
+                entity -> !hitEntities.contains(entity) && (entity.getType() == EntityType.END_CRYSTAL || TempAVPPredicates.isLiving(
+                    entity
+                )),
                 gunAttackConfig.fireModeConfig().range()
             );
 

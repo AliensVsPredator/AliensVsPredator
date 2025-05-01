@@ -14,7 +14,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import com.avp.common.item.AVPItemTags;
-import com.avp.fabric.common.util.AVPPredicates;
+import com.avp.common.util.TempAVPPredicates;
 
 @Mixin(LivingEntity.class)
 public abstract class MixinLivingEntity_ApplyArmorEffects extends Entity {
@@ -51,21 +51,21 @@ public abstract class MixinLivingEntity_ApplyArmorEffects extends Entity {
 
     @Unique
     private boolean isWearingFullFireResistantArmor(LivingEntity self) {
-        return AVPPredicates.hasFullArmorSetMatching(self, (itemStack -> itemStack.is(AVPItemTags.FIRE_RESISTANT_ARMOR)));
+        return TempAVPPredicates.hasFullArmorSetMatching(self, (itemStack -> itemStack.is(AVPItemTags.FIRE_RESISTANT_ARMOR)));
     }
 
     @Unique
     private boolean isWearingFullPredatorArmor(LivingEntity self) {
-        return AVPPredicates.hasFullArmorSetMatching(self, (itemStack -> itemStack.is(AVPItemTags.PREDATOR_ARMOR)));
+        return TempAVPPredicates.hasFullArmorSetMatching(self, (itemStack -> itemStack.is(AVPItemTags.PREDATOR_ARMOR)));
     }
 
     @Unique
     private boolean isWearingFullMK50SuitArmor(LivingEntity self) {
-        return AVPPredicates.hasFullArmorSetMatching(self, (itemStack -> itemStack.is(AVPItemTags.MK50_ARMOR)));
+        return TempAVPPredicates.hasFullArmorSetMatching(self, (itemStack -> itemStack.is(AVPItemTags.MK50_ARMOR)));
     }
 
     @Unique
     private boolean isWearingFullPressureSuitArmor(LivingEntity self) {
-        return AVPPredicates.hasFullArmorSetMatching(self, (itemStack -> itemStack.is(AVPItemTags.PRESSURE_ARMOR)));
+        return TempAVPPredicates.hasFullArmorSetMatching(self, (itemStack -> itemStack.is(AVPItemTags.PRESSURE_ARMOR)));
     }
 }

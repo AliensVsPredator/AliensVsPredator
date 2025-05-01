@@ -5,6 +5,7 @@ import net.minecraft.data.recipes.SimpleCookingRecipeBuilder;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
 
+import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
 
 import com.avp.AVP;
@@ -49,6 +50,10 @@ public class SmeltingRecipeBuilder {
     public SmeltingRecipeBuilder withCustomName(UnaryOperator<String> customNameOperator) {
         this.customNameOperator = customNameOperator;
         return this;
+    }
+
+    public void into(Supplier<? extends ItemLike> destinationSupplier) {
+        into(destinationSupplier.get());
     }
 
     public void into(ItemLike destination) {

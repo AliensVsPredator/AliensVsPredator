@@ -11,6 +11,7 @@ import net.minecraft.world.level.storage.loot.providers.number.UniformGenerator;
 
 import java.util.function.Function;
 
+import com.avp.common.item.TempAVPItems;
 import com.avp.fabric.common.item.AVPItems;
 
 public class ChestRawMaterialLootTable {
@@ -20,7 +21,7 @@ public class ChestRawMaterialLootTable {
             LootPool.lootPool()
                 .setRolls(ConstantValue.exactly(1))
                 .add(
-                    LootItem.lootTableItem(AVPItems.RAW_ZINC)
+                    LootItem.lootTableItem(TempAVPItems.RAW_ZINC.get())
                         .apply(SetItemCountFunction.setCount(UniformGenerator.between(2, 4)))
                         .setWeight(50)
                 )
@@ -47,7 +48,7 @@ public class ChestRawMaterialLootTable {
             LootPool.lootPool()
                 .setRolls(ConstantValue.exactly(1))
                 .add(
-                    LootItem.lootTableItem(AVPItems.RAW_ZINC)
+                    LootItem.lootTableItem(TempAVPItems.RAW_ZINC.get())
                         .apply(SetItemCountFunction.setCount(UniformGenerator.between(4, 8)))
                         .setWeight(40)
                 )
@@ -56,7 +57,7 @@ public class ChestRawMaterialLootTable {
             LootPool.lootPool()
                 .setRolls(ConstantValue.exactly(1))
                 .add(
-                    LootItem.lootTableItem(AVPItems.RAW_BRASS)
+                    LootItem.lootTableItem(TempAVPItems.RAW_BRASS.get())
                         .apply(SetItemCountFunction.setCount(UniformGenerator.between(2, 6)))
                         .setWeight(25)
                 )
@@ -83,7 +84,7 @@ public class ChestRawMaterialLootTable {
             LootPool.lootPool()
                 .setRolls(ConstantValue.exactly(1))
                 .add(
-                    LootItem.lootTableItem(AVPItems.RAW_MONAZITE)
+                    LootItem.lootTableItem(TempAVPItems.RAW_MONAZITE.get())
                         .apply(SetItemCountFunction.setCount(UniformGenerator.between(1, 6)))
                         .setWeight(5)
                 )

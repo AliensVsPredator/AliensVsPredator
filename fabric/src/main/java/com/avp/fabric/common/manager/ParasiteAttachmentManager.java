@@ -13,6 +13,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Objects;
 
 import com.avp.common.damage.AVPDamageTypes;
+import com.avp.common.util.TempAVPPredicates;
 import com.avp.fabric.common.entity.living.FreeMob;
 import com.avp.fabric.common.entity.living.Host;
 import com.avp.fabric.common.entity.living.alien.parasite.Parasite;
@@ -141,7 +142,7 @@ public class ParasiteAttachmentManager {
 
         if (!isFertile) {
             ((FreeMob) parasite).removeFreedom();
-            parasite.removeAllGoals(AVPPredicates.alwaysTrue());
+            parasite.removeAllGoals(TempAVPPredicates.alwaysTrue());
         } else {
             ((FreeMob) parasite).restoreFreedom();
             parasite.restoreAllGoals();

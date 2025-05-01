@@ -11,7 +11,7 @@ import net.minecraft.world.level.entity.EntityTypeTest;
 
 import com.avp.AVP;
 import com.avp.common.block.AVPBlockTags;
-import com.avp.fabric.common.util.AVPPredicates;
+import com.avp.common.util.TempAVPPredicates;
 
 public class QueenSpawning {
 
@@ -67,7 +67,7 @@ public class QueenSpawning {
     }
 
     public static boolean anyNearbyQueens(ServerLevelAccessor serverLevelAccessor, BlockPos blockPos, int requiredDistanceInBlocks) {
-        var allQueens = serverLevelAccessor.getLevel().getEntities(EntityTypeTest.forClass(Queen.class), AVPPredicates.alwaysTrue());
+        var allQueens = serverLevelAccessor.getLevel().getEntities(EntityTypeTest.forClass(Queen.class), TempAVPPredicates.alwaysTrue());
         var requiredDistanceSquared = requiredDistanceInBlocks * requiredDistanceInBlocks;
         return allQueens.stream()
             .anyMatch(queen -> queen.distanceToSqr(blockPos.getX(), blockPos.getY(), blockPos.getZ()) < requiredDistanceSquared);

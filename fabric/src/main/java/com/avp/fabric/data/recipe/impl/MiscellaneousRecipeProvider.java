@@ -17,22 +17,22 @@ public class MiscellaneousRecipeProvider {
         builder.blast(Blocks.REDSTONE_BLOCK)
             .withCategory(RecipeCategory.MISC)
             .withExperience(RecipeConstants.VERY_COMMON_SMELT_EXPERIENCE)
-            .into(AVPItems.REDSTONE_CRYSTAL);
+            .into(TempAVPItems.REDSTONE_CRYSTAL);
 
-        builder.blast(AVPItems.IRRADIATED_CHITIN)
+        builder.blast(TempAVPItems.IRRADIATED_CHITIN)
             .withCategory(RecipeCategory.MISC)
             .withExperience(RecipeConstants.UNCOMMON_MATERIAL_SMELT_EXPERIENCE)
-            .into(AVPItems.CHITIN);
+            .into(TempAVPItems.CHITIN);
 
-        builder.blast(AVPItems.PLATED_IRRADIATED_CHITIN)
+        builder.blast(TempAVPItems.PLATED_IRRADIATED_CHITIN)
             .withCategory(RecipeCategory.MISC)
             .withExperience(RecipeConstants.UNCOMMON_MATERIAL_SMELT_EXPERIENCE)
-            .into(AVPItems.PLATED_CHITIN);
+            .into(TempAVPItems.PLATED_CHITIN);
 
         builder.shaped()
             .withCategory(RecipeCategory.MISC)
             .define('A', Items.LAPIS_LAZULI)
-            .define('P', AVPItems.POLYMER)
+            .define('P', TempAVPItems.POLYMER)
             .define('D', ItemTags.PLANKS)
             .pattern("A A")
             .pattern("P P")
@@ -41,13 +41,13 @@ public class MiscellaneousRecipeProvider {
 
         builder.shaped()
             .withCategory(RecipeCategory.MISC)
-            .define('A', AVPItems.AUTUNITE_DUST)
+            .define('A', TempAVPItems.AUTUNITE_DUST)
             .define('G', Items.GOLD_INGOT)
             .define('D', Items.DIAMOND)
             .pattern("GDG")
             .pattern("AAA")
             .pattern("GDG")
-            .into(1, AVPItems.NUCLEAR_BATTERY);
+            .into(1, TempAVPItems.NUCLEAR_BATTERY);
 
         // builder.shaped()
         // .withCategory(RecipeCategory.MISC)
@@ -63,19 +63,19 @@ public class MiscellaneousRecipeProvider {
             .withCategory(RecipeCategory.MISC)
             .define('A', ItemTags.COALS)
             .pattern("A")
-            .into(2, AVPItems.CARBON_DUST);
+            .into(2, TempAVPItems.CARBON_DUST);
 
         builder.shaped()
             .withCategory(RecipeCategory.MISC)
-            .define('A', AVPItems.ALUMINUM_INGOT)
-            .define('B', AVPItems.POLYMER)
+            .define('A', TempAVPItems.ALUMINUM_INGOT)
+            .define('B', TempAVPItems.POLYMER)
             .define('C', Items.CHEST)
             .pattern("ABA")
             .pattern("BCB")
             .pattern("ABA")
             .into(1, AVPItems.ARMOR_CASE);
 
-        builder.smelt(AVPItems.IRRADIATED_RESIN_BALL)
+        builder.smelt(TempAVPItems.IRRADIATED_RESIN_BALL)
             .withCategory(RecipeCategory.MISC)
             .withExperience(RecipeConstants.VERY_COMMON_SMELT_EXPERIENCE)
             .into(Items.SLIME_BALL);
@@ -85,7 +85,7 @@ public class MiscellaneousRecipeProvider {
             .withExperience(RecipeConstants.VERY_COMMON_SMELT_EXPERIENCE)
             .into(Items.SLIME_BALL);
 
-        builder.smelt(AVPItems.RESIN_BALL)
+        builder.smelt(TempAVPItems.RESIN_BALL)
             .withCategory(RecipeCategory.MISC)
             .withExperience(RecipeConstants.VERY_COMMON_SMELT_EXPERIENCE)
             .into(Items.SLIME_BALL);
@@ -98,7 +98,7 @@ public class MiscellaneousRecipeProvider {
         builder.smelt(Items.SLIME_BALL)
             .withCategory(RecipeCategory.MISC)
             .withExperience(RecipeConstants.VERY_COMMON_SMELT_EXPERIENCE)
-            .into(AVPItems.POLYMER);
+            .into(TempAVPItems.POLYMER);
 
         builder.blast(AVPBlocks.SILICA_GRAVEL)
             .withCategory(RecipeCategory.MISC)
@@ -116,7 +116,7 @@ public class MiscellaneousRecipeProvider {
 
         builder.shaped()
             .withCategory(RecipeCategory.MISC)
-            .define('I', AVPItems.RAW_ROYAL_JELLY)
+            .define('I', TempAVPItems.RAW_ROYAL_JELLY)
             .pattern("III")
             .pattern("III")
             .pattern("III")
@@ -125,12 +125,12 @@ public class MiscellaneousRecipeProvider {
         builder.shapeless()
             .withCategory(RecipeCategory.MISC)
             .requires(1, AVPBlocks.ROYAL_JELLY_BLOCK)
-            .into(9, AVPItems.RAW_ROYAL_JELLY);
+            .into(9, TempAVPItems.RAW_ROYAL_JELLY);
 
         builder.shaped()
             .withCategory(RecipeCategory.MISC)
-            .define('T', AVPItems.TITANIUM_INGOT)
-            .define('R', AVPItems.REDSTONE_CRYSTAL)
+            .define('T', TempAVPItems.TITANIUM_INGOT)
+            .define('R', TempAVPItems.REDSTONE_CRYSTAL)
             .define('P', Items.PISTON)
             .define('B', Items.BUCKET)
             .pattern("TRT")
@@ -141,16 +141,16 @@ public class MiscellaneousRecipeProvider {
         builder.shapeless()
             .withCategory(RecipeCategory.MISC)
             .requires(1, Items.POISONOUS_POTATO)
-            .requires(1, AVPItems.RAW_ROYAL_JELLY)
+            .requires(1, TempAVPItems.RAW_ROYAL_JELLY)
             .into(1, AVPItems.POISON_JELLY);
 
         builder.shaped()
             .withCategory(RecipeCategory.MISC)
             .define('C', Items.CLOCK)
-            .define('S', AVPItems.LED_DISPLAY)
-            .define('P', AVPItems.CPU)
-            .define('L', AVPItems.LEAD_INGOT)
-            .define('N', AVPItems.NEODYMIUM_MAGNET)
+            .define('S', TempAVPItems.LED_DISPLAY)
+            .define('P', TempAVPItems.CPU)
+            .define('L', TempAVPItems.LEAD_INGOT)
+            .define('N', TempAVPItems.NEODYMIUM_MAGNET)
             .define('T', Items.TNT)
             .pattern("CSP")
             .pattern("LNL")

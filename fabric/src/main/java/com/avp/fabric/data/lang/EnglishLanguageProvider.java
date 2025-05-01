@@ -4,9 +4,12 @@ import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricLanguageProvider;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.level.block.Block;
 
 import java.util.Arrays;
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Supplier;
 
 import com.avp.common.block.TempAVPBlocks;
 import com.avp.common.item.TempAVPItems;
@@ -25,780 +28,796 @@ public class EnglishLanguageProvider extends FabricLanguageProvider {
     }
 
     @Override
-    public void generateTranslations(HolderLookup.Provider registryLookup, TranslationBuilder translationBuilder) {
+    public void generateTranslations(HolderLookup.Provider registryLookup, TranslationBuilder builder) {
         // Villagers
-        translationBuilder.add("entity.minecraft.villager.commissary", "Commissary Villager");
+        builder.add("entity.minecraft.villager.commissary", "Commissary Villager");
 
         // Blocks
-        translationBuilder.add(AVPBlocks.BLUEPRINT_BLOCK, "Blueprint Block");
-        translationBuilder.add(AVPBlocks.REDSTONE_GENERATOR, "Redstone Generator");
-        translationBuilder.add(AVPBlocks.DESK_TERMINAL_BLOCK, "Desk Terminal");
-        translationBuilder.add(AVPBlocks.TRIP_MINE_BLOCK, "Trip Mine");
-        translationBuilder.add(AVPBlocks.RESONATOR_BLOCK, "Resonator");
-        translationBuilder.add(AVPBlocks.AMMO_CHEST, "Ammo Chest");
-        translationBuilder.add(AVPBlocks.SENTRY_TURRET, "Sentry Turret");
-        translationBuilder.add(AVPBlocks.ASH_BLOCK, "Ash Block");
-        translationBuilder.add(AVPBlocks.NUKE_BLOCK, "Nuke Block");
-        translationBuilder.add(AVPBlocks.ROYAL_JELLY_BLOCK, "Royal Jelly Block");
-        translationBuilder.add(AVPBlocks.TRINITITE_BLOCK, "Block of Trinitite");
-        translationBuilder.add(AVPBlocks.ALUMINUM_BLOCK, "Block of Aluminum");
-        translationBuilder.add(AVPBlocks.AUTUNITE_BLOCK, "Autunite Block");
-        translationBuilder.add(TempAVPBlocks.AUTUNITE_ORE.get(), "Autunite Ore");
-        translationBuilder.add(TempAVPBlocks.BAUXITE_ORE.get(), "Bauxite Ore");
-        translationBuilder.add(AVPBlocks.BRASS_BLOCK, "Block of Brass");
-        translationBuilder.add(AVPBlocks.CHISELED_FERROALUMINUM, "Chiseled Ferroaluminum");
-        translationBuilder.add(AVPBlocks.CHISELED_STEEL, "Chiseled Steel");
-        translationBuilder.add(AVPBlocks.CHISELED_TITANIUM, "Chiseled Titanium");
-        translationBuilder.add(AVPBlocks.CUT_FERROALUMINUM, "Cut Ferroaluminum");
-        translationBuilder.add(AVPBlocks.CUT_FERROALUMINUM_SLAB, "Cut Ferroaluminum Slab");
-        translationBuilder.add(AVPBlocks.CUT_FERROALUMINUM_STAIRS, "Cut Ferroaluminum Stairs");
-        translationBuilder.add(AVPBlocks.CUT_STEEL, "Cut Steel");
-        translationBuilder.add(AVPBlocks.CUT_STEEL_SLAB, "Cut Steel Slab");
-        translationBuilder.add(AVPBlocks.CUT_STEEL_STAIRS, "Cut Steel Stairs");
-        translationBuilder.add(AVPBlocks.CUT_TITANIUM, "Cut Titanium");
-        translationBuilder.add(AVPBlocks.CUT_TITANIUM_SLAB, "Cut Titanium Slab");
-        translationBuilder.add(AVPBlocks.CUT_TITANIUM_STAIRS, "Cut Titanium Stairs");
-        translationBuilder.add(TempAVPBlocks.DEEPSLATE_TITANIUM_ORE.get(), "Deepslate Titanium Ore");
-        translationBuilder.add(TempAVPBlocks.DEEPSLATE_ZINC_ORE.get(), "Deepslate Zinc Ore");
-        translationBuilder.add(AVPBlocks.FERROALUMINUM_BLOCK, "Block of Ferroaluminum");
-        translationBuilder.add(AVPBlocks.FERROALUMINUM_BUTTON, "Ferroaluminum Button");
-        translationBuilder.add(AVPBlocks.FERROALUMINUM_CHAIN_FENCE, "Ferroaluminum Chain Fence");
-        translationBuilder.add(AVPBlocks.FERROALUMINUM_COLUMN, "Ferroaluminum Column");
-        translationBuilder.add(AVPBlocks.FERROALUMINUM_DOOR, "Ferroaluminum Door");
-        translationBuilder.add(AVPBlocks.FERROALUMINUM_FASTENED_SIDING, "Ferroaluminum Fastened Siding");
-        translationBuilder.add(AVPBlocks.FERROALUMINUM_FASTENED_STANDING, "Ferroaluminum Fastened Standing");
-        translationBuilder.add(AVPBlocks.FERROALUMINUM_GRATE, "Ferroaluminum Grate");
-        translationBuilder.add(AVPBlocks.FERROALUMINUM_PRESSURE_PLATE, "Ferroaluminum Pressure Plate");
-        translationBuilder.add(AVPBlocks.FERROALUMINUM_PLATING, "Ferroaluminum Plating");
-        translationBuilder.add(AVPBlocks.FERROALUMINUM_SIDING, "Ferroaluminum Siding");
-        translationBuilder.add(AVPBlocks.FERROALUMINUM_STANDING, "Ferroaluminum Standing");
-        translationBuilder.add(AVPBlocks.FERROALUMINUM_TRAP_DOOR, "Ferroaluminum Trapdoor");
-        translationBuilder.add(AVPBlocks.FERROALUMINUM_TREAD, "Ferroaluminum Tread");
-        translationBuilder.add(TempAVPBlocks.GALENA_ORE.get(), "Galena Ore");
-        translationBuilder.add(AVPBlocks.INDUSTRIAL_GLASS, "Industrial Glass");
-        translationBuilder.add(AVPBlocks.INDUSTRIAL_GLASS_PANE, "Industrial Glass Pane");
-        translationBuilder.add(AVPBlocks.INDUSTRIAL_GLASS_DOOR, "Industrial Glass Door");
-        translationBuilder.add(AVPBlocks.INDUSTRIAL_GLASS_TRAP_DOOR, "Industrial Glass Trap Door");
-        translationBuilder.add(AVPBlocks.INDUSTRIAL_GLASS_SLAB, "Industrial Glass Slab");
-        translationBuilder.add(AVPBlocks.INDUSTRIAL_GLASS_STAIRS, "Industrial Glass Stairs");
-        translationBuilder.add(AVPBlocks.LEAD_BLOCK, "Block of Lead");
-        translationBuilder.add(AVPBlocks.LEAD_CHEST, "Lead Chest");
-        translationBuilder.add(AVPBlocks.FERROALUMINUM_FASTENED_STANDING_SLAB, "Ferroaluminum Fastened Standing Slab");
-        translationBuilder.add(AVPBlocks.FERROALUMINUM_FASTENED_STANDING_STAIRS, "Ferroaluminum Fastened Standing Stairs");
-        translationBuilder.add(AVPBlocks.FERROALUMINUM_GRATE_SLAB, "Ferroaluminum Grate Slab");
-        translationBuilder.add(AVPBlocks.FERROALUMINUM_GRATE_STAIRS, "Ferroaluminum Grate Stairs");
-        translationBuilder.add(AVPBlocks.FERROALUMINUM_PLATING_SLAB, "Ferroaluminum Plating Slab");
-        translationBuilder.add(AVPBlocks.FERROALUMINUM_PLATING_STAIRS, "Ferroaluminum Plating Stairs");
-        translationBuilder.add(AVPBlocks.FERROALUMINUM_STANDING_SLAB, "Ferroaluminum Standing Slab");
-        translationBuilder.add(AVPBlocks.FERROALUMINUM_STANDING_STAIRS, "Ferroaluminum Standing Stairs");
-        translationBuilder.add(AVPBlocks.FERROALUMINUM_TREAD_SLAB, "Ferroaluminum Tread Slab");
-        translationBuilder.add(AVPBlocks.FERROALUMINUM_TREAD_STAIRS, "Ferroaluminum Tread Stairs");
-        translationBuilder.add(AVPBlocks.STEEL_FASTENED_STANDING_SLAB, "Steel Fastened Standing Slab");
-        translationBuilder.add(AVPBlocks.STEEL_FASTENED_STANDING_STAIRS, "Steel Fastened Standing Stairs");
-        translationBuilder.add(AVPBlocks.STEEL_GRATE_SLAB, "Steel Grate Slab");
-        translationBuilder.add(AVPBlocks.STEEL_GRATE_STAIRS, "Steel Grate Stairs");
-        translationBuilder.add(AVPBlocks.STEEL_PLATING_SLAB, "Steel Plating Slab");
-        translationBuilder.add(AVPBlocks.STEEL_PLATING_STAIRS, "Steel Plating Stairs");
-        translationBuilder.add(AVPBlocks.STEEL_TREAD_SLAB, "Steel Tread Slab");
-        translationBuilder.add(AVPBlocks.STEEL_TREAD_STAIRS, "Steel Tread Stairs");
-        translationBuilder.add(AVPBlocks.TITANIUM_FASTENED_STANDING_SLAB, "Titanium Fastened Standing Slab");
-        translationBuilder.add(AVPBlocks.TITANIUM_FASTENED_STANDING_STAIRS, "Titanium Fastened Standing Stairs");
-        translationBuilder.add(AVPBlocks.TITANIUM_GRATE_SLAB, "Titanium Grate Slab");
-        translationBuilder.add(AVPBlocks.TITANIUM_GRATE_STAIRS, "Titanium Grate Stairs");
-        translationBuilder.add(AVPBlocks.TITANIUM_PLATING_SLAB, "Titanium Plating Slab");
-        translationBuilder.add(AVPBlocks.TITANIUM_PLATING_STAIRS, "Titanium Plating Stairs");
-        translationBuilder.add(AVPBlocks.TITANIUM_TREAD_SLAB, "Titanium Tread Slab");
-        translationBuilder.add(AVPBlocks.TITANIUM_TREAD_STAIRS, "Titanium Tread Stairs");
+        addBlock(builder, AVPBlocks.BLUEPRINT_BLOCK, "Blueprint Block");
+        addBlock(builder, AVPBlocks.REDSTONE_GENERATOR, "Redstone Generator");
+        addBlock(builder, AVPBlocks.DESK_TERMINAL_BLOCK, "Desk Terminal");
+        addBlock(builder, AVPBlocks.TRIP_MINE_BLOCK, "Trip Mine");
+        addBlock(builder, AVPBlocks.RESONATOR_BLOCK, "Resonator");
+        addBlock(builder, AVPBlocks.AMMO_CHEST, "Ammo Chest");
+        addBlock(builder, AVPBlocks.SENTRY_TURRET, "Sentry Turret");
+        addBlock(builder, AVPBlocks.ASH_BLOCK, "Ash Block");
+        addBlock(builder, AVPBlocks.NUKE_BLOCK, "Nuke Block");
+        addBlock(builder, AVPBlocks.ROYAL_JELLY_BLOCK, "Royal Jelly Block");
+        addBlock(builder, AVPBlocks.TRINITITE_BLOCK, "Block of Trinitite");
+        addBlock(builder, AVPBlocks.ALUMINUM_BLOCK, "Block of Aluminum");
+        addBlock(builder, AVPBlocks.AUTUNITE_BLOCK, "Autunite Block");
+        addBlock(builder, TempAVPBlocks.AUTUNITE_ORE, "Autunite Ore");
+        addBlock(builder, TempAVPBlocks.BAUXITE_ORE, "Bauxite Ore");
+        addBlock(builder, AVPBlocks.BRASS_BLOCK, "Block of Brass");
+        addBlock(builder, AVPBlocks.CHISELED_FERROALUMINUM, "Chiseled Ferroaluminum");
+        addBlock(builder, AVPBlocks.CHISELED_STEEL, "Chiseled Steel");
+        addBlock(builder, AVPBlocks.CHISELED_TITANIUM, "Chiseled Titanium");
+        addBlock(builder, AVPBlocks.CUT_FERROALUMINUM, "Cut Ferroaluminum");
+        addBlock(builder, AVPBlocks.CUT_FERROALUMINUM_SLAB, "Cut Ferroaluminum Slab");
+        addBlock(builder, AVPBlocks.CUT_FERROALUMINUM_STAIRS, "Cut Ferroaluminum Stairs");
+        addBlock(builder, AVPBlocks.CUT_STEEL, "Cut Steel");
+        addBlock(builder, AVPBlocks.CUT_STEEL_SLAB, "Cut Steel Slab");
+        addBlock(builder, AVPBlocks.CUT_STEEL_STAIRS, "Cut Steel Stairs");
+        addBlock(builder, AVPBlocks.CUT_TITANIUM, "Cut Titanium");
+        addBlock(builder, AVPBlocks.CUT_TITANIUM_SLAB, "Cut Titanium Slab");
+        addBlock(builder, AVPBlocks.CUT_TITANIUM_STAIRS, "Cut Titanium Stairs");
+        addBlock(builder, TempAVPBlocks.DEEPSLATE_TITANIUM_ORE, "Deepslate Titanium Ore");
+        addBlock(builder, TempAVPBlocks.DEEPSLATE_ZINC_ORE, "Deepslate Zinc Ore");
+        addBlock(builder, AVPBlocks.FERROALUMINUM_BLOCK, "Block of Ferroaluminum");
+        addBlock(builder, AVPBlocks.FERROALUMINUM_BUTTON, "Ferroaluminum Button");
+        addBlock(builder, AVPBlocks.FERROALUMINUM_CHAIN_FENCE, "Ferroaluminum Chain Fence");
+        addBlock(builder, AVPBlocks.FERROALUMINUM_COLUMN, "Ferroaluminum Column");
+        addBlock(builder, AVPBlocks.FERROALUMINUM_DOOR, "Ferroaluminum Door");
+        addBlock(builder, AVPBlocks.FERROALUMINUM_FASTENED_SIDING, "Ferroaluminum Fastened Siding");
+        addBlock(builder, AVPBlocks.FERROALUMINUM_FASTENED_STANDING, "Ferroaluminum Fastened Standing");
+        addBlock(builder, AVPBlocks.FERROALUMINUM_GRATE, "Ferroaluminum Grate");
+        addBlock(builder, AVPBlocks.FERROALUMINUM_PRESSURE_PLATE, "Ferroaluminum Pressure Plate");
+        addBlock(builder, AVPBlocks.FERROALUMINUM_PLATING, "Ferroaluminum Plating");
+        addBlock(builder, AVPBlocks.FERROALUMINUM_SIDING, "Ferroaluminum Siding");
+        addBlock(builder, AVPBlocks.FERROALUMINUM_STANDING, "Ferroaluminum Standing");
+        addBlock(builder, AVPBlocks.FERROALUMINUM_TRAP_DOOR, "Ferroaluminum Trapdoor");
+        addBlock(builder, AVPBlocks.FERROALUMINUM_TREAD, "Ferroaluminum Tread");
+        addBlock(builder, TempAVPBlocks.GALENA_ORE, "Galena Ore");
+        addBlock(builder, AVPBlocks.INDUSTRIAL_GLASS, "Industrial Glass");
+        addBlock(builder, AVPBlocks.INDUSTRIAL_GLASS_PANE, "Industrial Glass Pane");
+        addBlock(builder, AVPBlocks.INDUSTRIAL_GLASS_DOOR, "Industrial Glass Door");
+        addBlock(builder, AVPBlocks.INDUSTRIAL_GLASS_TRAP_DOOR, "Industrial Glass Trap Door");
+        addBlock(builder, AVPBlocks.INDUSTRIAL_GLASS_SLAB, "Industrial Glass Slab");
+        addBlock(builder, AVPBlocks.INDUSTRIAL_GLASS_STAIRS, "Industrial Glass Stairs");
+        addBlock(builder, AVPBlocks.LEAD_BLOCK, "Block of Lead");
+        addBlock(builder, AVPBlocks.LEAD_CHEST, "Lead Chest");
+        addBlock(builder, AVPBlocks.FERROALUMINUM_FASTENED_STANDING_SLAB, "Ferroaluminum Fastened Standing Slab");
+        addBlock(builder, AVPBlocks.FERROALUMINUM_FASTENED_STANDING_STAIRS, "Ferroaluminum Fastened Standing Stairs");
+        addBlock(builder, AVPBlocks.FERROALUMINUM_GRATE_SLAB, "Ferroaluminum Grate Slab");
+        addBlock(builder, AVPBlocks.FERROALUMINUM_GRATE_STAIRS, "Ferroaluminum Grate Stairs");
+        addBlock(builder, AVPBlocks.FERROALUMINUM_PLATING_SLAB, "Ferroaluminum Plating Slab");
+        addBlock(builder, AVPBlocks.FERROALUMINUM_PLATING_STAIRS, "Ferroaluminum Plating Stairs");
+        addBlock(builder, AVPBlocks.FERROALUMINUM_STANDING_SLAB, "Ferroaluminum Standing Slab");
+        addBlock(builder, AVPBlocks.FERROALUMINUM_STANDING_STAIRS, "Ferroaluminum Standing Stairs");
+        addBlock(builder, AVPBlocks.FERROALUMINUM_TREAD_SLAB, "Ferroaluminum Tread Slab");
+        addBlock(builder, AVPBlocks.FERROALUMINUM_TREAD_STAIRS, "Ferroaluminum Tread Stairs");
+        addBlock(builder, AVPBlocks.STEEL_FASTENED_STANDING_SLAB, "Steel Fastened Standing Slab");
+        addBlock(builder, AVPBlocks.STEEL_FASTENED_STANDING_STAIRS, "Steel Fastened Standing Stairs");
+        addBlock(builder, AVPBlocks.STEEL_GRATE_SLAB, "Steel Grate Slab");
+        addBlock(builder, AVPBlocks.STEEL_GRATE_STAIRS, "Steel Grate Stairs");
+        addBlock(builder, AVPBlocks.STEEL_PLATING_SLAB, "Steel Plating Slab");
+        addBlock(builder, AVPBlocks.STEEL_PLATING_STAIRS, "Steel Plating Stairs");
+        addBlock(builder, AVPBlocks.STEEL_TREAD_SLAB, "Steel Tread Slab");
+        addBlock(builder, AVPBlocks.STEEL_TREAD_STAIRS, "Steel Tread Stairs");
+        addBlock(builder, AVPBlocks.TITANIUM_FASTENED_STANDING_SLAB, "Titanium Fastened Standing Slab");
+        addBlock(builder, AVPBlocks.TITANIUM_FASTENED_STANDING_STAIRS, "Titanium Fastened Standing Stairs");
+        addBlock(builder, AVPBlocks.TITANIUM_GRATE_SLAB, "Titanium Grate Slab");
+        addBlock(builder, AVPBlocks.TITANIUM_GRATE_STAIRS, "Titanium Grate Stairs");
+        addBlock(builder, AVPBlocks.TITANIUM_PLATING_SLAB, "Titanium Plating Slab");
+        addBlock(builder, AVPBlocks.TITANIUM_PLATING_STAIRS, "Titanium Plating Stairs");
+        addBlock(builder, AVPBlocks.TITANIUM_TREAD_SLAB, "Titanium Tread Slab");
+        addBlock(builder, AVPBlocks.TITANIUM_TREAD_STAIRS, "Titanium Tread Stairs");
 
         TempAVPBlocks.DYE_COLOR_TO_CONCRETE_SLAB.forEach(
-            (key, value) -> translationBuilder.add(value.get(), format(key.getName()) + " Concrete Slab")
+            (key, value) -> addBlock(builder, value, format(key.getName()) + " Concrete Slab")
         );
         TempAVPBlocks.DYE_COLOR_TO_CONCRETE_STAIRS.forEach(
-            (key, value) -> translationBuilder.add(value.get(), format(key.getName()) + " Concrete Stairs")
+            (key, value) -> addBlock(builder, value, format(key.getName()) + " Concrete Stairs")
         );
 
         TempAVPBlocks.DYE_COLOR_TO_INDUSTRIAL_CONCRETE.forEach(
-            (key, value) -> translationBuilder.add(value.get(), format(key.getName()) + " Industrial Concrete")
+            (key, value) -> addBlock(builder, value, format(key.getName()) + " Industrial Concrete")
         );
         TempAVPBlocks.DYE_COLOR_TO_INDUSTRIAL_CONCRETE_SLAB.forEach(
-            (key, value) -> translationBuilder.add(value.get(), format(key.getName()) + " Industrial Concrete Slab")
+            (key, value) -> addBlock(builder, value, format(key.getName()) + " Industrial Concrete Slab")
         );
         TempAVPBlocks.DYE_COLOR_TO_INDUSTRIAL_CONCRETE_STAIRS.forEach(
-            (key, value) -> translationBuilder.add(value.get(), format(key.getName()) + " Industrial Concrete Stairs")
+            (key, value) -> addBlock(builder, value, format(key.getName()) + " Industrial Concrete Stairs")
         );
         TempAVPBlocks.DYE_COLOR_TO_INDUSTRIAL_CONCRETE_WALL.forEach(
-            (key, value) -> translationBuilder.add(value.get(), format(key.getName()) + " Industrial Concrete Wall")
+            (key, value) -> addBlock(builder, value, format(key.getName()) + " Industrial Concrete Wall")
         );
         TempAVPBlocks.DYE_COLOR_TO_INDUSTRIAL_GLASS.forEach(
-            (key, value) -> translationBuilder.add(value.get(), format(key.getName()) + " Industrial Glass")
+            (key, value) -> addBlock(builder, value, format(key.getName()) + " Industrial Glass")
         );
         TempAVPBlocks.DYE_COLOR_TO_INDUSTRIAL_GLASS_PANE.forEach(
-            (key, value) -> translationBuilder.add(value.get(), format(key.getName()) + " Industrial Glass Pane")
+            (key, value) -> addBlock(builder, value, format(key.getName()) + " Industrial Glass Pane")
         );
 
-        translationBuilder.add(AVPBlocks.LITHIUM_BLOCK, "Block of Lithium");
-        translationBuilder.add(TempAVPBlocks.LITHIUM_ORE.get(), "Lithium Ore");
-        translationBuilder.add(TempAVPBlocks.MONAZITE_ORE.get(), "Monazite Ore");
-        translationBuilder.add(AVPBlocks.NETHER_RESIN, "Nether Resin");
-        translationBuilder.add(AVPBlocks.NETHER_RESIN_NODE, "Nether Resin");
-        translationBuilder.add(AVPBlocks.NETHER_RESIN_VEIN, "Nether Resin Vein");
-        translationBuilder.add(AVPBlocks.NETHER_RESIN_WEB, "Nether Resin Web");
-        translationBuilder.add(AVPBlocks.ABERRANT_RESIN, "Aberrant Resin");
-        translationBuilder.add(AVPBlocks.ABERRANT_RESIN_NODE, "Aberrant Resin");
-        translationBuilder.add(AVPBlocks.ABERRANT_RESIN_VEIN, "Aberrant Resin Vein");
-        translationBuilder.add(AVPBlocks.ABERRANT_RESIN_WEB, "Aberrant Resin Web");
-        translationBuilder.add(AVPBlocks.IRRADIATED_RESIN, "Irradiated Resin");
-        translationBuilder.add(AVPBlocks.IRRADIATED_RESIN_NODE, "Irradiated Resin");
-        translationBuilder.add(AVPBlocks.IRRADIATED_RESIN_VEIN, "Irradiated Resin Vein");
-        translationBuilder.add(AVPBlocks.IRRADIATED_RESIN_WEB, "Irradiated Resin Web");
-        translationBuilder.add(AVPBlocks.RESIN_BRICKS, "Resin Bricks");
-        translationBuilder.add(AVPBlocks.RESIN_O, "Resin O");
-        translationBuilder.add(AVPBlocks.RESIN_RIBBED, "Resin Ribbed");
-        translationBuilder.add(AVPBlocks.RESIN_SMOOTH, "Resin Smooth");
+        addBlock(builder, AVPBlocks.LITHIUM_BLOCK, "Block of Lithium");
+        addBlock(builder, TempAVPBlocks.LITHIUM_ORE, "Lithium Ore");
+        addBlock(builder, TempAVPBlocks.MONAZITE_ORE, "Monazite Ore");
+        addBlock(builder, AVPBlocks.NETHER_RESIN, "Nether Resin");
+        addBlock(builder, AVPBlocks.NETHER_RESIN_NODE, "Nether Resin");
+        addBlock(builder, AVPBlocks.NETHER_RESIN_VEIN, "Nether Resin Vein");
+        addBlock(builder, AVPBlocks.NETHER_RESIN_WEB, "Nether Resin Web");
+        addBlock(builder, AVPBlocks.ABERRANT_RESIN, "Aberrant Resin");
+        addBlock(builder, AVPBlocks.ABERRANT_RESIN_NODE, "Aberrant Resin");
+        addBlock(builder, AVPBlocks.ABERRANT_RESIN_VEIN, "Aberrant Resin Vein");
+        addBlock(builder, AVPBlocks.ABERRANT_RESIN_WEB, "Aberrant Resin Web");
+        addBlock(builder, AVPBlocks.IRRADIATED_RESIN, "Irradiated Resin");
+        addBlock(builder, AVPBlocks.IRRADIATED_RESIN_NODE, "Irradiated Resin");
+        addBlock(builder, AVPBlocks.IRRADIATED_RESIN_VEIN, "Irradiated Resin Vein");
+        addBlock(builder, AVPBlocks.IRRADIATED_RESIN_WEB, "Irradiated Resin Web");
+        addBlock(builder, AVPBlocks.RESIN_BRICKS, "Resin Bricks");
+        addBlock(builder, AVPBlocks.RESIN_O, "Resin O");
+        addBlock(builder, AVPBlocks.RESIN_RIBBED, "Resin Ribbed");
+        addBlock(builder, AVPBlocks.RESIN_SMOOTH, "Resin Smooth");
 
         TempAVPBlocks.DYE_COLOR_TO_PADDING.forEach(
-            (key, value) -> translationBuilder.add(value.get(), format(key.getName()) + " Padding")
+            (key, value) -> addBlock(builder, value, format(key.getName()) + " Padding")
         );
         TempAVPBlocks.DYE_COLOR_TO_PADDING_SLAB.forEach(
-            (key, value) -> translationBuilder.add(value.get(), format(key.getName()) + " Padding Slab")
+            (key, value) -> addBlock(builder, value, format(key.getName()) + " Padding Slab")
         );
         TempAVPBlocks.DYE_COLOR_TO_PADDING_STAIRS.forEach(
-            (key, value) -> translationBuilder.add(value.get(), format(key.getName()) + " Padding Stairs")
+            (key, value) -> addBlock(builder, value, format(key.getName()) + " Padding Stairs")
         );
 
         TempAVPBlocks.DYE_COLOR_TO_PANEL_PADDING.forEach(
-            (key, value) -> translationBuilder.add(value.get(), format(key.getName()) + " Panel Padding")
+            (key, value) -> addBlock(builder, value, format(key.getName()) + " Panel Padding")
         );
         TempAVPBlocks.DYE_COLOR_TO_PANEL_PADDING_SLAB.forEach(
-            (key, value) -> translationBuilder.add(value.get(), format(key.getName()) + " Panel Padding Slab")
+            (key, value) -> addBlock(builder, value, format(key.getName()) + " Panel Padding Slab")
         );
         TempAVPBlocks.DYE_COLOR_TO_PANEL_PADDING_STAIRS.forEach(
-            (key, value) -> translationBuilder.add(value.get(), format(key.getName()) + " Panel Padding Stairs")
+            (key, value) -> addBlock(builder, value, format(key.getName()) + " Panel Padding Stairs")
         );
 
         TempAVPBlocks.DYE_COLOR_TO_PIPE_PADDING.forEach(
-            (key, value) -> translationBuilder.add(value.get(), format(key.getName()) + " Pipe Padding")
+            (key, value) -> addBlock(builder, value, format(key.getName()) + " Pipe Padding")
         );
         TempAVPBlocks.DYE_COLOR_TO_PIPE_PADDING_SLAB.forEach(
-            (key, value) -> translationBuilder.add(value.get(), format(key.getName()) + " Pipe Padding Slab")
+            (key, value) -> addBlock(builder, value, format(key.getName()) + " Pipe Padding Slab")
         );
         TempAVPBlocks.DYE_COLOR_TO_PIPE_PADDING_STAIRS.forEach(
-            (key, value) -> translationBuilder.add(value.get(), format(key.getName()) + " Pipe Padding Stairs")
+            (key, value) -> addBlock(builder, value, format(key.getName()) + " Pipe Padding Stairs")
         );
 
         TempAVPBlocks.DYE_COLOR_TO_CUT_PLASTIC.forEach(
-            (key, value) -> translationBuilder.add(value.get(), format(key.getName()) + " Cut Plastic")
+            (key, value) -> addBlock(builder, value, format(key.getName()) + " Cut Plastic")
         );
         TempAVPBlocks.DYE_COLOR_TO_CUT_PLASTIC_SLAB.forEach(
-            (key, value) -> translationBuilder.add(value.get(), format(key.getName()) + " Cut Plastic Slab")
+            (key, value) -> addBlock(builder, value, format(key.getName()) + " Cut Plastic Slab")
         );
         TempAVPBlocks.DYE_COLOR_TO_CUT_PLASTIC_STAIRS.forEach(
-            (key, value) -> translationBuilder.add(value.get(), format(key.getName()) + " Cut Plastic Stairs")
+            (key, value) -> addBlock(builder, value, format(key.getName()) + " Cut Plastic Stairs")
         );
 
         TempAVPBlocks.DYE_COLOR_TO_PLASTIC.forEach(
-            (key, value) -> translationBuilder.add(value.get(), format(key.getName()) + " Plastic")
+            (key, value) -> addBlock(builder, value, format(key.getName()) + " Plastic")
         );
         TempAVPBlocks.DYE_COLOR_TO_PLASTIC_SLAB.forEach(
-            (key, value) -> translationBuilder.add(value.get(), format(key.getName()) + " Plastic Slab")
+            (key, value) -> addBlock(builder, value, format(key.getName()) + " Plastic Slab")
         );
         TempAVPBlocks.DYE_COLOR_TO_PLASTIC_STAIRS.forEach(
-            (key, value) -> translationBuilder.add(value.get(), format(key.getName()) + " Plastic Stairs")
+            (key, value) -> addBlock(builder, value, format(key.getName()) + " Plastic Stairs")
         );
 
-        translationBuilder.add(AVPBlocks.RAW_BAUXITE_BLOCK, "Block of Raw Bauxite");
-        translationBuilder.add(AVPBlocks.RAW_GALENA_BLOCK, "Block of Raw Galena");
-        translationBuilder.add(AVPBlocks.RAW_MONAZITE_BLOCK, "Block of Raw Monazite");
-        translationBuilder.add(AVPBlocks.RAW_SILICA_BLOCK, "Block of Raw Silica");
-        translationBuilder.add(AVPBlocks.RAW_TITANIUM_BLOCK, "Block of Raw Titanium");
-        translationBuilder.add(AVPBlocks.RAW_ZINC_BLOCK, "Block of Raw Zinc");
-        translationBuilder.add(AVPBlocks.RAZOR_WIRE, "Razor Wire");
-        translationBuilder.add(AVPBlocks.RESIN, "Resin");
-        translationBuilder.add(AVPBlocks.RESIN_NODE, "Resin");
-        translationBuilder.add(AVPBlocks.RESIN_VEIN, "Resin Vein");
-        translationBuilder.add(AVPBlocks.RESIN_WEB, "Resin Web");
-        translationBuilder.add(AVPBlocks.SILICA_GRAVEL, "Silica Gravel");
-        translationBuilder.add(AVPBlocks.STEEL_BARS, "Steel Bars");
-        translationBuilder.add(AVPBlocks.STEEL_BLOCK, "Block of Steel");
-        translationBuilder.add(AVPBlocks.STEEL_BUTTON, "Steel Button");
-        translationBuilder.add(AVPBlocks.STEEL_CHAIN_FENCE, "Steel Chain Fence");
-        translationBuilder.add(AVPBlocks.STEEL_COLUMN, "Steel Column");
-        translationBuilder.add(AVPBlocks.STEEL_DOOR, "Steel Door");
-        translationBuilder.add(AVPBlocks.STEEL_FASTENED_SIDING, "Steel Fastened Siding");
-        translationBuilder.add(AVPBlocks.STEEL_FASTENED_STANDING, "Steel Fastened Standing");
-        translationBuilder.add(AVPBlocks.STEEL_GRATE, "Steel Grate");
-        translationBuilder.add(AVPBlocks.STEEL_PRESSURE_PLATE, "Steel Pressure Plate");
-        translationBuilder.add(AVPBlocks.STEEL_PLATING, "Steel Plating");
-        translationBuilder.add(AVPBlocks.STEEL_SIDING, "Steel Siding");
-        translationBuilder.add(AVPBlocks.STEEL_STANDING, "Steel Standing");
-        translationBuilder.add(AVPBlocks.STEEL_TRAP_DOOR, "Steel Trapdoor");
-        translationBuilder.add(AVPBlocks.STEEL_TREAD, "Steel Tread");
-        translationBuilder.add(AVPBlocks.TITANIUM_BLOCK, "Block of Titanium");
-        translationBuilder.add(AVPBlocks.TITANIUM_BUTTON, "Titanium Button");
-        translationBuilder.add(AVPBlocks.TITANIUM_CHAIN_FENCE, "Titanium Chain Fence");
-        translationBuilder.add(AVPBlocks.TITANIUM_COLUMN, "Titanium Column");
-        translationBuilder.add(AVPBlocks.TITANIUM_DOOR, "Titanium Door");
-        translationBuilder.add(AVPBlocks.TITANIUM_FASTENED_SIDING, "Titanium Fastened Siding");
-        translationBuilder.add(AVPBlocks.TITANIUM_FASTENED_STANDING, "Titanium Fastened Standing");
-        translationBuilder.add(AVPBlocks.TITANIUM_GRATE, "Titanium Grate");
-        translationBuilder.add(AVPBlocks.TITANIUM_PRESSURE_PLATE, "Titanium Pressure Plate");
-        translationBuilder.add(AVPBlocks.TITANIUM_PLATING, "Titanium Plating");
-        translationBuilder.add(AVPBlocks.TITANIUM_SIDING, "Titanium Siding");
-        translationBuilder.add(AVPBlocks.TITANIUM_STANDING, "Titanium Standing");
-        translationBuilder.add(AVPBlocks.TITANIUM_TRAP_DOOR, "Titanium Trapdoor");
-        translationBuilder.add(AVPBlocks.TITANIUM_TREAD, "Titanium Tread");
-        translationBuilder.add(AVPBlocks.URANIUM_BLOCK, "Block of Uranium");
-        translationBuilder.add(AVPBlocks.ZINC_BLOCK, "Block of Zinc");
-        translationBuilder.add(TempAVPBlocks.ZINC_ORE.get(), "Zinc Ore");
-        translationBuilder.add(AVPBlocks.INDUSTRIAL_FURNACE, "Industrial Furnace");
-        translationBuilder.add(AVPBlocks.FERROALUMINUM_SLAB, "Ferroaluminum Slab");
-        translationBuilder.add(AVPBlocks.FERROALUMINUM_STAIRS, "Ferroaluminum Stairs");
-        translationBuilder.add(AVPBlocks.STEEL_SLAB, "Steel Slab");
-        translationBuilder.add(AVPBlocks.STEEL_STAIRS, "Steel Stairs");
-        translationBuilder.add(AVPBlocks.TITANIUM_SLAB, "Titanium Slab");
-        translationBuilder.add(AVPBlocks.TITANIUM_STAIRS, "Titanium Stairs");
-        translationBuilder.add(AVPBlocks.FERROALUMINUM_SIDING_SLAB, "Ferroaluminum Siding Slab");
-        translationBuilder.add(AVPBlocks.FERROALUMINUM_SIDING_STAIRS, "Ferroaluminum Siding Stairs");
-        translationBuilder.add(AVPBlocks.STEEL_SIDING_SLAB, "Steel Siding Slab");
-        translationBuilder.add(AVPBlocks.STEEL_SIDING_STAIRS, "Steel Siding Stairs");
-        translationBuilder.add(AVPBlocks.TITANIUM_SIDING_SLAB, "Titanium Siding Slab");
-        translationBuilder.add(AVPBlocks.TITANIUM_SIDING_STAIRS, "Titanium Siding Stairs");
-        translationBuilder.add(AVPBlocks.STEEL_STANDING_SLAB, "Steel Standing Slab");
-        translationBuilder.add(AVPBlocks.STEEL_STANDING_STAIRS, "Steel Standing Stairs");
-        translationBuilder.add(AVPBlocks.TITANIUM_STANDING_SLAB, "Titanium Standing Slab");
-        translationBuilder.add(AVPBlocks.TITANIUM_STANDING_STAIRS, "Titanium Standing Stairs");
-        translationBuilder.add(AVPBlocks.FERROALUMINUM_FASTENED_SIDING_SLAB, "Ferroaluminum Fastened Siding Slab");
-        translationBuilder.add(AVPBlocks.FERROALUMINUM_FASTENED_SIDING_STAIRS, "Ferroaluminum Fastened Siding Stairs");
-        translationBuilder.add(AVPBlocks.STEEL_FASTENED_SIDING_SLAB, "Steel Fastened Siding Slab");
-        translationBuilder.add(AVPBlocks.STEEL_FASTENED_SIDING_STAIRS, "Steel Fastened Siding Stairs");
-        translationBuilder.add(AVPBlocks.TITANIUM_FASTENED_SIDING_SLAB, "Titanium Fastened Siding Slab");
-        translationBuilder.add(AVPBlocks.TITANIUM_FASTENED_SIDING_STAIRS, "Titanium Fastened Siding Stairs");
+        addBlock(builder, AVPBlocks.RAW_BAUXITE_BLOCK, "Block of Raw Bauxite");
+        addBlock(builder, AVPBlocks.RAW_GALENA_BLOCK, "Block of Raw Galena");
+        addBlock(builder, AVPBlocks.RAW_MONAZITE_BLOCK, "Block of Raw Monazite");
+        addBlock(builder, AVPBlocks.RAW_SILICA_BLOCK, "Block of Raw Silica");
+        addBlock(builder, AVPBlocks.RAW_TITANIUM_BLOCK, "Block of Raw Titanium");
+        addBlock(builder, AVPBlocks.RAW_ZINC_BLOCK, "Block of Raw Zinc");
+        addBlock(builder, AVPBlocks.RAZOR_WIRE, "Razor Wire");
+        addBlock(builder, AVPBlocks.RESIN, "Resin");
+        addBlock(builder, AVPBlocks.RESIN_NODE, "Resin");
+        addBlock(builder, AVPBlocks.RESIN_VEIN, "Resin Vein");
+        addBlock(builder, AVPBlocks.RESIN_WEB, "Resin Web");
+        addBlock(builder, AVPBlocks.SILICA_GRAVEL, "Silica Gravel");
+        addBlock(builder, AVPBlocks.STEEL_BARS, "Steel Bars");
+        addBlock(builder, AVPBlocks.STEEL_BLOCK, "Block of Steel");
+        addBlock(builder, AVPBlocks.STEEL_BUTTON, "Steel Button");
+        addBlock(builder, AVPBlocks.STEEL_CHAIN_FENCE, "Steel Chain Fence");
+        addBlock(builder, AVPBlocks.STEEL_COLUMN, "Steel Column");
+        addBlock(builder, AVPBlocks.STEEL_DOOR, "Steel Door");
+        addBlock(builder, AVPBlocks.STEEL_FASTENED_SIDING, "Steel Fastened Siding");
+        addBlock(builder, AVPBlocks.STEEL_FASTENED_STANDING, "Steel Fastened Standing");
+        addBlock(builder, AVPBlocks.STEEL_GRATE, "Steel Grate");
+        addBlock(builder, AVPBlocks.STEEL_PRESSURE_PLATE, "Steel Pressure Plate");
+        addBlock(builder, AVPBlocks.STEEL_PLATING, "Steel Plating");
+        addBlock(builder, AVPBlocks.STEEL_SIDING, "Steel Siding");
+        addBlock(builder, AVPBlocks.STEEL_STANDING, "Steel Standing");
+        addBlock(builder, AVPBlocks.STEEL_TRAP_DOOR, "Steel Trapdoor");
+        addBlock(builder, AVPBlocks.STEEL_TREAD, "Steel Tread");
+        addBlock(builder, AVPBlocks.TITANIUM_BLOCK, "Block of Titanium");
+        addBlock(builder, AVPBlocks.TITANIUM_BUTTON, "Titanium Button");
+        addBlock(builder, AVPBlocks.TITANIUM_CHAIN_FENCE, "Titanium Chain Fence");
+        addBlock(builder, AVPBlocks.TITANIUM_COLUMN, "Titanium Column");
+        addBlock(builder, AVPBlocks.TITANIUM_DOOR, "Titanium Door");
+        addBlock(builder, AVPBlocks.TITANIUM_FASTENED_SIDING, "Titanium Fastened Siding");
+        addBlock(builder, AVPBlocks.TITANIUM_FASTENED_STANDING, "Titanium Fastened Standing");
+        addBlock(builder, AVPBlocks.TITANIUM_GRATE, "Titanium Grate");
+        addBlock(builder, AVPBlocks.TITANIUM_PRESSURE_PLATE, "Titanium Pressure Plate");
+        addBlock(builder, AVPBlocks.TITANIUM_PLATING, "Titanium Plating");
+        addBlock(builder, AVPBlocks.TITANIUM_SIDING, "Titanium Siding");
+        addBlock(builder, AVPBlocks.TITANIUM_STANDING, "Titanium Standing");
+        addBlock(builder, AVPBlocks.TITANIUM_TRAP_DOOR, "Titanium Trapdoor");
+        addBlock(builder, AVPBlocks.TITANIUM_TREAD, "Titanium Tread");
+        addBlock(builder, AVPBlocks.URANIUM_BLOCK, "Block of Uranium");
+        addBlock(builder, AVPBlocks.ZINC_BLOCK, "Block of Zinc");
+        addBlock(builder, TempAVPBlocks.ZINC_ORE, "Zinc Ore");
+        addBlock(builder, AVPBlocks.INDUSTRIAL_FURNACE, "Industrial Furnace");
+        addBlock(builder, AVPBlocks.FERROALUMINUM_SLAB, "Ferroaluminum Slab");
+        addBlock(builder, AVPBlocks.FERROALUMINUM_STAIRS, "Ferroaluminum Stairs");
+        addBlock(builder, AVPBlocks.STEEL_SLAB, "Steel Slab");
+        addBlock(builder, AVPBlocks.STEEL_STAIRS, "Steel Stairs");
+        addBlock(builder, AVPBlocks.TITANIUM_SLAB, "Titanium Slab");
+        addBlock(builder, AVPBlocks.TITANIUM_STAIRS, "Titanium Stairs");
+        addBlock(builder, AVPBlocks.FERROALUMINUM_SIDING_SLAB, "Ferroaluminum Siding Slab");
+        addBlock(builder, AVPBlocks.FERROALUMINUM_SIDING_STAIRS, "Ferroaluminum Siding Stairs");
+        addBlock(builder, AVPBlocks.STEEL_SIDING_SLAB, "Steel Siding Slab");
+        addBlock(builder, AVPBlocks.STEEL_SIDING_STAIRS, "Steel Siding Stairs");
+        addBlock(builder, AVPBlocks.TITANIUM_SIDING_SLAB, "Titanium Siding Slab");
+        addBlock(builder, AVPBlocks.TITANIUM_SIDING_STAIRS, "Titanium Siding Stairs");
+        addBlock(builder, AVPBlocks.STEEL_STANDING_SLAB, "Steel Standing Slab");
+        addBlock(builder, AVPBlocks.STEEL_STANDING_STAIRS, "Steel Standing Stairs");
+        addBlock(builder, AVPBlocks.TITANIUM_STANDING_SLAB, "Titanium Standing Slab");
+        addBlock(builder, AVPBlocks.TITANIUM_STANDING_STAIRS, "Titanium Standing Stairs");
+        addBlock(builder, AVPBlocks.FERROALUMINUM_FASTENED_SIDING_SLAB, "Ferroaluminum Fastened Siding Slab");
+        addBlock(builder, AVPBlocks.FERROALUMINUM_FASTENED_SIDING_STAIRS, "Ferroaluminum Fastened Siding Stairs");
+        addBlock(builder, AVPBlocks.STEEL_FASTENED_SIDING_SLAB, "Steel Fastened Siding Slab");
+        addBlock(builder, AVPBlocks.STEEL_FASTENED_SIDING_STAIRS, "Steel Fastened Siding Stairs");
+        addBlock(builder, AVPBlocks.TITANIUM_FASTENED_SIDING_SLAB, "Titanium Fastened Siding Slab");
+        addBlock(builder, AVPBlocks.TITANIUM_FASTENED_SIDING_STAIRS, "Titanium Fastened Siding Stairs");
 
         // Creative Mode Tabs
-        translationBuilder.add(CreativeModeTabs.BLOCKS_KEY, "AVP Blocks");
-        translationBuilder.add(CreativeModeTabs.COLORED_BLOCKS_KEY, "AVP Colored Blocks");
-        translationBuilder.add(CreativeModeTabs.COMBAT_KEY, "AVP Combat");
-        translationBuilder.add(CreativeModeTabs.INGREDIENTS_KEY, "AVP Ingredients");
-        translationBuilder.add(CreativeModeTabs.SPAWN_EGGS_KEY, "AVP Spawn Eggs");
-        translationBuilder.add(CreativeModeTabs.TOOLS_AND_UTILITIES_KEY, "AVP Tools & Utilities");
+        builder.add(CreativeModeTabs.BLOCKS_KEY, "AVP Blocks");
+        builder.add(CreativeModeTabs.COLORED_BLOCKS_KEY, "AVP Colored Blocks");
+        builder.add(CreativeModeTabs.COMBAT_KEY, "AVP Combat");
+        builder.add(CreativeModeTabs.INGREDIENTS_KEY, "AVP Ingredients");
+        builder.add(CreativeModeTabs.SPAWN_EGGS_KEY, "AVP Spawn Eggs");
+        builder.add(CreativeModeTabs.TOOLS_AND_UTILITIES_KEY, "AVP Tools & Utilities");
 
         // Entities
-        translationBuilder.add(AVPEntityTypes.ACID, "Acid");
-        translationBuilder.add(AVPEntityTypes.CHESTBURSTER, "Chestburster");
-        translationBuilder.add(AVPEntityTypes.DRONE, "Drone");
-        translationBuilder.add(AVPEntityTypes.FACEHUGGER, "Facehugger");
-        translationBuilder.add(AVPEntityTypes.OVAMORPH, "Ovamorph");
-        translationBuilder.add(AVPEntityTypes.PRAETORIAN, "Praetorian");
-        translationBuilder.add(AVPEntityTypes.QUEEN, "Queen");
-        translationBuilder.add(AVPEntityTypes.WARRIOR, "Warrior");
-        translationBuilder.add(AVPEntityTypes.YAUTJA, "Yautja");
-        translationBuilder.add(AVPEntityTypes.ROCKET, "Rocket");
-        translationBuilder.add(AVPEntityTypes.GRENADE_THROWN, "Grenade");
-        translationBuilder.add(AVPEntityTypes.SHURIKEN, "Shuriken");
-        translationBuilder.add(AVPEntityTypes.SMART_DISC, "Smart Disc");
-        translationBuilder.add(AVPEntityTypes.BULLET, "Bullet");
-        translationBuilder.add(AVPEntityTypes.MARINE, "Marine");
+        builder.add(AVPEntityTypes.ACID, "Acid");
+        builder.add(AVPEntityTypes.CHESTBURSTER, "Chestburster");
+        builder.add(AVPEntityTypes.DRONE, "Drone");
+        builder.add(AVPEntityTypes.FACEHUGGER, "Facehugger");
+        builder.add(AVPEntityTypes.OVAMORPH, "Ovamorph");
+        builder.add(AVPEntityTypes.PRAETORIAN, "Praetorian");
+        builder.add(AVPEntityTypes.QUEEN, "Queen");
+        builder.add(AVPEntityTypes.WARRIOR, "Warrior");
+        builder.add(AVPEntityTypes.YAUTJA, "Yautja");
+        builder.add(AVPEntityTypes.ROCKET, "Rocket");
+        builder.add(AVPEntityTypes.GRENADE_THROWN, "Grenade");
+        builder.add(AVPEntityTypes.SHURIKEN, "Shuriken");
+        builder.add(AVPEntityTypes.SMART_DISC, "Smart Disc");
+        builder.add(AVPEntityTypes.BULLET, "Bullet");
+        builder.add(AVPEntityTypes.MARINE, "Marine");
 
         // Combat Items
-        translationBuilder.add(AVPItems.SHURIKEN, "Shuriken");
-        translationBuilder.add(AVPItems.SMART_DISC, "Smart Disc");
-        translationBuilder.add(AVPItems.GRENADE, "Grenade");
-        translationBuilder.add(AVPItems.GRENADE_INCENDIARY, "Incendiary Grenade");
-        translationBuilder.add(AVPItems.GRENADE_IRRADIATED, "Irradiated Grenade");
-        translationBuilder.add(AVPItems.CASELESS_BULLET, "Caseless Bullet");
-        translationBuilder.add(ArmorItems.ABERRANT_CHITIN_BOOTS, "Aberrant Chitin Boots");
-        translationBuilder.add(ArmorItems.ABERRANT_CHITIN_CHESTPLATE, "Aberrant Chitin Chestplate");
-        translationBuilder.add(ArmorItems.ABERRANT_CHITIN_HELMET, "Aberrant Chitin Helmet");
-        translationBuilder.add(ArmorItems.ABERRANT_CHITIN_LEGGINGS, "Aberrant Chitin Leggings");
-        translationBuilder.add(ArmorItems.CHITIN_BOOTS, "Chitin Boots");
-        translationBuilder.add(ArmorItems.CHITIN_CHESTPLATE, "Chitin Chestplate");
-        translationBuilder.add(ArmorItems.CHITIN_HELMET, "Chitin Helmet");
-        translationBuilder.add(ArmorItems.CHITIN_LEGGINGS, "Chitin Leggings");
-        translationBuilder.add(ArmorItems.IRRADIATED_CHITIN_BOOTS, "Irradiated Chitin Boots");
-        translationBuilder.add(ArmorItems.IRRADIATED_CHITIN_CHESTPLATE, "Irradiated Chitin Chestplate");
-        translationBuilder.add(ArmorItems.IRRADIATED_CHITIN_HELMET, "Irradiated Chitin Helmet");
-        translationBuilder.add(ArmorItems.IRRADIATED_CHITIN_LEGGINGS, "Irradiated Chitin Leggings");
-        translationBuilder.add(AVPItems.F903WE_RIFLE, "F903WE Rifle");
-        translationBuilder.add(AVPItems.FLAMETHROWER_SEVASTOPOL, "Flamethrower (Sevastopol)");
-        translationBuilder.add(AVPItems.FUEL_TANK, "Fuel Tank");
-        translationBuilder.add(AVPItems.HEAVY_BULLET, "Heavy Bullet");
-        translationBuilder.add(ArmorItems.JUNGLE_PREDATOR_BOOTS, "Predator Boots");
-        translationBuilder.add(ArmorItems.JUNGLE_PREDATOR_CHESTPLATE, "Predator Chestplate");
-        translationBuilder.add(ArmorItems.JUNGLE_PREDATOR_HELMET, "Predator Helmet");
-        translationBuilder.add(ArmorItems.JUNGLE_PREDATOR_LEGGINGS, "Predator Leggings");
-        translationBuilder.add(AVPItems.M37_12_SHOTGUN, "M37-12 Shotgun");
-        translationBuilder.add(AVPItems.M41A_PULSE_RIFLE, "M41A Pulse Rifle");
-        translationBuilder.add(AVPItems.M42A3_SNIPER_RIFLE, "M42A3 Sniper Rifle");
-        translationBuilder.add(AVPItems.M4RA_BATTLE_RIFLE, "M4RA Battle Rifle");
-        translationBuilder.add(AVPItems.M56_SMARTGUN, "M56 Smartgun");
-        translationBuilder.add(AVPItems.M6B_ROCKET_LAUNCHER, "M6B Rocket Launcher");
-        translationBuilder.add(AVPItems.M88MOD4_COMBAT_PISTOL, "88 Mod 4 Combat Pistol");
-        translationBuilder.add(AVPItems.MEDIUM_BULLET, "Medium Bullet");
-        translationBuilder.add(ArmorItems.MK50_BOOTS, "MK50 Boots");
-        translationBuilder.add(ArmorItems.MK50_CHESTPLATE, "MK50 Chestplate");
-        translationBuilder.add(ArmorItems.MK50_HELMET, "MK50 Helmet");
-        translationBuilder.add(ArmorItems.MK50_LEGGINGS, "MK50 Leggings");
-        translationBuilder.add(ArmorItems.NETHER_CHITIN_BOOTS, "Nether Chitin Boots");
-        translationBuilder.add(ArmorItems.NETHER_CHITIN_CHESTPLATE, "Nether Chitin Chestplate");
-        translationBuilder.add(ArmorItems.NETHER_CHITIN_HELMET, "Nether Chitin Helmet");
-        translationBuilder.add(ArmorItems.NETHER_CHITIN_LEGGINGS, "Nether Chitin Leggings");
-        translationBuilder.add(AVPItems.OLD_PAINLESS, "Old Painless");
-        translationBuilder.add(ArmorItems.PLATED_ABERRANT_CHITIN_BOOTS, "Plated Aberrant Chitin Boots");
-        translationBuilder.add(ArmorItems.PLATED_ABERRANT_CHITIN_CHESTPLATE, "Plated Aberrant Chitin Chestplate");
-        translationBuilder.add(ArmorItems.PLATED_ABERRANT_CHITIN_HELMET, "Plated Aberrant Chitin Helmet");
-        translationBuilder.add(ArmorItems.PLATED_ABERRANT_CHITIN_LEGGINGS, "Plated Aberrant Chitin Leggings");
-        translationBuilder.add(ArmorItems.PLATED_CHITIN_BOOTS, "Plated Chitin Boots");
-        translationBuilder.add(ArmorItems.PLATED_CHITIN_CHESTPLATE, "Plated Chitin Chestplate");
-        translationBuilder.add(ArmorItems.PLATED_CHITIN_HELMET, "Plated Chitin Helmet");
-        translationBuilder.add(ArmorItems.PLATED_CHITIN_LEGGINGS, "Plated Chitin Leggings");
-        translationBuilder.add(ArmorItems.PLATED_IRRADIATED_CHITIN_BOOTS, "Plated Irradiated Chitin Boots");
-        translationBuilder.add(ArmorItems.PLATED_IRRADIATED_CHITIN_CHESTPLATE, "Plated Irradiated Chitin Chestplate");
-        translationBuilder.add(ArmorItems.PLATED_IRRADIATED_CHITIN_HELMET, "Plated Irradiated Chitin Helmet");
-        translationBuilder.add(ArmorItems.PLATED_IRRADIATED_CHITIN_LEGGINGS, "Plated Irradiated Chitin Leggings");
-        translationBuilder.add(ArmorItems.PLATED_NETHER_CHITIN_BOOTS, "Plated Nether Chitin Boots");
-        translationBuilder.add(ArmorItems.PLATED_NETHER_CHITIN_CHESTPLATE, "Plated Nether Chitin Chestplate");
-        translationBuilder.add(ArmorItems.PLATED_NETHER_CHITIN_HELMET, "Plated Nether Chitin Helmet");
-        translationBuilder.add(ArmorItems.PLATED_NETHER_CHITIN_LEGGINGS, "Plated Nether Chitin Leggings");
-        translationBuilder.add(ArmorItems.PRESSURE_BOOTS, "Pressure Boots");
-        translationBuilder.add(ArmorItems.PRESSURE_CHESTPLATE, "Pressure Chestplate");
-        translationBuilder.add(ArmorItems.PRESSURE_HELMET, "Pressure Helmet");
-        translationBuilder.add(ArmorItems.PRESSURE_LEGGINGS, "Pressure Leggings");
-        translationBuilder.add(AVPItems.ROCKET, "Rocket");
-        translationBuilder.add(AVPItems.SHOTGUN_SHELL, "Shotgun Shell");
-        translationBuilder.add(AVPItems.SMALL_BULLET, "Small Bullet");
-        translationBuilder.add(ArmorItems.STEEL_BOOTS, "Steel Boots");
-        translationBuilder.add(ArmorItems.STEEL_CHESTPLATE, "Steel Chestplate");
-        translationBuilder.add(ArmorItems.STEEL_HELMET, "Steel Helmet");
-        translationBuilder.add(ArmorItems.STEEL_LEGGINGS, "Steel Leggings");
-        translationBuilder.add(ArmorItems.TACTICAL_BOOTS, "Tactical Boots");
-        translationBuilder.add(ArmorItems.TACTICAL_CHESTPLATE, "Tactical Chestplate");
-        translationBuilder.add(ArmorItems.TACTICAL_HELMET, "Tactical Helmet");
-        translationBuilder.add(ArmorItems.TACTICAL_LEGGINGS, "Tactical Leggings");
-        translationBuilder.add(ArmorItems.TACTICAL_CAMO_BOOTS, "Tactical Camo Boots");
-        translationBuilder.add(ArmorItems.TACTICAL_CAMO_CHESTPLATE, "Tactical Camo Chestplate");
-        translationBuilder.add(ArmorItems.TACTICAL_CAMO_HELMET, "Tactical Camo Helmet");
-        translationBuilder.add(ArmorItems.TACTICAL_CAMO_LEGGINGS, "Tactical Camo Leggings");
-        translationBuilder.add(ArmorItems.TITANIUM_BOOTS, "Titanium Boots");
-        translationBuilder.add(ArmorItems.TITANIUM_CHESTPLATE, "Titanium Chestplate");
-        translationBuilder.add(ArmorItems.TITANIUM_HELMET, "Titanium Helmet");
-        translationBuilder.add(ArmorItems.TITANIUM_LEGGINGS, "Titanium Leggings");
-        translationBuilder.add(AVPItems.ZX_76_SHOTGUN, "ZX-76 Shotgun");
+        addItem(builder, AVPItems.SHURIKEN, "Shuriken");
+        addItem(builder, AVPItems.SMART_DISC, "Smart Disc");
+        addItem(builder, AVPItems.GRENADE, "Grenade");
+        addItem(builder, AVPItems.GRENADE_INCENDIARY, "Incendiary Grenade");
+        addItem(builder, AVPItems.GRENADE_IRRADIATED, "Irradiated Grenade");
+        addItem(builder, AVPItems.CASELESS_BULLET, "Caseless Bullet");
+        addItem(builder, ArmorItems.ABERRANT_CHITIN_BOOTS, "Aberrant Chitin Boots");
+        addItem(builder, ArmorItems.ABERRANT_CHITIN_CHESTPLATE, "Aberrant Chitin Chestplate");
+        addItem(builder, ArmorItems.ABERRANT_CHITIN_HELMET, "Aberrant Chitin Helmet");
+        addItem(builder, ArmorItems.ABERRANT_CHITIN_LEGGINGS, "Aberrant Chitin Leggings");
+        addItem(builder, ArmorItems.CHITIN_BOOTS, "Chitin Boots");
+        addItem(builder, ArmorItems.CHITIN_CHESTPLATE, "Chitin Chestplate");
+        addItem(builder, ArmorItems.CHITIN_HELMET, "Chitin Helmet");
+        addItem(builder, ArmorItems.CHITIN_LEGGINGS, "Chitin Leggings");
+        addItem(builder, ArmorItems.IRRADIATED_CHITIN_BOOTS, "Irradiated Chitin Boots");
+        addItem(builder, ArmorItems.IRRADIATED_CHITIN_CHESTPLATE, "Irradiated Chitin Chestplate");
+        addItem(builder, ArmorItems.IRRADIATED_CHITIN_HELMET, "Irradiated Chitin Helmet");
+        addItem(builder, ArmorItems.IRRADIATED_CHITIN_LEGGINGS, "Irradiated Chitin Leggings");
+        addItem(builder, AVPItems.F903WE_RIFLE, "F903WE Rifle");
+        addItem(builder, AVPItems.FLAMETHROWER_SEVASTOPOL, "Flamethrower (Sevastopol)");
+        addItem(builder, AVPItems.FUEL_TANK, "Fuel Tank");
+        addItem(builder, AVPItems.HEAVY_BULLET, "Heavy Bullet");
+        addItem(builder, ArmorItems.JUNGLE_PREDATOR_BOOTS, "Predator Boots");
+        addItem(builder, ArmorItems.JUNGLE_PREDATOR_CHESTPLATE, "Predator Chestplate");
+        addItem(builder, ArmorItems.JUNGLE_PREDATOR_HELMET, "Predator Helmet");
+        addItem(builder, ArmorItems.JUNGLE_PREDATOR_LEGGINGS, "Predator Leggings");
+        addItem(builder, AVPItems.M37_12_SHOTGUN, "M37-12 Shotgun");
+        addItem(builder, AVPItems.M41A_PULSE_RIFLE, "M41A Pulse Rifle");
+        addItem(builder, AVPItems.M42A3_SNIPER_RIFLE, "M42A3 Sniper Rifle");
+        addItem(builder, AVPItems.M4RA_BATTLE_RIFLE, "M4RA Battle Rifle");
+        addItem(builder, AVPItems.M56_SMARTGUN, "M56 Smartgun");
+        addItem(builder, AVPItems.M6B_ROCKET_LAUNCHER, "M6B Rocket Launcher");
+        addItem(builder, AVPItems.M88MOD4_COMBAT_PISTOL, "88 Mod 4 Combat Pistol");
+        addItem(builder, AVPItems.MEDIUM_BULLET, "Medium Bullet");
+        addItem(builder, ArmorItems.MK50_BOOTS, "MK50 Boots");
+        addItem(builder, ArmorItems.MK50_CHESTPLATE, "MK50 Chestplate");
+        addItem(builder, ArmorItems.MK50_HELMET, "MK50 Helmet");
+        addItem(builder, ArmorItems.MK50_LEGGINGS, "MK50 Leggings");
+        addItem(builder, ArmorItems.NETHER_CHITIN_BOOTS, "Nether Chitin Boots");
+        addItem(builder, ArmorItems.NETHER_CHITIN_CHESTPLATE, "Nether Chitin Chestplate");
+        addItem(builder, ArmorItems.NETHER_CHITIN_HELMET, "Nether Chitin Helmet");
+        addItem(builder, ArmorItems.NETHER_CHITIN_LEGGINGS, "Nether Chitin Leggings");
+        addItem(builder, AVPItems.OLD_PAINLESS, "Old Painless");
+        addItem(builder, ArmorItems.PLATED_ABERRANT_CHITIN_BOOTS, "Plated Aberrant Chitin Boots");
+        addItem(builder, ArmorItems.PLATED_ABERRANT_CHITIN_CHESTPLATE, "Plated Aberrant Chitin Chestplate");
+        addItem(builder, ArmorItems.PLATED_ABERRANT_CHITIN_HELMET, "Plated Aberrant Chitin Helmet");
+        addItem(builder, ArmorItems.PLATED_ABERRANT_CHITIN_LEGGINGS, "Plated Aberrant Chitin Leggings");
+        addItem(builder, ArmorItems.PLATED_CHITIN_BOOTS, "Plated Chitin Boots");
+        addItem(builder, ArmorItems.PLATED_CHITIN_CHESTPLATE, "Plated Chitin Chestplate");
+        addItem(builder, ArmorItems.PLATED_CHITIN_HELMET, "Plated Chitin Helmet");
+        addItem(builder, ArmorItems.PLATED_CHITIN_LEGGINGS, "Plated Chitin Leggings");
+        addItem(builder, ArmorItems.PLATED_IRRADIATED_CHITIN_BOOTS, "Plated Irradiated Chitin Boots");
+        addItem(builder, ArmorItems.PLATED_IRRADIATED_CHITIN_CHESTPLATE, "Plated Irradiated Chitin Chestplate");
+        addItem(builder, ArmorItems.PLATED_IRRADIATED_CHITIN_HELMET, "Plated Irradiated Chitin Helmet");
+        addItem(builder, ArmorItems.PLATED_IRRADIATED_CHITIN_LEGGINGS, "Plated Irradiated Chitin Leggings");
+        addItem(builder, ArmorItems.PLATED_NETHER_CHITIN_BOOTS, "Plated Nether Chitin Boots");
+        addItem(builder, ArmorItems.PLATED_NETHER_CHITIN_CHESTPLATE, "Plated Nether Chitin Chestplate");
+        addItem(builder, ArmorItems.PLATED_NETHER_CHITIN_HELMET, "Plated Nether Chitin Helmet");
+        addItem(builder, ArmorItems.PLATED_NETHER_CHITIN_LEGGINGS, "Plated Nether Chitin Leggings");
+        addItem(builder, ArmorItems.PRESSURE_BOOTS, "Pressure Boots");
+        addItem(builder, ArmorItems.PRESSURE_CHESTPLATE, "Pressure Chestplate");
+        addItem(builder, ArmorItems.PRESSURE_HELMET, "Pressure Helmet");
+        addItem(builder, ArmorItems.PRESSURE_LEGGINGS, "Pressure Leggings");
+        addItem(builder, TempAVPItems.ROCKET, "Rocket");
+        addItem(builder, TempAVPItems.SHOTGUN_SHELL, "Shotgun Shell");
+        addItem(builder, TempAVPItems.SMALL_BULLET, "Small Bullet");
+        addItem(builder, ArmorItems.STEEL_BOOTS, "Steel Boots");
+        addItem(builder, ArmorItems.STEEL_CHESTPLATE, "Steel Chestplate");
+        addItem(builder, ArmorItems.STEEL_HELMET, "Steel Helmet");
+        addItem(builder, ArmorItems.STEEL_LEGGINGS, "Steel Leggings");
+        addItem(builder, ArmorItems.TACTICAL_BOOTS, "Tactical Boots");
+        addItem(builder, ArmorItems.TACTICAL_CHESTPLATE, "Tactical Chestplate");
+        addItem(builder, ArmorItems.TACTICAL_HELMET, "Tactical Helmet");
+        addItem(builder, ArmorItems.TACTICAL_LEGGINGS, "Tactical Leggings");
+        addItem(builder, ArmorItems.TACTICAL_CAMO_BOOTS, "Tactical Camo Boots");
+        addItem(builder, ArmorItems.TACTICAL_CAMO_CHESTPLATE, "Tactical Camo Chestplate");
+        addItem(builder, ArmorItems.TACTICAL_CAMO_HELMET, "Tactical Camo Helmet");
+        addItem(builder, ArmorItems.TACTICAL_CAMO_LEGGINGS, "Tactical Camo Leggings");
+        addItem(builder, ArmorItems.TITANIUM_BOOTS, "Titanium Boots");
+        addItem(builder, ArmorItems.TITANIUM_CHESTPLATE, "Titanium Chestplate");
+        addItem(builder, ArmorItems.TITANIUM_HELMET, "Titanium Helmet");
+        addItem(builder, ArmorItems.TITANIUM_LEGGINGS, "Titanium Leggings");
+        addItem(builder, AVPItems.ZX_76_SHOTGUN, "ZX-76 Shotgun");
 
         // Ingredient Items
-        translationBuilder.add(AVPItems.NUCLEAR_BATTERY, "Nuclear Battery");
-        translationBuilder.add(AVPItems.REDSTONE_CRYSTAL, "Redstone Crystal");
-        translationBuilder.add(AVPItems.SERVO, "Servo");
-        translationBuilder.add(AVPItems.SPEAKER, "Speaker");
-        translationBuilder.add(AVPItems.ALUMINUM_INGOT, "Aluminum Ingot");
-        translationBuilder.add(AVPItems.ALIEN_MUSIC_DISC_1, "Music Disc");
-        translationBuilder.add(AVPItems.PREDATOR_MUSIC_DISC_1, "Music Disc");
-        translationBuilder.add(AVPItems.ALIEN_MUSIC_DISC_1_FRAGMENT, "Disc Fragment");
-        translationBuilder.add(AVPItems.PREDATOR_MUSIC_DISC_1_FRAGMENT, "Disc Fragment");
-        translationBuilder.add(AVPItems.ALIEN_MUSIC_DISC_1_FRAGMENT.getDescriptionId() + ".desc", "Music Disc - Silver Smile");
-        translationBuilder.add(AVPItems.PREDATOR_MUSIC_DISC_1_FRAGMENT.getDescriptionId() + ".desc", "Music Disc - Hunter");
-        translationBuilder.add(AVPItems.AUTUNITE_DUST, "Autunite Dust");
-        translationBuilder.add(AVPItems.BARREL, "Barrel");
-        translationBuilder.add(AVPItems.BATTERY_PACK, "Battery Pack");
-        translationBuilder.add(AVPItems.BLUEPRINT_F903WE_RIFLE, "F903WE Rifle Blueprint");
-        translationBuilder.add(AVPItems.BLUEPRINT_FLAMETHROWER_SEVASTOPOL, "Flamethrower (Sevastopol) Blueprint");
-        translationBuilder.add(AVPItems.BLUEPRINT_M37_12_SHOTGUN, "M37-12 Shotgun Blueprint");
-        translationBuilder.add(AVPItems.BLUEPRINT_M41A_PULSE_RIFLE, "M41A Pulse Rifle Blueprint");
-        translationBuilder.add(AVPItems.BLUEPRINT_M42A3_SNIPER_RIFLE, "M42A3 Sniper Rifle Blueprint");
-        translationBuilder.add(AVPItems.BLUEPRINT_M4RA_BATTLE_RIFLE, "M4RA Battle Rifle Blueprint");
-        translationBuilder.add(AVPItems.BLUEPRINT_M56_SMARTGUN, "M56 Smartgun Blueprint");
-        translationBuilder.add(AVPItems.BLUEPRINT_M6B_ROCKET_LAUNCHER, "M6B Rocket Launcher Blueprint");
-        translationBuilder.add(AVPItems.BLUEPRINT_M88MOD4_COMBAT_PISTOL, "M88 Mod 4 Combat Pistol Blueprint");
-        translationBuilder.add(AVPItems.BLUEPRINT_OLD_PAINLESS, "Old Painless Blueprint");
-        translationBuilder.add(AVPItems.BLUEPRINT_ZX_76_SHOTGUN, "ZX-76 Shotgun Blueprint");
-        translationBuilder.add(AVPItems.BRASS_INGOT, "Brass Ingot");
-        translationBuilder.add(AVPItems.BULLET_TIP, "Bullet Tip");
-        translationBuilder.add(AVPItems.CAPACITOR, "Capacitor");
-        translationBuilder.add(AVPItems.CARBON_DUST, "Carbon Dust");
-        translationBuilder.add(AVPItems.CASELESS_CARTRIDGE, "Caseless Cartridge");
-        translationBuilder.add(AVPItems.CHITIN, "Chitin");
-        translationBuilder.add(AVPItems.CPU, "CPU");
-        translationBuilder.add(AVPItems.DIODE, "Diode");
-        translationBuilder.add(AVPItems.FERROALUMINUM_INGOT, "Ferroaluminum Ingot");
-        translationBuilder.add(AVPItems.GRIP, "Grip");
-        translationBuilder.add(AVPItems.HEAVY_CASING, "Heavy Casing");
-        translationBuilder.add(AVPItems.INTEGRATED_CIRCUIT, "Integrated Circuit");
-        translationBuilder.add(AVPItems.LEAD_INGOT, "Lead Ingot");
-        translationBuilder.add(AVPItems.LED, "LED");
-        translationBuilder.add(AVPItems.LED_DISPLAY, "LED Display");
-        translationBuilder.add(AVPItems.LITHIUM_DUST, "Lithium Dust");
-        translationBuilder.add(AVPItems.MEDIUM_CASING, "Rifle Casing");
-        translationBuilder.add(AVPItems.MINIGUN_BARREL, "Minigun Barrel");
-        translationBuilder.add(AVPItems.NEODYMIUM_MAGNET, "Neodymium Magnet");
-        translationBuilder.add(AVPItems.NETHER_CHITIN, "Nether Chitin");
-        translationBuilder.add(AVPItems.NETHER_RESIN_BALL, "Nether Resin Ball");
-        translationBuilder.add(AVPItems.OVOID_POTTERY_SHERD, "Ovoid Pottery Sherd");
-        translationBuilder.add(AVPItems.PARASITE_POTTERY_SHERD, "Parasite Pottery Sherd");
-        translationBuilder.add(AVPItems.ROYALTY_POTTERY_SHERD, "Royalty Pottery Sherd");
-        translationBuilder.add(AVPItems.PLATED_CHITIN, "Plated Chitin");
-        translationBuilder.add(AVPItems.PLATED_NETHER_CHITIN, "Plated Nether Chitin");
-        translationBuilder.add(AVPItems.POLYMER, "Polymer");
-        translationBuilder.add(AVPItems.RAW_BAUXITE, "Raw Bauxite");
-        translationBuilder.add(AVPItems.RAW_BRASS, "Raw Brass");
-        translationBuilder.add(AVPItems.RAW_CRUDE_IRON, "Raw Crude Iron");
-        translationBuilder.add(AVPItems.RAW_FERROBAUXITE, "Raw Ferrobauxite");
-        translationBuilder.add(AVPItems.RAW_GALENA, "Raw Galena");
-        translationBuilder.add(AVPItems.RAW_MONAZITE, "Raw Monazite");
-        translationBuilder.add(AVPItems.RAW_ROYAL_JELLY, "Raw Royal Jelly");
-        translationBuilder.add(AVPItems.POISON_JELLY, "Poison Jelly");
-        translationBuilder.add(TempAVPItems.RAW_SILICA.get(), "Raw Silica");
-        translationBuilder.add(AVPItems.RAW_TITANIUM, "Raw Titanium");
-        translationBuilder.add(AVPItems.RAW_ZINC, "Raw Zinc");
-        translationBuilder.add(AVPItems.RECEIVER, "Receiver");
-        translationBuilder.add(AVPItems.REGULATOR, "Regulator");
-        translationBuilder.add(AVPItems.RESIN_BALL, "Resin Ball");
-        translationBuilder.add(AVPItems.RESISTOR, "Resistor");
-        translationBuilder.add(AVPItems.ROCKET_BARREL, "Rocket Barrel");
-        translationBuilder.add(AVPItems.SHOTGUN_CASING, "Shotgun Casing");
-        translationBuilder.add(AVPItems.SMALL_CASING, "Pistol Casing");
-        translationBuilder.add(AVPItems.SMART_BARREL, "Smart Barrel");
-        translationBuilder.add(AVPItems.SMART_RECEIVER, "Smart Receiver");
-        translationBuilder.add(AVPItems.STEEL_INGOT, "Steel Ingot");
-        translationBuilder.add(AVPItems.STOCK, "Stock");
-        translationBuilder.add(AVPItems.TITANIUM_INGOT, "Titanium Ingot");
-        translationBuilder.add(AVPItems.TRANSISTOR, "Transistor");
-        translationBuilder.add(AVPItems.URANIUM_INGOT, "Uranium Ingot");
-        translationBuilder.add(AVPItems.VECTOR_POTTERY_SHERD, "Vector Pottery Sherd");
-        translationBuilder.add(AVPItems.VERITANIUM_SHARD, "Veritanium Shard");
-        translationBuilder.add(AVPItems.ZINC_INGOT, "Zinc Ingot");
-        translationBuilder.add(AVPItems.ALUMINUM_NUGGET, "Aluminum Nugget");
-        translationBuilder.add(AVPItems.BRASS_NUGGET, "Brass Nugget");
-        translationBuilder.add(AVPItems.FERROALUMINUM_NUGGET, "Ferroaluminum Nugget");
-        translationBuilder.add(AVPItems.LEAD_NUGGET, "Lead Nugget");
-        translationBuilder.add(AVPItems.STEEL_NUGGET, "Steel Nugget");
-        translationBuilder.add(AVPItems.TITANIUM_NUGGET, "Titanium Nugget");
-        translationBuilder.add(AVPItems.URANIUM_NUGGET, "Uranium Nugget");
-        translationBuilder.add(AVPItems.ZINC_NUGGET, "Zinc Nugget");
-        translationBuilder.add(AVPItems.ABERRANT_RESIN_BALL, "Aberrant Resin Ball");
-        translationBuilder.add(AVPItems.ABERRANT_CHITIN, "Aberrant Chitin");
-        translationBuilder.add(AVPItems.PLATED_ABERRANT_CHITIN, "Plated Aberrant Chitin");
-        translationBuilder.add(AVPItems.IRRADIATED_RESIN_BALL, "Irradiated Resin Ball");
-        translationBuilder.add(AVPItems.IRRADIATED_CHITIN, "Irradiated Chitin");
-        translationBuilder.add(AVPItems.PLATED_IRRADIATED_CHITIN, "Plated Irradiated Chitin");
+        addItem(builder, TempAVPItems.NUCLEAR_BATTERY, "Nuclear Battery");
+        addItem(builder, TempAVPItems.REDSTONE_CRYSTAL, "Redstone Crystal");
+        addItem(builder, TempAVPItems.SERVO, "Servo");
+        addItem(builder, TempAVPItems.SPEAKER, "Speaker");
+        addItem(builder, TempAVPItems.ALUMINUM_INGOT, "Aluminum Ingot");
+        addItem(builder, AVPItems.ALIEN_MUSIC_DISC_1, "Music Disc");
+        addItem(builder, AVPItems.PREDATOR_MUSIC_DISC_1, "Music Disc");
+        addItem(builder, AVPItems.ALIEN_MUSIC_DISC_1_FRAGMENT, "Disc Fragment");
+        addItem(builder, AVPItems.PREDATOR_MUSIC_DISC_1_FRAGMENT, "Disc Fragment");
+        builder.add(AVPItems.ALIEN_MUSIC_DISC_1_FRAGMENT.getDescriptionId() + ".desc", "Music Disc - Silver Smile");
+        builder.add(AVPItems.PREDATOR_MUSIC_DISC_1_FRAGMENT.getDescriptionId() + ".desc", "Music Disc - Hunter");
+        addItem(builder, TempAVPItems.AUTUNITE_DUST, "Autunite Dust");
+        addItem(builder, TempAVPItems.BARREL, "Barrel");
+        addItem(builder, TempAVPItems.BATTERY_PACK, "Battery Pack");
+        addItem(builder, TempAVPItems.BLUEPRINT_F903WE_RIFLE, "F903WE Rifle Blueprint");
+        addItem(builder, TempAVPItems.BLUEPRINT_FLAMETHROWER_SEVASTOPOL, "Flamethrower (Sevastopol) Blueprint");
+        addItem(builder, TempAVPItems.BLUEPRINT_M37_12_SHOTGUN, "M37-12 Shotgun Blueprint");
+        addItem(builder, TempAVPItems.BLUEPRINT_M41A_PULSE_RIFLE, "M41A Pulse Rifle Blueprint");
+        addItem(builder, TempAVPItems.BLUEPRINT_M42A3_SNIPER_RIFLE, "M42A3 Sniper Rifle Blueprint");
+        addItem(builder, TempAVPItems.BLUEPRINT_M4RA_BATTLE_RIFLE, "M4RA Battle Rifle Blueprint");
+        addItem(builder, TempAVPItems.BLUEPRINT_M56_SMARTGUN, "M56 Smartgun Blueprint");
+        addItem(builder, TempAVPItems.BLUEPRINT_M6B_ROCKET_LAUNCHER, "M6B Rocket Launcher Blueprint");
+        addItem(builder, TempAVPItems.BLUEPRINT_M88MOD4_COMBAT_PISTOL, "M88 Mod 4 Combat Pistol Blueprint");
+        addItem(builder, TempAVPItems.BLUEPRINT_OLD_PAINLESS, "Old Painless Blueprint");
+        addItem(builder, TempAVPItems.BLUEPRINT_ZX_76_SHOTGUN, "ZX-76 Shotgun Blueprint");
+        addItem(builder, TempAVPItems.BRASS_INGOT, "Brass Ingot");
+        addItem(builder, TempAVPItems.BULLET_TIP, "Bullet Tip");
+        addItem(builder, TempAVPItems.CAPACITOR, "Capacitor");
+        addItem(builder, TempAVPItems.CARBON_DUST, "Carbon Dust");
+        addItem(builder, TempAVPItems.CASELESS_CARTRIDGE, "Caseless Cartridge");
+        addItem(builder, TempAVPItems.CHITIN, "Chitin");
+        addItem(builder, TempAVPItems.CPU, "CPU");
+        addItem(builder, TempAVPItems.DIODE, "Diode");
+        addItem(builder, TempAVPItems.FERROALUMINUM_INGOT, "Ferroaluminum Ingot");
+        addItem(builder, TempAVPItems.GRIP, "Grip");
+        addItem(builder, TempAVPItems.HEAVY_CASING, "Heavy Casing");
+        addItem(builder, TempAVPItems.INTEGRATED_CIRCUIT, "Integrated Circuit");
+        addItem(builder, TempAVPItems.LEAD_INGOT, "Lead Ingot");
+        addItem(builder, TempAVPItems.LED, "LED");
+        addItem(builder, TempAVPItems.LED_DISPLAY, "LED Display");
+        addItem(builder, TempAVPItems.LITHIUM_DUST, "Lithium Dust");
+        addItem(builder, TempAVPItems.MEDIUM_CASING, "Rifle Casing");
+        addItem(builder, TempAVPItems.MINIGUN_BARREL, "Minigun Barrel");
+        addItem(builder, TempAVPItems.NEODYMIUM_MAGNET, "Neodymium Magnet");
+        addItem(builder, AVPItems.NETHER_CHITIN, "Nether Chitin");
+        addItem(builder, AVPItems.NETHER_RESIN_BALL, "Nether Resin Ball");
+        addItem(builder, AVPItems.OVOID_POTTERY_SHERD, "Ovoid Pottery Sherd");
+        addItem(builder, AVPItems.PARASITE_POTTERY_SHERD, "Parasite Pottery Sherd");
+        addItem(builder, AVPItems.ROYALTY_POTTERY_SHERD, "Royalty Pottery Sherd");
+        addItem(builder, TempAVPItems.PLATED_CHITIN, "Plated Chitin");
+        addItem(builder, TempAVPItems.PLATED_NETHER_CHITIN, "Plated Nether Chitin");
+        addItem(builder, TempAVPItems.POLYMER, "Polymer");
+        addItem(builder, TempAVPItems.RAW_BAUXITE, "Raw Bauxite");
+        addItem(builder, TempAVPItems.RAW_BRASS, "Raw Brass");
+        addItem(builder, TempAVPItems.RAW_CRUDE_IRON, "Raw Crude Iron");
+        addItem(builder, TempAVPItems.RAW_FERROBAUXITE, "Raw Ferrobauxite");
+        addItem(builder, TempAVPItems.RAW_GALENA, "Raw Galena");
+        addItem(builder, TempAVPItems.RAW_MONAZITE, "Raw Monazite");
+        addItem(builder, TempAVPItems.RAW_ROYAL_JELLY, "Raw Royal Jelly");
+        addItem(builder, AVPItems.POISON_JELLY, "Poison Jelly");
+        addItem(builder, TempAVPItems.RAW_SILICA, "Raw Silica");
+        addItem(builder, TempAVPItems.RAW_TITANIUM, "Raw Titanium");
+        addItem(builder, TempAVPItems.RAW_ZINC, "Raw Zinc");
+        addItem(builder, TempAVPItems.RECEIVER, "Receiver");
+        addItem(builder, TempAVPItems.REGULATOR, "Regulator");
+        addItem(builder, TempAVPItems.RESIN_BALL, "Resin Ball");
+        addItem(builder, TempAVPItems.RESISTOR, "Resistor");
+        addItem(builder, TempAVPItems.ROCKET_BARREL, "Rocket Barrel");
+        addItem(builder, TempAVPItems.SHOTGUN_CASING, "Shotgun Casing");
+        addItem(builder, TempAVPItems.SMALL_CASING, "Pistol Casing");
+        addItem(builder, TempAVPItems.SMART_BARREL, "Smart Barrel");
+        addItem(builder, TempAVPItems.SMART_RECEIVER, "Smart Receiver");
+        addItem(builder, TempAVPItems.STEEL_INGOT, "Steel Ingot");
+        addItem(builder, TempAVPItems.STOCK, "Stock");
+        addItem(builder, TempAVPItems.TITANIUM_INGOT, "Titanium Ingot");
+        addItem(builder, TempAVPItems.TRANSISTOR, "Transistor");
+        addItem(builder, TempAVPItems.URANIUM_INGOT, "Uranium Ingot");
+        addItem(builder, AVPItems.VECTOR_POTTERY_SHERD, "Vector Pottery Sherd");
+        addItem(builder, AVPItems.VERITANIUM_SHARD, "Veritanium Shard");
+        addItem(builder, TempAVPItems.ZINC_INGOT, "Zinc Ingot");
+        addItem(builder, TempAVPItems.ALUMINUM_NUGGET, "Aluminum Nugget");
+        addItem(builder, TempAVPItems.BRASS_NUGGET, "Brass Nugget");
+        addItem(builder, TempAVPItems.FERROALUMINUM_NUGGET, "Ferroaluminum Nugget");
+        addItem(builder, TempAVPItems.LEAD_NUGGET, "Lead Nugget");
+        addItem(builder, TempAVPItems.STEEL_NUGGET, "Steel Nugget");
+        addItem(builder, TempAVPItems.TITANIUM_NUGGET, "Titanium Nugget");
+        addItem(builder, TempAVPItems.URANIUM_NUGGET, "Uranium Nugget");
+        addItem(builder, TempAVPItems.ZINC_NUGGET, "Zinc Nugget");
+        addItem(builder, AVPItems.ABERRANT_RESIN_BALL, "Aberrant Resin Ball");
+        addItem(builder, AVPItems.ABERRANT_CHITIN, "Aberrant Chitin");
+        addItem(builder, AVPItems.PLATED_ABERRANT_CHITIN, "Plated Aberrant Chitin");
+        addItem(builder, TempAVPItems.IRRADIATED_RESIN_BALL, "Irradiated Resin Ball");
+        addItem(builder, TempAVPItems.IRRADIATED_CHITIN, "Irradiated Chitin");
+        addItem(builder, TempAVPItems.PLATED_IRRADIATED_CHITIN, "Plated Irradiated Chitin");
 
         // Tools & Utilities Items
-        translationBuilder.add(AVPItems.ARMOR_CASE, "Armor Case");
-        translationBuilder.add(AVPItems.CANISTER, "Canister");
-        translationBuilder.add(AVPItems.WATER_CANISTER, "Water Canister");
-        translationBuilder.add(AVPItems.LAVA_CANISTER, "Lava Canister");
-        translationBuilder.add(AVPItems.MILK_CANISTER, "Milk Canister");
-        translationBuilder.add(AVPItems.POWDER_SNOW_CANISTER, "Powder Snow Canister");
-        translationBuilder.add(AVPItems.STEEL_AXE, "Steel Axe");
-        translationBuilder.add(AVPItems.STEEL_HOE, "Steel Hoe");
-        translationBuilder.add(AVPItems.STEEL_PICKAXE, "Steel Pickaxe");
-        translationBuilder.add(AVPItems.STEEL_SHOVEL, "Steel Shovel");
-        translationBuilder.add(AVPItems.STEEL_SWORD, "Steel Sword");
-        translationBuilder.add(AVPItems.TITANIUM_AXE, "Titanium Axe");
-        translationBuilder.add(AVPItems.TITANIUM_HOE, "Titanium Hoe");
-        translationBuilder.add(AVPItems.TITANIUM_PICKAXE, "Titanium Pickaxe");
-        translationBuilder.add(AVPItems.TITANIUM_SHOVEL, "Titanium Shovel");
-        translationBuilder.add(AVPItems.TITANIUM_SWORD, "Titanium Sword");
-        translationBuilder.add(AVPItems.VERITANIUM_AXE, "Veritanium Axe");
-        translationBuilder.add(AVPItems.VERITANIUM_HOE, "Veritanium Hoe");
-        translationBuilder.add(AVPItems.VERITANIUM_PICKAXE, "Veritanium Pickaxe");
-        translationBuilder.add(AVPItems.VERITANIUM_SHOVEL, "Veritanium Shovel");
-        translationBuilder.add(AVPItems.VERITANIUM_SWORD, "Veritanium Sword");
+        addItem(builder, AVPItems.ARMOR_CASE, "Armor Case");
+        addItem(builder, AVPItems.CANISTER, "Canister");
+        addItem(builder, AVPItems.WATER_CANISTER, "Water Canister");
+        addItem(builder, AVPItems.LAVA_CANISTER, "Lava Canister");
+        addItem(builder, AVPItems.MILK_CANISTER, "Milk Canister");
+        addItem(builder, AVPItems.POWDER_SNOW_CANISTER, "Powder Snow Canister");
+        addItem(builder, AVPItems.STEEL_AXE, "Steel Axe");
+        addItem(builder, AVPItems.STEEL_HOE, "Steel Hoe");
+        addItem(builder, AVPItems.STEEL_PICKAXE, "Steel Pickaxe");
+        addItem(builder, AVPItems.STEEL_SHOVEL, "Steel Shovel");
+        addItem(builder, AVPItems.STEEL_SWORD, "Steel Sword");
+        addItem(builder, AVPItems.TITANIUM_AXE, "Titanium Axe");
+        addItem(builder, AVPItems.TITANIUM_HOE, "Titanium Hoe");
+        addItem(builder, AVPItems.TITANIUM_PICKAXE, "Titanium Pickaxe");
+        addItem(builder, AVPItems.TITANIUM_SHOVEL, "Titanium Shovel");
+        addItem(builder, AVPItems.TITANIUM_SWORD, "Titanium Sword");
+        addItem(builder, AVPItems.VERITANIUM_AXE, "Veritanium Axe");
+        addItem(builder, AVPItems.VERITANIUM_HOE, "Veritanium Hoe");
+        addItem(builder, AVPItems.VERITANIUM_PICKAXE, "Veritanium Pickaxe");
+        addItem(builder, AVPItems.VERITANIUM_SHOVEL, "Veritanium Shovel");
+        addItem(builder, AVPItems.VERITANIUM_SWORD, "Veritanium Sword");
 
         // Spawn Egg Items
-        translationBuilder.add(SpawnEggItems.ABERRANT_CHESTBURSTER_SPAWN_EGG, "Aberrant Chestburster Spawn Egg");
-        translationBuilder.add(SpawnEggItems.ABERRANT_DRONE_SPAWN_EGG, "Aberrant Drone Spawn Egg");
-        translationBuilder.add(SpawnEggItems.ABERRANT_FACEHUGGER_SPAWN_EGG, "Aberrant Facehugger Spawn Egg");
-        translationBuilder.add(SpawnEggItems.ABERRANT_OVAMORPH_SPAWN_EGG, "Aberrant Ovamorph Spawn Egg");
-        translationBuilder.add(SpawnEggItems.ABERRANT_PRAETORIAN_SPAWN_EGG, "Aberrant Praetorian Spawn Egg");
-        translationBuilder.add(SpawnEggItems.ABERRANT_WARRIOR_SPAWN_EGG, "Aberrant Warrior Spawn Egg");
-        translationBuilder.add(SpawnEggItems.ABERRANT_QUEEN_SPAWN_EGG, "Aberrant Queen Spawn Egg");
-        translationBuilder.add(SpawnEggItems.CHESTBURSTER_SPAWN_EGG, "Chestburster Spawn Egg");
-        translationBuilder.add(SpawnEggItems.DRONE_SPAWN_EGG, "Drone Spawn Egg");
-        translationBuilder.add(SpawnEggItems.FACEHUGGER_SPAWN_EGG, "Facehugger Spawn Egg");
-        translationBuilder.add(SpawnEggItems.NETHER_CHESTBURSTER_SPAWN_EGG, "Nether Chestburster Spawn Egg");
-        translationBuilder.add(SpawnEggItems.NETHER_DRONE_SPAWN_EGG, "Nether Drone Spawn Egg");
-        translationBuilder.add(SpawnEggItems.NETHER_FACEHUGGER_SPAWN_EGG, "Nether Facehugger Spawn Egg");
-        translationBuilder.add(SpawnEggItems.NETHER_OVAMORPH_SPAWN_EGG, "Nether Ovamorph Spawn Egg");
-        translationBuilder.add(SpawnEggItems.NETHER_PRAETORIAN_SPAWN_EGG, "Nether Praetorian Spawn Egg");
-        translationBuilder.add(SpawnEggItems.NETHER_WARRIOR_SPAWN_EGG, "Nether Warrior Spawn Egg");
-        translationBuilder.add(SpawnEggItems.NETHER_QUEEN_SPAWN_EGG, "Nether Queen Spawn Egg");
-        translationBuilder.add(SpawnEggItems.IRRADIATED_DRONE_SPAWN_EGG, "Irradiated Drone Spawn Egg");
-        translationBuilder.add(SpawnEggItems.IRRADIATED_PRAETORIAN_SPAWN_EGG, "Irradiated Praetorian Spawn Egg");
-        translationBuilder.add(SpawnEggItems.IRRADIATED_QUEEN_SPAWN_EGG, "Irradiated Queen Spawn Egg");
-        translationBuilder.add(SpawnEggItems.IRRADIATED_WARRIOR_SPAWN_EGG, "Irradiated Warrior Spawn Egg");
-        translationBuilder.add(SpawnEggItems.OVAMORPH_SPAWN_EGG, "Ovamorph Spawn Egg");
-        translationBuilder.add(SpawnEggItems.PRAETORIAN_SPAWN_EGG, "Praetorian Spawn Egg");
-        translationBuilder.add(SpawnEggItems.QUEEN_SPAWN_EGG, "Queen Spawn Egg");
-        translationBuilder.add(SpawnEggItems.WARRIOR_SPAWN_EGG, "Warrior Spawn Egg");
-        translationBuilder.add(SpawnEggItems.YAUTJA_SPAWN_EGG, "Yautja Spawn Egg");
-        translationBuilder.add(SpawnEggItems.MARINE_SPAWN_EGG, "Marine Spawn Egg");
-        translationBuilder.add(SpawnEggItems.ROYAL_OVAMORPH_SPAWN_EGG, "Royal Ovamorph Spawn Egg");
-        translationBuilder.add(SpawnEggItems.ROYAL_FACEHUGGER_SPAWN_EGG, "Royal Facehugger Spawn Egg");
-        translationBuilder.add(SpawnEggItems.ROYAL_CHESTBURSTER_SPAWN_EGG, "Royal Chestburster Spawn Egg");
-        translationBuilder.add(SpawnEggItems.ROYAL_NETHER_OVAMORPH_SPAWN_EGG, "Royal Nether Ovamorph Spawn Egg");
-        translationBuilder.add(SpawnEggItems.ROYAL_NETHER_FACEHUGGER_SPAWN_EGG, "Royal Nether Facehugger Spawn Egg");
-        translationBuilder.add(SpawnEggItems.ROYAL_NETHER_CHESTBURSTER_SPAWN_EGG, "Royal Nether Chestburster Spawn Egg");
-        translationBuilder.add(SpawnEggItems.ROYAL_ABERRANT_OVAMORPH_SPAWN_EGG, "Royal Aberrant Ovamorph Spawn Egg");
-        translationBuilder.add(SpawnEggItems.ROYAL_ABERRANT_FACEHUGGER_SPAWN_EGG, "Royal Aberrant Facehugger Spawn Egg");
-        translationBuilder.add(SpawnEggItems.ROYAL_ABERRANT_CHESTBURSTER_SPAWN_EGG, "Royal Aberrant Chestburster Spawn Egg");
+        addItem(builder, SpawnEggItems.ABERRANT_CHESTBURSTER_SPAWN_EGG, "Aberrant Chestburster Spawn Egg");
+        addItem(builder, SpawnEggItems.ABERRANT_DRONE_SPAWN_EGG, "Aberrant Drone Spawn Egg");
+        addItem(builder, SpawnEggItems.ABERRANT_FACEHUGGER_SPAWN_EGG, "Aberrant Facehugger Spawn Egg");
+        addItem(builder, SpawnEggItems.ABERRANT_OVAMORPH_SPAWN_EGG, "Aberrant Ovamorph Spawn Egg");
+        addItem(builder, SpawnEggItems.ABERRANT_PRAETORIAN_SPAWN_EGG, "Aberrant Praetorian Spawn Egg");
+        addItem(builder, SpawnEggItems.ABERRANT_WARRIOR_SPAWN_EGG, "Aberrant Warrior Spawn Egg");
+        addItem(builder, SpawnEggItems.ABERRANT_QUEEN_SPAWN_EGG, "Aberrant Queen Spawn Egg");
+        addItem(builder, SpawnEggItems.CHESTBURSTER_SPAWN_EGG, "Chestburster Spawn Egg");
+        addItem(builder, SpawnEggItems.DRONE_SPAWN_EGG, "Drone Spawn Egg");
+        addItem(builder, SpawnEggItems.FACEHUGGER_SPAWN_EGG, "Facehugger Spawn Egg");
+        addItem(builder, SpawnEggItems.NETHER_CHESTBURSTER_SPAWN_EGG, "Nether Chestburster Spawn Egg");
+        addItem(builder, SpawnEggItems.NETHER_DRONE_SPAWN_EGG, "Nether Drone Spawn Egg");
+        addItem(builder, SpawnEggItems.NETHER_FACEHUGGER_SPAWN_EGG, "Nether Facehugger Spawn Egg");
+        addItem(builder, SpawnEggItems.NETHER_OVAMORPH_SPAWN_EGG, "Nether Ovamorph Spawn Egg");
+        addItem(builder, SpawnEggItems.NETHER_PRAETORIAN_SPAWN_EGG, "Nether Praetorian Spawn Egg");
+        addItem(builder, SpawnEggItems.NETHER_WARRIOR_SPAWN_EGG, "Nether Warrior Spawn Egg");
+        addItem(builder, SpawnEggItems.NETHER_QUEEN_SPAWN_EGG, "Nether Queen Spawn Egg");
+        addItem(builder, SpawnEggItems.IRRADIATED_DRONE_SPAWN_EGG, "Irradiated Drone Spawn Egg");
+        addItem(builder, SpawnEggItems.IRRADIATED_PRAETORIAN_SPAWN_EGG, "Irradiated Praetorian Spawn Egg");
+        addItem(builder, SpawnEggItems.IRRADIATED_QUEEN_SPAWN_EGG, "Irradiated Queen Spawn Egg");
+        addItem(builder, SpawnEggItems.IRRADIATED_WARRIOR_SPAWN_EGG, "Irradiated Warrior Spawn Egg");
+        addItem(builder, SpawnEggItems.OVAMORPH_SPAWN_EGG, "Ovamorph Spawn Egg");
+        addItem(builder, SpawnEggItems.PRAETORIAN_SPAWN_EGG, "Praetorian Spawn Egg");
+        addItem(builder, SpawnEggItems.QUEEN_SPAWN_EGG, "Queen Spawn Egg");
+        addItem(builder, SpawnEggItems.WARRIOR_SPAWN_EGG, "Warrior Spawn Egg");
+        addItem(builder, SpawnEggItems.YAUTJA_SPAWN_EGG, "Yautja Spawn Egg");
+        addItem(builder, SpawnEggItems.MARINE_SPAWN_EGG, "Marine Spawn Egg");
+        addItem(builder, SpawnEggItems.ROYAL_OVAMORPH_SPAWN_EGG, "Royal Ovamorph Spawn Egg");
+        addItem(builder, SpawnEggItems.ROYAL_FACEHUGGER_SPAWN_EGG, "Royal Facehugger Spawn Egg");
+        addItem(builder, SpawnEggItems.ROYAL_CHESTBURSTER_SPAWN_EGG, "Royal Chestburster Spawn Egg");
+        addItem(builder, SpawnEggItems.ROYAL_NETHER_OVAMORPH_SPAWN_EGG, "Royal Nether Ovamorph Spawn Egg");
+        addItem(builder, SpawnEggItems.ROYAL_NETHER_FACEHUGGER_SPAWN_EGG, "Royal Nether Facehugger Spawn Egg");
+        addItem(builder, SpawnEggItems.ROYAL_NETHER_CHESTBURSTER_SPAWN_EGG, "Royal Nether Chestburster Spawn Egg");
+        addItem(builder, SpawnEggItems.ROYAL_ABERRANT_OVAMORPH_SPAWN_EGG, "Royal Aberrant Ovamorph Spawn Egg");
+        addItem(builder, SpawnEggItems.ROYAL_ABERRANT_FACEHUGGER_SPAWN_EGG, "Royal Aberrant Facehugger Spawn Egg");
+        addItem(builder, SpawnEggItems.ROYAL_ABERRANT_CHESTBURSTER_SPAWN_EGG, "Royal Aberrant Chestburster Spawn Egg");
 
         // Sounds
-        addSound(translationBuilder, AVPSoundEvents.BLOCK_ACID_BURN, "Acid burns");
-        addSound(translationBuilder, AVPSoundEvents.BLOCK_RESIN_SPREAD, "Xenomorph spreads resin");
+        addSound(builder, AVPSoundEvents.BLOCK_ACID_BURN, "Acid burns");
+        addSound(builder, AVPSoundEvents.BLOCK_RESIN_SPREAD, "Xenomorph spreads resin");
 
-        addSound(translationBuilder, AVPSoundEvents.ENTITY_OVAMORPH_HATCH, "Ovamorph hatches");
-        addSound(translationBuilder, AVPSoundEvents.ENTITY_OVAMORPH_LAID, "Queen lays egg");
-        addSound(translationBuilder, AVPSoundEvents.ENTITY_OVAMORPH_ROOT, "Ovamorph takes root");
-        addSound(translationBuilder, AVPSoundEvents.ENTITY_OVAMORPH_SHEAR, "Ovamorph de-roots");
+        addSound(builder, AVPSoundEvents.ENTITY_OVAMORPH_HATCH, "Ovamorph hatches");
+        addSound(builder, AVPSoundEvents.ENTITY_OVAMORPH_LAID, "Queen lays egg");
+        addSound(builder, AVPSoundEvents.ENTITY_OVAMORPH_ROOT, "Ovamorph takes root");
+        addSound(builder, AVPSoundEvents.ENTITY_OVAMORPH_SHEAR, "Ovamorph de-roots");
 
-        addSound(translationBuilder, AVPSoundEvents.ENTITY_QUEEN_ARM_ATTACK, "Queen attacks");
-        addSound(translationBuilder, AVPSoundEvents.ENTITY_QUEEN_BACK_HAND_ATTACK, "Queen back hand attacks");
-        addSound(translationBuilder, AVPSoundEvents.ENTITY_QUEEN_RAM_ATTACK, "Queen ram attacks");
-        addSound(translationBuilder, AVPSoundEvents.ENTITY_QUEEN_SCREAM, "Queen screams");
-        addSound(translationBuilder, AVPSoundEvents.ENTITY_QUEEN_TAIL_ATTACK, "Queen tail attacks");
-        addSound(translationBuilder, AVPSoundEvents.ENTITY_QUEEN_DEATH, "Queen dies");
-        addSound(translationBuilder, AVPSoundEvents.ENTITY_QUEEN_HURT, "Queen hurts");
-        addSound(translationBuilder, AVPSoundEvents.ENTITY_QUEEN_IDLE, "Queen breathes");
-        addSound(translationBuilder, AVPSoundEvents.ENTITY_QUEEN_STEP_THUMP, "Queen steps");
-        addSound(translationBuilder, AVPSoundEvents.ENTITY_QUEEN_STEP_THUMP_ROCK, "Queen steps");
+        addSound(builder, AVPSoundEvents.ENTITY_QUEEN_ARM_ATTACK, "Queen attacks");
+        addSound(builder, AVPSoundEvents.ENTITY_QUEEN_BACK_HAND_ATTACK, "Queen back hand attacks");
+        addSound(builder, AVPSoundEvents.ENTITY_QUEEN_RAM_ATTACK, "Queen ram attacks");
+        addSound(builder, AVPSoundEvents.ENTITY_QUEEN_SCREAM, "Queen screams");
+        addSound(builder, AVPSoundEvents.ENTITY_QUEEN_TAIL_ATTACK, "Queen tail attacks");
+        addSound(builder, AVPSoundEvents.ENTITY_QUEEN_DEATH, "Queen dies");
+        addSound(builder, AVPSoundEvents.ENTITY_QUEEN_HURT, "Queen hurts");
+        addSound(builder, AVPSoundEvents.ENTITY_QUEEN_IDLE, "Queen breathes");
+        addSound(builder, AVPSoundEvents.ENTITY_QUEEN_STEP_THUMP, "Queen steps");
+        addSound(builder, AVPSoundEvents.ENTITY_QUEEN_STEP_THUMP_ROCK, "Queen steps");
 
-        addSound(translationBuilder, AVPSoundEvents.ENTITY_XENOMORPH_ATTACK, "Xenomorph attacks");
-        addSound(translationBuilder, AVPSoundEvents.ENTITY_XENOMORPH_DEATH, "Xenomorph dies");
-        addSound(translationBuilder, AVPSoundEvents.ENTITY_XENOMORPH_HISS, "Xenomorph hisses");
-        addSound(translationBuilder, AVPSoundEvents.ENTITY_XENOMORPH_HURT, "Xenomorph hurts");
-        addSound(translationBuilder, AVPSoundEvents.ENTITY_XENOMORPH_IDLE, "Xenomorph breathes");
-        addSound(translationBuilder, AVPSoundEvents.ENTITY_XENOMORPH_LUNGE, "Xenomorph lunges");
+        addSound(builder, AVPSoundEvents.ENTITY_XENOMORPH_ATTACK, "Xenomorph attacks");
+        addSound(builder, AVPSoundEvents.ENTITY_XENOMORPH_DEATH, "Xenomorph dies");
+        addSound(builder, AVPSoundEvents.ENTITY_XENOMORPH_HISS, "Xenomorph hisses");
+        addSound(builder, AVPSoundEvents.ENTITY_XENOMORPH_HURT, "Xenomorph hurts");
+        addSound(builder, AVPSoundEvents.ENTITY_XENOMORPH_IDLE, "Xenomorph breathes");
+        addSound(builder, AVPSoundEvents.ENTITY_XENOMORPH_LUNGE, "Xenomorph lunges");
 
-        addSound(translationBuilder, AVPSoundEvents.ITEM_ARMOR_EQUIP_CHITIN, "Chitin armor squishes");
-        addSound(translationBuilder, AVPSoundEvents.ITEM_ARMOR_EQUIP_MK50, "MK50 armor rustles");
-        addSound(translationBuilder, AVPSoundEvents.ITEM_ARMOR_EQUIP_PRESSURE, "Pressure armor rustles");
-        addSound(translationBuilder, AVPSoundEvents.ITEM_ARMOR_EQUIP_STEEL, "Steel armor clanks");
-        addSound(translationBuilder, AVPSoundEvents.ITEM_ARMOR_EQUIP_TACTICAL, "Tactical armor rustles");
-        addSound(translationBuilder, AVPSoundEvents.ITEM_ARMOR_EQUIP_TITANIUM, "Titanium armor clanks");
-        addSound(translationBuilder, AVPSoundEvents.ITEM_ARMOR_EQUIP_VERITANIUM, "Veritanium armor clanks");
+        addSound(builder, AVPSoundEvents.ITEM_ARMOR_EQUIP_CHITIN, "Chitin armor squishes");
+        addSound(builder, AVPSoundEvents.ITEM_ARMOR_EQUIP_MK50, "MK50 armor rustles");
+        addSound(builder, AVPSoundEvents.ITEM_ARMOR_EQUIP_PRESSURE, "Pressure armor rustles");
+        addSound(builder, AVPSoundEvents.ITEM_ARMOR_EQUIP_STEEL, "Steel armor clanks");
+        addSound(builder, AVPSoundEvents.ITEM_ARMOR_EQUIP_TACTICAL, "Tactical armor rustles");
+        addSound(builder, AVPSoundEvents.ITEM_ARMOR_EQUIP_TITANIUM, "Titanium armor clanks");
+        addSound(builder, AVPSoundEvents.ITEM_ARMOR_EQUIP_VERITANIUM, "Veritanium armor clanks");
 
-        addSound(translationBuilder, AVPSoundEvents.WEAPON_FLAMETHROWER_SEVASTOPOL_RELOAD_FINISH, "Flamethrower finishes reloading");
-        addSound(translationBuilder, AVPSoundEvents.WEAPON_FLAMETHROWER_SEVASTOPOL_RELOAD_START, "Flamethrower reloads");
-        addSound(translationBuilder, AVPSoundEvents.WEAPON_FLAMETHROWER_SEVASTOPOL_SHOOT, "Flamethrower shoots");
-        addSound(translationBuilder, AVPSoundEvents.WEAPON_FX_RICOCHET_DIRT, "Bullet ricochets off of dirt");
-        addSound(translationBuilder, AVPSoundEvents.WEAPON_FX_RICOCHET_GENERIC, "Bullet ricochets");
-        addSound(translationBuilder, AVPSoundEvents.WEAPON_FX_RICOCHET_GLASS, "Bullet ricochets off of glass");
-        addSound(translationBuilder, AVPSoundEvents.WEAPON_FX_RICOCHET_METAL, "Bullet ricochets off of metal");
-        addSound(translationBuilder, AVPSoundEvents.WEAPON_GENERIC_RELOAD, "Gun reloads");
-        addSound(translationBuilder, AVPSoundEvents.WEAPON_GENERIC_SHOOT, "Gun shoots");
-        addSound(translationBuilder, AVPSoundEvents.WEAPON_GENERIC_SHOOT_FAIL, "Gun fails to shoot");
-        addSound(translationBuilder, AVPSoundEvents.WEAPON_M37_12_SHOTGUN_SHOOT, "M37-12 Shotgun shoots");
-        addSound(translationBuilder, AVPSoundEvents.WEAPON_M41A_PULSE_RIFLE_SHOOT, "M41A Pulse Rifle shoots");
-        addSound(translationBuilder, AVPSoundEvents.WEAPON_M42A3_SNIPER_RIFLE_SHOOT, "M42A3 Sniper Rifle shoots");
-        addSound(translationBuilder, AVPSoundEvents.WEAPON_M4RA_BATTLE_RIFLE_SHOOT, "M4RA Battle Rifle shoots");
-        addSound(translationBuilder, AVPSoundEvents.WEAPON_M56_SMARTGUN_SHOOT, "M56 Smartgun shoots");
-        addSound(translationBuilder, AVPSoundEvents.WEAPON_M6B_ROCKET_LAUNCHER_RELOAD_FINISH, "M6B Rocket Launcher finishes reloading");
-        addSound(translationBuilder, AVPSoundEvents.WEAPON_M6B_ROCKET_LAUNCHER_RELOAD_START, "M6B Rocket Launcher reloads");
-        addSound(translationBuilder, AVPSoundEvents.WEAPON_M6B_ROCKET_LAUNCHER_SHOOT, "M6B Rocket Launcher shoots");
-        addSound(translationBuilder, AVPSoundEvents.WEAPON_M88_MOD_4_COMBAT_PISTOL_RELOAD, "M88 Mod 4 Combat Pistol reloads");
-        addSound(translationBuilder, AVPSoundEvents.WEAPON_M88_MOD_4_COMBAT_PISTOL_SHOOT, "M88 Mod 4 Combat Pistol shoots");
-        addSound(translationBuilder, AVPSoundEvents.WEAPON_OLD_PAINLESS_SHOOT, "Old painless shoots");
-        addSound(translationBuilder, AVPSoundEvents.WEAPON_OLD_PAINLESS_SHOOT_FINISH, "Old Painless stops shooting");
-        addSound(translationBuilder, AVPSoundEvents.WEAPON_OLD_PAINLESS_SHOOT_SPINNING, "Old Painless barrel spins");
-        addSound(translationBuilder, AVPSoundEvents.WEAPON_OLD_PAINLESS_SHOOT_START, "Old Painless barrel starts spinning");
-        addSound(translationBuilder, AVPSoundEvents.WEAPON_ZX_76_SHOTGUN_SHOOT, "ZX-76 Shotgun shoots");
-        addSound(translationBuilder, AVPSoundEvents.JUKEBOX_SOUNDS_ALIEN_MUSIC_1, "Silver Smile plays");
-        addSound(translationBuilder, AVPSoundEvents.JUKEBOX_SOUNDS_PREDATOR_MUSIC_1, "Hunter plays");
+        addSound(builder, AVPSoundEvents.WEAPON_FLAMETHROWER_SEVASTOPOL_RELOAD_FINISH, "Flamethrower finishes reloading");
+        addSound(builder, AVPSoundEvents.WEAPON_FLAMETHROWER_SEVASTOPOL_RELOAD_START, "Flamethrower reloads");
+        addSound(builder, AVPSoundEvents.WEAPON_FLAMETHROWER_SEVASTOPOL_SHOOT, "Flamethrower shoots");
+        addSound(builder, AVPSoundEvents.WEAPON_FX_RICOCHET_DIRT, "Bullet ricochets off of dirt");
+        addSound(builder, AVPSoundEvents.WEAPON_FX_RICOCHET_GENERIC, "Bullet ricochets");
+        addSound(builder, AVPSoundEvents.WEAPON_FX_RICOCHET_GLASS, "Bullet ricochets off of glass");
+        addSound(builder, AVPSoundEvents.WEAPON_FX_RICOCHET_METAL, "Bullet ricochets off of metal");
+        addSound(builder, AVPSoundEvents.WEAPON_GENERIC_RELOAD, "Gun reloads");
+        addSound(builder, AVPSoundEvents.WEAPON_GENERIC_SHOOT, "Gun shoots");
+        addSound(builder, AVPSoundEvents.WEAPON_GENERIC_SHOOT_FAIL, "Gun fails to shoot");
+        addSound(builder, AVPSoundEvents.WEAPON_M37_12_SHOTGUN_SHOOT, "M37-12 Shotgun shoots");
+        addSound(builder, AVPSoundEvents.WEAPON_M41A_PULSE_RIFLE_SHOOT, "M41A Pulse Rifle shoots");
+        addSound(builder, AVPSoundEvents.WEAPON_M42A3_SNIPER_RIFLE_SHOOT, "M42A3 Sniper Rifle shoots");
+        addSound(builder, AVPSoundEvents.WEAPON_M4RA_BATTLE_RIFLE_SHOOT, "M4RA Battle Rifle shoots");
+        addSound(builder, AVPSoundEvents.WEAPON_M56_SMARTGUN_SHOOT, "M56 Smartgun shoots");
+        addSound(builder, AVPSoundEvents.WEAPON_M6B_ROCKET_LAUNCHER_RELOAD_FINISH, "M6B Rocket Launcher finishes reloading");
+        addSound(builder, AVPSoundEvents.WEAPON_M6B_ROCKET_LAUNCHER_RELOAD_START, "M6B Rocket Launcher reloads");
+        addSound(builder, AVPSoundEvents.WEAPON_M6B_ROCKET_LAUNCHER_SHOOT, "M6B Rocket Launcher shoots");
+        addSound(builder, AVPSoundEvents.WEAPON_M88_MOD_4_COMBAT_PISTOL_RELOAD, "M88 Mod 4 Combat Pistol reloads");
+        addSound(builder, AVPSoundEvents.WEAPON_M88_MOD_4_COMBAT_PISTOL_SHOOT, "M88 Mod 4 Combat Pistol shoots");
+        addSound(builder, AVPSoundEvents.WEAPON_OLD_PAINLESS_SHOOT, "Old painless shoots");
+        addSound(builder, AVPSoundEvents.WEAPON_OLD_PAINLESS_SHOOT_FINISH, "Old Painless stops shooting");
+        addSound(builder, AVPSoundEvents.WEAPON_OLD_PAINLESS_SHOOT_SPINNING, "Old Painless barrel spins");
+        addSound(builder, AVPSoundEvents.WEAPON_OLD_PAINLESS_SHOOT_START, "Old Painless barrel starts spinning");
+        addSound(builder, AVPSoundEvents.WEAPON_ZX_76_SHOTGUN_SHOOT, "ZX-76 Shotgun shoots");
+        addSound(builder, AVPSoundEvents.JUKEBOX_SOUNDS_ALIEN_MUSIC_1, "Silver Smile plays");
+        addSound(builder, AVPSoundEvents.JUKEBOX_SOUNDS_PREDATOR_MUSIC_1, "Hunter plays");
 
         // Jukebox Sounds
-        translationBuilder.add("jukebox_song.avp.alien_music_1", "Rotch Gwylt - Silver Smile");
-        translationBuilder.add("jukebox_song.avp.predator_music_1", "Rotch Gwylt - Hunter");
+        builder.add("jukebox_song.avp.alien_music_1", "Rotch Gwylt - Silver Smile");
+        builder.add("jukebox_song.avp.predator_music_1", "Rotch Gwylt - Hunter");
 
         // Tooltips
-        translationBuilder.add("tooltip.avp.accuracy", "Accuracy: ");
-        translationBuilder.add("tooltip.avp.ammunition", "Ammo: ");
-        translationBuilder.add("tooltip.avp.ammunition_type", "Fires: ");
-        translationBuilder.add("tooltip.avp.damage", "Damage: ");
-        translationBuilder.add("tooltip.avp.fire_mode", "Fire Mode: ");
-        translationBuilder.add("tooltip.avp.fire_rate", "Fire Rate: ");
-        translationBuilder.add("tooltip.avp.knockback", "Knockback: ");
-        translationBuilder.add("tooltip.avp.recoil", "Recoil: ");
-        translationBuilder.add("tooltip.avp.capacity", "Capacity: ");
+        builder.add("tooltip.avp.accuracy", "Accuracy: ");
+        builder.add("tooltip.avp.ammunition", "Ammo: ");
+        builder.add("tooltip.avp.ammunition_type", "Fires: ");
+        builder.add("tooltip.avp.damage", "Damage: ");
+        builder.add("tooltip.avp.fire_mode", "Fire Mode: ");
+        builder.add("tooltip.avp.fire_rate", "Fire Rate: ");
+        builder.add("tooltip.avp.knockback", "Knockback: ");
+        builder.add("tooltip.avp.recoil", "Recoil: ");
+        builder.add("tooltip.avp.capacity", "Capacity: ");
 
-        translationBuilder.add("tooltip.avp.mk50_suit.full_set_bonus", "Full Set Bonus:");
-        translationBuilder.add("tooltip.avp.mk50_suit.radiation_resistance", "+ Radiation Resistance");
-        translationBuilder.add("tooltip.avp.mk50_suit.water_breathing", "+ Water Breathing");
-        translationBuilder.add("tooltip.avp.mk50_suit.slowness", "- Slowness");
+        builder.add("tooltip.avp.mk50_suit.full_set_bonus", "Full Set Bonus:");
+        builder.add("tooltip.avp.mk50_suit.radiation_resistance", "+ Radiation Resistance");
+        builder.add("tooltip.avp.mk50_suit.water_breathing", "+ Water Breathing");
+        builder.add("tooltip.avp.mk50_suit.slowness", "- Slowness");
 
-        translationBuilder.add("tooltip.avp.pressure_suit.full_set_bonus", "Full Set Bonus:");
-        translationBuilder.add("tooltip.avp.pressure_suit.water_breathing", "+ Water Breathing");
+        builder.add("tooltip.avp.pressure_suit.full_set_bonus", "Full Set Bonus:");
+        builder.add("tooltip.avp.pressure_suit.water_breathing", "+ Water Breathing");
 
-        translationBuilder.add("tooltip.avp.ammo_chest.in_inventory", "When In Inventory:");
-        translationBuilder.add("tooltip.avp.ammo_chest.reload_from_chest", "+ Guns Auto-Reload Ammo from Chest");
-        translationBuilder.add("tooltip.avp.ammo_chest.placed", "When Placed:");
-        translationBuilder.add("tooltip.avp.ammo_chest.turret_load_from_chest", "+ Nearby Turrets use Ammo from Chest");
+        builder.add("tooltip.avp.ammo_chest.in_inventory", "When In Inventory:");
+        builder.add("tooltip.avp.ammo_chest.reload_from_chest", "+ Guns Auto-Reload Ammo from Chest");
+        builder.add("tooltip.avp.ammo_chest.placed", "When Placed:");
+        builder.add("tooltip.avp.ammo_chest.turret_load_from_chest", "+ Nearby Turrets use Ammo from Chest");
 
-        translationBuilder.add("tooltip.avp.lead_chest.in_inventory", "When In Inventory:");
-        translationBuilder.add("tooltip.avp.lead_chest.auto_store_irradiated_items", "+ Irradiated Items Auto-Stored in Chest");
+        builder.add("tooltip.avp.lead_chest.in_inventory", "When In Inventory:");
+        builder.add("tooltip.avp.lead_chest.auto_store_irradiated_items", "+ Irradiated Items Auto-Stored in Chest");
 
-        translationBuilder.add("tooltip.avp.sentry_turret.requires", "Requires:");
-        translationBuilder.add("tooltip.avp.sentry_turret.redstone_power_requirement", "- Redstone Power");
-        translationBuilder.add(
+        builder.add("tooltip.avp.sentry_turret.requires", "Requires:");
+        builder.add("tooltip.avp.sentry_turret.redstone_power_requirement", "- Redstone Power");
+        builder.add(
             "tooltip.avp.sentry_turret.nearby_ammo_chest_with_ammo_requirement",
             "- Nearby Ammo Chest with Medium Bullets"
         );
 
         // Keybinds
-        translationBuilder.add("key.avp.reload", "Reload");
-        translationBuilder.add("keybind.category.avp.weapons", "AVP Weapons");
+        builder.add("key.avp.reload", "Reload");
+        builder.add("keybind.category.avp.weapons", "AVP Weapons");
 
         // Containers
-        translationBuilder.add("container.lead_chest", "Lead Chest");
-        translationBuilder.add("container.ammo_chest", "Ammo Chest");
+        builder.add("container.lead_chest", "Lead Chest");
+        builder.add("container.ammo_chest", "Ammo Chest");
 
         // Death messages
-        translationBuilder.add("death.attack.acid", "%1$s vaporized in acid");
-        translationBuilder.add("death.attack.radiation", "%1$s surrendered to radiation");
-        translationBuilder.add("death.attack.razor_wire", "%1$s was struck by razor wire");
-        translationBuilder.add("death.attack.smothering", "%1$s was smothered to death");
+        builder.add("death.attack.acid", "%1$s vaporized in acid");
+        builder.add("death.attack.radiation", "%1$s surrendered to radiation");
+        builder.add("death.attack.razor_wire", "%1$s was struck by razor wire");
+        builder.add("death.attack.smothering", "%1$s was smothered to death");
 
-        translationBuilder.add("advancements.aliens.root.title", "AVP: Aliens");
-        translationBuilder.add("advancements.aliens.root.description", "In Minecraft, no one can hear you scream");
+        builder.add("advancements.aliens.root.title", "AVP: Aliens");
+        builder.add("advancements.aliens.root.description", "In Minecraft, no one can hear you scream");
 
-        translationBuilder.add("advancements.aliens.kill_an_alien.title", "Imperfect Organism");
-        translationBuilder.add("advancements.aliens.kill_an_alien.description", "Kill an alien and live to tell the tale");
+        builder.add("advancements.aliens.kill_an_alien.title", "Imperfect Organism");
+        builder.add("advancements.aliens.kill_an_alien.description", "Kill an alien and live to tell the tale");
 
-        translationBuilder.add("advancements.aliens.kill_a_royal_alien.title", "Regicide");
-        translationBuilder.add("advancements.aliens.kill_a_royal_alien.description", "Kill a royal alien");
+        builder.add("advancements.aliens.kill_a_royal_alien.title", "Regicide");
+        builder.add("advancements.aliens.kill_a_royal_alien.description", "Kill a royal alien");
 
-        translationBuilder.add("advancements.aliens.kill_all_aliens.title", "Xenocide");
-        translationBuilder.add("advancements.aliens.kill_all_aliens.description", "Kill one of every alien");
+        builder.add("advancements.aliens.kill_all_aliens.title", "Xenocide");
+        builder.add("advancements.aliens.kill_all_aliens.description", "Kill one of every alien");
 
-        translationBuilder.add("advancements.aliens.chitin_armor.title", "Cover Me with... Uh...");
-        translationBuilder.add("advancements.aliens.chitin_armor.description", "Equip a full set of chitin armor");
+        builder.add("advancements.aliens.chitin_armor.title", "Cover Me with... Uh...");
+        builder.add("advancements.aliens.chitin_armor.description", "Equip a full set of chitin armor");
 
-        translationBuilder.add("advancements.aliens.shear_an_ovamorph.title", "Eggsploration Time");
-        translationBuilder.add("advancements.aliens.shear_an_ovamorph.description", "Free an ovamorph from its bindings");
+        builder.add("advancements.aliens.shear_an_ovamorph.title", "Eggsploration Time");
+        builder.add("advancements.aliens.shear_an_ovamorph.description", "Free an ovamorph from its bindings");
 
-        translationBuilder.add("advancements.aliens.plated_chitin_armor.title", "Kneel to the Crown");
-        translationBuilder.add("advancements.aliens.plated_chitin_armor.description", "Equip a full set of plated chitin armor");
+        builder.add("advancements.aliens.plated_chitin_armor.title", "Kneel to the Crown");
+        builder.add("advancements.aliens.plated_chitin_armor.description", "Equip a full set of plated chitin armor");
 
         // Hive boss bar
-        translationBuilder.add("bossbar.avp.hive.title", "Hive");
+        builder.add("bossbar.avp.hive.title", "Hive");
 
-        translationBuilder.add("avp.industrialfurnace.displayName", "Industrial Furnace");
-        translationBuilder.add("effect.avp.radiation", "Radiation");
+        builder.add("avp.industrialfurnace.displayName", "Industrial Furnace");
+        builder.add("effect.avp.radiation", "Radiation");
 
         // Configs
-        translationBuilder.add("config.screen.avp", "AVP Config");
+        builder.add("config.screen.avp", "AVP Config");
 
-        translationBuilder.add("config.avp.option.blockConfigs", "Block Setting Configs");
-        translationBuilder.add("config.avp.option.RESONATOR_REPLACE_TICKS", "Resonator Replace Ticks");
-        translationBuilder.add("config.avp.option.RESONATOR_REPLACE_RADIUS", "Resonator Replace Radius");
+        builder.add("config.avp.option.blockConfigs", "Block Setting Configs");
+        builder.add("config.avp.option.RESONATOR_REPLACE_TICKS", "Resonator Replace Ticks");
+        builder.add("config.avp.option.RESONATOR_REPLACE_RADIUS", "Resonator Replace Radius");
 
-        translationBuilder.add("config.avp.option.hiveConfigs", "Hive Configs");
-        translationBuilder.add(
+        builder.add("config.avp.option.hiveConfigs", "Hive Configs");
+        builder.add(
             "config.avp.option.MINIMUM_DISTANCE_BETWEEN_HIVES_IN_BLOCKS",
             "Minimum distance between hive centers in blocks"
         );
-        translationBuilder.add("config.avp.option.HIVE_RADIUS_IN_BLOCKS", "The radius of hives in blocks");
-        translationBuilder.add(
+        builder.add("config.avp.option.HIVE_RADIUS_IN_BLOCKS", "The radius of hives in blocks");
+        builder.add(
             "config.avp.option.HIVE_LEASH_RADIUS_IN_BLOCKS",
             "Maximum distance away from a hive that Xenomorphs can join or remain as a member"
         );
-        translationBuilder.add("config.avp.option.HIVE_MAX_PRAETORIAN_COUNT", "Maximum number of Praetorians allowed within a hive");
-        translationBuilder.add(
+        builder.add("config.avp.option.HIVE_MAX_PRAETORIAN_COUNT", "Maximum number of Praetorians allowed within a hive");
+        builder.add(
             "config.avp.option.HIVE_MEMBERS_REQUIRED_FOR_PRAETORIAN",
             "Number of hive members required to spawn a Praetorian"
         );
-        translationBuilder.add(
+        builder.add(
             "config.avp.option.HIVE_DARKEN_SCREEN",
             "Determines if the screen should darken when the hive boss bar appears"
         );
-        translationBuilder.add("config.avp.option.HIVE_DEBUG_ENABLED", "Enables hive debugging");
-        translationBuilder.add("config.avp.option.HIVE_DEBUG_HIGHLIGHT_LEADER", "Applies a glow effect to the hive leader");
-        translationBuilder.add("config.avp.option.HIVE_DEBUG_HIGHLIGHT_ALL_MEMBERS", "Applies a glow effect to all hive members");
-        translationBuilder.add("config.avp.option.HIVE_DEBUG_MARK_HIVE_CENTER", "Marks the hive center with a block");
-        translationBuilder.add("config.avp.option.CHESTBURSTER_MAX_GROWTH_TIMER_SECONDS", "Chestburster Max Growth Timer Seconds");
-        translationBuilder.add("config.avp.option.DRONE_MAX_GROWTH_TIMER_SECONDS", "Drone Max Growth Timer Seconds");
-        translationBuilder.add("config.avp.option.WARRIOR_MAX_GROWTH_TIMER_SECONDS", "Warrior Max Growth Timer Seconds");
-        translationBuilder.add("config.avp.option.PRAETORIAN_MAX_GROWTH_TIMER_SECONDS", "Praetorian Max Growth Timer Seconds");
-        translationBuilder.add("config.avp.option.PRAETORIAN_SHORTCUT_TIMER_SECONDS", "Praetorian Shortcut Timer Seconds");
+        builder.add("config.avp.option.HIVE_DEBUG_ENABLED", "Enables hive debugging");
+        builder.add("config.avp.option.HIVE_DEBUG_HIGHLIGHT_LEADER", "Applies a glow effect to the hive leader");
+        builder.add("config.avp.option.HIVE_DEBUG_HIGHLIGHT_ALL_MEMBERS", "Applies a glow effect to all hive members");
+        builder.add("config.avp.option.HIVE_DEBUG_MARK_HIVE_CENTER", "Marks the hive center with a block");
+        builder.add("config.avp.option.CHESTBURSTER_MAX_GROWTH_TIMER_SECONDS", "Chestburster Max Growth Timer Seconds");
+        builder.add("config.avp.option.DRONE_MAX_GROWTH_TIMER_SECONDS", "Drone Max Growth Timer Seconds");
+        builder.add("config.avp.option.WARRIOR_MAX_GROWTH_TIMER_SECONDS", "Warrior Max Growth Timer Seconds");
+        builder.add("config.avp.option.PRAETORIAN_MAX_GROWTH_TIMER_SECONDS", "Praetorian Max Growth Timer Seconds");
+        builder.add("config.avp.option.PRAETORIAN_SHORTCUT_TIMER_SECONDS", "Praetorian Shortcut Timer Seconds");
 
-        translationBuilder.add("config.avp.option.spawnConfigs", "Mob Spawn Configs");
-        translationBuilder.add("config.avp.option.NATURAL_SPAWNING_ENABLED", "Enable natural spawning for Xenomorphs in the overworld.");
-        translationBuilder.add(
+        builder.add("config.avp.option.spawnConfigs", "Mob Spawn Configs");
+        builder.add("config.avp.option.NATURAL_SPAWNING_ENABLED", "Enable natural spawning for Xenomorphs in the overworld.");
+        builder.add(
             "config.avp.option.ADULT_SPAWNING_ENABLED",
             "Enable natural spawning for adult Xenomorphs in the overworld."
         );
-        translationBuilder.add(
+        builder.add(
             "config.avp.option.YOUNG_SPAWNING_ENABLED",
             "Enable natural spawning for young Xenomorphs (eggs, facehuggers, bursters, etc.) in the overworld."
         );
-        translationBuilder.add(
+        builder.add(
             "config.avp.option.REMOVE_VANILLA_SPAWNS",
             "Removes certain hostile monster spawns, allowing others like Xenomorphs to spawn more frequently."
         );
-        translationBuilder.add(
+        builder.add(
             "config.avp.option.ALIEN_CUSTOM_MOB_CATEGORY_ENABLED",
             "Enable separate spawn cap for aliens and predators."
         );
-        translationBuilder.add(
+        builder.add(
             "config.avp.option.ALIEN_CUSTOM_MOB_CATEGORY_LIMIT",
             "Maximum spawn count for aliens in the custom mob category."
         );
-        translationBuilder.add(
+        builder.add(
             "config.avp.option.PREDATOR_CUSTOM_MOB_CATEGORY_LIMIT",
             "Maximum spawn count for predators in the custom mob category."
         );
-        translationBuilder.add("config.avp.option.CHESTBURSTER_SPAWN", "Chestburster spawn settings");
-        translationBuilder.add("config.avp.option.DRONE_SPAWN", "Drone spawn settings");
-        translationBuilder.add("config.avp.option.NETHER_CHESTBURSTER_SPAWN", "Nether Chestburster spawn settings");
-        translationBuilder.add("config.avp.option.NETHER_DRONE_SPAWN", "Nether Drone spawn settings");
-        translationBuilder.add("config.avp.option.NETHER_OVAMORPH_SPAWN", "Nether Ovamorph spawn settings");
-        translationBuilder.add("config.avp.option.NETHER_PRAETORIAN_SPAWN", "Nether Praetorian spawn settings");
-        translationBuilder.add("config.avp.option.NETHER_WARRIOR_SPAWN", "Nether Warrior spawn settings");
-        translationBuilder.add("config.avp.option.NETHER_QUEEN_SPAWN", "Nether Queen spawn settings");
-        translationBuilder.add("config.avp.option.OVAMORPH_SPAWN", "Ovamorph spawn settings");
-        translationBuilder.add("config.avp.option.PRAETORIAN_SPAWN", "Praetorian spawn settings");
-        translationBuilder.add("config.avp.option.QUEEN_SPAWN", "Queen spawn settings");
-        translationBuilder.add("config.avp.option.WARRIOR_SPAWN", "Warrior spawn settings");
-        translationBuilder.add("config.avp.option.YAUTJA_SPAWN", "Yautja spawn settings");
-        translationBuilder.add("config.avp.option.enabled", "Enable spawning");
-        translationBuilder.add("config.avp.option.maxY", "Maximum Y-level at for spawn");
-        translationBuilder.add("config.avp.option.minY", "Minimum Y-level at for spawn");
-        translationBuilder.add("config.avp.option.minGroupSize", "Minimum group size for spawns");
-        translationBuilder.add("config.avp.option.maxGroupSize", "Maximum group size for spawns");
-        translationBuilder.add("config.avp.option.weight", "Spawn weight");
-        translationBuilder.add("config.avp.option.requiresResin", "Requires resin for Nether Ovamorph spawning");
+        builder.add("config.avp.option.CHESTBURSTER_SPAWN", "Chestburster spawn settings");
+        builder.add("config.avp.option.DRONE_SPAWN", "Drone spawn settings");
+        builder.add("config.avp.option.NETHER_CHESTBURSTER_SPAWN", "Nether Chestburster spawn settings");
+        builder.add("config.avp.option.NETHER_DRONE_SPAWN", "Nether Drone spawn settings");
+        builder.add("config.avp.option.NETHER_OVAMORPH_SPAWN", "Nether Ovamorph spawn settings");
+        builder.add("config.avp.option.NETHER_PRAETORIAN_SPAWN", "Nether Praetorian spawn settings");
+        builder.add("config.avp.option.NETHER_WARRIOR_SPAWN", "Nether Warrior spawn settings");
+        builder.add("config.avp.option.NETHER_QUEEN_SPAWN", "Nether Queen spawn settings");
+        builder.add("config.avp.option.OVAMORPH_SPAWN", "Ovamorph spawn settings");
+        builder.add("config.avp.option.PRAETORIAN_SPAWN", "Praetorian spawn settings");
+        builder.add("config.avp.option.QUEEN_SPAWN", "Queen spawn settings");
+        builder.add("config.avp.option.WARRIOR_SPAWN", "Warrior spawn settings");
+        builder.add("config.avp.option.YAUTJA_SPAWN", "Yautja spawn settings");
+        builder.add("config.avp.option.enabled", "Enable spawning");
+        builder.add("config.avp.option.maxY", "Maximum Y-level at for spawn");
+        builder.add("config.avp.option.minY", "Minimum Y-level at for spawn");
+        builder.add("config.avp.option.minGroupSize", "Minimum group size for spawns");
+        builder.add("config.avp.option.maxGroupSize", "Maximum group size for spawns");
+        builder.add("config.avp.option.weight", "Spawn weight");
+        builder.add("config.avp.option.requiresResin", "Requires resin for Nether Ovamorph spawning");
 
-        translationBuilder.add("config.avp.option.statsConfigs", "Mob Stat Configs");
-        translationBuilder.add("config.avp.option.ABERRANT_STATS_MULTIPLIER", "Aberrant Stats Multiplier");
-        translationBuilder.add("config.avp.option.IRRADIATED_STATS_MULTIPLIER", "Irradiated Stats Multiplier");
-        translationBuilder.add("config.avp.option.ACID_ATTACK_DAMAGE", "Acid Damage per tick");
-        translationBuilder.add("config.avp.option.CHESTBURSTER_STATS", "Chestburster stats");
-        translationBuilder.add("config.avp.option.health", "Health value");
-        translationBuilder.add("config.avp.option.attackDamage", "Attack damage");
-        translationBuilder.add("config.avp.option.healthRegenPerSecond", "Health regeneration per second");
-        translationBuilder.add("config.avp.option.knockbackResistance", "Knockback resistance");
-        translationBuilder.add("config.avp.option.moveSpeed", "Movement speed");
-        translationBuilder.add("config.avp.option.armorToughness", "Armor toughness.");
-        translationBuilder.add("config.avp.option.armor", "Armor value");
-        translationBuilder.add("config.avp.option.nestTickrate", "Nest tickrate");
-        translationBuilder.add("config.avp.option.followRange", "Follow range");
-        translationBuilder.add("config.avp.option.DRONE_STATS", "Drone stats");
-        translationBuilder.add("config.avp.option.OVAMORPH_STATS", "Ovamorph stats");
-        translationBuilder.add("config.avp.option.PRAETORIAN_STATS", "Praetorian stats");
-        translationBuilder.add("config.avp.option.QUEEN_STATS", "Queen stats");
-        translationBuilder.add("config.avp.option.WARRIOR_STATS", "Warrior stats");
-        translationBuilder.add("config.avp.option.YAUTJA_STATS", "Yautja stats");
-        translationBuilder.add("config.avp.option.MARINE_STATS", "Marine stats");
-        translationBuilder.add("config.avp.option.FACEHUGGER_STATS", "Facehugger stats");
+        builder.add("config.avp.option.statsConfigs", "Mob Stat Configs");
+        builder.add("config.avp.option.ABERRANT_STATS_MULTIPLIER", "Aberrant Stats Multiplier");
+        builder.add("config.avp.option.IRRADIATED_STATS_MULTIPLIER", "Irradiated Stats Multiplier");
+        builder.add("config.avp.option.ACID_ATTACK_DAMAGE", "Acid Damage per tick");
+        builder.add("config.avp.option.CHESTBURSTER_STATS", "Chestburster stats");
+        builder.add("config.avp.option.health", "Health value");
+        builder.add("config.avp.option.attackDamage", "Attack damage");
+        builder.add("config.avp.option.healthRegenPerSecond", "Health regeneration per second");
+        builder.add("config.avp.option.knockbackResistance", "Knockback resistance");
+        builder.add("config.avp.option.moveSpeed", "Movement speed");
+        builder.add("config.avp.option.armorToughness", "Armor toughness.");
+        builder.add("config.avp.option.armor", "Armor value");
+        builder.add("config.avp.option.nestTickrate", "Nest tickrate");
+        builder.add("config.avp.option.followRange", "Follow range");
+        builder.add("config.avp.option.DRONE_STATS", "Drone stats");
+        builder.add("config.avp.option.OVAMORPH_STATS", "Ovamorph stats");
+        builder.add("config.avp.option.PRAETORIAN_STATS", "Praetorian stats");
+        builder.add("config.avp.option.QUEEN_STATS", "Queen stats");
+        builder.add("config.avp.option.WARRIOR_STATS", "Warrior stats");
+        builder.add("config.avp.option.YAUTJA_STATS", "Yautja stats");
+        builder.add("config.avp.option.MARINE_STATS", "Marine stats");
+        builder.add("config.avp.option.FACEHUGGER_STATS", "Facehugger stats");
 
-        translationBuilder.add("config.avp.option.weaponConfigs", "Weapon Options");
-        translationBuilder.add("config.avp.option.BULLETS_DAMAGE_BLOCKS_ENABLED", "Enable bullet collision damage to blocks");
-        translationBuilder.add("config.avp.option.ENABLE_NUKE_BLOCK_MECHS", "Allow nukes to work");
-        translationBuilder.add("config.avp.option.TURRET_FOV", "Turret FOV");
-        translationBuilder.add("config.avp.option.TURRET_RANGE", "Turret range");
-        translationBuilder.add("config.avp.option.TURRET_DAMAGE", "Turret damage");
-        translationBuilder.add("config.avp.option.TURRET_AMMOCHEST_SEARCH_RANGE", "Turret ammo chest search range");
+        builder.add("config.avp.option.weaponConfigs", "Weapon Options");
+        builder.add("config.avp.option.BULLETS_DAMAGE_BLOCKS_ENABLED", "Enable bullet collision damage to blocks");
+        builder.add("config.avp.option.ENABLE_NUKE_BLOCK_MECHS", "Allow nukes to work");
+        builder.add("config.avp.option.TURRET_FOV", "Turret FOV");
+        builder.add("config.avp.option.TURRET_RANGE", "Turret range");
+        builder.add("config.avp.option.TURRET_DAMAGE", "Turret damage");
+        builder.add("config.avp.option.TURRET_AMMOCHEST_SEARCH_RANGE", "Turret ammo chest search range");
 
-        translationBuilder.add("display.avp.low_ammunition_warning", "Low Ammo");
-        translationBuilder.add("display.avp.no_ammunition_warning", "Out of Ammo");
+        builder.add("display.avp.low_ammunition_warning", "Low Ammo");
+        builder.add("display.avp.no_ammunition_warning", "Out of Ammo");
+    }
+
+    private void addBlock(TranslationBuilder translationBuilder, Supplier<? extends Block> blockSupplier, String value) {
+        addBlock(translationBuilder, blockSupplier.get(), value);
+    }
+
+    private void addBlock(TranslationBuilder translationBuilder, Block block, String value) {
+        translationBuilder.add(block, value);
+    }
+
+    private void addItem(TranslationBuilder translationBuilder, Supplier<? extends Item> itemSupplier, String value) {
+        addItem(translationBuilder, itemSupplier.get(), value);
+    }
+
+    private void addItem(TranslationBuilder translationBuilder, Item item, String value) {
+        translationBuilder.add(item, value);
     }
 
     private void addSound(TranslationBuilder translationBuilder, SoundEvent soundEvent, String value) {

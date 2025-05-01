@@ -12,6 +12,7 @@ import java.util.List;
 
 import com.avp.common.util.EnchantmentUtil;
 import com.avp.common.util.GunLightUtil;
+import com.avp.common.util.TempAVPPredicates;
 import com.avp.fabric.common.component.DataComponents;
 import com.avp.fabric.common.item.GunItem;
 import com.avp.fabric.common.item.gun.FireModeConfig;
@@ -21,7 +22,6 @@ import com.avp.fabric.common.item.gun.pipeline.step.GunShootStep;
 import com.avp.fabric.common.item.gun.pipeline.step.impl.CheckCooldownStep;
 import com.avp.fabric.common.item.gun.pipeline.step.impl.CheckReloadingStep;
 import com.avp.fabric.common.item.gun.pipeline.step.impl.CheckShootDelayStep;
-import com.avp.fabric.common.util.AVPPredicates;
 
 public record GunShootContext(
     int currentAmmunition,
@@ -61,7 +61,7 @@ public record GunShootContext(
             gunItem,
             EnchantmentUtil.getLevel(shooter.level(), itemStack, Enchantments.INFINITY) > 0,
             tickProgress == 0,
-            AVPPredicates.IS_IMMORTAL.test(shooter),
+            TempAVPPredicates.IS_IMMORTAL.test(shooter),
             itemStack,
             shooter,
             tickProgress

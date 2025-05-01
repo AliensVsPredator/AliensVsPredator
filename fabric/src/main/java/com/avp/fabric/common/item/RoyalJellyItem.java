@@ -8,9 +8,9 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
+import com.avp.common.util.TempAVPPredicates;
 import com.avp.fabric.common.entity.living.alien.Alien;
 import com.avp.fabric.common.entity.living.alien.xenomorph.praetorian.Praetorian;
-import com.avp.fabric.common.util.AVPPredicates;
 
 public class RoyalJellyItem extends Item {
 
@@ -29,7 +29,7 @@ public class RoyalJellyItem extends Item {
             xenomorph.getEntityData().set(Alien.JELLY_COUNT, xenomorph.getEntityData().get(Alien.JELLY_COUNT) + 1);
         }
 
-        if (!AVPPredicates.IS_IMMORTAL.test(player)) {
+        if (!TempAVPPredicates.IS_IMMORTAL.test(player)) {
             itemStack.shrink(1);
         }
 

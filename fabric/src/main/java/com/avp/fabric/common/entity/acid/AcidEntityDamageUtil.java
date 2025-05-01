@@ -15,7 +15,7 @@ import com.avp.AVP;
 import com.avp.common.damage.AVPDamageTypes;
 import com.avp.common.entity.AVPEntityTypeTags;
 import com.avp.common.item.AVPItemTags;
-import com.avp.fabric.common.util.AVPPredicates;
+import com.avp.common.util.TempAVPPredicates;
 
 public class AcidEntityDamageUtil {
 
@@ -30,7 +30,7 @@ public class AcidEntityDamageUtil {
         level.getEntities(
             acid,
             acid.getBoundingBox(),
-            entity -> AVPPredicates.isLiving(entity) || entity instanceof Acid
+            entity -> TempAVPPredicates.isLiving(entity) || entity instanceof Acid
         )
             .stream()
             .filter(entity -> {
@@ -43,7 +43,7 @@ public class AcidEntityDamageUtil {
                     return false;
                 }
 
-                var isImmortalPlayer = entity instanceof Player player && AVPPredicates.IS_IMMORTAL.test(player);
+                var isImmortalPlayer = entity instanceof Player player && TempAVPPredicates.IS_IMMORTAL.test(player);
 
                 return entity.isAlive() && !isImmortalPlayer;
             })

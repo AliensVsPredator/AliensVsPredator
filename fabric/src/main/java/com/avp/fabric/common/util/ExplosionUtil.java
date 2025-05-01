@@ -11,6 +11,7 @@ import java.util.List;
 
 import com.avp.AVP;
 import com.avp.common.explosion.Explosion;
+import com.avp.common.util.TempAVPPredicates;
 import com.avp.fabric.common.command.nuke.ExplosionProgressTracker;
 import com.avp.fabric.common.entity.living.alien.Alien;
 import com.avp.fabric.common.entity.nukecloud.MushroomCloudEntity;
@@ -42,7 +43,7 @@ public class ExplosionUtil {
         var knockbackStrength = maxKnockback * (1.0 - (distance / (radius * radius)));
         // Prevent excessive knockback (cap velocity)
         var knockbackVelocity = direction.scale(Math.max(maxKnockback, knockbackStrength));
-        if (entity instanceof LivingEntity livingEntity && AVPPredicates.IS_IMMORTAL.test(livingEntity)) {
+        if (entity instanceof LivingEntity livingEntity && TempAVPPredicates.IS_IMMORTAL.test(livingEntity)) {
             return;
         }
         entity.setDeltaMovement(knockbackVelocity);

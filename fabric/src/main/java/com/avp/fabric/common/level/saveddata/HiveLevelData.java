@@ -16,8 +16,8 @@ import java.util.UUID;
 import java.util.function.Predicate;
 
 import com.avp.AVP;
+import com.avp.common.util.TempAVPPredicates;
 import com.avp.fabric.common.hive.Hive;
-import com.avp.fabric.common.util.AVPPredicates;
 
 public class HiveLevelData extends SavedData {
 
@@ -55,7 +55,7 @@ public class HiveLevelData extends SavedData {
     }
 
     public Option<Hive> findNearestHive(BlockPos blockPos) {
-        return findNearestHive(blockPos, AVPPredicates.alwaysTrue());
+        return findNearestHive(blockPos, TempAVPPredicates.alwaysTrue());
     }
 
     public Option<Hive> findNearestHive(BlockPos blockPos, Predicate<Hive> hivePredicate) {

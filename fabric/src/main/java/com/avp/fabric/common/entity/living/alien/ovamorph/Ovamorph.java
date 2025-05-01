@@ -22,9 +22,10 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import com.avp.AVP;
+import com.avp.common.item.TempAVPItems;
+import com.avp.common.util.TempAVPPredicates;
 import com.avp.fabric.common.entity.living.alien.Alien;
 import com.avp.fabric.common.entity.type.AVPEntityTypes;
-import com.avp.fabric.common.item.AVPItems;
 import com.avp.fabric.common.manager.HatchManager;
 import com.avp.fabric.common.sound.AVPSoundEvents;
 import com.avp.fabric.common.util.AVPPredicates;
@@ -102,12 +103,12 @@ public class Ovamorph extends Alien implements Shearable {
             var itemStack = player.getItemInHand(interactionHand);
             var resinBallItem = AlienVariantUtil.getResinBallFor(this);
 
-            if (itemStack.is(AVPItems.RAW_ROYAL_JELLY)) {
+            if (itemStack.is(TempAVPItems.RAW_ROYAL_JELLY.get())) {
                 if (hatchManager.hatched()) {
                     level().playSound(null, this, SoundEvents.HONEY_BLOCK_PLACE, SoundSource.PLAYERS, 1.0F, 1.0F);
                     hatchManager.restore();
 
-                    if (!AVPPredicates.IS_IMMORTAL.test(player)) {
+                    if (!TempAVPPredicates.IS_IMMORTAL.test(player)) {
                         player.getItemInHand(interactionHand).shrink(1);
                     }
 
@@ -119,7 +120,7 @@ public class Ovamorph extends Alien implements Shearable {
                 shear(SoundSource.PLAYERS);
                 gameEvent(GameEvent.SHEAR, player);
 
-                if (!AVPPredicates.IS_IMMORTAL.test(player)) {
+                if (!TempAVPPredicates.IS_IMMORTAL.test(player)) {
                     itemStack.hurtAndBreak(1, player, getSlotForHand(interactionHand));
                 }
 
@@ -128,7 +129,7 @@ public class Ovamorph extends Alien implements Shearable {
                 level().playSound(null, this, AVPSoundEvents.ENTITY_OVAMORPH_ROOT, SoundSource.PLAYERS, 1.0F, 1.0F);
                 setRooted(true);
 
-                if (!AVPPredicates.IS_IMMORTAL.test(player)) {
+                if (!TempAVPPredicates.IS_IMMORTAL.test(player)) {
                     itemStack.shrink(1);
                 }
             }

@@ -10,7 +10,7 @@ import net.minecraft.world.level.storage.loot.functions.SetItemCountFunction;
 import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
 import net.minecraft.world.level.storage.loot.providers.number.UniformGenerator;
 
-import com.avp.fabric.common.item.AVPItems;
+import com.avp.common.item.TempAVPItems;
 
 public class QueenLootTable {
 
@@ -20,7 +20,7 @@ public class QueenLootTable {
                 LootPool.lootPool()
                     .setRolls(ConstantValue.exactly(1))
                     .add(
-                        LootItem.lootTableItem(AVPItems.RAW_ROYAL_JELLY)
+                        LootItem.lootTableItem(TempAVPItems.RAW_ROYAL_JELLY.get())
                             .apply(SetItemCountFunction.setCount(ConstantValue.exactly(1)))
                             .apply(EnchantedCountIncreaseFunction.lootingMultiplier(provider, UniformGenerator.between(0, 1)))
                     )

@@ -14,6 +14,7 @@ import java.util.function.Supplier;
 import com.avp.AVP;
 import com.avp.AVPResources;
 import com.avp.common.block.TempAVPBlocks;
+import com.avp.common.item.TempAVPItems;
 import com.avp.fabric.common.block.AVPBlocks;
 import com.avp.fabric.common.item.AVPItems;
 import com.avp.fabric.common.item.ArmorItems;
@@ -44,7 +45,7 @@ public class CreativeModeTabs {
 
     public static final CreativeModeTab COMBAT = register(COMBAT_KEY, () -> new ItemStack(ArmorItems.CHITIN_HELMET));
 
-    public static final CreativeModeTab INGREDIENTS = register(INGREDIENTS_KEY, () -> new ItemStack(AVPItems.PLATED_CHITIN));
+    public static final CreativeModeTab INGREDIENTS = register(INGREDIENTS_KEY, () -> new ItemStack(TempAVPItems.PLATED_CHITIN.get()));
 
     public static final CreativeModeTab SPAWN_EGGS = register(SPAWN_EGGS_KEY, () -> new ItemStack(SpawnEggItems.OVAMORPH_SPAWN_EGG));
 

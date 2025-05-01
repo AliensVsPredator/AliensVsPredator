@@ -9,6 +9,8 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Supplier;
 
+import com.avp.common.item.TempAVPItems;
+
 public class AVPTiers {
 
     public static final Tier STEEL = create(
@@ -17,7 +19,7 @@ public class AVPTiers {
         2.5F,
         BlockTags.INCORRECT_FOR_IRON_TOOL,
         13,
-        () -> Ingredient.of(AVPItems.STEEL_INGOT)
+        () -> Ingredient.of(TempAVPItems.STEEL_INGOT.get())
     );
 
     public static final Tier TITANIUM = create(
@@ -26,7 +28,7 @@ public class AVPTiers {
         2.5F,
         BlockTags.INCORRECT_FOR_IRON_TOOL,
         12,
-        () -> Ingredient.of(AVPItems.TITANIUM_INGOT)
+        () -> Ingredient.of(TempAVPItems.TITANIUM_INGOT.get())
     );
 
     public static final Tier VERITANIUM = create(

@@ -8,6 +8,7 @@ import net.minecraft.world.entity.player.Player;
 import org.jetbrains.annotations.NotNull;
 
 import com.avp.common.item.AVPItemTags;
+import com.avp.common.util.TempAVPPredicates;
 import com.avp.fabric.common.entity.living.yautja.Yautja;
 
 public class YautjaPredicates {
@@ -28,7 +29,7 @@ public class YautjaPredicates {
         }
 
         if (potentialTarget instanceof Player player) {
-            return !AVPPredicates.IS_IMMORTAL.test(player)
+            return !TempAVPPredicates.IS_IMMORTAL.test(player)
                 && (player.getMainHandItem().is(AVPItemTags.HOSTILE_WEAPON)
                     || (yautja.getLastAttacker() != null && yautja.getLastAttacker().is(player)));
         }
