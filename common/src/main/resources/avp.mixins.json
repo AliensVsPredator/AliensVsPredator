@@ -4,7 +4,9 @@
   "package": "com.avp.mixin",
   "refmap": "${mod_id}.refmap.json",
   "compatibilityLevel": "JAVA_21",
-  "mixins": [],
+  "mixins": [
+    "MixinMobCategory_InjectCustomAlienCategory"
+  ],
   "client": [],
   "server": [],
   "injectors": {

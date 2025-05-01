@@ -21,7 +21,6 @@
     "MixinLivingEntity_GrowEmbryo",
     "MixinLivingEntity_NukedRadiation",
     "MixinMob_IncapacitateHost",
-    "MixinMobCategory_InjectCustomAlienCategory",
     "MixinShearsItem",
     "MixinVillagerHostilesSensor_RunAwayFromAVPMonsters",
     "ParrotSoundMapAccessor",

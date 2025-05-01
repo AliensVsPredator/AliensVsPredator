@@ -11,9 +11,9 @@ import net.minecraft.world.level.Level;
 import java.util.function.BiFunction;
 
 import com.avp.AVPResources;
+import com.avp.common.entity.AVPMobCategories;
 import com.avp.common.entity.gene.GeneKeys;
 import com.avp.fabric.common.block.entity.PrimedNuke;
-import com.avp.fabric.common.entity.AVPMobCategories;
 import com.avp.fabric.common.entity.acid.Acid;
 import com.avp.fabric.common.entity.living.alien.Alien;
 import com.avp.fabric.common.entity.living.alien.chestburster.Chestburster;

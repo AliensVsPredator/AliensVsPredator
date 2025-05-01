@@ -1,4 +1,4 @@
-package com.avp.fabric.common.entity;
+package com.avp.common.entity;
 
 import net.minecraft.world.entity.MobCategory;
 
