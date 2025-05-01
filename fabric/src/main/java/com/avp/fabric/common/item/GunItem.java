@@ -25,9 +25,9 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
+import com.avp.common.component.AVPDataComponents;
 import com.avp.common.item.TempAVPItems;
 import com.avp.common.util.TooltipUtil;
-import com.avp.fabric.common.component.DataComponents;
 import com.avp.fabric.common.item.gun.GunConfig;
 import com.avp.fabric.common.item.gun.pipeline.GunShootContext;
 import com.avp.fabric.common.item.old_painless.OldPainlessAnimationRefs;
@@ -162,7 +162,7 @@ public class GunItem extends Item {
     public void appendHoverText(ItemStack itemStack, TooltipContext tooltipContext, List<Component> list, TooltipFlag tooltipFlag) {
         super.appendHoverText(itemStack, tooltipContext, list, tooltipFlag);
 
-        int currentAmmunition = itemStack.getOrDefault(DataComponents.AMMUNITION, 0);
+        int currentAmmunition = itemStack.getOrDefault(AVPDataComponents.AMMUNITION.get(), 0);
         var fireMode = gunConfig.getDefaultFireMode();
         var itemSupplier = gunConfig.ammunitionItemSupplier();
 

@@ -16,7 +16,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import com.avp.fabric.common.component.DataComponents;
+import com.avp.common.component.AVPDataComponents;
 import com.avp.fabric.common.item.AVPItems;
 import com.avp.fabric.common.item.CanisterItem;
 
@@ -37,7 +37,7 @@ public abstract class MixinCow_FillMilkCanister extends Animal {
             return;
         }
 
-        int contentAmount = itemStack.getOrDefault(DataComponents.CANISTER_CAPACITY, 0);
+        int contentAmount = itemStack.getOrDefault(AVPDataComponents.CANISTER_CAPACITY.get(), 0);
 
         ItemStack updatedStack;
 

@@ -10,10 +10,10 @@ import net.minecraft.world.item.enchantment.Enchantments;
 
 import java.util.List;
 
+import com.avp.common.component.AVPDataComponents;
 import com.avp.common.util.EnchantmentUtil;
 import com.avp.common.util.GunLightUtil;
 import com.avp.common.util.TempAVPPredicates;
-import com.avp.fabric.common.component.DataComponents;
 import com.avp.fabric.common.item.GunItem;
 import com.avp.fabric.common.item.gun.FireModeConfig;
 import com.avp.fabric.common.item.gun.GunConfig;
@@ -55,7 +55,7 @@ public record GunShootContext(
 
     public GunShootContext(LivingEntity shooter, GunItem gunItem, ItemStack itemStack, int tickProgress) {
         this(
-            itemStack.getOrDefault(DataComponents.AMMUNITION, 0),
+            itemStack.getOrDefault(AVPDataComponents.AMMUNITION.get(), 0),
             gunItem.getGunConfig().getDefaultFireMode(),
             gunItem.getGunConfig(),
             gunItem,
@@ -107,7 +107,7 @@ public record GunShootContext(
 
     private void consumeAmmunition() {
         if (!isShooterImmortal && !hasInfinity) {
-            itemStack.set(DataComponents.AMMUNITION, Math.max(currentAmmunition - fireModeConfig.consumedAmmunitionPerShot(), 0));
+            itemStack.set(AVPDataComponents.AMMUNITION.get(), Math.max(currentAmmunition - fireModeConfig.consumedAmmunitionPerShot(), 0));
         }
     }
 

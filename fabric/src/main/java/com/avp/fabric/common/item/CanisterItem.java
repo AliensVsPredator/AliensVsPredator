@@ -33,7 +33,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-import com.avp.fabric.common.component.DataComponents;
+import com.avp.common.component.AVPDataComponents;
 
 public class CanisterItem extends Item implements DispensibleContainerItem {
 
@@ -50,7 +50,7 @@ public class CanisterItem extends Item implements DispensibleContainerItem {
     public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag) {
         super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
 
-        int currentContentAmount = stack.getOrDefault(DataComponents.CANISTER_CAPACITY, 0);
+        int currentContentAmount = stack.getOrDefault(AVPDataComponents.CANISTER_CAPACITY.get(), 0);
 
         if (currentContentAmount == 0) {
             return;
@@ -123,7 +123,7 @@ public class CanisterItem extends Item implements DispensibleContainerItem {
     ) {
         var bucketPickup = (BucketPickup) hitState.getBlock();
 
-        if (canisterStack.getOrDefault(DataComponents.CANISTER_CAPACITY, 0) >= MAX_CAPACITY) {
+        if (canisterStack.getOrDefault(AVPDataComponents.CANISTER_CAPACITY.get(), 0) >= MAX_CAPACITY) {
             return InteractionResultHolder.fail(canisterStack);
         }
 
@@ -177,7 +177,7 @@ public class CanisterItem extends Item implements DispensibleContainerItem {
 
         ItemStack resultStack;
 
-        if (canisterStack.getOrDefault(DataComponents.CANISTER_CAPACITY, 0) > 1 && !player.isCreative()) {
+        if (canisterStack.getOrDefault(AVPDataComponents.CANISTER_CAPACITY.get(), 0) > 1 && !player.isCreative()) {
             resultStack = updateCapacity(canisterStack, -1);
         } else {
             resultStack = ItemUtils.createFilledResult(canisterStack, player, getEmptySuccessItem(canisterStack, player));
@@ -187,12 +187,12 @@ public class CanisterItem extends Item implements DispensibleContainerItem {
     }
 
     public static ItemStack updateCapacity(ItemStack stack, int amount) {
-        int currentContentAmount = stack.getOrDefault(DataComponents.CANISTER_CAPACITY, 0);
+        int currentContentAmount = stack.getOrDefault(AVPDataComponents.CANISTER_CAPACITY.get(), 0);
         int newAmount = Mth.clamp(currentContentAmount + amount, 0, MAX_CAPACITY);
 
         stack.applyComponents(
             DataComponentPatch.builder()
-                .set(DataComponents.CANISTER_CAPACITY, newAmount)
+                .set(AVPDataComponents.CANISTER_CAPACITY.get(), newAmount)
                 .build()
         );
 

@@ -11,9 +11,9 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import com.avp.common.component.AVPDataComponents;
 import com.avp.common.util.AmmunitionIndicatorUtil;
 import com.avp.common.util.TempAVPPredicates;
-import com.avp.fabric.common.component.DataComponents;
 import com.avp.fabric.common.item.AVPItems;
 import com.avp.fabric.common.item.GunItem;
 
@@ -55,7 +55,7 @@ public abstract class MixinPlayerEntity_LowAmmunitionIndicator extends LivingEnt
 
     @Unique
     private void displayAmmunitionIndicator(GunItem gunItem, ItemStack mainHandItem, Player player) {
-        int currentAmmunition = mainHandItem.getOrDefault(DataComponents.AMMUNITION, 0);
+        int currentAmmunition = mainHandItem.getOrDefault(AVPDataComponents.AMMUNITION.get(), 0);
         var maximumAmmunition = gunItem.getGunConfig().maximumAmmunition();
 
         // Store the current display state for comparison later on.

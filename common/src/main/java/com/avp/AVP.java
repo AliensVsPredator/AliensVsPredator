@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.avp.common.block.TempAVPBlocks;
+import com.avp.common.component.AVPDataComponents;
 import com.avp.common.config.AVPConfig;
 import com.avp.common.item.TempAVPBlockItems;
 import com.avp.common.item.TempAVPItems;
@@ -31,6 +32,7 @@ public class AVP {
         TempAVPItems.initialize();
         TempAVPBlocks.initialize();
         TempAVPBlockItems.initialize();
+        AVPDataComponents.initialize();
     }
 
     /**

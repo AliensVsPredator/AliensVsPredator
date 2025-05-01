@@ -20,8 +20,8 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 import java.util.stream.Stream;
 
-import com.avp.fabric.common.component.ArmorCaseContainerContents;
-import com.avp.fabric.common.component.DataComponents;
+import com.avp.common.component.AVPDataComponents;
+import com.avp.common.component.ArmorCaseContainerContents;
 import com.avp.fabric.common.menu.armor_case.ArmorCaseMenu;
 
 public class ArmorCaseItem extends Item {
@@ -60,7 +60,7 @@ public class ArmorCaseItem extends Item {
     public void appendHoverText(ItemStack itemStack, TooltipContext tooltipContext, List<Component> list, TooltipFlag tooltipFlag) {
         super.appendHoverText(itemStack, tooltipContext, list, tooltipFlag);
 
-        var container = itemStack.getOrDefault(DataComponents.ARMOR_CASE_CONTAINER, ArmorCaseContainerContents.EMPTY);
+        var container = itemStack.getOrDefault(AVPDataComponents.ARMOR_CASE_CONTAINER.get(), ArmorCaseContainerContents.EMPTY);
 
         if (container.equals(ArmorCaseContainerContents.EMPTY)) {
             return;
@@ -74,7 +74,8 @@ public class ArmorCaseItem extends Item {
     }
 
     public static void swapArmorSlots(LivingEntity livingEntity, ItemStack itemStack) {
-        var container = itemStack.getComponents().getOrDefault(DataComponents.ARMOR_CASE_CONTAINER, ArmorCaseContainerContents.EMPTY);
+        var container = itemStack.getComponents()
+            .getOrDefault(AVPDataComponents.ARMOR_CASE_CONTAINER.get(), ArmorCaseContainerContents.EMPTY);
 
         var headItemStack = livingEntity.getItemBySlot(EquipmentSlot.HEAD);
         var chestItemStack = livingEntity.getItemBySlot(EquipmentSlot.CHEST);
@@ -88,6 +89,6 @@ public class ArmorCaseItem extends Item {
 
         var newContainer = new ArmorCaseContainerContents(headItemStack, chestItemStack, legsItemStack, feetItemStack);
 
-        itemStack.set(DataComponents.ARMOR_CASE_CONTAINER, newContainer);
+        itemStack.set(AVPDataComponents.ARMOR_CASE_CONTAINER.get(), newContainer);
     }
 }

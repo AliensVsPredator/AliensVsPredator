@@ -28,7 +28,6 @@ import com.avp.fabric.common.block.FlammableBlockRegistry;
 import com.avp.fabric.common.block.entity.AVPBlockEntityTypes;
 import com.avp.fabric.common.block_item.AVPBlockItems;
 import com.avp.fabric.common.command.Commands;
-import com.avp.fabric.common.component.DataComponents;
 import com.avp.fabric.common.creative_mode_tab.initializer.BlocksCreativeModeTabInitializer;
 import com.avp.fabric.common.creative_mode_tab.initializer.ColoredBlocksCreativeModeTabInitializer;
 import com.avp.fabric.common.creative_mode_tab.initializer.CombatCreativeModeTabInitializer;
@@ -90,7 +89,6 @@ public class AVPFabric implements ModInitializer {
         Lifecycles.initialize();
         AVPParticleTypes.initialize();
         MenuTypes.initialize();
-        DataComponents.initialize();
         DecoratedPotPatterns.initialize();
         WorldGen.initialize();
         AVPSoundEvents.initialize();

@@ -9,10 +9,10 @@ import net.minecraft.world.level.ItemLike;
 import java.time.Duration;
 import java.util.Objects;
 
+import com.avp.common.component.AVPDataComponents;
 import com.avp.common.util.EnchantmentUtil;
 import com.avp.common.util.TempAVPPredicates;
 import com.avp.fabric.common.block_item.AVPBlockItems;
-import com.avp.fabric.common.component.DataComponents;
 import com.avp.fabric.common.item.gun.GunData;
 import com.avp.server.ServerScheduler;
 
@@ -41,7 +41,7 @@ public class GunReloading {
             return;
         }
 
-        int currentAmmunition = itemStack.getOrDefault(DataComponents.AMMUNITION, 0);
+        int currentAmmunition = itemStack.getOrDefault(AVPDataComponents.AMMUNITION.get(), 0);
 
         if (currentAmmunition >= maximumAmmunition) {
             // Gun is already max ammo, no need to continue trying to reload.
@@ -93,7 +93,7 @@ public class GunReloading {
         }
 
         itemStack.set(
-            DataComponents.AMMUNITION,
+            AVPDataComponents.AMMUNITION.get(),
             Math.min(currentAmmunition + (ammunitionToRestore * reloadAmount), maximumAmmunition)
         );
 

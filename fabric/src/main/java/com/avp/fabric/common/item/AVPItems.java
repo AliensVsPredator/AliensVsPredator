@@ -11,7 +11,7 @@ import net.minecraft.world.level.material.Fluids;
 import java.util.function.Function;
 
 import com.avp.AVPResources;
-import com.avp.fabric.common.component.DataComponents;
+import com.avp.common.component.AVPDataComponents;
 import com.avp.fabric.common.item.grenades.GrendeItem;
 import com.avp.fabric.common.item.gun.GunData;
 import com.avp.fabric.common.item.old_painless.OldPainlessItem;
@@ -125,7 +125,7 @@ public class AVPItems {
     public static final Item WATER_CANISTER = register(
         new CanisterItem(
             Fluids.WATER,
-            new Item.Properties().stacksTo(1).craftRemainder(CANISTER).component(DataComponents.CANISTER_CAPACITY, 1)
+            new Item.Properties().stacksTo(1).craftRemainder(CANISTER).component(AVPDataComponents.CANISTER_CAPACITY.get(), 1)
         ),
         "water_canister"
     );
@@ -133,14 +133,14 @@ public class AVPItems {
     public static final Item LAVA_CANISTER = register(
         new CanisterItem(
             Fluids.LAVA,
-            new Item.Properties().stacksTo(1).craftRemainder(CANISTER).component(DataComponents.CANISTER_CAPACITY, 1)
+            new Item.Properties().stacksTo(1).craftRemainder(CANISTER).component(AVPDataComponents.CANISTER_CAPACITY.get(), 1)
         ),
         "lava_canister"
     );
 
     public static final Item MILK_CANISTER = register(
         new MilkCanisterItem(
-            new Item.Properties().craftRemainder(CANISTER).stacksTo(1).component(DataComponents.CANISTER_CAPACITY, 1)
+            new Item.Properties().craftRemainder(CANISTER).stacksTo(1).component(AVPDataComponents.CANISTER_CAPACITY.get(), 1)
         ),
         "milk_canister"
     );
@@ -149,7 +149,7 @@ public class AVPItems {
         new SolidCanisterItem(
             Blocks.POWDER_SNOW,
             SoundEvents.BUCKET_EMPTY_POWDER_SNOW,
-            new Item.Properties().stacksTo(1).component(DataComponents.CANISTER_CAPACITY, 1)
+            new Item.Properties().stacksTo(1).component(AVPDataComponents.CANISTER_CAPACITY.get(), 1)
         ),
         "powder_snow_canister"
     );

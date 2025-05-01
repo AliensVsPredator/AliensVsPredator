@@ -1,4 +1,4 @@
-package com.avp.fabric.common.component;
+package com.avp.common.component;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;

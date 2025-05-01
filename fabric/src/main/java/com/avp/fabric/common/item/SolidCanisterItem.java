@@ -23,7 +23,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-import com.avp.fabric.common.component.DataComponents;
+import com.avp.common.component.AVPDataComponents;
 
 public class SolidCanisterItem extends BlockItem {
 
@@ -38,7 +38,7 @@ public class SolidCanisterItem extends BlockItem {
     public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag) {
         super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
 
-        int currentContentAmount = stack.getOrDefault(DataComponents.CANISTER_CAPACITY, 0);
+        int currentContentAmount = stack.getOrDefault(AVPDataComponents.CANISTER_CAPACITY.get(), 0);
 
         if (currentContentAmount == 0) {
             return;
@@ -67,7 +67,7 @@ public class SolidCanisterItem extends BlockItem {
         var result = super.useOn(modifiedContext);
 
         if (result.consumesAction() && player.isShiftKeyDown()) {
-            int contentAmount = context.getItemInHand().getOrDefault(DataComponents.CANISTER_CAPACITY, 0);
+            int contentAmount = context.getItemInHand().getOrDefault(AVPDataComponents.CANISTER_CAPACITY.get(), 0);
 
             if (contentAmount > 1 && !player.isCreative()) {
                 CanisterItem.updateCapacity(context.getItemInHand(), -1);
@@ -110,7 +110,7 @@ public class SolidCanisterItem extends BlockItem {
     ) {
         var bucketPickup = (BucketPickup) hitState.getBlock();
 
-        if (canisterStack.getOrDefault(DataComponents.CANISTER_CAPACITY, 0) >= CanisterItem.MAX_CAPACITY) {
+        if (canisterStack.getOrDefault(AVPDataComponents.CANISTER_CAPACITY.get(), 0) >= CanisterItem.MAX_CAPACITY) {
             return InteractionResult.FAIL;
         }
 

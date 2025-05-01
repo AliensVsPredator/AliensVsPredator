@@ -14,7 +14,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-import com.avp.fabric.common.component.DataComponents;
+import com.avp.common.component.AVPDataComponents;
 
 public class MilkCanisterItem extends Item {
 
@@ -26,7 +26,7 @@ public class MilkCanisterItem extends Item {
     public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag) {
         super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
 
-        int currentContentAmount = stack.getOrDefault(DataComponents.CANISTER_CAPACITY, 0);
+        int currentContentAmount = stack.getOrDefault(AVPDataComponents.CANISTER_CAPACITY.get(), 0);
 
         if (currentContentAmount == 0) {
             return;
@@ -48,7 +48,7 @@ public class MilkCanisterItem extends Item {
             livingEntity.removeAllEffects();
         }
 
-        var canDeplete = stack.getOrDefault(DataComponents.CANISTER_CAPACITY, 0) > 1;
+        var canDeplete = stack.getOrDefault(AVPDataComponents.CANISTER_CAPACITY.get(), 0) > 1;
 
         if (livingEntity instanceof Player player) {
             if (canDeplete && !player.isCreative()) {
