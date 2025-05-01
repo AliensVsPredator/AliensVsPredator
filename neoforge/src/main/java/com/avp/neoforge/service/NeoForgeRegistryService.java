@@ -3,6 +3,7 @@ package com.avp.neoforge.service;
 import net.minecraft.core.Registry;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
@@ -27,6 +28,8 @@ public class NeoForgeRegistryService implements RegistryService {
 
     private final DeferredRegister<MenuType<?>> MENU_TYPE_REGISTRY = DeferredRegister.create(BuiltInRegistries.MENU, AVP.MOD_ID);
 
+    private final DeferredRegister<MobEffect> MOB_EFFECT_REGISTRY = DeferredRegister.create(BuiltInRegistries.MOB_EFFECT, AVP.MOD_ID);
+
     @Override
     @SuppressWarnings("unchecked")
     public <T> Supplier<T> register(Registry<? super T> registry, String id, Supplier<? extends T> supplier) {
@@ -38,6 +41,8 @@ public class NeoForgeRegistryService implements RegistryService {
             return (Supplier<T>) ITEM_REGISTRY.register(id, (Supplier<Item>) supplier);
         } else if (registry == BuiltInRegistries.MENU) {
             return (Supplier<T>) MENU_TYPE_REGISTRY.register(id, (Supplier<MenuType<?>>) supplier);
+        } else if (registry == BuiltInRegistries.MOB_EFFECT) {
+            return (Supplier<T>) MOB_EFFECT_REGISTRY.register(id, (Supplier<MobEffect>) supplier);
         }
 
         throw new IllegalArgumentException("Received registration attempt for an unhandled registry. Registry: " + registry);

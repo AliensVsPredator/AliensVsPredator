@@ -11,9 +11,9 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import com.avp.common.effect.AVPEffects;
+import com.avp.common.effect.RadiationStatusEffect;
 import com.avp.common.item.AVPItemTags;
-import com.avp.fabric.common.effect.AVPEffects;
-import com.avp.fabric.common.effect.RadiationStatusEffect;
 import com.avp.fabric.common.util.AVPPredicates;
 
 @Mixin(Item.class)
@@ -35,7 +35,7 @@ public class MixinItem_GiveRads {
         }
 
         // Apply the radiation effect.
-        var mobEffectInstance = new MobEffectInstance(AVPEffects.RADIATION_EFFECT, RadiationStatusEffect.EFFECT_DURATION_IN_TICKS, 0);
+        var mobEffectInstance = new MobEffectInstance(AVPEffects.RADIATION_HOLDER.get(), RadiationStatusEffect.EFFECT_DURATION_IN_TICKS, 0);
         livingEntity.addEffect(mobEffectInstance);
     }
 }

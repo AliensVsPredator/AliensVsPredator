@@ -6,10 +6,10 @@ import net.minecraft.world.entity.LivingEntity;
 
 import java.util.function.Predicate;
 
+import com.avp.common.effect.AVPEffects;
 import com.avp.common.entity.AVPEntityTypeTags;
 import com.avp.common.item.AVPItemTags;
 import com.avp.common.util.TempAVPPredicates;
-import com.avp.fabric.common.effect.AVPEffects;
 import com.avp.fabric.common.entity.living.Host;
 import com.avp.fabric.common.entity.living.alien.Alien;
 import com.avp.fabric.common.entity.living.yautja.Yautja;
@@ -26,7 +26,7 @@ public class AVPPredicates {
                 // Or if the living entity is immortal...
                 || TempAVPPredicates.IS_IMMORTAL.test(livingEntity)
                 // Or if the living entity already has the radiation effect...
-                || livingEntity.hasEffect(AVPEffects.RADIATION_EFFECT)
+                || livingEntity.hasEffect(AVPEffects.RADIATION_HOLDER.get())
                 // Or if the entity is no longer alive...
                 || !livingEntity.isAlive()
         ) {

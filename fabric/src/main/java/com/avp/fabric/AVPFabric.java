@@ -34,7 +34,6 @@ import com.avp.fabric.common.creative_mode_tab.initializer.CombatCreativeModeTab
 import com.avp.fabric.common.creative_mode_tab.initializer.IngredientsCreativeModeTabInitializer;
 import com.avp.fabric.common.creative_mode_tab.initializer.SpawnEggsCreativeModeTabInitializer;
 import com.avp.fabric.common.creative_mode_tab.initializer.ToolsAndUtilitiesCreativeModeTabInitializer;
-import com.avp.fabric.common.effect.AVPEffects;
 import com.avp.fabric.common.entity.spawn.SpawnPlacements;
 import com.avp.fabric.common.entity.type.AVPEntityTypes;
 import com.avp.fabric.common.fuel.AVPFuelRegistry;
@@ -95,7 +94,6 @@ public class AVPFabric implements ModInitializer {
         CommonPacketRegistry.initialize();
         ServerPacketHandlerRegistry.initialize();
         AVPRecipes.initialize();
-        AVPEffects.initialize();
         AVPBiomes.initialize();
         AVPProfessions.initialize();
 
