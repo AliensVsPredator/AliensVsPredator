@@ -19,7 +19,6 @@ import net.minecraft.world.level.levelgen.structure.templatesystem.StructureProc
 import java.util.ArrayList;
 
 import com.avp.AVP;
-import com.avp.common.worldgen.biome.AVPBiomes;
 import com.avp.fabric.common.block.AVPBlocks;
 import com.avp.fabric.common.block.CompostingChanceRegistry;
 import com.avp.fabric.common.block.DispenserBlockBehaviors;
@@ -27,12 +26,6 @@ import com.avp.fabric.common.block.FlammableBlockRegistry;
 import com.avp.fabric.common.block.entity.AVPBlockEntityTypes;
 import com.avp.fabric.common.block_item.AVPBlockItems;
 import com.avp.fabric.common.command.Commands;
-import com.avp.fabric.common.creative_mode_tab.initializer.BlocksCreativeModeTabInitializer;
-import com.avp.fabric.common.creative_mode_tab.initializer.ColoredBlocksCreativeModeTabInitializer;
-import com.avp.fabric.common.creative_mode_tab.initializer.CombatCreativeModeTabInitializer;
-import com.avp.fabric.common.creative_mode_tab.initializer.IngredientsCreativeModeTabInitializer;
-import com.avp.fabric.common.creative_mode_tab.initializer.SpawnEggsCreativeModeTabInitializer;
-import com.avp.fabric.common.creative_mode_tab.initializer.ToolsAndUtilitiesCreativeModeTabInitializer;
 import com.avp.fabric.common.entity.spawn.SpawnPlacements;
 import com.avp.fabric.common.entity.type.AVPEntityTypes;
 import com.avp.fabric.common.fuel.AVPFuelRegistry;
@@ -90,16 +83,7 @@ public class AVPFabric implements ModInitializer {
         CommonPacketRegistry.initialize();
         ServerPacketHandlerRegistry.initialize();
         AVPRecipes.initialize();
-        AVPBiomes.initialize();
         AVPProfessions.initialize();
-
-        // Creative Tabs
-        BlocksCreativeModeTabInitializer.initialize();
-        ColoredBlocksCreativeModeTabInitializer.initialize();
-        CombatCreativeModeTabInitializer.initialize();
-        IngredientsCreativeModeTabInitializer.initialize();
-        SpawnEggsCreativeModeTabInitializer.initialize();
-        ToolsAndUtilitiesCreativeModeTabInitializer.initialize();
 
         // Functionality
         CompostingChanceRegistry.initialize();

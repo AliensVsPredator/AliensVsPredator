@@ -7,6 +7,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.DecoratedPotPattern;
@@ -21,6 +22,11 @@ import com.avp.service.RegistryService;
 public class NeoForgeRegistryService implements RegistryService {
 
     private final DeferredRegister<Block> BLOCK_REGISTRY = DeferredRegister.create(BuiltInRegistries.BLOCK, AVP.MOD_ID);
+
+    private final DeferredRegister<CreativeModeTab> CREATIVE_MODE_TAB_REGISTRY = DeferredRegister.create(
+        BuiltInRegistries.CREATIVE_MODE_TAB,
+        AVP.MOD_ID
+    );
 
     private final DeferredRegister<DataComponentType<?>> DATA_COMPONENT_TYPE_REGISTRY = DeferredRegister.create(
         BuiltInRegistries.DATA_COMPONENT_TYPE,
@@ -45,6 +51,8 @@ public class NeoForgeRegistryService implements RegistryService {
     public <T> Supplier<T> register(Registry<? super T> registry, String id, Supplier<? extends T> supplier) {
         if (registry == BuiltInRegistries.BLOCK) {
             return (Supplier<T>) BLOCK_REGISTRY.register(id, (Supplier<Block>) supplier);
+        } else if (registry == BuiltInRegistries.CREATIVE_MODE_TAB) {
+            return (Supplier<T>) CREATIVE_MODE_TAB_REGISTRY.register(id, (Supplier<CreativeModeTab>) supplier);
         } else if (registry == BuiltInRegistries.DATA_COMPONENT_TYPE) {
             return (Supplier<T>) DATA_COMPONENT_TYPE_REGISTRY.register(id, (Supplier<DataComponentType<?>>) supplier);
         } else if (registry == BuiltInRegistries.DECORATED_POT_PATTERN) {
@@ -74,6 +82,7 @@ public class NeoForgeRegistryService implements RegistryService {
 
     public void initialize(IEventBus modBus) {
         BLOCK_REGISTRY.register(modBus);
+        CREATIVE_MODE_TAB_REGISTRY.register(modBus);
         DATA_COMPONENT_TYPE_REGISTRY.register(modBus);
         DECORATED_POT_PATTERN_REGISTRY.register(modBus);
         ITEM_REGISTRY.register(modBus);

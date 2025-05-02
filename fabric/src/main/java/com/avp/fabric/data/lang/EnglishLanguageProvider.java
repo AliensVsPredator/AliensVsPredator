@@ -12,10 +12,10 @@ import java.util.concurrent.CompletableFuture;
 import java.util.function.Supplier;
 
 import com.avp.common.block.TempAVPBlocks;
+import com.avp.common.creative_mode_tab.AVPCreativeModeTabs;
 import com.avp.common.item.TempAVPItems;
 import com.avp.common.sound.AVPSoundEvents;
 import com.avp.fabric.common.block.AVPBlocks;
-import com.avp.fabric.common.creative_mode_tab.CreativeModeTabs;
 import com.avp.fabric.common.entity.type.AVPEntityTypes;
 import com.avp.fabric.common.item.AVPItems;
 import com.avp.fabric.common.item.ArmorItems;
@@ -278,12 +278,12 @@ public class EnglishLanguageProvider extends FabricLanguageProvider {
         addBlock(builder, TempAVPBlocks.TITANIUM_FASTENED_SIDING_STAIRS, "Titanium Fastened Siding Stairs");
 
         // Creative Mode Tabs
-        builder.add(CreativeModeTabs.BLOCKS_KEY, "AVP Blocks");
-        builder.add(CreativeModeTabs.COLORED_BLOCKS_KEY, "AVP Colored Blocks");
-        builder.add(CreativeModeTabs.COMBAT_KEY, "AVP Combat");
-        builder.add(CreativeModeTabs.INGREDIENTS_KEY, "AVP Ingredients");
-        builder.add(CreativeModeTabs.SPAWN_EGGS_KEY, "AVP Spawn Eggs");
-        builder.add(CreativeModeTabs.TOOLS_AND_UTILITIES_KEY, "AVP Tools & Utilities");
+        builder.add(AVPCreativeModeTabs.BLOCKS_KEY, "AVP Blocks");
+        builder.add(AVPCreativeModeTabs.COLORED_BLOCKS_KEY, "AVP Colored Blocks");
+        builder.add(AVPCreativeModeTabs.COMBAT_KEY, "AVP Combat");
+        builder.add(AVPCreativeModeTabs.INGREDIENTS_KEY, "AVP Ingredients");
+        builder.add(AVPCreativeModeTabs.SPAWN_EGGS_KEY, "AVP Spawn Eggs");
+        builder.add(AVPCreativeModeTabs.TOOLS_AND_UTILITIES_KEY, "AVP Tools & Utilities");
 
         // Entities
         builder.add(AVPEntityTypes.ACID, "Acid");
