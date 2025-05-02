@@ -17,7 +17,6 @@ import com.avp.fabric.common.entity.living.alien.xenomorph.queen.QueenLootTable;
 import com.avp.fabric.common.entity.living.alien.xenomorph.warrior.WarriorLootTable;
 import com.avp.fabric.common.entity.living.yautja.YautjaLootTable;
 import com.avp.fabric.common.entity.type.AVPEntityTypes;
-import com.avp.fabric.common.item.AVPItems;
 
 public class EntityLootTableProvider extends SimpleFabricLootTableProvider {
 
@@ -43,30 +42,39 @@ public class EntityLootTableProvider extends SimpleFabricLootTableProvider {
         );
 
         // Nether
-        biConsumer.accept(AVPEntityTypes.NETHER_DRONE.getDefaultLootTable(), DroneLootTable.create(provider, AVPItems.NETHER_CHITIN));
-        biConsumer.accept(AVPEntityTypes.NETHER_WARRIOR.getDefaultLootTable(), WarriorLootTable.create(provider, AVPItems.NETHER_CHITIN));
+        biConsumer.accept(
+            AVPEntityTypes.NETHER_DRONE.getDefaultLootTable(),
+            DroneLootTable.create(provider, TempAVPItems.NETHER_CHITIN.get())
+        );
+        biConsumer.accept(
+            AVPEntityTypes.NETHER_WARRIOR.getDefaultLootTable(),
+            WarriorLootTable.create(provider, TempAVPItems.NETHER_CHITIN.get())
+        );
         biConsumer.accept(
             AVPEntityTypes.NETHER_PRAETORIAN.getDefaultLootTable(),
-            PraetorianLootTable.create(provider, AVPItems.NETHER_CHITIN, TempAVPItems.PLATED_NETHER_CHITIN.get())
+            PraetorianLootTable.create(provider, TempAVPItems.NETHER_CHITIN.get(), TempAVPItems.PLATED_NETHER_CHITIN.get())
         );
         biConsumer.accept(
             AVPEntityTypes.NETHER_QUEEN.getDefaultLootTable(),
-            QueenLootTable.createLootTableBuilder(provider, AVPItems.NETHER_CHITIN, TempAVPItems.PLATED_NETHER_CHITIN.get())
+            QueenLootTable.createLootTableBuilder(provider, TempAVPItems.NETHER_CHITIN.get(), TempAVPItems.PLATED_NETHER_CHITIN.get())
         );
 
         // Aberrant
-        biConsumer.accept(AVPEntityTypes.ABERRANT_DRONE.getDefaultLootTable(), DroneLootTable.create(provider, AVPItems.ABERRANT_CHITIN));
+        biConsumer.accept(
+            AVPEntityTypes.ABERRANT_DRONE.getDefaultLootTable(),
+            DroneLootTable.create(provider, TempAVPItems.ABERRANT_CHITIN.get())
+        );
         biConsumer.accept(
             AVPEntityTypes.ABERRANT_WARRIOR.getDefaultLootTable(),
-            WarriorLootTable.create(provider, AVPItems.ABERRANT_CHITIN)
+            WarriorLootTable.create(provider, TempAVPItems.ABERRANT_CHITIN.get())
         );
         biConsumer.accept(
             AVPEntityTypes.ABERRANT_PRAETORIAN.getDefaultLootTable(),
-            PraetorianLootTable.create(provider, AVPItems.ABERRANT_CHITIN, AVPItems.PLATED_ABERRANT_CHITIN)
+            PraetorianLootTable.create(provider, TempAVPItems.ABERRANT_CHITIN.get(), TempAVPItems.PLATED_ABERRANT_CHITIN.get())
         );
         biConsumer.accept(
             AVPEntityTypes.ABERRANT_QUEEN.getDefaultLootTable(),
-            QueenLootTable.createLootTableBuilder(provider, AVPItems.ABERRANT_CHITIN, AVPItems.PLATED_ABERRANT_CHITIN)
+            QueenLootTable.createLootTableBuilder(provider, TempAVPItems.ABERRANT_CHITIN.get(), TempAVPItems.PLATED_ABERRANT_CHITIN.get())
         );
 
         // Irradiated

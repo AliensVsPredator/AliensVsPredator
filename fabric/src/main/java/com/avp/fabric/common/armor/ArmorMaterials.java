@@ -16,7 +16,6 @@ import java.util.function.Supplier;
 import com.avp.AVPResources;
 import com.avp.common.item.TempAVPItems;
 import com.avp.common.sound.AVPSoundEvents;
-import com.avp.fabric.common.item.AVPItems;
 
 public class ArmorMaterials {
 
@@ -32,7 +31,7 @@ public class ArmorMaterials {
         ),
         7,
         Holder.direct(AVPSoundEvents.ITEM_ARMOR_EQUIP_CHITIN.get()),
-        () -> Ingredient.of(AVPItems.ABERRANT_CHITIN),
+        () -> Ingredient.of(TempAVPItems.ABERRANT_CHITIN.get()),
         0,
         0,
         false
@@ -102,7 +101,7 @@ public class ArmorMaterials {
         ),
         7,
         Holder.direct(AVPSoundEvents.ITEM_ARMOR_EQUIP_CHITIN.get()),
-        () -> Ingredient.of(AVPItems.NETHER_CHITIN),
+        () -> Ingredient.of(TempAVPItems.NETHER_CHITIN.get()),
         0,
         0,
         false
@@ -113,7 +112,7 @@ public class ArmorMaterials {
         relativeDefense(net.minecraft.world.item.ArmorMaterials.DIAMOND, Map.of()),
         7,
         Holder.direct(AVPSoundEvents.ITEM_ARMOR_EQUIP_CHITIN.get()),
-        () -> Ingredient.of(AVPItems.PLATED_ABERRANT_CHITIN),
+        () -> Ingredient.of(TempAVPItems.PLATED_ABERRANT_CHITIN.get()),
         1,
         0,
         false

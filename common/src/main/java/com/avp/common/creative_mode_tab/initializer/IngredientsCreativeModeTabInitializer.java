@@ -92,14 +92,12 @@ public class IngredientsCreativeModeTabInitializer {
         CreativeModeTabUtil.accept(output, TempAVPItems.RESIN_BALL);
         CreativeModeTabUtil.accept(output, TempAVPItems.CHITIN);
         CreativeModeTabUtil.accept(output, TempAVPItems.PLATED_CHITIN);
-        // FIXME:
-        // CreativeModeTabUtil.accept(output, AVPItems.NETHER_RESIN_BALL);
-        // CreativeModeTabUtil.accept(output, AVPItems.NETHER_CHITIN);
+        CreativeModeTabUtil.accept(output, TempAVPItems.NETHER_RESIN_BALL);
+        CreativeModeTabUtil.accept(output, TempAVPItems.NETHER_CHITIN);
         CreativeModeTabUtil.accept(output, TempAVPItems.PLATED_NETHER_CHITIN);
-        // FIXME:
-        // CreativeModeTabUtil.accept(output, AVPItems.ABERRANT_RESIN_BALL);
-        // CreativeModeTabUtil.accept(output, AVPItems.ABERRANT_CHITIN);
-        // CreativeModeTabUtil.accept(output, AVPItems.PLATED_ABERRANT_CHITIN);
+        CreativeModeTabUtil.accept(output, TempAVPItems.ABERRANT_RESIN_BALL);
+        CreativeModeTabUtil.accept(output, TempAVPItems.ABERRANT_CHITIN);
+        CreativeModeTabUtil.accept(output, TempAVPItems.PLATED_ABERRANT_CHITIN);
         CreativeModeTabUtil.accept(output, TempAVPItems.IRRADIATED_RESIN_BALL);
         CreativeModeTabUtil.accept(output, TempAVPItems.IRRADIATED_CHITIN);
         CreativeModeTabUtil.accept(output, TempAVPItems.PLATED_IRRADIATED_CHITIN);
@@ -112,9 +110,8 @@ public class IngredientsCreativeModeTabInitializer {
         CreativeModeTabUtil.accept(output, TempAVPItems.PARASITE_POTTERY_SHERD);
         CreativeModeTabUtil.accept(output, TempAVPItems.ROYALTY_POTTERY_SHERD);
         CreativeModeTabUtil.accept(output, TempAVPItems.VECTOR_POTTERY_SHERD);
-        // FIXME:
-        // CreativeModeTabUtil.accept(output, AVPItems.ALIEN_MUSIC_DISC_1_FRAGMENT);
-        // CreativeModeTabUtil.accept(output, AVPItems.PREDATOR_MUSIC_DISC_1_FRAGMENT);
+        CreativeModeTabUtil.accept(output, TempAVPItems.ALIEN_MUSIC_DISC_1_FRAGMENT);
+        CreativeModeTabUtil.accept(output, TempAVPItems.PREDATOR_MUSIC_DISC_1_FRAGMENT);
 
         CreativeModeTabUtil.accept(output, TempAVPItems.VERITANIUM_SHARD);
     };

@@ -19,7 +19,6 @@ import java.util.function.Supplier;
 import com.avp.common.block.TempAVPBlocks;
 import com.avp.common.item.TempAVPItems;
 import com.avp.fabric.common.block.AVPBlocks;
-import com.avp.fabric.common.item.AVPItems;
 
 public class BlockLootTableProvider extends FabricBlockLootTableProvider {
 
@@ -77,12 +76,12 @@ public class BlockLootTableProvider extends FabricBlockLootTableProvider {
         add(TempAVPBlocks.MONAZITE_ORE.get(), block -> createOreDrop(block, TempAVPItems.RAW_MONAZITE.get()));
         dropSelf(TempAVPBlocks.NETHER_RESIN.get());
         dropOther(TempAVPBlocks.NETHER_RESIN_NODE.get(), TempAVPBlocks.NETHER_RESIN.get());
-        dropOther(TempAVPBlocks.NETHER_RESIN_VEIN.get(), AVPItems.NETHER_RESIN_BALL);
-        dropOther(TempAVPBlocks.NETHER_RESIN_WEB.get(), AVPItems.NETHER_RESIN_BALL);
+        dropOther(TempAVPBlocks.NETHER_RESIN_VEIN.get(), TempAVPItems.NETHER_RESIN_BALL.get());
+        dropOther(TempAVPBlocks.NETHER_RESIN_WEB.get(), TempAVPItems.NETHER_RESIN_BALL.get());
         dropSelf(TempAVPBlocks.ABERRANT_RESIN.get());
         dropOther(TempAVPBlocks.ABERRANT_RESIN_NODE.get(), TempAVPBlocks.ABERRANT_RESIN.get());
-        dropOther(TempAVPBlocks.ABERRANT_RESIN_VEIN.get(), AVPItems.ABERRANT_RESIN_BALL);
-        dropOther(TempAVPBlocks.ABERRANT_RESIN_WEB.get(), AVPItems.ABERRANT_RESIN_BALL);
+        dropOther(TempAVPBlocks.ABERRANT_RESIN_VEIN.get(), TempAVPItems.ABERRANT_RESIN_BALL.get());
+        dropOther(TempAVPBlocks.ABERRANT_RESIN_WEB.get(), TempAVPItems.ABERRANT_RESIN_BALL.get());
         dropSelf(TempAVPBlocks.IRRADIATED_RESIN.get());
         dropOther(TempAVPBlocks.IRRADIATED_RESIN_NODE.get(), TempAVPBlocks.IRRADIATED_RESIN.get());
         dropOther(TempAVPBlocks.IRRADIATED_RESIN_VEIN.get(), TempAVPItems.IRRADIATED_RESIN_BALL.get());

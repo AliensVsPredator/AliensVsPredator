@@ -13,7 +13,6 @@ import com.avp.fabric.common.item.gun.GunData;
 import com.avp.fabric.common.item.old_painless.OldPainlessItem;
 import com.avp.fabric.common.item.yautja_items.ShurikenItem;
 import com.avp.fabric.common.item.yautja_items.SmartDiscItem;
-import com.avp.fabric.common.sound.AVPJukeboxSongs;
 
 public class AVPItems {
 
@@ -28,16 +27,12 @@ public class AVPItems {
 
     public static final Item GRENADE_IRRADIATED = register(new GrendeItem(false, true), "grenade_irradiated");
 
-    public static final Item CASELESS_BULLET = register("caseless_bullet");
-
     public static final Item F903WE_RIFLE = register(new GunItem(GunData.F903WE_RIFLE), "f903we_rifle");
 
     public static final Item FLAMETHROWER_SEVASTOPOL = register(
         new GunItem(GunData.FLAMETHROWER_SEVASTOPOL),
         "flamethrower_sevastopol"
     );
-
-    public static final Item FUEL_TANK = register(new Item.Properties().stacksTo(1), "fuel_tank");
 
     public static final Item M37_12_SHOTGUN = register(new GunItem(GunData.M37_12_SHOTGUN), "m37_12_shotgun");
 
@@ -59,41 +54,6 @@ public class AVPItems {
     public static final Item OLD_PAINLESS = register(new OldPainlessItem(), "old_painless");
 
     public static final Item ZX_76_SHOTGUN = register(new GunItem(GunData.ZX_76_SHOTGUN), "zx_76_shotgun");
-
-    // Decorative Items
-
-    // Music Disc Items
-    public static final Item ALIEN_MUSIC_DISC_1 = register(
-        new Item.Properties().stacksTo(1).rarity(Rarity.RARE).jukeboxPlayable(AVPJukeboxSongs.ALIEN_MUSIC_1),
-        "alien_music_disc_1"
-    );
-
-    public static final Item PREDATOR_MUSIC_DISC_1 = register(
-        new Item.Properties().stacksTo(1).rarity(Rarity.RARE).jukeboxPlayable(AVPJukeboxSongs.PREDATOR_MUSIC_1),
-        "predator_music_disc_1"
-    );
-
-    public static final Item ALIEN_MUSIC_DISC_1_FRAGMENT = register(
-        new DiscFragmentItem(new Item.Properties()),
-        "alien_music_disc_1_fragment"
-    );
-
-    public static final Item PREDATOR_MUSIC_DISC_1_FRAGMENT = register(
-        new DiscFragmentItem(new Item.Properties()),
-        "predator_music_disc_1_fragment"
-    );
-
-    // Material Items
-
-    public static final Item NETHER_CHITIN = register(new Item.Properties().fireResistant(), "nether_chitin");
-
-    public static final Item NETHER_RESIN_BALL = register(new Item.Properties().fireResistant(), "nether_resin_ball");
-
-    public static final Item ABERRANT_CHITIN = register(new Item.Properties().fireResistant(), "aberrant_chitin");
-
-    public static final Item PLATED_ABERRANT_CHITIN = register(new Item.Properties().fireResistant(), "plated_aberrant_chitin");
-
-    public static final Item ABERRANT_RESIN_BALL = register(new Item.Properties().fireResistant(), "aberrant_resin_ball");
 
     public static final Item POISON_JELLY = register(new PoisionJellyItem(), "poison_jelly");
 

@@ -5,6 +5,7 @@ import net.minecraft.world.item.CreativeModeTab;
 import java.util.function.Consumer;
 
 import com.avp.common.block.TempAVPBlocks;
+import com.avp.common.item.TempAVPItems;
 
 public class CombatCreativeModeTabInitializer {
 
@@ -14,14 +15,14 @@ public class CombatCreativeModeTabInitializer {
         // CreativeModeTabUtil.accept(output, AVPItems.GRENADE);
         // CreativeModeTabUtil.accept(output, AVPItems.GRENADE_INCENDIARY);
         // CreativeModeTabUtil.accept(output, AVPItems.GRENADE_IRRADIATED);
-        // CreativeModeTabUtil.accept(output, AVPItems.CASELESS_BULLET);
-        // CreativeModeTabUtil.accept(output, AVPItems.HEAVY_BULLET);
-        // CreativeModeTabUtil.accept(output, TempAVPItems.SMALL_BULLET);
-        // CreativeModeTabUtil.accept(output, AVPItems.MEDIUM_BULLET);
-        // CreativeModeTabUtil.accept(output, TempAVPItems.SHOTGUN_SHELL);
-        // CreativeModeTabUtil.accept(output, TempAVPItems.ROCKET);
-        // CreativeModeTabUtil.accept(output, AVPItems.FUEL_TANK);
-        //
+        CreativeModeTabUtil.accept(output, TempAVPItems.CASELESS_BULLET);
+        CreativeModeTabUtil.accept(output, TempAVPItems.HEAVY_BULLET);
+        CreativeModeTabUtil.accept(output, TempAVPItems.SMALL_BULLET);
+        CreativeModeTabUtil.accept(output, TempAVPItems.MEDIUM_BULLET);
+        CreativeModeTabUtil.accept(output, TempAVPItems.SHOTGUN_SHELL);
+        CreativeModeTabUtil.accept(output, TempAVPItems.ROCKET);
+        CreativeModeTabUtil.accept(output, TempAVPItems.FUEL_TANK);
+
         // CreativeModeTabUtil.accept(output, AVPItems.F903WE_RIFLE);
         // CreativeModeTabUtil.accept(output, AVPItems.FLAMETHROWER_SEVASTOPOL);
         // CreativeModeTabUtil.accept(output, AVPItems.M37_12_SHOTGUN);

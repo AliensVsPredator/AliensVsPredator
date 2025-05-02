@@ -81,7 +81,7 @@ public class MiscellaneousRecipeProvider {
             .withExperience(RecipeConstants.VERY_COMMON_SMELT_EXPERIENCE)
             .into(Items.SLIME_BALL);
 
-        builder.smelt(AVPItems.ABERRANT_RESIN_BALL)
+        builder.smelt(TempAVPItems.ABERRANT_RESIN_BALL)
             .withCategory(RecipeCategory.MISC)
             .withExperience(RecipeConstants.VERY_COMMON_SMELT_EXPERIENCE)
             .into(Items.SLIME_BALL);
@@ -91,7 +91,7 @@ public class MiscellaneousRecipeProvider {
             .withExperience(RecipeConstants.VERY_COMMON_SMELT_EXPERIENCE)
             .into(Items.SLIME_BALL);
 
-        builder.smelt(AVPItems.NETHER_RESIN_BALL)
+        builder.smelt(TempAVPItems.NETHER_RESIN_BALL)
             .withCategory(RecipeCategory.MISC)
             .withExperience(RecipeConstants.VERY_COMMON_SMELT_EXPERIENCE)
             .into(Items.SLIME_BALL);
@@ -373,12 +373,12 @@ public class MiscellaneousRecipeProvider {
 
         builder.shapeless()
             .withCategory(RecipeCategory.MISC)
-            .requires(9, AVPItems.ALIEN_MUSIC_DISC_1_FRAGMENT)
-            .into(1, AVPItems.ALIEN_MUSIC_DISC_1);
+            .requires(9, TempAVPItems.ALIEN_MUSIC_DISC_1_FRAGMENT)
+            .into(1, TempAVPItems.ALIEN_MUSIC_DISC_1);
 
         builder.shapeless()
             .withCategory(RecipeCategory.MISC)
-            .requires(9, AVPItems.PREDATOR_MUSIC_DISC_1_FRAGMENT)
-            .into(1, AVPItems.PREDATOR_MUSIC_DISC_1);
+            .requires(9, TempAVPItems.PREDATOR_MUSIC_DISC_1_FRAGMENT)
+            .into(1, TempAVPItems.PREDATOR_MUSIC_DISC_1);
     }
 }

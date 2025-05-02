@@ -20,6 +20,7 @@ import java.util.ArrayList;
 
 import com.avp.AVP;
 import com.avp.common.level.gameevent.AVPGameEvents;
+import com.avp.common.sound.AVPJukeboxSongs;
 import com.avp.fabric.common.block.AVPBlocks;
 import com.avp.fabric.common.block.CompostingChanceRegistry;
 import com.avp.fabric.common.block.DispenserBlockBehaviors;
@@ -41,7 +42,6 @@ import com.avp.fabric.common.patrols.MarinePatrolSpawner;
 import com.avp.fabric.common.profession.AVPGifts;
 import com.avp.fabric.common.profession.AVPProfessions;
 import com.avp.fabric.common.profession.AVPTrades;
-import com.avp.fabric.common.sound.AVPJukeboxSongs;
 import com.avp.fabric.common.worldgen.NukedAshPlacement;
 import com.avp.fabric.common.worldgen.WorldGen;
 import com.avp.fabric.data.loot.LootTableModifier;

@@ -3,9 +3,11 @@ package com.avp.common.item;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.item.AxeItem;
+import net.minecraft.world.item.DiscFragmentItem;
 import net.minecraft.world.item.HoeItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.PickaxeItem;
+import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.ShovelItem;
 import net.minecraft.world.item.SwordItem;
 import net.minecraft.world.level.block.Blocks;
@@ -14,10 +16,25 @@ import net.minecraft.world.level.material.Fluids;
 import java.util.function.Supplier;
 
 import com.avp.common.component.AVPDataComponents;
+import com.avp.common.sound.AVPJukeboxSongs;
 import com.avp.service.Services;
 
 // TODO: Rename this once multi-loader migration is finished.
 public class TempAVPItems {
+
+    public static final Supplier<Item> ABERRANT_CHITIN = register("aberrant_chitin", new Item.Properties().fireResistant());
+
+    public static final Supplier<Item> ABERRANT_RESIN_BALL = register("aberrant_resin_ball", new Item.Properties().fireResistant());
+
+    public static final Supplier<Item> ALIEN_MUSIC_DISC_1 = register(
+        "alien_music_disc_1",
+        new Item.Properties().stacksTo(1).rarity(Rarity.RARE).jukeboxPlayable(AVPJukeboxSongs.ALIEN_MUSIC_1)
+    );
+
+    public static final Supplier<Item> ALIEN_MUSIC_DISC_1_FRAGMENT = register(
+        "alien_music_disc_1_fragment",
+        () -> new DiscFragmentItem(new Item.Properties())
+    );
 
     public static final Supplier<Item> ALUMINUM_INGOT = register("aluminum_ingot");
 
@@ -66,6 +83,8 @@ public class TempAVPItems {
 
     public static final Supplier<Item> CARBON_DUST = register("carbon_dust");
 
+    public static final Supplier<Item> CASELESS_BULLET = register("caseless_bullet");
+
     public static final Supplier<Item> CASELESS_CARTRIDGE = register("caseless_cartridge");
 
     public static final Supplier<Item> CHITIN = register("chitin");
@@ -77,6 +96,8 @@ public class TempAVPItems {
     public static final Supplier<Item> FERROALUMINUM_INGOT = register("ferroaluminum_ingot");
 
     public static final Supplier<Item> FERROALUMINUM_NUGGET = register("ferroaluminum_nugget");
+
+    public static final Supplier<Item> FUEL_TANK = register("fuel_tank", new Item.Properties().stacksTo(1));
 
     public static final Supplier<Item> GRIP = register("grip");
 
@@ -123,6 +144,10 @@ public class TempAVPItems {
 
     public static final Supplier<Item> NEODYMIUM_MAGNET = register("neodymium_magnet");
 
+    public static final Supplier<Item> NETHER_CHITIN = register("nether_chitin", new Item.Properties().fireResistant());
+
+    public static final Supplier<Item> NETHER_RESIN_BALL = register("nether_resin_ball", new Item.Properties().fireResistant());
+
     public static final Supplier<Item> NUCLEAR_BATTERY = register("nuclear_battery");
 
     public static final Supplier<Item> OVOID_POTTERY_SHERD = register("ovoid_pottery_sherd");
@@ -130,6 +155,8 @@ public class TempAVPItems {
     public static final Supplier<Item> PARASITE_POTTERY_SHERD = register("parasite_pottery_sherd");
 
     public static final Supplier<Item> PLATED_CHITIN = register("plated_chitin");
+
+    public static final Supplier<Item> PLATED_ABERRANT_CHITIN = register("plated_aberrant_chitin", new Item.Properties().fireResistant());
 
     public static final Supplier<Item> PLATED_IRRADIATED_CHITIN = register("plated_irradiated_chitin");
 
@@ -144,6 +171,16 @@ public class TempAVPItems {
             SoundEvents.BUCKET_EMPTY_POWDER_SNOW,
             new Item.Properties().stacksTo(1).component(AVPDataComponents.CANISTER_CAPACITY.get(), 1)
         )
+    );
+
+    public static final Supplier<Item> PREDATOR_MUSIC_DISC_1 = register(
+        "predator_music_disc_1",
+        new Item.Properties().stacksTo(1).rarity(Rarity.RARE).jukeboxPlayable(AVPJukeboxSongs.PREDATOR_MUSIC_1)
+    );
+
+    public static final Supplier<Item> PREDATOR_MUSIC_DISC_1_FRAGMENT = register(
+        "predator_music_disc_1_fragment",
+        () -> new DiscFragmentItem(new Item.Properties())
     );
 
     public static final Supplier<Item> RAW_BAUXITE = register("raw_bauxite");

@@ -11,7 +11,6 @@ import net.minecraft.world.level.storage.loot.providers.number.UniformGenerator;
 import java.util.function.Function;
 
 import com.avp.common.item.TempAVPItems;
-import com.avp.fabric.common.item.AVPItems;
 
 public class AmmoChestBulletsLootTable {
 
@@ -38,7 +37,7 @@ public class AmmoChestBulletsLootTable {
             LootPool.lootPool()
                 .setRolls(ConstantValue.exactly(1))
                 .add(
-                    LootItem.lootTableItem(AVPItems.CASELESS_BULLET)
+                    LootItem.lootTableItem(TempAVPItems.CASELESS_BULLET.get())
                         .apply(SetItemCountFunction.setCount(UniformGenerator.between(2, 6)))
                         .setWeight(45)
                 )
@@ -65,7 +64,7 @@ public class AmmoChestBulletsLootTable {
             LootPool.lootPool()
                 .setRolls(ConstantValue.exactly(1))
                 .add(
-                    LootItem.lootTableItem(AVPItems.FUEL_TANK)
+                    LootItem.lootTableItem(TempAVPItems.FUEL_TANK.get())
                         .apply(SetItemCountFunction.setCount(UniformGenerator.between(1, 3)))
                         .setWeight(15)
                 )

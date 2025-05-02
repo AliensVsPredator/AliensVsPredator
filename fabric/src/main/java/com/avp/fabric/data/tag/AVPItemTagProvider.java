@@ -111,13 +111,13 @@ public class AVPItemTagProvider extends FabricTagProvider.ItemTagProvider {
 
         getOrCreateTagBuilder(AVPItemTags.AMMO_ITEMS)
             .add(
-                AVPItems.CASELESS_BULLET,
+                TempAVPItems.CASELESS_BULLET.get(),
                 TempAVPItems.HEAVY_BULLET.get(),
                 TempAVPItems.SMALL_BULLET.get(),
                 TempAVPItems.MEDIUM_BULLET.get(),
                 TempAVPItems.SHOTGUN_SHELL.get(),
                 TempAVPItems.ROCKET.get(),
-                AVPItems.FUEL_TANK
+                TempAVPItems.FUEL_TANK.get()
             );
 
         getOrCreateTagBuilder(AVPItemTags.FACEHUGGER_PROTECTION_HELMET)
@@ -178,12 +178,12 @@ public class AVPItemTagProvider extends FabricTagProvider.ItemTagProvider {
                 ArmorItems.PLATED_NETHER_CHITIN_BOOTS,
 
                 TempAVPItems.CHITIN.get(),
-                AVPItems.NETHER_CHITIN,
-                AVPItems.ABERRANT_CHITIN,
+                TempAVPItems.NETHER_CHITIN.get(),
+                TempAVPItems.ABERRANT_CHITIN.get(),
                 TempAVPItems.IRRADIATED_CHITIN.get(),
                 TempAVPItems.PLATED_CHITIN.get(),
                 TempAVPItems.PLATED_NETHER_CHITIN.get(),
-                AVPItems.PLATED_ABERRANT_CHITIN,
+                TempAVPItems.PLATED_ABERRANT_CHITIN.get(),
                 TempAVPItems.PLATED_IRRADIATED_CHITIN.get()
             );
 

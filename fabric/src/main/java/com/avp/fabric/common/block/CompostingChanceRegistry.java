@@ -2,14 +2,13 @@ package com.avp.fabric.common.block;
 
 import com.avp.common.block.TempAVPBlocks;
 import com.avp.common.item.TempAVPItems;
-import com.avp.fabric.common.item.AVPItems;
 
 public class CompostingChanceRegistry {
 
     public static void initialize() {
         net.fabricmc.fabric.api.registry.CompostingChanceRegistry.INSTANCE.add(TempAVPItems.IRRADIATED_RESIN_BALL.get(), 0.3F);
-        net.fabricmc.fabric.api.registry.CompostingChanceRegistry.INSTANCE.add(AVPItems.ABERRANT_RESIN_BALL, 0.3F);
-        net.fabricmc.fabric.api.registry.CompostingChanceRegistry.INSTANCE.add(AVPItems.NETHER_RESIN_BALL, 0.3F);
+        net.fabricmc.fabric.api.registry.CompostingChanceRegistry.INSTANCE.add(TempAVPItems.ABERRANT_RESIN_BALL.get(), 0.3F);
+        net.fabricmc.fabric.api.registry.CompostingChanceRegistry.INSTANCE.add(TempAVPItems.NETHER_RESIN_BALL.get(), 0.3F);
         net.fabricmc.fabric.api.registry.CompostingChanceRegistry.INSTANCE.add(TempAVPItems.RESIN_BALL.get(), 0.3F);
 
         net.fabricmc.fabric.api.registry.CompostingChanceRegistry.INSTANCE.add(TempAVPBlocks.IRRADIATED_RESIN.get(), 1F);

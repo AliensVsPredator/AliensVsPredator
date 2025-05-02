@@ -2,7 +2,6 @@ package com.avp.fabric.common.item.gun;
 
 import com.avp.common.item.TempAVPItems;
 import com.avp.common.sound.AVPSoundEvents;
-import com.avp.fabric.common.item.AVPItems;
 import com.avp.fabric.common.item.gun.attack.FlamethrowProjectileGunAttack;
 import com.avp.fabric.common.item.gun.attack.RocketProjectileGunAttack;
 
@@ -28,7 +27,7 @@ public class GunData {
         .withMaximumAmmunition(1000)
         .withReloadAmount(1000)
         .withReloadTimeInTicks(20 * 5)
-        .withAmmunitionItemSupplier(() -> AVPItems.FUEL_TANK)
+        .withAmmunitionItemSupplier(TempAVPItems.FUEL_TANK::get)
         .withFireMode(
             FireModeConfig.builder()
                 .withCooldownInTicks(1)
@@ -64,7 +63,7 @@ public class GunData {
         .withDurability(2048 + 1024)
         .withMaximumAmmunition(99)
         .withReloadTimeInTicks(20 * 3)
-        .withAmmunitionItemSupplier(() -> AVPItems.CASELESS_BULLET)
+        .withAmmunitionItemSupplier(TempAVPItems.CASELESS_BULLET::get)
         // Burst
         .withFireMode(
             FireModeConfig.builder()
@@ -114,7 +113,7 @@ public class GunData {
         .withDurability(4096)
         .withMaximumAmmunition(500)
         .withReloadTimeInTicks(20 * 7)
-        .withAmmunitionItemSupplier(() -> AVPItems.CASELESS_BULLET)
+        .withAmmunitionItemSupplier(TempAVPItems.CASELESS_BULLET::get)
         .withFireMode(
             FireModeConfig.builder()
                 .withCooldownInTicks(1)

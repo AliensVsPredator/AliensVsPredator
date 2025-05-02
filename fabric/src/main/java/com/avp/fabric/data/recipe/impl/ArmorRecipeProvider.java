@@ -10,7 +10,6 @@ import java.util.function.Supplier;
 
 import com.avp.common.item.AVPItemTags;
 import com.avp.common.item.TempAVPItems;
-import com.avp.fabric.common.item.AVPItems;
 import com.avp.fabric.common.item.ArmorItems;
 import com.avp.fabric.data.recipe.RecipeTemplates;
 import com.avp.fabric.data.recipe.builder.RecipeBuilder;
@@ -30,7 +29,7 @@ public class ArmorRecipeProvider {
 
         createStandardArmorSetRecipes(
             builder,
-            AVPItems.ABERRANT_CHITIN,
+            TempAVPItems.ABERRANT_CHITIN.get(),
             ArmorItems.ABERRANT_CHITIN_HELMET,
             ArmorItems.ABERRANT_CHITIN_CHESTPLATE,
             ArmorItems.ABERRANT_CHITIN_LEGGINGS,
@@ -55,7 +54,7 @@ public class ArmorRecipeProvider {
         // );
         createStandardArmorSetRecipes(
             builder,
-            AVPItems.NETHER_CHITIN,
+            TempAVPItems.NETHER_CHITIN.get(),
             ArmorItems.NETHER_CHITIN_HELMET,
             ArmorItems.NETHER_CHITIN_CHESTPLATE,
             ArmorItems.NETHER_CHITIN_LEGGINGS,
@@ -83,22 +82,22 @@ public class ArmorRecipeProvider {
         builder.shapeless()
             .withCategory(RecipeCategory.COMBAT)
             .requires(1, ArmorItems.ABERRANT_CHITIN_HELMET)
-            .requires(1, AVPItems.PLATED_ABERRANT_CHITIN)
+            .requires(1, TempAVPItems.PLATED_ABERRANT_CHITIN)
             .into(1, ArmorItems.PLATED_ABERRANT_CHITIN_HELMET);
         builder.shapeless()
             .withCategory(RecipeCategory.COMBAT)
             .requires(1, ArmorItems.ABERRANT_CHITIN_CHESTPLATE)
-            .requires(1, AVPItems.PLATED_ABERRANT_CHITIN)
+            .requires(1, TempAVPItems.PLATED_ABERRANT_CHITIN)
             .into(1, ArmorItems.PLATED_ABERRANT_CHITIN_CHESTPLATE);
         builder.shapeless()
             .withCategory(RecipeCategory.COMBAT)
             .requires(1, ArmorItems.ABERRANT_CHITIN_LEGGINGS)
-            .requires(1, AVPItems.PLATED_ABERRANT_CHITIN)
+            .requires(1, TempAVPItems.PLATED_ABERRANT_CHITIN)
             .into(1, ArmorItems.PLATED_ABERRANT_CHITIN_LEGGINGS);
         builder.shapeless()
             .withCategory(RecipeCategory.COMBAT)
             .requires(1, ArmorItems.ABERRANT_CHITIN_BOOTS)
-            .requires(1, AVPItems.PLATED_ABERRANT_CHITIN)
+            .requires(1, TempAVPItems.PLATED_ABERRANT_CHITIN)
             .into(1, ArmorItems.PLATED_ABERRANT_CHITIN_BOOTS);
     }
 

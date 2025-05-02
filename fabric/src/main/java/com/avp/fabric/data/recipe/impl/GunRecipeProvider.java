@@ -138,7 +138,7 @@ public class GunRecipeProvider {
             .define('B', TempAVPItems.CASELESS_CARTRIDGE)
             .pattern("A")
             .pattern("B")
-            .into(8, AVPItems.CASELESS_BULLET);
+            .into(8, TempAVPItems.CASELESS_BULLET);
         builder.shaped()
             .withCategory(RecipeCategory.COMBAT)
             .define('A', TempAVPItems.ALUMINUM_NUGGET)
@@ -146,7 +146,7 @@ public class GunRecipeProvider {
             .pattern("AAA")
             .pattern("ABA")
             .pattern("AAA")
-            .into(1, AVPItems.FUEL_TANK);
+            .into(1, TempAVPItems.FUEL_TANK);
     }
 
     private static void createGunRecipes(RecipeBuilder builder) {
