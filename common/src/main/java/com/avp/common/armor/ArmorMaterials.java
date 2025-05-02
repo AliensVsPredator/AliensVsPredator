@@ -1,7 +1,6 @@
-package com.avp.fabric.common.armor;
+package com.avp.common.armor;
 
 import net.minecraft.core.Holder;
-import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.item.ArmorItem;
@@ -15,12 +14,14 @@ import java.util.function.Supplier;
 
 import com.avp.AVPResources;
 import com.avp.common.item.TempAVPItems;
+import com.avp.common.registry.AVPDeferredHolder;
 import com.avp.common.sound.AVPSoundEvents;
+import com.avp.service.Services;
 
 public class ArmorMaterials {
 
     // Should be slightly stronger than iron.
-    public static final Holder<ArmorMaterial> ABERRANT_CHITIN = register(
+    public static final AVPDeferredHolder<ArmorMaterial> ABERRANT_CHITIN = register(
         "aberrant_chitin",
         relativeDefense(
             net.minecraft.world.item.ArmorMaterials.IRON,
@@ -38,7 +39,7 @@ public class ArmorMaterials {
     );
 
     // Should be slightly stronger than iron.
-    public static final Holder<ArmorMaterial> CHITIN = register(
+    public static final AVPDeferredHolder<ArmorMaterial> CHITIN = register(
         "chitin",
         relativeDefense(
             net.minecraft.world.item.ArmorMaterials.IRON,
@@ -56,7 +57,7 @@ public class ArmorMaterials {
     );
 
     // Should be slightly stronger than iron.
-    public static final Holder<ArmorMaterial> IRRADIATED_CHITIN = register(
+    public static final AVPDeferredHolder<ArmorMaterial> IRRADIATED_CHITIN = register(
         "irradiated_chitin",
         relativeDefense(
             net.minecraft.world.item.ArmorMaterials.IRON,
@@ -73,7 +74,7 @@ public class ArmorMaterials {
         false
     );
 
-    public static final Holder<ArmorMaterial> MK50 = register(
+    public static final AVPDeferredHolder<ArmorMaterial> MK50 = register(
         "mk50",
         relativeDefense(
             net.minecraft.world.item.ArmorMaterials.IRON,
@@ -90,7 +91,7 @@ public class ArmorMaterials {
         true
     );
 
-    public static final Holder<ArmorMaterial> NETHER_CHITIN = register(
+    public static final AVPDeferredHolder<ArmorMaterial> NETHER_CHITIN = register(
         "nether_chitin",
         relativeDefense(
             net.minecraft.world.item.ArmorMaterials.IRON,
@@ -107,7 +108,7 @@ public class ArmorMaterials {
         false
     );
 
-    public static final Holder<ArmorMaterial> PLATED_ABERRANT_CHITIN = register(
+    public static final AVPDeferredHolder<ArmorMaterial> PLATED_ABERRANT_CHITIN = register(
         "plated_aberrant_chitin",
         relativeDefense(net.minecraft.world.item.ArmorMaterials.DIAMOND, Map.of()),
         7,
@@ -118,7 +119,7 @@ public class ArmorMaterials {
         false
     );
 
-    public static final Holder<ArmorMaterial> PLATED_CHITIN = register(
+    public static final AVPDeferredHolder<ArmorMaterial> PLATED_CHITIN = register(
         "plated_chitin",
         relativeDefense(net.minecraft.world.item.ArmorMaterials.DIAMOND, Map.of()),
         7,
@@ -129,7 +130,7 @@ public class ArmorMaterials {
         false
     );
 
-    public static final Holder<ArmorMaterial> PLATED_IRRADIATED_CHITIN = register(
+    public static final AVPDeferredHolder<ArmorMaterial> PLATED_IRRADIATED_CHITIN = register(
         "plated_irradiated_chitin",
         relativeDefense(net.minecraft.world.item.ArmorMaterials.DIAMOND, Map.of()),
         7,
@@ -140,7 +141,7 @@ public class ArmorMaterials {
         false
     );
 
-    public static final Holder<ArmorMaterial> PLATED_NETHER_CHITIN = register(
+    public static final AVPDeferredHolder<ArmorMaterial> PLATED_NETHER_CHITIN = register(
         "plated_nether_chitin",
         relativeDefense(net.minecraft.world.item.ArmorMaterials.DIAMOND, Map.of()),
         7,
@@ -151,7 +152,7 @@ public class ArmorMaterials {
         false
     );
 
-    public static final Holder<ArmorMaterial> PRESSURE = register(
+    public static final AVPDeferredHolder<ArmorMaterial> PRESSURE = register(
         "pressure",
         relativeDefense(
             net.minecraft.world.item.ArmorMaterials.IRON,
@@ -168,7 +169,7 @@ public class ArmorMaterials {
         false
     );
 
-    public static final Holder<ArmorMaterial> STEEL = register(
+    public static final AVPDeferredHolder<ArmorMaterial> STEEL = register(
         "steel",
         relativeDefense(
             net.minecraft.world.item.ArmorMaterials.IRON,
@@ -187,7 +188,7 @@ public class ArmorMaterials {
         false
     );
 
-    public static final Holder<ArmorMaterial> TACTICAL = register(
+    public static final AVPDeferredHolder<ArmorMaterial> TACTICAL = register(
         "tactical",
         Map.ofEntries(
             Map.entry(ArmorItem.Type.HELMET, 2),
@@ -203,7 +204,7 @@ public class ArmorMaterials {
         false
     );
 
-    public static final Holder<ArmorMaterial> TITANIUM = register(
+    public static final AVPDeferredHolder<ArmorMaterial> TITANIUM = register(
         "titanium",
         relativeDefense(
             net.minecraft.world.item.ArmorMaterials.IRON,
@@ -222,7 +223,7 @@ public class ArmorMaterials {
         false
     );
 
-    public static final Holder<ArmorMaterial> VERITANIUM = register(
+    public static final AVPDeferredHolder<ArmorMaterial> VERITANIUM = register(
         "veritanium",
         relativeDefense(
             net.minecraft.world.item.ArmorMaterials.NETHERITE,
@@ -241,7 +242,7 @@ public class ArmorMaterials {
         false
     );
 
-    private static Holder<ArmorMaterial> register(
+    private static AVPDeferredHolder<ArmorMaterial> register(
         String id,
         Map<ArmorItem.Type, Integer> defensePoints,
         int enchantability,
@@ -257,19 +258,19 @@ public class ArmorMaterials {
             new ArmorMaterial.Layer(resourceLocation, "", dyeable)
         );
 
-        var material = new ArmorMaterial(
-            defensePoints,
-            enchantability,
-            equipSound,
-            repairIngredientSupplier,
-            layers,
-            toughness,
-            knockbackResistance
+        return Services.REGISTRY.register(
+            BuiltInRegistries.ARMOR_MATERIAL,
+            id,
+            () -> new ArmorMaterial(
+                defensePoints,
+                enchantability,
+                equipSound,
+                repairIngredientSupplier,
+                layers,
+                toughness,
+                knockbackResistance
+            )
         );
-        // Register the material within the ArmorMaterials registry.
-        material = Registry.register(BuiltInRegistries.ARMOR_MATERIAL, resourceLocation, material);
-
-        return Holder.direct(material);
     }
 
     private static Map<ArmorItem.Type, Integer> relativeDefense(

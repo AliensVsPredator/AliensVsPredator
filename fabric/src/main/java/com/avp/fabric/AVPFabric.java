@@ -19,8 +19,6 @@ import net.minecraft.world.level.levelgen.structure.templatesystem.StructureProc
 import java.util.ArrayList;
 
 import com.avp.AVP;
-import com.avp.common.level.gameevent.AVPGameEvents;
-import com.avp.common.sound.AVPJukeboxSongs;
 import com.avp.fabric.common.block.AVPBlocks;
 import com.avp.fabric.common.block.CompostingChanceRegistry;
 import com.avp.fabric.common.block.DispenserBlockBehaviors;
@@ -31,7 +29,6 @@ import com.avp.fabric.common.entity.spawn.SpawnPlacements;
 import com.avp.fabric.common.entity.type.AVPEntityTypes;
 import com.avp.fabric.common.fuel.AVPFuelRegistry;
 import com.avp.fabric.common.item.AVPItems;
-import com.avp.fabric.common.item.ArmorItems;
 import com.avp.fabric.common.item.SpawnEggItems;
 import com.avp.fabric.common.lifecycle.Infections;
 import com.avp.fabric.common.lifecycle.Lifecycles;
@@ -68,15 +65,12 @@ public class AVPFabric implements ModInitializer {
         AVPBlocks.initialize();
         AVPItems.initialize();
         AVPBlockItems.initialize();
-        ArmorItems.initialize();
         SpawnEggItems.initialize();
         AVPEntityTypes.initialize();
         Infections.initialize();
         Lifecycles.initialize();
         AVPParticleTypes.initialize();
         WorldGen.initialize();
-        AVPJukeboxSongs.initialize();
-        AVPGameEvents.initialize();
         CommonPacketRegistry.initialize();
         ServerPacketHandlerRegistry.initialize();
         AVPProfessions.initialize();

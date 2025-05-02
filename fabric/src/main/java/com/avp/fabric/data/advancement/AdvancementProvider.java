@@ -27,9 +27,9 @@ import java.util.function.Consumer;
 import com.avp.AVP;
 import com.avp.AVPResources;
 import com.avp.common.block.TempAVPBlocks;
+import com.avp.common.item.AVPArmorItems;
 import com.avp.common.item.TempAVPItems;
 import com.avp.fabric.common.entity.type.AVPEntityTypes;
-import com.avp.fabric.common.item.ArmorItems;
 
 public class AdvancementProvider extends FabricAdvancementProvider {
 
@@ -102,7 +102,7 @@ public class AdvancementProvider extends FabricAdvancementProvider {
         return Advancement.Builder.advancement()
             .parent(parent)
             .display(
-                ArmorItems.CHITIN_HELMET,
+                AVPArmorItems.CHITIN_HELMET.get(),
                 Component.translatable("advancements.aliens.chitin_armor.title"),
                 Component.translatable("advancements.aliens.chitin_armor.description"),
                 null,
@@ -114,19 +114,19 @@ public class AdvancementProvider extends FabricAdvancementProvider {
             .addCriterion(
                 "chitin_armor",
                 InventoryChangeTrigger.TriggerInstance.hasItems(
-                    ArmorItems.CHITIN_HELMET,
-                    ArmorItems.CHITIN_CHESTPLATE,
-                    ArmorItems.CHITIN_LEGGINGS,
-                    ArmorItems.CHITIN_BOOTS
+                    AVPArmorItems.CHITIN_HELMET.get(),
+                    AVPArmorItems.CHITIN_CHESTPLATE.get(),
+                    AVPArmorItems.CHITIN_LEGGINGS.get(),
+                    AVPArmorItems.CHITIN_BOOTS.get()
                 )
             )
             .addCriterion(
                 "nether_chitin_armor",
                 InventoryChangeTrigger.TriggerInstance.hasItems(
-                    ArmorItems.NETHER_CHITIN_HELMET,
-                    ArmorItems.NETHER_CHITIN_CHESTPLATE,
-                    ArmorItems.NETHER_CHITIN_LEGGINGS,
-                    ArmorItems.NETHER_CHITIN_BOOTS
+                    AVPArmorItems.NETHER_CHITIN_HELMET.get(),
+                    AVPArmorItems.NETHER_CHITIN_CHESTPLATE.get(),
+                    AVPArmorItems.NETHER_CHITIN_LEGGINGS.get(),
+                    AVPArmorItems.NETHER_CHITIN_BOOTS.get()
                 )
             )
             .requirements(AdvancementRequirements.Strategy.OR)
@@ -137,7 +137,7 @@ public class AdvancementProvider extends FabricAdvancementProvider {
         return Advancement.Builder.advancement()
             .parent(parent)
             .display(
-                ArmorItems.PLATED_CHITIN_HELMET,
+                AVPArmorItems.PLATED_CHITIN_HELMET.get(),
                 Component.translatable("advancements.aliens.plated_chitin_armor.title"),
                 Component.translatable("advancements.aliens.plated_chitin_armor.description"),
                 null,
@@ -149,19 +149,19 @@ public class AdvancementProvider extends FabricAdvancementProvider {
             .addCriterion(
                 "plated_chitin_armor",
                 InventoryChangeTrigger.TriggerInstance.hasItems(
-                    ArmorItems.PLATED_CHITIN_HELMET,
-                    ArmorItems.PLATED_CHITIN_CHESTPLATE,
-                    ArmorItems.PLATED_CHITIN_LEGGINGS,
-                    ArmorItems.PLATED_CHITIN_BOOTS
+                    AVPArmorItems.PLATED_CHITIN_HELMET.get(),
+                    AVPArmorItems.PLATED_CHITIN_CHESTPLATE.get(),
+                    AVPArmorItems.PLATED_CHITIN_LEGGINGS.get(),
+                    AVPArmorItems.PLATED_CHITIN_BOOTS.get()
                 )
             )
             .addCriterion(
                 "plated_nether_chitin_armor",
                 InventoryChangeTrigger.TriggerInstance.hasItems(
-                    ArmorItems.PLATED_NETHER_CHITIN_HELMET,
-                    ArmorItems.PLATED_NETHER_CHITIN_CHESTPLATE,
-                    ArmorItems.PLATED_NETHER_CHITIN_LEGGINGS,
-                    ArmorItems.PLATED_NETHER_CHITIN_BOOTS
+                    AVPArmorItems.PLATED_NETHER_CHITIN_HELMET.get(),
+                    AVPArmorItems.PLATED_NETHER_CHITIN_CHESTPLATE.get(),
+                    AVPArmorItems.PLATED_NETHER_CHITIN_LEGGINGS.get(),
+                    AVPArmorItems.PLATED_NETHER_CHITIN_BOOTS.get()
                 )
             )
             .requirements(AdvancementRequirements.Strategy.OR)

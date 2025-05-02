@@ -7,9 +7,9 @@ import net.minecraft.world.item.trading.ItemCost;
 import net.minecraft.world.item.trading.MerchantOffer;
 
 import com.avp.common.block.TempAVPBlocks;
+import com.avp.common.item.AVPArmorItems;
 import com.avp.common.item.TempAVPItems;
 import com.avp.fabric.common.item.AVPItems;
-import com.avp.fabric.common.item.ArmorItems;
 
 public class AVPTrades {
 
@@ -48,7 +48,7 @@ public class AVPTrades {
             factories.add(
                 (entity, random) -> new MerchantOffer(
                     new ItemCost(Items.EMERALD, 5),
-                    new ItemStack(ArmorItems.TACTICAL_CAMO_HELMET, 1),
+                    new ItemStack(AVPArmorItems.TACTICAL_CAMO_HELMET, 1),
                     4,
                     7,
                     0.04f
@@ -66,7 +66,7 @@ public class AVPTrades {
             factories.add(
                 (entity, random) -> new MerchantOffer(
                     new ItemCost(Items.EMERALD, 8),
-                    new ItemStack(ArmorItems.TACTICAL_CAMO_CHESTPLATE, 1),
+                    new ItemStack(AVPArmorItems.TACTICAL_CAMO_CHESTPLATE, 1),
                     3,
                     12,
                     0.09f
@@ -87,7 +87,7 @@ public class AVPTrades {
             factories.add(
                 (entity, random) -> new MerchantOffer(
                     new ItemCost(Items.EMERALD, 10),
-                    new ItemStack(ArmorItems.TACTICAL_CAMO_LEGGINGS, 1),
+                    new ItemStack(AVPArmorItems.TACTICAL_CAMO_LEGGINGS, 1),
                     3,
                     12,
                     0.09f
@@ -108,7 +108,7 @@ public class AVPTrades {
             factories.add(
                 (entity, random) -> new MerchantOffer(
                     new ItemCost(Items.EMERALD, 8),
-                    new ItemStack(ArmorItems.TACTICAL_CAMO_BOOTS, 1),
+                    new ItemStack(AVPArmorItems.TACTICAL_CAMO_BOOTS, 1),
                     4,
                     7,
                     0.04f

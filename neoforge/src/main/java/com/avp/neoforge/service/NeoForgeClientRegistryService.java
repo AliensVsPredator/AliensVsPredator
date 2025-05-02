@@ -1,6 +1,7 @@
 package com.avp.neoforge.service;
 
 import com.bvanseg.just.functional.tuple.Tuple2;
+import mod.azure.azurelib.rewrite.render.armor.AzArmorRenderer;
 import mod.azure.azurelib.rewrite.render.item.AzItemRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.world.item.Item;
@@ -16,13 +17,21 @@ import com.avp.service.ClientRegistryService;
 
 public class NeoForgeClientRegistryService implements ClientRegistryService {
 
+    private final List<Tuple2<Supplier<AzArmorRenderer>, List<Supplier<Item>>>> armorRendererPairs;
+
     private final List<Tuple2<Supplier<? extends BlockEntityType<? extends BlockEntity>>, BlockEntityRendererProvider<? extends BlockEntity>>> blockEntityRendererPairs;
 
     private final List<Tuple2<Supplier<? extends Item>, Function<String, Supplier<AzItemRenderer>>>> itemRendererPairs;
 
     public NeoForgeClientRegistryService() {
+        this.armorRendererPairs = new ArrayList<>();
         this.blockEntityRendererPairs = new ArrayList<>();
         this.itemRendererPairs = new ArrayList<>();
+    }
+
+    @Override
+    public void registerArmorRenderer(Supplier<AzArmorRenderer> armorRendererSupplier, List<Supplier<Item>> itemSuppliers) {
+        armorRendererPairs.add(new Tuple2<>(armorRendererSupplier, itemSuppliers));
     }
 
     @Override
@@ -36,6 +45,10 @@ public class NeoForgeClientRegistryService implements ClientRegistryService {
     @Override
     public void registerItemRenderer(Supplier<? extends Item> itemSupplier, Function<String, Supplier<AzItemRenderer>> rendererFactory) {
         itemRendererPairs.add(new Tuple2<>(itemSupplier, rendererFactory));
+    }
+
+    public List<Tuple2<Supplier<AzArmorRenderer>, List<Supplier<Item>>>> getArmorRendererPairs() {
+        return armorRendererPairs;
     }
 
     public List<Tuple2<Supplier<? extends BlockEntityType<? extends BlockEntity>>, BlockEntityRendererProvider<? extends BlockEntity>>> getBlockEntityRendererPairs() {

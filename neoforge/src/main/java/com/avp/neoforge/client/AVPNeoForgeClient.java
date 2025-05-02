@@ -26,6 +26,9 @@ public class AVPNeoForgeClient {
 
     @SubscribeEvent
     public static void onClientSetup(FMLClientSetupEvent event) {
+        CLIENT_REGISTRY.getArmorRendererPairs()
+            .forEach(pair -> CLIENT_REGISTRY.registerArmorRendererImmediately(pair.first(), pair.second()));
+
         CLIENT_REGISTRY.getItemRendererPairs()
             .forEach(pair -> CLIENT_REGISTRY.registerItemRendererImmediately(pair.first().get(), pair.second()));
     }

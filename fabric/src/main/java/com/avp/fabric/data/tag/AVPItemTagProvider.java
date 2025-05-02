@@ -10,11 +10,11 @@ import java.util.concurrent.CompletableFuture;
 import java.util.function.Supplier;
 
 import com.avp.common.block.TempAVPBlocks;
+import com.avp.common.item.AVPArmorItems;
 import com.avp.common.item.AVPItemTags;
 import com.avp.common.item.TempAVPBlockItems;
 import com.avp.common.item.TempAVPItems;
 import com.avp.fabric.common.item.AVPItems;
-import com.avp.fabric.common.item.ArmorItems;
 import com.avp.fabric.data.compatibility.common.CommonConstants;
 
 public class AVPItemTagProvider extends FabricTagProvider.ItemTagProvider {
@@ -33,50 +33,50 @@ public class AVPItemTagProvider extends FabricTagProvider.ItemTagProvider {
 
         getOrCreateTagBuilder(AVPItemTags.RADIATION_RESISTANT_ARMOR)
             .add(
-                ArmorItems.MK50_HELMET,
-                ArmorItems.MK50_CHESTPLATE,
-                ArmorItems.MK50_LEGGINGS,
-                ArmorItems.MK50_BOOTS
+                AVPArmorItems.MK50_HELMET.get(),
+                AVPArmorItems.MK50_CHESTPLATE.get(),
+                AVPArmorItems.MK50_LEGGINGS.get(),
+                AVPArmorItems.MK50_BOOTS.get()
             );
 
         getOrCreateTagBuilder(AVPItemTags.JUNGLE_PREDATOR_ARMOR)
             .add(
-                ArmorItems.JUNGLE_PREDATOR_BOOTS,
-                ArmorItems.JUNGLE_PREDATOR_CHESTPLATE,
-                ArmorItems.JUNGLE_PREDATOR_HELMET,
-                ArmorItems.JUNGLE_PREDATOR_LEGGINGS
+                AVPArmorItems.JUNGLE_PREDATOR_BOOTS.get(),
+                AVPArmorItems.JUNGLE_PREDATOR_CHESTPLATE.get(),
+                AVPArmorItems.JUNGLE_PREDATOR_HELMET.get(),
+                AVPArmorItems.JUNGLE_PREDATOR_LEGGINGS.get()
             );
 
         getOrCreateTagBuilder(AVPItemTags.MK50_ARMOR)
             .add(
-                ArmorItems.MK50_BOOTS,
-                ArmorItems.MK50_CHESTPLATE,
-                ArmorItems.MK50_HELMET,
-                ArmorItems.MK50_LEGGINGS
+                AVPArmorItems.MK50_BOOTS.get(),
+                AVPArmorItems.MK50_CHESTPLATE.get(),
+                AVPArmorItems.MK50_HELMET.get(),
+                AVPArmorItems.MK50_LEGGINGS.get()
             );
 
         getOrCreateTagBuilder(AVPItemTags.NETHER_CHITIN_ARMOR)
             .add(
-                ArmorItems.NETHER_CHITIN_BOOTS,
-                ArmorItems.NETHER_CHITIN_CHESTPLATE,
-                ArmorItems.NETHER_CHITIN_HELMET,
-                ArmorItems.NETHER_CHITIN_LEGGINGS
+                AVPArmorItems.NETHER_CHITIN_BOOTS.get(),
+                AVPArmorItems.NETHER_CHITIN_CHESTPLATE.get(),
+                AVPArmorItems.NETHER_CHITIN_HELMET.get(),
+                AVPArmorItems.NETHER_CHITIN_LEGGINGS.get()
             );
 
         getOrCreateTagBuilder(AVPItemTags.PLATED_NETHER_CHITIN_ARMOR)
             .add(
-                ArmorItems.PLATED_NETHER_CHITIN_BOOTS,
-                ArmorItems.PLATED_NETHER_CHITIN_CHESTPLATE,
-                ArmorItems.PLATED_NETHER_CHITIN_HELMET,
-                ArmorItems.PLATED_NETHER_CHITIN_LEGGINGS
+                AVPArmorItems.PLATED_NETHER_CHITIN_BOOTS.get(),
+                AVPArmorItems.PLATED_NETHER_CHITIN_CHESTPLATE.get(),
+                AVPArmorItems.PLATED_NETHER_CHITIN_HELMET.get(),
+                AVPArmorItems.PLATED_NETHER_CHITIN_LEGGINGS.get()
             );
 
         getOrCreateTagBuilder(AVPItemTags.PRESSURE_ARMOR)
             .add(
-                ArmorItems.PRESSURE_BOOTS,
-                ArmorItems.PRESSURE_CHESTPLATE,
-                ArmorItems.PRESSURE_HELMET,
-                ArmorItems.PRESSURE_LEGGINGS
+                AVPArmorItems.PRESSURE_BOOTS.get(),
+                AVPArmorItems.PRESSURE_CHESTPLATE.get(),
+                AVPArmorItems.PRESSURE_HELMET.get(),
+                AVPArmorItems.PRESSURE_LEGGINGS.get()
             );
 
         // Start composite tags
@@ -122,7 +122,7 @@ public class AVPItemTagProvider extends FabricTagProvider.ItemTagProvider {
 
         getOrCreateTagBuilder(AVPItemTags.FACEHUGGER_PROTECTION_HELMET)
             .add(
-                ArmorItems.JUNGLE_PREDATOR_HELMET
+                AVPArmorItems.JUNGLE_PREDATOR_HELMET.get()
             );
 
         getOrCreateTagBuilder(AVPItemTags.HOSTILE_WEAPON)
@@ -137,45 +137,45 @@ public class AVPItemTagProvider extends FabricTagProvider.ItemTagProvider {
         // Acid-resistant items
         getOrCreateTagBuilder(AVPItemTags.ACID_IMMUNE)
             .add(
-                ArmorItems.ABERRANT_CHITIN_HELMET,
-                ArmorItems.ABERRANT_CHITIN_CHESTPLATE,
-                ArmorItems.ABERRANT_CHITIN_LEGGINGS,
-                ArmorItems.ABERRANT_CHITIN_BOOTS,
+                AVPArmorItems.ABERRANT_CHITIN_HELMET.get(),
+                AVPArmorItems.ABERRANT_CHITIN_CHESTPLATE.get(),
+                AVPArmorItems.ABERRANT_CHITIN_LEGGINGS.get(),
+                AVPArmorItems.ABERRANT_CHITIN_BOOTS.get(),
 
-                ArmorItems.CHITIN_HELMET,
-                ArmorItems.CHITIN_CHESTPLATE,
-                ArmorItems.CHITIN_LEGGINGS,
-                ArmorItems.CHITIN_BOOTS,
+                AVPArmorItems.CHITIN_HELMET.get(),
+                AVPArmorItems.CHITIN_CHESTPLATE.get(),
+                AVPArmorItems.CHITIN_LEGGINGS.get(),
+                AVPArmorItems.CHITIN_BOOTS.get(),
 
-                ArmorItems.IRRADIATED_CHITIN_HELMET,
-                ArmorItems.IRRADIATED_CHITIN_CHESTPLATE,
-                ArmorItems.IRRADIATED_CHITIN_LEGGINGS,
-                ArmorItems.IRRADIATED_CHITIN_BOOTS,
+                AVPArmorItems.IRRADIATED_CHITIN_HELMET.get(),
+                AVPArmorItems.IRRADIATED_CHITIN_CHESTPLATE.get(),
+                AVPArmorItems.IRRADIATED_CHITIN_LEGGINGS.get(),
+                AVPArmorItems.IRRADIATED_CHITIN_BOOTS.get(),
 
-                ArmorItems.NETHER_CHITIN_HELMET,
-                ArmorItems.NETHER_CHITIN_CHESTPLATE,
-                ArmorItems.NETHER_CHITIN_LEGGINGS,
-                ArmorItems.NETHER_CHITIN_BOOTS,
+                AVPArmorItems.NETHER_CHITIN_HELMET.get(),
+                AVPArmorItems.NETHER_CHITIN_CHESTPLATE.get(),
+                AVPArmorItems.NETHER_CHITIN_LEGGINGS.get(),
+                AVPArmorItems.NETHER_CHITIN_BOOTS.get(),
 
-                ArmorItems.PLATED_ABERRANT_CHITIN_HELMET,
-                ArmorItems.PLATED_ABERRANT_CHITIN_CHESTPLATE,
-                ArmorItems.PLATED_ABERRANT_CHITIN_LEGGINGS,
-                ArmorItems.PLATED_ABERRANT_CHITIN_BOOTS,
+                AVPArmorItems.PLATED_ABERRANT_CHITIN_HELMET.get(),
+                AVPArmorItems.PLATED_ABERRANT_CHITIN_CHESTPLATE.get(),
+                AVPArmorItems.PLATED_ABERRANT_CHITIN_LEGGINGS.get(),
+                AVPArmorItems.PLATED_ABERRANT_CHITIN_BOOTS.get(),
 
-                ArmorItems.PLATED_CHITIN_HELMET,
-                ArmorItems.PLATED_CHITIN_CHESTPLATE,
-                ArmorItems.PLATED_CHITIN_LEGGINGS,
-                ArmorItems.PLATED_CHITIN_BOOTS,
+                AVPArmorItems.PLATED_CHITIN_HELMET.get(),
+                AVPArmorItems.PLATED_CHITIN_CHESTPLATE.get(),
+                AVPArmorItems.PLATED_CHITIN_LEGGINGS.get(),
+                AVPArmorItems.PLATED_CHITIN_BOOTS.get(),
 
-                ArmorItems.PLATED_IRRADIATED_CHITIN_HELMET,
-                ArmorItems.PLATED_IRRADIATED_CHITIN_CHESTPLATE,
-                ArmorItems.PLATED_IRRADIATED_CHITIN_LEGGINGS,
-                ArmorItems.PLATED_IRRADIATED_CHITIN_BOOTS,
+                AVPArmorItems.PLATED_IRRADIATED_CHITIN_HELMET.get(),
+                AVPArmorItems.PLATED_IRRADIATED_CHITIN_CHESTPLATE.get(),
+                AVPArmorItems.PLATED_IRRADIATED_CHITIN_LEGGINGS.get(),
+                AVPArmorItems.PLATED_IRRADIATED_CHITIN_BOOTS.get(),
 
-                ArmorItems.PLATED_NETHER_CHITIN_HELMET,
-                ArmorItems.PLATED_NETHER_CHITIN_CHESTPLATE,
-                ArmorItems.PLATED_NETHER_CHITIN_LEGGINGS,
-                ArmorItems.PLATED_NETHER_CHITIN_BOOTS,
+                AVPArmorItems.PLATED_NETHER_CHITIN_HELMET.get(),
+                AVPArmorItems.PLATED_NETHER_CHITIN_CHESTPLATE.get(),
+                AVPArmorItems.PLATED_NETHER_CHITIN_LEGGINGS.get(),
+                AVPArmorItems.PLATED_NETHER_CHITIN_BOOTS.get(),
 
                 TempAVPItems.CHITIN.get(),
                 TempAVPItems.NETHER_CHITIN.get(),
@@ -280,75 +280,75 @@ public class AVPItemTagProvider extends FabricTagProvider.ItemTagProvider {
 
         getOrCreateTagBuilder(ItemTags.HEAD_ARMOR)
             .add(
-                ArmorItems.ABERRANT_CHITIN_HELMET,
-                ArmorItems.CHITIN_HELMET,
-                ArmorItems.IRRADIATED_CHITIN_HELMET,
-                ArmorItems.JUNGLE_PREDATOR_HELMET,
-                ArmorItems.NETHER_CHITIN_HELMET,
-                ArmorItems.MK50_HELMET,
-                ArmorItems.PLATED_ABERRANT_CHITIN_HELMET,
-                ArmorItems.PLATED_CHITIN_HELMET,
-                ArmorItems.PLATED_IRRADIATED_CHITIN_HELMET,
-                ArmorItems.PLATED_NETHER_CHITIN_HELMET,
-                ArmorItems.PRESSURE_HELMET,
-                ArmorItems.STEEL_HELMET,
-                ArmorItems.TACTICAL_HELMET,
-                ArmorItems.TACTICAL_CAMO_HELMET,
-                ArmorItems.TITANIUM_HELMET
+                AVPArmorItems.ABERRANT_CHITIN_HELMET.get(),
+                AVPArmorItems.CHITIN_HELMET.get(),
+                AVPArmorItems.IRRADIATED_CHITIN_HELMET.get(),
+                AVPArmorItems.JUNGLE_PREDATOR_HELMET.get(),
+                AVPArmorItems.NETHER_CHITIN_HELMET.get(),
+                AVPArmorItems.MK50_HELMET.get(),
+                AVPArmorItems.PLATED_ABERRANT_CHITIN_HELMET.get(),
+                AVPArmorItems.PLATED_CHITIN_HELMET.get(),
+                AVPArmorItems.PLATED_IRRADIATED_CHITIN_HELMET.get(),
+                AVPArmorItems.PLATED_NETHER_CHITIN_HELMET.get(),
+                AVPArmorItems.PRESSURE_HELMET.get(),
+                AVPArmorItems.STEEL_HELMET.get(),
+                AVPArmorItems.TACTICAL_HELMET.get(),
+                AVPArmorItems.TACTICAL_CAMO_HELMET.get(),
+                AVPArmorItems.TITANIUM_HELMET.get()
             );
         getOrCreateTagBuilder(ItemTags.CHEST_ARMOR)
             .add(
-                ArmorItems.ABERRANT_CHITIN_CHESTPLATE,
-                ArmorItems.CHITIN_CHESTPLATE,
-                ArmorItems.IRRADIATED_CHITIN_CHESTPLATE,
-                ArmorItems.JUNGLE_PREDATOR_CHESTPLATE,
-                ArmorItems.NETHER_CHITIN_CHESTPLATE,
-                ArmorItems.MK50_CHESTPLATE,
-                ArmorItems.PLATED_ABERRANT_CHITIN_CHESTPLATE,
-                ArmorItems.PLATED_CHITIN_CHESTPLATE,
-                ArmorItems.PLATED_IRRADIATED_CHITIN_CHESTPLATE,
-                ArmorItems.PLATED_NETHER_CHITIN_CHESTPLATE,
-                ArmorItems.PRESSURE_CHESTPLATE,
-                ArmorItems.STEEL_CHESTPLATE,
-                ArmorItems.TACTICAL_CHESTPLATE,
-                ArmorItems.TACTICAL_CAMO_CHESTPLATE,
-                ArmorItems.TITANIUM_CHESTPLATE
+                AVPArmorItems.ABERRANT_CHITIN_CHESTPLATE.get(),
+                AVPArmorItems.CHITIN_CHESTPLATE.get(),
+                AVPArmorItems.IRRADIATED_CHITIN_CHESTPLATE.get(),
+                AVPArmorItems.JUNGLE_PREDATOR_CHESTPLATE.get(),
+                AVPArmorItems.NETHER_CHITIN_CHESTPLATE.get(),
+                AVPArmorItems.MK50_CHESTPLATE.get(),
+                AVPArmorItems.PLATED_ABERRANT_CHITIN_CHESTPLATE.get(),
+                AVPArmorItems.PLATED_CHITIN_CHESTPLATE.get(),
+                AVPArmorItems.PLATED_IRRADIATED_CHITIN_CHESTPLATE.get(),
+                AVPArmorItems.PLATED_NETHER_CHITIN_CHESTPLATE.get(),
+                AVPArmorItems.PRESSURE_CHESTPLATE.get(),
+                AVPArmorItems.STEEL_CHESTPLATE.get(),
+                AVPArmorItems.TACTICAL_CHESTPLATE.get(),
+                AVPArmorItems.TACTICAL_CAMO_CHESTPLATE.get(),
+                AVPArmorItems.TITANIUM_CHESTPLATE.get()
             );
         getOrCreateTagBuilder(ItemTags.LEG_ARMOR)
             .add(
-                ArmorItems.ABERRANT_CHITIN_LEGGINGS,
-                ArmorItems.CHITIN_LEGGINGS,
-                ArmorItems.IRRADIATED_CHITIN_LEGGINGS,
-                ArmorItems.JUNGLE_PREDATOR_LEGGINGS,
-                ArmorItems.NETHER_CHITIN_LEGGINGS,
-                ArmorItems.MK50_LEGGINGS,
-                ArmorItems.PLATED_ABERRANT_CHITIN_LEGGINGS,
-                ArmorItems.PLATED_CHITIN_LEGGINGS,
-                ArmorItems.PLATED_IRRADIATED_CHITIN_LEGGINGS,
-                ArmorItems.PLATED_NETHER_CHITIN_LEGGINGS,
-                ArmorItems.PRESSURE_LEGGINGS,
-                ArmorItems.STEEL_LEGGINGS,
-                ArmorItems.TACTICAL_LEGGINGS,
-                ArmorItems.TACTICAL_CAMO_LEGGINGS,
-                ArmorItems.TITANIUM_LEGGINGS
+                AVPArmorItems.ABERRANT_CHITIN_LEGGINGS.get(),
+                AVPArmorItems.CHITIN_LEGGINGS.get(),
+                AVPArmorItems.IRRADIATED_CHITIN_LEGGINGS.get(),
+                AVPArmorItems.JUNGLE_PREDATOR_LEGGINGS.get(),
+                AVPArmorItems.NETHER_CHITIN_LEGGINGS.get(),
+                AVPArmorItems.MK50_LEGGINGS.get(),
+                AVPArmorItems.PLATED_ABERRANT_CHITIN_LEGGINGS.get(),
+                AVPArmorItems.PLATED_CHITIN_LEGGINGS.get(),
+                AVPArmorItems.PLATED_IRRADIATED_CHITIN_LEGGINGS.get(),
+                AVPArmorItems.PLATED_NETHER_CHITIN_LEGGINGS.get(),
+                AVPArmorItems.PRESSURE_LEGGINGS.get(),
+                AVPArmorItems.STEEL_LEGGINGS.get(),
+                AVPArmorItems.TACTICAL_LEGGINGS.get(),
+                AVPArmorItems.TACTICAL_CAMO_LEGGINGS.get(),
+                AVPArmorItems.TITANIUM_LEGGINGS.get()
             );
         getOrCreateTagBuilder(ItemTags.FOOT_ARMOR)
             .add(
-                ArmorItems.ABERRANT_CHITIN_BOOTS,
-                ArmorItems.CHITIN_BOOTS,
-                ArmorItems.IRRADIATED_CHITIN_BOOTS,
-                ArmorItems.JUNGLE_PREDATOR_BOOTS,
-                ArmorItems.NETHER_CHITIN_BOOTS,
-                ArmorItems.MK50_BOOTS,
-                ArmorItems.PLATED_ABERRANT_CHITIN_BOOTS,
-                ArmorItems.PLATED_CHITIN_BOOTS,
-                ArmorItems.PLATED_IRRADIATED_CHITIN_BOOTS,
-                ArmorItems.PLATED_NETHER_CHITIN_BOOTS,
-                ArmorItems.PRESSURE_BOOTS,
-                ArmorItems.STEEL_BOOTS,
-                ArmorItems.TACTICAL_BOOTS,
-                ArmorItems.TACTICAL_CAMO_BOOTS,
-                ArmorItems.TITANIUM_BOOTS
+                AVPArmorItems.ABERRANT_CHITIN_BOOTS.get(),
+                AVPArmorItems.CHITIN_BOOTS.get(),
+                AVPArmorItems.IRRADIATED_CHITIN_BOOTS.get(),
+                AVPArmorItems.JUNGLE_PREDATOR_BOOTS.get(),
+                AVPArmorItems.NETHER_CHITIN_BOOTS.get(),
+                AVPArmorItems.MK50_BOOTS.get(),
+                AVPArmorItems.PLATED_ABERRANT_CHITIN_BOOTS.get(),
+                AVPArmorItems.PLATED_CHITIN_BOOTS.get(),
+                AVPArmorItems.PLATED_IRRADIATED_CHITIN_BOOTS.get(),
+                AVPArmorItems.PLATED_NETHER_CHITIN_BOOTS.get(),
+                AVPArmorItems.PRESSURE_BOOTS.get(),
+                AVPArmorItems.STEEL_BOOTS.get(),
+                AVPArmorItems.TACTICAL_BOOTS.get(),
+                AVPArmorItems.TACTICAL_CAMO_BOOTS.get(),
+                AVPArmorItems.TITANIUM_BOOTS.get()
             );
 
         getOrCreateTagBuilder(AVPItemTags.GUNS)
@@ -368,10 +368,10 @@ public class AVPItemTagProvider extends FabricTagProvider.ItemTagProvider {
 
         getOrCreateTagBuilder(ItemTags.DYEABLE)
             .add(
-                ArmorItems.MK50_HELMET,
-                ArmorItems.MK50_CHESTPLATE,
-                ArmorItems.MK50_LEGGINGS,
-                ArmorItems.MK50_BOOTS
+                AVPArmorItems.MK50_HELMET.get(),
+                AVPArmorItems.MK50_CHESTPLATE.get(),
+                AVPArmorItems.MK50_LEGGINGS.get(),
+                AVPArmorItems.MK50_BOOTS.get()
             );
 
         var fenceTagProvider = getOrCreateTagBuilder(ItemTags.FENCES);
@@ -499,10 +499,10 @@ public class AVPItemTagProvider extends FabricTagProvider.ItemTagProvider {
         var freezeImmuneTagBuilder = getOrCreateTagBuilder(ItemTags.FREEZE_IMMUNE_WEARABLES);
 
         freezeImmuneTagBuilder.add(
-            ArmorItems.JUNGLE_PREDATOR_HELMET,
-            ArmorItems.JUNGLE_PREDATOR_CHESTPLATE,
-            ArmorItems.JUNGLE_PREDATOR_LEGGINGS,
-            ArmorItems.JUNGLE_PREDATOR_BOOTS
+            AVPArmorItems.JUNGLE_PREDATOR_HELMET.get(),
+            AVPArmorItems.JUNGLE_PREDATOR_CHESTPLATE.get(),
+            AVPArmorItems.JUNGLE_PREDATOR_LEGGINGS.get(),
+            AVPArmorItems.JUNGLE_PREDATOR_BOOTS.get()
         );
 
         getOrCreateTagBuilder(AVPItemTags.MELEE_WEAPONS)

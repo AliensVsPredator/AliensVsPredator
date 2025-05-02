@@ -1,4 +1,4 @@
-package com.avp.fabric.client.render.armor;
+package com.avp.client.render.armor;
 
 import mod.azure.azurelib.core.object.Color;
 import mod.azure.azurelib.rewrite.render.AzRendererConfig;
@@ -14,7 +14,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.DyedItemColor;
 
 import com.avp.AVPResources;
-import com.avp.fabric.client.render.layer.MKOuterLayer;
+import com.avp.client.render.layer.MKOuterLayer;
 
 public class MK50ArmorRenderer extends AzArmorRenderer {
 

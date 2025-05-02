@@ -1,14 +1,15 @@
-package com.avp.fabric.common.item;
+package com.avp.common.item;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-import com.avp.fabric.common.armor.ArmorMaterials;
+import com.avp.common.armor.ArmorMaterials;
 
 public class PressureSuitArmorItem extends ArmorItem {
 
@@ -19,7 +20,12 @@ public class PressureSuitArmorItem extends ArmorItem {
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag) {
+    public void appendHoverText(
+        @NotNull ItemStack stack,
+        @NotNull TooltipContext context,
+        @NotNull List<Component> tooltipComponents,
+        @NotNull TooltipFlag tooltipFlag
+    ) {
         super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
 
         tooltipComponents.add(

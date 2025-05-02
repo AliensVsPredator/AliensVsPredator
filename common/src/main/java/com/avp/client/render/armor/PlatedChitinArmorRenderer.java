@@ -1,4 +1,4 @@
-package com.avp.fabric.client.render.armor;
+package com.avp.client.render.armor;
 
 import mod.azure.azurelib.rewrite.render.armor.AzArmorRenderer;
 import mod.azure.azurelib.rewrite.render.armor.AzArmorRendererConfig;

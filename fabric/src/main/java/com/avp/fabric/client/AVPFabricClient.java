@@ -1,6 +1,5 @@
 package com.avp.fabric.client;
 
-import mod.azure.azurelib.rewrite.render.armor.AzArmorRendererRegistry;
 import mod.azure.azurelib.rewrite.render.item.AzItemRenderer;
 import mod.azure.azurelib.rewrite.render.item.AzItemRendererRegistry;
 import net.fabricmc.api.ClientModInitializer;
@@ -20,6 +19,7 @@ import java.util.function.Supplier;
 
 import com.avp.client.AVPClient;
 import com.avp.common.block.TempAVPBlocks;
+import com.avp.common.item.AVPArmorItems;
 import com.avp.common.item.TempAVPBlockItems;
 import com.avp.common.menu.AVPMenuTypes;
 import com.avp.fabric.client.input.keybind.AVPKeybindingRegistry;
@@ -27,19 +27,6 @@ import com.avp.fabric.client.network.AVPClientPacketHandlerRegistry;
 import com.avp.fabric.client.particle.AcidParticleProvider;
 import com.avp.fabric.client.particle.BlueAcidParticleProvider;
 import com.avp.fabric.client.particle.IrradiatedAcidParticleProvider;
-import com.avp.fabric.client.render.armor.AberrantChitinArmorRenderer;
-import com.avp.fabric.client.render.armor.ChitinArmorRenderer;
-import com.avp.fabric.client.render.armor.IrradiatedChitinArmorRenderer;
-import com.avp.fabric.client.render.armor.JunglePredatorArmorRenderer;
-import com.avp.fabric.client.render.armor.MK50ArmorRenderer;
-import com.avp.fabric.client.render.armor.NetherChitinArmorRenderer;
-import com.avp.fabric.client.render.armor.PlatedAberrantChitinArmorRenderer;
-import com.avp.fabric.client.render.armor.PlatedChitinArmorRenderer;
-import com.avp.fabric.client.render.armor.PlatedIrradiatedChitinArmorRenderer;
-import com.avp.fabric.client.render.armor.PlatedNetherChitinArmorRenderer;
-import com.avp.fabric.client.render.armor.PressureArmorRenderer;
-import com.avp.fabric.client.render.armor.TacticalArmorRenderer;
-import com.avp.fabric.client.render.armor.TacticalCamoArmorRenderer;
 import com.avp.fabric.client.render.block.SentryTurretRenderer;
 import com.avp.fabric.client.render.entity.AcidRenderer;
 import com.avp.fabric.client.render.entity.ChestbursterRenderer;
@@ -75,7 +62,6 @@ import com.avp.fabric.client.screen.IndustrialFurnaceScreen;
 import com.avp.fabric.common.block.AVPBlocks;
 import com.avp.fabric.common.entity.type.AVPEntityTypes;
 import com.avp.fabric.common.item.AVPItems;
-import com.avp.fabric.common.item.ArmorItems;
 import com.avp.fabric.common.particle.AVPParticleTypes;
 
 public class AVPFabricClient implements ClientModInitializer {
@@ -130,97 +116,6 @@ public class AVPFabricClient implements ClientModInitializer {
             .forEach(blockSupplier -> BlockRenderLayerMap.INSTANCE.putBlock(blockSupplier.get(), RenderType.translucent()));
 
         // Armors
-        AzArmorRendererRegistry.register(
-            AberrantChitinArmorRenderer::new,
-            ArmorItems.ABERRANT_CHITIN_HELMET,
-            ArmorItems.ABERRANT_CHITIN_CHESTPLATE,
-            ArmorItems.ABERRANT_CHITIN_LEGGINGS,
-            ArmorItems.ABERRANT_CHITIN_BOOTS
-        );
-        AzArmorRendererRegistry.register(
-            ChitinArmorRenderer::new,
-            ArmorItems.CHITIN_HELMET,
-            ArmorItems.CHITIN_CHESTPLATE,
-            ArmorItems.CHITIN_LEGGINGS,
-            ArmorItems.CHITIN_BOOTS
-        );
-        AzArmorRendererRegistry.register(
-            IrradiatedChitinArmorRenderer::new,
-            ArmorItems.IRRADIATED_CHITIN_HELMET,
-            ArmorItems.IRRADIATED_CHITIN_CHESTPLATE,
-            ArmorItems.IRRADIATED_CHITIN_LEGGINGS,
-            ArmorItems.IRRADIATED_CHITIN_BOOTS
-        );
-        AzArmorRendererRegistry.register(
-            JunglePredatorArmorRenderer::new,
-            ArmorItems.JUNGLE_PREDATOR_HELMET,
-            ArmorItems.JUNGLE_PREDATOR_CHESTPLATE,
-            ArmorItems.JUNGLE_PREDATOR_LEGGINGS,
-            ArmorItems.JUNGLE_PREDATOR_BOOTS
-        );
-        AzArmorRendererRegistry.register(
-            MK50ArmorRenderer::new,
-            ArmorItems.MK50_HELMET,
-            ArmorItems.MK50_CHESTPLATE,
-            ArmorItems.MK50_LEGGINGS,
-            ArmorItems.MK50_BOOTS
-        );
-        AzArmorRendererRegistry.register(
-            NetherChitinArmorRenderer::new,
-            ArmorItems.NETHER_CHITIN_HELMET,
-            ArmorItems.NETHER_CHITIN_CHESTPLATE,
-            ArmorItems.NETHER_CHITIN_LEGGINGS,
-            ArmorItems.NETHER_CHITIN_BOOTS
-        );
-        AzArmorRendererRegistry.register(
-            PlatedAberrantChitinArmorRenderer::new,
-            ArmorItems.PLATED_ABERRANT_CHITIN_HELMET,
-            ArmorItems.PLATED_ABERRANT_CHITIN_CHESTPLATE,
-            ArmorItems.PLATED_ABERRANT_CHITIN_LEGGINGS,
-            ArmorItems.PLATED_ABERRANT_CHITIN_BOOTS
-        );
-        AzArmorRendererRegistry.register(
-            PlatedChitinArmorRenderer::new,
-            ArmorItems.PLATED_CHITIN_HELMET,
-            ArmorItems.PLATED_CHITIN_CHESTPLATE,
-            ArmorItems.PLATED_CHITIN_LEGGINGS,
-            ArmorItems.PLATED_CHITIN_BOOTS
-        );
-        AzArmorRendererRegistry.register(
-            PlatedIrradiatedChitinArmorRenderer::new,
-            ArmorItems.PLATED_IRRADIATED_CHITIN_HELMET,
-            ArmorItems.PLATED_IRRADIATED_CHITIN_CHESTPLATE,
-            ArmorItems.PLATED_IRRADIATED_CHITIN_LEGGINGS,
-            ArmorItems.PLATED_IRRADIATED_CHITIN_BOOTS
-        );
-        AzArmorRendererRegistry.register(
-            PlatedNetherChitinArmorRenderer::new,
-            ArmorItems.PLATED_NETHER_CHITIN_HELMET,
-            ArmorItems.PLATED_NETHER_CHITIN_CHESTPLATE,
-            ArmorItems.PLATED_NETHER_CHITIN_LEGGINGS,
-            ArmorItems.PLATED_NETHER_CHITIN_BOOTS
-        );
-        AzArmorRendererRegistry.register(
-            PressureArmorRenderer::new,
-            ArmorItems.PRESSURE_HELMET,
-            ArmorItems.PRESSURE_CHESTPLATE,
-            ArmorItems.PRESSURE_LEGGINGS,
-            ArmorItems.PRESSURE_BOOTS
-        );
-        AzArmorRendererRegistry.register(
-            TacticalArmorRenderer::new,
-            ArmorItems.TACTICAL_HELMET,
-            ArmorItems.TACTICAL_CHESTPLATE,
-            ArmorItems.TACTICAL_LEGGINGS,
-            ArmorItems.TACTICAL_BOOTS
-        );
-        AzArmorRendererRegistry.register(
-            TacticalCamoArmorRenderer::new,
-            ArmorItems.TACTICAL_CAMO_HELMET,
-            ArmorItems.TACTICAL_CAMO_CHESTPLATE,
-            ArmorItems.TACTICAL_CAMO_LEGGINGS,
-            ArmorItems.TACTICAL_CAMO_BOOTS
-        );
 
         // Items
         registerItemRenderer(AVPItems.ARMOR_CASE);
@@ -238,19 +133,19 @@ public class AVPFabricClient implements ClientModInitializer {
         registerItemRenderer(TempAVPBlockItems.SENTRY_TURRET.get(), name -> SentryItemtemRenderer::new);
         ColorProviderRegistry.ITEM.register(
             (itemStack, i) -> i > 0 ? -1 : DyedItemColor.getOrDefault(itemStack, -1),
-            ArmorItems.MK50_HELMET
+            AVPArmorItems.MK50_HELMET.get()
         );
         ColorProviderRegistry.ITEM.register(
             (itemStack, i) -> i > 0 ? -1 : DyedItemColor.getOrDefault(itemStack, -1),
-            ArmorItems.MK50_CHESTPLATE
+            AVPArmorItems.MK50_CHESTPLATE.get()
         );
         ColorProviderRegistry.ITEM.register(
             (itemStack, i) -> i > 0 ? -1 : DyedItemColor.getOrDefault(itemStack, -1),
-            ArmorItems.MK50_LEGGINGS
+            AVPArmorItems.MK50_LEGGINGS.get()
         );
         ColorProviderRegistry.ITEM.register(
             (itemStack, i) -> i > 0 ? -1 : DyedItemColor.getOrDefault(itemStack, -1),
-            ArmorItems.MK50_BOOTS
+            AVPArmorItems.MK50_BOOTS.get()
         );
 
         // Entities

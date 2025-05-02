@@ -20,6 +20,7 @@ import com.avp.common.creative_mode_tab.initializer.CombatCreativeModeTabInitial
 import com.avp.common.creative_mode_tab.initializer.IngredientsCreativeModeTabInitializer;
 import com.avp.common.creative_mode_tab.initializer.SpawnEggsCreativeModeTabInitializer;
 import com.avp.common.creative_mode_tab.initializer.ToolsAndUtilitiesCreativeModeTabInitializer;
+import com.avp.common.item.AVPArmorItems;
 import com.avp.common.item.TempAVPItems;
 import com.avp.common.registry.AVPDeferredHolder;
 import com.avp.service.Services;
@@ -52,16 +53,15 @@ public class AVPCreativeModeTabs {
         ColoredBlocksCreativeModeTabInitializer.OUTPUT_CONSUMER
     );
 
-    // TODO: Put a chitin helmet item for this tab icon.
     public static final AVPDeferredHolder<CreativeModeTab> COMBAT = register(
         COMBAT_KEY,
-        () -> new ItemStack(Items.EGG),
+        () -> new ItemStack(AVPArmorItems.CHITIN_HELMET),
         CombatCreativeModeTabInitializer.OUTPUT_CONSUMER
     );
 
     public static final AVPDeferredHolder<CreativeModeTab> INGREDIENTS = register(
         INGREDIENTS_KEY,
-        () -> new ItemStack(TempAVPItems.PLATED_CHITIN.get()),
+        () -> new ItemStack(TempAVPItems.PLATED_CHITIN),
         IngredientsCreativeModeTabInitializer.OUTPUT_CONSUMER
     );
 
@@ -74,7 +74,7 @@ public class AVPCreativeModeTabs {
 
     public static final AVPDeferredHolder<CreativeModeTab> TOOLS_AND_UTILITIES = register(
         TOOLS_AND_UTILITIES_KEY,
-        () -> new ItemStack(TempAVPItems.CANISTER.get()),
+        () -> new ItemStack(TempAVPItems.CANISTER),
         ToolsAndUtilitiesCreativeModeTabInitializer.OUTPUT_CONSUMER
     );
 

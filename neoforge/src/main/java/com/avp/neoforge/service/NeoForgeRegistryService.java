@@ -6,6 +6,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.item.ArmorMaterial;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.crafting.RecipeSerializer;
@@ -25,6 +26,11 @@ import com.avp.common.registry.AVPDeferredHolder;
 import com.avp.service.RegistryService;
 
 public class NeoForgeRegistryService implements RegistryService {
+
+    private final DeferredRegister<ArmorMaterial> ARMOR_MATERIAL_REGISTRY = DeferredRegister.create(
+        BuiltInRegistries.ARMOR_MATERIAL,
+        AVP.MOD_ID
+    );
 
     private final DeferredRegister<Block> BLOCK_REGISTRY = DeferredRegister.create(BuiltInRegistries.BLOCK, AVP.MOD_ID);
 
@@ -68,7 +74,9 @@ public class NeoForgeRegistryService implements RegistryService {
     @Override
     @SuppressWarnings("unchecked")
     public <T> AVPDeferredHolder<T> register(Registry<? super T> registry, String id, Supplier<? extends T> supplier) {
-        if (registry == BuiltInRegistries.BLOCK) {
+        if (registry == BuiltInRegistries.ARMOR_MATERIAL) {
+            return adapt((DeferredHolder<T, T>) ARMOR_MATERIAL_REGISTRY.register(id, (Supplier<ArmorMaterial>) supplier));
+        } else if (registry == BuiltInRegistries.BLOCK) {
             return adapt((DeferredHolder<T, T>) BLOCK_REGISTRY.register(id, (Supplier<Block>) supplier));
         } else if (registry == BuiltInRegistries.BLOCK_ENTITY_TYPE) {
             return adapt((DeferredHolder<T, T>) BLOCK_ENTITY_TYPE_REGISTRY.register(id, (Supplier<BlockEntityType<?>>) supplier));
@@ -102,6 +110,7 @@ public class NeoForgeRegistryService implements RegistryService {
     }
 
     public void initialize(IEventBus modBus) {
+        ARMOR_MATERIAL_REGISTRY.register(modBus);
         BLOCK_REGISTRY.register(modBus);
         BLOCK_ENTITY_TYPE_REGISTRY.register(modBus);
         CREATIVE_MODE_TAB_REGISTRY.register(modBus);
