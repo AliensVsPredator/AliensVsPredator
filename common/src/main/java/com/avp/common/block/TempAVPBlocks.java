@@ -1,5 +1,6 @@
 package com.avp.common.block;
 
+import com.avp.common.block.resin.ResinBlock;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.util.ColorRGBA;
 import net.minecraft.world.item.DyeColor;
@@ -35,9 +36,8 @@ import com.avp.service.Services;
 // TODO: Rename this once multi-loader migration is finished.
 public class TempAVPBlocks {
 
-    // FIXME: Make ResinBlock type.
     // FIXME: Fix properties.
-    public static final Supplier<Block> ABERRANT_RESIN = register("aberrant_resin", () -> new Block(BlockProperties.NETHER_RESIN.build()));
+    public static final Supplier<Block> ABERRANT_RESIN = register("aberrant_resin", () -> new ResinBlock(BlockProperties.NETHER_RESIN.build()));
 
     // FIXME: Fix properties.
     public static final Supplier<Block> ABERRANT_RESIN_NODE = register(
@@ -344,8 +344,7 @@ public class TempAVPBlocks {
 
     public static final Supplier<Block> MONAZITE_ORE = register("monazite_ore", BlockProperties.MONAZITE_ORE);
 
-    // FIXME: Make ResinBlock type.
-    public static final Supplier<Block> NETHER_RESIN = register("nether_resin", () -> new Block(BlockProperties.NETHER_RESIN.build()));
+    public static final Supplier<Block> NETHER_RESIN = register("nether_resin", () -> new ResinBlock(BlockProperties.NETHER_RESIN.build()));
 
     // FIXME: Fix properties.
     public static final Supplier<Block> NETHER_RESIN_NODE = register(
@@ -384,8 +383,7 @@ public class TempAVPBlocks {
         () -> new RedstoneGeneratorBlock(BlockProperties.STEEL.build().randomTicks())
     );
 
-    // FIXME: Make ResinBlock type.
-    public static final Supplier<Block> RESIN = register("resin", () -> new Block(BlockProperties.RESIN.build()));
+    public static final Supplier<Block> RESIN = register("resin", () -> new ResinBlock(BlockProperties.RESIN.build()));
 
     public static final Supplier<Block> RESIN_BRICKS = register("resin_bricks", BlockProperties.BRASS);
 
