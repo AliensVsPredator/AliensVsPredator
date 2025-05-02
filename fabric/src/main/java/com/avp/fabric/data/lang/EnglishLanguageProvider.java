@@ -484,7 +484,7 @@ public class EnglishLanguageProvider extends FabricLanguageProvider {
         addItem(builder, TempAVPItems.PLATED_IRRADIATED_CHITIN, "Plated Irradiated Chitin");
 
         // Tools & Utilities Items
-        addItem(builder, AVPItems.ARMOR_CASE, "Armor Case");
+        addItem(builder, TempAVPItems.ARMOR_CASE, "Armor Case");
         addItem(builder, TempAVPItems.CANISTER, "Canister");
         addItem(builder, TempAVPItems.WATER_CANISTER, "Water Canister");
         addItem(builder, TempAVPItems.LAVA_CANISTER, "Lava Canister");

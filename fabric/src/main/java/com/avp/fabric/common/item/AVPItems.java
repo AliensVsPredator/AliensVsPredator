@@ -50,9 +50,6 @@ public class AVPItems {
 
     public static final Item POISON_JELLY = register(new PoisionJellyItem(), "poison_jelly");
 
-    // Tools & Utilities
-    public static final Item ARMOR_CASE = register(new ArmorCaseItem(new Item.Properties().stacksTo(1)), "armor_case");
-
     public static Item register(Function<Item.Properties, Item> itemSupplier, String id) {
         return register(itemSupplier.apply(new Item.Properties()), id);
     }

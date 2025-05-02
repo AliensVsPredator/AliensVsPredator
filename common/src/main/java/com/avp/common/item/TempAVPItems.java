@@ -45,6 +45,11 @@ public class TempAVPItems {
 
     public static final AVPDeferredHolder<Item> ALUMINUM_NUGGET = register("aluminum_nugget");
 
+    public static final AVPDeferredHolder<Item> ARMOR_CASE = register(
+        "armor_case",
+        () -> new ArmorCaseItem(new Item.Properties().stacksTo(1))
+    );
+
     public static final AVPDeferredHolder<Item> AUTUNITE_DUST = register("autunite_dust");
 
     public static final AVPDeferredHolder<Item> BARREL = register("barrel");

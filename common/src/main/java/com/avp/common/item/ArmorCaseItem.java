@@ -1,4 +1,4 @@
-package com.avp.fabric.common.item;
+package com.avp.common.item;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.CommonComponents;

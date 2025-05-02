@@ -20,7 +20,13 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+import com.avp.client.render.item.SimpleItemRenderer;
+
 public interface ClientRegistryService {
+
+    Function<String, Supplier<AzItemRenderer>> ITEM_RENDERER_SUPPLIER_FACTORY = name -> () -> new SimpleItemRenderer(
+        name
+    );
 
     void registerArmorRenderer(Supplier<AzArmorRenderer> armorRendererSupplier, List<Supplier<Item>> itemSuppliers);
 
@@ -41,6 +47,8 @@ public interface ClientRegistryService {
     );
 
     void registerItemColor(ItemColor itemColor, List<Supplier<Item>> itemSuppliers);
+
+    void registerItemRenderer(Supplier<? extends Item> itemSupplier);
 
     void registerItemRenderer(Supplier<? extends Item> itemSupplier, Function<String, Supplier<AzItemRenderer>> rendererFactory);
 

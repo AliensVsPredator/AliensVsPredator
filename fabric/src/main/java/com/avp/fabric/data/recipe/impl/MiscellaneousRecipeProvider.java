@@ -73,7 +73,7 @@ public class MiscellaneousRecipeProvider {
             .pattern("ABA")
             .pattern("BCB")
             .pattern("ABA")
-            .into(1, AVPItems.ARMOR_CASE);
+            .into(1, TempAVPItems.ARMOR_CASE);
 
         builder.smelt(TempAVPItems.IRRADIATED_RESIN_BALL)
             .withCategory(RecipeCategory.MISC)

@@ -1,4 +1,4 @@
-package com.avp.fabric.mixin;
+package com.avp.mixin;
 
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -10,8 +10,8 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import com.avp.fabric.common.item.AVPItems;
-import com.avp.fabric.common.item.ArmorCaseItem;
+import com.avp.common.item.ArmorCaseItem;
+import com.avp.common.item.TempAVPItems;
 
 @Mixin(ArmorStand.class)
 public abstract class MixinArmorStand_EquipArmorFromArmorCase {
@@ -25,7 +25,7 @@ public abstract class MixinArmorStand_EquipArmorFromArmorCase {
     ) {
         var itemStack = player.getItemInHand(interactionHand);
 
-        if (!player.level().isClientSide && itemStack.is(AVPItems.ARMOR_CASE)) {
+        if (!player.level().isClientSide && itemStack.is(TempAVPItems.ARMOR_CASE.get())) {
             var armorStand = ArmorStand.class.cast(this);
             ArmorCaseItem.swapArmorSlots(armorStand, itemStack);
             callbackInfo.setReturnValue(InteractionResult.SUCCESS);

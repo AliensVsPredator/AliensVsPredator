@@ -1,4 +1,4 @@
-package com.avp.fabric.client.render.item;
+package com.avp.client.render.item;
 
 import mod.azure.azurelib.rewrite.render.item.AzItemRenderer;
 import mod.azure.azurelib.rewrite.render.item.AzItemRendererConfig;

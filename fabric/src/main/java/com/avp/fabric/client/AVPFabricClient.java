@@ -13,6 +13,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 import com.avp.client.AVPClient;
+import com.avp.client.render.item.SimpleItemRenderer;
 import com.avp.common.item.TempAVPBlockItems;
 import com.avp.common.menu.AVPMenuTypes;
 import com.avp.fabric.client.input.keybind.AVPKeybindingRegistry;
@@ -45,7 +46,6 @@ import com.avp.fabric.client.render.item.M6BRLItemRenderer;
 import com.avp.fabric.client.render.item.M88Mod4CombatPistolItemRenderer;
 import com.avp.fabric.client.render.item.OldPainlessItemRenderer;
 import com.avp.fabric.client.render.item.SentryItemtemRenderer;
-import com.avp.fabric.client.render.item.SimpleItemRenderer;
 import com.avp.fabric.client.render.item.SpinningItemRenderer;
 import com.avp.fabric.client.render.item.ZX76ShotgunItemRenderer;
 import com.avp.fabric.client.screen.ArmorCaseScreen;
@@ -65,7 +65,6 @@ public class AVPFabricClient implements ClientModInitializer {
         AVPClient.initialize();
 
         // Items
-        registerItemRenderer(AVPItems.ARMOR_CASE);
         registerItemRenderer(AVPItems.F903WE_RIFLE, name -> () -> new F903weItemRenderer(name));
         registerItemRenderer(AVPItems.FLAMETHROWER_SEVASTOPOL, name -> () -> new FlameThrowerItemRenderer(name));
         registerItemRenderer(AVPItems.M37_12_SHOTGUN, name -> () -> new M3712ShotgunItemRenderer(name));

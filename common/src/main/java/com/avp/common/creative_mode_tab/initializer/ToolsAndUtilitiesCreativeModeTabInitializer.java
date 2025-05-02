@@ -9,7 +9,7 @@ import com.avp.common.item.TempAVPItems;
 public class ToolsAndUtilitiesCreativeModeTabInitializer {
 
     public static final Consumer<CreativeModeTab.Output> OUTPUT_CONSUMER = output -> {
-        // CreativeModeTabUtil.accept(output, AVPItems.ARMOR_CASE);
+        CreativeModeTabUtil.accept(output, TempAVPItems.ARMOR_CASE);
         CreativeModeTabUtil.accept(output, TempAVPItems.CANISTER);
         CreativeModeTabUtil.accept(output, TempAVPItems.WATER_CANISTER);
         CreativeModeTabUtil.accept(output, TempAVPItems.LAVA_CANISTER);
@@ -30,8 +30,7 @@ public class ToolsAndUtilitiesCreativeModeTabInitializer {
         CreativeModeTabUtil.accept(output, TempAVPItems.VERITANIUM_PICKAXE);
         CreativeModeTabUtil.accept(output, TempAVPItems.VERITANIUM_SHOVEL);
         CreativeModeTabUtil.accept(output, TempAVPItems.VERITANIUM_SWORD);
-        // FIXME:
-        // CreativeModeTabUtil.accept(output, TempAVPItems.ALIEN_MUSIC_DISC_1);
-        // CreativeModeTabUtil.accept(output, TempAVPItems.PREDATOR_MUSIC_DISC_1);
+        CreativeModeTabUtil.accept(output, TempAVPItems.ALIEN_MUSIC_DISC_1);
+        CreativeModeTabUtil.accept(output, TempAVPItems.PREDATOR_MUSIC_DISC_1);
     };
 }

@@ -57,6 +57,11 @@ public class FabricClientRegistryService implements ClientRegistryService {
     }
 
     @Override
+    public void registerItemRenderer(Supplier<? extends Item> itemSupplier) {
+        registerItemRendererImmediately(itemSupplier.get(), ITEM_RENDERER_SUPPLIER_FACTORY);
+    }
+
+    @Override
     public void registerItemRenderer(Supplier<? extends Item> itemSupplier, Function<String, Supplier<AzItemRenderer>> rendererFactory) {
         registerItemRendererImmediately(itemSupplier.get(), rendererFactory);
     }

@@ -10,12 +10,11 @@ import com.avp.common.item.TempAVPItems;
 
 public class CombatCreativeModeTabInitializer {
 
-    // FIXME:
     public static final Consumer<CreativeModeTab.Output> OUTPUT_CONSUMER = output -> {
         CreativeModeTabUtil.accept(output, TempAVPBlocks.AMMO_CHEST);
-        // CreativeModeTabUtil.accept(output, AVPItems.GRENADE);
-        // CreativeModeTabUtil.accept(output, AVPItems.GRENADE_INCENDIARY);
-        // CreativeModeTabUtil.accept(output, AVPItems.GRENADE_IRRADIATED);
+        CreativeModeTabUtil.accept(output, TempAVPItems.GRENADE);
+        CreativeModeTabUtil.accept(output, TempAVPItems.GRENADE_INCENDIARY);
+        CreativeModeTabUtil.accept(output, TempAVPItems.GRENADE_IRRADIATED);
         CreativeModeTabUtil.accept(output, TempAVPItems.CASELESS_BULLET);
         CreativeModeTabUtil.accept(output, TempAVPItems.HEAVY_BULLET);
         CreativeModeTabUtil.accept(output, TempAVPItems.SMALL_BULLET);
@@ -24,6 +23,7 @@ public class CombatCreativeModeTabInitializer {
         CreativeModeTabUtil.accept(output, TempAVPItems.ROCKET);
         CreativeModeTabUtil.accept(output, TempAVPItems.FUEL_TANK);
 
+        // FIXME:
         // CreativeModeTabUtil.accept(output, AVPItems.F903WE_RIFLE);
         // CreativeModeTabUtil.accept(output, AVPItems.FLAMETHROWER_SEVASTOPOL);
         // CreativeModeTabUtil.accept(output, AVPItems.M37_12_SHOTGUN);

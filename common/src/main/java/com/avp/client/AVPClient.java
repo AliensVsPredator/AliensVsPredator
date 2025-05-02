@@ -34,6 +34,7 @@ import com.avp.common.block.entity.AVPBlockEntityTypes;
 import com.avp.common.entity.type.TempAVPEntityTypes;
 import com.avp.common.item.AVPArmorItems;
 import com.avp.common.item.TempAVPBlockItems;
+import com.avp.common.item.TempAVPItems;
 import com.avp.service.Services;
 
 public class AVPClient {
@@ -249,6 +250,7 @@ public class AVPClient {
     }
 
     private static void registerItemRenderers() {
+        Services.CLIENT_REGISTRY.registerItemRenderer(TempAVPItems.ARMOR_CASE);
         Services.CLIENT_REGISTRY.registerItemRenderer(TempAVPBlockItems.DESK_TERMINAL_BLOCK, name -> DeskTerminalItemRenderer::new);
         Services.CLIENT_REGISTRY.registerItemRenderer(TempAVPBlockItems.TRIP_MINE_BLOCK, name -> TripMineItemRenderer::new);
         Services.CLIENT_REGISTRY.registerItemRenderer(TempAVPBlockItems.RESONATOR_BLOCK, name -> ResonatorItemRenderer::new);

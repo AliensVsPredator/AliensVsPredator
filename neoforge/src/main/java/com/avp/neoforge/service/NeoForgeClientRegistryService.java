@@ -76,6 +76,11 @@ public class NeoForgeClientRegistryService implements ClientRegistryService {
     }
 
     @Override
+    public void registerItemRenderer(Supplier<? extends Item> itemSupplier) {
+        itemRendererPairs.add(new Tuple2<>(itemSupplier, ITEM_RENDERER_SUPPLIER_FACTORY));
+    }
+
+    @Override
     public void registerItemRenderer(Supplier<? extends Item> itemSupplier, Function<String, Supplier<AzItemRenderer>> rendererFactory) {
         itemRendererPairs.add(new Tuple2<>(itemSupplier, rendererFactory));
     }
