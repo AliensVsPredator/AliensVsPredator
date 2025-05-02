@@ -13,8 +13,8 @@ import java.util.Collections;
 import java.util.List;
 
 import com.avp.AVPResources;
+import com.avp.common.entity.type.SilencedEntityTypeBuilder;
 import com.avp.fabric.common.entity.type.AVPEntityTypes;
-import com.avp.fabric.common.entity.type.SilencedEntityTypeBuilder;
 
 public class SpawnEggItems {
 

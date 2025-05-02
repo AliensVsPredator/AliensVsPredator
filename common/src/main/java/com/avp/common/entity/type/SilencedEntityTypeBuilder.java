@@ -1,4 +1,4 @@
-package com.avp.fabric.common.entity.type;
+package com.avp.common.entity.type;
 
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;

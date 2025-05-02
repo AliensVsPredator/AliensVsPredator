@@ -9,6 +9,7 @@ import mod.azure.azurelib.common.internal.common.config.io.ConfigIO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.avp.common.block.AVPDecoratedPotPatterns;
 import com.avp.common.block.TempAVPBlocks;
 import com.avp.common.component.AVPDataComponents;
 import com.avp.common.config.AVPConfig;
@@ -31,12 +32,38 @@ public class AVP {
 
         LOGGER.info("Initializing AVP for platform '{}'", Services.PLATFORM.getPlatformName());
 
-        TempAVPItems.initialize();
         TempAVPBlocks.initialize();
+        TempAVPItems.initialize();
         TempAVPBlockItems.initialize();
-        AVPDataComponents.initialize();
         AVPMenuTypes.initialize();
+        AVPDataComponents.initialize();
+        AVPDecoratedPotPatterns.initialize();
         AVPMobEffects.initialize();
+
+        // TODO: Remove this once migration is done.
+        // AVPBlockEntityTypes.initialize();
+        // AVPBlocks.initialize();
+        // AVPItems.initialize();
+        // AVPBlockItems.initialize();
+        // ArmorItems.initialize();
+        // SpawnEggItems.initialize();
+        // AVPEntityTypes.initialize();
+        // Infections.initialize();
+        // Lifecycles.initialize();
+        // AVPParticleTypes.initialize();
+        // MenuTypes.initialize();
+        // DataComponents.initialize();
+        // DecoratedPotPatterns.initialize();
+        // WorldGen.initialize();
+        // AVPSoundEvents.initialize();
+        // AVPJukeboxSongs.initialize();
+        // AVPGameEvents.initialize();
+        // CommonPacketRegistry.initialize();
+        // ServerPacketHandlerRegistry.initialize();
+        // AVPRecipes.initialize();
+        // AVPEffects.initialize();
+        // AVPBiomes.initialize();
+        // AVPProfessions.initialize();
     }
 
     /**

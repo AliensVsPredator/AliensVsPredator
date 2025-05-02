@@ -11,7 +11,6 @@ import net.minecraft.world.level.storage.loot.entries.LootItem;
 import java.util.List;
 
 import com.avp.common.item.TempAVPItems;
-import com.avp.fabric.common.item.AVPItems;
 
 public class LootTableModifier {
 
@@ -81,8 +80,8 @@ public class LootTableModifier {
 
         builder.modifyPools(
             (pool) -> pool
-                .add(LootItem.lootTableItem(AVPItems.OVOID_POTTERY_SHERD))
-                .add(LootItem.lootTableItem(AVPItems.ROYALTY_POTTERY_SHERD))
+                .add(LootItem.lootTableItem(TempAVPItems.OVOID_POTTERY_SHERD.get()))
+                .add(LootItem.lootTableItem(TempAVPItems.ROYALTY_POTTERY_SHERD.get()))
         );
     }
 
@@ -93,8 +92,8 @@ public class LootTableModifier {
 
         builder.modifyPools(
             (pool) -> pool
-                .add(LootItem.lootTableItem(AVPItems.PARASITE_POTTERY_SHERD))
-                .add(LootItem.lootTableItem(AVPItems.VECTOR_POTTERY_SHERD))
+                .add(LootItem.lootTableItem(TempAVPItems.PARASITE_POTTERY_SHERD.get()))
+                .add(LootItem.lootTableItem(TempAVPItems.VECTOR_POTTERY_SHERD.get()))
         );
     }
 

@@ -65,13 +65,6 @@ public class AVPItems {
     public static final Item ZX_76_SHOTGUN = register(new GunItem(GunData.ZX_76_SHOTGUN), "zx_76_shotgun");
 
     // Decorative Items
-    public static final Item OVOID_POTTERY_SHERD = register("ovoid_pottery_sherd");
-
-    public static final Item PARASITE_POTTERY_SHERD = register("parasite_pottery_sherd");
-
-    public static final Item ROYALTY_POTTERY_SHERD = register("royalty_pottery_sherd");
-
-    public static final Item VECTOR_POTTERY_SHERD = register("vector_pottery_sherd");
 
     // Music Disc Items
     public static final Item ALIEN_MUSIC_DISC_1 = register(

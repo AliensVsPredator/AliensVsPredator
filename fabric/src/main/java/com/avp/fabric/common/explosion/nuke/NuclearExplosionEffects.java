@@ -23,7 +23,6 @@ import com.avp.common.block.TempAVPBlocks;
 import com.avp.common.explosion.Explosion;
 import com.avp.common.util.ExplosionDistanceUtil;
 import com.avp.common.worldgen.biome.AVPBiomes;
-import com.avp.fabric.common.block.AVPBlocks;
 
 public class NuclearExplosionEffects {
 

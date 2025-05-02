@@ -8,6 +8,7 @@ import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.DecoratedPotPattern;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
@@ -25,6 +26,11 @@ public class NeoForgeRegistryService implements RegistryService {
         AVP.MOD_ID
     );
 
+    private final DeferredRegister<DecoratedPotPattern> DECORATED_POT_PATTERN_REGISTRY = DeferredRegister.create(
+        BuiltInRegistries.DECORATED_POT_PATTERN,
+        AVP.MOD_ID
+    );
+
     private final DeferredRegister<Item> ITEM_REGISTRY = DeferredRegister.create(BuiltInRegistries.ITEM, AVP.MOD_ID);
 
     private final DeferredRegister<MenuType<?>> MENU_TYPE_REGISTRY = DeferredRegister.create(BuiltInRegistries.MENU, AVP.MOD_ID);
@@ -38,6 +44,8 @@ public class NeoForgeRegistryService implements RegistryService {
             return (Supplier<T>) BLOCK_REGISTRY.register(id, (Supplier<Block>) supplier);
         } else if (registry == BuiltInRegistries.DATA_COMPONENT_TYPE) {
             return (Supplier<T>) DATA_COMPONENT_TYPE_REGISTRY.register(id, (Supplier<DataComponentType<?>>) supplier);
+        } else if (registry == BuiltInRegistries.DECORATED_POT_PATTERN) {
+            return (Supplier<T>) DECORATED_POT_PATTERN_REGISTRY.register(id, (Supplier<DecoratedPotPattern>) supplier);
         } else if (registry == BuiltInRegistries.ITEM) {
             return (Supplier<T>) ITEM_REGISTRY.register(id, (Supplier<Item>) supplier);
         } else if (registry == BuiltInRegistries.MENU) {

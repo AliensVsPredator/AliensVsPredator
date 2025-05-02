@@ -1,4 +1,4 @@
-package com.avp.fabric.mixin;
+package com.avp.mixin;
 
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.monster.Creeper;

@@ -22,7 +22,6 @@ import com.avp.AVP;
 import com.avp.common.worldgen.biome.AVPBiomes;
 import com.avp.fabric.common.block.AVPBlocks;
 import com.avp.fabric.common.block.CompostingChanceRegistry;
-import com.avp.fabric.common.block.DecoratedPotPatterns;
 import com.avp.fabric.common.block.DispenserBlockBehaviors;
 import com.avp.fabric.common.block.FlammableBlockRegistry;
 import com.avp.fabric.common.block.entity.AVPBlockEntityTypes;
@@ -86,7 +85,6 @@ public class AVPFabric implements ModInitializer {
         Infections.initialize();
         Lifecycles.initialize();
         AVPParticleTypes.initialize();
-        DecoratedPotPatterns.initialize();
         WorldGen.initialize();
         AVPSoundEvents.initialize();
         AVPJukeboxSongs.initialize();

@@ -106,10 +106,10 @@ public class IngredientsCreativeModeTabInitializer {
             CreativeModeTabUtil.accept(entries, AVPItems.POISON_JELLY);
 
             // Decorative materials
-            CreativeModeTabUtil.accept(entries, AVPItems.OVOID_POTTERY_SHERD);
-            CreativeModeTabUtil.accept(entries, AVPItems.PARASITE_POTTERY_SHERD);
-            CreativeModeTabUtil.accept(entries, AVPItems.ROYALTY_POTTERY_SHERD);
-            CreativeModeTabUtil.accept(entries, AVPItems.VECTOR_POTTERY_SHERD);
+            CreativeModeTabUtil.accept(entries, TempAVPItems.OVOID_POTTERY_SHERD);
+            CreativeModeTabUtil.accept(entries, TempAVPItems.PARASITE_POTTERY_SHERD);
+            CreativeModeTabUtil.accept(entries, TempAVPItems.ROYALTY_POTTERY_SHERD);
+            CreativeModeTabUtil.accept(entries, TempAVPItems.VECTOR_POTTERY_SHERD);
             CreativeModeTabUtil.accept(entries, AVPItems.ALIEN_MUSIC_DISC_1_FRAGMENT);
             CreativeModeTabUtil.accept(entries, AVPItems.PREDATOR_MUSIC_DISC_1_FRAGMENT);
 

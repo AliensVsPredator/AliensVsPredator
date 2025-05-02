@@ -161,8 +161,8 @@ public class ItemModelProvider extends FabricModelProvider {
         generateStandardItem(generators, TempAVPItems.NEODYMIUM_MAGNET);
         generateStandardItem(generators, AVPItems.NETHER_CHITIN);
         generateStandardItem(generators, AVPItems.NETHER_RESIN_BALL);
-        generateStandardItem(generators, AVPItems.OVOID_POTTERY_SHERD);
-        generateStandardItem(generators, AVPItems.PARASITE_POTTERY_SHERD);
+        generateStandardItem(generators, TempAVPItems.OVOID_POTTERY_SHERD);
+        generateStandardItem(generators, TempAVPItems.PARASITE_POTTERY_SHERD);
         generateStandardItem(generators, TempAVPItems.PLATED_CHITIN);
         generateStandardItem(generators, TempAVPItems.PLATED_NETHER_CHITIN);
         generateStandardItem(generators, TempAVPItems.POLYMER);
@@ -181,7 +181,7 @@ public class ItemModelProvider extends FabricModelProvider {
         generateStandardItem(generators, TempAVPItems.RESIN_BALL);
         generateStandardItem(generators, TempAVPItems.RESISTOR);
         generateStandardItem(generators, TempAVPItems.ROCKET_BARREL);
-        generateStandardItem(generators, AVPItems.ROYALTY_POTTERY_SHERD);
+        generateStandardItem(generators, TempAVPItems.ROYALTY_POTTERY_SHERD);
         generateStandardItem(generators, TempAVPItems.SHOTGUN_CASING);
         generateStandardItem(generators, TempAVPItems.SMALL_CASING);
         generateStandardItem(generators, TempAVPItems.SMART_BARREL);
@@ -206,7 +206,7 @@ public class ItemModelProvider extends FabricModelProvider {
         generateHandheldItem(generators, AVPItems.VERITANIUM_SWORD);
         generateStandardItem(generators, TempAVPItems.TRANSISTOR);
         generateStandardItem(generators, TempAVPItems.URANIUM_INGOT);
-        generateStandardItem(generators, AVPItems.VECTOR_POTTERY_SHERD);
+        generateStandardItem(generators, TempAVPItems.VECTOR_POTTERY_SHERD);
         generateStandardItem(generators, AVPItems.VERITANIUM_SHARD);
         generateStandardItem(generators, TempAVPItems.ZINC_INGOT);
 

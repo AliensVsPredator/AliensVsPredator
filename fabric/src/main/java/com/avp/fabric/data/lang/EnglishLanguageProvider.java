@@ -434,9 +434,9 @@ public class EnglishLanguageProvider extends FabricLanguageProvider {
         addItem(builder, TempAVPItems.NEODYMIUM_MAGNET, "Neodymium Magnet");
         addItem(builder, AVPItems.NETHER_CHITIN, "Nether Chitin");
         addItem(builder, AVPItems.NETHER_RESIN_BALL, "Nether Resin Ball");
-        addItem(builder, AVPItems.OVOID_POTTERY_SHERD, "Ovoid Pottery Sherd");
-        addItem(builder, AVPItems.PARASITE_POTTERY_SHERD, "Parasite Pottery Sherd");
-        addItem(builder, AVPItems.ROYALTY_POTTERY_SHERD, "Royalty Pottery Sherd");
+        addItem(builder, TempAVPItems.OVOID_POTTERY_SHERD, "Ovoid Pottery Sherd");
+        addItem(builder, TempAVPItems.PARASITE_POTTERY_SHERD, "Parasite Pottery Sherd");
+        addItem(builder, TempAVPItems.ROYALTY_POTTERY_SHERD, "Royalty Pottery Sherd");
         addItem(builder, TempAVPItems.PLATED_CHITIN, "Plated Chitin");
         addItem(builder, TempAVPItems.PLATED_NETHER_CHITIN, "Plated Nether Chitin");
         addItem(builder, TempAVPItems.POLYMER, "Polymer");
@@ -465,7 +465,7 @@ public class EnglishLanguageProvider extends FabricLanguageProvider {
         addItem(builder, TempAVPItems.TITANIUM_INGOT, "Titanium Ingot");
         addItem(builder, TempAVPItems.TRANSISTOR, "Transistor");
         addItem(builder, TempAVPItems.URANIUM_INGOT, "Uranium Ingot");
-        addItem(builder, AVPItems.VECTOR_POTTERY_SHERD, "Vector Pottery Sherd");
+        addItem(builder, TempAVPItems.VECTOR_POTTERY_SHERD, "Vector Pottery Sherd");
         addItem(builder, AVPItems.VERITANIUM_SHARD, "Veritanium Shard");
         addItem(builder, TempAVPItems.ZINC_INGOT, "Zinc Ingot");
         addItem(builder, TempAVPItems.ALUMINUM_NUGGET, "Aluminum Nugget");

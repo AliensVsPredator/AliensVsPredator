@@ -116,6 +116,10 @@ public class TempAVPItems {
 
     public static final Supplier<Item> NUCLEAR_BATTERY = register("nuclear_battery");
 
+    public static final Supplier<Item> OVOID_POTTERY_SHERD = register("ovoid_pottery_sherd");
+
+    public static final Supplier<Item> PARASITE_POTTERY_SHERD = register("parasite_pottery_sherd");
+
     public static final Supplier<Item> PLATED_CHITIN = register("plated_chitin");
 
     public static final Supplier<Item> PLATED_IRRADIATED_CHITIN = register("plated_irradiated_chitin");
@@ -168,6 +172,8 @@ public class TempAVPItems {
 
     public static final Supplier<Item> ROCKET_BARREL = register("rocket_barrel");
 
+    public static final Supplier<Item> ROYALTY_POTTERY_SHERD = register("royalty_pottery_sherd");
+
     public static final Supplier<Item> SERVO = register("servo");
 
     public static final Supplier<Item> SHOTGUN_CASING = register("shotgun_casing");
@@ -199,6 +205,8 @@ public class TempAVPItems {
     public static final Supplier<Item> URANIUM_INGOT = register("uranium_ingot");
 
     public static final Supplier<Item> URANIUM_NUGGET = register("uranium_nugget");
+
+    public static final Supplier<Item> VECTOR_POTTERY_SHERD = register("vector_pottery_sherd");
 
     public static final Supplier<Item> WATER_CANISTER = register(
         "water_canister",

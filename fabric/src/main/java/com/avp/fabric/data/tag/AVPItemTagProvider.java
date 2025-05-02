@@ -13,7 +13,6 @@ import com.avp.common.block.TempAVPBlocks;
 import com.avp.common.item.AVPItemTags;
 import com.avp.common.item.TempAVPBlockItems;
 import com.avp.common.item.TempAVPItems;
-import com.avp.fabric.common.block_item.AVPBlockItems;
 import com.avp.fabric.common.item.AVPItems;
 import com.avp.fabric.common.item.ArmorItems;
 import com.avp.fabric.data.compatibility.common.CommonConstants;
@@ -190,10 +189,10 @@ public class AVPItemTagProvider extends FabricTagProvider.ItemTagProvider {
 
         getOrCreateTagBuilder(AVPItemTags.DECORATIVE_POT_SHERDS)
             .add(
-                AVPItems.OVOID_POTTERY_SHERD,
-                AVPItems.PARASITE_POTTERY_SHERD,
-                AVPItems.ROYALTY_POTTERY_SHERD,
-                AVPItems.VECTOR_POTTERY_SHERD
+                TempAVPItems.OVOID_POTTERY_SHERD.get(),
+                TempAVPItems.PARASITE_POTTERY_SHERD.get(),
+                TempAVPItems.ROYALTY_POTTERY_SHERD.get(),
+                TempAVPItems.VECTOR_POTTERY_SHERD.get()
             );
 
         getOrCreateTagBuilder(ItemTags.DECORATED_POT_SHERDS)

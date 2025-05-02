@@ -1,4 +1,4 @@
-package com.avp.fabric.mixin;
+package com.avp.mixin;
 
 import com.google.common.collect.ImmutableSet;
 import net.minecraft.world.entity.Entity;
@@ -12,7 +12,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 
-import com.avp.fabric.common.entity.type.SilencedEntityTypeBuilder;
+import com.avp.common.entity.type.SilencedEntityTypeBuilder;
 
 @Mixin(EntityType.Builder.class)
 public class MixinEntityTypeBuilder_SilenceDataFixerError implements SilencedEntityTypeBuilder {

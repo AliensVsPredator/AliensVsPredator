@@ -5,9 +5,16 @@
   "refmap": "${mod_id}.refmap.json",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
+    "MixinCow_FillMilkCanister",
+    "MixinCreeper_Nuked",
+    "MixinDecoratedPotPatterns_GetPatternForCustomSherds",
+    "MixinEntityTypeBuilder_SilenceDataFixerError",
     "MixinItem_GiveRads",
+    "MixinItemEntity_LithiumExplode",
+    "MixinLivingEntity_ApplyArmorEffects",
     "MixinLivingEntity_NukedRadiation",
-    "MixinMobCategory_InjectCustomAlienCategory"
+    "MixinMobCategory_InjectCustomAlienCategory",
+    "MixinVillagerHostilesSensor_RunAwayFromAVPMonsters"
   ],
   "client": [],
   "server": [],
