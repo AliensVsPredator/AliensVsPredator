@@ -1,7 +1,5 @@
 package com.avp.neoforge.data;
 
-import com.avp.AVP;
-import com.avp.AVPResources;
 import net.minecraft.core.HolderGetter;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.RegistrySetBuilder;
@@ -23,34 +21,41 @@ import net.neoforged.neoforge.registries.NeoForgeRegistries;
 import java.util.List;
 import java.util.Set;
 
+import com.avp.AVP;
+import com.avp.AVPResources;
+
 @EventBusSubscriber(modid = AVP.MOD_ID, bus = EventBusSubscriber.Bus.MOD)
 public class AVPNeoForgeDatagen {
 
     public static final ResourceKey<BiomeModifier> ADD_SPAWNS_EXAMPLE = ResourceKey.create(
-            NeoForgeRegistries.Keys.BIOME_MODIFIERS,
-            AVPResources.location("add_spawns_example")
+        NeoForgeRegistries.Keys.BIOME_MODIFIERS,
+        AVPResources.location("add_spawns_example")
     );
 
     @SubscribeEvent
     public static void onGatherData(GatherDataEvent event) {
-        event.getGenerator().addProvider(
-            event.includeServer(),
-            (DataProvider.Factory<DatapackBuiltinEntriesProvider>) output -> new DatapackBuiltinEntriesProvider(
-                event.getGenerator().getPackOutput(),
-                event.getLookupProvider(),
-                new RegistrySetBuilder()
-                    .add(NeoForgeRegistries.Keys.BIOME_MODIFIERS, bootstrap -> {
-                        HolderGetter<Biome> biomes = bootstrap.lookup(Registries.BIOME);
-                        bootstrap.register(ADD_SPAWNS_EXAMPLE, new BiomeModifiers.AddSpawnsBiomeModifier(
-                            HolderSet.direct(biomes.getOrThrow(Biomes.PLAINS)),
-                            List.of(
-                                new MobSpawnSettings.SpawnerData(EntityType.GHAST, 100, 1, 4),
-                                new MobSpawnSettings.SpawnerData(EntityType.GHAST, 1, 5, 10)
-                            )
-                        ));
-                    }),
-                Set.of(AVP.MOD_ID)
-            )
-        );
+        event.getGenerator()
+            .addProvider(
+                event.includeServer(),
+                (DataProvider.Factory<DatapackBuiltinEntriesProvider>) output -> new DatapackBuiltinEntriesProvider(
+                    event.getGenerator().getPackOutput(),
+                    event.getLookupProvider(),
+                    new RegistrySetBuilder()
+                        .add(NeoForgeRegistries.Keys.BIOME_MODIFIERS, bootstrap -> {
+                            HolderGetter<Biome> biomes = bootstrap.lookup(Registries.BIOME);
+                            bootstrap.register(
+                                ADD_SPAWNS_EXAMPLE,
+                                new BiomeModifiers.AddSpawnsBiomeModifier(
+                                    HolderSet.direct(biomes.getOrThrow(Biomes.PLAINS)),
+                                    List.of(
+                                        new MobSpawnSettings.SpawnerData(EntityType.GHAST, 100, 1, 4),
+                                        new MobSpawnSettings.SpawnerData(EntityType.GHAST, 1, 5, 10)
+                                    )
+                                )
+                            );
+                        }),
+                    Set.of(AVP.MOD_ID)
+                )
+            );
     }
 }

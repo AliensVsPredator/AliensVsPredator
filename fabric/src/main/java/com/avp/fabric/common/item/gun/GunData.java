@@ -82,7 +82,7 @@ public class GunData {
         .withDurability(1024)
         .withMaximumAmmunition(6)
         .withReloadTimeInTicks(20 * 7 + 10)
-        .withAmmunitionItemSupplier(() -> AVPItems.HEAVY_BULLET)
+        .withAmmunitionItemSupplier(TempAVPItems.HEAVY_BULLET::get)
         .withFireMode(
             FireModeConfig.builder()
                 .withCooldownInTicks(30)
@@ -166,7 +166,7 @@ public class GunData {
         .withDurability(4096)
         .withMaximumAmmunition(Integer.MAX_VALUE)
         .withReloadTimeInTicks(0)
-        .withAmmunitionItemSupplier(() -> AVPItems.HEAVY_BULLET)
+        .withAmmunitionItemSupplier(TempAVPItems.HEAVY_BULLET::get)
         .withFireMode(
             FireModeConfig.builder()
                 .withCooldownInTicks(1)

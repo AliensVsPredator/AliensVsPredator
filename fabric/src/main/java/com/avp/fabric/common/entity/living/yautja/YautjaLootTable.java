@@ -11,7 +11,7 @@ import net.minecraft.world.level.storage.loot.providers.number.UniformGenerator;
 
 import java.util.function.Function;
 
-import com.avp.fabric.common.item.AVPItems;
+import com.avp.common.item.TempAVPItems;
 import com.avp.fabric.common.item.ArmorItems;
 
 public class YautjaLootTable {
@@ -21,7 +21,7 @@ public class YautjaLootTable {
             LootPool.lootPool()
                 .setRolls(ConstantValue.exactly(1))
                 .add(
-                    LootItem.lootTableItem(AVPItems.VERITANIUM_SHARD)
+                    LootItem.lootTableItem(TempAVPItems.VERITANIUM_SHARD.get())
                         .apply(SetItemCountFunction.setCount(UniformGenerator.between(2, 3)))
                         .apply(EnchantedCountIncreaseFunction.lootingMultiplier(provider, UniformGenerator.between(0, 1)))
                 )
@@ -46,23 +46,23 @@ public class YautjaLootTable {
                         .apply(SetItemCountFunction.setCount(ConstantValue.exactly(1)))
                 )
                 .add(
-                    LootItem.lootTableItem(AVPItems.VERITANIUM_AXE)
+                    LootItem.lootTableItem(TempAVPItems.VERITANIUM_AXE.get())
                         .apply(SetItemCountFunction.setCount(ConstantValue.exactly(1)))
                 )
                 .add(
-                    LootItem.lootTableItem(AVPItems.VERITANIUM_HOE)
+                    LootItem.lootTableItem(TempAVPItems.VERITANIUM_HOE.get())
                         .apply(SetItemCountFunction.setCount(ConstantValue.exactly(1)))
                 )
                 .add(
-                    LootItem.lootTableItem(AVPItems.VERITANIUM_PICKAXE)
+                    LootItem.lootTableItem(TempAVPItems.VERITANIUM_PICKAXE.get())
                         .apply(SetItemCountFunction.setCount(ConstantValue.exactly(1)))
                 )
                 .add(
-                    LootItem.lootTableItem(AVPItems.VERITANIUM_SHOVEL)
+                    LootItem.lootTableItem(TempAVPItems.VERITANIUM_SHOVEL.get())
                         .apply(SetItemCountFunction.setCount(ConstantValue.exactly(1)))
                 )
                 .add(
-                    LootItem.lootTableItem(AVPItems.VERITANIUM_SWORD)
+                    LootItem.lootTableItem(TempAVPItems.VERITANIUM_SWORD.get())
                         .apply(SetItemCountFunction.setCount(ConstantValue.exactly(1)))
                 )
         );

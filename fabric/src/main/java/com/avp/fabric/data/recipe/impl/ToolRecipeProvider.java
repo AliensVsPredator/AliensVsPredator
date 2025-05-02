@@ -1,7 +1,6 @@
 package com.avp.fabric.data.recipe.impl;
 
 import com.avp.common.item.TempAVPItems;
-import com.avp.fabric.common.item.AVPItems;
 import com.avp.fabric.data.recipe.RecipeTemplates;
 import com.avp.fabric.data.recipe.builder.RecipeBuilder;
 
@@ -15,36 +14,36 @@ public class ToolRecipeProvider {
     private static void createSteelToolsetRecipes(RecipeBuilder builder) {
         builder.shaped()
             .apply(RecipeTemplates.AXE.apply(TempAVPItems.STEEL_INGOT.get()))
-            .into(1, AVPItems.STEEL_AXE);
+            .into(1, TempAVPItems.STEEL_AXE);
         builder.shaped()
             .apply(RecipeTemplates.HOE.apply(TempAVPItems.STEEL_INGOT.get()))
-            .into(1, AVPItems.STEEL_HOE);
+            .into(1, TempAVPItems.STEEL_HOE);
         builder.shaped()
             .apply(RecipeTemplates.PICKAXE.apply(TempAVPItems.STEEL_INGOT.get()))
-            .into(1, AVPItems.STEEL_PICKAXE);
+            .into(1, TempAVPItems.STEEL_PICKAXE);
         builder.shaped()
             .apply(RecipeTemplates.SHOVEL.apply(TempAVPItems.STEEL_INGOT.get()))
-            .into(1, AVPItems.STEEL_SHOVEL);
+            .into(1, TempAVPItems.STEEL_SHOVEL);
         builder.shaped()
             .apply(RecipeTemplates.SWORD.apply(TempAVPItems.STEEL_INGOT.get()))
-            .into(1, AVPItems.STEEL_SWORD);
+            .into(1, TempAVPItems.STEEL_SWORD);
     }
 
     private static void createTitaniumToolsetRecipes(RecipeBuilder builder) {
         builder.shaped()
             .apply(RecipeTemplates.AXE.apply(TempAVPItems.TITANIUM_INGOT.get()))
-            .into(1, AVPItems.TITANIUM_AXE);
+            .into(1, TempAVPItems.TITANIUM_AXE);
         builder.shaped()
             .apply(RecipeTemplates.HOE.apply(TempAVPItems.TITANIUM_INGOT.get()))
-            .into(1, AVPItems.TITANIUM_HOE);
+            .into(1, TempAVPItems.TITANIUM_HOE);
         builder.shaped()
             .apply(RecipeTemplates.PICKAXE.apply(TempAVPItems.TITANIUM_INGOT.get()))
-            .into(1, AVPItems.TITANIUM_PICKAXE);
+            .into(1, TempAVPItems.TITANIUM_PICKAXE);
         builder.shaped()
             .apply(RecipeTemplates.SHOVEL.apply(TempAVPItems.TITANIUM_INGOT.get()))
-            .into(1, AVPItems.TITANIUM_SHOVEL);
+            .into(1, TempAVPItems.TITANIUM_SHOVEL);
         builder.shaped()
             .apply(RecipeTemplates.SWORD.apply(TempAVPItems.TITANIUM_INGOT.get()))
-            .into(1, AVPItems.TITANIUM_SWORD);
+            .into(1, TempAVPItems.TITANIUM_SWORD);
     }
 }

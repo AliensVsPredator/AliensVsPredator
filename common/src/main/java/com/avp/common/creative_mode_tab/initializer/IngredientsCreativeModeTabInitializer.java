@@ -18,7 +18,7 @@ public class IngredientsCreativeModeTabInitializer {
         CreativeModeTabUtil.accept(output, TempAVPItems.RAW_FERROBAUXITE);
         CreativeModeTabUtil.accept(output, TempAVPItems.RAW_GALENA);
         CreativeModeTabUtil.accept(output, TempAVPItems.RAW_MONAZITE);
-        CreativeModeTabUtil.accept(output, TempAVPItems.RAW_SILICA.get());
+        CreativeModeTabUtil.accept(output, TempAVPItems.RAW_SILICA);
         CreativeModeTabUtil.accept(output, TempAVPItems.RAW_TITANIUM);
         CreativeModeTabUtil.accept(output, TempAVPItems.RAW_ZINC);
         CreativeModeTabUtil.accept(output, TempAVPItems.ALUMINUM_NUGGET);
@@ -116,7 +116,6 @@ public class IngredientsCreativeModeTabInitializer {
         // CreativeModeTabUtil.accept(output, AVPItems.ALIEN_MUSIC_DISC_1_FRAGMENT);
         // CreativeModeTabUtil.accept(output, AVPItems.PREDATOR_MUSIC_DISC_1_FRAGMENT);
 
-        // FIXME:
-        // CreativeModeTabUtil.accept(output, AVPItems.VERITANIUM_SHARD);
+        CreativeModeTabUtil.accept(output, TempAVPItems.VERITANIUM_SHARD);
     };
 }

@@ -324,7 +324,7 @@ public class EnglishLanguageProvider extends FabricLanguageProvider {
         addItem(builder, AVPItems.F903WE_RIFLE, "F903WE Rifle");
         addItem(builder, AVPItems.FLAMETHROWER_SEVASTOPOL, "Flamethrower (Sevastopol)");
         addItem(builder, AVPItems.FUEL_TANK, "Fuel Tank");
-        addItem(builder, AVPItems.HEAVY_BULLET, "Heavy Bullet");
+        addItem(builder, TempAVPItems.HEAVY_BULLET, "Heavy Bullet");
         addItem(builder, ArmorItems.JUNGLE_PREDATOR_BOOTS, "Predator Boots");
         addItem(builder, ArmorItems.JUNGLE_PREDATOR_CHESTPLATE, "Predator Chestplate");
         addItem(builder, ArmorItems.JUNGLE_PREDATOR_HELMET, "Predator Helmet");
@@ -466,7 +466,7 @@ public class EnglishLanguageProvider extends FabricLanguageProvider {
         addItem(builder, TempAVPItems.TRANSISTOR, "Transistor");
         addItem(builder, TempAVPItems.URANIUM_INGOT, "Uranium Ingot");
         addItem(builder, TempAVPItems.VECTOR_POTTERY_SHERD, "Vector Pottery Sherd");
-        addItem(builder, AVPItems.VERITANIUM_SHARD, "Veritanium Shard");
+        addItem(builder, TempAVPItems.VERITANIUM_SHARD, "Veritanium Shard");
         addItem(builder, TempAVPItems.ZINC_INGOT, "Zinc Ingot");
         addItem(builder, TempAVPItems.ALUMINUM_NUGGET, "Aluminum Nugget");
         addItem(builder, TempAVPItems.BRASS_NUGGET, "Brass Nugget");
@@ -490,21 +490,21 @@ public class EnglishLanguageProvider extends FabricLanguageProvider {
         addItem(builder, TempAVPItems.LAVA_CANISTER, "Lava Canister");
         addItem(builder, TempAVPItems.MILK_CANISTER, "Milk Canister");
         addItem(builder, TempAVPItems.POWDER_SNOW_CANISTER, "Powder Snow Canister");
-        addItem(builder, AVPItems.STEEL_AXE, "Steel Axe");
-        addItem(builder, AVPItems.STEEL_HOE, "Steel Hoe");
-        addItem(builder, AVPItems.STEEL_PICKAXE, "Steel Pickaxe");
-        addItem(builder, AVPItems.STEEL_SHOVEL, "Steel Shovel");
-        addItem(builder, AVPItems.STEEL_SWORD, "Steel Sword");
-        addItem(builder, AVPItems.TITANIUM_AXE, "Titanium Axe");
-        addItem(builder, AVPItems.TITANIUM_HOE, "Titanium Hoe");
-        addItem(builder, AVPItems.TITANIUM_PICKAXE, "Titanium Pickaxe");
-        addItem(builder, AVPItems.TITANIUM_SHOVEL, "Titanium Shovel");
-        addItem(builder, AVPItems.TITANIUM_SWORD, "Titanium Sword");
-        addItem(builder, AVPItems.VERITANIUM_AXE, "Veritanium Axe");
-        addItem(builder, AVPItems.VERITANIUM_HOE, "Veritanium Hoe");
-        addItem(builder, AVPItems.VERITANIUM_PICKAXE, "Veritanium Pickaxe");
-        addItem(builder, AVPItems.VERITANIUM_SHOVEL, "Veritanium Shovel");
-        addItem(builder, AVPItems.VERITANIUM_SWORD, "Veritanium Sword");
+        addItem(builder, TempAVPItems.STEEL_AXE, "Steel Axe");
+        addItem(builder, TempAVPItems.STEEL_HOE, "Steel Hoe");
+        addItem(builder, TempAVPItems.STEEL_PICKAXE, "Steel Pickaxe");
+        addItem(builder, TempAVPItems.STEEL_SHOVEL, "Steel Shovel");
+        addItem(builder, TempAVPItems.STEEL_SWORD, "Steel Sword");
+        addItem(builder, TempAVPItems.TITANIUM_AXE, "Titanium Axe");
+        addItem(builder, TempAVPItems.TITANIUM_HOE, "Titanium Hoe");
+        addItem(builder, TempAVPItems.TITANIUM_PICKAXE, "Titanium Pickaxe");
+        addItem(builder, TempAVPItems.TITANIUM_SHOVEL, "Titanium Shovel");
+        addItem(builder, TempAVPItems.TITANIUM_SWORD, "Titanium Sword");
+        addItem(builder, TempAVPItems.VERITANIUM_AXE, "Veritanium Axe");
+        addItem(builder, TempAVPItems.VERITANIUM_HOE, "Veritanium Hoe");
+        addItem(builder, TempAVPItems.VERITANIUM_PICKAXE, "Veritanium Pickaxe");
+        addItem(builder, TempAVPItems.VERITANIUM_SHOVEL, "Veritanium Shovel");
+        addItem(builder, TempAVPItems.VERITANIUM_SWORD, "Veritanium Sword");
 
         // Spawn Egg Items
         addItem(builder, SpawnEggItems.ABERRANT_CHESTBURSTER_SPAWN_EGG, "Aberrant Chestburster Spawn Egg");

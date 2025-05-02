@@ -1,6 +1,5 @@
 package com.avp.common.block;
 
-import com.avp.common.block.resin.ResinBlock;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.util.ColorRGBA;
 import net.minecraft.world.item.DyeColor;
@@ -30,6 +29,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
+import com.avp.common.block.resin.ResinBlock;
 import com.avp.common.block.resin.ResinWebBlock;
 import com.avp.service.Services;
 
@@ -37,7 +37,10 @@ import com.avp.service.Services;
 public class TempAVPBlocks {
 
     // FIXME: Fix properties.
-    public static final Supplier<Block> ABERRANT_RESIN = register("aberrant_resin", () -> new ResinBlock(BlockProperties.NETHER_RESIN.build()));
+    public static final Supplier<Block> ABERRANT_RESIN = register(
+        "aberrant_resin",
+        () -> new ResinBlock(BlockProperties.NETHER_RESIN.build())
+    );
 
     // FIXME: Fix properties.
     public static final Supplier<Block> ABERRANT_RESIN_NODE = register(

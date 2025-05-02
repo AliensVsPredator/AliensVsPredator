@@ -10,9 +10,9 @@ import java.util.function.Supplier;
 public interface BridgeService {
 
     <E extends Mob> Supplier<SpawnEggItem> makeSpawnEggFor(
-            Supplier<EntityType<E>> entityType,
-            int primaryEggColour,
-            int secondaryEggColour,
-            Item.Properties itemProperties
+        Supplier<EntityType<E>> entityType,
+        int primaryEggColour,
+        int secondaryEggColour,
+        Item.Properties itemProperties
     );
 }

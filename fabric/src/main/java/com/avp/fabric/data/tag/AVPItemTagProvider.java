@@ -112,7 +112,7 @@ public class AVPItemTagProvider extends FabricTagProvider.ItemTagProvider {
         getOrCreateTagBuilder(AVPItemTags.AMMO_ITEMS)
             .add(
                 AVPItems.CASELESS_BULLET,
-                AVPItems.HEAVY_BULLET,
+                TempAVPItems.HEAVY_BULLET.get(),
                 TempAVPItems.SMALL_BULLET.get(),
                 TempAVPItems.MEDIUM_BULLET.get(),
                 TempAVPItems.SHOTGUN_SHELL.get(),
@@ -249,33 +249,33 @@ public class AVPItemTagProvider extends FabricTagProvider.ItemTagProvider {
 
         getOrCreateTagBuilder(ItemTags.AXES)
             .add(
-                AVPItems.STEEL_AXE,
-                AVPItems.TITANIUM_AXE,
-                AVPItems.VERITANIUM_AXE
+                TempAVPItems.STEEL_AXE.get(),
+                TempAVPItems.TITANIUM_AXE.get(),
+                TempAVPItems.VERITANIUM_AXE.get()
             );
         getOrCreateTagBuilder(ItemTags.HOES)
             .add(
-                AVPItems.STEEL_HOE,
-                AVPItems.TITANIUM_HOE,
-                AVPItems.VERITANIUM_HOE
+                TempAVPItems.STEEL_HOE.get(),
+                TempAVPItems.TITANIUM_HOE.get(),
+                TempAVPItems.VERITANIUM_HOE.get()
             );
         getOrCreateTagBuilder(ItemTags.PICKAXES)
             .add(
-                AVPItems.STEEL_PICKAXE,
-                AVPItems.TITANIUM_PICKAXE,
-                AVPItems.VERITANIUM_PICKAXE
+                TempAVPItems.STEEL_PICKAXE.get(),
+                TempAVPItems.TITANIUM_PICKAXE.get(),
+                TempAVPItems.VERITANIUM_PICKAXE.get()
             );
         getOrCreateTagBuilder(ItemTags.SHOVELS)
             .add(
-                AVPItems.STEEL_SHOVEL,
-                AVPItems.TITANIUM_SHOVEL,
-                AVPItems.VERITANIUM_SHOVEL
+                TempAVPItems.STEEL_SHOVEL.get(),
+                TempAVPItems.TITANIUM_SHOVEL.get(),
+                TempAVPItems.VERITANIUM_SHOVEL.get()
             );
         getOrCreateTagBuilder(ItemTags.SWORDS)
             .add(
-                AVPItems.STEEL_SWORD,
-                AVPItems.TITANIUM_SWORD,
-                AVPItems.VERITANIUM_SWORD
+                TempAVPItems.STEEL_SWORD.get(),
+                TempAVPItems.TITANIUM_SWORD.get(),
+                TempAVPItems.VERITANIUM_SWORD.get()
             );
 
         getOrCreateTagBuilder(ItemTags.HEAD_ARMOR)

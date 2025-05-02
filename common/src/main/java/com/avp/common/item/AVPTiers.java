@@ -1,4 +1,4 @@
-package com.avp.fabric.common.item;
+package com.avp.common.item;
 
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
@@ -8,8 +8,6 @@ import net.minecraft.world.level.block.Block;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Supplier;
-
-import com.avp.common.item.TempAVPItems;
 
 public class AVPTiers {
 
@@ -37,7 +35,7 @@ public class AVPTiers {
         5F,
         BlockTags.INCORRECT_FOR_NETHERITE_TOOL,
         11,
-        () -> Ingredient.of(AVPItems.VERITANIUM_SHARD)
+        () -> Ingredient.of(TempAVPItems.VERITANIUM_SHARD.get())
     );
 
     private static Tier create(

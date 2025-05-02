@@ -2,7 +2,12 @@ package com.avp.common.item;
 
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.item.AxeItem;
+import net.minecraft.world.item.HoeItem;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.PickaxeItem;
+import net.minecraft.world.item.ShovelItem;
+import net.minecraft.world.item.SwordItem;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.material.Fluids;
 
@@ -74,6 +79,8 @@ public class TempAVPItems {
     public static final Supplier<Item> FERROALUMINUM_NUGGET = register("ferroaluminum_nugget");
 
     public static final Supplier<Item> GRIP = register("grip");
+
+    public static final Supplier<Item> HEAVY_BULLET = register("heavy_bullet");
 
     public static final Supplier<Item> HEAVY_CASING = register("heavy_casing");
 
@@ -194,13 +201,69 @@ public class TempAVPItems {
 
     public static final Supplier<Item> STOCK = register("stock");
 
+    public static final Supplier<Item> STEEL_AXE = register(
+        "steel_axe",
+        () -> new AxeItem(AVPTiers.STEEL, new Item.Properties().attributes(AxeItem.createAttributes(AVPTiers.STEEL, 6.0F, -3.1F)))
+    );
+
+    public static final Supplier<Item> STEEL_HOE = register(
+        "steel_hoe",
+        () -> new HoeItem(AVPTiers.STEEL, new Item.Properties().attributes(HoeItem.createAttributes(AVPTiers.STEEL, -2.0F, -1.0F)))
+    );
+
     public static final Supplier<Item> STEEL_INGOT = register("steel_ingot");
 
     public static final Supplier<Item> STEEL_NUGGET = register("steel_nugget");
 
-    public static final Supplier<Item> TITANIUM_NUGGET = register("titanium_nugget");
+    public static final Supplier<Item> STEEL_PICKAXE = register(
+        "steel_pickaxe",
+        () -> new PickaxeItem(AVPTiers.STEEL, new Item.Properties().attributes(PickaxeItem.createAttributes(AVPTiers.STEEL, 1.0F, -2.8F)))
+    );
+
+    public static final Supplier<Item> STEEL_SHOVEL = register(
+        "steel_shovel",
+        () -> new ShovelItem(AVPTiers.STEEL, new Item.Properties().attributes(ShovelItem.createAttributes(AVPTiers.STEEL, 1.5F, -3.0F)))
+    );
+
+    public static final Supplier<Item> STEEL_SWORD = register(
+        "steel_sword",
+        () -> new SwordItem(AVPTiers.STEEL, new Item.Properties().attributes(SwordItem.createAttributes(AVPTiers.STEEL, 3, -2.4F)))
+    );
+
+    public static final Supplier<Item> TITANIUM_AXE = register(
+        "titanium_axe",
+        () -> new AxeItem(AVPTiers.TITANIUM, new Item.Properties().attributes(AxeItem.createAttributes(AVPTiers.TITANIUM, 6.0F, -3.1F)))
+    );
+
+    public static final Supplier<Item> TITANIUM_HOE = register(
+        "titanium_hoe",
+        () -> new HoeItem(AVPTiers.TITANIUM, new Item.Properties().attributes(HoeItem.createAttributes(AVPTiers.TITANIUM, -2.0F, -1.0F)))
+    );
 
     public static final Supplier<Item> TITANIUM_INGOT = register("titanium_ingot");
+
+    public static final Supplier<Item> TITANIUM_NUGGET = register("titanium_nugget");
+
+    public static final Supplier<Item> TITANIUM_PICKAXE = register(
+        "titanium_pickaxe",
+        () -> new PickaxeItem(
+            AVPTiers.TITANIUM,
+            new Item.Properties().attributes(PickaxeItem.createAttributes(AVPTiers.TITANIUM, 1.0F, -2.8F))
+        )
+    );
+
+    public static final Supplier<Item> TITANIUM_SHOVEL = register(
+        "titanium_shovel",
+        () -> new ShovelItem(
+            AVPTiers.TITANIUM,
+            new Item.Properties().attributes(ShovelItem.createAttributes(AVPTiers.TITANIUM, 1.5F, -3.0F))
+        )
+    );
+
+    public static final Supplier<Item> TITANIUM_SWORD = register(
+        "titanium_sword",
+        () -> new SwordItem(AVPTiers.TITANIUM, new Item.Properties().attributes(SwordItem.createAttributes(AVPTiers.TITANIUM, 3, -2.4F)))
+    );
 
     public static final Supplier<Item> TRANSISTOR = register("transistor");
 
@@ -209,6 +272,48 @@ public class TempAVPItems {
     public static final Supplier<Item> URANIUM_NUGGET = register("uranium_nugget");
 
     public static final Supplier<Item> VECTOR_POTTERY_SHERD = register("vector_pottery_sherd");
+
+    public static final Supplier<Item> VERITANIUM_AXE = register(
+        "veritanium_axe",
+        () -> new AxeItem(
+            AVPTiers.VERITANIUM,
+            new Item.Properties().fireResistant().attributes(AxeItem.createAttributes(AVPTiers.VERITANIUM, 6.0F, -3.1F))
+        )
+    );
+
+    public static final Supplier<Item> VERITANIUM_HOE = register(
+        "veritanium_hoe",
+        () -> new HoeItem(
+            AVPTiers.VERITANIUM,
+            new Item.Properties().fireResistant().attributes(HoeItem.createAttributes(AVPTiers.VERITANIUM, -2.0F, -1.0F))
+        )
+    );
+
+    public static final Supplier<Item> VERITANIUM_PICKAXE = register(
+        "veritanium_pickaxe",
+        () -> new PickaxeItem(
+            AVPTiers.VERITANIUM,
+            new Item.Properties().fireResistant().attributes(PickaxeItem.createAttributes(AVPTiers.VERITANIUM, 1.0F, -2.8F))
+        )
+    );
+
+    public static final Supplier<Item> VERITANIUM_SHARD = register("veritanium_shard", new Item.Properties().fireResistant());
+
+    public static final Supplier<Item> VERITANIUM_SHOVEL = register(
+        "veritanium_shovel",
+        () -> new ShovelItem(
+            AVPTiers.VERITANIUM,
+            new Item.Properties().fireResistant().attributes(ShovelItem.createAttributes(AVPTiers.VERITANIUM, 1.5F, -3.0F))
+        )
+    );
+
+    public static final Supplier<Item> VERITANIUM_SWORD = register(
+        "veritanium_sword",
+        () -> new SwordItem(
+            AVPTiers.VERITANIUM,
+            new Item.Properties().fireResistant().attributes(SwordItem.createAttributes(AVPTiers.VERITANIUM, 3, -2.4F))
+        )
+    );
 
     public static final Supplier<Item> WATER_CANISTER = register(
         "water_canister",

@@ -124,7 +124,7 @@ public class GunRecipeProvider {
             .define('B', TempAVPItems.HEAVY_CASING)
             .pattern("A")
             .pattern("B")
-            .into(16, AVPItems.HEAVY_BULLET);
+            .into(16, TempAVPItems.HEAVY_BULLET);
         builder.shaped()
             .withCategory(RecipeCategory.COMBAT)
             .define('A', TempAVPItems.BULLET_TIP)

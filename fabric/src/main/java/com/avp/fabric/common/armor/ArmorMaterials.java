@@ -236,7 +236,7 @@ public class ArmorMaterials {
         ),
         6,
         Holder.direct(AVPSoundEvents.ITEM_ARMOR_EQUIP_VERITANIUM.get()),
-        () -> Ingredient.of(AVPItems.VERITANIUM_SHARD),
+        () -> Ingredient.of(TempAVPItems.VERITANIUM_SHARD.get()),
         4,
         0.15F,
         false

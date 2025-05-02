@@ -39,7 +39,7 @@ public class ItemModelProvider extends FabricModelProvider {
         generateStandardItem(generators, AVPItems.GRENADE_INCENDIARY);
         generateStandardItem(generators, AVPItems.GRENADE_IRRADIATED);
         generateStandardItem(generators, AVPItems.CASELESS_BULLET);
-        generateStandardItem(generators, AVPItems.HEAVY_BULLET);
+        generateStandardItem(generators, TempAVPItems.HEAVY_BULLET);
         generateStandardItem(generators, TempAVPItems.SMALL_BULLET);
         generateStandardItem(generators, TempAVPItems.MEDIUM_BULLET);
         generateStandardItem(generators, TempAVPItems.SHOTGUN_SHELL);
@@ -186,28 +186,28 @@ public class ItemModelProvider extends FabricModelProvider {
         generateStandardItem(generators, TempAVPItems.SMALL_CASING);
         generateStandardItem(generators, TempAVPItems.SMART_BARREL);
         generateStandardItem(generators, TempAVPItems.SMART_RECEIVER);
-        generateHandheldItem(generators, AVPItems.STEEL_AXE);
-        generateHandheldItem(generators, AVPItems.STEEL_HOE);
+        generateHandheldItem(generators, TempAVPItems.STEEL_AXE);
+        generateHandheldItem(generators, TempAVPItems.STEEL_HOE);
         generateStandardItem(generators, TempAVPItems.STEEL_INGOT);
-        generateHandheldItem(generators, AVPItems.STEEL_PICKAXE);
-        generateHandheldItem(generators, AVPItems.STEEL_SHOVEL);
-        generateHandheldItem(generators, AVPItems.STEEL_SWORD);
+        generateHandheldItem(generators, TempAVPItems.STEEL_PICKAXE);
+        generateHandheldItem(generators, TempAVPItems.STEEL_SHOVEL);
+        generateHandheldItem(generators, TempAVPItems.STEEL_SWORD);
         generateStandardItem(generators, TempAVPItems.STOCK);
-        generateHandheldItem(generators, AVPItems.TITANIUM_AXE);
-        generateHandheldItem(generators, AVPItems.TITANIUM_HOE);
+        generateHandheldItem(generators, TempAVPItems.TITANIUM_AXE);
+        generateHandheldItem(generators, TempAVPItems.TITANIUM_HOE);
         generateStandardItem(generators, TempAVPItems.TITANIUM_INGOT);
-        generateHandheldItem(generators, AVPItems.TITANIUM_PICKAXE);
-        generateHandheldItem(generators, AVPItems.TITANIUM_SHOVEL);
-        generateHandheldItem(generators, AVPItems.TITANIUM_SWORD);
-        generateHandheldItem(generators, AVPItems.VERITANIUM_AXE);
-        generateHandheldItem(generators, AVPItems.VERITANIUM_HOE);
-        generateHandheldItem(generators, AVPItems.VERITANIUM_PICKAXE);
-        generateHandheldItem(generators, AVPItems.VERITANIUM_SHOVEL);
-        generateHandheldItem(generators, AVPItems.VERITANIUM_SWORD);
+        generateHandheldItem(generators, TempAVPItems.TITANIUM_PICKAXE);
+        generateHandheldItem(generators, TempAVPItems.TITANIUM_SHOVEL);
+        generateHandheldItem(generators, TempAVPItems.TITANIUM_SWORD);
+        generateHandheldItem(generators, TempAVPItems.VERITANIUM_AXE);
+        generateHandheldItem(generators, TempAVPItems.VERITANIUM_HOE);
+        generateHandheldItem(generators, TempAVPItems.VERITANIUM_PICKAXE);
+        generateHandheldItem(generators, TempAVPItems.VERITANIUM_SHOVEL);
+        generateHandheldItem(generators, TempAVPItems.VERITANIUM_SWORD);
         generateStandardItem(generators, TempAVPItems.TRANSISTOR);
         generateStandardItem(generators, TempAVPItems.URANIUM_INGOT);
         generateStandardItem(generators, TempAVPItems.VECTOR_POTTERY_SHERD);
-        generateStandardItem(generators, AVPItems.VERITANIUM_SHARD);
+        generateStandardItem(generators, TempAVPItems.VERITANIUM_SHARD);
         generateStandardItem(generators, TempAVPItems.ZINC_INGOT);
 
         generateStandardItem(generators, TempAVPItems.FERROALUMINUM_NUGGET);
@@ -224,6 +224,10 @@ public class ItemModelProvider extends FabricModelProvider {
         generateHandheldItem(generators, TempAVPBlockItems.TITANIUM_DOOR.get());
 
         generateStandardItem(generators, AVPItems.POISON_JELLY);
+    }
+
+    private void generateHandheldItem(ItemModelGenerators generators, Supplier<? extends Item> itemSupplier) {
+        generateHandheldItem(generators, itemSupplier.get());
     }
 
     private void generateHandheldItem(ItemModelGenerators generators, Item item) {

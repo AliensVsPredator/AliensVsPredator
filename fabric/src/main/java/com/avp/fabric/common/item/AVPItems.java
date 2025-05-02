@@ -39,8 +39,6 @@ public class AVPItems {
 
     public static final Item FUEL_TANK = register(new Item.Properties().stacksTo(1), "fuel_tank");
 
-    public static final Item HEAVY_BULLET = register("heavy_bullet");
-
     public static final Item M37_12_SHOTGUN = register(new GunItem(GunData.M37_12_SHOTGUN), "m37_12_shotgun");
 
     public static final Item M41A_PULSE_RIFLE = register(new GunItem(GunData.M41A_PULSE_RIFLE), "m41a_pulse_rifle");
@@ -99,100 +97,8 @@ public class AVPItems {
 
     public static final Item POISON_JELLY = register(new PoisionJellyItem(), "poison_jelly");
 
-    public static final Item VERITANIUM_SHARD = register(new Item.Properties().fireResistant(), "veritanium_shard");
-
     // Tools & Utilities
     public static final Item ARMOR_CASE = register(new ArmorCaseItem(new Item.Properties().stacksTo(1)), "armor_case");
-
-    public static final Item STEEL_AXE = register(
-        new AxeItem(AVPTiers.STEEL, new Item.Properties().attributes(AxeItem.createAttributes(AVPTiers.STEEL, 6.0F, -3.1F))),
-        "steel_axe"
-    );
-
-    public static final Item STEEL_HOE = register(
-        new HoeItem(AVPTiers.STEEL, new Item.Properties().attributes(HoeItem.createAttributes(AVPTiers.STEEL, -2.0F, -1.0F))),
-        "steel_hoe"
-    );
-
-    public static final Item STEEL_PICKAXE = register(
-        new PickaxeItem(AVPTiers.STEEL, new Item.Properties().attributes(PickaxeItem.createAttributes(AVPTiers.STEEL, 1.0F, -2.8F))),
-        "steel_pickaxe"
-    );
-
-    public static final Item STEEL_SHOVEL = register(
-        new ShovelItem(AVPTiers.STEEL, new Item.Properties().attributes(ShovelItem.createAttributes(AVPTiers.STEEL, 1.5F, -3.0F))),
-        "steel_shovel"
-    );
-
-    public static final Item STEEL_SWORD = register(
-        new SwordItem(AVPTiers.STEEL, new Item.Properties().attributes(SwordItem.createAttributes(AVPTiers.STEEL, 3, -2.4F))),
-        "steel_sword"
-    );
-
-    public static final Item TITANIUM_AXE = register(
-        new AxeItem(AVPTiers.TITANIUM, new Item.Properties().attributes(AxeItem.createAttributes(AVPTiers.TITANIUM, 6.0F, -3.1F))),
-        "titanium_axe"
-    );
-
-    public static final Item TITANIUM_HOE = register(
-        new HoeItem(AVPTiers.TITANIUM, new Item.Properties().attributes(HoeItem.createAttributes(AVPTiers.TITANIUM, -2.0F, -1.0F))),
-        "titanium_hoe"
-    );
-
-    public static final Item TITANIUM_PICKAXE = register(
-        new PickaxeItem(AVPTiers.TITANIUM, new Item.Properties().attributes(PickaxeItem.createAttributes(AVPTiers.TITANIUM, 1.0F, -2.8F))),
-        "titanium_pickaxe"
-    );
-
-    public static final Item TITANIUM_SHOVEL = register(
-        new ShovelItem(AVPTiers.TITANIUM, new Item.Properties().attributes(ShovelItem.createAttributes(AVPTiers.TITANIUM, 1.5F, -3.0F))),
-        "titanium_shovel"
-    );
-
-    public static final Item TITANIUM_SWORD = register(
-        new SwordItem(AVPTiers.TITANIUM, new Item.Properties().attributes(SwordItem.createAttributes(AVPTiers.TITANIUM, 3, -2.4F))),
-        "titanium_sword"
-    );
-
-    public static final Item VERITANIUM_AXE = register(
-        new AxeItem(
-            AVPTiers.VERITANIUM,
-            new Item.Properties().fireResistant().attributes(AxeItem.createAttributes(AVPTiers.VERITANIUM, 6.0F, -3.1F))
-        ),
-        "veritanium_axe"
-    );
-
-    public static final Item VERITANIUM_HOE = register(
-        new HoeItem(
-            AVPTiers.VERITANIUM,
-            new Item.Properties().fireResistant().attributes(HoeItem.createAttributes(AVPTiers.VERITANIUM, -2.0F, -1.0F))
-        ),
-        "veritanium_hoe"
-    );
-
-    public static final Item VERITANIUM_PICKAXE = register(
-        new PickaxeItem(
-            AVPTiers.VERITANIUM,
-            new Item.Properties().fireResistant().attributes(PickaxeItem.createAttributes(AVPTiers.VERITANIUM, 1.0F, -2.8F))
-        ),
-        "veritanium_pickaxe"
-    );
-
-    public static final Item VERITANIUM_SHOVEL = register(
-        new ShovelItem(
-            AVPTiers.VERITANIUM,
-            new Item.Properties().fireResistant().attributes(ShovelItem.createAttributes(AVPTiers.VERITANIUM, 1.5F, -3.0F))
-        ),
-        "veritanium_shovel"
-    );
-
-    public static final Item VERITANIUM_SWORD = register(
-        new SwordItem(
-            AVPTiers.VERITANIUM,
-            new Item.Properties().fireResistant().attributes(SwordItem.createAttributes(AVPTiers.VERITANIUM, 3, -2.4F))
-        ),
-        "veritanium_sword"
-    );
 
     public static Item register(Function<Item.Properties, Item> itemSupplier, String id) {
         return register(itemSupplier.apply(new Item.Properties()), id);
