@@ -8,19 +8,19 @@ import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.crafting.SimpleCookingSerializer;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.function.Supplier;
-
+import com.avp.common.registry.AVPDeferredHolder;
 import com.avp.service.Services;
 
 public class AVPRecipes {
 
-    public static final Supplier<? extends RecipeSerializer<IndustrialFurnaceRecipe>> INDUSTRIAL_FURNACE_RECIPE_SERIALIZER = register(
-        "industrial_furnace",
-        IndustrialFurnaceRecipe::new,
-        100
-    );
+    public static final AVPDeferredHolder<? extends RecipeSerializer<IndustrialFurnaceRecipe>> INDUSTRIAL_FURNACE_RECIPE_SERIALIZER =
+        register(
+            "industrial_furnace",
+            IndustrialFurnaceRecipe::new,
+            100
+        );
 
-    private static @NotNull <T extends AbstractCookingRecipe> Supplier<SimpleCookingSerializer<T>> register(
+    private static @NotNull <T extends AbstractCookingRecipe> AVPDeferredHolder<SimpleCookingSerializer<T>> register(
         String id,
         AbstractCookingRecipe.Factory<T> factory,
         int cookingTime
@@ -32,9 +32,11 @@ public class AVPRecipes {
         );
     }
 
-    public static final Supplier<RecipeType<IndustrialFurnaceRecipe>> INDUSTRIAL_FURNACE_RECIPE_TYPE = register("industrial_furnace");
+    public static final AVPDeferredHolder<RecipeType<IndustrialFurnaceRecipe>> INDUSTRIAL_FURNACE_RECIPE_TYPE = register(
+        "industrial_furnace"
+    );
 
-    private static @NotNull <T extends Recipe<?>> Supplier<RecipeType<T>> register(String id) {
+    private static @NotNull <T extends Recipe<?>> AVPDeferredHolder<RecipeType<T>> register(String id) {
         return Services.REGISTRY.register(
             BuiltInRegistries.RECIPE_TYPE,
             id,

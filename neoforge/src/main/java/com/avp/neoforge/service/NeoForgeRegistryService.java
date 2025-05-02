@@ -1,6 +1,5 @@
 package com.avp.neoforge.service;
 
-import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -16,11 +15,13 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.entity.DecoratedPotPattern;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.neoforged.bus.api.IEventBus;
+import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
 import java.util.function.Supplier;
 
 import com.avp.AVP;
+import com.avp.common.registry.AVPDeferredHolder;
 import com.avp.service.RegistryService;
 
 public class NeoForgeRegistryService implements RegistryService {
@@ -66,44 +67,38 @@ public class NeoForgeRegistryService implements RegistryService {
 
     @Override
     @SuppressWarnings("unchecked")
-    public <T> Supplier<T> register(Registry<? super T> registry, String id, Supplier<? extends T> supplier) {
+    public <T> AVPDeferredHolder<T> register(Registry<? super T> registry, String id, Supplier<? extends T> supplier) {
         if (registry == BuiltInRegistries.BLOCK) {
-            return (Supplier<T>) BLOCK_REGISTRY.register(id, (Supplier<Block>) supplier);
+            return adapt((DeferredHolder<T, T>) BLOCK_REGISTRY.register(id, (Supplier<Block>) supplier));
         } else if (registry == BuiltInRegistries.BLOCK_ENTITY_TYPE) {
-            return (Supplier<T>) BLOCK_ENTITY_TYPE_REGISTRY.register(id, (Supplier<BlockEntityType<?>>) supplier);
+            return adapt((DeferredHolder<T, T>) BLOCK_ENTITY_TYPE_REGISTRY.register(id, (Supplier<BlockEntityType<?>>) supplier));
         } else if (registry == BuiltInRegistries.CREATIVE_MODE_TAB) {
-            return (Supplier<T>) CREATIVE_MODE_TAB_REGISTRY.register(id, (Supplier<CreativeModeTab>) supplier);
+            return adapt((DeferredHolder<T, T>) CREATIVE_MODE_TAB_REGISTRY.register(id, (Supplier<CreativeModeTab>) supplier));
         } else if (registry == BuiltInRegistries.DATA_COMPONENT_TYPE) {
-            return (Supplier<T>) DATA_COMPONENT_TYPE_REGISTRY.register(id, (Supplier<DataComponentType<?>>) supplier);
+            return adapt((DeferredHolder<T, T>) DATA_COMPONENT_TYPE_REGISTRY.register(id, (Supplier<DataComponentType<?>>) supplier));
         } else if (registry == BuiltInRegistries.DECORATED_POT_PATTERN) {
-            return (Supplier<T>) DECORATED_POT_PATTERN_REGISTRY.register(id, (Supplier<DecoratedPotPattern>) supplier);
+            return adapt((DeferredHolder<T, T>) DECORATED_POT_PATTERN_REGISTRY.register(id, (Supplier<DecoratedPotPattern>) supplier));
         } else if (registry == BuiltInRegistries.GAME_EVENT) {
-            return (Supplier<T>) GAME_EVENT_REGISTRY.register(id, (Supplier<GameEvent>) supplier);
+            return adapt((DeferredHolder<T, T>) GAME_EVENT_REGISTRY.register(id, (Supplier<GameEvent>) supplier));
         } else if (registry == BuiltInRegistries.ITEM) {
-            return (Supplier<T>) ITEM_REGISTRY.register(id, (Supplier<Item>) supplier);
+            return adapt((DeferredHolder<T, T>) ITEM_REGISTRY.register(id, (Supplier<Item>) supplier));
         } else if (registry == BuiltInRegistries.MENU) {
-            return (Supplier<T>) MENU_TYPE_REGISTRY.register(id, (Supplier<MenuType<?>>) supplier);
+            return adapt((DeferredHolder<T, T>) MENU_TYPE_REGISTRY.register(id, (Supplier<MenuType<?>>) supplier));
         } else if (registry == BuiltInRegistries.MOB_EFFECT) {
-            throw new IllegalArgumentException("Registering mob effects with 'register' is not supported. Use 'registerHolder', instead.");
+            return adapt((DeferredHolder<T, T>) MOB_EFFECT_REGISTRY.register(id, (Supplier<MobEffect>) supplier));
         } else if (registry == BuiltInRegistries.RECIPE_SERIALIZER) {
-            return (Supplier<T>) RECIPE_SERIALIZER_REGISTRY.register(id, (Supplier<RecipeSerializer<?>>) supplier);
+            return adapt((DeferredHolder<T, T>) RECIPE_SERIALIZER_REGISTRY.register(id, (Supplier<RecipeSerializer<?>>) supplier));
         } else if (registry == BuiltInRegistries.RECIPE_TYPE) {
-            return (Supplier<T>) RECIPE_TYPE_REGISTRY.register(id, (Supplier<RecipeType<?>>) supplier);
+            return adapt((DeferredHolder<T, T>) RECIPE_TYPE_REGISTRY.register(id, (Supplier<RecipeType<?>>) supplier));
         } else if (registry == BuiltInRegistries.SOUND_EVENT) {
-            return (Supplier<T>) SOUND_EVENT_REGISTRY.register(id, (Supplier<SoundEvent>) supplier);
+            return adapt((DeferredHolder<T, T>) SOUND_EVENT_REGISTRY.register(id, (Supplier<SoundEvent>) supplier));
         }
 
         throw new IllegalArgumentException("Received registration attempt for an unhandled registry. Registry: " + registry);
     }
 
-    @Override
-    @SuppressWarnings("unchecked")
-    public <T> Holder<T> registerHolder(Registry<? super T> registry, String id, Supplier<? extends T> supplier) {
-        if (registry == BuiltInRegistries.MOB_EFFECT) {
-            return (Holder<T>) MOB_EFFECT_REGISTRY.register(id, (Supplier<MobEffect>) supplier);
-        }
-
-        throw new IllegalArgumentException("Received holder registration attempt for an unhandled registry. Registry: " + registry);
+    private <T> AVPDeferredHolder<T> adapt(DeferredHolder<T, T> deferredHolder) {
+        return new AVPDeferredHolder<T>(deferredHolder, () -> deferredHolder);
     }
 
     public void initialize(IEventBus modBus) {

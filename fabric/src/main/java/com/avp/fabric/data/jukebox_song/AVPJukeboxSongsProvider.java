@@ -2,7 +2,6 @@ package com.avp.fabric.data.jukebox_song;
 
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricDynamicRegistryProvider;
-import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.JukeboxSong;
@@ -27,7 +26,7 @@ public class AVPJukeboxSongsProvider extends FabricDynamicRegistryProvider {
 
     private JukeboxSong createAlienMusic1Song() {
         return new JukeboxSong(
-            Holder.direct(AVPSoundEvents.JUKEBOX_SOUNDS_ALIEN_MUSIC_1.get()),
+            AVPSoundEvents.JUKEBOX_SOUNDS_ALIEN_MUSIC_1,
             Component.translatable("jukebox_song.avp.alien_music_1"),
             180,
             12
@@ -36,7 +35,7 @@ public class AVPJukeboxSongsProvider extends FabricDynamicRegistryProvider {
 
     private JukeboxSong createPredatorMusic1Song() {
         return new JukeboxSong(
-            Holder.direct(AVPSoundEvents.JUKEBOX_SOUNDS_PREDATOR_MUSIC_1.get()),
+            AVPSoundEvents.JUKEBOX_SOUNDS_PREDATOR_MUSIC_1,
             Component.translatable("jukebox_song.avp.predator_music_1"),
             184,
             12

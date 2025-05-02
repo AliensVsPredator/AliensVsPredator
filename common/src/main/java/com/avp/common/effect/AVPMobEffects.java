@@ -13,7 +13,7 @@ public class AVPMobEffects {
     public static final Holder<MobEffect> RADIATION = register("radiation", RadiationStatusEffect::new);
 
     private static Holder<MobEffect> register(String id, Supplier<MobEffect> mobEffectSupplier) {
-        return Services.REGISTRY.registerHolder(BuiltInRegistries.MOB_EFFECT, id, mobEffectSupplier);
+        return Services.REGISTRY.register(BuiltInRegistries.MOB_EFFECT, id, mobEffectSupplier);
     }
 
     public static void initialize() {}

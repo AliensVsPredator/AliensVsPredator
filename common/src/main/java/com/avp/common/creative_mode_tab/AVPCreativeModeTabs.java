@@ -21,6 +21,7 @@ import com.avp.common.creative_mode_tab.initializer.IngredientsCreativeModeTabIn
 import com.avp.common.creative_mode_tab.initializer.SpawnEggsCreativeModeTabInitializer;
 import com.avp.common.creative_mode_tab.initializer.ToolsAndUtilitiesCreativeModeTabInitializer;
 import com.avp.common.item.TempAVPItems;
+import com.avp.common.registry.AVPDeferredHolder;
 import com.avp.service.Services;
 
 public class AVPCreativeModeTabs {
@@ -39,39 +40,39 @@ public class AVPCreativeModeTabs {
 
     public static final ResourceKey<CreativeModeTab> TOOLS_AND_UTILITIES_KEY = createResourceKey("tools_and_utilities");
 
-    public static final Supplier<CreativeModeTab> BLOCKS = register(
+    public static final AVPDeferredHolder<CreativeModeTab> BLOCKS = register(
         BLOCKS_KEY,
         () -> new ItemStack(TempAVPBlocks.RESIN.get()),
         BlocksCreativeModeTabInitializer.OUTPUT_CONSUMER
     );
 
-    public static final Supplier<CreativeModeTab> COLORED_BLOCKS = register(
+    public static final AVPDeferredHolder<CreativeModeTab> COLORED_BLOCKS = register(
         COLORED_BLOCKS_KEY,
         () -> new ItemStack(TempAVPBlocks.DYE_COLOR_TO_PLASTIC.get(DyeColor.WHITE).get()),
         ColoredBlocksCreativeModeTabInitializer.OUTPUT_CONSUMER
     );
 
     // TODO: Put a chitin helmet item for this tab icon.
-    public static final Supplier<CreativeModeTab> COMBAT = register(
+    public static final AVPDeferredHolder<CreativeModeTab> COMBAT = register(
         COMBAT_KEY,
         () -> new ItemStack(Items.EGG),
         CombatCreativeModeTabInitializer.OUTPUT_CONSUMER
     );
 
-    public static final Supplier<CreativeModeTab> INGREDIENTS = register(
+    public static final AVPDeferredHolder<CreativeModeTab> INGREDIENTS = register(
         INGREDIENTS_KEY,
         () -> new ItemStack(TempAVPItems.PLATED_CHITIN.get()),
         IngredientsCreativeModeTabInitializer.OUTPUT_CONSUMER
     );
 
-    public static final Supplier<CreativeModeTab> SPAWN_EGGS = register(
+    public static final AVPDeferredHolder<CreativeModeTab> SPAWN_EGGS = register(
         SPAWN_EGGS_KEY,
         // TODO: Put a ovamorph spawn egg item for this tab icon.
         () -> new ItemStack(Items.EGG),
         SpawnEggsCreativeModeTabInitializer.OUTPUT_CONSUMER
     );
 
-    public static final Supplier<CreativeModeTab> TOOLS_AND_UTILITIES = register(
+    public static final AVPDeferredHolder<CreativeModeTab> TOOLS_AND_UTILITIES = register(
         TOOLS_AND_UTILITIES_KEY,
         () -> new ItemStack(TempAVPItems.CANISTER.get()),
         ToolsAndUtilitiesCreativeModeTabInitializer.OUTPUT_CONSUMER
@@ -84,7 +85,7 @@ public class AVPCreativeModeTabs {
         );
     }
 
-    public static Supplier<CreativeModeTab> register(
+    public static AVPDeferredHolder<CreativeModeTab> register(
         ResourceKey<CreativeModeTab> resourceKey,
         Supplier<ItemStack> iconSupplier,
         Consumer<CreativeModeTab.Output> outputConsumer
