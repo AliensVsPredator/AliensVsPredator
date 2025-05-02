@@ -1,4 +1,4 @@
-package com.avp.fabric.common.block.resin;
+package com.avp.common.block.resin;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;

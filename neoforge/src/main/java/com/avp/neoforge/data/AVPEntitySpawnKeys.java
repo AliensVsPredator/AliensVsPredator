@@ -1,9 +1,10 @@
 package com.avp.neoforge.data;
 
-import com.avp.AVPResources;
 import net.minecraft.resources.ResourceKey;
 import net.neoforged.neoforge.common.world.BiomeModifier;
 import net.neoforged.neoforge.registries.NeoForgeRegistries;
+
+import com.avp.AVPResources;
 
 public class AVPEntitySpawnKeys {
 

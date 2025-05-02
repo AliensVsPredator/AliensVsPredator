@@ -10,8 +10,8 @@ import net.minecraft.world.level.gameevent.PositionSource;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 
+import com.avp.common.block.entity.resin_node.ResinSpreader;
 import com.avp.common.level.gameevent.AVPGameEvents;
-import com.avp.fabric.common.block.entity.resin_node.ResinSpreader;
 import com.avp.fabric.common.util.resin.ResinProducer;
 
 public class ResinSpreadListener implements GameEventListener {

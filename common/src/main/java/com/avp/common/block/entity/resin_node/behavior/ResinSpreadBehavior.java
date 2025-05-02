@@ -1,4 +1,4 @@
-package com.avp.fabric.common.block.entity.resin_node.behavior;
+package com.avp.common.block.entity.resin_node.behavior;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -10,10 +10,8 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
 
-import com.avp.fabric.common.block.entity.resin_node.ChargeCursor;
-import com.avp.fabric.common.block.entity.resin_node.ResinSpreader;
-import com.avp.fabric.common.block.resin.ResinVeinRegrowUtil;
-import com.avp.fabric.common.util.AlienVariantUtil;
+import com.avp.common.block.entity.resin_node.ChargeCursor;
+import com.avp.common.block.entity.resin_node.ResinSpreader;
 
 public class ResinSpreadBehavior implements SpreadBehavior {
 
@@ -30,23 +28,24 @@ public class ResinSpreadBehavior implements SpreadBehavior {
         @Nullable Collection<Direction> facings,
         boolean bl
     ) {
+        // FIXME:
         var nodeBlock = levelAccessor.getBlockState(nodePos).getBlock();
-        var resinBlock = AlienVariantUtil.getResinVeinFor(nodeBlock);
-
-        if (facings == null) {
-            var spreader = resinBlock.getSameSpaceSpreader();
-            return spreader.spreadAll(levelAccessor.getBlockState(blockPos), levelAccessor, blockPos, bl) > 0L;
-        } else if (!facings.isEmpty()) {
-            return isAirOrWater(blockState) && ResinVeinRegrowUtil.regrow(
-                resinBlock.defaultBlockState(),
-                levelAccessor,
-                blockPos,
-                blockState,
-                facings
-            );
-        } else {
-            return SpreadBehavior.super.attemptSpreadVein(nodePos, levelAccessor, blockPos, blockState, facings, bl);
-        }
+        // var resinBlock = AlienVariantUtil.getResinVeinFor(nodeBlock);
+        //
+        // if (facings == null) {
+        // var spreader = resinBlock.getSameSpaceSpreader();
+        // return spreader.spreadAll(levelAccessor.getBlockState(blockPos), levelAccessor, blockPos, bl) > 0L;
+        // } else if (!facings.isEmpty()) {
+        // return isAirOrWater(blockState) && ResinVeinRegrowUtil.regrow(
+        // resinBlock.defaultBlockState(),
+        // levelAccessor,
+        // blockPos,
+        // blockState,
+        // facings
+        // );
+        // } else {
+        return SpreadBehavior.super.attemptSpreadVein(nodePos, levelAccessor, blockPos, blockState, facings, bl);
+        // }
     }
 
     @Override

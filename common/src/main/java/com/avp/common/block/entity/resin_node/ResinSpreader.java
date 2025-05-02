@@ -1,4 +1,4 @@
-package com.avp.fabric.common.block.entity.resin_node;
+package com.avp.common.block.entity.resin_node;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.mojang.logging.LogUtils;

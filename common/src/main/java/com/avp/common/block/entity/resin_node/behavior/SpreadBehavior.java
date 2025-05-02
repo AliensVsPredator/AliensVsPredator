@@ -1,4 +1,4 @@
-package com.avp.fabric.common.block.entity.resin_node.behavior;
+package com.avp.common.block.entity.resin_node.behavior;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -11,8 +11,8 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Collection;
 
 import com.avp.common.block.TempAVPBlocks;
-import com.avp.fabric.common.block.entity.resin_node.ChargeCursor;
-import com.avp.fabric.common.block.entity.resin_node.ResinSpreader;
+import com.avp.common.block.entity.resin_node.ChargeCursor;
+import com.avp.common.block.entity.resin_node.ResinSpreader;
 
 public interface SpreadBehavior {
 

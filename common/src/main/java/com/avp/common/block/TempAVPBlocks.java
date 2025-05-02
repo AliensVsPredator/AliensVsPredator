@@ -29,7 +29,12 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
+import com.avp.common.block.resin.IrradiatedResinBlock;
+import com.avp.common.block.resin.IrradiatedResinNodeBlock;
+import com.avp.common.block.resin.IrradiatedResinVeinBlock;
+import com.avp.common.block.resin.IrradiatedResinWebBlock;
 import com.avp.common.block.resin.ResinBlock;
+import com.avp.common.block.resin.ResinVeinBlock;
 import com.avp.common.block.resin.ResinWebBlock;
 import com.avp.common.registry.AVPDeferredHolder;
 import com.avp.service.Services;
@@ -49,11 +54,10 @@ public class TempAVPBlocks {
         () -> new ResinNodeBlock(BlockProperties.RESIN.build())
     );
 
-    // FIXME: Make ResinVeinBlock type.
     // FIXME: Fix properties.
     public static final AVPDeferredHolder<Block> ABERRANT_RESIN_VEIN = register(
         "aberrant_resin_vein",
-        () -> new Block(BlockProperties.NETHER_RESIN_VEIN.build())
+        () -> new ResinVeinBlock(BlockProperties.NETHER_RESIN_VEIN.build())
     );
 
     // FIXME: Fix properties.
@@ -323,29 +327,25 @@ public class TempAVPBlocks {
         () -> new StairBlock(INDUSTRIAL_GLASS.get().defaultBlockState(), BlockProperties.INDUSTRIAL_GLASS.build())
     );
 
-    // FIXME: Make IrradiatedResinBlock type.
     public static final AVPDeferredHolder<Block> IRRADIATED_RESIN = register(
         "irradiated_resin",
-        () -> new Block(BlockProperties.NETHER_RESIN.build())
+        () -> new IrradiatedResinBlock(BlockProperties.NETHER_RESIN.build())
     );
 
     // FIXME: Fix properties.
-    // FIXME: Make IrradiatedResinNodeBlock type.
     public static final AVPDeferredHolder<Block> IRRADIATED_RESIN_NODE = register(
         "irradiated_resin_node",
-        () -> new Block(BlockProperties.RESIN.build())
+        () -> new IrradiatedResinNodeBlock(BlockProperties.RESIN.build())
     );
 
-    // FIXME: Make IrradiatedResinVeinBlock type.
     public static final AVPDeferredHolder<Block> IRRADIATED_RESIN_VEIN = register(
         "irradiated_resin_vein",
-        () -> new Block(BlockProperties.NETHER_RESIN_VEIN.build())
+        () -> new IrradiatedResinVeinBlock(BlockProperties.NETHER_RESIN_VEIN.build())
     );
 
-    // FIXME: Make IrradiatedResinWebBlock type.
     public static final AVPDeferredHolder<Block> IRRADIATED_RESIN_WEB = register(
         "irradiated_resin_web",
-        () -> new Block(BlockProperties.NETHER_RESIN_WEB.build())
+        () -> new IrradiatedResinWebBlock(BlockProperties.NETHER_RESIN_WEB.build())
     );
 
     public static final AVPDeferredHolder<Block> LEAD_BLOCK = register("lead_block", BlockProperties.LEAD);
@@ -378,10 +378,9 @@ public class TempAVPBlocks {
         () -> new ResinNodeBlock(BlockProperties.RESIN.build())
     );
 
-    // FIXME: Make ResinVeinBlock type.
     public static final AVPDeferredHolder<Block> NETHER_RESIN_VEIN = register(
         "nether_resin_vein",
-        () -> new Block(BlockProperties.NETHER_RESIN_VEIN.build())
+        () -> new ResinVeinBlock(BlockProperties.NETHER_RESIN_VEIN.build())
     );
 
     public static final AVPDeferredHolder<Block> NETHER_RESIN_WEB = register(
@@ -413,7 +412,6 @@ public class TempAVPBlocks {
 
     public static final AVPDeferredHolder<Block> RESIN_BRICKS = register("resin_bricks", BlockProperties.BRASS);
 
-    // FIXME: Make ResinNodeBlock type.
     public static final AVPDeferredHolder<Block> RESIN_NODE = register(
         "resin_node",
         () -> new ResinNodeBlock(BlockProperties.RESIN.build())
@@ -425,8 +423,10 @@ public class TempAVPBlocks {
 
     public static final AVPDeferredHolder<Block> RESIN_SMOOTH = register("resin_smooth", BlockProperties.BRASS);
 
-    // FIXME: Make ResinVeinBlock type.
-    public static final AVPDeferredHolder<Block> RESIN_VEIN = register("resin_vein", () -> new Block(BlockProperties.RESIN_VEIN.build()));
+    public static final AVPDeferredHolder<Block> RESIN_VEIN = register(
+        "resin_vein",
+        () -> new ResinVeinBlock(BlockProperties.RESIN_VEIN.build())
+    );
 
     public static final AVPDeferredHolder<Block> RESIN_WEB = register(
         "resin_web",

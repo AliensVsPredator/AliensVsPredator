@@ -13,8 +13,8 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Map;
 
 import com.avp.common.block.TempAVPBlocks;
+import com.avp.common.block.resin.ResinVeinBlock;
 import com.avp.common.item.TempAVPItems;
-import com.avp.fabric.common.block.resin.ResinVeinBlock;
 import com.avp.fabric.common.entity.acid.Acid;
 import com.avp.fabric.common.entity.living.alien.Alien;
 import com.avp.fabric.common.entity.living.alien.xenomorph.queen.Queen;

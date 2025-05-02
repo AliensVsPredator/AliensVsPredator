@@ -1,4 +1,4 @@
-package com.avp.fabric.common.block.resin;
+package com.avp.common.block.resin;
 
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
@@ -20,10 +20,10 @@ import net.minecraft.world.level.material.Fluids;
 import org.jetbrains.annotations.NotNull;
 
 import com.avp.common.block.TempAVPBlocks;
+import com.avp.common.block.entity.resin_node.ChargeCursor;
+import com.avp.common.block.entity.resin_node.ResinSpreader;
+import com.avp.common.block.entity.resin_node.behavior.SpreadBehavior;
 import com.avp.common.sound.AVPSoundEvents;
-import com.avp.fabric.common.block.entity.resin_node.ChargeCursor;
-import com.avp.fabric.common.block.entity.resin_node.ResinSpreader;
-import com.avp.fabric.common.block.entity.resin_node.behavior.SpreadBehavior;
 
 public class ResinVeinBlock extends MultifaceBlock implements SpreadBehavior {
 

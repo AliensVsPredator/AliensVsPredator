@@ -1,4 +1,4 @@
-package com.avp.fabric.common.block.resin;
+package com.avp.common.block.resin;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -7,14 +7,13 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 
-import com.avp.common.block.resin.ResinBlock;
 import com.avp.common.effect.AVPMobEffects;
 import com.avp.common.effect.RadiationStatusEffect;
 import com.avp.common.util.TempAVPPredicates;
 
-public class IrradiatedResinBlock extends ResinBlock {
+public class IrradiatedResinVeinBlock extends ResinVeinBlock {
 
-    public IrradiatedResinBlock(Properties properties) {
+    public IrradiatedResinVeinBlock(Properties properties) {
         super(properties);
     }
 

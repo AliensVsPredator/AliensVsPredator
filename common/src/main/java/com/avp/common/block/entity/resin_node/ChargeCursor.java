@@ -1,4 +1,4 @@
-package com.avp.fabric.common.block.entity.resin_node;
+package com.avp.common.block.entity.resin_node;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
@@ -17,8 +17,8 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Optional;
 import java.util.Set;
 
+import com.avp.common.block.entity.resin_node.behavior.SpreadBehavior;
 import com.avp.common.sound.AVPSoundEvents;
-import com.avp.fabric.common.block.entity.resin_node.behavior.SpreadBehavior;
 
 public class ChargeCursor {
 

@@ -1,4 +1,4 @@
-package com.avp.fabric.common.block.entity.resin_node;
+package com.avp.common.block.entity.resin_node;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.Util;
@@ -13,8 +13,8 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-import com.avp.fabric.common.block.entity.resin_node.behavior.ResinSpreadBehavior;
-import com.avp.fabric.common.block.entity.resin_node.behavior.SpreadBehavior;
+import com.avp.common.block.entity.resin_node.behavior.ResinSpreadBehavior;
+import com.avp.common.block.entity.resin_node.behavior.SpreadBehavior;
 
 public class ChargeCursorUtil {
 
