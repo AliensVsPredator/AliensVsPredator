@@ -64,6 +64,9 @@ public class TempAVPBlocks {
     public static final Supplier<Block> ASH_BLOCK = register("ash_block", () -> new AshBlock(BlockProperties.ASH_BLOCK.build()));
 
     // FIXME: Change this to new RadiatedBlock once RadiatedBlock is migrated.
+    public static final Supplier<Block> AUTUNITE_BLOCK = register("autunite_block", BlockProperties.AUTUNITE_ORE);
+
+    // FIXME: Change this to new RadiatedBlock once RadiatedBlock is migrated.
     public static final Supplier<Block> AUTUNITE_ORE = register("autunite_ore", () -> new Block(BlockProperties.AUTUNITE_ORE.build()));
 
     public static final Supplier<Block> BAUXITE_ORE = register("bauxite_ore", BlockProperties.BAUXITE_ORE);
@@ -644,6 +647,9 @@ public class TempAVPBlocks {
         "titanium_tread_stairs",
         () -> new StairBlock(TITANIUM_TREAD.get().defaultBlockState(), BlockProperties.TITANIUM.build())
     );
+
+    // FIXME: Change this to new RadiatedBlock once RadiatedBlock is migrated.
+    public static final Supplier<Block> TRINITITE_BLOCK = register("trinitite_block", BlockProperties.TRINITITE);
 
     // FIXME: Change this to new RadiatedBlock once RadiatedBlock is migrated.
     public static final Supplier<Block> URANIUM_BLOCK = register("uranium_block", BlockProperties.URANIUM);

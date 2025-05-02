@@ -339,7 +339,7 @@ public class AVPBlockTagProvider extends FabricTagProvider.BlockTagProvider {
                 TempAVPBlocks.ABERRANT_RESIN_NODE.get(),
                 TempAVPBlocks.ALUMINUM_BLOCK.get(),
                 AVPBlocks.AMMO_CHEST,
-                AVPBlocks.AUTUNITE_BLOCK,
+                TempAVPBlocks.AUTUNITE_BLOCK.get(),
                 TempAVPBlocks.AUTUNITE_ORE.get(),
                 TempAVPBlocks.BAUXITE_ORE.get(),
                 TempAVPBlocks.BRASS_BLOCK.get(),
@@ -372,7 +372,7 @@ public class AVPBlockTagProvider extends FabricTagProvider.BlockTagProvider {
                 TempAVPBlocks.RESIN_SMOOTH.get(),
                 AVPBlocks.RESONATOR_BLOCK,
                 AVPBlocks.SENTRY_TURRET,
-                AVPBlocks.TRINITITE_BLOCK,
+                TempAVPBlocks.TRINITITE_BLOCK.get(),
                 AVPBlocks.TRIP_MINE_BLOCK,
                 TempAVPBlocks.URANIUM_BLOCK.get(),
                 TempAVPBlocks.ZINC_BLOCK.get(),
@@ -413,7 +413,7 @@ public class AVPBlockTagProvider extends FabricTagProvider.BlockTagProvider {
                 AVPBlocks.REDSTONE_GENERATOR,
                 AVPBlocks.RESONATOR_BLOCK,
                 AVPBlocks.SENTRY_TURRET,
-                AVPBlocks.TRINITITE_BLOCK,
+                TempAVPBlocks.TRINITITE_BLOCK.get(),
                 AVPBlocks.TRIP_MINE_BLOCK,
                 TempAVPBlocks.URANIUM_BLOCK.get()
             );

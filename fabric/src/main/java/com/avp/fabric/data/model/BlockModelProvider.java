@@ -169,8 +169,8 @@ public class BlockModelProvider extends FabricModelProvider {
 
         generators.createTrivialCube(TempAVPBlocks.ROYAL_JELLY_BLOCK.get());
         generators.createTrivialCube(TempAVPBlocks.ALUMINUM_BLOCK.get());
-        generators.createTrivialCube(AVPBlocks.TRINITITE_BLOCK);
-        generators.createTrivialCube(AVPBlocks.AUTUNITE_BLOCK);
+        generators.createTrivialCube(TempAVPBlocks.TRINITITE_BLOCK.get());
+        generators.createTrivialCube(TempAVPBlocks.AUTUNITE_BLOCK.get());
         generators.createTrivialCube(TempAVPBlocks.AUTUNITE_ORE.get());
         generators.createTrivialCube(TempAVPBlocks.BAUXITE_ORE.get());
         generators.createTrivialCube(TempAVPBlocks.BRASS_BLOCK.get());

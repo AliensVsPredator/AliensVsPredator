@@ -1,5 +1,6 @@
 package com.avp.neoforge.service;
 
+import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -42,10 +43,20 @@ public class NeoForgeRegistryService implements RegistryService {
         } else if (registry == BuiltInRegistries.MENU) {
             return (Supplier<T>) MENU_TYPE_REGISTRY.register(id, (Supplier<MenuType<?>>) supplier);
         } else if (registry == BuiltInRegistries.MOB_EFFECT) {
-            return (Supplier<T>) MOB_EFFECT_REGISTRY.register(id, (Supplier<MobEffect>) supplier);
+            throw new IllegalArgumentException("Registering mob effects with 'register' is not supported. Use 'registerHolder', instead.");
         }
 
         throw new IllegalArgumentException("Received registration attempt for an unhandled registry. Registry: " + registry);
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public <T> Holder<T> registerHolder(Registry<? super T> registry, String id, Supplier<? extends T> supplier) {
+        if (registry == BuiltInRegistries.MOB_EFFECT) {
+            return (Holder<T>) MOB_EFFECT_REGISTRY.register(id, (Supplier<MobEffect>) supplier);
+        }
+
+        throw new IllegalArgumentException("Received holder registration attempt for an unhandled registry. Registry: " + registry);
     }
 
     public void initialize(IEventBus modBus) {
@@ -53,5 +64,6 @@ public class NeoForgeRegistryService implements RegistryService {
         DATA_COMPONENT_TYPE_REGISTRY.register(modBus);
         ITEM_REGISTRY.register(modBus);
         MENU_TYPE_REGISTRY.register(modBus);
+        MOB_EFFECT_REGISTRY.register(modBus);
     }
 }

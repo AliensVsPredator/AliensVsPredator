@@ -44,7 +44,7 @@ public class RadiationStatusEffect extends MobEffect {
                     AVPEntityTypeTags.RADIATION_RESISTANT
                 )
         ) {
-            livingEntity.removeEffect(AVPEffects.RADIATION_HOLDER.get());
+            livingEntity.removeEffect(AVPMobEffects.RADIATION);
             return false;
         }
 
@@ -69,7 +69,7 @@ public class RadiationStatusEffect extends MobEffect {
         if (currentDuration >= threshold && amplifier < 2) {
             EFFECT_TRACKER.put(livingEntity, 0);
             livingEntity.addEffect(
-                new MobEffectInstance(AVPEffects.RADIATION_HOLDER.get(), RadiationStatusEffect.EFFECT_DURATION_IN_TICKS, amplifier + 1)
+                new MobEffectInstance(AVPMobEffects.RADIATION, RadiationStatusEffect.EFFECT_DURATION_IN_TICKS, amplifier + 1)
             );
         } else {
             EFFECT_TRACKER.put(livingEntity, currentDuration + 1);

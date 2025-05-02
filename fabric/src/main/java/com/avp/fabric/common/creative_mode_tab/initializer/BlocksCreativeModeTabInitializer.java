@@ -21,14 +21,14 @@ public class BlocksCreativeModeTabInitializer {
             CreativeModeTabUtil.accept(entries, TempAVPBlocks.SILICA_GRAVEL);
             CreativeModeTabUtil.accept(entries, TempAVPBlocks.DEEPSLATE_TITANIUM_ORE.get());
             CreativeModeTabUtil.accept(entries, TempAVPBlocks.ZINC_ORE.get());
-            CreativeModeTabUtil.accept(entries, AVPBlocks.AUTUNITE_BLOCK);
+            CreativeModeTabUtil.accept(entries, TempAVPBlocks.AUTUNITE_BLOCK);
             CreativeModeTabUtil.accept(entries, TempAVPBlocks.RAW_BAUXITE_BLOCK);
             CreativeModeTabUtil.accept(entries, TempAVPBlocks.RAW_GALENA_BLOCK);
             CreativeModeTabUtil.accept(entries, TempAVPBlocks.RAW_MONAZITE_BLOCK);
             CreativeModeTabUtil.accept(entries, TempAVPBlocks.RAW_SILICA_BLOCK);
             CreativeModeTabUtil.accept(entries, TempAVPBlocks.RAW_TITANIUM_BLOCK);
             CreativeModeTabUtil.accept(entries, TempAVPBlocks.RAW_ZINC_BLOCK);
-            CreativeModeTabUtil.accept(entries, AVPBlocks.TRINITITE_BLOCK);
+            CreativeModeTabUtil.accept(entries, TempAVPBlocks.TRINITITE_BLOCK);
 
             // Unnatural blocks (Metals, machines, etc.)
             // Aluminum

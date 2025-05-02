@@ -119,7 +119,7 @@ public class AVPClient implements ClientModInitializer {
         BlockRenderLayerMap.INSTANCE.putBlock(TempAVPBlocks.TITANIUM_DOOR.get(), RenderType.cutout());
         BlockRenderLayerMap.INSTANCE.putBlock(TempAVPBlocks.FERROALUMINUM_TRAP_DOOR.get(), RenderType.cutout());
         BlockRenderLayerMap.INSTANCE.putBlock(TempAVPBlocks.ROYAL_JELLY_BLOCK.get(), RenderType.translucent());
-        BlockRenderLayerMap.INSTANCE.putBlock(AVPBlocks.TRINITITE_BLOCK, RenderType.translucent());
+        BlockRenderLayerMap.INSTANCE.putBlock(TempAVPBlocks.TRINITITE_BLOCK.get(), RenderType.translucent());
         BlockRenderLayerMap.INSTANCE.putBlock(TempAVPBlocks.FERROALUMINUM_GRATE_SLAB.get(), RenderType.cutout());
         BlockRenderLayerMap.INSTANCE.putBlock(TempAVPBlocks.FERROALUMINUM_GRATE_STAIRS.get(), RenderType.cutout());
         BlockRenderLayerMap.INSTANCE.putBlock(TempAVPBlocks.STEEL_GRATE_SLAB.get(), RenderType.cutout());

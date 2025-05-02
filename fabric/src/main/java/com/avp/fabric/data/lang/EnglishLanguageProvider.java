@@ -43,9 +43,9 @@ public class EnglishLanguageProvider extends FabricLanguageProvider {
         addBlock(builder, TempAVPBlocks.ASH_BLOCK, "Ash Block");
         addBlock(builder, AVPBlocks.NUKE_BLOCK, "Nuke Block");
         addBlock(builder, TempAVPBlocks.ROYAL_JELLY_BLOCK, "Royal Jelly Block");
-        addBlock(builder, AVPBlocks.TRINITITE_BLOCK, "Block of Trinitite");
+        addBlock(builder, TempAVPBlocks.TRINITITE_BLOCK, "Block of Trinitite");
         addBlock(builder, TempAVPBlocks.ALUMINUM_BLOCK, "Block of Aluminum");
-        addBlock(builder, AVPBlocks.AUTUNITE_BLOCK, "Autunite Block");
+        addBlock(builder, TempAVPBlocks.AUTUNITE_BLOCK, "Autunite Block");
         addBlock(builder, TempAVPBlocks.AUTUNITE_ORE, "Autunite Ore");
         addBlock(builder, TempAVPBlocks.BAUXITE_ORE, "Bauxite Ore");
         addBlock(builder, TempAVPBlocks.BRASS_BLOCK, "Block of Brass");

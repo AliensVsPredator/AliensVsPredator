@@ -12,7 +12,7 @@ import org.slf4j.LoggerFactory;
 import com.avp.common.block.TempAVPBlocks;
 import com.avp.common.component.AVPDataComponents;
 import com.avp.common.config.AVPConfig;
-import com.avp.common.effect.AVPEffects;
+import com.avp.common.effect.AVPMobEffects;
 import com.avp.common.item.TempAVPBlockItems;
 import com.avp.common.item.TempAVPItems;
 import com.avp.common.menu.AVPMenuTypes;
@@ -36,7 +36,7 @@ public class AVP {
         TempAVPBlockItems.initialize();
         AVPDataComponents.initialize();
         AVPMenuTypes.initialize();
-        AVPEffects.initialize();
+        AVPMobEffects.initialize();
     }
 
     /**

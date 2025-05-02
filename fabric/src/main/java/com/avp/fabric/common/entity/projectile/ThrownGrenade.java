@@ -12,7 +12,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
-import com.avp.common.effect.AVPEffects;
+import com.avp.common.effect.AVPMobEffects;
 import com.avp.common.effect.RadiationStatusEffect;
 import com.avp.fabric.common.entity.type.AVPEntityTypes;
 import com.avp.fabric.common.item.AVPItems;
@@ -104,7 +104,7 @@ public class ThrownGrenade extends BouncingItemProjectile {
         );
         areaEffectCloudEntity.setParticle(ParticleTypes.ASH);
         areaEffectCloudEntity.addEffect(
-            new MobEffectInstance(AVPEffects.RADIATION_HOLDER.get(), RadiationStatusEffect.EFFECT_DURATION_IN_TICKS, 0)
+            new MobEffectInstance(AVPMobEffects.RADIATION, RadiationStatusEffect.EFFECT_DURATION_IN_TICKS, 0)
         );
 
         level.addFreshEntity(areaEffectCloudEntity);

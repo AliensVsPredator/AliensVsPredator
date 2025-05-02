@@ -9,7 +9,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import com.avp.common.effect.AVPEffects;
+import com.avp.common.effect.AVPMobEffects;
 import com.avp.common.item.AVPItemTags;
 
 @Mixin(Item.class)
@@ -22,8 +22,8 @@ public class MixinItem_RemoveRads {
         LivingEntity livingEntity,
         CallbackInfoReturnable<ItemStack> cir
     ) {
-        if (stack.is(AVPItemTags.RADIATION_CURE_ITEMS) && livingEntity.hasEffect(AVPEffects.RADIATION_HOLDER.get())) {
-            livingEntity.removeEffect(AVPEffects.RADIATION_HOLDER.get());
+        if (stack.is(AVPItemTags.RADIATION_CURE_ITEMS) && livingEntity.hasEffect(AVPMobEffects.RADIATION)) {
+            livingEntity.removeEffect(AVPMobEffects.RADIATION);
         }
     }
 

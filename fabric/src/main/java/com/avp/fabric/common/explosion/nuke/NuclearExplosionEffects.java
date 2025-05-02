@@ -78,7 +78,7 @@ public class NuclearExplosionEffects {
                     var rand2 = level.random.nextInt(100);
 
                     if (rand2 < 66) {
-                        transformedBlock = AVPBlocks.TRINITITE_BLOCK;
+                        transformedBlock = TempAVPBlocks.TRINITITE_BLOCK.get();
                     } else {
                         transformedBlock = Blocks.MAGMA_BLOCK;
                     }

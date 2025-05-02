@@ -1,5 +1,6 @@
-package com.avp.fabric.mixin;
+package com.avp.mixin;
 
+import net.minecraft.core.Holder;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -11,10 +12,10 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import com.avp.common.effect.AVPEffects;
+import com.avp.common.effect.AVPMobEffects;
 import com.avp.common.effect.RadiationStatusEffect;
 import com.avp.common.item.AVPItemTags;
-import com.avp.fabric.common.util.AVPPredicates;
+import com.avp.common.util.TempAVPPredicates;
 
 @Mixin(Item.class)
 public class MixinItem_GiveRads {
@@ -27,7 +28,7 @@ public class MixinItem_GiveRads {
                 // Only run this logic for radiation-emitting items.
                 || !stack.is(AVPItemTags.RADIATION_ITEMS)
                 // Only run this logic if the entity can be irradiated.
-                || !AVPPredicates.canBeIrradiated(entity)
+                || !TempAVPPredicates.canBeIrradiated(entity)
                 // Sanity check + allow compiler to assert entity type to get livingEntity ref access.
                 || !(entity instanceof LivingEntity livingEntity)
         ) {
@@ -35,7 +36,7 @@ public class MixinItem_GiveRads {
         }
 
         // Apply the radiation effect.
-        var mobEffectInstance = new MobEffectInstance(AVPEffects.RADIATION_HOLDER.get(), RadiationStatusEffect.EFFECT_DURATION_IN_TICKS, 0);
+        var mobEffectInstance = new MobEffectInstance(AVPMobEffects.RADIATION, RadiationStatusEffect.EFFECT_DURATION_IN_TICKS, 0);
         livingEntity.addEffect(mobEffectInstance);
     }
 }

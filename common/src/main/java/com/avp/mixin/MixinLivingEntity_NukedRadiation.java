@@ -1,5 +1,6 @@
-package com.avp.fabric.mixin;
+package com.avp.mixin;
 
+import net.minecraft.core.Holder;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -11,10 +12,10 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import com.avp.common.effect.AVPEffects;
+import com.avp.common.effect.AVPMobEffects;
 import com.avp.common.effect.RadiationStatusEffect;
+import com.avp.common.util.TempAVPPredicates;
 import com.avp.common.worldgen.biome.AVPBiomes;
-import com.avp.fabric.common.util.AVPPredicates;
 
 @Mixin(LivingEntity.class)
 public abstract class MixinLivingEntity_NukedRadiation extends Entity {
@@ -27,7 +28,7 @@ public abstract class MixinLivingEntity_NukedRadiation extends Entity {
     public void tick(CallbackInfo callbackInfo) {
         var self = LivingEntity.class.cast(this);
 
-        if (!AVPPredicates.canBeIrradiated(self)) {
+        if (!TempAVPPredicates.canBeIrradiated(self)) {
             return;
         }
 
@@ -37,7 +38,7 @@ public abstract class MixinLivingEntity_NukedRadiation extends Entity {
         }
 
         // Apply radiation effect.
-        self.addEffect(new MobEffectInstance(AVPEffects.RADIATION_HOLDER.get(), RadiationStatusEffect.EFFECT_DURATION_IN_TICKS, 0));
+        self.addEffect(new MobEffectInstance(AVPMobEffects.RADIATION, RadiationStatusEffect.EFFECT_DURATION_IN_TICKS, 0));
     }
 
     @Unique

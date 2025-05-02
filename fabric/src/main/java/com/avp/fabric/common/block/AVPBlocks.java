@@ -39,10 +39,6 @@ public class AVPBlocks {
         "industrial_furnace_block"
     );
 
-    public static final Block TRINITITE_BLOCK = registerRadiatedBlock(BlockProperties.TRINITITE.build(), "trinitite_block");
-
-    public static final Block AUTUNITE_BLOCK = registerRadiatedBlock(BlockProperties.AUTUNITE_ORE.build(), "autunite_block");
-
     public static final Block RAZOR_WIRE = register(new RazorWireBlock(BlockProperties.RAZOR_WIRE.build()), "razor_wire");
 
     // Doors And Trapdoors

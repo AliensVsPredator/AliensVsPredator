@@ -47,6 +47,8 @@ public class TempAVPBlockItems {
 
     public static final Supplier<BlockItem> ASH_BLOCK = register("ash_block", TempAVPBlocks.ASH_BLOCK);
 
+    public static final Supplier<BlockItem> AUTUNITE_BLOCK = register("autunite_block", TempAVPBlocks.AUTUNITE_BLOCK);
+
     public static final Supplier<BlockItem> AUTUNITE_ORE = register("autunite_ore", TempAVPBlocks.AUTUNITE_ORE);
 
     public static final Supplier<BlockItem> BAUXITE_ORE = register("bauxite_ore", TempAVPBlocks.BAUXITE_ORE);
@@ -480,6 +482,8 @@ public class TempAVPBlockItems {
     public static final Supplier<BlockItem> TITANIUM_TREAD_SLAB = register("titanium_tread_slab", TempAVPBlocks.TITANIUM_TREAD_SLAB);
 
     public static final Supplier<BlockItem> TITANIUM_TREAD_STAIRS = register("titanium_tread_stairs", TempAVPBlocks.TITANIUM_TREAD_STAIRS);
+
+    public static final Supplier<BlockItem> TRINITITE_BLOCK = register("trinitite_block", TempAVPBlocks.TRINITITE_BLOCK);
 
     public static final Supplier<BlockItem> URANIUM_BLOCK = register("uranium_block", TempAVPBlocks.URANIUM_BLOCK);
 

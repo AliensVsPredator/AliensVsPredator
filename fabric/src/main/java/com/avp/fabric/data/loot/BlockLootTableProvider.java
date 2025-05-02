@@ -35,12 +35,12 @@ public class BlockLootTableProvider extends FabricBlockLootTableProvider {
         dropSelf(AVPBlocks.TRIP_MINE_BLOCK);
         dropSelf(AVPBlocks.RESONATOR_BLOCK);
         dropSelf(AVPBlocks.SENTRY_TURRET);
-        dropSelf(AVPBlocks.TRINITITE_BLOCK);
+        dropSelf(TempAVPBlocks.TRINITITE_BLOCK.get());
         dropSelf(TempAVPBlocks.ASH_BLOCK.get());
         dropSelf(AVPBlocks.NUKE_BLOCK);
         dropSelf(TempAVPBlocks.ROYAL_JELLY_BLOCK.get());
         dropSelf(TempAVPBlocks.ALUMINUM_BLOCK.get());
-        dropSelf(AVPBlocks.AUTUNITE_BLOCK);
+        dropSelf(TempAVPBlocks.AUTUNITE_BLOCK.get());
         add(TempAVPBlocks.AUTUNITE_ORE.get(), block -> createOreMultiDrop(block, TempAVPItems.AUTUNITE_DUST.get(), 2, 4));
         add(TempAVPBlocks.BAUXITE_ORE.get(), block -> createOreDrop(block, TempAVPItems.RAW_BAUXITE.get()));
         dropSelf(TempAVPBlocks.BRASS_BLOCK.get());

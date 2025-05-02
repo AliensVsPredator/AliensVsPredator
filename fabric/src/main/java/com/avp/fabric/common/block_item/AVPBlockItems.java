@@ -24,11 +24,7 @@ public class AVPBlockItems {
 
     public static final BlockItem SENTRY_TURRET = register("sentry_turret", SentryTurretBlockItem::new);
 
-    public static final BlockItem TRINITITE_BLOCK = register(AVPBlocks.TRINITITE_BLOCK);
-
     public static final BlockItem NUKE_BLOCK = register(AVPBlocks.NUKE_BLOCK);
-
-    public static final BlockItem AUTUNITE_BLOCK = register(AVPBlocks.AUTUNITE_BLOCK);
 
     public static final BlockItem LEAD_CHEST = register("lead_chest", LeadChestBlockItem::new);
 

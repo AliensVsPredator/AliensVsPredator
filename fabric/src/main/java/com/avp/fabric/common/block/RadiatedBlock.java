@@ -8,9 +8,9 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 
-import com.avp.common.effect.AVPEffects;
+import com.avp.common.effect.AVPMobEffects;
 import com.avp.common.effect.RadiationStatusEffect;
-import com.avp.fabric.common.util.AVPPredicates;
+import com.avp.common.util.TempAVPPredicates;
 
 public class RadiatedBlock extends Block {
 
@@ -20,10 +20,10 @@ public class RadiatedBlock extends Block {
 
     @Override
     public void stepOn(Level level, BlockPos blockPos, BlockState blockState, Entity entity) {
-        if (AVPPredicates.canBeIrradiated(entity) && entity instanceof LivingEntity livingEntity) {
+        if (TempAVPPredicates.canBeIrradiated(entity) && entity instanceof LivingEntity livingEntity) {
             // Apply radiation effect.
             livingEntity.addEffect(
-                new MobEffectInstance(AVPEffects.RADIATION_HOLDER.get(), RadiationStatusEffect.EFFECT_DURATION_IN_TICKS, 0)
+                new MobEffectInstance(AVPMobEffects.RADIATION, RadiationStatusEffect.EFFECT_DURATION_IN_TICKS, 0)
             );
         }
 

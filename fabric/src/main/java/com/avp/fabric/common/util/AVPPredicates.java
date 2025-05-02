@@ -6,7 +6,6 @@ import net.minecraft.world.entity.LivingEntity;
 
 import java.util.function.Predicate;
 
-import com.avp.common.effect.AVPEffects;
 import com.avp.common.entity.AVPEntityTypeTags;
 import com.avp.common.item.AVPItemTags;
 import com.avp.common.util.TempAVPPredicates;
@@ -16,32 +15,6 @@ import com.avp.fabric.common.entity.living.yautja.Yautja;
 
 // TODO: Merge this with TempAVPPredicates in common.
 public class AVPPredicates {
-
-    public static boolean canBeIrradiated(Entity entity) {
-        if (
-            // If this is not a living entity...
-            !(entity instanceof LivingEntity livingEntity)
-                // Or if the entity is radiation-resistant...
-                || livingEntity.getType().is(AVPEntityTypeTags.RADIATION_RESISTANT)
-                // Or if the living entity is immortal...
-                || TempAVPPredicates.IS_IMMORTAL.test(livingEntity)
-                // Or if the living entity already has the radiation effect...
-                || livingEntity.hasEffect(AVPEffects.RADIATION_HOLDER.get())
-                // Or if the entity is no longer alive...
-                || !livingEntity.isAlive()
-        ) {
-            // Then we don't want to or can't reasonably apply the radiation effect. Abort.
-            return false;
-        }
-
-        var hasFullRadiationResistantArmor = TempAVPPredicates.hasFullArmorSetMatching(
-            livingEntity,
-            itemStack -> itemStack.is(AVPItemTags.RADIATION_RESISTANT_ARMOR)
-        );
-
-        // Entity should not have a full set of radiation-resistant armor.
-        return !hasFullRadiationResistantArmor;
-    }
 
     public static boolean hasEmbryo(Entity target) {
         return target instanceof Host host && host.parasiteType() != null;
