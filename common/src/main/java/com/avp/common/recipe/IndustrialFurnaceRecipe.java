@@ -11,7 +11,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.avp.common.item.TempAVPBlockItems;
+import com.avp.common.item.AVPBlockItems;
 
 public class IndustrialFurnaceRecipe extends AbstractCookingRecipe {
 
@@ -55,10 +55,10 @@ public class IndustrialFurnaceRecipe extends AbstractCookingRecipe {
         registerMeltingRecipe(Items.MUD, Items.CLAY);
         registerMeltingRecipe(Items.CLAY, Items.TERRACOTTA);
         // TODO: Remove these, these break the balance of smelting. We can have these be smelted in electrical furnaces.
-        registerMeltingRecipe(TempAVPBlockItems.RESIN.get(), TempAVPBlockItems.DYE_COLOR_TO_PLASTIC.get(DyeColor.GREEN).get());
-        registerMeltingRecipe(TempAVPBlockItems.NETHER_RESIN.get(), TempAVPBlockItems.DYE_COLOR_TO_PLASTIC.get(DyeColor.GREEN).get());
-        registerMeltingRecipe(TempAVPBlockItems.IRRADIATED_RESIN.get(), TempAVPBlockItems.DYE_COLOR_TO_PLASTIC.get(DyeColor.GREEN).get());
-        registerMeltingRecipe(TempAVPBlockItems.ABERRANT_RESIN.get(), TempAVPBlockItems.DYE_COLOR_TO_PLASTIC.get(DyeColor.GREEN).get());
+        registerMeltingRecipe(AVPBlockItems.RESIN.get(), AVPBlockItems.DYE_COLOR_TO_PLASTIC.get(DyeColor.GREEN).get());
+        registerMeltingRecipe(AVPBlockItems.NETHER_RESIN.get(), AVPBlockItems.DYE_COLOR_TO_PLASTIC.get(DyeColor.GREEN).get());
+        registerMeltingRecipe(AVPBlockItems.IRRADIATED_RESIN.get(), AVPBlockItems.DYE_COLOR_TO_PLASTIC.get(DyeColor.GREEN).get());
+        registerMeltingRecipe(AVPBlockItems.ABERRANT_RESIN.get(), AVPBlockItems.DYE_COLOR_TO_PLASTIC.get(DyeColor.GREEN).get());
     }
 
     private static void registerMeltingRecipe(Item input, Item output) {

@@ -38,7 +38,7 @@ public class AshBlock extends SnowLayerBlock {
                         if (
                             serverLevel.getBlockState(targetPos).isAir() &&
                                 serverLevel.getBlockState(targetPosBelow).isSolidRender(serverLevel, targetPosBelow)
-                                && !serverLevel.getBlockState(targetPosBelow).is(TempAVPBlocks.ASH_BLOCK.get())
+                                && !serverLevel.getBlockState(targetPosBelow).is(AVPBlocks.ASH_BLOCK.get())
                         ) {
                             serverLevel.setBlockAndUpdate(
                                 targetPos,

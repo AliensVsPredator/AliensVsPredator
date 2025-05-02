@@ -26,26 +26,26 @@ import java.util.function.Consumer;
 
 import com.avp.AVP;
 import com.avp.AVPResources;
-import com.avp.common.block.TempAVPBlocks;
-import com.avp.common.entity.type.TempAVPEntityTypes;
+import com.avp.common.block.AVPBlocks;
+import com.avp.common.entity.type.AVPEntityTypes;
 import com.avp.common.item.AVPArmorItems;
 import com.avp.common.item.TempAVPItems;
 
 public class AdvancementProvider extends FabricAdvancementProvider {
 
     private static final List<EntityType<?>> ALIENS_TO_KILL = List.of(
-        TempAVPEntityTypes.CHESTBURSTER.get(),
-        TempAVPEntityTypes.FACEHUGGER.get(),
-        TempAVPEntityTypes.DRONE.get(),
-        TempAVPEntityTypes.OVAMORPH.get(),
-        TempAVPEntityTypes.PRAETORIAN.get(),
-        TempAVPEntityTypes.QUEEN.get(),
-        TempAVPEntityTypes.WARRIOR.get()
+        AVPEntityTypes.CHESTBURSTER.get(),
+        AVPEntityTypes.FACEHUGGER.get(),
+        AVPEntityTypes.DRONE.get(),
+        AVPEntityTypes.OVAMORPH.get(),
+        AVPEntityTypes.PRAETORIAN.get(),
+        AVPEntityTypes.QUEEN.get(),
+        AVPEntityTypes.WARRIOR.get()
     );
 
     private static final List<EntityType<?>> ROYAL_ALIENS_TO_KILL = List.of(
-        TempAVPEntityTypes.PRAETORIAN.get(),
-        TempAVPEntityTypes.QUEEN.get()
+        AVPEntityTypes.PRAETORIAN.get(),
+        AVPEntityTypes.QUEEN.get()
     );
 
     public AdvancementProvider(FabricDataOutput output, CompletableFuture<HolderLookup.Provider> registryLookup) {
@@ -56,7 +56,7 @@ public class AdvancementProvider extends FabricAdvancementProvider {
     public void generateAdvancement(HolderLookup.Provider registryLookup, Consumer<AdvancementHolder> consumer) {
         var root = Advancement.Builder.advancement()
             .display(
-                TempAVPBlocks.RESIN.get(),
+                AVPBlocks.RESIN.get(),
                 Component.translatable("advancements.aliens.root.title"),
                 Component.translatable("advancements.aliens.root.description"),
                 AVPResources.location("textures/gui/advancements/backgrounds/resin.png"),
@@ -88,7 +88,7 @@ public class AdvancementProvider extends FabricAdvancementProvider {
                 "shear_an_ovamorph",
                 PlayerInteractTrigger.TriggerInstance.itemUsedOnEntity(
                     ItemPredicate.Builder.item().of(Items.SHEARS),
-                    Optional.of(EntityPredicate.wrap(EntityPredicate.Builder.entity().of(TempAVPEntityTypes.OVAMORPH.get())))
+                    Optional.of(EntityPredicate.wrap(EntityPredicate.Builder.entity().of(AVPEntityTypes.OVAMORPH.get())))
                 )
             )
             .save(consumer, AVP.MOD_ID + ":aliens/shear_an_ovamorph");

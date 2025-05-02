@@ -3,6 +3,7 @@ package com.avp.neoforge.service;
 import com.bvanseg.just.functional.tuple.Tuple2;
 import net.minecraft.core.Registry;
 import net.minecraft.core.component.DataComponentType;
+import net.minecraft.core.particles.ParticleType;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.effect.MobEffect;
@@ -70,6 +71,11 @@ public class NeoForgeRegistryService implements RegistryService {
 
     private final DeferredRegister<MobEffect> mobEffectRegistry = DeferredRegister.create(BuiltInRegistries.MOB_EFFECT, AVP.MOD_ID);
 
+    private final DeferredRegister<ParticleType<?>> particleTypeRegistry = DeferredRegister.create(
+        BuiltInRegistries.PARTICLE_TYPE,
+        AVP.MOD_ID
+    );
+
     private final DeferredRegister<RecipeSerializer<?>> recipeSerializerRegistry = DeferredRegister.create(
         BuiltInRegistries.RECIPE_SERIALIZER,
         AVP.MOD_ID
@@ -111,6 +117,8 @@ public class NeoForgeRegistryService implements RegistryService {
             return adapt((DeferredHolder<T, T>) menuTypeRegistry.register(id, (Supplier<MenuType<?>>) supplier));
         } else if (registry == BuiltInRegistries.MOB_EFFECT) {
             return adapt((DeferredHolder<T, T>) mobEffectRegistry.register(id, (Supplier<MobEffect>) supplier));
+        } else if (registry == BuiltInRegistries.PARTICLE_TYPE) {
+            return adapt((DeferredHolder<T, T>) particleTypeRegistry.register(id, (Supplier<ParticleType<?>>) supplier));
         } else if (registry == BuiltInRegistries.RECIPE_SERIALIZER) {
             return adapt((DeferredHolder<T, T>) recipeSerializerRegistry.register(id, (Supplier<RecipeSerializer<?>>) supplier));
         } else if (registry == BuiltInRegistries.RECIPE_TYPE) {
@@ -146,6 +154,7 @@ public class NeoForgeRegistryService implements RegistryService {
         itemRegistry.register(modBus);
         menuTypeRegistry.register(modBus);
         mobEffectRegistry.register(modBus);
+        particleTypeRegistry.register(modBus);
         recipeSerializerRegistry.register(modBus);
         recipeTypeRegistry.register(modBus);
         soundEventRegistry.register(modBus);

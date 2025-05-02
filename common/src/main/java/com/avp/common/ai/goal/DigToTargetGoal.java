@@ -19,7 +19,7 @@ import java.util.Collections;
 import java.util.List;
 
 import com.avp.common.block.AVPBlockTags;
-import com.avp.common.block.TempAVPBlocks;
+import com.avp.common.block.AVPBlocks;
 import com.avp.server.BlockBreakProgressManager;
 
 public class DigToTargetGoal extends Goal {
@@ -200,7 +200,7 @@ public class DigToTargetGoal extends Goal {
                         state.hasBlockEntity()
                             || state.getDestroySpeed(mob.level(), rayTraceResult.getBlockPos()) == -1
                             // TODO: Make this configurable
-                            || state.getBlock().defaultDestroyTime() >= TempAVPBlocks.STEEL_BLOCK.get().defaultDestroyTime()
+                            || state.getBlock().defaultDestroyTime() >= AVPBlocks.STEEL_BLOCK.get().defaultDestroyTime()
                             // TODO: Make this configurable
                             || state.is(AVPBlockTags.XENOMORPH_IMMUNE)
                     ) {

@@ -11,7 +11,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.function.Supplier;
 
 import com.avp.common.block.AVPBlockTags;
-import com.avp.common.block.TempAVPBlocks;
+import com.avp.common.block.AVPBlocks;
 import com.avp.fabric.data.compatibility.common.CommonConstants;
 import com.avp.fabric.data.compatibility.gigeresque.GigeresqueConstants;
 
@@ -26,8 +26,8 @@ public class AVPBlockTagProvider extends FabricTagProvider.BlockTagProvider {
         var concreteTagBuilder = getOrCreateTagBuilder(AVPBlockTags.CONCRETE);
 
         // TODO: Use a stream concat here.
-        TempAVPBlocks.DYE_COLOR_TO_CONCRETE_SLAB.values().stream().map(Supplier::get).forEach(concreteTagBuilder::add);
-        TempAVPBlocks.DYE_COLOR_TO_CONCRETE_STAIRS.values().stream().map(Supplier::get).forEach(concreteTagBuilder::add);
+        AVPBlocks.DYE_COLOR_TO_CONCRETE_SLAB.values().stream().map(Supplier::get).forEach(concreteTagBuilder::add);
+        AVPBlocks.DYE_COLOR_TO_CONCRETE_STAIRS.values().stream().map(Supplier::get).forEach(concreteTagBuilder::add);
 
         getOrCreateTagBuilder(AVPBlockTags.SHOULD_NOT_BE_DESTROYED)
             .addOptionalTag(BlockTags.FEATURES_CANNOT_REPLACE)
@@ -49,137 +49,137 @@ public class AVPBlockTagProvider extends FabricTagProvider.BlockTagProvider {
 
         getOrCreateTagBuilder(AVPBlockTags.FERROALUMINUM)
             .add(
-                TempAVPBlocks.CHISELED_FERROALUMINUM.get(),
-                TempAVPBlocks.CUT_FERROALUMINUM.get(),
-                TempAVPBlocks.CUT_FERROALUMINUM_SLAB.get(),
-                TempAVPBlocks.CUT_FERROALUMINUM_STAIRS.get(),
-                TempAVPBlocks.FERROALUMINUM_BLOCK.get(),
-                TempAVPBlocks.FERROALUMINUM_BUTTON.get(),
-                TempAVPBlocks.FERROALUMINUM_CHAIN_FENCE.get(),
-                TempAVPBlocks.FERROALUMINUM_COLUMN.get(),
-                TempAVPBlocks.FERROALUMINUM_DOOR.get(),
-                TempAVPBlocks.FERROALUMINUM_FASTENED_SIDING.get(),
-                TempAVPBlocks.FERROALUMINUM_FASTENED_SIDING_SLAB.get(),
-                TempAVPBlocks.FERROALUMINUM_FASTENED_SIDING_STAIRS.get(),
-                TempAVPBlocks.FERROALUMINUM_FASTENED_STANDING.get(),
-                TempAVPBlocks.FERROALUMINUM_FASTENED_STANDING_SLAB.get(),
-                TempAVPBlocks.FERROALUMINUM_FASTENED_STANDING_STAIRS.get(),
-                TempAVPBlocks.FERROALUMINUM_GRATE.get(),
-                TempAVPBlocks.FERROALUMINUM_GRATE_SLAB.get(),
-                TempAVPBlocks.FERROALUMINUM_GRATE_STAIRS.get(),
-                TempAVPBlocks.FERROALUMINUM_PLATING.get(),
-                TempAVPBlocks.FERROALUMINUM_PLATING_SLAB.get(),
-                TempAVPBlocks.FERROALUMINUM_PLATING_STAIRS.get(),
-                TempAVPBlocks.FERROALUMINUM_PRESSURE_PLATE.get(),
-                TempAVPBlocks.FERROALUMINUM_SIDING.get(),
-                TempAVPBlocks.FERROALUMINUM_SIDING_SLAB.get(),
-                TempAVPBlocks.FERROALUMINUM_SIDING_STAIRS.get(),
-                TempAVPBlocks.FERROALUMINUM_SLAB.get(),
-                TempAVPBlocks.FERROALUMINUM_STAIRS.get(),
-                TempAVPBlocks.FERROALUMINUM_STANDING.get(),
-                TempAVPBlocks.FERROALUMINUM_STANDING_SLAB.get(),
-                TempAVPBlocks.FERROALUMINUM_STANDING_STAIRS.get(),
-                TempAVPBlocks.FERROALUMINUM_TRAP_DOOR.get(),
-                TempAVPBlocks.FERROALUMINUM_TREAD.get(),
-                TempAVPBlocks.FERROALUMINUM_TREAD_SLAB.get(),
-                TempAVPBlocks.FERROALUMINUM_TREAD_STAIRS.get()
+                AVPBlocks.CHISELED_FERROALUMINUM.get(),
+                AVPBlocks.CUT_FERROALUMINUM.get(),
+                AVPBlocks.CUT_FERROALUMINUM_SLAB.get(),
+                AVPBlocks.CUT_FERROALUMINUM_STAIRS.get(),
+                AVPBlocks.FERROALUMINUM_BLOCK.get(),
+                AVPBlocks.FERROALUMINUM_BUTTON.get(),
+                AVPBlocks.FERROALUMINUM_CHAIN_FENCE.get(),
+                AVPBlocks.FERROALUMINUM_COLUMN.get(),
+                AVPBlocks.FERROALUMINUM_DOOR.get(),
+                AVPBlocks.FERROALUMINUM_FASTENED_SIDING.get(),
+                AVPBlocks.FERROALUMINUM_FASTENED_SIDING_SLAB.get(),
+                AVPBlocks.FERROALUMINUM_FASTENED_SIDING_STAIRS.get(),
+                AVPBlocks.FERROALUMINUM_FASTENED_STANDING.get(),
+                AVPBlocks.FERROALUMINUM_FASTENED_STANDING_SLAB.get(),
+                AVPBlocks.FERROALUMINUM_FASTENED_STANDING_STAIRS.get(),
+                AVPBlocks.FERROALUMINUM_GRATE.get(),
+                AVPBlocks.FERROALUMINUM_GRATE_SLAB.get(),
+                AVPBlocks.FERROALUMINUM_GRATE_STAIRS.get(),
+                AVPBlocks.FERROALUMINUM_PLATING.get(),
+                AVPBlocks.FERROALUMINUM_PLATING_SLAB.get(),
+                AVPBlocks.FERROALUMINUM_PLATING_STAIRS.get(),
+                AVPBlocks.FERROALUMINUM_PRESSURE_PLATE.get(),
+                AVPBlocks.FERROALUMINUM_SIDING.get(),
+                AVPBlocks.FERROALUMINUM_SIDING_SLAB.get(),
+                AVPBlocks.FERROALUMINUM_SIDING_STAIRS.get(),
+                AVPBlocks.FERROALUMINUM_SLAB.get(),
+                AVPBlocks.FERROALUMINUM_STAIRS.get(),
+                AVPBlocks.FERROALUMINUM_STANDING.get(),
+                AVPBlocks.FERROALUMINUM_STANDING_SLAB.get(),
+                AVPBlocks.FERROALUMINUM_STANDING_STAIRS.get(),
+                AVPBlocks.FERROALUMINUM_TRAP_DOOR.get(),
+                AVPBlocks.FERROALUMINUM_TREAD.get(),
+                AVPBlocks.FERROALUMINUM_TREAD_SLAB.get(),
+                AVPBlocks.FERROALUMINUM_TREAD_STAIRS.get()
             );
 
         var industrialConcreteTagBuilder = getOrCreateTagBuilder(AVPBlockTags.INDUSTRIAL_CONCRETE);
 
         // TODO: Use stream concat here.
-        TempAVPBlocks.DYE_COLOR_TO_INDUSTRIAL_CONCRETE.values().stream().map(Supplier::get).forEach(industrialConcreteTagBuilder::add);
-        TempAVPBlocks.DYE_COLOR_TO_INDUSTRIAL_CONCRETE_SLAB.values().stream().map(Supplier::get).forEach(industrialConcreteTagBuilder::add);
-        TempAVPBlocks.DYE_COLOR_TO_INDUSTRIAL_CONCRETE_STAIRS.values()
+        AVPBlocks.DYE_COLOR_TO_INDUSTRIAL_CONCRETE.values().stream().map(Supplier::get).forEach(industrialConcreteTagBuilder::add);
+        AVPBlocks.DYE_COLOR_TO_INDUSTRIAL_CONCRETE_SLAB.values().stream().map(Supplier::get).forEach(industrialConcreteTagBuilder::add);
+        AVPBlocks.DYE_COLOR_TO_INDUSTRIAL_CONCRETE_STAIRS.values()
             .stream()
             .map(Supplier::get)
             .forEach(industrialConcreteTagBuilder::add);
-        TempAVPBlocks.DYE_COLOR_TO_INDUSTRIAL_CONCRETE_WALL.values().stream().map(Supplier::get).forEach(industrialConcreteTagBuilder::add);
+        AVPBlocks.DYE_COLOR_TO_INDUSTRIAL_CONCRETE_WALL.values().stream().map(Supplier::get).forEach(industrialConcreteTagBuilder::add);
 
         var industrialGlassBlockTagBuilder = getOrCreateTagBuilder(AVPBlockTags.INDUSTRIAL_GLASS_BLOCK);
 
-        industrialGlassBlockTagBuilder.add(TempAVPBlocks.INDUSTRIAL_GLASS.get());
-        TempAVPBlocks.DYE_COLOR_TO_INDUSTRIAL_GLASS.values().stream().map(Supplier::get).forEach(industrialGlassBlockTagBuilder::add);
+        industrialGlassBlockTagBuilder.add(AVPBlocks.INDUSTRIAL_GLASS.get());
+        AVPBlocks.DYE_COLOR_TO_INDUSTRIAL_GLASS.values().stream().map(Supplier::get).forEach(industrialGlassBlockTagBuilder::add);
 
         var industrialGlassPaneTagBuilder = getOrCreateTagBuilder(AVPBlockTags.INDUSTRIAL_GLASS_PANE);
 
-        industrialGlassPaneTagBuilder.add(TempAVPBlocks.INDUSTRIAL_GLASS_PANE.get());
-        TempAVPBlocks.DYE_COLOR_TO_INDUSTRIAL_GLASS_PANE.values().stream().map(Supplier::get).forEach(industrialGlassPaneTagBuilder::add);
+        industrialGlassPaneTagBuilder.add(AVPBlocks.INDUSTRIAL_GLASS_PANE.get());
+        AVPBlocks.DYE_COLOR_TO_INDUSTRIAL_GLASS_PANE.values().stream().map(Supplier::get).forEach(industrialGlassPaneTagBuilder::add);
 
         getOrCreateTagBuilder(AVPBlockTags.INDUSTRIAL_GLASS)
             .addTag(AVPBlockTags.INDUSTRIAL_GLASS_BLOCK)
             .addTag(AVPBlockTags.INDUSTRIAL_GLASS_PANE)
             .add(
-                TempAVPBlocks.INDUSTRIAL_GLASS_DOOR.get(),
-                TempAVPBlocks.INDUSTRIAL_GLASS_SLAB.get(),
-                TempAVPBlocks.INDUSTRIAL_GLASS_STAIRS.get(),
-                TempAVPBlocks.INDUSTRIAL_GLASS_TRAP_DOOR.get()
+                AVPBlocks.INDUSTRIAL_GLASS_DOOR.get(),
+                AVPBlocks.INDUSTRIAL_GLASS_SLAB.get(),
+                AVPBlocks.INDUSTRIAL_GLASS_STAIRS.get(),
+                AVPBlocks.INDUSTRIAL_GLASS_TRAP_DOOR.get()
             );
 
         var paddingTagBuilder = getOrCreateTagBuilder(AVPBlockTags.PADDING);
 
         // TODO: Use stream concat here.
-        TempAVPBlocks.DYE_COLOR_TO_PADDING.values().stream().map(Supplier::get).forEach(paddingTagBuilder::add);
-        TempAVPBlocks.DYE_COLOR_TO_PADDING_SLAB.values().stream().map(Supplier::get).forEach(paddingTagBuilder::add);
-        TempAVPBlocks.DYE_COLOR_TO_PADDING_STAIRS.values().stream().map(Supplier::get).forEach(paddingTagBuilder::add);
+        AVPBlocks.DYE_COLOR_TO_PADDING.values().stream().map(Supplier::get).forEach(paddingTagBuilder::add);
+        AVPBlocks.DYE_COLOR_TO_PADDING_SLAB.values().stream().map(Supplier::get).forEach(paddingTagBuilder::add);
+        AVPBlocks.DYE_COLOR_TO_PADDING_STAIRS.values().stream().map(Supplier::get).forEach(paddingTagBuilder::add);
 
-        TempAVPBlocks.DYE_COLOR_TO_PANEL_PADDING.values().stream().map(Supplier::get).forEach(paddingTagBuilder::add);
-        TempAVPBlocks.DYE_COLOR_TO_PANEL_PADDING_SLAB.values().stream().map(Supplier::get).forEach(paddingTagBuilder::add);
-        TempAVPBlocks.DYE_COLOR_TO_PANEL_PADDING_STAIRS.values().stream().map(Supplier::get).forEach(paddingTagBuilder::add);
+        AVPBlocks.DYE_COLOR_TO_PANEL_PADDING.values().stream().map(Supplier::get).forEach(paddingTagBuilder::add);
+        AVPBlocks.DYE_COLOR_TO_PANEL_PADDING_SLAB.values().stream().map(Supplier::get).forEach(paddingTagBuilder::add);
+        AVPBlocks.DYE_COLOR_TO_PANEL_PADDING_STAIRS.values().stream().map(Supplier::get).forEach(paddingTagBuilder::add);
 
-        TempAVPBlocks.DYE_COLOR_TO_PIPE_PADDING.values().stream().map(Supplier::get).forEach(paddingTagBuilder::add);
-        TempAVPBlocks.DYE_COLOR_TO_PIPE_PADDING_SLAB.values().stream().map(Supplier::get).forEach(paddingTagBuilder::add);
-        TempAVPBlocks.DYE_COLOR_TO_PIPE_PADDING_STAIRS.values().stream().map(Supplier::get).forEach(paddingTagBuilder::add);
+        AVPBlocks.DYE_COLOR_TO_PIPE_PADDING.values().stream().map(Supplier::get).forEach(paddingTagBuilder::add);
+        AVPBlocks.DYE_COLOR_TO_PIPE_PADDING_SLAB.values().stream().map(Supplier::get).forEach(paddingTagBuilder::add);
+        AVPBlocks.DYE_COLOR_TO_PIPE_PADDING_STAIRS.values().stream().map(Supplier::get).forEach(paddingTagBuilder::add);
 
         var plasticTagBuilder = getOrCreateTagBuilder(AVPBlockTags.PLASTIC);
 
         // TODO: Use stream concat here.
-        TempAVPBlocks.DYE_COLOR_TO_CUT_PLASTIC.values().stream().map(Supplier::get).forEach(plasticTagBuilder::add);
-        TempAVPBlocks.DYE_COLOR_TO_CUT_PLASTIC_SLAB.values().stream().map(Supplier::get).forEach(plasticTagBuilder::add);
-        TempAVPBlocks.DYE_COLOR_TO_CUT_PLASTIC_STAIRS.values().stream().map(Supplier::get).forEach(plasticTagBuilder::add);
+        AVPBlocks.DYE_COLOR_TO_CUT_PLASTIC.values().stream().map(Supplier::get).forEach(plasticTagBuilder::add);
+        AVPBlocks.DYE_COLOR_TO_CUT_PLASTIC_SLAB.values().stream().map(Supplier::get).forEach(plasticTagBuilder::add);
+        AVPBlocks.DYE_COLOR_TO_CUT_PLASTIC_STAIRS.values().stream().map(Supplier::get).forEach(plasticTagBuilder::add);
 
-        TempAVPBlocks.DYE_COLOR_TO_PLASTIC.values().stream().map(Supplier::get).forEach(plasticTagBuilder::add);
-        TempAVPBlocks.DYE_COLOR_TO_PLASTIC_SLAB.values().stream().map(Supplier::get).forEach(plasticTagBuilder::add);
-        TempAVPBlocks.DYE_COLOR_TO_PLASTIC_STAIRS.values().stream().map(Supplier::get).forEach(plasticTagBuilder::add);
+        AVPBlocks.DYE_COLOR_TO_PLASTIC.values().stream().map(Supplier::get).forEach(plasticTagBuilder::add);
+        AVPBlocks.DYE_COLOR_TO_PLASTIC_SLAB.values().stream().map(Supplier::get).forEach(plasticTagBuilder::add);
+        AVPBlocks.DYE_COLOR_TO_PLASTIC_STAIRS.values().stream().map(Supplier::get).forEach(plasticTagBuilder::add);
 
         getOrCreateTagBuilder(AVPBlockTags.IRRADIATED_RESIN)
             .add(
-                TempAVPBlocks.IRRADIATED_RESIN.get(),
-                TempAVPBlocks.IRRADIATED_RESIN_NODE.get(),
-                TempAVPBlocks.IRRADIATED_RESIN_VEIN.get(),
-                TempAVPBlocks.IRRADIATED_RESIN_WEB.get()
+                AVPBlocks.IRRADIATED_RESIN.get(),
+                AVPBlocks.IRRADIATED_RESIN_NODE.get(),
+                AVPBlocks.IRRADIATED_RESIN_VEIN.get(),
+                AVPBlocks.IRRADIATED_RESIN_WEB.get()
             );
 
         getOrCreateTagBuilder(AVPBlockTags.ABERRANT_RESIN)
             .add(
-                TempAVPBlocks.ABERRANT_RESIN.get(),
-                TempAVPBlocks.ABERRANT_RESIN_NODE.get(),
-                TempAVPBlocks.ABERRANT_RESIN_VEIN.get(),
-                TempAVPBlocks.ABERRANT_RESIN_WEB.get()
+                AVPBlocks.ABERRANT_RESIN.get(),
+                AVPBlocks.ABERRANT_RESIN_NODE.get(),
+                AVPBlocks.ABERRANT_RESIN_VEIN.get(),
+                AVPBlocks.ABERRANT_RESIN_WEB.get()
             );
 
         getOrCreateTagBuilder(AVPBlockTags.NETHER_RESIN)
             .add(
-                TempAVPBlocks.NETHER_RESIN.get(),
-                TempAVPBlocks.NETHER_RESIN_NODE.get(),
-                TempAVPBlocks.NETHER_RESIN_VEIN.get(),
-                TempAVPBlocks.NETHER_RESIN_WEB.get()
+                AVPBlocks.NETHER_RESIN.get(),
+                AVPBlocks.NETHER_RESIN_NODE.get(),
+                AVPBlocks.NETHER_RESIN_VEIN.get(),
+                AVPBlocks.NETHER_RESIN_WEB.get()
             );
 
         getOrCreateTagBuilder(AVPBlockTags.NORMAL_RESIN)
             .add(
-                TempAVPBlocks.RESIN.get(),
-                TempAVPBlocks.RESIN_NODE.get(),
-                TempAVPBlocks.RESIN_VEIN.get(),
-                TempAVPBlocks.RESIN_WEB.get()
+                AVPBlocks.RESIN.get(),
+                AVPBlocks.RESIN_NODE.get(),
+                AVPBlocks.RESIN_VEIN.get(),
+                AVPBlocks.RESIN_WEB.get()
             );
 
         getOrCreateTagBuilder(AVPBlockTags.CRAFTED_RESIN)
             .add(
-                TempAVPBlocks.RESIN_BRICKS.get(),
-                TempAVPBlocks.RESIN_O.get(),
-                TempAVPBlocks.RESIN_RIBBED.get(),
-                TempAVPBlocks.RESIN_SMOOTH.get()
+                AVPBlocks.RESIN_BRICKS.get(),
+                AVPBlocks.RESIN_O.get(),
+                AVPBlocks.RESIN_RIBBED.get(),
+                AVPBlocks.RESIN_SMOOTH.get()
             );
 
         getOrCreateTagBuilder(AVPBlockTags.RESIN)
@@ -191,97 +191,97 @@ public class AVPBlockTagProvider extends FabricTagProvider.BlockTagProvider {
 
         getOrCreateTagBuilder(AVPBlockTags.RESIN_VEINS)
             .add(
-                TempAVPBlocks.ABERRANT_RESIN_VEIN.get(),
-                TempAVPBlocks.IRRADIATED_RESIN_VEIN.get(),
-                TempAVPBlocks.NETHER_RESIN_VEIN.get(),
-                TempAVPBlocks.RESIN_VEIN.get()
+                AVPBlocks.ABERRANT_RESIN_VEIN.get(),
+                AVPBlocks.IRRADIATED_RESIN_VEIN.get(),
+                AVPBlocks.NETHER_RESIN_VEIN.get(),
+                AVPBlocks.RESIN_VEIN.get()
             );
 
         getOrCreateTagBuilder(AVPBlockTags.RESIN_WEBS)
             .add(
-                TempAVPBlocks.ABERRANT_RESIN_WEB.get(),
-                TempAVPBlocks.IRRADIATED_RESIN_WEB.get(),
-                TempAVPBlocks.NETHER_RESIN_WEB.get(),
-                TempAVPBlocks.RESIN_WEB.get()
+                AVPBlocks.ABERRANT_RESIN_WEB.get(),
+                AVPBlocks.IRRADIATED_RESIN_WEB.get(),
+                AVPBlocks.NETHER_RESIN_WEB.get(),
+                AVPBlocks.RESIN_WEB.get()
             );
 
         getOrCreateTagBuilder(AVPBlockTags.STEEL)
             .add(
-                TempAVPBlocks.CHISELED_STEEL.get(),
-                TempAVPBlocks.CUT_STEEL.get(),
-                TempAVPBlocks.CUT_STEEL_SLAB.get(),
-                TempAVPBlocks.CUT_STEEL_STAIRS.get(),
-                TempAVPBlocks.STEEL_BARS.get(),
-                TempAVPBlocks.STEEL_BLOCK.get(),
-                TempAVPBlocks.STEEL_BUTTON.get(),
-                TempAVPBlocks.STEEL_CHAIN_FENCE.get(),
-                TempAVPBlocks.STEEL_COLUMN.get(),
-                TempAVPBlocks.STEEL_DOOR.get(),
-                TempAVPBlocks.STEEL_FASTENED_SIDING.get(),
-                TempAVPBlocks.STEEL_FASTENED_SIDING_SLAB.get(),
-                TempAVPBlocks.STEEL_FASTENED_SIDING_STAIRS.get(),
-                TempAVPBlocks.STEEL_FASTENED_STANDING.get(),
-                TempAVPBlocks.STEEL_FASTENED_STANDING_SLAB.get(),
-                TempAVPBlocks.STEEL_FASTENED_STANDING_STAIRS.get(),
-                TempAVPBlocks.STEEL_GRATE.get(),
-                TempAVPBlocks.STEEL_GRATE_SLAB.get(),
-                TempAVPBlocks.STEEL_GRATE_STAIRS.get(),
-                TempAVPBlocks.STEEL_PLATING.get(),
-                TempAVPBlocks.STEEL_PLATING_SLAB.get(),
-                TempAVPBlocks.STEEL_PLATING_STAIRS.get(),
-                TempAVPBlocks.STEEL_PRESSURE_PLATE.get(),
-                TempAVPBlocks.STEEL_SIDING.get(),
-                TempAVPBlocks.STEEL_SIDING_SLAB.get(),
-                TempAVPBlocks.STEEL_SIDING_STAIRS.get(),
-                TempAVPBlocks.STEEL_SLAB.get(),
-                TempAVPBlocks.STEEL_STAIRS.get(),
-                TempAVPBlocks.STEEL_STANDING.get(),
-                TempAVPBlocks.STEEL_STANDING_SLAB.get(),
-                TempAVPBlocks.STEEL_STANDING_STAIRS.get(),
-                TempAVPBlocks.STEEL_TRAP_DOOR.get(),
-                TempAVPBlocks.STEEL_TREAD.get(),
-                TempAVPBlocks.STEEL_TREAD_SLAB.get(),
-                TempAVPBlocks.STEEL_TREAD_STAIRS.get()
+                AVPBlocks.CHISELED_STEEL.get(),
+                AVPBlocks.CUT_STEEL.get(),
+                AVPBlocks.CUT_STEEL_SLAB.get(),
+                AVPBlocks.CUT_STEEL_STAIRS.get(),
+                AVPBlocks.STEEL_BARS.get(),
+                AVPBlocks.STEEL_BLOCK.get(),
+                AVPBlocks.STEEL_BUTTON.get(),
+                AVPBlocks.STEEL_CHAIN_FENCE.get(),
+                AVPBlocks.STEEL_COLUMN.get(),
+                AVPBlocks.STEEL_DOOR.get(),
+                AVPBlocks.STEEL_FASTENED_SIDING.get(),
+                AVPBlocks.STEEL_FASTENED_SIDING_SLAB.get(),
+                AVPBlocks.STEEL_FASTENED_SIDING_STAIRS.get(),
+                AVPBlocks.STEEL_FASTENED_STANDING.get(),
+                AVPBlocks.STEEL_FASTENED_STANDING_SLAB.get(),
+                AVPBlocks.STEEL_FASTENED_STANDING_STAIRS.get(),
+                AVPBlocks.STEEL_GRATE.get(),
+                AVPBlocks.STEEL_GRATE_SLAB.get(),
+                AVPBlocks.STEEL_GRATE_STAIRS.get(),
+                AVPBlocks.STEEL_PLATING.get(),
+                AVPBlocks.STEEL_PLATING_SLAB.get(),
+                AVPBlocks.STEEL_PLATING_STAIRS.get(),
+                AVPBlocks.STEEL_PRESSURE_PLATE.get(),
+                AVPBlocks.STEEL_SIDING.get(),
+                AVPBlocks.STEEL_SIDING_SLAB.get(),
+                AVPBlocks.STEEL_SIDING_STAIRS.get(),
+                AVPBlocks.STEEL_SLAB.get(),
+                AVPBlocks.STEEL_STAIRS.get(),
+                AVPBlocks.STEEL_STANDING.get(),
+                AVPBlocks.STEEL_STANDING_SLAB.get(),
+                AVPBlocks.STEEL_STANDING_STAIRS.get(),
+                AVPBlocks.STEEL_TRAP_DOOR.get(),
+                AVPBlocks.STEEL_TREAD.get(),
+                AVPBlocks.STEEL_TREAD_SLAB.get(),
+                AVPBlocks.STEEL_TREAD_STAIRS.get()
             );
 
         getOrCreateTagBuilder(AVPBlockTags.TITANIUM)
             .add(
-                TempAVPBlocks.CHISELED_TITANIUM.get(),
-                TempAVPBlocks.CUT_TITANIUM.get(),
-                TempAVPBlocks.CUT_TITANIUM_SLAB.get(),
-                TempAVPBlocks.CUT_TITANIUM_STAIRS.get(),
-                TempAVPBlocks.DEEPSLATE_TITANIUM_ORE.get(),
-                TempAVPBlocks.RAW_TITANIUM_BLOCK.get(),
-                TempAVPBlocks.TITANIUM_BLOCK.get(),
-                TempAVPBlocks.TITANIUM_BUTTON.get(),
-                TempAVPBlocks.TITANIUM_CHAIN_FENCE.get(),
-                TempAVPBlocks.TITANIUM_COLUMN.get(),
-                TempAVPBlocks.TITANIUM_DOOR.get(),
-                TempAVPBlocks.TITANIUM_FASTENED_SIDING.get(),
-                TempAVPBlocks.TITANIUM_FASTENED_SIDING_SLAB.get(),
-                TempAVPBlocks.TITANIUM_FASTENED_SIDING_STAIRS.get(),
-                TempAVPBlocks.TITANIUM_FASTENED_STANDING.get(),
-                TempAVPBlocks.TITANIUM_FASTENED_STANDING_SLAB.get(),
-                TempAVPBlocks.TITANIUM_FASTENED_STANDING_STAIRS.get(),
-                TempAVPBlocks.TITANIUM_GRATE.get(),
-                TempAVPBlocks.TITANIUM_GRATE_SLAB.get(),
-                TempAVPBlocks.TITANIUM_GRATE_STAIRS.get(),
-                TempAVPBlocks.TITANIUM_PLATING.get(),
-                TempAVPBlocks.TITANIUM_PLATING_SLAB.get(),
-                TempAVPBlocks.TITANIUM_PLATING_STAIRS.get(),
-                TempAVPBlocks.TITANIUM_PRESSURE_PLATE.get(),
-                TempAVPBlocks.TITANIUM_SIDING.get(),
-                TempAVPBlocks.TITANIUM_SIDING_SLAB.get(),
-                TempAVPBlocks.TITANIUM_SIDING_STAIRS.get(),
-                TempAVPBlocks.TITANIUM_SLAB.get(),
-                TempAVPBlocks.TITANIUM_STAIRS.get(),
-                TempAVPBlocks.TITANIUM_STANDING.get(),
-                TempAVPBlocks.TITANIUM_STANDING_SLAB.get(),
-                TempAVPBlocks.TITANIUM_STANDING_STAIRS.get(),
-                TempAVPBlocks.TITANIUM_TRAP_DOOR.get(),
-                TempAVPBlocks.TITANIUM_TREAD.get(),
-                TempAVPBlocks.TITANIUM_TREAD_SLAB.get(),
-                TempAVPBlocks.TITANIUM_TREAD_STAIRS.get()
+                AVPBlocks.CHISELED_TITANIUM.get(),
+                AVPBlocks.CUT_TITANIUM.get(),
+                AVPBlocks.CUT_TITANIUM_SLAB.get(),
+                AVPBlocks.CUT_TITANIUM_STAIRS.get(),
+                AVPBlocks.DEEPSLATE_TITANIUM_ORE.get(),
+                AVPBlocks.RAW_TITANIUM_BLOCK.get(),
+                AVPBlocks.TITANIUM_BLOCK.get(),
+                AVPBlocks.TITANIUM_BUTTON.get(),
+                AVPBlocks.TITANIUM_CHAIN_FENCE.get(),
+                AVPBlocks.TITANIUM_COLUMN.get(),
+                AVPBlocks.TITANIUM_DOOR.get(),
+                AVPBlocks.TITANIUM_FASTENED_SIDING.get(),
+                AVPBlocks.TITANIUM_FASTENED_SIDING_SLAB.get(),
+                AVPBlocks.TITANIUM_FASTENED_SIDING_STAIRS.get(),
+                AVPBlocks.TITANIUM_FASTENED_STANDING.get(),
+                AVPBlocks.TITANIUM_FASTENED_STANDING_SLAB.get(),
+                AVPBlocks.TITANIUM_FASTENED_STANDING_STAIRS.get(),
+                AVPBlocks.TITANIUM_GRATE.get(),
+                AVPBlocks.TITANIUM_GRATE_SLAB.get(),
+                AVPBlocks.TITANIUM_GRATE_STAIRS.get(),
+                AVPBlocks.TITANIUM_PLATING.get(),
+                AVPBlocks.TITANIUM_PLATING_SLAB.get(),
+                AVPBlocks.TITANIUM_PLATING_STAIRS.get(),
+                AVPBlocks.TITANIUM_PRESSURE_PLATE.get(),
+                AVPBlocks.TITANIUM_SIDING.get(),
+                AVPBlocks.TITANIUM_SIDING_SLAB.get(),
+                AVPBlocks.TITANIUM_SIDING_STAIRS.get(),
+                AVPBlocks.TITANIUM_SLAB.get(),
+                AVPBlocks.TITANIUM_STAIRS.get(),
+                AVPBlocks.TITANIUM_STANDING.get(),
+                AVPBlocks.TITANIUM_STANDING_SLAB.get(),
+                AVPBlocks.TITANIUM_STANDING_STAIRS.get(),
+                AVPBlocks.TITANIUM_TRAP_DOOR.get(),
+                AVPBlocks.TITANIUM_TREAD.get(),
+                AVPBlocks.TITANIUM_TREAD_SLAB.get(),
+                AVPBlocks.TITANIUM_TREAD_STAIRS.get()
             );
 
         // Acid-immune blocks
@@ -310,18 +310,18 @@ public class AVPBlockTagProvider extends FabricTagProvider.BlockTagProvider {
 
         getOrCreateTagBuilder(BlockTags.CLIMBABLE)
             .add(
-                TempAVPBlocks.FERROALUMINUM_CHAIN_FENCE.get(),
-                TempAVPBlocks.STEEL_CHAIN_FENCE.get(),
-                TempAVPBlocks.TITANIUM_CHAIN_FENCE.get()
+                AVPBlocks.FERROALUMINUM_CHAIN_FENCE.get(),
+                AVPBlocks.STEEL_CHAIN_FENCE.get(),
+                AVPBlocks.TITANIUM_CHAIN_FENCE.get()
             );
 
         getOrCreateTagBuilder(BlockTags.MINEABLE_WITH_AXE)
             .addTag(AVPBlockTags.RESIN_VEINS)
             .addTag(AVPBlockTags.RESIN_WEBS)
             .add(
-                TempAVPBlocks.ABERRANT_RESIN.get(),
-                TempAVPBlocks.BLUEPRINT_BLOCK.get(),
-                TempAVPBlocks.IRRADIATED_RESIN.get()
+                AVPBlocks.ABERRANT_RESIN.get(),
+                AVPBlocks.BLUEPRINT_BLOCK.get(),
+                AVPBlocks.IRRADIATED_RESIN.get()
             );
 
         getOrCreateTagBuilder(BlockTags.MINEABLE_WITH_PICKAXE)
@@ -334,54 +334,54 @@ public class AVPBlockTagProvider extends FabricTagProvider.BlockTagProvider {
             .addTag(AVPBlockTags.STEEL)
             .addTag(AVPBlockTags.TITANIUM)
             .add(
-                TempAVPBlocks.ABERRANT_RESIN.get(),
-                TempAVPBlocks.ABERRANT_RESIN_NODE.get(),
-                TempAVPBlocks.ALUMINUM_BLOCK.get(),
-                TempAVPBlocks.AMMO_CHEST.get(),
-                TempAVPBlocks.AUTUNITE_BLOCK.get(),
-                TempAVPBlocks.AUTUNITE_ORE.get(),
-                TempAVPBlocks.BAUXITE_ORE.get(),
-                TempAVPBlocks.BRASS_BLOCK.get(),
-                TempAVPBlocks.DEEPSLATE_TITANIUM_ORE.get(),
-                TempAVPBlocks.DEEPSLATE_ZINC_ORE.get(),
-                TempAVPBlocks.DESK_TERMINAL_BLOCK.get(),
-                TempAVPBlocks.GALENA_ORE.get(),
-                TempAVPBlocks.INDUSTRIAL_FURNACE.get(),
-                TempAVPBlocks.IRRADIATED_RESIN.get(),
-                TempAVPBlocks.IRRADIATED_RESIN_NODE.get(),
-                TempAVPBlocks.LEAD_BLOCK.get(),
-                TempAVPBlocks.LEAD_CHEST.get(),
-                TempAVPBlocks.LITHIUM_BLOCK.get(),
-                TempAVPBlocks.LITHIUM_ORE.get(),
-                TempAVPBlocks.MONAZITE_ORE.get(),
-                TempAVPBlocks.NETHER_RESIN.get(),
-                TempAVPBlocks.NETHER_RESIN_NODE.get(),
-                TempAVPBlocks.NUKE_BLOCK.get(),
-                TempAVPBlocks.RAW_BAUXITE_BLOCK.get(),
-                TempAVPBlocks.RAW_GALENA_BLOCK.get(),
-                TempAVPBlocks.RAW_MONAZITE_BLOCK.get(),
-                TempAVPBlocks.RAW_SILICA_BLOCK.get(),
-                TempAVPBlocks.RAW_ZINC_BLOCK.get(),
-                TempAVPBlocks.REDSTONE_GENERATOR.get(),
-                TempAVPBlocks.RESIN.get(),
-                TempAVPBlocks.RESIN_NODE.get(),
-                TempAVPBlocks.RESIN_BRICKS.get(),
-                TempAVPBlocks.RESIN_O.get(),
-                TempAVPBlocks.RESIN_RIBBED.get(),
-                TempAVPBlocks.RESIN_SMOOTH.get(),
-                TempAVPBlocks.RESONATOR_BLOCK.get(),
-                TempAVPBlocks.SENTRY_TURRET.get(),
-                TempAVPBlocks.TRINITITE_BLOCK.get(),
-                TempAVPBlocks.TRIP_MINE_BLOCK.get(),
-                TempAVPBlocks.URANIUM_BLOCK.get(),
-                TempAVPBlocks.ZINC_BLOCK.get(),
-                TempAVPBlocks.ZINC_ORE.get()
+                AVPBlocks.ABERRANT_RESIN.get(),
+                AVPBlocks.ABERRANT_RESIN_NODE.get(),
+                AVPBlocks.ALUMINUM_BLOCK.get(),
+                AVPBlocks.AMMO_CHEST.get(),
+                AVPBlocks.AUTUNITE_BLOCK.get(),
+                AVPBlocks.AUTUNITE_ORE.get(),
+                AVPBlocks.BAUXITE_ORE.get(),
+                AVPBlocks.BRASS_BLOCK.get(),
+                AVPBlocks.DEEPSLATE_TITANIUM_ORE.get(),
+                AVPBlocks.DEEPSLATE_ZINC_ORE.get(),
+                AVPBlocks.DESK_TERMINAL_BLOCK.get(),
+                AVPBlocks.GALENA_ORE.get(),
+                AVPBlocks.INDUSTRIAL_FURNACE.get(),
+                AVPBlocks.IRRADIATED_RESIN.get(),
+                AVPBlocks.IRRADIATED_RESIN_NODE.get(),
+                AVPBlocks.LEAD_BLOCK.get(),
+                AVPBlocks.LEAD_CHEST.get(),
+                AVPBlocks.LITHIUM_BLOCK.get(),
+                AVPBlocks.LITHIUM_ORE.get(),
+                AVPBlocks.MONAZITE_ORE.get(),
+                AVPBlocks.NETHER_RESIN.get(),
+                AVPBlocks.NETHER_RESIN_NODE.get(),
+                AVPBlocks.NUKE_BLOCK.get(),
+                AVPBlocks.RAW_BAUXITE_BLOCK.get(),
+                AVPBlocks.RAW_GALENA_BLOCK.get(),
+                AVPBlocks.RAW_MONAZITE_BLOCK.get(),
+                AVPBlocks.RAW_SILICA_BLOCK.get(),
+                AVPBlocks.RAW_ZINC_BLOCK.get(),
+                AVPBlocks.REDSTONE_GENERATOR.get(),
+                AVPBlocks.RESIN.get(),
+                AVPBlocks.RESIN_NODE.get(),
+                AVPBlocks.RESIN_BRICKS.get(),
+                AVPBlocks.RESIN_O.get(),
+                AVPBlocks.RESIN_RIBBED.get(),
+                AVPBlocks.RESIN_SMOOTH.get(),
+                AVPBlocks.RESONATOR_BLOCK.get(),
+                AVPBlocks.SENTRY_TURRET.get(),
+                AVPBlocks.TRINITITE_BLOCK.get(),
+                AVPBlocks.TRIP_MINE_BLOCK.get(),
+                AVPBlocks.URANIUM_BLOCK.get(),
+                AVPBlocks.ZINC_BLOCK.get(),
+                AVPBlocks.ZINC_ORE.get()
             );
 
         getOrCreateTagBuilder(BlockTags.MINEABLE_WITH_SHOVEL)
             .add(
-                TempAVPBlocks.ASH_BLOCK.get(),
-                TempAVPBlocks.SILICA_GRAVEL.get()
+                AVPBlocks.ASH_BLOCK.get(),
+                AVPBlocks.SILICA_GRAVEL.get()
             );
 
         getOrCreateTagBuilder(BlockTags.NEEDS_STONE_TOOL)
@@ -390,10 +390,10 @@ public class AVPBlockTagProvider extends FabricTagProvider.BlockTagProvider {
             .addTag(AVPBlockTags.PLASTIC)
             .addTag(AVPBlockTags.RESIN)
             .add(
-                TempAVPBlocks.BAUXITE_ORE.get(),
-                TempAVPBlocks.BLUEPRINT_BLOCK.get(),
-                TempAVPBlocks.GALENA_ORE.get(),
-                TempAVPBlocks.RAW_BAUXITE_BLOCK.get()
+                AVPBlocks.BAUXITE_ORE.get(),
+                AVPBlocks.BLUEPRINT_BLOCK.get(),
+                AVPBlocks.GALENA_ORE.get(),
+                AVPBlocks.RAW_BAUXITE_BLOCK.get()
             );
 
         getOrCreateTagBuilder(BlockTags.NEEDS_IRON_TOOL)
@@ -402,163 +402,163 @@ public class AVPBlockTagProvider extends FabricTagProvider.BlockTagProvider {
             .addTag(AVPBlockTags.STEEL)
             .addTag(AVPBlockTags.TITANIUM)
             .add(
-                TempAVPBlocks.AMMO_CHEST.get(),
-                TempAVPBlocks.DEEPSLATE_TITANIUM_ORE.get(),
-                TempAVPBlocks.DESK_TERMINAL_BLOCK.get(),
-                TempAVPBlocks.INDUSTRIAL_FURNACE.get(),
-                TempAVPBlocks.LEAD_CHEST.get(),
-                TempAVPBlocks.NUKE_BLOCK.get(),
-                TempAVPBlocks.RAW_TITANIUM_BLOCK.get(),
-                TempAVPBlocks.REDSTONE_GENERATOR.get(),
-                TempAVPBlocks.RESONATOR_BLOCK.get(),
-                TempAVPBlocks.SENTRY_TURRET.get(),
-                TempAVPBlocks.TRINITITE_BLOCK.get(),
-                TempAVPBlocks.TRIP_MINE_BLOCK.get(),
-                TempAVPBlocks.URANIUM_BLOCK.get()
+                AVPBlocks.AMMO_CHEST.get(),
+                AVPBlocks.DEEPSLATE_TITANIUM_ORE.get(),
+                AVPBlocks.DESK_TERMINAL_BLOCK.get(),
+                AVPBlocks.INDUSTRIAL_FURNACE.get(),
+                AVPBlocks.LEAD_CHEST.get(),
+                AVPBlocks.NUKE_BLOCK.get(),
+                AVPBlocks.RAW_TITANIUM_BLOCK.get(),
+                AVPBlocks.REDSTONE_GENERATOR.get(),
+                AVPBlocks.RESONATOR_BLOCK.get(),
+                AVPBlocks.SENTRY_TURRET.get(),
+                AVPBlocks.TRINITITE_BLOCK.get(),
+                AVPBlocks.TRIP_MINE_BLOCK.get(),
+                AVPBlocks.URANIUM_BLOCK.get()
             );
 
         var slabTagProvider = getOrCreateTagBuilder(BlockTags.SLABS);
 
         slabTagProvider.add(
-            TempAVPBlocks.INDUSTRIAL_GLASS_SLAB.get(),
-            TempAVPBlocks.CUT_FERROALUMINUM_SLAB.get(),
-            TempAVPBlocks.CUT_STEEL_SLAB.get(),
-            TempAVPBlocks.CUT_TITANIUM_SLAB.get(),
-            TempAVPBlocks.FERROALUMINUM_FASTENED_SIDING_SLAB.get(),
-            TempAVPBlocks.FERROALUMINUM_FASTENED_STANDING_SLAB.get(),
-            TempAVPBlocks.FERROALUMINUM_GRATE_SLAB.get(),
-            TempAVPBlocks.FERROALUMINUM_PLATING_SLAB.get(),
-            TempAVPBlocks.FERROALUMINUM_SIDING_SLAB.get(),
-            TempAVPBlocks.FERROALUMINUM_SLAB.get(),
-            TempAVPBlocks.FERROALUMINUM_STANDING_SLAB.get(),
-            TempAVPBlocks.FERROALUMINUM_TREAD_SLAB.get(),
-            TempAVPBlocks.STEEL_FASTENED_SIDING_SLAB.get(),
-            TempAVPBlocks.STEEL_FASTENED_STANDING_SLAB.get(),
-            TempAVPBlocks.STEEL_GRATE_SLAB.get(),
-            TempAVPBlocks.STEEL_PLATING_SLAB.get(),
-            TempAVPBlocks.STEEL_SIDING_SLAB.get(),
-            TempAVPBlocks.STEEL_SLAB.get(),
-            TempAVPBlocks.STEEL_STANDING_SLAB.get(),
-            TempAVPBlocks.STEEL_TREAD_SLAB.get(),
-            TempAVPBlocks.TITANIUM_FASTENED_SIDING_SLAB.get(),
-            TempAVPBlocks.TITANIUM_FASTENED_STANDING_SLAB.get(),
-            TempAVPBlocks.TITANIUM_GRATE_SLAB.get(),
-            TempAVPBlocks.TITANIUM_PLATING_SLAB.get(),
-            TempAVPBlocks.TITANIUM_SIDING_SLAB.get(),
-            TempAVPBlocks.TITANIUM_SLAB.get(),
-            TempAVPBlocks.TITANIUM_STANDING_SLAB.get(),
-            TempAVPBlocks.TITANIUM_TREAD_SLAB.get()
+            AVPBlocks.INDUSTRIAL_GLASS_SLAB.get(),
+            AVPBlocks.CUT_FERROALUMINUM_SLAB.get(),
+            AVPBlocks.CUT_STEEL_SLAB.get(),
+            AVPBlocks.CUT_TITANIUM_SLAB.get(),
+            AVPBlocks.FERROALUMINUM_FASTENED_SIDING_SLAB.get(),
+            AVPBlocks.FERROALUMINUM_FASTENED_STANDING_SLAB.get(),
+            AVPBlocks.FERROALUMINUM_GRATE_SLAB.get(),
+            AVPBlocks.FERROALUMINUM_PLATING_SLAB.get(),
+            AVPBlocks.FERROALUMINUM_SIDING_SLAB.get(),
+            AVPBlocks.FERROALUMINUM_SLAB.get(),
+            AVPBlocks.FERROALUMINUM_STANDING_SLAB.get(),
+            AVPBlocks.FERROALUMINUM_TREAD_SLAB.get(),
+            AVPBlocks.STEEL_FASTENED_SIDING_SLAB.get(),
+            AVPBlocks.STEEL_FASTENED_STANDING_SLAB.get(),
+            AVPBlocks.STEEL_GRATE_SLAB.get(),
+            AVPBlocks.STEEL_PLATING_SLAB.get(),
+            AVPBlocks.STEEL_SIDING_SLAB.get(),
+            AVPBlocks.STEEL_SLAB.get(),
+            AVPBlocks.STEEL_STANDING_SLAB.get(),
+            AVPBlocks.STEEL_TREAD_SLAB.get(),
+            AVPBlocks.TITANIUM_FASTENED_SIDING_SLAB.get(),
+            AVPBlocks.TITANIUM_FASTENED_STANDING_SLAB.get(),
+            AVPBlocks.TITANIUM_GRATE_SLAB.get(),
+            AVPBlocks.TITANIUM_PLATING_SLAB.get(),
+            AVPBlocks.TITANIUM_SIDING_SLAB.get(),
+            AVPBlocks.TITANIUM_SLAB.get(),
+            AVPBlocks.TITANIUM_STANDING_SLAB.get(),
+            AVPBlocks.TITANIUM_TREAD_SLAB.get()
         );
 
         // TODO: Use a stream concat here.
-        TempAVPBlocks.DYE_COLOR_TO_CONCRETE_SLAB.values().stream().map(Supplier::get).forEach(slabTagProvider::add);
-        TempAVPBlocks.DYE_COLOR_TO_CUT_PLASTIC_SLAB.values().stream().map(Supplier::get).forEach(slabTagProvider::add);
-        TempAVPBlocks.DYE_COLOR_TO_INDUSTRIAL_CONCRETE_SLAB.values().stream().map(Supplier::get).forEach(slabTagProvider::add);
-        TempAVPBlocks.DYE_COLOR_TO_PADDING_SLAB.values().stream().map(Supplier::get).forEach(slabTagProvider::add);
-        TempAVPBlocks.DYE_COLOR_TO_PANEL_PADDING_SLAB.values().stream().map(Supplier::get).forEach(slabTagProvider::add);
-        TempAVPBlocks.DYE_COLOR_TO_PIPE_PADDING_SLAB.values().stream().map(Supplier::get).forEach(slabTagProvider::add);
-        TempAVPBlocks.DYE_COLOR_TO_PLASTIC_SLAB.values().stream().map(Supplier::get).forEach(slabTagProvider::add);
+        AVPBlocks.DYE_COLOR_TO_CONCRETE_SLAB.values().stream().map(Supplier::get).forEach(slabTagProvider::add);
+        AVPBlocks.DYE_COLOR_TO_CUT_PLASTIC_SLAB.values().stream().map(Supplier::get).forEach(slabTagProvider::add);
+        AVPBlocks.DYE_COLOR_TO_INDUSTRIAL_CONCRETE_SLAB.values().stream().map(Supplier::get).forEach(slabTagProvider::add);
+        AVPBlocks.DYE_COLOR_TO_PADDING_SLAB.values().stream().map(Supplier::get).forEach(slabTagProvider::add);
+        AVPBlocks.DYE_COLOR_TO_PANEL_PADDING_SLAB.values().stream().map(Supplier::get).forEach(slabTagProvider::add);
+        AVPBlocks.DYE_COLOR_TO_PIPE_PADDING_SLAB.values().stream().map(Supplier::get).forEach(slabTagProvider::add);
+        AVPBlocks.DYE_COLOR_TO_PLASTIC_SLAB.values().stream().map(Supplier::get).forEach(slabTagProvider::add);
 
         var pressurePlateTagProvider = getOrCreateTagBuilder(BlockTags.PRESSURE_PLATES);
 
         pressurePlateTagProvider.add(
-            TempAVPBlocks.FERROALUMINUM_PRESSURE_PLATE.get(),
-            TempAVPBlocks.STEEL_PRESSURE_PLATE.get(),
-            TempAVPBlocks.TITANIUM_PRESSURE_PLATE.get()
+            AVPBlocks.FERROALUMINUM_PRESSURE_PLATE.get(),
+            AVPBlocks.STEEL_PRESSURE_PLATE.get(),
+            AVPBlocks.TITANIUM_PRESSURE_PLATE.get()
         );
 
         var doorTagProvider = getOrCreateTagBuilder(BlockTags.DOORS);
 
         doorTagProvider.add(
-            TempAVPBlocks.INDUSTRIAL_GLASS_DOOR.get(),
-            TempAVPBlocks.FERROALUMINUM_DOOR.get(),
-            TempAVPBlocks.STEEL_DOOR.get(),
-            TempAVPBlocks.TITANIUM_DOOR.get()
+            AVPBlocks.INDUSTRIAL_GLASS_DOOR.get(),
+            AVPBlocks.FERROALUMINUM_DOOR.get(),
+            AVPBlocks.STEEL_DOOR.get(),
+            AVPBlocks.TITANIUM_DOOR.get()
         );
 
         var trapdoorTagProvider = getOrCreateTagBuilder(BlockTags.TRAPDOORS);
 
         trapdoorTagProvider.add(
-            TempAVPBlocks.INDUSTRIAL_GLASS_TRAP_DOOR.get(),
-            TempAVPBlocks.FERROALUMINUM_TRAP_DOOR.get(),
-            TempAVPBlocks.STEEL_TRAP_DOOR.get(),
-            TempAVPBlocks.TITANIUM_TRAP_DOOR.get()
+            AVPBlocks.INDUSTRIAL_GLASS_TRAP_DOOR.get(),
+            AVPBlocks.FERROALUMINUM_TRAP_DOOR.get(),
+            AVPBlocks.STEEL_TRAP_DOOR.get(),
+            AVPBlocks.TITANIUM_TRAP_DOOR.get()
         );
 
         var buttonTagProvider = getOrCreateTagBuilder(BlockTags.BUTTONS);
 
         buttonTagProvider.add(
-            TempAVPBlocks.FERROALUMINUM_BUTTON.get(),
-            TempAVPBlocks.STEEL_BUTTON.get(),
-            TempAVPBlocks.TITANIUM_BUTTON.get()
+            AVPBlocks.FERROALUMINUM_BUTTON.get(),
+            AVPBlocks.STEEL_BUTTON.get(),
+            AVPBlocks.TITANIUM_BUTTON.get()
         );
 
         var fenceTagProvider = getOrCreateTagBuilder(BlockTags.FENCES);
 
         fenceTagProvider.add(
-            TempAVPBlocks.FERROALUMINUM_CHAIN_FENCE.get(),
-            TempAVPBlocks.STEEL_CHAIN_FENCE.get(),
-            TempAVPBlocks.TITANIUM_CHAIN_FENCE.get()
+            AVPBlocks.FERROALUMINUM_CHAIN_FENCE.get(),
+            AVPBlocks.STEEL_CHAIN_FENCE.get(),
+            AVPBlocks.TITANIUM_CHAIN_FENCE.get()
         );
 
         var stairsTagProvider = getOrCreateTagBuilder(BlockTags.STAIRS);
 
         stairsTagProvider.add(
-            TempAVPBlocks.INDUSTRIAL_GLASS_STAIRS.get(),
-            TempAVPBlocks.CUT_FERROALUMINUM_STAIRS.get(),
-            TempAVPBlocks.CUT_STEEL_STAIRS.get(),
-            TempAVPBlocks.CUT_TITANIUM_STAIRS.get(),
-            TempAVPBlocks.FERROALUMINUM_FASTENED_SIDING_STAIRS.get(),
-            TempAVPBlocks.FERROALUMINUM_FASTENED_STANDING_STAIRS.get(),
-            TempAVPBlocks.FERROALUMINUM_GRATE_STAIRS.get(),
-            TempAVPBlocks.FERROALUMINUM_PLATING_STAIRS.get(),
-            TempAVPBlocks.FERROALUMINUM_SIDING_STAIRS.get(),
-            TempAVPBlocks.FERROALUMINUM_STAIRS.get(),
-            TempAVPBlocks.FERROALUMINUM_STANDING_STAIRS.get(),
-            TempAVPBlocks.FERROALUMINUM_TREAD_STAIRS.get(),
-            TempAVPBlocks.STEEL_FASTENED_SIDING_STAIRS.get(),
-            TempAVPBlocks.STEEL_FASTENED_STANDING_STAIRS.get(),
-            TempAVPBlocks.STEEL_GRATE_STAIRS.get(),
-            TempAVPBlocks.STEEL_PLATING_STAIRS.get(),
-            TempAVPBlocks.STEEL_SIDING_STAIRS.get(),
-            TempAVPBlocks.STEEL_STAIRS.get(),
-            TempAVPBlocks.STEEL_STANDING_STAIRS.get(),
-            TempAVPBlocks.STEEL_TREAD_STAIRS.get(),
-            TempAVPBlocks.TITANIUM_FASTENED_SIDING_STAIRS.get(),
-            TempAVPBlocks.TITANIUM_FASTENED_STANDING_STAIRS.get(),
-            TempAVPBlocks.TITANIUM_GRATE_STAIRS.get(),
-            TempAVPBlocks.TITANIUM_PLATING_STAIRS.get(),
-            TempAVPBlocks.TITANIUM_SIDING_STAIRS.get(),
-            TempAVPBlocks.TITANIUM_STAIRS.get(),
-            TempAVPBlocks.TITANIUM_STANDING_STAIRS.get(),
-            TempAVPBlocks.TITANIUM_TREAD_STAIRS.get()
+            AVPBlocks.INDUSTRIAL_GLASS_STAIRS.get(),
+            AVPBlocks.CUT_FERROALUMINUM_STAIRS.get(),
+            AVPBlocks.CUT_STEEL_STAIRS.get(),
+            AVPBlocks.CUT_TITANIUM_STAIRS.get(),
+            AVPBlocks.FERROALUMINUM_FASTENED_SIDING_STAIRS.get(),
+            AVPBlocks.FERROALUMINUM_FASTENED_STANDING_STAIRS.get(),
+            AVPBlocks.FERROALUMINUM_GRATE_STAIRS.get(),
+            AVPBlocks.FERROALUMINUM_PLATING_STAIRS.get(),
+            AVPBlocks.FERROALUMINUM_SIDING_STAIRS.get(),
+            AVPBlocks.FERROALUMINUM_STAIRS.get(),
+            AVPBlocks.FERROALUMINUM_STANDING_STAIRS.get(),
+            AVPBlocks.FERROALUMINUM_TREAD_STAIRS.get(),
+            AVPBlocks.STEEL_FASTENED_SIDING_STAIRS.get(),
+            AVPBlocks.STEEL_FASTENED_STANDING_STAIRS.get(),
+            AVPBlocks.STEEL_GRATE_STAIRS.get(),
+            AVPBlocks.STEEL_PLATING_STAIRS.get(),
+            AVPBlocks.STEEL_SIDING_STAIRS.get(),
+            AVPBlocks.STEEL_STAIRS.get(),
+            AVPBlocks.STEEL_STANDING_STAIRS.get(),
+            AVPBlocks.STEEL_TREAD_STAIRS.get(),
+            AVPBlocks.TITANIUM_FASTENED_SIDING_STAIRS.get(),
+            AVPBlocks.TITANIUM_FASTENED_STANDING_STAIRS.get(),
+            AVPBlocks.TITANIUM_GRATE_STAIRS.get(),
+            AVPBlocks.TITANIUM_PLATING_STAIRS.get(),
+            AVPBlocks.TITANIUM_SIDING_STAIRS.get(),
+            AVPBlocks.TITANIUM_STAIRS.get(),
+            AVPBlocks.TITANIUM_STANDING_STAIRS.get(),
+            AVPBlocks.TITANIUM_TREAD_STAIRS.get()
         );
 
         // TODO: Use a stream concat here.
-        TempAVPBlocks.DYE_COLOR_TO_CONCRETE_STAIRS.values().stream().map(Supplier::get).forEach(stairsTagProvider::add);
-        TempAVPBlocks.DYE_COLOR_TO_CUT_PLASTIC_STAIRS.values().stream().map(Supplier::get).forEach(stairsTagProvider::add);
-        TempAVPBlocks.DYE_COLOR_TO_INDUSTRIAL_CONCRETE_STAIRS.values().stream().map(Supplier::get).forEach(stairsTagProvider::add);
-        TempAVPBlocks.DYE_COLOR_TO_PADDING_STAIRS.values().stream().map(Supplier::get).forEach(stairsTagProvider::add);
-        TempAVPBlocks.DYE_COLOR_TO_PANEL_PADDING_STAIRS.values().stream().map(Supplier::get).forEach(stairsTagProvider::add);
-        TempAVPBlocks.DYE_COLOR_TO_PIPE_PADDING_STAIRS.values().stream().map(Supplier::get).forEach(stairsTagProvider::add);
-        TempAVPBlocks.DYE_COLOR_TO_PLASTIC_STAIRS.values().stream().map(Supplier::get).forEach(stairsTagProvider::add);
+        AVPBlocks.DYE_COLOR_TO_CONCRETE_STAIRS.values().stream().map(Supplier::get).forEach(stairsTagProvider::add);
+        AVPBlocks.DYE_COLOR_TO_CUT_PLASTIC_STAIRS.values().stream().map(Supplier::get).forEach(stairsTagProvider::add);
+        AVPBlocks.DYE_COLOR_TO_INDUSTRIAL_CONCRETE_STAIRS.values().stream().map(Supplier::get).forEach(stairsTagProvider::add);
+        AVPBlocks.DYE_COLOR_TO_PADDING_STAIRS.values().stream().map(Supplier::get).forEach(stairsTagProvider::add);
+        AVPBlocks.DYE_COLOR_TO_PANEL_PADDING_STAIRS.values().stream().map(Supplier::get).forEach(stairsTagProvider::add);
+        AVPBlocks.DYE_COLOR_TO_PIPE_PADDING_STAIRS.values().stream().map(Supplier::get).forEach(stairsTagProvider::add);
+        AVPBlocks.DYE_COLOR_TO_PLASTIC_STAIRS.values().stream().map(Supplier::get).forEach(stairsTagProvider::add);
 
         var wallTagBuilder = getOrCreateTagBuilder(BlockTags.WALLS);
 
-        TempAVPBlocks.DYE_COLOR_TO_INDUSTRIAL_CONCRETE_WALL.values().stream().map(Supplier::get).forEach(wallTagBuilder::add);
+        AVPBlocks.DYE_COLOR_TO_INDUSTRIAL_CONCRETE_WALL.values().stream().map(Supplier::get).forEach(wallTagBuilder::add);
 
         getOrCreateTagBuilder(AVPBlockTags.MARINE_SPAWN_BLOCKS).add(
-            TempAVPBlocks.DYE_COLOR_TO_PANEL_PADDING.get(DyeColor.BLACK).get(),
-            TempAVPBlocks.DYE_COLOR_TO_CUT_PLASTIC_SLAB.get(DyeColor.LIGHT_GRAY).get(),
-            TempAVPBlocks.DYE_COLOR_TO_CUT_PLASTIC_SLAB.get(DyeColor.GRAY).get(),
-            TempAVPBlocks.DYE_COLOR_TO_INDUSTRIAL_CONCRETE.get(DyeColor.BLACK).get(),
+            AVPBlocks.DYE_COLOR_TO_PANEL_PADDING.get(DyeColor.BLACK).get(),
+            AVPBlocks.DYE_COLOR_TO_CUT_PLASTIC_SLAB.get(DyeColor.LIGHT_GRAY).get(),
+            AVPBlocks.DYE_COLOR_TO_CUT_PLASTIC_SLAB.get(DyeColor.GRAY).get(),
+            AVPBlocks.DYE_COLOR_TO_INDUSTRIAL_CONCRETE.get(DyeColor.BLACK).get(),
             Blocks.CYAN_TERRACOTTA,
             Blocks.MOSS_BLOCK,
-            TempAVPBlocks.FERROALUMINUM_TREAD.get(),
-            TempAVPBlocks.STEEL_TREAD.get(),
+            AVPBlocks.FERROALUMINUM_TREAD.get(),
+            AVPBlocks.STEEL_TREAD.get(),
             Blocks.GRAVEL,
-            TempAVPBlocks.STEEL_GRATE.get(),
-            TempAVPBlocks.TITANIUM_TREAD.get()
+            AVPBlocks.STEEL_GRATE.get(),
+            AVPBlocks.TITANIUM_TREAD.get()
         );
 
         addCompatibilityTags();
@@ -571,21 +571,21 @@ public class AVPBlockTagProvider extends FabricTagProvider.BlockTagProvider {
         getOrCreateTagBuilder(CommonConstants.CHESTS)
             .setReplace(false)
             .add(
-                TempAVPBlocks.AMMO_CHEST.get(),
-                TempAVPBlocks.LEAD_CHEST.get()
+                AVPBlocks.AMMO_CHEST.get(),
+                AVPBlocks.LEAD_CHEST.get()
             );
 
         getOrCreateTagBuilder(CommonConstants.ORES_BLOCKS)
             .setReplace(false)
             .add(
-                TempAVPBlocks.AUTUNITE_ORE.get(),
-                TempAVPBlocks.BAUXITE_ORE.get(),
-                TempAVPBlocks.DEEPSLATE_TITANIUM_ORE.get(),
-                TempAVPBlocks.DEEPSLATE_ZINC_ORE.get(),
-                TempAVPBlocks.GALENA_ORE.get(),
-                TempAVPBlocks.LITHIUM_ORE.get(),
-                TempAVPBlocks.MONAZITE_ORE.get(),
-                TempAVPBlocks.ZINC_ORE.get()
+                AVPBlocks.AUTUNITE_ORE.get(),
+                AVPBlocks.BAUXITE_ORE.get(),
+                AVPBlocks.DEEPSLATE_TITANIUM_ORE.get(),
+                AVPBlocks.DEEPSLATE_ZINC_ORE.get(),
+                AVPBlocks.GALENA_ORE.get(),
+                AVPBlocks.LITHIUM_ORE.get(),
+                AVPBlocks.MONAZITE_ORE.get(),
+                AVPBlocks.ZINC_ORE.get()
             );
     }
 }

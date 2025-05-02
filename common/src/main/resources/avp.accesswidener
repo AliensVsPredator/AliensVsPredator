@@ -26,3 +26,5 @@ accessible method net/minecraft/world/level/block/entity/AbstractFurnaceBlockEnt
 accessible method net/minecraft/core/Vec3i setX (I)Lnet/minecraft/core/Vec3i;
 accessible method net/minecraft/core/Vec3i setY (I)Lnet/minecraft/core/Vec3i;
 accessible method net/minecraft/core/Vec3i setZ (I)Lnet/minecraft/core/Vec3i;
+
+accessible class net/minecraft/client/particle/ParticleEngine$SpriteParticleRegistration

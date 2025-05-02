@@ -9,7 +9,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import org.jetbrains.annotations.NotNull;
 
-import com.avp.common.entity.type.TempAVPEntityTypes;
+import com.avp.common.entity.type.AVPEntityTypes;
 import com.avp.common.item.TempAVPItems;
 import com.avp.server.BlockBreakProgressManager;
 
@@ -20,7 +20,7 @@ public class ShurikenItemEntity extends ThrowableItemProjectile {
     }
 
     public ShurikenItemEntity(Level level, LivingEntity livingEntity) {
-        super(TempAVPEntityTypes.SHURIKEN.get(), livingEntity, level);
+        super(AVPEntityTypes.SHURIKEN.get(), livingEntity, level);
     }
 
     @Override

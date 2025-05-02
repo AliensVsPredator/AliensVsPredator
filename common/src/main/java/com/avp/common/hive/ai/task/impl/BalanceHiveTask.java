@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 
 import com.avp.AVP;
 import com.avp.common.entity.living.alien.xenomorph.Xenomorph;
-import com.avp.common.entity.type.TempAVPEntityTypes;
+import com.avp.common.entity.type.AVPEntityTypes;
 import com.avp.common.hive.Hive;
 import com.avp.common.hive.HiveMemberData;
 import com.avp.common.hive.ai.task.HiveTask;
@@ -44,8 +44,8 @@ public class BalanceHiveTask extends HiveTask {
     }
 
     private void balanceDronesAndWarriors(Map<? extends EntityType<?>, List<Map.Entry<UUID, HiveMemberData>>> membersByType) {
-        var drones = membersByType.getOrDefault(TempAVPEntityTypes.DRONE.get(), List.of());
-        var warriors = membersByType.getOrDefault(TempAVPEntityTypes.WARRIOR.get(), List.of());
+        var drones = membersByType.getOrDefault(AVPEntityTypes.DRONE.get(), List.of());
+        var warriors = membersByType.getOrDefault(AVPEntityTypes.WARRIOR.get(), List.of());
 
         var desiredWarriorCount = Math.max(0, (drones.size() - warriors.size()) / 2);
 
@@ -73,9 +73,9 @@ public class BalanceHiveTask extends HiveTask {
 
     private void balancePraetorians(Map<? extends EntityType<?>, List<Map.Entry<UUID, HiveMemberData>>> membersByType) {
         var hiveMemberCount = hive.hiveMemberDataMap().size();
-        var warriors = membersByType.getOrDefault(TempAVPEntityTypes.WARRIOR.get(), List.of());
-        var praetorians = membersByType.getOrDefault(TempAVPEntityTypes.PRAETORIAN.get(), List.of());
-        var queens = membersByType.getOrDefault(TempAVPEntityTypes.QUEEN.get(), List.of());
+        var warriors = membersByType.getOrDefault(AVPEntityTypes.WARRIOR.get(), List.of());
+        var praetorians = membersByType.getOrDefault(AVPEntityTypes.PRAETORIAN.get(), List.of());
+        var queens = membersByType.getOrDefault(AVPEntityTypes.QUEEN.get(), List.of());
 
         int hiveMembersRequiredForPraetorian = AVP.config.hiveConfigs.HIVE_MEMBERS_REQUIRED_FOR_PRAETORIAN;
         int maxPraetorianCount = AVP.config.hiveConfigs.HIVE_MAX_PRAETORIAN_COUNT;
@@ -106,7 +106,7 @@ public class BalanceHiveTask extends HiveTask {
     }
 
     private void balanceQueen(Map<? extends EntityType<?>, List<Map.Entry<UUID, HiveMemberData>>> membersByType) {
-        var queens = membersByType.getOrDefault(TempAVPEntityTypes.QUEEN.get(), List.of());
+        var queens = membersByType.getOrDefault(AVPEntityTypes.QUEEN.get(), List.of());
 
         if (!queens.isEmpty()) {
             return;
@@ -114,7 +114,7 @@ public class BalanceHiveTask extends HiveTask {
 
         hive.hiveLeader().ifSome(hiveLeader -> {
             if (
-                !Objects.equals(hiveLeader.getType(), TempAVPEntityTypes.PRAETORIAN.get()) || !(hiveLeader instanceof Xenomorph xenomorph)
+                !Objects.equals(hiveLeader.getType(), AVPEntityTypes.PRAETORIAN.get()) || !(hiveLeader instanceof Xenomorph xenomorph)
             ) {
                 return;
             }

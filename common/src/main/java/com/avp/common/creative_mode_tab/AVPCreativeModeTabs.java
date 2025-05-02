@@ -13,7 +13,7 @@ import java.util.function.Supplier;
 
 import com.avp.AVP;
 import com.avp.AVPResources;
-import com.avp.common.block.TempAVPBlocks;
+import com.avp.common.block.AVPBlocks;
 import com.avp.common.creative_mode_tab.initializer.BlocksCreativeModeTabInitializer;
 import com.avp.common.creative_mode_tab.initializer.ColoredBlocksCreativeModeTabInitializer;
 import com.avp.common.creative_mode_tab.initializer.CombatCreativeModeTabInitializer;
@@ -43,13 +43,13 @@ public class AVPCreativeModeTabs {
 
     public static final AVPDeferredHolder<CreativeModeTab> BLOCKS = register(
         BLOCKS_KEY,
-        () -> new ItemStack(TempAVPBlocks.RESIN.get()),
+        () -> new ItemStack(AVPBlocks.RESIN.get()),
         BlocksCreativeModeTabInitializer.OUTPUT_CONSUMER
     );
 
     public static final AVPDeferredHolder<CreativeModeTab> COLORED_BLOCKS = register(
         COLORED_BLOCKS_KEY,
-        () -> new ItemStack(TempAVPBlocks.DYE_COLOR_TO_PLASTIC.get(DyeColor.WHITE).get()),
+        () -> new ItemStack(AVPBlocks.DYE_COLOR_TO_PLASTIC.get(DyeColor.WHITE).get()),
         ColoredBlocksCreativeModeTabInitializer.OUTPUT_CONSUMER
     );
 

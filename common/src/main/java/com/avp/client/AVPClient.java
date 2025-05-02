@@ -8,6 +8,9 @@ import net.minecraft.world.item.component.DyedItemColor;
 
 import java.util.List;
 
+import com.avp.client.particle.AcidParticleProvider;
+import com.avp.client.particle.BlueAcidParticleProvider;
+import com.avp.client.particle.IrradiatedAcidParticleProvider;
 import com.avp.client.render.armor.AberrantChitinArmorRenderer;
 import com.avp.client.render.armor.ChitinArmorRenderer;
 import com.avp.client.render.armor.IrradiatedChitinArmorRenderer;
@@ -46,13 +49,14 @@ import com.avp.client.render.item.SpinningItemRenderer;
 import com.avp.client.render.item.TripMineItemRenderer;
 import com.avp.client.screen.ArmorCaseScreen;
 import com.avp.client.screen.IndustrialFurnaceScreen;
-import com.avp.common.block.TempAVPBlocks;
+import com.avp.common.block.AVPBlocks;
 import com.avp.common.block.entity.AVPBlockEntityTypes;
-import com.avp.common.entity.type.TempAVPEntityTypes;
+import com.avp.common.entity.type.AVPEntityTypes;
 import com.avp.common.item.AVPArmorItems;
-import com.avp.common.item.TempAVPBlockItems;
+import com.avp.common.item.AVPBlockItems;
 import com.avp.common.item.TempAVPItems;
 import com.avp.common.menu.AVPMenuTypes;
+import com.avp.common.particle.AVPParticleTypes;
 import com.avp.service.Services;
 
 public class AVPClient {
@@ -64,6 +68,7 @@ public class AVPClient {
         registerEntityRenderers();
         registerItemRenderers();
         registerMenuScreens();
+        registerParticleProviderFactories();
     }
 
     private static void registerArmorRenderers() {
@@ -221,105 +226,111 @@ public class AVPClient {
     }
 
     private static void registerBlockRenderLayers() {
-        Services.CLIENT_REGISTRY.registerBlockRenderLayer(TempAVPBlocks.FERROALUMINUM_CHAIN_FENCE, RenderType.cutout());
-        Services.CLIENT_REGISTRY.registerBlockRenderLayer(TempAVPBlocks.FERROALUMINUM_GRATE, RenderType.cutout());
-        Services.CLIENT_REGISTRY.registerBlockRenderLayer(TempAVPBlocks.IRRADIATED_RESIN_VEIN, RenderType.cutout());
-        Services.CLIENT_REGISTRY.registerBlockRenderLayer(TempAVPBlocks.IRRADIATED_RESIN_WEB, RenderType.cutout());
-        Services.CLIENT_REGISTRY.registerBlockRenderLayer(TempAVPBlocks.ABERRANT_RESIN_VEIN, RenderType.cutout());
-        Services.CLIENT_REGISTRY.registerBlockRenderLayer(TempAVPBlocks.ABERRANT_RESIN_WEB, RenderType.cutout());
-        Services.CLIENT_REGISTRY.registerBlockRenderLayer(TempAVPBlocks.NETHER_RESIN_VEIN, RenderType.cutout());
-        Services.CLIENT_REGISTRY.registerBlockRenderLayer(TempAVPBlocks.NETHER_RESIN_WEB, RenderType.cutout());
-        Services.CLIENT_REGISTRY.registerBlockRenderLayer(TempAVPBlocks.RESIN_VEIN, RenderType.cutout());
-        Services.CLIENT_REGISTRY.registerBlockRenderLayer(TempAVPBlocks.RESIN_WEB, RenderType.cutout());
-        Services.CLIENT_REGISTRY.registerBlockRenderLayer(TempAVPBlocks.STEEL_BARS, RenderType.cutout());
-        Services.CLIENT_REGISTRY.registerBlockRenderLayer(TempAVPBlocks.STEEL_CHAIN_FENCE, RenderType.cutout());
-        Services.CLIENT_REGISTRY.registerBlockRenderLayer(TempAVPBlocks.STEEL_GRATE, RenderType.cutout());
-        Services.CLIENT_REGISTRY.registerBlockRenderLayer(TempAVPBlocks.TITANIUM_CHAIN_FENCE, RenderType.cutout());
-        Services.CLIENT_REGISTRY.registerBlockRenderLayer(TempAVPBlocks.TITANIUM_GRATE, RenderType.cutout());
-        Services.CLIENT_REGISTRY.registerBlockRenderLayer(TempAVPBlocks.RAZOR_WIRE, RenderType.cutout());
-        Services.CLIENT_REGISTRY.registerBlockRenderLayer(TempAVPBlocks.INDUSTRIAL_GLASS_DOOR, RenderType.cutout());
-        Services.CLIENT_REGISTRY.registerBlockRenderLayer(TempAVPBlocks.INDUSTRIAL_GLASS_TRAP_DOOR, RenderType.cutout());
-        Services.CLIENT_REGISTRY.registerBlockRenderLayer(TempAVPBlocks.FERROALUMINUM_DOOR, RenderType.cutout());
-        Services.CLIENT_REGISTRY.registerBlockRenderLayer(TempAVPBlocks.STEEL_DOOR, RenderType.cutout());
-        Services.CLIENT_REGISTRY.registerBlockRenderLayer(TempAVPBlocks.TITANIUM_DOOR, RenderType.cutout());
-        Services.CLIENT_REGISTRY.registerBlockRenderLayer(TempAVPBlocks.FERROALUMINUM_TRAP_DOOR, RenderType.cutout());
-        Services.CLIENT_REGISTRY.registerBlockRenderLayer(TempAVPBlocks.ROYAL_JELLY_BLOCK, RenderType.translucent());
-        Services.CLIENT_REGISTRY.registerBlockRenderLayer(TempAVPBlocks.TRINITITE_BLOCK, RenderType.translucent());
-        Services.CLIENT_REGISTRY.registerBlockRenderLayer(TempAVPBlocks.FERROALUMINUM_GRATE_SLAB, RenderType.cutout());
-        Services.CLIENT_REGISTRY.registerBlockRenderLayer(TempAVPBlocks.FERROALUMINUM_GRATE_STAIRS, RenderType.cutout());
-        Services.CLIENT_REGISTRY.registerBlockRenderLayer(TempAVPBlocks.STEEL_GRATE_SLAB, RenderType.cutout());
-        Services.CLIENT_REGISTRY.registerBlockRenderLayer(TempAVPBlocks.STEEL_GRATE_STAIRS, RenderType.cutout());
-        Services.CLIENT_REGISTRY.registerBlockRenderLayer(TempAVPBlocks.TITANIUM_GRATE_SLAB, RenderType.cutout());
-        Services.CLIENT_REGISTRY.registerBlockRenderLayer(TempAVPBlocks.TITANIUM_GRATE_STAIRS, RenderType.cutout());
+        Services.CLIENT_REGISTRY.registerBlockRenderLayer(AVPBlocks.FERROALUMINUM_CHAIN_FENCE, RenderType.cutout());
+        Services.CLIENT_REGISTRY.registerBlockRenderLayer(AVPBlocks.FERROALUMINUM_GRATE, RenderType.cutout());
+        Services.CLIENT_REGISTRY.registerBlockRenderLayer(AVPBlocks.IRRADIATED_RESIN_VEIN, RenderType.cutout());
+        Services.CLIENT_REGISTRY.registerBlockRenderLayer(AVPBlocks.IRRADIATED_RESIN_WEB, RenderType.cutout());
+        Services.CLIENT_REGISTRY.registerBlockRenderLayer(AVPBlocks.ABERRANT_RESIN_VEIN, RenderType.cutout());
+        Services.CLIENT_REGISTRY.registerBlockRenderLayer(AVPBlocks.ABERRANT_RESIN_WEB, RenderType.cutout());
+        Services.CLIENT_REGISTRY.registerBlockRenderLayer(AVPBlocks.NETHER_RESIN_VEIN, RenderType.cutout());
+        Services.CLIENT_REGISTRY.registerBlockRenderLayer(AVPBlocks.NETHER_RESIN_WEB, RenderType.cutout());
+        Services.CLIENT_REGISTRY.registerBlockRenderLayer(AVPBlocks.RESIN_VEIN, RenderType.cutout());
+        Services.CLIENT_REGISTRY.registerBlockRenderLayer(AVPBlocks.RESIN_WEB, RenderType.cutout());
+        Services.CLIENT_REGISTRY.registerBlockRenderLayer(AVPBlocks.STEEL_BARS, RenderType.cutout());
+        Services.CLIENT_REGISTRY.registerBlockRenderLayer(AVPBlocks.STEEL_CHAIN_FENCE, RenderType.cutout());
+        Services.CLIENT_REGISTRY.registerBlockRenderLayer(AVPBlocks.STEEL_GRATE, RenderType.cutout());
+        Services.CLIENT_REGISTRY.registerBlockRenderLayer(AVPBlocks.TITANIUM_CHAIN_FENCE, RenderType.cutout());
+        Services.CLIENT_REGISTRY.registerBlockRenderLayer(AVPBlocks.TITANIUM_GRATE, RenderType.cutout());
+        Services.CLIENT_REGISTRY.registerBlockRenderLayer(AVPBlocks.RAZOR_WIRE, RenderType.cutout());
+        Services.CLIENT_REGISTRY.registerBlockRenderLayer(AVPBlocks.INDUSTRIAL_GLASS_DOOR, RenderType.cutout());
+        Services.CLIENT_REGISTRY.registerBlockRenderLayer(AVPBlocks.INDUSTRIAL_GLASS_TRAP_DOOR, RenderType.cutout());
+        Services.CLIENT_REGISTRY.registerBlockRenderLayer(AVPBlocks.FERROALUMINUM_DOOR, RenderType.cutout());
+        Services.CLIENT_REGISTRY.registerBlockRenderLayer(AVPBlocks.STEEL_DOOR, RenderType.cutout());
+        Services.CLIENT_REGISTRY.registerBlockRenderLayer(AVPBlocks.TITANIUM_DOOR, RenderType.cutout());
+        Services.CLIENT_REGISTRY.registerBlockRenderLayer(AVPBlocks.FERROALUMINUM_TRAP_DOOR, RenderType.cutout());
+        Services.CLIENT_REGISTRY.registerBlockRenderLayer(AVPBlocks.ROYAL_JELLY_BLOCK, RenderType.translucent());
+        Services.CLIENT_REGISTRY.registerBlockRenderLayer(AVPBlocks.TRINITITE_BLOCK, RenderType.translucent());
+        Services.CLIENT_REGISTRY.registerBlockRenderLayer(AVPBlocks.FERROALUMINUM_GRATE_SLAB, RenderType.cutout());
+        Services.CLIENT_REGISTRY.registerBlockRenderLayer(AVPBlocks.FERROALUMINUM_GRATE_STAIRS, RenderType.cutout());
+        Services.CLIENT_REGISTRY.registerBlockRenderLayer(AVPBlocks.STEEL_GRATE_SLAB, RenderType.cutout());
+        Services.CLIENT_REGISTRY.registerBlockRenderLayer(AVPBlocks.STEEL_GRATE_STAIRS, RenderType.cutout());
+        Services.CLIENT_REGISTRY.registerBlockRenderLayer(AVPBlocks.TITANIUM_GRATE_SLAB, RenderType.cutout());
+        Services.CLIENT_REGISTRY.registerBlockRenderLayer(AVPBlocks.TITANIUM_GRATE_STAIRS, RenderType.cutout());
 
-        Services.CLIENT_REGISTRY.registerBlockRenderLayer(TempAVPBlocks.INDUSTRIAL_GLASS, RenderType.cutout());
-        Services.CLIENT_REGISTRY.registerBlockRenderLayer(TempAVPBlocks.INDUSTRIAL_GLASS_SLAB, RenderType.cutout());
-        Services.CLIENT_REGISTRY.registerBlockRenderLayer(TempAVPBlocks.INDUSTRIAL_GLASS_STAIRS, RenderType.cutout());
-        TempAVPBlocks.DYE_COLOR_TO_INDUSTRIAL_GLASS.values()
+        Services.CLIENT_REGISTRY.registerBlockRenderLayer(AVPBlocks.INDUSTRIAL_GLASS, RenderType.cutout());
+        Services.CLIENT_REGISTRY.registerBlockRenderLayer(AVPBlocks.INDUSTRIAL_GLASS_SLAB, RenderType.cutout());
+        Services.CLIENT_REGISTRY.registerBlockRenderLayer(AVPBlocks.INDUSTRIAL_GLASS_STAIRS, RenderType.cutout());
+        AVPBlocks.DYE_COLOR_TO_INDUSTRIAL_GLASS.values()
             .forEach(blockSupplier -> Services.CLIENT_REGISTRY.registerBlockRenderLayer(blockSupplier, RenderType.translucent()));
-        Services.CLIENT_REGISTRY.registerBlockRenderLayer(TempAVPBlocks.INDUSTRIAL_GLASS_PANE, RenderType.cutout());
-        TempAVPBlocks.DYE_COLOR_TO_INDUSTRIAL_GLASS_PANE.values()
+        Services.CLIENT_REGISTRY.registerBlockRenderLayer(AVPBlocks.INDUSTRIAL_GLASS_PANE, RenderType.cutout());
+        AVPBlocks.DYE_COLOR_TO_INDUSTRIAL_GLASS_PANE.values()
             .forEach(blockSupplier -> Services.CLIENT_REGISTRY.registerBlockRenderLayer(blockSupplier, RenderType.translucent()));
     }
 
     private static void registerEntityRenderers() {
-        Services.CLIENT_REGISTRY.registerEntityRenderer(TempAVPEntityTypes.ABERRANT_CHESTBURSTER, ChestbursterRenderer::new);
-        Services.CLIENT_REGISTRY.registerEntityRenderer(TempAVPEntityTypes.ABERRANT_DRONE, DroneRenderer::new);
-        Services.CLIENT_REGISTRY.registerEntityRenderer(TempAVPEntityTypes.ABERRANT_FACEHUGGER, FacehuggerRenderer::new);
-        Services.CLIENT_REGISTRY.registerEntityRenderer(TempAVPEntityTypes.ABERRANT_OVAMORPH, OvamorphRenderer::new);
-        Services.CLIENT_REGISTRY.registerEntityRenderer(TempAVPEntityTypes.ABERRANT_PRAETORIAN, PraetorianRenderer::new);
-        Services.CLIENT_REGISTRY.registerEntityRenderer(TempAVPEntityTypes.ABERRANT_QUEEN, QueenRenderer::new);
-        Services.CLIENT_REGISTRY.registerEntityRenderer(TempAVPEntityTypes.ABERRANT_WARRIOR, WarriorRenderer::new);
-        Services.CLIENT_REGISTRY.registerEntityRenderer(TempAVPEntityTypes.ACID, AcidRenderer::new);
-        Services.CLIENT_REGISTRY.registerEntityRenderer(TempAVPEntityTypes.CHESTBURSTER, ChestbursterRenderer::new);
-        Services.CLIENT_REGISTRY.registerEntityRenderer(TempAVPEntityTypes.DRONE, DroneRenderer::new);
-        Services.CLIENT_REGISTRY.registerEntityRenderer(TempAVPEntityTypes.FACEHUGGER, FacehuggerRenderer::new);
-        Services.CLIENT_REGISTRY.registerEntityRenderer(TempAVPEntityTypes.FLAMETHROW, FlamethrowRenderer::new);
-        Services.CLIENT_REGISTRY.registerEntityRenderer(TempAVPEntityTypes.GRENADE_THROWN, ThrownItemRenderer::new);
-        Services.CLIENT_REGISTRY.registerEntityRenderer(TempAVPEntityTypes.IRRADIATED_DRONE, DroneRenderer::new);
-        Services.CLIENT_REGISTRY.registerEntityRenderer(TempAVPEntityTypes.IRRADIATED_PRAETORIAN, PraetorianRenderer::new);
-        Services.CLIENT_REGISTRY.registerEntityRenderer(TempAVPEntityTypes.IRRADIATED_QUEEN, QueenRenderer::new);
-        Services.CLIENT_REGISTRY.registerEntityRenderer(TempAVPEntityTypes.IRRADIATED_WARRIOR, WarriorRenderer::new);
-        Services.CLIENT_REGISTRY.registerEntityRenderer(TempAVPEntityTypes.MARINE, MarineRenderer::new);
-        Services.CLIENT_REGISTRY.registerEntityRenderer(TempAVPEntityTypes.MUSHROOM_CLOUD, MushroomCloudRenderer::new);
-        Services.CLIENT_REGISTRY.registerEntityRenderer(TempAVPEntityTypes.NETHER_CHESTBURSTER, ChestbursterRenderer::new);
-        Services.CLIENT_REGISTRY.registerEntityRenderer(TempAVPEntityTypes.NETHER_DRONE, DroneRenderer::new);
-        Services.CLIENT_REGISTRY.registerEntityRenderer(TempAVPEntityTypes.NETHER_FACEHUGGER, FacehuggerRenderer::new);
-        Services.CLIENT_REGISTRY.registerEntityRenderer(TempAVPEntityTypes.NETHER_OVAMORPH, OvamorphRenderer::new);
-        Services.CLIENT_REGISTRY.registerEntityRenderer(TempAVPEntityTypes.NETHER_PRAETORIAN, PraetorianRenderer::new);
-        Services.CLIENT_REGISTRY.registerEntityRenderer(TempAVPEntityTypes.NETHER_QUEEN, QueenRenderer::new);
-        Services.CLIENT_REGISTRY.registerEntityRenderer(TempAVPEntityTypes.NETHER_WARRIOR, WarriorRenderer::new);
-        Services.CLIENT_REGISTRY.registerEntityRenderer(TempAVPEntityTypes.NUKE, NukeRenderer::new);
-        Services.CLIENT_REGISTRY.registerEntityRenderer(TempAVPEntityTypes.OVAMORPH, OvamorphRenderer::new);
-        Services.CLIENT_REGISTRY.registerEntityRenderer(TempAVPEntityTypes.PRAETORIAN, PraetorianRenderer::new);
-        Services.CLIENT_REGISTRY.registerEntityRenderer(TempAVPEntityTypes.QUEEN, QueenRenderer::new);
-        Services.CLIENT_REGISTRY.registerEntityRenderer(TempAVPEntityTypes.ROCKET, RocketRenderer::new);
-        Services.CLIENT_REGISTRY.registerEntityRenderer(TempAVPEntityTypes.ROYAL_ABERRANT_CHESTBURSTER, ChestbursterRenderer::new);
-        Services.CLIENT_REGISTRY.registerEntityRenderer(TempAVPEntityTypes.ROYAL_ABERRANT_FACEHUGGER, FacehuggerRenderer::new);
-        Services.CLIENT_REGISTRY.registerEntityRenderer(TempAVPEntityTypes.ROYAL_ABERRANT_OVAMORPH, OvamorphRenderer::new);
-        Services.CLIENT_REGISTRY.registerEntityRenderer(TempAVPEntityTypes.ROYAL_CHESTBURSTER, ChestbursterRenderer::new);
-        Services.CLIENT_REGISTRY.registerEntityRenderer(TempAVPEntityTypes.ROYAL_FACEHUGGER, FacehuggerRenderer::new);
-        Services.CLIENT_REGISTRY.registerEntityRenderer(TempAVPEntityTypes.ROYAL_NETHER_CHESTBURSTER, ChestbursterRenderer::new);
-        Services.CLIENT_REGISTRY.registerEntityRenderer(TempAVPEntityTypes.ROYAL_NETHER_FACEHUGGER, FacehuggerRenderer::new);
-        Services.CLIENT_REGISTRY.registerEntityRenderer(TempAVPEntityTypes.ROYAL_NETHER_OVAMORPH, OvamorphRenderer::new);
-        Services.CLIENT_REGISTRY.registerEntityRenderer(TempAVPEntityTypes.ROYAL_OVAMORPH, OvamorphRenderer::new);
-        Services.CLIENT_REGISTRY.registerEntityRenderer(TempAVPEntityTypes.SENTRY_TURRET, SentryTurretRenderer::new);
-        Services.CLIENT_REGISTRY.registerEntityRenderer(TempAVPEntityTypes.SHURIKEN, SpinningItemRenderer::new);
-        Services.CLIENT_REGISTRY.registerEntityRenderer(TempAVPEntityTypes.SMART_DISC, SpinningItemRenderer::new);
-        Services.CLIENT_REGISTRY.registerEntityRenderer(TempAVPEntityTypes.WARRIOR, WarriorRenderer::new);
-        Services.CLIENT_REGISTRY.registerEntityRenderer(TempAVPEntityTypes.YAUTJA, YautjaRenderer::new);
+        Services.CLIENT_REGISTRY.registerEntityRenderer(AVPEntityTypes.ABERRANT_CHESTBURSTER, ChestbursterRenderer::new);
+        Services.CLIENT_REGISTRY.registerEntityRenderer(AVPEntityTypes.ABERRANT_DRONE, DroneRenderer::new);
+        Services.CLIENT_REGISTRY.registerEntityRenderer(AVPEntityTypes.ABERRANT_FACEHUGGER, FacehuggerRenderer::new);
+        Services.CLIENT_REGISTRY.registerEntityRenderer(AVPEntityTypes.ABERRANT_OVAMORPH, OvamorphRenderer::new);
+        Services.CLIENT_REGISTRY.registerEntityRenderer(AVPEntityTypes.ABERRANT_PRAETORIAN, PraetorianRenderer::new);
+        Services.CLIENT_REGISTRY.registerEntityRenderer(AVPEntityTypes.ABERRANT_QUEEN, QueenRenderer::new);
+        Services.CLIENT_REGISTRY.registerEntityRenderer(AVPEntityTypes.ABERRANT_WARRIOR, WarriorRenderer::new);
+        Services.CLIENT_REGISTRY.registerEntityRenderer(AVPEntityTypes.ACID, AcidRenderer::new);
+        Services.CLIENT_REGISTRY.registerEntityRenderer(AVPEntityTypes.CHESTBURSTER, ChestbursterRenderer::new);
+        Services.CLIENT_REGISTRY.registerEntityRenderer(AVPEntityTypes.DRONE, DroneRenderer::new);
+        Services.CLIENT_REGISTRY.registerEntityRenderer(AVPEntityTypes.FACEHUGGER, FacehuggerRenderer::new);
+        Services.CLIENT_REGISTRY.registerEntityRenderer(AVPEntityTypes.FLAMETHROW, FlamethrowRenderer::new);
+        Services.CLIENT_REGISTRY.registerEntityRenderer(AVPEntityTypes.GRENADE_THROWN, ThrownItemRenderer::new);
+        Services.CLIENT_REGISTRY.registerEntityRenderer(AVPEntityTypes.IRRADIATED_DRONE, DroneRenderer::new);
+        Services.CLIENT_REGISTRY.registerEntityRenderer(AVPEntityTypes.IRRADIATED_PRAETORIAN, PraetorianRenderer::new);
+        Services.CLIENT_REGISTRY.registerEntityRenderer(AVPEntityTypes.IRRADIATED_QUEEN, QueenRenderer::new);
+        Services.CLIENT_REGISTRY.registerEntityRenderer(AVPEntityTypes.IRRADIATED_WARRIOR, WarriorRenderer::new);
+        Services.CLIENT_REGISTRY.registerEntityRenderer(AVPEntityTypes.MARINE, MarineRenderer::new);
+        Services.CLIENT_REGISTRY.registerEntityRenderer(AVPEntityTypes.MUSHROOM_CLOUD, MushroomCloudRenderer::new);
+        Services.CLIENT_REGISTRY.registerEntityRenderer(AVPEntityTypes.NETHER_CHESTBURSTER, ChestbursterRenderer::new);
+        Services.CLIENT_REGISTRY.registerEntityRenderer(AVPEntityTypes.NETHER_DRONE, DroneRenderer::new);
+        Services.CLIENT_REGISTRY.registerEntityRenderer(AVPEntityTypes.NETHER_FACEHUGGER, FacehuggerRenderer::new);
+        Services.CLIENT_REGISTRY.registerEntityRenderer(AVPEntityTypes.NETHER_OVAMORPH, OvamorphRenderer::new);
+        Services.CLIENT_REGISTRY.registerEntityRenderer(AVPEntityTypes.NETHER_PRAETORIAN, PraetorianRenderer::new);
+        Services.CLIENT_REGISTRY.registerEntityRenderer(AVPEntityTypes.NETHER_QUEEN, QueenRenderer::new);
+        Services.CLIENT_REGISTRY.registerEntityRenderer(AVPEntityTypes.NETHER_WARRIOR, WarriorRenderer::new);
+        Services.CLIENT_REGISTRY.registerEntityRenderer(AVPEntityTypes.NUKE, NukeRenderer::new);
+        Services.CLIENT_REGISTRY.registerEntityRenderer(AVPEntityTypes.OVAMORPH, OvamorphRenderer::new);
+        Services.CLIENT_REGISTRY.registerEntityRenderer(AVPEntityTypes.PRAETORIAN, PraetorianRenderer::new);
+        Services.CLIENT_REGISTRY.registerEntityRenderer(AVPEntityTypes.QUEEN, QueenRenderer::new);
+        Services.CLIENT_REGISTRY.registerEntityRenderer(AVPEntityTypes.ROCKET, RocketRenderer::new);
+        Services.CLIENT_REGISTRY.registerEntityRenderer(AVPEntityTypes.ROYAL_ABERRANT_CHESTBURSTER, ChestbursterRenderer::new);
+        Services.CLIENT_REGISTRY.registerEntityRenderer(AVPEntityTypes.ROYAL_ABERRANT_FACEHUGGER, FacehuggerRenderer::new);
+        Services.CLIENT_REGISTRY.registerEntityRenderer(AVPEntityTypes.ROYAL_ABERRANT_OVAMORPH, OvamorphRenderer::new);
+        Services.CLIENT_REGISTRY.registerEntityRenderer(AVPEntityTypes.ROYAL_CHESTBURSTER, ChestbursterRenderer::new);
+        Services.CLIENT_REGISTRY.registerEntityRenderer(AVPEntityTypes.ROYAL_FACEHUGGER, FacehuggerRenderer::new);
+        Services.CLIENT_REGISTRY.registerEntityRenderer(AVPEntityTypes.ROYAL_NETHER_CHESTBURSTER, ChestbursterRenderer::new);
+        Services.CLIENT_REGISTRY.registerEntityRenderer(AVPEntityTypes.ROYAL_NETHER_FACEHUGGER, FacehuggerRenderer::new);
+        Services.CLIENT_REGISTRY.registerEntityRenderer(AVPEntityTypes.ROYAL_NETHER_OVAMORPH, OvamorphRenderer::new);
+        Services.CLIENT_REGISTRY.registerEntityRenderer(AVPEntityTypes.ROYAL_OVAMORPH, OvamorphRenderer::new);
+        Services.CLIENT_REGISTRY.registerEntityRenderer(AVPEntityTypes.SENTRY_TURRET, SentryTurretRenderer::new);
+        Services.CLIENT_REGISTRY.registerEntityRenderer(AVPEntityTypes.SHURIKEN, SpinningItemRenderer::new);
+        Services.CLIENT_REGISTRY.registerEntityRenderer(AVPEntityTypes.SMART_DISC, SpinningItemRenderer::new);
+        Services.CLIENT_REGISTRY.registerEntityRenderer(AVPEntityTypes.WARRIOR, WarriorRenderer::new);
+        Services.CLIENT_REGISTRY.registerEntityRenderer(AVPEntityTypes.YAUTJA, YautjaRenderer::new);
     }
 
     private static void registerItemRenderers() {
         Services.CLIENT_REGISTRY.registerItemRenderer(TempAVPItems.ARMOR_CASE);
-        Services.CLIENT_REGISTRY.registerItemRenderer(TempAVPBlockItems.DESK_TERMINAL_BLOCK, name -> DeskTerminalItemRenderer::new);
-        Services.CLIENT_REGISTRY.registerItemRenderer(TempAVPBlockItems.TRIP_MINE_BLOCK, name -> TripMineItemRenderer::new);
-        Services.CLIENT_REGISTRY.registerItemRenderer(TempAVPBlockItems.RESONATOR_BLOCK, name -> ResonatorItemRenderer::new);
-        Services.CLIENT_REGISTRY.registerItemRenderer(TempAVPBlockItems.SENTRY_TURRET, name -> SentryTurretItemRenderer::new);
+        Services.CLIENT_REGISTRY.registerItemRenderer(AVPBlockItems.DESK_TERMINAL_BLOCK, name -> DeskTerminalItemRenderer::new);
+        Services.CLIENT_REGISTRY.registerItemRenderer(AVPBlockItems.TRIP_MINE_BLOCK, name -> TripMineItemRenderer::new);
+        Services.CLIENT_REGISTRY.registerItemRenderer(AVPBlockItems.RESONATOR_BLOCK, name -> ResonatorItemRenderer::new);
+        Services.CLIENT_REGISTRY.registerItemRenderer(AVPBlockItems.SENTRY_TURRET, name -> SentryTurretItemRenderer::new);
     }
 
     private static void registerMenuScreens() {
         Services.CLIENT_REGISTRY.registerMenuScreen(AVPMenuTypes.ARMOR_CASE, ArmorCaseScreen::new);
         Services.CLIENT_REGISTRY.registerMenuScreen(AVPMenuTypes.INDUSTRIAL_FURNACE_MENU, IndustrialFurnaceScreen::new);
+    }
+
+    private static void registerParticleProviderFactories() {
+        Services.CLIENT_REGISTRY.registerParticleProviderFactory(AVPParticleTypes.ACID, AcidParticleProvider::new);
+        Services.CLIENT_REGISTRY.registerParticleProviderFactory(AVPParticleTypes.BLUE_ACID, BlueAcidParticleProvider::new);
+        Services.CLIENT_REGISTRY.registerParticleProviderFactory(AVPParticleTypes.IRRADIATED_ACID, IrradiatedAcidParticleProvider::new);
     }
 }

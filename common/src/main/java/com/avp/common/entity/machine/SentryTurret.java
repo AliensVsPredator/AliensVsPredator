@@ -22,7 +22,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.UUID;
 
 import com.avp.AVP;
-import com.avp.common.block.TempAVPBlocks;
+import com.avp.common.block.AVPBlocks;
 import com.avp.common.block.entity.AmmoChestBlockEntity;
 import com.avp.common.damage.AVPDamageTypes;
 import com.avp.common.damage.AVPDamageTypesTags;
@@ -144,7 +144,7 @@ public class SentryTurret extends Mob implements TraceableEntity {
 
     @Override
     public @Nullable ItemStack getPickResult() {
-        return TempAVPBlocks.SENTRY_TURRET.get().asItem().getDefaultInstance();
+        return AVPBlocks.SENTRY_TURRET.get().asItem().getDefaultInstance();
     }
 
     @Override

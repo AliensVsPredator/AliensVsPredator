@@ -4,14 +4,14 @@ import net.minecraft.world.item.CreativeModeTab;
 
 import java.util.function.Consumer;
 
-import com.avp.common.block.TempAVPBlocks;
+import com.avp.common.block.AVPBlocks;
 import com.avp.common.item.AVPArmorItems;
 import com.avp.common.item.TempAVPItems;
 
 public class CombatCreativeModeTabInitializer {
 
     public static final Consumer<CreativeModeTab.Output> OUTPUT_CONSUMER = output -> {
-        CreativeModeTabUtil.accept(output, TempAVPBlocks.AMMO_CHEST);
+        CreativeModeTabUtil.accept(output, AVPBlocks.AMMO_CHEST);
         CreativeModeTabUtil.accept(output, TempAVPItems.GRENADE);
         CreativeModeTabUtil.accept(output, TempAVPItems.GRENADE_INCENDIARY);
         CreativeModeTabUtil.accept(output, TempAVPItems.GRENADE_IRRADIATED);

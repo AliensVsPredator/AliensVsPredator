@@ -20,7 +20,7 @@ import net.minecraft.world.level.levelgen.feature.stateproviders.WeightedStatePr
 import java.util.List;
 
 import com.avp.AVPResources;
-import com.avp.common.block.TempAVPBlocks;
+import com.avp.common.block.AVPBlocks;
 
 public class AVPCaveConfigurations {
 
@@ -42,7 +42,7 @@ public class AVPCaveConfigurations {
                 BlockStateProvider.simple(Blocks.GRANITE),
                 new WeightedStateProvider(
                     SimpleWeightedRandomList.<BlockState>builder()
-                        .add(TempAVPBlocks.AUTUNITE_ORE.get().defaultBlockState(), 1)
+                        .add(AVPBlocks.AUTUNITE_ORE.get().defaultBlockState(), 1)
                         .add(Blocks.GRANITE.defaultBlockState(), 1)
                         .build()
                 ),

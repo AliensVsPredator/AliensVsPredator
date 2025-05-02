@@ -40,7 +40,7 @@ import com.avp.common.registry.AVPDeferredHolder;
 import com.avp.service.Services;
 
 // TODO: Rename this once multi-loader migration is finished.
-public class TempAVPBlocks {
+public class AVPBlocks {
 
     // FIXME: Fix properties.
     public static final AVPDeferredHolder<Block> ABERRANT_RESIN = register(

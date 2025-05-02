@@ -8,7 +8,7 @@ import net.minecraft.world.entity.EntityType;
 import java.util.Map;
 
 import com.avp.common.entity.AVPEntityTypeTags;
-import com.avp.common.entity.type.TempAVPEntityTypes;
+import com.avp.common.entity.type.AVPEntityTypes;
 import com.avp.common.hive.Hive;
 import com.avp.common.hive.HiveMemberData;
 import com.avp.common.hive.ai.task.HiveTask;
@@ -19,10 +19,10 @@ public class PickBestLeaderTask extends HiveTask {
 
     private static final Lazy<Map<EntityType<?>, Integer>> LEADER_DISPOSITION_BY_TYPE = Lazy.of(
         () -> Map.ofEntries(
-            Map.entry(TempAVPEntityTypes.DRONE.get(), 0),
-            Map.entry(TempAVPEntityTypes.WARRIOR.get(), 1),
-            Map.entry(TempAVPEntityTypes.PRAETORIAN.get(), 2),
-            Map.entry(TempAVPEntityTypes.QUEEN.get(), 3)
+            Map.entry(AVPEntityTypes.DRONE.get(), 0),
+            Map.entry(AVPEntityTypes.WARRIOR.get(), 1),
+            Map.entry(AVPEntityTypes.PRAETORIAN.get(), 2),
+            Map.entry(AVPEntityTypes.QUEEN.get(), 3)
         )
     );
 

@@ -9,7 +9,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import org.jetbrains.annotations.NotNull;
 
-import com.avp.common.entity.type.TempAVPEntityTypes;
+import com.avp.common.entity.type.AVPEntityTypes;
 import com.avp.common.item.TempAVPItems;
 import com.avp.server.BlockBreakProgressManager;
 
@@ -22,7 +22,7 @@ public class SmartDiscItemEntity extends ThrowableItemProjectile {
     }
 
     public SmartDiscItemEntity(Level level, LivingEntity livingEntity) {
-        super(TempAVPEntityTypes.SMART_DISC.get(), livingEntity, level);
+        super(AVPEntityTypes.SMART_DISC.get(), livingEntity, level);
     }
 
     @Override

@@ -20,9 +20,8 @@ import com.avp.common.entity.living.alien.xenomorph.queen.QueenSpawning;
 import com.avp.common.entity.living.alien.xenomorph.warrior.WarriorSpawning;
 import com.avp.common.entity.living.human.marine.MarineSpawning;
 import com.avp.common.entity.living.yautja.YautjaSpawning;
-import com.avp.common.entity.type.TempAVPEntityTypes;
+import com.avp.common.entity.type.AVPEntityTypes;
 import com.avp.common.util.AVPPredicates;
-import com.avp.fabric.common.entity.type.AVPEntityTypes;
 
 public class SpawnPlacements {
 
@@ -45,7 +44,7 @@ public class SpawnPlacements {
             var weight = AVP.config.spawnConfigs.YAUTJA_SPAWN.weight;
 
             net.minecraft.world.entity.SpawnPlacements.register(
-                TempAVPEntityTypes.YAUTJA.get(),
+                AVPEntityTypes.YAUTJA.get(),
                 placement,
                 heightMap,
                 YautjaSpawning.PREDICATE
@@ -53,7 +52,7 @@ public class SpawnPlacements {
             BiomeModifications.addSpawn(
                 IS_JUNGLE,
                 AVPEntityTypes.PREDATOR_CATEGORY,
-                TempAVPEntityTypes.YAUTJA.get(),
+                AVPEntityTypes.YAUTJA.get(),
                 weight,
                 minGroupSize,
                 maxGroupSize
@@ -69,7 +68,7 @@ public class SpawnPlacements {
         }
 
         net.minecraft.world.entity.SpawnPlacements.register(
-            TempAVPEntityTypes.MARINE.get(),
+            AVPEntityTypes.MARINE.get(),
             placement,
             heightMap,
             MarineSpawning.PREDICATE
@@ -96,7 +95,7 @@ public class SpawnPlacements {
             var weight = AVP.config.spawnConfigs.DRONE_SPAWN.weight;
 
             net.minecraft.world.entity.SpawnPlacements.register(
-                TempAVPEntityTypes.DRONE.get(),
+                AVPEntityTypes.DRONE.get(),
                 placement,
                 heightMap,
                 DroneSpawning.PREDICATE
@@ -104,7 +103,7 @@ public class SpawnPlacements {
             BiomeModifications.addSpawn(
                 AVPPredicates.alwaysTrue(),
                 AVPEntityTypes.ALIEN_CATEGORY,
-                TempAVPEntityTypes.DRONE.get(),
+                AVPEntityTypes.DRONE.get(),
                 weight,
                 minGroupSize,
                 maxGroupSize
@@ -117,15 +116,15 @@ public class SpawnPlacements {
             var weight = AVP.config.spawnConfigs.PRAETORIAN_SPAWN.weight;
 
             net.minecraft.world.entity.SpawnPlacements.register(
-                TempAVPEntityTypes.PRAETORIAN.get(),
+                AVPEntityTypes.PRAETORIAN.get(),
                 placement,
                 heightMap,
                 PraetorianSpawning.PREDICATE
             );
             BiomeModifications.addSpawn(
                 AVPPredicates.alwaysTrue(),
-                TempAVPEntityTypes.ALIEN_CATEGORY,
-                TempAVPEntityTypes.PRAETORIAN.get(),
+                AVPEntityTypes.ALIEN_CATEGORY,
+                AVPEntityTypes.PRAETORIAN.get(),
                 weight,
                 minGroupSize,
                 maxGroupSize
@@ -138,15 +137,15 @@ public class SpawnPlacements {
             var weight = AVP.config.spawnConfigs.QUEEN_SPAWN.weight;
 
             net.minecraft.world.entity.SpawnPlacements.register(
-                TempAVPEntityTypes.QUEEN.get(),
+                AVPEntityTypes.QUEEN.get(),
                 placement,
                 heightMap,
                 QueenSpawning.PREDICATE
             );
             BiomeModifications.addSpawn(
                 AVPPredicates.alwaysTrue(),
-                TempAVPEntityTypes.ALIEN_CATEGORY,
-                TempAVPEntityTypes.QUEEN.get(),
+                AVPEntityTypes.ALIEN_CATEGORY,
+                AVPEntityTypes.QUEEN.get(),
                 weight,
                 minGroupSize,
                 maxGroupSize
@@ -159,15 +158,15 @@ public class SpawnPlacements {
             var weight = AVP.config.spawnConfigs.WARRIOR_SPAWN.weight;
 
             net.minecraft.world.entity.SpawnPlacements.register(
-                TempAVPEntityTypes.WARRIOR.get(),
+                AVPEntityTypes.WARRIOR.get(),
                 placement,
                 heightMap,
                 WarriorSpawning.PREDICATE
             );
             BiomeModifications.addSpawn(
                 AVPPredicates.alwaysTrue(),
-                TempAVPEntityTypes.ALIEN_CATEGORY,
-                TempAVPEntityTypes.WARRIOR.get(),
+                AVPEntityTypes.ALIEN_CATEGORY,
+                AVPEntityTypes.WARRIOR.get(),
                 weight,
                 minGroupSize,
                 maxGroupSize
@@ -180,15 +179,15 @@ public class SpawnPlacements {
             var weight = AVP.config.spawnConfigs.NETHER_DRONE_SPAWN.weight;
 
             net.minecraft.world.entity.SpawnPlacements.register(
-                TempAVPEntityTypes.NETHER_DRONE.get(),
+                AVPEntityTypes.NETHER_DRONE.get(),
                 placement,
                 heightMap,
                 DroneSpawning.NETHER_PREDICATE
             );
             BiomeModifications.addSpawn(
                 biomeSelectionContext -> biomeSelectionContext.hasTag(BiomeTags.IS_NETHER),
-                TempAVPEntityTypes.ALIEN_CATEGORY,
-                TempAVPEntityTypes.NETHER_DRONE.get(),
+                AVPEntityTypes.ALIEN_CATEGORY,
+                AVPEntityTypes.NETHER_DRONE.get(),
                 weight,
                 minGroupSize,
                 maxGroupSize
@@ -201,15 +200,15 @@ public class SpawnPlacements {
             var weight = AVP.config.spawnConfigs.NETHER_PRAETORIAN_SPAWN.weight;
 
             net.minecraft.world.entity.SpawnPlacements.register(
-                TempAVPEntityTypes.NETHER_PRAETORIAN.get(),
+                AVPEntityTypes.NETHER_PRAETORIAN.get(),
                 placement,
                 heightMap,
                 PraetorianSpawning.NETHER_PREDICATE
             );
             BiomeModifications.addSpawn(
                 biomeSelectionContext -> biomeSelectionContext.hasTag(BiomeTags.IS_NETHER),
-                TempAVPEntityTypes.ALIEN_CATEGORY,
-                TempAVPEntityTypes.NETHER_PRAETORIAN.get(),
+                AVPEntityTypes.ALIEN_CATEGORY,
+                AVPEntityTypes.NETHER_PRAETORIAN.get(),
                 weight,
                 minGroupSize,
                 maxGroupSize
@@ -222,15 +221,15 @@ public class SpawnPlacements {
             var weight = AVP.config.spawnConfigs.NETHER_WARRIOR_SPAWN.weight;
 
             net.minecraft.world.entity.SpawnPlacements.register(
-                TempAVPEntityTypes.NETHER_WARRIOR.get(),
+                AVPEntityTypes.NETHER_WARRIOR.get(),
                 placement,
                 heightMap,
                 WarriorSpawning.NETHER_PREDICATE
             );
             BiomeModifications.addSpawn(
                 biomeSelectionContext -> biomeSelectionContext.hasTag(BiomeTags.IS_NETHER),
-                TempAVPEntityTypes.ALIEN_CATEGORY,
-                TempAVPEntityTypes.NETHER_WARRIOR.get(),
+                AVPEntityTypes.ALIEN_CATEGORY,
+                AVPEntityTypes.NETHER_WARRIOR.get(),
                 weight,
                 minGroupSize,
                 maxGroupSize
@@ -243,15 +242,15 @@ public class SpawnPlacements {
             var weight = AVP.config.spawnConfigs.NETHER_QUEEN_SPAWN.weight;
 
             net.minecraft.world.entity.SpawnPlacements.register(
-                TempAVPEntityTypes.NETHER_QUEEN.get(),
+                AVPEntityTypes.NETHER_QUEEN.get(),
                 placement,
                 heightMap,
                 QueenSpawning.NETHER_PREDICATE
             );
             BiomeModifications.addSpawn(
                 biomeSelectionContext -> biomeSelectionContext.hasTag(BiomeTags.IS_NETHER),
-                TempAVPEntityTypes.ALIEN_CATEGORY,
-                TempAVPEntityTypes.NETHER_QUEEN.get(),
+                AVPEntityTypes.ALIEN_CATEGORY,
+                AVPEntityTypes.NETHER_QUEEN.get(),
                 weight,
                 minGroupSize,
                 maxGroupSize
@@ -269,15 +268,15 @@ public class SpawnPlacements {
             var weight = AVP.config.spawnConfigs.CHESTBURSTER_SPAWN.weight;
 
             net.minecraft.world.entity.SpawnPlacements.register(
-                TempAVPEntityTypes.CHESTBURSTER.get(),
+                AVPEntityTypes.CHESTBURSTER.get(),
                 placement,
                 heightMap,
                 ChestbursterSpawning.PREDICATE
             );
             BiomeModifications.addSpawn(
                 AVPPredicates.alwaysTrue(),
-                TempAVPEntityTypes.ALIEN_CATEGORY,
-                TempAVPEntityTypes.CHESTBURSTER.get(),
+                AVPEntityTypes.ALIEN_CATEGORY,
+                AVPEntityTypes.CHESTBURSTER.get(),
                 weight,
                 minGroupSize,
                 maxGroupSize
@@ -290,15 +289,15 @@ public class SpawnPlacements {
             var weight = AVP.config.spawnConfigs.OVAMORPH_SPAWN.weight;
 
             net.minecraft.world.entity.SpawnPlacements.register(
-                TempAVPEntityTypes.OVAMORPH.get(),
+                AVPEntityTypes.OVAMORPH.get(),
                 placement,
                 heightMap,
                 OvamorphSpawning.PREDICATE
             );
             BiomeModifications.addSpawn(
                 AVPPredicates.alwaysTrue(),
-                TempAVPEntityTypes.ALIEN_CATEGORY,
-                TempAVPEntityTypes.OVAMORPH.get(),
+                AVPEntityTypes.ALIEN_CATEGORY,
+                AVPEntityTypes.OVAMORPH.get(),
                 weight,
                 minGroupSize,
                 maxGroupSize
@@ -311,15 +310,15 @@ public class SpawnPlacements {
             var weight = AVP.config.spawnConfigs.NETHER_CHESTBURSTER_SPAWN.weight;
 
             net.minecraft.world.entity.SpawnPlacements.register(
-                TempAVPEntityTypes.NETHER_CHESTBURSTER.get(),
+                AVPEntityTypes.NETHER_CHESTBURSTER.get(),
                 placement,
                 heightMap,
                 ChestbursterSpawning.NETHER_PREDICATE
             );
             BiomeModifications.addSpawn(
                 biomeSelectionContext -> biomeSelectionContext.hasTag(BiomeTags.IS_NETHER),
-                TempAVPEntityTypes.ALIEN_CATEGORY,
-                TempAVPEntityTypes.NETHER_CHESTBURSTER.get(),
+                AVPEntityTypes.ALIEN_CATEGORY,
+                AVPEntityTypes.NETHER_CHESTBURSTER.get(),
                 weight,
                 minGroupSize,
                 maxGroupSize
@@ -332,15 +331,15 @@ public class SpawnPlacements {
             var weight = AVP.config.spawnConfigs.NETHER_OVAMORPH_SPAWN.weight;
 
             net.minecraft.world.entity.SpawnPlacements.register(
-                TempAVPEntityTypes.NETHER_OVAMORPH.get(),
+                AVPEntityTypes.NETHER_OVAMORPH.get(),
                 placement,
                 heightMap,
                 OvamorphSpawning.NETHER_PREDICATE
             );
             BiomeModifications.addSpawn(
                 biomeSelectionContext -> biomeSelectionContext.hasTag(BiomeTags.IS_NETHER),
-                TempAVPEntityTypes.ALIEN_CATEGORY,
-                TempAVPEntityTypes.NETHER_OVAMORPH.get(),
+                AVPEntityTypes.ALIEN_CATEGORY,
+                AVPEntityTypes.NETHER_OVAMORPH.get(),
                 weight,
                 minGroupSize,
                 maxGroupSize

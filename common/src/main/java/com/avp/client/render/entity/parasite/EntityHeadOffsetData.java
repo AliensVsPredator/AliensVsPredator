@@ -8,7 +8,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.BiFunction;
 
-import com.avp.common.entity.type.TempAVPEntityTypes;
+import com.avp.common.entity.type.AVPEntityTypes;
 
 public record EntityHeadOffsetData(
     BiFunction<EntityHeadData, Entity, Double> verticalOffsetSupplier,
@@ -118,11 +118,11 @@ public record EntityHeadOffsetData(
                 Map.entry(EntityType.ZOGLIN, HOGLIN),
                 Map.entry(EntityType.ZOMBIE_VILLAGER, VILLAGER),
                 Map.entry(
-                    TempAVPEntityTypes.MARINE.get(),
+                    AVPEntityTypes.MARINE.get(),
                     new EntityHeadOffsetData(EntityHeadOffsetData::marineVerticalOffset, EntityHeadOffsetData::marineFaceOffset)
                 ),
                 Map.entry(
-                    TempAVPEntityTypes.YAUTJA.get(),
+                    AVPEntityTypes.YAUTJA.get(),
                     new EntityHeadOffsetData(EntityHeadOffsetData::yautjaVerticalOffset, EntityHeadOffsetData::yautjaFaceOffset)
                 )
             )

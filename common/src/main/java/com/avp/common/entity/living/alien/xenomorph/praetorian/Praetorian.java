@@ -10,7 +10,7 @@ import org.jetbrains.annotations.Nullable;
 import com.avp.AVP;
 import com.avp.common.entity.living.alien.Alien;
 import com.avp.common.entity.living.alien.xenomorph.Xenomorph;
-import com.avp.common.entity.type.TempAVPEntityTypes;
+import com.avp.common.entity.type.AVPEntityTypes;
 import com.avp.common.util.resin.ResinData;
 
 public class Praetorian extends Xenomorph {
@@ -30,17 +30,17 @@ public class Praetorian extends Xenomorph {
 
     @Override
     public @Nullable EntityType<? extends Alien> getAberrantType() {
-        return TempAVPEntityTypes.ABERRANT_PRAETORIAN.get();
+        return AVPEntityTypes.ABERRANT_PRAETORIAN.get();
     }
 
     @Override
     public @Nullable EntityType<? extends Alien> getIrradiatedType() {
-        return TempAVPEntityTypes.IRRADIATED_PRAETORIAN.get();
+        return AVPEntityTypes.IRRADIATED_PRAETORIAN.get();
     }
 
     @Override
     public @Nullable EntityType<? extends Alien> getNetherType() {
-        return TempAVPEntityTypes.NETHER_PRAETORIAN.get();
+        return AVPEntityTypes.NETHER_PRAETORIAN.get();
     }
 
     @Override

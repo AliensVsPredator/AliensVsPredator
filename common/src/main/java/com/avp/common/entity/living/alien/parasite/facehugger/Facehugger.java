@@ -17,7 +17,7 @@ import com.avp.AVP;
 import com.avp.common.ai.goal.combat.LungeAtTargetGoal;
 import com.avp.common.entity.living.alien.Alien;
 import com.avp.common.entity.living.alien.parasite.Parasite;
-import com.avp.common.entity.type.TempAVPEntityTypes;
+import com.avp.common.entity.type.AVPEntityTypes;
 
 public class Facehugger extends Parasite {
 
@@ -35,7 +35,7 @@ public class Facehugger extends Parasite {
 
     @Override
     public @Nullable EntityType<? extends Alien> getAberrantType() {
-        return isRoyal() ? TempAVPEntityTypes.ROYAL_ABERRANT_FACEHUGGER.get() : TempAVPEntityTypes.ABERRANT_FACEHUGGER.get();
+        return isRoyal() ? AVPEntityTypes.ROYAL_ABERRANT_FACEHUGGER.get() : AVPEntityTypes.ABERRANT_FACEHUGGER.get();
     }
 
     @Override
@@ -45,12 +45,12 @@ public class Facehugger extends Parasite {
 
     @Override
     public @Nullable EntityType<? extends Alien> getNetherType() {
-        return isRoyal() ? TempAVPEntityTypes.ROYAL_NETHER_FACEHUGGER.get() : TempAVPEntityTypes.NETHER_FACEHUGGER.get();
+        return isRoyal() ? AVPEntityTypes.ROYAL_NETHER_FACEHUGGER.get() : AVPEntityTypes.NETHER_FACEHUGGER.get();
     }
 
     @Override
     public @Nullable EntityType<? extends Alien> getDefaultType() {
-        return isRoyal() ? TempAVPEntityTypes.ROYAL_FACEHUGGER.get() : TempAVPEntityTypes.FACEHUGGER.get();
+        return isRoyal() ? AVPEntityTypes.ROYAL_FACEHUGGER.get() : AVPEntityTypes.FACEHUGGER.get();
     }
 
     @Override

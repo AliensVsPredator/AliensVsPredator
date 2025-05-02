@@ -1,9 +1,12 @@
 package com.avp.neoforge.client;
 
 import net.minecraft.client.gui.screens.MenuScreens;
+import net.minecraft.client.particle.ParticleEngine;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.core.particles.ParticleOptions;
+import net.minecraft.core.particles.ParticleType;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -14,6 +17,7 @@ import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.neoforge.client.event.RegisterColorHandlersEvent;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
+import net.neoforged.neoforge.client.event.RegisterParticleProvidersEvent;
 
 import com.avp.AVP;
 import com.avp.client.AVPClient;
@@ -41,17 +45,6 @@ public class AVPNeoForgeClient {
 
         CLIENT_REGISTRY.getBlockRenderLayerPairs()
             .forEach(pair -> ItemBlockRenderTypes.setRenderLayer(pair.first().get(), pair.second()));
-    }
-
-    @SubscribeEvent
-    public static void registerMenuScreens(RegisterMenuScreensEvent event) {
-        CLIENT_REGISTRY.getMenuScreenConstructorPairs()
-            .forEach(pair -> {
-                var menuType = pair.first().get();
-                @SuppressWarnings("unchecked")
-                var screenConstructor = (MenuScreens.ScreenConstructor<AbstractContainerMenu, ?>) pair.second();
-                event.register(menuType, screenConstructor);
-            });
     }
 
     @SubscribeEvent
@@ -84,6 +77,28 @@ public class AVPNeoForgeClient {
                 @SuppressWarnings("unchecked")
                 var blockEntityRendererProvider = (BlockEntityRendererProvider<BlockEntity>) pair.second();
                 event.registerBlockEntityRenderer(blockEntityType, blockEntityRendererProvider);
+            });
+    }
+
+    @SubscribeEvent
+    public static void registerMenuScreens(RegisterMenuScreensEvent event) {
+        CLIENT_REGISTRY.getMenuScreenConstructorPairs()
+            .forEach(pair -> {
+                var menuType = pair.first().get();
+                @SuppressWarnings("unchecked")
+                var screenConstructor = (MenuScreens.ScreenConstructor<AbstractContainerMenu, ?>) pair.second();
+                event.register(menuType, screenConstructor);
+            });
+    }
+
+    @SubscribeEvent
+    @SuppressWarnings("unchecked")
+    public static void registerParticleProviders(RegisterParticleProvidersEvent event) {
+        CLIENT_REGISTRY.getParticleProviderFactoryPairs()
+            .forEach(pair -> {
+                var particleType = (ParticleType<ParticleOptions>) pair.first().get();
+                var spriteParticleRegistration = (ParticleEngine.SpriteParticleRegistration<ParticleOptions>) pair.second();
+                event.registerSpriteSet(particleType, spriteParticleRegistration);
             });
     }
 }

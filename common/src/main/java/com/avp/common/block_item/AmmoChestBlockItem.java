@@ -12,13 +12,13 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-import com.avp.common.block.TempAVPBlocks;
+import com.avp.common.block.AVPBlocks;
 
 public class AmmoChestBlockItem extends BlockItem {
 
     public AmmoChestBlockItem() {
         super(
-            TempAVPBlocks.AMMO_CHEST.get(),
+            AVPBlocks.AMMO_CHEST.get(),
             new Item.Properties().component(DataComponents.CONTAINER, ItemContainerContents.EMPTY)
                 .component(DataComponents.MAX_STACK_SIZE, 1)
         );

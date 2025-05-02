@@ -1,4 +1,4 @@
-package com.avp.fabric.common.lifecycle.infection;
+package com.avp.common.lifecycle.infection;
 
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;

@@ -10,12 +10,12 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-import com.avp.common.block.TempAVPBlocks;
+import com.avp.common.block.AVPBlocks;
 
 public class SentryTurretBlockItem extends BlockItem {
 
     public SentryTurretBlockItem() {
-        super(TempAVPBlocks.SENTRY_TURRET.get(), new Item.Properties());
+        super(AVPBlocks.SENTRY_TURRET.get(), new Item.Properties());
     }
 
     @Override

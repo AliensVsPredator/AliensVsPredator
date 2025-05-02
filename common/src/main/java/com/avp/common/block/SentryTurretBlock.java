@@ -10,7 +10,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import com.avp.common.entity.type.TempAVPEntityTypes;
+import com.avp.common.entity.type.AVPEntityTypes;
 
 public class SentryTurretBlock extends Block {
 
@@ -31,7 +31,7 @@ public class SentryTurretBlock extends Block {
             return;
         }
 
-        var sentryTurret = TempAVPEntityTypes.SENTRY_TURRET.get().create(serverLevel);
+        var sentryTurret = AVPEntityTypes.SENTRY_TURRET.get().create(serverLevel);
 
         if (sentryTurret == null) {
             return;

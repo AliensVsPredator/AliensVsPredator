@@ -22,7 +22,7 @@ import net.minecraft.world.level.block.entity.LidBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
 
-import com.avp.common.block.TempAVPBlocks;
+import com.avp.common.block.AVPBlocks;
 
 public class LeadChestBlockEntity extends BaseContainerBlockEntity implements LidBlockEntity {
 
@@ -67,7 +67,7 @@ public class LeadChestBlockEntity extends BaseContainerBlockEntity implements Li
 
             @Override
             protected void openerCountChanged(Level level, BlockPos pos, BlockState state, int count, int openCount) {
-                level.blockEvent(LeadChestBlockEntity.this.worldPosition, TempAVPBlocks.LEAD_CHEST.get(), 1, openCount);
+                level.blockEvent(LeadChestBlockEntity.this.worldPosition, AVPBlocks.LEAD_CHEST.get(), 1, openCount);
             }
 
             @Override

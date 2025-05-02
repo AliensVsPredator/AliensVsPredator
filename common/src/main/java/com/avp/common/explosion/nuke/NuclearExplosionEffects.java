@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import com.avp.common.block.TempAVPBlocks;
+import com.avp.common.block.AVPBlocks;
 import com.avp.common.explosion.Explosion;
 import com.avp.common.util.ExplosionUtil;
 import com.avp.common.worldgen.biome.AVPBiomes;
@@ -77,7 +77,7 @@ public class NuclearExplosionEffects {
                     var rand2 = level.random.nextInt(100);
 
                     if (rand2 < 66) {
-                        transformedBlock = TempAVPBlocks.TRINITITE_BLOCK.get();
+                        transformedBlock = AVPBlocks.TRINITITE_BLOCK.get();
                     } else {
                         transformedBlock = Blocks.MAGMA_BLOCK;
                     }
@@ -89,7 +89,7 @@ public class NuclearExplosionEffects {
             if (blockState.isSolidRender(level, pos) && level.getRandom().nextInt(10) < 2) {
                 level.setBlock(
                     pos.above(),
-                    TempAVPBlocks.ASH_BLOCK.get().defaultBlockState().setValue(SnowLayerBlock.LAYERS, 1),
+                    AVPBlocks.ASH_BLOCK.get().defaultBlockState().setValue(SnowLayerBlock.LAYERS, 1),
                     flags
                 );
             }

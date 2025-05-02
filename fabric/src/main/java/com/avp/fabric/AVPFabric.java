@@ -19,21 +19,17 @@ import net.minecraft.world.level.levelgen.structure.templatesystem.StructureProc
 import java.util.ArrayList;
 
 import com.avp.AVP;
-import com.avp.common.entity.type.TempAVPEntityTypes;
+import com.avp.common.entity.type.AVPEntityTypes;
 import com.avp.fabric.common.block.CompostingChanceRegistry;
 import com.avp.fabric.common.block.DispenserBlockBehaviors;
 import com.avp.fabric.common.block.FlammableBlockRegistry;
 import com.avp.fabric.common.command.Commands;
 import com.avp.fabric.common.entity.spawn.SpawnPlacements;
-import com.avp.fabric.common.entity.type.AVPEntityTypes;
 import com.avp.fabric.common.fuel.AVPFuelRegistry;
 import com.avp.fabric.common.item.AVPItems;
 import com.avp.fabric.common.item.SpawnEggItems;
-import com.avp.fabric.common.lifecycle.Infections;
-import com.avp.fabric.common.lifecycle.Lifecycles;
 import com.avp.fabric.common.network.CommonPacketRegistry;
 import com.avp.fabric.common.network.ServerPacketHandlerRegistry;
-import com.avp.fabric.common.particle.AVPParticleTypes;
 import com.avp.fabric.common.patrols.MarinePatrolSpawner;
 import com.avp.fabric.common.profession.AVPGifts;
 import com.avp.fabric.common.profession.AVPProfessions;
@@ -63,10 +59,6 @@ public class AVPFabric implements ModInitializer {
         // Core
         AVPItems.initialize();
         SpawnEggItems.initialize();
-        AVPEntityTypes.initialize();
-        Infections.initialize();
-        Lifecycles.initialize();
-        AVPParticleTypes.initialize();
         WorldGen.initialize();
         CommonPacketRegistry.initialize();
         ServerPacketHandlerRegistry.initialize();
@@ -99,7 +91,7 @@ public class AVPFabric implements ModInitializer {
          * TODO: Use Yautja sound when added
          */
         // FIXME: This will break on NeoForge.
-        sounds.put(TempAVPEntityTypes.YAUTJA.get(), SoundEvents.ALLAY_AMBIENT_WITH_ITEM);
+        sounds.put(AVPEntityTypes.YAUTJA.get(), SoundEvents.ALLAY_AMBIENT_WITH_ITEM);
     }
 
     public static void modifyGifts() {

@@ -1,4 +1,4 @@
-package com.avp.fabric.common.lifecycle.registry;
+package com.avp.common.lifecycle.registry;
 
 import com.bvanseg.just.functional.option.Option;
 import net.minecraft.world.entity.EntityType;
@@ -8,8 +8,8 @@ import org.jetbrains.annotations.Nullable;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.avp.fabric.common.lifecycle.infection.AlienInfectionKey;
-import com.avp.fabric.common.lifecycle.infection.Infection;
+import com.avp.common.lifecycle.infection.AlienInfectionKey;
+import com.avp.common.lifecycle.infection.Infection;
 
 public class AlienInfectionRegistry {
 

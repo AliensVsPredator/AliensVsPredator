@@ -3,8 +3,6 @@ package com.avp.fabric.client;
 import mod.azure.azurelib.rewrite.render.item.AzItemRenderer;
 import mod.azure.azurelib.rewrite.render.item.AzItemRendererRegistry;
 import net.fabricmc.api.ClientModInitializer;
-import net.fabricmc.fabric.api.client.particle.v1.ParticleFactoryRegistry;
-import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.Item;
 
@@ -12,13 +10,8 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 import com.avp.client.AVPClient;
-import com.avp.client.render.item.SimpleItemRenderer;
 import com.avp.fabric.client.input.keybind.AVPKeybindingRegistry;
 import com.avp.fabric.client.network.AVPClientPacketHandlerRegistry;
-import com.avp.fabric.client.particle.AcidParticleProvider;
-import com.avp.fabric.client.particle.BlueAcidParticleProvider;
-import com.avp.fabric.client.particle.IrradiatedAcidParticleProvider;
-import com.avp.fabric.client.render.entity.EmptyRenderer;
 import com.avp.fabric.client.render.item.F903weItemRenderer;
 import com.avp.fabric.client.render.item.FlameThrowerItemRenderer;
 import com.avp.fabric.client.render.item.M3712ShotgunItemRenderer;
@@ -30,15 +23,9 @@ import com.avp.fabric.client.render.item.M6BRLItemRenderer;
 import com.avp.fabric.client.render.item.M88Mod4CombatPistolItemRenderer;
 import com.avp.fabric.client.render.item.OldPainlessItemRenderer;
 import com.avp.fabric.client.render.item.ZX76ShotgunItemRenderer;
-import com.avp.fabric.common.entity.type.AVPEntityTypes;
 import com.avp.fabric.common.item.AVPItems;
-import com.avp.fabric.common.particle.AVPParticleTypes;
 
 public class AVPFabricClient implements ClientModInitializer {
-
-    private static final Function<String, Supplier<AzItemRenderer>> ITEM_RENDERER_SUPPLIER_FACTORY = name -> () -> new SimpleItemRenderer(
-        name
-    );
 
     @Override
     public void onInitializeClient() {
@@ -57,26 +44,11 @@ public class AVPFabricClient implements ClientModInitializer {
         registerItemRenderer(AVPItems.OLD_PAINLESS, name -> () -> new OldPainlessItemRenderer(name));
         registerItemRenderer(AVPItems.ZX_76_SHOTGUN, name -> () -> new ZX76ShotgunItemRenderer(name));
 
-        // Entities
-
-        // Block-like entities (like primed TNT)
-
-        EntityRendererRegistry.register(AVPEntityTypes.BULLET, EmptyRenderer::new);
-
-        // Particles
-        ParticleFactoryRegistry.getInstance().register(AVPParticleTypes.ACID, AcidParticleProvider::new);
-        ParticleFactoryRegistry.getInstance().register(AVPParticleTypes.BLUE_ACID, BlueAcidParticleProvider::new);
-        ParticleFactoryRegistry.getInstance().register(AVPParticleTypes.IRRADIATED_ACID, IrradiatedAcidParticleProvider::new);
-
         // Keybindings
         AVPKeybindingRegistry.initialize();
 
         // Networking
         AVPClientPacketHandlerRegistry.initialize();
-    }
-
-    private void registerItemRenderer(Item item) {
-        registerItemRenderer(item, ITEM_RENDERER_SUPPLIER_FACTORY);
     }
 
     private void registerItemRenderer(Item item, Function<String, Supplier<AzItemRenderer>> rendererFactory) {

@@ -10,7 +10,7 @@ import org.jetbrains.annotations.Nullable;
 import com.avp.AVP;
 import com.avp.common.ai.goal.combat.LungeAtTargetGoal;
 import com.avp.common.entity.living.alien.xenomorph.Xenomorph;
-import com.avp.common.entity.type.TempAVPEntityTypes;
+import com.avp.common.entity.type.AVPEntityTypes;
 import com.avp.common.sound.AVPSoundEvents;
 import com.avp.common.util.resin.ResinData;
 
@@ -31,17 +31,17 @@ public class Warrior extends Xenomorph {
 
     @Override
     public @Nullable EntityType<? extends Xenomorph> getAberrantType() {
-        return TempAVPEntityTypes.ABERRANT_WARRIOR.get();
+        return AVPEntityTypes.ABERRANT_WARRIOR.get();
     }
 
     @Override
     public @Nullable EntityType<? extends Xenomorph> getIrradiatedType() {
-        return TempAVPEntityTypes.IRRADIATED_WARRIOR.get();
+        return AVPEntityTypes.IRRADIATED_WARRIOR.get();
     }
 
     @Override
     public @Nullable EntityType<? extends Xenomorph> getNetherType() {
-        return TempAVPEntityTypes.NETHER_WARRIOR.get();
+        return AVPEntityTypes.NETHER_WARRIOR.get();
     }
 
     @Override

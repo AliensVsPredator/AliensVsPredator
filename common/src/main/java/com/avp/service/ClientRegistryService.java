@@ -8,9 +8,12 @@ import net.minecraft.client.color.item.ItemColor;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.MenuAccess;
+import net.minecraft.client.particle.ParticleEngine;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.core.particles.ParticleOptions;
+import net.minecraft.core.particles.ParticleType;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -68,6 +71,11 @@ public interface ClientRegistryService {
     <T extends AbstractContainerMenu, U extends Screen & MenuAccess<T>> void registerMenuScreen(
         Supplier<? extends MenuType<T>> menuTypeSupplier,
         MenuScreens.ScreenConstructor<T, U> screenConstructor
+    );
+
+    <T extends ParticleOptions> void registerParticleProviderFactory(
+        Supplier<? extends ParticleType<T>> particleTypeSupplier,
+        ParticleEngine.SpriteParticleRegistration<T> spriteParticleRegistration
     );
 
 }

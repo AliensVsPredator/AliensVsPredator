@@ -19,8 +19,8 @@ import org.jetbrains.annotations.NotNull;
 import java.time.Duration;
 
 import com.avp.AVP;
-import com.avp.common.block.TempAVPBlocks;
-import com.avp.common.entity.type.TempAVPEntityTypes;
+import com.avp.common.block.AVPBlocks;
+import com.avp.common.entity.type.AVPEntityTypes;
 import com.avp.common.util.ExplosionUtil;
 import com.avp.server.ServerScheduler;
 
@@ -39,7 +39,7 @@ public class PrimedNuke extends Entity {
     }
 
     public PrimedNuke(Level level) {
-        this(TempAVPEntityTypes.NUKE.get(), level);
+        this(AVPEntityTypes.NUKE.get(), level);
     }
 
     public void setFuse(int i) {
@@ -61,7 +61,7 @@ public class PrimedNuke extends Entity {
     @Override
     protected void defineSynchedData(SynchedEntityData.Builder builder) {
         builder.define(DATA_FUSE_ID, 80);
-        builder.define(DATA_BLOCK_STATE_ID, TempAVPBlocks.NUKE_BLOCK.get().defaultBlockState());
+        builder.define(DATA_BLOCK_STATE_ID, AVPBlocks.NUKE_BLOCK.get().defaultBlockState());
     }
 
     @Override

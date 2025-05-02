@@ -12,14 +12,13 @@ import java.util.Arrays;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Supplier;
 
-import com.avp.common.block.TempAVPBlocks;
+import com.avp.common.block.AVPBlocks;
 import com.avp.common.creative_mode_tab.AVPCreativeModeTabs;
-import com.avp.common.entity.type.TempAVPEntityTypes;
+import com.avp.common.entity.type.AVPEntityTypes;
 import com.avp.common.item.AVPArmorItems;
 import com.avp.common.item.AVPSpawnEggItems;
 import com.avp.common.item.TempAVPItems;
 import com.avp.common.sound.AVPSoundEvents;
-import com.avp.fabric.common.entity.type.AVPEntityTypes;
 import com.avp.fabric.common.item.AVPItems;
 
 public class EnglishLanguageProvider extends FabricLanguageProvider {
@@ -34,249 +33,249 @@ public class EnglishLanguageProvider extends FabricLanguageProvider {
         builder.add("entity.minecraft.villager.commissary", "Commissary Villager");
 
         // Blocks
-        addBlock(builder, TempAVPBlocks.BLUEPRINT_BLOCK, "Blueprint Block");
-        addBlock(builder, TempAVPBlocks.REDSTONE_GENERATOR, "Redstone Generator");
-        addBlock(builder, TempAVPBlocks.DESK_TERMINAL_BLOCK, "Desk Terminal");
-        addBlock(builder, TempAVPBlocks.TRIP_MINE_BLOCK, "Trip Mine");
-        addBlock(builder, TempAVPBlocks.RESONATOR_BLOCK, "Resonator");
-        addBlock(builder, TempAVPBlocks.AMMO_CHEST, "Ammo Chest");
-        addBlock(builder, TempAVPBlocks.SENTRY_TURRET, "Sentry Turret");
-        addBlock(builder, TempAVPBlocks.ASH_BLOCK, "Ash Block");
-        addBlock(builder, TempAVPBlocks.NUKE_BLOCK, "Nuke Block");
-        addBlock(builder, TempAVPBlocks.ROYAL_JELLY_BLOCK, "Royal Jelly Block");
-        addBlock(builder, TempAVPBlocks.TRINITITE_BLOCK, "Block of Trinitite");
-        addBlock(builder, TempAVPBlocks.ALUMINUM_BLOCK, "Block of Aluminum");
-        addBlock(builder, TempAVPBlocks.AUTUNITE_BLOCK, "Autunite Block");
-        addBlock(builder, TempAVPBlocks.AUTUNITE_ORE, "Autunite Ore");
-        addBlock(builder, TempAVPBlocks.BAUXITE_ORE, "Bauxite Ore");
-        addBlock(builder, TempAVPBlocks.BRASS_BLOCK, "Block of Brass");
-        addBlock(builder, TempAVPBlocks.CHISELED_FERROALUMINUM, "Chiseled Ferroaluminum");
-        addBlock(builder, TempAVPBlocks.CHISELED_STEEL, "Chiseled Steel");
-        addBlock(builder, TempAVPBlocks.CHISELED_TITANIUM, "Chiseled Titanium");
-        addBlock(builder, TempAVPBlocks.CUT_FERROALUMINUM, "Cut Ferroaluminum");
-        addBlock(builder, TempAVPBlocks.CUT_FERROALUMINUM_SLAB, "Cut Ferroaluminum Slab");
-        addBlock(builder, TempAVPBlocks.CUT_FERROALUMINUM_STAIRS, "Cut Ferroaluminum Stairs");
-        addBlock(builder, TempAVPBlocks.CUT_STEEL, "Cut Steel");
-        addBlock(builder, TempAVPBlocks.CUT_STEEL_SLAB, "Cut Steel Slab");
-        addBlock(builder, TempAVPBlocks.CUT_STEEL_STAIRS, "Cut Steel Stairs");
-        addBlock(builder, TempAVPBlocks.CUT_TITANIUM, "Cut Titanium");
-        addBlock(builder, TempAVPBlocks.CUT_TITANIUM_SLAB, "Cut Titanium Slab");
-        addBlock(builder, TempAVPBlocks.CUT_TITANIUM_STAIRS, "Cut Titanium Stairs");
-        addBlock(builder, TempAVPBlocks.DEEPSLATE_TITANIUM_ORE, "Deepslate Titanium Ore");
-        addBlock(builder, TempAVPBlocks.DEEPSLATE_ZINC_ORE, "Deepslate Zinc Ore");
-        addBlock(builder, TempAVPBlocks.FERROALUMINUM_BLOCK, "Block of Ferroaluminum");
-        addBlock(builder, TempAVPBlocks.FERROALUMINUM_BUTTON, "Ferroaluminum Button");
-        addBlock(builder, TempAVPBlocks.FERROALUMINUM_CHAIN_FENCE, "Ferroaluminum Chain Fence");
-        addBlock(builder, TempAVPBlocks.FERROALUMINUM_COLUMN, "Ferroaluminum Column");
-        addBlock(builder, TempAVPBlocks.FERROALUMINUM_DOOR, "Ferroaluminum Door");
-        addBlock(builder, TempAVPBlocks.FERROALUMINUM_FASTENED_SIDING, "Ferroaluminum Fastened Siding");
-        addBlock(builder, TempAVPBlocks.FERROALUMINUM_FASTENED_STANDING, "Ferroaluminum Fastened Standing");
-        addBlock(builder, TempAVPBlocks.FERROALUMINUM_GRATE, "Ferroaluminum Grate");
-        addBlock(builder, TempAVPBlocks.FERROALUMINUM_PRESSURE_PLATE, "Ferroaluminum Pressure Plate");
-        addBlock(builder, TempAVPBlocks.FERROALUMINUM_PLATING, "Ferroaluminum Plating");
-        addBlock(builder, TempAVPBlocks.FERROALUMINUM_SIDING, "Ferroaluminum Siding");
-        addBlock(builder, TempAVPBlocks.FERROALUMINUM_STANDING, "Ferroaluminum Standing");
-        addBlock(builder, TempAVPBlocks.FERROALUMINUM_TRAP_DOOR, "Ferroaluminum Trapdoor");
-        addBlock(builder, TempAVPBlocks.FERROALUMINUM_TREAD, "Ferroaluminum Tread");
-        addBlock(builder, TempAVPBlocks.GALENA_ORE, "Galena Ore");
-        addBlock(builder, TempAVPBlocks.INDUSTRIAL_GLASS, "Industrial Glass");
-        addBlock(builder, TempAVPBlocks.INDUSTRIAL_GLASS_PANE, "Industrial Glass Pane");
-        addBlock(builder, TempAVPBlocks.INDUSTRIAL_GLASS_DOOR, "Industrial Glass Door");
-        addBlock(builder, TempAVPBlocks.INDUSTRIAL_GLASS_TRAP_DOOR, "Industrial Glass Trap Door");
-        addBlock(builder, TempAVPBlocks.INDUSTRIAL_GLASS_SLAB, "Industrial Glass Slab");
-        addBlock(builder, TempAVPBlocks.INDUSTRIAL_GLASS_STAIRS, "Industrial Glass Stairs");
-        addBlock(builder, TempAVPBlocks.LEAD_BLOCK, "Block of Lead");
-        addBlock(builder, TempAVPBlocks.LEAD_CHEST, "Lead Chest");
-        addBlock(builder, TempAVPBlocks.FERROALUMINUM_FASTENED_STANDING_SLAB, "Ferroaluminum Fastened Standing Slab");
-        addBlock(builder, TempAVPBlocks.FERROALUMINUM_FASTENED_STANDING_STAIRS, "Ferroaluminum Fastened Standing Stairs");
-        addBlock(builder, TempAVPBlocks.FERROALUMINUM_GRATE_SLAB, "Ferroaluminum Grate Slab");
-        addBlock(builder, TempAVPBlocks.FERROALUMINUM_GRATE_STAIRS, "Ferroaluminum Grate Stairs");
-        addBlock(builder, TempAVPBlocks.FERROALUMINUM_PLATING_SLAB, "Ferroaluminum Plating Slab");
-        addBlock(builder, TempAVPBlocks.FERROALUMINUM_PLATING_STAIRS, "Ferroaluminum Plating Stairs");
-        addBlock(builder, TempAVPBlocks.FERROALUMINUM_STANDING_SLAB, "Ferroaluminum Standing Slab");
-        addBlock(builder, TempAVPBlocks.FERROALUMINUM_STANDING_STAIRS, "Ferroaluminum Standing Stairs");
-        addBlock(builder, TempAVPBlocks.FERROALUMINUM_TREAD_SLAB, "Ferroaluminum Tread Slab");
-        addBlock(builder, TempAVPBlocks.FERROALUMINUM_TREAD_STAIRS, "Ferroaluminum Tread Stairs");
-        addBlock(builder, TempAVPBlocks.STEEL_FASTENED_STANDING_SLAB, "Steel Fastened Standing Slab");
-        addBlock(builder, TempAVPBlocks.STEEL_FASTENED_STANDING_STAIRS, "Steel Fastened Standing Stairs");
-        addBlock(builder, TempAVPBlocks.STEEL_GRATE_SLAB, "Steel Grate Slab");
-        addBlock(builder, TempAVPBlocks.STEEL_GRATE_STAIRS, "Steel Grate Stairs");
-        addBlock(builder, TempAVPBlocks.STEEL_PLATING_SLAB, "Steel Plating Slab");
-        addBlock(builder, TempAVPBlocks.STEEL_PLATING_STAIRS, "Steel Plating Stairs");
-        addBlock(builder, TempAVPBlocks.STEEL_TREAD_SLAB, "Steel Tread Slab");
-        addBlock(builder, TempAVPBlocks.STEEL_TREAD_STAIRS, "Steel Tread Stairs");
-        addBlock(builder, TempAVPBlocks.TITANIUM_FASTENED_STANDING_SLAB, "Titanium Fastened Standing Slab");
-        addBlock(builder, TempAVPBlocks.TITANIUM_FASTENED_STANDING_STAIRS, "Titanium Fastened Standing Stairs");
-        addBlock(builder, TempAVPBlocks.TITANIUM_GRATE_SLAB, "Titanium Grate Slab");
-        addBlock(builder, TempAVPBlocks.TITANIUM_GRATE_STAIRS, "Titanium Grate Stairs");
-        addBlock(builder, TempAVPBlocks.TITANIUM_PLATING_SLAB, "Titanium Plating Slab");
-        addBlock(builder, TempAVPBlocks.TITANIUM_PLATING_STAIRS, "Titanium Plating Stairs");
-        addBlock(builder, TempAVPBlocks.TITANIUM_TREAD_SLAB, "Titanium Tread Slab");
-        addBlock(builder, TempAVPBlocks.TITANIUM_TREAD_STAIRS, "Titanium Tread Stairs");
+        addBlock(builder, AVPBlocks.BLUEPRINT_BLOCK, "Blueprint Block");
+        addBlock(builder, AVPBlocks.REDSTONE_GENERATOR, "Redstone Generator");
+        addBlock(builder, AVPBlocks.DESK_TERMINAL_BLOCK, "Desk Terminal");
+        addBlock(builder, AVPBlocks.TRIP_MINE_BLOCK, "Trip Mine");
+        addBlock(builder, AVPBlocks.RESONATOR_BLOCK, "Resonator");
+        addBlock(builder, AVPBlocks.AMMO_CHEST, "Ammo Chest");
+        addBlock(builder, AVPBlocks.SENTRY_TURRET, "Sentry Turret");
+        addBlock(builder, AVPBlocks.ASH_BLOCK, "Ash Block");
+        addBlock(builder, AVPBlocks.NUKE_BLOCK, "Nuke Block");
+        addBlock(builder, AVPBlocks.ROYAL_JELLY_BLOCK, "Royal Jelly Block");
+        addBlock(builder, AVPBlocks.TRINITITE_BLOCK, "Block of Trinitite");
+        addBlock(builder, AVPBlocks.ALUMINUM_BLOCK, "Block of Aluminum");
+        addBlock(builder, AVPBlocks.AUTUNITE_BLOCK, "Autunite Block");
+        addBlock(builder, AVPBlocks.AUTUNITE_ORE, "Autunite Ore");
+        addBlock(builder, AVPBlocks.BAUXITE_ORE, "Bauxite Ore");
+        addBlock(builder, AVPBlocks.BRASS_BLOCK, "Block of Brass");
+        addBlock(builder, AVPBlocks.CHISELED_FERROALUMINUM, "Chiseled Ferroaluminum");
+        addBlock(builder, AVPBlocks.CHISELED_STEEL, "Chiseled Steel");
+        addBlock(builder, AVPBlocks.CHISELED_TITANIUM, "Chiseled Titanium");
+        addBlock(builder, AVPBlocks.CUT_FERROALUMINUM, "Cut Ferroaluminum");
+        addBlock(builder, AVPBlocks.CUT_FERROALUMINUM_SLAB, "Cut Ferroaluminum Slab");
+        addBlock(builder, AVPBlocks.CUT_FERROALUMINUM_STAIRS, "Cut Ferroaluminum Stairs");
+        addBlock(builder, AVPBlocks.CUT_STEEL, "Cut Steel");
+        addBlock(builder, AVPBlocks.CUT_STEEL_SLAB, "Cut Steel Slab");
+        addBlock(builder, AVPBlocks.CUT_STEEL_STAIRS, "Cut Steel Stairs");
+        addBlock(builder, AVPBlocks.CUT_TITANIUM, "Cut Titanium");
+        addBlock(builder, AVPBlocks.CUT_TITANIUM_SLAB, "Cut Titanium Slab");
+        addBlock(builder, AVPBlocks.CUT_TITANIUM_STAIRS, "Cut Titanium Stairs");
+        addBlock(builder, AVPBlocks.DEEPSLATE_TITANIUM_ORE, "Deepslate Titanium Ore");
+        addBlock(builder, AVPBlocks.DEEPSLATE_ZINC_ORE, "Deepslate Zinc Ore");
+        addBlock(builder, AVPBlocks.FERROALUMINUM_BLOCK, "Block of Ferroaluminum");
+        addBlock(builder, AVPBlocks.FERROALUMINUM_BUTTON, "Ferroaluminum Button");
+        addBlock(builder, AVPBlocks.FERROALUMINUM_CHAIN_FENCE, "Ferroaluminum Chain Fence");
+        addBlock(builder, AVPBlocks.FERROALUMINUM_COLUMN, "Ferroaluminum Column");
+        addBlock(builder, AVPBlocks.FERROALUMINUM_DOOR, "Ferroaluminum Door");
+        addBlock(builder, AVPBlocks.FERROALUMINUM_FASTENED_SIDING, "Ferroaluminum Fastened Siding");
+        addBlock(builder, AVPBlocks.FERROALUMINUM_FASTENED_STANDING, "Ferroaluminum Fastened Standing");
+        addBlock(builder, AVPBlocks.FERROALUMINUM_GRATE, "Ferroaluminum Grate");
+        addBlock(builder, AVPBlocks.FERROALUMINUM_PRESSURE_PLATE, "Ferroaluminum Pressure Plate");
+        addBlock(builder, AVPBlocks.FERROALUMINUM_PLATING, "Ferroaluminum Plating");
+        addBlock(builder, AVPBlocks.FERROALUMINUM_SIDING, "Ferroaluminum Siding");
+        addBlock(builder, AVPBlocks.FERROALUMINUM_STANDING, "Ferroaluminum Standing");
+        addBlock(builder, AVPBlocks.FERROALUMINUM_TRAP_DOOR, "Ferroaluminum Trapdoor");
+        addBlock(builder, AVPBlocks.FERROALUMINUM_TREAD, "Ferroaluminum Tread");
+        addBlock(builder, AVPBlocks.GALENA_ORE, "Galena Ore");
+        addBlock(builder, AVPBlocks.INDUSTRIAL_GLASS, "Industrial Glass");
+        addBlock(builder, AVPBlocks.INDUSTRIAL_GLASS_PANE, "Industrial Glass Pane");
+        addBlock(builder, AVPBlocks.INDUSTRIAL_GLASS_DOOR, "Industrial Glass Door");
+        addBlock(builder, AVPBlocks.INDUSTRIAL_GLASS_TRAP_DOOR, "Industrial Glass Trap Door");
+        addBlock(builder, AVPBlocks.INDUSTRIAL_GLASS_SLAB, "Industrial Glass Slab");
+        addBlock(builder, AVPBlocks.INDUSTRIAL_GLASS_STAIRS, "Industrial Glass Stairs");
+        addBlock(builder, AVPBlocks.LEAD_BLOCK, "Block of Lead");
+        addBlock(builder, AVPBlocks.LEAD_CHEST, "Lead Chest");
+        addBlock(builder, AVPBlocks.FERROALUMINUM_FASTENED_STANDING_SLAB, "Ferroaluminum Fastened Standing Slab");
+        addBlock(builder, AVPBlocks.FERROALUMINUM_FASTENED_STANDING_STAIRS, "Ferroaluminum Fastened Standing Stairs");
+        addBlock(builder, AVPBlocks.FERROALUMINUM_GRATE_SLAB, "Ferroaluminum Grate Slab");
+        addBlock(builder, AVPBlocks.FERROALUMINUM_GRATE_STAIRS, "Ferroaluminum Grate Stairs");
+        addBlock(builder, AVPBlocks.FERROALUMINUM_PLATING_SLAB, "Ferroaluminum Plating Slab");
+        addBlock(builder, AVPBlocks.FERROALUMINUM_PLATING_STAIRS, "Ferroaluminum Plating Stairs");
+        addBlock(builder, AVPBlocks.FERROALUMINUM_STANDING_SLAB, "Ferroaluminum Standing Slab");
+        addBlock(builder, AVPBlocks.FERROALUMINUM_STANDING_STAIRS, "Ferroaluminum Standing Stairs");
+        addBlock(builder, AVPBlocks.FERROALUMINUM_TREAD_SLAB, "Ferroaluminum Tread Slab");
+        addBlock(builder, AVPBlocks.FERROALUMINUM_TREAD_STAIRS, "Ferroaluminum Tread Stairs");
+        addBlock(builder, AVPBlocks.STEEL_FASTENED_STANDING_SLAB, "Steel Fastened Standing Slab");
+        addBlock(builder, AVPBlocks.STEEL_FASTENED_STANDING_STAIRS, "Steel Fastened Standing Stairs");
+        addBlock(builder, AVPBlocks.STEEL_GRATE_SLAB, "Steel Grate Slab");
+        addBlock(builder, AVPBlocks.STEEL_GRATE_STAIRS, "Steel Grate Stairs");
+        addBlock(builder, AVPBlocks.STEEL_PLATING_SLAB, "Steel Plating Slab");
+        addBlock(builder, AVPBlocks.STEEL_PLATING_STAIRS, "Steel Plating Stairs");
+        addBlock(builder, AVPBlocks.STEEL_TREAD_SLAB, "Steel Tread Slab");
+        addBlock(builder, AVPBlocks.STEEL_TREAD_STAIRS, "Steel Tread Stairs");
+        addBlock(builder, AVPBlocks.TITANIUM_FASTENED_STANDING_SLAB, "Titanium Fastened Standing Slab");
+        addBlock(builder, AVPBlocks.TITANIUM_FASTENED_STANDING_STAIRS, "Titanium Fastened Standing Stairs");
+        addBlock(builder, AVPBlocks.TITANIUM_GRATE_SLAB, "Titanium Grate Slab");
+        addBlock(builder, AVPBlocks.TITANIUM_GRATE_STAIRS, "Titanium Grate Stairs");
+        addBlock(builder, AVPBlocks.TITANIUM_PLATING_SLAB, "Titanium Plating Slab");
+        addBlock(builder, AVPBlocks.TITANIUM_PLATING_STAIRS, "Titanium Plating Stairs");
+        addBlock(builder, AVPBlocks.TITANIUM_TREAD_SLAB, "Titanium Tread Slab");
+        addBlock(builder, AVPBlocks.TITANIUM_TREAD_STAIRS, "Titanium Tread Stairs");
 
-        TempAVPBlocks.DYE_COLOR_TO_CONCRETE_SLAB.forEach(
+        AVPBlocks.DYE_COLOR_TO_CONCRETE_SLAB.forEach(
             (key, value) -> addBlock(builder, value, format(key.getName()) + " Concrete Slab")
         );
-        TempAVPBlocks.DYE_COLOR_TO_CONCRETE_STAIRS.forEach(
+        AVPBlocks.DYE_COLOR_TO_CONCRETE_STAIRS.forEach(
             (key, value) -> addBlock(builder, value, format(key.getName()) + " Concrete Stairs")
         );
 
-        TempAVPBlocks.DYE_COLOR_TO_INDUSTRIAL_CONCRETE.forEach(
+        AVPBlocks.DYE_COLOR_TO_INDUSTRIAL_CONCRETE.forEach(
             (key, value) -> addBlock(builder, value, format(key.getName()) + " Industrial Concrete")
         );
-        TempAVPBlocks.DYE_COLOR_TO_INDUSTRIAL_CONCRETE_SLAB.forEach(
+        AVPBlocks.DYE_COLOR_TO_INDUSTRIAL_CONCRETE_SLAB.forEach(
             (key, value) -> addBlock(builder, value, format(key.getName()) + " Industrial Concrete Slab")
         );
-        TempAVPBlocks.DYE_COLOR_TO_INDUSTRIAL_CONCRETE_STAIRS.forEach(
+        AVPBlocks.DYE_COLOR_TO_INDUSTRIAL_CONCRETE_STAIRS.forEach(
             (key, value) -> addBlock(builder, value, format(key.getName()) + " Industrial Concrete Stairs")
         );
-        TempAVPBlocks.DYE_COLOR_TO_INDUSTRIAL_CONCRETE_WALL.forEach(
+        AVPBlocks.DYE_COLOR_TO_INDUSTRIAL_CONCRETE_WALL.forEach(
             (key, value) -> addBlock(builder, value, format(key.getName()) + " Industrial Concrete Wall")
         );
-        TempAVPBlocks.DYE_COLOR_TO_INDUSTRIAL_GLASS.forEach(
+        AVPBlocks.DYE_COLOR_TO_INDUSTRIAL_GLASS.forEach(
             (key, value) -> addBlock(builder, value, format(key.getName()) + " Industrial Glass")
         );
-        TempAVPBlocks.DYE_COLOR_TO_INDUSTRIAL_GLASS_PANE.forEach(
+        AVPBlocks.DYE_COLOR_TO_INDUSTRIAL_GLASS_PANE.forEach(
             (key, value) -> addBlock(builder, value, format(key.getName()) + " Industrial Glass Pane")
         );
 
-        addBlock(builder, TempAVPBlocks.LITHIUM_BLOCK, "Block of Lithium");
-        addBlock(builder, TempAVPBlocks.LITHIUM_ORE, "Lithium Ore");
-        addBlock(builder, TempAVPBlocks.MONAZITE_ORE, "Monazite Ore");
-        addBlock(builder, TempAVPBlocks.NETHER_RESIN, "Nether Resin");
-        addBlock(builder, TempAVPBlocks.NETHER_RESIN_NODE, "Nether Resin");
-        addBlock(builder, TempAVPBlocks.NETHER_RESIN_VEIN, "Nether Resin Vein");
-        addBlock(builder, TempAVPBlocks.NETHER_RESIN_WEB, "Nether Resin Web");
-        addBlock(builder, TempAVPBlocks.ABERRANT_RESIN, "Aberrant Resin");
-        addBlock(builder, TempAVPBlocks.ABERRANT_RESIN_NODE, "Aberrant Resin");
-        addBlock(builder, TempAVPBlocks.ABERRANT_RESIN_VEIN, "Aberrant Resin Vein");
-        addBlock(builder, TempAVPBlocks.ABERRANT_RESIN_WEB, "Aberrant Resin Web");
-        addBlock(builder, TempAVPBlocks.IRRADIATED_RESIN, "Irradiated Resin");
-        addBlock(builder, TempAVPBlocks.IRRADIATED_RESIN_NODE, "Irradiated Resin");
-        addBlock(builder, TempAVPBlocks.IRRADIATED_RESIN_VEIN, "Irradiated Resin Vein");
-        addBlock(builder, TempAVPBlocks.IRRADIATED_RESIN_WEB, "Irradiated Resin Web");
-        addBlock(builder, TempAVPBlocks.RESIN_BRICKS, "Resin Bricks");
-        addBlock(builder, TempAVPBlocks.RESIN_O, "Resin O");
-        addBlock(builder, TempAVPBlocks.RESIN_RIBBED, "Resin Ribbed");
-        addBlock(builder, TempAVPBlocks.RESIN_SMOOTH, "Resin Smooth");
+        addBlock(builder, AVPBlocks.LITHIUM_BLOCK, "Block of Lithium");
+        addBlock(builder, AVPBlocks.LITHIUM_ORE, "Lithium Ore");
+        addBlock(builder, AVPBlocks.MONAZITE_ORE, "Monazite Ore");
+        addBlock(builder, AVPBlocks.NETHER_RESIN, "Nether Resin");
+        addBlock(builder, AVPBlocks.NETHER_RESIN_NODE, "Nether Resin");
+        addBlock(builder, AVPBlocks.NETHER_RESIN_VEIN, "Nether Resin Vein");
+        addBlock(builder, AVPBlocks.NETHER_RESIN_WEB, "Nether Resin Web");
+        addBlock(builder, AVPBlocks.ABERRANT_RESIN, "Aberrant Resin");
+        addBlock(builder, AVPBlocks.ABERRANT_RESIN_NODE, "Aberrant Resin");
+        addBlock(builder, AVPBlocks.ABERRANT_RESIN_VEIN, "Aberrant Resin Vein");
+        addBlock(builder, AVPBlocks.ABERRANT_RESIN_WEB, "Aberrant Resin Web");
+        addBlock(builder, AVPBlocks.IRRADIATED_RESIN, "Irradiated Resin");
+        addBlock(builder, AVPBlocks.IRRADIATED_RESIN_NODE, "Irradiated Resin");
+        addBlock(builder, AVPBlocks.IRRADIATED_RESIN_VEIN, "Irradiated Resin Vein");
+        addBlock(builder, AVPBlocks.IRRADIATED_RESIN_WEB, "Irradiated Resin Web");
+        addBlock(builder, AVPBlocks.RESIN_BRICKS, "Resin Bricks");
+        addBlock(builder, AVPBlocks.RESIN_O, "Resin O");
+        addBlock(builder, AVPBlocks.RESIN_RIBBED, "Resin Ribbed");
+        addBlock(builder, AVPBlocks.RESIN_SMOOTH, "Resin Smooth");
 
-        TempAVPBlocks.DYE_COLOR_TO_PADDING.forEach(
+        AVPBlocks.DYE_COLOR_TO_PADDING.forEach(
             (key, value) -> addBlock(builder, value, format(key.getName()) + " Padding")
         );
-        TempAVPBlocks.DYE_COLOR_TO_PADDING_SLAB.forEach(
+        AVPBlocks.DYE_COLOR_TO_PADDING_SLAB.forEach(
             (key, value) -> addBlock(builder, value, format(key.getName()) + " Padding Slab")
         );
-        TempAVPBlocks.DYE_COLOR_TO_PADDING_STAIRS.forEach(
+        AVPBlocks.DYE_COLOR_TO_PADDING_STAIRS.forEach(
             (key, value) -> addBlock(builder, value, format(key.getName()) + " Padding Stairs")
         );
 
-        TempAVPBlocks.DYE_COLOR_TO_PANEL_PADDING.forEach(
+        AVPBlocks.DYE_COLOR_TO_PANEL_PADDING.forEach(
             (key, value) -> addBlock(builder, value, format(key.getName()) + " Panel Padding")
         );
-        TempAVPBlocks.DYE_COLOR_TO_PANEL_PADDING_SLAB.forEach(
+        AVPBlocks.DYE_COLOR_TO_PANEL_PADDING_SLAB.forEach(
             (key, value) -> addBlock(builder, value, format(key.getName()) + " Panel Padding Slab")
         );
-        TempAVPBlocks.DYE_COLOR_TO_PANEL_PADDING_STAIRS.forEach(
+        AVPBlocks.DYE_COLOR_TO_PANEL_PADDING_STAIRS.forEach(
             (key, value) -> addBlock(builder, value, format(key.getName()) + " Panel Padding Stairs")
         );
 
-        TempAVPBlocks.DYE_COLOR_TO_PIPE_PADDING.forEach(
+        AVPBlocks.DYE_COLOR_TO_PIPE_PADDING.forEach(
             (key, value) -> addBlock(builder, value, format(key.getName()) + " Pipe Padding")
         );
-        TempAVPBlocks.DYE_COLOR_TO_PIPE_PADDING_SLAB.forEach(
+        AVPBlocks.DYE_COLOR_TO_PIPE_PADDING_SLAB.forEach(
             (key, value) -> addBlock(builder, value, format(key.getName()) + " Pipe Padding Slab")
         );
-        TempAVPBlocks.DYE_COLOR_TO_PIPE_PADDING_STAIRS.forEach(
+        AVPBlocks.DYE_COLOR_TO_PIPE_PADDING_STAIRS.forEach(
             (key, value) -> addBlock(builder, value, format(key.getName()) + " Pipe Padding Stairs")
         );
 
-        TempAVPBlocks.DYE_COLOR_TO_CUT_PLASTIC.forEach(
+        AVPBlocks.DYE_COLOR_TO_CUT_PLASTIC.forEach(
             (key, value) -> addBlock(builder, value, format(key.getName()) + " Cut Plastic")
         );
-        TempAVPBlocks.DYE_COLOR_TO_CUT_PLASTIC_SLAB.forEach(
+        AVPBlocks.DYE_COLOR_TO_CUT_PLASTIC_SLAB.forEach(
             (key, value) -> addBlock(builder, value, format(key.getName()) + " Cut Plastic Slab")
         );
-        TempAVPBlocks.DYE_COLOR_TO_CUT_PLASTIC_STAIRS.forEach(
+        AVPBlocks.DYE_COLOR_TO_CUT_PLASTIC_STAIRS.forEach(
             (key, value) -> addBlock(builder, value, format(key.getName()) + " Cut Plastic Stairs")
         );
 
-        TempAVPBlocks.DYE_COLOR_TO_PLASTIC.forEach(
+        AVPBlocks.DYE_COLOR_TO_PLASTIC.forEach(
             (key, value) -> addBlock(builder, value, format(key.getName()) + " Plastic")
         );
-        TempAVPBlocks.DYE_COLOR_TO_PLASTIC_SLAB.forEach(
+        AVPBlocks.DYE_COLOR_TO_PLASTIC_SLAB.forEach(
             (key, value) -> addBlock(builder, value, format(key.getName()) + " Plastic Slab")
         );
-        TempAVPBlocks.DYE_COLOR_TO_PLASTIC_STAIRS.forEach(
+        AVPBlocks.DYE_COLOR_TO_PLASTIC_STAIRS.forEach(
             (key, value) -> addBlock(builder, value, format(key.getName()) + " Plastic Stairs")
         );
 
-        addBlock(builder, TempAVPBlocks.RAW_BAUXITE_BLOCK, "Block of Raw Bauxite");
-        addBlock(builder, TempAVPBlocks.RAW_GALENA_BLOCK, "Block of Raw Galena");
-        addBlock(builder, TempAVPBlocks.RAW_MONAZITE_BLOCK, "Block of Raw Monazite");
-        addBlock(builder, TempAVPBlocks.RAW_SILICA_BLOCK, "Block of Raw Silica");
-        addBlock(builder, TempAVPBlocks.RAW_TITANIUM_BLOCK, "Block of Raw Titanium");
-        addBlock(builder, TempAVPBlocks.RAW_ZINC_BLOCK, "Block of Raw Zinc");
-        addBlock(builder, TempAVPBlocks.RAZOR_WIRE, "Razor Wire");
-        addBlock(builder, TempAVPBlocks.RESIN, "Resin");
-        addBlock(builder, TempAVPBlocks.RESIN_NODE, "Resin");
-        addBlock(builder, TempAVPBlocks.RESIN_VEIN, "Resin Vein");
-        addBlock(builder, TempAVPBlocks.RESIN_WEB, "Resin Web");
-        addBlock(builder, TempAVPBlocks.SILICA_GRAVEL, "Silica Gravel");
-        addBlock(builder, TempAVPBlocks.STEEL_BARS, "Steel Bars");
-        addBlock(builder, TempAVPBlocks.STEEL_BLOCK, "Block of Steel");
-        addBlock(builder, TempAVPBlocks.STEEL_BUTTON, "Steel Button");
-        addBlock(builder, TempAVPBlocks.STEEL_CHAIN_FENCE, "Steel Chain Fence");
-        addBlock(builder, TempAVPBlocks.STEEL_COLUMN, "Steel Column");
-        addBlock(builder, TempAVPBlocks.STEEL_DOOR, "Steel Door");
-        addBlock(builder, TempAVPBlocks.STEEL_FASTENED_SIDING, "Steel Fastened Siding");
-        addBlock(builder, TempAVPBlocks.STEEL_FASTENED_STANDING, "Steel Fastened Standing");
-        addBlock(builder, TempAVPBlocks.STEEL_GRATE, "Steel Grate");
-        addBlock(builder, TempAVPBlocks.STEEL_PRESSURE_PLATE, "Steel Pressure Plate");
-        addBlock(builder, TempAVPBlocks.STEEL_PLATING, "Steel Plating");
-        addBlock(builder, TempAVPBlocks.STEEL_SIDING, "Steel Siding");
-        addBlock(builder, TempAVPBlocks.STEEL_STANDING, "Steel Standing");
-        addBlock(builder, TempAVPBlocks.STEEL_TRAP_DOOR, "Steel Trapdoor");
-        addBlock(builder, TempAVPBlocks.STEEL_TREAD, "Steel Tread");
-        addBlock(builder, TempAVPBlocks.TITANIUM_BLOCK, "Block of Titanium");
-        addBlock(builder, TempAVPBlocks.TITANIUM_BUTTON, "Titanium Button");
-        addBlock(builder, TempAVPBlocks.TITANIUM_CHAIN_FENCE, "Titanium Chain Fence");
-        addBlock(builder, TempAVPBlocks.TITANIUM_COLUMN, "Titanium Column");
-        addBlock(builder, TempAVPBlocks.TITANIUM_DOOR, "Titanium Door");
-        addBlock(builder, TempAVPBlocks.TITANIUM_FASTENED_SIDING, "Titanium Fastened Siding");
-        addBlock(builder, TempAVPBlocks.TITANIUM_FASTENED_STANDING, "Titanium Fastened Standing");
-        addBlock(builder, TempAVPBlocks.TITANIUM_GRATE, "Titanium Grate");
-        addBlock(builder, TempAVPBlocks.TITANIUM_PRESSURE_PLATE, "Titanium Pressure Plate");
-        addBlock(builder, TempAVPBlocks.TITANIUM_PLATING, "Titanium Plating");
-        addBlock(builder, TempAVPBlocks.TITANIUM_SIDING, "Titanium Siding");
-        addBlock(builder, TempAVPBlocks.TITANIUM_STANDING, "Titanium Standing");
-        addBlock(builder, TempAVPBlocks.TITANIUM_TRAP_DOOR, "Titanium Trapdoor");
-        addBlock(builder, TempAVPBlocks.TITANIUM_TREAD, "Titanium Tread");
-        addBlock(builder, TempAVPBlocks.URANIUM_BLOCK, "Block of Uranium");
-        addBlock(builder, TempAVPBlocks.ZINC_BLOCK, "Block of Zinc");
-        addBlock(builder, TempAVPBlocks.ZINC_ORE, "Zinc Ore");
-        addBlock(builder, TempAVPBlocks.INDUSTRIAL_FURNACE, "Industrial Furnace");
-        addBlock(builder, TempAVPBlocks.FERROALUMINUM_SLAB, "Ferroaluminum Slab");
-        addBlock(builder, TempAVPBlocks.FERROALUMINUM_STAIRS, "Ferroaluminum Stairs");
-        addBlock(builder, TempAVPBlocks.STEEL_SLAB, "Steel Slab");
-        addBlock(builder, TempAVPBlocks.STEEL_STAIRS, "Steel Stairs");
-        addBlock(builder, TempAVPBlocks.TITANIUM_SLAB, "Titanium Slab");
-        addBlock(builder, TempAVPBlocks.TITANIUM_STAIRS, "Titanium Stairs");
-        addBlock(builder, TempAVPBlocks.FERROALUMINUM_SIDING_SLAB, "Ferroaluminum Siding Slab");
-        addBlock(builder, TempAVPBlocks.FERROALUMINUM_SIDING_STAIRS, "Ferroaluminum Siding Stairs");
-        addBlock(builder, TempAVPBlocks.STEEL_SIDING_SLAB, "Steel Siding Slab");
-        addBlock(builder, TempAVPBlocks.STEEL_SIDING_STAIRS, "Steel Siding Stairs");
-        addBlock(builder, TempAVPBlocks.TITANIUM_SIDING_SLAB, "Titanium Siding Slab");
-        addBlock(builder, TempAVPBlocks.TITANIUM_SIDING_STAIRS, "Titanium Siding Stairs");
-        addBlock(builder, TempAVPBlocks.STEEL_STANDING_SLAB, "Steel Standing Slab");
-        addBlock(builder, TempAVPBlocks.STEEL_STANDING_STAIRS, "Steel Standing Stairs");
-        addBlock(builder, TempAVPBlocks.TITANIUM_STANDING_SLAB, "Titanium Standing Slab");
-        addBlock(builder, TempAVPBlocks.TITANIUM_STANDING_STAIRS, "Titanium Standing Stairs");
-        addBlock(builder, TempAVPBlocks.FERROALUMINUM_FASTENED_SIDING_SLAB, "Ferroaluminum Fastened Siding Slab");
-        addBlock(builder, TempAVPBlocks.FERROALUMINUM_FASTENED_SIDING_STAIRS, "Ferroaluminum Fastened Siding Stairs");
-        addBlock(builder, TempAVPBlocks.STEEL_FASTENED_SIDING_SLAB, "Steel Fastened Siding Slab");
-        addBlock(builder, TempAVPBlocks.STEEL_FASTENED_SIDING_STAIRS, "Steel Fastened Siding Stairs");
-        addBlock(builder, TempAVPBlocks.TITANIUM_FASTENED_SIDING_SLAB, "Titanium Fastened Siding Slab");
-        addBlock(builder, TempAVPBlocks.TITANIUM_FASTENED_SIDING_STAIRS, "Titanium Fastened Siding Stairs");
+        addBlock(builder, AVPBlocks.RAW_BAUXITE_BLOCK, "Block of Raw Bauxite");
+        addBlock(builder, AVPBlocks.RAW_GALENA_BLOCK, "Block of Raw Galena");
+        addBlock(builder, AVPBlocks.RAW_MONAZITE_BLOCK, "Block of Raw Monazite");
+        addBlock(builder, AVPBlocks.RAW_SILICA_BLOCK, "Block of Raw Silica");
+        addBlock(builder, AVPBlocks.RAW_TITANIUM_BLOCK, "Block of Raw Titanium");
+        addBlock(builder, AVPBlocks.RAW_ZINC_BLOCK, "Block of Raw Zinc");
+        addBlock(builder, AVPBlocks.RAZOR_WIRE, "Razor Wire");
+        addBlock(builder, AVPBlocks.RESIN, "Resin");
+        addBlock(builder, AVPBlocks.RESIN_NODE, "Resin");
+        addBlock(builder, AVPBlocks.RESIN_VEIN, "Resin Vein");
+        addBlock(builder, AVPBlocks.RESIN_WEB, "Resin Web");
+        addBlock(builder, AVPBlocks.SILICA_GRAVEL, "Silica Gravel");
+        addBlock(builder, AVPBlocks.STEEL_BARS, "Steel Bars");
+        addBlock(builder, AVPBlocks.STEEL_BLOCK, "Block of Steel");
+        addBlock(builder, AVPBlocks.STEEL_BUTTON, "Steel Button");
+        addBlock(builder, AVPBlocks.STEEL_CHAIN_FENCE, "Steel Chain Fence");
+        addBlock(builder, AVPBlocks.STEEL_COLUMN, "Steel Column");
+        addBlock(builder, AVPBlocks.STEEL_DOOR, "Steel Door");
+        addBlock(builder, AVPBlocks.STEEL_FASTENED_SIDING, "Steel Fastened Siding");
+        addBlock(builder, AVPBlocks.STEEL_FASTENED_STANDING, "Steel Fastened Standing");
+        addBlock(builder, AVPBlocks.STEEL_GRATE, "Steel Grate");
+        addBlock(builder, AVPBlocks.STEEL_PRESSURE_PLATE, "Steel Pressure Plate");
+        addBlock(builder, AVPBlocks.STEEL_PLATING, "Steel Plating");
+        addBlock(builder, AVPBlocks.STEEL_SIDING, "Steel Siding");
+        addBlock(builder, AVPBlocks.STEEL_STANDING, "Steel Standing");
+        addBlock(builder, AVPBlocks.STEEL_TRAP_DOOR, "Steel Trapdoor");
+        addBlock(builder, AVPBlocks.STEEL_TREAD, "Steel Tread");
+        addBlock(builder, AVPBlocks.TITANIUM_BLOCK, "Block of Titanium");
+        addBlock(builder, AVPBlocks.TITANIUM_BUTTON, "Titanium Button");
+        addBlock(builder, AVPBlocks.TITANIUM_CHAIN_FENCE, "Titanium Chain Fence");
+        addBlock(builder, AVPBlocks.TITANIUM_COLUMN, "Titanium Column");
+        addBlock(builder, AVPBlocks.TITANIUM_DOOR, "Titanium Door");
+        addBlock(builder, AVPBlocks.TITANIUM_FASTENED_SIDING, "Titanium Fastened Siding");
+        addBlock(builder, AVPBlocks.TITANIUM_FASTENED_STANDING, "Titanium Fastened Standing");
+        addBlock(builder, AVPBlocks.TITANIUM_GRATE, "Titanium Grate");
+        addBlock(builder, AVPBlocks.TITANIUM_PRESSURE_PLATE, "Titanium Pressure Plate");
+        addBlock(builder, AVPBlocks.TITANIUM_PLATING, "Titanium Plating");
+        addBlock(builder, AVPBlocks.TITANIUM_SIDING, "Titanium Siding");
+        addBlock(builder, AVPBlocks.TITANIUM_STANDING, "Titanium Standing");
+        addBlock(builder, AVPBlocks.TITANIUM_TRAP_DOOR, "Titanium Trapdoor");
+        addBlock(builder, AVPBlocks.TITANIUM_TREAD, "Titanium Tread");
+        addBlock(builder, AVPBlocks.URANIUM_BLOCK, "Block of Uranium");
+        addBlock(builder, AVPBlocks.ZINC_BLOCK, "Block of Zinc");
+        addBlock(builder, AVPBlocks.ZINC_ORE, "Zinc Ore");
+        addBlock(builder, AVPBlocks.INDUSTRIAL_FURNACE, "Industrial Furnace");
+        addBlock(builder, AVPBlocks.FERROALUMINUM_SLAB, "Ferroaluminum Slab");
+        addBlock(builder, AVPBlocks.FERROALUMINUM_STAIRS, "Ferroaluminum Stairs");
+        addBlock(builder, AVPBlocks.STEEL_SLAB, "Steel Slab");
+        addBlock(builder, AVPBlocks.STEEL_STAIRS, "Steel Stairs");
+        addBlock(builder, AVPBlocks.TITANIUM_SLAB, "Titanium Slab");
+        addBlock(builder, AVPBlocks.TITANIUM_STAIRS, "Titanium Stairs");
+        addBlock(builder, AVPBlocks.FERROALUMINUM_SIDING_SLAB, "Ferroaluminum Siding Slab");
+        addBlock(builder, AVPBlocks.FERROALUMINUM_SIDING_STAIRS, "Ferroaluminum Siding Stairs");
+        addBlock(builder, AVPBlocks.STEEL_SIDING_SLAB, "Steel Siding Slab");
+        addBlock(builder, AVPBlocks.STEEL_SIDING_STAIRS, "Steel Siding Stairs");
+        addBlock(builder, AVPBlocks.TITANIUM_SIDING_SLAB, "Titanium Siding Slab");
+        addBlock(builder, AVPBlocks.TITANIUM_SIDING_STAIRS, "Titanium Siding Stairs");
+        addBlock(builder, AVPBlocks.STEEL_STANDING_SLAB, "Steel Standing Slab");
+        addBlock(builder, AVPBlocks.STEEL_STANDING_STAIRS, "Steel Standing Stairs");
+        addBlock(builder, AVPBlocks.TITANIUM_STANDING_SLAB, "Titanium Standing Slab");
+        addBlock(builder, AVPBlocks.TITANIUM_STANDING_STAIRS, "Titanium Standing Stairs");
+        addBlock(builder, AVPBlocks.FERROALUMINUM_FASTENED_SIDING_SLAB, "Ferroaluminum Fastened Siding Slab");
+        addBlock(builder, AVPBlocks.FERROALUMINUM_FASTENED_SIDING_STAIRS, "Ferroaluminum Fastened Siding Stairs");
+        addBlock(builder, AVPBlocks.STEEL_FASTENED_SIDING_SLAB, "Steel Fastened Siding Slab");
+        addBlock(builder, AVPBlocks.STEEL_FASTENED_SIDING_STAIRS, "Steel Fastened Siding Stairs");
+        addBlock(builder, AVPBlocks.TITANIUM_FASTENED_SIDING_SLAB, "Titanium Fastened Siding Slab");
+        addBlock(builder, AVPBlocks.TITANIUM_FASTENED_SIDING_STAIRS, "Titanium Fastened Siding Stairs");
 
         // Creative Mode Tabs
         builder.add(AVPCreativeModeTabs.BLOCKS_KEY, "AVP Blocks");
@@ -287,21 +286,20 @@ public class EnglishLanguageProvider extends FabricLanguageProvider {
         builder.add(AVPCreativeModeTabs.TOOLS_AND_UTILITIES_KEY, "AVP Tools & Utilities");
 
         // Entities
-        addEntity(builder, TempAVPEntityTypes.ACID, "Acid");
-        addEntity(builder, TempAVPEntityTypes.CHESTBURSTER, "Chestburster");
-        addEntity(builder, TempAVPEntityTypes.DRONE, "Drone");
-        addEntity(builder, TempAVPEntityTypes.FACEHUGGER, "Facehugger");
-        addEntity(builder, TempAVPEntityTypes.OVAMORPH, "Ovamorph");
-        addEntity(builder, TempAVPEntityTypes.PRAETORIAN, "Praetorian");
-        addEntity(builder, TempAVPEntityTypes.QUEEN, "Queen");
-        addEntity(builder, TempAVPEntityTypes.WARRIOR, "Warrior");
-        addEntity(builder, TempAVPEntityTypes.YAUTJA, "Yautja");
-        addEntity(builder, TempAVPEntityTypes.ROCKET, "Rocket");
-        addEntity(builder, TempAVPEntityTypes.GRENADE_THROWN, "Grenade");
-        addEntity(builder, TempAVPEntityTypes.SHURIKEN, "Shuriken");
-        addEntity(builder, TempAVPEntityTypes.SMART_DISC, "Smart Disc");
-        addEntity(builder, AVPEntityTypes.BULLET, "Bullet");
-        addEntity(builder, TempAVPEntityTypes.MARINE, "Marine");
+        addEntity(builder, AVPEntityTypes.ACID, "Acid");
+        addEntity(builder, AVPEntityTypes.CHESTBURSTER, "Chestburster");
+        addEntity(builder, AVPEntityTypes.DRONE, "Drone");
+        addEntity(builder, AVPEntityTypes.FACEHUGGER, "Facehugger");
+        addEntity(builder, AVPEntityTypes.OVAMORPH, "Ovamorph");
+        addEntity(builder, AVPEntityTypes.PRAETORIAN, "Praetorian");
+        addEntity(builder, AVPEntityTypes.QUEEN, "Queen");
+        addEntity(builder, AVPEntityTypes.WARRIOR, "Warrior");
+        addEntity(builder, AVPEntityTypes.YAUTJA, "Yautja");
+        addEntity(builder, AVPEntityTypes.ROCKET, "Rocket");
+        addEntity(builder, AVPEntityTypes.GRENADE_THROWN, "Grenade");
+        addEntity(builder, AVPEntityTypes.SHURIKEN, "Shuriken");
+        addEntity(builder, AVPEntityTypes.SMART_DISC, "Smart Disc");
+        addEntity(builder, AVPEntityTypes.MARINE, "Marine");
 
         // Combat Items
         addItem(builder, TempAVPItems.SHURIKEN, "Shuriken");

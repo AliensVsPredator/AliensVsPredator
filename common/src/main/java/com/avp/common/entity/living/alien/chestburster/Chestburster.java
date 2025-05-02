@@ -15,7 +15,7 @@ import com.avp.AVP;
 import com.avp.common.entity.gene.GeneKeys;
 import com.avp.common.entity.gene.behavior.GeneDecoders;
 import com.avp.common.entity.living.alien.Alien;
-import com.avp.common.entity.type.TempAVPEntityTypes;
+import com.avp.common.entity.type.AVPEntityTypes;
 import com.avp.common.manager.GrowthManager;
 import com.avp.common.util.AVPPredicates;
 import com.avp.common.util.AlienPredicates;
@@ -54,7 +54,7 @@ public class Chestburster extends Alien implements ResinProducer {
 
     @Override
     public @Nullable EntityType<? extends Alien> getAberrantType() {
-        return isRoyal() ? TempAVPEntityTypes.ROYAL_ABERRANT_CHESTBURSTER.get() : TempAVPEntityTypes.ABERRANT_CHESTBURSTER.get();
+        return isRoyal() ? AVPEntityTypes.ROYAL_ABERRANT_CHESTBURSTER.get() : AVPEntityTypes.ABERRANT_CHESTBURSTER.get();
     }
 
     @Override
@@ -64,12 +64,12 @@ public class Chestburster extends Alien implements ResinProducer {
 
     @Override
     public @Nullable EntityType<? extends Alien> getNetherType() {
-        return isRoyal() ? TempAVPEntityTypes.ROYAL_NETHER_CHESTBURSTER.get() : TempAVPEntityTypes.NETHER_CHESTBURSTER.get();
+        return isRoyal() ? AVPEntityTypes.ROYAL_NETHER_CHESTBURSTER.get() : AVPEntityTypes.NETHER_CHESTBURSTER.get();
     }
 
     @Override
     public @Nullable EntityType<? extends Alien> getDefaultType() {
-        return isRoyal() ? TempAVPEntityTypes.ROYAL_CHESTBURSTER.get() : TempAVPEntityTypes.CHESTBURSTER.get();
+        return isRoyal() ? AVPEntityTypes.ROYAL_CHESTBURSTER.get() : AVPEntityTypes.CHESTBURSTER.get();
     }
 
     @Override

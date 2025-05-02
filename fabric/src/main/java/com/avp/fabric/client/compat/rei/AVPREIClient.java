@@ -8,7 +8,7 @@ import me.shedaniel.rei.api.client.registry.screen.ScreenRegistry;
 import me.shedaniel.rei.api.common.util.EntryStacks;
 
 import com.avp.client.screen.IndustrialFurnaceScreen;
-import com.avp.common.block.TempAVPBlocks;
+import com.avp.common.block.AVPBlocks;
 import com.avp.common.recipe.AVPRecipes;
 import com.avp.common.recipe.IndustrialFurnaceRecipe;
 
@@ -18,7 +18,7 @@ public class AVPREIClient implements REIClientPlugin {
     public void registerCategories(CategoryRegistry registry) {
         registry.add(new IndustrialCategory());
 
-        registry.addWorkstations(IndustrialCategory.INDUSTRIAL_FURNACE, EntryStacks.of(TempAVPBlocks.INDUSTRIAL_FURNACE.get()));
+        registry.addWorkstations(IndustrialCategory.INDUSTRIAL_FURNACE, EntryStacks.of(AVPBlocks.INDUSTRIAL_FURNACE.get()));
     }
 
     @Override

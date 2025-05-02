@@ -8,7 +8,7 @@ import net.minecraft.world.level.Level;
 
 import com.avp.AVP;
 import com.avp.common.entity.living.alien.ovamorph.Ovamorph;
-import com.avp.common.entity.type.TempAVPEntityTypes;
+import com.avp.common.entity.type.AVPEntityTypes;
 import com.avp.common.sound.AVPSoundEvents;
 
 public class HatchManager {
@@ -137,7 +137,7 @@ public class HatchManager {
     }
 
     private void spawnFacehugger(Level level) {
-        var facehugger = (ovamorph.isRoyal() ? TempAVPEntityTypes.ROYAL_FACEHUGGER : TempAVPEntityTypes.FACEHUGGER).get().create(level);
+        var facehugger = (ovamorph.isRoyal() ? AVPEntityTypes.ROYAL_FACEHUGGER : AVPEntityTypes.FACEHUGGER).get().create(level);
 
         if (facehugger == null) {
             AVP.LOGGER.warn("Failed to create facehugger entity.");

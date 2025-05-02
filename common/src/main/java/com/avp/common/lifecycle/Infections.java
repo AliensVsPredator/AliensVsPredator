@@ -1,4 +1,4 @@
-package com.avp.fabric.common.lifecycle;
+package com.avp.common.lifecycle;
 
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -8,8 +8,8 @@ import java.util.concurrent.TimeUnit;
 
 import com.avp.common.entity.living.alien.chestburster.Chestburster;
 import com.avp.common.entity.living.alien.parasite.facehugger.Facehugger;
-import com.avp.fabric.common.lifecycle.infection.Infection;
-import com.avp.fabric.common.lifecycle.registry.AlienInfectionRegistry;
+import com.avp.common.lifecycle.infection.Infection;
+import com.avp.common.lifecycle.registry.AlienInfectionRegistry;
 
 public class Infections {
 

@@ -1,6 +1,6 @@
-package com.avp.fabric.common.lifecycle;
+package com.avp.common.lifecycle;
 
-import com.avp.fabric.common.lifecycle.registry.AlienLifecycleRegistry;
+import com.avp.common.lifecycle.registry.AlienLifecycleRegistry;
 
 public class Lifecycles {
 

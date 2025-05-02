@@ -18,8 +18,8 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+import com.avp.common.item.AVPBlockItems;
 import com.avp.common.item.AVPItemTags;
-import com.avp.common.item.TempAVPBlockItems;
 import com.avp.common.util.AVPPredicates;
 
 @Mixin(Inventory.class)
@@ -40,7 +40,7 @@ public class MixinInventory_InsertAmmoItemsIntoAmmoChest {
         }
 
         for (ItemStack inventoryItemStack : items) {
-            if (!inventoryItemStack.is(TempAVPBlockItems.AMMO_CHEST.get()))
+            if (!inventoryItemStack.is(AVPBlockItems.AMMO_CHEST.get()))
                 continue;
 
             insertItemIntoAmmoChest(inventoryItemStack, stack);
@@ -56,7 +56,7 @@ public class MixinInventory_InsertAmmoItemsIntoAmmoChest {
             return;
 
         for (ItemStack inventoryItemStack : items) {
-            if (!inventoryItemStack.is(TempAVPBlockItems.AMMO_CHEST.get()))
+            if (!inventoryItemStack.is(AVPBlockItems.AMMO_CHEST.get()))
                 continue;
 
             insertItemIntoAmmoChest(inventoryItemStack, stack);

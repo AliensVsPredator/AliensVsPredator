@@ -1,4 +1,4 @@
-package com.avp.fabric.client.particle;
+package com.avp.client.particle;
 
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.ParticleRenderType;

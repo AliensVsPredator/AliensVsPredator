@@ -20,7 +20,7 @@ import net.minecraft.world.level.block.entity.*;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
 
-import com.avp.common.block.TempAVPBlocks;
+import com.avp.common.block.AVPBlocks;
 import com.avp.common.item.AVPItemTags;
 import com.avp.common.item.TempAVPItems;
 
@@ -67,7 +67,7 @@ public class AmmoChestBlockEntity extends RandomizableContainerBlockEntity imple
 
             @Override
             protected void openerCountChanged(Level level, BlockPos pos, BlockState state, int count, int openCount) {
-                level.blockEvent(AmmoChestBlockEntity.this.worldPosition, TempAVPBlocks.AMMO_CHEST.get(), 1, openCount);
+                level.blockEvent(AmmoChestBlockEntity.this.worldPosition, AVPBlocks.AMMO_CHEST.get(), 1, openCount);
             }
 
             @Override

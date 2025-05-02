@@ -1,4 +1,4 @@
-package com.avp.fabric.common.lifecycle.growth;
+package com.avp.common.lifecycle.growth;
 
 import net.minecraft.world.entity.EntityType;
 

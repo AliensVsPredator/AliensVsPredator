@@ -23,7 +23,7 @@ import org.jetbrains.annotations.Nullable;
 
 import com.avp.AVP;
 import com.avp.common.entity.living.alien.Alien;
-import com.avp.common.entity.type.TempAVPEntityTypes;
+import com.avp.common.entity.type.AVPEntityTypes;
 import com.avp.common.item.TempAVPItems;
 import com.avp.common.manager.HatchManager;
 import com.avp.common.sound.AVPSoundEvents;
@@ -57,7 +57,7 @@ public class Ovamorph extends Alien implements Shearable {
 
     @Override
     public @Nullable EntityType<? extends Alien> getAberrantType() {
-        return isRoyal() ? TempAVPEntityTypes.ROYAL_ABERRANT_OVAMORPH.get() : TempAVPEntityTypes.ABERRANT_OVAMORPH.get();
+        return isRoyal() ? AVPEntityTypes.ROYAL_ABERRANT_OVAMORPH.get() : AVPEntityTypes.ABERRANT_OVAMORPH.get();
     }
 
     @Override
@@ -67,12 +67,12 @@ public class Ovamorph extends Alien implements Shearable {
 
     @Override
     public @Nullable EntityType<? extends Alien> getNetherType() {
-        return isRoyal() ? TempAVPEntityTypes.ROYAL_NETHER_OVAMORPH.get() : TempAVPEntityTypes.NETHER_OVAMORPH.get();
+        return isRoyal() ? AVPEntityTypes.ROYAL_NETHER_OVAMORPH.get() : AVPEntityTypes.NETHER_OVAMORPH.get();
     }
 
     @Override
     public @Nullable EntityType<? extends Alien> getDefaultType() {
-        return isRoyal() ? TempAVPEntityTypes.ROYAL_OVAMORPH.get() : TempAVPEntityTypes.OVAMORPH.get();
+        return isRoyal() ? AVPEntityTypes.ROYAL_OVAMORPH.get() : AVPEntityTypes.OVAMORPH.get();
     }
 
     @Override

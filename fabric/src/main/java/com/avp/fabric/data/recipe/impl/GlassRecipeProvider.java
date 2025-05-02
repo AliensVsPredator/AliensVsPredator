@@ -7,7 +7,7 @@ import net.minecraft.world.level.block.Blocks;
 
 import java.util.Set;
 
-import com.avp.common.block.TempAVPBlocks;
+import com.avp.common.block.AVPBlocks;
 import com.avp.fabric.data.recipe.RecipeConstants;
 import com.avp.fabric.data.recipe.RecipeTemplates;
 import com.avp.fabric.data.recipe.builder.RecipeBuilder;
@@ -18,39 +18,39 @@ public class GlassRecipeProvider {
         builder.blast(Blocks.GLASS)
             .withCategory(RecipeCategory.BUILDING_BLOCKS)
             .withExperience(RecipeConstants.VERY_COMMON_SMELT_EXPERIENCE)
-            .into(TempAVPBlocks.INDUSTRIAL_GLASS);
+            .into(AVPBlocks.INDUSTRIAL_GLASS);
 
         builder.shaped()
             .withCategory(RecipeCategory.BUILDING_BLOCKS)
-            .define('A', TempAVPBlocks.INDUSTRIAL_GLASS)
+            .define('A', AVPBlocks.INDUSTRIAL_GLASS)
             .pattern("AAA")
             .pattern("AAA")
-            .into(16, TempAVPBlocks.INDUSTRIAL_GLASS_PANE);
+            .into(16, AVPBlocks.INDUSTRIAL_GLASS_PANE);
 
         builder.shaped()
             .withCategory(RecipeCategory.BUILDING_BLOCKS)
-            .apply(RecipeTemplates.DOOR_BLOCK.apply(TempAVPBlocks.INDUSTRIAL_GLASS.get()))
-            .into(3, TempAVPBlocks.INDUSTRIAL_GLASS_DOOR);
+            .apply(RecipeTemplates.DOOR_BLOCK.apply(AVPBlocks.INDUSTRIAL_GLASS.get()))
+            .into(3, AVPBlocks.INDUSTRIAL_GLASS_DOOR);
 
         builder.shaped()
             .withCategory(RecipeCategory.BUILDING_BLOCKS)
-            .apply(RecipeTemplates.TRAP_DOOR_BLOCK.apply(TempAVPBlocks.INDUSTRIAL_GLASS.get()))
-            .into(2, TempAVPBlocks.INDUSTRIAL_GLASS_TRAP_DOOR);
+            .apply(RecipeTemplates.TRAP_DOOR_BLOCK.apply(AVPBlocks.INDUSTRIAL_GLASS.get()))
+            .into(2, AVPBlocks.INDUSTRIAL_GLASS_TRAP_DOOR);
 
         // Add standard slab and stair crafting recipes
-        createStandardSlabRecipe(builder, TempAVPBlocks.INDUSTRIAL_GLASS.get(), TempAVPBlocks.INDUSTRIAL_GLASS_SLAB.get());
-        createStandardStairRecipe(builder, TempAVPBlocks.INDUSTRIAL_GLASS.get(), TempAVPBlocks.INDUSTRIAL_GLASS_STAIRS.get());
+        createStandardSlabRecipe(builder, AVPBlocks.INDUSTRIAL_GLASS.get(), AVPBlocks.INDUSTRIAL_GLASS_SLAB.get());
+        createStandardStairRecipe(builder, AVPBlocks.INDUSTRIAL_GLASS.get(), AVPBlocks.INDUSTRIAL_GLASS_STAIRS.get());
 
         createIndustrialGlassBlockVariantRecipes(builder);
 
-        TempAVPBlocks.DYE_COLOR_TO_INDUSTRIAL_GLASS.forEach((dyeColor, blockSupplier) -> {
+        AVPBlocks.DYE_COLOR_TO_INDUSTRIAL_GLASS.forEach((dyeColor, blockSupplier) -> {
             var block = blockSupplier.get();
             var dyeItem = DyeItem.byColor(dyeColor);
 
             // Industrial glass combined with dyes creates colored industrial glass.
             builder.shaped()
                 .withCategory(RecipeCategory.BUILDING_BLOCKS)
-                .define('A', TempAVPBlocks.INDUSTRIAL_GLASS)
+                .define('A', AVPBlocks.INDUSTRIAL_GLASS)
                 .define('B', dyeItem)
                 .pattern("AAA")
                 .pattern("ABA")
@@ -62,13 +62,13 @@ public class GlassRecipeProvider {
                 .define('A', block)
                 .pattern("AAA")
                 .pattern("AAA")
-                .into(16, TempAVPBlocks.DYE_COLOR_TO_INDUSTRIAL_GLASS_PANE.get(dyeColor).get());
+                .into(16, AVPBlocks.DYE_COLOR_TO_INDUSTRIAL_GLASS_PANE.get(dyeColor).get());
 
             // All colored industrial glass blocks can be blasted again to remove dyed colors.
             builder.blast(block)
                 .withCategory(RecipeCategory.MISC)
                 .withExperience(RecipeConstants.VERY_COMMON_SMELT_EXPERIENCE)
-                .into(TempAVPBlocks.INDUSTRIAL_GLASS);
+                .into(AVPBlocks.INDUSTRIAL_GLASS);
         });
 
         createStainedGlassBlastingRecipes(builder);
@@ -100,16 +100,16 @@ public class GlassRecipeProvider {
         builder.blast(stainedGlassBlock)
             .withCategory(RecipeCategory.MISC)
             .withExperience(RecipeConstants.VERY_COMMON_SMELT_EXPERIENCE)
-            .into(TempAVPBlocks.INDUSTRIAL_GLASS)
+            .into(AVPBlocks.INDUSTRIAL_GLASS)
         );
     }
 
     private static void createIndustrialGlassBlockVariantRecipes(RecipeBuilder builder) {
-        var industrialGlassBaseBuilder = builder.stonecut(TempAVPBlocks.INDUSTRIAL_GLASS)
+        var industrialGlassBaseBuilder = builder.stonecut(AVPBlocks.INDUSTRIAL_GLASS)
             .withCategory(RecipeCategory.BUILDING_BLOCKS);
 
-        industrialGlassBaseBuilder.into(2, TempAVPBlocks.INDUSTRIAL_GLASS_SLAB);
-        industrialGlassBaseBuilder.into(1, TempAVPBlocks.INDUSTRIAL_GLASS_STAIRS);
+        industrialGlassBaseBuilder.into(2, AVPBlocks.INDUSTRIAL_GLASS_SLAB);
+        industrialGlassBaseBuilder.into(1, AVPBlocks.INDUSTRIAL_GLASS_STAIRS);
     }
 
     // TODO: Duplicate function, unify at some point.

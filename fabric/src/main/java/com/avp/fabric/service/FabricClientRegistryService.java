@@ -3,16 +3,20 @@ package com.avp.fabric.service;
 import mod.azure.azurelib.rewrite.render.armor.AzArmorRenderer;
 import mod.azure.azurelib.rewrite.render.item.AzItemRenderer;
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
+import net.fabricmc.fabric.api.client.particle.v1.ParticleFactoryRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.ColorProviderRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
 import net.minecraft.client.color.item.ItemColor;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.MenuAccess;
+import net.minecraft.client.particle.ParticleEngine;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.core.particles.ParticleOptions;
+import net.minecraft.core.particles.ParticleType;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -72,5 +76,13 @@ public class FabricClientRegistryService implements ClientRegistryService {
         MenuScreens.ScreenConstructor<T, U> screenConstructor
     ) {
         MenuScreens.register(menuTypeSupplier.get(), screenConstructor);
+    }
+
+    @Override
+    public <T extends ParticleOptions> void registerParticleProviderFactory(
+        Supplier<? extends ParticleType<T>> particleTypeSupplier,
+        ParticleEngine.SpriteParticleRegistration<T> spriteParticleRegistration
+    ) {
+        ParticleFactoryRegistry.getInstance().register(particleTypeSupplier.get(), spriteParticleRegistration::create);
     }
 }

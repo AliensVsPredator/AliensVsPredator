@@ -1,4 +1,4 @@
-package com.avp.fabric.client.particle;
+package com.avp.client.particle;
 
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.Particle;
@@ -7,11 +7,11 @@ import net.minecraft.client.particle.SpriteSet;
 import net.minecraft.core.particles.ParticleOptions;
 import org.jetbrains.annotations.NotNull;
 
-public class IrradiatedAcidParticleProvider<T extends ParticleOptions> implements ParticleProvider<T> {
+public class AcidParticleProvider<T extends ParticleOptions> implements ParticleProvider<T> {
 
     private final SpriteSet spriteProvider;
 
-    public IrradiatedAcidParticleProvider(SpriteSet spriteProvider) {
+    public AcidParticleProvider(SpriteSet spriteProvider) {
         this.spriteProvider = spriteProvider;
     }
 
@@ -26,6 +26,6 @@ public class IrradiatedAcidParticleProvider<T extends ParticleOptions> implement
         double h,
         double i
     ) {
-        return new IrradiatedAcidParticle(clientWorld, d, e, f, g, h, i, spriteProvider);
+        return new AcidParticle(clientWorld, d, e, f, g, h, i, spriteProvider);
     }
 }

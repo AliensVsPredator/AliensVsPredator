@@ -35,7 +35,7 @@ import com.avp.common.entity.projectile.ThrownGrenade;
 import com.avp.common.registry.AVPDeferredHolder;
 import com.avp.service.Services;
 
-public class TempAVPEntityTypes {
+public class AVPEntityTypes {
 
     public static final MobCategory ALIEN_CATEGORY = AVPMobCategories.ALIENS;
 

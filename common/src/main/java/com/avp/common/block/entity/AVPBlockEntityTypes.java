@@ -6,7 +6,7 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 
 import java.util.function.Supplier;
 
-import com.avp.common.block.TempAVPBlocks;
+import com.avp.common.block.AVPBlocks;
 import com.avp.common.block.entity.resin_node.ResinNodeBlockEntity;
 import com.avp.common.registry.AVPDeferredHolder;
 import com.avp.service.Services;
@@ -17,41 +17,41 @@ public class AVPBlockEntityTypes {
         "resin_node",
         () -> BlockEntityType.Builder.of(
             ResinNodeBlockEntity::new,
-            TempAVPBlocks.IRRADIATED_RESIN_NODE.get(),
-            TempAVPBlocks.ABERRANT_RESIN_NODE.get(),
-            TempAVPBlocks.NETHER_RESIN_NODE.get(),
-            TempAVPBlocks.RESIN_NODE.get()
+            AVPBlocks.IRRADIATED_RESIN_NODE.get(),
+            AVPBlocks.ABERRANT_RESIN_NODE.get(),
+            AVPBlocks.NETHER_RESIN_NODE.get(),
+            AVPBlocks.RESIN_NODE.get()
         )
     );
 
     public static final AVPDeferredHolder<BlockEntityType<IndustrialFurnaceBlockEntity>> INDUSTRIAL_FURNACE = register(
         "industrial_furnace",
-        () -> BlockEntityType.Builder.of(IndustrialFurnaceBlockEntity::new, TempAVPBlocks.INDUSTRIAL_FURNACE.get())
+        () -> BlockEntityType.Builder.of(IndustrialFurnaceBlockEntity::new, AVPBlocks.INDUSTRIAL_FURNACE.get())
     );
 
     public static final AVPDeferredHolder<BlockEntityType<LeadChestBlockEntity>> LEAD_CHEST = register(
         "lead_chest",
-        () -> BlockEntityType.Builder.of(LeadChestBlockEntity::new, TempAVPBlocks.LEAD_CHEST.get())
+        () -> BlockEntityType.Builder.of(LeadChestBlockEntity::new, AVPBlocks.LEAD_CHEST.get())
     );
 
     public static final AVPDeferredHolder<BlockEntityType<AmmoChestBlockEntity>> AMMO_CHEST = register(
         "ammo_chest",
-        () -> BlockEntityType.Builder.of(AmmoChestBlockEntity::new, TempAVPBlocks.AMMO_CHEST.get())
+        () -> BlockEntityType.Builder.of(AmmoChestBlockEntity::new, AVPBlocks.AMMO_CHEST.get())
     );
 
     public static final AVPDeferredHolder<BlockEntityType<DeskTerminalBlockEntity>> DESK_TERMINAL = register(
         "desk_terminal",
-        () -> BlockEntityType.Builder.of(DeskTerminalBlockEntity::new, TempAVPBlocks.DESK_TERMINAL_BLOCK.get())
+        () -> BlockEntityType.Builder.of(DeskTerminalBlockEntity::new, AVPBlocks.DESK_TERMINAL_BLOCK.get())
     );
 
     public static final AVPDeferredHolder<BlockEntityType<TripMineBlockEntity>> TRIP_MINE = register(
         "trip_mine",
-        () -> BlockEntityType.Builder.of(TripMineBlockEntity::new, TempAVPBlocks.TRIP_MINE_BLOCK.get())
+        () -> BlockEntityType.Builder.of(TripMineBlockEntity::new, AVPBlocks.TRIP_MINE_BLOCK.get())
     );
 
     public static final AVPDeferredHolder<BlockEntityType<ResonatorBlockEntity>> RESONATOR = register(
         "resonator",
-        () -> BlockEntityType.Builder.of(ResonatorBlockEntity::new, TempAVPBlocks.RESONATOR_BLOCK.get())
+        () -> BlockEntityType.Builder.of(ResonatorBlockEntity::new, AVPBlocks.RESONATOR_BLOCK.get())
     );
 
     private static <T extends BlockEntity> AVPDeferredHolder<BlockEntityType<T>> register(

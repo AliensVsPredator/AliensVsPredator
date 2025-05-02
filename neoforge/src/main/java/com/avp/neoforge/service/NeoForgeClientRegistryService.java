@@ -7,9 +7,12 @@ import net.minecraft.client.color.item.ItemColor;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.MenuAccess;
+import net.minecraft.client.particle.ParticleEngine;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.core.particles.ParticleOptions;
+import net.minecraft.core.particles.ParticleType;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -42,6 +45,8 @@ public class NeoForgeClientRegistryService implements ClientRegistryService {
 
     private final List<Tuple2<Supplier<? extends MenuType<?>>, MenuScreens.ScreenConstructor<?, ?>>> menuScreenConstructorPairs;
 
+    private final List<Tuple2<Supplier<? extends ParticleType<?>>, ParticleEngine.SpriteParticleRegistration<?>>> particleProviderFactoryPairs;
+
     public NeoForgeClientRegistryService() {
         this.armorRendererPairs = new ArrayList<>();
         this.blockEntityRendererPairs = new ArrayList<>();
@@ -50,6 +55,7 @@ public class NeoForgeClientRegistryService implements ClientRegistryService {
         this.itemColorPairs = new ArrayList<>();
         this.itemRendererPairs = new ArrayList<>();
         this.menuScreenConstructorPairs = new ArrayList<>();
+        this.particleProviderFactoryPairs = new ArrayList<>();
     }
 
     @Override
@@ -96,6 +102,14 @@ public class NeoForgeClientRegistryService implements ClientRegistryService {
         menuScreenConstructorPairs.add(new Tuple2<>(menuTypeSupplier, screenConstructor));
     }
 
+    @Override
+    public <T extends ParticleOptions> void registerParticleProviderFactory(
+        Supplier<? extends ParticleType<T>> particleTypeSupplier,
+        ParticleEngine.SpriteParticleRegistration<T> spriteParticleRegistration
+    ) {
+        particleProviderFactoryPairs.add(new Tuple2<>(particleTypeSupplier, spriteParticleRegistration));
+    }
+
     public List<Tuple2<Supplier<AzArmorRenderer>, List<Supplier<Item>>>> getArmorRendererPairs() {
         return armorRendererPairs;
     }
@@ -122,5 +136,9 @@ public class NeoForgeClientRegistryService implements ClientRegistryService {
 
     public List<Tuple2<Supplier<? extends MenuType<?>>, MenuScreens.ScreenConstructor<?, ?>>> getMenuScreenConstructorPairs() {
         return menuScreenConstructorPairs;
+    }
+
+    public List<Tuple2<Supplier<? extends ParticleType<?>>, ParticleEngine.SpriteParticleRegistration<?>>> getParticleProviderFactoryPairs() {
+        return particleProviderFactoryPairs;
     }
 }

@@ -7,13 +7,13 @@ import org.jetbrains.annotations.NotNull;
 
 import com.avp.common.entity.acid.Acid;
 import com.avp.common.entity.living.alien.Alien;
-import com.avp.common.entity.type.TempAVPEntityTypes;
+import com.avp.common.entity.type.AVPEntityTypes;
 
 public class AcidBleedUtil {
 
     public static void spawnAcid(LivingEntity livingEntity, float damage, Vec3 randomPos) {
         var level = livingEntity.level();
-        var acidEntityType = TempAVPEntityTypes.ACID.get();
+        var acidEntityType = AVPEntityTypes.ACID.get();
 
         var acidEntity = acidEntityType.create(level);
 

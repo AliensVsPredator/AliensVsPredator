@@ -3,7 +3,7 @@ package com.avp.fabric.data.recipe.impl.vanilla;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.world.item.Items;
 
-import com.avp.common.item.TempAVPBlockItems;
+import com.avp.common.item.AVPBlockItems;
 import com.avp.common.item.TempAVPItems;
 import com.avp.fabric.data.recipe.builder.RecipeBuilder;
 
@@ -21,7 +21,7 @@ public class VanillaChestRecipeProvider {
             .pattern("###")
             .pattern("#C#")
             .pattern("###")
-            .into(1, TempAVPBlockItems.LEAD_CHEST);
+            .into(1, AVPBlockItems.LEAD_CHEST);
 
         builder.shaped()
             .withCategory(RecipeCategory.DECORATIONS)
@@ -30,6 +30,6 @@ public class VanillaChestRecipeProvider {
             .pattern("###")
             .pattern("#C#")
             .pattern("###")
-            .into(1, TempAVPBlockItems.AMMO_CHEST);
+            .into(1, AVPBlockItems.AMMO_CHEST);
     }
 }

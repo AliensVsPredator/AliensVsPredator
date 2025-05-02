@@ -11,7 +11,7 @@ import com.avp.AVP;
 import com.avp.common.ai.goal.combat.LungeAtTargetGoal;
 import com.avp.common.entity.living.alien.Alien;
 import com.avp.common.entity.living.alien.xenomorph.Xenomorph;
-import com.avp.common.entity.type.TempAVPEntityTypes;
+import com.avp.common.entity.type.AVPEntityTypes;
 import com.avp.common.sound.AVPSoundEvents;
 import com.avp.common.util.resin.ResinData;
 
@@ -32,17 +32,17 @@ public class Drone extends Xenomorph {
 
     @Override
     public @Nullable EntityType<? extends Alien> getAberrantType() {
-        return TempAVPEntityTypes.ABERRANT_DRONE.get();
+        return AVPEntityTypes.ABERRANT_DRONE.get();
     }
 
     @Override
     public @Nullable EntityType<? extends Alien> getIrradiatedType() {
-        return TempAVPEntityTypes.IRRADIATED_DRONE.get();
+        return AVPEntityTypes.IRRADIATED_DRONE.get();
     }
 
     @Override
     public @Nullable EntityType<? extends Alien> getNetherType() {
-        return TempAVPEntityTypes.NETHER_DRONE.get();
+        return AVPEntityTypes.NETHER_DRONE.get();
     }
 
     @Override
