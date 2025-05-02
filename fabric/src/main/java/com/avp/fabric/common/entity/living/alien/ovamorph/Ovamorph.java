@@ -23,11 +23,11 @@ import org.jetbrains.annotations.Nullable;
 
 import com.avp.AVP;
 import com.avp.common.item.TempAVPItems;
+import com.avp.common.sound.AVPSoundEvents;
 import com.avp.common.util.TempAVPPredicates;
 import com.avp.fabric.common.entity.living.alien.Alien;
 import com.avp.fabric.common.entity.type.AVPEntityTypes;
 import com.avp.fabric.common.manager.HatchManager;
-import com.avp.fabric.common.sound.AVPSoundEvents;
 import com.avp.fabric.common.util.AVPPredicates;
 import com.avp.fabric.common.util.AlienVariantUtil;
 
@@ -126,7 +126,7 @@ public class Ovamorph extends Alien implements Shearable {
 
                 return InteractionResult.SUCCESS;
             } else if (!isRooted() && itemStack.is(resinBallItem)) {
-                level().playSound(null, this, AVPSoundEvents.ENTITY_OVAMORPH_ROOT, SoundSource.PLAYERS, 1.0F, 1.0F);
+                level().playSound(null, this, AVPSoundEvents.ENTITY_OVAMORPH_ROOT.get(), SoundSource.PLAYERS, 1.0F, 1.0F);
                 setRooted(true);
 
                 if (!TempAVPPredicates.IS_IMMORTAL.test(player)) {
@@ -142,7 +142,7 @@ public class Ovamorph extends Alien implements Shearable {
     public void shear(SoundSource soundSource) {
         setRooted(false);
         level().playSound(null, this, SoundEvents.SHEEP_SHEAR, soundSource, 1.0F, 1.0F);
-        level().playSound(null, this, AVPSoundEvents.ENTITY_OVAMORPH_SHEAR, soundSource, 1.0F, 1.0F);
+        level().playSound(null, this, AVPSoundEvents.ENTITY_OVAMORPH_SHEAR.get(), soundSource, 1.0F, 1.0F);
         var resinBallItem = AlienVariantUtil.getResinBallFor(this);
 
         var itemEntity = this.spawnAtLocation(resinBallItem, 1);

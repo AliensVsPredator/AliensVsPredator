@@ -15,8 +15,8 @@ import java.util.function.Supplier;
 
 import com.avp.AVPResources;
 import com.avp.common.item.TempAVPItems;
+import com.avp.common.sound.AVPSoundEvents;
 import com.avp.fabric.common.item.AVPItems;
-import com.avp.fabric.common.sound.AVPSoundEvents;
 
 public class ArmorMaterials {
 
@@ -31,7 +31,7 @@ public class ArmorMaterials {
             )
         ),
         7,
-        Holder.direct(AVPSoundEvents.ITEM_ARMOR_EQUIP_CHITIN),
+        Holder.direct(AVPSoundEvents.ITEM_ARMOR_EQUIP_CHITIN.get()),
         () -> Ingredient.of(AVPItems.ABERRANT_CHITIN),
         0,
         0,
@@ -49,7 +49,7 @@ public class ArmorMaterials {
             )
         ),
         7,
-        Holder.direct(AVPSoundEvents.ITEM_ARMOR_EQUIP_CHITIN),
+        Holder.direct(AVPSoundEvents.ITEM_ARMOR_EQUIP_CHITIN.get()),
         () -> Ingredient.of(TempAVPItems.CHITIN.get()),
         0,
         0,
@@ -67,7 +67,7 @@ public class ArmorMaterials {
             )
         ),
         7,
-        Holder.direct(AVPSoundEvents.ITEM_ARMOR_EQUIP_CHITIN),
+        Holder.direct(AVPSoundEvents.ITEM_ARMOR_EQUIP_CHITIN.get()),
         () -> Ingredient.of(TempAVPItems.IRRADIATED_CHITIN.get()),
         0,
         0,
@@ -84,7 +84,7 @@ public class ArmorMaterials {
             )
         ),
         6,
-        Holder.direct(AVPSoundEvents.ITEM_ARMOR_EQUIP_MK50),
+        Holder.direct(AVPSoundEvents.ITEM_ARMOR_EQUIP_MK50.get()),
         () -> Ingredient.of(TempAVPItems.LEAD_INGOT.get()),
         0,
         0,
@@ -101,7 +101,7 @@ public class ArmorMaterials {
             )
         ),
         7,
-        Holder.direct(AVPSoundEvents.ITEM_ARMOR_EQUIP_CHITIN),
+        Holder.direct(AVPSoundEvents.ITEM_ARMOR_EQUIP_CHITIN.get()),
         () -> Ingredient.of(AVPItems.NETHER_CHITIN),
         0,
         0,
@@ -112,7 +112,7 @@ public class ArmorMaterials {
         "plated_aberrant_chitin",
         relativeDefense(net.minecraft.world.item.ArmorMaterials.DIAMOND, Map.of()),
         7,
-        Holder.direct(AVPSoundEvents.ITEM_ARMOR_EQUIP_CHITIN),
+        Holder.direct(AVPSoundEvents.ITEM_ARMOR_EQUIP_CHITIN.get()),
         () -> Ingredient.of(AVPItems.PLATED_ABERRANT_CHITIN),
         1,
         0,
@@ -123,7 +123,7 @@ public class ArmorMaterials {
         "plated_chitin",
         relativeDefense(net.minecraft.world.item.ArmorMaterials.DIAMOND, Map.of()),
         7,
-        Holder.direct(AVPSoundEvents.ITEM_ARMOR_EQUIP_CHITIN),
+        Holder.direct(AVPSoundEvents.ITEM_ARMOR_EQUIP_CHITIN.get()),
         () -> Ingredient.of(TempAVPItems.PLATED_CHITIN.get()),
         1,
         0,
@@ -134,7 +134,7 @@ public class ArmorMaterials {
         "plated_irradiated_chitin",
         relativeDefense(net.minecraft.world.item.ArmorMaterials.DIAMOND, Map.of()),
         7,
-        Holder.direct(AVPSoundEvents.ITEM_ARMOR_EQUIP_CHITIN),
+        Holder.direct(AVPSoundEvents.ITEM_ARMOR_EQUIP_CHITIN.get()),
         () -> Ingredient.of(TempAVPItems.PLATED_IRRADIATED_CHITIN.get()),
         1,
         0,
@@ -145,7 +145,7 @@ public class ArmorMaterials {
         "plated_nether_chitin",
         relativeDefense(net.minecraft.world.item.ArmorMaterials.DIAMOND, Map.of()),
         7,
-        Holder.direct(AVPSoundEvents.ITEM_ARMOR_EQUIP_CHITIN),
+        Holder.direct(AVPSoundEvents.ITEM_ARMOR_EQUIP_CHITIN.get()),
         () -> Ingredient.of(TempAVPItems.PLATED_NETHER_CHITIN.get()),
         1,
         0,
@@ -162,7 +162,7 @@ public class ArmorMaterials {
             )
         ),
         6,
-        Holder.direct(AVPSoundEvents.ITEM_ARMOR_EQUIP_PRESSURE),
+        Holder.direct(AVPSoundEvents.ITEM_ARMOR_EQUIP_PRESSURE.get()),
         () -> Ingredient.of(TempAVPItems.ALUMINUM_INGOT.get()),
         0,
         0,
@@ -181,7 +181,7 @@ public class ArmorMaterials {
             )
         ),
         5, // TODO:
-        Holder.direct(AVPSoundEvents.ITEM_ARMOR_EQUIP_STEEL),
+        Holder.direct(AVPSoundEvents.ITEM_ARMOR_EQUIP_STEEL.get()),
         () -> Ingredient.of(TempAVPItems.STEEL_INGOT.get()),
         0,
         0,
@@ -197,7 +197,7 @@ public class ArmorMaterials {
             Map.entry(ArmorItem.Type.BOOTS, 2)
         ),
         5,
-        Holder.direct(AVPSoundEvents.ITEM_ARMOR_EQUIP_TACTICAL),
+        Holder.direct(AVPSoundEvents.ITEM_ARMOR_EQUIP_TACTICAL.get()),
         () -> Ingredient.of(TempAVPItems.STEEL_INGOT.get()),
         0,
         0,
@@ -216,7 +216,7 @@ public class ArmorMaterials {
             )
         ),
         5,
-        Holder.direct(AVPSoundEvents.ITEM_ARMOR_EQUIP_TITANIUM),
+        Holder.direct(AVPSoundEvents.ITEM_ARMOR_EQUIP_TITANIUM.get()),
         () -> Ingredient.of(TempAVPItems.TITANIUM_INGOT.get()),
         1,
         0,
@@ -235,7 +235,7 @@ public class ArmorMaterials {
             )
         ),
         6,
-        Holder.direct(AVPSoundEvents.ITEM_ARMOR_EQUIP_VERITANIUM),
+        Holder.direct(AVPSoundEvents.ITEM_ARMOR_EQUIP_VERITANIUM.get()),
         () -> Ingredient.of(AVPItems.VERITANIUM_SHARD),
         4,
         0.15F,

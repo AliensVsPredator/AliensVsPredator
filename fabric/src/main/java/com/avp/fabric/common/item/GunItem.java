@@ -104,7 +104,7 @@ public class GunItem extends Item {
         var shootFinishSoundEvent = fireModeConfig.shootFinishSoundEvent();
 
         if (shootFinishSoundEvent != null) {
-            level.playSound(null, livingEntity.blockPosition(), shootFinishSoundEvent, SoundSource.PLAYERS);
+            level.playSound(null, livingEntity.blockPosition(), shootFinishSoundEvent.get(), SoundSource.PLAYERS);
         }
 
         playReleaseUsingAnimations(livingEntity, itemStack);

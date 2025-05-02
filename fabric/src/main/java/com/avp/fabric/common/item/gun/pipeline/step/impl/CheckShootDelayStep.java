@@ -26,7 +26,7 @@ public class CheckShootDelayStep implements GunShootStep {
 
         if (shootStartSoundEvent != null && context.isFirstTick()) {
             var shooter = context.shooter();
-            shooter.level().playSound(null, shooter.blockPosition(), shootStartSoundEvent, SoundSource.PLAYERS);
+            shooter.level().playSound(null, shooter.blockPosition(), shootStartSoundEvent.get(), SoundSource.PLAYERS);
         }
     }
 }

@@ -6,9 +6,9 @@ import net.minecraft.world.entity.ai.goal.Goal;
 import java.util.concurrent.TimeUnit;
 
 import com.avp.common.entity.AVPEntityTypeTags;
+import com.avp.common.sound.AVPSoundEvents;
 import com.avp.fabric.common.entity.living.alien.ovamorph.Ovamorph;
 import com.avp.fabric.common.entity.living.alien.xenomorph.queen.Queen;
-import com.avp.fabric.common.sound.AVPSoundEvents;
 import com.avp.fabric.common.util.AlienPredicates;
 import com.avp.fabric.common.util.AlienVariantUtil;
 
@@ -101,7 +101,7 @@ public class QueenLayEggGoal extends Goal {
 
         ovamorph.setPos(queen.position());
 
-        level.playSound(null, queen, AVPSoundEvents.ENTITY_OVAMORPH_LAID, SoundSource.HOSTILE, 1.0F, 1.0F);
+        level.playSound(null, queen, AVPSoundEvents.ENTITY_OVAMORPH_LAID.get(), SoundSource.HOSTILE, 1.0F, 1.0F);
         level.addFreshEntity(ovamorph);
     }
 }

@@ -39,12 +39,12 @@ import com.avp.common.ai.goal.StrollAroundInWaterGoal;
 import com.avp.common.ai.goal.XenoFloatGoal;
 import com.avp.common.entity.gene.GeneKeys;
 import com.avp.common.entity.gene.behavior.GeneDecoders;
+import com.avp.common.manager.VibrationSystemManager;
+import com.avp.common.sound.AVPSoundEvents;
 import com.avp.fabric.common.entity.living.alien.Alien;
 import com.avp.fabric.common.lifecycle.registry.AlienLifecycleRegistry;
 import com.avp.fabric.common.manager.CrawlingManager;
 import com.avp.fabric.common.manager.GrowthManager;
-import com.avp.fabric.common.manager.VibrationSystemManager;
-import com.avp.fabric.common.sound.AVPSoundEvents;
 import com.avp.fabric.common.util.AlienPredicates;
 import com.avp.fabric.common.util.AlienVariantUtil;
 import com.avp.fabric.common.util.XenomorphGrowthUtil;
@@ -235,7 +235,11 @@ public abstract class Xenomorph extends Alien implements ResinProducer {
     @Override
     public void setTarget(@Nullable LivingEntity livingEntity) {
         if (livingEntity != null && !livingEntity.equals(getTarget()) && ambientSoundTime > getAmbientSoundInterval()) {
-            playSound(AVPSoundEvents.ENTITY_XENOMORPH_HISS, getSoundVolume(), (random.nextFloat() - random.nextFloat()) * 0.2F + 1.0F);
+            playSound(
+                AVPSoundEvents.ENTITY_XENOMORPH_HISS.get(),
+                getSoundVolume(),
+                (random.nextFloat() - random.nextFloat()) * 0.2F + 1.0F
+            );
         }
 
         super.setTarget(livingEntity);
@@ -248,17 +252,17 @@ public abstract class Xenomorph extends Alien implements ResinProducer {
 
     @Override
     protected @Nullable SoundEvent getAmbientSound() {
-        return getTarget() != null ? AVPSoundEvents.ENTITY_XENOMORPH_HISS : AVPSoundEvents.ENTITY_XENOMORPH_IDLE;
+        return getTarget() != null ? AVPSoundEvents.ENTITY_XENOMORPH_HISS.get() : AVPSoundEvents.ENTITY_XENOMORPH_IDLE.get();
     }
 
     @Override
     protected @NotNull SoundEvent getDeathSound() {
-        return AVPSoundEvents.ENTITY_XENOMORPH_DEATH;
+        return AVPSoundEvents.ENTITY_XENOMORPH_DEATH.get();
     }
 
     @Override
     protected @NotNull SoundEvent getHurtSound(DamageSource damageSource) {
-        return AVPSoundEvents.ENTITY_XENOMORPH_HURT;
+        return AVPSoundEvents.ENTITY_XENOMORPH_HURT.get();
     }
 
     @Override

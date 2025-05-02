@@ -1,4 +1,4 @@
-package com.avp.fabric.common.explosion.nuke;
+package com.avp.common.explosion.nuke;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;

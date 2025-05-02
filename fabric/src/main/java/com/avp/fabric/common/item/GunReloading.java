@@ -89,7 +89,7 @@ public class GunReloading {
         var reloadStartSoundEvent = fireModeConfig.reloadStartSoundEvent();
 
         if (reloadStartSoundEvent != null) {
-            level.playSound(null, player.blockPosition(), reloadStartSoundEvent, SoundSource.PLAYERS);
+            level.playSound(null, player.blockPosition(), reloadStartSoundEvent.get(), SoundSource.PLAYERS);
         }
 
         itemStack.set(
@@ -111,7 +111,7 @@ public class GunReloading {
                     var itemInHand = player.getItemInHand(interactionHand);
 
                     if (Objects.equals(itemStack, itemInHand)) {
-                        level.playSound(null, player.blockPosition(), reloadFinishSoundEvent, SoundSource.PLAYERS);
+                        level.playSound(null, player.blockPosition(), reloadFinishSoundEvent.get(), SoundSource.PLAYERS);
                     }
                 }
             }, Duration.ofMillis(reloadTimeInTicks * 50L));

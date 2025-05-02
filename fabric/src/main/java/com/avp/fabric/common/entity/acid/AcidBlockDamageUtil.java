@@ -7,7 +7,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 
 import com.avp.common.block.AVPBlockTags;
-import com.avp.fabric.common.sound.AVPSoundEvents;
+import com.avp.common.sound.AVPSoundEvents;
 import com.avp.server.BlockBreakProgressManager;
 
 public class AcidBlockDamageUtil {
@@ -44,7 +44,7 @@ public class AcidBlockDamageUtil {
         }
 
         if (acid.tickCount % (acid.getRandom().nextInt(100) + 10) == 0) {
-            level.playSound(null, acid, AVPSoundEvents.BLOCK_ACID_BURN, SoundSource.NEUTRAL, 1F, 1F);
+            level.playSound(null, acid, AVPSoundEvents.BLOCK_ACID_BURN.get(), SoundSource.NEUTRAL, 1F, 1F);
         }
 
         acid.age();

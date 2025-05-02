@@ -1,4 +1,4 @@
-package com.avp.fabric.common.manager;
+package com.avp.common.manager;
 
 import mod.azure.azurelib.common.api.common.entities.AzureVibrationUser;
 import mod.azure.azurelib.common.api.common.interfaces.AzureTicker;

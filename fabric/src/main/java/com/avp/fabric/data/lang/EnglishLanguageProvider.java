@@ -13,13 +13,13 @@ import java.util.function.Supplier;
 
 import com.avp.common.block.TempAVPBlocks;
 import com.avp.common.item.TempAVPItems;
+import com.avp.common.sound.AVPSoundEvents;
 import com.avp.fabric.common.block.AVPBlocks;
 import com.avp.fabric.common.creative_mode_tab.CreativeModeTabs;
 import com.avp.fabric.common.entity.type.AVPEntityTypes;
 import com.avp.fabric.common.item.AVPItems;
 import com.avp.fabric.common.item.ArmorItems;
 import com.avp.fabric.common.item.SpawnEggItems;
-import com.avp.fabric.common.sound.AVPSoundEvents;
 
 public class EnglishLanguageProvider extends FabricLanguageProvider {
 
@@ -818,6 +818,10 @@ public class EnglishLanguageProvider extends FabricLanguageProvider {
 
     private void addItem(TranslationBuilder translationBuilder, Item item, String value) {
         translationBuilder.add(item, value);
+    }
+
+    private void addSound(TranslationBuilder translationBuilder, Supplier<SoundEvent> soundEventSupplier, String value) {
+        addSound(translationBuilder, soundEventSupplier.get(), value);
     }
 
     private void addSound(TranslationBuilder translationBuilder, SoundEvent soundEvent, String value) {

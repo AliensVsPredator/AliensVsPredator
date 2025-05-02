@@ -9,10 +9,10 @@ import org.jetbrains.annotations.Nullable;
 
 import com.avp.AVP;
 import com.avp.common.ai.goal.combat.LungeAtTargetGoal;
+import com.avp.common.sound.AVPSoundEvents;
 import com.avp.fabric.common.entity.living.alien.Alien;
 import com.avp.fabric.common.entity.living.alien.xenomorph.Xenomorph;
 import com.avp.fabric.common.entity.type.AVPEntityTypes;
-import com.avp.fabric.common.sound.AVPSoundEvents;
 import com.avp.fabric.common.util.resin.ResinData;
 
 public class Drone extends Xenomorph {
@@ -60,7 +60,7 @@ public class Drone extends Xenomorph {
     public void runAttackAnimations() {
         var isClawAttack = random.nextBoolean();
 
-        playSound(AVPSoundEvents.ENTITY_XENOMORPH_ATTACK, getSoundVolume(), (random.nextFloat() - random.nextFloat()) * 0.2F + 1.0F);
+        playSound(AVPSoundEvents.ENTITY_XENOMORPH_ATTACK.get(), getSoundVolume(), (random.nextFloat() - random.nextFloat()) * 0.2F + 1.0F);
 
         if (isClawAttack) {
             animationDispatcher.clawAttack();
@@ -70,7 +70,7 @@ public class Drone extends Xenomorph {
     }
 
     private void runLungeAnimation() {
-        playSound(AVPSoundEvents.ENTITY_XENOMORPH_LUNGE, getSoundVolume(), (random.nextFloat() - random.nextFloat()) * 0.2F + 1.0F);
+        playSound(AVPSoundEvents.ENTITY_XENOMORPH_LUNGE.get(), getSoundVolume(), (random.nextFloat() - random.nextFloat()) * 0.2F + 1.0F);
         animationDispatcher.lunge();
     }
 

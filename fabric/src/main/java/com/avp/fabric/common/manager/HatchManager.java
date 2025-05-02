@@ -7,9 +7,9 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.level.Level;
 
 import com.avp.AVP;
+import com.avp.common.sound.AVPSoundEvents;
 import com.avp.fabric.common.entity.living.alien.ovamorph.Ovamorph;
 import com.avp.fabric.common.entity.type.AVPEntityTypes;
-import com.avp.fabric.common.sound.AVPSoundEvents;
 
 public class HatchManager {
 
@@ -91,7 +91,7 @@ public class HatchManager {
 
     public void hatch() {
         ovamorph.getEntityData().set(hatchedEDA, true);
-        ovamorph.level().playSound(null, ovamorph, AVPSoundEvents.ENTITY_OVAMORPH_HATCH, SoundSource.HOSTILE, 1.0F, 1.0F);
+        ovamorph.level().playSound(null, ovamorph, AVPSoundEvents.ENTITY_OVAMORPH_HATCH.get(), SoundSource.HOSTILE, 1.0F, 1.0F);
     }
 
     public byte maximumSpawnCount() {

@@ -11,11 +11,11 @@ import java.util.List;
 
 import com.avp.AVP;
 import com.avp.common.explosion.Explosion;
+import com.avp.common.explosion.nuke.NuclearExplosionEffects;
 import com.avp.common.util.TempAVPPredicates;
 import com.avp.fabric.common.command.nuke.ExplosionProgressTracker;
 import com.avp.fabric.common.entity.living.alien.Alien;
 import com.avp.fabric.common.entity.nukecloud.MushroomCloudEntity;
-import com.avp.fabric.common.explosion.nuke.NuclearExplosionEffects;
 
 // FIXME: Merge with ExplosionDistanceUtil in common.
 public class ExplosionUtil {

@@ -4,6 +4,7 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.Item;
@@ -37,6 +38,8 @@ public class NeoForgeRegistryService implements RegistryService {
 
     private final DeferredRegister<MobEffect> MOB_EFFECT_REGISTRY = DeferredRegister.create(BuiltInRegistries.MOB_EFFECT, AVP.MOD_ID);
 
+    private final DeferredRegister<SoundEvent> SOUND_EVENT_REGISTRY = DeferredRegister.create(BuiltInRegistries.SOUND_EVENT, AVP.MOD_ID);
+
     @Override
     @SuppressWarnings("unchecked")
     public <T> Supplier<T> register(Registry<? super T> registry, String id, Supplier<? extends T> supplier) {
@@ -52,6 +55,8 @@ public class NeoForgeRegistryService implements RegistryService {
             return (Supplier<T>) MENU_TYPE_REGISTRY.register(id, (Supplier<MenuType<?>>) supplier);
         } else if (registry == BuiltInRegistries.MOB_EFFECT) {
             throw new IllegalArgumentException("Registering mob effects with 'register' is not supported. Use 'registerHolder', instead.");
+        } else if (registry == BuiltInRegistries.SOUND_EVENT) {
+            return (Supplier<T>) SOUND_EVENT_REGISTRY.register(id, (Supplier<SoundEvent>) supplier);
         }
 
         throw new IllegalArgumentException("Received registration attempt for an unhandled registry. Registry: " + registry);
@@ -70,8 +75,10 @@ public class NeoForgeRegistryService implements RegistryService {
     public void initialize(IEventBus modBus) {
         BLOCK_REGISTRY.register(modBus);
         DATA_COMPONENT_TYPE_REGISTRY.register(modBus);
+        DECORATED_POT_PATTERN_REGISTRY.register(modBus);
         ITEM_REGISTRY.register(modBus);
         MENU_TYPE_REGISTRY.register(modBus);
         MOB_EFFECT_REGISTRY.register(modBus);
+        SOUND_EVENT_REGISTRY.register(modBus);
     }
 }

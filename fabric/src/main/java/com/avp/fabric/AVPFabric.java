@@ -51,7 +51,6 @@ import com.avp.fabric.common.profession.AVPProfessions;
 import com.avp.fabric.common.profession.AVPTrades;
 import com.avp.fabric.common.recipe.AVPRecipes;
 import com.avp.fabric.common.sound.AVPJukeboxSongs;
-import com.avp.fabric.common.sound.AVPSoundEvents;
 import com.avp.fabric.common.worldgen.NukedAshPlacement;
 import com.avp.fabric.common.worldgen.WorldGen;
 import com.avp.fabric.data.loot.LootTableModifier;
@@ -86,7 +85,6 @@ public class AVPFabric implements ModInitializer {
         Lifecycles.initialize();
         AVPParticleTypes.initialize();
         WorldGen.initialize();
-        AVPSoundEvents.initialize();
         AVPJukeboxSongs.initialize();
         AVPGameEvents.initialize();
         CommonPacketRegistry.initialize();

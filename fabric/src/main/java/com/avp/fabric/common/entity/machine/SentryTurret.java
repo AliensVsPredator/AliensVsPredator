@@ -24,9 +24,9 @@ import java.util.UUID;
 import com.avp.AVP;
 import com.avp.common.damage.AVPDamageTypes;
 import com.avp.common.damage.AVPDamageTypesTags;
+import com.avp.common.sound.AVPSoundEvents;
 import com.avp.fabric.common.block.AVPBlocks;
 import com.avp.fabric.common.block.entity.AmmoChestBlockEntity;
-import com.avp.fabric.common.sound.AVPSoundEvents;
 
 public class SentryTurret extends Mob implements TraceableEntity {
 
@@ -250,7 +250,7 @@ public class SentryTurret extends Mob implements TraceableEntity {
                 .hasLineOfSight(target)
         ) {
             animDispatcher.firing();
-            level().playSound(null, blockPosition(), AVPSoundEvents.WEAPON_GENERIC_SHOOT, SoundSource.BLOCKS, 1.0F, 1.0F);
+            level().playSound(null, blockPosition(), AVPSoundEvents.WEAPON_GENERIC_SHOOT.get(), SoundSource.BLOCKS, 1.0F, 1.0F);
             target.hurt(damageSources().source(AVPDamageTypes.BULLET, this), DAMAGE);
             target.setLastHurtMob(this);
             ammoChestBlockEntity.consumeAmmo(1);

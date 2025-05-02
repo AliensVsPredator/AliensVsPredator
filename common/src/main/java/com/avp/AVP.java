@@ -17,6 +17,7 @@ import com.avp.common.effect.AVPMobEffects;
 import com.avp.common.item.TempAVPBlockItems;
 import com.avp.common.item.TempAVPItems;
 import com.avp.common.menu.AVPMenuTypes;
+import com.avp.common.sound.AVPSoundEvents;
 import com.avp.service.Services;
 
 public class AVP {
@@ -38,6 +39,7 @@ public class AVP {
         AVPMenuTypes.initialize();
         AVPDataComponents.initialize();
         AVPDecoratedPotPatterns.initialize();
+        AVPSoundEvents.initialize();
         AVPMobEffects.initialize();
 
         // TODO: Remove this once migration is done.

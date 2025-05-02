@@ -20,10 +20,10 @@ import net.minecraft.world.level.material.Fluids;
 import org.jetbrains.annotations.NotNull;
 
 import com.avp.common.block.TempAVPBlocks;
+import com.avp.common.sound.AVPSoundEvents;
 import com.avp.fabric.common.block.entity.resin_node.ChargeCursor;
 import com.avp.fabric.common.block.entity.resin_node.ResinSpreader;
 import com.avp.fabric.common.block.entity.resin_node.behavior.SpreadBehavior;
-import com.avp.fabric.common.sound.AVPSoundEvents;
 
 public class ResinVeinBlock extends MultifaceBlock implements SpreadBehavior {
 
@@ -137,7 +137,7 @@ public class ResinVeinBlock extends MultifaceBlock implements SpreadBehavior {
 
             levelAccessor.setBlock(blockPos2, resinBlockState, 3);
             Block.pushEntitiesUp(blockState2, resinBlockState, levelAccessor, blockPos2);
-            levelAccessor.playSound(null, blockPos2, AVPSoundEvents.BLOCK_RESIN_SPREAD, SoundSource.BLOCKS, 1.0F, 1.0F);
+            levelAccessor.playSound(null, blockPos2, AVPSoundEvents.BLOCK_RESIN_SPREAD.get(), SoundSource.BLOCKS, 1.0F, 1.0F);
             this.veinSpreader.spreadAll(resinBlockState, levelAccessor, blockPos2, resinSpreader.isWorldGeneration());
             var direction2 = direction.getOpposite();
 

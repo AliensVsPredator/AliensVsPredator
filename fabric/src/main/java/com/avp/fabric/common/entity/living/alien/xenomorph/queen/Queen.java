@@ -12,11 +12,11 @@ import org.jetbrains.annotations.Nullable;
 import com.avp.AVP;
 import com.avp.common.ai.goal.DigToTargetGoal;
 import com.avp.common.block.AVPBlockTags;
+import com.avp.common.sound.AVPSoundEvents;
 import com.avp.fabric.common.ai.goal.QueenLayEggGoal;
 import com.avp.fabric.common.entity.living.alien.Alien;
 import com.avp.fabric.common.entity.living.alien.xenomorph.Xenomorph;
 import com.avp.fabric.common.entity.type.AVPEntityTypes;
-import com.avp.fabric.common.sound.AVPSoundEvents;
 import com.avp.fabric.common.util.AlienVariantUtil;
 import com.avp.fabric.common.util.resin.ResinData;
 
@@ -92,17 +92,17 @@ public class Queen extends Xenomorph {
 
     @Override
     protected @Nullable SoundEvent getAmbientSound() {
-        return AVPSoundEvents.ENTITY_QUEEN_IDLE;
+        return AVPSoundEvents.ENTITY_QUEEN_IDLE.get();
     }
 
     @Override
     protected @NotNull SoundEvent getDeathSound() {
-        return AVPSoundEvents.ENTITY_QUEEN_DEATH;
+        return AVPSoundEvents.ENTITY_QUEEN_DEATH.get();
     }
 
     @Override
     protected @NotNull SoundEvent getHurtSound(DamageSource damageSource) {
-        return AVPSoundEvents.ENTITY_QUEEN_HURT;
+        return AVPSoundEvents.ENTITY_QUEEN_HURT.get();
     }
 
     @Override

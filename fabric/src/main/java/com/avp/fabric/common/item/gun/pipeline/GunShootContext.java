@@ -128,7 +128,7 @@ public record GunShootContext(
                 (tickProgress == shootDelayInTicks || (tickProgress + shootDelayInTicks)
                     % secondaryShootSoundFrequencyInTicks == 0)
         ) {
-            level.playSound(null, shooter.blockPosition(), secondaryShootSoundEvent, SoundSource.PLAYERS);
+            level.playSound(null, shooter.blockPosition(), secondaryShootSoundEvent.get(), SoundSource.PLAYERS);
         }
     }
 
@@ -137,7 +137,7 @@ public record GunShootContext(
         var primaryShootSoundFrequencyInTicks = fireModeConfig.primaryShootSoundFrequencyInTicks();
 
         if (primaryShootSoundFrequencyInTicks <= 0 || tickProgress % primaryShootSoundFrequencyInTicks == 0) {
-            level.playSound(null, shooter.blockPosition(), fireModeConfig.primaryShootSoundEvent(), SoundSource.PLAYERS);
+            level.playSound(null, shooter.blockPosition(), fireModeConfig.primaryShootSoundEvent().get(), SoundSource.PLAYERS);
         }
     }
 

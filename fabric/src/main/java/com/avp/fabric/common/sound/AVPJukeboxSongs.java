@@ -7,6 +7,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.JukeboxSong;
 
 import com.avp.AVPResources;
+import com.avp.common.sound.AVPSoundEvents;
 
 public class AVPJukeboxSongs {
 
@@ -16,7 +17,7 @@ public class AVPJukeboxSongs {
 
     public static JukeboxSong createAlienMusic1Song() {
         return new JukeboxSong(
-            Holder.direct(AVPSoundEvents.JUKEBOX_SOUNDS_ALIEN_MUSIC_1),
+            Holder.direct(AVPSoundEvents.JUKEBOX_SOUNDS_ALIEN_MUSIC_1.get()),
             Component.translatable("jukebox_song.avp.alien_music_1"),
             180,
             12
@@ -25,7 +26,7 @@ public class AVPJukeboxSongs {
 
     public static JukeboxSong createPredatorMusic1Song() {
         return new JukeboxSong(
-            Holder.direct(AVPSoundEvents.JUKEBOX_SOUNDS_PREDATOR_MUSIC_1),
+            Holder.direct(AVPSoundEvents.JUKEBOX_SOUNDS_PREDATOR_MUSIC_1.get()),
             Component.translatable("jukebox_song.avp.predator_music_1"),
             184,
             12

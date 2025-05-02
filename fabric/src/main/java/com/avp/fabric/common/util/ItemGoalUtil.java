@@ -9,12 +9,12 @@ import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.phys.Vec3;
 
 import com.avp.common.entity.AVPEntityTypeTags;
+import com.avp.common.sound.AVPSoundEvents;
 import com.avp.common.util.TempAVPPredicates;
 import com.avp.fabric.common.entity.projectile.BulletProjectile;
 import com.avp.fabric.common.entity.projectile.ShurikenItemEntity;
 import com.avp.fabric.common.entity.projectile.SmartDiscItemEntity;
 import com.avp.fabric.common.item.AVPItems;
-import com.avp.fabric.common.sound.AVPSoundEvents;
 
 @Deprecated(forRemoval = true)
 public class ItemGoalUtil {
@@ -27,7 +27,7 @@ public class ItemGoalUtil {
                 entity.getX(),
                 entity.getY(),
                 entity.getZ(),
-                AVPSoundEvents.WEAPON_GENERIC_SHOOT,
+                AVPSoundEvents.WEAPON_GENERIC_SHOOT.get(),
                 SoundSource.PLAYERS,
                 0.5F,
                 0.4F / (entity.level().getRandom().nextFloat() * 0.4F + 0.8F)

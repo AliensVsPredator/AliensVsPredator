@@ -4,28 +4,29 @@ import net.minecraft.sounds.SoundEvent;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Function;
+import java.util.function.Supplier;
 
+import com.avp.common.sound.AVPSoundEvents;
 import com.avp.fabric.common.item.gun.attack.AbstractGunAttack;
 import com.avp.fabric.common.item.gun.attack.GunAttackConfig;
 import com.avp.fabric.common.item.gun.attack.HitScanGunAttack;
-import com.avp.fabric.common.sound.AVPSoundEvents;
 
 public record FireModeConfig(
     int consumedAmmunitionPerShot,
     int cooldownInTicks,
     float damage,
     float knockback,
-    SoundEvent primaryShootSoundEvent,
+    Supplier<SoundEvent> primaryShootSoundEvent,
     int primaryShootSoundFrequencyInTicks,
     int range,
     float recoil,
-    SoundEvent reloadFinishSoundEvent,
-    SoundEvent reloadStartSoundEvent,
-    @Nullable SoundEvent secondaryShootSoundEvent,
+    Supplier<SoundEvent> reloadFinishSoundEvent,
+    Supplier<SoundEvent> reloadStartSoundEvent,
+    @Nullable Supplier<SoundEvent> secondaryShootSoundEvent,
     int secondaryShootSoundFrequencyInTicks,
     int shootDelayInTicks,
-    @Nullable SoundEvent shootFinishSoundEvent,
-    @Nullable SoundEvent shootStartSoundEvent,
+    @Nullable Supplier<SoundEvent> shootFinishSoundEvent,
+    @Nullable Supplier<SoundEvent> shootStartSoundEvent,
     Function<GunAttackConfig, AbstractGunAttack> gunAttackSupplier
 ) {
 
@@ -43,7 +44,7 @@ public record FireModeConfig(
 
         private float knockback;
 
-        private SoundEvent primaryShootSoundEvent;
+        private Supplier<SoundEvent> primaryShootSoundEvent;
 
         private int primaryShootSoundFrequencyInTicks;
 
@@ -51,19 +52,19 @@ public record FireModeConfig(
 
         private float recoil;
 
-        private SoundEvent reloadFinishSoundEvent;
+        private Supplier<SoundEvent> reloadFinishSoundEvent;
 
-        private SoundEvent reloadStartSoundEvent;
+        private Supplier<SoundEvent> reloadStartSoundEvent;
 
-        private SoundEvent secondaryShootSoundEvent;
+        private Supplier<SoundEvent> secondaryShootSoundEvent;
 
         private int secondaryShootSoundFrequencyInTicks;
 
         private int shootDelayInTicks;
 
-        private SoundEvent shootFinishSoundEvent;
+        private Supplier<SoundEvent> shootFinishSoundEvent;
 
-        private SoundEvent shootStartSoundEvent;
+        private Supplier<SoundEvent> shootStartSoundEvent;
 
         private Function<GunAttackConfig, AbstractGunAttack> gunAttackSupplier;
 
@@ -103,7 +104,7 @@ public record FireModeConfig(
             return this;
         }
 
-        public Builder withPrimaryShootSound(SoundEvent primaryShootSoundEvent) {
+        public Builder withPrimaryShootSound(Supplier<SoundEvent> primaryShootSoundEvent) {
             this.primaryShootSoundEvent = primaryShootSoundEvent;
             return this;
         }
@@ -123,12 +124,12 @@ public record FireModeConfig(
             return this;
         }
 
-        public Builder withReloadFinishSound(SoundEvent reloadFinishSoundEvent) {
+        public Builder withReloadFinishSound(Supplier<SoundEvent> reloadFinishSoundEvent) {
             this.reloadFinishSoundEvent = reloadFinishSoundEvent;
             return this;
         }
 
-        public Builder withReloadStartSound(SoundEvent reloadStartSoundEvent) {
+        public Builder withReloadStartSound(Supplier<SoundEvent> reloadStartSoundEvent) {
             this.reloadStartSoundEvent = reloadStartSoundEvent;
             return this;
         }
@@ -138,7 +139,7 @@ public record FireModeConfig(
             return this;
         }
 
-        public Builder withSecondaryShootSound(SoundEvent secondaryShootSoundEvent) {
+        public Builder withSecondaryShootSound(Supplier<SoundEvent> secondaryShootSoundEvent) {
             this.secondaryShootSoundEvent = secondaryShootSoundEvent;
             return this;
         }
@@ -148,12 +149,12 @@ public record FireModeConfig(
             return this;
         }
 
-        public Builder withShootFinishSound(SoundEvent shootFinishSoundEvent) {
+        public Builder withShootFinishSound(Supplier<SoundEvent> shootFinishSoundEvent) {
             this.shootFinishSoundEvent = shootFinishSoundEvent;
             return this;
         }
 
-        public Builder withShootStartSound(SoundEvent shootStartSoundEvent) {
+        public Builder withShootStartSound(Supplier<SoundEvent> shootStartSoundEvent) {
             this.shootStartSoundEvent = shootStartSoundEvent;
             return this;
         }

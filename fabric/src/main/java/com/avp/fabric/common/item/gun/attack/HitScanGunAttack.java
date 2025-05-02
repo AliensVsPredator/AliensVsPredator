@@ -27,12 +27,12 @@ import java.util.ArrayList;
 import com.avp.AVP;
 import com.avp.common.block.AVPBlockTags;
 import com.avp.common.damage.AVPDamageTypes;
+import com.avp.common.sound.AVPSoundEvents;
 import com.avp.common.util.EnchantmentUtil;
 import com.avp.common.util.TempAVPPredicates;
 import com.avp.fabric.common.network.ServerNetworking;
 import com.avp.fabric.common.network.packet.S2CBulletHitBlockPayload;
 import com.avp.fabric.common.network.packet.S2CGunRecoilPayload;
-import com.avp.fabric.common.sound.AVPSoundEvents;
 import com.avp.server.BlockBreakProgressManager;
 
 public class HitScanGunAttack extends AbstractGunAttack {
@@ -162,13 +162,13 @@ public class HitScanGunAttack extends AbstractGunAttack {
         SoundEvent ricochetSfx;
 
         if (soundType == SoundType.GLASS) {
-            ricochetSfx = AVPSoundEvents.WEAPON_FX_RICOCHET_GLASS;
+            ricochetSfx = AVPSoundEvents.WEAPON_FX_RICOCHET_GLASS.get();
         } else if (soundType == SoundType.GRAVEL) {
-            ricochetSfx = AVPSoundEvents.WEAPON_FX_RICOCHET_DIRT;
+            ricochetSfx = AVPSoundEvents.WEAPON_FX_RICOCHET_DIRT.get();
         } else if (soundType == SoundType.METAL) {
-            ricochetSfx = AVPSoundEvents.WEAPON_FX_RICOCHET_METAL;
+            ricochetSfx = AVPSoundEvents.WEAPON_FX_RICOCHET_METAL.get();
         } else {
-            ricochetSfx = AVPSoundEvents.WEAPON_FX_RICOCHET_GENERIC;
+            ricochetSfx = AVPSoundEvents.WEAPON_FX_RICOCHET_GENERIC.get();
         }
         return ricochetSfx;
     }

@@ -1,10 +1,10 @@
 package com.avp.fabric.common.item.gun;
 
 import com.avp.common.item.TempAVPItems;
+import com.avp.common.sound.AVPSoundEvents;
 import com.avp.fabric.common.item.AVPItems;
 import com.avp.fabric.common.item.gun.attack.FlamethrowProjectileGunAttack;
 import com.avp.fabric.common.item.gun.attack.RocketProjectileGunAttack;
-import com.avp.fabric.common.sound.AVPSoundEvents;
 
 public class GunData {
 

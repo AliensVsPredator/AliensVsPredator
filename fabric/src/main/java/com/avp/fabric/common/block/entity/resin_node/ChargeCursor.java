@@ -17,8 +17,8 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Optional;
 import java.util.Set;
 
+import com.avp.common.sound.AVPSoundEvents;
 import com.avp.fabric.common.block.entity.resin_node.behavior.SpreadBehavior;
-import com.avp.fabric.common.sound.AVPSoundEvents;
 
 public class ChargeCursor {
 
@@ -110,7 +110,7 @@ public class ChargeCursor {
                 resinBehavior = ChargeCursorUtil.getSpreadBehavior(blockState);
             }
 
-            levelAccessor.playSound(null, pos, AVPSoundEvents.BLOCK_RESIN_SPREAD, SoundSource.BLOCKS, 1.0F, 1.0F);
+            levelAccessor.playSound(null, pos, AVPSoundEvents.BLOCK_RESIN_SPREAD.get(), SoundSource.BLOCKS, 1.0F, 1.0F);
         }
 
         this.charge = resinBehavior.attemptUseCharge(this, levelAccessor, nodePos, randomSource, resinSpreader, bl);
