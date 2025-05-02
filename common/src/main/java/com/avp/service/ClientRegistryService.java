@@ -5,12 +5,17 @@ import mod.azure.azurelib.rewrite.render.armor.AzArmorRendererRegistry;
 import mod.azure.azurelib.rewrite.render.item.AzItemRenderer;
 import mod.azure.azurelib.rewrite.render.item.AzItemRendererRegistry;
 import net.minecraft.client.color.item.ItemColor;
+import net.minecraft.client.gui.screens.MenuScreens;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.gui.screens.inventory.MenuAccess;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -48,7 +53,9 @@ public interface ClientRegistryService {
 
     void registerItemColor(ItemColor itemColor, List<Supplier<Item>> itemSuppliers);
 
-    void registerItemRenderer(Supplier<? extends Item> itemSupplier);
+    default void registerItemRenderer(Supplier<? extends Item> itemSupplier) {
+        registerItemRenderer(itemSupplier, ITEM_RENDERER_SUPPLIER_FACTORY);
+    }
 
     void registerItemRenderer(Supplier<? extends Item> itemSupplier, Function<String, Supplier<AzItemRenderer>> rendererFactory);
 
@@ -57,4 +64,10 @@ public interface ClientRegistryService {
         var itemRendererSupplier = rendererFactory.apply(path);
         AzItemRendererRegistry.register(itemRendererSupplier, item);
     }
+
+    <T extends AbstractContainerMenu, U extends Screen & MenuAccess<T>> void registerMenuScreen(
+        Supplier<? extends MenuType<T>> menuTypeSupplier,
+        MenuScreens.ScreenConstructor<T, U> screenConstructor
+    );
+
 }

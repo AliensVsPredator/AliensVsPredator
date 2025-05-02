@@ -4,11 +4,16 @@ import com.bvanseg.just.functional.tuple.Tuple2;
 import mod.azure.azurelib.rewrite.render.armor.AzArmorRenderer;
 import mod.azure.azurelib.rewrite.render.item.AzItemRenderer;
 import net.minecraft.client.color.item.ItemColor;
+import net.minecraft.client.gui.screens.MenuScreens;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.gui.screens.inventory.MenuAccess;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -35,6 +40,8 @@ public class NeoForgeClientRegistryService implements ClientRegistryService {
 
     private final List<Tuple2<Supplier<? extends Item>, Function<String, Supplier<AzItemRenderer>>>> itemRendererPairs;
 
+    private final List<Tuple2<Supplier<? extends MenuType<?>>, MenuScreens.ScreenConstructor<?, ?>>> menuScreenConstructorPairs;
+
     public NeoForgeClientRegistryService() {
         this.armorRendererPairs = new ArrayList<>();
         this.blockEntityRendererPairs = new ArrayList<>();
@@ -42,6 +49,7 @@ public class NeoForgeClientRegistryService implements ClientRegistryService {
         this.entityRendererPairs = new ArrayList<>();
         this.itemColorPairs = new ArrayList<>();
         this.itemRendererPairs = new ArrayList<>();
+        this.menuScreenConstructorPairs = new ArrayList<>();
     }
 
     @Override
@@ -76,13 +84,16 @@ public class NeoForgeClientRegistryService implements ClientRegistryService {
     }
 
     @Override
-    public void registerItemRenderer(Supplier<? extends Item> itemSupplier) {
-        itemRendererPairs.add(new Tuple2<>(itemSupplier, ITEM_RENDERER_SUPPLIER_FACTORY));
+    public void registerItemRenderer(Supplier<? extends Item> itemSupplier, Function<String, Supplier<AzItemRenderer>> rendererFactory) {
+        itemRendererPairs.add(new Tuple2<>(itemSupplier, rendererFactory));
     }
 
     @Override
-    public void registerItemRenderer(Supplier<? extends Item> itemSupplier, Function<String, Supplier<AzItemRenderer>> rendererFactory) {
-        itemRendererPairs.add(new Tuple2<>(itemSupplier, rendererFactory));
+    public <T extends AbstractContainerMenu, U extends Screen & MenuAccess<T>> void registerMenuScreen(
+        Supplier<? extends MenuType<T>> menuTypeSupplier,
+        MenuScreens.ScreenConstructor<T, U> screenConstructor
+    ) {
+        menuScreenConstructorPairs.add(new Tuple2<>(menuTypeSupplier, screenConstructor));
     }
 
     public List<Tuple2<Supplier<AzArmorRenderer>, List<Supplier<Item>>>> getArmorRendererPairs() {
@@ -107,5 +118,9 @@ public class NeoForgeClientRegistryService implements ClientRegistryService {
 
     public List<Tuple2<Supplier<? extends Item>, Function<String, Supplier<AzItemRenderer>>>> getItemRendererPairs() {
         return itemRendererPairs;
+    }
+
+    public List<Tuple2<Supplier<? extends MenuType<?>>, MenuScreens.ScreenConstructor<?, ?>>> getMenuScreenConstructorPairs() {
+        return menuScreenConstructorPairs;
     }
 }

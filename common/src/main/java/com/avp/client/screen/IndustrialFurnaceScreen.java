@@ -1,4 +1,4 @@
-package com.avp.fabric.client.screen;
+package com.avp.client.screen;
 
 import net.minecraft.client.gui.screens.inventory.AbstractFurnaceScreen;
 import net.minecraft.network.chat.Component;

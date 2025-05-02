@@ -1,9 +1,11 @@
 package com.avp.neoforge.client;
 
+import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -11,6 +13,7 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.neoforge.client.event.RegisterColorHandlersEvent;
+import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 
 import com.avp.AVP;
 import com.avp.client.AVPClient;
@@ -38,6 +41,17 @@ public class AVPNeoForgeClient {
 
         CLIENT_REGISTRY.getBlockRenderLayerPairs()
             .forEach(pair -> ItemBlockRenderTypes.setRenderLayer(pair.first().get(), pair.second()));
+    }
+
+    @SubscribeEvent
+    public static void registerMenuScreens(RegisterMenuScreensEvent event) {
+        CLIENT_REGISTRY.getMenuScreenConstructorPairs()
+            .forEach(pair -> {
+                var menuType = pair.first().get();
+                @SuppressWarnings("unchecked")
+                var screenConstructor = (MenuScreens.ScreenConstructor<AbstractContainerMenu, ?>) pair.second();
+                event.register(menuType, screenConstructor);
+            });
     }
 
     @SubscribeEvent

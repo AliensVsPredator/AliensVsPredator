@@ -5,7 +5,6 @@ import mod.azure.azurelib.rewrite.render.item.AzItemRendererRegistry;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.particle.v1.ParticleFactoryRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
-import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.Item;
 
@@ -15,7 +14,6 @@ import java.util.function.Supplier;
 import com.avp.client.AVPClient;
 import com.avp.client.render.item.SimpleItemRenderer;
 import com.avp.common.item.TempAVPBlockItems;
-import com.avp.common.menu.AVPMenuTypes;
 import com.avp.fabric.client.input.keybind.AVPKeybindingRegistry;
 import com.avp.fabric.client.network.AVPClientPacketHandlerRegistry;
 import com.avp.fabric.client.particle.AcidParticleProvider;
@@ -48,8 +46,6 @@ import com.avp.fabric.client.render.item.OldPainlessItemRenderer;
 import com.avp.fabric.client.render.item.SentryItemtemRenderer;
 import com.avp.fabric.client.render.item.SpinningItemRenderer;
 import com.avp.fabric.client.render.item.ZX76ShotgunItemRenderer;
-import com.avp.fabric.client.screen.ArmorCaseScreen;
-import com.avp.fabric.client.screen.IndustrialFurnaceScreen;
 import com.avp.fabric.common.entity.type.AVPEntityTypes;
 import com.avp.fabric.common.item.AVPItems;
 import com.avp.fabric.common.particle.AVPParticleTypes;
@@ -135,10 +131,6 @@ public class AVPFabricClient implements ClientModInitializer {
         ParticleFactoryRegistry.getInstance().register(AVPParticleTypes.ACID, AcidParticleProvider::new);
         ParticleFactoryRegistry.getInstance().register(AVPParticleTypes.BLUE_ACID, BlueAcidParticleProvider::new);
         ParticleFactoryRegistry.getInstance().register(AVPParticleTypes.IRRADIATED_ACID, IrradiatedAcidParticleProvider::new);
-
-        // GUI (aka Screens)
-        MenuScreens.register(AVPMenuTypes.ARMOR_CASE.get(), ArmorCaseScreen::new);
-        MenuScreens.register(AVPMenuTypes.INDUSTRIAL_FURNACE_MENU.get(), IndustrialFurnaceScreen::new);
 
         // Keybindings
         AVPKeybindingRegistry.initialize();

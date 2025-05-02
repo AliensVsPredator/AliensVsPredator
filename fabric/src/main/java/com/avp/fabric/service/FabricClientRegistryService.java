@@ -6,12 +6,17 @@ import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import net.fabricmc.fabric.api.client.rendering.v1.ColorProviderRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
 import net.minecraft.client.color.item.ItemColor;
+import net.minecraft.client.gui.screens.MenuScreens;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.gui.screens.inventory.MenuAccess;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -57,12 +62,15 @@ public class FabricClientRegistryService implements ClientRegistryService {
     }
 
     @Override
-    public void registerItemRenderer(Supplier<? extends Item> itemSupplier) {
-        registerItemRendererImmediately(itemSupplier.get(), ITEM_RENDERER_SUPPLIER_FACTORY);
+    public void registerItemRenderer(Supplier<? extends Item> itemSupplier, Function<String, Supplier<AzItemRenderer>> rendererFactory) {
+        registerItemRendererImmediately(itemSupplier.get(), rendererFactory);
     }
 
     @Override
-    public void registerItemRenderer(Supplier<? extends Item> itemSupplier, Function<String, Supplier<AzItemRenderer>> rendererFactory) {
-        registerItemRendererImmediately(itemSupplier.get(), rendererFactory);
+    public <T extends AbstractContainerMenu, U extends Screen & MenuAccess<T>> void registerMenuScreen(
+        Supplier<? extends MenuType<T>> menuTypeSupplier,
+        MenuScreens.ScreenConstructor<T, U> screenConstructor
+    ) {
+        MenuScreens.register(menuTypeSupplier.get(), screenConstructor);
     }
 }

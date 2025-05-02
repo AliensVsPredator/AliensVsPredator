@@ -7,10 +7,10 @@ import me.shedaniel.rei.api.client.registry.display.DisplayRegistry;
 import me.shedaniel.rei.api.client.registry.screen.ScreenRegistry;
 import me.shedaniel.rei.api.common.util.EntryStacks;
 
+import com.avp.client.screen.IndustrialFurnaceScreen;
 import com.avp.common.block.TempAVPBlocks;
 import com.avp.common.recipe.AVPRecipes;
 import com.avp.common.recipe.IndustrialFurnaceRecipe;
-import com.avp.fabric.client.screen.IndustrialFurnaceScreen;
 
 public class AVPREIClient implements REIClientPlugin {
 

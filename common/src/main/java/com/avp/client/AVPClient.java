@@ -29,12 +29,15 @@ import com.avp.client.render.entity.NukeRenderer;
 import com.avp.client.render.item.DeskTerminalItemRenderer;
 import com.avp.client.render.item.ResonatorItemRenderer;
 import com.avp.client.render.item.TripMineItemRenderer;
+import com.avp.client.screen.ArmorCaseScreen;
+import com.avp.client.screen.IndustrialFurnaceScreen;
 import com.avp.common.block.TempAVPBlocks;
 import com.avp.common.block.entity.AVPBlockEntityTypes;
 import com.avp.common.entity.type.TempAVPEntityTypes;
 import com.avp.common.item.AVPArmorItems;
 import com.avp.common.item.TempAVPBlockItems;
 import com.avp.common.item.TempAVPItems;
+import com.avp.common.menu.AVPMenuTypes;
 import com.avp.service.Services;
 
 public class AVPClient {
@@ -45,6 +48,7 @@ public class AVPClient {
         registerBlockRenderLayers();
         registerEntityRenderers();
         registerItemRenderers();
+        registerMenuScreens();
     }
 
     private static void registerArmorRenderers() {
@@ -254,5 +258,10 @@ public class AVPClient {
         Services.CLIENT_REGISTRY.registerItemRenderer(TempAVPBlockItems.DESK_TERMINAL_BLOCK, name -> DeskTerminalItemRenderer::new);
         Services.CLIENT_REGISTRY.registerItemRenderer(TempAVPBlockItems.TRIP_MINE_BLOCK, name -> TripMineItemRenderer::new);
         Services.CLIENT_REGISTRY.registerItemRenderer(TempAVPBlockItems.RESONATOR_BLOCK, name -> ResonatorItemRenderer::new);
+    }
+
+    private static void registerMenuScreens() {
+        Services.CLIENT_REGISTRY.registerMenuScreen(AVPMenuTypes.ARMOR_CASE, ArmorCaseScreen::new);
+        Services.CLIENT_REGISTRY.registerMenuScreen(AVPMenuTypes.INDUSTRIAL_FURNACE_MENU, IndustrialFurnaceScreen::new);
     }
 }
