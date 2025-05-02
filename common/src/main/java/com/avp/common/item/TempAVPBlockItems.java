@@ -14,6 +14,9 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import com.avp.common.block.TempAVPBlocks;
+import com.avp.common.block_item.AmmoChestBlockItem;
+import com.avp.common.block_item.LeadChestBlockItem;
+import com.avp.common.block_item.SentryTurretBlockItem;
 import com.avp.service.Services;
 
 // TODO: Rename this once multi-loader migration is finished.
@@ -44,6 +47,8 @@ public class TempAVPBlockItems {
     );
 
     public static final Supplier<BlockItem> ALUMINUM_BLOCK = register("aluminum_block", TempAVPBlocks.ALUMINUM_BLOCK);
+
+    public static final Supplier<BlockItem> AMMO_CHEST = registerDirect("ammo_chest", AmmoChestBlockItem::new);
 
     public static final Supplier<BlockItem> ASH_BLOCK = register("ash_block", TempAVPBlocks.ASH_BLOCK);
 
@@ -96,6 +101,8 @@ public class TempAVPBlockItems {
     );
 
     public static final Supplier<BlockItem> DEEPSLATE_ZINC_ORE = register("deepslate_zinc_ore", TempAVPBlocks.DEEPSLATE_ZINC_ORE);
+
+    public static final Supplier<BlockItem> DESK_TERMINAL_BLOCK = register("desk_terminal", TempAVPBlocks.DESK_TERMINAL_BLOCK);
 
     public static final Supplier<BlockItem> FERROALUMINUM_BLOCK = register("ferroaluminum_block", TempAVPBlocks.FERROALUMINUM_BLOCK);
 
@@ -219,6 +226,11 @@ public class TempAVPBlockItems {
 
     public static final Supplier<BlockItem> GALENA_ORE = register("galena_ore", TempAVPBlocks.GALENA_ORE);
 
+    public static final Supplier<BlockItem> INDUSTRIAL_FURNACE_BLOCK = register(
+        "industrial_furnace_block",
+        TempAVPBlocks.INDUSTRIAL_FURNACE
+    );
+
     public static final Supplier<BlockItem> INDUSTRIAL_GLASS = register("industrial_glass", TempAVPBlocks.INDUSTRIAL_GLASS);
 
     public static final Supplier<BlockItem> INDUSTRIAL_GLASS_DOOR = register("industrial_glass_door", TempAVPBlocks.INDUSTRIAL_GLASS_DOOR);
@@ -246,6 +258,8 @@ public class TempAVPBlockItems {
     public static final Supplier<BlockItem> IRRADIATED_RESIN_WEB = register("irradiated_resin_web", TempAVPBlocks.IRRADIATED_RESIN_WEB);
 
     public static final Supplier<BlockItem> LEAD_BLOCK = register("lead_block", TempAVPBlocks.LEAD_BLOCK);
+
+    public static final Supplier<BlockItem> LEAD_CHEST = registerDirect("lead_chest", LeadChestBlockItem::new);
 
     public static final Supplier<BlockItem> LITHIUM_BLOCK = register("lithium_block", TempAVPBlocks.LITHIUM_BLOCK);
 
@@ -289,6 +303,8 @@ public class TempAVPBlockItems {
 
     public static final Supplier<BlockItem> RAW_ZINC_BLOCK = register("raw_zinc_block", TempAVPBlocks.RAW_ZINC_BLOCK);
 
+    public static final Supplier<BlockItem> REDSTONE_GENERATOR = register("redstone_generator", TempAVPBlocks.REDSTONE_GENERATOR);
+
     public static final Supplier<BlockItem> RESIN = register("resin", TempAVPBlocks.RESIN);
 
     public static final Supplier<BlockItem> RESIN_BRICKS = register("resin_bricks", TempAVPBlocks.RESIN_BRICKS);
@@ -305,11 +321,15 @@ public class TempAVPBlockItems {
 
     public static final Supplier<BlockItem> RESIN_WEB = register("resin_web", TempAVPBlocks.RESIN_WEB);
 
+    public static final Supplier<BlockItem> RESONATOR_BLOCK = register("resonator", TempAVPBlocks.RESONATOR_BLOCK);
+
     // TODO: Make RoyalJellyBlockItem.
     public static final Supplier<BlockItem> ROYAL_JELLY_BLOCK = registerDirect(
         "royal_jelly_block",
         () -> new BlockItem(TempAVPBlocks.ROYAL_JELLY_BLOCK.get(), new Item.Properties())
     );
+
+    public static final Supplier<BlockItem> SENTRY_TURRET = registerDirect("sentry_turret", SentryTurretBlockItem::new);
 
     public static final Supplier<BlockItem> SILICA_GRAVEL = register("silica_gravel", TempAVPBlocks.SILICA_GRAVEL);
 
@@ -484,6 +504,8 @@ public class TempAVPBlockItems {
     public static final Supplier<BlockItem> TITANIUM_TREAD_STAIRS = register("titanium_tread_stairs", TempAVPBlocks.TITANIUM_TREAD_STAIRS);
 
     public static final Supplier<BlockItem> TRINITITE_BLOCK = register("trinitite_block", TempAVPBlocks.TRINITITE_BLOCK);
+
+    public static final Supplier<BlockItem> TRIP_MINE_BLOCK = register("trip_mine", TempAVPBlocks.TRIP_MINE_BLOCK);
 
     public static final Supplier<BlockItem> URANIUM_BLOCK = register("uranium_block", TempAVPBlocks.URANIUM_BLOCK);
 

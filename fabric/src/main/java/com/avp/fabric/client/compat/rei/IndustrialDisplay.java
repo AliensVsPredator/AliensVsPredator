@@ -9,7 +9,7 @@ import net.minecraft.world.item.crafting.RecipeHolder;
 
 import java.util.List;
 
-import com.avp.fabric.common.recipe.IndustrialFurnaceRecipe;
+import com.avp.common.recipe.IndustrialFurnaceRecipe;
 
 public class IndustrialDisplay extends BasicDisplay {
 

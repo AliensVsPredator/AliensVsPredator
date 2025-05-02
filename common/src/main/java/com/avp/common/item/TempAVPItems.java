@@ -101,6 +101,8 @@ public class TempAVPItems {
 
     public static final Supplier<Item> LITHIUM_DUST = register("lithium_dust");
 
+    public static final Supplier<Item> MEDIUM_BULLET = register("medium_bullet");
+
     public static final Supplier<Item> MEDIUM_CASING = register("medium_casing");
 
     public static final Supplier<Item> MILK_CANISTER = register(

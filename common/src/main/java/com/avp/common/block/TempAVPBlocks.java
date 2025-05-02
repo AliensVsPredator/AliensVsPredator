@@ -39,11 +39,10 @@ public class TempAVPBlocks {
     // FIXME: Fix properties.
     public static final Supplier<Block> ABERRANT_RESIN = register("aberrant_resin", () -> new Block(BlockProperties.NETHER_RESIN.build()));
 
-    // FIXME: Make ResinNodeBlock type.
     // FIXME: Fix properties.
     public static final Supplier<Block> ABERRANT_RESIN_NODE = register(
         "aberrant_resin_node",
-        () -> new Block(BlockProperties.RESIN.build())
+        () -> new ResinNodeBlock(BlockProperties.RESIN.build())
     );
 
     // FIXME: Make ResinVeinBlock type.
@@ -60,6 +59,8 @@ public class TempAVPBlocks {
     );
 
     public static final Supplier<Block> ALUMINUM_BLOCK = register("aluminum_block", BlockProperties.ALUMINUM);
+
+    public static final Supplier<Block> AMMO_CHEST = register("ammo_chest", () -> new AmmoChestBlock(BlockProperties.LEAD.build()));
 
     public static final Supplier<Block> ASH_BLOCK = register("ash_block", () -> new AshBlock(BlockProperties.ASH_BLOCK.build()));
 
@@ -126,6 +127,11 @@ public class TempAVPBlocks {
     public static final Supplier<Block> DEEPSLATE_TITANIUM_ORE = register("deepslate_titanium_ore", BlockProperties.DEEPSLATE_TITANIUM_ORE);
 
     public static final Supplier<Block> DEEPSLATE_ZINC_ORE = register("deepslate_zinc_ore", BlockProperties.DEEPSLATE_ZINC_ORE);
+
+    public static final Supplier<Block> DESK_TERMINAL_BLOCK = register(
+        "desk_terminal",
+        () -> new DeskTerminalBlock(BlockProperties.STEEL.build().noOcclusion())
+    );
 
     public static final Supplier<Block> FERROALUMINUM_BLOCK = register("ferroaluminum_block", BlockProperties.FERROALUMINUM);
 
@@ -264,6 +270,11 @@ public class TempAVPBlocks {
 
     public static final Supplier<Block> GALENA_ORE = register("galena_ore", BlockProperties.GALENA_ORE);
 
+    public static final Supplier<Block> INDUSTRIAL_FURNACE = register(
+        "industrial_furnace_block",
+        () -> new IndustrialFurnaceBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.STONE))
+    );
+
     public static final Supplier<Block> INDUSTRIAL_GLASS = register(
         "industrial_glass",
         () -> new TransparentBlock(BlockProperties.INDUSTRIAL_GLASS.build())
@@ -301,6 +312,7 @@ public class TempAVPBlocks {
         () -> new Block(BlockProperties.NETHER_RESIN.build())
     );
 
+    // FIXME: Fix properties.
     // FIXME: Make IrradiatedResinNodeBlock type.
     public static final Supplier<Block> IRRADIATED_RESIN_NODE = register(
         "irradiated_resin_node",
@@ -321,6 +333,8 @@ public class TempAVPBlocks {
 
     public static final Supplier<Block> LEAD_BLOCK = register("lead_block", BlockProperties.LEAD);
 
+    public static final Supplier<Block> LEAD_CHEST = register("lead_chest", () -> new LeadChestBlock(BlockProperties.LEAD.build()));
+
     public static final Supplier<Block> LITHIUM_BLOCK = register(
         "lithium_block",
         () -> new LithiumBlock(BlockProperties.LITHIUM_ORE.build())
@@ -333,8 +347,11 @@ public class TempAVPBlocks {
     // FIXME: Make ResinBlock type.
     public static final Supplier<Block> NETHER_RESIN = register("nether_resin", () -> new Block(BlockProperties.NETHER_RESIN.build()));
 
-    // FIXME: Make ResinNodeBlock type.
-    public static final Supplier<Block> NETHER_RESIN_NODE = register("nether_resin_node", () -> new Block(BlockProperties.RESIN.build()));
+    // FIXME: Fix properties.
+    public static final Supplier<Block> NETHER_RESIN_NODE = register(
+        "nether_resin_node",
+        () -> new ResinNodeBlock(BlockProperties.RESIN.build())
+    );
 
     // FIXME: Make ResinVeinBlock type.
     public static final Supplier<Block> NETHER_RESIN_VEIN = register(
@@ -362,13 +379,18 @@ public class TempAVPBlocks {
 
     public static final Supplier<Block> RAW_ZINC_BLOCK = register("raw_zinc_block", BlockProperties.ZINC_ORE);
 
+    public static final Supplier<Block> REDSTONE_GENERATOR = register(
+        "redstone_generator",
+        () -> new RedstoneGeneratorBlock(BlockProperties.STEEL.build().randomTicks())
+    );
+
     // FIXME: Make ResinBlock type.
     public static final Supplier<Block> RESIN = register("resin", () -> new Block(BlockProperties.RESIN.build()));
 
     public static final Supplier<Block> RESIN_BRICKS = register("resin_bricks", BlockProperties.BRASS);
 
     // FIXME: Make ResinNodeBlock type.
-    public static final Supplier<Block> RESIN_NODE = register("resin_node", () -> new Block(BlockProperties.RESIN.build()));
+    public static final Supplier<Block> RESIN_NODE = register("resin_node", () -> new ResinNodeBlock(BlockProperties.RESIN.build()));
 
     public static final Supplier<Block> RESIN_O = register("resin_o", BlockProperties.BRASS);
 
@@ -381,7 +403,17 @@ public class TempAVPBlocks {
 
     public static final Supplier<Block> RESIN_WEB = register("resin_web", () -> new ResinWebBlock(BlockProperties.RESIN_WEB.build()));
 
+    public static final Supplier<Block> RESONATOR_BLOCK = register(
+        "resonator",
+        () -> new ResonatorBlock(BlockProperties.STEEL.build().noOcclusion())
+    );
+
     public static final Supplier<Block> ROYAL_JELLY_BLOCK = register("royal_jelly_block", BlockProperties.JELLY);
+
+    public static final Supplier<Block> SENTRY_TURRET = register(
+        "sentry_turret",
+        () -> new SentryTurretBlock(BlockProperties.STEEL.build().noOcclusion())
+    );
 
     public static final Supplier<Block> SILICA_GRAVEL = register(
         "silica_gravel",
@@ -650,6 +682,11 @@ public class TempAVPBlocks {
 
     // FIXME: Change this to new RadiatedBlock once RadiatedBlock is migrated.
     public static final Supplier<Block> TRINITITE_BLOCK = register("trinitite_block", BlockProperties.TRINITITE);
+
+    public static final Supplier<Block> TRIP_MINE_BLOCK = register(
+        "trip_mine",
+        () -> new TripMineBlock(BlockProperties.TITANIUM.build().noOcclusion())
+    );
 
     // FIXME: Change this to new RadiatedBlock once RadiatedBlock is migrated.
     public static final Supplier<Block> URANIUM_BLOCK = register("uranium_block", BlockProperties.URANIUM);

@@ -22,7 +22,7 @@ import java.util.Map;
 import java.util.Objects;
 
 import com.avp.AVP;
-import com.avp.fabric.common.recipe.IndustrialFurnaceRecipe;
+import com.avp.common.recipe.IndustrialFurnaceRecipe;
 
 import static net.minecraft.data.recipes.RecipeProvider.has;
 

@@ -166,7 +166,7 @@ public class MiscellaneousRecipeProvider {
             .pattern("SSS")
             .pattern("SFS")
             .pattern("III")
-            .into(1, AVPBlocks.INDUSTRIAL_FURNACE);
+            .into(1, TempAVPBlocks.INDUSTRIAL_FURNACE);
 
         // Stone Recipes
         builder.industrialFurnaceSmelting(Items.COBBLESTONE)

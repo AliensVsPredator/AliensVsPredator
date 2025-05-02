@@ -98,7 +98,7 @@ public class GunData {
         .withDurability(2048)
         .withMaximumAmmunition(90)
         .withReloadTimeInTicks(20 * 4)
-        .withAmmunitionItemSupplier(() -> AVPItems.MEDIUM_BULLET)
+        .withAmmunitionItemSupplier(TempAVPItems.MEDIUM_BULLET::get)
         .withFireMode(
             FireModeConfig.builder()
                 .withCooldownInTicks(2)

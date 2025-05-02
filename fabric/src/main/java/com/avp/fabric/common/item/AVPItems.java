@@ -58,8 +58,6 @@ public class AVPItems {
         "m88mod4_combat_pistol"
     );
 
-    public static final Item MEDIUM_BULLET = register("medium_bullet");
-
     public static final Item OLD_PAINLESS = register(new OldPainlessItem(), "old_painless");
 
     public static final Item ZX_76_SHOTGUN = register(new GunItem(GunData.ZX_76_SHOTGUN), "zx_76_shotgun");

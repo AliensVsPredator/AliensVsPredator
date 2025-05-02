@@ -10,43 +10,14 @@ import net.minecraft.world.level.block.Block;
 import java.util.function.Supplier;
 
 import com.avp.AVPResources;
+import com.avp.common.item.TempAVPBlockItems;
 import com.avp.fabric.common.block.AVPBlocks;
 
 public class AVPBlockItems {
 
-    public static final BlockItem REDSTONE_GENERATOR = register(AVPBlocks.REDSTONE_GENERATOR);
-
-    public static final BlockItem DESK_TERMINAL_BLOCK = register(AVPBlocks.DESK_TERMINAL_BLOCK);
-
-    public static final BlockItem TRIP_MINE_BLOCK = register(AVPBlocks.TRIP_MINE_BLOCK);
-
-    public static final BlockItem RESONATOR_BLOCK = register(AVPBlocks.RESONATOR_BLOCK);
-
-    public static final BlockItem SENTRY_TURRET = register("sentry_turret", SentryTurretBlockItem::new);
-
     public static final BlockItem NUKE_BLOCK = register(AVPBlocks.NUKE_BLOCK);
 
-    public static final BlockItem LEAD_CHEST = register("lead_chest", LeadChestBlockItem::new);
-
-    public static final BlockItem AMMO_CHEST = register("ammo_chest", AmmoChestBlockItem::new);
-
     public static final BlockItem RAZOR_WIRE = register(AVPBlocks.RAZOR_WIRE);
-
-    // Metal Block - Slabs and Stairs
-
-    public static final BlockItem INDUSTRIAL_FURNACE_BLOCK = register(AVPBlocks.INDUSTRIAL_FURNACE);
-
-    // Siding - Slabs and Stairs
-
-    // Fastened Siding - Slabs and Stairs
-
-    // Fastened Standing - Slabs and Stairs
-
-    // Plating - Slabs and Stairs
-
-    // Tread - Slabs and Stairs
-
-    // Grate - Slabs and Stairs
 
     @Deprecated
     public static BlockItem register(Block block) {
@@ -80,6 +51,7 @@ public class AVPBlockItems {
     }
 
     public static void initialize() {
-        AzIdentityRegistry.register(RESONATOR_BLOCK, SENTRY_TURRET);
+        // FIXME:
+        AzIdentityRegistry.register(TempAVPBlockItems.RESONATOR_BLOCK.get(), TempAVPBlockItems.SENTRY_TURRET.get());
     }
 }

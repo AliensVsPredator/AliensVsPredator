@@ -114,7 +114,7 @@ public class AVPItemTagProvider extends FabricTagProvider.ItemTagProvider {
                 AVPItems.CASELESS_BULLET,
                 AVPItems.HEAVY_BULLET,
                 TempAVPItems.SMALL_BULLET.get(),
-                AVPItems.MEDIUM_BULLET,
+                TempAVPItems.MEDIUM_BULLET.get(),
                 TempAVPItems.SHOTGUN_SHELL.get(),
                 TempAVPItems.ROCKET.get(),
                 AVPItems.FUEL_TANK

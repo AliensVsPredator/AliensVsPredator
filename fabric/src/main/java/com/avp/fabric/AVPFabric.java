@@ -19,11 +19,11 @@ import net.minecraft.world.level.levelgen.structure.templatesystem.StructureProc
 import java.util.ArrayList;
 
 import com.avp.AVP;
+import com.avp.common.level.gameevent.AVPGameEvents;
 import com.avp.fabric.common.block.AVPBlocks;
 import com.avp.fabric.common.block.CompostingChanceRegistry;
 import com.avp.fabric.common.block.DispenserBlockBehaviors;
 import com.avp.fabric.common.block.FlammableBlockRegistry;
-import com.avp.fabric.common.block.entity.AVPBlockEntityTypes;
 import com.avp.fabric.common.block_item.AVPBlockItems;
 import com.avp.fabric.common.command.Commands;
 import com.avp.fabric.common.entity.spawn.SpawnPlacements;
@@ -32,7 +32,6 @@ import com.avp.fabric.common.fuel.AVPFuelRegistry;
 import com.avp.fabric.common.item.AVPItems;
 import com.avp.fabric.common.item.ArmorItems;
 import com.avp.fabric.common.item.SpawnEggItems;
-import com.avp.fabric.common.level.gameevent.AVPGameEvents;
 import com.avp.fabric.common.lifecycle.Infections;
 import com.avp.fabric.common.lifecycle.Lifecycles;
 import com.avp.fabric.common.network.CommonPacketRegistry;
@@ -42,7 +41,6 @@ import com.avp.fabric.common.patrols.MarinePatrolSpawner;
 import com.avp.fabric.common.profession.AVPGifts;
 import com.avp.fabric.common.profession.AVPProfessions;
 import com.avp.fabric.common.profession.AVPTrades;
-import com.avp.fabric.common.recipe.AVPRecipes;
 import com.avp.fabric.common.sound.AVPJukeboxSongs;
 import com.avp.fabric.common.worldgen.NukedAshPlacement;
 import com.avp.fabric.common.worldgen.WorldGen;
@@ -67,7 +65,6 @@ public class AVPFabric implements ModInitializer {
         AVP.initialize();
 
         // Core
-        AVPBlockEntityTypes.initialize();
         AVPBlocks.initialize();
         AVPItems.initialize();
         AVPBlockItems.initialize();
@@ -82,7 +79,6 @@ public class AVPFabric implements ModInitializer {
         AVPGameEvents.initialize();
         CommonPacketRegistry.initialize();
         ServerPacketHandlerRegistry.initialize();
-        AVPRecipes.initialize();
         AVPProfessions.initialize();
 
         // Functionality

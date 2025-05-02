@@ -10,9 +10,9 @@ import java.time.Duration;
 import java.util.Objects;
 
 import com.avp.common.component.AVPDataComponents;
+import com.avp.common.item.TempAVPBlockItems;
 import com.avp.common.util.EnchantmentUtil;
 import com.avp.common.util.TempAVPPredicates;
-import com.avp.fabric.common.block_item.AVPBlockItems;
 import com.avp.fabric.common.item.gun.GunData;
 import com.avp.server.ServerScheduler;
 
@@ -145,7 +145,7 @@ public class GunReloading {
 
         // We iterate over ammo chests first, since we want to consume from them before the player's bare inventory.
         for (var playerItemStack : playerInventory.items) {
-            if (!playerItemStack.is(AVPBlockItems.AMMO_CHEST)) {
+            if (!playerItemStack.is(TempAVPBlockItems.AMMO_CHEST.get())) {
                 // Skip non-ammo chests.
                 continue;
             }

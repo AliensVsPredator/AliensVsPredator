@@ -9,8 +9,12 @@ import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.entity.DecoratedPotPattern;
+import net.minecraft.world.level.gameevent.GameEvent;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
@@ -22,6 +26,11 @@ import com.avp.service.RegistryService;
 public class NeoForgeRegistryService implements RegistryService {
 
     private final DeferredRegister<Block> BLOCK_REGISTRY = DeferredRegister.create(BuiltInRegistries.BLOCK, AVP.MOD_ID);
+
+    private final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITY_TYPE_REGISTRY = DeferredRegister.create(
+        BuiltInRegistries.BLOCK_ENTITY_TYPE,
+        AVP.MOD_ID
+    );
 
     private final DeferredRegister<CreativeModeTab> CREATIVE_MODE_TAB_REGISTRY = DeferredRegister.create(
         BuiltInRegistries.CREATIVE_MODE_TAB,
@@ -38,11 +47,20 @@ public class NeoForgeRegistryService implements RegistryService {
         AVP.MOD_ID
     );
 
+    private final DeferredRegister<GameEvent> GAME_EVENT_REGISTRY = DeferredRegister.create(BuiltInRegistries.GAME_EVENT, AVP.MOD_ID);
+
     private final DeferredRegister<Item> ITEM_REGISTRY = DeferredRegister.create(BuiltInRegistries.ITEM, AVP.MOD_ID);
 
     private final DeferredRegister<MenuType<?>> MENU_TYPE_REGISTRY = DeferredRegister.create(BuiltInRegistries.MENU, AVP.MOD_ID);
 
     private final DeferredRegister<MobEffect> MOB_EFFECT_REGISTRY = DeferredRegister.create(BuiltInRegistries.MOB_EFFECT, AVP.MOD_ID);
+
+    private final DeferredRegister<RecipeSerializer<?>> RECIPE_SERIALIZER_REGISTRY = DeferredRegister.create(
+        BuiltInRegistries.RECIPE_SERIALIZER,
+        AVP.MOD_ID
+    );
+
+    private final DeferredRegister<RecipeType<?>> RECIPE_TYPE_REGISTRY = DeferredRegister.create(BuiltInRegistries.RECIPE_TYPE, AVP.MOD_ID);
 
     private final DeferredRegister<SoundEvent> SOUND_EVENT_REGISTRY = DeferredRegister.create(BuiltInRegistries.SOUND_EVENT, AVP.MOD_ID);
 
@@ -51,18 +69,26 @@ public class NeoForgeRegistryService implements RegistryService {
     public <T> Supplier<T> register(Registry<? super T> registry, String id, Supplier<? extends T> supplier) {
         if (registry == BuiltInRegistries.BLOCK) {
             return (Supplier<T>) BLOCK_REGISTRY.register(id, (Supplier<Block>) supplier);
+        } else if (registry == BuiltInRegistries.BLOCK_ENTITY_TYPE) {
+            return (Supplier<T>) BLOCK_ENTITY_TYPE_REGISTRY.register(id, (Supplier<BlockEntityType<?>>) supplier);
         } else if (registry == BuiltInRegistries.CREATIVE_MODE_TAB) {
             return (Supplier<T>) CREATIVE_MODE_TAB_REGISTRY.register(id, (Supplier<CreativeModeTab>) supplier);
         } else if (registry == BuiltInRegistries.DATA_COMPONENT_TYPE) {
             return (Supplier<T>) DATA_COMPONENT_TYPE_REGISTRY.register(id, (Supplier<DataComponentType<?>>) supplier);
         } else if (registry == BuiltInRegistries.DECORATED_POT_PATTERN) {
             return (Supplier<T>) DECORATED_POT_PATTERN_REGISTRY.register(id, (Supplier<DecoratedPotPattern>) supplier);
+        } else if (registry == BuiltInRegistries.GAME_EVENT) {
+            return (Supplier<T>) GAME_EVENT_REGISTRY.register(id, (Supplier<GameEvent>) supplier);
         } else if (registry == BuiltInRegistries.ITEM) {
             return (Supplier<T>) ITEM_REGISTRY.register(id, (Supplier<Item>) supplier);
         } else if (registry == BuiltInRegistries.MENU) {
             return (Supplier<T>) MENU_TYPE_REGISTRY.register(id, (Supplier<MenuType<?>>) supplier);
         } else if (registry == BuiltInRegistries.MOB_EFFECT) {
             throw new IllegalArgumentException("Registering mob effects with 'register' is not supported. Use 'registerHolder', instead.");
+        } else if (registry == BuiltInRegistries.RECIPE_SERIALIZER) {
+            return (Supplier<T>) RECIPE_SERIALIZER_REGISTRY.register(id, (Supplier<RecipeSerializer<?>>) supplier);
+        } else if (registry == BuiltInRegistries.RECIPE_TYPE) {
+            return (Supplier<T>) RECIPE_TYPE_REGISTRY.register(id, (Supplier<RecipeType<?>>) supplier);
         } else if (registry == BuiltInRegistries.SOUND_EVENT) {
             return (Supplier<T>) SOUND_EVENT_REGISTRY.register(id, (Supplier<SoundEvent>) supplier);
         }
@@ -82,12 +108,16 @@ public class NeoForgeRegistryService implements RegistryService {
 
     public void initialize(IEventBus modBus) {
         BLOCK_REGISTRY.register(modBus);
+        BLOCK_ENTITY_TYPE_REGISTRY.register(modBus);
         CREATIVE_MODE_TAB_REGISTRY.register(modBus);
         DATA_COMPONENT_TYPE_REGISTRY.register(modBus);
         DECORATED_POT_PATTERN_REGISTRY.register(modBus);
+        GAME_EVENT_REGISTRY.register(modBus);
         ITEM_REGISTRY.register(modBus);
         MENU_TYPE_REGISTRY.register(modBus);
         MOB_EFFECT_REGISTRY.register(modBus);
+        RECIPE_SERIALIZER_REGISTRY.register(modBus);
+        RECIPE_TYPE_REGISTRY.register(modBus);
         SOUND_EVENT_REGISTRY.register(modBus);
     }
 }

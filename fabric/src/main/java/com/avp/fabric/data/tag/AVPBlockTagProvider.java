@@ -338,20 +338,20 @@ public class AVPBlockTagProvider extends FabricTagProvider.BlockTagProvider {
                 TempAVPBlocks.ABERRANT_RESIN.get(),
                 TempAVPBlocks.ABERRANT_RESIN_NODE.get(),
                 TempAVPBlocks.ALUMINUM_BLOCK.get(),
-                AVPBlocks.AMMO_CHEST,
+                TempAVPBlocks.AMMO_CHEST.get(),
                 TempAVPBlocks.AUTUNITE_BLOCK.get(),
                 TempAVPBlocks.AUTUNITE_ORE.get(),
                 TempAVPBlocks.BAUXITE_ORE.get(),
                 TempAVPBlocks.BRASS_BLOCK.get(),
                 TempAVPBlocks.DEEPSLATE_TITANIUM_ORE.get(),
                 TempAVPBlocks.DEEPSLATE_ZINC_ORE.get(),
-                AVPBlocks.DESK_TERMINAL_BLOCK,
+                TempAVPBlocks.DESK_TERMINAL_BLOCK.get(),
                 TempAVPBlocks.GALENA_ORE.get(),
-                AVPBlocks.INDUSTRIAL_FURNACE,
+                TempAVPBlocks.INDUSTRIAL_FURNACE.get(),
                 TempAVPBlocks.IRRADIATED_RESIN.get(),
                 TempAVPBlocks.IRRADIATED_RESIN_NODE.get(),
                 TempAVPBlocks.LEAD_BLOCK.get(),
-                AVPBlocks.LEAD_CHEST,
+                TempAVPBlocks.LEAD_CHEST.get(),
                 TempAVPBlocks.LITHIUM_BLOCK.get(),
                 TempAVPBlocks.LITHIUM_ORE.get(),
                 TempAVPBlocks.MONAZITE_ORE.get(),
@@ -363,17 +363,17 @@ public class AVPBlockTagProvider extends FabricTagProvider.BlockTagProvider {
                 TempAVPBlocks.RAW_MONAZITE_BLOCK.get(),
                 TempAVPBlocks.RAW_SILICA_BLOCK.get(),
                 TempAVPBlocks.RAW_ZINC_BLOCK.get(),
-                AVPBlocks.REDSTONE_GENERATOR,
+                TempAVPBlocks.REDSTONE_GENERATOR.get(),
                 TempAVPBlocks.RESIN.get(),
                 TempAVPBlocks.RESIN_NODE.get(),
                 TempAVPBlocks.RESIN_BRICKS.get(),
                 TempAVPBlocks.RESIN_O.get(),
                 TempAVPBlocks.RESIN_RIBBED.get(),
                 TempAVPBlocks.RESIN_SMOOTH.get(),
-                AVPBlocks.RESONATOR_BLOCK,
-                AVPBlocks.SENTRY_TURRET,
+                TempAVPBlocks.RESONATOR_BLOCK.get(),
+                TempAVPBlocks.SENTRY_TURRET.get(),
                 TempAVPBlocks.TRINITITE_BLOCK.get(),
-                AVPBlocks.TRIP_MINE_BLOCK,
+                TempAVPBlocks.TRIP_MINE_BLOCK.get(),
                 TempAVPBlocks.URANIUM_BLOCK.get(),
                 TempAVPBlocks.ZINC_BLOCK.get(),
                 TempAVPBlocks.ZINC_ORE.get()
@@ -403,18 +403,18 @@ public class AVPBlockTagProvider extends FabricTagProvider.BlockTagProvider {
             .addTag(AVPBlockTags.STEEL)
             .addTag(AVPBlockTags.TITANIUM)
             .add(
-                AVPBlocks.AMMO_CHEST,
+                TempAVPBlocks.AMMO_CHEST.get(),
                 TempAVPBlocks.DEEPSLATE_TITANIUM_ORE.get(),
-                AVPBlocks.DESK_TERMINAL_BLOCK,
-                AVPBlocks.INDUSTRIAL_FURNACE,
-                AVPBlocks.LEAD_CHEST,
+                TempAVPBlocks.DESK_TERMINAL_BLOCK.get(),
+                TempAVPBlocks.INDUSTRIAL_FURNACE.get(),
+                TempAVPBlocks.LEAD_CHEST.get(),
                 AVPBlocks.NUKE_BLOCK,
                 TempAVPBlocks.RAW_TITANIUM_BLOCK.get(),
-                AVPBlocks.REDSTONE_GENERATOR,
-                AVPBlocks.RESONATOR_BLOCK,
-                AVPBlocks.SENTRY_TURRET,
+                TempAVPBlocks.REDSTONE_GENERATOR.get(),
+                TempAVPBlocks.RESONATOR_BLOCK.get(),
+                TempAVPBlocks.SENTRY_TURRET.get(),
                 TempAVPBlocks.TRINITITE_BLOCK.get(),
-                AVPBlocks.TRIP_MINE_BLOCK,
+                TempAVPBlocks.TRIP_MINE_BLOCK.get(),
                 TempAVPBlocks.URANIUM_BLOCK.get()
             );
 
@@ -572,8 +572,8 @@ public class AVPBlockTagProvider extends FabricTagProvider.BlockTagProvider {
         getOrCreateTagBuilder(CommonConstants.CHESTS)
             .setReplace(false)
             .add(
-                AVPBlocks.AMMO_CHEST,
-                AVPBlocks.LEAD_CHEST
+                TempAVPBlocks.AMMO_CHEST.get(),
+                TempAVPBlocks.LEAD_CHEST.get()
             );
 
         getOrCreateTagBuilder(CommonConstants.ORES_BLOCKS)

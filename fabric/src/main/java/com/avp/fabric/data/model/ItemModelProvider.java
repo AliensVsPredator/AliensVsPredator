@@ -41,7 +41,7 @@ public class ItemModelProvider extends FabricModelProvider {
         generateStandardItem(generators, AVPItems.CASELESS_BULLET);
         generateStandardItem(generators, AVPItems.HEAVY_BULLET);
         generateStandardItem(generators, TempAVPItems.SMALL_BULLET);
-        generateStandardItem(generators, AVPItems.MEDIUM_BULLET);
+        generateStandardItem(generators, TempAVPItems.MEDIUM_BULLET);
         generateStandardItem(generators, TempAVPItems.SHOTGUN_SHELL);
         generateStandardItem(generators, ArmorItems.ABERRANT_CHITIN_BOOTS);
         generateStandardItem(generators, ArmorItems.ABERRANT_CHITIN_CHESTPLATE);

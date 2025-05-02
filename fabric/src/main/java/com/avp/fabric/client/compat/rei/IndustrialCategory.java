@@ -16,7 +16,7 @@ import java.util.List;
 
 import com.avp.AVP;
 import com.avp.AVPResources;
-import com.avp.fabric.common.block_item.AVPBlockItems;
+import com.avp.common.item.TempAVPBlockItems;
 
 public class IndustrialCategory implements DisplayCategory<IndustrialDisplay> {
 
@@ -37,7 +37,7 @@ public class IndustrialCategory implements DisplayCategory<IndustrialDisplay> {
 
     @Override
     public Renderer getIcon() {
-        return EntryStacks.of(AVPBlockItems.INDUSTRIAL_FURNACE_BLOCK.getDefaultInstance());
+        return EntryStacks.of(TempAVPBlockItems.INDUSTRIAL_FURNACE_BLOCK.get().getDefaultInstance());
     }
 
     @Override

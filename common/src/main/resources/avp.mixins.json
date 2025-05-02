@@ -5,11 +5,14 @@
   "refmap": "${mod_id}.refmap.json",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
+    "AbstractFurnaceBlockEntityInvoker",
     "GiveGiftToHeroAccessor",
     "MixinCow_FillMilkCanister",
     "MixinCreeper_Nuked",
     "MixinDecoratedPotPatterns_GetPatternForCustomSherds",
     "MixinEntityTypeBuilder_SilenceDataFixerError",
+    "MixinInventory_InsertAmmoItemsIntoAmmoChest",
+    "MixinInventory_InsertRadioactiveItemsIntoLeadChest",
     "MixinItem_GiveRads",
     "MixinItem_RemoveRads",
     "MixinItemEntity_LithiumExplode",
@@ -21,7 +24,9 @@
     "ParrotSoundMapAccessor",
     "StructurePoolAccessor"
   ],
-  "client": [],
+  "client": [
+    "client.MixinSheets_AdjustLeadChestTexture"
+  ],
   "server": [],
   "injectors": {
     "defaultRequire": 1

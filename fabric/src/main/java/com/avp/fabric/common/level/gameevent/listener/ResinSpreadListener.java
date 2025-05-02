@@ -10,8 +10,8 @@ import net.minecraft.world.level.gameevent.PositionSource;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 
+import com.avp.common.level.gameevent.AVPGameEvents;
 import com.avp.fabric.common.block.entity.resin_node.ResinSpreader;
-import com.avp.fabric.common.level.gameevent.AVPGameEvents;
 import com.avp.fabric.common.util.resin.ResinProducer;
 
 public class ResinSpreadListener implements GameEventListener {
@@ -49,7 +49,8 @@ public class ResinSpreadListener implements GameEventListener {
 
     @Override
     public boolean handleGameEvent(ServerLevel serverLevel, Holder<GameEvent> holder, GameEvent.Context context, Vec3 vec3) {
-        if (!holder.is(AVPGameEvents.XENOMORPH_RESIN_SPREAD.key())) {
+        // TODO: Make sure this is correct, used to be a .key() on the game event type here.
+        if (!holder.is(AVPGameEvents.XENOMORPH_RESIN_SPREAD)) {
             return false;
         }
 

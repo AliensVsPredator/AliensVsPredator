@@ -117,7 +117,7 @@ public class GunRecipeProvider {
             .define('B', TempAVPItems.MEDIUM_CASING)
             .pattern("A")
             .pattern("B")
-            .into(8, AVPItems.MEDIUM_BULLET);
+            .into(8, TempAVPItems.MEDIUM_BULLET);
         builder.shaped()
             .withCategory(RecipeCategory.COMBAT)
             .define('A', TempAVPItems.BULLET_TIP)

@@ -30,7 +30,7 @@
 			"com.avp.fabric.AVPFabric"
 		],
 		"client": [
-			"com.avp.fabric.client.AVPClient"
+			"com.avp.fabric.client.AVPFabricClient"
 		],
 		"fabric-datagen": [
 			"com.avp.fabric.data.AVPDataGenerator"

@@ -17,8 +17,8 @@ import java.util.function.Supplier;
 
 import com.avp.AVP;
 import com.avp.common.block.AVPBlockTags;
+import com.avp.common.level.gameevent.AVPGameEvents;
 import com.avp.fabric.common.entity.living.alien.Alien;
-import com.avp.fabric.common.level.gameevent.AVPGameEvents;
 import com.avp.fabric.common.level.gameevent.listener.ResinSpreadListener;
 import com.avp.fabric.common.util.AlienVariantUtil;
 

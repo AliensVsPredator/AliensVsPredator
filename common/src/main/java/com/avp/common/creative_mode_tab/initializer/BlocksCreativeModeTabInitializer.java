@@ -158,17 +158,17 @@ public class BlocksCreativeModeTabInitializer {
         // Miscellaneous
         // FIXME:
         // CreativeModeTabUtil.accept(output, AVPBlocks.NUKE_BLOCK);
-        // CreativeModeTabUtil.accept(output, AVPBlocks.SENTRY_TURRET);
+        CreativeModeTabUtil.accept(output, TempAVPBlocks.SENTRY_TURRET);
         CreativeModeTabUtil.accept(output, TempAVPBlocks.ASH_BLOCK);
         CreativeModeTabUtil.accept(output, TempAVPBlocks.LEAD_BLOCK);
-        // CreativeModeTabUtil.accept(output, AVPBlocks.LEAD_CHEST);
+        CreativeModeTabUtil.accept(output, TempAVPBlocks.LEAD_CHEST);
         // CreativeModeTabUtil.accept(output, AVPBlocks.RAZOR_WIRE);
         CreativeModeTabUtil.accept(output, TempAVPBlocks.BLUEPRINT_BLOCK);
-        // CreativeModeTabUtil.accept(output, AVPBlocks.REDSTONE_GENERATOR);
-        // CreativeModeTabUtil.accept(output, AVPBlocks.INDUSTRIAL_FURNACE);
-        // CreativeModeTabUtil.accept(output, AVPBlocks.DESK_TERMINAL_BLOCK);
-        // CreativeModeTabUtil.accept(output, AVPBlocks.TRIP_MINE_BLOCK);
-        // CreativeModeTabUtil.accept(output, AVPBlocks.RESONATOR_BLOCK);
+        CreativeModeTabUtil.accept(output, TempAVPBlocks.REDSTONE_GENERATOR);
+        CreativeModeTabUtil.accept(output, TempAVPBlocks.INDUSTRIAL_FURNACE);
+        CreativeModeTabUtil.accept(output, TempAVPBlocks.DESK_TERMINAL_BLOCK);
+        CreativeModeTabUtil.accept(output, TempAVPBlocks.TRIP_MINE_BLOCK);
+        CreativeModeTabUtil.accept(output, TempAVPBlocks.RESONATOR_BLOCK);
 
         // Alien blocks
         CreativeModeTabUtil.accept(output, TempAVPBlocks.RESIN);

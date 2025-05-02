@@ -6,8 +6,6 @@
   "compatibilityLevel": "JAVA_21",
   "mixins": [
     "MixinArmorStand_EquipArmorFromArmorCase",
-    "MixinInventory_InsertAmmoItemsIntoAmmoChest",
-    "MixinInventory_InsertRadioactiveItemsIntoLeadChest",
     "MixinItem_ChorusEmbryo",
     "MixinLivingEntity_GrowEmbryo",
     "MixinShearsItem",
@@ -17,8 +15,7 @@
     "client.MixinGui_CrosshairPickEntityWithinGunRange",
     "client.MixinItemInHandRenderer_AdjustHandRenderingForGun",
     "client.MixinPlayerEntity_LowAmmunitionIndicator",
-    "client.MixinPlayerRenderer_AdjustArmPoseForGun",
-    "client.MixinSheets_AdjustLeadChestTexture"
+    "client.MixinPlayerRenderer_AdjustArmPoseForGun"
   ],
   "injectors": {
     "defaultRequire": 1

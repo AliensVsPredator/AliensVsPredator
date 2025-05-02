@@ -34,12 +34,12 @@ public class EnglishLanguageProvider extends FabricLanguageProvider {
 
         // Blocks
         addBlock(builder, TempAVPBlocks.BLUEPRINT_BLOCK, "Blueprint Block");
-        addBlock(builder, AVPBlocks.REDSTONE_GENERATOR, "Redstone Generator");
-        addBlock(builder, AVPBlocks.DESK_TERMINAL_BLOCK, "Desk Terminal");
-        addBlock(builder, AVPBlocks.TRIP_MINE_BLOCK, "Trip Mine");
-        addBlock(builder, AVPBlocks.RESONATOR_BLOCK, "Resonator");
-        addBlock(builder, AVPBlocks.AMMO_CHEST, "Ammo Chest");
-        addBlock(builder, AVPBlocks.SENTRY_TURRET, "Sentry Turret");
+        addBlock(builder, TempAVPBlocks.REDSTONE_GENERATOR, "Redstone Generator");
+        addBlock(builder, TempAVPBlocks.DESK_TERMINAL_BLOCK, "Desk Terminal");
+        addBlock(builder, TempAVPBlocks.TRIP_MINE_BLOCK, "Trip Mine");
+        addBlock(builder, TempAVPBlocks.RESONATOR_BLOCK, "Resonator");
+        addBlock(builder, TempAVPBlocks.AMMO_CHEST, "Ammo Chest");
+        addBlock(builder, TempAVPBlocks.SENTRY_TURRET, "Sentry Turret");
         addBlock(builder, TempAVPBlocks.ASH_BLOCK, "Ash Block");
         addBlock(builder, AVPBlocks.NUKE_BLOCK, "Nuke Block");
         addBlock(builder, TempAVPBlocks.ROYAL_JELLY_BLOCK, "Royal Jelly Block");
@@ -85,7 +85,7 @@ public class EnglishLanguageProvider extends FabricLanguageProvider {
         addBlock(builder, TempAVPBlocks.INDUSTRIAL_GLASS_SLAB, "Industrial Glass Slab");
         addBlock(builder, TempAVPBlocks.INDUSTRIAL_GLASS_STAIRS, "Industrial Glass Stairs");
         addBlock(builder, TempAVPBlocks.LEAD_BLOCK, "Block of Lead");
-        addBlock(builder, AVPBlocks.LEAD_CHEST, "Lead Chest");
+        addBlock(builder, TempAVPBlocks.LEAD_CHEST, "Lead Chest");
         addBlock(builder, TempAVPBlocks.FERROALUMINUM_FASTENED_STANDING_SLAB, "Ferroaluminum Fastened Standing Slab");
         addBlock(builder, TempAVPBlocks.FERROALUMINUM_FASTENED_STANDING_STAIRS, "Ferroaluminum Fastened Standing Stairs");
         addBlock(builder, TempAVPBlocks.FERROALUMINUM_GRATE_SLAB, "Ferroaluminum Grate Slab");
@@ -253,7 +253,7 @@ public class EnglishLanguageProvider extends FabricLanguageProvider {
         addBlock(builder, TempAVPBlocks.URANIUM_BLOCK, "Block of Uranium");
         addBlock(builder, TempAVPBlocks.ZINC_BLOCK, "Block of Zinc");
         addBlock(builder, TempAVPBlocks.ZINC_ORE, "Zinc Ore");
-        addBlock(builder, AVPBlocks.INDUSTRIAL_FURNACE, "Industrial Furnace");
+        addBlock(builder, TempAVPBlocks.INDUSTRIAL_FURNACE, "Industrial Furnace");
         addBlock(builder, TempAVPBlocks.FERROALUMINUM_SLAB, "Ferroaluminum Slab");
         addBlock(builder, TempAVPBlocks.FERROALUMINUM_STAIRS, "Ferroaluminum Stairs");
         addBlock(builder, TempAVPBlocks.STEEL_SLAB, "Steel Slab");
@@ -336,7 +336,7 @@ public class EnglishLanguageProvider extends FabricLanguageProvider {
         addItem(builder, AVPItems.M56_SMARTGUN, "M56 Smartgun");
         addItem(builder, AVPItems.M6B_ROCKET_LAUNCHER, "M6B Rocket Launcher");
         addItem(builder, AVPItems.M88MOD4_COMBAT_PISTOL, "88 Mod 4 Combat Pistol");
-        addItem(builder, AVPItems.MEDIUM_BULLET, "Medium Bullet");
+        addItem(builder, TempAVPItems.MEDIUM_BULLET, "Medium Bullet");
         addItem(builder, ArmorItems.MK50_BOOTS, "MK50 Boots");
         addItem(builder, ArmorItems.MK50_CHESTPLATE, "MK50 Chestplate");
         addItem(builder, ArmorItems.MK50_HELMET, "MK50 Helmet");

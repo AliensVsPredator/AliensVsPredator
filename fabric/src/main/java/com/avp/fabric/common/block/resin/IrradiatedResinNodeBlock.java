@@ -7,6 +7,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 
+import com.avp.common.block.ResinNodeBlock;
 import com.avp.common.effect.AVPMobEffects;
 import com.avp.common.effect.RadiationStatusEffect;
 import com.avp.common.util.TempAVPPredicates;

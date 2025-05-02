@@ -30,11 +30,11 @@ public class BlockLootTableProvider extends FabricBlockLootTableProvider {
     @Override
     public void generate() {
         dropSelf(TempAVPBlocks.BLUEPRINT_BLOCK.get());
-        dropSelf(AVPBlocks.REDSTONE_GENERATOR);
-        dropSelf(AVPBlocks.DESK_TERMINAL_BLOCK);
-        dropSelf(AVPBlocks.TRIP_MINE_BLOCK);
-        dropSelf(AVPBlocks.RESONATOR_BLOCK);
-        dropSelf(AVPBlocks.SENTRY_TURRET);
+        dropSelf(TempAVPBlocks.REDSTONE_GENERATOR.get());
+        dropSelf(TempAVPBlocks.DESK_TERMINAL_BLOCK.get());
+        dropSelf(TempAVPBlocks.TRIP_MINE_BLOCK.get());
+        dropSelf(TempAVPBlocks.RESONATOR_BLOCK.get());
+        dropSelf(TempAVPBlocks.SENTRY_TURRET.get());
         dropSelf(TempAVPBlocks.TRINITITE_BLOCK.get());
         dropSelf(TempAVPBlocks.ASH_BLOCK.get());
         dropSelf(AVPBlocks.NUKE_BLOCK);
@@ -70,8 +70,8 @@ public class BlockLootTableProvider extends FabricBlockLootTableProvider {
         dropSelf(TempAVPBlocks.FERROALUMINUM_TREAD.get());
         add(TempAVPBlocks.GALENA_ORE.get(), block -> createOreDrop(block, TempAVPItems.RAW_GALENA.get()));
         dropSelf(TempAVPBlocks.LEAD_BLOCK.get());
-        add(AVPBlocks.LEAD_CHEST, this::createShulkerBoxDrop);
-        add(AVPBlocks.AMMO_CHEST, this::createShulkerBoxDrop);
+        add(TempAVPBlocks.LEAD_CHEST.get(), this::createShulkerBoxDrop);
+        add(TempAVPBlocks.AMMO_CHEST.get(), this::createShulkerBoxDrop);
         dropSelf(TempAVPBlocks.LITHIUM_BLOCK.get());
         add(TempAVPBlocks.LITHIUM_ORE.get(), block -> createOreMultiDrop(block, TempAVPItems.LITHIUM_DUST.get(), 2, 4));
         add(TempAVPBlocks.MONAZITE_ORE.get(), block -> createOreDrop(block, TempAVPItems.RAW_MONAZITE.get()));
@@ -220,7 +220,7 @@ public class BlockLootTableProvider extends FabricBlockLootTableProvider {
         dropSelf(TempAVPBlocks.TITANIUM_FASTENED_SIDING_STAIRS.get());
         dropSelf(TempAVPBlocks.TITANIUM_FASTENED_STANDING_STAIRS.get());
 
-        add(AVPBlocks.INDUSTRIAL_FURNACE, this::createNameableBlockEntityTable);
+        add(TempAVPBlocks.INDUSTRIAL_FURNACE.get(), this::createNameableBlockEntityTable);
     }
 
     public void dropSlab(Block block) {

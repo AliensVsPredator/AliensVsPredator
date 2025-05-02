@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 
 import com.avp.common.block.AVPDecoratedPotPatterns;
 import com.avp.common.block.TempAVPBlocks;
+import com.avp.common.block.entity.AVPBlockEntityTypes;
 import com.avp.common.component.AVPDataComponents;
 import com.avp.common.config.AVPConfig;
 import com.avp.common.creative_mode_tab.AVPCreativeModeTabs;
@@ -18,6 +19,7 @@ import com.avp.common.effect.AVPMobEffects;
 import com.avp.common.item.TempAVPBlockItems;
 import com.avp.common.item.TempAVPItems;
 import com.avp.common.menu.AVPMenuTypes;
+import com.avp.common.recipe.AVPRecipes;
 import com.avp.common.sound.AVPSoundEvents;
 import com.avp.common.worldgen.biome.AVPBiomes;
 import com.avp.service.Services;
@@ -38,11 +40,13 @@ public class AVP {
         TempAVPBlocks.initialize();
         TempAVPItems.initialize();
         TempAVPBlockItems.initialize();
+        AVPBlockEntityTypes.initialize();
         AVPMenuTypes.initialize();
         AVPCreativeModeTabs.initialize();
         AVPDataComponents.initialize();
         AVPDecoratedPotPatterns.initialize();
         AVPSoundEvents.initialize();
+        AVPRecipes.initialize();
         AVPMobEffects.initialize();
         AVPBiomes.initialize();
 
