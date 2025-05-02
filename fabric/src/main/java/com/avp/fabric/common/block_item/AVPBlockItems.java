@@ -17,8 +17,6 @@ public class AVPBlockItems {
 
     public static final BlockItem NUKE_BLOCK = register(AVPBlocks.NUKE_BLOCK);
 
-    public static final BlockItem RAZOR_WIRE = register(AVPBlocks.RAZOR_WIRE);
-
     @Deprecated
     public static BlockItem register(Block block) {
         return register(new Item.Properties(), block);

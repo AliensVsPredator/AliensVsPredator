@@ -3,11 +3,9 @@ package com.avp.fabric.client;
 import mod.azure.azurelib.rewrite.render.item.AzItemRenderer;
 import mod.azure.azurelib.rewrite.render.item.AzItemRendererRegistry;
 import net.fabricmc.api.ClientModInitializer;
-import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import net.fabricmc.fabric.api.client.particle.v1.ParticleFactoryRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
 import net.minecraft.client.gui.screens.MenuScreens;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.ThrownItemRenderer;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.Item;
@@ -16,7 +14,6 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 import com.avp.client.AVPClient;
-import com.avp.common.block.TempAVPBlocks;
 import com.avp.common.item.TempAVPBlockItems;
 import com.avp.common.menu.AVPMenuTypes;
 import com.avp.fabric.client.input.keybind.AVPKeybindingRegistry;
@@ -56,7 +53,6 @@ import com.avp.fabric.client.render.item.SpinningItemRenderer;
 import com.avp.fabric.client.render.item.ZX76ShotgunItemRenderer;
 import com.avp.fabric.client.screen.ArmorCaseScreen;
 import com.avp.fabric.client.screen.IndustrialFurnaceScreen;
-import com.avp.fabric.common.block.AVPBlocks;
 import com.avp.fabric.common.entity.type.AVPEntityTypes;
 import com.avp.fabric.common.item.AVPItems;
 import com.avp.fabric.common.particle.AVPParticleTypes;
@@ -70,49 +66,6 @@ public class AVPFabricClient implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
         AVPClient.initialize();
-
-        // Blocks
-        BlockRenderLayerMap.INSTANCE.putBlock(TempAVPBlocks.FERROALUMINUM_CHAIN_FENCE.get(), RenderType.cutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(TempAVPBlocks.FERROALUMINUM_GRATE.get(), RenderType.cutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(TempAVPBlocks.IRRADIATED_RESIN_VEIN.get(), RenderType.cutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(TempAVPBlocks.IRRADIATED_RESIN_WEB.get(), RenderType.cutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(TempAVPBlocks.ABERRANT_RESIN_VEIN.get(), RenderType.cutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(TempAVPBlocks.ABERRANT_RESIN_WEB.get(), RenderType.cutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(TempAVPBlocks.NETHER_RESIN_VEIN.get(), RenderType.cutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(TempAVPBlocks.NETHER_RESIN_WEB.get(), RenderType.cutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(TempAVPBlocks.RESIN_VEIN.get(), RenderType.cutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(TempAVPBlocks.RESIN_WEB.get(), RenderType.cutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(TempAVPBlocks.STEEL_BARS.get(), RenderType.cutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(TempAVPBlocks.STEEL_CHAIN_FENCE.get(), RenderType.cutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(TempAVPBlocks.STEEL_GRATE.get(), RenderType.cutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(TempAVPBlocks.TITANIUM_CHAIN_FENCE.get(), RenderType.cutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(TempAVPBlocks.TITANIUM_GRATE.get(), RenderType.cutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(AVPBlocks.RAZOR_WIRE, RenderType.cutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(TempAVPBlocks.INDUSTRIAL_GLASS_DOOR.get(), RenderType.cutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(TempAVPBlocks.INDUSTRIAL_GLASS_TRAP_DOOR.get(), RenderType.cutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(TempAVPBlocks.FERROALUMINUM_DOOR.get(), RenderType.cutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(TempAVPBlocks.STEEL_DOOR.get(), RenderType.cutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(TempAVPBlocks.TITANIUM_DOOR.get(), RenderType.cutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(TempAVPBlocks.FERROALUMINUM_TRAP_DOOR.get(), RenderType.cutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(TempAVPBlocks.ROYAL_JELLY_BLOCK.get(), RenderType.translucent());
-        BlockRenderLayerMap.INSTANCE.putBlock(TempAVPBlocks.TRINITITE_BLOCK.get(), RenderType.translucent());
-        BlockRenderLayerMap.INSTANCE.putBlock(TempAVPBlocks.FERROALUMINUM_GRATE_SLAB.get(), RenderType.cutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(TempAVPBlocks.FERROALUMINUM_GRATE_STAIRS.get(), RenderType.cutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(TempAVPBlocks.STEEL_GRATE_SLAB.get(), RenderType.cutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(TempAVPBlocks.STEEL_GRATE_STAIRS.get(), RenderType.cutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(TempAVPBlocks.TITANIUM_GRATE_SLAB.get(), RenderType.cutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(TempAVPBlocks.TITANIUM_GRATE_STAIRS.get(), RenderType.cutout());
-
-        BlockRenderLayerMap.INSTANCE.putBlock(TempAVPBlocks.INDUSTRIAL_GLASS.get(), RenderType.cutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(TempAVPBlocks.INDUSTRIAL_GLASS_SLAB.get(), RenderType.cutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(TempAVPBlocks.INDUSTRIAL_GLASS_STAIRS.get(), RenderType.cutout());
-        TempAVPBlocks.DYE_COLOR_TO_INDUSTRIAL_GLASS.values()
-            .forEach(blockSupplier -> BlockRenderLayerMap.INSTANCE.putBlock(blockSupplier.get(), RenderType.translucent()));
-        BlockRenderLayerMap.INSTANCE.putBlock(TempAVPBlocks.INDUSTRIAL_GLASS_PANE.get(), RenderType.cutout());
-        TempAVPBlocks.DYE_COLOR_TO_INDUSTRIAL_GLASS_PANE.values()
-            .forEach(blockSupplier -> BlockRenderLayerMap.INSTANCE.putBlock(blockSupplier.get(), RenderType.translucent()));
-
-        // Armors
 
         // Items
         registerItemRenderer(AVPItems.ARMOR_CASE);
@@ -184,8 +137,6 @@ public class AVPFabricClient implements ClientModInitializer {
         EntityRendererRegistry.register(AVPEntityTypes.SHURIKEN, SpinningItemRenderer::new);
         EntityRendererRegistry.register(AVPEntityTypes.SMART_DISC, SpinningItemRenderer::new);
         EntityRendererRegistry.register(AVPEntityTypes.SENTRY_TURRET, SentryTurretRenderer::new);
-
-        // Block Entities
 
         // Particles
         ParticleFactoryRegistry.getInstance().register(AVPParticleTypes.ACID, AcidParticleProvider::new);

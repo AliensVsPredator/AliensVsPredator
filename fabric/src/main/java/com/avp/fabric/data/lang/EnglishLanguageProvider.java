@@ -215,7 +215,7 @@ public class EnglishLanguageProvider extends FabricLanguageProvider {
         addBlock(builder, TempAVPBlocks.RAW_SILICA_BLOCK, "Block of Raw Silica");
         addBlock(builder, TempAVPBlocks.RAW_TITANIUM_BLOCK, "Block of Raw Titanium");
         addBlock(builder, TempAVPBlocks.RAW_ZINC_BLOCK, "Block of Raw Zinc");
-        addBlock(builder, AVPBlocks.RAZOR_WIRE, "Razor Wire");
+        addBlock(builder, TempAVPBlocks.RAZOR_WIRE, "Razor Wire");
         addBlock(builder, TempAVPBlocks.RESIN, "Resin");
         addBlock(builder, TempAVPBlocks.RESIN_NODE, "Resin");
         addBlock(builder, TempAVPBlocks.RESIN_VEIN, "Resin Vein");

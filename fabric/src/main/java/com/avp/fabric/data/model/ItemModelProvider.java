@@ -15,7 +15,6 @@ import com.avp.common.block.TempAVPBlocks;
 import com.avp.common.item.AVPArmorItems;
 import com.avp.common.item.TempAVPBlockItems;
 import com.avp.common.item.TempAVPItems;
-import com.avp.fabric.common.block.AVPBlocks;
 import com.avp.fabric.common.item.AVPItems;
 
 public class ItemModelProvider extends FabricModelProvider {
@@ -27,7 +26,7 @@ public class ItemModelProvider extends FabricModelProvider {
     @Override
     public void generateBlockStateModels(BlockModelGenerators generators) {
         generators.createSimpleFlatItemModel(TempAVPBlocks.NETHER_RESIN_WEB.get());
-        generators.createSimpleFlatItemModel(AVPBlocks.RAZOR_WIRE);
+        generators.createSimpleFlatItemModel(TempAVPBlocks.RAZOR_WIRE.get());
         generators.createSimpleFlatItemModel(TempAVPBlocks.RESIN_WEB.get());
     }
 

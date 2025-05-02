@@ -2,11 +2,14 @@ package com.avp.fabric.service;
 
 import mod.azure.azurelib.rewrite.render.armor.AzArmorRenderer;
 import mod.azure.azurelib.rewrite.render.item.AzItemRenderer;
+import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import net.fabricmc.fabric.api.client.rendering.v1.ColorProviderRegistry;
 import net.minecraft.client.color.item.ItemColor;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 
@@ -29,6 +32,11 @@ public class FabricClientRegistryService implements ClientRegistryService {
         BlockEntityRendererProvider<T> renderProvider
     ) {
         BlockEntityRenderers.register(blockEntityTypeSupplier.get(), renderProvider);
+    }
+
+    @Override
+    public void registerBlockRenderLayer(Supplier<Block> blockSupplier, RenderType renderType) {
+        BlockRenderLayerMap.INSTANCE.putBlock(blockSupplier.get(), renderType);
     }
 
     @Override

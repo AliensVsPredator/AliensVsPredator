@@ -136,7 +136,7 @@ public class BlockLootTableProvider extends FabricBlockLootTableProvider {
         dropSelf(TempAVPBlocks.RAW_SILICA_BLOCK.get());
         dropSelf(TempAVPBlocks.RAW_TITANIUM_BLOCK.get());
         dropSelf(TempAVPBlocks.RAW_ZINC_BLOCK.get());
-        dropSelf(AVPBlocks.RAZOR_WIRE);
+        dropSelf(TempAVPBlocks.RAZOR_WIRE.get());
         dropSelf(TempAVPBlocks.RESIN.get());
         dropOther(TempAVPBlocks.RESIN_NODE.get(), TempAVPBlocks.RESIN.get());
         dropOther(TempAVPBlocks.RESIN_VEIN.get(), TempAVPItems.RESIN_BALL.get());

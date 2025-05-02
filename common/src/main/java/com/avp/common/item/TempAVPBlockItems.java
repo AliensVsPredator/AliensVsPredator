@@ -349,6 +349,8 @@ public class TempAVPBlockItems {
 
     public static final AVPDeferredHolder<BlockItem> RAW_ZINC_BLOCK = register("raw_zinc_block", TempAVPBlocks.RAW_ZINC_BLOCK);
 
+    public static final AVPDeferredHolder<BlockItem> RAZOR_WIRE = register("razor_wire", TempAVPBlocks.RAZOR_WIRE);
+
     public static final AVPDeferredHolder<BlockItem> REDSTONE_GENERATOR = register("redstone_generator", TempAVPBlocks.REDSTONE_GENERATOR);
 
     public static final AVPDeferredHolder<BlockItem> RESIN = register("resin", TempAVPBlocks.RESIN);

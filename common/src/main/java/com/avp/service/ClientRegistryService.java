@@ -5,9 +5,11 @@ import mod.azure.azurelib.rewrite.render.armor.AzArmorRendererRegistry;
 import mod.azure.azurelib.rewrite.render.item.AzItemRenderer;
 import mod.azure.azurelib.rewrite.render.item.AzItemRendererRegistry;
 import net.minecraft.client.color.item.ItemColor;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 
@@ -27,6 +29,8 @@ public interface ClientRegistryService {
         Supplier<BlockEntityType<T>> blockEntityTypeSupplier,
         BlockEntityRendererProvider<T> renderProvider
     );
+
+    void registerBlockRenderLayer(Supplier<Block> blockSupplier, RenderType renderType);
 
     void registerItemColor(ItemColor itemColor, List<Supplier<Item>> itemSuppliers);
 

@@ -113,7 +113,7 @@ public class MiscellaneousRecipeProvider {
             .pattern("INI")
             .pattern("NIN")
             .pattern("INI")
-            .into(16, AVPBlocks.RAZOR_WIRE);
+            .into(16, TempAVPBlocks.RAZOR_WIRE);
 
         builder.shaped()
             .withCategory(RecipeCategory.MISC)

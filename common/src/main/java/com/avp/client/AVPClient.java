@@ -1,5 +1,6 @@
 package com.avp.client;
 
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.blockentity.ChestRenderer;
 import net.minecraft.world.item.component.DyedItemColor;
@@ -25,6 +26,7 @@ import com.avp.client.render.block.TripMineRenderer;
 import com.avp.client.render.item.DeskTerminalItemRenderer;
 import com.avp.client.render.item.ResonatorItemRenderer;
 import com.avp.client.render.item.TripMineItemRenderer;
+import com.avp.common.block.TempAVPBlocks;
 import com.avp.common.block.entity.AVPBlockEntityTypes;
 import com.avp.common.item.AVPArmorItems;
 import com.avp.common.item.TempAVPBlockItems;
@@ -33,6 +35,55 @@ import com.avp.service.Services;
 public class AVPClient {
 
     public static void initialize() {
+        registerBlockRenderLayers();
+        registerArmorRenderers();
+        registerBlockEntityRenderers();
+        registerItemRenderers();
+    }
+
+    private static void registerBlockRenderLayers() {
+        Services.CLIENT_REGISTRY.registerBlockRenderLayer(TempAVPBlocks.FERROALUMINUM_CHAIN_FENCE, RenderType.cutout());
+        Services.CLIENT_REGISTRY.registerBlockRenderLayer(TempAVPBlocks.FERROALUMINUM_GRATE, RenderType.cutout());
+        Services.CLIENT_REGISTRY.registerBlockRenderLayer(TempAVPBlocks.IRRADIATED_RESIN_VEIN, RenderType.cutout());
+        Services.CLIENT_REGISTRY.registerBlockRenderLayer(TempAVPBlocks.IRRADIATED_RESIN_WEB, RenderType.cutout());
+        Services.CLIENT_REGISTRY.registerBlockRenderLayer(TempAVPBlocks.ABERRANT_RESIN_VEIN, RenderType.cutout());
+        Services.CLIENT_REGISTRY.registerBlockRenderLayer(TempAVPBlocks.ABERRANT_RESIN_WEB, RenderType.cutout());
+        Services.CLIENT_REGISTRY.registerBlockRenderLayer(TempAVPBlocks.NETHER_RESIN_VEIN, RenderType.cutout());
+        Services.CLIENT_REGISTRY.registerBlockRenderLayer(TempAVPBlocks.NETHER_RESIN_WEB, RenderType.cutout());
+        Services.CLIENT_REGISTRY.registerBlockRenderLayer(TempAVPBlocks.RESIN_VEIN, RenderType.cutout());
+        Services.CLIENT_REGISTRY.registerBlockRenderLayer(TempAVPBlocks.RESIN_WEB, RenderType.cutout());
+        Services.CLIENT_REGISTRY.registerBlockRenderLayer(TempAVPBlocks.STEEL_BARS, RenderType.cutout());
+        Services.CLIENT_REGISTRY.registerBlockRenderLayer(TempAVPBlocks.STEEL_CHAIN_FENCE, RenderType.cutout());
+        Services.CLIENT_REGISTRY.registerBlockRenderLayer(TempAVPBlocks.STEEL_GRATE, RenderType.cutout());
+        Services.CLIENT_REGISTRY.registerBlockRenderLayer(TempAVPBlocks.TITANIUM_CHAIN_FENCE, RenderType.cutout());
+        Services.CLIENT_REGISTRY.registerBlockRenderLayer(TempAVPBlocks.TITANIUM_GRATE, RenderType.cutout());
+        Services.CLIENT_REGISTRY.registerBlockRenderLayer(TempAVPBlocks.RAZOR_WIRE, RenderType.cutout());
+        Services.CLIENT_REGISTRY.registerBlockRenderLayer(TempAVPBlocks.INDUSTRIAL_GLASS_DOOR, RenderType.cutout());
+        Services.CLIENT_REGISTRY.registerBlockRenderLayer(TempAVPBlocks.INDUSTRIAL_GLASS_TRAP_DOOR, RenderType.cutout());
+        Services.CLIENT_REGISTRY.registerBlockRenderLayer(TempAVPBlocks.FERROALUMINUM_DOOR, RenderType.cutout());
+        Services.CLIENT_REGISTRY.registerBlockRenderLayer(TempAVPBlocks.STEEL_DOOR, RenderType.cutout());
+        Services.CLIENT_REGISTRY.registerBlockRenderLayer(TempAVPBlocks.TITANIUM_DOOR, RenderType.cutout());
+        Services.CLIENT_REGISTRY.registerBlockRenderLayer(TempAVPBlocks.FERROALUMINUM_TRAP_DOOR, RenderType.cutout());
+        Services.CLIENT_REGISTRY.registerBlockRenderLayer(TempAVPBlocks.ROYAL_JELLY_BLOCK, RenderType.translucent());
+        Services.CLIENT_REGISTRY.registerBlockRenderLayer(TempAVPBlocks.TRINITITE_BLOCK, RenderType.translucent());
+        Services.CLIENT_REGISTRY.registerBlockRenderLayer(TempAVPBlocks.FERROALUMINUM_GRATE_SLAB, RenderType.cutout());
+        Services.CLIENT_REGISTRY.registerBlockRenderLayer(TempAVPBlocks.FERROALUMINUM_GRATE_STAIRS, RenderType.cutout());
+        Services.CLIENT_REGISTRY.registerBlockRenderLayer(TempAVPBlocks.STEEL_GRATE_SLAB, RenderType.cutout());
+        Services.CLIENT_REGISTRY.registerBlockRenderLayer(TempAVPBlocks.STEEL_GRATE_STAIRS, RenderType.cutout());
+        Services.CLIENT_REGISTRY.registerBlockRenderLayer(TempAVPBlocks.TITANIUM_GRATE_SLAB, RenderType.cutout());
+        Services.CLIENT_REGISTRY.registerBlockRenderLayer(TempAVPBlocks.TITANIUM_GRATE_STAIRS, RenderType.cutout());
+
+        Services.CLIENT_REGISTRY.registerBlockRenderLayer(TempAVPBlocks.INDUSTRIAL_GLASS, RenderType.cutout());
+        Services.CLIENT_REGISTRY.registerBlockRenderLayer(TempAVPBlocks.INDUSTRIAL_GLASS_SLAB, RenderType.cutout());
+        Services.CLIENT_REGISTRY.registerBlockRenderLayer(TempAVPBlocks.INDUSTRIAL_GLASS_STAIRS, RenderType.cutout());
+        TempAVPBlocks.DYE_COLOR_TO_INDUSTRIAL_GLASS.values()
+            .forEach(blockSupplier -> Services.CLIENT_REGISTRY.registerBlockRenderLayer(blockSupplier, RenderType.translucent()));
+        Services.CLIENT_REGISTRY.registerBlockRenderLayer(TempAVPBlocks.INDUSTRIAL_GLASS_PANE, RenderType.cutout());
+        TempAVPBlocks.DYE_COLOR_TO_INDUSTRIAL_GLASS_PANE.values()
+            .forEach(blockSupplier -> Services.CLIENT_REGISTRY.registerBlockRenderLayer(blockSupplier, RenderType.translucent()));
+    }
+
+    private static void registerArmorRenderers() {
         Services.CLIENT_REGISTRY.registerArmorRenderer(
             AberrantChitinArmorRenderer::new,
             List.of(
@@ -150,7 +201,9 @@ public class AVPClient {
                 AVPArmorItems.TACTICAL_CAMO_BOOTS
             )
         );
+    }
 
+    private static void registerBlockEntityRenderers() {
         Services.CLIENT_REGISTRY.registerBlockEntityRenderer(AVPBlockEntityTypes.AMMO_CHEST, ChestRenderer::new);
         Services.CLIENT_REGISTRY.registerBlockEntityRenderer(
             AVPBlockEntityTypes.DESK_TERMINAL,
@@ -182,7 +235,9 @@ public class AVPClient {
             (itemStack, i) -> i > 0 ? -1 : DyedItemColor.getOrDefault(itemStack, -1),
             List.of(AVPArmorItems.MK50_BOOTS)
         );
+    }
 
+    private static void registerItemRenderers() {
         Services.CLIENT_REGISTRY.registerItemRenderer(TempAVPBlockItems.DESK_TERMINAL_BLOCK, name -> DeskTerminalItemRenderer::new);
         Services.CLIENT_REGISTRY.registerItemRenderer(TempAVPBlockItems.TRIP_MINE_BLOCK, name -> TripMineItemRenderer::new);
         Services.CLIENT_REGISTRY.registerItemRenderer(TempAVPBlockItems.RESONATOR_BLOCK, name -> ResonatorItemRenderer::new);

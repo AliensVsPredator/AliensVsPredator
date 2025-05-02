@@ -15,7 +15,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.avp.fabric.common.block.AVPBlocks;
+import com.avp.common.block.TempAVPBlocks;
 
 @Mixin(ShearsItem.class)
 public class MixinShearsItem {
@@ -26,7 +26,7 @@ public class MixinShearsItem {
 
         if (originalTool != null) {
             List<Tool.Rule> modifiedRules = new ArrayList<>(originalTool.rules());
-            modifiedRules.add(Tool.Rule.minesAndDrops(List.of(AVPBlocks.RAZOR_WIRE), 15.0F));
+            modifiedRules.add(Tool.Rule.minesAndDrops(List.of(TempAVPBlocks.RAZOR_WIRE.get()), 15.0F));
             Tool modifiedTool = new Tool(modifiedRules, originalTool.defaultMiningSpeed(), 1);
 
             cir.setReturnValue(modifiedTool);
@@ -44,7 +44,7 @@ public class MixinShearsItem {
     ) {
         boolean originReturnVal = cir.getReturnValue();
         if (originReturnVal) {
-            cir.setReturnValue(blockState.is(AVPBlocks.RAZOR_WIRE));
+            cir.setReturnValue(blockState.is(TempAVPBlocks.RAZOR_WIRE.get()));
         }
     }
 }

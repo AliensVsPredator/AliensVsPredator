@@ -1,4 +1,4 @@
-package com.avp.fabric.common.block;
+package com.avp.common.block;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
@@ -17,7 +17,6 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
 
 import com.avp.common.damage.AVPDamageTypes;
-import com.avp.fabric.common.entity.living.human.marine.Marine;
 
 public class RazorWireBlock extends Block {
 
@@ -30,22 +29,22 @@ public class RazorWireBlock extends Block {
     }
 
     @Override
-    protected boolean isPathfindable(BlockState blockState, PathComputationType pathComputationType) {
+    protected boolean isPathfindable(@NotNull BlockState blockState, @NotNull PathComputationType pathComputationType) {
         return false;
     }
 
     @Override
     protected @NotNull VoxelShape getShape(
-        BlockState blockState,
-        BlockGetter blockGetter,
-        BlockPos blockPos,
-        CollisionContext collisionContext
+        @NotNull BlockState blockState,
+        @NotNull BlockGetter blockGetter,
+        @NotNull BlockPos blockPos,
+        @NotNull CollisionContext collisionContext
     ) {
         return SHAPE;
     }
 
     @Override
-    protected void entityInside(BlockState blockState, Level level, BlockPos blockPos, Entity entity) {
+    protected void entityInside(@NotNull BlockState blockState, @NotNull Level level, @NotNull BlockPos blockPos, @NotNull Entity entity) {
         if (!(entity instanceof LivingEntity)) {
             return;
         }
@@ -54,7 +53,8 @@ public class RazorWireBlock extends Block {
 
         if (
             !level.isClientSide && (entity.xOld != entity.getX() || entity.yOld != entity.getY() || entity.zOld != entity.getZ())
-                && !(entity instanceof Marine)
+            // FIXME:
+            // && !(entity instanceof Marine)
         ) {
             var deltaX = Math.abs(entity.getX() - entity.xOld);
             var deltaY = Math.abs(entity.getY() - entity.yOld);

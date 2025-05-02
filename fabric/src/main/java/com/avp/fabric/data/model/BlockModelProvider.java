@@ -22,7 +22,6 @@ import org.jetbrains.annotations.NotNull;
 
 import com.avp.common.block.BlockProperties;
 import com.avp.common.block.TempAVPBlocks;
-import com.avp.fabric.common.block.AVPBlocks;
 import com.avp.fabric.common.item.SpawnEggItems;
 import com.avp.fabric.data.model.generator.BarsGenerator;
 import com.avp.fabric.data.model.generator.MultiFaceGenerator;
@@ -220,7 +219,7 @@ public class BlockModelProvider extends FabricModelProvider {
         generators.createTrivialCube(TempAVPBlocks.RAW_SILICA_BLOCK.get());
         generators.createTrivialCube(TempAVPBlocks.RAW_TITANIUM_BLOCK.get());
         generators.createTrivialCube(TempAVPBlocks.RAW_ZINC_BLOCK.get());
-        generators.createCrossBlock(AVPBlocks.RAZOR_WIRE, BlockModelGenerators.TintState.NOT_TINTED);
+        generators.createCrossBlock(TempAVPBlocks.RAZOR_WIRE.get(), BlockModelGenerators.TintState.NOT_TINTED);
         generators.createTrivialCube(TempAVPBlocks.SILICA_GRAVEL.get());
         BarsGenerator.generate(generators, TempAVPBlocks.STEEL_BARS.get());
         BarsGenerator.generate(generators, TempAVPBlocks.STEEL_CHAIN_FENCE.get());

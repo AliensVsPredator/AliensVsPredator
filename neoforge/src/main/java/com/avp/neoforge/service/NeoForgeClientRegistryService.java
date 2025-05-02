@@ -4,8 +4,10 @@ import com.bvanseg.just.functional.tuple.Tuple2;
 import mod.azure.azurelib.rewrite.render.armor.AzArmorRenderer;
 import mod.azure.azurelib.rewrite.render.item.AzItemRenderer;
 import net.minecraft.client.color.item.ItemColor;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 
@@ -22,6 +24,8 @@ public class NeoForgeClientRegistryService implements ClientRegistryService {
 
     private final List<Tuple2<Supplier<? extends BlockEntityType<? extends BlockEntity>>, BlockEntityRendererProvider<? extends BlockEntity>>> blockEntityRendererPairs;
 
+    private final List<Tuple2<Supplier<? extends Block>, RenderType>> blockRenderLayerPairs;
+
     private final List<Tuple2<ItemColor, List<Supplier<Item>>>> itemColorPairs;
 
     private final List<Tuple2<Supplier<? extends Item>, Function<String, Supplier<AzItemRenderer>>>> itemRendererPairs;
@@ -29,6 +33,7 @@ public class NeoForgeClientRegistryService implements ClientRegistryService {
     public NeoForgeClientRegistryService() {
         this.armorRendererPairs = new ArrayList<>();
         this.blockEntityRendererPairs = new ArrayList<>();
+        this.blockRenderLayerPairs = new ArrayList<>();
         this.itemColorPairs = new ArrayList<>();
         this.itemRendererPairs = new ArrayList<>();
     }
@@ -47,6 +52,11 @@ public class NeoForgeClientRegistryService implements ClientRegistryService {
     }
 
     @Override
+    public void registerBlockRenderLayer(Supplier<Block> blockSupplier, RenderType renderType) {
+        blockRenderLayerPairs.add(new Tuple2<>(blockSupplier, renderType));
+    }
+
+    @Override
     public void registerItemColor(ItemColor itemColor, List<Supplier<Item>> itemSuppliers) {
         itemColorPairs.add(new Tuple2<>(itemColor, itemSuppliers));
     }
@@ -62,6 +72,10 @@ public class NeoForgeClientRegistryService implements ClientRegistryService {
 
     public List<Tuple2<Supplier<? extends BlockEntityType<? extends BlockEntity>>, BlockEntityRendererProvider<? extends BlockEntity>>> getBlockEntityRendererPairs() {
         return blockEntityRendererPairs;
+    }
+
+    public List<Tuple2<Supplier<? extends Block>, RenderType>> getBlockRenderLayerPairs() {
+        return blockRenderLayerPairs;
     }
 
     public List<Tuple2<ItemColor, List<Supplier<Item>>>> getItemColorPairs() {

@@ -1,5 +1,6 @@
 package com.avp.neoforge.client;
 
+import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.neoforged.api.distmarker.Dist;
@@ -32,6 +33,9 @@ public class AVPNeoForgeClient {
 
         CLIENT_REGISTRY.getItemRendererPairs()
             .forEach(pair -> CLIENT_REGISTRY.registerItemRendererImmediately(pair.first().get(), pair.second()));
+
+        CLIENT_REGISTRY.getBlockRenderLayerPairs()
+            .forEach(pair -> ItemBlockRenderTypes.setRenderLayer(pair.first().get(), pair.second()));
     }
 
     @SubscribeEvent

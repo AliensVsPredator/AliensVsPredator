@@ -403,6 +403,11 @@ public class TempAVPBlocks {
 
     public static final AVPDeferredHolder<Block> RAW_ZINC_BLOCK = register("raw_zinc_block", BlockProperties.ZINC_ORE);
 
+    public static final AVPDeferredHolder<Block> RAZOR_WIRE = register(
+        "razor_wire",
+        () -> new RazorWireBlock(BlockProperties.RAZOR_WIRE.build())
+    );
+
     public static final AVPDeferredHolder<Block> REDSTONE_GENERATOR = register(
         "redstone_generator",
         () -> new RedstoneGeneratorBlock(BlockProperties.STEEL.build().randomTicks())
