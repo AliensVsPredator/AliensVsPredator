@@ -26,8 +26,10 @@ import com.avp.client.render.block.ResonatorRenderer;
 import com.avp.client.render.block.TripMineRenderer;
 import com.avp.client.render.entity.MushroomCloudRenderer;
 import com.avp.client.render.entity.NukeRenderer;
+import com.avp.client.render.entity.SentryTurretRenderer;
 import com.avp.client.render.item.DeskTerminalItemRenderer;
 import com.avp.client.render.item.ResonatorItemRenderer;
+import com.avp.client.render.item.SentryTurretItemRenderer;
 import com.avp.client.render.item.TripMineItemRenderer;
 import com.avp.client.screen.ArmorCaseScreen;
 import com.avp.client.screen.IndustrialFurnaceScreen;
@@ -251,6 +253,7 @@ public class AVPClient {
         Services.CLIENT_REGISTRY.registerEntityRenderer(TempAVPEntityTypes.GRENADE_THROWN, ThrownItemRenderer::new);
         Services.CLIENT_REGISTRY.registerEntityRenderer(TempAVPEntityTypes.MUSHROOM_CLOUD, MushroomCloudRenderer::new);
         Services.CLIENT_REGISTRY.registerEntityRenderer(TempAVPEntityTypes.NUKE, NukeRenderer::new);
+        Services.CLIENT_REGISTRY.registerEntityRenderer(TempAVPEntityTypes.SENTRY_TURRET, SentryTurretRenderer::new);
     }
 
     private static void registerItemRenderers() {
@@ -258,6 +261,7 @@ public class AVPClient {
         Services.CLIENT_REGISTRY.registerItemRenderer(TempAVPBlockItems.DESK_TERMINAL_BLOCK, name -> DeskTerminalItemRenderer::new);
         Services.CLIENT_REGISTRY.registerItemRenderer(TempAVPBlockItems.TRIP_MINE_BLOCK, name -> TripMineItemRenderer::new);
         Services.CLIENT_REGISTRY.registerItemRenderer(TempAVPBlockItems.RESONATOR_BLOCK, name -> ResonatorItemRenderer::new);
+        Services.CLIENT_REGISTRY.registerItemRenderer(TempAVPBlockItems.SENTRY_TURRET, name -> SentryTurretItemRenderer::new);
     }
 
     private static void registerMenuScreens() {

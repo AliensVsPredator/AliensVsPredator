@@ -13,13 +13,11 @@ import java.util.function.Supplier;
 
 import com.avp.client.AVPClient;
 import com.avp.client.render.item.SimpleItemRenderer;
-import com.avp.common.item.TempAVPBlockItems;
 import com.avp.fabric.client.input.keybind.AVPKeybindingRegistry;
 import com.avp.fabric.client.network.AVPClientPacketHandlerRegistry;
 import com.avp.fabric.client.particle.AcidParticleProvider;
 import com.avp.fabric.client.particle.BlueAcidParticleProvider;
 import com.avp.fabric.client.particle.IrradiatedAcidParticleProvider;
-import com.avp.fabric.client.render.block.SentryTurretRenderer;
 import com.avp.fabric.client.render.entity.AcidRenderer;
 import com.avp.fabric.client.render.entity.ChestbursterRenderer;
 import com.avp.fabric.client.render.entity.DroneRenderer;
@@ -43,7 +41,6 @@ import com.avp.fabric.client.render.item.M56SmartgunItemRenderer;
 import com.avp.fabric.client.render.item.M6BRLItemRenderer;
 import com.avp.fabric.client.render.item.M88Mod4CombatPistolItemRenderer;
 import com.avp.fabric.client.render.item.OldPainlessItemRenderer;
-import com.avp.fabric.client.render.item.SentryItemtemRenderer;
 import com.avp.fabric.client.render.item.SpinningItemRenderer;
 import com.avp.fabric.client.render.item.ZX76ShotgunItemRenderer;
 import com.avp.fabric.common.entity.type.AVPEntityTypes;
@@ -72,7 +69,6 @@ public class AVPFabricClient implements ClientModInitializer {
         registerItemRenderer(AVPItems.M88MOD4_COMBAT_PISTOL, name -> () -> new M88Mod4CombatPistolItemRenderer(name));
         registerItemRenderer(AVPItems.OLD_PAINLESS, name -> () -> new OldPainlessItemRenderer(name));
         registerItemRenderer(AVPItems.ZX_76_SHOTGUN, name -> () -> new ZX76ShotgunItemRenderer(name));
-        registerItemRenderer(TempAVPBlockItems.SENTRY_TURRET.get(), name -> SentryItemtemRenderer::new);
 
         // Entities
         EntityRendererRegistry.register(AVPEntityTypes.ACID, AcidRenderer::new);
@@ -125,7 +121,6 @@ public class AVPFabricClient implements ClientModInitializer {
         EntityRendererRegistry.register(AVPEntityTypes.ROCKET, RocketRenderer::new);
         EntityRendererRegistry.register(AVPEntityTypes.SHURIKEN, SpinningItemRenderer::new);
         EntityRendererRegistry.register(AVPEntityTypes.SMART_DISC, SpinningItemRenderer::new);
-        EntityRendererRegistry.register(AVPEntityTypes.SENTRY_TURRET, SentryTurretRenderer::new);
 
         // Particles
         ParticleFactoryRegistry.getInstance().register(AVPParticleTypes.ACID, AcidParticleProvider::new);

@@ -28,7 +28,6 @@ import com.avp.fabric.common.entity.living.human.HairColorGenerator;
 import com.avp.fabric.common.entity.living.human.SkinColorGenerator;
 import com.avp.fabric.common.entity.living.human.marine.Marine;
 import com.avp.fabric.common.entity.living.yautja.Yautja;
-import com.avp.fabric.common.entity.machine.SentryTurret;
 import com.avp.fabric.common.entity.projectile.BulletProjectile;
 import com.avp.fabric.common.entity.projectile.Flamethrow;
 import com.avp.fabric.common.entity.projectile.Rocket;
@@ -40,11 +39,6 @@ public class AVPEntityTypes {
     public static final MobCategory ALIEN_CATEGORY = AVPMobCategories.ALIENS;
 
     public static final MobCategory PREDATOR_CATEGORY = AVPMobCategories.PREDATOR;
-
-    public static final EntityType<SentryTurret> SENTRY_TURRET = register(
-        "sentry_turret",
-        EntityType.Builder.of(SentryTurret::new, MobCategory.MISC).sized(1.0F, 1.0F).noSummon()
-    );
 
     public static final EntityType<Acid> ACID = register(
         "acid",
@@ -522,6 +516,5 @@ public class AVPEntityTypes {
 
         FabricDefaultAttributeRegistry.register(YAUTJA, Yautja.createYautjaAttributes());
         FabricDefaultAttributeRegistry.register(MARINE, Marine.createMarineAttributes());
-        FabricDefaultAttributeRegistry.register(SENTRY_TURRET, SentryTurret.createSentryTurretAttributes());
     }
 }

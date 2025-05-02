@@ -22,7 +22,6 @@ import com.avp.AVP;
 import com.avp.fabric.common.block.CompostingChanceRegistry;
 import com.avp.fabric.common.block.DispenserBlockBehaviors;
 import com.avp.fabric.common.block.FlammableBlockRegistry;
-import com.avp.fabric.common.block_item.AVPBlockItems;
 import com.avp.fabric.common.command.Commands;
 import com.avp.fabric.common.entity.spawn.SpawnPlacements;
 import com.avp.fabric.common.entity.type.AVPEntityTypes;
@@ -62,7 +61,6 @@ public class AVPFabric implements ModInitializer {
 
         // Core
         AVPItems.initialize();
-        AVPBlockItems.initialize();
         SpawnEggItems.initialize();
         AVPEntityTypes.initialize();
         Infections.initialize();

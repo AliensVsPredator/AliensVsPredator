@@ -1,4 +1,4 @@
-package com.avp.fabric.client.render.block;
+package com.avp.client.render.entity;
 
 import mod.azure.azurelib.rewrite.render.entity.AzEntityRenderer;
 import mod.azure.azurelib.rewrite.render.entity.AzEntityRendererConfig;
@@ -7,8 +7,8 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
 
 import com.avp.AVPResources;
-import com.avp.fabric.client.animation.entity.SentryTurretAnimator;
-import com.avp.fabric.common.entity.machine.SentryTurret;
+import com.avp.client.animation.entity.SentryTurretAnimator;
+import com.avp.common.entity.machine.SentryTurret;
 
 public class SentryTurretRenderer extends AzEntityRenderer<SentryTurret> {
 

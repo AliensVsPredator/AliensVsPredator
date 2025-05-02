@@ -6,6 +6,7 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
 
 import com.avp.common.entity.AVPMobCategories;
+import com.avp.common.entity.machine.SentryTurret;
 import com.avp.common.entity.nuke.MushroomCloudEntity;
 import com.avp.common.entity.nuke.PrimedNuke;
 import com.avp.common.entity.projectile.ThrownGrenade;
@@ -38,6 +39,11 @@ public class TempAVPEntityTypes {
             .updateInterval(100)
     );
 
+    public static final AVPDeferredHolder<EntityType<SentryTurret>> SENTRY_TURRET = register(
+        "sentry_turret",
+        EntityType.Builder.of(SentryTurret::new, MobCategory.MISC).sized(1.0F, 1.0F).noSummon()
+    );
+
     private static <T extends Entity> AVPDeferredHolder<EntityType<T>> register(String id, EntityType.Builder<T> builder) {
         return Services.REGISTRY.register(
             BuiltInRegistries.ENTITY_TYPE,
@@ -46,5 +52,7 @@ public class TempAVPEntityTypes {
         );
     }
 
-    public static void initialize() {}
+    public static void initialize() {
+        Services.REGISTRY.registerEntityAttributes(SENTRY_TURRET, SentryTurret::createSentryTurretAttributes);
+    }
 }

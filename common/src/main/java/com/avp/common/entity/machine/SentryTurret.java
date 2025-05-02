@@ -1,4 +1,4 @@
-package com.avp.fabric.common.entity.machine;
+package com.avp.common.entity.machine;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -134,7 +134,7 @@ public class SentryTurret extends Mob implements TraceableEntity {
     }
 
     @Override
-    public void addAdditionalSaveData(CompoundTag compound) {
+    public void addAdditionalSaveData(@NotNull CompoundTag compound) {
         if (ownerUUID != null) {
             compound.putUUID(OWNER_KEY, ownerUUID);
         }
@@ -153,7 +153,7 @@ public class SentryTurret extends Mob implements TraceableEntity {
     }
 
     @Override
-    public boolean canBeAffected(MobEffectInstance effectInstance) {
+    public boolean canBeAffected(@NotNull MobEffectInstance effectInstance) {
         // Sentry turrets aren't affected by any effects, even positive ones. It doesn't make sense for a turret
         // to have regeneration or absorption as much as it doesn't make sense for them to have nausea or wither.
         return false;
@@ -174,7 +174,7 @@ public class SentryTurret extends Mob implements TraceableEntity {
     }
 
     @Override
-    protected @NotNull InteractionResult mobInteract(Player player, InteractionHand hand) {
+    protected @NotNull InteractionResult mobInteract(@NotNull Player player, @NotNull InteractionHand hand) {
         if (!level().isClientSide && getOwner() != null && getOwner().is(player)) {
             dropTurretItem();
             discard();

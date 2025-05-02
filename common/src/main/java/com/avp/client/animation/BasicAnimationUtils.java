@@ -1,38 +1,10 @@
-package com.avp.fabric.client.animation;
+package com.avp.client.animation;
 
 import mod.azure.azurelib.rewrite.animation.AzAnimationContext;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
 
-import com.avp.fabric.common.entity.living.yautja.Yautja;
-
 public class BasicAnimationUtils {
-
-    public static void showWristblades(
-        Yautja entity,
-        AzAnimationContext<?> context,
-        String bladeName
-    ) {
-        var bakedModel = context.boneCache().getBakedModel();
-        var blade = bakedModel.getBoneOrNull(bladeName);
-
-        if (blade != null) {
-            blade.setHidden(!entity.getMainHandItem().isEmpty() && !entity.isAggressive());
-        }
-    }
-
-    public static void showHelmet(
-        Yautja entity,
-        AzAnimationContext<?> context,
-        String helmetName
-    ) {
-        var bakedModel = context.boneCache().getBakedModel();
-        var helmet = bakedModel.getBoneOrNull(helmetName);
-
-        if (helmet != null) {
-            helmet.setHidden(!entity.yautjaMaskManager.hasMask());
-        }
-    }
 
     public static void applyHeadRotations(
         LivingEntity entity,

@@ -1,4 +1,4 @@
-package com.avp.fabric.client.animation.entity;
+package com.avp.client.animation.entity;
 
 import mod.azure.azurelib.rewrite.animation.AzAnimatorConfig;
 import mod.azure.azurelib.rewrite.animation.controller.AzAnimationController;
@@ -8,8 +8,8 @@ import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 
 import com.avp.AVPResources;
-import com.avp.fabric.client.animation.BasicAnimationUtils;
-import com.avp.fabric.common.entity.machine.SentryTurret;
+import com.avp.client.animation.BasicAnimationUtils;
+import com.avp.common.entity.machine.SentryTurret;
 
 public class SentryTurretAnimator extends AzEntityAnimator<SentryTurret> {
 

@@ -447,10 +447,7 @@ public class TempAVPBlocks {
 
     public static final AVPDeferredHolder<Block> ROYAL_JELLY_BLOCK = register("royal_jelly_block", BlockProperties.JELLY);
 
-    public static final AVPDeferredHolder<Block> SENTRY_TURRET = register(
-        "sentry_turret",
-        () -> new SentryTurretBlock(BlockProperties.STEEL.build().noOcclusion())
-    );
+    public static final AVPDeferredHolder<Block> SENTRY_TURRET = register("sentry_turret", SentryTurretBlock::new);
 
     public static final AVPDeferredHolder<Block> SILICA_GRAVEL = register(
         "silica_gravel",

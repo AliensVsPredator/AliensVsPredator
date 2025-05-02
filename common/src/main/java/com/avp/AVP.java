@@ -16,6 +16,7 @@ import com.avp.common.component.AVPDataComponents;
 import com.avp.common.config.AVPConfig;
 import com.avp.common.creative_mode_tab.AVPCreativeModeTabs;
 import com.avp.common.effect.AVPMobEffects;
+import com.avp.common.entity.type.TempAVPEntityTypes;
 import com.avp.common.item.AVPArmorItems;
 import com.avp.common.item.TempAVPBlockItems;
 import com.avp.common.item.TempAVPItems;
@@ -40,11 +41,12 @@ public class AVP {
 
         LOGGER.info("Initializing AVP for platform '{}'", Services.PLATFORM.getPlatformName());
 
+        AVPBlockEntityTypes.initialize();
         TempAVPBlocks.initialize();
         TempAVPItems.initialize();
         TempAVPBlockItems.initialize();
         AVPArmorItems.initialize();
-        AVPBlockEntityTypes.initialize();
+        TempAVPEntityTypes.initialize();
         AVPMenuTypes.initialize();
         AVPCreativeModeTabs.initialize();
         AVPDataComponents.initialize();

@@ -6,8 +6,7 @@
   "compatibilityLevel": "JAVA_21",
   "mixins": [
     "MixinItem_ChorusEmbryo",
-    "MixinLivingEntity_GrowEmbryo",
-    "MixinShearsItem"
+    "MixinLivingEntity_GrowEmbryo"
   ],
   "client": [
     "client.MixinGui_CrosshairPickEntityWithinGunRange",

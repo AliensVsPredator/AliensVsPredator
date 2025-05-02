@@ -1,4 +1,4 @@
-package com.avp.fabric.common.entity.machine;
+package com.avp.common.entity.machine;
 
 import mod.azure.azurelib.rewrite.animation.dispatch.command.AzCommand;
 import mod.azure.azurelib.rewrite.animation.play_behavior.AzPlayBehaviors;
