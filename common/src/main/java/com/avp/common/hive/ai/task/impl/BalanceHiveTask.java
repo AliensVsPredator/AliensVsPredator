@@ -12,11 +12,13 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import com.avp.AVP;
+import com.avp.common.entity.living.alien.Alien;
 import com.avp.common.entity.living.alien.xenomorph.Xenomorph;
 import com.avp.common.entity.type.AVPEntityTypes;
 import com.avp.common.hive.Hive;
 import com.avp.common.hive.HiveMemberData;
 import com.avp.common.hive.ai.task.HiveTask;
+import com.avp.common.lifecycle.registry.AlienLifecycleRegistry;
 
 public class BalanceHiveTask extends HiveTask {
 
@@ -129,39 +131,38 @@ public class BalanceHiveTask extends HiveTask {
 
     private void growXenomorph(HiveMemberData oldHiveMemberData, Xenomorph xenomorph) {
         var type = xenomorph.getType();
-        // FIXME:
-        // var growthStage = AlienLifecycleRegistry.getOrNull(null, type);
-        //
-        // if (growthStage == null || xenomorph.getEntityData().get(Xenomorph.IS_POISONED)) {
-        // return;
-        // }
-        //
-        // if (xenomorph.getEntityData().get(Alien.IS_IRRADIATED)) {
-        // return;
-        // }
-        //
-        // var nextFormType = growthStage.to();
-        // var resourceLocation = BuiltInRegistries.ENTITY_TYPE.getKey(nextFormType);
-        //
-        // var nextFormEntity = xenomorph.getGrowthManager().grow(growthStage);
-        //
-        // if (nextFormEntity != null) {
-        // var isLeader = Objects.equals(xenomorph.getUUID(), hive.hiveLeaderId());
-        //
-        // var newHiveMemberData = new HiveMemberData(
-        // resourceLocation,
-        // oldHiveMemberData.lastSeenPos(),
-        // oldHiveMemberData.lastSeenTimestampInTicks()
-        // );
-        //
-        // // Remove the old entity by the old entity's id.
-        // hive.hiveMemberDataMap().remove(xenomorph.getUUID());
-        // // Add the new entity by the new entity's id.
-        // hive.hiveMemberDataMap().put(nextFormEntity.getUUID(), newHiveMemberData);
-        //
-        // if (isLeader) {
-        // hive.setHiveLeaderId(nextFormEntity.getUUID());
-        // }
-        // }
+        var growthStage = AlienLifecycleRegistry.getOrNull(null, type);
+
+        if (growthStage == null || xenomorph.getEntityData().get(Xenomorph.IS_POISONED)) {
+            return;
+        }
+
+        if (xenomorph.getEntityData().get(Alien.IS_IRRADIATED)) {
+            return;
+        }
+
+        var nextFormType = growthStage.to();
+        var resourceLocation = BuiltInRegistries.ENTITY_TYPE.getKey(nextFormType);
+
+        var nextFormEntity = xenomorph.getGrowthManager().grow(growthStage);
+
+        if (nextFormEntity != null) {
+            var isLeader = Objects.equals(xenomorph.getUUID(), hive.hiveLeaderId());
+
+            var newHiveMemberData = new HiveMemberData(
+                resourceLocation,
+                oldHiveMemberData.lastSeenPos(),
+                oldHiveMemberData.lastSeenTimestampInTicks()
+            );
+
+            // Remove the old entity by the old entity's id.
+            hive.hiveMemberDataMap().remove(xenomorph.getUUID());
+            // Add the new entity by the new entity's id.
+            hive.hiveMemberDataMap().put(nextFormEntity.getUUID(), newHiveMemberData);
+
+            if (isLeader) {
+                hive.setHiveLeaderId(nextFormEntity.getUUID());
+            }
+        }
     }
 }

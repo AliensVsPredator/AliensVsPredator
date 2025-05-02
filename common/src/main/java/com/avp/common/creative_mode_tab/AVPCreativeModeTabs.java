@@ -6,7 +6,6 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 
 import java.util.function.Consumer;
 import java.util.function.Supplier;
@@ -21,6 +20,7 @@ import com.avp.common.creative_mode_tab.initializer.IngredientsCreativeModeTabIn
 import com.avp.common.creative_mode_tab.initializer.SpawnEggsCreativeModeTabInitializer;
 import com.avp.common.creative_mode_tab.initializer.ToolsAndUtilitiesCreativeModeTabInitializer;
 import com.avp.common.item.AVPArmorItems;
+import com.avp.common.item.AVPSpawnEggItems;
 import com.avp.common.item.TempAVPItems;
 import com.avp.common.registry.AVPDeferredHolder;
 import com.avp.service.Services;
@@ -67,8 +67,7 @@ public class AVPCreativeModeTabs {
 
     public static final AVPDeferredHolder<CreativeModeTab> SPAWN_EGGS = register(
         SPAWN_EGGS_KEY,
-        // TODO: Put a ovamorph spawn egg item for this tab icon.
-        () -> new ItemStack(Items.EGG),
+        () -> new ItemStack(AVPSpawnEggItems.OVAMORPH_SPAWN_EGG.get()),
         SpawnEggsCreativeModeTabInitializer.OUTPUT_CONSUMER
     );
 

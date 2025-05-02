@@ -15,7 +15,6 @@ import com.avp.common.block.AVPBlocks;
 import com.avp.common.item.AVPArmorItems;
 import com.avp.common.item.AVPBlockItems;
 import com.avp.common.item.TempAVPItems;
-import com.avp.fabric.common.item.AVPItems;
 
 public class ItemModelProvider extends FabricModelProvider {
 
@@ -218,11 +217,11 @@ public class ItemModelProvider extends FabricModelProvider {
         generateStandardItem(generators, TempAVPItems.URANIUM_NUGGET);
         generateStandardItem(generators, TempAVPItems.ALUMINUM_NUGGET);
 
-        generateHandheldItem(generators, AVPBlockItems.FERROALUMINUM_DOOR.get());
-        generateHandheldItem(generators, AVPBlockItems.STEEL_DOOR.get());
-        generateHandheldItem(generators, AVPBlockItems.TITANIUM_DOOR.get());
+        generateHandheldItem(generators, AVPBlockItems.FERROALUMINUM_DOOR);
+        generateHandheldItem(generators, AVPBlockItems.STEEL_DOOR);
+        generateHandheldItem(generators, AVPBlockItems.TITANIUM_DOOR);
 
-        generateStandardItem(generators, AVPItems.POISON_JELLY);
+        generateStandardItem(generators, TempAVPItems.POISON_JELLY);
     }
 
     private void generateHandheldItem(ItemModelGenerators generators, Supplier<? extends Item> itemSupplier) {

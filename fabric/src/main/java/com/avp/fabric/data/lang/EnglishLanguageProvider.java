@@ -446,7 +446,7 @@ public class EnglishLanguageProvider extends FabricLanguageProvider {
         addItem(builder, TempAVPItems.RAW_GALENA, "Raw Galena");
         addItem(builder, TempAVPItems.RAW_MONAZITE, "Raw Monazite");
         addItem(builder, TempAVPItems.RAW_ROYAL_JELLY, "Raw Royal Jelly");
-        addItem(builder, AVPItems.POISON_JELLY, "Poison Jelly");
+        addItem(builder, TempAVPItems.POISON_JELLY, "Poison Jelly");
         addItem(builder, TempAVPItems.RAW_SILICA, "Raw Silica");
         addItem(builder, TempAVPItems.RAW_TITANIUM, "Raw Titanium");
         addItem(builder, TempAVPItems.RAW_ZINC, "Raw Zinc");

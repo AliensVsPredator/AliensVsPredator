@@ -11,7 +11,7 @@ import net.minecraft.world.level.gameevent.GameEvent;
 import org.jetbrains.annotations.NotNull;
 
 import com.avp.AVP;
-import com.avp.fabric.common.item.SpawnEggItems;
+import com.avp.common.item.AVPSpawnEggItems;
 
 public class DispenserBlockBehaviors {
 
@@ -46,7 +46,7 @@ public class DispenserBlockBehaviors {
         };
 
         // TODO: This will crash the game in NeoForge due to the .get() for the spawn egg item.
-        SpawnEggItems.getAll()
+        AVPSpawnEggItems.getAll()
             .forEach(spawnEggItem -> DispenserBlock.registerBehavior(spawnEggItem.get(), defaultDispenseItemBehavior));
     }
 

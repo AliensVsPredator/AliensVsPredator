@@ -21,10 +21,13 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.phys.Vec3;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import com.avp.AVP;
 import com.avp.common.ai.goal.StrollAroundInWaterGoal;
+import com.avp.common.ai.goal.combat.DelayedAttackGoal;
+import com.avp.common.ai.goal.combat.UseItemGoal;
 import com.avp.common.config.AVPConfig;
 import com.avp.common.item.TempAVPItems;
 import com.avp.common.util.YautjaPredicates;
@@ -55,11 +58,9 @@ public class Yautja extends Monster {
 
     @Override
     protected void registerGoals() {
-        // goalSelector.addGoal(1, new FleeFightGoal(this));
         goalSelector.addGoal(0, new FloatGoal(this));
-        // FIXME:
-        // goalSelector.addGoal(1, new DelayedAttackGoal(this, 1.0, true, 5, this::runAttackAnimations));
-        // goalSelector.addGoal(1, new UseItemGoal(this, this::runAttackAnimations));
+        goalSelector.addGoal(1, new DelayedAttackGoal(this, 1.0, true, 5, this::runAttackAnimations));
+        goalSelector.addGoal(1, new UseItemGoal(this, this::runAttackAnimations));
         goalSelector.addGoal(7, new StrollAroundInWaterGoal(this, 1.0));
         goalSelector.addGoal(7, new WaterAvoidingRandomStrollGoal(this, 1.0));
         targetSelector.addGoal(1, new HurtByTargetGoal(this).setAlertOthers(Yautja.class));
@@ -89,7 +90,7 @@ public class Yautja extends Monster {
     }
 
     @Override
-    public boolean startRiding(Entity entity, boolean force) {
+    public boolean startRiding(@NotNull Entity entity, boolean force) {
         if (entity instanceof Boat || entity instanceof Minecart) {
             return false;
         }
@@ -99,9 +100,9 @@ public class Yautja extends Monster {
 
     @Override
     public @Nullable SpawnGroupData finalizeSpawn(
-        ServerLevelAccessor serverLevelAccessor,
-        DifficultyInstance difficultyInstance,
-        MobSpawnType mobSpawnType,
+        @NotNull ServerLevelAccessor serverLevelAccessor,
+        @NotNull DifficultyInstance difficultyInstance,
+        @NotNull MobSpawnType mobSpawnType,
         @Nullable SpawnGroupData spawnGroupData
     ) {
         if (random.nextDouble() <= 0.5) {
@@ -149,7 +150,7 @@ public class Yautja extends Monster {
     }
 
     @Override
-    public void travel(Vec3 vec3) {
+    public void travel(@NotNull Vec3 vec3) {
         if (isControlledByLocalInstance() && isUnderWater()) {
             moveRelative(0.01F, vec3);
             move(MoverType.SELF, getDeltaMovement());
@@ -160,19 +161,19 @@ public class Yautja extends Monster {
     }
 
     @Override
-    protected void defineSynchedData(SynchedEntityData.Builder builder) {
+    protected void defineSynchedData(@NotNull SynchedEntityData.Builder builder) {
         super.defineSynchedData(builder);
         builder.define(HAS_MASK, true);
     }
 
     @Override
-    public void readAdditionalSaveData(CompoundTag compoundTag) {
+    public void readAdditionalSaveData(@NotNull CompoundTag compoundTag) {
         super.readAdditionalSaveData(compoundTag);
         yautjaMaskManager.load(compoundTag);
     }
 
     @Override
-    public void addAdditionalSaveData(CompoundTag compoundTag) {
+    public void addAdditionalSaveData(@NotNull CompoundTag compoundTag) {
         super.addAdditionalSaveData(compoundTag);
         yautjaMaskManager.save(compoundTag);
     }

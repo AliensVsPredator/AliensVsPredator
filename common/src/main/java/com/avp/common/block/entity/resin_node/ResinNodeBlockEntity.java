@@ -7,42 +7,49 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.BlockPositionSource;
+import net.minecraft.world.level.gameevent.GameEventListener;
+import org.jetbrains.annotations.NotNull;
 
 import com.avp.common.block.entity.AVPBlockEntityTypes;
+import com.avp.common.level.gameevent.listener.ResinSpreadListener;
 
-// FIXME:
-public class ResinNodeBlockEntity extends BlockEntity /* implements GameEventListener.Provider<ResinSpreadListener> */ {
+public class ResinNodeBlockEntity extends BlockEntity implements GameEventListener.Provider<ResinSpreadListener> {
 
-    // private final ResinSpreadListener resinSpreadListener;
+    private final ResinSpreadListener resinSpreadListener;
 
     public ResinNodeBlockEntity(BlockPos blockPos, BlockState blockState) {
         super(AVPBlockEntityTypes.RESIN_NODE.get(), blockPos, blockState);
 
         var positionSource = new BlockPositionSource(blockPos);
-        // var spreaderType = new ResinSpreadListener.SpreaderType.Block(blockPos);
-        //
-        // this.resinSpreadListener = new ResinSpreadListener(positionSource, spreaderType);
+        var spreaderType = new ResinSpreadListener.SpreaderType.Block(blockPos);
+
+        this.resinSpreadListener = new ResinSpreadListener(positionSource, spreaderType);
     }
 
     public static void serverTick(Level level, BlockPos nodePos, BlockState blockState, ResinNodeBlockEntity resinNodeBlockEntity) {
-        // resinNodeBlockEntity.resinSpreadListener.getResinSpreader().updateCursors(level, nodePos, level.getRandom(),
-        // true);
+        resinNodeBlockEntity.resinSpreadListener.getResinSpreader()
+            .updateCursors(
+                level,
+                nodePos,
+                level.getRandom(),
+                true
+            );
     }
 
     @Override
-    protected void loadAdditional(CompoundTag compoundTag, HolderLookup.Provider provider) {
+    protected void loadAdditional(@NotNull CompoundTag compoundTag, @NotNull HolderLookup.Provider provider) {
         super.loadAdditional(compoundTag, provider);
-        // resinSpreadListener.getResinSpreader().load(compoundTag);
+        resinSpreadListener.getResinSpreader().load(compoundTag);
     }
 
     @Override
-    protected void saveAdditional(CompoundTag compoundTag, HolderLookup.Provider provider) {
-        // resinSpreadListener.getResinSpreader().save(compoundTag);
+    protected void saveAdditional(@NotNull CompoundTag compoundTag, @NotNull HolderLookup.Provider provider) {
+        resinSpreadListener.getResinSpreader().save(compoundTag);
         super.saveAdditional(compoundTag, provider);
     }
 
-    // @Override
-    // public @NotNull ResinSpreadListener getListener() {
-    // return resinSpreadListener;
-    // }
+    @Override
+    public @NotNull ResinSpreadListener getListener() {
+        return resinSpreadListener;
+    }
 }

@@ -26,6 +26,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 
 import com.avp.common.component.AVPDataComponents;
+import com.avp.common.item.AVPEnchantmentTags;
 import com.avp.common.item.TempAVPItems;
 import com.avp.common.util.TooltipUtil;
 import com.avp.fabric.common.item.gun.GunConfig;

@@ -6,6 +6,9 @@ import net.minecraft.world.entity.Mob;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.SpawnEggItem;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.function.Supplier;
 
 import com.avp.common.entity.type.AVPEntityTypes;
@@ -13,6 +16,12 @@ import com.avp.common.registry.AVPDeferredHolder;
 import com.avp.service.Services;
 
 public class AVPSpawnEggItems {
+
+    private static final List<AVPDeferredHolder<Item>> HOLDERS = new ArrayList<>();
+
+    public static List<AVPDeferredHolder<Item>> getAll() {
+        return Collections.unmodifiableList(HOLDERS);
+    }
 
     public static final AVPDeferredHolder<Item> ABERRANT_CHESTBURSTER_SPAWN_EGG = register(
         "aberrant_chestburster",
@@ -247,11 +256,15 @@ public class AVPSpawnEggItems {
         int primaryColor,
         int secondaryColor
     ) {
-        return Services.REGISTRY.register(
+        AVPDeferredHolder<Item> spawnEggItemSupplier = Services.REGISTRY.register(
             BuiltInRegistries.ITEM,
             baseId + "_spawn_egg",
             () -> new SpawnEggItem(entityTypeSupplier.get(), primaryColor, secondaryColor, new Item.Properties())
         );
+
+        HOLDERS.add(spawnEggItemSupplier);
+
+        return spawnEggItemSupplier;
     }
 
     public static void initialize() {}

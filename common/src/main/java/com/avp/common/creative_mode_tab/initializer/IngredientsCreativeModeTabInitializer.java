@@ -102,8 +102,7 @@ public class IngredientsCreativeModeTabInitializer {
         CreativeModeTabUtil.accept(output, TempAVPItems.IRRADIATED_CHITIN);
         CreativeModeTabUtil.accept(output, TempAVPItems.PLATED_IRRADIATED_CHITIN);
         CreativeModeTabUtil.accept(output, TempAVPItems.RAW_ROYAL_JELLY);
-        // FIXME:
-        // CreativeModeTabUtil.accept(output, AVPItems.POISON_JELLY);
+        CreativeModeTabUtil.accept(output, TempAVPItems.POISON_JELLY);
 
         // Decorative materials
         CreativeModeTabUtil.accept(output, TempAVPItems.OVOID_POTTERY_SHERD);

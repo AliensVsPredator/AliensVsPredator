@@ -186,6 +186,8 @@ public class TempAVPItems {
         new Item.Properties().fireResistant()
     );
 
+    public static final AVPDeferredHolder<Item> POISON_JELLY = register("poison_jelly", PoisionJellyItem::new);
+
     public static final AVPDeferredHolder<Item> POLYMER = register("polymer");
 
     public static final AVPDeferredHolder<Item> POWDER_SNOW_CANISTER = register(
@@ -219,8 +221,7 @@ public class TempAVPItems {
 
     public static final AVPDeferredHolder<Item> RAW_MONAZITE = register("raw_monazite");
 
-    // FIXME: Make item type RoyalJellyItem.
-    public static final AVPDeferredHolder<Item> RAW_ROYAL_JELLY = register("raw_royal_jelly");
+    public static final AVPDeferredHolder<Item> RAW_ROYAL_JELLY = register("raw_royal_jelly", RoyalJellyItem::new);
 
     public static final AVPDeferredHolder<Item> RAW_SILICA = register("raw_silica");
 

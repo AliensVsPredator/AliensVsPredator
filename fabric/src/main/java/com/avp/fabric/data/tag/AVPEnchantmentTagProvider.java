@@ -7,7 +7,7 @@ import net.minecraft.world.item.enchantment.Enchantments;
 
 import java.util.concurrent.CompletableFuture;
 
-import com.avp.fabric.common.item.AVPEnchantmentTags;
+import com.avp.common.item.AVPEnchantmentTags;
 
 public class AVPEnchantmentTagProvider extends FabricTagProvider.EnchantmentTagProvider {
 

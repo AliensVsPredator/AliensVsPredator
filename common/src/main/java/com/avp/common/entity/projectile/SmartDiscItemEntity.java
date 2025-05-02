@@ -11,6 +11,7 @@ import org.jetbrains.annotations.NotNull;
 
 import com.avp.common.entity.type.AVPEntityTypes;
 import com.avp.common.item.TempAVPItems;
+import com.avp.common.util.ItemGoalUtil;
 import com.avp.server.BlockBreakProgressManager;
 
 public class SmartDiscItemEntity extends ThrowableItemProjectile {
@@ -37,12 +38,11 @@ public class SmartDiscItemEntity extends ThrowableItemProjectile {
             this.kill();
         if (this.tickCount > 300)
             this.kill();
-        // FIXME:
-        // if (!this.dealtDamage) {
-        // ItemGoalUtil.trackToLivingEntity(this, 0.5, false);
-        // } else {
-        // ItemGoalUtil.trackToOwnerEntity(this);
-        // }
+        if (!this.dealtDamage) {
+            ItemGoalUtil.trackToLivingEntity(this, 0.5, false);
+        } else {
+            ItemGoalUtil.trackToOwnerEntity(this);
+        }
     }
 
     @Override

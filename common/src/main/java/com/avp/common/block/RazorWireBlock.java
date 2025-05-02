@@ -17,6 +17,7 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
 
 import com.avp.common.damage.AVPDamageTypes;
+import com.avp.common.entity.living.human.marine.Marine;
 
 public class RazorWireBlock extends Block {
 
@@ -53,8 +54,7 @@ public class RazorWireBlock extends Block {
 
         if (
             !level.isClientSide && (entity.xOld != entity.getX() || entity.yOld != entity.getY() || entity.zOld != entity.getZ())
-            // FIXME:
-            // && !(entity instanceof Marine)
+                && !(entity instanceof Marine)
         ) {
             var deltaX = Math.abs(entity.getX() - entity.xOld);
             var deltaY = Math.abs(entity.getY() - entity.yOld);

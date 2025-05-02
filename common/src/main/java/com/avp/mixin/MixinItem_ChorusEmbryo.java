@@ -1,4 +1,4 @@
-package com.avp.fabric.mixin;
+package com.avp.mixin;
 
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;

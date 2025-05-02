@@ -43,8 +43,6 @@ public class AVPItems {
 
     public static final Item ZX_76_SHOTGUN = register(new GunItem(GunData.ZX_76_SHOTGUN), "zx_76_shotgun");
 
-    public static final Item POISON_JELLY = register(new PoisionJellyItem(), "poison_jelly");
-
     public static Item register(Function<Item.Properties, Item> itemSupplier, String id) {
         return register(itemSupplier.apply(new Item.Properties()), id);
     }

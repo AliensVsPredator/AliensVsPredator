@@ -40,6 +40,7 @@ import com.avp.common.ai.goal.XenoFloatGoal;
 import com.avp.common.entity.gene.GeneKeys;
 import com.avp.common.entity.gene.behavior.GeneDecoders;
 import com.avp.common.entity.living.alien.Alien;
+import com.avp.common.lifecycle.registry.AlienLifecycleRegistry;
 import com.avp.common.manager.CrawlingManager;
 import com.avp.common.manager.GrowthManager;
 import com.avp.common.manager.VibrationSystemManager;
@@ -147,15 +148,14 @@ public abstract class Xenomorph extends Alien implements ResinProducer {
             }
 
             var type = AlienVariantUtil.getVariantTypeFor(this);
-            // FIXME:
-            // var growthStage = AlienLifecycleRegistry.getOrNull(null, type);
-            //
-            // if (
-            // growthStage != null && !this.getEntityData().get(Xenomorph.IS_POISONED) && this.getEntityData()
-            // .get(Xenomorph.JELLY_COUNT) >= this.maxJellyToGrowth()
-            // ) {
-            // this.getGrowthManager().grow(growthStage);
-            // }
+            var growthStage = AlienLifecycleRegistry.getOrNull(null, type);
+
+            if (
+                growthStage != null && !this.getEntityData().get(Xenomorph.IS_POISONED) && this.getEntityData()
+                    .get(Xenomorph.JELLY_COUNT) >= this.maxJellyToGrowth()
+            ) {
+                this.getGrowthManager().grow(growthStage);
+            }
         }
     }
 

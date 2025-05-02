@@ -7,7 +7,6 @@ import net.minecraft.world.level.block.Blocks;
 
 import com.avp.common.block.AVPBlocks;
 import com.avp.common.item.TempAVPItems;
-import com.avp.fabric.common.item.AVPItems;
 import com.avp.fabric.data.recipe.RecipeConstants;
 import com.avp.fabric.data.recipe.builder.RecipeBuilder;
 
@@ -142,7 +141,7 @@ public class MiscellaneousRecipeProvider {
             .withCategory(RecipeCategory.MISC)
             .requires(1, Items.POISONOUS_POTATO)
             .requires(1, TempAVPItems.RAW_ROYAL_JELLY)
-            .into(1, AVPItems.POISON_JELLY);
+            .into(1, TempAVPItems.POISON_JELLY);
 
         builder.shaped()
             .withCategory(RecipeCategory.MISC)

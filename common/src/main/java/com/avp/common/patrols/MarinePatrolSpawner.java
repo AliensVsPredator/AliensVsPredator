@@ -1,4 +1,4 @@
-package com.avp.fabric.common.patrols;
+package com.avp.common.patrols;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
@@ -9,6 +9,7 @@ import net.minecraft.world.level.CustomSpawner;
 import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.levelgen.Heightmap;
+import org.jetbrains.annotations.NotNull;
 
 import com.avp.common.block.AVPBlockTags;
 import com.avp.common.entity.type.AVPEntityTypes;
@@ -21,7 +22,7 @@ public class MarinePatrolSpawner implements CustomSpawner {
     public MarinePatrolSpawner() {}
 
     @Override
-    public int tick(ServerLevel level, boolean spawnEnemies, boolean spawnFriendlies) {
+    public int tick(@NotNull ServerLevel level, boolean spawnEnemies, boolean spawnFriendlies) {
         if (!spawnEnemies || !level.getGameRules().getBoolean(GameRules.RULE_DO_PATROL_SPAWNING)) {
             return 0;
         }
@@ -70,7 +71,7 @@ public class MarinePatrolSpawner implements CustomSpawner {
         return !level.isCloseToVillage(player.blockPosition(), 2);
     }
 
-    private BlockPos getRandomNearbyPosition(Player player, RandomSource randomSource) {
+    private BlockPos.MutableBlockPos getRandomNearbyPosition(Player player, RandomSource randomSource) {
         var xOffset = (24 + randomSource.nextInt(24)) * (randomSource.nextBoolean() ? -1 : 1);
         var zOffset = (24 + randomSource.nextInt(24)) * (randomSource.nextBoolean() ? -1 : 1);
         return player.blockPosition().mutable().move(xOffset, 0, zOffset);
@@ -86,7 +87,7 @@ public class MarinePatrolSpawner implements CustomSpawner {
         return biomeHolder.is(AVPBiomeTags.HAS_MARINE_CAMP_GRASS);
     }
 
-    private int spawnPatrolMembers(ServerLevel level, BlockPos startPos) {
+    private int spawnPatrolMembers(ServerLevel level, BlockPos.MutableBlockPos startPos) {
         var randomSource = level.random;
         var difficulty = (int) Math.ceil(level.getCurrentDifficultyAt(startPos).getEffectiveDifficulty()) + 1;
 

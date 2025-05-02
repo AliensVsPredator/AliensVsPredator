@@ -75,9 +75,9 @@ public class ParasiteAttachmentManager {
 
         var falloffTimeInTicks = (host instanceof ServerPlayer ? 1.5 : 2.5) * 20 * 60;
 
-        // FIXME: Make time configurable
+        // TODO: Make time configurable
         if (ticksAttachedToHost() < 20 * 10) {
-            // FIXME: Make damage configurable
+            // TODO: Make damage configurable
             host.hurt(parasite.damageSources().source(AVPDamageTypes.SMOTHERING), 0.01F);
         } else if (ticksAttachedToHost() > falloffTimeInTicks) {
             parasite.stopRiding();
@@ -90,7 +90,7 @@ public class ParasiteAttachmentManager {
                 ((FreeMob) mob).removeFreedom();
             }
 
-            // FIXME: Make time configurable
+            // TODO: Make time configurable
             if (ticksAttachedToHost() >= 20 * 20) {
                 host.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, 40, 3, true, false, true));
 

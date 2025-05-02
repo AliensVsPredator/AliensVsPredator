@@ -89,7 +89,7 @@ public class BlockProperties {
         .mapColor(MapColor.COLOR_BLACK)
         .requiresCorrectToolForDrops()
         .strength(4F)
-        // FIXME:
+        // TODO: Make this something other than the honey block sound.
         .sound(SoundType.HONEY_BLOCK);
 
     private static final Supplier<BlockPropertyBuilder> NETHER_RESIN_BLOCK_PROPERTIES_SUPPLIER = () -> RESIN_PROPERTIES_SUPPLIER.get()

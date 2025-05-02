@@ -1,4 +1,4 @@
-package com.avp.fabric.common.item;
+package com.avp.common.item;
 
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -20,10 +20,10 @@ public class RoyalJellyItem extends Item {
 
     @Override
     public @NotNull InteractionResult interactLivingEntity(
-        ItemStack itemStack,
-        Player player,
-        LivingEntity livingEntity,
-        InteractionHand interactionHand
+        @NotNull ItemStack itemStack,
+        @NotNull Player player,
+        @NotNull LivingEntity livingEntity,
+        @NotNull InteractionHand interactionHand
     ) {
         if (livingEntity instanceof Alien xenomorph && !(xenomorph instanceof Praetorian)) {
             xenomorph.getEntityData().set(Alien.JELLY_COUNT, xenomorph.getEntityData().get(Alien.JELLY_COUNT) + 1);

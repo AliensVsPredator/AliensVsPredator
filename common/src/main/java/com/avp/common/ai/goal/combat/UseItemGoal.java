@@ -10,6 +10,10 @@ import net.minecraft.world.level.pathfinder.Path;
 
 import java.util.EnumSet;
 
+import com.avp.common.item.yautja.ShurikenItem;
+import com.avp.common.item.yautja.SmartDiscItem;
+import com.avp.common.util.ItemGoalUtil;
+
 public class UseItemGoal extends Goal {
 
     private final int delayTicksBeforeAttack;
@@ -118,13 +122,13 @@ public class UseItemGoal extends Goal {
                 // ItemGoalUtil.shootBullet(entity);
                 // }
                 //
-                // if (entity.getMainHandItem().getItem() instanceof ShurikenItem) {
-                // ItemGoalUtil.shootShuriken(entity);
-                // }
-                //
-                // if (entity.getMainHandItem().getItem() instanceof SmartDiscItem) {
-                // ItemGoalUtil.shootSmartDisc(entity);
-                // }
+                if (entity.getMainHandItem().getItem() instanceof ShurikenItem) {
+                    ItemGoalUtil.shootShuriken(entity);
+                }
+
+                if (entity.getMainHandItem().getItem() instanceof SmartDiscItem) {
+                    ItemGoalUtil.shootSmartDisc(entity);
+                }
                 this.triggeredAttackAnimation = false;
             }
         } else {

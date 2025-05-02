@@ -42,25 +42,25 @@ import com.avp.service.Services;
 // TODO: Rename this once multi-loader migration is finished.
 public class AVPBlocks {
 
-    // FIXME: Fix properties.
+    // TODO: Fix properties.
     public static final AVPDeferredHolder<Block> ABERRANT_RESIN = register(
         "aberrant_resin",
         () -> new ResinBlock(BlockProperties.NETHER_RESIN.build())
     );
 
-    // FIXME: Fix properties.
+    // TODO: Fix properties.
     public static final AVPDeferredHolder<Block> ABERRANT_RESIN_NODE = register(
         "aberrant_resin_node",
         () -> new ResinNodeBlock(BlockProperties.RESIN.build())
     );
 
-    // FIXME: Fix properties.
+    // TODO: Fix properties.
     public static final AVPDeferredHolder<Block> ABERRANT_RESIN_VEIN = register(
         "aberrant_resin_vein",
         () -> new ResinVeinBlock(BlockProperties.NETHER_RESIN_VEIN.build())
     );
 
-    // FIXME: Fix properties.
+    // TODO: Fix properties.
     public static final AVPDeferredHolder<Block> ABERRANT_RESIN_WEB = register(
         "aberrant_resin_web",
         () -> new ResinWebBlock(BlockProperties.NETHER_RESIN_WEB.build())
@@ -332,7 +332,7 @@ public class AVPBlocks {
         () -> new IrradiatedResinBlock(BlockProperties.NETHER_RESIN.build())
     );
 
-    // FIXME: Fix properties.
+    // TODO: Fix properties.
     public static final AVPDeferredHolder<Block> IRRADIATED_RESIN_NODE = register(
         "irradiated_resin_node",
         () -> new IrradiatedResinNodeBlock(BlockProperties.RESIN.build())
@@ -372,7 +372,7 @@ public class AVPBlocks {
         () -> new ResinBlock(BlockProperties.NETHER_RESIN.build())
     );
 
-    // FIXME: Fix properties.
+    // TODO: Fix properties.
     public static final AVPDeferredHolder<Block> NETHER_RESIN_NODE = register(
         "nether_resin_node",
         () -> new ResinNodeBlock(BlockProperties.RESIN.build())

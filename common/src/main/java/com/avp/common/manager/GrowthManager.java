@@ -12,6 +12,8 @@ import java.util.function.Supplier;
 
 import com.avp.common.entity.living.alien.Alien;
 import com.avp.common.entity.living.alien.xenomorph.Xenomorph;
+import com.avp.common.lifecycle.growth.GrowthStage;
+import com.avp.common.lifecycle.registry.AlienLifecycleRegistry;
 import com.avp.common.util.AlienVariantUtil;
 
 public class GrowthManager {
@@ -52,49 +54,47 @@ public class GrowthManager {
         }
 
         var type = AlienVariantUtil.getVariantTypeFor(entity);
-        // FIXME:
-        // var growthStage = AlienLifecycleRegistry.getOrNull(null, type);
-        // this.growthTimeInTicks++;
-        //
-        // if (growthStage == null) {
-        // return;
-        // }
-        //
-        // var requiredGrowthTimeInTicks = growthStage.growthTimeInTicks();
-        // var growthTimeReductionMultiplier = 1F;
-        //
-        // if (growthTimeReductionMultiplierProvider != null) {
-        // var multiplier = growthTimeReductionMultiplierProvider.get();
-        // growthTimeReductionMultiplier = Math.clamp(multiplier, 0.2F, 1F);
-        // }
-        //
-        // if (growthTimeInTicks < requiredGrowthTimeInTicks * growthTimeReductionMultiplier) {
-        // return;
-        // }
-        //
-        // grow(growthStage);
+        var growthStage = AlienLifecycleRegistry.getOrNull(null, type);
+        this.growthTimeInTicks++;
+
+        if (growthStage == null) {
+            return;
+        }
+
+        var requiredGrowthTimeInTicks = growthStage.growthTimeInTicks();
+        var growthTimeReductionMultiplier = 1F;
+
+        if (growthTimeReductionMultiplierProvider != null) {
+            var multiplier = growthTimeReductionMultiplierProvider.get();
+            growthTimeReductionMultiplier = Math.clamp(multiplier, 0.2F, 1F);
+        }
+
+        if (growthTimeInTicks < requiredGrowthTimeInTicks * growthTimeReductionMultiplier) {
+            return;
+        }
+
+        grow(growthStage);
     }
 
-    // FIXME:
-    // public @Nullable LivingEntity grow(GrowthStage growthStage) {
-    // // Reset growth time at this point.
-    // this.growthTimeInTicks = 0;
-    //
-    // var level = entity.level();
-    // var nextFormType = growthStage.to();
-    // var nextForm = nextFormType.create(level);
-    // if (nextForm == null) {
-    // return nextForm;
-    // }
-    //
-    // swapOldStageWithNewStage(nextForm, level);
-    //
-    // if (onGrowUpCallback != null) {
-    // onGrowUpCallback.accept(nextForm);
-    // }
-    //
-    // return nextForm;
-    // }
+    public @Nullable LivingEntity grow(GrowthStage growthStage) {
+        // Reset growth time at this point.
+        this.growthTimeInTicks = 0;
+
+        var level = entity.level();
+        var nextFormType = growthStage.to();
+        var nextForm = nextFormType.create(level);
+        if (nextForm == null) {
+            return nextForm;
+        }
+
+        swapOldStageWithNewStage(nextForm, level);
+
+        if (onGrowUpCallback != null) {
+            onGrowUpCallback.accept(nextForm);
+        }
+
+        return nextForm;
+    }
 
     public void load(CompoundTag compoundTag) {
         if (compoundTag.contains(GROWTH_TIME_IN_TICKS_TAG_KEY)) {

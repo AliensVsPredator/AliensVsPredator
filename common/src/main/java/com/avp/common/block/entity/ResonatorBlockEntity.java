@@ -6,6 +6,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 
@@ -15,6 +16,8 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import com.avp.AVP;
+import com.avp.common.block.AVPBlockTags;
+import com.avp.common.util.AlienVariantUtil;
 
 public class ResonatorBlockEntity extends BlockEntity {
 
@@ -75,41 +78,41 @@ public class ResonatorBlockEntity extends BlockEntity {
 
         var resinBallsGained = new AtomicInteger(0);
 
+        // TODO: Fix this stream result not being used.
         BlockPos.betweenClosedStream(blockPos.offset(-radius, -radius, -radius), blockPos.offset(radius, radius, radius))
             .filter(currentPos -> {
                 var currentState = level.getBlockState(currentPos);
 
-                // FIXME:
-                // if (currentState.is(AVPBlockTags.RESIN_VEINS)) {
-                // level.setBlockAndUpdate(currentPos, Blocks.AIR.defaultBlockState());
-                //
-                // var resinBallItem = AlienVariantUtil.getResinBallForType(currentState);
-                // resonatorBlockEntity.addResinBallItem(resinBallItem);
-                //
-                // resinBallsGained.incrementAndGet();
-                //
-                // if (resinBallsGained.get() > 0) {
-                // resonatorBlockEntity.setChanged();
-                // }
-                // return true;
-                // }
-                //
-                // if (currentState.is(AVPBlockTags.RESIN)) {
-                // var isDeepstone = currentPos.getY() <= 0;
-                // var replacementBlock = isDeepstone ? Blocks.DEEPSLATE : Blocks.STONE;
-                //
-                // level.setBlockAndUpdate(currentPos, replacementBlock.defaultBlockState());
-                //
-                // var resinBallItem = AlienVariantUtil.getResinBallForType(currentState);
-                // resonatorBlockEntity.addResinBallItem(resinBallItem);
-                //
-                // resinBallsGained.incrementAndGet();
-                //
-                // if (resinBallsGained.get() > 0) {
-                // resonatorBlockEntity.setChanged();
-                // }
-                // return true;
-                // }
+                if (currentState.is(AVPBlockTags.RESIN_VEINS)) {
+                    level.setBlockAndUpdate(currentPos, Blocks.AIR.defaultBlockState());
+
+                    var resinBallItem = AlienVariantUtil.getResinBallForType(currentState);
+                    resonatorBlockEntity.addResinBallItem(resinBallItem);
+
+                    resinBallsGained.incrementAndGet();
+
+                    if (resinBallsGained.get() > 0) {
+                        resonatorBlockEntity.setChanged();
+                    }
+                    return true;
+                }
+
+                if (currentState.is(AVPBlockTags.RESIN)) {
+                    var isDeepstone = currentPos.getY() <= 0;
+                    var replacementBlock = isDeepstone ? Blocks.DEEPSLATE : Blocks.STONE;
+
+                    level.setBlockAndUpdate(currentPos, replacementBlock.defaultBlockState());
+
+                    var resinBallItem = AlienVariantUtil.getResinBallForType(currentState);
+                    resonatorBlockEntity.addResinBallItem(resinBallItem);
+
+                    resinBallsGained.incrementAndGet();
+
+                    if (resinBallsGained.get() > 0) {
+                        resonatorBlockEntity.setChanged();
+                    }
+                    return true;
+                }
 
                 return false;
             })

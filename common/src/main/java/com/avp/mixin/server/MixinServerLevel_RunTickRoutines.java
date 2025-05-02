@@ -7,6 +7,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import com.avp.common.level.saveddata.HiveLevelData;
 import com.avp.server.BlockBreakProgressManager;
 import com.avp.server.ServerScheduler;
 
@@ -18,10 +19,9 @@ public abstract class MixinServerLevel_RunTickRoutines {
         tickScheduledRunnables();
 
         var serverLevel = ServerLevel.class.cast(this);
-        // FIXME:
-        // var hiveLevelDataOptional = HiveLevelData.getOrCreate(serverLevel);
-        //
-        // hiveLevelDataOptional.ifSome(HiveLevelData::tick);
+        var hiveLevelDataOptional = HiveLevelData.getOrCreate(serverLevel);
+
+        hiveLevelDataOptional.ifSome(HiveLevelData::tick);
 
         BlockBreakProgressManager.tick(serverLevel);
     }

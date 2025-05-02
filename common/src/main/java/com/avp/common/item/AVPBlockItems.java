@@ -48,7 +48,7 @@ public class AVPBlockItems {
 
     public static final AVPDeferredHolder<BlockItem> ALUMINUM_BLOCK = register("aluminum_block", AVPBlocks.ALUMINUM_BLOCK);
 
-    public static final AVPDeferredHolder<BlockItem> AMMO_CHEST = registerDirect("ammo_chest", AmmoChestBlockItem::new);
+    public static final AVPDeferredHolder<BlockItem> AMMO_CHEST = registerWithSupplier("ammo_chest", AmmoChestBlockItem::new);
 
     public static final AVPDeferredHolder<BlockItem> ASH_BLOCK = register("ash_block", AVPBlocks.ASH_BLOCK);
 
@@ -304,7 +304,7 @@ public class AVPBlockItems {
 
     public static final AVPDeferredHolder<BlockItem> LEAD_BLOCK = register("lead_block", AVPBlocks.LEAD_BLOCK);
 
-    public static final AVPDeferredHolder<BlockItem> LEAD_CHEST = registerDirect("lead_chest", LeadChestBlockItem::new);
+    public static final AVPDeferredHolder<BlockItem> LEAD_CHEST = registerWithSupplier("lead_chest", LeadChestBlockItem::new);
 
     public static final AVPDeferredHolder<BlockItem> LITHIUM_BLOCK = register("lithium_block", AVPBlocks.LITHIUM_BLOCK);
 
@@ -372,13 +372,12 @@ public class AVPBlockItems {
 
     public static final AVPDeferredHolder<BlockItem> RESONATOR_BLOCK = register("resonator", AVPBlocks.RESONATOR_BLOCK);
 
-    // TODO: Make RoyalJellyBlockItem.
-    public static final AVPDeferredHolder<BlockItem> ROYAL_JELLY_BLOCK = registerDirect(
+    public static final AVPDeferredHolder<BlockItem> ROYAL_JELLY_BLOCK = registerWithSupplier(
         "royal_jelly_block",
-        () -> new BlockItem(AVPBlocks.ROYAL_JELLY_BLOCK.get(), new Item.Properties())
+        RoyalJellyBlockItem::new
     );
 
-    public static final AVPDeferredHolder<BlockItem> SENTRY_TURRET = registerDirect("sentry_turret", SentryTurretBlockItem::new);
+    public static final AVPDeferredHolder<BlockItem> SENTRY_TURRET = registerWithSupplier("sentry_turret", SentryTurretBlockItem::new);
 
     public static final AVPDeferredHolder<BlockItem> SILICA_GRAVEL = register("silica_gravel", AVPBlocks.SILICA_GRAVEL);
 
@@ -928,10 +927,10 @@ public class AVPBlockItems {
     }
 
     private static AVPDeferredHolder<BlockItem> register(String id, Supplier<Block> blockSupplier, Item.Properties properties) {
-        return registerDirect(id, () -> new BlockItem(blockSupplier.get(), properties));
+        return registerWithSupplier(id, () -> new BlockItem(blockSupplier.get(), properties));
     }
 
-    private static AVPDeferredHolder<BlockItem> registerDirect(String id, Supplier<BlockItem> blockItemSupplier) {
+    private static AVPDeferredHolder<BlockItem> registerWithSupplier(String id, Supplier<BlockItem> blockItemSupplier) {
         return Services.REGISTRY.register(BuiltInRegistries.ITEM, id, blockItemSupplier);
     }
 

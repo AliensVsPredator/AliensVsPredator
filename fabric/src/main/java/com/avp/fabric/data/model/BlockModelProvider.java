@@ -22,7 +22,7 @@ import org.jetbrains.annotations.NotNull;
 
 import com.avp.common.block.AVPBlocks;
 import com.avp.common.block.BlockProperties;
-import com.avp.fabric.common.item.SpawnEggItems;
+import com.avp.common.item.AVPSpawnEggItems;
 import com.avp.fabric.data.model.generator.BarsGenerator;
 import com.avp.fabric.data.model.generator.MultiFaceGenerator;
 
@@ -361,7 +361,7 @@ public class BlockModelProvider extends FabricModelProvider {
 
         var spawnEggLocation = ModelLocationUtils.decorateItemModelLocation("template_spawn_egg");
 
-        SpawnEggItems.getAll()
+        AVPSpawnEggItems.getAll()
             .forEach(spawnEggItem -> generators.delegateItemModel(spawnEggItem.get(), spawnEggLocation));
     }
 

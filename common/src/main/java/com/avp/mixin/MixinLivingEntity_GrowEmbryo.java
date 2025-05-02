@@ -1,4 +1,4 @@
-package com.avp.fabric.mixin;
+package com.avp.mixin;
 
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
@@ -112,7 +112,7 @@ public abstract class MixinLivingEntity_GrowEmbryo extends Entity implements Hos
     private void tickParasiteGrowth(Level level, LivingEntity self) {
         parasiteGrowthTimeInTicks++;
 
-        // FIXME: Make time configurable
+        // TODO: Make time configurable
         if (parasiteGrowthTimeInTicks <= TimeUnit.MINUTES.toSeconds(5) * 20) {
             return;
         }

@@ -15,7 +15,9 @@ import com.avp.AVP;
 import com.avp.common.entity.gene.GeneKeys;
 import com.avp.common.entity.gene.behavior.GeneDecoders;
 import com.avp.common.entity.living.alien.Alien;
+import com.avp.common.entity.living.alien.xenomorph.Xenomorph;
 import com.avp.common.entity.type.AVPEntityTypes;
+import com.avp.common.lifecycle.registry.AlienLifecycleRegistry;
 import com.avp.common.manager.GrowthManager;
 import com.avp.common.util.AVPPredicates;
 import com.avp.common.util.AlienPredicates;
@@ -98,15 +100,14 @@ public class Chestburster extends Alien implements ResinProducer {
 
         if (!this.level().isClientSide() && !this.isIrradiated()) {
             var type = AlienVariantUtil.getVariantTypeFor(this);
-            // FIXME:
-            // var growthStage = AlienLifecycleRegistry.getOrNull(null, type);
-            //
-            // if (
-            // growthStage != null && !this.getEntityData().get(Xenomorph.IS_POISONED) && this.getEntityData()
-            // .get(Xenomorph.JELLY_COUNT) == this.maxJellyToGrowth()
-            // ) {
-            // this.growthManager().grow(growthStage);
-            // }
+            var growthStage = AlienLifecycleRegistry.getOrNull(null, type);
+
+            if (
+                growthStage != null && !this.getEntityData().get(Xenomorph.IS_POISONED) && this.getEntityData()
+                    .get(Xenomorph.JELLY_COUNT) == this.maxJellyToGrowth()
+            ) {
+                this.growthManager().grow(growthStage);
+            }
         }
     }
 

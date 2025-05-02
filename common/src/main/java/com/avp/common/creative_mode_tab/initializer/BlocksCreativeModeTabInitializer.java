@@ -156,13 +156,12 @@ public class BlocksCreativeModeTabInitializer {
         CreativeModeTabUtil.accept(output, AVPBlocks.ZINC_BLOCK);
 
         // Miscellaneous
-        // FIXME:
-        // CreativeModeTabUtil.accept(output, AVPBlocks.NUKE_BLOCK);
+        CreativeModeTabUtil.accept(output, AVPBlocks.NUKE_BLOCK);
         CreativeModeTabUtil.accept(output, AVPBlocks.SENTRY_TURRET);
         CreativeModeTabUtil.accept(output, AVPBlocks.ASH_BLOCK);
         CreativeModeTabUtil.accept(output, AVPBlocks.LEAD_BLOCK);
         CreativeModeTabUtil.accept(output, AVPBlocks.LEAD_CHEST);
-        // CreativeModeTabUtil.accept(output, AVPBlocks.RAZOR_WIRE);
+        CreativeModeTabUtil.accept(output, AVPBlocks.RAZOR_WIRE);
         CreativeModeTabUtil.accept(output, AVPBlocks.BLUEPRINT_BLOCK);
         CreativeModeTabUtil.accept(output, AVPBlocks.REDSTONE_GENERATOR);
         CreativeModeTabUtil.accept(output, AVPBlocks.INDUSTRIAL_FURNACE);

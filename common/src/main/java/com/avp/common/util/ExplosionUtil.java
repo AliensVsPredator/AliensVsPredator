@@ -10,12 +10,12 @@ import net.minecraft.world.phys.Vec3;
 import java.util.List;
 
 import com.avp.AVP;
+import com.avp.common.entity.living.alien.Alien;
 import com.avp.common.entity.nuke.MushroomCloudEntity;
 import com.avp.common.explosion.Explosion;
 import com.avp.common.explosion.ExplosionProgressTracker;
 import com.avp.common.explosion.nuke.NuclearExplosionEffects;
 
-// FIXME: Merge with ExplosionUtil in fabric.
 public class ExplosionUtil {
 
     public static void applyKnockback(Vec3 center, double radius, Entity entity, double maxKnockback, double distance) {
@@ -85,10 +85,9 @@ public class ExplosionUtil {
                 for (var entity : entities) {
                     var distance = entity.distanceToSqr(center);
                     var damage = computeDamage(radius, 5, 1000, distance);
-                    // FIXME:
-                    // if (entity instanceof Alien alien) {
-                    // alien.setIrradiated(true);
-                    // }
+                    if (entity instanceof Alien alien) {
+                        alien.setIrradiated(true);
+                    }
                     entity.igniteForSeconds(15);
                     entity.hurt(level.damageSources().explosion(null), (float) damage);
                     applyKnockback(center, radius, entity, maxKnockback, distance);
