@@ -1,5 +1,6 @@
 package com.avp.fabric.common.block.resin;
 
+import com.avp.common.block.resin.ResinBlock;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;

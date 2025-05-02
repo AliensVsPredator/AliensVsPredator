@@ -9,8 +9,8 @@ public class FlammableBlockRegistry {
 
     public static void initialize() {
         FireBlock fireBlock = (FireBlock) Blocks.FIRE;
-        // FIXME: This will break if called in NeoForge.
         fireBlock.setFlammable(TempAVPBlocks.RESIN.get(), 1, 20);
+        // TODO: Move to common and make flammable in NeoForge.
         fireBlock.setFlammable(TempAVPBlocks.RESIN_NODE.get(), 1, 20);
     }
 }

@@ -1,9 +1,11 @@
 {
   "required": true,
   "minVersion": "0.8",
-  "package": "com.avp.mixin",
+  "package": "com.avp.neoforge.mixin",
   "compatibilityLevel": "JAVA_21",
-  "mixins": [],
+  "mixins": [
+    "common.MixinBlock_Flammable"
+  ],
   "client": [],
   "server": [],
   "injectors": {
