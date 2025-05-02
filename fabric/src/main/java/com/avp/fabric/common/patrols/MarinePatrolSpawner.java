@@ -11,8 +11,8 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.levelgen.Heightmap;
 
 import com.avp.common.block.AVPBlockTags;
+import com.avp.common.entity.type.TempAVPEntityTypes;
 import com.avp.common.worldgen.biome.AVPBiomeTags;
-import com.avp.fabric.common.entity.type.AVPEntityTypes;
 
 public class MarinePatrolSpawner implements CustomSpawner {
 
@@ -112,7 +112,8 @@ public class MarinePatrolSpawner implements CustomSpawner {
             return;
         }
 
-        var marineMob = AVPEntityTypes.MARINE.create(level);
+        var marineMob = TempAVPEntityTypes.MARINE.get().create(level);
+
         if (marineMob == null) {
             return;
         }

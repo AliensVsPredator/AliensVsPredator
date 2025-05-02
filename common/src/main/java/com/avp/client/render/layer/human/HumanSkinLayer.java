@@ -1,0 +1,36 @@
+package com.avp.client.render.layer.human;
+
+import mod.azure.azurelib.rewrite.model.AzBone;
+import mod.azure.azurelib.rewrite.render.AzRendererPipelineContext;
+import mod.azure.azurelib.rewrite.render.layer.AzRenderLayer;
+import net.minecraft.client.renderer.RenderType;
+
+import com.avp.common.entity.living.human.AbstractHuman;
+
+public class HumanSkinLayer<T extends AbstractHuman> implements AzRenderLayer<T> {
+
+    @Override
+    public void preRender(AzRendererPipelineContext<T> context) {}
+
+    @Override
+    public void render(AzRendererPipelineContext<T> context) {
+        var animatable = context.animatable();
+        var renderPipeline = context.rendererPipeline();
+
+        var textureLocation = animatable.getHumanFeatureManager().getSkinTexture();
+        var renderType = RenderType.entityCutout(textureLocation);
+        var vertexConsumer = context.multiBufferSource().getBuffer(renderType);
+        var previousColor = context.renderColor();
+
+        context.setRenderColor(animatable.getSkinColor());
+        context.setVertexConsumer(vertexConsumer);
+
+        renderPipeline.reRender(context);
+
+        // make sure to reset the color at the end.
+        context.setRenderColor(previousColor);
+    }
+
+    @Override
+    public void renderForBone(AzRendererPipelineContext<T> context, AzBone bone) {}
+}

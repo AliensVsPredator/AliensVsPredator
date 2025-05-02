@@ -43,7 +43,7 @@ public class FacehuggerModelRenderer extends AzEntityModelRenderer<Facehugger> {
             return;
         }
 
-        var data = EntityHeadData.ENTITY_HEAD_DATA_BY_TYPE.get(host.getType());
+        var data = EntityHeadData.ENTITY_HEAD_DATA_BY_TYPE.get().get(host.getType());
 
         if (data == null) {
             return;
@@ -78,7 +78,7 @@ public class FacehuggerModelRenderer extends AzEntityModelRenderer<Facehugger> {
         poseStack.mulPose(Axis.XP.rotationDegrees(headPitch));
         poseStack.translate(-xPivot, -yPivot + host.getBbHeight(), zPivot);
 
-        var offsetSuppliers = EntityHeadOffsetData.ENTITY_HEAD_OFFSET_DATA_BY_TYPE.get(host.getType());
+        var offsetSuppliers = EntityHeadOffsetData.ENTITY_HEAD_OFFSET_DATA_BY_TYPE.get().get(host.getType());
 
         if (offsetSuppliers != null) {
             var yOffset = offsetSuppliers.verticalOffsetSupplier().apply(data, facehugger);

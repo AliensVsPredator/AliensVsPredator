@@ -6,6 +6,10 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
 
 import com.avp.common.entity.AVPMobCategories;
+import com.avp.common.entity.living.human.EyeColorGenerator;
+import com.avp.common.entity.living.human.HairColorGenerator;
+import com.avp.common.entity.living.human.SkinColorGenerator;
+import com.avp.common.entity.living.human.marine.Marine;
 import com.avp.common.entity.machine.SentryTurret;
 import com.avp.common.entity.nuke.MushroomCloudEntity;
 import com.avp.common.entity.nuke.PrimedNuke;
@@ -35,6 +39,28 @@ public class TempAVPEntityTypes {
         "grenade_thrown",
         EntityType.Builder.<ThrownGrenade>of(ThrownGrenade::new, MobCategory.MISC)
             .sized(0.25F, 0.25F)
+    );
+
+    public static final AVPDeferredHolder<EntityType<Marine>> MARINE = register(
+        "marine",
+        EntityType.Builder.<Marine>of((entityType, level) -> {
+            var entity = new Marine(entityType, level);
+
+            var random = entity.getRandom();
+            entity.setMale(random.nextBoolean());
+            var isMale = entity.isMale();
+
+            if (isMale) {
+                entity.setBeardVariant(random.nextInt(3));
+            }
+
+            entity.setEyeColor(EyeColorGenerator.random(random));
+            entity.setHairColor(HairColorGenerator.random(random));
+            entity.setHairVariant(random.nextInt(isMale ? 5 : 6));
+            entity.setSkinColor(SkinColorGenerator.random(random));
+
+            return entity;
+        }, MobCategory.CREATURE).sized(0.7F, 1.95F)
     );
 
     public static final AVPDeferredHolder<EntityType<MushroomCloudEntity>> MUSHROOM_CLOUD = register(
@@ -85,6 +111,7 @@ public class TempAVPEntityTypes {
     }
 
     public static void initialize() {
+        Services.REGISTRY.registerEntityAttributes(MARINE, Marine::createMarineAttributes);
         Services.REGISTRY.registerEntityAttributes(SENTRY_TURRET, SentryTurret::createSentryTurretAttributes);
     }
 }

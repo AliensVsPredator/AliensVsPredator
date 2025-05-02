@@ -9,6 +9,7 @@ import net.minecraft.world.entity.EntityType;
 import java.util.concurrent.CompletableFuture;
 
 import com.avp.common.entity.AVPEntityTypeTags;
+import com.avp.common.entity.type.TempAVPEntityTypes;
 import com.avp.fabric.common.entity.type.AVPEntityTypes;
 import com.avp.fabric.data.compatibility.gigeresque.GigeresqueConstants;
 import com.avp.fabric.data.compatibility.stellaris.StellarisConstants;
@@ -65,7 +66,7 @@ public class AVPEntityTypeTagProvider extends FabricTagProvider.EntityTypeTagPro
                 EntityType.VILLAGER,
                 EntityType.WANDERING_TRADER,
                 EntityType.WITCH,
-                AVPEntityTypes.MARINE
+                TempAVPEntityTypes.MARINE.get()
             );
 
         getOrCreateTagBuilder(AVPEntityTypeTags.NETHER_CREATURES)
@@ -258,7 +259,7 @@ public class AVPEntityTypeTagProvider extends FabricTagProvider.EntityTypeTagPro
                 EntityType.WANDERING_TRADER,
                 EntityType.WITCH,
                 EntityType.WOLF,
-                AVPEntityTypes.MARINE,
+                TempAVPEntityTypes.MARINE.get(),
                 AVPEntityTypes.YAUTJA
             );
     }

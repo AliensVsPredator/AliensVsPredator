@@ -12,6 +12,8 @@ import java.util.function.Predicate;
 import com.avp.AVP;
 import com.avp.AVPResources;
 import com.avp.common.entity.AVPEntityTypeTags;
+import com.avp.common.entity.living.human.marine.MarineSpawning;
+import com.avp.common.entity.type.TempAVPEntityTypes;
 import com.avp.common.util.TempAVPPredicates;
 import com.avp.fabric.common.entity.living.alien.chestburster.ChestbursterSpawning;
 import com.avp.fabric.common.entity.living.alien.ovamorph.OvamorphSpawning;
@@ -19,7 +21,6 @@ import com.avp.fabric.common.entity.living.alien.xenomorph.drone.DroneSpawning;
 import com.avp.fabric.common.entity.living.alien.xenomorph.praetorian.PraetorianSpawning;
 import com.avp.fabric.common.entity.living.alien.xenomorph.queen.QueenSpawning;
 import com.avp.fabric.common.entity.living.alien.xenomorph.warrior.WarriorSpawning;
-import com.avp.fabric.common.entity.living.human.marine.MarineSpawning;
 import com.avp.fabric.common.entity.living.yautja.YautjaSpawning;
 import com.avp.fabric.common.entity.type.AVPEntityTypes;
 
@@ -62,7 +63,12 @@ public class SpawnPlacements {
             registerYoungXenomorphSpawns();
         }
 
-        net.minecraft.world.entity.SpawnPlacements.register(AVPEntityTypes.MARINE, placement, heightMap, MarineSpawning.PREDICATE);
+        net.minecraft.world.entity.SpawnPlacements.register(
+            TempAVPEntityTypes.MARINE.get(),
+            placement,
+            heightMap,
+            MarineSpawning.PREDICATE
+        );
 
         if (removableSpawnsEnabled) {
             BiomeModifications.create(AVPResources.location("remove_entity_spawns"))

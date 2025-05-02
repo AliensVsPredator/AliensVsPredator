@@ -45,8 +45,9 @@ public class DispenserBlockBehaviors {
             }
         };
 
+        // TODO: This will crash the game in NeoForge due to the .get() for the spawn egg item.
         SpawnEggItems.getAll()
-            .forEach(spawnEggItem -> DispenserBlock.registerBehavior(spawnEggItem, defaultDispenseItemBehavior));
+            .forEach(spawnEggItem -> DispenserBlock.registerBehavior(spawnEggItem.get(), defaultDispenseItemBehavior));
     }
 
     private DispenserBlockBehaviors() {

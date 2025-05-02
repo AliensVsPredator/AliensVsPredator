@@ -18,6 +18,7 @@ import com.avp.common.creative_mode_tab.AVPCreativeModeTabs;
 import com.avp.common.effect.AVPMobEffects;
 import com.avp.common.entity.type.TempAVPEntityTypes;
 import com.avp.common.item.AVPArmorItems;
+import com.avp.common.item.AVPSpawnEggItems;
 import com.avp.common.item.TempAVPBlockItems;
 import com.avp.common.item.TempAVPItems;
 import com.avp.common.level.gameevent.AVPGameEvents;
@@ -46,6 +47,7 @@ public class AVP {
         TempAVPItems.initialize();
         TempAVPBlockItems.initialize();
         AVPArmorItems.initialize();
+        AVPSpawnEggItems.initialize();
         TempAVPEntityTypes.initialize();
         AVPMenuTypes.initialize();
         AVPCreativeModeTabs.initialize();

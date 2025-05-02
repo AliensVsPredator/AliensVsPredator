@@ -15,6 +15,7 @@ import com.avp.common.block.TempAVPBlocks;
 import com.avp.common.creative_mode_tab.AVPCreativeModeTabs;
 import com.avp.common.entity.type.TempAVPEntityTypes;
 import com.avp.common.item.AVPArmorItems;
+import com.avp.common.item.AVPSpawnEggItems;
 import com.avp.common.item.TempAVPItems;
 import com.avp.common.sound.AVPSoundEvents;
 import com.avp.fabric.common.entity.type.AVPEntityTypes;
@@ -300,7 +301,7 @@ public class EnglishLanguageProvider extends FabricLanguageProvider {
         builder.add(TempAVPEntityTypes.SHURIKEN.get(), "Shuriken");
         builder.add(TempAVPEntityTypes.SMART_DISC.get(), "Smart Disc");
         builder.add(AVPEntityTypes.BULLET, "Bullet");
-        builder.add(AVPEntityTypes.MARINE, "Marine");
+        builder.add(TempAVPEntityTypes.MARINE.get(), "Marine");
 
         // Combat Items
         addItem(builder, TempAVPItems.SHURIKEN, "Shuriken");
@@ -533,7 +534,7 @@ public class EnglishLanguageProvider extends FabricLanguageProvider {
         addItem(builder, SpawnEggItems.QUEEN_SPAWN_EGG, "Queen Spawn Egg");
         addItem(builder, SpawnEggItems.WARRIOR_SPAWN_EGG, "Warrior Spawn Egg");
         addItem(builder, SpawnEggItems.YAUTJA_SPAWN_EGG, "Yautja Spawn Egg");
-        addItem(builder, SpawnEggItems.MARINE_SPAWN_EGG, "Marine Spawn Egg");
+        addItem(builder, AVPSpawnEggItems.MARINE_SPAWN_EGG, "Marine Spawn Egg");
         addItem(builder, SpawnEggItems.ROYAL_OVAMORPH_SPAWN_EGG, "Royal Ovamorph Spawn Egg");
         addItem(builder, SpawnEggItems.ROYAL_FACEHUGGER_SPAWN_EGG, "Royal Facehugger Spawn Egg");
         addItem(builder, SpawnEggItems.ROYAL_CHESTBURSTER_SPAWN_EGG, "Royal Chestburster Spawn Egg");

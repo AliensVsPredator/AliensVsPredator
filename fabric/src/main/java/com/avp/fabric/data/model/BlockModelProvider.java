@@ -362,7 +362,7 @@ public class BlockModelProvider extends FabricModelProvider {
         var spawnEggLocation = ModelLocationUtils.decorateItemModelLocation("template_spawn_egg");
 
         SpawnEggItems.getAll()
-            .forEach(spawnEggItem -> generators.delegateItemModel(spawnEggItem, spawnEggLocation));
+            .forEach(spawnEggItem -> generators.delegateItemModel(spawnEggItem.get(), spawnEggLocation));
     }
 
     public final void createGlassBlocks(BlockModelGenerators generators, Block block, Block block2) {

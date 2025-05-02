@@ -25,6 +25,7 @@ import com.avp.client.render.block.DeskTerminalRenderer;
 import com.avp.client.render.block.ResonatorRenderer;
 import com.avp.client.render.block.TripMineRenderer;
 import com.avp.client.render.entity.FlamethrowRenderer;
+import com.avp.client.render.entity.MarineRenderer;
 import com.avp.client.render.entity.MushroomCloudRenderer;
 import com.avp.client.render.entity.NukeRenderer;
 import com.avp.client.render.entity.RocketRenderer;
@@ -255,6 +256,7 @@ public class AVPClient {
     private static void registerEntityRenderers() {
         Services.CLIENT_REGISTRY.registerEntityRenderer(TempAVPEntityTypes.FLAMETHROW, FlamethrowRenderer::new);
         Services.CLIENT_REGISTRY.registerEntityRenderer(TempAVPEntityTypes.GRENADE_THROWN, ThrownItemRenderer::new);
+        Services.CLIENT_REGISTRY.registerEntityRenderer(TempAVPEntityTypes.MARINE, MarineRenderer::new);
         Services.CLIENT_REGISTRY.registerEntityRenderer(TempAVPEntityTypes.MUSHROOM_CLOUD, MushroomCloudRenderer::new);
         Services.CLIENT_REGISTRY.registerEntityRenderer(TempAVPEntityTypes.NUKE, NukeRenderer::new);
         Services.CLIENT_REGISTRY.registerEntityRenderer(TempAVPEntityTypes.ROCKET, RocketRenderer::new);
