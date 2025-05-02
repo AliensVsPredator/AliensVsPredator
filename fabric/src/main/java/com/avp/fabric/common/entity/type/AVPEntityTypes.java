@@ -29,10 +29,6 @@ import com.avp.fabric.common.entity.living.human.SkinColorGenerator;
 import com.avp.fabric.common.entity.living.human.marine.Marine;
 import com.avp.fabric.common.entity.living.yautja.Yautja;
 import com.avp.fabric.common.entity.projectile.BulletProjectile;
-import com.avp.fabric.common.entity.projectile.Flamethrow;
-import com.avp.fabric.common.entity.projectile.Rocket;
-import com.avp.fabric.common.entity.projectile.ShurikenItemEntity;
-import com.avp.fabric.common.entity.projectile.SmartDiscItemEntity;
 
 public class AVPEntityTypes {
 
@@ -64,30 +60,10 @@ public class AVPEntityTypes {
             .sized(0.8f, 0.25f)
     );
 
-    public static final EntityType<ShurikenItemEntity> SHURIKEN = register(
-        "shuriken",
-        EntityType.Builder.<ShurikenItemEntity>of(ShurikenItemEntity::new, MobCategory.MISC)
-            .sized(0.25F, 0.25F)
-    );
-
-    public static final EntityType<SmartDiscItemEntity> SMART_DISC = register(
-        "smart_disc",
-        EntityType.Builder.<SmartDiscItemEntity>of(SmartDiscItemEntity::new, MobCategory.MISC)
-            .sized(0.25F, 0.25F)
-    );
-
     public static final EntityType<BulletProjectile> BULLET = register(
         "bullet",
         EntityType.Builder.<BulletProjectile>of(BulletProjectile::new, MobCategory.MISC)
             .sized(0.25F, 0.25F)
-    );
-
-    public static final EntityType<Flamethrow> FLAMETHROW = register(
-        "flamethrow",
-        EntityType.Builder.<Flamethrow>of(Flamethrow::new, MobCategory.MISC)
-            .sized(0.1F, 0.1F)
-            .clientTrackingRange(8)
-            .updateInterval(10)
     );
 
     public static final EntityType<Ovamorph> OVAMORPH = register(
@@ -106,14 +82,6 @@ public class AVPEntityTypes {
         "queen",
         EntityType.Builder.of(Queen::new, ALIEN_CATEGORY)
             .sized(1.98f, 3.98f)
-    );
-
-    public static final EntityType<Rocket> ROCKET = register(
-        "rocket",
-        EntityType.Builder.<Rocket>of(Rocket::new, MobCategory.MISC)
-            .sized(0.1F, 0.1F)
-            .clientTrackingRange(8)
-            .updateInterval(10)
     );
 
     public static final EntityType<Warrior> WARRIOR = register(

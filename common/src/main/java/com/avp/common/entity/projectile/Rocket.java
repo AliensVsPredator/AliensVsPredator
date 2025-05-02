@@ -1,4 +1,4 @@
-package com.avp.fabric.common.entity.projectile;
+package com.avp.common.entity.projectile;
 
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
@@ -13,7 +13,7 @@ import net.minecraft.world.phys.HitResult;
 import org.jetbrains.annotations.NotNull;
 
 import com.avp.AVP;
-import com.avp.fabric.common.entity.type.AVPEntityTypes;
+import com.avp.common.entity.type.TempAVPEntityTypes;
 
 public class Rocket extends ThrowableProjectile {
 
@@ -24,7 +24,7 @@ public class Rocket extends ThrowableProjectile {
     }
 
     public Rocket(Level level, LivingEntity livingEntity) {
-        super(AVPEntityTypes.ROCKET, livingEntity, level);
+        super(TempAVPEntityTypes.ROCKET.get(), livingEntity, level);
     }
 
     @Override
@@ -81,7 +81,7 @@ public class Rocket extends ThrowableProjectile {
     }
 
     @Override
-    protected void defineSynchedData(SynchedEntityData.Builder builder) { /* NO-OP */ }
+    protected void defineSynchedData(SynchedEntityData.@NotNull Builder builder) { /* NO-OP */ }
 
     @Override
     protected double getDefaultGravity() {

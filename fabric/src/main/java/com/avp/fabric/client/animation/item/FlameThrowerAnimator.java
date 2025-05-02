@@ -24,6 +24,7 @@ public class FlameThrowerAnimator extends AzItemAnimator {
     @Override
     public void registerControllers(AzAnimationControllerContainer<ItemStack> animationControllerContainer) {
         animationControllerContainer.add(
+            // TODO: Fix this OldPainlessAnimationRefs reference.
             AzAnimationController.builder(this, OldPainlessAnimationRefs.MAIN_CONTROLLER_NAME)
                 .setTransitionLength(1)
                 .build()

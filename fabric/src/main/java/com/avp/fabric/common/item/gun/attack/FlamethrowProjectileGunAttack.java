@@ -3,8 +3,8 @@ package com.avp.fabric.common.item.gun.attack;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.enchantment.Enchantments;
 
+import com.avp.common.entity.projectile.Flamethrow;
 import com.avp.common.util.EnchantmentUtil;
-import com.avp.fabric.common.entity.projectile.Flamethrow;
 import com.avp.fabric.common.network.ServerNetworking;
 import com.avp.fabric.common.network.packet.S2CGunRecoilPayload;
 

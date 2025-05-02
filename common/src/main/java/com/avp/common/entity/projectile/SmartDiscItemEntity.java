@@ -1,4 +1,4 @@
-package com.avp.fabric.common.entity.projectile;
+package com.avp.common.entity.projectile;
 
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -9,9 +9,8 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import org.jetbrains.annotations.NotNull;
 
-import com.avp.fabric.common.entity.type.AVPEntityTypes;
-import com.avp.fabric.common.item.AVPItems;
-import com.avp.fabric.common.util.ItemGoalUtil;
+import com.avp.common.entity.type.TempAVPEntityTypes;
+import com.avp.common.item.TempAVPItems;
 import com.avp.server.BlockBreakProgressManager;
 
 public class SmartDiscItemEntity extends ThrowableItemProjectile {
@@ -23,12 +22,12 @@ public class SmartDiscItemEntity extends ThrowableItemProjectile {
     }
 
     public SmartDiscItemEntity(Level level, LivingEntity livingEntity) {
-        super(AVPEntityTypes.SMART_DISC, livingEntity, level);
+        super(TempAVPEntityTypes.SMART_DISC.get(), livingEntity, level);
     }
 
     @Override
     protected @NotNull Item getDefaultItem() {
-        return AVPItems.SMART_DISC;
+        return TempAVPItems.SMART_DISC.get();
     }
 
     @Override
@@ -38,11 +37,12 @@ public class SmartDiscItemEntity extends ThrowableItemProjectile {
             this.kill();
         if (this.tickCount > 300)
             this.kill();
-        if (!this.dealtDamage) {
-            ItemGoalUtil.trackToLivingEntity(this, 0.5, false);
-        } else {
-            ItemGoalUtil.trackToOwnerEntity(this);
-        }
+        // FIXME:
+        // if (!this.dealtDamage) {
+        // ItemGoalUtil.trackToLivingEntity(this, 0.5, false);
+        // } else {
+        // ItemGoalUtil.trackToOwnerEntity(this);
+        // }
     }
 
     @Override

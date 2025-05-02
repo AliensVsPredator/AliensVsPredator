@@ -1,4 +1,4 @@
-package com.avp.fabric.client.render.item;
+package com.avp.client.render.item;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;

@@ -1,6 +1,7 @@
-package com.avp.fabric.client.render.entity;
+package com.avp.client.render.entity;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.math.Axis;
 import mod.azure.azurelib.rewrite.render.entity.AzEntityRenderer;
 import mod.azure.azurelib.rewrite.render.entity.AzEntityRendererConfig;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -9,19 +10,19 @@ import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 
 import com.avp.AVPResources;
-import com.avp.fabric.common.entity.projectile.Flamethrow;
+import com.avp.common.entity.projectile.Rocket;
 
-public class FlamethrowRenderer extends AzEntityRenderer<Flamethrow> {
+public class RocketRenderer extends AzEntityRenderer<Rocket> {
 
-    private static final String NAME = "flamethrow";
+    private static final String NAME = "rocket";
 
     private static final ResourceLocation MODEL = AVPResources.entityGeoModelLocation(NAME);
 
     private static final ResourceLocation TEXTURE = AVPResources.entityTextureLocation(NAME);
 
-    public FlamethrowRenderer(EntityRendererProvider.Context context) {
+    public RocketRenderer(EntityRendererProvider.Context context) {
         super(
-            AzEntityRendererConfig.<Flamethrow>builder(MODEL, TEXTURE)
+            AzEntityRendererConfig.<Rocket>builder(MODEL, TEXTURE)
                 .build(),
             context
         );
@@ -29,11 +30,15 @@ public class FlamethrowRenderer extends AzEntityRenderer<Flamethrow> {
 
     @Override
     public void render(
-        @NotNull Flamethrow entity,
+        @NotNull Rocket entity,
         float entityYaw,
         float partialTick,
         @NotNull PoseStack poseStack,
         @NotNull MultiBufferSource bufferSource,
         int packedLight
-    ) {}
+    ) {
+        poseStack.mulPose(Axis.YP.rotationDegrees(entity.getYRot()));
+        poseStack.mulPose(Axis.XP.rotationDegrees(-entity.getXRot()));
+        super.render(entity, entityYaw, partialTick, poseStack, bufferSource, packedLight);
+    }
 }

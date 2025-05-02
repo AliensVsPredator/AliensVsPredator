@@ -1,4 +1,4 @@
-package com.avp.fabric.common.item.yautja_items;
+package com.avp.common.item.yautja;
 
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -12,7 +12,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
-import com.avp.fabric.common.entity.projectile.ShurikenItemEntity;
+import com.avp.common.entity.projectile.ShurikenItemEntity;
 
 public class ShurikenItem extends Item {
 

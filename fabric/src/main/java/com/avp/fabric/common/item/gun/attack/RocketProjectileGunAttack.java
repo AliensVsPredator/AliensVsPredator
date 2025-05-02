@@ -2,7 +2,7 @@ package com.avp.fabric.common.item.gun.attack;
 
 import net.minecraft.server.level.ServerPlayer;
 
-import com.avp.fabric.common.entity.projectile.Rocket;
+import com.avp.common.entity.projectile.Rocket;
 import com.avp.fabric.common.network.ServerNetworking;
 import com.avp.fabric.common.network.packet.S2CGunRecoilPayload;
 

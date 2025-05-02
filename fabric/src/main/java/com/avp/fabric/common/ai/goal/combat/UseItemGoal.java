@@ -10,9 +10,9 @@ import net.minecraft.world.level.pathfinder.Path;
 
 import java.util.EnumSet;
 
+import com.avp.common.item.yautja.ShurikenItem;
+import com.avp.common.item.yautja.SmartDiscItem;
 import com.avp.fabric.common.item.GunItem;
-import com.avp.fabric.common.item.yautja_items.ShurikenItem;
-import com.avp.fabric.common.item.yautja_items.SmartDiscItem;
 import com.avp.fabric.common.util.ItemGoalUtil;
 
 public class UseItemGoal extends Goal {

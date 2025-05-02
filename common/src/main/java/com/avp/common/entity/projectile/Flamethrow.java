@@ -1,4 +1,4 @@
-package com.avp.fabric.common.entity.projectile;
+package com.avp.common.entity.projectile;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -22,7 +22,7 @@ import java.util.ArrayDeque;
 import java.util.HashSet;
 
 import com.avp.common.damage.AVPDamageTypes;
-import com.avp.fabric.common.entity.type.AVPEntityTypes;
+import com.avp.common.entity.type.TempAVPEntityTypes;
 
 public class Flamethrow extends ThrowableProjectile {
 
@@ -38,7 +38,7 @@ public class Flamethrow extends ThrowableProjectile {
     }
 
     public Flamethrow(Level level, LivingEntity livingEntity) {
-        super(AVPEntityTypes.FLAMETHROW, livingEntity, level);
+        super(TempAVPEntityTypes.FLAMETHROW.get(), livingEntity, level);
     }
 
     @Override

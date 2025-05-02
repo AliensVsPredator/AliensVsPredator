@@ -24,12 +24,15 @@ import com.avp.client.render.armor.TacticalCamoArmorRenderer;
 import com.avp.client.render.block.DeskTerminalRenderer;
 import com.avp.client.render.block.ResonatorRenderer;
 import com.avp.client.render.block.TripMineRenderer;
+import com.avp.client.render.entity.FlamethrowRenderer;
 import com.avp.client.render.entity.MushroomCloudRenderer;
 import com.avp.client.render.entity.NukeRenderer;
+import com.avp.client.render.entity.RocketRenderer;
 import com.avp.client.render.entity.SentryTurretRenderer;
 import com.avp.client.render.item.DeskTerminalItemRenderer;
 import com.avp.client.render.item.ResonatorItemRenderer;
 import com.avp.client.render.item.SentryTurretItemRenderer;
+import com.avp.client.render.item.SpinningItemRenderer;
 import com.avp.client.render.item.TripMineItemRenderer;
 import com.avp.client.screen.ArmorCaseScreen;
 import com.avp.client.screen.IndustrialFurnaceScreen;
@@ -250,10 +253,14 @@ public class AVPClient {
     }
 
     private static void registerEntityRenderers() {
+        Services.CLIENT_REGISTRY.registerEntityRenderer(TempAVPEntityTypes.FLAMETHROW, FlamethrowRenderer::new);
         Services.CLIENT_REGISTRY.registerEntityRenderer(TempAVPEntityTypes.GRENADE_THROWN, ThrownItemRenderer::new);
         Services.CLIENT_REGISTRY.registerEntityRenderer(TempAVPEntityTypes.MUSHROOM_CLOUD, MushroomCloudRenderer::new);
         Services.CLIENT_REGISTRY.registerEntityRenderer(TempAVPEntityTypes.NUKE, NukeRenderer::new);
+        Services.CLIENT_REGISTRY.registerEntityRenderer(TempAVPEntityTypes.ROCKET, RocketRenderer::new);
         Services.CLIENT_REGISTRY.registerEntityRenderer(TempAVPEntityTypes.SENTRY_TURRET, SentryTurretRenderer::new);
+        Services.CLIENT_REGISTRY.registerEntityRenderer(TempAVPEntityTypes.SHURIKEN, SpinningItemRenderer::new);
+        Services.CLIENT_REGISTRY.registerEntityRenderer(TempAVPEntityTypes.SMART_DISC, SpinningItemRenderer::new);
     }
 
     private static void registerItemRenderers() {

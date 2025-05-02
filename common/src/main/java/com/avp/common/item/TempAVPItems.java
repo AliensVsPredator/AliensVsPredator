@@ -17,6 +17,8 @@ import java.util.function.Supplier;
 
 import com.avp.common.component.AVPDataComponents;
 import com.avp.common.item.grenade.GrenadeItem;
+import com.avp.common.item.yautja.ShurikenItem;
+import com.avp.common.item.yautja.SmartDiscItem;
 import com.avp.common.registry.AVPDeferredHolder;
 import com.avp.common.sound.AVPJukeboxSongs;
 import com.avp.service.Services;
@@ -248,11 +250,15 @@ public class TempAVPItems {
 
     public static final AVPDeferredHolder<Item> SHOTGUN_SHELL = register("shotgun_shell");
 
+    public static final AVPDeferredHolder<Item> SHURIKEN = register("shuriken", ShurikenItem::new);
+
     public static final AVPDeferredHolder<Item> SMALL_BULLET = register("small_bullet");
 
     public static final AVPDeferredHolder<Item> SMALL_CASING = register("small_casing");
 
     public static final AVPDeferredHolder<Item> SMART_BARREL = register("smart_barrel");
+
+    public static final AVPDeferredHolder<Item> SMART_DISC = register("smart_disc", SmartDiscItem::new);
 
     public static final AVPDeferredHolder<Item> SMART_RECEIVER = register("smart_receiver");
 

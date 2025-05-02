@@ -10,15 +10,10 @@ import java.util.function.Function;
 import com.avp.AVPResources;
 import com.avp.fabric.common.item.gun.GunData;
 import com.avp.fabric.common.item.old_painless.OldPainlessItem;
-import com.avp.fabric.common.item.yautja_items.ShurikenItem;
-import com.avp.fabric.common.item.yautja_items.SmartDiscItem;
 
 public class AVPItems {
 
     // Combat Items
-    public static final Item SMART_DISC = register(new SmartDiscItem(), "smart_disc");
-
-    public static final Item SHURIKEN = register(new ShurikenItem(), "shuriken");
 
     public static final Item F903WE_RIFLE = register(new GunItem(GunData.F903WE_RIFLE), "f903we_rifle");
 

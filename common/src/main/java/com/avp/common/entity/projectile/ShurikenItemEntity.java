@@ -1,4 +1,4 @@
-package com.avp.fabric.common.entity.projectile;
+package com.avp.common.entity.projectile;
 
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -9,8 +9,8 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import org.jetbrains.annotations.NotNull;
 
-import com.avp.fabric.common.entity.type.AVPEntityTypes;
-import com.avp.fabric.common.item.AVPItems;
+import com.avp.common.entity.type.TempAVPEntityTypes;
+import com.avp.common.item.TempAVPItems;
 import com.avp.server.BlockBreakProgressManager;
 
 public class ShurikenItemEntity extends ThrowableItemProjectile {
@@ -20,12 +20,12 @@ public class ShurikenItemEntity extends ThrowableItemProjectile {
     }
 
     public ShurikenItemEntity(Level level, LivingEntity livingEntity) {
-        super(AVPEntityTypes.SHURIKEN, livingEntity, level);
+        super(TempAVPEntityTypes.SHURIKEN.get(), livingEntity, level);
     }
 
     @Override
     protected @NotNull Item getDefaultItem() {
-        return AVPItems.SHURIKEN;
+        return TempAVPItems.SHURIKEN.get();
     }
 
     @Override

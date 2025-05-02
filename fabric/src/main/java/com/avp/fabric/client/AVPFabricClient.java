@@ -22,12 +22,10 @@ import com.avp.fabric.client.render.entity.AcidRenderer;
 import com.avp.fabric.client.render.entity.ChestbursterRenderer;
 import com.avp.fabric.client.render.entity.DroneRenderer;
 import com.avp.fabric.client.render.entity.EmptyRenderer;
-import com.avp.fabric.client.render.entity.FlamethrowRenderer;
 import com.avp.fabric.client.render.entity.MarineRenderer;
 import com.avp.fabric.client.render.entity.OvamorphRenderer;
 import com.avp.fabric.client.render.entity.PraetorianRenderer;
 import com.avp.fabric.client.render.entity.QueenRenderer;
-import com.avp.fabric.client.render.entity.RocketRenderer;
 import com.avp.fabric.client.render.entity.WarriorRenderer;
 import com.avp.fabric.client.render.entity.YautjaRenderer;
 import com.avp.fabric.client.render.entity.parasite.facehugger.FacehuggerRenderer;
@@ -41,7 +39,6 @@ import com.avp.fabric.client.render.item.M56SmartgunItemRenderer;
 import com.avp.fabric.client.render.item.M6BRLItemRenderer;
 import com.avp.fabric.client.render.item.M88Mod4CombatPistolItemRenderer;
 import com.avp.fabric.client.render.item.OldPainlessItemRenderer;
-import com.avp.fabric.client.render.item.SpinningItemRenderer;
 import com.avp.fabric.client.render.item.ZX76ShotgunItemRenderer;
 import com.avp.fabric.common.entity.type.AVPEntityTypes;
 import com.avp.fabric.common.item.AVPItems;
@@ -117,10 +114,6 @@ public class AVPFabricClient implements ClientModInitializer {
         // Block-like entities (like primed TNT)
 
         EntityRendererRegistry.register(AVPEntityTypes.BULLET, EmptyRenderer::new);
-        EntityRendererRegistry.register(AVPEntityTypes.FLAMETHROW, FlamethrowRenderer::new);
-        EntityRendererRegistry.register(AVPEntityTypes.ROCKET, RocketRenderer::new);
-        EntityRendererRegistry.register(AVPEntityTypes.SHURIKEN, SpinningItemRenderer::new);
-        EntityRendererRegistry.register(AVPEntityTypes.SMART_DISC, SpinningItemRenderer::new);
 
         // Particles
         ParticleFactoryRegistry.getInstance().register(AVPParticleTypes.ACID, AcidParticleProvider::new);

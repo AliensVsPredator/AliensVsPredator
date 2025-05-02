@@ -26,9 +26,9 @@ import org.jetbrains.annotations.Nullable;
 import com.avp.AVP;
 import com.avp.common.ai.goal.StrollAroundInWaterGoal;
 import com.avp.common.config.AVPConfig;
+import com.avp.common.item.TempAVPItems;
 import com.avp.fabric.common.ai.goal.combat.DelayedAttackGoal;
 import com.avp.fabric.common.ai.goal.combat.UseItemGoal;
-import com.avp.fabric.common.item.AVPItems;
 import com.avp.fabric.common.util.YautjaPredicates;
 
 public class Yautja extends Monster {
@@ -107,9 +107,9 @@ public class Yautja extends Monster {
     ) {
         if (random.nextDouble() <= 0.5) {
             if (random.nextDouble() <= 0.7) {
-                setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(AVPItems.SHURIKEN));
+                setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(TempAVPItems.SHURIKEN.get()));
             } else {
-                setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(AVPItems.SMART_DISC));
+                setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(TempAVPItems.SMART_DISC.get()));
             }
         }
 

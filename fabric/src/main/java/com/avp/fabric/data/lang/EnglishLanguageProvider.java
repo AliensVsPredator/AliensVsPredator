@@ -295,16 +295,16 @@ public class EnglishLanguageProvider extends FabricLanguageProvider {
         builder.add(AVPEntityTypes.QUEEN, "Queen");
         builder.add(AVPEntityTypes.WARRIOR, "Warrior");
         builder.add(AVPEntityTypes.YAUTJA, "Yautja");
-        builder.add(AVPEntityTypes.ROCKET, "Rocket");
+        builder.add(TempAVPEntityTypes.ROCKET.get(), "Rocket");
         builder.add(TempAVPEntityTypes.GRENADE_THROWN.get(), "Grenade");
-        builder.add(AVPEntityTypes.SHURIKEN, "Shuriken");
-        builder.add(AVPEntityTypes.SMART_DISC, "Smart Disc");
+        builder.add(TempAVPEntityTypes.SHURIKEN.get(), "Shuriken");
+        builder.add(TempAVPEntityTypes.SMART_DISC.get(), "Smart Disc");
         builder.add(AVPEntityTypes.BULLET, "Bullet");
         builder.add(AVPEntityTypes.MARINE, "Marine");
 
         // Combat Items
-        addItem(builder, AVPItems.SHURIKEN, "Shuriken");
-        addItem(builder, AVPItems.SMART_DISC, "Smart Disc");
+        addItem(builder, TempAVPItems.SHURIKEN, "Shuriken");
+        addItem(builder, TempAVPItems.SMART_DISC, "Smart Disc");
         addItem(builder, TempAVPItems.GRENADE, "Grenade");
         addItem(builder, TempAVPItems.GRENADE_INCENDIARY, "Incendiary Grenade");
         addItem(builder, TempAVPItems.GRENADE_IRRADIATED, "Irradiated Grenade");

@@ -36,8 +36,8 @@ public class CombatCreativeModeTabInitializer {
         // CreativeModeTabUtil.accept(output, AVPItems.OLD_PAINLESS);
         // CreativeModeTabUtil.accept(output, AVPItems.ZX_76_SHOTGUN);
 
-        // CreativeModeTabUtil.accept(output, AVPItems.SHURIKEN);
-        // CreativeModeTabUtil.accept(output, AVPItems.SMART_DISC);
+        CreativeModeTabUtil.accept(output, TempAVPItems.SHURIKEN);
+        CreativeModeTabUtil.accept(output, TempAVPItems.SMART_DISC);
 
         CreativeModeTabUtil.accept(output, AVPArmorItems.MK50_HELMET);
         CreativeModeTabUtil.accept(output, AVPArmorItems.MK50_CHESTPLATE);
