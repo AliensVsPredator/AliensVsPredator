@@ -388,6 +388,8 @@ public class TempAVPBlocks {
         () -> new ResinWebBlock(BlockProperties.NETHER_RESIN_WEB.build())
     );
 
+    public static final AVPDeferredHolder<Block> NUKE_BLOCK = register("nuke", () -> new NukeBlock(BlockProperties.NUKE.build()));
+
     public static final AVPDeferredHolder<Block> RAW_BAUXITE_BLOCK = register("raw_bauxite_block", BlockProperties.BAUXITE_ORE);
 
     public static final AVPDeferredHolder<Block> RAW_GALENA_BLOCK = register("raw_galena_block", BlockProperties.GALENA_ORE);

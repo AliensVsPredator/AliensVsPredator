@@ -12,7 +12,6 @@ import java.util.function.Supplier;
 
 import com.avp.common.block.AVPBlockTags;
 import com.avp.common.block.TempAVPBlocks;
-import com.avp.fabric.common.block.AVPBlocks;
 import com.avp.fabric.data.compatibility.common.CommonConstants;
 import com.avp.fabric.data.compatibility.gigeresque.GigeresqueConstants;
 
@@ -357,7 +356,7 @@ public class AVPBlockTagProvider extends FabricTagProvider.BlockTagProvider {
                 TempAVPBlocks.MONAZITE_ORE.get(),
                 TempAVPBlocks.NETHER_RESIN.get(),
                 TempAVPBlocks.NETHER_RESIN_NODE.get(),
-                AVPBlocks.NUKE_BLOCK,
+                TempAVPBlocks.NUKE_BLOCK.get(),
                 TempAVPBlocks.RAW_BAUXITE_BLOCK.get(),
                 TempAVPBlocks.RAW_GALENA_BLOCK.get(),
                 TempAVPBlocks.RAW_MONAZITE_BLOCK.get(),
@@ -408,7 +407,7 @@ public class AVPBlockTagProvider extends FabricTagProvider.BlockTagProvider {
                 TempAVPBlocks.DESK_TERMINAL_BLOCK.get(),
                 TempAVPBlocks.INDUSTRIAL_FURNACE.get(),
                 TempAVPBlocks.LEAD_CHEST.get(),
-                AVPBlocks.NUKE_BLOCK,
+                TempAVPBlocks.NUKE_BLOCK.get(),
                 TempAVPBlocks.RAW_TITANIUM_BLOCK.get(),
                 TempAVPBlocks.REDSTONE_GENERATOR.get(),
                 TempAVPBlocks.RESONATOR_BLOCK.get(),

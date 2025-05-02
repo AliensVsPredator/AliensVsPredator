@@ -47,7 +47,7 @@ public class AVPTrades {
             factories.add(
                 (entity, random) -> new MerchantOffer(
                     new ItemCost(Items.EMERALD, 5),
-                    new ItemStack(AVPArmorItems.TACTICAL_CAMO_HELMET, 1),
+                    new ItemStack(AVPArmorItems.TACTICAL_CAMO_HELMET.get(), 1),
                     4,
                     7,
                     0.04f
@@ -65,7 +65,7 @@ public class AVPTrades {
             factories.add(
                 (entity, random) -> new MerchantOffer(
                     new ItemCost(Items.EMERALD, 8),
-                    new ItemStack(AVPArmorItems.TACTICAL_CAMO_CHESTPLATE, 1),
+                    new ItemStack(AVPArmorItems.TACTICAL_CAMO_CHESTPLATE.get(), 1),
                     3,
                     12,
                     0.09f
@@ -86,7 +86,7 @@ public class AVPTrades {
             factories.add(
                 (entity, random) -> new MerchantOffer(
                     new ItemCost(Items.EMERALD, 10),
-                    new ItemStack(AVPArmorItems.TACTICAL_CAMO_LEGGINGS, 1),
+                    new ItemStack(AVPArmorItems.TACTICAL_CAMO_LEGGINGS.get(), 1),
                     3,
                     12,
                     0.09f
@@ -107,7 +107,7 @@ public class AVPTrades {
             factories.add(
                 (entity, random) -> new MerchantOffer(
                     new ItemCost(Items.EMERALD, 8),
-                    new ItemStack(AVPArmorItems.TACTICAL_CAMO_BOOTS, 1),
+                    new ItemStack(AVPArmorItems.TACTICAL_CAMO_BOOTS.get(), 1),
                     4,
                     7,
                     0.04f
@@ -146,7 +146,7 @@ public class AVPTrades {
             factories.add(
                 (entity, random) -> new MerchantOffer(
                     new ItemCost(Items.EMERALD, 10),
-                    new ItemStack(TempAVPItems.GRENADE, 3),
+                    new ItemStack(TempAVPItems.GRENADE.get(), 3),
                     3,
                     12,
                     0.09f

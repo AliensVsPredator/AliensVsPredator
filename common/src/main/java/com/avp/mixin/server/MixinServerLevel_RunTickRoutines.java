@@ -1,4 +1,4 @@
-package com.avp.fabric.mixin.server;
+package com.avp.mixin.server;
 
 import net.minecraft.server.level.ServerLevel;
 import org.spongepowered.asm.mixin.Mixin;
@@ -7,7 +7,6 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import com.avp.fabric.common.level.saveddata.HiveLevelData;
 import com.avp.server.BlockBreakProgressManager;
 import com.avp.server.ServerScheduler;
 
@@ -19,9 +18,10 @@ public abstract class MixinServerLevel_RunTickRoutines {
         tickScheduledRunnables();
 
         var serverLevel = ServerLevel.class.cast(this);
-        var hiveLevelDataOptional = HiveLevelData.getOrCreate(serverLevel);
-
-        hiveLevelDataOptional.ifSome(HiveLevelData::tick);
+        // FIXME:
+        // var hiveLevelDataOptional = HiveLevelData.getOrCreate(serverLevel);
+        //
+        // hiveLevelDataOptional.ifSome(HiveLevelData::tick);
 
         BlockBreakProgressManager.tick(serverLevel);
     }

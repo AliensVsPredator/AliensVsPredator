@@ -24,6 +24,8 @@ import com.avp.client.render.armor.TacticalCamoArmorRenderer;
 import com.avp.client.render.block.DeskTerminalRenderer;
 import com.avp.client.render.block.ResonatorRenderer;
 import com.avp.client.render.block.TripMineRenderer;
+import com.avp.client.render.entity.MushroomCloudRenderer;
+import com.avp.client.render.entity.NukeRenderer;
 import com.avp.client.render.item.DeskTerminalItemRenderer;
 import com.avp.client.render.item.ResonatorItemRenderer;
 import com.avp.client.render.item.TripMineItemRenderer;
@@ -242,6 +244,8 @@ public class AVPClient {
 
     private static void registerEntityRenderers() {
         Services.CLIENT_REGISTRY.registerEntityRenderer(TempAVPEntityTypes.GRENADE_THROWN, ThrownItemRenderer::new);
+        Services.CLIENT_REGISTRY.registerEntityRenderer(TempAVPEntityTypes.MUSHROOM_CLOUD, MushroomCloudRenderer::new);
+        Services.CLIENT_REGISTRY.registerEntityRenderer(TempAVPEntityTypes.NUKE, NukeRenderer::new);
     }
 
     private static void registerItemRenderers() {

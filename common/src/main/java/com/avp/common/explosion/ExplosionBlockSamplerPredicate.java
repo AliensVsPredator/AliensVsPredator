@@ -3,7 +3,7 @@ package com.avp.common.explosion;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.Blocks;
 
-import com.avp.common.util.ExplosionDistanceUtil;
+import com.avp.common.util.ExplosionUtil;
 
 @FunctionalInterface
 public interface ExplosionBlockSamplerPredicate {
@@ -24,6 +24,6 @@ public interface ExplosionBlockSamplerPredicate {
         var y = pos.getY() - centerPos.getY();
         var z = pos.getZ() - centerPos.getZ();
 
-        return ExplosionDistanceUtil.getNormalizedDistance(explosion, x, y, z) <= 1;
+        return ExplosionUtil.getNormalizedDistance(explosion, x, y, z) <= 1;
     };
 }

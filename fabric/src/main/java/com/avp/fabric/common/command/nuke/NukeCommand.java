@@ -10,8 +10,9 @@ import java.time.Duration;
 
 import com.avp.AVP;
 import com.avp.common.explosion.Explosion;
+import com.avp.common.explosion.ExplosionProgressTracker;
 import com.avp.common.explosion.nuke.NuclearExplosionEffects;
-import com.avp.fabric.common.util.ExplosionUtil;
+import com.avp.common.util.ExplosionUtil;
 import com.avp.server.ServerScheduler;
 
 public class NukeCommand {

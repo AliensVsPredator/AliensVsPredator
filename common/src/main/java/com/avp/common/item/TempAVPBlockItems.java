@@ -337,6 +337,8 @@ public class TempAVPBlockItems {
         new Item.Properties().fireResistant()
     );
 
+    public static final AVPDeferredHolder<BlockItem> NUKE_BLOCK = register("nuke", TempAVPBlocks.NUKE_BLOCK);
+
     public static final AVPDeferredHolder<BlockItem> RAW_BAUXITE_BLOCK = register("raw_bauxite_block", TempAVPBlocks.RAW_BAUXITE_BLOCK);
 
     public static final AVPDeferredHolder<BlockItem> RAW_GALENA_BLOCK = register("raw_galena_block", TempAVPBlocks.RAW_GALENA_BLOCK);

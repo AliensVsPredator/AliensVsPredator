@@ -35,7 +35,11 @@ public class MixinItem_GiveRads {
         }
 
         // Apply the radiation effect.
-        var mobEffectInstance = new MobEffectInstance(AVPMobEffects.RADIATION, RadiationStatusEffect.EFFECT_DURATION_IN_TICKS, 0);
+        var mobEffectInstance = new MobEffectInstance(
+            AVPMobEffects.RADIATION.getHolder(),
+            RadiationStatusEffect.EFFECT_DURATION_IN_TICKS,
+            0
+        );
         livingEntity.addEffect(mobEffectInstance);
     }
 }

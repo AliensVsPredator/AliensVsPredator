@@ -23,6 +23,7 @@
     "MixinMobCategory_InjectCustomAlienCategory",
     "MixinVillagerHostilesSensor_RunAwayFromAVPMonsters",
     "ParrotSoundMapAccessor",
+    "server.MixinServerLevel_RunTickRoutines",
     "StructurePoolAccessor"
   ],
   "client": [

@@ -14,7 +14,6 @@ import com.avp.AVPResources;
 import com.avp.common.entity.AVPMobCategories;
 import com.avp.common.entity.gene.GeneKeys;
 import com.avp.common.entity.type.SilencedEntityTypeBuilder;
-import com.avp.fabric.common.block.entity.PrimedNuke;
 import com.avp.fabric.common.entity.acid.Acid;
 import com.avp.fabric.common.entity.living.alien.Alien;
 import com.avp.fabric.common.entity.living.alien.chestburster.Chestburster;
@@ -30,7 +29,6 @@ import com.avp.fabric.common.entity.living.human.SkinColorGenerator;
 import com.avp.fabric.common.entity.living.human.marine.Marine;
 import com.avp.fabric.common.entity.living.yautja.Yautja;
 import com.avp.fabric.common.entity.machine.SentryTurret;
-import com.avp.fabric.common.entity.nukecloud.MushroomCloudEntity;
 import com.avp.fabric.common.entity.projectile.BulletProjectile;
 import com.avp.fabric.common.entity.projectile.Flamethrow;
 import com.avp.fabric.common.entity.projectile.Rocket;
@@ -46,20 +44,6 @@ public class AVPEntityTypes {
     public static final EntityType<SentryTurret> SENTRY_TURRET = register(
         "sentry_turret",
         EntityType.Builder.of(SentryTurret::new, MobCategory.MISC).sized(1.0F, 1.0F).noSummon()
-    );
-
-    public static final EntityType<MushroomCloudEntity> MUSHROOM_CLOUD = register(
-        "mushroom_cloud",
-        EntityType.Builder.of(MushroomCloudEntity::new, MobCategory.MISC)
-    );
-
-    public static final EntityType<Entity> NUKE = register(
-        "nuke",
-        EntityType.Builder.of(PrimedNuke::new, MobCategory.MISC)
-            .sized(0.1F, 0.1F)
-            .noSummon()
-            .clientTrackingRange(100)
-            .updateInterval(100)
     );
 
     public static final EntityType<Acid> ACID = register(

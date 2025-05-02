@@ -18,7 +18,6 @@ import java.util.function.Supplier;
 
 import com.avp.common.block.TempAVPBlocks;
 import com.avp.common.item.TempAVPItems;
-import com.avp.fabric.common.block.AVPBlocks;
 
 public class BlockLootTableProvider extends FabricBlockLootTableProvider {
 
@@ -36,7 +35,7 @@ public class BlockLootTableProvider extends FabricBlockLootTableProvider {
         dropSelf(TempAVPBlocks.SENTRY_TURRET.get());
         dropSelf(TempAVPBlocks.TRINITITE_BLOCK.get());
         dropSelf(TempAVPBlocks.ASH_BLOCK.get());
-        dropSelf(AVPBlocks.NUKE_BLOCK);
+        dropSelf(TempAVPBlocks.NUKE_BLOCK.get());
         dropSelf(TempAVPBlocks.ROYAL_JELLY_BLOCK.get());
         dropSelf(TempAVPBlocks.ALUMINUM_BLOCK.get());
         dropSelf(TempAVPBlocks.AUTUNITE_BLOCK.get());

@@ -1,4 +1,4 @@
-package com.avp.fabric.client.animation.entity;
+package com.avp.client.animation.entity;
 
 import mod.azure.azurelib.rewrite.animation.controller.AzAnimationController;
 import mod.azure.azurelib.rewrite.animation.controller.AzAnimationControllerContainer;
@@ -7,7 +7,7 @@ import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 
 import com.avp.AVPResources;
-import com.avp.fabric.common.entity.nukecloud.MushroomCloudEntity;
+import com.avp.common.entity.nuke.MushroomCloudEntity;
 
 public class MushroomCloudAnimator extends AzEntityAnimator<MushroomCloudEntity> {
 

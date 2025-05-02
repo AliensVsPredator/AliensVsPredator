@@ -37,7 +37,7 @@ public abstract class MixinLivingEntity_NukedRadiation extends Entity {
         }
 
         // Apply radiation effect.
-        self.addEffect(new MobEffectInstance(AVPMobEffects.RADIATION, RadiationStatusEffect.EFFECT_DURATION_IN_TICKS, 0));
+        self.addEffect(new MobEffectInstance(AVPMobEffects.RADIATION.getHolder(), RadiationStatusEffect.EFFECT_DURATION_IN_TICKS, 0));
     }
 
     @Unique

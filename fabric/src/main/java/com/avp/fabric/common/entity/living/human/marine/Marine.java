@@ -98,7 +98,7 @@ public class Marine extends AbstractHuman implements AVPInventoryBearer {
         addInitialWeapon();
 
         if (random.nextInt(100) <= 10) {
-            marineInventory.addPersonalItem(new ItemStack(TempAVPItems.GRENADE));
+            marineInventory.addPersonalItem(new ItemStack(TempAVPItems.GRENADE.get()));
             addInitialArmor();
         }
 

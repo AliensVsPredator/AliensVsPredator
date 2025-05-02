@@ -1,12 +1,13 @@
-package com.avp.fabric.common.entity.nukecloud;
+package com.avp.common.entity.nuke;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.level.Level;
+import org.jetbrains.annotations.NotNull;
 
-import com.avp.fabric.common.entity.type.AVPEntityTypes;
+import com.avp.common.entity.type.TempAVPEntityTypes;
 
 public class MushroomCloudEntity extends Entity {
 
@@ -19,7 +20,7 @@ public class MushroomCloudEntity extends Entity {
     }
 
     public MushroomCloudEntity(Level level, double x, double y, double z) {
-        super(AVPEntityTypes.MUSHROOM_CLOUD, level);
+        super(TempAVPEntityTypes.MUSHROOM_CLOUD.get(), level);
         animDispatcher = new MushroomCloudAnimDispatcher(this);
         setPos(x, y, z);
     }
@@ -36,11 +37,11 @@ public class MushroomCloudEntity extends Entity {
     }
 
     @Override
-    protected void defineSynchedData(SynchedEntityData.Builder builder) {}
+    protected void defineSynchedData(SynchedEntityData.@NotNull Builder builder) {}
 
     @Override
-    protected void readAdditionalSaveData(CompoundTag compound) {}
+    protected void readAdditionalSaveData(@NotNull CompoundTag compound) {}
 
     @Override
-    protected void addAdditionalSaveData(CompoundTag compound) {}
+    protected void addAdditionalSaveData(@NotNull CompoundTag compound) {}
 }

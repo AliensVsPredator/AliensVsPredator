@@ -7,7 +7,6 @@ import net.minecraft.world.level.block.Blocks;
 
 import com.avp.common.block.TempAVPBlocks;
 import com.avp.common.item.TempAVPItems;
-import com.avp.fabric.common.block.AVPBlocks;
 import com.avp.fabric.common.item.AVPItems;
 import com.avp.fabric.data.recipe.RecipeConstants;
 import com.avp.fabric.data.recipe.builder.RecipeBuilder;
@@ -156,7 +155,7 @@ public class MiscellaneousRecipeProvider {
             .pattern("CSP")
             .pattern("LNL")
             .pattern("TTT")
-            .into(1, AVPBlocks.NUKE_BLOCK);
+            .into(1, TempAVPBlocks.NUKE_BLOCK);
 
         builder.shaped()
             .withCategory(RecipeCategory.MISC)

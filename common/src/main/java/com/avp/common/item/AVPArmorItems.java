@@ -28,91 +28,91 @@ public class AVPArmorItems {
 
     public static final AVPDeferredHolder<Item> ABERRANT_CHITIN_BOOTS = register(
         "aberrant_chitin_boots",
-        ArmorMaterials.ABERRANT_CHITIN,
+        ArmorMaterials.ABERRANT_CHITIN::getHolder,
         ArmorItem.Type.BOOTS,
         CHITIN_DURABILITY_MULTIPLIER
     );
 
     public static final AVPDeferredHolder<Item> ABERRANT_CHITIN_CHESTPLATE = register(
         "aberrant_chitin_chestplate",
-        ArmorMaterials.ABERRANT_CHITIN,
+        ArmorMaterials.ABERRANT_CHITIN::getHolder,
         ArmorItem.Type.CHESTPLATE,
         CHITIN_DURABILITY_MULTIPLIER
     );
 
     public static final AVPDeferredHolder<Item> ABERRANT_CHITIN_HELMET = register(
         "aberrant_chitin_helmet",
-        ArmorMaterials.ABERRANT_CHITIN,
+        ArmorMaterials.ABERRANT_CHITIN::getHolder,
         ArmorItem.Type.HELMET,
         CHITIN_DURABILITY_MULTIPLIER
     );
 
     public static final AVPDeferredHolder<Item> ABERRANT_CHITIN_LEGGINGS = register(
         "aberrant_chitin_leggings",
-        ArmorMaterials.ABERRANT_CHITIN,
+        ArmorMaterials.ABERRANT_CHITIN::getHolder,
         ArmorItem.Type.LEGGINGS,
         CHITIN_DURABILITY_MULTIPLIER
     );
 
     public static final AVPDeferredHolder<Item> CHITIN_BOOTS = register(
         "chitin_boots",
-        ArmorMaterials.CHITIN,
+        ArmorMaterials.CHITIN::getHolder,
         ArmorItem.Type.BOOTS,
         CHITIN_DURABILITY_MULTIPLIER
     );
 
     public static final AVPDeferredHolder<Item> CHITIN_CHESTPLATE = register(
         "chitin_chestplate",
-        ArmorMaterials.CHITIN,
+        ArmorMaterials.CHITIN::getHolder,
         ArmorItem.Type.CHESTPLATE,
         CHITIN_DURABILITY_MULTIPLIER
     );
 
     public static final AVPDeferredHolder<Item> CHITIN_HELMET = register(
         "chitin_helmet",
-        ArmorMaterials.CHITIN,
+        ArmorMaterials.CHITIN::getHolder,
         ArmorItem.Type.HELMET,
         CHITIN_DURABILITY_MULTIPLIER
     );
 
     public static final AVPDeferredHolder<Item> CHITIN_LEGGINGS = register(
         "chitin_leggings",
-        ArmorMaterials.CHITIN,
+        ArmorMaterials.CHITIN::getHolder,
         ArmorItem.Type.LEGGINGS,
         CHITIN_DURABILITY_MULTIPLIER
     );
 
     public static final AVPDeferredHolder<Item> IRRADIATED_CHITIN_BOOTS = register(
         "irradiated_chitin_boots",
-        ArmorMaterials.IRRADIATED_CHITIN,
+        ArmorMaterials.IRRADIATED_CHITIN::getHolder,
         ArmorItem.Type.BOOTS,
         CHITIN_DURABILITY_MULTIPLIER
     );
 
     public static final AVPDeferredHolder<Item> IRRADIATED_CHITIN_CHESTPLATE = register(
         "irradiated_chitin_chestplate",
-        ArmorMaterials.IRRADIATED_CHITIN,
+        ArmorMaterials.IRRADIATED_CHITIN::getHolder,
         ArmorItem.Type.CHESTPLATE,
         CHITIN_DURABILITY_MULTIPLIER
     );
 
     public static final AVPDeferredHolder<Item> IRRADIATED_CHITIN_HELMET = register(
         "irradiated_chitin_helmet",
-        ArmorMaterials.IRRADIATED_CHITIN,
+        ArmorMaterials.IRRADIATED_CHITIN::getHolder,
         ArmorItem.Type.HELMET,
         CHITIN_DURABILITY_MULTIPLIER
     );
 
     public static final AVPDeferredHolder<Item> IRRADIATED_CHITIN_LEGGINGS = register(
         "irradiated_chitin_leggings",
-        ArmorMaterials.IRRADIATED_CHITIN,
+        ArmorMaterials.IRRADIATED_CHITIN::getHolder,
         ArmorItem.Type.LEGGINGS,
         CHITIN_DURABILITY_MULTIPLIER
     );
 
     public static final AVPDeferredHolder<Item> JUNGLE_PREDATOR_BOOTS = register(
         "jungle_predator_boots",
-        ArmorMaterials.VERITANIUM,
+        ArmorMaterials.VERITANIUM::getHolder,
         ArmorItem.Type.BOOTS,
         VERITANIUM_DURABILITY_MULTIPLIER,
         new Item.Properties().fireResistant()
@@ -120,7 +120,7 @@ public class AVPArmorItems {
 
     public static final AVPDeferredHolder<Item> JUNGLE_PREDATOR_CHESTPLATE = register(
         "jungle_predator_chestplate",
-        ArmorMaterials.VERITANIUM,
+        ArmorMaterials.VERITANIUM::getHolder,
         ArmorItem.Type.CHESTPLATE,
         VERITANIUM_DURABILITY_MULTIPLIER,
         new Item.Properties().fireResistant()
@@ -128,7 +128,7 @@ public class AVPArmorItems {
 
     public static final AVPDeferredHolder<Item> JUNGLE_PREDATOR_HELMET = register(
         "jungle_predator_helmet",
-        ArmorMaterials.VERITANIUM,
+        ArmorMaterials.VERITANIUM::getHolder,
         ArmorItem.Type.HELMET,
         VERITANIUM_DURABILITY_MULTIPLIER,
         new Item.Properties().fireResistant()
@@ -136,7 +136,7 @@ public class AVPArmorItems {
 
     public static final AVPDeferredHolder<Item> JUNGLE_PREDATOR_LEGGINGS = register(
         "jungle_predator_leggings",
-        ArmorMaterials.VERITANIUM,
+        ArmorMaterials.VERITANIUM::getHolder,
         ArmorItem.Type.LEGGINGS,
         VERITANIUM_DURABILITY_MULTIPLIER,
         new Item.Properties().fireResistant()
@@ -155,7 +155,7 @@ public class AVPArmorItems {
 
     public static final AVPDeferredHolder<Item> NETHER_CHITIN_BOOTS = register(
         "nether_chitin_boots",
-        ArmorMaterials.NETHER_CHITIN,
+        ArmorMaterials.NETHER_CHITIN::getHolder,
         ArmorItem.Type.BOOTS,
         CHITIN_DURABILITY_MULTIPLIER,
         new Item.Properties().fireResistant()
@@ -163,7 +163,7 @@ public class AVPArmorItems {
 
     public static final AVPDeferredHolder<Item> NETHER_CHITIN_CHESTPLATE = register(
         "nether_chitin_chestplate",
-        ArmorMaterials.NETHER_CHITIN,
+        ArmorMaterials.NETHER_CHITIN::getHolder,
         ArmorItem.Type.CHESTPLATE,
         CHITIN_DURABILITY_MULTIPLIER,
         new Item.Properties().fireResistant()
@@ -171,7 +171,7 @@ public class AVPArmorItems {
 
     public static final AVPDeferredHolder<Item> NETHER_CHITIN_HELMET = register(
         "nether_chitin_helmet",
-        ArmorMaterials.NETHER_CHITIN,
+        ArmorMaterials.NETHER_CHITIN::getHolder,
         ArmorItem.Type.HELMET,
         CHITIN_DURABILITY_MULTIPLIER,
         new Item.Properties().fireResistant()
@@ -179,7 +179,7 @@ public class AVPArmorItems {
 
     public static final AVPDeferredHolder<Item> NETHER_CHITIN_LEGGINGS = register(
         "nether_chitin_leggings",
-        ArmorMaterials.NETHER_CHITIN,
+        ArmorMaterials.NETHER_CHITIN::getHolder,
         ArmorItem.Type.LEGGINGS,
         CHITIN_DURABILITY_MULTIPLIER,
         new Item.Properties().fireResistant()
@@ -187,91 +187,91 @@ public class AVPArmorItems {
 
     public static final AVPDeferredHolder<Item> PLATED_ABERRANT_CHITIN_BOOTS = register(
         "plated_aberrant_chitin_boots",
-        ArmorMaterials.PLATED_ABERRANT_CHITIN,
+        ArmorMaterials.PLATED_ABERRANT_CHITIN::getHolder,
         ArmorItem.Type.BOOTS,
         PLATED_CHITIN_DURABILITY_MULTIPLIER
     );
 
     public static final AVPDeferredHolder<Item> PLATED_ABERRANT_CHITIN_CHESTPLATE = register(
         "plated_aberrant_chitin_chestplate",
-        ArmorMaterials.PLATED_ABERRANT_CHITIN,
+        ArmorMaterials.PLATED_ABERRANT_CHITIN::getHolder,
         ArmorItem.Type.CHESTPLATE,
         PLATED_CHITIN_DURABILITY_MULTIPLIER
     );
 
     public static final AVPDeferredHolder<Item> PLATED_ABERRANT_CHITIN_HELMET = register(
         "plated_aberrant_chitin_helmet",
-        ArmorMaterials.PLATED_ABERRANT_CHITIN,
+        ArmorMaterials.PLATED_ABERRANT_CHITIN::getHolder,
         ArmorItem.Type.HELMET,
         PLATED_CHITIN_DURABILITY_MULTIPLIER
     );
 
     public static final AVPDeferredHolder<Item> PLATED_ABERRANT_CHITIN_LEGGINGS = register(
         "plated_aberrant_chitin_leggings",
-        ArmorMaterials.PLATED_ABERRANT_CHITIN,
+        ArmorMaterials.PLATED_ABERRANT_CHITIN::getHolder,
         ArmorItem.Type.LEGGINGS,
         PLATED_CHITIN_DURABILITY_MULTIPLIER
     );
 
     public static final AVPDeferredHolder<Item> PLATED_CHITIN_BOOTS = register(
         "plated_chitin_boots",
-        ArmorMaterials.PLATED_CHITIN,
+        ArmorMaterials.PLATED_CHITIN::getHolder,
         ArmorItem.Type.BOOTS,
         PLATED_CHITIN_DURABILITY_MULTIPLIER
     );
 
     public static final AVPDeferredHolder<Item> PLATED_CHITIN_CHESTPLATE = register(
         "plated_chitin_chestplate",
-        ArmorMaterials.PLATED_CHITIN,
+        ArmorMaterials.PLATED_CHITIN::getHolder,
         ArmorItem.Type.CHESTPLATE,
         PLATED_CHITIN_DURABILITY_MULTIPLIER
     );
 
     public static final AVPDeferredHolder<Item> PLATED_CHITIN_HELMET = register(
         "plated_chitin_helmet",
-        ArmorMaterials.PLATED_CHITIN,
+        ArmorMaterials.PLATED_CHITIN::getHolder,
         ArmorItem.Type.HELMET,
         PLATED_CHITIN_DURABILITY_MULTIPLIER
     );
 
     public static final AVPDeferredHolder<Item> PLATED_CHITIN_LEGGINGS = register(
         "plated_chitin_leggings",
-        ArmorMaterials.PLATED_CHITIN,
+        ArmorMaterials.PLATED_CHITIN::getHolder,
         ArmorItem.Type.LEGGINGS,
         PLATED_CHITIN_DURABILITY_MULTIPLIER
     );
 
     public static final AVPDeferredHolder<Item> PLATED_IRRADIATED_CHITIN_BOOTS = register(
         "plated_irradiated_chitin_boots",
-        ArmorMaterials.PLATED_IRRADIATED_CHITIN,
+        ArmorMaterials.PLATED_IRRADIATED_CHITIN::getHolder,
         ArmorItem.Type.BOOTS,
         PLATED_CHITIN_DURABILITY_MULTIPLIER
     );
 
     public static final AVPDeferredHolder<Item> PLATED_IRRADIATED_CHITIN_CHESTPLATE = register(
         "plated_irradiated_chitin_chestplate",
-        ArmorMaterials.PLATED_IRRADIATED_CHITIN,
+        ArmorMaterials.PLATED_IRRADIATED_CHITIN::getHolder,
         ArmorItem.Type.CHESTPLATE,
         PLATED_CHITIN_DURABILITY_MULTIPLIER
     );
 
     public static final AVPDeferredHolder<Item> PLATED_IRRADIATED_CHITIN_HELMET = register(
         "plated_irradiated_chitin_helmet",
-        ArmorMaterials.PLATED_IRRADIATED_CHITIN,
+        ArmorMaterials.PLATED_IRRADIATED_CHITIN::getHolder,
         ArmorItem.Type.HELMET,
         PLATED_CHITIN_DURABILITY_MULTIPLIER
     );
 
     public static final AVPDeferredHolder<Item> PLATED_IRRADIATED_CHITIN_LEGGINGS = register(
         "plated_irradiated_chitin_leggings",
-        ArmorMaterials.PLATED_IRRADIATED_CHITIN,
+        ArmorMaterials.PLATED_IRRADIATED_CHITIN::getHolder,
         ArmorItem.Type.LEGGINGS,
         PLATED_CHITIN_DURABILITY_MULTIPLIER
     );
 
     public static final AVPDeferredHolder<Item> PLATED_NETHER_CHITIN_BOOTS = register(
         "plated_nether_chitin_boots",
-        ArmorMaterials.PLATED_NETHER_CHITIN,
+        ArmorMaterials.PLATED_NETHER_CHITIN::getHolder,
         ArmorItem.Type.BOOTS,
         PLATED_CHITIN_DURABILITY_MULTIPLIER,
         new Item.Properties().fireResistant()
@@ -279,7 +279,7 @@ public class AVPArmorItems {
 
     public static final AVPDeferredHolder<Item> PLATED_NETHER_CHITIN_CHESTPLATE = register(
         "plated_nether_chitin_chestplate",
-        ArmorMaterials.PLATED_NETHER_CHITIN,
+        ArmorMaterials.PLATED_NETHER_CHITIN::getHolder,
         ArmorItem.Type.CHESTPLATE,
         PLATED_CHITIN_DURABILITY_MULTIPLIER,
         new Item.Properties().fireResistant()
@@ -287,7 +287,7 @@ public class AVPArmorItems {
 
     public static final AVPDeferredHolder<Item> PLATED_NETHER_CHITIN_HELMET = register(
         "plated_nether_chitin_helmet",
-        ArmorMaterials.PLATED_NETHER_CHITIN,
+        ArmorMaterials.PLATED_NETHER_CHITIN::getHolder,
         ArmorItem.Type.HELMET,
         PLATED_CHITIN_DURABILITY_MULTIPLIER,
         new Item.Properties().fireResistant()
@@ -295,7 +295,7 @@ public class AVPArmorItems {
 
     public static final AVPDeferredHolder<Item> PLATED_NETHER_CHITIN_LEGGINGS = register(
         "plated_nether_chitin_leggings",
-        ArmorMaterials.PLATED_NETHER_CHITIN,
+        ArmorMaterials.PLATED_NETHER_CHITIN::getHolder,
         ArmorItem.Type.LEGGINGS,
         PLATED_CHITIN_DURABILITY_MULTIPLIER,
         new Item.Properties().fireResistant()
@@ -323,133 +323,133 @@ public class AVPArmorItems {
 
     public static final AVPDeferredHolder<Item> STEEL_BOOTS = register(
         "steel_boots",
-        ArmorMaterials.STEEL,
+        ArmorMaterials.STEEL::getHolder,
         ArmorItem.Type.BOOTS,
         STEEL_DURABILITY_MULTIPLIER
     );
 
     public static final AVPDeferredHolder<Item> STEEL_CHESTPLATE = register(
         "steel_chestplate",
-        ArmorMaterials.STEEL,
+        ArmorMaterials.STEEL::getHolder,
         ArmorItem.Type.CHESTPLATE,
         STEEL_DURABILITY_MULTIPLIER
     );
 
     public static final AVPDeferredHolder<Item> STEEL_HELMET = register(
         "steel_helmet",
-        ArmorMaterials.STEEL,
+        ArmorMaterials.STEEL::getHolder,
         ArmorItem.Type.HELMET,
         STEEL_DURABILITY_MULTIPLIER
     );
 
     public static final AVPDeferredHolder<Item> STEEL_LEGGINGS = register(
         "steel_leggings",
-        ArmorMaterials.STEEL,
+        ArmorMaterials.STEEL::getHolder,
         ArmorItem.Type.LEGGINGS,
         STEEL_DURABILITY_MULTIPLIER
     );
 
     public static final AVPDeferredHolder<Item> TACTICAL_BOOTS = register(
         "tactical_boots",
-        ArmorMaterials.TACTICAL,
+        ArmorMaterials.TACTICAL::getHolder,
         ArmorItem.Type.BOOTS,
         TACTICAL_DURABILITY_MULTIPLIER
     );
 
     public static final AVPDeferredHolder<Item> TACTICAL_CHESTPLATE = register(
         "tactical_chestplate",
-        ArmorMaterials.TACTICAL,
+        ArmorMaterials.TACTICAL::getHolder,
         ArmorItem.Type.CHESTPLATE,
         TACTICAL_DURABILITY_MULTIPLIER
     );
 
     public static final AVPDeferredHolder<Item> TACTICAL_HELMET = register(
         "tactical_helmet",
-        ArmorMaterials.TACTICAL,
+        ArmorMaterials.TACTICAL::getHolder,
         ArmorItem.Type.HELMET,
         TACTICAL_DURABILITY_MULTIPLIER
     );
 
     public static final AVPDeferredHolder<Item> TACTICAL_LEGGINGS = register(
         "tactical_leggings",
-        ArmorMaterials.TACTICAL,
+        ArmorMaterials.TACTICAL::getHolder,
         ArmorItem.Type.LEGGINGS,
         TACTICAL_DURABILITY_MULTIPLIER
     );
 
     public static final AVPDeferredHolder<Item> TACTICAL_CAMO_BOOTS = register(
         "tactical_camo_boots",
-        ArmorMaterials.TACTICAL,
+        ArmorMaterials.TACTICAL::getHolder,
         ArmorItem.Type.BOOTS,
         TACTICAL_DURABILITY_MULTIPLIER
     );
 
     public static final AVPDeferredHolder<Item> TACTICAL_CAMO_CHESTPLATE = register(
         "tactical_camo_chestplate",
-        ArmorMaterials.TACTICAL,
+        ArmorMaterials.TACTICAL::getHolder,
         ArmorItem.Type.CHESTPLATE,
         TACTICAL_DURABILITY_MULTIPLIER
     );
 
     public static final AVPDeferredHolder<Item> TACTICAL_CAMO_HELMET = register(
         "tactical_camo_helmet",
-        ArmorMaterials.TACTICAL,
+        ArmorMaterials.TACTICAL::getHolder,
         ArmorItem.Type.HELMET,
         TACTICAL_DURABILITY_MULTIPLIER
     );
 
     public static final AVPDeferredHolder<Item> TACTICAL_CAMO_LEGGINGS = register(
         "tactical_camo_leggings",
-        ArmorMaterials.TACTICAL,
+        ArmorMaterials.TACTICAL::getHolder,
         ArmorItem.Type.LEGGINGS,
         TACTICAL_DURABILITY_MULTIPLIER
     );
 
     public static final AVPDeferredHolder<Item> TITANIUM_BOOTS = register(
         "titanium_boots",
-        ArmorMaterials.TITANIUM,
+        ArmorMaterials.TITANIUM::getHolder,
         ArmorItem.Type.BOOTS,
         TITANIUM_DURABILITY_MULTIPLIER
     );
 
     public static final AVPDeferredHolder<Item> TITANIUM_CHESTPLATE = register(
         "titanium_chestplate",
-        ArmorMaterials.TITANIUM,
+        ArmorMaterials.TITANIUM::getHolder,
         ArmorItem.Type.CHESTPLATE,
         TITANIUM_DURABILITY_MULTIPLIER
     );
 
     public static final AVPDeferredHolder<Item> TITANIUM_HELMET = register(
         "titanium_helmet",
-        ArmorMaterials.TITANIUM,
+        ArmorMaterials.TITANIUM::getHolder,
         ArmorItem.Type.HELMET,
         TITANIUM_DURABILITY_MULTIPLIER
     );
 
     public static final AVPDeferredHolder<Item> TITANIUM_LEGGINGS = register(
         "titanium_leggings",
-        ArmorMaterials.TITANIUM,
+        ArmorMaterials.TITANIUM::getHolder,
         ArmorItem.Type.LEGGINGS,
         TITANIUM_DURABILITY_MULTIPLIER
     );
 
     private static AVPDeferredHolder<Item> register(
         String id,
-        Holder<ArmorMaterial> holder,
+        Supplier<Holder<ArmorMaterial>> holderSupplier,
         ArmorItem.Type type,
         int durabilityMultiplier
     ) {
-        return register(id, holder, type, durabilityMultiplier, new Item.Properties());
+        return register(id, holderSupplier, type, durabilityMultiplier, new Item.Properties());
     }
 
     private static AVPDeferredHolder<Item> register(
         String id,
-        Holder<ArmorMaterial> holder,
+        Supplier<Holder<ArmorMaterial>> holderSupplier,
         ArmorItem.Type type,
         int durabilityMultiplier,
         Item.Properties properties
     ) {
-        return register(id, () -> createArmorItem(holder, type, durabilityMultiplier, properties));
+        return register(id, () -> createArmorItem(holderSupplier.get(), type, durabilityMultiplier, properties));
     }
 
     // TODO: Make this return a Supplier<Item>.

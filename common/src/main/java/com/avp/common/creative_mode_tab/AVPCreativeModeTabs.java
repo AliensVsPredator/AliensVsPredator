@@ -55,13 +55,13 @@ public class AVPCreativeModeTabs {
 
     public static final AVPDeferredHolder<CreativeModeTab> COMBAT = register(
         COMBAT_KEY,
-        () -> new ItemStack(AVPArmorItems.CHITIN_HELMET),
+        () -> new ItemStack(AVPArmorItems.CHITIN_HELMET.get()),
         CombatCreativeModeTabInitializer.OUTPUT_CONSUMER
     );
 
     public static final AVPDeferredHolder<CreativeModeTab> INGREDIENTS = register(
         INGREDIENTS_KEY,
-        () -> new ItemStack(TempAVPItems.PLATED_CHITIN),
+        () -> new ItemStack(TempAVPItems.PLATED_CHITIN.get()),
         IngredientsCreativeModeTabInitializer.OUTPUT_CONSUMER
     );
 
@@ -74,7 +74,7 @@ public class AVPCreativeModeTabs {
 
     public static final AVPDeferredHolder<CreativeModeTab> TOOLS_AND_UTILITIES = register(
         TOOLS_AND_UTILITIES_KEY,
-        () -> new ItemStack(TempAVPItems.CANISTER),
+        () -> new ItemStack(TempAVPItems.CANISTER.get()),
         ToolsAndUtilitiesCreativeModeTabInitializer.OUTPUT_CONSUMER
     );
 

@@ -13,8 +13,9 @@ public class FabricRegistryService implements RegistryService {
 
     @Override
     public <T> AVPDeferredHolder<T> register(Registry<? super T> registry, String id, Supplier<? extends T> supplier) {
-        var registeredElement = Registry.register(registry, AVPResources.location(id), supplier.get());
-        var holder = Holder.direct(registeredElement);
-        return new AVPDeferredHolder<>(() -> registeredElement, () -> holder);
+        var reference = Registry.registerForHolder(registry, AVPResources.location(id), supplier.get());
+        @SuppressWarnings("unchecked")
+        var holder = (Holder<T>) reference;
+        return new AVPDeferredHolder<>(holder::value, () -> holder);
     }
 }

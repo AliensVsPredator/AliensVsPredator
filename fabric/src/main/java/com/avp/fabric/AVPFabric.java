@@ -19,7 +19,6 @@ import net.minecraft.world.level.levelgen.structure.templatesystem.StructureProc
 import java.util.ArrayList;
 
 import com.avp.AVP;
-import com.avp.fabric.common.block.AVPBlocks;
 import com.avp.fabric.common.block.CompostingChanceRegistry;
 import com.avp.fabric.common.block.DispenserBlockBehaviors;
 import com.avp.fabric.common.block.FlammableBlockRegistry;
@@ -62,7 +61,6 @@ public class AVPFabric implements ModInitializer {
         AVP.initialize();
 
         // Core
-        AVPBlocks.initialize();
         AVPItems.initialize();
         AVPBlockItems.initialize();
         SpawnEggItems.initialize();

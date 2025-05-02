@@ -16,7 +16,7 @@ public class PressureSuitArmorItem extends ArmorItem {
     private static final int PRESSURE_DURABILITY_MULTIPLIER = 12;
 
     public PressureSuitArmorItem(Type type) {
-        super(ArmorMaterials.PRESSURE, type, new Properties().durability(type.getDurability(PRESSURE_DURABILITY_MULTIPLIER)));
+        super(ArmorMaterials.PRESSURE.getHolder(), type, new Properties().durability(type.getDurability(PRESSURE_DURABILITY_MULTIPLIER)));
     }
 
     @Override

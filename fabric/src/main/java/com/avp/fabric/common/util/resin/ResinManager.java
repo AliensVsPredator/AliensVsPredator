@@ -100,7 +100,7 @@ public class ResinManager implements GameEventListener.Provider<ResinSpreadListe
                     return;
                 }
 
-                alien.gameEvent(AVPGameEvents.XENOMORPH_RESIN_SPREAD);
+                alien.gameEvent(AVPGameEvents.XENOMORPH_RESIN_SPREAD.getHolder());
 
                 if (resinData.resin() >= resinData.resinMax()) {
                     if (!belowState.is(BlockTags.SCULK_REPLACEABLE) || belowState.is(AVPBlockTags.RESIN)) {

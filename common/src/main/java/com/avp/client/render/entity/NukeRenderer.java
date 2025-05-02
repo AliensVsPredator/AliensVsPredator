@@ -1,4 +1,4 @@
-package com.avp.fabric.client.render.entity;
+package com.avp.client.render.entity;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
@@ -13,7 +13,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import org.jetbrains.annotations.NotNull;
 
-import com.avp.fabric.common.block.entity.PrimedNuke;
+import com.avp.common.entity.nuke.PrimedNuke;
 
 public class NukeRenderer<T extends Entity> extends EntityRenderer<T> {
 

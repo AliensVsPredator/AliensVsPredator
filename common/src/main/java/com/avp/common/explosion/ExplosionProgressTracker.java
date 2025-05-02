@@ -1,4 +1,4 @@
-package com.avp.fabric.common.command.nuke;
+package com.avp.common.explosion;
 
 public class ExplosionProgressTracker {
 

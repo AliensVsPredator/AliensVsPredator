@@ -11,11 +11,8 @@ import java.util.function.Supplier;
 
 import com.avp.AVPResources;
 import com.avp.common.item.TempAVPBlockItems;
-import com.avp.fabric.common.block.AVPBlocks;
 
 public class AVPBlockItems {
-
-    public static final BlockItem NUKE_BLOCK = register(AVPBlocks.NUKE_BLOCK);
 
     @Deprecated
     public static BlockItem register(Block block) {

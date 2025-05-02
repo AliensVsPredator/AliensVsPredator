@@ -1,4 +1,4 @@
-package com.avp.fabric.common.block;
+package com.avp.common.block;
 
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
@@ -14,7 +14,7 @@ import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.NotNull;
 
-import com.avp.fabric.common.block.entity.PrimedNuke;
+import com.avp.common.entity.nuke.PrimedNuke;
 
 public class NukeBlock extends Block {
 
@@ -33,7 +33,7 @@ public class NukeBlock extends Block {
     }
 
     @Override
-    public boolean dropFromExplosion(Explosion explosion) {
+    public boolean dropFromExplosion(@NotNull Explosion explosion) {
         return false;
     }
 
@@ -43,21 +43,33 @@ public class NukeBlock extends Block {
     }
 
     @Override
-    protected void neighborChanged(BlockState blockState, Level level, BlockPos blockPos, Block block, BlockPos blockPos2, boolean bl) {
+    protected void neighborChanged(
+        @NotNull BlockState blockState,
+        Level level,
+        @NotNull BlockPos blockPos,
+        @NotNull Block block,
+        @NotNull BlockPos blockPos2,
+        boolean bl
+    ) {
         if (level.hasNeighborSignal(blockPos)) {
             this.summonNuke(level, blockPos);
         }
     }
 
     @Override
-    protected void onPlace(BlockState blockState, Level level, BlockPos blockPos, BlockState blockState2, boolean bl) {
+    protected void onPlace(BlockState blockState, @NotNull Level level, @NotNull BlockPos blockPos, BlockState blockState2, boolean bl) {
         if (!blockState2.is(blockState.getBlock()) && level.hasNeighborSignal(blockPos)) {
             this.summonNuke(level, blockPos);
         }
     }
 
     @Override
-    public @NotNull BlockState playerWillDestroy(Level level, BlockPos blockPos, BlockState blockState, Player player) {
+    public @NotNull BlockState playerWillDestroy(
+        Level level,
+        @NotNull BlockPos blockPos,
+        @NotNull BlockState blockState,
+        @NotNull Player player
+    ) {
         if (!level.isClientSide() && !player.isCreative() && Boolean.TRUE.equals(blockState.getValue(UNSTABLE))) {
             this.summonNuke(level, blockPos);
         }
@@ -66,7 +78,12 @@ public class NukeBlock extends Block {
     }
 
     @Override
-    protected void onProjectileHit(Level level, BlockState blockState, BlockHitResult blockHitResult, Projectile projectile) {
+    protected void onProjectileHit(
+        Level level,
+        @NotNull BlockState blockState,
+        @NotNull BlockHitResult blockHitResult,
+        @NotNull Projectile projectile
+    ) {
         if (!level.isClientSide) {
             var blockPos = blockHitResult.getBlockPos();
             if (projectile.isOnFire() && projectile.mayInteract(level, blockPos)) {

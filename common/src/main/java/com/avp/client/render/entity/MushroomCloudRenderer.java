@@ -1,4 +1,4 @@
-package com.avp.fabric.client.render.entity;
+package com.avp.client.render.entity;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import mod.azure.azurelib.rewrite.render.entity.AzEntityRenderer;
@@ -10,8 +10,8 @@ import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 
 import com.avp.AVPResources;
-import com.avp.fabric.client.animation.entity.MushroomCloudAnimator;
-import com.avp.fabric.common.entity.nukecloud.MushroomCloudEntity;
+import com.avp.client.animation.entity.MushroomCloudAnimator;
+import com.avp.common.entity.nuke.MushroomCloudEntity;
 
 public class MushroomCloudRenderer extends AzEntityRenderer<MushroomCloudEntity> {
 

@@ -8,8 +8,7 @@
     "MixinArmorStand_EquipArmorFromArmorCase",
     "MixinItem_ChorusEmbryo",
     "MixinLivingEntity_GrowEmbryo",
-    "MixinShearsItem",
-    "server.MixinServerLevel_RunTickRoutines"
+    "MixinShearsItem"
   ],
   "client": [
     "client.MixinGui_CrosshairPickEntityWithinGunRange",

@@ -17,7 +17,6 @@ import com.avp.common.entity.type.TempAVPEntityTypes;
 import com.avp.common.item.AVPArmorItems;
 import com.avp.common.item.TempAVPItems;
 import com.avp.common.sound.AVPSoundEvents;
-import com.avp.fabric.common.block.AVPBlocks;
 import com.avp.fabric.common.entity.type.AVPEntityTypes;
 import com.avp.fabric.common.item.AVPItems;
 import com.avp.fabric.common.item.SpawnEggItems;
@@ -42,7 +41,7 @@ public class EnglishLanguageProvider extends FabricLanguageProvider {
         addBlock(builder, TempAVPBlocks.AMMO_CHEST, "Ammo Chest");
         addBlock(builder, TempAVPBlocks.SENTRY_TURRET, "Sentry Turret");
         addBlock(builder, TempAVPBlocks.ASH_BLOCK, "Ash Block");
-        addBlock(builder, AVPBlocks.NUKE_BLOCK, "Nuke Block");
+        addBlock(builder, TempAVPBlocks.NUKE_BLOCK, "Nuke Block");
         addBlock(builder, TempAVPBlocks.ROYAL_JELLY_BLOCK, "Royal Jelly Block");
         addBlock(builder, TempAVPBlocks.TRINITITE_BLOCK, "Block of Trinitite");
         addBlock(builder, TempAVPBlocks.ALUMINUM_BLOCK, "Block of Aluminum");

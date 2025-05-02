@@ -1,4 +1,4 @@
-package com.avp.fabric.common.entity.nukecloud;
+package com.avp.common.entity.nuke;
 
 import mod.azure.azurelib.rewrite.animation.dispatch.command.AzCommand;
 import mod.azure.azurelib.rewrite.animation.play_behavior.AzPlayBehaviors;
