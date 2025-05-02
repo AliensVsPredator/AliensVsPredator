@@ -6,6 +6,7 @@
   "compatibilityLevel": "JAVA_21",
   "mixins": [
     "AbstractFurnaceBlockEntityInvoker",
+    "BlockBehaviourInvoker",
     "GiveGiftToHeroAccessor",
     "MixinCow_FillMilkCanister",
     "MixinCreeper_Nuked",

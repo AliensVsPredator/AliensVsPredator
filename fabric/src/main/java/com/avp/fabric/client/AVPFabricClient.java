@@ -6,7 +6,6 @@ import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.particle.v1.ParticleFactoryRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
 import net.minecraft.client.gui.screens.MenuScreens;
-import net.minecraft.client.renderer.entity.ThrownItemRenderer;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.Item;
 
@@ -131,7 +130,6 @@ public class AVPFabricClient implements ClientModInitializer {
 
         EntityRendererRegistry.register(AVPEntityTypes.BULLET, EmptyRenderer::new);
         EntityRendererRegistry.register(AVPEntityTypes.FLAMETHROW, FlamethrowRenderer::new);
-        EntityRendererRegistry.register(AVPEntityTypes.GRENADE_THROWN, ThrownItemRenderer::new);
         EntityRendererRegistry.register(AVPEntityTypes.MUSHROOM_CLOUD, MushroomCloudRenderer::new);
         EntityRendererRegistry.register(AVPEntityTypes.ROCKET, RocketRenderer::new);
         EntityRendererRegistry.register(AVPEntityTypes.SHURIKEN, SpinningItemRenderer::new);

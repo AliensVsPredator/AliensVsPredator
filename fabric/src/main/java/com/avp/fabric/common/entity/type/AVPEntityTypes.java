@@ -36,7 +36,6 @@ import com.avp.fabric.common.entity.projectile.Flamethrow;
 import com.avp.fabric.common.entity.projectile.Rocket;
 import com.avp.fabric.common.entity.projectile.ShurikenItemEntity;
 import com.avp.fabric.common.entity.projectile.SmartDiscItemEntity;
-import com.avp.fabric.common.entity.projectile.ThrownGrenade;
 
 public class AVPEntityTypes {
 
@@ -137,12 +136,6 @@ public class AVPEntityTypes {
             .sized(0.1F, 0.1F)
             .clientTrackingRange(8)
             .updateInterval(10)
-    );
-
-    public static final EntityType<ThrownGrenade> GRENADE_THROWN = register(
-        "grenade_thrown",
-        EntityType.Builder.<ThrownGrenade>of(ThrownGrenade::new, MobCategory.MISC)
-            .sized(0.25F, 0.25F)
     );
 
     public static final EntityType<Warrior> WARRIOR = register(

@@ -1,4 +1,4 @@
-package com.avp.fabric.common.item.grenades;
+package com.avp.common.item.grenade;
 
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -11,15 +11,15 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
-import com.avp.fabric.common.entity.projectile.ThrownGrenade;
+import com.avp.common.entity.projectile.ThrownGrenade;
 
-public class GrendeItem extends Item {
+public class GrenadeItem extends Item {
 
     private final boolean isIncendiary;
 
     private final boolean isIrradiated;
 
-    public GrendeItem(boolean isIncendiary, boolean isIrradiated) {
+    public GrenadeItem(boolean isIncendiary, boolean isIrradiated) {
         super(new Properties().stacksTo(16));
         this.isIncendiary = isIncendiary;
         this.isIrradiated = isIrradiated;

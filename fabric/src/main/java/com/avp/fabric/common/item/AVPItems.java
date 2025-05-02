@@ -8,7 +8,6 @@ import net.minecraft.world.item.*;
 import java.util.function.Function;
 
 import com.avp.AVPResources;
-import com.avp.fabric.common.item.grenades.GrendeItem;
 import com.avp.fabric.common.item.gun.GunData;
 import com.avp.fabric.common.item.old_painless.OldPainlessItem;
 import com.avp.fabric.common.item.yautja_items.ShurikenItem;
@@ -20,12 +19,6 @@ public class AVPItems {
     public static final Item SMART_DISC = register(new SmartDiscItem(), "smart_disc");
 
     public static final Item SHURIKEN = register(new ShurikenItem(), "shuriken");
-
-    public static final Item GRENADE = register(new GrendeItem(false, false), "grenade_standard");
-
-    public static final Item GRENADE_INCENDIARY = register(new GrendeItem(true, false), "grenade_incendiary");
-
-    public static final Item GRENADE_IRRADIATED = register(new GrendeItem(false, true), "grenade_irradiated");
 
     public static final Item F903WE_RIFLE = register(new GunItem(GunData.F903WE_RIFLE), "f903we_rifle");
 

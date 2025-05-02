@@ -1,4 +1,4 @@
-package com.avp.fabric.common.entity.projectile;
+package com.avp.common.entity.projectile;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -12,6 +12,8 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
+
+import com.avp.mixin.BlockBehaviourInvoker;
 
 /**
  * Modified version of MrCrayfish's <a href=
@@ -98,7 +100,7 @@ public abstract class BouncingItemProjectile extends ThrowableItemProjectile {
             var level = level();
             BlockPos resultPos = blockResult.getBlockPos();
             BlockState state = level.getBlockState(resultPos);
-            SoundEvent event = state.getBlock().getSoundType(state).getStepSound();
+            SoundEvent event = ((BlockBehaviourInvoker) state.getBlock()).invokeGetSoundType(state).getStepSound();
             level.playSound(
                 null,
                 result.getLocation().x,

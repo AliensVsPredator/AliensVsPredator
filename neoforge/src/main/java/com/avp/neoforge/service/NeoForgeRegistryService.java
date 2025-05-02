@@ -5,6 +5,7 @@ import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.effect.MobEffect;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ArmorMaterial;
 import net.minecraft.world.item.CreativeModeTab;
@@ -54,6 +55,8 @@ public class NeoForgeRegistryService implements RegistryService {
         AVP.MOD_ID
     );
 
+    private final DeferredRegister<EntityType<?>> ENTITY_TYPE_REGISTRY = DeferredRegister.create(BuiltInRegistries.ENTITY_TYPE, AVP.MOD_ID);
+
     private final DeferredRegister<GameEvent> GAME_EVENT_REGISTRY = DeferredRegister.create(BuiltInRegistries.GAME_EVENT, AVP.MOD_ID);
 
     private final DeferredRegister<Item> ITEM_REGISTRY = DeferredRegister.create(BuiltInRegistries.ITEM, AVP.MOD_ID);
@@ -86,6 +89,8 @@ public class NeoForgeRegistryService implements RegistryService {
             return adapt((DeferredHolder<T, T>) DATA_COMPONENT_TYPE_REGISTRY.register(id, (Supplier<DataComponentType<?>>) supplier));
         } else if (registry == BuiltInRegistries.DECORATED_POT_PATTERN) {
             return adapt((DeferredHolder<T, T>) DECORATED_POT_PATTERN_REGISTRY.register(id, (Supplier<DecoratedPotPattern>) supplier));
+        } else if (registry == BuiltInRegistries.ENTITY_TYPE) {
+            return adapt((DeferredHolder<T, T>) ENTITY_TYPE_REGISTRY.register(id, (Supplier<EntityType<?>>) supplier));
         } else if (registry == BuiltInRegistries.GAME_EVENT) {
             return adapt((DeferredHolder<T, T>) GAME_EVENT_REGISTRY.register(id, (Supplier<GameEvent>) supplier));
         } else if (registry == BuiltInRegistries.ITEM) {
@@ -106,7 +111,7 @@ public class NeoForgeRegistryService implements RegistryService {
     }
 
     private <T> AVPDeferredHolder<T> adapt(DeferredHolder<T, T> deferredHolder) {
-        return new AVPDeferredHolder<T>(deferredHolder, () -> deferredHolder);
+        return new AVPDeferredHolder<>(deferredHolder, () -> deferredHolder);
     }
 
     public void initialize(IEventBus modBus) {
@@ -116,6 +121,7 @@ public class NeoForgeRegistryService implements RegistryService {
         CREATIVE_MODE_TAB_REGISTRY.register(modBus);
         DATA_COMPONENT_TYPE_REGISTRY.register(modBus);
         DECORATED_POT_PATTERN_REGISTRY.register(modBus);
+        ENTITY_TYPE_REGISTRY.register(modBus);
         GAME_EVENT_REGISTRY.register(modBus);
         ITEM_REGISTRY.register(modBus);
         MENU_TYPE_REGISTRY.register(modBus);

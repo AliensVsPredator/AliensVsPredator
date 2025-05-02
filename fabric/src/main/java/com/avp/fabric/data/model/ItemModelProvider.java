@@ -34,9 +34,9 @@ public class ItemModelProvider extends FabricModelProvider {
     public void generateItemModels(ItemModelGenerators generators) {
         generateStandardItem(generators, AVPItems.SHURIKEN);
         generateStandardItem(generators, AVPItems.SMART_DISC);
-        generateStandardItem(generators, AVPItems.GRENADE);
-        generateStandardItem(generators, AVPItems.GRENADE_INCENDIARY);
-        generateStandardItem(generators, AVPItems.GRENADE_IRRADIATED);
+        generateStandardItem(generators, TempAVPItems.GRENADE);
+        generateStandardItem(generators, TempAVPItems.GRENADE_INCENDIARY);
+        generateStandardItem(generators, TempAVPItems.GRENADE_IRRADIATED);
         generateStandardItem(generators, TempAVPItems.CASELESS_BULLET);
         generateStandardItem(generators, TempAVPItems.HEAVY_BULLET);
         generateStandardItem(generators, TempAVPItems.SMALL_BULLET);

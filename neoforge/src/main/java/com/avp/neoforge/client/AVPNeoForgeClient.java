@@ -2,6 +2,8 @@ package com.avp.neoforge.client;
 
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -52,6 +54,15 @@ public class AVPNeoForgeClient {
 
     @SubscribeEvent
     public static void registerEntityRenderers(EntityRenderersEvent.RegisterRenderers event) {
+        // Entities
+        CLIENT_REGISTRY.getEntityRendererPairs()
+            .forEach(pair -> {
+                var entityType = pair.first().get();
+                @SuppressWarnings("unchecked")
+                var entityRendererProvider = (EntityRendererProvider<Entity>) pair.second();
+                event.registerEntityRenderer(entityType, entityRendererProvider);
+            });
+
         // Block Entities
         CLIENT_REGISTRY.getBlockEntityRendererPairs()
             .forEach(pair -> {

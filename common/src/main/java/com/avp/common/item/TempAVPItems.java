@@ -16,6 +16,7 @@ import net.minecraft.world.level.material.Fluids;
 import java.util.function.Supplier;
 
 import com.avp.common.component.AVPDataComponents;
+import com.avp.common.item.grenade.GrenadeItem;
 import com.avp.common.registry.AVPDeferredHolder;
 import com.avp.common.sound.AVPJukeboxSongs;
 import com.avp.service.Services;
@@ -102,6 +103,12 @@ public class TempAVPItems {
     public static final AVPDeferredHolder<Item> FERROALUMINUM_NUGGET = register("ferroaluminum_nugget");
 
     public static final AVPDeferredHolder<Item> FUEL_TANK = register("fuel_tank", new Item.Properties().stacksTo(1));
+
+    public static final AVPDeferredHolder<Item> GRENADE = register("grenade_standard", () -> new GrenadeItem(false, false));
+
+    public static final AVPDeferredHolder<Item> GRENADE_INCENDIARY = register("grenade_incendiary", () -> new GrenadeItem(true, false));
+
+    public static final AVPDeferredHolder<Item> GRENADE_IRRADIATED = register("grenade_irradiated", () -> new GrenadeItem(false, true));
 
     public static final AVPDeferredHolder<Item> GRIP = register("grip");
 

@@ -13,6 +13,7 @@ import java.util.function.Supplier;
 
 import com.avp.common.block.TempAVPBlocks;
 import com.avp.common.creative_mode_tab.AVPCreativeModeTabs;
+import com.avp.common.entity.type.TempAVPEntityTypes;
 import com.avp.common.item.AVPArmorItems;
 import com.avp.common.item.TempAVPItems;
 import com.avp.common.sound.AVPSoundEvents;
@@ -296,7 +297,7 @@ public class EnglishLanguageProvider extends FabricLanguageProvider {
         builder.add(AVPEntityTypes.WARRIOR, "Warrior");
         builder.add(AVPEntityTypes.YAUTJA, "Yautja");
         builder.add(AVPEntityTypes.ROCKET, "Rocket");
-        builder.add(AVPEntityTypes.GRENADE_THROWN, "Grenade");
+        builder.add(TempAVPEntityTypes.GRENADE_THROWN.get(), "Grenade");
         builder.add(AVPEntityTypes.SHURIKEN, "Shuriken");
         builder.add(AVPEntityTypes.SMART_DISC, "Smart Disc");
         builder.add(AVPEntityTypes.BULLET, "Bullet");
@@ -305,9 +306,9 @@ public class EnglishLanguageProvider extends FabricLanguageProvider {
         // Combat Items
         addItem(builder, AVPItems.SHURIKEN, "Shuriken");
         addItem(builder, AVPItems.SMART_DISC, "Smart Disc");
-        addItem(builder, AVPItems.GRENADE, "Grenade");
-        addItem(builder, AVPItems.GRENADE_INCENDIARY, "Incendiary Grenade");
-        addItem(builder, AVPItems.GRENADE_IRRADIATED, "Irradiated Grenade");
+        addItem(builder, TempAVPItems.GRENADE, "Grenade");
+        addItem(builder, TempAVPItems.GRENADE_INCENDIARY, "Incendiary Grenade");
+        addItem(builder, TempAVPItems.GRENADE_IRRADIATED, "Irradiated Grenade");
         addItem(builder, TempAVPItems.CASELESS_BULLET, "Caseless Bullet");
         addItem(builder, AVPArmorItems.ABERRANT_CHITIN_BOOTS, "Aberrant Chitin Boots");
         addItem(builder, AVPArmorItems.ABERRANT_CHITIN_CHESTPLATE, "Aberrant Chitin Chestplate");

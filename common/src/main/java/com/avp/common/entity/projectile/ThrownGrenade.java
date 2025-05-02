@@ -1,4 +1,4 @@
-package com.avp.fabric.common.entity.projectile;
+package com.avp.common.entity.projectile;
 
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
@@ -14,8 +14,8 @@ import org.jetbrains.annotations.NotNull;
 
 import com.avp.common.effect.AVPMobEffects;
 import com.avp.common.effect.RadiationStatusEffect;
-import com.avp.fabric.common.entity.type.AVPEntityTypes;
-import com.avp.fabric.common.item.AVPItems;
+import com.avp.common.entity.type.TempAVPEntityTypes;
+import com.avp.common.item.TempAVPItems;
 
 public class ThrownGrenade extends BouncingItemProjectile {
 
@@ -34,7 +34,7 @@ public class ThrownGrenade extends BouncingItemProjectile {
     }
 
     public ThrownGrenade(Level level, LivingEntity livingEntity) {
-        super(AVPEntityTypes.GRENADE_THROWN, livingEntity, level);
+        super(TempAVPEntityTypes.GRENADE_THROWN.get(), livingEntity, level);
         this.shouldBounce = true;
         this.maxLife = 5 * 20;
     }
@@ -61,14 +61,14 @@ public class ThrownGrenade extends BouncingItemProjectile {
     @Override
     protected @NotNull Item getDefaultItem() {
         if (isIrradiated) {
-            return AVPItems.GRENADE_IRRADIATED;
+            return TempAVPItems.GRENADE_IRRADIATED.get();
         }
 
         if (isIncendiary) {
-            return AVPItems.GRENADE_INCENDIARY;
+            return TempAVPItems.GRENADE_INCENDIARY.get();
         }
 
-        return AVPItems.GRENADE;
+        return TempAVPItems.GRENADE.get();
     }
 
     @Override

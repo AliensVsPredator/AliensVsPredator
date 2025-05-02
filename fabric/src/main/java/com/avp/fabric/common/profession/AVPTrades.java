@@ -9,7 +9,6 @@ import net.minecraft.world.item.trading.MerchantOffer;
 import com.avp.common.block.TempAVPBlocks;
 import com.avp.common.item.AVPArmorItems;
 import com.avp.common.item.TempAVPItems;
-import com.avp.fabric.common.item.AVPItems;
 
 public class AVPTrades {
 
@@ -147,7 +146,7 @@ public class AVPTrades {
             factories.add(
                 (entity, random) -> new MerchantOffer(
                     new ItemCost(Items.EMERALD, 10),
-                    new ItemStack(AVPItems.GRENADE, 3),
+                    new ItemStack(TempAVPItems.GRENADE, 3),
                     3,
                     12,
                     0.09f

@@ -16,6 +16,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 
 import com.avp.AVP;
+import com.avp.common.item.TempAVPItems;
 import com.avp.common.util.AVPInventory;
 import com.avp.common.util.AVPInventoryBearer;
 import com.avp.fabric.common.entity.living.human.AbstractHuman;
@@ -97,7 +98,7 @@ public class Marine extends AbstractHuman implements AVPInventoryBearer {
         addInitialWeapon();
 
         if (random.nextInt(100) <= 10) {
-            marineInventory.addPersonalItem(new ItemStack(AVPItems.GRENADE));
+            marineInventory.addPersonalItem(new ItemStack(TempAVPItems.GRENADE));
             addInitialArmor();
         }
 
