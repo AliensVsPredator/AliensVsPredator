@@ -34,6 +34,8 @@ neoForge {
 
         data {
             data()
+            // Currently keeps the generated files in NeoForge sub project, maybe move?
+            programArguments.addAll '--mod', project.mod_id, '--all', '--output', file('src/generated/resources/').getAbsolutePath(), '--existing', file('src/main/resources/').getAbsolutePath()
         }
 
         server {
