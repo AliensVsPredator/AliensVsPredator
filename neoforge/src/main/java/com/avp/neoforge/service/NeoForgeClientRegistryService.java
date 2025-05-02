@@ -3,6 +3,7 @@ package com.avp.neoforge.service;
 import com.bvanseg.just.functional.tuple.Tuple2;
 import mod.azure.azurelib.rewrite.render.armor.AzArmorRenderer;
 import mod.azure.azurelib.rewrite.render.item.AzItemRenderer;
+import net.minecraft.client.color.item.ItemColor;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -21,11 +22,14 @@ public class NeoForgeClientRegistryService implements ClientRegistryService {
 
     private final List<Tuple2<Supplier<? extends BlockEntityType<? extends BlockEntity>>, BlockEntityRendererProvider<? extends BlockEntity>>> blockEntityRendererPairs;
 
+    private final List<Tuple2<ItemColor, List<Supplier<Item>>>> itemColorPairs;
+
     private final List<Tuple2<Supplier<? extends Item>, Function<String, Supplier<AzItemRenderer>>>> itemRendererPairs;
 
     public NeoForgeClientRegistryService() {
         this.armorRendererPairs = new ArrayList<>();
         this.blockEntityRendererPairs = new ArrayList<>();
+        this.itemColorPairs = new ArrayList<>();
         this.itemRendererPairs = new ArrayList<>();
     }
 
@@ -43,6 +47,11 @@ public class NeoForgeClientRegistryService implements ClientRegistryService {
     }
 
     @Override
+    public void registerItemColor(ItemColor itemColor, List<Supplier<Item>> itemSuppliers) {
+        itemColorPairs.add(new Tuple2<>(itemColor, itemSuppliers));
+    }
+
+    @Override
     public void registerItemRenderer(Supplier<? extends Item> itemSupplier, Function<String, Supplier<AzItemRenderer>> rendererFactory) {
         itemRendererPairs.add(new Tuple2<>(itemSupplier, rendererFactory));
     }
@@ -53,6 +62,10 @@ public class NeoForgeClientRegistryService implements ClientRegistryService {
 
     public List<Tuple2<Supplier<? extends BlockEntityType<? extends BlockEntity>>, BlockEntityRendererProvider<? extends BlockEntity>>> getBlockEntityRendererPairs() {
         return blockEntityRendererPairs;
+    }
+
+    public List<Tuple2<ItemColor, List<Supplier<Item>>>> getItemColorPairs() {
+        return itemColorPairs;
     }
 
     public List<Tuple2<Supplier<? extends Item>, Function<String, Supplier<AzItemRenderer>>>> getItemRendererPairs() {

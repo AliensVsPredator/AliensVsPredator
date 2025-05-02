@@ -2,6 +2,7 @@ package com.avp.client;
 
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.blockentity.ChestRenderer;
+import net.minecraft.world.item.component.DyedItemColor;
 
 import java.util.List;
 
@@ -163,6 +164,23 @@ public class AVPClient {
         Services.CLIENT_REGISTRY.registerBlockEntityRenderer(
             AVPBlockEntityTypes.TRIP_MINE,
             (BlockEntityRendererProvider.Context rendererDispatcherIn) -> new TripMineRenderer()
+        );
+
+        Services.CLIENT_REGISTRY.registerItemColor(
+            (itemStack, i) -> i > 0 ? -1 : DyedItemColor.getOrDefault(itemStack, -1),
+            List.of(AVPArmorItems.MK50_HELMET)
+        );
+        Services.CLIENT_REGISTRY.registerItemColor(
+            (itemStack, i) -> i > 0 ? -1 : DyedItemColor.getOrDefault(itemStack, -1),
+            List.of(AVPArmorItems.MK50_CHESTPLATE)
+        );
+        Services.CLIENT_REGISTRY.registerItemColor(
+            (itemStack, i) -> i > 0 ? -1 : DyedItemColor.getOrDefault(itemStack, -1),
+            List.of(AVPArmorItems.MK50_LEGGINGS)
+        );
+        Services.CLIENT_REGISTRY.registerItemColor(
+            (itemStack, i) -> i > 0 ? -1 : DyedItemColor.getOrDefault(itemStack, -1),
+            List.of(AVPArmorItems.MK50_BOOTS)
         );
 
         Services.CLIENT_REGISTRY.registerItemRenderer(TempAVPBlockItems.DESK_TERMINAL_BLOCK, name -> DeskTerminalItemRenderer::new);

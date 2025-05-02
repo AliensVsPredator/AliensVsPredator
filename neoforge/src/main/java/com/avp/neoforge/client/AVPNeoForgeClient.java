@@ -7,6 +7,7 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
+import net.neoforged.neoforge.client.event.RegisterColorHandlersEvent;
 
 import com.avp.AVP;
 import com.avp.client.AVPClient;
@@ -31,6 +32,18 @@ public class AVPNeoForgeClient {
 
         CLIENT_REGISTRY.getItemRendererPairs()
             .forEach(pair -> CLIENT_REGISTRY.registerItemRendererImmediately(pair.first().get(), pair.second()));
+    }
+
+    @SubscribeEvent
+    public static void registerItemColors(RegisterColorHandlersEvent.Item event) {
+        CLIENT_REGISTRY.getItemColorPairs()
+            .forEach(
+                pair -> pair.second()
+                    .forEach(
+                        itemSupplier -> event.getItemColors()
+                            .register(pair.first(), itemSupplier.get())
+                    )
+            );
     }
 
     @SubscribeEvent

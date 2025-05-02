@@ -2,6 +2,8 @@ package com.avp.fabric.service;
 
 import mod.azure.azurelib.rewrite.render.armor.AzArmorRenderer;
 import mod.azure.azurelib.rewrite.render.item.AzItemRenderer;
+import net.fabricmc.fabric.api.client.rendering.v1.ColorProviderRegistry;
+import net.minecraft.client.color.item.ItemColor;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraft.world.item.Item;
@@ -27,6 +29,11 @@ public class FabricClientRegistryService implements ClientRegistryService {
         BlockEntityRendererProvider<T> renderProvider
     ) {
         BlockEntityRenderers.register(blockEntityTypeSupplier.get(), renderProvider);
+    }
+
+    @Override
+    public void registerItemColor(ItemColor itemColor, List<Supplier<Item>> itemSuppliers) {
+        itemSuppliers.forEach(itemSupplier -> ColorProviderRegistry.ITEM.register(itemColor, itemSupplier.get()));
     }
 
     @Override

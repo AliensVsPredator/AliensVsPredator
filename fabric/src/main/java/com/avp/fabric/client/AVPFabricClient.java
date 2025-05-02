@@ -5,21 +5,18 @@ import mod.azure.azurelib.rewrite.render.item.AzItemRendererRegistry;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import net.fabricmc.fabric.api.client.particle.v1.ParticleFactoryRegistry;
-import net.fabricmc.fabric.api.client.rendering.v1.ColorProviderRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.ThrownItemRenderer;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.component.DyedItemColor;
 
 import java.util.function.Function;
 import java.util.function.Supplier;
 
 import com.avp.client.AVPClient;
 import com.avp.common.block.TempAVPBlocks;
-import com.avp.common.item.AVPArmorItems;
 import com.avp.common.item.TempAVPBlockItems;
 import com.avp.common.menu.AVPMenuTypes;
 import com.avp.fabric.client.input.keybind.AVPKeybindingRegistry;
@@ -131,22 +128,6 @@ public class AVPFabricClient implements ClientModInitializer {
         registerItemRenderer(AVPItems.OLD_PAINLESS, name -> () -> new OldPainlessItemRenderer(name));
         registerItemRenderer(AVPItems.ZX_76_SHOTGUN, name -> () -> new ZX76ShotgunItemRenderer(name));
         registerItemRenderer(TempAVPBlockItems.SENTRY_TURRET.get(), name -> SentryItemtemRenderer::new);
-        ColorProviderRegistry.ITEM.register(
-            (itemStack, i) -> i > 0 ? -1 : DyedItemColor.getOrDefault(itemStack, -1),
-            AVPArmorItems.MK50_HELMET.get()
-        );
-        ColorProviderRegistry.ITEM.register(
-            (itemStack, i) -> i > 0 ? -1 : DyedItemColor.getOrDefault(itemStack, -1),
-            AVPArmorItems.MK50_CHESTPLATE.get()
-        );
-        ColorProviderRegistry.ITEM.register(
-            (itemStack, i) -> i > 0 ? -1 : DyedItemColor.getOrDefault(itemStack, -1),
-            AVPArmorItems.MK50_LEGGINGS.get()
-        );
-        ColorProviderRegistry.ITEM.register(
-            (itemStack, i) -> i > 0 ? -1 : DyedItemColor.getOrDefault(itemStack, -1),
-            AVPArmorItems.MK50_BOOTS.get()
-        );
 
         // Entities
         EntityRendererRegistry.register(AVPEntityTypes.ACID, AcidRenderer::new);
