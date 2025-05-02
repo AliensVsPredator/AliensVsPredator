@@ -1,4 +1,4 @@
-package com.avp.fabric.mixin;
+package com.avp.mixin;
 
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.EntityType;

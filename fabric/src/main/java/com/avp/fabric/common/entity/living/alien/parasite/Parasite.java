@@ -17,9 +17,9 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
+import com.avp.common.entity.living.FreeMob;
 import com.avp.common.item.TempAVPItems;
 import com.avp.common.util.TempAVPPredicates;
-import com.avp.fabric.common.entity.living.FreeMob;
 import com.avp.fabric.common.entity.living.alien.Alien;
 import com.avp.fabric.common.manager.ParasiteAttachmentManager;
 import com.avp.fabric.common.util.AVPPredicates;

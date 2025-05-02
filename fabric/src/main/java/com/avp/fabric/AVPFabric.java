@@ -47,9 +47,9 @@ import com.avp.fabric.common.sound.AVPJukeboxSongs;
 import com.avp.fabric.common.worldgen.NukedAshPlacement;
 import com.avp.fabric.common.worldgen.WorldGen;
 import com.avp.fabric.data.loot.LootTableModifier;
-import com.avp.fabric.mixin.GiveGiftToHeroAccessor;
-import com.avp.fabric.mixin.ParrotSoundMapAccessor;
-import com.avp.fabric.mixin.StructurePoolAccessor;
+import com.avp.mixin.GiveGiftToHeroAccessor;
+import com.avp.mixin.ParrotSoundMapAccessor;
+import com.avp.mixin.StructurePoolAccessor;
 
 public class AVPFabric implements ModInitializer {
 

@@ -1,4 +1,4 @@
-package com.avp.fabric.mixin;
+package com.avp.mixin;
 
 import com.mojang.datafixers.util.Pair;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
