@@ -1,4 +1,4 @@
-package com.avp.fabric.common.block;
+package com.avp.common.block;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -7,6 +7,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
+import org.jetbrains.annotations.NotNull;
 
 import com.avp.common.effect.AVPMobEffects;
 import com.avp.common.effect.RadiationStatusEffect;
@@ -19,7 +20,7 @@ public class RadiatedBlock extends Block {
     }
 
     @Override
-    public void stepOn(Level level, BlockPos blockPos, BlockState blockState, Entity entity) {
+    public void stepOn(@NotNull Level level, @NotNull BlockPos blockPos, @NotNull BlockState blockState, @NotNull Entity entity) {
         if (TempAVPPredicates.canBeIrradiated(entity) && entity instanceof LivingEntity livingEntity) {
             // Apply radiation effect.
             livingEntity.addEffect(

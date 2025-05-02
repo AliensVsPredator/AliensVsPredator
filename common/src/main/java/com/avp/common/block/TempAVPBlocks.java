@@ -71,13 +71,14 @@ public class TempAVPBlocks {
 
     public static final AVPDeferredHolder<Block> ASH_BLOCK = register("ash_block", () -> new AshBlock(BlockProperties.ASH_BLOCK.build()));
 
-    // FIXME: Change this to new RadiatedBlock once RadiatedBlock is migrated.
-    public static final AVPDeferredHolder<Block> AUTUNITE_BLOCK = register("autunite_block", BlockProperties.AUTUNITE_ORE);
+    public static final AVPDeferredHolder<Block> AUTUNITE_BLOCK = register(
+        "autunite_block",
+        () -> new RadiatedBlock(BlockProperties.AUTUNITE_ORE.build())
+    );
 
-    // FIXME: Change this to new RadiatedBlock once RadiatedBlock is migrated.
     public static final AVPDeferredHolder<Block> AUTUNITE_ORE = register(
         "autunite_ore",
-        () -> new Block(BlockProperties.AUTUNITE_ORE.build())
+        () -> new RadiatedBlock(BlockProperties.AUTUNITE_ORE.build())
     );
 
     public static final AVPDeferredHolder<Block> BAUXITE_ORE = register("bauxite_ore", BlockProperties.BAUXITE_ORE);
@@ -715,16 +716,20 @@ public class TempAVPBlocks {
         () -> new StairBlock(TITANIUM_TREAD.get().defaultBlockState(), BlockProperties.TITANIUM.build())
     );
 
-    // FIXME: Change this to new RadiatedBlock once RadiatedBlock is migrated.
-    public static final AVPDeferredHolder<Block> TRINITITE_BLOCK = register("trinitite_block", BlockProperties.TRINITITE);
+    public static final AVPDeferredHolder<Block> TRINITITE_BLOCK = register(
+        "trinitite_block",
+        () -> new RadiatedBlock(BlockProperties.TRINITITE.build())
+    );
 
     public static final AVPDeferredHolder<Block> TRIP_MINE_BLOCK = register(
         "trip_mine",
         () -> new TripMineBlock(BlockProperties.TITANIUM.build().noOcclusion())
     );
 
-    // FIXME: Change this to new RadiatedBlock once RadiatedBlock is migrated.
-    public static final AVPDeferredHolder<Block> URANIUM_BLOCK = register("uranium_block", BlockProperties.URANIUM);
+    public static final AVPDeferredHolder<Block> URANIUM_BLOCK = register(
+        "uranium_block",
+        () -> new RadiatedBlock(BlockProperties.URANIUM.build())
+    );
 
     public static final AVPDeferredHolder<Block> ZINC_BLOCK = register("zinc_block", BlockProperties.ZINC);
 

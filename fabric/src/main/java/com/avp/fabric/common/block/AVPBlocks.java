@@ -15,12 +15,6 @@ public class AVPBlocks {
 
     public static final Block RAZOR_WIRE = register(new RazorWireBlock(BlockProperties.RAZOR_WIRE.build()), "razor_wire");
 
-    // Doors And Trapdoors
-
-    public static Block registerRadiatedBlock(BlockBehaviour.Properties properties, String id) {
-        return register(new RadiatedBlock(properties), id);
-    }
-
     public static Block register(BlockPropertyBuilder builder, String id) {
         return register(builder.build(), id);
     }
