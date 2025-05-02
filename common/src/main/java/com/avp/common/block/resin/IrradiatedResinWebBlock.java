@@ -10,7 +10,7 @@ import org.jetbrains.annotations.NotNull;
 
 import com.avp.common.effect.AVPMobEffects;
 import com.avp.common.effect.RadiationStatusEffect;
-import com.avp.common.util.TempAVPPredicates;
+import com.avp.common.util.AVPPredicates;
 
 public class IrradiatedResinWebBlock extends ResinWebBlock {
 
@@ -20,7 +20,7 @@ public class IrradiatedResinWebBlock extends ResinWebBlock {
 
     @Override
     public void stepOn(@NotNull Level level, @NotNull BlockPos blockPos, @NotNull BlockState blockState, @NotNull Entity entity) {
-        if (TempAVPPredicates.canBeIrradiated(entity) && entity instanceof LivingEntity livingEntity) {
+        if (AVPPredicates.canBeIrradiated(entity) && entity instanceof LivingEntity livingEntity) {
             // Apply radiation effect.
             livingEntity.addEffect(
                 new MobEffectInstance(AVPMobEffects.RADIATION.getHolder(), RadiationStatusEffect.EFFECT_DURATION_IN_TICKS, 0)

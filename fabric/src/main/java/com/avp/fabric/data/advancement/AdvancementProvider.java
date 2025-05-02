@@ -27,25 +27,25 @@ import java.util.function.Consumer;
 import com.avp.AVP;
 import com.avp.AVPResources;
 import com.avp.common.block.TempAVPBlocks;
+import com.avp.common.entity.type.TempAVPEntityTypes;
 import com.avp.common.item.AVPArmorItems;
 import com.avp.common.item.TempAVPItems;
-import com.avp.fabric.common.entity.type.AVPEntityTypes;
 
 public class AdvancementProvider extends FabricAdvancementProvider {
 
     private static final List<EntityType<?>> ALIENS_TO_KILL = List.of(
-        AVPEntityTypes.CHESTBURSTER,
-        AVPEntityTypes.FACEHUGGER,
-        AVPEntityTypes.DRONE,
-        AVPEntityTypes.OVAMORPH,
-        AVPEntityTypes.PRAETORIAN,
-        AVPEntityTypes.QUEEN,
-        AVPEntityTypes.WARRIOR
+        TempAVPEntityTypes.CHESTBURSTER.get(),
+        TempAVPEntityTypes.FACEHUGGER.get(),
+        TempAVPEntityTypes.DRONE.get(),
+        TempAVPEntityTypes.OVAMORPH.get(),
+        TempAVPEntityTypes.PRAETORIAN.get(),
+        TempAVPEntityTypes.QUEEN.get(),
+        TempAVPEntityTypes.WARRIOR.get()
     );
 
     private static final List<EntityType<?>> ROYAL_ALIENS_TO_KILL = List.of(
-        AVPEntityTypes.PRAETORIAN,
-        AVPEntityTypes.QUEEN
+        TempAVPEntityTypes.PRAETORIAN.get(),
+        TempAVPEntityTypes.QUEEN.get()
     );
 
     public AdvancementProvider(FabricDataOutput output, CompletableFuture<HolderLookup.Provider> registryLookup) {
@@ -88,7 +88,7 @@ public class AdvancementProvider extends FabricAdvancementProvider {
                 "shear_an_ovamorph",
                 PlayerInteractTrigger.TriggerInstance.itemUsedOnEntity(
                     ItemPredicate.Builder.item().of(Items.SHEARS),
-                    Optional.of(EntityPredicate.wrap(EntityPredicate.Builder.entity().of(AVPEntityTypes.OVAMORPH)))
+                    Optional.of(EntityPredicate.wrap(EntityPredicate.Builder.entity().of(TempAVPEntityTypes.OVAMORPH.get())))
                 )
             )
             .save(consumer, AVP.MOD_ID + ":aliens/shear_an_ovamorph");

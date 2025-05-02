@@ -23,7 +23,7 @@ public class ExplosionUtil {
         var knockbackStrength = maxKnockback * (1.0 - (distance / (radius * radius)));
         // Prevent excessive knockback (cap velocity)
         var knockbackVelocity = direction.scale(Math.max(maxKnockback, knockbackStrength));
-        if (entity instanceof LivingEntity livingEntity && TempAVPPredicates.IS_IMMORTAL.test(livingEntity)) {
+        if (entity instanceof LivingEntity livingEntity && AVPPredicates.IS_IMMORTAL.test(livingEntity)) {
             return;
         }
         entity.setDeltaMovement(knockbackVelocity);

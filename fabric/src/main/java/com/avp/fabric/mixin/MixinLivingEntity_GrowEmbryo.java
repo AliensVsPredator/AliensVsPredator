@@ -22,13 +22,13 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import com.avp.common.entity.gene.GeneProviders;
+import com.avp.common.entity.living.Host;
+import com.avp.common.entity.living.alien.Alien;
+import com.avp.common.entity.living.alien.parasite.Parasite;
 import com.avp.common.manager.GeneManager;
-import com.avp.fabric.common.entity.living.Host;
-import com.avp.fabric.common.entity.living.alien.Alien;
-import com.avp.fabric.common.entity.living.alien.parasite.Parasite;
+import com.avp.common.util.AlienVariantUtil;
 import com.avp.fabric.common.lifecycle.infection.Infection;
 import com.avp.fabric.common.lifecycle.registry.AlienInfectionRegistry;
-import com.avp.fabric.common.util.AlienVariantUtil;
 
 @Mixin(LivingEntity.class)
 public abstract class MixinLivingEntity_GrowEmbryo extends Entity implements Host {

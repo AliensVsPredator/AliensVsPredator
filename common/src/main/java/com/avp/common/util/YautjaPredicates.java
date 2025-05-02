@@ -28,7 +28,7 @@ public class YautjaPredicates {
         }
 
         if (potentialTarget instanceof Player player) {
-            return !TempAVPPredicates.IS_IMMORTAL.test(player)
+            return !AVPPredicates.IS_IMMORTAL.test(player)
                 && (player.getMainHandItem().is(AVPItemTags.HOSTILE_WEAPON)
                     || (yautja.getLastAttacker() != null && yautja.getLastAttacker().is(player)));
         }

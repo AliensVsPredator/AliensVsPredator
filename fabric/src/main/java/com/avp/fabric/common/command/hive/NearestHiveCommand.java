@@ -7,7 +7,7 @@ import net.minecraft.network.chat.Component;
 
 import java.util.Objects;
 
-import com.avp.fabric.common.level.saveddata.HiveLevelData;
+import com.avp.common.level.saveddata.HiveLevelData;
 
 public class NearestHiveCommand {
 

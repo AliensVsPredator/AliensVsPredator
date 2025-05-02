@@ -4,6 +4,7 @@ import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricLanguageProvider;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 
@@ -20,7 +21,6 @@ import com.avp.common.item.TempAVPItems;
 import com.avp.common.sound.AVPSoundEvents;
 import com.avp.fabric.common.entity.type.AVPEntityTypes;
 import com.avp.fabric.common.item.AVPItems;
-import com.avp.fabric.common.item.SpawnEggItems;
 
 public class EnglishLanguageProvider extends FabricLanguageProvider {
 
@@ -287,21 +287,21 @@ public class EnglishLanguageProvider extends FabricLanguageProvider {
         builder.add(AVPCreativeModeTabs.TOOLS_AND_UTILITIES_KEY, "AVP Tools & Utilities");
 
         // Entities
-        builder.add(AVPEntityTypes.ACID, "Acid");
-        builder.add(AVPEntityTypes.CHESTBURSTER, "Chestburster");
-        builder.add(AVPEntityTypes.DRONE, "Drone");
-        builder.add(AVPEntityTypes.FACEHUGGER, "Facehugger");
-        builder.add(AVPEntityTypes.OVAMORPH, "Ovamorph");
-        builder.add(AVPEntityTypes.PRAETORIAN, "Praetorian");
-        builder.add(AVPEntityTypes.QUEEN, "Queen");
-        builder.add(AVPEntityTypes.WARRIOR, "Warrior");
-        builder.add(TempAVPEntityTypes.YAUTJA.get(), "Yautja");
-        builder.add(TempAVPEntityTypes.ROCKET.get(), "Rocket");
-        builder.add(TempAVPEntityTypes.GRENADE_THROWN.get(), "Grenade");
-        builder.add(TempAVPEntityTypes.SHURIKEN.get(), "Shuriken");
-        builder.add(TempAVPEntityTypes.SMART_DISC.get(), "Smart Disc");
-        builder.add(AVPEntityTypes.BULLET, "Bullet");
-        builder.add(TempAVPEntityTypes.MARINE.get(), "Marine");
+        addEntity(builder, TempAVPEntityTypes.ACID, "Acid");
+        addEntity(builder, TempAVPEntityTypes.CHESTBURSTER, "Chestburster");
+        addEntity(builder, TempAVPEntityTypes.DRONE, "Drone");
+        addEntity(builder, TempAVPEntityTypes.FACEHUGGER, "Facehugger");
+        addEntity(builder, TempAVPEntityTypes.OVAMORPH, "Ovamorph");
+        addEntity(builder, TempAVPEntityTypes.PRAETORIAN, "Praetorian");
+        addEntity(builder, TempAVPEntityTypes.QUEEN, "Queen");
+        addEntity(builder, TempAVPEntityTypes.WARRIOR, "Warrior");
+        addEntity(builder, TempAVPEntityTypes.YAUTJA, "Yautja");
+        addEntity(builder, TempAVPEntityTypes.ROCKET, "Rocket");
+        addEntity(builder, TempAVPEntityTypes.GRENADE_THROWN, "Grenade");
+        addEntity(builder, TempAVPEntityTypes.SHURIKEN, "Shuriken");
+        addEntity(builder, TempAVPEntityTypes.SMART_DISC, "Smart Disc");
+        addEntity(builder, AVPEntityTypes.BULLET, "Bullet");
+        addEntity(builder, TempAVPEntityTypes.MARINE, "Marine");
 
         // Combat Items
         addItem(builder, TempAVPItems.SHURIKEN, "Shuriken");
@@ -508,42 +508,42 @@ public class EnglishLanguageProvider extends FabricLanguageProvider {
         addItem(builder, TempAVPItems.VERITANIUM_SWORD, "Veritanium Sword");
 
         // Spawn Egg Items
-        addItem(builder, SpawnEggItems.ABERRANT_CHESTBURSTER_SPAWN_EGG, "Aberrant Chestburster Spawn Egg");
-        addItem(builder, SpawnEggItems.ABERRANT_DRONE_SPAWN_EGG, "Aberrant Drone Spawn Egg");
-        addItem(builder, SpawnEggItems.ABERRANT_FACEHUGGER_SPAWN_EGG, "Aberrant Facehugger Spawn Egg");
-        addItem(builder, SpawnEggItems.ABERRANT_OVAMORPH_SPAWN_EGG, "Aberrant Ovamorph Spawn Egg");
-        addItem(builder, SpawnEggItems.ABERRANT_PRAETORIAN_SPAWN_EGG, "Aberrant Praetorian Spawn Egg");
-        addItem(builder, SpawnEggItems.ABERRANT_WARRIOR_SPAWN_EGG, "Aberrant Warrior Spawn Egg");
-        addItem(builder, SpawnEggItems.ABERRANT_QUEEN_SPAWN_EGG, "Aberrant Queen Spawn Egg");
-        addItem(builder, SpawnEggItems.CHESTBURSTER_SPAWN_EGG, "Chestburster Spawn Egg");
-        addItem(builder, SpawnEggItems.DRONE_SPAWN_EGG, "Drone Spawn Egg");
-        addItem(builder, SpawnEggItems.FACEHUGGER_SPAWN_EGG, "Facehugger Spawn Egg");
-        addItem(builder, SpawnEggItems.NETHER_CHESTBURSTER_SPAWN_EGG, "Nether Chestburster Spawn Egg");
-        addItem(builder, SpawnEggItems.NETHER_DRONE_SPAWN_EGG, "Nether Drone Spawn Egg");
-        addItem(builder, SpawnEggItems.NETHER_FACEHUGGER_SPAWN_EGG, "Nether Facehugger Spawn Egg");
-        addItem(builder, SpawnEggItems.NETHER_OVAMORPH_SPAWN_EGG, "Nether Ovamorph Spawn Egg");
-        addItem(builder, SpawnEggItems.NETHER_PRAETORIAN_SPAWN_EGG, "Nether Praetorian Spawn Egg");
-        addItem(builder, SpawnEggItems.NETHER_WARRIOR_SPAWN_EGG, "Nether Warrior Spawn Egg");
-        addItem(builder, SpawnEggItems.NETHER_QUEEN_SPAWN_EGG, "Nether Queen Spawn Egg");
-        addItem(builder, SpawnEggItems.IRRADIATED_DRONE_SPAWN_EGG, "Irradiated Drone Spawn Egg");
-        addItem(builder, SpawnEggItems.IRRADIATED_PRAETORIAN_SPAWN_EGG, "Irradiated Praetorian Spawn Egg");
-        addItem(builder, SpawnEggItems.IRRADIATED_QUEEN_SPAWN_EGG, "Irradiated Queen Spawn Egg");
-        addItem(builder, SpawnEggItems.IRRADIATED_WARRIOR_SPAWN_EGG, "Irradiated Warrior Spawn Egg");
-        addItem(builder, SpawnEggItems.OVAMORPH_SPAWN_EGG, "Ovamorph Spawn Egg");
-        addItem(builder, SpawnEggItems.PRAETORIAN_SPAWN_EGG, "Praetorian Spawn Egg");
-        addItem(builder, SpawnEggItems.QUEEN_SPAWN_EGG, "Queen Spawn Egg");
-        addItem(builder, SpawnEggItems.WARRIOR_SPAWN_EGG, "Warrior Spawn Egg");
+        addItem(builder, AVPSpawnEggItems.ABERRANT_CHESTBURSTER_SPAWN_EGG, "Aberrant Chestburster Spawn Egg");
+        addItem(builder, AVPSpawnEggItems.ABERRANT_DRONE_SPAWN_EGG, "Aberrant Drone Spawn Egg");
+        addItem(builder, AVPSpawnEggItems.ABERRANT_FACEHUGGER_SPAWN_EGG, "Aberrant Facehugger Spawn Egg");
+        addItem(builder, AVPSpawnEggItems.ABERRANT_OVAMORPH_SPAWN_EGG, "Aberrant Ovamorph Spawn Egg");
+        addItem(builder, AVPSpawnEggItems.ABERRANT_PRAETORIAN_SPAWN_EGG, "Aberrant Praetorian Spawn Egg");
+        addItem(builder, AVPSpawnEggItems.ABERRANT_WARRIOR_SPAWN_EGG, "Aberrant Warrior Spawn Egg");
+        addItem(builder, AVPSpawnEggItems.ABERRANT_QUEEN_SPAWN_EGG, "Aberrant Queen Spawn Egg");
+        addItem(builder, AVPSpawnEggItems.CHESTBURSTER_SPAWN_EGG, "Chestburster Spawn Egg");
+        addItem(builder, AVPSpawnEggItems.DRONE_SPAWN_EGG, "Drone Spawn Egg");
+        addItem(builder, AVPSpawnEggItems.FACEHUGGER_SPAWN_EGG, "Facehugger Spawn Egg");
+        addItem(builder, AVPSpawnEggItems.NETHER_CHESTBURSTER_SPAWN_EGG, "Nether Chestburster Spawn Egg");
+        addItem(builder, AVPSpawnEggItems.NETHER_DRONE_SPAWN_EGG, "Nether Drone Spawn Egg");
+        addItem(builder, AVPSpawnEggItems.NETHER_FACEHUGGER_SPAWN_EGG, "Nether Facehugger Spawn Egg");
+        addItem(builder, AVPSpawnEggItems.NETHER_OVAMORPH_SPAWN_EGG, "Nether Ovamorph Spawn Egg");
+        addItem(builder, AVPSpawnEggItems.NETHER_PRAETORIAN_SPAWN_EGG, "Nether Praetorian Spawn Egg");
+        addItem(builder, AVPSpawnEggItems.NETHER_WARRIOR_SPAWN_EGG, "Nether Warrior Spawn Egg");
+        addItem(builder, AVPSpawnEggItems.NETHER_QUEEN_SPAWN_EGG, "Nether Queen Spawn Egg");
+        addItem(builder, AVPSpawnEggItems.IRRADIATED_DRONE_SPAWN_EGG, "Irradiated Drone Spawn Egg");
+        addItem(builder, AVPSpawnEggItems.IRRADIATED_PRAETORIAN_SPAWN_EGG, "Irradiated Praetorian Spawn Egg");
+        addItem(builder, AVPSpawnEggItems.IRRADIATED_QUEEN_SPAWN_EGG, "Irradiated Queen Spawn Egg");
+        addItem(builder, AVPSpawnEggItems.IRRADIATED_WARRIOR_SPAWN_EGG, "Irradiated Warrior Spawn Egg");
+        addItem(builder, AVPSpawnEggItems.OVAMORPH_SPAWN_EGG, "Ovamorph Spawn Egg");
+        addItem(builder, AVPSpawnEggItems.PRAETORIAN_SPAWN_EGG, "Praetorian Spawn Egg");
+        addItem(builder, AVPSpawnEggItems.QUEEN_SPAWN_EGG, "Queen Spawn Egg");
+        addItem(builder, AVPSpawnEggItems.WARRIOR_SPAWN_EGG, "Warrior Spawn Egg");
         addItem(builder, AVPSpawnEggItems.YAUTJA_SPAWN_EGG, "Yautja Spawn Egg");
         addItem(builder, AVPSpawnEggItems.MARINE_SPAWN_EGG, "Marine Spawn Egg");
-        addItem(builder, SpawnEggItems.ROYAL_OVAMORPH_SPAWN_EGG, "Royal Ovamorph Spawn Egg");
-        addItem(builder, SpawnEggItems.ROYAL_FACEHUGGER_SPAWN_EGG, "Royal Facehugger Spawn Egg");
-        addItem(builder, SpawnEggItems.ROYAL_CHESTBURSTER_SPAWN_EGG, "Royal Chestburster Spawn Egg");
-        addItem(builder, SpawnEggItems.ROYAL_NETHER_OVAMORPH_SPAWN_EGG, "Royal Nether Ovamorph Spawn Egg");
-        addItem(builder, SpawnEggItems.ROYAL_NETHER_FACEHUGGER_SPAWN_EGG, "Royal Nether Facehugger Spawn Egg");
-        addItem(builder, SpawnEggItems.ROYAL_NETHER_CHESTBURSTER_SPAWN_EGG, "Royal Nether Chestburster Spawn Egg");
-        addItem(builder, SpawnEggItems.ROYAL_ABERRANT_OVAMORPH_SPAWN_EGG, "Royal Aberrant Ovamorph Spawn Egg");
-        addItem(builder, SpawnEggItems.ROYAL_ABERRANT_FACEHUGGER_SPAWN_EGG, "Royal Aberrant Facehugger Spawn Egg");
-        addItem(builder, SpawnEggItems.ROYAL_ABERRANT_CHESTBURSTER_SPAWN_EGG, "Royal Aberrant Chestburster Spawn Egg");
+        addItem(builder, AVPSpawnEggItems.ROYAL_OVAMORPH_SPAWN_EGG, "Royal Ovamorph Spawn Egg");
+        addItem(builder, AVPSpawnEggItems.ROYAL_FACEHUGGER_SPAWN_EGG, "Royal Facehugger Spawn Egg");
+        addItem(builder, AVPSpawnEggItems.ROYAL_CHESTBURSTER_SPAWN_EGG, "Royal Chestburster Spawn Egg");
+        addItem(builder, AVPSpawnEggItems.ROYAL_NETHER_OVAMORPH_SPAWN_EGG, "Royal Nether Ovamorph Spawn Egg");
+        addItem(builder, AVPSpawnEggItems.ROYAL_NETHER_FACEHUGGER_SPAWN_EGG, "Royal Nether Facehugger Spawn Egg");
+        addItem(builder, AVPSpawnEggItems.ROYAL_NETHER_CHESTBURSTER_SPAWN_EGG, "Royal Nether Chestburster Spawn Egg");
+        addItem(builder, AVPSpawnEggItems.ROYAL_ABERRANT_OVAMORPH_SPAWN_EGG, "Royal Aberrant Ovamorph Spawn Egg");
+        addItem(builder, AVPSpawnEggItems.ROYAL_ABERRANT_FACEHUGGER_SPAWN_EGG, "Royal Aberrant Facehugger Spawn Egg");
+        addItem(builder, AVPSpawnEggItems.ROYAL_ABERRANT_CHESTBURSTER_SPAWN_EGG, "Royal Aberrant Chestburster Spawn Egg");
 
         // Sounds
         addSound(builder, AVPSoundEvents.BLOCK_ACID_BURN, "Acid burns");
@@ -811,6 +811,14 @@ public class EnglishLanguageProvider extends FabricLanguageProvider {
 
     private void addBlock(TranslationBuilder translationBuilder, Block block, String value) {
         translationBuilder.add(block, value);
+    }
+
+    private void addEntity(TranslationBuilder translationBuilder, Supplier<? extends EntityType<?>> entityTypeSupplier, String value) {
+        addEntity(translationBuilder, entityTypeSupplier.get(), value);
+    }
+
+    private void addEntity(TranslationBuilder translationBuilder, EntityType<?> entityType, String value) {
+        translationBuilder.add(entityType, value);
     }
 
     private void addItem(TranslationBuilder translationBuilder, Supplier<? extends Item> itemSupplier, String value) {

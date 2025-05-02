@@ -12,8 +12,8 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import com.avp.common.component.AVPDataComponents;
+import com.avp.common.util.AVPPredicates;
 import com.avp.common.util.AmmunitionIndicatorUtil;
-import com.avp.common.util.TempAVPPredicates;
 import com.avp.fabric.common.item.AVPItems;
 import com.avp.fabric.common.item.GunItem;
 
@@ -39,7 +39,7 @@ public abstract class MixinPlayerEntity_LowAmmunitionIndicator extends LivingEnt
             // Don't try to show ammo indicator server-side.
             !self.level().isClientSide
                 // Don't show ammo indicator for creative/spectator players.
-                || TempAVPPredicates.IS_IMMORTAL.test(self)
+                || AVPPredicates.IS_IMMORTAL.test(self)
                 // Don't show ammo indicator if the player is not holding an item.
                 || mainHandItem.isEmpty()
                 // Don't show ammo indicator if the player is not holding a gun.

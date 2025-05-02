@@ -6,7 +6,7 @@ import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.EntityArgument;
 import net.minecraft.network.chat.Component;
 
-import com.avp.fabric.common.level.saveddata.HiveLevelData;
+import com.avp.common.level.saveddata.HiveLevelData;
 
 public class CountCommand {
 

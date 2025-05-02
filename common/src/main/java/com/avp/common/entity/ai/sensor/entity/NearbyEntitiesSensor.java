@@ -6,7 +6,7 @@ import net.minecraft.world.entity.LivingEntity;
 import com.avp.common.entity.ai.GOAPConstants;
 import com.avp.common.goap.GOAPSensor;
 import com.avp.common.goap.state.GOAPMutableWorldState;
-import com.avp.common.util.TempAVPPredicates;
+import com.avp.common.util.AVPPredicates;
 
 public class NearbyEntitiesSensor implements GOAPSensor<LivingEntity> {
 
@@ -19,7 +19,7 @@ public class NearbyEntitiesSensor implements GOAPSensor<LivingEntity> {
         worldState.set(
             GOAPConstants.NEARBY_ENTITIES,
             context.level()
-                .getEntitiesOfClass(Entity.class, context.getBoundingBox().inflate(16), TempAVPPredicates.alwaysTrue())
+                .getEntitiesOfClass(Entity.class, context.getBoundingBox().inflate(16), AVPPredicates.alwaysTrue())
         );
     }
 }

@@ -13,7 +13,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import com.avp.common.effect.AVPMobEffects;
 import com.avp.common.effect.RadiationStatusEffect;
-import com.avp.common.util.TempAVPPredicates;
+import com.avp.common.util.AVPPredicates;
 import com.avp.common.worldgen.biome.AVPBiomes;
 
 @Mixin(LivingEntity.class)
@@ -27,7 +27,7 @@ public abstract class MixinLivingEntity_NukedRadiation extends Entity {
     public void tick(CallbackInfo callbackInfo) {
         var self = LivingEntity.class.cast(this);
 
-        if (!TempAVPPredicates.canBeIrradiated(self)) {
+        if (!AVPPredicates.canBeIrradiated(self)) {
             return;
         }
 

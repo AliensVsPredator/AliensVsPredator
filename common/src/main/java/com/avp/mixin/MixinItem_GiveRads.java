@@ -14,7 +14,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import com.avp.common.effect.AVPMobEffects;
 import com.avp.common.effect.RadiationStatusEffect;
 import com.avp.common.item.AVPItemTags;
-import com.avp.common.util.TempAVPPredicates;
+import com.avp.common.util.AVPPredicates;
 
 @Mixin(Item.class)
 public class MixinItem_GiveRads {
@@ -27,7 +27,7 @@ public class MixinItem_GiveRads {
                 // Only run this logic for radiation-emitting items.
                 || !stack.is(AVPItemTags.RADIATION_ITEMS)
                 // Only run this logic if the entity can be irradiated.
-                || !TempAVPPredicates.canBeIrradiated(entity)
+                || !AVPPredicates.canBeIrradiated(entity)
                 // Sanity check + allow compiler to assert entity type to get livingEntity ref access.
                 || !(entity instanceof LivingEntity livingEntity)
         ) {

@@ -17,8 +17,8 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import com.avp.fabric.common.entity.living.Host;
-import com.avp.fabric.common.util.AVPPredicates;
+import com.avp.common.entity.living.Host;
+import com.avp.common.util.AVPPredicates;
 
 @Mixin(ChorusFruitItem.class)
 public class MixinItem_ChorusEmbryo {

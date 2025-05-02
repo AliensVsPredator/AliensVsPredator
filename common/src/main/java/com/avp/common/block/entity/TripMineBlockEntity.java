@@ -12,7 +12,7 @@ import net.minecraft.world.phys.AABB;
 
 import com.avp.AVP;
 import com.avp.common.entity.AVPEntityTypeTags;
-import com.avp.common.util.TempAVPPredicates;
+import com.avp.common.util.AVPPredicates;
 
 public class TripMineBlockEntity extends BlockEntity {
 
@@ -38,7 +38,7 @@ public class TripMineBlockEntity extends BlockEntity {
         var detectionArea = new AABB(blockPos).inflate(AVP.config.blockConfigs.TRIP_MINE_SEARCH_RADIUS);
         var entities = level.getEntitiesOfClass(LivingEntity.class, detectionArea, entity -> {
             if (entity instanceof Player player) {
-                return !TempAVPPredicates.IS_IMMORTAL.test(player);
+                return !AVPPredicates.IS_IMMORTAL.test(player);
             }
 
             return entity.getType().is(AVPEntityTypeTags.PREDATORS);

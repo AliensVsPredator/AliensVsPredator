@@ -9,9 +9,9 @@ import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 import com.avp.common.entity.gene.GeneKeys;
-import com.avp.common.util.TempAVPPredicates;
-import com.avp.fabric.common.entity.living.alien.Alien;
-import com.avp.fabric.common.entity.living.alien.ovamorph.Ovamorph;
+import com.avp.common.entity.living.alien.Alien;
+import com.avp.common.entity.living.alien.ovamorph.Ovamorph;
+import com.avp.common.util.AVPPredicates;
 
 public class PoisionJellyItem extends Item {
 
@@ -34,7 +34,7 @@ public class PoisionJellyItem extends Item {
             ovamorph.geneManager().minimize(GeneKeys.GENETIC_INTEGRITY);
         }
 
-        if (!TempAVPPredicates.IS_IMMORTAL.test(player)) {
+        if (!AVPPredicates.IS_IMMORTAL.test(player)) {
             itemStack.shrink(1);
         }
 

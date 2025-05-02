@@ -13,7 +13,7 @@ import com.avp.common.entity.projectile.ShurikenItemEntity;
 import com.avp.common.entity.projectile.SmartDiscItemEntity;
 import com.avp.common.item.TempAVPItems;
 import com.avp.common.sound.AVPSoundEvents;
-import com.avp.common.util.TempAVPPredicates;
+import com.avp.common.util.AVPPredicates;
 import com.avp.fabric.common.entity.projectile.BulletProjectile;
 
 @Deprecated(forRemoval = true)
@@ -145,7 +145,7 @@ public class ItemGoalUtil {
                 livingEntity -> !livingEntity.getType()
                     .is(
                         AVPEntityTypeTags.PREDATORS
-                    ) && !TempAVPPredicates.IS_IMMORTAL.test(livingEntity) && livingEntity != projectile.getOwner()
+                    ) && !AVPPredicates.IS_IMMORTAL.test(livingEntity) && livingEntity != projectile.getOwner()
             );
         if (!livingEntities.isEmpty()) {
             var first = livingEntities.getFirst();
@@ -177,7 +177,7 @@ public class ItemGoalUtil {
         if (
             projectile.getOwner() instanceof Player player && projectile.getBoundingBox().intersects(projectile.getOwner().getBoundingBox())
         ) {
-            if (!TempAVPPredicates.IS_IMMORTAL.test(player)) {
+            if (!AVPPredicates.IS_IMMORTAL.test(player)) {
                 player.getInventory().add(TempAVPItems.SMART_DISC.get().getDefaultInstance());
             }
             projectile.kill();

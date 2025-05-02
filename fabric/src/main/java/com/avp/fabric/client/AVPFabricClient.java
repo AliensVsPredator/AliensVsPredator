@@ -18,15 +18,7 @@ import com.avp.fabric.client.network.AVPClientPacketHandlerRegistry;
 import com.avp.fabric.client.particle.AcidParticleProvider;
 import com.avp.fabric.client.particle.BlueAcidParticleProvider;
 import com.avp.fabric.client.particle.IrradiatedAcidParticleProvider;
-import com.avp.fabric.client.render.entity.AcidRenderer;
-import com.avp.fabric.client.render.entity.ChestbursterRenderer;
-import com.avp.fabric.client.render.entity.DroneRenderer;
 import com.avp.fabric.client.render.entity.EmptyRenderer;
-import com.avp.fabric.client.render.entity.OvamorphRenderer;
-import com.avp.fabric.client.render.entity.PraetorianRenderer;
-import com.avp.fabric.client.render.entity.QueenRenderer;
-import com.avp.fabric.client.render.entity.WarriorRenderer;
-import com.avp.fabric.client.render.entity.parasite.facehugger.FacehuggerRenderer;
 import com.avp.fabric.client.render.item.F903weItemRenderer;
 import com.avp.fabric.client.render.item.FlameThrowerItemRenderer;
 import com.avp.fabric.client.render.item.M3712ShotgunItemRenderer;
@@ -66,45 +58,6 @@ public class AVPFabricClient implements ClientModInitializer {
         registerItemRenderer(AVPItems.ZX_76_SHOTGUN, name -> () -> new ZX76ShotgunItemRenderer(name));
 
         // Entities
-        EntityRendererRegistry.register(AVPEntityTypes.ACID, AcidRenderer::new);
-
-        EntityRendererRegistry.register(AVPEntityTypes.CHESTBURSTER, ChestbursterRenderer::new);
-        EntityRendererRegistry.register(AVPEntityTypes.DRONE, DroneRenderer::new);
-        EntityRendererRegistry.register(AVPEntityTypes.FACEHUGGER, FacehuggerRenderer::new);
-        EntityRendererRegistry.register(AVPEntityTypes.OVAMORPH, OvamorphRenderer::new);
-        EntityRendererRegistry.register(AVPEntityTypes.PRAETORIAN, PraetorianRenderer::new);
-        EntityRendererRegistry.register(AVPEntityTypes.QUEEN, QueenRenderer::new);
-        EntityRendererRegistry.register(AVPEntityTypes.WARRIOR, WarriorRenderer::new);
-        EntityRendererRegistry.register(AVPEntityTypes.ROYAL_CHESTBURSTER, ChestbursterRenderer::new);
-        EntityRendererRegistry.register(AVPEntityTypes.ROYAL_FACEHUGGER, FacehuggerRenderer::new);
-        EntityRendererRegistry.register(AVPEntityTypes.ROYAL_OVAMORPH, OvamorphRenderer::new);
-
-        EntityRendererRegistry.register(AVPEntityTypes.ABERRANT_CHESTBURSTER, ChestbursterRenderer::new);
-        EntityRendererRegistry.register(AVPEntityTypes.ABERRANT_DRONE, DroneRenderer::new);
-        EntityRendererRegistry.register(AVPEntityTypes.ABERRANT_FACEHUGGER, FacehuggerRenderer::new);
-        EntityRendererRegistry.register(AVPEntityTypes.ABERRANT_OVAMORPH, OvamorphRenderer::new);
-        EntityRendererRegistry.register(AVPEntityTypes.ABERRANT_PRAETORIAN, PraetorianRenderer::new);
-        EntityRendererRegistry.register(AVPEntityTypes.ABERRANT_QUEEN, QueenRenderer::new);
-        EntityRendererRegistry.register(AVPEntityTypes.ABERRANT_WARRIOR, WarriorRenderer::new);
-        EntityRendererRegistry.register(AVPEntityTypes.ROYAL_ABERRANT_CHESTBURSTER, ChestbursterRenderer::new);
-        EntityRendererRegistry.register(AVPEntityTypes.ROYAL_ABERRANT_FACEHUGGER, FacehuggerRenderer::new);
-        EntityRendererRegistry.register(AVPEntityTypes.ROYAL_ABERRANT_OVAMORPH, OvamorphRenderer::new);
-
-        EntityRendererRegistry.register(AVPEntityTypes.IRRADIATED_DRONE, DroneRenderer::new);
-        EntityRendererRegistry.register(AVPEntityTypes.IRRADIATED_PRAETORIAN, PraetorianRenderer::new);
-        EntityRendererRegistry.register(AVPEntityTypes.IRRADIATED_QUEEN, QueenRenderer::new);
-        EntityRendererRegistry.register(AVPEntityTypes.IRRADIATED_WARRIOR, WarriorRenderer::new);
-
-        EntityRendererRegistry.register(AVPEntityTypes.NETHER_CHESTBURSTER, ChestbursterRenderer::new);
-        EntityRendererRegistry.register(AVPEntityTypes.NETHER_DRONE, DroneRenderer::new);
-        EntityRendererRegistry.register(AVPEntityTypes.NETHER_FACEHUGGER, FacehuggerRenderer::new);
-        EntityRendererRegistry.register(AVPEntityTypes.NETHER_OVAMORPH, OvamorphRenderer::new);
-        EntityRendererRegistry.register(AVPEntityTypes.NETHER_PRAETORIAN, PraetorianRenderer::new);
-        EntityRendererRegistry.register(AVPEntityTypes.NETHER_QUEEN, QueenRenderer::new);
-        EntityRendererRegistry.register(AVPEntityTypes.NETHER_WARRIOR, WarriorRenderer::new);
-        EntityRendererRegistry.register(AVPEntityTypes.ROYAL_NETHER_CHESTBURSTER, ChestbursterRenderer::new);
-        EntityRendererRegistry.register(AVPEntityTypes.ROYAL_NETHER_FACEHUGGER, FacehuggerRenderer::new);
-        EntityRendererRegistry.register(AVPEntityTypes.ROYAL_NETHER_OVAMORPH, OvamorphRenderer::new);
 
         // Block-like entities (like primed TNT)
 

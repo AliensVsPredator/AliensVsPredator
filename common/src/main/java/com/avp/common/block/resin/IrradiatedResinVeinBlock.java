@@ -9,7 +9,7 @@ import net.minecraft.world.level.block.state.BlockState;
 
 import com.avp.common.effect.AVPMobEffects;
 import com.avp.common.effect.RadiationStatusEffect;
-import com.avp.common.util.TempAVPPredicates;
+import com.avp.common.util.AVPPredicates;
 
 public class IrradiatedResinVeinBlock extends ResinVeinBlock {
 
@@ -19,7 +19,7 @@ public class IrradiatedResinVeinBlock extends ResinVeinBlock {
 
     @Override
     public void stepOn(Level level, BlockPos blockPos, BlockState blockState, Entity entity) {
-        if (TempAVPPredicates.canBeIrradiated(entity) && entity instanceof LivingEntity livingEntity) {
+        if (AVPPredicates.canBeIrradiated(entity) && entity instanceof LivingEntity livingEntity) {
             // Apply radiation effect.
             livingEntity.addEffect(
                 new MobEffectInstance(AVPMobEffects.RADIATION.getHolder(), RadiationStatusEffect.EFFECT_DURATION_IN_TICKS, 0)
