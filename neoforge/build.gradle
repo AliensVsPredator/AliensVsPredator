@@ -38,6 +38,7 @@ neoForge {
 
         server {
             server()
+            programArgument '--nogui'
             gameDirectory = project.file('runs/server')
         }
     }
