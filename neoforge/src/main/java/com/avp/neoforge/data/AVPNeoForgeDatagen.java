@@ -2,20 +2,16 @@ package com.avp.neoforge.data;
 
 import com.avp.data.AVPCaveKey;
 import com.avp.data.worldgen.AVPOres;
-import net.minecraft.core.HolderGetter;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.RegistrySetBuilder;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.DataProvider;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.BiomeTags;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.Biomes;
 import net.minecraft.world.level.biome.MobSpawnSettings;
 import net.minecraft.world.level.levelgen.GenerationStep;
-import net.minecraft.world.level.levelgen.placement.PlacedFeature;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.common.data.DatapackBuiltinEntriesProvider;
@@ -26,7 +22,6 @@ import net.neoforged.neoforge.registries.NeoForgeRegistries;
 
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Stream;
 
 import com.avp.AVP;
 import com.avp.common.config.AVPConfig;
@@ -56,6 +51,7 @@ public class AVPNeoForgeDatagen {
             new AVPSpawnData(EntityType.COW, AVPEntitySpawnKeys.ADD_SPAWNS_YAUTJA, BiomeTags.IS_JUNGLE, config.YAUTJA_SPAWN)
     );
 
+    @SuppressWarnings( "unchecked")
     @SubscribeEvent
     public static void onGatherData(GatherDataEvent event) {
         event.getGenerator().addProvider(
@@ -77,8 +73,10 @@ public class AVPNeoForgeDatagen {
                                             ))
                                     ));
                         }
-                        HolderGetter<Biome> biomes = bootstrap.lookup(Registries.BIOME);
-                        HolderGetter<PlacedFeature> placedFeatures = bootstrap.lookup(Registries.PLACED_FEATURE);
+                        var biomes = bootstrap.lookup(Registries.BIOME);
+                        var placedFeatures = bootstrap.lookup(Registries.PLACED_FEATURE);
+                        var biomes0 = new BiomeFilterRegistryLookup(biomes);
+                        var excludedBiomes = HolderSet.direct(biomes.getOrThrow(Biomes.DRIPSTONE_CAVES));
 
                         bootstrap.register(AVPFeatureKeys.ADD_AUTUNITE_GEODE, new BiomeModifiers.AddFeaturesBiomeModifier(
                             bootstrap.lookup(Registries.BIOME).getOrThrow(BiomeTags.IS_OVERWORLD),
@@ -134,9 +132,13 @@ public class AVPNeoForgeDatagen {
                             GenerationStep.Decoration.UNDERGROUND_ORES));
 
                         bootstrap.register(AVPFeatureKeys.ADD_ZINC, new BiomeModifiers.AddFeaturesBiomeModifier(
-                            bootstrap.lookup(Registries.BIOME).getOrThrow(BiomeTags.IS_OVERWORLD),
+                            new AndHolderSet<>(
+                                bootstrap.lookup(Registries.BIOME).getOrThrow(BiomeTags.IS_OVERWORLD),
+                                new NotHolderSet<>(biomes0, excludedBiomes)
+                            ),
                             HolderSet.direct(placedFeatures.getOrThrow(AVPOres.ZINC.placedFeatureKey())),
-                            GenerationStep.Decoration.UNDERGROUND_ORES));
+                            GenerationStep.Decoration.UNDERGROUND_ORES
+                        ));
 
                         bootstrap.register(AVPFeatureKeys.ADD_ZINC_DRIPSTONE_CAVES, new BiomeModifiers.AddFeaturesBiomeModifier(
                             HolderSet.direct(biomes.getOrThrow(Biomes.DRIPSTONE_CAVES)),
