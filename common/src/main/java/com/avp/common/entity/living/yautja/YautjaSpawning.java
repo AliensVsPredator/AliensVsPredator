@@ -1,4 +1,4 @@
-package com.avp.fabric.common.entity.living.yautja;
+package com.avp.common.entity.living.yautja;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.RandomSource;

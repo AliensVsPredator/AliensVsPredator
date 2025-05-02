@@ -84,7 +84,7 @@ public class AVPEntityTypeTagProvider extends FabricTagProvider.EntityTypeTagPro
             .add(EntityType.CREEPER);
 
         getOrCreateTagBuilder(AVPEntityTypeTags.PREDATORS)
-            .add(AVPEntityTypes.YAUTJA);
+            .add(TempAVPEntityTypes.YAUTJA.get());
 
         addCompatibilityTags();
     }
@@ -260,7 +260,7 @@ public class AVPEntityTypeTagProvider extends FabricTagProvider.EntityTypeTagPro
                 EntityType.WITCH,
                 EntityType.WOLF,
                 TempAVPEntityTypes.MARINE.get(),
-                AVPEntityTypes.YAUTJA
+                TempAVPEntityTypes.YAUTJA.get()
             );
     }
 

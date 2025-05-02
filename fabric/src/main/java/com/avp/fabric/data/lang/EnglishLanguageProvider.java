@@ -295,7 +295,7 @@ public class EnglishLanguageProvider extends FabricLanguageProvider {
         builder.add(AVPEntityTypes.PRAETORIAN, "Praetorian");
         builder.add(AVPEntityTypes.QUEEN, "Queen");
         builder.add(AVPEntityTypes.WARRIOR, "Warrior");
-        builder.add(AVPEntityTypes.YAUTJA, "Yautja");
+        builder.add(TempAVPEntityTypes.YAUTJA.get(), "Yautja");
         builder.add(TempAVPEntityTypes.ROCKET.get(), "Rocket");
         builder.add(TempAVPEntityTypes.GRENADE_THROWN.get(), "Grenade");
         builder.add(TempAVPEntityTypes.SHURIKEN.get(), "Shuriken");
@@ -533,7 +533,7 @@ public class EnglishLanguageProvider extends FabricLanguageProvider {
         addItem(builder, SpawnEggItems.PRAETORIAN_SPAWN_EGG, "Praetorian Spawn Egg");
         addItem(builder, SpawnEggItems.QUEEN_SPAWN_EGG, "Queen Spawn Egg");
         addItem(builder, SpawnEggItems.WARRIOR_SPAWN_EGG, "Warrior Spawn Egg");
-        addItem(builder, SpawnEggItems.YAUTJA_SPAWN_EGG, "Yautja Spawn Egg");
+        addItem(builder, AVPSpawnEggItems.YAUTJA_SPAWN_EGG, "Yautja Spawn Egg");
         addItem(builder, AVPSpawnEggItems.MARINE_SPAWN_EGG, "Marine Spawn Egg");
         addItem(builder, SpawnEggItems.ROYAL_OVAMORPH_SPAWN_EGG, "Royal Ovamorph Spawn Egg");
         addItem(builder, SpawnEggItems.ROYAL_FACEHUGGER_SPAWN_EGG, "Royal Facehugger Spawn Egg");

@@ -1,9 +1,10 @@
 package com.avp.fabric.data.worldgen;
 
-import com.avp.data.worldgen.AVPOres;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
+
+import com.avp.data.worldgen.AVPOres;
 
 public class AVPOreConfigurations {
 

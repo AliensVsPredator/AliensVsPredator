@@ -19,6 +19,7 @@ import net.minecraft.world.level.levelgen.structure.templatesystem.StructureProc
 import java.util.ArrayList;
 
 import com.avp.AVP;
+import com.avp.common.entity.type.TempAVPEntityTypes;
 import com.avp.fabric.common.block.CompostingChanceRegistry;
 import com.avp.fabric.common.block.DispenserBlockBehaviors;
 import com.avp.fabric.common.block.FlammableBlockRegistry;
@@ -97,7 +98,8 @@ public class AVPFabric implements ModInitializer {
         /*
          * TODO: Use Yautja sound when added
          */
-        sounds.put(AVPEntityTypes.YAUTJA, SoundEvents.ALLAY_AMBIENT_WITH_ITEM);
+        // FIXME: This will break on NeoForge.
+        sounds.put(TempAVPEntityTypes.YAUTJA.get(), SoundEvents.ALLAY_AMBIENT_WITH_ITEM);
     }
 
     public static void modifyGifts() {

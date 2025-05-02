@@ -246,8 +246,6 @@ public class SpawnEggItems {
 
     public static final AVPDeferredHolder<Item> WARRIOR_SPAWN_EGG = register("warrior", () -> AVPEntityTypes.WARRIOR, 0x010202, 0x4A4E55);
 
-    public static final AVPDeferredHolder<Item> YAUTJA_SPAWN_EGG = register("yautja", () -> AVPEntityTypes.YAUTJA, 0xB9A86C, 0x5A4728);
-
     private static AVPDeferredHolder<Item> register(
         String baseId,
         Supplier<? extends EntityType<? extends Mob>> entityTypeSupplier,

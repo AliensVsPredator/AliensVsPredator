@@ -23,7 +23,6 @@ import com.avp.fabric.common.entity.living.alien.xenomorph.drone.Drone;
 import com.avp.fabric.common.entity.living.alien.xenomorph.praetorian.Praetorian;
 import com.avp.fabric.common.entity.living.alien.xenomorph.queen.Queen;
 import com.avp.fabric.common.entity.living.alien.xenomorph.warrior.Warrior;
-import com.avp.fabric.common.entity.living.yautja.Yautja;
 import com.avp.fabric.common.entity.projectile.BulletProjectile;
 
 public class AVPEntityTypes {
@@ -84,12 +83,6 @@ public class AVPEntityTypes {
         "warrior",
         EntityType.Builder.of(Warrior::new, ALIEN_CATEGORY)
             .sized(0.8f, 1.98f)
-    );
-
-    public static final EntityType<Yautja> YAUTJA = register(
-        "yautja",
-        EntityType.Builder.of(Yautja::new, PREDATOR_CATEGORY)
-            .sized(0.98f, 2.48f)
     );
 
     // These are "deferred" entity types for our existing entities. We want different spawn colors for these spawn eggs,
@@ -455,7 +448,5 @@ public class AVPEntityTypes {
         FabricDefaultAttributeRegistry.register(ROYAL_NETHER_CHESTBURSTER, Chestburster.createChestbursterAttributes());
         FabricDefaultAttributeRegistry.register(ROYAL_NETHER_FACEHUGGER, Facehugger.createFacehuggerAttributes());
         FabricDefaultAttributeRegistry.register(ROYAL_NETHER_OVAMORPH, Ovamorph.createOvamorphAttributes());
-
-        FabricDefaultAttributeRegistry.register(YAUTJA, Yautja.createYautjaAttributes());
     }
 }

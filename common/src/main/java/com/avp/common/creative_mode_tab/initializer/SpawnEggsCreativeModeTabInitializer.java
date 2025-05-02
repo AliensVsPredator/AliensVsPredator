@@ -52,7 +52,7 @@ public class SpawnEggsCreativeModeTabInitializer {
         // CreativeModeTabUtil.accept(output, SpawnEggItems.ROYAL_ABERRANT_OVAMORPH_SPAWN_EGG);
         // CreativeModeTabUtil.accept(output, SpawnEggItems.ROYAL_ABERRANT_FACEHUGGER_SPAWN_EGG);
         // CreativeModeTabUtil.accept(output, SpawnEggItems.ROYAL_ABERRANT_CHESTBURSTER_SPAWN_EGG);
-        //
-        // CreativeModeTabUtil.accept(output, SpawnEggItems.YAUTJA_SPAWN_EGG);
+
+        CreativeModeTabUtil.accept(output, AVPSpawnEggItems.YAUTJA_SPAWN_EGG);
     };
 }

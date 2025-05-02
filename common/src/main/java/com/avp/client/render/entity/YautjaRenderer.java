@@ -1,4 +1,4 @@
-package com.avp.fabric.client.render.entity;
+package com.avp.client.render.entity;
 
 import mod.azure.azurelib.rewrite.render.entity.AzEntityRenderer;
 import mod.azure.azurelib.rewrite.render.entity.AzEntityRendererConfig;
@@ -6,9 +6,9 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
 
 import com.avp.AVPResources;
-import com.avp.fabric.client.animation.entity.YautjaAnimator;
-import com.avp.fabric.client.render.layer.YautjaItemLayer;
-import com.avp.fabric.common.entity.living.yautja.Yautja;
+import com.avp.client.animation.entity.YautjaAnimator;
+import com.avp.client.render.layer.YautjaItemLayer;
+import com.avp.common.entity.living.yautja.Yautja;
 
 public class YautjaRenderer extends AzEntityRenderer<Yautja> {
 

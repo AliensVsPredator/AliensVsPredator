@@ -10,12 +10,13 @@ import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.BiConsumer;
 
+import com.avp.common.entity.living.yautja.YautjaLootTable;
+import com.avp.common.entity.type.TempAVPEntityTypes;
 import com.avp.common.item.TempAVPItems;
 import com.avp.fabric.common.entity.living.alien.xenomorph.drone.DroneLootTable;
 import com.avp.fabric.common.entity.living.alien.xenomorph.praetorian.PraetorianLootTable;
 import com.avp.fabric.common.entity.living.alien.xenomorph.queen.QueenLootTable;
 import com.avp.fabric.common.entity.living.alien.xenomorph.warrior.WarriorLootTable;
-import com.avp.fabric.common.entity.living.yautja.YautjaLootTable;
 import com.avp.fabric.common.entity.type.AVPEntityTypes;
 
 public class EntityLootTableProvider extends SimpleFabricLootTableProvider {
@@ -99,6 +100,6 @@ public class EntityLootTableProvider extends SimpleFabricLootTableProvider {
             )
         );
 
-        biConsumer.accept(AVPEntityTypes.YAUTJA.getDefaultLootTable(), YautjaLootTable.LOOT_TABLE.apply(provider));
+        biConsumer.accept(TempAVPEntityTypes.YAUTJA.get().getDefaultLootTable(), YautjaLootTable.LOOT_TABLE.apply(provider));
     }
 }

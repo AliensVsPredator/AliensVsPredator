@@ -10,6 +10,7 @@ import com.avp.common.entity.living.human.EyeColorGenerator;
 import com.avp.common.entity.living.human.HairColorGenerator;
 import com.avp.common.entity.living.human.SkinColorGenerator;
 import com.avp.common.entity.living.human.marine.Marine;
+import com.avp.common.entity.living.yautja.Yautja;
 import com.avp.common.entity.machine.SentryTurret;
 import com.avp.common.entity.nuke.MushroomCloudEntity;
 import com.avp.common.entity.nuke.PrimedNuke;
@@ -102,6 +103,12 @@ public class TempAVPEntityTypes {
             .sized(0.25F, 0.25F)
     );
 
+    public static final AVPDeferredHolder<EntityType<Yautja>> YAUTJA = register(
+        "yautja",
+        EntityType.Builder.of(Yautja::new, PREDATOR_CATEGORY)
+            .sized(0.98f, 2.48f)
+    );
+
     private static <T extends Entity> AVPDeferredHolder<EntityType<T>> register(String id, EntityType.Builder<T> builder) {
         return Services.REGISTRY.register(
             BuiltInRegistries.ENTITY_TYPE,
@@ -113,5 +120,6 @@ public class TempAVPEntityTypes {
     public static void initialize() {
         Services.REGISTRY.registerEntityAttributes(MARINE, Marine::createMarineAttributes);
         Services.REGISTRY.registerEntityAttributes(SENTRY_TURRET, SentryTurret::createSentryTurretAttributes);
+        Services.REGISTRY.registerEntityAttributes(YAUTJA, Yautja::createYautjaAttributes);
     }
 }

@@ -9,7 +9,6 @@ import java.util.Map;
 import java.util.function.BiFunction;
 
 import com.avp.common.entity.type.TempAVPEntityTypes;
-import com.avp.fabric.common.entity.type.AVPEntityTypes;
 
 public record EntityHeadOffsetData(
     BiFunction<EntityHeadData, Entity, Double> verticalOffsetSupplier,
@@ -123,7 +122,7 @@ public record EntityHeadOffsetData(
                     new EntityHeadOffsetData(EntityHeadOffsetData::marineVerticalOffset, EntityHeadOffsetData::marineFaceOffset)
                 ),
                 Map.entry(
-                    AVPEntityTypes.YAUTJA,
+                    TempAVPEntityTypes.YAUTJA.get(),
                     new EntityHeadOffsetData(EntityHeadOffsetData::yautjaVerticalOffset, EntityHeadOffsetData::yautjaFaceOffset)
                 )
             )

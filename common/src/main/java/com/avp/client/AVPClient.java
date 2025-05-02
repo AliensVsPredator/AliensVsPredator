@@ -30,6 +30,7 @@ import com.avp.client.render.entity.MushroomCloudRenderer;
 import com.avp.client.render.entity.NukeRenderer;
 import com.avp.client.render.entity.RocketRenderer;
 import com.avp.client.render.entity.SentryTurretRenderer;
+import com.avp.client.render.entity.YautjaRenderer;
 import com.avp.client.render.item.DeskTerminalItemRenderer;
 import com.avp.client.render.item.ResonatorItemRenderer;
 import com.avp.client.render.item.SentryTurretItemRenderer;
@@ -263,6 +264,7 @@ public class AVPClient {
         Services.CLIENT_REGISTRY.registerEntityRenderer(TempAVPEntityTypes.SENTRY_TURRET, SentryTurretRenderer::new);
         Services.CLIENT_REGISTRY.registerEntityRenderer(TempAVPEntityTypes.SHURIKEN, SpinningItemRenderer::new);
         Services.CLIENT_REGISTRY.registerEntityRenderer(TempAVPEntityTypes.SMART_DISC, SpinningItemRenderer::new);
+        Services.CLIENT_REGISTRY.registerEntityRenderer(TempAVPEntityTypes.YAUTJA, YautjaRenderer::new);
     }
 
     private static void registerItemRenderers() {

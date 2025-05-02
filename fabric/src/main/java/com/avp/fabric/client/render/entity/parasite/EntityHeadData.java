@@ -8,7 +8,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.avp.common.entity.type.TempAVPEntityTypes;
-import com.avp.fabric.common.entity.type.AVPEntityTypes;
 
 public record EntityHeadData(
     Vec3 size,
@@ -68,7 +67,10 @@ public record EntityHeadData(
                 Map.entry(EntityType.ZOGLIN, HOGLIN),
                 Map.entry(EntityType.ZOMBIE_VILLAGER, VILLAGER),
                 Map.entry(TempAVPEntityTypes.MARINE.get(), adjust(vec3(8, 8, 8), vec3(-4, 24, -4), vec3(0, 24, 0))),
-                Map.entry(AVPEntityTypes.YAUTJA, adjust(vec3(1, 4, 3), vec3(-4.0699, 31.8255, -4.43554), vec3(-0.3347, 32, 1.8756)))
+                Map.entry(
+                    TempAVPEntityTypes.YAUTJA.get(),
+                    adjust(vec3(1, 4, 3), vec3(-4.0699, 31.8255, -4.43554), vec3(-0.3347, 32, 1.8756))
+                )
             )
         )
     );

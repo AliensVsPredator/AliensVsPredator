@@ -1,9 +1,8 @@
-package com.avp.fabric.common.entity.living.yautja;
+package com.avp.common.entity.living.yautja;
 
 import mod.azure.azurelib.common.api.common.ai.pathing.AzureNavigation;
 import mod.azure.azurelib.common.internal.common.ai.pathing.AzurePathFinder;
 import net.minecraft.world.entity.ai.control.MoveControl;
-import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.ai.goal.GoalSelector;
 import net.minecraft.world.entity.ai.navigation.GroundPathNavigation;
 import net.minecraft.world.entity.ai.navigation.WaterBoundPathNavigation;
@@ -13,7 +12,6 @@ import net.minecraft.world.level.pathfinder.WalkNodeEvaluator;
 import org.jetbrains.annotations.NotNull;
 
 import com.avp.common.ai.goal.WaterMoveControl;
-import com.avp.fabric.common.ai.goal.combat.UseItemGoal;
 
 public class YautjaNavigationManager {
 
@@ -25,12 +23,15 @@ public class YautjaNavigationManager {
 
     private final WaterMoveControl waterMoveControl;
 
-    private final Goal groundAttackGoal;
+    // FIXME:
+    // private final Goal groundAttackGoal;
 
-    private final Goal waterAttackGoal;
+    // FIXME:
+    // private final Goal waterAttackGoal;
 
     public YautjaNavigationManager(Yautja yautja, MoveControl moveControl) {
-        this.groundAttackGoal = new UseItemGoal(yautja, yautja::runAttackAnimations);
+        // FIXME:
+        // this.groundAttackGoal = new UseItemGoal(yautja, yautja::runAttackAnimations);
         this.groundMoveControl = moveControl;
         this.groundNavigation = new AzureNavigation(yautja, yautja.level()) {
 
@@ -46,21 +47,24 @@ public class YautjaNavigationManager {
 
         // Water navigation.
         yautja.setPathfindingMalus(PathType.WATER, 0.0F);
-        this.waterAttackGoal = new UseItemGoal(yautja, yautja::runAttackAnimations);
+        // FIXME:
+        // this.waterAttackGoal = new UseItemGoal(yautja, yautja::runAttackAnimations);
         this.waterMoveControl = new WaterMoveControl(yautja);
         this.waterNavigation = new WaterBoundPathNavigation(yautja, yautja.level());
     }
 
     public void switchToGround(Yautja yautja, int priority, GoalSelector goalSelector) {
-        goalSelector.removeGoal(waterAttackGoal);
-        goalSelector.addGoal(priority, groundAttackGoal);
+        // FIXME:
+        // goalSelector.removeGoal(waterAttackGoal);
+        // goalSelector.addGoal(priority, groundAttackGoal);
         yautja.setMoveControl(groundMoveControl);
         yautja.setNavigation(groundNavigation);
     }
 
     public void switchToWater(Yautja yautja, int priority, GoalSelector goalSelector) {
-        goalSelector.removeGoal(groundAttackGoal);
-        goalSelector.addGoal(priority, waterAttackGoal);
+        // FIXME:
+        // goalSelector.removeGoal(groundAttackGoal);
+        // goalSelector.addGoal(priority, waterAttackGoal);
         yautja.setMoveControl(waterMoveControl);
         yautja.setNavigation(waterNavigation);
     }

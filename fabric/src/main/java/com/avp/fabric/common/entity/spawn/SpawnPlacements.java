@@ -13,6 +13,7 @@ import com.avp.AVP;
 import com.avp.AVPResources;
 import com.avp.common.entity.AVPEntityTypeTags;
 import com.avp.common.entity.living.human.marine.MarineSpawning;
+import com.avp.common.entity.living.yautja.YautjaSpawning;
 import com.avp.common.entity.type.TempAVPEntityTypes;
 import com.avp.common.util.TempAVPPredicates;
 import com.avp.fabric.common.entity.living.alien.chestburster.ChestbursterSpawning;
@@ -21,7 +22,6 @@ import com.avp.fabric.common.entity.living.alien.xenomorph.drone.DroneSpawning;
 import com.avp.fabric.common.entity.living.alien.xenomorph.praetorian.PraetorianSpawning;
 import com.avp.fabric.common.entity.living.alien.xenomorph.queen.QueenSpawning;
 import com.avp.fabric.common.entity.living.alien.xenomorph.warrior.WarriorSpawning;
-import com.avp.fabric.common.entity.living.yautja.YautjaSpawning;
 import com.avp.fabric.common.entity.type.AVPEntityTypes;
 
 public class SpawnPlacements {
@@ -44,11 +44,16 @@ public class SpawnPlacements {
             var minGroupSize = AVP.config.spawnConfigs.YAUTJA_SPAWN.minGroupSize;
             var weight = AVP.config.spawnConfigs.YAUTJA_SPAWN.weight;
 
-            net.minecraft.world.entity.SpawnPlacements.register(AVPEntityTypes.YAUTJA, placement, heightMap, YautjaSpawning.PREDICATE);
+            net.minecraft.world.entity.SpawnPlacements.register(
+                TempAVPEntityTypes.YAUTJA.get(),
+                placement,
+                heightMap,
+                YautjaSpawning.PREDICATE
+            );
             BiomeModifications.addSpawn(
                 IS_JUNGLE,
                 AVPEntityTypes.PREDATOR_CATEGORY,
-                AVPEntityTypes.YAUTJA,
+                TempAVPEntityTypes.YAUTJA.get(),
                 weight,
                 minGroupSize,
                 maxGroupSize

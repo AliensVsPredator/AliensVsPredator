@@ -1,4 +1,4 @@
-package com.avp.fabric.common.entity.living.yautja;
+package com.avp.common.entity.living.yautja;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -27,9 +27,7 @@ import com.avp.AVP;
 import com.avp.common.ai.goal.StrollAroundInWaterGoal;
 import com.avp.common.config.AVPConfig;
 import com.avp.common.item.TempAVPItems;
-import com.avp.fabric.common.ai.goal.combat.DelayedAttackGoal;
-import com.avp.fabric.common.ai.goal.combat.UseItemGoal;
-import com.avp.fabric.common.util.YautjaPredicates;
+import com.avp.common.util.YautjaPredicates;
 
 public class Yautja extends Monster {
 
@@ -59,8 +57,9 @@ public class Yautja extends Monster {
     protected void registerGoals() {
         // goalSelector.addGoal(1, new FleeFightGoal(this));
         goalSelector.addGoal(0, new FloatGoal(this));
-        goalSelector.addGoal(1, new DelayedAttackGoal(this, 1.0, true, 5, this::runAttackAnimations));
-        goalSelector.addGoal(1, new UseItemGoal(this, this::runAttackAnimations));
+        // FIXME:
+        // goalSelector.addGoal(1, new DelayedAttackGoal(this, 1.0, true, 5, this::runAttackAnimations));
+        // goalSelector.addGoal(1, new UseItemGoal(this, this::runAttackAnimations));
         goalSelector.addGoal(7, new StrollAroundInWaterGoal(this, 1.0));
         goalSelector.addGoal(7, new WaterAvoidingRandomStrollGoal(this, 1.0));
         targetSelector.addGoal(1, new HurtByTargetGoal(this).setAlertOthers(Yautja.class));

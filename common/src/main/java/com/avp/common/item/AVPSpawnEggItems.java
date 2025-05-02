@@ -16,6 +16,8 @@ public class AVPSpawnEggItems {
 
     public static final AVPDeferredHolder<Item> MARINE_SPAWN_EGG = register("marine", TempAVPEntityTypes.MARINE, 0x5a5941, 0x414441);
 
+    public static final AVPDeferredHolder<Item> YAUTJA_SPAWN_EGG = register("yautja", TempAVPEntityTypes.YAUTJA, 0xB9A86C, 0x5A4728);
+
     private static AVPDeferredHolder<Item> register(
         String baseId,
         Supplier<? extends EntityType<? extends Mob>> entityTypeSupplier,

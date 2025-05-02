@@ -1,4 +1,4 @@
-package com.avp.fabric.client.animation.entity;
+package com.avp.client.animation.entity;
 
 import mod.azure.azurelib.rewrite.animation.AzAnimationContext;
 import mod.azure.azurelib.rewrite.animation.AzAnimatorConfig;
@@ -10,8 +10,8 @@ import org.jetbrains.annotations.NotNull;
 
 import com.avp.AVPResources;
 import com.avp.client.animation.BasicAnimationUtils;
-import com.avp.fabric.common.entity.living.yautja.Yautja;
-import com.avp.fabric.common.entity.living.yautja.YautjaAnimationRefs;
+import com.avp.common.entity.living.yautja.Yautja;
+import com.avp.common.entity.living.yautja.YautjaAnimationRefs;
 
 public class YautjaAnimator extends AzEntityAnimator<Yautja> {
 

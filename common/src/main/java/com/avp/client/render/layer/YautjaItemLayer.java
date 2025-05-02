@@ -1,4 +1,4 @@
-package com.avp.fabric.client.render.layer;
+package com.avp.client.render.layer;
 
 import com.mojang.math.Axis;
 import mod.azure.azurelib.rewrite.model.AzBone;
@@ -8,7 +8,7 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 
-import com.avp.fabric.common.entity.living.yautja.Yautja;
+import com.avp.common.entity.living.yautja.Yautja;
 
 public class YautjaItemLayer extends AzBlockAndItemLayer<Yautja> {
 

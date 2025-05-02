@@ -26,7 +26,6 @@ import com.avp.fabric.client.render.entity.OvamorphRenderer;
 import com.avp.fabric.client.render.entity.PraetorianRenderer;
 import com.avp.fabric.client.render.entity.QueenRenderer;
 import com.avp.fabric.client.render.entity.WarriorRenderer;
-import com.avp.fabric.client.render.entity.YautjaRenderer;
 import com.avp.fabric.client.render.entity.parasite.facehugger.FacehuggerRenderer;
 import com.avp.fabric.client.render.item.F903weItemRenderer;
 import com.avp.fabric.client.render.item.FlameThrowerItemRenderer;
@@ -106,8 +105,6 @@ public class AVPFabricClient implements ClientModInitializer {
         EntityRendererRegistry.register(AVPEntityTypes.ROYAL_NETHER_CHESTBURSTER, ChestbursterRenderer::new);
         EntityRendererRegistry.register(AVPEntityTypes.ROYAL_NETHER_FACEHUGGER, FacehuggerRenderer::new);
         EntityRendererRegistry.register(AVPEntityTypes.ROYAL_NETHER_OVAMORPH, OvamorphRenderer::new);
-
-        EntityRendererRegistry.register(AVPEntityTypes.YAUTJA, YautjaRenderer::new);
 
         // Block-like entities (like primed TNT)
 

@@ -1,6 +1,5 @@
 package com.avp.fabric.common.worldgen;
 
-import com.avp.data.AVPCaveKey;
 import net.fabricmc.fabric.api.biome.v1.BiomeModificationContext;
 import net.fabricmc.fabric.api.biome.v1.BiomeModifications;
 import net.fabricmc.fabric.api.biome.v1.BiomeSelectionContext;
@@ -14,7 +13,7 @@ import net.minecraft.world.level.levelgen.GenerationStep;
 import java.util.function.BiConsumer;
 
 import com.avp.AVPResources;
-import com.avp.fabric.data.worldgen.AVPCavePlacements;
+import com.avp.data.AVPCaveKey;
 import com.avp.data.worldgen.AVPOres;
 
 public class WorldGen {
