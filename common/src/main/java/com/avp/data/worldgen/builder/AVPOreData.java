@@ -1,4 +1,4 @@
-package com.avp.fabric.data.worldgen.builder;
+package com.avp.data.worldgen.builder;
 
 import net.minecraft.core.HolderGetter;
 import net.minecraft.core.registries.Registries;

@@ -1,5 +1,6 @@
-package com.avp.fabric.data.worldgen;
+package com.avp.data.worldgen;
 
+import com.avp.data.worldgen.builder.AVPOreData;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.levelgen.VerticalAnchor;
@@ -15,7 +16,6 @@ import java.util.Collections;
 import java.util.List;
 
 import com.avp.common.block.TempAVPBlocks;
-import com.avp.fabric.data.worldgen.builder.AVPOreData;
 
 public class AVPOres {
 

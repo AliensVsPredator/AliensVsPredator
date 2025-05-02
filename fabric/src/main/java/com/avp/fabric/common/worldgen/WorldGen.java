@@ -1,5 +1,6 @@
 package com.avp.fabric.common.worldgen;
 
+import com.avp.data.AVPCaveKey;
 import net.fabricmc.fabric.api.biome.v1.BiomeModificationContext;
 import net.fabricmc.fabric.api.biome.v1.BiomeModifications;
 import net.fabricmc.fabric.api.biome.v1.BiomeSelectionContext;
@@ -14,7 +15,7 @@ import java.util.function.BiConsumer;
 
 import com.avp.AVPResources;
 import com.avp.fabric.data.worldgen.AVPCavePlacements;
-import com.avp.fabric.data.worldgen.AVPOres;
+import com.avp.data.worldgen.AVPOres;
 
 public class WorldGen {
 
@@ -51,7 +52,7 @@ public class WorldGen {
         return (biomeSelectionContext, biomeModificationContext) -> {
             var settings = biomeModificationContext.getGenerationSettings();
 
-            settings.addFeature(GenerationStep.Decoration.LOCAL_MODIFICATIONS, AVPCavePlacements.AUTUNITE_GEODE);
+            settings.addFeature(GenerationStep.Decoration.LOCAL_MODIFICATIONS, AVPCaveKey.AUTUNITE_GEODE);
 
             settings.addFeature(GenerationStep.Decoration.UNDERGROUND_ORES, AVPOres.BAUXITE_MIDDLE.placedFeatureKey());
             settings.addFeature(GenerationStep.Decoration.UNDERGROUND_ORES, AVPOres.BAUXITE_UPPER.placedFeatureKey());
