@@ -1,5 +1,7 @@
 package com.avp.common.item.gun;
 
+import java.util.Objects;
+
 import com.avp.common.item.AVPItems;
 import com.avp.common.item.gun.attack.FlamethrowProjectileGunAttack;
 import com.avp.common.item.gun.attack.RocketProjectileGunAttack;
@@ -11,7 +13,7 @@ public class GunData {
         .withDurability(2048)
         .withMaximumAmmunition(32)
         .withReloadTimeInTicks(20 * 3)
-        .withAmmunitionItemSupplier(AVPItems.SMALL_BULLET::get)
+        .withAmmunitionItemSupplier(() -> Objects.requireNonNull(AVPItems.SMALL_BULLET).get())
         .withFireMode(
             FireModeConfig.builder()
                 .withCooldownInTicks(2)
@@ -27,7 +29,7 @@ public class GunData {
         .withMaximumAmmunition(1000)
         .withReloadAmount(1000)
         .withReloadTimeInTicks(20 * 5)
-        .withAmmunitionItemSupplier(AVPItems.FUEL_TANK::get)
+        .withAmmunitionItemSupplier(() -> Objects.requireNonNull(AVPItems.FUEL_TANK.get()))
         .withFireMode(
             FireModeConfig.builder()
                 .withCooldownInTicks(1)
@@ -46,7 +48,7 @@ public class GunData {
         .withDurability(1024)
         .withMaximumAmmunition(6)
         .withReloadTimeInTicks(20 * 4)
-        .withAmmunitionItemSupplier(AVPItems.SHOTGUN_SHELL::get)
+        .withAmmunitionItemSupplier(() -> Objects.requireNonNull(AVPItems.SHOTGUN_SHELL.get()))
         .withFireMode(
             FireModeConfig.builder()
                 .withCooldownInTicks(20)
@@ -63,7 +65,7 @@ public class GunData {
         .withDurability(2048 + 1024)
         .withMaximumAmmunition(99)
         .withReloadTimeInTicks(20 * 3)
-        .withAmmunitionItemSupplier(AVPItems.CASELESS_BULLET::get)
+        .withAmmunitionItemSupplier(() -> Objects.requireNonNull(AVPItems.CASELESS_BULLET.get()))
         // Burst
         .withFireMode(
             FireModeConfig.builder()
@@ -81,7 +83,7 @@ public class GunData {
         .withDurability(1024)
         .withMaximumAmmunition(6)
         .withReloadTimeInTicks(20 * 7 + 10)
-        .withAmmunitionItemSupplier(AVPItems.HEAVY_BULLET::get)
+        .withAmmunitionItemSupplier(() -> Objects.requireNonNull(AVPItems.HEAVY_BULLET.get()))
         .withFireMode(
             FireModeConfig.builder()
                 .withCooldownInTicks(30)
@@ -97,7 +99,7 @@ public class GunData {
         .withDurability(2048)
         .withMaximumAmmunition(90)
         .withReloadTimeInTicks(20 * 4)
-        .withAmmunitionItemSupplier(AVPItems.MEDIUM_BULLET::get)
+        .withAmmunitionItemSupplier(() -> Objects.requireNonNull(AVPItems.MEDIUM_BULLET.get()))
         .withFireMode(
             FireModeConfig.builder()
                 .withCooldownInTicks(2)
@@ -113,7 +115,7 @@ public class GunData {
         .withDurability(4096)
         .withMaximumAmmunition(500)
         .withReloadTimeInTicks(20 * 7)
-        .withAmmunitionItemSupplier(AVPItems.CASELESS_BULLET::get)
+        .withAmmunitionItemSupplier(() -> Objects.requireNonNull(AVPItems.CASELESS_BULLET.get()))
         .withFireMode(
             FireModeConfig.builder()
                 .withCooldownInTicks(1)
@@ -129,7 +131,7 @@ public class GunData {
         .withDurability(512)
         .withMaximumAmmunition(4)
         .withReloadTimeInTicks(20 * 4)
-        .withAmmunitionItemSupplier(AVPItems.ROCKET::get)
+        .withAmmunitionItemSupplier(() -> Objects.requireNonNull(AVPItems.ROCKET.get()))
         .withFireMode(
             FireModeConfig.builder()
                 .withCooldownInTicks(60)
@@ -148,7 +150,7 @@ public class GunData {
         .withDurability(1024)
         .withMaximumAmmunition(18)
         .withReloadTimeInTicks(10 * 2 + 10)
-        .withAmmunitionItemSupplier(AVPItems.SMALL_BULLET::get)
+        .withAmmunitionItemSupplier(() -> Objects.requireNonNull(AVPItems.SMALL_BULLET.get()))
         .withFireMode(
             FireModeConfig.builder()
                 .withCooldownInTicks(4)
@@ -165,7 +167,7 @@ public class GunData {
         .withDurability(4096)
         .withMaximumAmmunition(Integer.MAX_VALUE)
         .withReloadTimeInTicks(0)
-        .withAmmunitionItemSupplier(AVPItems.HEAVY_BULLET::get)
+        .withAmmunitionItemSupplier(() -> Objects.requireNonNull(AVPItems.HEAVY_BULLET.get()))
         .withFireMode(
             FireModeConfig.builder()
                 .withCooldownInTicks(1)
@@ -186,7 +188,7 @@ public class GunData {
         .withDurability(1024)
         .withMaximumAmmunition(12)
         .withReloadTimeInTicks(20 * 3)
-        .withAmmunitionItemSupplier(AVPItems.SHOTGUN_SHELL::get)
+        .withAmmunitionItemSupplier(() -> Objects.requireNonNull(AVPItems.SHOTGUN_SHELL.get()))
         .withFireMode(
             FireModeConfig.builder()
                 .withCooldownInTicks(20)
