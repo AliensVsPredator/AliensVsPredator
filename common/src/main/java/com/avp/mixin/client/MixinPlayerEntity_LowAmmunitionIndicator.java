@@ -1,4 +1,4 @@
-package com.avp.fabric.mixin.client;
+package com.avp.mixin.client;
 
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;

@@ -7,10 +7,6 @@
   "mixins": [
   ],
   "client": [
-    "client.MixinGui_CrosshairPickEntityWithinGunRange",
-    "client.MixinItemInHandRenderer_AdjustHandRenderingForGun",
-    "client.MixinPlayerEntity_LowAmmunitionIndicator",
-    "client.MixinPlayerRenderer_AdjustArmPoseForGun"
   ],
   "injectors": {
     "defaultRequire": 1
