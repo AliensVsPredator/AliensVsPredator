@@ -11,7 +11,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import com.avp.common.block.resin.ResinBlock;
 
 @Mixin(ResinBlock.class)
-public class MixinBlock_Flammable implements IBlockExtension {
+public class MixinBlock_FlammableResinBlock implements IBlockExtension {
 
     @Override
     public int getFireSpreadSpeed(
