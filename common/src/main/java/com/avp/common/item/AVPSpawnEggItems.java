@@ -4,7 +4,6 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.SpawnEggItem;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -250,16 +249,16 @@ public class AVPSpawnEggItems {
 
     public static final AVPDeferredHolder<Item> YAUTJA_SPAWN_EGG = register("yautja", AVPEntityTypes.YAUTJA, 0xB9A86C, 0x5A4728);
 
-    private static AVPDeferredHolder<Item> register(
+    private static <E extends Mob> AVPDeferredHolder<Item> register(
         String baseId,
-        Supplier<? extends EntityType<? extends Mob>> entityTypeSupplier,
+        Supplier<EntityType<E>> entityTypeSupplier,
         int primaryColor,
         int secondaryColor
     ) {
         AVPDeferredHolder<Item> spawnEggItemSupplier = Services.REGISTRY.register(
             BuiltInRegistries.ITEM,
             baseId + "_spawn_egg",
-            () -> new SpawnEggItem(entityTypeSupplier.get(), primaryColor, secondaryColor, new Item.Properties())
+            Services.BRIDGE.createSpawnEggSupplier(entityTypeSupplier, primaryColor, secondaryColor, new Item.Properties())
         );
 
         HOLDERS.add(spawnEggItemSupplier);

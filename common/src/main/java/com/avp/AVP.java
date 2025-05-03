@@ -1,7 +1,5 @@
 package com.avp;
 
-import com.avp.common.patrols.MarinePatrolSpawner;
-import com.avp.common.worldgen.biome.NukedAshPlacement;
 import mod.azure.azurelib.common.api.common.config.Config;
 import mod.azure.azurelib.common.internal.common.config.ConfigHolder;
 import mod.azure.azurelib.common.internal.common.config.ConfigHolderRegistry;
@@ -29,10 +27,12 @@ import com.avp.common.lifecycle.AVPAlienInfections;
 import com.avp.common.lifecycle.AVPAlienLifecycles;
 import com.avp.common.menu.AVPMenuTypes;
 import com.avp.common.particle.AVPParticleTypes;
+import com.avp.common.patrols.MarinePatrolSpawner;
 import com.avp.common.recipe.AVPRecipes;
 import com.avp.common.sound.AVPJukeboxSongs;
 import com.avp.common.sound.AVPSoundEvents;
 import com.avp.common.worldgen.biome.AVPBiomes;
+import com.avp.common.worldgen.biome.NukedAshPlacement;
 import com.avp.service.Services;
 
 public class AVP {
@@ -43,9 +43,9 @@ public class AVP {
 
     public static AVPConfig config;
 
-    public static final MarinePatrolSpawner customSpawner = new MarinePatrolSpawner();
+    public static final MarinePatrolSpawner CUSTOM_SPAWNER = new MarinePatrolSpawner();
 
-    public static final NukedAshPlacement nukedAshPlacement = new NukedAshPlacement();
+    public static final NukedAshPlacement NUKED_ASH_PLACEMENT = new NukedAshPlacement();
 
     public static void initialize() {
         AVP.config = registerConfig(AVPConfig.class, ConfigFormats.json()).getConfigInstance();

@@ -1,6 +1,5 @@
 package com.avp.fabric;
 
-import com.avp.data.worldgen.AVPVillageInjection;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
@@ -14,6 +13,8 @@ import net.minecraft.world.level.GameRules;
 
 import com.avp.AVP;
 import com.avp.common.entity.type.AVPEntityTypes;
+import com.avp.common.profession.AVPGifts;
+import com.avp.data.worldgen.AVPVillageInjection;
 import com.avp.fabric.common.block.CompostingChanceRegistry;
 import com.avp.fabric.common.block.DispenserBlockBehaviors;
 import com.avp.fabric.common.block.FlammableBlockRegistry;
@@ -22,7 +23,6 @@ import com.avp.fabric.common.fuel.AVPFuelRegistry;
 import com.avp.fabric.common.item.AVPItems;
 import com.avp.fabric.common.network.CommonPacketRegistry;
 import com.avp.fabric.common.network.ServerPacketHandlerRegistry;
-import com.avp.common.profession.AVPGifts;
 import com.avp.fabric.common.profession.AVPProfessions;
 import com.avp.fabric.common.profession.AVPTrades;
 import com.avp.fabric.common.worldgen.WorldGen;
@@ -65,8 +65,8 @@ public class AVPFabric implements ModInitializer {
     }
 
     private void onWorldTick(ServerLevel serverLevel) {
-        AVP.customSpawner.tick(serverLevel, serverLevel.getGameRules().getBoolean(GameRules.RULE_DOMOBSPAWNING), true);
-        AVP.nukedAshPlacement.tick(serverLevel);
+        AVP.CUSTOM_SPAWNER.tick(serverLevel, serverLevel.getGameRules().getBoolean(GameRules.RULE_DOMOBSPAWNING), true);
+        AVP.NUKED_ASH_PLACEMENT.tick(serverLevel);
         modifyGifts();
         modifyParrotSounds();
     }

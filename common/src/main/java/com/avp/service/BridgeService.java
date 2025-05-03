@@ -9,7 +9,7 @@ import java.util.function.Supplier;
 
 public interface BridgeService {
 
-    <E extends Mob> Supplier<SpawnEggItem> makeSpawnEggFor(
+    <E extends Mob> Supplier<SpawnEggItem> createSpawnEggSupplier(
         Supplier<EntityType<E>> entityType,
         int primaryEggColour,
         int secondaryEggColour,

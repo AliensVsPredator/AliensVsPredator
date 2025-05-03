@@ -1,7 +1,8 @@
 package com.avp.fabric.common.profession;
 
-import com.avp.common.profession.AVPCommonTrades;
 import net.fabricmc.fabric.api.object.builder.v1.trade.TradeOfferHelper;
+
+import com.avp.common.profession.AVPCommonTrades;
 
 public class AVPTrades {
 

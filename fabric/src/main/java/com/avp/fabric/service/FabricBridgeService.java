@@ -12,7 +12,7 @@ import com.avp.service.BridgeService;
 public class FabricBridgeService implements BridgeService {
 
     @Override
-    public <E extends Mob> Supplier<SpawnEggItem> makeSpawnEggFor(
+    public <E extends Mob> Supplier<SpawnEggItem> createSpawnEggSupplier(
         Supplier<EntityType<E>> entityType,
         int primaryEggColour,
         int secondaryEggColour,

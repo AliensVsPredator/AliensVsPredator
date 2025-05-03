@@ -1,25 +1,26 @@
 package com.avp.data.worldgen;
 
-import com.avp.data.AVPStructureProcessorKey;
-import com.avp.mixin.StructurePoolAccessor;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.levelgen.structure.pools.SinglePoolElement;
-import net.minecraft.world.level.levelgen.structure.pools.StructurePoolElement;
 import net.minecraft.world.level.levelgen.structure.pools.StructureTemplatePool;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureProcessorList;
 
 import java.util.ArrayList;
-import java.util.List;
+
+import com.avp.data.AVPStructureProcessorKey;
+import com.avp.mixin.StructurePoolAccessor;
 
 public class AVPVillageInjection {
 
-    public static void addBuildingToPool(Registry<StructureTemplatePool> templatePoolRegistry,
-                                          Registry<StructureProcessorList> processorListRegistry,
-                                          ResourceLocation poolRL,
-                                          String nbtPieceRL,
-                                          int weight) {
+    public static void addBuildingToPool(
+        Registry<StructureTemplatePool> templatePoolRegistry,
+        Registry<StructureProcessorList> processorListRegistry,
+        ResourceLocation poolRL,
+        String nbtPieceRL,
+        int weight
+    ) {
         if (processorListRegistry.getHolder(AVPStructureProcessorKey.EMPTY_PROCESSOR_LIST_KEY).isEmpty()) {
             return;
         }

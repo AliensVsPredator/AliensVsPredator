@@ -6,6 +6,8 @@ import com.avp.AVP;
 
 public class Services {
 
+    public static final BridgeService BRIDGE = load(BridgeService.class);
+
     public static final ClientRegistryService CLIENT_REGISTRY = load(ClientRegistryService.class);
 
     public static final PlatformService PLATFORM = load(PlatformService.class);

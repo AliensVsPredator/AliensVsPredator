@@ -1,12 +1,5 @@
 package com.avp.neoforge;
 
-import com.avp.common.entity.type.AVPEntityTypes;
-import com.avp.common.profession.AVPCommonTrades;
-import com.avp.common.profession.AVPGifts;
-import com.avp.data.worldgen.AVPVillageInjection;
-import com.avp.mixin.GiveGiftToHeroAccessor;
-import com.avp.mixin.ParrotSoundMapAccessor;
-import com.avp.neoforge.common.profession.AVPProfessions;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
@@ -21,17 +14,24 @@ import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
 import net.neoforged.neoforge.event.entity.EntityAttributeCreationEvent;
-
-import com.avp.AVP;
-import com.avp.common.lifecycle.registry.AlienInfectionRegistry;
-import com.avp.common.lifecycle.registry.AlienLifecycleRegistry;
-import com.avp.neoforge.service.NeoForgeRegistryService;
-import com.avp.service.Services;
 import net.neoforged.neoforge.event.server.ServerAboutToStartEvent;
 import net.neoforged.neoforge.event.tick.LevelTickEvent;
 import net.neoforged.neoforge.event.village.VillagerTradesEvent;
 
 import java.util.List;
+
+import com.avp.AVP;
+import com.avp.common.entity.type.AVPEntityTypes;
+import com.avp.common.lifecycle.registry.AlienInfectionRegistry;
+import com.avp.common.lifecycle.registry.AlienLifecycleRegistry;
+import com.avp.common.profession.AVPCommonTrades;
+import com.avp.common.profession.AVPGifts;
+import com.avp.data.worldgen.AVPVillageInjection;
+import com.avp.mixin.GiveGiftToHeroAccessor;
+import com.avp.mixin.ParrotSoundMapAccessor;
+import com.avp.neoforge.common.profession.AVPProfessions;
+import com.avp.neoforge.service.NeoForgeRegistryService;
+import com.avp.service.Services;
 
 @Mod(AVP.MOD_ID)
 public class AVPNeoForge {
@@ -82,43 +82,43 @@ public class AVPNeoForge {
         var processorListRegistry = event.getServer().registryAccess().registry(Registries.PROCESSOR_LIST).orElseThrow();
 
         AVPVillageInjection.addBuildingToPool(
-                templatePoolRegistry,
-                processorListRegistry,
-                ResourceLocation.withDefaultNamespace("village/plains/houses"),
-                "avp:village/plains/houses/plains_commissary",
-                5
+            templatePoolRegistry,
+            processorListRegistry,
+            ResourceLocation.withDefaultNamespace("village/plains/houses"),
+            "avp:village/plains/houses/plains_commissary",
+            5
         );
 
         AVPVillageInjection.addBuildingToPool(
-                templatePoolRegistry,
-                processorListRegistry,
-                ResourceLocation.withDefaultNamespace("village/snowy/houses"),
-                "avp:village/snowy/houses/snowy_commissary",
-                5
+            templatePoolRegistry,
+            processorListRegistry,
+            ResourceLocation.withDefaultNamespace("village/snowy/houses"),
+            "avp:village/snowy/houses/snowy_commissary",
+            5
         );
 
         AVPVillageInjection.addBuildingToPool(
-                templatePoolRegistry,
-                processorListRegistry,
-                ResourceLocation.withDefaultNamespace("village/savanna/houses"),
-                "avp:village/savanna/houses/savanna_commissary",
-                5
+            templatePoolRegistry,
+            processorListRegistry,
+            ResourceLocation.withDefaultNamespace("village/savanna/houses"),
+            "avp:village/savanna/houses/savanna_commissary",
+            5
         );
 
         AVPVillageInjection.addBuildingToPool(
-                templatePoolRegistry,
-                processorListRegistry,
-                ResourceLocation.withDefaultNamespace("village/taiga/houses"),
-                "avp:village/taiga/houses/taiga_commissary",
-                5
+            templatePoolRegistry,
+            processorListRegistry,
+            ResourceLocation.withDefaultNamespace("village/taiga/houses"),
+            "avp:village/taiga/houses/taiga_commissary",
+            5
         );
 
         AVPVillageInjection.addBuildingToPool(
-                templatePoolRegistry,
-                processorListRegistry,
-                ResourceLocation.withDefaultNamespace("village/desert/houses"),
-                "avp:village/desert/houses/desert_commissary",
-                5
+            templatePoolRegistry,
+            processorListRegistry,
+            ResourceLocation.withDefaultNamespace("village/desert/houses"),
+            "avp:village/desert/houses/desert_commissary",
+            5
         );
     }
 
@@ -131,8 +131,8 @@ public class AVPNeoForge {
         var sounds = ParrotSoundMapAccessor.getSoundMap();
         var gifts = GiveGiftToHeroAccessor.getGifts();
 
-        AVP.customSpawner.tick(serverLevel, serverLevel.getGameRules().getBoolean(GameRules.RULE_DOMOBSPAWNING), true);
-        AVP.nukedAshPlacement.tick(serverLevel);
+        AVP.CUSTOM_SPAWNER.tick(serverLevel, serverLevel.getGameRules().getBoolean(GameRules.RULE_DOMOBSPAWNING), true);
+        AVP.NUKED_ASH_PLACEMENT.tick(serverLevel);
         /*
          * TODO: Use Yautja sound when added
          */
@@ -141,7 +141,7 @@ public class AVPNeoForge {
     }
 
     public static void addCustomTrades(final VillagerTradesEvent event) {
-        if(event.getType() == AVPProfessions.COMMISSARY.value()) {
+        if (event.getType() == AVPProfessions.COMMISSARY.value()) {
             Int2ObjectMap<List<VillagerTrades.ItemListing>> trades = event.getTrades();
 
             trades.get(1).addAll(AVPCommonTrades.level1Trades);

@@ -1,7 +1,5 @@
 package com.avp.neoforge.data;
 
-import com.avp.common.block.AVPBlocks;
-import com.avp.common.item.TempAVPItems;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.neoforged.neoforge.common.data.DataMapProvider;
@@ -10,6 +8,9 @@ import net.neoforged.neoforge.registries.datamaps.builtin.FurnaceFuel;
 import net.neoforged.neoforge.registries.datamaps.builtin.NeoForgeDataMaps;
 
 import java.util.concurrent.CompletableFuture;
+
+import com.avp.common.block.AVPBlocks;
+import com.avp.common.item.TempAVPItems;
 
 public class AVPNeoForgeDataMaps extends DataMapProvider {
 

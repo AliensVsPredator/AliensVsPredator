@@ -8,8 +8,8 @@ import net.minecraft.world.level.levelgen.structure.templatesystem.StructureProc
 public class AVPStructureProcessorKey {
 
     public static final ResourceKey<StructureProcessorList> EMPTY_PROCESSOR_LIST_KEY = ResourceKey.create(
-            Registries.PROCESSOR_LIST,
-            ResourceLocation.withDefaultNamespace("empty")
+        Registries.PROCESSOR_LIST,
+        ResourceLocation.withDefaultNamespace("empty")
     );
 
     private AVPStructureProcessorKey() {}
