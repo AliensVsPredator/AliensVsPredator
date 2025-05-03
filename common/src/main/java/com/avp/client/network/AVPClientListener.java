@@ -1,7 +1,7 @@
-package com.avp.fabric.client.network;
+package com.avp.client.network;
 
-import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.client.Minecraft;
+import net.minecraft.world.entity.player.Player;
 
 import com.avp.common.network.packet.S2CBulletHitBlockPayload;
 import com.avp.common.network.packet.S2CGunRecoilPayload;
@@ -17,8 +17,7 @@ public class AVPClientListener {
         }
     }
 
-    public static void handleGunRecoil(ClientPlayNetworking.Context context, S2CGunRecoilPayload gunRecoilPayload) {
-        var player = context.player();
+    public static void handleGunRecoil(S2CGunRecoilPayload gunRecoilPayload, Player player) {
         var level = player.level();
         var baseRecoilX = level.getRandom().nextBoolean() ? 1f : -1f;
 

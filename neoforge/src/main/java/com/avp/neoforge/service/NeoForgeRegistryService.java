@@ -9,6 +9,7 @@ import net.minecraft.core.Registry;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.particles.ParticleType;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.entity.EntityType;
@@ -39,6 +40,8 @@ import java.util.function.Supplier;
 import com.avp.AVP;
 import com.avp.common.lifecycle.AlienLifecycle;
 import com.avp.common.lifecycle.infection.AlienInfection;
+import com.avp.common.network.NetworkHandler;
+import com.avp.common.network.PacketDirection;
 import com.avp.common.registry.AVPDeferredHolder;
 import com.avp.service.RegistryService;
 
@@ -116,6 +119,8 @@ public class NeoForgeRegistryService implements RegistryService {
 
     private final List<LiteralArgumentBuilder<CommandSourceStack>> literalArgumentBuilders;
 
+    private final List<NetworkHandler<?>> networkHandlers;
+
     private final List<Tuple3<Supplier<VillagerProfession>, Integer, List<VillagerTrades.ItemListing>>> villagerTradeData;
 
     // TODO: Assign other final fields here.
@@ -127,6 +132,7 @@ public class NeoForgeRegistryService implements RegistryService {
         this.entityAttributeSupplierPairs = new ArrayList<>();
         this.furnaceFuelPairs = new ArrayList<>();
         this.literalArgumentBuilders = new ArrayList<>();
+        this.networkHandlers = new ArrayList<>();
         this.villagerTradeData = new ArrayList<>();
     }
 
@@ -220,6 +226,16 @@ public class NeoForgeRegistryService implements RegistryService {
     }
 
     @Override
+    public <T extends CustomPacketPayload> void registerPacketHandlers(NetworkHandler<T> networkHandler) {
+        networkHandlers.add(networkHandler);
+    }
+
+    @Override
+    public <T extends CustomPacketPayload> void registerPacketDirection(PacketDirection<T> packetDirection) {
+        /* NO-OP */
+    }
+
+    @Override
     public void registerVillagerTrade(
         Supplier<VillagerProfession> villagerProfessionSupplier,
         int level,
@@ -278,6 +294,10 @@ public class NeoForgeRegistryService implements RegistryService {
 
     public List<LiteralArgumentBuilder<CommandSourceStack>> getLiteralArgumentBuilders() {
         return literalArgumentBuilders;
+    }
+
+    public List<NetworkHandler<?>> getNetworkHandlers() {
+        return networkHandlers;
     }
 
     public List<Tuple3<Supplier<VillagerProfession>, Integer, List<VillagerTrades.ItemListing>>> getVillagerTradeData() {

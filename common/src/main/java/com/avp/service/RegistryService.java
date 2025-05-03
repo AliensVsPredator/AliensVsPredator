@@ -3,6 +3,7 @@ package com.avp.service;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.core.Registry;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
@@ -16,6 +17,8 @@ import java.util.function.Supplier;
 
 import com.avp.common.lifecycle.AlienLifecycle;
 import com.avp.common.lifecycle.infection.AlienInfection;
+import com.avp.common.network.NetworkHandler;
+import com.avp.common.network.PacketDirection;
 import com.avp.common.registry.AVPDeferredHolder;
 
 public interface RegistryService {
@@ -45,6 +48,10 @@ public interface RegistryService {
     );
 
     void registerFurnaceFuel(Supplier<? extends ItemLike> itemLikeSupplier, int burnTimeInTicks);
+
+    <T extends CustomPacketPayload> void registerPacketHandlers(NetworkHandler<T> networkHandler);
+
+    <T extends CustomPacketPayload> void registerPacketDirection(PacketDirection<T> packetDirection);
 
     void registerVillagerTrade(
         Supplier<VillagerProfession> villagerProfessionSupplier,

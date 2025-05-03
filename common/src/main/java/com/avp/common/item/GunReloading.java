@@ -1,7 +1,7 @@
 package com.avp.common.item;
 
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.ItemLike;
@@ -17,7 +17,7 @@ import com.avp.server.ServerScheduler;
 
 public class GunReloading {
 
-    public static void reload(ServerPlayer player) {
+    public static void reload(Player player) {
         if (player == null) {
             // Player is null, nothing we can do beyond this point.
             return;
@@ -118,28 +118,28 @@ public class GunReloading {
     }
 
     public static ItemConsumptionResult consumeItemAmountFromInventory(
-        ServerPlayer serverPlayer,
+        Player player,
         ItemLike ammunitionItem,
         int amountToConsume
     ) {
-        var result = consumeItemAmountFromInventoryNoSync(serverPlayer, ammunitionItem, amountToConsume);
+        var result = consumeItemAmountFromInventoryNoSync(player, ammunitionItem, amountToConsume);
 
         if (result == ItemConsumptionResult.None.INSTANCE) {
             return result;
         }
 
         // Result must be partial or full, in either case it has changed and needs to be updated to the client.
-        serverPlayer.getInventory().setChanged();
-        serverPlayer.inventoryMenu.broadcastChanges();
+        player.getInventory().setChanged();
+        player.inventoryMenu.broadcastChanges();
         return result;
     }
 
     private static ItemConsumptionResult consumeItemAmountFromInventoryNoSync(
-        ServerPlayer serverPlayer,
+        Player player,
         ItemLike ammunitionItem,
         int amountToConsume
     ) {
-        var playerInventory = serverPlayer.getInventory();
+        var playerInventory = player.getInventory();
         var remainingAmountToConsume = amountToConsume;
 
         // We iterate over ammo chests first, since we want to consume from them before the player's bare inventory.

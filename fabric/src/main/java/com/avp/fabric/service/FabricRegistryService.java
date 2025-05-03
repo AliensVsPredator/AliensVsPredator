@@ -2,6 +2,9 @@ package com.avp.fabric.service;
 
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import mod.azure.azurelib.rewrite.animation.cache.AzIdentityRegistry;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry;
 import net.fabricmc.fabric.api.object.builder.v1.trade.TradeOfferHelper;
 import net.fabricmc.fabric.api.registry.CompostingChanceRegistry;
@@ -9,6 +12,7 @@ import net.fabricmc.fabric.api.registry.FuelRegistry;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
@@ -26,6 +30,8 @@ import com.avp.common.lifecycle.AlienLifecycle;
 import com.avp.common.lifecycle.infection.AlienInfection;
 import com.avp.common.lifecycle.registry.AlienInfectionRegistry;
 import com.avp.common.lifecycle.registry.AlienLifecycleRegistry;
+import com.avp.common.network.NetworkHandler;
+import com.avp.common.network.PacketDirection;
 import com.avp.common.registry.AVPDeferredHolder;
 import com.avp.service.RegistryService;
 
@@ -89,6 +95,57 @@ public class FabricRegistryService implements RegistryService {
     @Override
     public void registerFurnaceFuel(Supplier<? extends ItemLike> itemLikeSupplier, int burnTimeInTicks) {
         FuelRegistry.INSTANCE.add(itemLikeSupplier.get(), burnTimeInTicks);
+    }
+
+    @Override
+    public <T extends CustomPacketPayload> void registerPacketHandlers(NetworkHandler<T> networkHandler) {
+        switch (networkHandler) {
+            case NetworkHandler.FromClient<T> handler -> ServerPlayNetworking.registerGlobalReceiver(
+                networkHandler.type(),
+                (payload, context) -> context.server().execute(() -> handler.payloadConsumer().accept(payload, context.player()))
+            );
+            case NetworkHandler.FromEither<T> handler -> {
+                ServerPlayNetworking.registerGlobalReceiver(
+                    networkHandler.type(),
+                    (payload, context) -> context.server()
+                        .execute(() -> handler.fromClientPayloadConsumer().accept(payload, context.player()))
+                );
+                ClientPlayNetworking.registerGlobalReceiver(
+                    networkHandler.type(),
+                    (payload, context) -> context.client()
+                        .execute(() -> handler.fromServerPayloadConsumer().accept(payload, context.player()))
+                );
+            }
+            case NetworkHandler.FromServer<T> handler -> ClientPlayNetworking.registerGlobalReceiver(
+                networkHandler.type(),
+                (payload, context) -> context.client().execute(() -> handler.payloadConsumer().accept(payload, context.player()))
+            );
+        }
+    }
+
+    @Override
+    public <T extends CustomPacketPayload> void registerPacketDirection(PacketDirection<T> packetDirection) {
+        var handleClient = false;
+        var handleServer = false;
+        var codec = packetDirection.codec();
+        var type = packetDirection.type();
+
+        switch (packetDirection) {
+            case PacketDirection.BI<T> ignored -> {
+                handleClient = true;
+                handleServer = true;
+            }
+            case PacketDirection.C2S<T> ignored -> handleServer = true;
+            case PacketDirection.S2C<T> ignored -> handleClient = true;
+        }
+
+        if (handleClient) {
+            PayloadTypeRegistry.playS2C().register(type, codec);
+        }
+
+        if (handleServer) {
+            PayloadTypeRegistry.playC2S().register(type, codec);
+        }
     }
 
     @Override

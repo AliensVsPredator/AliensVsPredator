@@ -4,7 +4,6 @@ import net.fabricmc.api.ClientModInitializer;
 
 import com.avp.client.AVPClient;
 import com.avp.fabric.client.input.keybind.AVPKeybindingRegistry;
-import com.avp.fabric.client.network.AVPClientPacketHandlerRegistry;
 
 public class AVPFabricClient implements ClientModInitializer {
 
@@ -14,8 +13,5 @@ public class AVPFabricClient implements ClientModInitializer {
 
         // Keybindings
         AVPKeybindingRegistry.initialize();
-
-        // Networking
-        AVPClientPacketHandlerRegistry.initialize();
     }
 }

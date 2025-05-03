@@ -2,6 +2,7 @@ package com.avp.neoforge;
 
 import mod.azure.azurelib.rewrite.animation.cache.AzIdentityRegistry;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
@@ -17,11 +18,14 @@ import net.neoforged.neoforge.event.server.ServerAboutToStartEvent;
 import net.neoforged.neoforge.event.tick.LevelTickEvent;
 import net.neoforged.neoforge.event.village.VillagerTradesEvent;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
+import net.neoforged.neoforge.network.handling.DirectionalPayloadHandler;
+import net.neoforged.neoforge.network.registration.HandlerThread;
 
 import com.avp.AVP;
 import com.avp.common.entity.type.AVPEntityTypes;
 import com.avp.common.lifecycle.registry.AlienInfectionRegistry;
 import com.avp.common.lifecycle.registry.AlienLifecycleRegistry;
+import com.avp.common.network.NetworkHandler;
 import com.avp.common.profession.AVPGifts;
 import com.avp.common.profession.AVPProfessions;
 import com.avp.data.worldgen.AVPVillageInjection;
@@ -41,6 +45,7 @@ public class AVPNeoForge {
         REGISTRY.initialize(modBus);
 
         // Mod bus events.
+        modBus.addListener(AVPNeoForge::registerPayloadHandlers);
         modBus.addListener(AVPNeoForge::registerEntityAttributes);
         modBus.addListener(AVPNeoForge::registerMiscellaneous);
 
@@ -150,5 +155,35 @@ public class AVPNeoForge {
             });
     }
 
-    public static void registerPayloadHandlers(RegisterPayloadHandlersEvent event) {}
+    public static void registerPayloadHandlers(RegisterPayloadHandlersEvent event) {
+        var registrar = event.registrar("1")
+            .executesOn(HandlerThread.NETWORK);
+
+        REGISTRY.getNetworkHandlers()
+            .forEach(networkHandler -> {
+                @SuppressWarnings("unchecked")
+                var typedNetworkHandler = (NetworkHandler<CustomPacketPayload>) networkHandler;
+
+                switch (typedNetworkHandler) {
+                    case NetworkHandler.FromClient<CustomPacketPayload> handler -> registrar.playToServer(
+                        handler.type(),
+                        handler.codec(),
+                        (payload, context) -> handler.payloadConsumer().accept(payload, context.player())
+                    );
+                    case NetworkHandler.FromEither<CustomPacketPayload> handler -> registrar.playBidirectional(
+                        handler.type(),
+                        handler.codec(),
+                        new DirectionalPayloadHandler<>(
+                            (payload, context) -> handler.fromServerPayloadConsumer().accept(payload, context.player()),
+                            (payload, context) -> handler.fromClientPayloadConsumer().accept(payload, context.player())
+                        )
+                    );
+                    case NetworkHandler.FromServer<CustomPacketPayload> handler -> registrar.playToClient(
+                        handler.type(),
+                        handler.codec(),
+                        (payload, context) -> handler.payloadConsumer().accept(payload, context.player())
+                    );
+                }
+            });
+    }
 }

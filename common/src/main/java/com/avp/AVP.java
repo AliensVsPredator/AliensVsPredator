@@ -28,6 +28,8 @@ import com.avp.common.level.gameevent.AVPGameEvents;
 import com.avp.common.lifecycle.AVPAlienInfections;
 import com.avp.common.lifecycle.AVPAlienLifecycles;
 import com.avp.common.menu.AVPMenuTypes;
+import com.avp.common.network.AVPPacketDirectionRegistry;
+import com.avp.common.network.AVPServerPacketHandlerRegistry;
 import com.avp.common.particle.AVPParticleTypes;
 import com.avp.common.patrols.MarinePatrolSpawner;
 import com.avp.common.profession.AVPPointOfInterests;
@@ -82,6 +84,8 @@ public class AVP {
         AVPProfessions.initialize();
 
         // Functionality
+        AVPPacketDirectionRegistry.initialize();
+        AVPServerPacketHandlerRegistry.initialize();
         AVPCompostingChanceRegistry.initialize();
         AVPFuelRegistry.initialize();
         AVPTrades.initialize();

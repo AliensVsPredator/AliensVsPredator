@@ -19,8 +19,6 @@ import com.avp.data.worldgen.AVPVillageInjection;
 import com.avp.fabric.common.DispenserBlockBehaviors;
 import com.avp.fabric.common.FlammableBlockRegistry;
 import com.avp.fabric.common.entity.spawn.SpawnPlacements;
-import com.avp.fabric.common.network.CommonPacketRegistry;
-import com.avp.fabric.common.network.ServerPacketHandlerRegistry;
 import com.avp.fabric.common.worldgen.WorldGen;
 import com.avp.fabric.data.loot.LootTableModifier;
 import com.avp.fabric.service.FabricRegistryService;
@@ -38,8 +36,6 @@ public class AVPFabric implements ModInitializer {
 
         // Core
         WorldGen.initialize();
-        CommonPacketRegistry.initialize();
-        ServerPacketHandlerRegistry.initialize();
 
         // Functionality
         DispenserBlockBehaviors.initialize();
