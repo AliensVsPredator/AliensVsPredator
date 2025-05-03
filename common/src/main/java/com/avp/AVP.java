@@ -1,5 +1,7 @@
 package com.avp;
 
+import com.avp.common.patrols.MarinePatrolSpawner;
+import com.avp.common.worldgen.biome.NukedAshPlacement;
 import mod.azure.azurelib.common.api.common.config.Config;
 import mod.azure.azurelib.common.internal.common.config.ConfigHolder;
 import mod.azure.azurelib.common.internal.common.config.ConfigHolderRegistry;
@@ -40,6 +42,10 @@ public class AVP {
     public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
 
     public static AVPConfig config;
+
+    public static final MarinePatrolSpawner customSpawner = new MarinePatrolSpawner();
+
+    public static final NukedAshPlacement nukedAshPlacement = new NukedAshPlacement();
 
     public static void initialize() {
         AVP.config = registerConfig(AVPConfig.class, ConfigFormats.json()).getConfigInstance();

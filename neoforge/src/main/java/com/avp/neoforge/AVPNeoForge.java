@@ -1,8 +1,15 @@
 package com.avp.neoforge;
 
+import com.avp.common.entity.type.AVPEntityTypes;
 import com.avp.data.worldgen.AVPVillageInjection;
+import com.avp.mixin.GiveGiftToHeroAccessor;
+import com.avp.mixin.ParrotSoundMapAccessor;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.level.GameRules;
+import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
@@ -15,6 +22,7 @@ import com.avp.common.lifecycle.registry.AlienLifecycleRegistry;
 import com.avp.neoforge.service.NeoForgeRegistryService;
 import com.avp.service.Services;
 import net.neoforged.neoforge.event.server.ServerAboutToStartEvent;
+import net.neoforged.neoforge.event.tick.LevelTickEvent;
 
 @Mod(AVP.MOD_ID)
 public class AVPNeoForge {
@@ -33,6 +41,7 @@ public class AVPNeoForge {
         // Game bus events
         NeoForge.EVENT_BUS.addListener(AVPNeoForge::registerCommands);
         NeoForge.EVENT_BUS.addListener(AVPNeoForge::addNewVillageBuilding);
+        NeoForge.EVENT_BUS.addListener(EventPriority.HIGH, AVPNeoForge::onWorldEndTick);
     }
 
     public static void registerMiscellaneous(final FMLCommonSetupEvent event) {
@@ -53,6 +62,7 @@ public class AVPNeoForge {
             .forEach(pair -> event.put(pair.first().get(), pair.second().get().build()));
     }
 
+    // Inject Village houses
     public static void addNewVillageBuilding(final ServerAboutToStartEvent event) {
         var templatePoolRegistry = event.getServer().registryAccess().registry(Registries.TEMPLATE_POOL).orElseThrow();
         var processorListRegistry = event.getServer().registryAccess().registry(Registries.PROCESSOR_LIST).orElseThrow();
@@ -96,5 +106,23 @@ public class AVPNeoForge {
                 "avp:village/desert/houses/desert_commissary",
                 5
         );
+    }
+
+    // Marine Spawns and Ash placement in nuked zones
+    public static void onWorldEndTick(final LevelTickEvent.Post event) {
+        if (event.getLevel().isClientSide)
+            return;
+
+        var serverLevel = (ServerLevel) event.getLevel();
+        var sounds = ParrotSoundMapAccessor.getSoundMap();
+        var gifts = GiveGiftToHeroAccessor.getGifts();
+
+        AVP.customSpawner.tick(serverLevel, serverLevel.getGameRules().getBoolean(GameRules.RULE_DOMOBSPAWNING), true);
+        AVP.nukedAshPlacement.tick(serverLevel);
+        /*
+         * TODO: Use Yautja sound when added
+         */
+        sounds.put(AVPEntityTypes.YAUTJA.get(), SoundEvents.ALLAY_AMBIENT_WITH_ITEM);
+//        gifts.put(AVPProfessions.COMMISSARY, AVPGifts.COMMISSARY_GIFT_LOOT_TABLE);
     }
 }

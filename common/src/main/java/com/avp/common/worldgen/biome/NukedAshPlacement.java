@@ -1,4 +1,4 @@
-package com.avp.fabric.common.worldgen;
+package com.avp.common.worldgen.biome;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
@@ -6,7 +6,6 @@ import net.minecraft.world.level.block.SnowLayerBlock;
 import net.minecraft.world.level.levelgen.Heightmap;
 
 import com.avp.common.block.AVPBlocks;
-import com.avp.common.worldgen.biome.AVPBiomes;
 
 public class NukedAshPlacement {
 

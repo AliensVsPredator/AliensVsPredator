@@ -26,7 +26,6 @@ import com.avp.fabric.common.network.ServerPacketHandlerRegistry;
 import com.avp.fabric.common.profession.AVPGifts;
 import com.avp.fabric.common.profession.AVPProfessions;
 import com.avp.fabric.common.profession.AVPTrades;
-import com.avp.fabric.common.worldgen.NukedAshPlacement;
 import com.avp.fabric.common.worldgen.WorldGen;
 import com.avp.fabric.data.loot.LootTableModifier;
 import com.avp.fabric.service.FabricRegistryService;
@@ -37,10 +36,6 @@ import com.avp.service.Services;
 public class AVPFabric implements ModInitializer {
 
     private static final FabricRegistryService REGISTRY = (FabricRegistryService) Services.REGISTRY;
-
-    private final MarinePatrolSpawner customSpawner = new MarinePatrolSpawner();
-
-    private final NukedAshPlacement nukedAshPlacement = new NukedAshPlacement();
 
     @Override
     public void onInitialize() {
@@ -71,8 +66,8 @@ public class AVPFabric implements ModInitializer {
     }
 
     private void onWorldTick(ServerLevel serverLevel) {
-        customSpawner.tick(serverLevel, serverLevel.getGameRules().getBoolean(GameRules.RULE_DOMOBSPAWNING), true);
-        nukedAshPlacement.tick(serverLevel);
+        AVP.customSpawner.tick(serverLevel, serverLevel.getGameRules().getBoolean(GameRules.RULE_DOMOBSPAWNING), true);
+        AVP.nukedAshPlacement.tick(serverLevel);
         modifyGifts();
         modifyParrotSounds();
     }
@@ -83,7 +78,6 @@ public class AVPFabric implements ModInitializer {
         /*
          * TODO: Use Yautja sound when added
          */
-        // FIXME: This will break on NeoForge.
         sounds.put(AVPEntityTypes.YAUTJA.get(), SoundEvents.ALLAY_AMBIENT_WITH_ITEM);
     }
 
