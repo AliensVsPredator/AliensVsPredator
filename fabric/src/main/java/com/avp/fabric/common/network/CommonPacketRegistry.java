@@ -2,9 +2,9 @@ package com.avp.fabric.common.network;
 
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 
-import com.avp.fabric.common.network.packet.C2SGunReloadPayload;
-import com.avp.fabric.common.network.packet.S2CBulletHitBlockPayload;
-import com.avp.fabric.common.network.packet.S2CGunRecoilPayload;
+import com.avp.common.network.packet.C2SGunReloadPayload;
+import com.avp.common.network.packet.S2CBulletHitBlockPayload;
+import com.avp.common.network.packet.S2CGunRecoilPayload;
 
 public class CommonPacketRegistry {
 

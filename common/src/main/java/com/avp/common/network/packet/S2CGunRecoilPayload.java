@@ -1,4 +1,4 @@
-package com.avp.fabric.common.network.packet;
+package com.avp.common.network.packet;
 
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;

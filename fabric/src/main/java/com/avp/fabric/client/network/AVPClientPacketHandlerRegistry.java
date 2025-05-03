@@ -2,8 +2,8 @@ package com.avp.fabric.client.network;
 
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 
-import com.avp.fabric.common.network.packet.S2CBulletHitBlockPayload;
-import com.avp.fabric.common.network.packet.S2CGunRecoilPayload;
+import com.avp.common.network.packet.S2CBulletHitBlockPayload;
+import com.avp.common.network.packet.S2CGunRecoilPayload;
 
 public class AVPClientPacketHandlerRegistry {
 

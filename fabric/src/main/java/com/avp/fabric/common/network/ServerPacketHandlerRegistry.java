@@ -2,7 +2,7 @@ package com.avp.fabric.common.network;
 
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 
-import com.avp.fabric.common.network.packet.C2SGunReloadPayload;
+import com.avp.common.network.packet.C2SGunReloadPayload;
 
 public class ServerPacketHandlerRegistry {
 

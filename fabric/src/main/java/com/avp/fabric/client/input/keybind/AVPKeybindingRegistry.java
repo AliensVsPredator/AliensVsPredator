@@ -10,8 +10,8 @@ import org.lwjgl.glfw.GLFW;
 import java.util.function.Consumer;
 
 import com.avp.AVP;
+import com.avp.common.network.packet.C2SGunReloadPayload;
 import com.avp.fabric.client.network.AVPClientNetworking;
-import com.avp.fabric.common.network.packet.C2SGunReloadPayload;
 
 public class AVPKeybindingRegistry {
 
