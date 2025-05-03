@@ -46,6 +46,8 @@ public class QueenLayEggGoal extends Goal {
 
         // Queen must be alive to lay eggs.
         return queen.isAlive()
+            // AND Queen must not be irradiated.
+            && !queen.isIrradiated()
             // AND Queen must not be in an aggressive state.
             && !queen.isAggressive()
             // AND Queen must have no target before she lays an egg.
