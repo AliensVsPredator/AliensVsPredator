@@ -1,4 +1,4 @@
-package com.avp.fabric.common.block.chest_loot_tables;
+package com.avp.common.block.loot_table;
 
 import net.minecraft.core.HolderLookup;
 import net.minecraft.world.level.storage.loot.LootPool;

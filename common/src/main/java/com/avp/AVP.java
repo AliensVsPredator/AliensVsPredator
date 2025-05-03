@@ -1,5 +1,8 @@
 package com.avp;
 
+import com.avp.common.profession.AVPPointOfInterests;
+import com.avp.common.profession.AVPProfessions;
+import com.avp.common.profession.AVPTrades;
 import mod.azure.azurelib.common.api.common.config.Config;
 import mod.azure.azurelib.common.internal.common.config.ConfigHolder;
 import mod.azure.azurelib.common.internal.common.config.ConfigHolderRegistry;
@@ -75,10 +78,13 @@ public class AVP {
         AVPRecipes.initialize();
         AVPMobEffects.initialize();
         AVPBiomes.initialize();
+        AVPPointOfInterests.initialize();
+        AVPProfessions.initialize();
 
         // Functionality
         AVPCompostingChanceRegistry.initialize();
         AVPFuelRegistry.initialize();
+        AVPTrades.initialize();
 
         // FIXME: Remove this once migration is done.
         // AVPBlockEntityTypes.initialize();

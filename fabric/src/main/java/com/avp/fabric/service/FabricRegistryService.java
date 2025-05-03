@@ -2,6 +2,7 @@ package com.avp.fabric.service;
 
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry;
+import net.fabricmc.fabric.api.object.builder.v1.trade.TradeOfferHelper;
 import net.fabricmc.fabric.api.registry.CompostingChanceRegistry;
 import net.fabricmc.fabric.api.registry.FuelRegistry;
 import net.minecraft.commands.CommandSourceStack;
@@ -10,6 +11,8 @@ import net.minecraft.core.Registry;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
+import net.minecraft.world.entity.npc.VillagerProfession;
+import net.minecraft.world.entity.npc.VillagerTrades;
 import net.minecraft.world.level.ItemLike;
 
 import java.util.ArrayList;
@@ -79,6 +82,19 @@ public class FabricRegistryService implements RegistryService {
     @Override
     public void registerFurnaceFuel(Supplier<? extends ItemLike> itemLikeSupplier, int burnTimeInTicks) {
         FuelRegistry.INSTANCE.add(itemLikeSupplier.get(), burnTimeInTicks);
+    }
+
+    @Override
+    public void registerVillagerTrade(
+        Supplier<VillagerProfession> villagerProfessionSupplier,
+        int level,
+        List<VillagerTrades.ItemListing> villagerTradeItemListings
+    ) {
+        TradeOfferHelper.registerVillagerOffers(
+            villagerProfessionSupplier.get(),
+            level,
+            factories -> factories.addAll(villagerTradeItemListings)
+        );
     }
 
     public List<LiteralArgumentBuilder<CommandSourceStack>> getLiteralArgumentBuilders() {

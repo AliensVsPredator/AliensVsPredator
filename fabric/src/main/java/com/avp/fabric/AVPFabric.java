@@ -14,14 +14,15 @@ import net.minecraft.world.level.GameRules;
 import com.avp.AVP;
 import com.avp.common.entity.type.AVPEntityTypes;
 import com.avp.common.profession.AVPGifts;
+import com.avp.common.profession.AVPPointOfInterests;
+import com.avp.common.profession.AVPProfessions;
+import com.avp.common.profession.AVPTrades;
 import com.avp.data.worldgen.AVPVillageInjection;
 import com.avp.fabric.common.block.DispenserBlockBehaviors;
 import com.avp.fabric.common.block.FlammableBlockRegistry;
 import com.avp.fabric.common.entity.spawn.SpawnPlacements;
 import com.avp.fabric.common.network.CommonPacketRegistry;
 import com.avp.fabric.common.network.ServerPacketHandlerRegistry;
-import com.avp.fabric.common.profession.AVPProfessions;
-import com.avp.fabric.common.profession.AVPTrades;
 import com.avp.fabric.common.worldgen.WorldGen;
 import com.avp.fabric.data.loot.LootTableModifier;
 import com.avp.fabric.service.FabricRegistryService;
@@ -41,7 +42,6 @@ public class AVPFabric implements ModInitializer {
         WorldGen.initialize();
         CommonPacketRegistry.initialize();
         ServerPacketHandlerRegistry.initialize();
-        AVPProfessions.initialize();
 
         // Functionality
         DispenserBlockBehaviors.initialize();
@@ -50,7 +50,6 @@ public class AVPFabric implements ModInitializer {
         FlammableBlockRegistry.initialize();
         ServerTickEvents.START_WORLD_TICK.register(this::onWorldTick);
         ServerLifecycleEvents.SERVER_STARTING.register(this::addNewVillageBuilding);
-        AVPTrades.initialize();
 
         CommandRegistrationCallback.EVENT.register(
             (dispatcher, registryAccess, environment) -> REGISTRY.getLiteralArgumentBuilders()
@@ -77,7 +76,7 @@ public class AVPFabric implements ModInitializer {
     public static void modifyGifts() {
         var gifts = GiveGiftToHeroAccessor.getGifts();
 
-        gifts.put(AVPProfessions.COMMISSARY, AVPGifts.COMMISSARY_GIFT_LOOT_TABLE);
+        gifts.put(AVPProfessions.COMMISSARY.get(), AVPGifts.COMMISSARY_GIFT_LOOT_TABLE);
     }
 
     public void addNewVillageBuilding(final MinecraftServer event) {

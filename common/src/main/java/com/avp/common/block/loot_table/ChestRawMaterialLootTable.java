@@ -1,4 +1,4 @@
-package com.avp.fabric.common.block.chest_loot_tables;
+package com.avp.common.block.loot_table;
 
 import net.minecraft.core.HolderLookup;
 import net.minecraft.world.item.Items;
@@ -13,15 +13,51 @@ import java.util.function.Function;
 
 import com.avp.common.item.AVPItems;
 
-public class CommanderChestPersonalLootTable {
+public class ChestRawMaterialLootTable {
 
     public static final Function<HolderLookup.Provider, LootTable.Builder> LOOT_TABLE = provider -> LootTable.lootTable()
         .withPool(
             LootPool.lootPool()
                 .setRolls(ConstantValue.exactly(1))
                 .add(
-                    LootItem.lootTableItem(Items.DIAMOND)
-                        .apply(SetItemCountFunction.setCount(UniformGenerator.between(1, 3)))
+                    LootItem.lootTableItem(AVPItems.RAW_ZINC.get())
+                        .apply(SetItemCountFunction.setCount(UniformGenerator.between(2, 4)))
+                        .setWeight(50)
+                )
+        )
+        .withPool(
+            LootPool.lootPool()
+                .setRolls(ConstantValue.exactly(1))
+                .add(
+                    LootItem.lootTableItem(Items.COPPER_ORE)
+                        .apply(SetItemCountFunction.setCount(UniformGenerator.between(2, 4)))
+                        .setWeight(50)
+                )
+        )
+        .withPool(
+            LootPool.lootPool()
+                .setRolls(ConstantValue.exactly(1))
+                .add(
+                    LootItem.lootTableItem(Items.RAW_COPPER)
+                        .apply(SetItemCountFunction.setCount(UniformGenerator.between(4, 8)))
+                        .setWeight(40)
+                )
+        )
+        .withPool(
+            LootPool.lootPool()
+                .setRolls(ConstantValue.exactly(1))
+                .add(
+                    LootItem.lootTableItem(AVPItems.RAW_ZINC.get())
+                        .apply(SetItemCountFunction.setCount(UniformGenerator.between(4, 8)))
+                        .setWeight(40)
+                )
+        )
+        .withPool(
+            LootPool.lootPool()
+                .setRolls(ConstantValue.exactly(1))
+                .add(
+                    LootItem.lootTableItem(AVPItems.RAW_BRASS.get())
+                        .apply(SetItemCountFunction.setCount(UniformGenerator.between(2, 6)))
                         .setWeight(25)
                 )
         )
@@ -29,59 +65,27 @@ public class CommanderChestPersonalLootTable {
             LootPool.lootPool()
                 .setRolls(ConstantValue.exactly(1))
                 .add(
-                    LootItem.lootTableItem(Items.GOLD_INGOT)
+                    LootItem.lootTableItem(AVPItems.ALIEN_MUSIC_DISC_1_FRAGMENT.get())
+                        .apply(SetItemCountFunction.setCount(UniformGenerator.between(2, 4)))
+                        .setWeight(5)
+                )
+        )
+        .withPool(
+            LootPool.lootPool()
+                .setRolls(ConstantValue.exactly(1))
+                .add(
+                    LootItem.lootTableItem(AVPItems.PREDATOR_MUSIC_DISC_1_FRAGMENT.get())
+                        .apply(SetItemCountFunction.setCount(UniformGenerator.between(2, 4)))
+                        .setWeight(5)
+                )
+        )
+        .withPool(
+            LootPool.lootPool()
+                .setRolls(ConstantValue.exactly(1))
+                .add(
+                    LootItem.lootTableItem(AVPItems.RAW_MONAZITE.get())
                         .apply(SetItemCountFunction.setCount(UniformGenerator.between(1, 6)))
-                        .setWeight(20)
-                )
-        )
-        .withPool(
-            LootPool.lootPool()
-                .setRolls(ConstantValue.exactly(1))
-                .add(
-                    LootItem.lootTableItem(Items.EMERALD)
-                        .apply(SetItemCountFunction.setCount(UniformGenerator.between(2, 3)))
-                        .setWeight(15)
-                )
-        )
-        .withPool(
-            LootPool.lootPool()
-                .setRolls(ConstantValue.exactly(1))
-                .add(
-                    LootItem.lootTableItem(AVPItems.BLUEPRINT_FLAMETHROWER_SEVASTOPOL.get())
-                        .apply(SetItemCountFunction.setCount(ConstantValue.exactly(1)))
-                        .setWeight(3)
-                )
-        )
-        .withPool(
-            LootPool.lootPool()
-                .setRolls(ConstantValue.exactly(1))
-                .add(
-                    LootItem.lootTableItem(AVPItems.ALIEN_MUSIC_DISC_1_FRAGMENT.get())
-                        .apply(SetItemCountFunction.setCount(UniformGenerator.between(1, 8)))
-                        .setWeight(10)
-                )
-        )
-        .withPool(
-            LootPool.lootPool()
-                .setRolls(ConstantValue.exactly(1))
-                .add(
-                    LootItem.lootTableItem(AVPItems.PREDATOR_MUSIC_DISC_1_FRAGMENT.get())
-                        .apply(SetItemCountFunction.setCount(UniformGenerator.between(1, 8)))
-                        .setWeight(10)
-                )
-        )
-        .withPool(
-            LootPool.lootPool()
-                .setRolls(ConstantValue.exactly(1))
-                .add(
-                    LootItem.lootTableItem(AVPItems.ALIEN_MUSIC_DISC_1_FRAGMENT.get())
-                        .apply(SetItemCountFunction.setCount(UniformGenerator.between(2, 4)))
-                        .setWeight(1)
-                )
-                .add(
-                    LootItem.lootTableItem(AVPItems.PREDATOR_MUSIC_DISC_1_FRAGMENT.get())
-                        .apply(SetItemCountFunction.setCount(UniformGenerator.between(2, 4)))
-                        .setWeight(1)
+                        .setWeight(5)
                 )
         );
 }

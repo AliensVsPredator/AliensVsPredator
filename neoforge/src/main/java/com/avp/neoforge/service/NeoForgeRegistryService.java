@@ -1,6 +1,7 @@
 package com.avp.neoforge.service;
 
 import com.bvanseg.just.functional.tuple.Tuple2;
+import com.bvanseg.just.functional.tuple.Tuple3;
 import com.bvanseg.just.functional.tuple.Tuple4;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import net.minecraft.commands.CommandSourceStack;
@@ -13,6 +14,9 @@ import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
+import net.minecraft.world.entity.ai.village.poi.PoiType;
+import net.minecraft.world.entity.npc.VillagerProfession;
+import net.minecraft.world.entity.npc.VillagerTrades;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ArmorMaterial;
 import net.minecraft.world.item.CreativeModeTab;
@@ -82,6 +86,8 @@ public class NeoForgeRegistryService implements RegistryService {
         AVP.MOD_ID
     );
 
+    private final DeferredRegister<PoiType> poiTypeRegistry = DeferredRegister.create(BuiltInRegistries.POINT_OF_INTEREST_TYPE, AVP.MOD_ID);
+
     private final DeferredRegister<RecipeSerializer<?>> recipeSerializerRegistry = DeferredRegister.create(
         BuiltInRegistries.RECIPE_SERIALIZER,
         AVP.MOD_ID
@@ -90,6 +96,11 @@ public class NeoForgeRegistryService implements RegistryService {
     private final DeferredRegister<RecipeType<?>> recipeTypeRegistry = DeferredRegister.create(BuiltInRegistries.RECIPE_TYPE, AVP.MOD_ID);
 
     private final DeferredRegister<SoundEvent> soundEventRegistry = DeferredRegister.create(BuiltInRegistries.SOUND_EVENT, AVP.MOD_ID);
+
+    private final DeferredRegister<VillagerProfession> villagerProfessionRegistry = DeferredRegister.create(
+        BuiltInRegistries.VILLAGER_PROFESSION,
+        AVP.MOD_ID
+    );
 
     private final List<Supplier<? extends AlienInfection<?, ?>>> alienInfectionSuppliers;
 
@@ -103,6 +114,8 @@ public class NeoForgeRegistryService implements RegistryService {
 
     private final List<LiteralArgumentBuilder<CommandSourceStack>> literalArgumentBuilders;
 
+    private final List<Tuple3<Supplier<VillagerProfession>, Integer, List<VillagerTrades.ItemListing>>> villagerTradeData;
+
     // TODO: Assign other final fields here.
     public NeoForgeRegistryService() {
         this.alienInfectionSuppliers = new ArrayList<>();
@@ -111,6 +124,7 @@ public class NeoForgeRegistryService implements RegistryService {
         this.entityAttributeSupplierPairs = new ArrayList<>();
         this.furnaceFuelPairs = new ArrayList<>();
         this.literalArgumentBuilders = new ArrayList<>();
+        this.villagerTradeData = new ArrayList<>();
     }
 
     @Override
@@ -140,12 +154,16 @@ public class NeoForgeRegistryService implements RegistryService {
             return adapt((DeferredHolder<T, T>) mobEffectRegistry.register(id, (Supplier<MobEffect>) supplier));
         } else if (registry == BuiltInRegistries.PARTICLE_TYPE) {
             return adapt((DeferredHolder<T, T>) particleTypeRegistry.register(id, (Supplier<ParticleType<?>>) supplier));
+        } else if (registry == BuiltInRegistries.POINT_OF_INTEREST_TYPE) {
+            return adapt((DeferredHolder<T, T>) poiTypeRegistry.register(id, (Supplier<PoiType>) supplier));
         } else if (registry == BuiltInRegistries.RECIPE_SERIALIZER) {
             return adapt((DeferredHolder<T, T>) recipeSerializerRegistry.register(id, (Supplier<RecipeSerializer<?>>) supplier));
         } else if (registry == BuiltInRegistries.RECIPE_TYPE) {
             return adapt((DeferredHolder<T, T>) recipeTypeRegistry.register(id, (Supplier<RecipeType<?>>) supplier));
         } else if (registry == BuiltInRegistries.SOUND_EVENT) {
             return adapt((DeferredHolder<T, T>) soundEventRegistry.register(id, (Supplier<SoundEvent>) supplier));
+        } else if (registry == BuiltInRegistries.VILLAGER_PROFESSION) {
+            return adapt((DeferredHolder<T, T>) villagerProfessionRegistry.register(id, (Supplier<VillagerProfession>) supplier));
         }
 
         throw new IllegalArgumentException("Received registration attempt for an unhandled registry. Registry: " + registry);
@@ -193,6 +211,15 @@ public class NeoForgeRegistryService implements RegistryService {
         furnaceFuelPairs.add(new Tuple2<>(itemLikeSupplier, burnTimeInTicks));
     }
 
+    @Override
+    public void registerVillagerTrade(
+        Supplier<VillagerProfession> villagerProfessionSupplier,
+        int level,
+        List<VillagerTrades.ItemListing> villagerTradeItemListings
+    ) {
+        villagerTradeData.add(new Tuple3<>(villagerProfessionSupplier, level, villagerTradeItemListings));
+    }
+
     private <T> AVPDeferredHolder<T> adapt(DeferredHolder<T, T> deferredHolder) {
         return new AVPDeferredHolder<>(deferredHolder, () -> deferredHolder);
     }
@@ -210,9 +237,11 @@ public class NeoForgeRegistryService implements RegistryService {
         menuTypeRegistry.register(modBus);
         mobEffectRegistry.register(modBus);
         particleTypeRegistry.register(modBus);
+        poiTypeRegistry.register(modBus);
         recipeSerializerRegistry.register(modBus);
         recipeTypeRegistry.register(modBus);
         soundEventRegistry.register(modBus);
+        villagerProfessionRegistry.register(modBus);
     }
 
     public List<Supplier<? extends AlienInfection<?, ?>>> getAlienInfectionSuppliers() {
@@ -237,5 +266,9 @@ public class NeoForgeRegistryService implements RegistryService {
 
     public List<LiteralArgumentBuilder<CommandSourceStack>> getLiteralArgumentBuilders() {
         return literalArgumentBuilders;
+    }
+
+    public List<Tuple3<Supplier<VillagerProfession>, Integer, List<VillagerTrades.ItemListing>>> getVillagerTradeData() {
+        return villagerTradeData;
     }
 }
