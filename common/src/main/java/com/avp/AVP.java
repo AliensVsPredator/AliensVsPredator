@@ -1,8 +1,5 @@
 package com.avp;
 
-import com.avp.common.profession.AVPPointOfInterests;
-import com.avp.common.profession.AVPProfessions;
-import com.avp.common.profession.AVPTrades;
 import mod.azure.azurelib.common.api.common.config.Config;
 import mod.azure.azurelib.common.internal.common.config.ConfigHolder;
 import mod.azure.azurelib.common.internal.common.config.ConfigHolderRegistry;
@@ -33,6 +30,9 @@ import com.avp.common.lifecycle.AVPAlienLifecycles;
 import com.avp.common.menu.AVPMenuTypes;
 import com.avp.common.particle.AVPParticleTypes;
 import com.avp.common.patrols.MarinePatrolSpawner;
+import com.avp.common.profession.AVPPointOfInterests;
+import com.avp.common.profession.AVPProfessions;
+import com.avp.common.profession.AVPTrades;
 import com.avp.common.recipe.AVPRecipes;
 import com.avp.common.sound.AVPJukeboxSongs;
 import com.avp.common.sound.AVPSoundEvents;

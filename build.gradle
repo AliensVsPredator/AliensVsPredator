@@ -21,3 +21,19 @@ processResources {
 		println "processResources executed: wiki folder copied into assets/avp"
 	}
 }
+
+// #####################################################################################
+// # Convenience task that runs data gen for both NeoForge and Fabric (in that order). #
+// #####################################################################################
+tasks.register("runAllDatagen") {
+	dependsOn(":neoforge:runData", ":fabric:runDatagen")
+}
+
+afterEvaluate {
+	project(":fabric").afterEvaluate { fabricProject ->
+		fabricProject.tasks.named("runDatagen").configure {
+			mustRunAfter(":neoforge:runData")
+		}
+	}
+}
+// End
