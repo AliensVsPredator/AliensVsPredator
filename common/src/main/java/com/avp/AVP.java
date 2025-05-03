@@ -77,6 +77,8 @@ public class AVP {
         AVPSoundEvents.initialize();
         AVPJukeboxSongs.initialize();
         AVPGameEvents.initialize();
+        AVPPacketDirectionRegistry.initialize();
+        AVPServerPacketHandlerRegistry.initialize();
         AVPRecipes.initialize();
         AVPMobEffects.initialize();
         AVPBiomes.initialize();
@@ -84,36 +86,9 @@ public class AVP {
         AVPProfessions.initialize();
 
         // Functionality
-        AVPPacketDirectionRegistry.initialize();
-        AVPServerPacketHandlerRegistry.initialize();
         AVPCompostingChanceRegistry.initialize();
         AVPFuelRegistry.initialize();
         AVPTrades.initialize();
-
-        // FIXME: Remove this once migration is done.
-        // AVPBlockEntityTypes.initialize();
-        // AVPBlocks.initialize();
-        // AVPItems.initialize();
-        // AVPBlockItems.initialize();
-        // ArmorItems.initialize();
-        // SpawnEggItems.initialize();
-        // AVPEntityTypes.initialize();
-        // Infections.initialize();
-        // Lifecycles.initialize();
-        // AVPParticleTypes.initialize();
-        // MenuTypes.initialize();
-        // DataComponents.initialize();
-        // DecoratedPotPatterns.initialize();
-        // WorldGen.initialize();
-        // AVPSoundEvents.initialize();
-        // AVPJukeboxSongs.initialize();
-        // AVPGameEvents.initialize();
-        // CommonPacketRegistry.initialize();
-        // ServerPacketHandlerRegistry.initialize();
-        // AVPRecipes.initialize();
-        // AVPEffects.initialize();
-        // AVPBiomes.initialize();
-        // AVPProfessions.initialize();
     }
 
     /**
