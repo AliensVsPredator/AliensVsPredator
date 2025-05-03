@@ -20,8 +20,8 @@ jobs:
         run: chmod +x ./gradlew
       - name: Run Datagen on Fabric
         run: ./gradlew runDatagen
-      - name: Run Datagen on NeoForge
-        run: ./gradlew runData
+#      - name: Run Datagen on NeoForge
+#        run: ./gradlew runData
       - name: Build with Gradle
         run: ./gradlew build
       - name: Upload a Fabric Build Artifact
