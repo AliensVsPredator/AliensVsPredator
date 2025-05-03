@@ -1,9 +1,9 @@
 package com.avp.neoforge;
 
 import net.neoforged.bus.api.IEventBus;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.common.Mod;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.event.RegisterCommandsEvent;
 import net.neoforged.neoforge.event.entity.EntityAttributeCreationEvent;
 
 import com.avp.AVP;
@@ -16,20 +16,24 @@ public class AVPNeoForge {
     private static final NeoForgeRegistryService REGISTRY = (NeoForgeRegistryService) Services.REGISTRY;
 
     public AVPNeoForge(IEventBus modBus) {
-        var registryService = (NeoForgeRegistryService) Services.REGISTRY;
-        registryService.initialize(modBus);
-
         AVP.initialize();
+
+        REGISTRY.initialize(modBus);
+
+        // Mod bus events
+        modBus.addListener(AVPNeoForge::registerEntityAttributes);
+
+        // Game bus events
+        NeoForge.EVENT_BUS.addListener(AVPNeoForge::registerCommands);
     }
 
-    @EventBusSubscriber(modid = AVP.MOD_ID, bus = EventBusSubscriber.Bus.MOD)
-    public static class Events {
-
-        @SubscribeEvent
-        public static void registerEntityAttributes(EntityAttributeCreationEvent event) {
-            REGISTRY.getEntityAttributeSupplierPairs()
-                .forEach(pair -> event.put(pair.first().get(), pair.second().get().build()));
-        }
+    public static void registerEntityAttributes(EntityAttributeCreationEvent event) {
+        REGISTRY.getEntityAttributeSupplierPairs()
+            .forEach(pair -> event.put(pair.first().get(), pair.second().get().build()));
     }
 
+    public static void registerCommands(RegisterCommandsEvent event) {
+        REGISTRY.getLiteralArgumentBuilders()
+            .forEach(literalArgumentBuilder -> event.getDispatcher().register(literalArgumentBuilder));
+    }
 }

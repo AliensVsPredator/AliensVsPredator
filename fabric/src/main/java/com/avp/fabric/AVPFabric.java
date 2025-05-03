@@ -2,6 +2,7 @@ package com.avp.fabric;
 
 import com.mojang.datafixers.util.Pair;
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.minecraft.core.Registry;
@@ -24,7 +25,6 @@ import com.avp.common.patrols.MarinePatrolSpawner;
 import com.avp.fabric.common.block.CompostingChanceRegistry;
 import com.avp.fabric.common.block.DispenserBlockBehaviors;
 import com.avp.fabric.common.block.FlammableBlockRegistry;
-import com.avp.fabric.common.command.Commands;
 import com.avp.fabric.common.entity.spawn.SpawnPlacements;
 import com.avp.fabric.common.fuel.AVPFuelRegistry;
 import com.avp.fabric.common.item.AVPItems;
@@ -36,20 +36,24 @@ import com.avp.fabric.common.profession.AVPTrades;
 import com.avp.fabric.common.worldgen.NukedAshPlacement;
 import com.avp.fabric.common.worldgen.WorldGen;
 import com.avp.fabric.data.loot.LootTableModifier;
+import com.avp.fabric.service.FabricRegistryService;
 import com.avp.mixin.GiveGiftToHeroAccessor;
 import com.avp.mixin.ParrotSoundMapAccessor;
 import com.avp.mixin.StructurePoolAccessor;
+import com.avp.service.Services;
 
 public class AVPFabric implements ModInitializer {
 
-    private final MarinePatrolSpawner customSpawner = new MarinePatrolSpawner();
-
-    private final NukedAshPlacement nukedAshPlacement = new NukedAshPlacement();
+    private static final FabricRegistryService REGISTRY = (FabricRegistryService) Services.REGISTRY;
 
     private static final ResourceKey<StructureProcessorList> EMPTY_PROCESSOR_LIST_KEY = ResourceKey.create(
         Registries.PROCESSOR_LIST,
         ResourceLocation.withDefaultNamespace("empty")
     );
+
+    private final MarinePatrolSpawner customSpawner = new MarinePatrolSpawner();
+
+    private final NukedAshPlacement nukedAshPlacement = new NukedAshPlacement();
 
     @Override
     public void onInitialize() {
@@ -69,10 +73,14 @@ public class AVPFabric implements ModInitializer {
         SpawnPlacements.initialize();
         FlammableBlockRegistry.initialize();
         AVPFuelRegistry.initialize();
-        Commands.initialize();
         ServerTickEvents.START_WORLD_TICK.register(this::onWorldTick);
         ServerLifecycleEvents.SERVER_STARTING.register(this::addNewVillageBuilding);
         AVPTrades.initialize();
+
+        CommandRegistrationCallback.EVENT.register(
+            (dispatcher, registryAccess, environment) -> REGISTRY.getLiteralArgumentBuilders()
+                .forEach(dispatcher::register)
+        );
     }
 
     private void onWorldTick(ServerLevel serverLevel) {

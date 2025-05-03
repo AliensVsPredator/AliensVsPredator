@@ -1,4 +1,4 @@
-package com.avp.neoforge.mixin.common;
+package com.avp.neoforge.mixin;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;

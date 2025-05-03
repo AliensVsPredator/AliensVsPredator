@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import com.avp.common.block.AVPBlocks;
 import com.avp.common.block.AVPDecoratedPotPatterns;
 import com.avp.common.block.entity.AVPBlockEntityTypes;
+import com.avp.common.command.AVPCommands;
 import com.avp.common.component.AVPDataComponents;
 import com.avp.common.config.AVPConfig;
 import com.avp.common.creative_mode_tab.AVPCreativeModeTabs;
@@ -57,6 +58,7 @@ public class AVP {
         AVPParticleTypes.initialize();
         AVPMenuTypes.initialize();
         AVPCreativeModeTabs.initialize();
+        AVPCommands.initialize();
         AVPDataComponents.initialize();
         AVPDecoratedPotPatterns.initialize();
         AVPSoundEvents.initialize();

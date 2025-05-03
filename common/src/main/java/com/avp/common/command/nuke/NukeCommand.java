@@ -1,4 +1,4 @@
-package com.avp.fabric.common.command.nuke;
+package com.avp.common.command.nuke;
 
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;

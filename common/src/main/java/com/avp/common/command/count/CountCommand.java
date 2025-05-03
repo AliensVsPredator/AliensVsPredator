@@ -1,4 +1,4 @@
-package com.avp.fabric.common.command.count;
+package com.avp.common.command.count;
 
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import net.minecraft.commands.CommandSourceStack;

@@ -1,4 +1,4 @@
-package com.avp.fabric.common.command.hive;
+package com.avp.common.command.hive;
 
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import net.minecraft.commands.CommandSourceStack;

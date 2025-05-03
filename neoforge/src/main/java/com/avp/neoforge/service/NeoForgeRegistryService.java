@@ -1,6 +1,8 @@
 package com.avp.neoforge.service;
 
 import com.bvanseg.just.functional.tuple.Tuple2;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.core.Registry;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.particles.ParticleType;
@@ -87,9 +89,12 @@ public class NeoForgeRegistryService implements RegistryService {
 
     private final List<Tuple2<Supplier<? extends EntityType<? extends LivingEntity>>, Supplier<AttributeSupplier.Builder>>> entityAttributeSupplierPairs;
 
+    private final List<LiteralArgumentBuilder<CommandSourceStack>> literalArgumentBuilders;
+
     // TODO: Assign other final fields here.
     public NeoForgeRegistryService() {
         this.entityAttributeSupplierPairs = new ArrayList<>();
+        this.literalArgumentBuilders = new ArrayList<>();
     }
 
     @Override
@@ -131,6 +136,11 @@ public class NeoForgeRegistryService implements RegistryService {
     }
 
     @Override
+    public void registerCommand(LiteralArgumentBuilder<CommandSourceStack> literalArgumentBuilder) {
+        literalArgumentBuilders.add(literalArgumentBuilder);
+    }
+
+    @Override
     public void registerEntityAttributes(
         Supplier<? extends EntityType<? extends LivingEntity>> entityTypeSupplier,
         Supplier<AttributeSupplier.Builder> attributeSupplierBuilderSupplier
@@ -162,5 +172,9 @@ public class NeoForgeRegistryService implements RegistryService {
 
     public List<Tuple2<Supplier<? extends EntityType<? extends LivingEntity>>, Supplier<AttributeSupplier.Builder>>> getEntityAttributeSupplierPairs() {
         return entityAttributeSupplierPairs;
+    }
+
+    public List<LiteralArgumentBuilder<CommandSourceStack>> getLiteralArgumentBuilders() {
+        return literalArgumentBuilders;
     }
 }

@@ -4,7 +4,7 @@
   "package": "com.avp.neoforge.mixin",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
-    "common.MixinBlock_Flammable"
+    "MixinBlock_Flammable"
   ],
   "client": [],
   "server": [],
