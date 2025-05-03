@@ -7,7 +7,13 @@ import net.minecraft.world.item.SpawnEggItem;
 
 import java.util.function.Supplier;
 
+import com.avp.common.item.gun.GunConfig;
+
 public interface BridgeService {
+
+    Supplier<Item> createGunSupplier(GunConfig gunConfig);
+
+    Supplier<Item> createOldPainlessSupplier();
 
     <E extends Mob> Supplier<SpawnEggItem> createSpawnEggSupplier(
         Supplier<EntityType<E>> entityType,

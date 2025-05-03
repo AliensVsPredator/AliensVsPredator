@@ -18,7 +18,6 @@ import java.util.function.Supplier;
 import com.avp.common.component.AVPDataComponents;
 import com.avp.common.item.grenade.GrenadeItem;
 import com.avp.common.item.gun.GunData;
-import com.avp.common.item.old_painless.OldPainlessItem;
 import com.avp.common.item.yautja.ShurikenItem;
 import com.avp.common.item.yautja.SmartDiscItem;
 import com.avp.common.registry.AVPDeferredHolder;
@@ -106,7 +105,10 @@ public class AVPItems {
 
     public static final AVPDeferredHolder<Item> DIODE = register("diode");
 
-    public static final AVPDeferredHolder<Item> F903WE_RIFLE = register("f903we_rifle", () -> new GunItem(GunData.F903WE_RIFLE));
+    public static final AVPDeferredHolder<Item> F903WE_RIFLE = register(
+        "f903we_rifle",
+        Services.BRIDGE.createGunSupplier(GunData.F903WE_RIFLE)
+    );
 
     public static final AVPDeferredHolder<Item> FERROALUMINUM_INGOT = register("ferroaluminum_ingot");
 
@@ -114,7 +116,7 @@ public class AVPItems {
 
     public static final AVPDeferredHolder<Item> FLAMETHROWER_SEVASTOPOL = register(
         "flamethrower_sevastopol",
-        () -> new GunItem(GunData.FLAMETHROWER_SEVASTOPOL)
+        Services.BRIDGE.createGunSupplier(GunData.FLAMETHROWER_SEVASTOPOL)
     );
 
     public static final AVPDeferredHolder<Item> FUEL_TANK = register("fuel_tank", new Item.Properties().stacksTo(1));
@@ -155,33 +157,39 @@ public class AVPItems {
 
     public static final AVPDeferredHolder<Item> LITHIUM_DUST = register("lithium_dust");
 
-    public static final AVPDeferredHolder<Item> M37_12_SHOTGUN = register("m37_12_shotgun", () -> new GunItem(GunData.M37_12_SHOTGUN));
+    public static final AVPDeferredHolder<Item> M37_12_SHOTGUN = register(
+        "m37_12_shotgun",
+        Services.BRIDGE.createGunSupplier(GunData.M37_12_SHOTGUN)
+    );
 
     public static final AVPDeferredHolder<Item> M41A_PULSE_RIFLE = register(
         "m41a_pulse_rifle",
-        () -> new GunItem(GunData.M41A_PULSE_RIFLE)
+        Services.BRIDGE.createGunSupplier(GunData.M41A_PULSE_RIFLE)
     );
 
     public static final AVPDeferredHolder<Item> M42A3_SNIPER_RIFLE = register(
         "m42a3_sniper_rifle",
-        () -> new GunItem(GunData.M42A3_SNIPER_RIFLE)
+        Services.BRIDGE.createGunSupplier(GunData.M42A3_SNIPER_RIFLE)
     );
 
     public static final AVPDeferredHolder<Item> M4RA_BATTLE_RIFLE = register(
         "m4ra_battle_rifle",
-        () -> new GunItem(GunData.M4RA_BATTLE_RIFLE)
+        Services.BRIDGE.createGunSupplier(GunData.M4RA_BATTLE_RIFLE)
     );
 
-    public static final AVPDeferredHolder<Item> M56_SMARTGUN = register("m56_smartgun", () -> new GunItem(GunData.M56_SMARTGUN));
+    public static final AVPDeferredHolder<Item> M56_SMARTGUN = register(
+        "m56_smartgun",
+        Services.BRIDGE.createGunSupplier(GunData.M56_SMARTGUN)
+    );
 
     public static final AVPDeferredHolder<Item> M6B_ROCKET_LAUNCHER = register(
         "m6b_rocket_launcher",
-        () -> new GunItem(GunData.M6B_ROCKET_LAUNCHER)
+        Services.BRIDGE.createGunSupplier(GunData.M6B_ROCKET_LAUNCHER)
     );
 
     public static final AVPDeferredHolder<Item> M88MOD4_COMBAT_PISTOL = register(
         "m88mod4_combat_pistol",
-        () -> new GunItem(GunData.M88_MOD_4_COMBAT_PISTOL)
+        Services.BRIDGE.createGunSupplier(GunData.M88_MOD_4_COMBAT_PISTOL)
     );
 
     public static final AVPDeferredHolder<Item> MEDIUM_BULLET = register("medium_bullet");
@@ -205,7 +213,7 @@ public class AVPItems {
 
     public static final AVPDeferredHolder<Item> NUCLEAR_BATTERY = register("nuclear_battery");
 
-    public static final AVPDeferredHolder<Item> OLD_PAINLESS = register("old_painless", OldPainlessItem::new);
+    public static final AVPDeferredHolder<Item> OLD_PAINLESS = register("old_painless", Services.BRIDGE.createOldPainlessSupplier());
 
     public static final AVPDeferredHolder<Item> OVOID_POTTERY_SHERD = register("ovoid_pottery_sherd");
 
@@ -432,7 +440,10 @@ public class AVPItems {
 
     public static final AVPDeferredHolder<Item> ZINC_NUGGET = register("zinc_nugget");
 
-    public static final AVPDeferredHolder<Item> ZX_76_SHOTGUN = register("zx_76_shotgun", () -> new GunItem(GunData.ZX_76_SHOTGUN));
+    public static final AVPDeferredHolder<Item> ZX_76_SHOTGUN = register(
+        "zx_76_shotgun",
+        Services.BRIDGE.createGunSupplier(GunData.ZX_76_SHOTGUN)
+    );
 
     private static AVPDeferredHolder<Item> register(String name) {
         return register(name, new Item.Properties());

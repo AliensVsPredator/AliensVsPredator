@@ -89,12 +89,6 @@ public class GunItem extends Item {
         return 1;
     }
 
-    // FIXME:
-    // @Override
-    // public boolean canBeEnchantedWith(ItemStack stack, Holder<Enchantment> enchantment, EnchantingContext context) {
-    // return enchantment.is(AVPEnchantmentTags.GUN_ENCHANTMENTS);
-    // }
-
     @Override
     public void releaseUsing(@NotNull ItemStack itemStack, @NotNull Level level, @NotNull LivingEntity livingEntity, int i) {
         var fireModeConfig = gunConfig.getDefaultFireMode();
