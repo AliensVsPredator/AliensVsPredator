@@ -10,6 +10,7 @@ import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import java.util.function.Supplier;
 
 import com.avp.common.lifecycle.AlienLifecycle;
+import com.avp.common.lifecycle.infection.AlienInfection;
 import com.avp.common.registry.AVPDeferredHolder;
 
 public interface RegistryService {
@@ -17,6 +18,10 @@ public interface RegistryService {
     <T> AVPDeferredHolder<T> register(Registry<? super T> registry, String id, Supplier<? extends T> supplier);
 
     void registerCommand(LiteralArgumentBuilder<CommandSourceStack> literalArgumentBuilder);
+
+    <S extends LivingEntity, P extends LivingEntity> Supplier<AlienInfection<S, P>> registerAlienInfection(
+        Supplier<AlienInfection<S, P>> alienInfectionSupplier
+    );
 
     Supplier<AlienLifecycle> registerAlienLifecycle(Supplier<AlienLifecycle> alienLifecycleSupplier);
 

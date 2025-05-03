@@ -18,6 +18,7 @@ import net.neoforged.neoforge.event.RegisterCommandsEvent;
 import net.neoforged.neoforge.event.entity.EntityAttributeCreationEvent;
 
 import com.avp.AVP;
+import com.avp.common.lifecycle.registry.AlienInfectionRegistry;
 import com.avp.common.lifecycle.registry.AlienLifecycleRegistry;
 import com.avp.neoforge.service.NeoForgeRegistryService;
 import com.avp.service.Services;
@@ -44,7 +45,10 @@ public class AVPNeoForge {
         NeoForge.EVENT_BUS.addListener(EventPriority.HIGH, AVPNeoForge::onWorldEndTick);
     }
 
-    public static void registerMiscellaneous(final FMLCommonSetupEvent event) {
+    public static void registerMiscellaneous(FMLCommonSetupEvent event) {
+        // Register alien infections.
+        REGISTRY.getAlienInfectionSuppliers()
+            .forEach(alienInfectionSupplier -> AlienInfectionRegistry.register(alienInfectionSupplier.get()));
         // Register alien lifecycles.
         REGISTRY.getAlienLifecycleSuppliers()
             .forEach(alienLifecycleSupplier -> AlienLifecycleRegistry.register(alienLifecycleSupplier.get()));

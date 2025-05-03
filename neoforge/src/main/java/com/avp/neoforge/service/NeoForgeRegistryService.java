@@ -32,6 +32,7 @@ import java.util.function.Supplier;
 
 import com.avp.AVP;
 import com.avp.common.lifecycle.AlienLifecycle;
+import com.avp.common.lifecycle.infection.AlienInfection;
 import com.avp.common.registry.AVPDeferredHolder;
 import com.avp.service.RegistryService;
 
@@ -88,6 +89,8 @@ public class NeoForgeRegistryService implements RegistryService {
 
     private final DeferredRegister<SoundEvent> soundEventRegistry = DeferredRegister.create(BuiltInRegistries.SOUND_EVENT, AVP.MOD_ID);
 
+    private final List<Supplier<? extends AlienInfection<?, ?>>> alienInfectionSuppliers;
+
     private final List<Supplier<AlienLifecycle>> alienLifecycleSuppliers;
 
     private final List<Tuple2<Supplier<? extends EntityType<? extends LivingEntity>>, Supplier<AttributeSupplier.Builder>>> entityAttributeSupplierPairs;
@@ -96,6 +99,7 @@ public class NeoForgeRegistryService implements RegistryService {
 
     // TODO: Assign other final fields here.
     public NeoForgeRegistryService() {
+        this.alienInfectionSuppliers = new ArrayList<>();
         this.alienLifecycleSuppliers = new ArrayList<>();
         this.entityAttributeSupplierPairs = new ArrayList<>();
         this.literalArgumentBuilders = new ArrayList<>();
@@ -145,6 +149,14 @@ public class NeoForgeRegistryService implements RegistryService {
     }
 
     @Override
+    public <S extends LivingEntity, P extends LivingEntity> Supplier<AlienInfection<S, P>> registerAlienInfection(
+        Supplier<AlienInfection<S, P>> alienInfectionSupplier
+    ) {
+        alienInfectionSuppliers.add(alienInfectionSupplier);
+        return alienInfectionSupplier;
+    }
+
+    @Override
     public Supplier<AlienLifecycle> registerAlienLifecycle(Supplier<AlienLifecycle> alienLifecycleSupplier) {
         alienLifecycleSuppliers.add(alienLifecycleSupplier);
         return alienLifecycleSupplier;
@@ -178,6 +190,10 @@ public class NeoForgeRegistryService implements RegistryService {
         recipeSerializerRegistry.register(modBus);
         recipeTypeRegistry.register(modBus);
         soundEventRegistry.register(modBus);
+    }
+
+    public List<Supplier<? extends AlienInfection<?, ?>>> getAlienInfectionSuppliers() {
+        return alienInfectionSuppliers;
     }
 
     public List<Supplier<AlienLifecycle>> getAlienLifecycleSuppliers() {

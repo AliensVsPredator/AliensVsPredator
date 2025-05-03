@@ -15,6 +15,8 @@ import java.util.function.Supplier;
 
 import com.avp.AVPResources;
 import com.avp.common.lifecycle.AlienLifecycle;
+import com.avp.common.lifecycle.infection.AlienInfection;
+import com.avp.common.lifecycle.registry.AlienInfectionRegistry;
 import com.avp.common.lifecycle.registry.AlienLifecycleRegistry;
 import com.avp.common.registry.AVPDeferredHolder;
 import com.avp.service.RegistryService;
@@ -38,6 +40,14 @@ public class FabricRegistryService implements RegistryService {
     @Override
     public void registerCommand(LiteralArgumentBuilder<CommandSourceStack> literalArgumentBuilder) {
         literalArgumentBuilders.add(literalArgumentBuilder);
+    }
+
+    @Override
+    public <S extends LivingEntity, P extends LivingEntity> Supplier<AlienInfection<S, P>> registerAlienInfection(
+        Supplier<AlienInfection<S, P>> alienInfectionSupplier
+    ) {
+        var alienInfection = AlienInfectionRegistry.register(alienInfectionSupplier.get());
+        return () -> alienInfection;
     }
 
     @Override
