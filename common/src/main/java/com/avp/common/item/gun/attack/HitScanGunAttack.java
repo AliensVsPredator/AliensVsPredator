@@ -27,10 +27,13 @@ import java.util.ArrayList;
 import com.avp.AVP;
 import com.avp.common.block.AVPBlockTags;
 import com.avp.common.damage.AVPDamageTypes;
+import com.avp.common.network.packet.S2CBulletHitBlockPayload;
+import com.avp.common.network.packet.S2CGunRecoilPayload;
 import com.avp.common.sound.AVPSoundEvents;
 import com.avp.common.util.AVPPredicates;
 import com.avp.common.util.EnchantmentUtil;
 import com.avp.server.BlockBreakProgressManager;
+import com.avp.service.Services;
 
 public class HitScanGunAttack extends AbstractGunAttack {
 
@@ -61,9 +64,7 @@ public class HitScanGunAttack extends AbstractGunAttack {
             );
 
             if (shooter instanceof ServerPlayer serverPlayer) {
-                // FIXME:
-                // ServerNetworking.sendToClient(serverPlayer, new
-                // S2CGunRecoilPayload(gunAttackConfig.fireModeConfig().recoil()));
+                Services.SERVER_NETWORKING.sendToClient(serverPlayer, new S2CGunRecoilPayload(gunAttackConfig.fireModeConfig().recoil()));
             }
 
             switch (hitResult.getType()) {
@@ -95,9 +96,8 @@ public class HitScanGunAttack extends AbstractGunAttack {
 
         damageBlock(level, blockPos);
 
-        // FIXME:
-        // var payload = new S2CBulletHitBlockPayload(blockPos, direction);
-        // ServerNetworking.sendToAllClients(level.getServer(), payload);
+        var payload = new S2CBulletHitBlockPayload(blockPos, direction);
+        Services.SERVER_NETWORKING.sendToAllClients(level.getServer(), payload);
     }
 
     @Override

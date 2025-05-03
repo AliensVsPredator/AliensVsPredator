@@ -16,6 +16,7 @@ import net.neoforged.neoforge.event.entity.EntityAttributeCreationEvent;
 import net.neoforged.neoforge.event.server.ServerAboutToStartEvent;
 import net.neoforged.neoforge.event.tick.LevelTickEvent;
 import net.neoforged.neoforge.event.village.VillagerTradesEvent;
+import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 
 import com.avp.AVP;
 import com.avp.common.entity.type.AVPEntityTypes;
@@ -50,7 +51,7 @@ public class AVPNeoForge {
         NeoForge.EVENT_BUS.addListener(EventPriority.HIGH, AVPNeoForge::onWorldEndTick);
     }
 
-    public static void registerMiscellaneous(final FMLCommonSetupEvent event) {
+    public static void registerMiscellaneous(FMLCommonSetupEvent event) {
         // Register alien infections.
         REGISTRY.getAlienInfectionSuppliers()
             .forEach(alienInfectionSupplier -> AlienInfectionRegistry.register(alienInfectionSupplier.get()));
@@ -63,19 +64,19 @@ public class AVPNeoForge {
     }
 
     // Game event
-    public static void registerCommands(final RegisterCommandsEvent event) {
+    public static void registerCommands(RegisterCommandsEvent event) {
         REGISTRY.getLiteralArgumentBuilders()
             .forEach(literalArgumentBuilder -> event.getDispatcher().register(literalArgumentBuilder));
     }
 
     // Mod event
-    public static void registerEntityAttributes(final EntityAttributeCreationEvent event) {
+    public static void registerEntityAttributes(EntityAttributeCreationEvent event) {
         REGISTRY.getEntityAttributeSupplierPairs()
             .forEach(pair -> event.put(pair.first().get(), pair.second().get().build()));
     }
 
     // Inject Village houses
-    public static void addNewVillageBuilding(final ServerAboutToStartEvent event) {
+    public static void addNewVillageBuilding(ServerAboutToStartEvent event) {
         var templatePoolRegistry = event.getServer().registryAccess().registry(Registries.TEMPLATE_POOL).orElseThrow();
         var processorListRegistry = event.getServer().registryAccess().registry(Registries.PROCESSOR_LIST).orElseThrow();
 
@@ -121,7 +122,7 @@ public class AVPNeoForge {
     }
 
     // Marine Spawns and Ash placement in nuked zones
-    public static void onWorldEndTick(final LevelTickEvent.Post event) {
+    public static void onWorldEndTick(LevelTickEvent.Post event) {
         if (event.getLevel().isClientSide)
             return;
 
@@ -138,7 +139,7 @@ public class AVPNeoForge {
         gifts.put(AVPProfessions.COMMISSARY.get(), AVPGifts.COMMISSARY_GIFT_LOOT_TABLE);
     }
 
-    public static void addCustomTrades(final VillagerTradesEvent event) {
+    public static void addCustomTrades(VillagerTradesEvent event) {
         var trades = event.getTrades();
 
         REGISTRY.getVillagerTradeData()
@@ -148,4 +149,6 @@ public class AVPNeoForge {
                 }
             });
     }
+
+    public static void registerPayloadHandlers(RegisterPayloadHandlersEvent event) {}
 }

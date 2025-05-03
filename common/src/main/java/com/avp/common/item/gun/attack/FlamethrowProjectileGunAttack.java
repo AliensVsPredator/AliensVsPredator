@@ -4,7 +4,9 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.enchantment.Enchantments;
 
 import com.avp.common.entity.projectile.Flamethrow;
+import com.avp.common.network.packet.S2CGunRecoilPayload;
 import com.avp.common.util.EnchantmentUtil;
+import com.avp.service.Services;
 
 public class FlamethrowProjectileGunAttack extends ProjectileGunAttack {
 
@@ -21,9 +23,7 @@ public class FlamethrowProjectileGunAttack extends ProjectileGunAttack {
         flamethrow.shootFromRotation(shooter, shooter.getXRot(), shooter.getYRot(), 0.0F, 1.5F, 1.0F);
 
         if (shooter instanceof ServerPlayer serverPlayer) {
-            // FIXME:
-            // ServerNetworking.sendToClient(serverPlayer, new
-            // S2CGunRecoilPayload(gunAttackConfig.fireModeConfig().recoil()));
+            Services.SERVER_NETWORKING.sendToClient(serverPlayer, new S2CGunRecoilPayload(gunAttackConfig.fireModeConfig().recoil()));
         }
 
         level.addFreshEntity(flamethrow);

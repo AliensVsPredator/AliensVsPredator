@@ -11,7 +11,7 @@ import java.util.function.Consumer;
 
 import com.avp.AVP;
 import com.avp.common.network.packet.C2SGunReloadPayload;
-import com.avp.fabric.client.network.AVPClientNetworking;
+import com.avp.service.Services;
 
 public class AVPKeybindingRegistry {
 
@@ -19,7 +19,7 @@ public class AVPKeybindingRegistry {
         var player = Minecraft.getInstance().player;
 
         if (player != null) {
-            AVPClientNetworking.sendToServer(C2SGunReloadPayload.INSTANCE);
+            Services.CLIENT_NETWORKING.sendToServer(C2SGunReloadPayload.INSTANCE);
         }
     });
 
