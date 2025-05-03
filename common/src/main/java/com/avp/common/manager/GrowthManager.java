@@ -138,6 +138,10 @@ public class GrowthManager {
             nextForm.addEffect(new MobEffectInstance(effect));
         }
 
+        if (entity.isPersistenceRequired() && nextForm instanceof Alien alien) {
+            alien.setPersistenceRequired();
+        }
+
         // Add the new form to the level.
         level.addFreshEntity(nextForm);
 
