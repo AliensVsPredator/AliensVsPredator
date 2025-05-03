@@ -14,6 +14,8 @@ import java.util.List;
 import java.util.function.Supplier;
 
 import com.avp.AVPResources;
+import com.avp.common.lifecycle.AlienLifecycle;
+import com.avp.common.lifecycle.registry.AlienLifecycleRegistry;
 import com.avp.common.registry.AVPDeferredHolder;
 import com.avp.service.RegistryService;
 
@@ -36,6 +38,12 @@ public class FabricRegistryService implements RegistryService {
     @Override
     public void registerCommand(LiteralArgumentBuilder<CommandSourceStack> literalArgumentBuilder) {
         literalArgumentBuilders.add(literalArgumentBuilder);
+    }
+
+    @Override
+    public Supplier<AlienLifecycle> registerAlienLifecycle(Supplier<AlienLifecycle> alienLifecycleSupplier) {
+        var alienLifecycle = AlienLifecycleRegistry.register(alienLifecycleSupplier.get());
+        return () -> alienLifecycle;
     }
 
     public void registerEntityAttributes(

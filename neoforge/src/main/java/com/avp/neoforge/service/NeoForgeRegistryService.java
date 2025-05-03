@@ -31,6 +31,7 @@ import java.util.List;
 import java.util.function.Supplier;
 
 import com.avp.AVP;
+import com.avp.common.lifecycle.AlienLifecycle;
 import com.avp.common.registry.AVPDeferredHolder;
 import com.avp.service.RegistryService;
 
@@ -87,12 +88,15 @@ public class NeoForgeRegistryService implements RegistryService {
 
     private final DeferredRegister<SoundEvent> soundEventRegistry = DeferredRegister.create(BuiltInRegistries.SOUND_EVENT, AVP.MOD_ID);
 
+    private final List<Supplier<AlienLifecycle>> alienLifecycleSuppliers;
+
     private final List<Tuple2<Supplier<? extends EntityType<? extends LivingEntity>>, Supplier<AttributeSupplier.Builder>>> entityAttributeSupplierPairs;
 
     private final List<LiteralArgumentBuilder<CommandSourceStack>> literalArgumentBuilders;
 
     // TODO: Assign other final fields here.
     public NeoForgeRegistryService() {
+        this.alienLifecycleSuppliers = new ArrayList<>();
         this.entityAttributeSupplierPairs = new ArrayList<>();
         this.literalArgumentBuilders = new ArrayList<>();
     }
@@ -141,6 +145,12 @@ public class NeoForgeRegistryService implements RegistryService {
     }
 
     @Override
+    public Supplier<AlienLifecycle> registerAlienLifecycle(Supplier<AlienLifecycle> alienLifecycleSupplier) {
+        alienLifecycleSuppliers.add(alienLifecycleSupplier);
+        return alienLifecycleSupplier;
+    }
+
+    @Override
     public void registerEntityAttributes(
         Supplier<? extends EntityType<? extends LivingEntity>> entityTypeSupplier,
         Supplier<AttributeSupplier.Builder> attributeSupplierBuilderSupplier
@@ -168,6 +178,10 @@ public class NeoForgeRegistryService implements RegistryService {
         recipeSerializerRegistry.register(modBus);
         recipeTypeRegistry.register(modBus);
         soundEventRegistry.register(modBus);
+    }
+
+    public List<Supplier<AlienLifecycle>> getAlienLifecycleSuppliers() {
+        return alienLifecycleSuppliers;
     }
 
     public List<Tuple2<Supplier<? extends EntityType<? extends LivingEntity>>, Supplier<AttributeSupplier.Builder>>> getEntityAttributeSupplierPairs() {
