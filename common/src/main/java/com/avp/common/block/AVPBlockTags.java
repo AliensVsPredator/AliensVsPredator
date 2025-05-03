@@ -44,6 +44,8 @@ public class AVPBlockTags {
 
     public static final TagKey<Block> PLASTIC = create("plastic");
 
+    public static final TagKey<Block> RAZOR_WIRE = create("razor_wire");
+
     public static final TagKey<Block> RESIN = create("resin");
 
     public static final TagKey<Block> RESIN_VEINS = create("resin_veins");

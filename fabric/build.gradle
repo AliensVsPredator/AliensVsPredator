@@ -70,6 +70,9 @@ dependencies {
     modApi "me.shedaniel.cloth:cloth-config-fabric:${project.cloth_version}"
 
     modRuntimeOnly "org.sinytra:item-asset-export-fabric:${project.asset_export}"
+
+    // Here in case of any issues
+    //modImplementation "maven.modrinth:modernfix:5.21.0+mc1.21.1"
 }
 
 loom {

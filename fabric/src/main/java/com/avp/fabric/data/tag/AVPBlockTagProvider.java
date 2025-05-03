@@ -561,6 +561,8 @@ public class AVPBlockTagProvider extends FabricTagProvider.BlockTagProvider {
             AVPBlocks.TITANIUM_TREAD.get()
         );
 
+        getOrCreateTagBuilder(AVPBlockTags.RAZOR_WIRE).add(AVPBlocks.RAZOR_WIRE.get());
+
         addCompatibilityTags();
     }
 
