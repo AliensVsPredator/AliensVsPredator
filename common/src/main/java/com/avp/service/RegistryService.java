@@ -6,6 +6,7 @@ import net.minecraft.core.Registry;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
+import net.minecraft.world.level.ItemLike;
 
 import java.util.function.Supplier;
 
@@ -25,8 +26,18 @@ public interface RegistryService {
 
     Supplier<AlienLifecycle> registerAlienLifecycle(Supplier<AlienLifecycle> alienLifecycleSupplier);
 
+    void registerCompostableItem(
+        Supplier<? extends ItemLike> itemLikeSupplier,
+        float chance,
+        boolean villagersCanCompost,
+        boolean replace
+    );
+
     void registerEntityAttributes(
         Supplier<? extends EntityType<? extends LivingEntity>> entityTypeSupplier,
         Supplier<AttributeSupplier.Builder> attributeSupplierBuilderSupplier
     );
+
+    void registerFurnaceFuel(Supplier<? extends ItemLike> itemLikeSupplier, int burnTimeInTicks);
+
 }

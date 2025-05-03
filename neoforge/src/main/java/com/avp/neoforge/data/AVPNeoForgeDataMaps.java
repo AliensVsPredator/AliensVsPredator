@@ -9,10 +9,12 @@ import net.neoforged.neoforge.registries.datamaps.builtin.NeoForgeDataMaps;
 
 import java.util.concurrent.CompletableFuture;
 
-import com.avp.common.block.AVPBlocks;
-import com.avp.common.item.TempAVPItems;
+import com.avp.neoforge.service.NeoForgeRegistryService;
+import com.avp.service.Services;
 
 public class AVPNeoForgeDataMaps extends DataMapProvider {
+
+    private static final NeoForgeRegistryService REGISTRY = (NeoForgeRegistryService) Services.REGISTRY;
 
     protected AVPNeoForgeDataMaps(PackOutput packOutput, CompletableFuture<HolderLookup.Provider> lookupProvider) {
         super(packOutput, lookupProvider);
@@ -20,36 +22,26 @@ public class AVPNeoForgeDataMaps extends DataMapProvider {
 
     @Override
     protected void gather() {
-        builder(NeoForgeDataMaps.FURNACE_FUELS)
-            .add(
-                TempAVPItems.CARBON_DUST.get().builtInRegistryHolder(),
-                new FurnaceFuel(800),
-                false
+        var compostablesBuilder = builder(NeoForgeDataMaps.COMPOSTABLES);
+
+        REGISTRY.getCompostableData()
+            .forEach(
+                compostableData -> compostablesBuilder.add(
+                    compostableData.first().get().asItem().builtInRegistryHolder(),
+                    new Compostable(compostableData.second(), compostableData.third()),
+                    compostableData.fourth()
+                )
             );
-        builder(NeoForgeDataMaps.COMPOSTABLES)
-            .add(TempAVPItems.IRRADIATED_RESIN_BALL.get().builtInRegistryHolder(), new Compostable(0.3F), false)
-            .add(TempAVPItems.ABERRANT_RESIN_BALL.get().builtInRegistryHolder(), new Compostable(0.3F), false)
-            .add(TempAVPItems.NETHER_RESIN_BALL.get().builtInRegistryHolder(), new Compostable(0.3F), false)
-            .add(TempAVPItems.RESIN_BALL.get().builtInRegistryHolder(), new Compostable(0.3F), false)
 
-            .add(AVPBlocks.IRRADIATED_RESIN.get().asItem().builtInRegistryHolder(), new Compostable(1F), false)
-            .add(AVPBlocks.IRRADIATED_RESIN_NODE.get().asItem().builtInRegistryHolder(), new Compostable(1F), false)
-            .add(AVPBlocks.IRRADIATED_RESIN_VEIN.get().asItem().builtInRegistryHolder(), new Compostable(0.3F), false)
-            .add(AVPBlocks.IRRADIATED_RESIN_WEB.get().asItem().builtInRegistryHolder(), new Compostable(0.65F), false)
+        var furnaceFuelBuilder = builder(NeoForgeDataMaps.FURNACE_FUELS);
 
-            .add(AVPBlocks.ABERRANT_RESIN.get().asItem().builtInRegistryHolder(), new Compostable(1F), false)
-            .add(AVPBlocks.ABERRANT_RESIN_NODE.get().asItem().builtInRegistryHolder(), new Compostable(1F), false)
-            .add(AVPBlocks.ABERRANT_RESIN_VEIN.get().asItem().builtInRegistryHolder(), new Compostable(0.3F), false)
-            .add(AVPBlocks.ABERRANT_RESIN_WEB.get().asItem().builtInRegistryHolder(), new Compostable(0.65F), false)
-
-            .add(AVPBlocks.NETHER_RESIN.get().asItem().builtInRegistryHolder(), new Compostable(1F), false)
-            .add(AVPBlocks.NETHER_RESIN_NODE.get().asItem().builtInRegistryHolder(), new Compostable(1F), false)
-            .add(AVPBlocks.NETHER_RESIN_VEIN.get().asItem().builtInRegistryHolder(), new Compostable(0.3F), false)
-            .add(AVPBlocks.NETHER_RESIN_WEB.get().asItem().builtInRegistryHolder(), new Compostable(0.65F), false)
-
-            .add(AVPBlocks.RESIN.get().asItem().builtInRegistryHolder(), new Compostable(1F), false)
-            .add(AVPBlocks.RESIN_NODE.get().asItem().builtInRegistryHolder(), new Compostable(1F), false)
-            .add(AVPBlocks.RESIN_VEIN.get().asItem().builtInRegistryHolder(), new Compostable(0.3F), false)
-            .add(AVPBlocks.RESIN_WEB.get().asItem().builtInRegistryHolder(), new Compostable(0.65F), false);
+        REGISTRY.getFurnaceFuelPairs()
+            .forEach(
+                fuelPair -> furnaceFuelBuilder.add(
+                    fuelPair.first().get().asItem().builtInRegistryHolder(),
+                    new FurnaceFuel(fuelPair.second()),
+                    false
+                )
+            );
     }
 }

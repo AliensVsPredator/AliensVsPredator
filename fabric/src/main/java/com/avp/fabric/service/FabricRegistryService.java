@@ -2,12 +2,15 @@ package com.avp.fabric.service;
 
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry;
+import net.fabricmc.fabric.api.registry.CompostingChanceRegistry;
+import net.fabricmc.fabric.api.registry.FuelRegistry;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
+import net.minecraft.world.level.ItemLike;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -56,11 +59,26 @@ public class FabricRegistryService implements RegistryService {
         return () -> alienLifecycle;
     }
 
+    @Override
+    public void registerCompostableItem(
+        Supplier<? extends ItemLike> itemLikeSupplier,
+        float chance,
+        boolean villagersCanCompost,
+        boolean replace
+    ) {
+        CompostingChanceRegistry.INSTANCE.add(itemLikeSupplier.get(), chance);
+    }
+
     public void registerEntityAttributes(
         Supplier<? extends EntityType<? extends LivingEntity>> entityTypeSupplier,
         Supplier<AttributeSupplier.Builder> attributeSupplierBuilderSupplier
     ) {
         FabricDefaultAttributeRegistry.register(entityTypeSupplier.get(), attributeSupplierBuilderSupplier.get());
+    }
+
+    @Override
+    public void registerFurnaceFuel(Supplier<? extends ItemLike> itemLikeSupplier, int burnTimeInTicks) {
+        FuelRegistry.INSTANCE.add(itemLikeSupplier.get(), burnTimeInTicks);
     }
 
     public List<LiteralArgumentBuilder<CommandSourceStack>> getLiteralArgumentBuilders() {

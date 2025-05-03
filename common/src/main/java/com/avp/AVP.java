@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.avp.common.block.AVPBlocks;
+import com.avp.common.block.AVPCompostingChanceRegistry;
 import com.avp.common.block.AVPDecoratedPotPatterns;
 import com.avp.common.block.entity.AVPBlockEntityTypes;
 import com.avp.common.command.AVPCommands;
@@ -18,6 +19,7 @@ import com.avp.common.config.AVPConfig;
 import com.avp.common.creative_mode_tab.AVPCreativeModeTabs;
 import com.avp.common.effect.AVPMobEffects;
 import com.avp.common.entity.type.AVPEntityTypes;
+import com.avp.common.fuel.AVPFuelRegistry;
 import com.avp.common.item.AVPArmorItems;
 import com.avp.common.item.AVPBlockItems;
 import com.avp.common.item.AVPSpawnEggItems;
@@ -73,6 +75,10 @@ public class AVP {
         AVPRecipes.initialize();
         AVPMobEffects.initialize();
         AVPBiomes.initialize();
+
+        // Functionality
+        AVPCompostingChanceRegistry.initialize();
+        AVPFuelRegistry.initialize();
 
         // TODO: Remove this once migration is done.
         // AVPBlockEntityTypes.initialize();

@@ -1,6 +1,7 @@
 package com.avp.neoforge.service;
 
 import com.bvanseg.just.functional.tuple.Tuple2;
+import com.bvanseg.just.functional.tuple.Tuple4;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.core.Registry;
@@ -18,6 +19,7 @@ import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.entity.DecoratedPotPattern;
@@ -93,7 +95,11 @@ public class NeoForgeRegistryService implements RegistryService {
 
     private final List<Supplier<AlienLifecycle>> alienLifecycleSuppliers;
 
+    private final List<Tuple4<Supplier<? extends ItemLike>, Float, Boolean, Boolean>> compostableData;
+
     private final List<Tuple2<Supplier<? extends EntityType<? extends LivingEntity>>, Supplier<AttributeSupplier.Builder>>> entityAttributeSupplierPairs;
+
+    private final List<Tuple2<Supplier<? extends ItemLike>, Integer>> furnaceFuelPairs;
 
     private final List<LiteralArgumentBuilder<CommandSourceStack>> literalArgumentBuilders;
 
@@ -101,7 +107,9 @@ public class NeoForgeRegistryService implements RegistryService {
     public NeoForgeRegistryService() {
         this.alienInfectionSuppliers = new ArrayList<>();
         this.alienLifecycleSuppliers = new ArrayList<>();
+        this.compostableData = new ArrayList<>();
         this.entityAttributeSupplierPairs = new ArrayList<>();
+        this.furnaceFuelPairs = new ArrayList<>();
         this.literalArgumentBuilders = new ArrayList<>();
     }
 
@@ -163,11 +171,26 @@ public class NeoForgeRegistryService implements RegistryService {
     }
 
     @Override
+    public void registerCompostableItem(
+        Supplier<? extends ItemLike> itemLikeSupplier,
+        float chance,
+        boolean villagersCanCompost,
+        boolean replace
+    ) {
+        compostableData.add(new Tuple4<>(itemLikeSupplier, chance, villagersCanCompost, replace));
+    }
+
+    @Override
     public void registerEntityAttributes(
         Supplier<? extends EntityType<? extends LivingEntity>> entityTypeSupplier,
         Supplier<AttributeSupplier.Builder> attributeSupplierBuilderSupplier
     ) {
         entityAttributeSupplierPairs.add(new Tuple2<>(entityTypeSupplier, attributeSupplierBuilderSupplier));
+    }
+
+    @Override
+    public void registerFurnaceFuel(Supplier<? extends ItemLike> itemLikeSupplier, int burnTimeInTicks) {
+        furnaceFuelPairs.add(new Tuple2<>(itemLikeSupplier, burnTimeInTicks));
     }
 
     private <T> AVPDeferredHolder<T> adapt(DeferredHolder<T, T> deferredHolder) {
@@ -200,8 +223,16 @@ public class NeoForgeRegistryService implements RegistryService {
         return alienLifecycleSuppliers;
     }
 
+    public List<Tuple4<Supplier<? extends ItemLike>, Float, Boolean, Boolean>> getCompostableData() {
+        return compostableData;
+    }
+
     public List<Tuple2<Supplier<? extends EntityType<? extends LivingEntity>>, Supplier<AttributeSupplier.Builder>>> getEntityAttributeSupplierPairs() {
         return entityAttributeSupplierPairs;
+    }
+
+    public List<Tuple2<Supplier<? extends ItemLike>, Integer>> getFurnaceFuelPairs() {
+        return furnaceFuelPairs;
     }
 
     public List<LiteralArgumentBuilder<CommandSourceStack>> getLiteralArgumentBuilders() {

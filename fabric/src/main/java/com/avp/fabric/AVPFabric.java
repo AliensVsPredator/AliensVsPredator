@@ -15,11 +15,9 @@ import com.avp.AVP;
 import com.avp.common.entity.type.AVPEntityTypes;
 import com.avp.common.profession.AVPGifts;
 import com.avp.data.worldgen.AVPVillageInjection;
-import com.avp.fabric.common.block.CompostingChanceRegistry;
 import com.avp.fabric.common.block.DispenserBlockBehaviors;
 import com.avp.fabric.common.block.FlammableBlockRegistry;
 import com.avp.fabric.common.entity.spawn.SpawnPlacements;
-import com.avp.fabric.common.fuel.AVPFuelRegistry;
 import com.avp.fabric.common.item.AVPItems;
 import com.avp.fabric.common.network.CommonPacketRegistry;
 import com.avp.fabric.common.network.ServerPacketHandlerRegistry;
@@ -48,12 +46,10 @@ public class AVPFabric implements ModInitializer {
         AVPProfessions.initialize();
 
         // Functionality
-        CompostingChanceRegistry.initialize();
         DispenserBlockBehaviors.initialize();
         LootTableModifier.initialize();
         SpawnPlacements.initialize();
         FlammableBlockRegistry.initialize();
-        AVPFuelRegistry.initialize();
         ServerTickEvents.START_WORLD_TICK.register(this::onWorldTick);
         ServerLifecycleEvents.SERVER_STARTING.register(this::addNewVillageBuilding);
         AVPTrades.initialize();
