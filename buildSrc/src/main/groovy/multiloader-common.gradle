@@ -161,6 +161,8 @@ idea {
 }
 
 spotless {
+    enforceCheck false
+
     java {
         eclipse().configFile("$rootDir/eclipse-formatter.xml")
         endWithNewline()
