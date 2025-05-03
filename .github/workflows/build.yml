@@ -1,4 +1,4 @@
-name: Java CI with Gradle
+name: AVP Jar Build Testing
 
 on:
   pull_request:
@@ -18,13 +18,19 @@ jobs:
         uses: gradle/actions/setup-gradle@v4
       - name: Make gradlew executable
         run: chmod +x ./gradlew
-      - name: Run Datagen
-        run: ./gradlew runDatagen
+      - name: Run Datagen for NeoForge and then Fabric
+        run: ./gradlew runAllDatagen
       - name: Build with Gradle
         run: ./gradlew build
-      - name: Upload a Build Artifact
+      - name: Upload a Fabric Build Artifact
         uses: actions/upload-artifact@v4
         with:
           name: Fabric
           path: |
-            build/libs/*.jar
+            fabric/build/libs/*.jar
+      - name: Upload a NeoForge Build Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: NeoForge
+          path: |
+            neoforge/build/libs/*.jar

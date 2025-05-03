@@ -1,0 +1,53 @@
+{
+	"schemaVersion": 1,
+	"id": "avp",
+	"version": "${version}",
+	"name": "${mod_name}",
+	"description": "${description}",
+	"accessWidener": "avp.accesswidener",
+	"authors": [
+		"AzureDoom",
+		"Boston Vanseghi",
+		"Caution",
+		"gorblegorble",
+		"Gothic Lycan",
+		"Hossaurus",
+		"Pheonix Atredes",
+		"Shift",
+		"Spookyboo117",
+		"Whiteshark01",
+		"Xavier"
+	],
+	"contact": {
+		"homepage": "https://www.curseforge.com/minecraft/mc-mods/avp-regenesis",
+		"sources": "https://github.com/AliensVsPredator/AliensVsPredator"
+	},
+	"license": "${license}",
+	"icon": "${icon}",
+	"environment": "*",
+	"entrypoints": {
+		"main": [
+			"com.avp.fabric.AVPFabric"
+		],
+		"client": [
+			"com.avp.fabric.client.AVPFabricClient"
+		],
+		"fabric-datagen": [
+			"com.avp.fabric.data.AVPDataGenerator"
+		],
+		"rei_client": [
+			"com.avp.fabric.client.compat.rei.AVPREIClient"
+		]
+	},
+	"mixins": [
+		"${mod_id}.mixins.json",
+		"${mod_id}.fabric.mixins.json"
+	],
+	"depends": {
+		"fabricloader": ">=0.16.9",
+		"minecraft": "~1.21.1",
+		"java": ">=21",
+		"fabric-api": "*",
+		"azurelib": ">=3.0.9"
+	}
+}

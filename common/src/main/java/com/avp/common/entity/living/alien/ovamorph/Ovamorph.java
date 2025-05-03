@@ -1,0 +1,250 @@
+package com.avp.common.entity.living.alien.ovamorph;
+
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.Shearable;
+import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
+import net.minecraft.world.entity.monster.Monster;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.gameevent.GameEvent;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import com.avp.AVP;
+import com.avp.common.entity.living.alien.Alien;
+import com.avp.common.entity.type.AVPEntityTypes;
+import com.avp.common.item.AVPItems;
+import com.avp.common.manager.HatchManager;
+import com.avp.common.sound.AVPSoundEvents;
+import com.avp.common.util.AVPPredicates;
+import com.avp.common.util.AlienVariantUtil;
+
+public class Ovamorph extends Alien implements Shearable {
+
+    private static final EntityDataAccessor<Boolean> HATCHED = SynchedEntityData.defineId(Ovamorph.class, EntityDataSerializers.BOOLEAN);
+
+    private static final EntityDataAccessor<Byte> MAX_SPAWN_COUNT = SynchedEntityData.defineId(Ovamorph.class, EntityDataSerializers.BYTE);
+
+    private static final EntityDataAccessor<Boolean> ROOTED = SynchedEntityData.defineId(Ovamorph.class, EntityDataSerializers.BOOLEAN);
+
+    private static final String IS_ROOTED_KEY = "isRooted";
+
+    public static AttributeSupplier.Builder createOvamorphAttributes() {
+        return applyFrom(AVP.config.statsConfigs.OVAMORPH_STATS, Monster.createMonsterAttributes());
+    }
+
+    private final OvamorphAnimationDispatcher animationDispatcher;
+
+    private final HatchManager hatchManager;
+
+    public Ovamorph(EntityType<? extends Ovamorph> entityType, Level level) {
+        super(entityType, level);
+        this.animationDispatcher = new OvamorphAnimationDispatcher(this);
+        this.hatchManager = new HatchManager(this, HATCHED, MAX_SPAWN_COUNT, 3 * 20, 3 * 20);
+        this.config = AVP.config.statsConfigs.OVAMORPH_STATS;
+    }
+
+    @Override
+    public @Nullable EntityType<? extends Alien> getAberrantType() {
+        return isRoyal() ? AVPEntityTypes.ROYAL_ABERRANT_OVAMORPH.get() : AVPEntityTypes.ABERRANT_OVAMORPH.get();
+    }
+
+    @Override
+    public @Nullable EntityType<? extends Alien> getIrradiatedType() {
+        return null;
+    }
+
+    @Override
+    public @Nullable EntityType<? extends Alien> getNetherType() {
+        return isRoyal() ? AVPEntityTypes.ROYAL_NETHER_OVAMORPH.get() : AVPEntityTypes.NETHER_OVAMORPH.get();
+    }
+
+    @Override
+    public @Nullable EntityType<? extends Alien> getDefaultType() {
+        return isRoyal() ? AVPEntityTypes.ROYAL_OVAMORPH.get() : AVPEntityTypes.OVAMORPH.get();
+    }
+
+    @Override
+    protected void defineSynchedData(SynchedEntityData.Builder builder) {
+        super.defineSynchedData(builder);
+        builder.define(HATCHED, false);
+        builder.define(MAX_SPAWN_COUNT, (byte) 1);
+        builder.define(ROOTED, true);
+    }
+
+    @Override
+    public void tick() {
+        super.tick();
+        hatchManager.tick();
+    }
+
+    public void tryHatch() {
+        if (!level().isClientSide && !hatchManager.hatched() && !isIrradiated()) {
+            hatchManager.hatch();
+            animationDispatcher.open();
+        }
+    }
+
+    @Override
+    public @NotNull InteractionResult mobInteract(Player player, InteractionHand interactionHand) {
+        if (!level().isClientSide) {
+            var itemStack = player.getItemInHand(interactionHand);
+            var resinBallItem = AlienVariantUtil.getResinBallFor(this);
+
+            if (itemStack.is(AVPItems.RAW_ROYAL_JELLY.get())) {
+                if (hatchManager.hatched()) {
+                    level().playSound(null, this, SoundEvents.HONEY_BLOCK_PLACE, SoundSource.PLAYERS, 1.0F, 1.0F);
+                    hatchManager.restore();
+
+                    if (!AVPPredicates.IS_IMMORTAL.test(player)) {
+                        player.getItemInHand(interactionHand).shrink(1);
+                    }
+
+                    return InteractionResult.SUCCESS;
+                } else {
+                    return InteractionResult.CONSUME;
+                }
+            } else if (isRooted() && itemStack.is(Items.SHEARS)) {
+                shear(SoundSource.PLAYERS);
+                gameEvent(GameEvent.SHEAR, player);
+
+                if (!AVPPredicates.IS_IMMORTAL.test(player)) {
+                    itemStack.hurtAndBreak(1, player, getSlotForHand(interactionHand));
+                }
+
+                return InteractionResult.SUCCESS;
+            } else if (!isRooted() && itemStack.is(resinBallItem)) {
+                level().playSound(null, this, AVPSoundEvents.ENTITY_OVAMORPH_ROOT.get(), SoundSource.PLAYERS, 1.0F, 1.0F);
+                setRooted(true);
+
+                if (!AVPPredicates.IS_IMMORTAL.test(player)) {
+                    itemStack.shrink(1);
+                }
+            }
+        }
+
+        return super.mobInteract(player, interactionHand);
+    }
+
+    @Override
+    public void shear(SoundSource soundSource) {
+        setRooted(false);
+        level().playSound(null, this, SoundEvents.SHEEP_SHEAR, soundSource, 1.0F, 1.0F);
+        level().playSound(null, this, AVPSoundEvents.ENTITY_OVAMORPH_SHEAR.get(), soundSource, 1.0F, 1.0F);
+        var resinBallItem = AlienVariantUtil.getResinBallFor(this);
+
+        var itemEntity = this.spawnAtLocation(resinBallItem, 1);
+
+        if (itemEntity != null) {
+            itemEntity.setDeltaMovement(
+                itemEntity.getDeltaMovement()
+                    .add(
+                        (random.nextFloat() - random.nextFloat()) * 0.1F,
+                        random.nextFloat() * 0.05F,
+                        (random.nextFloat() - random.nextFloat()) * 0.1F
+                    )
+            );
+        }
+    }
+
+    @Override
+    public boolean readyForShearing() {
+        return isRooted();
+    }
+
+    @Override
+    public boolean hurt(DamageSource damageSource, float damage) {
+        var isHurt = super.hurt(damageSource, damage);
+
+        if (!level().isClientSide && isHurt && damageSource.getEntity() != null) {
+            tryHatch();
+        }
+
+        return isHurt;
+    }
+
+    @Override
+    protected void doPush(Entity entity) {
+        if (entity instanceof Player player && (player.isCreative() || player.isSpectator())) {
+            super.doPush(entity);
+            return;
+        }
+
+        if (AVPPredicates.isFreeHost(this, entity)) {
+            tryHatch();
+        }
+
+        super.doPush(entity);
+    }
+
+    @Override
+    protected boolean canBleedAcid() {
+        return !hatchManager.hatched();
+    }
+
+    @Override
+    public boolean isPushedByFluid() {
+        return !isRooted();
+    }
+
+    @Override
+    public boolean isPushable() {
+        return !isRooted();
+    }
+
+    @Override
+    public boolean isPersistenceRequired() {
+        return super.isPersistenceRequired() || !isRooted();
+    }
+
+    @Override
+    protected boolean canHeal() {
+        return !hatchManager.hatched() && super.canHeal();
+    }
+
+    @Override
+    protected float getHealthRegenPerSecond() {
+        return AVP.config.statsConfigs.OVAMORPH_STATS.healthRegenPerSecond;
+    }
+
+    @Override
+    public void readAdditionalSaveData(CompoundTag compoundTag) {
+        super.readAdditionalSaveData(compoundTag);
+        hatchManager.load(compoundTag);
+
+        if (compoundTag.contains(IS_ROOTED_KEY)) {
+            setRooted(compoundTag.getBoolean(IS_ROOTED_KEY));
+        }
+    }
+
+    @Override
+    public void addAdditionalSaveData(CompoundTag compoundTag) {
+        super.addAdditionalSaveData(compoundTag);
+        hatchManager.save(compoundTag);
+
+        compoundTag.putBoolean(IS_ROOTED_KEY, isRooted());
+    }
+
+    public HatchManager hatchManager() {
+        return hatchManager;
+    }
+
+    public boolean isRooted() {
+        return entityData.get(ROOTED);
+    }
+
+    public void setRooted(boolean isRooted) {
+        entityData.set(ROOTED, isRooted);
+    }
+}

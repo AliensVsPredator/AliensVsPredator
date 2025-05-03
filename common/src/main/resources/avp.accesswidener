@@ -1,0 +1,30 @@
+accessWidener	v1	named
+
+accessible field net/minecraft/data/models/BlockModelGenerators$BlockFamilyProvider mapping Lnet/minecraft/data/models/model/TextureMapping;
+mutable field net/minecraft/data/models/BlockModelGenerators$BlockFamilyProvider mapping Lnet/minecraft/data/models/model/TextureMapping;
+accessible method net/minecraft/data/models/BlockModelGenerators$BlockFamilyProvider door (Lnet/minecraft/world/level/block/Block;)Lnet/minecraft/data/models/BlockModelGenerators$BlockFamilyProvider;
+accessible method net/minecraft/data/models/BlockModelGenerators$BlockFamilyProvider trapdoor (Lnet/minecraft/world/level/block/Block;)V
+accessible method net/minecraft/world/level/block/state/BlockBehaviour getSoundType (Lnet/minecraft/world/level/block/state/BlockState;)Lnet/minecraft/world/level/block/SoundType;
+
+accessible method net/minecraft/world/level/block/entity/AbstractFurnaceBlockEntity isLit ()Z
+accessible field net/minecraft/world/level/block/entity/AbstractFurnaceBlockEntity litTime I
+accessible field net/minecraft/world/level/block/entity/AbstractFurnaceBlockEntity cookingProgress I
+accessible field net/minecraft/world/level/block/entity/AbstractFurnaceBlockEntity cookingTotalTime I
+accessible field net/minecraft/world/level/block/entity/AbstractFurnaceBlockEntity litDuration I
+accessible field net/minecraft/world/level/block/entity/AbstractFurnaceBlockEntity items Lnet/minecraft/core/NonNullList;
+accessible method net/minecraft/world/level/block/entity/AbstractFurnaceBlockEntity getTotalCookTime (Lnet/minecraft/world/level/Level;Lnet/minecraft/world/level/block/entity/AbstractFurnaceBlockEntity;)I
+accessible field net/minecraft/world/level/block/entity/AbstractFurnaceBlockEntity cookingProgress I
+accessible field net/minecraft/world/level/block/entity/AbstractFurnaceBlockEntity cookingTotalTime I
+accessible field net/minecraft/world/level/block/entity/AbstractFurnaceBlockEntity quickCheck Lnet/minecraft/world/item/crafting/RecipeManager$CachedCheck;
+accessible method net/minecraft/world/level/block/entity/AbstractFurnaceBlockEntity isLit ()Z
+accessible field net/minecraft/world/level/block/entity/AbstractFurnaceBlockEntity litTime I
+accessible field net/minecraft/world/level/block/entity/AbstractFurnaceBlockEntity items Lnet/minecraft/core/NonNullList;
+accessible method net/minecraft/world/level/block/entity/AbstractFurnaceBlockEntity canBurn (Lnet/minecraft/core/RegistryAccess;Lnet/minecraft/world/item/crafting/RecipeHolder;Lnet/minecraft/core/NonNullList;I)Z
+accessible field net/minecraft/world/level/block/entity/AbstractFurnaceBlockEntity litDuration I
+accessible method net/minecraft/world/level/block/entity/AbstractFurnaceBlockEntity getBurnDuration (Lnet/minecraft/world/item/ItemStack;)I
+accessible method net/minecraft/world/level/block/entity/AbstractFurnaceBlockEntity burn (Lnet/minecraft/core/RegistryAccess;Lnet/minecraft/world/item/crafting/RecipeHolder;Lnet/minecraft/core/NonNullList;I)Z
+accessible method net/minecraft/core/Vec3i setX (I)Lnet/minecraft/core/Vec3i;
+accessible method net/minecraft/core/Vec3i setY (I)Lnet/minecraft/core/Vec3i;
+accessible method net/minecraft/core/Vec3i setZ (I)Lnet/minecraft/core/Vec3i;
+
+accessible class net/minecraft/client/particle/ParticleEngine$SpriteParticleRegistration

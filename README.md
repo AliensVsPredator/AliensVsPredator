@@ -13,8 +13,8 @@
 [java-shield]: https://img.shields.io/badge/Made%20with-Java-ED8B00.svg
 [java-url]: https://www.java.com/
 
-[license-shield]: https://img.shields.io/badge/License-MIT-green.svg
-[license-url]: https://opensource.org/licenses/MIT
+[license-shield]: https://img.shields.io/badge/license-Apache%202.0-blue?style=flat-square
+[license-url]: https://www.apache.org/licenses/LICENSE-2.0
 
 [IntelliJ IDEA]: https://www.jetbrains.com/idea/
 [Gradle]: https://www.gradle.org/
@@ -53,6 +53,11 @@ Aliens Vs Predator
 ## Prerequisites ##
 * [Java Development Kit 21]
 * [Gradle]
+
+## Development Guide
+The majority of mod should be developed in the `common` project. The `common` project is compiled against the vanilla game and is used to hold code shared between the different loader-specific versions of your mod. The `common` project has no knowledge or access to ModLoader specific code, apis, or concepts. Code that requires something from a specific loader must be done through the project that is specific to that loader, such as the `fabric` or `neoforge` projects.
+
+Loader-specific projects such as the `fabric` and `neoforge` project are used to load the `common` project into the game. These projects also define code that is specific to that loader. Loader-specific projects can access all the code in the `common` project. It is important to remember that the `common` project cannot access code from loader-specific projects.
 
 ## Contributing ##
 Before contributing to this project, please ensure that you read the following guidelines. It's crucial to have your development environment configured correctly. Additionally, pull requests that do not adhere to the specified format will not be accepted.

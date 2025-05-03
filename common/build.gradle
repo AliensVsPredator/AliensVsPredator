@@ -1,0 +1,95 @@
+plugins {
+    id 'com.diffplug.spotless'
+    id 'idea'
+    id 'multiloader-common'
+    id 'net.neoforged.moddev'
+    id 'org.moddedmc.wiki.toolkit'
+}
+
+neoForge {
+    neoFormVersion = neo_form_version
+    // Automatically enable AccessTransformers if the file exists
+    def at = file('src/main/resources/META-INF/accesstransformer.cfg')
+    if (at.exists()) {
+        accessTransformers.from(at.absolutePath)
+    }
+    parchment {
+        minecraftVersion = parchment_minecraft
+        mappingsVersion = parchment_version
+    }
+}
+
+dependencies {
+    compileOnly group: 'org.spongepowered', name: 'mixin', version: '0.8.5'
+    // fabric and neoforge both bundle mixinextras, so it is safe to use it in common
+    compileOnly group: 'io.github.llamalad7', name: 'mixinextras-common', version: '0.3.5'
+    annotationProcessor group: 'io.github.llamalad7', name: 'mixinextras-common', version: '0.3.5'
+
+    // Manually added dependencies
+    compileOnly "com.github.bvanseg:just:${project.just_version}"
+    compileOnly "mod.azure.azurelib:azurelib-common-${project.minecraft_version}:${project.azurelib_version}"
+}
+
+configurations {
+    commonJava {
+        canBeResolved = false
+        canBeConsumed = true
+    }
+    commonResources {
+        canBeResolved = false
+        canBeConsumed = true
+    }
+}
+
+// ##################################################################################
+// # Generate common/src/main/generated and mark as resource folder.                #
+// ##################################################################################
+tasks.register('prepareGeneratedDir') {
+    doLast {
+        file('src/main/generated').mkdirs()
+    }
+}
+
+tasks.named('processResources') {
+    dependsOn 'prepareGeneratedDir'
+}
+// END
+
+// ##################################################################################
+// # Include src/main/generated as a resource folder for common.                    #
+// ##################################################################################
+sourceSets {
+    main {
+        resources {
+            srcDir 'src/main/generated'
+        }
+    }
+}
+
+tasks.register('packageCommonResources', Sync) {
+    from sourceSets.main.resources
+    into layout.buildDirectory.dir("commonResourcesOut")
+}
+
+artifacts {
+    commonJava sourceSets.main.java.sourceDirectories.singleFile
+
+    commonResources(tasks.named('packageCommonResources').get().outputs.files.singleFile) {
+        builtBy tasks.named('packageCommonResources')
+    }
+}
+// END
+
+wiki {
+    def releaseProp = new Properties()
+    def keyPropsFile = new File(rootProject.projectDir, "key.properties")
+    if (keyPropsFile.exists()) {
+        releaseProp.load(new FileInputStream(keyPropsFile))
+        wikiAccessToken = releaseProp.getProperty("wikiKey")
+    }
+    docs {
+        avp {
+            root = file('../docs/avp')
+        }
+    }
+}
