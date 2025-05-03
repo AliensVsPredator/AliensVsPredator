@@ -23,8 +23,8 @@ import com.avp.common.item.AVPBlockItems;
 import com.avp.common.item.AVPSpawnEggItems;
 import com.avp.common.item.TempAVPItems;
 import com.avp.common.level.gameevent.AVPGameEvents;
+import com.avp.common.lifecycle.AVPAlienInfections;
 import com.avp.common.lifecycle.AVPAlienLifecycles;
-import com.avp.common.lifecycle.Infections;
 import com.avp.common.menu.AVPMenuTypes;
 import com.avp.common.particle.AVPParticleTypes;
 import com.avp.common.recipe.AVPRecipes;
@@ -53,7 +53,7 @@ public class AVP {
         AVPArmorItems.initialize();
         AVPSpawnEggItems.initialize();
         AVPEntityTypes.initialize();
-        Infections.initialize();
+        AVPAlienInfections.initialize();
         AVPAlienLifecycles.initialize();
         AVPParticleTypes.initialize();
         AVPMenuTypes.initialize();

@@ -25,7 +25,7 @@ import com.avp.common.entity.gene.GeneProviders;
 import com.avp.common.entity.living.Host;
 import com.avp.common.entity.living.alien.Alien;
 import com.avp.common.entity.living.alien.parasite.Parasite;
-import com.avp.common.lifecycle.infection.Infection;
+import com.avp.common.lifecycle.infection.AlienInfection;
 import com.avp.common.lifecycle.registry.AlienInfectionRegistry;
 import com.avp.common.manager.GeneManager;
 import com.avp.common.util.AlienVariantUtil;
@@ -118,9 +118,9 @@ public abstract class MixinLivingEntity_GrowEmbryo extends Entity implements Hos
         }
 
         AlienInfectionRegistry.get(getType(), parasiteSourceType)
-            .ifSome(infection -> {
+            .ifSome(alienInfection -> {
                 @SuppressWarnings("unchecked")
-                var typedInfection = (Infection<LivingEntity, LivingEntity>) infection;
+                var typedInfection = (AlienInfection<LivingEntity, LivingEntity>) alienInfection;
 
                 giveBirth(level, self, typedInfection);
             });
@@ -130,8 +130,8 @@ public abstract class MixinLivingEntity_GrowEmbryo extends Entity implements Hos
     }
 
     @Unique
-    private void giveBirth(Level level, LivingEntity self, Infection<LivingEntity, LivingEntity> infection) {
-        var parasiteType = infection.parasiteType();
+    private void giveBirth(Level level, LivingEntity self, AlienInfection<LivingEntity, LivingEntity> alienInfection) {
+        var parasiteType = alienInfection.parasiteType();
         var parasite = parasiteType.create(level);
 
         if (parasite == null) {
