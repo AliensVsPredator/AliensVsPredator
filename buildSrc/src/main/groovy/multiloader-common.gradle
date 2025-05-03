@@ -114,7 +114,13 @@ processResources {
 
     inputs.properties(expandProps)
 
+    from("$rootDir/docs/avp/") {
+        into "assets/avp/books/avp/"
+        exclude '.assets/item/**'
+    }
+
     doLast {
+        println "processResources executed: wiki folder copied into assets/avp"
         def jsonMinifyStart = System.currentTimeMillis()
         def jsonMinified = 0
         def jsonBytesSaved = 0
