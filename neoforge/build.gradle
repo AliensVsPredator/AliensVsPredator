@@ -56,6 +56,7 @@ dependencies {
 
     compileOnly "me.shedaniel:RoughlyEnoughItems-api-neoforge:${project.rei_version}"
     compileOnly "me.shedaniel:RoughlyEnoughItems-neoforge:${project.rei_version}"
+    runtimeOnly "me.shedaniel:RoughlyEnoughItems-neoforge:${project.rei_version}"
 
     implementation "dev.architectury:architectury-neoforge:${project.architectury_version}"
     implementation "me.shedaniel.cloth:cloth-config-neoforge:${project.cloth_version}"
