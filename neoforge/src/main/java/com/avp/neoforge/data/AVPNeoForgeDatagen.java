@@ -1,5 +1,7 @@
 package com.avp.neoforge.data;
 
+import com.avp.common.entity.type.AVPEntityTypes;
+import com.bvanseg.just.functional.function.Lazy;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.RegistrySetBuilder;
 import net.minecraft.core.registries.Registries;
@@ -36,31 +38,31 @@ public class AVPNeoForgeDatagen {
 
     // FIXME: UPDATE TO PROPER ENTITY TYPES AND IF POSSIBLE FIGURE OUT A BRIDGE SERVICE FOR THE ResourceKey, SINCE
     // ResourceKey<BiomeModifier> IS NEO ONLY
-    private static final List<AVPSpawnData> spawnDataList = List.of(
-        new AVPSpawnData(EntityType.GHAST, AVPEntitySpawnKeys.ADD_SPAWNS_OVAMORPH, BiomeTags.IS_OVERWORLD, config.OVAMORPH_SPAWN),
-        new AVPSpawnData(EntityType.PIG, AVPEntitySpawnKeys.ADD_SPAWNS_CHESTBURSTER, BiomeTags.IS_OVERWORLD, config.CHESTBURSTER_SPAWN),
-        new AVPSpawnData(EntityType.PIGLIN, AVPEntitySpawnKeys.ADD_SPAWNS_DRONE, BiomeTags.IS_OVERWORLD, config.DRONE_SPAWN),
-        new AVPSpawnData(EntityType.PILLAGER, AVPEntitySpawnKeys.ADD_SPAWNS_WARRIOR, BiomeTags.IS_OVERWORLD, config.WARRIOR_SPAWN),
-        new AVPSpawnData(EntityType.PANDA, AVPEntitySpawnKeys.ADD_SPAWNS_PRAETORIAN, BiomeTags.IS_OVERWORLD, config.PRAETORIAN_SPAWN),
-        new AVPSpawnData(EntityType.PARROT, AVPEntitySpawnKeys.ADD_SPAWNS_QUEEN, BiomeTags.IS_OVERWORLD, config.QUEEN_SPAWN),
-        new AVPSpawnData(EntityType.BAT, AVPEntitySpawnKeys.ADD_SPAWNS_NETHER_OVAMORPH, BiomeTags.IS_NETHER, config.NETHER_OVAMORPH_SPAWN),
-        new AVPSpawnData(
-            EntityType.BEE,
-            AVPEntitySpawnKeys.ADD_SPAWNS_NETHER_CHESTBURSTER,
-            BiomeTags.IS_NETHER,
-            config.NETHER_CHESTBURSTER_SPAWN
-        ),
-        new AVPSpawnData(EntityType.BLAZE, AVPEntitySpawnKeys.ADD_SPAWNS_NETHER_DRONE, BiomeTags.IS_NETHER, config.NETHER_DRONE_SPAWN),
-        new AVPSpawnData(EntityType.BOGGED, AVPEntitySpawnKeys.ADD_SPAWNS_NETHER_WARRIOR, BiomeTags.IS_NETHER, config.NETHER_WARRIOR_SPAWN),
-        new AVPSpawnData(
-            EntityType.CAMEL,
-            AVPEntitySpawnKeys.ADD_SPAWNS_NETHER_PRAETORIAN,
-            BiomeTags.IS_NETHER,
-            config.NETHER_PRAETORIAN_SPAWN
-        ),
-        new AVPSpawnData(EntityType.CAT, AVPEntitySpawnKeys.ADD_SPAWNS_NETHER_QUEEN, BiomeTags.IS_NETHER, config.NETHER_QUEEN_SPAWN),
-        new AVPSpawnData(EntityType.COW, AVPEntitySpawnKeys.ADD_SPAWNS_YAUTJA, BiomeTags.IS_JUNGLE, config.YAUTJA_SPAWN)
-    );
+    private static final Lazy<List<AVPSpawnData>> spawnDataList = Lazy.of(() -> List.of(
+            new AVPSpawnData(AVPEntityTypes.OVAMORPH.get(), AVPEntitySpawnKeys.ADD_SPAWNS_OVAMORPH, BiomeTags.IS_OVERWORLD, config.OVAMORPH_SPAWN),
+            new AVPSpawnData(AVPEntityTypes.CHESTBURSTER.get(), AVPEntitySpawnKeys.ADD_SPAWNS_CHESTBURSTER, BiomeTags.IS_OVERWORLD, config.CHESTBURSTER_SPAWN),
+            new AVPSpawnData(AVPEntityTypes.DRONE.get(), AVPEntitySpawnKeys.ADD_SPAWNS_DRONE, BiomeTags.IS_OVERWORLD, config.DRONE_SPAWN),
+            new AVPSpawnData(AVPEntityTypes.WARRIOR.get(), AVPEntitySpawnKeys.ADD_SPAWNS_WARRIOR, BiomeTags.IS_OVERWORLD, config.WARRIOR_SPAWN),
+            new AVPSpawnData(AVPEntityTypes.PRAETORIAN.get(), AVPEntitySpawnKeys.ADD_SPAWNS_PRAETORIAN, BiomeTags.IS_OVERWORLD, config.PRAETORIAN_SPAWN),
+            new AVPSpawnData(AVPEntityTypes.QUEEN.get(), AVPEntitySpawnKeys.ADD_SPAWNS_QUEEN, BiomeTags.IS_OVERWORLD, config.QUEEN_SPAWN),
+            new AVPSpawnData(AVPEntityTypes.NETHER_OVAMORPH.get(), AVPEntitySpawnKeys.ADD_SPAWNS_NETHER_OVAMORPH, BiomeTags.IS_NETHER, config.NETHER_OVAMORPH_SPAWN),
+            new AVPSpawnData(
+                    AVPEntityTypes.NETHER_CHESTBURSTER.get(),
+                    AVPEntitySpawnKeys.ADD_SPAWNS_NETHER_CHESTBURSTER,
+                    BiomeTags.IS_NETHER,
+                    config.NETHER_CHESTBURSTER_SPAWN
+            ),
+            new AVPSpawnData(AVPEntityTypes.NETHER_DRONE.get(), AVPEntitySpawnKeys.ADD_SPAWNS_NETHER_DRONE, BiomeTags.IS_NETHER, config.NETHER_DRONE_SPAWN),
+            new AVPSpawnData(AVPEntityTypes.NETHER_WARRIOR.get(), AVPEntitySpawnKeys.ADD_SPAWNS_NETHER_WARRIOR, BiomeTags.IS_NETHER, config.NETHER_WARRIOR_SPAWN),
+            new AVPSpawnData(
+                    AVPEntityTypes.NETHER_PRAETORIAN.get(),
+                    AVPEntitySpawnKeys.ADD_SPAWNS_NETHER_PRAETORIAN,
+                    BiomeTags.IS_NETHER,
+                    config.NETHER_PRAETORIAN_SPAWN
+            ),
+            new AVPSpawnData(AVPEntityTypes.NETHER_QUEEN.get(), AVPEntitySpawnKeys.ADD_SPAWNS_NETHER_QUEEN, BiomeTags.IS_NETHER, config.NETHER_QUEEN_SPAWN),
+            new AVPSpawnData(AVPEntityTypes.YAUTJA.get(), AVPEntitySpawnKeys.ADD_SPAWNS_YAUTJA, BiomeTags.IS_JUNGLE, config.YAUTJA_SPAWN)
+    ));
 
     @SuppressWarnings("unchecked")
     @SubscribeEvent
@@ -76,11 +78,16 @@ public class AVPNeoForgeDatagen {
                 event.getLookupProvider(),
                 new RegistrySetBuilder()
                     .add(NeoForgeRegistries.Keys.BIOME_MODIFIERS, bootstrap -> {
-                        for (AVPSpawnData spawnData : spawnDataList) {
+                        var biomes = bootstrap.lookup(Registries.BIOME);
+                        var placedFeatures = bootstrap.lookup(Registries.PLACED_FEATURE);
+                        var biomes0 = new BiomeFilterRegistryLookup(biomes);
+                        var excludedBiomes = HolderSet.direct(biomes.getOrThrow(Biomes.DRIPSTONE_CAVES));
+
+                        for (AVPSpawnData spawnData : spawnDataList.get()) {
                             bootstrap.register(
                                 (ResourceKey<BiomeModifier>) spawnData.spawnKey(),
                                 new BiomeModifiers.AddSpawnsBiomeModifier(
-                                    bootstrap.lookup(Registries.BIOME).getOrThrow(spawnData.biomeTag()),
+                                    biomes.getOrThrow(spawnData.biomeTag()),
                                     List.of(
                                         new MobSpawnSettings.SpawnerData(
                                             spawnData.entityType(),
@@ -92,15 +99,10 @@ public class AVPNeoForgeDatagen {
                                 )
                             );
                         }
-                        var biomes = bootstrap.lookup(Registries.BIOME);
-                        var placedFeatures = bootstrap.lookup(Registries.PLACED_FEATURE);
-                        var biomes0 = new BiomeFilterRegistryLookup(biomes);
-                        var excludedBiomes = HolderSet.direct(biomes.getOrThrow(Biomes.DRIPSTONE_CAVES));
-
                         bootstrap.register(
                             AVPFeatureKeys.ADD_AUTUNITE_GEODE,
                             new BiomeModifiers.AddFeaturesBiomeModifier(
-                                bootstrap.lookup(Registries.BIOME).getOrThrow(BiomeTags.IS_OVERWORLD),
+                                biomes.getOrThrow(BiomeTags.IS_OVERWORLD),
                                 HolderSet.direct(placedFeatures.getOrThrow(AVPCaveKey.AUTUNITE_GEODE)),
                                 GenerationStep.Decoration.LOCAL_MODIFICATIONS
                             )
@@ -109,7 +111,7 @@ public class AVPNeoForgeDatagen {
                         bootstrap.register(
                             AVPFeatureKeys.ADD_BAUXITE_MIDDLE,
                             new BiomeModifiers.AddFeaturesBiomeModifier(
-                                bootstrap.lookup(Registries.BIOME).getOrThrow(BiomeTags.IS_OVERWORLD),
+                                biomes.getOrThrow(BiomeTags.IS_OVERWORLD),
                                 HolderSet.direct(placedFeatures.getOrThrow(AVPOres.BAUXITE_MIDDLE.placedFeatureKey())),
                                 GenerationStep.Decoration.UNDERGROUND_ORES
                             )
@@ -117,7 +119,7 @@ public class AVPNeoForgeDatagen {
                         bootstrap.register(
                             AVPFeatureKeys.ADD_BAUXITE_UPPER,
                             new BiomeModifiers.AddFeaturesBiomeModifier(
-                                bootstrap.lookup(Registries.BIOME).getOrThrow(BiomeTags.IS_OVERWORLD),
+                                biomes.getOrThrow(BiomeTags.IS_OVERWORLD),
                                 HolderSet.direct(placedFeatures.getOrThrow(AVPOres.BAUXITE_UPPER.placedFeatureKey())),
                                 GenerationStep.Decoration.UNDERGROUND_ORES
                             )
@@ -125,7 +127,7 @@ public class AVPNeoForgeDatagen {
                         bootstrap.register(
                             AVPFeatureKeys.ADD_GALENA,
                             new BiomeModifiers.AddFeaturesBiomeModifier(
-                                bootstrap.lookup(Registries.BIOME).getOrThrow(BiomeTags.IS_OVERWORLD),
+                                biomes.getOrThrow(BiomeTags.IS_OVERWORLD),
                                 HolderSet.direct(placedFeatures.getOrThrow(AVPOres.GALENA.placedFeatureKey())),
                                 GenerationStep.Decoration.UNDERGROUND_ORES
                             )
@@ -133,7 +135,7 @@ public class AVPNeoForgeDatagen {
                         bootstrap.register(
                             AVPFeatureKeys.ADD_LITHIUM,
                             new BiomeModifiers.AddFeaturesBiomeModifier(
-                                bootstrap.lookup(Registries.BIOME).getOrThrow(BiomeTags.IS_OVERWORLD),
+                                biomes.getOrThrow(BiomeTags.IS_OVERWORLD),
                                 HolderSet.direct(placedFeatures.getOrThrow(AVPOres.LITHIUM.placedFeatureKey())),
                                 GenerationStep.Decoration.UNDERGROUND_ORES
                             )
@@ -141,7 +143,7 @@ public class AVPNeoForgeDatagen {
                         bootstrap.register(
                             AVPFeatureKeys.ADD_MONAZITE,
                             new BiomeModifiers.AddFeaturesBiomeModifier(
-                                bootstrap.lookup(Registries.BIOME).getOrThrow(BiomeTags.IS_OVERWORLD),
+                                biomes.getOrThrow(BiomeTags.IS_OVERWORLD),
                                 HolderSet.direct(placedFeatures.getOrThrow(AVPOres.MONAZITE.placedFeatureKey())),
                                 GenerationStep.Decoration.UNDERGROUND_ORES
                             )
@@ -149,7 +151,7 @@ public class AVPNeoForgeDatagen {
                         bootstrap.register(
                             AVPFeatureKeys.ADD_SILICON_GRAVEL,
                             new BiomeModifiers.AddFeaturesBiomeModifier(
-                                bootstrap.lookup(Registries.BIOME).getOrThrow(BiomeTags.IS_OVERWORLD),
+                                biomes.getOrThrow(BiomeTags.IS_OVERWORLD),
                                 HolderSet.direct(placedFeatures.getOrThrow(AVPOres.SILICON_GRAVEL.placedFeatureKey())),
                                 GenerationStep.Decoration.UNDERGROUND_ORES
                             )
@@ -157,7 +159,7 @@ public class AVPNeoForgeDatagen {
                         bootstrap.register(
                             AVPFeatureKeys.ADD_TITANIUM_LOWER,
                             new BiomeModifiers.AddFeaturesBiomeModifier(
-                                bootstrap.lookup(Registries.BIOME).getOrThrow(BiomeTags.IS_OVERWORLD),
+                                biomes.getOrThrow(BiomeTags.IS_OVERWORLD),
                                 HolderSet.direct(placedFeatures.getOrThrow(AVPOres.TITANIUM_LOWER.placedFeatureKey())),
                                 GenerationStep.Decoration.UNDERGROUND_ORES
                             )
@@ -188,7 +190,7 @@ public class AVPNeoForgeDatagen {
                         bootstrap.register(
                             AVPFeatureKeys.ADD_MONAZITE_JUNGLE,
                             new BiomeModifiers.AddFeaturesBiomeModifier(
-                                bootstrap.lookup(Registries.BIOME).getOrThrow(BiomeTags.IS_JUNGLE),
+                                biomes.getOrThrow(BiomeTags.IS_JUNGLE),
                                 HolderSet.direct(placedFeatures.getOrThrow(AVPOres.MONAZITE_JUNGLE.placedFeatureKey())),
                                 GenerationStep.Decoration.UNDERGROUND_ORES
                             )
@@ -198,7 +200,7 @@ public class AVPNeoForgeDatagen {
                             AVPFeatureKeys.ADD_ZINC,
                             new BiomeModifiers.AddFeaturesBiomeModifier(
                                 new AndHolderSet<>(
-                                    bootstrap.lookup(Registries.BIOME).getOrThrow(BiomeTags.IS_OVERWORLD),
+                                    biomes.getOrThrow(BiomeTags.IS_OVERWORLD),
                                     new NotHolderSet<>(biomes0, excludedBiomes)
                                 ),
                                 HolderSet.direct(placedFeatures.getOrThrow(AVPOres.ZINC.placedFeatureKey())),

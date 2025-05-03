@@ -1,12 +1,22 @@
 package com.avp.neoforge;
 
+import com.avp.common.entity.living.alien.chestburster.ChestbursterSpawning;
+import com.avp.common.entity.living.alien.ovamorph.OvamorphSpawning;
+import com.avp.common.entity.living.alien.xenomorph.drone.DroneSpawning;
+import com.avp.common.entity.living.alien.xenomorph.praetorian.PraetorianSpawning;
+import com.avp.common.entity.living.alien.xenomorph.queen.QueenSpawning;
+import com.avp.common.entity.living.alien.xenomorph.warrior.WarriorSpawning;
+import com.avp.common.entity.living.human.marine.MarineSpawning;
+import com.avp.common.entity.living.yautja.YautjaSpawning;
 import mod.azure.azurelib.rewrite.animation.cache.AzIdentityRegistry;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.entity.SpawnPlacementTypes;
 import net.minecraft.world.level.GameRules;
+import net.minecraft.world.level.levelgen.Heightmap;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.common.Mod;
@@ -14,6 +24,7 @@ import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
 import net.neoforged.neoforge.event.entity.EntityAttributeCreationEvent;
+import net.neoforged.neoforge.event.entity.RegisterSpawnPlacementsEvent;
 import net.neoforged.neoforge.event.server.ServerAboutToStartEvent;
 import net.neoforged.neoforge.event.tick.LevelTickEvent;
 import net.neoforged.neoforge.event.village.VillagerTradesEvent;
@@ -47,6 +58,7 @@ public class AVPNeoForge {
         // Mod bus events.
         modBus.addListener(AVPNeoForge::registerPayloadHandlers);
         modBus.addListener(AVPNeoForge::registerEntityAttributes);
+        modBus.addListener(AVPNeoForge::registerSpawnPlacements);
         modBus.addListener(AVPNeoForge::registerMiscellaneous);
 
         // Game bus events.
@@ -78,6 +90,110 @@ public class AVPNeoForge {
     public static void registerEntityAttributes(EntityAttributeCreationEvent event) {
         REGISTRY.getEntityAttributeSupplierPairs()
             .forEach(pair -> event.put(pair.first().get(), pair.second().get().build()));
+    }
+
+    public static void registerSpawnPlacements(RegisterSpawnPlacementsEvent event) {
+        var placement = SpawnPlacementTypes.ON_GROUND;
+        var heightMap = Heightmap.Types.MOTION_BLOCKING_NO_LEAVES;
+        event.register(
+                AVPEntityTypes.YAUTJA.get(),
+                placement,
+                heightMap,
+                YautjaSpawning.PREDICATE,
+                RegisterSpawnPlacementsEvent.Operation.AND
+        );
+
+        event.register(
+                AVPEntityTypes.MARINE.get(),
+                placement,
+                heightMap,
+                MarineSpawning.PREDICATE,
+                RegisterSpawnPlacementsEvent.Operation.AND
+        );
+        event.register(
+                AVPEntityTypes.DRONE.get(),
+                placement,
+                heightMap,
+                DroneSpawning.PREDICATE,
+                RegisterSpawnPlacementsEvent.Operation.AND
+        );
+        event.register(
+                AVPEntityTypes.PRAETORIAN.get(),
+                placement,
+                heightMap,
+                PraetorianSpawning.PREDICATE,
+                RegisterSpawnPlacementsEvent.Operation.AND
+        );
+        event.register(
+                AVPEntityTypes.QUEEN.get(),
+                placement,
+                heightMap,
+                QueenSpawning.PREDICATE,
+                RegisterSpawnPlacementsEvent.Operation.AND
+        );
+        event.register(
+                AVPEntityTypes.WARRIOR.get(),
+                placement,
+                heightMap,
+                WarriorSpawning.PREDICATE,
+                RegisterSpawnPlacementsEvent.Operation.AND
+        );
+        event.register(
+                AVPEntityTypes.NETHER_DRONE.get(),
+                placement,
+                heightMap,
+                DroneSpawning.NETHER_PREDICATE,
+                RegisterSpawnPlacementsEvent.Operation.AND
+        );
+        event.register(
+                AVPEntityTypes.NETHER_PRAETORIAN.get(),
+                placement,
+                heightMap,
+                PraetorianSpawning.NETHER_PREDICATE,
+                RegisterSpawnPlacementsEvent.Operation.AND
+        );
+        event.register(
+                AVPEntityTypes.NETHER_WARRIOR.get(),
+                placement,
+                heightMap,
+                WarriorSpawning.NETHER_PREDICATE,
+                RegisterSpawnPlacementsEvent.Operation.AND
+        );
+        event.register(
+                AVPEntityTypes.NETHER_QUEEN.get(),
+                placement,
+                heightMap,
+                QueenSpawning.NETHER_PREDICATE,
+                RegisterSpawnPlacementsEvent.Operation.AND
+        );
+        event.register(
+                AVPEntityTypes.CHESTBURSTER.get(),
+                placement,
+                heightMap,
+                ChestbursterSpawning.PREDICATE,
+                RegisterSpawnPlacementsEvent.Operation.AND
+        );
+        event.register(
+                AVPEntityTypes.OVAMORPH.get(),
+                placement,
+                heightMap,
+                OvamorphSpawning.PREDICATE,
+                RegisterSpawnPlacementsEvent.Operation.AND
+        );
+        event.register(
+                AVPEntityTypes.NETHER_CHESTBURSTER.get(),
+                placement,
+                heightMap,
+                ChestbursterSpawning.NETHER_PREDICATE,
+                RegisterSpawnPlacementsEvent.Operation.AND
+        );
+        event.register(
+                AVPEntityTypes.NETHER_OVAMORPH.get(),
+                placement,
+                heightMap,
+                OvamorphSpawning.NETHER_PREDICATE,
+                RegisterSpawnPlacementsEvent.Operation.AND
+        );
     }
 
     // Inject Village houses
