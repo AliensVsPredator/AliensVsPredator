@@ -1,6 +1,5 @@
 package com.avp.neoforge.data;
 
-import com.avp.common.entity.type.AVPEntityTypes;
 import com.bvanseg.just.functional.function.Lazy;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.RegistrySetBuilder;
@@ -8,7 +7,6 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.data.DataProvider;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.BiomeTags;
-import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.level.biome.Biomes;
 import net.minecraft.world.level.biome.MobSpawnSettings;
 import net.minecraft.world.level.levelgen.GenerationStep;
@@ -27,6 +25,7 @@ import java.util.Set;
 
 import com.avp.AVP;
 import com.avp.common.config.AVPConfig;
+import com.avp.common.entity.type.AVPEntityTypes;
 import com.avp.data.AVPCaveKey;
 import com.avp.data.AVPSpawnData;
 import com.avp.data.worldgen.AVPOres;
@@ -38,31 +37,73 @@ public class AVPNeoForgeDatagen {
 
     // FIXME: UPDATE TO PROPER ENTITY TYPES AND IF POSSIBLE FIGURE OUT A BRIDGE SERVICE FOR THE ResourceKey, SINCE
     // ResourceKey<BiomeModifier> IS NEO ONLY
-    private static final Lazy<List<AVPSpawnData>> spawnDataList = Lazy.of(() -> List.of(
-            new AVPSpawnData(AVPEntityTypes.OVAMORPH.get(), AVPEntitySpawnKeys.ADD_SPAWNS_OVAMORPH, BiomeTags.IS_OVERWORLD, config.OVAMORPH_SPAWN),
-            new AVPSpawnData(AVPEntityTypes.CHESTBURSTER.get(), AVPEntitySpawnKeys.ADD_SPAWNS_CHESTBURSTER, BiomeTags.IS_OVERWORLD, config.CHESTBURSTER_SPAWN),
+    private static final Lazy<List<AVPSpawnData>> spawnDataList = Lazy.of(
+        () -> List.of(
+            new AVPSpawnData(
+                AVPEntityTypes.OVAMORPH.get(),
+                AVPEntitySpawnKeys.ADD_SPAWNS_OVAMORPH,
+                BiomeTags.IS_OVERWORLD,
+                config.OVAMORPH_SPAWN
+            ),
+            new AVPSpawnData(
+                AVPEntityTypes.CHESTBURSTER.get(),
+                AVPEntitySpawnKeys.ADD_SPAWNS_CHESTBURSTER,
+                BiomeTags.IS_OVERWORLD,
+                config.CHESTBURSTER_SPAWN
+            ),
             new AVPSpawnData(AVPEntityTypes.DRONE.get(), AVPEntitySpawnKeys.ADD_SPAWNS_DRONE, BiomeTags.IS_OVERWORLD, config.DRONE_SPAWN),
-            new AVPSpawnData(AVPEntityTypes.WARRIOR.get(), AVPEntitySpawnKeys.ADD_SPAWNS_WARRIOR, BiomeTags.IS_OVERWORLD, config.WARRIOR_SPAWN),
-            new AVPSpawnData(AVPEntityTypes.PRAETORIAN.get(), AVPEntitySpawnKeys.ADD_SPAWNS_PRAETORIAN, BiomeTags.IS_OVERWORLD, config.PRAETORIAN_SPAWN),
+            new AVPSpawnData(
+                AVPEntityTypes.WARRIOR.get(),
+                AVPEntitySpawnKeys.ADD_SPAWNS_WARRIOR,
+                BiomeTags.IS_OVERWORLD,
+                config.WARRIOR_SPAWN
+            ),
+            new AVPSpawnData(
+                AVPEntityTypes.PRAETORIAN.get(),
+                AVPEntitySpawnKeys.ADD_SPAWNS_PRAETORIAN,
+                BiomeTags.IS_OVERWORLD,
+                config.PRAETORIAN_SPAWN
+            ),
             new AVPSpawnData(AVPEntityTypes.QUEEN.get(), AVPEntitySpawnKeys.ADD_SPAWNS_QUEEN, BiomeTags.IS_OVERWORLD, config.QUEEN_SPAWN),
-            new AVPSpawnData(AVPEntityTypes.NETHER_OVAMORPH.get(), AVPEntitySpawnKeys.ADD_SPAWNS_NETHER_OVAMORPH, BiomeTags.IS_NETHER, config.NETHER_OVAMORPH_SPAWN),
             new AVPSpawnData(
-                    AVPEntityTypes.NETHER_CHESTBURSTER.get(),
-                    AVPEntitySpawnKeys.ADD_SPAWNS_NETHER_CHESTBURSTER,
-                    BiomeTags.IS_NETHER,
-                    config.NETHER_CHESTBURSTER_SPAWN
+                AVPEntityTypes.NETHER_OVAMORPH.get(),
+                AVPEntitySpawnKeys.ADD_SPAWNS_NETHER_OVAMORPH,
+                BiomeTags.IS_NETHER,
+                config.NETHER_OVAMORPH_SPAWN
             ),
-            new AVPSpawnData(AVPEntityTypes.NETHER_DRONE.get(), AVPEntitySpawnKeys.ADD_SPAWNS_NETHER_DRONE, BiomeTags.IS_NETHER, config.NETHER_DRONE_SPAWN),
-            new AVPSpawnData(AVPEntityTypes.NETHER_WARRIOR.get(), AVPEntitySpawnKeys.ADD_SPAWNS_NETHER_WARRIOR, BiomeTags.IS_NETHER, config.NETHER_WARRIOR_SPAWN),
             new AVPSpawnData(
-                    AVPEntityTypes.NETHER_PRAETORIAN.get(),
-                    AVPEntitySpawnKeys.ADD_SPAWNS_NETHER_PRAETORIAN,
-                    BiomeTags.IS_NETHER,
-                    config.NETHER_PRAETORIAN_SPAWN
+                AVPEntityTypes.NETHER_CHESTBURSTER.get(),
+                AVPEntitySpawnKeys.ADD_SPAWNS_NETHER_CHESTBURSTER,
+                BiomeTags.IS_NETHER,
+                config.NETHER_CHESTBURSTER_SPAWN
             ),
-            new AVPSpawnData(AVPEntityTypes.NETHER_QUEEN.get(), AVPEntitySpawnKeys.ADD_SPAWNS_NETHER_QUEEN, BiomeTags.IS_NETHER, config.NETHER_QUEEN_SPAWN),
+            new AVPSpawnData(
+                AVPEntityTypes.NETHER_DRONE.get(),
+                AVPEntitySpawnKeys.ADD_SPAWNS_NETHER_DRONE,
+                BiomeTags.IS_NETHER,
+                config.NETHER_DRONE_SPAWN
+            ),
+            new AVPSpawnData(
+                AVPEntityTypes.NETHER_WARRIOR.get(),
+                AVPEntitySpawnKeys.ADD_SPAWNS_NETHER_WARRIOR,
+                BiomeTags.IS_NETHER,
+                config.NETHER_WARRIOR_SPAWN
+            ),
+            new AVPSpawnData(
+                AVPEntityTypes.NETHER_PRAETORIAN.get(),
+                AVPEntitySpawnKeys.ADD_SPAWNS_NETHER_PRAETORIAN,
+                BiomeTags.IS_NETHER,
+                config.NETHER_PRAETORIAN_SPAWN
+            ),
+            new AVPSpawnData(
+                AVPEntityTypes.NETHER_QUEEN.get(),
+                AVPEntitySpawnKeys.ADD_SPAWNS_NETHER_QUEEN,
+                BiomeTags.IS_NETHER,
+                config.NETHER_QUEEN_SPAWN
+            ),
             new AVPSpawnData(AVPEntityTypes.YAUTJA.get(), AVPEntitySpawnKeys.ADD_SPAWNS_YAUTJA, BiomeTags.IS_JUNGLE, config.YAUTJA_SPAWN)
-    ));
+        )
+    );
 
     @SuppressWarnings("unchecked")
     @SubscribeEvent

@@ -1,13 +1,5 @@
 package com.avp.neoforge;
 
-import com.avp.common.entity.living.alien.chestburster.ChestbursterSpawning;
-import com.avp.common.entity.living.alien.ovamorph.OvamorphSpawning;
-import com.avp.common.entity.living.alien.xenomorph.drone.DroneSpawning;
-import com.avp.common.entity.living.alien.xenomorph.praetorian.PraetorianSpawning;
-import com.avp.common.entity.living.alien.xenomorph.queen.QueenSpawning;
-import com.avp.common.entity.living.alien.xenomorph.warrior.WarriorSpawning;
-import com.avp.common.entity.living.human.marine.MarineSpawning;
-import com.avp.common.entity.living.yautja.YautjaSpawning;
 import mod.azure.azurelib.rewrite.animation.cache.AzIdentityRegistry;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
@@ -33,6 +25,14 @@ import net.neoforged.neoforge.network.handling.DirectionalPayloadHandler;
 import net.neoforged.neoforge.network.registration.HandlerThread;
 
 import com.avp.AVP;
+import com.avp.common.entity.living.alien.chestburster.ChestbursterSpawning;
+import com.avp.common.entity.living.alien.ovamorph.OvamorphSpawning;
+import com.avp.common.entity.living.alien.xenomorph.drone.DroneSpawning;
+import com.avp.common.entity.living.alien.xenomorph.praetorian.PraetorianSpawning;
+import com.avp.common.entity.living.alien.xenomorph.queen.QueenSpawning;
+import com.avp.common.entity.living.alien.xenomorph.warrior.WarriorSpawning;
+import com.avp.common.entity.living.human.marine.MarineSpawning;
+import com.avp.common.entity.living.yautja.YautjaSpawning;
 import com.avp.common.entity.type.AVPEntityTypes;
 import com.avp.common.lifecycle.registry.AlienInfectionRegistry;
 import com.avp.common.lifecycle.registry.AlienLifecycleRegistry;
@@ -96,103 +96,103 @@ public class AVPNeoForge {
         var placement = SpawnPlacementTypes.ON_GROUND;
         var heightMap = Heightmap.Types.MOTION_BLOCKING_NO_LEAVES;
         event.register(
-                AVPEntityTypes.YAUTJA.get(),
-                placement,
-                heightMap,
-                YautjaSpawning.PREDICATE,
-                RegisterSpawnPlacementsEvent.Operation.AND
+            AVPEntityTypes.YAUTJA.get(),
+            placement,
+            heightMap,
+            YautjaSpawning.PREDICATE,
+            RegisterSpawnPlacementsEvent.Operation.AND
         );
 
         event.register(
-                AVPEntityTypes.MARINE.get(),
-                placement,
-                heightMap,
-                MarineSpawning.PREDICATE,
-                RegisterSpawnPlacementsEvent.Operation.AND
+            AVPEntityTypes.MARINE.get(),
+            placement,
+            heightMap,
+            MarineSpawning.PREDICATE,
+            RegisterSpawnPlacementsEvent.Operation.AND
         );
         event.register(
-                AVPEntityTypes.DRONE.get(),
-                placement,
-                heightMap,
-                DroneSpawning.PREDICATE,
-                RegisterSpawnPlacementsEvent.Operation.AND
+            AVPEntityTypes.DRONE.get(),
+            placement,
+            heightMap,
+            DroneSpawning.PREDICATE,
+            RegisterSpawnPlacementsEvent.Operation.AND
         );
         event.register(
-                AVPEntityTypes.PRAETORIAN.get(),
-                placement,
-                heightMap,
-                PraetorianSpawning.PREDICATE,
-                RegisterSpawnPlacementsEvent.Operation.AND
+            AVPEntityTypes.PRAETORIAN.get(),
+            placement,
+            heightMap,
+            PraetorianSpawning.PREDICATE,
+            RegisterSpawnPlacementsEvent.Operation.AND
         );
         event.register(
-                AVPEntityTypes.QUEEN.get(),
-                placement,
-                heightMap,
-                QueenSpawning.PREDICATE,
-                RegisterSpawnPlacementsEvent.Operation.AND
+            AVPEntityTypes.QUEEN.get(),
+            placement,
+            heightMap,
+            QueenSpawning.PREDICATE,
+            RegisterSpawnPlacementsEvent.Operation.AND
         );
         event.register(
-                AVPEntityTypes.WARRIOR.get(),
-                placement,
-                heightMap,
-                WarriorSpawning.PREDICATE,
-                RegisterSpawnPlacementsEvent.Operation.AND
+            AVPEntityTypes.WARRIOR.get(),
+            placement,
+            heightMap,
+            WarriorSpawning.PREDICATE,
+            RegisterSpawnPlacementsEvent.Operation.AND
         );
         event.register(
-                AVPEntityTypes.NETHER_DRONE.get(),
-                placement,
-                heightMap,
-                DroneSpawning.NETHER_PREDICATE,
-                RegisterSpawnPlacementsEvent.Operation.AND
+            AVPEntityTypes.NETHER_DRONE.get(),
+            placement,
+            heightMap,
+            DroneSpawning.NETHER_PREDICATE,
+            RegisterSpawnPlacementsEvent.Operation.AND
         );
         event.register(
-                AVPEntityTypes.NETHER_PRAETORIAN.get(),
-                placement,
-                heightMap,
-                PraetorianSpawning.NETHER_PREDICATE,
-                RegisterSpawnPlacementsEvent.Operation.AND
+            AVPEntityTypes.NETHER_PRAETORIAN.get(),
+            placement,
+            heightMap,
+            PraetorianSpawning.NETHER_PREDICATE,
+            RegisterSpawnPlacementsEvent.Operation.AND
         );
         event.register(
-                AVPEntityTypes.NETHER_WARRIOR.get(),
-                placement,
-                heightMap,
-                WarriorSpawning.NETHER_PREDICATE,
-                RegisterSpawnPlacementsEvent.Operation.AND
+            AVPEntityTypes.NETHER_WARRIOR.get(),
+            placement,
+            heightMap,
+            WarriorSpawning.NETHER_PREDICATE,
+            RegisterSpawnPlacementsEvent.Operation.AND
         );
         event.register(
-                AVPEntityTypes.NETHER_QUEEN.get(),
-                placement,
-                heightMap,
-                QueenSpawning.NETHER_PREDICATE,
-                RegisterSpawnPlacementsEvent.Operation.AND
+            AVPEntityTypes.NETHER_QUEEN.get(),
+            placement,
+            heightMap,
+            QueenSpawning.NETHER_PREDICATE,
+            RegisterSpawnPlacementsEvent.Operation.AND
         );
         event.register(
-                AVPEntityTypes.CHESTBURSTER.get(),
-                placement,
-                heightMap,
-                ChestbursterSpawning.PREDICATE,
-                RegisterSpawnPlacementsEvent.Operation.AND
+            AVPEntityTypes.CHESTBURSTER.get(),
+            placement,
+            heightMap,
+            ChestbursterSpawning.PREDICATE,
+            RegisterSpawnPlacementsEvent.Operation.AND
         );
         event.register(
-                AVPEntityTypes.OVAMORPH.get(),
-                placement,
-                heightMap,
-                OvamorphSpawning.PREDICATE,
-                RegisterSpawnPlacementsEvent.Operation.AND
+            AVPEntityTypes.OVAMORPH.get(),
+            placement,
+            heightMap,
+            OvamorphSpawning.PREDICATE,
+            RegisterSpawnPlacementsEvent.Operation.AND
         );
         event.register(
-                AVPEntityTypes.NETHER_CHESTBURSTER.get(),
-                placement,
-                heightMap,
-                ChestbursterSpawning.NETHER_PREDICATE,
-                RegisterSpawnPlacementsEvent.Operation.AND
+            AVPEntityTypes.NETHER_CHESTBURSTER.get(),
+            placement,
+            heightMap,
+            ChestbursterSpawning.NETHER_PREDICATE,
+            RegisterSpawnPlacementsEvent.Operation.AND
         );
         event.register(
-                AVPEntityTypes.NETHER_OVAMORPH.get(),
-                placement,
-                heightMap,
-                OvamorphSpawning.NETHER_PREDICATE,
-                RegisterSpawnPlacementsEvent.Operation.AND
+            AVPEntityTypes.NETHER_OVAMORPH.get(),
+            placement,
+            heightMap,
+            OvamorphSpawning.NETHER_PREDICATE,
+            RegisterSpawnPlacementsEvent.Operation.AND
         );
     }
 

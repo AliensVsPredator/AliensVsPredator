@@ -18,7 +18,7 @@ jobs:
         uses: gradle/actions/setup-gradle@v4
       - name: Make gradlew executable
         run: chmod +x ./gradlew
-      - name: Run Datagen on Fabric
+      - name: Run Datagen for NeoForge and then Fabric
         run: ./gradlew runAllDatagen
       - name: Build with Gradle
         run: ./gradlew build
