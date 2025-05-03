@@ -228,7 +228,8 @@ public class AVPEntityTypeTagProvider extends FabricTagProvider.EntityTypeTagPro
             .addTag(AVPEntityTypeTags.IRRADIATED_ALIENS)
             .addTag(AVPEntityTypeTags.ABERRANT_ALIENS)
             .addTag(AVPEntityTypeTags.NORMAL_ALIENS)
-            .addTag(AVPEntityTypeTags.NETHER_ALIENS);
+            .addTag(AVPEntityTypeTags.NETHER_ALIENS)
+            .addTag(AVPEntityTypeTags.ROYAL_ALIENS);
     }
 
     private void addHosts() {
