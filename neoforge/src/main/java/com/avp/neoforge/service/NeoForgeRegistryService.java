@@ -106,6 +106,8 @@ public class NeoForgeRegistryService implements RegistryService {
 
     private final List<Supplier<AlienLifecycle>> alienLifecycleSuppliers;
 
+    private final List<Supplier<? extends Item>> azureLibItemIdentitySuppliers;
+
     private final List<Tuple4<Supplier<? extends ItemLike>, Float, Boolean, Boolean>> compostableData;
 
     private final List<Tuple2<Supplier<? extends EntityType<? extends LivingEntity>>, Supplier<AttributeSupplier.Builder>>> entityAttributeSupplierPairs;
@@ -120,6 +122,7 @@ public class NeoForgeRegistryService implements RegistryService {
     public NeoForgeRegistryService() {
         this.alienInfectionSuppliers = new ArrayList<>();
         this.alienLifecycleSuppliers = new ArrayList<>();
+        this.azureLibItemIdentitySuppliers = new ArrayList<>();
         this.compostableData = new ArrayList<>();
         this.entityAttributeSupplierPairs = new ArrayList<>();
         this.furnaceFuelPairs = new ArrayList<>();
@@ -189,6 +192,11 @@ public class NeoForgeRegistryService implements RegistryService {
     }
 
     @Override
+    public void registerAzureLibIdentity(Supplier<? extends Item> itemSupplier) {
+        azureLibItemIdentitySuppliers.add(itemSupplier);
+    }
+
+    @Override
     public void registerCompostableItem(
         Supplier<? extends ItemLike> itemLikeSupplier,
         float chance,
@@ -250,6 +258,10 @@ public class NeoForgeRegistryService implements RegistryService {
 
     public List<Supplier<AlienLifecycle>> getAlienLifecycleSuppliers() {
         return alienLifecycleSuppliers;
+    }
+
+    public List<Supplier<? extends Item>> getAzureLibItemIdentitySuppliers() {
+        return azureLibItemIdentitySuppliers;
     }
 
     public List<Tuple4<Supplier<? extends ItemLike>, Float, Boolean, Boolean>> getCompostableData() {

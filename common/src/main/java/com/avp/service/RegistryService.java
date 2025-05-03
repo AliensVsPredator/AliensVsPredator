@@ -8,6 +8,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.npc.VillagerProfession;
 import net.minecraft.world.entity.npc.VillagerTrades;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.level.ItemLike;
 
 import java.util.List;
@@ -28,6 +29,8 @@ public interface RegistryService {
     );
 
     Supplier<AlienLifecycle> registerAlienLifecycle(Supplier<AlienLifecycle> alienLifecycleSupplier);
+
+    void registerAzureLibIdentity(Supplier<? extends Item> itemSupplier);
 
     void registerCompostableItem(
         Supplier<? extends ItemLike> itemLikeSupplier,

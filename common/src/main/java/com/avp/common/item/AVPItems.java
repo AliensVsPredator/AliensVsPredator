@@ -446,5 +446,17 @@ public class AVPItems {
         return Services.REGISTRY.register(BuiltInRegistries.ITEM, name, itemSupplier);
     }
 
-    public static void initialize() {}
+    public static void initialize() {
+        Services.REGISTRY.registerAzureLibIdentity(F903WE_RIFLE);
+        Services.REGISTRY.registerAzureLibIdentity(FLAMETHROWER_SEVASTOPOL);
+        Services.REGISTRY.registerAzureLibIdentity(M37_12_SHOTGUN);
+        Services.REGISTRY.registerAzureLibIdentity(M41A_PULSE_RIFLE);
+        Services.REGISTRY.registerAzureLibIdentity(M42A3_SNIPER_RIFLE);
+        Services.REGISTRY.registerAzureLibIdentity(M4RA_BATTLE_RIFLE);
+        Services.REGISTRY.registerAzureLibIdentity(M56_SMARTGUN);
+        Services.REGISTRY.registerAzureLibIdentity(M6B_ROCKET_LAUNCHER);
+        Services.REGISTRY.registerAzureLibIdentity(M88MOD4_COMBAT_PISTOL);
+        Services.REGISTRY.registerAzureLibIdentity(OLD_PAINLESS);
+        Services.REGISTRY.registerAzureLibIdentity(ZX_76_SHOTGUN);
+    }
 }

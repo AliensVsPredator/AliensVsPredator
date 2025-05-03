@@ -1,4 +1,4 @@
-package com.avp.fabric.common.block;
+package com.avp.fabric.common;
 
 import net.minecraft.core.Direction;
 import net.minecraft.core.dispenser.BlockSource;

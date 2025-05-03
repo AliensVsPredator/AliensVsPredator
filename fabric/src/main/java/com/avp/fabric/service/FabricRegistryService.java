@@ -1,6 +1,7 @@
 package com.avp.fabric.service;
 
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import mod.azure.azurelib.rewrite.animation.cache.AzIdentityRegistry;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry;
 import net.fabricmc.fabric.api.object.builder.v1.trade.TradeOfferHelper;
 import net.fabricmc.fabric.api.registry.CompostingChanceRegistry;
@@ -13,6 +14,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.npc.VillagerProfession;
 import net.minecraft.world.entity.npc.VillagerTrades;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.level.ItemLike;
 
 import java.util.ArrayList;
@@ -60,6 +62,11 @@ public class FabricRegistryService implements RegistryService {
     public Supplier<AlienLifecycle> registerAlienLifecycle(Supplier<AlienLifecycle> alienLifecycleSupplier) {
         var alienLifecycle = AlienLifecycleRegistry.register(alienLifecycleSupplier.get());
         return () -> alienLifecycle;
+    }
+
+    @Override
+    public void registerAzureLibIdentity(Supplier<? extends Item> itemSupplier) {
+        AzIdentityRegistry.register(itemSupplier.get());
     }
 
     @Override

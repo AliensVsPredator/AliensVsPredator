@@ -934,5 +934,8 @@ public class AVPBlockItems {
         return Services.REGISTRY.register(BuiltInRegistries.ITEM, id, blockItemSupplier);
     }
 
-    public static void initialize() {}
+    public static void initialize() {
+        Services.REGISTRY.registerAzureLibIdentity(RESONATOR_BLOCK);
+        Services.REGISTRY.registerAzureLibIdentity(SENTRY_TURRET);
+    }
 }

@@ -1,5 +1,6 @@
 package com.avp.neoforge;
 
+import mod.azure.azurelib.rewrite.animation.cache.AzIdentityRegistry;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
@@ -56,6 +57,9 @@ public class AVPNeoForge {
         // Register alien lifecycles.
         REGISTRY.getAlienLifecycleSuppliers()
             .forEach(alienLifecycleSupplier -> AlienLifecycleRegistry.register(alienLifecycleSupplier.get()));
+        // Register AzureLib item identities.
+        REGISTRY.getAzureLibItemIdentitySuppliers()
+            .forEach(itemSupplier -> AzIdentityRegistry.register(itemSupplier.get()));
     }
 
     // Game event
