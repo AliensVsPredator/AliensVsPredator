@@ -1,11 +1,12 @@
-# v0.1.4
+# v0.1.5
 
 ## ☢️ Breaking Changes
-- Ported the mod to NeoForge! :)
-  - Please note that this also required a substantial change to the Fabric version of the mod. We haven't found any issues in our testing, but please back up your worlds just to be safe!
+- N/A
 
 ## ✨ What's New
-- N/A
+- Fixed Irradiated Queens laying eggs.
+- Fixed persistence not carrying over when an alien grows into the next stage.
+- Fixed Royal aliens not being acid immune.
 
 ## ♻️ Changes
 - N/A
@@ -14,11 +15,7 @@
 - Fixed ModernFix crash (for good this time).
 
 ## 🛠 Data Pack
-- Added NeoForge-related data pack files for worldgen and entity spawns.
-- Added `#avp:razor_wire` block tag.
-  - This tag is now used internally for shear item logic.
-  - This change fixes the crash with ModernFix.
+- Updated `#avp:aliens` entity tag for missing `#avp:royal_aliens`
 
 ## 🔬 Technical Changes
-- Rewrote the project to support multiple mod loaders.
-- Added NeoForge modloader support.
+- N/A
