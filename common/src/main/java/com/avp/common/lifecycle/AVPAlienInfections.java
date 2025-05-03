@@ -1,5 +1,6 @@
 package com.avp.common.lifecycle;
 
+import com.bvanseg.just.functional.function.Lazy;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import org.jetbrains.annotations.NotNull;
@@ -63,7 +64,8 @@ public class AVPAlienInfections {
     private static <S extends LivingEntity, P extends LivingEntity> Supplier<AlienInfection<S, P>> register(
         Supplier<AlienInfection<S, P>> infectionSupplier
     ) {
-        return Services.REGISTRY.registerAlienInfection(infectionSupplier);
+        // Note the use of lazy here.
+        return Services.REGISTRY.registerAlienInfection(Lazy.of(infectionSupplier));
     }
 
     public static void initialize() {}

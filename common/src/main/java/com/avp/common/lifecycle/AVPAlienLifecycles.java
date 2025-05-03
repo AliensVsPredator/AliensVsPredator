@@ -1,5 +1,7 @@
 package com.avp.common.lifecycle;
 
+import com.bvanseg.just.functional.function.Lazy;
+
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
@@ -137,7 +139,8 @@ public class AVPAlienLifecycles {
     private AVPAlienLifecycles() {}
 
     private static Supplier<AlienLifecycle> register(Supplier<AlienLifecycle> alienLifecycleSupplier) {
-        return Services.REGISTRY.registerAlienLifecycle(alienLifecycleSupplier);
+        // Note the use of lazy here.
+        return Services.REGISTRY.registerAlienLifecycle(Lazy.of(alienLifecycleSupplier));
     }
 
     public static void initialize() {}
