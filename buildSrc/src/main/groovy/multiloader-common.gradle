@@ -170,3 +170,7 @@ spotless {
         trimTrailingWhitespace()
     }
 }
+
+tasks.build {
+    dependsOn("spotlessApply")
+}

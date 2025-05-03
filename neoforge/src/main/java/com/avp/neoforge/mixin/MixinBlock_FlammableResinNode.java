@@ -1,6 +1,5 @@
 package com.avp.neoforge.mixin;
 
-import com.avp.common.block.ResinNodeBlock;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.BlockGetter;
@@ -8,6 +7,8 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.common.extensions.IBlockExtension;
 import org.jetbrains.annotations.NotNull;
 import org.spongepowered.asm.mixin.Mixin;
+
+import com.avp.common.block.ResinNodeBlock;
 
 @Mixin(ResinNodeBlock.class)
 public class MixinBlock_FlammableResinNode implements IBlockExtension {
