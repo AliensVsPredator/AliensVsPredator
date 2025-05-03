@@ -1,9 +1,12 @@
 package com.avp.neoforge.data;
 
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.RegistrySetBuilder;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.data.DataGenerator;
 import net.minecraft.data.DataProvider;
+import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.BiomeTags;
 import net.minecraft.world.entity.EntityType;
@@ -22,6 +25,7 @@ import net.neoforged.neoforge.registries.holdersets.NotHolderSet;
 
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.CompletableFuture;
 
 import com.avp.AVP;
 import com.avp.common.config.AVPConfig;
@@ -65,8 +69,11 @@ public class AVPNeoForgeDatagen {
     @SuppressWarnings("unchecked")
     @SubscribeEvent
     public static void onGatherData(GatherDataEvent event) {
-        event.getGenerator()
-            .addProvider(
+        var generator = event.getGenerator();
+        var packOutput = generator.getPackOutput();
+        var lookupProvider = event.getLookupProvider();
+        generator.addProvider(event.includeServer(), new AVPNeoForgeDataMaps(packOutput, lookupProvider));
+        generator.addProvider(
                 event.includeServer(),
                 (DataProvider.Factory<DatapackBuiltinEntriesProvider>) output -> new DatapackBuiltinEntriesProvider(
                     event.getGenerator().getPackOutput(),
