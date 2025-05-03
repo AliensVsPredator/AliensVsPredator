@@ -78,7 +78,7 @@ if (keyPropsFile.exists()) {
         changelog = new File(rootProject.projectDir, "CHANGELOG.md").text
         type = STABLE
         file = jar.archiveFile
-        modLoaders.add("fabric")
+        modLoaders.add("neoforge")
         dryRun = false
 
         discord {
