@@ -1,23 +1,16 @@
 package com.avp.fabric;
 
-import com.mojang.datafixers.util.Pair;
+import com.avp.data.worldgen.AVPVillageInjection;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
-import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.level.GameRules;
-import net.minecraft.world.level.levelgen.structure.pools.StructurePoolElement;
-import net.minecraft.world.level.levelgen.structure.pools.StructureTemplatePool;
-import net.minecraft.world.level.levelgen.structure.templatesystem.StructureProcessorList;
-
-import java.util.ArrayList;
 
 import com.avp.AVP;
 import com.avp.common.entity.type.AVPEntityTypes;
@@ -39,17 +32,11 @@ import com.avp.fabric.data.loot.LootTableModifier;
 import com.avp.fabric.service.FabricRegistryService;
 import com.avp.mixin.GiveGiftToHeroAccessor;
 import com.avp.mixin.ParrotSoundMapAccessor;
-import com.avp.mixin.StructurePoolAccessor;
 import com.avp.service.Services;
 
 public class AVPFabric implements ModInitializer {
 
     private static final FabricRegistryService REGISTRY = (FabricRegistryService) Services.REGISTRY;
-
-    private static final ResourceKey<StructureProcessorList> EMPTY_PROCESSOR_LIST_KEY = ResourceKey.create(
-        Registries.PROCESSOR_LIST,
-        ResourceLocation.withDefaultNamespace("empty")
-    );
 
     private final MarinePatrolSpawner customSpawner = new MarinePatrolSpawner();
 
@@ -106,40 +93,11 @@ public class AVPFabric implements ModInitializer {
         gifts.put(AVPProfessions.COMMISSARY, AVPGifts.COMMISSARY_GIFT_LOOT_TABLE);
     }
 
-    private static void addBuildingToPool(
-        Registry<StructureTemplatePool> templatePoolRegistry,
-        Registry<StructureProcessorList> processorListRegistry,
-        ResourceLocation poolRL,
-        String nbtPieceRL,
-        int weight
-    ) {
-        if (processorListRegistry.getHolder(EMPTY_PROCESSOR_LIST_KEY).isEmpty()) {
-            return;
-        }
-
-        var emptyProcessorList = processorListRegistry.getHolder(EMPTY_PROCESSOR_LIST_KEY).get();
-        var pool = templatePoolRegistry.get(poolRL);
-
-        if (pool == null) {
-            return;
-        }
-
-        var piece = StructurePoolElement.legacy(nbtPieceRL, emptyProcessorList).apply(StructureTemplatePool.Projection.RIGID);
-
-        for (var i = 0; i < weight; i++) {
-            ((StructurePoolAccessor) pool).getElements().add(piece);
-        }
-
-        var listOfPieceEntries = new ArrayList<>(((StructurePoolAccessor) pool).getElementCounts());
-        listOfPieceEntries.add(new Pair<>(piece, weight));
-        ((StructurePoolAccessor) pool).setElementCounts(listOfPieceEntries);
-    }
-
     public void addNewVillageBuilding(final MinecraftServer event) {
         var templatePoolRegistry = event.registryAccess().registryOrThrow(Registries.TEMPLATE_POOL);
         var processorListRegistry = event.registryAccess().registryOrThrow(Registries.PROCESSOR_LIST);
 
-        addBuildingToPool(
+        AVPVillageInjection.addBuildingToPool(
             templatePoolRegistry,
             processorListRegistry,
             ResourceLocation.withDefaultNamespace("village/plains/houses"),
@@ -147,7 +105,7 @@ public class AVPFabric implements ModInitializer {
             5
         );
 
-        addBuildingToPool(
+        AVPVillageInjection.addBuildingToPool(
             templatePoolRegistry,
             processorListRegistry,
             ResourceLocation.withDefaultNamespace("village/snowy/houses"),
@@ -155,7 +113,7 @@ public class AVPFabric implements ModInitializer {
             5
         );
 
-        addBuildingToPool(
+        AVPVillageInjection.addBuildingToPool(
             templatePoolRegistry,
             processorListRegistry,
             ResourceLocation.withDefaultNamespace("village/savanna/houses"),
@@ -163,7 +121,7 @@ public class AVPFabric implements ModInitializer {
             5
         );
 
-        addBuildingToPool(
+        AVPVillageInjection.addBuildingToPool(
             templatePoolRegistry,
             processorListRegistry,
             ResourceLocation.withDefaultNamespace("village/taiga/houses"),
@@ -171,7 +129,7 @@ public class AVPFabric implements ModInitializer {
             5
         );
 
-        addBuildingToPool(
+        AVPVillageInjection.addBuildingToPool(
             templatePoolRegistry,
             processorListRegistry,
             ResourceLocation.withDefaultNamespace("village/desert/houses"),
