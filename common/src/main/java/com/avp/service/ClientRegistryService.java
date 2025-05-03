@@ -1,9 +1,11 @@
 package com.avp.service;
 
+import com.bvanseg.just.functional.tuple.Tuple2;
 import mod.azure.azurelib.rewrite.render.armor.AzArmorRenderer;
 import mod.azure.azurelib.rewrite.render.armor.AzArmorRendererRegistry;
 import mod.azure.azurelib.rewrite.render.item.AzItemRenderer;
 import mod.azure.azurelib.rewrite.render.item.AzItemRendererRegistry;
+import net.minecraft.client.KeyMapping;
 import net.minecraft.client.color.item.ItemColor;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.gui.screens.Screen;
@@ -67,6 +69,8 @@ public interface ClientRegistryService {
         var itemRendererSupplier = rendererFactory.apply(path);
         AzItemRendererRegistry.register(itemRendererSupplier, item);
     }
+
+    Supplier<Tuple2<KeyMapping, Runnable>> registerKeyMapping(String id, String category, int key, Runnable onKeyMappingActivated);
 
     <T extends AbstractContainerMenu, U extends Screen & MenuAccess<T>> void registerMenuScreen(
         Supplier<? extends MenuType<T>> menuTypeSupplier,

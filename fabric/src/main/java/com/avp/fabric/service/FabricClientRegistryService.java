@@ -1,11 +1,15 @@
 package com.avp.fabric.service;
 
+import com.bvanseg.just.functional.tuple.Tuple2;
 import mod.azure.azurelib.rewrite.render.armor.AzArmorRenderer;
 import mod.azure.azurelib.rewrite.render.item.AzItemRenderer;
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
+import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.fabricmc.fabric.api.client.particle.v1.ParticleFactoryRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.ColorProviderRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
+import net.minecraft.client.KeyMapping;
 import net.minecraft.client.color.item.ItemColor;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.gui.screens.Screen;
@@ -30,6 +34,7 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+import com.avp.client.util.KeyMappingUtil;
 import com.avp.service.ClientRegistryService;
 
 public class FabricClientRegistryService implements ClientRegistryService {
@@ -68,6 +73,22 @@ public class FabricClientRegistryService implements ClientRegistryService {
     @Override
     public void registerItemRenderer(Supplier<? extends Item> itemSupplier, Function<String, Supplier<AzItemRenderer>> rendererFactory) {
         registerItemRendererImmediately(itemSupplier.get(), rendererFactory);
+    }
+
+    @Override
+    public Supplier<Tuple2<KeyMapping, Runnable>> registerKeyMapping(String id, String category, int key, Runnable onKeyMappingActivated) {
+        var keyMapping = KeyMappingUtil.createKeyMapping(id, category, key);
+        var keyMappingHandlerPair = new Tuple2<>(keyMapping, onKeyMappingActivated);
+
+        KeyBindingHelper.registerKeyBinding(keyMapping);
+
+        ClientTickEvents.END_CLIENT_TICK.register(client -> {
+            while (keyMapping.consumeClick()) {
+                onKeyMappingActivated.run();
+            }
+        });
+
+        return () -> keyMappingHandlerPair;
     }
 
     @Override

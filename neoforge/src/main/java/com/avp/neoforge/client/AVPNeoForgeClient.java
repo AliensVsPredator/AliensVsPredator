@@ -14,10 +14,13 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
+import net.neoforged.neoforge.client.event.ClientTickEvent;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.neoforge.client.event.RegisterColorHandlersEvent;
+import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 import net.neoforged.neoforge.client.event.RegisterParticleProvidersEvent;
+import net.neoforged.neoforge.common.NeoForge;
 
 import com.avp.AVP;
 import com.avp.client.AVPClient;
@@ -33,6 +36,9 @@ public class AVPNeoForgeClient {
         // We want this to run before any of the other events, as this sets up queues of data pairs (for example, pairs
         // of item suppliers to item renderers) prior the registration events firing.
         AVPClient.initialize();
+
+        // Client game bus events.
+        NeoForge.EVENT_BUS.addListener(AVPNeoForgeClient::onClientTick);
     }
 
     @SubscribeEvent
@@ -77,6 +83,22 @@ public class AVPNeoForgeClient {
                 @SuppressWarnings("unchecked")
                 var blockEntityRendererProvider = (BlockEntityRendererProvider<BlockEntity>) pair.second();
                 event.registerBlockEntityRenderer(blockEntityType, blockEntityRendererProvider);
+            });
+    }
+
+    @SubscribeEvent
+    public static void registerBindings(RegisterKeyMappingsEvent event) {
+        CLIENT_REGISTRY.getKeyMappingHandlerPairSuppliers()
+            .forEach(keyMappingSupplier -> event.register(keyMappingSupplier.get().first()));
+    }
+
+    // Game bus event.
+    public static void onClientTick(ClientTickEvent.Post event) {
+        CLIENT_REGISTRY.getKeyMappingHandlerPairSuppliers()
+            .forEach(keyMappingSupplier -> {
+                while (keyMappingSupplier.get().first().consumeClick()) {
+                    keyMappingSupplier.get().second().run();
+                }
             });
     }
 

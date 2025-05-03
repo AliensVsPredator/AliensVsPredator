@@ -1,8 +1,10 @@
 package com.avp.neoforge.service;
 
+import com.bvanseg.just.functional.function.Lazy;
 import com.bvanseg.just.functional.tuple.Tuple2;
 import mod.azure.azurelib.rewrite.render.armor.AzArmorRenderer;
 import mod.azure.azurelib.rewrite.render.item.AzItemRenderer;
+import net.minecraft.client.KeyMapping;
 import net.minecraft.client.color.item.ItemColor;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.gui.screens.Screen;
@@ -27,6 +29,7 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+import com.avp.client.util.KeyMappingUtil;
 import com.avp.service.ClientRegistryService;
 
 public class NeoForgeClientRegistryService implements ClientRegistryService {
@@ -43,6 +46,8 @@ public class NeoForgeClientRegistryService implements ClientRegistryService {
 
     private final List<Tuple2<Supplier<? extends Item>, Function<String, Supplier<AzItemRenderer>>>> itemRendererPairs;
 
+    private final List<Supplier<Tuple2<KeyMapping, Runnable>>> keyMappingHandlerPairSuppliers;
+
     private final List<Tuple2<Supplier<? extends MenuType<?>>, MenuScreens.ScreenConstructor<?, ?>>> menuScreenConstructorPairs;
 
     private final List<Tuple2<Supplier<? extends ParticleType<?>>, ParticleEngine.SpriteParticleRegistration<?>>> particleProviderFactoryPairs;
@@ -54,6 +59,7 @@ public class NeoForgeClientRegistryService implements ClientRegistryService {
         this.entityRendererPairs = new ArrayList<>();
         this.itemColorPairs = new ArrayList<>();
         this.itemRendererPairs = new ArrayList<>();
+        this.keyMappingHandlerPairSuppliers = new ArrayList<>();
         this.menuScreenConstructorPairs = new ArrayList<>();
         this.particleProviderFactoryPairs = new ArrayList<>();
     }
@@ -95,6 +101,16 @@ public class NeoForgeClientRegistryService implements ClientRegistryService {
     }
 
     @Override
+    public Supplier<Tuple2<KeyMapping, Runnable>> registerKeyMapping(String id, String category, int key, Runnable onKeyMappingActivated) {
+        // Note the use of Lazy.of(...) here. This is deliberate so that the key mapping is only created once.
+        Supplier<Tuple2<KeyMapping, Runnable>> supplier = Lazy.of(
+            () -> new Tuple2<>(KeyMappingUtil.createKeyMapping(id, category, key), onKeyMappingActivated)
+        );
+        keyMappingHandlerPairSuppliers.add(supplier);
+        return supplier;
+    }
+
+    @Override
     public <T extends AbstractContainerMenu, U extends Screen & MenuAccess<T>> void registerMenuScreen(
         Supplier<? extends MenuType<T>> menuTypeSupplier,
         MenuScreens.ScreenConstructor<T, U> screenConstructor
@@ -132,6 +148,10 @@ public class NeoForgeClientRegistryService implements ClientRegistryService {
 
     public List<Tuple2<Supplier<? extends Item>, Function<String, Supplier<AzItemRenderer>>>> getItemRendererPairs() {
         return itemRendererPairs;
+    }
+
+    public List<Supplier<Tuple2<KeyMapping, Runnable>>> getKeyMappingHandlerPairSuppliers() {
+        return keyMappingHandlerPairSuppliers;
     }
 
     public List<Tuple2<Supplier<? extends MenuType<?>>, MenuScreens.ScreenConstructor<?, ?>>> getMenuScreenConstructorPairs() {
