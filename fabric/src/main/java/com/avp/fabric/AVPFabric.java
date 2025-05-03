@@ -14,7 +14,6 @@ import net.minecraft.world.level.GameRules;
 
 import com.avp.AVP;
 import com.avp.common.entity.type.AVPEntityTypes;
-import com.avp.common.patrols.MarinePatrolSpawner;
 import com.avp.fabric.common.block.CompostingChanceRegistry;
 import com.avp.fabric.common.block.DispenserBlockBehaviors;
 import com.avp.fabric.common.block.FlammableBlockRegistry;
@@ -23,7 +22,7 @@ import com.avp.fabric.common.fuel.AVPFuelRegistry;
 import com.avp.fabric.common.item.AVPItems;
 import com.avp.fabric.common.network.CommonPacketRegistry;
 import com.avp.fabric.common.network.ServerPacketHandlerRegistry;
-import com.avp.fabric.common.profession.AVPGifts;
+import com.avp.common.profession.AVPGifts;
 import com.avp.fabric.common.profession.AVPProfessions;
 import com.avp.fabric.common.profession.AVPTrades;
 import com.avp.fabric.common.worldgen.WorldGen;

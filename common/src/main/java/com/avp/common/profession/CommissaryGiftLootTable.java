@@ -1,4 +1,4 @@
-package com.avp.fabric.common.profession;
+package com.avp.common.profession;
 
 import net.minecraft.core.HolderLookup;
 import net.minecraft.world.level.storage.loot.LootPool;

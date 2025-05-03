@@ -1,13 +1,18 @@
 package com.avp.neoforge;
 
 import com.avp.common.entity.type.AVPEntityTypes;
+import com.avp.common.profession.AVPCommonTrades;
+import com.avp.common.profession.AVPGifts;
 import com.avp.data.worldgen.AVPVillageInjection;
 import com.avp.mixin.GiveGiftToHeroAccessor;
 import com.avp.mixin.ParrotSoundMapAccessor;
+import com.avp.neoforge.common.profession.AVPProfessions;
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.entity.npc.VillagerTrades;
 import net.minecraft.world.level.GameRules;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.IEventBus;
@@ -24,6 +29,9 @@ import com.avp.neoforge.service.NeoForgeRegistryService;
 import com.avp.service.Services;
 import net.neoforged.neoforge.event.server.ServerAboutToStartEvent;
 import net.neoforged.neoforge.event.tick.LevelTickEvent;
+import net.neoforged.neoforge.event.village.VillagerTradesEvent;
+
+import java.util.List;
 
 @Mod(AVP.MOD_ID)
 public class AVPNeoForge {
@@ -34,6 +42,7 @@ public class AVPNeoForge {
         AVP.initialize();
 
         REGISTRY.initialize(modBus);
+        AVPProfessions.register(modBus);
 
         // Mod bus events
         modBus.addListener(AVPNeoForge::registerEntityAttributes);
@@ -42,10 +51,11 @@ public class AVPNeoForge {
         // Game bus events
         NeoForge.EVENT_BUS.addListener(AVPNeoForge::registerCommands);
         NeoForge.EVENT_BUS.addListener(AVPNeoForge::addNewVillageBuilding);
+        NeoForge.EVENT_BUS.addListener(AVPNeoForge::addCustomTrades);
         NeoForge.EVENT_BUS.addListener(EventPriority.HIGH, AVPNeoForge::onWorldEndTick);
     }
 
-    public static void registerMiscellaneous(FMLCommonSetupEvent event) {
+    public static void registerMiscellaneous(final FMLCommonSetupEvent event) {
         // Register alien infections.
         REGISTRY.getAlienInfectionSuppliers()
             .forEach(alienInfectionSupplier -> AlienInfectionRegistry.register(alienInfectionSupplier.get()));
@@ -127,6 +137,18 @@ public class AVPNeoForge {
          * TODO: Use Yautja sound when added
          */
         sounds.put(AVPEntityTypes.YAUTJA.get(), SoundEvents.ALLAY_AMBIENT_WITH_ITEM);
-//        gifts.put(AVPProfessions.COMMISSARY, AVPGifts.COMMISSARY_GIFT_LOOT_TABLE);
+        gifts.put(AVPProfessions.COMMISSARY.value(), AVPGifts.COMMISSARY_GIFT_LOOT_TABLE);
+    }
+
+    public static void addCustomTrades(final VillagerTradesEvent event) {
+        if(event.getType() == AVPProfessions.COMMISSARY.value()) {
+            Int2ObjectMap<List<VillagerTrades.ItemListing>> trades = event.getTrades();
+
+            trades.get(1).addAll(AVPCommonTrades.level1Trades);
+            trades.get(2).addAll(AVPCommonTrades.level2Trades);
+            trades.get(3).addAll(AVPCommonTrades.level3Trades);
+            trades.get(4).addAll(AVPCommonTrades.level4Trades);
+            trades.get(5).addAll(AVPCommonTrades.level5Trades);
+        }
     }
 }

@@ -1,4 +1,4 @@
-package com.avp.fabric.common.profession;
+package com.avp.common.profession;
 
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;

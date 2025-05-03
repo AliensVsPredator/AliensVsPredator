@@ -31,6 +31,7 @@ public class EnglishLanguageProvider extends FabricLanguageProvider {
     public void generateTranslations(HolderLookup.Provider registryLookup, TranslationBuilder builder) {
         // Villagers
         builder.add("entity.minecraft.villager.commissary", "Commissary Villager");
+        builder.add("entity.minecraft.villager.avp.commissary", "Commissary Villager");
 
         // Blocks
         addBlock(builder, AVPBlocks.BLUEPRINT_BLOCK, "Blueprint Block");

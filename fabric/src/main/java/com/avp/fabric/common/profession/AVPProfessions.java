@@ -14,6 +14,7 @@ import net.minecraft.world.level.block.Block;
 import com.avp.AVPResources;
 import com.avp.common.block.AVPBlocks;
 
+// FIXME NOT QUITE SURE HOW TO BEST COMMON THIS MYSELF
 public class AVPProfessions {
 
     public static final ResourceKey<PoiType> COMMISSARY_KEY = poiKey("commissary_poi");
