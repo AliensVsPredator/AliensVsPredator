@@ -168,20 +168,24 @@ public class AVPNeoForge {
                     case NetworkHandler.FromClient<CustomPacketPayload> handler -> registrar.playToServer(
                         handler.type(),
                         handler.codec(),
-                        (payload, context) -> handler.payloadConsumer().accept(payload, context.player())
+                        (payload, context) -> context.enqueueWork(() -> handler.payloadConsumer().accept(payload, context.player()))
                     );
                     case NetworkHandler.FromEither<CustomPacketPayload> handler -> registrar.playBidirectional(
                         handler.type(),
                         handler.codec(),
                         new DirectionalPayloadHandler<>(
-                            (payload, context) -> handler.fromServerPayloadConsumer().accept(payload, context.player()),
-                            (payload, context) -> handler.fromClientPayloadConsumer().accept(payload, context.player())
+                            (payload, context) -> context.enqueueWork(
+                                () -> handler.fromServerPayloadConsumer().accept(payload, context.player())
+                            ),
+                            (payload, context) -> context.enqueueWork(
+                                () -> handler.fromClientPayloadConsumer().accept(payload, context.player())
+                            )
                         )
                     );
                     case NetworkHandler.FromServer<CustomPacketPayload> handler -> registrar.playToClient(
                         handler.type(),
                         handler.codec(),
-                        (payload, context) -> handler.payloadConsumer().accept(payload, context.player())
+                        (payload, context) -> context.enqueueWork(() -> handler.payloadConsumer().accept(payload, context.player()))
                     );
                 }
             });
