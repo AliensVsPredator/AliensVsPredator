@@ -16,7 +16,6 @@ import com.avp.common.entity.living.alien.Alien;
 import com.avp.common.entity.living.yautja.Yautja;
 import com.avp.common.item.AVPItemTags;
 
-// TODO: Rename this once multi-loader migration is finished.
 public class AVPPredicates {
 
     public static final Predicate<LivingEntity> IS_IMMORTAL = livingEntity -> livingEntity instanceof Player player && (player.isCreative()

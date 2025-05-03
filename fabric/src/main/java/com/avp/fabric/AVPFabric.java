@@ -18,7 +18,6 @@ import com.avp.data.worldgen.AVPVillageInjection;
 import com.avp.fabric.common.block.DispenserBlockBehaviors;
 import com.avp.fabric.common.block.FlammableBlockRegistry;
 import com.avp.fabric.common.entity.spawn.SpawnPlacements;
-import com.avp.fabric.common.item.AVPItems;
 import com.avp.fabric.common.network.CommonPacketRegistry;
 import com.avp.fabric.common.network.ServerPacketHandlerRegistry;
 import com.avp.fabric.common.profession.AVPProfessions;
@@ -39,7 +38,6 @@ public class AVPFabric implements ModInitializer {
         AVP.initialize();
 
         // Core
-        AVPItems.initialize();
         WorldGen.initialize();
         CommonPacketRegistry.initialize();
         ServerPacketHandlerRegistry.initialize();

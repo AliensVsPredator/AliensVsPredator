@@ -11,7 +11,7 @@ import net.minecraft.world.phys.Vec3;
 import com.avp.common.entity.AVPEntityTypeTags;
 import com.avp.common.entity.projectile.ShurikenItemEntity;
 import com.avp.common.entity.projectile.SmartDiscItemEntity;
-import com.avp.common.item.TempAVPItems;
+import com.avp.common.item.AVPItems;
 
 public class ItemGoalUtil {
 
@@ -133,7 +133,7 @@ public class ItemGoalUtil {
             projectile.getOwner() instanceof Player player && projectile.getBoundingBox().intersects(projectile.getOwner().getBoundingBox())
         ) {
             if (!AVPPredicates.IS_IMMORTAL.test(player)) {
-                player.getInventory().add(TempAVPItems.SMART_DISC.get().getDefaultInstance());
+                player.getInventory().add(AVPItems.SMART_DISC.get().getDefaultInstance());
             }
             projectile.kill();
         } else if (projectile.getBoundingBox().intersects(projectile.getOwner().getBoundingBox())) {

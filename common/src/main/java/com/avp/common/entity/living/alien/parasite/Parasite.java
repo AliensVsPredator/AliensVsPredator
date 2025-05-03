@@ -19,7 +19,7 @@ import org.jetbrains.annotations.NotNull;
 
 import com.avp.common.entity.living.FreeMob;
 import com.avp.common.entity.living.alien.Alien;
-import com.avp.common.item.TempAVPItems;
+import com.avp.common.item.AVPItems;
 import com.avp.common.manager.ParasiteAttachmentManager;
 import com.avp.common.util.AVPPredicates;
 
@@ -65,7 +65,7 @@ public abstract class Parasite extends Alien {
     @Override
     public @NotNull InteractionResult mobInteract(Player player, InteractionHand interactionHand) {
         ItemStack itemStack = player.getItemInHand(interactionHand);
-        if (itemStack.is(TempAVPItems.RAW_ROYAL_JELLY.get())) {
+        if (itemStack.is(AVPItems.RAW_ROYAL_JELLY.get())) {
             if (!level().isClientSide && !attachmentManager.isFertile()) {
                 attachmentManager.restore();
                 player.getItemInHand(interactionHand).shrink(1);

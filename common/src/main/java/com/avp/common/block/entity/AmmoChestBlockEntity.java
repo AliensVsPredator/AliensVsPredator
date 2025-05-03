@@ -22,7 +22,7 @@ import org.jetbrains.annotations.NotNull;
 
 import com.avp.common.block.AVPBlocks;
 import com.avp.common.item.AVPItemTags;
-import com.avp.common.item.TempAVPItems;
+import com.avp.common.item.AVPItems;
 
 public class AmmoChestBlockEntity extends RandomizableContainerBlockEntity implements LidBlockEntity {
 
@@ -197,12 +197,12 @@ public class AmmoChestBlockEntity extends RandomizableContainerBlockEntity imple
     }
 
     public boolean hasAmmo() {
-        return !this.itemStacks.isEmpty() && this.itemStacks.stream().anyMatch(item -> item.is(TempAVPItems.MEDIUM_BULLET.get()));
+        return !this.itemStacks.isEmpty() && this.itemStacks.stream().anyMatch(item -> item.is(AVPItems.MEDIUM_BULLET.get()));
     }
 
     public boolean consumeAmmo(int count) {
         for (ItemStack itemStack : this.itemStacks) {
-            if (itemStack.is(TempAVPItems.MEDIUM_BULLET.get())) {
+            if (itemStack.is(AVPItems.MEDIUM_BULLET.get())) {
                 var available = itemStack.getCount();
                 if (available >= count) {
                     itemStack.shrink(count);

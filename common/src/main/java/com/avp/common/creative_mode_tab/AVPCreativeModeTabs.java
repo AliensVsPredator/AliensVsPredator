@@ -20,8 +20,8 @@ import com.avp.common.creative_mode_tab.initializer.IngredientsCreativeModeTabIn
 import com.avp.common.creative_mode_tab.initializer.SpawnEggsCreativeModeTabInitializer;
 import com.avp.common.creative_mode_tab.initializer.ToolsAndUtilitiesCreativeModeTabInitializer;
 import com.avp.common.item.AVPArmorItems;
+import com.avp.common.item.AVPItems;
 import com.avp.common.item.AVPSpawnEggItems;
-import com.avp.common.item.TempAVPItems;
 import com.avp.common.registry.AVPDeferredHolder;
 import com.avp.service.Services;
 
@@ -61,7 +61,7 @@ public class AVPCreativeModeTabs {
 
     public static final AVPDeferredHolder<CreativeModeTab> INGREDIENTS = register(
         INGREDIENTS_KEY,
-        () -> new ItemStack(TempAVPItems.PLATED_CHITIN.get()),
+        () -> new ItemStack(AVPItems.PLATED_CHITIN.get()),
         IngredientsCreativeModeTabInitializer.OUTPUT_CONSUMER
     );
 
@@ -73,7 +73,7 @@ public class AVPCreativeModeTabs {
 
     public static final AVPDeferredHolder<CreativeModeTab> TOOLS_AND_UTILITIES = register(
         TOOLS_AND_UTILITIES_KEY,
-        () -> new ItemStack(TempAVPItems.CANISTER.get()),
+        () -> new ItemStack(AVPItems.CANISTER.get()),
         ToolsAndUtilitiesCreativeModeTabInitializer.OUTPUT_CONSUMER
     );
 

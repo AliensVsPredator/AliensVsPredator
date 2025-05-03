@@ -15,7 +15,7 @@ import org.jetbrains.annotations.NotNull;
 import com.avp.common.effect.AVPMobEffects;
 import com.avp.common.effect.RadiationStatusEffect;
 import com.avp.common.entity.type.AVPEntityTypes;
-import com.avp.common.item.TempAVPItems;
+import com.avp.common.item.AVPItems;
 
 public class ThrownGrenade extends BouncingItemProjectile {
 
@@ -61,14 +61,14 @@ public class ThrownGrenade extends BouncingItemProjectile {
     @Override
     protected @NotNull Item getDefaultItem() {
         if (isIrradiated) {
-            return TempAVPItems.GRENADE_IRRADIATED.get();
+            return AVPItems.GRENADE_IRRADIATED.get();
         }
 
         if (isIncendiary) {
-            return TempAVPItems.GRENADE_INCENDIARY.get();
+            return AVPItems.GRENADE_INCENDIARY.get();
         }
 
-        return TempAVPItems.GRENADE.get();
+        return AVPItems.GRENADE.get();
     }
 
     @Override

@@ -10,7 +10,7 @@ import net.minecraft.world.level.storage.loot.providers.number.UniformGenerator;
 
 import java.util.function.Function;
 
-import com.avp.common.item.TempAVPItems;
+import com.avp.common.item.AVPItems;
 
 public class AmmoChestBulletsLootTable {
 
@@ -19,7 +19,7 @@ public class AmmoChestBulletsLootTable {
             LootPool.lootPool()
                 .setRolls(ConstantValue.exactly(1))
                 .add(
-                    LootItem.lootTableItem(TempAVPItems.SMALL_BULLET.get())
+                    LootItem.lootTableItem(AVPItems.SMALL_BULLET.get())
                         .apply(SetItemCountFunction.setCount(UniformGenerator.between(3, 6)))
                         .setWeight(60)
                 )
@@ -28,7 +28,7 @@ public class AmmoChestBulletsLootTable {
             LootPool.lootPool()
                 .setRolls(ConstantValue.exactly(1))
                 .add(
-                    LootItem.lootTableItem(TempAVPItems.MEDIUM_BULLET.get())
+                    LootItem.lootTableItem(AVPItems.MEDIUM_BULLET.get())
                         .apply(SetItemCountFunction.setCount(UniformGenerator.between(1, 8)))
                         .setWeight(50)
                 )
@@ -37,7 +37,7 @@ public class AmmoChestBulletsLootTable {
             LootPool.lootPool()
                 .setRolls(ConstantValue.exactly(1))
                 .add(
-                    LootItem.lootTableItem(TempAVPItems.CASELESS_BULLET.get())
+                    LootItem.lootTableItem(AVPItems.CASELESS_BULLET.get())
                         .apply(SetItemCountFunction.setCount(UniformGenerator.between(2, 6)))
                         .setWeight(45)
                 )
@@ -46,7 +46,7 @@ public class AmmoChestBulletsLootTable {
             LootPool.lootPool()
                 .setRolls(ConstantValue.exactly(1))
                 .add(
-                    LootItem.lootTableItem(TempAVPItems.HEAVY_BULLET.get())
+                    LootItem.lootTableItem(AVPItems.HEAVY_BULLET.get())
                         .apply(SetItemCountFunction.setCount(UniformGenerator.between(3, 8)))
                         .setWeight(30)
                 )
@@ -55,7 +55,7 @@ public class AmmoChestBulletsLootTable {
             LootPool.lootPool()
                 .setRolls(ConstantValue.exactly(1))
                 .add(
-                    LootItem.lootTableItem(TempAVPItems.SHOTGUN_SHELL.get())
+                    LootItem.lootTableItem(AVPItems.SHOTGUN_SHELL.get())
                         .apply(SetItemCountFunction.setCount(UniformGenerator.between(2, 6)))
                         .setWeight(25)
                 )
@@ -64,7 +64,7 @@ public class AmmoChestBulletsLootTable {
             LootPool.lootPool()
                 .setRolls(ConstantValue.exactly(1))
                 .add(
-                    LootItem.lootTableItem(TempAVPItems.FUEL_TANK.get())
+                    LootItem.lootTableItem(AVPItems.FUEL_TANK.get())
                         .apply(SetItemCountFunction.setCount(UniformGenerator.between(1, 3)))
                         .setWeight(15)
                 )

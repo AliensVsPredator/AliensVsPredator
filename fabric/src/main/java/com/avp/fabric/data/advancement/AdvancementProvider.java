@@ -29,7 +29,7 @@ import com.avp.AVPResources;
 import com.avp.common.block.AVPBlocks;
 import com.avp.common.entity.type.AVPEntityTypes;
 import com.avp.common.item.AVPArmorItems;
-import com.avp.common.item.TempAVPItems;
+import com.avp.common.item.AVPItems;
 
 public class AdvancementProvider extends FabricAdvancementProvider {
 
@@ -173,7 +173,7 @@ public class AdvancementProvider extends FabricAdvancementProvider {
         return addMobsToKill(Advancement.Builder.advancement(), ALIENS_TO_KILL)
             .parent(parent)
             .display(
-                TempAVPItems.CHITIN.get(),
+                AVPItems.CHITIN.get(),
                 Component.translatable("advancements.aliens.kill_an_alien.title"),
                 Component.translatable("advancements.aliens.kill_an_alien.description"),
                 null,
@@ -190,7 +190,7 @@ public class AdvancementProvider extends FabricAdvancementProvider {
         return addMobsToKill(Advancement.Builder.advancement(), ROYAL_ALIENS_TO_KILL)
             .parent(parent)
             .display(
-                TempAVPItems.PLATED_CHITIN.get(),
+                AVPItems.PLATED_CHITIN.get(),
                 Component.translatable("advancements.aliens.kill_a_royal_alien.title"),
                 Component.translatable("advancements.aliens.kill_a_royal_alien.description"),
                 null,
@@ -207,7 +207,7 @@ public class AdvancementProvider extends FabricAdvancementProvider {
         return addMobsToKill(Advancement.Builder.advancement(), ALIENS_TO_KILL)
             .parent(parent)
             .display(
-                TempAVPItems.RAW_ROYAL_JELLY.get(),
+                AVPItems.RAW_ROYAL_JELLY.get(),
                 Component.translatable("advancements.aliens.kill_all_aliens.title"),
                 Component.translatable("advancements.aliens.kill_all_aliens.description"),
                 null,

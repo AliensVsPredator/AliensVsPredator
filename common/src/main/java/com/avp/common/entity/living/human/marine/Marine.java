@@ -14,11 +14,12 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+import java.util.function.Supplier;
 
 import com.avp.AVP;
 import com.avp.common.entity.living.human.AbstractHuman;
 import com.avp.common.entity.living.human.marine.ai.MarineGOAP;
-import com.avp.common.item.TempAVPItems;
+import com.avp.common.item.AVPItems;
 import com.avp.common.util.AVPInventory;
 import com.avp.common.util.AVPInventoryBearer;
 
@@ -33,15 +34,14 @@ public class Marine extends AbstractHuman implements AVPInventoryBearer {
         )
     );
 
-    private static final List<Item> USABLE_WEAPON_ITEMS = List.of(
-        // FIXME:
-        // AVPItems.M88MOD4_COMBAT_PISTOL,
-        // AVPItems.M37_12_SHOTGUN,
-        // AVPItems.F903WE_RIFLE,
-        // AVPItems.M41A_PULSE_RIFLE,
-        // AVPItems.M4RA_BATTLE_RIFLE,
-        Items.IRON_AXE,
-        Items.IRON_SWORD
+    private static final List<Supplier<Item>> USABLE_WEAPON_ITEM_SUPPLIERS = List.of(
+        AVPItems.M88MOD4_COMBAT_PISTOL,
+        AVPItems.M37_12_SHOTGUN,
+        AVPItems.F903WE_RIFLE,
+        AVPItems.M41A_PULSE_RIFLE,
+        AVPItems.M4RA_BATTLE_RIFLE,
+        () -> Items.IRON_AXE,
+        () -> Items.IRON_SWORD
     );
 
     private static final List<EquipmentSlot> ARMOR_EQUIPMENT_SLOTS = List.of(
@@ -98,7 +98,7 @@ public class Marine extends AbstractHuman implements AVPInventoryBearer {
         addInitialWeapon();
 
         if (random.nextInt(100) <= 10) {
-            marineInventory.addPersonalItem(new ItemStack(TempAVPItems.GRENADE.get()));
+            marineInventory.addPersonalItem(new ItemStack(AVPItems.GRENADE.get()));
             addInitialArmor();
         }
 
@@ -135,6 +135,8 @@ public class Marine extends AbstractHuman implements AVPInventoryBearer {
     }
 
     private void addInitialWeapon() {
-        marineInventory.addPersonalItem(new ItemStack(USABLE_WEAPON_ITEMS.get(random.nextInt(USABLE_WEAPON_ITEMS.size()))));
+        marineInventory.addPersonalItem(
+            new ItemStack(USABLE_WEAPON_ITEM_SUPPLIERS.get(random.nextInt(USABLE_WEAPON_ITEM_SUPPLIERS.size())).get())
+        );
     }
 }

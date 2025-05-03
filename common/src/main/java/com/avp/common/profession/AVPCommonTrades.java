@@ -10,21 +10,21 @@ import java.util.List;
 
 import com.avp.common.block.AVPBlocks;
 import com.avp.common.item.AVPArmorItems;
-import com.avp.common.item.TempAVPItems;
+import com.avp.common.item.AVPItems;
 
 public class AVPCommonTrades {
 
     public static List<VillagerTrades.ItemListing> level1Trades = List.of(
         (entity, randomSource) -> new MerchantOffer(
             new ItemCost(Items.EMERALD, 1),
-            new ItemStack(TempAVPItems.SMALL_BULLET.get(), 8),
+            new ItemStack(AVPItems.SMALL_BULLET.get(), 8),
             4,
             7,
             0.04f
         ),
         (entity, randomSource) -> new MerchantOffer(
             new ItemCost(Items.EMERALD, 2),
-            new ItemStack(TempAVPItems.MEDIUM_BULLET.get(), 16),
+            new ItemStack(AVPItems.MEDIUM_BULLET.get(), 16),
             3,
             12,
             0.09f
@@ -65,7 +65,7 @@ public class AVPCommonTrades {
     public static List<VillagerTrades.ItemListing> level3Trades = List.of(
         (entity, randomSource) -> new MerchantOffer(
             new ItemCost(Items.EMERALD, 15),
-            new ItemStack(TempAVPItems.BLUEPRINT_M88MOD4_COMBAT_PISTOL.get(), 1),
+            new ItemStack(AVPItems.BLUEPRINT_M88MOD4_COMBAT_PISTOL.get(), 1),
             4,
             7,
             0.04f
@@ -78,7 +78,7 @@ public class AVPCommonTrades {
             0.09f
         ),
         (entity, randomSource) -> new MerchantOffer(
-            new ItemCost(TempAVPItems.STEEL_INGOT.get(), 8),
+            new ItemCost(AVPItems.STEEL_INGOT.get(), 8),
             new ItemStack(Items.EMERALD, 8),
             3,
             12,
@@ -96,13 +96,13 @@ public class AVPCommonTrades {
         ),
         (entity, randomSource) -> new MerchantOffer(
             new ItemCost(Items.EMERALD, 10),
-            new ItemStack(TempAVPItems.BLUEPRINT_M4RA_BATTLE_RIFLE.get(), 1),
+            new ItemStack(AVPItems.BLUEPRINT_M4RA_BATTLE_RIFLE.get(), 1),
             3,
             12,
             0.09f
         ),
         (entity, randomSource) -> new MerchantOffer(
-            new ItemCost(TempAVPItems.BRASS_INGOT.get(), 12),
+            new ItemCost(AVPItems.BRASS_INGOT.get(), 12),
             new ItemStack(Items.EMERALD, 10),
             3,
             12,
@@ -120,14 +120,14 @@ public class AVPCommonTrades {
         ),
         (entity, randomSource) -> new MerchantOffer(
             new ItemCost(Items.EMERALD, 10),
-            new ItemStack(TempAVPItems.GRENADE.get(), 3),
+            new ItemStack(AVPItems.GRENADE.get(), 3),
             3,
             12,
             0.09f
         ),
         (entity, randomSource) -> new MerchantOffer(
             new ItemCost(Items.EMERALD, 50),
-            new ItemStack(TempAVPItems.BLUEPRINT_M6B_ROCKET_LAUNCHER.get(), 1),
+            new ItemStack(AVPItems.BLUEPRINT_M6B_ROCKET_LAUNCHER.get(), 1),
             3,
             12,
             0.09f

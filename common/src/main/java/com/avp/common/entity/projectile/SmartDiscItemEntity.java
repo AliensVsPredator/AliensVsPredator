@@ -10,7 +10,7 @@ import net.minecraft.world.phys.EntityHitResult;
 import org.jetbrains.annotations.NotNull;
 
 import com.avp.common.entity.type.AVPEntityTypes;
-import com.avp.common.item.TempAVPItems;
+import com.avp.common.item.AVPItems;
 import com.avp.common.util.ItemGoalUtil;
 import com.avp.server.BlockBreakProgressManager;
 
@@ -28,7 +28,7 @@ public class SmartDiscItemEntity extends ThrowableItemProjectile {
 
     @Override
     protected @NotNull Item getDefaultItem() {
-        return TempAVPItems.SMART_DISC.get();
+        return AVPItems.SMART_DISC.get();
     }
 
     @Override

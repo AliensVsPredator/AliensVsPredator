@@ -12,8 +12,8 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import com.avp.common.item.GunItem;
 import com.avp.common.util.AVPPredicates;
-import com.avp.fabric.common.item.GunItem;
 
 @Mixin(Gui.class)
 public abstract class MixinGui_CrosshairPickEntityWithinGunRange {

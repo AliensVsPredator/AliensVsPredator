@@ -43,10 +43,21 @@ import com.avp.client.render.entity.WarriorRenderer;
 import com.avp.client.render.entity.YautjaRenderer;
 import com.avp.client.render.entity.parasite.facehugger.FacehuggerRenderer;
 import com.avp.client.render.item.DeskTerminalItemRenderer;
+import com.avp.client.render.item.F903weItemRenderer;
+import com.avp.client.render.item.FlameThrowerItemRenderer;
+import com.avp.client.render.item.M3712ShotgunItemRenderer;
+import com.avp.client.render.item.M41APulseRifleItemRenderer;
+import com.avp.client.render.item.M42a3SniperRifleItemRenderer;
+import com.avp.client.render.item.M4raBattleRifileItemRenderer;
+import com.avp.client.render.item.M56SmartgunItemRenderer;
+import com.avp.client.render.item.M6BRLItemRenderer;
+import com.avp.client.render.item.M88Mod4CombatPistolItemRenderer;
+import com.avp.client.render.item.OldPainlessItemRenderer;
 import com.avp.client.render.item.ResonatorItemRenderer;
 import com.avp.client.render.item.SentryTurretItemRenderer;
 import com.avp.client.render.item.SpinningItemRenderer;
 import com.avp.client.render.item.TripMineItemRenderer;
+import com.avp.client.render.item.ZX76ShotgunItemRenderer;
 import com.avp.client.screen.ArmorCaseScreen;
 import com.avp.client.screen.IndustrialFurnaceScreen;
 import com.avp.common.block.AVPBlocks;
@@ -54,7 +65,7 @@ import com.avp.common.block.entity.AVPBlockEntityTypes;
 import com.avp.common.entity.type.AVPEntityTypes;
 import com.avp.common.item.AVPArmorItems;
 import com.avp.common.item.AVPBlockItems;
-import com.avp.common.item.TempAVPItems;
+import com.avp.common.item.AVPItems;
 import com.avp.common.menu.AVPMenuTypes;
 import com.avp.common.particle.AVPParticleTypes;
 import com.avp.service.Services;
@@ -316,11 +327,25 @@ public class AVPClient {
     }
 
     private static void registerItemRenderers() {
-        Services.CLIENT_REGISTRY.registerItemRenderer(TempAVPItems.ARMOR_CASE);
+        Services.CLIENT_REGISTRY.registerItemRenderer(AVPItems.ARMOR_CASE);
         Services.CLIENT_REGISTRY.registerItemRenderer(AVPBlockItems.DESK_TERMINAL_BLOCK, name -> DeskTerminalItemRenderer::new);
-        Services.CLIENT_REGISTRY.registerItemRenderer(AVPBlockItems.TRIP_MINE_BLOCK, name -> TripMineItemRenderer::new);
+        Services.CLIENT_REGISTRY.registerItemRenderer(AVPItems.F903WE_RIFLE, name -> () -> new F903weItemRenderer(name));
+        Services.CLIENT_REGISTRY.registerItemRenderer(AVPItems.FLAMETHROWER_SEVASTOPOL, name -> () -> new FlameThrowerItemRenderer(name));
+        Services.CLIENT_REGISTRY.registerItemRenderer(AVPItems.M37_12_SHOTGUN, name -> () -> new M3712ShotgunItemRenderer(name));
+        Services.CLIENT_REGISTRY.registerItemRenderer(AVPItems.M41A_PULSE_RIFLE, name -> () -> new M41APulseRifleItemRenderer(name));
+        Services.CLIENT_REGISTRY.registerItemRenderer(AVPItems.M42A3_SNIPER_RIFLE, name -> () -> new M42a3SniperRifleItemRenderer(name));
+        Services.CLIENT_REGISTRY.registerItemRenderer(AVPItems.M4RA_BATTLE_RIFLE, name -> () -> new M4raBattleRifileItemRenderer(name));
+        Services.CLIENT_REGISTRY.registerItemRenderer(AVPItems.M56_SMARTGUN, name -> () -> new M56SmartgunItemRenderer(name));
+        Services.CLIENT_REGISTRY.registerItemRenderer(AVPItems.M6B_ROCKET_LAUNCHER, name -> () -> new M6BRLItemRenderer(name));
+        Services.CLIENT_REGISTRY.registerItemRenderer(
+            AVPItems.M88MOD4_COMBAT_PISTOL,
+            name -> () -> new M88Mod4CombatPistolItemRenderer(name)
+        );
+        Services.CLIENT_REGISTRY.registerItemRenderer(AVPItems.OLD_PAINLESS, name -> () -> new OldPainlessItemRenderer(name));
         Services.CLIENT_REGISTRY.registerItemRenderer(AVPBlockItems.RESONATOR_BLOCK, name -> ResonatorItemRenderer::new);
         Services.CLIENT_REGISTRY.registerItemRenderer(AVPBlockItems.SENTRY_TURRET, name -> SentryTurretItemRenderer::new);
+        Services.CLIENT_REGISTRY.registerItemRenderer(AVPBlockItems.TRIP_MINE_BLOCK, name -> TripMineItemRenderer::new);
+        Services.CLIENT_REGISTRY.registerItemRenderer(AVPItems.ZX_76_SHOTGUN, name -> () -> new ZX76ShotgunItemRenderer(name));
     }
 
     private static void registerMenuScreens() {

@@ -117,11 +117,7 @@ public class UseItemGoal extends Goal {
             } else {
                 resetAttackCooldown();
                 entity.swing(InteractionHand.MAIN_HAND);
-                // FIXME:
-                // if (entity.getMainHandItem().getItem() instanceof GunItem) {
-                // ItemGoalUtil.shootBullet(entity);
-                // }
-                //
+
                 if (entity.getMainHandItem().getItem() instanceof ShurikenItem) {
                     ItemGoalUtil.shootShuriken(entity);
                 }

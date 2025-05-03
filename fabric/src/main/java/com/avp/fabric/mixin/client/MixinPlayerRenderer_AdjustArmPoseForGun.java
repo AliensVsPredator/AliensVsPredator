@@ -9,8 +9,8 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import com.avp.fabric.common.item.GunItem;
-import com.avp.fabric.common.item.gun.GunData;
+import com.avp.common.item.GunItem;
+import com.avp.common.item.gun.GunData;
 
 @Mixin(PlayerRenderer.class)
 public class MixinPlayerRenderer_AdjustArmPoseForGun {

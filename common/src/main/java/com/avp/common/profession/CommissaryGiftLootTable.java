@@ -9,7 +9,7 @@ import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
 
 import java.util.function.Function;
 
-import com.avp.common.item.TempAVPItems;
+import com.avp.common.item.AVPItems;
 
 public class CommissaryGiftLootTable {
 
@@ -18,12 +18,12 @@ public class CommissaryGiftLootTable {
             LootPool.lootPool()
                 .setRolls(ConstantValue.exactly(1))
                 .add(
-                    LootItem.lootTableItem(TempAVPItems.SMALL_BULLET.get())
+                    LootItem.lootTableItem(AVPItems.SMALL_BULLET.get())
                         .apply(SetItemCountFunction.setCount(ConstantValue.exactly(1)))
                         .setWeight(2)
                 )
                 .add(
-                    LootItem.lootTableItem(TempAVPItems.MEDIUM_BULLET.get())
+                    LootItem.lootTableItem(AVPItems.MEDIUM_BULLET.get())
                         .apply(SetItemCountFunction.setCount(ConstantValue.exactly(1)))
                         .setWeight(1)
                 )

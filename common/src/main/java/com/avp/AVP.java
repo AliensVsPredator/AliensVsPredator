@@ -22,8 +22,8 @@ import com.avp.common.entity.type.AVPEntityTypes;
 import com.avp.common.fuel.AVPFuelRegistry;
 import com.avp.common.item.AVPArmorItems;
 import com.avp.common.item.AVPBlockItems;
+import com.avp.common.item.AVPItems;
 import com.avp.common.item.AVPSpawnEggItems;
-import com.avp.common.item.TempAVPItems;
 import com.avp.common.level.gameevent.AVPGameEvents;
 import com.avp.common.lifecycle.AVPAlienInfections;
 import com.avp.common.lifecycle.AVPAlienLifecycles;
@@ -56,7 +56,7 @@ public class AVP {
 
         AVPBlockEntityTypes.initialize();
         AVPBlocks.initialize();
-        TempAVPItems.initialize();
+        AVPItems.initialize();
         AVPBlockItems.initialize();
         AVPArmorItems.initialize();
         AVPSpawnEggItems.initialize();
@@ -80,7 +80,7 @@ public class AVP {
         AVPCompostingChanceRegistry.initialize();
         AVPFuelRegistry.initialize();
 
-        // TODO: Remove this once migration is done.
+        // FIXME: Remove this once migration is done.
         // AVPBlockEntityTypes.initialize();
         // AVPBlocks.initialize();
         // AVPItems.initialize();

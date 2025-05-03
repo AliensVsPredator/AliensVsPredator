@@ -11,7 +11,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import com.avp.fabric.common.item.GunItem;
+import com.avp.common.item.GunItem;
 
 @Mixin(value = ItemInHandRenderer.class)
 public abstract class MixinItemInHandRenderer_AdjustHandRenderingForGun {

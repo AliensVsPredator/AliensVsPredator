@@ -33,6 +33,7 @@ import com.avp.common.entity.ai.util.CombatResponse;
 import com.avp.common.entity.ai.util.ItemType;
 import com.avp.common.entity.living.human.marine.Marine;
 import com.avp.common.goap.state.GOAPWorldState;
+import com.avp.common.item.GunItem;
 
 public class MarineGOAP extends EntityGOAP<Marine> {
 
@@ -148,12 +149,11 @@ public class MarineGOAP extends EntityGOAP<Marine> {
         return switch (worldState.getOrDefault(GOAPConstants.MAIN_HAND_ITEM_TYPE, ItemType.none())) {
             case ItemType.MeleeWeapon meleeWeapon -> distanceSqr <= 2 * 2;
             case ItemType.RangedWeapon rangedWeapon -> {
-                // FIXME:
-                // if (marine.getMainHandItem().getItem() instanceof GunItem gunItem) {
-                // var fireMode = gunItem.getGunConfig().getDefaultFireMode();
-                // var range = fireMode.range();
-                // yield distanceSqr < range * range;
-                // }
+                if (marine.getMainHandItem().getItem() instanceof GunItem gunItem) {
+                    var fireMode = gunItem.getGunConfig().getDefaultFireMode();
+                    var range = fireMode.range();
+                    yield distanceSqr < range * range;
+                }
 
                 yield distanceSqr < 16 * 16;
             }

@@ -10,7 +10,7 @@ import net.minecraft.world.level.storage.loot.entries.LootItem;
 
 import java.util.List;
 
-import com.avp.common.item.TempAVPItems;
+import com.avp.common.item.AVPItems;
 
 public class LootTableModifier {
 
@@ -80,8 +80,8 @@ public class LootTableModifier {
 
         builder.modifyPools(
             (pool) -> pool
-                .add(LootItem.lootTableItem(TempAVPItems.OVOID_POTTERY_SHERD.get()))
-                .add(LootItem.lootTableItem(TempAVPItems.ROYALTY_POTTERY_SHERD.get()))
+                .add(LootItem.lootTableItem(AVPItems.OVOID_POTTERY_SHERD.get()))
+                .add(LootItem.lootTableItem(AVPItems.ROYALTY_POTTERY_SHERD.get()))
         );
     }
 
@@ -92,8 +92,8 @@ public class LootTableModifier {
 
         builder.modifyPools(
             (pool) -> pool
-                .add(LootItem.lootTableItem(TempAVPItems.PARASITE_POTTERY_SHERD.get()))
-                .add(LootItem.lootTableItem(TempAVPItems.VECTOR_POTTERY_SHERD.get()))
+                .add(LootItem.lootTableItem(AVPItems.PARASITE_POTTERY_SHERD.get()))
+                .add(LootItem.lootTableItem(AVPItems.VECTOR_POTTERY_SHERD.get()))
         );
     }
 
@@ -102,7 +102,7 @@ public class LootTableModifier {
         var lootPool = LootPool.lootPool()
             .add(EmptyLootItem.emptyItem().setWeight(100 - pistolWeight))
             .add(
-                LootItem.lootTableItem(TempAVPItems.BLUEPRINT_M88MOD4_COMBAT_PISTOL.get())
+                LootItem.lootTableItem(AVPItems.BLUEPRINT_M88MOD4_COMBAT_PISTOL.get())
                     .setWeight(pistolWeight)
             )
             .build();
@@ -118,15 +118,15 @@ public class LootTableModifier {
         var lootPool = LootPool.lootPool()
             .add(EmptyLootItem.emptyItem().setWeight(50))
             .add(
-                LootItem.lootTableItem(TempAVPItems.BLUEPRINT_M88MOD4_COMBAT_PISTOL.get())
+                LootItem.lootTableItem(AVPItems.BLUEPRINT_M88MOD4_COMBAT_PISTOL.get())
                     .setWeight(10)
             )
             .add(
-                LootItem.lootTableItem(TempAVPItems.BLUEPRINT_M37_12_SHOTGUN.get())
+                LootItem.lootTableItem(AVPItems.BLUEPRINT_M37_12_SHOTGUN.get())
                     .setWeight(20)
             )
             .add(
-                LootItem.lootTableItem(TempAVPItems.BLUEPRINT_ZX_76_SHOTGUN.get())
+                LootItem.lootTableItem(AVPItems.BLUEPRINT_ZX_76_SHOTGUN.get())
                     .setWeight(20)
             )
             .build();
@@ -142,23 +142,23 @@ public class LootTableModifier {
         var lootPool = LootPool.lootPool()
             .add(EmptyLootItem.emptyItem().setWeight(50))
             .add(
-                LootItem.lootTableItem(TempAVPItems.BLUEPRINT_M88MOD4_COMBAT_PISTOL.get())
+                LootItem.lootTableItem(AVPItems.BLUEPRINT_M88MOD4_COMBAT_PISTOL.get())
                     .setWeight(4)
             )
             .add(
-                LootItem.lootTableItem(TempAVPItems.BLUEPRINT_M37_12_SHOTGUN.get())
+                LootItem.lootTableItem(AVPItems.BLUEPRINT_M37_12_SHOTGUN.get())
                     .setWeight(8)
             )
             .add(
-                LootItem.lootTableItem(TempAVPItems.BLUEPRINT_ZX_76_SHOTGUN.get())
+                LootItem.lootTableItem(AVPItems.BLUEPRINT_ZX_76_SHOTGUN.get())
                     .setWeight(8)
             )
             .add(
-                LootItem.lootTableItem(TempAVPItems.BLUEPRINT_F903WE_RIFLE.get())
+                LootItem.lootTableItem(AVPItems.BLUEPRINT_F903WE_RIFLE.get())
                     .setWeight(15)
             )
             .add(
-                LootItem.lootTableItem(TempAVPItems.BLUEPRINT_M4RA_BATTLE_RIFLE.get())
+                LootItem.lootTableItem(AVPItems.BLUEPRINT_M4RA_BATTLE_RIFLE.get())
                     .setWeight(15)
             )
             .build();
@@ -177,7 +177,7 @@ public class LootTableModifier {
 
         var lootPool = LootPool.lootPool()
             .add(EmptyLootItem.emptyItem().setWeight(66))
-            .add(LootItem.lootTableItem(TempAVPItems.BLUEPRINT_FLAMETHROWER_SEVASTOPOL.get()).setWeight(33))
+            .add(LootItem.lootTableItem(AVPItems.BLUEPRINT_FLAMETHROWER_SEVASTOPOL.get()).setWeight(33))
             .build();
 
         builder.pool(lootPool);
@@ -189,7 +189,7 @@ public class LootTableModifier {
         }
 
         var lootPool = LootPool.lootPool()
-            .add(LootItem.lootTableItem(TempAVPItems.BLUEPRINT_FLAMETHROWER_SEVASTOPOL.get()))
+            .add(LootItem.lootTableItem(AVPItems.BLUEPRINT_FLAMETHROWER_SEVASTOPOL.get()))
             .build();
 
         builder.pool(lootPool);
@@ -203,23 +203,23 @@ public class LootTableModifier {
         var lootPool = LootPool.lootPool()
             .add(EmptyLootItem.emptyItem().setWeight(50))
             .add(
-                LootItem.lootTableItem(TempAVPItems.BLUEPRINT_M41A_PULSE_RIFLE.get())
+                LootItem.lootTableItem(AVPItems.BLUEPRINT_M41A_PULSE_RIFLE.get())
                     .setWeight(15)
             )
             .add(
-                LootItem.lootTableItem(TempAVPItems.BLUEPRINT_M42A3_SNIPER_RIFLE.get())
+                LootItem.lootTableItem(AVPItems.BLUEPRINT_M42A3_SNIPER_RIFLE.get())
                     .setWeight(15)
             )
             .add(
-                LootItem.lootTableItem(TempAVPItems.BLUEPRINT_M6B_ROCKET_LAUNCHER.get())
+                LootItem.lootTableItem(AVPItems.BLUEPRINT_M6B_ROCKET_LAUNCHER.get())
                     .setWeight(10)
             )
             .add(
-                LootItem.lootTableItem(TempAVPItems.BLUEPRINT_M56_SMARTGUN.get())
+                LootItem.lootTableItem(AVPItems.BLUEPRINT_M56_SMARTGUN.get())
                     .setWeight(5)
             )
             .add(
-                LootItem.lootTableItem(TempAVPItems.BLUEPRINT_OLD_PAINLESS.get())
+                LootItem.lootTableItem(AVPItems.BLUEPRINT_OLD_PAINLESS.get())
                     .setWeight(5)
             )
             .build();

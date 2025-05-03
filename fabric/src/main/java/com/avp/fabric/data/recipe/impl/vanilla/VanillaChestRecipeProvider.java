@@ -4,7 +4,7 @@ import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.world.item.Items;
 
 import com.avp.common.item.AVPBlockItems;
-import com.avp.common.item.TempAVPItems;
+import com.avp.common.item.AVPItems;
 import com.avp.fabric.data.recipe.builder.RecipeBuilder;
 
 public class VanillaChestRecipeProvider {
@@ -16,7 +16,7 @@ public class VanillaChestRecipeProvider {
     private static void createChestRecipes(RecipeBuilder builder) {
         builder.shaped()
             .withCategory(RecipeCategory.DECORATIONS)
-            .define('#', TempAVPItems.LEAD_INGOT)
+            .define('#', AVPItems.LEAD_INGOT)
             .define('C', Items.CHEST)
             .pattern("###")
             .pattern("#C#")
@@ -25,7 +25,7 @@ public class VanillaChestRecipeProvider {
 
         builder.shaped()
             .withCategory(RecipeCategory.DECORATIONS)
-            .define('#', TempAVPItems.STEEL_INGOT)
+            .define('#', AVPItems.STEEL_INGOT)
             .define('C', Items.CHEST)
             .pattern("###")
             .pattern("#C#")

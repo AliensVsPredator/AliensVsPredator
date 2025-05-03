@@ -9,7 +9,7 @@ import net.minecraft.world.item.crafting.Ingredient;
 import java.util.function.Supplier;
 
 import com.avp.common.block.AVPBlocks;
-import com.avp.common.item.TempAVPItems;
+import com.avp.common.item.AVPItems;
 import com.avp.fabric.data.recipe.RecipeTemplates;
 import com.avp.fabric.data.recipe.builder.RecipeBuilder;
 import com.avp.fabric.data.recipe.util.RecipeUtil;
@@ -25,7 +25,7 @@ public class PlasticRecipeProvider {
 
         builder.shaped()
             .withCategory(RecipeCategory.BUILDING_BLOCKS)
-            .define('A', TempAVPItems.POLYMER)
+            .define('A', AVPItems.POLYMER)
             .pattern("AA")
             .pattern("AA")
             .into(1, base);

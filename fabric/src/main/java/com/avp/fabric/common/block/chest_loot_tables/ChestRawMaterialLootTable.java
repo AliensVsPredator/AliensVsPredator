@@ -11,7 +11,7 @@ import net.minecraft.world.level.storage.loot.providers.number.UniformGenerator;
 
 import java.util.function.Function;
 
-import com.avp.common.item.TempAVPItems;
+import com.avp.common.item.AVPItems;
 
 public class ChestRawMaterialLootTable {
 
@@ -20,7 +20,7 @@ public class ChestRawMaterialLootTable {
             LootPool.lootPool()
                 .setRolls(ConstantValue.exactly(1))
                 .add(
-                    LootItem.lootTableItem(TempAVPItems.RAW_ZINC.get())
+                    LootItem.lootTableItem(AVPItems.RAW_ZINC.get())
                         .apply(SetItemCountFunction.setCount(UniformGenerator.between(2, 4)))
                         .setWeight(50)
                 )
@@ -47,7 +47,7 @@ public class ChestRawMaterialLootTable {
             LootPool.lootPool()
                 .setRolls(ConstantValue.exactly(1))
                 .add(
-                    LootItem.lootTableItem(TempAVPItems.RAW_ZINC.get())
+                    LootItem.lootTableItem(AVPItems.RAW_ZINC.get())
                         .apply(SetItemCountFunction.setCount(UniformGenerator.between(4, 8)))
                         .setWeight(40)
                 )
@@ -56,7 +56,7 @@ public class ChestRawMaterialLootTable {
             LootPool.lootPool()
                 .setRolls(ConstantValue.exactly(1))
                 .add(
-                    LootItem.lootTableItem(TempAVPItems.RAW_BRASS.get())
+                    LootItem.lootTableItem(AVPItems.RAW_BRASS.get())
                         .apply(SetItemCountFunction.setCount(UniformGenerator.between(2, 6)))
                         .setWeight(25)
                 )
@@ -65,7 +65,7 @@ public class ChestRawMaterialLootTable {
             LootPool.lootPool()
                 .setRolls(ConstantValue.exactly(1))
                 .add(
-                    LootItem.lootTableItem(TempAVPItems.ALIEN_MUSIC_DISC_1_FRAGMENT.get())
+                    LootItem.lootTableItem(AVPItems.ALIEN_MUSIC_DISC_1_FRAGMENT.get())
                         .apply(SetItemCountFunction.setCount(UniformGenerator.between(2, 4)))
                         .setWeight(5)
                 )
@@ -74,7 +74,7 @@ public class ChestRawMaterialLootTable {
             LootPool.lootPool()
                 .setRolls(ConstantValue.exactly(1))
                 .add(
-                    LootItem.lootTableItem(TempAVPItems.PREDATOR_MUSIC_DISC_1_FRAGMENT.get())
+                    LootItem.lootTableItem(AVPItems.PREDATOR_MUSIC_DISC_1_FRAGMENT.get())
                         .apply(SetItemCountFunction.setCount(UniformGenerator.between(2, 4)))
                         .setWeight(5)
                 )
@@ -83,7 +83,7 @@ public class ChestRawMaterialLootTable {
             LootPool.lootPool()
                 .setRolls(ConstantValue.exactly(1))
                 .add(
-                    LootItem.lootTableItem(TempAVPItems.RAW_MONAZITE.get())
+                    LootItem.lootTableItem(AVPItems.RAW_MONAZITE.get())
                         .apply(SetItemCountFunction.setCount(UniformGenerator.between(1, 6)))
                         .setWeight(5)
                 )

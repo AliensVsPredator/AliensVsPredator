@@ -18,7 +18,7 @@ import com.avp.common.entity.acid.Acid;
 import com.avp.common.entity.living.alien.Alien;
 import com.avp.common.entity.living.alien.xenomorph.queen.Queen;
 import com.avp.common.entity.type.AVPEntityTypes;
-import com.avp.common.item.TempAVPItems;
+import com.avp.common.item.AVPItems;
 import com.avp.common.particle.AVPParticleTypes;
 
 public class AlienVariantUtil {
@@ -26,18 +26,18 @@ public class AlienVariantUtil {
     // Made lazy so that the block/item access here doesn't cause NeoForge to crash during startup.
     private static final Lazy<Map<Block, Item>> RESIN_BALL_MAPPING = Lazy.of(
         () -> Map.ofEntries(
-            Map.entry(AVPBlocks.ABERRANT_RESIN_NODE.get(), TempAVPItems.ABERRANT_RESIN_BALL.get()),
-            Map.entry(AVPBlocks.ABERRANT_RESIN.get(), TempAVPItems.ABERRANT_RESIN_BALL.get()),
-            Map.entry(AVPBlocks.ABERRANT_RESIN_WEB.get(), TempAVPItems.ABERRANT_RESIN_BALL.get()),
-            Map.entry(AVPBlocks.ABERRANT_RESIN_VEIN.get(), TempAVPItems.ABERRANT_RESIN_BALL.get()),
-            Map.entry(AVPBlocks.IRRADIATED_RESIN_NODE.get(), TempAVPItems.IRRADIATED_RESIN_BALL.get()),
-            Map.entry(AVPBlocks.IRRADIATED_RESIN.get(), TempAVPItems.IRRADIATED_RESIN_BALL.get()),
-            Map.entry(AVPBlocks.IRRADIATED_RESIN_WEB.get(), TempAVPItems.IRRADIATED_RESIN_BALL.get()),
-            Map.entry(AVPBlocks.IRRADIATED_RESIN_VEIN.get(), TempAVPItems.IRRADIATED_RESIN_BALL.get()),
-            Map.entry(AVPBlocks.NETHER_RESIN_NODE.get(), TempAVPItems.NETHER_RESIN_BALL.get()),
-            Map.entry(AVPBlocks.NETHER_RESIN.get(), TempAVPItems.NETHER_RESIN_BALL.get()),
-            Map.entry(AVPBlocks.NETHER_RESIN_WEB.get(), TempAVPItems.NETHER_RESIN_BALL.get()),
-            Map.entry(AVPBlocks.NETHER_RESIN_VEIN.get(), TempAVPItems.NETHER_RESIN_BALL.get())
+            Map.entry(AVPBlocks.ABERRANT_RESIN_NODE.get(), AVPItems.ABERRANT_RESIN_BALL.get()),
+            Map.entry(AVPBlocks.ABERRANT_RESIN.get(), AVPItems.ABERRANT_RESIN_BALL.get()),
+            Map.entry(AVPBlocks.ABERRANT_RESIN_WEB.get(), AVPItems.ABERRANT_RESIN_BALL.get()),
+            Map.entry(AVPBlocks.ABERRANT_RESIN_VEIN.get(), AVPItems.ABERRANT_RESIN_BALL.get()),
+            Map.entry(AVPBlocks.IRRADIATED_RESIN_NODE.get(), AVPItems.IRRADIATED_RESIN_BALL.get()),
+            Map.entry(AVPBlocks.IRRADIATED_RESIN.get(), AVPItems.IRRADIATED_RESIN_BALL.get()),
+            Map.entry(AVPBlocks.IRRADIATED_RESIN_WEB.get(), AVPItems.IRRADIATED_RESIN_BALL.get()),
+            Map.entry(AVPBlocks.IRRADIATED_RESIN_VEIN.get(), AVPItems.IRRADIATED_RESIN_BALL.get()),
+            Map.entry(AVPBlocks.NETHER_RESIN_NODE.get(), AVPItems.NETHER_RESIN_BALL.get()),
+            Map.entry(AVPBlocks.NETHER_RESIN.get(), AVPItems.NETHER_RESIN_BALL.get()),
+            Map.entry(AVPBlocks.NETHER_RESIN_WEB.get(), AVPItems.NETHER_RESIN_BALL.get()),
+            Map.entry(AVPBlocks.NETHER_RESIN_VEIN.get(), AVPItems.NETHER_RESIN_BALL.get())
         )
     );
 
@@ -67,10 +67,10 @@ public class AlienVariantUtil {
 
     public static Item getResinBallFor(Alien alien) {
         return switch (alien) {
-            case Alien netherAlien when netherAlien.isNetherAfflicted() -> TempAVPItems.NETHER_RESIN_BALL.get();
-            case Alien aberrantAlien when aberrantAlien.isAberrant() -> TempAVPItems.ABERRANT_RESIN_BALL.get();
-            case Alien irradiatedAlien when irradiatedAlien.isIrradiated() -> TempAVPItems.IRRADIATED_RESIN_BALL.get();
-            default -> TempAVPItems.RESIN_BALL.get();
+            case Alien netherAlien when netherAlien.isNetherAfflicted() -> AVPItems.NETHER_RESIN_BALL.get();
+            case Alien aberrantAlien when aberrantAlien.isAberrant() -> AVPItems.ABERRANT_RESIN_BALL.get();
+            case Alien irradiatedAlien when irradiatedAlien.isIrradiated() -> AVPItems.IRRADIATED_RESIN_BALL.get();
+            default -> AVPItems.RESIN_BALL.get();
         };
     }
 
@@ -108,7 +108,7 @@ public class AlienVariantUtil {
     }
 
     public static Item getResinBallForType(BlockState blockState) {
-        return RESIN_BALL_MAPPING.get().getOrDefault(blockState.getBlock(), TempAVPItems.RESIN_BALL.get());
+        return RESIN_BALL_MAPPING.get().getOrDefault(blockState.getBlock(), AVPItems.RESIN_BALL.get());
     }
 
     public static EntityType<?> getOvamorphTypeFor(Queen queen, boolean isRoyal) {

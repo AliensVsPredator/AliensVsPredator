@@ -6,38 +6,37 @@ import java.util.function.Consumer;
 
 import com.avp.common.block.AVPBlocks;
 import com.avp.common.item.AVPArmorItems;
-import com.avp.common.item.TempAVPItems;
+import com.avp.common.item.AVPItems;
 
 public class CombatCreativeModeTabInitializer {
 
     public static final Consumer<CreativeModeTab.Output> OUTPUT_CONSUMER = output -> {
         CreativeModeTabUtil.accept(output, AVPBlocks.AMMO_CHEST);
-        CreativeModeTabUtil.accept(output, TempAVPItems.GRENADE);
-        CreativeModeTabUtil.accept(output, TempAVPItems.GRENADE_INCENDIARY);
-        CreativeModeTabUtil.accept(output, TempAVPItems.GRENADE_IRRADIATED);
-        CreativeModeTabUtil.accept(output, TempAVPItems.CASELESS_BULLET);
-        CreativeModeTabUtil.accept(output, TempAVPItems.HEAVY_BULLET);
-        CreativeModeTabUtil.accept(output, TempAVPItems.SMALL_BULLET);
-        CreativeModeTabUtil.accept(output, TempAVPItems.MEDIUM_BULLET);
-        CreativeModeTabUtil.accept(output, TempAVPItems.SHOTGUN_SHELL);
-        CreativeModeTabUtil.accept(output, TempAVPItems.ROCKET);
-        CreativeModeTabUtil.accept(output, TempAVPItems.FUEL_TANK);
+        CreativeModeTabUtil.accept(output, AVPItems.GRENADE);
+        CreativeModeTabUtil.accept(output, AVPItems.GRENADE_INCENDIARY);
+        CreativeModeTabUtil.accept(output, AVPItems.GRENADE_IRRADIATED);
+        CreativeModeTabUtil.accept(output, AVPItems.CASELESS_BULLET);
+        CreativeModeTabUtil.accept(output, AVPItems.HEAVY_BULLET);
+        CreativeModeTabUtil.accept(output, AVPItems.SMALL_BULLET);
+        CreativeModeTabUtil.accept(output, AVPItems.MEDIUM_BULLET);
+        CreativeModeTabUtil.accept(output, AVPItems.SHOTGUN_SHELL);
+        CreativeModeTabUtil.accept(output, AVPItems.ROCKET);
+        CreativeModeTabUtil.accept(output, AVPItems.FUEL_TANK);
 
-        // FIXME:
-        // CreativeModeTabUtil.accept(output, AVPItems.F903WE_RIFLE);
-        // CreativeModeTabUtil.accept(output, AVPItems.FLAMETHROWER_SEVASTOPOL);
-        // CreativeModeTabUtil.accept(output, AVPItems.M37_12_SHOTGUN);
-        // CreativeModeTabUtil.accept(output, AVPItems.M41A_PULSE_RIFLE);
-        // CreativeModeTabUtil.accept(output, AVPItems.M42A3_SNIPER_RIFLE);
-        // CreativeModeTabUtil.accept(output, AVPItems.M4RA_BATTLE_RIFLE);
-        // CreativeModeTabUtil.accept(output, AVPItems.M56_SMARTGUN);
-        // CreativeModeTabUtil.accept(output, AVPItems.M6B_ROCKET_LAUNCHER);
-        // CreativeModeTabUtil.accept(output, AVPItems.M88MOD4_COMBAT_PISTOL);
-        // CreativeModeTabUtil.accept(output, AVPItems.OLD_PAINLESS);
-        // CreativeModeTabUtil.accept(output, AVPItems.ZX_76_SHOTGUN);
+        CreativeModeTabUtil.accept(output, AVPItems.F903WE_RIFLE);
+        CreativeModeTabUtil.accept(output, AVPItems.FLAMETHROWER_SEVASTOPOL);
+        CreativeModeTabUtil.accept(output, AVPItems.M37_12_SHOTGUN);
+        CreativeModeTabUtil.accept(output, AVPItems.M41A_PULSE_RIFLE);
+        CreativeModeTabUtil.accept(output, AVPItems.M42A3_SNIPER_RIFLE);
+        CreativeModeTabUtil.accept(output, AVPItems.M4RA_BATTLE_RIFLE);
+        CreativeModeTabUtil.accept(output, AVPItems.M56_SMARTGUN);
+        CreativeModeTabUtil.accept(output, AVPItems.M6B_ROCKET_LAUNCHER);
+        CreativeModeTabUtil.accept(output, AVPItems.M88MOD4_COMBAT_PISTOL);
+        CreativeModeTabUtil.accept(output, AVPItems.OLD_PAINLESS);
+        CreativeModeTabUtil.accept(output, AVPItems.ZX_76_SHOTGUN);
 
-        CreativeModeTabUtil.accept(output, TempAVPItems.SHURIKEN);
-        CreativeModeTabUtil.accept(output, TempAVPItems.SMART_DISC);
+        CreativeModeTabUtil.accept(output, AVPItems.SHURIKEN);
+        CreativeModeTabUtil.accept(output, AVPItems.SMART_DISC);
 
         CreativeModeTabUtil.accept(output, AVPArmorItems.MK50_HELMET);
         CreativeModeTabUtil.accept(output, AVPArmorItems.MK50_CHESTPLATE);

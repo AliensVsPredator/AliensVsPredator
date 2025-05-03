@@ -24,7 +24,7 @@ import org.jetbrains.annotations.Nullable;
 import com.avp.AVP;
 import com.avp.common.entity.living.alien.Alien;
 import com.avp.common.entity.type.AVPEntityTypes;
-import com.avp.common.item.TempAVPItems;
+import com.avp.common.item.AVPItems;
 import com.avp.common.manager.HatchManager;
 import com.avp.common.sound.AVPSoundEvents;
 import com.avp.common.util.AVPPredicates;
@@ -102,7 +102,7 @@ public class Ovamorph extends Alien implements Shearable {
             var itemStack = player.getItemInHand(interactionHand);
             var resinBallItem = AlienVariantUtil.getResinBallFor(this);
 
-            if (itemStack.is(TempAVPItems.RAW_ROYAL_JELLY.get())) {
+            if (itemStack.is(AVPItems.RAW_ROYAL_JELLY.get())) {
                 if (hatchManager.hatched()) {
                     level().playSound(null, this, SoundEvents.HONEY_BLOCK_PLACE, SoundSource.PLAYERS, 1.0F, 1.0F);
                     hatchManager.restore();

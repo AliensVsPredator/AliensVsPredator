@@ -12,10 +12,10 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import com.avp.common.component.AVPDataComponents;
+import com.avp.common.item.AVPItems;
+import com.avp.common.item.GunItem;
 import com.avp.common.util.AVPPredicates;
 import com.avp.common.util.AmmunitionIndicatorUtil;
-import com.avp.fabric.common.item.AVPItems;
-import com.avp.fabric.common.item.GunItem;
 
 @Mixin(Player.class)
 public abstract class MixinPlayerEntity_LowAmmunitionIndicator extends LivingEntity {
@@ -45,7 +45,7 @@ public abstract class MixinPlayerEntity_LowAmmunitionIndicator extends LivingEnt
                 // Don't show ammo indicator if the player is not holding a gun.
                 || !(mainHandItem.getItem() instanceof GunItem gunItem)
                 // Don't show ammo indicator for weapons that do not store ammunition in their item stack.
-                || gunItem == AVPItems.OLD_PAINLESS
+                || gunItem == AVPItems.OLD_PAINLESS.get()
         ) {
             return;
         }

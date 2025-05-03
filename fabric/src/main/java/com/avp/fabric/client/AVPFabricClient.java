@@ -12,18 +12,6 @@ import java.util.function.Supplier;
 import com.avp.client.AVPClient;
 import com.avp.fabric.client.input.keybind.AVPKeybindingRegistry;
 import com.avp.fabric.client.network.AVPClientPacketHandlerRegistry;
-import com.avp.fabric.client.render.item.F903weItemRenderer;
-import com.avp.fabric.client.render.item.FlameThrowerItemRenderer;
-import com.avp.fabric.client.render.item.M3712ShotgunItemRenderer;
-import com.avp.fabric.client.render.item.M41APulseRifleItemRenderer;
-import com.avp.fabric.client.render.item.M42a3SniperRifleItemRenderer;
-import com.avp.fabric.client.render.item.M4raBattleRifileItemRenderer;
-import com.avp.fabric.client.render.item.M56SmartgunItemRenderer;
-import com.avp.fabric.client.render.item.M6BRLItemRenderer;
-import com.avp.fabric.client.render.item.M88Mod4CombatPistolItemRenderer;
-import com.avp.fabric.client.render.item.OldPainlessItemRenderer;
-import com.avp.fabric.client.render.item.ZX76ShotgunItemRenderer;
-import com.avp.fabric.common.item.AVPItems;
 
 public class AVPFabricClient implements ClientModInitializer {
 
@@ -32,17 +20,6 @@ public class AVPFabricClient implements ClientModInitializer {
         AVPClient.initialize();
 
         // Items
-        registerItemRenderer(AVPItems.F903WE_RIFLE, name -> () -> new F903weItemRenderer(name));
-        registerItemRenderer(AVPItems.FLAMETHROWER_SEVASTOPOL, name -> () -> new FlameThrowerItemRenderer(name));
-        registerItemRenderer(AVPItems.M37_12_SHOTGUN, name -> () -> new M3712ShotgunItemRenderer(name));
-        registerItemRenderer(AVPItems.M41A_PULSE_RIFLE, name -> () -> new M41APulseRifleItemRenderer(name));
-        registerItemRenderer(AVPItems.M42A3_SNIPER_RIFLE, name -> () -> new M42a3SniperRifleItemRenderer(name));
-        registerItemRenderer(AVPItems.M4RA_BATTLE_RIFLE, name -> () -> new M4raBattleRifileItemRenderer(name));
-        registerItemRenderer(AVPItems.M56_SMARTGUN, name -> () -> new M56SmartgunItemRenderer(name));
-        registerItemRenderer(AVPItems.M6B_ROCKET_LAUNCHER, name -> () -> new M6BRLItemRenderer(name));
-        registerItemRenderer(AVPItems.M88MOD4_COMBAT_PISTOL, name -> () -> new M88Mod4CombatPistolItemRenderer(name));
-        registerItemRenderer(AVPItems.OLD_PAINLESS, name -> () -> new OldPainlessItemRenderer(name));
-        registerItemRenderer(AVPItems.ZX_76_SHOTGUN, name -> () -> new ZX76ShotgunItemRenderer(name));
 
         // Keybindings
         AVPKeybindingRegistry.initialize();

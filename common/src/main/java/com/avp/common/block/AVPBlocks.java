@@ -39,7 +39,6 @@ import com.avp.common.block.resin.ResinWebBlock;
 import com.avp.common.registry.AVPDeferredHolder;
 import com.avp.service.Services;
 
-// TODO: Rename this once multi-loader migration is finished.
 public class AVPBlocks {
 
     // TODO: Fix properties.

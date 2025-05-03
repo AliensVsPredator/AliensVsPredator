@@ -55,7 +55,7 @@ public class MilkCanisterItem extends Item {
                 return CanisterItem.updateCapacity(stack, -1);
             }
 
-            return ItemUtils.createFilledResult(stack, player, new ItemStack(TempAVPItems.CANISTER.get()), false);
+            return ItemUtils.createFilledResult(stack, player, new ItemStack(AVPItems.CANISTER.get()), false);
         } else {
             if (canDeplete) {
                 return CanisterItem.updateCapacity(stack, -1);

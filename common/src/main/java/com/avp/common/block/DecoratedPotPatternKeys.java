@@ -9,7 +9,7 @@ import net.minecraft.world.level.block.entity.DecoratedPotPattern;
 import java.util.Map;
 
 import com.avp.AVPResources;
-import com.avp.common.item.TempAVPItems;
+import com.avp.common.item.AVPItems;
 
 public class DecoratedPotPatternKeys {
 
@@ -23,10 +23,10 @@ public class DecoratedPotPatternKeys {
 
     public static final Lazy<Map<Item, ResourceKey<DecoratedPotPattern>>> ITEM_TO_POT_TEXTURE = Lazy.of(
         () -> Map.ofEntries(
-            Map.entry(TempAVPItems.OVOID_POTTERY_SHERD.get(), OVOID),
-            Map.entry(TempAVPItems.PARASITE_POTTERY_SHERD.get(), PARASITE),
-            Map.entry(TempAVPItems.ROYALTY_POTTERY_SHERD.get(), ROYALTY),
-            Map.entry(TempAVPItems.VECTOR_POTTERY_SHERD.get(), VECTOR)
+            Map.entry(AVPItems.OVOID_POTTERY_SHERD.get(), OVOID),
+            Map.entry(AVPItems.PARASITE_POTTERY_SHERD.get(), PARASITE),
+            Map.entry(AVPItems.ROYALTY_POTTERY_SHERD.get(), ROYALTY),
+            Map.entry(AVPItems.VECTOR_POTTERY_SHERD.get(), VECTOR)
         )
     );
 

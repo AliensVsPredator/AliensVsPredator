@@ -12,7 +12,7 @@ import net.minecraft.world.level.storage.loot.providers.number.UniformGenerator;
 
 import java.util.function.Function;
 
-import com.avp.common.item.TempAVPItems;
+import com.avp.common.item.AVPItems;
 
 public class MarineChestPersonalLootTable {
 
@@ -87,12 +87,12 @@ public class MarineChestPersonalLootTable {
                     EmptyLootItem.emptyItem().setWeight(1)
                 )
                 .add(
-                    LootItem.lootTableItem(TempAVPItems.ALIEN_MUSIC_DISC_1_FRAGMENT.get())
+                    LootItem.lootTableItem(AVPItems.ALIEN_MUSIC_DISC_1_FRAGMENT.get())
                         .apply(SetItemCountFunction.setCount(UniformGenerator.between(1, 2)))
                         .setWeight(1)
                 )
                 .add(
-                    LootItem.lootTableItem(TempAVPItems.PREDATOR_MUSIC_DISC_1_FRAGMENT.get())
+                    LootItem.lootTableItem(AVPItems.PREDATOR_MUSIC_DISC_1_FRAGMENT.get())
                         .apply(SetItemCountFunction.setCount(UniformGenerator.between(1, 2)))
                         .setWeight(1)
                 )

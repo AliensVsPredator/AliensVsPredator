@@ -17,7 +17,7 @@ public class AVPTiers {
         2.5F,
         BlockTags.INCORRECT_FOR_IRON_TOOL,
         13,
-        () -> Ingredient.of(TempAVPItems.STEEL_INGOT.get())
+        () -> Ingredient.of(AVPItems.STEEL_INGOT.get())
     );
 
     public static final Tier TITANIUM = create(
@@ -26,7 +26,7 @@ public class AVPTiers {
         2.5F,
         BlockTags.INCORRECT_FOR_IRON_TOOL,
         12,
-        () -> Ingredient.of(TempAVPItems.TITANIUM_INGOT.get())
+        () -> Ingredient.of(AVPItems.TITANIUM_INGOT.get())
     );
 
     public static final Tier VERITANIUM = create(
@@ -35,7 +35,7 @@ public class AVPTiers {
         5F,
         BlockTags.INCORRECT_FOR_NETHERITE_TOOL,
         11,
-        () -> Ingredient.of(TempAVPItems.VERITANIUM_SHARD.get())
+        () -> Ingredient.of(AVPItems.VERITANIUM_SHARD.get())
     );
 
     private static Tier create(
