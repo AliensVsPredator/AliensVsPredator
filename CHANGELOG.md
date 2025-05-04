@@ -16,6 +16,7 @@
 - Fixed persistence not carrying over when an alien grows into the next stage.
 - Fixed royal aliens not being acid immune.
 - Fixed royal aliens not being tagged as aliens.
+- Fixed missing name translations for aberrant, irradiated, nether and royal aliens.
 - Fixed xenomorphs lunging in-place while attacking a target.
   - Fixed by increasing their minimum horizontal lunge distance check from 1 block to 6 blocks.
 

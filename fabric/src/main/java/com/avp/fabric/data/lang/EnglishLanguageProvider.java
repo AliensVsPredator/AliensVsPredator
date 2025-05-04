@@ -286,20 +286,47 @@ public class EnglishLanguageProvider extends FabricLanguageProvider {
         builder.add(AVPCreativeModeTabs.TOOLS_AND_UTILITIES_KEY, "AVP Tools & Utilities");
 
         // Entities
+        addEntity(builder, AVPEntityTypes.ABERRANT_CHESTBURSTER, "Aberrant Chestburster");
+        addEntity(builder, AVPEntityTypes.ABERRANT_DRONE, "Aberrant Drone");
+        addEntity(builder, AVPEntityTypes.ABERRANT_FACEHUGGER, "Aberrant Facehugger");
+        addEntity(builder, AVPEntityTypes.ABERRANT_OVAMORPH, "Aberrant Ovamorph");
+        addEntity(builder, AVPEntityTypes.ABERRANT_PRAETORIAN, "Aberrant Praetorian");
+        addEntity(builder, AVPEntityTypes.ABERRANT_QUEEN, "Aberrant Queen");
+        addEntity(builder, AVPEntityTypes.ABERRANT_WARRIOR, "Aberrant Warrior");
         addEntity(builder, AVPEntityTypes.ACID, "Acid");
         addEntity(builder, AVPEntityTypes.CHESTBURSTER, "Chestburster");
         addEntity(builder, AVPEntityTypes.DRONE, "Drone");
         addEntity(builder, AVPEntityTypes.FACEHUGGER, "Facehugger");
+        addEntity(builder, AVPEntityTypes.GRENADE_THROWN, "Grenade");
+        addEntity(builder, AVPEntityTypes.IRRADIATED_DRONE, "Irradiated Drone");
+        addEntity(builder, AVPEntityTypes.IRRADIATED_PRAETORIAN, "Irradiated Praetorian");
+        addEntity(builder, AVPEntityTypes.IRRADIATED_QUEEN, "Irradiated Queen");
+        addEntity(builder, AVPEntityTypes.IRRADIATED_WARRIOR, "Irradiated Warrior");
+        addEntity(builder, AVPEntityTypes.MARINE, "Marine");
+        addEntity(builder, AVPEntityTypes.NETHER_CHESTBURSTER, "Nether Chestburster");
+        addEntity(builder, AVPEntityTypes.NETHER_DRONE, "Nether Drone");
+        addEntity(builder, AVPEntityTypes.NETHER_FACEHUGGER, "Nether Facehugger");
+        addEntity(builder, AVPEntityTypes.NETHER_OVAMORPH, "Nether Ovamorph");
+        addEntity(builder, AVPEntityTypes.NETHER_PRAETORIAN, "Nether Praetorian");
+        addEntity(builder, AVPEntityTypes.NETHER_QUEEN, "Nether Queen");
+        addEntity(builder, AVPEntityTypes.NETHER_WARRIOR, "Nether Warrior");
         addEntity(builder, AVPEntityTypes.OVAMORPH, "Ovamorph");
         addEntity(builder, AVPEntityTypes.PRAETORIAN, "Praetorian");
         addEntity(builder, AVPEntityTypes.QUEEN, "Queen");
-        addEntity(builder, AVPEntityTypes.WARRIOR, "Warrior");
-        addEntity(builder, AVPEntityTypes.YAUTJA, "Yautja");
         addEntity(builder, AVPEntityTypes.ROCKET, "Rocket");
-        addEntity(builder, AVPEntityTypes.GRENADE_THROWN, "Grenade");
+        addEntity(builder, AVPEntityTypes.ROYAL_ABERRANT_CHESTBURSTER, "Royal Aberrant Chestburster");
+        addEntity(builder, AVPEntityTypes.ROYAL_ABERRANT_FACEHUGGER, "Royal Aberrant Facehugger");
+        addEntity(builder, AVPEntityTypes.ROYAL_ABERRANT_OVAMORPH, "Royal Aberrant Ovamorph");
+        addEntity(builder, AVPEntityTypes.ROYAL_CHESTBURSTER, "Royal Chestburster");
+        addEntity(builder, AVPEntityTypes.ROYAL_FACEHUGGER, "Royal Facehugger");
+        addEntity(builder, AVPEntityTypes.ROYAL_NETHER_CHESTBURSTER, "Royal Nether Chestburster");
+        addEntity(builder, AVPEntityTypes.ROYAL_NETHER_FACEHUGGER, "Royal Nether Facehugger");
+        addEntity(builder, AVPEntityTypes.ROYAL_NETHER_OVAMORPH, "Royal Nether Ovamorph");
+        addEntity(builder, AVPEntityTypes.ROYAL_OVAMORPH, "Royal Ovamorph");
         addEntity(builder, AVPEntityTypes.SHURIKEN, "Shuriken");
         addEntity(builder, AVPEntityTypes.SMART_DISC, "Smart Disc");
-        addEntity(builder, AVPEntityTypes.MARINE, "Marine");
+        addEntity(builder, AVPEntityTypes.WARRIOR, "Warrior");
+        addEntity(builder, AVPEntityTypes.YAUTJA, "Yautja");
 
         // Combat Items
         addItem(builder, AVPItems.SHURIKEN, "Shuriken");
