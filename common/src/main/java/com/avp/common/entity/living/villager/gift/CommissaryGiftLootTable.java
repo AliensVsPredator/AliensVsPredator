@@ -1,4 +1,4 @@
-package com.avp.common.profession;
+package com.avp.common.entity.living.villager.gift;
 
 import net.minecraft.core.HolderLookup;
 import net.minecraft.world.level.storage.loot.LootPool;

@@ -9,8 +9,8 @@ import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.phys.Vec3;
 
 import com.avp.common.entity.AVPEntityTypeTags;
-import com.avp.common.entity.projectile.ShurikenItemEntity;
-import com.avp.common.entity.projectile.SmartDiscItemEntity;
+import com.avp.common.entity.projectile.ShurikenProjectile;
+import com.avp.common.entity.projectile.SmartDiscProjectile;
 import com.avp.common.item.AVPItems;
 
 public class ItemGoalUtil {
@@ -44,7 +44,7 @@ public class ItemGoalUtil {
             directionY /= length;
             directionZ /= length;
 
-            var shurikenItemEntity = new ShurikenItemEntity(entity.level(), entity);
+            var shurikenItemEntity = new ShurikenProjectile(entity.level(), entity);
             shurikenItemEntity.setOwner(entity);
             shurikenItemEntity.setPos(sourceX, sourceY, sourceZ);
             var velocity = 1.5F;
@@ -83,7 +83,7 @@ public class ItemGoalUtil {
             directionY /= length;
             directionZ /= length;
 
-            var smartDiscItemEntity = new SmartDiscItemEntity(entity.level(), entity);
+            var smartDiscItemEntity = new SmartDiscProjectile(entity.level(), entity);
             smartDiscItemEntity.setOwner(entity);
             smartDiscItemEntity.setPos(sourceX, sourceY, sourceZ);
             var velocity = 3.5F;

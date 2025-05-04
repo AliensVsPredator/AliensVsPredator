@@ -11,7 +11,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
-import com.avp.common.entity.projectile.SmartDiscItemEntity;
+import com.avp.common.entity.projectile.SmartDiscProjectile;
 
 public class SmartDiscItem extends Item {
 
@@ -41,7 +41,7 @@ public class SmartDiscItem extends Item {
             );
 
             if (!level.isClientSide) {
-                var smartDiscItemEntity = new SmartDiscItemEntity(level, player);
+                var smartDiscItemEntity = new SmartDiscProjectile(level, player);
                 smartDiscItemEntity.setItem(itemInHand);
                 smartDiscItemEntity.setOwner(player);
                 smartDiscItemEntity.shootFromRotation(player, player.getXRot(), player.getYRot(), 0.0F, 3.5F, 1.0F);

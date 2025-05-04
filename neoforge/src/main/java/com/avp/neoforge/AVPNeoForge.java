@@ -32,13 +32,13 @@ import com.avp.common.entity.living.alien.xenomorph.praetorian.PraetorianSpawnin
 import com.avp.common.entity.living.alien.xenomorph.queen.QueenSpawning;
 import com.avp.common.entity.living.alien.xenomorph.warrior.WarriorSpawning;
 import com.avp.common.entity.living.human.marine.MarineSpawning;
+import com.avp.common.entity.living.villager.gift.AVPVillagerGiftKeys;
+import com.avp.common.entity.living.villager.profession.AVPVillagerProfessions;
 import com.avp.common.entity.living.yautja.YautjaSpawning;
 import com.avp.common.entity.type.AVPEntityTypes;
 import com.avp.common.lifecycle.registry.AlienInfectionRegistry;
 import com.avp.common.lifecycle.registry.AlienLifecycleRegistry;
 import com.avp.common.network.NetworkHandler;
-import com.avp.common.profession.AVPGifts;
-import com.avp.common.profession.AVPProfessions;
 import com.avp.data.worldgen.AVPVillageInjection;
 import com.avp.mixin.GiveGiftToHeroAccessor;
 import com.avp.mixin.ParrotSoundMapAccessor;
@@ -257,7 +257,7 @@ public class AVPNeoForge {
          * TODO: Use Yautja sound when added
          */
         sounds.put(AVPEntityTypes.YAUTJA.get(), SoundEvents.ALLAY_AMBIENT_WITH_ITEM);
-        gifts.put(AVPProfessions.COMMISSARY.get(), AVPGifts.COMMISSARY_GIFT_LOOT_TABLE);
+        gifts.put(AVPVillagerProfessions.COMMISSARY.get(), AVPVillagerGiftKeys.COMMISSARY_GIFT_LOOT_TABLE);
     }
 
     public static void addCustomTrades(VillagerTradesEvent event) {

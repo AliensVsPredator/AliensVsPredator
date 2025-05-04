@@ -1,4 +1,4 @@
-package com.avp.common.profession;
+package com.avp.common.entity.living.villager.poi;
 
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
@@ -6,7 +6,7 @@ import net.minecraft.world.entity.ai.village.poi.PoiType;
 
 import com.avp.AVPResources;
 
-public class AVPPOIKeys {
+public class AVPVillagerPoiKeys {
 
     public static final ResourceKey<PoiType> COMMISSARY_POI_KEY = create("commissary_poi");
 

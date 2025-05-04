@@ -1,4 +1,4 @@
-package com.avp.common.profession;
+package com.avp.common.entity.living.villager.poi;
 
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.entity.ai.village.poi.PoiType;
@@ -11,7 +11,7 @@ import com.avp.common.block.AVPBlocks;
 import com.avp.common.registry.AVPDeferredHolder;
 import com.avp.service.Services;
 
-public class AVPPointOfInterests {
+public class AVPVillagerPoiTypes {
 
     public static final AVPDeferredHolder<PoiType> COMMISSARY_POI = register("commissary_poi", AVPBlocks.BLUEPRINT_BLOCK, 1, 1);
 

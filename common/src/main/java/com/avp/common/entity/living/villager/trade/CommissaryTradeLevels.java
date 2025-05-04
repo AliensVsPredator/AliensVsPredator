@@ -1,4 +1,4 @@
-package com.avp.common.profession;
+package com.avp.common.entity.living.villager.trade;
 
 import net.minecraft.world.entity.npc.VillagerTrades;
 import net.minecraft.world.item.ItemStack;
@@ -12,9 +12,9 @@ import com.avp.common.block.AVPBlocks;
 import com.avp.common.item.AVPArmorItems;
 import com.avp.common.item.AVPItems;
 
-public class AVPCommonTrades {
+public class CommissaryTradeLevels {
 
-    public static List<VillagerTrades.ItemListing> level1Trades = List.of(
+    public static List<VillagerTrades.ItemListing> LEVEL_1 = List.of(
         (entity, randomSource) -> new MerchantOffer(
             new ItemCost(Items.EMERALD, 1),
             new ItemStack(AVPItems.SMALL_BULLET.get(), 8),
@@ -38,7 +38,7 @@ public class AVPCommonTrades {
         )
     );
 
-    public static List<VillagerTrades.ItemListing> level2Trades = List.of(
+    public static List<VillagerTrades.ItemListing> LEVEL_2 = List.of(
         (entity, randomSource) -> new MerchantOffer(
             new ItemCost(Items.EMERALD, 5),
             new ItemStack(AVPArmorItems.TACTICAL_CAMO_HELMET.get(), 1),
@@ -62,7 +62,7 @@ public class AVPCommonTrades {
         )
     );
 
-    public static List<VillagerTrades.ItemListing> level3Trades = List.of(
+    public static List<VillagerTrades.ItemListing> LEVEL_3 = List.of(
         (entity, randomSource) -> new MerchantOffer(
             new ItemCost(Items.EMERALD, 15),
             new ItemStack(AVPItems.BLUEPRINT_M88MOD4_COMBAT_PISTOL.get(), 1),
@@ -86,7 +86,7 @@ public class AVPCommonTrades {
         )
     );
 
-    public static List<VillagerTrades.ItemListing> level4Trades = List.of(
+    public static List<VillagerTrades.ItemListing> LEVEL_4 = List.of(
         (entity, randomSource) -> new MerchantOffer(
             new ItemCost(Items.EMERALD, 8),
             new ItemStack(AVPArmorItems.TACTICAL_CAMO_BOOTS.get(), 1),
@@ -110,7 +110,7 @@ public class AVPCommonTrades {
         )
     );
 
-    public static List<VillagerTrades.ItemListing> level5Trades = List.of(
+    public static List<VillagerTrades.ItemListing> LEVEL_5 = List.of(
         (entity, randomSource) -> new MerchantOffer(
             new ItemCost(Items.EMERALD, 25),
             new ItemStack(AVPBlocks.SENTRY_TURRET.get(), 1),

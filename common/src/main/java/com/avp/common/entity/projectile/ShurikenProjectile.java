@@ -11,38 +11,28 @@ import org.jetbrains.annotations.NotNull;
 
 import com.avp.common.entity.type.AVPEntityTypes;
 import com.avp.common.item.AVPItems;
-import com.avp.common.util.ItemGoalUtil;
 import com.avp.server.BlockBreakProgressManager;
 
-public class SmartDiscItemEntity extends ThrowableItemProjectile {
+public class ShurikenProjectile extends ThrowableItemProjectile {
 
-    private boolean dealtDamage;
-
-    public SmartDiscItemEntity(EntityType<? extends ThrowableItemProjectile> entityType, Level level) {
+    public ShurikenProjectile(EntityType<? extends ThrowableItemProjectile> entityType, Level level) {
         super(entityType, level);
     }
 
-    public SmartDiscItemEntity(Level level, LivingEntity livingEntity) {
-        super(AVPEntityTypes.SMART_DISC.get(), livingEntity, level);
+    public ShurikenProjectile(Level level, LivingEntity livingEntity) {
+        super(AVPEntityTypes.SHURIKEN.get(), livingEntity, level);
     }
 
     @Override
     protected @NotNull Item getDefaultItem() {
-        return AVPItems.SMART_DISC.get();
+        return AVPItems.SHURIKEN.get();
     }
 
     @Override
     public void tick() {
         super.tick();
-        if (this.getOwner() == null)
-            this.kill();
         if (this.tickCount > 300)
             this.kill();
-        if (!this.dealtDamage) {
-            ItemGoalUtil.trackToLivingEntity(this, 0.5, false);
-        } else {
-            ItemGoalUtil.trackToOwnerEntity(this);
-        }
     }
 
     @Override
@@ -53,20 +43,15 @@ public class SmartDiscItemEntity extends ThrowableItemProjectile {
                 result.getBlockPos(),
                 2.0F
             );
-            this.dealtDamage = true;
+            this.discard();
         }
         super.onHitBlock(result);
     }
 
     @Override
     protected void onHitEntity(@NotNull EntityHitResult result) {
-        if (result.getEntity() instanceof LivingEntity livingEntity && getOwner() != null && livingEntity != getOwner()) {
-            livingEntity.hurt(
-                damageSources().thrown(getOwner(), livingEntity),
-                5.0F
-            );
-            this.dealtDamage = true;
-        }
+        if (result.getEntity() instanceof LivingEntity livingEntity && getOwner() != null)
+            livingEntity.hurt(damageSources().thrown(getOwner(), livingEntity), 5.0F);
         super.onHitEntity(result);
     }
 }
