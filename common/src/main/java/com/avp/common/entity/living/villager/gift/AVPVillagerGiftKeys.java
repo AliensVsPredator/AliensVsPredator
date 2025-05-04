@@ -9,12 +9,12 @@ import com.avp.AVPResources;
 
 public class AVPVillagerGiftKeys {
 
-    public static final ResourceKey<LootTable> COMMISSARY_GIFT_LOOT_TABLE = create("gameplay/hero_of_the_village/commissary_gift");
+    public static final ResourceKey<LootTable> COMMISSARY_GIFT_LOOT_TABLE = create("commissary_gift");
 
-    private static @NotNull ResourceKey<LootTable> create(String path) {
+    private static @NotNull ResourceKey<LootTable> create(String id) {
         return ResourceKey.create(
             Registries.LOOT_TABLE,
-            AVPResources.location(path)
+            AVPResources.location("gameplay/hero_of_the_village/" + id)
         );
     }
 }
