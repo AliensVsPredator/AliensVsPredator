@@ -7,7 +7,8 @@
 - N/A
 
 ## ♻️ Changes
-- N/A
+- Reduced overall block damage dealt by acid by 80%.
+  - Acid's block damage still scales with the "strength" of acid, which increases when acid entities overlap.
 
 ## 🐞 Fixes
 - Fixed facehuggers and xenomorphs lunging towards targets even if they aren't looking towards the target.

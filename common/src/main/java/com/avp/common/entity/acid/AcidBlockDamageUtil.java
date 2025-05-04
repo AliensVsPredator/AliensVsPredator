@@ -40,7 +40,7 @@ public class AcidBlockDamageUtil {
                 level.setBlockAndUpdate(blockPos, Blocks.FIRE.defaultBlockState());
             }
 
-            BlockBreakProgressManager.damage(level, blockPos, acid.getMultiplier());
+            BlockBreakProgressManager.damage(level, blockPos, 0.2F * acid.getMultiplier());
         }
 
         if (acid.tickCount % (acid.getRandom().nextInt(100) + 10) == 0) {
