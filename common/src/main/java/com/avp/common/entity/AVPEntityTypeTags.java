@@ -16,6 +16,8 @@ public record AVPEntityTypeTags() {
 
     public static final TagKey<EntityType<?>> ANIMALS = create("animals");
 
+    public static final TagKey<EntityType<?>> HATED_BY_XENOMORPHS = create("hated_by_xenomorphs");
+
     public static final TagKey<EntityType<?>> HIVE_ALIENS = create("hive_aliens");
 
     public static final TagKey<EntityType<?>> HOSTS = create("hosts");

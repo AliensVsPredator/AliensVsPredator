@@ -14,8 +14,6 @@ import java.util.Objects;
 import com.avp.common.block.AVPBlockTags;
 import com.avp.common.entity.AVPEntityTypeTags;
 import com.avp.common.entity.living.alien.Alien;
-import com.avp.common.entity.living.human.marine.Marine;
-import com.avp.common.entity.living.yautja.Yautja;
 
 public class AlienPredicates {
 
@@ -120,15 +118,16 @@ public class AlienPredicates {
         var baseBlockState = potentialTarget.level().getBlockState(basePos);
         var belowBlockState = potentialTarget.level().getBlockState(belowPos);
 
-        // Attack targets that are standing on resin.
-        // TODO: Eventually remove this once hive mechanics are added.
         return baseBlockState.is(AVPBlockTags.RESIN) || belowBlockState.is(AVPBlockTags.RESIN);
     }
 
     private static boolean isHated(@NotNull Alien alien, @NotNull LivingEntity potentialTarget) {
-        return (potentialTarget instanceof Player && !AVPPredicates.IS_IMMORTAL.test(potentialTarget))
-            || potentialTarget instanceof Yautja
-            || potentialTarget instanceof Marine
+        if (AVPPredicates.IS_IMMORTAL.test(potentialTarget)) {
+            // If the target is immortal, then alien can't "hate" them.
+            return false;
+        }
+
+        return potentialTarget.getType().is(AVPEntityTypeTags.HATED_BY_XENOMORPHS)
             || isTargetingHiveMember(alien, potentialTarget);
     }
 

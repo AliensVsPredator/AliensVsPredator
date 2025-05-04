@@ -1,9 +1,5 @@
 package com.avp.fabric.data.tag;
 
-import com.avp.common.entity.AVPEntityTypeTags;
-import com.avp.common.entity.type.AVPEntityTypes;
-import com.avp.fabric.data.compatibility.gigeresque.GigeresqueConstants;
-import com.avp.fabric.data.compatibility.stellaris.StellarisConstants;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
 import net.minecraft.core.HolderLookup;
@@ -11,6 +7,11 @@ import net.minecraft.tags.EntityTypeTags;
 import net.minecraft.world.entity.EntityType;
 
 import java.util.concurrent.CompletableFuture;
+
+import com.avp.common.entity.AVPEntityTypeTags;
+import com.avp.common.entity.type.AVPEntityTypes;
+import com.avp.fabric.data.compatibility.gigeresque.GigeresqueConstants;
+import com.avp.fabric.data.compatibility.stellaris.StellarisConstants;
 
 public class AVPEntityTypeTagProvider extends FabricTagProvider.EntityTypeTagProvider {
 
@@ -24,6 +25,7 @@ public class AVPEntityTypeTagProvider extends FabricTagProvider.EntityTypeTagPro
         addAcidImmune();
         addAliens();
         addAnimals();
+        addHatedByXenomorphs();
         addHiveAliens();
         addHosts();
         addHumanoids();
@@ -40,6 +42,14 @@ public class AVPEntityTypeTagProvider extends FabricTagProvider.EntityTypeTagPro
         addXenomorphs();
 
         addCompatibilityTags();
+    }
+
+    private void addHatedByXenomorphs() {
+        getOrCreateTagBuilder(AVPEntityTypeTags.HATED_BY_XENOMORPHS)
+            .addTag(AVPEntityTypeTags.PREDATORS)
+            .add(EntityType.PLAYER)
+            // TODO: Add a "humans" tag here that includes the marine.
+            .add(AVPEntityTypes.MARINE.get());
     }
 
     private void addPredators() {

@@ -16,7 +16,8 @@
 - Fixed royal aliens not being tagged as aliens.
 
 ## 🛠 Data Pack
-- Updated `#avp:aliens` entity tag to include missing `#avp:royal_aliens`.
+- Added `#avp:hated_by_xenomorphs` entity type tag. Includes players, marines and predators.
+- Updated `#avp:aliens` entity type tag to include missing `#avp:royal_aliens`.
 
 ## 🔬 Technical Changes
 - N/A
