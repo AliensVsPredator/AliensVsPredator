@@ -10,6 +10,7 @@
 - N/A
 
 ## 🐞 Fixes
+- Fixed facehuggers and xenomorphs lunging towards targets even if they aren't looking towards the target.
 - Fixed irradiated queens laying eggs when they shouldn't.
 - Fixed persistence not carrying over when an alien grows into the next stage.
 - Fixed royal aliens not being acid immune.

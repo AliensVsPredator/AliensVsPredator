@@ -1,5 +1,6 @@
 package com.avp.common.ai.goal.combat;
 
+import net.minecraft.commands.arguments.EntityAnchorArgument;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.goal.Goal;
 import org.jetbrains.annotations.Nullable;
@@ -77,20 +78,25 @@ public class LungeAtTargetGoal extends Goal {
     public void start() {
         super.start();
 
-        if (mob.getTarget() != null) {
-            mob.getLookControl().setLookAt(mob.getTarget(), 180.0F, 180.0F);
+        var target = mob.getTarget();
+
+        if (target != null) {
+            mob.lookAt(EntityAnchorArgument.Anchor.EYES, target.getEyePosition());
+            mob.getLookControl().setLookAt(target);
         }
     }
 
     @Override
     public void tick() {
-        if (mob.getTarget() == null) {
+        var target = mob.getTarget();
+
+        if (target == null) {
             return;
         }
 
-        mob.getLookControl().setLookAt(mob.getTarget(), 180.0F, 180.0F);
+        mob.lookAt(EntityAnchorArgument.Anchor.EYES, target.getEyePosition());
+        mob.getLookControl().setLookAt(target);
 
-        var target = mob.getTarget();
         var currentDistanceToTarget = mob.distanceTo(target);
 
         if (distanceToTarget == DEFAULT_DISTANCE_TARGET) {
