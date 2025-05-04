@@ -15,6 +15,8 @@
 - Fixed persistence not carrying over when an alien grows into the next stage.
 - Fixed royal aliens not being acid immune.
 - Fixed royal aliens not being tagged as aliens.
+- Fixed xenomorphs lunging in-place while attacking a target.
+  - Fixed by increasing their minimum horizontal lunge distance check from 1 block to 6 blocks.
 
 ## 🛠 Data Pack
 - Added `#avp:hated_by_xenomorphs` entity type tag. Includes players, marines and predators.

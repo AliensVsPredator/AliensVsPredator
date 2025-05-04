@@ -53,7 +53,7 @@ public class Drone extends Xenomorph {
     @Override
     protected void registerGoals() {
         super.registerGoals();
-        goalSelector.addGoal(3, new LungeAtTargetGoal(this, 0.05F, 20 * 7, 1, 12).setOnLungeCallback(this::runLungeAnimation));
+        goalSelector.addGoal(3, new LungeAtTargetGoal(this, 0.05F, 20 * 7, 6, 12).setOnLungeCallback(this::runLungeAnimation));
     }
 
     @Override

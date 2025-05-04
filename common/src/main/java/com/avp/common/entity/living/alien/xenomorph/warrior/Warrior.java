@@ -57,7 +57,7 @@ public class Warrior extends Xenomorph {
     @Override
     protected void registerGoals() {
         super.registerGoals();
-        goalSelector.addGoal(3, new LungeAtTargetGoal(this, 0.1F, 20 * 5, 1, 15).setOnLungeCallback(this::runLungeAnimation));
+        goalSelector.addGoal(3, new LungeAtTargetGoal(this, 0.1F, 20 * 5, 6, 15).setOnLungeCallback(this::runLungeAnimation));
     }
 
     @Override
