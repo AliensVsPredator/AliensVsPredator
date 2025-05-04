@@ -29,8 +29,10 @@ import com.avp.common.ai.goal.StrollAroundInWaterGoal;
 import com.avp.common.ai.goal.combat.DelayedAttackGoal;
 import com.avp.common.ai.goal.combat.UseItemGoal;
 import com.avp.common.config.AVPConfig;
+import com.avp.common.entity.living.yautja.manager.YautjaMaskManager;
+import com.avp.common.entity.living.yautja.manager.YautjaNavigationManager;
+import com.avp.common.entity.living.yautja.util.YautjaPredicates;
 import com.avp.common.item.AVPItems;
-import com.avp.common.util.YautjaPredicates;
 
 public class Yautja extends Monster {
 

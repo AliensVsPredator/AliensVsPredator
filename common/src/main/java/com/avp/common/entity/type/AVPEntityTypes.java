@@ -10,7 +10,6 @@ import java.util.function.BiFunction;
 
 import com.avp.common.entity.AVPMobCategories;
 import com.avp.common.entity.acid.Acid;
-import com.avp.common.entity.gene.GeneKeys;
 import com.avp.common.entity.living.alien.Alien;
 import com.avp.common.entity.living.alien.chestburster.Chestburster;
 import com.avp.common.entity.living.alien.ovamorph.Ovamorph;
@@ -19,6 +18,7 @@ import com.avp.common.entity.living.alien.xenomorph.drone.Drone;
 import com.avp.common.entity.living.alien.xenomorph.praetorian.Praetorian;
 import com.avp.common.entity.living.alien.xenomorph.queen.Queen;
 import com.avp.common.entity.living.alien.xenomorph.warrior.Warrior;
+import com.avp.common.entity.living.gene.GeneKeys;
 import com.avp.common.entity.living.human.EyeColorGenerator;
 import com.avp.common.entity.living.human.HairColorGenerator;
 import com.avp.common.entity.living.human.SkinColorGenerator;

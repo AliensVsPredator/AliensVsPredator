@@ -37,20 +37,21 @@ import java.util.function.BiConsumer;
 import com.avp.common.ai.goal.DigToTargetGoal;
 import com.avp.common.ai.goal.StrollAroundInWaterGoal;
 import com.avp.common.ai.goal.XenoFloatGoal;
-import com.avp.common.entity.gene.GeneKeys;
-import com.avp.common.entity.gene.behavior.GeneDecoders;
 import com.avp.common.entity.living.alien.Alien;
+import com.avp.common.entity.living.alien.manager.GrowthManager;
+import com.avp.common.entity.living.alien.manager.ResinManager;
+import com.avp.common.entity.living.alien.manager.resin.ResinData;
+import com.avp.common.entity.living.alien.manager.resin.ResinProducer;
+import com.avp.common.entity.living.alien.util.AlienPredicates;
+import com.avp.common.entity.living.alien.util.AlienVariantUtil;
+import com.avp.common.entity.living.alien.xenomorph.manager.XenomorphNavigationManager;
+import com.avp.common.entity.living.alien.xenomorph.util.XenomorphGrowthUtil;
+import com.avp.common.entity.living.gene.GeneKeys;
+import com.avp.common.entity.living.gene.behavior.GeneDecoders;
+import com.avp.common.entity.living.manager.CrawlingManager;
+import com.avp.common.entity.living.manager.VibrationSystemManager;
 import com.avp.common.lifecycle.registry.AlienLifecycleRegistry;
-import com.avp.common.manager.CrawlingManager;
-import com.avp.common.manager.GrowthManager;
-import com.avp.common.manager.VibrationSystemManager;
 import com.avp.common.sound.AVPSoundEvents;
-import com.avp.common.util.AlienPredicates;
-import com.avp.common.util.AlienVariantUtil;
-import com.avp.common.util.XenomorphGrowthUtil;
-import com.avp.common.util.resin.ResinData;
-import com.avp.common.util.resin.ResinManager;
-import com.avp.common.util.resin.ResinProducer;
 
 public abstract class Xenomorph extends Alien implements ResinProducer {
 
@@ -160,7 +161,7 @@ public abstract class Xenomorph extends Alien implements ResinProducer {
     }
 
     @Override
-    public void travel(Vec3 vec3) {
+    public void travel(@NotNull Vec3 vec3) {
         if (isControlledByLocalInstance() && isUnderWater()) {
             moveRelative(0.01F, vec3);
             move(MoverType.SELF, getDeltaMovement());
@@ -184,7 +185,7 @@ public abstract class Xenomorph extends Alien implements ResinProducer {
     }
 
     @Override
-    public boolean startRiding(Entity entity, boolean force) {
+    public boolean startRiding(@NotNull Entity entity, boolean force) {
         if (entity instanceof Boat || entity instanceof Minecart) {
             return false;
         }
@@ -212,13 +213,13 @@ public abstract class Xenomorph extends Alien implements ResinProducer {
 
     // Prevents the xenomorph from having a bias towards pathing in darker areas.
     @Override
-    public float getWalkTargetValue(BlockPos blockPos, LevelReader levelReader) {
+    public float getWalkTargetValue(@NotNull BlockPos blockPos, @NotNull LevelReader levelReader) {
         return 0.0F;
     }
 
     // Reduces how much FLOWING water slows down xenomorphs.
     @Override
-    public boolean updateFluidHeightAndDoFluidPushing(TagKey<Fluid> tagKey, double d) {
+    public boolean updateFluidHeightAndDoFluidPushing(@NotNull TagKey<Fluid> tagKey, double d) {
         var modifier = d;
 
         if (Objects.equals(tagKey, FluidTags.WATER)) {
@@ -261,7 +262,7 @@ public abstract class Xenomorph extends Alien implements ResinProducer {
     }
 
     @Override
-    protected @NotNull SoundEvent getHurtSound(DamageSource damageSource) {
+    protected @NotNull SoundEvent getHurtSound(@NotNull DamageSource damageSource) {
         return AVPSoundEvents.ENTITY_XENOMORPH_HURT.get();
     }
 
@@ -282,7 +283,7 @@ public abstract class Xenomorph extends Alien implements ResinProducer {
     }
 
     @Override
-    public void onSyncedDataUpdated(EntityDataAccessor<?> entityDataAccessor) {
+    public void onSyncedDataUpdated(@NotNull EntityDataAccessor<?> entityDataAccessor) {
         super.onSyncedDataUpdated(entityDataAccessor);
 
         if (entityDataAccessor.equals(IS_CRAWLING)) {
@@ -307,11 +308,11 @@ public abstract class Xenomorph extends Alien implements ResinProducer {
         return crawlingManager;
     }
 
-    void setMoveControl(MoveControl moveControl) {
+    public void setMoveControl(MoveControl moveControl) {
         this.moveControl = moveControl;
     }
 
-    void setNavigation(PathNavigation navigation) {
+    public void setNavigation(PathNavigation navigation) {
         this.navigation = navigation;
     }
 }

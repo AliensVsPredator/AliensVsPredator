@@ -7,10 +7,10 @@ import java.util.concurrent.TimeUnit;
 
 import com.avp.common.entity.AVPEntityTypeTags;
 import com.avp.common.entity.living.alien.ovamorph.Ovamorph;
+import com.avp.common.entity.living.alien.util.AlienPredicates;
+import com.avp.common.entity.living.alien.util.AlienVariantUtil;
 import com.avp.common.entity.living.alien.xenomorph.queen.Queen;
 import com.avp.common.sound.AVPSoundEvents;
-import com.avp.common.util.AlienPredicates;
-import com.avp.common.util.AlienVariantUtil;
 
 public class QueenLayEggGoal extends Goal {
 

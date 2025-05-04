@@ -2,9 +2,9 @@ package com.avp.common.hive.ai.task.impl;
 
 import net.minecraft.server.level.ServerBossEvent;
 
+import com.avp.common.entity.living.alien.util.AlienPredicates;
 import com.avp.common.hive.Hive;
 import com.avp.common.hive.ai.task.HiveTask;
-import com.avp.common.util.AlienPredicates;
 
 public class UpdateHiveBossBarTask extends HiveTask {
 

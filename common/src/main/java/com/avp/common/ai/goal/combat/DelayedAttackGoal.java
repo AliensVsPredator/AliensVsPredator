@@ -8,7 +8,7 @@ import net.minecraft.world.entity.ai.goal.MeleeAttackGoal;
 import java.util.EnumSet;
 
 import com.avp.common.entity.living.alien.Alien;
-import com.avp.common.util.AlienPredicates;
+import com.avp.common.entity.living.alien.util.AlienPredicates;
 
 public class DelayedAttackGoal extends MeleeAttackGoal {
 

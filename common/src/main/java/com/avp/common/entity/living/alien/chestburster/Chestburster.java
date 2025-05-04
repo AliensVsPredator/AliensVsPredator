@@ -12,20 +12,20 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import com.avp.AVP;
-import com.avp.common.entity.gene.GeneKeys;
-import com.avp.common.entity.gene.behavior.GeneDecoders;
 import com.avp.common.entity.living.alien.Alien;
+import com.avp.common.entity.living.alien.manager.GrowthManager;
+import com.avp.common.entity.living.alien.manager.ResinManager;
+import com.avp.common.entity.living.alien.manager.resin.ResinData;
+import com.avp.common.entity.living.alien.manager.resin.ResinProducer;
+import com.avp.common.entity.living.alien.util.AlienPredicates;
+import com.avp.common.entity.living.alien.util.AlienVariantUtil;
 import com.avp.common.entity.living.alien.xenomorph.Xenomorph;
+import com.avp.common.entity.living.alien.xenomorph.util.XenomorphGrowthUtil;
+import com.avp.common.entity.living.gene.GeneKeys;
+import com.avp.common.entity.living.gene.behavior.GeneDecoders;
 import com.avp.common.entity.type.AVPEntityTypes;
 import com.avp.common.lifecycle.registry.AlienLifecycleRegistry;
-import com.avp.common.manager.GrowthManager;
 import com.avp.common.util.AVPPredicates;
-import com.avp.common.util.AlienPredicates;
-import com.avp.common.util.AlienVariantUtil;
-import com.avp.common.util.XenomorphGrowthUtil;
-import com.avp.common.util.resin.ResinData;
-import com.avp.common.util.resin.ResinManager;
-import com.avp.common.util.resin.ResinProducer;
 
 public class Chestburster extends Alien implements ResinProducer {
 
