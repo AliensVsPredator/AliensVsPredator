@@ -1,5 +1,9 @@
 package com.avp.fabric.data.tag;
 
+import com.avp.common.entity.AVPEntityTypeTags;
+import com.avp.common.entity.type.AVPEntityTypes;
+import com.avp.fabric.data.compatibility.gigeresque.GigeresqueConstants;
+import com.avp.fabric.data.compatibility.stellaris.StellarisConstants;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
 import net.minecraft.core.HolderLookup;
@@ -7,11 +11,6 @@ import net.minecraft.tags.EntityTypeTags;
 import net.minecraft.world.entity.EntityType;
 
 import java.util.concurrent.CompletableFuture;
-
-import com.avp.common.entity.AVPEntityTypeTags;
-import com.avp.common.entity.type.AVPEntityTypes;
-import com.avp.fabric.data.compatibility.gigeresque.GigeresqueConstants;
-import com.avp.fabric.data.compatibility.stellaris.StellarisConstants;
 
 public class AVPEntityTypeTagProvider extends FabricTagProvider.EntityTypeTagProvider {
 
@@ -21,20 +20,66 @@ public class AVPEntityTypeTagProvider extends FabricTagProvider.EntityTypeTagPro
 
     @Override
     protected void addTags(HolderLookup.Provider wrapperLookup) {
-        addHosts();
-        addIrradiatedAliens();
         addAberrantAliens();
-        addNetherAliens();
-        addNormalAliens();
-        addAliens();
-        addHiveAliens();
-        addRoyalAliens();
-        addParasites();
-        addOvamorphs();
-        addXenomorphs();
         addAcidImmune();
+        addAliens();
+        addAnimals();
+        addHiveAliens();
+        addHosts();
+        addHumanoids();
+        addIrradiatedAliens();
+        addNetherAliens();
+        addNetherCreatures();
+        addNormalAliens();
+        addOvamorphs();
+        addParasites();
+        addPredators();
+        addRadiationResistant();
         addRemovableVanillaSpawns();
+        addRoyalAliens();
+        addXenomorphs();
 
+        addCompatibilityTags();
+    }
+
+    private void addPredators() {
+        getOrCreateTagBuilder(AVPEntityTypeTags.PREDATORS)
+            .add(AVPEntityTypes.YAUTJA.get());
+    }
+
+    private void addRadiationResistant() {
+        getOrCreateTagBuilder(AVPEntityTypeTags.RADIATION_RESISTANT)
+            .addOptionalTag(EntityTypeTags.UNDEAD)
+            .addTag(AVPEntityTypeTags.XENOMORPHS)
+            .addTag(AVPEntityTypeTags.PREDATORS)
+            .add(EntityType.CREEPER);
+    }
+
+    private void addNetherCreatures() {
+        getOrCreateTagBuilder(AVPEntityTypeTags.NETHER_CREATURES)
+            .add(
+                EntityType.HOGLIN,
+                EntityType.PIGLIN,
+                EntityType.PIGLIN_BRUTE,
+                EntityType.STRIDER
+            );
+    }
+
+    private void addHumanoids() {
+        getOrCreateTagBuilder(AVPEntityTypeTags.HUMANOIDS)
+            .addOptionalTag(EntityTypeTags.ILLAGER)
+            .add(
+                EntityType.PIGLIN,
+                EntityType.PIGLIN_BRUTE,
+                EntityType.PLAYER,
+                EntityType.VILLAGER,
+                EntityType.WANDERING_TRADER,
+                EntityType.WITCH,
+                AVPEntityTypes.MARINE.get()
+            );
+    }
+
+    private void addAnimals() {
         getOrCreateTagBuilder(AVPEntityTypeTags.ANIMALS)
             .add(
                 EntityType.CAMEL,
@@ -55,37 +100,6 @@ public class AVPEntityTypeTagProvider extends FabricTagProvider.EntityTypeTagPro
                 EntityType.TRADER_LLAMA,
                 EntityType.WOLF
             );
-
-        getOrCreateTagBuilder(AVPEntityTypeTags.HUMANOIDS)
-            .addOptionalTag(EntityTypeTags.ILLAGER)
-            .add(
-                EntityType.PIGLIN,
-                EntityType.PIGLIN_BRUTE,
-                EntityType.PLAYER,
-                EntityType.VILLAGER,
-                EntityType.WANDERING_TRADER,
-                EntityType.WITCH,
-                AVPEntityTypes.MARINE.get()
-            );
-
-        getOrCreateTagBuilder(AVPEntityTypeTags.NETHER_CREATURES)
-            .add(
-                EntityType.HOGLIN,
-                EntityType.PIGLIN,
-                EntityType.PIGLIN_BRUTE,
-                EntityType.STRIDER
-            );
-
-        getOrCreateTagBuilder(AVPEntityTypeTags.RADIATION_RESISTANT)
-            .addOptionalTag(EntityTypeTags.UNDEAD)
-            .addTag(AVPEntityTypeTags.XENOMORPHS)
-            .addTag(AVPEntityTypeTags.PREDATORS)
-            .add(EntityType.CREEPER);
-
-        getOrCreateTagBuilder(AVPEntityTypeTags.PREDATORS)
-            .add(AVPEntityTypes.YAUTJA.get());
-
-        addCompatibilityTags();
     }
 
     private void addXenomorphs() {
