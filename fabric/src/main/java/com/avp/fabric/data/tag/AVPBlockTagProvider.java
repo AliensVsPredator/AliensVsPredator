@@ -568,7 +568,7 @@ public class AVPBlockTagProvider extends FabricTagProvider.BlockTagProvider {
 
     private void addCompatibilityTags() {
         getOrCreateTagBuilder(AVPBlockTags.ACID_IMMUNE)
-            .addOptionalTag(GigeresqueConstants.ACID_RESISTANT_BLOCK_TAG);
+            .addOptionalTag(GigeresqueConstants.ACID_RESISTANT_BLOCKS);
 
         getOrCreateTagBuilder(GigeresqueConstants.ACID_RESISTANT_BLOCKS)
             .addTag(AVPBlockTags.TITANIUM);
