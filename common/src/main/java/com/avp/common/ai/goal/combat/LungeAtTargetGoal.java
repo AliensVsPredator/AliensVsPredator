@@ -1,5 +1,6 @@
 package com.avp.common.ai.goal.combat;
 
+import net.minecraft.commands.arguments.EntityAnchorArgument;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.goal.Goal;
 import org.jetbrains.annotations.Nullable;
@@ -77,20 +78,25 @@ public class LungeAtTargetGoal extends Goal {
     public void start() {
         super.start();
 
-        if (mob.getTarget() != null) {
-            mob.getLookControl().setLookAt(mob.getTarget(), 180.0F, 180.0F);
+        var target = mob.getTarget();
+
+        if (target != null) {
+            mob.lookAt(EntityAnchorArgument.Anchor.EYES, target.getEyePosition());
+            mob.getLookControl().setLookAt(target);
         }
     }
 
     @Override
     public void tick() {
-        if (mob.getTarget() == null) {
+        var target = mob.getTarget();
+
+        if (target == null) {
             return;
         }
 
-        mob.getLookControl().setLookAt(mob.getTarget(), 180.0F, 180.0F);
+        mob.lookAt(EntityAnchorArgument.Anchor.EYES, target.getEyePosition());
+        mob.getLookControl().setLookAt(target);
 
-        var target = mob.getTarget();
         var currentDistanceToTarget = mob.distanceTo(target);
 
         if (distanceToTarget == DEFAULT_DISTANCE_TARGET) {
@@ -167,11 +173,38 @@ public class LungeAtTargetGoal extends Goal {
             return false;
         }
 
-        var distanceToHost = mob.distanceToSqr(target);
+        // Compute squared horizontal distance (ignore Y-axis).
+        var dx = mob.getX() - target.getX();
+        var dz = mob.getZ() - target.getZ();
+        var horizontalDistanceSqr = dx * dx + dz * dz;
 
+        // TODO: Store these instead of constantly recomputing.
         var minimumRangeSquared = minLungeRange * minLungeRange;
         var maximumRangeSquared = maxLungeRange * maxLungeRange;
 
-        return distanceToHost <= maximumRangeSquared && distanceToHost >= minimumRangeSquared;
+        // Always reject targets too far horizontally.
+        var isTargetTooFarAwayHorizontally = horizontalDistanceSqr > maximumRangeSquared;
+
+        if (isTargetTooFarAwayHorizontally) {
+            return false;
+        }
+
+        // Vertical distance (Y only).
+        var dy = Math.abs(mob.getY() - target.getY());
+        var verticalDistanceSqr = dy * dy;
+
+        var isTargetTooFarAwayVertically = verticalDistanceSqr > maximumRangeSquared;
+
+        if (isTargetTooFarAwayVertically) {
+            return false;
+        }
+
+        var minVerticalLungeRange = mob.getBbHeight() * mob.getBbHeight();
+
+        var isTargetTooCloseHorizontally = horizontalDistanceSqr < minimumRangeSquared;
+        var isTargetTooCloseVertically = dy <= minVerticalLungeRange;
+
+        // Allow targets outside minimum horizontal range if they are far enough vertically.
+        return !isTargetTooCloseHorizontally || !isTargetTooCloseVertically;
     }
 }

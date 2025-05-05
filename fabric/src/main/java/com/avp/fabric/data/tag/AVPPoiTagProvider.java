@@ -9,7 +9,7 @@ import net.minecraft.world.entity.ai.village.poi.PoiType;
 
 import java.util.concurrent.CompletableFuture;
 
-import com.avp.common.profession.AVPPOIKeys;
+import com.avp.common.entity.living.villager.poi.AVPVillagerPoiKeys;
 
 public class AVPPoiTagProvider extends FabricTagProvider<PoiType> {
 
@@ -21,7 +21,7 @@ public class AVPPoiTagProvider extends FabricTagProvider<PoiType> {
     protected void addTags(HolderLookup.Provider wrapperLookup) {
         getOrCreateTagBuilder(PoiTypeTags.ACQUIRABLE_JOB_SITE)
             .addOptional(
-                AVPPOIKeys.COMMISSARY_POI_KEY
+                AVPVillagerPoiKeys.COMMISSARY_POI_KEY
             );
     }
 }

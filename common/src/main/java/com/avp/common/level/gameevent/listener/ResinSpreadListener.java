@@ -11,8 +11,8 @@ import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 
 import com.avp.common.block.entity.resin_node.ResinSpreader;
+import com.avp.common.entity.living.alien.manager.resin.ResinProducer;
 import com.avp.common.level.gameevent.AVPGameEvents;
-import com.avp.common.util.resin.ResinProducer;
 
 public class ResinSpreadListener implements GameEventListener {
 

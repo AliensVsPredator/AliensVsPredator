@@ -21,14 +21,14 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import com.avp.common.entity.gene.GeneProviders;
 import com.avp.common.entity.living.Host;
 import com.avp.common.entity.living.alien.Alien;
 import com.avp.common.entity.living.alien.parasite.Parasite;
+import com.avp.common.entity.living.alien.util.AlienVariantUtil;
+import com.avp.common.entity.living.gene.GeneProviders;
+import com.avp.common.entity.living.manager.GeneManager;
 import com.avp.common.lifecycle.infection.AlienInfection;
 import com.avp.common.lifecycle.registry.AlienInfectionRegistry;
-import com.avp.common.manager.GeneManager;
-import com.avp.common.util.AlienVariantUtil;
 
 @Mixin(LivingEntity.class)
 public abstract class MixinLivingEntity_GrowEmbryo extends Entity implements Host {

@@ -30,14 +30,14 @@ import org.jetbrains.annotations.Nullable;
 import com.avp.AVP;
 import com.avp.common.config.AVPConfig;
 import com.avp.common.effect.AVPMobEffectTags;
-import com.avp.common.entity.gene.GeneKeys;
+import com.avp.common.entity.living.alien.manager.HiveManager;
+import com.avp.common.entity.living.alien.util.AcidBleedUtil;
+import com.avp.common.entity.living.alien.util.AlienHurtUtil;
+import com.avp.common.entity.living.alien.util.AlienVariantUtil;
+import com.avp.common.entity.living.gene.GeneKeys;
+import com.avp.common.entity.living.manager.GeneManager;
+import com.avp.common.entity.util.MovementAnalyzer;
 import com.avp.common.hive.Hive;
-import com.avp.common.manager.GeneManager;
-import com.avp.common.manager.HiveManager;
-import com.avp.common.util.AcidBleedUtil;
-import com.avp.common.util.AlienHurtUtil;
-import com.avp.common.util.AlienVariantUtil;
-import com.avp.common.util.MovementAnalyzer;
 import com.avp.common.worldgen.biome.AVPBiomes;
 
 public abstract class Alien extends Monster {

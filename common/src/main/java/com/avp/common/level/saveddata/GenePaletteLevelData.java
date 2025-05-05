@@ -11,7 +11,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.saveddata.SavedData;
 import org.jetbrains.annotations.NotNull;
 
-import com.avp.common.entity.gene.GeneKey;
+import com.avp.common.entity.living.gene.GeneKey;
 
 public class GenePaletteLevelData extends SavedData {
 

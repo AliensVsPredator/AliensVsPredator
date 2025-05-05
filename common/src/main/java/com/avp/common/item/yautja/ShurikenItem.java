@@ -12,7 +12,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
-import com.avp.common.entity.projectile.ShurikenItemEntity;
+import com.avp.common.entity.projectile.ShurikenProjectile;
 
 public class ShurikenItem extends Item {
 
@@ -44,7 +44,7 @@ public class ShurikenItem extends Item {
             );
 
             if (!level.isClientSide) {
-                var shurikenItemEntity = new ShurikenItemEntity(level, player);
+                var shurikenItemEntity = new ShurikenProjectile(level, player);
                 shurikenItemEntity.setItem(stack);
                 shurikenItemEntity.setOwner(player);
                 shurikenItemEntity.shootFromRotation(player, player.getXRot(), player.getYRot(), 0.0F, powerForTime * 6.5F, 1.0F);

@@ -17,7 +17,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import com.avp.AVP;
 import com.avp.common.block.AVPBlockTags;
-import com.avp.common.util.AlienVariantUtil;
+import com.avp.common.entity.living.alien.util.AlienVariantUtil;
 
 public class ResonatorBlockEntity extends BlockEntity {
 

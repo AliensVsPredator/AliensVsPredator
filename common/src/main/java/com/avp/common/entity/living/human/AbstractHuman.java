@@ -21,8 +21,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import com.avp.common.config.AVPConfig;
-import com.avp.common.manager.HumanFeatureManager;
-import com.avp.common.util.MovementAnalyzer;
+import com.avp.common.entity.util.MovementAnalyzer;
 
 public abstract class AbstractHuman extends PathfinderMob {
 

@@ -23,12 +23,11 @@ import org.jetbrains.annotations.Nullable;
 
 import com.avp.AVP;
 import com.avp.common.entity.living.alien.Alien;
+import com.avp.common.entity.living.alien.util.AlienVariantUtil;
 import com.avp.common.entity.type.AVPEntityTypes;
 import com.avp.common.item.AVPItems;
-import com.avp.common.manager.HatchManager;
 import com.avp.common.sound.AVPSoundEvents;
 import com.avp.common.util.AVPPredicates;
-import com.avp.common.util.AlienVariantUtil;
 
 public class Ovamorph extends Alien implements Shearable {
 

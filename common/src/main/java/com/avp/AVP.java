@@ -18,6 +18,9 @@ import com.avp.common.component.AVPDataComponents;
 import com.avp.common.config.AVPConfig;
 import com.avp.common.creative_mode_tab.AVPCreativeModeTabs;
 import com.avp.common.effect.AVPMobEffects;
+import com.avp.common.entity.living.villager.poi.AVPVillagerPoiTypes;
+import com.avp.common.entity.living.villager.profession.AVPVillagerProfessions;
+import com.avp.common.entity.living.villager.trade.AVPVillagerTrades;
 import com.avp.common.entity.type.AVPEntityTypes;
 import com.avp.common.fuel.AVPFuelRegistry;
 import com.avp.common.item.AVPArmorItems;
@@ -32,9 +35,6 @@ import com.avp.common.network.AVPPacketDirectionRegistry;
 import com.avp.common.network.AVPServerPacketHandlerRegistry;
 import com.avp.common.particle.AVPParticleTypes;
 import com.avp.common.patrols.MarinePatrolSpawner;
-import com.avp.common.profession.AVPPointOfInterests;
-import com.avp.common.profession.AVPProfessions;
-import com.avp.common.profession.AVPTrades;
 import com.avp.common.recipe.AVPRecipes;
 import com.avp.common.sound.AVPJukeboxSongs;
 import com.avp.common.sound.AVPSoundEvents;
@@ -82,13 +82,13 @@ public class AVP {
         AVPRecipes.initialize();
         AVPMobEffects.initialize();
         AVPBiomes.initialize();
-        AVPPointOfInterests.initialize();
-        AVPProfessions.initialize();
+        AVPVillagerPoiTypes.initialize();
+        AVPVillagerProfessions.initialize();
 
         // Functionality
         AVPCompostingChanceRegistry.initialize();
         AVPFuelRegistry.initialize();
-        AVPTrades.initialize();
+        AVPVillagerTrades.initialize();
     }
 
     /**

@@ -14,11 +14,11 @@ import com.avp.common.ai.goal.DigToTargetGoal;
 import com.avp.common.ai.goal.QueenLayEggGoal;
 import com.avp.common.block.AVPBlockTags;
 import com.avp.common.entity.living.alien.Alien;
+import com.avp.common.entity.living.alien.manager.resin.ResinData;
+import com.avp.common.entity.living.alien.util.AlienVariantUtil;
 import com.avp.common.entity.living.alien.xenomorph.Xenomorph;
 import com.avp.common.entity.type.AVPEntityTypes;
 import com.avp.common.sound.AVPSoundEvents;
-import com.avp.common.util.AlienVariantUtil;
-import com.avp.common.util.resin.ResinData;
 
 public class Queen extends Xenomorph {
 
@@ -101,7 +101,7 @@ public class Queen extends Xenomorph {
     }
 
     @Override
-    protected @NotNull SoundEvent getHurtSound(DamageSource damageSource) {
+    protected @NotNull SoundEvent getHurtSound(@NotNull DamageSource damageSource) {
         return AVPSoundEvents.ENTITY_QUEEN_HURT.get();
     }
 

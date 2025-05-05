@@ -10,8 +10,8 @@ import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.BiConsumer;
 
-import com.avp.common.profession.AVPGifts;
-import com.avp.common.profession.CommissaryGiftLootTable;
+import com.avp.common.entity.living.villager.gift.AVPVillagerGiftKeys;
+import com.avp.common.entity.living.villager.gift.CommissaryGiftLootTable;
 
 public class VillagerLootTableProvider extends SimpleFabricLootTableProvider {
 
@@ -24,6 +24,6 @@ public class VillagerLootTableProvider extends SimpleFabricLootTableProvider {
 
     @Override
     public void generate(BiConsumer<ResourceKey<LootTable>, LootTable.Builder> biConsumer) {
-        biConsumer.accept(AVPGifts.COMMISSARY_GIFT_LOOT_TABLE, CommissaryGiftLootTable.LOOT_TABLE.apply(provider));
+        biConsumer.accept(AVPVillagerGiftKeys.COMMISSARY_GIFT_LOOT_TABLE, CommissaryGiftLootTable.LOOT_TABLE.apply(provider));
     }
 }

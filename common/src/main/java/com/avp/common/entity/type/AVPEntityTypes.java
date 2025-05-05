@@ -10,7 +10,6 @@ import java.util.function.BiFunction;
 
 import com.avp.common.entity.AVPMobCategories;
 import com.avp.common.entity.acid.Acid;
-import com.avp.common.entity.gene.GeneKeys;
 import com.avp.common.entity.living.alien.Alien;
 import com.avp.common.entity.living.alien.chestburster.Chestburster;
 import com.avp.common.entity.living.alien.ovamorph.Ovamorph;
@@ -19,6 +18,7 @@ import com.avp.common.entity.living.alien.xenomorph.drone.Drone;
 import com.avp.common.entity.living.alien.xenomorph.praetorian.Praetorian;
 import com.avp.common.entity.living.alien.xenomorph.queen.Queen;
 import com.avp.common.entity.living.alien.xenomorph.warrior.Warrior;
+import com.avp.common.entity.living.gene.GeneKeys;
 import com.avp.common.entity.living.human.EyeColorGenerator;
 import com.avp.common.entity.living.human.HairColorGenerator;
 import com.avp.common.entity.living.human.SkinColorGenerator;
@@ -29,8 +29,8 @@ import com.avp.common.entity.nuke.MushroomCloudEntity;
 import com.avp.common.entity.nuke.PrimedNuke;
 import com.avp.common.entity.projectile.Flamethrow;
 import com.avp.common.entity.projectile.Rocket;
-import com.avp.common.entity.projectile.ShurikenItemEntity;
-import com.avp.common.entity.projectile.SmartDiscItemEntity;
+import com.avp.common.entity.projectile.ShurikenProjectile;
+import com.avp.common.entity.projectile.SmartDiscProjectile;
 import com.avp.common.entity.projectile.ThrownGrenade;
 import com.avp.common.registry.AVPDeferredHolder;
 import com.avp.service.Services;
@@ -389,15 +389,15 @@ public class AVPEntityTypes {
         EntityType.Builder.of(SentryTurret::new, MobCategory.MISC).sized(1.0F, 1.0F).noSummon()
     );
 
-    public static final AVPDeferredHolder<EntityType<ShurikenItemEntity>> SHURIKEN = register(
+    public static final AVPDeferredHolder<EntityType<ShurikenProjectile>> SHURIKEN = register(
         "shuriken",
-        EntityType.Builder.<ShurikenItemEntity>of(ShurikenItemEntity::new, MobCategory.MISC)
+        EntityType.Builder.<ShurikenProjectile>of(ShurikenProjectile::new, MobCategory.MISC)
             .sized(0.25F, 0.25F)
     );
 
-    public static final AVPDeferredHolder<EntityType<SmartDiscItemEntity>> SMART_DISC = register(
+    public static final AVPDeferredHolder<EntityType<SmartDiscProjectile>> SMART_DISC = register(
         "smart_disc",
-        EntityType.Builder.<SmartDiscItemEntity>of(SmartDiscItemEntity::new, MobCategory.MISC)
+        EntityType.Builder.<SmartDiscProjectile>of(SmartDiscProjectile::new, MobCategory.MISC)
             .sized(0.25F, 0.25F)
     );
 

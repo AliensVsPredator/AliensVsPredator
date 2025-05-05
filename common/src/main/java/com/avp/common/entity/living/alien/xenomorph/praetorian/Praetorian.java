@@ -9,9 +9,9 @@ import org.jetbrains.annotations.Nullable;
 
 import com.avp.AVP;
 import com.avp.common.entity.living.alien.Alien;
+import com.avp.common.entity.living.alien.manager.resin.ResinData;
 import com.avp.common.entity.living.alien.xenomorph.Xenomorph;
 import com.avp.common.entity.type.AVPEntityTypes;
-import com.avp.common.util.resin.ResinData;
 
 public class Praetorian extends Xenomorph {
 
