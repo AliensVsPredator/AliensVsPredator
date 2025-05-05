@@ -143,6 +143,7 @@ public class BlockLootTableProvider extends FabricBlockLootTableProvider {
                 AVPBlocks.ZINC_BLOCK
             ),
             Stream.of(
+                AVPBlocks.DYE_COLOR_TO_CONCRETE_STAIRS,
                 AVPBlocks.DYE_COLOR_TO_CUT_PLASTIC,
                 AVPBlocks.DYE_COLOR_TO_CUT_PLASTIC_STAIRS,
                 AVPBlocks.DYE_COLOR_TO_INDUSTRIAL_CONCRETE,
@@ -192,7 +193,6 @@ public class BlockLootTableProvider extends FabricBlockLootTableProvider {
             ),
             Stream.of(
                 AVPBlocks.DYE_COLOR_TO_CONCRETE_SLAB,
-                AVPBlocks.DYE_COLOR_TO_CONCRETE_STAIRS,
                 AVPBlocks.DYE_COLOR_TO_CUT_PLASTIC_SLAB,
                 AVPBlocks.DYE_COLOR_TO_INDUSTRIAL_CONCRETE_SLAB,
                 AVPBlocks.DYE_COLOR_TO_PADDING_SLAB,
