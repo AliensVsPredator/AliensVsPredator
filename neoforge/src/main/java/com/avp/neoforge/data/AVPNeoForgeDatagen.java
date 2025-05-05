@@ -35,7 +35,7 @@ public class AVPNeoForgeDatagen {
 
     private static final AVPConfig.SpawnConfigs config = AVP.config.spawnConfigs;
 
-    // FIXME: UPDATE TO PROPER ENTITY TYPES AND IF POSSIBLE FIGURE OUT A BRIDGE SERVICE FOR THE ResourceKey, SINCE
+    // FIXME: UPDATE TO IF POSSIBLE FIGURE OUT A BRIDGE SERVICE FOR THE ResourceKey, SINCE
     // ResourceKey<BiomeModifier> IS NEO ONLY
     private static final Lazy<List<AVPSpawnData>> spawnDataList = Lazy.of(
         () -> List.of(
@@ -123,6 +123,7 @@ public class AVPNeoForgeDatagen {
                         var placedFeatures = bootstrap.lookup(Registries.PLACED_FEATURE);
                         var biomes0 = new BiomeFilterRegistryLookup(biomes);
                         var excludedBiomes = HolderSet.direct(biomes.getOrThrow(Biomes.DRIPSTONE_CAVES));
+                        var underGround = GenerationStep.Decoration.UNDERGROUND_ORES;
 
                         for (AVPSpawnData spawnData : spawnDataList.get()) {
                             bootstrap.register(
@@ -154,7 +155,7 @@ public class AVPNeoForgeDatagen {
                             new BiomeModifiers.AddFeaturesBiomeModifier(
                                 biomes.getOrThrow(BiomeTags.IS_OVERWORLD),
                                 HolderSet.direct(placedFeatures.getOrThrow(AVPOres.BAUXITE_MIDDLE.placedFeatureKey())),
-                                GenerationStep.Decoration.UNDERGROUND_ORES
+                                underGround
                             )
                         );
                         bootstrap.register(
@@ -162,7 +163,7 @@ public class AVPNeoForgeDatagen {
                             new BiomeModifiers.AddFeaturesBiomeModifier(
                                 biomes.getOrThrow(BiomeTags.IS_OVERWORLD),
                                 HolderSet.direct(placedFeatures.getOrThrow(AVPOres.BAUXITE_UPPER.placedFeatureKey())),
-                                GenerationStep.Decoration.UNDERGROUND_ORES
+                                underGround
                             )
                         );
                         bootstrap.register(
@@ -170,7 +171,7 @@ public class AVPNeoForgeDatagen {
                             new BiomeModifiers.AddFeaturesBiomeModifier(
                                 biomes.getOrThrow(BiomeTags.IS_OVERWORLD),
                                 HolderSet.direct(placedFeatures.getOrThrow(AVPOres.GALENA.placedFeatureKey())),
-                                GenerationStep.Decoration.UNDERGROUND_ORES
+                                underGround
                             )
                         );
                         bootstrap.register(
@@ -178,7 +179,7 @@ public class AVPNeoForgeDatagen {
                             new BiomeModifiers.AddFeaturesBiomeModifier(
                                 biomes.getOrThrow(BiomeTags.IS_OVERWORLD),
                                 HolderSet.direct(placedFeatures.getOrThrow(AVPOres.LITHIUM.placedFeatureKey())),
-                                GenerationStep.Decoration.UNDERGROUND_ORES
+                                underGround
                             )
                         );
                         bootstrap.register(
@@ -186,7 +187,7 @@ public class AVPNeoForgeDatagen {
                             new BiomeModifiers.AddFeaturesBiomeModifier(
                                 biomes.getOrThrow(BiomeTags.IS_OVERWORLD),
                                 HolderSet.direct(placedFeatures.getOrThrow(AVPOres.MONAZITE.placedFeatureKey())),
-                                GenerationStep.Decoration.UNDERGROUND_ORES
+                                underGround
                             )
                         );
                         bootstrap.register(
@@ -194,7 +195,7 @@ public class AVPNeoForgeDatagen {
                             new BiomeModifiers.AddFeaturesBiomeModifier(
                                 biomes.getOrThrow(BiomeTags.IS_OVERWORLD),
                                 HolderSet.direct(placedFeatures.getOrThrow(AVPOres.SILICON_GRAVEL.placedFeatureKey())),
-                                GenerationStep.Decoration.UNDERGROUND_ORES
+                                underGround
                             )
                         );
                         bootstrap.register(
@@ -202,7 +203,7 @@ public class AVPNeoForgeDatagen {
                             new BiomeModifiers.AddFeaturesBiomeModifier(
                                 biomes.getOrThrow(BiomeTags.IS_OVERWORLD),
                                 HolderSet.direct(placedFeatures.getOrThrow(AVPOres.TITANIUM_LOWER.placedFeatureKey())),
-                                GenerationStep.Decoration.UNDERGROUND_ORES
+                                underGround
                             )
                         );
 
@@ -213,7 +214,7 @@ public class AVPNeoForgeDatagen {
                                     List.of(biomes.getOrThrow(Biomes.SWAMP), biomes.getOrThrow(Biomes.MANGROVE_SWAMP))
                                 ),
                                 HolderSet.direct(placedFeatures.getOrThrow(AVPOres.LEAD_SWAMP.placedFeatureKey())),
-                                GenerationStep.Decoration.UNDERGROUND_ORES
+                                underGround
                             )
                         );
 
@@ -224,7 +225,7 @@ public class AVPNeoForgeDatagen {
                                     List.of(biomes.getOrThrow(Biomes.DESERT), biomes.getOrThrow(Biomes.BADLANDS))
                                 ),
                                 HolderSet.direct(placedFeatures.getOrThrow(AVPOres.LITHIUM_DESERT.placedFeatureKey())),
-                                GenerationStep.Decoration.UNDERGROUND_ORES
+                                underGround
                             )
                         );
 
@@ -233,7 +234,7 @@ public class AVPNeoForgeDatagen {
                             new BiomeModifiers.AddFeaturesBiomeModifier(
                                 biomes.getOrThrow(BiomeTags.IS_JUNGLE),
                                 HolderSet.direct(placedFeatures.getOrThrow(AVPOres.MONAZITE_JUNGLE.placedFeatureKey())),
-                                GenerationStep.Decoration.UNDERGROUND_ORES
+                                underGround
                             )
                         );
 
@@ -245,7 +246,7 @@ public class AVPNeoForgeDatagen {
                                     new NotHolderSet<>(biomes0, excludedBiomes)
                                 ),
                                 HolderSet.direct(placedFeatures.getOrThrow(AVPOres.ZINC.placedFeatureKey())),
-                                GenerationStep.Decoration.UNDERGROUND_ORES
+                                underGround
                             )
                         );
 
@@ -254,7 +255,7 @@ public class AVPNeoForgeDatagen {
                             new BiomeModifiers.AddFeaturesBiomeModifier(
                                 HolderSet.direct(biomes.getOrThrow(Biomes.DRIPSTONE_CAVES)),
                                 HolderSet.direct(placedFeatures.getOrThrow(AVPOres.ZINC_DRIPSTONE_CAVES.placedFeatureKey())),
-                                GenerationStep.Decoration.UNDERGROUND_ORES
+                                underGround
                             )
                         );
                     }),
