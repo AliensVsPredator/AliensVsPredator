@@ -13,6 +13,7 @@
   - Acid's block damage still scales with the "strength" of acid, which increases when acid entities overlap.
 
 ## 🐞 Fixes
+- Fixed trip mine block texture dimensions not being powers of 2.
 - Fixed facehuggers and xenomorphs lunging towards targets even if they aren't looking towards the target.
 - Fixed irradiated queens laying eggs when they shouldn't.
 - Fixed persistence not carrying over when an alien grows into the next stage.
