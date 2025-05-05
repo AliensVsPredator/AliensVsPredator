@@ -130,11 +130,11 @@ public class Yautja extends Monster {
         return builder;
     }
 
-    void setMoveControl(MoveControl moveControl) {
+    public void setMoveControl(MoveControl moveControl) {
         this.moveControl = moveControl;
     }
 
-    void setNavigation(PathNavigation navigation) {
+    public void setNavigation(PathNavigation navigation) {
         this.navigation = navigation;
     }
 
