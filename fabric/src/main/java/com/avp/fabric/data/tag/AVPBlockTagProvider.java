@@ -7,8 +7,11 @@ import net.minecraft.tags.BlockTags;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.block.Blocks;
 
+import java.util.Collection;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Supplier;
+import java.util.stream.Stream;
 
 import com.avp.common.block.AVPBlockTags;
 import com.avp.common.block.AVPBlocks;
@@ -25,9 +28,14 @@ public class AVPBlockTagProvider extends FabricTagProvider.BlockTagProvider {
     protected void addTags(HolderLookup.Provider wrapperLookup) {
         var concreteTagBuilder = getOrCreateTagBuilder(AVPBlockTags.CONCRETE);
 
-        // TODO: Use a stream concat here.
-        AVPBlocks.DYE_COLOR_TO_CONCRETE_SLAB.values().stream().map(Supplier::get).forEach(concreteTagBuilder::add);
-        AVPBlocks.DYE_COLOR_TO_CONCRETE_STAIRS.values().stream().map(Supplier::get).forEach(concreteTagBuilder::add);
+        Stream.of(
+            AVPBlocks.DYE_COLOR_TO_CONCRETE_SLAB,
+            AVPBlocks.DYE_COLOR_TO_CONCRETE_STAIRS
+        )
+            .map(Map::values)
+            .flatMap(Collection::stream)
+            .map(Supplier::get)
+            .forEach(concreteTagBuilder::add);
 
         getOrCreateTagBuilder(AVPBlockTags.SHOULD_NOT_BE_DESTROYED)
             .addOptionalTag(BlockTags.FEATURES_CANNOT_REPLACE)
@@ -87,14 +95,16 @@ public class AVPBlockTagProvider extends FabricTagProvider.BlockTagProvider {
 
         var industrialConcreteTagBuilder = getOrCreateTagBuilder(AVPBlockTags.INDUSTRIAL_CONCRETE);
 
-        // TODO: Use stream concat here.
-        AVPBlocks.DYE_COLOR_TO_INDUSTRIAL_CONCRETE.values().stream().map(Supplier::get).forEach(industrialConcreteTagBuilder::add);
-        AVPBlocks.DYE_COLOR_TO_INDUSTRIAL_CONCRETE_SLAB.values().stream().map(Supplier::get).forEach(industrialConcreteTagBuilder::add);
-        AVPBlocks.DYE_COLOR_TO_INDUSTRIAL_CONCRETE_STAIRS.values()
-            .stream()
+        Stream.of(
+            AVPBlocks.DYE_COLOR_TO_INDUSTRIAL_CONCRETE,
+            AVPBlocks.DYE_COLOR_TO_INDUSTRIAL_CONCRETE_SLAB,
+            AVPBlocks.DYE_COLOR_TO_INDUSTRIAL_CONCRETE_STAIRS,
+            AVPBlocks.DYE_COLOR_TO_INDUSTRIAL_CONCRETE_WALL
+        )
+            .map(Map::values)
+            .flatMap(Collection::stream)
             .map(Supplier::get)
             .forEach(industrialConcreteTagBuilder::add);
-        AVPBlocks.DYE_COLOR_TO_INDUSTRIAL_CONCRETE_WALL.values().stream().map(Supplier::get).forEach(industrialConcreteTagBuilder::add);
 
         var industrialGlassBlockTagBuilder = getOrCreateTagBuilder(AVPBlockTags.INDUSTRIAL_GLASS_BLOCK);
 
@@ -118,29 +128,36 @@ public class AVPBlockTagProvider extends FabricTagProvider.BlockTagProvider {
 
         var paddingTagBuilder = getOrCreateTagBuilder(AVPBlockTags.PADDING);
 
-        // TODO: Use stream concat here.
-        AVPBlocks.DYE_COLOR_TO_PADDING.values().stream().map(Supplier::get).forEach(paddingTagBuilder::add);
-        AVPBlocks.DYE_COLOR_TO_PADDING_SLAB.values().stream().map(Supplier::get).forEach(paddingTagBuilder::add);
-        AVPBlocks.DYE_COLOR_TO_PADDING_STAIRS.values().stream().map(Supplier::get).forEach(paddingTagBuilder::add);
-
-        AVPBlocks.DYE_COLOR_TO_PANEL_PADDING.values().stream().map(Supplier::get).forEach(paddingTagBuilder::add);
-        AVPBlocks.DYE_COLOR_TO_PANEL_PADDING_SLAB.values().stream().map(Supplier::get).forEach(paddingTagBuilder::add);
-        AVPBlocks.DYE_COLOR_TO_PANEL_PADDING_STAIRS.values().stream().map(Supplier::get).forEach(paddingTagBuilder::add);
-
-        AVPBlocks.DYE_COLOR_TO_PIPE_PADDING.values().stream().map(Supplier::get).forEach(paddingTagBuilder::add);
-        AVPBlocks.DYE_COLOR_TO_PIPE_PADDING_SLAB.values().stream().map(Supplier::get).forEach(paddingTagBuilder::add);
-        AVPBlocks.DYE_COLOR_TO_PIPE_PADDING_STAIRS.values().stream().map(Supplier::get).forEach(paddingTagBuilder::add);
+        Stream.of(
+            AVPBlocks.DYE_COLOR_TO_PADDING,
+            AVPBlocks.DYE_COLOR_TO_PADDING_SLAB,
+            AVPBlocks.DYE_COLOR_TO_PADDING_STAIRS,
+            AVPBlocks.DYE_COLOR_TO_PANEL_PADDING,
+            AVPBlocks.DYE_COLOR_TO_PANEL_PADDING_SLAB,
+            AVPBlocks.DYE_COLOR_TO_PANEL_PADDING_STAIRS,
+            AVPBlocks.DYE_COLOR_TO_PIPE_PADDING,
+            AVPBlocks.DYE_COLOR_TO_PIPE_PADDING_SLAB,
+            AVPBlocks.DYE_COLOR_TO_PIPE_PADDING_STAIRS
+        )
+            .map(Map::values)
+            .flatMap(Collection::stream)
+            .map(Supplier::get)
+            .forEach(paddingTagBuilder::add);
 
         var plasticTagBuilder = getOrCreateTagBuilder(AVPBlockTags.PLASTIC);
 
-        // TODO: Use stream concat here.
-        AVPBlocks.DYE_COLOR_TO_CUT_PLASTIC.values().stream().map(Supplier::get).forEach(plasticTagBuilder::add);
-        AVPBlocks.DYE_COLOR_TO_CUT_PLASTIC_SLAB.values().stream().map(Supplier::get).forEach(plasticTagBuilder::add);
-        AVPBlocks.DYE_COLOR_TO_CUT_PLASTIC_STAIRS.values().stream().map(Supplier::get).forEach(plasticTagBuilder::add);
-
-        AVPBlocks.DYE_COLOR_TO_PLASTIC.values().stream().map(Supplier::get).forEach(plasticTagBuilder::add);
-        AVPBlocks.DYE_COLOR_TO_PLASTIC_SLAB.values().stream().map(Supplier::get).forEach(plasticTagBuilder::add);
-        AVPBlocks.DYE_COLOR_TO_PLASTIC_STAIRS.values().stream().map(Supplier::get).forEach(plasticTagBuilder::add);
+        Stream.of(
+            AVPBlocks.DYE_COLOR_TO_CUT_PLASTIC,
+            AVPBlocks.DYE_COLOR_TO_CUT_PLASTIC_SLAB,
+            AVPBlocks.DYE_COLOR_TO_CUT_PLASTIC_STAIRS,
+            AVPBlocks.DYE_COLOR_TO_PLASTIC,
+            AVPBlocks.DYE_COLOR_TO_PLASTIC_SLAB,
+            AVPBlocks.DYE_COLOR_TO_PLASTIC_STAIRS
+        )
+            .map(Map::values)
+            .flatMap(Collection::stream)
+            .map(Supplier::get)
+            .forEach(plasticTagBuilder::add);
 
         getOrCreateTagBuilder(AVPBlockTags.IRRADIATED_RESIN)
             .add(
@@ -450,14 +467,19 @@ public class AVPBlockTagProvider extends FabricTagProvider.BlockTagProvider {
             AVPBlocks.TITANIUM_TREAD_SLAB.get()
         );
 
-        // TODO: Use a stream concat here.
-        AVPBlocks.DYE_COLOR_TO_CONCRETE_SLAB.values().stream().map(Supplier::get).forEach(slabTagProvider::add);
-        AVPBlocks.DYE_COLOR_TO_CUT_PLASTIC_SLAB.values().stream().map(Supplier::get).forEach(slabTagProvider::add);
-        AVPBlocks.DYE_COLOR_TO_INDUSTRIAL_CONCRETE_SLAB.values().stream().map(Supplier::get).forEach(slabTagProvider::add);
-        AVPBlocks.DYE_COLOR_TO_PADDING_SLAB.values().stream().map(Supplier::get).forEach(slabTagProvider::add);
-        AVPBlocks.DYE_COLOR_TO_PANEL_PADDING_SLAB.values().stream().map(Supplier::get).forEach(slabTagProvider::add);
-        AVPBlocks.DYE_COLOR_TO_PIPE_PADDING_SLAB.values().stream().map(Supplier::get).forEach(slabTagProvider::add);
-        AVPBlocks.DYE_COLOR_TO_PLASTIC_SLAB.values().stream().map(Supplier::get).forEach(slabTagProvider::add);
+        Stream.of(
+            AVPBlocks.DYE_COLOR_TO_CONCRETE_SLAB,
+            AVPBlocks.DYE_COLOR_TO_CUT_PLASTIC_SLAB,
+            AVPBlocks.DYE_COLOR_TO_INDUSTRIAL_CONCRETE_SLAB,
+            AVPBlocks.DYE_COLOR_TO_PADDING_SLAB,
+            AVPBlocks.DYE_COLOR_TO_PANEL_PADDING_SLAB,
+            AVPBlocks.DYE_COLOR_TO_PIPE_PADDING_SLAB,
+            AVPBlocks.DYE_COLOR_TO_PLASTIC_SLAB
+        )
+            .map(Map::values)
+            .flatMap(Collection::stream)
+            .map(Supplier::get)
+            .forEach(slabTagProvider::add);
 
         var pressurePlateTagProvider = getOrCreateTagBuilder(BlockTags.PRESSURE_PLATES);
 
@@ -534,14 +556,19 @@ public class AVPBlockTagProvider extends FabricTagProvider.BlockTagProvider {
             AVPBlocks.TITANIUM_TREAD_STAIRS.get()
         );
 
-        // TODO: Use a stream concat here.
-        AVPBlocks.DYE_COLOR_TO_CONCRETE_STAIRS.values().stream().map(Supplier::get).forEach(stairsTagProvider::add);
-        AVPBlocks.DYE_COLOR_TO_CUT_PLASTIC_STAIRS.values().stream().map(Supplier::get).forEach(stairsTagProvider::add);
-        AVPBlocks.DYE_COLOR_TO_INDUSTRIAL_CONCRETE_STAIRS.values().stream().map(Supplier::get).forEach(stairsTagProvider::add);
-        AVPBlocks.DYE_COLOR_TO_PADDING_STAIRS.values().stream().map(Supplier::get).forEach(stairsTagProvider::add);
-        AVPBlocks.DYE_COLOR_TO_PANEL_PADDING_STAIRS.values().stream().map(Supplier::get).forEach(stairsTagProvider::add);
-        AVPBlocks.DYE_COLOR_TO_PIPE_PADDING_STAIRS.values().stream().map(Supplier::get).forEach(stairsTagProvider::add);
-        AVPBlocks.DYE_COLOR_TO_PLASTIC_STAIRS.values().stream().map(Supplier::get).forEach(stairsTagProvider::add);
+        Stream.of(
+            AVPBlocks.DYE_COLOR_TO_CONCRETE_STAIRS,
+            AVPBlocks.DYE_COLOR_TO_CUT_PLASTIC_STAIRS,
+            AVPBlocks.DYE_COLOR_TO_INDUSTRIAL_CONCRETE_STAIRS,
+            AVPBlocks.DYE_COLOR_TO_PADDING_STAIRS,
+            AVPBlocks.DYE_COLOR_TO_PANEL_PADDING_STAIRS,
+            AVPBlocks.DYE_COLOR_TO_PIPE_PADDING_STAIRS,
+            AVPBlocks.DYE_COLOR_TO_PLASTIC_STAIRS
+        )
+            .map(Map::values)
+            .flatMap(Collection::stream)
+            .map(Supplier::get)
+            .forEach(stairsTagProvider::add);
 
         var wallTagBuilder = getOrCreateTagBuilder(BlockTags.WALLS);
 
