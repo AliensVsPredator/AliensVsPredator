@@ -40,7 +40,7 @@ public class MarineGOAP extends EntityGOAP<Marine> {
     public MarineGOAP(Marine marine) {
         // Order matters for these.
         // TODO: Organize sensors automatically based on dependencies.
-        addBaseRoutines();
+        addBaseRoutines(marine);
         addInventoryRoutines();
         addFoodPickupRoutines(marine);
         addCombatRoutines(marine);
@@ -48,12 +48,12 @@ public class MarineGOAP extends EntityGOAP<Marine> {
     }
 
     // Base routines that most entities have, that aren't necessarily direct preconditions for actions.
-    public void addBaseRoutines() {
+    public void addBaseRoutines(Marine marine) {
         addSensor(NearbyEntitiesSensor.INSTANCE);
         addSensor(NearbyLivingEntitiesSensor.INSTANCE);
         addSensor(NearbyItemEntitiesSensor.INSTANCE);
 
-        addSensor(new IsBoredSensor());
+        addSensor(new IsBoredSensor(marine.getRandom()));
 
         addAction(new WanderToLandPosAction<>(0.75));
 
