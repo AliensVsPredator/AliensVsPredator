@@ -8,40 +8,41 @@ import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 
 import com.avp.AVPResources;
-import com.avp.common.entity.living.alien.ovamorph.Ovamorph;
-import com.avp.common.entity.living.alien.ovamorph.OvamorphAnimationRefs;
+import com.avp.common.entity.living.alien.ovomorph.Ovomorph;
+import com.avp.common.entity.living.alien.ovomorph.OvomorphAnimationRefs;
 
-public class OvamorphAnimator extends AzEntityAnimator<Ovamorph> {
+public class OvomorphAnimator extends AzEntityAnimator<Ovomorph> {
 
+    // TODO: Change this to "ovomorph" with 0.2.0.
     private static final String NAME = "ovamorph";
 
     private static final ResourceLocation ANIMATION = AVPResources.entityAnimationLocation(NAME);
 
-    public OvamorphAnimator() {
+    public OvomorphAnimator() {
         super(AzAnimatorConfig.defaultConfig());
     }
 
     @Override
-    public void registerControllers(AzAnimationControllerContainer<Ovamorph> animationControllerContainer) {
+    public void registerControllers(AzAnimationControllerContainer<Ovomorph> animationControllerContainer) {
         animationControllerContainer.add(
-            AzAnimationController.builder(this, OvamorphAnimationRefs.BASE_CONTROLLER_NAME)
+            AzAnimationController.builder(this, OvomorphAnimationRefs.BASE_CONTROLLER_NAME)
                 .setTransitionLength(5)
                 .build()
         );
     }
 
     @Override
-    public @NotNull ResourceLocation getAnimationLocation(Ovamorph animatable) {
+    public @NotNull ResourceLocation getAnimationLocation(Ovomorph animatable) {
         return ANIMATION;
     }
 
     @Override
-    public void setCustomAnimations(Ovamorph ovamorph, float partialTicks) {
+    public void setCustomAnimations(Ovomorph ovomorph, float partialTicks) {
         var bakedModel = context().boneCache().getBakedModel();
         var gVeinBottom = bakedModel.getBoneOrNull("gVeinBottom");
 
         if (gVeinBottom != null) {
-            gVeinBottom.setHidden(!ovamorph.isRooted());
+            gVeinBottom.setHidden(!ovomorph.isRooted());
         }
     }
 }

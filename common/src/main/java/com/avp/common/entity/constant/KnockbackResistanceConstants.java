@@ -9,7 +9,7 @@ public record KnockbackResistanceConstants() {
 
     public static final float FACEHUGGER_KNOCKBACK_RESISTANCE = 0f;
 
-    public static final float OVAMORPH_KNOCKBACK_RESISTANCE = 1f;
+    public static final float OVOMORPH_KNOCKBACK_RESISTANCE = 1f;
 
     public static final float PRAETORIAN_KNOCKBACK_RESISTANCE = 0.7f;
 

@@ -34,7 +34,7 @@ public class ResinSpreadListener implements GameEventListener {
     }
 
     @Override
-    public GameEventListener.@NotNull DeliveryMode getDeliveryMode() {
+    public @NotNull GameEventListener.DeliveryMode getDeliveryMode() {
         return GameEventListener.DeliveryMode.BY_DISTANCE;
     }
 

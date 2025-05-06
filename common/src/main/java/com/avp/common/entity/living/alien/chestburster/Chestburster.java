@@ -121,14 +121,14 @@ public class Chestburster extends Alien implements ResinProducer {
     }
 
     @Override
-    public void readAdditionalSaveData(CompoundTag compoundTag) {
+    public void readAdditionalSaveData(@NotNull CompoundTag compoundTag) {
         super.readAdditionalSaveData(compoundTag);
         growthManager.load(compoundTag);
         resinManager.load(compoundTag);
     }
 
     @Override
-    public void addAdditionalSaveData(CompoundTag compoundTag) {
+    public void addAdditionalSaveData(@NotNull CompoundTag compoundTag) {
         super.addAdditionalSaveData(compoundTag);
         growthManager.save(compoundTag);
         resinManager.save(compoundTag);

@@ -37,7 +37,7 @@ public class AdvancementProvider extends FabricAdvancementProvider {
         AVPEntityTypes.CHESTBURSTER.get(),
         AVPEntityTypes.FACEHUGGER.get(),
         AVPEntityTypes.DRONE.get(),
-        AVPEntityTypes.OVAMORPH.get(),
+        AVPEntityTypes.OVOMORPH.get(),
         AVPEntityTypes.PRAETORIAN.get(),
         AVPEntityTypes.QUEEN.get(),
         AVPEntityTypes.WARRIOR.get()
@@ -72,11 +72,13 @@ public class AdvancementProvider extends FabricAdvancementProvider {
         var royalAlienKillerAdvancement = addRoyalAlienKillerAdvancement(alienKillerAdvancement, consumer);
         var xenocideAdvancement = addXenocideAdvancement(royalAlienKillerAdvancement, consumer);
 
-        var shearAnOvamorphAdvancement = Advancement.Builder.advancement()
+        var shearAnOvomorphAdvancement = Advancement.Builder.advancement()
             .parent(root)
             .display(
                 Items.SHEARS,
+                // TODO: Change this to "ovomorph" with 0.2.0.
                 Component.translatable("advancements.aliens.shear_an_ovamorph.title"),
+                // TODO: Change this to "ovomorph" with 0.2.0.
                 Component.translatable("advancements.aliens.shear_an_ovamorph.description"),
                 null,
                 AdvancementType.TASK,
@@ -88,9 +90,10 @@ public class AdvancementProvider extends FabricAdvancementProvider {
                 "shear_an_ovamorph",
                 PlayerInteractTrigger.TriggerInstance.itemUsedOnEntity(
                     ItemPredicate.Builder.item().of(Items.SHEARS),
-                    Optional.of(EntityPredicate.wrap(EntityPredicate.Builder.entity().of(AVPEntityTypes.OVAMORPH.get())))
+                    Optional.of(EntityPredicate.wrap(EntityPredicate.Builder.entity().of(AVPEntityTypes.OVOMORPH.get())))
                 )
             )
+            // TODO: Change this to "ovomorph" with 0.2.0.
             .save(consumer, AVP.MOD_ID + ":aliens/shear_an_ovamorph");
 
         var addChitinArmorAdvancement = addChitinArmorAdvancements(alienKillerAdvancement, consumer);

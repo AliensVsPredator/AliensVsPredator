@@ -127,6 +127,7 @@ public class AVPConfig {
         @Configurable
         @Configurable.Synchronized
         @Configurable.Comment("Modifying these will require restarting the game.")
+        // TODO: Change this to "NETHER_OVOMORPH_SPAWN" with 0.2.0.
         public SpawnSettings NETHER_OVAMORPH_SPAWN = new SpawnSettings(true, 1, 3, 10, false);
 
         @Configurable
@@ -146,7 +147,8 @@ public class AVPConfig {
 
         @Configurable
         @Configurable.Synchronized
-        @Configurable.Comment("Ovamorph spawn settings. Modifying these will require restarting the game.")
+        @Configurable.Comment("Ovomorph spawn settings. Modifying these will require restarting the game.")
+        // TODO: Change this to "ovomorph" with 0.2.0.
         public SpawnSettings OVAMORPH_SPAWN = new SpawnSettings(true, 1, 3, 25, true);
 
         @Configurable
@@ -284,11 +286,12 @@ public class AVPConfig {
         @Configurable
         @Configurable.Synchronized
         @Configurable.Comment("Modifying any of these will require restarting the game.")
+        // TODO: Change this to "ovomorph" with 0.2.0.
         public AdvancedStats OVAMORPH_STATS = new AdvancedStats(
-            HealthConstants.OVAMORPH_HEALTH,
+            HealthConstants.OVOMORPH_HEALTH,
             0,
-            HealthRegenConstants.OVAMORPH_HEALTH_REGEN,
-            KnockbackResistanceConstants.OVAMORPH_KNOCKBACK_RESISTANCE,
+            HealthRegenConstants.OVOMORPH_HEALTH_REGEN,
+            KnockbackResistanceConstants.OVOMORPH_KNOCKBACK_RESISTANCE,
             0,
             0,
             0,

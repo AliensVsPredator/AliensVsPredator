@@ -289,7 +289,7 @@ public class EnglishLanguageProvider extends FabricLanguageProvider {
         addEntity(builder, AVPEntityTypes.ABERRANT_CHESTBURSTER, "Aberrant Chestburster");
         addEntity(builder, AVPEntityTypes.ABERRANT_DRONE, "Aberrant Drone");
         addEntity(builder, AVPEntityTypes.ABERRANT_FACEHUGGER, "Aberrant Facehugger");
-        addEntity(builder, AVPEntityTypes.ABERRANT_OVAMORPH, "Aberrant Ovamorph");
+        addEntity(builder, AVPEntityTypes.ABERRANT_OVOMORPH, "Aberrant Ovomorph");
         addEntity(builder, AVPEntityTypes.ABERRANT_PRAETORIAN, "Aberrant Praetorian");
         addEntity(builder, AVPEntityTypes.ABERRANT_QUEEN, "Aberrant Queen");
         addEntity(builder, AVPEntityTypes.ABERRANT_WARRIOR, "Aberrant Warrior");
@@ -306,23 +306,23 @@ public class EnglishLanguageProvider extends FabricLanguageProvider {
         addEntity(builder, AVPEntityTypes.NETHER_CHESTBURSTER, "Nether Chestburster");
         addEntity(builder, AVPEntityTypes.NETHER_DRONE, "Nether Drone");
         addEntity(builder, AVPEntityTypes.NETHER_FACEHUGGER, "Nether Facehugger");
-        addEntity(builder, AVPEntityTypes.NETHER_OVAMORPH, "Nether Ovamorph");
+        addEntity(builder, AVPEntityTypes.NETHER_OVOMORPH, "Nether Ovomorph");
         addEntity(builder, AVPEntityTypes.NETHER_PRAETORIAN, "Nether Praetorian");
         addEntity(builder, AVPEntityTypes.NETHER_QUEEN, "Nether Queen");
         addEntity(builder, AVPEntityTypes.NETHER_WARRIOR, "Nether Warrior");
-        addEntity(builder, AVPEntityTypes.OVAMORPH, "Ovamorph");
+        addEntity(builder, AVPEntityTypes.OVOMORPH, "Ovomorph");
         addEntity(builder, AVPEntityTypes.PRAETORIAN, "Praetorian");
         addEntity(builder, AVPEntityTypes.QUEEN, "Queen");
         addEntity(builder, AVPEntityTypes.ROCKET, "Rocket");
         addEntity(builder, AVPEntityTypes.ROYAL_ABERRANT_CHESTBURSTER, "Royal Aberrant Chestburster");
         addEntity(builder, AVPEntityTypes.ROYAL_ABERRANT_FACEHUGGER, "Royal Aberrant Facehugger");
-        addEntity(builder, AVPEntityTypes.ROYAL_ABERRANT_OVAMORPH, "Royal Aberrant Ovamorph");
+        addEntity(builder, AVPEntityTypes.ROYAL_ABERRANT_OVOMORPH, "Royal Aberrant Ovomorph");
         addEntity(builder, AVPEntityTypes.ROYAL_CHESTBURSTER, "Royal Chestburster");
         addEntity(builder, AVPEntityTypes.ROYAL_FACEHUGGER, "Royal Facehugger");
         addEntity(builder, AVPEntityTypes.ROYAL_NETHER_CHESTBURSTER, "Royal Nether Chestburster");
         addEntity(builder, AVPEntityTypes.ROYAL_NETHER_FACEHUGGER, "Royal Nether Facehugger");
-        addEntity(builder, AVPEntityTypes.ROYAL_NETHER_OVAMORPH, "Royal Nether Ovamorph");
-        addEntity(builder, AVPEntityTypes.ROYAL_OVAMORPH, "Royal Ovamorph");
+        addEntity(builder, AVPEntityTypes.ROYAL_NETHER_OVOMORPH, "Royal Nether Ovomorph");
+        addEntity(builder, AVPEntityTypes.ROYAL_OVOMORPH, "Royal Ovomorph");
         addEntity(builder, AVPEntityTypes.SHURIKEN, "Shuriken");
         addEntity(builder, AVPEntityTypes.SMART_DISC, "Smart Disc");
         addEntity(builder, AVPEntityTypes.WARRIOR, "Warrior");
@@ -536,7 +536,7 @@ public class EnglishLanguageProvider extends FabricLanguageProvider {
         addItem(builder, AVPSpawnEggItems.ABERRANT_CHESTBURSTER_SPAWN_EGG, "Aberrant Chestburster Spawn Egg");
         addItem(builder, AVPSpawnEggItems.ABERRANT_DRONE_SPAWN_EGG, "Aberrant Drone Spawn Egg");
         addItem(builder, AVPSpawnEggItems.ABERRANT_FACEHUGGER_SPAWN_EGG, "Aberrant Facehugger Spawn Egg");
-        addItem(builder, AVPSpawnEggItems.ABERRANT_OVAMORPH_SPAWN_EGG, "Aberrant Ovamorph Spawn Egg");
+        addItem(builder, AVPSpawnEggItems.ABERRANT_OVOMORPH_SPAWN_EGG, "Aberrant Ovomorph Spawn Egg");
         addItem(builder, AVPSpawnEggItems.ABERRANT_PRAETORIAN_SPAWN_EGG, "Aberrant Praetorian Spawn Egg");
         addItem(builder, AVPSpawnEggItems.ABERRANT_WARRIOR_SPAWN_EGG, "Aberrant Warrior Spawn Egg");
         addItem(builder, AVPSpawnEggItems.ABERRANT_QUEEN_SPAWN_EGG, "Aberrant Queen Spawn Egg");
@@ -546,7 +546,7 @@ public class EnglishLanguageProvider extends FabricLanguageProvider {
         addItem(builder, AVPSpawnEggItems.NETHER_CHESTBURSTER_SPAWN_EGG, "Nether Chestburster Spawn Egg");
         addItem(builder, AVPSpawnEggItems.NETHER_DRONE_SPAWN_EGG, "Nether Drone Spawn Egg");
         addItem(builder, AVPSpawnEggItems.NETHER_FACEHUGGER_SPAWN_EGG, "Nether Facehugger Spawn Egg");
-        addItem(builder, AVPSpawnEggItems.NETHER_OVAMORPH_SPAWN_EGG, "Nether Ovamorph Spawn Egg");
+        addItem(builder, AVPSpawnEggItems.NETHER_OVOMORPH_SPAWN_EGG, "Nether Ovomorph Spawn Egg");
         addItem(builder, AVPSpawnEggItems.NETHER_PRAETORIAN_SPAWN_EGG, "Nether Praetorian Spawn Egg");
         addItem(builder, AVPSpawnEggItems.NETHER_WARRIOR_SPAWN_EGG, "Nether Warrior Spawn Egg");
         addItem(builder, AVPSpawnEggItems.NETHER_QUEEN_SPAWN_EGG, "Nether Queen Spawn Egg");
@@ -554,19 +554,19 @@ public class EnglishLanguageProvider extends FabricLanguageProvider {
         addItem(builder, AVPSpawnEggItems.IRRADIATED_PRAETORIAN_SPAWN_EGG, "Irradiated Praetorian Spawn Egg");
         addItem(builder, AVPSpawnEggItems.IRRADIATED_QUEEN_SPAWN_EGG, "Irradiated Queen Spawn Egg");
         addItem(builder, AVPSpawnEggItems.IRRADIATED_WARRIOR_SPAWN_EGG, "Irradiated Warrior Spawn Egg");
-        addItem(builder, AVPSpawnEggItems.OVAMORPH_SPAWN_EGG, "Ovamorph Spawn Egg");
+        addItem(builder, AVPSpawnEggItems.OVOMORPH_SPAWN_EGG, "Ovomorph Spawn Egg");
         addItem(builder, AVPSpawnEggItems.PRAETORIAN_SPAWN_EGG, "Praetorian Spawn Egg");
         addItem(builder, AVPSpawnEggItems.QUEEN_SPAWN_EGG, "Queen Spawn Egg");
         addItem(builder, AVPSpawnEggItems.WARRIOR_SPAWN_EGG, "Warrior Spawn Egg");
         addItem(builder, AVPSpawnEggItems.YAUTJA_SPAWN_EGG, "Yautja Spawn Egg");
         addItem(builder, AVPSpawnEggItems.MARINE_SPAWN_EGG, "Marine Spawn Egg");
-        addItem(builder, AVPSpawnEggItems.ROYAL_OVAMORPH_SPAWN_EGG, "Royal Ovamorph Spawn Egg");
+        addItem(builder, AVPSpawnEggItems.ROYAL_OVOMORPH_SPAWN_EGG, "Royal Ovomorph Spawn Egg");
         addItem(builder, AVPSpawnEggItems.ROYAL_FACEHUGGER_SPAWN_EGG, "Royal Facehugger Spawn Egg");
         addItem(builder, AVPSpawnEggItems.ROYAL_CHESTBURSTER_SPAWN_EGG, "Royal Chestburster Spawn Egg");
-        addItem(builder, AVPSpawnEggItems.ROYAL_NETHER_OVAMORPH_SPAWN_EGG, "Royal Nether Ovamorph Spawn Egg");
+        addItem(builder, AVPSpawnEggItems.ROYAL_NETHER_OVOMORPH_SPAWN_EGG, "Royal Nether Ovomorph Spawn Egg");
         addItem(builder, AVPSpawnEggItems.ROYAL_NETHER_FACEHUGGER_SPAWN_EGG, "Royal Nether Facehugger Spawn Egg");
         addItem(builder, AVPSpawnEggItems.ROYAL_NETHER_CHESTBURSTER_SPAWN_EGG, "Royal Nether Chestburster Spawn Egg");
-        addItem(builder, AVPSpawnEggItems.ROYAL_ABERRANT_OVAMORPH_SPAWN_EGG, "Royal Aberrant Ovamorph Spawn Egg");
+        addItem(builder, AVPSpawnEggItems.ROYAL_ABERRANT_OVOMORPH_SPAWN_EGG, "Royal Aberrant Ovomorph Spawn Egg");
         addItem(builder, AVPSpawnEggItems.ROYAL_ABERRANT_FACEHUGGER_SPAWN_EGG, "Royal Aberrant Facehugger Spawn Egg");
         addItem(builder, AVPSpawnEggItems.ROYAL_ABERRANT_CHESTBURSTER_SPAWN_EGG, "Royal Aberrant Chestburster Spawn Egg");
 
@@ -574,10 +574,10 @@ public class EnglishLanguageProvider extends FabricLanguageProvider {
         addSound(builder, AVPSoundEvents.BLOCK_ACID_BURN, "Acid burns");
         addSound(builder, AVPSoundEvents.BLOCK_RESIN_SPREAD, "Xenomorph spreads resin");
 
-        addSound(builder, AVPSoundEvents.ENTITY_OVAMORPH_HATCH, "Ovamorph hatches");
-        addSound(builder, AVPSoundEvents.ENTITY_OVAMORPH_LAID, "Queen lays egg");
-        addSound(builder, AVPSoundEvents.ENTITY_OVAMORPH_ROOT, "Ovamorph takes root");
-        addSound(builder, AVPSoundEvents.ENTITY_OVAMORPH_SHEAR, "Ovamorph de-roots");
+        addSound(builder, AVPSoundEvents.ENTITY_OVOMORPH_HATCH, "Ovomorph hatches");
+        addSound(builder, AVPSoundEvents.ENTITY_OVOMORPH_LAID, "Queen lays egg");
+        addSound(builder, AVPSoundEvents.ENTITY_OVOMORPH_ROOT, "Ovomorph takes root");
+        addSound(builder, AVPSoundEvents.ENTITY_OVOMORPH_SHEAR, "Ovomorph de-roots");
 
         addSound(builder, AVPSoundEvents.ENTITY_QUEEN_ARM_ATTACK, "Queen attacks");
         addSound(builder, AVPSoundEvents.ENTITY_QUEEN_BACK_HAND_ATTACK, "Queen back hand attacks");
@@ -700,7 +700,9 @@ public class EnglishLanguageProvider extends FabricLanguageProvider {
         builder.add("advancements.aliens.chitin_armor.title", "Cover Me with... Uh...");
         builder.add("advancements.aliens.chitin_armor.description", "Equip a full set of chitin armor");
 
+        // TODO: Change this to "ovomorph" with 0.2.0.
         builder.add("advancements.aliens.shear_an_ovamorph.title", "Eggsploration Time");
+        // TODO: Change this to "ovomorph" with 0.2.0.
         builder.add("advancements.aliens.shear_an_ovamorph.description", "Free an ovamorph from its bindings");
 
         builder.add("advancements.aliens.plated_chitin_armor.title", "Kneel to the Crown");
@@ -778,11 +780,13 @@ public class EnglishLanguageProvider extends FabricLanguageProvider {
         builder.add("config.avp.option.DRONE_SPAWN", "Drone spawn settings");
         builder.add("config.avp.option.NETHER_CHESTBURSTER_SPAWN", "Nether Chestburster spawn settings");
         builder.add("config.avp.option.NETHER_DRONE_SPAWN", "Nether Drone spawn settings");
-        builder.add("config.avp.option.NETHER_OVAMORPH_SPAWN", "Nether Ovamorph spawn settings");
+        // TODO: Change this to "ovomorph" with 0.2.0.
+        builder.add("config.avp.option.NETHER_OVAMORPH_SPAWN", "Nether Ovomorph spawn settings");
         builder.add("config.avp.option.NETHER_PRAETORIAN_SPAWN", "Nether Praetorian spawn settings");
         builder.add("config.avp.option.NETHER_WARRIOR_SPAWN", "Nether Warrior spawn settings");
         builder.add("config.avp.option.NETHER_QUEEN_SPAWN", "Nether Queen spawn settings");
-        builder.add("config.avp.option.OVAMORPH_SPAWN", "Ovamorph spawn settings");
+        // TODO: Change this to "ovomorph" with 0.2.0.
+        builder.add("config.avp.option.OVAMORPH_SPAWN", "Ovomorph spawn settings");
         builder.add("config.avp.option.PRAETORIAN_SPAWN", "Praetorian spawn settings");
         builder.add("config.avp.option.QUEEN_SPAWN", "Queen spawn settings");
         builder.add("config.avp.option.WARRIOR_SPAWN", "Warrior spawn settings");
@@ -793,7 +797,7 @@ public class EnglishLanguageProvider extends FabricLanguageProvider {
         builder.add("config.avp.option.minGroupSize", "Minimum group size for spawns");
         builder.add("config.avp.option.maxGroupSize", "Maximum group size for spawns");
         builder.add("config.avp.option.weight", "Spawn weight");
-        builder.add("config.avp.option.requiresResin", "Requires resin for Nether Ovamorph spawning");
+        builder.add("config.avp.option.requiresResin", "Requires resin for Nether Ovomorph spawning");
 
         builder.add("config.avp.option.statsConfigs", "Mob Stat Configs");
         builder.add("config.avp.option.ABERRANT_STATS_MULTIPLIER", "Aberrant Stats Multiplier");
@@ -810,7 +814,8 @@ public class EnglishLanguageProvider extends FabricLanguageProvider {
         builder.add("config.avp.option.nestTickrate", "Nest tickrate");
         builder.add("config.avp.option.followRange", "Follow range");
         builder.add("config.avp.option.DRONE_STATS", "Drone stats");
-        builder.add("config.avp.option.OVAMORPH_STATS", "Ovamorph stats");
+        // TODO: Change this to "ovomorph" with 0.2.0.
+        builder.add("config.avp.option.OVAMORPH_STATS", "Ovomorph stats");
         builder.add("config.avp.option.PRAETORIAN_STATS", "Praetorian stats");
         builder.add("config.avp.option.QUEEN_STATS", "Queen stats");
         builder.add("config.avp.option.WARRIOR_STATS", "Warrior stats");

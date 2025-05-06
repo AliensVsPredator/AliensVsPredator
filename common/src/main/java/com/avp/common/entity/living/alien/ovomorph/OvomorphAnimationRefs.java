@@ -1,6 +1,6 @@
-package com.avp.common.entity.living.alien.ovamorph;
+package com.avp.common.entity.living.alien.ovomorph;
 
-public class OvamorphAnimationRefs {
+public class OvomorphAnimationRefs {
 
     public static final String BASE_CONTROLLER_NAME = "base";
 

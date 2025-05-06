@@ -40,8 +40,8 @@ public class AVPNeoForgeDatagen {
     private static final Lazy<List<AVPSpawnData>> spawnDataList = Lazy.of(
         () -> List.of(
             new AVPSpawnData(
-                AVPEntityTypes.OVAMORPH.get(),
-                AVPEntitySpawnKeys.ADD_SPAWNS_OVAMORPH,
+                AVPEntityTypes.OVOMORPH.get(),
+                AVPEntitySpawnKeys.ADD_SPAWNS_OVOMORPH,
                 BiomeTags.IS_OVERWORLD,
                 config.OVAMORPH_SPAWN
             ),
@@ -66,8 +66,8 @@ public class AVPNeoForgeDatagen {
             ),
             new AVPSpawnData(AVPEntityTypes.QUEEN.get(), AVPEntitySpawnKeys.ADD_SPAWNS_QUEEN, BiomeTags.IS_OVERWORLD, config.QUEEN_SPAWN),
             new AVPSpawnData(
-                AVPEntityTypes.NETHER_OVAMORPH.get(),
-                AVPEntitySpawnKeys.ADD_SPAWNS_NETHER_OVAMORPH,
+                AVPEntityTypes.NETHER_OVOMORPH.get(),
+                AVPEntitySpawnKeys.ADD_SPAWNS_NETHER_OVOMORPH,
                 BiomeTags.IS_NETHER,
                 config.NETHER_OVAMORPH_SPAWN
             ),

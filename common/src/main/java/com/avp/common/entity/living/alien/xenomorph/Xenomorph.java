@@ -99,7 +99,7 @@ public abstract class Xenomorph extends Alien implements ResinProducer {
     public abstract void runAttackAnimations();
 
     @Override
-    protected void defineSynchedData(SynchedEntityData.Builder builder) {
+    protected void defineSynchedData(@NotNull SynchedEntityData.Builder builder) {
         super.defineSynchedData(builder);
         builder.define(CLIENT_ANGER_LEVEL, 0);
         builder.define(IS_CRAWLING, false);
@@ -267,7 +267,7 @@ public abstract class Xenomorph extends Alien implements ResinProducer {
     }
 
     @Override
-    public void readAdditionalSaveData(CompoundTag compoundTag) {
+    public void readAdditionalSaveData(@NotNull CompoundTag compoundTag) {
         super.readAdditionalSaveData(compoundTag);
         crawlingManager.load(compoundTag);
         growthManager.load(compoundTag);
@@ -275,7 +275,7 @@ public abstract class Xenomorph extends Alien implements ResinProducer {
     }
 
     @Override
-    public void addAdditionalSaveData(CompoundTag compoundTag) {
+    public void addAdditionalSaveData(@NotNull CompoundTag compoundTag) {
         super.addAdditionalSaveData(compoundTag);
         crawlingManager.save(compoundTag);
         growthManager.save(compoundTag);

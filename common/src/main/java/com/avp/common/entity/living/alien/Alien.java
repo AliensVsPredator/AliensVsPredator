@@ -135,7 +135,7 @@ public abstract class Alien extends Monster {
     }
 
     @Override
-    protected void defineSynchedData(SynchedEntityData.Builder builder) {
+    protected void defineSynchedData(@NotNull SynchedEntityData.Builder builder) {
         super.defineSynchedData(builder);
         builder.define(IS_ABERRANT, false);
         builder.define(IS_NETHER_AFFLICTED, false);
@@ -189,9 +189,9 @@ public abstract class Alien extends Monster {
 
     @Override
     public @Nullable SpawnGroupData finalizeSpawn(
-        ServerLevelAccessor serverLevelAccessor,
-        DifficultyInstance difficultyInstance,
-        MobSpawnType mobSpawnType,
+        @NotNull ServerLevelAccessor serverLevelAccessor,
+        @NotNull DifficultyInstance difficultyInstance,
+        @NotNull MobSpawnType mobSpawnType,
         @Nullable SpawnGroupData spawnGroupData
     ) {
         updateStateBasedOnGenetics();
@@ -262,7 +262,7 @@ public abstract class Alien extends Monster {
     }
 
     @Override
-    public boolean hurt(DamageSource damageSource, float damage) {
+    public boolean hurt(@NotNull DamageSource damageSource, float damage) {
         var isHurt = AlienHurtUtil.isHurt(this, damageSource, damage, super::hurt);
 
         if (isHurt) {
@@ -326,7 +326,7 @@ public abstract class Alien extends Monster {
     }
 
     @Override
-    public void remove(RemovalReason removalReason) {
+    public void remove(@NotNull RemovalReason removalReason) {
         super.remove(removalReason);
 
         switch (removalReason) {
@@ -354,7 +354,7 @@ public abstract class Alien extends Monster {
     }
 
     @Override
-    public void readAdditionalSaveData(CompoundTag compoundTag) {
+    public void readAdditionalSaveData(@NotNull CompoundTag compoundTag) {
         super.readAdditionalSaveData(compoundTag);
         geneManager.load(compoundTag);
         hiveManager.load(compoundTag);
@@ -385,7 +385,7 @@ public abstract class Alien extends Monster {
     }
 
     @Override
-    public void addAdditionalSaveData(CompoundTag compoundTag) {
+    public void addAdditionalSaveData(@NotNull CompoundTag compoundTag) {
         super.addAdditionalSaveData(compoundTag);
         geneManager.save(compoundTag);
         hiveManager.save(compoundTag);

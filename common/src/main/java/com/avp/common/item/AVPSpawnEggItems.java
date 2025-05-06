@@ -43,9 +43,10 @@ public class AVPSpawnEggItems {
         0xC9CE3B
     );
 
-    public static final AVPDeferredHolder<Item> ABERRANT_OVAMORPH_SPAWN_EGG = register(
+    public static final AVPDeferredHolder<Item> ABERRANT_OVOMORPH_SPAWN_EGG = register(
+        // TODO: Change this to "ovomorph" with 0.2.0.
         "aberrant_ovamorph",
-        AVPEntityTypes.ABERRANT_OVAMORPH,
+        AVPEntityTypes.ABERRANT_OVOMORPH,
         0x767139,
         0xC9C432
     );
@@ -138,9 +139,10 @@ public class AVPSpawnEggItems {
         0xFAD855
     );
 
-    public static final AVPDeferredHolder<Item> NETHER_OVAMORPH_SPAWN_EGG = register(
+    public static final AVPDeferredHolder<Item> NETHER_OVOMORPH_SPAWN_EGG = register(
+        // TODO: Change this to "ovomorph" with 0.2.0.
         "nether_ovamorph",
-        AVPEntityTypes.NETHER_OVAMORPH,
+        AVPEntityTypes.NETHER_OVOMORPH,
         0x20131C,
         0xFCEE4B
     );
@@ -166,9 +168,10 @@ public class AVPSpawnEggItems {
         0x67261f
     );
 
-    public static final AVPDeferredHolder<Item> OVAMORPH_SPAWN_EGG = register(
+    public static final AVPDeferredHolder<Item> OVOMORPH_SPAWN_EGG = register(
+        // TODO: Change this to "ovomorph" with 0.2.0.
         "ovamorph",
-        AVPEntityTypes.OVAMORPH,
+        AVPEntityTypes.OVOMORPH,
         0x615B45,
         0xBF7872
     );
@@ -196,9 +199,10 @@ public class AVPSpawnEggItems {
         0xd3cf51
     );
 
-    public static final AVPDeferredHolder<Item> ROYAL_ABERRANT_OVAMORPH_SPAWN_EGG = register(
+    public static final AVPDeferredHolder<Item> ROYAL_ABERRANT_OVOMORPH_SPAWN_EGG = register(
+        // TODO: Change this to "ovomorph" with 0.2.0.
         "royal_aberrant_ovamorph",
-        AVPEntityTypes.ROYAL_ABERRANT_OVAMORPH,
+        AVPEntityTypes.ROYAL_ABERRANT_OVOMORPH,
         0x706c36,
         0xd3cf51
     );
@@ -231,16 +235,18 @@ public class AVPSpawnEggItems {
         0xfcee4b
     );
 
-    public static final AVPDeferredHolder<Item> ROYAL_NETHER_OVAMORPH_SPAWN_EGG = register(
+    public static final AVPDeferredHolder<Item> ROYAL_NETHER_OVOMORPH_SPAWN_EGG = register(
+        // TODO: Change this to "ovomorph" with 0.2.0.
         "royal_nether_ovamorph",
-        AVPEntityTypes.ROYAL_NETHER_OVAMORPH,
+        AVPEntityTypes.ROYAL_NETHER_OVOMORPH,
         0x331715,
         0xfcee4b
     );
 
-    public static final AVPDeferredHolder<Item> ROYAL_OVAMORPH_SPAWN_EGG = register(
+    public static final AVPDeferredHolder<Item> ROYAL_OVOMORPH_SPAWN_EGG = register(
+        // TODO: Change this to "ovomorph" with 0.2.0.
         "royal_ovamorph",
-        AVPEntityTypes.ROYAL_OVAMORPH,
+        AVPEntityTypes.ROYAL_OVOMORPH,
         0x2a2918,
         0x34341f
     );

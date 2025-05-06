@@ -9,7 +9,7 @@ import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 import com.avp.common.entity.living.alien.Alien;
-import com.avp.common.entity.living.alien.ovamorph.Ovamorph;
+import com.avp.common.entity.living.alien.ovomorph.Ovomorph;
 import com.avp.common.entity.living.gene.GeneKeys;
 import com.avp.common.util.AVPPredicates;
 
@@ -30,8 +30,8 @@ public class PoisionJellyItem extends Item {
             xenomorph.getEntityData().set(Alien.IS_POISONED, true);
         }
 
-        if (livingEntity instanceof Ovamorph ovamorph && ovamorph.isRoyal() && !ovamorph.isAberrant() && !ovamorph.isNetherAfflicted()) {
-            ovamorph.geneManager().minimize(GeneKeys.GENETIC_INTEGRITY);
+        if (livingEntity instanceof Ovomorph ovomorph && ovomorph.isRoyal() && !ovomorph.isAberrant() && !ovomorph.isNetherAfflicted()) {
+            ovomorph.geneManager().minimize(GeneKeys.GENETIC_INTEGRITY);
         }
 
         if (!AVPPredicates.IS_IMMORTAL.test(player)) {

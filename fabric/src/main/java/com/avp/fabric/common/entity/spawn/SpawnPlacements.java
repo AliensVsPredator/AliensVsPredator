@@ -13,7 +13,7 @@ import com.avp.AVP;
 import com.avp.AVPResources;
 import com.avp.common.entity.AVPEntityTypeTags;
 import com.avp.common.entity.living.alien.chestburster.ChestbursterSpawning;
-import com.avp.common.entity.living.alien.ovamorph.OvamorphSpawning;
+import com.avp.common.entity.living.alien.ovomorph.OvomorphSpawning;
 import com.avp.common.entity.living.alien.xenomorph.drone.DroneSpawning;
 import com.avp.common.entity.living.alien.xenomorph.praetorian.PraetorianSpawning;
 import com.avp.common.entity.living.alien.xenomorph.queen.QueenSpawning;
@@ -289,15 +289,15 @@ public class SpawnPlacements {
             var weight = AVP.config.spawnConfigs.OVAMORPH_SPAWN.weight;
 
             net.minecraft.world.entity.SpawnPlacements.register(
-                AVPEntityTypes.OVAMORPH.get(),
+                AVPEntityTypes.OVOMORPH.get(),
                 placement,
                 heightMap,
-                OvamorphSpawning.PREDICATE
+                OvomorphSpawning.PREDICATE
             );
             BiomeModifications.addSpawn(
                 AVPPredicates.alwaysTrue(),
                 AVPEntityTypes.ALIEN_CATEGORY,
-                AVPEntityTypes.OVAMORPH.get(),
+                AVPEntityTypes.OVOMORPH.get(),
                 weight,
                 minGroupSize,
                 maxGroupSize
@@ -331,15 +331,15 @@ public class SpawnPlacements {
             var weight = AVP.config.spawnConfigs.NETHER_OVAMORPH_SPAWN.weight;
 
             net.minecraft.world.entity.SpawnPlacements.register(
-                AVPEntityTypes.NETHER_OVAMORPH.get(),
+                AVPEntityTypes.NETHER_OVOMORPH.get(),
                 placement,
                 heightMap,
-                OvamorphSpawning.NETHER_PREDICATE
+                OvomorphSpawning.NETHER_PREDICATE
             );
             BiomeModifications.addSpawn(
                 biomeSelectionContext -> biomeSelectionContext.hasTag(BiomeTags.IS_NETHER),
                 AVPEntityTypes.ALIEN_CATEGORY,
-                AVPEntityTypes.NETHER_OVAMORPH.get(),
+                AVPEntityTypes.NETHER_OVOMORPH.get(),
                 weight,
                 minGroupSize,
                 maxGroupSize

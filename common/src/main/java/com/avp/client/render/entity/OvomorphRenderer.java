@@ -10,11 +10,12 @@ import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 
 import com.avp.AVPResources;
-import com.avp.client.animation.entity.OvamorphAnimator;
-import com.avp.common.entity.living.alien.ovamorph.Ovamorph;
+import com.avp.client.animation.entity.OvomorphAnimator;
+import com.avp.common.entity.living.alien.ovomorph.Ovomorph;
 
-public class OvamorphRenderer extends AzEntityRenderer<Ovamorph> {
+public class OvomorphRenderer extends AzEntityRenderer<Ovomorph> {
 
+    // TODO: Change this to "ovomorph" with 0.2.0.
     private static final String NAME = "ovamorph";
 
     private static final ResourceLocation MODEL = AVPResources.entityGeoModelLocation(NAME);
@@ -33,11 +34,11 @@ public class OvamorphRenderer extends AzEntityRenderer<Ovamorph> {
 
     private static final ResourceLocation NETHER_ROYAL_TEXTURE = AVPResources.entityTextureLocation("royal_nether_" + NAME);
 
-    public OvamorphRenderer(EntityRendererProvider.Context context) {
+    public OvomorphRenderer(EntityRendererProvider.Context context) {
         super(
-            AzEntityRendererConfig.builder(OvamorphRenderer::modelLocation, OvamorphRenderer::textureLocation)
-                .setAnimatorProvider(OvamorphAnimator::new)
-                .setRenderType(OvamorphRenderer::getEggRenderType)
+            AzEntityRendererConfig.builder(OvomorphRenderer::modelLocation, OvomorphRenderer::textureLocation)
+                .setAnimatorProvider(OvomorphAnimator::new)
+                .setRenderType(OvomorphRenderer::getEggRenderType)
                 .build(),
             context
         );
@@ -46,7 +47,7 @@ public class OvamorphRenderer extends AzEntityRenderer<Ovamorph> {
 
     @Override
     public void render(
-        @NotNull Ovamorph entity,
+        @NotNull Ovomorph entity,
         float entityYaw,
         float partialTick,
         @NotNull PoseStack poseStack,
@@ -63,32 +64,32 @@ public class OvamorphRenderer extends AzEntityRenderer<Ovamorph> {
         poseStack.popPose();
     }
 
-    public static ResourceLocation modelLocation(Ovamorph ovamorph) {
-        if (ovamorph.isRoyal()) {
+    public static ResourceLocation modelLocation(Ovomorph ovomorph) {
+        if (ovomorph.isRoyal()) {
             return ROYAL_MODEL;
         }
 
         return MODEL;
     }
 
-    // TODO: Add textures with transparency to so the ovamorph will be transparent when hatched.
-    public static ResourceLocation textureLocation(Ovamorph ovamorph) {
-        if (ovamorph.isRoyal()) {
-            if (ovamorph.isNetherAfflicted()) {
+    // TODO: Add textures with transparency to so the ovomorph will be transparent when hatched.
+    public static ResourceLocation textureLocation(Ovomorph ovomorph) {
+        if (ovomorph.isRoyal()) {
+            if (ovomorph.isNetherAfflicted()) {
                 return NETHER_ROYAL_TEXTURE;
             }
-            if (ovamorph.isAberrant()) {
+            if (ovomorph.isAberrant()) {
                 return ABERRANT_ROYAL_TEXTURE;
             }
             return ROYAL_TEXTURE;
         }
 
-        if (!ovamorph.isRoyal()) {
-            if (ovamorph.isNetherAfflicted()) {
+        if (!ovomorph.isRoyal()) {
+            if (ovomorph.isNetherAfflicted()) {
                 return NETHER_TEXTURE;
             }
 
-            if (ovamorph.isAberrant()) {
+            if (ovomorph.isAberrant()) {
                 return ABERRANT_TEXTURE;
             }
         }
@@ -96,11 +97,11 @@ public class OvamorphRenderer extends AzEntityRenderer<Ovamorph> {
         return TEXTURE;
     }
 
-    public static RenderType getEggRenderType(Ovamorph ovamorph) {
-        if (ovamorph.hatchManager().hatched()) {
-            return RenderType.entityTranslucent(textureLocation(ovamorph));
+    public static RenderType getEggRenderType(Ovomorph ovomorph) {
+        if (ovomorph.hatchManager().hatched()) {
+            return RenderType.entityTranslucent(textureLocation(ovomorph));
         }
 
-        return RenderType.entityCutoutNoCull(textureLocation(ovamorph));
+        return RenderType.entityCutoutNoCull(textureLocation(ovomorph));
     }
 }

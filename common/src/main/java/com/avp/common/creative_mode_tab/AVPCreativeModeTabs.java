@@ -67,7 +67,7 @@ public class AVPCreativeModeTabs {
 
     public static final AVPDeferredHolder<CreativeModeTab> SPAWN_EGGS = register(
         SPAWN_EGGS_KEY,
-        () -> new ItemStack(AVPSpawnEggItems.OVAMORPH_SPAWN_EGG.get()),
+        () -> new ItemStack(AVPSpawnEggItems.OVOMORPH_SPAWN_EGG.get()),
         SpawnEggsCreativeModeTabInitializer.OUTPUT_CONSUMER
     );
 

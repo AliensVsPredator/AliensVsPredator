@@ -26,7 +26,7 @@ import net.neoforged.neoforge.network.registration.HandlerThread;
 
 import com.avp.AVP;
 import com.avp.common.entity.living.alien.chestburster.ChestbursterSpawning;
-import com.avp.common.entity.living.alien.ovamorph.OvamorphSpawning;
+import com.avp.common.entity.living.alien.ovomorph.OvomorphSpawning;
 import com.avp.common.entity.living.alien.xenomorph.drone.DroneSpawning;
 import com.avp.common.entity.living.alien.xenomorph.praetorian.PraetorianSpawning;
 import com.avp.common.entity.living.alien.xenomorph.queen.QueenSpawning;
@@ -174,10 +174,10 @@ public class AVPNeoForge {
             RegisterSpawnPlacementsEvent.Operation.AND
         );
         event.register(
-            AVPEntityTypes.OVAMORPH.get(),
+            AVPEntityTypes.OVOMORPH.get(),
             placement,
             heightMap,
-            OvamorphSpawning.PREDICATE,
+            OvomorphSpawning.PREDICATE,
             RegisterSpawnPlacementsEvent.Operation.AND
         );
         event.register(
@@ -188,10 +188,10 @@ public class AVPNeoForge {
             RegisterSpawnPlacementsEvent.Operation.AND
         );
         event.register(
-            AVPEntityTypes.NETHER_OVAMORPH.get(),
+            AVPEntityTypes.NETHER_OVOMORPH.get(),
             placement,
             heightMap,
-            OvamorphSpawning.NETHER_PREDICATE,
+            OvomorphSpawning.NETHER_PREDICATE,
             RegisterSpawnPlacementsEvent.Operation.AND
         );
     }

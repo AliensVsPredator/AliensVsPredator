@@ -9,6 +9,8 @@
 ## ♻️ Changes
 - Updated deepslate titanium ore texture to be more consistent with other deepslate ores.
 - Xenomorphs now only move 10% faster instead of 20% faster when chasing a target.
+- Renamed "Ovamorph" to "Ovomorph".
+  - These are only display-facing, non-breaking changes. Ovomorphs will have their registry names starting with v0.2.0.
 - Reduced overall block damage dealt by acid by 80%.
   - Acid's block damage still scales with the "strength" of acid, which increases when acid entities overlap.
 

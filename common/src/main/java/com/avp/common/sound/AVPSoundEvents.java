@@ -13,13 +13,17 @@ public class AVPSoundEvents {
 
     public static final AVPDeferredHolder<SoundEvent> BLOCK_RESIN_SPREAD = register("block.resin.spread");
 
-    public static final AVPDeferredHolder<SoundEvent> ENTITY_OVAMORPH_HATCH = register("entity.ovamorph.hatch");
+    // TODO: Change this to "ovomorph" with 0.2.0.
+    public static final AVPDeferredHolder<SoundEvent> ENTITY_OVOMORPH_HATCH = register("entity.ovamorph.hatch");
 
-    public static final AVPDeferredHolder<SoundEvent> ENTITY_OVAMORPH_LAID = register("entity.ovamorph.laid");
+    // TODO: Change this to "ovomorph" with 0.2.0.
+    public static final AVPDeferredHolder<SoundEvent> ENTITY_OVOMORPH_LAID = register("entity.ovamorph.laid");
 
-    public static final AVPDeferredHolder<SoundEvent> ENTITY_OVAMORPH_ROOT = register("entity.ovamorph.root");
+    // TODO: Change this to "ovomorph" with 0.2.0.
+    public static final AVPDeferredHolder<SoundEvent> ENTITY_OVOMORPH_ROOT = register("entity.ovamorph.root");
 
-    public static final AVPDeferredHolder<SoundEvent> ENTITY_OVAMORPH_SHEAR = register("entity.ovamorph.shear");
+    // TODO: Change this to "ovomorph" with 0.2.0.
+    public static final AVPDeferredHolder<SoundEvent> ENTITY_OVOMORPH_SHEAR = register("entity.ovamorph.shear");
 
     public static final AVPDeferredHolder<SoundEvent> ENTITY_QUEEN_ARM_ATTACK = register("entity.queen.arm_attack");
 

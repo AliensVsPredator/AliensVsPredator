@@ -1,4 +1,4 @@
-package com.avp.common.entity.living.alien.ovamorph;
+package com.avp.common.entity.living.alien.ovomorph;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -29,34 +29,34 @@ import com.avp.common.item.AVPItems;
 import com.avp.common.sound.AVPSoundEvents;
 import com.avp.common.util.AVPPredicates;
 
-public class Ovamorph extends Alien implements Shearable {
+public class Ovomorph extends Alien implements Shearable {
 
-    private static final EntityDataAccessor<Boolean> HATCHED = SynchedEntityData.defineId(Ovamorph.class, EntityDataSerializers.BOOLEAN);
+    private static final EntityDataAccessor<Boolean> HATCHED = SynchedEntityData.defineId(Ovomorph.class, EntityDataSerializers.BOOLEAN);
 
-    private static final EntityDataAccessor<Byte> MAX_SPAWN_COUNT = SynchedEntityData.defineId(Ovamorph.class, EntityDataSerializers.BYTE);
+    private static final EntityDataAccessor<Byte> MAX_SPAWN_COUNT = SynchedEntityData.defineId(Ovomorph.class, EntityDataSerializers.BYTE);
 
-    private static final EntityDataAccessor<Boolean> ROOTED = SynchedEntityData.defineId(Ovamorph.class, EntityDataSerializers.BOOLEAN);
+    private static final EntityDataAccessor<Boolean> ROOTED = SynchedEntityData.defineId(Ovomorph.class, EntityDataSerializers.BOOLEAN);
 
     private static final String IS_ROOTED_KEY = "isRooted";
 
-    public static AttributeSupplier.Builder createOvamorphAttributes() {
+    public static AttributeSupplier.Builder createOvomorphAttributes() {
         return applyFrom(AVP.config.statsConfigs.OVAMORPH_STATS, Monster.createMonsterAttributes());
     }
 
-    private final OvamorphAnimationDispatcher animationDispatcher;
+    private final OvomorphAnimationDispatcher animationDispatcher;
 
     private final HatchManager hatchManager;
 
-    public Ovamorph(EntityType<? extends Ovamorph> entityType, Level level) {
+    public Ovomorph(EntityType<? extends Ovomorph> entityType, Level level) {
         super(entityType, level);
-        this.animationDispatcher = new OvamorphAnimationDispatcher(this);
+        this.animationDispatcher = new OvomorphAnimationDispatcher(this);
         this.hatchManager = new HatchManager(this, HATCHED, MAX_SPAWN_COUNT, 3 * 20, 3 * 20);
         this.config = AVP.config.statsConfigs.OVAMORPH_STATS;
     }
 
     @Override
     public @Nullable EntityType<? extends Alien> getAberrantType() {
-        return isRoyal() ? AVPEntityTypes.ROYAL_ABERRANT_OVAMORPH.get() : AVPEntityTypes.ABERRANT_OVAMORPH.get();
+        return isRoyal() ? AVPEntityTypes.ROYAL_ABERRANT_OVOMORPH.get() : AVPEntityTypes.ABERRANT_OVOMORPH.get();
     }
 
     @Override
@@ -66,16 +66,16 @@ public class Ovamorph extends Alien implements Shearable {
 
     @Override
     public @Nullable EntityType<? extends Alien> getNetherType() {
-        return isRoyal() ? AVPEntityTypes.ROYAL_NETHER_OVAMORPH.get() : AVPEntityTypes.NETHER_OVAMORPH.get();
+        return isRoyal() ? AVPEntityTypes.ROYAL_NETHER_OVOMORPH.get() : AVPEntityTypes.NETHER_OVOMORPH.get();
     }
 
     @Override
     public @Nullable EntityType<? extends Alien> getDefaultType() {
-        return isRoyal() ? AVPEntityTypes.ROYAL_OVAMORPH.get() : AVPEntityTypes.OVAMORPH.get();
+        return isRoyal() ? AVPEntityTypes.ROYAL_OVOMORPH.get() : AVPEntityTypes.OVOMORPH.get();
     }
 
     @Override
-    protected void defineSynchedData(SynchedEntityData.Builder builder) {
+    protected void defineSynchedData(@NotNull SynchedEntityData.Builder builder) {
         super.defineSynchedData(builder);
         builder.define(HATCHED, false);
         builder.define(MAX_SPAWN_COUNT, (byte) 1);
@@ -96,7 +96,7 @@ public class Ovamorph extends Alien implements Shearable {
     }
 
     @Override
-    public @NotNull InteractionResult mobInteract(Player player, InteractionHand interactionHand) {
+    public @NotNull InteractionResult mobInteract(@NotNull Player player, @NotNull InteractionHand interactionHand) {
         if (!level().isClientSide) {
             var itemStack = player.getItemInHand(interactionHand);
             var resinBallItem = AlienVariantUtil.getResinBallFor(this);
@@ -124,7 +124,7 @@ public class Ovamorph extends Alien implements Shearable {
 
                 return InteractionResult.SUCCESS;
             } else if (!isRooted() && itemStack.is(resinBallItem)) {
-                level().playSound(null, this, AVPSoundEvents.ENTITY_OVAMORPH_ROOT.get(), SoundSource.PLAYERS, 1.0F, 1.0F);
+                level().playSound(null, this, AVPSoundEvents.ENTITY_OVOMORPH_ROOT.get(), SoundSource.PLAYERS, 1.0F, 1.0F);
                 setRooted(true);
 
                 if (!AVPPredicates.IS_IMMORTAL.test(player)) {
@@ -137,10 +137,10 @@ public class Ovamorph extends Alien implements Shearable {
     }
 
     @Override
-    public void shear(SoundSource soundSource) {
+    public void shear(@NotNull SoundSource soundSource) {
         setRooted(false);
         level().playSound(null, this, SoundEvents.SHEEP_SHEAR, soundSource, 1.0F, 1.0F);
-        level().playSound(null, this, AVPSoundEvents.ENTITY_OVAMORPH_SHEAR.get(), soundSource, 1.0F, 1.0F);
+        level().playSound(null, this, AVPSoundEvents.ENTITY_OVOMORPH_SHEAR.get(), soundSource, 1.0F, 1.0F);
         var resinBallItem = AlienVariantUtil.getResinBallFor(this);
 
         var itemEntity = this.spawnAtLocation(resinBallItem, 1);
@@ -163,7 +163,7 @@ public class Ovamorph extends Alien implements Shearable {
     }
 
     @Override
-    public boolean hurt(DamageSource damageSource, float damage) {
+    public boolean hurt(@NotNull DamageSource damageSource, float damage) {
         var isHurt = super.hurt(damageSource, damage);
 
         if (!level().isClientSide && isHurt && damageSource.getEntity() != null) {
@@ -174,7 +174,7 @@ public class Ovamorph extends Alien implements Shearable {
     }
 
     @Override
-    protected void doPush(Entity entity) {
+    protected void doPush(@NotNull Entity entity) {
         if (entity instanceof Player player && (player.isCreative() || player.isSpectator())) {
             super.doPush(entity);
             return;
@@ -218,7 +218,7 @@ public class Ovamorph extends Alien implements Shearable {
     }
 
     @Override
-    public void readAdditionalSaveData(CompoundTag compoundTag) {
+    public void readAdditionalSaveData(@NotNull CompoundTag compoundTag) {
         super.readAdditionalSaveData(compoundTag);
         hatchManager.load(compoundTag);
 
@@ -228,7 +228,7 @@ public class Ovamorph extends Alien implements Shearable {
     }
 
     @Override
-    public void addAdditionalSaveData(CompoundTag compoundTag) {
+    public void addAdditionalSaveData(@NotNull CompoundTag compoundTag) {
         super.addAdditionalSaveData(compoundTag);
         hatchManager.save(compoundTag);
 

@@ -43,7 +43,7 @@ public abstract class Parasite extends Alien {
     }
 
     @Override
-    protected void defineSynchedData(SynchedEntityData.Builder builder) {
+    protected void defineSynchedData(@NotNull SynchedEntityData.Builder builder) {
         super.defineSynchedData(builder);
         builder.define(IS_FERTILE, true);
     }
@@ -63,7 +63,7 @@ public abstract class Parasite extends Alien {
     }
 
     @Override
-    public @NotNull InteractionResult mobInteract(Player player, InteractionHand interactionHand) {
+    public @NotNull InteractionResult mobInteract(Player player, @NotNull InteractionHand interactionHand) {
         ItemStack itemStack = player.getItemInHand(interactionHand);
         if (itemStack.is(AVPItems.RAW_ROYAL_JELLY.get())) {
             if (!level().isClientSide && !attachmentManager.isFertile()) {
@@ -79,7 +79,7 @@ public abstract class Parasite extends Alien {
     }
 
     @Override
-    public boolean doHurtTarget(Entity entity) {
+    public boolean doHurtTarget(@NotNull Entity entity) {
         if (canAttachToHost(entity)) {
             startRiding(entity, true);
         }
@@ -98,7 +98,7 @@ public abstract class Parasite extends Alien {
     }
 
     @Override
-    public boolean startRiding(Entity entity, boolean bl) {
+    public boolean startRiding(@NotNull Entity entity, boolean bl) {
         var isRiding = super.startRiding(entity, bl);
 
         if (isRiding) {
@@ -124,7 +124,7 @@ public abstract class Parasite extends Alien {
     }
 
     @Override
-    protected void doPush(Entity entity) {
+    protected void doPush(@NotNull Entity entity) {
         super.doPush(entity);
 
         if (canAttachToHost(entity)) {
@@ -154,13 +154,13 @@ public abstract class Parasite extends Alien {
     }
 
     @Override
-    public void readAdditionalSaveData(CompoundTag compoundTag) {
+    public void readAdditionalSaveData(@NotNull CompoundTag compoundTag) {
         super.readAdditionalSaveData(compoundTag);
         attachmentManager.load(compoundTag);
     }
 
     @Override
-    public void addAdditionalSaveData(CompoundTag compoundTag) {
+    public void addAdditionalSaveData(@NotNull CompoundTag compoundTag) {
         super.addAdditionalSaveData(compoundTag);
         attachmentManager.save(compoundTag);
     }

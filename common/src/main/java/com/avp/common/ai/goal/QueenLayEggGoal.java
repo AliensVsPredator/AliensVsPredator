@@ -6,7 +6,7 @@ import net.minecraft.world.entity.ai.goal.Goal;
 import java.util.concurrent.TimeUnit;
 
 import com.avp.common.entity.AVPEntityTypeTags;
-import com.avp.common.entity.living.alien.ovamorph.Ovamorph;
+import com.avp.common.entity.living.alien.ovomorph.Ovomorph;
 import com.avp.common.entity.living.alien.util.AlienPredicates;
 import com.avp.common.entity.living.alien.util.AlienVariantUtil;
 import com.avp.common.entity.living.alien.xenomorph.queen.Queen;
@@ -70,14 +70,14 @@ public class QueenLayEggGoal extends Goal {
     private boolean noFriendlyEggsNearby() {
         // Reset scanning cooldown regardless of scanner outcome.
         eggScanCooldownInTicks = MAX_EGG_SCAN_COOLDOWN_IN_TICKS;
-        // Scan for friendly ovamorphs.
+        // Scan for friendly ovomorphs.
         return queen.level()
             .getEntitiesOfClass(
-                Ovamorph.class,
+                Ovomorph.class,
                 // 4 block radius
                 queen.getBoundingBox().inflate(4),
-                // Must be tagged as an ovamorph...
-                entity -> entity.getType().is(AVPEntityTypeTags.OVAMORPHS)
+                // Must be tagged as an ovomorph...
+                entity -> entity.getType().is(AVPEntityTypeTags.OVOMORPHS)
                     // AND must NOT be an enemy alien to the queen (so either a neutral egg, or same strain and same
                     // hive).
                     && !AlienPredicates.areAliensEnemies(queen, entity)
@@ -93,18 +93,18 @@ public class QueenLayEggGoal extends Goal {
         var level = queen.level();
         // Egg has a 5% chance of being royal.
         var isRoyal = queen.getRandom().nextInt(100) < 5;
-        var ovamorphType = AlienVariantUtil.getOvamorphTypeFor(queen, isRoyal);
+        var ovomorphType = AlienVariantUtil.getOvomorphTypeFor(queen, isRoyal);
 
-        var ovamorph = ovamorphType.create(level);
+        var ovomorph = ovomorphType.create(level);
 
-        if (ovamorph == null) {
+        if (ovomorph == null) {
             return;
         }
 
-        ovamorph.setPos(queen.position());
-        ovamorph.setPersistenceRequired();
+        ovomorph.setPos(queen.position());
+        ovomorph.setPersistenceRequired();
 
-        level.playSound(null, queen, AVPSoundEvents.ENTITY_OVAMORPH_LAID.get(), SoundSource.HOSTILE, 1.0F, 1.0F);
-        level.addFreshEntity(ovamorph);
+        level.playSound(null, queen, AVPSoundEvents.ENTITY_OVOMORPH_LAID.get(), SoundSource.HOSTILE, 1.0F, 1.0F);
+        level.addFreshEntity(ovomorph);
     }
 }

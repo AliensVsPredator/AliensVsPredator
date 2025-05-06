@@ -16,7 +16,7 @@ import com.avp.common.block.AVPBlocks;
 import com.avp.common.block.resin.ResinVeinBlock;
 import com.avp.common.entity.acid.Acid;
 import com.avp.common.entity.living.alien.Alien;
-import com.avp.common.entity.living.alien.ovamorph.Ovamorph;
+import com.avp.common.entity.living.alien.ovomorph.Ovomorph;
 import com.avp.common.entity.living.alien.xenomorph.queen.Queen;
 import com.avp.common.entity.type.AVPEntityTypes;
 import com.avp.common.item.AVPItems;
@@ -112,15 +112,15 @@ public class AlienVariantUtil {
         return RESIN_BALL_MAPPING.get().getOrDefault(blockState.getBlock(), AVPItems.RESIN_BALL.get());
     }
 
-    public static EntityType<? extends Ovamorph> getOvamorphTypeFor(Queen queen, boolean isRoyal) {
+    public static EntityType<? extends Ovomorph> getOvomorphTypeFor(Queen queen, boolean isRoyal) {
         return switch (queen) {
             case Queen netherQueen when netherQueen.isNetherAfflicted() && isRoyal ->
-                AVPEntityTypes.ROYAL_NETHER_OVAMORPH.get();
-            case Queen netherQueen when netherQueen.isNetherAfflicted() -> AVPEntityTypes.NETHER_OVAMORPH.get();
+                AVPEntityTypes.ROYAL_NETHER_OVOMORPH.get();
+            case Queen netherQueen when netherQueen.isNetherAfflicted() -> AVPEntityTypes.NETHER_OVOMORPH.get();
             case Queen aberrantQueen when aberrantQueen.isAberrant() && isRoyal ->
-                AVPEntityTypes.ROYAL_ABERRANT_OVAMORPH.get();
-            case Queen aberrantQueen when aberrantQueen.isAberrant() -> AVPEntityTypes.ABERRANT_OVAMORPH.get();
-            default -> isRoyal ? AVPEntityTypes.ROYAL_OVAMORPH.get() : AVPEntityTypes.OVAMORPH.get();
+                AVPEntityTypes.ROYAL_ABERRANT_OVOMORPH.get();
+            case Queen aberrantQueen when aberrantQueen.isAberrant() -> AVPEntityTypes.ABERRANT_OVOMORPH.get();
+            default -> isRoyal ? AVPEntityTypes.ROYAL_OVOMORPH.get() : AVPEntityTypes.OVOMORPH.get();
         };
     }
 }
