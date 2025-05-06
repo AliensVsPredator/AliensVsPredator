@@ -292,7 +292,8 @@ public class AVPBlocks {
 
     public static final AVPDeferredHolder<Block> INDUSTRIAL_FURNACE = register(
         "industrial_furnace_block",
-        () -> new IndustrialFurnaceBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.STONE))
+        // TODO: Use custom properties here.
+        () -> new IndustrialFurnaceBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.BLAST_FURNACE))
     );
 
     public static final AVPDeferredHolder<Block> INDUSTRIAL_GLASS = register(

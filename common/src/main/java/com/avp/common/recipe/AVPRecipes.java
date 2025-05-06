@@ -40,7 +40,7 @@ public class AVPRecipes {
         return Services.REGISTRY.register(
             BuiltInRegistries.RECIPE_TYPE,
             id,
-            () -> new RecipeType<T>() {
+            () -> new RecipeType<>() {
 
                 @Override
                 public String toString() {
