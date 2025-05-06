@@ -16,6 +16,7 @@ import com.avp.common.block.AVPBlocks;
 import com.avp.common.block.resin.ResinVeinBlock;
 import com.avp.common.entity.acid.Acid;
 import com.avp.common.entity.living.alien.Alien;
+import com.avp.common.entity.living.alien.ovamorph.Ovamorph;
 import com.avp.common.entity.living.alien.xenomorph.queen.Queen;
 import com.avp.common.entity.type.AVPEntityTypes;
 import com.avp.common.item.AVPItems;
@@ -111,7 +112,7 @@ public class AlienVariantUtil {
         return RESIN_BALL_MAPPING.get().getOrDefault(blockState.getBlock(), AVPItems.RESIN_BALL.get());
     }
 
-    public static EntityType<?> getOvamorphTypeFor(Queen queen, boolean isRoyal) {
+    public static EntityType<? extends Ovamorph> getOvamorphTypeFor(Queen queen, boolean isRoyal) {
         return switch (queen) {
             case Queen netherQueen when netherQueen.isNetherAfflicted() && isRoyal ->
                 AVPEntityTypes.ROYAL_NETHER_OVAMORPH.get();

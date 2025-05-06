@@ -102,6 +102,7 @@ public class QueenLayEggGoal extends Goal {
         }
 
         ovamorph.setPos(queen.position());
+        ovamorph.setPersistenceRequired();
 
         level.playSound(null, queen, AVPSoundEvents.ENTITY_OVAMORPH_LAID.get(), SoundSource.HOSTILE, 1.0F, 1.0F);
         level.addFreshEntity(ovamorph);

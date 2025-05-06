@@ -16,6 +16,7 @@
 - Fixed guns rendering a muzzle flash in inventories.
 - Fixed multiple guns in inventory playing animations if the guns are copies of each other.
 - Fixed trip mine block texture dimensions not being powers of 2.
+- Fixed ovamorphs spawned from queens not persisting.
 - Fixed facehuggers and xenomorphs lunging towards targets even if they aren't looking towards the target.
 - Fixed irradiated queens laying eggs when they shouldn't.
 - Fixed persistence not carrying over when an alien grows into the next stage.
