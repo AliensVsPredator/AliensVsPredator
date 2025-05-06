@@ -12,7 +12,7 @@ public class GigeresqueConstants {
 
     private static final String ACID_RESISTANT = "acid_resistant";
 
-    public static final TagKey<EntityType<?>> ACID_RESISTANT_ENTITY = createEntity(ACID_RESISTANT);
+    public static final TagKey<EntityType<?>> ACID_RESISTANT_ENTITIES = createEntity(ACID_RESISTANT);
 
     public static final TagKey<Block> ACID_RESISTANT_BLOCKS = createBlock(ACID_RESISTANT);
 

@@ -302,7 +302,7 @@ public class AVPEntityTypeTagProvider extends FabricTagProvider.EntityTypeTagPro
 
     private void addCompatibilityTags() {
         getOrCreateTagBuilder(AVPEntityTypeTags.ACID_IMMUNE)
-            .addOptionalTag(GigeresqueConstants.ACID_RESISTANT_ENTITY);
+            .addOptionalTag(GigeresqueConstants.ACID_RESISTANT_ENTITIES);
 
         getOrCreateTagBuilder(StellarisConstants.NO_OXYGEN_NEEDED)
             .setReplace(false)

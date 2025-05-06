@@ -597,9 +597,6 @@ public class AVPBlockTagProvider extends FabricTagProvider.BlockTagProvider {
         getOrCreateTagBuilder(AVPBlockTags.ACID_IMMUNE)
             .addOptionalTag(GigeresqueConstants.ACID_RESISTANT_BLOCKS);
 
-        getOrCreateTagBuilder(GigeresqueConstants.ACID_RESISTANT_BLOCKS)
-            .addTag(AVPBlockTags.TITANIUM);
-
         getOrCreateTagBuilder(CommonConstants.CHESTS)
             .setReplace(false)
             .add(
