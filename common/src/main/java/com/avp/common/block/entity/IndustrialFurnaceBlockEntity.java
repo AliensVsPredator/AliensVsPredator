@@ -7,7 +7,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.inventory.BlastFurnaceMenu;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -20,6 +19,7 @@ import net.minecraft.world.level.block.entity.AbstractFurnaceBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
 
+import com.avp.common.menu.IndustrialFurnaceMenu;
 import com.avp.common.recipe.AVPRecipes;
 import com.avp.mixin.AbstractFurnaceBlockEntityInvoker;
 
@@ -190,6 +190,6 @@ public class IndustrialFurnaceBlockEntity extends AbstractFurnaceBlockEntity {
 
     @Override
     protected @NotNull AbstractContainerMenu createMenu(int i, @NotNull Inventory inventory) {
-        return new BlastFurnaceMenu(i, inventory, this, this.dataAccess);
+        return new IndustrialFurnaceMenu(i, inventory, this, dataAccess);
     }
 }

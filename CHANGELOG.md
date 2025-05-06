@@ -16,6 +16,7 @@
 
 ## 🐞 Fixes
 - Fixed industrial furnaces not emitting light while cooking.
+- Fixed shift-clicking not working with industrial furnace.
 - Fixed marines always wandering around immediately when spawned in or when loading into the world.
 - Fixed guns rendering a muzzle flash in inventories.
 - Fixed multiple guns in inventory playing animations if the guns are copies of each other.

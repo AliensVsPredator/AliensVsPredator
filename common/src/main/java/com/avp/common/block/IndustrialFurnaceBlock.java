@@ -76,6 +76,7 @@ public class IndustrialFurnaceBlock extends AbstractFurnaceBlock {
         double e = blockPos.getY();
         double f = (double) blockPos.getZ() + 0.5;
         if (randomSource.nextDouble() < 0.1) {
+            // TODO: There might be a bug with subtitles due to this sound being re-used.
             level.playLocalSound(d, e, f, SoundEvents.BLASTFURNACE_FIRE_CRACKLE, SoundSource.BLOCKS, 1.0f, 1.0f, false);
         }
         Direction direction = blockState.getValue(FACING);
