@@ -47,7 +47,12 @@ public class CanisterItem extends Item implements DispensibleContainerItem {
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag) {
+    public void appendHoverText(
+        @NotNull ItemStack stack,
+        @NotNull TooltipContext context,
+        @NotNull List<Component> tooltipComponents,
+        @NotNull TooltipFlag tooltipFlag
+    ) {
         super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
 
         int currentContentAmount = stack.getOrDefault(AVPDataComponents.CANISTER_CAPACITY.get(), 0);
@@ -60,7 +65,7 @@ public class CanisterItem extends Item implements DispensibleContainerItem {
     }
 
     @Override
-    public @NotNull InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand usedHand) {
+    public @NotNull InteractionResultHolder<ItemStack> use(@NotNull Level level, Player player, @NotNull InteractionHand usedHand) {
         var canisterStack = player.getItemInHand(usedHand);
         var hitResult = getPlayerPOVHitResult(
             level,
@@ -69,7 +74,7 @@ public class CanisterItem extends Item implements DispensibleContainerItem {
         );
 
         if (isInvalidHitResult(hitResult)) {
-            return InteractionResultHolder.pass(canisterStack);
+            return InteractionResultHolder.fail(canisterStack);
         }
 
         var hitPos = hitResult.getBlockPos();
@@ -229,7 +234,7 @@ public class CanisterItem extends Item implements DispensibleContainerItem {
     }
 
     @Override
-    public boolean emptyContents(@Nullable Player player, Level level, BlockPos pos, @Nullable BlockHitResult result) {
+    public boolean emptyContents(@Nullable Player player, @NotNull Level level, @NotNull BlockPos pos, @Nullable BlockHitResult result) {
         if (!(this.content instanceof FlowingFluid flowingFluid)) {
             return false;
         }

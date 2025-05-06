@@ -15,6 +15,7 @@
   - Acid's block damage still scales with the "strength" of acid, which increases when acid entities overlap.
 
 ## 🐞 Fixes
+- Fixed empty canisters being consumed when right-clicking non-cow entities.
 - Fixed industrial furnaces not emitting light while cooking.
 - Fixed shift-clicking not working with industrial furnace.
 - Fixed marines always wandering around immediately when spawned in or when loading into the world.
