@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.function.UnaryOperator;
 
 import com.avp.AVPResources;
-import com.avp.common.item.GunItem;
+import com.avp.common.component.AVPDataComponents;
 
 public abstract class MuzzledGunItemRenderer extends AzItemRenderer {
 
@@ -33,17 +33,14 @@ public abstract class MuzzledGunItemRenderer extends AzItemRenderer {
                 .addRenderLayer(new AzAutoGlowingLayer<>())
                 .useNewOffset(true)
                 .setPrerenderEntry(context -> {
-                    var itemStack = context.animatable();
-
-                    if (!(itemStack.getItem() instanceof GunItem gunItem)) {
-                        return context;
-                    }
+                    var isFiring = context.animatable().get(AVPDataComponents.IS_FIRING.get());
 
                     muzzleFlashBoneNames.forEach(muzzleFlashBoneName -> {
                         var maybeBone = context.bakedModel().getBoneOrNull(muzzleFlashBoneName);
 
                         if (maybeBone != null) {
-                            maybeBone.setHidden(!gunItem.isFiring);
+                            // The null check here is deliberate for backwards compatibility.
+                            maybeBone.setHidden(isFiring == null || !isFiring);
                         }
                     });
 

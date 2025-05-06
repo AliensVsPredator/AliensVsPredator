@@ -34,6 +34,13 @@ public class AVPDataComponents {
             .cacheEncoding()
     );
 
+    public static final AVPDeferredHolder<DataComponentType<Boolean>> IS_FIRING = register(
+        "is_firing",
+        builder -> builder.persistent(Codec.BOOL)
+            .networkSynchronized(ByteBufCodecs.BOOL)
+            .cacheEncoding()
+    );
+
     private static <T> AVPDeferredHolder<DataComponentType<T>> register(
         String id,
         UnaryOperator<DataComponentType.Builder<T>> unaryOperator
