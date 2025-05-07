@@ -48,6 +48,6 @@
 		"minecraft": "~1.21.1",
 		"java": ">=21",
 		"fabric-api": "*",
-		"azurelib": ">=3.0.9"
+		"azurelib": ">=${azurelib_version}"
 	}
 }
