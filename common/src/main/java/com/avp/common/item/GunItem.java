@@ -125,13 +125,6 @@ public class GunItem extends Item {
                     case SHOT -> {
                         var isFiring = itemStack.get(AVPDataComponents.IS_FIRING.get());
 
-                        if (isFiring == null || !isFiring) {
-                            // This helps resolve a bug in AzureLib where item stacks with the same UUID would play
-                            // the same animation even if the other copies are in an idle slot not being used.
-                            // TODO: Apply this fix in AzureLib... somehow.
-                            itemStack.set(AzureLib.AZ_ID.get(), UUID.randomUUID());
-                        }
-
                         itemStack.set(AVPDataComponents.IS_FIRING.get(), true);
                         playUseAnimations(livingEntity, itemStack);
                     }
