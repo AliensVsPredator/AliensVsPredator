@@ -15,6 +15,7 @@
   - Acid's block damage still scales with the "strength" of acid, which increases when acid entities overlap.
 
 ## 🐞 Fixes
+- Fixed villagers not becoming commissaries (Fabric-only).
 - Fixed empty canisters being consumed when right-clicking non-cow entities.
 - Fixed industrial furnaces not emitting light while cooking.
 - Fixed shift-clicking not working with industrial furnace.
