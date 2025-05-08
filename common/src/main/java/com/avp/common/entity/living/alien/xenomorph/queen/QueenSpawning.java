@@ -10,8 +10,9 @@ import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.entity.EntityTypeTest;
 
 import com.avp.AVP;
-import com.avp.common.block.AVPBlockTags;
+import com.avp.common.level.saveddata.QueenSpawnChunkData;
 import com.avp.common.util.AVPPredicates;
+import com.avp.common.util.ChunkPosUtil;
 
 public class QueenSpawning {
 
@@ -24,27 +25,24 @@ public class QueenSpawning {
         blockPos,
         randomSource
     ) -> {
-        var requiresResin = AVP.config.spawnConfigs.QUEEN_SPAWN.requiresResin;
-        var isValidSpawn = !requiresResin || serverLevelAccessor.getBlockState(blockPos.below()).is(AVPBlockTags.RESIN);
+        var queenSpawnChunkDataOption = QueenSpawnChunkData.getOrCreate(serverLevelAccessor.getLevel());
+        var isChunkSpawnAvailable = queenSpawnChunkDataOption
+            .isSomeAnd(queenSpawnChunkData -> !queenSpawnChunkData.isChunkBlacklisted(blockPos));
 
-        return blockPos.getY() <= MAX_Y_LEVEL &&
-            isValidSpawn &&
-            checkSpawnRules(entityType, serverLevelAccessor, mobSpawnType, blockPos, randomSource);
-    };
+        var canSpawn = blockPos.getY() <= MAX_Y_LEVEL
+            && isChunkSpawnAvailable
+            && checkSpawnRules(entityType, serverLevelAccessor, mobSpawnType, blockPos, randomSource);
 
-    public static final SpawnPlacements.SpawnPredicate<Queen> NETHER_PREDICATE = (
-        entityType,
-        serverLevelAccessor,
-        mobSpawnType,
-        blockPos,
-        randomSource
-    ) -> {
-        var requiresResin = AVP.config.spawnConfigs.NETHER_QUEEN_SPAWN.requiresResin;
-        var isValidSpawn = !requiresResin || serverLevelAccessor.getBlockState(blockPos.below()).is(AVPBlockTags.RESIN);
+        if (canSpawn) {
+            var queenSpawnChunkData = queenSpawnChunkDataOption.unwrap();
+            // TODO: Replace this with a dedicated config value in terms of chunks.
+            var chunkRadiusToBlacklist = AVP.config.hiveConfigs.MINIMUM_DISTANCE_BETWEEN_HIVES_IN_BLOCKS / 16;
+            var nearbyChunkPositions = ChunkPosUtil.getChunksAround(blockPos, chunkRadiusToBlacklist);
 
-        return blockPos.getY() <= MAX_Y_LEVEL &&
-            isValidSpawn &&
-            checkSpawnRules(entityType, serverLevelAccessor, mobSpawnType, blockPos, randomSource);
+            nearbyChunkPositions.forEach(queenSpawnChunkData::addChunkToBlacklist);
+        }
+
+        return canSpawn;
     };
 
     public static boolean checkSpawnRules(
@@ -63,6 +61,7 @@ public class QueenSpawning {
             blockPos,
             randomSource
         ) &&
+        // FIXME: Check for nearby hives instead of nearby queens.
             !anyNearbyQueens(serverLevelAccessor, blockPos, minimumDistanceBetweenHivesInBlocks);
     }
 

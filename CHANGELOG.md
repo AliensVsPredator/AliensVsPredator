@@ -9,8 +9,15 @@
 ## ♻️ Changes
 - Updated deepslate titanium ore texture to be more consistent with other deepslate ores.
 - Xenomorphs now only move 10% faster instead of 20% faster when chasing a target.
-- Queens no longer despawn under any circumstances.
 - Significantly improved hit registration for all hitscan-based weaponry.
+- Queens no longer despawn under any circumstances.
+- Reduced `MINIMUM_DISTANCE_BETWEEN_HIVES_IN_BLOCKS` from 1024 blocks (64 chunks) to 256 blocks (16 chunks).
+  - This change does not apply retroactively.
+  - We're reducing the default value so that naturally spawning queens are more common as the default experience.
+- Naturally spawning queens now only spawn once in a chunk region.
+  - The size of the region currently depends on the value of `MINIMUM_DISTANCE_BETWEEN_HIVES_IN_BLOCKS` in the config.
+  - Killing the queen will not allow more natural queens to spawn in that region. Once the region is cleansed, it's cleansed for good.
+  - Artificial queens/hives can still be made in these regions even after naturally occurring queens have been eradicated.
 - Removed `requiresResin` config options, xenomorphs (excluding queens) now always require resin in order to spawn.
   - We're making this change to allow for players to have consistent experiences, as well as to complement other spawn changes we've made this update.
   - If you want to add custom xenomorph spawns, we recommend using third-party mods designed with spawning customization in mind.

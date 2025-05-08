@@ -245,7 +245,7 @@ public class SpawnPlacements {
                 AVPEntityTypes.NETHER_QUEEN.get(),
                 placement,
                 heightMap,
-                QueenSpawning.NETHER_PREDICATE
+                QueenSpawning.PREDICATE
             );
             BiomeModifications.addSpawn(
                 biomeSelectionContext -> biomeSelectionContext.hasTag(BiomeTags.IS_NETHER),

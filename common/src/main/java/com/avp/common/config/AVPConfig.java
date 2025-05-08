@@ -453,7 +453,7 @@ public class AVPConfig {
                 "If this value is less than 2x the hive radius, hives will begin to overlap.",
                 "If this value is more than 2x the hive radius, then there will be buffer zones between hives where no hives will form." }
         )
-        public int MINIMUM_DISTANCE_BETWEEN_HIVES_IN_BLOCKS = 1024;
+        public int MINIMUM_DISTANCE_BETWEEN_HIVES_IN_BLOCKS = 256;
 
         @Configurable
         @Configurable.Synchronized

@@ -163,7 +163,7 @@ public class AVPNeoForge {
             AVPEntityTypes.NETHER_QUEEN.get(),
             placement,
             heightMap,
-            QueenSpawning.NETHER_PREDICATE,
+            QueenSpawning.PREDICATE,
             RegisterSpawnPlacementsEvent.Operation.AND
         );
         event.register(
