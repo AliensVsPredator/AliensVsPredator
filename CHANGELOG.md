@@ -46,7 +46,17 @@
 
 ## 🛠 Data Pack
 - Added `#avp:hated_by_xenomorphs` entity type tag. Includes players, marines and predators.
+- Added `#avp:drones` entity type tag.
+- Added `#avp:facehuggers` entity type tag.
+- Added `#avp:praetorians` entity type tag.
+- Added `#avp:queens` entity type tag.
+- Added `#avp:royal_xenomorphs` entity type tag.
+- Added `#avp:warriors` entity type tag.
 - Updated `#avp:aliens` entity type tag to include missing `#avp:royal_aliens`.
+- Updated `#avp:xenomorphs` to use `#avp:drones`, `#avp:queens`, `#avp:praetorians` and `#avp:warriors`.
+- Updated `#avp:parasites` to use `#avp:facehuggers`.
+- Updated `#avp:royal_aliens` to use `#avp:royal_xenomorphs`.
+- Updated `#avp:normal_aliens` to include missing `avp:royal_chestburster`, `avp:royal_facehugger` and `avp:royal_ovamorph`.
 - Updated `avp:aliens/shear_an_ovamorph` advancement to use `#avp:ovamorphs` entity type tag instead of just the single `avp:ovamorph` entity type.
 
 ## 🔬 Technical Changes
