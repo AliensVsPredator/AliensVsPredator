@@ -233,7 +233,7 @@ public class AVPItems {
         new Item.Properties().fireResistant()
     );
 
-    public static final AVPDeferredHolder<Item> POISON_JELLY = register("poison_jelly", PoisionJellyItem::new);
+    public static final AVPDeferredHolder<Item> POISON_JELLY = register("poison_jelly", PoisonJellyItem::new);
 
     public static final AVPDeferredHolder<Item> POLYMER = register("polymer");
 

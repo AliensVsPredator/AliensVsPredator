@@ -8,13 +8,14 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
+import com.avp.common.entity.AVPEntityTypeTags;
 import com.avp.common.entity.living.alien.Alien;
-import com.avp.common.entity.living.alien.xenomorph.praetorian.Praetorian;
+import com.avp.common.entity.living.gene.GeneKeys;
 
-public class RoyalJellyItem extends Item {
+public class PoisonJellyItem extends Item {
 
-    public RoyalJellyItem() {
-        super(new Properties().stacksTo(64));
+    public PoisonJellyItem() {
+        super(new Item.Properties());
     }
 
     @Override
@@ -24,8 +25,24 @@ public class RoyalJellyItem extends Item {
         @NotNull LivingEntity livingEntity,
         @NotNull InteractionHand interactionHand
     ) {
-        if (livingEntity instanceof Alien xenomorph && !(xenomorph instanceof Praetorian)) {
-            xenomorph.getEntityData().set(Alien.JELLY_COUNT, xenomorph.getEntityData().get(Alien.JELLY_COUNT) + 1);
+        var wasConsumed = false;
+
+        if (livingEntity instanceof Alien alien && !alien.isPoisoned()) {
+            alien.setPoisoned(true);
+            wasConsumed = true;
+
+            // TODO: This should be moved to the ovomorph class, probably.
+            if (
+                livingEntity.getType().is(AVPEntityTypeTags.OVOMORPHS)
+                    && alien.isRoyal()
+                    && !alien.isAberrant()
+                    && !alien.isNetherAfflicted()
+            ) {
+                alien.geneManager().minimize(GeneKeys.GENETIC_INTEGRITY);
+            }
+        }
+
+        if (wasConsumed) {
             itemStack.consume(1, player);
             return InteractionResult.SUCCESS;
         }

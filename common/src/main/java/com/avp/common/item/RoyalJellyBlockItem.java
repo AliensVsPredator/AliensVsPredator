@@ -11,7 +11,6 @@ import org.jetbrains.annotations.NotNull;
 import com.avp.common.block.AVPBlocks;
 import com.avp.common.entity.living.alien.xenomorph.Xenomorph;
 import com.avp.common.entity.living.alien.xenomorph.praetorian.Praetorian;
-import com.avp.common.util.AVPPredicates;
 
 public class RoyalJellyBlockItem extends BlockItem {
 
@@ -28,10 +27,8 @@ public class RoyalJellyBlockItem extends BlockItem {
     ) {
         if (livingEntity instanceof Praetorian praetorian) {
             praetorian.getEntityData().set(Xenomorph.JELLY_COUNT, 10);
-        }
-
-        if (!AVPPredicates.IS_IMMORTAL.test(player)) {
-            itemStack.shrink(1);
+            itemStack.consume(1, player);
+            return InteractionResult.SUCCESS;
         }
 
         return super.interactLivingEntity(itemStack, player, livingEntity, interactionHand);

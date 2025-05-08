@@ -15,6 +15,11 @@
   - Acid's block damage still scales with the "strength" of acid, which increases when acid entities overlap.
 
 ## 🐞 Fixes
+- Fixed royal jelly item not triggering player hand swing animation when used.
+- Fixed royal jelly item being consumed when right-clicking non-alien entities.
+- Fixed royal jelly block item not triggering player hand swing animation when used.
+- Fixed royal jelly block item being consumed when right-clicking non-alien entities.
+- Fixed poison jelly item being consumed even if alien is already poisoned.
 - Fixed villagers not becoming commissaries (Fabric-only).
 - Fixed empty canisters being consumed when right-clicking non-cow entities.
 - Fixed industrial furnaces not emitting light while cooking.
