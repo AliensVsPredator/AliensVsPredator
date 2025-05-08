@@ -1,7 +1,6 @@
 package com.avp.common.entity.living.alien.ovomorph;
 
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.Level;
@@ -14,23 +13,15 @@ public class HatchManager {
 
     private static final String HATCH_DURATION_IN_TICKS_KEY = "hatchDurationInTicks";
 
-    @Deprecated(forRemoval = true)
     // TODO: Remove this in 0.2.0.
+    @Deprecated(forRemoval = true)
     private static final String HATCHED_KEY = "hatched";
-
-    private static final String HATCH_STATE_KEY = "hatchState";
-
-    private static final String MAXIMUM_SPAWN_COUNT_KEY = "maximumSpawnCount";
 
     private static final String REMAINING_SPAWN_DELAY_IN_TICKS_KEY = "remainingSpawnDelayInTicks";
 
     private static final String SPAWN_COUNT_KEY = "spawnCount";
 
     private final Ovomorph ovomorph;
-
-    private final EntityDataAccessor<Byte> hatchStateEDA;
-
-    private final EntityDataAccessor<Byte> maximumSpawnCountEDA;
 
     private final int hatchDurationInTicks;
 
@@ -42,16 +33,8 @@ public class HatchManager {
 
     private int spawnCount;
 
-    public HatchManager(
-        Ovomorph ovomorph,
-        EntityDataAccessor<Byte> hatchStateEDA,
-        EntityDataAccessor<Byte> maximumSpawnCountEDA,
-        int hatchDurationInTicks,
-        int spawnDelayInTicks
-    ) {
+    public HatchManager(Ovomorph ovomorph, int hatchDurationInTicks, int spawnDelayInTicks) {
         this.ovomorph = ovomorph;
-        this.hatchStateEDA = hatchStateEDA;
-        this.maximumSpawnCountEDA = maximumSpawnCountEDA;
         this.hatchDurationInTicks = hatchDurationInTicks;
         this.remainingHatchDurationInTicks = hatchDurationInTicks;
         this.spawnDelayInTicks = spawnDelayInTicks;
@@ -75,9 +58,9 @@ public class HatchManager {
         }
 
         // The ovomorph has fully opened visually at this point, so set its state to hatched.
-        ovomorph.getEntityData().set(hatchStateEDA, (byte) HatchState.HATCHED.getId());
+        ovomorph.setHatchState(HatchState.HATCHED);
 
-        var canSpawnMoreFacehuggers = spawnCount < maximumSpawnCount();
+        var canSpawnMoreFacehuggers = spawnCount < ovomorph.getMaximumSpawnCount();
 
         if (!canSpawnMoreFacehuggers) {
             return;
@@ -98,16 +81,12 @@ public class HatchManager {
         return remainingHatchDurationInTicks <= 0;
     }
 
-    public boolean isSleeping() {
-        return ovomorph.getEntityData().get(hatchStateEDA) == HatchState.SLEEPING.getId();
-    }
-
     public boolean isHatching() {
-        return ovomorph.getEntityData().get(hatchStateEDA) == HatchState.HATCHING.getId();
+        return ovomorph.getHatchState().contains(HatchState.HATCHING);
     }
 
     public boolean isHatched() {
-        return ovomorph.getEntityData().get(hatchStateEDA) == HatchState.HATCHED.getId();
+        return ovomorph.getHatchState().contains(HatchState.HATCHED);
     }
 
     public void hatch() {
@@ -116,19 +95,15 @@ public class HatchManager {
             return;
         }
 
-        ovomorph.getEntityData().set(hatchStateEDA, (byte) HatchState.HATCHING.getId());
+        ovomorph.setHatchState(HatchState.HATCHING);
         ovomorph.level().playSound(null, ovomorph, AVPSoundEvents.ENTITY_OVOMORPH_HATCH.get(), SoundSource.HOSTILE, 1.0F, 1.0F);
-    }
-
-    public byte maximumSpawnCount() {
-        return ovomorph.getEntityData().get(maximumSpawnCountEDA);
     }
 
     public void restore() {
         this.spawnCount = 0;
         this.remainingHatchDurationInTicks = hatchDurationInTicks;
         this.remainingSpawnDelayInTicks = spawnDelayInTicks;
-        ovomorph.getEntityData().set(hatchStateEDA, (byte) HatchState.SLEEPING.getId());
+        ovomorph.setHatchState(Ovomorph.DEFAULT_HATCH_STATE);
     }
 
     public void load(CompoundTag compoundTag) {
@@ -147,17 +122,7 @@ public class HatchManager {
         // Here for backwards compatibility.
         // TODO: Remove this in 0.2.0.
         if (compoundTag.contains(HATCHED_KEY)) {
-            ovomorph.getEntityData()
-                .set(hatchStateEDA, (byte) (compoundTag.getBoolean(HATCHED_KEY) ? HatchState.HATCHING : HatchState.SLEEPING).getId());
-        }
-
-        // New logic for hatch state bookkeeping.
-        if (compoundTag.contains(HATCH_STATE_KEY)) {
-            ovomorph.getEntityData().set(hatchStateEDA, (byte) compoundTag.getInt(HATCH_STATE_KEY));
-        }
-
-        if (compoundTag.contains(MAXIMUM_SPAWN_COUNT_KEY)) {
-            ovomorph.getEntityData().set(maximumSpawnCountEDA, compoundTag.getByte(MAXIMUM_SPAWN_COUNT_KEY));
+            ovomorph.setHatchState(compoundTag.getBoolean(HATCHED_KEY) ? HatchState.HATCHING : Ovomorph.DEFAULT_HATCH_STATE);
         }
     }
 
@@ -165,9 +130,6 @@ public class HatchManager {
         compoundTag.putInt(HATCH_DURATION_IN_TICKS_KEY, remainingHatchDurationInTicks);
         compoundTag.putInt(REMAINING_SPAWN_DELAY_IN_TICKS_KEY, remainingSpawnDelayInTicks);
         compoundTag.putInt(SPAWN_COUNT_KEY, spawnCount);
-
-        compoundTag.putInt(HATCH_STATE_KEY, ovomorph.getEntityData().get(hatchStateEDA));
-        compoundTag.putByte(MAXIMUM_SPAWN_COUNT_KEY, ovomorph.getEntityData().get(maximumSpawnCountEDA));
     }
 
     private void spawnFacehugger(Level level) {

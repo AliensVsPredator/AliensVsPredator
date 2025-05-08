@@ -13,7 +13,7 @@ public enum HatchState {
     HATCHING(1),
     HATCHED(2);
 
-    private static final Map<Integer, HatchState> ID_TO_HATCH_STATE_MAP = Arrays.stream(values())
+    public static final Map<Integer, HatchState> ID_TO_HATCH_STATE_MAP = Arrays.stream(values())
         .collect(Collectors.toMap(HatchState::getId, Function.identity()));
 
     private final int id;

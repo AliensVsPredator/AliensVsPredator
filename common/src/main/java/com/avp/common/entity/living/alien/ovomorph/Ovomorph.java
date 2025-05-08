@@ -1,5 +1,6 @@
 package com.avp.common.entity.living.alien.ovomorph;
 
+import com.bvanseg.just.functional.option.Option;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -37,6 +38,12 @@ public class Ovomorph extends Alien implements Shearable {
 
     private static final EntityDataAccessor<Boolean> ROOTED = SynchedEntityData.defineId(Ovomorph.class, EntityDataSerializers.BOOLEAN);
 
+    public static final HatchState DEFAULT_HATCH_STATE = HatchState.SLEEPING;
+
+    private static final String HATCH_STATE_KEY = "hatchState";
+
+    private static final String MAXIMUM_SPAWN_COUNT_KEY = "maximumSpawnCount";
+
     private static final String IS_ROOTED_KEY = "isRooted";
 
     public static AttributeSupplier.Builder createOvomorphAttributes() {
@@ -50,7 +57,7 @@ public class Ovomorph extends Alien implements Shearable {
     public Ovomorph(EntityType<? extends Ovomorph> entityType, Level level) {
         super(entityType, level);
         this.animationDispatcher = new OvomorphAnimationDispatcher(this);
-        this.hatchManager = new HatchManager(this, HATCH_STATE, MAX_SPAWN_COUNT, 3 * 20, 3 * 20);
+        this.hatchManager = new HatchManager(this, 3 * 20, 3 * 20);
         this.config = AVP.config.statsConfigs.OVAMORPH_STATS;
     }
 
@@ -77,7 +84,7 @@ public class Ovomorph extends Alien implements Shearable {
     @Override
     protected void defineSynchedData(@NotNull SynchedEntityData.Builder builder) {
         super.defineSynchedData(builder);
-        builder.define(HATCH_STATE, (byte) HatchState.SLEEPING.getId());
+        builder.define(HATCH_STATE, (byte) DEFAULT_HATCH_STATE.getId());
         builder.define(MAX_SPAWN_COUNT, (byte) 1);
         builder.define(ROOTED, true);
     }
@@ -222,8 +229,18 @@ public class Ovomorph extends Alien implements Shearable {
         super.readAdditionalSaveData(compoundTag);
         hatchManager.load(compoundTag);
 
+        if (compoundTag.contains(HATCH_STATE_KEY)) {
+            // Assign the default hatch state in case we read an invalid hatch state ID.
+            var hatchState = HatchState.ID_TO_HATCH_STATE_MAP.getOrDefault((int) compoundTag.getByte(HATCH_STATE_KEY), DEFAULT_HATCH_STATE);
+            setHatchState(hatchState);
+        }
+
         if (compoundTag.contains(IS_ROOTED_KEY)) {
             setRooted(compoundTag.getBoolean(IS_ROOTED_KEY));
+        }
+
+        if (compoundTag.contains(MAXIMUM_SPAWN_COUNT_KEY)) {
+            setMaximumSpawnCount(compoundTag.getByte(MAXIMUM_SPAWN_COUNT_KEY));
         }
     }
 
@@ -232,11 +249,22 @@ public class Ovomorph extends Alien implements Shearable {
         super.addAdditionalSaveData(compoundTag);
         hatchManager.save(compoundTag);
 
+        compoundTag.putByte(HATCH_STATE_KEY, (byte) getHatchState().unwrapOr(DEFAULT_HATCH_STATE).getId());
         compoundTag.putBoolean(IS_ROOTED_KEY, isRooted());
+        compoundTag.putByte(MAXIMUM_SPAWN_COUNT_KEY, (byte) getMaximumSpawnCount());
     }
 
     public HatchManager hatchManager() {
         return hatchManager;
+    }
+
+    public Option<HatchState> getHatchState() {
+        var id = (int) entityData.get(HATCH_STATE);
+        return Option.ofNullable(HatchState.ID_TO_HATCH_STATE_MAP.get(id));
+    }
+
+    public void setHatchState(HatchState hatchState) {
+        entityData.set(HATCH_STATE, (byte) hatchState.getId());
     }
 
     public boolean isRooted() {
@@ -245,6 +273,14 @@ public class Ovomorph extends Alien implements Shearable {
 
     public void setRooted(boolean isRooted) {
         entityData.set(ROOTED, isRooted);
+    }
+
+    public int getMaximumSpawnCount() {
+        return entityData.get(MAX_SPAWN_COUNT);
+    }
+
+    public void setMaximumSpawnCount(int maximumSpawnCount) {
+        entityData.set(MAX_SPAWN_COUNT, (byte) maximumSpawnCount);
     }
 
     public OvomorphAnimationDispatcher getAnimationDispatcher() {
