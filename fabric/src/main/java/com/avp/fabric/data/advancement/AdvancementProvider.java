@@ -15,6 +15,7 @@ import net.minecraft.advancements.critereon.PlayerInteractTrigger;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
@@ -42,11 +43,6 @@ public class AdvancementProvider extends FabricAdvancementProvider {
         AVPEntityTypes.PRAETORIAN.get(),
         AVPEntityTypes.QUEEN.get(),
         AVPEntityTypes.WARRIOR.get()
-    );
-
-    private static final List<EntityType<?>> ROYAL_ALIENS_TO_KILL = List.of(
-        AVPEntityTypes.PRAETORIAN.get(),
-        AVPEntityTypes.QUEEN.get()
     );
 
     public AdvancementProvider(FabricDataOutput output, CompletableFuture<HolderLookup.Provider> registryLookup) {
@@ -191,7 +187,7 @@ public class AdvancementProvider extends FabricAdvancementProvider {
     }
 
     private AdvancementHolder addRoyalAlienKillerAdvancement(AdvancementHolder parent, Consumer<AdvancementHolder> consumer) {
-        return addMobsToKill(Advancement.Builder.advancement(), ROYAL_ALIENS_TO_KILL)
+        return addMobsToKill(Advancement.Builder.advancement(), "kill_a_royal_alien", AVPEntityTypeTags.ROYAL_XENOMORPHS)
             .parent(parent)
             .display(
                 AVPItems.PLATED_CHITIN.get(),
@@ -222,6 +218,14 @@ public class AdvancementProvider extends FabricAdvancementProvider {
             )
             .rewards(AdvancementRewards.Builder.experience(100))
             .save(consumer, AVP.MOD_ID + ":aliens/kill_all_aliens");
+    }
+
+    private Advancement.Builder addMobsToKill(Advancement.Builder builder, String criterionKey, TagKey<EntityType<?>> entityTypeTagKey) {
+        builder.addCriterion(
+            criterionKey,
+            KilledTrigger.TriggerInstance.playerKilledEntity(EntityPredicate.Builder.entity().of(entityTypeTagKey))
+        );
+        return builder;
     }
 
     private Advancement.Builder addMobsToKill(Advancement.Builder builder, List<EntityType<?>> list) {
