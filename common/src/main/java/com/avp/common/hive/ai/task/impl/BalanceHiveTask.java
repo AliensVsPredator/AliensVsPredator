@@ -12,7 +12,6 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import com.avp.AVP;
-import com.avp.common.entity.living.alien.Alien;
 import com.avp.common.entity.living.alien.xenomorph.Xenomorph;
 import com.avp.common.entity.type.AVPEntityTypes;
 import com.avp.common.hive.Hive;
@@ -133,11 +132,11 @@ public class BalanceHiveTask extends HiveTask {
         var type = xenomorph.getType();
         var growthStage = AlienLifecycleRegistry.getOrNull(null, type);
 
-        if (growthStage == null || xenomorph.getEntityData().get(Xenomorph.IS_POISONED)) {
+        if (growthStage == null || xenomorph.isPoisoned()) {
             return;
         }
 
-        if (xenomorph.getEntityData().get(Alien.IS_IRRADIATED)) {
+        if (xenomorph.isIrradiated()) {
             return;
         }
 

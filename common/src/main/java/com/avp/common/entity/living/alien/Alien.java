@@ -179,6 +179,14 @@ public abstract class Alien extends Monster {
         }
     }
 
+    public boolean isPoisoned() {
+        return entityData.get(IS_POISONED);
+    }
+
+    public void setPoisoned(boolean isPoisoned) {
+        entityData.set(IS_POISONED, isPoisoned);
+    }
+
     public boolean isRoyal() {
         return entityData.get(IS_ROYAL);
     }
@@ -372,7 +380,7 @@ public abstract class Alien extends Monster {
         }
 
         if (compoundTag.contains(IS_POISONED_KEY)) {
-            getEntityData().set(IS_POISONED, compoundTag.getBoolean(IS_POISONED_KEY));
+            setPoisoned(compoundTag.getBoolean(IS_POISONED_KEY));
         }
 
         if (compoundTag.contains(IS_ROYAL_KEY)) {
@@ -392,7 +400,7 @@ public abstract class Alien extends Monster {
         compoundTag.putBoolean(IS_ABERRANT_KEY, isAberrant());
         compoundTag.putBoolean(IS_IRRADIATED_KEY, isIrradiated());
         compoundTag.putBoolean(IS_NETHER_AFFLICTED_KEY, isNetherAfflicted());
-        compoundTag.putBoolean(IS_POISONED_KEY, getEntityData().get(IS_POISONED));
+        compoundTag.putBoolean(IS_POISONED_KEY, isPoisoned());
         compoundTag.putBoolean(IS_ROYAL_KEY, isRoyal());
         compoundTag.putInt(JELLY_COUNT_KEY, getEntityData().get(JELLY_COUNT));
     }

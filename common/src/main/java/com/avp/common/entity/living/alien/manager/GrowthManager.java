@@ -45,11 +45,11 @@ public class GrowthManager {
             return;
         }
 
-        if (entity instanceof Xenomorph xenomorph && Boolean.TRUE.equals(xenomorph.getEntityData().get(Alien.IS_POISONED))) {
+        if (entity instanceof Xenomorph xenomorph && Boolean.TRUE.equals(xenomorph.isPoisoned())) {
             return;
         }
 
-        if (entity instanceof Xenomorph xenomorph && Boolean.TRUE.equals(xenomorph.getEntityData().get(Alien.IS_IRRADIATED))) {
+        if (entity instanceof Xenomorph xenomorph && Boolean.TRUE.equals(xenomorph.isIrradiated())) {
             return;
         }
 

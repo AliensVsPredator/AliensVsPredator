@@ -103,7 +103,7 @@ public class Chestburster extends Alien implements ResinProducer {
             var growthStage = AlienLifecycleRegistry.getOrNull(null, type);
 
             if (
-                growthStage != null && !this.getEntityData().get(Xenomorph.IS_POISONED) && this.getEntityData()
+                growthStage != null && !isPoisoned() && this.getEntityData()
                     .get(Xenomorph.JELLY_COUNT) == this.maxJellyToGrowth()
             ) {
                 this.growthManager().grow(growthStage);
