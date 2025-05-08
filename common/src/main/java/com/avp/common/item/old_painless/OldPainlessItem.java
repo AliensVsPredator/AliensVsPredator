@@ -42,7 +42,7 @@ public class OldPainlessItem extends GunItem {
     }
 
     @Override
-    public void onUseTick(Level level, @NotNull LivingEntity livingEntity, @NotNull ItemStack itemStack, int tickCountdown) {
+    public void onUseTick(@NotNull Level level, @NotNull LivingEntity livingEntity, @NotNull ItemStack itemStack, int tickCountdown) {
         var tickProgress = Math.abs(START_TICK_PROGRESS - tickCountdown);
         var isFirstTick = tickProgress == 0;
 

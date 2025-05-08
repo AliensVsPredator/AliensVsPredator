@@ -107,8 +107,9 @@ public class GunItem extends Item {
     }
 
     @Override
-    public void onUseTick(Level level, @NotNull LivingEntity livingEntity, @NotNull ItemStack itemStack, int tickCountdown) {
-        if (level.isClientSide || !(livingEntity instanceof Player player)) {
+    public void onUseTick(@NotNull Level level, @NotNull LivingEntity livingEntity, @NotNull ItemStack itemStack, int tickCountdown) {
+        // Lack of server/client side check here is deliberate.
+        if (!(livingEntity instanceof Player player)) {
             return;
         }
 
@@ -119,10 +120,8 @@ public class GunItem extends Item {
             .ifSome(result -> {
                 switch (result) {
                     // No side effects to run for these results at the time of writing.
-                    case COOLDOWN, DELAYED, RELOADING -> { /* NO-OP */ }
+                    case COOLDOWN, DELAYED, FAILURE, RELOADING -> { /* NO-OP */ }
                     case SHOT -> {
-                        var isFiring = itemStack.get(AVPDataComponents.IS_FIRING.get());
-
                         itemStack.set(AVPDataComponents.IS_FIRING.get(), true);
                         playUseAnimations(livingEntity, itemStack);
                     }

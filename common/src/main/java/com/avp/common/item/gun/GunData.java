@@ -3,8 +3,8 @@ package com.avp.common.item.gun;
 import java.util.Objects;
 
 import com.avp.common.item.AVPItems;
-import com.avp.common.item.gun.attack.FlamethrowProjectileGunAttack;
-import com.avp.common.item.gun.attack.RocketProjectileGunAttack;
+import com.avp.common.item.gun.attack.projectile.FlamethrowProjectileGunAttackAction;
+import com.avp.common.item.gun.attack.projectile.RocketProjectileGunAttackAction;
 import com.avp.common.sound.AVPSoundEvents;
 
 public class GunData {
@@ -39,7 +39,7 @@ public class GunData {
                 .withReloadFinishSound(AVPSoundEvents.WEAPON_FLAMETHROWER_SEVASTOPOL_RELOAD_FINISH)
                 .withReloadStartSound(AVPSoundEvents.WEAPON_FLAMETHROWER_SEVASTOPOL_RELOAD_START)
                 .withPrimaryShootSound(AVPSoundEvents.WEAPON_FLAMETHROWER_SEVASTOPOL_SHOOT)
-                .withGunAttackSupplier(FlamethrowProjectileGunAttack::new)
+                .withGunAttackAction(FlamethrowProjectileGunAttackAction.INSTANCE)
                 .build()
         )
         .build();
@@ -141,7 +141,7 @@ public class GunData {
                 .withReloadFinishSound(AVPSoundEvents.WEAPON_M6B_ROCKET_LAUNCHER_RELOAD_FINISH)
                 .withReloadStartSound(AVPSoundEvents.WEAPON_M6B_ROCKET_LAUNCHER_RELOAD_START)
                 .withPrimaryShootSound(AVPSoundEvents.WEAPON_M6B_ROCKET_LAUNCHER_SHOOT)
-                .withGunAttackSupplier(RocketProjectileGunAttack::new)
+                .withGunAttackAction(RocketProjectileGunAttackAction.INSTANCE)
                 .build()
         )
         .build();

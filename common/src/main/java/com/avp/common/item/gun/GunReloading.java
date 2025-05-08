@@ -1,4 +1,4 @@
-package com.avp.common.item;
+package com.avp.common.item.gun;
 
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.player.Player;
@@ -10,7 +10,8 @@ import java.time.Duration;
 import java.util.Objects;
 
 import com.avp.common.component.AVPDataComponents;
-import com.avp.common.item.gun.GunData;
+import com.avp.common.item.AVPBlockItems;
+import com.avp.common.item.GunItem;
 import com.avp.common.util.AVPPredicates;
 import com.avp.common.util.EnchantmentUtil;
 import com.avp.server.ServerScheduler;
@@ -63,7 +64,7 @@ public class GunReloading {
             // If the player is immortal, then assume they can get a full reload.
             ? ItemConsumptionResult.Full.INSTANCE
             // Otherwise, the player needs to use actual ammunition.
-            : consumeItemAmountFromInventory(player, ammunitionItem, neededAmmunition);
+            : consumeItemAmountFromInventory(player, ammunitionItem, neededAmmunition, true);
 
         var ammunitionToRestore = switch (result) {
             // We successfully consumed all ammunition we needed, so this is just an identity assignment.
@@ -120,9 +121,10 @@ public class GunReloading {
     public static ItemConsumptionResult consumeItemAmountFromInventory(
         Player player,
         ItemLike ammunitionItem,
-        int amountToConsume
+        int amountToConsume,
+        boolean consume
     ) {
-        var result = consumeItemAmountFromInventoryNoSync(player, ammunitionItem, amountToConsume);
+        var result = consumeItemAmountFromInventoryNoSync(player, ammunitionItem, amountToConsume, consume);
 
         if (result == ItemConsumptionResult.None.INSTANCE) {
             return result;
@@ -137,7 +139,8 @@ public class GunReloading {
     private static ItemConsumptionResult consumeItemAmountFromInventoryNoSync(
         Player player,
         ItemLike ammunitionItem,
-        int amountToConsume
+        int amountToConsume,
+        boolean consume
     ) {
         var playerInventory = player.getInventory();
         var remainingAmountToConsume = amountToConsume;
@@ -150,7 +153,7 @@ public class GunReloading {
             }
 
             // Try and consume some amount from the ammo chest.
-            var result = consumeFromAmmoChestItem(playerItemStack, remainingAmountToConsume, ammunitionItem);
+            var result = consumeFromAmmoChestItem(playerItemStack, remainingAmountToConsume, ammunitionItem, consume);
 
             switch (result) {
                 case ItemConsumptionResult.Full full -> {
@@ -174,7 +177,11 @@ public class GunReloading {
             }
 
             var consumeCount = Math.min(playerItemStack.getCount(), remainingAmountToConsume);
-            playerItemStack.shrink(consumeCount);
+
+            if (consume) {
+                playerItemStack.shrink(consumeCount);
+            }
+
             remainingAmountToConsume -= consumeCount;
 
             if (remainingAmountToConsume == 0) {
@@ -189,7 +196,12 @@ public class GunReloading {
         return new ItemConsumptionResult.Partial(remainingAmountToConsume);
     }
 
-    private static ItemConsumptionResult consumeFromAmmoChestItem(ItemStack ammoChestStack, int amountToConsume, ItemLike ammunitionItem) {
+    private static ItemConsumptionResult consumeFromAmmoChestItem(
+        ItemStack ammoChestStack,
+        int amountToConsume,
+        ItemLike ammunitionItem,
+        boolean consume
+    ) {
         var container = ammoChestStack.get(net.minecraft.core.component.DataComponents.CONTAINER);
 
         if (container == null || amountToConsume <= 0) {
@@ -207,7 +219,11 @@ public class GunReloading {
 
             // Item is our target consumable by this point.
             var consumeCount = Math.min(itemStack.getCount(), remainingAmountToConsume);
-            itemStack.shrink(consumeCount);
+
+            if (consume) {
+                itemStack.shrink(consumeCount);
+            }
+
             remainingAmountToConsume -= consumeCount;
 
             if (remainingAmountToConsume == 0) {

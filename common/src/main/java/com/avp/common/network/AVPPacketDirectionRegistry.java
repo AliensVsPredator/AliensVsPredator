@@ -1,5 +1,6 @@
 package com.avp.common.network;
 
+import com.avp.common.network.packet.C2SGunHitResultsPayload;
 import com.avp.common.network.packet.C2SGunReloadPayload;
 import com.avp.common.network.packet.S2CBulletHitBlockPayload;
 import com.avp.common.network.packet.S2CGunRecoilPayload;
@@ -9,6 +10,7 @@ public class AVPPacketDirectionRegistry {
 
     public static void initialize() {
         Services.REGISTRY.registerPacketDirection(new PacketDirection.C2S<>(C2SGunReloadPayload.TYPE, C2SGunReloadPayload.CODEC));
+        Services.REGISTRY.registerPacketDirection(new PacketDirection.C2S<>(C2SGunHitResultsPayload.TYPE, C2SGunHitResultsPayload.CODEC));
 
         Services.REGISTRY.registerPacketDirection(
             new PacketDirection.S2C<>(S2CBulletHitBlockPayload.TYPE, S2CBulletHitBlockPayload.CODEC)
