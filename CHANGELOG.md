@@ -17,6 +17,7 @@
   - Acid's block damage still scales with the "strength" of acid, which increases when acid entities overlap.
 
 ## 🐞 Fixes
+- Fixed 'Eggsploration Time' advancement not being granted when shearing royal or non-regular strain ovomorphs.
 - Fixed mobs dying to chestbursting even after switching to peaceful difficulty.
 - Fixed royal jelly item not triggering player hand swing animation when used.
 - Fixed royal jelly item being consumed when right-clicking non-alien entities.
@@ -44,6 +45,7 @@
 ## 🛠 Data Pack
 - Added `#avp:hated_by_xenomorphs` entity type tag. Includes players, marines and predators.
 - Updated `#avp:aliens` entity type tag to include missing `#avp:royal_aliens`.
+- Updated `avp:aliens/shear_an_ovamorph` advancement to use `#avp:ovamorphs` entity type tag instead of just the single `avp:ovamorph` entity type.
 
 ## 🔬 Technical Changes
 - N/A

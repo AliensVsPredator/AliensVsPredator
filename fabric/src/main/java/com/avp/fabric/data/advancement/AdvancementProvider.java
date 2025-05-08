@@ -27,6 +27,7 @@ import java.util.function.Consumer;
 import com.avp.AVP;
 import com.avp.AVPResources;
 import com.avp.common.block.AVPBlocks;
+import com.avp.common.entity.AVPEntityTypeTags;
 import com.avp.common.entity.type.AVPEntityTypes;
 import com.avp.common.item.AVPArmorItems;
 import com.avp.common.item.AVPItems;
@@ -90,7 +91,7 @@ public class AdvancementProvider extends FabricAdvancementProvider {
                 "shear_an_ovamorph",
                 PlayerInteractTrigger.TriggerInstance.itemUsedOnEntity(
                     ItemPredicate.Builder.item().of(Items.SHEARS),
-                    Optional.of(EntityPredicate.wrap(EntityPredicate.Builder.entity().of(AVPEntityTypes.OVOMORPH.get())))
+                    Optional.of(EntityPredicate.wrap(EntityPredicate.Builder.entity().of(AVPEntityTypeTags.OVOMORPHS)))
                 )
             )
             // TODO: Change this to "ovomorph" with 0.2.0.
