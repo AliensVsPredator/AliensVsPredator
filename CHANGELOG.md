@@ -19,8 +19,10 @@
 ## 🐞 Fixes
 - Fixed hatched ovomorphs closing up again after re-logging.
 - Fixed hatched ovomorphs not closing up again after royal jelly is used on them.
+- Fixed 'Imperfect Organism' not including alternative strains of aliens or royal aliens.
 - Fixed 'Eggsploration Time' advancement not being granted when shearing royal or non-regular strain ovomorphs.
 - Fixed 'Regicide' advancement not being granted when killing non-regular strain praetorians or queens.
+- Fixed 'Xenocide' advancement not including alternative strains of aliens or royal aliens.
 - Fixed mobs dying to chestbursting even after switching to peaceful difficulty.
 - Fixed royal jelly item not triggering player hand swing animation when used.
 - Fixed royal jelly item being consumed when right-clicking non-alien entities.
