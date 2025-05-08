@@ -20,7 +20,7 @@ public class Acid extends Entity {
 
     public static final int MAX_MULTIPLIER = 5;
 
-    private static final int DEFAULT_MAX_LIFE_IN_TICKS = 20 * 20; // 10 seconds.
+    private static final int DEFAULT_MAX_LIFE_IN_TICKS = 20 * 20; // 20 seconds.
 
     private static final int MIN_TICKS_UNTIL_PARTICLES = 5;
 

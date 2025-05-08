@@ -133,6 +133,12 @@ public class Queen extends Xenomorph {
         return false;
     }
 
+    // Queens should never despawn no matter what.
+    @Override
+    public boolean isPersistenceRequired() {
+        return true;
+    }
+
     @Override
     public int maxJellyToGrowth() {
         return Integer.MAX_VALUE;
