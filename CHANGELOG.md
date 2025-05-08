@@ -11,6 +11,7 @@
 - Xenomorphs now only move 10% faster instead of 20% faster when chasing a target.
 - Significantly improved hit registration for all hitscan-based weaponry.
 - Queens no longer despawn under any circumstances.
+- Queens no longer immediately place a resin block down beneath wherever they are standing.
 - All aliens (except queens) will now only naturally spawn in hives.
   - This means if there is resin outside a hive, aliens will no longer naturally spawn there.
 - Reduced `MINIMUM_DISTANCE_BETWEEN_HIVES_IN_BLOCKS` from 1024 blocks (64 chunks) to 256 blocks (16 chunks).

@@ -72,16 +72,6 @@ public class Queen extends Xenomorph {
 
         if (!level().isClientSide()) {
             becomeIrradiated();
-
-            if (tickCount < 2) {
-                var belowBlockPos = blockPosition().below();
-                var blockState = level().getBlockState(belowBlockPos);
-                var resinNode = AlienVariantUtil.getResinNodeForType(this).getBlock();
-
-                if (!blockState.is(resinNode) && !blockState.is(AVPBlockTags.ACID_IMMUNE)) {
-                    level().setBlockAndUpdate(belowBlockPos, AlienVariantUtil.getResinNodeForType(this));
-                }
-            }
         }
     }
 
