@@ -11,6 +11,9 @@
 - Xenomorphs now only move 10% faster instead of 20% faster when chasing a target.
 - Queens no longer despawn under any circumstances.
 - Significantly improved hit registration for all hitscan-based weaponry.
+- Removed `requiresResin` config options, xenomorphs (excluding queens) now always require resin in order to spawn.
+  - We're making this change to allow for players to have consistent experiences, as well as to complement other spawn changes we've made this update.
+  - If you want to add custom xenomorph spawns, we recommend using third-party mods designed with spawning customization in mind.
 - Renamed "Ovamorph" to "Ovomorph".
   - These are only display-facing, non-breaking changes. Ovomorphs will have their registry names starting with v0.2.0.
 - Reduced overall block damage dealt by acid by 80%.

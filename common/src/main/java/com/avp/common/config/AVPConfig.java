@@ -107,71 +107,71 @@ public class AVPConfig {
         @Configurable
         @Configurable.Synchronized
         @Configurable.Comment("Modifying these will require restarting the game.")
-        public SpawnSettings CHESTBURSTER_SPAWN = new SpawnSettings(true, 1, 2, 10, true);
+        public SpawnSettings CHESTBURSTER_SPAWN = new SpawnSettings(true, 1, 2, 10);
 
         @Configurable
         @Configurable.Synchronized
         @Configurable.Comment("Modifying these will require restarting the game.")
-        public SpawnSettings DRONE_SPAWN = new SpawnSettings(true, 1, 2, 50, true);
+        public SpawnSettings DRONE_SPAWN = new SpawnSettings(true, 1, 2, 50);
 
         @Configurable
         @Configurable.Synchronized
         @Configurable.Comment("Modifying these will require restarting the game.")
-        public SpawnSettings NETHER_CHESTBURSTER_SPAWN = new SpawnSettings(true, 1, 2, 10, false);
+        public SpawnSettings NETHER_CHESTBURSTER_SPAWN = new SpawnSettings(true, 1, 2, 10);
 
         @Configurable
         @Configurable.Synchronized
         @Configurable.Comment("Modifying these will require restarting the game.")
-        public SpawnSettings NETHER_DRONE_SPAWN = new SpawnSettings(true, 1, 2, 50, false);
+        public SpawnSettings NETHER_DRONE_SPAWN = new SpawnSettings(true, 1, 2, 50);
 
         @Configurable
         @Configurable.Synchronized
         @Configurable.Comment("Modifying these will require restarting the game.")
         // TODO: Change this to "NETHER_OVOMORPH_SPAWN" with 0.2.0.
-        public SpawnSettings NETHER_OVAMORPH_SPAWN = new SpawnSettings(true, 1, 3, 10, false);
+        public SpawnSettings NETHER_OVAMORPH_SPAWN = new SpawnSettings(true, 1, 3, 10);
 
         @Configurable
         @Configurable.Synchronized
         @Configurable.Comment("Nether Praetorian spawn settings. Modifying these will require restarting the game.")
-        public SpawnSettings NETHER_PRAETORIAN_SPAWN = new SpawnSettings(true, 1, 1, 10, false);
+        public SpawnSettings NETHER_PRAETORIAN_SPAWN = new SpawnSettings(true, 1, 1, 10);
 
         @Configurable
         @Configurable.Synchronized
         @Configurable.Comment("Nether Warrior spawn settings. Modifying these will require restarting the game.")
-        public SpawnSettings NETHER_WARRIOR_SPAWN = new SpawnSettings(true, 1, 2, 25, false);
+        public SpawnSettings NETHER_WARRIOR_SPAWN = new SpawnSettings(true, 1, 2, 25);
 
         @Configurable
         @Configurable.Synchronized
         @Configurable.Comment("Nether Queen spawn settings. Modifying these will require restarting the game.")
-        public SpawnSettings NETHER_QUEEN_SPAWN = new SpawnSettings(true, 1, 1, 5, true);
+        public SpawnSettings NETHER_QUEEN_SPAWN = new SpawnSettings(true, 1, 1, 5);
 
         @Configurable
         @Configurable.Synchronized
         @Configurable.Comment("Ovomorph spawn settings. Modifying these will require restarting the game.")
         // TODO: Change this to "ovomorph" with 0.2.0.
-        public SpawnSettings OVAMORPH_SPAWN = new SpawnSettings(true, 1, 3, 25, true);
+        public SpawnSettings OVAMORPH_SPAWN = new SpawnSettings(true, 1, 3, 25);
 
         @Configurable
         @Configurable.Synchronized
         @Configurable.Comment("Praetorian spawn settings. Modifying these will require restarting the game.")
-        public SpawnSettings PRAETORIAN_SPAWN = new SpawnSettings(true, 1, 1, 10, true);
+        public SpawnSettings PRAETORIAN_SPAWN = new SpawnSettings(true, 1, 1, 10);
 
         @Configurable
         @Configurable.Synchronized
         @Configurable.Comment("Queen spawn settings. Modifying these will require restarting the game.")
-        public SpawnSettings QUEEN_SPAWN = new SpawnSettings(true, 1, 1, 5, false);
+        public SpawnSettings QUEEN_SPAWN = new SpawnSettings(true, 1, 1, 5);
 
         @Configurable
         @Configurable.Synchronized
         @Configurable.Comment("Warrior spawn settings. Modifying these will require restarting the game.")
-        public SpawnSettings WARRIOR_SPAWN = new SpawnSettings(true, 1, 2, 25, true);
+        public SpawnSettings WARRIOR_SPAWN = new SpawnSettings(true, 1, 2, 25);
 
         @Configurable
         @Configurable.Synchronized
         @Configurable.Comment("Yautja spawn settings. Modifying these will require restarting the game.")
-        public SpawnSettings YAUTJA_SPAWN = new SpawnSettings(true, 1, 1, 10, false);
+        public SpawnSettings YAUTJA_SPAWN = new SpawnSettings(true, 1, 1, 10);
 
-        public SpawnSettings MARINE_SPAWN = new SpawnSettings(true, 1, 1, 1, false);
+        public SpawnSettings MARINE_SPAWN = new SpawnSettings(true, 1, 1, 1);
 
         public static class SpawnSettings {
 
@@ -195,23 +195,16 @@ public class AVPConfig {
             @Configurable.Comment("The spawn weight for this entity.")
             public int weight;
 
-            @Configurable
-            @Configurable.Synchronized
-            @Configurable.Comment("If true, spawning requires the entity to be near resin.")
-            public boolean requiresResin;
-
             public SpawnSettings(
                 boolean enabled,
                 int minGroupSize,
                 int maxGroupSize,
-                int weight,
-                boolean requiresResin
+                int weight
             ) {
                 this.enabled = enabled;
                 this.minGroupSize = minGroupSize;
                 this.maxGroupSize = maxGroupSize;
                 this.weight = weight;
-                this.requiresResin = requiresResin;
             }
         }
     }
