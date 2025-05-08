@@ -96,7 +96,7 @@ public class ResinManager implements GameEventListener.Provider<ResinSpreadListe
                         || alien.tickCount <= alien.lastHurtTimeInTicks() + (10 * 20)
                         || alien.hiveManager()
                             .hive()
-                            .filter(hive -> hive.isAngry() || !hive.isEntityWithinHive(alien))
+                            .filter(hive -> hive.isAngry() || !hive.isEntityWithinRangeOfHive(alien))
                             .isSome()
                 ) {
                     return;

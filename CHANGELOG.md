@@ -11,6 +11,8 @@
 - Xenomorphs now only move 10% faster instead of 20% faster when chasing a target.
 - Significantly improved hit registration for all hitscan-based weaponry.
 - Queens no longer despawn under any circumstances.
+- All aliens (except queens) will now only naturally spawn in hives.
+  - This means if there is resin outside a hive, aliens will no longer naturally spawn there.
 - Reduced `MINIMUM_DISTANCE_BETWEEN_HIVES_IN_BLOCKS` from 1024 blocks (64 chunks) to 256 blocks (16 chunks).
   - This change does not apply retroactively.
   - We're reducing the default value so that naturally spawning queens are more common as the default experience.
@@ -54,6 +56,9 @@
 - Fixed royal aliens not being acid immune.
 - Fixed royal aliens not being tagged as aliens.
 - Fixed missing name translations for aberrant, irradiated, nether and royal aliens.
+- Fixed queen spawn checks only checking for nearby queens.
+  - This created a scenario where a queen could spawn in a loaded chunk next to an unloaded queen in an unloaded chunk.
+  - Instead, queen spawn attempts will now check for nearby *hives* instead of nearby queens, as hives are loaded regardless of chunk load state.
 - Fixed xenomorphs lunging in-place while attacking a target.
   - Fixed by increasing their minimum horizontal lunge distance check from 1 block to 6 blocks.
 

@@ -61,7 +61,7 @@ public class QueenLayEggGoal extends Goal {
                         // AND chunk loaded...
                         && hive.isChunkLoaded()
                         // AND the queen must be within the hive to lay eggs there.
-                        && hive.isEntityWithinHive(queen)
+                        && hive.isEntityWithinRangeOfHive(queen)
                 )
             // AND there must be no other friendly eggs nearby already.
             && noFriendlyEggsNearby();

@@ -7,11 +7,10 @@ import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.SpawnPlacements;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.level.ServerLevelAccessor;
-import net.minecraft.world.level.entity.EntityTypeTest;
 
 import com.avp.AVP;
+import com.avp.common.level.saveddata.HiveLevelData;
 import com.avp.common.level.saveddata.QueenSpawnChunkData;
-import com.avp.common.util.AVPPredicates;
 import com.avp.common.util.ChunkPosUtil;
 
 public class QueenSpawning {
@@ -35,13 +34,15 @@ public class QueenSpawning {
 
         if (canSpawn) {
             var queenSpawnChunkData = queenSpawnChunkDataOption.unwrap();
-            // TODO: Replace this with a dedicated config value in terms of chunks.
+            // TODO: Refactor this distance value at a later date, all hive distance checks are begging for a refactor.
             var chunkRadiusToBlacklist = AVP.config.hiveConfigs.MINIMUM_DISTANCE_BETWEEN_HIVES_IN_BLOCKS / 16;
             var nearbyChunkPositions = ChunkPosUtil.getChunksAround(blockPos, chunkRadiusToBlacklist);
 
             nearbyChunkPositions.forEach(queenSpawnChunkData::addChunkToBlacklist);
         }
 
+        // NOTE: All spawn checks for the queen should go in the check above, as we need to be certain the queen will
+        // be able to spawn in order to correctly blacklist chunks from having future queen spawns.
         return canSpawn;
     };
 
@@ -52,23 +53,23 @@ public class QueenSpawning {
         BlockPos blockPos,
         RandomSource randomSource
     ) {
-        var minimumDistanceBetweenHivesInBlocks = AVP.config.hiveConfigs.MINIMUM_DISTANCE_BETWEEN_HIVES_IN_BLOCKS;
-
         return Monster.checkMonsterSpawnRules(
             entityType,
             serverLevelAccessor,
             mobSpawnType,
             blockPos,
             randomSource
-        ) &&
-        // FIXME: Check for nearby hives instead of nearby queens.
-            !anyNearbyQueens(serverLevelAccessor, blockPos, minimumDistanceBetweenHivesInBlocks);
-    }
-
-    public static boolean anyNearbyQueens(ServerLevelAccessor serverLevelAccessor, BlockPos blockPos, int requiredDistanceInBlocks) {
-        var allQueens = serverLevelAccessor.getLevel().getEntities(EntityTypeTest.forClass(Queen.class), AVPPredicates.alwaysTrue());
-        var requiredDistanceSquared = requiredDistanceInBlocks * requiredDistanceInBlocks;
-        return allQueens.stream()
-            .anyMatch(queen -> queen.distanceToSqr(blockPos.getX(), blockPos.getY(), blockPos.getZ()) < requiredDistanceSquared);
+        )
+            && HiveLevelData.getOrCreate(serverLevelAccessor.getLevel())
+                .andThen(hiveLevelData -> hiveLevelData.findNearestHive(blockPos))
+                .match(
+                    // If there is hive, we need to make sure it's far enough away from where the queen wants to spawn.
+                    nearestHive -> !nearestHive.isBlockPosWithinRangeOfHive(
+                        blockPos,
+                        AVP.config.hiveConfigs.MINIMUM_DISTANCE_BETWEEN_HIVES_IN_BLOCKS
+                    ),
+                    // No "nearest hive" present, so the queen is clear to spawn.
+                    () -> true
+                );
     }
 }

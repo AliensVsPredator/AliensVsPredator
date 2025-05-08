@@ -129,7 +129,7 @@ public abstract class Alien extends Monster {
 
         if (livingEntity instanceof ServerPlayer player) {
             hiveManager.hive()
-                .filter(hive -> hive.isEntityWithinHive(player))
+                .filter(hive -> hive.isEntityWithinRangeOfHive(player))
                 .ifSome(hive -> hive.bossEvent().addPlayer(player));
         }
     }

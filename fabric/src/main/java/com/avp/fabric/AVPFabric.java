@@ -18,7 +18,7 @@ import com.avp.common.entity.type.AVPEntityTypes;
 import com.avp.data.worldgen.AVPVillageInjection;
 import com.avp.fabric.common.DispenserBlockBehaviors;
 import com.avp.fabric.common.FlammableBlockRegistry;
-import com.avp.fabric.common.entity.spawn.SpawnPlacements;
+import com.avp.fabric.common.entity.spawn.AVPSpawnPlacements;
 import com.avp.fabric.common.worldgen.WorldGen;
 import com.avp.fabric.data.loot.LootTableModifier;
 import com.avp.fabric.service.FabricRegistryService;
@@ -40,7 +40,7 @@ public class AVPFabric implements ModInitializer {
         // Functionality
         DispenserBlockBehaviors.initialize();
         LootTableModifier.initialize();
-        SpawnPlacements.initialize();
+        AVPSpawnPlacements.initialize();
         FlammableBlockRegistry.initialize();
         ServerTickEvents.START_WORLD_TICK.register(this::onWorldTick);
         ServerLifecycleEvents.SERVER_STARTING.register(this::addNewVillageBuilding);

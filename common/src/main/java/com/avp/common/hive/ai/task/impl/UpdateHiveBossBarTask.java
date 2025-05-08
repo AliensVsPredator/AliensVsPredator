@@ -46,7 +46,7 @@ public class UpdateHiveBossBarTask extends HiveTask {
                     return true;
                 }
 
-                return !hive.isEntityWithinHive(player);
+                return !hive.isEntityWithinRangeOfHive(player);
             })
             .toList();
 

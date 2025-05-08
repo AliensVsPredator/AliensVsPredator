@@ -9,29 +9,30 @@ import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.level.ServerLevelAccessor;
 
 import com.avp.common.block.AVPBlockTags;
-import com.avp.common.config.AVPConfig;
 import com.avp.common.entity.AVPEntityTypeTags;
+import com.avp.common.level.saveddata.HiveLevelData;
 
 public class AlienSpawning {
 
-    public static <T extends Alien> SpawnPlacements.SpawnPredicate<T> createPredicate(
-        AVPConfig.SpawnConfigs.SpawnSettings container
-    ) {
-        return (
-            entityType,
-            serverLevelAccessor,
-            mobSpawnType,
-            blockPos,
-            randomSource
-        ) -> {
-            var belowState = serverLevelAccessor.getBlockState(blockPos.below());
-            var resinBlock = entityType.is(AVPEntityTypeTags.NETHER_ALIENS) ? AVPBlockTags.NETHER_RESIN : AVPBlockTags.NORMAL_RESIN;
-            var isValidResinPos = belowState.is(resinBlock);
-
-            return isValidResinPos
-                && checkSpawnRules(entityType, serverLevelAccessor, mobSpawnType, blockPos, randomSource);
-        };
+    @SuppressWarnings("unchecked")
+    public static <T extends Alien> SpawnPlacements.SpawnPredicate<T> getTypedPredicate() {
+        return (SpawnPlacements.SpawnPredicate<T>) PREDICATE;
     }
+
+    private static final SpawnPlacements.SpawnPredicate<Alien> PREDICATE = (
+        entityType,
+        serverLevelAccessor,
+        mobSpawnType,
+        blockPos,
+        randomSource
+    ) -> {
+        var belowState = serverLevelAccessor.getBlockState(blockPos.below());
+        var resinBlock = entityType.is(AVPEntityTypeTags.NETHER_ALIENS) ? AVPBlockTags.NETHER_RESIN : AVPBlockTags.NORMAL_RESIN;
+        var isValidResinPos = belowState.is(resinBlock);
+
+        return isValidResinPos
+            && checkSpawnRules(entityType, serverLevelAccessor, mobSpawnType, blockPos, randomSource);
+    };
 
     public static boolean checkSpawnRules(
         EntityType<? extends Monster> entityType,
@@ -46,6 +47,15 @@ public class AlienSpawning {
             mobSpawnType,
             blockPos,
             randomSource
-        );
+        ) &&
+            isSpawnPositionWithinHive(serverLevelAccessor, blockPos);
+    }
+
+    // TODO: We need to check that the entity type we're trying to spawn isn't going to get immediately clobbered by an
+    // enemy strain hive.
+    private static boolean isSpawnPositionWithinHive(ServerLevelAccessor serverLevelAccessor, BlockPos blockPos) {
+        return HiveLevelData.getOrCreate(serverLevelAccessor.getLevel())
+            .andThen(hiveLevelData -> hiveLevelData.findNearestHive(blockPos))
+            .isSomeAnd(nearestHive -> nearestHive.isBlockPosWithinRangeOfHive(blockPos));
     }
 }

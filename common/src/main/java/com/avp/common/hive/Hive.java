@@ -62,14 +62,15 @@ public class Hive {
 
     private int ageInTicks;
 
-    private @Nullable UUID hiveLeaderId;
+    private Option<UUID> hiveLeaderIdOption;
 
     public Hive(Level level, UUID id) {
         this.tasks = new ArrayList<>();
         this.hiveMemberDataMap = new HashMap<>();
         this.id = id;
         this.level = level;
-        centerPos = BlockPos.ZERO;
+        this.hiveLeaderIdOption = Option.none();
+        this.centerPos = BlockPos.ZERO;
 
         // Order matters here.
         tasks.add(new UpdateHiveBossBarTask(this));
@@ -136,10 +137,11 @@ public class Hive {
 
     public void removeHiveMember(@NotNull Entity entity) {
         hiveMemberDataMap.remove(entity.getUUID());
-    }
 
-    public boolean hasHiveLeader() {
-        return hiveLeaderId != null;
+        if (hiveLeaderIdOption.contains(entity.getUUID())) {
+            // If the entity being removed is the hive leader, then set the hive leader ID to none.
+            this.hiveLeaderIdOption = Option.none();
+        }
     }
 
     public boolean isChunkLoaded() {
@@ -165,14 +167,21 @@ public class Hive {
     }
 
     public boolean isHiveLeader(Entity entity) {
-        return entity.getUUID().equals(hiveLeaderId);
+        return hiveLeaderIdOption.contains(entity.getUUID());
     }
 
-    public boolean isEntityWithinHive(Entity entity) {
+    public boolean isEntityWithinRangeOfHive(Entity entity) {
+        return isBlockPosWithinRangeOfHive(entity.blockPosition());
+    }
+
+    public boolean isBlockPosWithinRangeOfHive(BlockPos blockPos) {
+        return isBlockPosWithinRangeOfHive(blockPos, AVP.config.hiveConfigs.HIVE_RADIUS_IN_BLOCKS);
+    }
+
+    public boolean isBlockPosWithinRangeOfHive(BlockPos blockPos, int rangeInBlocks) {
         var centerPos = centerPosition();
-        var hiveRadius = AVP.config.hiveConfigs.HIVE_RADIUS_IN_BLOCKS;
-        var hiveRadiusSquared = hiveRadius * hiveRadius;
-        var distanceSquared = entity.distanceToSqr(centerPos.getX(), centerPos.getY(), centerPos.getZ());
+        var hiveRadiusSquared = rangeInBlocks * rangeInBlocks;
+        var distanceSquared = blockPos.distToCenterSqr(centerPos.getX(), centerPos.getY(), centerPos.getZ());
 
         return distanceSquared <= hiveRadiusSquared;
     }
@@ -186,15 +195,14 @@ public class Hive {
     }
 
     public @Nullable Alien hiveLeaderOrNull() {
-        if (level instanceof ServerLevel serverLevel) {
-            var entity = serverLevel.getEntity(hiveLeaderId);
-
-            if (entity instanceof Alien alien) {
-                return alien;
-            }
+        if (!(level instanceof ServerLevel serverLevel)) {
+            return null;
         }
 
-        return null;
+        return hiveLeaderIdOption.map(serverLevel::getEntity)
+            .filter(entity -> entity instanceof Alien)
+            .map(entity -> (Alien) entity)
+            .unwrapOr(null);
     }
 
     public Option<Alien> hiveLeader() {
@@ -202,14 +210,14 @@ public class Hive {
     }
 
     public void setHiveLeaderId(@Nullable UUID id) {
-        hiveLeaderId = id;
+        this.hiveLeaderIdOption = Option.ofNullable(id);
     }
 
     public void load(CompoundTag compoundTag) {
         var centerPosComponents = compoundTag.getIntArray(CENTER_POS_KEY);
         this.ageInTicks = compoundTag.getInt(AGE_IN_TICKS_KEY);
         this.centerPos = new BlockPos(centerPosComponents[0], centerPosComponents[1], centerPosComponents[2]);
-        this.hiveLeaderId = CompoundTagUtil.getUUIDOrNull(compoundTag, HIVE_LEADER_ID_KEY);
+        this.hiveLeaderIdOption = Option.ofNullable(CompoundTagUtil.getUUIDOrNull(compoundTag, HIVE_LEADER_ID_KEY));
 
         var hiveMemberDataMapTag = compoundTag.getCompound(HIVE_MEMBER_DATA_KEY);
 
@@ -233,9 +241,7 @@ public class Hive {
         var centerPosComponents = new int[] { centerPos.getX(), centerPos.getY(), centerPos.getZ() };
         compoundTag.putIntArray(CENTER_POS_KEY, centerPosComponents);
 
-        if (hiveLeaderId != null) {
-            compoundTag.putUUID(HIVE_LEADER_ID_KEY, hiveLeaderId);
-        }
+        hiveLeaderIdOption.ifSome(hiveLeaderId -> compoundTag.putUUID(HIVE_LEADER_ID_KEY, hiveLeaderId));
 
         var hiveMemberDataTag = new CompoundTag();
 
@@ -259,7 +265,7 @@ public class Hive {
     }
 
     public @Nullable UUID hiveLeaderId() {
-        return hiveLeaderId;
+        return hiveLeaderIdOption.unwrapOr(null);
     }
 
     public Map<UUID, HiveMemberData> hiveMemberDataMap() {
