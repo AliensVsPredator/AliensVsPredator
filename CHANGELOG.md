@@ -17,6 +17,8 @@
   - Acid's block damage still scales with the "strength" of acid, which increases when acid entities overlap.
 
 ## 🐞 Fixes
+- Fixed hatched ovomorphs closing up again after re-logging.
+- Fixed hatched ovomorphs not closing up again after royal jelly is used on them.
 - Fixed 'Eggsploration Time' advancement not being granted when shearing royal or non-regular strain ovomorphs.
 - Fixed mobs dying to chestbursting even after switching to peaceful difficulty.
 - Fixed royal jelly item not triggering player hand swing animation when used.

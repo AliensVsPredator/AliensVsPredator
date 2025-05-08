@@ -98,7 +98,10 @@ public class OvomorphRenderer extends AzEntityRenderer<Ovomorph> {
     }
 
     public static RenderType getEggRenderType(Ovomorph ovomorph) {
-        if (ovomorph.hatchManager().hatched()) {
+        if (
+            ovomorph.hatchManager().isHatching()
+                || ovomorph.hatchManager().isHatched()
+        ) {
             return RenderType.entityTranslucent(textureLocation(ovomorph));
         }
 

@@ -31,7 +31,7 @@ import com.avp.common.util.AVPPredicates;
 
 public class Ovomorph extends Alien implements Shearable {
 
-    private static final EntityDataAccessor<Boolean> HATCHED = SynchedEntityData.defineId(Ovomorph.class, EntityDataSerializers.BOOLEAN);
+    private static final EntityDataAccessor<Byte> HATCH_STATE = SynchedEntityData.defineId(Ovomorph.class, EntityDataSerializers.BYTE);
 
     private static final EntityDataAccessor<Byte> MAX_SPAWN_COUNT = SynchedEntityData.defineId(Ovomorph.class, EntityDataSerializers.BYTE);
 
@@ -50,7 +50,7 @@ public class Ovomorph extends Alien implements Shearable {
     public Ovomorph(EntityType<? extends Ovomorph> entityType, Level level) {
         super(entityType, level);
         this.animationDispatcher = new OvomorphAnimationDispatcher(this);
-        this.hatchManager = new HatchManager(this, HATCHED, MAX_SPAWN_COUNT, 3 * 20, 3 * 20);
+        this.hatchManager = new HatchManager(this, HATCH_STATE, MAX_SPAWN_COUNT, 3 * 20, 3 * 20);
         this.config = AVP.config.statsConfigs.OVAMORPH_STATS;
     }
 
@@ -77,7 +77,7 @@ public class Ovomorph extends Alien implements Shearable {
     @Override
     protected void defineSynchedData(@NotNull SynchedEntityData.Builder builder) {
         super.defineSynchedData(builder);
-        builder.define(HATCHED, false);
+        builder.define(HATCH_STATE, (byte) HatchState.SLEEPING.getId());
         builder.define(MAX_SPAWN_COUNT, (byte) 1);
         builder.define(ROOTED, true);
     }
@@ -89,48 +89,45 @@ public class Ovomorph extends Alien implements Shearable {
     }
 
     public void tryHatch() {
-        if (!level().isClientSide && !hatchManager.hatched() && !isIrradiated()) {
+        if (
+            !level().isClientSide
+                && !hatchManager.isHatching()
+                && !hatchManager.isHatched()
+                && !isIrradiated()
+        ) {
             hatchManager.hatch();
-            animationDispatcher.open();
         }
     }
 
     @Override
     public @NotNull InteractionResult mobInteract(@NotNull Player player, @NotNull InteractionHand interactionHand) {
-        if (!level().isClientSide) {
-            var itemStack = player.getItemInHand(interactionHand);
-            var resinBallItem = AlienVariantUtil.getResinBallFor(this);
+        if (level().isClientSide) {
+            return super.mobInteract(player, interactionHand);
+        }
 
-            if (itemStack.is(AVPItems.RAW_ROYAL_JELLY.get())) {
-                if (hatchManager.hatched()) {
-                    level().playSound(null, this, SoundEvents.HONEY_BLOCK_PLACE, SoundSource.PLAYERS, 1.0F, 1.0F);
-                    hatchManager.restore();
+        var itemStack = player.getItemInHand(interactionHand);
+        var resinBallItem = AlienVariantUtil.getResinBallFor(this);
 
-                    if (!AVPPredicates.IS_IMMORTAL.test(player)) {
-                        player.getItemInHand(interactionHand).shrink(1);
-                    }
-
-                    return InteractionResult.SUCCESS;
-                } else {
-                    return InteractionResult.CONSUME;
-                }
-            } else if (isRooted() && itemStack.is(Items.SHEARS)) {
-                shear(SoundSource.PLAYERS);
-                gameEvent(GameEvent.SHEAR, player);
-
-                if (!AVPPredicates.IS_IMMORTAL.test(player)) {
-                    itemStack.hurtAndBreak(1, player, getSlotForHand(interactionHand));
-                }
+        if (itemStack.is(AVPItems.RAW_ROYAL_JELLY.get())) {
+            if (hatchManager.isHatching() || hatchManager().isHatched()) {
+                level().playSound(null, this, SoundEvents.HONEY_BLOCK_PLACE, SoundSource.PLAYERS, 1.0F, 1.0F);
+                hatchManager.restore();
+                itemStack.consume(1, player);
 
                 return InteractionResult.SUCCESS;
-            } else if (!isRooted() && itemStack.is(resinBallItem)) {
-                level().playSound(null, this, AVPSoundEvents.ENTITY_OVOMORPH_ROOT.get(), SoundSource.PLAYERS, 1.0F, 1.0F);
-                setRooted(true);
-
-                if (!AVPPredicates.IS_IMMORTAL.test(player)) {
-                    itemStack.shrink(1);
-                }
+            } else {
+                return InteractionResult.CONSUME;
             }
+        } else if (isRooted() && itemStack.is(Items.SHEARS)) {
+            shear(SoundSource.PLAYERS);
+            gameEvent(GameEvent.SHEAR, player);
+            itemStack.hurtAndBreak(1, player, getSlotForHand(interactionHand));
+
+            return InteractionResult.SUCCESS;
+        } else if (!isRooted() && itemStack.is(resinBallItem)) {
+            level().playSound(null, this, AVPSoundEvents.ENTITY_OVOMORPH_ROOT.get(), SoundSource.PLAYERS, 1.0F, 1.0F);
+            setRooted(true);
+            itemStack.consume(1, player);
         }
 
         return super.mobInteract(player, interactionHand);
@@ -189,7 +186,8 @@ public class Ovomorph extends Alien implements Shearable {
 
     @Override
     protected boolean canBleedAcid() {
-        return !hatchManager.hatched();
+        return !hatchManager.isHatching()
+            && !hatchManager.isHatched();
     }
 
     @Override
@@ -209,7 +207,9 @@ public class Ovomorph extends Alien implements Shearable {
 
     @Override
     protected boolean canHeal() {
-        return !hatchManager.hatched() && super.canHeal();
+        return !hatchManager.isHatching()
+            && !hatchManager.isHatched()
+            && super.canHeal();
     }
 
     @Override
@@ -245,5 +245,9 @@ public class Ovomorph extends Alien implements Shearable {
 
     public void setRooted(boolean isRooted) {
         entityData.set(ROOTED, isRooted);
+    }
+
+    public OvomorphAnimationDispatcher getAnimationDispatcher() {
+        return animationDispatcher;
     }
 }

@@ -44,5 +44,17 @@ public class OvomorphAnimator extends AzEntityAnimator<Ovomorph> {
         if (gVeinBottom != null) {
             gVeinBottom.setHidden(!ovomorph.isRooted());
         }
+
+        runPassiveAnimations(ovomorph);
+    }
+
+    private void runPassiveAnimations(Ovomorph ovomorph) {
+        if (ovomorph.hatchManager().isHatching()) {
+            ovomorph.getAnimationDispatcher().open();
+        } else if (ovomorph.hatchManager().isHatched()) {
+            ovomorph.getAnimationDispatcher().openHold();
+        } else {
+            ovomorph.getAnimationDispatcher().closeHold();
+        }
     }
 }
