@@ -17,6 +17,7 @@
   - Acid's block damage still scales with the "strength" of acid, which increases when acid entities overlap.
 
 ## 🐞 Fixes
+- Fixed mobs dying to chestbursting even after switching to peaceful difficulty.
 - Fixed royal jelly item not triggering player hand swing animation when used.
 - Fixed royal jelly item being consumed when right-clicking non-alien entities.
 - Fixed royal jelly block item not triggering player hand swing animation when used.
