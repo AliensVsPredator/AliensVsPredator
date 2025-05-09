@@ -12,6 +12,10 @@
 - Significantly improved hit registration for all hitscan-based weaponry.
 - Queens no longer despawn under any circumstances.
 - Queens no longer immediately place a resin block down beneath wherever they are standing.
+- Chestbursters, facehuggers and ovomorphs no longer count towards the hive's overall health.
+  - These aliens will no longer count towards the hive boss bar.
+  - They also will not keep the hive alive. If you kill all xenomorphs in the hive, the hive dies, even if there were chestbursters, facehuggers or ovomorphs within the hive.
+  - If they are left alive under the right conditions, however, they can form an entirely new hive.
 - Rebalanced queen resin spread stats to allow queens to spread resin faster and more frequently than drones.
   - We want queens to be able to "jump-start" a hive with this change. Previously they were too slow to spread any resin at all.
 - All aliens (except queens) will now only naturally spawn in hives.

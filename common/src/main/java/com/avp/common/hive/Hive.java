@@ -4,6 +4,7 @@ import com.bvanseg.just.functional.option.Option;
 import com.mojang.serialization.Dynamic;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.network.chat.Component;
@@ -23,6 +24,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import com.avp.AVP;
+import com.avp.common.entity.AVPEntityTypeTags;
 import com.avp.common.entity.living.alien.Alien;
 import com.avp.common.entity.living.alien.xenomorph.queen.Queen;
 import com.avp.common.hive.ai.task.Task;
@@ -62,6 +64,8 @@ public class Hive {
 
     private int ageInTicks;
 
+    private int xenomorphCount;
+
     private Option<UUID> hiveLeaderIdOption;
 
     public Hive(Level level, UUID id) {
@@ -89,6 +93,8 @@ public class Hive {
         tasks.stream()
             .filter(Task::canRun)
             .forEach(Task::run);
+
+        this.xenomorphCount = computeNumberOfXenomorphsInHive();
 
         ageInTicks++;
     }
@@ -149,9 +155,12 @@ public class Hive {
     }
 
     public boolean isAlive() {
-        return !hiveMemberDataMap.isEmpty() && HiveLevelData.getOrCreate(level)
-            .filter(data -> data.hasHive(this))
-            .isSome();
+        // Ovomorphs, facehuggers and chestbursters do not sustain a hive. That's why we check the xenomorph count
+        // here instead of the overall hive member map size.
+        return xenomorphCount > 0
+            && HiveLevelData.getOrCreate(level)
+                .filter(data -> data.hasHive(this))
+                .isSome();
     }
 
     public void onRemove() {
@@ -233,6 +242,8 @@ public class Hive {
                 )
                 .ifPresent(hiveMemberData -> hiveMemberDataMap.put(entityUUID, hiveMemberData));
         }
+
+        this.xenomorphCount = computeNumberOfXenomorphsInHive();
     }
 
     public void save(CompoundTag compoundTag) {
@@ -276,6 +287,10 @@ public class Hive {
         return level;
     }
 
+    public int getXenomorphCount() {
+        return xenomorphCount;
+    }
+
     public boolean isDebugEnabled() {
         return AVP.config.hiveConfigs.HIVE_DEBUG_ENABLED;
     }
@@ -290,5 +305,20 @@ public class Hive {
 
     public boolean isDebugMarkHiveCenterEnabled() {
         return AVP.config.hiveConfigs.HIVE_DEBUG_MARK_HIVE_CENTER;
+    }
+
+    private int computeNumberOfXenomorphsInHive() {
+        return (int) hiveMemberDataMap()
+            .values()
+            .stream()
+            .filter(hiveMemberData -> {
+                var entityType = level()
+                    .registryAccess()
+                    .registryOrThrow(Registries.ENTITY_TYPE)
+                    .get(hiveMemberData.entityType());
+
+                return entityType != null && entityType.is(AVPEntityTypeTags.XENOMORPHS);
+            })
+            .count();
     }
 }

@@ -55,7 +55,6 @@ public class HiveManager {
                 });
         }
 
-        // TODO: hasHiveLeader should change once we have actual strength comparisons.
         hiveOption = hiveOption.filter(Hive::isAlive)
             .inspect(hive -> {
                 if (alien.tickCount % (20 * 30) == 0) {
@@ -66,8 +65,10 @@ public class HiveManager {
 
     private void tryCreateAndAssignHive(HiveLevelData hiveLevelData, @Nullable Hive nearestHive) {
         if (!alien.getType().is(AVPEntityTypeTags.XENOMORPHS)) {
+            // Non-xenomorphs cannot create their own hives.
             return;
         }
+
         if (alien instanceof Queen) {
             var newHive = hiveLevelData.createHive();
             newHive.moveCenter(alien.blockPosition());

@@ -12,7 +12,7 @@ public class UpdateHiveBossBarTask extends HiveTask {
 
     public UpdateHiveBossBarTask(Hive hive) {
         super(hive);
-        this.maximumSeenAlienCount = hive.hiveMemberDataMap().size();
+        this.maximumSeenAlienCount = hive.getXenomorphCount();
     }
 
     @Override
@@ -22,7 +22,7 @@ public class UpdateHiveBossBarTask extends HiveTask {
 
     @Override
     public void run() {
-        var currentAlienCount = hive.hiveMemberDataMap().size();
+        var currentAlienCount = hive.getXenomorphCount();
         this.maximumSeenAlienCount = Math.max(maximumSeenAlienCount, currentAlienCount);
 
         var bossEvent = hive.bossEvent();
