@@ -1,7 +1,7 @@
 # v0.1.5
 
 ## ☢️ Breaking Changes
-- N/A
+- NOTE: If you have an existing world you must delete your old avp config for some changes in this update to take effect.
 
 ## ✨ What's New
 - N/A
@@ -12,6 +12,8 @@
 - Significantly improved hit registration for all hitscan-based weaponry.
 - Queens no longer despawn under any circumstances.
 - Queens no longer immediately place a resin block down beneath wherever they are standing.
+- Rebalanced queen resin spread stats to allow queens to spread resin faster and more frequently than drones.
+  - We want queens to be able to "jump-start" a hive with this change. Previously they were too slow to spread any resin at all.
 - All aliens (except queens) will now only naturally spawn in hives.
   - This means if there is resin outside a hive, aliens will no longer naturally spawn there.
   - Hives must be alive and must not be in an angered state in order for aliens to spawn in them.

@@ -318,7 +318,7 @@ public class AVPConfig {
             MoveSpeedConstants.QUEEN_SPEED,
             ArmorConstants.QUEEN_ARMOR,
             ArmorToughnessConstants.QUEEN_ARMOR_TOUGHNESS,
-            160,
+            10,
             FollowRangeConstants.QUEEN_FOLLOW_RANGE
         );
 
