@@ -18,13 +18,10 @@ import com.avp.common.entity.living.alien.manager.ResinManager;
 import com.avp.common.entity.living.alien.manager.resin.ResinData;
 import com.avp.common.entity.living.alien.manager.resin.ResinProducer;
 import com.avp.common.entity.living.alien.util.AlienPredicates;
-import com.avp.common.entity.living.alien.util.AlienVariantUtil;
-import com.avp.common.entity.living.alien.xenomorph.Xenomorph;
 import com.avp.common.entity.living.alien.xenomorph.util.XenomorphGrowthUtil;
 import com.avp.common.entity.living.gene.GeneKeys;
 import com.avp.common.entity.living.gene.behavior.GeneDecoders;
 import com.avp.common.entity.type.AVPEntityTypes;
-import com.avp.common.lifecycle.registry.AlienLifecycleRegistry;
 import com.avp.common.util.AVPPredicates;
 
 public class Chestburster extends Alien implements ResinProducer {
@@ -97,18 +94,6 @@ public class Chestburster extends Alien implements ResinProducer {
         super.tick();
         growthManager.tick();
         resinManager.tick();
-
-        if (!this.level().isClientSide() && !this.isIrradiated()) {
-            var type = AlienVariantUtil.getVariantTypeFor(this);
-            var growthStage = AlienLifecycleRegistry.getOrNull(null, type);
-
-            if (
-                growthStage != null && !isPoisoned() && this.getEntityData()
-                    .get(Xenomorph.JELLY_COUNT) == this.maxJellyToGrowth()
-            ) {
-                this.growthManager().grow(growthStage);
-            }
-        }
     }
 
     @Override

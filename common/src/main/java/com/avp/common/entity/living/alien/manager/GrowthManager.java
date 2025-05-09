@@ -31,6 +31,8 @@ public class GrowthManager {
 
     private int growthRetryTimeInTicks = 0;
 
+    private boolean readyToGrow;
+
     private @Nullable Supplier<Float> growthTimeReductionMultiplierProvider;
 
     public GrowthManager(Alien entity) {
@@ -41,12 +43,12 @@ public class GrowthManager {
         this.entity = entity;
         this.onGrowUpCallback = onGrowUpCallback;
         this.growOverTime = true;
+        this.readyToGrow = false;
     }
 
     public void tick() {
         if (
             entity.level().isClientSide
-                || !growOverTime
                 || entity.isPoisoned()
                 || entity.isIrradiated()
         ) {
@@ -55,21 +57,23 @@ public class GrowthManager {
 
         var type = AlienVariantUtil.getVariantTypeFor(entity);
         var growthStage = AlienLifecycleRegistry.getOrNull(null, type);
-        this.growthTimeInTicks++;
 
         if (growthStage == null) {
             return;
         }
 
-        var requiredGrowthTimeInTicks = growthStage.growthTimeInTicks();
-        var growthTimeReductionMultiplier = 1F;
+        var canBypassGrowthTime = entity.getEntityData().get(Xenomorph.JELLY_COUNT) >= entity.maxJellyToGrowth();
 
-        if (growthTimeReductionMultiplierProvider != null) {
-            var multiplier = growthTimeReductionMultiplierProvider.get();
-            growthTimeReductionMultiplier = Math.clamp(multiplier, 0.2F, 1F);
+        if (canBypassGrowthTime) {
+            // If we can bypass growing over time thanks to royal jelly, then do so.
+            this.readyToGrow = true;
+        } else if (growOverTime) {
+            // Otherwise if we can't bypass growth time, tick the entity's growth progress.
+            growOverTime(growthStage);
         }
 
-        if (growthTimeInTicks < requiredGrowthTimeInTicks * growthTimeReductionMultiplier) {
+        if (!readyToGrow) {
+            // If the entity isn't ready to grow, then don't continue any further.
             return;
         }
 
@@ -91,6 +95,29 @@ public class GrowthManager {
         grow(growthStage);
     }
 
+    private void growOverTime(GrowthStage growthStage) {
+        this.growthTimeInTicks++;
+
+        if (growthStage == null) {
+            return;
+        }
+
+        var requiredGrowthTimeInTicks = growthStage.growthTimeInTicks();
+        var growthTimeReductionMultiplier = 1F;
+
+        if (growthTimeReductionMultiplierProvider != null) {
+            var multiplier = growthTimeReductionMultiplierProvider.get();
+            growthTimeReductionMultiplier = Math.clamp(multiplier, 0.2F, 1F);
+        }
+
+        if (growthTimeInTicks < requiredGrowthTimeInTicks * growthTimeReductionMultiplier) {
+            return;
+        }
+
+        this.readyToGrow = true;
+    }
+
+    // TODO: Make this return a sealed type result since there are checks here we want to do that might cause growth failure.
     public @Nullable LivingEntity grow(GrowthStage growthStage) {
         // Reset growth time at this point.
         this.growthTimeInTicks = 0;

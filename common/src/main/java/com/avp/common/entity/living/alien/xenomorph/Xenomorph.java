@@ -43,14 +43,12 @@ import com.avp.common.entity.living.alien.manager.ResinManager;
 import com.avp.common.entity.living.alien.manager.resin.ResinData;
 import com.avp.common.entity.living.alien.manager.resin.ResinProducer;
 import com.avp.common.entity.living.alien.util.AlienPredicates;
-import com.avp.common.entity.living.alien.util.AlienVariantUtil;
 import com.avp.common.entity.living.alien.xenomorph.manager.XenomorphNavigationManager;
 import com.avp.common.entity.living.alien.xenomorph.util.XenomorphGrowthUtil;
 import com.avp.common.entity.living.gene.GeneKeys;
 import com.avp.common.entity.living.gene.behavior.GeneDecoders;
 import com.avp.common.entity.living.manager.CrawlingManager;
 import com.avp.common.entity.living.manager.VibrationSystemManager;
-import com.avp.common.lifecycle.registry.AlienLifecycleRegistry;
 import com.avp.common.sound.AVPSoundEvents;
 
 public abstract class Xenomorph extends Alien implements ResinProducer {
@@ -146,16 +144,6 @@ public abstract class Xenomorph extends Alien implements ResinProducer {
             if (target != null && !AlienPredicates.canContinueTargeting(this, target)) {
                 // If the target is no longer valid, stop targeting them.
                 setTarget(null);
-            }
-
-            var type = AlienVariantUtil.getVariantTypeFor(this);
-            var growthStage = AlienLifecycleRegistry.getOrNull(null, type);
-
-            if (
-                growthStage != null && !isPoisoned() && this.getEntityData()
-                    .get(Xenomorph.JELLY_COUNT) >= this.maxJellyToGrowth()
-            ) {
-                this.getGrowthManager().grow(growthStage);
             }
         }
     }
