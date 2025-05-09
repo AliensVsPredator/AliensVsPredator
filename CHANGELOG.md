@@ -14,6 +14,7 @@
 - Queens no longer immediately place a resin block down beneath wherever they are standing.
 - All aliens (except queens) will now only naturally spawn in hives.
   - This means if there is resin outside a hive, aliens will no longer naturally spawn there.
+  - Hives must be alive and must not be in an angered state in order for aliens to spawn in them.
 - Reduced `MINIMUM_DISTANCE_BETWEEN_HIVES_IN_BLOCKS` from 1024 blocks (64 chunks) to 256 blocks (16 chunks).
   - This change does not apply retroactively.
   - We're reducing the default value so that naturally spawning queens are more common as the default experience.

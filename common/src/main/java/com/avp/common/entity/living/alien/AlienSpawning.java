@@ -51,11 +51,19 @@ public class AlienSpawning {
             isSpawnPositionWithinHive(serverLevelAccessor, blockPos);
     }
 
-    // TODO: We need to check that the entity type we're trying to spawn isn't going to get immediately clobbered by an
+    // TODO:
+    // We need to check that the entity type we're trying to spawn isn't going to get immediately clobbered by an
     // enemy strain hive.
     private static boolean isSpawnPositionWithinHive(ServerLevelAccessor serverLevelAccessor, BlockPos blockPos) {
         return HiveLevelData.getOrCreate(serverLevelAccessor.getLevel())
             .andThen(hiveLevelData -> hiveLevelData.findNearestHive(blockPos))
-            .isSomeAnd(nearestHive -> nearestHive.isBlockPosWithinRangeOfHive(blockPos));
+            .isSomeAnd(nearestHive ->
+            // Aliens can not spawn in hives that are dead.
+            nearestHive.isAlive()
+                // AND Hive is not angry/aggro'd.
+                && !nearestHive.isAngry()
+                // AND spawn position must be within range of the hive.
+                && nearestHive.isBlockPosWithinRangeOfHive(blockPos)
+            );
     }
 }
