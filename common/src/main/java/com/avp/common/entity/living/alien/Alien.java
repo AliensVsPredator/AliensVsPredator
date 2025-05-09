@@ -37,7 +37,6 @@ import com.avp.common.entity.living.alien.util.AlienVariantUtil;
 import com.avp.common.entity.living.gene.GeneKeys;
 import com.avp.common.entity.living.manager.GeneManager;
 import com.avp.common.entity.util.MovementAnalyzer;
-import com.avp.common.hive.Hive;
 import com.avp.common.worldgen.biome.AVPBiomes;
 
 public abstract class Alien extends Monster {
@@ -327,10 +326,15 @@ public abstract class Alien extends Monster {
 
     @Override
     public boolean isPersistenceRequired() {
-        return super.isPersistenceRequired() || hiveManager.hive()
-            .andThen(Hive::hiveLeader)
-            .filter(leader -> leader.getUUID().equals(getUUID()))
-            .isSome();
+        return super.isPersistenceRequired()
+            || hiveManager.hive()
+                .filter(
+                    // If the hive is angry, then the alien shouldn't despawn.
+                    hive -> hive.isAngry()
+                        // OR if this alien is the hive leader, then they shouldn't despawn, either.
+                        || hive.isHiveLeader(this)
+                )
+                .isSome();
     }
 
     @Override
