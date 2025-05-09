@@ -15,6 +15,7 @@ import com.avp.common.entity.living.alien.util.AlienVariantUtil;
 import com.avp.common.entity.living.alien.xenomorph.Xenomorph;
 import com.avp.common.lifecycle.growth.GrowthStage;
 import com.avp.common.lifecycle.registry.AlienLifecycleRegistry;
+import com.avp.common.util.BlockPosUtil;
 
 public class GrowthManager {
 
@@ -27,6 +28,8 @@ public class GrowthManager {
     private boolean growOverTime;
 
     private int growthTimeInTicks;
+
+    private int growthRetryTimeInTicks = 0;
 
     private @Nullable Supplier<Float> growthTimeReductionMultiplierProvider;
 
@@ -41,15 +44,12 @@ public class GrowthManager {
     }
 
     public void tick() {
-        if (entity.level().isClientSide || !growOverTime) {
-            return;
-        }
-
-        if (entity instanceof Xenomorph xenomorph && Boolean.TRUE.equals(xenomorph.isPoisoned())) {
-            return;
-        }
-
-        if (entity instanceof Xenomorph xenomorph && Boolean.TRUE.equals(xenomorph.isIrradiated())) {
+        if (
+            entity.level().isClientSide
+                || !growOverTime
+                || entity.isPoisoned()
+                || entity.isIrradiated()
+        ) {
             return;
         }
 
@@ -73,6 +73,21 @@ public class GrowthManager {
             return;
         }
 
+        this.growthRetryTimeInTicks = Math.max(growthRetryTimeInTicks - 1, 0);
+
+        if (growthRetryTimeInTicks > 0) {
+            return;
+        }
+
+        if (!BlockPosUtil.canEntityTypeFit(entity.level(), entity.blockPosition(), growthStage.to())) {
+            // if the next stage of the entity's growth can't fit at the entity's location, then the entity can't grow
+            // up yet.
+            // TODO: Add particles here maybe if the alien can't grow up, to indicate "frustration"?
+            // Apply a buffer time period before we retry checking collision.
+            this.growthRetryTimeInTicks = 20 * 10;
+            return;
+        }
+
         grow(growthStage);
     }
 
@@ -83,8 +98,9 @@ public class GrowthManager {
         var level = entity.level();
         var nextFormType = growthStage.to();
         var nextForm = nextFormType.create(level);
+
         if (nextForm == null) {
-            return nextForm;
+            return null;
         }
 
         swapOldStageWithNewStage(nextForm, level);
