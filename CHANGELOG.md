@@ -37,6 +37,7 @@
   - Acid's block damage still scales with the "strength" of acid, which increases when acid entities overlap.
 
 ## 🐞 Fixes
+- Fixed the inner jaws of both drones and warriors sticking out of their necks.
 - Fixed aliens not checking their surroundings to see if there is enough space to grow.
 - Fixed hatched ovomorphs closing up again after re-logging.
 - Fixed hatched ovomorphs not closing up again after royal jelly is used on them.
