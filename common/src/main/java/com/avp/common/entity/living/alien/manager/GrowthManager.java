@@ -117,7 +117,8 @@ public class GrowthManager {
         this.readyToGrow = true;
     }
 
-    // TODO: Make this return a sealed type result since there are checks here we want to do that might cause growth failure.
+    // TODO:
+    // Make this return a sealed type result since there are checks here we want to do that might cause growth failure.
     public @Nullable LivingEntity grow(GrowthStage growthStage) {
         // Reset growth time at this point.
         this.growthTimeInTicks = 0;

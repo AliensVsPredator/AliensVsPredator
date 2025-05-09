@@ -65,6 +65,7 @@
 - Fixed royal aliens not being acid immune.
 - Fixed royal aliens not being tagged as aliens.
 - Fixed missing name translations for aberrant, irradiated, nether and royal aliens.
+- Fixed hive leaders being stuck in warrior form within small hives and not growing into queens.
 - Fixed queen spawn checks only checking for nearby queens.
   - This created a scenario where a queen could spawn in a loaded chunk next to an unloaded queen in an unloaded chunk.
   - Instead, queen spawn attempts will now check for nearby *hives* instead of nearby queens, as hives are loaded regardless of chunk load state.

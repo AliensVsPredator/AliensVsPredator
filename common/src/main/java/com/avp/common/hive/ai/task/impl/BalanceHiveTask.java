@@ -114,9 +114,8 @@ public class BalanceHiveTask extends HiveTask {
         }
 
         hive.hiveLeader().ifSome(hiveLeader -> {
-            if (
-                !Objects.equals(hiveLeader.getType(), AVPEntityTypes.PRAETORIAN.get()) || !(hiveLeader instanceof Xenomorph xenomorph)
-            ) {
+            if (!(hiveLeader instanceof Xenomorph xenomorph)) {
+                // If the hive leader is not a xenomorph (somehow), then return.
                 return;
             }
 
@@ -132,11 +131,12 @@ public class BalanceHiveTask extends HiveTask {
         var type = xenomorph.getType();
         var growthStage = AlienLifecycleRegistry.getOrNull(null, type);
 
-        if (growthStage == null || xenomorph.isPoisoned()) {
-            return;
-        }
-
-        if (xenomorph.isIrradiated()) {
+        // TODO: Don't duplicate this check here, the growth manager should already be checking this.
+        if (
+            growthStage == null
+                || xenomorph.isPoisoned()
+                || xenomorph.isIrradiated()
+        ) {
             return;
         }
 
