@@ -49,7 +49,7 @@ public abstract class BalanceHiveTask extends HiveTask {
         var nextFormEntity = xenomorph.getGrowthManager().grow(growthStage);
 
         if (nextFormEntity != null) {
-            var isLeader = Objects.equals(xenomorph.getUUID(), hive.hiveLeaderId());
+            var isLeader = Objects.equals(xenomorph.getUUID(), hive.getLeadershipManager().getLeaderIdOrNull());
 
             // Remove the old entity's membership.
             hive.getMembershipManager().removeMember(xenomorph);
@@ -57,7 +57,7 @@ public abstract class BalanceHiveTask extends HiveTask {
             hive.getMembershipManager().addMember(nextFormEntity);
 
             if (isLeader) {
-                hive.setHiveLeaderId(nextFormEntity.getUUID());
+                hive.getLeadershipManager().setLeaderId(nextFormEntity.getUUID());
             }
         }
     }

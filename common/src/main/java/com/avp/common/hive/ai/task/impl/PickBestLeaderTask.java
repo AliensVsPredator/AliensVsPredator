@@ -36,7 +36,7 @@ public class PickBestLeaderTask extends HiveTask {
 
     @Override
     public void run() {
-        Entity candidate = hive.hiveLeaderOrNull();
+        Entity candidate = hive.getLeadershipManager().getLeaderOrNull();
         var membershipManager = hive.getMembershipManager();
         var candidateHiveMemberData = membershipManager.getMemberData(candidate);
 
@@ -61,7 +61,7 @@ public class PickBestLeaderTask extends HiveTask {
         }
 
         if (candidate != null) {
-            hive.setHiveLeaderId(candidate.getUUID());
+            hive.getLeadershipManager().setLeaderId(candidate.getUUID());
         }
     }
 

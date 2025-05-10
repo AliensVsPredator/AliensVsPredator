@@ -25,7 +25,7 @@ public class BalanceQueenHiveTask extends BalanceHiveTask {
             return;
         }
 
-        hive.hiveLeader().ifSome(hiveLeader -> {
+        hive.getLeadershipManager().getLeader().ifSome(hiveLeader -> {
             if (!(hiveLeader instanceof Xenomorph xenomorph)) {
                 // If the hive leader is not a xenomorph (somehow), then return.
                 return;

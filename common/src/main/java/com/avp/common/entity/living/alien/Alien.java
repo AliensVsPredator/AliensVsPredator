@@ -332,7 +332,7 @@ public abstract class Alien extends Monster {
                     // If the hive is angry, then the alien shouldn't despawn.
                     hive -> hive.isAngry()
                         // OR if this alien is the hive leader, then they shouldn't despawn, either.
-                        || hive.isHiveLeader(this)
+                        || hive.getLeadershipManager().isLeader(this)
                 )
                 .isSome();
     }

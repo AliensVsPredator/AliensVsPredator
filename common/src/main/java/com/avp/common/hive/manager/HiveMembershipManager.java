@@ -82,9 +82,9 @@ public class HiveMembershipManager implements NBTSerializable {
             return hive.ageInTicks() - lastSeenTimestampInTicks > 20 * 60 * 3;
         });
 
-        if (!isMember(hive.hiveLeaderId())) {
+        if (!isMember(hive.getLeadershipManager().getLeaderIdOrNull())) {
             // If the hive leader id is no longer present in the hive member data map, clear the leader.
-            hive.setHiveLeaderId(null);
+            hive.getLeadershipManager().setLeaderId(null);
         }
     }
 

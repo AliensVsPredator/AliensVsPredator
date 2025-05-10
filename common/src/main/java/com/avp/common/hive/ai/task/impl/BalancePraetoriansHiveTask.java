@@ -32,7 +32,7 @@ public class BalancePraetoriansHiveTask extends BalanceHiveTask {
             ? Math.max(0, Math.clamp(hiveMemberCount / hiveMembersRequiredForPraetorian, 0, maxPraetorianCount) - praetorians.size())
             : 0;
 
-        if (desiredPraetorianCount == 0 || !hive.isChunkLoaded()) {
+        if (desiredPraetorianCount == 0) {
             return;
         }
 

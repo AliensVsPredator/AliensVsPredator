@@ -1,17 +1,14 @@
 package com.avp.common.hive;
 
-import com.bvanseg.just.functional.option.Option;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerBossEvent;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.BossEvent;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,9 +24,9 @@ import com.avp.common.hive.ai.task.impl.BalanceQueenHiveTask;
 import com.avp.common.hive.ai.task.impl.DebugHiveTask;
 import com.avp.common.hive.ai.task.impl.PickBestLeaderTask;
 import com.avp.common.hive.ai.task.impl.UpdateHiveBossBarTask;
+import com.avp.common.hive.manager.HiveLeadershipManager;
 import com.avp.common.hive.manager.HiveMembershipManager;
 import com.avp.common.level.saveddata.HiveLevelData;
-import com.avp.common.util.CompoundTagUtil;
 
 public class Hive {
 
@@ -37,7 +34,7 @@ public class Hive {
 
     private static final String CENTER_POS_KEY = "CenterPos";
 
-    private static final String HIVE_LEADER_ID_KEY = "HiveLeaderId";
+    private final HiveLeadershipManager leadershipManager;
 
     private final HiveMembershipManager membershipManager;
 
@@ -53,14 +50,12 @@ public class Hive {
 
     private int ageInTicks;
 
-    private Option<UUID> hiveLeaderIdOption;
-
     public Hive(Level level, UUID id) {
         this.tasks = new ArrayList<>();
         this.id = id;
         this.level = level;
+        this.leadershipManager = new HiveLeadershipManager(this);
         this.membershipManager = new HiveMembershipManager(this);
-        this.hiveLeaderIdOption = Option.none();
         this.centerPos = BlockPos.ZERO;
         this.bossEvent = (ServerBossEvent) new ServerBossEvent(
             Component.translatable("bossbar.avp.hive.title"),
@@ -124,12 +119,8 @@ public class Hive {
     }
 
     public void removeHiveMember(@NotNull Entity entity) {
+        leadershipManager.removeLeadership(entity);
         membershipManager.removeMember(entity);
-
-        if (hiveLeaderIdOption.contains(entity.getUUID())) {
-            // If the entity being removed is the hive leader, then set the hive leader ID to none.
-            this.hiveLeaderIdOption = Option.none();
-        }
     }
 
     public boolean isChunkLoaded() {
@@ -155,10 +146,6 @@ public class Hive {
 
     public boolean isAngry() {
         return !bossEvent.getPlayers().isEmpty();
-    }
-
-    public boolean isHiveLeader(Entity entity) {
-        return hiveLeaderIdOption.contains(entity.getUUID());
     }
 
     public boolean isEntityWithinRangeOfHive(Entity entity) {
@@ -191,31 +178,12 @@ public class Hive {
         return centerPos;
     }
 
-    public @Nullable Alien hiveLeaderOrNull() {
-        if (!(level instanceof ServerLevel serverLevel)) {
-            return null;
-        }
-
-        return hiveLeaderIdOption.map(serverLevel::getEntity)
-            .filter(entity -> entity instanceof Alien)
-            .map(entity -> (Alien) entity)
-            .unwrapOr(null);
-    }
-
-    public Option<Alien> hiveLeader() {
-        return Option.ofNullable(hiveLeaderOrNull());
-    }
-
-    public void setHiveLeaderId(@Nullable UUID id) {
-        this.hiveLeaderIdOption = Option.ofNullable(id);
-    }
-
     public void load(CompoundTag compoundTag) {
         var centerPosComponents = compoundTag.getIntArray(CENTER_POS_KEY);
         this.ageInTicks = compoundTag.getInt(AGE_IN_TICKS_KEY);
         this.centerPos = new BlockPos(centerPosComponents[0], centerPosComponents[1], centerPosComponents[2]);
-        this.hiveLeaderIdOption = Option.ofNullable(CompoundTagUtil.getUUIDOrNull(compoundTag, HIVE_LEADER_ID_KEY));
 
+        leadershipManager.load(compoundTag);
         membershipManager.load(compoundTag);
     }
 
@@ -225,8 +193,7 @@ public class Hive {
         var centerPosComponents = new int[] { centerPos.getX(), centerPos.getY(), centerPos.getZ() };
         compoundTag.putIntArray(CENTER_POS_KEY, centerPosComponents);
 
-        hiveLeaderIdOption.ifSome(hiveLeaderId -> compoundTag.putUUID(HIVE_LEADER_ID_KEY, hiveLeaderId));
-
+        leadershipManager.save(compoundTag);
         membershipManager.save(compoundTag);
     }
 
@@ -238,8 +205,8 @@ public class Hive {
         return bossEvent;
     }
 
-    public @Nullable UUID hiveLeaderId() {
-        return hiveLeaderIdOption.unwrapOr(null);
+    public HiveLeadershipManager getLeadershipManager() {
+        return leadershipManager;
     }
 
     public HiveMembershipManager getMembershipManager() {

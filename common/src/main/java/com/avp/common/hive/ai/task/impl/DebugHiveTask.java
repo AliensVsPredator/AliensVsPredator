@@ -32,7 +32,7 @@ public class DebugHiveTask extends HiveTask {
                 level.setBlock(centerPos, HiveConstants.DEBUG_BLOCK.defaultBlockState(), 3);
             }
 
-            var hiveLeader = hive.hiveLeaderOrNull();
+            var hiveLeader = hive.getLeadershipManager().getLeaderOrNull();
 
             if (hiveLeader != null && hive.isDebugLeaderHighlightEnabled()) {
                 if (hive.ageInTicks() % 20 == 0) {
