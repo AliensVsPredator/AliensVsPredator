@@ -396,11 +396,6 @@ public class AVPBlocks {
 
     public static final AVPDeferredHolder<Block> RAW_MONAZITE_BLOCK = register("raw_monazite_block", BlockProperties.MONAZITE_ORE);
 
-    public static final AVPDeferredHolder<Block> RAW_SILICA_BLOCK = register(
-        "raw_silica_block",
-        () -> new Block(BlockBehaviour.Properties.ofFullCopy(Blocks.GRAVEL).strength(0.9F))
-    );
-
     public static final AVPDeferredHolder<Block> RAW_TITANIUM_BLOCK = register("raw_titanium_block", BlockProperties.TITANIUM_ORE);
 
     public static final AVPDeferredHolder<Block> RAW_ZINC_BLOCK = register("raw_zinc_block", BlockProperties.ZINC_ORE);
@@ -452,6 +447,12 @@ public class AVPBlocks {
     public static final AVPDeferredHolder<Block> SILICA_GRAVEL = register(
         "silica_gravel",
         () -> new ColoredFallingBlock(new ColorRGBA(-8356741), BlockBehaviour.Properties.ofFullCopy(Blocks.GRAVEL))
+    );
+
+    public static final AVPDeferredHolder<Block> SILICON_BLOCK = register(
+        // TODO: Change this to "silicon_block" with 0.2.0.
+        "raw_silica_block",
+        () -> new Block(BlockBehaviour.Properties.ofFullCopy(Blocks.GRAVEL).strength(0.9F))
     );
 
     public static final AVPDeferredHolder<Block> STEEL_BLOCK = register("steel_block", BlockProperties.STEEL);

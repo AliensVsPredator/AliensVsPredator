@@ -1,15 +1,16 @@
 package com.avp.client.compat.rei;
 
-import com.avp.client.screen.IndustrialFurnaceScreen;
-import com.avp.common.block.AVPBlocks;
-import com.avp.common.recipe.AVPRecipes;
-import com.avp.common.recipe.IndustrialFurnaceRecipe;
 import me.shedaniel.math.Rectangle;
 import me.shedaniel.rei.api.client.plugins.REIClientPlugin;
 import me.shedaniel.rei.api.client.registry.category.CategoryRegistry;
 import me.shedaniel.rei.api.client.registry.display.DisplayRegistry;
 import me.shedaniel.rei.api.client.registry.screen.ScreenRegistry;
 import me.shedaniel.rei.api.common.util.EntryStacks;
+
+import com.avp.client.screen.IndustrialFurnaceScreen;
+import com.avp.common.block.AVPBlocks;
+import com.avp.common.recipe.AVPRecipes;
+import com.avp.common.recipe.IndustrialFurnaceRecipe;
 
 public class AVPREIClient implements REIClientPlugin {
 

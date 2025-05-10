@@ -24,7 +24,7 @@ public class BlocksCreativeModeTabInitializer {
         CreativeModeTabUtil.accept(output, AVPBlocks.RAW_BAUXITE_BLOCK);
         CreativeModeTabUtil.accept(output, AVPBlocks.RAW_GALENA_BLOCK);
         CreativeModeTabUtil.accept(output, AVPBlocks.RAW_MONAZITE_BLOCK);
-        CreativeModeTabUtil.accept(output, AVPBlocks.RAW_SILICA_BLOCK);
+        CreativeModeTabUtil.accept(output, AVPBlocks.SILICON_BLOCK);
         CreativeModeTabUtil.accept(output, AVPBlocks.RAW_TITANIUM_BLOCK);
         CreativeModeTabUtil.accept(output, AVPBlocks.RAW_ZINC_BLOCK);
         CreativeModeTabUtil.accept(output, AVPBlocks.TRINITITE_BLOCK);

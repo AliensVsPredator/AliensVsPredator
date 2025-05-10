@@ -212,7 +212,7 @@ public class EnglishLanguageProvider extends FabricLanguageProvider {
         addBlock(builder, AVPBlocks.RAW_BAUXITE_BLOCK, "Block of Raw Bauxite");
         addBlock(builder, AVPBlocks.RAW_GALENA_BLOCK, "Block of Raw Galena");
         addBlock(builder, AVPBlocks.RAW_MONAZITE_BLOCK, "Block of Raw Monazite");
-        addBlock(builder, AVPBlocks.RAW_SILICA_BLOCK, "Block of Raw Silica");
+        addBlock(builder, AVPBlocks.SILICON_BLOCK, "Block of Silicon");
         addBlock(builder, AVPBlocks.RAW_TITANIUM_BLOCK, "Block of Raw Titanium");
         addBlock(builder, AVPBlocks.RAW_ZINC_BLOCK, "Block of Raw Zinc");
         addBlock(builder, AVPBlocks.RAZOR_WIRE, "Razor Wire");
@@ -474,7 +474,7 @@ public class EnglishLanguageProvider extends FabricLanguageProvider {
         addItem(builder, AVPItems.RAW_MONAZITE, "Raw Monazite");
         addItem(builder, AVPItems.RAW_ROYAL_JELLY, "Raw Royal Jelly");
         addItem(builder, AVPItems.POISON_JELLY, "Poison Jelly");
-        addItem(builder, AVPItems.RAW_SILICA, "Raw Silica");
+        addItem(builder, AVPItems.SILICON, "Silicon");
         addItem(builder, AVPItems.RAW_TITANIUM, "Raw Titanium");
         addItem(builder, AVPItems.RAW_ZINC, "Raw Zinc");
         addItem(builder, AVPItems.RECEIVER, "Receiver");

@@ -171,7 +171,6 @@ public class ItemModelProvider extends FabricModelProvider {
         generateStandardItem(generators, AVPItems.RAW_GALENA);
         generateStandardItem(generators, AVPItems.RAW_MONAZITE);
         generateStandardItem(generators, AVPItems.RAW_ROYAL_JELLY);
-        generateStandardItem(generators, AVPItems.RAW_SILICA);
         generateStandardItem(generators, AVPItems.RAW_TITANIUM);
         generateStandardItem(generators, AVPItems.RAW_ZINC);
         generateStandardItem(generators, AVPItems.RECEIVER);
@@ -181,6 +180,7 @@ public class ItemModelProvider extends FabricModelProvider {
         generateStandardItem(generators, AVPItems.ROCKET_BARREL);
         generateStandardItem(generators, AVPItems.ROYALTY_POTTERY_SHERD);
         generateStandardItem(generators, AVPItems.SHOTGUN_CASING);
+        generateStandardItem(generators, AVPItems.SILICON);
         generateStandardItem(generators, AVPItems.SMALL_CASING);
         generateStandardItem(generators, AVPItems.SMART_BARREL);
         generateStandardItem(generators, AVPItems.SMART_RECEIVER);

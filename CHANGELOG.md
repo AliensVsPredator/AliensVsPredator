@@ -33,7 +33,11 @@
   - We're making this change to allow for players to have consistent experiences, as well as to complement other spawn changes we've made this update.
   - If you want to add custom xenomorph spawns, we recommend using third-party mods designed with spawning customization in mind.
 - Renamed "Ovamorph" to "Ovomorph".
-  - These are only display-facing, non-breaking changes. Ovomorphs will have their registry names starting with v0.2.0.
+  - These are only display-facing, non-breaking changes. Ovomorphs will have their registry name changed starting with v0.2.0.
+- Renamed "Raw Silica" item to "Silicon".
+  - These are only display-facing, non-breaking changes. Raw Silica will have its registry name changed starting with v0.2.0.
+- Renamed "Block of Raw Silica" block to "Block of Silicon".
+  - These are only display-facing, non-breaking changes. Block of Raw Silica will have its registry name changed starting with v0.2.0.
 - Reduced overall block damage dealt by acid by 80%.
   - Acid's block damage still scales with the "strength" of acid, which increases when acid entities overlap.
 
@@ -42,7 +46,7 @@
 - Fixed aliens not checking their surroundings to see if there is enough space to grow.
 - Fixed hatched ovomorphs closing up again after re-logging.
 - Fixed hatched ovomorphs not closing up again after royal jelly is used on them.
-- Fixed 'Imperfect Organism' not including alternative strains of aliens or royal aliens.
+- Fixed 'Imperfect Organism' advancement not including alternative strains of aliens or royal aliens.
 - Fixed 'Eggsploration Time' advancement not being granted when shearing royal or non-regular strain ovomorphs.
 - Fixed 'Regicide' advancement not being granted when killing non-regular strain praetorians or queens.
 - Fixed 'Xenocide' advancement not including alternative strains of aliens or royal aliens.
@@ -60,7 +64,7 @@
 - Fixed guns rendering a muzzle flash in inventories.
 - Fixed multiple guns in inventory playing animations if the guns are copies of each other.
 - Fixed trip mine block texture dimensions not being powers of 2.
-- Fixed ovamorphs spawned from queens not persisting.
+- Fixed ovomorphs spawned from queens not persisting.
 - Fixed facehuggers and xenomorphs lunging towards targets even if they aren't looking towards the target.
 - Fixed irradiated queens laying eggs when they shouldn't.
 - Fixed persistence not carrying over when an alien grows into the next stage.

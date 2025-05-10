@@ -216,11 +216,11 @@ public class BlockModelProvider extends FabricModelProvider {
         generators.createTrivialCube(AVPBlocks.RAW_BAUXITE_BLOCK.get());
         generators.createTrivialCube(AVPBlocks.RAW_GALENA_BLOCK.get());
         generators.createTrivialCube(AVPBlocks.RAW_MONAZITE_BLOCK.get());
-        generators.createTrivialCube(AVPBlocks.RAW_SILICA_BLOCK.get());
         generators.createTrivialCube(AVPBlocks.RAW_TITANIUM_BLOCK.get());
         generators.createTrivialCube(AVPBlocks.RAW_ZINC_BLOCK.get());
         generators.createCrossBlock(AVPBlocks.RAZOR_WIRE.get(), BlockModelGenerators.TintState.NOT_TINTED);
         generators.createTrivialCube(AVPBlocks.SILICA_GRAVEL.get());
+        generators.createTrivialCube(AVPBlocks.SILICON_BLOCK.get());
         BarsGenerator.generate(generators, AVPBlocks.STEEL_BARS.get());
         BarsGenerator.generate(generators, AVPBlocks.STEEL_CHAIN_FENCE.get());
         generators.createRotatedPillarWithHorizontalVariant(
