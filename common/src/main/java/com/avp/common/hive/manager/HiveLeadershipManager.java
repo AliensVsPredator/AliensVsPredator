@@ -27,6 +27,13 @@ public class HiveLeadershipManager implements NBTSerializable {
         this.leaderIdOption = Option.none();
     }
 
+    public void tick() {
+        if (!hive.getMembershipManager().isMember(getLeaderIdOrNull())) {
+            // If the hive leader id is no longer present in the hive member data map, clear the leader.
+            setLeaderId(null);
+        }
+    }
+
     public void removeLeadership(@NotNull Entity entity) {
         removeLeadership(entity.getUUID());
     }
