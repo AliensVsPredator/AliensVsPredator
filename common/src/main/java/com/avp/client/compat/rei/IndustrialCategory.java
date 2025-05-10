@@ -2,6 +2,7 @@ package com.avp.client.compat.rei;
 
 import com.avp.AVP;
 import com.avp.AVPResources;
+import com.avp.common.block.AVPBlocks;
 import com.avp.common.item.AVPBlockItems;
 import me.shedaniel.math.Point;
 import me.shedaniel.math.Rectangle;
@@ -31,7 +32,7 @@ public class IndustrialCategory implements DisplayCategory<IndustrialDisplay> {
 
     @Override
     public Component getTitle() {
-        return Component.translatable("block.avp.industrial_furnace_block");
+        return AVPBlocks.INDUSTRIAL_FURNACE.get().getName();
     }
 
     @Override
