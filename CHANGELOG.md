@@ -14,8 +14,10 @@
 ## 🐞 Fixes
 - Fixed ovomorphs hatching and releasing facehuggers even while they are dead or dying.
 - Fixed queens having issues creating new hives.
-- Fixed hives sometimes breaking out into civil wars due to interference from multiple queens and/or hive leaders.
 - Fixed hives not creating praetorians if a queen is present.
+- Fixed hives sometimes breaking out into civil wars due to interference from multiple queens and/or hive leaders.
+  - Please note that this only applies to newer hives and does not apply to existing hives.
+  - If you have hives undergoing civil wars, one of the hives needs to lose (all xenomorphs in that hive are dead) so that the hive dies.
 
 ## 🛠 Data Pack
 - N/A
