@@ -10,7 +10,6 @@ import java.util.UUID;
 import com.avp.AVP;
 import com.avp.common.entity.AVPEntityTypeTags;
 import com.avp.common.entity.living.alien.Alien;
-import com.avp.common.entity.living.alien.xenomorph.queen.Queen;
 import com.avp.common.hive.Hive;
 import com.avp.common.level.saveddata.HiveLevelData;
 import com.avp.common.util.CompoundTagUtil;

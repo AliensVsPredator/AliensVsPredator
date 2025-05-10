@@ -10,7 +10,6 @@ import java.util.Map;
 import com.avp.common.entity.AVPEntityTypeTags;
 import com.avp.common.entity.type.AVPEntityTypes;
 import com.avp.common.hive.Hive;
-import com.avp.common.hive.HiveMemberData;
 import com.avp.common.hive.ai.task.HiveTask;
 
 public class PickBestLeaderTask extends HiveTask {
@@ -38,17 +37,18 @@ public class PickBestLeaderTask extends HiveTask {
     @Override
     public void run() {
         Entity candidate = hive.hiveLeaderOrNull();
-        HiveMemberData candidateHiveMemberData = candidate == null ? null : hive.hiveMemberDataMap().get(candidate.getUUID());
+        var membershipManager = hive.getMembershipManager();
+        var candidateHiveMemberData = membershipManager.getMemberData(candidate);
 
-        for (var hiveMemberEntry : hive.hiveMemberDataMap().entrySet()) {
-            var contestant = ((ServerLevel) hive.level()).getEntity(hiveMemberEntry.getKey());
-            var contestantHiveMemberData = hiveMemberEntry.getValue();
+        for (var memberUUID : membershipManager.getMemberUUIDs()) {
+            var contestant = ((ServerLevel) hive.level()).getEntity(memberUUID);
+            var contestantHiveMemberData = membershipManager.getMemberData(memberUUID);
 
             if (contestant == null || !contestant.getType().is(AVPEntityTypeTags.XENOMORPHS)) {
                 continue;
             }
 
-            if (candidate == null || candidateHiveMemberData == null) {
+            if (candidate == null || candidateHiveMemberData.isNone()) {
                 candidate = contestant;
                 candidateHiveMemberData = contestantHiveMemberData;
                 continue;

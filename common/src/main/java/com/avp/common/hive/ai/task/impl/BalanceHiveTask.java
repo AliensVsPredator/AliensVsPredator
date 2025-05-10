@@ -1,5 +1,6 @@
 package com.avp.common.hive.ai.task.impl;
 
+import com.bvanseg.just.functional.option.Option;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.EntityType;
@@ -34,9 +35,11 @@ public class BalanceHiveTask extends HiveTask {
 
     @Override
     public void run() {
-        var membersByType = hive.hiveMemberDataMap()
-            .entrySet()
+        var membersByType = hive.getMembershipManager()
+            .getMemberUUIDs()
             .stream()
+            .map(uuid -> hive.getMembershipManager().getMemberData(uuid).map(data -> Map.entry(uuid, data)))
+            .flatMap(Option::toStream)
             .collect(Collectors.groupingBy(entry -> BuiltInRegistries.ENTITY_TYPE.get(entry.getValue().entityType())));
 
         balanceDronesAndWarriors(membersByType);
@@ -68,12 +71,12 @@ public class BalanceHiveTask extends HiveTask {
                     return;
                 }
 
-                growXenomorph(entry.getValue(), xenomorph);
+                growXenomorph(xenomorph);
             });
     }
 
     private void balancePraetorians(Map<? extends EntityType<?>, List<Map.Entry<UUID, HiveMemberData>>> membersByType) {
-        var hiveMemberCount = hive.hiveMemberDataMap().size();
+        var hiveMemberCount = hive.getMembershipManager().getMemberCount();
         var warriors = membersByType.getOrDefault(AVPEntityTypes.WARRIOR.get(), List.of());
         var praetorians = membersByType.getOrDefault(AVPEntityTypes.PRAETORIAN.get(), List.of());
         var queens = membersByType.getOrDefault(AVPEntityTypes.QUEEN.get(), List.of());
@@ -102,7 +105,7 @@ public class BalanceHiveTask extends HiveTask {
                     return;
                 }
 
-                growXenomorph(entry.getValue(), xenomorph);
+                growXenomorph(xenomorph);
             });
     }
 
@@ -119,15 +122,13 @@ public class BalanceHiveTask extends HiveTask {
                 return;
             }
 
-            var hiveLeaderData = hive.hiveMemberDataMap().get(xenomorph.getUUID());
+            var hiveLeaderDataOption = hive.getMembershipManager().getMemberData(xenomorph.getUUID());
 
-            if (hiveLeaderData != null) {
-                growXenomorph(hiveLeaderData, xenomorph);
-            }
+            hiveLeaderDataOption.ifSome($ -> growXenomorph(xenomorph));
         });
     }
 
-    private void growXenomorph(HiveMemberData oldHiveMemberData, Xenomorph xenomorph) {
+    private void growXenomorph(Xenomorph xenomorph) {
         var type = xenomorph.getType();
         var growthStage = AlienLifecycleRegistry.getOrNull(null, type);
 
@@ -140,24 +141,15 @@ public class BalanceHiveTask extends HiveTask {
             return;
         }
 
-        var nextFormType = growthStage.to();
-        var resourceLocation = BuiltInRegistries.ENTITY_TYPE.getKey(nextFormType);
-
         var nextFormEntity = xenomorph.getGrowthManager().grow(growthStage);
 
         if (nextFormEntity != null) {
             var isLeader = Objects.equals(xenomorph.getUUID(), hive.hiveLeaderId());
 
-            var newHiveMemberData = new HiveMemberData(
-                resourceLocation,
-                oldHiveMemberData.lastSeenPos(),
-                oldHiveMemberData.lastSeenTimestampInTicks()
-            );
-
-            // Remove the old entity by the old entity's id.
-            hive.hiveMemberDataMap().remove(xenomorph.getUUID());
-            // Add the new entity by the new entity's id.
-            hive.hiveMemberDataMap().put(nextFormEntity.getUUID(), newHiveMemberData);
+            // Remove the old entity's membership.
+            hive.getMembershipManager().removeMember(xenomorph);
+            // Add the new entity as a member.
+            hive.getMembershipManager().addMember(nextFormEntity);
 
             if (isLeader) {
                 hive.setHiveLeaderId(nextFormEntity.getUUID());

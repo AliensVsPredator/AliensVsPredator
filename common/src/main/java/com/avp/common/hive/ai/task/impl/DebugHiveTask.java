@@ -1,12 +1,9 @@
 package com.avp.common.hive.ai.task.impl;
 
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.block.Blocks;
-
-import java.util.Objects;
 
 import com.avp.common.hive.Hive;
 import com.avp.common.hive.HiveConstants;
@@ -48,11 +45,8 @@ public class DebugHiveTask extends HiveTask {
             if (hive.isDebugHiveMemberHighlightEnabled()) {
                 var effect = new MobEffectInstance(MobEffects.GLOWING, 40, 3, true, false, true);
 
-                hive.hiveMemberDataMap()
-                    .keySet()
-                    .stream()
-                    .map(((ServerLevel) level)::getEntity)
-                    .filter(Objects::nonNull)
+                hive.getMembershipManager()
+                    .getLoadedMembers()
                     .forEach(entity -> {
                         if (entity instanceof LivingEntity livingEntity) {
                             livingEntity.addEffect(effect);
