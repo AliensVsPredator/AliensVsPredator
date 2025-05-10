@@ -3,22 +3,25 @@ package com.avp.common.hive.manager;
 import com.bvanseg.just.functional.option.Option;
 import com.mojang.serialization.Dynamic;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 import com.avp.AVP;
-import com.avp.common.entity.AVPEntityTypeTags;
 import com.avp.common.hive.Hive;
 import com.avp.common.hive.HiveMemberData;
 import com.avp.common.util.NBTSerializable;
@@ -31,13 +34,14 @@ public class HiveMembershipManager implements NBTSerializable {
 
     private final Hive hive;
 
-    private final Map<UUID, HiveMemberData> hiveMemberDataMap;
+    private final Map<UUID, HiveMemberData> hiveMemberDataByEntityUUIDMap;
 
-    private int xenomorphCount;
+    private final Map<EntityType<?>, List<Map.Entry<UUID, HiveMemberData>>> hiveMemberDataByEntityTypeMap;
 
     public HiveMembershipManager(Hive hive) {
         this.hive = hive;
-        this.hiveMemberDataMap = new HashMap<>();
+        this.hiveMemberDataByEntityUUIDMap = new HashMap<>();
+        this.hiveMemberDataByEntityTypeMap = new HashMap<>();
     }
 
     public void tick() {
@@ -45,11 +49,25 @@ public class HiveMembershipManager implements NBTSerializable {
             purgeUnresponsiveHiveMembers();
         }
 
-        this.xenomorphCount = computeNumberOfXenomorphsInHive();
+        // TODO: Shouldn't have to compute this every tick, should only compute on load and then incrementally update.
+        computeHiveMembersByType();
+    }
+
+    private void computeHiveMembersByType() {
+        hiveMemberDataByEntityTypeMap.clear();
+
+        var membersByType = hive.getMembershipManager()
+            .getMemberUUIDs()
+            .stream()
+            .map(uuid -> hive.getMembershipManager().getMemberData(uuid).map(data -> Map.entry(uuid, data)))
+            .flatMap(Option::toStream)
+            .collect(Collectors.groupingBy(entry -> BuiltInRegistries.ENTITY_TYPE.get(entry.getValue().entityType())));
+
+        hiveMemberDataByEntityTypeMap.putAll(membersByType);
     }
 
     private void purgeUnresponsiveHiveMembers() {
-        hiveMemberDataMap.entrySet().removeIf(hiveMemberEntry -> {
+        hiveMemberDataByEntityUUIDMap.entrySet().removeIf(hiveMemberEntry -> {
             var hiveMemberData = hiveMemberEntry.getValue();
             var lastSeenTimestampInTicks = hiveMemberData.lastSeenTimestampInTicks();
             var lastSeenPos = hiveMemberData.lastSeenPos();
@@ -74,7 +92,7 @@ public class HiveMembershipManager implements NBTSerializable {
         var resourceLocation = BuiltInRegistries.ENTITY_TYPE.getKey(entity.getType());
         var hiveMemberData = new HiveMemberData(resourceLocation, entity.blockPosition(), hive.ageInTicks());
 
-        hiveMemberDataMap.put(entity.getUUID(), hiveMemberData);
+        hiveMemberDataByEntityUUIDMap.put(entity.getUUID(), hiveMemberData);
     }
 
     public boolean isMember(Entity entity) {
@@ -82,15 +100,15 @@ public class HiveMembershipManager implements NBTSerializable {
     }
 
     public boolean isMember(UUID uuid) {
-        return hiveMemberDataMap.containsKey(uuid);
+        return hiveMemberDataByEntityUUIDMap.containsKey(uuid);
     }
 
     public void removeMember(Entity entity) {
-        hiveMemberDataMap.remove(entity.getUUID());
+        hiveMemberDataByEntityUUIDMap.remove(entity.getUUID());
     }
 
     public Set<UUID> getMemberUUIDs() {
-        return hiveMemberDataMap.keySet();
+        return hiveMemberDataByEntityUUIDMap.keySet();
     }
 
     public int getMemberCount() {
@@ -102,7 +120,7 @@ public class HiveMembershipManager implements NBTSerializable {
 
         return level.isClientSide
             ? List.of()
-            : hiveMemberDataMap.keySet()
+            : hiveMemberDataByEntityUUIDMap.keySet()
                 .stream()
                 .map(((ServerLevel) level)::getEntity)
                 .filter(Objects::nonNull)
@@ -122,25 +140,20 @@ public class HiveMembershipManager implements NBTSerializable {
             return Option.none();
         }
 
-        return Option.ofNullable(hiveMemberDataMap.get(uuid));
+        return Option.ofNullable(hiveMemberDataByEntityUUIDMap.get(uuid));
     }
 
-    public int getXenomorphCount() {
-        return xenomorphCount;
+    public Map<EntityType<?>, List<Map.Entry<UUID, HiveMemberData>>> getMembersByEntityType() {
+        return Collections.unmodifiableMap(hiveMemberDataByEntityTypeMap);
     }
 
-    public int computeNumberOfXenomorphsInHive() {
-        return (int) hiveMemberDataMap.values()
+    public Collection<Map.Entry<UUID, HiveMemberData>> getMembersMatching(Predicate<EntityType<?>> predicate) {
+        return hiveMemberDataByEntityTypeMap.keySet()
             .stream()
-            .filter(hiveMemberData -> {
-                var entityType = hive.level()
-                    .registryAccess()
-                    .registryOrThrow(Registries.ENTITY_TYPE)
-                    .get(hiveMemberData.entityType());
-
-                return entityType != null && entityType.is(AVPEntityTypeTags.XENOMORPHS);
-            })
-            .count();
+            .filter(predicate)
+            .map(hiveMemberDataByEntityTypeMap::get)
+            .flatMap(Collection::stream)
+            .toList();
     }
 
     @Override
@@ -157,17 +170,18 @@ public class HiveMembershipManager implements NBTSerializable {
                 .resultOrPartial(
                     AVP.LOGGER::error
                 )
-                .ifPresent(hiveMemberData -> hiveMemberDataMap.put(entityUUID, hiveMemberData));
+                .ifPresent(hiveMemberData -> hiveMemberDataByEntityUUIDMap.put(entityUUID, hiveMemberData));
         }
 
-        this.xenomorphCount = computeNumberOfXenomorphsInHive();
+        // TODO: Change this eventually to use a cache populate method or some other mechanism.
+        computeHiveMembersByType();
     }
 
     @Override
     public void save(CompoundTag compoundTag) {
         var hiveMemberDataTag = new CompoundTag();
 
-        for (var entry : hiveMemberDataMap.entrySet()) {
+        for (var entry : hiveMemberDataByEntityUUIDMap.entrySet()) {
             HiveMemberData.CODEC.encodeStart(NbtOps.INSTANCE, entry.getValue())
                 .resultOrPartial(
                     AVP.LOGGER::error

@@ -18,9 +18,12 @@ import java.util.List;
 import java.util.UUID;
 
 import com.avp.AVP;
+import com.avp.common.entity.AVPEntityTypeTags;
 import com.avp.common.entity.living.alien.Alien;
 import com.avp.common.hive.ai.task.Task;
-import com.avp.common.hive.ai.task.impl.BalanceHiveTask;
+import com.avp.common.hive.ai.task.impl.BalanceDronesAndWarriorsHiveTask;
+import com.avp.common.hive.ai.task.impl.BalancePraetoriansHiveTask;
+import com.avp.common.hive.ai.task.impl.BalanceQueenHiveTask;
 import com.avp.common.hive.ai.task.impl.DebugHiveTask;
 import com.avp.common.hive.ai.task.impl.PickBestLeaderTask;
 import com.avp.common.hive.ai.task.impl.UpdateHiveBossBarTask;
@@ -68,7 +71,9 @@ public class Hive {
         // Order matters here.
         tasks.add(new UpdateHiveBossBarTask(this));
         tasks.add(new DebugHiveTask(this));
-        tasks.add(new BalanceHiveTask(this));
+        tasks.add(new BalanceDronesAndWarriorsHiveTask(this));
+        tasks.add(new BalancePraetoriansHiveTask(this));
+        tasks.add(new BalanceQueenHiveTask(this));
         tasks.add(new PickBestLeaderTask(this));
     }
 
@@ -134,7 +139,7 @@ public class Hive {
     public boolean isAlive() {
         // Ovomorphs, facehuggers and chestbursters do not sustain a hive. That's why we check the xenomorph count
         // here instead of the overall hive member map size.
-        return membershipManager.getXenomorphCount() > 0
+        return !membershipManager.getMembersMatching(entityType -> entityType.is(AVPEntityTypeTags.XENOMORPHS)).isEmpty()
             && HiveLevelData.getOrCreate(level)
                 .filter(data -> data.hasHive(this))
                 .isSome();
