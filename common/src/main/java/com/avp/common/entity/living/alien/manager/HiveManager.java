@@ -74,8 +74,7 @@ public class HiveManager {
             return;
         }
 
-        var newHive = hiveLevelData.createHive(alien.blockPosition());
-        newHive.ping(alien);
+        var newHive = hiveLevelData.createHive(alien);
         this.hiveOption = Option.some(newHive);
     }
 
