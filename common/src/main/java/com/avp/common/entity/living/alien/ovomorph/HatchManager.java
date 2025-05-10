@@ -45,7 +45,15 @@ public class HatchManager {
     public void tick() {
         var level = ovomorph.level();
 
-        if (level.isClientSide) {
+        if (
+            // If the running code is client-side...
+            level.isClientSide
+                // OR the ovomorph is not alive...
+                || !ovomorph.isAlive()
+                // OR the ovomorph is dead or dying...
+                || ovomorph.isDeadOrDying()
+        ) {
+            // then return, the ovomorph should never attempt to hatch under any of these conditions.
             return;
         }
 

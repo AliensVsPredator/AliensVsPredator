@@ -10,7 +10,6 @@ import java.util.UUID;
 import com.avp.AVP;
 import com.avp.common.entity.AVPEntityTypeTags;
 import com.avp.common.entity.living.alien.Alien;
-import com.avp.common.entity.living.alien.xenomorph.queen.Queen;
 import com.avp.common.hive.Hive;
 import com.avp.common.level.saveddata.HiveLevelData;
 import com.avp.common.util.CompoundTagUtil;
@@ -55,7 +54,7 @@ public class HiveManager {
                 });
         }
 
-        hiveOption = hiveOption.filter(Hive::isAlive)
+        this.hiveOption = hiveOption.filter(Hive::isAlive)
             .inspect(hive -> {
                 if (alien.tickCount % (20 * 30) == 0) {
                     hive.ping(alien);
@@ -69,30 +68,14 @@ public class HiveManager {
             return;
         }
 
-        if (alien instanceof Queen) {
-            var newHive = hiveLevelData.createHive();
-            newHive.moveCenter(alien.blockPosition());
-            newHive.ping(alien);
-            hiveOption = Option.some(newHive);
+        var range = AVP.config.hiveConfigs.MINIMUM_DISTANCE_BETWEEN_HIVES_IN_BLOCKS;
+
+        if (nearestHive != null && nearestHive.isBlockPosWithinRangeOfHive(alien.blockPosition(), range)) {
             return;
         }
 
-        if (nearestHive != null) {
-            var minimumDistance = AVP.config.hiveConfigs.MINIMUM_DISTANCE_BETWEEN_HIVES_IN_BLOCKS;
-            var minimumDistanceSquared = minimumDistance * minimumDistance;
-            var hivePos = nearestHive.centerPosition();
-            var distanceFromHiveCenterSquared = alien.distanceToSqr(hivePos.getX(), hivePos.getY(), hivePos.getZ());
-
-            if (distanceFromHiveCenterSquared < minimumDistanceSquared) {
-                // If the nearest hive is too close, don't create a new hive.
-                return;
-            }
-        }
-
-        var newHive = hiveLevelData.createHive();
-        newHive.moveCenter(alien.blockPosition());
-        newHive.ping(alien);
-        hiveOption = Option.some(newHive);
+        var newHive = hiveLevelData.createHive(alien);
+        this.hiveOption = Option.some(newHive);
     }
 
     public void load(CompoundTag compoundTag) {

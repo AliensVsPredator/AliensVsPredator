@@ -2,6 +2,7 @@ package com.avp.common.hive.ai.task.impl;
 
 import net.minecraft.server.level.ServerBossEvent;
 
+import com.avp.common.entity.AVPEntityTypeTags;
 import com.avp.common.entity.living.alien.util.AlienPredicates;
 import com.avp.common.hive.Hive;
 import com.avp.common.hive.ai.task.HiveTask;
@@ -12,7 +13,9 @@ public class UpdateHiveBossBarTask extends HiveTask {
 
     public UpdateHiveBossBarTask(Hive hive) {
         super(hive);
-        this.maximumSeenAlienCount = hive.getXenomorphCount();
+        this.maximumSeenAlienCount = hive.getMembershipManager()
+            .getMembersMatching(entityType -> entityType.is(AVPEntityTypeTags.XENOMORPHS))
+            .size();
     }
 
     @Override
@@ -22,7 +25,9 @@ public class UpdateHiveBossBarTask extends HiveTask {
 
     @Override
     public void run() {
-        var currentAlienCount = hive.getXenomorphCount();
+        var currentAlienCount = hive.getMembershipManager()
+            .getMembersMatching(entityType -> entityType.is(AVPEntityTypeTags.XENOMORPHS))
+            .size();
         this.maximumSeenAlienCount = Math.max(maximumSeenAlienCount, currentAlienCount);
 
         var bossEvent = hive.bossEvent();

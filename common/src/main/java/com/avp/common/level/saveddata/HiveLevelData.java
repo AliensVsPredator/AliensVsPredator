@@ -5,6 +5,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.saveddata.SavedData;
 import org.jetbrains.annotations.NotNull;
@@ -75,9 +76,17 @@ public class HiveLevelData extends SavedData {
         return Option.ofNullable(closestHive);
     }
 
-    public Hive createHive() {
+    public Hive createHive(Entity entity) {
+        var hive = createHive(entity.blockPosition());
+        hive.ping(entity);
+        return hive;
+    }
+
+    public Hive createHive(BlockPos blockPos) {
         var id = UUID.randomUUID();
         var hive = new Hive(level, id);
+        // Move the hive center to the provided block position.
+        hive.moveCenter(blockPos);
         hiveByIdMap.put(id, hive);
         AVP.LOGGER.debug("Created hive: {}", id);
         return hive;

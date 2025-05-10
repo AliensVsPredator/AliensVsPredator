@@ -1,40 +1,31 @@
 package com.avp.common.hive;
 
-import com.bvanseg.just.functional.option.Option;
-import com.mojang.serialization.Dynamic;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.NbtOps;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerBossEvent;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.BossEvent;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Blocks;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 import com.avp.AVP;
 import com.avp.common.entity.AVPEntityTypeTags;
 import com.avp.common.entity.living.alien.Alien;
-import com.avp.common.entity.living.alien.xenomorph.queen.Queen;
 import com.avp.common.hive.ai.task.Task;
-import com.avp.common.hive.ai.task.impl.BalanceHiveTask;
-import com.avp.common.hive.ai.task.impl.DebugHiveTask;
+import com.avp.common.hive.ai.task.impl.BalanceDronesAndWarriorsHiveTask;
+import com.avp.common.hive.ai.task.impl.BalancePraetoriansHiveTask;
+import com.avp.common.hive.ai.task.impl.BalanceQueenHiveTask;
 import com.avp.common.hive.ai.task.impl.PickBestLeaderTask;
 import com.avp.common.hive.ai.task.impl.UpdateHiveBossBarTask;
-import com.avp.common.hive.ai.task.impl.UpdateHiveMembershipsTask;
+import com.avp.common.hive.manager.HiveDebugManager;
+import com.avp.common.hive.manager.HiveLeadershipManager;
+import com.avp.common.hive.manager.HiveMembershipManager;
 import com.avp.common.level.saveddata.HiveLevelData;
-import com.avp.common.util.CompoundTagUtil;
 
 public class Hive {
 
@@ -42,19 +33,15 @@ public class Hive {
 
     private static final String CENTER_POS_KEY = "CenterPos";
 
-    private static final String HIVE_LEADER_ID_KEY = "HiveLeaderId";
+    private final HiveDebugManager debugManager;
 
-    private static final String HIVE_MEMBER_DATA_KEY = "HiveMemberData";
+    private final HiveLeadershipManager leadershipManager;
 
-    private final ServerBossEvent bossEvent = (ServerBossEvent) new ServerBossEvent(
-        Component.translatable("bossbar.avp.hive.title"),
-        BossEvent.BossBarColor.GREEN,
-        BossEvent.BossBarOverlay.PROGRESS
-    ).setDarkenScreen(AVP.config.hiveConfigs.HIVE_DARKEN_SCREEN);
+    private final HiveMembershipManager membershipManager;
+
+    private final ServerBossEvent bossEvent;
 
     private final List<Task> tasks;
-
-    private final Map<UUID, HiveMemberData> hiveMemberDataMap;
 
     private final UUID id;
 
@@ -64,23 +51,25 @@ public class Hive {
 
     private int ageInTicks;
 
-    private int xenomorphCount;
-
-    private Option<UUID> hiveLeaderIdOption;
-
     public Hive(Level level, UUID id) {
         this.tasks = new ArrayList<>();
-        this.hiveMemberDataMap = new HashMap<>();
         this.id = id;
         this.level = level;
-        this.hiveLeaderIdOption = Option.none();
+        this.debugManager = new HiveDebugManager(this);
+        this.leadershipManager = new HiveLeadershipManager(this);
+        this.membershipManager = new HiveMembershipManager(this);
         this.centerPos = BlockPos.ZERO;
+        this.bossEvent = (ServerBossEvent) new ServerBossEvent(
+            Component.translatable("bossbar.avp.hive.title"),
+            BossEvent.BossBarColor.GREEN,
+            BossEvent.BossBarOverlay.PROGRESS
+        ).setDarkenScreen(AVP.config.hiveConfigs.HIVE_DARKEN_SCREEN);
 
         // Order matters here.
         tasks.add(new UpdateHiveBossBarTask(this));
-        tasks.add(new DebugHiveTask(this));
-        tasks.add(new UpdateHiveMembershipsTask(this));
-        tasks.add(new BalanceHiveTask(this));
+        tasks.add(new BalanceDronesAndWarriorsHiveTask(this));
+        tasks.add(new BalancePraetoriansHiveTask(this));
+        tasks.add(new BalanceQueenHiveTask(this));
         tasks.add(new PickBestLeaderTask(this));
     }
 
@@ -90,11 +79,12 @@ public class Hive {
             return;
         }
 
+        debugManager.tick();
+        membershipManager.tick();
+
         tasks.stream()
             .filter(Task::canRun)
             .forEach(Task::run);
-
-        this.xenomorphCount = computeNumberOfXenomorphsInHive();
 
         ageInTicks++;
     }
@@ -104,29 +94,21 @@ public class Hive {
     }
 
     public boolean requestToJoin(Entity requestingEntity) {
-        var isAlien = requestingEntity instanceof Alien;
-
-        if (requestingEntity instanceof Queen && hiveLeader().isSome()) {
+        if (!(requestingEntity instanceof Alien)) {
+            // Hives only accept aliens, non-aliens get rejected.
             return false;
         }
 
-        if (isAlien) {
-            var hivePos = centerPosition();
-            int leashDistance = AVP.config.hiveConfigs.HIVE_LEASH_RADIUS_IN_BLOCKS;
-            var leashDistanceSquared = leashDistance * leashDistance;
-            var distanceFromHiveSquared = requestingEntity.distanceToSqr(hivePos.getX(), hivePos.getY(), hivePos.getZ());
+        var leashDistance = AVP.config.hiveConfigs.HIVE_LEASH_RADIUS_IN_BLOCKS;
 
-            if (distanceFromHiveSquared > leashDistanceSquared) {
-                return false;
-            }
-
-            var resourceLocation = BuiltInRegistries.ENTITY_TYPE.getKey(requestingEntity.getType());
-            var hiveMemberData = new HiveMemberData(resourceLocation, requestingEntity.blockPosition(), ageInTicks);
-            hiveMemberDataMap.put(requestingEntity.getUUID(), hiveMemberData);
+        if (!isEntityWithinRangeOfHive(requestingEntity, leashDistance)) {
+            // If the entity isn't within range of the hive, it shouldn't be able to join the hive.
+            return false;
         }
 
-        // Hives only accept aliens.
-        return isAlien;
+        membershipManager.addMember(requestingEntity);
+
+        return true;
     }
 
     public void ping(@NotNull Entity entity) {
@@ -135,19 +117,12 @@ public class Hive {
             return;
         }
 
-        var resourceLocation = BuiltInRegistries.ENTITY_TYPE.getKey(entity.getType());
-        var uuid = entity.getUUID();
-        var hiveMemberData = new HiveMemberData(resourceLocation, entity.blockPosition(), ageInTicks);
-        hiveMemberDataMap.put(uuid, hiveMemberData);
+        membershipManager.addMember(entity);
     }
 
     public void removeHiveMember(@NotNull Entity entity) {
-        hiveMemberDataMap.remove(entity.getUUID());
-
-        if (hiveLeaderIdOption.contains(entity.getUUID())) {
-            // If the entity being removed is the hive leader, then set the hive leader ID to none.
-            this.hiveLeaderIdOption = Option.none();
-        }
+        leadershipManager.removeLeadership(entity);
+        membershipManager.removeMember(entity);
     }
 
     public boolean isChunkLoaded() {
@@ -157,7 +132,7 @@ public class Hive {
     public boolean isAlive() {
         // Ovomorphs, facehuggers and chestbursters do not sustain a hive. That's why we check the xenomorph count
         // here instead of the overall hive member map size.
-        return xenomorphCount > 0
+        return !membershipManager.getMembersMatching(entityType -> entityType.is(AVPEntityTypeTags.XENOMORPHS)).isEmpty()
             && HiveLevelData.getOrCreate(level)
                 .filter(data -> data.hasHive(this))
                 .isSome();
@@ -165,22 +140,19 @@ public class Hive {
 
     public void onRemove() {
         bossEvent.removeAllPlayers();
-
-        if (isDebugEnabled() && isDebugMarkHiveCenterEnabled() && level.getBlockState(centerPosition()).is(HiveConstants.DEBUG_BLOCK)) {
-            level.setBlock(centerPosition(), Blocks.AIR.defaultBlockState(), 3);
-        }
+        debugManager.onHiveRemoved();
     }
 
     public boolean isAngry() {
         return !bossEvent.getPlayers().isEmpty();
     }
 
-    public boolean isHiveLeader(Entity entity) {
-        return hiveLeaderIdOption.contains(entity.getUUID());
-    }
-
     public boolean isEntityWithinRangeOfHive(Entity entity) {
         return isBlockPosWithinRangeOfHive(entity.blockPosition());
+    }
+
+    public boolean isEntityWithinRangeOfHive(Entity entity, int rangeInBlocks) {
+        return isBlockPosWithinRangeOfHive(entity.blockPosition(), rangeInBlocks);
     }
 
     public boolean isBlockPosWithinRangeOfHive(BlockPos blockPos) {
@@ -188,11 +160,13 @@ public class Hive {
     }
 
     public boolean isBlockPosWithinRangeOfHive(BlockPos blockPos, int rangeInBlocks) {
-        var centerPos = centerPosition();
         var hiveRadiusSquared = rangeInBlocks * rangeInBlocks;
-        var distanceSquared = blockPos.distToCenterSqr(centerPos.getX(), centerPos.getY(), centerPos.getZ());
+        return distanceToCenterSqr(blockPos) <= hiveRadiusSquared;
+    }
 
-        return distanceSquared <= hiveRadiusSquared;
+    public double distanceToCenterSqr(BlockPos blockPos) {
+        var centerPos = centerPosition();
+        return blockPos.distToCenterSqr(centerPos.getX(), centerPos.getY(), centerPos.getZ());
     }
 
     public UUID id() {
@@ -203,47 +177,13 @@ public class Hive {
         return centerPos;
     }
 
-    public @Nullable Alien hiveLeaderOrNull() {
-        if (!(level instanceof ServerLevel serverLevel)) {
-            return null;
-        }
-
-        return hiveLeaderIdOption.map(serverLevel::getEntity)
-            .filter(entity -> entity instanceof Alien)
-            .map(entity -> (Alien) entity)
-            .unwrapOr(null);
-    }
-
-    public Option<Alien> hiveLeader() {
-        return Option.ofNullable(hiveLeaderOrNull());
-    }
-
-    public void setHiveLeaderId(@Nullable UUID id) {
-        this.hiveLeaderIdOption = Option.ofNullable(id);
-    }
-
     public void load(CompoundTag compoundTag) {
         var centerPosComponents = compoundTag.getIntArray(CENTER_POS_KEY);
         this.ageInTicks = compoundTag.getInt(AGE_IN_TICKS_KEY);
         this.centerPos = new BlockPos(centerPosComponents[0], centerPosComponents[1], centerPosComponents[2]);
-        this.hiveLeaderIdOption = Option.ofNullable(CompoundTagUtil.getUUIDOrNull(compoundTag, HIVE_LEADER_ID_KEY));
 
-        var hiveMemberDataMapTag = compoundTag.getCompound(HIVE_MEMBER_DATA_KEY);
-
-        for (var key : hiveMemberDataMapTag.getAllKeys()) {
-            var entityUUID = UUID.fromString(key);
-            var hiveMemberDataTag = hiveMemberDataMapTag.getCompound(key);
-
-            HiveMemberData.CODEC.parse(
-                new Dynamic<>(NbtOps.INSTANCE, hiveMemberDataTag)
-            )
-                .resultOrPartial(
-                    AVP.LOGGER::error
-                )
-                .ifPresent(hiveMemberData -> hiveMemberDataMap.put(entityUUID, hiveMemberData));
-        }
-
-        this.xenomorphCount = computeNumberOfXenomorphsInHive();
+        leadershipManager.load(compoundTag);
+        membershipManager.load(compoundTag);
     }
 
     public void save(CompoundTag compoundTag) {
@@ -252,19 +192,8 @@ public class Hive {
         var centerPosComponents = new int[] { centerPos.getX(), centerPos.getY(), centerPos.getZ() };
         compoundTag.putIntArray(CENTER_POS_KEY, centerPosComponents);
 
-        hiveLeaderIdOption.ifSome(hiveLeaderId -> compoundTag.putUUID(HIVE_LEADER_ID_KEY, hiveLeaderId));
-
-        var hiveMemberDataTag = new CompoundTag();
-
-        for (var entry : hiveMemberDataMap.entrySet()) {
-            HiveMemberData.CODEC.encodeStart(NbtOps.INSTANCE, entry.getValue())
-                .resultOrPartial(
-                    AVP.LOGGER::error
-                )
-                .ifPresent(tag -> hiveMemberDataTag.put(entry.getKey().toString(), tag));
-        }
-
-        compoundTag.put(HIVE_MEMBER_DATA_KEY, hiveMemberDataTag);
+        leadershipManager.save(compoundTag);
+        membershipManager.save(compoundTag);
     }
 
     public int ageInTicks() {
@@ -275,50 +204,19 @@ public class Hive {
         return bossEvent;
     }
 
-    public @Nullable UUID hiveLeaderId() {
-        return hiveLeaderIdOption.unwrapOr(null);
+    public HiveDebugManager getDebugManager() {
+        return debugManager;
     }
 
-    public Map<UUID, HiveMemberData> hiveMemberDataMap() {
-        return hiveMemberDataMap;
+    public HiveLeadershipManager getLeadershipManager() {
+        return leadershipManager;
+    }
+
+    public HiveMembershipManager getMembershipManager() {
+        return membershipManager;
     }
 
     public Level level() {
         return level;
-    }
-
-    public int getXenomorphCount() {
-        return xenomorphCount;
-    }
-
-    public boolean isDebugEnabled() {
-        return AVP.config.hiveConfigs.HIVE_DEBUG_ENABLED;
-    }
-
-    public boolean isDebugHiveMemberHighlightEnabled() {
-        return AVP.config.hiveConfigs.HIVE_DEBUG_HIGHLIGHT_ALL_MEMBERS;
-    }
-
-    public boolean isDebugLeaderHighlightEnabled() {
-        return AVP.config.hiveConfigs.HIVE_DEBUG_HIGHLIGHT_LEADER;
-    }
-
-    public boolean isDebugMarkHiveCenterEnabled() {
-        return AVP.config.hiveConfigs.HIVE_DEBUG_MARK_HIVE_CENTER;
-    }
-
-    private int computeNumberOfXenomorphsInHive() {
-        return (int) hiveMemberDataMap()
-            .values()
-            .stream()
-            .filter(hiveMemberData -> {
-                var entityType = level()
-                    .registryAccess()
-                    .registryOrThrow(Registries.ENTITY_TYPE)
-                    .get(hiveMemberData.entityType());
-
-                return entityType != null && entityType.is(AVPEntityTypeTags.XENOMORPHS);
-            })
-            .count();
     }
 }
