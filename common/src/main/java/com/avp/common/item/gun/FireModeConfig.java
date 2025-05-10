@@ -3,12 +3,10 @@ package com.avp.common.item.gun;
 import net.minecraft.sounds.SoundEvent;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.function.Function;
 import java.util.function.Supplier;
 
-import com.avp.common.item.gun.attack.AbstractGunAttack;
-import com.avp.common.item.gun.attack.GunAttackConfig;
-import com.avp.common.item.gun.attack.HitScanGunAttack;
+import com.avp.common.item.gun.attack.GunAttackAction;
+import com.avp.common.item.gun.attack.hitscan.HitScanGunAttackAction;
 import com.avp.common.sound.AVPSoundEvents;
 
 public record FireModeConfig(
@@ -27,7 +25,7 @@ public record FireModeConfig(
     int shootDelayInTicks,
     @Nullable Supplier<SoundEvent> shootFinishSoundEvent,
     @Nullable Supplier<SoundEvent> shootStartSoundEvent,
-    Function<GunAttackConfig, AbstractGunAttack> gunAttackSupplier
+    GunAttackAction gunAttackAction
 ) {
 
     public static Builder builder() {
@@ -66,7 +64,7 @@ public record FireModeConfig(
 
         private Supplier<SoundEvent> shootStartSoundEvent;
 
-        private Function<GunAttackConfig, AbstractGunAttack> gunAttackSupplier;
+        private GunAttackAction gunAttackAction;
 
         private Builder() {
             this.consumedAmmunitionPerShot = 1;
@@ -81,7 +79,7 @@ public record FireModeConfig(
             this.reloadStartSoundEvent = AVPSoundEvents.WEAPON_GENERIC_RELOAD;
             this.secondaryShootSoundFrequencyInTicks = 0;
             this.shootDelayInTicks = 0;
-            this.gunAttackSupplier = HitScanGunAttack::new;
+            this.gunAttackAction = HitScanGunAttackAction.INSTANCE;
         }
 
         public Builder withConsumedAmmunitionPerShot(int consumedAmmunitionPerShot) {
@@ -159,8 +157,8 @@ public record FireModeConfig(
             return this;
         }
 
-        public Builder withGunAttackSupplier(Function<GunAttackConfig, AbstractGunAttack> gunAttackSupplier) {
-            this.gunAttackSupplier = gunAttackSupplier;
+        public Builder withGunAttackAction(GunAttackAction gunAttackAction) {
+            this.gunAttackAction = gunAttackAction;
             return this;
         }
 
@@ -181,7 +179,7 @@ public record FireModeConfig(
                 shootDelayInTicks,
                 shootFinishSoundEvent,
                 shootStartSoundEvent,
-                gunAttackSupplier
+                gunAttackAction
             );
         }
     }

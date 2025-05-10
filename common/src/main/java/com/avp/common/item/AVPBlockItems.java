@@ -344,8 +344,6 @@ public class AVPBlockItems {
 
     public static final AVPDeferredHolder<BlockItem> RAW_MONAZITE_BLOCK = register("raw_monazite_block", AVPBlocks.RAW_MONAZITE_BLOCK);
 
-    public static final AVPDeferredHolder<BlockItem> RAW_SILICA_BLOCK = register("raw_silica_block", AVPBlocks.RAW_SILICA_BLOCK);
-
     public static final AVPDeferredHolder<BlockItem> RAW_TITANIUM_BLOCK = register("raw_titanium_block", AVPBlocks.RAW_TITANIUM_BLOCK);
 
     public static final AVPDeferredHolder<BlockItem> RAW_ZINC_BLOCK = register("raw_zinc_block", AVPBlocks.RAW_ZINC_BLOCK);
@@ -380,6 +378,9 @@ public class AVPBlockItems {
     public static final AVPDeferredHolder<BlockItem> SENTRY_TURRET = registerWithSupplier("sentry_turret", SentryTurretBlockItem::new);
 
     public static final AVPDeferredHolder<BlockItem> SILICA_GRAVEL = register("silica_gravel", AVPBlocks.SILICA_GRAVEL);
+
+    // TODO: Change this to "silicon_block" with 0.2.0.
+    public static final AVPDeferredHolder<BlockItem> SILICON_BLOCK = register("raw_silica_block", AVPBlocks.SILICON_BLOCK);
 
     public static final AVPDeferredHolder<BlockItem> STEEL_BARS = register("steel_bars", AVPBlocks.STEEL_BARS);
 

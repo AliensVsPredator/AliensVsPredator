@@ -13,7 +13,7 @@ import java.util.Collection;
 import com.avp.common.block.entity.resin_node.ChargeCursor;
 import com.avp.common.block.entity.resin_node.ResinSpreader;
 import com.avp.common.block.resin.ResinVeinRegrowUtil;
-import com.avp.common.util.AlienVariantUtil;
+import com.avp.common.entity.living.alien.util.AlienVariantUtil;
 
 public class ResinSpreadBehavior implements SpreadBehavior {
 

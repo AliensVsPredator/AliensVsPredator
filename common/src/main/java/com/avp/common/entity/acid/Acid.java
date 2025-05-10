@@ -13,14 +13,14 @@ import net.minecraft.world.entity.Pose;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
-import com.avp.common.util.AlienVariantUtil;
+import com.avp.common.entity.living.alien.util.AlienVariantUtil;
 import com.avp.common.util.GravityUtil;
 
 public class Acid extends Entity {
 
     public static final int MAX_MULTIPLIER = 5;
 
-    private static final int DEFAULT_MAX_LIFE_IN_TICKS = 20 * 20; // 10 seconds.
+    private static final int DEFAULT_MAX_LIFE_IN_TICKS = 20 * 20; // 20 seconds.
 
     private static final int MIN_TICKS_UNTIL_PARTICLES = 5;
 

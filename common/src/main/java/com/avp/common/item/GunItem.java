@@ -38,8 +38,6 @@ public class GunItem extends Item {
 
     public AzCommand shoot;
 
-    public boolean isFiring = false;
-
     public static final AzCommand reload = AzCommand.create(
         OldPainlessAnimationRefs.MAIN_CONTROLLER_NAME,
         OldPainlessAnimationRefs.RELOAD_ANIMATION_NAME,
@@ -47,7 +45,12 @@ public class GunItem extends Item {
     );
 
     public GunItem(GunConfig gunConfig) {
-        super(new Item.Properties().stacksTo(1).durability(gunConfig.durability()).attributes(createAttributes()));
+        super(
+            new Item.Properties().stacksTo(1)
+                .component(AVPDataComponents.IS_FIRING.get(), false)
+                .durability(gunConfig.durability())
+                .attributes(createAttributes())
+        );
         this.gunConfig = gunConfig;
         idle = AzCommand.create(
             OldPainlessAnimationRefs.MAIN_CONTROLLER_NAME,
@@ -104,8 +107,9 @@ public class GunItem extends Item {
     }
 
     @Override
-    public void onUseTick(Level level, @NotNull LivingEntity livingEntity, @NotNull ItemStack itemStack, int tickCountdown) {
-        if (level.isClientSide || !(livingEntity instanceof Player player)) {
+    public void onUseTick(@NotNull Level level, @NotNull LivingEntity livingEntity, @NotNull ItemStack itemStack, int tickCountdown) {
+        // Lack of server/client side check here is deliberate.
+        if (!(livingEntity instanceof Player player)) {
             return;
         }
 
@@ -116,11 +120,10 @@ public class GunItem extends Item {
             .ifSome(result -> {
                 switch (result) {
                     // No side effects to run for these results at the time of writing.
-                    case COOLDOWN, DELAYED, RELOADING -> { /* NO-OP */ }
+                    case COOLDOWN, DELAYED, FAILURE, RELOADING -> { /* NO-OP */ }
                     case SHOT -> {
+                        itemStack.set(AVPDataComponents.IS_FIRING.get(), true);
                         playUseAnimations(livingEntity, itemStack);
-                        // TODO: Fix this, this should not be on the item class itself but rather the item stack.
-                        isFiring = true;
                     }
                 }
             });
@@ -142,7 +145,14 @@ public class GunItem extends Item {
 
     @Override
     public void inventoryTick(@NotNull ItemStack itemStack, @NotNull Level level, @NotNull Entity entity, int i, boolean bl) {
-        if (bl && entity instanceof LivingEntity livingEntity && !livingEntity.isUsingItem()) {
+        var isFiring = itemStack.get(AVPDataComponents.IS_FIRING.get());
+
+        if (
+            Boolean.TRUE.equals(isFiring)
+                && entity instanceof LivingEntity livingEntity
+                && !livingEntity.isUsingItem()
+        ) {
+            itemStack.set(AVPDataComponents.IS_FIRING.get(), false);
             playReleaseUsingAnimations(livingEntity, itemStack);
         }
 

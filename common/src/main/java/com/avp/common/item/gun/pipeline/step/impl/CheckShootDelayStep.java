@@ -14,7 +14,10 @@ public class CheckShootDelayStep implements GunShootStep {
 
     @Override
     public GunShootResult apply(GunShootContext context) {
-        playShootStartSoundEffect(context);
+        if (!context.shooter().level().isClientSide) {
+            // Only run this side effect server-side.
+            playShootStartSoundEffect(context);
+        }
 
         return context.tickProgress() < context.fireModeConfig().shootDelayInTicks()
             ? GunShootResult.DELAYED

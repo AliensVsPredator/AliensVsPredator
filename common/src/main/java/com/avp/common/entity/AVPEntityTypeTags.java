@@ -16,6 +16,12 @@ public record AVPEntityTypeTags() {
 
     public static final TagKey<EntityType<?>> ANIMALS = create("animals");
 
+    public static final TagKey<EntityType<?>> DRONES = create("drones");
+
+    public static final TagKey<EntityType<?>> FACEHUGGERS = create("facehuggers");
+
+    public static final TagKey<EntityType<?>> HATED_BY_XENOMORPHS = create("hated_by_xenomorphs");
+
     public static final TagKey<EntityType<?>> HIVE_ALIENS = create("hive_aliens");
 
     public static final TagKey<EntityType<?>> HOSTS = create("hosts");
@@ -30,17 +36,26 @@ public record AVPEntityTypeTags() {
 
     public static final TagKey<EntityType<?>> NORMAL_ALIENS = create("normal_aliens");
 
-    public static final TagKey<EntityType<?>> OVAMORPHS = create("ovamorphs");
+    // TODO: Change this to "ovomorphs" with 0.2.0.
+    public static final TagKey<EntityType<?>> OVOMORPHS = create("ovamorphs");
 
     public static final TagKey<EntityType<?>> PARASITES = create("parasites");
 
+    public static final TagKey<EntityType<?>> PRAETORIANS = create("praetorians");
+
     public static final TagKey<EntityType<?>> PREDATORS = create("predators");
+
+    public static final TagKey<EntityType<?>> QUEENS = create("queens");
 
     public static final TagKey<EntityType<?>> RADIATION_RESISTANT = create("radiation_resistant");
 
     public static final TagKey<EntityType<?>> REMOVE_VANILLA_SPAWNS = create("remove_vanilla_spawns");
 
     public static final TagKey<EntityType<?>> ROYAL_ALIENS = create("royal_aliens");
+
+    public static final TagKey<EntityType<?>> ROYAL_XENOMORPHS = create("royal_xenomorphs");
+
+    public static final TagKey<EntityType<?>> WARRIORS = create("warriors");
 
     public static final TagKey<EntityType<?>> XENOMORPHS = create("xenomorphs");
 

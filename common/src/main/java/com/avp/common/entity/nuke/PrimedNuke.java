@@ -81,7 +81,7 @@ public class PrimedNuke extends Entity {
     }
 
     @Override
-    protected Entity.@NotNull MovementEmission getMovementEmission() {
+    protected @NotNull Entity.MovementEmission getMovementEmission() {
         return Entity.MovementEmission.NONE;
     }
 

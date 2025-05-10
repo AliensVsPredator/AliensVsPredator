@@ -15,6 +15,7 @@ import net.minecraft.advancements.critereon.PlayerInteractTrigger;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
@@ -27,25 +28,59 @@ import java.util.function.Consumer;
 import com.avp.AVP;
 import com.avp.AVPResources;
 import com.avp.common.block.AVPBlocks;
+import com.avp.common.entity.AVPEntityTypeTags;
 import com.avp.common.entity.type.AVPEntityTypes;
 import com.avp.common.item.AVPArmorItems;
 import com.avp.common.item.AVPItems;
 
 public class AdvancementProvider extends FabricAdvancementProvider {
 
+    // Yes we have to do this manually.
+    // No, a tag will not work (because tags only work with OR conditions, not AND).
+    // No, a filter on the entity types using a tag won't work (because tags aren't loaded yet when this provider runs).
+    // Yes, I was very annoyed with Mojang while writing this list out.
     private static final List<EntityType<?>> ALIENS_TO_KILL = List.of(
+        // Normal Aliens
         AVPEntityTypes.CHESTBURSTER.get(),
         AVPEntityTypes.FACEHUGGER.get(),
         AVPEntityTypes.DRONE.get(),
-        AVPEntityTypes.OVAMORPH.get(),
+        AVPEntityTypes.OVOMORPH.get(),
         AVPEntityTypes.PRAETORIAN.get(),
         AVPEntityTypes.QUEEN.get(),
-        AVPEntityTypes.WARRIOR.get()
-    );
+        AVPEntityTypes.WARRIOR.get(),
 
-    private static final List<EntityType<?>> ROYAL_ALIENS_TO_KILL = List.of(
-        AVPEntityTypes.PRAETORIAN.get(),
-        AVPEntityTypes.QUEEN.get()
+        // Aberrant Aliens
+        AVPEntityTypes.ABERRANT_CHESTBURSTER.get(),
+        AVPEntityTypes.ABERRANT_FACEHUGGER.get(),
+        AVPEntityTypes.ABERRANT_DRONE.get(),
+        AVPEntityTypes.ABERRANT_OVOMORPH.get(),
+        AVPEntityTypes.ABERRANT_PRAETORIAN.get(),
+        AVPEntityTypes.ABERRANT_QUEEN.get(),
+        AVPEntityTypes.ABERRANT_WARRIOR.get(),
+
+        // Nether Aliens
+        AVPEntityTypes.NETHER_CHESTBURSTER.get(),
+        AVPEntityTypes.NETHER_FACEHUGGER.get(),
+        AVPEntityTypes.NETHER_DRONE.get(),
+        AVPEntityTypes.NETHER_OVOMORPH.get(),
+        AVPEntityTypes.NETHER_PRAETORIAN.get(),
+        AVPEntityTypes.NETHER_QUEEN.get(),
+        AVPEntityTypes.NETHER_WARRIOR.get(),
+
+        // Royal Normal Aliens
+        AVPEntityTypes.ROYAL_CHESTBURSTER.get(),
+        AVPEntityTypes.ROYAL_FACEHUGGER.get(),
+        AVPEntityTypes.ROYAL_OVOMORPH.get(),
+
+        // Royal Aberrant Aliens
+        AVPEntityTypes.ROYAL_ABERRANT_CHESTBURSTER.get(),
+        AVPEntityTypes.ROYAL_ABERRANT_FACEHUGGER.get(),
+        AVPEntityTypes.ROYAL_ABERRANT_OVOMORPH.get(),
+
+        // Royal nether Aliens
+        AVPEntityTypes.ROYAL_NETHER_CHESTBURSTER.get(),
+        AVPEntityTypes.ROYAL_NETHER_FACEHUGGER.get(),
+        AVPEntityTypes.ROYAL_NETHER_OVOMORPH.get()
     );
 
     public AdvancementProvider(FabricDataOutput output, CompletableFuture<HolderLookup.Provider> registryLookup) {
@@ -72,11 +107,13 @@ public class AdvancementProvider extends FabricAdvancementProvider {
         var royalAlienKillerAdvancement = addRoyalAlienKillerAdvancement(alienKillerAdvancement, consumer);
         var xenocideAdvancement = addXenocideAdvancement(royalAlienKillerAdvancement, consumer);
 
-        var shearAnOvamorphAdvancement = Advancement.Builder.advancement()
+        var shearAnOvomorphAdvancement = Advancement.Builder.advancement()
             .parent(root)
             .display(
                 Items.SHEARS,
+                // TODO: Change this to "ovomorph" with 0.2.0.
                 Component.translatable("advancements.aliens.shear_an_ovamorph.title"),
+                // TODO: Change this to "ovomorph" with 0.2.0.
                 Component.translatable("advancements.aliens.shear_an_ovamorph.description"),
                 null,
                 AdvancementType.TASK,
@@ -88,9 +125,10 @@ public class AdvancementProvider extends FabricAdvancementProvider {
                 "shear_an_ovamorph",
                 PlayerInteractTrigger.TriggerInstance.itemUsedOnEntity(
                     ItemPredicate.Builder.item().of(Items.SHEARS),
-                    Optional.of(EntityPredicate.wrap(EntityPredicate.Builder.entity().of(AVPEntityTypes.OVAMORPH.get())))
+                    Optional.of(EntityPredicate.wrap(EntityPredicate.Builder.entity().of(AVPEntityTypeTags.OVOMORPHS)))
                 )
             )
+            // TODO: Change this to "ovomorph" with 0.2.0.
             .save(consumer, AVP.MOD_ID + ":aliens/shear_an_ovamorph");
 
         var addChitinArmorAdvancement = addChitinArmorAdvancements(alienKillerAdvancement, consumer);
@@ -170,7 +208,7 @@ public class AdvancementProvider extends FabricAdvancementProvider {
     }
 
     private AdvancementHolder addAlienKillerAdvancement(AdvancementHolder parent, Consumer<AdvancementHolder> consumer) {
-        return addMobsToKill(Advancement.Builder.advancement(), ALIENS_TO_KILL)
+        return addMobsToKill(Advancement.Builder.advancement(), "kill_an_alien", AVPEntityTypeTags.ALIENS)
             .parent(parent)
             .display(
                 AVPItems.CHITIN.get(),
@@ -187,7 +225,7 @@ public class AdvancementProvider extends FabricAdvancementProvider {
     }
 
     private AdvancementHolder addRoyalAlienKillerAdvancement(AdvancementHolder parent, Consumer<AdvancementHolder> consumer) {
-        return addMobsToKill(Advancement.Builder.advancement(), ROYAL_ALIENS_TO_KILL)
+        return addMobsToKill(Advancement.Builder.advancement(), "kill_a_royal_alien", AVPEntityTypeTags.ROYAL_XENOMORPHS)
             .parent(parent)
             .display(
                 AVPItems.PLATED_CHITIN.get(),
@@ -216,8 +254,17 @@ public class AdvancementProvider extends FabricAdvancementProvider {
                 true,
                 false
             )
+            .requirements(AdvancementRequirements.Strategy.AND)
             .rewards(AdvancementRewards.Builder.experience(100))
             .save(consumer, AVP.MOD_ID + ":aliens/kill_all_aliens");
+    }
+
+    private Advancement.Builder addMobsToKill(Advancement.Builder builder, String criterionKey, TagKey<EntityType<?>> entityTypeTagKey) {
+        builder.addCriterion(
+            criterionKey,
+            KilledTrigger.TriggerInstance.playerKilledEntity(EntityPredicate.Builder.entity().of(entityTypeTagKey))
+        );
+        return builder;
     }
 
     private Advancement.Builder addMobsToKill(Advancement.Builder builder, List<EntityType<?>> list) {

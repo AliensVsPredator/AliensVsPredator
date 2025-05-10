@@ -102,7 +102,7 @@ public class MiscellaneousRecipeProvider {
         builder.blast(AVPBlocks.SILICA_GRAVEL)
             .withCategory(RecipeCategory.MISC)
             .withExperience(RecipeConstants.RARE_SMELT_EXPERIENCE)
-            .into(AVPItems.RAW_SILICA.get());
+            .into(AVPItems.SILICON.get());
 
         builder.shaped()
             .withCategory(RecipeCategory.COMBAT)

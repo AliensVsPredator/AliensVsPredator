@@ -8,8 +8,9 @@ import com.avp.AVPResources;
 
 public class AVPEntitySpawnKeys {
 
-    public static final ResourceKey<BiomeModifier> ADD_SPAWNS_OVAMORPH = ResourceKey.create(
+    public static final ResourceKey<BiomeModifier> ADD_SPAWNS_OVOMORPH = ResourceKey.create(
         NeoForgeRegistries.Keys.BIOME_MODIFIERS,
+        // TODO: Change this to "ovomorph" with 0.2.0.
         AVPResources.location("add_spawns_ovamorph")
     );
 
@@ -38,8 +39,9 @@ public class AVPEntitySpawnKeys {
         AVPResources.location("add_spawns_queen")
     );
 
-    public static final ResourceKey<BiomeModifier> ADD_SPAWNS_NETHER_OVAMORPH = ResourceKey.create(
+    public static final ResourceKey<BiomeModifier> ADD_SPAWNS_NETHER_OVOMORPH = ResourceKey.create(
         NeoForgeRegistries.Keys.BIOME_MODIFIERS,
+        // TODO: Change this to "ovomorph" with 0.2.0.
         AVPResources.location("add_spawns_nether_ovamorph")
     );
 

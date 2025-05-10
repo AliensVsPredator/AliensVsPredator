@@ -18,7 +18,7 @@ public class IngredientsCreativeModeTabInitializer {
         CreativeModeTabUtil.accept(output, AVPItems.RAW_FERROBAUXITE);
         CreativeModeTabUtil.accept(output, AVPItems.RAW_GALENA);
         CreativeModeTabUtil.accept(output, AVPItems.RAW_MONAZITE);
-        CreativeModeTabUtil.accept(output, AVPItems.RAW_SILICA);
+        CreativeModeTabUtil.accept(output, AVPItems.SILICON);
         CreativeModeTabUtil.accept(output, AVPItems.RAW_TITANIUM);
         CreativeModeTabUtil.accept(output, AVPItems.RAW_ZINC);
         CreativeModeTabUtil.accept(output, AVPItems.ALUMINUM_NUGGET);

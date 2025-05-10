@@ -1,14 +1,41 @@
 package com.avp.common.menu;
 
+import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractFurnaceMenu;
+import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.inventory.RecipeBookType;
-import net.minecraft.world.item.crafting.RecipeType;
+
+import com.avp.common.recipe.AVPRecipes;
 
 public class IndustrialFurnaceMenu extends AbstractFurnaceMenu {
 
-    public IndustrialFurnaceMenu(int i, Inventory inventory) {
-        super(AVPMenuTypes.INDUSTRIAL_FURNACE_MENU.get(), RecipeType.SMELTING, RecipeBookType.FURNACE, i, inventory);
+    public IndustrialFurnaceMenu(int containerId, Inventory inventory) {
+        super(
+            AVPMenuTypes.INDUSTRIAL_FURNACE_MENU.get(),
+            AVPRecipes.INDUSTRIAL_FURNACE_RECIPE_TYPE.get(),
+            // TODO: Look into if we need to change this.
+            RecipeBookType.BLAST_FURNACE,
+            containerId,
+            inventory
+        );
     }
 
+    public IndustrialFurnaceMenu(
+        int containerId,
+        Inventory inventory,
+        Container industrialFurnaceContainer,
+        ContainerData industrialFurnaceData
+    ) {
+        super(
+            AVPMenuTypes.INDUSTRIAL_FURNACE_MENU.get(),
+            AVPRecipes.INDUSTRIAL_FURNACE_RECIPE_TYPE.get(),
+            // TODO: Look into if we need to change this.
+            RecipeBookType.BLAST_FURNACE,
+            containerId,
+            inventory,
+            industrialFurnaceContainer,
+            industrialFurnaceData
+        );
+    }
 }

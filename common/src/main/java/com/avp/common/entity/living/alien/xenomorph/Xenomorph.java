@@ -37,20 +37,19 @@ import java.util.function.BiConsumer;
 import com.avp.common.ai.goal.DigToTargetGoal;
 import com.avp.common.ai.goal.StrollAroundInWaterGoal;
 import com.avp.common.ai.goal.XenoFloatGoal;
-import com.avp.common.entity.gene.GeneKeys;
-import com.avp.common.entity.gene.behavior.GeneDecoders;
 import com.avp.common.entity.living.alien.Alien;
-import com.avp.common.lifecycle.registry.AlienLifecycleRegistry;
-import com.avp.common.manager.CrawlingManager;
-import com.avp.common.manager.GrowthManager;
-import com.avp.common.manager.VibrationSystemManager;
+import com.avp.common.entity.living.alien.manager.GrowthManager;
+import com.avp.common.entity.living.alien.manager.ResinManager;
+import com.avp.common.entity.living.alien.manager.resin.ResinData;
+import com.avp.common.entity.living.alien.manager.resin.ResinProducer;
+import com.avp.common.entity.living.alien.util.AlienPredicates;
+import com.avp.common.entity.living.alien.xenomorph.manager.XenomorphNavigationManager;
+import com.avp.common.entity.living.alien.xenomorph.util.XenomorphGrowthUtil;
+import com.avp.common.entity.living.gene.GeneKeys;
+import com.avp.common.entity.living.gene.behavior.GeneDecoders;
+import com.avp.common.entity.living.manager.CrawlingManager;
+import com.avp.common.entity.living.manager.VibrationSystemManager;
 import com.avp.common.sound.AVPSoundEvents;
-import com.avp.common.util.AlienPredicates;
-import com.avp.common.util.AlienVariantUtil;
-import com.avp.common.util.XenomorphGrowthUtil;
-import com.avp.common.util.resin.ResinData;
-import com.avp.common.util.resin.ResinManager;
-import com.avp.common.util.resin.ResinProducer;
 
 public abstract class Xenomorph extends Alien implements ResinProducer {
 
@@ -98,7 +97,7 @@ public abstract class Xenomorph extends Alien implements ResinProducer {
     public abstract void runAttackAnimations();
 
     @Override
-    protected void defineSynchedData(SynchedEntityData.Builder builder) {
+    protected void defineSynchedData(@NotNull SynchedEntityData.Builder builder) {
         super.defineSynchedData(builder);
         builder.define(CLIENT_ANGER_LEVEL, 0);
         builder.define(IS_CRAWLING, false);
@@ -146,21 +145,11 @@ public abstract class Xenomorph extends Alien implements ResinProducer {
                 // If the target is no longer valid, stop targeting them.
                 setTarget(null);
             }
-
-            var type = AlienVariantUtil.getVariantTypeFor(this);
-            var growthStage = AlienLifecycleRegistry.getOrNull(null, type);
-
-            if (
-                growthStage != null && !this.getEntityData().get(Xenomorph.IS_POISONED) && this.getEntityData()
-                    .get(Xenomorph.JELLY_COUNT) >= this.maxJellyToGrowth()
-            ) {
-                this.getGrowthManager().grow(growthStage);
-            }
         }
     }
 
     @Override
-    public void travel(Vec3 vec3) {
+    public void travel(@NotNull Vec3 vec3) {
         if (isControlledByLocalInstance() && isUnderWater()) {
             moveRelative(0.01F, vec3);
             move(MoverType.SELF, getDeltaMovement());
@@ -184,7 +173,7 @@ public abstract class Xenomorph extends Alien implements ResinProducer {
     }
 
     @Override
-    public boolean startRiding(Entity entity, boolean force) {
+    public boolean startRiding(@NotNull Entity entity, boolean force) {
         if (entity instanceof Boat || entity instanceof Minecart) {
             return false;
         }
@@ -212,13 +201,13 @@ public abstract class Xenomorph extends Alien implements ResinProducer {
 
     // Prevents the xenomorph from having a bias towards pathing in darker areas.
     @Override
-    public float getWalkTargetValue(BlockPos blockPos, LevelReader levelReader) {
+    public float getWalkTargetValue(@NotNull BlockPos blockPos, @NotNull LevelReader levelReader) {
         return 0.0F;
     }
 
     // Reduces how much FLOWING water slows down xenomorphs.
     @Override
-    public boolean updateFluidHeightAndDoFluidPushing(TagKey<Fluid> tagKey, double d) {
+    public boolean updateFluidHeightAndDoFluidPushing(@NotNull TagKey<Fluid> tagKey, double d) {
         var modifier = d;
 
         if (Objects.equals(tagKey, FluidTags.WATER)) {
@@ -261,12 +250,12 @@ public abstract class Xenomorph extends Alien implements ResinProducer {
     }
 
     @Override
-    protected @NotNull SoundEvent getHurtSound(DamageSource damageSource) {
+    protected @NotNull SoundEvent getHurtSound(@NotNull DamageSource damageSource) {
         return AVPSoundEvents.ENTITY_XENOMORPH_HURT.get();
     }
 
     @Override
-    public void readAdditionalSaveData(CompoundTag compoundTag) {
+    public void readAdditionalSaveData(@NotNull CompoundTag compoundTag) {
         super.readAdditionalSaveData(compoundTag);
         crawlingManager.load(compoundTag);
         growthManager.load(compoundTag);
@@ -274,7 +263,7 @@ public abstract class Xenomorph extends Alien implements ResinProducer {
     }
 
     @Override
-    public void addAdditionalSaveData(CompoundTag compoundTag) {
+    public void addAdditionalSaveData(@NotNull CompoundTag compoundTag) {
         super.addAdditionalSaveData(compoundTag);
         crawlingManager.save(compoundTag);
         growthManager.save(compoundTag);
@@ -282,7 +271,7 @@ public abstract class Xenomorph extends Alien implements ResinProducer {
     }
 
     @Override
-    public void onSyncedDataUpdated(EntityDataAccessor<?> entityDataAccessor) {
+    public void onSyncedDataUpdated(@NotNull EntityDataAccessor<?> entityDataAccessor) {
         super.onSyncedDataUpdated(entityDataAccessor);
 
         if (entityDataAccessor.equals(IS_CRAWLING)) {
@@ -307,11 +296,11 @@ public abstract class Xenomorph extends Alien implements ResinProducer {
         return crawlingManager;
     }
 
-    void setMoveControl(MoveControl moveControl) {
+    public void setMoveControl(MoveControl moveControl) {
         this.moveControl = moveControl;
     }
 
-    void setNavigation(PathNavigation navigation) {
+    public void setNavigation(PathNavigation navigation) {
         this.navigation = navigation;
     }
 }

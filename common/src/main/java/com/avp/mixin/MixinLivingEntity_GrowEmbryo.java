@@ -3,6 +3,7 @@ package com.avp.mixin;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.Difficulty;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
@@ -21,14 +22,14 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import com.avp.common.entity.gene.GeneProviders;
 import com.avp.common.entity.living.Host;
 import com.avp.common.entity.living.alien.Alien;
 import com.avp.common.entity.living.alien.parasite.Parasite;
+import com.avp.common.entity.living.alien.util.AlienVariantUtil;
+import com.avp.common.entity.living.gene.GeneProviders;
+import com.avp.common.entity.living.manager.GeneManager;
 import com.avp.common.lifecycle.infection.AlienInfection;
 import com.avp.common.lifecycle.registry.AlienInfectionRegistry;
-import com.avp.common.manager.GeneManager;
-import com.avp.common.util.AlienVariantUtil;
 
 @Mixin(LivingEntity.class)
 public abstract class MixinLivingEntity_GrowEmbryo extends Entity implements Host {
@@ -117,16 +118,22 @@ public abstract class MixinLivingEntity_GrowEmbryo extends Entity implements Hos
             return;
         }
 
-        AlienInfectionRegistry.get(getType(), parasiteSourceType)
-            .ifSome(alienInfection -> {
-                @SuppressWarnings("unchecked")
-                var typedInfection = (AlienInfection<LivingEntity, LivingEntity>) alienInfection;
+        if (level.getDifficulty() != Difficulty.PEACEFUL) {
+            AlienInfectionRegistry.get(getType(), parasiteSourceType)
+                .ifSome(alienInfection -> {
+                    @SuppressWarnings("unchecked")
+                    var typedInfection = (AlienInfection<LivingEntity, LivingEntity>) alienInfection;
 
-                giveBirth(level, self, typedInfection);
-            });
+                    giveBirth(level, self, typedInfection);
+                });
 
+            kill();
+        }
+
+        // Remove the parasite source type no matter what.
         this.parasiteSourceType = null;
-        kill();
+        // Reset the parasite growth time (in ticks) no matter what.
+        this.parasiteGrowthTimeInTicks = 0;
     }
 
     @Unique

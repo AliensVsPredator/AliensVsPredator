@@ -233,7 +233,7 @@ public class AVPItems {
         new Item.Properties().fireResistant()
     );
 
-    public static final AVPDeferredHolder<Item> POISON_JELLY = register("poison_jelly", PoisionJellyItem::new);
+    public static final AVPDeferredHolder<Item> POISON_JELLY = register("poison_jelly", PoisonJellyItem::new);
 
     public static final AVPDeferredHolder<Item> POLYMER = register("polymer");
 
@@ -270,8 +270,6 @@ public class AVPItems {
 
     public static final AVPDeferredHolder<Item> RAW_ROYAL_JELLY = register("raw_royal_jelly", RoyalJellyItem::new);
 
-    public static final AVPDeferredHolder<Item> RAW_SILICA = register("raw_silica");
-
     public static final AVPDeferredHolder<Item> RAW_TITANIUM = register("raw_titanium");
 
     public static final AVPDeferredHolder<Item> RAW_ZINC = register("raw_zinc");
@@ -299,6 +297,9 @@ public class AVPItems {
     public static final AVPDeferredHolder<Item> SHOTGUN_SHELL = register("shotgun_shell");
 
     public static final AVPDeferredHolder<Item> SHURIKEN = register("shuriken", ShurikenItem::new);
+
+    // TODO: Change this to "silicon" with 0.2.0.
+    public static final AVPDeferredHolder<Item> SILICON = register("raw_silica");
 
     public static final AVPDeferredHolder<Item> SMALL_BULLET = register("small_bullet");
 

@@ -37,7 +37,7 @@ public class MushroomCloudEntity extends Entity {
     }
 
     @Override
-    protected void defineSynchedData(SynchedEntityData.@NotNull Builder builder) {}
+    protected void defineSynchedData(@NotNull SynchedEntityData.Builder builder) {}
 
     @Override
     protected void readAdditionalSaveData(@NotNull CompoundTag compound) {}

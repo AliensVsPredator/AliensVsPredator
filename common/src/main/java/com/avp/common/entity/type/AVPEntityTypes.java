@@ -6,19 +6,22 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.level.Level;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.function.BiFunction;
 
 import com.avp.common.entity.AVPMobCategories;
 import com.avp.common.entity.acid.Acid;
-import com.avp.common.entity.gene.GeneKeys;
 import com.avp.common.entity.living.alien.Alien;
 import com.avp.common.entity.living.alien.chestburster.Chestburster;
-import com.avp.common.entity.living.alien.ovamorph.Ovamorph;
+import com.avp.common.entity.living.alien.ovomorph.Ovomorph;
 import com.avp.common.entity.living.alien.parasite.facehugger.Facehugger;
 import com.avp.common.entity.living.alien.xenomorph.drone.Drone;
 import com.avp.common.entity.living.alien.xenomorph.praetorian.Praetorian;
 import com.avp.common.entity.living.alien.xenomorph.queen.Queen;
 import com.avp.common.entity.living.alien.xenomorph.warrior.Warrior;
+import com.avp.common.entity.living.gene.GeneKeys;
 import com.avp.common.entity.living.human.EyeColorGenerator;
 import com.avp.common.entity.living.human.HairColorGenerator;
 import com.avp.common.entity.living.human.SkinColorGenerator;
@@ -29,8 +32,8 @@ import com.avp.common.entity.nuke.MushroomCloudEntity;
 import com.avp.common.entity.nuke.PrimedNuke;
 import com.avp.common.entity.projectile.Flamethrow;
 import com.avp.common.entity.projectile.Rocket;
-import com.avp.common.entity.projectile.ShurikenItemEntity;
-import com.avp.common.entity.projectile.SmartDiscItemEntity;
+import com.avp.common.entity.projectile.ShurikenProjectile;
+import com.avp.common.entity.projectile.SmartDiscProjectile;
 import com.avp.common.entity.projectile.ThrownGrenade;
 import com.avp.common.registry.AVPDeferredHolder;
 import com.avp.service.Services;
@@ -40,6 +43,12 @@ public class AVPEntityTypes {
     public static final MobCategory ALIEN_CATEGORY = AVPMobCategories.ALIENS;
 
     public static final MobCategory PREDATOR_CATEGORY = AVPMobCategories.PREDATOR;
+
+    private static final List<AVPDeferredHolder<? extends EntityType<?>>> ENTITY_TYPE_HOLDERS = new ArrayList<>();
+
+    public static List<AVPDeferredHolder<? extends EntityType<?>>> getAll() {
+        return Collections.unmodifiableList(ENTITY_TYPE_HOLDERS);
+    }
 
     public static final AVPDeferredHolder<EntityType<Chestburster>> ABERRANT_CHESTBURSTER = register(
         "aberrant_chestburster",
@@ -68,10 +77,11 @@ public class AVPEntityTypes {
             .sized(0.8f, 0.25f)
     );
 
-    public static final AVPDeferredHolder<EntityType<Ovamorph>> ABERRANT_OVAMORPH = register(
+    public static final AVPDeferredHolder<EntityType<Ovomorph>> ABERRANT_OVOMORPH = register(
+        // TODO: Change this to "ovomorph" with 0.2.0.
         "aberrant_ovamorph",
-        EntityType.Builder.<Ovamorph>of(
-            (type, level) -> aberrantFactory(Ovamorph::new, type, level),
+        EntityType.Builder.<Ovomorph>of(
+            (type, level) -> aberrantFactory(Ovomorph::new, type, level),
             ALIEN_CATEGORY
         )
             .sized(0.65f, 0.8f)
@@ -232,10 +242,11 @@ public class AVPEntityTypes {
             .sized(0.8f, 0.25f)
     );
 
-    public static final AVPDeferredHolder<EntityType<Ovamorph>> NETHER_OVAMORPH = register(
+    public static final AVPDeferredHolder<EntityType<Ovomorph>> NETHER_OVOMORPH = register(
+        // TODO: Change this to "ovomorph" with 0.2.0.
         "nether_ovamorph",
-        EntityType.Builder.<Ovamorph>of(
-            (type, level) -> nethermorphFactory(Ovamorph::new, type, level),
+        EntityType.Builder.<Ovomorph>of(
+            (type, level) -> nethermorphFactory(Ovomorph::new, type, level),
             ALIEN_CATEGORY
         )
             .sized(0.65f, 0.8f)
@@ -277,9 +288,10 @@ public class AVPEntityTypes {
             .updateInterval(100)
     );
 
-    public static final AVPDeferredHolder<EntityType<Ovamorph>> OVAMORPH = register(
+    public static final AVPDeferredHolder<EntityType<Ovomorph>> OVOMORPH = register(
+        // TODO: Change this to "ovomorph" with 0.2.0.
         "ovamorph",
-        EntityType.Builder.of(Ovamorph::new, ALIEN_CATEGORY)
+        EntityType.Builder.of(Ovomorph::new, ALIEN_CATEGORY)
             .sized(0.65f, 0.8f)
     );
 
@@ -321,10 +333,11 @@ public class AVPEntityTypes {
             .sized(0.8f, 0.25f)
     );
 
-    public static final AVPDeferredHolder<EntityType<Ovamorph>> ROYAL_ABERRANT_OVAMORPH = register(
+    public static final AVPDeferredHolder<EntityType<Ovomorph>> ROYAL_ABERRANT_OVOMORPH = register(
+        // TODO: Change this to "ovomorph" with 0.2.0.
         "royal_aberrant_ovamorph",
-        EntityType.Builder.<Ovamorph>of(
-            (type, level) -> royalAberrantFactory(Ovamorph::new, type, level),
+        EntityType.Builder.<Ovomorph>of(
+            (type, level) -> royalAberrantFactory(Ovomorph::new, type, level),
             ALIEN_CATEGORY
         )
             .sized(0.65f, 0.8f)
@@ -348,10 +361,11 @@ public class AVPEntityTypes {
             .sized(0.8f, 0.25f)
     );
 
-    public static final AVPDeferredHolder<EntityType<Ovamorph>> ROYAL_OVAMORPH = register(
+    public static final AVPDeferredHolder<EntityType<Ovomorph>> ROYAL_OVOMORPH = register(
+        // TODO: Change this to "ovomorph" with 0.2.0.
         "royal_ovamorph",
-        EntityType.Builder.<Ovamorph>of(
-            (type, level) -> royalFactory(Ovamorph::new, type, level),
+        EntityType.Builder.<Ovomorph>of(
+            (type, level) -> royalFactory(Ovomorph::new, type, level),
             ALIEN_CATEGORY
         )
             .sized(0.65f, 0.8f)
@@ -375,10 +389,11 @@ public class AVPEntityTypes {
             .sized(0.8f, 0.25f)
     );
 
-    public static final AVPDeferredHolder<EntityType<Ovamorph>> ROYAL_NETHER_OVAMORPH = register(
+    public static final AVPDeferredHolder<EntityType<Ovomorph>> ROYAL_NETHER_OVOMORPH = register(
+        // TODO: Change this to "ovomorph" with 0.2.0.
         "royal_nether_ovamorph",
-        EntityType.Builder.<Ovamorph>of(
-            (type, level) -> royalNethermorphFactory(Ovamorph::new, type, level),
+        EntityType.Builder.<Ovomorph>of(
+            (type, level) -> royalNethermorphFactory(Ovomorph::new, type, level),
             ALIEN_CATEGORY
         )
             .sized(0.65f, 0.8f)
@@ -389,15 +404,15 @@ public class AVPEntityTypes {
         EntityType.Builder.of(SentryTurret::new, MobCategory.MISC).sized(1.0F, 1.0F).noSummon()
     );
 
-    public static final AVPDeferredHolder<EntityType<ShurikenItemEntity>> SHURIKEN = register(
+    public static final AVPDeferredHolder<EntityType<ShurikenProjectile>> SHURIKEN = register(
         "shuriken",
-        EntityType.Builder.<ShurikenItemEntity>of(ShurikenItemEntity::new, MobCategory.MISC)
+        EntityType.Builder.<ShurikenProjectile>of(ShurikenProjectile::new, MobCategory.MISC)
             .sized(0.25F, 0.25F)
     );
 
-    public static final AVPDeferredHolder<EntityType<SmartDiscItemEntity>> SMART_DISC = register(
+    public static final AVPDeferredHolder<EntityType<SmartDiscProjectile>> SMART_DISC = register(
         "smart_disc",
-        EntityType.Builder.<SmartDiscItemEntity>of(SmartDiscItemEntity::new, MobCategory.MISC)
+        EntityType.Builder.<SmartDiscProjectile>of(SmartDiscProjectile::new, MobCategory.MISC)
             .sized(0.25F, 0.25F)
     );
 
@@ -478,18 +493,22 @@ public class AVPEntityTypes {
     }
 
     private static <T extends Entity> AVPDeferredHolder<EntityType<T>> register(String id, EntityType.Builder<T> builder) {
-        return Services.REGISTRY.register(
+        var holder = Services.REGISTRY.register(
             BuiltInRegistries.ENTITY_TYPE,
             id,
-            () -> ((SilencedEntityTypeBuilder) builder).buildWithoutDataFixerCheck()
+            () -> ((SilencedEntityTypeBuilder) builder).<T>buildWithoutDataFixerCheck()
         );
+
+        ENTITY_TYPE_HOLDERS.add(holder);
+
+        return holder;
     }
 
     public static void initialize() {
         Services.REGISTRY.registerEntityAttributes(ABERRANT_CHESTBURSTER, Chestburster::createChestbursterAttributes);
         Services.REGISTRY.registerEntityAttributes(ABERRANT_DRONE, Drone::createDroneAttributes);
         Services.REGISTRY.registerEntityAttributes(ABERRANT_FACEHUGGER, Facehugger::createFacehuggerAttributes);
-        Services.REGISTRY.registerEntityAttributes(ABERRANT_OVAMORPH, Ovamorph::createOvamorphAttributes);
+        Services.REGISTRY.registerEntityAttributes(ABERRANT_OVOMORPH, Ovomorph::createOvomorphAttributes);
         Services.REGISTRY.registerEntityAttributes(ABERRANT_PRAETORIAN, Praetorian::createPraetorianAttributes);
         Services.REGISTRY.registerEntityAttributes(ABERRANT_QUEEN, Queen::createQueenAttributes);
         Services.REGISTRY.registerEntityAttributes(ABERRANT_WARRIOR, Warrior::createWarriorAttributes);
@@ -504,22 +523,22 @@ public class AVPEntityTypes {
         Services.REGISTRY.registerEntityAttributes(NETHER_CHESTBURSTER, Chestburster::createChestbursterAttributes);
         Services.REGISTRY.registerEntityAttributes(NETHER_DRONE, Drone::createDroneAttributes);
         Services.REGISTRY.registerEntityAttributes(NETHER_FACEHUGGER, Facehugger::createFacehuggerAttributes);
-        Services.REGISTRY.registerEntityAttributes(NETHER_OVAMORPH, Ovamorph::createOvamorphAttributes);
+        Services.REGISTRY.registerEntityAttributes(NETHER_OVOMORPH, Ovomorph::createOvomorphAttributes);
         Services.REGISTRY.registerEntityAttributes(NETHER_PRAETORIAN, Praetorian::createPraetorianAttributes);
         Services.REGISTRY.registerEntityAttributes(NETHER_QUEEN, Queen::createQueenAttributes);
         Services.REGISTRY.registerEntityAttributes(NETHER_WARRIOR, Warrior::createWarriorAttributes);
-        Services.REGISTRY.registerEntityAttributes(OVAMORPH, Ovamorph::createOvamorphAttributes);
+        Services.REGISTRY.registerEntityAttributes(OVOMORPH, Ovomorph::createOvomorphAttributes);
         Services.REGISTRY.registerEntityAttributes(PRAETORIAN, Praetorian::createPraetorianAttributes);
         Services.REGISTRY.registerEntityAttributes(QUEEN, Queen::createQueenAttributes);
         Services.REGISTRY.registerEntityAttributes(ROYAL_ABERRANT_CHESTBURSTER, Chestburster::createChestbursterAttributes);
         Services.REGISTRY.registerEntityAttributes(ROYAL_ABERRANT_FACEHUGGER, Facehugger::createFacehuggerAttributes);
-        Services.REGISTRY.registerEntityAttributes(ROYAL_ABERRANT_OVAMORPH, Ovamorph::createOvamorphAttributes);
+        Services.REGISTRY.registerEntityAttributes(ROYAL_ABERRANT_OVOMORPH, Ovomorph::createOvomorphAttributes);
         Services.REGISTRY.registerEntityAttributes(ROYAL_CHESTBURSTER, Chestburster::createChestbursterAttributes);
         Services.REGISTRY.registerEntityAttributes(ROYAL_FACEHUGGER, Facehugger::createFacehuggerAttributes);
         Services.REGISTRY.registerEntityAttributes(ROYAL_NETHER_CHESTBURSTER, Chestburster::createChestbursterAttributes);
         Services.REGISTRY.registerEntityAttributes(ROYAL_NETHER_FACEHUGGER, Facehugger::createFacehuggerAttributes);
-        Services.REGISTRY.registerEntityAttributes(ROYAL_NETHER_OVAMORPH, Ovamorph::createOvamorphAttributes);
-        Services.REGISTRY.registerEntityAttributes(ROYAL_OVAMORPH, Ovamorph::createOvamorphAttributes);
+        Services.REGISTRY.registerEntityAttributes(ROYAL_NETHER_OVOMORPH, Ovomorph::createOvomorphAttributes);
+        Services.REGISTRY.registerEntityAttributes(ROYAL_OVOMORPH, Ovomorph::createOvomorphAttributes);
         Services.REGISTRY.registerEntityAttributes(SENTRY_TURRET, SentryTurret::createSentryTurretAttributes);
         Services.REGISTRY.registerEntityAttributes(WARRIOR, Warrior::createWarriorAttributes);
         Services.REGISTRY.registerEntityAttributes(YAUTJA, Yautja::createYautjaAttributes);

@@ -28,6 +28,9 @@ dependencies {
     // Manually added dependencies
     compileOnly "com.github.bvanseg:just:${project.just_version}"
     compileOnly "mod.azure.azurelib:azurelib-common-${project.minecraft_version}:${project.azurelib_version}"
+    compileOnly "mezz.jei:jei-${minecraft_version}-neoforge-api:${project.jei_version}"
+    compileOnly "me.shedaniel:RoughlyEnoughItems-api-neoforge:${project.rei_version}"
+    compileOnly "me.shedaniel:RoughlyEnoughItems-neoforge:${project.rei_version}"
 }
 
 configurations {

@@ -292,7 +292,8 @@ public class AVPBlocks {
 
     public static final AVPDeferredHolder<Block> INDUSTRIAL_FURNACE = register(
         "industrial_furnace_block",
-        () -> new IndustrialFurnaceBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.STONE))
+        // TODO: Use custom properties here.
+        () -> new IndustrialFurnaceBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.BLAST_FURNACE))
     );
 
     public static final AVPDeferredHolder<Block> INDUSTRIAL_GLASS = register(
@@ -395,11 +396,6 @@ public class AVPBlocks {
 
     public static final AVPDeferredHolder<Block> RAW_MONAZITE_BLOCK = register("raw_monazite_block", BlockProperties.MONAZITE_ORE);
 
-    public static final AVPDeferredHolder<Block> RAW_SILICA_BLOCK = register(
-        "raw_silica_block",
-        () -> new Block(BlockBehaviour.Properties.ofFullCopy(Blocks.GRAVEL).strength(0.9F))
-    );
-
     public static final AVPDeferredHolder<Block> RAW_TITANIUM_BLOCK = register("raw_titanium_block", BlockProperties.TITANIUM_ORE);
 
     public static final AVPDeferredHolder<Block> RAW_ZINC_BLOCK = register("raw_zinc_block", BlockProperties.ZINC_ORE);
@@ -451,6 +447,12 @@ public class AVPBlocks {
     public static final AVPDeferredHolder<Block> SILICA_GRAVEL = register(
         "silica_gravel",
         () -> new ColoredFallingBlock(new ColorRGBA(-8356741), BlockBehaviour.Properties.ofFullCopy(Blocks.GRAVEL))
+    );
+
+    public static final AVPDeferredHolder<Block> SILICON_BLOCK = register(
+        // TODO: Change this to "silicon_block" with 0.2.0.
+        "raw_silica_block",
+        () -> new Block(BlockBehaviour.Properties.ofFullCopy(Blocks.GRAVEL).strength(0.9F))
     );
 
     public static final AVPDeferredHolder<Block> STEEL_BLOCK = register("steel_block", BlockProperties.STEEL);
@@ -738,7 +740,7 @@ public class AVPBlocks {
 
     public static final AVPDeferredHolder<Block> ZINC_ORE = register("zinc_ore", BlockProperties.ZINC_ORE);
 
-    public static final Map<DyeColor, Supplier<Block>> DYE_COLOR_TO_CONCRETE_SLAB =
+    public static final Map<DyeColor, AVPDeferredHolder<Block>> DYE_COLOR_TO_CONCRETE_SLAB =
         Collections.unmodifiableMap(
             Arrays.stream(DyeColor.values())
                 .collect(
@@ -752,7 +754,7 @@ public class AVPBlocks {
                 )
         );
 
-    public static final Map<DyeColor, Supplier<Block>> DYE_COLOR_TO_CONCRETE_STAIRS =
+    public static final Map<DyeColor, AVPDeferredHolder<Block>> DYE_COLOR_TO_CONCRETE_STAIRS =
         Collections.unmodifiableMap(
             Arrays.stream(DyeColor.values())
                 .collect(
@@ -769,7 +771,7 @@ public class AVPBlocks {
                 )
         );
 
-    public static final Map<DyeColor, Supplier<Block>> DYE_COLOR_TO_INDUSTRIAL_CONCRETE =
+    public static final Map<DyeColor, AVPDeferredHolder<Block>> DYE_COLOR_TO_INDUSTRIAL_CONCRETE =
         Collections.unmodifiableMap(
             Arrays.stream(DyeColor.values())
                 .collect(
@@ -783,7 +785,7 @@ public class AVPBlocks {
                 )
         );
 
-    public static final Map<DyeColor, Supplier<Block>> DYE_COLOR_TO_INDUSTRIAL_CONCRETE_SLAB =
+    public static final Map<DyeColor, AVPDeferredHolder<Block>> DYE_COLOR_TO_INDUSTRIAL_CONCRETE_SLAB =
         Collections.unmodifiableMap(
             Arrays.stream(DyeColor.values())
                 .collect(
@@ -797,7 +799,7 @@ public class AVPBlocks {
                 )
         );
 
-    public static final Map<DyeColor, Supplier<Block>> DYE_COLOR_TO_INDUSTRIAL_CONCRETE_STAIRS =
+    public static final Map<DyeColor, AVPDeferredHolder<Block>> DYE_COLOR_TO_INDUSTRIAL_CONCRETE_STAIRS =
         Collections.unmodifiableMap(
             Arrays.stream(DyeColor.values())
                 .collect(
@@ -814,7 +816,7 @@ public class AVPBlocks {
                 )
         );
 
-    public static final Map<DyeColor, Supplier<Block>> DYE_COLOR_TO_INDUSTRIAL_CONCRETE_WALL =
+    public static final Map<DyeColor, AVPDeferredHolder<Block>> DYE_COLOR_TO_INDUSTRIAL_CONCRETE_WALL =
         Collections.unmodifiableMap(
             Arrays.stream(DyeColor.values())
                 .collect(
@@ -828,7 +830,7 @@ public class AVPBlocks {
                 )
         );
 
-    public static final Map<DyeColor, Supplier<Block>> DYE_COLOR_TO_INDUSTRIAL_GLASS =
+    public static final Map<DyeColor, AVPDeferredHolder<Block>> DYE_COLOR_TO_INDUSTRIAL_GLASS =
         Collections.unmodifiableMap(
             Arrays.stream(DyeColor.values())
                 .collect(
@@ -845,7 +847,7 @@ public class AVPBlocks {
                 )
         );
 
-    public static final Map<DyeColor, Supplier<Block>> DYE_COLOR_TO_INDUSTRIAL_GLASS_PANE =
+    public static final Map<DyeColor, AVPDeferredHolder<Block>> DYE_COLOR_TO_INDUSTRIAL_GLASS_PANE =
         Collections.unmodifiableMap(
             Arrays.stream(DyeColor.values())
                 .collect(
@@ -859,7 +861,7 @@ public class AVPBlocks {
                 )
         );
 
-    public static final Map<DyeColor, Supplier<Block>> DYE_COLOR_TO_PADDING =
+    public static final Map<DyeColor, AVPDeferredHolder<Block>> DYE_COLOR_TO_PADDING =
         Collections.unmodifiableMap(
             Arrays.stream(DyeColor.values())
                 .collect(
@@ -873,7 +875,7 @@ public class AVPBlocks {
                 )
         );
 
-    public static final Map<DyeColor, Supplier<Block>> DYE_COLOR_TO_PADDING_SLAB =
+    public static final Map<DyeColor, AVPDeferredHolder<Block>> DYE_COLOR_TO_PADDING_SLAB =
         Collections.unmodifiableMap(
             Arrays.stream(DyeColor.values())
                 .collect(
@@ -887,7 +889,7 @@ public class AVPBlocks {
                 )
         );
 
-    public static final Map<DyeColor, Supplier<Block>> DYE_COLOR_TO_PADDING_STAIRS =
+    public static final Map<DyeColor, AVPDeferredHolder<Block>> DYE_COLOR_TO_PADDING_STAIRS =
         Collections.unmodifiableMap(
             Arrays.stream(DyeColor.values())
                 .collect(
@@ -904,7 +906,7 @@ public class AVPBlocks {
                 )
         );
 
-    public static final Map<DyeColor, Supplier<Block>> DYE_COLOR_TO_PANEL_PADDING =
+    public static final Map<DyeColor, AVPDeferredHolder<Block>> DYE_COLOR_TO_PANEL_PADDING =
         Collections.unmodifiableMap(
             Arrays.stream(DyeColor.values())
                 .collect(
@@ -918,7 +920,7 @@ public class AVPBlocks {
                 )
         );
 
-    public static final Map<DyeColor, Supplier<Block>> DYE_COLOR_TO_PANEL_PADDING_SLAB =
+    public static final Map<DyeColor, AVPDeferredHolder<Block>> DYE_COLOR_TO_PANEL_PADDING_SLAB =
         Collections.unmodifiableMap(
             Arrays.stream(DyeColor.values())
                 .collect(
@@ -932,7 +934,7 @@ public class AVPBlocks {
                 )
         );
 
-    public static final Map<DyeColor, Supplier<Block>> DYE_COLOR_TO_PANEL_PADDING_STAIRS =
+    public static final Map<DyeColor, AVPDeferredHolder<Block>> DYE_COLOR_TO_PANEL_PADDING_STAIRS =
         Collections.unmodifiableMap(
             Arrays.stream(DyeColor.values())
                 .collect(
@@ -949,7 +951,7 @@ public class AVPBlocks {
                 )
         );
 
-    public static final Map<DyeColor, Supplier<Block>> DYE_COLOR_TO_PIPE_PADDING =
+    public static final Map<DyeColor, AVPDeferredHolder<Block>> DYE_COLOR_TO_PIPE_PADDING =
         Collections.unmodifiableMap(
             Arrays.stream(DyeColor.values())
                 .collect(
@@ -963,7 +965,7 @@ public class AVPBlocks {
                 )
         );
 
-    public static final Map<DyeColor, Supplier<Block>> DYE_COLOR_TO_PIPE_PADDING_SLAB =
+    public static final Map<DyeColor, AVPDeferredHolder<Block>> DYE_COLOR_TO_PIPE_PADDING_SLAB =
         Collections.unmodifiableMap(
             Arrays.stream(DyeColor.values())
                 .collect(
@@ -977,7 +979,7 @@ public class AVPBlocks {
                 )
         );
 
-    public static final Map<DyeColor, Supplier<Block>> DYE_COLOR_TO_PIPE_PADDING_STAIRS =
+    public static final Map<DyeColor, AVPDeferredHolder<Block>> DYE_COLOR_TO_PIPE_PADDING_STAIRS =
         Collections.unmodifiableMap(
             Arrays.stream(DyeColor.values())
                 .collect(
@@ -994,7 +996,7 @@ public class AVPBlocks {
                 )
         );
 
-    public static final Map<DyeColor, Supplier<Block>> DYE_COLOR_TO_CUT_PLASTIC =
+    public static final Map<DyeColor, AVPDeferredHolder<Block>> DYE_COLOR_TO_CUT_PLASTIC =
         Collections.unmodifiableMap(
             Arrays.stream(DyeColor.values())
                 .collect(
@@ -1008,7 +1010,7 @@ public class AVPBlocks {
                 )
         );
 
-    public static final Map<DyeColor, Supplier<Block>> DYE_COLOR_TO_CUT_PLASTIC_SLAB =
+    public static final Map<DyeColor, AVPDeferredHolder<Block>> DYE_COLOR_TO_CUT_PLASTIC_SLAB =
         Collections.unmodifiableMap(
             Arrays.stream(DyeColor.values())
                 .collect(
@@ -1022,7 +1024,7 @@ public class AVPBlocks {
                 )
         );
 
-    public static final Map<DyeColor, Supplier<Block>> DYE_COLOR_TO_CUT_PLASTIC_STAIRS =
+    public static final Map<DyeColor, AVPDeferredHolder<Block>> DYE_COLOR_TO_CUT_PLASTIC_STAIRS =
         Collections.unmodifiableMap(
             Arrays.stream(DyeColor.values())
                 .collect(
@@ -1039,7 +1041,7 @@ public class AVPBlocks {
                 )
         );
 
-    public static final Map<DyeColor, Supplier<Block>> DYE_COLOR_TO_PLASTIC =
+    public static final Map<DyeColor, AVPDeferredHolder<Block>> DYE_COLOR_TO_PLASTIC =
         Collections.unmodifiableMap(
             Arrays.stream(DyeColor.values())
                 .collect(
@@ -1053,7 +1055,7 @@ public class AVPBlocks {
                 )
         );
 
-    public static final Map<DyeColor, Supplier<Block>> DYE_COLOR_TO_PLASTIC_SLAB =
+    public static final Map<DyeColor, AVPDeferredHolder<Block>> DYE_COLOR_TO_PLASTIC_SLAB =
         Collections.unmodifiableMap(
             Arrays.stream(DyeColor.values())
                 .collect(
@@ -1067,7 +1069,7 @@ public class AVPBlocks {
                 )
         );
 
-    public static final Map<DyeColor, Supplier<Block>> DYE_COLOR_TO_PLASTIC_STAIRS =
+    public static final Map<DyeColor, AVPDeferredHolder<Block>> DYE_COLOR_TO_PLASTIC_STAIRS =
         Collections.unmodifiableMap(
             Arrays.stream(DyeColor.values())
                 .collect(

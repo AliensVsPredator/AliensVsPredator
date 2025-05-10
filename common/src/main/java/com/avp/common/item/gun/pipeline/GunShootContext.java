@@ -78,18 +78,21 @@ public record GunShootContext(
         }
 
         var gunAttackConfig = new GunAttackConfig(gunConfig, fireModeConfig, shooter, itemStack);
-        var gunAttack = fireModeConfig
-            .gunAttackSupplier()
-            .apply(gunAttackConfig);
-
-        gunAttack.shoot();
+        var result = fireModeConfig
+            .gunAttackAction()
+            .shoot(gunAttackConfig);
 
         runPostEffects();
 
-        return GunShootResult.SHOT;
+        return result;
     }
 
     private void runPostEffects() {
+        if (shooter.level().isClientSide) {
+            // Post-effects only run server-side.
+            return;
+        }
+
         GunLightUtil.spawnLightSource(shooter);
 
         consumeAmmunition();

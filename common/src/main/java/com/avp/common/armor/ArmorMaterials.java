@@ -287,7 +287,7 @@ public class ArmorMaterials {
         );
     }
 
-    private static Map.@NotNull Entry<ArmorItem.Type, Integer> compute(
+    private static @NotNull Map.Entry<ArmorItem.Type, Integer> compute(
         ArmorItem.Type type,
         Map<ArmorItem.Type, Integer> additiveDefense,
         ArmorMaterial armorMaterial

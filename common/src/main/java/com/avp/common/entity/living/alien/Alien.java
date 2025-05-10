@@ -30,14 +30,13 @@ import org.jetbrains.annotations.Nullable;
 import com.avp.AVP;
 import com.avp.common.config.AVPConfig;
 import com.avp.common.effect.AVPMobEffectTags;
-import com.avp.common.entity.gene.GeneKeys;
-import com.avp.common.hive.Hive;
-import com.avp.common.manager.GeneManager;
-import com.avp.common.manager.HiveManager;
-import com.avp.common.util.AcidBleedUtil;
-import com.avp.common.util.AlienHurtUtil;
-import com.avp.common.util.AlienVariantUtil;
-import com.avp.common.util.MovementAnalyzer;
+import com.avp.common.entity.living.alien.manager.HiveManager;
+import com.avp.common.entity.living.alien.util.AcidBleedUtil;
+import com.avp.common.entity.living.alien.util.AlienHurtUtil;
+import com.avp.common.entity.living.alien.util.AlienVariantUtil;
+import com.avp.common.entity.living.gene.GeneKeys;
+import com.avp.common.entity.living.manager.GeneManager;
+import com.avp.common.entity.util.MovementAnalyzer;
 import com.avp.common.worldgen.biome.AVPBiomes;
 
 public abstract class Alien extends Monster {
@@ -129,13 +128,13 @@ public abstract class Alien extends Monster {
 
         if (livingEntity instanceof ServerPlayer player) {
             hiveManager.hive()
-                .filter(hive -> hive.isEntityWithinHive(player))
+                .filter(hive -> hive.isEntityWithinRangeOfHive(player))
                 .ifSome(hive -> hive.bossEvent().addPlayer(player));
         }
     }
 
     @Override
-    protected void defineSynchedData(SynchedEntityData.Builder builder) {
+    protected void defineSynchedData(@NotNull SynchedEntityData.Builder builder) {
         super.defineSynchedData(builder);
         builder.define(IS_ABERRANT, false);
         builder.define(IS_NETHER_AFFLICTED, false);
@@ -179,6 +178,14 @@ public abstract class Alien extends Monster {
         }
     }
 
+    public boolean isPoisoned() {
+        return entityData.get(IS_POISONED);
+    }
+
+    public void setPoisoned(boolean isPoisoned) {
+        entityData.set(IS_POISONED, isPoisoned);
+    }
+
     public boolean isRoyal() {
         return entityData.get(IS_ROYAL);
     }
@@ -189,9 +196,9 @@ public abstract class Alien extends Monster {
 
     @Override
     public @Nullable SpawnGroupData finalizeSpawn(
-        ServerLevelAccessor serverLevelAccessor,
-        DifficultyInstance difficultyInstance,
-        MobSpawnType mobSpawnType,
+        @NotNull ServerLevelAccessor serverLevelAccessor,
+        @NotNull DifficultyInstance difficultyInstance,
+        @NotNull MobSpawnType mobSpawnType,
         @Nullable SpawnGroupData spawnGroupData
     ) {
         updateStateBasedOnGenetics();
@@ -262,7 +269,7 @@ public abstract class Alien extends Monster {
     }
 
     @Override
-    public boolean hurt(DamageSource damageSource, float damage) {
+    public boolean hurt(@NotNull DamageSource damageSource, float damage) {
         var isHurt = AlienHurtUtil.isHurt(this, damageSource, damage, super::hurt);
 
         if (isHurt) {
@@ -319,14 +326,19 @@ public abstract class Alien extends Monster {
 
     @Override
     public boolean isPersistenceRequired() {
-        return super.isPersistenceRequired() || hiveManager.hive()
-            .andThen(Hive::hiveLeader)
-            .filter(leader -> leader.getUUID().equals(getUUID()))
-            .isSome();
+        return super.isPersistenceRequired()
+            || hiveManager.hive()
+                .filter(
+                    // If the hive is angry, then the alien shouldn't despawn.
+                    hive -> hive.isAngry()
+                        // OR if this alien is the hive leader, then they shouldn't despawn, either.
+                        || hive.isHiveLeader(this)
+                )
+                .isSome();
     }
 
     @Override
-    public void remove(RemovalReason removalReason) {
+    public void remove(@NotNull RemovalReason removalReason) {
         super.remove(removalReason);
 
         switch (removalReason) {
@@ -354,7 +366,7 @@ public abstract class Alien extends Monster {
     }
 
     @Override
-    public void readAdditionalSaveData(CompoundTag compoundTag) {
+    public void readAdditionalSaveData(@NotNull CompoundTag compoundTag) {
         super.readAdditionalSaveData(compoundTag);
         geneManager.load(compoundTag);
         hiveManager.load(compoundTag);
@@ -372,7 +384,7 @@ public abstract class Alien extends Monster {
         }
 
         if (compoundTag.contains(IS_POISONED_KEY)) {
-            getEntityData().set(IS_POISONED, compoundTag.getBoolean(IS_POISONED_KEY));
+            setPoisoned(compoundTag.getBoolean(IS_POISONED_KEY));
         }
 
         if (compoundTag.contains(IS_ROYAL_KEY)) {
@@ -385,14 +397,14 @@ public abstract class Alien extends Monster {
     }
 
     @Override
-    public void addAdditionalSaveData(CompoundTag compoundTag) {
+    public void addAdditionalSaveData(@NotNull CompoundTag compoundTag) {
         super.addAdditionalSaveData(compoundTag);
         geneManager.save(compoundTag);
         hiveManager.save(compoundTag);
         compoundTag.putBoolean(IS_ABERRANT_KEY, isAberrant());
         compoundTag.putBoolean(IS_IRRADIATED_KEY, isIrradiated());
         compoundTag.putBoolean(IS_NETHER_AFFLICTED_KEY, isNetherAfflicted());
-        compoundTag.putBoolean(IS_POISONED_KEY, getEntityData().get(IS_POISONED));
+        compoundTag.putBoolean(IS_POISONED_KEY, isPoisoned());
         compoundTag.putBoolean(IS_ROYAL_KEY, isRoyal());
         compoundTag.putInt(JELLY_COUNT_KEY, getEntityData().get(JELLY_COUNT));
     }

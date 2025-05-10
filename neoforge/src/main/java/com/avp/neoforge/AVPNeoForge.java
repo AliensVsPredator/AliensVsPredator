@@ -25,20 +25,16 @@ import net.neoforged.neoforge.network.handling.DirectionalPayloadHandler;
 import net.neoforged.neoforge.network.registration.HandlerThread;
 
 import com.avp.AVP;
-import com.avp.common.entity.living.alien.chestburster.ChestbursterSpawning;
-import com.avp.common.entity.living.alien.ovamorph.OvamorphSpawning;
-import com.avp.common.entity.living.alien.xenomorph.drone.DroneSpawning;
-import com.avp.common.entity.living.alien.xenomorph.praetorian.PraetorianSpawning;
+import com.avp.common.entity.living.alien.AlienSpawning;
 import com.avp.common.entity.living.alien.xenomorph.queen.QueenSpawning;
-import com.avp.common.entity.living.alien.xenomorph.warrior.WarriorSpawning;
 import com.avp.common.entity.living.human.marine.MarineSpawning;
+import com.avp.common.entity.living.villager.gift.AVPVillagerGiftKeys;
+import com.avp.common.entity.living.villager.profession.AVPVillagerProfessions;
 import com.avp.common.entity.living.yautja.YautjaSpawning;
 import com.avp.common.entity.type.AVPEntityTypes;
 import com.avp.common.lifecycle.registry.AlienInfectionRegistry;
 import com.avp.common.lifecycle.registry.AlienLifecycleRegistry;
 import com.avp.common.network.NetworkHandler;
-import com.avp.common.profession.AVPGifts;
-import com.avp.common.profession.AVPProfessions;
 import com.avp.data.worldgen.AVPVillageInjection;
 import com.avp.mixin.GiveGiftToHeroAccessor;
 import com.avp.mixin.ParrotSoundMapAccessor;
@@ -114,14 +110,14 @@ public class AVPNeoForge {
             AVPEntityTypes.DRONE.get(),
             placement,
             heightMap,
-            DroneSpawning.PREDICATE,
+            AlienSpawning.getTypedPredicate(),
             RegisterSpawnPlacementsEvent.Operation.AND
         );
         event.register(
             AVPEntityTypes.PRAETORIAN.get(),
             placement,
             heightMap,
-            PraetorianSpawning.PREDICATE,
+            AlienSpawning.getTypedPredicate(),
             RegisterSpawnPlacementsEvent.Operation.AND
         );
         event.register(
@@ -135,63 +131,63 @@ public class AVPNeoForge {
             AVPEntityTypes.WARRIOR.get(),
             placement,
             heightMap,
-            WarriorSpawning.PREDICATE,
+            AlienSpawning.getTypedPredicate(),
             RegisterSpawnPlacementsEvent.Operation.AND
         );
         event.register(
             AVPEntityTypes.NETHER_DRONE.get(),
             placement,
             heightMap,
-            DroneSpawning.NETHER_PREDICATE,
+            AlienSpawning.getTypedPredicate(),
             RegisterSpawnPlacementsEvent.Operation.AND
         );
         event.register(
             AVPEntityTypes.NETHER_PRAETORIAN.get(),
             placement,
             heightMap,
-            PraetorianSpawning.NETHER_PREDICATE,
+            AlienSpawning.getTypedPredicate(),
             RegisterSpawnPlacementsEvent.Operation.AND
         );
         event.register(
             AVPEntityTypes.NETHER_WARRIOR.get(),
             placement,
             heightMap,
-            WarriorSpawning.NETHER_PREDICATE,
+            AlienSpawning.getTypedPredicate(),
             RegisterSpawnPlacementsEvent.Operation.AND
         );
         event.register(
             AVPEntityTypes.NETHER_QUEEN.get(),
             placement,
             heightMap,
-            QueenSpawning.NETHER_PREDICATE,
+            QueenSpawning.PREDICATE,
             RegisterSpawnPlacementsEvent.Operation.AND
         );
         event.register(
             AVPEntityTypes.CHESTBURSTER.get(),
             placement,
             heightMap,
-            ChestbursterSpawning.PREDICATE,
+            AlienSpawning.getTypedPredicate(),
             RegisterSpawnPlacementsEvent.Operation.AND
         );
         event.register(
-            AVPEntityTypes.OVAMORPH.get(),
+            AVPEntityTypes.OVOMORPH.get(),
             placement,
             heightMap,
-            OvamorphSpawning.PREDICATE,
+            AlienSpawning.getTypedPredicate(),
             RegisterSpawnPlacementsEvent.Operation.AND
         );
         event.register(
             AVPEntityTypes.NETHER_CHESTBURSTER.get(),
             placement,
             heightMap,
-            ChestbursterSpawning.NETHER_PREDICATE,
+            AlienSpawning.getTypedPredicate(),
             RegisterSpawnPlacementsEvent.Operation.AND
         );
         event.register(
-            AVPEntityTypes.NETHER_OVAMORPH.get(),
+            AVPEntityTypes.NETHER_OVOMORPH.get(),
             placement,
             heightMap,
-            OvamorphSpawning.NETHER_PREDICATE,
+            AlienSpawning.getTypedPredicate(),
             RegisterSpawnPlacementsEvent.Operation.AND
         );
     }
@@ -257,7 +253,7 @@ public class AVPNeoForge {
          * TODO: Use Yautja sound when added
          */
         sounds.put(AVPEntityTypes.YAUTJA.get(), SoundEvents.ALLAY_AMBIENT_WITH_ITEM);
-        gifts.put(AVPProfessions.COMMISSARY.get(), AVPGifts.COMMISSARY_GIFT_LOOT_TABLE);
+        gifts.put(AVPVillagerProfessions.COMMISSARY.get(), AVPVillagerGiftKeys.COMMISSARY_GIFT_LOOT_TABLE);
     }
 
     public static void addCustomTrades(VillagerTradesEvent event) {

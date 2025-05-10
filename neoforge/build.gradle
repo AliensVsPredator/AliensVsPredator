@@ -63,6 +63,9 @@ dependencies {
 
     compileOnly "org.sinytra:item-asset-export-neoforge:${project.asset_export}"
 
+    compileOnly("mezz.jei:jei-${minecraft_version}-neoforge-api:${project.jei_version}")
+    runtimeOnly("mezz.jei:jei-${minecraft_version}-neoforge:${project.jei_version}")
+
     jarJar(implementation("com.github.bvanseg:just:${project.just_version}"))
     additionalRuntimeClasspath "com.github.bvanseg:just:${project.just_version}"
 }

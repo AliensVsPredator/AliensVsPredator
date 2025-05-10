@@ -65,7 +65,7 @@ public class LeadChestBlock extends AbstractChestBlock<LeadChestBlockEntity> imp
     @Override
     public void appendHoverText(
         @NotNull ItemStack stack,
-        Item.@NotNull TooltipContext context,
+        @NotNull Item.TooltipContext context,
         @NotNull List<Component> tooltipComponents,
         @NotNull TooltipFlag tooltipFlag
     ) {
@@ -95,7 +95,7 @@ public class LeadChestBlock extends AbstractChestBlock<LeadChestBlockEntity> imp
     }
 
     @Override
-    public DoubleBlockCombiner.@NotNull NeighborCombineResult<? extends ChestBlockEntity> combine(
+    public @NotNull DoubleBlockCombiner.NeighborCombineResult<? extends ChestBlockEntity> combine(
         @NotNull BlockState state,
         @NotNull Level level,
         @NotNull BlockPos pos,

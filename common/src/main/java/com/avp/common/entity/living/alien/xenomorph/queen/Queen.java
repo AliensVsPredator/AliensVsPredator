@@ -12,13 +12,11 @@ import org.jetbrains.annotations.Nullable;
 import com.avp.AVP;
 import com.avp.common.ai.goal.DigToTargetGoal;
 import com.avp.common.ai.goal.QueenLayEggGoal;
-import com.avp.common.block.AVPBlockTags;
 import com.avp.common.entity.living.alien.Alien;
+import com.avp.common.entity.living.alien.manager.resin.ResinData;
 import com.avp.common.entity.living.alien.xenomorph.Xenomorph;
 import com.avp.common.entity.type.AVPEntityTypes;
 import com.avp.common.sound.AVPSoundEvents;
-import com.avp.common.util.AlienVariantUtil;
-import com.avp.common.util.resin.ResinData;
 
 public class Queen extends Xenomorph {
 
@@ -52,7 +50,7 @@ public class Queen extends Xenomorph {
 
     @Override
     protected @NotNull ResinData createResinData() {
-        return new ResinData(0, 128, 1, AVP.config.statsConfigs.QUEEN_STATS.nestTickrate);
+        return new ResinData(0, 128, 10, AVP.config.statsConfigs.QUEEN_STATS.nestTickrate);
     }
 
     @Override
@@ -72,16 +70,6 @@ public class Queen extends Xenomorph {
 
         if (!level().isClientSide()) {
             becomeIrradiated();
-
-            if (tickCount < 2) {
-                var belowBlockPos = blockPosition().below();
-                var blockState = level().getBlockState(belowBlockPos);
-                var resinNode = AlienVariantUtil.getResinNodeForType(this).getBlock();
-
-                if (!blockState.is(resinNode) && !blockState.is(AVPBlockTags.ACID_IMMUNE)) {
-                    level().setBlockAndUpdate(belowBlockPos, AlienVariantUtil.getResinNodeForType(this));
-                }
-            }
         }
     }
 
@@ -101,7 +89,7 @@ public class Queen extends Xenomorph {
     }
 
     @Override
-    protected @NotNull SoundEvent getHurtSound(DamageSource damageSource) {
+    protected @NotNull SoundEvent getHurtSound(@NotNull DamageSource damageSource) {
         return AVPSoundEvents.ENTITY_QUEEN_HURT.get();
     }
 
@@ -131,6 +119,12 @@ public class Queen extends Xenomorph {
     @Override
     public boolean isPushable() {
         return false;
+    }
+
+    // Queens should never despawn no matter what.
+    @Override
+    public boolean isPersistenceRequired() {
+        return true;
     }
 
     @Override

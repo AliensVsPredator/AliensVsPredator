@@ -81,7 +81,7 @@ public class Rocket extends ThrowableProjectile {
     }
 
     @Override
-    protected void defineSynchedData(SynchedEntityData.@NotNull Builder builder) { /* NO-OP */ }
+    protected void defineSynchedData(@NotNull SynchedEntityData.Builder builder) { /* NO-OP */ }
 
     @Override
     protected double getDefaultGravity() {

@@ -12,7 +12,6 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import com.avp.AVP;
-import com.avp.common.entity.living.alien.Alien;
 import com.avp.common.entity.living.alien.xenomorph.Xenomorph;
 import com.avp.common.entity.type.AVPEntityTypes;
 import com.avp.common.hive.Hive;
@@ -115,9 +114,8 @@ public class BalanceHiveTask extends HiveTask {
         }
 
         hive.hiveLeader().ifSome(hiveLeader -> {
-            if (
-                !Objects.equals(hiveLeader.getType(), AVPEntityTypes.PRAETORIAN.get()) || !(hiveLeader instanceof Xenomorph xenomorph)
-            ) {
+            if (!(hiveLeader instanceof Xenomorph xenomorph)) {
+                // If the hive leader is not a xenomorph (somehow), then return.
                 return;
             }
 
@@ -133,11 +131,12 @@ public class BalanceHiveTask extends HiveTask {
         var type = xenomorph.getType();
         var growthStage = AlienLifecycleRegistry.getOrNull(null, type);
 
-        if (growthStage == null || xenomorph.getEntityData().get(Xenomorph.IS_POISONED)) {
-            return;
-        }
-
-        if (xenomorph.getEntityData().get(Alien.IS_IRRADIATED)) {
+        // TODO: Don't duplicate this check here, the growth manager should already be checking this.
+        if (
+            growthStage == null
+                || xenomorph.isPoisoned()
+                || xenomorph.isIrradiated()
+        ) {
             return;
         }
 

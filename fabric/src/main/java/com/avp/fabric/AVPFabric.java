@@ -12,13 +12,13 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.level.GameRules;
 
 import com.avp.AVP;
+import com.avp.common.entity.living.villager.gift.AVPVillagerGiftKeys;
+import com.avp.common.entity.living.villager.profession.AVPVillagerProfessions;
 import com.avp.common.entity.type.AVPEntityTypes;
-import com.avp.common.profession.AVPGifts;
-import com.avp.common.profession.AVPProfessions;
 import com.avp.data.worldgen.AVPVillageInjection;
 import com.avp.fabric.common.DispenserBlockBehaviors;
 import com.avp.fabric.common.FlammableBlockRegistry;
-import com.avp.fabric.common.entity.spawn.SpawnPlacements;
+import com.avp.fabric.common.entity.spawn.AVPSpawnPlacements;
 import com.avp.fabric.common.worldgen.WorldGen;
 import com.avp.fabric.data.loot.LootTableModifier;
 import com.avp.fabric.service.FabricRegistryService;
@@ -40,7 +40,7 @@ public class AVPFabric implements ModInitializer {
         // Functionality
         DispenserBlockBehaviors.initialize();
         LootTableModifier.initialize();
-        SpawnPlacements.initialize();
+        AVPSpawnPlacements.initialize();
         FlammableBlockRegistry.initialize();
         ServerTickEvents.START_WORLD_TICK.register(this::onWorldTick);
         ServerLifecycleEvents.SERVER_STARTING.register(this::addNewVillageBuilding);
@@ -70,7 +70,7 @@ public class AVPFabric implements ModInitializer {
     public static void modifyGifts() {
         var gifts = GiveGiftToHeroAccessor.getGifts();
 
-        gifts.put(AVPProfessions.COMMISSARY.get(), AVPGifts.COMMISSARY_GIFT_LOOT_TABLE);
+        gifts.put(AVPVillagerProfessions.COMMISSARY.get(), AVPVillagerGiftKeys.COMMISSARY_GIFT_LOOT_TABLE);
     }
 
     public void addNewVillageBuilding(final MinecraftServer event) {
