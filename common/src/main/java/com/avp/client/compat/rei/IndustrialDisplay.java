@@ -1,5 +1,6 @@
-package com.avp.fabric.client.compat.rei;
+package com.avp.client.compat.rei;
 
+import com.avp.common.recipe.IndustrialFurnaceRecipe;
 import me.shedaniel.rei.api.common.category.CategoryIdentifier;
 import me.shedaniel.rei.api.common.display.basic.BasicDisplay;
 import me.shedaniel.rei.api.common.entry.EntryIngredient;
@@ -9,13 +10,11 @@ import net.minecraft.world.item.crafting.RecipeHolder;
 
 import java.util.List;
 
-import com.avp.common.recipe.IndustrialFurnaceRecipe;
-
 public class IndustrialDisplay extends BasicDisplay {
 
     public IndustrialDisplay(RecipeHolder<IndustrialFurnaceRecipe> recipe) {
         super(
-            List.of(EntryIngredients.ofIngredient(recipe.value().getIngredients().get(0))),
+            List.of(EntryIngredients.ofIngredient(recipe.value().getIngredients().getFirst())),
             List.of(EntryIngredient.of(EntryStacks.of(recipe.value().getResultItem(null))))
         );
     }

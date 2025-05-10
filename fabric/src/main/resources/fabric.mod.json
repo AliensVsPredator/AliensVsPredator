@@ -36,7 +36,7 @@
 			"com.avp.fabric.data.AVPDataGenerator"
 		],
 		"rei_client": [
-			"com.avp.fabric.client.compat.rei.AVPREIClient"
+			"com.avp.client.compat.rei.AVPREIClient"
 		]
 	},
 	"mixins": [
