@@ -12,6 +12,7 @@
   - This means a hive can have multiple queens. This is intended behavior for a future mechanic.
 
 ## 🐞 Fixes
+- Fixed ovomorphs hatching and releasing facehuggers even while they are dead or dying.
 - Fixed queens having issues creating new hives.
 - Fixed hives sometimes breaking out into civil wars due to interference from multiple queens and/or hive leaders.
 - Fixed hives not creating praetorians if a queen is present.
