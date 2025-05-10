@@ -81,11 +81,6 @@ public class HiveMembershipManager implements NBTSerializable {
             // Remove the hive member if their last seen pos is loaded and if they haven't been seen in 3 minutes.
             return hive.ageInTicks() - lastSeenTimestampInTicks > 20 * 60 * 3;
         });
-
-        if (!isMember(hive.getLeadershipManager().getLeaderIdOrNull())) {
-            // If the hive leader id is no longer present in the hive member data map, clear the leader.
-            hive.getLeadershipManager().setLeaderId(null);
-        }
     }
 
     public void addMember(Entity entity) {

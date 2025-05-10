@@ -80,6 +80,7 @@ public class Hive {
         }
 
         debugManager.tick();
+        leadershipManager.tick();
         membershipManager.tick();
 
         tasks.stream()
