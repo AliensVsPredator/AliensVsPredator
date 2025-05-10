@@ -12,7 +12,7 @@
   - This means a hive can have multiple queens. This is intended behavior for a future mechanic.
 
 ## 🐞 Fixes
-- N/A
+- Fixed hives not creating Praetorians if a queen is present.
 
 ## 🛠 Data Pack
 - N/A

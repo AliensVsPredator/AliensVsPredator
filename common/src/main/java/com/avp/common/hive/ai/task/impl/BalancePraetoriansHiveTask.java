@@ -25,7 +25,6 @@ public class BalancePraetoriansHiveTask extends BalanceHiveTask {
         var hiveMemberCount = hive.getMembershipManager().getMemberCount();
         var warriors = membersByType.getOrDefault(AVPEntityTypes.WARRIOR.get(), List.of());
         var praetorians = membersByType.getOrDefault(AVPEntityTypes.PRAETORIAN.get(), List.of());
-        var queens = membersByType.getOrDefault(AVPEntityTypes.QUEEN.get(), List.of());
 
         int hiveMembersRequiredForPraetorian = AVP.config.hiveConfigs.HIVE_MEMBERS_REQUIRED_FOR_PRAETORIAN;
         int maxPraetorianCount = AVP.config.hiveConfigs.HIVE_MAX_PRAETORIAN_COUNT;
@@ -33,7 +32,7 @@ public class BalancePraetoriansHiveTask extends BalanceHiveTask {
             ? Math.max(0, Math.clamp(hiveMemberCount / hiveMembersRequiredForPraetorian, 0, maxPraetorianCount) - praetorians.size())
             : 0;
 
-        if (desiredPraetorianCount == 0 || !queens.isEmpty() || !hive.isChunkLoaded()) {
+        if (desiredPraetorianCount == 0 || !hive.isChunkLoaded()) {
             return;
         }
 
