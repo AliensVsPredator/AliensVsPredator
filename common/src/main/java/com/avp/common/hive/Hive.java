@@ -26,7 +26,6 @@ import java.util.UUID;
 import com.avp.AVP;
 import com.avp.common.entity.AVPEntityTypeTags;
 import com.avp.common.entity.living.alien.Alien;
-import com.avp.common.entity.living.alien.xenomorph.queen.Queen;
 import com.avp.common.hive.ai.task.Task;
 import com.avp.common.hive.ai.task.impl.BalanceHiveTask;
 import com.avp.common.hive.ai.task.impl.DebugHiveTask;
@@ -104,29 +103,23 @@ public class Hive {
     }
 
     public boolean requestToJoin(Entity requestingEntity) {
-        var isAlien = requestingEntity instanceof Alien;
-
-        if (requestingEntity instanceof Queen && hiveLeader().isSome()) {
+        if (!(requestingEntity instanceof Alien)) {
+            // Hives only accept aliens, non-aliens get rejected.
             return false;
         }
 
-        if (isAlien) {
-            var hivePos = centerPosition();
-            int leashDistance = AVP.config.hiveConfigs.HIVE_LEASH_RADIUS_IN_BLOCKS;
-            var leashDistanceSquared = leashDistance * leashDistance;
-            var distanceFromHiveSquared = requestingEntity.distanceToSqr(hivePos.getX(), hivePos.getY(), hivePos.getZ());
+        var leashDistance = AVP.config.hiveConfigs.HIVE_LEASH_RADIUS_IN_BLOCKS;
 
-            if (distanceFromHiveSquared > leashDistanceSquared) {
-                return false;
-            }
-
-            var resourceLocation = BuiltInRegistries.ENTITY_TYPE.getKey(requestingEntity.getType());
-            var hiveMemberData = new HiveMemberData(resourceLocation, requestingEntity.blockPosition(), ageInTicks);
-            hiveMemberDataMap.put(requestingEntity.getUUID(), hiveMemberData);
+        if (!isEntityWithinRangeOfHive(requestingEntity, leashDistance)) {
+            // If the entity isn't within range of the hive, it shouldn't be able to join the hive.
+            return false;
         }
 
-        // Hives only accept aliens.
-        return isAlien;
+        var resourceLocation = BuiltInRegistries.ENTITY_TYPE.getKey(requestingEntity.getType());
+        var hiveMemberData = new HiveMemberData(resourceLocation, requestingEntity.blockPosition(), ageInTicks);
+        hiveMemberDataMap.put(requestingEntity.getUUID(), hiveMemberData);
+
+        return true;
     }
 
     public void ping(@NotNull Entity entity) {
@@ -192,11 +185,13 @@ public class Hive {
     }
 
     public boolean isBlockPosWithinRangeOfHive(BlockPos blockPos, int rangeInBlocks) {
-        var centerPos = centerPosition();
         var hiveRadiusSquared = rangeInBlocks * rangeInBlocks;
-        var distanceSquared = blockPos.distToCenterSqr(centerPos.getX(), centerPos.getY(), centerPos.getZ());
+        return distanceToCenterSqr(blockPos) <= hiveRadiusSquared;
+    }
 
-        return distanceSquared <= hiveRadiusSquared;
+    public double distanceToCenterSqr(BlockPos blockPos) {
+        var centerPos = centerPosition();
+        return blockPos.distToCenterSqr(centerPos.getX(), centerPos.getY(), centerPos.getZ());
     }
 
     public UUID id() {

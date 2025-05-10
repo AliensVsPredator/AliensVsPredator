@@ -75,9 +75,11 @@ public class HiveLevelData extends SavedData {
         return Option.ofNullable(closestHive);
     }
 
-    public Hive createHive() {
+    public Hive createHive(BlockPos blockPos) {
         var id = UUID.randomUUID();
         var hive = new Hive(level, id);
+        // Move the hive center to the provided block position.
+        hive.moveCenter(blockPos);
         hiveByIdMap.put(id, hive);
         AVP.LOGGER.debug("Created hive: {}", id);
         return hive;

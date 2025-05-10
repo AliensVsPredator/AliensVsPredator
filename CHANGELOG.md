@@ -7,7 +7,9 @@
 - N/A
 
 ## ♻️ Changes
-- N/A
+- Queens no longer forcibly create their own hives regardless of nearby hives.
+- Queens may now join an existing hive even if that hive already has a leader.
+  - This means a hive can have multiple queens. This is intended behavior for a future mechanic.
 
 ## 🐞 Fixes
 - N/A
