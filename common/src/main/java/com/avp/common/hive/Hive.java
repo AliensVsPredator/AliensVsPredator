@@ -183,6 +183,10 @@ public class Hive {
         return isBlockPosWithinRangeOfHive(entity.blockPosition());
     }
 
+    public boolean isEntityWithinRangeOfHive(Entity entity, int rangeInBlocks) {
+        return isBlockPosWithinRangeOfHive(entity.blockPosition(), rangeInBlocks);
+    }
+
     public boolean isBlockPosWithinRangeOfHive(BlockPos blockPos) {
         return isBlockPosWithinRangeOfHive(blockPos, AVP.config.hiveConfigs.HIVE_RADIUS_IN_BLOCKS);
     }
