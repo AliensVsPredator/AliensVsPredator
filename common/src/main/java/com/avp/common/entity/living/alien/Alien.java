@@ -114,14 +114,17 @@ public abstract class Alien extends Monster {
         return AlienVariant.NORMAL;
     }
 
+    @Deprecated(forRemoval = true)
     public boolean isAberrant() {
         return Objects.equal(getType(), getTypeForVariant(AlienVariant.ABERRANT));
     }
 
+    @Deprecated(forRemoval = true)
     public boolean isIrradiated() {
         return Objects.equal(getType(), getTypeForVariant(AlienVariant.IRRADIATED));
     }
 
+    @Deprecated(forRemoval = true)
     public boolean isNetherAfflicted() {
         return Objects.equal(getType(), getTypeForVariant(AlienVariant.NETHER));
     }
