@@ -15,11 +15,11 @@ import com.avp.common.block.entity.resin_node.ResinSpreader;
 import com.avp.common.block.resin.ResinVeinRegrowUtil;
 import com.avp.common.entity.living.alien.util.AlienVariantUtil;
 
-public class ResinSpreadBehavior implements SpreadBehavior {
+public class ResinVeinSpreadBehavior implements VeinSpreadBehavior {
 
-    public static final ResinSpreadBehavior INSTANCE = new ResinSpreadBehavior();
+    public static final ResinVeinSpreadBehavior INSTANCE = new ResinVeinSpreadBehavior();
 
-    private ResinSpreadBehavior() {}
+    private ResinVeinSpreadBehavior() {}
 
     @Override
     public boolean attemptSpreadVein(
@@ -27,15 +27,14 @@ public class ResinSpreadBehavior implements SpreadBehavior {
         LevelAccessor levelAccessor,
         BlockPos blockPos,
         BlockState blockState,
-        @Nullable Collection<Direction> facings,
-        boolean bl
+        @Nullable Collection<Direction> facings
     ) {
         var nodeBlock = levelAccessor.getBlockState(nodePos).getBlock();
         var resinBlock = AlienVariantUtil.getResinVeinFor(nodeBlock);
 
         if (facings == null) {
             var spreader = resinBlock.getSameSpaceSpreader();
-            return spreader.spreadAll(levelAccessor.getBlockState(blockPos), levelAccessor, blockPos, bl) > 0L;
+            return spreader.spreadAll(levelAccessor.getBlockState(blockPos), levelAccessor, blockPos, false) > 0L;
         } else if (!facings.isEmpty()) {
             return isAirOrWater(blockState) && ResinVeinRegrowUtil.regrow(
                 resinBlock.defaultBlockState(),
@@ -45,7 +44,7 @@ public class ResinSpreadBehavior implements SpreadBehavior {
                 facings
             );
         } else {
-            return SpreadBehavior.super.attemptSpreadVein(nodePos, levelAccessor, blockPos, blockState, facings, bl);
+            return VeinSpreadBehavior.super.attemptSpreadVein(nodePos, levelAccessor, blockPos, blockState, facings);
         }
     }
 
@@ -55,10 +54,11 @@ public class ResinSpreadBehavior implements SpreadBehavior {
         LevelAccessor levelAccessor,
         BlockPos blockPos,
         RandomSource randomSource,
-        ResinSpreader resinSpreader,
-        boolean bl
+        ResinSpreader resinSpreader
     ) {
-        return chargeCursor.getDecayDelay() > 0 ? chargeCursor.getCharge() : 0;
+        return chargeCursor.getDecayDelay() > 0
+            ? chargeCursor.getCharge()
+            : 0;
     }
 
     @Override

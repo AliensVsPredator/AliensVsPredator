@@ -25,7 +25,7 @@ public class ResinSpreadListener implements GameEventListener {
     public ResinSpreadListener(PositionSource positionSource, SpreaderType spreaderType) {
         this.positionSource = positionSource;
         this.spreaderType = spreaderType;
-        this.resinSpreader = ResinSpreader.createLevelSpreader();
+        this.resinSpreader = ResinSpreader.create();
     }
 
     @Override
@@ -48,7 +48,12 @@ public class ResinSpreadListener implements GameEventListener {
     }
 
     @Override
-    public boolean handleGameEvent(ServerLevel serverLevel, Holder<GameEvent> holder, GameEvent.Context context, Vec3 vec3) {
+    public boolean handleGameEvent(
+        @NotNull ServerLevel serverLevel,
+        Holder<GameEvent> holder,
+        @NotNull GameEvent.Context context,
+        @NotNull Vec3 vec3
+    ) {
         // TODO: Make sure this is correct, used to be a .key() on the game event type here.
         if (!holder.is(AVPGameEvents.XENOMORPH_RESIN_SPREAD.getHolder())) {
             return false;

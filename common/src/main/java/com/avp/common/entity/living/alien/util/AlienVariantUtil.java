@@ -44,9 +44,10 @@ public class AlienVariantUtil {
 
     private static final Lazy<Map<Block, Block>> RESIN_VEIN_MAPPING = Lazy.of(
         () -> Map.ofEntries(
-            Map.entry(AVPBlocks.NETHER_RESIN_NODE.get(), AVPBlocks.NETHER_RESIN_VEIN.get()),
             Map.entry(AVPBlocks.ABERRANT_RESIN_NODE.get(), AVPBlocks.ABERRANT_RESIN_VEIN.get()),
-            Map.entry(AVPBlocks.IRRADIATED_RESIN_NODE.get(), AVPBlocks.IRRADIATED_RESIN_VEIN.get())
+            Map.entry(AVPBlocks.IRRADIATED_RESIN_NODE.get(), AVPBlocks.IRRADIATED_RESIN_VEIN.get()),
+            Map.entry(AVPBlocks.NETHER_RESIN_NODE.get(), AVPBlocks.NETHER_RESIN_VEIN.get()),
+            Map.entry(AVPBlocks.RESIN_NODE.get(), AVPBlocks.RESIN_VEIN.get())
         )
     );
 
@@ -93,18 +94,6 @@ public class AlienVariantUtil {
             case Acid irradiatedAcid when irradiatedAcid.isIrradiated() -> AVPParticleTypes.IRRADIATED_ACID.get();
             case Acid netherAcid when netherAcid.isNetherAfflicted() -> AVPParticleTypes.BLUE_ACID.get();
             default -> AVPParticleTypes.ACID.get();
-        };
-    }
-
-    public static BlockState getResinNodeForType(Alien alien) {
-        return switch (alien) {
-            case Alien netherAlien when netherAlien.isNetherAfflicted() ->
-                AVPBlocks.NETHER_RESIN_NODE.get().defaultBlockState();
-            case Alien aberrantAlien when aberrantAlien.isAberrant() ->
-                AVPBlocks.ABERRANT_RESIN_NODE.get().defaultBlockState();
-            case Alien irradiatedAlien when irradiatedAlien.isIrradiated() ->
-                AVPBlocks.IRRADIATED_RESIN_NODE.get().defaultBlockState();
-            default -> AVPBlocks.RESIN_NODE.get().defaultBlockState();
         };
     }
 

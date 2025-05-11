@@ -24,10 +24,10 @@ class ResinVeinSpreaderConfig extends MultifaceSpreader.DefaultSpreaderConfig {
     @Override
     public boolean stateCanBeReplaced(
         BlockGetter blockGetter,
-        BlockPos blockPos,
+        @NotNull BlockPos blockPos,
         BlockPos blockPos2,
-        Direction direction,
-        BlockState blockState
+        @NotNull Direction direction,
+        @NotNull BlockState blockState
     ) {
         var blockState2 = blockGetter.getBlockState(blockPos2.relative(direction));
         // TODO: Use tag here for resin nodes.

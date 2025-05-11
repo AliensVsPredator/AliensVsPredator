@@ -13,8 +13,8 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-import com.avp.common.block.entity.resin_node.behavior.ResinSpreadBehavior;
-import com.avp.common.block.entity.resin_node.behavior.SpreadBehavior;
+import com.avp.common.block.entity.resin_node.behavior.ResinVeinSpreadBehavior;
+import com.avp.common.block.entity.resin_node.behavior.VeinSpreadBehavior;
 
 public class ChargeCursorUtil {
 
@@ -30,8 +30,10 @@ public class ChargeCursorUtil {
             .forEach(objectArrayList::add)
     );
 
-    static SpreadBehavior getSpreadBehavior(BlockState blockState) {
-        return blockState.getBlock() instanceof SpreadBehavior spreadBehavior ? spreadBehavior : ResinSpreadBehavior.INSTANCE;
+    static VeinSpreadBehavior getSpreadBehavior(BlockState blockState) {
+        return blockState.getBlock() instanceof VeinSpreadBehavior veinSpreadBehavior
+            ? veinSpreadBehavior
+            : ResinVeinSpreadBehavior.INSTANCE;
     }
 
     @Nullable
@@ -43,7 +45,7 @@ public class ChargeCursorUtil {
             mutableBlockPos2.setWithOffset(blockPos, vec3i);
             var blockState = levelAccessor.getBlockState(mutableBlockPos2);
 
-            if (blockState.getBlock() instanceof SpreadBehavior && isMovementUnobstructed(levelAccessor, blockPos, mutableBlockPos2)) {
+            if (blockState.getBlock() instanceof VeinSpreadBehavior && isMovementUnobstructed(levelAccessor, blockPos, mutableBlockPos2)) {
                 mutableBlockPos.set(mutableBlockPos2);
 
                 if (SculkVeinBlock.hasSubstrateAccess(levelAccessor, blockState, mutableBlockPos2)) {

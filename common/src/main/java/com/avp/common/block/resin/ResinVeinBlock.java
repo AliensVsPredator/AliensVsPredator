@@ -22,10 +22,10 @@ import org.jetbrains.annotations.NotNull;
 import com.avp.common.block.AVPBlocks;
 import com.avp.common.block.entity.resin_node.ChargeCursor;
 import com.avp.common.block.entity.resin_node.ResinSpreader;
-import com.avp.common.block.entity.resin_node.behavior.SpreadBehavior;
+import com.avp.common.block.entity.resin_node.behavior.VeinSpreadBehavior;
 import com.avp.common.sound.AVPSoundEvents;
 
-public class ResinVeinBlock extends MultifaceBlock implements SpreadBehavior {
+public class ResinVeinBlock extends MultifaceBlock implements VeinSpreadBehavior {
 
     public static final MapCodec<MultifaceBlock> CODEC = simpleCodec(ResinVeinBlock::new);
 
@@ -50,7 +50,7 @@ public class ResinVeinBlock extends MultifaceBlock implements SpreadBehavior {
     }
 
     @Override
-    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
+    protected void createBlockStateDefinition(@NotNull StateDefinition.Builder<Block, BlockState> builder) {
         super.createBlockStateDefinition(builder);
         builder.add(WATERLOGGED);
     }
@@ -58,11 +58,11 @@ public class ResinVeinBlock extends MultifaceBlock implements SpreadBehavior {
     @Override
     protected @NotNull BlockState updateShape(
         BlockState blockState,
-        Direction direction,
-        BlockState blockState2,
-        LevelAccessor levelAccessor,
-        BlockPos blockPos,
-        BlockPos blockPos2
+        @NotNull Direction direction,
+        @NotNull BlockState blockState2,
+        @NotNull LevelAccessor levelAccessor,
+        @NotNull BlockPos blockPos,
+        @NotNull BlockPos blockPos2
     ) {
         if (blockState.getValue(WATERLOGGED)) {
             levelAccessor.scheduleTick(blockPos, Fluids.WATER, Fluids.WATER.getTickDelay(levelAccessor));
@@ -72,7 +72,7 @@ public class ResinVeinBlock extends MultifaceBlock implements SpreadBehavior {
     }
 
     @Override
-    protected boolean canBeReplaced(BlockState blockState, BlockPlaceContext blockPlaceContext) {
+    protected boolean canBeReplaced(@NotNull BlockState blockState, BlockPlaceContext blockPlaceContext) {
         // TODO: What about the other resin vein types here?
         return !blockPlaceContext.getItemInHand().is(AVPBlocks.RESIN_VEIN.get().asItem()) || super.canBeReplaced(
             blockState,
@@ -100,10 +100,9 @@ public class ResinVeinBlock extends MultifaceBlock implements SpreadBehavior {
         LevelAccessor levelAccessor,
         BlockPos blockPos,
         RandomSource randomSource,
-        ResinSpreader resinSpreader,
-        boolean bl
+        ResinSpreader resinSpreader
     ) {
-        if (bl && this.attemptPlaceResin(resinSpreader, levelAccessor, chargeCursor.getPos(), randomSource)) {
+        if (this.attemptPlaceResin(resinSpreader, levelAccessor, chargeCursor.getPos(), randomSource)) {
             return chargeCursor.getCharge() - 1;
         } else {
             return randomSource.nextInt(resinSpreader.chargeDecayRate()) == 0
@@ -138,39 +137,12 @@ public class ResinVeinBlock extends MultifaceBlock implements SpreadBehavior {
             levelAccessor.setBlock(blockPos2, resinBlockState, 3);
             Block.pushEntitiesUp(blockState2, resinBlockState, levelAccessor, blockPos2);
             levelAccessor.playSound(null, blockPos2, AVPSoundEvents.BLOCK_RESIN_SPREAD.get(), SoundSource.BLOCKS, 1.0F, 1.0F);
-            this.veinSpreader.spreadAll(resinBlockState, levelAccessor, blockPos2, resinSpreader.isWorldGeneration());
-            var direction2 = direction.getOpposite();
-
-            dischargeForAllFacesExcludingDirection(levelAccessor, randomSource, direction2, blockPos2);
+            this.veinSpreader.spreadAll(resinBlockState, levelAccessor, blockPos2, false);
 
             return true;
         }
 
         return false;
-    }
-
-    private void dischargeForAllFacesExcludingDirection(
-        LevelAccessor levelAccessor,
-        RandomSource randomSource,
-        Direction direction2,
-        BlockPos blockPos2
-    ) {
-        for (var direction3 : DIRECTIONS) {
-            if (direction3 == direction2) {
-                continue;
-            }
-
-            var blockPos3 = blockPos2.relative(direction3);
-            dischargeForBlockPos(levelAccessor, randomSource, blockPos3);
-        }
-    }
-
-    private void dischargeForBlockPos(LevelAccessor levelAccessor, RandomSource randomSource, BlockPos blockPos3) {
-        var blockState4 = levelAccessor.getBlockState(blockPos3);
-
-        if (blockState4.is(this)) {
-            this.onDischarged(levelAccessor, blockState4, blockPos3, randomSource);
-        }
     }
 
     private Block getResinBlock() {
