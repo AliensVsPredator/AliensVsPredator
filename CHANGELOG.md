@@ -29,6 +29,7 @@
 
 ## 🐞 Fixes
 - Fixed nether resin not being flame-resistant and turning into basalt (NeoForge-only).
+- Fixed nether resin veins being destroyed when ignited by flamethrowers.
 - Fixed aliens spreading resin that belonged to other strains (ex. nether xenomorphs spreading aberrant resin).
 - Fixed broken textures appearing when an aberrant queen became irradiated.
 - Fixed broken textures appearing when a nether queen became irradiated.

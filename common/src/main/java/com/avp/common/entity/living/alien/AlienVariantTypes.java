@@ -6,6 +6,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
 import java.util.EnumMap;
@@ -122,37 +123,45 @@ public class AlienVariantTypes {
     }
 
     /**
-     * Usage of this function is discouraged since it can return Option#none. Consider using getFor(AlienVariantType)
-     * where possible.
+     * Usage of this function is discouraged since it can return Option#none. Consider using getFor(AlienVariant) where
+     * possible.
      */
     public static Option<AlienVariantType> getFor(Integer alienVariantId) {
         return Option.ofNullable(TYPE_BY_ID.get(alienVariantId));
     }
 
     /**
-     * Usage of this function is discouraged since it can return Option#none. Consider using getFor(AlienVariantType)
-     * where possible.
+     * Usage of this function is discouraged since it can return Option#none. Consider using getFor(AlienVariant) where
+     * possible.
      */
     public static Option<AlienVariantType> getFor(Block block) {
         return getFor(block.defaultBlockState());
     }
 
     /**
-     * Usage of this function is discouraged since it can return Option#none. Consider using getFor(AlienVariantType)
-     * where possible.
+     * Usage of this function is discouraged since it can return null. Consider using getFor(AlienVariant) where
+     * possible.
      */
-    public static Option<AlienVariantType> getFor(BlockState blockState) {
+    public static @Nullable AlienVariantType getForOrNull(BlockState blockState) {
         if (blockState.is(AVPBlockTags.ABERRANT_RESIN)) {
-            return Option.some(ABERRANT);
+            return ABERRANT;
         } else if (blockState.is(AVPBlockTags.IRRADIATED_RESIN)) {
-            return Option.some(IRRADIATED);
+            return IRRADIATED;
         } else if (blockState.is(AVPBlockTags.NETHER_RESIN)) {
-            return Option.some(NETHER);
+            return NETHER;
         } else if (blockState.is(AVPBlockTags.RESIN)) {
-            return Option.some(NORMAL);
+            return NORMAL;
         }
 
-        return Option.none();
+        return null;
+    }
+
+    /**
+     * Usage of this function is discouraged since it can return Option#none. Consider using getFor(AlienVariant) where
+     * possible.
+     */
+    public static Option<AlienVariantType> getFor(BlockState blockState) {
+        return Option.ofNullable(getForOrNull(blockState));
     }
 
     public static AlienVariantType getFor(Alien alien) {
@@ -160,16 +169,16 @@ public class AlienVariantTypes {
     }
 
     /**
-     * Usage of this function is discouraged since it can return Option#none. Consider using getFor(AlienVariantType)
-     * where possible.
+     * Usage of this function is discouraged since it can return Option#none. Consider using getFor(AlienVariant) where
+     * possible.
      */
     public static Option<AlienVariantType> getFor(Entity entity) {
         return getFor(entity.getType());
     }
 
     /**
-     * Usage of this function is discouraged since it can return Option#none. Consider using getFor(AlienVariantType)
-     * where possible.
+     * Usage of this function is discouraged since it can return Option#none. Consider using getFor(AlienVariant) where
+     * possible.
      */
     @Deprecated(forRemoval = true)
     public static Option<AlienVariantType> getFor(Acid entity) {
@@ -183,8 +192,8 @@ public class AlienVariantTypes {
     }
 
     /**
-     * Usage of this function is discouraged since it can return Option#none. Consider using getFor(AlienVariantType)
-     * where possible.
+     * Usage of this function is discouraged since it can return Option#none. Consider using getFor(AlienVariant) where
+     * possible.
      */
     public static Option<AlienVariantType> getFor(EntityType<?> entityType) {
         if (entityType.is(AVPEntityTypeTags.ABERRANT_ALIENS)) {

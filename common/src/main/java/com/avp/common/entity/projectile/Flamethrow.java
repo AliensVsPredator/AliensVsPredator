@@ -22,6 +22,7 @@ import java.util.ArrayDeque;
 import java.util.HashSet;
 
 import com.avp.common.damage.AVPDamageTypes;
+import com.avp.common.entity.living.alien.AlienVariantTypes;
 import com.avp.common.entity.type.AVPEntityTypes;
 
 public class Flamethrow extends ThrowableProjectile {
@@ -138,11 +139,18 @@ public class Flamethrow extends ThrowableProjectile {
 
     private boolean shouldPlaceFireAt(BlockPos pos) {
         var state = level().getBlockState(pos);
+        var alienVariantType = AlienVariantTypes.getForOrNull(state);
+
+        if (alienVariantType == AlienVariantTypes.NETHER) {
+            // If the state being replaced is a nether variant type (nether resin), then don't replace it with fire.
+            return false;
+        }
+
         return state.canBeReplaced() && state.getFluidState().isEmpty();
     }
 
     @Override
-    protected void defineSynchedData(SynchedEntityData.Builder builder) { /* NO-OP */ }
+    protected void defineSynchedData(@NotNull SynchedEntityData.Builder builder) { /* NO-OP */ }
 
     @Override
     public boolean shouldRenderAtSqrDistance(double distance) {
