@@ -71,5 +71,10 @@ public class AVPBiomeTagProvider extends FabricTagProvider<Biome> {
         getOrCreateTagBuilder(AVPBiomeTags.HAS_ALTAR)
             .addTag(AVPBiomeTags.HAS_BADLANDS_ALTAR)
             .addTag(AVPBiomeTags.HAS_DESERT_ALTAR);
+
+        getOrCreateTagBuilder(AVPBiomeTags.HAS_XENOMORPHS)
+            .addOptionalTag(BiomeTags.IS_END)
+            .addOptionalTag(BiomeTags.IS_NETHER)
+            .addOptionalTag(BiomeTags.IS_OVERWORLD);
     }
 }

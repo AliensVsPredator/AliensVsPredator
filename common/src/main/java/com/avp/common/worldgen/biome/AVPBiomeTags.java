@@ -32,6 +32,8 @@ public class AVPBiomeTags {
 
     public static final TagKey<Biome> HAS_OUTPOST_SUPPLY_DESERT = create("has_outpost_supply_desert");
 
+    public static final TagKey<Biome> HAS_XENOMORPHS = create("has_xenomorphs");
+
     private static TagKey<Biome> create(String name) {
         return TagKey.create(Registries.BIOME, AVPResources.location(name));
     }

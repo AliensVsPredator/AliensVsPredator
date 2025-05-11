@@ -20,6 +20,7 @@
   - Irradiated Resin Node
 
 ## 🛠 Data Pack
+- Added `#avp:has_xenomorphs` biome tag.
 - Added `#avp:resin_blocks` block tag.
 - Added `#avp:resin_nodes` block tag.
 - Added `#avp:resin_replaceable` block tag.
