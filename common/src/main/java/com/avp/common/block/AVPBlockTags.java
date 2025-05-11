@@ -48,6 +48,12 @@ public class AVPBlockTags {
 
     public static final TagKey<Block> RESIN = create("resin");
 
+    public static final TagKey<Block> RESIN_BLOCKS = create("resin_blocks");
+
+    public static final TagKey<Block> RESIN_NODES = create("resin_nodes");
+
+    public static final TagKey<Block> RESIN_REPLACEABLE = create("resin_replaceable");
+
     public static final TagKey<Block> RESIN_VEINS = create("resin_veins");
 
     public static final TagKey<Block> RESIN_WEBS = create("resin_webs");

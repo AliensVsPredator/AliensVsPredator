@@ -18,7 +18,10 @@
   - Irradiated Resin Node
 
 ## 🛠 Data Pack
-- N/A
+- Added `#avp:resin_blocks` block tag.
+- Added `#avp:resin_nodes` block tag.
+- Added `#avp:resin_replaceable` block tag.
+  - Allows for controlling which blocks aliens can fully replace with resin.
 
 ## 🔬 Technical Changes
 - N/A
