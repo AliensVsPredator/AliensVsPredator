@@ -10,6 +10,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.npc.VillagerProfession;
 import net.minecraft.world.entity.npc.VillagerTrades;
@@ -29,6 +30,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import com.avp.AVP;
+import com.avp.common.entity.spawning.AVPEntitySpawnData;
 import com.avp.common.lifecycle.AlienLifecycle;
 import com.avp.common.lifecycle.infection.AlienInfection;
 import com.avp.common.network.NetworkHandler;
@@ -53,6 +55,8 @@ public class NeoForgeRegistryService implements RegistryService {
     private final List<Tuple4<Supplier<? extends ItemLike>, Float, Boolean, Boolean>> compostableData;
 
     private final List<Tuple2<Supplier<? extends EntityType<? extends LivingEntity>>, Supplier<AttributeSupplier.Builder>>> entityAttributeSupplierPairs;
+
+    private final List<AVPEntitySpawnData<?>> entitySpawnDataEntries;
 
     private final List<Tuple2<Supplier<? extends ItemLike>, Integer>> furnaceFuelPairs;
 
@@ -88,6 +92,7 @@ public class NeoForgeRegistryService implements RegistryService {
         this.azureLibItemIdentitySuppliers = new ArrayList<>();
         this.compostableData = new ArrayList<>();
         this.entityAttributeSupplierPairs = new ArrayList<>();
+        this.entitySpawnDataEntries = new ArrayList<>();
         this.furnaceFuelPairs = new ArrayList<>();
         this.literalArgumentBuilders = new ArrayList<>();
         this.networkHandlers = new ArrayList<>();
@@ -149,6 +154,11 @@ public class NeoForgeRegistryService implements RegistryService {
     }
 
     @Override
+    public <T extends Mob> void registerEntitySpawnData(AVPEntitySpawnData<T> spawnData) {
+        entitySpawnDataEntries.add(spawnData);
+    }
+
+    @Override
     public void registerFurnaceFuel(Supplier<? extends ItemLike> itemLikeSupplier, int burnTimeInTicks) {
         furnaceFuelPairs.add(new Tuple2<>(itemLikeSupplier, burnTimeInTicks));
     }
@@ -198,6 +208,10 @@ public class NeoForgeRegistryService implements RegistryService {
 
     public List<Tuple2<Supplier<? extends EntityType<? extends LivingEntity>>, Supplier<AttributeSupplier.Builder>>> getEntityAttributeSupplierPairs() {
         return entityAttributeSupplierPairs;
+    }
+
+    public List<AVPEntitySpawnData<?>> getEntitySpawnDataEntries() {
+        return entitySpawnDataEntries;
     }
 
     public List<Tuple2<Supplier<? extends ItemLike>, Integer>> getFurnaceFuelPairs() {

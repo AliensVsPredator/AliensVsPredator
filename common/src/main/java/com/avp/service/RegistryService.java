@@ -6,6 +6,7 @@ import net.minecraft.core.Registry;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.npc.VillagerProfession;
 import net.minecraft.world.entity.npc.VillagerTrades;
@@ -15,6 +16,7 @@ import net.minecraft.world.level.ItemLike;
 import java.util.List;
 import java.util.function.Supplier;
 
+import com.avp.common.entity.spawning.AVPEntitySpawnData;
 import com.avp.common.lifecycle.AlienLifecycle;
 import com.avp.common.lifecycle.infection.AlienInfection;
 import com.avp.common.network.NetworkHandler;
@@ -46,6 +48,8 @@ public interface RegistryService {
         Supplier<? extends EntityType<? extends LivingEntity>> entityTypeSupplier,
         Supplier<AttributeSupplier.Builder> attributeSupplierBuilderSupplier
     );
+
+    <T extends Mob> void registerEntitySpawnData(AVPEntitySpawnData<T> spawnData);
 
     void registerFurnaceFuel(Supplier<? extends ItemLike> itemLikeSupplier, int burnTimeInTicks);
 

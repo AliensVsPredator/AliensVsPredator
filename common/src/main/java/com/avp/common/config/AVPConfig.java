@@ -73,39 +73,6 @@ public class AVPConfig {
 
         @Configurable
         @Configurable.Synchronized
-        @Configurable.Comment(
-            "If set to true, xenomorphs will spawn in the overworld naturally along with other monsters. Modifying this requires restarting the game."
-        )
-        public boolean NATURAL_SPAWNING_ENABLED = true;
-
-        @Configurable
-        @Configurable.Synchronized
-        @Configurable.Comment(
-            "If set to true, *ADULT* xenomorphs will spawn in the overworld naturally along with other monsters. Modifying this requires restarting the game."
-        )
-        public boolean ADULT_SPAWNING_ENABLED = true;
-
-        @Configurable
-        @Configurable.Synchronized
-        @Configurable.Comment(
-            "If set to true, *YOUNG* xenomorphs (eggs, facehuggers, bursters, etc.) will spawn in the overworld naturally along with other monsters. Modifying this requires restarting the game."
-        )
-        public boolean YOUNG_SPAWNING_ENABLED = true;
-
-        @Configurable
-        @Configurable.Synchronized
-        @Configurable.Comment(
-            {
-                "WARNING: This might break mob farms.",
-                "If set to true, certain hostile monster spawns will be removed. This will allow other hostile monsters (xenomorphs, for example) to spawn more frequently. Modifying this requires restarting the game.",
-                "The list of mobs that have their spawns removed can be viewed (and modified) with the avp:tags/entity/remove_vanilla_spawns tag.",
-                "ENABLING THIS MAY BREAK CERTAIN FARMS THAT RELY ON MOB SPAWNS. Enable at your own risk, you have been warned!"
-            }
-        )
-        public boolean REMOVE_VANILLA_SPAWNS = false;
-
-        @Configurable
-        @Configurable.Synchronized
         @Configurable.Comment("Modifying these will require restarting the game.")
         public SpawnSettings CHESTBURSTER_SPAWN = new SpawnSettings(true, 1, 2, 10);
 

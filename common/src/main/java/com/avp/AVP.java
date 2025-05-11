@@ -21,6 +21,7 @@ import com.avp.common.effect.AVPMobEffects;
 import com.avp.common.entity.living.villager.poi.AVPVillagerPoiTypes;
 import com.avp.common.entity.living.villager.profession.AVPVillagerProfessions;
 import com.avp.common.entity.living.villager.trade.AVPVillagerTrades;
+import com.avp.common.entity.spawning.AVPEntitySpawns;
 import com.avp.common.entity.type.AVPEntityTypes;
 import com.avp.common.fuel.AVPFuelRegistry;
 import com.avp.common.item.AVPArmorItems;
@@ -87,6 +88,7 @@ public class AVP {
 
         // Functionality
         AVPCompostingChanceRegistry.initialize();
+        AVPEntitySpawns.initialize();
         AVPFuelRegistry.initialize();
         AVPVillagerTrades.initialize();
     }

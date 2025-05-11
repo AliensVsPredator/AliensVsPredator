@@ -1,8 +1,8 @@
 package com.avp.neoforge.data;
 
-import com.bvanseg.just.functional.function.Lazy;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.RegistrySetBuilder;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.DataProvider;
 import net.minecraft.resources.ResourceKey;
@@ -13,7 +13,6 @@ import net.minecraft.world.level.levelgen.GenerationStep;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.common.data.DatapackBuiltinEntriesProvider;
-import net.neoforged.neoforge.common.world.BiomeModifier;
 import net.neoforged.neoforge.common.world.BiomeModifiers;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
 import net.neoforged.neoforge.registries.NeoForgeRegistries;
@@ -24,88 +23,17 @@ import java.util.List;
 import java.util.Set;
 
 import com.avp.AVP;
-import com.avp.common.config.AVPConfig;
-import com.avp.common.entity.type.AVPEntityTypes;
+import com.avp.AVPResources;
 import com.avp.data.AVPCaveKey;
-import com.avp.data.AVPSpawnData;
 import com.avp.data.worldgen.AVPOres;
+import com.avp.neoforge.service.NeoForgeRegistryService;
+import com.avp.service.Services;
 
 @EventBusSubscriber(modid = AVP.MOD_ID, bus = EventBusSubscriber.Bus.MOD)
 public class AVPNeoForgeDatagen {
 
-    private static final AVPConfig.SpawnConfigs config = AVP.config.spawnConfigs;
+    private static final NeoForgeRegistryService REGISTRY = (NeoForgeRegistryService) Services.REGISTRY;
 
-    // FIXME: UPDATE TO IF POSSIBLE FIGURE OUT A BRIDGE SERVICE FOR THE ResourceKey, SINCE
-    // ResourceKey<BiomeModifier> IS NEO ONLY
-    private static final Lazy<List<AVPSpawnData>> spawnDataList = Lazy.of(
-        () -> List.of(
-            new AVPSpawnData(
-                AVPEntityTypes.OVOMORPH.get(),
-                AVPEntitySpawnKeys.ADD_SPAWNS_OVOMORPH,
-                BiomeTags.IS_OVERWORLD,
-                config.OVAMORPH_SPAWN
-            ),
-            new AVPSpawnData(
-                AVPEntityTypes.CHESTBURSTER.get(),
-                AVPEntitySpawnKeys.ADD_SPAWNS_CHESTBURSTER,
-                BiomeTags.IS_OVERWORLD,
-                config.CHESTBURSTER_SPAWN
-            ),
-            new AVPSpawnData(AVPEntityTypes.DRONE.get(), AVPEntitySpawnKeys.ADD_SPAWNS_DRONE, BiomeTags.IS_OVERWORLD, config.DRONE_SPAWN),
-            new AVPSpawnData(
-                AVPEntityTypes.WARRIOR.get(),
-                AVPEntitySpawnKeys.ADD_SPAWNS_WARRIOR,
-                BiomeTags.IS_OVERWORLD,
-                config.WARRIOR_SPAWN
-            ),
-            new AVPSpawnData(
-                AVPEntityTypes.PRAETORIAN.get(),
-                AVPEntitySpawnKeys.ADD_SPAWNS_PRAETORIAN,
-                BiomeTags.IS_OVERWORLD,
-                config.PRAETORIAN_SPAWN
-            ),
-            new AVPSpawnData(AVPEntityTypes.QUEEN.get(), AVPEntitySpawnKeys.ADD_SPAWNS_QUEEN, BiomeTags.IS_OVERWORLD, config.QUEEN_SPAWN),
-            new AVPSpawnData(
-                AVPEntityTypes.NETHER_OVOMORPH.get(),
-                AVPEntitySpawnKeys.ADD_SPAWNS_NETHER_OVOMORPH,
-                BiomeTags.IS_NETHER,
-                config.NETHER_OVAMORPH_SPAWN
-            ),
-            new AVPSpawnData(
-                AVPEntityTypes.NETHER_CHESTBURSTER.get(),
-                AVPEntitySpawnKeys.ADD_SPAWNS_NETHER_CHESTBURSTER,
-                BiomeTags.IS_NETHER,
-                config.NETHER_CHESTBURSTER_SPAWN
-            ),
-            new AVPSpawnData(
-                AVPEntityTypes.NETHER_DRONE.get(),
-                AVPEntitySpawnKeys.ADD_SPAWNS_NETHER_DRONE,
-                BiomeTags.IS_NETHER,
-                config.NETHER_DRONE_SPAWN
-            ),
-            new AVPSpawnData(
-                AVPEntityTypes.NETHER_WARRIOR.get(),
-                AVPEntitySpawnKeys.ADD_SPAWNS_NETHER_WARRIOR,
-                BiomeTags.IS_NETHER,
-                config.NETHER_WARRIOR_SPAWN
-            ),
-            new AVPSpawnData(
-                AVPEntityTypes.NETHER_PRAETORIAN.get(),
-                AVPEntitySpawnKeys.ADD_SPAWNS_NETHER_PRAETORIAN,
-                BiomeTags.IS_NETHER,
-                config.NETHER_PRAETORIAN_SPAWN
-            ),
-            new AVPSpawnData(
-                AVPEntityTypes.NETHER_QUEEN.get(),
-                AVPEntitySpawnKeys.ADD_SPAWNS_NETHER_QUEEN,
-                BiomeTags.IS_NETHER,
-                config.NETHER_QUEEN_SPAWN
-            ),
-            new AVPSpawnData(AVPEntityTypes.YAUTJA.get(), AVPEntitySpawnKeys.ADD_SPAWNS_YAUTJA, BiomeTags.IS_JUNGLE, config.YAUTJA_SPAWN)
-        )
-    );
-
-    @SuppressWarnings("unchecked")
     @SubscribeEvent
     public static void onGatherData(GatherDataEvent event) {
         var generator = event.getGenerator();
@@ -125,17 +53,30 @@ public class AVPNeoForgeDatagen {
                         var excludedBiomes = HolderSet.direct(biomes.getOrThrow(Biomes.DRIPSTONE_CAVES));
                         var underGround = GenerationStep.Decoration.UNDERGROUND_ORES;
 
-                        for (AVPSpawnData spawnData : spawnDataList.get()) {
+                        for (var spawnData : REGISTRY.getEntitySpawnDataEntries()) {
+                            if (spawnData.isConfigDisabled()) {
+                                continue;
+                            }
+
+                            var entityType = spawnData.getEntityType();
+                            var entityTypePath = BuiltInRegistries.ENTITY_TYPE.getKey(entityType).getPath();
+                            var spawnKey = ResourceKey.create(
+                                NeoForgeRegistries.Keys.BIOME_MODIFIERS,
+                                AVPResources.location("add_spawns_" + entityTypePath)
+                            );
+                            var config = spawnData.getConfigData();
+                            var spawnSettings = config.spawnSettings();
+
                             bootstrap.register(
-                                (ResourceKey<BiomeModifier>) spawnData.spawnKey(),
+                                spawnKey,
                                 new BiomeModifiers.AddSpawnsBiomeModifier(
-                                    biomes.getOrThrow(spawnData.biomeTag()),
+                                    biomes.getOrThrow(config.biomeTagKey()),
                                     List.of(
                                         new MobSpawnSettings.SpawnerData(
-                                            spawnData.entityType(),
-                                            spawnData.config().weight,
-                                            spawnData.config().minGroupSize,
-                                            spawnData.config().maxGroupSize
+                                            entityType,
+                                            spawnSettings.weight,
+                                            spawnSettings.minGroupSize,
+                                            spawnSettings.maxGroupSize
                                         )
                                     )
                                 )

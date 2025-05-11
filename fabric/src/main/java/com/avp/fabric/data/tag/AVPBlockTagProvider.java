@@ -228,8 +228,6 @@ public class AVPBlockTagProvider extends FabricTagProvider.BlockTagProvider {
             .addOptionalTag(BlockTags.DIRT)
             .addOptionalTag(BlockTags.NYLIUM)
             .addOptionalTag(BlockTags.TERRACOTTA)
-            .addTag(AVPBlockTags.RESIN_BLOCKS)
-            .addTag(AVPBlockTags.RESIN_NODES)
             .add(
                 Blocks.CALCITE,
                 Blocks.CLAY,
