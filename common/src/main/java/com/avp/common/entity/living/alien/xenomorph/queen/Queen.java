@@ -13,6 +13,7 @@ import com.avp.AVP;
 import com.avp.common.ai.goal.DigToTargetGoal;
 import com.avp.common.ai.goal.QueenLayEggGoal;
 import com.avp.common.entity.living.alien.Alien;
+import com.avp.common.entity.living.alien.AlienVariant;
 import com.avp.common.entity.living.alien.manager.resin.ResinData;
 import com.avp.common.entity.living.alien.xenomorph.Xenomorph;
 import com.avp.common.entity.type.AVPEntityTypes;
@@ -34,18 +35,8 @@ public class Queen extends Xenomorph {
     }
 
     @Override
-    public @Nullable EntityType<? extends Alien> getAberrantType() {
-        return AVPEntityTypes.ABERRANT_QUEEN.get();
-    }
-
-    @Override
-    public @Nullable EntityType<? extends Alien> getIrradiatedType() {
-        return AVPEntityTypes.IRRADIATED_QUEEN.get();
-    }
-
-    @Override
-    public @Nullable EntityType<? extends Alien> getNetherType() {
-        return AVPEntityTypes.NETHER_QUEEN.get();
+    public @Nullable EntityType<? extends Alien> getTypeForVariant(AlienVariant alienVariant) {
+        return getType(alienVariant);
     }
 
     @Override
@@ -62,15 +53,6 @@ public class Queen extends Xenomorph {
     @Override
     protected void addDigToTargetGoal() {
         goalSelector.addGoal(5, new DigToTargetGoal(this, 32, 4));
-    }
-
-    @Override
-    public void tick() {
-        super.tick();
-
-        if (!level().isClientSide()) {
-            becomeIrradiated();
-        }
     }
 
     @Override
@@ -134,5 +116,14 @@ public class Queen extends Xenomorph {
 
     public QueenAnimationDispatcher getAnimationDispatcher() {
         return animationDispatcher;
+    }
+
+    public static EntityType<? extends Alien> getType(AlienVariant alienVariant) {
+        return switch (alienVariant) {
+            case NORMAL -> AVPEntityTypes.QUEEN.get();
+            case NETHER -> AVPEntityTypes.NETHER_QUEEN.get();
+            case ABERRANT -> AVPEntityTypes.ABERRANT_QUEEN.get();
+            case IRRADIATED -> AVPEntityTypes.IRRADIATED_QUEEN.get();
+        };
     }
 }

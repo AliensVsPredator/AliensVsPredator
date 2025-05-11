@@ -11,7 +11,7 @@ import java.util.Collection;
 
 import com.avp.common.block.entity.resin_node.ChargeCursor;
 import com.avp.common.block.entity.resin_node.ResinSpreader;
-import com.avp.common.entity.living.alien.util.AlienVariantUtil;
+import com.avp.common.entity.living.alien.AlienVariantTypes;
 
 public interface VeinSpreadBehavior {
 
@@ -35,12 +35,15 @@ public interface VeinSpreadBehavior {
         @Nullable Collection<Direction> facings
     ) {
         var block = levelAccessor.getBlockState(nodePos).getBlock();
-        var resinVeinBlock = AlienVariantUtil.getResinVeinFor(block);
 
-        var numberOfDirectionsSpreadTowards = resinVeinBlock.getSpreader()
-            .spreadAll(blockState, levelAccessor, blockPos, false);
+        return AlienVariantTypes.getFor(block)
+            .isSomeAnd(alienVariantType -> {
+                var resinVeinBlock = alienVariantType.resinVein().get();
+                var numberOfDirectionsSpreadTowards = resinVeinBlock.getSpreader()
+                    .spreadAll(blockState, levelAccessor, blockPos, false);
 
-        return numberOfDirectionsSpreadTowards > 0L;
+                return numberOfDirectionsSpreadTowards > 0L;
+            });
     }
 
     default boolean canChangeBlockStateOnSpread() {

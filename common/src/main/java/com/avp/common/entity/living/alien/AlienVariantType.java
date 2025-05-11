@@ -1,0 +1,30 @@
+package com.avp.common.entity.living.alien;
+
+import net.minecraft.core.particles.SimpleParticleType;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.level.block.Block;
+
+import com.avp.common.block.resin.ResinVeinBlock;
+import com.avp.common.registry.AVPDeferredHolder;
+
+public record AlienVariantType(
+    AlienVariant variant,
+
+    // Blocks
+    AVPDeferredHolder<Block> resin,
+    AVPDeferredHolder<Block> resinNode,
+    AVPDeferredHolder<ResinVeinBlock> resinVein,
+    AVPDeferredHolder<Block> resinWeb,
+
+    // Block Tags
+    TagKey<Block> resinBlockTag,
+
+    // Items
+    AVPDeferredHolder<Item> chitin,
+    AVPDeferredHolder<Item> platedChitin,
+    AVPDeferredHolder<Item> resinBall,
+
+    // Particle Types
+    AVPDeferredHolder<SimpleParticleType> acidParticleType
+) {}

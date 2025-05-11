@@ -154,37 +154,25 @@ public class AVPEntityTypes {
 
     public static final AVPDeferredHolder<EntityType<Drone>> IRRADIATED_DRONE = register(
         "irradiated_drone",
-        EntityType.Builder.<Drone>of(
-            (type, level) -> irradiatedFactory(Drone::new, type, level),
-            ALIEN_CATEGORY
-        )
+        EntityType.Builder.of(Drone::new, ALIEN_CATEGORY)
             .sized(0.8f, 1.98f)
     );
 
     public static final AVPDeferredHolder<EntityType<Praetorian>> IRRADIATED_PRAETORIAN = register(
         "irradiated_praetorian",
-        EntityType.Builder.<Praetorian>of(
-            (type, level) -> irradiatedFactory(Praetorian::new, type, level),
-            ALIEN_CATEGORY
-        )
+        EntityType.Builder.<Praetorian>of(Praetorian::new, ALIEN_CATEGORY)
             .sized(0.98f, 3.98f)
     );
 
     public static final AVPDeferredHolder<EntityType<Queen>> IRRADIATED_QUEEN = register(
         "irradiated_queen",
-        EntityType.Builder.<Queen>of(
-            (type, level) -> irradiatedFactory(Queen::new, type, level),
-            ALIEN_CATEGORY
-        )
+        EntityType.Builder.of(Queen::new, ALIEN_CATEGORY)
             .sized(1.98f, 3.98f)
     );
 
     public static final AVPDeferredHolder<EntityType<Warrior>> IRRADIATED_WARRIOR = register(
         "irradiated_warrior",
-        EntityType.Builder.<Warrior>of(
-            (type, level) -> irradiatedFactory(Warrior::new, type, level),
-            ALIEN_CATEGORY
-        )
+        EntityType.Builder.of(Warrior::new, ALIEN_CATEGORY)
             .sized(0.8f, 1.98f)
     );
 
@@ -435,16 +423,6 @@ public class AVPEntityTypes {
     ) {
         var entity = entityFactory.apply(entityType, level);
         entity.geneManager().minimize(GeneKeys.GENETIC_INTEGRITY);
-        return entity;
-    }
-
-    private static <T extends Alien> T irradiatedFactory(
-        BiFunction<EntityType<T>, Level, T> entityFactory,
-        EntityType<T> entityType,
-        Level level
-    ) {
-        var entity = entityFactory.apply(entityType, level);
-        entity.setIrradiated(true);
         return entity;
     }
 

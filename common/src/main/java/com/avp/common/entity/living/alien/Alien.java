@@ -1,29 +1,22 @@
 package com.avp.common.entity.living.alien;
 
+import com.google.common.base.Objects;
 import net.minecraft.core.Holder;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.MobSpawnType;
-import net.minecraft.world.entity.SpawnGroupData;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.monster.Monster;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.SpawnEggItem;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.pathfinder.PathType;
-import net.minecraft.world.level.storage.loot.LootTable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -33,34 +26,17 @@ import com.avp.common.effect.AVPMobEffectTags;
 import com.avp.common.entity.living.alien.manager.HiveManager;
 import com.avp.common.entity.living.alien.util.AcidBleedUtil;
 import com.avp.common.entity.living.alien.util.AlienHurtUtil;
-import com.avp.common.entity.living.alien.util.AlienVariantUtil;
-import com.avp.common.entity.living.gene.GeneKeys;
 import com.avp.common.entity.living.manager.GeneManager;
 import com.avp.common.entity.util.MovementAnalyzer;
 import com.avp.common.worldgen.biome.AVPBiomes;
 
 public abstract class Alien extends Monster {
 
-    private static final String IS_ABERRANT_KEY = "isAberrant";
-
-    private static final String IS_IRRADIATED_KEY = "isIrradiated";
-
-    private static final String IS_NETHER_AFFLICTED_KEY = "isNetherAfflicted";
-
     private static final String IS_POISONED_KEY = "isPoisoned";
 
     private static final String IS_ROYAL_KEY = "isRoyal";
 
     private static final String JELLY_COUNT_KEY = "jellyCount";
-
-    public static final EntityDataAccessor<Boolean> IS_ABERRANT = SynchedEntityData.defineId(Alien.class, EntityDataSerializers.BOOLEAN);
-
-    public static final EntityDataAccessor<Boolean> IS_IRRADIATED = SynchedEntityData.defineId(Alien.class, EntityDataSerializers.BOOLEAN);
-
-    public static final EntityDataAccessor<Boolean> IS_NETHER_AFFLICTED = SynchedEntityData.defineId(
-        Alien.class,
-        EntityDataSerializers.BOOLEAN
-    );
 
     public static final EntityDataAccessor<Boolean> IS_POISONED = SynchedEntityData.defineId(
         Alien.class,
@@ -91,22 +67,7 @@ public abstract class Alien extends Monster {
         this.movementAnalyzer = new MovementAnalyzer(this);
     }
 
-    public abstract @Nullable EntityType<? extends Alien> getAberrantType();
-
-    public abstract @Nullable EntityType<? extends Alien> getIrradiatedType();
-
-    public abstract @Nullable EntityType<? extends Alien> getNetherType();
-
-    @SuppressWarnings("unchecked")
-    public @Nullable EntityType<? extends Alien> getDefaultType() {
-        return (EntityType<? extends Alien>) getType();
-    }
-
-    // This override is just to mark getType as final.
-    @Override
-    public final @NotNull EntityType<?> getType() {
-        return super.getType();
-    }
+    public abstract @Nullable EntityType<? extends Alien> getTypeForVariant(AlienVariant alienVariant);
 
     @Override
     public float maxUpStep() {
@@ -136,38 +97,37 @@ public abstract class Alien extends Monster {
     @Override
     protected void defineSynchedData(@NotNull SynchedEntityData.Builder builder) {
         super.defineSynchedData(builder);
-        builder.define(IS_ABERRANT, false);
-        builder.define(IS_NETHER_AFFLICTED, false);
-        builder.define(IS_IRRADIATED, false);
         builder.define(IS_POISONED, false);
         builder.define(IS_ROYAL, false);
         builder.define(JELLY_COUNT, 0);
     }
 
-    public boolean isIrradiated() {
-        return entityData.get(IS_IRRADIATED);
-    }
+    public AlienVariant getVariant() {
+        if (isAberrant()) {
+            return AlienVariant.ABERRANT;
+        } else if (isIrradiated()) {
+            return AlienVariant.IRRADIATED;
+        } else if (isNetherAfflicted()) {
+            return AlienVariant.NETHER;
+        }
 
-    public void setIrradiated(boolean isIrradiated) {
-        entityData.set(IS_IRRADIATED, isIrradiated);
+        return AlienVariant.NORMAL;
     }
 
     public boolean isAberrant() {
-        return entityData.get(IS_ABERRANT);
+        return Objects.equal(getType(), getTypeForVariant(AlienVariant.ABERRANT));
     }
 
-    public void setAberrant(boolean isAberrant) {
-        entityData.set(IS_ABERRANT, isAberrant);
+    public boolean isIrradiated() {
+        return Objects.equal(getType(), getTypeForVariant(AlienVariant.IRRADIATED));
     }
 
     public boolean isNetherAfflicted() {
-        return entityData.get(IS_NETHER_AFFLICTED);
+        return Objects.equal(getType(), getTypeForVariant(AlienVariant.NETHER));
     }
 
-    public void setNetherAfflicted(boolean isNetherAfflicted) {
-        entityData.set(IS_NETHER_AFFLICTED, isNetherAfflicted);
-
-        if (isNetherAfflicted) {
+    private void applyMalusBasedOnVariant() {
+        if (isNetherAfflicted()) {
             setPathfindingMalus(PathType.LAVA, 0.0F);
             setPathfindingMalus(PathType.DANGER_FIRE, 0.0F);
             setPathfindingMalus(PathType.DAMAGE_FIRE, 0.0F);
@@ -195,54 +155,28 @@ public abstract class Alien extends Monster {
     }
 
     @Override
-    public @Nullable SpawnGroupData finalizeSpawn(
-        @NotNull ServerLevelAccessor serverLevelAccessor,
-        @NotNull DifficultyInstance difficultyInstance,
-        @NotNull MobSpawnType mobSpawnType,
-        @Nullable SpawnGroupData spawnGroupData
-    ) {
-        updateStateBasedOnGenetics();
-        return super.finalizeSpawn(serverLevelAccessor, difficultyInstance, mobSpawnType, spawnGroupData);
-    }
-
-    public void updateStateBasedOnGenetics() {
-        var hasMinimumGeneIntegrity = geneManager.isMinimized(GeneKeys.GENETIC_INTEGRITY);
-
-        if (!isNetherAfflicted() && !isIrradiated()) {
-            setAberrant(hasMinimumGeneIntegrity);
-        }
-
-        var hasMaximumFireResistance = geneManager.isMinimized(GeneKeys.COLD_RESISTANCE) && geneManager.isMaximized(
-            GeneKeys.FIRE_RESISTANCE
-        );
-
-        if (!isAberrant() && !isIrradiated()) {
-            setNetherAfflicted(hasMaximumFireResistance);
-        }
-    }
-
-    @Override
     public void tick() {
         super.tick();
         movementAnalyzer.tick();
         hiveManager.tick();
 
         if (!level().isClientSide) {
-            updateStateBasedOnGenetics();
             healPassively();
+            applyMalusBasedOnVariant();
             applyDynamicAttributes(config);
+            becomeIrradiated();
         }
     }
 
     /**
      * 10% chance when in Nuked Biome to become Irradiated
      */
-    protected void becomeIrradiated() {
+    private void becomeIrradiated() {
         if (tickCount % 60 != 0) {
             return;
         }
 
-        if (!this.level().getBiome(this.blockPosition()).is(AVPBiomes.NUKED_BIOME)) {
+        if (!level().getBiome(blockPosition()).is(AVPBiomes.NUKED_BIOME)) {
             return;
         }
 
@@ -250,8 +184,8 @@ public abstract class Alien extends Monster {
             return;
         }
 
-        if (this.getRandom().nextIntBetweenInclusive(1, 100) >= 90) {
-            this.setIrradiated(true);
+        if (getRandom().nextIntBetweenInclusive(1, 100) >= 90) {
+            AVPAlienTransitions.transitionIntoVariant(this, AlienVariant.IRRADIATED);
         }
     }
 
@@ -348,40 +282,10 @@ public abstract class Alien extends Monster {
     }
 
     @Override
-    public final @Nullable ItemStack getPickResult() {
-        SpawnEggItem spawnEggItem = null;
-
-        var variantType = AlienVariantUtil.getVariantTypeFor(this);
-
-        if (variantType != null) {
-            spawnEggItem = SpawnEggItem.byId(variantType);
-        }
-
-        return spawnEggItem == null ? super.getPickResult() : new ItemStack(spawnEggItem);
-    }
-
-    @Override
-    protected final @NotNull ResourceKey<LootTable> getDefaultLootTable() {
-        return AlienVariantUtil.getLootTableFor(this);
-    }
-
-    @Override
     public void readAdditionalSaveData(@NotNull CompoundTag compoundTag) {
         super.readAdditionalSaveData(compoundTag);
         geneManager.load(compoundTag);
         hiveManager.load(compoundTag);
-
-        if (compoundTag.contains(IS_ABERRANT_KEY)) {
-            setAberrant(compoundTag.getBoolean(IS_ABERRANT_KEY));
-        }
-
-        if (compoundTag.contains(IS_IRRADIATED_KEY)) {
-            setIrradiated(compoundTag.getBoolean(IS_IRRADIATED_KEY));
-        }
-
-        if (compoundTag.contains(IS_NETHER_AFFLICTED_KEY)) {
-            setNetherAfflicted(compoundTag.getBoolean(IS_NETHER_AFFLICTED_KEY));
-        }
 
         if (compoundTag.contains(IS_POISONED_KEY)) {
             setPoisoned(compoundTag.getBoolean(IS_POISONED_KEY));
@@ -401,9 +305,6 @@ public abstract class Alien extends Monster {
         super.addAdditionalSaveData(compoundTag);
         geneManager.save(compoundTag);
         hiveManager.save(compoundTag);
-        compoundTag.putBoolean(IS_ABERRANT_KEY, isAberrant());
-        compoundTag.putBoolean(IS_IRRADIATED_KEY, isIrradiated());
-        compoundTag.putBoolean(IS_NETHER_AFFLICTED_KEY, isNetherAfflicted());
         compoundTag.putBoolean(IS_POISONED_KEY, isPoisoned());
         compoundTag.putBoolean(IS_ROYAL_KEY, isRoyal());
         compoundTag.putInt(JELLY_COUNT_KEY, getEntityData().get(JELLY_COUNT));
@@ -463,7 +364,7 @@ public abstract class Alien extends Monster {
 
     @Override
     public boolean fireImmune() {
-        return this.isNetherAfflicted();
+        return isNetherAfflicted();
     }
 
     public MovementAnalyzer getMovementAnalyzer() {

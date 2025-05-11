@@ -8,7 +8,6 @@ import net.minecraft.world.entity.SpawnPlacements;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.level.ServerLevelAccessor;
 
-import com.avp.common.entity.living.alien.util.AlienVariantUtil;
 import com.avp.common.level.saveddata.HiveLevelData;
 
 public class AlienSpawning {
@@ -26,8 +25,10 @@ public class AlienSpawning {
         randomSource
     ) -> {
         var belowState = serverLevelAccessor.getBlockState(blockPos.below());
-        var resinTag = AlienVariantUtil.getResinTagFor(entityType);
-        var isValidResinPos = belowState.is(resinTag);
+        var alienVariantTypeOption = AlienVariantTypes.getFor(entityType)
+            .map(AlienVariantType::resinBlockTag);
+
+        var isValidResinPos = alienVariantTypeOption.isSomeAnd(belowState::is);
 
         return isValidResinPos
             && checkSpawnRules(entityType, serverLevelAccessor, mobSpawnType, blockPos, randomSource);

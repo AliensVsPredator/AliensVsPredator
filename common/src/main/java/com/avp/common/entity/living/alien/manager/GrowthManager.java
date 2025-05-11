@@ -1,25 +1,32 @@
 package com.avp.common.entity.living.alien.manager;
 
+import net.minecraft.Util;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.effect.MobEffectInstance;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.HashSet;
+import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
+import com.avp.common.entity.AVPEntityTransitions;
 import com.avp.common.entity.living.alien.Alien;
-import com.avp.common.entity.living.alien.util.AlienVariantUtil;
 import com.avp.common.entity.living.alien.xenomorph.Xenomorph;
 import com.avp.common.lifecycle.growth.GrowthStage;
 import com.avp.common.lifecycle.registry.AlienLifecycleRegistry;
 import com.avp.common.util.BlockPosUtil;
+import com.avp.common.util.NBTSerializable;
 
-public class GrowthManager {
+public class GrowthManager implements NBTSerializable {
 
     private static final String GROWTH_TIME_IN_TICKS_TAG_KEY = "growthTimeInTicks";
+
+    private static final Set<String> TRANSITION_NBT_KEY_BLACKLIST = Util.make(() -> {
+        var set = new HashSet<>(AVPEntityTransitions.DEFAULT_NBT_KEY_BLACKLIST);
+        set.add(GROWTH_TIME_IN_TICKS_TAG_KEY);
+        return set;
+    });
 
     private final Alien entity;
 
@@ -55,8 +62,7 @@ public class GrowthManager {
             return;
         }
 
-        var type = AlienVariantUtil.getVariantTypeFor(entity);
-        var growthStage = AlienLifecycleRegistry.getOrNull(null, type);
+        var growthStage = AlienLifecycleRegistry.getOrNull(null, entity.getType());
 
         if (growthStage == null) {
             return;
@@ -123,15 +129,14 @@ public class GrowthManager {
         // Reset growth time at this point.
         this.growthTimeInTicks = 0;
 
-        var level = entity.level();
         var nextFormType = growthStage.to();
-        var nextForm = nextFormType.create(level);
+        var nextForm = AVPEntityTransitions.transitionInto(entity, nextFormType, TRANSITION_NBT_KEY_BLACKLIST);
 
         if (nextForm == null) {
             return null;
         }
 
-        swapOldStageWithNewStage(nextForm, level);
+        nextForm.getEntityData().set(Xenomorph.JELLY_COUNT, 0);
 
         if (onGrowUpCallback != null) {
             onGrowUpCallback.accept(nextForm);
@@ -140,12 +145,14 @@ public class GrowthManager {
         return nextForm;
     }
 
+    @Override
     public void load(CompoundTag compoundTag) {
         if (compoundTag.contains(GROWTH_TIME_IN_TICKS_TAG_KEY)) {
             this.growthTimeInTicks = compoundTag.getInt(GROWTH_TIME_IN_TICKS_TAG_KEY);
         }
     }
 
+    @Override
     public void save(CompoundTag compoundTag) {
         compoundTag.putInt(GROWTH_TIME_IN_TICKS_TAG_KEY, growthTimeInTicks);
     }
@@ -158,57 +165,5 @@ public class GrowthManager {
     public GrowthManager setGrowthTimeReductionMultiplierProvider(@Nullable Supplier<Float> growthTimeReductionMultiplierProvider) {
         this.growthTimeReductionMultiplierProvider = growthTimeReductionMultiplierProvider;
         return this;
-    }
-
-    private void swapOldStageWithNewStage(LivingEntity nextForm, Level level) {
-        copyEntityTagData(entity, nextForm);
-        nextForm.getEntityData().set(Xenomorph.JELLY_COUNT, 0);
-
-        // Move the next form to the entity's current position. Set rotation angles as well.
-        nextForm.moveTo(entity.position(), entity.getYRot(), entity.getXRot());
-
-        // Explicitly set the yaw and pitch to ensure accurate orientation
-        nextForm.setYRot(entity.getYRot());
-        nextForm.setXRot(entity.getXRot());
-
-        // Synchronize the visual body rotation (if applicable for mobs)
-        nextForm.yBodyRot = entity.yBodyRot; // Body rotation
-        nextForm.yHeadRot = entity.yHeadRot; // Head rotation
-
-        nextForm.setDeltaMovement(entity.getDeltaMovement());
-
-        // Copies effects from previous entity to the next
-        for (var effect : entity.getActiveEffects()) {
-            nextForm.addEffect(new MobEffectInstance(effect));
-        }
-
-        if (entity.isPersistenceRequired() && nextForm instanceof Alien alien) {
-            alien.setPersistenceRequired();
-        }
-
-        // Add the new form to the level.
-        level.addFreshEntity(nextForm);
-
-        // Remove the old form from the level *without* killing it.
-        entity.discard();
-    }
-
-    private void copyEntityTagData(Entity oldEntity, Entity newEntity) {
-        // Step 1: Save old entity's data to a CompoundTag
-        var oldEntityData = new CompoundTag();
-        oldEntity.save(oldEntityData);
-
-        // Removes specific fields that shouldn't be copied.
-        oldEntityData.remove("id"); // Entity id shouldn't carry over since we're creating a new entity.
-        oldEntityData.remove("UUID"); // Each entity must have a unique UUID.
-        oldEntityData.remove("Pos"); // Position is set separately.
-        oldEntityData.remove("Motion"); // Velocity is handled separately.
-        oldEntityData.remove("Rotation"); // Rotation is set separately.
-        oldEntityData.remove("Health"); // Health should be whatever the new entity's health is.
-        oldEntityData.remove("attributes"); // New entity shouldn't take on attributes of the old entity.
-        oldEntityData.remove(GROWTH_TIME_IN_TICKS_TAG_KEY); // Growth should be reset.
-
-        // Step 2: Load the data into the new entity
-        newEntity.load(oldEntityData);
     }
 }

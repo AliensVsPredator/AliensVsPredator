@@ -17,6 +17,7 @@ import org.jetbrains.annotations.Nullable;
 import com.avp.AVP;
 import com.avp.common.ai.goal.combat.LungeAtTargetGoal;
 import com.avp.common.entity.living.alien.Alien;
+import com.avp.common.entity.living.alien.AlienVariant;
 import com.avp.common.entity.living.alien.parasite.Parasite;
 import com.avp.common.entity.type.AVPEntityTypes;
 
@@ -35,23 +36,8 @@ public class Facehugger extends Parasite {
     }
 
     @Override
-    public @Nullable EntityType<? extends Alien> getAberrantType() {
-        return isRoyal() ? AVPEntityTypes.ROYAL_ABERRANT_FACEHUGGER.get() : AVPEntityTypes.ABERRANT_FACEHUGGER.get();
-    }
-
-    @Override
-    public @Nullable EntityType<? extends Alien> getIrradiatedType() {
-        return null;
-    }
-
-    @Override
-    public @Nullable EntityType<? extends Alien> getNetherType() {
-        return isRoyal() ? AVPEntityTypes.ROYAL_NETHER_FACEHUGGER.get() : AVPEntityTypes.NETHER_FACEHUGGER.get();
-    }
-
-    @Override
-    public @Nullable EntityType<? extends Alien> getDefaultType() {
-        return isRoyal() ? AVPEntityTypes.ROYAL_FACEHUGGER.get() : AVPEntityTypes.FACEHUGGER.get();
+    public @Nullable EntityType<? extends Alien> getTypeForVariant(AlienVariant alienVariant) {
+        return getType(alienVariant, isRoyal());
     }
 
     @Override
@@ -86,5 +72,23 @@ public class Facehugger extends Parasite {
 
     public FacehuggerAnimationDispatcher getAnimationDispatcher() {
         return animationDispatcher;
+    }
+
+    public static @Nullable EntityType<? extends Alien> getType(AlienVariant alienVariant, boolean isRoyal) {
+        if (isRoyal) {
+            return switch (alienVariant) {
+                case NORMAL -> AVPEntityTypes.ROYAL_FACEHUGGER.get();
+                case NETHER -> AVPEntityTypes.ROYAL_NETHER_FACEHUGGER.get();
+                case ABERRANT -> AVPEntityTypes.ROYAL_ABERRANT_FACEHUGGER.get();
+                case IRRADIATED -> null;
+            };
+        }
+
+        return switch (alienVariant) {
+            case NORMAL -> AVPEntityTypes.FACEHUGGER.get();
+            case NETHER -> AVPEntityTypes.NETHER_FACEHUGGER.get();
+            case ABERRANT -> AVPEntityTypes.ABERRANT_FACEHUGGER.get();
+            case IRRADIATED -> null;
+        };
     }
 }

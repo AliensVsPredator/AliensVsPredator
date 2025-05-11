@@ -149,7 +149,6 @@ public class HatchManager {
         }
 
         facehugger.geneManager().setAll(ovomorph.geneManager().getAll());
-        facehugger.updateStateBasedOnGenetics();
 
         var ovomorphAbovePos = ovomorph.blockPosition().above();
         var ovomorphSuffocatingAboveCheck = ovomorph.level()

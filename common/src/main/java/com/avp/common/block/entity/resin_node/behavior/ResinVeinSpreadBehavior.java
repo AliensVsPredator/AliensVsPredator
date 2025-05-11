@@ -13,7 +13,9 @@ import java.util.Collection;
 import com.avp.common.block.entity.resin_node.ChargeCursor;
 import com.avp.common.block.entity.resin_node.ResinSpreader;
 import com.avp.common.block.resin.ResinVeinRegrowUtil;
-import com.avp.common.entity.living.alien.util.AlienVariantUtil;
+import com.avp.common.entity.living.alien.AlienVariantType;
+import com.avp.common.entity.living.alien.AlienVariantTypes;
+import com.avp.common.registry.AVPDeferredHolder;
 
 public class ResinVeinSpreadBehavior implements VeinSpreadBehavior {
 
@@ -30,14 +32,21 @@ public class ResinVeinSpreadBehavior implements VeinSpreadBehavior {
         @Nullable Collection<Direction> facings
     ) {
         var nodeBlock = levelAccessor.getBlockState(nodePos).getBlock();
-        var resinBlock = AlienVariantUtil.getResinVeinFor(nodeBlock);
+        var resinVeinBlock = AlienVariantTypes.getFor(nodeBlock)
+            .map(AlienVariantType::resinVein)
+            .map(AVPDeferredHolder::get)
+            .unwrapOr(null);
+
+        if (resinVeinBlock == null) {
+            return false;
+        }
 
         if (facings == null) {
-            var spreader = resinBlock.getSameSpaceSpreader();
+            var spreader = resinVeinBlock.getSameSpaceSpreader();
             return spreader.spreadAll(levelAccessor.getBlockState(blockPos), levelAccessor, blockPos, false) > 0L;
         } else if (!facings.isEmpty()) {
             return isAirOrWater(blockState) && ResinVeinRegrowUtil.regrow(
-                resinBlock.defaultBlockState(),
+                resinVeinBlock.defaultBlockState(),
                 levelAccessor,
                 blockPos,
                 blockState,

@@ -20,9 +20,9 @@ import java.util.function.Supplier;
 import com.avp.AVP;
 import com.avp.common.block.AVPBlockTags;
 import com.avp.common.entity.living.alien.Alien;
+import com.avp.common.entity.living.alien.AlienVariantTypes;
 import com.avp.common.entity.living.alien.manager.resin.ReadableResinData;
 import com.avp.common.entity.living.alien.manager.resin.ResinData;
-import com.avp.common.entity.living.alien.util.AlienVariantUtil;
 import com.avp.common.level.gameevent.AVPGameEvents;
 import com.avp.common.level.gameevent.listener.ResinSpreadListener;
 import com.avp.common.util.NBTSerializable;
@@ -115,10 +115,9 @@ public class ResinManager implements GameEventListener.Provider<ResinSpreadListe
             }
 
             // If the resin holder still has more resin, then we place a resin node manually.
-            var resinNodeBlock = AlienVariantUtil.getResinNodeFor(alien);
-
+            var resinNodeBlockState = AlienVariantTypes.getFor(alien).resinNode().get().defaultBlockState();
             // Place the resin node block at the suitable position.
-            alien.level().setBlockAndUpdate(suitableResinNodeBlockPosOption.unwrap(), resinNodeBlock.defaultBlockState());
+            alien.level().setBlockAndUpdate(suitableResinNodeBlockPosOption.unwrap(), resinNodeBlockState);
         }
     }
 

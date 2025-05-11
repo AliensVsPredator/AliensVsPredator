@@ -51,7 +51,7 @@ public class AVPBlocks {
         () -> new ResinNodeBlock(BlockProperties.ABERRANT_RESIN.build())
     );
 
-    public static final AVPDeferredHolder<Block> ABERRANT_RESIN_VEIN = register(
+    public static final AVPDeferredHolder<ResinVeinBlock> ABERRANT_RESIN_VEIN = register(
         "aberrant_resin_vein",
         () -> new ResinVeinBlock(BlockProperties.ABERRANT_RESIN_VEIN.build())
     );
@@ -334,7 +334,7 @@ public class AVPBlocks {
         () -> new IrradiatedResinNodeBlock(BlockProperties.RESIN.build())
     );
 
-    public static final AVPDeferredHolder<Block> IRRADIATED_RESIN_VEIN = register(
+    public static final AVPDeferredHolder<ResinVeinBlock> IRRADIATED_RESIN_VEIN = register(
         "irradiated_resin_vein",
         () -> new IrradiatedResinVeinBlock(BlockProperties.NETHER_RESIN_VEIN.build())
     );
@@ -374,7 +374,7 @@ public class AVPBlocks {
         () -> new ResinNodeBlock(BlockProperties.RESIN.build())
     );
 
-    public static final AVPDeferredHolder<Block> NETHER_RESIN_VEIN = register(
+    public static final AVPDeferredHolder<ResinVeinBlock> NETHER_RESIN_VEIN = register(
         "nether_resin_vein",
         () -> new ResinVeinBlock(BlockProperties.NETHER_RESIN_VEIN.build())
     );
@@ -421,7 +421,7 @@ public class AVPBlocks {
 
     public static final AVPDeferredHolder<Block> RESIN_SMOOTH = register("resin_smooth", BlockProperties.BRASS);
 
-    public static final AVPDeferredHolder<Block> RESIN_VEIN = register(
+    public static final AVPDeferredHolder<ResinVeinBlock> RESIN_VEIN = register(
         "resin_vein",
         () -> new ResinVeinBlock(BlockProperties.RESIN_VEIN.build())
     );
@@ -1086,7 +1086,7 @@ public class AVPBlocks {
         return register(id, () -> new Block(blockPropertyBuilder.build()));
     }
 
-    private static AVPDeferredHolder<Block> register(String id, Supplier<Block> blockSupplier) {
+    private static <T extends Block> AVPDeferredHolder<T> register(String id, Supplier<T> blockSupplier) {
         return Services.REGISTRY.register(BuiltInRegistries.BLOCK, id, blockSupplier);
     }
 

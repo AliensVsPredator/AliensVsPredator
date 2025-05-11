@@ -923,11 +923,11 @@ public class AVPBlockItems {
                 )
         );
 
-    private static AVPDeferredHolder<BlockItem> register(String id, Supplier<Block> blockSupplier) {
+    private static AVPDeferredHolder<BlockItem> register(String id, Supplier<? extends Block> blockSupplier) {
         return register(id, blockSupplier, new Item.Properties());
     }
 
-    private static AVPDeferredHolder<BlockItem> register(String id, Supplier<Block> blockSupplier, Item.Properties properties) {
+    private static AVPDeferredHolder<BlockItem> register(String id, Supplier<? extends Block> blockSupplier, Item.Properties properties) {
         return registerWithSupplier(id, () -> new BlockItem(blockSupplier.get(), properties));
     }
 

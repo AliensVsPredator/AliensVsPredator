@@ -8,7 +8,6 @@ import java.util.concurrent.TimeUnit;
 import com.avp.common.entity.AVPEntityTypeTags;
 import com.avp.common.entity.living.alien.ovomorph.Ovomorph;
 import com.avp.common.entity.living.alien.util.AlienPredicates;
-import com.avp.common.entity.living.alien.util.AlienVariantUtil;
 import com.avp.common.entity.living.alien.xenomorph.queen.Queen;
 import com.avp.common.sound.AVPSoundEvents;
 
@@ -93,9 +92,11 @@ public class QueenLayEggGoal extends Goal {
         var level = queen.level();
         // Egg has a 5% chance of being royal.
         var isRoyal = queen.getRandom().nextInt(100) < 5;
-        var ovomorphType = AlienVariantUtil.getOvomorphTypeFor(queen, isRoyal);
+        var ovomorphType = Ovomorph.getType(queen.getVariant(), isRoyal);
 
-        var ovomorph = ovomorphType.create(level);
+        var ovomorph = ovomorphType == null
+            ? null
+            : ovomorphType.create(level);
 
         if (ovomorph == null) {
             return;

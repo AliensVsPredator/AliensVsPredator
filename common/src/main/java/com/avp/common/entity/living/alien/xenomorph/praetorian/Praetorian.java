@@ -9,6 +9,7 @@ import org.jetbrains.annotations.Nullable;
 
 import com.avp.AVP;
 import com.avp.common.entity.living.alien.Alien;
+import com.avp.common.entity.living.alien.AlienVariant;
 import com.avp.common.entity.living.alien.manager.resin.ResinData;
 import com.avp.common.entity.living.alien.xenomorph.Xenomorph;
 import com.avp.common.entity.type.AVPEntityTypes;
@@ -29,18 +30,8 @@ public class Praetorian extends Xenomorph {
     }
 
     @Override
-    public @Nullable EntityType<? extends Alien> getAberrantType() {
-        return AVPEntityTypes.ABERRANT_PRAETORIAN.get();
-    }
-
-    @Override
-    public @Nullable EntityType<? extends Alien> getIrradiatedType() {
-        return AVPEntityTypes.IRRADIATED_PRAETORIAN.get();
-    }
-
-    @Override
-    public @Nullable EntityType<? extends Alien> getNetherType() {
-        return AVPEntityTypes.NETHER_PRAETORIAN.get();
+    public @Nullable EntityType<? extends Alien> getTypeForVariant(AlienVariant alienVariant) {
+        return getType(alienVariant);
     }
 
     @Override
@@ -81,15 +72,16 @@ public class Praetorian extends Xenomorph {
         return 9;
     }
 
-    @Override
-    public void tick() {
-        super.tick();
-        if (!level().isClientSide()) {
-            becomeIrradiated();
-        }
-    }
-
     public PraetorianAnimationDispatcher getAnimationDispatcher() {
         return animationDispatcher;
+    }
+
+    public static EntityType<? extends Alien> getType(AlienVariant alienVariant) {
+        return switch (alienVariant) {
+            case NORMAL -> AVPEntityTypes.PRAETORIAN.get();
+            case NETHER -> AVPEntityTypes.NETHER_PRAETORIAN.get();
+            case ABERRANT -> AVPEntityTypes.ABERRANT_PRAETORIAN.get();
+            case IRRADIATED -> AVPEntityTypes.IRRADIATED_PRAETORIAN.get();
+        };
     }
 }

@@ -28,6 +28,8 @@
     - Highly specific spawn configuration like this option provided is better suited for other mods to handle, not AVP.
 
 ## 🐞 Fixes
+- Fixed broken textures appearing when an aberrant queen became irradiated.
+- Fixed broken textures appearing when a nether queen became irradiated.
 - Fixed nether queens not spawning in the nether.
 - Fixed aberrant aliens not naturally spawning on aberrant resin.
 - Fixed aberrant aliens not spawning on aberrant resin in the end, nether or overworld.
@@ -53,3 +55,6 @@
 
 ## 🔬 Technical Changes
 - Entity spawn handling code is now shared between Fabric and NeoForge.
+- Rewrote alien variant type handling from the ground up.
+  - Aliens can no longer have multiple variants.
+  - This rewrite makes handling alien variants far less bug-prone.
