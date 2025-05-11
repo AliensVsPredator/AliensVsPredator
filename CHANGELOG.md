@@ -28,6 +28,7 @@
     - Highly specific spawn configuration like this option provided is better suited for other mods to handle, not AVP.
 
 ## 🐞 Fixes
+- Fixed aliens spreading resin that belonged to other strains (ex. nether xenomorphs spreading aberrant resin).
 - Fixed broken textures appearing when an aberrant queen became irradiated.
 - Fixed broken textures appearing when a nether queen became irradiated.
 - Fixed nether queens not spawning in the nether.

@@ -23,7 +23,6 @@ import com.avp.common.entity.living.alien.Alien;
 import com.avp.common.entity.living.alien.AlienVariantTypes;
 import com.avp.common.entity.living.alien.manager.resin.ReadableResinData;
 import com.avp.common.entity.living.alien.manager.resin.ResinData;
-import com.avp.common.level.gameevent.AVPGameEvents;
 import com.avp.common.level.gameevent.listener.ResinSpreadListener;
 import com.avp.common.util.NBTSerializable;
 
@@ -99,8 +98,10 @@ public class ResinManager implements GameEventListener.Provider<ResinSpreadListe
             return;
         }
 
+        var alienVariantType = AlienVariantTypes.getFor(alien);
+
         // Signal to the nearest resin node that we want to spread resin.
-        alien.gameEvent(AVPGameEvents.XENOMORPH_RESIN_SPREAD.getHolder());
+        alien.gameEvent(alienVariantType.resinSpreadEvent().getHolder());
 
         // If the alien still has resin even after signalling a resin spread event, that means there was no resin node
         // to intercept the event. So we try to place a resin node down here.
@@ -115,7 +116,7 @@ public class ResinManager implements GameEventListener.Provider<ResinSpreadListe
             }
 
             // If the resin holder still has more resin, then we place a resin node manually.
-            var resinNodeBlockState = AlienVariantTypes.getFor(alien).resinNode().get().defaultBlockState();
+            var resinNodeBlockState = alienVariantType.resinNode().get().defaultBlockState();
             // Place the resin node block at the suitable position.
             alien.level().setBlockAndUpdate(suitableResinNodeBlockPosOption.unwrap(), resinNodeBlockState);
         }

@@ -154,15 +154,17 @@ public class Acid extends Entity {
                 level.addAlwaysVisibleParticle(ParticleTypes.BUBBLE_COLUMN_UP, getRandomX(0.5), getRandomY(), getRandomZ(0.5), 0, 0, 0);
             }
 
-            alienVariantTypeOption.ifSome(alienVariantType -> level.addAlwaysVisibleParticle(
-                alienVariantType.acidParticleType().get(),
-                getRandomX(0.5),
-                getRandomY(),
-                getRandomZ(0.5),
-                0,
-                0,
-                0
-            ));
+            alienVariantTypeOption.ifSome(
+                alienVariantType -> level.addAlwaysVisibleParticle(
+                    alienVariantType.acidParticleType().get(),
+                    getRandomX(0.5),
+                    getRandomY(),
+                    getRandomZ(0.5),
+                    0,
+                    0,
+                    0
+                )
+            );
         }
     }
 

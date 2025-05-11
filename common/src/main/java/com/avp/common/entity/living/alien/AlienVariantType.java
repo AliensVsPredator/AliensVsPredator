@@ -4,6 +4,7 @@ import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.gameevent.GameEvent;
 
 import com.avp.common.block.resin.ResinVeinBlock;
 import com.avp.common.registry.AVPDeferredHolder;
@@ -24,6 +25,9 @@ public record AlienVariantType(
     AVPDeferredHolder<Item> chitin,
     AVPDeferredHolder<Item> platedChitin,
     AVPDeferredHolder<Item> resinBall,
+
+    // Game Events
+    AVPDeferredHolder<GameEvent> resinSpreadEvent,
 
     // Particle Types
     AVPDeferredHolder<SimpleParticleType> acidParticleType

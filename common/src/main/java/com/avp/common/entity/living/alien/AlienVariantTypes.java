@@ -17,6 +17,7 @@ import com.avp.common.block.AVPBlocks;
 import com.avp.common.entity.AVPEntityTypeTags;
 import com.avp.common.entity.acid.Acid;
 import com.avp.common.item.AVPItems;
+import com.avp.common.level.gameevent.AVPGameEvents;
 import com.avp.common.particle.AVPParticleTypes;
 
 public class AlienVariantTypes {
@@ -35,6 +36,8 @@ public class AlienVariantTypes {
         AVPItems.PLATED_ABERRANT_CHITIN,
         AVPItems.ABERRANT_RESIN_BALL,
 
+        AVPGameEvents.XENOMORPH_ABERRANT_RESIN_SPREAD,
+
         AVPParticleTypes.ACID
     );
 
@@ -51,6 +54,8 @@ public class AlienVariantTypes {
         AVPItems.IRRADIATED_CHITIN,
         AVPItems.PLATED_IRRADIATED_CHITIN,
         AVPItems.IRRADIATED_RESIN_BALL,
+
+        AVPGameEvents.XENOMORPH_IRRADIATED_RESIN_SPREAD,
 
         AVPParticleTypes.IRRADIATED_ACID
     );
@@ -69,6 +74,8 @@ public class AlienVariantTypes {
         AVPItems.PLATED_NETHER_CHITIN,
         AVPItems.NETHER_RESIN_BALL,
 
+        AVPGameEvents.XENOMORPH_NETHER_RESIN_SPREAD,
+
         AVPParticleTypes.BLUE_ACID
     );
 
@@ -85,6 +92,8 @@ public class AlienVariantTypes {
         AVPItems.CHITIN,
         AVPItems.PLATED_CHITIN,
         AVPItems.RESIN_BALL,
+
+        AVPGameEvents.XENOMORPH_RESIN_SPREAD,
 
         AVPParticleTypes.ACID
     );
