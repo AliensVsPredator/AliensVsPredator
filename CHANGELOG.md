@@ -28,6 +28,11 @@
     - Highly specific spawn configuration like this option provided is better suited for other mods to handle, not AVP.
 
 ## 🐞 Fixes
+- Fixed variant aliens not creating hives near enemy variant hives.
+- Fixed variant aliens spawning on resin near enemy variant hives without having a nearby hive of their own to spawn in.
+- Fixed variant hives not balancing drone and warrior numbers correctly.
+- Fixed variant hives not balancing praetorian numbers correctly.
+- Fixed variant hives not balancing queen numbers correctly.
 - Fixed nether resin not being flame-resistant and turning into basalt (NeoForge-only).
 - Fixed nether resin veins being destroyed when ignited by flamethrowers.
 - Fixed aliens spreading resin that belonged to other strains (ex. nether xenomorphs spreading aberrant resin).

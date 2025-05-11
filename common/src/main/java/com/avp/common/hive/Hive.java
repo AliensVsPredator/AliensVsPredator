@@ -25,8 +25,8 @@ import com.avp.common.hive.ai.task.impl.BalanceQueenHiveTask;
 import com.avp.common.hive.ai.task.impl.PickBestLeaderTask;
 import com.avp.common.hive.ai.task.impl.UpdateHiveBossBarTask;
 import com.avp.common.hive.manager.HiveDebugManager;
-import com.avp.common.hive.manager.HiveLeadershipManager;
-import com.avp.common.hive.manager.HiveMembershipManager;
+import com.avp.common.hive.membership.manager.HiveLeadershipManager;
+import com.avp.common.hive.membership.manager.HiveMembershipManager;
 import com.avp.common.level.saveddata.HiveLevelData;
 
 public class Hive {
