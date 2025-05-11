@@ -10,6 +10,7 @@
 - N/A
 
 ## 🐞 Fixes
+- Fixed nether queens not spawning in the nether.
 - Fixed the following resin blocks not being flammable (Fabric-only):
   - Aberrant Resin
   - Aberrant Resin Node

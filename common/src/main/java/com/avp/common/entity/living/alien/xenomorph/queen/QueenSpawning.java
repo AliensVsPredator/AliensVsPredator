@@ -6,6 +6,7 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.SpawnPlacements;
 import net.minecraft.world.entity.monster.Monster;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 
 import com.avp.AVP;
@@ -15,7 +16,7 @@ import com.avp.common.util.ChunkPosUtil;
 
 public class QueenSpawning {
 
-    private static final int MAX_Y_LEVEL = -24;
+    private static final int MAX_OVERWORLD_Y_LEVEL = -24;
 
     public static final SpawnPlacements.SpawnPredicate<Queen> PREDICATE = (
         entityType,
@@ -24,11 +25,20 @@ public class QueenSpawning {
         blockPos,
         randomSource
     ) -> {
-        var queenSpawnChunkDataOption = QueenSpawnChunkData.getOrCreate(serverLevelAccessor.getLevel());
+        var level = serverLevelAccessor.getLevel();
+        var queenSpawnChunkDataOption = QueenSpawnChunkData.getOrCreate(level);
         var isChunkSpawnAvailable = queenSpawnChunkDataOption
             .isSomeAnd(queenSpawnChunkData -> !queenSpawnChunkData.isChunkBlacklisted(blockPos));
 
-        var canSpawn = blockPos.getY() <= MAX_Y_LEVEL
+        int maxYLevelForDimension;
+
+        if (level.dimension() == Level.NETHER) {
+            maxYLevelForDimension = level.dimensionType().logicalHeight();
+        } else {
+            maxYLevelForDimension = MAX_OVERWORLD_Y_LEVEL;
+        }
+
+        var canSpawn = blockPos.getY() <= maxYLevelForDimension
             && isChunkSpawnAvailable
             && checkSpawnRules(entityType, serverLevelAccessor, mobSpawnType, blockPos, randomSource);
 
