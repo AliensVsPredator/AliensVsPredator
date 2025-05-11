@@ -8,8 +8,7 @@ import net.minecraft.world.entity.SpawnPlacements;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.level.ServerLevelAccessor;
 
-import com.avp.common.block.AVPBlockTags;
-import com.avp.common.entity.AVPEntityTypeTags;
+import com.avp.common.entity.living.alien.util.AlienVariantUtil;
 import com.avp.common.level.saveddata.HiveLevelData;
 
 public class AlienSpawning {
@@ -27,8 +26,8 @@ public class AlienSpawning {
         randomSource
     ) -> {
         var belowState = serverLevelAccessor.getBlockState(blockPos.below());
-        var resinBlock = entityType.is(AVPEntityTypeTags.NETHER_ALIENS) ? AVPBlockTags.NETHER_RESIN : AVPBlockTags.NORMAL_RESIN;
-        var isValidResinPos = belowState.is(resinBlock);
+        var resinTag = AlienVariantUtil.getResinTagFor(entityType);
+        var isValidResinPos = belowState.is(resinTag);
 
         return isValidResinPos
             && checkSpawnRules(entityType, serverLevelAccessor, mobSpawnType, blockPos, randomSource);

@@ -92,11 +92,30 @@ public class BlockProperties {
         // TODO: Make this something other than the honey block sound.
         .sound(SoundType.HONEY_BLOCK);
 
+    private static final Supplier<BlockPropertyBuilder> ABERRANT_RESIN_BLOCK_PROPERTIES_SUPPLIER = () -> RESIN_PROPERTIES_SUPPLIER.get()
+        .isValidSpawn(($1, $2, $3, entityType) -> entityType.is(AVPEntityTypeTags.ABERRANT_ALIENS));
+
     private static final Supplier<BlockPropertyBuilder> NETHER_RESIN_BLOCK_PROPERTIES_SUPPLIER = () -> RESIN_PROPERTIES_SUPPLIER.get()
         .isValidSpawn(($1, $2, $3, entityType) -> entityType.is(AVPEntityTypeTags.NETHER_ALIENS));
 
     private static final Supplier<BlockPropertyBuilder> RESIN_BLOCK_PROPERTIES_SUPPLIER = () -> RESIN_PROPERTIES_SUPPLIER.get()
         .isValidSpawn(($1, $2, $3, entityType) -> entityType.is(AVPEntityTypeTags.NORMAL_ALIENS));
+
+    public static final BlockPropertyBuilder ABERRANT_RESIN = ABERRANT_RESIN_BLOCK_PROPERTIES_SUPPLIER.get()
+        .mapColor(MapColor.TERRACOTTA_GREEN);
+
+    public static final BlockPropertyBuilder ABERRANT_RESIN_VEIN = RESIN_PROPERTIES_SUPPLIER.get()
+        .mapColor(MapColor.TERRACOTTA_GREEN)
+        .noCollision()
+        .noOcclusion()
+        .pushReaction(PushReaction.DESTROY)
+        .replaceable();
+
+    public static final BlockPropertyBuilder ABERRANT_RESIN_WEB = ABERRANT_RESIN_BLOCK_PROPERTIES_SUPPLIER.get()
+        .mapColor(MapColor.TERRACOTTA_GREEN)
+        .noCollision()
+        .noOcclusion()
+        .pushReaction(PushReaction.DESTROY);
 
     public static final BlockPropertyBuilder NETHER_RESIN = NETHER_RESIN_BLOCK_PROPERTIES_SUPPLIER.get()
         .mapColor(MapColor.COLOR_RED);

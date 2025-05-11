@@ -41,28 +41,24 @@ import com.avp.service.Services;
 
 public class AVPBlocks {
 
-    // TODO: Fix properties.
     public static final AVPDeferredHolder<Block> ABERRANT_RESIN = register(
         "aberrant_resin",
-        () -> new ResinBlock(BlockProperties.NETHER_RESIN.build())
+        () -> new ResinBlock(BlockProperties.ABERRANT_RESIN.build())
     );
 
-    // TODO: Fix properties.
     public static final AVPDeferredHolder<Block> ABERRANT_RESIN_NODE = register(
         "aberrant_resin_node",
-        () -> new ResinNodeBlock(BlockProperties.RESIN.build())
+        () -> new ResinNodeBlock(BlockProperties.ABERRANT_RESIN.build())
     );
 
-    // TODO: Fix properties.
     public static final AVPDeferredHolder<Block> ABERRANT_RESIN_VEIN = register(
         "aberrant_resin_vein",
-        () -> new ResinVeinBlock(BlockProperties.NETHER_RESIN_VEIN.build())
+        () -> new ResinVeinBlock(BlockProperties.ABERRANT_RESIN_VEIN.build())
     );
 
-    // TODO: Fix properties.
     public static final AVPDeferredHolder<Block> ABERRANT_RESIN_WEB = register(
         "aberrant_resin_web",
-        () -> new ResinWebBlock(BlockProperties.NETHER_RESIN_WEB.build())
+        () -> new ResinWebBlock(BlockProperties.ABERRANT_RESIN_WEB.build())
     );
 
     public static final AVPDeferredHolder<Block> ALUMINUM_BLOCK = register("aluminum_block", BlockProperties.ALUMINUM);

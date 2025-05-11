@@ -3,6 +3,7 @@ package com.avp.common.entity.living.alien.util;
 import com.bvanseg.just.functional.function.Lazy;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
@@ -12,8 +13,10 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
 
+import com.avp.common.block.AVPBlockTags;
 import com.avp.common.block.AVPBlocks;
 import com.avp.common.block.resin.ResinVeinBlock;
+import com.avp.common.entity.AVPEntityTypeTags;
 import com.avp.common.entity.acid.Acid;
 import com.avp.common.entity.living.alien.Alien;
 import com.avp.common.entity.living.alien.ovomorph.Ovomorph;
@@ -111,5 +114,17 @@ public class AlienVariantUtil {
             case Queen aberrantQueen when aberrantQueen.isAberrant() -> AVPEntityTypes.ABERRANT_OVOMORPH.get();
             default -> isRoyal ? AVPEntityTypes.ROYAL_OVOMORPH.get() : AVPEntityTypes.OVOMORPH.get();
         };
+    }
+
+    public static TagKey<Block> getResinTagFor(EntityType<?> entityType) {
+        if (entityType.is(AVPEntityTypeTags.ABERRANT_ALIENS)) {
+            return AVPBlockTags.ABERRANT_RESIN;
+        } else if (entityType.is(AVPEntityTypeTags.IRRADIATED_ALIENS)) {
+            return AVPBlockTags.IRRADIATED_RESIN;
+        } else if (entityType.is(AVPEntityTypeTags.NETHER_ALIENS)) {
+            return AVPBlockTags.NETHER_RESIN;
+        }
+
+        return AVPBlockTags.NORMAL_RESIN;
     }
 }
