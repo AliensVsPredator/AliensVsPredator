@@ -7,7 +7,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import com.avp.common.entity.living.alien.xenomorph.Xenomorph;
-import com.avp.common.entity.type.AVPEntityTypes;
+import com.avp.common.entity.living.alien.xenomorph.queen.Queen;
 import com.avp.common.hive.Hive;
 import com.avp.common.hive.HiveMemberData;
 
@@ -19,7 +19,8 @@ public class BalanceQueenHiveTask extends BalanceHiveTask {
 
     @Override
     protected void balance(Map<? extends EntityType<?>, List<Map.Entry<UUID, HiveMemberData>>> membersByType) {
-        var queens = membersByType.getOrDefault(AVPEntityTypes.QUEEN.get(), List.of());
+        var queenEntityType = Queen.getType(hive.getVariant());
+        var queens = membersByType.getOrDefault(queenEntityType, List.of());
 
         if (!queens.isEmpty()) {
             return;

@@ -9,7 +9,10 @@ import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 
+import java.util.Objects;
+
 import com.avp.AVP;
+import com.avp.common.entity.living.alien.AlienVariantTypes;
 import com.avp.common.level.saveddata.HiveLevelData;
 import com.avp.common.level.saveddata.QueenSpawnChunkData;
 import com.avp.common.util.ChunkPosUtil;
@@ -63,6 +66,8 @@ public class QueenSpawning {
         BlockPos blockPos,
         RandomSource randomSource
     ) {
+        var alienVariantTypeOption = AlienVariantTypes.getFor(entityType);
+
         return Monster.checkMonsterSpawnRules(
             entityType,
             serverLevelAccessor,
@@ -71,7 +76,15 @@ public class QueenSpawning {
             randomSource
         )
             && HiveLevelData.getOrCreate(serverLevelAccessor.getLevel())
-                .andThen(hiveLevelData -> hiveLevelData.findNearestHive(blockPos))
+                .andThen(
+                    hiveLevelData -> hiveLevelData.findNearestHive(
+                        blockPos,
+                        // Find the nearest hive for this alien type's variant type.
+                        hive -> alienVariantTypeOption.isSomeAnd(
+                            alienVariantType -> Objects.equals(hive.getVariant(), alienVariantType.variant())
+                        )
+                    )
+                )
                 .match(
                     // If there is hive, we need to make sure it's far enough away from where the queen wants to spawn.
                     nearestHive -> !nearestHive.isBlockPosWithinRangeOfHive(

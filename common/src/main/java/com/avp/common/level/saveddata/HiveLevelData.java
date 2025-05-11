@@ -5,7 +5,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.saveddata.SavedData;
 import org.jetbrains.annotations.NotNull;
@@ -17,6 +16,7 @@ import java.util.UUID;
 import java.util.function.Predicate;
 
 import com.avp.AVP;
+import com.avp.common.entity.living.alien.Alien;
 import com.avp.common.hive.Hive;
 import com.avp.common.util.AVPPredicates;
 
@@ -76,9 +76,12 @@ public class HiveLevelData extends SavedData {
         return Option.ofNullable(closestHive);
     }
 
-    public Hive createHive(Entity entity) {
-        var hive = createHive(entity.blockPosition());
-        hive.ping(entity);
+    public Hive createHive(Alien alien) {
+        var hive = createHive(alien.blockPosition());
+        // Set the hive's variant.
+        hive.setVariant(alien.getVariant());
+        // Immediately ping the hive.
+        hive.ping(alien);
         return hive;
     }
 
@@ -122,7 +125,7 @@ public class HiveLevelData extends SavedData {
     }
 
     @Override
-    public @NotNull CompoundTag save(CompoundTag compoundTag, HolderLookup.Provider provider) {
+    public @NotNull CompoundTag save(CompoundTag compoundTag, @NotNull HolderLookup.Provider provider) {
         var hivesTag = new CompoundTag();
 
         hiveByIdMap.forEach((hiveId, hive) -> {

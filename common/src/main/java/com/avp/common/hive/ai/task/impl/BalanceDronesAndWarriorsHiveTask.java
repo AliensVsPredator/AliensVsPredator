@@ -9,7 +9,8 @@ import java.util.Map;
 import java.util.UUID;
 
 import com.avp.common.entity.living.alien.xenomorph.Xenomorph;
-import com.avp.common.entity.type.AVPEntityTypes;
+import com.avp.common.entity.living.alien.xenomorph.drone.Drone;
+import com.avp.common.entity.living.alien.xenomorph.warrior.Warrior;
 import com.avp.common.hive.Hive;
 import com.avp.common.hive.HiveMemberData;
 
@@ -21,8 +22,10 @@ public class BalanceDronesAndWarriorsHiveTask extends BalanceHiveTask {
 
     @Override
     protected void balance(Map<? extends EntityType<?>, List<Map.Entry<UUID, HiveMemberData>>> membersByType) {
-        var drones = membersByType.getOrDefault(AVPEntityTypes.DRONE.get(), List.of());
-        var warriors = membersByType.getOrDefault(AVPEntityTypes.WARRIOR.get(), List.of());
+        var droneEntityType = Drone.getType(hive.getVariant());
+        var warriorEntityType = Warrior.getType(hive.getVariant());
+        var drones = membersByType.getOrDefault(droneEntityType, List.of());
+        var warriors = membersByType.getOrDefault(warriorEntityType, List.of());
 
         var desiredWarriorCount = Math.max(0, (drones.size() - warriors.size()) / 2);
 

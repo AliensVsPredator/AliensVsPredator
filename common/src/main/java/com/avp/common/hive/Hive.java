@@ -11,11 +11,13 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 import com.avp.AVP;
 import com.avp.common.entity.AVPEntityTypeTags;
 import com.avp.common.entity.living.alien.Alien;
+import com.avp.common.entity.living.alien.AlienVariant;
 import com.avp.common.hive.ai.task.Task;
 import com.avp.common.hive.ai.task.impl.BalanceDronesAndWarriorsHiveTask;
 import com.avp.common.hive.ai.task.impl.BalancePraetoriansHiveTask;
@@ -29,9 +31,13 @@ import com.avp.common.level.saveddata.HiveLevelData;
 
 public class Hive {
 
+    private static final AlienVariant DEFAULT_VARIANT = AlienVariant.NORMAL;
+
     private static final String AGE_IN_TICKS_KEY = "AgeInTicks";
 
     private static final String CENTER_POS_KEY = "CenterPos";
+
+    private static final String VARIANT_ID_KEY = "VariantId";
 
     private final HiveDebugManager debugManager;
 
@@ -41,17 +47,20 @@ public class Hive {
 
     private final ServerBossEvent bossEvent;
 
-    private final List<Task> tasks;
-
     private final UUID id;
 
     private final Level level;
+
+    private final List<Task> tasks;
 
     private BlockPos centerPos;
 
     private int ageInTicks;
 
+    private AlienVariant variant;
+
     public Hive(Level level, UUID id) {
+        this.variant = DEFAULT_VARIANT;
         this.tasks = new ArrayList<>();
         this.id = id;
         this.level = level;
@@ -95,8 +104,13 @@ public class Hive {
     }
 
     public boolean requestToJoin(Entity requestingEntity) {
-        if (!(requestingEntity instanceof Alien)) {
-            // Hives only accept aliens, non-aliens get rejected.
+        if (
+            // If the requesting entity is not an alien...
+            !(requestingEntity instanceof Alien alien)
+                // OR the alien is not the same variant as the hive...
+                || !Objects.equals(alien.getVariant(), variant)
+        ) {
+            // Then reject the entity's request to join the hive.
             return false;
         }
 
@@ -170,35 +184,37 @@ public class Hive {
         return blockPos.distToCenterSqr(centerPos.getX(), centerPos.getY(), centerPos.getZ());
     }
 
-    public UUID id() {
-        return id;
-    }
-
-    public BlockPos centerPosition() {
-        return centerPos;
-    }
-
     public void load(CompoundTag compoundTag) {
+        leadershipManager.load(compoundTag);
+        membershipManager.load(compoundTag);
+
         var centerPosComponents = compoundTag.getIntArray(CENTER_POS_KEY);
         this.ageInTicks = compoundTag.getInt(AGE_IN_TICKS_KEY);
         this.centerPos = new BlockPos(centerPosComponents[0], centerPosComponents[1], centerPosComponents[2]);
 
-        leadershipManager.load(compoundTag);
-        membershipManager.load(compoundTag);
+        if (compoundTag.contains(VARIANT_ID_KEY)) {
+            this.variant = AlienVariant.getById(compoundTag.getByte(VARIANT_ID_KEY)).unwrapOr(DEFAULT_VARIANT);
+        }
     }
 
     public void save(CompoundTag compoundTag) {
+        leadershipManager.save(compoundTag);
+        membershipManager.save(compoundTag);
+
         compoundTag.putInt(AGE_IN_TICKS_KEY, ageInTicks);
 
         var centerPosComponents = new int[] { centerPos.getX(), centerPos.getY(), centerPos.getZ() };
         compoundTag.putIntArray(CENTER_POS_KEY, centerPosComponents);
 
-        leadershipManager.save(compoundTag);
-        membershipManager.save(compoundTag);
+        compoundTag.putByte(VARIANT_ID_KEY, (byte) variant.getId());
     }
 
     public int ageInTicks() {
         return ageInTicks;
+    }
+
+    public BlockPos centerPosition() {
+        return centerPos;
     }
 
     public ServerBossEvent bossEvent() {
@@ -209,12 +225,24 @@ public class Hive {
         return debugManager;
     }
 
+    public UUID id() {
+        return id;
+    }
+
     public HiveLeadershipManager getLeadershipManager() {
         return leadershipManager;
     }
 
     public HiveMembershipManager getMembershipManager() {
         return membershipManager;
+    }
+
+    public AlienVariant getVariant() {
+        return variant;
+    }
+
+    public void setVariant(AlienVariant variant) {
+        this.variant = variant;
     }
 
     public Level level() {

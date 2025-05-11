@@ -10,7 +10,8 @@ import java.util.UUID;
 
 import com.avp.AVP;
 import com.avp.common.entity.living.alien.xenomorph.Xenomorph;
-import com.avp.common.entity.type.AVPEntityTypes;
+import com.avp.common.entity.living.alien.xenomorph.praetorian.Praetorian;
+import com.avp.common.entity.living.alien.xenomorph.warrior.Warrior;
 import com.avp.common.hive.Hive;
 import com.avp.common.hive.HiveMemberData;
 
@@ -23,8 +24,10 @@ public class BalancePraetoriansHiveTask extends BalanceHiveTask {
     @Override
     protected void balance(Map<? extends EntityType<?>, List<Map.Entry<UUID, HiveMemberData>>> membersByType) {
         var hiveMemberCount = hive.getMembershipManager().getMemberCount();
-        var warriors = membersByType.getOrDefault(AVPEntityTypes.WARRIOR.get(), List.of());
-        var praetorians = membersByType.getOrDefault(AVPEntityTypes.PRAETORIAN.get(), List.of());
+        var warriorEntityType = Warrior.getType(hive.getVariant());
+        var praetorianEntityType = Praetorian.getType(hive.getVariant());
+        var warriors = membersByType.getOrDefault(warriorEntityType, List.of());
+        var praetorians = membersByType.getOrDefault(praetorianEntityType, List.of());
 
         int hiveMembersRequiredForPraetorian = AVP.config.hiveConfigs.HIVE_MEMBERS_REQUIRED_FOR_PRAETORIAN;
         int maxPraetorianCount = AVP.config.hiveConfigs.HIVE_MAX_PRAETORIAN_COUNT;
