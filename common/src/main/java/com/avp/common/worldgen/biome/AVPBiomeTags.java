@@ -34,6 +34,8 @@ public class AVPBiomeTags {
 
     public static final TagKey<Biome> HAS_XENOMORPHS = create("has_xenomorphs");
 
+    public static final TagKey<Biome> IS_IRRADIATED = create("is_irradiated");
+
     private static TagKey<Biome> create(String name) {
         return TagKey.create(Registries.BIOME, AVPResources.location(name));
     }

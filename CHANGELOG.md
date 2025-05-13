@@ -61,6 +61,7 @@
 
 ## 🛠 Data Pack
 - Added `#avp:has_xenomorphs` biome tag.
+- Added `#avp:is_irradiated` biome tag.
 - Added `#avp:resin_blocks` block tag.
 - Added `#avp:resin_nodes` block tag.
 - Added `#avp:aberrant_resin_replaceable` block tag.
