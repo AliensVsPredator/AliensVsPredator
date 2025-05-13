@@ -15,8 +15,9 @@ public class AVPEntitySpawns {
 
     public static void initialize() {
         registerAberrantAlienSpawns();
-        registerNormalAlienSpawns();
+        registerIrradiatedAlienSpawns();
         registerNetherAlienSpawns();
+        registerNormalAlienSpawns();
 
         Services.REGISTRY.registerEntitySpawnData(
             AVPEntitySpawnData.builder(AVPEntityTypes.YAUTJA)
@@ -122,6 +123,39 @@ public class AVPEntitySpawns {
                 .withBiomeTagKey(AVPBiomeTags.HAS_XENOMORPHS)
                 .withSpawnPredicate(QueenSpawning.PREDICATE)
                 .withSpawnSettings(AVP.config.spawnConfigs.ABERRANT_QUEEN_SPAWN)
+                // Prevents aberrant queen biome spawn configurations from being generated.
+                .disableConfig()
+                .build()
+        );
+    }
+
+    private static void registerIrradiatedAlienSpawns() {
+        Services.REGISTRY.registerEntitySpawnData(
+            AVPEntitySpawnData.builder(AVPEntityTypes.IRRADIATED_DRONE)
+                .withBiomeTagKey(AVPBiomeTags.HAS_XENOMORPHS)
+                .withSpawnPredicate(AlienSpawning.getTypedPredicate())
+                .withSpawnSettings(AVP.config.spawnConfigs.IRRADIATED_DRONE_SPAWN)
+                .build()
+        );
+        Services.REGISTRY.registerEntitySpawnData(
+            AVPEntitySpawnData.builder(AVPEntityTypes.IRRADIATED_WARRIOR)
+                .withBiomeTagKey(AVPBiomeTags.HAS_XENOMORPHS)
+                .withSpawnPredicate(AlienSpawning.getTypedPredicate())
+                .withSpawnSettings(AVP.config.spawnConfigs.IRRADIATED_WARRIOR_SPAWN)
+                .build()
+        );
+        Services.REGISTRY.registerEntitySpawnData(
+            AVPEntitySpawnData.builder(AVPEntityTypes.IRRADIATED_PRAETORIAN)
+                .withBiomeTagKey(AVPBiomeTags.HAS_XENOMORPHS)
+                .withSpawnPredicate(AlienSpawning.getTypedPredicate())
+                .withSpawnSettings(AVP.config.spawnConfigs.IRRADIATED_PRAETORIAN_SPAWN)
+                .build()
+        );
+        Services.REGISTRY.registerEntitySpawnData(
+            AVPEntitySpawnData.builder(AVPEntityTypes.IRRADIATED_QUEEN)
+                .withBiomeTagKey(AVPBiomeTags.IS_IRRADIATED)
+                .withSpawnPredicate(QueenSpawning.PREDICATE)
+                .withSpawnSettings(AVP.config.spawnConfigs.IRRADIATED_QUEEN_SPAWN)
                 .build()
         );
     }

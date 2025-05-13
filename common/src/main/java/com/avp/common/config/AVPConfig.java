@@ -112,6 +112,26 @@ public class AVPConfig {
         @Configurable.Comment("Modifying these will require restarting the game.")
         public SpawnSettings DRONE_SPAWN = new SpawnSettings(true, 1, 2, 50);
 
+        @Configurable
+        @Configurable.Synchronized
+        @Configurable.Comment("Irradiated Drone spawn settings. Modifying these will require restarting the game.")
+        public SpawnSettings IRRADIATED_DRONE_SPAWN = new SpawnSettings(true, 1, 2, 50);
+
+        @Configurable
+        @Configurable.Synchronized
+        @Configurable.Comment("Irradiated Praetorian spawn settings. Modifying these will require restarting the game.")
+        public SpawnSettings IRRADIATED_PRAETORIAN_SPAWN = new SpawnSettings(true, 1, 1, 10);
+
+        @Configurable
+        @Configurable.Synchronized
+        @Configurable.Comment("Irradiated Queen spawn settings. Modifying these will require restarting the game.")
+        public SpawnSettings IRRADIATED_QUEEN_SPAWN = new SpawnSettings(true, 1, 1, 5);
+
+        @Configurable
+        @Configurable.Synchronized
+        @Configurable.Comment("Irradiated Warrior spawn settings. Modifying these will require restarting the game.")
+        public SpawnSettings IRRADIATED_WARRIOR_SPAWN = new SpawnSettings(true, 1, 2, 25);
+
         public SpawnSettings MARINE_SPAWN = new SpawnSettings(true, 1, 1, 1);
 
         @Configurable
