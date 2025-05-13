@@ -164,7 +164,7 @@ public class AVPEntitySpawns {
         );
         Services.REGISTRY.registerEntitySpawnData(
             AVPEntitySpawnData.builder(AVPEntityTypes.NETHER_QUEEN)
-                .withBiomeTagKey(AVPBiomeTags.HAS_XENOMORPHS)
+                .withBiomeTagKey(BiomeTags.IS_NETHER)
                 .withSpawnPredicate(QueenSpawning.PREDICATE)
                 .withSpawnSettings(AVP.config.spawnConfigs.NETHER_QUEEN_SPAWN)
                 .build()
