@@ -9,12 +9,14 @@ import java.util.Objects;
 
 import com.avp.common.level.saveddata.HiveLevelData;
 
-public class NearestHiveCommand {
+public class CurrentHiveLayerCommand {
 
     public static LiteralArgumentBuilder<CommandSourceStack> create() {
-        return Commands.literal("nearest")
+        return Commands.literal("current")
             .requires(CommandSourceStack::isPlayer)
             .executes(context -> {
+                var playerPos = Objects.requireNonNull(context.getSource().getPlayer()).blockPosition();
+
                 HiveLevelData.getOrCreate(context.getSource().getLevel())
                     .andThen(
                         hiveLevelData -> hiveLevelData.findNearestHive(
@@ -22,14 +24,20 @@ public class NearestHiveCommand {
                         )
                     )
                     .inspect(hive -> {
-                        var pos = hive.centerPosition();
-                        context.getSource()
-                            .sendSuccess(
-                                () -> Component.literal(
-                                    "Nearest hive: x " + pos.getX() + " y " + pos.getY() + " z " + pos.getZ()
-                                ),
-                                false
-                            );
+                        var currentLayer = hive.getSpaceManager().getLayerOrNull(playerPos);
+
+                        if (currentLayer == null) {
+                            context.getSource()
+                                .sendSuccess(() -> Component.literal("No layer found."), false);
+                        } else {
+                            var hiveLayer = hive.getSpaceManager().getHiveLayerOrNull(playerPos);
+
+                            context.getSource()
+                                .sendSuccess(
+                                    () -> Component.literal("Current hive layer: " + hiveLayer),
+                                    false
+                                );
+                        }
                     })
                     .ifNone(() -> context.getSource().sendSuccess(() -> Component.literal("No nearby hive found."), false));
 

@@ -25,6 +25,7 @@ import com.avp.common.hive.ai.task.impl.BalanceQueenHiveTask;
 import com.avp.common.hive.ai.task.impl.PickBestLeaderTask;
 import com.avp.common.hive.ai.task.impl.UpdateHiveBossBarTask;
 import com.avp.common.hive.manager.HiveDebugManager;
+import com.avp.common.hive.manager.HiveSpaceManager;
 import com.avp.common.hive.membership.manager.HiveLeadershipManager;
 import com.avp.common.hive.membership.manager.HiveMembershipManager;
 import com.avp.common.level.saveddata.HiveLevelData;
@@ -44,6 +45,8 @@ public class Hive {
     private final HiveLeadershipManager leadershipManager;
 
     private final HiveMembershipManager membershipManager;
+
+    private final HiveSpaceManager spaceManager;
 
     private final ServerBossEvent bossEvent;
 
@@ -67,6 +70,7 @@ public class Hive {
         this.debugManager = new HiveDebugManager(this);
         this.leadershipManager = new HiveLeadershipManager(this);
         this.membershipManager = new HiveMembershipManager(this);
+        this.spaceManager = new HiveSpaceManager(this);
         this.centerPos = BlockPos.ZERO;
         this.bossEvent = (ServerBossEvent) new ServerBossEvent(
             Component.translatable("bossbar.avp.hive.title"),
@@ -114,9 +118,7 @@ public class Hive {
             return false;
         }
 
-        var leashDistance = AVP.config.hiveConfigs.HIVE_LEASH_RADIUS_IN_BLOCKS;
-
-        if (!isEntityWithinRangeOfHive(requestingEntity, leashDistance)) {
+        if (!spaceManager.isEntityLeashedToHive(requestingEntity)) {
             // If the entity isn't within range of the hive, it shouldn't be able to join the hive.
             return false;
         }
@@ -160,28 +162,6 @@ public class Hive {
 
     public boolean isAngry() {
         return !bossEvent.getPlayers().isEmpty();
-    }
-
-    public boolean isEntityWithinRangeOfHive(Entity entity) {
-        return isBlockPosWithinRangeOfHive(entity.blockPosition());
-    }
-
-    public boolean isEntityWithinRangeOfHive(Entity entity, int rangeInBlocks) {
-        return isBlockPosWithinRangeOfHive(entity.blockPosition(), rangeInBlocks);
-    }
-
-    public boolean isBlockPosWithinRangeOfHive(BlockPos blockPos) {
-        return isBlockPosWithinRangeOfHive(blockPos, AVP.config.hiveConfigs.HIVE_RADIUS_IN_BLOCKS);
-    }
-
-    public boolean isBlockPosWithinRangeOfHive(BlockPos blockPos, int rangeInBlocks) {
-        var hiveRadiusSquared = rangeInBlocks * rangeInBlocks;
-        return distanceToCenterSqr(blockPos) <= hiveRadiusSquared;
-    }
-
-    public double distanceToCenterSqr(BlockPos blockPos) {
-        var centerPos = centerPosition();
-        return blockPos.distToCenterSqr(centerPos.getX(), centerPos.getY(), centerPos.getZ());
     }
 
     public void load(CompoundTag compoundTag) {
@@ -235,6 +215,10 @@ public class Hive {
 
     public HiveMembershipManager getMembershipManager() {
         return membershipManager;
+    }
+
+    public HiveSpaceManager getSpaceManager() {
+        return spaceManager;
     }
 
     public AlienVariant getVariant() {

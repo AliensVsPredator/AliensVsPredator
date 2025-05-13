@@ -134,7 +134,7 @@ public class ResinManager implements GameEventListener.Provider<ResinSpreadListe
             && alien.hiveManager()
                 .hive()
                 // Where the alien's hive is not angry AND the alien is within range of the hive...
-                .filter(hive -> !hive.isAngry() && hive.isEntityWithinRangeOfHive(alien))
+                .filter(hive -> !hive.isAngry() && hive.getSpaceManager().isEntityWithinHive(alien))
                 // AND the alien must be in a hive for the hive conditions to be true.
                 .isSome();
     }

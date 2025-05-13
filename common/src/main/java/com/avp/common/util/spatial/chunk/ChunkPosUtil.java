@@ -1,4 +1,4 @@
-package com.avp.common.util;
+package com.avp.common.util.spatial.chunk;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.ChunkPos;

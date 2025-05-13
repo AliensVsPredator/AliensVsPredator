@@ -15,7 +15,7 @@ import com.avp.AVP;
 import com.avp.common.entity.living.alien.AlienVariantTypes;
 import com.avp.common.level.saveddata.HiveLevelData;
 import com.avp.common.level.saveddata.QueenSpawnChunkData;
-import com.avp.common.util.ChunkPosUtil;
+import com.avp.common.util.spatial.chunk.ChunkPosUtil;
 
 public class QueenSpawning {
 
@@ -47,8 +47,7 @@ public class QueenSpawning {
 
         if (canSpawn) {
             var queenSpawnChunkData = queenSpawnChunkDataOption.unwrap();
-            // TODO: Refactor this distance value at a later date, all hive distance checks are begging for a refactor.
-            var chunkRadiusToBlacklist = AVP.config.hiveConfigs.MINIMUM_DISTANCE_BETWEEN_HIVES_IN_BLOCKS / 16;
+            var chunkRadiusToBlacklist = AVP.config.hiveConfigs.MINIMUM_DISTANCE_BETWEEN_NATURAL_QUEEN_SPAWNS_IN_CHUNKS;
             var nearbyChunkPositions = ChunkPosUtil.getChunksAround(blockPos, chunkRadiusToBlacklist);
 
             nearbyChunkPositions.forEach(queenSpawnChunkData::addChunkToBlacklist);
@@ -87,10 +86,7 @@ public class QueenSpawning {
                 )
                 .match(
                     // If there is hive, we need to make sure it's far enough away from where the queen wants to spawn.
-                    nearestHive -> !nearestHive.isBlockPosWithinRangeOfHive(
-                        blockPos,
-                        AVP.config.hiveConfigs.MINIMUM_DISTANCE_BETWEEN_HIVES_IN_BLOCKS
-                    ),
+                    nearestHive -> !nearestHive.getSpaceManager().isBlockPosWithinHiveBuffer(blockPos),
                     // No "nearest hive" present, so the queen is clear to spawn.
                     () -> true
                 );

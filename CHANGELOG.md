@@ -4,11 +4,22 @@
 - N/A
 
 ## ✨ What's New
-- N/A
+- Added a new debug command `/avp debug hive layer current` to check which layer of a hive the player is currently in.
 
 ## ♻️ Changes
 - Updated female marine model + `hair_5` texture.
 - Irradiated queens now have a chance of spawning naturally in irradiated biomes.
+- Hives are now broken up into layers:
+  - Every hive is now represented as a "sphere" of influence.
+  - The sphere consists of different layers. From closest to furthest away from the hive center, the layers are as follows:
+    - Center Layer (Core). The queen resides here.
+    - Praetorian Layer. Where Praetorians can naturally spawn.
+    - Drone Layer. Where drones can naturally spawn. In the future, ovomorphs will be moved here by drones.
+    - Warrior Layer. Where warriors can naturally spawn.
+    - Edge Layer. Nothing spawns here, this is the border of the hive.
+    - Leash Layer. Aliens can exit the core hive (resin area), but still be members of the hive beyond it if they are within this layer.
+    - Buffer Layer. This is a layer double the width of the core layers + leash layer. No other hives (of the same variant) can form here.
+  - Currently, this hive layering is only used for natural spawning. Later on the alien AI will have a bias towards resting in their respective layers.
 - Aliens can now place resin nodes above blocks they can't replace.
   - Previously, aliens could only replace certain blocks with resin nodes. This lead to the alien being unable to put resin nodes down in areas with irreplaceable blocks.
   - Now, aliens can place resin nodes in open air blocks above blocks they can't replace, allowing them to spread resin veins in nearly all places.
@@ -32,12 +43,13 @@
     - Following the recent hive spawning changes, this config option is no longer all that useful.
   - `REMOVE_VANILLA_SPAWNS`
     - Highly specific spawn configuration like this option provided is better suited for other mods to handle, not AVP.
+  - `MINIMUM_DISTANCE_BETWEEN_HIVES_IN_BLOCKS`
+    - This has now been replaced with `MINIMUM_DISTANCE_BETWEEN_NATURAL_QUEEN_SPAWNS_IN_CHUNKS`, which more accurately describes what the original config option was used for.
 
 ## 🐞 Fixes
 - Fixed uprooted ovomorphs not despawning even if they have already hatched.
 - Fixed nether resin nodes having incorrect block properties.
 - Fixed irradiated resin, irradiated resin nodes, irradiated resin veins and irradiated resin webs having incorrect block properties.
-- Fixed resin, resin nodes, resin veins and resin webs having incorrect colors on maps.
 - Fixed variant aliens being unable to replace enemy variant resin.
 - Fixed variant aliens not creating hives near enemy variant hives.
 - Fixed variant aliens spawning on resin near enemy variant hives without having a nearby hive of their own to spawn in.
@@ -59,6 +71,14 @@
   - Aberrant Resin Node
   - Aberrant Resin Vein
   - Aberrant Resin Web
+  - Irradiated Resin
+  - Irradiated Resin Node
+  - Irradiated Resin Vein
+  - Irradiated Resin Web
+  - Resin
+  - Resin Node
+  - Resin Vein
+  - Resin Web
 - Fixed the following resin blocks not being flammable (Fabric-only):
   - Aberrant Resin
   - Aberrant Resin Node

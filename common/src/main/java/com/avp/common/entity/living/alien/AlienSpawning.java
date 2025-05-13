@@ -76,7 +76,7 @@ public class AlienSpawning {
                 // AND Hive is not angry/aggro'd.
                 && !nearestHive.isAngry()
                 // AND spawn position must be within range of the hive.
-                && nearestHive.isBlockPosWithinRangeOfHive(blockPos)
+                && nearestHive.getSpaceManager().isBlockPosWithinHive(blockPos)
             );
     }
 }

@@ -467,11 +467,10 @@ public class AVPConfig {
         @Configurable.Synchronized
         @Configurable.Comment(
             {
-                "The minimum distance between hive centers in blocks. This controls how far apart hives are.",
-                "If this value is less than 2x the hive radius, hives will begin to overlap.",
-                "If this value is more than 2x the hive radius, then there will be buffer zones between hives where no hives will form." }
+                "The minimum distance between natural queen spawns in chunks.",
+            }
         )
-        public int MINIMUM_DISTANCE_BETWEEN_HIVES_IN_BLOCKS = 256;
+        public int MINIMUM_DISTANCE_BETWEEN_NATURAL_QUEEN_SPAWNS_IN_CHUNKS = 16;
 
         @Configurable
         @Configurable.Synchronized

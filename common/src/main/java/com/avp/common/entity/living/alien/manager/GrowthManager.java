@@ -15,8 +15,8 @@ import com.avp.common.entity.living.alien.Alien;
 import com.avp.common.entity.living.alien.xenomorph.Xenomorph;
 import com.avp.common.lifecycle.growth.GrowthStage;
 import com.avp.common.lifecycle.registry.AlienLifecycleRegistry;
-import com.avp.common.util.BlockPosUtil;
 import com.avp.common.util.NBTSerializable;
+import com.avp.common.util.spatial.block.BlockPosUtil;
 
 public class GrowthManager implements NBTSerializable {
 
