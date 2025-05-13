@@ -79,6 +79,6 @@ public class AVPBiomeTagProvider extends FabricTagProvider<Biome> {
             .addOptionalTag(BiomeTags.IS_OVERWORLD);
 
         getOrCreateTagBuilder(AVPBiomeTags.IS_IRRADIATED)
-            .add(AVPBiomes.NUKED_BIOME);
+            .addOptional(AVPBiomes.NUKED_BIOME);
     }
 }
