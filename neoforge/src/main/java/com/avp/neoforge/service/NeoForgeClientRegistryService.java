@@ -78,7 +78,7 @@ public class NeoForgeClientRegistryService implements ClientRegistryService {
     }
 
     @Override
-    public void registerBlockRenderLayer(Supplier<Block> blockSupplier, RenderType renderType) {
+    public void registerBlockRenderLayer(Supplier<? extends Block> blockSupplier, RenderType renderType) {
         blockRenderLayerPairs.add(new Tuple2<>(blockSupplier, renderType));
     }
 

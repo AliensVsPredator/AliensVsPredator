@@ -5,9 +5,9 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Tuple;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Objects;
 import java.util.UUID;
 
-import com.avp.AVP;
 import com.avp.common.entity.AVPEntityTypeTags;
 import com.avp.common.entity.living.alien.Alien;
 import com.avp.common.hive.Hive;
@@ -36,7 +36,16 @@ public class HiveManager {
 
         if (hiveOption.isNone() && alien.tickCount % (20 * 10) == 0) {
             HiveLevelData.getOrCreate(level)
-                .map(hiveLevelData -> new Tuple<>(hiveLevelData, hiveLevelData.findNearestHive(alien.blockPosition())))
+                .map(
+                    hiveLevelData -> new Tuple<>(
+                        hiveLevelData,
+                        hiveLevelData.findNearestHive(
+                            alien.blockPosition(),
+                            // Find the nearest hive for this alien's variant type.
+                            hive -> Objects.equals(alien.getVariant(), hive.getVariant())
+                        )
+                    )
+                )
                 .ifSome(tuple -> {
                     var hiveLevelData = tuple.getA();
 
@@ -54,12 +63,25 @@ public class HiveManager {
                 });
         }
 
-        this.hiveOption = hiveOption.filter(Hive::isAlive)
-            .inspect(hive -> {
-                if (alien.tickCount % (20 * 30) == 0) {
-                    hive.ping(alien);
-                }
-            });
+        hiveOption.ifSome(hive -> {
+            if (
+                // If hive is no longer alive...
+            !hive.isAlive()
+                // OR alien variant no longer matches the hive's variant...
+                || !Objects.equals(alien.getVariant(), hive.getVariant())
+            ) {
+                // Then remove the alien from the hive.
+                hive.removeHiveMember(alien);
+                // And also assign this alien's hive to nothing.
+                this.hiveOption = Option.none();
+                // Don't proceed any further.
+                return;
+            }
+
+            if (alien.tickCount % (20 * 30) == 0) {
+                hive.ping(alien);
+            }
+        });
     }
 
     private void tryCreateAndAssignHive(HiveLevelData hiveLevelData, @Nullable Hive nearestHive) {
@@ -68,9 +90,7 @@ public class HiveManager {
             return;
         }
 
-        var range = AVP.config.hiveConfigs.MINIMUM_DISTANCE_BETWEEN_HIVES_IN_BLOCKS;
-
-        if (nearestHive != null && nearestHive.isBlockPosWithinRangeOfHive(alien.blockPosition(), range)) {
+        if (nearestHive != null && nearestHive.getSpaceManager().isEntityWithinHiveBuffer(alien)) {
             return;
         }
 

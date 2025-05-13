@@ -1,197 +1,134 @@
 package com.avp.common.block.entity.resin_node;
 
-import com.google.common.annotations.VisibleForTesting;
-import com.mojang.logging.LogUtils;
 import com.mojang.serialization.Dynamic;
-import it.unimi.dsi.fastutil.objects.Object2IntMap;
-import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
-import net.minecraft.tags.BlockTags;
-import net.minecraft.tags.TagKey;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.LevelAccessor;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.MultifaceBlock;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-public class ResinSpreader {
+import com.avp.common.util.NBTSerializable;
 
-    final boolean isWorldGeneration;
+public class ResinSpreader implements NBTSerializable {
 
-    private final TagKey<Block> replaceableBlocks;
+    private static final Logger LOGGER = LoggerFactory.getLogger(ResinSpreader.class);
 
-    private final int growthSpawnCost;
+    private static final String CURSORS_KEY = "cursors";
 
-    private final int noGrowthRadius;
+    // The maximum number of cursors that can be controlled by a resin spreader at any given time.
+    private static final int CURSOR_LIMIT = 32;
+
+    // The maximum charge value that a cursor can maintain.
+    private static final int MAX_CHARGE = 1000;
+
+    public static ResinSpreader create() {
+        return new ResinSpreader();
+    }
 
     private final int chargeDecayRate;
 
-    private final int additionalDecayRate;
+    private List<ChargeCursor> cursors;
 
-    private List<ChargeCursor> cursors = new ArrayList<>();
-
-    private static final Logger LOGGER = LogUtils.getLogger();
-
-    public ResinSpreader(
-        boolean bl,
-        TagKey<Block> tagKey,
-        int growthSpawnCost,
-        int noGrowthRadius,
-        int chargeDecayRate,
-        int additionalDecayRate
-    ) {
-        this.isWorldGeneration = bl;
-        this.replaceableBlocks = tagKey;
-        this.growthSpawnCost = growthSpawnCost;
-        this.noGrowthRadius = noGrowthRadius;
-        this.chargeDecayRate = chargeDecayRate;
-        this.additionalDecayRate = additionalDecayRate;
-    }
-
-    public static ResinSpreader createLevelSpreader() {
-        return new ResinSpreader(false, BlockTags.SCULK_REPLACEABLE, 10, 4, 10, 5);
-    }
-
-    public static ResinSpreader createWorldGenSpreader() {
-        return new ResinSpreader(true, BlockTags.SCULK_REPLACEABLE_WORLD_GEN, 50, 1, 5, 10);
-    }
-
-    public TagKey<Block> replaceableBlocks() {
-        return this.replaceableBlocks;
-    }
-
-    public int growthSpawnCost() {
-        return this.growthSpawnCost;
-    }
-
-    public int noGrowthRadius() {
-        return this.noGrowthRadius;
+    private ResinSpreader() {
+        this.chargeDecayRate = 10;
+        this.cursors = new ArrayList<>();
     }
 
     public int chargeDecayRate() {
         return this.chargeDecayRate;
     }
 
-    public int additionalDecayRate() {
-        return this.additionalDecayRate;
-    }
-
-    public boolean isWorldGeneration() {
-        return this.isWorldGeneration;
-    }
-
-    @VisibleForTesting
-    public List<ChargeCursor> getCursors() {
-        return this.cursors;
-    }
-
-    public void clear() {
-        this.cursors.clear();
-    }
-
-    public void load(CompoundTag compoundTag) {
-        if (compoundTag.contains("cursors", 9)) {
-            cursors.clear();
-            var list = ChargeCursor.CODEC
-                .listOf()
-                .parse(new Dynamic<>(NbtOps.INSTANCE, compoundTag.getList("cursors", 10)))
-                .resultOrPartial(LOGGER::error)
-                .orElseGet(ArrayList::new);
-
-            var i = Math.min(list.size(), 32);
-
-            for (var j = 0; j < i; j++) {
-                addCursor(list.get(j));
-            }
-        }
-    }
-
-    public void save(CompoundTag compoundTag) {
-        ChargeCursor.CODEC
-            .listOf()
-            .encodeStart(NbtOps.INSTANCE, this.cursors)
-            .resultOrPartial(LOGGER::error)
-            .ifPresent(tag -> compoundTag.put("cursors", tag));
-    }
-
-    public void addCursors(BlockPos blockPos, int i) {
-        while (i > 0) {
-            var j = Math.min(i, 1000);
-            addCursor(new ChargeCursor(blockPos, j));
-            i -= j;
+    public void addCursors(BlockPos blockPos, int totalCharge) {
+        while (totalCharge > 0) {
+            var chargeForCursor = Math.min(totalCharge, MAX_CHARGE);
+            addCursor(new ChargeCursor(blockPos, chargeForCursor));
+            totalCharge -= chargeForCursor;
         }
     }
 
     private void addCursor(ChargeCursor chargeCursor) {
-        if (this.cursors.size() < 32) {
-            this.cursors.add(chargeCursor);
+        if (cursors.size() < CURSOR_LIMIT) {
+            // If we can add more cursors, then do so.
+            cursors.add(chargeCursor);
         }
     }
 
-    public void updateCursors(LevelAccessor levelAccessor, BlockPos nodePos, RandomSource randomSource, boolean bl) {
+    public void updateCursors(LevelAccessor levelAccessor, BlockPos nodePos, RandomSource randomSource) {
         if (this.cursors.isEmpty()) {
+            // No cursors to update, so return.
             return;
         }
 
-        var list = new ArrayList<ChargeCursor>();
-        var map = new HashMap<BlockPos, ChargeCursor>();
-        var object2IntMap = new Object2IntOpenHashMap<BlockPos>();
+        // Cursors that get retained/kept will be added to this list.
+        var retainedCursors = new ArrayList<ChargeCursor>();
+        // Caches low-charge cursors by block position, preferring the one with the smallest charge when multiple
+        // cursors occupy the same position.
+        var cursorsByPos = new HashMap<BlockPos, ChargeCursor>();
 
-        for (var chargeCursor : cursors) {
-            chargeCursor.update(levelAccessor, nodePos, randomSource, this, bl);
+        for (var cursor : cursors) {
+            // Update the cursor.
+            cursor.update(levelAccessor, nodePos, randomSource, this);
 
-            if (chargeCursor.charge <= 0) {
-                // TODO: This spawns a particle effect when the charge cursor expires.
-                // levelAccessor.levelEvent(3006, chargeCursor.getPos(), 0);
-            } else {
-                var blockPos2 = chargeCursor.getPos();
-                object2IntMap.computeInt(blockPos2, (blockPosx, integer) -> (integer == null ? 0 : integer) + chargeCursor.charge);
-                var chargeCursor2 = map.get(blockPos2);
+            if (cursor.charge > 0) {
+                // The cursor still has charge left to it after updating.
+                var cursorPos = cursor.getPos();
+                var cachedCursor = cursorsByPos.get(cursorPos);
 
-                if (chargeCursor2 == null) {
-                    map.put(blockPos2, chargeCursor);
-                    list.add(chargeCursor);
-                } else if (!isWorldGeneration() && chargeCursor.charge + chargeCursor2.charge <= 1000) {
-                    chargeCursor2.mergeWith(chargeCursor);
+                if (cachedCursor == null) {
+                    // If there is no cursor at this position yet, then add the cursor under this position and continue.
+                    cursorsByPos.put(cursorPos, cursor);
+                    retainedCursors.add(cursor);
+                } else if (cursor.charge + cachedCursor.charge <= MAX_CHARGE) {
+                    // The current cursor is overlapping in position with the cached cursor, and their combined charge
+                    // is under the maximum. We can safely combine them into a single cursor at the given position.
+                    cachedCursor.mergeWith(cursor);
                 } else {
-                    list.add(chargeCursor);
+                    // The current cursor could not be combined with the cached cursor, so retain it.
+                    retainedCursors.add(cursor);
 
-                    if (chargeCursor.charge < chargeCursor2.charge) {
-                        map.put(blockPos2, chargeCursor);
+                    if (cursor.charge < cachedCursor.charge) {
+                        // The current cursor's charge is less than the cached cursor's charge. The point of the map
+                        // is to combine cursors with low charge where possible, so we want to store the current
+                        // cursor since it has a weaker charge here.
+                        cursorsByPos.put(cursorPos, cursor);
                     }
                 }
             }
         }
 
-        // TODO: This spawns the numerous particle effects when blocks get transformed into resin.
-        // networkEffectsToClientForAffectedBlocks(levelAccessor, object2IntMap, map);
-
-        this.cursors = list;
+        this.cursors = retainedCursors;
     }
 
-    private void networkEffectsToClientForAffectedBlocks(
-        LevelAccessor levelAccessor,
-        Object2IntMap<BlockPos> object2IntMap,
-        Map<BlockPos, ChargeCursor> map
-    ) {
-        for (var entry : object2IntMap.object2IntEntrySet()) {
-            var blockPos2 = entry.getKey();
-            var i = entry.getIntValue();
-            var chargeCursor3 = map.get(blockPos2);
-            var collection = chargeCursor3 == null ? null : chargeCursor3.getFacingData();
+    @Override
+    public void load(CompoundTag compoundTag) {
+        if (compoundTag.contains(CURSORS_KEY, 9)) {
+            cursors.clear();
+            var list = ChargeCursor.CODEC
+                .listOf()
+                .parse(new Dynamic<>(NbtOps.INSTANCE, compoundTag.getList(CURSORS_KEY, 10)))
+                .resultOrPartial(LOGGER::error)
+                .orElseGet(ArrayList::new);
 
-            if (i > 0 && collection != null) {
-                var j = (int) (Math.log1p(i) / 2.3F) + 1;
-                var k = (j << 6) + MultifaceBlock.pack(collection);
-                levelAccessor.levelEvent(3006, blockPos2, k);
+            var cursorCount = Math.min(list.size(), CURSOR_LIMIT);
+
+            for (var i = 0; i < cursorCount; i++) {
+                addCursor(list.get(i));
             }
         }
+    }
+
+    @Override
+    public void save(CompoundTag compoundTag) {
+        ChargeCursor.CODEC
+            .listOf()
+            .encodeStart(NbtOps.INSTANCE, cursors)
+            .resultOrPartial(LOGGER::error)
+            .ifPresent(tag -> compoundTag.put(CURSORS_KEY, tag));
     }
 }

@@ -41,28 +41,24 @@ import com.avp.service.Services;
 
 public class AVPBlocks {
 
-    // TODO: Fix properties.
     public static final AVPDeferredHolder<Block> ABERRANT_RESIN = register(
         "aberrant_resin",
-        () -> new ResinBlock(BlockProperties.NETHER_RESIN.build())
+        () -> new ResinBlock(BlockProperties.ABERRANT_RESIN.build())
     );
 
-    // TODO: Fix properties.
     public static final AVPDeferredHolder<Block> ABERRANT_RESIN_NODE = register(
         "aberrant_resin_node",
-        () -> new ResinNodeBlock(BlockProperties.RESIN.build())
+        () -> new ResinNodeBlock(BlockProperties.ABERRANT_RESIN.build())
     );
 
-    // TODO: Fix properties.
-    public static final AVPDeferredHolder<Block> ABERRANT_RESIN_VEIN = register(
+    public static final AVPDeferredHolder<ResinVeinBlock> ABERRANT_RESIN_VEIN = register(
         "aberrant_resin_vein",
-        () -> new ResinVeinBlock(BlockProperties.NETHER_RESIN_VEIN.build())
+        () -> new ResinVeinBlock(BlockProperties.ABERRANT_RESIN_VEIN.build())
     );
 
-    // TODO: Fix properties.
     public static final AVPDeferredHolder<Block> ABERRANT_RESIN_WEB = register(
         "aberrant_resin_web",
-        () -> new ResinWebBlock(BlockProperties.NETHER_RESIN_WEB.build())
+        () -> new ResinWebBlock(BlockProperties.ABERRANT_RESIN_WEB.build())
     );
 
     public static final AVPDeferredHolder<Block> ALUMINUM_BLOCK = register("aluminum_block", BlockProperties.ALUMINUM);
@@ -329,23 +325,22 @@ public class AVPBlocks {
 
     public static final AVPDeferredHolder<Block> IRRADIATED_RESIN = register(
         "irradiated_resin",
-        () -> new IrradiatedResinBlock(BlockProperties.NETHER_RESIN.build())
+        () -> new IrradiatedResinBlock(BlockProperties.IRRADIATED_RESIN.build())
     );
 
-    // TODO: Fix properties.
     public static final AVPDeferredHolder<Block> IRRADIATED_RESIN_NODE = register(
         "irradiated_resin_node",
-        () -> new IrradiatedResinNodeBlock(BlockProperties.RESIN.build())
+        () -> new IrradiatedResinNodeBlock(BlockProperties.IRRADIATED_RESIN.build())
     );
 
-    public static final AVPDeferredHolder<Block> IRRADIATED_RESIN_VEIN = register(
+    public static final AVPDeferredHolder<ResinVeinBlock> IRRADIATED_RESIN_VEIN = register(
         "irradiated_resin_vein",
-        () -> new IrradiatedResinVeinBlock(BlockProperties.NETHER_RESIN_VEIN.build())
+        () -> new IrradiatedResinVeinBlock(BlockProperties.IRRADIATED_RESIN_VEIN.build())
     );
 
     public static final AVPDeferredHolder<Block> IRRADIATED_RESIN_WEB = register(
         "irradiated_resin_web",
-        () -> new IrradiatedResinWebBlock(BlockProperties.NETHER_RESIN_WEB.build())
+        () -> new IrradiatedResinWebBlock(BlockProperties.IRRADIATED_RESIN_WEB.build())
     );
 
     public static final AVPDeferredHolder<Block> LEAD_BLOCK = register("lead_block", BlockProperties.LEAD);
@@ -372,13 +367,12 @@ public class AVPBlocks {
         () -> new ResinBlock(BlockProperties.NETHER_RESIN.build())
     );
 
-    // TODO: Fix properties.
     public static final AVPDeferredHolder<Block> NETHER_RESIN_NODE = register(
         "nether_resin_node",
-        () -> new ResinNodeBlock(BlockProperties.RESIN.build())
+        () -> new ResinNodeBlock(BlockProperties.NETHER_RESIN.build())
     );
 
-    public static final AVPDeferredHolder<Block> NETHER_RESIN_VEIN = register(
+    public static final AVPDeferredHolder<ResinVeinBlock> NETHER_RESIN_VEIN = register(
         "nether_resin_vein",
         () -> new ResinVeinBlock(BlockProperties.NETHER_RESIN_VEIN.build())
     );
@@ -425,7 +419,7 @@ public class AVPBlocks {
 
     public static final AVPDeferredHolder<Block> RESIN_SMOOTH = register("resin_smooth", BlockProperties.BRASS);
 
-    public static final AVPDeferredHolder<Block> RESIN_VEIN = register(
+    public static final AVPDeferredHolder<ResinVeinBlock> RESIN_VEIN = register(
         "resin_vein",
         () -> new ResinVeinBlock(BlockProperties.RESIN_VEIN.build())
     );
@@ -1090,7 +1084,7 @@ public class AVPBlocks {
         return register(id, () -> new Block(blockPropertyBuilder.build()));
     }
 
-    private static AVPDeferredHolder<Block> register(String id, Supplier<Block> blockSupplier) {
+    private static <T extends Block> AVPDeferredHolder<T> register(String id, Supplier<T> blockSupplier) {
         return Services.REGISTRY.register(BuiltInRegistries.BLOCK, id, blockSupplier);
     }
 

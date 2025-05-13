@@ -2,6 +2,8 @@ package com.avp.fabric.service;
 
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import mod.azure.azurelib.rewrite.animation.cache.AzIdentityRegistry;
+import net.fabricmc.fabric.api.biome.v1.BiomeModifications;
+import net.fabricmc.fabric.api.biome.v1.BiomeSelectionContext;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
@@ -17,6 +19,8 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.SpawnPlacements;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.village.poi.PoiType;
 import net.minecraft.world.entity.npc.VillagerProfession;
@@ -27,9 +31,11 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 import com.avp.AVPResources;
+import com.avp.common.entity.spawning.AVPEntitySpawnData;
 import com.avp.common.lifecycle.AlienLifecycle;
 import com.avp.common.lifecycle.infection.AlienInfection;
 import com.avp.common.lifecycle.registry.AlienInfectionRegistry;
@@ -113,6 +119,32 @@ public class FabricRegistryService implements RegistryService {
         Supplier<AttributeSupplier.Builder> attributeSupplierBuilderSupplier
     ) {
         FabricDefaultAttributeRegistry.register(entityTypeSupplier.get(), attributeSupplierBuilderSupplier.get());
+    }
+
+    @Override
+    public <T extends Mob> void registerEntitySpawnData(AVPEntitySpawnData<T> spawnData) {
+        var spawnSettings = spawnData.getConfigData().spawnSettings();
+        var entityType = spawnData.getEntityType();
+
+        if (!spawnData.isPlacementDisabled()) {
+            var placement = spawnData.getPlacementData().type();
+            var heightMap = spawnData.getPlacementData().heightmapType();
+            var spawnPredicate = spawnData.getPlacementData().spawnPredicate();
+
+            SpawnPlacements.register(entityType, placement, heightMap, spawnPredicate);
+        }
+
+        if (!spawnData.isConfigDisabled()) {
+            Predicate<BiomeSelectionContext> biomeSelector = biomeSelectionContext -> biomeSelectionContext.hasTag(
+                spawnData.getConfigData().biomeTagKey()
+            );
+            var spawnGroup = entityType.getCategory();
+            var weight = spawnSettings.weight;
+            var minGroupSize = spawnSettings.minGroupSize;
+            var maxGroupSize = spawnSettings.maxGroupSize;
+
+            BiomeModifications.addSpawn(biomeSelector, spawnGroup, entityType, weight, minGroupSize, maxGroupSize);
+        }
     }
 
     @Override

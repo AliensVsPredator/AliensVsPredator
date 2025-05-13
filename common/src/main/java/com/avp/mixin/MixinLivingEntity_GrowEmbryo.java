@@ -25,7 +25,6 @@ import java.util.concurrent.TimeUnit;
 import com.avp.common.entity.living.Host;
 import com.avp.common.entity.living.alien.Alien;
 import com.avp.common.entity.living.alien.parasite.Parasite;
-import com.avp.common.entity.living.alien.util.AlienVariantUtil;
 import com.avp.common.entity.living.gene.GeneProviders;
 import com.avp.common.entity.living.manager.GeneManager;
 import com.avp.common.lifecycle.infection.AlienInfection;
@@ -185,7 +184,6 @@ public abstract class MixinLivingEntity_GrowEmbryo extends Entity implements Hos
     private void applyGenesToParasite(LivingEntity self, Alien alien) {
         var geneManager = alien.geneManager();
         geneManager.setAll(getOrCreateGeneManager().getAll());
-        alien.updateStateBasedOnGenetics();
 
         // Transfer genetics from parasite source to parasite.
         var hostType = self.getType();
@@ -225,7 +223,7 @@ public abstract class MixinLivingEntity_GrowEmbryo extends Entity implements Hos
 
     @Override
     public void injectEmbryo(Parasite parasite) {
-        this.parasiteSourceType = AlienVariantUtil.getVariantTypeFor(parasite);
+        this.parasiteSourceType = parasite.getType();
         getOrCreateGeneManager().setAll(parasite.geneManager().getAll());
 
         var self = LivingEntity.class.cast(this);

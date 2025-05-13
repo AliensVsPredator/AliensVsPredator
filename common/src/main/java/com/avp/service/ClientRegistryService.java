@@ -49,7 +49,7 @@ public interface ClientRegistryService {
         BlockEntityRendererProvider<T> renderProvider
     );
 
-    void registerBlockRenderLayer(Supplier<Block> blockSupplier, RenderType renderType);
+    void registerBlockRenderLayer(Supplier<? extends Block> blockSupplier, RenderType renderType);
 
     <E extends Entity> void registerEntityRenderer(
         Supplier<EntityType<E>> entityTypeSupplier,

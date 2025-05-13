@@ -1,4 +1,4 @@
-package com.avp.common.util.region;
+package com.avp.common.util.spatial.region;
 
 import net.minecraft.world.level.ChunkPos;
 

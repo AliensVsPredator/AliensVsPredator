@@ -1,4 +1,4 @@
-package com.avp.common.hive.manager;
+package com.avp.common.hive.membership.manager;
 
 import com.bvanseg.just.functional.option.Option;
 import net.minecraft.nbt.CompoundTag;

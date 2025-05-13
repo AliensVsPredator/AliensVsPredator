@@ -19,13 +19,13 @@ import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
 import org.jetbrains.annotations.NotNull;
 
-import com.avp.common.block.AVPBlocks;
 import com.avp.common.block.entity.resin_node.ChargeCursor;
 import com.avp.common.block.entity.resin_node.ResinSpreader;
-import com.avp.common.block.entity.resin_node.behavior.SpreadBehavior;
+import com.avp.common.block.entity.resin_node.behavior.VeinSpreadBehavior;
+import com.avp.common.entity.living.alien.AlienVariantTypes;
 import com.avp.common.sound.AVPSoundEvents;
 
-public class ResinVeinBlock extends MultifaceBlock implements SpreadBehavior {
+public class ResinVeinBlock extends MultifaceBlock implements VeinSpreadBehavior {
 
     public static final MapCodec<MultifaceBlock> CODEC = simpleCodec(ResinVeinBlock::new);
 
@@ -50,7 +50,7 @@ public class ResinVeinBlock extends MultifaceBlock implements SpreadBehavior {
     }
 
     @Override
-    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
+    protected void createBlockStateDefinition(@NotNull StateDefinition.Builder<Block, BlockState> builder) {
         super.createBlockStateDefinition(builder);
         builder.add(WATERLOGGED);
     }
@@ -58,11 +58,11 @@ public class ResinVeinBlock extends MultifaceBlock implements SpreadBehavior {
     @Override
     protected @NotNull BlockState updateShape(
         BlockState blockState,
-        Direction direction,
-        BlockState blockState2,
-        LevelAccessor levelAccessor,
-        BlockPos blockPos,
-        BlockPos blockPos2
+        @NotNull Direction direction,
+        @NotNull BlockState blockState2,
+        @NotNull LevelAccessor levelAccessor,
+        @NotNull BlockPos blockPos,
+        @NotNull BlockPos blockPos2
     ) {
         if (blockState.getValue(WATERLOGGED)) {
             levelAccessor.scheduleTick(blockPos, Fluids.WATER, Fluids.WATER.getTickDelay(levelAccessor));
@@ -72,12 +72,12 @@ public class ResinVeinBlock extends MultifaceBlock implements SpreadBehavior {
     }
 
     @Override
-    protected boolean canBeReplaced(BlockState blockState, BlockPlaceContext blockPlaceContext) {
-        // TODO: What about the other resin vein types here?
-        return !blockPlaceContext.getItemInHand().is(AVPBlocks.RESIN_VEIN.get().asItem()) || super.canBeReplaced(
-            blockState,
-            blockPlaceContext
-        );
+    protected boolean canBeReplaced(@NotNull BlockState blockState, @NotNull BlockPlaceContext blockPlaceContext) {
+        var alienVariantType = AlienVariantTypes.getForOrNull(blockState);
+        // This check is faster than super.canBeReplaced, which checks all block face directions.
+        var itemInHandIsNotResinVein = alienVariantType != null && !blockPlaceContext.getItemInHand()
+            .is(alienVariantType.resinVein().get().asItem());
+        return itemInHandIsNotResinVein || super.canBeReplaced(blockState, blockPlaceContext);
     }
 
     @Override
@@ -91,19 +91,20 @@ public class ResinVeinBlock extends MultifaceBlock implements SpreadBehavior {
 
     @Override
     protected @NotNull FluidState getFluidState(BlockState blockState) {
-        return blockState.getValue(WATERLOGGED) ? Fluids.WATER.getSource(false) : super.getFluidState(blockState);
+        return blockState.getValue(WATERLOGGED)
+            ? Fluids.WATER.getSource(false)
+            : super.getFluidState(blockState);
     }
 
     @Override
     public int attemptUseCharge(
         ChargeCursor chargeCursor,
         LevelAccessor levelAccessor,
-        BlockPos blockPos,
+        BlockPos nodePos,
         RandomSource randomSource,
-        ResinSpreader resinSpreader,
-        boolean bl
+        ResinSpreader resinSpreader
     ) {
-        if (bl && this.attemptPlaceResin(resinSpreader, levelAccessor, chargeCursor.getPos(), randomSource)) {
+        if (attemptPlaceResin(levelAccessor, nodePos, chargeCursor.getPos(), randomSource)) {
             return chargeCursor.getCharge() - 1;
         } else {
             return randomSource.nextInt(resinSpreader.chargeDecayRate()) == 0
@@ -112,78 +113,37 @@ public class ResinVeinBlock extends MultifaceBlock implements SpreadBehavior {
         }
     }
 
-    private boolean attemptPlaceResin(
-        ResinSpreader resinSpreader,
-        LevelAccessor levelAccessor,
-        BlockPos blockPos,
-        RandomSource randomSource
-    ) {
-        var blockState = levelAccessor.getBlockState(blockPos);
-        var tagKey = resinSpreader.replaceableBlocks();
+    private boolean attemptPlaceResin(LevelAccessor levelAccessor, BlockPos nodePos, BlockPos cursorPos, RandomSource randomSource) {
+        var nodeBlockState = levelAccessor.getBlockState(nodePos);
+        var cursorBlockState = levelAccessor.getBlockState(cursorPos);
+        var alienVariantType = AlienVariantTypes.getForOrNull(nodeBlockState);
+
+        if (alienVariantType == null) {
+            return false;
+        }
+
+        var resinBlockState = alienVariantType.resin().get().defaultBlockState();
 
         for (var direction : Direction.allShuffled(randomSource)) {
-            if (!hasFace(blockState, direction)) {
+            if (!hasFace(cursorBlockState, direction)) {
                 continue;
             }
 
-            var blockPos2 = blockPos.relative(direction);
+            var blockPos2 = cursorPos.relative(direction);
             var blockState2 = levelAccessor.getBlockState(blockPos2);
 
-            if (!blockState2.is(tagKey)) {
+            if (!blockState2.is(alienVariantType.resinReplaceableTag())) {
                 continue;
             }
-
-            var resinBlockState = getResinBlock().defaultBlockState();
 
             levelAccessor.setBlock(blockPos2, resinBlockState, 3);
             Block.pushEntitiesUp(blockState2, resinBlockState, levelAccessor, blockPos2);
             levelAccessor.playSound(null, blockPos2, AVPSoundEvents.BLOCK_RESIN_SPREAD.get(), SoundSource.BLOCKS, 1.0F, 1.0F);
-            this.veinSpreader.spreadAll(resinBlockState, levelAccessor, blockPos2, resinSpreader.isWorldGeneration());
-            var direction2 = direction.getOpposite();
-
-            dischargeForAllFacesExcludingDirection(levelAccessor, randomSource, direction2, blockPos2);
+            veinSpreader.spreadAll(resinBlockState, levelAccessor, blockPos2, false);
 
             return true;
         }
 
         return false;
     }
-
-    private void dischargeForAllFacesExcludingDirection(
-        LevelAccessor levelAccessor,
-        RandomSource randomSource,
-        Direction direction2,
-        BlockPos blockPos2
-    ) {
-        for (var direction3 : DIRECTIONS) {
-            if (direction3 == direction2) {
-                continue;
-            }
-
-            var blockPos3 = blockPos2.relative(direction3);
-            dischargeForBlockPos(levelAccessor, randomSource, blockPos3);
-        }
-    }
-
-    private void dischargeForBlockPos(LevelAccessor levelAccessor, RandomSource randomSource, BlockPos blockPos3) {
-        var blockState4 = levelAccessor.getBlockState(blockPos3);
-
-        if (blockState4.is(this)) {
-            this.onDischarged(levelAccessor, blockState4, blockPos3, randomSource);
-        }
-    }
-
-    private Block getResinBlock() {
-        // TODO: Use a variant map here.
-        if (this == AVPBlocks.ABERRANT_RESIN_VEIN.get()) {
-            return AVPBlocks.ABERRANT_RESIN.get();
-        } else if (this == AVPBlocks.NETHER_RESIN_VEIN.get()) {
-            return AVPBlocks.NETHER_RESIN.get();
-        } else if (this == AVPBlocks.IRRADIATED_RESIN_VEIN.get()) {
-            return AVPBlocks.IRRADIATED_RESIN.get();
-        } else {
-            return AVPBlocks.RESIN.get();
-        }
-    }
-
 }

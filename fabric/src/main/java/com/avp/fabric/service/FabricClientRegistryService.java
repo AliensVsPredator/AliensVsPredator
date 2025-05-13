@@ -53,7 +53,7 @@ public class FabricClientRegistryService implements ClientRegistryService {
     }
 
     @Override
-    public void registerBlockRenderLayer(Supplier<Block> blockSupplier, RenderType renderType) {
+    public void registerBlockRenderLayer(Supplier<? extends Block> blockSupplier, RenderType renderType) {
         BlockRenderLayerMap.INSTANCE.putBlock(blockSupplier.get(), renderType);
     }
 

@@ -10,6 +10,7 @@ import org.jetbrains.annotations.Nullable;
 import com.avp.AVP;
 import com.avp.common.ai.goal.combat.LungeAtTargetGoal;
 import com.avp.common.entity.living.alien.Alien;
+import com.avp.common.entity.living.alien.AlienVariant;
 import com.avp.common.entity.living.alien.manager.resin.ResinData;
 import com.avp.common.entity.living.alien.xenomorph.Xenomorph;
 import com.avp.common.entity.type.AVPEntityTypes;
@@ -31,18 +32,8 @@ public class Drone extends Xenomorph {
     }
 
     @Override
-    public @Nullable EntityType<? extends Alien> getAberrantType() {
-        return AVPEntityTypes.ABERRANT_DRONE.get();
-    }
-
-    @Override
-    public @Nullable EntityType<? extends Alien> getIrradiatedType() {
-        return AVPEntityTypes.IRRADIATED_DRONE.get();
-    }
-
-    @Override
-    public @Nullable EntityType<? extends Alien> getNetherType() {
-        return AVPEntityTypes.NETHER_DRONE.get();
+    public @Nullable EntityType<? extends Alien> getTypeForVariant(AlienVariant alienVariant) {
+        return getType(alienVariant);
     }
 
     @Override
@@ -84,16 +75,16 @@ public class Drone extends Xenomorph {
         return 2;
     }
 
-    @Override
-    public void tick() {
-        super.tick();
-
-        if (!level().isClientSide()) {
-            becomeIrradiated();
-        }
-    }
-
     public DroneAnimationDispatcher getAnimationDispatcher() {
         return animationDispatcher;
+    }
+
+    public static EntityType<? extends Alien> getType(AlienVariant alienVariant) {
+        return switch (alienVariant) {
+            case NORMAL -> AVPEntityTypes.DRONE.get();
+            case NETHER -> AVPEntityTypes.NETHER_DRONE.get();
+            case ABERRANT -> AVPEntityTypes.ABERRANT_DRONE.get();
+            case IRRADIATED -> AVPEntityTypes.IRRADIATED_DRONE.get();
+        };
     }
 }

@@ -9,8 +9,9 @@ import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 import com.avp.common.entity.AVPEntityTypeTags;
+import com.avp.common.entity.living.alien.AVPAlienTransitions;
 import com.avp.common.entity.living.alien.Alien;
-import com.avp.common.entity.living.gene.GeneKeys;
+import com.avp.common.entity.living.alien.AlienVariant;
 
 public class PoisonJellyItem extends Item {
 
@@ -35,10 +36,9 @@ public class PoisonJellyItem extends Item {
             if (
                 livingEntity.getType().is(AVPEntityTypeTags.OVOMORPHS)
                     && alien.isRoyal()
-                    && !alien.isAberrant()
-                    && !alien.isNetherAfflicted()
+                    && alien.getVariant() == AlienVariant.NORMAL
             ) {
-                alien.geneManager().minimize(GeneKeys.GENETIC_INTEGRITY);
+                AVPAlienTransitions.transitionIntoVariant(alien, AlienVariant.ABERRANT);
             }
         }
 

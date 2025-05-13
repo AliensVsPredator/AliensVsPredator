@@ -24,7 +24,8 @@ import org.jetbrains.annotations.Nullable;
 
 import com.avp.AVP;
 import com.avp.common.entity.living.alien.Alien;
-import com.avp.common.entity.living.alien.util.AlienVariantUtil;
+import com.avp.common.entity.living.alien.AlienVariant;
+import com.avp.common.entity.living.alien.AlienVariantTypes;
 import com.avp.common.entity.type.AVPEntityTypes;
 import com.avp.common.item.AVPItems;
 import com.avp.common.sound.AVPSoundEvents;
@@ -62,23 +63,8 @@ public class Ovomorph extends Alien implements Shearable {
     }
 
     @Override
-    public @Nullable EntityType<? extends Alien> getAberrantType() {
-        return isRoyal() ? AVPEntityTypes.ROYAL_ABERRANT_OVOMORPH.get() : AVPEntityTypes.ABERRANT_OVOMORPH.get();
-    }
-
-    @Override
-    public @Nullable EntityType<? extends Alien> getIrradiatedType() {
-        return null;
-    }
-
-    @Override
-    public @Nullable EntityType<? extends Alien> getNetherType() {
-        return isRoyal() ? AVPEntityTypes.ROYAL_NETHER_OVOMORPH.get() : AVPEntityTypes.NETHER_OVOMORPH.get();
-    }
-
-    @Override
-    public @Nullable EntityType<? extends Alien> getDefaultType() {
-        return isRoyal() ? AVPEntityTypes.ROYAL_OVOMORPH.get() : AVPEntityTypes.OVOMORPH.get();
+    public @Nullable EntityType<? extends Alien> getTypeForVariant(AlienVariant alienVariant) {
+        return getType(alienVariant, isRoyal());
     }
 
     @Override
@@ -113,7 +99,7 @@ public class Ovomorph extends Alien implements Shearable {
         }
 
         var itemStack = player.getItemInHand(interactionHand);
-        var resinBallItem = AlienVariantUtil.getResinBallFor(this);
+        var resinBallItem = AlienVariantTypes.getFor(this).resinBall().get();
 
         if (itemStack.is(AVPItems.RAW_ROYAL_JELLY.get())) {
             if (hatchManager.isHatching() || hatchManager().isHatched()) {
@@ -145,7 +131,7 @@ public class Ovomorph extends Alien implements Shearable {
         setRooted(false);
         level().playSound(null, this, SoundEvents.SHEEP_SHEAR, soundSource, 1.0F, 1.0F);
         level().playSound(null, this, AVPSoundEvents.ENTITY_OVOMORPH_SHEAR.get(), soundSource, 1.0F, 1.0F);
-        var resinBallItem = AlienVariantUtil.getResinBallFor(this);
+        var resinBallItem = AlienVariantTypes.getFor(this).resinBall().get();
 
         var itemEntity = this.spawnAtLocation(resinBallItem, 1);
 
@@ -209,6 +195,12 @@ public class Ovomorph extends Alien implements Shearable {
 
     @Override
     public boolean isPersistenceRequired() {
+        if (hatchManager.isHatched()) {
+            // If the ovomorph is hatched, then defer to super and no other factors.
+            return super.isPersistenceRequired();
+        }
+
+        // Otherwise if super check passes or if ovomorph is not rooted, then persist the ovomorph.
         return super.isPersistenceRequired() || !isRooted();
     }
 
@@ -285,5 +277,23 @@ public class Ovomorph extends Alien implements Shearable {
 
     public OvomorphAnimationDispatcher getAnimationDispatcher() {
         return animationDispatcher;
+    }
+
+    public static @Nullable EntityType<? extends Ovomorph> getType(AlienVariant alienVariant, boolean isRoyal) {
+        if (isRoyal) {
+            return switch (alienVariant) {
+                case NORMAL -> AVPEntityTypes.ROYAL_OVOMORPH.get();
+                case NETHER -> AVPEntityTypes.ROYAL_NETHER_OVOMORPH.get();
+                case ABERRANT -> AVPEntityTypes.ROYAL_ABERRANT_OVOMORPH.get();
+                case IRRADIATED -> null;
+            };
+        }
+
+        return switch (alienVariant) {
+            case NORMAL -> AVPEntityTypes.OVOMORPH.get();
+            case NETHER -> AVPEntityTypes.NETHER_OVOMORPH.get();
+            case ABERRANT -> AVPEntityTypes.ABERRANT_OVOMORPH.get();
+            case IRRADIATED -> null;
+        };
     }
 }

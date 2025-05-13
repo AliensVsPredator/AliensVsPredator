@@ -16,7 +16,7 @@ import java.util.BitSet;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.avp.common.util.region.RegionPos;
+import com.avp.common.util.spatial.region.RegionPos;
 
 /**
  * Tracks permanently blacklisted chunk spawn positions for queens using 128x128 chunk regions and BitSets.

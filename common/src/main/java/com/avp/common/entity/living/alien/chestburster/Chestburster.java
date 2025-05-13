@@ -13,6 +13,7 @@ import org.jetbrains.annotations.Nullable;
 
 import com.avp.AVP;
 import com.avp.common.entity.living.alien.Alien;
+import com.avp.common.entity.living.alien.AlienVariant;
 import com.avp.common.entity.living.alien.manager.GrowthManager;
 import com.avp.common.entity.living.alien.manager.ResinManager;
 import com.avp.common.entity.living.alien.manager.resin.ResinData;
@@ -52,23 +53,8 @@ public class Chestburster extends Alien implements ResinProducer {
     }
 
     @Override
-    public @Nullable EntityType<? extends Alien> getAberrantType() {
-        return isRoyal() ? AVPEntityTypes.ROYAL_ABERRANT_CHESTBURSTER.get() : AVPEntityTypes.ABERRANT_CHESTBURSTER.get();
-    }
-
-    @Override
-    public @Nullable EntityType<? extends Alien> getIrradiatedType() {
-        return null;
-    }
-
-    @Override
-    public @Nullable EntityType<? extends Alien> getNetherType() {
-        return isRoyal() ? AVPEntityTypes.ROYAL_NETHER_CHESTBURSTER.get() : AVPEntityTypes.NETHER_CHESTBURSTER.get();
-    }
-
-    @Override
-    public @Nullable EntityType<? extends Alien> getDefaultType() {
-        return isRoyal() ? AVPEntityTypes.ROYAL_CHESTBURSTER.get() : AVPEntityTypes.CHESTBURSTER.get();
+    public @Nullable EntityType<? extends Alien> getTypeForVariant(AlienVariant alienVariant) {
+        return getType(alienVariant, isRoyal());
     }
 
     @Override
@@ -135,5 +121,23 @@ public class Chestburster extends Alien implements ResinProducer {
 
     public ChestbursterAnimationDispatcher getAnimationDispatcher() {
         return animationDispatcher;
+    }
+
+    public static @Nullable EntityType<? extends Alien> getType(AlienVariant alienVariant, boolean isRoyal) {
+        if (isRoyal) {
+            return switch (alienVariant) {
+                case NORMAL -> AVPEntityTypes.ROYAL_CHESTBURSTER.get();
+                case NETHER -> AVPEntityTypes.ROYAL_NETHER_CHESTBURSTER.get();
+                case ABERRANT -> AVPEntityTypes.ROYAL_ABERRANT_CHESTBURSTER.get();
+                case IRRADIATED -> null;
+            };
+        }
+
+        return switch (alienVariant) {
+            case NORMAL -> AVPEntityTypes.CHESTBURSTER.get();
+            case NETHER -> AVPEntityTypes.NETHER_CHESTBURSTER.get();
+            case ABERRANT -> AVPEntityTypes.ABERRANT_CHESTBURSTER.get();
+            case IRRADIATED -> null;
+        };
     }
 }

@@ -9,6 +9,7 @@ import org.jetbrains.annotations.NotNull;
 import org.spongepowered.asm.mixin.Mixin;
 
 import com.avp.common.block.ResinNodeBlock;
+import com.avp.common.entity.living.alien.AlienVariantTypes;
 
 @Mixin(ResinNodeBlock.class)
 public class MixinBlock_FlammableResinNode implements IBlockExtension {
@@ -20,7 +21,10 @@ public class MixinBlock_FlammableResinNode implements IBlockExtension {
         @NotNull BlockPos pos,
         @NotNull Direction direction
     ) {
-        return 1;
+        return AlienVariantTypes.getFor(state)
+            .isSomeAnd(alienVariantType -> alienVariantType != AlienVariantTypes.NETHER)
+                ? 1
+                : IBlockExtension.super.getFireSpreadSpeed(state, level, pos, direction);
     }
 
     @Override
@@ -30,6 +34,9 @@ public class MixinBlock_FlammableResinNode implements IBlockExtension {
         @NotNull BlockPos pos,
         @NotNull Direction direction
     ) {
-        return 20;
+        return AlienVariantTypes.getFor(state)
+            .isSomeAnd(alienVariantType -> alienVariantType != AlienVariantTypes.NETHER)
+                ? 20
+                : IBlockExtension.super.getFlammability(state, level, pos, direction);
     }
 }

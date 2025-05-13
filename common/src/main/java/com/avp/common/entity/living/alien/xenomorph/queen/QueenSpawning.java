@@ -6,16 +6,20 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.SpawnPlacements;
 import net.minecraft.world.entity.monster.Monster;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 
+import java.util.Objects;
+
 import com.avp.AVP;
+import com.avp.common.entity.living.alien.AlienVariantTypes;
 import com.avp.common.level.saveddata.HiveLevelData;
 import com.avp.common.level.saveddata.QueenSpawnChunkData;
-import com.avp.common.util.ChunkPosUtil;
+import com.avp.common.util.spatial.chunk.ChunkPosUtil;
 
 public class QueenSpawning {
 
-    private static final int MAX_Y_LEVEL = -24;
+    private static final int MAX_OVERWORLD_Y_LEVEL = -24;
 
     public static final SpawnPlacements.SpawnPredicate<Queen> PREDICATE = (
         entityType,
@@ -24,18 +28,26 @@ public class QueenSpawning {
         blockPos,
         randomSource
     ) -> {
-        var queenSpawnChunkDataOption = QueenSpawnChunkData.getOrCreate(serverLevelAccessor.getLevel());
+        var level = serverLevelAccessor.getLevel();
+        var queenSpawnChunkDataOption = QueenSpawnChunkData.getOrCreate(level);
         var isChunkSpawnAvailable = queenSpawnChunkDataOption
             .isSomeAnd(queenSpawnChunkData -> !queenSpawnChunkData.isChunkBlacklisted(blockPos));
 
-        var canSpawn = blockPos.getY() <= MAX_Y_LEVEL
+        int maxYLevelForDimension;
+
+        if (level.dimension() == Level.NETHER) {
+            maxYLevelForDimension = level.dimensionType().logicalHeight();
+        } else {
+            maxYLevelForDimension = MAX_OVERWORLD_Y_LEVEL;
+        }
+
+        var canSpawn = blockPos.getY() <= maxYLevelForDimension
             && isChunkSpawnAvailable
             && checkSpawnRules(entityType, serverLevelAccessor, mobSpawnType, blockPos, randomSource);
 
         if (canSpawn) {
             var queenSpawnChunkData = queenSpawnChunkDataOption.unwrap();
-            // TODO: Refactor this distance value at a later date, all hive distance checks are begging for a refactor.
-            var chunkRadiusToBlacklist = AVP.config.hiveConfigs.MINIMUM_DISTANCE_BETWEEN_HIVES_IN_BLOCKS / 16;
+            var chunkRadiusToBlacklist = AVP.config.hiveConfigs.MINIMUM_DISTANCE_BETWEEN_NATURAL_QUEEN_SPAWNS_IN_CHUNKS;
             var nearbyChunkPositions = ChunkPosUtil.getChunksAround(blockPos, chunkRadiusToBlacklist);
 
             nearbyChunkPositions.forEach(queenSpawnChunkData::addChunkToBlacklist);
@@ -53,6 +65,8 @@ public class QueenSpawning {
         BlockPos blockPos,
         RandomSource randomSource
     ) {
+        var alienVariantTypeOption = AlienVariantTypes.getFor(entityType);
+
         return Monster.checkMonsterSpawnRules(
             entityType,
             serverLevelAccessor,
@@ -61,13 +75,18 @@ public class QueenSpawning {
             randomSource
         )
             && HiveLevelData.getOrCreate(serverLevelAccessor.getLevel())
-                .andThen(hiveLevelData -> hiveLevelData.findNearestHive(blockPos))
+                .andThen(
+                    hiveLevelData -> hiveLevelData.findNearestHive(
+                        blockPos,
+                        // Find the nearest hive for this alien type's variant type.
+                        hive -> alienVariantTypeOption.isSomeAnd(
+                            alienVariantType -> Objects.equals(hive.getVariant(), alienVariantType.variant())
+                        )
+                    )
+                )
                 .match(
                     // If there is hive, we need to make sure it's far enough away from where the queen wants to spawn.
-                    nearestHive -> !nearestHive.isBlockPosWithinRangeOfHive(
-                        blockPos,
-                        AVP.config.hiveConfigs.MINIMUM_DISTANCE_BETWEEN_HIVES_IN_BLOCKS
-                    ),
+                    nearestHive -> !nearestHive.getSpaceManager().isBlockPosWithinHiveBuffer(blockPos),
                     // No "nearest hive" present, so the queen is clear to spawn.
                     () -> true
                 );

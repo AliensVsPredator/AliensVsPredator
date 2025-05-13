@@ -8,8 +8,8 @@ import net.minecraft.world.entity.SpawnPlacements;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.level.ServerLevelAccessor;
 
-import com.avp.common.block.AVPBlockTags;
-import com.avp.common.entity.AVPEntityTypeTags;
+import java.util.Objects;
+
 import com.avp.common.level.saveddata.HiveLevelData;
 
 public class AlienSpawning {
@@ -27,8 +27,10 @@ public class AlienSpawning {
         randomSource
     ) -> {
         var belowState = serverLevelAccessor.getBlockState(blockPos.below());
-        var resinBlock = entityType.is(AVPEntityTypeTags.NETHER_ALIENS) ? AVPBlockTags.NETHER_RESIN : AVPBlockTags.NORMAL_RESIN;
-        var isValidResinPos = belowState.is(resinBlock);
+        var alienVariantTypeOption = AlienVariantTypes.getFor(entityType)
+            .map(AlienVariantType::resinBlockTag);
+
+        var isValidResinPos = alienVariantTypeOption.isSomeAnd(belowState::is);
 
         return isValidResinPos
             && checkSpawnRules(entityType, serverLevelAccessor, mobSpawnType, blockPos, randomSource);
@@ -48,22 +50,33 @@ public class AlienSpawning {
             blockPos,
             randomSource
         ) &&
-            isSpawnPositionWithinHive(serverLevelAccessor, blockPos);
+            isSpawnPositionWithinHive(entityType, serverLevelAccessor, blockPos);
     }
 
-    // TODO:
-    // We need to check that the entity type we're trying to spawn isn't going to get immediately clobbered by an
-    // enemy strain hive.
-    private static boolean isSpawnPositionWithinHive(ServerLevelAccessor serverLevelAccessor, BlockPos blockPos) {
+    private static boolean isSpawnPositionWithinHive(
+        EntityType<? extends Monster> entityType,
+        ServerLevelAccessor serverLevelAccessor,
+        BlockPos blockPos
+    ) {
+        var alienVariantTypeOption = AlienVariantTypes.getFor(entityType);
+
         return HiveLevelData.getOrCreate(serverLevelAccessor.getLevel())
-            .andThen(hiveLevelData -> hiveLevelData.findNearestHive(blockPos))
+            .andThen(
+                hiveLevelData -> hiveLevelData.findNearestHive(
+                    blockPos,
+                    // Find the nearest hive for this alien type's variant type.
+                    hive -> alienVariantTypeOption.isSomeAnd(
+                        alienVariantType -> Objects.equals(hive.getVariant(), alienVariantType.variant())
+                    )
+                )
+            )
             .isSomeAnd(nearestHive ->
             // Aliens can not spawn in hives that are dead.
             nearestHive.isAlive()
                 // AND Hive is not angry/aggro'd.
                 && !nearestHive.isAngry()
                 // AND spawn position must be within range of the hive.
-                && nearestHive.isBlockPosWithinRangeOfHive(blockPos)
+                && nearestHive.getSpaceManager().isBlockPosWithinHive(blockPos)
             );
     }
 }

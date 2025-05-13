@@ -28,12 +28,7 @@ public class ResinNodeBlockEntity extends BlockEntity implements GameEventListen
 
     public static void serverTick(Level level, BlockPos nodePos, BlockState blockState, ResinNodeBlockEntity resinNodeBlockEntity) {
         resinNodeBlockEntity.resinSpreadListener.getResinSpreader()
-            .updateCursors(
-                level,
-                nodePos,
-                level.getRandom(),
-                true
-            );
+            .updateCursors(level, nodePos, level.getRandom());
     }
 
     @Override

@@ -13,7 +13,7 @@ import net.minecraft.world.entity.Pose;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
-import com.avp.common.entity.living.alien.util.AlienVariantUtil;
+import com.avp.common.entity.living.alien.AlienVariantTypes;
 import com.avp.common.util.GravityUtil;
 
 public class Acid extends Entity {
@@ -147,19 +147,23 @@ public class Acid extends Entity {
 
         particleTickCounter = 0;
 
+        var alienVariantTypeOption = AlienVariantTypes.getFor(this);
+
         for (int i = 0; i < getMultiplier(); i++) {
             if (isInWater()) {
                 level.addAlwaysVisibleParticle(ParticleTypes.BUBBLE_COLUMN_UP, getRandomX(0.5), getRandomY(), getRandomZ(0.5), 0, 0, 0);
             }
 
-            level.addAlwaysVisibleParticle(
-                AlienVariantUtil.getParticleFor(this),
-                getRandomX(0.5),
-                getRandomY(),
-                getRandomZ(0.5),
-                0,
-                0,
-                0
+            alienVariantTypeOption.ifSome(
+                alienVariantType -> level.addAlwaysVisibleParticle(
+                    alienVariantType.acidParticleType().get(),
+                    getRandomX(0.5),
+                    getRandomY(),
+                    getRandomZ(0.5),
+                    0,
+                    0,
+                    0
+                )
             );
         }
     }

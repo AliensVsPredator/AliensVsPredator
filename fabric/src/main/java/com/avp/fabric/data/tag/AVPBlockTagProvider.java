@@ -206,6 +206,67 @@ public class AVPBlockTagProvider extends FabricTagProvider.BlockTagProvider {
             .addTag(AVPBlockTags.NETHER_RESIN)
             .addTag(AVPBlockTags.NORMAL_RESIN);
 
+        getOrCreateTagBuilder(AVPBlockTags.RESIN_BLOCKS)
+            .add(
+                AVPBlocks.ABERRANT_RESIN.get(),
+                AVPBlocks.IRRADIATED_RESIN.get(),
+                AVPBlocks.NETHER_RESIN.get(),
+                AVPBlocks.RESIN.get()
+            );
+
+        getOrCreateTagBuilder(AVPBlockTags.RESIN_NODES)
+            .add(
+                AVPBlocks.ABERRANT_RESIN_NODE.get(),
+                AVPBlocks.IRRADIATED_RESIN_NODE.get(),
+                AVPBlocks.NETHER_RESIN_NODE.get(),
+                AVPBlocks.RESIN_NODE.get()
+            );
+
+        getOrCreateTagBuilder(AVPBlockTags.RESIN_REPLACEABLE)
+            .addOptionalTag(BlockTags.BASE_STONE_NETHER)
+            .addOptionalTag(BlockTags.BASE_STONE_OVERWORLD)
+            .addOptionalTag(BlockTags.DIRT)
+            .addOptionalTag(BlockTags.NYLIUM)
+            .addOptionalTag(BlockTags.TERRACOTTA)
+            .add(
+                Blocks.CALCITE,
+                Blocks.CLAY,
+                Blocks.DRIPSTONE_BLOCK,
+                Blocks.END_STONE,
+                Blocks.GRAVEL,
+                Blocks.RED_SAND,
+                Blocks.RED_SANDSTONE,
+                Blocks.SAND,
+                Blocks.SANDSTONE,
+                Blocks.SMOOTH_BASALT,
+                Blocks.SOUL_SAND,
+                Blocks.SOUL_SOIL
+            );
+
+        getOrCreateTagBuilder(AVPBlockTags.ABERRANT_RESIN_REPLACEABLE)
+            .addTag(AVPBlockTags.RESIN_REPLACEABLE)
+            .addTag(AVPBlockTags.IRRADIATED_RESIN)
+            .addTag(AVPBlockTags.NETHER_RESIN)
+            .addTag(AVPBlockTags.NORMAL_RESIN);
+
+        getOrCreateTagBuilder(AVPBlockTags.IRRADIATED_RESIN_REPLACEABLE)
+            .addTag(AVPBlockTags.RESIN_REPLACEABLE)
+            .addTag(AVPBlockTags.ABERRANT_RESIN)
+            .addTag(AVPBlockTags.NETHER_RESIN)
+            .addTag(AVPBlockTags.NORMAL_RESIN);
+
+        getOrCreateTagBuilder(AVPBlockTags.NETHER_RESIN_REPLACEABLE)
+            .addTag(AVPBlockTags.RESIN_REPLACEABLE)
+            .addTag(AVPBlockTags.ABERRANT_RESIN)
+            .addTag(AVPBlockTags.IRRADIATED_RESIN)
+            .addTag(AVPBlockTags.NORMAL_RESIN);
+
+        getOrCreateTagBuilder(AVPBlockTags.NORMAL_RESIN_REPLACEABLE)
+            .addTag(AVPBlockTags.RESIN_REPLACEABLE)
+            .addTag(AVPBlockTags.ABERRANT_RESIN)
+            .addTag(AVPBlockTags.IRRADIATED_RESIN)
+            .addTag(AVPBlockTags.NETHER_RESIN);
+
         getOrCreateTagBuilder(AVPBlockTags.RESIN_VEINS)
             .add(
                 AVPBlocks.ABERRANT_RESIN_VEIN.get(),

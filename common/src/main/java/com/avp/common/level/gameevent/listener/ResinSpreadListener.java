@@ -11,8 +11,8 @@ import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 
 import com.avp.common.block.entity.resin_node.ResinSpreader;
+import com.avp.common.entity.living.alien.AlienVariantTypes;
 import com.avp.common.entity.living.alien.manager.resin.ResinProducer;
-import com.avp.common.level.gameevent.AVPGameEvents;
 
 public class ResinSpreadListener implements GameEventListener {
 
@@ -25,7 +25,7 @@ public class ResinSpreadListener implements GameEventListener {
     public ResinSpreadListener(PositionSource positionSource, SpreaderType spreaderType) {
         this.positionSource = positionSource;
         this.spreaderType = spreaderType;
-        this.resinSpreader = ResinSpreader.createLevelSpreader();
+        this.resinSpreader = ResinSpreader.create();
     }
 
     @Override
@@ -48,27 +48,44 @@ public class ResinSpreadListener implements GameEventListener {
     }
 
     @Override
-    public boolean handleGameEvent(ServerLevel serverLevel, Holder<GameEvent> holder, GameEvent.Context context, Vec3 vec3) {
-        // TODO: Make sure this is correct, used to be a .key() on the game event type here.
-        if (!holder.is(AVPGameEvents.XENOMORPH_RESIN_SPREAD.getHolder())) {
+    public boolean handleGameEvent(
+        @NotNull ServerLevel serverLevel,
+        @NotNull Holder<GameEvent> holder,
+        @NotNull GameEvent.Context context,
+        @NotNull Vec3 vec3
+    ) {
+        var sourceEntity = context.sourceEntity();
+
+        if (sourceEntity == null) {
+            // Resin spread events should ideally always come from a source entity (in other words, a xenomorph).
             return false;
         }
 
-        if (spreaderType instanceof SpreaderType.Entity spreaderEntity && spreaderEntity.entity.equals(context.sourceEntity())) {
-            // If this type of listener is a spreader type entity, and if the game event was emitted from the
-            // same spreader entity, then we want to ignore this event.
+        if (!(spreaderType instanceof SpreaderType.Block(BlockPos blockPos))) {
+            return false;
+        }
+
+        var nodeBlockState = serverLevel.getBlockState(blockPos);
+        var alienVariantTypeOption = AlienVariantTypes.getFor(nodeBlockState);
+
+        if (
+            // If there is no alien variant type for given source entity.
+            alienVariantTypeOption.isNone()
+                // OR if there is a resin spread event type mismatch...
+                || !holder.is(alienVariantTypeOption.unwrap().resinSpreadEvent().getHolder())
+        ) {
+            // Then ignore the event.
+            return false;
+        }
+
+        if (context.sourceEntity() instanceof ResinProducer resinProducer) {
+            var resin = resinProducer.getResinManager().resinData().resin();
+            this.resinSpreader.addCursors(BlockPos.containing(vec3.relative(Direction.UP, 0.5)), resin);
+            resinProducer.getResinManager().resinData().setResin(0);
             return true;
         }
 
-        if (spreaderType instanceof SpreaderType.Block) {
-            if (context.sourceEntity() instanceof ResinProducer resinProducer) {
-                var i = resinProducer.getResinManager().resinData().resin();
-                this.resinSpreader.addCursors(BlockPos.containing(vec3.relative(Direction.UP, 0.5)), i);
-                resinProducer.getResinManager().resinData().setResin(0);
-            }
-        }
-
-        return true;
+        return false;
     }
 
     public sealed interface SpreaderType {

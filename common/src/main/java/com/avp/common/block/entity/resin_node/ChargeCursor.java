@@ -6,7 +6,6 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.Vec3i;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
@@ -17,7 +16,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Optional;
 import java.util.Set;
 
-import com.avp.common.block.entity.resin_node.behavior.SpreadBehavior;
+import com.avp.common.block.entity.resin_node.behavior.VeinSpreadBehavior;
 import com.avp.common.sound.AVPSoundEvents;
 
 public class ChargeCursor {
@@ -30,7 +29,10 @@ public class ChargeCursor {
             BlockPos.CODEC.fieldOf("pos").forGetter(ChargeCursor::getPos),
             Codec.intRange(0, 1000).fieldOf("charge").orElse(0).forGetter(ChargeCursor::getCharge),
             Codec.intRange(0, 1).fieldOf("decay_delay").orElse(1).forGetter(ChargeCursor::getDecayDelay),
-            Codec.intRange(0, Integer.MAX_VALUE).fieldOf("update_delay").orElse(0).forGetter(chargeCursor -> chargeCursor.updateDelay),
+            Codec.intRange(0, Integer.MAX_VALUE)
+                .fieldOf("update_delay")
+                .orElse(0)
+                .forGetter(chargeCursor -> chargeCursor.updateDelayInTicks),
             DIRECTION_SET.lenientOptionalFieldOf("facings").forGetter(chargeCursor -> Optional.ofNullable(chargeCursor.getFacingData()))
         )
             .apply(instance, ChargeCursor::new)
@@ -40,23 +42,91 @@ public class ChargeCursor {
 
     int charge;
 
-    private int updateDelay;
+    private int updateDelayInTicks;
 
     private int decayDelay;
 
     @Nullable
     private Set<Direction> facings;
 
-    private ChargeCursor(BlockPos blockPos, int charge, int decayDelay, int updateDelay, Optional<Set<Direction>> facingsOptional) {
+    private ChargeCursor(BlockPos blockPos, int charge, int decayDelay, int updateDelayInTicks, Optional<Set<Direction>> facingsOptional) {
         this.pos = blockPos;
         this.charge = charge;
         this.decayDelay = decayDelay;
-        this.updateDelay = updateDelay;
+        this.updateDelayInTicks = updateDelayInTicks;
         this.facings = facingsOptional.orElse(null);
     }
 
     public ChargeCursor(BlockPos blockPos, int i) {
         this(blockPos, i, 1, 0, Optional.empty());
+    }
+
+    public void update(
+        LevelAccessor levelAccessor,
+        BlockPos nodePos,
+        RandomSource randomSource,
+        ResinSpreader resinSpreader
+    ) {
+        if (!shouldUpdate(levelAccessor, nodePos)) {
+            // If this cursor shouldn't update, then return.
+            return;
+        }
+
+        if (updateDelayInTicks > 0) {
+            // If the cursor still has an active cooldown, then return.
+            updateDelayInTicks--;
+            return;
+        }
+
+        var blockState = levelAccessor.getBlockState(pos);
+        // Gets the spread behavior of the block's block state. If the block state does not define any spread behavior,
+        // then the default resin spread behavior is used.
+        var resinBehavior = ChargeCursorUtil.getSpreadBehavior(blockState);
+
+        if (resinBehavior.attemptSpreadVein(nodePos, levelAccessor, pos, blockState, facings)) {
+            if (resinBehavior.canChangeBlockStateOnSpread()) {
+                blockState = levelAccessor.getBlockState(pos);
+                resinBehavior = ChargeCursorUtil.getSpreadBehavior(blockState);
+            }
+
+            levelAccessor.playSound(null, pos, AVPSoundEvents.BLOCK_RESIN_SPREAD.get(), SoundSource.BLOCKS, 1.0F, 1.0F);
+        }
+
+        this.charge = resinBehavior.attemptUseCharge(this, levelAccessor, nodePos, randomSource, resinSpreader);
+
+        if (charge > 0) {
+            var validMovementPos = ChargeCursorUtil.getValidMovementPos(levelAccessor, pos, randomSource);
+
+            if (validMovementPos != null) {
+                this.pos = validMovementPos.immutable();
+                blockState = levelAccessor.getBlockState(validMovementPos);
+            }
+
+            if (blockState.getBlock() instanceof VeinSpreadBehavior) {
+                this.facings = MultifaceBlock.availableFaces(blockState);
+            }
+
+            this.decayDelay = resinBehavior.updateDecayDelay(decayDelay);
+            this.updateDelayInTicks = resinBehavior.getResinSpreadDelayInTicks();
+        }
+    }
+
+    private boolean shouldUpdate(LevelAccessor levelAccessor, BlockPos blockPos) {
+        // If the cursor still has charge to use...
+        return charge > 0
+            // AND the cursor is executing server-side...
+            && levelAccessor instanceof ServerLevel serverLevel
+            // AND the chunk for the given block position can simulate ticks, then this cursor can update.
+            && serverLevel.shouldTickBlocksAt(blockPos);
+    }
+
+    /* package-private */ void mergeWith(ChargeCursor chargeCursor) {
+        // Absorb the given cursor's charge into this cursor.
+        this.charge = charge + chargeCursor.charge;
+        // Set the given cursor's charge to 0 since we just absorbed it.
+        chargeCursor.charge = 0;
+        // Set this cursor's update delay to whichever cursor's update delay is currently the shortest amount of time.
+        this.updateDelayInTicks = Math.min(updateDelayInTicks, chargeCursor.updateDelayInTicks);
     }
 
     public BlockPos getPos() {
@@ -74,91 +144,5 @@ public class ChargeCursor {
     @Nullable
     public Set<Direction> getFacingData() {
         return facings;
-    }
-
-    public void update(
-        LevelAccessor levelAccessor,
-        BlockPos nodePos,
-        RandomSource randomSource,
-        ResinSpreader resinSpreader,
-        boolean bl
-    ) {
-        if (!shouldUpdate(levelAccessor, nodePos, resinSpreader.isWorldGeneration)) {
-            return;
-        }
-
-        if (updateDelay > 0) {
-            updateDelay--;
-            return;
-        }
-
-        var blockState = levelAccessor.getBlockState(pos);
-        var resinBehavior = ChargeCursorUtil.getSpreadBehavior(blockState);
-
-        if (
-            bl && resinBehavior.attemptSpreadVein(
-                nodePos,
-                levelAccessor,
-                pos,
-                blockState,
-                facings,
-                resinSpreader.isWorldGeneration()
-            )
-        ) {
-            if (resinBehavior.canChangeBlockStateOnSpread()) {
-                blockState = levelAccessor.getBlockState(pos);
-                resinBehavior = ChargeCursorUtil.getSpreadBehavior(blockState);
-            }
-
-            levelAccessor.playSound(null, pos, AVPSoundEvents.BLOCK_RESIN_SPREAD.get(), SoundSource.BLOCKS, 1.0F, 1.0F);
-        }
-
-        this.charge = resinBehavior.attemptUseCharge(this, levelAccessor, nodePos, randomSource, resinSpreader, bl);
-
-        if (charge <= 0) {
-            resinBehavior.onDischarged(levelAccessor, blockState, pos, randomSource);
-        } else {
-            var validMovementPos = ChargeCursorUtil.getValidMovementPos(levelAccessor, pos, randomSource);
-
-            if (validMovementPos != null) {
-                resinBehavior.onDischarged(levelAccessor, blockState, pos, randomSource);
-                this.pos = validMovementPos.immutable();
-
-                if (
-                    resinSpreader.isWorldGeneration() && !pos.closerThan(
-                        new Vec3i(nodePos.getX(), pos.getY(), nodePos.getZ()),
-                        15.0
-                    )
-                ) {
-                    this.charge = 0;
-                    return;
-                }
-
-                blockState = levelAccessor.getBlockState(validMovementPos);
-            }
-
-            if (blockState.getBlock() instanceof SpreadBehavior) {
-                this.facings = MultifaceBlock.availableFaces(blockState);
-            }
-
-            this.decayDelay = resinBehavior.updateDecayDelay(decayDelay);
-            this.updateDelay = resinBehavior.getResinSpreadDelay();
-        }
-    }
-
-    private boolean shouldUpdate(LevelAccessor levelAccessor, BlockPos blockPos, boolean isWorldGeneration) {
-        if (charge <= 0) {
-            return false;
-        } else if (isWorldGeneration) {
-            return true;
-        } else {
-            return levelAccessor instanceof ServerLevel serverLevel && serverLevel.shouldTickBlocksAt(blockPos);
-        }
-    }
-
-    void mergeWith(ChargeCursor chargeCursor) {
-        this.charge = charge + chargeCursor.charge;
-        chargeCursor.charge = 0;
-        this.updateDelay = Math.min(updateDelay, chargeCursor.updateDelay);
     }
 }

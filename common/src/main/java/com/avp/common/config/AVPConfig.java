@@ -73,36 +73,34 @@ public class AVPConfig {
 
         @Configurable
         @Configurable.Synchronized
-        @Configurable.Comment(
-            "If set to true, xenomorphs will spawn in the overworld naturally along with other monsters. Modifying this requires restarting the game."
-        )
-        public boolean NATURAL_SPAWNING_ENABLED = true;
+        @Configurable.Comment("Modifying these will require restarting the game.")
+        public SpawnSettings ABERRANT_CHESTBURSTER_SPAWN = new SpawnSettings(true, 1, 2, 10);
 
         @Configurable
         @Configurable.Synchronized
-        @Configurable.Comment(
-            "If set to true, *ADULT* xenomorphs will spawn in the overworld naturally along with other monsters. Modifying this requires restarting the game."
-        )
-        public boolean ADULT_SPAWNING_ENABLED = true;
+        @Configurable.Comment("Modifying these will require restarting the game.")
+        public SpawnSettings ABERRANT_DRONE_SPAWN = new SpawnSettings(true, 1, 2, 50);
 
         @Configurable
         @Configurable.Synchronized
-        @Configurable.Comment(
-            "If set to true, *YOUNG* xenomorphs (eggs, facehuggers, bursters, etc.) will spawn in the overworld naturally along with other monsters. Modifying this requires restarting the game."
-        )
-        public boolean YOUNG_SPAWNING_ENABLED = true;
+        @Configurable.Comment("Modifying these will require restarting the game.")
+        // TODO: Change this to "ABERRANT_OVOMORPH_SPAWN" with 0.2.0.
+        public SpawnSettings ABERRANT_OVAMORPH_SPAWN = new SpawnSettings(true, 1, 3, 10);
 
         @Configurable
         @Configurable.Synchronized
-        @Configurable.Comment(
-            {
-                "WARNING: This might break mob farms.",
-                "If set to true, certain hostile monster spawns will be removed. This will allow other hostile monsters (xenomorphs, for example) to spawn more frequently. Modifying this requires restarting the game.",
-                "The list of mobs that have their spawns removed can be viewed (and modified) with the avp:tags/entity/remove_vanilla_spawns tag.",
-                "ENABLING THIS MAY BREAK CERTAIN FARMS THAT RELY ON MOB SPAWNS. Enable at your own risk, you have been warned!"
-            }
-        )
-        public boolean REMOVE_VANILLA_SPAWNS = false;
+        @Configurable.Comment("Aberrant Praetorian spawn settings. Modifying these will require restarting the game.")
+        public SpawnSettings ABERRANT_PRAETORIAN_SPAWN = new SpawnSettings(true, 1, 1, 10);
+
+        @Configurable
+        @Configurable.Synchronized
+        @Configurable.Comment("Aberrant Queen spawn settings. Modifying these will require restarting the game.")
+        public SpawnSettings ABERRANT_QUEEN_SPAWN = new SpawnSettings(true, 1, 1, 5);
+
+        @Configurable
+        @Configurable.Synchronized
+        @Configurable.Comment("Aberrant Warrior spawn settings. Modifying these will require restarting the game.")
+        public SpawnSettings ABERRANT_WARRIOR_SPAWN = new SpawnSettings(true, 1, 2, 25);
 
         @Configurable
         @Configurable.Synchronized
@@ -113,6 +111,28 @@ public class AVPConfig {
         @Configurable.Synchronized
         @Configurable.Comment("Modifying these will require restarting the game.")
         public SpawnSettings DRONE_SPAWN = new SpawnSettings(true, 1, 2, 50);
+
+        @Configurable
+        @Configurable.Synchronized
+        @Configurable.Comment("Irradiated Drone spawn settings. Modifying these will require restarting the game.")
+        public SpawnSettings IRRADIATED_DRONE_SPAWN = new SpawnSettings(true, 1, 2, 50);
+
+        @Configurable
+        @Configurable.Synchronized
+        @Configurable.Comment("Irradiated Praetorian spawn settings. Modifying these will require restarting the game.")
+        public SpawnSettings IRRADIATED_PRAETORIAN_SPAWN = new SpawnSettings(true, 1, 1, 10);
+
+        @Configurable
+        @Configurable.Synchronized
+        @Configurable.Comment("Irradiated Queen spawn settings. Modifying these will require restarting the game.")
+        public SpawnSettings IRRADIATED_QUEEN_SPAWN = new SpawnSettings(true, 1, 1, 5);
+
+        @Configurable
+        @Configurable.Synchronized
+        @Configurable.Comment("Irradiated Warrior spawn settings. Modifying these will require restarting the game.")
+        public SpawnSettings IRRADIATED_WARRIOR_SPAWN = new SpawnSettings(true, 1, 2, 25);
+
+        public SpawnSettings MARINE_SPAWN = new SpawnSettings(true, 1, 1, 1);
 
         @Configurable
         @Configurable.Synchronized
@@ -137,13 +157,13 @@ public class AVPConfig {
 
         @Configurable
         @Configurable.Synchronized
-        @Configurable.Comment("Nether Warrior spawn settings. Modifying these will require restarting the game.")
-        public SpawnSettings NETHER_WARRIOR_SPAWN = new SpawnSettings(true, 1, 2, 25);
+        @Configurable.Comment("Nether Queen spawn settings. Modifying these will require restarting the game.")
+        public SpawnSettings NETHER_QUEEN_SPAWN = new SpawnSettings(true, 1, 1, 5);
 
         @Configurable
         @Configurable.Synchronized
-        @Configurable.Comment("Nether Queen spawn settings. Modifying these will require restarting the game.")
-        public SpawnSettings NETHER_QUEEN_SPAWN = new SpawnSettings(true, 1, 1, 5);
+        @Configurable.Comment("Nether Warrior spawn settings. Modifying these will require restarting the game.")
+        public SpawnSettings NETHER_WARRIOR_SPAWN = new SpawnSettings(true, 1, 2, 25);
 
         @Configurable
         @Configurable.Synchronized
@@ -170,8 +190,6 @@ public class AVPConfig {
         @Configurable.Synchronized
         @Configurable.Comment("Yautja spawn settings. Modifying these will require restarting the game.")
         public SpawnSettings YAUTJA_SPAWN = new SpawnSettings(true, 1, 1, 10);
-
-        public SpawnSettings MARINE_SPAWN = new SpawnSettings(true, 1, 1, 1);
 
         public static class SpawnSettings {
 
@@ -449,11 +467,10 @@ public class AVPConfig {
         @Configurable.Synchronized
         @Configurable.Comment(
             {
-                "The minimum distance between hive centers in blocks. This controls how far apart hives are.",
-                "If this value is less than 2x the hive radius, hives will begin to overlap.",
-                "If this value is more than 2x the hive radius, then there will be buffer zones between hives where no hives will form." }
+                "The minimum distance between natural queen spawns in chunks.",
+            }
         )
-        public int MINIMUM_DISTANCE_BETWEEN_HIVES_IN_BLOCKS = 256;
+        public int MINIMUM_DISTANCE_BETWEEN_NATURAL_QUEEN_SPAWNS_IN_CHUNKS = 16;
 
         @Configurable
         @Configurable.Synchronized

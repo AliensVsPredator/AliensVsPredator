@@ -17,7 +17,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import com.avp.AVP;
 import com.avp.common.block.AVPBlockTags;
-import com.avp.common.entity.living.alien.util.AlienVariantUtil;
+import com.avp.common.entity.living.alien.AlienVariantTypes;
 
 public class ResonatorBlockEntity extends BlockEntity {
 
@@ -78,45 +78,47 @@ public class ResonatorBlockEntity extends BlockEntity {
 
         var resinBallsGained = new AtomicInteger(0);
 
-        // TODO: Fix this stream result not being used.
         BlockPos.betweenClosedStream(blockPos.offset(-radius, -radius, -radius), blockPos.offset(radius, radius, radius))
-            .filter(currentPos -> {
+            .forEach(currentPos -> {
                 var currentState = level.getBlockState(currentPos);
 
-                if (currentState.is(AVPBlockTags.RESIN_VEINS)) {
-                    level.setBlockAndUpdate(currentPos, Blocks.AIR.defaultBlockState());
+                AlienVariantTypes.getFor(currentState)
+                    .ifSome(alienVariantType -> {
+                        // TODO: Use variant-specific tag here.
+                        if (currentState.is(AVPBlockTags.RESIN_VEINS)) {
+                            level.setBlockAndUpdate(currentPos, Blocks.AIR.defaultBlockState());
 
-                    var resinBallItem = AlienVariantUtil.getResinBallForType(currentState);
-                    resonatorBlockEntity.addResinBallItem(resinBallItem);
+                            var resinBallItem = alienVariantType.resinBall().get();
+                            resonatorBlockEntity.addResinBallItem(resinBallItem);
 
-                    resinBallsGained.incrementAndGet();
+                            resinBallsGained.incrementAndGet();
 
-                    if (resinBallsGained.get() > 0) {
-                        resonatorBlockEntity.setChanged();
-                    }
-                    return true;
-                }
+                            if (resinBallsGained.get() > 0) {
+                                resonatorBlockEntity.setChanged();
+                            }
 
-                if (currentState.is(AVPBlockTags.RESIN)) {
-                    var isDeepstone = currentPos.getY() <= 0;
-                    var replacementBlock = isDeepstone ? Blocks.DEEPSLATE : Blocks.STONE;
+                            return;
+                        }
 
-                    level.setBlockAndUpdate(currentPos, replacementBlock.defaultBlockState());
+                        // TODO: Use variant-specific tag here.
+                        if (currentState.is(AVPBlockTags.RESIN)) {
+                            // TODO: This is not a safe assumption to make!
+                            var isDeepstone = currentPos.getY() <= 0;
+                            var replacementBlock = isDeepstone ? Blocks.DEEPSLATE : Blocks.STONE;
 
-                    var resinBallItem = AlienVariantUtil.getResinBallForType(currentState);
-                    resonatorBlockEntity.addResinBallItem(resinBallItem);
+                            level.setBlockAndUpdate(currentPos, replacementBlock.defaultBlockState());
 
-                    resinBallsGained.incrementAndGet();
+                            var resinBallItem = alienVariantType.resinBall().get();
+                            resonatorBlockEntity.addResinBallItem(resinBallItem);
 
-                    if (resinBallsGained.get() > 0) {
-                        resonatorBlockEntity.setChanged();
-                    }
-                    return true;
-                }
+                            resinBallsGained.incrementAndGet();
 
-                return false;
-            })
-            .findFirst();
+                            if (resinBallsGained.get() > 0) {
+                                resonatorBlockEntity.setChanged();
+                            }
+                        }
+                    });
+            });
     }
 
     public void addResinBallItem(Item resinBallItem) {

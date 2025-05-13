@@ -10,7 +10,9 @@ import net.minecraft.world.phys.Vec3;
 import java.util.List;
 
 import com.avp.AVP;
+import com.avp.common.entity.living.alien.AVPAlienTransitions;
 import com.avp.common.entity.living.alien.Alien;
+import com.avp.common.entity.living.alien.AlienVariant;
 import com.avp.common.entity.nuke.MushroomCloudEntity;
 import com.avp.common.explosion.Explosion;
 import com.avp.common.explosion.ExplosionProgressTracker;
@@ -85,9 +87,11 @@ public class ExplosionUtil {
                 for (var entity : entities) {
                     var distance = entity.distanceToSqr(center);
                     var damage = computeDamage(radius, 5, 1000, distance);
+
                     if (entity instanceof Alien alien) {
-                        alien.setIrradiated(true);
+                        AVPAlienTransitions.transitionIntoVariant(alien, AlienVariant.IRRADIATED);
                     }
+
                     entity.igniteForSeconds(15);
                     entity.hurt(level.damageSources().explosion(null), (float) damage);
                     applyKnockback(center, radius, entity, maxKnockback, distance);

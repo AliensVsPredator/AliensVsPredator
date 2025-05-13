@@ -6,9 +6,10 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
-import net.minecraft.world.entity.SpawnPlacementTypes;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.SpawnPlacements;
 import net.minecraft.world.level.GameRules;
-import net.minecraft.world.level.levelgen.Heightmap;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.common.Mod;
@@ -25,12 +26,8 @@ import net.neoforged.neoforge.network.handling.DirectionalPayloadHandler;
 import net.neoforged.neoforge.network.registration.HandlerThread;
 
 import com.avp.AVP;
-import com.avp.common.entity.living.alien.AlienSpawning;
-import com.avp.common.entity.living.alien.xenomorph.queen.QueenSpawning;
-import com.avp.common.entity.living.human.marine.MarineSpawning;
 import com.avp.common.entity.living.villager.gift.AVPVillagerGiftKeys;
 import com.avp.common.entity.living.villager.profession.AVPVillagerProfessions;
-import com.avp.common.entity.living.yautja.YautjaSpawning;
 import com.avp.common.entity.type.AVPEntityTypes;
 import com.avp.common.lifecycle.registry.AlienInfectionRegistry;
 import com.avp.common.lifecycle.registry.AlienLifecycleRegistry;
@@ -89,107 +86,27 @@ public class AVPNeoForge {
     }
 
     public static void registerSpawnPlacements(RegisterSpawnPlacementsEvent event) {
-        var placement = SpawnPlacementTypes.ON_GROUND;
-        var heightMap = Heightmap.Types.MOTION_BLOCKING_NO_LEAVES;
-        event.register(
-            AVPEntityTypes.YAUTJA.get(),
-            placement,
-            heightMap,
-            YautjaSpawning.PREDICATE,
-            RegisterSpawnPlacementsEvent.Operation.AND
-        );
+        REGISTRY.getEntitySpawnDataEntries().forEach(spawnData -> {
+            if (spawnData.isPlacementDisabled()) {
+                return;
+            }
 
-        event.register(
-            AVPEntityTypes.MARINE.get(),
-            placement,
-            heightMap,
-            MarineSpawning.PREDICATE,
-            RegisterSpawnPlacementsEvent.Operation.AND
-        );
-        event.register(
-            AVPEntityTypes.DRONE.get(),
-            placement,
-            heightMap,
-            AlienSpawning.getTypedPredicate(),
-            RegisterSpawnPlacementsEvent.Operation.AND
-        );
-        event.register(
-            AVPEntityTypes.PRAETORIAN.get(),
-            placement,
-            heightMap,
-            AlienSpawning.getTypedPredicate(),
-            RegisterSpawnPlacementsEvent.Operation.AND
-        );
-        event.register(
-            AVPEntityTypes.QUEEN.get(),
-            placement,
-            heightMap,
-            QueenSpawning.PREDICATE,
-            RegisterSpawnPlacementsEvent.Operation.AND
-        );
-        event.register(
-            AVPEntityTypes.WARRIOR.get(),
-            placement,
-            heightMap,
-            AlienSpawning.getTypedPredicate(),
-            RegisterSpawnPlacementsEvent.Operation.AND
-        );
-        event.register(
-            AVPEntityTypes.NETHER_DRONE.get(),
-            placement,
-            heightMap,
-            AlienSpawning.getTypedPredicate(),
-            RegisterSpawnPlacementsEvent.Operation.AND
-        );
-        event.register(
-            AVPEntityTypes.NETHER_PRAETORIAN.get(),
-            placement,
-            heightMap,
-            AlienSpawning.getTypedPredicate(),
-            RegisterSpawnPlacementsEvent.Operation.AND
-        );
-        event.register(
-            AVPEntityTypes.NETHER_WARRIOR.get(),
-            placement,
-            heightMap,
-            AlienSpawning.getTypedPredicate(),
-            RegisterSpawnPlacementsEvent.Operation.AND
-        );
-        event.register(
-            AVPEntityTypes.NETHER_QUEEN.get(),
-            placement,
-            heightMap,
-            QueenSpawning.PREDICATE,
-            RegisterSpawnPlacementsEvent.Operation.AND
-        );
-        event.register(
-            AVPEntityTypes.CHESTBURSTER.get(),
-            placement,
-            heightMap,
-            AlienSpawning.getTypedPredicate(),
-            RegisterSpawnPlacementsEvent.Operation.AND
-        );
-        event.register(
-            AVPEntityTypes.OVOMORPH.get(),
-            placement,
-            heightMap,
-            AlienSpawning.getTypedPredicate(),
-            RegisterSpawnPlacementsEvent.Operation.AND
-        );
-        event.register(
-            AVPEntityTypes.NETHER_CHESTBURSTER.get(),
-            placement,
-            heightMap,
-            AlienSpawning.getTypedPredicate(),
-            RegisterSpawnPlacementsEvent.Operation.AND
-        );
-        event.register(
-            AVPEntityTypes.NETHER_OVOMORPH.get(),
-            placement,
-            heightMap,
-            AlienSpawning.getTypedPredicate(),
-            RegisterSpawnPlacementsEvent.Operation.AND
-        );
+            @SuppressWarnings("unchecked")
+            var entityType = (EntityType<Mob>) spawnData.getEntityType();
+            var placementData = spawnData.getPlacementData();
+            var placement = placementData.type();
+            var heightMap = placementData.heightmapType();
+            @SuppressWarnings("unchecked")
+            var spawnPredicate = (SpawnPlacements.SpawnPredicate<Mob>) placementData.spawnPredicate();
+
+            event.register(
+                entityType,
+                placement,
+                heightMap,
+                spawnPredicate,
+                RegisterSpawnPlacementsEvent.Operation.AND
+            );
+        });
     }
 
     // Inject Village houses

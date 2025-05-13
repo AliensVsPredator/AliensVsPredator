@@ -1,29 +1,16 @@
 package com.avp.common.hive.ai.task.impl;
 
-import com.bvanseg.just.functional.function.Lazy;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 
-import java.util.Map;
-
 import com.avp.common.entity.AVPEntityTypeTags;
-import com.avp.common.entity.type.AVPEntityTypes;
 import com.avp.common.hive.Hive;
 import com.avp.common.hive.ai.task.HiveTask;
 
 public class PickBestLeaderTask extends HiveTask {
 
     private static final int FREQUENCY = 20 * 10;
-
-    private static final Lazy<Map<EntityType<?>, Integer>> LEADER_DISPOSITION_BY_TYPE = Lazy.of(
-        () -> Map.ofEntries(
-            Map.entry(AVPEntityTypes.DRONE.get(), 0),
-            Map.entry(AVPEntityTypes.WARRIOR.get(), 1),
-            Map.entry(AVPEntityTypes.PRAETORIAN.get(), 2),
-            Map.entry(AVPEntityTypes.QUEEN.get(), 3)
-        )
-    );
 
     public PickBestLeaderTask(Hive hive) {
         super(hive);
@@ -66,8 +53,22 @@ public class PickBestLeaderTask extends HiveTask {
     }
 
     public boolean compareEntityTypes(EntityType<?> current, EntityType<?> other) {
-        var currentDisposition = LEADER_DISPOSITION_BY_TYPE.get().getOrDefault(current, -1);
-        var contestantDisposition = LEADER_DISPOSITION_BY_TYPE.get().getOrDefault(other, -1);
+        var currentDisposition = getDispositionForEntityType(current);
+        var contestantDisposition = getDispositionForEntityType(other);
         return currentDisposition < contestantDisposition;
+    }
+
+    private int getDispositionForEntityType(EntityType<?> entityType) {
+        if (entityType.is(AVPEntityTypeTags.DRONES)) {
+            return 0;
+        } else if (entityType.is(AVPEntityTypeTags.WARRIORS)) {
+            return 1;
+        } else if (entityType.is(AVPEntityTypeTags.PRAETORIANS)) {
+            return 2;
+        } else if (entityType.is(AVPEntityTypeTags.QUEENS)) {
+            return 3;
+        }
+
+        return -1;
     }
 }

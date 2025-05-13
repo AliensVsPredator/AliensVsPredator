@@ -15,7 +15,7 @@ import org.jetbrains.annotations.Nullable;
 
 import com.avp.common.block.entity.AVPBlockEntityTypes;
 import com.avp.common.block.entity.resin_node.ResinNodeBlockEntity;
-import com.avp.common.util.BlockPosUtil;
+import com.avp.common.util.spatial.block.BlockPosUtil;
 
 public class ResinNodeBlock extends BaseEntityBlock {
 

@@ -8,9 +8,13 @@ import com.avp.common.block.AVPBlocks;
 public class FlammableBlockRegistry {
 
     public static void initialize() {
-        FireBlock fireBlock = (FireBlock) Blocks.FIRE;
+        var fireBlock = (FireBlock) Blocks.FIRE;
+
+        fireBlock.setFlammable(AVPBlocks.ABERRANT_RESIN.get(), 1, 20);
+        fireBlock.setFlammable(AVPBlocks.ABERRANT_RESIN_NODE.get(), 1, 20);
+        fireBlock.setFlammable(AVPBlocks.IRRADIATED_RESIN.get(), 1, 20);
+        fireBlock.setFlammable(AVPBlocks.IRRADIATED_RESIN_NODE.get(), 1, 20);
         fireBlock.setFlammable(AVPBlocks.RESIN.get(), 1, 20);
-        // TODO: Move to common and make flammable in NeoForge.
         fireBlock.setFlammable(AVPBlocks.RESIN_NODE.get(), 1, 20);
     }
 }

@@ -6,7 +6,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.level.Level;
 
 import com.avp.AVP;
-import com.avp.common.entity.type.AVPEntityTypes;
+import com.avp.common.entity.living.alien.parasite.facehugger.Facehugger;
 import com.avp.common.sound.AVPSoundEvents;
 
 public class HatchManager {
@@ -141,7 +141,18 @@ public class HatchManager {
     }
 
     private void spawnFacehugger(Level level) {
-        var facehugger = (ovomorph.isRoyal() ? AVPEntityTypes.ROYAL_FACEHUGGER : AVPEntityTypes.FACEHUGGER).get().create(level);
+        var facehuggerType = Facehugger.getType(ovomorph.getVariant(), ovomorph.isRoyal());
+
+        if (facehuggerType == null) {
+            AVP.LOGGER.warn(
+                "Failed to get a facehugger type for an ovomorph entity Ovomorph Variant: {}, IsRoyal: {}.",
+                ovomorph.getVariant(),
+                ovomorph.isRoyal()
+            );
+            return;
+        }
+
+        var facehugger = facehuggerType.create(level);
 
         if (facehugger == null) {
             AVP.LOGGER.warn("Failed to create facehugger entity.");
@@ -149,7 +160,6 @@ public class HatchManager {
         }
 
         facehugger.geneManager().setAll(ovomorph.geneManager().getAll());
-        facehugger.updateStateBasedOnGenetics();
 
         var ovomorphAbovePos = ovomorph.blockPosition().above();
         var ovomorphSuffocatingAboveCheck = ovomorph.level()
