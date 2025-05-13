@@ -74,7 +74,7 @@ public class AVPEntitySpawns {
         );
         Services.REGISTRY.registerEntitySpawnData(
             AVPEntitySpawnData.builder(AVPEntityTypes.QUEEN)
-                .withBiomeTagKey(AVPBiomeTags.HAS_XENOMORPHS)
+                .withBiomeTagKey(BiomeTags.IS_OVERWORLD)
                 .withSpawnPredicate(QueenSpawning.PREDICATE)
                 .withSpawnSettings(AVP.config.spawnConfigs.QUEEN_SPAWN)
                 .build()
