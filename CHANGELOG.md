@@ -34,6 +34,7 @@
     - Highly specific spawn configuration like this option provided is better suited for other mods to handle, not AVP.
 
 ## 🐞 Fixes
+- Fixed uprooted ovomorphs not despawning even if they have already hatched.
 - Fixed nether resin nodes having incorrect block properties.
 - Fixed irradiated resin, irradiated resin nodes, irradiated resin veins and irradiated resin webs having incorrect block properties.
 - Fixed resin, resin nodes, resin veins and resin webs having incorrect colors on maps.

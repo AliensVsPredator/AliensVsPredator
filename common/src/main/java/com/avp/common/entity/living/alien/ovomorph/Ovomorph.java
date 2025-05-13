@@ -195,6 +195,12 @@ public class Ovomorph extends Alien implements Shearable {
 
     @Override
     public boolean isPersistenceRequired() {
+        if (hatchManager.isHatched()) {
+            // If the ovomorph is hatched, then defer to super and no other factors.
+            return super.isPersistenceRequired();
+        }
+
+        // Otherwise if super check passes or if ovomorph is not rooted, then persist the ovomorph.
         return super.isPersistenceRequired() || !isRooted();
     }
 
