@@ -32,6 +32,7 @@ public class AlienVariantTypes {
         AVPBlocks.ABERRANT_RESIN_WEB,
 
         AVPBlockTags.ABERRANT_RESIN,
+        AVPBlockTags.ABERRANT_RESIN_REPLACEABLE,
 
         AVPItems.ABERRANT_CHITIN,
         AVPItems.PLATED_ABERRANT_CHITIN,
@@ -51,6 +52,7 @@ public class AlienVariantTypes {
         AVPBlocks.IRRADIATED_RESIN_WEB,
 
         AVPBlockTags.IRRADIATED_RESIN,
+        AVPBlockTags.IRRADIATED_RESIN_REPLACEABLE,
 
         AVPItems.IRRADIATED_CHITIN,
         AVPItems.PLATED_IRRADIATED_CHITIN,
@@ -70,6 +72,7 @@ public class AlienVariantTypes {
         AVPBlocks.NETHER_RESIN_WEB,
 
         AVPBlockTags.NETHER_RESIN,
+        AVPBlockTags.NETHER_RESIN_REPLACEABLE,
 
         AVPItems.NETHER_CHITIN,
         AVPItems.PLATED_NETHER_CHITIN,
@@ -89,6 +92,7 @@ public class AlienVariantTypes {
         AVPBlocks.RESIN_WEB,
 
         AVPBlockTags.NORMAL_RESIN,
+        AVPBlockTags.NORMAL_RESIN_REPLACEABLE,
 
         AVPItems.CHITIN,
         AVPItems.PLATED_CHITIN,
@@ -135,7 +139,23 @@ public class AlienVariantTypes {
      * possible.
      */
     public static Option<AlienVariantType> getFor(Block block) {
-        return getFor(block.defaultBlockState());
+        return Option.ofNullable(getForOrNull(block));
+    }
+
+    /**
+     * Usage of this function is discouraged since it can return Option#none. Consider using getFor(AlienVariant) where
+     * possible.
+     */
+    public static @Nullable AlienVariantType getForOrNull(Block block) {
+        return getForOrNull(block.defaultBlockState());
+    }
+
+    /**
+     * Usage of this function is discouraged since it can return Option#none. Consider using getFor(AlienVariant) where
+     * possible.
+     */
+    public static Option<AlienVariantType> getFor(BlockState blockState) {
+        return Option.ofNullable(getForOrNull(blockState));
     }
 
     /**
@@ -156,14 +176,6 @@ public class AlienVariantTypes {
         return null;
     }
 
-    /**
-     * Usage of this function is discouraged since it can return Option#none. Consider using getFor(AlienVariant) where
-     * possible.
-     */
-    public static Option<AlienVariantType> getFor(BlockState blockState) {
-        return Option.ofNullable(getForOrNull(blockState));
-    }
-
     public static AlienVariantType getFor(Alien alien) {
         return getFor(alien.getVariant());
     }
@@ -173,7 +185,15 @@ public class AlienVariantTypes {
      * possible.
      */
     public static Option<AlienVariantType> getFor(Entity entity) {
-        return getFor(entity.getType());
+        return Option.ofNullable(getForOrNull(entity));
+    }
+
+    /**
+     * Usage of this function is discouraged since it can return Option#none. Consider using getFor(AlienVariant) where
+     * possible.
+     */
+    public static @Nullable AlienVariantType getForOrNull(Entity entity) {
+        return getForOrNull(entity.getType());
     }
 
     /**
@@ -196,16 +216,24 @@ public class AlienVariantTypes {
      * possible.
      */
     public static Option<AlienVariantType> getFor(EntityType<?> entityType) {
+        return Option.ofNullable(getForOrNull(entityType));
+    }
+
+    /**
+     * Usage of this function is discouraged since it can return Option#none. Consider using getFor(AlienVariant) where
+     * possible.
+     */
+    public static @Nullable AlienVariantType getForOrNull(EntityType<?> entityType) {
         if (entityType.is(AVPEntityTypeTags.ABERRANT_ALIENS)) {
-            return Option.some(ABERRANT);
+            return ABERRANT;
         } else if (entityType.is(AVPEntityTypeTags.IRRADIATED_ALIENS)) {
-            return Option.some(IRRADIATED);
+            return IRRADIATED;
         } else if (entityType.is(AVPEntityTypeTags.NETHER_ALIENS)) {
-            return Option.some(NETHER);
+            return NETHER;
         } else if (entityType.is(AVPEntityTypeTags.NORMAL_ALIENS)) {
-            return Option.some(NORMAL);
+            return NORMAL;
         }
 
-        return Option.none();
+        return null;
     }
 }

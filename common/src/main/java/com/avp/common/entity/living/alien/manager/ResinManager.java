@@ -6,8 +6,10 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LightLayer;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.gameevent.DynamicGameEventListener;
 import net.minecraft.world.level.gameevent.EntityPositionSource;
 import net.minecraft.world.level.gameevent.GameEventListener;
@@ -18,7 +20,6 @@ import java.util.function.BiConsumer;
 import java.util.function.Supplier;
 
 import com.avp.AVP;
-import com.avp.common.block.AVPBlockTags;
 import com.avp.common.entity.living.alien.Alien;
 import com.avp.common.entity.living.alien.AlienVariantTypes;
 import com.avp.common.entity.living.alien.manager.resin.ReadableResinData;
@@ -107,7 +108,7 @@ public class ResinManager implements GameEventListener.Provider<ResinSpreadListe
         // to intercept the event. So we try to place a resin node down here.
         if (resinData.resin() >= resinData.resinMax()) {
             // Try and find a suitable resin node block location.
-            var suitableResinNodeBlockPosOption = findSuitableResinNodeBlockPos(level);
+            var suitableResinNodeBlockPosOption = findSuitableResinNodeBlockPos(level, alienVariantType.resinReplaceableTag());
 
             if (suitableResinNodeBlockPosOption.isNone()) {
                 // Could not find a suitable resin node block position, so reset the node place cooldown and return.
@@ -138,13 +139,12 @@ public class ResinManager implements GameEventListener.Provider<ResinSpreadListe
                 .isSome();
     }
 
-    // TODO: Move this to BlockPosUtil, probably.
-    private Option<BlockPos> findSuitableResinNodeBlockPos(Level level) {
+    private Option<BlockPos> findSuitableResinNodeBlockPos(Level level, TagKey<Block> replaceableTagKey) {
         var origin = alien.blockPosition();
         var below = origin.below();
         var belowState = level.getBlockState(below);
 
-        if (belowState.is(AVPBlockTags.RESIN_REPLACEABLE) && !belowState.is(AVPBlockTags.RESIN)) {
+        if (belowState.is(replaceableTagKey)) {
             return Option.some(below);
         }
 

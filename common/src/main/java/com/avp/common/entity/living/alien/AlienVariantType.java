@@ -20,6 +20,7 @@ public record AlienVariantType(
 
     // Block Tags
     TagKey<Block> resinBlockTag,
+    TagKey<Block> resinReplaceableTag,
 
     // Items
     AVPDeferredHolder<Item> chitin,

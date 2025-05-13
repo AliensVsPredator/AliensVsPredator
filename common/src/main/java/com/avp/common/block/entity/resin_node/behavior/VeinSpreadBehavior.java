@@ -18,7 +18,7 @@ public interface VeinSpreadBehavior {
     int attemptUseCharge(
         ChargeCursor chargeCursor,
         LevelAccessor levelAccessor,
-        BlockPos blockPos,
+        BlockPos nodePos,
         RandomSource randomSource,
         ResinSpreader resinSpreader
     );

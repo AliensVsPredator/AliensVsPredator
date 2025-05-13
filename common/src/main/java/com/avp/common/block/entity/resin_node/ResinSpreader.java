@@ -4,10 +4,8 @@ import com.mojang.serialization.Dynamic;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
-import net.minecraft.tags.TagKey;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.LevelAccessor;
-import net.minecraft.world.level.block.Block;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -15,7 +13,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import com.avp.common.block.AVPBlockTags;
 import com.avp.common.util.NBTSerializable;
 
 public class ResinSpreader implements NBTSerializable {
@@ -31,23 +28,16 @@ public class ResinSpreader implements NBTSerializable {
     private static final int MAX_CHARGE = 1000;
 
     public static ResinSpreader create() {
-        return new ResinSpreader(AVPBlockTags.RESIN_REPLACEABLE, 10);
+        return new ResinSpreader();
     }
-
-    private final TagKey<Block> replaceableBlocks;
 
     private final int chargeDecayRate;
 
     private List<ChargeCursor> cursors;
 
-    private ResinSpreader(TagKey<Block> tagKey, int chargeDecayRate) {
-        this.replaceableBlocks = tagKey;
-        this.chargeDecayRate = chargeDecayRate;
+    private ResinSpreader() {
+        this.chargeDecayRate = 10;
         this.cursors = new ArrayList<>();
-    }
-
-    public TagKey<Block> replaceableBlocks() {
-        return this.replaceableBlocks;
     }
 
     public int chargeDecayRate() {

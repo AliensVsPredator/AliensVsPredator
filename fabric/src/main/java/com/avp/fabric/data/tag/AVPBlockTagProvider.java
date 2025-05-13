@@ -243,6 +243,30 @@ public class AVPBlockTagProvider extends FabricTagProvider.BlockTagProvider {
                 Blocks.SOUL_SOIL
             );
 
+        getOrCreateTagBuilder(AVPBlockTags.ABERRANT_RESIN_REPLACEABLE)
+            .addTag(AVPBlockTags.RESIN_REPLACEABLE)
+            .addTag(AVPBlockTags.IRRADIATED_RESIN)
+            .addTag(AVPBlockTags.NETHER_RESIN)
+            .addTag(AVPBlockTags.NORMAL_RESIN);
+
+        getOrCreateTagBuilder(AVPBlockTags.IRRADIATED_RESIN_REPLACEABLE)
+            .addTag(AVPBlockTags.RESIN_REPLACEABLE)
+            .addTag(AVPBlockTags.ABERRANT_RESIN)
+            .addTag(AVPBlockTags.NETHER_RESIN)
+            .addTag(AVPBlockTags.NORMAL_RESIN);
+
+        getOrCreateTagBuilder(AVPBlockTags.NETHER_RESIN_REPLACEABLE)
+            .addTag(AVPBlockTags.RESIN_REPLACEABLE)
+            .addTag(AVPBlockTags.ABERRANT_RESIN)
+            .addTag(AVPBlockTags.IRRADIATED_RESIN)
+            .addTag(AVPBlockTags.NORMAL_RESIN);
+
+        getOrCreateTagBuilder(AVPBlockTags.NORMAL_RESIN_REPLACEABLE)
+            .addTag(AVPBlockTags.RESIN_REPLACEABLE)
+            .addTag(AVPBlockTags.ABERRANT_RESIN)
+            .addTag(AVPBlockTags.IRRADIATED_RESIN)
+            .addTag(AVPBlockTags.NETHER_RESIN);
+
         getOrCreateTagBuilder(AVPBlockTags.RESIN_VEINS)
             .add(
                 AVPBlocks.ABERRANT_RESIN_VEIN.get(),

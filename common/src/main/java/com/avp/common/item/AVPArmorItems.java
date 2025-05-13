@@ -452,7 +452,6 @@ public class AVPArmorItems {
         return register(id, () -> createArmorItem(holderSupplier.get(), type, durabilityMultiplier, properties));
     }
 
-    // TODO: Make this return a Supplier<Item>.
     private static AVPDeferredHolder<Item> register(String id, Supplier<Item> itemSupplier) {
         return Services.REGISTRY.register(BuiltInRegistries.ITEM, id, itemSupplier);
     }

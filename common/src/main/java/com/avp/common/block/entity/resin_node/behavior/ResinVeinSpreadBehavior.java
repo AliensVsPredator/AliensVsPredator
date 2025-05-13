@@ -61,7 +61,7 @@ public class ResinVeinSpreadBehavior implements VeinSpreadBehavior {
     public int attemptUseCharge(
         ChargeCursor chargeCursor,
         LevelAccessor levelAccessor,
-        BlockPos blockPos,
+        BlockPos nodePos,
         RandomSource randomSource,
         ResinSpreader resinSpreader
     ) {

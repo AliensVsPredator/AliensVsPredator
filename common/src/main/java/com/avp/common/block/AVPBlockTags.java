@@ -8,13 +8,15 @@ import com.avp.AVPResources;
 
 public class AVPBlockTags {
 
+    public static final TagKey<Block> ABERRANT_RESIN = create("aberrant_resin");
+
+    public static final TagKey<Block> ABERRANT_RESIN_REPLACEABLE = create("aberrant_resin_replaceable");
+
     public static final TagKey<Block> ACID_IMMUNE = create("acid_immune");
 
     public static final TagKey<Block> CONCRETE = create("concrete");
 
     public static final TagKey<Block> CRAFTED_RESIN = create("crafted_resin");
-
-    public static final TagKey<Block> XENOMORPH_IMMUNE = create("xenomorph_immune");
 
     public static final TagKey<Block> FERROALUMINUM = create("ferroaluminum");
 
@@ -26,17 +28,21 @@ public class AVPBlockTags {
 
     public static final TagKey<Block> INDUSTRIAL_GLASS_PANE = create("industrial_glass_pane");
 
-    public static final TagKey<Block> NETHER_ACID_IMMUNE = create("nether_acid_immune");
-
     public static final TagKey<Block> IRRADIATED_ACID_IMMUNE = create("irradiated_acid_immune");
 
     public static final TagKey<Block> IRRADIATED_RESIN = create("irradiated_resin");
 
-    public static final TagKey<Block> ABERRANT_RESIN = create("aberrant_resin");
+    public static final TagKey<Block> IRRADIATED_RESIN_REPLACEABLE = create("irradiated_resin_replaceable");
+
+    public static final TagKey<Block> NETHER_ACID_IMMUNE = create("nether_acid_immune");
 
     public static final TagKey<Block> NETHER_RESIN = create("nether_resin");
 
+    public static final TagKey<Block> NETHER_RESIN_REPLACEABLE = create("nether_resin_replaceable");
+
     public static final TagKey<Block> NORMAL_RESIN = create("normal_resin");
+
+    public static final TagKey<Block> NORMAL_RESIN_REPLACEABLE = create("normal_resin_replaceable");
 
     public static final TagKey<Block> MARINE_SPAWN_BLOCKS = create("marine_spawn_blocks");
 
@@ -63,6 +69,8 @@ public class AVPBlockTags {
     public static final TagKey<Block> STEEL = create("steel");
 
     public static final TagKey<Block> TITANIUM = create("titanium");
+
+    public static final TagKey<Block> XENOMORPH_IMMUNE = create("xenomorph_immune");
 
     private static TagKey<Block> create(String name) {
         return TagKey.create(Registries.BLOCK, AVPResources.location(name));

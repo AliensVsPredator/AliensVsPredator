@@ -28,6 +28,7 @@
     - Highly specific spawn configuration like this option provided is better suited for other mods to handle, not AVP.
 
 ## 🐞 Fixes
+- Fixed variant aliens being unable to replace enemy variant resin.
 - Fixed variant aliens not creating hives near enemy variant hives.
 - Fixed variant aliens spawning on resin near enemy variant hives without having a nearby hive of their own to spawn in.
 - Fixed variant hives not balancing drone and warrior numbers correctly.
@@ -58,8 +59,13 @@
 - Added `#avp:has_xenomorphs` biome tag.
 - Added `#avp:resin_blocks` block tag.
 - Added `#avp:resin_nodes` block tag.
+- Added `#avp:aberrant_resin_replaceable` block tag.
+- Added `#avp:irradiated_resin_replaceable` block tag.
+- Added `#avp:nether_resin_replaceable` block tag.
+- Added `#avp:normal_resin_replaceable` block tag.
 - Added `#avp:resin_replaceable` block tag.
   - Allows for controlling which blocks aliens can fully replace with resin.
+  - Serves as the base for the other resin replaceable tags.
 
 ## 🔬 Technical Changes
 - Entity spawn handling code is now shared between Fabric and NeoForge.
