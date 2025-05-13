@@ -325,23 +325,22 @@ public class AVPBlocks {
 
     public static final AVPDeferredHolder<Block> IRRADIATED_RESIN = register(
         "irradiated_resin",
-        () -> new IrradiatedResinBlock(BlockProperties.NETHER_RESIN.build())
+        () -> new IrradiatedResinBlock(BlockProperties.IRRADIATED_RESIN.build())
     );
 
-    // TODO: Fix properties.
     public static final AVPDeferredHolder<Block> IRRADIATED_RESIN_NODE = register(
         "irradiated_resin_node",
-        () -> new IrradiatedResinNodeBlock(BlockProperties.RESIN.build())
+        () -> new IrradiatedResinNodeBlock(BlockProperties.IRRADIATED_RESIN.build())
     );
 
     public static final AVPDeferredHolder<ResinVeinBlock> IRRADIATED_RESIN_VEIN = register(
         "irradiated_resin_vein",
-        () -> new IrradiatedResinVeinBlock(BlockProperties.NETHER_RESIN_VEIN.build())
+        () -> new IrradiatedResinVeinBlock(BlockProperties.IRRADIATED_RESIN_VEIN.build())
     );
 
     public static final AVPDeferredHolder<Block> IRRADIATED_RESIN_WEB = register(
         "irradiated_resin_web",
-        () -> new IrradiatedResinWebBlock(BlockProperties.NETHER_RESIN_WEB.build())
+        () -> new IrradiatedResinWebBlock(BlockProperties.IRRADIATED_RESIN_WEB.build())
     );
 
     public static final AVPDeferredHolder<Block> LEAD_BLOCK = register("lead_block", BlockProperties.LEAD);
@@ -368,10 +367,9 @@ public class AVPBlocks {
         () -> new ResinBlock(BlockProperties.NETHER_RESIN.build())
     );
 
-    // TODO: Fix properties.
     public static final AVPDeferredHolder<Block> NETHER_RESIN_NODE = register(
         "nether_resin_node",
-        () -> new ResinNodeBlock(BlockProperties.RESIN.build())
+        () -> new ResinNodeBlock(BlockProperties.NETHER_RESIN.build())
     );
 
     public static final AVPDeferredHolder<ResinVeinBlock> NETHER_RESIN_VEIN = register(

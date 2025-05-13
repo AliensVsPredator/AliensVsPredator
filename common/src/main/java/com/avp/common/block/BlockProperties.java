@@ -95,6 +95,9 @@ public class BlockProperties {
     private static final Supplier<BlockPropertyBuilder> ABERRANT_RESIN_BLOCK_PROPERTIES_SUPPLIER = () -> RESIN_PROPERTIES_SUPPLIER.get()
         .isValidSpawn(($1, $2, $3, entityType) -> entityType.is(AVPEntityTypeTags.ABERRANT_ALIENS));
 
+    private static final Supplier<BlockPropertyBuilder> IRRADIATED_RESIN_BLOCK_PROPERTIES_SUPPLIER = () -> RESIN_PROPERTIES_SUPPLIER.get()
+        .isValidSpawn(($1, $2, $3, entityType) -> entityType.is(AVPEntityTypeTags.IRRADIATED_ALIENS));
+
     private static final Supplier<BlockPropertyBuilder> NETHER_RESIN_BLOCK_PROPERTIES_SUPPLIER = () -> RESIN_PROPERTIES_SUPPLIER.get()
         .isValidSpawn(($1, $2, $3, entityType) -> entityType.is(AVPEntityTypeTags.NETHER_ALIENS));
 
@@ -117,6 +120,22 @@ public class BlockProperties {
         .noOcclusion()
         .pushReaction(PushReaction.DESTROY);
 
+    public static final BlockPropertyBuilder IRRADIATED_RESIN = IRRADIATED_RESIN_BLOCK_PROPERTIES_SUPPLIER.get()
+        .mapColor(MapColor.COLOR_BLACK);
+
+    public static final BlockPropertyBuilder IRRADIATED_RESIN_VEIN = RESIN_PROPERTIES_SUPPLIER.get()
+        .mapColor(MapColor.COLOR_BLACK)
+        .noCollision()
+        .noOcclusion()
+        .pushReaction(PushReaction.DESTROY)
+        .replaceable();
+
+    public static final BlockPropertyBuilder IRRADIATED_RESIN_WEB = IRRADIATED_RESIN_BLOCK_PROPERTIES_SUPPLIER.get()
+        .mapColor(MapColor.COLOR_BLACK)
+        .noCollision()
+        .noOcclusion()
+        .pushReaction(PushReaction.DESTROY);
+
     public static final BlockPropertyBuilder NETHER_RESIN = NETHER_RESIN_BLOCK_PROPERTIES_SUPPLIER.get()
         .mapColor(MapColor.COLOR_RED);
 
@@ -133,15 +152,18 @@ public class BlockProperties {
         .noOcclusion()
         .pushReaction(PushReaction.DESTROY);
 
-    public static final BlockPropertyBuilder RESIN = RESIN_BLOCK_PROPERTIES_SUPPLIER.get();
+    public static final BlockPropertyBuilder RESIN = RESIN_BLOCK_PROPERTIES_SUPPLIER.get()
+        .mapColor(MapColor.COLOR_BLACK);
 
     public static final BlockPropertyBuilder RESIN_VEIN = RESIN_PROPERTIES_SUPPLIER.get()
+        .mapColor(MapColor.COLOR_BLACK)
         .noCollision()
         .noOcclusion()
         .pushReaction(PushReaction.DESTROY)
         .replaceable();
 
     public static final BlockPropertyBuilder RESIN_WEB = RESIN_BLOCK_PROPERTIES_SUPPLIER.get()
+        .mapColor(MapColor.COLOR_BLACK)
         .noCollision()
         .noOcclusion()
         .pushReaction(PushReaction.DESTROY);
