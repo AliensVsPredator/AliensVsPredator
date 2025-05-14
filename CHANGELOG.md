@@ -10,10 +10,11 @@
 - N/A
 
 ## 🐞 Fixes
-- N/A
+- Fixed weapons with piercing having excessive recoil.
+- Fixed weapons with piercing not piercing through multiple blocks.
 
 ## 🛠 Data Pack
 - N/A
 
 ## 🔬 Technical Changes
-- N/A
+- Improved bullet piercing accuracy for weapons.
