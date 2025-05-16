@@ -8,6 +8,8 @@
 
 ## ♻️ Changes
 - Updated royal facehugger texture.
+- Hive boss bars are now stylized based on the hive's variant.
+  - For example, a nether xenomorph hive will show "Nether Hive" for the boss bar title, and the boss bar color will be red instead of green.
 
 ## 🐞 Fixes
 - Fixed an error occurring when attempting to join a server with the AVP mod installed (NeoForge-only).

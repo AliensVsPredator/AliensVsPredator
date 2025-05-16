@@ -2,9 +2,6 @@ package com.avp.common.hive;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.chat.Component;
-import net.minecraft.server.level.ServerBossEvent;
-import net.minecraft.world.BossEvent;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
@@ -14,7 +11,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
-import com.avp.AVP;
 import com.avp.common.entity.AVPEntityTypeTags;
 import com.avp.common.entity.living.alien.Alien;
 import com.avp.common.entity.living.alien.AlienVariant;
@@ -23,7 +19,7 @@ import com.avp.common.hive.ai.task.impl.BalanceDronesAndWarriorsHiveTask;
 import com.avp.common.hive.ai.task.impl.BalancePraetoriansHiveTask;
 import com.avp.common.hive.ai.task.impl.BalanceQueenHiveTask;
 import com.avp.common.hive.ai.task.impl.PickBestLeaderTask;
-import com.avp.common.hive.ai.task.impl.UpdateHiveBossBarTask;
+import com.avp.common.hive.manager.HiveBossBarManager;
 import com.avp.common.hive.manager.HiveDebugManager;
 import com.avp.common.hive.manager.HiveSpaceManager;
 import com.avp.common.hive.membership.manager.HiveLeadershipManager;
@@ -40,6 +36,8 @@ public class Hive {
 
     private static final String VARIANT_ID_KEY = "VariantId";
 
+    private final HiveBossBarManager bossBarManager;
+
     private final HiveDebugManager debugManager;
 
     private final HiveLeadershipManager leadershipManager;
@@ -47,8 +45,6 @@ public class Hive {
     private final HiveMembershipManager membershipManager;
 
     private final HiveSpaceManager spaceManager;
-
-    private final ServerBossEvent bossEvent;
 
     private final UUID id;
 
@@ -67,19 +63,14 @@ public class Hive {
         this.tasks = new ArrayList<>();
         this.id = id;
         this.level = level;
+        this.bossBarManager = new HiveBossBarManager(this);
         this.debugManager = new HiveDebugManager(this);
         this.leadershipManager = new HiveLeadershipManager(this);
         this.membershipManager = new HiveMembershipManager(this);
         this.spaceManager = new HiveSpaceManager(this);
         this.centerPos = BlockPos.ZERO;
-        this.bossEvent = (ServerBossEvent) new ServerBossEvent(
-            Component.translatable("bossbar.avp.hive.title"),
-            BossEvent.BossBarColor.GREEN,
-            BossEvent.BossBarOverlay.PROGRESS
-        ).setDarkenScreen(AVP.config.hiveConfigs.HIVE_DARKEN_SCREEN);
 
         // Order matters here.
-        tasks.add(new UpdateHiveBossBarTask(this));
         tasks.add(new BalanceDronesAndWarriorsHiveTask(this));
         tasks.add(new BalancePraetoriansHiveTask(this));
         tasks.add(new BalanceQueenHiveTask(this));
@@ -92,6 +83,7 @@ public class Hive {
             return;
         }
 
+        bossBarManager.tick();
         debugManager.tick();
         leadershipManager.tick();
         membershipManager.tick();
@@ -156,12 +148,12 @@ public class Hive {
     }
 
     public void onRemove() {
-        bossEvent.removeAllPlayers();
+        bossBarManager.onHiveRemoved();
         debugManager.onHiveRemoved();
     }
 
     public boolean isAngry() {
-        return !bossEvent.getPlayers().isEmpty();
+        return bossBarManager.isTrackingPlayers();
     }
 
     public void load(CompoundTag compoundTag) {
@@ -197,8 +189,8 @@ public class Hive {
         return centerPos;
     }
 
-    public ServerBossEvent bossEvent() {
-        return bossEvent;
+    public HiveBossBarManager getBossBarManager() {
+        return bossBarManager;
     }
 
     public HiveDebugManager getDebugManager() {
