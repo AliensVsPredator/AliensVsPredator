@@ -18,7 +18,7 @@
 - Fixed weapons with piercing not piercing through multiple blocks.
 
 ## 🛠 Data Pack
-- N/A
+- Added `#avp:chestbursters` entity type tag.
 
 ## 🔬 Technical Changes
 - Improved bullet piercing accuracy for weapons.

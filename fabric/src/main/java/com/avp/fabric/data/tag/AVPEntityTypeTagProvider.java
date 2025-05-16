@@ -25,6 +25,7 @@ public class AVPEntityTypeTagProvider extends FabricTagProvider.EntityTypeTagPro
         addAcidImmune();
         addAliens();
         addAnimals();
+        addChestbursters();
         addDrones();
         addFacehuggers();
         addHatedByXenomorphs();
@@ -162,6 +163,18 @@ public class AVPEntityTypeTagProvider extends FabricTagProvider.EntityTypeTagPro
     private void addAcidImmune() {
         getOrCreateTagBuilder(AVPEntityTypeTags.ACID_IMMUNE)
             .addTag(AVPEntityTypeTags.ALIENS);
+    }
+
+    private void addChestbursters() {
+        getOrCreateTagBuilder(AVPEntityTypeTags.CHESTBURSTERS)
+            .add(
+                AVPEntityTypes.ABERRANT_CHESTBURSTER.get(),
+                AVPEntityTypes.CHESTBURSTER.get(),
+                AVPEntityTypes.NETHER_CHESTBURSTER.get(),
+                AVPEntityTypes.ROYAL_ABERRANT_CHESTBURSTER.get(),
+                AVPEntityTypes.ROYAL_CHESTBURSTER.get(),
+                AVPEntityTypes.ROYAL_NETHER_CHESTBURSTER.get()
+            );
     }
 
     private void addFacehuggers() {
