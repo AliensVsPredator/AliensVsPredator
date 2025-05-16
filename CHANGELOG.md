@@ -10,6 +10,7 @@
 - N/A
 
 ## 🐞 Fixes
+- Fixed an error occurring when attempting to join a server with the AVP mod installed (NeoForge-only).
 - Fixed weapons with piercing having excessive recoil.
 - Fixed weapons with piercing not piercing through multiple blocks.
 

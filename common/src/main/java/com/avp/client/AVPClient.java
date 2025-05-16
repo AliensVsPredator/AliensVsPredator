@@ -9,7 +9,6 @@ import net.minecraft.world.item.component.DyedItemColor;
 import java.util.List;
 
 import com.avp.client.input.keybind.AVPKeybindingRegistry;
-import com.avp.client.network.AVPClientPacketHandlerRegistry;
 import com.avp.client.particle.AcidParticleProvider;
 import com.avp.client.particle.BlueAcidParticleProvider;
 import com.avp.client.particle.IrradiatedAcidParticleProvider;
@@ -82,9 +81,6 @@ public class AVPClient {
         registerItemRenderers();
         registerMenuScreens();
         registerParticleProviderFactories();
-
-        // Networking
-        AVPClientPacketHandlerRegistry.initialize();
 
         // Keybindings
         AVPKeybindingRegistry.initialize();
