@@ -6,6 +6,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.ProjectileUtil;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.ClipContext;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.HitResult;
 
 import java.util.ArrayList;
@@ -31,10 +32,6 @@ public class HitScanGunAttackAction implements GunAttackAction {
     public GunShootResult shoot(GunAttackConfig gunAttackConfig) {
         var shooter = gunAttackConfig.shooter();
         var level = shooter.level();
-
-        if (!level.isClientSide) {
-            return GunShootResult.FAILURE;
-        }
 
         final var stepSize = 0.25;
         final var maxDistance = (double) gunAttackConfig.fireModeConfig().range();
@@ -90,14 +87,30 @@ public class HitScanGunAttackAction implements GunAttackAction {
             current = next;
         }
 
-        if (shooter instanceof Player player) {
-            var baseRecoilX = level.getRandom().nextBoolean() ? 1f : -1f;
-            var recoil = gunAttackConfig.fireModeConfig().recoil();
-            player.turn(baseRecoilX * 2, -recoil * 2);
+        var gunHitResultsPayload = new C2SGunHitResultsPayload(hitResults);
+
+        if (!level.isClientSide && !(shooter instanceof Player)) {
+            // If the gun was fired server-side and the shooter is not a player (such as a marine), then we process the
+            // shot immediately. This is fine to do because the marine has no outdated information on its target like a
+            // client might have in terms of target's movement, position, etc.
+            GunHitScanAttackHandler.handle(gunHitResultsPayload, shooter);
+            return GunShootResult.SHOT;
+        } else if (level.isClientSide && shooter instanceof Player player) {
+            // Otherwise if the shot occurred client-side AND the shooter was a player, then add a bit of recoil.
+            applyRecoilToPlayer(gunAttackConfig, player, level);
+            // And then network their hit results to the server. While yes this opens the door for players to cheat
+            // on servers, hit results are done this way so that the player's shots are visually accurate.
+            // TODO: There is some cheating that can occur here on servers. Add server-side validation at some point.
+            Services.CLIENT_NETWORKING.sendToServer(gunHitResultsPayload);
+            return GunShootResult.SHOT;
         }
 
-        Services.CLIENT_NETWORKING.sendToServer(new C2SGunHitResultsPayload(hitResults));
+        return GunShootResult.FAILURE;
+    }
 
-        return GunShootResult.SHOT;
+    private void applyRecoilToPlayer(GunAttackConfig gunAttackConfig, Player player, Level level) {
+        var baseRecoilX = level.getRandom().nextBoolean() ? 1f : -1f;
+        var recoil = gunAttackConfig.fireModeConfig().recoil();
+        player.turn(baseRecoilX * 2, -recoil * 2);
     }
 }

@@ -13,6 +13,7 @@
 
 ## 🐞 Fixes
 - Fixed an error occurring when attempting to join a server with the AVP mod installed (NeoForge-only).
+- Fixed marines not shooting properly after player hit accuracy changes.
 - Fixed weapons with piercing having excessive recoil.
 - Fixed weapons with piercing not piercing through multiple blocks.
 
