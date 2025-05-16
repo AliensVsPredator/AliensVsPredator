@@ -4,7 +4,6 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import mod.azure.azurelib.rewrite.animation.cache.AzIdentityRegistry;
 import net.fabricmc.fabric.api.biome.v1.BiomeModifications;
 import net.fabricmc.fabric.api.biome.v1.BiomeSelectionContext;
-import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry;
@@ -47,9 +46,12 @@ import com.avp.service.RegistryService;
 
 public class FabricRegistryService implements RegistryService {
 
+    private final List<NetworkHandler<?>> clientBoundPacketHandlers;
+
     private final List<LiteralArgumentBuilder<CommandSourceStack>> literalArgumentBuilders;
 
     public FabricRegistryService() {
+        this.clientBoundPacketHandlers = new ArrayList<>();
         this.literalArgumentBuilders = new ArrayList<>();
     }
 
@@ -165,16 +167,10 @@ public class FabricRegistryService implements RegistryService {
                     (payload, context) -> context.server()
                         .execute(() -> handler.fromClientPayloadConsumer().accept(payload, context.player()))
                 );
-                ClientPlayNetworking.registerGlobalReceiver(
-                    networkHandler.type(),
-                    (payload, context) -> context.client()
-                        .execute(() -> handler.fromServerPayloadConsumer().accept(payload, context.player()))
-                );
+
+                clientBoundPacketHandlers.add(networkHandler);
             }
-            case NetworkHandler.FromServer<T> handler -> ClientPlayNetworking.registerGlobalReceiver(
-                networkHandler.type(),
-                (payload, context) -> context.client().execute(() -> handler.payloadConsumer().accept(payload, context.player()))
-            );
+            case NetworkHandler.FromServer<T> handler -> clientBoundPacketHandlers.add(networkHandler);
         }
     }
 
@@ -214,6 +210,10 @@ public class FabricRegistryService implements RegistryService {
             level,
             factories -> factories.addAll(villagerTradeItemListings)
         );
+    }
+
+    public List<NetworkHandler<?>> getClientBoundPacketHandlers() {
+        return clientBoundPacketHandlers;
     }
 
     public List<LiteralArgumentBuilder<CommandSourceStack>> getLiteralArgumentBuilders() {

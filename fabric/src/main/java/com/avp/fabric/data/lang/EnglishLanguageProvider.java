@@ -15,6 +15,7 @@ import java.util.function.Supplier;
 import com.avp.common.block.AVPBlocks;
 import com.avp.common.creative_mode_tab.AVPCreativeModeTabs;
 import com.avp.common.entity.type.AVPEntityTypes;
+import com.avp.common.hive.manager.HiveBossBarManager;
 import com.avp.common.item.AVPArmorItems;
 import com.avp.common.item.AVPItems;
 import com.avp.common.item.AVPSpawnEggItems;
@@ -708,8 +709,17 @@ public class EnglishLanguageProvider extends FabricLanguageProvider {
         builder.add("advancements.aliens.plated_chitin_armor.title", "Kneel to the Crown");
         builder.add("advancements.aliens.plated_chitin_armor.description", "Equip a full set of plated chitin armor");
 
-        // Hive boss bar
-        builder.add("bossbar.avp.hive.title", "Hive");
+        // Hive boss bars
+        HiveBossBarManager.ALIEN_VARIANT_TO_TRANSLATABLE_STRING_MAP.forEach((alienVariant, translationKey) -> {
+            var prefix = switch (alienVariant) {
+                case ABERRANT -> "Aberrant ";
+                case IRRADIATED -> "Irradiated ";
+                case NETHER -> "Nether ";
+                case NORMAL -> "";
+            };
+
+            builder.add(translationKey, prefix + "Hive");
+        });
 
         builder.add("avp.industrialfurnace.displayName", "Industrial Furnace");
         builder.add("effect.avp.radiation", "Radiation");

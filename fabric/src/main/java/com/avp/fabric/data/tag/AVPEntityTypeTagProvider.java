@@ -25,10 +25,12 @@ public class AVPEntityTypeTagProvider extends FabricTagProvider.EntityTypeTagPro
         addAcidImmune();
         addAliens();
         addAnimals();
+        addChestbursters();
         addDrones();
         addFacehuggers();
         addHatedByXenomorphs();
         addHiveAliens();
+        addHiveLayerSpawns();
         addHosts();
         addHumanoids();
         addIrradiatedAliens();
@@ -162,6 +164,18 @@ public class AVPEntityTypeTagProvider extends FabricTagProvider.EntityTypeTagPro
     private void addAcidImmune() {
         getOrCreateTagBuilder(AVPEntityTypeTags.ACID_IMMUNE)
             .addTag(AVPEntityTypeTags.ALIENS);
+    }
+
+    private void addChestbursters() {
+        getOrCreateTagBuilder(AVPEntityTypeTags.CHESTBURSTERS)
+            .add(
+                AVPEntityTypes.ABERRANT_CHESTBURSTER.get(),
+                AVPEntityTypes.CHESTBURSTER.get(),
+                AVPEntityTypes.NETHER_CHESTBURSTER.get(),
+                AVPEntityTypes.ROYAL_ABERRANT_CHESTBURSTER.get(),
+                AVPEntityTypes.ROYAL_CHESTBURSTER.get(),
+                AVPEntityTypes.ROYAL_NETHER_CHESTBURSTER.get()
+            );
     }
 
     private void addFacehuggers() {
@@ -337,6 +351,25 @@ public class AVPEntityTypeTagProvider extends FabricTagProvider.EntityTypeTagPro
                 AVPEntityTypes.ROYAL_NETHER_OVOMORPH.get(),
                 AVPEntityTypes.ROYAL_OVOMORPH.get()
             );
+    }
+
+    private void addHiveLayerSpawns() {
+        getOrCreateTagBuilder(AVPEntityTypeTags.SPAWNS_IN_HIVE_WARRIOR_LAYER)
+            .addTag(AVPEntityTypeTags.WARRIORS);
+
+        getOrCreateTagBuilder(AVPEntityTypeTags.SPAWNS_IN_HIVE_DRONE_LAYER)
+            .addTag(AVPEntityTypeTags.SPAWNS_IN_HIVE_WARRIOR_LAYER)
+            .addTag(AVPEntityTypeTags.CHESTBURSTERS)
+            .addTag(AVPEntityTypeTags.DRONES)
+            .addTag(AVPEntityTypeTags.OVOMORPHS);
+
+        getOrCreateTagBuilder(AVPEntityTypeTags.SPAWNS_IN_HIVE_PRAETORIAN_LAYER)
+            .addTag(AVPEntityTypeTags.SPAWNS_IN_HIVE_DRONE_LAYER)
+            .addTag(AVPEntityTypeTags.PRAETORIANS);
+
+        getOrCreateTagBuilder(AVPEntityTypeTags.SPAWNS_IN_HIVE_QUEEN_LAYER)
+            .addTag(AVPEntityTypeTags.SPAWNS_IN_HIVE_PRAETORIAN_LAYER)
+            .addTag(AVPEntityTypeTags.QUEENS);
     }
 
     private void addCompatibilityTags() {

@@ -10,6 +10,8 @@ import net.minecraft.world.level.ServerLevelAccessor;
 
 import java.util.Objects;
 
+import com.avp.common.entity.AVPEntityTypeTags;
+import com.avp.common.hive.Hive;
 import com.avp.common.level.saveddata.HiveLevelData;
 
 public class AlienSpawning {
@@ -76,7 +78,28 @@ public class AlienSpawning {
                 // AND Hive is not angry/aggro'd.
                 && !nearestHive.isAngry()
                 // AND spawn position must be within range of the hive.
-                && nearestHive.getSpaceManager().isBlockPosWithinHive(blockPos)
+                && canEntityTypeSpawnWithinHiveLayer(nearestHive, entityType, blockPos)
             );
+    }
+
+    private static boolean canEntityTypeSpawnWithinHiveLayer(
+        Hive nearestHive,
+        EntityType<? extends Monster> entityType,
+        BlockPos blockPos
+    ) {
+        var layer = nearestHive.getSpaceManager()
+            .getHiveLayerOrNull(blockPos);
+
+        if (layer == null) {
+            return false;
+        }
+
+        return switch (layer) {
+            case EDGE, LEASH, BUFFER -> false;
+            case WARRIOR -> entityType.is(AVPEntityTypeTags.SPAWNS_IN_HIVE_WARRIOR_LAYER);
+            case DRONE -> entityType.is(AVPEntityTypeTags.SPAWNS_IN_HIVE_DRONE_LAYER);
+            case PRAETORIAN -> entityType.is(AVPEntityTypeTags.SPAWNS_IN_HIVE_PRAETORIAN_LAYER);
+            case CENTER -> entityType.is(AVPEntityTypeTags.SPAWNS_IN_HIVE_QUEEN_LAYER);
+        };
     }
 }
