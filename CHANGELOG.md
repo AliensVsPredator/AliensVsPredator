@@ -7,7 +7,7 @@
 - N/A
 
 ## ♻️ Changes
-- N/A
+- Updated royal facehugger texture.
 
 ## 🐞 Fixes
 - Fixed an error occurring when attempting to join a server with the AVP mod installed (NeoForge-only).
