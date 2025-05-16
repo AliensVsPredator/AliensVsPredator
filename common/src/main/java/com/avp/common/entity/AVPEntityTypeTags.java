@@ -57,6 +57,14 @@ public record AVPEntityTypeTags() {
 
     public static final TagKey<EntityType<?>> ROYAL_XENOMORPHS = create("royal_xenomorphs");
 
+    public static final TagKey<EntityType<?>> SPAWNS_IN_HIVE_DRONE_LAYER = create("spawns_in_hive_drone_layer");
+
+    public static final TagKey<EntityType<?>> SPAWNS_IN_HIVE_PRAETORIAN_LAYER = create("spawns_in_hive_praetorian_layer");
+
+    public static final TagKey<EntityType<?>> SPAWNS_IN_HIVE_QUEEN_LAYER = create("spawns_in_hive_queen_layer");
+
+    public static final TagKey<EntityType<?>> SPAWNS_IN_HIVE_WARRIOR_LAYER = create("spawns_in_hive_warrior_layer");
+
     public static final TagKey<EntityType<?>> WARRIORS = create("warriors");
 
     public static final TagKey<EntityType<?>> XENOMORPHS = create("xenomorphs");
