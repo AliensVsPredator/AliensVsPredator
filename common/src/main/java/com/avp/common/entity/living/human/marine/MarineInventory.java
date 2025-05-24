@@ -15,8 +15,9 @@ import java.util.stream.Stream;
 
 import com.avp.common.util.AVPInventory;
 import com.avp.common.util.ItemUtil;
+import com.avp.common.util.NBTSerializable;
 
-public class MarineInventory implements AVPInventory, InventoryCarrier {
+public class MarineInventory implements AVPInventory, InventoryCarrier, NBTSerializable {
 
     private static final String PERSONAL_INVENTORY_KEY = "personalInventory";
 
@@ -80,12 +81,14 @@ public class MarineInventory implements AVPInventory, InventoryCarrier {
             .forEach(itemEntity -> marine.level().addFreshEntity(itemEntity));
     }
 
+    @Override
     public void load(CompoundTag compoundTag) {
         var level = marine.level();
         personalInventory.fromTag(compoundTag.getList(PERSONAL_INVENTORY_KEY, Tag.TAG_COMPOUND), level.registryAccess());
         primaryInventory.fromTag(compoundTag.getList(PRIMARY_INVENTORY_KEY, Tag.TAG_COMPOUND), level.registryAccess());
     }
 
+    @Override
     public void save(CompoundTag compoundTag) {
         var level = marine.level();
         compoundTag.put(PERSONAL_INVENTORY_KEY, personalInventory.createTag(level.registryAccess()));

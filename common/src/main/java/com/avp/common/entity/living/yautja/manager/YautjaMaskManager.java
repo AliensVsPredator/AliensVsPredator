@@ -4,8 +4,9 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 
 import com.avp.common.entity.living.yautja.Yautja;
+import com.avp.common.util.NBTSerializable;
 
-public class YautjaMaskManager {
+public class YautjaMaskManager implements NBTSerializable {
 
     private static final String MASK_KEY = "hasMask";
 
@@ -41,12 +42,14 @@ public class YautjaMaskManager {
         return yautja.getEntityData().get(hasMaskEDA);
     }
 
+    @Override
     public void load(CompoundTag compoundTag) {
         if (compoundTag.contains(MASK_KEY)) {
             yautja.getEntityData().set(hasMaskEDA, compoundTag.getBoolean(MASK_KEY));
         }
     }
 
+    @Override
     public void save(CompoundTag compoundTag) {
         compoundTag.putBoolean(MASK_KEY, yautja.getEntityData().get(hasMaskEDA));
     }

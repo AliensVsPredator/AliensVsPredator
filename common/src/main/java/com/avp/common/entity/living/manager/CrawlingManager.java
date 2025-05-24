@@ -6,8 +6,9 @@ import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.world.entity.PathfinderMob;
 
 import com.avp.common.entity.living.alien.xenomorph.queen.Queen;
+import com.avp.common.util.NBTSerializable;
 
-public class CrawlingManager {
+public class CrawlingManager implements NBTSerializable {
 
     private static final String CRAWLING_TAG_KEY = "crawling";
 
@@ -67,12 +68,14 @@ public class CrawlingManager {
         return !aboveState.isAir() && aboveState.entityCanStandOn(entity.level(), blockPos, entity);
     }
 
+    @Override
     public void load(CompoundTag compoundTag) {
         if (compoundTag.contains(CRAWLING_TAG_KEY)) {
             entity.getEntityData().set(isCrawlingEDA, compoundTag.getBoolean(CRAWLING_TAG_KEY));
         }
     }
 
+    @Override
     public void save(CompoundTag compoundTag) {
         compoundTag.putBoolean(CRAWLING_TAG_KEY, entity.getEntityData().get(isCrawlingEDA));
     }

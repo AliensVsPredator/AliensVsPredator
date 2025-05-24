@@ -10,8 +10,9 @@ import java.util.Map;
 import com.avp.common.entity.living.gene.GeneKey;
 import com.avp.common.entity.living.gene.behavior.GeneDecoder;
 import com.avp.common.level.saveddata.GenePaletteLevelData;
+import com.avp.common.util.NBTSerializable;
 
-public class GeneManager {
+public class GeneManager implements NBTSerializable {
 
     private static final String GENE_KEY = "genes";
 
@@ -67,6 +68,7 @@ public class GeneManager {
         set(geneKey, Byte.MAX_VALUE);
     }
 
+    @Override
     public void load(CompoundTag compoundTag) {
         var level = entity.level();
         var genePaletteOption = GenePaletteLevelData.getOrCreate(level);
@@ -84,6 +86,7 @@ public class GeneManager {
         });
     }
 
+    @Override
     public void save(CompoundTag compoundTag) {
         var level = entity.level();
         var genePaletteOptional = GenePaletteLevelData.getOrCreate(level);

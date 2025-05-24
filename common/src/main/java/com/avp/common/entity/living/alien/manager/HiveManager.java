@@ -13,8 +13,9 @@ import com.avp.common.entity.living.alien.Alien;
 import com.avp.common.hive.Hive;
 import com.avp.common.level.saveddata.HiveLevelData;
 import com.avp.common.util.CompoundTagUtil;
+import com.avp.common.util.NBTSerializable;
 
-public class HiveManager {
+public class HiveManager implements NBTSerializable {
 
     private static final String HIVE_SIGNATURE_KEY = "HiveSignature";
 
@@ -98,6 +99,7 @@ public class HiveManager {
         this.hiveOption = Option.some(newHive);
     }
 
+    @Override
     public void load(CompoundTag compoundTag) {
         if (!compoundTag.contains(HIVE_SIGNATURE_KEY)) {
             return;
@@ -112,6 +114,7 @@ public class HiveManager {
             });
     }
 
+    @Override
     public void save(CompoundTag compoundTag) {
         hiveOption.ifSome(hive -> compoundTag.putUUID(HIVE_SIGNATURE_KEY, hive.id()));
     }

@@ -8,8 +8,9 @@ import net.minecraft.world.level.Level;
 import com.avp.AVP;
 import com.avp.common.entity.living.alien.parasite.facehugger.Facehugger;
 import com.avp.common.sound.AVPSoundEvents;
+import com.avp.common.util.NBTSerializable;
 
-public class HatchManager {
+public class HatchManager implements NBTSerializable {
 
     private static final String HATCH_DURATION_IN_TICKS_KEY = "hatchDurationInTicks";
 
@@ -114,6 +115,7 @@ public class HatchManager {
         ovomorph.setHatchState(Ovomorph.DEFAULT_HATCH_STATE);
     }
 
+    @Override
     public void load(CompoundTag compoundTag) {
         if (compoundTag.contains(HATCH_DURATION_IN_TICKS_KEY)) {
             this.remainingHatchDurationInTicks = compoundTag.getInt(HATCH_DURATION_IN_TICKS_KEY);
@@ -134,6 +136,7 @@ public class HatchManager {
         }
     }
 
+    @Override
     public void save(CompoundTag compoundTag) {
         compoundTag.putInt(HATCH_DURATION_IN_TICKS_KEY, remainingHatchDurationInTicks);
         compoundTag.putInt(REMAINING_SPAWN_DELAY_IN_TICKS_KEY, remainingSpawnDelayInTicks);

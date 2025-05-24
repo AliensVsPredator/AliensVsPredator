@@ -25,8 +25,9 @@ import com.avp.common.hive.manager.HiveSpaceManager;
 import com.avp.common.hive.membership.manager.HiveLeadershipManager;
 import com.avp.common.hive.membership.manager.HiveMembershipManager;
 import com.avp.common.level.saveddata.HiveLevelData;
+import com.avp.common.util.NBTSerializable;
 
-public class Hive {
+public class Hive implements NBTSerializable {
 
     private static final AlienVariant DEFAULT_VARIANT = AlienVariant.NORMAL;
 
@@ -156,6 +157,7 @@ public class Hive {
         return bossBarManager.isTrackingPlayers();
     }
 
+    @Override
     public void load(CompoundTag compoundTag) {
         leadershipManager.load(compoundTag);
         membershipManager.load(compoundTag);
@@ -169,6 +171,7 @@ public class Hive {
         }
     }
 
+    @Override
     public void save(CompoundTag compoundTag) {
         leadershipManager.save(compoundTag);
         membershipManager.save(compoundTag);

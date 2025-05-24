@@ -7,8 +7,9 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 
 import com.avp.AVPResources;
+import com.avp.common.util.NBTSerializable;
 
-public class HumanFeatureManager {
+public class HumanFeatureManager implements NBTSerializable {
 
     private static final String BEARD_VARIANT_KEY = "beardVariant";
 
@@ -73,6 +74,7 @@ public class HumanFeatureManager {
         return cachedSkinTexture.apply(entity.isMale());
     }
 
+    @Override
     public void load(CompoundTag compoundTag) {
         if (compoundTag.contains(BEARD_VARIANT_KEY)) {
             entity.setBeardVariant(compoundTag.getInt(BEARD_VARIANT_KEY));
@@ -99,6 +101,7 @@ public class HumanFeatureManager {
         }
     }
 
+    @Override
     public void save(CompoundTag compoundTag) {
         entity.getBeardVariant()
             .ifSome(beardVariant -> compoundTag.putInt(BEARD_VARIANT_KEY, beardVariant));

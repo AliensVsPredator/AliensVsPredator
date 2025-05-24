@@ -17,8 +17,9 @@ import com.avp.common.entity.living.FreeMob;
 import com.avp.common.entity.living.Host;
 import com.avp.common.entity.living.alien.parasite.Parasite;
 import com.avp.common.util.AVPPredicates;
+import com.avp.common.util.NBTSerializable;
 
-public class ParasiteAttachmentManager {
+public class ParasiteAttachmentManager implements NBTSerializable {
 
     private static final String IS_FERTILE_KEY = "isFertile";
 
@@ -109,6 +110,7 @@ public class ParasiteAttachmentManager {
         setIsFertile(true);
     }
 
+    @Override
     public void load(CompoundTag compoundTag) {
         if (compoundTag.contains(IS_FERTILE_KEY)) {
             setIsFertile(compoundTag.getBoolean(IS_FERTILE_KEY));
@@ -119,6 +121,7 @@ public class ParasiteAttachmentManager {
         }
     }
 
+    @Override
     public void save(CompoundTag compoundTag) {
         compoundTag.putBoolean(IS_FERTILE_KEY, isFertile());
         compoundTag.putInt(TICKS_ATTACHED_TO_HOST_KEY, ticksAttachedToHost);
