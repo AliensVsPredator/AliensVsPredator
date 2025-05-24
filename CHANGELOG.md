@@ -10,7 +10,7 @@
 - N/A
 
 ## 🐞 Fixes
-- N/A
+- Fixed players eating chorus fruit while infected causing facehuggers to spawn instead of the correct embryo type.
 
 ## 🛠 Data Pack
 - N/A

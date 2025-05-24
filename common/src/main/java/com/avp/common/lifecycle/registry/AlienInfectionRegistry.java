@@ -33,11 +33,11 @@ public class AlienInfectionRegistry {
         var hosts = alienInfection.hosts();
 
         if (hosts == null) {
-            var lookupKey = new AlienInfectionKey(null, alienInfection.parasiteSourceType());
+            var lookupKey = new AlienInfectionKey(null, alienInfection.parasiteType());
             ALIEN_INFECTION_LOOKUP_MAP.put(lookupKey, alienInfection);
         } else {
             hosts.forEach(host -> {
-                var lookupKey = new AlienInfectionKey(host, alienInfection.parasiteSourceType());
+                var lookupKey = new AlienInfectionKey(host, alienInfection.parasiteType());
                 ALIEN_INFECTION_LOOKUP_MAP.put(lookupKey, alienInfection);
             });
         }

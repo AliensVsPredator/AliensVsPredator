@@ -10,12 +10,10 @@ public interface Host {
 
     GeneManager getOrCreateGeneManager();
 
-    int parasiteGrowthTimeInTicks();
-
     @Nullable
-    EntityType<?> parasiteType();
+    EntityType<?> getParasiteType();
 
     void injectEmbryo(Parasite parasite);
 
-    void clearParasiteSourceType();
+    void clearParasiteType();
 }
