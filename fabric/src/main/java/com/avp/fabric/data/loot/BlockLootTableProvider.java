@@ -6,6 +6,7 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.enchantment.Enchantments;
+import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.entries.LootItem;
@@ -14,19 +15,27 @@ import net.minecraft.world.level.storage.loot.functions.SetItemCountFunction;
 import net.minecraft.world.level.storage.loot.providers.number.UniformGenerator;
 
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
+import com.avp.AVP;
 import com.avp.common.block.AVPBlocks;
 import com.avp.common.item.AVPItems;
+import com.avp.common.registry.AVPDeferredHolder;
 
 public class BlockLootTableProvider extends FabricBlockLootTableProvider {
 
+    private final Set<Block> touchedBlockSuppliers;
+
     public BlockLootTableProvider(FabricDataOutput dataOutput, CompletableFuture<HolderLookup.Provider> registryLookup) {
         super(dataOutput, registryLookup);
+        this.touchedBlockSuppliers = new HashSet<>();
     }
 
     @Override
@@ -35,214 +44,260 @@ public class BlockLootTableProvider extends FabricBlockLootTableProvider {
         generateSlabDrops();
         generateCustomDrops();
         generateOtherDrops();
+
+        var unhandledBlocks = AVPBlocks.getAll()
+            .stream()
+            .map(AVPDeferredHolder::get)
+            .filter(Predicate.not(touchedBlockSuppliers::contains))
+            .toList();
+
+        if (!unhandledBlocks.isEmpty()) {
+            var unhandledBlocksStrings = String.join("\n", unhandledBlocks.stream().map(Block::getDescriptionId).toList());
+            AVP.LOGGER.error(
+                "Detected {} blocks with unhandled loot table generation. Blocks:\n{}",
+                unhandledBlocks.size(),
+                unhandledBlocksStrings
+            );
+            throw new IllegalStateException(
+                "Block loot table generation did not complete successfully - there are unhandled blocks that need to be handled."
+            );
+        }
     }
 
     private void generateSelfDrops() {
+        dropSelf(AVPBlocks.ABERRANT_RESIN);
+        dropSelf(AVPBlocks.ALUMINUM_BLOCK);
+        dropSelf(AVPBlocks.ASH_BLOCK);
+        dropSelf(AVPBlocks.AUTUNITE_BLOCK);
+        dropSelf(AVPBlocks.BLUEPRINT_BLOCK);
+        dropSelf(AVPBlocks.BRASS_BLOCK);
+        dropSelf(AVPBlocks.CHISELED_FERROALUMINUM);
+        dropSelf(AVPBlocks.CHISELED_STEEL);
+        dropSelf(AVPBlocks.CHISELED_TITANIUM);
+        dropSelf(AVPBlocks.CUT_FERROALUMINUM);
+        dropSelf(AVPBlocks.CUT_FERROALUMINUM_STAIRS);
+        dropSelf(AVPBlocks.CUT_STEEL);
+        dropSelf(AVPBlocks.CUT_STEEL_STAIRS);
+        dropSelf(AVPBlocks.CUT_TITANIUM);
+        dropSelf(AVPBlocks.CUT_TITANIUM_STAIRS);
+        dropSelf(AVPBlocks.DESK_TERMINAL_BLOCK);
+        dropSelf(AVPBlocks.FERROALUMINUM_BLOCK);
+        dropSelf(AVPBlocks.FERROALUMINUM_BUTTON);
+        dropSelf(AVPBlocks.FERROALUMINUM_CHAIN_FENCE);
+        dropSelf(AVPBlocks.FERROALUMINUM_COLUMN);
+        dropSelf(AVPBlocks.FERROALUMINUM_FASTENED_SIDING);
+        dropSelf(AVPBlocks.FERROALUMINUM_FASTENED_SIDING_STAIRS);
+        dropSelf(AVPBlocks.FERROALUMINUM_FASTENED_STANDING);
+        dropSelf(AVPBlocks.FERROALUMINUM_FASTENED_STANDING_STAIRS);
+        dropSelf(AVPBlocks.FERROALUMINUM_GRATE);
+        dropSelf(AVPBlocks.FERROALUMINUM_GRATE_STAIRS);
+        dropSelf(AVPBlocks.FERROALUMINUM_PLATING);
+        dropSelf(AVPBlocks.FERROALUMINUM_PLATING_STAIRS);
+        dropSelf(AVPBlocks.FERROALUMINUM_PRESSURE_PLATE);
+        dropSelf(AVPBlocks.FERROALUMINUM_SIDING);
+        dropSelf(AVPBlocks.FERROALUMINUM_SIDING_STAIRS);
+        dropSelf(AVPBlocks.FERROALUMINUM_STAIRS);
+        dropSelf(AVPBlocks.FERROALUMINUM_STANDING);
+        dropSelf(AVPBlocks.FERROALUMINUM_STANDING_STAIRS);
+        dropSelf(AVPBlocks.FERROALUMINUM_TRAP_DOOR);
+        dropSelf(AVPBlocks.FERROALUMINUM_TREAD);
+        dropSelf(AVPBlocks.FERROALUMINUM_TREAD_STAIRS);
+        dropSelf(AVPBlocks.INDUSTRIAL_GLASS);
+        dropSelf(AVPBlocks.INDUSTRIAL_GLASS_PANE);
+        dropSelf(AVPBlocks.INDUSTRIAL_GLASS_STAIRS);
+        dropSelf(AVPBlocks.INDUSTRIAL_GLASS_TRAP_DOOR);
+        dropSelf(AVPBlocks.IRRADIATED_RESIN);
+        dropSelf(AVPBlocks.LEAD_BLOCK);
+        dropSelf(AVPBlocks.LITHIUM_BLOCK);
+        dropSelf(AVPBlocks.NETHER_RESIN);
+        dropSelf(AVPBlocks.NUKE_BLOCK);
+        dropSelf(AVPBlocks.RAW_BAUXITE_BLOCK);
+        dropSelf(AVPBlocks.RAW_GALENA_BLOCK);
+        dropSelf(AVPBlocks.RAW_MONAZITE_BLOCK);
+        dropSelf(AVPBlocks.RAW_TITANIUM_BLOCK);
+        dropSelf(AVPBlocks.RAW_ZINC_BLOCK);
+        dropSelf(AVPBlocks.RAZOR_WIRE);
+        dropSelf(AVPBlocks.REDSTONE_GENERATOR);
+        dropSelf(AVPBlocks.RESIN);
+        dropSelf(AVPBlocks.RESIN_BRICKS);
+        dropSelf(AVPBlocks.RESIN_O);
+        dropSelf(AVPBlocks.RESIN_RIBBED);
+        dropSelf(AVPBlocks.RESIN_SMOOTH);
+        dropSelf(AVPBlocks.RESONATOR_BLOCK);
+        dropSelf(AVPBlocks.ROYAL_JELLY_BLOCK);
+        dropSelf(AVPBlocks.SENTRY_TURRET);
+        dropSelf(AVPBlocks.SILICA_GRAVEL);
+        dropSelf(AVPBlocks.SILICON_BLOCK);
+        dropSelf(AVPBlocks.STEEL_BARS);
+        dropSelf(AVPBlocks.STEEL_BLOCK);
+        dropSelf(AVPBlocks.STEEL_BUTTON);
+        dropSelf(AVPBlocks.STEEL_CHAIN_FENCE);
+        dropSelf(AVPBlocks.STEEL_COLUMN);
+        dropSelf(AVPBlocks.STEEL_FASTENED_SIDING);
+        dropSelf(AVPBlocks.STEEL_FASTENED_SIDING_STAIRS);
+        dropSelf(AVPBlocks.STEEL_FASTENED_STANDING);
+        dropSelf(AVPBlocks.STEEL_FASTENED_STANDING_STAIRS);
+        dropSelf(AVPBlocks.STEEL_GRATE);
+        dropSelf(AVPBlocks.STEEL_GRATE_STAIRS);
+        dropSelf(AVPBlocks.STEEL_PLATING);
+        dropSelf(AVPBlocks.STEEL_PLATING_STAIRS);
+        dropSelf(AVPBlocks.STEEL_PRESSURE_PLATE);
+        dropSelf(AVPBlocks.STEEL_SIDING);
+        dropSelf(AVPBlocks.STEEL_SIDING_STAIRS);
+        dropSelf(AVPBlocks.STEEL_STAIRS);
+        dropSelf(AVPBlocks.STEEL_STANDING);
+        dropSelf(AVPBlocks.STEEL_STANDING_STAIRS);
+        dropSelf(AVPBlocks.STEEL_TRAP_DOOR);
+        dropSelf(AVPBlocks.STEEL_TREAD);
+        dropSelf(AVPBlocks.STEEL_TREAD_STAIRS);
+        dropSelf(AVPBlocks.TITANIUM_BLOCK);
+        dropSelf(AVPBlocks.TITANIUM_BUTTON);
+        dropSelf(AVPBlocks.TITANIUM_CHAIN_FENCE);
+        dropSelf(AVPBlocks.TITANIUM_COLUMN);
+        dropSelf(AVPBlocks.TITANIUM_FASTENED_SIDING);
+        dropSelf(AVPBlocks.TITANIUM_FASTENED_SIDING_STAIRS);
+        dropSelf(AVPBlocks.TITANIUM_FASTENED_STANDING);
+        dropSelf(AVPBlocks.TITANIUM_FASTENED_STANDING_STAIRS);
+        dropSelf(AVPBlocks.TITANIUM_GRATE);
+        dropSelf(AVPBlocks.TITANIUM_GRATE_STAIRS);
+        dropSelf(AVPBlocks.TITANIUM_PLATING);
+        dropSelf(AVPBlocks.TITANIUM_PLATING_STAIRS);
+        dropSelf(AVPBlocks.TITANIUM_PRESSURE_PLATE);
+        dropSelf(AVPBlocks.TITANIUM_SIDING);
+        dropSelf(AVPBlocks.TITANIUM_SIDING_STAIRS);
+        dropSelf(AVPBlocks.TITANIUM_STAIRS);
+        dropSelf(AVPBlocks.TITANIUM_STANDING);
+        dropSelf(AVPBlocks.TITANIUM_STANDING_STAIRS);
+        dropSelf(AVPBlocks.TITANIUM_TRAP_DOOR);
+        dropSelf(AVPBlocks.TITANIUM_TREAD);
+        dropSelf(AVPBlocks.TITANIUM_TREAD_STAIRS);
+        dropSelf(AVPBlocks.TRINITITE_BLOCK);
+        dropSelf(AVPBlocks.TRIP_MINE_BLOCK);
+        dropSelf(AVPBlocks.URANIUM_BLOCK);
+        dropSelf(AVPBlocks.ZINC_BLOCK);
+
         Stream.of(
-            Stream.of(
-                AVPBlocks.ABERRANT_RESIN,
-                AVPBlocks.ALUMINUM_BLOCK,
-                AVPBlocks.ASH_BLOCK,
-                AVPBlocks.AUTUNITE_BLOCK,
-                AVPBlocks.BLUEPRINT_BLOCK,
-                AVPBlocks.BRASS_BLOCK,
-                AVPBlocks.CHISELED_FERROALUMINUM,
-                AVPBlocks.CHISELED_STEEL,
-                AVPBlocks.CHISELED_TITANIUM,
-                AVPBlocks.CUT_FERROALUMINUM,
-                AVPBlocks.CUT_FERROALUMINUM_STAIRS,
-                AVPBlocks.CUT_STEEL,
-                AVPBlocks.CUT_STEEL_STAIRS,
-                AVPBlocks.CUT_TITANIUM,
-                AVPBlocks.CUT_TITANIUM_STAIRS,
-                AVPBlocks.DESK_TERMINAL_BLOCK,
-                AVPBlocks.FERROALUMINUM_BLOCK,
-                AVPBlocks.FERROALUMINUM_BUTTON,
-                AVPBlocks.FERROALUMINUM_CHAIN_FENCE,
-                AVPBlocks.FERROALUMINUM_COLUMN,
-                AVPBlocks.FERROALUMINUM_FASTENED_SIDING,
-                AVPBlocks.FERROALUMINUM_FASTENED_SIDING_STAIRS,
-                AVPBlocks.FERROALUMINUM_FASTENED_STANDING,
-                AVPBlocks.FERROALUMINUM_FASTENED_STANDING_STAIRS,
-                AVPBlocks.FERROALUMINUM_GRATE,
-                AVPBlocks.FERROALUMINUM_GRATE_STAIRS,
-                AVPBlocks.FERROALUMINUM_PLATING,
-                AVPBlocks.FERROALUMINUM_PRESSURE_PLATE,
-                AVPBlocks.FERROALUMINUM_SIDING,
-                AVPBlocks.FERROALUMINUM_SIDING_STAIRS,
-                AVPBlocks.FERROALUMINUM_STANDING,
-                AVPBlocks.FERROALUMINUM_STANDING_STAIRS,
-                AVPBlocks.FERROALUMINUM_TRAP_DOOR,
-                AVPBlocks.FERROALUMINUM_TREAD,
-                AVPBlocks.INDUSTRIAL_GLASS,
-                AVPBlocks.INDUSTRIAL_GLASS_PANE,
-                AVPBlocks.INDUSTRIAL_GLASS_STAIRS,
-                AVPBlocks.INDUSTRIAL_GLASS_TRAP_DOOR,
-                AVPBlocks.IRRADIATED_RESIN,
-                AVPBlocks.LEAD_BLOCK,
-                AVPBlocks.LITHIUM_BLOCK,
-                AVPBlocks.NETHER_RESIN,
-                AVPBlocks.NUKE_BLOCK,
-                AVPBlocks.RAW_BAUXITE_BLOCK,
-                AVPBlocks.RAW_GALENA_BLOCK,
-                AVPBlocks.RAW_MONAZITE_BLOCK,
-                AVPBlocks.RAW_TITANIUM_BLOCK,
-                AVPBlocks.RAW_ZINC_BLOCK,
-                AVPBlocks.RAZOR_WIRE,
-                AVPBlocks.REDSTONE_GENERATOR,
-                AVPBlocks.RESIN,
-                AVPBlocks.RESIN_BRICKS,
-                AVPBlocks.RESIN_O,
-                AVPBlocks.RESIN_RIBBED,
-                AVPBlocks.RESIN_SMOOTH,
-                AVPBlocks.RESONATOR_BLOCK,
-                AVPBlocks.ROYAL_JELLY_BLOCK,
-                AVPBlocks.SENTRY_TURRET,
-                AVPBlocks.SILICA_GRAVEL,
-                AVPBlocks.SILICON_BLOCK,
-                AVPBlocks.STEEL_BARS,
-                AVPBlocks.STEEL_BLOCK,
-                AVPBlocks.STEEL_BUTTON,
-                AVPBlocks.STEEL_CHAIN_FENCE,
-                AVPBlocks.STEEL_COLUMN,
-                AVPBlocks.STEEL_FASTENED_SIDING,
-                AVPBlocks.STEEL_FASTENED_SIDING_STAIRS,
-                AVPBlocks.STEEL_FASTENED_STANDING,
-                AVPBlocks.STEEL_FASTENED_STANDING_STAIRS,
-                AVPBlocks.STEEL_GRATE,
-                AVPBlocks.STEEL_GRATE_STAIRS,
-                AVPBlocks.STEEL_PLATING,
-                AVPBlocks.STEEL_PRESSURE_PLATE,
-                AVPBlocks.STEEL_SIDING,
-                AVPBlocks.STEEL_SIDING_STAIRS,
-                AVPBlocks.STEEL_STANDING,
-                AVPBlocks.STEEL_STANDING_STAIRS,
-                AVPBlocks.STEEL_TRAP_DOOR,
-                AVPBlocks.STEEL_TREAD,
-                AVPBlocks.TITANIUM_BLOCK,
-                AVPBlocks.TITANIUM_BUTTON,
-                AVPBlocks.TITANIUM_CHAIN_FENCE,
-                AVPBlocks.TITANIUM_COLUMN,
-                AVPBlocks.TITANIUM_FASTENED_SIDING,
-                AVPBlocks.TITANIUM_FASTENED_SIDING_STAIRS,
-                AVPBlocks.TITANIUM_FASTENED_STANDING,
-                AVPBlocks.TITANIUM_FASTENED_STANDING_STAIRS,
-                AVPBlocks.TITANIUM_GRATE,
-                AVPBlocks.TITANIUM_GRATE_STAIRS,
-                AVPBlocks.TITANIUM_PLATING,
-                AVPBlocks.TITANIUM_PRESSURE_PLATE,
-                AVPBlocks.TITANIUM_SIDING,
-                AVPBlocks.TITANIUM_SIDING_STAIRS,
-                AVPBlocks.TITANIUM_STANDING,
-                AVPBlocks.TITANIUM_STANDING_STAIRS,
-                AVPBlocks.TITANIUM_TRAP_DOOR,
-                AVPBlocks.TITANIUM_TREAD,
-                AVPBlocks.TRINITITE_BLOCK,
-                AVPBlocks.TRIP_MINE_BLOCK,
-                AVPBlocks.URANIUM_BLOCK,
-                AVPBlocks.ZINC_BLOCK
-            ),
-            Stream.of(
-                AVPBlocks.DYE_COLOR_TO_CONCRETE_STAIRS,
-                AVPBlocks.DYE_COLOR_TO_CUT_PLASTIC,
-                AVPBlocks.DYE_COLOR_TO_CUT_PLASTIC_STAIRS,
-                AVPBlocks.DYE_COLOR_TO_INDUSTRIAL_CONCRETE,
-                AVPBlocks.DYE_COLOR_TO_INDUSTRIAL_CONCRETE_STAIRS,
-                AVPBlocks.DYE_COLOR_TO_INDUSTRIAL_CONCRETE_WALL,
-                AVPBlocks.DYE_COLOR_TO_INDUSTRIAL_GLASS,
-                AVPBlocks.DYE_COLOR_TO_INDUSTRIAL_GLASS_PANE,
-                AVPBlocks.DYE_COLOR_TO_PADDING,
-                AVPBlocks.DYE_COLOR_TO_PADDING_STAIRS,
-                AVPBlocks.DYE_COLOR_TO_PANEL_PADDING,
-                AVPBlocks.DYE_COLOR_TO_PANEL_PADDING_STAIRS,
-                AVPBlocks.DYE_COLOR_TO_PIPE_PADDING,
-                AVPBlocks.DYE_COLOR_TO_PIPE_PADDING_STAIRS,
-                AVPBlocks.DYE_COLOR_TO_PLASTIC,
-                AVPBlocks.DYE_COLOR_TO_PLASTIC_STAIRS
-            )
-                .map(Map::values)
-                .flatMap(Collection::stream)
+            AVPBlocks.DYE_COLOR_TO_CONCRETE_STAIRS,
+            AVPBlocks.DYE_COLOR_TO_CUT_PLASTIC,
+            AVPBlocks.DYE_COLOR_TO_CUT_PLASTIC_STAIRS,
+            AVPBlocks.DYE_COLOR_TO_INDUSTRIAL_CONCRETE,
+            AVPBlocks.DYE_COLOR_TO_INDUSTRIAL_CONCRETE_STAIRS,
+            AVPBlocks.DYE_COLOR_TO_INDUSTRIAL_CONCRETE_WALL,
+            AVPBlocks.DYE_COLOR_TO_INDUSTRIAL_GLASS,
+            AVPBlocks.DYE_COLOR_TO_INDUSTRIAL_GLASS_PANE,
+            AVPBlocks.DYE_COLOR_TO_PADDING,
+            AVPBlocks.DYE_COLOR_TO_PADDING_STAIRS,
+            AVPBlocks.DYE_COLOR_TO_PANEL_PADDING,
+            AVPBlocks.DYE_COLOR_TO_PANEL_PADDING_STAIRS,
+            AVPBlocks.DYE_COLOR_TO_PIPE_PADDING,
+            AVPBlocks.DYE_COLOR_TO_PIPE_PADDING_STAIRS,
+            AVPBlocks.DYE_COLOR_TO_PLASTIC,
+            AVPBlocks.DYE_COLOR_TO_PLASTIC_STAIRS
         )
-            .flatMap(Function.identity())
-            .map(Supplier::get)
+            .map(Map::values)
+            .flatMap(Collection::stream)
             .forEach(this::dropSelf);
     }
 
     private void generateSlabDrops() {
+        dropSlab(AVPBlocks.CUT_FERROALUMINUM_SLAB);
+        dropSlab(AVPBlocks.CUT_STEEL_SLAB);
+        dropSlab(AVPBlocks.CUT_TITANIUM_SLAB);
+        dropSlab(AVPBlocks.FERROALUMINUM_FASTENED_SIDING_SLAB);
+        dropSlab(AVPBlocks.FERROALUMINUM_FASTENED_STANDING_SLAB);
+        dropSlab(AVPBlocks.FERROALUMINUM_GRATE_SLAB);
+        dropSlab(AVPBlocks.FERROALUMINUM_PLATING_SLAB);
+        dropSlab(AVPBlocks.FERROALUMINUM_SIDING_SLAB);
+        dropSlab(AVPBlocks.FERROALUMINUM_SLAB);
+        dropSlab(AVPBlocks.FERROALUMINUM_STANDING_SLAB);
+        dropSlab(AVPBlocks.FERROALUMINUM_TREAD_SLAB);
+        dropSlab(AVPBlocks.INDUSTRIAL_GLASS_SLAB);
+        dropSlab(AVPBlocks.STEEL_FASTENED_SIDING_SLAB);
+        dropSlab(AVPBlocks.STEEL_FASTENED_STANDING_SLAB);
+        dropSlab(AVPBlocks.STEEL_GRATE_SLAB);
+        dropSlab(AVPBlocks.STEEL_PLATING_SLAB);
+        dropSlab(AVPBlocks.STEEL_SIDING_SLAB);
+        dropSlab(AVPBlocks.STEEL_SLAB);
+        dropSlab(AVPBlocks.STEEL_STANDING_SLAB);
+        dropSlab(AVPBlocks.STEEL_TREAD_SLAB);
+        dropSlab(AVPBlocks.TITANIUM_FASTENED_SIDING_SLAB);
+        dropSlab(AVPBlocks.TITANIUM_FASTENED_STANDING_SLAB);
+        dropSlab(AVPBlocks.TITANIUM_GRATE_SLAB);
+        dropSlab(AVPBlocks.TITANIUM_PLATING_SLAB);
+        dropSlab(AVPBlocks.TITANIUM_SIDING_SLAB);
+        dropSlab(AVPBlocks.TITANIUM_SLAB);
+        dropSlab(AVPBlocks.TITANIUM_STANDING_SLAB);
+        dropSlab(AVPBlocks.TITANIUM_TREAD_SLAB);
+
         Stream.of(
-            Stream.of(
-                AVPBlocks.CUT_FERROALUMINUM_SLAB,
-                AVPBlocks.CUT_STEEL_SLAB,
-                AVPBlocks.CUT_TITANIUM_SLAB,
-                AVPBlocks.FERROALUMINUM_FASTENED_SIDING_SLAB,
-                AVPBlocks.FERROALUMINUM_FASTENED_STANDING_SLAB,
-                AVPBlocks.FERROALUMINUM_GRATE_SLAB,
-                AVPBlocks.FERROALUMINUM_SIDING_SLAB,
-                AVPBlocks.FERROALUMINUM_STANDING_SLAB,
-                AVPBlocks.INDUSTRIAL_GLASS_SLAB,
-                AVPBlocks.STEEL_FASTENED_SIDING_SLAB,
-                AVPBlocks.STEEL_FASTENED_STANDING_SLAB,
-                AVPBlocks.STEEL_GRATE_SLAB,
-                AVPBlocks.STEEL_SIDING_SLAB,
-                AVPBlocks.STEEL_STANDING_SLAB,
-                AVPBlocks.TITANIUM_FASTENED_SIDING_SLAB,
-                AVPBlocks.TITANIUM_FASTENED_STANDING_SLAB,
-                AVPBlocks.TITANIUM_GRATE_SLAB,
-                AVPBlocks.TITANIUM_SIDING_SLAB,
-                AVPBlocks.TITANIUM_STANDING_SLAB
-            ),
-            Stream.of(
-                AVPBlocks.DYE_COLOR_TO_CONCRETE_SLAB,
-                AVPBlocks.DYE_COLOR_TO_CUT_PLASTIC_SLAB,
-                AVPBlocks.DYE_COLOR_TO_INDUSTRIAL_CONCRETE_SLAB,
-                AVPBlocks.DYE_COLOR_TO_PADDING_SLAB,
-                AVPBlocks.DYE_COLOR_TO_PANEL_PADDING_SLAB,
-                AVPBlocks.DYE_COLOR_TO_PIPE_PADDING_SLAB,
-                AVPBlocks.DYE_COLOR_TO_PLASTIC_SLAB
-            )
-                .map(Map::values)
-                .flatMap(Collection::stream)
+            AVPBlocks.DYE_COLOR_TO_CONCRETE_SLAB,
+            AVPBlocks.DYE_COLOR_TO_CUT_PLASTIC_SLAB,
+            AVPBlocks.DYE_COLOR_TO_INDUSTRIAL_CONCRETE_SLAB,
+            AVPBlocks.DYE_COLOR_TO_PADDING_SLAB,
+            AVPBlocks.DYE_COLOR_TO_PANEL_PADDING_SLAB,
+            AVPBlocks.DYE_COLOR_TO_PIPE_PADDING_SLAB,
+            AVPBlocks.DYE_COLOR_TO_PLASTIC_SLAB
         )
-            .flatMap(Function.identity())
-            .map(Supplier::get)
+            .map(Map::values)
+            .flatMap(Collection::stream)
             .forEach(this::dropSlab);
     }
 
     private void generateCustomDrops() {
-        add(AVPBlocks.AUTUNITE_ORE.get(), block -> createOreMultiDrop(block, AVPItems.AUTUNITE_DUST.get(), 2, 4));
-        add(AVPBlocks.BAUXITE_ORE.get(), block -> createOreDrop(block, AVPItems.RAW_BAUXITE.get()));
-        add(AVPBlocks.DEEPSLATE_TITANIUM_ORE.get(), block -> createOreDrop(block, AVPItems.RAW_TITANIUM.get()));
-        add(AVPBlocks.DEEPSLATE_ZINC_ORE.get(), block -> createOreMultiDrop(block, AVPItems.RAW_ZINC.get(), 2, 5));
-        add(AVPBlocks.GALENA_ORE.get(), block -> createOreDrop(block, AVPItems.RAW_GALENA.get()));
-        add(AVPBlocks.LEAD_CHEST.get(), this::createShulkerBoxDrop);
-        add(AVPBlocks.AMMO_CHEST.get(), this::createShulkerBoxDrop);
-        add(AVPBlocks.LITHIUM_ORE.get(), block -> createOreMultiDrop(block, AVPItems.LITHIUM_DUST.get(), 2, 4));
-        add(AVPBlocks.MONAZITE_ORE.get(), block -> createOreDrop(block, AVPItems.RAW_MONAZITE.get()));
-        add(AVPBlocks.ZINC_ORE.get(), block -> createOreMultiDrop(block, AVPItems.RAW_ZINC.get(), 2, 5));
-        add(AVPBlocks.INDUSTRIAL_GLASS_DOOR.get(), this::createDoorTable);
-        add(AVPBlocks.FERROALUMINUM_DOOR.get(), this::createDoorTable);
-        add(AVPBlocks.STEEL_DOOR.get(), this::createDoorTable);
-        add(AVPBlocks.TITANIUM_DOOR.get(), this::createDoorTable);
-        add(AVPBlocks.INDUSTRIAL_FURNACE.get(), this::createNameableBlockEntityTable);
+        add(AVPBlocks.AUTUNITE_ORE, block -> createOreMultiDrop(block, AVPItems.AUTUNITE_DUST.get(), 2, 4));
+        add(AVPBlocks.BAUXITE_ORE, block -> createOreDrop(block, AVPItems.RAW_BAUXITE.get()));
+        add(AVPBlocks.DEEPSLATE_TITANIUM_ORE, block -> createOreDrop(block, AVPItems.RAW_TITANIUM.get()));
+        add(AVPBlocks.DEEPSLATE_ZINC_ORE, block -> createOreMultiDrop(block, AVPItems.RAW_ZINC.get(), 2, 5));
+        add(AVPBlocks.GALENA_ORE, block -> createOreDrop(block, AVPItems.RAW_GALENA.get()));
+        add(AVPBlocks.LEAD_CHEST, this::createShulkerBoxDrop);
+        add(AVPBlocks.AMMO_CHEST, this::createShulkerBoxDrop);
+        add(AVPBlocks.LITHIUM_ORE, block -> createOreMultiDrop(block, AVPItems.LITHIUM_DUST.get(), 2, 4));
+        add(AVPBlocks.MONAZITE_ORE, block -> createOreDrop(block, AVPItems.RAW_MONAZITE.get()));
+        add(AVPBlocks.ZINC_ORE, block -> createOreMultiDrop(block, AVPItems.RAW_ZINC.get(), 2, 5));
+        add(AVPBlocks.INDUSTRIAL_GLASS_DOOR, this::createDoorTable);
+        add(AVPBlocks.FERROALUMINUM_DOOR, this::createDoorTable);
+        add(AVPBlocks.STEEL_DOOR, this::createDoorTable);
+        add(AVPBlocks.TITANIUM_DOOR, this::createDoorTable);
+        add(AVPBlocks.INDUSTRIAL_FURNACE, this::createNameableBlockEntityTable);
     }
 
     private void generateOtherDrops() {
-        dropOther(AVPBlocks.ABERRANT_RESIN_NODE.get(), AVPBlocks.ABERRANT_RESIN.get());
-        dropOther(AVPBlocks.ABERRANT_RESIN_VEIN.get(), AVPItems.ABERRANT_RESIN_BALL.get());
-        dropOther(AVPBlocks.ABERRANT_RESIN_WEB.get(), AVPItems.ABERRANT_RESIN_BALL.get());
-        dropOther(AVPBlocks.IRRADIATED_RESIN_NODE.get(), AVPBlocks.IRRADIATED_RESIN.get());
-        dropOther(AVPBlocks.IRRADIATED_RESIN_VEIN.get(), AVPItems.IRRADIATED_RESIN_BALL.get());
-        dropOther(AVPBlocks.IRRADIATED_RESIN_WEB.get(), AVPItems.IRRADIATED_RESIN_BALL.get());
-        dropOther(AVPBlocks.NETHER_RESIN_NODE.get(), AVPBlocks.NETHER_RESIN.get());
-        dropOther(AVPBlocks.NETHER_RESIN_VEIN.get(), AVPItems.NETHER_RESIN_BALL.get());
-        dropOther(AVPBlocks.NETHER_RESIN_WEB.get(), AVPItems.NETHER_RESIN_BALL.get());
-        dropOther(AVPBlocks.RESIN_NODE.get(), AVPBlocks.RESIN.get());
-        dropOther(AVPBlocks.RESIN_VEIN.get(), AVPItems.RESIN_BALL.get());
-        dropOther(AVPBlocks.RESIN_WEB.get(), AVPItems.RESIN_BALL.get());
+        dropOther(AVPBlocks.ABERRANT_RESIN_NODE, AVPBlocks.ABERRANT_RESIN);
+        dropOther(AVPBlocks.ABERRANT_RESIN_VEIN, AVPItems.ABERRANT_RESIN_BALL);
+        dropOther(AVPBlocks.ABERRANT_RESIN_WEB, AVPItems.ABERRANT_RESIN_BALL);
+        dropOther(AVPBlocks.IRRADIATED_RESIN_NODE, AVPBlocks.IRRADIATED_RESIN);
+        dropOther(AVPBlocks.IRRADIATED_RESIN_VEIN, AVPItems.IRRADIATED_RESIN_BALL);
+        dropOther(AVPBlocks.IRRADIATED_RESIN_WEB, AVPItems.IRRADIATED_RESIN_BALL);
+        dropOther(AVPBlocks.NETHER_RESIN_NODE, AVPBlocks.NETHER_RESIN);
+        dropOther(AVPBlocks.NETHER_RESIN_VEIN, AVPItems.NETHER_RESIN_BALL);
+        dropOther(AVPBlocks.NETHER_RESIN_WEB, AVPItems.NETHER_RESIN_BALL);
+        dropOther(AVPBlocks.RESIN_NODE, AVPBlocks.RESIN);
+        dropOther(AVPBlocks.RESIN_VEIN, AVPItems.RESIN_BALL);
+        dropOther(AVPBlocks.RESIN_WEB, AVPItems.RESIN_BALL);
     }
 
-    public void dropSlab(Block block) {
+    public void add(Supplier<? extends Block> blockSupplier, Function<Block, LootTable.Builder> factory) {
+        var block = blockSupplier.get();
+        add(block, factory);
+        touchedBlockSuppliers.add(block);
+    }
+
+    public void dropOther(Supplier<? extends Block> blockSupplier, Supplier<? extends ItemLike> itemLikeSupplier) {
+        var block = blockSupplier.get();
+        dropOther(block, itemLikeSupplier.get());
+        touchedBlockSuppliers.add(block);
+    }
+
+    public void dropSelf(Supplier<? extends Block> blockSupplier) {
+        var block = blockSupplier.get();
+        dropSelf(block);
+        touchedBlockSuppliers.add(block);
+    }
+
+    public void dropSlab(Supplier<? extends Block> blockSupplier) {
+        var block = blockSupplier.get();
         add(block, createSlabItemTable(block));
+        touchedBlockSuppliers.add(block);
     }
 
     public LootTable.Builder createOreMultiDrop(Block block, Item item, int min, int max) {

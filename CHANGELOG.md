@@ -11,6 +11,25 @@
 
 ## 🐞 Fixes
 - Fixed players eating chorus fruit while infected causing facehuggers to spawn instead of the correct embryo type.
+- Fixed the following blocks not dropping anything when mined:
+  - Ferroaluminum Plating Slab
+  - Ferroaluminum Plating Stairs
+  - Ferroaluminum Slab
+  - Ferroaluminum Stairs
+  - Ferroaluminum Tread Slab
+  - Ferroaluminum Tread Stairs
+  - Steel Plating Slab
+  - Steel Plating Stairs
+  - Steel Slab
+  - Steel Stairs
+  - Steel Tread Slab
+  - Steel Tread Stairs
+  - Titanium Plating Slab
+  - Titanium Plating Stairs
+  - Titanium Slab
+  - Titanium Stairs
+  - Titanium Tread Slab
+  - Titanium Tread Stairs
 
 ## 🛠 Data Pack
 - N/A

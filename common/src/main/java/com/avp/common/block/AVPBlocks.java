@@ -22,8 +22,10 @@ import net.minecraft.world.level.block.WaterloggedTransparentBlock;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.properties.BlockSetType;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -40,6 +42,12 @@ import com.avp.common.registry.AVPDeferredHolder;
 import com.avp.service.Services;
 
 public class AVPBlocks {
+
+    private static final List<AVPDeferredHolder<? extends Block>> ALL = new ArrayList<>();
+
+    public static List<AVPDeferredHolder<? extends Block>> getAll() {
+        return Collections.unmodifiableList(ALL);
+    }
 
     public static final AVPDeferredHolder<Block> ABERRANT_RESIN = register(
         "aberrant_resin",
@@ -1085,7 +1093,9 @@ public class AVPBlocks {
     }
 
     private static <T extends Block> AVPDeferredHolder<T> register(String id, Supplier<T> blockSupplier) {
-        return Services.REGISTRY.register(BuiltInRegistries.BLOCK, id, blockSupplier);
+        var holder = Services.REGISTRY.register(BuiltInRegistries.BLOCK, id, blockSupplier);
+        ALL.add(holder);
+        return holder;
     }
 
     public static void initialize() {}
