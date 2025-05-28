@@ -4,7 +4,10 @@
 - N/A
 
 ## ✨ What's New
-- N/A
+- [Fabric] Now requires Fabric API `0.116.0+1.21.1`.
+- [Fabric] Now requires Fabric Loader `0.16.14`.
+- [NeoForge] Now requires NeoForge `21.1.173`.
+- Now requires AzureLib 3.0.20.
 
 ## ♻️ Changes
 - N/A
