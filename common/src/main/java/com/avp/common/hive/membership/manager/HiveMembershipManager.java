@@ -2,6 +2,7 @@ package com.avp.common.hive.membership.manager;
 
 import com.bvanseg.just.functional.option.Option;
 import com.mojang.serialization.Dynamic;
+import com.xlib.NBTSerializable;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
@@ -23,7 +24,6 @@ import com.avp.AVP;
 import com.avp.common.hive.Hive;
 import com.avp.common.hive.HiveMemberData;
 import com.avp.common.hive.membership.HiveMembershipCache;
-import com.avp.common.util.NBTSerializable;
 
 public class HiveMembershipManager implements NBTSerializable {
 
@@ -47,7 +47,7 @@ public class HiveMembershipManager implements NBTSerializable {
     }
 
     private void purgeUnresponsiveHiveMembers() {
-        hiveMembershipCache.removeFromCacheIf(hiveMemberEntry -> {
+        hiveMembershipCache.removeIf(hiveMemberEntry -> {
             var hiveMemberData = hiveMemberEntry.getValue();
             var lastSeenTimestampInTicks = hiveMemberData.lastSeenTimestampInTicks();
             var lastSeenPos = hiveMemberData.lastSeenPos();
@@ -67,7 +67,7 @@ public class HiveMembershipManager implements NBTSerializable {
         var resourceLocation = BuiltInRegistries.ENTITY_TYPE.getKey(entity.getType());
         var hiveMemberData = new HiveMemberData(resourceLocation, entity.blockPosition(), hive.ageInTicks());
 
-        hiveMembershipCache.addToCache(entity.getUUID(), hiveMemberData);
+        hiveMembershipCache.add(entity.getUUID(), hiveMemberData);
     }
 
     public boolean isMember(Entity entity) {
@@ -75,15 +75,15 @@ public class HiveMembershipManager implements NBTSerializable {
     }
 
     public boolean isMember(UUID uuid) {
-        return hiveMembershipCache.isInCache(uuid);
+        return hiveMembershipCache.has(uuid);
     }
 
     public void removeMember(Entity entity) {
-        hiveMembershipCache.removeFromCache(entity.getUUID());
+        hiveMembershipCache.remove(entity.getUUID());
     }
 
     public Set<UUID> getMemberUUIDs() {
-        return hiveMembershipCache.streamCacheEntries()
+        return hiveMembershipCache.streamEntries()
             .map(Map.Entry::getKey)
             .collect(Collectors.toSet());
     }
@@ -97,7 +97,7 @@ public class HiveMembershipManager implements NBTSerializable {
 
         return level.isClientSide
             ? List.of()
-            : hiveMembershipCache.streamCacheEntries()
+            : hiveMembershipCache.streamEntries()
                 .map(Map.Entry::getKey)
                 .map(((ServerLevel) level)::getEntity)
                 .filter(Objects::nonNull)
@@ -117,7 +117,7 @@ public class HiveMembershipManager implements NBTSerializable {
             return Option.none();
         }
 
-        return hiveMembershipCache.getFromCache(uuid);
+        return hiveMembershipCache.get(uuid);
     }
 
     public Map<EntityType<?>, List<Map.Entry<UUID, HiveMemberData>>> getMembersByEntityType() {
@@ -148,7 +148,7 @@ public class HiveMembershipManager implements NBTSerializable {
                 .resultOrPartial(
                     AVP.LOGGER::error
                 )
-                .ifPresent(hiveMemberData -> hiveMembershipCache.addToCache(entityUUID, hiveMemberData));
+                .ifPresent(hiveMemberData -> hiveMembershipCache.add(entityUUID, hiveMemberData));
         }
     }
 
@@ -156,7 +156,7 @@ public class HiveMembershipManager implements NBTSerializable {
     public void save(CompoundTag compoundTag) {
         var hiveMemberDataTag = new CompoundTag();
 
-        hiveMembershipCache.streamCacheEntries()
+        hiveMembershipCache.streamEntries()
             .forEach(
                 entry -> HiveMemberData.CODEC.encodeStart(NbtOps.INSTANCE, entry.getValue())
                     .resultOrPartial(

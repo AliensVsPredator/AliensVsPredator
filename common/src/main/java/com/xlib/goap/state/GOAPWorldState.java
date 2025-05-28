@@ -1,10 +1,10 @@
-package com.avp.common.goap.state;
+package com.xlib.goap.state;
+
+import com.xlib.goap.TypedIdentifier;
+import com.xlib.goap.condition.GOAPConditionContainer;
+import com.xlib.goap.effect.GOAPEffectContainer;
 
 import java.util.Map;
-
-import com.avp.common.goap.TypedIdentifier;
-import com.avp.common.goap.condition.GOAPConditionContainer;
-import com.avp.common.goap.effect.GOAPEffectContainer;
 
 public class GOAPWorldState extends GOAPStateCache {
 

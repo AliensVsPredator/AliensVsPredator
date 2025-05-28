@@ -1,5 +1,6 @@
 package com.avp.common.item.gun.attack.hitscan;
 
+import com.xlib.util.EnchantmentUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Player;
@@ -19,7 +20,6 @@ import com.avp.common.item.gun.attack.GunHitResult;
 import com.avp.common.item.gun.pipeline.GunShootResult;
 import com.avp.common.network.packet.C2SGunHitResultsPayload;
 import com.avp.common.util.AVPPredicates;
-import com.avp.common.util.EnchantmentUtil;
 import com.avp.service.Services;
 
 public class HitScanGunAttackAction implements GunAttackAction {

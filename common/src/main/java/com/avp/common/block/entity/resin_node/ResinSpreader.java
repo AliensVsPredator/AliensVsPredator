@@ -1,6 +1,7 @@
 package com.avp.common.block.entity.resin_node;
 
 import com.mojang.serialization.Dynamic;
+import com.xlib.NBTSerializable;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
@@ -12,8 +13,6 @@ import org.slf4j.LoggerFactory;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-
-import com.avp.common.util.NBTSerializable;
 
 public class ResinSpreader implements NBTSerializable {
 

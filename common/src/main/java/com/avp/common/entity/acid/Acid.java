@@ -1,5 +1,6 @@
 package com.avp.common.entity.acid;
 
+import com.xlib.util.GravityUtil;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -14,7 +15,6 @@ import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
 import com.avp.common.entity.living.alien.AlienVariantTypes;
-import com.avp.common.util.GravityUtil;
 
 public class Acid extends Entity {
 

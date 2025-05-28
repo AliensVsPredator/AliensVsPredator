@@ -1,5 +1,6 @@
 package com.avp.common.item.gun;
 
+import com.xlib.util.EnchantmentUtil;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -13,7 +14,6 @@ import com.avp.common.component.AVPDataComponents;
 import com.avp.common.item.AVPBlockItems;
 import com.avp.common.item.GunItem;
 import com.avp.common.util.AVPPredicates;
-import com.avp.common.util.EnchantmentUtil;
 import com.avp.server.ServerScheduler;
 
 public class GunReloading {

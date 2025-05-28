@@ -1,6 +1,8 @@
 package com.avp.common.hive.membership.manager;
 
 import com.bvanseg.just.functional.option.Option;
+import com.xlib.NBTSerializable;
+import com.xlib.util.CompoundTagUtil;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
@@ -11,8 +13,6 @@ import java.util.UUID;
 
 import com.avp.common.entity.living.alien.Alien;
 import com.avp.common.hive.Hive;
-import com.avp.common.util.CompoundTagUtil;
-import com.avp.common.util.NBTSerializable;
 
 public class HiveLeadershipManager implements NBTSerializable {
 

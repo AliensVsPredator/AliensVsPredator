@@ -1,5 +1,6 @@
 package com.avp.common.entity.living.alien.manager;
 
+import com.xlib.NBTSerializable;
 import net.minecraft.Util;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.LivingEntity;
@@ -15,7 +16,6 @@ import com.avp.common.entity.living.alien.Alien;
 import com.avp.common.entity.living.alien.xenomorph.Xenomorph;
 import com.avp.common.lifecycle.growth.GrowthStage;
 import com.avp.common.lifecycle.registry.AlienLifecycleRegistry;
-import com.avp.common.util.NBTSerializable;
 import com.avp.common.util.spatial.block.BlockPosUtil;
 
 public class GrowthManager implements NBTSerializable {

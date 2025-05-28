@@ -1,5 +1,7 @@
 package com.avp.common.entity.ai.sensor.inventory;
 
+import com.xlib.goap.GOAPSensor;
+import com.xlib.goap.state.GOAPMutableWorldState;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
@@ -8,8 +10,6 @@ import java.util.HashSet;
 
 import com.avp.common.entity.ai.GOAPConstants;
 import com.avp.common.entity.ai.util.ItemType;
-import com.avp.common.goap.GOAPSensor;
-import com.avp.common.goap.state.GOAPMutableWorldState;
 import com.avp.common.item.AVPItemTags;
 import com.avp.common.util.AVPInventoryBearer;
 

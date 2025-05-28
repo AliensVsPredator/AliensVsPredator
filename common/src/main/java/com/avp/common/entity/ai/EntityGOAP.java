@@ -1,8 +1,7 @@
 package com.avp.common.entity.ai;
 
+import com.xlib.goap.GOAP;
 import net.minecraft.world.entity.LivingEntity;
-
-import com.avp.common.goap.GOAP;
 
 public abstract class EntityGOAP<T extends LivingEntity> extends GOAP<T> {
 

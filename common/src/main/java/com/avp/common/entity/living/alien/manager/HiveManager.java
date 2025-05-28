@@ -1,6 +1,8 @@
 package com.avp.common.entity.living.alien.manager;
 
 import com.bvanseg.just.functional.option.Option;
+import com.xlib.NBTSerializable;
+import com.xlib.util.CompoundTagUtil;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Tuple;
 import org.jetbrains.annotations.Nullable;
@@ -12,8 +14,6 @@ import com.avp.common.entity.AVPEntityTypeTags;
 import com.avp.common.entity.living.alien.Alien;
 import com.avp.common.hive.Hive;
 import com.avp.common.level.saveddata.HiveLevelData;
-import com.avp.common.util.CompoundTagUtil;
-import com.avp.common.util.NBTSerializable;
 
 public class HiveManager implements NBTSerializable {
 

@@ -1,14 +1,14 @@
-package com.avp.common.goap;
+package com.xlib.goap;
 
-import com.avp.common.goap.condition.GOAPCondition;
-import com.avp.common.goap.condition.GOAPConditionContainer;
-import com.avp.common.goap.condition.GOAPMutableConditionContainer;
-import com.avp.common.goap.condition.expression.GOAPExpression;
-import com.avp.common.goap.effect.GOAPEffect;
-import com.avp.common.goap.effect.GOAPEffectContainer;
-import com.avp.common.goap.effect.GOAPMutableEffectContainer;
-import com.avp.common.goap.state.GOAPBlackboard;
-import com.avp.common.goap.state.GOAPWorldState;
+import com.xlib.goap.condition.GOAPCondition;
+import com.xlib.goap.condition.GOAPConditionContainer;
+import com.xlib.goap.condition.GOAPMutableConditionContainer;
+import com.xlib.goap.condition.expression.GOAPExpression;
+import com.xlib.goap.effect.GOAPEffect;
+import com.xlib.goap.effect.GOAPEffectContainer;
+import com.xlib.goap.effect.GOAPMutableEffectContainer;
+import com.xlib.goap.state.GOAPBlackboard;
+import com.xlib.goap.state.GOAPWorldState;
 
 public abstract class GOAPAction<T> {
 

@@ -1,5 +1,6 @@
 package com.avp.common.hive;
 
+import com.xlib.NBTSerializable;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.Entity;
@@ -25,7 +26,6 @@ import com.avp.common.hive.manager.HiveSpaceManager;
 import com.avp.common.hive.membership.manager.HiveLeadershipManager;
 import com.avp.common.hive.membership.manager.HiveMembershipManager;
 import com.avp.common.level.saveddata.HiveLevelData;
-import com.avp.common.util.NBTSerializable;
 
 public class Hive implements NBTSerializable {
 

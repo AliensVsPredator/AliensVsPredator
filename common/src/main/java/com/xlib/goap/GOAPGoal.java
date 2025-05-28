@@ -1,6 +1,6 @@
-package com.avp.common.goap;
+package com.xlib.goap;
 
-import com.avp.common.goap.condition.GOAPConditionContainer;
+import com.xlib.goap.condition.GOAPConditionContainer;
 
 public abstract class GOAPGoal {
 

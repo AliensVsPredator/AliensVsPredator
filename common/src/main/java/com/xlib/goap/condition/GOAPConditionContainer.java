@@ -1,9 +1,9 @@
-package com.avp.common.goap.condition;
+package com.xlib.goap.condition;
+
+import com.xlib.goap.state.GOAPWorldState;
 
 import java.util.Arrays;
 import java.util.List;
-
-import com.avp.common.goap.state.GOAPWorldState;
 
 public class GOAPConditionContainer {
 

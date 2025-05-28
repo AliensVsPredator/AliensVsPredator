@@ -3,11 +3,11 @@ package com.avp.common.entity.living.human;
 import com.bvanseg.just.functional.function.memo.BiMemo;
 import com.bvanseg.just.functional.function.memo.Memo;
 import com.bvanseg.just.functional.option.Option;
+import com.xlib.NBTSerializable;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 
 import com.avp.AVPResources;
-import com.avp.common.util.NBTSerializable;
 
 public class HumanFeatureManager implements NBTSerializable {
 

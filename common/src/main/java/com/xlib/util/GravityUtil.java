@@ -1,4 +1,4 @@
-package com.avp.common.util;
+package com.xlib.util;
 
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.MoverType;

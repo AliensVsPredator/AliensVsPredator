@@ -1,13 +1,13 @@
 package com.avp.common.entity.ai.sensor.entity;
 
+import com.xlib.goap.GOAPSensor;
+import com.xlib.goap.state.GOAPMutableWorldState;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.entity.LivingEntity;
 
 import java.util.List;
 
 import com.avp.common.entity.ai.GOAPConstants;
-import com.avp.common.goap.GOAPSensor;
-import com.avp.common.goap.state.GOAPMutableWorldState;
 
 public class NearbyFoodItemEntitiesSensor implements GOAPSensor<LivingEntity> {
 

@@ -1,4 +1,4 @@
-package com.avp.common.goap;
+package com.xlib.goap;
 
 public record TypedIdentifier<T>(String identifier) {
 

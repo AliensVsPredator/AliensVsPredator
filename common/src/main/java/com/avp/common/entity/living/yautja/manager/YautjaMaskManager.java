@@ -1,10 +1,10 @@
 package com.avp.common.entity.living.yautja.manager;
 
+import com.xlib.NBTSerializable;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 
 import com.avp.common.entity.living.yautja.Yautja;
-import com.avp.common.util.NBTSerializable;
 
 public class YautjaMaskManager implements NBTSerializable {
 

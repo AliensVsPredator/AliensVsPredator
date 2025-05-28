@@ -1,6 +1,7 @@
 package com.avp.common.entity.ai;
 
 import com.bvanseg.just.functional.option.Option;
+import com.xlib.goap.TypedIdentifier;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.ItemEntity;
@@ -10,7 +11,6 @@ import java.util.Set;
 
 import com.avp.common.entity.ai.util.CombatResponse;
 import com.avp.common.entity.ai.util.ItemType;
-import com.avp.common.goap.TypedIdentifier;
 
 // TODO: There should be a registry here to guard against accidental duplicate identifiers.
 public class GOAPConstants {

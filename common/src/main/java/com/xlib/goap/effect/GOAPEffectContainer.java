@@ -1,10 +1,10 @@
-package com.avp.common.goap.effect;
+package com.xlib.goap.effect;
+
+import com.xlib.goap.state.GOAPMutableWorldState;
+import com.xlib.goap.state.GOAPWorldState;
 
 import java.util.Arrays;
 import java.util.List;
-
-import com.avp.common.goap.state.GOAPMutableWorldState;
-import com.avp.common.goap.state.GOAPWorldState;
 
 public class GOAPEffectContainer {
 

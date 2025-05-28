@@ -1,6 +1,12 @@
 package com.avp.common.entity.ai.action;
 
 import com.bvanseg.just.functional.option.Option;
+import com.xlib.goap.GOAPAction;
+import com.xlib.goap.TypedIdentifier;
+import com.xlib.goap.condition.expression.GOAPExpression;
+import com.xlib.goap.effect.GOAPEffect;
+import com.xlib.goap.state.GOAPBlackboard;
+import com.xlib.goap.state.GOAPWorldState;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.PathfinderMob;
@@ -9,12 +15,6 @@ import net.minecraft.world.level.pathfinder.Path;
 
 import com.avp.common.entity.ai.GOAPConstants;
 import com.avp.common.entity.ai.util.CombatResponse;
-import com.avp.common.goap.GOAPAction;
-import com.avp.common.goap.TypedIdentifier;
-import com.avp.common.goap.condition.expression.GOAPExpression;
-import com.avp.common.goap.effect.GOAPEffect;
-import com.avp.common.goap.state.GOAPBlackboard;
-import com.avp.common.goap.state.GOAPWorldState;
 
 public class AvoidAction<T extends PathfinderMob> extends GOAPAction<T> {
 

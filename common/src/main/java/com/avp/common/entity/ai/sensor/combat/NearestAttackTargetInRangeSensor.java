@@ -3,14 +3,14 @@ package com.avp.common.entity.ai.sensor.combat;
 import com.bvanseg.just.functional.option.None;
 import com.bvanseg.just.functional.option.Option;
 import com.bvanseg.just.functional.option.Some;
+import com.xlib.goap.GOAPSensor;
+import com.xlib.goap.state.GOAPMutableWorldState;
+import com.xlib.goap.state.GOAPWorldState;
 import net.minecraft.world.entity.LivingEntity;
 
 import java.util.function.BiPredicate;
 
 import com.avp.common.entity.ai.GOAPConstants;
-import com.avp.common.goap.GOAPSensor;
-import com.avp.common.goap.state.GOAPMutableWorldState;
-import com.avp.common.goap.state.GOAPWorldState;
 
 public class NearestAttackTargetInRangeSensor<T extends LivingEntity> implements GOAPSensor<T> {
 

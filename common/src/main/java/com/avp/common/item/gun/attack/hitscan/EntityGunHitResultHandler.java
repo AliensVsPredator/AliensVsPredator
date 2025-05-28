@@ -1,5 +1,6 @@
 package com.avp.common.item.gun.attack.hitscan;
 
+import com.xlib.util.EnchantmentUtil;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
@@ -11,7 +12,6 @@ import net.minecraft.world.item.enchantment.Enchantments;
 
 import com.avp.common.damage.AVPDamageTypes;
 import com.avp.common.item.gun.attack.GunAttackConfig;
-import com.avp.common.util.EnchantmentUtil;
 
 public class EntityGunHitResultHandler {
 

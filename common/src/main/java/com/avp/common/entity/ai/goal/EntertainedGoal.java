@@ -1,10 +1,11 @@
 package com.avp.common.entity.ai.goal;
 
+import com.xlib.goap.GOAPGoal;
+import com.xlib.goap.condition.GOAPCondition;
+import com.xlib.goap.condition.GOAPConditionContainer;
+import com.xlib.goap.condition.expression.GOAPExpression;
+
 import com.avp.common.entity.ai.GOAPConstants;
-import com.avp.common.goap.GOAPGoal;
-import com.avp.common.goap.condition.GOAPCondition;
-import com.avp.common.goap.condition.GOAPConditionContainer;
-import com.avp.common.goap.condition.expression.GOAPExpression;
 
 public class EntertainedGoal extends GOAPGoal {
 

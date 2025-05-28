@@ -1,5 +1,7 @@
 package com.avp.common.entity.living.human.marine.ai;
 
+import com.xlib.goap.TypedIdentifier;
+import com.xlib.goap.state.GOAPBlackboard;
 import net.minecraft.commands.arguments.EntityAnchorArgument;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
@@ -7,8 +9,6 @@ import net.minecraft.world.item.ItemStack;
 import com.avp.common.entity.ai.action.AttackAction;
 import com.avp.common.entity.ai.util.CombatResponse;
 import com.avp.common.entity.living.human.marine.Marine;
-import com.avp.common.goap.TypedIdentifier;
-import com.avp.common.goap.state.GOAPBlackboard;
 import com.avp.common.item.GunItem;
 import com.avp.common.item.gun.pipeline.GunShootContext;
 import com.avp.common.item.gun.pipeline.GunShootResult;

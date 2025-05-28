@@ -1,6 +1,7 @@
 package com.avp.common.entity.living.human.marine;
 
 import com.bvanseg.just.functional.option.Option;
+import com.xlib.NBTSerializable;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.world.SimpleContainer;
@@ -15,7 +16,6 @@ import java.util.stream.Stream;
 
 import com.avp.common.util.AVPInventory;
 import com.avp.common.util.ItemUtil;
-import com.avp.common.util.NBTSerializable;
 
 public class MarineInventory implements AVPInventory, InventoryCarrier, NBTSerializable {
 

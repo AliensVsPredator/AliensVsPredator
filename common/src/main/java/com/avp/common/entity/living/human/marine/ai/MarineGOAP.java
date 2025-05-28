@@ -1,5 +1,6 @@
 package com.avp.common.entity.living.human.marine.ai;
 
+import com.xlib.goap.state.GOAPWorldState;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.monster.Monster;
 
@@ -32,7 +33,6 @@ import com.avp.common.entity.ai.sensor.stats.IsHealthySensor;
 import com.avp.common.entity.ai.util.CombatResponse;
 import com.avp.common.entity.ai.util.ItemType;
 import com.avp.common.entity.living.human.marine.Marine;
-import com.avp.common.goap.state.GOAPWorldState;
 import com.avp.common.item.GunItem;
 
 public class MarineGOAP extends EntityGOAP<Marine> {

@@ -1,8 +1,8 @@
-package com.avp.common.goap.state;
+package com.xlib.goap.state;
+
+import com.xlib.goap.TypedIdentifier;
 
 import java.util.HashMap;
-
-import com.avp.common.goap.TypedIdentifier;
 
 public class GOAPBlackboard extends GOAPStateCache {
 

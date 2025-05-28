@@ -1,12 +1,12 @@
 package com.avp.common.entity.living.manager;
 
+import com.xlib.NBTSerializable;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.world.entity.PathfinderMob;
 
 import com.avp.common.entity.living.alien.xenomorph.queen.Queen;
-import com.avp.common.util.NBTSerializable;
 
 public class CrawlingManager implements NBTSerializable {
 

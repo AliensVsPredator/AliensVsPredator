@@ -3,6 +3,8 @@ package com.avp.common.entity.ai.sensor.combat;
 import com.bvanseg.just.functional.option.None;
 import com.bvanseg.just.functional.option.Option;
 import com.bvanseg.just.functional.option.Some;
+import com.xlib.goap.GOAPSensor;
+import com.xlib.goap.state.GOAPMutableWorldState;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -14,8 +16,6 @@ import java.util.Set;
 import com.avp.common.entity.ai.GOAPConstants;
 import com.avp.common.entity.ai.util.CombatResponse;
 import com.avp.common.entity.ai.util.ItemType;
-import com.avp.common.goap.GOAPSensor;
-import com.avp.common.goap.state.GOAPMutableWorldState;
 
 public class CombatResponseSensor<T extends LivingEntity> implements GOAPSensor<T> {
 

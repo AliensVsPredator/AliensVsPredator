@@ -1,5 +1,6 @@
 package com.avp.common.item.gun.attack.hitscan;
 
+import com.xlib.util.EnchantmentUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
@@ -14,7 +15,6 @@ import com.avp.common.item.gun.attack.GunAttackConfig;
 import com.avp.common.item.gun.attack.GunHitResult;
 import com.avp.common.network.packet.S2CBulletHitBlockPayload;
 import com.avp.common.sound.AVPSoundEvents;
-import com.avp.common.util.EnchantmentUtil;
 import com.avp.server.BlockBreakProgressManager;
 import com.avp.service.Services;
 

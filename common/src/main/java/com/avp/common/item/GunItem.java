@@ -1,5 +1,6 @@
 package com.avp.common.item;
 
+import com.xlib.util.TooltipUtil;
 import mod.azure.azurelib.rewrite.animation.dispatch.command.AzCommand;
 import mod.azure.azurelib.rewrite.animation.play_behavior.AzPlayBehaviors;
 import net.minecraft.network.chat.Component;
@@ -26,7 +27,6 @@ import com.avp.common.component.AVPDataComponents;
 import com.avp.common.item.gun.GunConfig;
 import com.avp.common.item.gun.pipeline.GunShootContext;
 import com.avp.common.item.old_painless.OldPainlessAnimationRefs;
-import com.avp.common.util.TooltipUtil;
 
 public class GunItem extends Item {
 

@@ -1,6 +1,8 @@
 package com.avp.common.entity.ai.sensor.entity;
 
 import com.bvanseg.just.functional.option.Option;
+import com.xlib.goap.GOAPSensor;
+import com.xlib.goap.state.GOAPMutableWorldState;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.ItemEntity;
 
@@ -8,8 +10,6 @@ import java.util.Comparator;
 import java.util.List;
 
 import com.avp.common.entity.ai.GOAPConstants;
-import com.avp.common.goap.GOAPSensor;
-import com.avp.common.goap.state.GOAPMutableWorldState;
 
 public class NearestFoodItemEntitySensor implements GOAPSensor<LivingEntity> {
 

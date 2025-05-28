@@ -17,21 +17,21 @@ public abstract class Cache<K, T> {
         this.cache = new HashMap<>();
     }
 
-    public final void addToCache(K id, T value) {
+    public final void add(K id, T value) {
         var oldValue = cache.put(id, value);
 
         onAddToCache(id, oldValue, value);
     }
 
-    public final Option<T> getFromCache(K id) {
+    public final Option<T> get(K id) {
         return Option.ofNullable(cache.get(id));
     }
 
-    public final boolean isInCache(K id) {
+    public final boolean has(K id) {
         return cache.containsKey(id);
     }
 
-    public final void removeFromCache(K id) {
+    public final void remove(K id) {
         var value = cache.remove(id);
 
         if (value != null) {
@@ -39,21 +39,21 @@ public abstract class Cache<K, T> {
         }
     }
 
-    public final void clearCache() {
+    public final void clear() {
         cache.clear();
         onClearCache();
     }
 
-    public void removeFromCacheIf(Predicate<Map.Entry<K, T>> predicate) {
+    public void removeIf(Predicate<Map.Entry<K, T>> predicate) {
         var entriesToRemove = cache.entrySet()
             .stream()
             .filter(predicate)
             .toList();
 
-        entriesToRemove.forEach(entry -> removeFromCache(entry.getKey()));
+        entriesToRemove.forEach(entry -> remove(entry.getKey()));
     }
 
-    public final Stream<Map.Entry<K, T>> streamCacheEntries() {
+    public final Stream<Map.Entry<K, T>> streamEntries() {
         return List.copyOf(cache.entrySet()).stream();
     }
 

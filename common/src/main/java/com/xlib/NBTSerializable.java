@@ -1,4 +1,4 @@
-package com.avp.common.util;
+package com.xlib;
 
 import net.minecraft.nbt.CompoundTag;
 

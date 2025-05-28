@@ -2,6 +2,7 @@ package com.avp.common.entity.living.alien.manager;
 
 import com.bvanseg.just.functional.option.Option;
 import com.mojang.serialization.Dynamic;
+import com.xlib.NBTSerializable;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
@@ -25,7 +26,6 @@ import com.avp.common.entity.living.alien.AlienVariantTypes;
 import com.avp.common.entity.living.alien.manager.resin.ReadableResinData;
 import com.avp.common.entity.living.alien.manager.resin.ResinData;
 import com.avp.common.level.gameevent.listener.ResinSpreadListener;
-import com.avp.common.util.NBTSerializable;
 
 public class ResinManager implements GameEventListener.Provider<ResinSpreadListener>, NBTSerializable {
 

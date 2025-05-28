@@ -1,5 +1,6 @@
 package com.avp.common.entity.living.manager;
 
+import com.xlib.NBTSerializable;
 import it.unimi.dsi.fastutil.objects.Object2ByteArrayMap;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.Entity;
@@ -10,7 +11,6 @@ import java.util.Map;
 import com.avp.common.entity.living.gene.GeneKey;
 import com.avp.common.entity.living.gene.behavior.GeneDecoder;
 import com.avp.common.level.saveddata.GenePaletteLevelData;
-import com.avp.common.util.NBTSerializable;
 
 public class GeneManager implements NBTSerializable {
 

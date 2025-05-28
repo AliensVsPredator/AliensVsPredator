@@ -1,4 +1,4 @@
-package com.avp.common.util;
+package com.xlib.util;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;

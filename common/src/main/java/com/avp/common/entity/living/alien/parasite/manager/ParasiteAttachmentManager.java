@@ -1,5 +1,6 @@
 package com.avp.common.entity.living.alien.parasite.manager;
 
+import com.xlib.NBTSerializable;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.game.ClientboundSetPassengersPacket;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -17,7 +18,6 @@ import com.avp.common.entity.living.FreeMob;
 import com.avp.common.entity.living.Host;
 import com.avp.common.entity.living.alien.parasite.Parasite;
 import com.avp.common.util.AVPPredicates;
-import com.avp.common.util.NBTSerializable;
 
 public class ParasiteAttachmentManager implements NBTSerializable {
 

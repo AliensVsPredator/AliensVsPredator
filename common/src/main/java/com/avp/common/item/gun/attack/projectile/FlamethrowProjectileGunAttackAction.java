@@ -1,5 +1,6 @@
 package com.avp.common.item.gun.attack.projectile;
 
+import com.xlib.util.EnchantmentUtil;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.enchantment.Enchantments;
 
@@ -8,7 +9,6 @@ import com.avp.common.item.gun.attack.GunAttackAction;
 import com.avp.common.item.gun.attack.GunAttackConfig;
 import com.avp.common.item.gun.pipeline.GunShootResult;
 import com.avp.common.network.packet.S2CGunRecoilPayload;
-import com.avp.common.util.EnchantmentUtil;
 import com.avp.service.Services;
 
 public class FlamethrowProjectileGunAttackAction implements GunAttackAction {

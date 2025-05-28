@@ -1,10 +1,10 @@
 package com.avp.common.entity.ai.sensor.stats;
 
+import com.xlib.goap.GOAPSensor;
+import com.xlib.goap.state.GOAPMutableWorldState;
 import net.minecraft.world.entity.LivingEntity;
 
 import com.avp.common.entity.ai.GOAPConstants;
-import com.avp.common.goap.GOAPSensor;
-import com.avp.common.goap.state.GOAPMutableWorldState;
 
 public class IsHealthySensor<T extends LivingEntity> implements GOAPSensor<T> {
 

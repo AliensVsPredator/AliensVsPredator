@@ -1,6 +1,7 @@
 package com.avp.common.item.gun.pipeline;
 
 import com.bvanseg.just.functional.option.Option;
+import com.xlib.util.EnchantmentUtil;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
@@ -20,7 +21,6 @@ import com.avp.common.item.gun.pipeline.step.impl.CheckCooldownStep;
 import com.avp.common.item.gun.pipeline.step.impl.CheckReloadingStep;
 import com.avp.common.item.gun.pipeline.step.impl.CheckShootDelayStep;
 import com.avp.common.util.AVPPredicates;
-import com.avp.common.util.EnchantmentUtil;
 import com.avp.common.util.GunLightUtil;
 
 public record GunShootContext(

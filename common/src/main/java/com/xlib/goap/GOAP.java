@@ -1,6 +1,10 @@
-package com.avp.common.goap;
+package com.xlib.goap;
 
 import com.bvanseg.just.functional.option.Option;
+import com.xlib.goap.plan.GOAPPlan;
+import com.xlib.goap.plan.GOAPPlanner;
+import com.xlib.goap.state.GOAPMutableWorldState;
+import com.xlib.goap.state.GOAPWorldState;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -8,11 +12,6 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
-import com.avp.common.goap.plan.GOAPPlan;
-import com.avp.common.goap.plan.GOAPPlanner;
-import com.avp.common.goap.state.GOAPMutableWorldState;
-import com.avp.common.goap.state.GOAPWorldState;
 
 public abstract class GOAP<T> {
 

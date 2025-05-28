@@ -1,17 +1,16 @@
-package com.avp.common.goap.plan;
+package com.xlib.goap.plan;
 
 import com.bvanseg.just.functional.option.Option;
+import com.xlib.goap.GOAP;
+import com.xlib.goap.GOAPAction;
+import com.xlib.goap.GOAPGoal;
+import com.xlib.goap.condition.GOAPConditionContainer;
+import com.xlib.goap.state.GOAPMutableWorldState;
+import com.xlib.goap.state.GOAPWorldState;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-
-import com.avp.common.goap.GOAP;
-import com.avp.common.goap.GOAPAction;
-import com.avp.common.goap.GOAPGoal;
-import com.avp.common.goap.condition.GOAPConditionContainer;
-import com.avp.common.goap.state.GOAPMutableWorldState;
-import com.avp.common.goap.state.GOAPWorldState;
 
 public class GOAPPlanner<T> {
 

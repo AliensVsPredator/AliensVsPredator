@@ -1,5 +1,6 @@
 package com.avp.common.entity.living.alien.ovomorph;
 
+import com.xlib.NBTSerializable;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
@@ -8,7 +9,6 @@ import net.minecraft.world.level.Level;
 import com.avp.AVP;
 import com.avp.common.entity.living.alien.parasite.facehugger.Facehugger;
 import com.avp.common.sound.AVPSoundEvents;
-import com.avp.common.util.NBTSerializable;
 
 public class HatchManager implements NBTSerializable {
 

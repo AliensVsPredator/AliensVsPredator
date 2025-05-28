@@ -1,4 +1,4 @@
-package com.avp.common.goap.condition;
+package com.xlib.goap.condition;
 
 import java.util.ArrayList;
 
