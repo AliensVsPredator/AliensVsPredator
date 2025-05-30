@@ -1,5 +1,6 @@
 package com.avp.mixin;
 
+import com.human.common.gameplay.item.ArmorCaseItem;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.decoration.ArmorStand;
@@ -10,8 +11,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import com.avp.common.item.AVPItems;
-import com.avp.common.item.ArmorCaseItem;
+import com.avp.common.registry.init.item.AVPItems;
 
 @Mixin(ArmorStand.class)
 public abstract class MixinArmorStand_EquipArmorFromArmorCase {

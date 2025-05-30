@@ -1,5 +1,7 @@
 package com.avp.mixin;
 
+import com.alien.common.model.alien.Host;
+import com.alien.common.registry.AlienInfectionRegistry;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -17,8 +19,6 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import com.avp.common.entity.living.Host;
-import com.avp.common.lifecycle.registry.AlienInfectionRegistry;
 import com.avp.common.util.AVPPredicates;
 
 @Mixin(ChorusFruitItem.class)

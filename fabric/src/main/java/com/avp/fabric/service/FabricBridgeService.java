@@ -1,5 +1,6 @@
 package com.avp.fabric.service;
 
+import com.human.common.gameplay.item.gun.GunConfig;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.item.Item;
@@ -7,7 +8,6 @@ import net.minecraft.world.item.SpawnEggItem;
 
 import java.util.function.Supplier;
 
-import com.avp.common.item.gun.GunConfig;
 import com.avp.fabric.common.item.FabricGunItem;
 import com.avp.fabric.common.item.FabricOldPainlessItem;
 import com.avp.service.BridgeService;

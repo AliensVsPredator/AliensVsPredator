@@ -1,5 +1,6 @@
 package com.avp.fabric.data.model;
 
+import com.alien.common.registry.init.AlienBlocks;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricModelProvider;
 import net.minecraft.data.models.BlockModelGenerators;
@@ -20,9 +21,9 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import org.jetbrains.annotations.NotNull;
 
-import com.avp.common.block.AVPBlocks;
-import com.avp.common.block.BlockProperties;
-import com.avp.common.item.AVPSpawnEggItems;
+import com.avp.common.gameplay.block.property.BlockProperties;
+import com.avp.common.registry.init.AVPBlocks;
+import com.avp.common.registry.init.item.AVPSpawnEggItems;
 import com.avp.fabric.data.model.generator.BarsGenerator;
 import com.avp.fabric.data.model.generator.MultiFaceGenerator;
 
@@ -86,25 +87,25 @@ public class BlockModelProvider extends FabricModelProvider {
             )
         );
 
-        generators.createRotatedVariantBlock(AVPBlocks.IRRADIATED_RESIN.get());
-        generators.createRotatedVariantBlock(AVPBlocks.IRRADIATED_RESIN_NODE.get());
-        MultiFaceGenerator.generate(generators, AVPBlocks.IRRADIATED_RESIN_VEIN.get());
-        generators.createCrossBlock(AVPBlocks.IRRADIATED_RESIN_WEB.get(), BlockModelGenerators.TintState.NOT_TINTED);
+        generators.createRotatedVariantBlock(AlienBlocks.IRRADIATED_RESIN.get());
+        generators.createRotatedVariantBlock(AlienBlocks.IRRADIATED_RESIN_NODE.get());
+        MultiFaceGenerator.generate(generators, AlienBlocks.IRRADIATED_RESIN_VEIN.get());
+        generators.createCrossBlock(AlienBlocks.IRRADIATED_RESIN_WEB.get(), BlockModelGenerators.TintState.NOT_TINTED);
 
-        generators.createRotatedVariantBlock(AVPBlocks.ABERRANT_RESIN.get());
-        generators.createRotatedVariantBlock(AVPBlocks.ABERRANT_RESIN_NODE.get());
-        MultiFaceGenerator.generate(generators, AVPBlocks.ABERRANT_RESIN_VEIN.get());
-        generators.createCrossBlock(AVPBlocks.ABERRANT_RESIN_WEB.get(), BlockModelGenerators.TintState.NOT_TINTED);
+        generators.createRotatedVariantBlock(AlienBlocks.ABERRANT_RESIN.get());
+        generators.createRotatedVariantBlock(AlienBlocks.ABERRANT_RESIN_NODE.get());
+        MultiFaceGenerator.generate(generators, AlienBlocks.ABERRANT_RESIN_VEIN.get());
+        generators.createCrossBlock(AlienBlocks.ABERRANT_RESIN_WEB.get(), BlockModelGenerators.TintState.NOT_TINTED);
 
-        generators.createRotatedVariantBlock(AVPBlocks.NETHER_RESIN.get());
-        generators.createRotatedVariantBlock(AVPBlocks.NETHER_RESIN_NODE.get());
-        MultiFaceGenerator.generate(generators, AVPBlocks.NETHER_RESIN_VEIN.get());
-        generators.createCrossBlock(AVPBlocks.NETHER_RESIN_WEB.get(), BlockModelGenerators.TintState.NOT_TINTED);
+        generators.createRotatedVariantBlock(AlienBlocks.NETHER_RESIN.get());
+        generators.createRotatedVariantBlock(AlienBlocks.NETHER_RESIN_NODE.get());
+        MultiFaceGenerator.generate(generators, AlienBlocks.NETHER_RESIN_VEIN.get());
+        generators.createCrossBlock(AlienBlocks.NETHER_RESIN_WEB.get(), BlockModelGenerators.TintState.NOT_TINTED);
 
-        generators.createRotatedVariantBlock(AVPBlocks.RESIN.get());
-        generators.createRotatedVariantBlock(AVPBlocks.RESIN_NODE.get());
-        MultiFaceGenerator.generate(generators, AVPBlocks.RESIN_VEIN.get());
-        generators.createCrossBlock(AVPBlocks.RESIN_WEB.get(), BlockModelGenerators.TintState.NOT_TINTED);
+        generators.createRotatedVariantBlock(AlienBlocks.RESIN.get());
+        generators.createRotatedVariantBlock(AlienBlocks.RESIN_NODE.get());
+        MultiFaceGenerator.generate(generators, AlienBlocks.RESIN_VEIN.get());
+        generators.createCrossBlock(AlienBlocks.RESIN_WEB.get(), BlockModelGenerators.TintState.NOT_TINTED);
 
         AVPBlocks.DYE_COLOR_TO_PADDING.forEach(
             (dyeColor, blockSupplier) -> {
@@ -166,7 +167,7 @@ public class BlockModelProvider extends FabricModelProvider {
             }
         );
 
-        generators.createTrivialCube(AVPBlocks.ROYAL_JELLY_BLOCK.get());
+        generators.createTrivialCube(AlienBlocks.ROYAL_JELLY_BLOCK.get());
         generators.createTrivialCube(AVPBlocks.ALUMINUM_BLOCK.get());
         generators.createTrivialCube(AVPBlocks.TRINITITE_BLOCK.get());
         generators.createTrivialCube(AVPBlocks.AUTUNITE_BLOCK.get());
@@ -176,10 +177,10 @@ public class BlockModelProvider extends FabricModelProvider {
         generators.createTrivialCube(AVPBlocks.CHISELED_FERROALUMINUM.get());
         generators.createTrivialCube(AVPBlocks.CHISELED_STEEL.get());
         generators.createTrivialCube(AVPBlocks.CHISELED_TITANIUM.get());
-        generators.createTrivialCube(AVPBlocks.RESIN_BRICKS.get());
-        generators.createTrivialCube(AVPBlocks.RESIN_O.get());
-        generators.createTrivialCube(AVPBlocks.RESIN_RIBBED.get());
-        generators.createTrivialCube(AVPBlocks.RESIN_SMOOTH.get());
+        generators.createTrivialCube(AlienBlocks.RESIN_BRICKS.get());
+        generators.createTrivialCube(AlienBlocks.RESIN_O.get());
+        generators.createTrivialCube(AlienBlocks.RESIN_RIBBED.get());
+        generators.createTrivialCube(AlienBlocks.RESIN_SMOOTH.get());
 
         generators.family(AVPBlocks.CUT_FERROALUMINUM.get())
             .slab(AVPBlocks.CUT_FERROALUMINUM_SLAB.get())

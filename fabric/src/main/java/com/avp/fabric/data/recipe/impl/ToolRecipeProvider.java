@@ -1,6 +1,6 @@
 package com.avp.fabric.data.recipe.impl;
 
-import com.avp.common.item.AVPItems;
+import com.avp.common.registry.init.item.AVPItems;
 import com.avp.fabric.data.recipe.RecipeTemplates;
 import com.avp.fabric.data.recipe.builder.RecipeBuilder;
 

@@ -24,8 +24,8 @@ import java.util.Set;
 
 import com.avp.AVP;
 import com.avp.AVPResources;
-import com.avp.data.AVPCaveKey;
-import com.avp.data.worldgen.AVPOres;
+import com.avp.common.data.worldgen.AVPOres;
+import com.avp.common.registry.key.AVPPlacedFeatureKeys;
 import com.avp.neoforge.service.NeoForgeRegistryService;
 import com.avp.service.Services;
 
@@ -86,7 +86,7 @@ public class AVPNeoForgeDatagen {
                             AVPFeatureKeys.ADD_AUTUNITE_GEODE,
                             new BiomeModifiers.AddFeaturesBiomeModifier(
                                 biomes.getOrThrow(BiomeTags.IS_OVERWORLD),
-                                HolderSet.direct(placedFeatures.getOrThrow(AVPCaveKey.AUTUNITE_GEODE)),
+                                HolderSet.direct(placedFeatures.getOrThrow(AVPPlacedFeatureKeys.AUTUNITE_GEODE)),
                                 GenerationStep.Decoration.LOCAL_MODIFICATIONS
                             )
                         );

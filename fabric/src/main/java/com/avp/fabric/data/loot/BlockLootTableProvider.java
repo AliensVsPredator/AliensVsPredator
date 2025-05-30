@@ -1,5 +1,7 @@
 package com.avp.fabric.data.loot;
 
+import com.alien.common.registry.init.AlienBlocks;
+import com.alien.common.registry.init.AlienItems;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricBlockLootTableProvider;
 import net.minecraft.core.HolderLookup;
@@ -25,9 +27,9 @@ import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 import com.avp.AVP;
-import com.avp.common.block.AVPBlocks;
-import com.avp.common.item.AVPItems;
 import com.avp.common.registry.AVPDeferredHolder;
+import com.avp.common.registry.init.AVPBlocks;
+import com.avp.common.registry.init.item.AVPItems;
 
 public class BlockLootTableProvider extends FabricBlockLootTableProvider {
 
@@ -65,7 +67,7 @@ public class BlockLootTableProvider extends FabricBlockLootTableProvider {
     }
 
     private void generateSelfDrops() {
-        dropSelf(AVPBlocks.ABERRANT_RESIN);
+        dropSelf(AlienBlocks.ABERRANT_RESIN);
         dropSelf(AVPBlocks.ALUMINUM_BLOCK);
         dropSelf(AVPBlocks.ASH_BLOCK);
         dropSelf(AVPBlocks.AUTUNITE_BLOCK);
@@ -106,10 +108,10 @@ public class BlockLootTableProvider extends FabricBlockLootTableProvider {
         dropSelf(AVPBlocks.INDUSTRIAL_GLASS_PANE);
         dropSelf(AVPBlocks.INDUSTRIAL_GLASS_STAIRS);
         dropSelf(AVPBlocks.INDUSTRIAL_GLASS_TRAP_DOOR);
-        dropSelf(AVPBlocks.IRRADIATED_RESIN);
+        dropSelf(AlienBlocks.IRRADIATED_RESIN);
         dropSelf(AVPBlocks.LEAD_BLOCK);
         dropSelf(AVPBlocks.LITHIUM_BLOCK);
-        dropSelf(AVPBlocks.NETHER_RESIN);
+        dropSelf(AlienBlocks.NETHER_RESIN);
         dropSelf(AVPBlocks.NUKE_BLOCK);
         dropSelf(AVPBlocks.RAW_BAUXITE_BLOCK);
         dropSelf(AVPBlocks.RAW_GALENA_BLOCK);
@@ -118,13 +120,13 @@ public class BlockLootTableProvider extends FabricBlockLootTableProvider {
         dropSelf(AVPBlocks.RAW_ZINC_BLOCK);
         dropSelf(AVPBlocks.RAZOR_WIRE);
         dropSelf(AVPBlocks.REDSTONE_GENERATOR);
-        dropSelf(AVPBlocks.RESIN);
-        dropSelf(AVPBlocks.RESIN_BRICKS);
-        dropSelf(AVPBlocks.RESIN_O);
-        dropSelf(AVPBlocks.RESIN_RIBBED);
-        dropSelf(AVPBlocks.RESIN_SMOOTH);
+        dropSelf(AlienBlocks.RESIN);
+        dropSelf(AlienBlocks.RESIN_BRICKS);
+        dropSelf(AlienBlocks.RESIN_O);
+        dropSelf(AlienBlocks.RESIN_RIBBED);
+        dropSelf(AlienBlocks.RESIN_SMOOTH);
         dropSelf(AVPBlocks.RESONATOR_BLOCK);
-        dropSelf(AVPBlocks.ROYAL_JELLY_BLOCK);
+        dropSelf(AlienBlocks.ROYAL_JELLY_BLOCK);
         dropSelf(AVPBlocks.SENTRY_TURRET);
         dropSelf(AVPBlocks.SILICA_GRAVEL);
         dropSelf(AVPBlocks.SILICON_BLOCK);
@@ -262,18 +264,18 @@ public class BlockLootTableProvider extends FabricBlockLootTableProvider {
     }
 
     private void generateOtherDrops() {
-        dropOther(AVPBlocks.ABERRANT_RESIN_NODE, AVPBlocks.ABERRANT_RESIN);
-        dropOther(AVPBlocks.ABERRANT_RESIN_VEIN, AVPItems.ABERRANT_RESIN_BALL);
-        dropOther(AVPBlocks.ABERRANT_RESIN_WEB, AVPItems.ABERRANT_RESIN_BALL);
-        dropOther(AVPBlocks.IRRADIATED_RESIN_NODE, AVPBlocks.IRRADIATED_RESIN);
-        dropOther(AVPBlocks.IRRADIATED_RESIN_VEIN, AVPItems.IRRADIATED_RESIN_BALL);
-        dropOther(AVPBlocks.IRRADIATED_RESIN_WEB, AVPItems.IRRADIATED_RESIN_BALL);
-        dropOther(AVPBlocks.NETHER_RESIN_NODE, AVPBlocks.NETHER_RESIN);
-        dropOther(AVPBlocks.NETHER_RESIN_VEIN, AVPItems.NETHER_RESIN_BALL);
-        dropOther(AVPBlocks.NETHER_RESIN_WEB, AVPItems.NETHER_RESIN_BALL);
-        dropOther(AVPBlocks.RESIN_NODE, AVPBlocks.RESIN);
-        dropOther(AVPBlocks.RESIN_VEIN, AVPItems.RESIN_BALL);
-        dropOther(AVPBlocks.RESIN_WEB, AVPItems.RESIN_BALL);
+        dropOther(AlienBlocks.ABERRANT_RESIN_NODE, AlienBlocks.ABERRANT_RESIN);
+        dropOther(AlienBlocks.ABERRANT_RESIN_VEIN, AlienItems.ABERRANT_RESIN_BALL);
+        dropOther(AlienBlocks.ABERRANT_RESIN_WEB, AlienItems.ABERRANT_RESIN_BALL);
+        dropOther(AlienBlocks.IRRADIATED_RESIN_NODE, AlienBlocks.IRRADIATED_RESIN);
+        dropOther(AlienBlocks.IRRADIATED_RESIN_VEIN, AlienItems.IRRADIATED_RESIN_BALL);
+        dropOther(AlienBlocks.IRRADIATED_RESIN_WEB, AlienItems.IRRADIATED_RESIN_BALL);
+        dropOther(AlienBlocks.NETHER_RESIN_NODE, AlienBlocks.NETHER_RESIN);
+        dropOther(AlienBlocks.NETHER_RESIN_VEIN, AlienItems.NETHER_RESIN_BALL);
+        dropOther(AlienBlocks.NETHER_RESIN_WEB, AlienItems.NETHER_RESIN_BALL);
+        dropOther(AlienBlocks.RESIN_NODE, AlienBlocks.RESIN);
+        dropOther(AlienBlocks.RESIN_VEIN, AlienItems.RESIN_BALL);
+        dropOther(AlienBlocks.RESIN_WEB, AlienItems.RESIN_BALL);
     }
 
     public void add(Supplier<? extends Block> blockSupplier, Function<Block, LootTable.Builder> factory) {

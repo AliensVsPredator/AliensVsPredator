@@ -1,9 +1,9 @@
 package com.avp.fabric.data.recipe.impl;
 
+import com.alien.common.registry.init.AlienBlocks;
+import com.alien.common.registry.init.AlienItems;
 import net.minecraft.data.recipes.RecipeCategory;
 
-import com.avp.common.block.AVPBlocks;
-import com.avp.common.item.AVPItems;
 import com.avp.fabric.data.recipe.RecipeTemplates;
 import com.avp.fabric.data.recipe.builder.RecipeBuilder;
 import com.avp.fabric.data.recipe.util.RecipeUtil;
@@ -15,52 +15,52 @@ public class ResinRecipeProvider {
     }
 
     private static void createResinRecipes(RecipeBuilder builder) {
-        RecipeUtil.createCompressedBlockRecipes2x2(builder, AVPItems.IRRADIATED_RESIN_BALL.get(), AVPBlocks.IRRADIATED_RESIN.get());
+        RecipeUtil.createCompressedBlockRecipes2x2(builder, AlienItems.IRRADIATED_RESIN_BALL.get(), AlienBlocks.IRRADIATED_RESIN.get());
 
         builder.shaped()
             .withCategory(RecipeCategory.BUILDING_BLOCKS)
-            .apply(RecipeTemplates.PLUS_CROSS.apply(AVPItems.IRRADIATED_RESIN_BALL.get()))
-            .into(5, AVPBlocks.IRRADIATED_RESIN_VEIN);
+            .apply(RecipeTemplates.PLUS_CROSS.apply(AlienItems.IRRADIATED_RESIN_BALL.get()))
+            .into(5, AlienBlocks.IRRADIATED_RESIN_VEIN);
 
         builder.shaped()
             .withCategory(RecipeCategory.BUILDING_BLOCKS)
-            .apply(RecipeTemplates.X_CROSS.apply(AVPItems.IRRADIATED_RESIN_BALL.get()))
-            .into(1, AVPBlocks.IRRADIATED_RESIN_WEB);
+            .apply(RecipeTemplates.X_CROSS.apply(AlienItems.IRRADIATED_RESIN_BALL.get()))
+            .into(1, AlienBlocks.IRRADIATED_RESIN_WEB);
 
-        RecipeUtil.createCompressedBlockRecipes2x2(builder, AVPItems.ABERRANT_RESIN_BALL.get(), AVPBlocks.ABERRANT_RESIN.get());
-
-        builder.shaped()
-            .withCategory(RecipeCategory.BUILDING_BLOCKS)
-            .apply(RecipeTemplates.PLUS_CROSS.apply(AVPItems.ABERRANT_RESIN_BALL.get()))
-            .into(5, AVPBlocks.ABERRANT_RESIN_VEIN);
+        RecipeUtil.createCompressedBlockRecipes2x2(builder, AlienItems.ABERRANT_RESIN_BALL.get(), AlienBlocks.ABERRANT_RESIN.get());
 
         builder.shaped()
             .withCategory(RecipeCategory.BUILDING_BLOCKS)
-            .apply(RecipeTemplates.X_CROSS.apply(AVPItems.ABERRANT_RESIN_BALL.get()))
-            .into(1, AVPBlocks.ABERRANT_RESIN_WEB);
-
-        RecipeUtil.createCompressedBlockRecipes2x2(builder, AVPItems.NETHER_RESIN_BALL.get(), AVPBlocks.NETHER_RESIN.get());
+            .apply(RecipeTemplates.PLUS_CROSS.apply(AlienItems.ABERRANT_RESIN_BALL.get()))
+            .into(5, AlienBlocks.ABERRANT_RESIN_VEIN);
 
         builder.shaped()
             .withCategory(RecipeCategory.BUILDING_BLOCKS)
-            .apply(RecipeTemplates.PLUS_CROSS.apply(AVPItems.NETHER_RESIN_BALL.get()))
-            .into(5, AVPBlocks.NETHER_RESIN_VEIN);
+            .apply(RecipeTemplates.X_CROSS.apply(AlienItems.ABERRANT_RESIN_BALL.get()))
+            .into(1, AlienBlocks.ABERRANT_RESIN_WEB);
+
+        RecipeUtil.createCompressedBlockRecipes2x2(builder, AlienItems.NETHER_RESIN_BALL.get(), AlienBlocks.NETHER_RESIN.get());
 
         builder.shaped()
             .withCategory(RecipeCategory.BUILDING_BLOCKS)
-            .apply(RecipeTemplates.X_CROSS.apply(AVPItems.NETHER_RESIN_BALL.get()))
-            .into(1, AVPBlocks.NETHER_RESIN_WEB);
-
-        RecipeUtil.createCompressedBlockRecipes2x2(builder, AVPItems.RESIN_BALL.get(), AVPBlocks.RESIN.get());
+            .apply(RecipeTemplates.PLUS_CROSS.apply(AlienItems.NETHER_RESIN_BALL.get()))
+            .into(5, AlienBlocks.NETHER_RESIN_VEIN);
 
         builder.shaped()
             .withCategory(RecipeCategory.BUILDING_BLOCKS)
-            .apply(RecipeTemplates.PLUS_CROSS.apply(AVPItems.RESIN_BALL.get()))
-            .into(5, AVPBlocks.RESIN_VEIN);
+            .apply(RecipeTemplates.X_CROSS.apply(AlienItems.NETHER_RESIN_BALL.get()))
+            .into(1, AlienBlocks.NETHER_RESIN_WEB);
+
+        RecipeUtil.createCompressedBlockRecipes2x2(builder, AlienItems.RESIN_BALL.get(), AlienBlocks.RESIN.get());
 
         builder.shaped()
             .withCategory(RecipeCategory.BUILDING_BLOCKS)
-            .apply(RecipeTemplates.X_CROSS.apply(AVPItems.RESIN_BALL.get()))
-            .into(1, AVPBlocks.RESIN_WEB);
+            .apply(RecipeTemplates.PLUS_CROSS.apply(AlienItems.RESIN_BALL.get()))
+            .into(5, AlienBlocks.RESIN_VEIN);
+
+        builder.shaped()
+            .withCategory(RecipeCategory.BUILDING_BLOCKS)
+            .apply(RecipeTemplates.X_CROSS.apply(AlienItems.RESIN_BALL.get()))
+            .into(1, AlienBlocks.RESIN_WEB);
     }
 }

@@ -1,5 +1,6 @@
 package com.avp.mixin;
 
+import com.human.common.gameplay.item.CanisterItem;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -16,9 +17,8 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import com.avp.common.component.AVPDataComponents;
-import com.avp.common.item.AVPItems;
-import com.avp.common.item.CanisterItem;
+import com.avp.common.registry.init.AVPDataComponents;
+import com.avp.common.registry.init.item.AVPItems;
 
 @Mixin(Cow.class)
 public abstract class MixinCow_FillMilkCanister extends Animal {

@@ -1,5 +1,6 @@
 package com.avp.fabric.data.tag;
 
+import com.alien.common.registry.init.AlienBlocks;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
 import net.minecraft.core.HolderLookup;
@@ -13,8 +14,8 @@ import java.util.concurrent.CompletableFuture;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
-import com.avp.common.block.AVPBlockTags;
-import com.avp.common.block.AVPBlocks;
+import com.avp.common.registry.init.AVPBlocks;
+import com.avp.common.registry.tag.AVPBlockTags;
 import com.avp.fabric.data.compatibility.common.CommonConstants;
 import com.avp.fabric.data.compatibility.gigeresque.GigeresqueConstants;
 
@@ -161,42 +162,42 @@ public class AVPBlockTagProvider extends FabricTagProvider.BlockTagProvider {
 
         getOrCreateTagBuilder(AVPBlockTags.IRRADIATED_RESIN)
             .add(
-                AVPBlocks.IRRADIATED_RESIN.get(),
-                AVPBlocks.IRRADIATED_RESIN_NODE.get(),
-                AVPBlocks.IRRADIATED_RESIN_VEIN.get(),
-                AVPBlocks.IRRADIATED_RESIN_WEB.get()
+                AlienBlocks.IRRADIATED_RESIN.get(),
+                AlienBlocks.IRRADIATED_RESIN_NODE.get(),
+                AlienBlocks.IRRADIATED_RESIN_VEIN.get(),
+                AlienBlocks.IRRADIATED_RESIN_WEB.get()
             );
 
         getOrCreateTagBuilder(AVPBlockTags.ABERRANT_RESIN)
             .add(
-                AVPBlocks.ABERRANT_RESIN.get(),
-                AVPBlocks.ABERRANT_RESIN_NODE.get(),
-                AVPBlocks.ABERRANT_RESIN_VEIN.get(),
-                AVPBlocks.ABERRANT_RESIN_WEB.get()
+                AlienBlocks.ABERRANT_RESIN.get(),
+                AlienBlocks.ABERRANT_RESIN_NODE.get(),
+                AlienBlocks.ABERRANT_RESIN_VEIN.get(),
+                AlienBlocks.ABERRANT_RESIN_WEB.get()
             );
 
         getOrCreateTagBuilder(AVPBlockTags.NETHER_RESIN)
             .add(
-                AVPBlocks.NETHER_RESIN.get(),
-                AVPBlocks.NETHER_RESIN_NODE.get(),
-                AVPBlocks.NETHER_RESIN_VEIN.get(),
-                AVPBlocks.NETHER_RESIN_WEB.get()
+                AlienBlocks.NETHER_RESIN.get(),
+                AlienBlocks.NETHER_RESIN_NODE.get(),
+                AlienBlocks.NETHER_RESIN_VEIN.get(),
+                AlienBlocks.NETHER_RESIN_WEB.get()
             );
 
         getOrCreateTagBuilder(AVPBlockTags.NORMAL_RESIN)
             .add(
-                AVPBlocks.RESIN.get(),
-                AVPBlocks.RESIN_NODE.get(),
-                AVPBlocks.RESIN_VEIN.get(),
-                AVPBlocks.RESIN_WEB.get()
+                AlienBlocks.RESIN.get(),
+                AlienBlocks.RESIN_NODE.get(),
+                AlienBlocks.RESIN_VEIN.get(),
+                AlienBlocks.RESIN_WEB.get()
             );
 
         getOrCreateTagBuilder(AVPBlockTags.CRAFTED_RESIN)
             .add(
-                AVPBlocks.RESIN_BRICKS.get(),
-                AVPBlocks.RESIN_O.get(),
-                AVPBlocks.RESIN_RIBBED.get(),
-                AVPBlocks.RESIN_SMOOTH.get()
+                AlienBlocks.RESIN_BRICKS.get(),
+                AlienBlocks.RESIN_O.get(),
+                AlienBlocks.RESIN_RIBBED.get(),
+                AlienBlocks.RESIN_SMOOTH.get()
             );
 
         getOrCreateTagBuilder(AVPBlockTags.RESIN)
@@ -208,18 +209,18 @@ public class AVPBlockTagProvider extends FabricTagProvider.BlockTagProvider {
 
         getOrCreateTagBuilder(AVPBlockTags.RESIN_BLOCKS)
             .add(
-                AVPBlocks.ABERRANT_RESIN.get(),
-                AVPBlocks.IRRADIATED_RESIN.get(),
-                AVPBlocks.NETHER_RESIN.get(),
-                AVPBlocks.RESIN.get()
+                AlienBlocks.ABERRANT_RESIN.get(),
+                AlienBlocks.IRRADIATED_RESIN.get(),
+                AlienBlocks.NETHER_RESIN.get(),
+                AlienBlocks.RESIN.get()
             );
 
         getOrCreateTagBuilder(AVPBlockTags.RESIN_NODES)
             .add(
-                AVPBlocks.ABERRANT_RESIN_NODE.get(),
-                AVPBlocks.IRRADIATED_RESIN_NODE.get(),
-                AVPBlocks.NETHER_RESIN_NODE.get(),
-                AVPBlocks.RESIN_NODE.get()
+                AlienBlocks.ABERRANT_RESIN_NODE.get(),
+                AlienBlocks.IRRADIATED_RESIN_NODE.get(),
+                AlienBlocks.NETHER_RESIN_NODE.get(),
+                AlienBlocks.RESIN_NODE.get()
             );
 
         getOrCreateTagBuilder(AVPBlockTags.RESIN_REPLACEABLE)
@@ -269,18 +270,18 @@ public class AVPBlockTagProvider extends FabricTagProvider.BlockTagProvider {
 
         getOrCreateTagBuilder(AVPBlockTags.RESIN_VEINS)
             .add(
-                AVPBlocks.ABERRANT_RESIN_VEIN.get(),
-                AVPBlocks.IRRADIATED_RESIN_VEIN.get(),
-                AVPBlocks.NETHER_RESIN_VEIN.get(),
-                AVPBlocks.RESIN_VEIN.get()
+                AlienBlocks.ABERRANT_RESIN_VEIN.get(),
+                AlienBlocks.IRRADIATED_RESIN_VEIN.get(),
+                AlienBlocks.NETHER_RESIN_VEIN.get(),
+                AlienBlocks.RESIN_VEIN.get()
             );
 
         getOrCreateTagBuilder(AVPBlockTags.RESIN_WEBS)
             .add(
-                AVPBlocks.ABERRANT_RESIN_WEB.get(),
-                AVPBlocks.IRRADIATED_RESIN_WEB.get(),
-                AVPBlocks.NETHER_RESIN_WEB.get(),
-                AVPBlocks.RESIN_WEB.get()
+                AlienBlocks.ABERRANT_RESIN_WEB.get(),
+                AlienBlocks.IRRADIATED_RESIN_WEB.get(),
+                AlienBlocks.NETHER_RESIN_WEB.get(),
+                AlienBlocks.RESIN_WEB.get()
             );
 
         getOrCreateTagBuilder(AVPBlockTags.STEEL)
@@ -397,9 +398,10 @@ public class AVPBlockTagProvider extends FabricTagProvider.BlockTagProvider {
             .addTag(AVPBlockTags.RESIN_VEINS)
             .addTag(AVPBlockTags.RESIN_WEBS)
             .add(
-                AVPBlocks.ABERRANT_RESIN.get(),
+                // TODO: Why are aberrant resin blocks here?
+                AlienBlocks.ABERRANT_RESIN.get(),
                 AVPBlocks.BLUEPRINT_BLOCK.get(),
-                AVPBlocks.IRRADIATED_RESIN.get()
+                AlienBlocks.IRRADIATED_RESIN.get()
             );
 
         getOrCreateTagBuilder(BlockTags.MINEABLE_WITH_PICKAXE)
@@ -412,8 +414,8 @@ public class AVPBlockTagProvider extends FabricTagProvider.BlockTagProvider {
             .addTag(AVPBlockTags.STEEL)
             .addTag(AVPBlockTags.TITANIUM)
             .add(
-                AVPBlocks.ABERRANT_RESIN.get(),
-                AVPBlocks.ABERRANT_RESIN_NODE.get(),
+                AlienBlocks.ABERRANT_RESIN.get(),
+                AlienBlocks.ABERRANT_RESIN_NODE.get(),
                 AVPBlocks.ALUMINUM_BLOCK.get(),
                 AVPBlocks.AMMO_CHEST.get(),
                 AVPBlocks.AUTUNITE_BLOCK.get(),
@@ -425,27 +427,27 @@ public class AVPBlockTagProvider extends FabricTagProvider.BlockTagProvider {
                 AVPBlocks.DESK_TERMINAL_BLOCK.get(),
                 AVPBlocks.GALENA_ORE.get(),
                 AVPBlocks.INDUSTRIAL_FURNACE.get(),
-                AVPBlocks.IRRADIATED_RESIN.get(),
-                AVPBlocks.IRRADIATED_RESIN_NODE.get(),
+                AlienBlocks.IRRADIATED_RESIN.get(),
+                AlienBlocks.IRRADIATED_RESIN_NODE.get(),
                 AVPBlocks.LEAD_BLOCK.get(),
                 AVPBlocks.LEAD_CHEST.get(),
                 AVPBlocks.LITHIUM_BLOCK.get(),
                 AVPBlocks.LITHIUM_ORE.get(),
                 AVPBlocks.MONAZITE_ORE.get(),
-                AVPBlocks.NETHER_RESIN.get(),
-                AVPBlocks.NETHER_RESIN_NODE.get(),
+                AlienBlocks.NETHER_RESIN.get(),
+                AlienBlocks.NETHER_RESIN_NODE.get(),
                 AVPBlocks.NUKE_BLOCK.get(),
                 AVPBlocks.RAW_BAUXITE_BLOCK.get(),
                 AVPBlocks.RAW_GALENA_BLOCK.get(),
                 AVPBlocks.RAW_MONAZITE_BLOCK.get(),
                 AVPBlocks.RAW_ZINC_BLOCK.get(),
                 AVPBlocks.REDSTONE_GENERATOR.get(),
-                AVPBlocks.RESIN.get(),
-                AVPBlocks.RESIN_NODE.get(),
-                AVPBlocks.RESIN_BRICKS.get(),
-                AVPBlocks.RESIN_O.get(),
-                AVPBlocks.RESIN_RIBBED.get(),
-                AVPBlocks.RESIN_SMOOTH.get(),
+                AlienBlocks.RESIN.get(),
+                AlienBlocks.RESIN_NODE.get(),
+                AlienBlocks.RESIN_BRICKS.get(),
+                AlienBlocks.RESIN_O.get(),
+                AlienBlocks.RESIN_RIBBED.get(),
+                AlienBlocks.RESIN_SMOOTH.get(),
                 AVPBlocks.RESONATOR_BLOCK.get(),
                 AVPBlocks.SENTRY_TURRET.get(),
                 AVPBlocks.SILICON_BLOCK.get(),

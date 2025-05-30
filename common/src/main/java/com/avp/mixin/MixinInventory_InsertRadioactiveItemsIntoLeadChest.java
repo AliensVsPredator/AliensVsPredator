@@ -18,8 +18,8 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import com.avp.common.item.AVPBlockItems;
-import com.avp.common.item.AVPItemTags;
+import com.avp.common.registry.init.item.AVPBlockItems;
+import com.avp.common.registry.tag.AVPItemTags;
 import com.avp.common.util.AVPPredicates;
 
 @Mixin(Inventory.class)

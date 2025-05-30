@@ -7,7 +7,7 @@ import net.minecraft.world.level.block.Blocks;
 
 import java.util.Set;
 
-import com.avp.common.block.AVPBlocks;
+import com.avp.common.registry.init.AVPBlocks;
 import com.avp.fabric.data.recipe.RecipeConstants;
 import com.avp.fabric.data.recipe.RecipeTemplates;
 import com.avp.fabric.data.recipe.builder.RecipeBuilder;

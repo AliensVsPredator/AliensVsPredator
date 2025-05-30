@@ -1,5 +1,7 @@
 package com.avp.service;
 
+import com.alien.common.model.lifecycle.AlienLifecycle;
+import com.alien.common.model.lifecycle.infection.AlienInfection;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.core.Registry;
@@ -16,9 +18,7 @@ import net.minecraft.world.level.ItemLike;
 import java.util.List;
 import java.util.function.Supplier;
 
-import com.avp.common.entity.spawning.AVPEntitySpawnData;
-import com.avp.common.lifecycle.AlienLifecycle;
-import com.avp.common.lifecycle.infection.AlienInfection;
+import com.avp.common.model.spawning.AVPEntitySpawnData;
 import com.avp.common.network.NetworkHandler;
 import com.avp.common.network.PacketDirection;
 import com.avp.common.registry.AVPDeferredHolder;

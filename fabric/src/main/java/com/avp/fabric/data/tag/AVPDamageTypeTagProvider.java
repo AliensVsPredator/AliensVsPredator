@@ -10,8 +10,8 @@ import net.minecraft.world.damagesource.DamageTypes;
 
 import java.util.concurrent.CompletableFuture;
 
-import com.avp.common.damage.AVPDamageTypes;
-import com.avp.common.damage.AVPDamageTypesTags;
+import com.avp.common.registry.key.AVPDamageTypeKeys;
+import com.avp.common.registry.tag.AVPDamageTypesTags;
 
 public class AVPDamageTypeTagProvider extends FabricTagProvider<DamageType> {
 
@@ -23,49 +23,49 @@ public class AVPDamageTypeTagProvider extends FabricTagProvider<DamageType> {
     protected void addTags(HolderLookup.Provider wrapperLookup) {
         getOrCreateTagBuilder(DamageTypeTags.AVOIDS_GUARDIAN_THORNS)
             .add(
-                AVPDamageTypes.BULLET,
-                AVPDamageTypes.FLAMETHROW
+                AVPDamageTypeKeys.BULLET,
+                AVPDamageTypeKeys.FLAMETHROW
             );
 
         getOrCreateTagBuilder(DamageTypeTags.BYPASSES_ARMOR)
             .add(
-                AVPDamageTypes.RADIATION
+                AVPDamageTypeKeys.RADIATION
             );
 
         getOrCreateTagBuilder(DamageTypeTags.BYPASSES_WOLF_ARMOR)
             .add(
-                AVPDamageTypes.RADIATION
+                AVPDamageTypeKeys.RADIATION
             );
 
         getOrCreateTagBuilder(DamageTypeTags.BYPASSES_ENCHANTMENTS)
             .add(
-                AVPDamageTypes.RADIATION
+                AVPDamageTypeKeys.RADIATION
             );
 
         getOrCreateTagBuilder(DamageTypeTags.BYPASSES_RESISTANCE)
             .add(
-                AVPDamageTypes.RADIATION
+                AVPDamageTypeKeys.RADIATION
             );
 
         getOrCreateTagBuilder(DamageTypeTags.IS_PROJECTILE)
             .add(
-                AVPDamageTypes.BULLET,
-                AVPDamageTypes.FLAMETHROW
+                AVPDamageTypeKeys.BULLET,
+                AVPDamageTypeKeys.FLAMETHROW
             );
 
         getOrCreateTagBuilder(DamageTypeTags.IS_FIRE)
             .add(
-                AVPDamageTypes.FLAMETHROW
+                AVPDamageTypeKeys.FLAMETHROW
             );
 
         getOrCreateTagBuilder(DamageTypeTags.NO_KNOCKBACK)
             .add(
-                AVPDamageTypes.ACID,
-                AVPDamageTypes.BULLET,
-                AVPDamageTypes.FLAMETHROW,
-                AVPDamageTypes.RADIATION,
-                AVPDamageTypes.RAZOR_WIRE,
-                AVPDamageTypes.SMOTHERING
+                AVPDamageTypeKeys.ACID,
+                AVPDamageTypeKeys.BULLET,
+                AVPDamageTypeKeys.FLAMETHROW,
+                AVPDamageTypeKeys.RADIATION,
+                AVPDamageTypeKeys.RAZOR_WIRE,
+                AVPDamageTypeKeys.SMOTHERING
             );
 
         // All missing damage types here were excluded on purpose. Yes, including lava. Lava melts machinery.
@@ -82,15 +82,15 @@ public class AVPDamageTypeTagProvider extends FabricTagProvider<DamageType> {
                 DamageTypes.IN_WALL,
                 DamageTypes.FIREWORKS,
                 DamageTypes.ON_FIRE,
-                AVPDamageTypes.RADIATION,
-                AVPDamageTypes.RAZOR_WIRE,
+                AVPDamageTypeKeys.RADIATION,
+                AVPDamageTypeKeys.RAZOR_WIRE,
                 DamageTypes.STARVE,
                 DamageTypes.STING,
                 DamageTypes.SWEET_BERRY_BUSH,
                 DamageTypes.THORNS,
                 DamageTypes.WIND_CHARGE,
                 DamageTypes.WITHER,
-                AVPDamageTypes.SMOTHERING
+                AVPDamageTypeKeys.SMOTHERING
             );
     }
 }

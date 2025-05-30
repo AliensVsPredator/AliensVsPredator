@@ -1,5 +1,6 @@
 package com.avp.fabric.data.loot;
 
+import com.alien.common.registry.init.AlienItems;
 import net.fabricmc.fabric.api.loot.v3.LootTableEvents;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.storage.loot.BuiltInLootTables;
@@ -10,7 +11,7 @@ import net.minecraft.world.level.storage.loot.entries.LootItem;
 
 import java.util.List;
 
-import com.avp.common.item.AVPItems;
+import com.avp.common.registry.init.item.AVPItems;
 
 public class LootTableModifier {
 
@@ -80,8 +81,8 @@ public class LootTableModifier {
 
         builder.modifyPools(
             (pool) -> pool
-                .add(LootItem.lootTableItem(AVPItems.OVOID_POTTERY_SHERD.get()))
-                .add(LootItem.lootTableItem(AVPItems.ROYALTY_POTTERY_SHERD.get()))
+                .add(LootItem.lootTableItem(AlienItems.OVOID_POTTERY_SHERD.get()))
+                .add(LootItem.lootTableItem(AlienItems.ROYALTY_POTTERY_SHERD.get()))
         );
     }
 
@@ -92,8 +93,8 @@ public class LootTableModifier {
 
         builder.modifyPools(
             (pool) -> pool
-                .add(LootItem.lootTableItem(AVPItems.PARASITE_POTTERY_SHERD.get()))
-                .add(LootItem.lootTableItem(AVPItems.VECTOR_POTTERY_SHERD.get()))
+                .add(LootItem.lootTableItem(AlienItems.PARASITE_POTTERY_SHERD.get()))
+                .add(LootItem.lootTableItem(AlienItems.VECTOR_POTTERY_SHERD.get()))
         );
     }
 

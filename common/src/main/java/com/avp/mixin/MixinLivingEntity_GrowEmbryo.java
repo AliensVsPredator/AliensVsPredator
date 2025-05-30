@@ -1,5 +1,12 @@
 package com.avp.mixin;
 
+import com.alien.common.gameplay.entity.living.alien.Alien;
+import com.alien.common.gameplay.entity.living.alien.parasite.Parasite;
+import com.alien.common.model.alien.Host;
+import com.alien.common.model.lifecycle.infection.AlienInfection;
+import com.alien.common.registry.AlienInfectionRegistry;
+import com.lib.common.gameplay.entity.manager.GeneManager;
+import com.lib.common.gameplay.gene.GeneProviders;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
@@ -21,14 +28,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
-
-import com.avp.common.entity.living.Host;
-import com.avp.common.entity.living.alien.Alien;
-import com.avp.common.entity.living.alien.parasite.Parasite;
-import com.avp.common.entity.living.gene.GeneProviders;
-import com.avp.common.entity.living.manager.GeneManager;
-import com.avp.common.lifecycle.infection.AlienInfection;
-import com.avp.common.lifecycle.registry.AlienInfectionRegistry;
 
 @Mixin(LivingEntity.class)
 public abstract class MixinLivingEntity_GrowEmbryo extends Entity implements Host {

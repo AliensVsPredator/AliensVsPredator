@@ -1,5 +1,8 @@
 package com.avp.fabric.data.tag;
 
+import com.alien.common.registry.init.AlienArmorItems;
+import com.alien.common.registry.init.AlienBlockItems;
+import com.alien.common.registry.init.AlienItems;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
 import net.minecraft.core.HolderLookup;
@@ -12,11 +15,11 @@ import java.util.concurrent.CompletableFuture;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
-import com.avp.common.block.AVPBlocks;
-import com.avp.common.item.AVPArmorItems;
-import com.avp.common.item.AVPBlockItems;
-import com.avp.common.item.AVPItemTags;
-import com.avp.common.item.AVPItems;
+import com.avp.common.registry.init.AVPBlocks;
+import com.avp.common.registry.init.item.AVPArmorItems;
+import com.avp.common.registry.init.item.AVPBlockItems;
+import com.avp.common.registry.init.item.AVPItems;
+import com.avp.common.registry.tag.AVPItemTags;
 import com.avp.fabric.data.compatibility.common.CommonConstants;
 
 public class AVPItemTagProvider extends FabricTagProvider.ItemTagProvider {
@@ -59,18 +62,18 @@ public class AVPItemTagProvider extends FabricTagProvider.ItemTagProvider {
 
         getOrCreateTagBuilder(AVPItemTags.NETHER_CHITIN_ARMOR)
             .add(
-                AVPArmorItems.NETHER_CHITIN_BOOTS.get(),
-                AVPArmorItems.NETHER_CHITIN_CHESTPLATE.get(),
-                AVPArmorItems.NETHER_CHITIN_HELMET.get(),
-                AVPArmorItems.NETHER_CHITIN_LEGGINGS.get()
+                AlienArmorItems.NETHER_CHITIN_BOOTS.get(),
+                AlienArmorItems.NETHER_CHITIN_CHESTPLATE.get(),
+                AlienArmorItems.NETHER_CHITIN_HELMET.get(),
+                AlienArmorItems.NETHER_CHITIN_LEGGINGS.get()
             );
 
         getOrCreateTagBuilder(AVPItemTags.PLATED_NETHER_CHITIN_ARMOR)
             .add(
-                AVPArmorItems.PLATED_NETHER_CHITIN_BOOTS.get(),
-                AVPArmorItems.PLATED_NETHER_CHITIN_CHESTPLATE.get(),
-                AVPArmorItems.PLATED_NETHER_CHITIN_HELMET.get(),
-                AVPArmorItems.PLATED_NETHER_CHITIN_LEGGINGS.get()
+                AlienArmorItems.PLATED_NETHER_CHITIN_BOOTS.get(),
+                AlienArmorItems.PLATED_NETHER_CHITIN_CHESTPLATE.get(),
+                AlienArmorItems.PLATED_NETHER_CHITIN_HELMET.get(),
+                AlienArmorItems.PLATED_NETHER_CHITIN_LEGGINGS.get()
             );
 
         getOrCreateTagBuilder(AVPItemTags.PRESSURE_ARMOR)
@@ -97,17 +100,17 @@ public class AVPItemTagProvider extends FabricTagProvider.ItemTagProvider {
                 AVPItems.AUTUNITE_DUST.get(),
                 AVPItems.URANIUM_NUGGET.get(),
                 AVPItems.URANIUM_INGOT.get(),
-                AVPItems.IRRADIATED_CHITIN.get(),
-                AVPItems.PLATED_IRRADIATED_CHITIN.get(),
-                AVPItems.IRRADIATED_RESIN_BALL.get(),
+                AlienItems.IRRADIATED_CHITIN.get(),
+                AlienItems.PLATED_IRRADIATED_CHITIN.get(),
+                AlienItems.IRRADIATED_RESIN_BALL.get(),
                 AVPBlockItems.AUTUNITE_BLOCK.get(),
                 AVPBlockItems.AUTUNITE_ORE.get(),
                 AVPBlockItems.URANIUM_BLOCK.get(),
                 AVPBlockItems.TRINITITE_BLOCK.get(),
-                AVPBlockItems.IRRADIATED_RESIN.get(),
-                AVPBlockItems.IRRADIATED_RESIN_NODE.get(),
-                AVPBlockItems.IRRADIATED_RESIN_VEIN.get(),
-                AVPBlockItems.IRRADIATED_RESIN_WEB.get()
+                AlienBlockItems.IRRADIATED_RESIN.get(),
+                AlienBlockItems.IRRADIATED_RESIN_NODE.get(),
+                AlienBlockItems.IRRADIATED_RESIN_VEIN.get(),
+                AlienBlockItems.IRRADIATED_RESIN_WEB.get()
             )
             .addOptionalTag(CommonConstants.URANIUM);
 
@@ -139,62 +142,62 @@ public class AVPItemTagProvider extends FabricTagProvider.ItemTagProvider {
         // Acid-resistant items
         getOrCreateTagBuilder(AVPItemTags.ACID_IMMUNE)
             .add(
-                AVPArmorItems.ABERRANT_CHITIN_HELMET.get(),
-                AVPArmorItems.ABERRANT_CHITIN_CHESTPLATE.get(),
-                AVPArmorItems.ABERRANT_CHITIN_LEGGINGS.get(),
-                AVPArmorItems.ABERRANT_CHITIN_BOOTS.get(),
+                AlienArmorItems.ABERRANT_CHITIN_HELMET.get(),
+                AlienArmorItems.ABERRANT_CHITIN_CHESTPLATE.get(),
+                AlienArmorItems.ABERRANT_CHITIN_LEGGINGS.get(),
+                AlienArmorItems.ABERRANT_CHITIN_BOOTS.get(),
 
-                AVPArmorItems.CHITIN_HELMET.get(),
-                AVPArmorItems.CHITIN_CHESTPLATE.get(),
-                AVPArmorItems.CHITIN_LEGGINGS.get(),
-                AVPArmorItems.CHITIN_BOOTS.get(),
+                AlienArmorItems.CHITIN_HELMET.get(),
+                AlienArmorItems.CHITIN_CHESTPLATE.get(),
+                AlienArmorItems.CHITIN_LEGGINGS.get(),
+                AlienArmorItems.CHITIN_BOOTS.get(),
 
-                AVPArmorItems.IRRADIATED_CHITIN_HELMET.get(),
-                AVPArmorItems.IRRADIATED_CHITIN_CHESTPLATE.get(),
-                AVPArmorItems.IRRADIATED_CHITIN_LEGGINGS.get(),
-                AVPArmorItems.IRRADIATED_CHITIN_BOOTS.get(),
+                AlienArmorItems.IRRADIATED_CHITIN_HELMET.get(),
+                AlienArmorItems.IRRADIATED_CHITIN_CHESTPLATE.get(),
+                AlienArmorItems.IRRADIATED_CHITIN_LEGGINGS.get(),
+                AlienArmorItems.IRRADIATED_CHITIN_BOOTS.get(),
 
-                AVPArmorItems.NETHER_CHITIN_HELMET.get(),
-                AVPArmorItems.NETHER_CHITIN_CHESTPLATE.get(),
-                AVPArmorItems.NETHER_CHITIN_LEGGINGS.get(),
-                AVPArmorItems.NETHER_CHITIN_BOOTS.get(),
+                AlienArmorItems.NETHER_CHITIN_HELMET.get(),
+                AlienArmorItems.NETHER_CHITIN_CHESTPLATE.get(),
+                AlienArmorItems.NETHER_CHITIN_LEGGINGS.get(),
+                AlienArmorItems.NETHER_CHITIN_BOOTS.get(),
 
-                AVPArmorItems.PLATED_ABERRANT_CHITIN_HELMET.get(),
-                AVPArmorItems.PLATED_ABERRANT_CHITIN_CHESTPLATE.get(),
-                AVPArmorItems.PLATED_ABERRANT_CHITIN_LEGGINGS.get(),
-                AVPArmorItems.PLATED_ABERRANT_CHITIN_BOOTS.get(),
+                AlienArmorItems.PLATED_ABERRANT_CHITIN_HELMET.get(),
+                AlienArmorItems.PLATED_ABERRANT_CHITIN_CHESTPLATE.get(),
+                AlienArmorItems.PLATED_ABERRANT_CHITIN_LEGGINGS.get(),
+                AlienArmorItems.PLATED_ABERRANT_CHITIN_BOOTS.get(),
 
-                AVPArmorItems.PLATED_CHITIN_HELMET.get(),
-                AVPArmorItems.PLATED_CHITIN_CHESTPLATE.get(),
-                AVPArmorItems.PLATED_CHITIN_LEGGINGS.get(),
-                AVPArmorItems.PLATED_CHITIN_BOOTS.get(),
+                AlienArmorItems.PLATED_CHITIN_HELMET.get(),
+                AlienArmorItems.PLATED_CHITIN_CHESTPLATE.get(),
+                AlienArmorItems.PLATED_CHITIN_LEGGINGS.get(),
+                AlienArmorItems.PLATED_CHITIN_BOOTS.get(),
 
-                AVPArmorItems.PLATED_IRRADIATED_CHITIN_HELMET.get(),
-                AVPArmorItems.PLATED_IRRADIATED_CHITIN_CHESTPLATE.get(),
-                AVPArmorItems.PLATED_IRRADIATED_CHITIN_LEGGINGS.get(),
-                AVPArmorItems.PLATED_IRRADIATED_CHITIN_BOOTS.get(),
+                AlienArmorItems.PLATED_IRRADIATED_CHITIN_HELMET.get(),
+                AlienArmorItems.PLATED_IRRADIATED_CHITIN_CHESTPLATE.get(),
+                AlienArmorItems.PLATED_IRRADIATED_CHITIN_LEGGINGS.get(),
+                AlienArmorItems.PLATED_IRRADIATED_CHITIN_BOOTS.get(),
 
-                AVPArmorItems.PLATED_NETHER_CHITIN_HELMET.get(),
-                AVPArmorItems.PLATED_NETHER_CHITIN_CHESTPLATE.get(),
-                AVPArmorItems.PLATED_NETHER_CHITIN_LEGGINGS.get(),
-                AVPArmorItems.PLATED_NETHER_CHITIN_BOOTS.get(),
+                AlienArmorItems.PLATED_NETHER_CHITIN_HELMET.get(),
+                AlienArmorItems.PLATED_NETHER_CHITIN_CHESTPLATE.get(),
+                AlienArmorItems.PLATED_NETHER_CHITIN_LEGGINGS.get(),
+                AlienArmorItems.PLATED_NETHER_CHITIN_BOOTS.get(),
 
-                AVPItems.CHITIN.get(),
-                AVPItems.NETHER_CHITIN.get(),
-                AVPItems.ABERRANT_CHITIN.get(),
-                AVPItems.IRRADIATED_CHITIN.get(),
-                AVPItems.PLATED_CHITIN.get(),
-                AVPItems.PLATED_NETHER_CHITIN.get(),
-                AVPItems.PLATED_ABERRANT_CHITIN.get(),
-                AVPItems.PLATED_IRRADIATED_CHITIN.get()
+                AlienItems.CHITIN.get(),
+                AlienItems.NETHER_CHITIN.get(),
+                AlienItems.ABERRANT_CHITIN.get(),
+                AlienItems.IRRADIATED_CHITIN.get(),
+                AlienItems.PLATED_CHITIN.get(),
+                AlienItems.PLATED_NETHER_CHITIN.get(),
+                AlienItems.PLATED_ABERRANT_CHITIN.get(),
+                AlienItems.PLATED_IRRADIATED_CHITIN.get()
             );
 
         getOrCreateTagBuilder(AVPItemTags.DECORATIVE_POT_SHERDS)
             .add(
-                AVPItems.OVOID_POTTERY_SHERD.get(),
-                AVPItems.PARASITE_POTTERY_SHERD.get(),
-                AVPItems.ROYALTY_POTTERY_SHERD.get(),
-                AVPItems.VECTOR_POTTERY_SHERD.get()
+                AlienItems.OVOID_POTTERY_SHERD.get(),
+                AlienItems.PARASITE_POTTERY_SHERD.get(),
+                AlienItems.ROYALTY_POTTERY_SHERD.get(),
+                AlienItems.VECTOR_POTTERY_SHERD.get()
             );
 
         getOrCreateTagBuilder(ItemTags.DECORATED_POT_SHERDS)
@@ -221,7 +224,7 @@ public class AVPItemTagProvider extends FabricTagProvider.ItemTagProvider {
         getOrCreateTagBuilder(AVPItemTags.URANIUM_NUGGET_LIKE)
             .add(
                 AVPItems.URANIUM_NUGGET.get(),
-                AVPItems.IRRADIATED_CHITIN.get()
+                AlienItems.IRRADIATED_CHITIN.get()
             );
 
         var industrialGlassBlockTagBuilder = getOrCreateTagBuilder(AVPItemTags.INDUSTRIAL_GLASS_BLOCK);
@@ -282,16 +285,16 @@ public class AVPItemTagProvider extends FabricTagProvider.ItemTagProvider {
 
         getOrCreateTagBuilder(ItemTags.HEAD_ARMOR)
             .add(
-                AVPArmorItems.ABERRANT_CHITIN_HELMET.get(),
-                AVPArmorItems.CHITIN_HELMET.get(),
-                AVPArmorItems.IRRADIATED_CHITIN_HELMET.get(),
+                AlienArmorItems.ABERRANT_CHITIN_HELMET.get(),
+                AlienArmorItems.CHITIN_HELMET.get(),
+                AlienArmorItems.IRRADIATED_CHITIN_HELMET.get(),
                 AVPArmorItems.JUNGLE_PREDATOR_HELMET.get(),
-                AVPArmorItems.NETHER_CHITIN_HELMET.get(),
+                AlienArmorItems.NETHER_CHITIN_HELMET.get(),
                 AVPArmorItems.MK50_HELMET.get(),
-                AVPArmorItems.PLATED_ABERRANT_CHITIN_HELMET.get(),
-                AVPArmorItems.PLATED_CHITIN_HELMET.get(),
-                AVPArmorItems.PLATED_IRRADIATED_CHITIN_HELMET.get(),
-                AVPArmorItems.PLATED_NETHER_CHITIN_HELMET.get(),
+                AlienArmorItems.PLATED_ABERRANT_CHITIN_HELMET.get(),
+                AlienArmorItems.PLATED_CHITIN_HELMET.get(),
+                AlienArmorItems.PLATED_IRRADIATED_CHITIN_HELMET.get(),
+                AlienArmorItems.PLATED_NETHER_CHITIN_HELMET.get(),
                 AVPArmorItems.PRESSURE_HELMET.get(),
                 AVPArmorItems.STEEL_HELMET.get(),
                 AVPArmorItems.TACTICAL_HELMET.get(),
@@ -300,16 +303,16 @@ public class AVPItemTagProvider extends FabricTagProvider.ItemTagProvider {
             );
         getOrCreateTagBuilder(ItemTags.CHEST_ARMOR)
             .add(
-                AVPArmorItems.ABERRANT_CHITIN_CHESTPLATE.get(),
-                AVPArmorItems.CHITIN_CHESTPLATE.get(),
-                AVPArmorItems.IRRADIATED_CHITIN_CHESTPLATE.get(),
+                AlienArmorItems.ABERRANT_CHITIN_CHESTPLATE.get(),
+                AlienArmorItems.CHITIN_CHESTPLATE.get(),
+                AlienArmorItems.IRRADIATED_CHITIN_CHESTPLATE.get(),
                 AVPArmorItems.JUNGLE_PREDATOR_CHESTPLATE.get(),
-                AVPArmorItems.NETHER_CHITIN_CHESTPLATE.get(),
+                AlienArmorItems.NETHER_CHITIN_CHESTPLATE.get(),
                 AVPArmorItems.MK50_CHESTPLATE.get(),
-                AVPArmorItems.PLATED_ABERRANT_CHITIN_CHESTPLATE.get(),
-                AVPArmorItems.PLATED_CHITIN_CHESTPLATE.get(),
-                AVPArmorItems.PLATED_IRRADIATED_CHITIN_CHESTPLATE.get(),
-                AVPArmorItems.PLATED_NETHER_CHITIN_CHESTPLATE.get(),
+                AlienArmorItems.PLATED_ABERRANT_CHITIN_CHESTPLATE.get(),
+                AlienArmorItems.PLATED_CHITIN_CHESTPLATE.get(),
+                AlienArmorItems.PLATED_IRRADIATED_CHITIN_CHESTPLATE.get(),
+                AlienArmorItems.PLATED_NETHER_CHITIN_CHESTPLATE.get(),
                 AVPArmorItems.PRESSURE_CHESTPLATE.get(),
                 AVPArmorItems.STEEL_CHESTPLATE.get(),
                 AVPArmorItems.TACTICAL_CHESTPLATE.get(),
@@ -318,16 +321,16 @@ public class AVPItemTagProvider extends FabricTagProvider.ItemTagProvider {
             );
         getOrCreateTagBuilder(ItemTags.LEG_ARMOR)
             .add(
-                AVPArmorItems.ABERRANT_CHITIN_LEGGINGS.get(),
-                AVPArmorItems.CHITIN_LEGGINGS.get(),
-                AVPArmorItems.IRRADIATED_CHITIN_LEGGINGS.get(),
+                AlienArmorItems.ABERRANT_CHITIN_LEGGINGS.get(),
+                AlienArmorItems.CHITIN_LEGGINGS.get(),
+                AlienArmorItems.IRRADIATED_CHITIN_LEGGINGS.get(),
                 AVPArmorItems.JUNGLE_PREDATOR_LEGGINGS.get(),
-                AVPArmorItems.NETHER_CHITIN_LEGGINGS.get(),
+                AlienArmorItems.NETHER_CHITIN_LEGGINGS.get(),
                 AVPArmorItems.MK50_LEGGINGS.get(),
-                AVPArmorItems.PLATED_ABERRANT_CHITIN_LEGGINGS.get(),
-                AVPArmorItems.PLATED_CHITIN_LEGGINGS.get(),
-                AVPArmorItems.PLATED_IRRADIATED_CHITIN_LEGGINGS.get(),
-                AVPArmorItems.PLATED_NETHER_CHITIN_LEGGINGS.get(),
+                AlienArmorItems.PLATED_ABERRANT_CHITIN_LEGGINGS.get(),
+                AlienArmorItems.PLATED_CHITIN_LEGGINGS.get(),
+                AlienArmorItems.PLATED_IRRADIATED_CHITIN_LEGGINGS.get(),
+                AlienArmorItems.PLATED_NETHER_CHITIN_LEGGINGS.get(),
                 AVPArmorItems.PRESSURE_LEGGINGS.get(),
                 AVPArmorItems.STEEL_LEGGINGS.get(),
                 AVPArmorItems.TACTICAL_LEGGINGS.get(),
@@ -336,16 +339,16 @@ public class AVPItemTagProvider extends FabricTagProvider.ItemTagProvider {
             );
         getOrCreateTagBuilder(ItemTags.FOOT_ARMOR)
             .add(
-                AVPArmorItems.ABERRANT_CHITIN_BOOTS.get(),
-                AVPArmorItems.CHITIN_BOOTS.get(),
-                AVPArmorItems.IRRADIATED_CHITIN_BOOTS.get(),
+                AlienArmorItems.ABERRANT_CHITIN_BOOTS.get(),
+                AlienArmorItems.CHITIN_BOOTS.get(),
+                AlienArmorItems.IRRADIATED_CHITIN_BOOTS.get(),
                 AVPArmorItems.JUNGLE_PREDATOR_BOOTS.get(),
-                AVPArmorItems.NETHER_CHITIN_BOOTS.get(),
+                AlienArmorItems.NETHER_CHITIN_BOOTS.get(),
                 AVPArmorItems.MK50_BOOTS.get(),
-                AVPArmorItems.PLATED_ABERRANT_CHITIN_BOOTS.get(),
-                AVPArmorItems.PLATED_CHITIN_BOOTS.get(),
-                AVPArmorItems.PLATED_IRRADIATED_CHITIN_BOOTS.get(),
-                AVPArmorItems.PLATED_NETHER_CHITIN_BOOTS.get(),
+                AlienArmorItems.PLATED_ABERRANT_CHITIN_BOOTS.get(),
+                AlienArmorItems.PLATED_CHITIN_BOOTS.get(),
+                AlienArmorItems.PLATED_IRRADIATED_CHITIN_BOOTS.get(),
+                AlienArmorItems.PLATED_NETHER_CHITIN_BOOTS.get(),
                 AVPArmorItems.PRESSURE_BOOTS.get(),
                 AVPArmorItems.STEEL_BOOTS.get(),
                 AVPArmorItems.TACTICAL_BOOTS.get(),

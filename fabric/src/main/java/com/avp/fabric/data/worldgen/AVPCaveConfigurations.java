@@ -20,7 +20,7 @@ import net.minecraft.world.level.levelgen.feature.stateproviders.WeightedStatePr
 import java.util.List;
 
 import com.avp.AVPResources;
-import com.avp.common.block.AVPBlocks;
+import com.avp.common.registry.init.AVPBlocks;
 
 public class AVPCaveConfigurations {
 

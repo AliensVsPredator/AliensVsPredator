@@ -5,7 +5,7 @@ import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.DyeItem;
 import net.minecraft.world.item.Items;
 
-import com.avp.common.block.AVPBlocks;
+import com.avp.common.registry.init.AVPBlocks;
 import com.avp.fabric.data.recipe.builder.RecipeBuilder;
 import com.avp.fabric.data.recipe.util.RecipeUtil;
 

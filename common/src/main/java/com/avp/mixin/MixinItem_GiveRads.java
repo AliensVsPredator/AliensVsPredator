@@ -11,9 +11,9 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import com.avp.common.effect.AVPMobEffects;
-import com.avp.common.effect.RadiationStatusEffect;
-import com.avp.common.item.AVPItemTags;
+import com.avp.common.gameplay.effect.RadiationStatusEffect;
+import com.avp.common.registry.init.AVPMobEffects;
+import com.avp.common.registry.tag.AVPItemTags;
 import com.avp.common.util.AVPPredicates;
 
 @Mixin(Item.class)

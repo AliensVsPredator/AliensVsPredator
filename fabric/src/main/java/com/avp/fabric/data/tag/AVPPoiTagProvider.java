@@ -9,7 +9,7 @@ import net.minecraft.world.entity.ai.village.poi.PoiType;
 
 import java.util.concurrent.CompletableFuture;
 
-import com.avp.common.entity.living.villager.poi.AVPVillagerPoiKeys;
+import com.avp.common.registry.key.AVPVillagerPoiKeys;
 
 public class AVPPoiTagProvider extends FabricTagProvider<PoiType> {
 

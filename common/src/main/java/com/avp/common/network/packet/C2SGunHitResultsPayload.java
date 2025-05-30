@@ -1,5 +1,6 @@
 package com.avp.common.network.packet;
 
+import com.human.common.gameplay.item.gun.attack.GunHitResult;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
@@ -9,7 +10,6 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 
 import com.avp.AVPResources;
-import com.avp.common.item.gun.attack.GunHitResult;
 import com.avp.common.network.codec.ListStreamCodec;
 
 public record C2SGunHitResultsPayload(

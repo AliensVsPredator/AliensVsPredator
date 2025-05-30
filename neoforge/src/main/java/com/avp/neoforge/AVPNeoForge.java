@@ -1,5 +1,7 @@
 package com.avp.neoforge;
 
+import com.alien.common.registry.AlienInfectionRegistry;
+import com.alien.common.registry.AlienLifecycleRegistry;
 import mod.azure.azurelib.rewrite.animation.cache.AzIdentityRegistry;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
@@ -26,13 +28,11 @@ import net.neoforged.neoforge.network.handling.DirectionalPayloadHandler;
 import net.neoforged.neoforge.network.registration.HandlerThread;
 
 import com.avp.AVP;
-import com.avp.common.entity.living.villager.gift.AVPVillagerGiftKeys;
-import com.avp.common.entity.living.villager.profession.AVPVillagerProfessions;
-import com.avp.common.entity.type.AVPEntityTypes;
-import com.avp.common.lifecycle.registry.AlienInfectionRegistry;
-import com.avp.common.lifecycle.registry.AlienLifecycleRegistry;
+import com.avp.common.data.worldgen.AVPVillageInjection;
 import com.avp.common.network.NetworkHandler;
-import com.avp.data.worldgen.AVPVillageInjection;
+import com.avp.common.registry.init.AVPVillagerProfessions;
+import com.avp.common.registry.init.entity_type.AVPEntityTypes;
+import com.avp.common.registry.key.AVPVillagerGiftKeys;
 import com.avp.mixin.GiveGiftToHeroAccessor;
 import com.avp.mixin.ParrotSoundMapAccessor;
 import com.avp.neoforge.service.NeoForgeRegistryService;

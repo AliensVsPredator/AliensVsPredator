@@ -7,8 +7,8 @@ import net.minecraft.world.item.crafting.Ingredient;
 
 import java.util.function.Supplier;
 
-import com.avp.common.block.AVPBlocks;
-import com.avp.common.block.BlockProperties;
+import com.avp.common.gameplay.block.property.BlockProperties;
+import com.avp.common.registry.init.AVPBlocks;
 import com.avp.fabric.data.recipe.builder.RecipeBuilder;
 import com.avp.fabric.data.recipe.util.RecipeUtil;
 

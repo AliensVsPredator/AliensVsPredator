@@ -1,5 +1,48 @@
 package com.avp.client;
 
+import com.alien.client.AlienClient;
+import com.alien.client.particle.AcidParticleProvider;
+import com.alien.client.particle.BlueAcidParticleProvider;
+import com.alien.client.particle.IrradiatedAcidParticleProvider;
+import com.alien.client.render.entity.AcidRenderer;
+import com.alien.client.render.entity.ChestbursterRenderer;
+import com.alien.client.render.entity.DroneRenderer;
+import com.alien.client.render.entity.OvomorphRenderer;
+import com.alien.client.render.entity.PraetorianRenderer;
+import com.alien.client.render.entity.QueenRenderer;
+import com.alien.client.render.entity.WarriorRenderer;
+import com.alien.client.render.entity.parasite.facehugger.FacehuggerRenderer;
+import com.human.client.render.armor.MK50ArmorRenderer;
+import com.human.client.render.armor.PressureArmorRenderer;
+import com.human.client.render.armor.TacticalArmorRenderer;
+import com.human.client.render.armor.TacticalCamoArmorRenderer;
+import com.human.client.render.block.DeskTerminalRenderer;
+import com.human.client.render.block.ResonatorRenderer;
+import com.human.client.render.entity.FlamethrowRenderer;
+import com.human.client.render.entity.MarineRenderer;
+import com.human.client.render.entity.MushroomCloudRenderer;
+import com.human.client.render.entity.NukeRenderer;
+import com.human.client.render.entity.RocketRenderer;
+import com.human.client.render.entity.SentryTurretRenderer;
+import com.human.client.render.item.DeskTerminalItemRenderer;
+import com.human.client.render.item.ResonatorItemRenderer;
+import com.human.client.render.item.SentryTurretItemRenderer;
+import com.human.client.render.item.gun.FlamethrowerItemRenderer;
+import com.human.client.render.item.gun.muzzled.impl.F903WEItemRenderer;
+import com.human.client.render.item.gun.muzzled.impl.M3712ShotgunItemRenderer;
+import com.human.client.render.item.gun.muzzled.impl.M41APulseRifleItemRenderer;
+import com.human.client.render.item.gun.muzzled.impl.M42A3SniperRifleItemRenderer;
+import com.human.client.render.item.gun.muzzled.impl.M4RABattleRifleItemRenderer;
+import com.human.client.render.item.gun.muzzled.impl.M56SmartgunItemRenderer;
+import com.human.client.render.item.gun.muzzled.impl.M6BRocketLauncherItemRenderer;
+import com.human.client.render.item.gun.muzzled.impl.M88Mod4CombatPistolItemRenderer;
+import com.human.client.render.item.gun.muzzled.impl.OldPainlessItemRenderer;
+import com.human.client.render.item.gun.muzzled.impl.ZX76ShotgunItemRenderer;
+import com.human.client.screen.ArmorCaseScreen;
+import com.human.client.screen.IndustrialFurnaceScreen;
+import com.predator.client.render.armor.JunglePredatorArmorRenderer;
+import com.predator.client.render.block.TripMineRenderer;
+import com.predator.client.render.entity.YautjaRenderer;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.blockentity.ChestRenderer;
@@ -9,71 +52,23 @@ import net.minecraft.world.item.component.DyedItemColor;
 import java.util.List;
 
 import com.avp.client.input.keybind.AVPKeybindingRegistry;
-import com.avp.client.particle.AcidParticleProvider;
-import com.avp.client.particle.BlueAcidParticleProvider;
-import com.avp.client.particle.IrradiatedAcidParticleProvider;
-import com.avp.client.render.armor.AberrantChitinArmorRenderer;
-import com.avp.client.render.armor.ChitinArmorRenderer;
-import com.avp.client.render.armor.IrradiatedChitinArmorRenderer;
-import com.avp.client.render.armor.JunglePredatorArmorRenderer;
-import com.avp.client.render.armor.MK50ArmorRenderer;
-import com.avp.client.render.armor.NetherChitinArmorRenderer;
-import com.avp.client.render.armor.PlatedAberrantChitinArmorRenderer;
-import com.avp.client.render.armor.PlatedChitinArmorRenderer;
-import com.avp.client.render.armor.PlatedIrradiatedChitinArmorRenderer;
-import com.avp.client.render.armor.PlatedNetherChitinArmorRenderer;
-import com.avp.client.render.armor.PressureArmorRenderer;
-import com.avp.client.render.armor.TacticalArmorRenderer;
-import com.avp.client.render.armor.TacticalCamoArmorRenderer;
-import com.avp.client.render.block.DeskTerminalRenderer;
-import com.avp.client.render.block.ResonatorRenderer;
-import com.avp.client.render.block.TripMineRenderer;
-import com.avp.client.render.entity.AcidRenderer;
-import com.avp.client.render.entity.ChestbursterRenderer;
-import com.avp.client.render.entity.DroneRenderer;
-import com.avp.client.render.entity.FlamethrowRenderer;
-import com.avp.client.render.entity.MarineRenderer;
-import com.avp.client.render.entity.MushroomCloudRenderer;
-import com.avp.client.render.entity.NukeRenderer;
-import com.avp.client.render.entity.OvomorphRenderer;
-import com.avp.client.render.entity.PraetorianRenderer;
-import com.avp.client.render.entity.QueenRenderer;
-import com.avp.client.render.entity.RocketRenderer;
-import com.avp.client.render.entity.SentryTurretRenderer;
-import com.avp.client.render.entity.WarriorRenderer;
-import com.avp.client.render.entity.YautjaRenderer;
-import com.avp.client.render.entity.parasite.facehugger.FacehuggerRenderer;
-import com.avp.client.render.item.DeskTerminalItemRenderer;
-import com.avp.client.render.item.ResonatorItemRenderer;
-import com.avp.client.render.item.SentryTurretItemRenderer;
 import com.avp.client.render.item.SpinningItemRenderer;
 import com.avp.client.render.item.TripMineItemRenderer;
-import com.avp.client.render.item.gun.FlamethrowerItemRenderer;
-import com.avp.client.render.item.gun.muzzled.impl.F903WEItemRenderer;
-import com.avp.client.render.item.gun.muzzled.impl.M3712ShotgunItemRenderer;
-import com.avp.client.render.item.gun.muzzled.impl.M41APulseRifleItemRenderer;
-import com.avp.client.render.item.gun.muzzled.impl.M42A3SniperRifleItemRenderer;
-import com.avp.client.render.item.gun.muzzled.impl.M4RABattleRifleItemRenderer;
-import com.avp.client.render.item.gun.muzzled.impl.M56SmartgunItemRenderer;
-import com.avp.client.render.item.gun.muzzled.impl.M6BRocketLauncherItemRenderer;
-import com.avp.client.render.item.gun.muzzled.impl.M88Mod4CombatPistolItemRenderer;
-import com.avp.client.render.item.gun.muzzled.impl.OldPainlessItemRenderer;
-import com.avp.client.render.item.gun.muzzled.impl.ZX76ShotgunItemRenderer;
-import com.avp.client.screen.ArmorCaseScreen;
-import com.avp.client.screen.IndustrialFurnaceScreen;
-import com.avp.common.block.AVPBlocks;
-import com.avp.common.block.entity.AVPBlockEntityTypes;
-import com.avp.common.entity.type.AVPEntityTypes;
-import com.avp.common.item.AVPArmorItems;
-import com.avp.common.item.AVPBlockItems;
-import com.avp.common.item.AVPItems;
-import com.avp.common.menu.AVPMenuTypes;
-import com.avp.common.particle.AVPParticleTypes;
+import com.avp.common.registry.init.AVPBlockEntityTypes;
+import com.avp.common.registry.init.AVPBlocks;
+import com.avp.common.registry.init.AVPMenuTypes;
+import com.avp.common.registry.init.AVPParticleTypes;
+import com.avp.common.registry.init.entity_type.AVPEntityTypes;
+import com.avp.common.registry.init.item.AVPArmorItems;
+import com.avp.common.registry.init.item.AVPBlockItems;
+import com.avp.common.registry.init.item.AVPItems;
 import com.avp.service.Services;
 
 public class AVPClient {
 
     public static void initialize() {
+        AlienClient.initialize();
+
         registerArmorRenderers();
         registerBlockEntityRenderers();
         registerBlockRenderLayers();
@@ -87,33 +82,6 @@ public class AVPClient {
     }
 
     private static void registerArmorRenderers() {
-        Services.CLIENT_REGISTRY.registerArmorRenderer(
-            AberrantChitinArmorRenderer::new,
-            List.of(
-                AVPArmorItems.ABERRANT_CHITIN_HELMET,
-                AVPArmorItems.ABERRANT_CHITIN_CHESTPLATE,
-                AVPArmorItems.ABERRANT_CHITIN_LEGGINGS,
-                AVPArmorItems.ABERRANT_CHITIN_BOOTS
-            )
-        );
-        Services.CLIENT_REGISTRY.registerArmorRenderer(
-            ChitinArmorRenderer::new,
-            List.of(
-                AVPArmorItems.CHITIN_HELMET,
-                AVPArmorItems.CHITIN_CHESTPLATE,
-                AVPArmorItems.CHITIN_LEGGINGS,
-                AVPArmorItems.CHITIN_BOOTS
-            )
-        );
-        Services.CLIENT_REGISTRY.registerArmorRenderer(
-            IrradiatedChitinArmorRenderer::new,
-            List.of(
-                AVPArmorItems.IRRADIATED_CHITIN_HELMET,
-                AVPArmorItems.IRRADIATED_CHITIN_CHESTPLATE,
-                AVPArmorItems.IRRADIATED_CHITIN_LEGGINGS,
-                AVPArmorItems.IRRADIATED_CHITIN_BOOTS
-            )
-        );
         Services.CLIENT_REGISTRY.registerArmorRenderer(
             JunglePredatorArmorRenderer::new,
             List.of(
@@ -130,51 +98,6 @@ public class AVPClient {
                 AVPArmorItems.MK50_CHESTPLATE,
                 AVPArmorItems.MK50_LEGGINGS,
                 AVPArmorItems.MK50_BOOTS
-            )
-        );
-        Services.CLIENT_REGISTRY.registerArmorRenderer(
-            NetherChitinArmorRenderer::new,
-            List.of(
-                AVPArmorItems.NETHER_CHITIN_HELMET,
-                AVPArmorItems.NETHER_CHITIN_CHESTPLATE,
-                AVPArmorItems.NETHER_CHITIN_LEGGINGS,
-                AVPArmorItems.NETHER_CHITIN_BOOTS
-            )
-        );
-        Services.CLIENT_REGISTRY.registerArmorRenderer(
-            PlatedAberrantChitinArmorRenderer::new,
-            List.of(
-                AVPArmorItems.PLATED_ABERRANT_CHITIN_HELMET,
-                AVPArmorItems.PLATED_ABERRANT_CHITIN_CHESTPLATE,
-                AVPArmorItems.PLATED_ABERRANT_CHITIN_LEGGINGS,
-                AVPArmorItems.PLATED_ABERRANT_CHITIN_BOOTS
-            )
-        );
-        Services.CLIENT_REGISTRY.registerArmorRenderer(
-            PlatedChitinArmorRenderer::new,
-            List.of(
-                AVPArmorItems.PLATED_CHITIN_HELMET,
-                AVPArmorItems.PLATED_CHITIN_CHESTPLATE,
-                AVPArmorItems.PLATED_CHITIN_LEGGINGS,
-                AVPArmorItems.PLATED_CHITIN_BOOTS
-            )
-        );
-        Services.CLIENT_REGISTRY.registerArmorRenderer(
-            PlatedIrradiatedChitinArmorRenderer::new,
-            List.of(
-                AVPArmorItems.PLATED_IRRADIATED_CHITIN_HELMET,
-                AVPArmorItems.PLATED_IRRADIATED_CHITIN_CHESTPLATE,
-                AVPArmorItems.PLATED_IRRADIATED_CHITIN_LEGGINGS,
-                AVPArmorItems.PLATED_IRRADIATED_CHITIN_BOOTS
-            )
-        );
-        Services.CLIENT_REGISTRY.registerArmorRenderer(
-            PlatedNetherChitinArmorRenderer::new,
-            List.of(
-                AVPArmorItems.PLATED_NETHER_CHITIN_HELMET,
-                AVPArmorItems.PLATED_NETHER_CHITIN_CHESTPLATE,
-                AVPArmorItems.PLATED_NETHER_CHITIN_LEGGINGS,
-                AVPArmorItems.PLATED_NETHER_CHITIN_BOOTS
             )
         );
         Services.CLIENT_REGISTRY.registerArmorRenderer(
@@ -243,14 +166,6 @@ public class AVPClient {
     private static void registerBlockRenderLayers() {
         Services.CLIENT_REGISTRY.registerBlockRenderLayer(AVPBlocks.FERROALUMINUM_CHAIN_FENCE, RenderType.cutout());
         Services.CLIENT_REGISTRY.registerBlockRenderLayer(AVPBlocks.FERROALUMINUM_GRATE, RenderType.cutout());
-        Services.CLIENT_REGISTRY.registerBlockRenderLayer(AVPBlocks.IRRADIATED_RESIN_VEIN, RenderType.cutout());
-        Services.CLIENT_REGISTRY.registerBlockRenderLayer(AVPBlocks.IRRADIATED_RESIN_WEB, RenderType.cutout());
-        Services.CLIENT_REGISTRY.registerBlockRenderLayer(AVPBlocks.ABERRANT_RESIN_VEIN, RenderType.cutout());
-        Services.CLIENT_REGISTRY.registerBlockRenderLayer(AVPBlocks.ABERRANT_RESIN_WEB, RenderType.cutout());
-        Services.CLIENT_REGISTRY.registerBlockRenderLayer(AVPBlocks.NETHER_RESIN_VEIN, RenderType.cutout());
-        Services.CLIENT_REGISTRY.registerBlockRenderLayer(AVPBlocks.NETHER_RESIN_WEB, RenderType.cutout());
-        Services.CLIENT_REGISTRY.registerBlockRenderLayer(AVPBlocks.RESIN_VEIN, RenderType.cutout());
-        Services.CLIENT_REGISTRY.registerBlockRenderLayer(AVPBlocks.RESIN_WEB, RenderType.cutout());
         Services.CLIENT_REGISTRY.registerBlockRenderLayer(AVPBlocks.STEEL_BARS, RenderType.cutout());
         Services.CLIENT_REGISTRY.registerBlockRenderLayer(AVPBlocks.STEEL_CHAIN_FENCE, RenderType.cutout());
         Services.CLIENT_REGISTRY.registerBlockRenderLayer(AVPBlocks.STEEL_GRATE, RenderType.cutout());
@@ -263,7 +178,6 @@ public class AVPClient {
         Services.CLIENT_REGISTRY.registerBlockRenderLayer(AVPBlocks.STEEL_DOOR, RenderType.cutout());
         Services.CLIENT_REGISTRY.registerBlockRenderLayer(AVPBlocks.TITANIUM_DOOR, RenderType.cutout());
         Services.CLIENT_REGISTRY.registerBlockRenderLayer(AVPBlocks.FERROALUMINUM_TRAP_DOOR, RenderType.cutout());
-        Services.CLIENT_REGISTRY.registerBlockRenderLayer(AVPBlocks.ROYAL_JELLY_BLOCK, RenderType.translucent());
         Services.CLIENT_REGISTRY.registerBlockRenderLayer(AVPBlocks.TRINITITE_BLOCK, RenderType.translucent());
         Services.CLIENT_REGISTRY.registerBlockRenderLayer(AVPBlocks.FERROALUMINUM_GRATE_SLAB, RenderType.cutout());
         Services.CLIENT_REGISTRY.registerBlockRenderLayer(AVPBlocks.FERROALUMINUM_GRATE_STAIRS, RenderType.cutout());

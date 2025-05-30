@@ -10,8 +10,8 @@ import net.minecraft.world.level.biome.Biomes;
 
 import java.util.concurrent.CompletableFuture;
 
-import com.avp.common.worldgen.biome.AVPBiomeTags;
-import com.avp.common.worldgen.biome.AVPBiomes;
+import com.avp.common.registry.key.AVPBiomeKeys;
+import com.avp.common.registry.tag.AVPBiomeTags;
 
 public class AVPBiomeTagProvider extends FabricTagProvider<Biome> {
 
@@ -79,6 +79,6 @@ public class AVPBiomeTagProvider extends FabricTagProvider<Biome> {
             .addOptionalTag(BiomeTags.IS_OVERWORLD);
 
         getOrCreateTagBuilder(AVPBiomeTags.IS_IRRADIATED)
-            .addOptional(AVPBiomes.NUKED_BIOME);
+            .addOptional(AVPBiomeKeys.NUKED_BIOME);
     }
 }

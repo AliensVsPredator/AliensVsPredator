@@ -1,10 +1,9 @@
 package com.avp.common.network.codec;
 
+import com.human.common.gameplay.item.gun.attack.GunHitResult;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import org.jetbrains.annotations.NotNull;
-
-import com.avp.common.item.gun.attack.GunHitResult;
 
 public class GunHitResultCodec implements StreamCodec<FriendlyByteBuf, GunHitResult> {
 

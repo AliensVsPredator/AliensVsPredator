@@ -29,7 +29,7 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import com.avp.client.util.KeyMappingUtil;
+import com.avp.client.input.keybind.util.KeyMappingUtil;
 import com.avp.service.ClientRegistryService;
 
 public class NeoForgeClientRegistryService implements ClientRegistryService {

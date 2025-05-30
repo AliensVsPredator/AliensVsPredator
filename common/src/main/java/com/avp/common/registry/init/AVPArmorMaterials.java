@@ -1,0 +1,181 @@
+package com.avp.common.registry.init;
+
+import net.minecraft.core.Holder;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.world.item.ArmorItem;
+import net.minecraft.world.item.ArmorMaterial;
+import net.minecraft.world.item.crafting.Ingredient;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.List;
+import java.util.Map;
+import java.util.function.Supplier;
+
+import com.avp.AVPResources;
+import com.avp.common.registry.AVPDeferredHolder;
+import com.avp.common.registry.init.item.AVPItems;
+import com.avp.service.Services;
+
+public class AVPArmorMaterials {
+
+    public static final AVPDeferredHolder<ArmorMaterial> MK50 = register(
+        "mk50",
+        relativeDefense(
+            net.minecraft.world.item.ArmorMaterials.IRON,
+            Map.ofEntries(
+                Map.entry(ArmorItem.Type.CHESTPLATE, -2),
+                Map.entry(ArmorItem.Type.LEGGINGS, -1)
+            )
+        ),
+        6,
+        AVPSoundEvents.ITEM_ARMOR_EQUIP_MK50::getHolder,
+        () -> Ingredient.of(AVPItems.LEAD_INGOT.get()),
+        0,
+        0,
+        true
+    );
+
+    public static final AVPDeferredHolder<ArmorMaterial> PRESSURE = register(
+        "pressure",
+        relativeDefense(
+            net.minecraft.world.item.ArmorMaterials.IRON,
+            Map.ofEntries(
+                Map.entry(ArmorItem.Type.CHESTPLATE, -2),
+                Map.entry(ArmorItem.Type.LEGGINGS, -1)
+            )
+        ),
+        6,
+        AVPSoundEvents.ITEM_ARMOR_EQUIP_PRESSURE::getHolder,
+        () -> Ingredient.of(AVPItems.ALUMINUM_INGOT.get()),
+        0,
+        0,
+        false
+    );
+
+    public static final AVPDeferredHolder<ArmorMaterial> STEEL = register(
+        "steel",
+        relativeDefense(
+            net.minecraft.world.item.ArmorMaterials.IRON,
+            Map.ofEntries(
+                Map.entry(ArmorItem.Type.HELMET, 1),
+                Map.entry(ArmorItem.Type.CHESTPLATE, 1),
+                Map.entry(ArmorItem.Type.LEGGINGS, 1),
+                Map.entry(ArmorItem.Type.BOOTS, 1)
+            )
+        ),
+        5, // TODO:
+        AVPSoundEvents.ITEM_ARMOR_EQUIP_STEEL::getHolder,
+        () -> Ingredient.of(AVPItems.STEEL_INGOT.get()),
+        0,
+        0,
+        false
+    );
+
+    public static final AVPDeferredHolder<ArmorMaterial> TACTICAL = register(
+        "tactical",
+        Map.ofEntries(
+            Map.entry(ArmorItem.Type.HELMET, 2),
+            Map.entry(ArmorItem.Type.CHESTPLATE, 6),
+            Map.entry(ArmorItem.Type.LEGGINGS, 3),
+            Map.entry(ArmorItem.Type.BOOTS, 2)
+        ),
+        5,
+        AVPSoundEvents.ITEM_ARMOR_EQUIP_TACTICAL::getHolder,
+        () -> Ingredient.of(AVPItems.STEEL_INGOT.get()),
+        0,
+        0,
+        false
+    );
+
+    public static final AVPDeferredHolder<ArmorMaterial> TITANIUM = register(
+        "titanium",
+        relativeDefense(
+            net.minecraft.world.item.ArmorMaterials.IRON,
+            Map.ofEntries(
+                Map.entry(ArmorItem.Type.HELMET, 1),
+                Map.entry(ArmorItem.Type.CHESTPLATE, 2),
+                Map.entry(ArmorItem.Type.LEGGINGS, 1),
+                Map.entry(ArmorItem.Type.BOOTS, 1)
+            )
+        ),
+        5,
+        AVPSoundEvents.ITEM_ARMOR_EQUIP_TITANIUM::getHolder,
+        () -> Ingredient.of(AVPItems.TITANIUM_INGOT.get()),
+        1,
+        0,
+        false
+    );
+
+    public static final AVPDeferredHolder<ArmorMaterial> VERITANIUM = register(
+        "veritanium",
+        relativeDefense(
+            net.minecraft.world.item.ArmorMaterials.NETHERITE,
+            Map.ofEntries(
+                Map.entry(ArmorItem.Type.HELMET, 1),
+                Map.entry(ArmorItem.Type.CHESTPLATE, 1),
+                Map.entry(ArmorItem.Type.LEGGINGS, 1),
+                Map.entry(ArmorItem.Type.BOOTS, 1)
+            )
+        ),
+        6,
+        AVPSoundEvents.ITEM_ARMOR_EQUIP_VERITANIUM::getHolder,
+        () -> Ingredient.of(AVPItems.VERITANIUM_SHARD.get()),
+        4,
+        0.15F,
+        false
+    );
+
+    public static AVPDeferredHolder<ArmorMaterial> register(
+        String id,
+        Map<ArmorItem.Type, Integer> defensePoints,
+        int enchantability,
+        Supplier<Holder<SoundEvent>> equipSoundHolderSupplier,
+        Supplier<Ingredient> repairIngredientSupplier,
+        float toughness,
+        float knockbackResistance,
+        boolean dyeable
+    ) {
+        var resourceLocation = AVPResources.location(id);
+
+        List<ArmorMaterial.Layer> layers = List.of(
+            new ArmorMaterial.Layer(resourceLocation, "", dyeable)
+        );
+
+        return Services.REGISTRY.register(
+            BuiltInRegistries.ARMOR_MATERIAL,
+            id,
+            () -> new ArmorMaterial(
+                defensePoints,
+                enchantability,
+                equipSoundHolderSupplier.get(),
+                repairIngredientSupplier,
+                layers,
+                toughness,
+                knockbackResistance
+            )
+        );
+    }
+
+    public static Map<ArmorItem.Type, Integer> relativeDefense(
+        Holder<ArmorMaterial> armorMaterialHolder,
+        Map<ArmorItem.Type, Integer> additiveDefense
+    ) {
+        var armorMaterial = armorMaterialHolder.value();
+
+        return Map.ofEntries(
+            compute(ArmorItem.Type.HELMET, additiveDefense, armorMaterial),
+            compute(ArmorItem.Type.CHESTPLATE, additiveDefense, armorMaterial),
+            compute(ArmorItem.Type.LEGGINGS, additiveDefense, armorMaterial),
+            compute(ArmorItem.Type.BOOTS, additiveDefense, armorMaterial)
+        );
+    }
+
+    private static @NotNull Map.Entry<ArmorItem.Type, Integer> compute(
+        ArmorItem.Type type,
+        Map<ArmorItem.Type, Integer> additiveDefense,
+        ArmorMaterial armorMaterial
+    ) {
+        return Map.entry(type, armorMaterial.getDefense(type) + additiveDefense.getOrDefault(type, 0));
+    }
+}

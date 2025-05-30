@@ -1,9 +1,9 @@
 package com.avp.common.network;
 
+import com.human.common.gameplay.item.gun.GunReloading;
+import com.human.common.gameplay.item.gun.attack.hitscan.GunHitScanAttackHandler;
 import net.minecraft.world.entity.player.Player;
 
-import com.avp.common.item.gun.GunReloading;
-import com.avp.common.item.gun.attack.hitscan.GunHitScanAttackHandler;
 import com.avp.common.network.packet.C2SGunHitResultsPayload;
 import com.avp.common.network.packet.C2SGunReloadPayload;
 

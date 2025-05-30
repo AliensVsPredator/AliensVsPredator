@@ -12,10 +12,10 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.level.GameRules;
 
 import com.avp.AVP;
-import com.avp.common.entity.living.villager.gift.AVPVillagerGiftKeys;
-import com.avp.common.entity.living.villager.profession.AVPVillagerProfessions;
-import com.avp.common.entity.type.AVPEntityTypes;
-import com.avp.data.worldgen.AVPVillageInjection;
+import com.avp.common.data.worldgen.AVPVillageInjection;
+import com.avp.common.registry.init.AVPVillagerProfessions;
+import com.avp.common.registry.init.entity_type.AVPEntityTypes;
+import com.avp.common.registry.key.AVPVillagerGiftKeys;
 import com.avp.fabric.common.DispenserBlockBehaviors;
 import com.avp.fabric.common.FlammableBlockRegistry;
 import com.avp.fabric.common.worldgen.WorldGen;

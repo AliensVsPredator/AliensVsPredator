@@ -1,14 +1,13 @@
 package com.avp.client.render.layer;
 
 import com.mojang.math.Axis;
+import com.predator.common.gameplay.entity.living.yautja.Yautja;
 import mod.azure.azurelib.rewrite.model.AzBone;
 import mod.azure.azurelib.rewrite.render.AzRendererPipelineContext;
 import mod.azure.azurelib.rewrite.render.layer.AzBlockAndItemLayer;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
-
-import com.avp.common.entity.living.yautja.Yautja;
 
 public class YautjaItemLayer extends AzBlockAndItemLayer<Yautja> {
 

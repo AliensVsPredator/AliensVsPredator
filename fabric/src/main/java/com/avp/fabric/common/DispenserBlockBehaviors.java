@@ -11,7 +11,7 @@ import net.minecraft.world.level.gameevent.GameEvent;
 import org.jetbrains.annotations.NotNull;
 
 import com.avp.AVP;
-import com.avp.common.item.AVPSpawnEggItems;
+import com.avp.common.registry.init.item.AVPSpawnEggItems;
 
 public class DispenserBlockBehaviors {
 

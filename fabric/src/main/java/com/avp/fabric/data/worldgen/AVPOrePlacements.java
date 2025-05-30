@@ -4,7 +4,7 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.world.level.levelgen.placement.PlacedFeature;
 
-import com.avp.data.worldgen.AVPOres;
+import com.avp.common.data.worldgen.AVPOres;
 
 public class AVPOrePlacements {
 

@@ -1,5 +1,7 @@
 package com.avp.neoforge.mixin;
 
+import com.alien.common.data.AlienVariantTypes;
+import com.alien.common.gameplay.block.resin.ResinBlock;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.BlockGetter;
@@ -7,9 +9,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.common.extensions.IBlockExtension;
 import org.jetbrains.annotations.NotNull;
 import org.spongepowered.asm.mixin.Mixin;
-
-import com.avp.common.block.resin.ResinBlock;
-import com.avp.common.entity.living.alien.AlienVariantTypes;
 
 @Mixin(ResinBlock.class)
 public class MixinBlock_FlammableResinBlock implements IBlockExtension {

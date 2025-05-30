@@ -1,5 +1,6 @@
 package com.avp.mixin.client;
 
+import com.human.common.gameplay.item.GunItem;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -11,9 +12,8 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import com.avp.common.component.AVPDataComponents;
-import com.avp.common.item.AVPItems;
-import com.avp.common.item.GunItem;
+import com.avp.common.registry.init.AVPDataComponents;
+import com.avp.common.registry.init.item.AVPItems;
 import com.avp.common.util.AVPPredicates;
 import com.avp.common.util.AmmunitionIndicatorUtil;
 

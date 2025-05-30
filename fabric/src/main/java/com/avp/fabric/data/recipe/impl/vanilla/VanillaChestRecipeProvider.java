@@ -3,8 +3,8 @@ package com.avp.fabric.data.recipe.impl.vanilla;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.world.item.Items;
 
-import com.avp.common.item.AVPBlockItems;
-import com.avp.common.item.AVPItems;
+import com.avp.common.registry.init.item.AVPBlockItems;
+import com.avp.common.registry.init.item.AVPItems;
 import com.avp.fabric.data.recipe.builder.RecipeBuilder;
 
 public class VanillaChestRecipeProvider {

@@ -1,5 +1,6 @@
 package com.avp.client.compat.jei;
 
+import com.human.common.gameplay.recipe.IndustrialFurnaceRecipe;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
 import mezz.jei.api.recipe.RecipeType;
@@ -16,9 +17,8 @@ import org.jetbrains.annotations.NotNull;
 
 import com.avp.AVP;
 import com.avp.AVPResources;
-import com.avp.common.block.AVPBlocks;
-import com.avp.common.recipe.AVPRecipes;
-import com.avp.common.recipe.IndustrialFurnaceRecipe;
+import com.avp.common.registry.init.AVPBlocks;
+import com.avp.common.registry.init.AVPRecipes;
 
 @JeiPlugin
 public class AVPJEIPlugin implements IModPlugin {

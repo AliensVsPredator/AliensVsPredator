@@ -1,5 +1,7 @@
 package com.avp.mixin.client;
 
+import com.human.common.gameplay.item.GunItem;
+import com.human.common.gameplay.item.gun.GunData;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.renderer.entity.player.PlayerRenderer;
@@ -8,9 +10,6 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-
-import com.avp.common.item.GunItem;
-import com.avp.common.item.gun.GunData;
 
 @Mixin(PlayerRenderer.class)
 public class MixinPlayerRenderer_AdjustArmPoseForGun {

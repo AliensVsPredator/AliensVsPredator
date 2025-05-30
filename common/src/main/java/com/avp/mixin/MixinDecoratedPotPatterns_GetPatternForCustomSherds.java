@@ -9,8 +9,8 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import com.avp.common.block.DecoratedPotPatternKeys;
-import com.avp.common.item.AVPItemTags;
+import com.avp.common.registry.key.DecoratedPotPatternKeys;
+import com.avp.common.registry.tag.AVPItemTags;
 
 @Mixin(DecoratedPotPatterns.class)
 public abstract class MixinDecoratedPotPatterns_GetPatternForCustomSherds {
