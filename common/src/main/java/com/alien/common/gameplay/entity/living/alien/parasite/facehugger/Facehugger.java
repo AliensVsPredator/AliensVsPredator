@@ -3,6 +3,7 @@ package com.alien.common.gameplay.entity.living.alien.parasite.facehugger;
 import com.alien.common.gameplay.entity.living.alien.Alien;
 import com.alien.common.gameplay.entity.living.alien.parasite.Parasite;
 import com.alien.common.model.alien.variant.AlienVariant;
+import com.alien.common.registry.init.AlienEntityTypes;
 import net.minecraft.core.BlockPos;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.EntityType;
@@ -19,7 +20,6 @@ import org.jetbrains.annotations.Nullable;
 
 import com.avp.AVP;
 import com.avp.common.gameplay.ai.goal.combat.LungeAtTargetGoal;
-import com.avp.common.registry.init.entity_type.AVPEntityTypes;
 
 public class Facehugger extends Parasite {
 
@@ -77,17 +77,17 @@ public class Facehugger extends Parasite {
     public static @Nullable EntityType<? extends Alien> getType(AlienVariant alienVariant, boolean isRoyal) {
         if (isRoyal) {
             return switch (alienVariant) {
-                case NORMAL -> AVPEntityTypes.ROYAL_FACEHUGGER.get();
-                case NETHER -> AVPEntityTypes.ROYAL_NETHER_FACEHUGGER.get();
-                case ABERRANT -> AVPEntityTypes.ROYAL_ABERRANT_FACEHUGGER.get();
+                case NORMAL -> AlienEntityTypes.ROYAL_FACEHUGGER.get();
+                case NETHER -> AlienEntityTypes.ROYAL_NETHER_FACEHUGGER.get();
+                case ABERRANT -> AlienEntityTypes.ROYAL_ABERRANT_FACEHUGGER.get();
                 case IRRADIATED -> null;
             };
         }
 
         return switch (alienVariant) {
-            case NORMAL -> AVPEntityTypes.FACEHUGGER.get();
-            case NETHER -> AVPEntityTypes.NETHER_FACEHUGGER.get();
-            case ABERRANT -> AVPEntityTypes.ABERRANT_FACEHUGGER.get();
+            case NORMAL -> AlienEntityTypes.FACEHUGGER.get();
+            case NETHER -> AlienEntityTypes.NETHER_FACEHUGGER.get();
+            case ABERRANT -> AlienEntityTypes.ABERRANT_FACEHUGGER.get();
             case IRRADIATED -> null;
         };
     }

@@ -4,6 +4,7 @@ import com.alien.common.gameplay.entity.living.alien.Alien;
 import com.alien.common.gameplay.entity.living.alien.xenomorph.Xenomorph;
 import com.alien.common.model.alien.variant.AlienVariant;
 import com.alien.common.model.resin.ResinData;
+import com.alien.common.registry.init.AlienEntityTypes;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.monster.Monster;
@@ -12,7 +13,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import com.avp.AVP;
-import com.avp.common.registry.init.entity_type.AVPEntityTypes;
 
 public class Praetorian extends Xenomorph {
 
@@ -78,10 +78,10 @@ public class Praetorian extends Xenomorph {
 
     public static EntityType<? extends Alien> getType(AlienVariant alienVariant) {
         return switch (alienVariant) {
-            case NORMAL -> AVPEntityTypes.PRAETORIAN.get();
-            case NETHER -> AVPEntityTypes.NETHER_PRAETORIAN.get();
-            case ABERRANT -> AVPEntityTypes.ABERRANT_PRAETORIAN.get();
-            case IRRADIATED -> AVPEntityTypes.IRRADIATED_PRAETORIAN.get();
+            case NORMAL -> AlienEntityTypes.PRAETORIAN.get();
+            case NETHER -> AlienEntityTypes.NETHER_PRAETORIAN.get();
+            case ABERRANT -> AlienEntityTypes.ABERRANT_PRAETORIAN.get();
+            case IRRADIATED -> AlienEntityTypes.IRRADIATED_PRAETORIAN.get();
         };
     }
 }

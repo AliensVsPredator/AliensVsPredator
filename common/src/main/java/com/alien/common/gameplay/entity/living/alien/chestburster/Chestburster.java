@@ -6,6 +6,7 @@ import com.alien.common.gameplay.entity.living.alien.ResinManager;
 import com.alien.common.model.alien.variant.AlienVariant;
 import com.alien.common.model.resin.ResinData;
 import com.alien.common.model.resin.ResinProducer;
+import com.alien.common.registry.init.AlienEntityTypes;
 import com.alien.common.util.AlienPredicates;
 import com.alien.common.util.XenomorphGrowthUtil;
 import com.lib.common.gameplay.gene.GeneKeys;
@@ -22,7 +23,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import com.avp.AVP;
-import com.avp.common.registry.init.entity_type.AVPEntityTypes;
 import com.avp.common.util.AVPPredicates;
 
 public class Chestburster extends Alien implements ResinProducer {
@@ -126,17 +126,17 @@ public class Chestburster extends Alien implements ResinProducer {
     public static @Nullable EntityType<? extends Alien> getType(AlienVariant alienVariant, boolean isRoyal) {
         if (isRoyal) {
             return switch (alienVariant) {
-                case NORMAL -> AVPEntityTypes.ROYAL_CHESTBURSTER.get();
-                case NETHER -> AVPEntityTypes.ROYAL_NETHER_CHESTBURSTER.get();
-                case ABERRANT -> AVPEntityTypes.ROYAL_ABERRANT_CHESTBURSTER.get();
+                case NORMAL -> AlienEntityTypes.ROYAL_CHESTBURSTER.get();
+                case NETHER -> AlienEntityTypes.ROYAL_NETHER_CHESTBURSTER.get();
+                case ABERRANT -> AlienEntityTypes.ROYAL_ABERRANT_CHESTBURSTER.get();
                 case IRRADIATED -> null;
             };
         }
 
         return switch (alienVariant) {
-            case NORMAL -> AVPEntityTypes.CHESTBURSTER.get();
-            case NETHER -> AVPEntityTypes.NETHER_CHESTBURSTER.get();
-            case ABERRANT -> AVPEntityTypes.ABERRANT_CHESTBURSTER.get();
+            case NORMAL -> AlienEntityTypes.CHESTBURSTER.get();
+            case NETHER -> AlienEntityTypes.NETHER_CHESTBURSTER.get();
+            case ABERRANT -> AlienEntityTypes.ABERRANT_CHESTBURSTER.get();
             case IRRADIATED -> null;
         };
     }

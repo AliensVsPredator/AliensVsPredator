@@ -1,5 +1,6 @@
 package com.predator.common.gameplay.entity.projectile;
 
+import com.predator.common.registry.init.PredatorEntityTypes;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.projectile.ThrowableItemProjectile;
@@ -9,7 +10,6 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import org.jetbrains.annotations.NotNull;
 
-import com.avp.common.registry.init.entity_type.AVPEntityTypes;
 import com.avp.common.registry.init.item.AVPItems;
 import com.avp.server.BlockBreakProgressManager;
 
@@ -20,7 +20,7 @@ public class ShurikenProjectile extends ThrowableItemProjectile {
     }
 
     public ShurikenProjectile(Level level, LivingEntity livingEntity) {
-        super(AVPEntityTypes.SHURIKEN.get(), livingEntity, level);
+        super(PredatorEntityTypes.SHURIKEN.get(), livingEntity, level);
     }
 
     @Override

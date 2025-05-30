@@ -2,6 +2,7 @@ package com.avp.fabric.data.advancement;
 
 import com.alien.common.registry.init.AlienArmorItems;
 import com.alien.common.registry.init.AlienBlocks;
+import com.alien.common.registry.init.AlienEntityTypes;
 import com.alien.common.registry.init.AlienItems;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricAdvancementProvider;
@@ -30,7 +31,6 @@ import java.util.function.Consumer;
 
 import com.avp.AVP;
 import com.avp.AVPResources;
-import com.avp.common.registry.init.entity_type.AVPEntityTypes;
 import com.avp.common.registry.tag.AVPEntityTypeTags;
 
 public class AdvancementProvider extends FabricAdvancementProvider {
@@ -41,46 +41,46 @@ public class AdvancementProvider extends FabricAdvancementProvider {
     // Yes, I was very annoyed with Mojang while writing this list out.
     private static final List<EntityType<?>> ALIENS_TO_KILL = List.of(
         // Normal Aliens
-        AVPEntityTypes.CHESTBURSTER.get(),
-        AVPEntityTypes.FACEHUGGER.get(),
-        AVPEntityTypes.DRONE.get(),
-        AVPEntityTypes.OVOMORPH.get(),
-        AVPEntityTypes.PRAETORIAN.get(),
-        AVPEntityTypes.QUEEN.get(),
-        AVPEntityTypes.WARRIOR.get(),
+        AlienEntityTypes.CHESTBURSTER.get(),
+        AlienEntityTypes.FACEHUGGER.get(),
+        AlienEntityTypes.DRONE.get(),
+        AlienEntityTypes.OVOMORPH.get(),
+        AlienEntityTypes.PRAETORIAN.get(),
+        AlienEntityTypes.QUEEN.get(),
+        AlienEntityTypes.WARRIOR.get(),
 
         // Aberrant Aliens
-        AVPEntityTypes.ABERRANT_CHESTBURSTER.get(),
-        AVPEntityTypes.ABERRANT_FACEHUGGER.get(),
-        AVPEntityTypes.ABERRANT_DRONE.get(),
-        AVPEntityTypes.ABERRANT_OVOMORPH.get(),
-        AVPEntityTypes.ABERRANT_PRAETORIAN.get(),
-        AVPEntityTypes.ABERRANT_QUEEN.get(),
-        AVPEntityTypes.ABERRANT_WARRIOR.get(),
+        AlienEntityTypes.ABERRANT_CHESTBURSTER.get(),
+        AlienEntityTypes.ABERRANT_FACEHUGGER.get(),
+        AlienEntityTypes.ABERRANT_DRONE.get(),
+        AlienEntityTypes.ABERRANT_OVOMORPH.get(),
+        AlienEntityTypes.ABERRANT_PRAETORIAN.get(),
+        AlienEntityTypes.ABERRANT_QUEEN.get(),
+        AlienEntityTypes.ABERRANT_WARRIOR.get(),
 
         // Nether Aliens
-        AVPEntityTypes.NETHER_CHESTBURSTER.get(),
-        AVPEntityTypes.NETHER_FACEHUGGER.get(),
-        AVPEntityTypes.NETHER_DRONE.get(),
-        AVPEntityTypes.NETHER_OVOMORPH.get(),
-        AVPEntityTypes.NETHER_PRAETORIAN.get(),
-        AVPEntityTypes.NETHER_QUEEN.get(),
-        AVPEntityTypes.NETHER_WARRIOR.get(),
+        AlienEntityTypes.NETHER_CHESTBURSTER.get(),
+        AlienEntityTypes.NETHER_FACEHUGGER.get(),
+        AlienEntityTypes.NETHER_DRONE.get(),
+        AlienEntityTypes.NETHER_OVOMORPH.get(),
+        AlienEntityTypes.NETHER_PRAETORIAN.get(),
+        AlienEntityTypes.NETHER_QUEEN.get(),
+        AlienEntityTypes.NETHER_WARRIOR.get(),
 
         // Royal Normal Aliens
-        AVPEntityTypes.ROYAL_CHESTBURSTER.get(),
-        AVPEntityTypes.ROYAL_FACEHUGGER.get(),
-        AVPEntityTypes.ROYAL_OVOMORPH.get(),
+        AlienEntityTypes.ROYAL_CHESTBURSTER.get(),
+        AlienEntityTypes.ROYAL_FACEHUGGER.get(),
+        AlienEntityTypes.ROYAL_OVOMORPH.get(),
 
         // Royal Aberrant Aliens
-        AVPEntityTypes.ROYAL_ABERRANT_CHESTBURSTER.get(),
-        AVPEntityTypes.ROYAL_ABERRANT_FACEHUGGER.get(),
-        AVPEntityTypes.ROYAL_ABERRANT_OVOMORPH.get(),
+        AlienEntityTypes.ROYAL_ABERRANT_CHESTBURSTER.get(),
+        AlienEntityTypes.ROYAL_ABERRANT_FACEHUGGER.get(),
+        AlienEntityTypes.ROYAL_ABERRANT_OVOMORPH.get(),
 
         // Royal nether Aliens
-        AVPEntityTypes.ROYAL_NETHER_CHESTBURSTER.get(),
-        AVPEntityTypes.ROYAL_NETHER_FACEHUGGER.get(),
-        AVPEntityTypes.ROYAL_NETHER_OVOMORPH.get()
+        AlienEntityTypes.ROYAL_NETHER_CHESTBURSTER.get(),
+        AlienEntityTypes.ROYAL_NETHER_FACEHUGGER.get(),
+        AlienEntityTypes.ROYAL_NETHER_OVOMORPH.get()
     );
 
     public AdvancementProvider(FabricDataOutput output, CompletableFuture<HolderLookup.Provider> registryLookup) {

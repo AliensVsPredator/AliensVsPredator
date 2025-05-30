@@ -2,6 +2,7 @@ package com.avp;
 
 import com.alien.Alien;
 import com.human.common.gameplay.level.patrol.MarinePatrolSpawner;
+import com.predator.Predator;
 import mod.azure.azurelib.common.api.common.config.Config;
 import mod.azure.azurelib.common.internal.common.config.ConfigHolder;
 import mod.azure.azurelib.common.internal.common.config.ConfigHolderRegistry;
@@ -59,6 +60,7 @@ public class AVP {
         LOGGER.info("Initializing AVP for platform '{}'", Services.PLATFORM.getPlatformName());
 
         Alien.initialize();
+        Predator.initialize();
 
         AVPBlockEntityTypes.initialize();
         AVPBlocks.initialize();

@@ -1,5 +1,6 @@
 package com.avp.fabric;
 
+import com.predator.common.registry.init.PredatorEntityTypes;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
@@ -14,7 +15,6 @@ import net.minecraft.world.level.GameRules;
 import com.avp.AVP;
 import com.avp.common.data.worldgen.AVPVillageInjection;
 import com.avp.common.registry.init.AVPVillagerProfessions;
-import com.avp.common.registry.init.entity_type.AVPEntityTypes;
 import com.avp.common.registry.key.AVPVillagerGiftKeys;
 import com.avp.fabric.common.DispenserBlockBehaviors;
 import com.avp.fabric.common.FlammableBlockRegistry;
@@ -62,7 +62,7 @@ public class AVPFabric implements ModInitializer {
         /*
          * TODO: Use Yautja sound when added
          */
-        sounds.put(AVPEntityTypes.YAUTJA.get(), SoundEvents.ALLAY_AMBIENT_WITH_ITEM);
+        sounds.put(PredatorEntityTypes.YAUTJA.get(), SoundEvents.ALLAY_AMBIENT_WITH_ITEM);
     }
 
     public static void modifyGifts() {

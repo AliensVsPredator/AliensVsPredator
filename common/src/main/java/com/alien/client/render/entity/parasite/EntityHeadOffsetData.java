@@ -1,6 +1,7 @@
 package com.alien.client.render.entity.parasite;
 
 import com.bvanseg.just.functional.function.Lazy;
+import com.predator.common.registry.init.PredatorEntityTypes;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 
@@ -122,7 +123,7 @@ public record EntityHeadOffsetData(
                     new EntityHeadOffsetData(EntityHeadOffsetData::marineVerticalOffset, EntityHeadOffsetData::marineFaceOffset)
                 ),
                 Map.entry(
-                    AVPEntityTypes.YAUTJA.get(),
+                    PredatorEntityTypes.YAUTJA.get(),
                     new EntityHeadOffsetData(EntityHeadOffsetData::yautjaVerticalOffset, EntityHeadOffsetData::yautjaFaceOffset)
                 )
             )

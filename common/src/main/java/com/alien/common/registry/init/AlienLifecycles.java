@@ -9,7 +9,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
 
 import com.avp.AVP;
-import com.avp.common.registry.init.entity_type.AVPEntityTypes;
 import com.avp.service.Services;
 
 public class AlienLifecycles {
@@ -19,23 +18,23 @@ public class AlienLifecycles {
             null, // No hosts = this lifecycle will be the default for all chestbursters.
             List.of(
                 new GrowthStage(
-                    AVPEntityTypes.CHESTBURSTER.get(),
-                    AVPEntityTypes.DRONE.get(),
+                    AlienEntityTypes.CHESTBURSTER.get(),
+                    AlienEntityTypes.DRONE.get(),
                     (int) TimeUnit.MINUTES.toSeconds(AVP.config.hiveConfigs.CHESTBURSTER_MAX_GROWTH_TIMER_SECONDS)
                 ),
                 new GrowthStage(
-                    AVPEntityTypes.DRONE.get(),
-                    AVPEntityTypes.WARRIOR.get(),
+                    AlienEntityTypes.DRONE.get(),
+                    AlienEntityTypes.WARRIOR.get(),
                     (int) TimeUnit.MINUTES.toSeconds(AVP.config.hiveConfigs.DRONE_MAX_GROWTH_TIMER_SECONDS)
                 ),
                 new GrowthStage(
-                    AVPEntityTypes.WARRIOR.get(),
-                    AVPEntityTypes.PRAETORIAN.get(),
+                    AlienEntityTypes.WARRIOR.get(),
+                    AlienEntityTypes.PRAETORIAN.get(),
                     (int) TimeUnit.MINUTES.toSeconds(AVP.config.hiveConfigs.WARRIOR_MAX_GROWTH_TIMER_SECONDS)
                 ),
                 new GrowthStage(
-                    AVPEntityTypes.PRAETORIAN.get(),
-                    AVPEntityTypes.QUEEN.get(),
+                    AlienEntityTypes.PRAETORIAN.get(),
+                    AlienEntityTypes.QUEEN.get(),
                     (int) TimeUnit.MINUTES.toSeconds(AVP.config.hiveConfigs.PRAETORIAN_MAX_GROWTH_TIMER_SECONDS)
                 )
             )
@@ -47,23 +46,23 @@ public class AlienLifecycles {
             null, // No hosts = this lifecycle will be the default for all chestbursters.
             List.of(
                 new GrowthStage(
-                    AVPEntityTypes.ABERRANT_CHESTBURSTER.get(),
-                    AVPEntityTypes.ABERRANT_DRONE.get(),
+                    AlienEntityTypes.ABERRANT_CHESTBURSTER.get(),
+                    AlienEntityTypes.ABERRANT_DRONE.get(),
                     (int) TimeUnit.MINUTES.toSeconds(AVP.config.hiveConfigs.CHESTBURSTER_MAX_GROWTH_TIMER_SECONDS)
                 ),
                 new GrowthStage(
-                    AVPEntityTypes.ABERRANT_DRONE.get(),
-                    AVPEntityTypes.ABERRANT_WARRIOR.get(),
+                    AlienEntityTypes.ABERRANT_DRONE.get(),
+                    AlienEntityTypes.ABERRANT_WARRIOR.get(),
                     (int) TimeUnit.MINUTES.toSeconds(AVP.config.hiveConfigs.DRONE_MAX_GROWTH_TIMER_SECONDS)
                 ),
                 new GrowthStage(
-                    AVPEntityTypes.ABERRANT_WARRIOR.get(),
-                    AVPEntityTypes.ABERRANT_PRAETORIAN.get(),
+                    AlienEntityTypes.ABERRANT_WARRIOR.get(),
+                    AlienEntityTypes.ABERRANT_PRAETORIAN.get(),
                     (int) TimeUnit.MINUTES.toSeconds(AVP.config.hiveConfigs.WARRIOR_MAX_GROWTH_TIMER_SECONDS)
                 ),
                 new GrowthStage(
-                    AVPEntityTypes.ABERRANT_PRAETORIAN.get(),
-                    AVPEntityTypes.ABERRANT_QUEEN.get(),
+                    AlienEntityTypes.ABERRANT_PRAETORIAN.get(),
+                    AlienEntityTypes.ABERRANT_QUEEN.get(),
                     (int) TimeUnit.MINUTES.toSeconds(AVP.config.hiveConfigs.PRAETORIAN_MAX_GROWTH_TIMER_SECONDS)
                 )
             )
@@ -75,23 +74,23 @@ public class AlienLifecycles {
             null, // No hosts = this lifecycle will be the default for all chestbursters.
             List.of(
                 new GrowthStage(
-                    AVPEntityTypes.NETHER_CHESTBURSTER.get(),
-                    AVPEntityTypes.NETHER_DRONE.get(),
+                    AlienEntityTypes.NETHER_CHESTBURSTER.get(),
+                    AlienEntityTypes.NETHER_DRONE.get(),
                     (int) TimeUnit.MINUTES.toSeconds(AVP.config.hiveConfigs.CHESTBURSTER_MAX_GROWTH_TIMER_SECONDS)
                 ),
                 new GrowthStage(
-                    AVPEntityTypes.NETHER_DRONE.get(),
-                    AVPEntityTypes.NETHER_WARRIOR.get(),
+                    AlienEntityTypes.NETHER_DRONE.get(),
+                    AlienEntityTypes.NETHER_WARRIOR.get(),
                     (int) TimeUnit.MINUTES.toSeconds(AVP.config.hiveConfigs.DRONE_MAX_GROWTH_TIMER_SECONDS)
                 ),
                 new GrowthStage(
-                    AVPEntityTypes.NETHER_WARRIOR.get(),
-                    AVPEntityTypes.NETHER_PRAETORIAN.get(),
+                    AlienEntityTypes.NETHER_WARRIOR.get(),
+                    AlienEntityTypes.NETHER_PRAETORIAN.get(),
                     (int) TimeUnit.MINUTES.toSeconds(AVP.config.hiveConfigs.WARRIOR_MAX_GROWTH_TIMER_SECONDS)
                 ),
                 new GrowthStage(
-                    AVPEntityTypes.NETHER_PRAETORIAN.get(),
-                    AVPEntityTypes.NETHER_QUEEN.get(),
+                    AlienEntityTypes.NETHER_PRAETORIAN.get(),
+                    AlienEntityTypes.NETHER_QUEEN.get(),
                     (int) TimeUnit.MINUTES.toSeconds(AVP.config.hiveConfigs.PRAETORIAN_MAX_GROWTH_TIMER_SECONDS)
                 )
             )
@@ -103,8 +102,8 @@ public class AlienLifecycles {
             null,
             List.of(
                 new GrowthStage(
-                    AVPEntityTypes.ROYAL_CHESTBURSTER.get(),
-                    AVPEntityTypes.PRAETORIAN.get(),
+                    AlienEntityTypes.ROYAL_CHESTBURSTER.get(),
+                    AlienEntityTypes.PRAETORIAN.get(),
                     (int) TimeUnit.MINUTES.toSeconds(AVP.config.hiveConfigs.PRAETORIAN_SHORTCUT_TIMER_SECONDS)
                 )
             )
@@ -116,8 +115,8 @@ public class AlienLifecycles {
             null,
             List.of(
                 new GrowthStage(
-                    AVPEntityTypes.ROYAL_ABERRANT_CHESTBURSTER.get(),
-                    AVPEntityTypes.ABERRANT_PRAETORIAN.get(),
+                    AlienEntityTypes.ROYAL_ABERRANT_CHESTBURSTER.get(),
+                    AlienEntityTypes.ABERRANT_PRAETORIAN.get(),
                     (int) TimeUnit.MINUTES.toSeconds(AVP.config.hiveConfigs.PRAETORIAN_SHORTCUT_TIMER_SECONDS)
                 )
             )
@@ -129,8 +128,8 @@ public class AlienLifecycles {
             null,
             List.of(
                 new GrowthStage(
-                    AVPEntityTypes.ROYAL_NETHER_CHESTBURSTER.get(),
-                    AVPEntityTypes.NETHER_PRAETORIAN.get(),
+                    AlienEntityTypes.ROYAL_NETHER_CHESTBURSTER.get(),
+                    AlienEntityTypes.NETHER_PRAETORIAN.get(),
                     (int) TimeUnit.MINUTES.toSeconds(AVP.config.hiveConfigs.PRAETORIAN_SHORTCUT_TIMER_SECONDS)
                 )
             )

@@ -4,6 +4,7 @@ import com.alien.common.gameplay.entity.living.alien.Alien;
 import com.alien.common.gameplay.entity.living.alien.xenomorph.Xenomorph;
 import com.alien.common.model.alien.variant.AlienVariant;
 import com.alien.common.model.resin.ResinData;
+import com.alien.common.registry.init.AlienEntityTypes;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.monster.Monster;
@@ -14,7 +15,6 @@ import org.jetbrains.annotations.Nullable;
 import com.avp.AVP;
 import com.avp.common.gameplay.ai.goal.combat.LungeAtTargetGoal;
 import com.avp.common.registry.init.AVPSoundEvents;
-import com.avp.common.registry.init.entity_type.AVPEntityTypes;
 
 public class Warrior extends Xenomorph {
 
@@ -81,10 +81,10 @@ public class Warrior extends Xenomorph {
 
     public static EntityType<? extends Alien> getType(AlienVariant alienVariant) {
         return switch (alienVariant) {
-            case NORMAL -> AVPEntityTypes.WARRIOR.get();
-            case NETHER -> AVPEntityTypes.NETHER_WARRIOR.get();
-            case ABERRANT -> AVPEntityTypes.ABERRANT_WARRIOR.get();
-            case IRRADIATED -> AVPEntityTypes.IRRADIATED_WARRIOR.get();
+            case NORMAL -> AlienEntityTypes.WARRIOR.get();
+            case NETHER -> AlienEntityTypes.NETHER_WARRIOR.get();
+            case ABERRANT -> AlienEntityTypes.ABERRANT_WARRIOR.get();
+            case IRRADIATED -> AlienEntityTypes.IRRADIATED_WARRIOR.get();
         };
     }
 }

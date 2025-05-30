@@ -1,5 +1,7 @@
 package com.avp.fabric.data.tag;
 
+import com.alien.common.registry.init.AlienEntityTypes;
+import com.predator.common.registry.init.PredatorEntityTypes;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
 import net.minecraft.core.HolderLookup;
@@ -62,7 +64,7 @@ public class AVPEntityTypeTagProvider extends FabricTagProvider.EntityTypeTagPro
 
     private void addPredators() {
         getOrCreateTagBuilder(AVPEntityTypeTags.PREDATORS)
-            .add(AVPEntityTypes.YAUTJA.get());
+            .add(PredatorEntityTypes.YAUTJA.get());
     }
 
     private void addRadiationResistant() {
@@ -123,20 +125,20 @@ public class AVPEntityTypeTagProvider extends FabricTagProvider.EntityTypeTagPro
     private void addDrones() {
         getOrCreateTagBuilder(AVPEntityTypeTags.DRONES)
             .add(
-                AVPEntityTypes.ABERRANT_DRONE.get(),
-                AVPEntityTypes.DRONE.get(),
-                AVPEntityTypes.IRRADIATED_DRONE.get(),
-                AVPEntityTypes.NETHER_DRONE.get()
+                AlienEntityTypes.ABERRANT_DRONE.get(),
+                AlienEntityTypes.DRONE.get(),
+                AlienEntityTypes.IRRADIATED_DRONE.get(),
+                AlienEntityTypes.NETHER_DRONE.get()
             );
     }
 
     private void addWarriors() {
         getOrCreateTagBuilder(AVPEntityTypeTags.WARRIORS)
             .add(
-                AVPEntityTypes.ABERRANT_WARRIOR.get(),
-                AVPEntityTypes.IRRADIATED_WARRIOR.get(),
-                AVPEntityTypes.NETHER_WARRIOR.get(),
-                AVPEntityTypes.WARRIOR.get()
+                AlienEntityTypes.ABERRANT_WARRIOR.get(),
+                AlienEntityTypes.IRRADIATED_WARRIOR.get(),
+                AlienEntityTypes.NETHER_WARRIOR.get(),
+                AlienEntityTypes.WARRIOR.get()
             );
     }
 
@@ -169,24 +171,24 @@ public class AVPEntityTypeTagProvider extends FabricTagProvider.EntityTypeTagPro
     private void addChestbursters() {
         getOrCreateTagBuilder(AVPEntityTypeTags.CHESTBURSTERS)
             .add(
-                AVPEntityTypes.ABERRANT_CHESTBURSTER.get(),
-                AVPEntityTypes.CHESTBURSTER.get(),
-                AVPEntityTypes.NETHER_CHESTBURSTER.get(),
-                AVPEntityTypes.ROYAL_ABERRANT_CHESTBURSTER.get(),
-                AVPEntityTypes.ROYAL_CHESTBURSTER.get(),
-                AVPEntityTypes.ROYAL_NETHER_CHESTBURSTER.get()
+                AlienEntityTypes.ABERRANT_CHESTBURSTER.get(),
+                AlienEntityTypes.CHESTBURSTER.get(),
+                AlienEntityTypes.NETHER_CHESTBURSTER.get(),
+                AlienEntityTypes.ROYAL_ABERRANT_CHESTBURSTER.get(),
+                AlienEntityTypes.ROYAL_CHESTBURSTER.get(),
+                AlienEntityTypes.ROYAL_NETHER_CHESTBURSTER.get()
             );
     }
 
     private void addFacehuggers() {
         getOrCreateTagBuilder(AVPEntityTypeTags.FACEHUGGERS)
             .add(
-                AVPEntityTypes.ABERRANT_FACEHUGGER.get(),
-                AVPEntityTypes.FACEHUGGER.get(),
-                AVPEntityTypes.NETHER_FACEHUGGER.get(),
-                AVPEntityTypes.ROYAL_ABERRANT_FACEHUGGER.get(),
-                AVPEntityTypes.ROYAL_FACEHUGGER.get(),
-                AVPEntityTypes.ROYAL_NETHER_FACEHUGGER.get()
+                AlienEntityTypes.ABERRANT_FACEHUGGER.get(),
+                AlienEntityTypes.FACEHUGGER.get(),
+                AlienEntityTypes.NETHER_FACEHUGGER.get(),
+                AlienEntityTypes.ROYAL_ABERRANT_FACEHUGGER.get(),
+                AlienEntityTypes.ROYAL_FACEHUGGER.get(),
+                AlienEntityTypes.ROYAL_NETHER_FACEHUGGER.get()
             );
     }
 
@@ -198,20 +200,20 @@ public class AVPEntityTypeTagProvider extends FabricTagProvider.EntityTypeTagPro
     private void addPraetorians() {
         getOrCreateTagBuilder(AVPEntityTypeTags.PRAETORIANS)
             .add(
-                AVPEntityTypes.ABERRANT_PRAETORIAN.get(),
-                AVPEntityTypes.IRRADIATED_PRAETORIAN.get(),
-                AVPEntityTypes.NETHER_PRAETORIAN.get(),
-                AVPEntityTypes.PRAETORIAN.get()
+                AlienEntityTypes.ABERRANT_PRAETORIAN.get(),
+                AlienEntityTypes.IRRADIATED_PRAETORIAN.get(),
+                AlienEntityTypes.NETHER_PRAETORIAN.get(),
+                AlienEntityTypes.PRAETORIAN.get()
             );
     }
 
     private void addQueens() {
         getOrCreateTagBuilder(AVPEntityTypeTags.QUEENS)
             .add(
-                AVPEntityTypes.ABERRANT_QUEEN.get(),
-                AVPEntityTypes.IRRADIATED_QUEEN.get(),
-                AVPEntityTypes.NETHER_QUEEN.get(),
-                AVPEntityTypes.QUEEN.get()
+                AlienEntityTypes.ABERRANT_QUEEN.get(),
+                AlienEntityTypes.IRRADIATED_QUEEN.get(),
+                AlienEntityTypes.NETHER_QUEEN.get(),
+                AlienEntityTypes.QUEEN.get()
             );
     }
 
@@ -219,15 +221,15 @@ public class AVPEntityTypeTagProvider extends FabricTagProvider.EntityTypeTagPro
         getOrCreateTagBuilder(AVPEntityTypeTags.ROYAL_ALIENS)
             .addTag(AVPEntityTypeTags.ROYAL_XENOMORPHS)
             .add(
-                AVPEntityTypes.ROYAL_ABERRANT_CHESTBURSTER.get(),
-                AVPEntityTypes.ROYAL_ABERRANT_FACEHUGGER.get(),
-                AVPEntityTypes.ROYAL_ABERRANT_OVOMORPH.get(),
-                AVPEntityTypes.ROYAL_CHESTBURSTER.get(),
-                AVPEntityTypes.ROYAL_FACEHUGGER.get(),
-                AVPEntityTypes.ROYAL_NETHER_CHESTBURSTER.get(),
-                AVPEntityTypes.ROYAL_NETHER_FACEHUGGER.get(),
-                AVPEntityTypes.ROYAL_NETHER_OVOMORPH.get(),
-                AVPEntityTypes.ROYAL_OVOMORPH.get()
+                AlienEntityTypes.ROYAL_ABERRANT_CHESTBURSTER.get(),
+                AlienEntityTypes.ROYAL_ABERRANT_FACEHUGGER.get(),
+                AlienEntityTypes.ROYAL_ABERRANT_OVOMORPH.get(),
+                AlienEntityTypes.ROYAL_CHESTBURSTER.get(),
+                AlienEntityTypes.ROYAL_FACEHUGGER.get(),
+                AlienEntityTypes.ROYAL_NETHER_CHESTBURSTER.get(),
+                AlienEntityTypes.ROYAL_NETHER_FACEHUGGER.get(),
+                AlienEntityTypes.ROYAL_NETHER_OVOMORPH.get(),
+                AlienEntityTypes.ROYAL_OVOMORPH.get()
             );
     }
 
@@ -245,58 +247,58 @@ public class AVPEntityTypeTagProvider extends FabricTagProvider.EntityTypeTagPro
     private void addIrradiatedAliens() {
         getOrCreateTagBuilder(AVPEntityTypeTags.IRRADIATED_ALIENS)
             .add(
-                AVPEntityTypes.IRRADIATED_DRONE.get(),
-                AVPEntityTypes.IRRADIATED_PRAETORIAN.get(),
-                AVPEntityTypes.IRRADIATED_QUEEN.get(),
-                AVPEntityTypes.IRRADIATED_WARRIOR.get()
+                AlienEntityTypes.IRRADIATED_DRONE.get(),
+                AlienEntityTypes.IRRADIATED_PRAETORIAN.get(),
+                AlienEntityTypes.IRRADIATED_QUEEN.get(),
+                AlienEntityTypes.IRRADIATED_WARRIOR.get()
             );
     }
 
     private void addAberrantAliens() {
         getOrCreateTagBuilder(AVPEntityTypeTags.ABERRANT_ALIENS)
             .add(
-                AVPEntityTypes.ABERRANT_CHESTBURSTER.get(),
-                AVPEntityTypes.ABERRANT_DRONE.get(),
-                AVPEntityTypes.ABERRANT_FACEHUGGER.get(),
-                AVPEntityTypes.ABERRANT_OVOMORPH.get(),
-                AVPEntityTypes.ABERRANT_PRAETORIAN.get(),
-                AVPEntityTypes.ABERRANT_QUEEN.get(),
-                AVPEntityTypes.ABERRANT_WARRIOR.get(),
-                AVPEntityTypes.ROYAL_ABERRANT_FACEHUGGER.get(),
-                AVPEntityTypes.ROYAL_ABERRANT_CHESTBURSTER.get(),
-                AVPEntityTypes.ROYAL_ABERRANT_OVOMORPH.get()
+                AlienEntityTypes.ABERRANT_CHESTBURSTER.get(),
+                AlienEntityTypes.ABERRANT_DRONE.get(),
+                AlienEntityTypes.ABERRANT_FACEHUGGER.get(),
+                AlienEntityTypes.ABERRANT_OVOMORPH.get(),
+                AlienEntityTypes.ABERRANT_PRAETORIAN.get(),
+                AlienEntityTypes.ABERRANT_QUEEN.get(),
+                AlienEntityTypes.ABERRANT_WARRIOR.get(),
+                AlienEntityTypes.ROYAL_ABERRANT_FACEHUGGER.get(),
+                AlienEntityTypes.ROYAL_ABERRANT_CHESTBURSTER.get(),
+                AlienEntityTypes.ROYAL_ABERRANT_OVOMORPH.get()
             );
     }
 
     private void addNetherAliens() {
         getOrCreateTagBuilder(AVPEntityTypeTags.NETHER_ALIENS)
             .add(
-                AVPEntityTypes.NETHER_CHESTBURSTER.get(),
-                AVPEntityTypes.NETHER_DRONE.get(),
-                AVPEntityTypes.NETHER_FACEHUGGER.get(),
-                AVPEntityTypes.NETHER_OVOMORPH.get(),
-                AVPEntityTypes.NETHER_PRAETORIAN.get(),
-                AVPEntityTypes.NETHER_QUEEN.get(),
-                AVPEntityTypes.NETHER_WARRIOR.get(),
-                AVPEntityTypes.ROYAL_NETHER_CHESTBURSTER.get(),
-                AVPEntityTypes.ROYAL_NETHER_OVOMORPH.get(),
-                AVPEntityTypes.ROYAL_NETHER_FACEHUGGER.get()
+                AlienEntityTypes.NETHER_CHESTBURSTER.get(),
+                AlienEntityTypes.NETHER_DRONE.get(),
+                AlienEntityTypes.NETHER_FACEHUGGER.get(),
+                AlienEntityTypes.NETHER_OVOMORPH.get(),
+                AlienEntityTypes.NETHER_PRAETORIAN.get(),
+                AlienEntityTypes.NETHER_QUEEN.get(),
+                AlienEntityTypes.NETHER_WARRIOR.get(),
+                AlienEntityTypes.ROYAL_NETHER_CHESTBURSTER.get(),
+                AlienEntityTypes.ROYAL_NETHER_OVOMORPH.get(),
+                AlienEntityTypes.ROYAL_NETHER_FACEHUGGER.get()
             );
     }
 
     private void addNormalAliens() {
         getOrCreateTagBuilder(AVPEntityTypeTags.NORMAL_ALIENS)
             .add(
-                AVPEntityTypes.CHESTBURSTER.get(),
-                AVPEntityTypes.DRONE.get(),
-                AVPEntityTypes.FACEHUGGER.get(),
-                AVPEntityTypes.OVOMORPH.get(),
-                AVPEntityTypes.PRAETORIAN.get(),
-                AVPEntityTypes.QUEEN.get(),
-                AVPEntityTypes.ROYAL_CHESTBURSTER.get(),
-                AVPEntityTypes.ROYAL_FACEHUGGER.get(),
-                AVPEntityTypes.ROYAL_OVOMORPH.get(),
-                AVPEntityTypes.WARRIOR.get()
+                AlienEntityTypes.CHESTBURSTER.get(),
+                AlienEntityTypes.DRONE.get(),
+                AlienEntityTypes.FACEHUGGER.get(),
+                AlienEntityTypes.OVOMORPH.get(),
+                AlienEntityTypes.PRAETORIAN.get(),
+                AlienEntityTypes.QUEEN.get(),
+                AlienEntityTypes.ROYAL_CHESTBURSTER.get(),
+                AlienEntityTypes.ROYAL_FACEHUGGER.get(),
+                AlienEntityTypes.ROYAL_OVOMORPH.get(),
+                AlienEntityTypes.WARRIOR.get()
             );
     }
 
@@ -337,19 +339,19 @@ public class AVPEntityTypeTagProvider extends FabricTagProvider.EntityTypeTagPro
                 EntityType.WITCH,
                 EntityType.WOLF,
                 AVPEntityTypes.MARINE.get(),
-                AVPEntityTypes.YAUTJA.get()
+                PredatorEntityTypes.YAUTJA.get()
             );
     }
 
     private void addOvomorphs() {
         getOrCreateTagBuilder(AVPEntityTypeTags.OVOMORPHS)
             .add(
-                AVPEntityTypes.ABERRANT_OVOMORPH.get(),
-                AVPEntityTypes.NETHER_OVOMORPH.get(),
-                AVPEntityTypes.OVOMORPH.get(),
-                AVPEntityTypes.ROYAL_ABERRANT_OVOMORPH.get(),
-                AVPEntityTypes.ROYAL_NETHER_OVOMORPH.get(),
-                AVPEntityTypes.ROYAL_OVOMORPH.get()
+                AlienEntityTypes.ABERRANT_OVOMORPH.get(),
+                AlienEntityTypes.NETHER_OVOMORPH.get(),
+                AlienEntityTypes.OVOMORPH.get(),
+                AlienEntityTypes.ROYAL_ABERRANT_OVOMORPH.get(),
+                AlienEntityTypes.ROYAL_NETHER_OVOMORPH.get(),
+                AlienEntityTypes.ROYAL_OVOMORPH.get()
             );
     }
 

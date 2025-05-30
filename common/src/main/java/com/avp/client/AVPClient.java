@@ -1,17 +1,6 @@
 package com.avp.client;
 
 import com.alien.client.AlienClient;
-import com.alien.client.particle.AcidParticleProvider;
-import com.alien.client.particle.BlueAcidParticleProvider;
-import com.alien.client.particle.IrradiatedAcidParticleProvider;
-import com.alien.client.render.entity.AcidRenderer;
-import com.alien.client.render.entity.ChestbursterRenderer;
-import com.alien.client.render.entity.DroneRenderer;
-import com.alien.client.render.entity.OvomorphRenderer;
-import com.alien.client.render.entity.PraetorianRenderer;
-import com.alien.client.render.entity.QueenRenderer;
-import com.alien.client.render.entity.WarriorRenderer;
-import com.alien.client.render.entity.parasite.facehugger.FacehuggerRenderer;
 import com.human.client.render.armor.MK50ArmorRenderer;
 import com.human.client.render.armor.PressureArmorRenderer;
 import com.human.client.render.armor.TacticalArmorRenderer;
@@ -40,9 +29,7 @@ import com.human.client.render.item.gun.muzzled.impl.OldPainlessItemRenderer;
 import com.human.client.render.item.gun.muzzled.impl.ZX76ShotgunItemRenderer;
 import com.human.client.screen.ArmorCaseScreen;
 import com.human.client.screen.IndustrialFurnaceScreen;
-import com.predator.client.render.armor.JunglePredatorArmorRenderer;
-import com.predator.client.render.block.TripMineRenderer;
-import com.predator.client.render.entity.YautjaRenderer;
+import com.predator.client.PredatorClient;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.blockentity.ChestRenderer;
@@ -52,12 +39,10 @@ import net.minecraft.world.item.component.DyedItemColor;
 import java.util.List;
 
 import com.avp.client.input.keybind.AVPKeybindingRegistry;
-import com.avp.client.render.item.SpinningItemRenderer;
 import com.avp.client.render.item.TripMineItemRenderer;
 import com.avp.common.registry.init.AVPBlockEntityTypes;
 import com.avp.common.registry.init.AVPBlocks;
 import com.avp.common.registry.init.AVPMenuTypes;
-import com.avp.common.registry.init.AVPParticleTypes;
 import com.avp.common.registry.init.entity_type.AVPEntityTypes;
 import com.avp.common.registry.init.item.AVPArmorItems;
 import com.avp.common.registry.init.item.AVPBlockItems;
@@ -68,6 +53,7 @@ public class AVPClient {
 
     public static void initialize() {
         AlienClient.initialize();
+        PredatorClient.initialize();
 
         registerArmorRenderers();
         registerBlockEntityRenderers();
@@ -75,22 +61,12 @@ public class AVPClient {
         registerEntityRenderers();
         registerItemRenderers();
         registerMenuScreens();
-        registerParticleProviderFactories();
 
         // Keybindings
         AVPKeybindingRegistry.initialize();
     }
 
     private static void registerArmorRenderers() {
-        Services.CLIENT_REGISTRY.registerArmorRenderer(
-            JunglePredatorArmorRenderer::new,
-            List.of(
-                AVPArmorItems.JUNGLE_PREDATOR_HELMET,
-                AVPArmorItems.JUNGLE_PREDATOR_CHESTPLATE,
-                AVPArmorItems.JUNGLE_PREDATOR_LEGGINGS,
-                AVPArmorItems.JUNGLE_PREDATOR_BOOTS
-            )
-        );
         Services.CLIENT_REGISTRY.registerArmorRenderer(
             MK50ArmorRenderer::new,
             List.of(
@@ -139,10 +115,6 @@ public class AVPClient {
         Services.CLIENT_REGISTRY.registerBlockEntityRenderer(
             AVPBlockEntityTypes.RESONATOR,
             (BlockEntityRendererProvider.Context rendererDispatcherIn) -> new ResonatorRenderer()
-        );
-        Services.CLIENT_REGISTRY.registerBlockEntityRenderer(
-            AVPBlockEntityTypes.TRIP_MINE,
-            (BlockEntityRendererProvider.Context rendererDispatcherIn) -> new TripMineRenderer()
         );
 
         Services.CLIENT_REGISTRY.registerItemColor(
@@ -197,51 +169,13 @@ public class AVPClient {
     }
 
     private static void registerEntityRenderers() {
-        Services.CLIENT_REGISTRY.registerEntityRenderer(AVPEntityTypes.ABERRANT_CHESTBURSTER, ChestbursterRenderer::new);
-        Services.CLIENT_REGISTRY.registerEntityRenderer(AVPEntityTypes.ABERRANT_DRONE, DroneRenderer::new);
-        Services.CLIENT_REGISTRY.registerEntityRenderer(AVPEntityTypes.ABERRANT_FACEHUGGER, FacehuggerRenderer::new);
-        Services.CLIENT_REGISTRY.registerEntityRenderer(AVPEntityTypes.ABERRANT_OVOMORPH, OvomorphRenderer::new);
-        Services.CLIENT_REGISTRY.registerEntityRenderer(AVPEntityTypes.ABERRANT_PRAETORIAN, PraetorianRenderer::new);
-        Services.CLIENT_REGISTRY.registerEntityRenderer(AVPEntityTypes.ABERRANT_QUEEN, QueenRenderer::new);
-        Services.CLIENT_REGISTRY.registerEntityRenderer(AVPEntityTypes.ABERRANT_WARRIOR, WarriorRenderer::new);
-        Services.CLIENT_REGISTRY.registerEntityRenderer(AVPEntityTypes.ACID, AcidRenderer::new);
-        Services.CLIENT_REGISTRY.registerEntityRenderer(AVPEntityTypes.CHESTBURSTER, ChestbursterRenderer::new);
-        Services.CLIENT_REGISTRY.registerEntityRenderer(AVPEntityTypes.DRONE, DroneRenderer::new);
-        Services.CLIENT_REGISTRY.registerEntityRenderer(AVPEntityTypes.FACEHUGGER, FacehuggerRenderer::new);
         Services.CLIENT_REGISTRY.registerEntityRenderer(AVPEntityTypes.FLAMETHROW, FlamethrowRenderer::new);
         Services.CLIENT_REGISTRY.registerEntityRenderer(AVPEntityTypes.GRENADE_THROWN, ThrownItemRenderer::new);
-        Services.CLIENT_REGISTRY.registerEntityRenderer(AVPEntityTypes.IRRADIATED_DRONE, DroneRenderer::new);
-        Services.CLIENT_REGISTRY.registerEntityRenderer(AVPEntityTypes.IRRADIATED_PRAETORIAN, PraetorianRenderer::new);
-        Services.CLIENT_REGISTRY.registerEntityRenderer(AVPEntityTypes.IRRADIATED_QUEEN, QueenRenderer::new);
-        Services.CLIENT_REGISTRY.registerEntityRenderer(AVPEntityTypes.IRRADIATED_WARRIOR, WarriorRenderer::new);
         Services.CLIENT_REGISTRY.registerEntityRenderer(AVPEntityTypes.MARINE, MarineRenderer::new);
         Services.CLIENT_REGISTRY.registerEntityRenderer(AVPEntityTypes.MUSHROOM_CLOUD, MushroomCloudRenderer::new);
-        Services.CLIENT_REGISTRY.registerEntityRenderer(AVPEntityTypes.NETHER_CHESTBURSTER, ChestbursterRenderer::new);
-        Services.CLIENT_REGISTRY.registerEntityRenderer(AVPEntityTypes.NETHER_DRONE, DroneRenderer::new);
-        Services.CLIENT_REGISTRY.registerEntityRenderer(AVPEntityTypes.NETHER_FACEHUGGER, FacehuggerRenderer::new);
-        Services.CLIENT_REGISTRY.registerEntityRenderer(AVPEntityTypes.NETHER_OVOMORPH, OvomorphRenderer::new);
-        Services.CLIENT_REGISTRY.registerEntityRenderer(AVPEntityTypes.NETHER_PRAETORIAN, PraetorianRenderer::new);
-        Services.CLIENT_REGISTRY.registerEntityRenderer(AVPEntityTypes.NETHER_QUEEN, QueenRenderer::new);
-        Services.CLIENT_REGISTRY.registerEntityRenderer(AVPEntityTypes.NETHER_WARRIOR, WarriorRenderer::new);
         Services.CLIENT_REGISTRY.registerEntityRenderer(AVPEntityTypes.NUKE, NukeRenderer::new);
-        Services.CLIENT_REGISTRY.registerEntityRenderer(AVPEntityTypes.OVOMORPH, OvomorphRenderer::new);
-        Services.CLIENT_REGISTRY.registerEntityRenderer(AVPEntityTypes.PRAETORIAN, PraetorianRenderer::new);
-        Services.CLIENT_REGISTRY.registerEntityRenderer(AVPEntityTypes.QUEEN, QueenRenderer::new);
         Services.CLIENT_REGISTRY.registerEntityRenderer(AVPEntityTypes.ROCKET, RocketRenderer::new);
-        Services.CLIENT_REGISTRY.registerEntityRenderer(AVPEntityTypes.ROYAL_ABERRANT_CHESTBURSTER, ChestbursterRenderer::new);
-        Services.CLIENT_REGISTRY.registerEntityRenderer(AVPEntityTypes.ROYAL_ABERRANT_FACEHUGGER, FacehuggerRenderer::new);
-        Services.CLIENT_REGISTRY.registerEntityRenderer(AVPEntityTypes.ROYAL_ABERRANT_OVOMORPH, OvomorphRenderer::new);
-        Services.CLIENT_REGISTRY.registerEntityRenderer(AVPEntityTypes.ROYAL_CHESTBURSTER, ChestbursterRenderer::new);
-        Services.CLIENT_REGISTRY.registerEntityRenderer(AVPEntityTypes.ROYAL_FACEHUGGER, FacehuggerRenderer::new);
-        Services.CLIENT_REGISTRY.registerEntityRenderer(AVPEntityTypes.ROYAL_NETHER_CHESTBURSTER, ChestbursterRenderer::new);
-        Services.CLIENT_REGISTRY.registerEntityRenderer(AVPEntityTypes.ROYAL_NETHER_FACEHUGGER, FacehuggerRenderer::new);
-        Services.CLIENT_REGISTRY.registerEntityRenderer(AVPEntityTypes.ROYAL_NETHER_OVOMORPH, OvomorphRenderer::new);
-        Services.CLIENT_REGISTRY.registerEntityRenderer(AVPEntityTypes.ROYAL_OVOMORPH, OvomorphRenderer::new);
         Services.CLIENT_REGISTRY.registerEntityRenderer(AVPEntityTypes.SENTRY_TURRET, SentryTurretRenderer::new);
-        Services.CLIENT_REGISTRY.registerEntityRenderer(AVPEntityTypes.SHURIKEN, SpinningItemRenderer::new);
-        Services.CLIENT_REGISTRY.registerEntityRenderer(AVPEntityTypes.SMART_DISC, SpinningItemRenderer::new);
-        Services.CLIENT_REGISTRY.registerEntityRenderer(AVPEntityTypes.WARRIOR, WarriorRenderer::new);
-        Services.CLIENT_REGISTRY.registerEntityRenderer(AVPEntityTypes.YAUTJA, YautjaRenderer::new);
     }
 
     private static void registerItemRenderers() {
@@ -269,11 +203,5 @@ public class AVPClient {
     private static void registerMenuScreens() {
         Services.CLIENT_REGISTRY.registerMenuScreen(AVPMenuTypes.ARMOR_CASE, ArmorCaseScreen::new);
         Services.CLIENT_REGISTRY.registerMenuScreen(AVPMenuTypes.INDUSTRIAL_FURNACE_MENU, IndustrialFurnaceScreen::new);
-    }
-
-    private static void registerParticleProviderFactories() {
-        Services.CLIENT_REGISTRY.registerParticleProviderFactory(AVPParticleTypes.ACID, AcidParticleProvider::new);
-        Services.CLIENT_REGISTRY.registerParticleProviderFactory(AVPParticleTypes.BLUE_ACID, BlueAcidParticleProvider::new);
-        Services.CLIENT_REGISTRY.registerParticleProviderFactory(AVPParticleTypes.IRRADIATED_ACID, IrradiatedAcidParticleProvider::new);
     }
 }

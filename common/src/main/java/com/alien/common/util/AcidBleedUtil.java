@@ -2,18 +2,17 @@ package com.alien.common.util;
 
 import com.alien.common.gameplay.entity.acid.Acid;
 import com.alien.common.gameplay.entity.living.alien.Alien;
+import com.alien.common.registry.init.AlienEntityTypes;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 
-import com.avp.common.registry.init.entity_type.AVPEntityTypes;
-
 public class AcidBleedUtil {
 
     public static void spawnAcid(LivingEntity livingEntity, float damage, Vec3 randomPos) {
         var level = livingEntity.level();
-        var acidEntityType = AVPEntityTypes.ACID.get();
+        var acidEntityType = AlienEntityTypes.ACID.get();
 
         var acidEntity = acidEntityType.create(level);
 

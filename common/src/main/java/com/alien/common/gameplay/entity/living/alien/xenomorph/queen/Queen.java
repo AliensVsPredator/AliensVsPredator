@@ -4,6 +4,7 @@ import com.alien.common.gameplay.entity.living.alien.Alien;
 import com.alien.common.gameplay.entity.living.alien.xenomorph.Xenomorph;
 import com.alien.common.model.alien.variant.AlienVariant;
 import com.alien.common.model.resin.ResinData;
+import com.alien.common.registry.init.AlienEntityTypes;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityType;
@@ -17,7 +18,6 @@ import com.avp.AVP;
 import com.avp.common.gameplay.ai.goal.DigToTargetGoal;
 import com.avp.common.gameplay.ai.goal.QueenLayEggGoal;
 import com.avp.common.registry.init.AVPSoundEvents;
-import com.avp.common.registry.init.entity_type.AVPEntityTypes;
 
 public class Queen extends Xenomorph {
 
@@ -120,10 +120,10 @@ public class Queen extends Xenomorph {
 
     public static EntityType<? extends Alien> getType(AlienVariant alienVariant) {
         return switch (alienVariant) {
-            case NORMAL -> AVPEntityTypes.QUEEN.get();
-            case NETHER -> AVPEntityTypes.NETHER_QUEEN.get();
-            case ABERRANT -> AVPEntityTypes.ABERRANT_QUEEN.get();
-            case IRRADIATED -> AVPEntityTypes.IRRADIATED_QUEEN.get();
+            case NORMAL -> AlienEntityTypes.QUEEN.get();
+            case NETHER -> AlienEntityTypes.NETHER_QUEEN.get();
+            case ABERRANT -> AlienEntityTypes.ABERRANT_QUEEN.get();
+            case IRRADIATED -> AlienEntityTypes.IRRADIATED_QUEEN.get();
         };
     }
 }

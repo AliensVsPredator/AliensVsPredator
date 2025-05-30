@@ -1,5 +1,6 @@
 package com.predator.common.gameplay.entity.projectile;
 
+import com.predator.common.registry.init.PredatorEntityTypes;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.projectile.ThrowableItemProjectile;
@@ -9,7 +10,6 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import org.jetbrains.annotations.NotNull;
 
-import com.avp.common.registry.init.entity_type.AVPEntityTypes;
 import com.avp.common.registry.init.item.AVPItems;
 import com.avp.common.util.ItemGoalUtil;
 import com.avp.server.BlockBreakProgressManager;
@@ -23,7 +23,7 @@ public class SmartDiscProjectile extends ThrowableItemProjectile {
     }
 
     public SmartDiscProjectile(Level level, LivingEntity livingEntity) {
-        super(AVPEntityTypes.SMART_DISC.get(), livingEntity, level);
+        super(PredatorEntityTypes.SMART_DISC.get(), livingEntity, level);
     }
 
     @Override

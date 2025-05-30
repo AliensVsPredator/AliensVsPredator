@@ -2,6 +2,7 @@ package com.avp.neoforge;
 
 import com.alien.common.registry.AlienInfectionRegistry;
 import com.alien.common.registry.AlienLifecycleRegistry;
+import com.predator.common.registry.init.PredatorEntityTypes;
 import mod.azure.azurelib.rewrite.animation.cache.AzIdentityRegistry;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
@@ -31,7 +32,6 @@ import com.avp.AVP;
 import com.avp.common.data.worldgen.AVPVillageInjection;
 import com.avp.common.network.NetworkHandler;
 import com.avp.common.registry.init.AVPVillagerProfessions;
-import com.avp.common.registry.init.entity_type.AVPEntityTypes;
 import com.avp.common.registry.key.AVPVillagerGiftKeys;
 import com.avp.mixin.GiveGiftToHeroAccessor;
 import com.avp.mixin.ParrotSoundMapAccessor;
@@ -169,7 +169,7 @@ public class AVPNeoForge {
         /*
          * TODO: Use Yautja sound when added
          */
-        sounds.put(AVPEntityTypes.YAUTJA.get(), SoundEvents.ALLAY_AMBIENT_WITH_ITEM);
+        sounds.put(PredatorEntityTypes.YAUTJA.get(), SoundEvents.ALLAY_AMBIENT_WITH_ITEM);
         gifts.put(AVPVillagerProfessions.COMMISSARY.get(), AVPVillagerGiftKeys.COMMISSARY_GIFT_LOOT_TABLE);
     }
 

@@ -5,6 +5,7 @@ import com.alien.common.registry.init.AlienArmorMaterials;
 import com.alien.common.registry.init.AlienBlockItems;
 import com.alien.common.registry.init.AlienBlocks;
 import com.alien.common.registry.init.AlienCompostingChances;
+import com.alien.common.registry.init.AlienEntityTypes;
 import com.alien.common.registry.init.AlienGameEvents;
 import com.alien.common.registry.init.AlienInfections;
 import com.alien.common.registry.init.AlienItems;
@@ -24,6 +25,7 @@ public class Alien {
         AlienArmorMaterials.initialize();
         AlienArmorItems.initialize();
         AlienBlockItems.initialize();
+        AlienEntityTypes.initialize();
         AlienGameEvents.initialize();
 
         // Custom

@@ -1,5 +1,8 @@
 package com.alien.client;
 
+import com.alien.client.particle.AcidParticleProvider;
+import com.alien.client.particle.BlueAcidParticleProvider;
+import com.alien.client.particle.IrradiatedAcidParticleProvider;
 import com.alien.client.render.armor.AberrantChitinArmorRenderer;
 import com.alien.client.render.armor.ChitinArmorRenderer;
 import com.alien.client.render.armor.IrradiatedChitinArmorRenderer;
@@ -8,12 +11,22 @@ import com.alien.client.render.armor.PlatedAberrantChitinArmorRenderer;
 import com.alien.client.render.armor.PlatedChitinArmorRenderer;
 import com.alien.client.render.armor.PlatedIrradiatedChitinArmorRenderer;
 import com.alien.client.render.armor.PlatedNetherChitinArmorRenderer;
+import com.alien.client.render.entity.AcidRenderer;
+import com.alien.client.render.entity.ChestbursterRenderer;
+import com.alien.client.render.entity.DroneRenderer;
+import com.alien.client.render.entity.OvomorphRenderer;
+import com.alien.client.render.entity.PraetorianRenderer;
+import com.alien.client.render.entity.QueenRenderer;
+import com.alien.client.render.entity.WarriorRenderer;
+import com.alien.client.render.entity.parasite.facehugger.FacehuggerRenderer;
 import com.alien.common.registry.init.AlienArmorItems;
 import com.alien.common.registry.init.AlienBlocks;
+import com.alien.common.registry.init.AlienEntityTypes;
 import net.minecraft.client.renderer.RenderType;
 
 import java.util.List;
 
+import com.avp.common.registry.init.AVPParticleTypes;
 import com.avp.service.Services;
 
 public class AlienClient {
@@ -21,6 +34,8 @@ public class AlienClient {
     public static void initialize() {
         registerArmorRenderers();
         registerBlockRenderLayers();
+        registerEntityRenderers();
+        registerParticleProviderFactories();
     }
 
     private static void registerArmorRenderers() {
@@ -108,5 +123,49 @@ public class AlienClient {
         Services.CLIENT_REGISTRY.registerBlockRenderLayer(AlienBlocks.RESIN_VEIN, RenderType.cutout());
         Services.CLIENT_REGISTRY.registerBlockRenderLayer(AlienBlocks.RESIN_WEB, RenderType.cutout());
         Services.CLIENT_REGISTRY.registerBlockRenderLayer(AlienBlocks.ROYAL_JELLY_BLOCK, RenderType.translucent());
+    }
+
+    private static void registerEntityRenderers() {
+        Services.CLIENT_REGISTRY.registerEntityRenderer(AlienEntityTypes.ABERRANT_CHESTBURSTER, ChestbursterRenderer::new);
+        Services.CLIENT_REGISTRY.registerEntityRenderer(AlienEntityTypes.ABERRANT_DRONE, DroneRenderer::new);
+        Services.CLIENT_REGISTRY.registerEntityRenderer(AlienEntityTypes.ABERRANT_FACEHUGGER, FacehuggerRenderer::new);
+        Services.CLIENT_REGISTRY.registerEntityRenderer(AlienEntityTypes.ABERRANT_OVOMORPH, OvomorphRenderer::new);
+        Services.CLIENT_REGISTRY.registerEntityRenderer(AlienEntityTypes.ABERRANT_PRAETORIAN, PraetorianRenderer::new);
+        Services.CLIENT_REGISTRY.registerEntityRenderer(AlienEntityTypes.ABERRANT_QUEEN, QueenRenderer::new);
+        Services.CLIENT_REGISTRY.registerEntityRenderer(AlienEntityTypes.ABERRANT_WARRIOR, WarriorRenderer::new);
+        Services.CLIENT_REGISTRY.registerEntityRenderer(AlienEntityTypes.ACID, AcidRenderer::new);
+        Services.CLIENT_REGISTRY.registerEntityRenderer(AlienEntityTypes.CHESTBURSTER, ChestbursterRenderer::new);
+        Services.CLIENT_REGISTRY.registerEntityRenderer(AlienEntityTypes.DRONE, DroneRenderer::new);
+        Services.CLIENT_REGISTRY.registerEntityRenderer(AlienEntityTypes.FACEHUGGER, FacehuggerRenderer::new);
+        Services.CLIENT_REGISTRY.registerEntityRenderer(AlienEntityTypes.IRRADIATED_DRONE, DroneRenderer::new);
+        Services.CLIENT_REGISTRY.registerEntityRenderer(AlienEntityTypes.IRRADIATED_PRAETORIAN, PraetorianRenderer::new);
+        Services.CLIENT_REGISTRY.registerEntityRenderer(AlienEntityTypes.IRRADIATED_QUEEN, QueenRenderer::new);
+        Services.CLIENT_REGISTRY.registerEntityRenderer(AlienEntityTypes.IRRADIATED_WARRIOR, WarriorRenderer::new);
+        Services.CLIENT_REGISTRY.registerEntityRenderer(AlienEntityTypes.NETHER_CHESTBURSTER, ChestbursterRenderer::new);
+        Services.CLIENT_REGISTRY.registerEntityRenderer(AlienEntityTypes.NETHER_DRONE, DroneRenderer::new);
+        Services.CLIENT_REGISTRY.registerEntityRenderer(AlienEntityTypes.NETHER_FACEHUGGER, FacehuggerRenderer::new);
+        Services.CLIENT_REGISTRY.registerEntityRenderer(AlienEntityTypes.NETHER_OVOMORPH, OvomorphRenderer::new);
+        Services.CLIENT_REGISTRY.registerEntityRenderer(AlienEntityTypes.NETHER_PRAETORIAN, PraetorianRenderer::new);
+        Services.CLIENT_REGISTRY.registerEntityRenderer(AlienEntityTypes.NETHER_QUEEN, QueenRenderer::new);
+        Services.CLIENT_REGISTRY.registerEntityRenderer(AlienEntityTypes.NETHER_WARRIOR, WarriorRenderer::new);
+        Services.CLIENT_REGISTRY.registerEntityRenderer(AlienEntityTypes.OVOMORPH, OvomorphRenderer::new);
+        Services.CLIENT_REGISTRY.registerEntityRenderer(AlienEntityTypes.PRAETORIAN, PraetorianRenderer::new);
+        Services.CLIENT_REGISTRY.registerEntityRenderer(AlienEntityTypes.QUEEN, QueenRenderer::new);
+        Services.CLIENT_REGISTRY.registerEntityRenderer(AlienEntityTypes.ROYAL_ABERRANT_CHESTBURSTER, ChestbursterRenderer::new);
+        Services.CLIENT_REGISTRY.registerEntityRenderer(AlienEntityTypes.ROYAL_ABERRANT_FACEHUGGER, FacehuggerRenderer::new);
+        Services.CLIENT_REGISTRY.registerEntityRenderer(AlienEntityTypes.ROYAL_ABERRANT_OVOMORPH, OvomorphRenderer::new);
+        Services.CLIENT_REGISTRY.registerEntityRenderer(AlienEntityTypes.ROYAL_CHESTBURSTER, ChestbursterRenderer::new);
+        Services.CLIENT_REGISTRY.registerEntityRenderer(AlienEntityTypes.ROYAL_FACEHUGGER, FacehuggerRenderer::new);
+        Services.CLIENT_REGISTRY.registerEntityRenderer(AlienEntityTypes.ROYAL_NETHER_CHESTBURSTER, ChestbursterRenderer::new);
+        Services.CLIENT_REGISTRY.registerEntityRenderer(AlienEntityTypes.ROYAL_NETHER_FACEHUGGER, FacehuggerRenderer::new);
+        Services.CLIENT_REGISTRY.registerEntityRenderer(AlienEntityTypes.ROYAL_NETHER_OVOMORPH, OvomorphRenderer::new);
+        Services.CLIENT_REGISTRY.registerEntityRenderer(AlienEntityTypes.ROYAL_OVOMORPH, OvomorphRenderer::new);
+        Services.CLIENT_REGISTRY.registerEntityRenderer(AlienEntityTypes.WARRIOR, WarriorRenderer::new);
+    }
+
+    private static void registerParticleProviderFactories() {
+        Services.CLIENT_REGISTRY.registerParticleProviderFactory(AVPParticleTypes.ACID, AcidParticleProvider::new);
+        Services.CLIENT_REGISTRY.registerParticleProviderFactory(AVPParticleTypes.BLUE_ACID, BlueAcidParticleProvider::new);
+        Services.CLIENT_REGISTRY.registerParticleProviderFactory(AVPParticleTypes.IRRADIATED_ACID, IrradiatedAcidParticleProvider::new);
     }
 }

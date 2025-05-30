@@ -4,6 +4,7 @@ import com.alien.common.data.AlienVariantTypes;
 import com.alien.common.gameplay.entity.living.alien.Alien;
 import com.alien.common.model.alien.HatchState;
 import com.alien.common.model.alien.variant.AlienVariant;
+import com.alien.common.registry.init.AlienEntityTypes;
 import com.alien.common.registry.init.AlienItems;
 import com.bvanseg.just.functional.option.Option;
 import net.minecraft.nbt.CompoundTag;
@@ -29,7 +30,6 @@ import org.jetbrains.annotations.Nullable;
 
 import com.avp.AVP;
 import com.avp.common.registry.init.AVPSoundEvents;
-import com.avp.common.registry.init.entity_type.AVPEntityTypes;
 import com.avp.common.util.AVPPredicates;
 
 public class Ovomorph extends Alien implements Shearable {
@@ -283,17 +283,17 @@ public class Ovomorph extends Alien implements Shearable {
     public static @Nullable EntityType<? extends Ovomorph> getType(AlienVariant alienVariant, boolean isRoyal) {
         if (isRoyal) {
             return switch (alienVariant) {
-                case NORMAL -> AVPEntityTypes.ROYAL_OVOMORPH.get();
-                case NETHER -> AVPEntityTypes.ROYAL_NETHER_OVOMORPH.get();
-                case ABERRANT -> AVPEntityTypes.ROYAL_ABERRANT_OVOMORPH.get();
+                case NORMAL -> AlienEntityTypes.ROYAL_OVOMORPH.get();
+                case NETHER -> AlienEntityTypes.ROYAL_NETHER_OVOMORPH.get();
+                case ABERRANT -> AlienEntityTypes.ROYAL_ABERRANT_OVOMORPH.get();
                 case IRRADIATED -> null;
             };
         }
 
         return switch (alienVariant) {
-            case NORMAL -> AVPEntityTypes.OVOMORPH.get();
-            case NETHER -> AVPEntityTypes.NETHER_OVOMORPH.get();
-            case ABERRANT -> AVPEntityTypes.ABERRANT_OVOMORPH.get();
+            case NORMAL -> AlienEntityTypes.OVOMORPH.get();
+            case NETHER -> AlienEntityTypes.NETHER_OVOMORPH.get();
+            case ABERRANT -> AlienEntityTypes.ABERRANT_OVOMORPH.get();
             case IRRADIATED -> null;
         };
     }

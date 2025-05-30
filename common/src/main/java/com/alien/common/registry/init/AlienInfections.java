@@ -11,40 +11,42 @@ import org.jetbrains.annotations.NotNull;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
 
-import com.avp.common.registry.init.entity_type.AVPEntityTypes;
 import com.avp.service.Services;
 
 public class AlienInfections {
 
     public static final Supplier<AlienInfection<Facehugger, Chestburster>> FACEHUGGER_PRODUCES_CHESTBURSTER = register(
-        () -> createFacehuggerInfection(AVPEntityTypes.FACEHUGGER.get(), AVPEntityTypes.CHESTBURSTER.get())
+        () -> createFacehuggerInfection(AlienEntityTypes.FACEHUGGER.get(), AlienEntityTypes.CHESTBURSTER.get())
     );
 
     public static final Supplier<AlienInfection<Facehugger, Chestburster>> ABERRANT_FACEHUGGER_PRODUCES_ABERRANT_CHESTBURSTER =
         register(
-            () -> createFacehuggerInfection(AVPEntityTypes.ABERRANT_FACEHUGGER.get(), AVPEntityTypes.ABERRANT_CHESTBURSTER.get())
+            () -> createFacehuggerInfection(AlienEntityTypes.ABERRANT_FACEHUGGER.get(), AlienEntityTypes.ABERRANT_CHESTBURSTER.get())
         );
 
     public static final Supplier<AlienInfection<Facehugger, Chestburster>> NETHER_FACEHUGGER_PRODUCES_NETHER_CHESTBURSTER =
         register(
-            () -> createFacehuggerInfection(AVPEntityTypes.NETHER_FACEHUGGER.get(), AVPEntityTypes.NETHER_CHESTBURSTER.get())
+            () -> createFacehuggerInfection(AlienEntityTypes.NETHER_FACEHUGGER.get(), AlienEntityTypes.NETHER_CHESTBURSTER.get())
         );
 
     public static final Supplier<AlienInfection<Facehugger, Chestburster>> ROYAL_FACEHUGGER_PRODUCES_ROYAL_CHESTBURSTER = register(
-        () -> createFacehuggerInfection(AVPEntityTypes.ROYAL_FACEHUGGER.get(), AVPEntityTypes.ROYAL_CHESTBURSTER.get())
+        () -> createFacehuggerInfection(AlienEntityTypes.ROYAL_FACEHUGGER.get(), AlienEntityTypes.ROYAL_CHESTBURSTER.get())
     );
 
     public static final Supplier<AlienInfection<Facehugger, Chestburster>> ROYAL_ABERRANT_FACEHUGGER_PRODUCES_ROYAL_ABERRANT_CHESTBURSTER =
         register(
             () -> createFacehuggerInfection(
-                AVPEntityTypes.ROYAL_ABERRANT_FACEHUGGER.get(),
-                AVPEntityTypes.ROYAL_ABERRANT_CHESTBURSTER.get()
+                AlienEntityTypes.ROYAL_ABERRANT_FACEHUGGER.get(),
+                AlienEntityTypes.ROYAL_ABERRANT_CHESTBURSTER.get()
             )
         );
 
     public static final Supplier<AlienInfection<Facehugger, Chestburster>> ROYAL_NETHER_FACEHUGGER_PRODUCES_ROYAL_NETHER_CHESTBURSTER =
         register(
-            () -> createFacehuggerInfection(AVPEntityTypes.ROYAL_NETHER_FACEHUGGER.get(), AVPEntityTypes.ROYAL_NETHER_CHESTBURSTER.get())
+            () -> createFacehuggerInfection(
+                AlienEntityTypes.ROYAL_NETHER_FACEHUGGER.get(),
+                AlienEntityTypes.ROYAL_NETHER_CHESTBURSTER.get()
+            )
         );
 
     private static @NotNull AlienInfection<Facehugger, Chestburster> createFacehuggerInfection(
