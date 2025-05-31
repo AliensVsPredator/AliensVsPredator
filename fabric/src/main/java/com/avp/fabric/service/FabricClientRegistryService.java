@@ -31,10 +31,13 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+import com.avp.client.input.keybind.KeyPressHandler;
 import com.avp.client.input.keybind.util.KeyMappingUtil;
+import com.avp.client.model.KeyInteractType;
 import com.avp.service.ClientRegistryService;
 
 public class FabricClientRegistryService implements ClientRegistryService {
@@ -76,17 +79,18 @@ public class FabricClientRegistryService implements ClientRegistryService {
     }
 
     @Override
-    public Supplier<Tuple2<KeyMapping, Runnable>> registerKeyMapping(String id, String category, int key, Runnable onKeyMappingActivated) {
+    public Supplier<Tuple2<KeyMapping, Consumer<KeyInteractType>>> registerKeyMapping(
+        String id,
+        String category,
+        int key,
+        Consumer<KeyInteractType> keyInteractTypeConsumer
+    ) {
         var keyMapping = KeyMappingUtil.createKeyMapping(id, category, key);
-        var keyMappingHandlerPair = new Tuple2<>(keyMapping, onKeyMappingActivated);
+        var keyMappingHandlerPair = new Tuple2<>(keyMapping, keyInteractTypeConsumer);
 
         KeyBindingHelper.registerKeyBinding(keyMapping);
 
-        ClientTickEvents.END_CLIENT_TICK.register(client -> {
-            while (keyMapping.consumeClick()) {
-                onKeyMappingActivated.run();
-            }
-        });
+        ClientTickEvents.END_CLIENT_TICK.register(client -> KeyPressHandler.handle(keyMapping, keyInteractTypeConsumer));
 
         return () -> keyMappingHandlerPair;
     }

@@ -24,6 +24,7 @@
     "MixinLivingEntity_NukedRadiation",
     "MixinMob_IncapacitateHost",
     "MixinMobCategory_InjectCustomAlienCategory",
+    "MixinPlayer_CrawlPosing",
     "MixinShearsItem_BreakRazorWire",
     "MixinVillagerHostilesSensor_RunAwayFromAVPMonsters",
     "ParrotSoundMapAccessor",

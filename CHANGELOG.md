@@ -8,6 +8,9 @@
 - [Fabric] Now requires Fabric Loader `0.16.14`.
 - [NeoForge] Now requires NeoForge `21.1.173`.
 - Now requires AzureLib 3.0.20.
+- Added keybind to allow players to crawl on demand.
+  - Player crawling already exists in vanilla, but there is no key to activate it on demand.
+  - This update adds a keybind (left alt) to crawl on demand. Player crawling will be important for future AVP updates.
 
 ## ♻️ Changes
 - N/A

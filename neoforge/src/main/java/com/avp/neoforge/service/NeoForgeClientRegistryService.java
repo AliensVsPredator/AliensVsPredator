@@ -26,10 +26,12 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
 import com.avp.client.input.keybind.util.KeyMappingUtil;
+import com.avp.client.model.KeyInteractType;
 import com.avp.service.ClientRegistryService;
 
 public class NeoForgeClientRegistryService implements ClientRegistryService {
@@ -46,7 +48,7 @@ public class NeoForgeClientRegistryService implements ClientRegistryService {
 
     private final List<Tuple2<Supplier<? extends Item>, Function<String, Supplier<AzItemRenderer>>>> itemRendererPairs;
 
-    private final List<Supplier<Tuple2<KeyMapping, Runnable>>> keyMappingHandlerPairSuppliers;
+    private final List<Supplier<Tuple2<KeyMapping, Consumer<KeyInteractType>>>> keyMappingHandlerPairSuppliers;
 
     private final List<Tuple2<Supplier<? extends MenuType<?>>, MenuScreens.ScreenConstructor<?, ?>>> menuScreenConstructorPairs;
 
@@ -101,10 +103,15 @@ public class NeoForgeClientRegistryService implements ClientRegistryService {
     }
 
     @Override
-    public Supplier<Tuple2<KeyMapping, Runnable>> registerKeyMapping(String id, String category, int key, Runnable onKeyMappingActivated) {
+    public Supplier<Tuple2<KeyMapping, Consumer<KeyInteractType>>> registerKeyMapping(
+        String id,
+        String category,
+        int key,
+        Consumer<KeyInteractType> keyInteractTypeConsumer
+    ) {
         // Note the use of Lazy.of(...) here. This is deliberate so that the key mapping is only created once.
-        Supplier<Tuple2<KeyMapping, Runnable>> supplier = Lazy.of(
-            () -> new Tuple2<>(KeyMappingUtil.createKeyMapping(id, category, key), onKeyMappingActivated)
+        Supplier<Tuple2<KeyMapping, Consumer<KeyInteractType>>> supplier = Lazy.of(
+            () -> new Tuple2<>(KeyMappingUtil.createKeyMapping(id, category, key), keyInteractTypeConsumer)
         );
         keyMappingHandlerPairSuppliers.add(supplier);
         return supplier;
@@ -150,7 +157,7 @@ public class NeoForgeClientRegistryService implements ClientRegistryService {
         return itemRendererPairs;
     }
 
-    public List<Supplier<Tuple2<KeyMapping, Runnable>>> getKeyMappingHandlerPairSuppliers() {
+    public List<Supplier<Tuple2<KeyMapping, Consumer<KeyInteractType>>>> getKeyMappingHandlerPairSuppliers() {
         return keyMappingHandlerPairSuppliers;
     }
 

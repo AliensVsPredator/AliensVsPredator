@@ -678,7 +678,9 @@ public class EnglishLanguageProvider extends FabricLanguageProvider {
         );
 
         // Keybinds
+        builder.add("key.avp.crawl", "Crawl");
         builder.add("key.avp.reload", "Reload");
+        builder.add("keybind.category.avp.movement", "AVP Movement");
         builder.add("keybind.category.avp.weapons", "AVP Weapons");
 
         // Containers
