@@ -10,26 +10,22 @@ public class AlienBlockItems {
 
     public static final AVPDeferredHolder<BlockItem> ABERRANT_RESIN = AVPBlockItems.register(
         "aberrant_resin",
-        AlienBlocks.ABERRANT_RESIN,
-        new Item.Properties().fireResistant()
+        AlienBlocks.ABERRANT_RESIN
     );
 
     public static final AVPDeferredHolder<BlockItem> ABERRANT_RESIN_NODE = AVPBlockItems.register(
         "aberrant_resin_node",
-        AlienBlocks.ABERRANT_RESIN_NODE,
-        new Item.Properties().fireResistant()
+        AlienBlocks.ABERRANT_RESIN_NODE
     );
 
     public static final AVPDeferredHolder<BlockItem> ABERRANT_RESIN_VEIN = AVPBlockItems.register(
         "aberrant_resin_vein",
-        AlienBlocks.ABERRANT_RESIN_VEIN,
-        new Item.Properties().fireResistant()
+        AlienBlocks.ABERRANT_RESIN_VEIN
     );
 
     public static final AVPDeferredHolder<BlockItem> ABERRANT_RESIN_WEB = AVPBlockItems.register(
         "aberrant_resin_web",
-        AlienBlocks.ABERRANT_RESIN_WEB,
-        new Item.Properties().fireResistant()
+        AlienBlocks.ABERRANT_RESIN_WEB
     );
 
     public static final AVPDeferredHolder<BlockItem> IRRADIATED_RESIN = AVPBlockItems.register(
