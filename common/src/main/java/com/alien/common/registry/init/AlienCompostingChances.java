@@ -12,21 +12,29 @@ public class AlienCompostingChances {
 
         Services.REGISTRY.registerCompostableItem(AlienBlocks.IRRADIATED_RESIN, 1F, false, false);
         Services.REGISTRY.registerCompostableItem(AlienBlocks.IRRADIATED_RESIN_NODE, 1F, false, false);
+        Services.REGISTRY.registerCompostableItem(AlienBlocks.IRRADIATED_RESIN_SLAB, 0.5F, false, false);
+        Services.REGISTRY.registerCompostableItem(AlienBlocks.IRRADIATED_RESIN_STAIRS, 0.66F, false, false);
         Services.REGISTRY.registerCompostableItem(AlienBlocks.IRRADIATED_RESIN_VEIN, 0.3F, false, false);
         Services.REGISTRY.registerCompostableItem(AlienBlocks.IRRADIATED_RESIN_WEB, 0.65F, false, false);
 
         Services.REGISTRY.registerCompostableItem(AlienBlocks.ABERRANT_RESIN, 1F, false, false);
         Services.REGISTRY.registerCompostableItem(AlienBlocks.ABERRANT_RESIN_NODE, 1F, false, false);
+        Services.REGISTRY.registerCompostableItem(AlienBlocks.ABERRANT_RESIN_SLAB, 0.5F, false, false);
+        Services.REGISTRY.registerCompostableItem(AlienBlocks.ABERRANT_RESIN_STAIRS, 0.66F, false, false);
         Services.REGISTRY.registerCompostableItem(AlienBlocks.ABERRANT_RESIN_VEIN, 0.3F, false, false);
         Services.REGISTRY.registerCompostableItem(AlienBlocks.ABERRANT_RESIN_WEB, 0.65F, false, false);
 
         Services.REGISTRY.registerCompostableItem(AlienBlocks.NETHER_RESIN, 1F, false, false);
         Services.REGISTRY.registerCompostableItem(AlienBlocks.NETHER_RESIN_NODE, 1F, false, false);
+        Services.REGISTRY.registerCompostableItem(AlienBlocks.NETHER_RESIN_SLAB, 0.5F, false, false);
+        Services.REGISTRY.registerCompostableItem(AlienBlocks.NETHER_RESIN_STAIRS, 0.66F, false, false);
         Services.REGISTRY.registerCompostableItem(AlienBlocks.NETHER_RESIN_VEIN, 0.3F, false, false);
         Services.REGISTRY.registerCompostableItem(AlienBlocks.NETHER_RESIN_WEB, 0.65F, false, false);
 
         Services.REGISTRY.registerCompostableItem(AlienBlocks.RESIN, 1F, false, false);
         Services.REGISTRY.registerCompostableItem(AlienBlocks.RESIN_NODE, 1F, false, false);
+        Services.REGISTRY.registerCompostableItem(AlienBlocks.RESIN_SLAB, 0.5F, false, false);
+        Services.REGISTRY.registerCompostableItem(AlienBlocks.RESIN_STAIRS, 0.66F, false, false);
         Services.REGISTRY.registerCompostableItem(AlienBlocks.RESIN_VEIN, 0.3F, false, false);
         Services.REGISTRY.registerCompostableItem(AlienBlocks.RESIN_WEB, 0.65F, false, false);
     }

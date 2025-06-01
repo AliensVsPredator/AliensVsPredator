@@ -68,6 +68,19 @@ public class BlockLootTableProvider extends FabricBlockLootTableProvider {
 
     private void generateSelfDrops() {
         dropSelf(AlienBlocks.ABERRANT_RESIN);
+        dropSelf(AlienBlocks.ABERRANT_RESIN_STAIRS);
+        dropSelf(AlienBlocks.IRRADIATED_RESIN);
+        dropSelf(AlienBlocks.IRRADIATED_RESIN_STAIRS);
+        dropSelf(AlienBlocks.NETHER_RESIN);
+        dropSelf(AlienBlocks.NETHER_RESIN_STAIRS);
+        dropSelf(AlienBlocks.RESIN);
+        dropSelf(AlienBlocks.RESIN_BRICKS);
+        dropSelf(AlienBlocks.RESIN_O);
+        dropSelf(AlienBlocks.RESIN_RIBBED);
+        dropSelf(AlienBlocks.RESIN_SMOOTH);
+        dropSelf(AlienBlocks.RESIN_STAIRS);
+        dropSelf(AlienBlocks.ROYAL_JELLY_BLOCK);
+
         dropSelf(AVPBlocks.ALUMINUM_BLOCK);
         dropSelf(AVPBlocks.ASH_BLOCK);
         dropSelf(AVPBlocks.AUTUNITE_BLOCK);
@@ -108,10 +121,8 @@ public class BlockLootTableProvider extends FabricBlockLootTableProvider {
         dropSelf(AVPBlocks.INDUSTRIAL_GLASS_PANE);
         dropSelf(AVPBlocks.INDUSTRIAL_GLASS_STAIRS);
         dropSelf(AVPBlocks.INDUSTRIAL_GLASS_TRAP_DOOR);
-        dropSelf(AlienBlocks.IRRADIATED_RESIN);
         dropSelf(AVPBlocks.LEAD_BLOCK);
         dropSelf(AVPBlocks.LITHIUM_BLOCK);
-        dropSelf(AlienBlocks.NETHER_RESIN);
         dropSelf(AVPBlocks.NUKE_BLOCK);
         dropSelf(AVPBlocks.RAW_BAUXITE_BLOCK);
         dropSelf(AVPBlocks.RAW_GALENA_BLOCK);
@@ -120,13 +131,7 @@ public class BlockLootTableProvider extends FabricBlockLootTableProvider {
         dropSelf(AVPBlocks.RAW_ZINC_BLOCK);
         dropSelf(AVPBlocks.RAZOR_WIRE);
         dropSelf(AVPBlocks.REDSTONE_GENERATOR);
-        dropSelf(AlienBlocks.RESIN);
-        dropSelf(AlienBlocks.RESIN_BRICKS);
-        dropSelf(AlienBlocks.RESIN_O);
-        dropSelf(AlienBlocks.RESIN_RIBBED);
-        dropSelf(AlienBlocks.RESIN_SMOOTH);
         dropSelf(AVPBlocks.RESONATOR_BLOCK);
-        dropSelf(AlienBlocks.ROYAL_JELLY_BLOCK);
         dropSelf(AVPBlocks.SENTRY_TURRET);
         dropSelf(AVPBlocks.SILICA_GRAVEL);
         dropSelf(AVPBlocks.SILICON_BLOCK);
@@ -202,6 +207,11 @@ public class BlockLootTableProvider extends FabricBlockLootTableProvider {
     }
 
     private void generateSlabDrops() {
+        dropSlab(AlienBlocks.ABERRANT_RESIN_SLAB);
+        dropSlab(AlienBlocks.IRRADIATED_RESIN_SLAB);
+        dropSlab(AlienBlocks.NETHER_RESIN_SLAB);
+        dropSlab(AlienBlocks.RESIN_SLAB);
+
         dropSlab(AVPBlocks.CUT_FERROALUMINUM_SLAB);
         dropSlab(AVPBlocks.CUT_STEEL_SLAB);
         dropSlab(AVPBlocks.CUT_TITANIUM_SLAB);

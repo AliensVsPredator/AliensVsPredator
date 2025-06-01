@@ -172,15 +172,23 @@ public class BlocksCreativeModeTabInitializer {
 
         // Alien blocks
         CreativeModeTabUtil.accept(output, AlienBlocks.RESIN);
+        CreativeModeTabUtil.accept(output, AlienBlocks.RESIN_SLAB);
+        CreativeModeTabUtil.accept(output, AlienBlocks.RESIN_STAIRS);
         CreativeModeTabUtil.accept(output, AlienBlocks.RESIN_VEIN);
         CreativeModeTabUtil.accept(output, AlienBlocks.RESIN_WEB);
         CreativeModeTabUtil.accept(output, AlienBlocks.NETHER_RESIN);
+        CreativeModeTabUtil.accept(output, AlienBlocks.NETHER_RESIN_SLAB);
+        CreativeModeTabUtil.accept(output, AlienBlocks.NETHER_RESIN_STAIRS);
         CreativeModeTabUtil.accept(output, AlienBlocks.NETHER_RESIN_VEIN);
         CreativeModeTabUtil.accept(output, AlienBlocks.NETHER_RESIN_WEB);
         CreativeModeTabUtil.accept(output, AlienBlocks.ABERRANT_RESIN);
+        CreativeModeTabUtil.accept(output, AlienBlocks.ABERRANT_RESIN_SLAB);
+        CreativeModeTabUtil.accept(output, AlienBlocks.ABERRANT_RESIN_STAIRS);
         CreativeModeTabUtil.accept(output, AlienBlocks.ABERRANT_RESIN_VEIN);
         CreativeModeTabUtil.accept(output, AlienBlocks.ABERRANT_RESIN_WEB);
         CreativeModeTabUtil.accept(output, AlienBlocks.IRRADIATED_RESIN);
+        CreativeModeTabUtil.accept(output, AlienBlocks.IRRADIATED_RESIN_SLAB);
+        CreativeModeTabUtil.accept(output, AlienBlocks.IRRADIATED_RESIN_STAIRS);
         CreativeModeTabUtil.accept(output, AlienBlocks.IRRADIATED_RESIN_VEIN);
         CreativeModeTabUtil.accept(output, AlienBlocks.IRRADIATED_RESIN_WEB);
         CreativeModeTabUtil.accept(output, AlienBlocks.ROYAL_JELLY_BLOCK);

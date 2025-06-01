@@ -9,6 +9,7 @@ public class FlammableBlockRegistry {
     public static void initialize() {
         var fireBlock = (FireBlock) Blocks.FIRE;
 
+        // TODO: Add resin slabs and resin stairs here.
         fireBlock.setFlammable(AlienBlocks.ABERRANT_RESIN.get(), 1, 20);
         fireBlock.setFlammable(AlienBlocks.ABERRANT_RESIN_NODE.get(), 1, 20);
         fireBlock.setFlammable(AlienBlocks.IRRADIATED_RESIN.get(), 1, 20);

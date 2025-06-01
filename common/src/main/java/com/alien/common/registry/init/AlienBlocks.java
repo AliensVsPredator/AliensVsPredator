@@ -9,6 +9,8 @@ import com.alien.common.gameplay.block.resin.vein.ResinVeinBlock;
 import com.alien.common.gameplay.block.resin.web.IrradiatedResinWebBlock;
 import com.alien.common.gameplay.block.resin.web.ResinWebBlock;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.SlabBlock;
+import net.minecraft.world.level.block.StairBlock;
 
 import com.avp.common.gameplay.block.property.BlockProperties;
 import com.avp.common.registry.AVPDeferredHolder;
@@ -19,6 +21,19 @@ public class AlienBlocks {
     public static final AVPDeferredHolder<Block> ABERRANT_RESIN = AVPBlocks.register(
         "aberrant_resin",
         () -> new ResinBlock(BlockProperties.ABERRANT_RESIN.build())
+    );
+
+    public static final AVPDeferredHolder<Block> ABERRANT_RESIN_SLAB = AVPBlocks.register(
+        "aberrant_resin_slab",
+        () -> new SlabBlock(BlockProperties.ABERRANT_RESIN.build())
+    );
+
+    public static final AVPDeferredHolder<Block> ABERRANT_RESIN_STAIRS = AVPBlocks.register(
+        "aberrant_resin_stairs",
+        () -> new StairBlock(
+            ABERRANT_RESIN.get().defaultBlockState(),
+            BlockProperties.ABERRANT_RESIN.build()
+        )
     );
 
     public static final AVPDeferredHolder<Block> ABERRANT_RESIN_NODE = AVPBlocks.register(
@@ -41,6 +56,19 @@ public class AlienBlocks {
         () -> new IrradiatedResinBlock(BlockProperties.IRRADIATED_RESIN.build())
     );
 
+    public static final AVPDeferredHolder<Block> IRRADIATED_RESIN_SLAB = AVPBlocks.register(
+        "irradiated_resin_slab",
+        () -> new SlabBlock(BlockProperties.IRRADIATED_RESIN.build())
+    );
+
+    public static final AVPDeferredHolder<Block> IRRADIATED_RESIN_STAIRS = AVPBlocks.register(
+        "irradiated_resin_stairs",
+        () -> new StairBlock(
+            IRRADIATED_RESIN.get().defaultBlockState(),
+            BlockProperties.IRRADIATED_RESIN.build()
+        )
+    );
+
     public static final AVPDeferredHolder<Block> IRRADIATED_RESIN_NODE = AVPBlocks.register(
         "irradiated_resin_node",
         () -> new IrradiatedResinNodeBlock(BlockProperties.IRRADIATED_RESIN.build())
@@ -61,6 +89,19 @@ public class AlienBlocks {
         () -> new ResinBlock(BlockProperties.NETHER_RESIN.build())
     );
 
+    public static final AVPDeferredHolder<Block> NETHER_RESIN_SLAB = AVPBlocks.register(
+        "nether_resin_slab",
+        () -> new SlabBlock(BlockProperties.NETHER_RESIN.build())
+    );
+
+    public static final AVPDeferredHolder<Block> NETHER_RESIN_STAIRS = AVPBlocks.register(
+        "nether_resin_stairs",
+        () -> new StairBlock(
+            NETHER_RESIN.get().defaultBlockState(),
+            BlockProperties.NETHER_RESIN.build()
+        )
+    );
+
     public static final AVPDeferredHolder<Block> NETHER_RESIN_NODE = AVPBlocks.register(
         "nether_resin_node",
         () -> new ResinNodeBlock(BlockProperties.NETHER_RESIN.build())
@@ -78,6 +119,7 @@ public class AlienBlocks {
 
     public static final AVPDeferredHolder<Block> RESIN = AVPBlocks.register("resin", () -> new ResinBlock(BlockProperties.RESIN.build()));
 
+    // TODO: Fix properties.
     public static final AVPDeferredHolder<Block> RESIN_BRICKS = AVPBlocks.register("resin_bricks", BlockProperties.BRASS);
 
     public static final AVPDeferredHolder<Block> RESIN_NODE = AVPBlocks.register(
@@ -85,11 +127,27 @@ public class AlienBlocks {
         () -> new ResinNodeBlock(BlockProperties.RESIN.build())
     );
 
+    // TODO: Fix properties.
     public static final AVPDeferredHolder<Block> RESIN_O = AVPBlocks.register("resin_o", BlockProperties.BRASS);
 
+    // TODO: Fix properties.
     public static final AVPDeferredHolder<Block> RESIN_RIBBED = AVPBlocks.register("resin_ribbed", BlockProperties.BRASS);
 
+    public static final AVPDeferredHolder<Block> RESIN_SLAB = AVPBlocks.register(
+        "resin_slab",
+        () -> new SlabBlock(BlockProperties.RESIN.build())
+    );
+
+    // TODO: Fix properties.
     public static final AVPDeferredHolder<Block> RESIN_SMOOTH = AVPBlocks.register("resin_smooth", BlockProperties.BRASS);
+
+    public static final AVPDeferredHolder<Block> RESIN_STAIRS = AVPBlocks.register(
+        "resin_stairs",
+        () -> new StairBlock(
+            RESIN.get().defaultBlockState(),
+            BlockProperties.RESIN.build()
+        )
+    );
 
     public static final AVPDeferredHolder<ResinVeinBlock> RESIN_VEIN = AVPBlocks.register(
         "resin_vein",

@@ -18,6 +18,16 @@ public class AlienBlockItems {
         AlienBlocks.ABERRANT_RESIN_NODE
     );
 
+    public static final AVPDeferredHolder<BlockItem> ABERRANT_RESIN_SLAB = AVPBlockItems.register(
+        "aberrant_resin_slab",
+        AlienBlocks.ABERRANT_RESIN_SLAB
+    );
+
+    public static final AVPDeferredHolder<BlockItem> ABERRANT_RESIN_STAIRS = AVPBlockItems.register(
+        "aberrant_resin_stairs",
+        AlienBlocks.ABERRANT_RESIN_STAIRS
+    );
+
     public static final AVPDeferredHolder<BlockItem> ABERRANT_RESIN_VEIN = AVPBlockItems.register(
         "aberrant_resin_vein",
         AlienBlocks.ABERRANT_RESIN_VEIN
@@ -36,6 +46,16 @@ public class AlienBlockItems {
     public static final AVPDeferredHolder<BlockItem> IRRADIATED_RESIN_NODE = AVPBlockItems.register(
         "irradiated_resin_node",
         AlienBlocks.IRRADIATED_RESIN_NODE
+    );
+
+    public static final AVPDeferredHolder<BlockItem> IRRADIATED_RESIN_SLAB = AVPBlockItems.register(
+        "irradiated_resin_slab",
+        AlienBlocks.IRRADIATED_RESIN_SLAB
+    );
+
+    public static final AVPDeferredHolder<BlockItem> IRRADIATED_RESIN_STAIRS = AVPBlockItems.register(
+        "irradiated_resin_stairs",
+        AlienBlocks.IRRADIATED_RESIN_STAIRS
     );
 
     public static final AVPDeferredHolder<BlockItem> IRRADIATED_RESIN_VEIN = AVPBlockItems.register(
@@ -58,6 +78,16 @@ public class AlienBlockItems {
         "nether_resin_node",
         AlienBlocks.NETHER_RESIN_NODE,
         new Item.Properties().fireResistant()
+    );
+
+    public static final AVPDeferredHolder<BlockItem> NETHER_RESIN_SLAB = AVPBlockItems.register(
+        "nether_resin_slab",
+        AlienBlocks.NETHER_RESIN_SLAB
+    );
+
+    public static final AVPDeferredHolder<BlockItem> NETHER_RESIN_STAIRS = AVPBlockItems.register(
+        "nether_resin_stairs",
+        AlienBlocks.NETHER_RESIN_STAIRS
     );
 
     public static final AVPDeferredHolder<BlockItem> NETHER_RESIN_VEIN = AVPBlockItems.register(
@@ -83,6 +113,16 @@ public class AlienBlockItems {
     public static final AVPDeferredHolder<BlockItem> RESIN_RIBBED = AVPBlockItems.register("resin_ribbed", AlienBlocks.RESIN_RIBBED);
 
     public static final AVPDeferredHolder<BlockItem> RESIN_SMOOTH = AVPBlockItems.register("resin_smooth", AlienBlocks.RESIN_SMOOTH);
+
+    public static final AVPDeferredHolder<BlockItem> RESIN_SLAB = AVPBlockItems.register(
+        "resin_slab",
+        AlienBlocks.RESIN_SLAB
+    );
+
+    public static final AVPDeferredHolder<BlockItem> RESIN_STAIRS = AVPBlockItems.register(
+        "resin_stairs",
+        AlienBlocks.RESIN_STAIRS
+    );
 
     public static final AVPDeferredHolder<BlockItem> RESIN_VEIN = AVPBlockItems.register("resin_vein", AlienBlocks.RESIN_VEIN);
 

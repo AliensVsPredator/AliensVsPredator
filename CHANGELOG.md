@@ -8,6 +8,15 @@
 - [Fabric] Now requires Fabric Loader `0.16.14`.
 - [NeoForge] Now requires NeoForge `21.1.173`.
 - Now requires AzureLib 3.0.20.
+- Added new resin blocks:
+  - Aberrant Resin Slab
+  - Aberrant Resin Stairs
+  - Irradiated Resin Slab
+  - Irradiated Resin Stairs
+  - Nether Resin Slab
+  - Nether Resin Stairs
+  - Resin Slab
+  - Resin Stairs
 - Added keybind to allow players to crawl on demand.
   - Player crawling already exists in vanilla, but there is no key to activate it on demand.
   - This update adds a keybind (left alt) to crawl on demand. Player crawling will be important for future AVP updates.
@@ -16,7 +25,10 @@
 - N/A
 
 ## 🐞 Fixes
+- Fixed aberrant resin blocks not burning in fire or lava.
 - Fixed players eating chorus fruit while infected causing facehuggers to spawn instead of the correct embryo type.
+- Fixed aberrant resin being mineable with axes.
+- Fixed irradiated resin being mineable with axes.
 - Fixed the following blocks not dropping anything when mined:
   - Ferroaluminum Plating Slab
   - Ferroaluminum Plating Stairs

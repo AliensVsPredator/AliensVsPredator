@@ -37,36 +37,24 @@ public class BlockModelProvider extends FabricModelProvider {
     public void generateBlockStateModels(BlockModelGenerators generators) {
         BlockProperties.DYE_COLOR_TO_CONCRETE_BLOCKS.forEach(
             (dyeColor, block) -> {
-                var resourceLocation = ModelLocationUtils.getModelLocation(block);
-
-                var textureMapping = TextureMapping.cube(block)
-                    .put(TextureSlot.BOTTOM, resourceLocation)
-                    .put(TextureSlot.TOP, resourceLocation);
-
-                createConcreteSlab(generators, dyeColor, textureMapping, resourceLocation);
-
-                createConcreteStairs(generators, dyeColor, textureMapping);
+                createSlab(generators, block, AVPBlocks.DYE_COLOR_TO_CONCRETE_SLAB.get(dyeColor).get());
+                createStairs(generators, block, AVPBlocks.DYE_COLOR_TO_CONCRETE_STAIRS.get(dyeColor).get());
             }
         );
 
         AVPBlocks.DYE_COLOR_TO_INDUSTRIAL_CONCRETE.forEach(
             (dyeColor, blockSupplier) -> {
                 var block = blockSupplier.get();
-                var resourceLocation = ModelLocationUtils.getModelLocation(block);
                 var topResourceLocation = TextureMapping.getBlockTexture(block, "_top");
 
                 var baseTextureMapping = TextureMapping.cube(block)
                     .put(TextureSlot.END, topResourceLocation);
 
-                var textureMapping = TextureMapping.cube(block)
-                    .put(TextureSlot.BOTTOM, topResourceLocation)
-                    .put(TextureSlot.TOP, topResourceLocation);
-
                 generators.createTrivialBlock(block, baseTextureMapping, ModelTemplates.CUBE_COLUMN);
 
-                createIndustrialConcreteSlab(generators, dyeColor, textureMapping, resourceLocation);
+                createSlab(generators, block, AVPBlocks.DYE_COLOR_TO_INDUSTRIAL_CONCRETE_SLAB.get(dyeColor).get());
 
-                createIndustrialConcreteStairs(generators, dyeColor, textureMapping);
+                createStairs(generators, block, AVPBlocks.DYE_COLOR_TO_INDUSTRIAL_CONCRETE_STAIRS.get(dyeColor).get());
 
                 createIndustrialConcreteWall(generators, dyeColor, block, topResourceLocation);
             }
@@ -88,21 +76,29 @@ public class BlockModelProvider extends FabricModelProvider {
         );
 
         generators.createRotatedVariantBlock(AlienBlocks.IRRADIATED_RESIN.get());
+        createSlab(generators, AlienBlocks.IRRADIATED_RESIN.get(), AlienBlocks.IRRADIATED_RESIN_SLAB.get());
+        createStairs(generators, AlienBlocks.IRRADIATED_RESIN.get(), AlienBlocks.IRRADIATED_RESIN_STAIRS.get());
         generators.createRotatedVariantBlock(AlienBlocks.IRRADIATED_RESIN_NODE.get());
         MultiFaceGenerator.generate(generators, AlienBlocks.IRRADIATED_RESIN_VEIN.get());
         generators.createCrossBlock(AlienBlocks.IRRADIATED_RESIN_WEB.get(), BlockModelGenerators.TintState.NOT_TINTED);
 
         generators.createRotatedVariantBlock(AlienBlocks.ABERRANT_RESIN.get());
+        createSlab(generators, AlienBlocks.ABERRANT_RESIN.get(), AlienBlocks.ABERRANT_RESIN_SLAB.get());
+        createStairs(generators, AlienBlocks.ABERRANT_RESIN.get(), AlienBlocks.ABERRANT_RESIN_STAIRS.get());
         generators.createRotatedVariantBlock(AlienBlocks.ABERRANT_RESIN_NODE.get());
         MultiFaceGenerator.generate(generators, AlienBlocks.ABERRANT_RESIN_VEIN.get());
         generators.createCrossBlock(AlienBlocks.ABERRANT_RESIN_WEB.get(), BlockModelGenerators.TintState.NOT_TINTED);
 
         generators.createRotatedVariantBlock(AlienBlocks.NETHER_RESIN.get());
+        createSlab(generators, AlienBlocks.NETHER_RESIN.get(), AlienBlocks.NETHER_RESIN_SLAB.get());
+        createStairs(generators, AlienBlocks.NETHER_RESIN.get(), AlienBlocks.NETHER_RESIN_STAIRS.get());
         generators.createRotatedVariantBlock(AlienBlocks.NETHER_RESIN_NODE.get());
         MultiFaceGenerator.generate(generators, AlienBlocks.NETHER_RESIN_VEIN.get());
         generators.createCrossBlock(AlienBlocks.NETHER_RESIN_WEB.get(), BlockModelGenerators.TintState.NOT_TINTED);
 
         generators.createRotatedVariantBlock(AlienBlocks.RESIN.get());
+        createSlab(generators, AlienBlocks.RESIN.get(), AlienBlocks.RESIN_SLAB.get());
+        createStairs(generators, AlienBlocks.RESIN.get(), AlienBlocks.RESIN_STAIRS.get());
         generators.createRotatedVariantBlock(AlienBlocks.RESIN_NODE.get());
         MultiFaceGenerator.generate(generators, AlienBlocks.RESIN_VEIN.get());
         generators.createCrossBlock(AlienBlocks.RESIN_WEB.get(), BlockModelGenerators.TintState.NOT_TINTED);
@@ -434,13 +430,16 @@ public class BlockModelProvider extends FabricModelProvider {
             );
     }
 
-    private void createConcreteSlab(
+    private void createSlab(
         BlockModelGenerators generators,
-        DyeColor dyeColor,
-        TextureMapping textureMapping,
-        ResourceLocation resourceLocation
+        Block baseBlock,
+        Block slabBlock
     ) {
-        var slabBlock = AVPBlocks.DYE_COLOR_TO_CONCRETE_SLAB.get(dyeColor).get();
+        var resourceLocation = ModelLocationUtils.getModelLocation(baseBlock);
+        var textureMapping = TextureMapping.cube(baseBlock)
+            .put(TextureSlot.BOTTOM, resourceLocation)
+            .put(TextureSlot.TOP, resourceLocation);
+
         var bottom = ModelTemplates.SLAB_BOTTOM.create(slabBlock, textureMapping, generators.modelOutput);
         var top = ModelTemplates.SLAB_TOP.create(slabBlock, textureMapping, generators.modelOutput);
 
@@ -449,42 +448,19 @@ public class BlockModelProvider extends FabricModelProvider {
         );
     }
 
-    private void createConcreteStairs(BlockModelGenerators generators, DyeColor dyeColor, TextureMapping textureMapping) {
-        var stairBlock = AVPBlocks.DYE_COLOR_TO_CONCRETE_STAIRS.get(dyeColor).get();
+    private void createStairs(BlockModelGenerators generators, Block baseBlock, Block stairsBlock) {
+        var resourceLocation = ModelLocationUtils.getModelLocation(baseBlock);
 
-        var innerResourceLocation = ModelTemplates.STAIRS_INNER.create(stairBlock, textureMapping, generators.modelOutput);
-        var straightResourceLocation = ModelTemplates.STAIRS_STRAIGHT.create(stairBlock, textureMapping, generators.modelOutput);
-        var outerResourceLocation = ModelTemplates.STAIRS_OUTER.create(stairBlock, textureMapping, generators.modelOutput);
+        var textureMapping = TextureMapping.cube(baseBlock)
+            .put(TextureSlot.BOTTOM, resourceLocation)
+            .put(TextureSlot.TOP, resourceLocation);
 
-        generators.blockStateOutput.accept(
-            BlockModelGenerators.createStairs(stairBlock, innerResourceLocation, straightResourceLocation, outerResourceLocation)
-        );
-    }
-
-    private void createIndustrialConcreteSlab(
-        BlockModelGenerators generators,
-        DyeColor dyeColor,
-        TextureMapping textureMapping,
-        ResourceLocation resourceLocation
-    ) {
-        var slabBlock = AVPBlocks.DYE_COLOR_TO_INDUSTRIAL_CONCRETE_SLAB.get(dyeColor).get();
-        var bottom = ModelTemplates.SLAB_BOTTOM.create(slabBlock, textureMapping, generators.modelOutput);
-        var top = ModelTemplates.SLAB_TOP.create(slabBlock, textureMapping, generators.modelOutput);
+        var innerResourceLocation = ModelTemplates.STAIRS_INNER.create(stairsBlock, textureMapping, generators.modelOutput);
+        var straightResourceLocation = ModelTemplates.STAIRS_STRAIGHT.create(stairsBlock, textureMapping, generators.modelOutput);
+        var outerResourceLocation = ModelTemplates.STAIRS_OUTER.create(stairsBlock, textureMapping, generators.modelOutput);
 
         generators.blockStateOutput.accept(
-            BlockModelGenerators.createSlab(slabBlock, bottom, top, resourceLocation)
-        );
-    }
-
-    private void createIndustrialConcreteStairs(BlockModelGenerators generators, DyeColor dyeColor, TextureMapping textureMapping) {
-        var stairBlock = AVPBlocks.DYE_COLOR_TO_INDUSTRIAL_CONCRETE_STAIRS.get(dyeColor).get();
-
-        var innerResourceLocation = ModelTemplates.STAIRS_INNER.create(stairBlock, textureMapping, generators.modelOutput);
-        var straightResourceLocation = ModelTemplates.STAIRS_STRAIGHT.create(stairBlock, textureMapping, generators.modelOutput);
-        var outerResourceLocation = ModelTemplates.STAIRS_OUTER.create(stairBlock, textureMapping, generators.modelOutput);
-
-        generators.blockStateOutput.accept(
-            BlockModelGenerators.createStairs(stairBlock, innerResourceLocation, straightResourceLocation, outerResourceLocation)
+            BlockModelGenerators.createStairs(stairsBlock, innerResourceLocation, straightResourceLocation, outerResourceLocation)
         );
     }
 

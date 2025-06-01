@@ -149,21 +149,33 @@ public class EnglishLanguageProvider extends FabricLanguageProvider {
         addBlock(builder, AVPBlocks.LITHIUM_ORE, "Lithium Ore");
         addBlock(builder, AVPBlocks.MONAZITE_ORE, "Monazite Ore");
         addBlock(builder, AlienBlocks.NETHER_RESIN, "Nether Resin");
+        addBlock(builder, AlienBlocks.NETHER_RESIN_SLAB, "Nether Resin Slab");
+        addBlock(builder, AlienBlocks.NETHER_RESIN_STAIRS, "Nether Resin Stairs");
         addBlock(builder, AlienBlocks.NETHER_RESIN_NODE, "Nether Resin");
         addBlock(builder, AlienBlocks.NETHER_RESIN_VEIN, "Nether Resin Vein");
         addBlock(builder, AlienBlocks.NETHER_RESIN_WEB, "Nether Resin Web");
         addBlock(builder, AlienBlocks.ABERRANT_RESIN, "Aberrant Resin");
+        addBlock(builder, AlienBlocks.ABERRANT_RESIN_SLAB, "Aberrant Resin Slab");
+        addBlock(builder, AlienBlocks.ABERRANT_RESIN_STAIRS, "Aberrant Resin Stairs");
         addBlock(builder, AlienBlocks.ABERRANT_RESIN_NODE, "Aberrant Resin");
         addBlock(builder, AlienBlocks.ABERRANT_RESIN_VEIN, "Aberrant Resin Vein");
         addBlock(builder, AlienBlocks.ABERRANT_RESIN_WEB, "Aberrant Resin Web");
         addBlock(builder, AlienBlocks.IRRADIATED_RESIN, "Irradiated Resin");
+        addBlock(builder, AlienBlocks.IRRADIATED_RESIN_SLAB, "Irradiated Resin Slab");
+        addBlock(builder, AlienBlocks.IRRADIATED_RESIN_STAIRS, "Irradiated Resin Stairs");
         addBlock(builder, AlienBlocks.IRRADIATED_RESIN_NODE, "Irradiated Resin");
         addBlock(builder, AlienBlocks.IRRADIATED_RESIN_VEIN, "Irradiated Resin Vein");
         addBlock(builder, AlienBlocks.IRRADIATED_RESIN_WEB, "Irradiated Resin Web");
+        addBlock(builder, AlienBlocks.RESIN, "Resin");
         addBlock(builder, AlienBlocks.RESIN_BRICKS, "Resin Bricks");
+        addBlock(builder, AlienBlocks.RESIN_NODE, "Resin");
         addBlock(builder, AlienBlocks.RESIN_O, "Resin O");
         addBlock(builder, AlienBlocks.RESIN_RIBBED, "Resin Ribbed");
+        addBlock(builder, AlienBlocks.RESIN_SLAB, "Resin Slab");
         addBlock(builder, AlienBlocks.RESIN_SMOOTH, "Resin Smooth");
+        addBlock(builder, AlienBlocks.RESIN_STAIRS, "Resin Stairs");
+        addBlock(builder, AlienBlocks.RESIN_VEIN, "Resin Vein");
+        addBlock(builder, AlienBlocks.RESIN_WEB, "Resin Web");
 
         AVPBlocks.DYE_COLOR_TO_PADDING.forEach(
             (key, value) -> addBlock(builder, value, format(key.getName()) + " Padding")
@@ -222,10 +234,6 @@ public class EnglishLanguageProvider extends FabricLanguageProvider {
         addBlock(builder, AVPBlocks.RAW_TITANIUM_BLOCK, "Block of Raw Titanium");
         addBlock(builder, AVPBlocks.RAW_ZINC_BLOCK, "Block of Raw Zinc");
         addBlock(builder, AVPBlocks.RAZOR_WIRE, "Razor Wire");
-        addBlock(builder, AlienBlocks.RESIN, "Resin");
-        addBlock(builder, AlienBlocks.RESIN_NODE, "Resin");
-        addBlock(builder, AlienBlocks.RESIN_VEIN, "Resin Vein");
-        addBlock(builder, AlienBlocks.RESIN_WEB, "Resin Web");
         addBlock(builder, AVPBlocks.SILICA_GRAVEL, "Silica Gravel");
         addBlock(builder, AVPBlocks.STEEL_BARS, "Steel Bars");
         addBlock(builder, AVPBlocks.STEEL_BLOCK, "Block of Steel");

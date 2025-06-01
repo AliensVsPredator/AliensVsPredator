@@ -171,6 +171,8 @@ public class AVPBlockTagProvider extends FabricTagProvider.BlockTagProvider {
         getOrCreateTagBuilder(AVPBlockTags.ABERRANT_RESIN)
             .add(
                 AlienBlocks.ABERRANT_RESIN.get(),
+                AlienBlocks.ABERRANT_RESIN_SLAB.get(),
+                AlienBlocks.ABERRANT_RESIN_STAIRS.get(),
                 AlienBlocks.ABERRANT_RESIN_NODE.get(),
                 AlienBlocks.ABERRANT_RESIN_VEIN.get(),
                 AlienBlocks.ABERRANT_RESIN_WEB.get()
@@ -179,6 +181,8 @@ public class AVPBlockTagProvider extends FabricTagProvider.BlockTagProvider {
         getOrCreateTagBuilder(AVPBlockTags.NETHER_RESIN)
             .add(
                 AlienBlocks.NETHER_RESIN.get(),
+                AlienBlocks.NETHER_RESIN_SLAB.get(),
+                AlienBlocks.NETHER_RESIN_STAIRS.get(),
                 AlienBlocks.NETHER_RESIN_NODE.get(),
                 AlienBlocks.NETHER_RESIN_VEIN.get(),
                 AlienBlocks.NETHER_RESIN_WEB.get()
@@ -187,6 +191,8 @@ public class AVPBlockTagProvider extends FabricTagProvider.BlockTagProvider {
         getOrCreateTagBuilder(AVPBlockTags.NORMAL_RESIN)
             .add(
                 AlienBlocks.RESIN.get(),
+                AlienBlocks.RESIN_SLAB.get(),
+                AlienBlocks.RESIN_STAIRS.get(),
                 AlienBlocks.RESIN_NODE.get(),
                 AlienBlocks.RESIN_VEIN.get(),
                 AlienBlocks.RESIN_WEB.get()
@@ -398,10 +404,7 @@ public class AVPBlockTagProvider extends FabricTagProvider.BlockTagProvider {
             .addTag(AVPBlockTags.RESIN_VEINS)
             .addTag(AVPBlockTags.RESIN_WEBS)
             .add(
-                // TODO: Why are aberrant resin blocks here?
-                AlienBlocks.ABERRANT_RESIN.get(),
-                AVPBlocks.BLUEPRINT_BLOCK.get(),
-                AlienBlocks.IRRADIATED_RESIN.get()
+                AVPBlocks.BLUEPRINT_BLOCK.get()
             );
 
         getOrCreateTagBuilder(BlockTags.MINEABLE_WITH_PICKAXE)
@@ -415,6 +418,8 @@ public class AVPBlockTagProvider extends FabricTagProvider.BlockTagProvider {
             .addTag(AVPBlockTags.TITANIUM)
             .add(
                 AlienBlocks.ABERRANT_RESIN.get(),
+                AlienBlocks.ABERRANT_RESIN_SLAB.get(),
+                AlienBlocks.ABERRANT_RESIN_STAIRS.get(),
                 AlienBlocks.ABERRANT_RESIN_NODE.get(),
                 AVPBlocks.ALUMINUM_BLOCK.get(),
                 AVPBlocks.AMMO_CHEST.get(),
@@ -428,6 +433,8 @@ public class AVPBlockTagProvider extends FabricTagProvider.BlockTagProvider {
                 AVPBlocks.GALENA_ORE.get(),
                 AVPBlocks.INDUSTRIAL_FURNACE.get(),
                 AlienBlocks.IRRADIATED_RESIN.get(),
+                AlienBlocks.IRRADIATED_RESIN_SLAB.get(),
+                AlienBlocks.IRRADIATED_RESIN_STAIRS.get(),
                 AlienBlocks.IRRADIATED_RESIN_NODE.get(),
                 AVPBlocks.LEAD_BLOCK.get(),
                 AVPBlocks.LEAD_CHEST.get(),
@@ -435,6 +442,8 @@ public class AVPBlockTagProvider extends FabricTagProvider.BlockTagProvider {
                 AVPBlocks.LITHIUM_ORE.get(),
                 AVPBlocks.MONAZITE_ORE.get(),
                 AlienBlocks.NETHER_RESIN.get(),
+                AlienBlocks.NETHER_RESIN_SLAB.get(),
+                AlienBlocks.NETHER_RESIN_STAIRS.get(),
                 AlienBlocks.NETHER_RESIN_NODE.get(),
                 AVPBlocks.NUKE_BLOCK.get(),
                 AVPBlocks.RAW_BAUXITE_BLOCK.get(),
@@ -443,6 +452,8 @@ public class AVPBlockTagProvider extends FabricTagProvider.BlockTagProvider {
                 AVPBlocks.RAW_ZINC_BLOCK.get(),
                 AVPBlocks.REDSTONE_GENERATOR.get(),
                 AlienBlocks.RESIN.get(),
+                AlienBlocks.RESIN_SLAB.get(),
+                AlienBlocks.RESIN_STAIRS.get(),
                 AlienBlocks.RESIN_NODE.get(),
                 AlienBlocks.RESIN_BRICKS.get(),
                 AlienBlocks.RESIN_O.get(),
@@ -500,6 +511,11 @@ public class AVPBlockTagProvider extends FabricTagProvider.BlockTagProvider {
         var slabTagProvider = getOrCreateTagBuilder(BlockTags.SLABS);
 
         slabTagProvider.add(
+            AlienBlocks.ABERRANT_RESIN_SLAB.get(),
+            AlienBlocks.IRRADIATED_RESIN_SLAB.get(),
+            AlienBlocks.NETHER_RESIN_SLAB.get(),
+            AlienBlocks.RESIN_SLAB.get(),
+
             AVPBlocks.INDUSTRIAL_GLASS_SLAB.get(),
             AVPBlocks.CUT_FERROALUMINUM_SLAB.get(),
             AVPBlocks.CUT_STEEL_SLAB.get(),
@@ -589,6 +605,11 @@ public class AVPBlockTagProvider extends FabricTagProvider.BlockTagProvider {
         var stairsTagProvider = getOrCreateTagBuilder(BlockTags.STAIRS);
 
         stairsTagProvider.add(
+            AlienBlocks.ABERRANT_RESIN_STAIRS.get(),
+            AlienBlocks.IRRADIATED_RESIN_STAIRS.get(),
+            AlienBlocks.NETHER_RESIN_STAIRS.get(),
+            AlienBlocks.RESIN_STAIRS.get(),
+
             AVPBlocks.INDUSTRIAL_GLASS_STAIRS.get(),
             AVPBlocks.CUT_FERROALUMINUM_STAIRS.get(),
             AVPBlocks.CUT_STEEL_STAIRS.get(),
