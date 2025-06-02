@@ -24,8 +24,16 @@ public class ResinRecipeProvider {
     private static void createAberrantResinRecipes(RecipeBuilder builder) {
         RecipeUtil.createCompressedBlockRecipes2x2(builder, AlienItems.ABERRANT_RESIN_BALL.get(), AlienBlocks.ABERRANT_RESIN.get());
 
-        RecipeUtil.createSlabBlockManualAndStonecutterRecipes(builder, AlienBlocks.ABERRANT_RESIN.get(), AlienBlocks.ABERRANT_RESIN_SLAB.get());
-        RecipeUtil.createStairBlockManualAndStonecutterRecipes(builder, AlienBlocks.ABERRANT_RESIN.get(), AlienBlocks.ABERRANT_RESIN_STAIRS.get());
+        RecipeUtil.createSlabBlockManualAndStonecutterRecipes(
+            builder,
+            AlienBlocks.ABERRANT_RESIN.get(),
+            AlienBlocks.ABERRANT_RESIN_SLAB.get()
+        );
+        RecipeUtil.createStairBlockManualAndStonecutterRecipes(
+            builder,
+            AlienBlocks.ABERRANT_RESIN.get(),
+            AlienBlocks.ABERRANT_RESIN_STAIRS.get()
+        );
 
         builder.shaped()
             .withCategory(RecipeCategory.BUILDING_BLOCKS)
@@ -41,8 +49,16 @@ public class ResinRecipeProvider {
     private static void createIrradiatedResinRecipes(RecipeBuilder builder) {
         RecipeUtil.createCompressedBlockRecipes2x2(builder, AlienItems.IRRADIATED_RESIN_BALL.get(), AlienBlocks.IRRADIATED_RESIN.get());
 
-        RecipeUtil.createSlabBlockManualAndStonecutterRecipes(builder, AlienBlocks.IRRADIATED_RESIN.get(), AlienBlocks.IRRADIATED_RESIN_SLAB.get());
-        RecipeUtil.createStairBlockManualAndStonecutterRecipes(builder, AlienBlocks.IRRADIATED_RESIN.get(), AlienBlocks.IRRADIATED_RESIN_STAIRS.get());
+        RecipeUtil.createSlabBlockManualAndStonecutterRecipes(
+            builder,
+            AlienBlocks.IRRADIATED_RESIN.get(),
+            AlienBlocks.IRRADIATED_RESIN_SLAB.get()
+        );
+        RecipeUtil.createStairBlockManualAndStonecutterRecipes(
+            builder,
+            AlienBlocks.IRRADIATED_RESIN.get(),
+            AlienBlocks.IRRADIATED_RESIN_STAIRS.get()
+        );
 
         builder.shaped()
             .withCategory(RecipeCategory.BUILDING_BLOCKS)
@@ -59,7 +75,11 @@ public class ResinRecipeProvider {
         RecipeUtil.createCompressedBlockRecipes2x2(builder, AlienItems.NETHER_RESIN_BALL.get(), AlienBlocks.NETHER_RESIN.get());
 
         RecipeUtil.createSlabBlockManualAndStonecutterRecipes(builder, AlienBlocks.NETHER_RESIN.get(), AlienBlocks.NETHER_RESIN_SLAB.get());
-        RecipeUtil.createStairBlockManualAndStonecutterRecipes(builder, AlienBlocks.NETHER_RESIN.get(), AlienBlocks.NETHER_RESIN_STAIRS.get());
+        RecipeUtil.createStairBlockManualAndStonecutterRecipes(
+            builder,
+            AlienBlocks.NETHER_RESIN.get(),
+            AlienBlocks.NETHER_RESIN_STAIRS.get()
+        );
 
         builder.shaped()
             .withCategory(RecipeCategory.BUILDING_BLOCKS)

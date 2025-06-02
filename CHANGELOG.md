@@ -25,6 +25,7 @@
 - N/A
 
 ## 🐞 Fixes
+- Fixed chestbursters spreading resin like adult xenomorphs.
 - Fixed aberrant resin blocks not burning in fire or lava.
 - Fixed players eating chorus fruit while infected causing facehuggers to spawn instead of the correct embryo type.
 - Fixed aberrant resin being mineable with axes.

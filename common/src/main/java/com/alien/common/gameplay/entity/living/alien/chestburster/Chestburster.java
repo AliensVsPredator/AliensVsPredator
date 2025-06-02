@@ -2,10 +2,8 @@ package com.alien.common.gameplay.entity.living.alien.chestburster;
 
 import com.alien.common.gameplay.entity.living.alien.Alien;
 import com.alien.common.gameplay.entity.living.alien.GrowthManager;
-import com.alien.common.gameplay.entity.living.alien.ResinManager;
 import com.alien.common.model.alien.variant.AlienVariant;
 import com.alien.common.model.resin.ResinData;
-import com.alien.common.model.resin.ResinProducer;
 import com.alien.common.registry.init.AlienEntityTypes;
 import com.alien.common.util.AlienPredicates;
 import com.alien.common.util.XenomorphGrowthUtil;
@@ -25,7 +23,7 @@ import org.jetbrains.annotations.Nullable;
 import com.avp.AVP;
 import com.avp.common.util.AVPPredicates;
 
-public class Chestburster extends Alien implements ResinProducer {
+public class Chestburster extends Alien {
 
     public static AttributeSupplier.Builder createChestbursterAttributes() {
         return applyFrom(AVP.config.statsConfigs.CHESTBURSTER_STATS, Monster.createMonsterAttributes());
@@ -35,8 +33,6 @@ public class Chestburster extends Alien implements ResinProducer {
 
     private final GrowthManager growthManager;
 
-    private final ResinManager resinManager;
-
     public Chestburster(EntityType<? extends Chestburster> entityType, Level level) {
         super(entityType, level);
         this.animationDispatcher = new ChestbursterAnimationDispatcher(this);
@@ -44,10 +40,6 @@ public class Chestburster extends Alien implements ResinProducer {
             .setGrowOverTime(true)
             .setGrowthTimeReductionMultiplierProvider(
                 () -> geneManager.get(GeneKeys.GROWTH_SPEED, GeneDecoders.GROWTH_SPEED)
-            );
-        this.resinManager = new ResinManager(this, createResinData())
-            .setBonusResinProvider(
-                () -> geneManager.get(GeneKeys.BONUS_RESIN_PRODUCTION, GeneDecoders.BONUS_RESIN_PRODUCTION).intValue()
             );
         this.config = AVP.config.statsConfigs.CHESTBURSTER_STATS;
     }
@@ -79,7 +71,6 @@ public class Chestburster extends Alien implements ResinProducer {
     public void tick() {
         super.tick();
         growthManager.tick();
-        resinManager.tick();
     }
 
     @Override
@@ -95,19 +86,12 @@ public class Chestburster extends Alien implements ResinProducer {
     public void readAdditionalSaveData(@NotNull CompoundTag compoundTag) {
         super.readAdditionalSaveData(compoundTag);
         growthManager.load(compoundTag);
-        resinManager.load(compoundTag);
     }
 
     @Override
     public void addAdditionalSaveData(@NotNull CompoundTag compoundTag) {
         super.addAdditionalSaveData(compoundTag);
         growthManager.save(compoundTag);
-        resinManager.save(compoundTag);
-    }
-
-    @Override
-    public ResinManager getResinManager() {
-        return resinManager;
     }
 
     public GrowthManager growthManager() {
