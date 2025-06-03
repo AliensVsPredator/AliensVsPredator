@@ -22,7 +22,8 @@
   - This update adds a keybind (left alt) to crawl on demand. Player crawling will be important for future AVP updates.
 
 ## ♻️ Changes
-- N/A
+- Iron-like ingots can now be used to craft industrial furnaces.
+- Iron-like ingots can now be used to craft razor wire.
 
 ## 🐞 Fixes
 - Fixed chestbursters spreading resin like adult xenomorphs.

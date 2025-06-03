@@ -2,6 +2,7 @@ package com.avp.fabric.data.recipe.impl;
 
 import com.alien.common.registry.init.AlienBlocks;
 import com.alien.common.registry.init.AlienItems;
+import com.avp.common.registry.tag.AVPItemTags;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.Items;
@@ -108,7 +109,7 @@ public class MiscellaneousRecipeProvider {
 
         builder.shaped()
             .withCategory(RecipeCategory.COMBAT)
-            .define('I', Items.IRON_INGOT)
+            .define('I', AVPItemTags.IRON_INGOT_LIKE)
             .define('N', Items.IRON_NUGGET)
             .pattern("INI")
             .pattern("NIN")
@@ -162,7 +163,7 @@ public class MiscellaneousRecipeProvider {
             .withCategory(RecipeCategory.MISC)
             .define('S', Items.SMOOTH_STONE)
             .define('F', Items.FURNACE)
-            .define('I', Items.IRON_INGOT)
+            .define('I', AVPItemTags.IRON_INGOT_LIKE)
             .pattern("SSS")
             .pattern("SFS")
             .pattern("III")
