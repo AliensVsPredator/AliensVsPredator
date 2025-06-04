@@ -1,5 +1,6 @@
 package com.human.common.gameplay.menu.armor_case;
 
+import com.human.common.registry.init.HumanMenuTypes;
 import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -9,8 +10,6 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
-
-import com.avp.common.registry.init.AVPMenuTypes;
 
 public class ArmorCaseMenu extends AbstractContainerMenu {
 
@@ -29,7 +28,7 @@ public class ArmorCaseMenu extends AbstractContainerMenu {
     }
 
     public ArmorCaseMenu(int syncId, Inventory playerInventory, Container container) {
-        super(AVPMenuTypes.ARMOR_CASE.get(), syncId);
+        super(HumanMenuTypes.ARMOR_CASE.get(), syncId);
         this.container = container;
         container.startOpen(playerInventory.player);
 

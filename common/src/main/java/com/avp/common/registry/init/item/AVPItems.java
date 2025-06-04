@@ -5,7 +5,8 @@ import com.human.common.gameplay.item.CanisterItem;
 import com.human.common.gameplay.item.MilkCanisterItem;
 import com.human.common.gameplay.item.SolidCanisterItem;
 import com.human.common.gameplay.item.grenade.GrenadeItem;
-import com.human.common.gameplay.item.gun.GunData;
+import com.human.common.registry.init.HumanDataComponents;
+import com.human.common.registry.init.item.HumanGunItems;
 import com.predator.common.gameplay.item.ShurikenItem;
 import com.predator.common.gameplay.item.SmartDiscItem;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -24,7 +25,6 @@ import net.minecraft.world.level.material.Fluids;
 import java.util.function.Supplier;
 
 import com.avp.common.registry.AVPDeferredHolder;
-import com.avp.common.registry.init.AVPDataComponents;
 import com.avp.common.registry.init.AVPTiers;
 import com.avp.common.registry.key.AVPJukeboxSongKeys;
 import com.avp.service.Services;
@@ -91,19 +91,9 @@ public class AVPItems {
 
     public static final AVPDeferredHolder<Item> DIODE = register("diode");
 
-    public static final AVPDeferredHolder<Item> F903WE_RIFLE = register(
-        "f903we_rifle",
-        Services.BRIDGE.createGunSupplier(GunData.F903WE_RIFLE)
-    );
-
     public static final AVPDeferredHolder<Item> FERROALUMINUM_INGOT = register("ferroaluminum_ingot");
 
     public static final AVPDeferredHolder<Item> FERROALUMINUM_NUGGET = register("ferroaluminum_nugget");
-
-    public static final AVPDeferredHolder<Item> FLAMETHROWER_SEVASTOPOL = register(
-        "flamethrower_sevastopol",
-        Services.BRIDGE.createGunSupplier(GunData.FLAMETHROWER_SEVASTOPOL)
-    );
 
     public static final AVPDeferredHolder<Item> FUEL_TANK = register("fuel_tank", new Item.Properties().stacksTo(1));
 
@@ -125,7 +115,7 @@ public class AVPItems {
         "lava_canister",
         () -> new CanisterItem(
             Fluids.LAVA,
-            new Item.Properties().stacksTo(1).craftRemainder(CANISTER.get()).component(AVPDataComponents.CANISTER_CAPACITY.get(), 1)
+            new Item.Properties().stacksTo(1).craftRemainder(CANISTER.get()).component(HumanDataComponents.CANISTER_CAPACITY.get(), 1)
         )
     );
 
@@ -139,41 +129,6 @@ public class AVPItems {
 
     public static final AVPDeferredHolder<Item> LITHIUM_DUST = register("lithium_dust");
 
-    public static final AVPDeferredHolder<Item> M37_12_SHOTGUN = register(
-        "m37_12_shotgun",
-        Services.BRIDGE.createGunSupplier(GunData.M37_12_SHOTGUN)
-    );
-
-    public static final AVPDeferredHolder<Item> M41A_PULSE_RIFLE = register(
-        "m41a_pulse_rifle",
-        Services.BRIDGE.createGunSupplier(GunData.M41A_PULSE_RIFLE)
-    );
-
-    public static final AVPDeferredHolder<Item> M42A3_SNIPER_RIFLE = register(
-        "m42a3_sniper_rifle",
-        Services.BRIDGE.createGunSupplier(GunData.M42A3_SNIPER_RIFLE)
-    );
-
-    public static final AVPDeferredHolder<Item> M4RA_BATTLE_RIFLE = register(
-        "m4ra_battle_rifle",
-        Services.BRIDGE.createGunSupplier(GunData.M4RA_BATTLE_RIFLE)
-    );
-
-    public static final AVPDeferredHolder<Item> M56_SMARTGUN = register(
-        "m56_smartgun",
-        Services.BRIDGE.createGunSupplier(GunData.M56_SMARTGUN)
-    );
-
-    public static final AVPDeferredHolder<Item> M6B_ROCKET_LAUNCHER = register(
-        "m6b_rocket_launcher",
-        Services.BRIDGE.createGunSupplier(GunData.M6B_ROCKET_LAUNCHER)
-    );
-
-    public static final AVPDeferredHolder<Item> M88MOD4_COMBAT_PISTOL = register(
-        "m88mod4_combat_pistol",
-        Services.BRIDGE.createGunSupplier(GunData.M88_MOD_4_COMBAT_PISTOL)
-    );
-
     public static final AVPDeferredHolder<Item> MEDIUM_BULLET = register("medium_bullet");
 
     public static final AVPDeferredHolder<Item> MEDIUM_CASING = register("medium_casing");
@@ -181,7 +136,7 @@ public class AVPItems {
     public static final AVPDeferredHolder<Item> MILK_CANISTER = register(
         "milk_canister",
         () -> new MilkCanisterItem(
-            new Item.Properties().craftRemainder(CANISTER.get()).stacksTo(1).component(AVPDataComponents.CANISTER_CAPACITY.get(), 1)
+            new Item.Properties().craftRemainder(CANISTER.get()).stacksTo(1).component(HumanDataComponents.CANISTER_CAPACITY.get(), 1)
         )
     );
 
@@ -191,8 +146,6 @@ public class AVPItems {
 
     public static final AVPDeferredHolder<Item> NUCLEAR_BATTERY = register("nuclear_battery");
 
-    public static final AVPDeferredHolder<Item> OLD_PAINLESS = register("old_painless", Services.BRIDGE.createOldPainlessSupplier());
-
     public static final AVPDeferredHolder<Item> POLYMER = register("polymer");
 
     public static final AVPDeferredHolder<Item> POWDER_SNOW_CANISTER = register(
@@ -200,7 +153,7 @@ public class AVPItems {
         () -> new SolidCanisterItem(
             Blocks.POWDER_SNOW,
             SoundEvents.BUCKET_EMPTY_POWDER_SNOW,
-            new Item.Properties().stacksTo(1).component(AVPDataComponents.CANISTER_CAPACITY.get(), 1)
+            new Item.Properties().stacksTo(1).component(HumanDataComponents.CANISTER_CAPACITY.get(), 1)
         )
     );
 
@@ -383,18 +336,13 @@ public class AVPItems {
         "water_canister",
         () -> new CanisterItem(
             Fluids.WATER,
-            new Item.Properties().stacksTo(1).craftRemainder(CANISTER.get()).component(AVPDataComponents.CANISTER_CAPACITY.get(), 1)
+            new Item.Properties().stacksTo(1).craftRemainder(CANISTER.get()).component(HumanDataComponents.CANISTER_CAPACITY.get(), 1)
         )
     );
 
     public static final AVPDeferredHolder<Item> ZINC_INGOT = register("zinc_ingot");
 
     public static final AVPDeferredHolder<Item> ZINC_NUGGET = register("zinc_nugget");
-
-    public static final AVPDeferredHolder<Item> ZX_76_SHOTGUN = register(
-        "zx_76_shotgun",
-        Services.BRIDGE.createGunSupplier(GunData.ZX_76_SHOTGUN)
-    );
 
     public static AVPDeferredHolder<Item> register(String name) {
         return register(name, new Item.Properties());
@@ -409,16 +357,16 @@ public class AVPItems {
     }
 
     public static void initialize() {
-        Services.REGISTRY.registerAzureLibIdentity(F903WE_RIFLE);
-        Services.REGISTRY.registerAzureLibIdentity(FLAMETHROWER_SEVASTOPOL);
-        Services.REGISTRY.registerAzureLibIdentity(M37_12_SHOTGUN);
-        Services.REGISTRY.registerAzureLibIdentity(M41A_PULSE_RIFLE);
-        Services.REGISTRY.registerAzureLibIdentity(M42A3_SNIPER_RIFLE);
-        Services.REGISTRY.registerAzureLibIdentity(M4RA_BATTLE_RIFLE);
-        Services.REGISTRY.registerAzureLibIdentity(M56_SMARTGUN);
-        Services.REGISTRY.registerAzureLibIdentity(M6B_ROCKET_LAUNCHER);
-        Services.REGISTRY.registerAzureLibIdentity(M88MOD4_COMBAT_PISTOL);
-        Services.REGISTRY.registerAzureLibIdentity(OLD_PAINLESS);
-        Services.REGISTRY.registerAzureLibIdentity(ZX_76_SHOTGUN);
+        Services.REGISTRY.registerAzureLibIdentity(HumanGunItems.F903WE_RIFLE);
+        Services.REGISTRY.registerAzureLibIdentity(HumanGunItems.FLAMETHROWER_SEVASTOPOL);
+        Services.REGISTRY.registerAzureLibIdentity(HumanGunItems.M37_12_SHOTGUN);
+        Services.REGISTRY.registerAzureLibIdentity(HumanGunItems.M41A_PULSE_RIFLE);
+        Services.REGISTRY.registerAzureLibIdentity(HumanGunItems.M42A3_SNIPER_RIFLE);
+        Services.REGISTRY.registerAzureLibIdentity(HumanGunItems.M4RA_BATTLE_RIFLE);
+        Services.REGISTRY.registerAzureLibIdentity(HumanGunItems.M56_SMARTGUN);
+        Services.REGISTRY.registerAzureLibIdentity(HumanGunItems.M6B_ROCKET_LAUNCHER);
+        Services.REGISTRY.registerAzureLibIdentity(HumanGunItems.M88MOD4_COMBAT_PISTOL);
+        Services.REGISTRY.registerAzureLibIdentity(HumanGunItems.OLD_PAINLESS);
+        Services.REGISTRY.registerAzureLibIdentity(HumanGunItems.ZX_76_SHOTGUN);
     }
 }

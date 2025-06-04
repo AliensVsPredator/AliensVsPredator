@@ -19,14 +19,14 @@ import com.alien.client.render.entity.PraetorianRenderer;
 import com.alien.client.render.entity.QueenRenderer;
 import com.alien.client.render.entity.WarriorRenderer;
 import com.alien.client.render.entity.parasite.facehugger.FacehuggerRenderer;
-import com.alien.common.registry.init.AlienArmorItems;
 import com.alien.common.registry.init.AlienBlocks;
 import com.alien.common.registry.init.AlienEntityTypes;
+import com.alien.common.registry.init.item.AlienArmorItems;
 import net.minecraft.client.renderer.RenderType;
 
 import java.util.List;
 
-import com.avp.common.registry.init.AVPParticleTypes;
+import com.avp.common.registry.init.AlienParticleTypes;
 import com.avp.service.Services;
 
 public class AlienClient {
@@ -164,8 +164,8 @@ public class AlienClient {
     }
 
     private static void registerParticleProviderFactories() {
-        Services.CLIENT_REGISTRY.registerParticleProviderFactory(AVPParticleTypes.ACID, AcidParticleProvider::new);
-        Services.CLIENT_REGISTRY.registerParticleProviderFactory(AVPParticleTypes.BLUE_ACID, BlueAcidParticleProvider::new);
-        Services.CLIENT_REGISTRY.registerParticleProviderFactory(AVPParticleTypes.IRRADIATED_ACID, IrradiatedAcidParticleProvider::new);
+        Services.CLIENT_REGISTRY.registerParticleProviderFactory(AlienParticleTypes.ACID, AcidParticleProvider::new);
+        Services.CLIENT_REGISTRY.registerParticleProviderFactory(AlienParticleTypes.BLUE_ACID, BlueAcidParticleProvider::new);
+        Services.CLIENT_REGISTRY.registerParticleProviderFactory(AlienParticleTypes.IRRADIATED_ACID, IrradiatedAcidParticleProvider::new);
     }
 }

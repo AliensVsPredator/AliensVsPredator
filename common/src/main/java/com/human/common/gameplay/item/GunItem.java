@@ -3,6 +3,8 @@ package com.human.common.gameplay.item;
 import com.human.common.gameplay.item.gun.GunConfig;
 import com.human.common.gameplay.item.gun.pipeline.GunShootContext;
 import com.human.common.gameplay.item.old_painless.OldPainlessAnimationRefs;
+import com.human.common.registry.init.HumanDataComponents;
+import com.human.common.registry.init.item.HumanGunItems;
 import com.lib.common.gameplay.util.TooltipUtil;
 import mod.azure.azurelib.rewrite.animation.dispatch.command.AzCommand;
 import mod.azure.azurelib.rewrite.animation.play_behavior.AzPlayBehaviors;
@@ -26,7 +28,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-import com.avp.common.registry.init.AVPDataComponents;
 import com.avp.common.registry.init.item.AVPItems;
 
 public class GunItem extends Item {
@@ -48,7 +49,7 @@ public class GunItem extends Item {
     public GunItem(GunConfig gunConfig) {
         super(
             new Item.Properties().stacksTo(1)
-                .component(AVPDataComponents.IS_FIRING.get(), false)
+                .component(HumanDataComponents.IS_FIRING.get(), false)
                 .durability(gunConfig.durability())
                 .attributes(createAttributes())
         );
@@ -123,7 +124,7 @@ public class GunItem extends Item {
                     // No side effects to run for these results at the time of writing.
                     case COOLDOWN, DELAYED, FAILURE, RELOADING -> { /* NO-OP */ }
                     case SHOT -> {
-                        itemStack.set(AVPDataComponents.IS_FIRING.get(), true);
+                        itemStack.set(HumanDataComponents.IS_FIRING.get(), true);
                         playUseAnimations(livingEntity, itemStack);
                     }
                 }
@@ -146,14 +147,14 @@ public class GunItem extends Item {
 
     @Override
     public void inventoryTick(@NotNull ItemStack itemStack, @NotNull Level level, @NotNull Entity entity, int i, boolean bl) {
-        var isFiring = itemStack.get(AVPDataComponents.IS_FIRING.get());
+        var isFiring = itemStack.get(HumanDataComponents.IS_FIRING.get());
 
         if (
             Boolean.TRUE.equals(isFiring)
                 && entity instanceof LivingEntity livingEntity
                 && !livingEntity.isUsingItem()
         ) {
-            itemStack.set(AVPDataComponents.IS_FIRING.get(), false);
+            itemStack.set(HumanDataComponents.IS_FIRING.get(), false);
             playReleaseUsingAnimations(livingEntity, itemStack);
         }
 
@@ -173,7 +174,7 @@ public class GunItem extends Item {
     ) {
         super.appendHoverText(itemStack, tooltipContext, list, tooltipFlag);
 
-        int currentAmmunition = itemStack.getOrDefault(AVPDataComponents.AMMUNITION.get(), 0);
+        int currentAmmunition = itemStack.getOrDefault(HumanDataComponents.AMMUNITION.get(), 0);
         var fireMode = gunConfig.getDefaultFireMode();
         var itemSupplier = gunConfig.ammunitionItemSupplier();
 
@@ -195,7 +196,7 @@ public class GunItem extends Item {
         }
 
         // TODO: Don't hardcode old painless here.
-        if (this != AVPItems.OLD_PAINLESS.get()) {
+        if (this != HumanGunItems.OLD_PAINLESS.get()) {
             TooltipUtil.appendLabel(
                 list,
                 "tooltip.avp.ammunition",

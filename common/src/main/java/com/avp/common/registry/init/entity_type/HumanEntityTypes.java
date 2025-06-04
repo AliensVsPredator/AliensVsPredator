@@ -23,7 +23,7 @@ import com.avp.common.registry.AVPDeferredHolder;
 import com.avp.common.registry.init.AVPMobCategories;
 import com.avp.service.Services;
 
-public class AVPEntityTypes {
+public class HumanEntityTypes {
 
     public static final MobCategory ALIEN_CATEGORY = AVPMobCategories.ALIENS;
 

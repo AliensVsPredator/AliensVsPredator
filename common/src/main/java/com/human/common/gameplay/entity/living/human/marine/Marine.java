@@ -2,6 +2,7 @@ package com.human.common.gameplay.entity.living.human.marine;
 
 import com.human.common.gameplay.entity.living.human.AbstractHuman;
 import com.human.common.gameplay.entity.living.human.marine.ai.MarineGOAP;
+import com.human.common.registry.init.item.HumanGunItems;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.entity.*;
@@ -35,11 +36,11 @@ public class Marine extends AbstractHuman implements AVPInventoryBearer {
     );
 
     private static final List<Supplier<Item>> USABLE_WEAPON_ITEM_SUPPLIERS = List.of(
-        AVPItems.M88MOD4_COMBAT_PISTOL,
-        AVPItems.M37_12_SHOTGUN,
-        AVPItems.F903WE_RIFLE,
-        AVPItems.M41A_PULSE_RIFLE,
-        AVPItems.M4RA_BATTLE_RIFLE,
+        HumanGunItems.M88MOD4_COMBAT_PISTOL,
+        HumanGunItems.M37_12_SHOTGUN,
+        HumanGunItems.F903WE_RIFLE,
+        HumanGunItems.M41A_PULSE_RIFLE,
+        HumanGunItems.M4RA_BATTLE_RIFLE,
         () -> Items.IRON_AXE,
         () -> Items.IRON_SWORD
     );

@@ -21,7 +21,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
 
 import com.avp.common.registry.init.AVPBlockEntityTypes;
-import com.avp.common.registry.init.AVPBlocks;
+import com.avp.common.registry.init.block.AVPBlocks;
 import com.avp.common.registry.init.item.AVPItems;
 import com.avp.common.registry.tag.AVPItemTags;
 

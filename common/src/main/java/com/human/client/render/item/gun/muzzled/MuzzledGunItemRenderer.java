@@ -1,5 +1,6 @@
 package com.human.client.render.item.gun.muzzled;
 
+import com.human.common.registry.init.HumanDataComponents;
 import mod.azure.azurelib.rewrite.render.item.AzItemRenderer;
 import mod.azure.azurelib.rewrite.render.item.AzItemRendererConfig;
 import mod.azure.azurelib.rewrite.render.layer.AzAutoGlowingLayer;
@@ -8,7 +9,6 @@ import java.util.List;
 import java.util.function.UnaryOperator;
 
 import com.avp.AVPResources;
-import com.avp.common.registry.init.AVPDataComponents;
 
 public abstract class MuzzledGunItemRenderer extends AzItemRenderer {
 
@@ -33,7 +33,7 @@ public abstract class MuzzledGunItemRenderer extends AzItemRenderer {
                 .addRenderLayer(new AzAutoGlowingLayer<>())
                 .useNewOffset(true)
                 .setPrerenderEntry(context -> {
-                    var isFiring = context.animatable().get(AVPDataComponents.IS_FIRING.get());
+                    var isFiring = context.animatable().get(HumanDataComponents.IS_FIRING.get());
 
                     muzzleFlashBoneNames.forEach(muzzleFlashBoneName -> {
                         var maybeBone = context.bakedModel().getBoneOrNull(muzzleFlashBoneName);

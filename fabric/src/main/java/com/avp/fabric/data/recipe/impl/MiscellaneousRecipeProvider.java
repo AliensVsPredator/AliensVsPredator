@@ -2,14 +2,15 @@ package com.avp.fabric.data.recipe.impl;
 
 import com.alien.common.registry.init.AlienBlocks;
 import com.alien.common.registry.init.AlienItems;
-import com.avp.common.registry.tag.AVPItemTags;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
 
-import com.avp.common.registry.init.AVPBlocks;
+import com.avp.common.registry.init.block.AVPBlocks;
+import com.avp.common.registry.init.block.CoreBlocks;
 import com.avp.common.registry.init.item.AVPItems;
+import com.avp.common.registry.tag.AVPItemTags;
 import com.avp.fabric.data.recipe.RecipeConstants;
 import com.avp.fabric.data.recipe.builder.RecipeBuilder;
 
@@ -102,7 +103,7 @@ public class MiscellaneousRecipeProvider {
             .withExperience(RecipeConstants.VERY_COMMON_SMELT_EXPERIENCE)
             .into(AVPItems.POLYMER);
 
-        builder.blast(AVPBlocks.SILICA_GRAVEL)
+        builder.blast(CoreBlocks.SILICA_GRAVEL)
             .withCategory(RecipeCategory.MISC)
             .withExperience(RecipeConstants.RARE_SMELT_EXPERIENCE)
             .into(AVPItems.SILICON.get());

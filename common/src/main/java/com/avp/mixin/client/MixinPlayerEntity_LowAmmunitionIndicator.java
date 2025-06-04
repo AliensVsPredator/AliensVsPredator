@@ -1,6 +1,8 @@
 package com.avp.mixin.client;
 
 import com.human.common.gameplay.item.GunItem;
+import com.human.common.registry.init.HumanDataComponents;
+import com.human.common.registry.init.item.HumanGunItems;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -12,8 +14,6 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import com.avp.common.registry.init.AVPDataComponents;
-import com.avp.common.registry.init.item.AVPItems;
 import com.avp.common.util.AVPPredicates;
 import com.avp.common.util.AmmunitionIndicatorUtil;
 
@@ -45,7 +45,7 @@ public abstract class MixinPlayerEntity_LowAmmunitionIndicator extends LivingEnt
                 // Don't show ammo indicator if the player is not holding a gun.
                 || !(mainHandItem.getItem() instanceof GunItem gunItem)
                 // Don't show ammo indicator for weapons that do not store ammunition in their item stack.
-                || gunItem == AVPItems.OLD_PAINLESS.get()
+                || gunItem == HumanGunItems.OLD_PAINLESS.get()
         ) {
             return;
         }
@@ -55,7 +55,7 @@ public abstract class MixinPlayerEntity_LowAmmunitionIndicator extends LivingEnt
 
     @Unique
     private void displayAmmunitionIndicator(GunItem gunItem, ItemStack mainHandItem, Player player) {
-        int currentAmmunition = mainHandItem.getOrDefault(AVPDataComponents.AMMUNITION.get(), 0);
+        int currentAmmunition = mainHandItem.getOrDefault(HumanDataComponents.AMMUNITION.get(), 0);
         var maximumAmmunition = gunItem.getGunConfig().maximumAmmunition();
 
         // Store the current display state for comparison later on.

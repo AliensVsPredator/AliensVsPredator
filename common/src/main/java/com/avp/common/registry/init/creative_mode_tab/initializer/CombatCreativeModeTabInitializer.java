@@ -1,11 +1,13 @@
 package com.avp.common.registry.init.creative_mode_tab.initializer;
 
-import com.alien.common.registry.init.AlienArmorItems;
+import com.alien.common.registry.init.item.AlienArmorItems;
+import com.human.common.registry.init.item.HumanGunItems;
+import com.predator.common.registry.init.item.PredatorArmorItems;
 import net.minecraft.world.item.CreativeModeTab;
 
 import java.util.function.Consumer;
 
-import com.avp.common.registry.init.AVPBlocks;
+import com.avp.common.registry.init.block.AVPBlocks;
 import com.avp.common.registry.init.item.AVPArmorItems;
 import com.avp.common.registry.init.item.AVPItems;
 
@@ -24,17 +26,17 @@ public class CombatCreativeModeTabInitializer {
         CreativeModeTabUtil.accept(output, AVPItems.ROCKET);
         CreativeModeTabUtil.accept(output, AVPItems.FUEL_TANK);
 
-        CreativeModeTabUtil.accept(output, AVPItems.F903WE_RIFLE);
-        CreativeModeTabUtil.accept(output, AVPItems.FLAMETHROWER_SEVASTOPOL);
-        CreativeModeTabUtil.accept(output, AVPItems.M37_12_SHOTGUN);
-        CreativeModeTabUtil.accept(output, AVPItems.M41A_PULSE_RIFLE);
-        CreativeModeTabUtil.accept(output, AVPItems.M42A3_SNIPER_RIFLE);
-        CreativeModeTabUtil.accept(output, AVPItems.M4RA_BATTLE_RIFLE);
-        CreativeModeTabUtil.accept(output, AVPItems.M56_SMARTGUN);
-        CreativeModeTabUtil.accept(output, AVPItems.M6B_ROCKET_LAUNCHER);
-        CreativeModeTabUtil.accept(output, AVPItems.M88MOD4_COMBAT_PISTOL);
-        CreativeModeTabUtil.accept(output, AVPItems.OLD_PAINLESS);
-        CreativeModeTabUtil.accept(output, AVPItems.ZX_76_SHOTGUN);
+        CreativeModeTabUtil.accept(output, HumanGunItems.F903WE_RIFLE);
+        CreativeModeTabUtil.accept(output, HumanGunItems.FLAMETHROWER_SEVASTOPOL);
+        CreativeModeTabUtil.accept(output, HumanGunItems.M37_12_SHOTGUN);
+        CreativeModeTabUtil.accept(output, HumanGunItems.M41A_PULSE_RIFLE);
+        CreativeModeTabUtil.accept(output, HumanGunItems.M42A3_SNIPER_RIFLE);
+        CreativeModeTabUtil.accept(output, HumanGunItems.M4RA_BATTLE_RIFLE);
+        CreativeModeTabUtil.accept(output, HumanGunItems.M56_SMARTGUN);
+        CreativeModeTabUtil.accept(output, HumanGunItems.M6B_ROCKET_LAUNCHER);
+        CreativeModeTabUtil.accept(output, HumanGunItems.M88MOD4_COMBAT_PISTOL);
+        CreativeModeTabUtil.accept(output, HumanGunItems.OLD_PAINLESS);
+        CreativeModeTabUtil.accept(output, HumanGunItems.ZX_76_SHOTGUN);
 
         CreativeModeTabUtil.accept(output, AVPItems.SHURIKEN);
         CreativeModeTabUtil.accept(output, AVPItems.SMART_DISC);
@@ -111,9 +113,9 @@ public class CombatCreativeModeTabInitializer {
         CreativeModeTabUtil.accept(output, AlienArmorItems.PLATED_NETHER_CHITIN_LEGGINGS);
         CreativeModeTabUtil.accept(output, AlienArmorItems.PLATED_NETHER_CHITIN_BOOTS);
 
-        CreativeModeTabUtil.accept(output, AVPArmorItems.JUNGLE_PREDATOR_HELMET);
-        CreativeModeTabUtil.accept(output, AVPArmorItems.JUNGLE_PREDATOR_CHESTPLATE);
-        CreativeModeTabUtil.accept(output, AVPArmorItems.JUNGLE_PREDATOR_LEGGINGS);
-        CreativeModeTabUtil.accept(output, AVPArmorItems.JUNGLE_PREDATOR_BOOTS);
+        CreativeModeTabUtil.accept(output, PredatorArmorItems.JUNGLE_PREDATOR_HELMET);
+        CreativeModeTabUtil.accept(output, PredatorArmorItems.JUNGLE_PREDATOR_CHESTPLATE);
+        CreativeModeTabUtil.accept(output, PredatorArmorItems.JUNGLE_PREDATOR_LEGGINGS);
+        CreativeModeTabUtil.accept(output, PredatorArmorItems.JUNGLE_PREDATOR_BOOTS);
     };
 }

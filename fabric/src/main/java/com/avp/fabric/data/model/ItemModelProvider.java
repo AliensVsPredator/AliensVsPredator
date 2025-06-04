@@ -1,8 +1,12 @@
 package com.avp.fabric.data.model;
 
-import com.alien.common.registry.init.AlienArmorItems;
 import com.alien.common.registry.init.AlienBlocks;
 import com.alien.common.registry.init.AlienItems;
+import com.alien.common.registry.init.item.AlienArmorItems;
+import com.human.common.registry.init.item.HumanFerroaluminumBlockItems;
+import com.human.common.registry.init.item.HumanSteelBlockItems;
+import com.human.common.registry.init.item.HumanTitaniumBlockItems;
+import com.predator.common.registry.init.item.PredatorArmorItems;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricModelProvider;
 import net.minecraft.data.models.BlockModelGenerators;
@@ -14,9 +18,8 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Supplier;
 
-import com.avp.common.registry.init.AVPBlocks;
+import com.avp.common.registry.init.block.AVPBlocks;
 import com.avp.common.registry.init.item.AVPArmorItems;
-import com.avp.common.registry.init.item.AVPBlockItems;
 import com.avp.common.registry.init.item.AVPItems;
 
 public class ItemModelProvider extends FabricModelProvider {
@@ -57,10 +60,10 @@ public class ItemModelProvider extends FabricModelProvider {
         generateStandardItem(generators, AlienArmorItems.IRRADIATED_CHITIN_HELMET);
         generateStandardItem(generators, AlienArmorItems.IRRADIATED_CHITIN_LEGGINGS);
         generateStandardItem(generators, AVPItems.FUEL_TANK);
-        generateStandardItem(generators, AVPArmorItems.JUNGLE_PREDATOR_BOOTS);
-        generateStandardItem(generators, AVPArmorItems.JUNGLE_PREDATOR_CHESTPLATE);
-        generateStandardItem(generators, AVPArmorItems.JUNGLE_PREDATOR_HELMET);
-        generateStandardItem(generators, AVPArmorItems.JUNGLE_PREDATOR_LEGGINGS);
+        generateStandardItem(generators, PredatorArmorItems.JUNGLE_PREDATOR_BOOTS);
+        generateStandardItem(generators, PredatorArmorItems.JUNGLE_PREDATOR_CHESTPLATE);
+        generateStandardItem(generators, PredatorArmorItems.JUNGLE_PREDATOR_HELMET);
+        generateStandardItem(generators, PredatorArmorItems.JUNGLE_PREDATOR_LEGGINGS);
         generateStandardItem(generators, AVPArmorItems.MK50_BOOTS);
         generateStandardItem(generators, AVPArmorItems.MK50_CHESTPLATE);
         generateStandardItem(generators, AVPArmorItems.MK50_HELMET);
@@ -220,9 +223,9 @@ public class ItemModelProvider extends FabricModelProvider {
         generateStandardItem(generators, AVPItems.URANIUM_NUGGET);
         generateStandardItem(generators, AVPItems.ALUMINUM_NUGGET);
 
-        generateHandheldItem(generators, AVPBlockItems.FERROALUMINUM_DOOR);
-        generateHandheldItem(generators, AVPBlockItems.STEEL_DOOR);
-        generateHandheldItem(generators, AVPBlockItems.TITANIUM_DOOR);
+        generateHandheldItem(generators, HumanFerroaluminumBlockItems.FERROALUMINUM_DOOR);
+        generateHandheldItem(generators, HumanSteelBlockItems.STEEL_DOOR);
+        generateHandheldItem(generators, HumanTitaniumBlockItems.TITANIUM_DOOR);
 
         generateStandardItem(generators, AlienItems.POISON_JELLY);
     }

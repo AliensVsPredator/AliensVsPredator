@@ -11,7 +11,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import com.avp.common.gameplay.block.property.BlockProperties;
-import com.avp.common.registry.init.entity_type.AVPEntityTypes;
+import com.avp.common.registry.init.entity_type.HumanEntityTypes;
 
 public class SentryTurretBlock extends Block {
 
@@ -32,7 +32,7 @@ public class SentryTurretBlock extends Block {
             return;
         }
 
-        var sentryTurret = AVPEntityTypes.SENTRY_TURRET.get().create(serverLevel);
+        var sentryTurret = HumanEntityTypes.SENTRY_TURRET.get().create(serverLevel);
 
         if (sentryTurret == null) {
             return;

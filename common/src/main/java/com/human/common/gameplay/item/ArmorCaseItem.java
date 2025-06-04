@@ -2,6 +2,7 @@ package com.human.common.gameplay.item;
 
 import com.human.common.gameplay.component.ArmorCaseContainerContents;
 import com.human.common.gameplay.menu.armor_case.ArmorCaseMenu;
+import com.human.common.registry.init.HumanDataComponents;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
@@ -21,8 +22,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 import java.util.stream.Stream;
-
-import com.avp.common.registry.init.AVPDataComponents;
 
 public class ArmorCaseItem extends Item {
 
@@ -60,7 +59,7 @@ public class ArmorCaseItem extends Item {
     public void appendHoverText(ItemStack itemStack, TooltipContext tooltipContext, List<Component> list, TooltipFlag tooltipFlag) {
         super.appendHoverText(itemStack, tooltipContext, list, tooltipFlag);
 
-        var container = itemStack.getOrDefault(AVPDataComponents.ARMOR_CASE_CONTAINER.get(), ArmorCaseContainerContents.EMPTY);
+        var container = itemStack.getOrDefault(HumanDataComponents.ARMOR_CASE_CONTAINER.get(), ArmorCaseContainerContents.EMPTY);
 
         if (container.equals(ArmorCaseContainerContents.EMPTY)) {
             return;
@@ -75,7 +74,7 @@ public class ArmorCaseItem extends Item {
 
     public static void swapArmorSlots(LivingEntity livingEntity, ItemStack itemStack) {
         var container = itemStack.getComponents()
-            .getOrDefault(AVPDataComponents.ARMOR_CASE_CONTAINER.get(), ArmorCaseContainerContents.EMPTY);
+            .getOrDefault(HumanDataComponents.ARMOR_CASE_CONTAINER.get(), ArmorCaseContainerContents.EMPTY);
 
         var headItemStack = livingEntity.getItemBySlot(EquipmentSlot.HEAD);
         var chestItemStack = livingEntity.getItemBySlot(EquipmentSlot.CHEST);
@@ -89,6 +88,6 @@ public class ArmorCaseItem extends Item {
 
         var newContainer = new ArmorCaseContainerContents(headItemStack, chestItemStack, legsItemStack, feetItemStack);
 
-        itemStack.set(AVPDataComponents.ARMOR_CASE_CONTAINER.get(), newContainer);
+        itemStack.set(HumanDataComponents.ARMOR_CASE_CONTAINER.get(), newContainer);
     }
 }

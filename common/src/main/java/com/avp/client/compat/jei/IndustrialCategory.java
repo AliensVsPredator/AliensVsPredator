@@ -15,7 +15,7 @@ import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import com.avp.common.registry.init.AVPBlocks;
+import com.avp.common.registry.init.block.AVPBlocks;
 
 public class IndustrialCategory implements IRecipeCategory<IndustrialFurnaceRecipe> {
 

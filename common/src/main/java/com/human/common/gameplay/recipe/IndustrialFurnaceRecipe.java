@@ -1,6 +1,7 @@
 package com.human.common.gameplay.recipe;
 
-import com.alien.common.registry.init.AlienBlockItems;
+import com.alien.common.registry.init.item.AlienBlockItems;
+import com.human.common.registry.init.item.HumanPlasticBlockItems;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
@@ -13,7 +14,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.avp.common.registry.init.AVPRecipes;
-import com.avp.common.registry.init.item.AVPBlockItems;
 
 public class IndustrialFurnaceRecipe extends AbstractCookingRecipe {
 
@@ -57,10 +57,13 @@ public class IndustrialFurnaceRecipe extends AbstractCookingRecipe {
         registerMeltingRecipe(Items.MUD, Items.CLAY);
         registerMeltingRecipe(Items.CLAY, Items.TERRACOTTA);
         // TODO: Remove these, these break the balance of smelting. We can have these be smelted in electrical furnaces.
-        registerMeltingRecipe(AlienBlockItems.RESIN.get(), AVPBlockItems.DYE_COLOR_TO_PLASTIC.get(DyeColor.GREEN).get());
-        registerMeltingRecipe(AlienBlockItems.NETHER_RESIN.get(), AVPBlockItems.DYE_COLOR_TO_PLASTIC.get(DyeColor.GREEN).get());
-        registerMeltingRecipe(AlienBlockItems.IRRADIATED_RESIN.get(), AVPBlockItems.DYE_COLOR_TO_PLASTIC.get(DyeColor.GREEN).get());
-        registerMeltingRecipe(AlienBlockItems.ABERRANT_RESIN.get(), AVPBlockItems.DYE_COLOR_TO_PLASTIC.get(DyeColor.GREEN).get());
+        registerMeltingRecipe(AlienBlockItems.RESIN.get(), HumanPlasticBlockItems.DYE_COLOR_TO_PLASTIC.get(DyeColor.GREEN).get());
+        registerMeltingRecipe(AlienBlockItems.NETHER_RESIN.get(), HumanPlasticBlockItems.DYE_COLOR_TO_PLASTIC.get(DyeColor.GREEN).get());
+        registerMeltingRecipe(
+            AlienBlockItems.IRRADIATED_RESIN.get(),
+            HumanPlasticBlockItems.DYE_COLOR_TO_PLASTIC.get(DyeColor.GREEN).get()
+        );
+        registerMeltingRecipe(AlienBlockItems.ABERRANT_RESIN.get(), HumanPlasticBlockItems.DYE_COLOR_TO_PLASTIC.get(DyeColor.GREEN).get());
     }
 
     private static void registerMeltingRecipe(Item input, Item output) {

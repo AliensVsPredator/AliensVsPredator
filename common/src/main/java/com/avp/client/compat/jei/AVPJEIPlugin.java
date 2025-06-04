@@ -17,8 +17,8 @@ import org.jetbrains.annotations.NotNull;
 
 import com.avp.AVP;
 import com.avp.AVPResources;
-import com.avp.common.registry.init.AVPBlocks;
 import com.avp.common.registry.init.AVPRecipes;
+import com.avp.common.registry.init.block.AVPBlocks;
 
 @JeiPlugin
 public class AVPJEIPlugin implements IModPlugin {

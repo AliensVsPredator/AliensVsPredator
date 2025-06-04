@@ -8,7 +8,7 @@ import net.minecraft.world.item.trading.MerchantOffer;
 
 import java.util.List;
 
-import com.avp.common.registry.init.AVPBlocks;
+import com.avp.common.registry.init.block.AVPBlocks;
 import com.avp.common.registry.init.item.AVPArmorItems;
 import com.avp.common.registry.init.item.AVPItems;
 

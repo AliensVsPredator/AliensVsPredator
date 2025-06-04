@@ -1,5 +1,6 @@
-package com.alien.common.registry.init;
+package com.alien.common.registry.init.item;
 
+import com.alien.common.registry.init.AlienBlocks;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 

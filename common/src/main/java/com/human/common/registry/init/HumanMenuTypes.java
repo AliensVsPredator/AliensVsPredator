@@ -1,4 +1,4 @@
-package com.avp.common.registry.init;
+package com.human.common.registry.init;
 
 import com.human.common.gameplay.menu.IndustrialFurnaceMenu;
 import com.human.common.gameplay.menu.armor_case.ArmorCaseMenu;
@@ -10,7 +10,7 @@ import net.minecraft.world.inventory.MenuType;
 import com.avp.common.registry.AVPDeferredHolder;
 import com.avp.service.Services;
 
-public class AVPMenuTypes {
+public class HumanMenuTypes {
 
     public static final AVPDeferredHolder<MenuType<ArmorCaseMenu>> ARMOR_CASE = register("armor_case", ArmorCaseMenu::new);
 

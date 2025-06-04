@@ -16,7 +16,7 @@ import java.util.List;
 
 import com.avp.AVP;
 import com.avp.AVPResources;
-import com.avp.common.registry.init.AVPBlocks;
+import com.avp.common.registry.init.block.AVPBlocks;
 import com.avp.common.registry.init.item.AVPBlockItems;
 
 public class IndustrialCategory implements DisplayCategory<IndustrialDisplay> {

@@ -5,7 +5,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.SnowLayerBlock;
 import net.minecraft.world.level.levelgen.Heightmap;
 
-import com.avp.common.registry.init.AVPBlocks;
+import com.avp.common.registry.init.block.CoreBlocks;
 import com.avp.common.registry.key.AVPBiomeKeys;
 
 public class NukedAshPlacement {
@@ -45,7 +45,7 @@ public class NukedAshPlacement {
                             var currentBlock = serverLevel.getBlockState(blockPos);
                             var currentBlockAbove = serverLevel.getBlockState(blockPos.above());
                             if (currentBlock.isSolidRender(serverLevel, blockPos) && !currentBlock.liquid() && currentBlockAbove.isAir()) {
-                                var ashBlock = AVPBlocks.ASH_BLOCK.get().defaultBlockState().setValue(SnowLayerBlock.LAYERS, 1);
+                                var ashBlock = CoreBlocks.ASH_BLOCK.get().defaultBlockState().setValue(SnowLayerBlock.LAYERS, 1);
                                 serverLevel.setBlock(blockPos.above(), ashBlock, 3);
                             }
                         }

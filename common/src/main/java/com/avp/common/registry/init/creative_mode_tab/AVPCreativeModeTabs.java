@@ -1,8 +1,10 @@
 package com.avp.common.registry.init.creative_mode_tab;
 
-import com.alien.common.registry.init.AlienArmorItems;
 import com.alien.common.registry.init.AlienBlocks;
 import com.alien.common.registry.init.AlienItems;
+import com.alien.common.registry.init.item.AlienArmorItems;
+import com.alien.common.registry.init.item.AlienSpawnEggItems;
+import com.human.common.registry.init.block.HumanPlasticBlocks;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
@@ -15,7 +17,6 @@ import java.util.function.Supplier;
 
 import com.avp.AVP;
 import com.avp.common.registry.AVPDeferredHolder;
-import com.avp.common.registry.init.AVPBlocks;
 import com.avp.common.registry.init.creative_mode_tab.initializer.BlocksCreativeModeTabInitializer;
 import com.avp.common.registry.init.creative_mode_tab.initializer.ColoredBlocksCreativeModeTabInitializer;
 import com.avp.common.registry.init.creative_mode_tab.initializer.CombatCreativeModeTabInitializer;
@@ -23,7 +24,6 @@ import com.avp.common.registry.init.creative_mode_tab.initializer.IngredientsCre
 import com.avp.common.registry.init.creative_mode_tab.initializer.SpawnEggsCreativeModeTabInitializer;
 import com.avp.common.registry.init.creative_mode_tab.initializer.ToolsAndUtilitiesCreativeModeTabInitializer;
 import com.avp.common.registry.init.item.AVPItems;
-import com.avp.common.registry.init.item.AVPSpawnEggItems;
 import com.avp.common.registry.key.AVPCreativeModeTabKeys;
 import com.avp.service.Services;
 
@@ -39,7 +39,7 @@ public class AVPCreativeModeTabs {
 
     public static final AVPDeferredHolder<CreativeModeTab> COLORED_BLOCKS = register(
         AVPCreativeModeTabKeys.COLORED_BLOCKS_KEY,
-        () -> new ItemStack(AVPBlocks.DYE_COLOR_TO_PLASTIC.get(DyeColor.WHITE).get()),
+        () -> new ItemStack(HumanPlasticBlocks.DYE_COLOR_TO_PLASTIC.get(DyeColor.WHITE).get()),
         ColoredBlocksCreativeModeTabInitializer.OUTPUT_CONSUMER
     );
 
@@ -57,7 +57,7 @@ public class AVPCreativeModeTabs {
 
     public static final AVPDeferredHolder<CreativeModeTab> SPAWN_EGGS = register(
         AVPCreativeModeTabKeys.SPAWN_EGGS_KEY,
-        () -> new ItemStack(AVPSpawnEggItems.OVOMORPH_SPAWN_EGG.get()),
+        () -> new ItemStack(AlienSpawnEggItems.OVOMORPH_SPAWN_EGG.get()),
         SpawnEggsCreativeModeTabInitializer.OUTPUT_CONSUMER
     );
 

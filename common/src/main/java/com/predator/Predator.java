@@ -1,6 +1,10 @@
 package com.predator;
 
+import com.predator.common.registry.init.PredatorBlockItems;
+import com.predator.common.registry.init.PredatorBlocks;
 import com.predator.common.registry.init.PredatorEntityTypes;
+import com.predator.common.registry.init.item.PredatorArmorItems;
+import com.predator.common.registry.init.item.PredatorSpawnEggItems;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -11,6 +15,10 @@ public class Predator {
     public static final Logger LOGGER = LoggerFactory.getLogger(AVP.MOD_ID);
 
     public static void initialize() {
+        PredatorBlocks.initialize();
+        PredatorBlockItems.initialize();
+        PredatorArmorItems.initialize();
+        PredatorSpawnEggItems.initialize();
         PredatorEntityTypes.initialize();
     }
 }

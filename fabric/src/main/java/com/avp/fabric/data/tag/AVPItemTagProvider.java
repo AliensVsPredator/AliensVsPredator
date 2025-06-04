@@ -1,8 +1,17 @@
 package com.avp.fabric.data.tag;
 
-import com.alien.common.registry.init.AlienArmorItems;
-import com.alien.common.registry.init.AlienBlockItems;
 import com.alien.common.registry.init.AlienItems;
+import com.alien.common.registry.init.item.AlienArmorItems;
+import com.alien.common.registry.init.item.AlienBlockItems;
+import com.human.common.registry.init.item.HumanFerroaluminumBlockItems;
+import com.human.common.registry.init.item.HumanGunItems;
+import com.human.common.registry.init.item.HumanIndustrialConcreteBlockItems;
+import com.human.common.registry.init.item.HumanIndustrialGlassBlockItems;
+import com.human.common.registry.init.item.HumanPaddingBlockItems;
+import com.human.common.registry.init.item.HumanPlasticBlockItems;
+import com.human.common.registry.init.item.HumanSteelBlockItems;
+import com.human.common.registry.init.item.HumanTitaniumBlockItems;
+import com.predator.common.registry.init.item.PredatorArmorItems;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
 import net.minecraft.core.HolderLookup;
@@ -15,7 +24,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
-import com.avp.common.registry.init.AVPBlocks;
+import com.avp.common.registry.init.block.CoreBlocks;
 import com.avp.common.registry.init.item.AVPArmorItems;
 import com.avp.common.registry.init.item.AVPBlockItems;
 import com.avp.common.registry.init.item.AVPItems;
@@ -46,10 +55,10 @@ public class AVPItemTagProvider extends FabricTagProvider.ItemTagProvider {
 
         getOrCreateTagBuilder(AVPItemTags.JUNGLE_PREDATOR_ARMOR)
             .add(
-                AVPArmorItems.JUNGLE_PREDATOR_BOOTS.get(),
-                AVPArmorItems.JUNGLE_PREDATOR_CHESTPLATE.get(),
-                AVPArmorItems.JUNGLE_PREDATOR_HELMET.get(),
-                AVPArmorItems.JUNGLE_PREDATOR_LEGGINGS.get()
+                PredatorArmorItems.JUNGLE_PREDATOR_BOOTS.get(),
+                PredatorArmorItems.JUNGLE_PREDATOR_CHESTPLATE.get(),
+                PredatorArmorItems.JUNGLE_PREDATOR_HELMET.get(),
+                PredatorArmorItems.JUNGLE_PREDATOR_LEGGINGS.get()
             );
 
         getOrCreateTagBuilder(AVPItemTags.MK50_ARMOR)
@@ -127,7 +136,7 @@ public class AVPItemTagProvider extends FabricTagProvider.ItemTagProvider {
 
         getOrCreateTagBuilder(AVPItemTags.FACEHUGGER_PROTECTION_HELMET)
             .add(
-                AVPArmorItems.JUNGLE_PREDATOR_HELMET.get()
+                PredatorArmorItems.JUNGLE_PREDATOR_HELMET.get()
             );
 
         getOrCreateTagBuilder(AVPItemTags.HOSTILE_WEAPON)
@@ -207,8 +216,8 @@ public class AVPItemTagProvider extends FabricTagProvider.ItemTagProvider {
             .add(
                 Items.IRON_BLOCK,
                 AVPBlockItems.ALUMINUM_BLOCK.get(),
-                AVPBlockItems.FERROALUMINUM_BLOCK.get(),
-                AVPBlockItems.STEEL_BLOCK.get(),
+                HumanFerroaluminumBlockItems.FERROALUMINUM_BLOCK.get(),
+                HumanSteelBlockItems.STEEL_BLOCK.get(),
                 AVPBlockItems.ZINC_BLOCK.get()
             );
 
@@ -229,15 +238,15 @@ public class AVPItemTagProvider extends FabricTagProvider.ItemTagProvider {
 
         var industrialGlassBlockTagBuilder = getOrCreateTagBuilder(AVPItemTags.INDUSTRIAL_GLASS_BLOCK);
 
-        industrialGlassBlockTagBuilder.add(AVPBlockItems.INDUSTRIAL_GLASS.get());
-        AVPBlockItems.DYE_COLOR_TO_INDUSTRIAL_GLASS.forEach(
+        industrialGlassBlockTagBuilder.add(HumanIndustrialGlassBlockItems.INDUSTRIAL_GLASS.get());
+        HumanIndustrialGlassBlockItems.DYE_COLOR_TO_INDUSTRIAL_GLASS.forEach(
             ($, blockItemSupplier) -> industrialGlassBlockTagBuilder.add(blockItemSupplier.get())
         );
 
         var industrialGlassPaneTagBuilder = getOrCreateTagBuilder(AVPItemTags.INDUSTRIAL_GLASS_PANE);
 
-        industrialGlassPaneTagBuilder.add(AVPBlockItems.INDUSTRIAL_GLASS_PANE.get());
-        AVPBlockItems.DYE_COLOR_TO_INDUSTRIAL_GLASS_PANE.forEach(
+        industrialGlassPaneTagBuilder.add(HumanIndustrialGlassBlockItems.INDUSTRIAL_GLASS_PANE.get());
+        HumanIndustrialGlassBlockItems.DYE_COLOR_TO_INDUSTRIAL_GLASS_PANE.forEach(
             ($, blockItemSupplier) -> industrialGlassPaneTagBuilder.add(blockItemSupplier.get())
         );
 
@@ -247,8 +256,8 @@ public class AVPItemTagProvider extends FabricTagProvider.ItemTagProvider {
 
         getOrCreateTagBuilder(AVPItemTags.LITHIUM)
             .add(
-                AVPBlocks.LITHIUM_BLOCK.get().asItem(),
-                AVPBlocks.LITHIUM_ORE.get().asItem(),
+                CoreBlocks.LITHIUM_BLOCK.get().asItem(),
+                CoreBlocks.LITHIUM_ORE.get().asItem(),
                 AVPItems.LITHIUM_DUST.get()
             );
 
@@ -288,7 +297,7 @@ public class AVPItemTagProvider extends FabricTagProvider.ItemTagProvider {
                 AlienArmorItems.ABERRANT_CHITIN_HELMET.get(),
                 AlienArmorItems.CHITIN_HELMET.get(),
                 AlienArmorItems.IRRADIATED_CHITIN_HELMET.get(),
-                AVPArmorItems.JUNGLE_PREDATOR_HELMET.get(),
+                PredatorArmorItems.JUNGLE_PREDATOR_HELMET.get(),
                 AlienArmorItems.NETHER_CHITIN_HELMET.get(),
                 AVPArmorItems.MK50_HELMET.get(),
                 AlienArmorItems.PLATED_ABERRANT_CHITIN_HELMET.get(),
@@ -306,7 +315,7 @@ public class AVPItemTagProvider extends FabricTagProvider.ItemTagProvider {
                 AlienArmorItems.ABERRANT_CHITIN_CHESTPLATE.get(),
                 AlienArmorItems.CHITIN_CHESTPLATE.get(),
                 AlienArmorItems.IRRADIATED_CHITIN_CHESTPLATE.get(),
-                AVPArmorItems.JUNGLE_PREDATOR_CHESTPLATE.get(),
+                PredatorArmorItems.JUNGLE_PREDATOR_CHESTPLATE.get(),
                 AlienArmorItems.NETHER_CHITIN_CHESTPLATE.get(),
                 AVPArmorItems.MK50_CHESTPLATE.get(),
                 AlienArmorItems.PLATED_ABERRANT_CHITIN_CHESTPLATE.get(),
@@ -324,7 +333,7 @@ public class AVPItemTagProvider extends FabricTagProvider.ItemTagProvider {
                 AlienArmorItems.ABERRANT_CHITIN_LEGGINGS.get(),
                 AlienArmorItems.CHITIN_LEGGINGS.get(),
                 AlienArmorItems.IRRADIATED_CHITIN_LEGGINGS.get(),
-                AVPArmorItems.JUNGLE_PREDATOR_LEGGINGS.get(),
+                PredatorArmorItems.JUNGLE_PREDATOR_LEGGINGS.get(),
                 AlienArmorItems.NETHER_CHITIN_LEGGINGS.get(),
                 AVPArmorItems.MK50_LEGGINGS.get(),
                 AlienArmorItems.PLATED_ABERRANT_CHITIN_LEGGINGS.get(),
@@ -342,7 +351,7 @@ public class AVPItemTagProvider extends FabricTagProvider.ItemTagProvider {
                 AlienArmorItems.ABERRANT_CHITIN_BOOTS.get(),
                 AlienArmorItems.CHITIN_BOOTS.get(),
                 AlienArmorItems.IRRADIATED_CHITIN_BOOTS.get(),
-                AVPArmorItems.JUNGLE_PREDATOR_BOOTS.get(),
+                PredatorArmorItems.JUNGLE_PREDATOR_BOOTS.get(),
                 AlienArmorItems.NETHER_CHITIN_BOOTS.get(),
                 AVPArmorItems.MK50_BOOTS.get(),
                 AlienArmorItems.PLATED_ABERRANT_CHITIN_BOOTS.get(),
@@ -358,17 +367,17 @@ public class AVPItemTagProvider extends FabricTagProvider.ItemTagProvider {
 
         getOrCreateTagBuilder(AVPItemTags.GUNS)
             .add(
-                AVPItems.F903WE_RIFLE.get(),
-                AVPItems.FLAMETHROWER_SEVASTOPOL.get(),
-                AVPItems.M37_12_SHOTGUN.get(),
-                AVPItems.M41A_PULSE_RIFLE.get(),
-                AVPItems.M42A3_SNIPER_RIFLE.get(),
-                AVPItems.M4RA_BATTLE_RIFLE.get(),
-                AVPItems.M56_SMARTGUN.get(),
-                AVPItems.M6B_ROCKET_LAUNCHER.get(),
-                AVPItems.M88MOD4_COMBAT_PISTOL.get(),
-                AVPItems.OLD_PAINLESS.get(),
-                AVPItems.ZX_76_SHOTGUN.get()
+                HumanGunItems.F903WE_RIFLE.get(),
+                HumanGunItems.FLAMETHROWER_SEVASTOPOL.get(),
+                HumanGunItems.M37_12_SHOTGUN.get(),
+                HumanGunItems.M41A_PULSE_RIFLE.get(),
+                HumanGunItems.M42A3_SNIPER_RIFLE.get(),
+                HumanGunItems.M4RA_BATTLE_RIFLE.get(),
+                HumanGunItems.M56_SMARTGUN.get(),
+                HumanGunItems.M6B_ROCKET_LAUNCHER.get(),
+                HumanGunItems.M88MOD4_COMBAT_PISTOL.get(),
+                HumanGunItems.OLD_PAINLESS.get(),
+                HumanGunItems.ZX_76_SHOTGUN.get()
             );
 
         getOrCreateTagBuilder(ItemTags.DYEABLE)
@@ -382,70 +391,70 @@ public class AVPItemTagProvider extends FabricTagProvider.ItemTagProvider {
         var fenceTagProvider = getOrCreateTagBuilder(ItemTags.FENCES);
 
         fenceTagProvider.add(
-            AVPBlockItems.FERROALUMINUM_CHAIN_FENCE.get(),
-            AVPBlockItems.STEEL_CHAIN_FENCE.get(),
-            AVPBlockItems.TITANIUM_CHAIN_FENCE.get()
+            HumanFerroaluminumBlockItems.FERROALUMINUM_CHAIN_FENCE.get(),
+            HumanSteelBlockItems.STEEL_CHAIN_FENCE.get(),
+            HumanTitaniumBlockItems.TITANIUM_CHAIN_FENCE.get()
         );
 
         var doorTagProvider = getOrCreateTagBuilder(ItemTags.DOORS);
 
         doorTagProvider.add(
-            AVPBlockItems.FERROALUMINUM_DOOR.get(),
-            AVPBlockItems.INDUSTRIAL_GLASS_DOOR.get(),
-            AVPBlockItems.STEEL_DOOR.get(),
-            AVPBlockItems.TITANIUM_DOOR.get()
+            HumanFerroaluminumBlockItems.FERROALUMINUM_DOOR.get(),
+            HumanIndustrialGlassBlockItems.INDUSTRIAL_GLASS_DOOR.get(),
+            HumanSteelBlockItems.STEEL_DOOR.get(),
+            HumanTitaniumBlockItems.TITANIUM_DOOR.get()
         );
 
         var trapdoorTagProvider = getOrCreateTagBuilder(ItemTags.TRAPDOORS);
 
         trapdoorTagProvider.add(
-            AVPBlockItems.FERROALUMINUM_TRAP_DOOR.get(),
-            AVPBlockItems.INDUSTRIAL_GLASS_TRAP_DOOR.get(),
-            AVPBlockItems.STEEL_TRAP_DOOR.get(),
-            AVPBlockItems.TITANIUM_TRAP_DOOR.get()
+            HumanFerroaluminumBlockItems.FERROALUMINUM_TRAP_DOOR.get(),
+            HumanIndustrialGlassBlockItems.INDUSTRIAL_GLASS_TRAP_DOOR.get(),
+            HumanSteelBlockItems.STEEL_TRAP_DOOR.get(),
+            HumanTitaniumBlockItems.TITANIUM_TRAP_DOOR.get()
         );
 
         var slabTagProvider = getOrCreateTagBuilder(ItemTags.SLABS);
 
         slabTagProvider.add(
-            AVPBlockItems.CUT_FERROALUMINUM_SLAB.get(),
-            AVPBlockItems.CUT_STEEL_SLAB.get(),
-            AVPBlockItems.CUT_TITANIUM_SLAB.get(),
-            AVPBlockItems.FERROALUMINUM_FASTENED_SIDING_SLAB.get(),
-            AVPBlockItems.FERROALUMINUM_FASTENED_STANDING_SLAB.get(),
-            AVPBlockItems.FERROALUMINUM_GRATE_SLAB.get(),
-            AVPBlockItems.FERROALUMINUM_PLATING_SLAB.get(),
-            AVPBlockItems.FERROALUMINUM_SIDING_SLAB.get(),
-            AVPBlockItems.FERROALUMINUM_SLAB.get(),
-            AVPBlockItems.FERROALUMINUM_STANDING_SLAB.get(),
-            AVPBlockItems.FERROALUMINUM_TREAD_SLAB.get(),
-            AVPBlockItems.INDUSTRIAL_GLASS_SLAB.get(),
-            AVPBlockItems.STEEL_FASTENED_SIDING_SLAB.get(),
-            AVPBlockItems.STEEL_FASTENED_STANDING_SLAB.get(),
-            AVPBlockItems.STEEL_GRATE_SLAB.get(),
-            AVPBlockItems.STEEL_PLATING_SLAB.get(),
-            AVPBlockItems.STEEL_SIDING_SLAB.get(),
-            AVPBlockItems.STEEL_SLAB.get(),
-            AVPBlockItems.STEEL_STANDING_SLAB.get(),
-            AVPBlockItems.STEEL_TREAD_SLAB.get(),
-            AVPBlockItems.TITANIUM_FASTENED_SIDING_SLAB.get(),
-            AVPBlockItems.TITANIUM_FASTENED_STANDING_SLAB.get(),
-            AVPBlockItems.TITANIUM_GRATE_SLAB.get(),
-            AVPBlockItems.TITANIUM_PLATING_SLAB.get(),
-            AVPBlockItems.TITANIUM_SIDING_SLAB.get(),
-            AVPBlockItems.TITANIUM_SLAB.get(),
-            AVPBlockItems.TITANIUM_STANDING_SLAB.get(),
-            AVPBlockItems.TITANIUM_TREAD_SLAB.get()
+            HumanFerroaluminumBlockItems.CUT_FERROALUMINUM_SLAB.get(),
+            HumanSteelBlockItems.CUT_STEEL_SLAB.get(),
+            HumanTitaniumBlockItems.CUT_TITANIUM_SLAB.get(),
+            HumanFerroaluminumBlockItems.FERROALUMINUM_FASTENED_SIDING_SLAB.get(),
+            HumanFerroaluminumBlockItems.FERROALUMINUM_FASTENED_STANDING_SLAB.get(),
+            HumanFerroaluminumBlockItems.FERROALUMINUM_GRATE_SLAB.get(),
+            HumanFerroaluminumBlockItems.FERROALUMINUM_PLATING_SLAB.get(),
+            HumanFerroaluminumBlockItems.FERROALUMINUM_SIDING_SLAB.get(),
+            HumanFerroaluminumBlockItems.FERROALUMINUM_SLAB.get(),
+            HumanFerroaluminumBlockItems.FERROALUMINUM_STANDING_SLAB.get(),
+            HumanFerroaluminumBlockItems.FERROALUMINUM_TREAD_SLAB.get(),
+            HumanIndustrialGlassBlockItems.INDUSTRIAL_GLASS_SLAB.get(),
+            HumanSteelBlockItems.STEEL_FASTENED_SIDING_SLAB.get(),
+            HumanSteelBlockItems.STEEL_FASTENED_STANDING_SLAB.get(),
+            HumanSteelBlockItems.STEEL_GRATE_SLAB.get(),
+            HumanSteelBlockItems.STEEL_PLATING_SLAB.get(),
+            HumanSteelBlockItems.STEEL_SIDING_SLAB.get(),
+            HumanSteelBlockItems.STEEL_SLAB.get(),
+            HumanSteelBlockItems.STEEL_STANDING_SLAB.get(),
+            HumanSteelBlockItems.STEEL_TREAD_SLAB.get(),
+            HumanTitaniumBlockItems.TITANIUM_FASTENED_SIDING_SLAB.get(),
+            HumanTitaniumBlockItems.TITANIUM_FASTENED_STANDING_SLAB.get(),
+            HumanTitaniumBlockItems.TITANIUM_GRATE_SLAB.get(),
+            HumanTitaniumBlockItems.TITANIUM_PLATING_SLAB.get(),
+            HumanTitaniumBlockItems.TITANIUM_SIDING_SLAB.get(),
+            HumanTitaniumBlockItems.TITANIUM_SLAB.get(),
+            HumanTitaniumBlockItems.TITANIUM_STANDING_SLAB.get(),
+            HumanTitaniumBlockItems.TITANIUM_TREAD_SLAB.get()
         );
 
         Stream.of(
             AVPBlockItems.DYE_COLOR_TO_CONCRETE_SLAB,
-            AVPBlockItems.DYE_COLOR_TO_CUT_PLASTIC_SLAB,
-            AVPBlockItems.DYE_COLOR_TO_INDUSTRIAL_CONCRETE_SLAB,
-            AVPBlockItems.DYE_COLOR_TO_PADDING_SLAB,
-            AVPBlockItems.DYE_COLOR_TO_PANEL_PADDING_SLAB,
-            AVPBlockItems.DYE_COLOR_TO_PIPE_PADDING_SLAB,
-            AVPBlockItems.DYE_COLOR_TO_PLASTIC_SLAB
+            HumanPlasticBlockItems.DYE_COLOR_TO_CUT_PLASTIC_SLAB,
+            HumanIndustrialConcreteBlockItems.DYE_COLOR_TO_INDUSTRIAL_CONCRETE_SLAB,
+            HumanPaddingBlockItems.DYE_COLOR_TO_PADDING_SLAB,
+            HumanPaddingBlockItems.DYE_COLOR_TO_PANEL_PADDING_SLAB,
+            HumanPaddingBlockItems.DYE_COLOR_TO_PIPE_PADDING_SLAB,
+            HumanPlasticBlockItems.DYE_COLOR_TO_PLASTIC_SLAB
         )
             .map(Map::values)
             .flatMap(Collection::stream)
@@ -455,52 +464,52 @@ public class AVPItemTagProvider extends FabricTagProvider.ItemTagProvider {
         var buttonTagProvider = getOrCreateTagBuilder(ItemTags.BUTTONS);
 
         buttonTagProvider.add(
-            AVPBlockItems.FERROALUMINUM_BUTTON.get(),
-            AVPBlockItems.STEEL_BUTTON.get(),
-            AVPBlockItems.TITANIUM_BUTTON.get()
+            HumanFerroaluminumBlockItems.FERROALUMINUM_BUTTON.get(),
+            HumanSteelBlockItems.STEEL_BUTTON.get(),
+            HumanTitaniumBlockItems.TITANIUM_BUTTON.get()
         );
 
         var stairsTagProvider = getOrCreateTagBuilder(ItemTags.STAIRS);
 
         stairsTagProvider.add(
-            AVPBlockItems.CUT_FERROALUMINUM_STAIRS.get(),
-            AVPBlockItems.CUT_STEEL_STAIRS.get(),
-            AVPBlockItems.CUT_TITANIUM_STAIRS.get(),
-            AVPBlockItems.FERROALUMINUM_FASTENED_SIDING_STAIRS.get(),
-            AVPBlockItems.FERROALUMINUM_FASTENED_STANDING_STAIRS.get(),
-            AVPBlockItems.FERROALUMINUM_GRATE_STAIRS.get(),
-            AVPBlockItems.FERROALUMINUM_PLATING_STAIRS.get(),
-            AVPBlockItems.FERROALUMINUM_SIDING_STAIRS.get(),
-            AVPBlockItems.FERROALUMINUM_STAIRS.get(),
-            AVPBlockItems.FERROALUMINUM_STANDING_STAIRS.get(),
-            AVPBlockItems.FERROALUMINUM_TREAD_STAIRS.get(),
-            AVPBlockItems.INDUSTRIAL_GLASS_STAIRS.get(),
-            AVPBlockItems.STEEL_FASTENED_SIDING_STAIRS.get(),
-            AVPBlockItems.STEEL_FASTENED_STANDING_STAIRS.get(),
-            AVPBlockItems.STEEL_GRATE_STAIRS.get(),
-            AVPBlockItems.STEEL_PLATING_STAIRS.get(),
-            AVPBlockItems.STEEL_SIDING_STAIRS.get(),
-            AVPBlockItems.STEEL_STAIRS.get(),
-            AVPBlockItems.STEEL_STANDING_STAIRS.get(),
-            AVPBlockItems.STEEL_TREAD_STAIRS.get(),
-            AVPBlockItems.TITANIUM_FASTENED_SIDING_STAIRS.get(),
-            AVPBlockItems.TITANIUM_FASTENED_STANDING_STAIRS.get(),
-            AVPBlockItems.TITANIUM_GRATE_STAIRS.get(),
-            AVPBlockItems.TITANIUM_PLATING_STAIRS.get(),
-            AVPBlockItems.TITANIUM_SIDING_STAIRS.get(),
-            AVPBlockItems.TITANIUM_STAIRS.get(),
-            AVPBlockItems.TITANIUM_STANDING_STAIRS.get(),
-            AVPBlockItems.TITANIUM_TREAD_STAIRS.get()
+            HumanFerroaluminumBlockItems.CUT_FERROALUMINUM_STAIRS.get(),
+            HumanSteelBlockItems.CUT_STEEL_STAIRS.get(),
+            HumanTitaniumBlockItems.CUT_TITANIUM_STAIRS.get(),
+            HumanFerroaluminumBlockItems.FERROALUMINUM_FASTENED_SIDING_STAIRS.get(),
+            HumanFerroaluminumBlockItems.FERROALUMINUM_FASTENED_STANDING_STAIRS.get(),
+            HumanFerroaluminumBlockItems.FERROALUMINUM_GRATE_STAIRS.get(),
+            HumanFerroaluminumBlockItems.FERROALUMINUM_PLATING_STAIRS.get(),
+            HumanFerroaluminumBlockItems.FERROALUMINUM_SIDING_STAIRS.get(),
+            HumanFerroaluminumBlockItems.FERROALUMINUM_STAIRS.get(),
+            HumanFerroaluminumBlockItems.FERROALUMINUM_STANDING_STAIRS.get(),
+            HumanFerroaluminumBlockItems.FERROALUMINUM_TREAD_STAIRS.get(),
+            HumanIndustrialGlassBlockItems.INDUSTRIAL_GLASS_STAIRS.get(),
+            HumanSteelBlockItems.STEEL_FASTENED_SIDING_STAIRS.get(),
+            HumanSteelBlockItems.STEEL_FASTENED_STANDING_STAIRS.get(),
+            HumanSteelBlockItems.STEEL_GRATE_STAIRS.get(),
+            HumanSteelBlockItems.STEEL_PLATING_STAIRS.get(),
+            HumanSteelBlockItems.STEEL_SIDING_STAIRS.get(),
+            HumanSteelBlockItems.STEEL_STAIRS.get(),
+            HumanSteelBlockItems.STEEL_STANDING_STAIRS.get(),
+            HumanSteelBlockItems.STEEL_TREAD_STAIRS.get(),
+            HumanTitaniumBlockItems.TITANIUM_FASTENED_SIDING_STAIRS.get(),
+            HumanTitaniumBlockItems.TITANIUM_FASTENED_STANDING_STAIRS.get(),
+            HumanTitaniumBlockItems.TITANIUM_GRATE_STAIRS.get(),
+            HumanTitaniumBlockItems.TITANIUM_PLATING_STAIRS.get(),
+            HumanTitaniumBlockItems.TITANIUM_SIDING_STAIRS.get(),
+            HumanTitaniumBlockItems.TITANIUM_STAIRS.get(),
+            HumanTitaniumBlockItems.TITANIUM_STANDING_STAIRS.get(),
+            HumanTitaniumBlockItems.TITANIUM_TREAD_STAIRS.get()
         );
 
         Stream.of(
             AVPBlockItems.DYE_COLOR_TO_CONCRETE_STAIRS,
-            AVPBlockItems.DYE_COLOR_TO_CUT_PLASTIC_STAIRS,
-            AVPBlockItems.DYE_COLOR_TO_INDUSTRIAL_CONCRETE_STAIRS,
-            AVPBlockItems.DYE_COLOR_TO_PADDING_STAIRS,
-            AVPBlockItems.DYE_COLOR_TO_PANEL_PADDING_STAIRS,
-            AVPBlockItems.DYE_COLOR_TO_PIPE_PADDING_STAIRS,
-            AVPBlockItems.DYE_COLOR_TO_PLASTIC_STAIRS
+            HumanPlasticBlockItems.DYE_COLOR_TO_CUT_PLASTIC_STAIRS,
+            HumanIndustrialConcreteBlockItems.DYE_COLOR_TO_INDUSTRIAL_CONCRETE_STAIRS,
+            HumanPaddingBlockItems.DYE_COLOR_TO_PADDING_STAIRS,
+            HumanPaddingBlockItems.DYE_COLOR_TO_PANEL_PADDING_STAIRS,
+            HumanPaddingBlockItems.DYE_COLOR_TO_PIPE_PADDING_STAIRS,
+            HumanPlasticBlockItems.DYE_COLOR_TO_PLASTIC_STAIRS
         )
             .map(Map::values)
             .flatMap(Collection::stream)
@@ -509,15 +518,18 @@ public class AVPItemTagProvider extends FabricTagProvider.ItemTagProvider {
 
         var wallTagBuilder = getOrCreateTagBuilder(ItemTags.WALLS);
 
-        AVPBlockItems.DYE_COLOR_TO_INDUSTRIAL_CONCRETE_WALL.values().stream().map(Supplier::get).forEach(wallTagBuilder::add);
+        HumanIndustrialConcreteBlockItems.DYE_COLOR_TO_INDUSTRIAL_CONCRETE_WALL.values()
+            .stream()
+            .map(Supplier::get)
+            .forEach(wallTagBuilder::add);
 
         var freezeImmuneTagBuilder = getOrCreateTagBuilder(ItemTags.FREEZE_IMMUNE_WEARABLES);
 
         freezeImmuneTagBuilder.add(
-            AVPArmorItems.JUNGLE_PREDATOR_HELMET.get(),
-            AVPArmorItems.JUNGLE_PREDATOR_CHESTPLATE.get(),
-            AVPArmorItems.JUNGLE_PREDATOR_LEGGINGS.get(),
-            AVPArmorItems.JUNGLE_PREDATOR_BOOTS.get()
+            PredatorArmorItems.JUNGLE_PREDATOR_HELMET.get(),
+            PredatorArmorItems.JUNGLE_PREDATOR_CHESTPLATE.get(),
+            PredatorArmorItems.JUNGLE_PREDATOR_LEGGINGS.get(),
+            PredatorArmorItems.JUNGLE_PREDATOR_BOOTS.get()
         );
 
         getOrCreateTagBuilder(AVPItemTags.MELEE_WEAPONS)

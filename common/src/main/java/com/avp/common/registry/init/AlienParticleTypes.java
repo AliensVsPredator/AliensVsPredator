@@ -6,7 +6,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import com.avp.common.registry.AVPDeferredHolder;
 import com.avp.service.Services;
 
-public class AVPParticleTypes {
+public class AlienParticleTypes {
 
     public static final AVPDeferredHolder<SimpleParticleType> ACID = register("acid");
 

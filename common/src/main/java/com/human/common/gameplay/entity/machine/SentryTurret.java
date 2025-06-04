@@ -23,8 +23,8 @@ import org.jetbrains.annotations.Nullable;
 import java.util.UUID;
 
 import com.avp.AVP;
-import com.avp.common.registry.init.AVPBlocks;
 import com.avp.common.registry.init.AVPSoundEvents;
+import com.avp.common.registry.init.block.AVPBlocks;
 import com.avp.common.registry.key.AVPDamageTypeKeys;
 import com.avp.common.registry.tag.AVPDamageTypesTags;
 

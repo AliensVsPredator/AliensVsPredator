@@ -1,4 +1,4 @@
-package com.avp.common.registry.init;
+package com.human.common.registry.init;
 
 import com.human.common.gameplay.component.ArmorCaseContainerContents;
 import com.mojang.serialization.Codec;
@@ -12,7 +12,7 @@ import java.util.function.UnaryOperator;
 import com.avp.common.registry.AVPDeferredHolder;
 import com.avp.service.Services;
 
-public class AVPDataComponents {
+public class HumanDataComponents {
 
     public static final AVPDeferredHolder<DataComponentType<Integer>> AMMUNITION = register(
         "ammunition",

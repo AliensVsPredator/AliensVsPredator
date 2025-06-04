@@ -13,7 +13,7 @@ import net.minecraft.world.phys.HitResult;
 import org.jetbrains.annotations.NotNull;
 
 import com.avp.AVP;
-import com.avp.common.registry.init.entity_type.AVPEntityTypes;
+import com.avp.common.registry.init.entity_type.HumanEntityTypes;
 
 public class Rocket extends ThrowableProjectile {
 
@@ -24,7 +24,7 @@ public class Rocket extends ThrowableProjectile {
     }
 
     public Rocket(Level level, LivingEntity livingEntity) {
-        super(AVPEntityTypes.ROCKET.get(), livingEntity, level);
+        super(HumanEntityTypes.ROCKET.get(), livingEntity, level);
     }
 
     @Override

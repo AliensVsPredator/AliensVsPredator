@@ -22,40 +22,6 @@ public class AVPArmorItems {
 
     private static final int TITANIUM_DURABILITY_MULTIPLIER = 27;
 
-    private static final int VERITANIUM_DURABILITY_MULTIPLIER = 40;
-
-    public static final AVPDeferredHolder<Item> JUNGLE_PREDATOR_BOOTS = register(
-        "jungle_predator_boots",
-        AVPArmorMaterials.VERITANIUM::getHolder,
-        ArmorItem.Type.BOOTS,
-        VERITANIUM_DURABILITY_MULTIPLIER,
-        new Item.Properties().fireResistant()
-    );
-
-    public static final AVPDeferredHolder<Item> JUNGLE_PREDATOR_CHESTPLATE = register(
-        "jungle_predator_chestplate",
-        AVPArmorMaterials.VERITANIUM::getHolder,
-        ArmorItem.Type.CHESTPLATE,
-        VERITANIUM_DURABILITY_MULTIPLIER,
-        new Item.Properties().fireResistant()
-    );
-
-    public static final AVPDeferredHolder<Item> JUNGLE_PREDATOR_HELMET = register(
-        "jungle_predator_helmet",
-        AVPArmorMaterials.VERITANIUM::getHolder,
-        ArmorItem.Type.HELMET,
-        VERITANIUM_DURABILITY_MULTIPLIER,
-        new Item.Properties().fireResistant()
-    );
-
-    public static final AVPDeferredHolder<Item> JUNGLE_PREDATOR_LEGGINGS = register(
-        "jungle_predator_leggings",
-        AVPArmorMaterials.VERITANIUM::getHolder,
-        ArmorItem.Type.LEGGINGS,
-        VERITANIUM_DURABILITY_MULTIPLIER,
-        new Item.Properties().fireResistant()
-    );
-
     public static final AVPDeferredHolder<Item> MK50_BOOTS = register("mk50_boots", () -> new MK50ArmorItem(ArmorItem.Type.BOOTS));
 
     public static final AVPDeferredHolder<Item> MK50_CHESTPLATE = register(

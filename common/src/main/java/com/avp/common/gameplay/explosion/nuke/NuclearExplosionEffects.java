@@ -20,7 +20,7 @@ import java.util.Map;
 import java.util.Set;
 
 import com.avp.common.gameplay.explosion.Explosion;
-import com.avp.common.registry.init.AVPBlocks;
+import com.avp.common.registry.init.block.CoreBlocks;
 import com.avp.common.registry.key.AVPBiomeKeys;
 import com.avp.common.util.ExplosionUtil;
 
@@ -77,7 +77,7 @@ public class NuclearExplosionEffects {
                     var rand2 = level.random.nextInt(100);
 
                     if (rand2 < 66) {
-                        transformedBlock = AVPBlocks.TRINITITE_BLOCK.get();
+                        transformedBlock = CoreBlocks.TRINITITE_BLOCK.get();
                     } else {
                         transformedBlock = Blocks.MAGMA_BLOCK;
                     }
@@ -89,7 +89,7 @@ public class NuclearExplosionEffects {
             if (blockState.isSolidRender(level, pos) && level.getRandom().nextInt(10) < 2) {
                 level.setBlock(
                     pos.above(),
-                    AVPBlocks.ASH_BLOCK.get().defaultBlockState().setValue(SnowLayerBlock.LAYERS, 1),
+                    CoreBlocks.ASH_BLOCK.get().defaultBlockState().setValue(SnowLayerBlock.LAYERS, 1),
                     flags
                 );
             }

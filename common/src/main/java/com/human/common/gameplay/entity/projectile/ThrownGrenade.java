@@ -15,7 +15,7 @@ import org.jetbrains.annotations.NotNull;
 import com.avp.common.gameplay.effect.RadiationStatusEffect;
 import com.avp.common.gameplay.entity.projectile.BouncingItemProjectile;
 import com.avp.common.registry.init.AVPMobEffects;
-import com.avp.common.registry.init.entity_type.AVPEntityTypes;
+import com.avp.common.registry.init.entity_type.HumanEntityTypes;
 import com.avp.common.registry.init.item.AVPItems;
 
 public class ThrownGrenade extends BouncingItemProjectile {
@@ -35,7 +35,7 @@ public class ThrownGrenade extends BouncingItemProjectile {
     }
 
     public ThrownGrenade(Level level, LivingEntity livingEntity) {
-        super(AVPEntityTypes.GRENADE_THROWN.get(), livingEntity, level);
+        super(HumanEntityTypes.GRENADE_THROWN.get(), livingEntity, level);
         this.shouldBounce = true;
         this.maxLife = 5 * 20;
     }

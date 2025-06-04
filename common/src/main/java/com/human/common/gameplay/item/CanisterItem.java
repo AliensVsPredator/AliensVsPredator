@@ -1,5 +1,6 @@
 package com.human.common.gameplay.item;
 
+import com.human.common.registry.init.HumanDataComponents;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -33,7 +34,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-import com.avp.common.registry.init.AVPDataComponents;
 import com.avp.common.registry.init.item.AVPItems;
 
 public class CanisterItem extends Item implements DispensibleContainerItem {
@@ -56,7 +56,7 @@ public class CanisterItem extends Item implements DispensibleContainerItem {
     ) {
         super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
 
-        int currentContentAmount = stack.getOrDefault(AVPDataComponents.CANISTER_CAPACITY.get(), 0);
+        int currentContentAmount = stack.getOrDefault(HumanDataComponents.CANISTER_CAPACITY.get(), 0);
 
         if (currentContentAmount == 0) {
             return;
@@ -129,7 +129,7 @@ public class CanisterItem extends Item implements DispensibleContainerItem {
     ) {
         var bucketPickup = (BucketPickup) hitState.getBlock();
 
-        if (canisterStack.getOrDefault(AVPDataComponents.CANISTER_CAPACITY.get(), 0) >= MAX_CAPACITY) {
+        if (canisterStack.getOrDefault(HumanDataComponents.CANISTER_CAPACITY.get(), 0) >= MAX_CAPACITY) {
             return InteractionResultHolder.fail(canisterStack);
         }
 
@@ -183,7 +183,7 @@ public class CanisterItem extends Item implements DispensibleContainerItem {
 
         ItemStack resultStack;
 
-        if (canisterStack.getOrDefault(AVPDataComponents.CANISTER_CAPACITY.get(), 0) > 1 && !player.isCreative()) {
+        if (canisterStack.getOrDefault(HumanDataComponents.CANISTER_CAPACITY.get(), 0) > 1 && !player.isCreative()) {
             resultStack = updateCapacity(canisterStack, -1);
         } else {
             resultStack = ItemUtils.createFilledResult(canisterStack, player, getEmptySuccessItem(canisterStack, player));
@@ -193,12 +193,12 @@ public class CanisterItem extends Item implements DispensibleContainerItem {
     }
 
     public static ItemStack updateCapacity(ItemStack stack, int amount) {
-        int currentContentAmount = stack.getOrDefault(AVPDataComponents.CANISTER_CAPACITY.get(), 0);
+        int currentContentAmount = stack.getOrDefault(HumanDataComponents.CANISTER_CAPACITY.get(), 0);
         int newAmount = Mth.clamp(currentContentAmount + amount, 0, MAX_CAPACITY);
 
         stack.applyComponents(
             DataComponentPatch.builder()
-                .set(AVPDataComponents.CANISTER_CAPACITY.get(), newAmount)
+                .set(HumanDataComponents.CANISTER_CAPACITY.get(), newAmount)
                 .build()
         );
 

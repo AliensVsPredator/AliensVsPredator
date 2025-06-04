@@ -8,6 +8,7 @@ import com.human.common.gameplay.block.entity.IndustrialFurnaceBlockEntity;
 import com.human.common.gameplay.block.entity.LeadChestBlockEntity;
 import com.human.common.gameplay.block.entity.ResonatorBlockEntity;
 import com.predator.common.gameplay.block.entity.TripMineBlockEntity;
+import com.predator.common.registry.init.PredatorBlocks;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -15,6 +16,7 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import java.util.function.Supplier;
 
 import com.avp.common.registry.AVPDeferredHolder;
+import com.avp.common.registry.init.block.AVPBlocks;
 import com.avp.service.Services;
 
 public class AVPBlockEntityTypes {
@@ -52,7 +54,7 @@ public class AVPBlockEntityTypes {
 
     public static final AVPDeferredHolder<BlockEntityType<TripMineBlockEntity>> TRIP_MINE = register(
         "trip_mine",
-        () -> BlockEntityType.Builder.of(TripMineBlockEntity::new, AVPBlocks.TRIP_MINE_BLOCK.get())
+        () -> BlockEntityType.Builder.of(TripMineBlockEntity::new, PredatorBlocks.TRIP_MINE_BLOCK.get())
     );
 
     public static final AVPDeferredHolder<BlockEntityType<ResonatorBlockEntity>> RESONATOR = register(

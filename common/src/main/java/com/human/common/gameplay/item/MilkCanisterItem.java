@@ -1,5 +1,6 @@
 package com.human.common.gameplay.item;
 
+import com.human.common.registry.init.HumanDataComponents;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
@@ -14,7 +15,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-import com.avp.common.registry.init.AVPDataComponents;
 import com.avp.common.registry.init.item.AVPItems;
 
 public class MilkCanisterItem extends Item {
@@ -27,7 +27,7 @@ public class MilkCanisterItem extends Item {
     public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag) {
         super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
 
-        int currentContentAmount = stack.getOrDefault(AVPDataComponents.CANISTER_CAPACITY.get(), 0);
+        int currentContentAmount = stack.getOrDefault(HumanDataComponents.CANISTER_CAPACITY.get(), 0);
 
         if (currentContentAmount == 0) {
             return;
@@ -49,7 +49,7 @@ public class MilkCanisterItem extends Item {
             livingEntity.removeAllEffects();
         }
 
-        var canDeplete = stack.getOrDefault(AVPDataComponents.CANISTER_CAPACITY.get(), 0) > 1;
+        var canDeplete = stack.getOrDefault(HumanDataComponents.CANISTER_CAPACITY.get(), 0) > 1;
 
         if (livingEntity instanceof Player player) {
             if (canDeplete && !player.isCreative()) {

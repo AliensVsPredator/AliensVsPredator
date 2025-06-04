@@ -11,7 +11,7 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.levelgen.Heightmap;
 import org.jetbrains.annotations.NotNull;
 
-import com.avp.common.registry.init.entity_type.AVPEntityTypes;
+import com.avp.common.registry.init.entity_type.HumanEntityTypes;
 import com.avp.common.registry.tag.AVPBiomeTags;
 import com.avp.common.registry.tag.AVPBlockTags;
 
@@ -113,7 +113,7 @@ public class MarinePatrolSpawner implements CustomSpawner {
             return;
         }
 
-        var marineMob = AVPEntityTypes.MARINE.get().create(level);
+        var marineMob = HumanEntityTypes.MARINE.get().create(level);
 
         if (marineMob == null) {
             return;

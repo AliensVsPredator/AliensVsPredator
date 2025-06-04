@@ -19,8 +19,8 @@ import org.jetbrains.annotations.NotNull;
 import java.time.Duration;
 
 import com.avp.AVP;
-import com.avp.common.registry.init.AVPBlocks;
-import com.avp.common.registry.init.entity_type.AVPEntityTypes;
+import com.avp.common.registry.init.block.AVPBlocks;
+import com.avp.common.registry.init.entity_type.HumanEntityTypes;
 import com.avp.common.util.ExplosionUtil;
 import com.avp.server.ServerScheduler;
 
@@ -39,7 +39,7 @@ public class PrimedNuke extends Entity {
     }
 
     public PrimedNuke(Level level) {
-        this(AVPEntityTypes.NUKE.get(), level);
+        this(HumanEntityTypes.NUKE.get(), level);
     }
 
     public void setFuse(int i) {

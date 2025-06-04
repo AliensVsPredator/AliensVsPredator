@@ -7,7 +7,7 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
-import com.avp.common.registry.init.entity_type.AVPEntityTypes;
+import com.avp.common.registry.init.entity_type.HumanEntityTypes;
 
 public class MushroomCloudEntity extends Entity {
 
@@ -20,7 +20,7 @@ public class MushroomCloudEntity extends Entity {
     }
 
     public MushroomCloudEntity(Level level, double x, double y, double z) {
-        super(AVPEntityTypes.MUSHROOM_CLOUD.get(), level);
+        super(HumanEntityTypes.MUSHROOM_CLOUD.get(), level);
         animDispatcher = new MushroomCloudAnimDispatcher(this);
         setPos(x, y, z);
     }

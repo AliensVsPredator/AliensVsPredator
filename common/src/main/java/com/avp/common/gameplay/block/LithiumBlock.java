@@ -7,7 +7,7 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
 
-import com.avp.common.registry.init.AVPBlocks;
+import com.avp.common.registry.init.block.CoreBlocks;
 
 public class LithiumBlock extends Block {
 
@@ -29,7 +29,7 @@ public class LithiumBlock extends Block {
         var newBlockState = level.getBlockState(updatedPos);
 
         if (newBlockState.is(Blocks.WATER)) {
-            var strength = blockState.is(AVPBlocks.LITHIUM_ORE.get()) ? 2F : 4F;
+            var strength = blockState.is(CoreBlocks.LITHIUM_ORE.get()) ? 2F : 4F;
             level.removeBlock(blockPos, false);
             level.explode(null, blockPos.getX(), blockPos.getY(), blockPos.getZ(), strength, Level.ExplosionInteraction.BLOCK);
         }

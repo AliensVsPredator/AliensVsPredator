@@ -23,7 +23,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
 
 import com.avp.common.registry.init.AVPBlockEntityTypes;
-import com.avp.common.registry.init.AVPBlocks;
+import com.avp.common.registry.init.block.AVPBlocks;
 
 public class LeadChestBlockEntity extends BaseContainerBlockEntity implements LidBlockEntity {
 

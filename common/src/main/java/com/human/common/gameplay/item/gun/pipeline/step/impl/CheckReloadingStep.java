@@ -4,9 +4,8 @@ import com.human.common.gameplay.item.gun.GunReloading;
 import com.human.common.gameplay.item.gun.pipeline.GunShootContext;
 import com.human.common.gameplay.item.gun.pipeline.GunShootResult;
 import com.human.common.gameplay.item.gun.pipeline.step.GunShootStep;
+import com.human.common.registry.init.item.HumanGunItems;
 import net.minecraft.world.entity.player.Player;
-
-import com.avp.common.registry.init.item.AVPItems;
 
 public class CheckReloadingStep implements GunShootStep {
 
@@ -39,7 +38,7 @@ public class CheckReloadingStep implements GunShootStep {
 
         // TODO: Don't hardcode old painless check here.
         if (
-            gunItem == AVPItems.OLD_PAINLESS.get()
+            gunItem == HumanGunItems.OLD_PAINLESS.get()
                 && supplier != null
         ) {
             var ammunitionItem = supplier.get();

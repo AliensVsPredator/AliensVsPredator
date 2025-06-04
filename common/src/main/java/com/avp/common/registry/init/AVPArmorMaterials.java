@@ -5,6 +5,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ArmorMaterial;
+import net.minecraft.world.item.ArmorMaterials;
 import net.minecraft.world.item.crafting.Ingredient;
 import org.jetbrains.annotations.NotNull;
 
@@ -22,7 +23,7 @@ public class AVPArmorMaterials {
     public static final AVPDeferredHolder<ArmorMaterial> MK50 = register(
         "mk50",
         relativeDefense(
-            net.minecraft.world.item.ArmorMaterials.IRON,
+            ArmorMaterials.IRON,
             Map.ofEntries(
                 Map.entry(ArmorItem.Type.CHESTPLATE, -2),
                 Map.entry(ArmorItem.Type.LEGGINGS, -1)
@@ -39,7 +40,7 @@ public class AVPArmorMaterials {
     public static final AVPDeferredHolder<ArmorMaterial> PRESSURE = register(
         "pressure",
         relativeDefense(
-            net.minecraft.world.item.ArmorMaterials.IRON,
+            ArmorMaterials.IRON,
             Map.ofEntries(
                 Map.entry(ArmorItem.Type.CHESTPLATE, -2),
                 Map.entry(ArmorItem.Type.LEGGINGS, -1)
@@ -56,7 +57,7 @@ public class AVPArmorMaterials {
     public static final AVPDeferredHolder<ArmorMaterial> STEEL = register(
         "steel",
         relativeDefense(
-            net.minecraft.world.item.ArmorMaterials.IRON,
+            ArmorMaterials.IRON,
             Map.ofEntries(
                 Map.entry(ArmorItem.Type.HELMET, 1),
                 Map.entry(ArmorItem.Type.CHESTPLATE, 1),
@@ -91,7 +92,7 @@ public class AVPArmorMaterials {
     public static final AVPDeferredHolder<ArmorMaterial> TITANIUM = register(
         "titanium",
         relativeDefense(
-            net.minecraft.world.item.ArmorMaterials.IRON,
+            ArmorMaterials.IRON,
             Map.ofEntries(
                 Map.entry(ArmorItem.Type.HELMET, 1),
                 Map.entry(ArmorItem.Type.CHESTPLATE, 2),
@@ -104,25 +105,6 @@ public class AVPArmorMaterials {
         () -> Ingredient.of(AVPItems.TITANIUM_INGOT.get()),
         1,
         0,
-        false
-    );
-
-    public static final AVPDeferredHolder<ArmorMaterial> VERITANIUM = register(
-        "veritanium",
-        relativeDefense(
-            net.minecraft.world.item.ArmorMaterials.NETHERITE,
-            Map.ofEntries(
-                Map.entry(ArmorItem.Type.HELMET, 1),
-                Map.entry(ArmorItem.Type.CHESTPLATE, 1),
-                Map.entry(ArmorItem.Type.LEGGINGS, 1),
-                Map.entry(ArmorItem.Type.BOOTS, 1)
-            )
-        ),
-        6,
-        AVPSoundEvents.ITEM_ARMOR_EQUIP_VERITANIUM::getHolder,
-        () -> Ingredient.of(AVPItems.VERITANIUM_SHARD.get()),
-        4,
-        0.15F,
         false
     );
 

@@ -20,7 +20,7 @@ import java.util.EnumMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import com.avp.common.registry.init.AVPParticleTypes;
+import com.avp.common.registry.init.AlienParticleTypes;
 import com.avp.common.registry.tag.AVPBlockTags;
 import com.avp.common.registry.tag.AVPEntityTypeTags;
 
@@ -43,7 +43,7 @@ public class AlienVariantTypes {
 
         AlienGameEvents.XENOMORPH_ABERRANT_RESIN_SPREAD,
 
-        AVPParticleTypes.ACID
+        AlienParticleTypes.ACID
     );
 
     public static final AlienVariantType IRRADIATED = new AlienVariantType(
@@ -63,7 +63,7 @@ public class AlienVariantTypes {
 
         AlienGameEvents.XENOMORPH_IRRADIATED_RESIN_SPREAD,
 
-        AVPParticleTypes.IRRADIATED_ACID
+        AlienParticleTypes.IRRADIATED_ACID
     );
 
     public static final AlienVariantType NETHER = new AlienVariantType(
@@ -83,7 +83,7 @@ public class AlienVariantTypes {
 
         AlienGameEvents.XENOMORPH_NETHER_RESIN_SPREAD,
 
-        AVPParticleTypes.BLUE_ACID
+        AlienParticleTypes.BLUE_ACID
     );
 
     public static final AlienVariantType NORMAL = new AlienVariantType(
@@ -103,7 +103,7 @@ public class AlienVariantTypes {
 
         AlienGameEvents.XENOMORPH_RESIN_SPREAD,
 
-        AVPParticleTypes.ACID
+        AlienParticleTypes.ACID
     );
 
     private static final Map<AlienVariant, AlienVariantType> TYPE_BY_VARIANT = Util.make(() -> {

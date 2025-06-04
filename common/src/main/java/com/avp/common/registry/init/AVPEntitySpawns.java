@@ -10,7 +10,7 @@ import net.minecraft.tags.BiomeTags;
 
 import com.avp.AVP;
 import com.avp.common.model.spawning.AVPEntitySpawnData;
-import com.avp.common.registry.init.entity_type.AVPEntityTypes;
+import com.avp.common.registry.init.entity_type.HumanEntityTypes;
 import com.avp.common.registry.tag.AVPBiomeTags;
 import com.avp.service.Services;
 
@@ -31,7 +31,7 @@ public class AVPEntitySpawns {
         );
 
         Services.REGISTRY.registerEntitySpawnData(
-            AVPEntitySpawnData.builder(AVPEntityTypes.MARINE)
+            AVPEntitySpawnData.builder(HumanEntityTypes.MARINE)
                 .withSpawnPredicate(MarineSpawning.PREDICATE)
                 .withSpawnSettings(AVP.config.spawnConfigs.MARINE_SPAWN)
                 // Prevents marine biome spawn configurations from being generated.

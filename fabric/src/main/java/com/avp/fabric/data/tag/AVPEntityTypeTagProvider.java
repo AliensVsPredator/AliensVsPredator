@@ -10,7 +10,7 @@ import net.minecraft.world.entity.EntityType;
 
 import java.util.concurrent.CompletableFuture;
 
-import com.avp.common.registry.init.entity_type.AVPEntityTypes;
+import com.avp.common.registry.init.entity_type.HumanEntityTypes;
 import com.avp.common.registry.tag.AVPEntityTypeTags;
 import com.avp.fabric.data.compatibility.gigeresque.GigeresqueConstants;
 import com.avp.fabric.data.compatibility.stellaris.StellarisConstants;
@@ -59,7 +59,7 @@ public class AVPEntityTypeTagProvider extends FabricTagProvider.EntityTypeTagPro
             .addTag(AVPEntityTypeTags.PREDATORS)
             .add(EntityType.PLAYER)
             // TODO: Add a "humans" tag here that includes the marine.
-            .add(AVPEntityTypes.MARINE.get());
+            .add(HumanEntityTypes.MARINE.get());
     }
 
     private void addPredators() {
@@ -95,7 +95,7 @@ public class AVPEntityTypeTagProvider extends FabricTagProvider.EntityTypeTagPro
                 EntityType.VILLAGER,
                 EntityType.WANDERING_TRADER,
                 EntityType.WITCH,
-                AVPEntityTypes.MARINE.get()
+                HumanEntityTypes.MARINE.get()
             );
     }
 
@@ -338,7 +338,7 @@ public class AVPEntityTypeTagProvider extends FabricTagProvider.EntityTypeTagPro
                 EntityType.WANDERING_TRADER,
                 EntityType.WITCH,
                 EntityType.WOLF,
-                AVPEntityTypes.MARINE.get(),
+                HumanEntityTypes.MARINE.get(),
                 PredatorEntityTypes.YAUTJA.get()
             );
     }

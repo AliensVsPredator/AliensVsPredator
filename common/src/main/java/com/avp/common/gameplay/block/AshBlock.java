@@ -7,7 +7,7 @@ import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.SnowLayerBlock;
 import net.minecraft.world.level.block.state.BlockState;
 
-import com.avp.common.registry.init.AVPBlocks;
+import com.avp.common.registry.init.block.CoreBlocks;
 import com.avp.common.registry.key.AVPBiomeKeys;
 
 public class AshBlock extends SnowLayerBlock {
@@ -39,7 +39,7 @@ public class AshBlock extends SnowLayerBlock {
                         if (
                             serverLevel.getBlockState(targetPos).isAir() &&
                                 serverLevel.getBlockState(targetPosBelow).isSolidRender(serverLevel, targetPosBelow)
-                                && !serverLevel.getBlockState(targetPosBelow).is(AVPBlocks.ASH_BLOCK.get())
+                                && !serverLevel.getBlockState(targetPosBelow).is(CoreBlocks.ASH_BLOCK.get())
                         ) {
                             serverLevel.setBlockAndUpdate(
                                 targetPos,

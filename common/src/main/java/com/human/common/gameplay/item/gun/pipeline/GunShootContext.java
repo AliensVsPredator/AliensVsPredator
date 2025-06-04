@@ -9,6 +9,7 @@ import com.human.common.gameplay.item.gun.pipeline.step.GunShootStep;
 import com.human.common.gameplay.item.gun.pipeline.step.impl.CheckCooldownStep;
 import com.human.common.gameplay.item.gun.pipeline.step.impl.CheckReloadingStep;
 import com.human.common.gameplay.item.gun.pipeline.step.impl.CheckShootDelayStep;
+import com.human.common.registry.init.HumanDataComponents;
 import com.lib.common.gameplay.util.EnchantmentUtil;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -19,7 +20,6 @@ import net.minecraft.world.item.enchantment.Enchantments;
 
 import java.util.List;
 
-import com.avp.common.registry.init.AVPDataComponents;
 import com.avp.common.util.AVPPredicates;
 import com.avp.common.util.GunLightUtil;
 
@@ -55,7 +55,7 @@ public record GunShootContext(
 
     public GunShootContext(LivingEntity shooter, GunItem gunItem, ItemStack itemStack, int tickProgress) {
         this(
-            itemStack.getOrDefault(AVPDataComponents.AMMUNITION.get(), 0),
+            itemStack.getOrDefault(HumanDataComponents.AMMUNITION.get(), 0),
             gunItem.getGunConfig().getDefaultFireMode(),
             gunItem.getGunConfig(),
             gunItem,
@@ -110,7 +110,10 @@ public record GunShootContext(
 
     private void consumeAmmunition() {
         if (!isShooterImmortal && !hasInfinity) {
-            itemStack.set(AVPDataComponents.AMMUNITION.get(), Math.max(currentAmmunition - fireModeConfig.consumedAmmunitionPerShot(), 0));
+            itemStack.set(
+                HumanDataComponents.AMMUNITION.get(),
+                Math.max(currentAmmunition - fireModeConfig.consumedAmmunitionPerShot(), 0)
+            );
         }
     }
 

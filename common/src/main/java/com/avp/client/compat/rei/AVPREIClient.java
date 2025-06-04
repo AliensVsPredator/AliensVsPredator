@@ -9,8 +9,8 @@ import me.shedaniel.rei.api.client.registry.display.DisplayRegistry;
 import me.shedaniel.rei.api.client.registry.screen.ScreenRegistry;
 import me.shedaniel.rei.api.common.util.EntryStacks;
 
-import com.avp.common.registry.init.AVPBlocks;
 import com.avp.common.registry.init.AVPRecipes;
+import com.avp.common.registry.init.block.AVPBlocks;
 
 public class AVPREIClient implements REIClientPlugin {
 

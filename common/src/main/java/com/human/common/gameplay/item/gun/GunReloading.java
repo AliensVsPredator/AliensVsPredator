@@ -1,6 +1,7 @@
 package com.human.common.gameplay.item.gun;
 
 import com.human.common.gameplay.item.GunItem;
+import com.human.common.registry.init.HumanDataComponents;
 import com.lib.common.gameplay.util.EnchantmentUtil;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.player.Player;
@@ -11,7 +12,6 @@ import net.minecraft.world.level.ItemLike;
 import java.time.Duration;
 import java.util.Objects;
 
-import com.avp.common.registry.init.AVPDataComponents;
 import com.avp.common.registry.init.item.AVPBlockItems;
 import com.avp.common.util.AVPPredicates;
 import com.avp.server.ServerScheduler;
@@ -41,7 +41,7 @@ public class GunReloading {
             return;
         }
 
-        int currentAmmunition = itemStack.getOrDefault(AVPDataComponents.AMMUNITION.get(), 0);
+        int currentAmmunition = itemStack.getOrDefault(HumanDataComponents.AMMUNITION.get(), 0);
 
         if (currentAmmunition >= maximumAmmunition) {
             // Gun is already max ammo, no need to continue trying to reload.
@@ -93,7 +93,7 @@ public class GunReloading {
         }
 
         itemStack.set(
-            AVPDataComponents.AMMUNITION.get(),
+            HumanDataComponents.AMMUNITION.get(),
             Math.min(currentAmmunition + (ammunitionToRestore * reloadAmount), maximumAmmunition)
         );
 

@@ -1,5 +1,6 @@
 package com.predator.common.gameplay.entity.living.yautja;
 
+import com.predator.common.registry.init.item.PredatorArmorItems;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.world.level.storage.loot.LootPool;
 import net.minecraft.world.level.storage.loot.LootTable;
@@ -11,7 +12,6 @@ import net.minecraft.world.level.storage.loot.providers.number.UniformGenerator;
 
 import java.util.function.Function;
 
-import com.avp.common.registry.init.item.AVPArmorItems;
 import com.avp.common.registry.init.item.AVPItems;
 
 public class YautjaLootTable {
@@ -30,19 +30,19 @@ public class YautjaLootTable {
             LootPool.lootPool()
                 .setRolls(ConstantValue.exactly(1))
                 .add(
-                    LootItem.lootTableItem(AVPArmorItems.JUNGLE_PREDATOR_HELMET.get())
+                    LootItem.lootTableItem(PredatorArmorItems.JUNGLE_PREDATOR_HELMET.get())
                         .apply(SetItemCountFunction.setCount(ConstantValue.exactly(1)))
                 )
                 .add(
-                    LootItem.lootTableItem(AVPArmorItems.JUNGLE_PREDATOR_CHESTPLATE.get())
+                    LootItem.lootTableItem(PredatorArmorItems.JUNGLE_PREDATOR_CHESTPLATE.get())
                         .apply(SetItemCountFunction.setCount(ConstantValue.exactly(1)))
                 )
                 .add(
-                    LootItem.lootTableItem(AVPArmorItems.JUNGLE_PREDATOR_LEGGINGS.get())
+                    LootItem.lootTableItem(PredatorArmorItems.JUNGLE_PREDATOR_LEGGINGS.get())
                         .apply(SetItemCountFunction.setCount(ConstantValue.exactly(1)))
                 )
                 .add(
-                    LootItem.lootTableItem(AVPArmorItems.JUNGLE_PREDATOR_BOOTS.get())
+                    LootItem.lootTableItem(PredatorArmorItems.JUNGLE_PREDATOR_BOOTS.get())
                         .apply(SetItemCountFunction.setCount(ConstantValue.exactly(1)))
                 )
                 .add(

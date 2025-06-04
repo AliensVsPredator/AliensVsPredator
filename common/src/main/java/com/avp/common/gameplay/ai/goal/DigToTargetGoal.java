@@ -1,5 +1,6 @@
 package com.avp.common.gameplay.ai.goal;
 
+import com.human.common.registry.init.block.HumanSteelBlocks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
@@ -18,7 +19,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import com.avp.common.registry.init.AVPBlocks;
 import com.avp.common.registry.tag.AVPBlockTags;
 import com.avp.server.BlockBreakProgressManager;
 
@@ -200,7 +200,7 @@ public class DigToTargetGoal extends Goal {
                         state.hasBlockEntity()
                             || state.getDestroySpeed(mob.level(), rayTraceResult.getBlockPos()) == -1
                             // TODO: Make this configurable
-                            || state.getBlock().defaultDestroyTime() >= AVPBlocks.STEEL_BLOCK.get().defaultDestroyTime()
+                            || state.getBlock().defaultDestroyTime() >= HumanSteelBlocks.STEEL_BLOCK.get().defaultDestroyTime()
                             // TODO: Make this configurable
                             || state.is(AVPBlockTags.XENOMORPH_IMMUNE)
                     ) {

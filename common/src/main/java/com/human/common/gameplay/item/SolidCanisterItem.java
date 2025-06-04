@@ -1,5 +1,6 @@
 package com.human.common.gameplay.item;
 
+import com.human.common.registry.init.HumanDataComponents;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
@@ -23,8 +24,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-import com.avp.common.registry.init.AVPDataComponents;
-
 public class SolidCanisterItem extends BlockItem {
 
     private final SoundEvent placeSound;
@@ -43,7 +42,7 @@ public class SolidCanisterItem extends BlockItem {
     ) {
         super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
 
-        int currentContentAmount = stack.getOrDefault(AVPDataComponents.CANISTER_CAPACITY.get(), 0);
+        int currentContentAmount = stack.getOrDefault(HumanDataComponents.CANISTER_CAPACITY.get(), 0);
 
         if (currentContentAmount == 0) {
             return;
@@ -72,7 +71,7 @@ public class SolidCanisterItem extends BlockItem {
         var result = super.useOn(modifiedContext);
 
         if (result.consumesAction() && player.isShiftKeyDown()) {
-            int contentAmount = context.getItemInHand().getOrDefault(AVPDataComponents.CANISTER_CAPACITY.get(), 0);
+            int contentAmount = context.getItemInHand().getOrDefault(HumanDataComponents.CANISTER_CAPACITY.get(), 0);
 
             if (contentAmount > 1 && !player.isCreative()) {
                 CanisterItem.updateCapacity(context.getItemInHand(), -1);
@@ -115,7 +114,7 @@ public class SolidCanisterItem extends BlockItem {
     ) {
         var bucketPickup = (BucketPickup) hitState.getBlock();
 
-        if (canisterStack.getOrDefault(AVPDataComponents.CANISTER_CAPACITY.get(), 0) >= CanisterItem.MAX_CAPACITY) {
+        if (canisterStack.getOrDefault(HumanDataComponents.CANISTER_CAPACITY.get(), 0) >= CanisterItem.MAX_CAPACITY) {
             return InteractionResult.FAIL;
         }
 

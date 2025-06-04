@@ -1,7 +1,7 @@
 package com.avp.fabric.data.recipe.impl;
 
-import com.alien.common.registry.init.AlienArmorItems;
 import com.alien.common.registry.init.AlienItems;
+import com.alien.common.registry.init.item.AlienArmorItems;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.Item;

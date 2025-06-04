@@ -22,7 +22,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayDeque;
 import java.util.HashSet;
 
-import com.avp.common.registry.init.entity_type.AVPEntityTypes;
+import com.avp.common.registry.init.entity_type.HumanEntityTypes;
 import com.avp.common.registry.key.AVPDamageTypeKeys;
 
 public class Flamethrow extends ThrowableProjectile {
@@ -39,7 +39,7 @@ public class Flamethrow extends ThrowableProjectile {
     }
 
     public Flamethrow(Level level, LivingEntity livingEntity) {
-        super(AVPEntityTypes.FLAMETHROW.get(), livingEntity, level);
+        super(HumanEntityTypes.FLAMETHROW.get(), livingEntity, level);
     }
 
     @Override
