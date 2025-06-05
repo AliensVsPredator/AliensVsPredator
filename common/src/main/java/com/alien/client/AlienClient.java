@@ -21,6 +21,7 @@ import com.alien.client.render.entity.WarriorRenderer;
 import com.alien.client.render.entity.parasite.facehugger.FacehuggerRenderer;
 import com.alien.common.registry.init.AlienBlocks;
 import com.alien.common.registry.init.AlienEntityTypes;
+import com.alien.common.registry.init.block.AlienResinBlocks;
 import com.alien.common.registry.init.item.AlienArmorItems;
 import net.minecraft.client.renderer.RenderType;
 
@@ -114,14 +115,14 @@ public class AlienClient {
     }
 
     private static void registerBlockRenderLayers() {
-        Services.CLIENT_REGISTRY.registerBlockRenderLayer(AlienBlocks.IRRADIATED_RESIN_VEIN, RenderType.cutout());
-        Services.CLIENT_REGISTRY.registerBlockRenderLayer(AlienBlocks.IRRADIATED_RESIN_WEB, RenderType.cutout());
-        Services.CLIENT_REGISTRY.registerBlockRenderLayer(AlienBlocks.ABERRANT_RESIN_VEIN, RenderType.cutout());
-        Services.CLIENT_REGISTRY.registerBlockRenderLayer(AlienBlocks.ABERRANT_RESIN_WEB, RenderType.cutout());
-        Services.CLIENT_REGISTRY.registerBlockRenderLayer(AlienBlocks.NETHER_RESIN_VEIN, RenderType.cutout());
-        Services.CLIENT_REGISTRY.registerBlockRenderLayer(AlienBlocks.NETHER_RESIN_WEB, RenderType.cutout());
-        Services.CLIENT_REGISTRY.registerBlockRenderLayer(AlienBlocks.RESIN_VEIN, RenderType.cutout());
-        Services.CLIENT_REGISTRY.registerBlockRenderLayer(AlienBlocks.RESIN_WEB, RenderType.cutout());
+        Services.CLIENT_REGISTRY.registerBlockRenderLayer(AlienResinBlocks.IRRADIATED_RESIN_VEIN, RenderType.cutout());
+        Services.CLIENT_REGISTRY.registerBlockRenderLayer(AlienResinBlocks.IRRADIATED_RESIN_WEB, RenderType.cutout());
+        Services.CLIENT_REGISTRY.registerBlockRenderLayer(AlienResinBlocks.ABERRANT_RESIN_VEIN, RenderType.cutout());
+        Services.CLIENT_REGISTRY.registerBlockRenderLayer(AlienResinBlocks.ABERRANT_RESIN_WEB, RenderType.cutout());
+        Services.CLIENT_REGISTRY.registerBlockRenderLayer(AlienResinBlocks.NETHER_RESIN_VEIN, RenderType.cutout());
+        Services.CLIENT_REGISTRY.registerBlockRenderLayer(AlienResinBlocks.NETHER_RESIN_WEB, RenderType.cutout());
+        Services.CLIENT_REGISTRY.registerBlockRenderLayer(AlienResinBlocks.RESIN_VEIN, RenderType.cutout());
+        Services.CLIENT_REGISTRY.registerBlockRenderLayer(AlienResinBlocks.RESIN_WEB, RenderType.cutout());
         Services.CLIENT_REGISTRY.registerBlockRenderLayer(AlienBlocks.ROYAL_JELLY_BLOCK, RenderType.translucent());
     }
 

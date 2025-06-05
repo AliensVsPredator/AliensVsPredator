@@ -1,6 +1,7 @@
 package com.avp.fabric.data.model;
 
 import com.alien.common.registry.init.AlienBlocks;
+import com.alien.common.registry.init.block.AlienResinBlocks;
 import com.human.common.registry.init.block.HumanFerroaluminumBlocks;
 import com.human.common.registry.init.block.HumanIndustrialConcreteBlocks;
 import com.human.common.registry.init.block.HumanIndustrialGlassBlocks;
@@ -89,33 +90,33 @@ public class BlockModelProvider extends FabricModelProvider {
             )
         );
 
-        generators.createRotatedVariantBlock(AlienBlocks.IRRADIATED_RESIN.get());
-        createSlab(generators, AlienBlocks.IRRADIATED_RESIN.get(), AlienBlocks.IRRADIATED_RESIN_SLAB.get());
-        createStairs(generators, AlienBlocks.IRRADIATED_RESIN.get(), AlienBlocks.IRRADIATED_RESIN_STAIRS.get());
-        generators.createRotatedVariantBlock(AlienBlocks.IRRADIATED_RESIN_NODE.get());
-        MultiFaceGenerator.generate(generators, AlienBlocks.IRRADIATED_RESIN_VEIN.get());
-        generators.createCrossBlock(AlienBlocks.IRRADIATED_RESIN_WEB.get(), BlockModelGenerators.TintState.NOT_TINTED);
+        generators.createRotatedVariantBlock(AlienResinBlocks.IRRADIATED_RESIN.get());
+        createSlab(generators, AlienResinBlocks.IRRADIATED_RESIN.get(), AlienResinBlocks.IRRADIATED_RESIN_SLAB.get());
+        createStairs(generators, AlienResinBlocks.IRRADIATED_RESIN.get(), AlienResinBlocks.IRRADIATED_RESIN_STAIRS.get());
+        generators.createRotatedVariantBlock(AlienResinBlocks.IRRADIATED_RESIN_NODE.get());
+        MultiFaceGenerator.generate(generators, AlienResinBlocks.IRRADIATED_RESIN_VEIN.get());
+        generators.createCrossBlock(AlienResinBlocks.IRRADIATED_RESIN_WEB.get(), BlockModelGenerators.TintState.NOT_TINTED);
 
-        generators.createRotatedVariantBlock(AlienBlocks.ABERRANT_RESIN.get());
-        createSlab(generators, AlienBlocks.ABERRANT_RESIN.get(), AlienBlocks.ABERRANT_RESIN_SLAB.get());
-        createStairs(generators, AlienBlocks.ABERRANT_RESIN.get(), AlienBlocks.ABERRANT_RESIN_STAIRS.get());
-        generators.createRotatedVariantBlock(AlienBlocks.ABERRANT_RESIN_NODE.get());
-        MultiFaceGenerator.generate(generators, AlienBlocks.ABERRANT_RESIN_VEIN.get());
-        generators.createCrossBlock(AlienBlocks.ABERRANT_RESIN_WEB.get(), BlockModelGenerators.TintState.NOT_TINTED);
+        generators.createRotatedVariantBlock(AlienResinBlocks.ABERRANT_RESIN.get());
+        createSlab(generators, AlienResinBlocks.ABERRANT_RESIN.get(), AlienResinBlocks.ABERRANT_RESIN_SLAB.get());
+        createStairs(generators, AlienResinBlocks.ABERRANT_RESIN.get(), AlienResinBlocks.ABERRANT_RESIN_STAIRS.get());
+        generators.createRotatedVariantBlock(AlienResinBlocks.ABERRANT_RESIN_NODE.get());
+        MultiFaceGenerator.generate(generators, AlienResinBlocks.ABERRANT_RESIN_VEIN.get());
+        generators.createCrossBlock(AlienResinBlocks.ABERRANT_RESIN_WEB.get(), BlockModelGenerators.TintState.NOT_TINTED);
 
-        generators.createRotatedVariantBlock(AlienBlocks.NETHER_RESIN.get());
-        createSlab(generators, AlienBlocks.NETHER_RESIN.get(), AlienBlocks.NETHER_RESIN_SLAB.get());
-        createStairs(generators, AlienBlocks.NETHER_RESIN.get(), AlienBlocks.NETHER_RESIN_STAIRS.get());
-        generators.createRotatedVariantBlock(AlienBlocks.NETHER_RESIN_NODE.get());
-        MultiFaceGenerator.generate(generators, AlienBlocks.NETHER_RESIN_VEIN.get());
-        generators.createCrossBlock(AlienBlocks.NETHER_RESIN_WEB.get(), BlockModelGenerators.TintState.NOT_TINTED);
+        generators.createRotatedVariantBlock(AlienResinBlocks.NETHER_RESIN.get());
+        createSlab(generators, AlienResinBlocks.NETHER_RESIN.get(), AlienResinBlocks.NETHER_RESIN_SLAB.get());
+        createStairs(generators, AlienResinBlocks.NETHER_RESIN.get(), AlienResinBlocks.NETHER_RESIN_STAIRS.get());
+        generators.createRotatedVariantBlock(AlienResinBlocks.NETHER_RESIN_NODE.get());
+        MultiFaceGenerator.generate(generators, AlienResinBlocks.NETHER_RESIN_VEIN.get());
+        generators.createCrossBlock(AlienResinBlocks.NETHER_RESIN_WEB.get(), BlockModelGenerators.TintState.NOT_TINTED);
 
-        generators.createRotatedVariantBlock(AlienBlocks.RESIN.get());
-        createSlab(generators, AlienBlocks.RESIN.get(), AlienBlocks.RESIN_SLAB.get());
-        createStairs(generators, AlienBlocks.RESIN.get(), AlienBlocks.RESIN_STAIRS.get());
-        generators.createRotatedVariantBlock(AlienBlocks.RESIN_NODE.get());
-        MultiFaceGenerator.generate(generators, AlienBlocks.RESIN_VEIN.get());
-        generators.createCrossBlock(AlienBlocks.RESIN_WEB.get(), BlockModelGenerators.TintState.NOT_TINTED);
+        generators.createRotatedVariantBlock(AlienResinBlocks.RESIN.get());
+        createSlab(generators, AlienResinBlocks.RESIN.get(), AlienResinBlocks.RESIN_SLAB.get());
+        createStairs(generators, AlienResinBlocks.RESIN.get(), AlienResinBlocks.RESIN_STAIRS.get());
+        generators.createRotatedVariantBlock(AlienResinBlocks.RESIN_NODE.get());
+        MultiFaceGenerator.generate(generators, AlienResinBlocks.RESIN_VEIN.get());
+        generators.createCrossBlock(AlienResinBlocks.RESIN_WEB.get(), BlockModelGenerators.TintState.NOT_TINTED);
 
         HumanPaddingBlocks.DYE_COLOR_TO_PADDING.forEach(
             (dyeColor, blockSupplier) -> {
@@ -187,10 +188,12 @@ public class BlockModelProvider extends FabricModelProvider {
         generators.createTrivialCube(HumanFerroaluminumBlocks.CHISELED_FERROALUMINUM.get());
         generators.createTrivialCube(HumanSteelBlocks.CHISELED_STEEL.get());
         generators.createTrivialCube(HumanTitaniumBlocks.CHISELED_TITANIUM.get());
-        generators.createTrivialCube(AlienBlocks.RESIN_BRICKS.get());
-        generators.createTrivialCube(AlienBlocks.RESIN_O.get());
-        generators.createTrivialCube(AlienBlocks.RESIN_RIBBED.get());
-        generators.createTrivialCube(AlienBlocks.RESIN_SMOOTH.get());
+        generators.createTrivialCube(AlienResinBlocks.RESIN_BRICKS.get());
+        createSlab(generators, AlienResinBlocks.RESIN_BRICKS.get(), AlienResinBlocks.RESIN_BRICK_SLAB.get());
+        createStairs(generators, AlienResinBlocks.RESIN_BRICKS.get(), AlienResinBlocks.RESIN_BRICK_STAIRS.get());
+        generators.createTrivialCube(AlienResinBlocks.RESIN_VENT.get());
+        generators.createTrivialCube(AlienResinBlocks.RIBBED_RESIN.get());
+        generators.createTrivialCube(AlienResinBlocks.SMOOTH_RESIN.get());
 
         generators.family(HumanFerroaluminumBlocks.CUT_FERROALUMINUM.get())
             .slab(HumanFerroaluminumBlocks.CUT_FERROALUMINUM_SLAB.get())

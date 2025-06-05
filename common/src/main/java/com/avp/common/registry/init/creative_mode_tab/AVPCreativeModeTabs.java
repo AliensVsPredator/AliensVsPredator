@@ -1,7 +1,7 @@
 package com.avp.common.registry.init.creative_mode_tab;
 
-import com.alien.common.registry.init.AlienBlocks;
 import com.alien.common.registry.init.AlienItems;
+import com.alien.common.registry.init.block.AlienResinBlocks;
 import com.alien.common.registry.init.item.AlienArmorItems;
 import com.alien.common.registry.init.item.AlienSpawnEggItems;
 import com.human.common.registry.init.block.HumanPlasticBlocks;
@@ -33,7 +33,7 @@ public class AVPCreativeModeTabs {
 
     public static final AVPDeferredHolder<CreativeModeTab> BLOCKS = register(
         AVPCreativeModeTabKeys.BLOCKS_KEY,
-        () -> new ItemStack(AlienBlocks.RESIN.get()),
+        () -> new ItemStack(AlienResinBlocks.RESIN.get()),
         BlocksCreativeModeTabInitializer.OUTPUT_CONSUMER
     );
 

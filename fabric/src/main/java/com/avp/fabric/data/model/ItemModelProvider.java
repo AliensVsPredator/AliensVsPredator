@@ -1,7 +1,7 @@
 package com.avp.fabric.data.model;
 
-import com.alien.common.registry.init.AlienBlocks;
 import com.alien.common.registry.init.AlienItems;
+import com.alien.common.registry.init.block.AlienResinBlocks;
 import com.alien.common.registry.init.item.AlienArmorItems;
 import com.human.common.registry.init.item.HumanFerroaluminumBlockItems;
 import com.human.common.registry.init.item.HumanSteelBlockItems;
@@ -30,9 +30,9 @@ public class ItemModelProvider extends FabricModelProvider {
 
     @Override
     public void generateBlockStateModels(BlockModelGenerators generators) {
-        generators.createSimpleFlatItemModel(AlienBlocks.NETHER_RESIN_WEB.get());
+        generators.createSimpleFlatItemModel(AlienResinBlocks.NETHER_RESIN_WEB.get());
         generators.createSimpleFlatItemModel(AVPBlocks.RAZOR_WIRE.get());
-        generators.createSimpleFlatItemModel(AlienBlocks.RESIN_WEB.get());
+        generators.createSimpleFlatItemModel(AlienResinBlocks.RESIN_WEB.get());
     }
 
     @Override

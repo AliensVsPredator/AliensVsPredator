@@ -8,6 +8,8 @@ import com.alien.common.registry.init.AlienGameEvents;
 import com.alien.common.registry.init.AlienInfections;
 import com.alien.common.registry.init.AlienItems;
 import com.alien.common.registry.init.AlienLifecycles;
+import com.alien.common.registry.init.block.AlienChitinBlocks;
+import com.alien.common.registry.init.block.AlienResinBlocks;
 import com.alien.common.registry.init.item.AlienArmorItems;
 import com.alien.common.registry.init.item.AlienBlockItems;
 import com.alien.common.registry.init.item.AlienSpawnEggItems;
@@ -22,7 +24,12 @@ public class Alien {
     public static final Logger LOGGER = LoggerFactory.getLogger(AVP.MOD_ID);
 
     public static void initialize() {
+        // Blocks
         AlienBlocks.initialize();
+        AlienChitinBlocks.initialize();
+        AlienResinBlocks.initialize();
+
+        // Items
         AlienItems.initialize();
         AlienArmorMaterials.initialize();
         AlienArmorItems.initialize();

@@ -1,8 +1,8 @@
 package com.avp.fabric.data.advancement;
 
-import com.alien.common.registry.init.AlienBlocks;
 import com.alien.common.registry.init.AlienEntityTypes;
 import com.alien.common.registry.init.AlienItems;
+import com.alien.common.registry.init.block.AlienResinBlocks;
 import com.alien.common.registry.init.item.AlienArmorItems;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricAdvancementProvider;
@@ -91,7 +91,7 @@ public class AdvancementProvider extends FabricAdvancementProvider {
     public void generateAdvancement(HolderLookup.Provider registryLookup, Consumer<AdvancementHolder> consumer) {
         var root = Advancement.Builder.advancement()
             .display(
-                AlienBlocks.RESIN.get(),
+                AlienResinBlocks.RESIN.get(),
                 Component.translatable("advancements.aliens.root.title"),
                 Component.translatable("advancements.aliens.root.description"),
                 AVPResources.location("textures/gui/advancements/backgrounds/resin.png"),

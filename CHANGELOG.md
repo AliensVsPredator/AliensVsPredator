@@ -1,7 +1,10 @@
 # v0.1.9
 
 ## ☢️ Breaking Changes
-- N/A
+- Some (previously uncraftable) resin blocks have had their registry names changed:
+  - `resin_ribbed` -> `ribbed_resin`
+  - `resin_o` -> `resin_vent`
+  - `resin_smooth` -> `smooth_resin`
 
 ## ✨ What's New
 - [Fabric] Now requires Fabric API `0.116.0+1.21.1`.
@@ -15,6 +18,8 @@
   - Irradiated Resin Stairs
   - Nether Resin Slab
   - Nether Resin Stairs
+  - Resin Brick Slab
+  - Resin Brick Stairs
   - Resin Slab
   - Resin Stairs
 - Added keybind to allow players to crawl on demand.

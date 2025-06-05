@@ -16,8 +16,6 @@ public class AVPBlockTags {
 
     public static final TagKey<Block> CONCRETE = create("concrete");
 
-    public static final TagKey<Block> CRAFTED_RESIN = create("crafted_resin");
-
     public static final TagKey<Block> FERROALUMINUM = create("ferroaluminum");
 
     public static final TagKey<Block> INDUSTRIAL_CONCRETE = create("industrial_concrete");

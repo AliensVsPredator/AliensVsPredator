@@ -4,9 +4,9 @@ import com.alien.common.gameplay.entity.acid.Acid;
 import com.alien.common.gameplay.entity.living.alien.Alien;
 import com.alien.common.model.alien.variant.AlienVariant;
 import com.alien.common.model.alien.variant.AlienVariantType;
-import com.alien.common.registry.init.AlienBlocks;
 import com.alien.common.registry.init.AlienGameEvents;
 import com.alien.common.registry.init.AlienItems;
+import com.alien.common.registry.init.block.AlienResinBlocks;
 import com.bvanseg.just.functional.option.Option;
 import net.minecraft.Util;
 import net.minecraft.world.entity.Entity;
@@ -29,10 +29,10 @@ public class AlienVariantTypes {
     public static final AlienVariantType ABERRANT = new AlienVariantType(
         AlienVariant.ABERRANT,
 
-        AlienBlocks.ABERRANT_RESIN,
-        AlienBlocks.ABERRANT_RESIN_NODE,
-        AlienBlocks.ABERRANT_RESIN_VEIN,
-        AlienBlocks.ABERRANT_RESIN_WEB,
+        AlienResinBlocks.ABERRANT_RESIN,
+        AlienResinBlocks.ABERRANT_RESIN_NODE,
+        AlienResinBlocks.ABERRANT_RESIN_VEIN,
+        AlienResinBlocks.ABERRANT_RESIN_WEB,
 
         AVPBlockTags.ABERRANT_RESIN,
         AVPBlockTags.ABERRANT_RESIN_REPLACEABLE,
@@ -49,10 +49,10 @@ public class AlienVariantTypes {
     public static final AlienVariantType IRRADIATED = new AlienVariantType(
         AlienVariant.IRRADIATED,
 
-        AlienBlocks.IRRADIATED_RESIN,
-        AlienBlocks.IRRADIATED_RESIN_NODE,
-        AlienBlocks.IRRADIATED_RESIN_VEIN,
-        AlienBlocks.IRRADIATED_RESIN_WEB,
+        AlienResinBlocks.IRRADIATED_RESIN,
+        AlienResinBlocks.IRRADIATED_RESIN_NODE,
+        AlienResinBlocks.IRRADIATED_RESIN_VEIN,
+        AlienResinBlocks.IRRADIATED_RESIN_WEB,
 
         AVPBlockTags.IRRADIATED_RESIN,
         AVPBlockTags.IRRADIATED_RESIN_REPLACEABLE,
@@ -69,10 +69,10 @@ public class AlienVariantTypes {
     public static final AlienVariantType NETHER = new AlienVariantType(
         AlienVariant.NETHER,
 
-        AlienBlocks.NETHER_RESIN,
-        AlienBlocks.NETHER_RESIN_NODE,
-        AlienBlocks.NETHER_RESIN_VEIN,
-        AlienBlocks.NETHER_RESIN_WEB,
+        AlienResinBlocks.NETHER_RESIN,
+        AlienResinBlocks.NETHER_RESIN_NODE,
+        AlienResinBlocks.NETHER_RESIN_VEIN,
+        AlienResinBlocks.NETHER_RESIN_WEB,
 
         AVPBlockTags.NETHER_RESIN,
         AVPBlockTags.NETHER_RESIN_REPLACEABLE,
@@ -89,10 +89,10 @@ public class AlienVariantTypes {
     public static final AlienVariantType NORMAL = new AlienVariantType(
         AlienVariant.NORMAL,
 
-        AlienBlocks.RESIN,
-        AlienBlocks.RESIN_NODE,
-        AlienBlocks.RESIN_VEIN,
-        AlienBlocks.RESIN_WEB,
+        AlienResinBlocks.RESIN,
+        AlienResinBlocks.RESIN_NODE,
+        AlienResinBlocks.RESIN_VEIN,
+        AlienResinBlocks.RESIN_WEB,
 
         AVPBlockTags.NORMAL_RESIN,
         AVPBlockTags.NORMAL_RESIN_REPLACEABLE,

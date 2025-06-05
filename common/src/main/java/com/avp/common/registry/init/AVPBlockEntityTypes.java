@@ -1,7 +1,7 @@
 package com.avp.common.registry.init;
 
 import com.alien.common.gameplay.block.entity.resin.node.ResinNodeBlockEntity;
-import com.alien.common.registry.init.AlienBlocks;
+import com.alien.common.registry.init.block.AlienResinBlocks;
 import com.human.common.gameplay.block.entity.AmmoChestBlockEntity;
 import com.human.common.gameplay.block.entity.DeskTerminalBlockEntity;
 import com.human.common.gameplay.block.entity.IndustrialFurnaceBlockEntity;
@@ -25,10 +25,10 @@ public class AVPBlockEntityTypes {
         "resin_node",
         () -> BlockEntityType.Builder.of(
             ResinNodeBlockEntity::new,
-            AlienBlocks.IRRADIATED_RESIN_NODE.get(),
-            AlienBlocks.ABERRANT_RESIN_NODE.get(),
-            AlienBlocks.NETHER_RESIN_NODE.get(),
-            AlienBlocks.RESIN_NODE.get()
+            AlienResinBlocks.IRRADIATED_RESIN_NODE.get(),
+            AlienResinBlocks.ABERRANT_RESIN_NODE.get(),
+            AlienResinBlocks.NETHER_RESIN_NODE.get(),
+            AlienResinBlocks.RESIN_NODE.get()
         )
     );
 
