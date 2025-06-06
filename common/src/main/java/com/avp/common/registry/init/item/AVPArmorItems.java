@@ -3,7 +3,6 @@ package com.avp.common.registry.init.item;
 import com.human.common.gameplay.item.MK50ArmorItem;
 import com.human.common.gameplay.item.PressureSuitArmorItem;
 import net.minecraft.core.Holder;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ArmorMaterial;
 import net.minecraft.world.item.Item;
@@ -12,7 +11,6 @@ import java.util.function.Supplier;
 
 import com.avp.common.registry.AVPDeferredHolder;
 import com.avp.common.registry.init.AVPArmorMaterials;
-import com.avp.service.Services;
 
 public class AVPArmorItems {
 
@@ -185,7 +183,7 @@ public class AVPArmorItems {
     }
 
     public static AVPDeferredHolder<Item> register(String id, Supplier<Item> itemSupplier) {
-        return Services.REGISTRY.register(BuiltInRegistries.ITEM, id, itemSupplier);
+        return AVPItems.register(id, itemSupplier);
     }
 
     public static Item createArmorItem(

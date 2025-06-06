@@ -361,7 +361,7 @@ public class AVPItems {
         return register(name, () -> new Item(properties));
     }
 
-    public static AVPDeferredHolder<Item> register(String name, Supplier<Item> itemSupplier) {
+    public static <T extends Item> AVPDeferredHolder<T> register(String name, Supplier<T> itemSupplier) {
         var holder = Services.REGISTRY.register(BuiltInRegistries.ITEM, name, itemSupplier);
         HOLDERS.add(holder);
         return holder;

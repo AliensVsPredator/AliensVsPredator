@@ -4,7 +4,6 @@ import com.alien.common.gameplay.item.RoyalJellyBlockItem;
 import com.human.common.gameplay.block_item.AmmoChestBlockItem;
 import com.human.common.gameplay.block_item.LeadChestBlockItem;
 import com.human.common.gameplay.block_item.SentryTurretBlockItem;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
@@ -141,7 +140,7 @@ public class AVPBlockItems {
     }
 
     public static AVPDeferredHolder<BlockItem> registerWithSupplier(String id, Supplier<BlockItem> blockItemSupplier) {
-        return Services.REGISTRY.register(BuiltInRegistries.ITEM, id, blockItemSupplier);
+        return AVPItems.register(id, blockItemSupplier);
     }
 
     public static void initialize() {
