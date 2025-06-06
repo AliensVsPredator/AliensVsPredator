@@ -22,6 +22,9 @@ import net.minecraft.world.item.SwordItem;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.material.Fluids;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.function.Supplier;
 
 import com.avp.common.registry.AVPDeferredHolder;
@@ -30,6 +33,12 @@ import com.avp.common.registry.key.AVPJukeboxSongKeys;
 import com.avp.service.Services;
 
 public class AVPItems {
+
+    private static final List<AVPDeferredHolder<? extends Item>> HOLDERS = new ArrayList<>();
+
+    public static List<AVPDeferredHolder<? extends Item>> getAll() {
+        return Collections.unmodifiableList(HOLDERS);
+    }
 
     public static final AVPDeferredHolder<Item> ALUMINUM_INGOT = register("aluminum_ingot");
 
@@ -353,7 +362,9 @@ public class AVPItems {
     }
 
     public static AVPDeferredHolder<Item> register(String name, Supplier<Item> itemSupplier) {
-        return Services.REGISTRY.register(BuiltInRegistries.ITEM, name, itemSupplier);
+        var holder = Services.REGISTRY.register(BuiltInRegistries.ITEM, name, itemSupplier);
+        HOLDERS.add(holder);
+        return holder;
     }
 
     public static void initialize() {
