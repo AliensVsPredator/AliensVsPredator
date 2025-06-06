@@ -30,12 +30,12 @@ public class YautjaPredicates {
 
         if (potentialTarget instanceof Player player) {
             return !AVPPredicates.IS_IMMORTAL.test(player)
-                && (player.getMainHandItem().is(AVPItemTags.HOSTILE_WEAPON)
+                && (player.getMainHandItem().is(AVPItemTags.HOSTILE_WEAPONS)
                     || (yautja.getLastAttacker() != null && yautja.getLastAttacker().is(player)));
         }
 
         if (potentialTarget instanceof Mob || potentialTarget instanceof Monster) {
-            return potentialTarget.getMainHandItem().is(AVPItemTags.HOSTILE_WEAPON)
+            return potentialTarget.getMainHandItem().is(AVPItemTags.HOSTILE_WEAPONS)
                 || (yautja.getLastAttacker() != null && yautja.getLastAttacker().is(potentialTarget));
         }
 

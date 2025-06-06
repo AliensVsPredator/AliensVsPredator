@@ -25,7 +25,7 @@ public class MixinItem_GiveRads {
             // Only want to run this logic server-side.
             level.isClientSide()
                 // Only run this logic for radiation-emitting items.
-                || !stack.is(AVPItemTags.RADIATION_ITEMS)
+                || !stack.is(AVPItemTags.RADIOACTIVE_ITEMS)
                 // Only run this logic if the entity can be irradiated.
                 || !AVPPredicates.canBeIrradiated(entity)
                 // Sanity check + allow compiler to assert entity type to get livingEntity ref access.

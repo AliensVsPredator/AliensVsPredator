@@ -57,7 +57,20 @@
   - Titanium Tread Stairs
 
 ## 🛠 Data Pack
-- N/A
+- Renamed `#avp:facehugger_protection_helmet` item tag to `#avp:facehugger_resistant_helmets`.
+- Renamed `#avp:fire_resistant_armor` item tag to `#avp:fire_resistant_armors`.
+- Renamed `#avp:hostile_weapon` item tag to `#avp:hostile_weapons`.
+- Renamed `#avp:radiation_items` item tag to `#avp:radioactive_items`.
+- Renamed `#avp:radiation_resistant_armor` item tag to `#avp:radiation_resistant_armors`.
+- Renamed `#avp:predator_armor` item tag to `#avp:predator_armors`.
+- Added `#avp:aberrant_chitin_armor` item tag.
+- Added `#avp:irradiated_chitin_armor` item tag.
+- Added `#avp:normal_chitin_armor` item tag.
+- Added `#avp:plated_aberrant_chitin_armor` item tag.
+- Added `#avp:plated_irradiated_chitin_armor` item tag.
+- Added `#avp:plated_normal_chitin_armor` item tag.
+- Added `#avp:chitin_armors` item tag.
+- Added `#avp:plated_chitin_armors` item tag.
 
 ## 🔬 Technical Changes
 - N/A

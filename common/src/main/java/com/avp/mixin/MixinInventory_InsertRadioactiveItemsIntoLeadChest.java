@@ -35,7 +35,7 @@ public class MixinInventory_InsertRadioactiveItemsIntoLeadChest {
 
     @Inject(method = "add(ILnet/minecraft/world/item/ItemStack;)Z", at = @At("HEAD"), cancellable = true)
     private void onAddItem(int slot, ItemStack stack, CallbackInfoReturnable<Boolean> cir) {
-        if (!stack.is(AVPItemTags.RADIATION_ITEMS)) {
+        if (!stack.is(AVPItemTags.RADIOACTIVE_ITEMS)) {
             return;
         }
 
@@ -52,7 +52,7 @@ public class MixinInventory_InsertRadioactiveItemsIntoLeadChest {
 
     @Inject(method = "setItem", at = @At("HEAD"), cancellable = true)
     private void onSetItem(int slot, ItemStack stack, CallbackInfo ci) {
-        if (!stack.is(AVPItemTags.RADIATION_ITEMS))
+        if (!stack.is(AVPItemTags.RADIOACTIVE_ITEMS))
             return;
 
         for (ItemStack inventoryItemStack : items) {

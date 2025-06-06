@@ -44,7 +44,7 @@ public class AVPPredicates {
 
         var hasFullRadiationResistantArmor = hasFullArmorSetMatching(
             livingEntity,
-            itemStack -> itemStack.is(AVPItemTags.RADIATION_RESISTANT_ARMOR)
+            itemStack -> itemStack.is(AVPItemTags.RADIATION_RESISTANT_ARMORS)
         );
 
         // Entity should not have a full set of radiation-resistant armor.
@@ -102,7 +102,7 @@ public class AVPPredicates {
 
     public static final Predicate<LivingEntity> HAS_FACE_MASK = livingEntity -> livingEntity.getItemBySlot(
         EquipmentSlot.HEAD
-    ).is(AVPItemTags.FACEHUGGER_PROTECTION_HELMET);
+    ).is(AVPItemTags.FACEHUGGER_RESISTANT_HELMETS);
 
     public static final Predicate<LivingEntity> HAS_MASK = livingEntity -> livingEntity instanceof Yautja yautja && yautja.yautjaMaskManager
         .hasMask();
