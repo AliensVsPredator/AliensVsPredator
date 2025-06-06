@@ -3,26 +3,32 @@ package com.avp.fabric.data.tag;
 import com.alien.common.registry.init.AlienItems;
 import com.alien.common.registry.init.item.AlienArmorItems;
 import com.alien.common.registry.init.item.AlienBlockItems;
+import com.human.common.gameplay.item.GunItem;
 import com.human.common.registry.init.item.HumanFerroaluminumBlockItems;
-import com.human.common.registry.init.item.HumanGunItems;
-import com.human.common.registry.init.item.HumanIndustrialConcreteBlockItems;
 import com.human.common.registry.init.item.HumanIndustrialGlassBlockItems;
-import com.human.common.registry.init.item.HumanPaddingBlockItems;
-import com.human.common.registry.init.item.HumanPlasticBlockItems;
 import com.human.common.registry.init.item.HumanSteelBlockItems;
-import com.human.common.registry.init.item.HumanTitaniumBlockItems;
 import com.predator.common.registry.init.item.PredatorArmorItems;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.tags.ItemTags;
+import net.minecraft.world.item.ArmorItem;
+import net.minecraft.world.item.AxeItem;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.HoeItem;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.PickaxeItem;
+import net.minecraft.world.item.ShovelItem;
+import net.minecraft.world.item.SwordItem;
+import net.minecraft.world.level.block.ButtonBlock;
+import net.minecraft.world.level.block.DoorBlock;
+import net.minecraft.world.level.block.FenceBlock;
+import net.minecraft.world.level.block.SlabBlock;
+import net.minecraft.world.level.block.StairBlock;
+import net.minecraft.world.level.block.TrapDoorBlock;
+import net.minecraft.world.level.block.WallBlock;
 
-import java.util.Collection;
-import java.util.Map;
 import java.util.concurrent.CompletableFuture;
-import java.util.function.Supplier;
-import java.util.stream.Stream;
 
 import com.avp.common.registry.init.block.CoreBlocks;
 import com.avp.common.registry.init.item.AVPArmorItems;
@@ -261,124 +267,100 @@ public class AVPItemTagProvider extends FabricTagProvider.ItemTagProvider {
                 AVPItems.LITHIUM_DUST.get()
             );
 
-        getOrCreateTagBuilder(ItemTags.AXES)
-            .add(
-                AVPItems.STEEL_AXE.get(),
-                AVPItems.TITANIUM_AXE.get(),
-                AVPItems.VERITANIUM_AXE.get()
-            );
-        getOrCreateTagBuilder(ItemTags.HOES)
-            .add(
-                AVPItems.STEEL_HOE.get(),
-                AVPItems.TITANIUM_HOE.get(),
-                AVPItems.VERITANIUM_HOE.get()
-            );
-        getOrCreateTagBuilder(ItemTags.PICKAXES)
-            .add(
-                AVPItems.STEEL_PICKAXE.get(),
-                AVPItems.TITANIUM_PICKAXE.get(),
-                AVPItems.VERITANIUM_PICKAXE.get()
-            );
-        getOrCreateTagBuilder(ItemTags.SHOVELS)
-            .add(
-                AVPItems.STEEL_SHOVEL.get(),
-                AVPItems.TITANIUM_SHOVEL.get(),
-                AVPItems.VERITANIUM_SHOVEL.get()
-            );
-        getOrCreateTagBuilder(ItemTags.SWORDS)
-            .add(
-                AVPItems.STEEL_SWORD.get(),
-                AVPItems.TITANIUM_SWORD.get(),
-                AVPItems.VERITANIUM_SWORD.get()
-            );
+        // Armor
+        var headArmorTagProvider = getOrCreateTagBuilder(ItemTags.HEAD_ARMOR);
+        var chestArmorTagProvider = getOrCreateTagBuilder(ItemTags.CHEST_ARMOR);
+        var legArmorTagProvider = getOrCreateTagBuilder(ItemTags.LEG_ARMOR);
+        var footArmorTagProvider = getOrCreateTagBuilder(ItemTags.FOOT_ARMOR);
 
-        getOrCreateTagBuilder(ItemTags.HEAD_ARMOR)
-            .add(
-                AlienArmorItems.ABERRANT_CHITIN_HELMET.get(),
-                AlienArmorItems.CHITIN_HELMET.get(),
-                AlienArmorItems.IRRADIATED_CHITIN_HELMET.get(),
-                PredatorArmorItems.JUNGLE_PREDATOR_HELMET.get(),
-                AlienArmorItems.NETHER_CHITIN_HELMET.get(),
-                AVPArmorItems.MK50_HELMET.get(),
-                AlienArmorItems.PLATED_ABERRANT_CHITIN_HELMET.get(),
-                AlienArmorItems.PLATED_CHITIN_HELMET.get(),
-                AlienArmorItems.PLATED_IRRADIATED_CHITIN_HELMET.get(),
-                AlienArmorItems.PLATED_NETHER_CHITIN_HELMET.get(),
-                AVPArmorItems.PRESSURE_HELMET.get(),
-                AVPArmorItems.STEEL_HELMET.get(),
-                AVPArmorItems.TACTICAL_HELMET.get(),
-                AVPArmorItems.TACTICAL_CAMO_HELMET.get(),
-                AVPArmorItems.TITANIUM_HELMET.get()
-            );
-        getOrCreateTagBuilder(ItemTags.CHEST_ARMOR)
-            .add(
-                AlienArmorItems.ABERRANT_CHITIN_CHESTPLATE.get(),
-                AlienArmorItems.CHITIN_CHESTPLATE.get(),
-                AlienArmorItems.IRRADIATED_CHITIN_CHESTPLATE.get(),
-                PredatorArmorItems.JUNGLE_PREDATOR_CHESTPLATE.get(),
-                AlienArmorItems.NETHER_CHITIN_CHESTPLATE.get(),
-                AVPArmorItems.MK50_CHESTPLATE.get(),
-                AlienArmorItems.PLATED_ABERRANT_CHITIN_CHESTPLATE.get(),
-                AlienArmorItems.PLATED_CHITIN_CHESTPLATE.get(),
-                AlienArmorItems.PLATED_IRRADIATED_CHITIN_CHESTPLATE.get(),
-                AlienArmorItems.PLATED_NETHER_CHITIN_CHESTPLATE.get(),
-                AVPArmorItems.PRESSURE_CHESTPLATE.get(),
-                AVPArmorItems.STEEL_CHESTPLATE.get(),
-                AVPArmorItems.TACTICAL_CHESTPLATE.get(),
-                AVPArmorItems.TACTICAL_CAMO_CHESTPLATE.get(),
-                AVPArmorItems.TITANIUM_CHESTPLATE.get()
-            );
-        getOrCreateTagBuilder(ItemTags.LEG_ARMOR)
-            .add(
-                AlienArmorItems.ABERRANT_CHITIN_LEGGINGS.get(),
-                AlienArmorItems.CHITIN_LEGGINGS.get(),
-                AlienArmorItems.IRRADIATED_CHITIN_LEGGINGS.get(),
-                PredatorArmorItems.JUNGLE_PREDATOR_LEGGINGS.get(),
-                AlienArmorItems.NETHER_CHITIN_LEGGINGS.get(),
-                AVPArmorItems.MK50_LEGGINGS.get(),
-                AlienArmorItems.PLATED_ABERRANT_CHITIN_LEGGINGS.get(),
-                AlienArmorItems.PLATED_CHITIN_LEGGINGS.get(),
-                AlienArmorItems.PLATED_IRRADIATED_CHITIN_LEGGINGS.get(),
-                AlienArmorItems.PLATED_NETHER_CHITIN_LEGGINGS.get(),
-                AVPArmorItems.PRESSURE_LEGGINGS.get(),
-                AVPArmorItems.STEEL_LEGGINGS.get(),
-                AVPArmorItems.TACTICAL_LEGGINGS.get(),
-                AVPArmorItems.TACTICAL_CAMO_LEGGINGS.get(),
-                AVPArmorItems.TITANIUM_LEGGINGS.get()
-            );
-        getOrCreateTagBuilder(ItemTags.FOOT_ARMOR)
-            .add(
-                AlienArmorItems.ABERRANT_CHITIN_BOOTS.get(),
-                AlienArmorItems.CHITIN_BOOTS.get(),
-                AlienArmorItems.IRRADIATED_CHITIN_BOOTS.get(),
-                PredatorArmorItems.JUNGLE_PREDATOR_BOOTS.get(),
-                AlienArmorItems.NETHER_CHITIN_BOOTS.get(),
-                AVPArmorItems.MK50_BOOTS.get(),
-                AlienArmorItems.PLATED_ABERRANT_CHITIN_BOOTS.get(),
-                AlienArmorItems.PLATED_CHITIN_BOOTS.get(),
-                AlienArmorItems.PLATED_IRRADIATED_CHITIN_BOOTS.get(),
-                AlienArmorItems.PLATED_NETHER_CHITIN_BOOTS.get(),
-                AVPArmorItems.PRESSURE_BOOTS.get(),
-                AVPArmorItems.STEEL_BOOTS.get(),
-                AVPArmorItems.TACTICAL_BOOTS.get(),
-                AVPArmorItems.TACTICAL_CAMO_BOOTS.get(),
-                AVPArmorItems.TITANIUM_BOOTS.get()
-            );
+        // Blocks
+        var buttonTagProvider = getOrCreateTagBuilder(ItemTags.BUTTONS);
+        var doorTagProvider = getOrCreateTagBuilder(ItemTags.DOORS);
+        var fenceTagProvider = getOrCreateTagBuilder(ItemTags.FENCES);
+        var slabTagProvider = getOrCreateTagBuilder(ItemTags.SLABS);
+        var stairsTagProvider = getOrCreateTagBuilder(ItemTags.STAIRS);
+        var trapdoorTagProvider = getOrCreateTagBuilder(ItemTags.TRAPDOORS);
+        var wallTagBuilder = getOrCreateTagBuilder(ItemTags.WALLS);
 
-        getOrCreateTagBuilder(AVPItemTags.GUNS)
-            .add(
-                HumanGunItems.F903WE_RIFLE.get(),
-                HumanGunItems.FLAMETHROWER_SEVASTOPOL.get(),
-                HumanGunItems.M37_12_SHOTGUN.get(),
-                HumanGunItems.M41A_PULSE_RIFLE.get(),
-                HumanGunItems.M42A3_SNIPER_RIFLE.get(),
-                HumanGunItems.M4RA_BATTLE_RIFLE.get(),
-                HumanGunItems.M56_SMARTGUN.get(),
-                HumanGunItems.M6B_ROCKET_LAUNCHER.get(),
-                HumanGunItems.M88MOD4_COMBAT_PISTOL.get(),
-                HumanGunItems.OLD_PAINLESS.get(),
-                HumanGunItems.ZX_76_SHOTGUN.get()
-            );
+        // Tools
+        var axeTagProvider = getOrCreateTagBuilder(ItemTags.AXES);
+        var hoeTagProvider = getOrCreateTagBuilder(ItemTags.HOES);
+        var pickaxeTagProvider = getOrCreateTagBuilder(ItemTags.PICKAXES);
+        var shovelTagProvider = getOrCreateTagBuilder(ItemTags.SHOVELS);
+
+        // Weapons
+        var gunTagProvider = getOrCreateTagBuilder(AVPItemTags.GUNS);
+        var swordTagProvider = getOrCreateTagBuilder(ItemTags.SWORDS);
+
+        AVPItems.getAll().forEach(deferredHolder -> {
+            var item = deferredHolder.get();
+
+            if (item instanceof ArmorItem armorItem) {
+                switch (armorItem.getType()) {
+                    case HELMET -> headArmorTagProvider.add(item);
+                    case CHESTPLATE -> chestArmorTagProvider.add(item);
+                    case LEGGINGS -> legArmorTagProvider.add(item);
+                    case BOOTS -> footArmorTagProvider.add(item);
+                    case BODY -> { /* NO-OP */ }
+                }
+            }
+
+            if (item instanceof BlockItem blockItem) {
+                var block = blockItem.getBlock();
+
+                if (block instanceof ButtonBlock) {
+                    buttonTagProvider.add(item);
+                }
+
+                if (block instanceof DoorBlock) {
+                    doorTagProvider.add(item);
+                }
+
+                if (block instanceof FenceBlock) {
+                    fenceTagProvider.add(item);
+                }
+
+                if (block instanceof SlabBlock) {
+                    slabTagProvider.add(item);
+                }
+
+                if (block instanceof StairBlock) {
+                    stairsTagProvider.add(item);
+                }
+
+                if (block instanceof TrapDoorBlock) {
+                    trapdoorTagProvider.add(item);
+                }
+
+                if (block instanceof WallBlock) {
+                    wallTagBuilder.add(item);
+                }
+            }
+
+            if (item instanceof AxeItem) {
+                axeTagProvider.add(item);
+            }
+
+            if (item instanceof GunItem) {
+                gunTagProvider.add(item);
+            }
+
+            if (item instanceof HoeItem) {
+                hoeTagProvider.add(item);
+            }
+
+            if (item instanceof PickaxeItem) {
+                pickaxeTagProvider.add(item);
+            }
+
+            if (item instanceof ShovelItem) {
+                shovelTagProvider.add(item);
+            }
+
+            if (item instanceof SwordItem) {
+                swordTagProvider.add(item);
+            }
+        });
 
         getOrCreateTagBuilder(ItemTags.DYEABLE)
             .add(
@@ -387,141 +369,6 @@ public class AVPItemTagProvider extends FabricTagProvider.ItemTagProvider {
                 AVPArmorItems.MK50_LEGGINGS.get(),
                 AVPArmorItems.MK50_BOOTS.get()
             );
-
-        var fenceTagProvider = getOrCreateTagBuilder(ItemTags.FENCES);
-
-        fenceTagProvider.add(
-            HumanFerroaluminumBlockItems.FERROALUMINUM_CHAIN_FENCE.get(),
-            HumanSteelBlockItems.STEEL_CHAIN_FENCE.get(),
-            HumanTitaniumBlockItems.TITANIUM_CHAIN_FENCE.get()
-        );
-
-        var doorTagProvider = getOrCreateTagBuilder(ItemTags.DOORS);
-
-        doorTagProvider.add(
-            HumanFerroaluminumBlockItems.FERROALUMINUM_DOOR.get(),
-            HumanIndustrialGlassBlockItems.INDUSTRIAL_GLASS_DOOR.get(),
-            HumanSteelBlockItems.STEEL_DOOR.get(),
-            HumanTitaniumBlockItems.TITANIUM_DOOR.get()
-        );
-
-        var trapdoorTagProvider = getOrCreateTagBuilder(ItemTags.TRAPDOORS);
-
-        trapdoorTagProvider.add(
-            HumanFerroaluminumBlockItems.FERROALUMINUM_TRAP_DOOR.get(),
-            HumanIndustrialGlassBlockItems.INDUSTRIAL_GLASS_TRAP_DOOR.get(),
-            HumanSteelBlockItems.STEEL_TRAP_DOOR.get(),
-            HumanTitaniumBlockItems.TITANIUM_TRAP_DOOR.get()
-        );
-
-        var slabTagProvider = getOrCreateTagBuilder(ItemTags.SLABS);
-
-        slabTagProvider.add(
-            HumanFerroaluminumBlockItems.CUT_FERROALUMINUM_SLAB.get(),
-            HumanSteelBlockItems.CUT_STEEL_SLAB.get(),
-            HumanTitaniumBlockItems.CUT_TITANIUM_SLAB.get(),
-            HumanFerroaluminumBlockItems.FERROALUMINUM_FASTENED_SIDING_SLAB.get(),
-            HumanFerroaluminumBlockItems.FERROALUMINUM_FASTENED_STANDING_SLAB.get(),
-            HumanFerroaluminumBlockItems.FERROALUMINUM_GRATE_SLAB.get(),
-            HumanFerroaluminumBlockItems.FERROALUMINUM_PLATING_SLAB.get(),
-            HumanFerroaluminumBlockItems.FERROALUMINUM_SIDING_SLAB.get(),
-            HumanFerroaluminumBlockItems.FERROALUMINUM_SLAB.get(),
-            HumanFerroaluminumBlockItems.FERROALUMINUM_STANDING_SLAB.get(),
-            HumanFerroaluminumBlockItems.FERROALUMINUM_TREAD_SLAB.get(),
-            HumanIndustrialGlassBlockItems.INDUSTRIAL_GLASS_SLAB.get(),
-            HumanSteelBlockItems.STEEL_FASTENED_SIDING_SLAB.get(),
-            HumanSteelBlockItems.STEEL_FASTENED_STANDING_SLAB.get(),
-            HumanSteelBlockItems.STEEL_GRATE_SLAB.get(),
-            HumanSteelBlockItems.STEEL_PLATING_SLAB.get(),
-            HumanSteelBlockItems.STEEL_SIDING_SLAB.get(),
-            HumanSteelBlockItems.STEEL_SLAB.get(),
-            HumanSteelBlockItems.STEEL_STANDING_SLAB.get(),
-            HumanSteelBlockItems.STEEL_TREAD_SLAB.get(),
-            HumanTitaniumBlockItems.TITANIUM_FASTENED_SIDING_SLAB.get(),
-            HumanTitaniumBlockItems.TITANIUM_FASTENED_STANDING_SLAB.get(),
-            HumanTitaniumBlockItems.TITANIUM_GRATE_SLAB.get(),
-            HumanTitaniumBlockItems.TITANIUM_PLATING_SLAB.get(),
-            HumanTitaniumBlockItems.TITANIUM_SIDING_SLAB.get(),
-            HumanTitaniumBlockItems.TITANIUM_SLAB.get(),
-            HumanTitaniumBlockItems.TITANIUM_STANDING_SLAB.get(),
-            HumanTitaniumBlockItems.TITANIUM_TREAD_SLAB.get()
-        );
-
-        Stream.of(
-            AVPBlockItems.DYE_COLOR_TO_CONCRETE_SLAB,
-            HumanPlasticBlockItems.DYE_COLOR_TO_CUT_PLASTIC_SLAB,
-            HumanIndustrialConcreteBlockItems.DYE_COLOR_TO_INDUSTRIAL_CONCRETE_SLAB,
-            HumanPaddingBlockItems.DYE_COLOR_TO_PADDING_SLAB,
-            HumanPaddingBlockItems.DYE_COLOR_TO_PANEL_PADDING_SLAB,
-            HumanPaddingBlockItems.DYE_COLOR_TO_PIPE_PADDING_SLAB,
-            HumanPlasticBlockItems.DYE_COLOR_TO_PLASTIC_SLAB
-        )
-            .map(Map::values)
-            .flatMap(Collection::stream)
-            .map(Supplier::get)
-            .forEach(slabTagProvider::add);
-
-        var buttonTagProvider = getOrCreateTagBuilder(ItemTags.BUTTONS);
-
-        buttonTagProvider.add(
-            HumanFerroaluminumBlockItems.FERROALUMINUM_BUTTON.get(),
-            HumanSteelBlockItems.STEEL_BUTTON.get(),
-            HumanTitaniumBlockItems.TITANIUM_BUTTON.get()
-        );
-
-        var stairsTagProvider = getOrCreateTagBuilder(ItemTags.STAIRS);
-
-        stairsTagProvider.add(
-            HumanFerroaluminumBlockItems.CUT_FERROALUMINUM_STAIRS.get(),
-            HumanSteelBlockItems.CUT_STEEL_STAIRS.get(),
-            HumanTitaniumBlockItems.CUT_TITANIUM_STAIRS.get(),
-            HumanFerroaluminumBlockItems.FERROALUMINUM_FASTENED_SIDING_STAIRS.get(),
-            HumanFerroaluminumBlockItems.FERROALUMINUM_FASTENED_STANDING_STAIRS.get(),
-            HumanFerroaluminumBlockItems.FERROALUMINUM_GRATE_STAIRS.get(),
-            HumanFerroaluminumBlockItems.FERROALUMINUM_PLATING_STAIRS.get(),
-            HumanFerroaluminumBlockItems.FERROALUMINUM_SIDING_STAIRS.get(),
-            HumanFerroaluminumBlockItems.FERROALUMINUM_STAIRS.get(),
-            HumanFerroaluminumBlockItems.FERROALUMINUM_STANDING_STAIRS.get(),
-            HumanFerroaluminumBlockItems.FERROALUMINUM_TREAD_STAIRS.get(),
-            HumanIndustrialGlassBlockItems.INDUSTRIAL_GLASS_STAIRS.get(),
-            HumanSteelBlockItems.STEEL_FASTENED_SIDING_STAIRS.get(),
-            HumanSteelBlockItems.STEEL_FASTENED_STANDING_STAIRS.get(),
-            HumanSteelBlockItems.STEEL_GRATE_STAIRS.get(),
-            HumanSteelBlockItems.STEEL_PLATING_STAIRS.get(),
-            HumanSteelBlockItems.STEEL_SIDING_STAIRS.get(),
-            HumanSteelBlockItems.STEEL_STAIRS.get(),
-            HumanSteelBlockItems.STEEL_STANDING_STAIRS.get(),
-            HumanSteelBlockItems.STEEL_TREAD_STAIRS.get(),
-            HumanTitaniumBlockItems.TITANIUM_FASTENED_SIDING_STAIRS.get(),
-            HumanTitaniumBlockItems.TITANIUM_FASTENED_STANDING_STAIRS.get(),
-            HumanTitaniumBlockItems.TITANIUM_GRATE_STAIRS.get(),
-            HumanTitaniumBlockItems.TITANIUM_PLATING_STAIRS.get(),
-            HumanTitaniumBlockItems.TITANIUM_SIDING_STAIRS.get(),
-            HumanTitaniumBlockItems.TITANIUM_STAIRS.get(),
-            HumanTitaniumBlockItems.TITANIUM_STANDING_STAIRS.get(),
-            HumanTitaniumBlockItems.TITANIUM_TREAD_STAIRS.get()
-        );
-
-        Stream.of(
-            AVPBlockItems.DYE_COLOR_TO_CONCRETE_STAIRS,
-            HumanPlasticBlockItems.DYE_COLOR_TO_CUT_PLASTIC_STAIRS,
-            HumanIndustrialConcreteBlockItems.DYE_COLOR_TO_INDUSTRIAL_CONCRETE_STAIRS,
-            HumanPaddingBlockItems.DYE_COLOR_TO_PADDING_STAIRS,
-            HumanPaddingBlockItems.DYE_COLOR_TO_PANEL_PADDING_STAIRS,
-            HumanPaddingBlockItems.DYE_COLOR_TO_PIPE_PADDING_STAIRS,
-            HumanPlasticBlockItems.DYE_COLOR_TO_PLASTIC_STAIRS
-        )
-            .map(Map::values)
-            .flatMap(Collection::stream)
-            .map(Supplier::get)
-            .forEach(stairsTagProvider::add);
-
-        var wallTagBuilder = getOrCreateTagBuilder(ItemTags.WALLS);
-
-        HumanIndustrialConcreteBlockItems.DYE_COLOR_TO_INDUSTRIAL_CONCRETE_WALL.values()
-            .stream()
-            .map(Supplier::get)
-            .forEach(wallTagBuilder::add);
 
         var freezeImmuneTagBuilder = getOrCreateTagBuilder(ItemTags.FREEZE_IMMUNE_WEARABLES);
 
