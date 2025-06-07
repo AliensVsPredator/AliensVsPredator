@@ -9,6 +9,7 @@ import com.alien.common.gameplay.block.resin.vein.ResinVeinBlock;
 import com.alien.common.gameplay.block.resin.web.IrradiatedResinWebBlock;
 import com.alien.common.gameplay.block.resin.web.ResinWebBlock;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.RotatedPillarBlock;
 import net.minecraft.world.level.block.SlabBlock;
 import net.minecraft.world.level.block.StairBlock;
 
@@ -232,20 +233,23 @@ public class AlienResinBlocks {
 
     public static final AVPDeferredHolder<Block> RIBBED_ABERRANT_RESIN = AVPBlocks.register(
         "ribbed_aberrant_resin",
-        BlockProperties.ABERRANT_RESIN
+        () -> new RotatedPillarBlock(BlockProperties.ABERRANT_RESIN.build())
     );
 
     public static final AVPDeferredHolder<Block> RIBBED_IRRADIATED_RESIN = AVPBlocks.register(
         "ribbed_irradiated_resin",
-        BlockProperties.IRRADIATED_RESIN
+        () -> new RotatedPillarBlock(BlockProperties.IRRADIATED_RESIN.build())
     );
 
     public static final AVPDeferredHolder<Block> RIBBED_NETHER_RESIN = AVPBlocks.register(
         "ribbed_nether_resin",
-        BlockProperties.NETHER_RESIN
+        () -> new RotatedPillarBlock(BlockProperties.NETHER_RESIN.build())
     );
 
-    public static final AVPDeferredHolder<Block> RIBBED_RESIN = AVPBlocks.register("ribbed_resin", BlockProperties.RESIN);
+    public static final AVPDeferredHolder<Block> RIBBED_RESIN = AVPBlocks.register(
+        "ribbed_resin",
+        () -> new RotatedPillarBlock(BlockProperties.RESIN.build())
+    );
 
     public static final AVPDeferredHolder<Block> SMOOTH_ABERRANT_RESIN = AVPBlocks.register(
         "smooth_aberrant_resin",

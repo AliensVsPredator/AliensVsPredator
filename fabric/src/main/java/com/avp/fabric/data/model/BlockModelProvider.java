@@ -209,10 +209,10 @@ public class BlockModelProvider extends FabricModelProvider {
         createStairs(generators, AlienResinBlocks.RESIN_BRICKS.get(), AlienResinBlocks.RESIN_BRICK_STAIRS.get());
         generators.createTrivialCube(AlienResinBlocks.RESIN_VENT.get());
 
-        generators.createTrivialCube(AlienResinBlocks.RIBBED_ABERRANT_RESIN.get());
-        generators.createTrivialCube(AlienResinBlocks.RIBBED_IRRADIATED_RESIN.get());
-        generators.createTrivialCube(AlienResinBlocks.RIBBED_NETHER_RESIN.get());
-        generators.createTrivialCube(AlienResinBlocks.RIBBED_RESIN.get());
+        createRotatedPillar(generators, AlienResinBlocks.RIBBED_ABERRANT_RESIN.get(), TexturedModel.CUBE);
+        createRotatedPillar(generators, AlienResinBlocks.RIBBED_IRRADIATED_RESIN.get(), TexturedModel.CUBE);
+        createRotatedPillar(generators, AlienResinBlocks.RIBBED_NETHER_RESIN.get(), TexturedModel.CUBE);
+        createRotatedPillar(generators, AlienResinBlocks.RIBBED_RESIN.get(), TexturedModel.CUBE);
 
         generators.createTrivialCube(AlienResinBlocks.SMOOTH_ABERRANT_RESIN.get());
         generators.createTrivialCube(AlienResinBlocks.SMOOTH_IRRADIATED_RESIN.get());
@@ -401,6 +401,13 @@ public class BlockModelProvider extends FabricModelProvider {
 
         AVPSpawnEggItems.getAll()
             .forEach(spawnEggItem -> generators.delegateItemModel(spawnEggItem.get(), spawnEggLocation));
+    }
+
+    public final void createRotatedPillar(BlockModelGenerators generators, Block rotatedPillarBlock, TexturedModel.Provider modelProvider) {
+        var resourceLocation = modelProvider.create(rotatedPillarBlock, generators.modelOutput);
+        generators.blockStateOutput.accept(
+            BlockModelGenerators.createRotatedPillarWithHorizontalVariant(rotatedPillarBlock, resourceLocation, resourceLocation)
+        );
     }
 
     public final void createGlassBlocks(BlockModelGenerators generators, Block block, Block block2) {
