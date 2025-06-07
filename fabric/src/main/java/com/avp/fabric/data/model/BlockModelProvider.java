@@ -1,6 +1,7 @@
 package com.avp.fabric.data.model;
 
 import com.alien.common.registry.init.AlienBlocks;
+import com.alien.common.registry.init.block.AlienChitinBlocks;
 import com.alien.common.registry.init.block.AlienResinBlocks;
 import com.human.common.registry.init.block.HumanFerroaluminumBlocks;
 import com.human.common.registry.init.block.HumanIndustrialConcreteBlocks;
@@ -104,6 +105,16 @@ public class BlockModelProvider extends FabricModelProvider {
         MultiFaceGenerator.generate(generators, AlienResinBlocks.ABERRANT_RESIN_VEIN.get());
         generators.createCrossBlock(AlienResinBlocks.ABERRANT_RESIN_WEB.get(), BlockModelGenerators.TintState.NOT_TINTED);
 
+        generators.family(AlienChitinBlocks.ABERRANT_CHITIN_BLOCK.get())
+            .slab(AlienChitinBlocks.ABERRANT_CHITIN_BLOCK_SLAB.get())
+            .stairs(AlienChitinBlocks.ABERRANT_CHITIN_BLOCK_STAIRS.get());
+        generators.family(AlienChitinBlocks.ABERRANT_CHITIN_BRICKS.get())
+            .slab(AlienChitinBlocks.ABERRANT_CHITIN_BRICK_SLAB.get())
+            .stairs(AlienChitinBlocks.ABERRANT_CHITIN_BRICK_STAIRS.get());
+        generators.family(AlienChitinBlocks.POLISHED_ABERRANT_CHITIN.get())
+            .slab(AlienChitinBlocks.POLISHED_ABERRANT_CHITIN_SLAB.get())
+            .stairs(AlienChitinBlocks.POLISHED_ABERRANT_CHITIN_STAIRS.get());
+
         generators.createRotatedVariantBlock(AlienResinBlocks.NETHER_RESIN.get());
         createSlab(generators, AlienResinBlocks.NETHER_RESIN.get(), AlienResinBlocks.NETHER_RESIN_SLAB.get());
         createStairs(generators, AlienResinBlocks.NETHER_RESIN.get(), AlienResinBlocks.NETHER_RESIN_STAIRS.get());
@@ -111,12 +122,32 @@ public class BlockModelProvider extends FabricModelProvider {
         MultiFaceGenerator.generate(generators, AlienResinBlocks.NETHER_RESIN_VEIN.get());
         generators.createCrossBlock(AlienResinBlocks.NETHER_RESIN_WEB.get(), BlockModelGenerators.TintState.NOT_TINTED);
 
+        generators.family(AlienChitinBlocks.NETHER_CHITIN_BLOCK.get())
+            .slab(AlienChitinBlocks.NETHER_CHITIN_BLOCK_SLAB.get())
+            .stairs(AlienChitinBlocks.NETHER_CHITIN_BLOCK_STAIRS.get());
+        generators.family(AlienChitinBlocks.NETHER_CHITIN_BRICKS.get())
+            .slab(AlienChitinBlocks.NETHER_CHITIN_BRICK_SLAB.get())
+            .stairs(AlienChitinBlocks.NETHER_CHITIN_BRICK_STAIRS.get());
+        generators.family(AlienChitinBlocks.POLISHED_NETHER_CHITIN.get())
+            .slab(AlienChitinBlocks.POLISHED_NETHER_CHITIN_SLAB.get())
+            .stairs(AlienChitinBlocks.POLISHED_NETHER_CHITIN_STAIRS.get());
+
         generators.createRotatedVariantBlock(AlienResinBlocks.RESIN.get());
         createSlab(generators, AlienResinBlocks.RESIN.get(), AlienResinBlocks.RESIN_SLAB.get());
         createStairs(generators, AlienResinBlocks.RESIN.get(), AlienResinBlocks.RESIN_STAIRS.get());
         generators.createRotatedVariantBlock(AlienResinBlocks.RESIN_NODE.get());
         MultiFaceGenerator.generate(generators, AlienResinBlocks.RESIN_VEIN.get());
         generators.createCrossBlock(AlienResinBlocks.RESIN_WEB.get(), BlockModelGenerators.TintState.NOT_TINTED);
+
+        generators.family(AlienChitinBlocks.CHITIN_BLOCK.get())
+            .slab(AlienChitinBlocks.CHITIN_BLOCK_SLAB.get())
+            .stairs(AlienChitinBlocks.CHITIN_BLOCK_STAIRS.get());
+        generators.family(AlienChitinBlocks.CHITIN_BRICKS.get())
+            .slab(AlienChitinBlocks.CHITIN_BRICK_SLAB.get())
+            .stairs(AlienChitinBlocks.CHITIN_BRICK_STAIRS.get());
+        generators.family(AlienChitinBlocks.POLISHED_CHITIN.get())
+            .slab(AlienChitinBlocks.POLISHED_CHITIN_SLAB.get())
+            .stairs(AlienChitinBlocks.POLISHED_CHITIN_STAIRS.get());
 
         HumanPaddingBlocks.DYE_COLOR_TO_PADDING.forEach(
             (dyeColor, blockSupplier) -> {

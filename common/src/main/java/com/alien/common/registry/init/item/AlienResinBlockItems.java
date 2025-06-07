@@ -7,7 +7,7 @@ import net.minecraft.world.item.Item;
 import com.avp.common.registry.AVPDeferredHolder;
 import com.avp.common.registry.init.item.AVPBlockItems;
 
-public class AlienBlockItems {
+public class AlienResinBlockItems {
 
     public static final AVPDeferredHolder<BlockItem> ABERRANT_RESIN = AVPBlockItems.register(
         "aberrant_resin",

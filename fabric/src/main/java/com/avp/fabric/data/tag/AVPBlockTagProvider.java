@@ -1,5 +1,6 @@
 package com.avp.fabric.data.tag;
 
+import com.alien.common.registry.init.block.AlienChitinBlocks;
 import com.alien.common.registry.init.block.AlienResinBlocks;
 import com.human.common.registry.init.block.HumanFerroaluminumBlocks;
 import com.human.common.registry.init.block.HumanIndustrialConcreteBlocks;
@@ -249,6 +250,51 @@ public class AVPBlockTagProvider extends FabricTagProvider.BlockTagProvider {
                 AlienResinBlocks.SMOOTH_RESIN.get()
             );
 
+        getOrCreateTagBuilder(AVPBlockTags.ABERRANT_CHITIN)
+            .add(
+                AlienChitinBlocks.ABERRANT_CHITIN_BLOCK.get(),
+                AlienChitinBlocks.ABERRANT_CHITIN_BLOCK_SLAB.get(),
+                AlienChitinBlocks.ABERRANT_CHITIN_BLOCK_STAIRS.get(),
+                AlienChitinBlocks.ABERRANT_CHITIN_BRICKS.get(),
+                AlienChitinBlocks.ABERRANT_CHITIN_BRICK_SLAB.get(),
+                AlienChitinBlocks.ABERRANT_CHITIN_BRICK_STAIRS.get(),
+                AlienChitinBlocks.POLISHED_ABERRANT_CHITIN.get(),
+                AlienChitinBlocks.POLISHED_ABERRANT_CHITIN_SLAB.get(),
+                AlienChitinBlocks.POLISHED_ABERRANT_CHITIN_STAIRS.get()
+            );
+
+        getOrCreateTagBuilder(AVPBlockTags.NETHER_CHITIN)
+            .add(
+
+                AlienChitinBlocks.NETHER_CHITIN_BLOCK.get(),
+                AlienChitinBlocks.NETHER_CHITIN_BLOCK_SLAB.get(),
+                AlienChitinBlocks.NETHER_CHITIN_BLOCK_STAIRS.get(),
+                AlienChitinBlocks.NETHER_CHITIN_BRICKS.get(),
+                AlienChitinBlocks.NETHER_CHITIN_BRICK_SLAB.get(),
+                AlienChitinBlocks.NETHER_CHITIN_BRICK_STAIRS.get(),
+                AlienChitinBlocks.POLISHED_NETHER_CHITIN.get(),
+                AlienChitinBlocks.POLISHED_NETHER_CHITIN_SLAB.get(),
+                AlienChitinBlocks.POLISHED_NETHER_CHITIN_STAIRS.get()
+            );
+
+        getOrCreateTagBuilder(AVPBlockTags.NORMAL_CHITIN)
+            .add(
+                AlienChitinBlocks.CHITIN_BLOCK.get(),
+                AlienChitinBlocks.CHITIN_BLOCK_SLAB.get(),
+                AlienChitinBlocks.CHITIN_BLOCK_STAIRS.get(),
+                AlienChitinBlocks.CHITIN_BRICKS.get(),
+                AlienChitinBlocks.CHITIN_BRICK_SLAB.get(),
+                AlienChitinBlocks.CHITIN_BRICK_STAIRS.get(),
+                AlienChitinBlocks.POLISHED_CHITIN.get(),
+                AlienChitinBlocks.POLISHED_CHITIN_SLAB.get(),
+                AlienChitinBlocks.POLISHED_CHITIN_STAIRS.get()
+            );
+
+        getOrCreateTagBuilder(AVPBlockTags.CHITIN)
+            .addTag(AVPBlockTags.ABERRANT_CHITIN)
+            .addTag(AVPBlockTags.NETHER_CHITIN)
+            .addTag(AVPBlockTags.NORMAL_CHITIN);
+
         getOrCreateTagBuilder(AVPBlockTags.RESIN)
             .addTag(AVPBlockTags.ABERRANT_RESIN)
             .addTag(AVPBlockTags.IRRADIATED_RESIN)
@@ -413,6 +459,7 @@ public class AVPBlockTagProvider extends FabricTagProvider.BlockTagProvider {
 
         // Acid-immune blocks
         getOrCreateTagBuilder(AVPBlockTags.ACID_IMMUNE)
+            .addTag(AVPBlockTags.CHITIN)
             .addTag(AVPBlockTags.INDUSTRIAL_GLASS)
             .addTag(AVPBlockTags.PLASTIC)
             .addTag(AVPBlockTags.RESIN)
@@ -450,6 +497,7 @@ public class AVPBlockTagProvider extends FabricTagProvider.BlockTagProvider {
             );
 
         getOrCreateTagBuilder(BlockTags.MINEABLE_WITH_PICKAXE)
+            .addTag(AVPBlockTags.CHITIN)
             .addTag(AVPBlockTags.CONCRETE)
             .addTag(AVPBlockTags.FERROALUMINUM)
             .addTag(AVPBlockTags.INDUSTRIAL_CONCRETE)
@@ -545,6 +593,7 @@ public class AVPBlockTagProvider extends FabricTagProvider.BlockTagProvider {
             );
 
         getOrCreateTagBuilder(BlockTags.NEEDS_STONE_TOOL)
+            .addTag(AVPBlockTags.CHITIN)
             .addTag(AVPBlockTags.FERROALUMINUM)
             .addTag(AVPBlockTags.PADDING)
             .addTag(AVPBlockTags.PLASTIC)

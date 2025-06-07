@@ -11,25 +11,52 @@
 - [Fabric] Now requires Fabric Loader `0.16.14`.
 - [NeoForge] Now requires NeoForge `21.1.173`.
 - Now requires AzureLib 3.0.20.
-- Added new resin blocks:
+- Added new alien blocks:
+  - Aberrant Chitin Block
+  - Aberrant Chitin Block Slab
+  - Aberrant Chitin Block Stairs
+  - Aberrant Chitin Bricks
+  - Aberrant Chitin Brick Slab
+  - Aberrant Chitin Brick Stairs
   - Aberrant Resin Bricks
   - Aberrant Resin Brick Slab
   - Aberrant Resin Brick Stairs
   - Aberrant Resin Slab
   - Aberrant Resin Stairs
   - Aberrant Resin Vent
+  - Irradiated Chitin Block
+  - Irradiated Chitin Block Slab
+  - Irradiated Chitin Block Stairs
+  - Irradiated Chitin Bricks
+  - Irradiated Chitin Brick Slab
+  - Irradiated Chitin Brick Stairs
   - Irradiated Resin Bricks
   - Irradiated Resin Brick Slab
   - Irradiated Resin Brick Stairs
   - Irradiated Resin Slab
   - Irradiated Resin Stairs
   - Irradiated Resin Vent
+  - Nether Chitin Block
+  - Nether Chitin Block Slab
+  - Nether Chitin Block Stairs
+  - Nether Chitin Bricks
+  - Nether Chitin Brick Slab
+  - Nether Chitin Brick Stairs
   - Nether Resin Bricks
   - Nether Resin Brick Slab
   - Nether Resin Brick Stairs
   - Nether Resin Slab
   - Nether Resin Stairs
   - Nether Resin Vent
+  - Polished Aberrant Chitin
+  - Polished Aberrant Chitin Slab
+  - Polished Aberrant Chitin Stairs
+  - Polished Chitin
+  - Polished Chitin Slab
+  - Polished Chitin Stairs
+  - Polished Nether Chitin
+  - Polished Nether Chitin Slab
+  - Polished Nether Chitin Stairs
   - Resin Brick Slab
   - Resin Brick Stairs
   - Resin Slab

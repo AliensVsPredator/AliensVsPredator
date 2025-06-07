@@ -1,6 +1,6 @@
 package com.human.common.gameplay.recipe;
 
-import com.alien.common.registry.init.item.AlienBlockItems;
+import com.alien.common.registry.init.item.AlienResinBlockItems;
 import com.human.common.registry.init.item.HumanPlasticBlockItems;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.DyeColor;
@@ -57,13 +57,13 @@ public class IndustrialFurnaceRecipe extends AbstractCookingRecipe {
         registerMeltingRecipe(Items.MUD, Items.CLAY);
         registerMeltingRecipe(Items.CLAY, Items.TERRACOTTA);
         // TODO: Remove these, these break the balance of smelting. We can have these be smelted in electrical furnaces.
-        registerMeltingRecipe(AlienBlockItems.RESIN.get(), HumanPlasticBlockItems.DYE_COLOR_TO_PLASTIC.get(DyeColor.GREEN).get());
-        registerMeltingRecipe(AlienBlockItems.NETHER_RESIN.get(), HumanPlasticBlockItems.DYE_COLOR_TO_PLASTIC.get(DyeColor.GREEN).get());
+        registerMeltingRecipe(AlienResinBlockItems.RESIN.get(), HumanPlasticBlockItems.DYE_COLOR_TO_PLASTIC.get(DyeColor.GREEN).get());
+        registerMeltingRecipe(AlienResinBlockItems.NETHER_RESIN.get(), HumanPlasticBlockItems.DYE_COLOR_TO_PLASTIC.get(DyeColor.GREEN).get());
         registerMeltingRecipe(
-            AlienBlockItems.IRRADIATED_RESIN.get(),
+            AlienResinBlockItems.IRRADIATED_RESIN.get(),
             HumanPlasticBlockItems.DYE_COLOR_TO_PLASTIC.get(DyeColor.GREEN).get()
         );
-        registerMeltingRecipe(AlienBlockItems.ABERRANT_RESIN.get(), HumanPlasticBlockItems.DYE_COLOR_TO_PLASTIC.get(DyeColor.GREEN).get());
+        registerMeltingRecipe(AlienResinBlockItems.ABERRANT_RESIN.get(), HumanPlasticBlockItems.DYE_COLOR_TO_PLASTIC.get(DyeColor.GREEN).get());
     }
 
     private static void registerMeltingRecipe(Item input, Item output) {

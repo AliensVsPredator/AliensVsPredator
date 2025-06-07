@@ -2,7 +2,7 @@ package com.avp.fabric.data.tag;
 
 import com.alien.common.registry.init.AlienItems;
 import com.alien.common.registry.init.item.AlienArmorItems;
-import com.alien.common.registry.init.item.AlienBlockItems;
+import com.alien.common.registry.init.item.AlienResinBlockItems;
 import com.human.common.gameplay.item.GunItem;
 import com.human.common.registry.init.item.HumanFerroaluminumBlockItems;
 import com.human.common.registry.init.item.HumanIndustrialGlassBlockItems;
@@ -180,10 +180,10 @@ public class AVPItemTagProvider extends FabricTagProvider.ItemTagProvider {
                 AVPBlockItems.AUTUNITE_ORE.get(),
                 AVPBlockItems.URANIUM_BLOCK.get(),
                 AVPBlockItems.TRINITITE_BLOCK.get(),
-                AlienBlockItems.IRRADIATED_RESIN.get(),
-                AlienBlockItems.IRRADIATED_RESIN_NODE.get(),
-                AlienBlockItems.IRRADIATED_RESIN_VEIN.get(),
-                AlienBlockItems.IRRADIATED_RESIN_WEB.get()
+                AlienResinBlockItems.IRRADIATED_RESIN.get(),
+                AlienResinBlockItems.IRRADIATED_RESIN_NODE.get(),
+                AlienResinBlockItems.IRRADIATED_RESIN_VEIN.get(),
+                AlienResinBlockItems.IRRADIATED_RESIN_WEB.get()
             )
             .addOptionalTag(CommonConstants.URANIUM);
 

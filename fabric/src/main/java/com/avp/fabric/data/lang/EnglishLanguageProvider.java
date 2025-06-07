@@ -4,6 +4,7 @@ import com.alien.common.gameplay.hive.HiveBossBarManager;
 import com.alien.common.registry.init.AlienBlocks;
 import com.alien.common.registry.init.AlienEntityTypes;
 import com.alien.common.registry.init.AlienItems;
+import com.alien.common.registry.init.block.AlienChitinBlocks;
 import com.alien.common.registry.init.block.AlienResinBlocks;
 import com.alien.common.registry.init.item.AlienArmorItems;
 import com.alien.common.registry.init.item.AlienSpawnEggItems;
@@ -173,6 +174,7 @@ public class EnglishLanguageProvider extends FabricLanguageProvider {
         addBlock(builder, AlienResinBlocks.ABERRANT_RESIN_VEIN, "Aberrant Resin Vein");
         addBlock(builder, AlienResinBlocks.ABERRANT_RESIN_VENT, "Aberrant Resin Vent");
         addBlock(builder, AlienResinBlocks.ABERRANT_RESIN_WEB, "Aberrant Resin Web");
+
         addBlock(builder, AlienResinBlocks.IRRADIATED_RESIN, "Irradiated Resin");
         addBlock(builder, AlienResinBlocks.IRRADIATED_RESIN_BRICKS, "Irradiated Resin Bricks");
         addBlock(builder, AlienResinBlocks.IRRADIATED_RESIN_BRICK_SLAB, "Irradiated Resin Brick Slab");
@@ -183,6 +185,7 @@ public class EnglishLanguageProvider extends FabricLanguageProvider {
         addBlock(builder, AlienResinBlocks.IRRADIATED_RESIN_VEIN, "Irradiated Resin Vein");
         addBlock(builder, AlienResinBlocks.IRRADIATED_RESIN_VENT, "Irradiated Resin Vent");
         addBlock(builder, AlienResinBlocks.IRRADIATED_RESIN_WEB, "Irradiated Resin Web");
+
         addBlock(builder, AlienResinBlocks.NETHER_RESIN, "Nether Resin");
         addBlock(builder, AlienResinBlocks.NETHER_RESIN_BRICKS, "Nether Resin Bricks");
         addBlock(builder, AlienResinBlocks.NETHER_RESIN_BRICK_SLAB, "Nether Resin Brick Slab");
@@ -193,6 +196,7 @@ public class EnglishLanguageProvider extends FabricLanguageProvider {
         addBlock(builder, AlienResinBlocks.NETHER_RESIN_VEIN, "Nether Resin Vein");
         addBlock(builder, AlienResinBlocks.NETHER_RESIN_VENT, "Nether Resin Vent");
         addBlock(builder, AlienResinBlocks.NETHER_RESIN_WEB, "Nether Resin Web");
+
         addBlock(builder, AlienResinBlocks.RESIN, "Resin");
         addBlock(builder, AlienResinBlocks.RESIN_BRICKS, "Resin Bricks");
         addBlock(builder, AlienResinBlocks.RESIN_BRICK_SLAB, "Resin Brick Slab");
@@ -203,6 +207,7 @@ public class EnglishLanguageProvider extends FabricLanguageProvider {
         addBlock(builder, AlienResinBlocks.RESIN_VEIN, "Resin Vein");
         addBlock(builder, AlienResinBlocks.RESIN_VENT, "Resin Vent");
         addBlock(builder, AlienResinBlocks.RESIN_WEB, "Resin Web");
+
         addBlock(builder, AlienResinBlocks.RIBBED_ABERRANT_RESIN, "Ribbed Aberrant Resin");
         addBlock(builder, AlienResinBlocks.RIBBED_IRRADIATED_RESIN, "Ribbed Irradiated Resin");
         addBlock(builder, AlienResinBlocks.RIBBED_NETHER_RESIN, "Ribbed Nether Resin");
@@ -211,6 +216,36 @@ public class EnglishLanguageProvider extends FabricLanguageProvider {
         addBlock(builder, AlienResinBlocks.SMOOTH_IRRADIATED_RESIN, "Smooth Irradiated Resin");
         addBlock(builder, AlienResinBlocks.SMOOTH_NETHER_RESIN, "Smooth Nether Resin");
         addBlock(builder, AlienResinBlocks.SMOOTH_RESIN, "Smooth Resin");
+
+        addBlock(builder, AlienChitinBlocks.ABERRANT_CHITIN_BLOCK, "Block of Aberrant Chitin");
+        addBlock(builder, AlienChitinBlocks.ABERRANT_CHITIN_BLOCK_SLAB, "Aberrant Chitin Slab");
+        addBlock(builder, AlienChitinBlocks.ABERRANT_CHITIN_BLOCK_STAIRS, "Aberrant Chitin Stairs");
+        addBlock(builder, AlienChitinBlocks.ABERRANT_CHITIN_BRICKS, "Aberrant Chitin Bricks");
+        addBlock(builder, AlienChitinBlocks.ABERRANT_CHITIN_BRICK_SLAB, "Aberrant Chitin Brick Slab");
+        addBlock(builder, AlienChitinBlocks.ABERRANT_CHITIN_BRICK_STAIRS, "Aberrant Chitin Brick Stairs");
+        addBlock(builder, AlienChitinBlocks.POLISHED_ABERRANT_CHITIN, "Polished Aberrant Chitin");
+        addBlock(builder, AlienChitinBlocks.POLISHED_ABERRANT_CHITIN_SLAB, "Polished Aberrant Chitin Slab");
+        addBlock(builder, AlienChitinBlocks.POLISHED_ABERRANT_CHITIN_STAIRS, "Polished Aberrant Chitin Stairs");
+
+        addBlock(builder, AlienChitinBlocks.CHITIN_BLOCK, "Block of Chitin");
+        addBlock(builder, AlienChitinBlocks.CHITIN_BLOCK_SLAB, "Chitin Slab");
+        addBlock(builder, AlienChitinBlocks.CHITIN_BLOCK_STAIRS, "Chitin Stairs");
+        addBlock(builder, AlienChitinBlocks.CHITIN_BRICKS, "Chitin Bricks");
+        addBlock(builder, AlienChitinBlocks.CHITIN_BRICK_SLAB, "Chitin Brick Slab");
+        addBlock(builder, AlienChitinBlocks.CHITIN_BRICK_STAIRS, "Chitin Brick Stairs");
+        addBlock(builder, AlienChitinBlocks.POLISHED_CHITIN, "Polished Chitin");
+        addBlock(builder, AlienChitinBlocks.POLISHED_CHITIN_SLAB, "Polished Chitin Slab");
+        addBlock(builder, AlienChitinBlocks.POLISHED_CHITIN_STAIRS, "Polished Chitin Stairs");
+
+        addBlock(builder, AlienChitinBlocks.NETHER_CHITIN_BLOCK, "Block of Nether Chitin");
+        addBlock(builder, AlienChitinBlocks.NETHER_CHITIN_BLOCK_SLAB, "Nether Chitin Slab");
+        addBlock(builder, AlienChitinBlocks.NETHER_CHITIN_BLOCK_STAIRS, "Nether Chitin Stairs");
+        addBlock(builder, AlienChitinBlocks.NETHER_CHITIN_BRICKS, "Nether Chitin Bricks");
+        addBlock(builder, AlienChitinBlocks.NETHER_CHITIN_BRICK_SLAB, "Nether Chitin Brick Slab");
+        addBlock(builder, AlienChitinBlocks.NETHER_CHITIN_BRICK_STAIRS, "Nether Chitin Brick Stairs");
+        addBlock(builder, AlienChitinBlocks.POLISHED_NETHER_CHITIN, "Polished Nether Chitin");
+        addBlock(builder, AlienChitinBlocks.POLISHED_NETHER_CHITIN_SLAB, "Polished Nether Chitin Slab");
+        addBlock(builder, AlienChitinBlocks.POLISHED_NETHER_CHITIN_STAIRS, "Polished Nether Chitin Stairs");
 
         HumanPaddingBlocks.DYE_COLOR_TO_PADDING.forEach(
             (key, value) -> addBlock(builder, value, format(key.getName()) + " Padding")

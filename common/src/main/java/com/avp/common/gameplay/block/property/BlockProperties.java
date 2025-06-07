@@ -85,6 +85,11 @@ public class BlockProperties {
 
     public static final BlockPropertyBuilder INDUSTRIAL_GLASS_PANE = INDUSTRIAL_GLASS_PANE_SUPPLIER.get();
 
+    private static final Supplier<BlockPropertyBuilder> CHITIN_PROPERTIES_SUPPLIER = () -> BlockPropertyBuilder.of()
+        .mapColor(MapColor.COLOR_BLACK)
+        .requiresCorrectToolForDrops()
+        .strength(5, 6);
+
     private static final Supplier<BlockPropertyBuilder> RESIN_PROPERTIES_SUPPLIER = () -> BlockPropertyBuilder.of()
         .mapColor(MapColor.COLOR_BLACK)
         .requiresCorrectToolForDrops()
@@ -103,6 +108,9 @@ public class BlockProperties {
 
     private static final Supplier<BlockPropertyBuilder> RESIN_BLOCK_PROPERTIES_SUPPLIER = () -> RESIN_PROPERTIES_SUPPLIER.get()
         .isValidSpawn(($1, $2, $3, entityType) -> entityType.is(AVPEntityTypeTags.NORMAL_ALIENS));
+
+    public static final BlockPropertyBuilder ABERRANT_CHITIN = CHITIN_PROPERTIES_SUPPLIER.get()
+        .mapColor(MapColor.TERRACOTTA_GREEN);
 
     public static final BlockPropertyBuilder ABERRANT_RESIN = ABERRANT_RESIN_BLOCK_PROPERTIES_SUPPLIER.get()
         .mapColor(MapColor.TERRACOTTA_GREEN);
@@ -136,6 +144,9 @@ public class BlockProperties {
         .noOcclusion()
         .pushReaction(PushReaction.DESTROY);
 
+    public static final BlockPropertyBuilder NETHER_CHITIN = CHITIN_PROPERTIES_SUPPLIER.get()
+        .mapColor(MapColor.COLOR_RED);
+
     public static final BlockPropertyBuilder NETHER_RESIN = NETHER_RESIN_BLOCK_PROPERTIES_SUPPLIER.get()
         .mapColor(MapColor.COLOR_RED);
 
@@ -151,6 +162,8 @@ public class BlockProperties {
         .noCollision()
         .noOcclusion()
         .pushReaction(PushReaction.DESTROY);
+
+    public static final BlockPropertyBuilder CHITIN = CHITIN_PROPERTIES_SUPPLIER.get();
 
     public static final BlockPropertyBuilder RESIN = RESIN_BLOCK_PROPERTIES_SUPPLIER.get()
         .mapColor(MapColor.COLOR_BLACK);

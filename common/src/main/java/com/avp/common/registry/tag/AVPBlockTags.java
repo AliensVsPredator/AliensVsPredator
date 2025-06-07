@@ -8,11 +8,15 @@ import com.avp.AVPResources;
 
 public class AVPBlockTags {
 
+    public static final TagKey<Block> ABERRANT_CHITIN = create("aberrant_chitin");
+
     public static final TagKey<Block> ABERRANT_RESIN = create("aberrant_resin");
 
     public static final TagKey<Block> ABERRANT_RESIN_REPLACEABLE = create("aberrant_resin_replaceable");
 
     public static final TagKey<Block> ACID_IMMUNE = create("acid_immune");
+
+    public static final TagKey<Block> CHITIN = create("chitin");
 
     public static final TagKey<Block> CONCRETE = create("concrete");
 
@@ -34,9 +38,13 @@ public class AVPBlockTags {
 
     public static final TagKey<Block> NETHER_ACID_IMMUNE = create("nether_acid_immune");
 
+    public static final TagKey<Block> NETHER_CHITIN = create("nether_chitin");
+
     public static final TagKey<Block> NETHER_RESIN = create("nether_resin");
 
     public static final TagKey<Block> NETHER_RESIN_REPLACEABLE = create("nether_resin_replaceable");
+
+    public static final TagKey<Block> NORMAL_CHITIN = create("normal_chitin");
 
     public static final TagKey<Block> NORMAL_RESIN = create("normal_resin");
 
