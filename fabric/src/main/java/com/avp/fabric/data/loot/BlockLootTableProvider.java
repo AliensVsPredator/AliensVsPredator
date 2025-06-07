@@ -78,18 +78,39 @@ public class BlockLootTableProvider extends FabricBlockLootTableProvider {
 
     private void generateSelfDrops() {
         dropSelf(AlienResinBlocks.ABERRANT_RESIN);
+        dropSelf(AlienResinBlocks.ABERRANT_RESIN_BRICKS);
+        dropSelf(AlienResinBlocks.ABERRANT_RESIN_BRICK_STAIRS);
         dropSelf(AlienResinBlocks.ABERRANT_RESIN_STAIRS);
+        dropSelf(AlienResinBlocks.ABERRANT_RESIN_VENT);
+
         dropSelf(AlienResinBlocks.IRRADIATED_RESIN);
+        dropSelf(AlienResinBlocks.IRRADIATED_RESIN_BRICKS);
+        dropSelf(AlienResinBlocks.IRRADIATED_RESIN_BRICK_STAIRS);
         dropSelf(AlienResinBlocks.IRRADIATED_RESIN_STAIRS);
+        dropSelf(AlienResinBlocks.IRRADIATED_RESIN_VENT);
+
         dropSelf(AlienResinBlocks.NETHER_RESIN);
+        dropSelf(AlienResinBlocks.NETHER_RESIN_BRICKS);
+        dropSelf(AlienResinBlocks.NETHER_RESIN_BRICK_STAIRS);
         dropSelf(AlienResinBlocks.NETHER_RESIN_STAIRS);
+        dropSelf(AlienResinBlocks.NETHER_RESIN_VENT);
+
         dropSelf(AlienResinBlocks.RESIN);
         dropSelf(AlienResinBlocks.RESIN_BRICKS);
-        dropSelf(AlienResinBlocks.RESIN_VENT);
-        dropSelf(AlienResinBlocks.RIBBED_RESIN);
-        dropSelf(AlienResinBlocks.SMOOTH_RESIN);
-        dropSelf(AlienResinBlocks.RESIN_STAIRS);
         dropSelf(AlienResinBlocks.RESIN_BRICK_STAIRS);
+        dropSelf(AlienResinBlocks.RESIN_STAIRS);
+        dropSelf(AlienResinBlocks.RESIN_VENT);
+
+        dropSelf(AlienResinBlocks.RIBBED_ABERRANT_RESIN);
+        dropSelf(AlienResinBlocks.RIBBED_IRRADIATED_RESIN);
+        dropSelf(AlienResinBlocks.RIBBED_NETHER_RESIN);
+        dropSelf(AlienResinBlocks.RIBBED_RESIN);
+
+        dropSelf(AlienResinBlocks.SMOOTH_ABERRANT_RESIN);
+        dropSelf(AlienResinBlocks.SMOOTH_IRRADIATED_RESIN);
+        dropSelf(AlienResinBlocks.SMOOTH_NETHER_RESIN);
+        dropSelf(AlienResinBlocks.SMOOTH_RESIN);
+
         dropSelf(AlienBlocks.ROYAL_JELLY_BLOCK);
 
         dropSelf(CoreBlocks.ALUMINUM_BLOCK);
@@ -219,8 +240,14 @@ public class BlockLootTableProvider extends FabricBlockLootTableProvider {
 
     private void generateSlabDrops() {
         dropSlab(AlienResinBlocks.ABERRANT_RESIN_SLAB);
+        dropSlab(AlienResinBlocks.ABERRANT_RESIN_BRICK_SLAB);
+
         dropSlab(AlienResinBlocks.IRRADIATED_RESIN_SLAB);
+        dropSlab(AlienResinBlocks.IRRADIATED_RESIN_BRICK_SLAB);
+
         dropSlab(AlienResinBlocks.NETHER_RESIN_SLAB);
+        dropSlab(AlienResinBlocks.NETHER_RESIN_BRICK_SLAB);
+
         dropSlab(AlienResinBlocks.RESIN_SLAB);
         dropSlab(AlienResinBlocks.RESIN_BRICK_SLAB);
 

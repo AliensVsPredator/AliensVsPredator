@@ -12,16 +12,34 @@
 - [NeoForge] Now requires NeoForge `21.1.173`.
 - Now requires AzureLib 3.0.20.
 - Added new resin blocks:
+  - Aberrant Resin Bricks
+  - Aberrant Resin Brick Slab
+  - Aberrant Resin Brick Stairs
   - Aberrant Resin Slab
   - Aberrant Resin Stairs
+  - Aberrant Resin Vent
+  - Irradiated Resin Bricks
+  - Irradiated Resin Brick Slab
+  - Irradiated Resin Brick Stairs
   - Irradiated Resin Slab
   - Irradiated Resin Stairs
+  - Irradiated Resin Vent
+  - Nether Resin Bricks
+  - Nether Resin Brick Slab
+  - Nether Resin Brick Stairs
   - Nether Resin Slab
   - Nether Resin Stairs
+  - Nether Resin Vent
   - Resin Brick Slab
   - Resin Brick Stairs
   - Resin Slab
   - Resin Stairs
+  - Ribbed Aberrant Resin
+  - Ribbed Irradiated Resin
+  - Ribbed Nether Resin
+  - Smooth Aberrant Resin
+  - Smooth Irradiated Resin
+  - Smooth Nether Resin
 - Added keybind to allow players to crawl on demand.
   - Player crawling already exists in vanilla, but there is no key to activate it on demand.
   - This update adds a keybind (left alt) to crawl on demand. Player crawling will be important for future AVP updates.

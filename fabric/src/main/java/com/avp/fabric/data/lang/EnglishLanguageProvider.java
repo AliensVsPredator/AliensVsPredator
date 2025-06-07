@@ -162,24 +162,37 @@ public class EnglishLanguageProvider extends FabricLanguageProvider {
         addBlock(builder, CoreBlocks.LITHIUM_BLOCK, "Block of Lithium");
         addBlock(builder, CoreBlocks.LITHIUM_ORE, "Lithium Ore");
         addBlock(builder, CoreBlocks.MONAZITE_ORE, "Monazite Ore");
-        addBlock(builder, AlienResinBlocks.NETHER_RESIN, "Nether Resin");
-        addBlock(builder, AlienResinBlocks.NETHER_RESIN_SLAB, "Nether Resin Slab");
-        addBlock(builder, AlienResinBlocks.NETHER_RESIN_STAIRS, "Nether Resin Stairs");
-        addBlock(builder, AlienResinBlocks.NETHER_RESIN_NODE, "Nether Resin");
-        addBlock(builder, AlienResinBlocks.NETHER_RESIN_VEIN, "Nether Resin Vein");
-        addBlock(builder, AlienResinBlocks.NETHER_RESIN_WEB, "Nether Resin Web");
+
         addBlock(builder, AlienResinBlocks.ABERRANT_RESIN, "Aberrant Resin");
+        addBlock(builder, AlienResinBlocks.ABERRANT_RESIN_BRICKS, "Aberrant Resin Bricks");
+        addBlock(builder, AlienResinBlocks.ABERRANT_RESIN_BRICK_SLAB, "Aberrant Resin Brick Slab");
+        addBlock(builder, AlienResinBlocks.ABERRANT_RESIN_BRICK_STAIRS, "Aberrant Resin Brick Stairs");
         addBlock(builder, AlienResinBlocks.ABERRANT_RESIN_SLAB, "Aberrant Resin Slab");
         addBlock(builder, AlienResinBlocks.ABERRANT_RESIN_STAIRS, "Aberrant Resin Stairs");
         addBlock(builder, AlienResinBlocks.ABERRANT_RESIN_NODE, "Aberrant Resin");
         addBlock(builder, AlienResinBlocks.ABERRANT_RESIN_VEIN, "Aberrant Resin Vein");
+        addBlock(builder, AlienResinBlocks.ABERRANT_RESIN_VENT, "Aberrant Resin Vent");
         addBlock(builder, AlienResinBlocks.ABERRANT_RESIN_WEB, "Aberrant Resin Web");
         addBlock(builder, AlienResinBlocks.IRRADIATED_RESIN, "Irradiated Resin");
+        addBlock(builder, AlienResinBlocks.IRRADIATED_RESIN_BRICKS, "Irradiated Resin Bricks");
+        addBlock(builder, AlienResinBlocks.IRRADIATED_RESIN_BRICK_SLAB, "Irradiated Resin Brick Slab");
+        addBlock(builder, AlienResinBlocks.IRRADIATED_RESIN_BRICK_STAIRS, "Irradiated Resin Brick Stairs");
         addBlock(builder, AlienResinBlocks.IRRADIATED_RESIN_SLAB, "Irradiated Resin Slab");
         addBlock(builder, AlienResinBlocks.IRRADIATED_RESIN_STAIRS, "Irradiated Resin Stairs");
         addBlock(builder, AlienResinBlocks.IRRADIATED_RESIN_NODE, "Irradiated Resin");
         addBlock(builder, AlienResinBlocks.IRRADIATED_RESIN_VEIN, "Irradiated Resin Vein");
+        addBlock(builder, AlienResinBlocks.IRRADIATED_RESIN_VENT, "Irradiated Resin Vent");
         addBlock(builder, AlienResinBlocks.IRRADIATED_RESIN_WEB, "Irradiated Resin Web");
+        addBlock(builder, AlienResinBlocks.NETHER_RESIN, "Nether Resin");
+        addBlock(builder, AlienResinBlocks.NETHER_RESIN_BRICKS, "Nether Resin Bricks");
+        addBlock(builder, AlienResinBlocks.NETHER_RESIN_BRICK_SLAB, "Nether Resin Brick Slab");
+        addBlock(builder, AlienResinBlocks.NETHER_RESIN_BRICK_STAIRS, "Nether Resin Brick Stairs");
+        addBlock(builder, AlienResinBlocks.NETHER_RESIN_SLAB, "Nether Resin Slab");
+        addBlock(builder, AlienResinBlocks.NETHER_RESIN_STAIRS, "Nether Resin Stairs");
+        addBlock(builder, AlienResinBlocks.NETHER_RESIN_NODE, "Nether Resin");
+        addBlock(builder, AlienResinBlocks.NETHER_RESIN_VEIN, "Nether Resin Vein");
+        addBlock(builder, AlienResinBlocks.NETHER_RESIN_VENT, "Nether Resin Vent");
+        addBlock(builder, AlienResinBlocks.NETHER_RESIN_WEB, "Nether Resin Web");
         addBlock(builder, AlienResinBlocks.RESIN, "Resin");
         addBlock(builder, AlienResinBlocks.RESIN_BRICKS, "Resin Bricks");
         addBlock(builder, AlienResinBlocks.RESIN_BRICK_SLAB, "Resin Brick Slab");
@@ -190,7 +203,13 @@ public class EnglishLanguageProvider extends FabricLanguageProvider {
         addBlock(builder, AlienResinBlocks.RESIN_VEIN, "Resin Vein");
         addBlock(builder, AlienResinBlocks.RESIN_VENT, "Resin Vent");
         addBlock(builder, AlienResinBlocks.RESIN_WEB, "Resin Web");
+        addBlock(builder, AlienResinBlocks.RIBBED_ABERRANT_RESIN, "Ribbed Aberrant Resin");
+        addBlock(builder, AlienResinBlocks.RIBBED_IRRADIATED_RESIN, "Ribbed Irradiated Resin");
+        addBlock(builder, AlienResinBlocks.RIBBED_NETHER_RESIN, "Ribbed Nether Resin");
         addBlock(builder, AlienResinBlocks.RIBBED_RESIN, "Ribbed Resin");
+        addBlock(builder, AlienResinBlocks.SMOOTH_ABERRANT_RESIN, "Smooth Aberrant Resin");
+        addBlock(builder, AlienResinBlocks.SMOOTH_IRRADIATED_RESIN, "Smooth Irradiated Resin");
+        addBlock(builder, AlienResinBlocks.SMOOTH_NETHER_RESIN, "Smooth Nether Resin");
         addBlock(builder, AlienResinBlocks.SMOOTH_RESIN, "Smooth Resin");
 
         HumanPaddingBlocks.DYE_COLOR_TO_PADDING.forEach(

@@ -188,7 +188,14 @@ public class AVPBlockTagProvider extends FabricTagProvider.BlockTagProvider {
                 AlienResinBlocks.IRRADIATED_RESIN.get(),
                 AlienResinBlocks.IRRADIATED_RESIN_NODE.get(),
                 AlienResinBlocks.IRRADIATED_RESIN_VEIN.get(),
-                AlienResinBlocks.IRRADIATED_RESIN_WEB.get()
+                AlienResinBlocks.IRRADIATED_RESIN_WEB.get(),
+
+                AlienResinBlocks.IRRADIATED_RESIN_BRICKS.get(),
+                AlienResinBlocks.IRRADIATED_RESIN_BRICK_SLAB.get(),
+                AlienResinBlocks.IRRADIATED_RESIN_BRICK_STAIRS.get(),
+                AlienResinBlocks.IRRADIATED_RESIN_VENT.get(),
+                AlienResinBlocks.RIBBED_IRRADIATED_RESIN.get(),
+                AlienResinBlocks.SMOOTH_IRRADIATED_RESIN.get()
             );
 
         getOrCreateTagBuilder(AVPBlockTags.ABERRANT_RESIN)
@@ -198,7 +205,14 @@ public class AVPBlockTagProvider extends FabricTagProvider.BlockTagProvider {
                 AlienResinBlocks.ABERRANT_RESIN_STAIRS.get(),
                 AlienResinBlocks.ABERRANT_RESIN_NODE.get(),
                 AlienResinBlocks.ABERRANT_RESIN_VEIN.get(),
-                AlienResinBlocks.ABERRANT_RESIN_WEB.get()
+                AlienResinBlocks.ABERRANT_RESIN_WEB.get(),
+
+                AlienResinBlocks.ABERRANT_RESIN_BRICKS.get(),
+                AlienResinBlocks.ABERRANT_RESIN_BRICK_SLAB.get(),
+                AlienResinBlocks.ABERRANT_RESIN_BRICK_STAIRS.get(),
+                AlienResinBlocks.ABERRANT_RESIN_VENT.get(),
+                AlienResinBlocks.RIBBED_ABERRANT_RESIN.get(),
+                AlienResinBlocks.SMOOTH_ABERRANT_RESIN.get()
             );
 
         getOrCreateTagBuilder(AVPBlockTags.NETHER_RESIN)
@@ -208,7 +222,14 @@ public class AVPBlockTagProvider extends FabricTagProvider.BlockTagProvider {
                 AlienResinBlocks.NETHER_RESIN_STAIRS.get(),
                 AlienResinBlocks.NETHER_RESIN_NODE.get(),
                 AlienResinBlocks.NETHER_RESIN_VEIN.get(),
-                AlienResinBlocks.NETHER_RESIN_WEB.get()
+                AlienResinBlocks.NETHER_RESIN_WEB.get(),
+
+                AlienResinBlocks.NETHER_RESIN_BRICKS.get(),
+                AlienResinBlocks.NETHER_RESIN_BRICK_SLAB.get(),
+                AlienResinBlocks.NETHER_RESIN_BRICK_STAIRS.get(),
+                AlienResinBlocks.NETHER_RESIN_VENT.get(),
+                AlienResinBlocks.RIBBED_NETHER_RESIN.get(),
+                AlienResinBlocks.SMOOTH_NETHER_RESIN.get()
             );
 
         getOrCreateTagBuilder(AVPBlockTags.NORMAL_RESIN)
@@ -441,7 +462,14 @@ public class AVPBlockTagProvider extends FabricTagProvider.BlockTagProvider {
                 AlienResinBlocks.ABERRANT_RESIN.get(),
                 AlienResinBlocks.ABERRANT_RESIN_SLAB.get(),
                 AlienResinBlocks.ABERRANT_RESIN_STAIRS.get(),
+                AlienResinBlocks.ABERRANT_RESIN_BRICKS.get(),
+                AlienResinBlocks.ABERRANT_RESIN_BRICK_SLAB.get(),
+                AlienResinBlocks.ABERRANT_RESIN_BRICK_STAIRS.get(),
                 AlienResinBlocks.ABERRANT_RESIN_NODE.get(),
+                AlienResinBlocks.ABERRANT_RESIN_VENT.get(),
+                AlienResinBlocks.RIBBED_ABERRANT_RESIN.get(),
+                AlienResinBlocks.SMOOTH_ABERRANT_RESIN.get(),
+
                 CoreBlocks.ALUMINUM_BLOCK.get(),
                 AVPBlocks.AMMO_CHEST.get(),
                 CoreBlocks.AUTUNITE_BLOCK.get(),
@@ -453,34 +481,53 @@ public class AVPBlockTagProvider extends FabricTagProvider.BlockTagProvider {
                 AVPBlocks.DESK_TERMINAL_BLOCK.get(),
                 CoreBlocks.GALENA_ORE.get(),
                 AVPBlocks.INDUSTRIAL_FURNACE.get(),
+
                 AlienResinBlocks.IRRADIATED_RESIN.get(),
                 AlienResinBlocks.IRRADIATED_RESIN_SLAB.get(),
                 AlienResinBlocks.IRRADIATED_RESIN_STAIRS.get(),
+                AlienResinBlocks.IRRADIATED_RESIN_BRICKS.get(),
+                AlienResinBlocks.IRRADIATED_RESIN_BRICK_SLAB.get(),
+                AlienResinBlocks.IRRADIATED_RESIN_BRICK_STAIRS.get(),
                 AlienResinBlocks.IRRADIATED_RESIN_NODE.get(),
+                AlienResinBlocks.IRRADIATED_RESIN_VENT.get(),
+                AlienResinBlocks.RIBBED_IRRADIATED_RESIN.get(),
+                AlienResinBlocks.SMOOTH_IRRADIATED_RESIN.get(),
+
                 CoreBlocks.LEAD_BLOCK.get(),
                 AVPBlocks.LEAD_CHEST.get(),
                 CoreBlocks.LITHIUM_BLOCK.get(),
                 CoreBlocks.LITHIUM_ORE.get(),
                 CoreBlocks.MONAZITE_ORE.get(),
+
                 AlienResinBlocks.NETHER_RESIN.get(),
                 AlienResinBlocks.NETHER_RESIN_SLAB.get(),
                 AlienResinBlocks.NETHER_RESIN_STAIRS.get(),
+                AlienResinBlocks.NETHER_RESIN_BRICKS.get(),
+                AlienResinBlocks.NETHER_RESIN_BRICK_SLAB.get(),
+                AlienResinBlocks.NETHER_RESIN_BRICK_STAIRS.get(),
                 AlienResinBlocks.NETHER_RESIN_NODE.get(),
+                AlienResinBlocks.NETHER_RESIN_VENT.get(),
+                AlienResinBlocks.RIBBED_NETHER_RESIN.get(),
+                AlienResinBlocks.SMOOTH_NETHER_RESIN.get(),
+
                 AVPBlocks.NUKE_BLOCK.get(),
                 CoreBlocks.RAW_BAUXITE_BLOCK.get(),
                 CoreBlocks.RAW_GALENA_BLOCK.get(),
                 CoreBlocks.RAW_MONAZITE_BLOCK.get(),
                 CoreBlocks.RAW_ZINC_BLOCK.get(),
                 AVPBlocks.REDSTONE_GENERATOR.get(),
+
                 AlienResinBlocks.RESIN.get(),
-                AlienResinBlocks.RESIN_BRICK_SLAB.get(),
                 AlienResinBlocks.RESIN_SLAB.get(),
                 AlienResinBlocks.RESIN_STAIRS.get(),
-                AlienResinBlocks.RESIN_NODE.get(),
                 AlienResinBlocks.RESIN_BRICKS.get(),
+                AlienResinBlocks.RESIN_BRICK_SLAB.get(),
+                AlienResinBlocks.RESIN_BRICK_STAIRS.get(),
+                AlienResinBlocks.RESIN_NODE.get(),
                 AlienResinBlocks.RESIN_VENT.get(),
                 AlienResinBlocks.RIBBED_RESIN.get(),
                 AlienResinBlocks.SMOOTH_RESIN.get(),
+
                 AVPBlocks.RESONATOR_BLOCK.get(),
                 AVPBlocks.SENTRY_TURRET.get(),
                 CoreBlocks.SILICON_BLOCK.get(),
