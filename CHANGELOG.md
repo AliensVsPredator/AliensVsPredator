@@ -152,4 +152,4 @@
 - Added `#avp:plated_chitin_armors` item tag.
 
 ## 🔬 Technical Changes
-- N/A
+- Added translations for all tags provided by the AVP mod.

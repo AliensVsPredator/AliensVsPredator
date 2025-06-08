@@ -26,7 +26,7 @@ public class AVPBlockTags {
 
     public static final TagKey<Block> INDUSTRIAL_GLASS = create("industrial_glass");
 
-    public static final TagKey<Block> INDUSTRIAL_GLASS_BLOCK = create("industrial_glass_pane");
+    public static final TagKey<Block> INDUSTRIAL_GLASS_BLOCK = create("industrial_glass_block");
 
     public static final TagKey<Block> INDUSTRIAL_GLASS_PANE = create("industrial_glass_pane");
 

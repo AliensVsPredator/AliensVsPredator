@@ -45,7 +45,6 @@ public class AVPEntityTypeTagProvider extends FabricTagProvider.EntityTypeTagPro
         addPredators();
         addQueens();
         addRadiationResistant();
-        addRemovableVanillaSpawns();
         addRoyalAliens();
         addRoyalXenomorphs();
         addWarriors();
@@ -148,19 +147,6 @@ public class AVPEntityTypeTagProvider extends FabricTagProvider.EntityTypeTagPro
             .addTag(AVPEntityTypeTags.PRAETORIANS)
             .addTag(AVPEntityTypeTags.QUEENS)
             .addTag(AVPEntityTypeTags.WARRIORS);
-    }
-
-    private void addRemovableVanillaSpawns() {
-        getOrCreateTagBuilder(AVPEntityTypeTags.REMOVE_VANILLA_SPAWNS)
-            .add(
-                EntityType.CREEPER,
-                EntityType.HUSK,
-                EntityType.SKELETON,
-                EntityType.SPIDER,
-                EntityType.WITCH,
-                EntityType.ZOMBIE,
-                EntityType.ZOMBIE_VILLAGER
-            );
     }
 
     private void addAcidImmune() {

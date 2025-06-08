@@ -6,7 +6,7 @@ import net.minecraft.world.entity.EntityType;
 
 import com.avp.AVPResources;
 
-public record AVPEntityTypeTags() {
+public class AVPEntityTypeTags {
 
     public static final TagKey<EntityType<?>> ABERRANT_ALIENS = create("aberrant_aliens");
 
@@ -50,8 +50,6 @@ public record AVPEntityTypeTags() {
     public static final TagKey<EntityType<?>> QUEENS = create("queens");
 
     public static final TagKey<EntityType<?>> RADIATION_RESISTANT = create("radiation_resistant");
-
-    public static final TagKey<EntityType<?>> REMOVE_VANILLA_SPAWNS = create("remove_vanilla_spawns");
 
     public static final TagKey<EntityType<?>> ROYAL_ALIENS = create("royal_aliens");
 
