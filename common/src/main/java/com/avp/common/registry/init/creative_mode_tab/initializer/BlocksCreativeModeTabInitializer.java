@@ -185,6 +185,7 @@ public class BlocksCreativeModeTabInitializer {
         CreativeModeTabUtil.accept(output, AlienResinBlocks.RESIN_BRICKS);
         CreativeModeTabUtil.accept(output, AlienResinBlocks.RESIN_BRICK_SLAB);
         CreativeModeTabUtil.accept(output, AlienResinBlocks.RESIN_BRICK_STAIRS);
+        CreativeModeTabUtil.accept(output, AlienResinBlocks.RESIN_BRICK_WALL);
         CreativeModeTabUtil.accept(output, AlienResinBlocks.RESIN_VEIN);
         CreativeModeTabUtil.accept(output, AlienResinBlocks.RESIN_VENT);
         CreativeModeTabUtil.accept(output, AlienResinBlocks.RESIN_WEB);
@@ -194,12 +195,15 @@ public class BlocksCreativeModeTabInitializer {
         CreativeModeTabUtil.accept(output, AlienChitinBlocks.CHITIN_BLOCK);
         CreativeModeTabUtil.accept(output, AlienChitinBlocks.CHITIN_BLOCK_SLAB);
         CreativeModeTabUtil.accept(output, AlienChitinBlocks.CHITIN_BLOCK_STAIRS);
+        CreativeModeTabUtil.accept(output, AlienChitinBlocks.CHITIN_BLOCK_WALL);
         CreativeModeTabUtil.accept(output, AlienChitinBlocks.CHITIN_BRICKS);
         CreativeModeTabUtil.accept(output, AlienChitinBlocks.CHITIN_BRICK_SLAB);
         CreativeModeTabUtil.accept(output, AlienChitinBlocks.CHITIN_BRICK_STAIRS);
+        CreativeModeTabUtil.accept(output, AlienChitinBlocks.CHITIN_BRICK_WALL);
         CreativeModeTabUtil.accept(output, AlienChitinBlocks.POLISHED_CHITIN);
         CreativeModeTabUtil.accept(output, AlienChitinBlocks.POLISHED_CHITIN_SLAB);
         CreativeModeTabUtil.accept(output, AlienChitinBlocks.POLISHED_CHITIN_STAIRS);
+        CreativeModeTabUtil.accept(output, AlienChitinBlocks.POLISHED_CHITIN_WALL);
         CreativeModeTabUtil.accept(output, AlienChitinBlocks.CHISELED_CHITIN_BRICKS);
         CreativeModeTabUtil.accept(output, AlienChitinBlocks.CHISELED_CHITIN_BRICKS_EMBRYO);
 
@@ -209,6 +213,7 @@ public class BlocksCreativeModeTabInitializer {
         CreativeModeTabUtil.accept(output, AlienResinBlocks.NETHER_RESIN_BRICKS);
         CreativeModeTabUtil.accept(output, AlienResinBlocks.NETHER_RESIN_BRICK_SLAB);
         CreativeModeTabUtil.accept(output, AlienResinBlocks.NETHER_RESIN_BRICK_STAIRS);
+        CreativeModeTabUtil.accept(output, AlienResinBlocks.NETHER_RESIN_BRICK_WALL);
         CreativeModeTabUtil.accept(output, AlienResinBlocks.NETHER_RESIN_VEIN);
         CreativeModeTabUtil.accept(output, AlienResinBlocks.NETHER_RESIN_VENT);
         CreativeModeTabUtil.accept(output, AlienResinBlocks.NETHER_RESIN_WEB);
@@ -218,12 +223,15 @@ public class BlocksCreativeModeTabInitializer {
         CreativeModeTabUtil.accept(output, AlienChitinBlocks.NETHER_CHITIN_BLOCK);
         CreativeModeTabUtil.accept(output, AlienChitinBlocks.NETHER_CHITIN_BLOCK_SLAB);
         CreativeModeTabUtil.accept(output, AlienChitinBlocks.NETHER_CHITIN_BLOCK_STAIRS);
+        CreativeModeTabUtil.accept(output, AlienChitinBlocks.NETHER_CHITIN_BLOCK_WALL);
         CreativeModeTabUtil.accept(output, AlienChitinBlocks.NETHER_CHITIN_BRICKS);
         CreativeModeTabUtil.accept(output, AlienChitinBlocks.NETHER_CHITIN_BRICK_SLAB);
         CreativeModeTabUtil.accept(output, AlienChitinBlocks.NETHER_CHITIN_BRICK_STAIRS);
+        CreativeModeTabUtil.accept(output, AlienChitinBlocks.NETHER_CHITIN_BRICK_WALL);
         CreativeModeTabUtil.accept(output, AlienChitinBlocks.POLISHED_NETHER_CHITIN);
         CreativeModeTabUtil.accept(output, AlienChitinBlocks.POLISHED_NETHER_CHITIN_SLAB);
         CreativeModeTabUtil.accept(output, AlienChitinBlocks.POLISHED_NETHER_CHITIN_STAIRS);
+        CreativeModeTabUtil.accept(output, AlienChitinBlocks.POLISHED_NETHER_CHITIN_WALL);
         CreativeModeTabUtil.accept(output, AlienChitinBlocks.CHISELED_NETHER_CHITIN_BRICKS);
         CreativeModeTabUtil.accept(output, AlienChitinBlocks.CHISELED_NETHER_CHITIN_BRICKS_EMBRYO);
 
@@ -233,6 +241,7 @@ public class BlocksCreativeModeTabInitializer {
         CreativeModeTabUtil.accept(output, AlienResinBlocks.ABERRANT_RESIN_BRICKS);
         CreativeModeTabUtil.accept(output, AlienResinBlocks.ABERRANT_RESIN_BRICK_SLAB);
         CreativeModeTabUtil.accept(output, AlienResinBlocks.ABERRANT_RESIN_BRICK_STAIRS);
+        CreativeModeTabUtil.accept(output, AlienResinBlocks.ABERRANT_RESIN_BRICK_WALL);
         CreativeModeTabUtil.accept(output, AlienResinBlocks.ABERRANT_RESIN_VEIN);
         CreativeModeTabUtil.accept(output, AlienResinBlocks.ABERRANT_RESIN_VENT);
         CreativeModeTabUtil.accept(output, AlienResinBlocks.ABERRANT_RESIN_WEB);
@@ -242,12 +251,15 @@ public class BlocksCreativeModeTabInitializer {
         CreativeModeTabUtil.accept(output, AlienChitinBlocks.ABERRANT_CHITIN_BLOCK);
         CreativeModeTabUtil.accept(output, AlienChitinBlocks.ABERRANT_CHITIN_BLOCK_SLAB);
         CreativeModeTabUtil.accept(output, AlienChitinBlocks.ABERRANT_CHITIN_BLOCK_STAIRS);
+        CreativeModeTabUtil.accept(output, AlienChitinBlocks.ABERRANT_CHITIN_BLOCK_WALL);
         CreativeModeTabUtil.accept(output, AlienChitinBlocks.ABERRANT_CHITIN_BRICKS);
         CreativeModeTabUtil.accept(output, AlienChitinBlocks.ABERRANT_CHITIN_BRICK_SLAB);
         CreativeModeTabUtil.accept(output, AlienChitinBlocks.ABERRANT_CHITIN_BRICK_STAIRS);
+        CreativeModeTabUtil.accept(output, AlienChitinBlocks.ABERRANT_CHITIN_BRICK_WALL);
         CreativeModeTabUtil.accept(output, AlienChitinBlocks.POLISHED_ABERRANT_CHITIN);
         CreativeModeTabUtil.accept(output, AlienChitinBlocks.POLISHED_ABERRANT_CHITIN_SLAB);
         CreativeModeTabUtil.accept(output, AlienChitinBlocks.POLISHED_ABERRANT_CHITIN_STAIRS);
+        CreativeModeTabUtil.accept(output, AlienChitinBlocks.POLISHED_ABERRANT_CHITIN_WALL);
         CreativeModeTabUtil.accept(output, AlienChitinBlocks.CHISELED_ABERRANT_CHITIN_BRICKS);
         CreativeModeTabUtil.accept(output, AlienChitinBlocks.CHISELED_ABERRANT_CHITIN_BRICKS_EMBRYO);
 
@@ -257,6 +269,7 @@ public class BlocksCreativeModeTabInitializer {
         CreativeModeTabUtil.accept(output, AlienResinBlocks.IRRADIATED_RESIN_BRICKS);
         CreativeModeTabUtil.accept(output, AlienResinBlocks.IRRADIATED_RESIN_BRICK_SLAB);
         CreativeModeTabUtil.accept(output, AlienResinBlocks.IRRADIATED_RESIN_BRICK_STAIRS);
+        CreativeModeTabUtil.accept(output, AlienResinBlocks.IRRADIATED_RESIN_BRICK_WALL);
         CreativeModeTabUtil.accept(output, AlienResinBlocks.IRRADIATED_RESIN_VEIN);
         CreativeModeTabUtil.accept(output, AlienResinBlocks.IRRADIATED_RESIN_VENT);
         CreativeModeTabUtil.accept(output, AlienResinBlocks.IRRADIATED_RESIN_WEB);

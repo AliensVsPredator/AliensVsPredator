@@ -17,14 +17,17 @@ public class ChitinRecipeProvider {
         AlienChitinBlocks.ABERRANT_CHITIN_BLOCK,
         AlienChitinBlocks.ABERRANT_CHITIN_BLOCK_SLAB,
         AlienChitinBlocks.ABERRANT_CHITIN_BLOCK_STAIRS,
+        AlienChitinBlocks.ABERRANT_CHITIN_BLOCK_WALL,
         AlienChitinBlocks.ABERRANT_CHITIN_BRICKS,
         AlienChitinBlocks.ABERRANT_CHITIN_BRICK_SLAB,
         AlienChitinBlocks.ABERRANT_CHITIN_BRICK_STAIRS,
+        AlienChitinBlocks.ABERRANT_CHITIN_BRICK_WALL,
         AlienChitinBlocks.CHISELED_ABERRANT_CHITIN_BRICKS,
         AlienChitinBlocks.CHISELED_ABERRANT_CHITIN_BRICKS_EMBRYO,
         AlienChitinBlocks.POLISHED_ABERRANT_CHITIN,
         AlienChitinBlocks.POLISHED_ABERRANT_CHITIN_SLAB,
-        AlienChitinBlocks.POLISHED_ABERRANT_CHITIN_STAIRS
+        AlienChitinBlocks.POLISHED_ABERRANT_CHITIN_STAIRS,
+        AlienChitinBlocks.POLISHED_ABERRANT_CHITIN_WALL
     );
 
     private static final ChitinSet NETHER_SET = new ChitinSet(
@@ -33,14 +36,17 @@ public class ChitinRecipeProvider {
         AlienChitinBlocks.NETHER_CHITIN_BLOCK,
         AlienChitinBlocks.NETHER_CHITIN_BLOCK_SLAB,
         AlienChitinBlocks.NETHER_CHITIN_BLOCK_STAIRS,
+        AlienChitinBlocks.NETHER_CHITIN_BLOCK_WALL,
         AlienChitinBlocks.NETHER_CHITIN_BRICKS,
         AlienChitinBlocks.NETHER_CHITIN_BRICK_SLAB,
         AlienChitinBlocks.NETHER_CHITIN_BRICK_STAIRS,
+        AlienChitinBlocks.NETHER_CHITIN_BRICK_WALL,
         AlienChitinBlocks.CHISELED_NETHER_CHITIN_BRICKS,
         AlienChitinBlocks.CHISELED_NETHER_CHITIN_BRICKS_EMBRYO,
         AlienChitinBlocks.POLISHED_NETHER_CHITIN,
         AlienChitinBlocks.POLISHED_NETHER_CHITIN_SLAB,
-        AlienChitinBlocks.POLISHED_NETHER_CHITIN_STAIRS
+        AlienChitinBlocks.POLISHED_NETHER_CHITIN_STAIRS,
+        AlienChitinBlocks.POLISHED_NETHER_CHITIN_WALL
     );
 
     private static final ChitinSet NORMAL_SET = new ChitinSet(
@@ -49,14 +55,17 @@ public class ChitinRecipeProvider {
         AlienChitinBlocks.CHITIN_BLOCK,
         AlienChitinBlocks.CHITIN_BLOCK_SLAB,
         AlienChitinBlocks.CHITIN_BLOCK_STAIRS,
+        AlienChitinBlocks.CHITIN_BLOCK_WALL,
         AlienChitinBlocks.CHITIN_BRICKS,
         AlienChitinBlocks.CHITIN_BRICK_SLAB,
         AlienChitinBlocks.CHITIN_BRICK_STAIRS,
+        AlienChitinBlocks.CHITIN_BRICK_WALL,
         AlienChitinBlocks.CHISELED_CHITIN_BRICKS,
         AlienChitinBlocks.CHISELED_CHITIN_BRICKS_EMBRYO,
         AlienChitinBlocks.POLISHED_CHITIN,
         AlienChitinBlocks.POLISHED_CHITIN_SLAB,
-        AlienChitinBlocks.POLISHED_CHITIN_STAIRS
+        AlienChitinBlocks.POLISHED_CHITIN_STAIRS,
+        AlienChitinBlocks.POLISHED_CHITIN_WALL
     );
 
     public static void provide(RecipeBuilder builder) {
@@ -80,18 +89,21 @@ public class ChitinRecipeProvider {
 
         RecipeUtil.createSlabBlockManualAndStonecutterRecipes(builder, set.chitinBlock.get(), set.chitinBlockSlab.get());
         RecipeUtil.createStairBlockManualAndStonecutterRecipes(builder, set.chitinBlock.get(), set.chitinBlockStairs.get());
+        RecipeUtil.createWallBlockManualAndStonecutterRecipes(builder, set.chitinBlock.get(), set.chitinBlockWall.get());
 
         builder.stonecut(set.chitinBlock)
             .into(1, set.polished);
 
         RecipeUtil.createSlabBlockManualAndStonecutterRecipes(builder, set.chitinBlock.get(), set.polishedSlab.get());
         RecipeUtil.createStairBlockManualAndStonecutterRecipes(builder, set.chitinBlock.get(), set.polishedStairs.get());
+        RecipeUtil.createWallBlockManualAndStonecutterRecipes(builder, set.chitinBlock.get(), set.polishedWall.get());
 
         builder.stonecut(set.chitinBlock)
             .into(1, set.bricks);
 
         RecipeUtil.createSlabBlockManualAndStonecutterRecipes(builder, set.chitinBlock.get(), set.brickSlab.get());
         RecipeUtil.createStairBlockManualAndStonecutterRecipes(builder, set.chitinBlock.get(), set.brickStairs.get());
+        RecipeUtil.createWallBlockManualAndStonecutterRecipes(builder, set.chitinBlock.get(), set.brickWall.get());
 
         builder.stonecut(set.chitinBlock)
             .into(1, set.chiseledBricks);
@@ -102,6 +114,7 @@ public class ChitinRecipeProvider {
 
         RecipeUtil.createSlabBlockManualAndStonecutterRecipes(builder, set.bricks.get(), set.brickSlab.get());
         RecipeUtil.createStairBlockManualAndStonecutterRecipes(builder, set.bricks.get(), set.brickStairs.get());
+        RecipeUtil.createWallBlockManualAndStonecutterRecipes(builder, set.bricks.get(), set.brickWall.get());
 
         builder.stonecut(set.bricks)
             .into(1, set.chiseledBricks);
@@ -112,12 +125,14 @@ public class ChitinRecipeProvider {
 
         RecipeUtil.createSlabBlockManualAndStonecutterRecipes(builder, set.polished.get(), set.polishedSlab.get());
         RecipeUtil.createStairBlockManualAndStonecutterRecipes(builder, set.polished.get(), set.polishedStairs.get());
+        RecipeUtil.createWallBlockManualAndStonecutterRecipes(builder, set.polished.get(), set.polishedWall.get());
 
         builder.stonecut(set.polished)
             .into(1, set.bricks);
 
         RecipeUtil.createSlabBlockManualAndStonecutterRecipes(builder, set.polished.get(), set.brickSlab.get());
         RecipeUtil.createStairBlockManualAndStonecutterRecipes(builder, set.polished.get(), set.brickStairs.get());
+        RecipeUtil.createWallBlockManualAndStonecutterRecipes(builder, set.polished.get(), set.brickWall.get());
 
         builder.stonecut(set.polished)
             .into(1, set.chiseledBricks);
@@ -131,13 +146,16 @@ public class ChitinRecipeProvider {
         AVPDeferredHolder<Block> chitinBlock,
         AVPDeferredHolder<Block> chitinBlockSlab,
         AVPDeferredHolder<Block> chitinBlockStairs,
+        AVPDeferredHolder<Block> chitinBlockWall,
         AVPDeferredHolder<Block> bricks,
         AVPDeferredHolder<Block> brickSlab,
         AVPDeferredHolder<Block> brickStairs,
+        AVPDeferredHolder<Block> brickWall,
         AVPDeferredHolder<Block> chiseledBricks,
         AVPDeferredHolder<Block> chiseledBricksEmbryo,
         AVPDeferredHolder<Block> polished,
         AVPDeferredHolder<Block> polishedSlab,
-        AVPDeferredHolder<Block> polishedStairs
+        AVPDeferredHolder<Block> polishedStairs,
+        AVPDeferredHolder<Block> polishedWall
     ) {}
 }

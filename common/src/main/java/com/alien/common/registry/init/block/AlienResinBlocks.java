@@ -12,6 +12,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.RotatedPillarBlock;
 import net.minecraft.world.level.block.SlabBlock;
 import net.minecraft.world.level.block.StairBlock;
+import net.minecraft.world.level.block.WallBlock;
 
 import com.avp.common.gameplay.block.property.BlockProperties;
 import com.avp.common.registry.AVPDeferredHolder;
@@ -40,6 +41,11 @@ public class AlienResinBlocks {
             ABERRANT_RESIN_BRICKS.get().defaultBlockState(),
             BlockProperties.ABERRANT_RESIN.build()
         )
+    );
+
+    public static final AVPDeferredHolder<Block> ABERRANT_RESIN_BRICK_WALL = AVPBlocks.register(
+        "aberrant_resin_brick_wall",
+        () -> new WallBlock(BlockProperties.ABERRANT_RESIN.build())
     );
 
     public static final AVPDeferredHolder<Block> ABERRANT_RESIN_STAIRS = AVPBlocks.register(
@@ -98,6 +104,11 @@ public class AlienResinBlocks {
         )
     );
 
+    public static final AVPDeferredHolder<Block> IRRADIATED_RESIN_BRICK_WALL = AVPBlocks.register(
+        "irradiated_resin_brick_wall",
+        () -> new WallBlock(BlockProperties.IRRADIATED_RESIN.build())
+    );
+
     public static final AVPDeferredHolder<Block> IRRADIATED_RESIN_STAIRS = AVPBlocks.register(
         "irradiated_resin_stairs",
         () -> new StairBlock(
@@ -154,6 +165,11 @@ public class AlienResinBlocks {
         )
     );
 
+    public static final AVPDeferredHolder<Block> NETHER_RESIN_BRICK_WALL = AVPBlocks.register(
+        "nether_resin_brick_wall",
+        () -> new WallBlock(BlockProperties.NETHER_RESIN.build())
+    );
+
     public static final AVPDeferredHolder<Block> NETHER_RESIN_STAIRS = AVPBlocks.register(
         "nether_resin_stairs",
         () -> new StairBlock(
@@ -199,6 +215,11 @@ public class AlienResinBlocks {
             RESIN_BRICKS.get().defaultBlockState(),
             BlockProperties.RESIN.build()
         )
+    );
+
+    public static final AVPDeferredHolder<Block> RESIN_BRICK_WALL = AVPBlocks.register(
+        "resin_brick_wall",
+        () -> new WallBlock(BlockProperties.RESIN.build())
     );
 
     public static final AVPDeferredHolder<Block> RESIN_NODE = AVPBlocks.register(

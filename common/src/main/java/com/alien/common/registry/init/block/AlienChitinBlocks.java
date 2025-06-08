@@ -3,6 +3,7 @@ package com.alien.common.registry.init.block;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SlabBlock;
 import net.minecraft.world.level.block.StairBlock;
+import net.minecraft.world.level.block.WallBlock;
 
 import com.avp.common.gameplay.block.property.BlockProperties;
 import com.avp.common.registry.AVPDeferredHolder;
@@ -28,6 +29,11 @@ public class AlienChitinBlocks {
         )
     );
 
+    public static final AVPDeferredHolder<Block> ABERRANT_CHITIN_BLOCK_WALL = AVPBlocks.register(
+        "aberrant_chitin_block_wall",
+        () -> new WallBlock(BlockProperties.ABERRANT_CHITIN.build())
+    );
+
     public static final AVPDeferredHolder<Block> ABERRANT_CHITIN_BRICKS = AVPBlocks.register(
         "aberrant_chitin_bricks",
         BlockProperties.ABERRANT_CHITIN
@@ -44,6 +50,11 @@ public class AlienChitinBlocks {
             ABERRANT_CHITIN_BRICKS.get().defaultBlockState(),
             BlockProperties.ABERRANT_CHITIN.build()
         )
+    );
+
+    public static final AVPDeferredHolder<Block> ABERRANT_CHITIN_BRICK_WALL = AVPBlocks.register(
+        "aberrant_chitin_brick_wall",
+        () -> new WallBlock(BlockProperties.ABERRANT_CHITIN.build())
     );
 
     public static final AVPDeferredHolder<Block> CHISELED_ABERRANT_CHITIN_BRICKS = AVPBlocks.register(
@@ -94,6 +105,11 @@ public class AlienChitinBlocks {
         )
     );
 
+    public static final AVPDeferredHolder<Block> CHITIN_BLOCK_WALL = AVPBlocks.register(
+        "chitin_block_wall",
+        () -> new WallBlock(BlockProperties.CHITIN.build())
+    );
+
     public static final AVPDeferredHolder<Block> CHITIN_BRICKS = AVPBlocks.register(
         "chitin_bricks",
         BlockProperties.CHITIN
@@ -110,6 +126,11 @@ public class AlienChitinBlocks {
             CHITIN_BRICKS.get().defaultBlockState(),
             BlockProperties.CHITIN.build()
         )
+    );
+
+    public static final AVPDeferredHolder<Block> CHITIN_BRICK_WALL = AVPBlocks.register(
+        "chitin_brick_wall",
+        () -> new WallBlock(BlockProperties.CHITIN.build())
     );
 
     public static final AVPDeferredHolder<Block> NETHER_CHITIN_BLOCK = AVPBlocks.register(
@@ -130,6 +151,11 @@ public class AlienChitinBlocks {
         )
     );
 
+    public static final AVPDeferredHolder<Block> NETHER_CHITIN_BLOCK_WALL = AVPBlocks.register(
+        "nether_chitin_block_wall",
+        () -> new WallBlock(BlockProperties.NETHER_CHITIN.build())
+    );
+
     public static final AVPDeferredHolder<Block> NETHER_CHITIN_BRICKS = AVPBlocks.register(
         "nether_chitin_bricks",
         BlockProperties.NETHER_CHITIN
@@ -146,6 +172,11 @@ public class AlienChitinBlocks {
             NETHER_CHITIN_BRICKS.get().defaultBlockState(),
             BlockProperties.NETHER_CHITIN.build()
         )
+    );
+
+    public static final AVPDeferredHolder<Block> NETHER_CHITIN_BRICK_WALL = AVPBlocks.register(
+        "nether_chitin_brick_wall",
+        () -> new WallBlock(BlockProperties.NETHER_CHITIN.build())
     );
 
     public static final AVPDeferredHolder<Block> POLISHED_ABERRANT_CHITIN = AVPBlocks.register(
@@ -166,6 +197,11 @@ public class AlienChitinBlocks {
         )
     );
 
+    public static final AVPDeferredHolder<Block> POLISHED_ABERRANT_CHITIN_WALL = AVPBlocks.register(
+        "polished_aberrant_chitin_wall",
+        () -> new WallBlock(BlockProperties.ABERRANT_CHITIN.build())
+    );
+
     public static final AVPDeferredHolder<Block> POLISHED_CHITIN = AVPBlocks.register(
         "polished_chitin",
         BlockProperties.CHITIN
@@ -184,6 +220,11 @@ public class AlienChitinBlocks {
         )
     );
 
+    public static final AVPDeferredHolder<Block> POLISHED_CHITIN_WALL = AVPBlocks.register(
+        "polished_chitin_wall",
+        () -> new WallBlock(BlockProperties.CHITIN.build())
+    );
+
     public static final AVPDeferredHolder<Block> POLISHED_NETHER_CHITIN = AVPBlocks.register(
         "polished_nether_chitin",
         BlockProperties.NETHER_CHITIN
@@ -200,6 +241,11 @@ public class AlienChitinBlocks {
             POLISHED_NETHER_CHITIN.get().defaultBlockState(),
             BlockProperties.NETHER_CHITIN.build()
         )
+    );
+
+    public static final AVPDeferredHolder<Block> POLISHED_NETHER_CHITIN_WALL = AVPBlocks.register(
+        "polished_nether_chitin_wall",
+        () -> new WallBlock(BlockProperties.NETHER_CHITIN.build())
     );
 
     public static void initialize() {}

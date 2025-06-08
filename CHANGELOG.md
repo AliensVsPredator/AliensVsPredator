@@ -15,12 +15,15 @@
   - Aberrant Chitin Block
   - Aberrant Chitin Block Slab
   - Aberrant Chitin Block Stairs
+  - Aberrant Chitin Block Wall
   - Aberrant Chitin Bricks
   - Aberrant Chitin Brick Slab
   - Aberrant Chitin Brick Stairs
+  - Aberrant Chitin Brick Wall
   - Aberrant Resin Bricks
   - Aberrant Resin Brick Slab
   - Aberrant Resin Brick Stairs
+  - Aberrant Resin Brick Wall
   - Aberrant Resin Slab
   - Aberrant Resin Stairs
   - Aberrant Resin Vent
@@ -33,38 +36,48 @@
   - Irradiated Chitin Block
   - Irradiated Chitin Block Slab
   - Irradiated Chitin Block Stairs
+  - Irradiated Chitin Block Wall
   - Irradiated Chitin Bricks
   - Irradiated Chitin Brick Slab
   - Irradiated Chitin Brick Stairs
+  - Irradiated Chitin Brick Wall
   - Irradiated Resin Bricks
   - Irradiated Resin Brick Slab
   - Irradiated Resin Brick Stairs
+  - Irradiated Resin Brick Wall
   - Irradiated Resin Slab
   - Irradiated Resin Stairs
   - Irradiated Resin Vent
   - Nether Chitin Block
   - Nether Chitin Block Slab
   - Nether Chitin Block Stairs
+  - Nether Chitin Block Wall
   - Nether Chitin Bricks
   - Nether Chitin Brick Slab
   - Nether Chitin Brick Stairs
+  - Nether Chitin Brick Wall
   - Nether Resin Bricks
   - Nether Resin Brick Slab
   - Nether Resin Brick Stairs
+  - Nether Resin Brick Wall
   - Nether Resin Slab
   - Nether Resin Stairs
   - Nether Resin Vent
   - Polished Aberrant Chitin
   - Polished Aberrant Chitin Slab
   - Polished Aberrant Chitin Stairs
+  - Polished Aberrant Chitin Wall
   - Polished Chitin
   - Polished Chitin Slab
   - Polished Chitin Stairs
+  - Polished Chitin Wall
   - Polished Nether Chitin
   - Polished Nether Chitin Slab
   - Polished Nether Chitin Stairs
+  - Polished Nether Chitin Wall
   - Resin Brick Slab
   - Resin Brick Stairs
+  - Resin Brick Wall
   - Resin Slab
   - Resin Stairs
   - Ribbed Aberrant Resin

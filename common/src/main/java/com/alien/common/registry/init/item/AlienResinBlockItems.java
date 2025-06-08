@@ -29,6 +29,11 @@ public class AlienResinBlockItems {
         AlienResinBlocks.ABERRANT_RESIN_BRICK_STAIRS
     );
 
+    public static final AVPDeferredHolder<BlockItem> ABERRANT_RESIN_BRICK_WALL = AVPBlockItems.register(
+        "aberrant_resin_brick_wall",
+        AlienResinBlocks.ABERRANT_RESIN_BRICK_WALL
+    );
+
     public static final AVPDeferredHolder<BlockItem> ABERRANT_RESIN_NODE = AVPBlockItems.register(
         "aberrant_resin_node",
         AlienResinBlocks.ABERRANT_RESIN_NODE
@@ -72,6 +77,11 @@ public class AlienResinBlockItems {
     public static final AVPDeferredHolder<BlockItem> IRRADIATED_RESIN_BRICK_STAIRS = AVPBlockItems.register(
         "irradiated_resin_brick_stairs",
         AlienResinBlocks.IRRADIATED_RESIN_BRICK_STAIRS
+    );
+
+    public static final AVPDeferredHolder<BlockItem> IRRADIATED_RESIN_BRICK_WALL = AVPBlockItems.register(
+        "irradiated_resin_brick_wall",
+        AlienResinBlocks.IRRADIATED_RESIN_BRICK_WALL
     );
 
     public static final AVPDeferredHolder<BlockItem> IRRADIATED_RESIN_NODE = AVPBlockItems.register(
@@ -120,6 +130,11 @@ public class AlienResinBlockItems {
         AlienResinBlocks.NETHER_RESIN_BRICK_STAIRS
     );
 
+    public static final AVPDeferredHolder<BlockItem> NETHER_RESIN_BRICK_WALL = AVPBlockItems.register(
+        "nether_resin_brick_wall",
+        AlienResinBlocks.NETHER_RESIN_BRICK_WALL
+    );
+
     public static final AVPDeferredHolder<BlockItem> NETHER_RESIN_NODE = AVPBlockItems.register(
         "nether_resin_node",
         AlienResinBlocks.NETHER_RESIN_NODE,
@@ -160,6 +175,11 @@ public class AlienResinBlockItems {
     public static final AVPDeferredHolder<BlockItem> RESIN_BRICK_STAIRS = AVPBlockItems.register(
         "resin_brick_stairs",
         AlienResinBlocks.RESIN_BRICK_STAIRS
+    );
+
+    public static final AVPDeferredHolder<BlockItem> RESIN_BRICK_WALL = AVPBlockItems.register(
+        "resin_brick_wall",
+        AlienResinBlocks.RESIN_BRICK_WALL
     );
 
     public static final AVPDeferredHolder<BlockItem> RESIN_NODE = AVPBlockItems.register("resin_node", AlienResinBlocks.RESIN_NODE);

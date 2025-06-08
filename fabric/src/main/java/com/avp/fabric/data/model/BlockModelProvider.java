@@ -25,7 +25,6 @@ import net.minecraft.data.models.model.TextureMapping;
 import net.minecraft.data.models.model.TextureSlot;
 import net.minecraft.data.models.model.TexturedModel;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
@@ -67,7 +66,12 @@ public class BlockModelProvider extends FabricModelProvider {
 
                 createStairs(generators, block, HumanIndustrialConcreteBlocks.DYE_COLOR_TO_INDUSTRIAL_CONCRETE_STAIRS.get(dyeColor).get());
 
-                createIndustrialConcreteWall(generators, dyeColor, block, topResourceLocation);
+                createWallCustomTop(
+                    generators,
+                    block,
+                    HumanIndustrialConcreteBlocks.DYE_COLOR_TO_INDUSTRIAL_CONCRETE_WALL.get(dyeColor).get(),
+                    topResourceLocation
+                );
             }
         );
 
@@ -108,10 +112,12 @@ public class BlockModelProvider extends FabricModelProvider {
 
         generators.family(AlienChitinBlocks.ABERRANT_CHITIN_BLOCK.get())
             .slab(AlienChitinBlocks.ABERRANT_CHITIN_BLOCK_SLAB.get())
-            .stairs(AlienChitinBlocks.ABERRANT_CHITIN_BLOCK_STAIRS.get());
+            .stairs(AlienChitinBlocks.ABERRANT_CHITIN_BLOCK_STAIRS.get())
+            .wall(AlienChitinBlocks.ABERRANT_CHITIN_BLOCK_WALL.get());
         generators.family(AlienChitinBlocks.ABERRANT_CHITIN_BRICKS.get())
             .slab(AlienChitinBlocks.ABERRANT_CHITIN_BRICK_SLAB.get())
-            .stairs(AlienChitinBlocks.ABERRANT_CHITIN_BRICK_STAIRS.get());
+            .stairs(AlienChitinBlocks.ABERRANT_CHITIN_BRICK_STAIRS.get())
+            .wall(AlienChitinBlocks.ABERRANT_CHITIN_BRICK_WALL.get());
         createBottomTopBlock(
             generators,
             AlienChitinBlocks.CHISELED_ABERRANT_CHITIN_BRICKS.get(),
@@ -124,7 +130,8 @@ public class BlockModelProvider extends FabricModelProvider {
         );
         generators.family(AlienChitinBlocks.POLISHED_ABERRANT_CHITIN.get())
             .slab(AlienChitinBlocks.POLISHED_ABERRANT_CHITIN_SLAB.get())
-            .stairs(AlienChitinBlocks.POLISHED_ABERRANT_CHITIN_STAIRS.get());
+            .stairs(AlienChitinBlocks.POLISHED_ABERRANT_CHITIN_STAIRS.get())
+            .wall(AlienChitinBlocks.POLISHED_ABERRANT_CHITIN_WALL.get());
 
         generators.createRotatedVariantBlock(AlienResinBlocks.NETHER_RESIN.get());
         createSlab(generators, AlienResinBlocks.NETHER_RESIN.get(), AlienResinBlocks.NETHER_RESIN_SLAB.get());
@@ -135,10 +142,12 @@ public class BlockModelProvider extends FabricModelProvider {
 
         generators.family(AlienChitinBlocks.NETHER_CHITIN_BLOCK.get())
             .slab(AlienChitinBlocks.NETHER_CHITIN_BLOCK_SLAB.get())
-            .stairs(AlienChitinBlocks.NETHER_CHITIN_BLOCK_STAIRS.get());
+            .stairs(AlienChitinBlocks.NETHER_CHITIN_BLOCK_STAIRS.get())
+            .wall(AlienChitinBlocks.NETHER_CHITIN_BLOCK_WALL.get());
         generators.family(AlienChitinBlocks.NETHER_CHITIN_BRICKS.get())
             .slab(AlienChitinBlocks.NETHER_CHITIN_BRICK_SLAB.get())
-            .stairs(AlienChitinBlocks.NETHER_CHITIN_BRICK_STAIRS.get());
+            .stairs(AlienChitinBlocks.NETHER_CHITIN_BRICK_STAIRS.get())
+            .wall(AlienChitinBlocks.NETHER_CHITIN_BRICK_WALL.get());
         createBottomTopBlock(
             generators,
             AlienChitinBlocks.CHISELED_NETHER_CHITIN_BRICKS.get(),
@@ -151,7 +160,8 @@ public class BlockModelProvider extends FabricModelProvider {
         );
         generators.family(AlienChitinBlocks.POLISHED_NETHER_CHITIN.get())
             .slab(AlienChitinBlocks.POLISHED_NETHER_CHITIN_SLAB.get())
-            .stairs(AlienChitinBlocks.POLISHED_NETHER_CHITIN_STAIRS.get());
+            .stairs(AlienChitinBlocks.POLISHED_NETHER_CHITIN_STAIRS.get())
+            .wall(AlienChitinBlocks.POLISHED_NETHER_CHITIN_WALL.get());
 
         generators.createRotatedVariantBlock(AlienResinBlocks.RESIN.get());
         createSlab(generators, AlienResinBlocks.RESIN.get(), AlienResinBlocks.RESIN_SLAB.get());
@@ -162,15 +172,18 @@ public class BlockModelProvider extends FabricModelProvider {
 
         generators.family(AlienChitinBlocks.CHITIN_BLOCK.get())
             .slab(AlienChitinBlocks.CHITIN_BLOCK_SLAB.get())
-            .stairs(AlienChitinBlocks.CHITIN_BLOCK_STAIRS.get());
+            .stairs(AlienChitinBlocks.CHITIN_BLOCK_STAIRS.get())
+            .wall(AlienChitinBlocks.CHITIN_BLOCK_WALL.get());
         generators.family(AlienChitinBlocks.CHITIN_BRICKS.get())
             .slab(AlienChitinBlocks.CHITIN_BRICK_SLAB.get())
-            .stairs(AlienChitinBlocks.CHITIN_BRICK_STAIRS.get());
+            .stairs(AlienChitinBlocks.CHITIN_BRICK_STAIRS.get())
+            .wall(AlienChitinBlocks.CHITIN_BRICK_WALL.get());
         createBottomTopBlock(generators, AlienChitinBlocks.CHISELED_CHITIN_BRICKS.get(), AlienChitinBlocks.POLISHED_CHITIN.get());
         createBottomTopBlock(generators, AlienChitinBlocks.CHISELED_CHITIN_BRICKS_EMBRYO.get(), AlienChitinBlocks.POLISHED_CHITIN.get());
         generators.family(AlienChitinBlocks.POLISHED_CHITIN.get())
             .slab(AlienChitinBlocks.POLISHED_CHITIN_SLAB.get())
-            .stairs(AlienChitinBlocks.POLISHED_CHITIN_STAIRS.get());
+            .stairs(AlienChitinBlocks.POLISHED_CHITIN_STAIRS.get())
+            .wall(AlienChitinBlocks.POLISHED_CHITIN_WALL.get());
 
         HumanPaddingBlocks.DYE_COLOR_TO_PADDING.forEach(
             (dyeColor, blockSupplier) -> {
@@ -243,24 +256,28 @@ public class BlockModelProvider extends FabricModelProvider {
         generators.createTrivialCube(HumanSteelBlocks.CHISELED_STEEL.get());
         generators.createTrivialCube(HumanTitaniumBlocks.CHISELED_TITANIUM.get());
 
-        generators.createTrivialCube(AlienResinBlocks.ABERRANT_RESIN_BRICKS.get());
-        createSlab(generators, AlienResinBlocks.ABERRANT_RESIN_BRICKS.get(), AlienResinBlocks.ABERRANT_RESIN_BRICK_SLAB.get());
-        createStairs(generators, AlienResinBlocks.ABERRANT_RESIN_BRICKS.get(), AlienResinBlocks.ABERRANT_RESIN_BRICK_STAIRS.get());
+        generators.family(AlienResinBlocks.ABERRANT_RESIN_BRICKS.get())
+            .slab(AlienResinBlocks.ABERRANT_RESIN_BRICK_SLAB.get())
+            .stairs(AlienResinBlocks.ABERRANT_RESIN_BRICK_STAIRS.get())
+            .wall(AlienResinBlocks.ABERRANT_RESIN_BRICK_WALL.get());
         generators.createTrivialCube(AlienResinBlocks.ABERRANT_RESIN_VENT.get());
 
-        generators.createTrivialCube(AlienResinBlocks.IRRADIATED_RESIN_BRICKS.get());
-        createSlab(generators, AlienResinBlocks.IRRADIATED_RESIN_BRICKS.get(), AlienResinBlocks.IRRADIATED_RESIN_BRICK_SLAB.get());
-        createStairs(generators, AlienResinBlocks.IRRADIATED_RESIN_BRICKS.get(), AlienResinBlocks.IRRADIATED_RESIN_BRICK_STAIRS.get());
+        generators.family(AlienResinBlocks.IRRADIATED_RESIN_BRICKS.get())
+            .slab(AlienResinBlocks.IRRADIATED_RESIN_BRICK_SLAB.get())
+            .stairs(AlienResinBlocks.IRRADIATED_RESIN_BRICK_STAIRS.get())
+            .wall(AlienResinBlocks.IRRADIATED_RESIN_BRICK_WALL.get());
         generators.createTrivialCube(AlienResinBlocks.IRRADIATED_RESIN_VENT.get());
 
-        generators.createTrivialCube(AlienResinBlocks.NETHER_RESIN_BRICKS.get());
-        createSlab(generators, AlienResinBlocks.NETHER_RESIN_BRICKS.get(), AlienResinBlocks.NETHER_RESIN_BRICK_SLAB.get());
-        createStairs(generators, AlienResinBlocks.NETHER_RESIN_BRICKS.get(), AlienResinBlocks.NETHER_RESIN_BRICK_STAIRS.get());
+        generators.family(AlienResinBlocks.NETHER_RESIN_BRICKS.get())
+            .slab(AlienResinBlocks.NETHER_RESIN_BRICK_SLAB.get())
+            .stairs(AlienResinBlocks.NETHER_RESIN_BRICK_STAIRS.get())
+            .wall(AlienResinBlocks.NETHER_RESIN_BRICK_WALL.get());
         generators.createTrivialCube(AlienResinBlocks.NETHER_RESIN_VENT.get());
 
-        generators.createTrivialCube(AlienResinBlocks.RESIN_BRICKS.get());
-        createSlab(generators, AlienResinBlocks.RESIN_BRICKS.get(), AlienResinBlocks.RESIN_BRICK_SLAB.get());
-        createStairs(generators, AlienResinBlocks.RESIN_BRICKS.get(), AlienResinBlocks.RESIN_BRICK_STAIRS.get());
+        generators.family(AlienResinBlocks.RESIN_BRICKS.get())
+            .slab(AlienResinBlocks.RESIN_BRICK_SLAB.get())
+            .stairs(AlienResinBlocks.RESIN_BRICK_STAIRS.get())
+            .wall(AlienResinBlocks.RESIN_BRICK_WALL.get());
         generators.createTrivialCube(AlienResinBlocks.RESIN_VENT.get());
 
         createRotatedPillar(generators, AlienResinBlocks.RIBBED_ABERRANT_RESIN.get(), TexturedModel.CUBE);
@@ -578,14 +595,20 @@ public class BlockModelProvider extends FabricModelProvider {
         );
     }
 
-    private void createIndustrialConcreteWall(
+    private void createWall(
         BlockModelGenerators generators,
-        DyeColor dyeColor,
         Block block,
+        Block wallBlock
+    ) {
+        createWallCustomTop(generators, block, wallBlock, TextureMapping.getBlockTexture(block));
+    }
+
+    private void createWallCustomTop(
+        BlockModelGenerators generators,
+        Block block,
+        Block wallBlock,
         ResourceLocation topResourceLocation
     ) {
-        var wallBlock = HumanIndustrialConcreteBlocks.DYE_COLOR_TO_INDUSTRIAL_CONCRETE_WALL.get(dyeColor).get();
-
         var wallTextureMapping = TextureMapping.cube(block)
             .put(TextureSlot.TOP, topResourceLocation);
         var wallTopTextureMapping = TextureMapping.cube(block)
