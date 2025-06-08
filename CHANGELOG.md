@@ -105,8 +105,11 @@
 ## ♻️ Changes
 - Iron-like ingots can now be used to craft industrial furnaces.
 - Iron-like ingots can now be used to craft razor wire.
+- Increased the damage dealt by old painless by 6x, making it the most lethal weapon in the game.
+- Old painless now consumes 6 bullets per shot instead of 1.
 
 ## 🐞 Fixes
+- Fixed old painless ammo consumption logic not accounting for consuming multiple bullets per shot.
 - Fixed chestbursters spreading resin like adult xenomorphs.
 - Fixed aberrant resin blocks not burning in fire or lava.
 - Fixed players eating chorus fruit while infected causing facehuggers to spawn instead of the correct embryo type.

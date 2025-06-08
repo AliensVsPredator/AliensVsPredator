@@ -42,7 +42,7 @@ public class CheckReloadingStep implements GunShootStep {
                 && supplier != null
         ) {
             var ammunitionItem = supplier.get();
-            var amountToConsume = 1;
+            var amountToConsume = gunConfig.getDefaultFireMode().consumedAmmunitionPerShot();
             // Run a simulation to see if we can succeed in consuming a single bullet.
             var itemConsumptionResult = GunReloading.consumeItemAmountFromInventory(player, ammunitionItem, amountToConsume, false);
 
