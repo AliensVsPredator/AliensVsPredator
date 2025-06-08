@@ -1,4 +1,4 @@
-package com.avp.fabric.data.lang;
+package com.avp.fabric.data.lang.en_us;
 
 import com.alien.common.gameplay.hive.HiveBossBarManager;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
@@ -7,22 +7,22 @@ import net.minecraft.core.HolderLookup;
 
 import java.util.concurrent.CompletableFuture;
 
-import com.avp.fabric.data.lang.en_us.EnUsAdvancementProvider;
-import com.avp.fabric.data.lang.en_us.EnUsBiomeTagProvider;
-import com.avp.fabric.data.lang.en_us.EnUsBlockProvider;
-import com.avp.fabric.data.lang.en_us.EnUsBlockTagProvider;
-import com.avp.fabric.data.lang.en_us.EnUsConfigProvider;
-import com.avp.fabric.data.lang.en_us.EnUsCreativeModeTabProvider;
-import com.avp.fabric.data.lang.en_us.EnUsDamageTypeTagProvider;
-import com.avp.fabric.data.lang.en_us.EnUsEnchantmentTagProvider;
-import com.avp.fabric.data.lang.en_us.EnUsEntityProvider;
-import com.avp.fabric.data.lang.en_us.EnUsEntityTypeTagProvider;
-import com.avp.fabric.data.lang.en_us.EnUsItemProvider;
-import com.avp.fabric.data.lang.en_us.EnUsItemTagProvider;
-import com.avp.fabric.data.lang.en_us.EnUsKeybindProvider;
-import com.avp.fabric.data.lang.en_us.EnUsMobEffectTagProvider;
-import com.avp.fabric.data.lang.en_us.EnUsSoundEventProvider;
-import com.avp.fabric.data.lang.en_us.EnUsTooltipProvider;
+import com.avp.fabric.data.lang.en_us.provider.EnUsAdvancementProvider;
+import com.avp.fabric.data.lang.en_us.provider.EnUsBiomeTagProvider;
+import com.avp.fabric.data.lang.en_us.provider.EnUsBlockProvider;
+import com.avp.fabric.data.lang.en_us.provider.EnUsBlockTagProvider;
+import com.avp.fabric.data.lang.en_us.provider.EnUsConfigProvider;
+import com.avp.fabric.data.lang.en_us.provider.EnUsCreativeModeTabProvider;
+import com.avp.fabric.data.lang.en_us.provider.EnUsDamageTypeTagProvider;
+import com.avp.fabric.data.lang.en_us.provider.EnUsEnchantmentTagProvider;
+import com.avp.fabric.data.lang.en_us.provider.EnUsEntityProvider;
+import com.avp.fabric.data.lang.en_us.provider.EnUsEntityTypeTagProvider;
+import com.avp.fabric.data.lang.en_us.provider.EnUsItemProvider;
+import com.avp.fabric.data.lang.en_us.provider.EnUsItemTagProvider;
+import com.avp.fabric.data.lang.en_us.provider.EnUsKeybindProvider;
+import com.avp.fabric.data.lang.en_us.provider.EnUsMobEffectTagProvider;
+import com.avp.fabric.data.lang.en_us.provider.EnUsSoundEventProvider;
+import com.avp.fabric.data.lang.en_us.provider.EnUsTooltipProvider;
 
 public class EnglishLanguageProvider extends FabricLanguageProvider {
 

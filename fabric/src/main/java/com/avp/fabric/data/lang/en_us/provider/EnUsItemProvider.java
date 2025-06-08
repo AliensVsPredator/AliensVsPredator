@@ -1,4 +1,4 @@
-package com.avp.fabric.data.lang.en_us;
+package com.avp.fabric.data.lang.en_us.provider;
 
 import com.alien.common.registry.init.AlienItems;
 import com.alien.common.registry.init.item.AlienArmorItems;
