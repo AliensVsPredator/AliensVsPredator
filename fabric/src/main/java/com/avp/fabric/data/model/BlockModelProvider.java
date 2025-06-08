@@ -285,10 +285,25 @@ public class BlockModelProvider extends FabricModelProvider {
         createRotatedPillar(generators, AlienResinBlocks.RIBBED_NETHER_RESIN.get(), TexturedModel.CUBE);
         createRotatedPillar(generators, AlienResinBlocks.RIBBED_RESIN.get(), TexturedModel.CUBE);
 
-        generators.createTrivialCube(AlienResinBlocks.SMOOTH_ABERRANT_RESIN.get());
-        generators.createTrivialCube(AlienResinBlocks.SMOOTH_IRRADIATED_RESIN.get());
-        generators.createTrivialCube(AlienResinBlocks.SMOOTH_NETHER_RESIN.get());
-        generators.createTrivialCube(AlienResinBlocks.SMOOTH_RESIN.get());
+        generators.family(AlienResinBlocks.SMOOTH_ABERRANT_RESIN.get())
+            .slab(AlienResinBlocks.SMOOTH_ABERRANT_RESIN_SLAB.get())
+            .stairs(AlienResinBlocks.SMOOTH_ABERRANT_RESIN_STAIRS.get())
+            .wall(AlienResinBlocks.SMOOTH_ABERRANT_RESIN_WALL.get());
+
+        generators.family(AlienResinBlocks.SMOOTH_IRRADIATED_RESIN.get())
+            .slab(AlienResinBlocks.SMOOTH_IRRADIATED_RESIN_SLAB.get())
+            .stairs(AlienResinBlocks.SMOOTH_IRRADIATED_RESIN_STAIRS.get())
+            .wall(AlienResinBlocks.SMOOTH_IRRADIATED_RESIN_WALL.get());
+
+        generators.family(AlienResinBlocks.SMOOTH_NETHER_RESIN.get())
+            .slab(AlienResinBlocks.SMOOTH_NETHER_RESIN_SLAB.get())
+            .stairs(AlienResinBlocks.SMOOTH_NETHER_RESIN_STAIRS.get())
+            .wall(AlienResinBlocks.SMOOTH_NETHER_RESIN_WALL.get());
+
+        generators.family(AlienResinBlocks.SMOOTH_RESIN.get())
+            .slab(AlienResinBlocks.SMOOTH_RESIN_SLAB.get())
+            .stairs(AlienResinBlocks.SMOOTH_RESIN_STAIRS.get())
+            .wall(AlienResinBlocks.SMOOTH_RESIN_WALL.get());
 
         generators.family(HumanFerroaluminumBlocks.CUT_FERROALUMINUM.get())
             .slab(HumanFerroaluminumBlocks.CUT_FERROALUMINUM_SLAB.get())

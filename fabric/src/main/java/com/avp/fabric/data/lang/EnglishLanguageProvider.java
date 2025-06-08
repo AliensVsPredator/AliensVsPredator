@@ -217,9 +217,21 @@ public class EnglishLanguageProvider extends FabricLanguageProvider {
         addBlock(builder, AlienResinBlocks.RIBBED_NETHER_RESIN, "Ribbed Nether Resin");
         addBlock(builder, AlienResinBlocks.RIBBED_RESIN, "Ribbed Resin");
         addBlock(builder, AlienResinBlocks.SMOOTH_ABERRANT_RESIN, "Smooth Aberrant Resin");
+        addBlock(builder, AlienResinBlocks.SMOOTH_ABERRANT_RESIN_SLAB, "Smooth Aberrant Resin Slab");
+        addBlock(builder, AlienResinBlocks.SMOOTH_ABERRANT_RESIN_STAIRS, "Smooth Aberrant Resin Stairs");
+        addBlock(builder, AlienResinBlocks.SMOOTH_ABERRANT_RESIN_WALL, "Smooth Aberrant Resin Wall");
         addBlock(builder, AlienResinBlocks.SMOOTH_IRRADIATED_RESIN, "Smooth Irradiated Resin");
+        addBlock(builder, AlienResinBlocks.SMOOTH_IRRADIATED_RESIN_SLAB, "Smooth Irradiated Resin Slab");
+        addBlock(builder, AlienResinBlocks.SMOOTH_IRRADIATED_RESIN_STAIRS, "Smooth Irradiated Resin Stairs");
+        addBlock(builder, AlienResinBlocks.SMOOTH_IRRADIATED_RESIN_WALL, "Smooth Irradiated Resin Wall");
         addBlock(builder, AlienResinBlocks.SMOOTH_NETHER_RESIN, "Smooth Nether Resin");
+        addBlock(builder, AlienResinBlocks.SMOOTH_NETHER_RESIN_SLAB, "Smooth Nether Resin Slab");
+        addBlock(builder, AlienResinBlocks.SMOOTH_NETHER_RESIN_STAIRS, "Smooth Nether Resin Stairs");
+        addBlock(builder, AlienResinBlocks.SMOOTH_NETHER_RESIN_WALL, "Smooth Nether Resin Wall");
         addBlock(builder, AlienResinBlocks.SMOOTH_RESIN, "Smooth Resin");
+        addBlock(builder, AlienResinBlocks.SMOOTH_RESIN_SLAB, "Smooth Resin Slab");
+        addBlock(builder, AlienResinBlocks.SMOOTH_RESIN_STAIRS, "Smooth Resin Stairs");
+        addBlock(builder, AlienResinBlocks.SMOOTH_RESIN_WALL, "Smooth Resin Wall");
 
         addBlock(builder, AlienChitinBlocks.ABERRANT_CHITIN_BLOCK, "Block of Aberrant Chitin");
         addBlock(builder, AlienChitinBlocks.ABERRANT_CHITIN_BLOCK_SLAB, "Aberrant Chitin Slab");

@@ -237,9 +237,39 @@ public class AlienResinBlockItems {
         AlienResinBlocks.SMOOTH_ABERRANT_RESIN
     );
 
+    public static final AVPDeferredHolder<BlockItem> SMOOTH_ABERRANT_RESIN_SLAB = AVPBlockItems.register(
+        "smooth_aberrant_resin_slab",
+        AlienResinBlocks.SMOOTH_ABERRANT_RESIN_SLAB
+    );
+
+    public static final AVPDeferredHolder<BlockItem> SMOOTH_ABERRANT_RESIN_STAIRS = AVPBlockItems.register(
+        "smooth_aberrant_resin_stairs",
+        AlienResinBlocks.SMOOTH_ABERRANT_RESIN_STAIRS
+    );
+
+    public static final AVPDeferredHolder<BlockItem> SMOOTH_ABERRANT_RESIN_WALL = AVPBlockItems.register(
+        "smooth_aberrant_resin_wall",
+        AlienResinBlocks.SMOOTH_ABERRANT_RESIN_WALL
+    );
+
     public static final AVPDeferredHolder<BlockItem> SMOOTH_IRRADIATED_RESIN = AVPBlockItems.register(
         "smooth_irradiated_resin",
         AlienResinBlocks.SMOOTH_IRRADIATED_RESIN
+    );
+
+    public static final AVPDeferredHolder<BlockItem> SMOOTH_IRRADIATED_RESIN_SLAB = AVPBlockItems.register(
+        "smooth_irradiated_resin_slab",
+        AlienResinBlocks.SMOOTH_IRRADIATED_RESIN_SLAB
+    );
+
+    public static final AVPDeferredHolder<BlockItem> SMOOTH_IRRADIATED_RESIN_STAIRS = AVPBlockItems.register(
+        "smooth_irradiated_resin_stairs",
+        AlienResinBlocks.SMOOTH_IRRADIATED_RESIN_STAIRS
+    );
+
+    public static final AVPDeferredHolder<BlockItem> SMOOTH_IRRADIATED_RESIN_WALL = AVPBlockItems.register(
+        "smooth_irradiated_resin_wall",
+        AlienResinBlocks.SMOOTH_IRRADIATED_RESIN_WALL
     );
 
     public static final AVPDeferredHolder<BlockItem> SMOOTH_NETHER_RESIN = AVPBlockItems.register(
@@ -247,7 +277,37 @@ public class AlienResinBlockItems {
         AlienResinBlocks.SMOOTH_NETHER_RESIN
     );
 
+    public static final AVPDeferredHolder<BlockItem> SMOOTH_NETHER_RESIN_SLAB = AVPBlockItems.register(
+        "smooth_nether_resin_slab",
+        AlienResinBlocks.SMOOTH_NETHER_RESIN_SLAB
+    );
+
+    public static final AVPDeferredHolder<BlockItem> SMOOTH_NETHER_RESIN_STAIRS = AVPBlockItems.register(
+        "smooth_nether_resin_stairs",
+        AlienResinBlocks.SMOOTH_NETHER_RESIN_STAIRS
+    );
+
+    public static final AVPDeferredHolder<BlockItem> SMOOTH_NETHER_RESIN_WALL = AVPBlockItems.register(
+        "smooth_nether_resin_wall",
+        AlienResinBlocks.SMOOTH_NETHER_RESIN_WALL
+    );
+
     public static final AVPDeferredHolder<BlockItem> SMOOTH_RESIN = AVPBlockItems.register("smooth_resin", AlienResinBlocks.SMOOTH_RESIN);
+
+    public static final AVPDeferredHolder<BlockItem> SMOOTH_RESIN_SLAB = AVPBlockItems.register(
+        "smooth_resin_slab",
+        AlienResinBlocks.SMOOTH_RESIN_SLAB
+    );
+
+    public static final AVPDeferredHolder<BlockItem> SMOOTH_RESIN_STAIRS = AVPBlockItems.register(
+        "smooth_resin_stairs",
+        AlienResinBlocks.SMOOTH_RESIN_STAIRS
+    );
+
+    public static final AVPDeferredHolder<BlockItem> SMOOTH_RESIN_WALL = AVPBlockItems.register(
+        "smooth_resin_wall",
+        AlienResinBlocks.SMOOTH_RESIN_WALL
+    );
 
     public static void initialize() {}
 }

@@ -84,8 +84,20 @@
   - Ribbed Irradiated Resin
   - Ribbed Nether Resin
   - Smooth Aberrant Resin
+  - Smooth Aberrant Resin Slab
+  - Smooth Aberrant Resin Stairs
+  - Smooth Aberrant Resin Wall
   - Smooth Irradiated Resin
+  - Smooth Irradiated Resin Slab
+  - Smooth Irradiated Resin Stairs
+  - Smooth Irradiated Resin Wall
   - Smooth Nether Resin
+  - Smooth Nether Resin Slab
+  - Smooth Nether Resin Stairs
+  - Smooth Nether Resin Wall
+  - Smooth Resin Slab
+  - Smooth Resin Stairs
+  - Smooth Resin Wall
 - Added keybind to allow players to crawl on demand.
   - Player crawling already exists in vanilla, but there is no key to activate it on demand.
   - This update adds a keybind (left alt) to crawl on demand. Player crawling will be important for future AVP updates.

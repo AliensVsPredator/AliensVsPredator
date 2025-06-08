@@ -145,9 +145,17 @@ public class BlockLootTableProvider extends FabricBlockLootTableProvider {
         dropSelf(AlienResinBlocks.RIBBED_RESIN);
 
         dropSelf(AlienResinBlocks.SMOOTH_ABERRANT_RESIN);
+        dropSelf(AlienResinBlocks.SMOOTH_ABERRANT_RESIN_STAIRS);
+        dropSelf(AlienResinBlocks.SMOOTH_ABERRANT_RESIN_WALL);
         dropSelf(AlienResinBlocks.SMOOTH_IRRADIATED_RESIN);
+        dropSelf(AlienResinBlocks.SMOOTH_IRRADIATED_RESIN_STAIRS);
+        dropSelf(AlienResinBlocks.SMOOTH_IRRADIATED_RESIN_WALL);
         dropSelf(AlienResinBlocks.SMOOTH_NETHER_RESIN);
+        dropSelf(AlienResinBlocks.SMOOTH_NETHER_RESIN_STAIRS);
+        dropSelf(AlienResinBlocks.SMOOTH_NETHER_RESIN_WALL);
         dropSelf(AlienResinBlocks.SMOOTH_RESIN);
+        dropSelf(AlienResinBlocks.SMOOTH_RESIN_STAIRS);
+        dropSelf(AlienResinBlocks.SMOOTH_RESIN_WALL);
 
         dropSelf(AlienBlocks.ROYAL_JELLY_BLOCK);
 
@@ -279,21 +287,28 @@ public class BlockLootTableProvider extends FabricBlockLootTableProvider {
     private void generateSlabDrops() {
         dropSlab(AlienResinBlocks.ABERRANT_RESIN_SLAB);
         dropSlab(AlienResinBlocks.ABERRANT_RESIN_BRICK_SLAB);
+        dropSlab(AlienResinBlocks.SMOOTH_ABERRANT_RESIN_SLAB);
+
         dropSlab(AlienChitinBlocks.ABERRANT_CHITIN_BLOCK_SLAB);
         dropSlab(AlienChitinBlocks.ABERRANT_CHITIN_BRICK_SLAB);
         dropSlab(AlienChitinBlocks.POLISHED_ABERRANT_CHITIN_SLAB);
 
         dropSlab(AlienResinBlocks.IRRADIATED_RESIN_SLAB);
         dropSlab(AlienResinBlocks.IRRADIATED_RESIN_BRICK_SLAB);
+        dropSlab(AlienResinBlocks.SMOOTH_IRRADIATED_RESIN_SLAB);
 
         dropSlab(AlienResinBlocks.NETHER_RESIN_SLAB);
         dropSlab(AlienResinBlocks.NETHER_RESIN_BRICK_SLAB);
+        dropSlab(AlienResinBlocks.SMOOTH_NETHER_RESIN_SLAB);
+
         dropSlab(AlienChitinBlocks.NETHER_CHITIN_BLOCK_SLAB);
         dropSlab(AlienChitinBlocks.NETHER_CHITIN_BRICK_SLAB);
         dropSlab(AlienChitinBlocks.POLISHED_NETHER_CHITIN_SLAB);
 
         dropSlab(AlienResinBlocks.RESIN_SLAB);
         dropSlab(AlienResinBlocks.RESIN_BRICK_SLAB);
+        dropSlab(AlienResinBlocks.SMOOTH_RESIN_SLAB);
+
         dropSlab(AlienChitinBlocks.CHITIN_BLOCK_SLAB);
         dropSlab(AlienChitinBlocks.CHITIN_BRICK_SLAB);
         dropSlab(AlienChitinBlocks.POLISHED_CHITIN_SLAB);
