@@ -1,6 +1,7 @@
 package com.avp.fabric.data.tag;
 
 import com.alien.common.registry.init.AlienEntityTypes;
+import com.human.common.registry.init.entity_type.HumanEntityTypes;
 import com.predator.common.registry.init.PredatorEntityTypes;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
@@ -10,7 +11,6 @@ import net.minecraft.world.entity.EntityType;
 
 import java.util.concurrent.CompletableFuture;
 
-import com.avp.common.registry.init.entity_type.HumanEntityTypes;
 import com.avp.common.registry.tag.AVPEntityTypeTags;
 import com.avp.fabric.data.compatibility.gigeresque.GigeresqueConstants;
 import com.avp.fabric.data.compatibility.stellaris.StellarisConstants;

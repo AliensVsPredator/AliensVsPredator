@@ -1,5 +1,6 @@
 package com.human.common.gameplay.level.patrol;
 
+import com.human.common.registry.init.entity_type.HumanEntityTypes;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
@@ -11,7 +12,6 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.levelgen.Heightmap;
 import org.jetbrains.annotations.NotNull;
 
-import com.avp.common.registry.init.entity_type.HumanEntityTypes;
 import com.avp.common.registry.tag.AVPBiomeTags;
 import com.avp.common.registry.tag.AVPBlockTags;
 

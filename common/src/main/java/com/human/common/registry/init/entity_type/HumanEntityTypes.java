@@ -1,4 +1,4 @@
-package com.avp.common.registry.init.entity_type;
+package com.human.common.registry.init.entity_type;
 
 import com.human.common.gameplay.entity.living.human.marine.Marine;
 import com.human.common.gameplay.entity.machine.SentryTurret;
@@ -10,32 +10,16 @@ import com.human.common.gameplay.entity.projectile.ThrownGrenade;
 import com.human.common.gameplay.util.EyeColorGenerator;
 import com.human.common.gameplay.util.HairColorGenerator;
 import com.human.common.gameplay.util.SkinColorGenerator;
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
 import com.avp.common.registry.AVPDeferredHolder;
-import com.avp.common.registry.init.AVPMobCategories;
+import com.avp.common.registry.init.entity_type.AVPEntityTypes;
 import com.avp.service.Services;
 
 public class HumanEntityTypes {
 
-    public static final MobCategory ALIEN_CATEGORY = AVPMobCategories.ALIENS;
-
-    public static final MobCategory PREDATOR_CATEGORY = AVPMobCategories.PREDATOR;
-
-    private static final List<AVPDeferredHolder<? extends EntityType<?>>> ENTITY_TYPE_HOLDERS = new ArrayList<>();
-
-    public static List<AVPDeferredHolder<? extends EntityType<?>>> getAll() {
-        return Collections.unmodifiableList(ENTITY_TYPE_HOLDERS);
-    }
-
-    public static final AVPDeferredHolder<EntityType<Flamethrow>> FLAMETHROW = register(
+    public static final AVPDeferredHolder<EntityType<Flamethrow>> FLAMETHROW = AVPEntityTypes.register(
         "flamethrow",
         EntityType.Builder.<Flamethrow>of(Flamethrow::new, MobCategory.MISC)
             .sized(0.1F, 0.1F)
@@ -43,13 +27,13 @@ public class HumanEntityTypes {
             .updateInterval(10)
     );
 
-    public static final AVPDeferredHolder<EntityType<ThrownGrenade>> GRENADE_THROWN = register(
+    public static final AVPDeferredHolder<EntityType<ThrownGrenade>> GRENADE_THROWN = AVPEntityTypes.register(
         "grenade_thrown",
         EntityType.Builder.<ThrownGrenade>of(ThrownGrenade::new, MobCategory.MISC)
             .sized(0.25F, 0.25F)
     );
 
-    public static final AVPDeferredHolder<EntityType<Marine>> MARINE = register(
+    public static final AVPDeferredHolder<EntityType<Marine>> MARINE = AVPEntityTypes.register(
         "marine",
         EntityType.Builder.<Marine>of((entityType, level) -> {
             var entity = new Marine(entityType, level);
@@ -71,12 +55,12 @@ public class HumanEntityTypes {
         }, MobCategory.CREATURE).sized(0.7F, 1.95F)
     );
 
-    public static final AVPDeferredHolder<EntityType<MushroomCloudEntity>> MUSHROOM_CLOUD = register(
+    public static final AVPDeferredHolder<EntityType<MushroomCloudEntity>> MUSHROOM_CLOUD = AVPEntityTypes.register(
         "mushroom_cloud",
         EntityType.Builder.of(MushroomCloudEntity::new, MobCategory.MISC)
     );
 
-    public static final AVPDeferredHolder<EntityType<PrimedNuke>> NUKE = register(
+    public static final AVPDeferredHolder<EntityType<PrimedNuke>> NUKE = AVPEntityTypes.register(
         "nuke",
         EntityType.Builder.<PrimedNuke>of(PrimedNuke::new, MobCategory.MISC)
             .sized(0.1F, 0.1F)
@@ -85,7 +69,7 @@ public class HumanEntityTypes {
             .updateInterval(100)
     );
 
-    public static final AVPDeferredHolder<EntityType<Rocket>> ROCKET = register(
+    public static final AVPDeferredHolder<EntityType<Rocket>> ROCKET = AVPEntityTypes.register(
         "rocket",
         EntityType.Builder.<Rocket>of(Rocket::new, MobCategory.MISC)
             .sized(0.1F, 0.1F)
@@ -93,25 +77,13 @@ public class HumanEntityTypes {
             .updateInterval(10)
     );
 
-    public static final AVPDeferredHolder<EntityType<SentryTurret>> SENTRY_TURRET = register(
+    public static final AVPDeferredHolder<EntityType<SentryTurret>> SENTRY_TURRET = AVPEntityTypes.register(
         "sentry_turret",
         EntityType.Builder.of(SentryTurret::new, MobCategory.MISC).sized(1.0F, 1.0F).noSummon()
     );
 
-    public static <T extends Entity> AVPDeferredHolder<EntityType<T>> register(String id, EntityType.Builder<T> builder) {
-        var holder = Services.REGISTRY.register(
-            BuiltInRegistries.ENTITY_TYPE,
-            id,
-            () -> ((SilencedEntityTypeBuilder) builder).<T>buildWithoutDataFixerCheck()
-        );
-
-        ENTITY_TYPE_HOLDERS.add(holder);
-
-        return holder;
-    }
-
     public static void initialize() {
-        Services.REGISTRY.registerEntityAttributes(MARINE, Marine::createMarineAttributes);
-        Services.REGISTRY.registerEntityAttributes(SENTRY_TURRET, SentryTurret::createSentryTurretAttributes);
+        Services.REGISTRY.registerEntityAttributes(HumanEntityTypes.MARINE, Marine::createMarineAttributes);
+        Services.REGISTRY.registerEntityAttributes(HumanEntityTypes.SENTRY_TURRET, SentryTurret::createSentryTurretAttributes);
     }
 }

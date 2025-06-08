@@ -4,13 +4,13 @@ import com.alien.common.gameplay.entity.living.alien.AlienSpawning;
 import com.alien.common.gameplay.entity.living.alien.xenomorph.queen.QueenSpawning;
 import com.alien.common.registry.init.AlienEntityTypes;
 import com.human.common.gameplay.entity.living.human.marine.MarineSpawning;
+import com.human.common.registry.init.entity_type.HumanEntityTypes;
 import com.predator.common.gameplay.entity.living.yautja.YautjaSpawning;
 import com.predator.common.registry.init.PredatorEntityTypes;
 import net.minecraft.tags.BiomeTags;
 
 import com.avp.AVP;
 import com.avp.common.model.spawning.AVPEntitySpawnData;
-import com.avp.common.registry.init.entity_type.HumanEntityTypes;
 import com.avp.common.registry.tag.AVPBiomeTags;
 import com.avp.service.Services;
 

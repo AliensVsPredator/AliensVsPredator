@@ -7,26 +7,26 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
 
 import com.avp.common.registry.AVPDeferredHolder;
-import com.avp.common.registry.init.entity_type.HumanEntityTypes;
+import com.avp.common.registry.init.entity_type.AVPEntityTypes;
 import com.avp.service.Services;
 
 public class PredatorEntityTypes {
 
-    public static final AVPDeferredHolder<EntityType<ShurikenProjectile>> SHURIKEN = HumanEntityTypes.register(
+    public static final AVPDeferredHolder<EntityType<ShurikenProjectile>> SHURIKEN = AVPEntityTypes.register(
         "shuriken",
         EntityType.Builder.<ShurikenProjectile>of(ShurikenProjectile::new, MobCategory.MISC)
             .sized(0.25F, 0.25F)
     );
 
-    public static final AVPDeferredHolder<EntityType<SmartDiscProjectile>> SMART_DISC = HumanEntityTypes.register(
+    public static final AVPDeferredHolder<EntityType<SmartDiscProjectile>> SMART_DISC = AVPEntityTypes.register(
         "smart_disc",
         EntityType.Builder.<SmartDiscProjectile>of(SmartDiscProjectile::new, MobCategory.MISC)
             .sized(0.25F, 0.25F)
     );
 
-    public static final AVPDeferredHolder<EntityType<Yautja>> YAUTJA = HumanEntityTypes.register(
+    public static final AVPDeferredHolder<EntityType<Yautja>> YAUTJA = AVPEntityTypes.register(
         "yautja",
-        EntityType.Builder.of(Yautja::new, HumanEntityTypes.PREDATOR_CATEGORY)
+        EntityType.Builder.of(Yautja::new, AVPEntityTypes.PREDATOR_CATEGORY)
             .sized(0.98f, 2.48f)
     );
 

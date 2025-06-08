@@ -9,6 +9,7 @@ import com.human.common.registry.init.block.HumanPaddingBlocks;
 import com.human.common.registry.init.block.HumanPlasticBlocks;
 import com.human.common.registry.init.block.HumanSteelBlocks;
 import com.human.common.registry.init.block.HumanTitaniumBlocks;
+import com.human.common.registry.init.entity_type.HumanEntityTypes;
 import com.human.common.registry.init.item.HumanFerroaluminumBlockItems;
 import com.human.common.registry.init.item.HumanGunItems;
 import com.human.common.registry.init.item.HumanIndustrialConcreteBlockItems;
@@ -18,8 +19,6 @@ import com.human.common.registry.init.item.HumanPlasticBlockItems;
 import com.human.common.registry.init.item.HumanSpawnEggItems;
 import com.human.common.registry.init.item.HumanSteelBlockItems;
 import com.human.common.registry.init.item.HumanTitaniumBlockItems;
-
-import com.avp.common.registry.init.entity_type.HumanEntityTypes;
 
 public class Human {
 

@@ -1,5 +1,6 @@
 package com.human.common.gameplay.block;
 
+import com.human.common.registry.init.entity_type.HumanEntityTypes;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.LivingEntity;
@@ -11,7 +12,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import com.avp.common.gameplay.block.property.BlockProperties;
-import com.avp.common.registry.init.entity_type.HumanEntityTypes;
 
 public class SentryTurretBlock extends Block {
 

@@ -32,6 +32,7 @@ import com.avp.common.registry.init.AVPVillagerTrades;
 import com.avp.common.registry.init.block.AVPBlocks;
 import com.avp.common.registry.init.block.CoreBlocks;
 import com.avp.common.registry.init.creative_mode_tab.AVPCreativeModeTabs;
+import com.avp.common.registry.init.entity_type.AVPEntityTypes;
 import com.avp.common.registry.init.item.AVPArmorItems;
 import com.avp.common.registry.init.item.AVPBlockItems;
 import com.avp.common.registry.init.item.AVPItems;
@@ -67,6 +68,7 @@ public class AVP {
         AVPBlockItems.initialize();
         AVPArmorItems.initialize();
         AVPCreativeModeTabs.initialize();
+        AVPEntityTypes.initialize();
         AVPCommands.initialize();
         AVPDecoratedPotPatterns.initialize();
         AVPSoundEvents.initialize();

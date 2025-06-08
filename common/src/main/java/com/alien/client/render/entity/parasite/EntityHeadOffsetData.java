@@ -1,6 +1,7 @@
 package com.alien.client.render.entity.parasite;
 
 import com.bvanseg.just.functional.function.Lazy;
+import com.human.common.registry.init.entity_type.HumanEntityTypes;
 import com.predator.common.registry.init.PredatorEntityTypes;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -8,8 +9,6 @@ import net.minecraft.world.entity.EntityType;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.BiFunction;
-
-import com.avp.common.registry.init.entity_type.HumanEntityTypes;
 
 public record EntityHeadOffsetData(
     BiFunction<EntityHeadData, Entity, Double> verticalOffsetSupplier,

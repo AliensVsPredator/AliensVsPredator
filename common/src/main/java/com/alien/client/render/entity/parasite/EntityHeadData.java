@@ -1,14 +1,13 @@
 package com.alien.client.render.entity.parasite;
 
 import com.bvanseg.just.functional.function.Lazy;
+import com.human.common.registry.init.entity_type.HumanEntityTypes;
 import com.predator.common.registry.init.PredatorEntityTypes;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.HashMap;
 import java.util.Map;
-
-import com.avp.common.registry.init.entity_type.HumanEntityTypes;
 
 public record EntityHeadData(
     Vec3 size,

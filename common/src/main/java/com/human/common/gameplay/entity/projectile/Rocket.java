@@ -1,5 +1,6 @@
 package com.human.common.gameplay.entity.projectile;
 
+import com.human.common.registry.init.entity_type.HumanEntityTypes;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -13,7 +14,6 @@ import net.minecraft.world.phys.HitResult;
 import org.jetbrains.annotations.NotNull;
 
 import com.avp.AVP;
-import com.avp.common.registry.init.entity_type.HumanEntityTypes;
 
 public class Rocket extends ThrowableProjectile {
 

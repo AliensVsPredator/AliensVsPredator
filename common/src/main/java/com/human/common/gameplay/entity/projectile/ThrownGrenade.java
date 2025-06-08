@@ -1,5 +1,6 @@
 package com.human.common.gameplay.entity.projectile;
 
+import com.human.common.registry.init.entity_type.HumanEntityTypes;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.sounds.SoundEvents;
@@ -15,7 +16,6 @@ import org.jetbrains.annotations.NotNull;
 import com.avp.common.gameplay.effect.RadiationStatusEffect;
 import com.avp.common.gameplay.entity.projectile.BouncingItemProjectile;
 import com.avp.common.registry.init.AVPMobEffects;
-import com.avp.common.registry.init.entity_type.HumanEntityTypes;
 import com.avp.common.registry.init.item.AVPItems;
 
 public class ThrownGrenade extends BouncingItemProjectile {

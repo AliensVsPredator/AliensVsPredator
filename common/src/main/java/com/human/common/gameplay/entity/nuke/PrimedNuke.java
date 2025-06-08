@@ -1,5 +1,6 @@
 package com.human.common.gameplay.entity.nuke;
 
+import com.human.common.registry.init.entity_type.HumanEntityTypes;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
@@ -20,7 +21,6 @@ import java.time.Duration;
 
 import com.avp.AVP;
 import com.avp.common.registry.init.block.AVPBlocks;
-import com.avp.common.registry.init.entity_type.HumanEntityTypes;
 import com.avp.common.util.ExplosionUtil;
 import com.avp.server.ServerScheduler;
 
