@@ -3,6 +3,8 @@ package com.human.common.gameplay.item;
 import com.human.common.gameplay.component.ArmorCaseContainerContents;
 import com.human.common.gameplay.menu.armor_case.ArmorCaseMenu;
 import com.human.common.registry.init.HumanDataComponents;
+import com.lib.common.data.TooltipHintBuilder;
+import com.lib.common.model.TooltipCategoryType;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
@@ -23,7 +25,16 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 import java.util.stream.Stream;
 
+import com.avp.common.data.TooltipTranslationKeys;
+
 public class ArmorCaseItem extends Item {
+
+    private static final List<Component> TOOLTIP_COMPONENTS = new TooltipHintBuilder()
+        .addCategory(TooltipCategoryType.WHEN_USED)
+        .addPositiveEffect(TooltipTranslationKeys.EFFECT_AUTO_EQUIP_ARMOR_SET)
+        .addCategory(TooltipCategoryType.WHEN_USED_ON_ARMOR_STAND)
+        .addPositiveEffect(TooltipTranslationKeys.EFFECT_AUTO_EQUIP_ARMOR_STAND_ARMOR_SET)
+        .build();
 
     private static final MenuProvider PROVIDER = new MenuProvider() {
 
@@ -64,6 +75,7 @@ public class ArmorCaseItem extends Item {
         @NotNull TooltipFlag tooltipFlag
     ) {
         super.appendHoverText(itemStack, tooltipContext, list, tooltipFlag);
+        list.addAll(TOOLTIP_COMPONENTS);
 
         var container = itemStack.getOrDefault(HumanDataComponents.ARMOR_CASE_CONTAINER.get(), ArmorCaseContainerContents.EMPTY);
 

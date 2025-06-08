@@ -11,6 +11,10 @@
 - [Fabric] Now requires Fabric Loader `0.16.14`.
 - [NeoForge] Now requires NeoForge `21.1.173`.
 - Now requires AzureLib 3.0.20.
+- Added new tooltip hints to armor case item.
+- Added new tooltip hints to predator armor items.
+- Added new tooltip hints to nether chitin armor items.
+- Added new tooltip hints to plated nether chitin armor items.
 - Added new alien blocks:
   - Aberrant Chitin Block
   - Aberrant Chitin Block Slab

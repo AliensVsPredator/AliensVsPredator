@@ -1,5 +1,7 @@
 package com.alien.common.registry.init.item;
 
+import com.alien.common.gameplay.item.NetherChitinArmorItem;
+import com.alien.common.gameplay.item.PlatedNetherChitinArmorItem;
 import com.alien.common.registry.init.AlienArmorMaterials;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.Item;
@@ -9,9 +11,9 @@ import com.avp.common.registry.init.item.AVPArmorItems;
 
 public class AlienArmorItems {
 
-    private static final int CHITIN_DURABILITY_MULTIPLIER = 21;
+    public static final int CHITIN_DURABILITY_MULTIPLIER = 21;
 
-    private static final int PLATED_CHITIN_DURABILITY_MULTIPLIER = 27;
+    public static final int PLATED_CHITIN_DURABILITY_MULTIPLIER = 27;
 
     public static final AVPDeferredHolder<Item> ABERRANT_CHITIN_BOOTS = AVPArmorItems.register(
         "aberrant_chitin_boots",
@@ -99,34 +101,22 @@ public class AlienArmorItems {
 
     public static final AVPDeferredHolder<Item> NETHER_CHITIN_BOOTS = AVPArmorItems.register(
         "nether_chitin_boots",
-        AlienArmorMaterials.NETHER_CHITIN::getHolder,
-        ArmorItem.Type.BOOTS,
-        CHITIN_DURABILITY_MULTIPLIER,
-        new Item.Properties().fireResistant()
+        () -> new NetherChitinArmorItem(ArmorItem.Type.BOOTS)
     );
 
     public static final AVPDeferredHolder<Item> NETHER_CHITIN_CHESTPLATE = AVPArmorItems.register(
         "nether_chitin_chestplate",
-        AlienArmorMaterials.NETHER_CHITIN::getHolder,
-        ArmorItem.Type.CHESTPLATE,
-        CHITIN_DURABILITY_MULTIPLIER,
-        new Item.Properties().fireResistant()
+        () -> new NetherChitinArmorItem(ArmorItem.Type.CHESTPLATE)
     );
 
     public static final AVPDeferredHolder<Item> NETHER_CHITIN_HELMET = AVPArmorItems.register(
         "nether_chitin_helmet",
-        AlienArmorMaterials.NETHER_CHITIN::getHolder,
-        ArmorItem.Type.HELMET,
-        CHITIN_DURABILITY_MULTIPLIER,
-        new Item.Properties().fireResistant()
+        () -> new NetherChitinArmorItem(ArmorItem.Type.HELMET)
     );
 
     public static final AVPDeferredHolder<Item> NETHER_CHITIN_LEGGINGS = AVPArmorItems.register(
         "nether_chitin_leggings",
-        AlienArmorMaterials.NETHER_CHITIN::getHolder,
-        ArmorItem.Type.LEGGINGS,
-        CHITIN_DURABILITY_MULTIPLIER,
-        new Item.Properties().fireResistant()
+        () -> new NetherChitinArmorItem(ArmorItem.Type.LEGGINGS)
     );
 
     public static final AVPDeferredHolder<Item> PLATED_ABERRANT_CHITIN_BOOTS = AVPArmorItems.register(
@@ -215,34 +205,22 @@ public class AlienArmorItems {
 
     public static final AVPDeferredHolder<Item> PLATED_NETHER_CHITIN_BOOTS = AVPArmorItems.register(
         "plated_nether_chitin_boots",
-        AlienArmorMaterials.PLATED_NETHER_CHITIN::getHolder,
-        ArmorItem.Type.BOOTS,
-        PLATED_CHITIN_DURABILITY_MULTIPLIER,
-        new Item.Properties().fireResistant()
+        () -> new PlatedNetherChitinArmorItem(ArmorItem.Type.BOOTS)
     );
 
     public static final AVPDeferredHolder<Item> PLATED_NETHER_CHITIN_CHESTPLATE = AVPArmorItems.register(
         "plated_nether_chitin_chestplate",
-        AlienArmorMaterials.PLATED_NETHER_CHITIN::getHolder,
-        ArmorItem.Type.CHESTPLATE,
-        PLATED_CHITIN_DURABILITY_MULTIPLIER,
-        new Item.Properties().fireResistant()
+        () -> new PlatedNetherChitinArmorItem(ArmorItem.Type.CHESTPLATE)
     );
 
     public static final AVPDeferredHolder<Item> PLATED_NETHER_CHITIN_HELMET = AVPArmorItems.register(
         "plated_nether_chitin_helmet",
-        AlienArmorMaterials.PLATED_NETHER_CHITIN::getHolder,
-        ArmorItem.Type.HELMET,
-        PLATED_CHITIN_DURABILITY_MULTIPLIER,
-        new Item.Properties().fireResistant()
+        () -> new PlatedNetherChitinArmorItem(ArmorItem.Type.HELMET)
     );
 
     public static final AVPDeferredHolder<Item> PLATED_NETHER_CHITIN_LEGGINGS = AVPArmorItems.register(
         "plated_nether_chitin_leggings",
-        AlienArmorMaterials.PLATED_NETHER_CHITIN::getHolder,
-        ArmorItem.Type.LEGGINGS,
-        PLATED_CHITIN_DURABILITY_MULTIPLIER,
-        new Item.Properties().fireResistant()
+        () -> new PlatedNetherChitinArmorItem(ArmorItem.Type.LEGGINGS)
     );
 
     public static void initialize() {}

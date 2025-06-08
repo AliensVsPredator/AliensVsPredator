@@ -32,4 +32,6 @@ public class PredatorArmorMaterials {
         0.15F,
         false
     );
+
+    public static void initialize() {}
 }

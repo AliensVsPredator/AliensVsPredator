@@ -160,4 +160,6 @@ public class AVPArmorMaterials {
     ) {
         return Map.entry(type, armorMaterial.getDefense(type) + additiveDefense.getOrDefault(type, 0));
     }
+
+    public static void initialize() {}
 }

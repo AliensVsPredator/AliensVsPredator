@@ -1,6 +1,7 @@
 package com.human.common.gameplay.item;
 
-import net.minecraft.ChatFormatting;
+import com.lib.common.data.TooltipHintBuilder;
+import com.lib.common.model.TooltipCategoryType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ItemStack;
@@ -9,11 +10,17 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
+import com.avp.common.data.TooltipTranslationKeys;
 import com.avp.common.registry.init.AVPArmorMaterials;
 
 public class PressureSuitArmorItem extends ArmorItem {
 
     private static final int PRESSURE_DURABILITY_MULTIPLIER = 12;
+
+    private static final List<Component> TOOLTIP_COMPONENTS = new TooltipHintBuilder()
+        .addCategory(TooltipCategoryType.WHEN_FULL_ARMOR_SET_EQUIPPED)
+        .addPositiveEffect(TooltipTranslationKeys.EFFECT_WATER_BREATHING)
+        .build();
 
     public PressureSuitArmorItem(Type type) {
         super(
@@ -31,14 +38,6 @@ public class PressureSuitArmorItem extends ArmorItem {
         @NotNull TooltipFlag tooltipFlag
     ) {
         super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
-
-        tooltipComponents.add(
-            Component.translatable("tooltip.avp.pressure_suit.full_set_bonus")
-                .withStyle(ChatFormatting.YELLOW)
-        );
-        tooltipComponents.add(
-            Component.translatable("tooltip.avp.pressure_suit.water_breathing")
-                .withStyle(ChatFormatting.GREEN)
-        );
+        tooltipComponents.addAll(TOOLTIP_COMPONENTS);
     }
 }

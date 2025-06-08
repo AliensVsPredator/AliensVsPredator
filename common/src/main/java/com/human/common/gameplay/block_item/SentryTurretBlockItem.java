@@ -1,6 +1,7 @@
 package com.human.common.gameplay.block_item;
 
-import net.minecraft.ChatFormatting;
+import com.lib.common.data.TooltipHintBuilder;
+import com.lib.common.model.TooltipCategoryType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
@@ -10,9 +11,16 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
+import com.avp.common.data.TooltipTranslationKeys;
 import com.avp.common.registry.init.block.AVPBlocks;
 
 public class SentryTurretBlockItem extends BlockItem {
+
+    private static final List<Component> TOOLTIP_COMPONENTS = new TooltipHintBuilder()
+        .addCategory(TooltipCategoryType.REQUIREMENTS)
+        .addNegativeEffect(TooltipTranslationKeys.REQUIRES_REDSTONE_POWER)
+        .addNegativeEffect(TooltipTranslationKeys.REQUIRES_NEARBY_AMMO_CHEST_WITH_AMMO)
+        .build();
 
     public SentryTurretBlockItem() {
         super(AVPBlocks.SENTRY_TURRET.get(), new Item.Properties());
@@ -26,18 +34,6 @@ public class SentryTurretBlockItem extends BlockItem {
         @NotNull TooltipFlag tooltipFlag
     ) {
         super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
-
-        tooltipComponents.add(
-            Component.translatable("tooltip.avp.sentry_turret.requires")
-                .withStyle(ChatFormatting.YELLOW)
-        );
-        tooltipComponents.add(
-            Component.translatable("tooltip.avp.sentry_turret.redstone_power_requirement")
-                .withStyle(ChatFormatting.RED)
-        );
-        tooltipComponents.add(
-            Component.translatable("tooltip.avp.sentry_turret.nearby_ammo_chest_with_ammo_requirement")
-                .withStyle(ChatFormatting.RED)
-        );
+        tooltipComponents.addAll(TOOLTIP_COMPONENTS);
     }
 }

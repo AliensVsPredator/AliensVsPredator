@@ -1,5 +1,6 @@
 package com.predator;
 
+import com.predator.common.registry.init.PredatorArmorMaterials;
 import com.predator.common.registry.init.PredatorBlockItems;
 import com.predator.common.registry.init.PredatorBlocks;
 import com.predator.common.registry.init.PredatorEntityTypes;
@@ -17,6 +18,7 @@ public class Predator {
     public static void initialize() {
         PredatorBlocks.initialize();
         PredatorBlockItems.initialize();
+        PredatorArmorMaterials.initialize();
         PredatorArmorItems.initialize();
         PredatorSpawnEggItems.initialize();
         PredatorEntityTypes.initialize();

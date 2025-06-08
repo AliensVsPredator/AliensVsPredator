@@ -17,6 +17,7 @@ import com.avp.common.config.AVPConfig;
 import com.avp.common.gameplay.worldgen.biome.NukedAshPlacement;
 import com.avp.common.network.AVPPacketDirectionRegistry;
 import com.avp.common.network.AVPServerPacketHandlerRegistry;
+import com.avp.common.registry.init.AVPArmorMaterials;
 import com.avp.common.registry.init.AVPBlockEntityTypes;
 import com.avp.common.registry.init.AVPCommands;
 import com.avp.common.registry.init.AVPCompostingChances;
@@ -66,6 +67,7 @@ public class AVP {
         AVPBlocks.initialize();
         AVPItems.initialize();
         AVPBlockItems.initialize();
+        AVPArmorMaterials.initialize();
         AVPArmorItems.initialize();
         AVPCreativeModeTabs.initialize();
         AVPEntityTypes.initialize();
