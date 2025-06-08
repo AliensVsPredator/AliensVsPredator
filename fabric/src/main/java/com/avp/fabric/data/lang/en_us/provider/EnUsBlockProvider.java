@@ -15,13 +15,17 @@ import net.fabricmc.fabric.api.datagen.v1.provider.FabricLanguageProvider;
 import net.minecraft.world.level.block.Block;
 
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
+import com.avp.common.registry.AVPRegistryValidation;
 import com.avp.common.registry.init.block.AVPBlocks;
 import com.avp.common.registry.init.block.CoreBlocks;
 
 public class EnUsBlockProvider {
+
+    private static final HashSet<Block> TOUCHED_ENTRIES = new HashSet<>();
 
     public static final Consumer<FabricLanguageProvider.TranslationBuilder> CONSUMER = builder -> {
         addBlock(builder, AVPBlocks.BLUEPRINT_BLOCK, "Blueprint Block");
@@ -361,6 +365,13 @@ public class EnUsBlockProvider {
         addBlock(builder, HumanSteelBlocks.STEEL_FASTENED_SIDING_STAIRS, "Steel Fastened Siding Stairs");
         addBlock(builder, HumanTitaniumBlocks.TITANIUM_FASTENED_SIDING_SLAB, "Titanium Fastened Siding Slab");
         addBlock(builder, HumanTitaniumBlocks.TITANIUM_FASTENED_SIDING_STAIRS, "Titanium Fastened Siding Stairs");
+
+        AVPRegistryValidation.throwIfMissingEntries(
+            AVPBlocks.getAll(),
+            TOUCHED_ENTRIES::contains,
+            Block::getDescriptionId,
+            "Block translation did not complete successfully - there are unhandled blocks that need to be handled."
+        );
     };
 
     private static void addBlock(
@@ -372,6 +383,7 @@ public class EnUsBlockProvider {
     }
 
     private static void addBlock(FabricLanguageProvider.TranslationBuilder translationBuilder, Block block, String value) {
+        TOUCHED_ENTRIES.add(block);
         translationBuilder.add(block, value);
     }
 

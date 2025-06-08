@@ -32,23 +32,20 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
-import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
-import com.avp.AVP;
-import com.avp.common.registry.AVPDeferredHolder;
+import com.avp.common.registry.AVPRegistryValidation;
 import com.avp.common.registry.init.block.AVPBlocks;
 import com.avp.common.registry.init.block.CoreBlocks;
 import com.avp.common.registry.init.item.AVPItems;
 
 public class BlockLootTableProvider extends FabricBlockLootTableProvider {
 
-    private final Set<Block> touchedBlockSuppliers;
+    private static final Set<Block> TOUCHED_ENTRIES = new HashSet<>();
 
     public BlockLootTableProvider(FabricDataOutput dataOutput, CompletableFuture<HolderLookup.Provider> registryLookup) {
         super(dataOutput, registryLookup);
-        this.touchedBlockSuppliers = new HashSet<>();
     }
 
     @Override
@@ -58,23 +55,12 @@ public class BlockLootTableProvider extends FabricBlockLootTableProvider {
         generateCustomDrops();
         generateOtherDrops();
 
-        var unhandledBlocks = AVPBlocks.getAll()
-            .stream()
-            .map(AVPDeferredHolder::get)
-            .filter(Predicate.not(touchedBlockSuppliers::contains))
-            .toList();
-
-        if (!unhandledBlocks.isEmpty()) {
-            var unhandledBlocksStrings = String.join("\n", unhandledBlocks.stream().map(Block::getDescriptionId).toList());
-            AVP.LOGGER.error(
-                "Detected {} blocks with unhandled loot table generation. Blocks:\n{}",
-                unhandledBlocks.size(),
-                unhandledBlocksStrings
-            );
-            throw new IllegalStateException(
-                "Block loot table generation did not complete successfully - there are unhandled blocks that need to be handled."
-            );
-        }
+        AVPRegistryValidation.throwIfMissingEntries(
+            AVPBlocks.getAll(),
+            TOUCHED_ENTRIES::contains,
+            Block::getDescriptionId,
+            "Block loot table generation did not complete successfully - there are unhandled blocks that need to be handled."
+        );
     }
 
     private void generateSelfDrops() {
@@ -392,25 +378,25 @@ public class BlockLootTableProvider extends FabricBlockLootTableProvider {
     public void add(Supplier<? extends Block> blockSupplier, Function<Block, LootTable.Builder> factory) {
         var block = blockSupplier.get();
         add(block, factory);
-        touchedBlockSuppliers.add(block);
+        TOUCHED_ENTRIES.add(block);
     }
 
     public void dropOther(Supplier<? extends Block> blockSupplier, Supplier<? extends ItemLike> itemLikeSupplier) {
         var block = blockSupplier.get();
         dropOther(block, itemLikeSupplier.get());
-        touchedBlockSuppliers.add(block);
+        TOUCHED_ENTRIES.add(block);
     }
 
     public void dropSelf(Supplier<? extends Block> blockSupplier) {
         var block = blockSupplier.get();
         dropSelf(block);
-        touchedBlockSuppliers.add(block);
+        TOUCHED_ENTRIES.add(block);
     }
 
     public void dropSlab(Supplier<? extends Block> blockSupplier) {
         var block = blockSupplier.get();
         add(block, createSlabItemTable(block));
-        touchedBlockSuppliers.add(block);
+        TOUCHED_ENTRIES.add(block);
     }
 
     public LootTable.Builder createOreMultiDrop(Block block, Item item, int min, int max) {

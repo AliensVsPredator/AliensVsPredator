@@ -8,15 +8,20 @@ import com.human.common.registry.init.item.HumanSpawnEggItems;
 import com.predator.common.registry.init.item.PredatorArmorItems;
 import com.predator.common.registry.init.item.PredatorSpawnEggItems;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricLanguageProvider;
+import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 
+import java.util.HashSet;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
+import com.avp.common.registry.AVPRegistryValidation;
 import com.avp.common.registry.init.item.AVPArmorItems;
 import com.avp.common.registry.init.item.AVPItems;
 
 public class EnUsItemProvider {
+
+    private static final HashSet<Item> TOUCHED_ENTRIES = new HashSet<>();
 
     public static final Consumer<FabricLanguageProvider.TranslationBuilder> CONSUMER = builder -> {
         // Combat Items
@@ -260,6 +265,16 @@ public class EnUsItemProvider {
         addItem(builder, AlienSpawnEggItems.ROYAL_ABERRANT_OVOMORPH_SPAWN_EGG, "Royal Aberrant Ovomorph Spawn Egg");
         addItem(builder, AlienSpawnEggItems.ROYAL_ABERRANT_FACEHUGGER_SPAWN_EGG, "Royal Aberrant Facehugger Spawn Egg");
         addItem(builder, AlienSpawnEggItems.ROYAL_ABERRANT_CHESTBURSTER_SPAWN_EGG, "Royal Aberrant Chestburster Spawn Egg");
+
+        AVPRegistryValidation.throwIfMissingEntries(
+            AVPItems.getAll()
+                .stream()
+                .filter(deferredHolder -> !(deferredHolder.get() instanceof BlockItem))
+                .toList(),
+            TOUCHED_ENTRIES::contains,
+            Item::getDescriptionId,
+            "Item translation did not complete successfully - there are unhandled items that need to be handled."
+        );
     };
 
     private static void addItem(
@@ -271,6 +286,7 @@ public class EnUsItemProvider {
     }
 
     private static void addItem(FabricLanguageProvider.TranslationBuilder translationBuilder, Item item, String value) {
+        TOUCHED_ENTRIES.add(item);
         translationBuilder.add(item, value);
     }
 

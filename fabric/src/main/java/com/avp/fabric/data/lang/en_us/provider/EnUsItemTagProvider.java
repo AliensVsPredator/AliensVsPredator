@@ -5,6 +5,7 @@ import net.fabricmc.fabric.api.datagen.v1.provider.FabricLanguageProvider;
 import java.util.function.Consumer;
 
 import com.avp.common.registry.tag.AVPItemTags;
+import com.avp.fabric.data.compatibility.common.CommonConstants;
 
 public class EnUsItemTagProvider {
 
@@ -42,5 +43,25 @@ public class EnUsItemTagProvider {
         builder.add(AVPItemTags.RADIOACTIVE_ITEMS, "Radioactive Items");
         builder.add(AVPItemTags.RANGED_WEAPONS, "Ranged Weapons");
         builder.add(AVPItemTags.URANIUM_NUGGET_LIKE, "Uranium Nugget Like");
+
+        // Common Tags
+        builder.add(CommonConstants.HEAVY_METAL, "Heavy Metals");
+        builder.add(CommonConstants.HIDDEN_FROM_RECIPE_VIEWERS, "Hidden From Recipe Viewers");
+        builder.add(CommonConstants.INGOTS, "Ingots");
+        builder.add(CommonConstants.INGOTS_ALUMINUM, "Aluminum Ingots");
+        builder.add(CommonConstants.INGOTS_BRASS, "Brass Ingots");
+        builder.add(CommonConstants.INGOTS_LEAD, "Lead Ingots");
+        builder.add(CommonConstants.INGOTS_STEEL, "Steel Ingots");
+        builder.add(CommonConstants.INGOTS_TITANIUM, "Titanium Ingots");
+        builder.add(CommonConstants.INGOTS_ZINC, "Zinc Ingots");
+        builder.add(CommonConstants.NUGGETS, "Nuggets");
+        builder.add(CommonConstants.NUGGETS_ALUMINUM, "Aluminum Nuggets");
+        builder.add(CommonConstants.NUGGETS_BRASS, "Brass Nuggets");
+        builder.add(CommonConstants.NUGGETS_LEAD, "Lead Nuggets");
+        builder.add(CommonConstants.NUGGETS_STEEL, "Steel Nuggets");
+        builder.add(CommonConstants.NUGGETS_TITANIUM, "Titanium Nuggets");
+        builder.add(CommonConstants.NUGGETS_ZINC, "Zinc Nuggets");
+        builder.add(CommonConstants.ORES, "Ores");
+        builder.add(CommonConstants.URANIUM, "Uranium");
     };
 }
