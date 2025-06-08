@@ -24,6 +24,12 @@
   - Aberrant Resin Slab
   - Aberrant Resin Stairs
   - Aberrant Resin Vent
+  - Chiseled Aberrant Chitin
+  - Chiseled Aberrant Chitin (Embryo)
+  - Chiseled Chitin
+  - Chiseled Chitin (Embryo)
+  - Chiseled Nether Chitin
+  - Chiseled Nether Chitin (Embryo)
   - Irradiated Chitin Block
   - Irradiated Chitin Block Slab
   - Irradiated Chitin Block Stairs

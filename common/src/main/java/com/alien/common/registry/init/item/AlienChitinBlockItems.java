@@ -1,9 +1,10 @@
 package com.alien.common.registry.init.item;
 
 import com.alien.common.registry.init.block.AlienChitinBlocks;
+import net.minecraft.world.item.BlockItem;
+
 import com.avp.common.registry.AVPDeferredHolder;
 import com.avp.common.registry.init.item.AVPBlockItems;
-import net.minecraft.world.item.BlockItem;
 
 public class AlienChitinBlockItems {
 
@@ -35,6 +36,36 @@ public class AlienChitinBlockItems {
     public static final AVPDeferredHolder<BlockItem> ABERRANT_CHITIN_BRICK_STAIRS = AVPBlockItems.register(
         "aberrant_chitin_brick_stairs",
         AlienChitinBlocks.ABERRANT_CHITIN_BRICK_STAIRS
+    );
+
+    public static final AVPDeferredHolder<BlockItem> CHISELED_ABERRANT_CHITIN_BRICKS = AVPBlockItems.register(
+        "chiseled_aberrant_chitin_bricks",
+        AlienChitinBlocks.CHISELED_ABERRANT_CHITIN_BRICKS
+    );
+
+    public static final AVPDeferredHolder<BlockItem> CHISELED_ABERRANT_CHITIN_BRICKS_EMBRYO = AVPBlockItems.register(
+        "chiseled_aberrant_chitin_bricks_embryo",
+        AlienChitinBlocks.CHISELED_ABERRANT_CHITIN_BRICKS_EMBRYO
+    );
+
+    public static final AVPDeferredHolder<BlockItem> CHISELED_CHITIN_BRICKS = AVPBlockItems.register(
+        "chiseled_chitin_bricks",
+        AlienChitinBlocks.CHISELED_CHITIN_BRICKS
+    );
+
+    public static final AVPDeferredHolder<BlockItem> CHISELED_CHITIN_BRICKS_EMBRYO = AVPBlockItems.register(
+        "chiseled_chitin_bricks_embryo",
+        AlienChitinBlocks.CHISELED_CHITIN_BRICKS_EMBRYO
+    );
+
+    public static final AVPDeferredHolder<BlockItem> CHISELED_NETHER_CHITIN_BRICKS = AVPBlockItems.register(
+        "chiseled_nether_chitin_bricks",
+        AlienChitinBlocks.CHISELED_NETHER_CHITIN_BRICKS
+    );
+
+    public static final AVPDeferredHolder<BlockItem> CHISELED_NETHER_CHITIN_BRICKS_EMBRYO = AVPBlockItems.register(
+        "chiseled_nether_chitin_bricks_embryo",
+        AlienChitinBlocks.CHISELED_NETHER_CHITIN_BRICKS_EMBRYO
     );
 
     public static final AVPDeferredHolder<BlockItem> CHITIN_BLOCK = AVPBlockItems.register(

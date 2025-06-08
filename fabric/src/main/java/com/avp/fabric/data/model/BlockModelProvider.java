@@ -12,6 +12,7 @@ import com.human.common.registry.init.block.HumanSteelBlocks;
 import com.human.common.registry.init.block.HumanTitaniumBlocks;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricModelProvider;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.models.BlockModelGenerators;
 import net.minecraft.data.models.ItemModelGenerators;
 import net.minecraft.data.models.blockstates.Condition;
@@ -111,6 +112,16 @@ public class BlockModelProvider extends FabricModelProvider {
         generators.family(AlienChitinBlocks.ABERRANT_CHITIN_BRICKS.get())
             .slab(AlienChitinBlocks.ABERRANT_CHITIN_BRICK_SLAB.get())
             .stairs(AlienChitinBlocks.ABERRANT_CHITIN_BRICK_STAIRS.get());
+        createBottomTopBlock(
+            generators,
+            AlienChitinBlocks.CHISELED_ABERRANT_CHITIN_BRICKS.get(),
+            AlienChitinBlocks.POLISHED_ABERRANT_CHITIN.get()
+        );
+        createBottomTopBlock(
+            generators,
+            AlienChitinBlocks.CHISELED_ABERRANT_CHITIN_BRICKS_EMBRYO.get(),
+            AlienChitinBlocks.POLISHED_ABERRANT_CHITIN.get()
+        );
         generators.family(AlienChitinBlocks.POLISHED_ABERRANT_CHITIN.get())
             .slab(AlienChitinBlocks.POLISHED_ABERRANT_CHITIN_SLAB.get())
             .stairs(AlienChitinBlocks.POLISHED_ABERRANT_CHITIN_STAIRS.get());
@@ -128,6 +139,16 @@ public class BlockModelProvider extends FabricModelProvider {
         generators.family(AlienChitinBlocks.NETHER_CHITIN_BRICKS.get())
             .slab(AlienChitinBlocks.NETHER_CHITIN_BRICK_SLAB.get())
             .stairs(AlienChitinBlocks.NETHER_CHITIN_BRICK_STAIRS.get());
+        createBottomTopBlock(
+            generators,
+            AlienChitinBlocks.CHISELED_NETHER_CHITIN_BRICKS.get(),
+            AlienChitinBlocks.POLISHED_NETHER_CHITIN.get()
+        );
+        createBottomTopBlock(
+            generators,
+            AlienChitinBlocks.CHISELED_NETHER_CHITIN_BRICKS_EMBRYO.get(),
+            AlienChitinBlocks.POLISHED_NETHER_CHITIN.get()
+        );
         generators.family(AlienChitinBlocks.POLISHED_NETHER_CHITIN.get())
             .slab(AlienChitinBlocks.POLISHED_NETHER_CHITIN_SLAB.get())
             .stairs(AlienChitinBlocks.POLISHED_NETHER_CHITIN_STAIRS.get());
@@ -145,6 +166,8 @@ public class BlockModelProvider extends FabricModelProvider {
         generators.family(AlienChitinBlocks.CHITIN_BRICKS.get())
             .slab(AlienChitinBlocks.CHITIN_BRICK_SLAB.get())
             .stairs(AlienChitinBlocks.CHITIN_BRICK_STAIRS.get());
+        createBottomTopBlock(generators, AlienChitinBlocks.CHISELED_CHITIN_BRICKS.get(), AlienChitinBlocks.POLISHED_CHITIN.get());
+        createBottomTopBlock(generators, AlienChitinBlocks.CHISELED_CHITIN_BRICKS_EMBRYO.get(), AlienChitinBlocks.POLISHED_CHITIN.get());
         generators.family(AlienChitinBlocks.POLISHED_CHITIN.get())
             .slab(AlienChitinBlocks.POLISHED_CHITIN_SLAB.get())
             .stairs(AlienChitinBlocks.POLISHED_CHITIN_STAIRS.get());
@@ -434,14 +457,26 @@ public class BlockModelProvider extends FabricModelProvider {
             .forEach(spawnEggItem -> generators.delegateItemModel(spawnEggItem.get(), spawnEggLocation));
     }
 
-    public final void createRotatedPillar(BlockModelGenerators generators, Block rotatedPillarBlock, TexturedModel.Provider modelProvider) {
+    private void createBottomTopBlock(BlockModelGenerators generators, Block block, Block yBlock) {
+        var yResourceLocation = ModelLocationUtils.getModelLocation(yBlock);
+        var chiseledTextureResourceLocation = BuiltInRegistries.BLOCK.getKey(block).withPrefix("block/").withSuffix("_side");
+
+        var textureMapping = TextureMapping.cube(block)
+            .put(TextureSlot.BOTTOM, yResourceLocation)
+            .put(TextureSlot.SIDE, chiseledTextureResourceLocation)
+            .put(TextureSlot.TOP, yResourceLocation);
+
+        generators.createTrivialBlock(block, textureMapping, ModelTemplates.CUBE_BOTTOM_TOP);
+    }
+
+    private void createRotatedPillar(BlockModelGenerators generators, Block rotatedPillarBlock, TexturedModel.Provider modelProvider) {
         var resourceLocation = modelProvider.create(rotatedPillarBlock, generators.modelOutput);
         generators.blockStateOutput.accept(
             BlockModelGenerators.createRotatedPillarWithHorizontalVariant(rotatedPillarBlock, resourceLocation, resourceLocation)
         );
     }
 
-    public final void createGlassBlocks(BlockModelGenerators generators, Block block, Block block2) {
+    private void createGlassBlocks(BlockModelGenerators generators, Block block, Block block2) {
         TextureMapping textureMapping = TextureMapping.pane(block, block2);
         ResourceLocation resourceLocation = ModelTemplates.STAINED_GLASS_PANE_POST.create(block2, textureMapping, generators.modelOutput);
         ResourceLocation resourceLocation2 = ModelTemplates.STAINED_GLASS_PANE_SIDE.create(block2, textureMapping, generators.modelOutput);

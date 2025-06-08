@@ -87,6 +87,8 @@ public class BlockLootTableProvider extends FabricBlockLootTableProvider {
         dropSelf(AlienChitinBlocks.ABERRANT_CHITIN_BLOCK_STAIRS);
         dropSelf(AlienChitinBlocks.ABERRANT_CHITIN_BRICKS);
         dropSelf(AlienChitinBlocks.ABERRANT_CHITIN_BRICK_STAIRS);
+        dropSelf(AlienChitinBlocks.CHISELED_ABERRANT_CHITIN_BRICKS);
+        dropSelf(AlienChitinBlocks.CHISELED_ABERRANT_CHITIN_BRICKS_EMBRYO);
         dropSelf(AlienChitinBlocks.POLISHED_ABERRANT_CHITIN);
         dropSelf(AlienChitinBlocks.POLISHED_ABERRANT_CHITIN_STAIRS);
 
@@ -105,6 +107,8 @@ public class BlockLootTableProvider extends FabricBlockLootTableProvider {
         dropSelf(AlienChitinBlocks.NETHER_CHITIN_BLOCK_STAIRS);
         dropSelf(AlienChitinBlocks.NETHER_CHITIN_BRICKS);
         dropSelf(AlienChitinBlocks.NETHER_CHITIN_BRICK_STAIRS);
+        dropSelf(AlienChitinBlocks.CHISELED_NETHER_CHITIN_BRICKS);
+        dropSelf(AlienChitinBlocks.CHISELED_NETHER_CHITIN_BRICKS_EMBRYO);
         dropSelf(AlienChitinBlocks.POLISHED_NETHER_CHITIN);
         dropSelf(AlienChitinBlocks.POLISHED_NETHER_CHITIN_STAIRS);
 
@@ -117,6 +121,8 @@ public class BlockLootTableProvider extends FabricBlockLootTableProvider {
         dropSelf(AlienChitinBlocks.CHITIN_BLOCK_STAIRS);
         dropSelf(AlienChitinBlocks.CHITIN_BRICKS);
         dropSelf(AlienChitinBlocks.CHITIN_BRICK_STAIRS);
+        dropSelf(AlienChitinBlocks.CHISELED_CHITIN_BRICKS);
+        dropSelf(AlienChitinBlocks.CHISELED_CHITIN_BRICKS_EMBRYO);
         dropSelf(AlienChitinBlocks.POLISHED_CHITIN);
         dropSelf(AlienChitinBlocks.POLISHED_CHITIN_STAIRS);
 

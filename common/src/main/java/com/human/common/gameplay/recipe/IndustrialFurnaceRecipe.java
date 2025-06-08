@@ -58,12 +58,18 @@ public class IndustrialFurnaceRecipe extends AbstractCookingRecipe {
         registerMeltingRecipe(Items.CLAY, Items.TERRACOTTA);
         // TODO: Remove these, these break the balance of smelting. We can have these be smelted in electrical furnaces.
         registerMeltingRecipe(AlienResinBlockItems.RESIN.get(), HumanPlasticBlockItems.DYE_COLOR_TO_PLASTIC.get(DyeColor.GREEN).get());
-        registerMeltingRecipe(AlienResinBlockItems.NETHER_RESIN.get(), HumanPlasticBlockItems.DYE_COLOR_TO_PLASTIC.get(DyeColor.GREEN).get());
+        registerMeltingRecipe(
+            AlienResinBlockItems.NETHER_RESIN.get(),
+            HumanPlasticBlockItems.DYE_COLOR_TO_PLASTIC.get(DyeColor.GREEN).get()
+        );
         registerMeltingRecipe(
             AlienResinBlockItems.IRRADIATED_RESIN.get(),
             HumanPlasticBlockItems.DYE_COLOR_TO_PLASTIC.get(DyeColor.GREEN).get()
         );
-        registerMeltingRecipe(AlienResinBlockItems.ABERRANT_RESIN.get(), HumanPlasticBlockItems.DYE_COLOR_TO_PLASTIC.get(DyeColor.GREEN).get());
+        registerMeltingRecipe(
+            AlienResinBlockItems.ABERRANT_RESIN.get(),
+            HumanPlasticBlockItems.DYE_COLOR_TO_PLASTIC.get(DyeColor.GREEN).get()
+        );
     }
 
     private static void registerMeltingRecipe(Item input, Item output) {

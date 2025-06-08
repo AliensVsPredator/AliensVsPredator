@@ -258,6 +258,8 @@ public class AVPBlockTagProvider extends FabricTagProvider.BlockTagProvider {
                 AlienChitinBlocks.ABERRANT_CHITIN_BRICKS.get(),
                 AlienChitinBlocks.ABERRANT_CHITIN_BRICK_SLAB.get(),
                 AlienChitinBlocks.ABERRANT_CHITIN_BRICK_STAIRS.get(),
+                AlienChitinBlocks.CHISELED_ABERRANT_CHITIN_BRICKS.get(),
+                AlienChitinBlocks.CHISELED_ABERRANT_CHITIN_BRICKS_EMBRYO.get(),
                 AlienChitinBlocks.POLISHED_ABERRANT_CHITIN.get(),
                 AlienChitinBlocks.POLISHED_ABERRANT_CHITIN_SLAB.get(),
                 AlienChitinBlocks.POLISHED_ABERRANT_CHITIN_STAIRS.get()
@@ -272,6 +274,8 @@ public class AVPBlockTagProvider extends FabricTagProvider.BlockTagProvider {
                 AlienChitinBlocks.NETHER_CHITIN_BRICKS.get(),
                 AlienChitinBlocks.NETHER_CHITIN_BRICK_SLAB.get(),
                 AlienChitinBlocks.NETHER_CHITIN_BRICK_STAIRS.get(),
+                AlienChitinBlocks.CHISELED_NETHER_CHITIN_BRICKS.get(),
+                AlienChitinBlocks.CHISELED_NETHER_CHITIN_BRICKS_EMBRYO.get(),
                 AlienChitinBlocks.POLISHED_NETHER_CHITIN.get(),
                 AlienChitinBlocks.POLISHED_NETHER_CHITIN_SLAB.get(),
                 AlienChitinBlocks.POLISHED_NETHER_CHITIN_STAIRS.get()
@@ -285,6 +289,8 @@ public class AVPBlockTagProvider extends FabricTagProvider.BlockTagProvider {
                 AlienChitinBlocks.CHITIN_BRICKS.get(),
                 AlienChitinBlocks.CHITIN_BRICK_SLAB.get(),
                 AlienChitinBlocks.CHITIN_BRICK_STAIRS.get(),
+                AlienChitinBlocks.CHISELED_CHITIN_BRICKS.get(),
+                AlienChitinBlocks.CHISELED_CHITIN_BRICKS_EMBRYO.get(),
                 AlienChitinBlocks.POLISHED_CHITIN.get(),
                 AlienChitinBlocks.POLISHED_CHITIN_SLAB.get(),
                 AlienChitinBlocks.POLISHED_CHITIN_STAIRS.get()

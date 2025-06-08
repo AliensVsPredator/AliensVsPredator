@@ -223,6 +223,8 @@ public class EnglishLanguageProvider extends FabricLanguageProvider {
         addBlock(builder, AlienChitinBlocks.ABERRANT_CHITIN_BRICKS, "Aberrant Chitin Bricks");
         addBlock(builder, AlienChitinBlocks.ABERRANT_CHITIN_BRICK_SLAB, "Aberrant Chitin Brick Slab");
         addBlock(builder, AlienChitinBlocks.ABERRANT_CHITIN_BRICK_STAIRS, "Aberrant Chitin Brick Stairs");
+        addBlock(builder, AlienChitinBlocks.CHISELED_ABERRANT_CHITIN_BRICKS, "Chiseled Aberrant Chitin Bricks");
+        addBlock(builder, AlienChitinBlocks.CHISELED_ABERRANT_CHITIN_BRICKS_EMBRYO, "Chiseled Aberrant Chitin Bricks (Embryo)");
         addBlock(builder, AlienChitinBlocks.POLISHED_ABERRANT_CHITIN, "Polished Aberrant Chitin");
         addBlock(builder, AlienChitinBlocks.POLISHED_ABERRANT_CHITIN_SLAB, "Polished Aberrant Chitin Slab");
         addBlock(builder, AlienChitinBlocks.POLISHED_ABERRANT_CHITIN_STAIRS, "Polished Aberrant Chitin Stairs");
@@ -233,6 +235,8 @@ public class EnglishLanguageProvider extends FabricLanguageProvider {
         addBlock(builder, AlienChitinBlocks.CHITIN_BRICKS, "Chitin Bricks");
         addBlock(builder, AlienChitinBlocks.CHITIN_BRICK_SLAB, "Chitin Brick Slab");
         addBlock(builder, AlienChitinBlocks.CHITIN_BRICK_STAIRS, "Chitin Brick Stairs");
+        addBlock(builder, AlienChitinBlocks.CHISELED_CHITIN_BRICKS, "Chiseled Chitin Bricks");
+        addBlock(builder, AlienChitinBlocks.CHISELED_CHITIN_BRICKS_EMBRYO, "Chiseled Chitin Bricks (Embryo)");
         addBlock(builder, AlienChitinBlocks.POLISHED_CHITIN, "Polished Chitin");
         addBlock(builder, AlienChitinBlocks.POLISHED_CHITIN_SLAB, "Polished Chitin Slab");
         addBlock(builder, AlienChitinBlocks.POLISHED_CHITIN_STAIRS, "Polished Chitin Stairs");
@@ -243,6 +247,8 @@ public class EnglishLanguageProvider extends FabricLanguageProvider {
         addBlock(builder, AlienChitinBlocks.NETHER_CHITIN_BRICKS, "Nether Chitin Bricks");
         addBlock(builder, AlienChitinBlocks.NETHER_CHITIN_BRICK_SLAB, "Nether Chitin Brick Slab");
         addBlock(builder, AlienChitinBlocks.NETHER_CHITIN_BRICK_STAIRS, "Nether Chitin Brick Stairs");
+        addBlock(builder, AlienChitinBlocks.CHISELED_NETHER_CHITIN_BRICKS, "Chiseled Nether Chitin Bricks");
+        addBlock(builder, AlienChitinBlocks.CHISELED_NETHER_CHITIN_BRICKS_EMBRYO, "Chiseled Nether Chitin Bricks (Embryo)");
         addBlock(builder, AlienChitinBlocks.POLISHED_NETHER_CHITIN, "Polished Nether Chitin");
         addBlock(builder, AlienChitinBlocks.POLISHED_NETHER_CHITIN_SLAB, "Polished Nether Chitin Slab");
         addBlock(builder, AlienChitinBlocks.POLISHED_NETHER_CHITIN_STAIRS, "Polished Nether Chitin Stairs");

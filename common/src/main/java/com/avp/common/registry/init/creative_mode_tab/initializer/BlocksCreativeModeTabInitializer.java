@@ -200,6 +200,8 @@ public class BlocksCreativeModeTabInitializer {
         CreativeModeTabUtil.accept(output, AlienChitinBlocks.POLISHED_CHITIN);
         CreativeModeTabUtil.accept(output, AlienChitinBlocks.POLISHED_CHITIN_SLAB);
         CreativeModeTabUtil.accept(output, AlienChitinBlocks.POLISHED_CHITIN_STAIRS);
+        CreativeModeTabUtil.accept(output, AlienChitinBlocks.CHISELED_CHITIN_BRICKS);
+        CreativeModeTabUtil.accept(output, AlienChitinBlocks.CHISELED_CHITIN_BRICKS_EMBRYO);
 
         CreativeModeTabUtil.accept(output, AlienResinBlocks.NETHER_RESIN);
         CreativeModeTabUtil.accept(output, AlienResinBlocks.NETHER_RESIN_SLAB);
@@ -222,6 +224,8 @@ public class BlocksCreativeModeTabInitializer {
         CreativeModeTabUtil.accept(output, AlienChitinBlocks.POLISHED_NETHER_CHITIN);
         CreativeModeTabUtil.accept(output, AlienChitinBlocks.POLISHED_NETHER_CHITIN_SLAB);
         CreativeModeTabUtil.accept(output, AlienChitinBlocks.POLISHED_NETHER_CHITIN_STAIRS);
+        CreativeModeTabUtil.accept(output, AlienChitinBlocks.CHISELED_NETHER_CHITIN_BRICKS);
+        CreativeModeTabUtil.accept(output, AlienChitinBlocks.CHISELED_NETHER_CHITIN_BRICKS_EMBRYO);
 
         CreativeModeTabUtil.accept(output, AlienResinBlocks.ABERRANT_RESIN);
         CreativeModeTabUtil.accept(output, AlienResinBlocks.ABERRANT_RESIN_SLAB);
@@ -244,6 +248,8 @@ public class BlocksCreativeModeTabInitializer {
         CreativeModeTabUtil.accept(output, AlienChitinBlocks.POLISHED_ABERRANT_CHITIN);
         CreativeModeTabUtil.accept(output, AlienChitinBlocks.POLISHED_ABERRANT_CHITIN_SLAB);
         CreativeModeTabUtil.accept(output, AlienChitinBlocks.POLISHED_ABERRANT_CHITIN_STAIRS);
+        CreativeModeTabUtil.accept(output, AlienChitinBlocks.CHISELED_ABERRANT_CHITIN_BRICKS);
+        CreativeModeTabUtil.accept(output, AlienChitinBlocks.CHISELED_ABERRANT_CHITIN_BRICKS_EMBRYO);
 
         CreativeModeTabUtil.accept(output, AlienResinBlocks.IRRADIATED_RESIN);
         CreativeModeTabUtil.accept(output, AlienResinBlocks.IRRADIATED_RESIN_SLAB);

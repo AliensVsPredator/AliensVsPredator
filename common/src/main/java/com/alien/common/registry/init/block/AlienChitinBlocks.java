@@ -1,11 +1,12 @@
 package com.alien.common.registry.init.block;
 
-import com.avp.common.gameplay.block.property.BlockProperties;
-import com.avp.common.registry.AVPDeferredHolder;
-import com.avp.common.registry.init.block.AVPBlocks;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SlabBlock;
 import net.minecraft.world.level.block.StairBlock;
+
+import com.avp.common.gameplay.block.property.BlockProperties;
+import com.avp.common.registry.AVPDeferredHolder;
+import com.avp.common.registry.init.block.AVPBlocks;
 
 public class AlienChitinBlocks {
 
@@ -43,6 +44,36 @@ public class AlienChitinBlocks {
             ABERRANT_CHITIN_BRICKS.get().defaultBlockState(),
             BlockProperties.ABERRANT_CHITIN.build()
         )
+    );
+
+    public static final AVPDeferredHolder<Block> CHISELED_ABERRANT_CHITIN_BRICKS = AVPBlocks.register(
+        "chiseled_aberrant_chitin_bricks",
+        BlockProperties.ABERRANT_CHITIN
+    );
+
+    public static final AVPDeferredHolder<Block> CHISELED_ABERRANT_CHITIN_BRICKS_EMBRYO = AVPBlocks.register(
+        "chiseled_aberrant_chitin_bricks_embryo",
+        BlockProperties.ABERRANT_CHITIN
+    );
+
+    public static final AVPDeferredHolder<Block> CHISELED_CHITIN_BRICKS = AVPBlocks.register(
+        "chiseled_chitin_bricks",
+        BlockProperties.CHITIN
+    );
+
+    public static final AVPDeferredHolder<Block> CHISELED_CHITIN_BRICKS_EMBRYO = AVPBlocks.register(
+        "chiseled_chitin_bricks_embryo",
+        BlockProperties.CHITIN
+    );
+
+    public static final AVPDeferredHolder<Block> CHISELED_NETHER_CHITIN_BRICKS = AVPBlocks.register(
+        "chiseled_nether_chitin_bricks",
+        BlockProperties.NETHER_CHITIN
+    );
+
+    public static final AVPDeferredHolder<Block> CHISELED_NETHER_CHITIN_BRICKS_EMBRYO = AVPBlocks.register(
+        "chiseled_nether_chitin_bricks_embryo",
+        BlockProperties.NETHER_CHITIN
     );
 
     public static final AVPDeferredHolder<Block> CHITIN_BLOCK = AVPBlocks.register(
