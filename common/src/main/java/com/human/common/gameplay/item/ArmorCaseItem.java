@@ -33,7 +33,7 @@ public class ArmorCaseItem extends Item {
         }
 
         @Override
-        public @NotNull AbstractContainerMenu createMenu(int i, Inventory inventory, Player player) {
+        public @NotNull AbstractContainerMenu createMenu(int i, @NotNull Inventory inventory, @NotNull Player player) {
             return new ArmorCaseMenu(i, inventory);
         }
     };
@@ -43,20 +43,26 @@ public class ArmorCaseItem extends Item {
     }
 
     @Override
-    public @NotNull InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand interactionHand) {
+    public @NotNull InteractionResultHolder<ItemStack> use(Level level, @NotNull Player player, @NotNull InteractionHand interactionHand) {
         if (!level.isClientSide) {
-            if (player.isCrouching()) {
-                player.openMenu(PROVIDER);
-            } else {
-                swapArmorSlots(player, player.getItemInHand(interactionHand));
-            }
+            // TODO: Fix armor case menu.
+            // if (player.isCrouching()) {
+            // player.openMenu(PROVIDER);
+            // } else {
+            swapArmorSlots(player, player.getItemInHand(interactionHand));
+            // }
         }
 
         return super.use(level, player, interactionHand);
     }
 
     @Override
-    public void appendHoverText(ItemStack itemStack, TooltipContext tooltipContext, List<Component> list, TooltipFlag tooltipFlag) {
+    public void appendHoverText(
+        @NotNull ItemStack itemStack,
+        @NotNull TooltipContext tooltipContext,
+        @NotNull List<Component> list,
+        @NotNull TooltipFlag tooltipFlag
+    ) {
         super.appendHoverText(itemStack, tooltipContext, list, tooltipFlag);
 
         var container = itemStack.getOrDefault(HumanDataComponents.ARMOR_CASE_CONTAINER.get(), ArmorCaseContainerContents.EMPTY);
