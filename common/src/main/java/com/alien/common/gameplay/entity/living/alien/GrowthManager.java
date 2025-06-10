@@ -61,13 +61,14 @@ public class GrowthManager implements NBTSerializable {
             return;
         }
 
-        var growthStage = AlienLifecycleRegistry.getOrNull(null, entity.getType());
+        var hostType = entity.getHostType().unwrapOr(null);
+        var growthStage = AlienLifecycleRegistry.getOrNull(hostType, entity.getType());
 
         if (growthStage == null) {
             return;
         }
 
-        var canBypassGrowthTime = entity.getEntityData().get(Xenomorph.JELLY_COUNT) >= entity.maxJellyToGrowth();
+        var canBypassGrowthTime = entity.getEntityData().get(Xenomorph.JELLY_COUNT) >= entity.getMaxJellyToGrowth();
 
         if (canBypassGrowthTime) {
             // If we can bypass growing over time thanks to royal jelly, then do so.

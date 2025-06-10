@@ -149,6 +149,7 @@ public abstract class MixinLivingEntity_GrowEmbryo extends Entity implements Hos
 
         if (embryo instanceof Alien alien) {
             applyGenesToParasite(self, alien);
+            alien.setHostType(self.getType());
         }
 
         embryo.moveTo(position(), getYRot(), getXRot());
@@ -181,7 +182,7 @@ public abstract class MixinLivingEntity_GrowEmbryo extends Entity implements Hos
 
     @Unique
     private void applyGenesToParasite(LivingEntity self, Alien alien) {
-        var geneManager = alien.geneManager();
+        var geneManager = alien.getGeneManager();
         geneManager.setAll(getOrCreateGeneManager().getAll());
 
         // Transfer genetics from parasite to embryo.
@@ -218,7 +219,7 @@ public abstract class MixinLivingEntity_GrowEmbryo extends Entity implements Hos
     @Override
     public void injectEmbryo(Parasite parasite) {
         this.parasiteType = parasite.getType();
-        getOrCreateGeneManager().setAll(parasite.geneManager().getAll());
+        getOrCreateGeneManager().setAll(parasite.getGeneManager().getAll());
 
         var self = LivingEntity.class.cast(this);
 

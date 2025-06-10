@@ -4,13 +4,16 @@ import com.alien.common.model.alien.variant.AlienVariant;
 import com.alien.common.util.AcidBleedUtil;
 import com.alien.common.util.AlienHurtUtil;
 import com.alien.common.util.AlienTransitionUtil;
+import com.bvanseg.just.functional.option.Option;
 import com.google.common.base.Objects;
 import com.lib.common.gameplay.entity.manager.GeneManager;
 import net.minecraft.core.Holder;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -33,11 +36,13 @@ import com.avp.common.util.MovementAnalyzer;
 
 public abstract class Alien extends Monster {
 
-    private static final String IS_POISONED_KEY = "isPoisoned";
+    private static final String NBT_HOST_TYPE = "hostType";
 
-    private static final String IS_ROYAL_KEY = "isRoyal";
+    private static final String NBT_IS_POISONED = "isPoisoned";
 
-    private static final String JELLY_COUNT_KEY = "jellyCount";
+    private static final String NBT_IS_ROYAL = "isRoyal";
+
+    private static final String NBT_JELLY_COUNT = "jellyCount";
 
     public static final EntityDataAccessor<Boolean> IS_POISONED = SynchedEntityData.defineId(
         Alien.class,
@@ -57,6 +62,8 @@ public abstract class Alien extends Monster {
 
     protected final MovementAnalyzer movementAnalyzer;
 
+    private Option<EntityType<?>> hostTypeOption;
+
     private int lastHurtTimeInTicks;
 
     protected AVPConfig.StatsConfigs.AdvancedStats config;
@@ -65,6 +72,7 @@ public abstract class Alien extends Monster {
         super(entityType, level);
         this.geneManager = new GeneManager(this);
         this.hiveManager = new HiveManager(this);
+        this.hostTypeOption = Option.none();
         this.movementAnalyzer = new MovementAnalyzer(this);
     }
 
@@ -260,6 +268,11 @@ public abstract class Alien extends Monster {
     }
 
     @Override
+    public boolean fireImmune() {
+        return isNetherAfflicted();
+    }
+
+    @Override
     public boolean isPersistenceRequired() {
         return super.isPersistenceRequired()
             || hiveManager.hive()
@@ -288,16 +301,24 @@ public abstract class Alien extends Monster {
         geneManager.load(compoundTag);
         hiveManager.load(compoundTag);
 
-        if (compoundTag.contains(IS_POISONED_KEY)) {
-            setPoisoned(compoundTag.getBoolean(IS_POISONED_KEY));
+        if (compoundTag.contains(NBT_IS_POISONED)) {
+            setPoisoned(compoundTag.getBoolean(NBT_IS_POISONED));
         }
 
-        if (compoundTag.contains(IS_ROYAL_KEY)) {
-            setRoyal(compoundTag.getBoolean(IS_ROYAL_KEY));
+        if (compoundTag.contains(NBT_IS_ROYAL)) {
+            setRoyal(compoundTag.getBoolean(NBT_IS_ROYAL));
         }
 
-        if (compoundTag.contains(JELLY_COUNT_KEY)) {
-            getEntityData().set(JELLY_COUNT, compoundTag.getInt(JELLY_COUNT_KEY));
+        if (compoundTag.contains(NBT_JELLY_COUNT)) {
+            getEntityData().set(JELLY_COUNT, compoundTag.getInt(NBT_JELLY_COUNT));
+        }
+
+        var resourceLocationString = compoundTag.getString(NBT_HOST_TYPE);
+        var resourceLocation = ResourceLocation.parse(resourceLocationString);
+        var entityType = BuiltInRegistries.ENTITY_TYPE.get(resourceLocation);
+
+        if (!entityType.equals(EntityType.PIG)) {
+            this.hostTypeOption = Option.some(entityType);
         }
     }
 
@@ -306,38 +327,42 @@ public abstract class Alien extends Monster {
         super.addAdditionalSaveData(compoundTag);
         geneManager.save(compoundTag);
         hiveManager.save(compoundTag);
-        compoundTag.putBoolean(IS_POISONED_KEY, isPoisoned());
-        compoundTag.putBoolean(IS_ROYAL_KEY, isRoyal());
-        compoundTag.putInt(JELLY_COUNT_KEY, getEntityData().get(JELLY_COUNT));
+        compoundTag.putBoolean(NBT_IS_POISONED, isPoisoned());
+        compoundTag.putBoolean(NBT_IS_ROYAL, isRoyal());
+        compoundTag.putInt(NBT_JELLY_COUNT, getEntityData().get(JELLY_COUNT));
+
+        hostTypeOption.ifSome(hostType -> {
+            var resourceLocation = BuiltInRegistries.ENTITY_TYPE.getKey(hostTypeOption.unwrap());
+            compoundTag.putString(NBT_HOST_TYPE, resourceLocation.toString());
+        });
     }
 
-    public GeneManager geneManager() {
+    public GeneManager getGeneManager() {
         return geneManager;
     }
 
-    public HiveManager hiveManager() {
+    public HiveManager getHiveManager() {
         return hiveManager;
     }
 
-    public int lastHurtTimeInTicks() {
+    public Option<EntityType<?>> getHostType() {
+        return hostTypeOption;
+    }
+
+    public int getLastHurtTimeInTicks() {
         return lastHurtTimeInTicks;
     }
 
-    public int maxJellyToGrowth() {
+    public int getMaxJellyToGrowth() {
         return 10;
     }
 
-    public static AttributeSupplier.Builder applyFrom(AVPConfig.StatsConfigs.AdvancedStats config, AttributeSupplier.Builder builder) {
-        builder.add(Attributes.ARMOR, config.armor);
-        builder.add(Attributes.ARMOR_TOUGHNESS, config.armorToughness);
-        builder.add(Attributes.ATTACK_DAMAGE, config.attackDamage);
-        builder.add(Attributes.FOLLOW_RANGE, config.followRange);
-        builder.add(Attributes.KNOCKBACK_RESISTANCE, config.knockbackResistance);
-        builder.add(Attributes.MAX_HEALTH, config.health);
-        builder.add(Attributes.MOVEMENT_SPEED, config.moveSpeed);
-        builder.add(Attributes.JUMP_STRENGTH, 0.1F);
+    public MovementAnalyzer getMovementAnalyzer() {
+        return movementAnalyzer;
+    }
 
-        return builder;
+    public void setHostType(EntityType<?> hostType) {
+        this.hostTypeOption = Option.some(hostType);
     }
 
     public void applyDynamicAttributes(AVPConfig.StatsConfigs.AdvancedStats config) {
@@ -363,12 +388,16 @@ public abstract class Alien extends Monster {
         }
     }
 
-    @Override
-    public boolean fireImmune() {
-        return isNetherAfflicted();
-    }
+    public static AttributeSupplier.Builder applyFrom(AVPConfig.StatsConfigs.AdvancedStats config, AttributeSupplier.Builder builder) {
+        builder.add(Attributes.ARMOR, config.armor);
+        builder.add(Attributes.ARMOR_TOUGHNESS, config.armorToughness);
+        builder.add(Attributes.ATTACK_DAMAGE, config.attackDamage);
+        builder.add(Attributes.FOLLOW_RANGE, config.followRange);
+        builder.add(Attributes.KNOCKBACK_RESISTANCE, config.knockbackResistance);
+        builder.add(Attributes.MAX_HEALTH, config.health);
+        builder.add(Attributes.MOVEMENT_SPEED, config.moveSpeed);
+        builder.add(Attributes.JUMP_STRENGTH, 0.1F);
 
-    public MovementAnalyzer getMovementAnalyzer() {
-        return movementAnalyzer;
+        return builder;
     }
 }

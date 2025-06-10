@@ -43,6 +43,7 @@ public class EntityLootTableProvider extends SimpleFabricLootTableProvider {
             AlienEntityTypes.QUEEN.get().getDefaultLootTable(),
             QueenLootTable.createLootTableBuilder(provider, AlienVariantTypes.NORMAL)
         );
+        biConsumer.accept(AlienEntityTypes.RUNNER.get().getDefaultLootTable(), DroneLootTable.create(provider, AlienVariantTypes.NORMAL));
 
         // Nether
         biConsumer.accept(
@@ -60,6 +61,10 @@ public class EntityLootTableProvider extends SimpleFabricLootTableProvider {
         biConsumer.accept(
             AlienEntityTypes.NETHER_QUEEN.get().getDefaultLootTable(),
             QueenLootTable.createLootTableBuilder(provider, AlienVariantTypes.NETHER)
+        );
+        biConsumer.accept(
+            AlienEntityTypes.NETHER_RUNNER.get().getDefaultLootTable(),
+            DroneLootTable.create(provider, AlienVariantTypes.NETHER)
         );
 
         // Aberrant
@@ -79,6 +84,10 @@ public class EntityLootTableProvider extends SimpleFabricLootTableProvider {
             AlienEntityTypes.ABERRANT_QUEEN.get().getDefaultLootTable(),
             QueenLootTable.createLootTableBuilder(provider, AlienVariantTypes.ABERRANT)
         );
+        biConsumer.accept(
+            AlienEntityTypes.ABERRANT_RUNNER.get().getDefaultLootTable(),
+            DroneLootTable.create(provider, AlienVariantTypes.ABERRANT)
+        );
 
         // Irradiated
         biConsumer.accept(
@@ -96,6 +105,10 @@ public class EntityLootTableProvider extends SimpleFabricLootTableProvider {
         biConsumer.accept(
             AlienEntityTypes.IRRADIATED_QUEEN.get().getDefaultLootTable(),
             QueenLootTable.createLootTableBuilder(provider, AlienVariantTypes.IRRADIATED)
+        );
+        biConsumer.accept(
+            AlienEntityTypes.IRRADIATED_RUNNER.get().getDefaultLootTable(),
+            DroneLootTable.create(provider, AlienVariantTypes.IRRADIATED)
         );
 
         biConsumer.accept(PredatorEntityTypes.YAUTJA.get().getDefaultLootTable(), YautjaLootTable.LOOT_TABLE.apply(provider));

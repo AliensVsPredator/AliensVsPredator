@@ -47,6 +47,7 @@ public class AdvancementProvider extends FabricAdvancementProvider {
         AlienEntityTypes.OVOMORPH.get(),
         AlienEntityTypes.PRAETORIAN.get(),
         AlienEntityTypes.QUEEN.get(),
+        AlienEntityTypes.RUNNER.get(),
         AlienEntityTypes.WARRIOR.get(),
 
         // Aberrant Aliens
@@ -56,6 +57,7 @@ public class AdvancementProvider extends FabricAdvancementProvider {
         AlienEntityTypes.ABERRANT_OVOMORPH.get(),
         AlienEntityTypes.ABERRANT_PRAETORIAN.get(),
         AlienEntityTypes.ABERRANT_QUEEN.get(),
+        AlienEntityTypes.ABERRANT_RUNNER.get(),
         AlienEntityTypes.ABERRANT_WARRIOR.get(),
 
         // Nether Aliens
@@ -65,6 +67,7 @@ public class AdvancementProvider extends FabricAdvancementProvider {
         AlienEntityTypes.NETHER_OVOMORPH.get(),
         AlienEntityTypes.NETHER_PRAETORIAN.get(),
         AlienEntityTypes.NETHER_QUEEN.get(),
+        AlienEntityTypes.NETHER_RUNNER.get(),
         AlienEntityTypes.NETHER_WARRIOR.get(),
 
         // Royal Normal Aliens

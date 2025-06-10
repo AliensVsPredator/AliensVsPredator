@@ -15,6 +15,8 @@ public record KnockbackResistanceConstants() {
 
     public static final float QUEEN_KNOCKBACK_RESISTANCE = 1f;
 
+    public static final float RUNNER_KNOCKBACK_RESISTANCE = 0.3f;
+
     public static final float WARRIOR_KNOCKBACK_RESISTANCE = 0.5f;
 
     public static final float YAUTJA_KNOCKBACK_RESISTANCE = 1f;

@@ -12,6 +12,8 @@ public class HealthRegenConstants {
 
     public static final float PRAETORIAN_HEALTH_REGEN = 0.5F;
 
+    public static final float RUNNER_HEALTH_REGEN = 0.5F;
+
     public static final float QUEEN_HEALTH_REGEN = 0.5F;
 
     public static final float WARRIOR_HEALTH_REGEN = 0.5F;

@@ -54,8 +54,8 @@ public class AlienPredicates {
     }
 
     private static boolean areAliensRivalHiveMembers(Alien first, Alien second) {
-        var firstHiveSignatureOption = first.hiveManager().signature();
-        var secondHiveSignatureOption = second.hiveManager().signature();
+        var firstHiveSignatureOption = first.getHiveManager().signature();
+        var secondHiveSignatureOption = second.getHiveManager().signature();
 
         if (firstHiveSignatureOption.isNone() || secondHiveSignatureOption.isNone()) {
             // Aliens are neutral towards other aliens that have no hive.
@@ -104,8 +104,8 @@ public class AlienPredicates {
     }
 
     public static boolean areAliensSameHive(@NotNull Alien alien, @NotNull Alien otherAlien) {
-        var hiveSignatureOption = alien.hiveManager().signature();
-        var otherHiveSignatureOption = otherAlien.hiveManager().signature();
+        var hiveSignatureOption = alien.getHiveManager().signature();
+        var otherHiveSignatureOption = otherAlien.getHiveManager().signature();
 
         // Two aliens with null/missing hives are not considered part of the same hive.
         return hiveSignatureOption.isSome()

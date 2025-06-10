@@ -3,8 +3,10 @@ package com.alien.common.registry.init;
 import com.alien.common.model.lifecycle.AlienLifecycle;
 import com.alien.common.model.lifecycle.growth.GrowthStage;
 import com.bvanseg.just.functional.function.Lazy;
+import net.minecraft.world.entity.EntityType;
 
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
 
@@ -41,6 +43,21 @@ public class AlienLifecycles {
         )
     );
 
+    public static final Supplier<AlienLifecycle> RUNNER_LIFECYCLE = register(
+        () -> new AlienLifecycle(
+            Set.of(
+                EntityType.COW
+            ),
+            List.of(
+                new GrowthStage(
+                    AlienEntityTypes.CHESTBURSTER.get(),
+                    AlienEntityTypes.RUNNER.get(),
+                    (int) TimeUnit.MINUTES.toSeconds(AVP.config.hiveConfigs.CHESTBURSTER_MAX_GROWTH_TIMER_SECONDS)
+                )
+            )
+        )
+    );
+
     public static final Supplier<AlienLifecycle> ABERRANT_LIFECYCLE = register(
         () -> new AlienLifecycle(
             null, // No hosts = this lifecycle will be the default for all chestbursters.
@@ -69,6 +86,21 @@ public class AlienLifecycles {
         )
     );
 
+    public static final Supplier<AlienLifecycle> ABERRANT_RUNNER_LIFECYCLE = register(
+        () -> new AlienLifecycle(
+            Set.of(
+                EntityType.COW
+            ),
+            List.of(
+                new GrowthStage(
+                    AlienEntityTypes.ABERRANT_CHESTBURSTER.get(),
+                    AlienEntityTypes.ABERRANT_RUNNER.get(),
+                    (int) TimeUnit.MINUTES.toSeconds(AVP.config.hiveConfigs.CHESTBURSTER_MAX_GROWTH_TIMER_SECONDS)
+                )
+            )
+        )
+    );
+
     public static final Supplier<AlienLifecycle> NETHER_LIFECYCLE = register(
         () -> new AlienLifecycle(
             null, // No hosts = this lifecycle will be the default for all chestbursters.
@@ -92,6 +124,21 @@ public class AlienLifecycles {
                     AlienEntityTypes.NETHER_PRAETORIAN.get(),
                     AlienEntityTypes.NETHER_QUEEN.get(),
                     (int) TimeUnit.MINUTES.toSeconds(AVP.config.hiveConfigs.PRAETORIAN_MAX_GROWTH_TIMER_SECONDS)
+                )
+            )
+        )
+    );
+
+    public static final Supplier<AlienLifecycle> NETHER_RUNNER_LIFECYCLE = register(
+        () -> new AlienLifecycle(
+            Set.of(
+                EntityType.COW
+            ),
+            List.of(
+                new GrowthStage(
+                    AlienEntityTypes.NETHER_CHESTBURSTER.get(),
+                    AlienEntityTypes.NETHER_RUNNER.get(),
+                    (int) TimeUnit.MINUTES.toSeconds(AVP.config.hiveConfigs.CHESTBURSTER_MAX_GROWTH_TIMER_SECONDS)
                 )
             )
         )

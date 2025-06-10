@@ -51,7 +51,7 @@ public class QueenLayEggGoal extends Goal {
             && !queen.isAggressive()
             // AND Queen must have no target before she lays an egg.
             && queen.getTarget() == null
-            && queen.hiveManager()
+            && queen.getHiveManager()
                 .hive()
                 // AND Queen must have a hive...
                 .isSomeAnd(

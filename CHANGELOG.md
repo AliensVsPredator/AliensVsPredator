@@ -4,7 +4,9 @@
 - N/A
 
 ## ✨ What's New
-- N/A
+- Aliens now remember what host type they came from.
+- Added new aliens:
+  - Runner
 
 ## ♻️ Changes
 - N/A

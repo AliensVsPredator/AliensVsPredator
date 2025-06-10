@@ -83,6 +83,13 @@ public class AVPEntitySpawns {
                 .withSpawnSettings(AVP.config.spawnConfigs.QUEEN_SPAWN)
                 .build()
         );
+        Services.REGISTRY.registerEntitySpawnData(
+            AVPEntitySpawnData.builder(AlienEntityTypes.RUNNER)
+                .withBiomeTagKey(AVPBiomeTags.HAS_XENOMORPHS)
+                .withSpawnPredicate(AlienSpawning.getTypedPredicate())
+                .withSpawnSettings(AVP.config.spawnConfigs.RUNNER_SPAWN)
+                .build()
+        );
     }
 
     private static void registerAberrantAlienSpawns() {
@@ -130,6 +137,13 @@ public class AVPEntitySpawns {
                 .disableConfig()
                 .build()
         );
+        Services.REGISTRY.registerEntitySpawnData(
+            AVPEntitySpawnData.builder(AlienEntityTypes.ABERRANT_RUNNER)
+                .withBiomeTagKey(AVPBiomeTags.HAS_XENOMORPHS)
+                .withSpawnPredicate(AlienSpawning.getTypedPredicate())
+                .withSpawnSettings(AVP.config.spawnConfigs.ABERRANT_RUNNER_SPAWN)
+                .build()
+        );
     }
 
     private static void registerIrradiatedAlienSpawns() {
@@ -159,6 +173,13 @@ public class AVPEntitySpawns {
                 .withBiomeTagKey(AVPBiomeTags.IS_IRRADIATED)
                 .withSpawnPredicate(QueenSpawning.PREDICATE)
                 .withSpawnSettings(AVP.config.spawnConfigs.IRRADIATED_QUEEN_SPAWN)
+                .build()
+        );
+        Services.REGISTRY.registerEntitySpawnData(
+            AVPEntitySpawnData.builder(AlienEntityTypes.IRRADIATED_RUNNER)
+                .withBiomeTagKey(AVPBiomeTags.HAS_XENOMORPHS)
+                .withSpawnPredicate(AlienSpawning.getTypedPredicate())
+                .withSpawnSettings(AVP.config.spawnConfigs.IRRADIATED_RUNNER_SPAWN)
                 .build()
         );
     }
@@ -204,6 +225,13 @@ public class AVPEntitySpawns {
                 .withBiomeTagKey(BiomeTags.IS_NETHER)
                 .withSpawnPredicate(QueenSpawning.PREDICATE)
                 .withSpawnSettings(AVP.config.spawnConfigs.NETHER_QUEEN_SPAWN)
+                .build()
+        );
+        Services.REGISTRY.registerEntitySpawnData(
+            AVPEntitySpawnData.builder(AlienEntityTypes.NETHER_RUNNER)
+                .withBiomeTagKey(AVPBiomeTags.HAS_XENOMORPHS)
+                .withSpawnPredicate(AlienSpawning.getTypedPredicate())
+                .withSpawnSettings(AVP.config.spawnConfigs.NETHER_RUNNER_SPAWN)
                 .build()
         );
     }

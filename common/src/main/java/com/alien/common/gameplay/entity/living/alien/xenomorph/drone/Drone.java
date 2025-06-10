@@ -71,7 +71,7 @@ public class Drone extends Xenomorph {
     }
 
     @Override
-    public int maxJellyToGrowth() {
+    public int getMaxJellyToGrowth() {
         return 2;
     }
 

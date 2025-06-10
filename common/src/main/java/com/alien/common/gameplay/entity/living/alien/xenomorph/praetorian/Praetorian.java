@@ -68,7 +68,7 @@ public class Praetorian extends Xenomorph {
     }
 
     @Override
-    public int maxJellyToGrowth() {
+    public int getMaxJellyToGrowth() {
         return 9;
     }
 

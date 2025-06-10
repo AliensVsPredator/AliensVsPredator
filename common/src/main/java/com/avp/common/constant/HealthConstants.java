@@ -18,6 +18,8 @@ public record HealthConstants() {
 
     public static final float QUEEN_HEALTH = PLAYER_HEALTH * 10F;
 
+    public static final float RUNNER_HEALTH = PLAYER_HEALTH * 2F;
+
     public static final float WARRIOR_HEALTH = PLAYER_HEALTH * 3F;
 
     public static final float YAUTJA_HEALTH = PLAYER_HEALTH * 10F;

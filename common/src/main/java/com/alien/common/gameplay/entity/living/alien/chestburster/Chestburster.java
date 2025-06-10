@@ -99,7 +99,7 @@ public class Chestburster extends Alien {
     }
 
     @Override
-    public int maxJellyToGrowth() {
+    public int getMaxJellyToGrowth() {
         return 1;
     }
 

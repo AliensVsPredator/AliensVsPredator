@@ -99,6 +99,11 @@ public class AVPConfig {
 
         @Configurable
         @Configurable.Synchronized
+        @Configurable.Comment("Modifying these will require restarting the game.")
+        public SpawnSettings ABERRANT_RUNNER_SPAWN = new SpawnSettings(true, 1, 2, 50);
+
+        @Configurable
+        @Configurable.Synchronized
         @Configurable.Comment("Aberrant Warrior spawn settings. Modifying these will require restarting the game.")
         public SpawnSettings ABERRANT_WARRIOR_SPAWN = new SpawnSettings(true, 1, 2, 25);
 
@@ -126,6 +131,11 @@ public class AVPConfig {
         @Configurable.Synchronized
         @Configurable.Comment("Irradiated Queen spawn settings. Modifying these will require restarting the game.")
         public SpawnSettings IRRADIATED_QUEEN_SPAWN = new SpawnSettings(true, 1, 1, 5);
+
+        @Configurable
+        @Configurable.Synchronized
+        @Configurable.Comment("Irradiated Runner spawn settings. Modifying these will require restarting the game.")
+        public SpawnSettings IRRADIATED_RUNNER_SPAWN = new SpawnSettings(true, 1, 2, 50);
 
         @Configurable
         @Configurable.Synchronized
@@ -162,6 +172,11 @@ public class AVPConfig {
 
         @Configurable
         @Configurable.Synchronized
+        @Configurable.Comment("Modifying these will require restarting the game.")
+        public SpawnSettings NETHER_RUNNER_SPAWN = new SpawnSettings(true, 1, 2, 50);
+
+        @Configurable
+        @Configurable.Synchronized
         @Configurable.Comment("Nether Warrior spawn settings. Modifying these will require restarting the game.")
         public SpawnSettings NETHER_WARRIOR_SPAWN = new SpawnSettings(true, 1, 2, 25);
 
@@ -180,6 +195,11 @@ public class AVPConfig {
         @Configurable.Synchronized
         @Configurable.Comment("Queen spawn settings. Modifying these will require restarting the game.")
         public SpawnSettings QUEEN_SPAWN = new SpawnSettings(true, 1, 1, 5);
+
+        @Configurable
+        @Configurable.Synchronized
+        @Configurable.Comment("Modifying these will require restarting the game.")
+        public SpawnSettings RUNNER_SPAWN = new SpawnSettings(true, 1, 2, 50);
 
         @Configurable
         @Configurable.Synchronized
@@ -338,6 +358,21 @@ public class AVPConfig {
             ArmorToughnessConstants.QUEEN_ARMOR_TOUGHNESS,
             10,
             FollowRangeConstants.QUEEN_FOLLOW_RANGE
+        );
+
+        @Configurable
+        @Configurable.Synchronized
+        @Configurable.Comment("Modifying any of these will require restarting the game.")
+        public AdvancedStats RUNNER_STATS = new AdvancedStats(
+            HealthConstants.RUNNER_HEALTH,
+            AttackDamageConstants.RUNNER_ATTACK_DAMAGE,
+            HealthRegenConstants.RUNNER_HEALTH_REGEN,
+            KnockbackResistanceConstants.RUNNER_KNOCKBACK_RESISTANCE,
+            MoveSpeedConstants.RUNNER_SPEED,
+            ArmorConstants.RUNNER_ARMOR,
+            0.0f,
+            20,
+            FollowRangeConstants.RUNNER_FOLLOW_RANGE
         );
 
         @Configurable

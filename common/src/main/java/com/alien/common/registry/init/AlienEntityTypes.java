@@ -8,6 +8,7 @@ import com.alien.common.gameplay.entity.living.alien.parasite.facehugger.Facehug
 import com.alien.common.gameplay.entity.living.alien.xenomorph.drone.Drone;
 import com.alien.common.gameplay.entity.living.alien.xenomorph.praetorian.Praetorian;
 import com.alien.common.gameplay.entity.living.alien.xenomorph.queen.Queen;
+import com.alien.common.gameplay.entity.living.alien.xenomorph.runner.Runner;
 import com.alien.common.gameplay.entity.living.alien.xenomorph.warrior.Warrior;
 import com.lib.common.gameplay.gene.GeneKeys;
 import net.minecraft.world.entity.EntityType;
@@ -68,15 +69,6 @@ public class AlienEntityTypes {
             .sized(0.98f, 3.98f)
     );
 
-    public static final AVPDeferredHolder<EntityType<Warrior>> ABERRANT_WARRIOR = AVPEntityTypes.register(
-        "aberrant_warrior",
-        EntityType.Builder.<Warrior>of(
-            (type, level) -> aberrantFactory(Warrior::new, type, level),
-            AVPEntityTypes.ALIEN_CATEGORY
-        )
-            .sized(0.8f, 1.98f)
-    );
-
     public static final AVPDeferredHolder<EntityType<Queen>> ABERRANT_QUEEN = AVPEntityTypes.register(
         "aberrant_queen",
         EntityType.Builder.<Queen>of(
@@ -84,6 +76,21 @@ public class AlienEntityTypes {
             AVPEntityTypes.ALIEN_CATEGORY
         )
             .sized(1.98f, 3.98f)
+    );
+
+    public static final AVPDeferredHolder<EntityType<Runner>> ABERRANT_RUNNER = AVPEntityTypes.register(
+        "aberrant_runner",
+        EntityType.Builder.of(Runner::new, AVPEntityTypes.ALIEN_CATEGORY)
+            .sized(0.8f, 0.98f)
+    );
+
+    public static final AVPDeferredHolder<EntityType<Warrior>> ABERRANT_WARRIOR = AVPEntityTypes.register(
+        "aberrant_warrior",
+        EntityType.Builder.<Warrior>of(
+            (type, level) -> aberrantFactory(Warrior::new, type, level),
+            AVPEntityTypes.ALIEN_CATEGORY
+        )
+            .sized(0.8f, 1.98f)
     );
 
     public static final AVPDeferredHolder<EntityType<Acid>> ACID = AVPEntityTypes.register(
@@ -126,6 +133,12 @@ public class AlienEntityTypes {
         "irradiated_queen",
         EntityType.Builder.of(Queen::new, AVPEntityTypes.ALIEN_CATEGORY)
             .sized(1.98f, 3.98f)
+    );
+
+    public static final AVPDeferredHolder<EntityType<Runner>> IRRADIATED_RUNNER = AVPEntityTypes.register(
+        "irradiated_runner",
+        EntityType.Builder.of(Runner::new, AVPEntityTypes.ALIEN_CATEGORY)
+            .sized(0.8f, 0.98f)
     );
 
     public static final AVPDeferredHolder<EntityType<Warrior>> IRRADIATED_WARRIOR = AVPEntityTypes.register(
@@ -180,15 +193,6 @@ public class AlienEntityTypes {
             .sized(0.98f, 3.98f)
     );
 
-    public static final AVPDeferredHolder<EntityType<Warrior>> NETHER_WARRIOR = AVPEntityTypes.register(
-        "nether_warrior",
-        EntityType.Builder.<Warrior>of(
-            (type, level) -> nethermorphFactory(Warrior::new, type, level),
-            AVPEntityTypes.ALIEN_CATEGORY
-        )
-            .sized(0.8f, 1.98f)
-    );
-
     public static final AVPDeferredHolder<EntityType<Queen>> NETHER_QUEEN = AVPEntityTypes.register(
         "nether_queen",
         EntityType.Builder.<Queen>of(
@@ -196,6 +200,21 @@ public class AlienEntityTypes {
             AVPEntityTypes.ALIEN_CATEGORY
         )
             .sized(1.98f, 3.98f)
+    );
+
+    public static final AVPDeferredHolder<EntityType<Runner>> NETHER_RUNNER = AVPEntityTypes.register(
+        "nether_runner",
+        EntityType.Builder.of(Runner::new, AVPEntityTypes.ALIEN_CATEGORY)
+            .sized(0.8f, 0.98f)
+    );
+
+    public static final AVPDeferredHolder<EntityType<Warrior>> NETHER_WARRIOR = AVPEntityTypes.register(
+        "nether_warrior",
+        EntityType.Builder.<Warrior>of(
+            (type, level) -> nethermorphFactory(Warrior::new, type, level),
+            AVPEntityTypes.ALIEN_CATEGORY
+        )
+            .sized(0.8f, 1.98f)
     );
 
     public static final AVPDeferredHolder<EntityType<Ovomorph>> OVOMORPH = AVPEntityTypes.register(
@@ -301,6 +320,12 @@ public class AlienEntityTypes {
             .sized(0.65f, 0.8f)
     );
 
+    public static final AVPDeferredHolder<EntityType<Runner>> RUNNER = AVPEntityTypes.register(
+        "runner",
+        EntityType.Builder.of(Runner::new, AVPEntityTypes.ALIEN_CATEGORY)
+            .sized(0.8f, 0.98f)
+    );
+
     public static final AVPDeferredHolder<EntityType<Warrior>> WARRIOR = AVPEntityTypes.register(
         "warrior",
         EntityType.Builder.of(Warrior::new, AVPEntityTypes.ALIEN_CATEGORY)
@@ -313,7 +338,7 @@ public class AlienEntityTypes {
         Level level
     ) {
         var entity = entityFactory.apply(entityType, level);
-        entity.geneManager().minimize(GeneKeys.GENETIC_INTEGRITY);
+        entity.getGeneManager().minimize(GeneKeys.GENETIC_INTEGRITY);
         return entity;
     }
 
@@ -323,8 +348,8 @@ public class AlienEntityTypes {
         Level level
     ) {
         var entity = entityFactory.apply(entityType, level);
-        entity.geneManager().minimize(GeneKeys.COLD_RESISTANCE);
-        entity.geneManager().maximize(GeneKeys.FIRE_RESISTANCE);
+        entity.getGeneManager().minimize(GeneKeys.COLD_RESISTANCE);
+        entity.getGeneManager().maximize(GeneKeys.FIRE_RESISTANCE);
         return entity;
     }
 
@@ -345,7 +370,7 @@ public class AlienEntityTypes {
     ) {
         var entity = entityFactory.apply(entityType, level);
         entity.setRoyal(true);
-        entity.geneManager().minimize(GeneKeys.GENETIC_INTEGRITY);
+        entity.getGeneManager().minimize(GeneKeys.GENETIC_INTEGRITY);
         return entity;
     }
 
@@ -356,8 +381,8 @@ public class AlienEntityTypes {
     ) {
         var entity = entityFactory.apply(entityType, level);
         entity.setRoyal(true);
-        entity.geneManager().minimize(GeneKeys.COLD_RESISTANCE);
-        entity.geneManager().maximize(GeneKeys.FIRE_RESISTANCE);
+        entity.getGeneManager().minimize(GeneKeys.COLD_RESISTANCE);
+        entity.getGeneManager().maximize(GeneKeys.FIRE_RESISTANCE);
         return entity;
     }
 
@@ -368,6 +393,7 @@ public class AlienEntityTypes {
         Services.REGISTRY.registerEntityAttributes(ABERRANT_OVOMORPH, Ovomorph::createOvomorphAttributes);
         Services.REGISTRY.registerEntityAttributes(ABERRANT_PRAETORIAN, Praetorian::createPraetorianAttributes);
         Services.REGISTRY.registerEntityAttributes(ABERRANT_QUEEN, Queen::createQueenAttributes);
+        Services.REGISTRY.registerEntityAttributes(ABERRANT_RUNNER, Runner::createRunnerAttributes);
         Services.REGISTRY.registerEntityAttributes(ABERRANT_WARRIOR, Warrior::createWarriorAttributes);
         Services.REGISTRY.registerEntityAttributes(CHESTBURSTER, Chestburster::createChestbursterAttributes);
         Services.REGISTRY.registerEntityAttributes(DRONE, Drone::createDroneAttributes);
@@ -375,6 +401,7 @@ public class AlienEntityTypes {
         Services.REGISTRY.registerEntityAttributes(IRRADIATED_DRONE, Drone::createDroneAttributes);
         Services.REGISTRY.registerEntityAttributes(IRRADIATED_PRAETORIAN, Praetorian::createPraetorianAttributes);
         Services.REGISTRY.registerEntityAttributes(IRRADIATED_QUEEN, Queen::createQueenAttributes);
+        Services.REGISTRY.registerEntityAttributes(IRRADIATED_RUNNER, Runner::createRunnerAttributes);
         Services.REGISTRY.registerEntityAttributes(IRRADIATED_WARRIOR, Warrior::createWarriorAttributes);
         Services.REGISTRY.registerEntityAttributes(NETHER_CHESTBURSTER, Chestburster::createChestbursterAttributes);
         Services.REGISTRY.registerEntityAttributes(NETHER_DRONE, Drone::createDroneAttributes);
@@ -382,6 +409,7 @@ public class AlienEntityTypes {
         Services.REGISTRY.registerEntityAttributes(NETHER_OVOMORPH, Ovomorph::createOvomorphAttributes);
         Services.REGISTRY.registerEntityAttributes(NETHER_PRAETORIAN, Praetorian::createPraetorianAttributes);
         Services.REGISTRY.registerEntityAttributes(NETHER_QUEEN, Queen::createQueenAttributes);
+        Services.REGISTRY.registerEntityAttributes(NETHER_RUNNER, Runner::createRunnerAttributes);
         Services.REGISTRY.registerEntityAttributes(NETHER_WARRIOR, Warrior::createWarriorAttributes);
         Services.REGISTRY.registerEntityAttributes(OVOMORPH, Ovomorph::createOvomorphAttributes);
         Services.REGISTRY.registerEntityAttributes(PRAETORIAN, Praetorian::createPraetorianAttributes);
@@ -395,6 +423,7 @@ public class AlienEntityTypes {
         Services.REGISTRY.registerEntityAttributes(ROYAL_NETHER_FACEHUGGER, Facehugger::createFacehuggerAttributes);
         Services.REGISTRY.registerEntityAttributes(ROYAL_NETHER_OVOMORPH, Ovomorph::createOvomorphAttributes);
         Services.REGISTRY.registerEntityAttributes(ROYAL_OVOMORPH, Ovomorph::createOvomorphAttributes);
+        Services.REGISTRY.registerEntityAttributes(RUNNER, Runner::createRunnerAttributes);
         Services.REGISTRY.registerEntityAttributes(WARRIOR, Warrior::createWarriorAttributes);
     }
 }

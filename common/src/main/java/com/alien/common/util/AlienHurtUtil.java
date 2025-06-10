@@ -23,7 +23,7 @@ public class AlienHurtUtil {
             return false;
         }
 
-        var geneManager = alien.geneManager();
+        var geneManager = alien.getGeneManager();
 
         if (isFireDamageSource(damageSource)) {
             return hurtWithResistance(
