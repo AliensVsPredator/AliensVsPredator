@@ -13,8 +13,8 @@ import net.minecraft.world.level.levelgen.GenerationStep;
 import java.util.function.BiConsumer;
 
 import com.avp.AVPResources;
-import com.avp.data.AVPCaveKey;
-import com.avp.data.worldgen.AVPOres;
+import com.avp.common.data.worldgen.AVPOres;
+import com.avp.common.registry.key.AVPPlacedFeatureKeys;
 
 public class WorldGen {
 
@@ -51,7 +51,7 @@ public class WorldGen {
         return (biomeSelectionContext, biomeModificationContext) -> {
             var settings = biomeModificationContext.getGenerationSettings();
 
-            settings.addFeature(GenerationStep.Decoration.LOCAL_MODIFICATIONS, AVPCaveKey.AUTUNITE_GEODE);
+            settings.addFeature(GenerationStep.Decoration.LOCAL_MODIFICATIONS, AVPPlacedFeatureKeys.AUTUNITE_GEODE);
 
             settings.addFeature(GenerationStep.Decoration.UNDERGROUND_ORES, AVPOres.BAUXITE_MIDDLE.placedFeatureKey());
             settings.addFeature(GenerationStep.Decoration.UNDERGROUND_ORES, AVPOres.BAUXITE_UPPER.placedFeatureKey());

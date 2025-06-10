@@ -1,0 +1,50 @@
+package com.alien.common.gameplay.block.entity.resin.node;
+
+import com.alien.common.gameplay.level.gameevent.listener.ResinSpreadListener;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.gameevent.BlockPositionSource;
+import net.minecraft.world.level.gameevent.GameEventListener;
+import org.jetbrains.annotations.NotNull;
+
+import com.avp.common.registry.init.AVPBlockEntityTypes;
+
+public class ResinNodeBlockEntity extends BlockEntity implements GameEventListener.Provider<ResinSpreadListener> {
+
+    private final ResinSpreadListener resinSpreadListener;
+
+    public ResinNodeBlockEntity(BlockPos blockPos, BlockState blockState) {
+        super(AVPBlockEntityTypes.RESIN_NODE.get(), blockPos, blockState);
+
+        var positionSource = new BlockPositionSource(blockPos);
+        var spreaderType = new ResinSpreadListener.SpreaderType.Block(blockPos);
+
+        this.resinSpreadListener = new ResinSpreadListener(positionSource, spreaderType);
+    }
+
+    public static void serverTick(Level level, BlockPos nodePos, BlockState blockState, ResinNodeBlockEntity resinNodeBlockEntity) {
+        resinNodeBlockEntity.resinSpreadListener.getResinSpreader()
+            .updateCursors(level, nodePos, level.getRandom());
+    }
+
+    @Override
+    protected void loadAdditional(@NotNull CompoundTag compoundTag, @NotNull HolderLookup.Provider provider) {
+        super.loadAdditional(compoundTag, provider);
+        resinSpreadListener.getResinSpreader().load(compoundTag);
+    }
+
+    @Override
+    protected void saveAdditional(@NotNull CompoundTag compoundTag, @NotNull HolderLookup.Provider provider) {
+        resinSpreadListener.getResinSpreader().save(compoundTag);
+        super.saveAdditional(compoundTag, provider);
+    }
+
+    @Override
+    public @NotNull ResinSpreadListener getListener() {
+        return resinSpreadListener;
+    }
+}

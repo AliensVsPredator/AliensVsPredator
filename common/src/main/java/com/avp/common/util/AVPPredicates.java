@@ -1,5 +1,8 @@
 package com.avp.common.util;
 
+import com.alien.common.gameplay.entity.living.alien.Alien;
+import com.alien.common.model.alien.Host;
+import com.predator.common.gameplay.entity.living.yautja.Yautja;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
@@ -9,12 +12,9 @@ import net.minecraft.world.item.Items;
 
 import java.util.function.Predicate;
 
-import com.avp.common.effect.AVPMobEffects;
-import com.avp.common.entity.AVPEntityTypeTags;
-import com.avp.common.entity.living.Host;
-import com.avp.common.entity.living.alien.Alien;
-import com.avp.common.entity.living.yautja.Yautja;
-import com.avp.common.item.AVPItemTags;
+import com.avp.common.registry.init.AVPMobEffects;
+import com.avp.common.registry.tag.AVPEntityTypeTags;
+import com.avp.common.registry.tag.AVPItemTags;
 
 public class AVPPredicates {
 
@@ -44,7 +44,7 @@ public class AVPPredicates {
 
         var hasFullRadiationResistantArmor = hasFullArmorSetMatching(
             livingEntity,
-            itemStack -> itemStack.is(AVPItemTags.RADIATION_RESISTANT_ARMOR)
+            itemStack -> itemStack.is(AVPItemTags.RADIATION_RESISTANT_ARMORS)
         );
 
         // Entity should not have a full set of radiation-resistant armor.
@@ -63,7 +63,7 @@ public class AVPPredicates {
     }
 
     public static boolean hasEmbryo(Entity target) {
-        return target instanceof Host host && host.parasiteType() != null;
+        return target instanceof Host host && host.getParasiteType() != null;
     }
 
     public static boolean isFreeHost(Alien parasite, Entity hostTarget) {
@@ -102,7 +102,7 @@ public class AVPPredicates {
 
     public static final Predicate<LivingEntity> HAS_FACE_MASK = livingEntity -> livingEntity.getItemBySlot(
         EquipmentSlot.HEAD
-    ).is(AVPItemTags.FACEHUGGER_PROTECTION_HELMET);
+    ).is(AVPItemTags.FACEHUGGER_RESISTANT_HELMETS);
 
     public static final Predicate<LivingEntity> HAS_MASK = livingEntity -> livingEntity instanceof Yautja yautja && yautja.yautjaMaskManager
         .hasMask();

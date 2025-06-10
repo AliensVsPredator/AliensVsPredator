@@ -10,6 +10,7 @@ import java.util.concurrent.CompletableFuture;
 import com.avp.fabric.data.recipe.builder.IndustrialFurnaceRecipeBuilder;
 import com.avp.fabric.data.recipe.builder.RecipeBuilder;
 import com.avp.fabric.data.recipe.impl.ArmorRecipeProvider;
+import com.avp.fabric.data.recipe.impl.ChitinRecipeProvider;
 import com.avp.fabric.data.recipe.impl.ElectronicItemRecipeProvider;
 import com.avp.fabric.data.recipe.impl.GlassRecipeProvider;
 import com.avp.fabric.data.recipe.impl.GunRecipeProvider;
@@ -44,6 +45,7 @@ public class RecipeProvider extends FabricRecipeProvider {
         MiscellaneousRecipeProvider.provide(builder);
         PaddingRecipeProvider.provide(builder);
         PlasticRecipeProvider.provide(builder);
+        ChitinRecipeProvider.provide(builder);
         ResinRecipeProvider.provide(builder);
         ToolRecipeProvider.provide(builder);
 

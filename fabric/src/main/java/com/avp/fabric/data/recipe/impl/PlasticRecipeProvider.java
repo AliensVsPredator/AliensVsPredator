@@ -1,5 +1,6 @@
 package com.avp.fabric.data.recipe.impl;
 
+import com.human.common.registry.init.block.HumanPlasticBlocks;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.DyeItem;
@@ -8,8 +9,7 @@ import net.minecraft.world.item.crafting.Ingredient;
 
 import java.util.function.Supplier;
 
-import com.avp.common.block.AVPBlocks;
-import com.avp.common.item.AVPItems;
+import com.avp.common.registry.init.item.AVPItems;
 import com.avp.fabric.data.recipe.RecipeTemplates;
 import com.avp.fabric.data.recipe.builder.RecipeBuilder;
 import com.avp.fabric.data.recipe.util.RecipeUtil;
@@ -21,7 +21,7 @@ public class PlasticRecipeProvider {
     }
 
     private static void createPlasticBlockRecipes(RecipeBuilder builder) {
-        var base = AVPBlocks.DYE_COLOR_TO_PLASTIC.get(DyeColor.GREEN).get();
+        var base = HumanPlasticBlocks.DYE_COLOR_TO_PLASTIC.get(DyeColor.GREEN).get();
 
         builder.shaped()
             .withCategory(RecipeCategory.BUILDING_BLOCKS)
@@ -30,12 +30,12 @@ public class PlasticRecipeProvider {
             .pattern("AA")
             .into(1, base);
 
-        AVPBlocks.DYE_COLOR_TO_PLASTIC.forEach(((dyeColor, blockSupplier) -> {
+        HumanPlasticBlocks.DYE_COLOR_TO_PLASTIC.forEach(((dyeColor, blockSupplier) -> {
             var block = blockSupplier.get();
             var dyeItem = DyeItem.byColor(dyeColor);
 
             var ingredient = Ingredient.of(
-                AVPBlocks.DYE_COLOR_TO_PLASTIC.values()
+                HumanPlasticBlocks.DYE_COLOR_TO_PLASTIC.values()
                     .stream()
                     .map(Supplier::get)
                     .filter(plasticBlock -> !plasticBlock.equals(block))
@@ -52,15 +52,15 @@ public class PlasticRecipeProvider {
                 .withCustomName((outputItem) -> "dye_" + outputItem)
                 .into(8, block);
 
-            var slabBlock = AVPBlocks.DYE_COLOR_TO_PLASTIC_SLAB.get(dyeColor).get();
+            var slabBlock = HumanPlasticBlocks.DYE_COLOR_TO_PLASTIC_SLAB.get(dyeColor).get();
             RecipeUtil.createSlabBlockManualAndStonecutterRecipes(builder, block, slabBlock);
 
-            var stairBlock = AVPBlocks.DYE_COLOR_TO_PLASTIC_STAIRS.get(dyeColor).get();
+            var stairBlock = HumanPlasticBlocks.DYE_COLOR_TO_PLASTIC_STAIRS.get(dyeColor).get();
             RecipeUtil.createStairBlockManualAndStonecutterRecipes(builder, block, stairBlock);
 
             var stonecut = builder.stonecut(block);
 
-            var cutBlock = AVPBlocks.DYE_COLOR_TO_CUT_PLASTIC.get(dyeColor).get();
+            var cutBlock = HumanPlasticBlocks.DYE_COLOR_TO_CUT_PLASTIC.get(dyeColor).get();
             stonecut.into(4, cutBlock);
 
             builder.shaped()
@@ -68,11 +68,11 @@ public class PlasticRecipeProvider {
                 .apply(RecipeTemplates.COMPRESSED_BLOCK_2x2.apply(block))
                 .into(4, cutBlock);
 
-            var cutSlabBlock = AVPBlocks.DYE_COLOR_TO_CUT_PLASTIC_SLAB.get(dyeColor).get();
+            var cutSlabBlock = HumanPlasticBlocks.DYE_COLOR_TO_CUT_PLASTIC_SLAB.get(dyeColor).get();
             RecipeUtil.createSlabBlockManualAndStonecutterRecipes(builder, cutBlock, cutSlabBlock);
             stonecut.into(8, cutSlabBlock);
 
-            var cutStairBlock = AVPBlocks.DYE_COLOR_TO_CUT_PLASTIC_STAIRS.get(dyeColor).get();
+            var cutStairBlock = HumanPlasticBlocks.DYE_COLOR_TO_CUT_PLASTIC_STAIRS.get(dyeColor).get();
             RecipeUtil.createStairBlockManualAndStonecutterRecipes(builder, cutBlock, cutStairBlock);
             stonecut.into(4, cutStairBlock);
         }));

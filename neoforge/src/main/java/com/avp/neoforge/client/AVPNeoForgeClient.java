@@ -24,6 +24,7 @@ import net.neoforged.neoforge.common.NeoForge;
 
 import com.avp.AVP;
 import com.avp.client.AVPClient;
+import com.avp.client.input.keybind.KeyPressHandler;
 import com.avp.neoforge.service.NeoForgeClientRegistryService;
 import com.avp.service.Services;
 
@@ -96,9 +97,10 @@ public class AVPNeoForgeClient {
     public static void onClientTick(ClientTickEvent.Post event) {
         CLIENT_REGISTRY.getKeyMappingHandlerPairSuppliers()
             .forEach(keyMappingSupplier -> {
-                while (keyMappingSupplier.get().first().consumeClick()) {
-                    keyMappingSupplier.get().second().run();
-                }
+                var keyMapping = keyMappingSupplier.get().first();
+                var keyInteractTypeConsumer = keyMappingSupplier.get().second();
+
+                KeyPressHandler.handle(keyMapping, keyInteractTypeConsumer);
             });
     }
 

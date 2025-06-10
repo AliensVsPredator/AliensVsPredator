@@ -9,7 +9,7 @@ import net.minecraft.world.effect.MobEffects;
 
 import java.util.concurrent.CompletableFuture;
 
-import com.avp.common.effect.AVPMobEffectTags;
+import com.avp.common.registry.tag.AVPMobEffectTags;
 
 public class AVPMobEffectTagProvider extends FabricTagProvider<MobEffect> {
 

@@ -1,5 +1,7 @@
 package com.avp.mixin;
 
+import com.alien.common.model.alien.Host;
+import com.alien.common.registry.AlienInfectionRegistry;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -17,7 +19,6 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import com.avp.common.entity.living.Host;
 import com.avp.common.util.AVPPredicates;
 
 @Mixin(ChorusFruitItem.class)
@@ -33,39 +34,47 @@ public class MixinItem_ChorusEmbryo {
                 // OR the host doesn't have an embryo...
                 || !AVPPredicates.hasEmbryo(livingEntity)
         ) {
-            // Then return, there's no parasite to teleport out of the host. Returning here will let the normal
+            // Then return, there's no embryo to teleport out of the host. Returning here will let the normal
             // chorus fruit behavior play out.
             return;
         }
 
-        var parasiteType = host.parasiteType();
+        var parasiteType = host.getParasiteType();
 
         if (parasiteType == null) {
             // Parasite type is null, despite our hasEmbryo check earlier above. Not much we can do in this case.
             return;
         }
 
-        var parasite = parasiteType.create(level);
+        var alienInfection = AlienInfectionRegistry.get(livingEntity.getType(), parasiteType).unwrapOr(null);
 
-        if (!(parasite instanceof LivingEntity livingParasite)) {
-            // Parasite is null or not a living entity, not much we can do in this case.
-            // We need the parasite to be a living entity in order to do potion effect / teleportation behavior.
+        if (alienInfection == null) {
             return;
         }
 
-        // before attempting to teleport, we set the parasite's position to the host's position so that if the
-        // teleportation
-        // fails, then the parasite will at the very least be at the host's feet.
-        livingParasite.setPos(livingEntity.position());
-        // Attempt teleportation. We don't need a result from this since it wouldn't help anyway.
-        tryTeleportingEntity(livingParasite);
-        // Add the parasite to the world after we've moved it.
-        level.addFreshEntity(livingParasite);
+        var embryoType = alienInfection.embryoType();
 
-        // Copies effects from the host to the parasite.
-        // TODO: This logic is duplicated elsewhere, need to unify this with other parasite ejection behavior.
+        var embryo = embryoType.create(level);
+
+        if (!(embryo instanceof LivingEntity livingEmbryo)) {
+            // Embryo is null or not a living entity, not much we can do in this case.
+            // We need the embryo to be a living entity in order to do potion effect / teleportation behavior.
+            return;
+        }
+
+        // before attempting to teleport, we set the embryo's position to the host's position so that if the
+        // teleportation
+        // fails, then the embryo will at the very least be at the host's feet.
+        livingEmbryo.setPos(livingEntity.position());
+        // Attempt teleportation. We don't need a result from this since it wouldn't help anyway.
+        tryTeleportingEntity(livingEmbryo);
+        // Add the embryo to the world after we've moved it.
+        level.addFreshEntity(livingEmbryo);
+
+        // Copies effects from the host to the embryo.
+        // TODO: This logic is duplicated elsewhere, need to unify this with other embryo ejection behavior.
         for (var effect : livingEntity.getActiveEffects()) {
-            livingParasite.addEffect(new MobEffectInstance(effect));
+            livingEmbryo.addEffect(new MobEffectInstance(effect));
         }
 
         if (livingEntity instanceof Player player) {
@@ -73,8 +82,8 @@ public class MixinItem_ChorusEmbryo {
             player.getCooldowns().addCooldown(stack.getItem(), 20);
         }
 
-        // Removes the parasite without any side effects.
-        host.clearParasiteSourceType();
+        // Removes the embryo without any side effects.
+        host.clearParasiteType();
 
         // Return here so that the rest of the chorus fruit behavior to teleport the host entity doesn't happen.
         cir.setReturnValue(stack);

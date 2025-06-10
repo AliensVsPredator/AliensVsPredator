@@ -13,7 +13,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import com.avp.common.item.AVPItemTags;
+import com.avp.common.registry.tag.AVPItemTags;
 import com.avp.common.util.AVPPredicates;
 
 @Mixin(LivingEntity.class)
@@ -51,12 +51,12 @@ public abstract class MixinLivingEntity_ApplyArmorEffects extends Entity {
 
     @Unique
     private boolean isWearingFullFireResistantArmor(LivingEntity self) {
-        return AVPPredicates.hasFullArmorSetMatching(self, (itemStack -> itemStack.is(AVPItemTags.FIRE_RESISTANT_ARMOR)));
+        return AVPPredicates.hasFullArmorSetMatching(self, (itemStack -> itemStack.is(AVPItemTags.FIRE_RESISTANT_ARMORS)));
     }
 
     @Unique
     private boolean isWearingFullPredatorArmor(LivingEntity self) {
-        return AVPPredicates.hasFullArmorSetMatching(self, (itemStack -> itemStack.is(AVPItemTags.PREDATOR_ARMOR)));
+        return AVPPredicates.hasFullArmorSetMatching(self, (itemStack -> itemStack.is(AVPItemTags.PREDATOR_ARMORS)));
     }
 
     @Unique

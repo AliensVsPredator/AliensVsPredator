@@ -9,7 +9,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import com.avp.common.worldgen.biome.AVPBiomes;
+import com.avp.common.registry.key.AVPBiomeKeys;
 
 @Mixin(Creeper.class)
 public abstract class MixinCreeper_Nuked extends Monster {
@@ -20,7 +20,7 @@ public abstract class MixinCreeper_Nuked extends Monster {
 
     @Inject(method = "isPowered", at = @At("HEAD"), cancellable = true)
     private void setCharged(CallbackInfoReturnable<Boolean> cir) {
-        if (this.level().getBiome(this.blockPosition()).is(AVPBiomes.NUKED_BIOME)) {
+        if (this.level().getBiome(this.blockPosition()).is(AVPBiomeKeys.NUKED_BIOME)) {
             cir.setReturnValue(true);
             cir.cancel();
         }

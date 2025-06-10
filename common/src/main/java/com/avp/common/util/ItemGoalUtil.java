@@ -1,5 +1,7 @@
 package com.avp.common.util;
 
+import com.predator.common.gameplay.entity.projectile.ShurikenProjectile;
+import com.predator.common.gameplay.entity.projectile.SmartDiscProjectile;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.LivingEntity;
@@ -8,10 +10,8 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.phys.Vec3;
 
-import com.avp.common.entity.AVPEntityTypeTags;
-import com.avp.common.entity.projectile.ShurikenProjectile;
-import com.avp.common.entity.projectile.SmartDiscProjectile;
-import com.avp.common.item.AVPItems;
+import com.avp.common.registry.init.item.AVPItems;
+import com.avp.common.registry.tag.AVPEntityTypeTags;
 
 public class ItemGoalUtil {
 

@@ -1,13 +1,14 @@
 package com.avp.fabric.data.recipe.impl;
 
+import com.human.common.registry.init.item.HumanGunItems;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 
 import java.util.function.Supplier;
 
-import com.avp.common.item.AVPItemTags;
-import com.avp.common.item.AVPItems;
+import com.avp.common.registry.init.item.AVPItems;
+import com.avp.common.registry.tag.AVPItemTags;
 import com.avp.fabric.data.recipe.builder.RecipeBuilder;
 
 public class GunRecipeProvider {
@@ -149,28 +150,28 @@ public class GunRecipeProvider {
     }
 
     private static void createGunRecipes(RecipeBuilder builder) {
-        createGenericGunRecipe(builder, AVPItems.BLUEPRINT_F903WE_RIFLE, AVPItems.F903WE_RIFLE.get(), true);
+        createGenericGunRecipe(builder, AVPItems.BLUEPRINT_F903WE_RIFLE, HumanGunItems.F903WE_RIFLE.get(), true);
         createGenericGunRecipe(
             builder,
             AVPItems.BLUEPRINT_FLAMETHROWER_SEVASTOPOL,
-            AVPItems.FLAMETHROWER_SEVASTOPOL.get(),
+            HumanGunItems.FLAMETHROWER_SEVASTOPOL.get(),
             false
         );
-        createGenericGunRecipe(builder, AVPItems.BLUEPRINT_M37_12_SHOTGUN, AVPItems.M37_12_SHOTGUN.get(), true);
-        createGenericGunRecipe(builder, AVPItems.BLUEPRINT_ZX_76_SHOTGUN, AVPItems.ZX_76_SHOTGUN.get(), true);
+        createGenericGunRecipe(builder, AVPItems.BLUEPRINT_M37_12_SHOTGUN, HumanGunItems.M37_12_SHOTGUN.get(), true);
+        createGenericGunRecipe(builder, AVPItems.BLUEPRINT_ZX_76_SHOTGUN, HumanGunItems.ZX_76_SHOTGUN.get(), true);
         createGenericGunRecipe(
             builder,
             AVPItems.BLUEPRINT_M88MOD4_COMBAT_PISTOL,
-            AVPItems.M88MOD4_COMBAT_PISTOL.get(),
+            HumanGunItems.M88MOD4_COMBAT_PISTOL.get(),
             false
         );
         createGenericGunRecipe(
             builder,
             AVPItems.BLUEPRINT_M42A3_SNIPER_RIFLE,
-            AVPItems.M42A3_SNIPER_RIFLE.get(),
+            HumanGunItems.M42A3_SNIPER_RIFLE.get(),
             true
         );
-        createGenericGunRecipe(builder, AVPItems.BLUEPRINT_M4RA_BATTLE_RIFLE, AVPItems.M4RA_BATTLE_RIFLE.get(), true);
+        createGenericGunRecipe(builder, AVPItems.BLUEPRINT_M4RA_BATTLE_RIFLE, HumanGunItems.M4RA_BATTLE_RIFLE.get(), true);
 
         builder.shapeless()
             .withCategory(RecipeCategory.COMBAT)
@@ -179,7 +180,7 @@ public class GunRecipeProvider {
             .requires(1, AVPItems.GRIP)
             .requires(1, AVPItems.SMART_RECEIVER)
             .requires(1, AVPItems.STOCK)
-            .into(1, AVPItems.M41A_PULSE_RIFLE);
+            .into(1, HumanGunItems.M41A_PULSE_RIFLE);
 
         builder.shapeless()
             .withCategory(RecipeCategory.COMBAT)
@@ -187,7 +188,7 @@ public class GunRecipeProvider {
             .requires(1, AVPItems.SMART_BARREL)
             .requires(1, AVPItems.GRIP)
             .requires(1, AVPItems.SMART_RECEIVER)
-            .into(1, AVPItems.M56_SMARTGUN);
+            .into(1, HumanGunItems.M56_SMARTGUN);
 
         builder.shapeless()
             .withCategory(RecipeCategory.COMBAT)
@@ -195,7 +196,7 @@ public class GunRecipeProvider {
             .requires(1, AVPItems.MINIGUN_BARREL)
             .requires(2, AVPItems.GRIP)
             .requires(1, AVPItems.RECEIVER)
-            .into(1, AVPItems.OLD_PAINLESS);
+            .into(1, HumanGunItems.OLD_PAINLESS);
 
         builder.shapeless()
             .withCategory(RecipeCategory.COMBAT)
@@ -203,7 +204,7 @@ public class GunRecipeProvider {
             .requires(1, AVPItems.ROCKET_BARREL)
             .requires(1, AVPItems.GRIP)
             .requires(1, AVPItems.SMART_RECEIVER)
-            .into(1, AVPItems.M6B_ROCKET_LAUNCHER);
+            .into(1, HumanGunItems.M6B_ROCKET_LAUNCHER);
     }
 
     private static void createGunPartRecipes(RecipeBuilder builder) {

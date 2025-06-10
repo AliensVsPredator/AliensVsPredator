@@ -15,7 +15,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.avp.common.block.AVPBlockTags;
+import com.avp.common.registry.tag.AVPBlockTags;
 
 @Mixin(ShearsItem.class)
 public class MixinShearsItem_BreakRazorWire {

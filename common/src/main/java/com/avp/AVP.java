@@ -1,5 +1,9 @@
 package com.avp;
 
+import com.alien.Alien;
+import com.human.Human;
+import com.human.common.gameplay.level.patrol.MarinePatrolSpawner;
+import com.predator.Predator;
 import mod.azure.azurelib.common.api.common.config.Config;
 import mod.azure.azurelib.common.internal.common.config.ConfigHolder;
 import mod.azure.azurelib.common.internal.common.config.ConfigHolderRegistry;
@@ -9,38 +13,32 @@ import mod.azure.azurelib.common.internal.common.config.io.ConfigIO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.avp.common.block.AVPBlocks;
-import com.avp.common.block.AVPCompostingChanceRegistry;
-import com.avp.common.block.AVPDecoratedPotPatterns;
-import com.avp.common.block.entity.AVPBlockEntityTypes;
-import com.avp.common.command.AVPCommands;
-import com.avp.common.component.AVPDataComponents;
 import com.avp.common.config.AVPConfig;
-import com.avp.common.creative_mode_tab.AVPCreativeModeTabs;
-import com.avp.common.effect.AVPMobEffects;
-import com.avp.common.entity.living.villager.poi.AVPVillagerPoiTypes;
-import com.avp.common.entity.living.villager.profession.AVPVillagerProfessions;
-import com.avp.common.entity.living.villager.trade.AVPVillagerTrades;
-import com.avp.common.entity.spawning.AVPEntitySpawns;
-import com.avp.common.entity.type.AVPEntityTypes;
-import com.avp.common.fuel.AVPFuelRegistry;
-import com.avp.common.item.AVPArmorItems;
-import com.avp.common.item.AVPBlockItems;
-import com.avp.common.item.AVPItems;
-import com.avp.common.item.AVPSpawnEggItems;
-import com.avp.common.level.gameevent.AVPGameEvents;
-import com.avp.common.lifecycle.AVPAlienInfections;
-import com.avp.common.lifecycle.AVPAlienLifecycles;
-import com.avp.common.menu.AVPMenuTypes;
+import com.avp.common.gameplay.worldgen.biome.NukedAshPlacement;
 import com.avp.common.network.AVPPacketDirectionRegistry;
 import com.avp.common.network.AVPServerPacketHandlerRegistry;
-import com.avp.common.particle.AVPParticleTypes;
-import com.avp.common.patrols.MarinePatrolSpawner;
-import com.avp.common.recipe.AVPRecipes;
-import com.avp.common.sound.AVPJukeboxSongs;
-import com.avp.common.sound.AVPSoundEvents;
-import com.avp.common.worldgen.biome.AVPBiomes;
-import com.avp.common.worldgen.biome.NukedAshPlacement;
+import com.avp.common.registry.init.AVPArmorMaterials;
+import com.avp.common.registry.init.AVPBlockEntityTypes;
+import com.avp.common.registry.init.AVPCommands;
+import com.avp.common.registry.init.AVPCompostingChances;
+import com.avp.common.registry.init.AVPDecoratedPotPatterns;
+import com.avp.common.registry.init.AVPEntitySpawns;
+import com.avp.common.registry.init.AVPFuels;
+import com.avp.common.registry.init.AVPMobEffects;
+import com.avp.common.registry.init.AVPRecipes;
+import com.avp.common.registry.init.AVPSoundEvents;
+import com.avp.common.registry.init.AVPVillagerPoiTypes;
+import com.avp.common.registry.init.AVPVillagerProfessions;
+import com.avp.common.registry.init.AVPVillagerTrades;
+import com.avp.common.registry.init.block.AVPBlocks;
+import com.avp.common.registry.init.block.CoreBlocks;
+import com.avp.common.registry.init.creative_mode_tab.AVPCreativeModeTabs;
+import com.avp.common.registry.init.entity_type.AVPEntityTypes;
+import com.avp.common.registry.init.item.AVPArmorItems;
+import com.avp.common.registry.init.item.AVPBlockItems;
+import com.avp.common.registry.init.item.AVPItems;
+import com.avp.common.registry.key.AVPBiomeKeys;
+import com.avp.common.registry.key.AVPJukeboxSongKeys;
 import com.avp.service.Services;
 
 public class AVP {
@@ -60,36 +58,35 @@ public class AVP {
 
         LOGGER.info("Initializing AVP for platform '{}'", Services.PLATFORM.getPlatformName());
 
+        Alien.initialize();
+        Human.initialize();
+        Predator.initialize();
+
         AVPBlockEntityTypes.initialize();
+        CoreBlocks.initialize();
         AVPBlocks.initialize();
         AVPItems.initialize();
         AVPBlockItems.initialize();
+        AVPArmorMaterials.initialize();
         AVPArmorItems.initialize();
-        AVPSpawnEggItems.initialize();
-        AVPEntityTypes.initialize();
-        AVPAlienInfections.initialize();
-        AVPAlienLifecycles.initialize();
-        AVPParticleTypes.initialize();
-        AVPMenuTypes.initialize();
         AVPCreativeModeTabs.initialize();
+        AVPEntityTypes.initialize();
         AVPCommands.initialize();
-        AVPDataComponents.initialize();
         AVPDecoratedPotPatterns.initialize();
         AVPSoundEvents.initialize();
-        AVPJukeboxSongs.initialize();
-        AVPGameEvents.initialize();
+        AVPJukeboxSongKeys.initialize();
         AVPPacketDirectionRegistry.initialize();
         AVPServerPacketHandlerRegistry.initialize();
         AVPRecipes.initialize();
         AVPMobEffects.initialize();
-        AVPBiomes.initialize();
+        AVPBiomeKeys.initialize();
         AVPVillagerPoiTypes.initialize();
         AVPVillagerProfessions.initialize();
 
         // Functionality
-        AVPCompostingChanceRegistry.initialize();
+        AVPCompostingChances.initialize();
         AVPEntitySpawns.initialize();
-        AVPFuelRegistry.initialize();
+        AVPFuels.initialize();
         AVPVillagerTrades.initialize();
     }
 

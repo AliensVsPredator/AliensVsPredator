@@ -18,8 +18,8 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import com.avp.common.item.AVPBlockItems;
-import com.avp.common.item.AVPItemTags;
+import com.avp.common.registry.init.item.AVPBlockItems;
+import com.avp.common.registry.tag.AVPItemTags;
 import com.avp.common.util.AVPPredicates;
 
 @Mixin(Inventory.class)
@@ -35,7 +35,7 @@ public class MixinInventory_InsertRadioactiveItemsIntoLeadChest {
 
     @Inject(method = "add(ILnet/minecraft/world/item/ItemStack;)Z", at = @At("HEAD"), cancellable = true)
     private void onAddItem(int slot, ItemStack stack, CallbackInfoReturnable<Boolean> cir) {
-        if (!stack.is(AVPItemTags.RADIATION_ITEMS)) {
+        if (!stack.is(AVPItemTags.RADIOACTIVE_ITEMS)) {
             return;
         }
 
@@ -52,7 +52,7 @@ public class MixinInventory_InsertRadioactiveItemsIntoLeadChest {
 
     @Inject(method = "setItem", at = @At("HEAD"), cancellable = true)
     private void onSetItem(int slot, ItemStack stack, CallbackInfo ci) {
-        if (!stack.is(AVPItemTags.RADIATION_ITEMS))
+        if (!stack.is(AVPItemTags.RADIOACTIVE_ITEMS))
             return;
 
         for (ItemStack inventoryItemStack : items) {

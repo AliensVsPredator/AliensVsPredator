@@ -9,7 +9,7 @@ import com.avp.fabric.data.advancement.AdvancementProvider;
 import com.avp.fabric.data.damage_type.DamageTypeBootstrapper;
 import com.avp.fabric.data.damage_type.DamageTypeProvider;
 import com.avp.fabric.data.jukebox_song.AVPJukeboxSongsProvider;
-import com.avp.fabric.data.lang.EnglishLanguageProvider;
+import com.avp.fabric.data.lang.en_us.EnglishLanguageProvider;
 import com.avp.fabric.data.loot.BlockLootTableProvider;
 import com.avp.fabric.data.loot.ChestLootTableProvider;
 import com.avp.fabric.data.loot.EntityLootTableProvider;

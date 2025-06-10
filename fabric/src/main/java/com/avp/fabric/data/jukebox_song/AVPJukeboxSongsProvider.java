@@ -9,8 +9,8 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.concurrent.CompletableFuture;
 
-import com.avp.common.sound.AVPJukeboxSongs;
-import com.avp.common.sound.AVPSoundEvents;
+import com.avp.common.registry.init.AVPSoundEvents;
+import com.avp.common.registry.key.AVPJukeboxSongKeys;
 
 public class AVPJukeboxSongsProvider extends FabricDynamicRegistryProvider {
 
@@ -20,8 +20,8 @@ public class AVPJukeboxSongsProvider extends FabricDynamicRegistryProvider {
 
     @Override
     protected void configure(HolderLookup.Provider registries, Entries entries) {
-        entries.add(AVPJukeboxSongs.ALIEN_MUSIC_1, createAlienMusic1Song());
-        entries.add(AVPJukeboxSongs.PREDATOR_MUSIC_1, createPredatorMusic1Song());
+        entries.add(AVPJukeboxSongKeys.ALIEN_MUSIC_1, createAlienMusic1Song());
+        entries.add(AVPJukeboxSongKeys.PREDATOR_MUSIC_1, createPredatorMusic1Song());
     }
 
     private JukeboxSong createAlienMusic1Song() {

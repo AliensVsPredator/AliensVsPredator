@@ -1,5 +1,7 @@
 package com.avp.mixin.client;
 
+import com.human.common.gameplay.block.entity.AmmoChestBlockEntity;
+import com.human.common.gameplay.block.entity.LeadChestBlockEntity;
 import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.resources.model.Material;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -10,9 +12,6 @@ import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-
-import com.avp.common.block.entity.AmmoChestBlockEntity;
-import com.avp.common.block.entity.LeadChestBlockEntity;
 
 @Mixin(Sheets.class)
 public class MixinSheets_AdjustLeadChestTexture {

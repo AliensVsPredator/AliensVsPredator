@@ -11,9 +11,9 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import com.avp.common.effect.AVPMobEffects;
-import com.avp.common.effect.RadiationStatusEffect;
-import com.avp.common.item.AVPItemTags;
+import com.avp.common.gameplay.effect.RadiationStatusEffect;
+import com.avp.common.registry.init.AVPMobEffects;
+import com.avp.common.registry.tag.AVPItemTags;
 import com.avp.common.util.AVPPredicates;
 
 @Mixin(Item.class)
@@ -25,7 +25,7 @@ public class MixinItem_GiveRads {
             // Only want to run this logic server-side.
             level.isClientSide()
                 // Only run this logic for radiation-emitting items.
-                || !stack.is(AVPItemTags.RADIATION_ITEMS)
+                || !stack.is(AVPItemTags.RADIOACTIVE_ITEMS)
                 // Only run this logic if the entity can be irradiated.
                 || !AVPPredicates.canBeIrradiated(entity)
                 // Sanity check + allow compiler to assert entity type to get livingEntity ref access.

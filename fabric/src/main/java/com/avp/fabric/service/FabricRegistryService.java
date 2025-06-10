@@ -1,5 +1,9 @@
 package com.avp.fabric.service;
 
+import com.alien.common.model.lifecycle.AlienLifecycle;
+import com.alien.common.model.lifecycle.infection.AlienInfection;
+import com.alien.common.registry.AlienInfectionRegistry;
+import com.alien.common.registry.AlienLifecycleRegistry;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import mod.azure.azurelib.rewrite.animation.cache.AzIdentityRegistry;
 import net.fabricmc.fabric.api.biome.v1.BiomeModifications;
@@ -34,11 +38,7 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 import com.avp.AVPResources;
-import com.avp.common.entity.spawning.AVPEntitySpawnData;
-import com.avp.common.lifecycle.AlienLifecycle;
-import com.avp.common.lifecycle.infection.AlienInfection;
-import com.avp.common.lifecycle.registry.AlienInfectionRegistry;
-import com.avp.common.lifecycle.registry.AlienLifecycleRegistry;
+import com.avp.common.model.spawning.AVPEntitySpawnData;
 import com.avp.common.network.NetworkHandler;
 import com.avp.common.network.PacketDirection;
 import com.avp.common.registry.AVPDeferredHolder;

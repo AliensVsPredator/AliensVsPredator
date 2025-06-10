@@ -27,9 +27,11 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+import com.avp.client.model.KeyInteractType;
 import com.avp.client.render.item.SimpleItemRenderer;
 
 public interface ClientRegistryService {
@@ -70,7 +72,12 @@ public interface ClientRegistryService {
         AzItemRendererRegistry.register(itemRendererSupplier, item);
     }
 
-    Supplier<Tuple2<KeyMapping, Runnable>> registerKeyMapping(String id, String category, int key, Runnable onKeyMappingActivated);
+    Supplier<Tuple2<KeyMapping, Consumer<KeyInteractType>>> registerKeyMapping(
+        String id,
+        String category,
+        int key,
+        Consumer<KeyInteractType> keyInteractTypeConsumer
+    );
 
     <T extends AbstractContainerMenu, U extends Screen & MenuAccess<T>> void registerMenuScreen(
         Supplier<? extends MenuType<T>> menuTypeSupplier,

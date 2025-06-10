@@ -1,5 +1,7 @@
 package com.avp.fabric.data.recipe.impl;
 
+import com.alien.common.registry.init.AlienItems;
+import com.alien.common.registry.init.item.AlienArmorItems;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.Item;
@@ -8,9 +10,9 @@ import net.minecraft.world.level.ItemLike;
 
 import java.util.function.Supplier;
 
-import com.avp.common.item.AVPArmorItems;
-import com.avp.common.item.AVPItemTags;
-import com.avp.common.item.AVPItems;
+import com.avp.common.registry.init.item.AVPArmorItems;
+import com.avp.common.registry.init.item.AVPItems;
+import com.avp.common.registry.tag.AVPItemTags;
 import com.avp.fabric.data.recipe.RecipeTemplates;
 import com.avp.fabric.data.recipe.builder.RecipeBuilder;
 import com.avp.fabric.data.recipe.builder.ShapedRecipeBuilder;
@@ -29,19 +31,19 @@ public class ArmorRecipeProvider {
 
         createStandardArmorSetRecipes(
             builder,
-            AVPItems.ABERRANT_CHITIN.get(),
-            AVPArmorItems.ABERRANT_CHITIN_HELMET.get(),
-            AVPArmorItems.ABERRANT_CHITIN_CHESTPLATE.get(),
-            AVPArmorItems.ABERRANT_CHITIN_LEGGINGS.get(),
-            AVPArmorItems.ABERRANT_CHITIN_BOOTS.get()
+            AlienItems.ABERRANT_CHITIN.get(),
+            AlienArmorItems.ABERRANT_CHITIN_HELMET.get(),
+            AlienArmorItems.ABERRANT_CHITIN_CHESTPLATE.get(),
+            AlienArmorItems.ABERRANT_CHITIN_LEGGINGS.get(),
+            AlienArmorItems.ABERRANT_CHITIN_BOOTS.get()
         );
         createStandardArmorSetRecipes(
             builder,
-            AVPItems.CHITIN.get(),
-            AVPArmorItems.CHITIN_HELMET.get(),
-            AVPArmorItems.CHITIN_CHESTPLATE.get(),
-            AVPArmorItems.CHITIN_LEGGINGS.get(),
-            AVPArmorItems.CHITIN_BOOTS.get()
+            AlienItems.CHITIN.get(),
+            AlienArmorItems.CHITIN_HELMET.get(),
+            AlienArmorItems.CHITIN_CHESTPLATE.get(),
+            AlienArmorItems.CHITIN_LEGGINGS.get(),
+            AlienArmorItems.CHITIN_BOOTS.get()
         );
         // TODO: Re-implement these at some point in the future.
         // createStandardArmorSetRecipes(
@@ -54,11 +56,11 @@ public class ArmorRecipeProvider {
         // );
         createStandardArmorSetRecipes(
             builder,
-            AVPItems.NETHER_CHITIN.get(),
-            AVPArmorItems.NETHER_CHITIN_HELMET.get(),
-            AVPArmorItems.NETHER_CHITIN_CHESTPLATE.get(),
-            AVPArmorItems.NETHER_CHITIN_LEGGINGS.get(),
-            AVPArmorItems.NETHER_CHITIN_BOOTS.get()
+            AlienItems.NETHER_CHITIN.get(),
+            AlienArmorItems.NETHER_CHITIN_HELMET.get(),
+            AlienArmorItems.NETHER_CHITIN_CHESTPLATE.get(),
+            AlienArmorItems.NETHER_CHITIN_LEGGINGS.get(),
+            AlienArmorItems.NETHER_CHITIN_BOOTS.get()
         );
         createStandardArmorSetRecipes(
             builder,
@@ -81,93 +83,93 @@ public class ArmorRecipeProvider {
     private static void createPlatedAberrantChitinArmorSetRecipes(RecipeBuilder builder) {
         builder.shapeless()
             .withCategory(RecipeCategory.COMBAT)
-            .requires(1, AVPArmorItems.ABERRANT_CHITIN_HELMET)
-            .requires(1, AVPItems.PLATED_ABERRANT_CHITIN)
-            .into(1, AVPArmorItems.PLATED_ABERRANT_CHITIN_HELMET);
+            .requires(1, AlienArmorItems.ABERRANT_CHITIN_HELMET)
+            .requires(1, AlienItems.PLATED_ABERRANT_CHITIN)
+            .into(1, AlienArmorItems.PLATED_ABERRANT_CHITIN_HELMET);
         builder.shapeless()
             .withCategory(RecipeCategory.COMBAT)
-            .requires(1, AVPArmorItems.ABERRANT_CHITIN_CHESTPLATE)
-            .requires(1, AVPItems.PLATED_ABERRANT_CHITIN)
-            .into(1, AVPArmorItems.PLATED_ABERRANT_CHITIN_CHESTPLATE);
+            .requires(1, AlienArmorItems.ABERRANT_CHITIN_CHESTPLATE)
+            .requires(1, AlienItems.PLATED_ABERRANT_CHITIN)
+            .into(1, AlienArmorItems.PLATED_ABERRANT_CHITIN_CHESTPLATE);
         builder.shapeless()
             .withCategory(RecipeCategory.COMBAT)
-            .requires(1, AVPArmorItems.ABERRANT_CHITIN_LEGGINGS)
-            .requires(1, AVPItems.PLATED_ABERRANT_CHITIN)
-            .into(1, AVPArmorItems.PLATED_ABERRANT_CHITIN_LEGGINGS);
+            .requires(1, AlienArmorItems.ABERRANT_CHITIN_LEGGINGS)
+            .requires(1, AlienItems.PLATED_ABERRANT_CHITIN)
+            .into(1, AlienArmorItems.PLATED_ABERRANT_CHITIN_LEGGINGS);
         builder.shapeless()
             .withCategory(RecipeCategory.COMBAT)
-            .requires(1, AVPArmorItems.ABERRANT_CHITIN_BOOTS)
-            .requires(1, AVPItems.PLATED_ABERRANT_CHITIN)
-            .into(1, AVPArmorItems.PLATED_ABERRANT_CHITIN_BOOTS);
+            .requires(1, AlienArmorItems.ABERRANT_CHITIN_BOOTS)
+            .requires(1, AlienItems.PLATED_ABERRANT_CHITIN)
+            .into(1, AlienArmorItems.PLATED_ABERRANT_CHITIN_BOOTS);
     }
 
     private static void createPlatedIrradiatedChitinArmorSetRecipes(RecipeBuilder builder) {
         builder.shapeless()
             .withCategory(RecipeCategory.COMBAT)
-            .requires(1, AVPArmorItems.IRRADIATED_CHITIN_HELMET)
-            .requires(1, AVPItems.PLATED_IRRADIATED_CHITIN)
-            .into(1, AVPArmorItems.PLATED_IRRADIATED_CHITIN_HELMET);
+            .requires(1, AlienArmorItems.IRRADIATED_CHITIN_HELMET)
+            .requires(1, AlienItems.PLATED_IRRADIATED_CHITIN)
+            .into(1, AlienArmorItems.PLATED_IRRADIATED_CHITIN_HELMET);
         builder.shapeless()
             .withCategory(RecipeCategory.COMBAT)
-            .requires(1, AVPArmorItems.IRRADIATED_CHITIN_CHESTPLATE)
-            .requires(1, AVPItems.PLATED_IRRADIATED_CHITIN)
-            .into(1, AVPArmorItems.PLATED_IRRADIATED_CHITIN_CHESTPLATE);
+            .requires(1, AlienArmorItems.IRRADIATED_CHITIN_CHESTPLATE)
+            .requires(1, AlienItems.PLATED_IRRADIATED_CHITIN)
+            .into(1, AlienArmorItems.PLATED_IRRADIATED_CHITIN_CHESTPLATE);
         builder.shapeless()
             .withCategory(RecipeCategory.COMBAT)
-            .requires(1, AVPArmorItems.IRRADIATED_CHITIN_LEGGINGS)
-            .requires(1, AVPItems.PLATED_IRRADIATED_CHITIN)
-            .into(1, AVPArmorItems.PLATED_IRRADIATED_CHITIN_LEGGINGS);
+            .requires(1, AlienArmorItems.IRRADIATED_CHITIN_LEGGINGS)
+            .requires(1, AlienItems.PLATED_IRRADIATED_CHITIN)
+            .into(1, AlienArmorItems.PLATED_IRRADIATED_CHITIN_LEGGINGS);
         builder.shapeless()
             .withCategory(RecipeCategory.COMBAT)
-            .requires(1, AVPArmorItems.IRRADIATED_CHITIN_BOOTS)
-            .requires(1, AVPItems.PLATED_IRRADIATED_CHITIN)
-            .into(1, AVPArmorItems.PLATED_IRRADIATED_CHITIN_BOOTS);
+            .requires(1, AlienArmorItems.IRRADIATED_CHITIN_BOOTS)
+            .requires(1, AlienItems.PLATED_IRRADIATED_CHITIN)
+            .into(1, AlienArmorItems.PLATED_IRRADIATED_CHITIN_BOOTS);
     }
 
     private static void createPlatedNetherChitinArmorSetRecipes(RecipeBuilder builder) {
         builder.shapeless()
             .withCategory(RecipeCategory.COMBAT)
-            .requires(1, AVPArmorItems.NETHER_CHITIN_HELMET)
-            .requires(1, AVPItems.PLATED_NETHER_CHITIN)
-            .into(1, AVPArmorItems.PLATED_NETHER_CHITIN_HELMET);
+            .requires(1, AlienArmorItems.NETHER_CHITIN_HELMET)
+            .requires(1, AlienItems.PLATED_NETHER_CHITIN)
+            .into(1, AlienArmorItems.PLATED_NETHER_CHITIN_HELMET);
         builder.shapeless()
             .withCategory(RecipeCategory.COMBAT)
-            .requires(1, AVPArmorItems.NETHER_CHITIN_CHESTPLATE)
-            .requires(1, AVPItems.PLATED_NETHER_CHITIN)
-            .into(1, AVPArmorItems.PLATED_NETHER_CHITIN_CHESTPLATE);
+            .requires(1, AlienArmorItems.NETHER_CHITIN_CHESTPLATE)
+            .requires(1, AlienItems.PLATED_NETHER_CHITIN)
+            .into(1, AlienArmorItems.PLATED_NETHER_CHITIN_CHESTPLATE);
         builder.shapeless()
             .withCategory(RecipeCategory.COMBAT)
-            .requires(1, AVPArmorItems.NETHER_CHITIN_LEGGINGS)
-            .requires(1, AVPItems.PLATED_NETHER_CHITIN)
-            .into(1, AVPArmorItems.PLATED_NETHER_CHITIN_LEGGINGS);
+            .requires(1, AlienArmorItems.NETHER_CHITIN_LEGGINGS)
+            .requires(1, AlienItems.PLATED_NETHER_CHITIN)
+            .into(1, AlienArmorItems.PLATED_NETHER_CHITIN_LEGGINGS);
         builder.shapeless()
             .withCategory(RecipeCategory.COMBAT)
-            .requires(1, AVPArmorItems.NETHER_CHITIN_BOOTS)
-            .requires(1, AVPItems.PLATED_NETHER_CHITIN)
-            .into(1, AVPArmorItems.PLATED_NETHER_CHITIN_BOOTS);
+            .requires(1, AlienArmorItems.NETHER_CHITIN_BOOTS)
+            .requires(1, AlienItems.PLATED_NETHER_CHITIN)
+            .into(1, AlienArmorItems.PLATED_NETHER_CHITIN_BOOTS);
     }
 
     private static void createPlatedChitinArmorSetRecipes(RecipeBuilder builder) {
         builder.shapeless()
             .withCategory(RecipeCategory.COMBAT)
-            .requires(1, AVPArmorItems.CHITIN_HELMET)
-            .requires(1, AVPItems.PLATED_CHITIN)
-            .into(1, AVPArmorItems.PLATED_CHITIN_HELMET);
+            .requires(1, AlienArmorItems.CHITIN_HELMET)
+            .requires(1, AlienItems.PLATED_CHITIN)
+            .into(1, AlienArmorItems.PLATED_CHITIN_HELMET);
         builder.shapeless()
             .withCategory(RecipeCategory.COMBAT)
-            .requires(1, AVPArmorItems.CHITIN_CHESTPLATE)
-            .requires(1, AVPItems.PLATED_CHITIN)
-            .into(1, AVPArmorItems.PLATED_CHITIN_CHESTPLATE);
+            .requires(1, AlienArmorItems.CHITIN_CHESTPLATE)
+            .requires(1, AlienItems.PLATED_CHITIN)
+            .into(1, AlienArmorItems.PLATED_CHITIN_CHESTPLATE);
         builder.shapeless()
             .withCategory(RecipeCategory.COMBAT)
-            .requires(1, AVPArmorItems.CHITIN_LEGGINGS)
-            .requires(1, AVPItems.PLATED_CHITIN)
-            .into(1, AVPArmorItems.PLATED_CHITIN_LEGGINGS);
+            .requires(1, AlienArmorItems.CHITIN_LEGGINGS)
+            .requires(1, AlienItems.PLATED_CHITIN)
+            .into(1, AlienArmorItems.PLATED_CHITIN_LEGGINGS);
         builder.shapeless()
             .withCategory(RecipeCategory.COMBAT)
-            .requires(1, AVPArmorItems.CHITIN_BOOTS)
-            .requires(1, AVPItems.PLATED_CHITIN)
-            .into(1, AVPArmorItems.PLATED_CHITIN_BOOTS);
+            .requires(1, AlienArmorItems.CHITIN_BOOTS)
+            .requires(1, AlienItems.PLATED_CHITIN)
+            .into(1, AlienArmorItems.PLATED_CHITIN_BOOTS);
     }
 
     private static void createMk50ArmorSetRecipes(RecipeBuilder builder) {

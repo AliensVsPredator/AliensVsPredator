@@ -1,5 +1,7 @@
 package com.avp.neoforge.service;
 
+import com.alien.common.model.lifecycle.AlienLifecycle;
+import com.alien.common.model.lifecycle.infection.AlienInfection;
 import com.bvanseg.just.functional.tuple.Tuple2;
 import com.bvanseg.just.functional.tuple.Tuple3;
 import com.bvanseg.just.functional.tuple.Tuple4;
@@ -30,9 +32,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import com.avp.AVP;
-import com.avp.common.entity.spawning.AVPEntitySpawnData;
-import com.avp.common.lifecycle.AlienLifecycle;
-import com.avp.common.lifecycle.infection.AlienInfection;
+import com.avp.common.model.spawning.AVPEntitySpawnData;
 import com.avp.common.network.NetworkHandler;
 import com.avp.common.network.PacketDirection;
 import com.avp.common.registry.AVPDeferredHolder;

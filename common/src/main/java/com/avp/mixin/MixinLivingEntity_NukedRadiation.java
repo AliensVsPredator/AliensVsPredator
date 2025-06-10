@@ -11,10 +11,10 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import com.avp.common.effect.AVPMobEffects;
-import com.avp.common.effect.RadiationStatusEffect;
+import com.avp.common.gameplay.effect.RadiationStatusEffect;
+import com.avp.common.registry.init.AVPMobEffects;
+import com.avp.common.registry.key.AVPBiomeKeys;
 import com.avp.common.util.AVPPredicates;
-import com.avp.common.worldgen.biome.AVPBiomes;
 
 @Mixin(LivingEntity.class)
 public abstract class MixinLivingEntity_NukedRadiation extends Entity {
@@ -42,6 +42,6 @@ public abstract class MixinLivingEntity_NukedRadiation extends Entity {
 
     @Unique
     private boolean isIsEntityInAnIrradiatedBiome(LivingEntity self) {
-        return self.level().getBiome(self.blockPosition()).is(AVPBiomes.NUKED_BIOME);
+        return self.level().getBiome(self.blockPosition()).is(AVPBiomeKeys.NUKED_BIOME);
     }
 }

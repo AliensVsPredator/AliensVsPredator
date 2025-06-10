@@ -14,7 +14,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import com.avp.common.entity.AVPMobCategories;
+import com.avp.common.registry.init.AVPMobCategories;
 
 // TODO: Rename this.
 @Mixin(MobCategory.class)

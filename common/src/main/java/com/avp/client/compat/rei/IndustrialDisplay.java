@@ -1,5 +1,6 @@
 package com.avp.client.compat.rei;
 
+import com.human.common.gameplay.recipe.IndustrialFurnaceRecipe;
 import me.shedaniel.rei.api.common.category.CategoryIdentifier;
 import me.shedaniel.rei.api.common.display.basic.BasicDisplay;
 import me.shedaniel.rei.api.common.entry.EntryIngredient;
@@ -8,8 +9,6 @@ import me.shedaniel.rei.api.common.util.EntryStacks;
 import net.minecraft.world.item.crafting.RecipeHolder;
 
 import java.util.List;
-
-import com.avp.common.recipe.IndustrialFurnaceRecipe;
 
 public class IndustrialDisplay extends BasicDisplay {
 

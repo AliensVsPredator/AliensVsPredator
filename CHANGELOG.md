@@ -1,34 +1,167 @@
-# v0.1.8
+# v0.1.9
 
 ## ☢️ Breaking Changes
-- N/A
+- Some (previously uncraftable) resin blocks have had their registry names changed:
+  - `resin_ribbed` -> `ribbed_resin`
+  - `resin_o` -> `resin_vent`
+  - `resin_smooth` -> `smooth_resin`
 
 ## ✨ What's New
-- N/A
+- [Fabric] Now requires Fabric API `0.116.0+1.21.1`.
+- [Fabric] Now requires Fabric Loader `0.16.14`.
+- [NeoForge] Now requires NeoForge `21.1.173`.
+- Now requires AzureLib 3.0.20.
+- Added new tooltip hints to armor case item.
+- Added new tooltip hints to predator armor items.
+- Added new tooltip hints to nether chitin armor items.
+- Added new tooltip hints to plated nether chitin armor items.
+- Added a new "event" for when queens spawn naturally in the world.
+  - When a queen spawns, nearby players will get an ominous message.
+  - A sound effect cue will also play when the queen spawns.
+  - This something we're testing for future features, feedback is (always) appreciated <3.
+- Added new alien blocks:
+  - Aberrant Chitin Block
+  - Aberrant Chitin Block Slab
+  - Aberrant Chitin Block Stairs
+  - Aberrant Chitin Block Wall
+  - Aberrant Chitin Bricks
+  - Aberrant Chitin Brick Slab
+  - Aberrant Chitin Brick Stairs
+  - Aberrant Chitin Brick Wall
+  - Aberrant Resin Bricks
+  - Aberrant Resin Brick Slab
+  - Aberrant Resin Brick Stairs
+  - Aberrant Resin Brick Wall
+  - Aberrant Resin Slab
+  - Aberrant Resin Stairs
+  - Aberrant Resin Vent
+  - Chiseled Aberrant Chitin
+  - Chiseled Aberrant Chitin (Embryo)
+  - Chiseled Chitin
+  - Chiseled Chitin (Embryo)
+  - Chiseled Nether Chitin
+  - Chiseled Nether Chitin (Embryo)
+  - Irradiated Chitin Block
+  - Irradiated Chitin Block Slab
+  - Irradiated Chitin Block Stairs
+  - Irradiated Chitin Block Wall
+  - Irradiated Chitin Bricks
+  - Irradiated Chitin Brick Slab
+  - Irradiated Chitin Brick Stairs
+  - Irradiated Chitin Brick Wall
+  - Irradiated Resin Bricks
+  - Irradiated Resin Brick Slab
+  - Irradiated Resin Brick Stairs
+  - Irradiated Resin Brick Wall
+  - Irradiated Resin Slab
+  - Irradiated Resin Stairs
+  - Irradiated Resin Vent
+  - Nether Chitin Block
+  - Nether Chitin Block Slab
+  - Nether Chitin Block Stairs
+  - Nether Chitin Block Wall
+  - Nether Chitin Bricks
+  - Nether Chitin Brick Slab
+  - Nether Chitin Brick Stairs
+  - Nether Chitin Brick Wall
+  - Nether Resin Bricks
+  - Nether Resin Brick Slab
+  - Nether Resin Brick Stairs
+  - Nether Resin Brick Wall
+  - Nether Resin Slab
+  - Nether Resin Stairs
+  - Nether Resin Vent
+  - Polished Aberrant Chitin
+  - Polished Aberrant Chitin Slab
+  - Polished Aberrant Chitin Stairs
+  - Polished Aberrant Chitin Wall
+  - Polished Chitin
+  - Polished Chitin Slab
+  - Polished Chitin Stairs
+  - Polished Chitin Wall
+  - Polished Nether Chitin
+  - Polished Nether Chitin Slab
+  - Polished Nether Chitin Stairs
+  - Polished Nether Chitin Wall
+  - Resin Brick Slab
+  - Resin Brick Stairs
+  - Resin Brick Wall
+  - Resin Slab
+  - Resin Stairs
+  - Ribbed Aberrant Resin
+  - Ribbed Irradiated Resin
+  - Ribbed Nether Resin
+  - Smooth Aberrant Resin
+  - Smooth Aberrant Resin Slab
+  - Smooth Aberrant Resin Stairs
+  - Smooth Aberrant Resin Wall
+  - Smooth Irradiated Resin
+  - Smooth Irradiated Resin Slab
+  - Smooth Irradiated Resin Stairs
+  - Smooth Irradiated Resin Wall
+  - Smooth Nether Resin
+  - Smooth Nether Resin Slab
+  - Smooth Nether Resin Stairs
+  - Smooth Nether Resin Wall
+  - Smooth Resin Slab
+  - Smooth Resin Stairs
+  - Smooth Resin Wall
+- Added keybind to allow players to crawl on demand.
+  - Player crawling already exists in vanilla, but there is no key to activate it on demand.
+  - This update adds a keybind (left alt) to crawl on demand. Player crawling will be important for future AVP updates.
 
 ## ♻️ Changes
-- Updated royal facehugger texture.
-- Hive boss bars are now stylized based on the hive's variant.
-  - For example, a nether xenomorph hive will show "Nether Hive" for the boss bar title, and the boss bar color will be red instead of green.
+- Disabled armor case menu (for now, until it is fixed).
+- Iron-like ingots can now be used to craft industrial furnaces.
+- Iron-like ingots can now be used to craft razor wire.
+- Increased the damage dealt by old painless by 6x, making it the most lethal weapon in the game.
+- Old painless now consumes 6 bullets per shot instead of 1.
+- Reduced queen resin generation per tick (10 -> 1).
+- Removed queen spawn chunk blacklisting system.
+  - With further testing we've found that it hurt gameplay more than helped, so we've gutted it.
 
 ## 🐞 Fixes
-- Fixed an error occurring when attempting to join a server with the AVP mod installed (NeoForge-only).
-- Fixed marines not shooting properly after player hit accuracy changes.
-- Fixed weapons with piercing having excessive recoil.
-- Fixed weapons with piercing not piercing through multiple blocks.
-- Fixed aliens not spawning in their respective hive layers.
-  - Last update we had commented that the hive layering was only effective for natural alien spawns. However, this wasn't actually the case and aliens were not spawning in their correct layers.
-  - As a recap, the hive is now organized into spherical layers, with:
-    - warriors spawning on the exterior parts (or deeper) of the hive.
-    - drones/ovomorphs in the interior middle parts (or deeper) of the hive.
-    - and then praetorians + the queen in the center of the hive.
+- Fixed old painless ammo consumption logic not accounting for consuming multiple bullets per shot.
+- Fixed chestbursters spreading resin like adult xenomorphs.
+- Fixed aberrant resin blocks not burning in fire or lava.
+- Fixed players eating chorus fruit while infected causing facehuggers to spawn instead of the correct embryo type.
+- Fixed aberrant resin being mineable with axes.
+- Fixed irradiated resin being mineable with axes.
+- Fixed the following blocks not dropping anything when mined:
+  - Ferroaluminum Plating Slab
+  - Ferroaluminum Plating Stairs
+  - Ferroaluminum Slab
+  - Ferroaluminum Stairs
+  - Ferroaluminum Tread Slab
+  - Ferroaluminum Tread Stairs
+  - Steel Plating Slab
+  - Steel Plating Stairs
+  - Steel Slab
+  - Steel Stairs
+  - Steel Tread Slab
+  - Steel Tread Stairs
+  - Titanium Plating Slab
+  - Titanium Plating Stairs
+  - Titanium Slab
+  - Titanium Stairs
+  - Titanium Tread Slab
+  - Titanium Tread Stairs
 
 ## 🛠 Data Pack
-- Added `#avp:chestbursters` entity type tag.
-- Added `#avp:spawns_in_hive_drone_layer` entity type tag.
-- Added `#avp:spawns_in_hive_praetorian_layer` entity type tag.
-- Added `#avp:spawns_in_hive_queen_layer` entity type tag.
-- Added `#avp:spawns_in_hive_warrior_layer` entity type tag.
+- Renamed `#avp:facehugger_protection_helmet` item tag to `#avp:facehugger_resistant_helmets`.
+- Renamed `#avp:fire_resistant_armor` item tag to `#avp:fire_resistant_armors`.
+- Renamed `#avp:hostile_weapon` item tag to `#avp:hostile_weapons`.
+- Renamed `#avp:radiation_items` item tag to `#avp:radioactive_items`.
+- Renamed `#avp:radiation_resistant_armor` item tag to `#avp:radiation_resistant_armors`.
+- Renamed `#avp:predator_armor` item tag to `#avp:predator_armors`.
+- Added `#avp:aberrant_chitin_armor` item tag.
+- Added `#avp:irradiated_chitin_armor` item tag.
+- Added `#avp:normal_chitin_armor` item tag.
+- Added `#avp:plated_aberrant_chitin_armor` item tag.
+- Added `#avp:plated_irradiated_chitin_armor` item tag.
+- Added `#avp:plated_normal_chitin_armor` item tag.
+- Added `#avp:chitin_armors` item tag.
+- Added `#avp:plated_chitin_armors` item tag.
 
 ## 🔬 Technical Changes
-- Improved bullet piercing accuracy for weapons.
+- Added translations for all tags provided by the AVP mod.

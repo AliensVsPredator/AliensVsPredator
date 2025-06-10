@@ -14,14 +14,14 @@ import net.minecraft.world.level.levelgen.placement.RarityFilter;
 
 import java.util.ArrayList;
 
-import com.avp.data.AVPCaveKey;
+import com.avp.common.registry.key.AVPPlacedFeatureKeys;
 
 public class AVPCavePlacements {
 
     public static void bootstrap(BootstrapContext<PlacedFeature> registry) {
         var configuredFeatureLookup = registry.lookup(Registries.CONFIGURED_FEATURE);
 
-        registry.register(AVPCaveKey.AUTUNITE_GEODE, createAutuniteGeodePlacement(configuredFeatureLookup));
+        registry.register(AVPPlacedFeatureKeys.AUTUNITE_GEODE, createAutuniteGeodePlacement(configuredFeatureLookup));
     }
 
     private static PlacedFeature createAutuniteGeodePlacement(HolderGetter<ConfiguredFeature<?, ?>> configuredFeatureLookup) {

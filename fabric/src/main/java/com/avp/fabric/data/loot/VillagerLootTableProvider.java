@@ -10,8 +10,8 @@ import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.BiConsumer;
 
-import com.avp.common.entity.living.villager.gift.AVPVillagerGiftKeys;
-import com.avp.common.entity.living.villager.gift.CommissaryGiftLootTable;
+import com.avp.common.data.loot.CommissaryGiftLootTable;
+import com.avp.common.registry.key.AVPVillagerGiftKeys;
 
 public class VillagerLootTableProvider extends SimpleFabricLootTableProvider {
 

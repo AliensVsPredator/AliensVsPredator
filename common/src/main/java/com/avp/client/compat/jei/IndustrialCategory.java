@@ -1,5 +1,6 @@
 package com.avp.client.compat.jei;
 
+import com.human.common.gameplay.recipe.IndustrialFurnaceRecipe;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.drawable.IDrawable;
@@ -14,8 +15,7 @@ import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import com.avp.common.block.AVPBlocks;
-import com.avp.common.recipe.IndustrialFurnaceRecipe;
+import com.avp.common.registry.init.block.AVPBlocks;
 
 public class IndustrialCategory implements IRecipeCategory<IndustrialFurnaceRecipe> {
 

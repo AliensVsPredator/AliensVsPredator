@@ -1,13 +1,13 @@
 package com.avp.mixin;
 
+import com.alien.common.model.alien.FreeMob;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.level.Level;
 import org.spongepowered.asm.mixin.Mixin;
 
-import com.avp.common.entity.AVPEntityTypeTags;
-import com.avp.common.entity.living.FreeMob;
+import com.avp.common.registry.tag.AVPEntityTypeTags;
 
 @Mixin(Mob.class)
 public abstract class MixinMob_IncapacitateHost extends LivingEntity implements FreeMob {

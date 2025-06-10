@@ -1,0 +1,26 @@
+package com.human.client.screen;
+
+import com.human.common.gameplay.menu.IndustrialFurnaceMenu;
+import com.human.common.gameplay.menu.IndustrialFurnaceRecipeBookComponent;
+import net.minecraft.client.gui.screens.inventory.AbstractFurnaceScreen;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.player.Inventory;
+
+import com.avp.AVP;
+
+public class IndustrialFurnaceScreen extends AbstractFurnaceScreen<IndustrialFurnaceMenu> {
+
+    private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(
+        AVP.MOD_ID,
+        "textures/gui/container/industrial_furnace_gui.png"
+    );
+
+    private static final ResourceLocation LIT_PROGRESS_TEXTURE = ResourceLocation.withDefaultNamespace("container/furnace/lit_progress");
+
+    private static final ResourceLocation BURN_PROGRESS_TEXTURE = ResourceLocation.withDefaultNamespace("container/furnace/burn_progress");
+
+    public IndustrialFurnaceScreen(IndustrialFurnaceMenu handler, Inventory inventory, Component title) {
+        super(handler, new IndustrialFurnaceRecipeBookComponent(), inventory, title, TEXTURE, LIT_PROGRESS_TEXTURE, BURN_PROGRESS_TEXTURE);
+    }
+}

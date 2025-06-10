@@ -1,5 +1,6 @@
 package com.avp.fabric.data.recipe.util;
 
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
@@ -13,6 +14,7 @@ public class RecipeUtil {
         builder.shaped()
             .withCategory(RecipeCategory.BUILDING_BLOCKS)
             .apply(RecipeTemplates.SLAB_BLOCK.apply(block))
+            .withCustomName(outputItem -> outputItem + "_from_" + BuiltInRegistries.BLOCK.getKey(block).getPath())
             .into(6, slabBlock);
 
         builder.stonecut(block)
@@ -24,6 +26,7 @@ public class RecipeUtil {
         builder.shaped()
             .withCategory(RecipeCategory.BUILDING_BLOCKS)
             .apply(RecipeTemplates.STAIR_BLOCK.apply(block))
+            .withCustomName(outputItem -> outputItem + "_from_" + BuiltInRegistries.BLOCK.getKey(block).getPath())
             .into(4, stairBlock);
 
         builder.stonecut(block)
@@ -35,6 +38,7 @@ public class RecipeUtil {
         builder.shaped()
             .withCategory(RecipeCategory.BUILDING_BLOCKS)
             .apply(RecipeTemplates.WALL_BLOCK.apply(block))
+            .withCustomName(outputItem -> outputItem + "_from_" + BuiltInRegistries.BLOCK.getKey(block).getPath())
             .into(6, wallBlock);
 
         builder.stonecut(block)

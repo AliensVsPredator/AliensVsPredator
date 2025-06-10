@@ -1,5 +1,6 @@
 package com.avp.neoforge.service;
 
+import com.human.common.gameplay.item.gun.GunConfig;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.item.Item;
@@ -8,7 +9,6 @@ import net.neoforged.neoforge.common.DeferredSpawnEggItem;
 
 import java.util.function.Supplier;
 
-import com.avp.common.item.gun.GunConfig;
 import com.avp.neoforge.common.item.NeoForgeGunItem;
 import com.avp.neoforge.common.item.NeoForgeOldPainlessItem;
 import com.avp.service.BridgeService;
