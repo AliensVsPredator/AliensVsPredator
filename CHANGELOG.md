@@ -15,7 +15,8 @@
 - N/A
 
 ## 🛠 Data Pack
-- N/A
+- Added `#avp:runner_hosts` entity tag.
+- Updated `#avp:hosts` to be composed of `#avp:runner_hosts` entity tag.
 
 ## 🔬 Technical Changes
-- N/A
+- Upgraded alien lifecycle registry to support entity tags.

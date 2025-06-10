@@ -19,6 +19,7 @@ import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
+import net.neoforged.neoforge.event.TagsUpdatedEvent;
 import net.neoforged.neoforge.event.entity.EntityAttributeCreationEvent;
 import net.neoforged.neoforge.event.entity.RegisterSpawnPlacementsEvent;
 import net.neoforged.neoforge.event.server.ServerAboutToStartEvent;
@@ -29,6 +30,7 @@ import net.neoforged.neoforge.network.handling.DirectionalPayloadHandler;
 import net.neoforged.neoforge.network.registration.HandlerThread;
 
 import com.avp.AVP;
+import com.avp.common.AVPEvents;
 import com.avp.common.data.worldgen.AVPVillageInjection;
 import com.avp.common.network.NetworkHandler;
 import com.avp.common.registry.init.AVPVillagerProfessions;
@@ -56,6 +58,7 @@ public class AVPNeoForge {
 
         // Game bus events.
         NeoForge.EVENT_BUS.addListener(AVPNeoForge::registerCommands);
+        NeoForge.EVENT_BUS.addListener(AVPNeoForge::registerTagUpdateHandler);
         NeoForge.EVENT_BUS.addListener(AVPNeoForge::addNewVillageBuilding);
         NeoForge.EVENT_BUS.addListener(AVPNeoForge::addCustomTrades);
         NeoForge.EVENT_BUS.addListener(EventPriority.HIGH, AVPNeoForge::onWorldEndTick);
@@ -77,6 +80,10 @@ public class AVPNeoForge {
     public static void registerCommands(RegisterCommandsEvent event) {
         REGISTRY.getLiteralArgumentBuilders()
             .forEach(literalArgumentBuilder -> event.getDispatcher().register(literalArgumentBuilder));
+    }
+
+    public static void registerTagUpdateHandler(TagsUpdatedEvent event) {
+        AVPEvents.onTagsUpdated();
     }
 
     // Mod event

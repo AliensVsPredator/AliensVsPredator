@@ -3,14 +3,13 @@ package com.alien.common.registry.init;
 import com.alien.common.model.lifecycle.AlienLifecycle;
 import com.alien.common.model.lifecycle.growth.GrowthStage;
 import com.bvanseg.just.functional.function.Lazy;
-import net.minecraft.world.entity.EntityType;
 
 import java.util.List;
-import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
 
 import com.avp.AVP;
+import com.avp.common.registry.tag.AVPEntityTypeTags;
 import com.avp.service.Services;
 
 public class AlienLifecycles {
@@ -45,9 +44,7 @@ public class AlienLifecycles {
 
     public static final Supplier<AlienLifecycle> RUNNER_LIFECYCLE = register(
         () -> new AlienLifecycle(
-            Set.of(
-                EntityType.COW
-            ),
+            AVPEntityTypeTags.RUNNER_HOSTS,
             List.of(
                 new GrowthStage(
                     AlienEntityTypes.CHESTBURSTER.get(),
@@ -88,9 +85,7 @@ public class AlienLifecycles {
 
     public static final Supplier<AlienLifecycle> ABERRANT_RUNNER_LIFECYCLE = register(
         () -> new AlienLifecycle(
-            Set.of(
-                EntityType.COW
-            ),
+            AVPEntityTypeTags.RUNNER_HOSTS,
             List.of(
                 new GrowthStage(
                     AlienEntityTypes.ABERRANT_CHESTBURSTER.get(),
@@ -131,9 +126,7 @@ public class AlienLifecycles {
 
     public static final Supplier<AlienLifecycle> NETHER_RUNNER_LIFECYCLE = register(
         () -> new AlienLifecycle(
-            Set.of(
-                EntityType.COW
-            ),
+            AVPEntityTypeTags.RUNNER_HOSTS,
             List.of(
                 new GrowthStage(
                     AlienEntityTypes.NETHER_CHESTBURSTER.get(),

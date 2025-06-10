@@ -3,6 +3,7 @@ package com.avp.fabric;
 import com.predator.common.registry.init.PredatorEntityTypes;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
+import net.fabricmc.fabric.api.event.lifecycle.v1.CommonLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.minecraft.core.registries.Registries;
@@ -13,6 +14,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.level.GameRules;
 
 import com.avp.AVP;
+import com.avp.common.AVPEvents;
 import com.avp.common.data.worldgen.AVPVillageInjection;
 import com.avp.common.registry.init.AVPVillagerProfessions;
 import com.avp.common.registry.key.AVPVillagerGiftKeys;
@@ -47,6 +49,8 @@ public class AVPFabric implements ModInitializer {
             (dispatcher, registryAccess, environment) -> REGISTRY.getLiteralArgumentBuilders()
                 .forEach(dispatcher::register)
         );
+
+        CommonLifecycleEvents.TAGS_LOADED.register((registries, client) -> AVPEvents.onTagsUpdated());
     }
 
     private void onWorldTick(ServerLevel serverLevel) {

@@ -33,6 +33,7 @@ public class AVPEntityTypeTagProvider extends FabricTagProvider.EntityTypeTagPro
         addHatedByXenomorphs();
         addHiveAliens();
         addHiveLayerSpawns();
+        addRunnerHosts();
         addHosts();
         addHumanoids();
         addIrradiatedAliens();
@@ -313,33 +314,22 @@ public class AVPEntityTypeTagProvider extends FabricTagProvider.EntityTypeTagPro
             .addTag(AVPEntityTypeTags.ROYAL_ALIENS);
     }
 
+    private void addRunnerHosts() {
+        getOrCreateTagBuilder(AVPEntityTypeTags.RUNNER_HOSTS)
+            .addTag(AVPEntityTypeTags.ANIMALS);
+    }
+
     private void addHosts() {
         getOrCreateTagBuilder(AVPEntityTypeTags.HOSTS)
+            .addTag(AVPEntityTypeTags.RUNNER_HOSTS)
             .addOptionalTag(EntityTypeTags.ILLAGER)
             .add(
-                EntityType.CAMEL,
-                EntityType.COW,
-                EntityType.DONKEY,
-                EntityType.FOX,
-                EntityType.GOAT,
-                EntityType.HORSE,
-                EntityType.LLAMA,
-                EntityType.MOOSHROOM,
-                EntityType.MULE,
-                EntityType.PANDA,
-                EntityType.PIG,
                 EntityType.PIGLIN,
                 EntityType.PIGLIN_BRUTE,
                 EntityType.PLAYER,
-                EntityType.POLAR_BEAR,
-                EntityType.RAVAGER,
-                EntityType.SHEEP,
-                EntityType.SNIFFER,
-                EntityType.TRADER_LLAMA,
                 EntityType.VILLAGER,
                 EntityType.WANDERING_TRADER,
                 EntityType.WITCH,
-                EntityType.WOLF,
                 HumanEntityTypes.MARINE.get(),
                 PredatorEntityTypes.YAUTJA.get()
             );
