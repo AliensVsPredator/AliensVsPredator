@@ -5,12 +5,20 @@ import com.alien.common.gameplay.entity.living.alien.xenomorph.Xenomorph;
 import com.alien.common.model.alien.variant.AlienVariant;
 import com.alien.common.model.resin.ResinData;
 import com.alien.common.registry.init.AlienEntityTypes;
+import com.lib.common.util.PlayerUtil;
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.MobSpawnType;
+import net.minecraft.world.entity.SpawnGroupData;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.ServerLevelAccessor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -18,6 +26,7 @@ import com.avp.AVP;
 import com.avp.common.gameplay.ai.goal.DigToTargetGoal;
 import com.avp.common.gameplay.ai.goal.QueenLayEggGoal;
 import com.avp.common.registry.init.AVPSoundEvents;
+import com.avp.server.ServerLevelManagerAccessor;
 
 public class Queen extends Xenomorph {
 
@@ -41,7 +50,29 @@ public class Queen extends Xenomorph {
 
     @Override
     protected @NotNull ResinData createResinData() {
-        return new ResinData(0, 128, 10, AVP.config.statsConfigs.QUEEN_STATS.nestTickrate);
+        return new ResinData(0, 128, 1, AVP.config.statsConfigs.QUEEN_STATS.nestTickrate);
+    }
+
+    @Override
+    public @Nullable SpawnGroupData finalizeSpawn(
+        @NotNull ServerLevelAccessor serverLevelAccessor,
+        @NotNull DifficultyInstance difficulty,
+        @NotNull MobSpawnType spawnType,
+        @Nullable SpawnGroupData spawnGroupData
+    ) {
+        for (var player : PlayerUtil.getTrackingPlayers(this)) {
+            player.playNotifySound(AVPSoundEvents.ENTITY_QUEEN_SCREAM.get(), SoundSource.MASTER, 1, 1);
+            player.sendSystemMessage(
+                Component.translatable("A scream from the depths sends chills down your spine...")
+                    .withStyle(ChatFormatting.GREEN, ChatFormatting.ITALIC)
+            );
+        }
+
+        ((ServerLevelManagerAccessor) serverLevelAccessor.getLevel()).getServerLevelManager()
+            .getQueenSpawnCooldown()
+            .reset();
+
+        return super.finalizeSpawn(serverLevelAccessor, difficulty, spawnType, spawnGroupData);
     }
 
     @Override
@@ -107,6 +138,11 @@ public class Queen extends Xenomorph {
     @Override
     public boolean isPersistenceRequired() {
         return true;
+    }
+
+    @Override
+    public void checkDespawn() {
+        super.checkDespawn();
     }
 
     @Override

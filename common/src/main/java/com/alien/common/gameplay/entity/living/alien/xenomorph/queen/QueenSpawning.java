@@ -2,8 +2,6 @@ package com.alien.common.gameplay.entity.living.alien.xenomorph.queen;
 
 import com.alien.common.data.AlienVariantTypes;
 import com.alien.common.gameplay.level.saveddata.HiveLevelData;
-import com.alien.common.gameplay.level.saveddata.QueenSpawnChunkData;
-import com.lib.common.gameplay.util.spatial.chunk.ChunkPosUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.EntityType;
@@ -15,7 +13,7 @@ import net.minecraft.world.level.ServerLevelAccessor;
 
 import java.util.Objects;
 
-import com.avp.AVP;
+import com.avp.server.ServerLevelManagerAccessor;
 
 public class QueenSpawning {
 
@@ -28,34 +26,23 @@ public class QueenSpawning {
         blockPos,
         randomSource
     ) -> {
-        var level = serverLevelAccessor.getLevel();
-        var queenSpawnChunkDataOption = QueenSpawnChunkData.getOrCreate(level);
-        var isChunkSpawnAvailable = queenSpawnChunkDataOption
-            .isSomeAnd(queenSpawnChunkData -> !queenSpawnChunkData.isChunkBlacklisted(blockPos));
+        var serverLevel = serverLevelAccessor.getLevel();
+        var serverLevelManager = ((ServerLevelManagerAccessor) serverLevel).getServerLevelManager();
+
+        if (serverLevelManager.getQueenSpawnCooldown().isActive()) {
+            return false;
+        }
 
         int maxYLevelForDimension;
 
-        if (level.dimension() == Level.NETHER) {
-            maxYLevelForDimension = level.dimensionType().logicalHeight();
+        if (serverLevel.dimension() == Level.NETHER) {
+            maxYLevelForDimension = serverLevel.dimensionType().logicalHeight();
         } else {
             maxYLevelForDimension = MAX_OVERWORLD_Y_LEVEL;
         }
 
-        var canSpawn = blockPos.getY() <= maxYLevelForDimension
-            && isChunkSpawnAvailable
+        return blockPos.getY() <= maxYLevelForDimension
             && checkSpawnRules(entityType, serverLevelAccessor, mobSpawnType, blockPos, randomSource);
-
-        if (canSpawn) {
-            var queenSpawnChunkData = queenSpawnChunkDataOption.unwrap();
-            var chunkRadiusToBlacklist = AVP.config.hiveConfigs.MINIMUM_DISTANCE_BETWEEN_NATURAL_QUEEN_SPAWNS_IN_CHUNKS;
-            var nearbyChunkPositions = ChunkPosUtil.getChunksAround(blockPos, chunkRadiusToBlacklist);
-
-            nearbyChunkPositions.forEach(queenSpawnChunkData::addChunkToBlacklist);
-        }
-
-        // NOTE: All spawn checks for the queen should go in the check above, as we need to be certain the queen will
-        // be able to spawn in order to correctly blacklist chunks from having future queen spawns.
-        return canSpawn;
     };
 
     public static boolean checkSpawnRules(

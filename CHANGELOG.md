@@ -15,6 +15,10 @@
 - Added new tooltip hints to predator armor items.
 - Added new tooltip hints to nether chitin armor items.
 - Added new tooltip hints to plated nether chitin armor items.
+- Added a new "event" for when queens spawn naturally in the world.
+  - When a queen spawns, nearby players will get an ominous message.
+  - A sound effect cue will also play when the queen spawns.
+  - This something we're testing for future features, feedback is (always) appreciated <3.
 - Added new alien blocks:
   - Aberrant Chitin Block
   - Aberrant Chitin Block Slab
@@ -111,6 +115,9 @@
 - Iron-like ingots can now be used to craft razor wire.
 - Increased the damage dealt by old painless by 6x, making it the most lethal weapon in the game.
 - Old painless now consumes 6 bullets per shot instead of 1.
+- Reduced queen resin generation per tick (10 -> 1).
+- Removed queen spawn chunk blacklisting system.
+  - With further testing we've found that it hurt gameplay more than helped, so we've gutted it.
 
 ## 🐞 Fixes
 - Fixed old painless ammo consumption logic not accounting for consuming multiple bullets per shot.

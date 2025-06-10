@@ -1,6 +1,5 @@
 package com.avp.mixin.server;
 
-import com.alien.common.gameplay.level.saveddata.HiveLevelData;
 import net.minecraft.server.level.ServerLevel;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
@@ -8,35 +7,23 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import com.avp.server.BlockBreakProgressManager;
-import com.avp.server.ServerScheduler;
+import com.avp.server.ServerLevelManager;
+import com.avp.server.ServerLevelManagerAccessor;
 
 @Mixin(ServerLevel.class)
-public abstract class MixinServerLevel_RunTickRoutines {
+public abstract class MixinServerLevel_RunTickRoutines implements ServerLevelManagerAccessor {
+
+    @Unique
+    private final ServerLevelManager serverLevelManager = new ServerLevelManager();
 
     @Inject(at = @At("HEAD"), method = "tick")
     public void tick(CallbackInfo callbackInfo) {
-        tickScheduledRunnables();
-
         var serverLevel = ServerLevel.class.cast(this);
-        var hiveLevelDataOptional = HiveLevelData.getOrCreate(serverLevel);
-
-        hiveLevelDataOptional.ifSome(HiveLevelData::tick);
-
-        BlockBreakProgressManager.tick(serverLevel);
+        serverLevelManager.tick(serverLevel);
     }
 
-    @Unique
-    private void tickScheduledRunnables() {
-        ServerScheduler.getScheduledTasks().removeIf(entry -> {
-            var runTime = entry.getKey();
-
-            if (System.currentTimeMillis() >= runTime) {
-                entry.getValue().run();
-                return true;
-            }
-
-            return false;
-        });
+    @Override
+    public ServerLevelManager getServerLevelManager() {
+        return serverLevelManager;
     }
 }
