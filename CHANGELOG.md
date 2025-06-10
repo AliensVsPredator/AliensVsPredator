@@ -111,6 +111,7 @@
   - This update adds a keybind (left alt) to crawl on demand. Player crawling will be important for future AVP updates.
 
 ## ♻️ Changes
+- Disabled armor case menu (for now, until it is fixed).
 - Iron-like ingots can now be used to craft industrial furnaces.
 - Iron-like ingots can now be used to craft razor wire.
 - Increased the damage dealt by old painless by 6x, making it the most lethal weapon in the game.
