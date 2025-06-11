@@ -173,7 +173,7 @@ public class GunData {
             FireModeConfig.builder()
                 .withCooldownInTicks(1)
                 .withConsumedAmmunitionPerShot(6)
-                .withDamage(2F * 2 * 6)
+                .withDamage(2F * 2 * 2) // 1 half-heart * 2 hearts * 2 bonus damage multiplier
                 .withRange(64)
                 .withPrimaryShootSound(AVPSoundEvents.WEAPON_OLD_PAINLESS_SHOOT)
                 .withPrimaryShootSoundFrequencyInTicks(10)

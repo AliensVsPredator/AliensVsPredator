@@ -6,10 +6,12 @@ import com.lib.common.gameplay.util.EnchantmentUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.block.state.BlockState;
 
 import com.avp.AVP;
 import com.avp.common.network.packet.S2CBulletHitBlockPayload;
@@ -30,7 +32,7 @@ public class BlockGunHitResultHandler {
         var ricochetSoundEvent = getRicochetSoundForSoundType(soundType);
         level.playSound(null, blockPos, ricochetSoundEvent, SoundSource.BLOCKS);
 
-        damageBlock(gunAttackConfig, level, blockPos);
+        damageBlock(gunAttackConfig, level, blockPos, blockState);
 
         var payload = new S2CBulletHitBlockPayload(blockPos, direction);
         Services.SERVER_NETWORKING.sendToAllClients(level.getServer(), payload);
@@ -51,19 +53,15 @@ public class BlockGunHitResultHandler {
         return ricochetSfx;
     }
 
-    private static void damageBlock(GunAttackConfig gunAttackConfig, Level level, BlockPos blockPos) {
-        if (!AVP.config.weaponConfigs.BULLETS_DAMAGE_BLOCKS_ENABLED) {
-            return;
-        }
-
-        if (!level.getGameRules().getBoolean(GameRules.RULE_PROJECTILESCANBREAKBLOCKS)) {
-            return;
-        }
-
-        var blockState = level.getBlockState(blockPos);
-
-        // Only damage blocks if they should be destroyed.
-        if (blockState.is(AVPBlockTags.SHOULD_NOT_BE_DESTROYED)) {
+    private static void damageBlock(GunAttackConfig gunAttackConfig, Level level, BlockPos blockPos, BlockState blockState) {
+        if (
+            !AVP.config.weaponConfigs.BULLETS_DAMAGE_BLOCKS_ENABLED
+                || !level.getGameRules().getBoolean(GameRules.RULE_PROJECTILESCANBREAKBLOCKS)
+                // Only damage blocks if they should be destroyed.
+                || blockState.is(AVPBlockTags.SHOULD_NOT_BE_DESTROYED)
+                || (gunAttackConfig.shooter() instanceof Player player
+                    && !Services.EVENT.beforeBlockBreak(level, blockPos, blockState, player))
+        ) {
             return;
         }
 

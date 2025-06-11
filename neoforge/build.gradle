@@ -68,6 +68,9 @@ dependencies {
 
     jarJar(implementation("com.github.bvanseg:just:${project.just_version}"))
     additionalRuntimeClasspath "com.github.bvanseg:just:${project.just_version}"
+
+    // Compats
+    implementation "maven.modrinth:gigeresque:0.8.8"
 }
 
 

@@ -15,6 +15,8 @@
 - Added new tooltip hints to predator armor items.
 - Added new tooltip hints to nether chitin armor items.
 - Added new tooltip hints to plated nether chitin armor items.
+- Added new compatibility with the Gigeresque mod:
+  - Gigeresque's Surgery Kit item will now work on hosts infected with AVP aliens.
 - Added a new "event" for when queens spawn naturally in the world.
   - When a queen spawns, nearby players will get an ominous message.
   - A sound effect cue will also play when the queen spawns.
@@ -114,13 +116,14 @@
 - Disabled armor case menu (for now, until it is fixed).
 - Iron-like ingots can now be used to craft industrial furnaces.
 - Iron-like ingots can now be used to craft razor wire.
-- Increased the damage dealt by old painless by 6x, making it the most lethal weapon in the game.
+- Increased the damage dealt by old painless by 2x, making it the highest DPS weapon in the game.
 - Old painless now consumes 6 bullets per shot instead of 1.
 - Reduced queen resin generation per tick (10 -> 1).
-- Removed queen spawn chunk blacklisting system.
-  - With further testing we've found that it hurt gameplay more than helped, so we've gutted it.
+- Refactored queen spawn chunk blacklisting system:
+  - When a hive is defeated, chunks around the hive will now be blacklisted from spawning natural queens.
 
 ## 🐞 Fixes
+- Fixed gun block damage from players ignoring claimed chunks (and other cancelled player block break events).
 - Fixed old painless ammo consumption logic not accounting for consuming multiple bullets per shot.
 - Fixed chestbursters spreading resin like adult xenomorphs.
 - Fixed aberrant resin blocks not burning in fire or lava.

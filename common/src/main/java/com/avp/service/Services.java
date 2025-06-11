@@ -12,6 +12,8 @@ public class Services {
 
     public static final ClientRegistryService CLIENT_REGISTRY = load(ClientRegistryService.class);
 
+    public static final EventService EVENT = load(EventService.class);
+
     public static final PlatformService PLATFORM = load(PlatformService.class);
 
     public static final RegistryService REGISTRY = load(RegistryService.class);
