@@ -16,6 +16,7 @@
     "MixinInventory_InsertAmmoItemsIntoAmmoChest",
     "MixinInventory_InsertRadioactiveItemsIntoLeadChest",
     "MixinItem_ChorusEmbryo",
+    "MixinItem_GigSurgeryKit",
     "MixinItem_GiveRads",
     "MixinItem_RemoveRads",
     "MixinItemEntity_LithiumExplode",
