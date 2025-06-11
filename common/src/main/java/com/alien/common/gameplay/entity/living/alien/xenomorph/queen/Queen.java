@@ -60,17 +60,19 @@ public class Queen extends Xenomorph {
         @NotNull MobSpawnType spawnType,
         @Nullable SpawnGroupData spawnGroupData
     ) {
-        for (var player : PlayerUtil.getTrackingPlayers(this)) {
-            player.playNotifySound(AVPSoundEvents.ENTITY_QUEEN_SCREAM.get(), SoundSource.MASTER, 1, 1);
-            player.sendSystemMessage(
-                Component.translatable("A scream from the depths sends chills down your spine...")
-                    .withStyle(ChatFormatting.GREEN, ChatFormatting.ITALIC)
-            );
-        }
+        if (spawnType == MobSpawnType.NATURAL) {
+            for (var player : PlayerUtil.getTrackingPlayers(this)) {
+                player.playNotifySound(AVPSoundEvents.ENTITY_QUEEN_SCREAM.get(), SoundSource.MASTER, 1, 1);
+                player.sendSystemMessage(
+                    Component.translatable("A scream from the depths sends chills down your spine...")
+                        .withStyle(ChatFormatting.GREEN, ChatFormatting.ITALIC)
+                );
+            }
 
-        ((ServerLevelManagerAccessor) serverLevelAccessor.getLevel()).getServerLevelManager()
-            .getQueenSpawnCooldown()
-            .reset();
+            ((ServerLevelManagerAccessor) serverLevelAccessor.getLevel()).getServerLevelManager()
+                .getQueenSpawnCooldown()
+                .reset();
+        }
 
         return super.finalizeSpawn(serverLevelAccessor, difficulty, spawnType, spawnGroupData);
     }

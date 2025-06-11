@@ -2,6 +2,7 @@ package com.alien.common.gameplay.entity.living.alien.xenomorph.queen;
 
 import com.alien.common.data.AlienVariantTypes;
 import com.alien.common.gameplay.level.saveddata.HiveLevelData;
+import com.alien.common.gameplay.level.saveddata.QueenSpawnChunkData;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.EntityType;
@@ -30,6 +31,14 @@ public class QueenSpawning {
         var serverLevelManager = ((ServerLevelManagerAccessor) serverLevel).getServerLevelManager();
 
         if (serverLevelManager.getQueenSpawnCooldown().isActive()) {
+            return false;
+        }
+
+        var queenSpawnChunkDataOption = QueenSpawnChunkData.getOrCreate(serverLevel);
+        var isChunkSpawnAvailable = queenSpawnChunkDataOption
+            .isSomeAnd(queenSpawnChunkData -> !queenSpawnChunkData.isChunkBlacklisted(blockPos));
+
+        if (!isChunkSpawnAvailable) {
             return false;
         }
 

@@ -10,10 +10,13 @@ import com.alien.common.gameplay.hive.ai.task.impl.PickBestLeaderTask;
 import com.alien.common.gameplay.hive.membership.HiveLeadershipManager;
 import com.alien.common.gameplay.hive.membership.HiveMembershipManager;
 import com.alien.common.gameplay.level.saveddata.HiveLevelData;
+import com.alien.common.gameplay.level.saveddata.QueenSpawnChunkData;
 import com.alien.common.model.alien.variant.AlienVariant;
 import com.lib.common.gameplay.NBTSerializable;
+import com.lib.common.gameplay.util.spatial.chunk.ChunkPosUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.Difficulty;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
@@ -23,6 +26,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
+import com.avp.AVP;
 import com.avp.common.registry.tag.AVPEntityTypeTags;
 
 public class Hive implements NBTSerializable {
@@ -150,6 +154,20 @@ public class Hive implements NBTSerializable {
     public void onRemove() {
         bossBarManager.onHiveRemoved();
         debugManager.onHiveRemoved();
+
+        // Difficulty check because we don't want to blacklist chunks if the hive members simply de-spawned.
+        if (level.getDifficulty() != Difficulty.PEACEFUL) {
+            // Once the hive is defeated, blacklist chunks around the hive center so no more queens can spawn.
+            QueenSpawnChunkData.getOrCreate(level)
+                .ifSome(queenSpawnChunkData -> {
+                    // TODO: Use a precise circular area of chunks based on the hive's radius/size. This uses a square
+                    // area.
+                    var chunkRadiusToBlacklist = AVP.config.hiveConfigs.MINIMUM_DISTANCE_BETWEEN_NATURAL_QUEEN_SPAWNS_IN_CHUNKS;
+                    var nearbyChunkPositions = ChunkPosUtil.getChunksAround(centerPosition(), chunkRadiusToBlacklist);
+
+                    nearbyChunkPositions.forEach(queenSpawnChunkData::addChunkToBlacklist);
+                });
+        }
     }
 
     public boolean isAngry() {

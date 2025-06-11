@@ -1,6 +1,7 @@
 package com.avp.fabric.data.tag;
 
 import com.alien.common.registry.init.AlienEntityTypes;
+import com.compat.gigeresque.common.registry.tag.GigEntityTags;
 import com.human.common.registry.init.entity_type.HumanEntityTypes;
 import com.predator.common.registry.init.PredatorEntityTypes;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
@@ -12,7 +13,6 @@ import net.minecraft.world.entity.EntityType;
 import java.util.concurrent.CompletableFuture;
 
 import com.avp.common.registry.tag.AVPEntityTypeTags;
-import com.avp.fabric.data.compatibility.gigeresque.GigeresqueConstants;
 import com.avp.fabric.data.compatibility.stellaris.StellarisConstants;
 
 public class AVPEntityTypeTagProvider extends FabricTagProvider.EntityTypeTagProvider {
@@ -386,7 +386,7 @@ public class AVPEntityTypeTagProvider extends FabricTagProvider.EntityTypeTagPro
 
     private void addCompatibilityTags() {
         getOrCreateTagBuilder(AVPEntityTypeTags.ACID_IMMUNE)
-            .addOptionalTag(GigeresqueConstants.ACID_RESISTANT_ENTITIES);
+            .addOptionalTag(GigEntityTags.ACID_RESISTANT);
 
         getOrCreateTagBuilder(StellarisConstants.NO_OXYGEN_NEEDED)
             .setReplace(false)
