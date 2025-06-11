@@ -76,6 +76,9 @@ dependencies {
 
     // Here in case of any issues
     //modImplementation "maven.modrinth:modernfix:5.21.0+mc1.21.1"
+
+    // Compats
+    modImplementation "maven.modrinth:gigeresque:qWNQxQ99"
 }
 
 loom {
