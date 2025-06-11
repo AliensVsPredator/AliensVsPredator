@@ -34,7 +34,8 @@ public abstract class BalanceHiveTask extends HiveTask {
 
     protected void growXenomorph(Xenomorph xenomorph) {
         var type = xenomorph.getType();
-        var growthStage = AlienLifecycleRegistry.getOrNull(null, type);
+        var hostType = xenomorph.getHostType().unwrapOr(null);
+        var growthStage = AlienLifecycleRegistry.getOrNull(hostType, type);
 
         // TODO: Don't duplicate this check here, the growth manager should already be checking this.
         if (

@@ -44,6 +44,7 @@ public class AVPEntityTypeTagProvider extends FabricTagProvider.EntityTypeTagPro
         addParasites();
         addPraetorians();
         addPredators();
+        addProwlers();
         addQueens();
         addRadiationResistant();
         addRoyalAliens();
@@ -133,6 +134,16 @@ public class AVPEntityTypeTagProvider extends FabricTagProvider.EntityTypeTagPro
             );
     }
 
+    private void addProwlers() {
+        getOrCreateTagBuilder(AVPEntityTypeTags.PROWLERS)
+            .add(
+                AlienEntityTypes.ABERRANT_PROWLER.get(),
+                AlienEntityTypes.IRRADIATED_PROWLER.get(),
+                AlienEntityTypes.NETHER_PROWLER.get(),
+                AlienEntityTypes.PROWLER.get()
+            );
+    }
+
     private void addRunners() {
         getOrCreateTagBuilder(AVPEntityTypeTags.RUNNERS)
             .add(
@@ -157,6 +168,7 @@ public class AVPEntityTypeTagProvider extends FabricTagProvider.EntityTypeTagPro
         getOrCreateTagBuilder(AVPEntityTypeTags.XENOMORPHS)
             .addTag(AVPEntityTypeTags.DRONES)
             .addTag(AVPEntityTypeTags.PRAETORIANS)
+            .addTag(AVPEntityTypeTags.PROWLERS)
             .addTag(AVPEntityTypeTags.QUEENS)
             .addTag(AVPEntityTypeTags.RUNNERS)
             .addTag(AVPEntityTypeTags.WARRIORS);
@@ -248,6 +260,7 @@ public class AVPEntityTypeTagProvider extends FabricTagProvider.EntityTypeTagPro
             .add(
                 AlienEntityTypes.IRRADIATED_DRONE.get(),
                 AlienEntityTypes.IRRADIATED_PRAETORIAN.get(),
+                AlienEntityTypes.IRRADIATED_PROWLER.get(),
                 AlienEntityTypes.IRRADIATED_QUEEN.get(),
                 AlienEntityTypes.IRRADIATED_RUNNER.get(),
                 AlienEntityTypes.IRRADIATED_WARRIOR.get()
@@ -262,6 +275,7 @@ public class AVPEntityTypeTagProvider extends FabricTagProvider.EntityTypeTagPro
                 AlienEntityTypes.ABERRANT_FACEHUGGER.get(),
                 AlienEntityTypes.ABERRANT_OVOMORPH.get(),
                 AlienEntityTypes.ABERRANT_PRAETORIAN.get(),
+                AlienEntityTypes.ABERRANT_PROWLER.get(),
                 AlienEntityTypes.ABERRANT_QUEEN.get(),
                 AlienEntityTypes.ABERRANT_RUNNER.get(),
                 AlienEntityTypes.ABERRANT_WARRIOR.get(),
@@ -279,6 +293,7 @@ public class AVPEntityTypeTagProvider extends FabricTagProvider.EntityTypeTagPro
                 AlienEntityTypes.NETHER_FACEHUGGER.get(),
                 AlienEntityTypes.NETHER_OVOMORPH.get(),
                 AlienEntityTypes.NETHER_PRAETORIAN.get(),
+                AlienEntityTypes.NETHER_PROWLER.get(),
                 AlienEntityTypes.NETHER_QUEEN.get(),
                 AlienEntityTypes.NETHER_RUNNER.get(),
                 AlienEntityTypes.NETHER_WARRIOR.get(),
@@ -296,6 +311,7 @@ public class AVPEntityTypeTagProvider extends FabricTagProvider.EntityTypeTagPro
                 AlienEntityTypes.FACEHUGGER.get(),
                 AlienEntityTypes.OVOMORPH.get(),
                 AlienEntityTypes.PRAETORIAN.get(),
+                AlienEntityTypes.PROWLER.get(),
                 AlienEntityTypes.QUEEN.get(),
                 AlienEntityTypes.ROYAL_CHESTBURSTER.get(),
                 AlienEntityTypes.ROYAL_FACEHUGGER.get(),
@@ -349,6 +365,7 @@ public class AVPEntityTypeTagProvider extends FabricTagProvider.EntityTypeTagPro
 
     private void addHiveLayerSpawns() {
         getOrCreateTagBuilder(AVPEntityTypeTags.SPAWNS_IN_HIVE_WARRIOR_LAYER)
+            .addTag(AVPEntityTypeTags.PROWLERS)
             .addTag(AVPEntityTypeTags.WARRIORS);
 
         getOrCreateTagBuilder(AVPEntityTypeTags.SPAWNS_IN_HIVE_DRONE_LAYER)

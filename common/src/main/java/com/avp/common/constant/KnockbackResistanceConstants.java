@@ -13,6 +13,8 @@ public record KnockbackResistanceConstants() {
 
     public static final float PRAETORIAN_KNOCKBACK_RESISTANCE = 0.7f;
 
+    public static final float PROWLER_KNOCKBACK_RESISTANCE = 0.5f;
+
     public static final float QUEEN_KNOCKBACK_RESISTANCE = 1f;
 
     public static final float RUNNER_KNOCKBACK_RESISTANCE = 0.3f;

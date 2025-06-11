@@ -44,6 +44,13 @@ public class AlienSpawnEggItems {
         0xD7D7DF
     );
 
+    public static final AVPDeferredHolder<Item> ABERRANT_PROWLER_SPAWN_EGG = AVPSpawnEggItems.register(
+        "aberrant_prowler",
+        AlienEntityTypes.ABERRANT_PROWLER,
+        0xE5BF05,
+        0xD7D7DF
+    );
+
     public static final AVPDeferredHolder<Item> ABERRANT_RUNNER_SPAWN_EGG = AVPSpawnEggItems.register(
         "aberrant_runner",
         AlienEntityTypes.ABERRANT_RUNNER,
@@ -96,6 +103,13 @@ public class AlienSpawnEggItems {
     public static final AVPDeferredHolder<Item> IRRADIATED_PRAETORIAN_SPAWN_EGG = AVPSpawnEggItems.register(
         "irradiated_praetorian",
         AlienEntityTypes.IRRADIATED_PRAETORIAN,
+        0xD5F2ED,
+        0x73D9CF
+    );
+
+    public static final AVPDeferredHolder<Item> IRRADIATED_PROWLER_SPAWN_EGG = AVPSpawnEggItems.register(
+        "irradiated_prowler",
+        AlienEntityTypes.IRRADIATED_PROWLER,
         0xD5F2ED,
         0x73D9CF
     );
@@ -157,6 +171,13 @@ public class AlienSpawnEggItems {
         0x5d1f1f
     );
 
+    public static final AVPDeferredHolder<Item> NETHER_PROWLER_SPAWN_EGG = AVPSpawnEggItems.register(
+        "nether_prowler",
+        AlienEntityTypes.NETHER_PROWLER,
+        0x360101,
+        0x803232
+    );
+
     public static final AVPDeferredHolder<Item> NETHER_RUNNER_SPAWN_EGG = AVPSpawnEggItems.register(
         "nether_runner",
         AlienEntityTypes.NETHER_RUNNER,
@@ -191,6 +212,13 @@ public class AlienSpawnEggItems {
         AlienEntityTypes.PRAETORIAN,
         0x010202,
         0x363534
+    );
+
+    public static final AVPDeferredHolder<Item> PROWLER_SPAWN_EGG = AVPSpawnEggItems.register(
+        "prowler",
+        AlienEntityTypes.PROWLER,
+        0x010202,
+        0xDFE2E4
     );
 
     public static final AVPDeferredHolder<Item> QUEEN_SPAWN_EGG = AVPSpawnEggItems.register(

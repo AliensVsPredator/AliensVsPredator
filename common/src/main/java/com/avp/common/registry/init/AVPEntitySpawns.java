@@ -77,6 +77,13 @@ public class AVPEntitySpawns {
                 .build()
         );
         Services.REGISTRY.registerEntitySpawnData(
+            AVPEntitySpawnData.builder(AlienEntityTypes.PROWLER)
+                .withBiomeTagKey(AVPBiomeTags.HAS_XENOMORPHS)
+                .withSpawnPredicate(AlienSpawning.getTypedPredicate())
+                .withSpawnSettings(AVP.config.spawnConfigs.PROWLER_SPAWN)
+                .build()
+        );
+        Services.REGISTRY.registerEntitySpawnData(
             AVPEntitySpawnData.builder(AlienEntityTypes.QUEEN)
                 .withBiomeTagKey(BiomeTags.IS_OVERWORLD)
                 .withSpawnPredicate(QueenSpawning.PREDICATE)
@@ -129,6 +136,13 @@ public class AVPEntitySpawns {
                 .build()
         );
         Services.REGISTRY.registerEntitySpawnData(
+            AVPEntitySpawnData.builder(AlienEntityTypes.ABERRANT_PROWLER)
+                .withBiomeTagKey(AVPBiomeTags.HAS_XENOMORPHS)
+                .withSpawnPredicate(AlienSpawning.getTypedPredicate())
+                .withSpawnSettings(AVP.config.spawnConfigs.ABERRANT_PROWLER_SPAWN)
+                .build()
+        );
+        Services.REGISTRY.registerEntitySpawnData(
             AVPEntitySpawnData.builder(AlienEntityTypes.ABERRANT_QUEEN)
                 .withBiomeTagKey(AVPBiomeTags.HAS_XENOMORPHS)
                 .withSpawnPredicate(QueenSpawning.PREDICATE)
@@ -166,6 +180,13 @@ public class AVPEntitySpawns {
                 .withBiomeTagKey(AVPBiomeTags.HAS_XENOMORPHS)
                 .withSpawnPredicate(AlienSpawning.getTypedPredicate())
                 .withSpawnSettings(AVP.config.spawnConfigs.IRRADIATED_PRAETORIAN_SPAWN)
+                .build()
+        );
+        Services.REGISTRY.registerEntitySpawnData(
+            AVPEntitySpawnData.builder(AlienEntityTypes.IRRADIATED_PROWLER)
+                .withBiomeTagKey(AVPBiomeTags.HAS_XENOMORPHS)
+                .withSpawnPredicate(AlienSpawning.getTypedPredicate())
+                .withSpawnSettings(AVP.config.spawnConfigs.IRRADIATED_PROWLER_SPAWN)
                 .build()
         );
         Services.REGISTRY.registerEntitySpawnData(
@@ -218,6 +239,13 @@ public class AVPEntitySpawns {
                 .withBiomeTagKey(AVPBiomeTags.HAS_XENOMORPHS)
                 .withSpawnPredicate(AlienSpawning.getTypedPredicate())
                 .withSpawnSettings(AVP.config.spawnConfigs.NETHER_PRAETORIAN_SPAWN)
+                .build()
+        );
+        Services.REGISTRY.registerEntitySpawnData(
+            AVPEntitySpawnData.builder(AlienEntityTypes.NETHER_PROWLER)
+                .withBiomeTagKey(AVPBiomeTags.HAS_XENOMORPHS)
+                .withSpawnPredicate(AlienSpawning.getTypedPredicate())
+                .withSpawnSettings(AVP.config.spawnConfigs.NETHER_PROWLER_SPAWN)
                 .build()
         );
         Services.REGISTRY.registerEntitySpawnData(

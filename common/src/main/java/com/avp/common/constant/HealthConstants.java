@@ -16,6 +16,8 @@ public record HealthConstants() {
 
     public static final float PRAETORIAN_HEALTH = PLAYER_HEALTH * 5F;
 
+    public static final float PROWLER_HEALTH = PLAYER_HEALTH * 3F;
+
     public static final float QUEEN_HEALTH = PLAYER_HEALTH * 10F;
 
     public static final float RUNNER_HEALTH = PLAYER_HEALTH * 2F;

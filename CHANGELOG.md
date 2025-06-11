@@ -6,6 +6,13 @@
 ## ✨ What's New
 - Aliens now remember what host type they came from.
 - Added new aliens:
+  - Aberrant Prowler
+  - Aberrant Runner
+  - Irradiated Prowler
+  - Irradiated Runner
+  - Nether Prowler
+  - Nether Runner
+  - Prowler
   - Runner
 
 ## ♻️ Changes

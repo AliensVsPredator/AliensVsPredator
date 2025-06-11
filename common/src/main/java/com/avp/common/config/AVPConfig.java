@@ -94,6 +94,11 @@ public class AVPConfig {
 
         @Configurable
         @Configurable.Synchronized
+        @Configurable.Comment("Aberrant Prowler spawn settings. Modifying these will require restarting the game.")
+        public SpawnSettings ABERRANT_PROWLER_SPAWN = new SpawnSettings(true, 1, 2, 25);
+
+        @Configurable
+        @Configurable.Synchronized
         @Configurable.Comment("Aberrant Queen spawn settings. Modifying these will require restarting the game.")
         public SpawnSettings ABERRANT_QUEEN_SPAWN = new SpawnSettings(true, 1, 1, 5);
 
@@ -126,6 +131,11 @@ public class AVPConfig {
         @Configurable.Synchronized
         @Configurable.Comment("Irradiated Praetorian spawn settings. Modifying these will require restarting the game.")
         public SpawnSettings IRRADIATED_PRAETORIAN_SPAWN = new SpawnSettings(true, 1, 1, 10);
+
+        @Configurable
+        @Configurable.Synchronized
+        @Configurable.Comment("Irradiated Prowler spawn settings. Modifying these will require restarting the game.")
+        public SpawnSettings IRRADIATED_PROWLER_SPAWN = new SpawnSettings(true, 1, 2, 25);
 
         @Configurable
         @Configurable.Synchronized
@@ -167,6 +177,11 @@ public class AVPConfig {
 
         @Configurable
         @Configurable.Synchronized
+        @Configurable.Comment("Nether Prowler spawn settings. Modifying these will require restarting the game.")
+        public SpawnSettings NETHER_PROWLER_SPAWN = new SpawnSettings(true, 1, 2, 25);
+
+        @Configurable
+        @Configurable.Synchronized
         @Configurable.Comment("Nether Queen spawn settings. Modifying these will require restarting the game.")
         public SpawnSettings NETHER_QUEEN_SPAWN = new SpawnSettings(true, 1, 1, 5);
 
@@ -190,6 +205,11 @@ public class AVPConfig {
         @Configurable.Synchronized
         @Configurable.Comment("Praetorian spawn settings. Modifying these will require restarting the game.")
         public SpawnSettings PRAETORIAN_SPAWN = new SpawnSettings(true, 1, 1, 10);
+
+        @Configurable
+        @Configurable.Synchronized
+        @Configurable.Comment("Prowler spawn settings. Modifying these will require restarting the game.")
+        public SpawnSettings PROWLER_SPAWN = new SpawnSettings(true, 1, 2, 25);
 
         @Configurable
         @Configurable.Synchronized
@@ -343,6 +363,21 @@ public class AVPConfig {
             ArmorToughnessConstants.PRAETORIAN_ARMOR_TOUGHNESS,
             80,
             FollowRangeConstants.PRAETORIAN_FOLLOW_RANGE
+        );
+
+        @Configurable
+        @Configurable.Synchronized
+        @Configurable.Comment("Modifying any of these will require restarting the game.")
+        public AdvancedStats PROWLER_STATS = new AdvancedStats(
+            HealthConstants.PROWLER_HEALTH,
+            AttackDamageConstants.PROWLER_ATTACK_DAMAGE,
+            HealthRegenConstants.PROWLER_HEALTH_REGEN,
+            KnockbackResistanceConstants.PROWLER_KNOCKBACK_RESISTANCE,
+            MoveSpeedConstants.PROWLER_SPEED,
+            ArmorConstants.PROWLER_ARMOR,
+            0.0f,
+            40,
+            FollowRangeConstants.PROWLER_FOLLOW_RANGE
         );
 
         @Configurable

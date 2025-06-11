@@ -40,6 +40,10 @@ public class EntityLootTableProvider extends SimpleFabricLootTableProvider {
             PraetorianLootTable.create(provider, AlienVariantTypes.NORMAL)
         );
         biConsumer.accept(
+            AlienEntityTypes.PROWLER.get().getDefaultLootTable(),
+            WarriorLootTable.create(provider, AlienVariantTypes.NORMAL)
+        );
+        biConsumer.accept(
             AlienEntityTypes.QUEEN.get().getDefaultLootTable(),
             QueenLootTable.createLootTableBuilder(provider, AlienVariantTypes.NORMAL)
         );
@@ -57,6 +61,10 @@ public class EntityLootTableProvider extends SimpleFabricLootTableProvider {
         biConsumer.accept(
             AlienEntityTypes.NETHER_PRAETORIAN.get().getDefaultLootTable(),
             PraetorianLootTable.create(provider, AlienVariantTypes.NETHER)
+        );
+        biConsumer.accept(
+            AlienEntityTypes.NETHER_PROWLER.get().getDefaultLootTable(),
+            WarriorLootTable.create(provider, AlienVariantTypes.NETHER)
         );
         biConsumer.accept(
             AlienEntityTypes.NETHER_QUEEN.get().getDefaultLootTable(),
@@ -81,6 +89,10 @@ public class EntityLootTableProvider extends SimpleFabricLootTableProvider {
             PraetorianLootTable.create(provider, AlienVariantTypes.ABERRANT)
         );
         biConsumer.accept(
+            AlienEntityTypes.ABERRANT_PROWLER.get().getDefaultLootTable(),
+            WarriorLootTable.create(provider, AlienVariantTypes.ABERRANT)
+        );
+        biConsumer.accept(
             AlienEntityTypes.ABERRANT_QUEEN.get().getDefaultLootTable(),
             QueenLootTable.createLootTableBuilder(provider, AlienVariantTypes.ABERRANT)
         );
@@ -101,6 +113,10 @@ public class EntityLootTableProvider extends SimpleFabricLootTableProvider {
         biConsumer.accept(
             AlienEntityTypes.IRRADIATED_PRAETORIAN.get().getDefaultLootTable(),
             PraetorianLootTable.create(provider, AlienVariantTypes.IRRADIATED)
+        );
+        biConsumer.accept(
+            AlienEntityTypes.IRRADIATED_PROWLER.get().getDefaultLootTable(),
+            WarriorLootTable.create(provider, AlienVariantTypes.IRRADIATED)
         );
         biConsumer.accept(
             AlienEntityTypes.IRRADIATED_QUEEN.get().getDefaultLootTable(),

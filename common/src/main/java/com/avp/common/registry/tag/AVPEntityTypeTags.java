@@ -47,6 +47,8 @@ public class AVPEntityTypeTags {
 
     public static final TagKey<EntityType<?>> PREDATORS = create("predators");
 
+    public static final TagKey<EntityType<?>> PROWLERS = create("prowlers");
+
     public static final TagKey<EntityType<?>> QUEENS = create("queens");
 
     public static final TagKey<EntityType<?>> RADIATION_RESISTANT = create("radiation_resistant");

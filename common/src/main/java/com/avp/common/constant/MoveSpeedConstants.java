@@ -20,6 +20,8 @@ public record MoveSpeedConstants() {
 
     public static final float PRAETORIAN_SPEED = PLAYER_WALK_SPEED * 1.2F;
 
+    public static final float PROWLER_SPEED = PLAYER_WALK_SPEED * 1.1F;
+
     public static final float QUEEN_SPEED = PLAYER_WALK_SPEED * 0.9F;
 
     public static final float RUNNER_SPEED = PLAYER_WALK_SPEED * 1F;

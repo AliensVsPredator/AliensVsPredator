@@ -17,6 +17,7 @@ public class SpawnEggsCreativeModeTabInitializer {
         CreativeModeTabUtil.accept(output, AlienSpawnEggItems.FACEHUGGER_SPAWN_EGG);
         CreativeModeTabUtil.accept(output, AlienSpawnEggItems.OVOMORPH_SPAWN_EGG);
         CreativeModeTabUtil.accept(output, AlienSpawnEggItems.PRAETORIAN_SPAWN_EGG);
+        CreativeModeTabUtil.accept(output, AlienSpawnEggItems.PROWLER_SPAWN_EGG);
         CreativeModeTabUtil.accept(output, AlienSpawnEggItems.QUEEN_SPAWN_EGG);
         CreativeModeTabUtil.accept(output, AlienSpawnEggItems.RUNNER_SPAWN_EGG);
         CreativeModeTabUtil.accept(output, AlienSpawnEggItems.WARRIOR_SPAWN_EGG);
@@ -26,6 +27,7 @@ public class SpawnEggsCreativeModeTabInitializer {
         CreativeModeTabUtil.accept(output, AlienSpawnEggItems.NETHER_FACEHUGGER_SPAWN_EGG);
         CreativeModeTabUtil.accept(output, AlienSpawnEggItems.NETHER_OVOMORPH_SPAWN_EGG);
         CreativeModeTabUtil.accept(output, AlienSpawnEggItems.NETHER_PRAETORIAN_SPAWN_EGG);
+        CreativeModeTabUtil.accept(output, AlienSpawnEggItems.NETHER_PROWLER_SPAWN_EGG);
         CreativeModeTabUtil.accept(output, AlienSpawnEggItems.NETHER_RUNNER_SPAWN_EGG);
         CreativeModeTabUtil.accept(output, AlienSpawnEggItems.NETHER_WARRIOR_SPAWN_EGG);
         CreativeModeTabUtil.accept(output, AlienSpawnEggItems.NETHER_QUEEN_SPAWN_EGG);
@@ -35,6 +37,7 @@ public class SpawnEggsCreativeModeTabInitializer {
         CreativeModeTabUtil.accept(output, AlienSpawnEggItems.ABERRANT_FACEHUGGER_SPAWN_EGG);
         CreativeModeTabUtil.accept(output, AlienSpawnEggItems.ABERRANT_OVOMORPH_SPAWN_EGG);
         CreativeModeTabUtil.accept(output, AlienSpawnEggItems.ABERRANT_PRAETORIAN_SPAWN_EGG);
+        CreativeModeTabUtil.accept(output, AlienSpawnEggItems.ABERRANT_PROWLER_SPAWN_EGG);
         CreativeModeTabUtil.accept(output, AlienSpawnEggItems.ABERRANT_RUNNER_SPAWN_EGG);
         CreativeModeTabUtil.accept(output, AlienSpawnEggItems.ABERRANT_WARRIOR_SPAWN_EGG);
         CreativeModeTabUtil.accept(output, AlienSpawnEggItems.ABERRANT_QUEEN_SPAWN_EGG);
@@ -42,6 +45,7 @@ public class SpawnEggsCreativeModeTabInitializer {
         CreativeModeTabUtil.accept(output, AlienSpawnEggItems.IRRADIATED_DRONE_SPAWN_EGG);
         CreativeModeTabUtil.accept(output, AlienSpawnEggItems.IRRADIATED_WARRIOR_SPAWN_EGG);
         CreativeModeTabUtil.accept(output, AlienSpawnEggItems.IRRADIATED_PRAETORIAN_SPAWN_EGG);
+        CreativeModeTabUtil.accept(output, AlienSpawnEggItems.IRRADIATED_PROWLER_SPAWN_EGG);
         CreativeModeTabUtil.accept(output, AlienSpawnEggItems.IRRADIATED_RUNNER_SPAWN_EGG);
         CreativeModeTabUtil.accept(output, AlienSpawnEggItems.IRRADIATED_QUEEN_SPAWN_EGG);
 

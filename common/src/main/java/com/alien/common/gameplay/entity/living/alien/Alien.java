@@ -17,6 +17,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attribute;
@@ -31,6 +32,7 @@ import org.jetbrains.annotations.Nullable;
 import com.avp.AVP;
 import com.avp.common.config.AVPConfig;
 import com.avp.common.registry.key.AVPBiomeKeys;
+import com.avp.common.registry.tag.AVPEntityTypeTags;
 import com.avp.common.registry.tag.AVPMobEffectTags;
 import com.avp.common.util.MovementAnalyzer;
 
@@ -72,7 +74,7 @@ public abstract class Alien extends Monster {
         super(entityType, level);
         this.geneManager = new GeneManager(this);
         this.hiveManager = new HiveManager(this);
-        this.hostTypeOption = Option.none();
+        this.hostTypeOption = Option.ofNullable(getDefaultHostType(entityType));
         this.movementAnalyzer = new MovementAnalyzer(this);
     }
 
@@ -81,6 +83,14 @@ public abstract class Alien extends Monster {
     @Override
     public float maxUpStep() {
         return 1.5F;
+    }
+
+    private EntityType<? extends Entity> getDefaultHostType(EntityType<? extends Alien> entityType) {
+        if (entityType.is(AVPEntityTypeTags.RUNNERS)) {
+            return EntityType.PIG;
+        }
+
+        return EntityType.VILLAGER;
     }
 
     protected boolean canBleedAcid() {

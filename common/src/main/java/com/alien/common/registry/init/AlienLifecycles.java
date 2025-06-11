@@ -50,6 +50,11 @@ public class AlienLifecycles {
                     AlienEntityTypes.CHESTBURSTER.get(),
                     AlienEntityTypes.RUNNER.get(),
                     (int) TimeUnit.MINUTES.toSeconds(AVP.config.hiveConfigs.CHESTBURSTER_MAX_GROWTH_TIMER_SECONDS)
+                ),
+                new GrowthStage(
+                    AlienEntityTypes.RUNNER.get(),
+                    AlienEntityTypes.PROWLER.get(),
+                    (int) TimeUnit.MINUTES.toSeconds(AVP.config.hiveConfigs.DRONE_MAX_GROWTH_TIMER_SECONDS)
                 )
             )
         )
@@ -91,6 +96,11 @@ public class AlienLifecycles {
                     AlienEntityTypes.ABERRANT_CHESTBURSTER.get(),
                     AlienEntityTypes.ABERRANT_RUNNER.get(),
                     (int) TimeUnit.MINUTES.toSeconds(AVP.config.hiveConfigs.CHESTBURSTER_MAX_GROWTH_TIMER_SECONDS)
+                ),
+                new GrowthStage(
+                    AlienEntityTypes.ABERRANT_RUNNER.get(),
+                    AlienEntityTypes.ABERRANT_PROWLER.get(),
+                    (int) TimeUnit.MINUTES.toSeconds(AVP.config.hiveConfigs.DRONE_MAX_GROWTH_TIMER_SECONDS)
                 )
             )
         )
@@ -132,6 +142,11 @@ public class AlienLifecycles {
                     AlienEntityTypes.NETHER_CHESTBURSTER.get(),
                     AlienEntityTypes.NETHER_RUNNER.get(),
                     (int) TimeUnit.MINUTES.toSeconds(AVP.config.hiveConfigs.CHESTBURSTER_MAX_GROWTH_TIMER_SECONDS)
+                ),
+                new GrowthStage(
+                    AlienEntityTypes.NETHER_RUNNER.get(),
+                    AlienEntityTypes.NETHER_PROWLER.get(),
+                    (int) TimeUnit.MINUTES.toSeconds(AVP.config.hiveConfigs.DRONE_MAX_GROWTH_TIMER_SECONDS)
                 )
             )
         )
