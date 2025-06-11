@@ -114,7 +114,7 @@
 - Disabled armor case menu (for now, until it is fixed).
 - Iron-like ingots can now be used to craft industrial furnaces.
 - Iron-like ingots can now be used to craft razor wire.
-- Increased the damage dealt by old painless by 6x, making it the most lethal weapon in the game.
+- Increased the damage dealt by old painless by 2x, making it the highest DPS weapon in the game.
 - Old painless now consumes 6 bullets per shot instead of 1.
 - Reduced queen resin generation per tick (10 -> 1).
 - Removed queen spawn chunk blacklisting system.
