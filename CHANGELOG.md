@@ -123,6 +123,7 @@
   - When a hive is defeated, chunks around the hive will now be blacklisted from spawning natural queens.
 
 ## 🐞 Fixes
+- Fixed gun block damage from players ignoring claimed chunks (and other cancelled player block break events).
 - Fixed old painless ammo consumption logic not accounting for consuming multiple bullets per shot.
 - Fixed chestbursters spreading resin like adult xenomorphs.
 - Fixed aberrant resin blocks not burning in fire or lava.
