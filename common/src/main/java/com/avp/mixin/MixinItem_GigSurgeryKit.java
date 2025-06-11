@@ -1,5 +1,7 @@
 package com.avp.mixin;
 
+import com.compat.gigeresque.Gig;
+import com.compat.gigeresque.common.patch.GigSurgeryKitPatch;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
@@ -13,7 +15,6 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import com.compat.gigeresque.GigCommonCompat;
 import com.avp.service.Services;
 
 @Mixin(Item.class)
@@ -27,8 +28,8 @@ public class MixinItem_GigSurgeryKit {
         InteractionHand usedHand,
         CallbackInfoReturnable<InteractionResult> cir
     ) {
-        if (Services.PLATFORM.isModLoaded("gigeresque")) {
-            GigCommonCompat.removeParasite(player, interactionTarget, stack);
+        if (Services.PLATFORM.isModLoaded(Gig.MOD_ID)) {
+            GigSurgeryKitPatch.removeParasite(player, interactionTarget, stack);
         }
     }
 
@@ -39,8 +40,8 @@ public class MixinItem_GigSurgeryKit {
         InteractionHand usedHand,
         CallbackInfoReturnable<InteractionResultHolder<ItemStack>> cir
     ) {
-        if (Services.PLATFORM.isModLoaded("gigeresque")) {
-            GigCommonCompat.removeParasite(player, player, player.getItemInHand(usedHand));
+        if (Services.PLATFORM.isModLoaded(Gig.MOD_ID)) {
+            GigSurgeryKitPatch.removeParasite(player, player, player.getItemInHand(usedHand));
         }
     }
 }

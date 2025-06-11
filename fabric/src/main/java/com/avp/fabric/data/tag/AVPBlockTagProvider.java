@@ -2,6 +2,7 @@ package com.avp.fabric.data.tag;
 
 import com.alien.common.registry.init.block.AlienChitinBlocks;
 import com.alien.common.registry.init.block.AlienResinBlocks;
+import com.compat.gigeresque.common.registry.tag.GigBlockTags;
 import com.human.common.registry.init.block.HumanFerroaluminumBlocks;
 import com.human.common.registry.init.block.HumanIndustrialConcreteBlocks;
 import com.human.common.registry.init.block.HumanIndustrialGlassBlocks;
@@ -35,7 +36,6 @@ import com.avp.common.registry.init.block.AVPBlocks;
 import com.avp.common.registry.init.block.CoreBlocks;
 import com.avp.common.registry.tag.AVPBlockTags;
 import com.avp.fabric.data.compatibility.common.CommonConstants;
-import com.avp.fabric.data.compatibility.gigeresque.GigeresqueConstants;
 
 public class AVPBlockTagProvider extends FabricTagProvider.BlockTagProvider {
 
@@ -739,7 +739,7 @@ public class AVPBlockTagProvider extends FabricTagProvider.BlockTagProvider {
 
     private void addCompatibilityTags() {
         getOrCreateTagBuilder(AVPBlockTags.ACID_IMMUNE)
-            .addOptionalTag(GigeresqueConstants.ACID_RESISTANT_BLOCKS);
+            .addOptionalTag(GigBlockTags.ACID_RESISTANT);
 
         getOrCreateTagBuilder(CommonConstants.CHESTS)
             .setReplace(false)
