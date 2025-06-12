@@ -10,7 +10,7 @@ public class RunnerAnimationRefs {
 
     public static final String CRAWL_ANIMATION_NAME = "animation.crawl";
 
-    public static final String IDLE_ANIMATION_NAME = "animation.idle";
+    public static final String IDLE_ANIMATION_NAME = "animation.quadidle";
 
     public static final String LUNGE_ANIMATION_NAME = "animation.lunge";
 
@@ -18,5 +18,5 @@ public class RunnerAnimationRefs {
 
     public static final String SWIM_ANIMATION_NAME = "animation.swim";
 
-    public static final String WALK_ANIMATION_NAME = "animation.walk";
+    public static final String WALK_ANIMATION_NAME = "animation.quadwalk";
 }
