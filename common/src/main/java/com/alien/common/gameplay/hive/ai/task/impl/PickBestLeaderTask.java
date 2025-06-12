@@ -59,11 +59,11 @@ public class PickBestLeaderTask extends HiveTask {
     }
 
     private int getDispositionForEntityType(EntityType<?> entityType) {
-        if (entityType.is(AVPEntityTypeTags.DRONES)) {
+        if (entityType.is(AVPEntityTypeTags.DRONES) || entityType.is(AVPEntityTypeTags.RUNNERS)) {
             return 0;
-        } else if (entityType.is(AVPEntityTypeTags.WARRIORS)) {
+        } else if (entityType.is(AVPEntityTypeTags.WARRIORS) || entityType.is(AVPEntityTypeTags.PROWLERS)) {
             return 1;
-        } else if (entityType.is(AVPEntityTypeTags.PRAETORIANS)) {
+        } else if (entityType.is(AVPEntityTypeTags.PRAETORIANS) || entityType.is(AVPEntityTypeTags.CRUSHERS)) {
             return 2;
         } else if (entityType.is(AVPEntityTypeTags.QUEENS)) {
             return 3;

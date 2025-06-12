@@ -1,60 +1,60 @@
 package com.alien.common.gameplay.entity.living.alien.xenomorph.prowler;
 
-import com.alien.common.constant.animation.RunnerAnimationRefs;
+import com.alien.common.constant.animation.ProwlerAnimationRefs;
 import mod.azure.azurelib.rewrite.animation.dispatch.command.AzCommand;
 import mod.azure.azurelib.rewrite.animation.play_behavior.AzPlayBehaviors;
 
 public class ProwlerAnimationDispatcher {
 
     private static final AzCommand ATTACK_CLAW = AzCommand.create(
-        RunnerAnimationRefs.FULL_BODY_CONTROLLER_NAME,
-        RunnerAnimationRefs.ATTACK_CLAW_ANIMATION_NAME
+        ProwlerAnimationRefs.FULL_BODY_CONTROLLER_NAME,
+        ProwlerAnimationRefs.ATTACK_CLAW_ANIMATION_NAME
     );
 
     private static final AzCommand ATTACK_TAIL = AzCommand.create(
-        RunnerAnimationRefs.FULL_BODY_CONTROLLER_NAME,
-        RunnerAnimationRefs.ATTACK_TAIL_ANIMATION_NAME
+        ProwlerAnimationRefs.FULL_BODY_CONTROLLER_NAME,
+        ProwlerAnimationRefs.ATTACK_TAIL_ANIMATION_NAME
     );
 
     private static final AzCommand CRAWL = AzCommand.create(
-        RunnerAnimationRefs.FULL_BODY_CONTROLLER_NAME,
-        RunnerAnimationRefs.CRAWL_ANIMATION_NAME,
+        ProwlerAnimationRefs.FULL_BODY_CONTROLLER_NAME,
+        ProwlerAnimationRefs.CRAWL_ANIMATION_NAME,
         AzPlayBehaviors.LOOP
     );
 
     private static final AzCommand CRAWL_HOLD = AzCommand.create(
-        RunnerAnimationRefs.FULL_BODY_CONTROLLER_NAME,
-        RunnerAnimationRefs.CRAWL_ANIMATION_NAME,
+        ProwlerAnimationRefs.FULL_BODY_CONTROLLER_NAME,
+        ProwlerAnimationRefs.CRAWL_ANIMATION_NAME,
         AzPlayBehaviors.HOLD_ON_LAST_FRAME
     );
 
     private static final AzCommand IDLE = AzCommand.create(
-        RunnerAnimationRefs.FULL_BODY_CONTROLLER_NAME,
-        RunnerAnimationRefs.IDLE_ANIMATION_NAME,
+        ProwlerAnimationRefs.FULL_BODY_CONTROLLER_NAME,
+        ProwlerAnimationRefs.IDLE_ANIMATION_NAME,
         AzPlayBehaviors.LOOP
     );
 
     private static final AzCommand LUNGE = AzCommand.create(
-        RunnerAnimationRefs.FULL_BODY_CONTROLLER_NAME,
-        RunnerAnimationRefs.LUNGE_ANIMATION_NAME,
+        ProwlerAnimationRefs.FULL_BODY_CONTROLLER_NAME,
+        ProwlerAnimationRefs.LUNGE_ANIMATION_NAME,
         AzPlayBehaviors.PLAY_ONCE
     );
 
     private static final AzCommand RUN = AzCommand.create(
-        RunnerAnimationRefs.FULL_BODY_CONTROLLER_NAME,
-        RunnerAnimationRefs.RUN_ANIMATION_NAME,
+        ProwlerAnimationRefs.FULL_BODY_CONTROLLER_NAME,
+        ProwlerAnimationRefs.RUN_ANIMATION_NAME,
         AzPlayBehaviors.LOOP
     );
 
     private static final AzCommand SWIM = AzCommand.create(
-        RunnerAnimationRefs.FULL_BODY_CONTROLLER_NAME,
-        RunnerAnimationRefs.SWIM_ANIMATION_NAME,
+        ProwlerAnimationRefs.FULL_BODY_CONTROLLER_NAME,
+        ProwlerAnimationRefs.SWIM_ANIMATION_NAME,
         AzPlayBehaviors.LOOP
     );
 
     private static final AzCommand WALK = AzCommand.create(
-        RunnerAnimationRefs.FULL_BODY_CONTROLLER_NAME,
-        RunnerAnimationRefs.WALK_ANIMATION_NAME,
+        ProwlerAnimationRefs.FULL_BODY_CONTROLLER_NAME,
+        ProwlerAnimationRefs.WALK_ANIMATION_NAME,
         AzPlayBehaviors.LOOP
     );
 
