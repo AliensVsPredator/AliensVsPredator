@@ -78,6 +78,11 @@ public class AVPConfig {
 
         @Configurable
         @Configurable.Synchronized
+        @Configurable.Comment("Aberrant Crusher spawn settings. Modifying these will require restarting the game.")
+        public SpawnSettings ABERRANT_CRUSHER_SPAWN = new SpawnSettings(true, 1, 1, 10);
+
+        @Configurable
+        @Configurable.Synchronized
         @Configurable.Comment("Modifying these will require restarting the game.")
         public SpawnSettings ABERRANT_DRONE_SPAWN = new SpawnSettings(true, 1, 2, 50);
 
@@ -119,8 +124,18 @@ public class AVPConfig {
 
         @Configurable
         @Configurable.Synchronized
+        @Configurable.Comment("Crusher spawn settings. Modifying these will require restarting the game.")
+        public SpawnSettings CRUSHER_SPAWN = new SpawnSettings(true, 1, 1, 10);
+
+        @Configurable
+        @Configurable.Synchronized
         @Configurable.Comment("Modifying these will require restarting the game.")
         public SpawnSettings DRONE_SPAWN = new SpawnSettings(true, 1, 2, 50);
+
+        @Configurable
+        @Configurable.Synchronized
+        @Configurable.Comment("Irradiated Crusher spawn settings. Modifying these will require restarting the game.")
+        public SpawnSettings IRRADIATED_CRUSHER_SPAWN = new SpawnSettings(true, 1, 1, 10);
 
         @Configurable
         @Configurable.Synchronized
@@ -158,6 +173,11 @@ public class AVPConfig {
         @Configurable.Synchronized
         @Configurable.Comment("Modifying these will require restarting the game.")
         public SpawnSettings NETHER_CHESTBURSTER_SPAWN = new SpawnSettings(true, 1, 2, 10);
+
+        @Configurable
+        @Configurable.Synchronized
+        @Configurable.Comment("Nether Crusher spawn settings. Modifying these will require restarting the game.")
+        public SpawnSettings NETHER_CRUSHER_SPAWN = new SpawnSettings(true, 1, 1, 10);
 
         @Configurable
         @Configurable.Synchronized
@@ -317,6 +337,21 @@ public class AVPConfig {
             0.0f,
             750,
             FollowRangeConstants.CHESTBURSTER_FOLLOW_RANGE
+        );
+
+        @Configurable
+        @Configurable.Synchronized
+        @Configurable.Comment("Modifying any of these will require restarting the game.")
+        public AdvancedStats CRUSHER_STATS = new AdvancedStats(
+            HealthConstants.CRUSHER_HEALTH,
+            AttackDamageConstants.CRUSHER_ATTACK_DAMAGE,
+            HealthRegenConstants.CRUSHER_HEALTH_REGEN,
+            KnockbackResistanceConstants.CRUSHER_KNOCKBACK_RESISTANCE,
+            MoveSpeedConstants.CRUSHER_SPEED,
+            ArmorConstants.CRUSHER_ARMOR,
+            ArmorToughnessConstants.CRUSHER_ARMOR_TOUGHNESS,
+            80,
+            FollowRangeConstants.CRUSHER_FOLLOW_RANGE
         );
 
         @Configurable

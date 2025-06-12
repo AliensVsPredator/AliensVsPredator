@@ -19,6 +19,7 @@ public class EnUsEntityProvider {
 
     public static final Consumer<FabricLanguageProvider.TranslationBuilder> CONSUMER = builder -> {
         addEntity(builder, AlienEntityTypes.ABERRANT_CHESTBURSTER, "Aberrant Chestburster");
+        addEntity(builder, AlienEntityTypes.ABERRANT_CRUSHER, "Aberrant Crusher");
         addEntity(builder, AlienEntityTypes.ABERRANT_DRONE, "Aberrant Drone");
         addEntity(builder, AlienEntityTypes.ABERRANT_FACEHUGGER, "Aberrant Facehugger");
         addEntity(builder, AlienEntityTypes.ABERRANT_OVOMORPH, "Aberrant Ovomorph");
@@ -29,8 +30,10 @@ public class EnUsEntityProvider {
         addEntity(builder, AlienEntityTypes.ABERRANT_WARRIOR, "Aberrant Warrior");
         addEntity(builder, AlienEntityTypes.ACID, "Acid");
         addEntity(builder, AlienEntityTypes.CHESTBURSTER, "Chestburster");
+        addEntity(builder, AlienEntityTypes.CRUSHER, "Crusher");
         addEntity(builder, AlienEntityTypes.DRONE, "Drone");
         addEntity(builder, AlienEntityTypes.FACEHUGGER, "Facehugger");
+        addEntity(builder, AlienEntityTypes.IRRADIATED_CRUSHER, "Irradiated Crusher");
         addEntity(builder, AlienEntityTypes.IRRADIATED_DRONE, "Irradiated Drone");
         addEntity(builder, AlienEntityTypes.IRRADIATED_PRAETORIAN, "Irradiated Praetorian");
         addEntity(builder, AlienEntityTypes.IRRADIATED_PROWLER, "Irradiated Prowler");
@@ -38,6 +41,7 @@ public class EnUsEntityProvider {
         addEntity(builder, AlienEntityTypes.IRRADIATED_RUNNER, "Irradiated Runner");
         addEntity(builder, AlienEntityTypes.IRRADIATED_WARRIOR, "Irradiated Warrior");
         addEntity(builder, AlienEntityTypes.NETHER_CHESTBURSTER, "Nether Chestburster");
+        addEntity(builder, AlienEntityTypes.NETHER_CRUSHER, "Nether Crusher");
         addEntity(builder, AlienEntityTypes.NETHER_DRONE, "Nether Drone");
         addEntity(builder, AlienEntityTypes.NETHER_FACEHUGGER, "Nether Facehugger");
         addEntity(builder, AlienEntityTypes.NETHER_OVOMORPH, "Nether Ovomorph");

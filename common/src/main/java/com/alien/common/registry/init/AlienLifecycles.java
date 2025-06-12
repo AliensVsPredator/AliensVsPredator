@@ -55,6 +55,11 @@ public class AlienLifecycles {
                     AlienEntityTypes.RUNNER.get(),
                     AlienEntityTypes.PROWLER.get(),
                     (int) TimeUnit.MINUTES.toSeconds(AVP.config.hiveConfigs.DRONE_MAX_GROWTH_TIMER_SECONDS)
+                ),
+                new GrowthStage(
+                    AlienEntityTypes.PROWLER.get(),
+                    AlienEntityTypes.CRUSHER.get(),
+                    (int) TimeUnit.MINUTES.toSeconds(AVP.config.hiveConfigs.WARRIOR_MAX_GROWTH_TIMER_SECONDS)
                 )
             )
         )
@@ -101,6 +106,11 @@ public class AlienLifecycles {
                     AlienEntityTypes.ABERRANT_RUNNER.get(),
                     AlienEntityTypes.ABERRANT_PROWLER.get(),
                     (int) TimeUnit.MINUTES.toSeconds(AVP.config.hiveConfigs.DRONE_MAX_GROWTH_TIMER_SECONDS)
+                ),
+                new GrowthStage(
+                    AlienEntityTypes.ABERRANT_PROWLER.get(),
+                    AlienEntityTypes.ABERRANT_CRUSHER.get(),
+                    (int) TimeUnit.MINUTES.toSeconds(AVP.config.hiveConfigs.WARRIOR_MAX_GROWTH_TIMER_SECONDS)
                 )
             )
         )
@@ -147,6 +157,24 @@ public class AlienLifecycles {
                     AlienEntityTypes.NETHER_RUNNER.get(),
                     AlienEntityTypes.NETHER_PROWLER.get(),
                     (int) TimeUnit.MINUTES.toSeconds(AVP.config.hiveConfigs.DRONE_MAX_GROWTH_TIMER_SECONDS)
+                ),
+                new GrowthStage(
+                    AlienEntityTypes.NETHER_PROWLER.get(),
+                    AlienEntityTypes.NETHER_CRUSHER.get(),
+                    (int) TimeUnit.MINUTES.toSeconds(AVP.config.hiveConfigs.WARRIOR_MAX_GROWTH_TIMER_SECONDS)
+                )
+            )
+        )
+    );
+
+    public static final Supplier<AlienLifecycle> ROYAL_CRUSHER_LIFECYCLE = register(
+        () -> new AlienLifecycle(
+            AVPEntityTypeTags.RUNNER_HOSTS,
+            List.of(
+                new GrowthStage(
+                    AlienEntityTypes.ROYAL_CHESTBURSTER.get(),
+                    AlienEntityTypes.CRUSHER.get(),
+                    (int) TimeUnit.MINUTES.toSeconds(AVP.config.hiveConfigs.PRAETORIAN_SHORTCUT_TIMER_SECONDS)
                 )
             )
         )
@@ -165,6 +193,19 @@ public class AlienLifecycles {
         )
     );
 
+    public static final Supplier<AlienLifecycle> ROYAL_ABERRANT_CRUSHER_LIFECYCLE = register(
+        () -> new AlienLifecycle(
+            AVPEntityTypeTags.RUNNER_HOSTS,
+            List.of(
+                new GrowthStage(
+                    AlienEntityTypes.ROYAL_ABERRANT_CHESTBURSTER.get(),
+                    AlienEntityTypes.ABERRANT_CRUSHER.get(),
+                    (int) TimeUnit.MINUTES.toSeconds(AVP.config.hiveConfigs.PRAETORIAN_SHORTCUT_TIMER_SECONDS)
+                )
+            )
+        )
+    );
+
     public static final Supplier<AlienLifecycle> ROYAL_ABERRANT_LIFECYCLE = register(
         () -> new AlienLifecycle(
             null,
@@ -172,6 +213,19 @@ public class AlienLifecycles {
                 new GrowthStage(
                     AlienEntityTypes.ROYAL_ABERRANT_CHESTBURSTER.get(),
                     AlienEntityTypes.ABERRANT_PRAETORIAN.get(),
+                    (int) TimeUnit.MINUTES.toSeconds(AVP.config.hiveConfigs.PRAETORIAN_SHORTCUT_TIMER_SECONDS)
+                )
+            )
+        )
+    );
+
+    public static final Supplier<AlienLifecycle> ROYAL_NETHER_CRUSHER_LIFECYCLE = register(
+        () -> new AlienLifecycle(
+            AVPEntityTypeTags.RUNNER_HOSTS,
+            List.of(
+                new GrowthStage(
+                    AlienEntityTypes.ROYAL_NETHER_CHESTBURSTER.get(),
+                    AlienEntityTypes.NETHER_CRUSHER.get(),
                     (int) TimeUnit.MINUTES.toSeconds(AVP.config.hiveConfigs.PRAETORIAN_SHORTCUT_TIMER_SECONDS)
                 )
             )

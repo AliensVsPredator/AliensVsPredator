@@ -14,6 +14,8 @@ public record MoveSpeedConstants() {
     // Alien measurements
     public static final float CHESTBURSTER_SPEED = PLAYER_WALK_SPEED * 1.05F;
 
+    public static final float CRUSHER_SPEED = PLAYER_WALK_SPEED * 1.2F;
+
     public static final float DRONE_SPEED = PLAYER_WALK_SPEED * 1F;
 
     public static final float FACEHUGGER_SPEED = PLAYER_WALK_SPEED * 1.1F;

@@ -5,6 +5,7 @@ import com.alien.common.gameplay.entity.living.alien.Alien;
 import com.alien.common.gameplay.entity.living.alien.chestburster.Chestburster;
 import com.alien.common.gameplay.entity.living.alien.ovomorph.Ovomorph;
 import com.alien.common.gameplay.entity.living.alien.parasite.facehugger.Facehugger;
+import com.alien.common.gameplay.entity.living.alien.xenomorph.crusher.Crusher;
 import com.alien.common.gameplay.entity.living.alien.xenomorph.drone.Drone;
 import com.alien.common.gameplay.entity.living.alien.xenomorph.praetorian.Praetorian;
 import com.alien.common.gameplay.entity.living.alien.xenomorph.prowler.Prowler;
@@ -31,6 +32,12 @@ public class AlienEntityTypes {
             AVPEntityTypes.ALIEN_CATEGORY
         )
             .sized(0.35f, 0.35f)
+    );
+
+    public static final AVPDeferredHolder<EntityType<Crusher>> ABERRANT_CRUSHER = AVPEntityTypes.register(
+        "aberrant_crusher",
+        EntityType.Builder.of(Crusher::new, AVPEntityTypes.ALIEN_CATEGORY)
+            .sized(1.8f, 1.98f)
     );
 
     public static final AVPDeferredHolder<EntityType<Drone>> ABERRANT_DRONE = AVPEntityTypes.register(
@@ -112,6 +119,12 @@ public class AlienEntityTypes {
             .sized(0.35f, 0.35f)
     );
 
+    public static final AVPDeferredHolder<EntityType<Crusher>> CRUSHER = AVPEntityTypes.register(
+        "crusher",
+        EntityType.Builder.of(Crusher::new, AVPEntityTypes.ALIEN_CATEGORY)
+            .sized(1.8f, 1.98f)
+    );
+
     public static final AVPDeferredHolder<EntityType<Drone>> DRONE = AVPEntityTypes.register(
         "drone",
         EntityType.Builder.of(Drone::new, AVPEntityTypes.ALIEN_CATEGORY)
@@ -122,6 +135,12 @@ public class AlienEntityTypes {
         "facehugger",
         EntityType.Builder.of(Facehugger::new, AVPEntityTypes.ALIEN_CATEGORY)
             .sized(0.8f, 0.25f)
+    );
+
+    public static final AVPDeferredHolder<EntityType<Crusher>> IRRADIATED_CRUSHER = AVPEntityTypes.register(
+        "irradiated_crusher",
+        EntityType.Builder.of(Crusher::new, AVPEntityTypes.ALIEN_CATEGORY)
+            .sized(1.8f, 1.98f)
     );
 
     public static final AVPDeferredHolder<EntityType<Drone>> IRRADIATED_DRONE = AVPEntityTypes.register(
@@ -167,6 +186,12 @@ public class AlienEntityTypes {
             AVPEntityTypes.ALIEN_CATEGORY
         )
             .sized(0.35f, 0.35f)
+    );
+
+    public static final AVPDeferredHolder<EntityType<Crusher>> NETHER_CRUSHER = AVPEntityTypes.register(
+        "nether_crusher",
+        EntityType.Builder.of(Crusher::new, AVPEntityTypes.ALIEN_CATEGORY)
+            .sized(1.8f, 1.98f)
     );
 
     public static final AVPDeferredHolder<EntityType<Drone>> NETHER_DRONE = AVPEntityTypes.register(
@@ -413,6 +438,7 @@ public class AlienEntityTypes {
 
     public static void initialize() {
         Services.REGISTRY.registerEntityAttributes(ABERRANT_CHESTBURSTER, Chestburster::createChestbursterAttributes);
+        Services.REGISTRY.registerEntityAttributes(ABERRANT_CRUSHER, Crusher::createCrusherAttributes);
         Services.REGISTRY.registerEntityAttributes(ABERRANT_DRONE, Drone::createDroneAttributes);
         Services.REGISTRY.registerEntityAttributes(ABERRANT_FACEHUGGER, Facehugger::createFacehuggerAttributes);
         Services.REGISTRY.registerEntityAttributes(ABERRANT_OVOMORPH, Ovomorph::createOvomorphAttributes);
@@ -422,8 +448,10 @@ public class AlienEntityTypes {
         Services.REGISTRY.registerEntityAttributes(ABERRANT_RUNNER, Runner::createRunnerAttributes);
         Services.REGISTRY.registerEntityAttributes(ABERRANT_WARRIOR, Warrior::createWarriorAttributes);
         Services.REGISTRY.registerEntityAttributes(CHESTBURSTER, Chestburster::createChestbursterAttributes);
+        Services.REGISTRY.registerEntityAttributes(CRUSHER, Crusher::createCrusherAttributes);
         Services.REGISTRY.registerEntityAttributes(DRONE, Drone::createDroneAttributes);
         Services.REGISTRY.registerEntityAttributes(FACEHUGGER, Facehugger::createFacehuggerAttributes);
+        Services.REGISTRY.registerEntityAttributes(IRRADIATED_CRUSHER, Crusher::createCrusherAttributes);
         Services.REGISTRY.registerEntityAttributes(IRRADIATED_DRONE, Drone::createDroneAttributes);
         Services.REGISTRY.registerEntityAttributes(IRRADIATED_PRAETORIAN, Praetorian::createPraetorianAttributes);
         Services.REGISTRY.registerEntityAttributes(IRRADIATED_PROWLER, Prowler::createProwlerAttributes);
@@ -431,6 +459,7 @@ public class AlienEntityTypes {
         Services.REGISTRY.registerEntityAttributes(IRRADIATED_RUNNER, Runner::createRunnerAttributes);
         Services.REGISTRY.registerEntityAttributes(IRRADIATED_WARRIOR, Warrior::createWarriorAttributes);
         Services.REGISTRY.registerEntityAttributes(NETHER_CHESTBURSTER, Chestburster::createChestbursterAttributes);
+        Services.REGISTRY.registerEntityAttributes(NETHER_CRUSHER, Crusher::createCrusherAttributes);
         Services.REGISTRY.registerEntityAttributes(NETHER_DRONE, Drone::createDroneAttributes);
         Services.REGISTRY.registerEntityAttributes(NETHER_FACEHUGGER, Facehugger::createFacehuggerAttributes);
         Services.REGISTRY.registerEntityAttributes(NETHER_OVOMORPH, Ovomorph::createOvomorphAttributes);

@@ -2,6 +2,8 @@ package com.avp.common.constant;
 
 public record ArmorConstants() {
 
+    public static final float CRUSHER_ARMOR = 12.0F;
+
     public static final float DRONE_ARMOR = 4.0F;
 
     public static final float PRAETORIAN_ARMOR = 12.0F;

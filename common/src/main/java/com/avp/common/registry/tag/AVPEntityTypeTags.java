@@ -18,6 +18,8 @@ public class AVPEntityTypeTags {
 
     public static final TagKey<EntityType<?>> CHESTBURSTERS = create("chestbursters");
 
+    public static final TagKey<EntityType<?>> CRUSHERS = create("crushers");
+
     public static final TagKey<EntityType<?>> DRONES = create("drones");
 
     public static final TagKey<EntityType<?>> FACEHUGGERS = create("facehuggers");

@@ -56,6 +56,13 @@ public class AVPEntitySpawns {
                 .build()
         );
         Services.REGISTRY.registerEntitySpawnData(
+            AVPEntitySpawnData.builder(AlienEntityTypes.CRUSHER)
+                .withBiomeTagKey(AVPBiomeTags.HAS_XENOMORPHS)
+                .withSpawnPredicate(AlienSpawning.getTypedPredicate())
+                .withSpawnSettings(AVP.config.spawnConfigs.CRUSHER_SPAWN)
+                .build()
+        );
+        Services.REGISTRY.registerEntitySpawnData(
             AVPEntitySpawnData.builder(AlienEntityTypes.DRONE)
                 .withBiomeTagKey(AVPBiomeTags.HAS_XENOMORPHS)
                 .withSpawnPredicate(AlienSpawning.getTypedPredicate())
@@ -115,6 +122,13 @@ public class AVPEntitySpawns {
                 .build()
         );
         Services.REGISTRY.registerEntitySpawnData(
+            AVPEntitySpawnData.builder(AlienEntityTypes.ABERRANT_CRUSHER)
+                .withBiomeTagKey(AVPBiomeTags.HAS_XENOMORPHS)
+                .withSpawnPredicate(AlienSpawning.getTypedPredicate())
+                .withSpawnSettings(AVP.config.spawnConfigs.ABERRANT_CRUSHER_SPAWN)
+                .build()
+        );
+        Services.REGISTRY.registerEntitySpawnData(
             AVPEntitySpawnData.builder(AlienEntityTypes.ABERRANT_DRONE)
                 .withBiomeTagKey(AVPBiomeTags.HAS_XENOMORPHS)
                 .withSpawnPredicate(AlienSpawning.getTypedPredicate())
@@ -161,6 +175,13 @@ public class AVPEntitySpawns {
     }
 
     private static void registerIrradiatedAlienSpawns() {
+        Services.REGISTRY.registerEntitySpawnData(
+            AVPEntitySpawnData.builder(AlienEntityTypes.IRRADIATED_CRUSHER)
+                .withBiomeTagKey(AVPBiomeTags.HAS_XENOMORPHS)
+                .withSpawnPredicate(AlienSpawning.getTypedPredicate())
+                .withSpawnSettings(AVP.config.spawnConfigs.IRRADIATED_CRUSHER_SPAWN)
+                .build()
+        );
         Services.REGISTRY.registerEntitySpawnData(
             AVPEntitySpawnData.builder(AlienEntityTypes.IRRADIATED_DRONE)
                 .withBiomeTagKey(AVPBiomeTags.HAS_XENOMORPHS)
@@ -218,6 +239,13 @@ public class AVPEntitySpawns {
                 .withBiomeTagKey(AVPBiomeTags.HAS_XENOMORPHS)
                 .withSpawnPredicate(AlienSpawning.getTypedPredicate())
                 .withSpawnSettings(AVP.config.spawnConfigs.NETHER_CHESTBURSTER_SPAWN)
+                .build()
+        );
+        Services.REGISTRY.registerEntitySpawnData(
+            AVPEntitySpawnData.builder(AlienEntityTypes.NETHER_CRUSHER)
+                .withBiomeTagKey(AVPBiomeTags.HAS_XENOMORPHS)
+                .withSpawnPredicate(AlienSpawning.getTypedPredicate())
+                .withSpawnSettings(AVP.config.spawnConfigs.NETHER_CRUSHER_SPAWN)
                 .build()
         );
         Services.REGISTRY.registerEntitySpawnData(

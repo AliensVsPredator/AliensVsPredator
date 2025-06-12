@@ -230,6 +230,7 @@ public class EnUsItemProvider {
 
         // Spawn Egg Items
         addItem(builder, AlienSpawnEggItems.ABERRANT_CHESTBURSTER_SPAWN_EGG, "Aberrant Chestburster Spawn Egg");
+        addItem(builder, AlienSpawnEggItems.ABERRANT_CRUSHER_SPAWN_EGG, "Aberrant Crusher Spawn Egg");
         addItem(builder, AlienSpawnEggItems.ABERRANT_DRONE_SPAWN_EGG, "Aberrant Drone Spawn Egg");
         addItem(builder, AlienSpawnEggItems.ABERRANT_FACEHUGGER_SPAWN_EGG, "Aberrant Facehugger Spawn Egg");
         addItem(builder, AlienSpawnEggItems.ABERRANT_OVOMORPH_SPAWN_EGG, "Aberrant Ovomorph Spawn Egg");
@@ -239,9 +240,11 @@ public class EnUsItemProvider {
         addItem(builder, AlienSpawnEggItems.ABERRANT_QUEEN_SPAWN_EGG, "Aberrant Queen Spawn Egg");
         addItem(builder, AlienSpawnEggItems.ABERRANT_RUNNER_SPAWN_EGG, "Aberrant Runner Spawn Egg");
         addItem(builder, AlienSpawnEggItems.CHESTBURSTER_SPAWN_EGG, "Chestburster Spawn Egg");
+        addItem(builder, AlienSpawnEggItems.CRUSHER_SPAWN_EGG, "Crusher Spawn Egg");
         addItem(builder, AlienSpawnEggItems.DRONE_SPAWN_EGG, "Drone Spawn Egg");
         addItem(builder, AlienSpawnEggItems.FACEHUGGER_SPAWN_EGG, "Facehugger Spawn Egg");
         addItem(builder, AlienSpawnEggItems.NETHER_CHESTBURSTER_SPAWN_EGG, "Nether Chestburster Spawn Egg");
+        addItem(builder, AlienSpawnEggItems.NETHER_CRUSHER_SPAWN_EGG, "Nether Crusher Spawn Egg");
         addItem(builder, AlienSpawnEggItems.NETHER_DRONE_SPAWN_EGG, "Nether Drone Spawn Egg");
         addItem(builder, AlienSpawnEggItems.NETHER_FACEHUGGER_SPAWN_EGG, "Nether Facehugger Spawn Egg");
         addItem(builder, AlienSpawnEggItems.NETHER_OVOMORPH_SPAWN_EGG, "Nether Ovomorph Spawn Egg");
@@ -250,6 +253,7 @@ public class EnUsItemProvider {
         addItem(builder, AlienSpawnEggItems.NETHER_RUNNER_SPAWN_EGG, "Nether Runner Spawn Egg");
         addItem(builder, AlienSpawnEggItems.NETHER_WARRIOR_SPAWN_EGG, "Nether Warrior Spawn Egg");
         addItem(builder, AlienSpawnEggItems.NETHER_QUEEN_SPAWN_EGG, "Nether Queen Spawn Egg");
+        addItem(builder, AlienSpawnEggItems.IRRADIATED_CRUSHER_SPAWN_EGG, "Irradiated Crusher Spawn Egg");
         addItem(builder, AlienSpawnEggItems.IRRADIATED_DRONE_SPAWN_EGG, "Irradiated Drone Spawn Egg");
         addItem(builder, AlienSpawnEggItems.IRRADIATED_PRAETORIAN_SPAWN_EGG, "Irradiated Praetorian Spawn Egg");
         addItem(builder, AlienSpawnEggItems.IRRADIATED_PROWLER_SPAWN_EGG, "Irradiated Prowler Spawn Egg");

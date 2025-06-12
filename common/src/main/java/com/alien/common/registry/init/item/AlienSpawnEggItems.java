@@ -15,6 +15,13 @@ public class AlienSpawnEggItems {
         0xBFBF88
     );
 
+    public static final AVPDeferredHolder<Item> ABERRANT_CRUSHER_SPAWN_EGG = AVPSpawnEggItems.register(
+        "aberrant_crusher",
+        AlienEntityTypes.ABERRANT_CRUSHER,
+        0xF1C810,
+        0xD7D7DF
+    );
+
     public static final AVPDeferredHolder<Item> ABERRANT_DRONE_SPAWN_EGG = AVPSpawnEggItems.register(
         "aberrant_drone",
         AlienEntityTypes.ABERRANT_DRONE,
@@ -79,6 +86,13 @@ public class AlienSpawnEggItems {
         0xF7E2B4
     );
 
+    public static final AVPDeferredHolder<Item> CRUSHER_SPAWN_EGG = AVPSpawnEggItems.register(
+        "crusher",
+        AlienEntityTypes.CRUSHER,
+        0x010202,
+        0x363534
+    );
+
     public static final AVPDeferredHolder<Item> DRONE_SPAWN_EGG = AVPSpawnEggItems.register(
         "drone",
         AlienEntityTypes.DRONE,
@@ -91,6 +105,13 @@ public class AlienSpawnEggItems {
         AlienEntityTypes.FACEHUGGER,
         0xE4D597,
         0xA55863
+    );
+
+    public static final AVPDeferredHolder<Item> IRRADIATED_CRUSHER_SPAWN_EGG = AVPSpawnEggItems.register(
+        "irradiated_crusher",
+        AlienEntityTypes.IRRADIATED_CRUSHER,
+        0xD5F2ED,
+        0x73D9CF
     );
 
     public static final AVPDeferredHolder<Item> IRRADIATED_DRONE_SPAWN_EGG = AVPSpawnEggItems.register(
@@ -140,6 +161,13 @@ public class AlienSpawnEggItems {
         AlienEntityTypes.NETHER_CHESTBURSTER,
         0x360101,
         0x803232
+    );
+
+    public static final AVPDeferredHolder<Item> NETHER_CRUSHER_SPAWN_EGG = AVPSpawnEggItems.register(
+        "nether_crusher",
+        AlienEntityTypes.NETHER_CRUSHER,
+        0x310808,
+        0x5d1f1f
     );
 
     public static final AVPDeferredHolder<Item> NETHER_DRONE_SPAWN_EGG = AVPSpawnEggItems.register(

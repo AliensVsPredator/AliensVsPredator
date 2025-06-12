@@ -28,6 +28,7 @@ public class AVPEntityTypeTagProvider extends FabricTagProvider.EntityTypeTagPro
         addAliens();
         addAnimals();
         addChestbursters();
+        addCrushers();
         addDrones();
         addFacehuggers();
         addHatedByXenomorphs();
@@ -191,6 +192,16 @@ public class AVPEntityTypeTagProvider extends FabricTagProvider.EntityTypeTagPro
             );
     }
 
+    private void addCrushers() {
+        getOrCreateTagBuilder(AVPEntityTypeTags.CRUSHERS)
+            .add(
+                AlienEntityTypes.ABERRANT_CRUSHER.get(),
+                AlienEntityTypes.CRUSHER.get(),
+                AlienEntityTypes.IRRADIATED_CRUSHER.get(),
+                AlienEntityTypes.NETHER_CRUSHER.get()
+            );
+    }
+
     private void addFacehuggers() {
         getOrCreateTagBuilder(AVPEntityTypeTags.FACEHUGGERS)
             .add(
@@ -258,6 +269,7 @@ public class AVPEntityTypeTagProvider extends FabricTagProvider.EntityTypeTagPro
     private void addIrradiatedAliens() {
         getOrCreateTagBuilder(AVPEntityTypeTags.IRRADIATED_ALIENS)
             .add(
+                AlienEntityTypes.IRRADIATED_CRUSHER.get(),
                 AlienEntityTypes.IRRADIATED_DRONE.get(),
                 AlienEntityTypes.IRRADIATED_PRAETORIAN.get(),
                 AlienEntityTypes.IRRADIATED_PROWLER.get(),
@@ -271,6 +283,7 @@ public class AVPEntityTypeTagProvider extends FabricTagProvider.EntityTypeTagPro
         getOrCreateTagBuilder(AVPEntityTypeTags.ABERRANT_ALIENS)
             .add(
                 AlienEntityTypes.ABERRANT_CHESTBURSTER.get(),
+                AlienEntityTypes.ABERRANT_CRUSHER.get(),
                 AlienEntityTypes.ABERRANT_DRONE.get(),
                 AlienEntityTypes.ABERRANT_FACEHUGGER.get(),
                 AlienEntityTypes.ABERRANT_OVOMORPH.get(),
@@ -289,6 +302,7 @@ public class AVPEntityTypeTagProvider extends FabricTagProvider.EntityTypeTagPro
         getOrCreateTagBuilder(AVPEntityTypeTags.NETHER_ALIENS)
             .add(
                 AlienEntityTypes.NETHER_CHESTBURSTER.get(),
+                AlienEntityTypes.NETHER_CRUSHER.get(),
                 AlienEntityTypes.NETHER_DRONE.get(),
                 AlienEntityTypes.NETHER_FACEHUGGER.get(),
                 AlienEntityTypes.NETHER_OVOMORPH.get(),
@@ -307,6 +321,7 @@ public class AVPEntityTypeTagProvider extends FabricTagProvider.EntityTypeTagPro
         getOrCreateTagBuilder(AVPEntityTypeTags.NORMAL_ALIENS)
             .add(
                 AlienEntityTypes.CHESTBURSTER.get(),
+                AlienEntityTypes.CRUSHER.get(),
                 AlienEntityTypes.DRONE.get(),
                 AlienEntityTypes.FACEHUGGER.get(),
                 AlienEntityTypes.OVOMORPH.get(),

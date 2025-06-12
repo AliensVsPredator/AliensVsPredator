@@ -4,6 +4,8 @@ public class HealthRegenConstants {
 
     public static final float CHESTBURSTER_HEALTH_REGEN = 0.5F;
 
+    public static final float CRUSHER_HEALTH_REGEN = 0.5F;
+
     public static final float DRONE_HEALTH_REGEN = 0.5F;
 
     public static final float FACEHUGGER_HEALTH_REGEN = 0.5F;

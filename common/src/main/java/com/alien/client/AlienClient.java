@@ -13,6 +13,7 @@ import com.alien.client.render.armor.PlatedIrradiatedChitinArmorRenderer;
 import com.alien.client.render.armor.PlatedNetherChitinArmorRenderer;
 import com.alien.client.render.entity.AcidRenderer;
 import com.alien.client.render.entity.ChestbursterRenderer;
+import com.alien.client.render.entity.CrusherRenderer;
 import com.alien.client.render.entity.DroneRenderer;
 import com.alien.client.render.entity.OvomorphRenderer;
 import com.alien.client.render.entity.PraetorianRenderer;
@@ -130,6 +131,7 @@ public class AlienClient {
 
     private static void registerEntityRenderers() {
         Services.CLIENT_REGISTRY.registerEntityRenderer(AlienEntityTypes.ABERRANT_CHESTBURSTER, ChestbursterRenderer::new);
+        Services.CLIENT_REGISTRY.registerEntityRenderer(AlienEntityTypes.ABERRANT_CRUSHER, CrusherRenderer::new);
         Services.CLIENT_REGISTRY.registerEntityRenderer(AlienEntityTypes.ABERRANT_DRONE, DroneRenderer::new);
         Services.CLIENT_REGISTRY.registerEntityRenderer(AlienEntityTypes.ABERRANT_FACEHUGGER, FacehuggerRenderer::new);
         Services.CLIENT_REGISTRY.registerEntityRenderer(AlienEntityTypes.ABERRANT_OVOMORPH, OvomorphRenderer::new);
@@ -140,8 +142,10 @@ public class AlienClient {
         Services.CLIENT_REGISTRY.registerEntityRenderer(AlienEntityTypes.ABERRANT_WARRIOR, WarriorRenderer::new);
         Services.CLIENT_REGISTRY.registerEntityRenderer(AlienEntityTypes.ACID, AcidRenderer::new);
         Services.CLIENT_REGISTRY.registerEntityRenderer(AlienEntityTypes.CHESTBURSTER, ChestbursterRenderer::new);
+        Services.CLIENT_REGISTRY.registerEntityRenderer(AlienEntityTypes.CRUSHER, CrusherRenderer::new);
         Services.CLIENT_REGISTRY.registerEntityRenderer(AlienEntityTypes.DRONE, DroneRenderer::new);
         Services.CLIENT_REGISTRY.registerEntityRenderer(AlienEntityTypes.FACEHUGGER, FacehuggerRenderer::new);
+        Services.CLIENT_REGISTRY.registerEntityRenderer(AlienEntityTypes.IRRADIATED_CRUSHER, CrusherRenderer::new);
         Services.CLIENT_REGISTRY.registerEntityRenderer(AlienEntityTypes.IRRADIATED_DRONE, DroneRenderer::new);
         Services.CLIENT_REGISTRY.registerEntityRenderer(AlienEntityTypes.IRRADIATED_PRAETORIAN, PraetorianRenderer::new);
         Services.CLIENT_REGISTRY.registerEntityRenderer(AlienEntityTypes.IRRADIATED_PROWLER, ProwlerRenderer::new);
@@ -149,6 +153,7 @@ public class AlienClient {
         Services.CLIENT_REGISTRY.registerEntityRenderer(AlienEntityTypes.IRRADIATED_RUNNER, RunnerRenderer::new);
         Services.CLIENT_REGISTRY.registerEntityRenderer(AlienEntityTypes.IRRADIATED_WARRIOR, WarriorRenderer::new);
         Services.CLIENT_REGISTRY.registerEntityRenderer(AlienEntityTypes.NETHER_CHESTBURSTER, ChestbursterRenderer::new);
+        Services.CLIENT_REGISTRY.registerEntityRenderer(AlienEntityTypes.NETHER_CRUSHER, CrusherRenderer::new);
         Services.CLIENT_REGISTRY.registerEntityRenderer(AlienEntityTypes.NETHER_DRONE, DroneRenderer::new);
         Services.CLIENT_REGISTRY.registerEntityRenderer(AlienEntityTypes.NETHER_FACEHUGGER, FacehuggerRenderer::new);
         Services.CLIENT_REGISTRY.registerEntityRenderer(AlienEntityTypes.NETHER_OVOMORPH, OvomorphRenderer::new);
