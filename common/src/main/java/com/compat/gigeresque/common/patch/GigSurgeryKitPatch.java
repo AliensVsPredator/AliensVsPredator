@@ -1,7 +1,7 @@
 package com.compat.gigeresque.common.patch;
 
 import com.alien.common.model.alien.Host;
-import com.alien.common.registry.AlienInfectionRegistry;
+import com.alien.common.registry.InfectionRegistry;
 import com.compat.gigeresque.GigResources;
 import mods.cybercat.gigeresque.CommonMod;
 import mods.cybercat.gigeresque.common.item.GigItems;
@@ -28,7 +28,7 @@ public class GigSurgeryKitPatch {
             return;
         }
 
-        var alienInfection = AlienInfectionRegistry.get(livingEntity.getType(), parasiteType).unwrapOr(null);
+        var alienInfection = InfectionRegistry.get(livingEntity.getType(), parasiteType).unwrapOr(null);
 
         if (alienInfection == null) {
             return;

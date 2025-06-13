@@ -32,6 +32,8 @@
 - Updated variant entity tags to include new runner alien entity types.
 
 ## 🔬 Technical Changes
-- Upgraded alien lifecycle registry to support host entity tags.
+- Upgraded alien lifecycles to support host entity tags.
 - Added full datagen support for alien growth stages. Alien lifecycle registry has been removed.
 - Alien lifecycle host entity tags have been migrated to individual alien growth stages.
+- Upgraded alien infections to support host entity tags.
+- Added full datagen support for alien infections. Alien infection registry has been removed.

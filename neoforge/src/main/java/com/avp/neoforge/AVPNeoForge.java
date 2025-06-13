@@ -1,6 +1,5 @@
 package com.avp.neoforge;
 
-import com.alien.common.registry.AlienInfectionRegistry;
 import com.predator.common.registry.init.PredatorEntityTypes;
 import mod.azure.azurelib.rewrite.animation.cache.AzIdentityRegistry;
 import net.minecraft.core.registries.Registries;
@@ -66,9 +65,6 @@ public class AVPNeoForge {
     }
 
     public static void registerMiscellaneous(FMLCommonSetupEvent event) {
-        // Register alien infections.
-        REGISTRY.getAlienInfectionSuppliers()
-            .forEach(alienInfectionSupplier -> AlienInfectionRegistry.register(alienInfectionSupplier.get()));
         // Register AzureLib item identities.
         REGISTRY.getAzureLibItemIdentitySuppliers()
             .forEach(itemSupplier -> AzIdentityRegistry.register(itemSupplier.get()));

@@ -1,6 +1,5 @@
 package com.avp.service;
 
-import com.alien.common.model.lifecycle.infection.AlienInfection;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.core.Registry;
@@ -28,10 +27,6 @@ public interface RegistryService {
     <T> AVPDeferredHolder<T> register(Registry<? super T> registry, String id, Supplier<? extends T> supplier);
 
     void registerCommand(LiteralArgumentBuilder<CommandSourceStack> literalArgumentBuilder);
-
-    <S extends LivingEntity, P extends LivingEntity> Supplier<AlienInfection<S, P>> registerAlienInfection(
-        Supplier<AlienInfection<S, P>> alienInfectionSupplier
-    );
 
     void registerAzureLibIdentity(Supplier<? extends Item> itemSupplier);
 

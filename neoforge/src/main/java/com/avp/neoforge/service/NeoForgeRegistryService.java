@@ -1,6 +1,5 @@
 package com.avp.neoforge.service;
 
-import com.alien.common.model.lifecycle.infection.AlienInfection;
 import com.bvanseg.just.functional.tuple.Tuple2;
 import com.bvanseg.just.functional.tuple.Tuple3;
 import com.bvanseg.just.functional.tuple.Tuple4;
@@ -46,8 +45,6 @@ public class NeoForgeRegistryService implements RegistryService {
 
     private final Map<Registry<?>, DeferredRegister<?>> registryToDeferredRegisterMap;
 
-    private final List<Supplier<? extends AlienInfection<?, ?>>> alienInfectionSuppliers;
-
     private final List<Supplier<? extends Item>> azureLibItemIdentitySuppliers;
 
     private final List<Tuple4<Supplier<? extends ItemLike>, Float, Boolean, Boolean>> compostableData;
@@ -87,7 +84,6 @@ public class NeoForgeRegistryService implements RegistryService {
             BuiltInRegistries.VILLAGER_PROFESSION
         ).collect(Collectors.toMap(Function.identity(), NeoForgeRegistryService::createDeferredRegistry));
 
-        this.alienInfectionSuppliers = new ArrayList<>();
         this.azureLibItemIdentitySuppliers = new ArrayList<>();
         this.compostableData = new ArrayList<>();
         this.entityAttributeSupplierPairs = new ArrayList<>();
@@ -114,14 +110,6 @@ public class NeoForgeRegistryService implements RegistryService {
     @Override
     public void registerCommand(LiteralArgumentBuilder<CommandSourceStack> literalArgumentBuilder) {
         literalArgumentBuilders.add(literalArgumentBuilder);
-    }
-
-    @Override
-    public <S extends LivingEntity, P extends LivingEntity> Supplier<AlienInfection<S, P>> registerAlienInfection(
-        Supplier<AlienInfection<S, P>> alienInfectionSupplier
-    ) {
-        alienInfectionSuppliers.add(alienInfectionSupplier);
-        return alienInfectionSupplier;
     }
 
     @Override
@@ -188,10 +176,6 @@ public class NeoForgeRegistryService implements RegistryService {
 
     public void initialize(IEventBus modBus) {
         registryToDeferredRegisterMap.values().forEach(deferredRegister -> deferredRegister.register(modBus));
-    }
-
-    public List<Supplier<? extends AlienInfection<?, ?>>> getAlienInfectionSuppliers() {
-        return alienInfectionSuppliers;
     }
 
     public List<Supplier<? extends Item>> getAzureLibItemIdentitySuppliers() {

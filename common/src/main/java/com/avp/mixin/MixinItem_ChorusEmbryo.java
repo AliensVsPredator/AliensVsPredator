@@ -1,7 +1,7 @@
 package com.avp.mixin;
 
 import com.alien.common.model.alien.Host;
-import com.alien.common.registry.AlienInfectionRegistry;
+import com.alien.common.registry.InfectionRegistry;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -46,7 +46,7 @@ public class MixinItem_ChorusEmbryo {
             return;
         }
 
-        var alienInfection = AlienInfectionRegistry.get(livingEntity.getType(), parasiteType).unwrapOr(null);
+        var alienInfection = InfectionRegistry.get(livingEntity.getType(), parasiteType).unwrapOr(null);
 
         if (alienInfection == null) {
             return;

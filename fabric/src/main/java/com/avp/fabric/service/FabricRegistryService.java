@@ -1,7 +1,5 @@
 package com.avp.fabric.service;
 
-import com.alien.common.model.lifecycle.infection.AlienInfection;
-import com.alien.common.registry.AlienInfectionRegistry;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import mod.azure.azurelib.rewrite.animation.cache.AzIdentityRegistry;
 import net.fabricmc.fabric.api.biome.v1.BiomeModifications;
@@ -92,14 +90,6 @@ public class FabricRegistryService implements RegistryService {
     @Override
     public void registerCommand(LiteralArgumentBuilder<CommandSourceStack> literalArgumentBuilder) {
         literalArgumentBuilders.add(literalArgumentBuilder);
-    }
-
-    @Override
-    public <S extends LivingEntity, P extends LivingEntity> Supplier<AlienInfection<S, P>> registerAlienInfection(
-        Supplier<AlienInfection<S, P>> alienInfectionSupplier
-    ) {
-        var alienInfection = AlienInfectionRegistry.register(alienInfectionSupplier.get());
-        return () -> alienInfection;
     }
 
     @Override

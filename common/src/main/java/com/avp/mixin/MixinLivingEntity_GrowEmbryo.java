@@ -3,8 +3,8 @@ package com.avp.mixin;
 import com.alien.common.gameplay.entity.living.alien.Alien;
 import com.alien.common.gameplay.entity.living.alien.parasite.Parasite;
 import com.alien.common.model.alien.Host;
-import com.alien.common.model.lifecycle.infection.AlienInfection;
-import com.alien.common.registry.AlienInfectionRegistry;
+import com.alien.common.model.lifecycle.infection.Infection;
+import com.alien.common.registry.InfectionRegistry;
 import com.lib.common.gameplay.entity.manager.GeneManager;
 import com.lib.common.gameplay.gene.GeneProviders;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -117,13 +117,8 @@ public abstract class MixinLivingEntity_GrowEmbryo extends Entity implements Hos
         }
 
         if (level.getDifficulty() != Difficulty.PEACEFUL) {
-            AlienInfectionRegistry.get(getType(), parasiteType)
-                .ifSome(alienInfection -> {
-                    @SuppressWarnings("unchecked")
-                    var typedInfection = (AlienInfection<LivingEntity, LivingEntity>) alienInfection;
-
-                    giveBirth(level, self, typedInfection);
-                });
+            InfectionRegistry.get(getType(), parasiteType)
+                .ifSome(infection -> giveBirth(level, self, infection));
 
             kill();
         }
@@ -135,8 +130,8 @@ public abstract class MixinLivingEntity_GrowEmbryo extends Entity implements Hos
     }
 
     @Unique
-    private void giveBirth(Level level, LivingEntity self, AlienInfection<LivingEntity, LivingEntity> alienInfection) {
-        var embryoType = alienInfection.embryoType();
+    private void giveBirth(Level level, LivingEntity self, Infection infection) {
+        var embryoType = infection.embryoType();
         var embryo = embryoType.create(level);
 
         if (embryo == null) {
@@ -156,23 +151,25 @@ public abstract class MixinLivingEntity_GrowEmbryo extends Entity implements Hos
         embryo.setYRot(getYRot());
         embryo.setXRot(getXRot());
 
-        // TODO: This shouldn't be here at all.
-        if (self instanceof Witch) {
-            var effects = List.of(
-                MobEffects.DAMAGE_BOOST,
-                MobEffects.MOVEMENT_SPEED,
-                MobEffects.REGENERATION,
-                MobEffects.DIG_SPEED,
-                MobEffects.JUMP
-            );
-            var randomEffect = effects.get(self.getRandom().nextInt(effects.size()));
-            // TODO: Prefer genes over effects, effects can be removed by milk / other factors, genes can't.
-            embryo.addEffect(new MobEffectInstance(randomEffect, Integer.MAX_VALUE, 0, false, false));
-        }
+        if (embryo instanceof LivingEntity livingEmbryo) {
+            // TODO: This shouldn't be here at all.
+            if (self instanceof Witch) {
+                var effects = List.of(
+                    MobEffects.DAMAGE_BOOST,
+                    MobEffects.MOVEMENT_SPEED,
+                    MobEffects.REGENERATION,
+                    MobEffects.DIG_SPEED,
+                    MobEffects.JUMP
+                );
+                var randomEffect = effects.get(self.getRandom().nextInt(effects.size()));
+                // TODO: Prefer genes over effects, effects can be removed by milk / other factors, genes can't.
+                livingEmbryo.addEffect(new MobEffectInstance(randomEffect, Integer.MAX_VALUE, 0, false, false));
+            }
 
-        // Copies effects from previous entity to the next
-        for (var effect : self.getActiveEffects()) {
-            embryo.addEffect(new MobEffectInstance(effect));
+            // Copies effects from previous entity to the next
+            for (var effect : self.getActiveEffects()) {
+                livingEmbryo.addEffect(new MobEffectInstance(effect));
+            }
         }
 
         // TODO: Adjust parasite's base attributes based on genes.
