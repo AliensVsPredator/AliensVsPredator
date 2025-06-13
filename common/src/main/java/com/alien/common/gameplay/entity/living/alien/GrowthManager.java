@@ -2,12 +2,12 @@ package com.alien.common.gameplay.entity.living.alien;
 
 import com.alien.common.gameplay.entity.living.alien.xenomorph.Xenomorph;
 import com.alien.common.model.lifecycle.growth.GrowthStage;
-import com.alien.common.registry.AlienLifecycleRegistry;
+import com.alien.common.registry.GrowthStageRegistry;
 import com.lib.common.gameplay.NBTSerializable;
 import com.lib.common.gameplay.util.spatial.block.BlockPosUtil;
 import net.minecraft.Util;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Entity;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.HashSet;
@@ -29,7 +29,7 @@ public class GrowthManager implements NBTSerializable {
 
     private final Alien entity;
 
-    private final @Nullable Consumer<LivingEntity> onGrowUpCallback;
+    private final @Nullable Consumer<Entity> onGrowUpCallback;
 
     private boolean growOverTime;
 
@@ -45,7 +45,7 @@ public class GrowthManager implements NBTSerializable {
         this(entity, null);
     }
 
-    public GrowthManager(Alien entity, @Nullable Consumer<LivingEntity> onGrowUpCallback) {
+    public GrowthManager(Alien entity, @Nullable Consumer<Entity> onGrowUpCallback) {
         this.entity = entity;
         this.onGrowUpCallback = onGrowUpCallback;
         this.growOverTime = true;
@@ -62,7 +62,7 @@ public class GrowthManager implements NBTSerializable {
         }
 
         var hostType = entity.getHostType().unwrapOr(null);
-        var growthStage = AlienLifecycleRegistry.getOrNull(hostType, entity.getType());
+        var growthStage = GrowthStageRegistry.getOrNull(hostType, entity.getType());
 
         if (growthStage == null) {
             return;
@@ -125,7 +125,7 @@ public class GrowthManager implements NBTSerializable {
 
     // TODO:
     // Make this return a sealed type result since there are checks here we want to do that might cause growth failure.
-    public @Nullable LivingEntity grow(GrowthStage growthStage) {
+    public @Nullable Entity grow(GrowthStage growthStage) {
         // Reset growth time at this point.
         this.growthTimeInTicks = 0;
 

@@ -86,7 +86,11 @@ public abstract class Alien extends Monster {
     }
 
     private EntityType<? extends Entity> getDefaultHostType(EntityType<? extends Alien> entityType) {
-        if (entityType.is(AVPEntityTypeTags.RUNNERS)) {
+        if (
+            entityType.is(AVPEntityTypeTags.RUNNERS)
+                || entityType.is(AVPEntityTypeTags.PROWLERS)
+                || entityType.is(AVPEntityTypeTags.CRUSHERS)
+        ) {
             return EntityType.PIG;
         }
 
@@ -325,11 +329,9 @@ public abstract class Alien extends Monster {
 
         var resourceLocationString = compoundTag.getString(NBT_HOST_TYPE);
         var resourceLocation = ResourceLocation.parse(resourceLocationString);
-        var entityType = BuiltInRegistries.ENTITY_TYPE.get(resourceLocation);
+        var entityTypeHolderOptional = BuiltInRegistries.ENTITY_TYPE.getHolder(resourceLocation);
 
-        if (!entityType.equals(EntityType.PIG)) {
-            this.hostTypeOption = Option.some(entityType);
-        }
+        entityTypeHolderOptional.ifPresent($ -> this.hostTypeOption = Option.some(BuiltInRegistries.ENTITY_TYPE.get(resourceLocation)));
     }
 
     @Override

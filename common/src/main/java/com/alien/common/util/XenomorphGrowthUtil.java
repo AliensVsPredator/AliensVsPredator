@@ -1,13 +1,13 @@
 package com.alien.common.util;
 
 import com.alien.common.model.resin.ResinProducer;
-import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Entity;
 
 import java.util.function.Consumer;
 
 public class XenomorphGrowthUtil {
 
-    public static final Consumer<LivingEntity> GROW_UP_CALLBACK = (newForm) -> {
+    public static final Consumer<Entity> GROW_UP_CALLBACK = (newForm) -> {
         if (newForm instanceof ResinProducer resinProducer) {
             var resinManager = resinProducer.getResinManager();
             var baseResinData = resinManager.baseResinData();

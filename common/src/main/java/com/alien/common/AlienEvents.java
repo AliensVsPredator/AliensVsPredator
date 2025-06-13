@@ -1,10 +1,10 @@
 package com.alien.common;
 
-import com.alien.common.registry.AlienLifecycleRegistry;
+import com.alien.common.registry.GrowthStageRegistry;
 
 public class AlienEvents {
 
     public static void onTagsUpdated() {
-        AlienLifecycleRegistry.rebuildLookupMappings();
+        GrowthStageRegistry.rebuildLookupMappings();
     }
 }

@@ -167,6 +167,7 @@ public class AVPEntityTypeTagProvider extends FabricTagProvider.EntityTypeTagPro
 
     private void addXenomorphs() {
         getOrCreateTagBuilder(AVPEntityTypeTags.XENOMORPHS)
+            .addTag(AVPEntityTypeTags.CRUSHERS)
             .addTag(AVPEntityTypeTags.DRONES)
             .addTag(AVPEntityTypeTags.PRAETORIANS)
             .addTag(AVPEntityTypeTags.PROWLERS)
@@ -392,6 +393,7 @@ public class AVPEntityTypeTagProvider extends FabricTagProvider.EntityTypeTagPro
 
         getOrCreateTagBuilder(AVPEntityTypeTags.SPAWNS_IN_HIVE_PRAETORIAN_LAYER)
             .addTag(AVPEntityTypeTags.SPAWNS_IN_HIVE_DRONE_LAYER)
+            .addTag(AVPEntityTypeTags.CRUSHERS)
             .addTag(AVPEntityTypeTags.PRAETORIANS);
 
         getOrCreateTagBuilder(AVPEntityTypeTags.SPAWNS_IN_HIVE_QUEEN_LAYER)

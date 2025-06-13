@@ -14,6 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.avp.common.config.AVPConfig;
+import com.avp.common.data.AVPReloadListeners;
 import com.avp.common.gameplay.worldgen.biome.NukedAshPlacement;
 import com.avp.common.network.AVPPacketDirectionRegistry;
 import com.avp.common.network.AVPServerPacketHandlerRegistry;
@@ -88,6 +89,9 @@ public class AVP {
         AVPEntitySpawns.initialize();
         AVPFuels.initialize();
         AVPVillagerTrades.initialize();
+
+        // Listeners/Events
+        AVPReloadListeners.initialize();
     }
 
     /**

@@ -1,7 +1,6 @@
 package com.avp.neoforge;
 
 import com.alien.common.registry.AlienInfectionRegistry;
-import com.alien.common.registry.AlienLifecycleRegistry;
 import com.predator.common.registry.init.PredatorEntityTypes;
 import mod.azure.azurelib.rewrite.animation.cache.AzIdentityRegistry;
 import net.minecraft.core.registries.Registries;
@@ -18,6 +17,7 @@ import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.event.AddReloadListenerEvent;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
 import net.neoforged.neoforge.event.TagsUpdatedEvent;
 import net.neoforged.neoforge.event.entity.EntityAttributeCreationEvent;
@@ -58,6 +58,7 @@ public class AVPNeoForge {
 
         // Game bus events.
         NeoForge.EVENT_BUS.addListener(AVPNeoForge::registerCommands);
+        NeoForge.EVENT_BUS.addListener(AVPNeoForge::registerDataReloadListeners);
         NeoForge.EVENT_BUS.addListener(AVPNeoForge::registerTagUpdateHandler);
         NeoForge.EVENT_BUS.addListener(AVPNeoForge::addNewVillageBuilding);
         NeoForge.EVENT_BUS.addListener(AVPNeoForge::addCustomTrades);
@@ -68,9 +69,6 @@ public class AVPNeoForge {
         // Register alien infections.
         REGISTRY.getAlienInfectionSuppliers()
             .forEach(alienInfectionSupplier -> AlienInfectionRegistry.register(alienInfectionSupplier.get()));
-        // Register alien lifecycles.
-        REGISTRY.getAlienLifecycleSuppliers()
-            .forEach(alienLifecycleSupplier -> AlienLifecycleRegistry.register(alienLifecycleSupplier.get()));
         // Register AzureLib item identities.
         REGISTRY.getAzureLibItemIdentitySuppliers()
             .forEach(itemSupplier -> AzIdentityRegistry.register(itemSupplier.get()));
@@ -82,6 +80,13 @@ public class AVPNeoForge {
             .forEach(literalArgumentBuilder -> event.getDispatcher().register(literalArgumentBuilder));
     }
 
+    // Game event
+    public static void registerDataReloadListeners(AddReloadListenerEvent event) {
+        REGISTRY.getReloadListeners()
+            .forEach(event::addListener);
+    }
+
+    // Game event
     public static void registerTagUpdateHandler(TagsUpdatedEvent event) {
         AVPEvents.onTagsUpdated();
     }

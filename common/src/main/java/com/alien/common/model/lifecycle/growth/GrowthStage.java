@@ -1,23 +1,46 @@
 package com.alien.common.model.lifecycle.growth;
 
-import net.minecraft.world.entity.Entity;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.LivingEntity;
 
-import java.util.function.Predicate;
+import java.util.Optional;
 
 public record GrowthStage(
-    EntityType<? extends LivingEntity> from,
-    EntityType<? extends LivingEntity> to,
-    int growthTimeInTicks,
-    Predicate<? super Entity> canMaturePredicate
+    Optional<TagKey<EntityType<?>>> hostTag,
+    EntityType<?> from,
+    EntityType<?> to,
+    int growthTimeInTicks
 ) {
 
+    public static final Codec<GrowthStage> CODEC = RecordCodecBuilder.create(
+        instance -> instance.group(
+            TagKey.hashedCodec(Registries.ENTITY_TYPE)
+                .optionalFieldOf("hostTag")
+                .forGetter(GrowthStage::hostTag),
+            BuiltInRegistries.ENTITY_TYPE.byNameCodec().fieldOf("from").forGetter(GrowthStage::from),
+            BuiltInRegistries.ENTITY_TYPE.byNameCodec().fieldOf("to").forGetter(GrowthStage::to),
+            Codec.INT.fieldOf("growthTimeInTicks").forGetter(GrowthStage::growthTimeInTicks)
+        ).apply(instance, GrowthStage::new)
+    );
+
     public GrowthStage(
-        EntityType<? extends LivingEntity> from,
-        EntityType<? extends LivingEntity> to,
+        EntityType<?> from,
+        EntityType<?> to,
         int growthTimeInTicks
     ) {
-        this(from, to, growthTimeInTicks, $ -> true);
+        this(Optional.empty(), from, to, growthTimeInTicks);
+    }
+
+    public GrowthStage(
+        TagKey<EntityType<?>> hostTag,
+        EntityType<?> from,
+        EntityType<?> to,
+        int growthTimeInTicks
+    ) {
+        this(Optional.of(hostTag), from, to, growthTimeInTicks);
     }
 }
