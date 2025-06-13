@@ -40,8 +40,7 @@ public class AVPEntityTypeTags {
 
     public static final TagKey<EntityType<?>> NORMAL_ALIENS = create("normal_aliens");
 
-    // TODO: Change this to "ovomorphs" with 0.2.0.
-    public static final TagKey<EntityType<?>> OVOMORPHS = create("ovamorphs");
+    public static final TagKey<EntityType<?>> OVOMORPHS = create("ovomorphs");
 
     public static final TagKey<EntityType<?>> PARASITES = create("parasites");
 

@@ -15,8 +15,7 @@ import com.avp.AVPResources;
 
 public class OvomorphRenderer extends AzEntityRenderer<Ovomorph> {
 
-    // TODO: Change this to "ovomorph" with 0.2.0.
-    private static final String NAME = "ovamorph";
+    private static final String NAME = "ovomorph";
 
     private static final ResourceLocation MODEL = AVPResources.entityGeoModelLocation(NAME);
 

@@ -120,10 +120,8 @@ public class AdvancementProvider extends FabricAdvancementProvider {
             .parent(root)
             .display(
                 Items.SHEARS,
-                // TODO: Change this to "ovomorph" with 0.2.0.
-                Component.translatable("advancements.aliens.shear_an_ovamorph.title"),
-                // TODO: Change this to "ovomorph" with 0.2.0.
-                Component.translatable("advancements.aliens.shear_an_ovamorph.description"),
+                Component.translatable("advancements.aliens.shear_an_ovomorph.title"),
+                Component.translatable("advancements.aliens.shear_an_ovomorph.description"),
                 null,
                 AdvancementType.TASK,
                 true,
@@ -131,14 +129,13 @@ public class AdvancementProvider extends FabricAdvancementProvider {
                 false
             )
             .addCriterion(
-                "shear_an_ovamorph",
+                "shear_an_ovomorph",
                 PlayerInteractTrigger.TriggerInstance.itemUsedOnEntity(
                     ItemPredicate.Builder.item().of(Items.SHEARS),
                     Optional.of(EntityPredicate.wrap(EntityPredicate.Builder.entity().of(AVPEntityTypeTags.OVOMORPHS)))
                 )
             )
-            // TODO: Change this to "ovomorph" with 0.2.0.
-            .save(consumer, AVP.MOD_ID + ":aliens/shear_an_ovamorph");
+            .save(consumer, AVP.MOD_ID + ":aliens/shear_an_ovomorph");
 
         var addChitinArmorAdvancement = addChitinArmorAdvancements(alienKillerAdvancement, consumer);
 

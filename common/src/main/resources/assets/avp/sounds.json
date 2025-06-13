@@ -17,29 +17,29 @@
     ],
     "subtitle": "subtitles.block.resin.spread"
   },
-  "entity.ovamorph.hatch": {
+  "entity.ovomorph.hatch": {
     "sounds": [
-      "avp:entity/ovamorph/hatch/hatch"
+      "avp:entity/ovomorph/hatch/hatch"
     ],
-    "subtitle": "subtitles.entity.ovamorph.hatch"
+    "subtitle": "subtitles.entity.ovomorph.hatch"
   },
-  "entity.ovamorph.laid": {
+  "entity.ovomorph.laid": {
     "sounds": [
-      "avp:entity/ovamorph/laid/laid"
+      "avp:entity/ovomorph/laid/laid"
     ],
-    "subtitle": "subtitles.entity.ovamorph.laid"
+    "subtitle": "subtitles.entity.ovomorph.laid"
   },
-  "entity.ovamorph.root": {
+  "entity.ovomorph.root": {
     "sounds": [
-      "avp:entity/ovamorph/root/root"
+      "avp:entity/ovomorph/root/root"
     ],
-    "subtitle": "subtitles.entity.ovamorph.root"
+    "subtitle": "subtitles.entity.ovomorph.root"
   },
-  "entity.ovamorph.shear": {
+  "entity.ovomorph.shear": {
     "sounds": [
-      "avp:entity/ovamorph/shear/shear"
+      "avp:entity/ovomorph/shear/shear"
     ],
-    "subtitle": "subtitles.entity.ovamorph.shear"
+    "subtitle": "subtitles.entity.ovomorph.shear"
   },
   "entity.queen.arm_attack": {
     "sounds": [

@@ -1,7 +1,7 @@
 # v0.2.0-beta1
 
 ## ☢️ Breaking Changes
-- N/A
+- Renamed `avp:ovamorph` to `avp:ovomorph`.
 
 ## ✨ What's New
 - Aliens now remember what host type they came from.

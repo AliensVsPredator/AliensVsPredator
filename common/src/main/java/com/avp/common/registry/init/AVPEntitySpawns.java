@@ -45,7 +45,7 @@ public class AVPEntitySpawns {
             AVPEntitySpawnData.builder(AlienEntityTypes.OVOMORPH)
                 .withBiomeTagKey(AVPBiomeTags.HAS_XENOMORPHS)
                 .withSpawnPredicate(AlienSpawning.getTypedPredicate())
-                .withSpawnSettings(AVP.config.spawnConfigs.OVAMORPH_SPAWN)
+                .withSpawnSettings(AVP.config.spawnConfigs.OVOMORPH_SPAWN)
                 .build()
         );
         Services.REGISTRY.registerEntitySpawnData(
@@ -111,7 +111,7 @@ public class AVPEntitySpawns {
             AVPEntitySpawnData.builder(AlienEntityTypes.ABERRANT_OVOMORPH)
                 .withBiomeTagKey(AVPBiomeTags.HAS_XENOMORPHS)
                 .withSpawnPredicate(AlienSpawning.getTypedPredicate())
-                .withSpawnSettings(AVP.config.spawnConfigs.ABERRANT_OVAMORPH_SPAWN)
+                .withSpawnSettings(AVP.config.spawnConfigs.ABERRANT_OVOMORPH_SPAWN)
                 .build()
         );
         Services.REGISTRY.registerEntitySpawnData(
@@ -231,7 +231,7 @@ public class AVPEntitySpawns {
             AVPEntitySpawnData.builder(AlienEntityTypes.NETHER_OVOMORPH)
                 .withBiomeTagKey(AVPBiomeTags.HAS_XENOMORPHS)
                 .withSpawnPredicate(AlienSpawning.getTypedPredicate())
-                .withSpawnSettings(AVP.config.spawnConfigs.NETHER_OVAMORPH_SPAWN)
+                .withSpawnSettings(AVP.config.spawnConfigs.NETHER_OVOMORPH_SPAWN)
                 .build()
         );
         Services.REGISTRY.registerEntitySpawnData(

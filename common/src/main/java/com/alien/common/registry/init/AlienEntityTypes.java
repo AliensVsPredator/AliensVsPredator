@@ -59,8 +59,7 @@ public class AlienEntityTypes {
     );
 
     public static final AVPDeferredHolder<EntityType<Ovomorph>> ABERRANT_OVOMORPH = AVPEntityTypes.register(
-        // TODO: Change this to "ovomorph" with 0.2.0.
-        "aberrant_ovamorph",
+        "aberrant_ovomorph",
         EntityType.Builder.<Ovomorph>of(
             (type, level) -> aberrantFactory(Ovomorph::new, type, level),
             AVPEntityTypes.ALIEN_CATEGORY
@@ -213,8 +212,7 @@ public class AlienEntityTypes {
     );
 
     public static final AVPDeferredHolder<EntityType<Ovomorph>> NETHER_OVOMORPH = AVPEntityTypes.register(
-        // TODO: Change this to "ovomorph" with 0.2.0.
-        "nether_ovamorph",
+        "nether_ovomorph",
         EntityType.Builder.<Ovomorph>of(
             (type, level) -> nethermorphFactory(Ovomorph::new, type, level),
             AVPEntityTypes.ALIEN_CATEGORY
@@ -262,8 +260,7 @@ public class AlienEntityTypes {
     );
 
     public static final AVPDeferredHolder<EntityType<Ovomorph>> OVOMORPH = AVPEntityTypes.register(
-        // TODO: Change this to "ovomorph" with 0.2.0.
-        "ovamorph",
+        "ovomorph",
         EntityType.Builder.of(Ovomorph::new, AVPEntityTypes.ALIEN_CATEGORY)
             .sized(0.65f, 0.8f)
     );
@@ -305,8 +302,7 @@ public class AlienEntityTypes {
     );
 
     public static final AVPDeferredHolder<EntityType<Ovomorph>> ROYAL_ABERRANT_OVOMORPH = AVPEntityTypes.register(
-        // TODO: Change this to "ovomorph" with 0.2.0.
-        "royal_aberrant_ovamorph",
+        "royal_aberrant_ovomorph",
         EntityType.Builder.<Ovomorph>of(
             (type, level) -> royalAberrantFactory(Ovomorph::new, type, level),
             AVPEntityTypes.ALIEN_CATEGORY
@@ -333,8 +329,7 @@ public class AlienEntityTypes {
     );
 
     public static final AVPDeferredHolder<EntityType<Ovomorph>> ROYAL_OVOMORPH = AVPEntityTypes.register(
-        // TODO: Change this to "ovomorph" with 0.2.0.
-        "royal_ovamorph",
+        "royal_ovomorph",
         EntityType.Builder.<Ovomorph>of(
             (type, level) -> royalFactory(Ovomorph::new, type, level),
             AVPEntityTypes.ALIEN_CATEGORY
@@ -361,8 +356,7 @@ public class AlienEntityTypes {
     );
 
     public static final AVPDeferredHolder<EntityType<Ovomorph>> ROYAL_NETHER_OVOMORPH = AVPEntityTypes.register(
-        // TODO: Change this to "ovomorph" with 0.2.0.
-        "royal_nether_ovamorph",
+        "royal_nether_ovomorph",
         EntityType.Builder.<Ovomorph>of(
             (type, level) -> royalNethermorphFactory(Ovomorph::new, type, level),
             AVPEntityTypes.ALIEN_CATEGORY

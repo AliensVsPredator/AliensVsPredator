@@ -37,8 +37,7 @@ public class AlienSpawnEggItems {
     );
 
     public static final AVPDeferredHolder<Item> ABERRANT_OVOMORPH_SPAWN_EGG = AVPSpawnEggItems.register(
-        // TODO: Change this to "ovomorph" with 0.2.0.
-        "aberrant_ovamorph",
+        "aberrant_ovomorph",
         AlienEntityTypes.ABERRANT_OVOMORPH,
         0x767139,
         0xC9C432
@@ -185,8 +184,7 @@ public class AlienSpawnEggItems {
     );
 
     public static final AVPDeferredHolder<Item> NETHER_OVOMORPH_SPAWN_EGG = AVPSpawnEggItems.register(
-        // TODO: Change this to "ovomorph" with 0.2.0.
-        "nether_ovamorph",
+        "nether_ovomorph",
         AlienEntityTypes.NETHER_OVOMORPH,
         0x20131C,
         0xFCEE4B
@@ -228,8 +226,7 @@ public class AlienSpawnEggItems {
     );
 
     public static final AVPDeferredHolder<Item> OVOMORPH_SPAWN_EGG = AVPSpawnEggItems.register(
-        // TODO: Change this to "ovomorph" with 0.2.0.
-        "ovamorph",
+        "ovomorph",
         AlienEntityTypes.OVOMORPH,
         0x615B45,
         0xBF7872
@@ -271,8 +268,7 @@ public class AlienSpawnEggItems {
     );
 
     public static final AVPDeferredHolder<Item> ROYAL_ABERRANT_OVOMORPH_SPAWN_EGG = AVPSpawnEggItems.register(
-        // TODO: Change this to "ovomorph" with 0.2.0.
-        "royal_aberrant_ovamorph",
+        "royal_aberrant_ovomorph",
         AlienEntityTypes.ROYAL_ABERRANT_OVOMORPH,
         0x706c36,
         0xd3cf51
@@ -307,16 +303,14 @@ public class AlienSpawnEggItems {
     );
 
     public static final AVPDeferredHolder<Item> ROYAL_NETHER_OVOMORPH_SPAWN_EGG = AVPSpawnEggItems.register(
-        // TODO: Change this to "ovomorph" with 0.2.0.
-        "royal_nether_ovamorph",
+        "royal_nether_ovomorph",
         AlienEntityTypes.ROYAL_NETHER_OVOMORPH,
         0x331715,
         0xfcee4b
     );
 
     public static final AVPDeferredHolder<Item> ROYAL_OVOMORPH_SPAWN_EGG = AVPSpawnEggItems.register(
-        // TODO: Change this to "ovomorph" with 0.2.0.
-        "royal_ovamorph",
+        "royal_ovomorph",
         AlienEntityTypes.ROYAL_OVOMORPH,
         0x2a2918,
         0x34341f

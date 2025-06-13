@@ -1,5 +1,5 @@
 {
-  "name": "avp:desert_royal_ovamorph",
+  "name": "avp:desert_royal_ovomorph",
   "fallback": "minecraft:empty",
   "elements": [
     {
@@ -7,7 +7,7 @@
       "element": {
         "element_type": "minecraft:single_pool_element",
         "projection": "rigid",
-        "location": "avp:altar/desert/desert_royal_ovamorph",
+        "location": "avp:altar/desert/desert_royal_ovomorph",
         "processors": "minecraft:empty"
       }
     }

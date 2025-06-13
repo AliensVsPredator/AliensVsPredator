@@ -22,10 +22,8 @@ public class EnUsAdvancementProvider {
         builder.add("advancements.aliens.chitin_armor.title", "Cover Me with... Uh...");
         builder.add("advancements.aliens.chitin_armor.description", "Equip a full set of chitin armor");
 
-        // TODO: Change this to "ovomorph" with 0.2.0.
-        builder.add("advancements.aliens.shear_an_ovamorph.title", "Eggsploration Time");
-        // TODO: Change this to "ovomorph" with 0.2.0.
-        builder.add("advancements.aliens.shear_an_ovamorph.description", "Free an ovamorph from its bindings");
+        builder.add("advancements.aliens.shear_an_ovomorph.title", "Eggsploration Time");
+        builder.add("advancements.aliens.shear_an_ovomorph.description", "Free an ovomorph from its bindings");
 
         builder.add("advancements.aliens.plated_chitin_armor.title", "Kneel to the Crown");
         builder.add("advancements.aliens.plated_chitin_armor.description", "Equip a full set of plated chitin armor");

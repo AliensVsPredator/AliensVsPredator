@@ -1,11 +1,11 @@
 {
-    "ovamorph.mdx": {
-        "name": "Ovamorph",
-        "icon": "avp:ovamorph"
+    "ovomorph.mdx": {
+        "name": "Ovomorph",
+        "icon": "avp:ovomorph"
     },
-    "royal_ovamorph.mdx": {
-        "name": "Royal Ovamorph",
-        "icon": "avp:royal_ovamorph"
+    "royal_ovomorph.mdx": {
+        "name": "Royal Ovomorph",
+        "icon": "avp:royal_ovomorph"
     },
     "drone.mdx": {
         "name": "Drone",

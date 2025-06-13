@@ -49,7 +49,7 @@ public class Ovomorph extends Alien implements Shearable {
     private static final String IS_ROOTED_KEY = "isRooted";
 
     public static AttributeSupplier.Builder createOvomorphAttributes() {
-        return applyFrom(AVP.config.statsConfigs.OVAMORPH_STATS, Monster.createMonsterAttributes());
+        return applyFrom(AVP.config.statsConfigs.OVOMORPH_STATS, Monster.createMonsterAttributes());
     }
 
     private final OvomorphAnimationDispatcher animationDispatcher;
@@ -60,7 +60,7 @@ public class Ovomorph extends Alien implements Shearable {
         super(entityType, level);
         this.animationDispatcher = new OvomorphAnimationDispatcher(this);
         this.hatchManager = new HatchManager(this, 3 * 20, 3 * 20);
-        this.config = AVP.config.statsConfigs.OVAMORPH_STATS;
+        this.config = AVP.config.statsConfigs.OVOMORPH_STATS;
     }
 
     @Override
@@ -214,7 +214,7 @@ public class Ovomorph extends Alien implements Shearable {
 
     @Override
     protected float getHealthRegenPerSecond() {
-        return AVP.config.statsConfigs.OVAMORPH_STATS.healthRegenPerSecond;
+        return AVP.config.statsConfigs.OVOMORPH_STATS.healthRegenPerSecond;
     }
 
     @Override

@@ -89,8 +89,7 @@ public class AVPConfig {
         @Configurable
         @Configurable.Synchronized
         @Configurable.Comment("Modifying these will require restarting the game.")
-        // TODO: Change this to "ABERRANT_OVOMORPH_SPAWN" with 0.2.0.
-        public SpawnSettings ABERRANT_OVAMORPH_SPAWN = new SpawnSettings(true, 1, 3, 10);
+        public SpawnSettings ABERRANT_OVOMORPH_SPAWN = new SpawnSettings(true, 1, 3, 10);
 
         @Configurable
         @Configurable.Synchronized
@@ -187,8 +186,7 @@ public class AVPConfig {
         @Configurable
         @Configurable.Synchronized
         @Configurable.Comment("Modifying these will require restarting the game.")
-        // TODO: Change this to "NETHER_OVOMORPH_SPAWN" with 0.2.0.
-        public SpawnSettings NETHER_OVAMORPH_SPAWN = new SpawnSettings(true, 1, 3, 10);
+        public SpawnSettings NETHER_OVOMORPH_SPAWN = new SpawnSettings(true, 1, 3, 10);
 
         @Configurable
         @Configurable.Synchronized
@@ -218,8 +216,7 @@ public class AVPConfig {
         @Configurable
         @Configurable.Synchronized
         @Configurable.Comment("Ovomorph spawn settings. Modifying these will require restarting the game.")
-        // TODO: Change this to "ovomorph" with 0.2.0.
-        public SpawnSettings OVAMORPH_SPAWN = new SpawnSettings(true, 1, 3, 25);
+        public SpawnSettings OVOMORPH_SPAWN = new SpawnSettings(true, 1, 3, 25);
 
         @Configurable
         @Configurable.Synchronized
@@ -372,8 +369,7 @@ public class AVPConfig {
         @Configurable
         @Configurable.Synchronized
         @Configurable.Comment("Modifying any of these will require restarting the game.")
-        // TODO: Change this to "ovomorph" with 0.2.0.
-        public AdvancedStats OVAMORPH_STATS = new AdvancedStats(
+        public AdvancedStats OVOMORPH_STATS = new AdvancedStats(
             HealthConstants.OVOMORPH_HEALTH,
             0,
             HealthRegenConstants.OVOMORPH_HEALTH_REGEN,
