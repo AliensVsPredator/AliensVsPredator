@@ -38,6 +38,19 @@ public class HatchDesireManager implements NBTSerializable {
     }
 
     public void tick() {
+        handleBrightness();
+        handleVibration();
+
+        if (ovomorph.tickCount % 20 == 0) {
+            addDesire(-1);
+        }
+
+        if (ovomorph.getHatchManager().isHatched()) {
+            this.desireToHatch = 0;
+        }
+    }
+
+    private void handleBrightness() {
         var level = ovomorph.level();
         var blockPos = ovomorph.blockPosition();
         var blockBrightness = level.getBrightness(LightLayer.BLOCK, blockPos);
@@ -52,6 +65,11 @@ public class HatchDesireManager implements NBTSerializable {
             }
         });
 
+        lastBrightnessMap.put(LightLayer.BLOCK, blockBrightness);
+        lastBrightnessMap.put(LightLayer.SKY, skyBrightness);
+    }
+
+    private void handleVibration() {
         var vibrationSystemManager = ovomorph.getVibrationSystemManager();
         var vibrationInfo = vibrationSystemManager.getVibrationData()
             .getCurrentVibration();
@@ -61,22 +79,11 @@ public class HatchDesireManager implements NBTSerializable {
                 .getListenerRadius();
             var sourceEntity = vibrationInfo.entity();
 
-            if (sourceEntity != null && AVPPredicates.isHost(sourceEntity) && ovomorph.getSensing().hasLineOfSight(sourceEntity)) {
+            if (sourceEntity != null && AVPPredicates.isFreeHost(ovomorph, sourceEntity) && ovomorph.getSensing().hasLineOfSight(sourceEntity)) {
                 addDesire((int) Math.abs(radius - vibrationInfo.distance()) * 2);
             }
 
             this.lastVibrationInfo = vibrationInfo;
-        }
-
-        lastBrightnessMap.put(LightLayer.BLOCK, blockBrightness);
-        lastBrightnessMap.put(LightLayer.SKY, skyBrightness);
-
-        if (ovomorph.tickCount % 20 == 0) {
-            addDesire(-1);
-        }
-
-        if (ovomorph.getHatchManager().isHatched()) {
-            this.desireToHatch = 0;
         }
     }
 
