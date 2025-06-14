@@ -15,6 +15,7 @@ import org.slf4j.LoggerFactory;
 
 import com.avp.common.config.AVPConfig;
 import com.avp.common.data.AVPReloadListeners;
+import com.avp.common.data.fixer.migration.AVPDataMigrations;
 import com.avp.common.gameplay.worldgen.biome.NukedAshPlacement;
 import com.avp.common.network.AVPPacketDirectionRegistry;
 import com.avp.common.network.AVPServerPacketHandlerRegistry;
@@ -92,6 +93,9 @@ public class AVP {
 
         // Listeners/Events
         AVPReloadListeners.initialize();
+
+        // Data Migration
+        AVPDataMigrations.initialize();
     }
 
     /**

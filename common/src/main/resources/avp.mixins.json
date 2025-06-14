@@ -26,6 +26,7 @@
     "MixinMob_IncapacitateHost",
     "MixinMobCategory_InjectCustomAlienCategory",
     "MixinPlayer_CrawlPosing",
+    "MixinRegistry_ApplyDataFixes",
     "MixinShearsItem_BreakRazorWire",
     "MixinVillagerHostilesSensor_RunAwayFromAVPMonsters",
     "ParrotSoundMapAccessor",
