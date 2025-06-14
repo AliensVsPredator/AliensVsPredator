@@ -5,6 +5,8 @@
 
 ## ✨ What's New
 - Aliens now remember what host type they came from.
+- Ovomorphs now hatch based on changes in light.
+- Ovomorphs now hatch if they detect too much movement near them.
 - Added new aliens:
   - Aberrant Prowler
   - Aberrant Runner

@@ -2,11 +2,13 @@ package com.alien.common.gameplay.entity.living.alien.ovomorph;
 
 import com.alien.common.data.AlienVariantTypes;
 import com.alien.common.gameplay.entity.living.alien.Alien;
+import com.alien.common.gameplay.entity.living.alien.ovomorph.ai.OvomorphGOAP;
 import com.alien.common.model.alien.HatchState;
 import com.alien.common.model.alien.variant.AlienVariant;
 import com.alien.common.registry.init.AlienEntityTypes;
 import com.alien.common.registry.init.AlienItems;
 import com.bvanseg.just.functional.option.Option;
+import com.lib.common.gameplay.entity.manager.VibrationSystemManager;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -54,11 +56,14 @@ public class Ovomorph extends Alien implements Shearable {
 
     private final OvomorphAnimationDispatcher animationDispatcher;
 
+    private final OvomorphGOAP goap;
+
     private final HatchManager hatchManager;
 
     public Ovomorph(EntityType<? extends Ovomorph> entityType, Level level) {
         super(entityType, level);
         this.animationDispatcher = new OvomorphAnimationDispatcher(this);
+        this.goap = new OvomorphGOAP(this);
         this.hatchManager = new HatchManager(this, 3 * 20, 3 * 20);
         this.config = AVP.config.statsConfigs.OVOMORPH_STATS;
     }
@@ -66,6 +71,11 @@ public class Ovomorph extends Alien implements Shearable {
     @Override
     public @Nullable EntityType<? extends Alien> getTypeForVariant(AlienVariant alienVariant) {
         return getType(alienVariant, isRoyal());
+    }
+
+    @Override
+    protected VibrationSystemManager createVibrationSystemManager() {
+        return new VibrationSystemManager(this, 2.5F, 8);
     }
 
     @Override
@@ -80,6 +90,10 @@ public class Ovomorph extends Alien implements Shearable {
     public void tick() {
         super.tick();
         hatchManager.tick();
+
+        if (!level().isClientSide) {
+            goap.update(this);
+        }
     }
 
     public void tryHatch() {
