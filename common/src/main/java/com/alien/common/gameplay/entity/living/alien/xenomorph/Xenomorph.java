@@ -8,7 +8,6 @@ import com.alien.common.model.resin.ResinProducer;
 import com.alien.common.util.AlienPredicates;
 import com.alien.common.util.XenomorphGrowthUtil;
 import com.lib.common.gameplay.entity.manager.CrawlingManager;
-import com.lib.common.gameplay.entity.manager.VibrationSystemManager;
 import com.lib.common.gameplay.gene.GeneKeys;
 import com.lib.common.gameplay.gene.decoder.GeneDecoders;
 import net.minecraft.core.BlockPos;
@@ -52,11 +51,6 @@ import com.avp.common.registry.init.AVPSoundEvents;
 
 public abstract class Xenomorph extends Alien implements ResinProducer {
 
-    protected static final EntityDataAccessor<Integer> CLIENT_ANGER_LEVEL = SynchedEntityData.defineId(
-        Xenomorph.class,
-        EntityDataSerializers.INT
-    );
-
     private static final EntityDataAccessor<Boolean> IS_CRAWLING = SynchedEntityData.defineId(
         Xenomorph.class,
         EntityDataSerializers.BOOLEAN
@@ -69,8 +63,6 @@ public abstract class Xenomorph extends Alien implements ResinProducer {
     private final GrowthManager growthManager;
 
     private final ResinManager resinManager;
-
-    private final VibrationSystemManager vibrationSystemManager;
 
     public int attackDelayTicks;
 
@@ -87,8 +79,6 @@ public abstract class Xenomorph extends Alien implements ResinProducer {
             .setBonusResinProvider(
                 () -> geneManager.get(GeneKeys.BONUS_RESIN_PRODUCTION, GeneDecoders.BONUS_RESIN_PRODUCTION).intValue()
             );
-        this.vibrationSystemManager = new VibrationSystemManager(this)
-            .setAngerManagementTickCallback(this::syncClientAngerLevel);
     }
 
     protected abstract @NotNull ResinData createResinData();
@@ -98,7 +88,6 @@ public abstract class Xenomorph extends Alien implements ResinProducer {
     @Override
     protected void defineSynchedData(@NotNull SynchedEntityData.Builder builder) {
         super.defineSynchedData(builder);
-        builder.define(CLIENT_ANGER_LEVEL, 0);
         builder.define(IS_CRAWLING, false);
     }
 
@@ -131,7 +120,6 @@ public abstract class Xenomorph extends Alien implements ResinProducer {
         crawlingManager.tick();
         growthManager.tick();
         resinManager.tick();
-        vibrationSystemManager.tick();
 
         if (!level().isClientSide) {
             if (getVehicle() instanceof Boat || getVehicle() instanceof Minecart) {
@@ -188,8 +176,8 @@ public abstract class Xenomorph extends Alien implements ResinProducer {
 
     @Override
     public void updateDynamicGameEventListener(@NotNull BiConsumer<DynamicGameEventListener<?>, ServerLevel> biConsumer) {
+        super.updateDynamicGameEventListener(biConsumer);
         resinManager.updateDynamicGameEventListener(biConsumer);
-        vibrationSystemManager.updateDynamicGameEventListener(biConsumer);
     }
 
     // Allows the xenomorph to disable shields on attack.
@@ -276,10 +264,6 @@ public abstract class Xenomorph extends Alien implements ResinProducer {
         if (entityDataAccessor.equals(IS_CRAWLING)) {
             refreshDimensions();
         }
-    }
-
-    protected void syncClientAngerLevel() {
-        this.entityData.set(CLIENT_ANGER_LEVEL, vibrationSystemManager.getActiveAnger());
     }
 
     public GrowthManager getGrowthManager() {

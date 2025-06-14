@@ -16,7 +16,7 @@
   - Runner
 
 ## ♻️ Changes
-- N/A
+- All aliens can now detect vibrations (instead of just xenomorphs).
 
 ## 🐞 Fixes
 - N/A

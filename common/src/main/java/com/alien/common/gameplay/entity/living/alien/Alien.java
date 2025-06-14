@@ -7,6 +7,7 @@ import com.alien.common.util.AlienTransitionUtil;
 import com.bvanseg.just.functional.option.Option;
 import com.google.common.base.Objects;
 import com.lib.common.gameplay.entity.manager.GeneManager;
+import com.lib.common.gameplay.entity.manager.VibrationSystemManager;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
@@ -14,6 +15,7 @@ import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -25,9 +27,12 @@ import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.gameevent.DynamicGameEventListener;
 import net.minecraft.world.level.pathfinder.PathType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.function.BiConsumer;
 
 import com.avp.AVP;
 import com.avp.common.config.AVPConfig;
@@ -64,6 +69,8 @@ public abstract class Alien extends Monster {
 
     protected final MovementAnalyzer movementAnalyzer;
 
+    private final VibrationSystemManager vibrationSystemManager;
+
     private Option<EntityType<?>> hostTypeOption;
 
     private int lastHurtTimeInTicks;
@@ -76,9 +83,16 @@ public abstract class Alien extends Monster {
         this.hiveManager = new HiveManager(this);
         this.hostTypeOption = Option.ofNullable(getDefaultHostType(entityType));
         this.movementAnalyzer = new MovementAnalyzer(this);
+        this.vibrationSystemManager = createVibrationSystemManager();
     }
 
     public abstract @Nullable EntityType<? extends Alien> getTypeForVariant(AlienVariant alienVariant);
+
+    protected abstract float getHealthRegenPerSecond();
+
+    protected VibrationSystemManager createVibrationSystemManager() {
+        return new VibrationSystemManager(this, 2.5F, 32);
+    }
 
     @Override
     public float maxUpStep() {
@@ -182,6 +196,7 @@ public abstract class Alien extends Monster {
         super.tick();
         movementAnalyzer.tick();
         hiveManager.tick();
+        vibrationSystemManager.tick();
 
         if (!level().isClientSide) {
             healPassively();
@@ -189,6 +204,11 @@ public abstract class Alien extends Monster {
             applyDynamicAttributes(config);
             becomeIrradiated();
         }
+    }
+
+    @Override
+    public void updateDynamicGameEventListener(@NotNull BiConsumer<DynamicGameEventListener<?>, ServerLevel> biConsumer) {
+        vibrationSystemManager.updateDynamicGameEventListener(biConsumer);
     }
 
     /**
@@ -240,8 +260,6 @@ public abstract class Alien extends Monster {
 
         return isHurt;
     }
-
-    protected abstract float getHealthRegenPerSecond();
 
     // Prevent the chestburster from drowning or otherwise running out of air.
     @Override
@@ -371,6 +389,10 @@ public abstract class Alien extends Monster {
 
     public MovementAnalyzer getMovementAnalyzer() {
         return movementAnalyzer;
+    }
+
+    public VibrationSystemManager getVibrationSystemManager() {
+        return vibrationSystemManager;
     }
 
     public void setHostType(EntityType<?> hostType) {
