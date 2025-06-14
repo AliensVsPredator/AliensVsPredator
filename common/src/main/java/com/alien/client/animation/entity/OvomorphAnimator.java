@@ -48,9 +48,9 @@ public class OvomorphAnimator extends AzEntityAnimator<Ovomorph> {
     }
 
     private void runPassiveAnimations(Ovomorph ovomorph) {
-        if (ovomorph.hatchManager().isHatching()) {
+        if (ovomorph.getHatchManager().isHatching()) {
             ovomorph.getAnimationDispatcher().open();
-        } else if (ovomorph.hatchManager().isHatched()) {
+        } else if (ovomorph.getHatchManager().isHatched()) {
             ovomorph.getAnimationDispatcher().openHold();
         } else {
             ovomorph.getAnimationDispatcher().closeHold();

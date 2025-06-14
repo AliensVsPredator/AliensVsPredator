@@ -117,7 +117,7 @@ public class Ovomorph extends Alien implements Shearable {
         var resinBallItem = AlienVariantTypes.getFor(this).resinBall().get();
 
         if (itemStack.is(AlienItems.RAW_ROYAL_JELLY.get())) {
-            if (hatchManager.isHatching() || hatchManager().isHatched()) {
+            if (hatchManager.isHatching() || getHatchManager().isHatched()) {
                 level().playSound(null, this, SoundEvents.HONEY_BLOCK_PLACE, SoundSource.PLAYERS, 1.0F, 1.0F);
                 hatchManager.restore();
                 itemStack.consume(1, player);
@@ -261,7 +261,7 @@ public class Ovomorph extends Alien implements Shearable {
         compoundTag.putByte(MAXIMUM_SPAWN_COUNT_KEY, (byte) getMaximumSpawnCount());
     }
 
-    public HatchManager hatchManager() {
+    public HatchManager getHatchManager() {
         return hatchManager;
     }
 

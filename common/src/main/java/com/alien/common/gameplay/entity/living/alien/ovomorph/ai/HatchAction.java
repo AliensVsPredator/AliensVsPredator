@@ -19,7 +19,7 @@ public class HatchAction extends GOAPAction<Ovomorph> {
 
     @Override
     public boolean perform(Ovomorph ovomorph, GOAPWorldState worldState, GOAPBlackboard blackboard) {
-        var hatchManager = ovomorph.hatchManager();
+        var hatchManager = ovomorph.getHatchManager();
 
         hatchManager.hatch();
 

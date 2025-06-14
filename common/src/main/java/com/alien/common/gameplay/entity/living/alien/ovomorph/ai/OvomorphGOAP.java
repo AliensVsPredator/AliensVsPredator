@@ -13,12 +13,22 @@ public class OvomorphGOAP extends EntityGOAP<Ovomorph> {
     public static final TypedIdentifier<Boolean> WANTS_TO_HATCH = new TypedIdentifier<>("wantsToHatch");
 
     public OvomorphGOAP(Ovomorph ovomorph) {
-        addBaseRoutines(ovomorph);
+        addBaseRoutines();
     }
 
-    public void addBaseRoutines(Ovomorph ovomorph) {
+    @Override
+    public void update(Ovomorph context) {
+        if (context.getHatchManager().isHatched()) {
+            // Don't run GOAP planning if the ovomorph is hatched.
+            return;
+        }
+
+        super.update(context);
+    }
+
+    public void addBaseRoutines() {
         // Track the ovomorph's desire to hatch.
-        addSensor(new WantsToHatchSensor());
+        addSensor(this::senseHatchDesireState);
         // Track the ovomorph's hatch state.
         addSensor(this::senseHatchState);
 
@@ -27,6 +37,10 @@ public class OvomorphGOAP extends EntityGOAP<Ovomorph> {
 
         // How can the ovomorph hatch?
         addAction(new HatchAction());
+    }
+
+    private void senseHatchDesireState(Ovomorph ovomorph, GOAPMutableWorldState worldState) {
+        worldState.set(OvomorphGOAP.WANTS_TO_HATCH, ovomorph.getHatchManager().getHatchDesireManager().wantsToHatch());
     }
 
     private void senseHatchState(Ovomorph ovomorph, GOAPMutableWorldState worldState) {

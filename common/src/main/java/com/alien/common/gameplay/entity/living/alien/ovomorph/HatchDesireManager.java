@@ -1,45 +1,46 @@
-package com.alien.common.gameplay.entity.living.alien.ovomorph.ai;
+package com.alien.common.gameplay.entity.living.alien.ovomorph;
 
-import com.alien.common.gameplay.entity.living.alien.ovomorph.Ovomorph;
-import com.lib.common.gameplay.goap.GOAPSensor;
-import com.lib.common.gameplay.goap.state.GOAPMutableWorldState;
+import com.avp.common.util.AVPPredicates;
+import com.lib.common.gameplay.NBTSerializable;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.LightLayer;
 import net.minecraft.world.level.gameevent.vibrations.VibrationInfo;
 
 import java.util.EnumMap;
 import java.util.Objects;
 
-import com.avp.common.util.AVPPredicates;
+public class HatchDesireManager implements NBTSerializable {
 
-public class WantsToHatchSensor implements GOAPSensor<Ovomorph> {
+    private static final String NBT_DESIRE_TO_HATCH = "desireToHatch";
 
-    private static final int MAX_DESIRE = 100;
+    private static final int MAXIMUM_DESIRE_TO_HATCH = 100;
 
     private final EnumMap<LightLayer, Integer> lastBrightnessMap;
 
-    private boolean isInitialized = false;
+    private final Ovomorph ovomorph;
 
-    private int desireToHatch = 0;
+    private int desireToHatch;
 
     private VibrationInfo lastVibrationInfo;
 
-    public WantsToHatchSensor() {
+    public HatchDesireManager(Ovomorph ovomorph) {
+        this.ovomorph = ovomorph;
         this.lastBrightnessMap = new EnumMap<>(LightLayer.class);
+        this.desireToHatch = 0;
+
+        lastBrightnessMap.put(LightLayer.BLOCK, getBrightness(LightLayer.BLOCK));
+        lastBrightnessMap.put(LightLayer.SKY, getBrightness(LightLayer.SKY));
     }
 
-    @Override
-    public void sense(Ovomorph ovomorph, GOAPMutableWorldState worldState) {
+    private int getBrightness(LightLayer lightLayer) {
+        return ovomorph.level().getBrightness(lightLayer, ovomorph.blockPosition());
+    }
+
+    public void tick() {
         var level = ovomorph.level();
         var blockPos = ovomorph.blockPosition();
         var blockBrightness = level.getBrightness(LightLayer.BLOCK, blockPos);
         var skyBrightness = level.getBrightness(LightLayer.SKY, blockPos);
-
-        if (!isInitialized) {
-            lastBrightnessMap.put(LightLayer.BLOCK, blockBrightness);
-            lastBrightnessMap.put(LightLayer.SKY, skyBrightness);
-            this.isInitialized = true;
-            return;
-        }
 
         lastBrightnessMap.forEach((lightLayer, lastBrightness) -> {
             var currentBrightness = level.getBrightness(lightLayer, blockPos);
@@ -66,17 +67,35 @@ public class WantsToHatchSensor implements GOAPSensor<Ovomorph> {
             this.lastVibrationInfo = vibrationInfo;
         }
 
-        worldState.set(OvomorphGOAP.WANTS_TO_HATCH, desireToHatch == MAX_DESIRE);
-
         lastBrightnessMap.put(LightLayer.BLOCK, blockBrightness);
         lastBrightnessMap.put(LightLayer.SKY, skyBrightness);
 
         if (ovomorph.tickCount % 20 == 0) {
             addDesire(-1);
         }
+
+        if (ovomorph.getHatchManager().isHatched()) {
+            this.desireToHatch = 0;
+        }
+    }
+
+    public boolean wantsToHatch() {
+        return desireToHatch == MAXIMUM_DESIRE_TO_HATCH;
+    }
+
+    @Override
+    public void load(CompoundTag compoundTag) {
+        if (compoundTag.contains(NBT_DESIRE_TO_HATCH)) {
+            this.desireToHatch = compoundTag.getInt(NBT_DESIRE_TO_HATCH);
+        }
+    }
+
+    @Override
+    public void save(CompoundTag compoundTag) {
+        compoundTag.putInt(NBT_DESIRE_TO_HATCH, desireToHatch);
     }
 
     private void addDesire(int desireAmount) {
-        this.desireToHatch = Math.clamp(desireToHatch + desireAmount, 0, MAX_DESIRE);
+        this.desireToHatch = Math.clamp(desireToHatch + desireAmount, 0, MAXIMUM_DESIRE_TO_HATCH);
     }
 }

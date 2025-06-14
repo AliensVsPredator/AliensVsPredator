@@ -5,8 +5,10 @@
 
 ## ✨ What's New
 - Aliens now remember what host type they came from.
-- Ovomorphs now hatch based on changes in light.
-- Ovomorphs now hatch if they detect too much movement near them.
+- Ovomorphs now have hatching AI
+  - Ovomorphs now have a "desire" meter for hatching. 
+  - Changes in the environment (such as light) will increase the desire meter.
+  - Movement of nearby hosts will also increase the desire meter.
 - Added new aliens:
   - Aberrant Prowler
   - Aberrant Runner

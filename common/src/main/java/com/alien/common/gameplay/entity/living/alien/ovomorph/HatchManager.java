@@ -23,6 +23,8 @@ public class HatchManager implements NBTSerializable {
 
     private static final String SPAWN_COUNT_KEY = "spawnCount";
 
+    private final HatchDesireManager hatchDesireManager;
+
     private final Ovomorph ovomorph;
 
     private final int hatchDurationInTicks;
@@ -36,6 +38,7 @@ public class HatchManager implements NBTSerializable {
     private int spawnCount;
 
     public HatchManager(Ovomorph ovomorph, int hatchDurationInTicks, int spawnDelayInTicks) {
+        this.hatchDesireManager = new HatchDesireManager(ovomorph);
         this.ovomorph = ovomorph;
         this.hatchDurationInTicks = hatchDurationInTicks;
         this.remainingHatchDurationInTicks = hatchDurationInTicks;
@@ -45,6 +48,8 @@ public class HatchManager implements NBTSerializable {
     }
 
     public void tick() {
+        hatchDesireManager.tick();
+
         var level = ovomorph.level();
 
         if (
@@ -116,8 +121,14 @@ public class HatchManager implements NBTSerializable {
         ovomorph.setHatchState(Ovomorph.DEFAULT_HATCH_STATE);
     }
 
+    public HatchDesireManager getHatchDesireManager() {
+        return hatchDesireManager;
+    }
+
     @Override
     public void load(CompoundTag compoundTag) {
+        hatchDesireManager.load(compoundTag);
+
         if (compoundTag.contains(HATCH_DURATION_IN_TICKS_KEY)) {
             this.remainingHatchDurationInTicks = compoundTag.getInt(HATCH_DURATION_IN_TICKS_KEY);
         }
@@ -139,6 +150,8 @@ public class HatchManager implements NBTSerializable {
 
     @Override
     public void save(CompoundTag compoundTag) {
+        hatchDesireManager.save(compoundTag);
+
         compoundTag.putInt(HATCH_DURATION_IN_TICKS_KEY, remainingHatchDurationInTicks);
         compoundTag.putInt(REMAINING_SPAWN_DELAY_IN_TICKS_KEY, remainingSpawnDelayInTicks);
         compoundTag.putInt(SPAWN_COUNT_KEY, spawnCount);
