@@ -227,6 +227,11 @@ public class Ovomorph extends Alien implements Shearable {
     }
 
     @Override
+    protected boolean canAlienRideVehicle(@NotNull Entity vehicle) {
+        return !isRooted();
+    }
+
+    @Override
     protected float getHealthRegenPerSecond() {
         return AVP.config.statsConfigs.OVOMORPH_STATS.healthRegenPerSecond;
     }

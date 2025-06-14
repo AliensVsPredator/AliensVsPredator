@@ -79,7 +79,10 @@ public class HatchDesireManager implements NBTSerializable {
                 .getListenerRadius();
             var sourceEntity = vibrationInfo.entity();
 
-            if (sourceEntity != null && AVPPredicates.isFreeHost(ovomorph, sourceEntity) && ovomorph.getSensing().hasLineOfSight(sourceEntity)) {
+            if (
+                sourceEntity != null && AVPPredicates.isFreeHost(ovomorph, sourceEntity) && ovomorph.getSensing()
+                    .hasLineOfSight(sourceEntity)
+            ) {
                 addDesire((int) Math.abs(radius - vibrationInfo.distance()) * 2);
             }
 

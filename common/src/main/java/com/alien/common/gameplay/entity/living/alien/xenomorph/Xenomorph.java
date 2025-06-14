@@ -122,10 +122,6 @@ public abstract class Xenomorph extends Alien implements ResinProducer {
         resinManager.tick();
 
         if (!level().isClientSide) {
-            if (getVehicle() instanceof Boat || getVehicle() instanceof Minecart) {
-                stopRiding();
-            }
-
             var target = getTarget();
 
             if (target != null && !AlienPredicates.canContinueTargeting(this, target)) {

@@ -26,6 +26,8 @@ import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.monster.Monster;
+import net.minecraft.world.entity.vehicle.Boat;
+import net.minecraft.world.entity.vehicle.Minecart;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.gameevent.DynamicGameEventListener;
 import net.minecraft.world.level.pathfinder.PathType;
@@ -191,6 +193,15 @@ public abstract class Alien extends Monster {
         entityData.set(IS_ROYAL, isRoyal);
     }
 
+    protected boolean canAlienRideVehicle(@NotNull Entity vehicle) {
+        return !(vehicle instanceof Boat) && !(vehicle instanceof Minecart);
+    }
+
+    @Override
+    protected final boolean canRide(@NotNull Entity vehicle) {
+        return super.canRide(vehicle) && canAlienRideVehicle(vehicle);
+    }
+
     @Override
     public void tick() {
         super.tick();
@@ -199,6 +210,10 @@ public abstract class Alien extends Monster {
         vibrationSystemManager.tick();
 
         if (!level().isClientSide) {
+            if (getVehicle() != null && !canRide(getVehicle())) {
+                stopRiding();
+            }
+
             healPassively();
             applyMalusBasedOnVariant();
             applyDynamicAttributes(config);

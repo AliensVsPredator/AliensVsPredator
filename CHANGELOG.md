@@ -21,6 +21,8 @@
 
 ## ♻️ Changes
 - All aliens can now detect vibrations (instead of just xenomorphs).
+- Chestbursters can no longer be trapped in boats and minecarts.
+- Facehuggers can no longer be trapped in boats and minecarts.
 
 ## 🐞 Fixes
 - N/A
