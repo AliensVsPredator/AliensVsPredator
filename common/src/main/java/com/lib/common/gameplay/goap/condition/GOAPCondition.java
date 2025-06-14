@@ -6,7 +6,7 @@ import com.lib.common.gameplay.goap.effect.GOAPEffectContainer;
 import com.lib.common.gameplay.goap.state.GOAPWorldState;
 
 public record GOAPCondition<T>(
-    TypedIdentifier<? extends T> identifier,
+    TypedIdentifier<? super T> identifier,
     GOAPExpression<? super T> expression
 ) {
 
@@ -14,6 +14,7 @@ public record GOAPCondition<T>(
         return satisfiedBy(effectContainer.toWorldState());
     }
 
+    @SuppressWarnings("unchecked")
     public boolean satisfiedBy(GOAPWorldState worldState) {
         var value = (T) worldState.get(identifier);
         return value != null && expression.evaluate(value);
