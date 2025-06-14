@@ -11,7 +11,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
 
 public class InfectionRegistry {
 
@@ -47,25 +46,19 @@ public class InfectionRegistry {
     }
 
     public static void compute(Infection infection) {
-        var hostTag = infection.hostTag().orElse(null);
+        var hostTypePredicate = infection.hostTypePredicate().orElse(null);
 
-        if (hostTag == null) {
+        if (hostTypePredicate == null) {
             var lookupKey = new InfectionKey(null, infection.parasiteType());
             INFECTION_KEY_TO_INFECTION.put(lookupKey, infection);
         } else {
-            var holderEntityTypeSetOptional = BuiltInRegistries.ENTITY_TYPE.getTag(hostTag);
-
-            holderEntityTypeSetOptional.ifPresent(holderEntityTypeSet -> {
-                holderEntityTypeSet.stream()
-                    // For every host...
-                    .forEach(entityTypeHolder -> {
-                        var host = entityTypeHolder.unwrap().map(BuiltInRegistries.ENTITY_TYPE::get, Function.identity());
-
-                        // map the lookup key to the infection.
-                        var lookupKey = new InfectionKey(host, infection.parasiteType());
-                        INFECTION_KEY_TO_INFECTION.put(lookupKey, infection);
-                    });
-            });
+            BuiltInRegistries.ENTITY_TYPE.stream()
+                .filter(hostTypePredicate::test)
+                .forEach(entityType -> {
+                    // map the lookup key to the infection.
+                    var lookupKey = new InfectionKey(entityType, infection.parasiteType());
+                    INFECTION_KEY_TO_INFECTION.put(lookupKey, infection);
+                });
         }
     }
 }

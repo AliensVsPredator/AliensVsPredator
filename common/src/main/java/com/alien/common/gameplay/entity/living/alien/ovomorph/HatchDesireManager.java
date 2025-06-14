@@ -1,6 +1,5 @@
 package com.alien.common.gameplay.entity.living.alien.ovomorph;
 
-import com.avp.common.util.AVPPredicates;
 import com.lib.common.gameplay.NBTSerializable;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.LightLayer;
@@ -8,6 +7,8 @@ import net.minecraft.world.level.gameevent.vibrations.VibrationInfo;
 
 import java.util.EnumMap;
 import java.util.Objects;
+
+import com.avp.common.util.AVPPredicates;
 
 public class HatchDesireManager implements NBTSerializable {
 
