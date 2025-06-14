@@ -43,3 +43,4 @@
 - Alien lifecycle host entity tags have been migrated to individual alien growth stages.
 - Upgraded alien infections to support host entity tags.
 - Added full datagen support for alien infections. Alien infection registry has been removed.
+- Removed redundant royal data from aliens.

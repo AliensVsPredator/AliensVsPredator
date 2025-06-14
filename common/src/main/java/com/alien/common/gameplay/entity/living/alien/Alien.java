@@ -49,16 +49,12 @@ public abstract class Alien extends Monster {
 
     private static final String NBT_IS_POISONED = "isPoisoned";
 
-    private static final String NBT_IS_ROYAL = "isRoyal";
-
     private static final String NBT_JELLY_COUNT = "jellyCount";
 
     public static final EntityDataAccessor<Boolean> IS_POISONED = SynchedEntityData.defineId(
         Alien.class,
         EntityDataSerializers.BOOLEAN
     );
-
-    private static final EntityDataAccessor<Boolean> IS_ROYAL = SynchedEntityData.defineId(Alien.class, EntityDataSerializers.BOOLEAN);
 
     public static final EntityDataAccessor<Integer> JELLY_COUNT = SynchedEntityData.defineId(
         Alien.class,
@@ -137,7 +133,6 @@ public abstract class Alien extends Monster {
     protected void defineSynchedData(@NotNull SynchedEntityData.Builder builder) {
         super.defineSynchedData(builder);
         builder.define(IS_POISONED, false);
-        builder.define(IS_ROYAL, false);
         builder.define(JELLY_COUNT, 0);
     }
 
@@ -186,11 +181,7 @@ public abstract class Alien extends Monster {
     }
 
     public boolean isRoyal() {
-        return entityData.get(IS_ROYAL);
-    }
-
-    public void setRoyal(boolean isRoyal) {
-        entityData.set(IS_ROYAL, isRoyal);
+        return getType().is(AVPEntityTypeTags.ROYAL_ALIENS);
     }
 
     protected boolean canAlienRideVehicle(@NotNull Entity vehicle) {
@@ -352,10 +343,6 @@ public abstract class Alien extends Monster {
             setPoisoned(compoundTag.getBoolean(NBT_IS_POISONED));
         }
 
-        if (compoundTag.contains(NBT_IS_ROYAL)) {
-            setRoyal(compoundTag.getBoolean(NBT_IS_ROYAL));
-        }
-
         if (compoundTag.contains(NBT_JELLY_COUNT)) {
             getEntityData().set(JELLY_COUNT, compoundTag.getInt(NBT_JELLY_COUNT));
         }
@@ -373,7 +360,6 @@ public abstract class Alien extends Monster {
         geneManager.save(compoundTag);
         hiveManager.save(compoundTag);
         compoundTag.putBoolean(NBT_IS_POISONED, isPoisoned());
-        compoundTag.putBoolean(NBT_IS_ROYAL, isRoyal());
         compoundTag.putInt(NBT_JELLY_COUNT, getEntityData().get(JELLY_COUNT));
 
         hostTypeOption.ifSome(hostType -> {

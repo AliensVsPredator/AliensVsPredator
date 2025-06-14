@@ -286,7 +286,7 @@ public class AlienEntityTypes {
     public static final AVPDeferredHolder<EntityType<Chestburster>> ROYAL_ABERRANT_CHESTBURSTER = AVPEntityTypes.register(
         "royal_aberrant_chestburster",
         EntityType.Builder.<Chestburster>of(
-            (type, level) -> royalAberrantFactory(Chestburster::new, type, level),
+            (type, level) -> aberrantFactory(Chestburster::new, type, level),
             AVPEntityTypes.ALIEN_CATEGORY
         )
             .sized(0.35f, 0.35f)
@@ -295,7 +295,7 @@ public class AlienEntityTypes {
     public static final AVPDeferredHolder<EntityType<Facehugger>> ROYAL_ABERRANT_FACEHUGGER = AVPEntityTypes.register(
         "royal_aberrant_facehugger",
         EntityType.Builder.<Facehugger>of(
-            (type, level) -> royalAberrantFactory(Facehugger::new, type, level),
+            (type, level) -> aberrantFactory(Facehugger::new, type, level),
             AVPEntityTypes.ALIEN_CATEGORY
         )
             .sized(0.8f, 0.25f)
@@ -304,7 +304,7 @@ public class AlienEntityTypes {
     public static final AVPDeferredHolder<EntityType<Ovomorph>> ROYAL_ABERRANT_OVOMORPH = AVPEntityTypes.register(
         "royal_aberrant_ovomorph",
         EntityType.Builder.<Ovomorph>of(
-            (type, level) -> royalAberrantFactory(Ovomorph::new, type, level),
+            (type, level) -> aberrantFactory(Ovomorph::new, type, level),
             AVPEntityTypes.ALIEN_CATEGORY
         )
             .sized(0.65f, 0.8f)
@@ -312,35 +312,26 @@ public class AlienEntityTypes {
 
     public static final AVPDeferredHolder<EntityType<Chestburster>> ROYAL_CHESTBURSTER = AVPEntityTypes.register(
         "royal_chestburster",
-        EntityType.Builder.<Chestburster>of(
-            (type, level) -> royalFactory(Chestburster::new, type, level),
-            AVPEntityTypes.ALIEN_CATEGORY
-        )
+        EntityType.Builder.<Chestburster>of(Chestburster::new, AVPEntityTypes.ALIEN_CATEGORY)
             .sized(0.35f, 0.35f)
     );
 
     public static final AVPDeferredHolder<EntityType<Facehugger>> ROYAL_FACEHUGGER = AVPEntityTypes.register(
         "royal_facehugger",
-        EntityType.Builder.<Facehugger>of(
-            (type, level) -> royalFactory(Facehugger::new, type, level),
-            AVPEntityTypes.ALIEN_CATEGORY
-        )
+        EntityType.Builder.of(Facehugger::new, AVPEntityTypes.ALIEN_CATEGORY)
             .sized(0.8f, 0.25f)
     );
 
     public static final AVPDeferredHolder<EntityType<Ovomorph>> ROYAL_OVOMORPH = AVPEntityTypes.register(
         "royal_ovomorph",
-        EntityType.Builder.<Ovomorph>of(
-            (type, level) -> royalFactory(Ovomorph::new, type, level),
-            AVPEntityTypes.ALIEN_CATEGORY
-        )
+        EntityType.Builder.of(Ovomorph::new, AVPEntityTypes.ALIEN_CATEGORY)
             .sized(0.65f, 0.8f)
     );
 
     public static final AVPDeferredHolder<EntityType<Chestburster>> ROYAL_NETHER_CHESTBURSTER = AVPEntityTypes.register(
         "royal_nether_chestburster",
         EntityType.Builder.<Chestburster>of(
-            (type, level) -> royalNethermorphFactory(Chestburster::new, type, level),
+            (type, level) -> nethermorphFactory(Chestburster::new, type, level),
             AVPEntityTypes.ALIEN_CATEGORY
         )
             .sized(0.35f, 0.35f)
@@ -349,7 +340,7 @@ public class AlienEntityTypes {
     public static final AVPDeferredHolder<EntityType<Facehugger>> ROYAL_NETHER_FACEHUGGER = AVPEntityTypes.register(
         "royal_nether_facehugger",
         EntityType.Builder.<Facehugger>of(
-            (type, level) -> royalNethermorphFactory(Facehugger::new, type, level),
+            (type, level) -> nethermorphFactory(Facehugger::new, type, level),
             AVPEntityTypes.ALIEN_CATEGORY
         )
             .sized(0.8f, 0.25f)
@@ -358,7 +349,7 @@ public class AlienEntityTypes {
     public static final AVPDeferredHolder<EntityType<Ovomorph>> ROYAL_NETHER_OVOMORPH = AVPEntityTypes.register(
         "royal_nether_ovomorph",
         EntityType.Builder.<Ovomorph>of(
-            (type, level) -> royalNethermorphFactory(Ovomorph::new, type, level),
+            (type, level) -> nethermorphFactory(Ovomorph::new, type, level),
             AVPEntityTypes.ALIEN_CATEGORY
         )
             .sized(0.65f, 0.8f)
@@ -392,39 +383,6 @@ public class AlienEntityTypes {
         Level level
     ) {
         var entity = entityFactory.apply(entityType, level);
-        entity.getGeneManager().minimize(GeneKeys.COLD_RESISTANCE);
-        entity.getGeneManager().maximize(GeneKeys.FIRE_RESISTANCE);
-        return entity;
-    }
-
-    private static <T extends Alien> T royalFactory(
-        BiFunction<EntityType<T>, Level, T> entityFactory,
-        EntityType<T> entityType,
-        Level level
-    ) {
-        var entity = entityFactory.apply(entityType, level);
-        entity.setRoyal(true);
-        return entity;
-    }
-
-    private static <T extends Alien> T royalAberrantFactory(
-        BiFunction<EntityType<T>, Level, T> entityFactory,
-        EntityType<T> entityType,
-        Level level
-    ) {
-        var entity = entityFactory.apply(entityType, level);
-        entity.setRoyal(true);
-        entity.getGeneManager().minimize(GeneKeys.GENETIC_INTEGRITY);
-        return entity;
-    }
-
-    private static <T extends Alien> T royalNethermorphFactory(
-        BiFunction<EntityType<T>, Level, T> entityFactory,
-        EntityType<T> entityType,
-        Level level
-    ) {
-        var entity = entityFactory.apply(entityType, level);
-        entity.setRoyal(true);
         entity.getGeneManager().minimize(GeneKeys.COLD_RESISTANCE);
         entity.getGeneManager().maximize(GeneKeys.FIRE_RESISTANCE);
         return entity;
