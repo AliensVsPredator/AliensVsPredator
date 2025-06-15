@@ -8,6 +8,8 @@ public record AttackDamageConstants() {
     // Alien measurements (in terms of half-hearts).
     public static final float MARINE_ATTACK_DAMAGE = PLAYER_HEALTH * 0.1F;
 
+    public static final float ADOLESCENT_ATTACK_DAMAGE = PLAYER_HEALTH * 0.1F;
+
     public static final float CHESTBURSTER_ATTACK_DAMAGE = PLAYER_HEALTH * 0.1F;
 
     public static final float CRUSHER_ATTACK_DAMAGE = PLAYER_HEALTH * 0.75F;

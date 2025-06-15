@@ -309,6 +309,21 @@ public class AVPConfig {
         @Configurable
         @Configurable.Synchronized
         @Configurable.Comment("Modifying any of these will require restarting the game.")
+        public AdvancedStats ADOLESCENT_STATS = new AdvancedStats(
+            HealthConstants.ADOLESCENT_HEALTH,
+            AttackDamageConstants.ADOLESCENT_ATTACK_DAMAGE,
+            HealthRegenConstants.ADOLESCENT_HEALTH_REGEN,
+            KnockbackResistanceConstants.ADOLESCENT_KNOCKBACK_RESISTANCE,
+            MoveSpeedConstants.ADOLESCENT_SPEED,
+            0.0F,
+            0.0f,
+            750,
+            FollowRangeConstants.ADOLESCENT_FOLLOW_RANGE
+        );
+
+        @Configurable
+        @Configurable.Synchronized
+        @Configurable.Comment("Modifying any of these will require restarting the game.")
         public AdvancedStats FACEHUGGER_STATS = new AdvancedStats(
             HealthConstants.FACEHUGGER_HEALTH,
             0,
@@ -627,6 +642,8 @@ public class AVPConfig {
         @Configurable.Synchronized
         @Configurable.Comment("Requires hive debugging to be enabled.")
         public boolean HIVE_DEBUG_MARK_HIVE_CENTER = true;
+
+        // FIXME: Remove all of these
 
         @Configurable
         @Configurable.Synchronized

@@ -18,6 +18,7 @@ public class EnUsEntityProvider {
     private static final HashSet<EntityType<?>> TOUCHED_ENTRIES = new HashSet<>();
 
     public static final Consumer<FabricLanguageProvider.TranslationBuilder> CONSUMER = builder -> {
+        addEntity(builder, AlienEntityTypes.ABERRANT_ADOLESCENT, "Aberrant Adolescent");
         addEntity(builder, AlienEntityTypes.ABERRANT_CHESTBURSTER, "Aberrant Chestburster");
         addEntity(builder, AlienEntityTypes.ABERRANT_CRUSHER, "Aberrant Crusher");
         addEntity(builder, AlienEntityTypes.ABERRANT_DRONE, "Aberrant Drone");
@@ -29,6 +30,7 @@ public class EnUsEntityProvider {
         addEntity(builder, AlienEntityTypes.ABERRANT_RUNNER, "Aberrant Runner");
         addEntity(builder, AlienEntityTypes.ABERRANT_WARRIOR, "Aberrant Warrior");
         addEntity(builder, AlienEntityTypes.ACID, "Acid");
+        addEntity(builder, AlienEntityTypes.ADOLESCENT, "Adolescent");
         addEntity(builder, AlienEntityTypes.CHESTBURSTER, "Chestburster");
         addEntity(builder, AlienEntityTypes.CRUSHER, "Crusher");
         addEntity(builder, AlienEntityTypes.DRONE, "Drone");
@@ -40,6 +42,7 @@ public class EnUsEntityProvider {
         addEntity(builder, AlienEntityTypes.IRRADIATED_QUEEN, "Irradiated Queen");
         addEntity(builder, AlienEntityTypes.IRRADIATED_RUNNER, "Irradiated Runner");
         addEntity(builder, AlienEntityTypes.IRRADIATED_WARRIOR, "Irradiated Warrior");
+        addEntity(builder, AlienEntityTypes.NETHER_ADOLESCENT, "Nether Adolescent");
         addEntity(builder, AlienEntityTypes.NETHER_CHESTBURSTER, "Nether Chestburster");
         addEntity(builder, AlienEntityTypes.NETHER_CRUSHER, "Nether Crusher");
         addEntity(builder, AlienEntityTypes.NETHER_DRONE, "Nether Drone");
@@ -54,11 +57,14 @@ public class EnUsEntityProvider {
         addEntity(builder, AlienEntityTypes.PRAETORIAN, "Praetorian");
         addEntity(builder, AlienEntityTypes.PROWLER, "Prowler");
         addEntity(builder, AlienEntityTypes.QUEEN, "Queen");
+        addEntity(builder, AlienEntityTypes.ROYAL_ABERRANT_ADOLESCENT, "Royal Aberrant Adolescent");
         addEntity(builder, AlienEntityTypes.ROYAL_ABERRANT_CHESTBURSTER, "Royal Aberrant Chestburster");
         addEntity(builder, AlienEntityTypes.ROYAL_ABERRANT_FACEHUGGER, "Royal Aberrant Facehugger");
         addEntity(builder, AlienEntityTypes.ROYAL_ABERRANT_OVOMORPH, "Royal Aberrant Ovomorph");
+        addEntity(builder, AlienEntityTypes.ROYAL_ADOLESCENT, "Royal Adolescent");
         addEntity(builder, AlienEntityTypes.ROYAL_CHESTBURSTER, "Royal Chestburster");
         addEntity(builder, AlienEntityTypes.ROYAL_FACEHUGGER, "Royal Facehugger");
+        addEntity(builder, AlienEntityTypes.ROYAL_NETHER_ADOLESCENT, "Royal Nether Adolescent");
         addEntity(builder, AlienEntityTypes.ROYAL_NETHER_CHESTBURSTER, "Royal Nether Chestburster");
         addEntity(builder, AlienEntityTypes.ROYAL_NETHER_FACEHUGGER, "Royal Nether Facehugger");
         addEntity(builder, AlienEntityTypes.ROYAL_NETHER_OVOMORPH, "Royal Nether Ovomorph");

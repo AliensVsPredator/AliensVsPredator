@@ -41,6 +41,7 @@ public class AdvancementProvider extends FabricAdvancementProvider {
     // Yes, I was very annoyed with Mojang while writing this list out.
     private static final List<EntityType<?>> ALIENS_TO_KILL = List.of(
         // Normal Aliens
+        AlienEntityTypes.ADOLESCENT.get(),
         AlienEntityTypes.CHESTBURSTER.get(),
         AlienEntityTypes.CRUSHER.get(),
         AlienEntityTypes.FACEHUGGER.get(),
@@ -53,6 +54,7 @@ public class AdvancementProvider extends FabricAdvancementProvider {
         AlienEntityTypes.WARRIOR.get(),
 
         // Aberrant Aliens
+        AlienEntityTypes.ABERRANT_ADOLESCENT.get(),
         AlienEntityTypes.ABERRANT_CHESTBURSTER.get(),
         AlienEntityTypes.ABERRANT_CRUSHER.get(),
         AlienEntityTypes.ABERRANT_FACEHUGGER.get(),
@@ -65,6 +67,7 @@ public class AdvancementProvider extends FabricAdvancementProvider {
         AlienEntityTypes.ABERRANT_WARRIOR.get(),
 
         // Nether Aliens
+        AlienEntityTypes.NETHER_ADOLESCENT.get(),
         AlienEntityTypes.NETHER_CHESTBURSTER.get(),
         AlienEntityTypes.NETHER_CRUSHER.get(),
         AlienEntityTypes.NETHER_FACEHUGGER.get(),
@@ -77,16 +80,19 @@ public class AdvancementProvider extends FabricAdvancementProvider {
         AlienEntityTypes.NETHER_WARRIOR.get(),
 
         // Royal Normal Aliens
+        AlienEntityTypes.ROYAL_ADOLESCENT.get(),
         AlienEntityTypes.ROYAL_CHESTBURSTER.get(),
         AlienEntityTypes.ROYAL_FACEHUGGER.get(),
         AlienEntityTypes.ROYAL_OVOMORPH.get(),
 
         // Royal Aberrant Aliens
+        AlienEntityTypes.ROYAL_ABERRANT_ADOLESCENT.get(),
         AlienEntityTypes.ROYAL_ABERRANT_CHESTBURSTER.get(),
         AlienEntityTypes.ROYAL_ABERRANT_FACEHUGGER.get(),
         AlienEntityTypes.ROYAL_ABERRANT_OVOMORPH.get(),
 
         // Royal nether Aliens
+        AlienEntityTypes.ROYAL_NETHER_ADOLESCENT.get(),
         AlienEntityTypes.ROYAL_NETHER_CHESTBURSTER.get(),
         AlienEntityTypes.ROYAL_NETHER_FACEHUGGER.get(),
         AlienEntityTypes.ROYAL_NETHER_OVOMORPH.get()

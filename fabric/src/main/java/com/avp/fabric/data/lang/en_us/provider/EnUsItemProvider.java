@@ -229,6 +229,7 @@ public class EnUsItemProvider {
         addItem(builder, AVPItems.VERITANIUM_SWORD, "Veritanium Sword");
 
         // Spawn Egg Items
+        addItem(builder, AlienSpawnEggItems.ABERRANT_ADOLESCENT_SPAWN_EGG, "Aberrant Adolescent Spawn Egg");
         addItem(builder, AlienSpawnEggItems.ABERRANT_CHESTBURSTER_SPAWN_EGG, "Aberrant Chestburster Spawn Egg");
         addItem(builder, AlienSpawnEggItems.ABERRANT_CRUSHER_SPAWN_EGG, "Aberrant Crusher Spawn Egg");
         addItem(builder, AlienSpawnEggItems.ABERRANT_DRONE_SPAWN_EGG, "Aberrant Drone Spawn Egg");
@@ -239,10 +240,12 @@ public class EnUsItemProvider {
         addItem(builder, AlienSpawnEggItems.ABERRANT_WARRIOR_SPAWN_EGG, "Aberrant Warrior Spawn Egg");
         addItem(builder, AlienSpawnEggItems.ABERRANT_QUEEN_SPAWN_EGG, "Aberrant Queen Spawn Egg");
         addItem(builder, AlienSpawnEggItems.ABERRANT_RUNNER_SPAWN_EGG, "Aberrant Runner Spawn Egg");
+        addItem(builder, AlienSpawnEggItems.ADOLESCENT_SPAWN_EGG, "Adolescent Spawn Egg");
         addItem(builder, AlienSpawnEggItems.CHESTBURSTER_SPAWN_EGG, "Chestburster Spawn Egg");
         addItem(builder, AlienSpawnEggItems.CRUSHER_SPAWN_EGG, "Crusher Spawn Egg");
         addItem(builder, AlienSpawnEggItems.DRONE_SPAWN_EGG, "Drone Spawn Egg");
         addItem(builder, AlienSpawnEggItems.FACEHUGGER_SPAWN_EGG, "Facehugger Spawn Egg");
+        addItem(builder, AlienSpawnEggItems.NETHER_ADOLESCENT_SPAWN_EGG, "Nether Adolescent Spawn Egg");
         addItem(builder, AlienSpawnEggItems.NETHER_CHESTBURSTER_SPAWN_EGG, "Nether Chestburster Spawn Egg");
         addItem(builder, AlienSpawnEggItems.NETHER_CRUSHER_SPAWN_EGG, "Nether Crusher Spawn Egg");
         addItem(builder, AlienSpawnEggItems.NETHER_DRONE_SPAWN_EGG, "Nether Drone Spawn Egg");
@@ -268,6 +271,9 @@ public class EnUsItemProvider {
         addItem(builder, AlienSpawnEggItems.WARRIOR_SPAWN_EGG, "Warrior Spawn Egg");
         addItem(builder, PredatorSpawnEggItems.YAUTJA_SPAWN_EGG, "Yautja Spawn Egg");
         addItem(builder, HumanSpawnEggItems.MARINE_SPAWN_EGG, "Marine Spawn Egg");
+        addItem(builder, AlienSpawnEggItems.ROYAL_ABERRANT_ADOLESCENT_SPAWN_EGG, "Royal Aberrant Adolescent Spawn Egg");
+        addItem(builder, AlienSpawnEggItems.ROYAL_ADOLESCENT_SPAWN_EGG, "Royal Adolescent Spawn Egg");
+        addItem(builder, AlienSpawnEggItems.ROYAL_NETHER_ADOLESCENT_SPAWN_EGG, "Royal Nether Adolescent Spawn Egg");
         addItem(builder, AlienSpawnEggItems.ROYAL_OVOMORPH_SPAWN_EGG, "Royal Ovomorph Spawn Egg");
         addItem(builder, AlienSpawnEggItems.ROYAL_FACEHUGGER_SPAWN_EGG, "Royal Facehugger Spawn Egg");
         addItem(builder, AlienSpawnEggItems.ROYAL_CHESTBURSTER_SPAWN_EGG, "Royal Chestburster Spawn Egg");

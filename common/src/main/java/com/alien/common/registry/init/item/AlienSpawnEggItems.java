@@ -8,6 +8,13 @@ import com.avp.common.registry.init.item.AVPSpawnEggItems;
 
 public class AlienSpawnEggItems {
 
+    public static final AVPDeferredHolder<Item> ABERRANT_ADOLESCENT_SPAWN_EGG = AVPSpawnEggItems.register(
+        "aberrant_adolescent",
+        AlienEntityTypes.ABERRANT_ADOLESCENT,
+        0xD9D9B8,
+        0xBFBF88
+    );
+
     public static final AVPDeferredHolder<Item> ABERRANT_CHESTBURSTER_SPAWN_EGG = AVPSpawnEggItems.register(
         "aberrant_chestburster",
         AlienEntityTypes.ABERRANT_CHESTBURSTER,
@@ -76,6 +83,13 @@ public class AlienSpawnEggItems {
         AlienEntityTypes.ABERRANT_QUEEN,
         0xF3CE07,
         0xD7D7DF
+    );
+
+    public static final AVPDeferredHolder<Item> ADOLESCENT_SPAWN_EGG = AVPSpawnEggItems.register(
+        "adolescent",
+        AlienEntityTypes.ADOLESCENT,
+        0xD8B877,
+        0xF7E2B4
     );
 
     public static final AVPDeferredHolder<Item> CHESTBURSTER_SPAWN_EGG = AVPSpawnEggItems.register(
@@ -153,6 +167,13 @@ public class AlienSpawnEggItems {
         AlienEntityTypes.IRRADIATED_WARRIOR,
         0xD5F2ED,
         0x73D9CF
+    );
+
+    public static final AVPDeferredHolder<Item> NETHER_ADOLESCENT_SPAWN_EGG = AVPSpawnEggItems.register(
+        "nether_adolescent",
+        AlienEntityTypes.NETHER_ADOLESCENT,
+        0x360101,
+        0x803232
     );
 
     public static final AVPDeferredHolder<Item> NETHER_CHESTBURSTER_SPAWN_EGG = AVPSpawnEggItems.register(
@@ -253,6 +274,13 @@ public class AlienSpawnEggItems {
         0x363534
     );
 
+    public static final AVPDeferredHolder<Item> ROYAL_ABERRANT_ADOLESCENT_SPAWN_EGG = AVPSpawnEggItems.register(
+        "royal_aberrant_adolescent",
+        AlienEntityTypes.ROYAL_ABERRANT_ADOLESCENT,
+        0x706c36,
+        0xd3cf51
+    );
+
     public static final AVPDeferredHolder<Item> ROYAL_ABERRANT_CHESTBURSTER_SPAWN_EGG = AVPSpawnEggItems.register(
         "royal_aberrant_chestburster",
         AlienEntityTypes.ROYAL_ABERRANT_CHESTBURSTER,
@@ -274,11 +302,11 @@ public class AlienSpawnEggItems {
         0xd3cf51
     );
 
-    public static final AVPDeferredHolder<Item> ROYAL_NETHER_CHESTBURSTER_SPAWN_EGG = AVPSpawnEggItems.register(
-        "royal_nether_chestburster",
-        AlienEntityTypes.ROYAL_NETHER_CHESTBURSTER,
-        0x331715,
-        0xfcee4b
+    public static final AVPDeferredHolder<Item> ROYAL_ADOLESCENT_SPAWN_EGG = AVPSpawnEggItems.register(
+        "royal_adolescent",
+        AlienEntityTypes.ROYAL_ADOLESCENT,
+        0x29140a,
+        0xe6b57b
     );
 
     public static final AVPDeferredHolder<Item> ROYAL_CHESTBURSTER_SPAWN_EGG = AVPSpawnEggItems.register(
@@ -286,6 +314,20 @@ public class AlienSpawnEggItems {
         AlienEntityTypes.ROYAL_CHESTBURSTER,
         0x29140a,
         0xe6b57b
+    );
+
+    public static final AVPDeferredHolder<Item> ROYAL_NETHER_ADOLESCENT_SPAWN_EGG = AVPSpawnEggItems.register(
+        "royal_nether_adolescent",
+        AlienEntityTypes.ROYAL_NETHER_ADOLESCENT,
+        0x331715,
+        0xfcee4b
+    );
+
+    public static final AVPDeferredHolder<Item> ROYAL_NETHER_CHESTBURSTER_SPAWN_EGG = AVPSpawnEggItems.register(
+        "royal_nether_chestburster",
+        AlienEntityTypes.ROYAL_NETHER_CHESTBURSTER,
+        0x331715,
+        0xfcee4b
     );
 
     public static final AVPDeferredHolder<Item> ROYAL_FACEHUGGER_SPAWN_EGG = AVPSpawnEggItems.register(

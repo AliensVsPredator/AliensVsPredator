@@ -12,6 +12,8 @@ public class AVPEntityTypeTags {
 
     public static final TagKey<EntityType<?>> ACID_IMMUNE = create("acid_immune");
 
+    public static final TagKey<EntityType<?>> ADOLESCENTS = create("adolescents");
+
     public static final TagKey<EntityType<?>> ALIENS = create("aliens");
 
     public static final TagKey<EntityType<?>> ANIMALS = create("animals");

@@ -3,6 +3,8 @@ package com.avp.common.constant;
 public record KnockbackResistanceConstants() {
 
     // Alien measurements (normalized values).
+    public static final float ADOLESCENT_KNOCKBACK_RESISTANCE = 0;
+
     public static final float CHESTBURSTER_KNOCKBACK_RESISTANCE = 0;
 
     public static final float CRUSHER_KNOCKBACK_RESISTANCE = 0.7f;

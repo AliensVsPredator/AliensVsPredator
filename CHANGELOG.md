@@ -10,13 +10,23 @@
   - Changes in the environment (such as light) will increase the desire meter.
   - Movement of nearby hosts will also increase the desire meter.
 - Added new aliens:
+  - Aberrant Adolescent
+  - Aberrant Crusher
   - Aberrant Prowler
   - Aberrant Runner
+  - Adolescent
+  - Crusher
+  - Irradiated Crusher
   - Irradiated Prowler
   - Irradiated Runner
+  - Nether Adolescent
+  - Nether Crusher
   - Nether Prowler
   - Nether Runner
   - Prowler
+  - Royal Aberrant Adolescent
+  - Royal Adolescent
+  - Royal Nether Adolescent
   - Runner
 
 ## ♻️ Changes

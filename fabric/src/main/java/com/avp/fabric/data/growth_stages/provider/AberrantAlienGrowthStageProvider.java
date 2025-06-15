@@ -15,32 +15,48 @@ public class AberrantAlienGrowthStageProvider {
         provideRunnerAberrantGrowthStages(biConsumer);
 
         biConsumer.accept(
-            "royal_aberrant_chestburster_to_aberrant_praetorian",
+            "royal_aberrant_chestburster_to_royal_aberrant_adolescent",
             new GrowthStage(
                 AlienEntityTypes.ROYAL_ABERRANT_CHESTBURSTER.get(),
-                AlienEntityTypes.ABERRANT_PRAETORIAN.get(),
+                AlienEntityTypes.ROYAL_ABERRANT_ADOLESCENT.get(),
                 GrowthConstants.ROYAL_CHESTBURSTER_GROWTH_TIME_IN_TICKS
+            )
+        );
+        biConsumer.accept(
+            "royal_aberrant_adolescent_to_aberrant_praetorian",
+            new GrowthStage(
+                AlienEntityTypes.ROYAL_ABERRANT_ADOLESCENT.get(),
+                AlienEntityTypes.ABERRANT_PRAETORIAN.get(),
+                GrowthConstants.ROYAL_ADOLESCENT_GROWTH_TIME_IN_TICKS
             )
         );
 
         biConsumer.accept(
-            "royal_aberrant_chestburster_to_aberrant_crusher",
+            "royal_aberrant_adolescent_to_aberrant_crusher",
             new GrowthStage(
                 AVPEntityTypeTags.RUNNER_HOSTS,
-                AlienEntityTypes.ROYAL_ABERRANT_CHESTBURSTER.get(),
+                AlienEntityTypes.ROYAL_ABERRANT_ADOLESCENT.get(),
                 AlienEntityTypes.ABERRANT_CRUSHER.get(),
-                GrowthConstants.ROYAL_CHESTBURSTER_GROWTH_TIME_IN_TICKS / 2
+                GrowthConstants.ROYAL_ADOLESCENT_GROWTH_TIME_IN_TICKS / 2
             )
         );
     }
 
     private static void provideBaseAberrantGrowthStages(BiConsumer<String, GrowthStage> biConsumer) {
         biConsumer.accept(
-            "aberrant_chestburster_to_aberrant_drone",
+            "aberrant_chestburster_to_aberrant_adolescent",
             new GrowthStage(
                 AlienEntityTypes.ABERRANT_CHESTBURSTER.get(),
-                AlienEntityTypes.ABERRANT_DRONE.get(),
+                AlienEntityTypes.ABERRANT_ADOLESCENT.get(),
                 GrowthConstants.CHESTBURSTER_GROWTH_TIME_IN_TICKS
+            )
+        );
+        biConsumer.accept(
+            "aberrant_adolescent_to_aberrant_drone",
+            new GrowthStage(
+                AlienEntityTypes.ABERRANT_ADOLESCENT.get(),
+                AlienEntityTypes.ABERRANT_DRONE.get(),
+                GrowthConstants.ADOLESCENT_GROWTH_TIME_IN_TICKS
             )
         );
         biConsumer.accept(
@@ -71,12 +87,12 @@ public class AberrantAlienGrowthStageProvider {
 
     private static void provideRunnerAberrantGrowthStages(BiConsumer<String, GrowthStage> biConsumer) {
         biConsumer.accept(
-            "aberrant_chestburster_to_aberrant_runner",
+            "aberrant_adolescent_to_aberrant_runner",
             new GrowthStage(
                 AVPEntityTypeTags.RUNNER_HOSTS,
-                AlienEntityTypes.ABERRANT_CHESTBURSTER.get(),
+                AlienEntityTypes.ABERRANT_ADOLESCENT.get(),
                 AlienEntityTypes.ABERRANT_RUNNER.get(),
-                GrowthConstants.CHESTBURSTER_GROWTH_TIME_IN_TICKS / 2
+                GrowthConstants.ADOLESCENT_GROWTH_TIME_IN_TICKS / 2
             )
         );
         biConsumer.accept(

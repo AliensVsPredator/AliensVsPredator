@@ -1,8 +1,9 @@
-package com.alien.common.gameplay.entity.living.alien.chestburster;
+package com.alien.common.gameplay.entity.living.alien.adolescent;
 
 import com.alien.common.gameplay.entity.living.alien.Alien;
 import com.alien.common.gameplay.entity.living.alien.GrowthManager;
 import com.alien.common.model.alien.variant.AlienVariant;
+import com.alien.common.model.resin.ResinData;
 import com.alien.common.registry.init.AlienEntityTypes;
 import com.alien.common.util.AlienPredicates;
 import com.alien.common.util.XenomorphGrowthUtil;
@@ -22,25 +23,25 @@ import org.jetbrains.annotations.Nullable;
 import com.avp.AVP;
 import com.avp.common.util.AVPPredicates;
 
-public class Chestburster extends Alien {
+public class Adolescent extends Alien {
 
-    public static AttributeSupplier.Builder createChestbursterAttributes() {
-        return applyFrom(AVP.config.statsConfigs.CHESTBURSTER_STATS, Monster.createMonsterAttributes());
+    public static AttributeSupplier.Builder createAdolescentAttributes() {
+        return applyFrom(AVP.config.statsConfigs.ADOLESCENT_STATS, Monster.createMonsterAttributes());
     }
 
-    private final ChestbursterAnimationDispatcher animationDispatcher;
+    private final AdolescentAnimationDispatcher animationDispatcher;
 
     private final GrowthManager growthManager;
 
-    public Chestburster(EntityType<? extends Chestburster> entityType, Level level) {
+    public Adolescent(EntityType<? extends Adolescent> entityType, Level level) {
         super(entityType, level);
-        this.animationDispatcher = new ChestbursterAnimationDispatcher(this);
+        this.animationDispatcher = new AdolescentAnimationDispatcher(this);
         this.growthManager = new GrowthManager(this, XenomorphGrowthUtil.GROW_UP_CALLBACK)
             .setGrowOverTime(true)
             .setGrowthTimeReductionMultiplierProvider(
                 () -> geneManager.get(GeneKeys.GROWTH_SPEED, GeneDecoders.GROWTH_SPEED)
             );
-        this.config = AVP.config.statsConfigs.CHESTBURSTER_STATS;
+        this.config = AVP.config.statsConfigs.ADOLESCENT_STATS;
     }
 
     @Override
@@ -74,7 +75,11 @@ public class Chestburster extends Alien {
 
     @Override
     protected float getHealthRegenPerSecond() {
-        return AVP.config.statsConfigs.CHESTBURSTER_STATS.healthRegenPerSecond;
+        return AVP.config.statsConfigs.ADOLESCENT_STATS.healthRegenPerSecond;
+    }
+
+    protected @NotNull ResinData createResinData() {
+        return new ResinData(0, 8, 1, AVP.config.statsConfigs.ADOLESCENT_STATS.nestTickrate);
     }
 
     @Override
@@ -94,24 +99,24 @@ public class Chestburster extends Alien {
         return 1;
     }
 
-    public ChestbursterAnimationDispatcher getAnimationDispatcher() {
+    public AdolescentAnimationDispatcher getAnimationDispatcher() {
         return animationDispatcher;
     }
 
     public static @Nullable EntityType<? extends Alien> getType(AlienVariant alienVariant, boolean isRoyal) {
         if (isRoyal) {
             return switch (alienVariant) {
-                case NORMAL -> AlienEntityTypes.ROYAL_CHESTBURSTER.get();
-                case NETHER -> AlienEntityTypes.ROYAL_NETHER_CHESTBURSTER.get();
-                case ABERRANT -> AlienEntityTypes.ROYAL_ABERRANT_CHESTBURSTER.get();
+                case NORMAL -> AlienEntityTypes.ROYAL_ADOLESCENT.get();
+                case NETHER -> AlienEntityTypes.ROYAL_NETHER_ADOLESCENT.get();
+                case ABERRANT -> AlienEntityTypes.ROYAL_ABERRANT_ADOLESCENT.get();
                 case IRRADIATED -> null;
             };
         }
 
         return switch (alienVariant) {
-            case NORMAL -> AlienEntityTypes.CHESTBURSTER.get();
-            case NETHER -> AlienEntityTypes.NETHER_CHESTBURSTER.get();
-            case ABERRANT -> AlienEntityTypes.ABERRANT_CHESTBURSTER.get();
+            case NORMAL -> AlienEntityTypes.ADOLESCENT.get();
+            case NETHER -> AlienEntityTypes.NETHER_ADOLESCENT.get();
+            case ABERRANT -> AlienEntityTypes.ABERRANT_ADOLESCENT.get();
             case IRRADIATED -> null;
         };
     }

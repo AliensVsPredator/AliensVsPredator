@@ -2,6 +2,7 @@ package com.alien.common.registry.init;
 
 import com.alien.common.gameplay.entity.acid.Acid;
 import com.alien.common.gameplay.entity.living.alien.Alien;
+import com.alien.common.gameplay.entity.living.alien.adolescent.Adolescent;
 import com.alien.common.gameplay.entity.living.alien.chestburster.Chestburster;
 import com.alien.common.gameplay.entity.living.alien.ovomorph.Ovomorph;
 import com.alien.common.gameplay.entity.living.alien.parasite.facehugger.Facehugger;
@@ -24,6 +25,15 @@ import com.avp.common.registry.init.entity_type.AVPEntityTypes;
 import com.avp.service.Services;
 
 public class AlienEntityTypes {
+
+    public static final AVPDeferredHolder<EntityType<Adolescent>> ABERRANT_ADOLESCENT = AVPEntityTypes.register(
+        "aberrant_adolescent",
+        EntityType.Builder.<Adolescent>of(
+            (type, level) -> aberrantFactory(Adolescent::new, type, level),
+            AVPEntityTypes.ALIEN_CATEGORY
+        )
+            .sized(0.5f, 0.5f)
+    );
 
     public static final AVPDeferredHolder<EntityType<Chestburster>> ABERRANT_CHESTBURSTER = AVPEntityTypes.register(
         "aberrant_chestburster",
@@ -112,6 +122,12 @@ public class AlienEntityTypes {
             .sized(0.66F, 0.05F)
     );
 
+    public static final AVPDeferredHolder<EntityType<Adolescent>> ADOLESCENT = AVPEntityTypes.register(
+        "adolescent",
+        EntityType.Builder.of(Adolescent::new, AVPEntityTypes.ALIEN_CATEGORY)
+            .sized(0.5f, 0.5f)
+    );
+
     public static final AVPDeferredHolder<EntityType<Chestburster>> CHESTBURSTER = AVPEntityTypes.register(
         "chestburster",
         EntityType.Builder.of(Chestburster::new, AVPEntityTypes.ALIEN_CATEGORY)
@@ -176,6 +192,15 @@ public class AlienEntityTypes {
         "irradiated_warrior",
         EntityType.Builder.of(Warrior::new, AVPEntityTypes.ALIEN_CATEGORY)
             .sized(0.8f, 1.98f)
+    );
+
+    public static final AVPDeferredHolder<EntityType<Adolescent>> NETHER_ADOLESCENT = AVPEntityTypes.register(
+        "nether_adolescent",
+        EntityType.Builder.<Adolescent>of(
+            (type, level) -> nethermorphFactory(Adolescent::new, type, level),
+            AVPEntityTypes.ALIEN_CATEGORY
+        )
+            .sized(0.5f, 0.5f)
     );
 
     public static final AVPDeferredHolder<EntityType<Chestburster>> NETHER_CHESTBURSTER = AVPEntityTypes.register(
@@ -283,6 +308,15 @@ public class AlienEntityTypes {
             .sized(1.98f, 3.98f)
     );
 
+    public static final AVPDeferredHolder<EntityType<Adolescent>> ROYAL_ABERRANT_ADOLESCENT = AVPEntityTypes.register(
+        "royal_aberrant_adolescent",
+        EntityType.Builder.<Adolescent>of(
+            (type, level) -> aberrantFactory(Adolescent::new, type, level),
+            AVPEntityTypes.ALIEN_CATEGORY
+        )
+            .sized(0.5f, 0.5f)
+    );
+
     public static final AVPDeferredHolder<EntityType<Chestburster>> ROYAL_ABERRANT_CHESTBURSTER = AVPEntityTypes.register(
         "royal_aberrant_chestburster",
         EntityType.Builder.<Chestburster>of(
@@ -310,6 +344,12 @@ public class AlienEntityTypes {
             .sized(0.65f, 0.8f)
     );
 
+    public static final AVPDeferredHolder<EntityType<Adolescent>> ROYAL_ADOLESCENT = AVPEntityTypes.register(
+        "royal_adolescent",
+        EntityType.Builder.of(Adolescent::new, AVPEntityTypes.ALIEN_CATEGORY)
+            .sized(0.5f, 0.5f)
+    );
+
     public static final AVPDeferredHolder<EntityType<Chestburster>> ROYAL_CHESTBURSTER = AVPEntityTypes.register(
         "royal_chestburster",
         EntityType.Builder.<Chestburster>of(Chestburster::new, AVPEntityTypes.ALIEN_CATEGORY)
@@ -326,6 +366,15 @@ public class AlienEntityTypes {
         "royal_ovomorph",
         EntityType.Builder.of(Ovomorph::new, AVPEntityTypes.ALIEN_CATEGORY)
             .sized(0.65f, 0.8f)
+    );
+
+    public static final AVPDeferredHolder<EntityType<Adolescent>> ROYAL_NETHER_ADOLESCENT = AVPEntityTypes.register(
+        "royal_nether_adolescent",
+        EntityType.Builder.<Adolescent>of(
+            (type, level) -> nethermorphFactory(Adolescent::new, type, level),
+            AVPEntityTypes.ALIEN_CATEGORY
+        )
+            .sized(0.5f, 0.5f)
     );
 
     public static final AVPDeferredHolder<EntityType<Chestburster>> ROYAL_NETHER_CHESTBURSTER = AVPEntityTypes.register(
@@ -389,6 +438,7 @@ public class AlienEntityTypes {
     }
 
     public static void initialize() {
+        Services.REGISTRY.registerEntityAttributes(ABERRANT_ADOLESCENT, Adolescent::createAdolescentAttributes);
         Services.REGISTRY.registerEntityAttributes(ABERRANT_CHESTBURSTER, Chestburster::createChestbursterAttributes);
         Services.REGISTRY.registerEntityAttributes(ABERRANT_CRUSHER, Crusher::createCrusherAttributes);
         Services.REGISTRY.registerEntityAttributes(ABERRANT_DRONE, Drone::createDroneAttributes);
@@ -400,6 +450,7 @@ public class AlienEntityTypes {
         Services.REGISTRY.registerEntityAttributes(ABERRANT_RUNNER, Runner::createRunnerAttributes);
         Services.REGISTRY.registerEntityAttributes(ABERRANT_WARRIOR, Warrior::createWarriorAttributes);
         Services.REGISTRY.registerEntityAttributes(CHESTBURSTER, Chestburster::createChestbursterAttributes);
+        Services.REGISTRY.registerEntityAttributes(ADOLESCENT, Adolescent::createAdolescentAttributes);
         Services.REGISTRY.registerEntityAttributes(CRUSHER, Crusher::createCrusherAttributes);
         Services.REGISTRY.registerEntityAttributes(DRONE, Drone::createDroneAttributes);
         Services.REGISTRY.registerEntityAttributes(FACEHUGGER, Facehugger::createFacehuggerAttributes);
@@ -410,6 +461,7 @@ public class AlienEntityTypes {
         Services.REGISTRY.registerEntityAttributes(IRRADIATED_QUEEN, Queen::createQueenAttributes);
         Services.REGISTRY.registerEntityAttributes(IRRADIATED_RUNNER, Runner::createRunnerAttributes);
         Services.REGISTRY.registerEntityAttributes(IRRADIATED_WARRIOR, Warrior::createWarriorAttributes);
+        Services.REGISTRY.registerEntityAttributes(NETHER_ADOLESCENT, Adolescent::createAdolescentAttributes);
         Services.REGISTRY.registerEntityAttributes(NETHER_CHESTBURSTER, Chestburster::createChestbursterAttributes);
         Services.REGISTRY.registerEntityAttributes(NETHER_CRUSHER, Crusher::createCrusherAttributes);
         Services.REGISTRY.registerEntityAttributes(NETHER_DRONE, Drone::createDroneAttributes);
@@ -424,11 +476,14 @@ public class AlienEntityTypes {
         Services.REGISTRY.registerEntityAttributes(PRAETORIAN, Praetorian::createPraetorianAttributes);
         Services.REGISTRY.registerEntityAttributes(PROWLER, Prowler::createProwlerAttributes);
         Services.REGISTRY.registerEntityAttributes(QUEEN, Queen::createQueenAttributes);
+        Services.REGISTRY.registerEntityAttributes(ROYAL_ABERRANT_ADOLESCENT, Adolescent::createAdolescentAttributes);
         Services.REGISTRY.registerEntityAttributes(ROYAL_ABERRANT_CHESTBURSTER, Chestburster::createChestbursterAttributes);
         Services.REGISTRY.registerEntityAttributes(ROYAL_ABERRANT_FACEHUGGER, Facehugger::createFacehuggerAttributes);
         Services.REGISTRY.registerEntityAttributes(ROYAL_ABERRANT_OVOMORPH, Ovomorph::createOvomorphAttributes);
+        Services.REGISTRY.registerEntityAttributes(ROYAL_ADOLESCENT, Adolescent::createAdolescentAttributes);
         Services.REGISTRY.registerEntityAttributes(ROYAL_CHESTBURSTER, Chestburster::createChestbursterAttributes);
         Services.REGISTRY.registerEntityAttributes(ROYAL_FACEHUGGER, Facehugger::createFacehuggerAttributes);
+        Services.REGISTRY.registerEntityAttributes(ROYAL_NETHER_ADOLESCENT, Adolescent::createAdolescentAttributes);
         Services.REGISTRY.registerEntityAttributes(ROYAL_NETHER_CHESTBURSTER, Chestburster::createChestbursterAttributes);
         Services.REGISTRY.registerEntityAttributes(ROYAL_NETHER_FACEHUGGER, Facehugger::createFacehuggerAttributes);
         Services.REGISTRY.registerEntityAttributes(ROYAL_NETHER_OVOMORPH, Ovomorph::createOvomorphAttributes);

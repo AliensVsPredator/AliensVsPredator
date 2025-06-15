@@ -13,62 +13,50 @@ public class NetherAlienGrowthStageProvider {
     public static void provide(BiConsumer<String, GrowthStage> biConsumer) {
         provideBaseNetherGrowthStages(biConsumer);
         providerRunnerNetherGrowthStages(biConsumer);
-
+        
         biConsumer.accept(
-            "royal_nether_chestburster_to_nether_praetorian",
+            "royal_nether_chestburster_to_royal_nether_adolescent",
             new GrowthStage(
                 AlienEntityTypes.ROYAL_NETHER_CHESTBURSTER.get(),
-                AlienEntityTypes.NETHER_PRAETORIAN.get(),
+                AlienEntityTypes.ROYAL_NETHER_ADOLESCENT.get(),
                 GrowthConstants.ROYAL_CHESTBURSTER_GROWTH_TIME_IN_TICKS
             )
         );
+        biConsumer.accept(
+            "royal_nether_adolescent_to_nether_praetorian",
+            new GrowthStage(
+                AlienEntityTypes.ROYAL_NETHER_ADOLESCENT.get(),
+                AlienEntityTypes.NETHER_PRAETORIAN.get(),
+                GrowthConstants.ROYAL_ADOLESCENT_GROWTH_TIME_IN_TICKS
+            )
+        );
 
         biConsumer.accept(
-            "royal_nether_chestburster_to_nether_crusher",
+            "royal_nether_adolescent_to_nether_crusher",
             new GrowthStage(
                 AVPEntityTypeTags.RUNNER_HOSTS,
-                AlienEntityTypes.ROYAL_NETHER_CHESTBURSTER.get(),
+                AlienEntityTypes.ROYAL_NETHER_ADOLESCENT.get(),
                 AlienEntityTypes.NETHER_CRUSHER.get(),
-                GrowthConstants.ROYAL_CHESTBURSTER_GROWTH_TIME_IN_TICKS / 2
-            )
-        );
-    }
-
-    private static void providerRunnerNetherGrowthStages(BiConsumer<String, GrowthStage> biConsumer) {
-        biConsumer.accept(
-            "nether_chestburster_to_nether_runner",
-            new GrowthStage(
-                AVPEntityTypeTags.RUNNER_HOSTS,
-                AlienEntityTypes.NETHER_CHESTBURSTER.get(),
-                AlienEntityTypes.NETHER_RUNNER.get(),
-                GrowthConstants.CHESTBURSTER_GROWTH_TIME_IN_TICKS / 2
-            )
-        );
-        biConsumer.accept(
-            "nether_runner_to_nether_prowler",
-            new GrowthStage(
-                AlienEntityTypes.NETHER_RUNNER.get(),
-                AlienEntityTypes.NETHER_PROWLER.get(),
-                GrowthConstants.DRONE_GROWTH_TIME_IN_TICKS / 2
-            )
-        );
-        biConsumer.accept(
-            "nether_prowler_to_nether_crusher",
-            new GrowthStage(
-                AlienEntityTypes.NETHER_PROWLER.get(),
-                AlienEntityTypes.NETHER_CRUSHER.get(),
-                GrowthConstants.WARRIOR_GROWTH_TIME_IN_TICKS / 2
+                GrowthConstants.ROYAL_ADOLESCENT_GROWTH_TIME_IN_TICKS / 2
             )
         );
     }
 
     private static void provideBaseNetherGrowthStages(BiConsumer<String, GrowthStage> biConsumer) {
         biConsumer.accept(
-            "nether_chestburster_to_nether_drone",
+            "nether_chestburster_to_nether_adolescent",
             new GrowthStage(
                 AlienEntityTypes.NETHER_CHESTBURSTER.get(),
-                AlienEntityTypes.NETHER_DRONE.get(),
+                AlienEntityTypes.NETHER_ADOLESCENT.get(),
                 GrowthConstants.CHESTBURSTER_GROWTH_TIME_IN_TICKS
+            )
+        );
+        biConsumer.accept(
+            "nether_adolescent_to_nether_drone",
+            new GrowthStage(
+                AlienEntityTypes.NETHER_ADOLESCENT.get(),
+                AlienEntityTypes.NETHER_DRONE.get(),
+                GrowthConstants.ADOLESCENT_GROWTH_TIME_IN_TICKS
             )
         );
         biConsumer.accept(
@@ -93,6 +81,34 @@ public class NetherAlienGrowthStageProvider {
                 AlienEntityTypes.NETHER_PRAETORIAN.get(),
                 AlienEntityTypes.NETHER_QUEEN.get(),
                 GrowthConstants.PRAETORIAN_GROWTH_TIME_IN_TICKS
+            )
+        );
+    }
+
+    private static void providerRunnerNetherGrowthStages(BiConsumer<String, GrowthStage> biConsumer) {
+        biConsumer.accept(
+            "nether_adolescent_to_nether_runner",
+            new GrowthStage(
+                AVPEntityTypeTags.RUNNER_HOSTS,
+                AlienEntityTypes.NETHER_ADOLESCENT.get(),
+                AlienEntityTypes.NETHER_RUNNER.get(),
+                GrowthConstants.ADOLESCENT_GROWTH_TIME_IN_TICKS / 2
+            )
+        );
+        biConsumer.accept(
+            "nether_runner_to_nether_prowler",
+            new GrowthStage(
+                AlienEntityTypes.NETHER_RUNNER.get(),
+                AlienEntityTypes.NETHER_PROWLER.get(),
+                GrowthConstants.DRONE_GROWTH_TIME_IN_TICKS / 2
+            )
+        );
+        biConsumer.accept(
+            "nether_prowler_to_nether_crusher",
+            new GrowthStage(
+                AlienEntityTypes.NETHER_PROWLER.get(),
+                AlienEntityTypes.NETHER_CRUSHER.get(),
+                GrowthConstants.WARRIOR_GROWTH_TIME_IN_TICKS / 2
             )
         );
     }
