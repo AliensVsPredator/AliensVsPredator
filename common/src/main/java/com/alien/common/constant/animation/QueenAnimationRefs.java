@@ -20,6 +20,8 @@ public record QueenAnimationRefs() {
 
     public static final String RUN_ANIMATION_NAME = "animation.run";
 
+    public static final String SIT_ON_OVIPOSITOR_ANIMATION_NAME = "animation.rideegg";
+
     public static final String SWIM_ANIMATION_NAME = "animation.swim";
 
     public static final String WALK_ANIMATION_NAME = "animation.walk";

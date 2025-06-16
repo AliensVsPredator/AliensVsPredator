@@ -9,7 +9,16 @@
   - Ovomorphs now have a "desire" meter for hatching. 
   - Changes in the environment (such as light) will increase the desire meter.
   - Movement of nearby hosts will also increase the desire meter.
-- Added new aliens:
+- Added the queen's ovipositor/eggsack:
+  - Queens will create an ovipositor when they are in a hive and are "safe" (they aren't the only hive member).
+  - The queen will play a new animation when she is mounted on her ovipositor.
+  - Ovipositors are an entity and extend off of the queen. Other mobs will not attack the ovipositor.
+  - The queen requires a considerable amount of space as well as stable ground to create her ovipositor.
+  - Eggs no longer drop at the queen's feet, but instead at the end of the ovipositor.
+  - Egglaying has otherwise remained unchanged.
+- Ovomorphs no longer spawn naturally.
+  - Ovipositor is complete, natural ovomorph spawning is no longer necessary.
+- Added new entities:
   - Aberrant Adolescent
   - Aberrant Crusher
   - Aberrant Prowler
@@ -23,6 +32,7 @@
   - Nether Crusher
   - Nether Prowler
   - Nether Runner
+  - Ovipositor
   - Prowler
   - Royal Aberrant Adolescent
   - Royal Adolescent
@@ -33,6 +43,16 @@
 - All aliens can now detect vibrations (instead of just xenomorphs).
 - Chestbursters can no longer be trapped in boats and minecarts.
 - Facehuggers can no longer be trapped in boats and minecarts.
+- Moved the following config options to datapack:
+  - `CHESTBURSTER_MAX_GROWTH_TIMER_SECONDS`
+  - `DRONE_MAX_GROWTH_TIMER_SECONDS`
+  - `PRAETORIAN_MAX_GROWTH_TIMER_SECONDS`
+  - `PRAETORIAN_SHORTCUT_TIMER_SECONDS`
+  - `WARRIOR_MAX_GROWTH_TIMER_SECONDS`
+- Removed the following config options:
+  - `ABERRANT_OVOMORPH_SPAWN`
+  - `NETHER_OVOMORPH_SPAWN`
+  - `OVOMORPH_SPAWN`
 
 ## 🐞 Fixes
 - N/A
@@ -49,8 +69,8 @@
 
 ## 🔬 Technical Changes
 - Upgraded alien lifecycles to support host entity tags.
-- Added full datagen support for alien growth stages. Alien lifecycle registry has been removed.
+- Added full datapack support for alien growth stages.
 - Alien lifecycle host entity tags have been migrated to individual alien growth stages.
 - Upgraded alien infections to support host entity tags.
-- Added full datagen support for alien infections. Alien infection registry has been removed.
+- Added full datapack support for alien infections.
 - Removed redundant royal data from aliens.

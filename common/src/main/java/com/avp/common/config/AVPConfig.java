@@ -88,11 +88,6 @@ public class AVPConfig {
 
         @Configurable
         @Configurable.Synchronized
-        @Configurable.Comment("Modifying these will require restarting the game.")
-        public SpawnSettings ABERRANT_OVOMORPH_SPAWN = new SpawnSettings(true, 1, 3, 10);
-
-        @Configurable
-        @Configurable.Synchronized
         @Configurable.Comment("Aberrant Praetorian spawn settings. Modifying these will require restarting the game.")
         public SpawnSettings ABERRANT_PRAETORIAN_SPAWN = new SpawnSettings(true, 1, 1, 10);
 
@@ -185,11 +180,6 @@ public class AVPConfig {
 
         @Configurable
         @Configurable.Synchronized
-        @Configurable.Comment("Modifying these will require restarting the game.")
-        public SpawnSettings NETHER_OVOMORPH_SPAWN = new SpawnSettings(true, 1, 3, 10);
-
-        @Configurable
-        @Configurable.Synchronized
         @Configurable.Comment("Nether Praetorian spawn settings. Modifying these will require restarting the game.")
         public SpawnSettings NETHER_PRAETORIAN_SPAWN = new SpawnSettings(true, 1, 1, 10);
 
@@ -212,11 +202,6 @@ public class AVPConfig {
         @Configurable.Synchronized
         @Configurable.Comment("Nether Warrior spawn settings. Modifying these will require restarting the game.")
         public SpawnSettings NETHER_WARRIOR_SPAWN = new SpawnSettings(true, 1, 2, 25);
-
-        @Configurable
-        @Configurable.Synchronized
-        @Configurable.Comment("Ovomorph spawn settings. Modifying these will require restarting the game.")
-        public SpawnSettings OVOMORPH_SPAWN = new SpawnSettings(true, 1, 3, 25);
 
         @Configurable
         @Configurable.Synchronized
@@ -642,28 +627,6 @@ public class AVPConfig {
         @Configurable.Synchronized
         @Configurable.Comment("Requires hive debugging to be enabled.")
         public boolean HIVE_DEBUG_MARK_HIVE_CENTER = true;
-
-        // FIXME: Remove all of these
-
-        @Configurable
-        @Configurable.Synchronized
-        public int CHESTBURSTER_MAX_GROWTH_TIMER_SECONDS = 1200;
-
-        @Configurable
-        @Configurable.Synchronized
-        public int DRONE_MAX_GROWTH_TIMER_SECONDS = 800;
-
-        @Configurable
-        @Configurable.Synchronized
-        public int WARRIOR_MAX_GROWTH_TIMER_SECONDS = 1600;
-
-        @Configurable
-        @Configurable.Synchronized
-        public int PRAETORIAN_MAX_GROWTH_TIMER_SECONDS = 3200;
-
-        @Configurable
-        @Configurable.Synchronized
-        public int PRAETORIAN_SHORTCUT_TIMER_SECONDS = 1800;
     }
 
     @Configurable

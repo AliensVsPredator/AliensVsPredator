@@ -13,7 +13,7 @@ public class NetherAlienGrowthStageProvider {
     public static void provide(BiConsumer<String, GrowthStage> biConsumer) {
         provideBaseNetherGrowthStages(biConsumer);
         providerRunnerNetherGrowthStages(biConsumer);
-        
+
         biConsumer.accept(
             "royal_nether_chestburster_to_royal_nether_adolescent",
             new GrowthStage(

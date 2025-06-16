@@ -55,6 +55,12 @@ public class QueenAnimationDispatcher {
         AzPlayBehaviors.LOOP
     );
 
+    private static final AzCommand SIT_ON_OVIPOSITOR = AzCommand.create(
+        QueenAnimationRefs.FULL_BODY_CONTROLLER_NAME,
+        QueenAnimationRefs.SIT_ON_OVIPOSITOR_ANIMATION_NAME,
+        AzPlayBehaviors.LOOP
+    );
+
     private static final AzCommand SWIM = AzCommand.create(
         QueenAnimationRefs.FULL_BODY_CONTROLLER_NAME,
         QueenAnimationRefs.SWIM_ANIMATION_NAME,
@@ -87,6 +93,10 @@ public class QueenAnimationDispatcher {
 
     public void run() {
         RUN.sendForEntity(queen);
+    }
+
+    public void sitOnOvipositor() {
+        SIT_ON_OVIPOSITOR.sendForEntity(queen);
     }
 
     public void swim() {

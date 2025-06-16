@@ -12,6 +12,7 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.SpawnGroupData;
@@ -36,10 +37,13 @@ public class Queen extends Xenomorph {
 
     private final QueenAnimationDispatcher animationDispatcher;
 
+    private final OvipositorManager ovipositorManager;
+
     public Queen(EntityType<? extends Queen> entityType, Level level) {
         super(entityType, level);
         this.attackDelayTicks = 20;
         this.animationDispatcher = new QueenAnimationDispatcher(this);
+        this.ovipositorManager = new OvipositorManager(this);
         this.config = AVP.config.statsConfigs.QUEEN_STATS;
     }
 
@@ -51,6 +55,22 @@ public class Queen extends Xenomorph {
     @Override
     protected @NotNull ResinData createResinData() {
         return new ResinData(0, 128, 1, AVP.config.statsConfigs.QUEEN_STATS.nestTickrate);
+    }
+
+    @Override
+    public void tick() {
+        super.tick();
+        ovipositorManager.tick();
+    }
+
+    @Override
+    protected void positionRider(@NotNull Entity passenger, @NotNull MoveFunction callback) {
+        if (passenger.getType() == AlienEntityTypes.OVIPOSITOR.get()) {
+            callback.accept(passenger, position().x, position().y, position().z);
+            return;
+        }
+
+        super.positionRider(passenger, callback);
     }
 
     @Override
@@ -154,6 +174,10 @@ public class Queen extends Xenomorph {
 
     public QueenAnimationDispatcher getAnimationDispatcher() {
         return animationDispatcher;
+    }
+
+    public OvipositorManager getOvipositorManager() {
+        return ovipositorManager;
     }
 
     public static EntityType<? extends Alien> getType(AlienVariant alienVariant) {

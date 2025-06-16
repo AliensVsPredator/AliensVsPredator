@@ -42,13 +42,6 @@ public class AVPEntitySpawns {
 
     private static void registerNormalAlienSpawns() {
         Services.REGISTRY.registerEntitySpawnData(
-            AVPEntitySpawnData.builder(AlienEntityTypes.OVOMORPH)
-                .withBiomeTagKey(AVPBiomeTags.HAS_XENOMORPHS)
-                .withSpawnPredicate(AlienSpawning.getTypedPredicate())
-                .withSpawnSettings(AVP.config.spawnConfigs.OVOMORPH_SPAWN)
-                .build()
-        );
-        Services.REGISTRY.registerEntitySpawnData(
             AVPEntitySpawnData.builder(AlienEntityTypes.CHESTBURSTER)
                 .withBiomeTagKey(AVPBiomeTags.HAS_XENOMORPHS)
                 .withSpawnPredicate(AlienSpawning.getTypedPredicate())
@@ -107,13 +100,6 @@ public class AVPEntitySpawns {
     }
 
     private static void registerAberrantAlienSpawns() {
-        Services.REGISTRY.registerEntitySpawnData(
-            AVPEntitySpawnData.builder(AlienEntityTypes.ABERRANT_OVOMORPH)
-                .withBiomeTagKey(AVPBiomeTags.HAS_XENOMORPHS)
-                .withSpawnPredicate(AlienSpawning.getTypedPredicate())
-                .withSpawnSettings(AVP.config.spawnConfigs.ABERRANT_OVOMORPH_SPAWN)
-                .build()
-        );
         Services.REGISTRY.registerEntitySpawnData(
             AVPEntitySpawnData.builder(AlienEntityTypes.ABERRANT_CHESTBURSTER)
                 .withBiomeTagKey(AVPBiomeTags.HAS_XENOMORPHS)
@@ -227,13 +213,6 @@ public class AVPEntitySpawns {
     }
 
     private static void registerNetherAlienSpawns() {
-        Services.REGISTRY.registerEntitySpawnData(
-            AVPEntitySpawnData.builder(AlienEntityTypes.NETHER_OVOMORPH)
-                .withBiomeTagKey(AVPBiomeTags.HAS_XENOMORPHS)
-                .withSpawnPredicate(AlienSpawning.getTypedPredicate())
-                .withSpawnSettings(AVP.config.spawnConfigs.NETHER_OVOMORPH_SPAWN)
-                .build()
-        );
         Services.REGISTRY.registerEntitySpawnData(
             AVPEntitySpawnData.builder(AlienEntityTypes.NETHER_CHESTBURSTER)
                 .withBiomeTagKey(AVPBiomeTags.HAS_XENOMORPHS)

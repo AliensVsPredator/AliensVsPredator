@@ -58,7 +58,9 @@ public class QueenAnimator extends AzEntityAnimator<Queen> {
         var isMovingOnGround = movementAnalyzer.isMovingHorizontally() && queen.onGround();
         Runnable animFunction;
 
-        if (queen.isUnderWater()) {
+        if (queen.getOvipositorManager().hasOvipositor()) {
+            animFunction = dispatcher::sitOnOvipositor;
+        } else if (queen.isUnderWater()) {
             // TODO: idle swim
             animFunction = dispatcher::swim;
         } else if (isMovingOnGround) {

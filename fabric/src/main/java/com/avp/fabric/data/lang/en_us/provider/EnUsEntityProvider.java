@@ -54,6 +54,7 @@ public class EnUsEntityProvider {
         addEntity(builder, AlienEntityTypes.NETHER_RUNNER, "Nether Runner");
         addEntity(builder, AlienEntityTypes.NETHER_WARRIOR, "Nether Warrior");
         addEntity(builder, AlienEntityTypes.OVOMORPH, "Ovomorph");
+        addEntity(builder, AlienEntityTypes.OVIPOSITOR, "Ovipositor");
         addEntity(builder, AlienEntityTypes.PRAETORIAN, "Praetorian");
         addEntity(builder, AlienEntityTypes.PROWLER, "Prowler");
         addEntity(builder, AlienEntityTypes.QUEEN, "Queen");

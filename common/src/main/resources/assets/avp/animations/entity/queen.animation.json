@@ -1,6 +1,226 @@
 {
 	"format_version": "1.8.0",
 	"animations": {
+		"animation.rideegg": {
+			"animation_length": 0.25,
+			"bones": {
+				"root": {
+					"position": {
+						"vector": [0, -5, 0]
+					}
+				},
+				"gTail1": {
+					"rotation": {
+						"vector": [2.5, 0, 0]
+					}
+				},
+				"gTail2": {
+					"rotation": {
+						"vector": [0, 25, 0]
+					}
+				},
+				"gTail3": {
+					"rotation": {
+						"vector": [-10, 35, 0]
+					}
+				},
+				"gTail4": {
+					"rotation": {
+						"vector": [-45, 30, 0]
+					}
+				},
+				"gTail5": {
+					"rotation": {
+						"vector": [-17.94992, 40.30595, 2.95023]
+					}
+				},
+				"gTail6": {
+					"rotation": {
+						"vector": [-3.92114, 12.55852, 6.62029]
+					}
+				},
+				"gTail7": {
+					"rotation": {
+						"vector": [6.25222, 6.55483, -0.70699]
+					}
+				},
+				"gTail8": {
+					"rotation": {
+						"vector": [-16.51716, 27.88225, -12.85623]
+					}
+				},
+				"gTail9": {
+					"rotation": {
+						"vector": [-3.33274, 13.01693, 8.84941]
+					}
+				},
+				"gTail10": {
+					"rotation": {
+						"vector": [-23.87666, -2.08477, -10.702]
+					}
+				},
+				"gTailBlade": {
+					"rotation": {
+						"vector": [12.68664, 9.76061, 2.18558]
+					}
+				},
+				"gRightLeg": {
+					"rotation": {
+						"vector": [-32.5, 15, 3]
+					}
+				},
+				"gRightShin": {
+					"rotation": {
+						"vector": [22.5, 0, 0]
+					}
+				},
+				"gRightAnkle": {
+					"rotation": {
+						"vector": [72.5, 0, 0]
+					}
+				},
+				"gRightFoot": {
+					"rotation": {
+						"vector": [-70, 0, 0]
+					}
+				},
+				"gRightMiddleToe": {
+					"rotation": {
+						"vector": [7.5, 0, 0]
+					}
+				},
+				"gRightPointerToe": {
+					"rotation": {
+						"vector": [7.5, 0, 0]
+					}
+				},
+				"gRightRingToe": {
+					"rotation": {
+						"vector": [7.5, 0, 0]
+					}
+				},
+				"gLowerBody": {
+					"rotation": {
+						"vector": [-30, 0, 0]
+					}
+				},
+				"gNeck": {
+					"rotation": {
+						"vector": [17.5, 0, 0]
+					}
+				},
+				"gNeckEnd": {
+					"rotation": {
+						"vector": [37.5, 0, 0]
+					}
+				},
+				"gHead": {
+					"rotation": {
+						"vector": [10, 0, 0]
+					}
+				},
+				"gLeftShoulder": {
+					"rotation": {
+						"vector": [13, 41, -28]
+					}
+				},
+				"gLeftBicep": {
+					"rotation": {
+						"vector": [-21, 18, -30]
+					}
+				},
+				"gLeftFobackm": {
+					"rotation": {
+						"vector": [20, 43, 0]
+					}
+				},
+				"gLeftHand": {
+					"rotation": {
+						"vector": [14, 20, 33]
+					}
+				},
+				"gRightShoulder": {
+					"rotation": {
+						"vector": [13, -41, 28]
+					}
+				},
+				"gRightBicep": {
+					"rotation": {
+						"vector": [-21, -18, 30]
+					}
+				},
+				"gRightFobackm": {
+					"rotation": {
+						"vector": [20, -43, 0]
+					}
+				},
+				"gRightHand": {
+					"rotation": {
+						"vector": [14, -20, -33]
+					}
+				},
+				"gRightTittyShoulder": {
+					"rotation": {
+						"vector": [0, 0, -7.5]
+					}
+				},
+				"gRightTittyBicep": {
+					"rotation": {
+						"vector": [42.26525, -11.09041, -34.50692]
+					}
+				},
+				"gRightTittyForearm": {
+					"rotation": {
+						"vector": [12.5, 0, 0]
+					}
+				},
+				"gLeftTittyShoulder": {
+					"rotation": {
+						"vector": [0, 0, 7.5]
+					}
+				},
+				"gLeftTittyBicep": {
+					"rotation": {
+						"vector": [53.4421, -2.8432, 29.30797]
+					}
+				},
+				"gLeftLeg": {
+					"rotation": {
+						"vector": [-87.5, -15, -3]
+					}
+				},
+				"gLeftShin": {
+					"rotation": {
+						"vector": [50.5, 0, 0]
+					}
+				},
+				"gLeftAnkle": {
+					"rotation": {
+						"vector": [30.5, 0, 0]
+					}
+				},
+				"gLeftFoot": {
+					"rotation": {
+						"vector": [-16.5, 0, 0]
+					}
+				},
+				"gLeftMiddleToe": {
+					"rotation": {
+						"vector": [17.5, 0, 0]
+					}
+				},
+				"gLeftPointerToe": {
+					"rotation": {
+						"vector": [17.5, 0, 0]
+					}
+				},
+				"gLeftRingToe": {
+					"rotation": {
+						"vector": [17.5, 0, 0]
+					}
+				}
+			}
+		},
 		"animation.run": {
 			"loop": true,
 			"animation_length": 0.875,

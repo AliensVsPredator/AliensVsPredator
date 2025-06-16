@@ -4,6 +4,7 @@ import com.alien.common.gameplay.entity.acid.Acid;
 import com.alien.common.gameplay.entity.living.alien.Alien;
 import com.alien.common.gameplay.entity.living.alien.adolescent.Adolescent;
 import com.alien.common.gameplay.entity.living.alien.chestburster.Chestburster;
+import com.alien.common.gameplay.entity.living.alien.ovipositor.Ovipositor;
 import com.alien.common.gameplay.entity.living.alien.ovomorph.Ovomorph;
 import com.alien.common.gameplay.entity.living.alien.parasite.facehugger.Facehugger;
 import com.alien.common.gameplay.entity.living.alien.xenomorph.crusher.Crusher;
@@ -284,6 +285,12 @@ public class AlienEntityTypes {
             .sized(0.8f, 1.98f)
     );
 
+    public static final AVPDeferredHolder<EntityType<Ovipositor>> OVIPOSITOR = AVPEntityTypes.register(
+        "ovipositor",
+        EntityType.Builder.of(Ovipositor::new, AVPEntityTypes.ALIEN_CATEGORY)
+            .sized(3f, 3f)
+    );
+
     public static final AVPDeferredHolder<EntityType<Ovomorph>> OVOMORPH = AVPEntityTypes.register(
         "ovomorph",
         EntityType.Builder.of(Ovomorph::new, AVPEntityTypes.ALIEN_CATEGORY)
@@ -472,6 +479,7 @@ public class AlienEntityTypes {
         Services.REGISTRY.registerEntityAttributes(NETHER_QUEEN, Queen::createQueenAttributes);
         Services.REGISTRY.registerEntityAttributes(NETHER_RUNNER, Runner::createRunnerAttributes);
         Services.REGISTRY.registerEntityAttributes(NETHER_WARRIOR, Warrior::createWarriorAttributes);
+        Services.REGISTRY.registerEntityAttributes(OVIPOSITOR, Ovipositor::createMobAttributes);
         Services.REGISTRY.registerEntityAttributes(OVOMORPH, Ovomorph::createOvomorphAttributes);
         Services.REGISTRY.registerEntityAttributes(PRAETORIAN, Praetorian::createPraetorianAttributes);
         Services.REGISTRY.registerEntityAttributes(PROWLER, Prowler::createProwlerAttributes);
