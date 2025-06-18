@@ -217,6 +217,7 @@ public class EnUsItemProvider {
         addItem(builder, AVPItems.STEEL_PICKAXE, "Steel Pickaxe");
         addItem(builder, AVPItems.STEEL_SHOVEL, "Steel Shovel");
         addItem(builder, AVPItems.STEEL_SWORD, "Steel Sword");
+        addItem(builder, AVPItems.SYRINGE, "Syringe");
         addItem(builder, AVPItems.TITANIUM_AXE, "Titanium Axe");
         addItem(builder, AVPItems.TITANIUM_HOE, "Titanium Hoe");
         addItem(builder, AVPItems.TITANIUM_PICKAXE, "Titanium Pickaxe");

@@ -4,20 +4,17 @@ import com.alien.common.gameplay.entity.living.alien.Alien;
 import com.alien.common.gameplay.entity.living.alien.parasite.Parasite;
 import com.alien.common.model.alien.Host;
 import com.alien.common.model.lifecycle.infection.Infection;
+import com.alien.common.registry.GeneBonusDataRegistry;
 import com.alien.common.registry.InfectionRegistry;
-import com.lib.common.gameplay.entity.manager.GeneManager;
-import com.lib.common.gameplay.gene.GeneProviders;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.effect.MobEffectInstance;
-import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.monster.Witch;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import org.spongepowered.asm.mixin.Mixin;
@@ -26,7 +23,6 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 @Mixin(LivingEntity.class)
@@ -37,9 +33,6 @@ public abstract class MixinLivingEntity_GrowEmbryo extends Entity implements Hos
 
     @Unique
     private static final String PARASITE_TYPE_KEY = "parasiteType";
-
-    @Unique
-    private GeneManager geneManager;
 
     @Unique
     private int parasiteGrowthTimeInTicks;
@@ -58,8 +51,6 @@ public abstract class MixinLivingEntity_GrowEmbryo extends Entity implements Hos
 
     @Inject(at = @At("HEAD"), method = "readAdditionalSaveData")
     public void readAdditionalSaveData(CompoundTag compoundTag, CallbackInfo callbackInfo) {
-        getOrCreateGeneManager().load(compoundTag);
-
         this.parasiteGrowthTimeInTicks = compoundTag.getInt(PARASITE_GROWTH_TIME_IN_TICKS_KEY);
 
         var resourceLocationString = compoundTag.getString(PARASITE_TYPE_KEY);
@@ -73,8 +64,6 @@ public abstract class MixinLivingEntity_GrowEmbryo extends Entity implements Hos
 
     @Inject(at = @At("HEAD"), method = "addAdditionalSaveData")
     public void addAdditionalSaveData(CompoundTag compoundTag, CallbackInfo callbackInfo) {
-        getOrCreateGeneManager().save(compoundTag);
-
         compoundTag.putInt(PARASITE_GROWTH_TIME_IN_TICKS_KEY, parasiteGrowthTimeInTicks);
 
         if (parasiteType != null) {
@@ -96,7 +85,7 @@ public abstract class MixinLivingEntity_GrowEmbryo extends Entity implements Hos
         if (self instanceof Player player && (player.isCreative() || player.isSpectator() || player.isInvulnerable())) {
             parasiteGrowthTimeInTicks = 0;
             parasiteType = null;
-            geneManager = null;
+            setGeneManager(null);
             return;
         }
 
@@ -111,7 +100,7 @@ public abstract class MixinLivingEntity_GrowEmbryo extends Entity implements Hos
     private void tickParasiteGrowth(Level level, LivingEntity self) {
         parasiteGrowthTimeInTicks++;
 
-        // TODO: Make time configurable
+        // TODO: Use data pack values here.
         if (parasiteGrowthTimeInTicks <= TimeUnit.MINUTES.toSeconds(5) * 20) {
             return;
         }
@@ -143,7 +132,7 @@ public abstract class MixinLivingEntity_GrowEmbryo extends Entity implements Hos
         }
 
         if (embryo instanceof Alien alien) {
-            applyGenesToParasite(self, alien);
+            applyGenesToEmbryo(self, alien);
             alien.setHostType(self.getType());
         }
 
@@ -152,60 +141,27 @@ public abstract class MixinLivingEntity_GrowEmbryo extends Entity implements Hos
         embryo.setXRot(getXRot());
 
         if (embryo instanceof LivingEntity livingEmbryo) {
-            // TODO: This shouldn't be here at all.
-            if (self instanceof Witch) {
-                var effects = List.of(
-                    MobEffects.DAMAGE_BOOST,
-                    MobEffects.MOVEMENT_SPEED,
-                    MobEffects.REGENERATION,
-                    MobEffects.DIG_SPEED,
-                    MobEffects.JUMP
-                );
-                var randomEffect = effects.get(self.getRandom().nextInt(effects.size()));
-                // TODO: Prefer genes over effects, effects can be removed by milk / other factors, genes can't.
-                livingEmbryo.addEffect(new MobEffectInstance(randomEffect, Integer.MAX_VALUE, 0, false, false));
-            }
-
+            // TODO: The genes are assigned once here, but if they're removed they don't appear on the embryo again.
             // Copies effects from previous entity to the next
             for (var effect : self.getActiveEffects()) {
-                livingEmbryo.addEffect(new MobEffectInstance(effect));
+                livingEmbryo.addEffect(new MobEffectInstance(effect.getEffect(), Integer.MAX_VALUE, effect.getAmplifier(), false, false));
             }
         }
-
-        // TODO: Adjust parasite's base attributes based on genes.
 
         level.addFreshEntity(embryo);
     }
 
     @Unique
-    private void applyGenesToParasite(LivingEntity self, Alien alien) {
-        var geneManager = alien.getGeneManager();
-        geneManager.setAll(getOrCreateGeneManager().getAll());
+    private void applyGenesToEmbryo(LivingEntity self, Alien embryo) {
+        var alienGeneManager = embryo.getGeneManager();
 
-        // Transfer genetics from parasite to embryo.
+        // Transfer genes.
+        getOrCreateGeneManager().transfer(alienGeneManager, true);
+
+        // Transfer genes from host to embryo.
         var hostType = self.getType();
-        var hostSpecificBonusGenesMap = GeneProviders.GENE_MAPS_BY_ENTITY_TYPE.get(hostType);
-
-        if (hostSpecificBonusGenesMap != null) {
-            hostSpecificBonusGenesMap.forEach(geneManager::add);
-        }
-
-        // Should be safe since this is a LivingEntity mixin, would only break if some other mod
-        // is modifying getType to NOT return a living entity type.
-        @SuppressWarnings("unchecked")
-        var commonBonusGenesMap = GeneProviders.computeInheritedGeneAdditiveValues(
-            (EntityType<? extends LivingEntity>) hostType
-        );
-        commonBonusGenesMap.forEach(geneManager::add);
-    }
-
-    @Override
-    public GeneManager getOrCreateGeneManager() {
-        if (geneManager == null) {
-            this.geneManager = new GeneManager(this);
-        }
-
-        return geneManager;
+        var hostSpecificBonusGenesMap = GeneBonusDataRegistry.getOrDefault(hostType);
+        hostSpecificBonusGenesMap.forEach(alienGeneManager::addActiveGene);
     }
 
     @Override
@@ -216,11 +172,13 @@ public abstract class MixinLivingEntity_GrowEmbryo extends Entity implements Hos
     @Override
     public void injectEmbryo(Parasite parasite) {
         this.parasiteType = parasite.getType();
-        getOrCreateGeneManager().setAll(parasite.getGeneManager().getAll());
+        // Assign the active genes from the parasite to the host's gene manager.
+        parasite.getGeneManager().transfer(getOrCreateGeneManager(), false);
 
         var self = LivingEntity.class.cast(this);
 
         if (self instanceof Mob mob) {
+            // Set persistence required since we don't want this mob to despawn while it is carrying an embryo.
             mob.setPersistenceRequired();
         }
     }

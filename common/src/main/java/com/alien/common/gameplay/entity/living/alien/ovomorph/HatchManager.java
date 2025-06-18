@@ -176,7 +176,7 @@ public class HatchManager implements NBTSerializable {
             return;
         }
 
-        facehugger.getGeneManager().setAll(ovomorph.getGeneManager().getAll());
+        ovomorph.getGeneManager().transfer(facehugger.getGeneManager(), false);
 
         var ovomorphAbovePos = ovomorph.blockPosition().above();
         var ovomorphSuffocatingAboveCheck = ovomorph.level()

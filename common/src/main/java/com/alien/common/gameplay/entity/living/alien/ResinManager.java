@@ -19,10 +19,8 @@ import net.minecraft.world.level.gameevent.DynamicGameEventListener;
 import net.minecraft.world.level.gameevent.EntityPositionSource;
 import net.minecraft.world.level.gameevent.GameEventListener;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.function.BiConsumer;
-import java.util.function.Supplier;
 
 import com.avp.AVP;
 
@@ -37,8 +35,6 @@ public class ResinManager implements GameEventListener.Provider<ResinSpreadListe
     private final DynamicGameEventListener<ResinSpreadListener> dynamicResinSpreadListener;
 
     private final ResinSpreadListener resinSpreadListener;
-
-    private @Nullable Supplier<Integer> bonusResinProvider;
 
     private ResinData resinData;
 
@@ -78,11 +74,6 @@ public class ResinManager implements GameEventListener.Provider<ResinSpreadListe
         var factor = ticksSinceLastResinProduction / resinData.tickRate();
         var accumulatedResin = factor * resinData.resinPerTick();
         resinData.addResin(accumulatedResin);
-
-        if (bonusResinProvider != null) {
-            var bonusResin = bonusResinProvider.get();
-            resinData.addResin(bonusResin);
-        }
 
         ticksSinceLastResinProduction = 0;
 
@@ -196,11 +187,6 @@ public class ResinManager implements GameEventListener.Provider<ResinSpreadListe
 
     public ResinData resinData() {
         return resinData;
-    }
-
-    public ResinManager setBonusResinProvider(Supplier<Integer> bonusResinProvider) {
-        this.bonusResinProvider = bonusResinProvider;
-        return this;
     }
 
     @Override

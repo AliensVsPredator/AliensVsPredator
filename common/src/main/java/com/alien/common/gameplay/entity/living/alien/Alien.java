@@ -1,5 +1,6 @@
 package com.alien.common.gameplay.entity.living.alien;
 
+import com.alien.common.model.alien.GeneCarrier;
 import com.alien.common.model.alien.variant.AlienVariant;
 import com.alien.common.util.AcidBleedUtil;
 import com.alien.common.util.AlienHurtUtil;
@@ -61,8 +62,6 @@ public abstract class Alien extends Monster {
         EntityDataSerializers.INT
     );
 
-    protected final GeneManager geneManager;
-
     protected final HiveManager hiveManager;
 
     protected final MovementAnalyzer movementAnalyzer;
@@ -77,7 +76,6 @@ public abstract class Alien extends Monster {
 
     protected Alien(EntityType<? extends Alien> entityType, Level level) {
         super(entityType, level);
-        this.geneManager = new GeneManager(this);
         this.hiveManager = new HiveManager(this);
         this.hostTypeOption = Option.ofNullable(getDefaultHostType(entityType));
         this.movementAnalyzer = new MovementAnalyzer(this);
@@ -196,6 +194,7 @@ public abstract class Alien extends Monster {
     @Override
     public void tick() {
         super.tick();
+        ((GeneCarrier) this).getOrCreateGeneManager().tick();
         movementAnalyzer.tick();
         hiveManager.tick();
         vibrationSystemManager.tick();
@@ -336,7 +335,6 @@ public abstract class Alien extends Monster {
     @Override
     public void readAdditionalSaveData(@NotNull CompoundTag compoundTag) {
         super.readAdditionalSaveData(compoundTag);
-        geneManager.load(compoundTag);
         hiveManager.load(compoundTag);
 
         if (compoundTag.contains(NBT_IS_POISONED)) {
@@ -357,7 +355,6 @@ public abstract class Alien extends Monster {
     @Override
     public void addAdditionalSaveData(@NotNull CompoundTag compoundTag) {
         super.addAdditionalSaveData(compoundTag);
-        geneManager.save(compoundTag);
         hiveManager.save(compoundTag);
         compoundTag.putBoolean(NBT_IS_POISONED, isPoisoned());
         compoundTag.putInt(NBT_JELLY_COUNT, getEntityData().get(JELLY_COUNT));
@@ -369,7 +366,7 @@ public abstract class Alien extends Monster {
     }
 
     public GeneManager getGeneManager() {
-        return geneManager;
+        return ((GeneCarrier) this).getOrCreateGeneManager();
     }
 
     public HiveManager getHiveManager() {

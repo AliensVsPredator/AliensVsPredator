@@ -4,6 +4,7 @@ import com.human.common.gameplay.item.ArmorCaseItem;
 import com.human.common.gameplay.item.CanisterItem;
 import com.human.common.gameplay.item.MilkCanisterItem;
 import com.human.common.gameplay.item.SolidCanisterItem;
+import com.human.common.gameplay.item.SyringeItem;
 import com.human.common.gameplay.item.grenade.GrenadeItem;
 import com.human.common.registry.init.HumanDataComponents;
 import com.human.common.registry.init.item.HumanGunItems;
@@ -257,6 +258,8 @@ public class AVPItems {
         "steel_sword",
         () -> new SwordItem(AVPTiers.STEEL, new Item.Properties().attributes(SwordItem.createAttributes(AVPTiers.STEEL, 3, -2.4F)))
     );
+
+    public static final AVPDeferredHolder<Item> SYRINGE = register("syringe", SyringeItem::new);
 
     public static final AVPDeferredHolder<Item> TITANIUM_AXE = register(
         "titanium_axe",

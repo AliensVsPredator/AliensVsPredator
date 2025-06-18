@@ -7,8 +7,6 @@ import com.alien.common.model.resin.ResinData;
 import com.alien.common.registry.init.AlienEntityTypes;
 import com.alien.common.util.AlienPredicates;
 import com.alien.common.util.XenomorphGrowthUtil;
-import com.lib.common.gameplay.gene.GeneKeys;
-import com.lib.common.gameplay.gene.decoder.GeneDecoders;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -37,10 +35,7 @@ public class Adolescent extends Alien {
         super(entityType, level);
         this.animationDispatcher = new AdolescentAnimationDispatcher(this);
         this.growthManager = new GrowthManager(this, XenomorphGrowthUtil.GROW_UP_CALLBACK)
-            .setGrowOverTime(true)
-            .setGrowthTimeReductionMultiplierProvider(
-                () -> geneManager.get(GeneKeys.GROWTH_SPEED, GeneDecoders.GROWTH_SPEED)
-            );
+            .setGrowOverTime(true);
         this.config = AVP.config.statsConfigs.ADOLESCENT_STATS;
     }
 

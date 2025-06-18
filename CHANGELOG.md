@@ -5,6 +5,15 @@
 
 ## ✨ What's New
 - Aliens now remember what host type they came from.
+- Revamped genetics system:
+  - Gene bonuses are now datapacked.
+  - All hosts now provide gene bonuses.
+  - Gene bonuses now have a more noticeable impact to xenomorphs.
+  - Added a new "syringe" item:
+    - Right-click any mob to get their genes.
+    - Right-click an ovomorph or a host to add the genes to them.
+      - Added genes are "dormant" (do not apply immediately).
+      - Dormant genes only manifest on chestbursters born from hosts.
 - Ovomorphs now have hatching AI
   - Ovomorphs now have a "desire" meter for hatching. 
   - Changes in the environment (such as light) will increase the desire meter.
@@ -55,7 +64,8 @@
   - `OVOMORPH_SPAWN`
 
 ## 🐞 Fixes
-- N/A
+- Fixed queens not transferring their genes to laid eggs.
+- Fixed potion effects carried over from host to embryo not being permanent.
 
 ## 🛠 Data Pack
 - Added `#avp:runner_hosts` entity tag.
@@ -74,3 +84,5 @@
 - Upgraded alien infections to support host entity tags.
 - Added full datapack support for alien infections.
 - Removed redundant royal data from aliens.
+- Added full datapack support for gene bonuses.
+- Alien gene manager now managed through a mixin (same as host gene managers).

@@ -13,7 +13,6 @@ import org.jetbrains.annotations.Nullable;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.function.Consumer;
-import java.util.function.Supplier;
 
 import com.avp.common.util.AVPEntityTransitionUtil;
 
@@ -38,8 +37,6 @@ public class GrowthManager implements NBTSerializable {
     private int growthRetryTimeInTicks = 0;
 
     private boolean readyToGrow;
-
-    private @Nullable Supplier<Float> growthTimeReductionMultiplierProvider;
 
     public GrowthManager(Alien entity) {
         this(entity, null);
@@ -111,11 +108,6 @@ public class GrowthManager implements NBTSerializable {
         var requiredGrowthTimeInTicks = growthStage.growthTimeInTicks();
         var growthTimeReductionMultiplier = 1F;
 
-        if (growthTimeReductionMultiplierProvider != null) {
-            var multiplier = growthTimeReductionMultiplierProvider.get();
-            growthTimeReductionMultiplier = Math.clamp(multiplier, 0.2F, 1F);
-        }
-
         if (growthTimeInTicks < requiredGrowthTimeInTicks * growthTimeReductionMultiplier) {
             return;
         }
@@ -159,11 +151,6 @@ public class GrowthManager implements NBTSerializable {
 
     public GrowthManager setGrowOverTime(boolean growOverTime) {
         this.growOverTime = growOverTime;
-        return this;
-    }
-
-    public GrowthManager setGrowthTimeReductionMultiplierProvider(@Nullable Supplier<Float> growthTimeReductionMultiplierProvider) {
-        this.growthTimeReductionMultiplierProvider = growthTimeReductionMultiplierProvider;
         return this;
     }
 }

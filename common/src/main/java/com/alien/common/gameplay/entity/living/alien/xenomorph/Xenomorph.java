@@ -8,8 +8,6 @@ import com.alien.common.model.resin.ResinProducer;
 import com.alien.common.util.AlienPredicates;
 import com.alien.common.util.XenomorphGrowthUtil;
 import com.lib.common.gameplay.entity.manager.CrawlingManager;
-import com.lib.common.gameplay.gene.GeneKeys;
-import com.lib.common.gameplay.gene.decoder.GeneDecoders;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -70,15 +68,9 @@ public abstract class Xenomorph extends Alien implements ResinProducer {
         super(entityType, level);
         this.crawlingManager = new CrawlingManager(this, IS_CRAWLING);
         this.growthManager = new GrowthManager(this, XenomorphGrowthUtil.GROW_UP_CALLBACK)
-            .setGrowOverTime(false)
-            .setGrowthTimeReductionMultiplierProvider(
-                () -> geneManager.get(GeneKeys.GROWTH_SPEED, GeneDecoders.GROWTH_SPEED)
-            );
+            .setGrowOverTime(false);
         this.navigationManager = new XenomorphNavigationManager(this, moveControl);
-        this.resinManager = new ResinManager(this, createResinData())
-            .setBonusResinProvider(
-                () -> geneManager.get(GeneKeys.BONUS_RESIN_PRODUCTION, GeneDecoders.BONUS_RESIN_PRODUCTION).intValue()
-            );
+        this.resinManager = new ResinManager(this, createResinData());
     }
 
     protected abstract @NotNull ResinData createResinData();

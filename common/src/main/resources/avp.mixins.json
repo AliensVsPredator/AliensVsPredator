@@ -21,6 +21,7 @@
     "MixinItem_RemoveRads",
     "MixinItemEntity_LithiumExplode",
     "MixinLivingEntity_ApplyArmorEffects",
+    "MixinLivingEntity_GeneCarrier",
     "MixinLivingEntity_GrowEmbryo",
     "MixinLivingEntity_NukedRadiation",
     "MixinMob_IncapacitateHost",

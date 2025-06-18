@@ -3,6 +3,7 @@ package com.avp;
 import com.alien.Alien;
 import com.human.Human;
 import com.human.common.gameplay.level.patrol.MarinePatrolSpawner;
+import com.lib.common.gameplay.gene.Genes;
 import com.predator.Predator;
 import mod.azure.azurelib.common.api.common.config.Config;
 import mod.azure.azurelib.common.internal.common.config.ConfigHolder;
@@ -90,6 +91,7 @@ public class AVP {
         AVPEntitySpawns.initialize();
         AVPFuels.initialize();
         AVPVillagerTrades.initialize();
+        Genes.initialize();
 
         // Listeners/Events
         AVPReloadListeners.initialize();

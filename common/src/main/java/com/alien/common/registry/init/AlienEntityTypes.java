@@ -1,7 +1,6 @@
 package com.alien.common.registry.init;
 
 import com.alien.common.gameplay.entity.acid.Acid;
-import com.alien.common.gameplay.entity.living.alien.Alien;
 import com.alien.common.gameplay.entity.living.alien.adolescent.Adolescent;
 import com.alien.common.gameplay.entity.living.alien.chestburster.Chestburster;
 import com.alien.common.gameplay.entity.living.alien.ovipositor.Ovipositor;
@@ -14,12 +13,8 @@ import com.alien.common.gameplay.entity.living.alien.xenomorph.prowler.Prowler;
 import com.alien.common.gameplay.entity.living.alien.xenomorph.queen.Queen;
 import com.alien.common.gameplay.entity.living.alien.xenomorph.runner.Runner;
 import com.alien.common.gameplay.entity.living.alien.xenomorph.warrior.Warrior;
-import com.lib.common.gameplay.gene.GeneKeys;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
-import net.minecraft.world.level.Level;
-
-import java.util.function.BiFunction;
 
 import com.avp.common.registry.AVPDeferredHolder;
 import com.avp.common.registry.init.entity_type.AVPEntityTypes;
@@ -29,19 +24,13 @@ public class AlienEntityTypes {
 
     public static final AVPDeferredHolder<EntityType<Adolescent>> ABERRANT_ADOLESCENT = AVPEntityTypes.register(
         "aberrant_adolescent",
-        EntityType.Builder.<Adolescent>of(
-            (type, level) -> aberrantFactory(Adolescent::new, type, level),
-            AVPEntityTypes.ALIEN_CATEGORY
-        )
+        EntityType.Builder.of(Adolescent::new, AVPEntityTypes.ALIEN_CATEGORY)
             .sized(0.5f, 0.5f)
     );
 
     public static final AVPDeferredHolder<EntityType<Chestburster>> ABERRANT_CHESTBURSTER = AVPEntityTypes.register(
         "aberrant_chestburster",
-        EntityType.Builder.<Chestburster>of(
-            (type, level) -> aberrantFactory(Chestburster::new, type, level),
-            AVPEntityTypes.ALIEN_CATEGORY
-        )
+        EntityType.Builder.of(Chestburster::new, AVPEntityTypes.ALIEN_CATEGORY)
             .sized(0.35f, 0.35f)
     );
 
@@ -53,37 +42,25 @@ public class AlienEntityTypes {
 
     public static final AVPDeferredHolder<EntityType<Drone>> ABERRANT_DRONE = AVPEntityTypes.register(
         "aberrant_drone",
-        EntityType.Builder.<Drone>of(
-            (type, level) -> aberrantFactory(Drone::new, type, level),
-            AVPEntityTypes.ALIEN_CATEGORY
-        )
+        EntityType.Builder.of(Drone::new, AVPEntityTypes.ALIEN_CATEGORY)
             .sized(0.8f, 1.98f)
     );
 
     public static final AVPDeferredHolder<EntityType<Facehugger>> ABERRANT_FACEHUGGER = AVPEntityTypes.register(
         "aberrant_facehugger",
-        EntityType.Builder.<Facehugger>of(
-            (type, level) -> aberrantFactory(Facehugger::new, type, level),
-            AVPEntityTypes.ALIEN_CATEGORY
-        )
+        EntityType.Builder.of(Facehugger::new, AVPEntityTypes.ALIEN_CATEGORY)
             .sized(0.8f, 0.25f)
     );
 
     public static final AVPDeferredHolder<EntityType<Ovomorph>> ABERRANT_OVOMORPH = AVPEntityTypes.register(
         "aberrant_ovomorph",
-        EntityType.Builder.<Ovomorph>of(
-            (type, level) -> aberrantFactory(Ovomorph::new, type, level),
-            AVPEntityTypes.ALIEN_CATEGORY
-        )
+        EntityType.Builder.of(Ovomorph::new, AVPEntityTypes.ALIEN_CATEGORY)
             .sized(0.65f, 0.8f)
     );
 
     public static final AVPDeferredHolder<EntityType<Praetorian>> ABERRANT_PRAETORIAN = AVPEntityTypes.register(
         "aberrant_praetorian",
-        EntityType.Builder.<Praetorian>of(
-            (type, level) -> aberrantFactory(Praetorian::new, type, level),
-            AVPEntityTypes.ALIEN_CATEGORY
-        )
+        EntityType.Builder.of(Praetorian::new, AVPEntityTypes.ALIEN_CATEGORY)
             .sized(0.98f, 3.98f)
     );
 
@@ -95,10 +72,7 @@ public class AlienEntityTypes {
 
     public static final AVPDeferredHolder<EntityType<Queen>> ABERRANT_QUEEN = AVPEntityTypes.register(
         "aberrant_queen",
-        EntityType.Builder.<Queen>of(
-            (type, level) -> aberrantFactory(Queen::new, type, level),
-            AVPEntityTypes.ALIEN_CATEGORY
-        )
+        EntityType.Builder.of(Queen::new, AVPEntityTypes.ALIEN_CATEGORY)
             .sized(1.98f, 3.98f)
     );
 
@@ -110,10 +84,7 @@ public class AlienEntityTypes {
 
     public static final AVPDeferredHolder<EntityType<Warrior>> ABERRANT_WARRIOR = AVPEntityTypes.register(
         "aberrant_warrior",
-        EntityType.Builder.<Warrior>of(
-            (type, level) -> aberrantFactory(Warrior::new, type, level),
-            AVPEntityTypes.ALIEN_CATEGORY
-        )
+        EntityType.Builder.of(Warrior::new, AVPEntityTypes.ALIEN_CATEGORY)
             .sized(0.8f, 1.98f)
     );
 
@@ -197,19 +168,13 @@ public class AlienEntityTypes {
 
     public static final AVPDeferredHolder<EntityType<Adolescent>> NETHER_ADOLESCENT = AVPEntityTypes.register(
         "nether_adolescent",
-        EntityType.Builder.<Adolescent>of(
-            (type, level) -> nethermorphFactory(Adolescent::new, type, level),
-            AVPEntityTypes.ALIEN_CATEGORY
-        )
+        EntityType.Builder.of(Adolescent::new, AVPEntityTypes.ALIEN_CATEGORY)
             .sized(0.5f, 0.5f)
     );
 
     public static final AVPDeferredHolder<EntityType<Chestburster>> NETHER_CHESTBURSTER = AVPEntityTypes.register(
         "nether_chestburster",
-        EntityType.Builder.<Chestburster>of(
-            (type, level) -> nethermorphFactory(Chestburster::new, type, level),
-            AVPEntityTypes.ALIEN_CATEGORY
-        )
+        EntityType.Builder.of(Chestburster::new, AVPEntityTypes.ALIEN_CATEGORY)
             .sized(0.35f, 0.35f)
     );
 
@@ -221,37 +186,25 @@ public class AlienEntityTypes {
 
     public static final AVPDeferredHolder<EntityType<Drone>> NETHER_DRONE = AVPEntityTypes.register(
         "nether_drone",
-        EntityType.Builder.<Drone>of(
-            (type, level) -> nethermorphFactory(Drone::new, type, level),
-            AVPEntityTypes.ALIEN_CATEGORY
-        )
+        EntityType.Builder.of(Drone::new, AVPEntityTypes.ALIEN_CATEGORY)
             .sized(0.8f, 1.98f)
     );
 
     public static final AVPDeferredHolder<EntityType<Facehugger>> NETHER_FACEHUGGER = AVPEntityTypes.register(
         "nether_facehugger",
-        EntityType.Builder.<Facehugger>of(
-            (type, level) -> nethermorphFactory(Facehugger::new, type, level),
-            AVPEntityTypes.ALIEN_CATEGORY
-        )
+        EntityType.Builder.of(Facehugger::new, AVPEntityTypes.ALIEN_CATEGORY)
             .sized(0.8f, 0.25f)
     );
 
     public static final AVPDeferredHolder<EntityType<Ovomorph>> NETHER_OVOMORPH = AVPEntityTypes.register(
         "nether_ovomorph",
-        EntityType.Builder.<Ovomorph>of(
-            (type, level) -> nethermorphFactory(Ovomorph::new, type, level),
-            AVPEntityTypes.ALIEN_CATEGORY
-        )
+        EntityType.Builder.of(Ovomorph::new, AVPEntityTypes.ALIEN_CATEGORY)
             .sized(0.65f, 0.8f)
     );
 
     public static final AVPDeferredHolder<EntityType<Praetorian>> NETHER_PRAETORIAN = AVPEntityTypes.register(
         "nether_praetorian",
-        EntityType.Builder.<Praetorian>of(
-            (type, level) -> nethermorphFactory(Praetorian::new, type, level),
-            AVPEntityTypes.ALIEN_CATEGORY
-        )
+        EntityType.Builder.of(Praetorian::new, AVPEntityTypes.ALIEN_CATEGORY)
             .sized(0.98f, 3.98f)
     );
 
@@ -263,10 +216,7 @@ public class AlienEntityTypes {
 
     public static final AVPDeferredHolder<EntityType<Queen>> NETHER_QUEEN = AVPEntityTypes.register(
         "nether_queen",
-        EntityType.Builder.<Queen>of(
-            (type, level) -> nethermorphFactory(Queen::new, type, level),
-            AVPEntityTypes.ALIEN_CATEGORY
-        )
+        EntityType.Builder.of(Queen::new, AVPEntityTypes.ALIEN_CATEGORY)
             .sized(1.98f, 3.98f)
     );
 
@@ -278,10 +228,7 @@ public class AlienEntityTypes {
 
     public static final AVPDeferredHolder<EntityType<Warrior>> NETHER_WARRIOR = AVPEntityTypes.register(
         "nether_warrior",
-        EntityType.Builder.<Warrior>of(
-            (type, level) -> nethermorphFactory(Warrior::new, type, level),
-            AVPEntityTypes.ALIEN_CATEGORY
-        )
+        EntityType.Builder.of(Warrior::new, AVPEntityTypes.ALIEN_CATEGORY)
             .sized(0.8f, 1.98f)
     );
 
@@ -317,37 +264,25 @@ public class AlienEntityTypes {
 
     public static final AVPDeferredHolder<EntityType<Adolescent>> ROYAL_ABERRANT_ADOLESCENT = AVPEntityTypes.register(
         "royal_aberrant_adolescent",
-        EntityType.Builder.<Adolescent>of(
-            (type, level) -> aberrantFactory(Adolescent::new, type, level),
-            AVPEntityTypes.ALIEN_CATEGORY
-        )
+        EntityType.Builder.of(Adolescent::new, AVPEntityTypes.ALIEN_CATEGORY)
             .sized(0.5f, 0.5f)
     );
 
     public static final AVPDeferredHolder<EntityType<Chestburster>> ROYAL_ABERRANT_CHESTBURSTER = AVPEntityTypes.register(
         "royal_aberrant_chestburster",
-        EntityType.Builder.<Chestburster>of(
-            (type, level) -> aberrantFactory(Chestburster::new, type, level),
-            AVPEntityTypes.ALIEN_CATEGORY
-        )
+        EntityType.Builder.of(Chestburster::new, AVPEntityTypes.ALIEN_CATEGORY)
             .sized(0.35f, 0.35f)
     );
 
     public static final AVPDeferredHolder<EntityType<Facehugger>> ROYAL_ABERRANT_FACEHUGGER = AVPEntityTypes.register(
         "royal_aberrant_facehugger",
-        EntityType.Builder.<Facehugger>of(
-            (type, level) -> aberrantFactory(Facehugger::new, type, level),
-            AVPEntityTypes.ALIEN_CATEGORY
-        )
+        EntityType.Builder.of(Facehugger::new, AVPEntityTypes.ALIEN_CATEGORY)
             .sized(0.8f, 0.25f)
     );
 
     public static final AVPDeferredHolder<EntityType<Ovomorph>> ROYAL_ABERRANT_OVOMORPH = AVPEntityTypes.register(
         "royal_aberrant_ovomorph",
-        EntityType.Builder.<Ovomorph>of(
-            (type, level) -> aberrantFactory(Ovomorph::new, type, level),
-            AVPEntityTypes.ALIEN_CATEGORY
-        )
+        EntityType.Builder.of(Ovomorph::new, AVPEntityTypes.ALIEN_CATEGORY)
             .sized(0.65f, 0.8f)
     );
 
@@ -377,37 +312,25 @@ public class AlienEntityTypes {
 
     public static final AVPDeferredHolder<EntityType<Adolescent>> ROYAL_NETHER_ADOLESCENT = AVPEntityTypes.register(
         "royal_nether_adolescent",
-        EntityType.Builder.<Adolescent>of(
-            (type, level) -> nethermorphFactory(Adolescent::new, type, level),
-            AVPEntityTypes.ALIEN_CATEGORY
-        )
+        EntityType.Builder.of(Adolescent::new, AVPEntityTypes.ALIEN_CATEGORY)
             .sized(0.5f, 0.5f)
     );
 
     public static final AVPDeferredHolder<EntityType<Chestburster>> ROYAL_NETHER_CHESTBURSTER = AVPEntityTypes.register(
         "royal_nether_chestburster",
-        EntityType.Builder.<Chestburster>of(
-            (type, level) -> nethermorphFactory(Chestburster::new, type, level),
-            AVPEntityTypes.ALIEN_CATEGORY
-        )
+        EntityType.Builder.of(Chestburster::new, AVPEntityTypes.ALIEN_CATEGORY)
             .sized(0.35f, 0.35f)
     );
 
     public static final AVPDeferredHolder<EntityType<Facehugger>> ROYAL_NETHER_FACEHUGGER = AVPEntityTypes.register(
         "royal_nether_facehugger",
-        EntityType.Builder.<Facehugger>of(
-            (type, level) -> nethermorphFactory(Facehugger::new, type, level),
-            AVPEntityTypes.ALIEN_CATEGORY
-        )
+        EntityType.Builder.of(Facehugger::new, AVPEntityTypes.ALIEN_CATEGORY)
             .sized(0.8f, 0.25f)
     );
 
     public static final AVPDeferredHolder<EntityType<Ovomorph>> ROYAL_NETHER_OVOMORPH = AVPEntityTypes.register(
         "royal_nether_ovomorph",
-        EntityType.Builder.<Ovomorph>of(
-            (type, level) -> nethermorphFactory(Ovomorph::new, type, level),
-            AVPEntityTypes.ALIEN_CATEGORY
-        )
+        EntityType.Builder.of(Ovomorph::new, AVPEntityTypes.ALIEN_CATEGORY)
             .sized(0.65f, 0.8f)
     );
 
@@ -422,27 +345,6 @@ public class AlienEntityTypes {
         EntityType.Builder.of(Warrior::new, AVPEntityTypes.ALIEN_CATEGORY)
             .sized(0.8f, 1.98f)
     );
-
-    private static <T extends Alien> T aberrantFactory(
-        BiFunction<EntityType<T>, Level, T> entityFactory,
-        EntityType<T> entityType,
-        Level level
-    ) {
-        var entity = entityFactory.apply(entityType, level);
-        entity.getGeneManager().minimize(GeneKeys.GENETIC_INTEGRITY);
-        return entity;
-    }
-
-    private static <T extends Alien> T nethermorphFactory(
-        BiFunction<EntityType<T>, Level, T> entityFactory,
-        EntityType<T> entityType,
-        Level level
-    ) {
-        var entity = entityFactory.apply(entityType, level);
-        entity.getGeneManager().minimize(GeneKeys.COLD_RESISTANCE);
-        entity.getGeneManager().maximize(GeneKeys.FIRE_RESISTANCE);
-        return entity;
-    }
 
     public static void initialize() {
         Services.REGISTRY.registerEntityAttributes(ABERRANT_ADOLESCENT, Adolescent::createAdolescentAttributes);

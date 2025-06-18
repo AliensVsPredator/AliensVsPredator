@@ -1,5 +1,6 @@
 package com.avp.common.data;
 
+import com.alien.common.data.GeneBonusDataReloadListener;
 import com.alien.common.data.GrowthStageReloadListener;
 import com.alien.common.data.InfectionReloadListener;
 import net.minecraft.server.packs.resources.PreparableReloadListener;
@@ -7,6 +8,11 @@ import net.minecraft.server.packs.resources.PreparableReloadListener;
 import com.avp.service.Services;
 
 public class AVPReloadListeners {
+
+    public static final PreparableReloadListener GENE_BONUS_DATA_RELOAD_LISTENER = register(
+        GeneBonusDataReloadListener.DIRECTORY_NAME,
+        new GeneBonusDataReloadListener()
+    );
 
     public static final PreparableReloadListener GROWTH_STAGES_RELOAD_LISTENER = register(
         GrowthStageReloadListener.DIRECTORY_NAME,

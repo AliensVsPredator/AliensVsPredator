@@ -8,6 +8,7 @@ import net.minecraft.core.registries.Registries;
 import com.avp.fabric.data.advancement.AdvancementProvider;
 import com.avp.fabric.data.damage_type.DamageTypeBootstrapper;
 import com.avp.fabric.data.damage_type.DamageTypeProvider;
+import com.avp.fabric.data.gene_bonus_data.GeneBonusDataSubProvider;
 import com.avp.fabric.data.growth_stages.GrowthStageSubProvider;
 import com.avp.fabric.data.infections.InfectionSubProvider;
 import com.avp.fabric.data.jukebox_song.AVPJukeboxSongsProvider;
@@ -79,6 +80,7 @@ public class AVPDataGenerator implements DataGeneratorEntrypoint {
         pack.addProvider(AVPJukeboxSongsProvider::new);
 
         // Custom Providers
+        pack.addProvider(GeneBonusDataSubProvider::new);
         pack.addProvider(GrowthStageSubProvider::new);
         pack.addProvider(InfectionSubProvider::new);
     }

@@ -216,6 +216,7 @@ public class ItemModelProvider extends FabricModelProvider {
 
         generateStandardItem(generators, AVPItems.FERROALUMINUM_NUGGET);
         generateStandardItem(generators, AVPItems.STEEL_NUGGET);
+        generateStandardItem(generators, AVPItems.SYRINGE);
         generateStandardItem(generators, AVPItems.BRASS_NUGGET);
         generateStandardItem(generators, AVPItems.TITANIUM_NUGGET);
         generateStandardItem(generators, AVPItems.ZINC_NUGGET);

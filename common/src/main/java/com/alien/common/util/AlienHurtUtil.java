@@ -2,14 +2,15 @@ package com.alien.common.util;
 
 import com.alien.common.gameplay.entity.living.alien.Alien;
 import com.lib.common.gameplay.entity.manager.GeneManager;
-import com.lib.common.gameplay.gene.GeneKey;
-import com.lib.common.gameplay.gene.GeneKeys;
-import com.lib.common.gameplay.gene.decoder.GeneDecoder;
-import com.lib.common.gameplay.gene.decoder.GeneDecoders;
+import com.lib.common.gameplay.gene.Gene;
+import com.lib.common.gameplay.gene.GeneOperationType;
+import com.lib.common.gameplay.gene.Genes;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageTypes;
 
 import java.util.function.BiFunction;
+
+import com.avp.common.registry.AVPDeferredHolder;
 
 public class AlienHurtUtil {
 
@@ -28,8 +29,7 @@ public class AlienHurtUtil {
         if (isFireDamageSource(damageSource)) {
             return hurtWithResistance(
                 geneManager,
-                GeneKeys.FIRE_RESISTANCE,
-                GeneDecoders.FIRE_RESISTANCE,
+                Genes.FIRE_RESISTANCE,
                 damageSource,
                 damage,
                 superCall
@@ -39,8 +39,7 @@ public class AlienHurtUtil {
         if (damageSource.is(DamageTypes.FREEZE)) {
             return hurtWithResistance(
                 geneManager,
-                GeneKeys.COLD_RESISTANCE,
-                GeneDecoders.COLD_RESISTANCE,
+                Genes.COLD_RESISTANCE,
                 damageSource,
                 damage,
                 superCall
@@ -52,15 +51,18 @@ public class AlienHurtUtil {
 
     private static boolean hurtWithResistance(
         GeneManager geneManager,
-        GeneKey geneKey,
-        GeneDecoder<Float> geneDecoder,
+        AVPDeferredHolder<Gene> gene,
         DamageSource damageSource,
         float damage,
         BiFunction<DamageSource, Float, Boolean> superCall
     ) {
-        var resistance = geneManager.get(geneKey, geneDecoder);
-        var modifiedDamage = damage - (resistance * damage);
-        return modifiedDamage > 0 && superCall.apply(damageSource, modifiedDamage);
+        // Percent reduction value.
+        var percentageResistance = geneManager.getActiveGeneValue(gene, GeneOperationType.MULTIPLICATIVE);
+        // Damage reduction value.
+        var damageResistance = geneManager.getActiveGeneValue(gene, GeneOperationType.ADDITIVE);
+        var modifiedDamage = Math.max(damage - (percentageResistance * damage) - damageResistance, 0);
+
+        return modifiedDamage > 0 && superCall.apply(damageSource, (float) modifiedDamage);
     }
 
     private static boolean isFireDamageSource(DamageSource damageSource) {

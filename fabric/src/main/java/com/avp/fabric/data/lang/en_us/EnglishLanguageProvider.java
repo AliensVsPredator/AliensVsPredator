@@ -17,6 +17,7 @@ import com.avp.fabric.data.lang.en_us.provider.EnUsDamageTypeTagProvider;
 import com.avp.fabric.data.lang.en_us.provider.EnUsEnchantmentTagProvider;
 import com.avp.fabric.data.lang.en_us.provider.EnUsEntityProvider;
 import com.avp.fabric.data.lang.en_us.provider.EnUsEntityTypeTagProvider;
+import com.avp.fabric.data.lang.en_us.provider.EnUsGeneProvider;
 import com.avp.fabric.data.lang.en_us.provider.EnUsItemProvider;
 import com.avp.fabric.data.lang.en_us.provider.EnUsItemTagProvider;
 import com.avp.fabric.data.lang.en_us.provider.EnUsKeybindProvider;
@@ -44,6 +45,9 @@ public class EnglishLanguageProvider extends FabricLanguageProvider {
 
         // Entities
         EnUsEntityProvider.CONSUMER.accept(builder);
+
+        // Genes
+        EnUsGeneProvider.CONSUMER.accept(builder);
 
         // Items
         EnUsItemProvider.CONSUMER.accept(builder);
