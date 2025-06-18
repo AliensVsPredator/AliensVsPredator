@@ -300,6 +300,7 @@ public class AVPEntityTypeTagProvider extends FabricTagProvider.EntityTypeTagPro
         getOrCreateTagBuilder(AVPEntityTypeTags.ABERRANT_ALIENS)
             .add(
                 AlienEntityTypes.ABERRANT_ADOLESCENT.get(),
+                AlienEntityTypes.ABERRANT_BOILER.get(),
                 AlienEntityTypes.ABERRANT_CHESTBURSTER.get(),
                 AlienEntityTypes.ABERRANT_CRUSHER.get(),
                 AlienEntityTypes.ABERRANT_DRONE.get(),
@@ -321,6 +322,7 @@ public class AVPEntityTypeTagProvider extends FabricTagProvider.EntityTypeTagPro
         getOrCreateTagBuilder(AVPEntityTypeTags.NETHER_ALIENS)
             .add(
                 AlienEntityTypes.NETHER_ADOLESCENT.get(),
+                AlienEntityTypes.NETHER_BOILER.get(),
                 AlienEntityTypes.NETHER_CHESTBURSTER.get(),
                 AlienEntityTypes.NETHER_CRUSHER.get(),
                 AlienEntityTypes.NETHER_DRONE.get(),
@@ -342,6 +344,7 @@ public class AVPEntityTypeTagProvider extends FabricTagProvider.EntityTypeTagPro
         getOrCreateTagBuilder(AVPEntityTypeTags.NORMAL_ALIENS)
             .add(
                 AlienEntityTypes.ADOLESCENT.get(),
+                AlienEntityTypes.BOILER.get(),
                 AlienEntityTypes.CHESTBURSTER.get(),
                 AlienEntityTypes.CRUSHER.get(),
                 AlienEntityTypes.DRONE.get(),

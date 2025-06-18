@@ -4,6 +4,8 @@ public record FollowRangeConstants() {
 
     public static final float ADOLESCENT_FOLLOW_RANGE = 16F;
 
+    public static final float BOILER_FOLLOW_RANGE = 16F;
+
     public static final float CHESTBURSTER_FOLLOW_RANGE = 16F;
 
     public static final float CRUSHER_FOLLOW_RANGE = 35F;

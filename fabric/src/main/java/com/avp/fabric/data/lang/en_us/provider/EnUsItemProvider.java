@@ -231,6 +231,7 @@ public class EnUsItemProvider {
 
         // Spawn Egg Items
         addItem(builder, AlienSpawnEggItems.ABERRANT_ADOLESCENT_SPAWN_EGG, "Aberrant Adolescent Spawn Egg");
+        addItem(builder, AlienSpawnEggItems.ABERRANT_BOILER_SPAWN_EGG, "Aberrant Boiler Spawn Egg");
         addItem(builder, AlienSpawnEggItems.ABERRANT_CHESTBURSTER_SPAWN_EGG, "Aberrant Chestburster Spawn Egg");
         addItem(builder, AlienSpawnEggItems.ABERRANT_CRUSHER_SPAWN_EGG, "Aberrant Crusher Spawn Egg");
         addItem(builder, AlienSpawnEggItems.ABERRANT_DRONE_SPAWN_EGG, "Aberrant Drone Spawn Egg");
@@ -242,11 +243,13 @@ public class EnUsItemProvider {
         addItem(builder, AlienSpawnEggItems.ABERRANT_QUEEN_SPAWN_EGG, "Aberrant Queen Spawn Egg");
         addItem(builder, AlienSpawnEggItems.ABERRANT_RUNNER_SPAWN_EGG, "Aberrant Runner Spawn Egg");
         addItem(builder, AlienSpawnEggItems.ADOLESCENT_SPAWN_EGG, "Adolescent Spawn Egg");
+        addItem(builder, AlienSpawnEggItems.BOILER_SPAWN_EGG, "Boiler Spawn Egg");
         addItem(builder, AlienSpawnEggItems.CHESTBURSTER_SPAWN_EGG, "Chestburster Spawn Egg");
         addItem(builder, AlienSpawnEggItems.CRUSHER_SPAWN_EGG, "Crusher Spawn Egg");
         addItem(builder, AlienSpawnEggItems.DRONE_SPAWN_EGG, "Drone Spawn Egg");
         addItem(builder, AlienSpawnEggItems.FACEHUGGER_SPAWN_EGG, "Facehugger Spawn Egg");
         addItem(builder, AlienSpawnEggItems.NETHER_ADOLESCENT_SPAWN_EGG, "Nether Adolescent Spawn Egg");
+        addItem(builder, AlienSpawnEggItems.NETHER_BOILER_SPAWN_EGG, "Nether Boiler Spawn Egg");
         addItem(builder, AlienSpawnEggItems.NETHER_CHESTBURSTER_SPAWN_EGG, "Nether Chestburster Spawn Egg");
         addItem(builder, AlienSpawnEggItems.NETHER_CRUSHER_SPAWN_EGG, "Nether Crusher Spawn Egg");
         addItem(builder, AlienSpawnEggItems.NETHER_DRONE_SPAWN_EGG, "Nether Drone Spawn Egg");

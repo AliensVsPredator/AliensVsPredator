@@ -6,6 +6,7 @@ import com.alien.common.gameplay.entity.living.alien.chestburster.Chestburster;
 import com.alien.common.gameplay.entity.living.alien.ovipositor.Ovipositor;
 import com.alien.common.gameplay.entity.living.alien.ovomorph.Ovomorph;
 import com.alien.common.gameplay.entity.living.alien.parasite.facehugger.Facehugger;
+import com.alien.common.gameplay.entity.living.alien.xenomorph.boiler.Boiler;
 import com.alien.common.gameplay.entity.living.alien.xenomorph.crusher.Crusher;
 import com.alien.common.gameplay.entity.living.alien.xenomorph.drone.Drone;
 import com.alien.common.gameplay.entity.living.alien.xenomorph.praetorian.Praetorian;
@@ -26,6 +27,12 @@ public class AlienEntityTypes {
         "aberrant_adolescent",
         EntityType.Builder.of(Adolescent::new, AVPEntityTypes.ALIEN_CATEGORY)
             .sized(0.5f, 0.5f)
+    );
+
+    public static final AVPDeferredHolder<EntityType<Boiler>> ABERRANT_BOILER = AVPEntityTypes.register(
+        "aberrant_boiler",
+        EntityType.Builder.of(Boiler::new, AVPEntityTypes.ALIEN_CATEGORY)
+            .sized(0.8f, 1.98f)
     );
 
     public static final AVPDeferredHolder<EntityType<Chestburster>> ABERRANT_CHESTBURSTER = AVPEntityTypes.register(
@@ -100,6 +107,12 @@ public class AlienEntityTypes {
             .sized(0.5f, 0.5f)
     );
 
+    public static final AVPDeferredHolder<EntityType<Boiler>> BOILER = AVPEntityTypes.register(
+        "boiler",
+        EntityType.Builder.of(Boiler::new, AVPEntityTypes.ALIEN_CATEGORY)
+            .sized(0.8f, 1.98f)
+    );
+
     public static final AVPDeferredHolder<EntityType<Chestburster>> CHESTBURSTER = AVPEntityTypes.register(
         "chestburster",
         EntityType.Builder.of(Chestburster::new, AVPEntityTypes.ALIEN_CATEGORY)
@@ -170,6 +183,12 @@ public class AlienEntityTypes {
         "nether_adolescent",
         EntityType.Builder.of(Adolescent::new, AVPEntityTypes.ALIEN_CATEGORY)
             .sized(0.5f, 0.5f)
+    );
+
+    public static final AVPDeferredHolder<EntityType<Boiler>> NETHER_BOILER = AVPEntityTypes.register(
+        "nether_boiler",
+        EntityType.Builder.of(Boiler::new, AVPEntityTypes.ALIEN_CATEGORY)
+            .sized(0.8f, 1.98f)
     );
 
     public static final AVPDeferredHolder<EntityType<Chestburster>> NETHER_CHESTBURSTER = AVPEntityTypes.register(
@@ -348,6 +367,7 @@ public class AlienEntityTypes {
 
     public static void initialize() {
         Services.REGISTRY.registerEntityAttributes(ABERRANT_ADOLESCENT, Adolescent::createAdolescentAttributes);
+        Services.REGISTRY.registerEntityAttributes(ABERRANT_BOILER, Boiler::createBoilerAttributes);
         Services.REGISTRY.registerEntityAttributes(ABERRANT_CHESTBURSTER, Chestburster::createChestbursterAttributes);
         Services.REGISTRY.registerEntityAttributes(ABERRANT_CRUSHER, Crusher::createCrusherAttributes);
         Services.REGISTRY.registerEntityAttributes(ABERRANT_DRONE, Drone::createDroneAttributes);
@@ -360,6 +380,7 @@ public class AlienEntityTypes {
         Services.REGISTRY.registerEntityAttributes(ABERRANT_WARRIOR, Warrior::createWarriorAttributes);
         Services.REGISTRY.registerEntityAttributes(CHESTBURSTER, Chestburster::createChestbursterAttributes);
         Services.REGISTRY.registerEntityAttributes(ADOLESCENT, Adolescent::createAdolescentAttributes);
+        Services.REGISTRY.registerEntityAttributes(BOILER, Boiler::createBoilerAttributes);
         Services.REGISTRY.registerEntityAttributes(CRUSHER, Crusher::createCrusherAttributes);
         Services.REGISTRY.registerEntityAttributes(DRONE, Drone::createDroneAttributes);
         Services.REGISTRY.registerEntityAttributes(FACEHUGGER, Facehugger::createFacehuggerAttributes);
@@ -371,6 +392,7 @@ public class AlienEntityTypes {
         Services.REGISTRY.registerEntityAttributes(IRRADIATED_RUNNER, Runner::createRunnerAttributes);
         Services.REGISTRY.registerEntityAttributes(IRRADIATED_WARRIOR, Warrior::createWarriorAttributes);
         Services.REGISTRY.registerEntityAttributes(NETHER_ADOLESCENT, Adolescent::createAdolescentAttributes);
+        Services.REGISTRY.registerEntityAttributes(NETHER_BOILER, Boiler::createBoilerAttributes);
         Services.REGISTRY.registerEntityAttributes(NETHER_CHESTBURSTER, Chestburster::createChestbursterAttributes);
         Services.REGISTRY.registerEntityAttributes(NETHER_CRUSHER, Crusher::createCrusherAttributes);
         Services.REGISTRY.registerEntityAttributes(NETHER_DRONE, Drone::createDroneAttributes);

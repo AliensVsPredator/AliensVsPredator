@@ -8,6 +8,8 @@ public record HealthConstants() {
     // Alien measurements (in terms of half-hearts).
     public static final float ADOLESCENT_HEALTH = PLAYER_HEALTH * 0.5F;
 
+    public static final float BOILER_HEALTH = PLAYER_HEALTH * 2F;
+
     public static final float CHESTBURSTER_HEALTH = PLAYER_HEALTH * 0.25F;
 
     public static final float CRUSHER_HEALTH = PLAYER_HEALTH * 5F;

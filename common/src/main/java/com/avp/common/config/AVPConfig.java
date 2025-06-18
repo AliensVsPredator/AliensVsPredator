@@ -309,6 +309,21 @@ public class AVPConfig {
         @Configurable
         @Configurable.Synchronized
         @Configurable.Comment("Modifying any of these will require restarting the game.")
+        public AdvancedStats BOILER_STATS = new AdvancedStats(
+            HealthConstants.BOILER_HEALTH,
+            AttackDamageConstants.BOILER_ATTACK_DAMAGE,
+            HealthRegenConstants.BOILER_HEALTH_REGEN,
+            KnockbackResistanceConstants.BOILER_KNOCKBACK_RESISTANCE,
+            MoveSpeedConstants.BOILER_SPEED,
+            ArmorConstants.BOILER_ARMOR,
+            0.0f,
+            20,
+            FollowRangeConstants.BOILER_FOLLOW_RANGE
+        );
+
+        @Configurable
+        @Configurable.Synchronized
+        @Configurable.Comment("Modifying any of these will require restarting the game.")
         public AdvancedStats FACEHUGGER_STATS = new AdvancedStats(
             HealthConstants.FACEHUGGER_HEALTH,
             0,

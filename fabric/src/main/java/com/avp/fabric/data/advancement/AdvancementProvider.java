@@ -42,6 +42,7 @@ public class AdvancementProvider extends FabricAdvancementProvider {
     private static final List<EntityType<?>> ALIENS_TO_KILL = List.of(
         // Normal Aliens
         AlienEntityTypes.ADOLESCENT.get(),
+        AlienEntityTypes.BOILER.get(),
         AlienEntityTypes.CHESTBURSTER.get(),
         AlienEntityTypes.CRUSHER.get(),
         AlienEntityTypes.FACEHUGGER.get(),
@@ -55,6 +56,7 @@ public class AdvancementProvider extends FabricAdvancementProvider {
 
         // Aberrant Aliens
         AlienEntityTypes.ABERRANT_ADOLESCENT.get(),
+        AlienEntityTypes.ABERRANT_BOILER.get(),
         AlienEntityTypes.ABERRANT_CHESTBURSTER.get(),
         AlienEntityTypes.ABERRANT_CRUSHER.get(),
         AlienEntityTypes.ABERRANT_FACEHUGGER.get(),
@@ -68,6 +70,7 @@ public class AdvancementProvider extends FabricAdvancementProvider {
 
         // Nether Aliens
         AlienEntityTypes.NETHER_ADOLESCENT.get(),
+        AlienEntityTypes.NETHER_BOILER.get(),
         AlienEntityTypes.NETHER_CHESTBURSTER.get(),
         AlienEntityTypes.NETHER_CRUSHER.get(),
         AlienEntityTypes.NETHER_FACEHUGGER.get(),

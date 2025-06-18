@@ -10,6 +10,8 @@ public record AttackDamageConstants() {
 
     public static final float ADOLESCENT_ATTACK_DAMAGE = PLAYER_HEALTH * 0.1F;
 
+    public static final float BOILER_ATTACK_DAMAGE = PLAYER_HEALTH * 0.25F;
+
     public static final float CHESTBURSTER_ATTACK_DAMAGE = PLAYER_HEALTH * 0.1F;
 
     public static final float CRUSHER_ATTACK_DAMAGE = PLAYER_HEALTH * 0.75F;

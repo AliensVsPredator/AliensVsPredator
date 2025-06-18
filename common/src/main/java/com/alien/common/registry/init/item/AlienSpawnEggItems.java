@@ -15,6 +15,13 @@ public class AlienSpawnEggItems {
         0xBFBF88
     );
 
+    public static final AVPDeferredHolder<Item> ABERRANT_BOILER_SPAWN_EGG = AVPSpawnEggItems.register(
+        "aberrant_boiler",
+        AlienEntityTypes.ABERRANT_BOILER,
+        0xE5BF05,
+        0xD7D7DF
+    );
+
     public static final AVPDeferredHolder<Item> ABERRANT_CHESTBURSTER_SPAWN_EGG = AVPSpawnEggItems.register(
         "aberrant_chestburster",
         AlienEntityTypes.ABERRANT_CHESTBURSTER,
@@ -90,6 +97,13 @@ public class AlienSpawnEggItems {
         AlienEntityTypes.ADOLESCENT,
         0xD8B877,
         0xF7E2B4
+    );
+
+    public static final AVPDeferredHolder<Item> BOILER_SPAWN_EGG = AVPSpawnEggItems.register(
+        "boiler",
+        AlienEntityTypes.BOILER,
+        0x010202,
+        0xDFE2E4
     );
 
     public static final AVPDeferredHolder<Item> CHESTBURSTER_SPAWN_EGG = AVPSpawnEggItems.register(
@@ -172,6 +186,13 @@ public class AlienSpawnEggItems {
     public static final AVPDeferredHolder<Item> NETHER_ADOLESCENT_SPAWN_EGG = AVPSpawnEggItems.register(
         "nether_adolescent",
         AlienEntityTypes.NETHER_ADOLESCENT,
+        0x360101,
+        0x803232
+    );
+
+    public static final AVPDeferredHolder<Item> NETHER_BOILER_SPAWN_EGG = AVPSpawnEggItems.register(
+        "nether_boiler",
+        AlienEntityTypes.NETHER_BOILER,
         0x360101,
         0x803232
     );
