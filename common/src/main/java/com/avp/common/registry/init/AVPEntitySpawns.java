@@ -5,8 +5,6 @@ import com.alien.common.gameplay.entity.living.alien.xenomorph.queen.QueenSpawni
 import com.alien.common.registry.init.AlienEntityTypes;
 import com.human.common.gameplay.entity.living.human.marine.MarineSpawning;
 import com.human.common.registry.init.entity_type.HumanEntityTypes;
-import com.predator.common.gameplay.entity.living.yautja.YautjaSpawning;
-import com.predator.common.registry.init.PredatorEntityTypes;
 import net.minecraft.tags.BiomeTags;
 
 import com.avp.AVP;
@@ -21,14 +19,6 @@ public class AVPEntitySpawns {
         registerIrradiatedAlienSpawns();
         registerNetherAlienSpawns();
         registerNormalAlienSpawns();
-
-        Services.REGISTRY.registerEntitySpawnData(
-            AVPEntitySpawnData.builder(PredatorEntityTypes.YAUTJA)
-                .withBiomeTagKey(BiomeTags.IS_JUNGLE)
-                .withSpawnPredicate(YautjaSpawning.PREDICATE)
-                .withSpawnSettings(AVP.config.spawnConfigs.YAUTJA_SPAWN)
-                .build()
-        );
 
         Services.REGISTRY.registerEntitySpawnData(
             AVPEntitySpawnData.builder(HumanEntityTypes.MARINE)
