@@ -1,4 +1,4 @@
-# v0.2.0-beta2
+# v0.2.0-beta3
 
 ## ☢️ Breaking Changes
 - Renamed `avp:ovamorph` to `avp:ovomorph`.
