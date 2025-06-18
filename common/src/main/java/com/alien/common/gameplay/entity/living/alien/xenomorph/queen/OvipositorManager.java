@@ -68,7 +68,7 @@ public class OvipositorManager implements NBTSerializable {
     }
 
     public Vec3 getEggLayingPosition() {
-        return getRelativePosition(5.75, 0, -1);
+        return getRelativePosition(6, 0, 2.5);
     }
 
     public @Nullable Ovipositor getOvipositorOrNull() {
@@ -121,7 +121,7 @@ public class OvipositorManager implements NBTSerializable {
     private boolean canOvipositorFit() {
         var leftBottomSupport = getRelativePosition(1.5, 0, 2.5);
         var rightBottomSupport = getRelativePosition(-2, 0, 2);
-        var farLeftBottomSupport = getRelativePosition(5, 0, 7);
+        var farLeftBottomSupport = getRelativePosition(5.7, 0, 8.25);
         var backBottomSupport = getRelativePosition(0, 0, 7);
 
         return canOvipositorSupportExistAt(leftBottomSupport)
