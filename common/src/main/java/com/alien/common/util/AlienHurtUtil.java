@@ -73,7 +73,7 @@ public class AlienHurtUtil {
             damageSource.is(DamageTypes.LAVA);
     }
 
-    private static boolean isNonDamagingSource(DamageSource damageSource) {
+    public static boolean isNonDamagingSource(DamageSource damageSource) {
         // Xenomorphs should not drown.
         return damageSource.is(DamageTypes.DROWN) ||
         // Xenomorphs should not freeze.
