@@ -111,6 +111,14 @@ public class AberrantAlienGrowthStageProvider {
                 GrowthConstants.WARRIOR_GROWTH_TIME_IN_TICKS / 2
             )
         );
+        biConsumer.accept(
+            "aberrant_crusher_to_aberrant_queen",
+            new GrowthStage(
+                AlienEntityTypes.ABERRANT_CRUSHER.get(),
+                AlienEntityTypes.ABERRANT_QUEEN.get(),
+                GrowthConstants.PRAETORIAN_GROWTH_TIME_IN_TICKS / 2
+            )
+        );
     }
 
 }

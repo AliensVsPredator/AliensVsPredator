@@ -103,5 +103,13 @@ public class AlienGrowthStageProvider {
                 GrowthConstants.WARRIOR_GROWTH_TIME_IN_TICKS / 2
             )
         );
+        biConsumer.accept(
+            "crusher_to_queen",
+            new GrowthStage(
+                AlienEntityTypes.CRUSHER.get(),
+                AlienEntityTypes.QUEEN.get(),
+                GrowthConstants.PRAETORIAN_GROWTH_TIME_IN_TICKS / 2
+            )
+        );
     }
 }

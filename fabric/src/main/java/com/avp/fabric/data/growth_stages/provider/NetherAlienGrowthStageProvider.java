@@ -111,5 +111,13 @@ public class NetherAlienGrowthStageProvider {
                 GrowthConstants.WARRIOR_GROWTH_TIME_IN_TICKS / 2
             )
         );
+        biConsumer.accept(
+            "nether_crusher_to_nether_queen",
+            new GrowthStage(
+                AlienEntityTypes.NETHER_CRUSHER.get(),
+                AlienEntityTypes.NETHER_QUEEN.get(),
+                GrowthConstants.PRAETORIAN_GROWTH_TIME_IN_TICKS / 2
+            )
+        );
     }
 }
