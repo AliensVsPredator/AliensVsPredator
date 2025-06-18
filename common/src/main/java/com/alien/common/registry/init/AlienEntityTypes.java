@@ -254,7 +254,7 @@ public class AlienEntityTypes {
     public static final AVPDeferredHolder<EntityType<Ovipositor>> OVIPOSITOR = AVPEntityTypes.register(
         "ovipositor",
         EntityType.Builder.of(Ovipositor::new, AVPEntityTypes.ALIEN_CATEGORY)
-            .sized(3f, 3f)
+            .sized(6.5f, 3.25f)
     );
 
     public static final AVPDeferredHolder<EntityType<Ovomorph>> OVOMORPH = AVPEntityTypes.register(
