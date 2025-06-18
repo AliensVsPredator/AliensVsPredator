@@ -6,6 +6,8 @@ import com.alien.common.model.alien.Host;
 import com.alien.common.model.lifecycle.infection.Infection;
 import com.alien.common.registry.GeneBonusDataRegistry;
 import com.alien.common.registry.InfectionRegistry;
+import com.lib.common.gameplay.gene.GeneOperationType;
+import com.lib.common.gameplay.gene.Genes;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
@@ -107,7 +109,26 @@ public abstract class MixinLivingEntity_GrowEmbryo extends Entity implements Hos
 
         if (level.getDifficulty() != Difficulty.PEACEFUL) {
             InfectionRegistry.get(getType(), parasiteType)
-                .ifSome(infection -> giveBirth(level, self, infection));
+                .ifSome(infection -> {
+                    // 1 added here to guarantee 1 birth by default.
+                    var birthBonus = 1 + Math.clamp(
+                        getOrCreateGeneManager().getActiveGeneValue(Genes.BONUS_EMBRYO_COUNT, GeneOperationType.ADDITIVE),
+                        0.0,
+                        3.0
+                    );
+                    var baseOffspring = (int) birthBonus;
+                    var fractionalChance = birthBonus - baseOffspring;
+
+                    // Guaranteed births based on whole number values.
+                    for (int i = 0; i < baseOffspring; i++) {
+                        giveBirth(level, self, infection);
+                    }
+
+                    // Probabilistic birth based on fractional values.
+                    if (self.getRandom().nextDouble() < fractionalChance) {
+                        giveBirth(level, self, infection);
+                    }
+                });
 
             kill();
         }
