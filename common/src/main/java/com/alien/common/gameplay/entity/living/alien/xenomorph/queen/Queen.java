@@ -7,6 +7,7 @@ import com.alien.common.model.resin.ResinData;
 import com.alien.common.registry.init.AlienEntityTypes;
 import com.lib.common.util.PlayerUtil;
 import net.minecraft.ChatFormatting;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
@@ -178,6 +179,18 @@ public class Queen extends Xenomorph {
 
     public OvipositorManager getOvipositorManager() {
         return ovipositorManager;
+    }
+
+    @Override
+    public void readAdditionalSaveData(@NotNull CompoundTag compoundTag) {
+        super.readAdditionalSaveData(compoundTag);
+        ovipositorManager.load(compoundTag);
+    }
+
+    @Override
+    public void addAdditionalSaveData(@NotNull CompoundTag compoundTag) {
+        super.addAdditionalSaveData(compoundTag);
+        ovipositorManager.save(compoundTag);
     }
 
     public static EntityType<? extends Alien> getType(AlienVariant alienVariant) {

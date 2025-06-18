@@ -3,17 +3,27 @@ package com.alien.common.gameplay.entity.living.alien.xenomorph.queen;
 import com.alien.common.gameplay.entity.living.alien.ovipositor.Ovipositor;
 import com.alien.common.registry.init.AlienEntityTypes;
 import com.bvanseg.just.functional.option.Option;
+import com.lib.common.data.Cooldown;
+import com.lib.common.gameplay.NBTSerializable;
 import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 
+import java.time.Duration;
+
 import com.avp.common.registry.tag.AVPEntityTypeTags;
 
-public class OvipositorManager {
+public class OvipositorManager implements NBTSerializable {
+
+    private final Cooldown ovipositorCreationCooldown;
 
     private final Queen queen;
 
+    private boolean hadOvipositorLastTick;
+
     public OvipositorManager(Queen queen) {
+        this.ovipositorCreationCooldown = Cooldown.withCooldownTime("ovipositorCreationCooldownInTicks", Duration.ofMinutes(1));
         this.queen = queen;
     }
 
@@ -22,7 +32,17 @@ public class OvipositorManager {
             return;
         }
 
-        if (hasOvipositor()) {
+        ovipositorCreationCooldown.tick();
+
+        var hasOvipositor = hasOvipositor();
+
+        if (!hasOvipositor && hadOvipositorLastTick) {
+            ovipositorCreationCooldown.reset();
+        }
+
+        this.hadOvipositorLastTick = hasOvipositor;
+
+        if (hasOvipositor) {
             getOvipositor().ifSome(ovipositor -> {
                 ovipositor.setYRot(queen.getYRot());
                 ovipositor.setXRot(queen.getXRot());
@@ -84,13 +104,14 @@ public class OvipositorManager {
     }
 
     private boolean canCreateOvipositor() {
-        return queen.getHiveManager()
-            .hive()
-            .isSomeAnd(
-                hive -> hive.getMembershipManager()
-                    .getMembersMatching(entityType -> entityType.is(AVPEntityTypeTags.XENOMORPHS))
-                    .size() > 2
-            )
+        return !ovipositorCreationCooldown.isActive() &&
+            queen.getHiveManager()
+                .hive()
+                .isSomeAnd(
+                    hive -> hive.getMembershipManager()
+                        .getMembersMatching(entityType -> entityType.is(AVPEntityTypeTags.XENOMORPHS))
+                        .size() > 2
+                )
             && canOvipositorFit();
     }
 
@@ -143,5 +164,15 @@ public class OvipositorManager {
         }
 
         return isSupported;
+    }
+
+    @Override
+    public void load(CompoundTag compoundTag) {
+        ovipositorCreationCooldown.load(compoundTag);
+    }
+
+    @Override
+    public void save(CompoundTag compoundTag) {
+        ovipositorCreationCooldown.save(compoundTag);
     }
 }
