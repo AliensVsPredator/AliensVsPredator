@@ -131,7 +131,7 @@ public class OvipositorManager implements NBTSerializable {
             && queen.level().getBlockState(BlockPos.containing(getEggLayingPosition())).isAir();
     }
 
-    private Vec3 getRelativePosition(double leftOffset, double upOffset, double backwardOffset) {
+    public Vec3 getRelativePosition(double leftOffset, double upOffset, double backwardOffset) {
         var forward = queen.getLookAngle().normalize();
         var left = new Vec3(forward.z, 0, -forward.x).normalize(); // perpendicular on XZ plane
 

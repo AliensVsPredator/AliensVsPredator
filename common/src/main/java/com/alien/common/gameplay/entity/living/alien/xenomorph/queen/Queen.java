@@ -74,7 +74,8 @@ public class Queen extends Xenomorph {
     @Override
     protected void positionRider(@NotNull Entity passenger, @NotNull MoveFunction callback) {
         if (passenger.getType() == AlienEntityTypes.OVIPOSITOR.get()) {
-            callback.accept(passenger, position().x, position().y, position().z);
+            var relativePos = ovipositorManager.getRelativePosition(3, 0.01, 5.25);
+            callback.accept(passenger, relativePos.x, relativePos.y, relativePos.z);
             return;
         }
 
