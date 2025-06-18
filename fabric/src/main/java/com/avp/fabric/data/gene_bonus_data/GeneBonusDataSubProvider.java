@@ -280,6 +280,7 @@ public class GeneBonusDataSubProvider extends GeneBonusDataProvider {
         add(
             EntityType.WOLF,
             List.of(
+                new Tuple2<>(Genes.BONUS_EMBRYO_COUNT, new GeneModifier(GeneOperationType.ADDITIVE, 1.0)),
                 new Tuple2<>(Genes.COLD_RESISTANCE, new GeneModifier(GeneOperationType.MULTIPLICATIVE, 0.05)),
                 new Tuple2<>(Genes.INTELLIGENCE, new GeneModifier(GeneOperationType.ADDITIVE, 5.0)),
                 new Tuple2<>(Genes.MAX_HEALTH, new GeneModifier(GeneOperationType.MULTIPLICATIVE, mulHealthBonusFactory.apply(4.0))),
