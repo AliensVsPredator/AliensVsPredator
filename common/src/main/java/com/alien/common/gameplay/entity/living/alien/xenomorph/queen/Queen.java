@@ -24,6 +24,8 @@ import net.minecraft.world.level.ServerLevelAccessor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Objects;
+
 import com.avp.AVP;
 import com.avp.common.gameplay.ai.goal.DigToTargetGoal;
 import com.avp.common.gameplay.ai.goal.QueenLayEggGoal;
@@ -62,6 +64,11 @@ public class Queen extends Xenomorph {
     public void tick() {
         super.tick();
         ovipositorManager.tick();
+    }
+
+    @Override
+    protected boolean canEntityRideAlien(@NotNull Entity passenger) {
+        return Objects.equals(passenger.getType(), AlienEntityTypes.OVIPOSITOR.get());
     }
 
     @Override

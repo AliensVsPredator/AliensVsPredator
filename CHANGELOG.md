@@ -67,6 +67,7 @@
 ## 🐞 Fixes
 - Fixed queens not transferring their genes to laid eggs.
 - Fixed potion effects carried over from host to embryo not being permanent.
+- Fixed entities being able to ride aliens (disabling their AI in the process).
 
 ## 🛠 Data Pack
 - Added `#avp:runner_hosts` entity tag.

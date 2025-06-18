@@ -36,6 +36,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.function.BiConsumer;
+import java.util.function.Predicate;
 
 import com.avp.AVP;
 import com.avp.common.config.AVPConfig;
@@ -182,6 +183,15 @@ public abstract class Alien extends Monster {
         return getType().is(AVPEntityTypeTags.ROYAL_ALIENS);
     }
 
+    protected boolean canEntityRideAlien(@NotNull Entity passenger) {
+        return false;
+    }
+
+    @Override
+    protected final boolean canAddPassenger(@NotNull Entity passenger) {
+        return super.canAddPassenger(passenger) && canEntityRideAlien(passenger);
+    }
+
     protected boolean canAlienRideVehicle(@NotNull Entity vehicle) {
         return !(vehicle instanceof Boat) && !(vehicle instanceof Minecart);
     }
@@ -202,6 +212,14 @@ public abstract class Alien extends Monster {
         if (!level().isClientSide) {
             if (getVehicle() != null && !canRide(getVehicle())) {
                 stopRiding();
+            }
+
+            if (!getPassengers().isEmpty()) {
+                var passengersToRemove = getPassengers().stream()
+                    .filter(Predicate.not(this::canEntityRideAlien))
+                    .toList();
+
+                passengersToRemove.forEach(Entity::stopRiding);
             }
 
             healPassively();
