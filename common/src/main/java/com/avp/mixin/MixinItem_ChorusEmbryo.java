@@ -39,7 +39,7 @@ public class MixinItem_ChorusEmbryo {
             return;
         }
 
-        var parasiteType = host.getParasiteType();
+        var parasiteType = host.getEmbryoType();
 
         if (parasiteType == null) {
             // Parasite type is null, despite our hasEmbryo check earlier above. Not much we can do in this case.
@@ -83,7 +83,7 @@ public class MixinItem_ChorusEmbryo {
         }
 
         // Removes the embryo without any side effects.
-        host.clearParasiteType();
+        host.removeEmbryo();
 
         // Return here so that the rest of the chorus fruit behavior to teleport the host entity doesn't happen.
         cir.setReturnValue(stack);

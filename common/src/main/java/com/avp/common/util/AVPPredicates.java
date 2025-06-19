@@ -63,7 +63,7 @@ public class AVPPredicates {
     }
 
     public static boolean hasEmbryo(Entity target) {
-        return target instanceof Host host && host.getParasiteType() != null;
+        return target instanceof Host host && host.getEmbryoType() != null;
     }
 
     public static boolean isFreeHost(Alien parasite, Entity hostTarget) {

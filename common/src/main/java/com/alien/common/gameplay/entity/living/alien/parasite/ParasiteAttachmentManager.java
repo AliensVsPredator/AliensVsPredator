@@ -95,7 +95,7 @@ public class ParasiteAttachmentManager implements NBTSerializable {
                 host.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, 40, 3, true, false, true));
 
                 if (isFertile()) {
-                    ((Host) host).injectEmbryo(parasite);
+                    ((Host) host).implantEmbryo(parasite);
                     setIsFertile(false);
                     // TODO: Play nasty toob sound
                 }

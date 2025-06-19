@@ -22,7 +22,7 @@ public class GigSurgeryKitPatch {
             return;
         }
 
-        var parasiteType = host.getParasiteType();
+        var parasiteType = host.getEmbryoType();
 
         if (parasiteType == null) {
             return;
@@ -50,7 +50,7 @@ public class GigSurgeryKitPatch {
             livingEmbryo.addEffect(new MobEffectInstance(effect));
         }
 
-        host.clearParasiteType();
+        host.removeEmbryo();
 
         applySurgeryKitBehavior(player, livingEntity, itemStack);
     }

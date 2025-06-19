@@ -7,9 +7,17 @@ import org.jetbrains.annotations.Nullable;
 public interface Host extends GeneCarrier {
 
     @Nullable
-    EntityType<?> getParasiteType();
+    EntityType<?> getEmbryoType();
 
-    void injectEmbryo(Parasite parasite);
+    void implantEmbryo(Parasite parasite);
 
-    void clearParasiteType();
+    void removeEmbryo();
+
+    int getEmbryoGrowthTimeInTicks();
+
+    void setEmbryoGrowthTimeInTicks(int growthTimeInTicks);
+
+    default void incrementEmbryoGrowthTimeInTicks() {
+        setEmbryoGrowthTimeInTicks(getEmbryoGrowthTimeInTicks() + 1);
+    }
 }

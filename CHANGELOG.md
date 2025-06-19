@@ -2,6 +2,9 @@
 
 ## ☢️ Breaking Changes
 - Renamed `avp:ovamorph` to `avp:ovomorph`.
+- Parasites no longer implant a parasite type into hosts, now implant correct embryo type.
+  - Previously, parasites would store their own entity type to a host. At the time of birth, the embryo type was then computed. This has been changed such that the embryo type is computed immediately and then stored.
+  - This means that any currently-infected hosts in your game *will not burst* and will need to be infected again.
 
 ## ✨ What's New
 - Aliens now remember what host type they came from.
