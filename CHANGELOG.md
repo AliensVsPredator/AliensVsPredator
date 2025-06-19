@@ -89,3 +89,4 @@
 - Removed redundant royal data from aliens.
 - Added full datapack support for gene bonuses.
 - Alien gene manager now managed through a mixin (same as host gene managers).
+- Added `#avp:does_not_hurt_aliens` damage type tag.

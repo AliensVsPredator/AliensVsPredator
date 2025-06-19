@@ -9,6 +9,7 @@ import com.avp.common.registry.tag.AVPDamageTypesTags;
 public class EnUsDamageTypeTagProvider {
 
     public static final Consumer<FabricLanguageProvider.TranslationBuilder> CONSUMER = builder -> {
+        builder.add(AVPDamageTypesTags.DOES_NOT_HURT_ALIENS, "Does Not Hurt Aliens");
         builder.add(AVPDamageTypesTags.DOES_NOT_HURT_SENTRY_TURRETS, "Does Not Hurt Sentry Turrets");
     };
 }

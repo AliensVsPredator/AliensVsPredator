@@ -11,6 +11,7 @@ import net.minecraft.world.damagesource.DamageTypes;
 import java.util.function.BiFunction;
 
 import com.avp.common.registry.AVPDeferredHolder;
+import com.avp.common.registry.tag.AVPDamageTypesTags;
 
 public class AlienHurtUtil {
 
@@ -20,7 +21,7 @@ public class AlienHurtUtil {
         float damage,
         BiFunction<DamageSource, Float, Boolean> superCall
     ) {
-        if (isNonDamagingSource(damageSource)) {
+        if (damageSource.is(AVPDamageTypesTags.DOES_NOT_HURT_ALIENS)) {
             return false;
         }
 
@@ -71,14 +72,5 @@ public class AlienHurtUtil {
             damageSource.is(DamageTypes.CAMPFIRE) ||
             damageSource.is(DamageTypes.HOT_FLOOR) ||
             damageSource.is(DamageTypes.LAVA);
-    }
-
-    public static boolean isNonDamagingSource(DamageSource damageSource) {
-        // Xenomorphs should not drown.
-        return damageSource.is(DamageTypes.DROWN) ||
-        // Xenomorphs should not freeze.
-            damageSource.is(DamageTypes.FREEZE) ||
-            // Xenomorphs should not suffocate in walls.
-            damageSource.is(DamageTypes.IN_WALL);
     }
 }

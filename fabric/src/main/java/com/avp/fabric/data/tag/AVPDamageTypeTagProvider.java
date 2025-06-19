@@ -68,6 +68,14 @@ public class AVPDamageTypeTagProvider extends FabricTagProvider<DamageType> {
                 AVPDamageTypeKeys.SMOTHERING
             );
 
+        getOrCreateTagBuilder(AVPDamageTypesTags.DOES_NOT_HURT_ALIENS)
+            .add(
+                AVPDamageTypeKeys.ACID,
+                DamageTypes.DROWN,
+                DamageTypes.FREEZE,
+                DamageTypes.IN_WALL
+            );
+
         // All missing damage types here were excluded on purpose. Yes, including lava. Lava melts machinery.
         getOrCreateTagBuilder(AVPDamageTypesTags.DOES_NOT_HURT_SENTRY_TURRETS)
             .add(
