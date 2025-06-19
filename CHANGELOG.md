@@ -72,6 +72,8 @@
 - Fixed queens not transferring their genes to laid eggs.
 - Fixed potion effects carried over from host to embryo not being permanent.
 - Fixed entities being able to ride aliens (disabling their AI in the process).
+- Fixed embryos born from a host eating chorus fruit not persisting.
+- Fixed inconsistent potion effect behavior with embryos born from hosts eating chorus fruit.
 
 ## 🛠 Data Pack
 - Added `#avp:runner_hosts` entity tag.

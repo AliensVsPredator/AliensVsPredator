@@ -8,10 +8,12 @@ import com.lib.common.gameplay.gene.GeneOperationType;
 import com.lib.common.gameplay.gene.Genes;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.player.Player;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.concurrent.TimeUnit;
 
@@ -80,19 +82,19 @@ public class EmbryoUtil {
         host.setEmbryoGrowthTimeInTicks(0);
     }
 
-    public static void birthEmbryo(@NotNull LivingEntity hostEntity) {
+    public static @Nullable Entity birthEmbryo(@NotNull LivingEntity hostEntity) {
         var level = hostEntity.level();
         var host = (Host) hostEntity;
         var embryoType = host.getEmbryoType();
 
         if (embryoType == null) {
-            return;
+            return null;
         }
 
         var embryo = embryoType.create(level);
 
         if (embryo == null) {
-            return;
+            return null;
         }
 
         if (embryo instanceof Mob mob) {
@@ -117,6 +119,8 @@ public class EmbryoUtil {
         }
 
         level.addFreshEntity(embryo);
+
+        return embryo;
     }
 
     private static void applyGenesToEmbryo(@NotNull LivingEntity hostEntity, Alien embryo) {

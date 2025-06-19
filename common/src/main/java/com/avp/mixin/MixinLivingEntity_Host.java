@@ -98,4 +98,9 @@ public abstract class MixinLivingEntity_Host extends Entity implements Host {
     public int getEmbryoGrowthTimeInTicks() {
         return embryoGrowthTimeInTicks;
     }
+
+    @Override
+    public void setEmbryoGrowthTimeInTicks(int embryoGrowthTimeInTicks) {
+        this.embryoGrowthTimeInTicks = embryoGrowthTimeInTicks;
+    }
 }
