@@ -13,6 +13,7 @@ import org.jetbrains.annotations.Nullable;
 import java.time.Duration;
 
 import com.avp.common.registry.tag.AVPEntityTypeTags;
+import com.avp.common.util.EntityUtil;
 
 public class OvipositorManager implements NBTSerializable {
 
@@ -68,7 +69,7 @@ public class OvipositorManager implements NBTSerializable {
     }
 
     public Vec3 getEggLayingPosition() {
-        return getRelativePosition(6, 0, 2.5);
+        return EntityUtil.getRelativePosition(queen, 6, 0, 2.5);
     }
 
     public @Nullable Ovipositor getOvipositorOrNull() {
@@ -119,34 +120,24 @@ public class OvipositorManager implements NBTSerializable {
     }
 
     private boolean canOvipositorFit() {
-        var leftBottomSupport = getRelativePosition(1.5, 0, 2.5);
-        var rightBottomSupport = getRelativePosition(-2, 0, 2);
-        var farLeftBottomSupport = getRelativePosition(5.7, 0, 8.25);
-        var backBottomSupport = getRelativePosition(0, 0, 7);
+        var leftBottomSupport = EntityUtil.getRelativePosition(queen, 1.5, 0, 2.5);
+        var rightBottomSupport = EntityUtil.getRelativePosition(queen, -2, 0, 2);
+        var farLeftBottomSupport = EntityUtil.getRelativePosition(queen, 5.7, 0, 8.25);
+        var backBottomSupport = EntityUtil.getRelativePosition(queen, 0, 0, 7);
 
         return canOvipositorSupportExistAt(leftBottomSupport)
             && canOvipositorSupportExistAt(rightBottomSupport)
             && canOvipositorSupportExistAt(farLeftBottomSupport)
             && canOvipositorSupportExistAt(backBottomSupport)
-            && queen.level().getBlockState(BlockPos.containing(getEggLayingPosition())).isAir();
+            && isEggLayingPositionValid();
     }
 
-    public Vec3 getRelativePosition(double leftOffset, double upOffset, double backwardOffset) {
-        var forward = queen.getLookAngle().normalize();
-        var left = new Vec3(forward.z, 0, -forward.x).normalize(); // perpendicular on XZ plane
+    private boolean isEggLayingPositionValid() {
+        var eggLayingPosition = getEggLayingPosition();
+        var blockState = queen.level().getBlockState(BlockPos.containing(eggLayingPosition));
+        var isClearForEgg = blockState.isAir() || blockState.canBeReplaced();
 
-        var bounds = queen.getBoundingBox();
-        var base = new Vec3(
-            (bounds.minX + bounds.maxX) / 2.0,
-            bounds.minY,
-            (bounds.minZ + bounds.maxZ) / 2.0
-        );
-
-        // Negative backwardOffset = forward, positive = behind
-        return base
-            .add(forward.scale(-backwardOffset))
-            .add(left.scale(leftOffset))
-            .add(0, upOffset, 0);
+        return isClearForEgg && EntityUtil.canMobSeeBlock(queen, eggLayingPosition);
     }
 
     private boolean canOvipositorSupportExistAt(Vec3 vec3) {
@@ -166,7 +157,7 @@ public class OvipositorManager implements NBTSerializable {
             stepsDown++;
         }
 
-        return isSupported;
+        return isSupported && EntityUtil.canMobSeeBlock(queen, vec3);
     }
 
     @Override

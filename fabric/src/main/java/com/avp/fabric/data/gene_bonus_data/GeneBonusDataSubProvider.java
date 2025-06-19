@@ -37,11 +37,9 @@ public class GeneBonusDataSubProvider extends GeneBonusDataProvider {
 
     @Override
     protected void generate() {
-        // 5 / 40 = 0.125
-        // 0.125 * (h / 5)
-        var droneHalfHearts = 60.0;
+        var warriorHalfHearts = 60.0;
         var fiveHalfHearts = 5.0;
-        var fiveHalfHeartsPercentage = fiveHalfHearts / droneHalfHearts;
+        var fiveHalfHeartsPercentage = fiveHalfHearts / warriorHalfHearts;
         UnaryOperator<Double> mulHealthBonusFactory = halfHearts -> fiveHalfHeartsPercentage * (halfHearts / fiveHalfHearts);
 
         var llamaGeneBonuses = List.of(

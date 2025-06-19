@@ -30,6 +30,7 @@ import com.avp.AVP;
 import com.avp.common.gameplay.ai.goal.DigToTargetGoal;
 import com.avp.common.gameplay.ai.goal.QueenLayEggGoal;
 import com.avp.common.registry.init.AVPSoundEvents;
+import com.avp.common.util.EntityUtil;
 import com.avp.server.ServerLevelManagerAccessor;
 
 public class Queen extends Xenomorph {
@@ -74,7 +75,7 @@ public class Queen extends Xenomorph {
     @Override
     protected void positionRider(@NotNull Entity passenger, @NotNull MoveFunction callback) {
         if (passenger.getType() == AlienEntityTypes.OVIPOSITOR.get()) {
-            var relativePos = ovipositorManager.getRelativePosition(3, 0.01, 5.25);
+            var relativePos = EntityUtil.getRelativePosition(this, 3, 0.01, 5.25);
             callback.accept(passenger, relativePos.x, relativePos.y, relativePos.z);
             return;
         }
