@@ -94,7 +94,7 @@ public class Queen extends Xenomorph {
             for (var player : PlayerUtil.getTrackingPlayers(this)) {
                 player.playNotifySound(AVPSoundEvents.ENTITY_QUEEN_SCREAM.get(), SoundSource.MASTER, 1, 1);
                 player.sendSystemMessage(
-                    Component.translatable("A scream from the depths sends chills down your spine...")
+                    Component.literal("A scream from the depths sends chills down your spine...")
                         .withStyle(ChatFormatting.GREEN, ChatFormatting.ITALIC)
                 );
             }

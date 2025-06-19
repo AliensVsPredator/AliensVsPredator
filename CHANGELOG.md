@@ -8,6 +8,9 @@
 
 ## ✨ What's New
 - Aliens now remember what host type they came from.
+- Added two new advancements:
+  - "Eviction" - Infected? Eat a chorus fruit to remove the embryo, saving yourself... and dooming the world.
+  - "Hive Buster" - Defeat an alien hive.
 - Revamped genetics system:
   - Gene bonuses are now datapacked.
   - All hosts now provide gene bonuses.
@@ -74,6 +77,7 @@
 - Fixed entities being able to ride aliens (disabling their AI in the process).
 - Fixed embryos born from a host eating chorus fruit not persisting.
 - Fixed inconsistent potion effect behavior with embryos born from hosts eating chorus fruit.
+- Fixed aberrant chitin armors not counting towards chitin armor advancements.
 
 ## 🛠 Data Pack
 - Added `#avp:runner_hosts` entity tag.

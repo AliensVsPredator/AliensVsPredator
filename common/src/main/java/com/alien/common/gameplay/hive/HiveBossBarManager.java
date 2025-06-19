@@ -1,11 +1,14 @@
 package com.alien.common.gameplay.hive;
 
+import com.alien.common.data.AlienAdvancements;
 import com.alien.common.model.alien.variant.AlienVariant;
 import com.alien.common.util.AlienPredicates;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerBossEvent;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.BossEvent;
+import net.minecraft.world.Difficulty;
 
 import java.util.Arrays;
 import java.util.Locale;
@@ -111,6 +114,15 @@ public class HiveBossBarManager {
     }
 
     public void onHiveRemoved() {
+        var level = hive.level();
+
+        if (level.getDifficulty() != Difficulty.PEACEFUL && level instanceof ServerLevel serverLevel) {
+            serverLevel.players()
+                .stream()
+                .filter(player -> hive.getSpaceManager().isEntityWithinHive(player))
+                .forEach(AlienAdvancements.KILL_A_HIVE::grant);
+        }
+
         bossEvent.removeAllPlayers();
     }
 

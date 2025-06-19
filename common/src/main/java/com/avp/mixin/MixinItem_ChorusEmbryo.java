@@ -1,8 +1,10 @@
 package com.avp.mixin;
 
+import com.alien.common.data.AlienAdvancements;
 import com.alien.common.model.alien.Host;
 import com.alien.common.util.EmbryoUtil;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
@@ -54,6 +56,11 @@ public class MixinItem_ChorusEmbryo {
 
             // Removes the embryo without any side effects.
             host.removeEmbryo();
+
+            if (livingEntity instanceof ServerPlayer serverPlayer) {
+                // Grant advancement for removing the embryo with chorus fruit.
+                AlienAdvancements.REMOVE_EMBRYO_WITH_CHORUS_FRUIT.grant(serverPlayer);
+            }
 
             // Return here so that the rest of the chorus fruit behavior to teleport the host entity doesn't happen.
             cir.setReturnValue(stack);
