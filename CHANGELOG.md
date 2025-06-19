@@ -53,6 +53,7 @@
 - All aliens can now detect vibrations (instead of just xenomorphs).
 - Chestbursters can no longer be trapped in boats and minecarts.
 - Facehuggers can no longer be trapped in boats and minecarts.
+- Improved razor wire death message.
 - Moved the following config options to datapack:
   - `CHESTBURSTER_MAX_GROWTH_TIMER_SECONDS`
   - `DRONE_MAX_GROWTH_TIMER_SECONDS`
