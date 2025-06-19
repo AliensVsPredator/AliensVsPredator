@@ -42,7 +42,8 @@ public class AdolescentAnimator extends AzEntityAnimator<Adolescent> {
     public void setCustomAnimations(Adolescent animatable, float partialTicks) {
         super.setCustomAnimations(animatable, partialTicks);
 
-        runPassiveAnimations(animatable);
+        // TODO: Re-add this once adolescent animations are done.
+//        runPassiveAnimations(animatable);
     }
 
     private void runPassiveAnimations(Adolescent adolescent) {
