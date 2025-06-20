@@ -36,7 +36,7 @@ public class EntityUtil {
             eyePos,
             targetVec,
             // blocks that block vision.
-            ClipContext.Block.COLLIDER,
+            ClipContext.Block.OUTLINE,
             // ignore fluids.
             ClipContext.Fluid.NONE,
             mob

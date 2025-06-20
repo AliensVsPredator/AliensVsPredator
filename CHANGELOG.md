@@ -15,6 +15,9 @@
   - Gene bonuses are now datapacked.
   - All hosts now provide gene bonuses.
   - Gene bonuses now have a more noticeable impact to xenomorphs.
+  - Repeated injections will cause xenomorphs to turn aberrant.
+  - Further repeated injections will cause aberrant xenomorphs to turn into boilers.
+  - Poison jelly no longer turns royal ovomorphs into royal aberrant ovomorphs. 
   - Added a new "syringe" item:
     - Right-click any mob to get their genes.
     - Right-click an ovomorph or a host to add the genes to them.
@@ -60,6 +63,7 @@
 - Chestbursters can no longer be trapped in boats and minecarts.
 - Facehuggers can no longer be trapped in boats and minecarts.
 - Improved razor wire death message.
+- Poison jelly no longer turns royal ovomorphs into royal aberrant ovomorphs.
 - Moved the following config options to datapack:
   - `CHESTBURSTER_MAX_GROWTH_TIMER_SECONDS`
   - `DRONE_MAX_GROWTH_TIMER_SECONDS`
