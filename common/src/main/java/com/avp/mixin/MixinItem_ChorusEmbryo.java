@@ -40,15 +40,19 @@ public class MixinItem_ChorusEmbryo {
             return;
         }
 
-        var embryo = EmbryoUtil.birthEmbryo(livingEntity);
+        var embryos = EmbryoUtil.birthEmbryos(livingEntity);
 
-        if (embryo instanceof LivingEntity livingEmbryo) {
-            // before attempting to teleport, we set the embryo's position to the host's position so that if the
-            // teleportation fails, then the embryo will at the very least be at the host's feet.
-            livingEmbryo.setPos(livingEntity.position());
-            // Attempt teleportation. We don't need a result from this since it wouldn't be useful anyway.
-            tryTeleportingEntity(livingEmbryo);
+        embryos.forEach(embryo -> {
+            if (embryo instanceof LivingEntity livingEmbryo) {
+                // before attempting to teleport, we set the embryo's position to the host's position so that if the
+                // teleportation fails, then the embryo will at the very least be at the host's feet.
+                livingEmbryo.setPos(livingEntity.position());
+                // Attempt teleportation. We don't need a result from this since it wouldn't be useful anyway.
+                tryTeleportingEntity(livingEmbryo);
+            }
+        });
 
+        if (!embryos.isEmpty()) {
             if (livingEntity instanceof Player player) {
                 player.resetCurrentImpulseContext();
                 player.getCooldowns().addCooldown(stack.getItem(), 20);

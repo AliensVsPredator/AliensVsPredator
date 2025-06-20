@@ -29,9 +29,9 @@ public class GigSurgeryKitPatch {
             return;
         }
 
-        var embryo = EmbryoUtil.birthEmbryo(livingEntity);
+        var embryos = EmbryoUtil.birthEmbryos(livingEntity);
 
-        if (embryo != null) {
+        if (!embryos.isEmpty()) {
             // Removes the embryo without any side effects.
             host.removeEmbryo();
             // Apply surgery kit behavior after embryo is removed.

@@ -15,6 +15,8 @@ import net.minecraft.world.entity.player.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 public class EmbryoUtil {
@@ -54,25 +56,7 @@ public class EmbryoUtil {
         }
 
         if (hostEntity.level().getDifficulty() != Difficulty.PEACEFUL) {
-            // 1 added here to guarantee 1 birth by default.
-            var birthBonus = 1 + Math.clamp(
-                host.getOrCreateGeneManager().getActiveGeneValue(Genes.BONUS_EMBRYO_COUNT, GeneOperationType.ADDITIVE),
-                0.0,
-                3.0
-            );
-            var baseOffspring = (int) birthBonus;
-            var fractionalChance = birthBonus - baseOffspring;
-
-            // Guaranteed births based on whole number values.
-            for (int i = 0; i < baseOffspring; i++) {
-                birthEmbryo(hostEntity);
-            }
-
-            // Probabilistic birth based on fractional values.
-            if (hostEntity.getRandom().nextDouble() < fractionalChance) {
-                birthEmbryo(hostEntity);
-            }
-
+            birthEmbryos(hostEntity);
             hostEntity.kill();
         }
 
@@ -80,6 +64,37 @@ public class EmbryoUtil {
         host.removeEmbryo();
         // Reset the embryo growth time (in ticks) no matter what.
         host.setEmbryoGrowthTimeInTicks(0);
+    }
+
+    public static List<Entity> birthEmbryos(LivingEntity hostEntity) {
+        var host = (Host) hostEntity;
+        var embryoList = new ArrayList<Entity>();
+
+        // 1 added here to guarantee 1 birth by default.
+        var birthBonus = 1 + Math.clamp(
+            host.getOrCreateGeneManager().getActiveGeneValue(Genes.BONUS_EMBRYO_COUNT, GeneOperationType.ADDITIVE),
+            0.0,
+            3.0
+        );
+        var baseOffspring = (int) birthBonus;
+        var fractionalChance = birthBonus - baseOffspring;
+
+        // Guaranteed births based on whole number values.
+        for (int i = 0; i < baseOffspring; i++) {
+            var embryo = birthEmbryo(hostEntity);
+
+            if (embryo != null) {
+                embryoList.add(embryo);
+            }
+        }
+
+        // Probabilistic birth based on fractional values.
+        if (hostEntity.getRandom().nextDouble() < fractionalChance) {
+            var embryo = birthEmbryo(hostEntity);
+            embryoList.add(embryo);
+        }
+
+        return embryoList;
     }
 
     public static @Nullable Entity birthEmbryo(@NotNull LivingEntity hostEntity) {
