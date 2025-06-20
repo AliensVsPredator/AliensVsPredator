@@ -17,6 +17,16 @@ import com.avp.fabric.data.recipe.builder.RecipeBuilder;
 public class MiscellaneousRecipeProvider {
 
     public static void provide(RecipeBuilder builder) {
+        builder.shaped()
+            .withCategory(RecipeCategory.MISC)
+            .define('A', Items.IRON_NUGGET)
+            .define('B', Items.GLASS_BOTTLE)
+            .define('C', AVPItems.POLYMER)
+            .pattern("A  ")
+            .pattern(" B ")
+            .pattern("  C")
+            .into(1, AVPItems.SYRINGE);
+
         builder.blast(Blocks.REDSTONE_BLOCK)
             .withCategory(RecipeCategory.MISC)
             .withExperience(RecipeConstants.VERY_COMMON_SMELT_EXPERIENCE)
