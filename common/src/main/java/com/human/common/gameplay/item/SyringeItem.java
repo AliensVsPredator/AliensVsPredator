@@ -34,7 +34,11 @@ public class SyringeItem extends Item {
     private static final SyringeMode DEFAULT_SYRINGE_MODE = SyringeMode.EXTRACT;
 
     public SyringeItem() {
-        super(new Item.Properties().stacksTo(1).component(HumanDataComponents.SYRINGE_MODE.get(), DEFAULT_SYRINGE_MODE));
+        super(
+            new Item.Properties().stacksTo(1)
+                .component(HumanDataComponents.SYRINGE_MODE.get(), DEFAULT_SYRINGE_MODE)
+                .durability(20)
+        );
     }
 
     @Override
@@ -161,6 +165,7 @@ public class SyringeItem extends Item {
                     .toList();
                 // Assign syringe contents back to syringe item stack.
                 stack.set(HumanDataComponents.SYRINGE_CONTENTS.get(), new SyringeContents(geneBonusDataEntries));
+                stack.hurtAndBreak(1, player, player.getEquipmentSlotForItem(stack));
                 // Assign stack back to player hand to update client-side.
                 player.setItemInHand(usedHand, stack);
                 // Apply "fake" damage to the entity.
@@ -178,6 +183,7 @@ public class SyringeItem extends Item {
                 geneCarrier.getOrCreateGeneManager().addDormantGene(resourceLocation, GeneOperationType.ADDITIVE, -0.34);
 
                 stack.set(HumanDataComponents.SYRINGE_CONTENTS.get(), SyringeContents.EMPTY);
+                stack.hurtAndBreak(1, player, player.getEquipmentSlotForItem(stack));
                 // Assign stack back to player hand to update client-side.
                 player.setItemInHand(usedHand, stack);
                 // Apply "fake" damage to the entity.
