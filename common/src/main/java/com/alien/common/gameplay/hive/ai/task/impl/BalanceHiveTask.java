@@ -4,7 +4,6 @@ import com.alien.common.gameplay.entity.living.alien.xenomorph.Xenomorph;
 import com.alien.common.gameplay.hive.Hive;
 import com.alien.common.gameplay.hive.ai.task.HiveTask;
 import com.alien.common.model.hive.HiveMemberData;
-import com.alien.common.registry.GrowthStageRegistry;
 import net.minecraft.world.entity.EntityType;
 
 import java.util.List;
@@ -33,20 +32,7 @@ public abstract class BalanceHiveTask extends HiveTask {
     }
 
     protected void growXenomorph(Xenomorph xenomorph) {
-        var type = xenomorph.getType();
-        var hostType = xenomorph.getHostType().unwrapOr(null);
-        var growthStage = GrowthStageRegistry.getOrNull(hostType, type);
-
-        // TODO: Don't duplicate this check here, the growth manager should already be checking this.
-        if (
-            growthStage == null
-                || xenomorph.isPoisoned()
-                || xenomorph.isIrradiated()
-        ) {
-            return;
-        }
-
-        var nextFormEntity = xenomorph.getGrowthManager().grow(growthStage);
+        var nextFormEntity = xenomorph.getGrowthManager().grow();
 
         if (nextFormEntity != null) {
             var isLeader = Objects.equals(xenomorph.getUUID(), hive.getLeadershipManager().getLeaderIdOrNull());

@@ -60,6 +60,14 @@ public class GeneBonusDataSubProvider extends GeneBonusDataProvider {
             )
         );
         add(
+            EntityType.CREEPER,
+            List.of(
+                new Tuple2<>(Genes.ACID_VOLATILITY, new GeneModifier(GeneOperationType.ADDITIVE, 0.34)),
+                new Tuple2<>(Genes.MAX_HEALTH, new GeneModifier(GeneOperationType.MULTIPLICATIVE, mulHealthBonusFactory.apply(10.0))),
+                new Tuple2<>(Genes.INTELLIGENCE, new GeneModifier(GeneOperationType.ADDITIVE, 5.0))
+            )
+        );
+        add(
             EntityType.COW,
             List.of(
                 new Tuple2<>(Genes.MAX_HEALTH, new GeneModifier(GeneOperationType.MULTIPLICATIVE, mulHealthBonusFactory.apply(5.0))),

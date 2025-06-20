@@ -1,19 +1,24 @@
 package com.alien.common.gameplay.entity.living.alien;
 
 import com.alien.common.gameplay.entity.living.alien.xenomorph.Xenomorph;
+import com.alien.common.gameplay.entity.living.alien.xenomorph.boiler.Boiler;
 import com.alien.common.model.lifecycle.growth.GrowthStage;
 import com.alien.common.registry.GrowthStageRegistry;
 import com.lib.common.gameplay.NBTSerializable;
+import com.lib.common.gameplay.gene.GeneOperationType;
+import com.lib.common.gameplay.gene.Genes;
 import com.lib.common.gameplay.util.spatial.block.BlockPosUtil;
 import net.minecraft.Util;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.HashSet;
 import java.util.Set;
 import java.util.function.Consumer;
 
+import com.avp.common.registry.tag.AVPEntityTypeTags;
 import com.avp.common.util.AVPEntityTransitionUtil;
 
 public class GrowthManager implements NBTSerializable {
@@ -52,14 +57,12 @@ public class GrowthManager implements NBTSerializable {
     public void tick() {
         if (
             entity.level().isClientSide
-                || entity.isPoisoned()
-                || entity.isIrradiated()
+                || canNeverGrow()
         ) {
             return;
         }
 
-        var hostType = entity.getHostType().unwrapOr(null);
-        var growthStage = GrowthStageRegistry.getOrNull(hostType, entity.getType());
+        var growthStage = getNextGrowthStage();
 
         if (growthStage == null) {
             return;
@@ -72,7 +75,7 @@ public class GrowthManager implements NBTSerializable {
             this.readyToGrow = true;
         } else if (growOverTime) {
             // Otherwise if we can't bypass growth time, tick the entity's growth progress.
-            growOverTime(growthStage);
+            growOverTime();
         }
 
         if (!readyToGrow) {
@@ -95,11 +98,18 @@ public class GrowthManager implements NBTSerializable {
             return;
         }
 
-        grow(growthStage);
+        grow();
     }
 
-    private void growOverTime(GrowthStage growthStage) {
+    private @Nullable GrowthStage getNextGrowthStage() {
+        var hostType = entity.getHostType().unwrapOr(null);
+        return GrowthStageRegistry.getOrNull(hostType, entity.getType());
+    }
+
+    private void growOverTime() {
         this.growthTimeInTicks++;
+
+        var growthStage = getNextGrowthStage();
 
         if (growthStage == null) {
             return;
@@ -117,12 +127,26 @@ public class GrowthManager implements NBTSerializable {
 
     // TODO:
     // Make this return a sealed type result since there are checks here we want to do that might cause growth failure.
-    public @Nullable Entity grow(GrowthStage growthStage) {
+    public @Nullable Entity grow() {
         // Reset growth time at this point.
         this.growthTimeInTicks = 0;
+        var growthStage = getNextGrowthStage();
+
+        if (growthStage == null || canNeverGrow()) {
+            return null;
+        }
 
         var nextFormType = growthStage.to();
-        var nextForm = AVPEntityTransitionUtil.transitionInto(entity, nextFormType, TRANSITION_NBT_KEY_BLACKLIST);
+
+        var canBecomeBoiler = canBecomeBoiler(nextFormType);
+
+        Entity nextForm;
+
+        if (canBecomeBoiler) {
+            nextFormType = Boiler.getType(entity.getVariant());
+        }
+
+        nextForm = AVPEntityTransitionUtil.transitionInto(entity, nextFormType, TRANSITION_NBT_KEY_BLACKLIST);
 
         if (nextForm == null) {
             return null;
@@ -135,6 +159,25 @@ public class GrowthManager implements NBTSerializable {
         }
 
         return nextForm;
+    }
+
+    private boolean canNeverGrow() {
+        return entity.isPoisoned()
+            || entity.isIrradiated();
+    }
+
+    private boolean canBecomeBoiler(EntityType<?> nextFormType) {
+        var geneManager = entity.getGeneManager();
+        var additiveAcidVolatility = geneManager.getActiveGeneValue(Genes.ACID_VOLATILITY, GeneOperationType.ADDITIVE);
+        var multiplicativeAcidVolatility = geneManager.getActiveGeneValue(Genes.ACID_VOLATILITY, GeneOperationType.MULTIPLICATIVE);
+
+        var totalAcidVolatility = additiveAcidVolatility + multiplicativeAcidVolatility;
+        var isCurrentlyAdolescent = entity.getType().is(AVPEntityTypeTags.ADOLESCENTS);
+        var willGrowIntoAdult = nextFormType.is(AVPEntityTypeTags.XENOMORPHS);
+
+        return isCurrentlyAdolescent
+            && willGrowIntoAdult
+            && entity.getRandom().nextDouble() < totalAcidVolatility;
     }
 
     @Override

@@ -10,6 +10,7 @@ import java.util.function.Supplier;
 public class EnUsGeneProvider {
 
     public static final Consumer<FabricLanguageProvider.TranslationBuilder> CONSUMER = builder -> {
+        addGene(builder, Genes.ACID_VOLATILITY, "Acid Volatility");
         addGene(builder, Genes.ARMOR, "Armor");
         addGene(builder, Genes.ARMOR_TOUGHNESS, "Armor Toughness");
         addGene(builder, Genes.ATTACK_DAMAGE, "Attack Damage");
