@@ -2,12 +2,14 @@ package com.alien.common.gameplay.entity.living.alien;
 
 import com.alien.common.gameplay.entity.living.alien.xenomorph.Xenomorph;
 import com.alien.common.gameplay.entity.living.alien.xenomorph.boiler.Boiler;
+import com.alien.common.model.alien.GeneCarrier;
 import com.alien.common.model.lifecycle.growth.GrowthStage;
 import com.alien.common.registry.GrowthStageRegistry;
 import com.lib.common.gameplay.NBTSerializable;
 import com.lib.common.gameplay.gene.GeneOperationType;
 import com.lib.common.gameplay.gene.Genes;
 import com.lib.common.gameplay.util.spatial.block.BlockPosUtil;
+import com.lib.common.util.GeneUtil;
 import net.minecraft.Util;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.Entity;
@@ -167,17 +169,47 @@ public class GrowthManager implements NBTSerializable {
     }
 
     private boolean canBecomeBoiler(EntityType<?> nextFormType) {
+        if (!isProperTransition(nextFormType)) {
+            return false;
+        }
+
+        return shouldBecomeBoilerFromGeneDecay() || shouldBecomeBoilerFromAcidVolatility();
+    }
+
+    private boolean isProperTransition(EntityType<?> nextFormType) {
+        var isCurrentlyAdolescent = entity.getType().is(AVPEntityTypeTags.ADOLESCENTS);
+        var willGrowIntoAdult = nextFormType.is(AVPEntityTypeTags.XENOMORPHS);
+
+        return isCurrentlyAdolescent
+            && willGrowIntoAdult;
+    }
+
+    private boolean shouldBecomeBoilerFromAcidVolatility() {
         var geneManager = entity.getGeneManager();
         var additiveAcidVolatility = geneManager.getActiveGeneValue(Genes.ACID_VOLATILITY, GeneOperationType.ADDITIVE);
         var multiplicativeAcidVolatility = geneManager.getActiveGeneValue(Genes.ACID_VOLATILITY, GeneOperationType.MULTIPLICATIVE);
 
         var totalAcidVolatility = additiveAcidVolatility + multiplicativeAcidVolatility;
-        var isCurrentlyAdolescent = entity.getType().is(AVPEntityTypeTags.ADOLESCENTS);
-        var willGrowIntoAdult = nextFormType.is(AVPEntityTypeTags.XENOMORPHS);
 
-        return isCurrentlyAdolescent
-            && willGrowIntoAdult
-            && entity.getRandom().nextDouble() < totalAcidVolatility;
+        return entity.getRandom().nextDouble() < totalAcidVolatility;
+    }
+
+    private boolean shouldBecomeBoilerFromGeneDecay() {
+        var geneCarrier = (GeneCarrier) entity;
+        var geneDecayLevel = GeneUtil.getGeneDecayLevel(geneCarrier);
+
+        return switch (geneDecayLevel) {
+            case FATAL -> true;
+            case STABLE, UNSTABLE -> false;
+            case VOLATILE -> {
+                // Ex. -2.75 -> 2.75
+                var totalGeneIntegrity = Math.abs(GeneUtil.getTotalGeneticIntegrity(geneCarrier));
+                // Ex. 2.75 - 2 = 0.75
+                var chance = totalGeneIntegrity - Math.floor(totalGeneIntegrity);
+                // Ex. 0.75 means 75% chance to be a boiler.
+                yield entity.getRandom().nextDouble() < chance;
+            }
+        };
     }
 
     @Override

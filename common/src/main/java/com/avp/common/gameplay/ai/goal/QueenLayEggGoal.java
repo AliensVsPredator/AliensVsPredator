@@ -2,7 +2,9 @@ package com.avp.common.gameplay.ai.goal;
 
 import com.alien.common.gameplay.entity.living.alien.ovomorph.Ovomorph;
 import com.alien.common.gameplay.entity.living.alien.xenomorph.queen.Queen;
-import com.alien.common.util.AlienPredicates;
+import com.alien.common.model.alien.GeneCarrier;
+import com.alien.common.model.alien.variant.AlienVariant;
+import com.lib.common.util.GeneUtil;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.phys.AABB;
@@ -39,10 +41,6 @@ public class QueenLayEggGoal extends Goal {
             && queen.getOvipositorManager().hasOvipositor()
             // AND Queen must not be irradiated.
             && !queen.isIrradiated()
-            // AND Queen must not be in an aggressive state.
-            && !queen.isAggressive()
-            // AND Queen must have no target before she lays an egg.
-            && queen.getTarget() == null
             && queen.getHiveManager()
                 .hive()
                 // AND Queen must have a hive...
@@ -54,8 +52,8 @@ public class QueenLayEggGoal extends Goal {
                         // AND the queen must be within the hive to lay eggs there.
                         && hive.getSpaceManager().isEntityWithinHive(queen)
                 )
-            // AND there must be no other friendly eggs nearby already.
-            && noFriendlyEggsNearby();
+            // AND there must be no other eggs nearby already.
+            && noEggsNearby();
     }
 
     @Override
@@ -65,7 +63,12 @@ public class QueenLayEggGoal extends Goal {
         var level = queen.level();
         // Egg has a 5% chance of being royal.
         var isRoyal = queen.getRandom().nextInt(100) < 5;
-        var ovomorphType = Ovomorph.getType(queen.getVariant(), isRoyal);
+        var variant = shouldBeAberrant()
+            // If the queen has weak genetic integrity, then it can become aberrant.
+            ? AlienVariant.ABERRANT
+            // Otherwise just use the queen's current variant type.
+            : queen.getVariant();
+        var ovomorphType = Ovomorph.getType(variant, isRoyal);
 
         var ovomorph = ovomorphType == null
             ? null
@@ -84,10 +87,28 @@ public class QueenLayEggGoal extends Goal {
         level.addFreshEntity(ovomorph);
     }
 
-    private boolean noFriendlyEggsNearby() {
+    private boolean shouldBeAberrant() {
+        var geneCarrier = (GeneCarrier) queen;
+        var geneDecayLevel = GeneUtil.getGeneDecayLevel(geneCarrier);
+
+        return switch (geneDecayLevel) {
+            case FATAL, VOLATILE -> true;
+            case STABLE -> false;
+            case UNSTABLE -> {
+                // Ex. -1.75 -> 1.75
+                var totalGeneIntegrity = Math.abs(GeneUtil.getTotalGeneticIntegrity(geneCarrier));
+                // Ex. 1.75 - 1 = 0.75
+                var chance = totalGeneIntegrity - Math.floor(totalGeneIntegrity);
+                // Ex. 0.75 means 75% chance to be aberrant.
+                yield queen.getRandom().nextDouble() < chance;
+            }
+        };
+    }
+
+    private boolean noEggsNearby() {
         // Reset scanning cooldown regardless of scanner outcome.
         eggLayCooldownInTicks = MAX_EGG_LAY_COOLDOWN_IN_TICKS;
-        // Scan for friendly ovomorphs.
+        // Scan for ovomorphs.
         return queen.level()
             .getEntitiesOfClass(
                 Ovomorph.class,
@@ -95,11 +116,8 @@ public class QueenLayEggGoal extends Goal {
                 getBoundingBoxAtEggLayingPosition(),
                 // Must be tagged as an ovomorph...
                 entity -> entity.getType().is(AVPEntityTypeTags.OVOMORPHS)
-                    // AND must NOT be an enemy alien to the queen (so either a neutral egg, or same strain and same
-                    // hive).
-                    && !AlienPredicates.areAliensEnemies(queen, entity)
             )
-            // If the list of FRIENDLY eggs is empty, then the queen is good to lay an egg.
+            // If the list of eggs is empty, then the queen is good to lay an egg.
             .isEmpty();
     }
 
