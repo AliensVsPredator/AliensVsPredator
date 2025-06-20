@@ -8,6 +8,7 @@ import com.human.common.registry.init.HumanDataComponents;
 import com.lib.common.gameplay.gene.GeneBonusDataEntry;
 import com.lib.common.gameplay.gene.GeneOperationType;
 import com.lib.common.gameplay.gene.GeneRegistry;
+import com.lib.common.gameplay.gene.Genes;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
@@ -25,6 +26,8 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 import java.util.List;
+
+import com.avp.AVPResources;
 
 public class SyringeItem extends Item {
 
@@ -170,6 +173,9 @@ public class SyringeItem extends Item {
             case INJECT -> {
                 var geneCarrier = (GeneCarrier) interactionTarget;
                 geneCarrier.getOrCreateGeneManager().putDormantGenes(syringeContents.toMap());
+                // TODO: This is terribly unsafe, don't manually create the resource location here.
+                var resourceLocation = AVPResources.location(Genes.GENETIC_INTEGRITY.get().id());
+                geneCarrier.getOrCreateGeneManager().addDormantGene(resourceLocation, GeneOperationType.ADDITIVE, -0.34);
 
                 stack.set(HumanDataComponents.SYRINGE_CONTENTS.get(), SyringeContents.EMPTY);
                 // Assign stack back to player hand to update client-side.

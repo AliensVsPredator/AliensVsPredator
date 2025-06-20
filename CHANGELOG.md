@@ -23,6 +23,7 @@
     - Right-click an ovomorph or a host to add the genes to them.
       - Added genes are "dormant" (do not apply immediately).
       - Dormant genes only manifest on chestbursters born from hosts.
+      - Every injection makes the entity's and their offspring's genes "unstable". The more unstable the genes, the more negative effects each successive generation will have.
 - Ovomorphs now have hatching AI
   - Ovomorphs now have a "desire" meter for hatching. 
   - Changes in the environment (such as light) will increase the desire meter.
