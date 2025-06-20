@@ -83,6 +83,7 @@
 - Fixed embryos born from a host eating chorus fruit not persisting.
 - Fixed inconsistent potion effect behavior with embryos born from hosts eating chorus fruit.
 - Fixed aberrant chitin armors not counting towards chitin armor advancements.
+- Fixed aliens spreading resin while underwater.
 
 ## 🛠 Data Pack
 - Added `#avp:runner_hosts` entity tag.
