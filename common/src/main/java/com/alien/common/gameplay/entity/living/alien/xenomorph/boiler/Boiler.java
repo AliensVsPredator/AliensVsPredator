@@ -13,8 +13,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import com.avp.AVP;
-import com.avp.common.gameplay.ai.goal.combat.LungeAtTargetGoal;
-import com.avp.common.registry.init.AVPSoundEvents;
 
 public class Boiler extends Xenomorph {
 
@@ -41,28 +39,7 @@ public class Boiler extends Xenomorph {
     }
 
     @Override
-    protected void registerGoals() {
-        super.registerGoals();
-        goalSelector.addGoal(3, new LungeAtTargetGoal(this, 0.05F, 20 * 7, 6, 12).setOnLungeCallback(this::runLungeAnimation));
-    }
-
-    @Override
-    public void runAttackAnimations() {
-        var isClawAttack = random.nextBoolean();
-
-        playSound(AVPSoundEvents.ENTITY_XENOMORPH_ATTACK.get(), getSoundVolume(), (random.nextFloat() - random.nextFloat()) * 0.2F + 1.0F);
-
-        if (isClawAttack) {
-            animationDispatcher.clawAttack();
-        } else {
-            animationDispatcher.tailAttack();
-        }
-    }
-
-    private void runLungeAnimation() {
-        playSound(AVPSoundEvents.ENTITY_XENOMORPH_LUNGE.get(), getSoundVolume(), (random.nextFloat() - random.nextFloat()) * 0.2F + 1.0F);
-        animationDispatcher.lunge();
-    }
+    public void runAttackAnimations() {}
 
     @Override
     protected float getHealthRegenPerSecond() {

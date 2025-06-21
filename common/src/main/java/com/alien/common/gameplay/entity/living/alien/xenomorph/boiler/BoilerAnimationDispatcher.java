@@ -6,16 +6,6 @@ import mod.azure.azurelib.rewrite.animation.play_behavior.AzPlayBehaviors;
 
 public class BoilerAnimationDispatcher {
 
-    private static final AzCommand ATTACK_CLAW = AzCommand.create(
-        DroneAnimationRefs.FULL_BODY_CONTROLLER_NAME,
-        DroneAnimationRefs.ATTACK_CLAW_ANIMATION_NAME
-    );
-
-    private static final AzCommand ATTACK_TAIL = AzCommand.create(
-        DroneAnimationRefs.FULL_BODY_CONTROLLER_NAME,
-        DroneAnimationRefs.ATTACK_TAIL_ANIMATION_NAME
-    );
-
     private static final AzCommand CRAWL = AzCommand.create(
         DroneAnimationRefs.FULL_BODY_CONTROLLER_NAME,
         DroneAnimationRefs.CRAWL_ANIMATION_NAME,
@@ -32,12 +22,6 @@ public class BoilerAnimationDispatcher {
         DroneAnimationRefs.FULL_BODY_CONTROLLER_NAME,
         DroneAnimationRefs.IDLE_ANIMATION_NAME,
         AzPlayBehaviors.LOOP
-    );
-
-    private static final AzCommand LUNGE = AzCommand.create(
-        DroneAnimationRefs.FULL_BODY_CONTROLLER_NAME,
-        DroneAnimationRefs.LUNGE_ANIMATION_NAME,
-        AzPlayBehaviors.PLAY_ONCE
     );
 
     private static final AzCommand RUN = AzCommand.create(
@@ -76,10 +60,6 @@ public class BoilerAnimationDispatcher {
         IDLE.sendForEntity(boiler);
     }
 
-    public void lunge() {
-        LUNGE.sendForEntity(boiler);
-    }
-
     public void run() {
         RUN.sendForEntity(boiler);
     }
@@ -92,11 +72,4 @@ public class BoilerAnimationDispatcher {
         WALK.sendForEntity(boiler);
     }
 
-    public void clawAttack() {
-        ATTACK_CLAW.sendForEntity(boiler);
-    }
-
-    public void tailAttack() {
-        ATTACK_TAIL.sendForEntity(boiler);
-    }
 }
