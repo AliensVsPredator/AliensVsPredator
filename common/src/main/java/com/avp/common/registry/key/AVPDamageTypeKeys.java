@@ -12,6 +12,8 @@ public class AVPDamageTypeKeys {
 
     public static final ResourceKey<DamageType> BULLET = create("bullet");
 
+    public static final ResourceKey<DamageType> CHESTBURSTING = create("chestbursting");
+
     public static final ResourceKey<DamageType> FLAMETHROW = create("flamethrow");
 
     public static final ResourceKey<DamageType> RAZOR_WIRE = create("razor_wire");

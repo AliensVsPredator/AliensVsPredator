@@ -11,6 +11,11 @@
 - Added two new advancements:
   - "Eviction" - Infected? Eat a chorus fruit to remove the embryo, saving yourself... and dooming the world.
   - "Hive Buster" - Defeat an alien hive.
+- Revamped chestbursting:
+  - Heartbeats can now be heard by players minutes before they get chestbursted.
+  - The heartbeats get progressively faster the closer the player is to chestbursting.
+  - 8 seconds before death, the host (not just players) will emit bone crunching sfx and take (0.001 aka fake) damage.
+  - Upon death, a chestburster screech will play as the new killing machine enters the world.
 - Revamped genetics system:
   - Gene bonuses are now datapacked.
   - All hosts now provide gene bonuses.
@@ -67,6 +72,7 @@
 - Poison jelly no longer turns royal ovomorphs into royal aberrant ovomorphs.
 - Same-strain, different-hive xenos now no longer kill each other.
 - Hive centers now constantly move with the hive leader.
+- Updated the chestbursting death message to have a proper, better-fitting message.
 - Moved the following config options to datapack:
   - `CHESTBURSTER_MAX_GROWTH_TIMER_SECONDS`
   - `DRONE_MAX_GROWTH_TIMER_SECONDS`

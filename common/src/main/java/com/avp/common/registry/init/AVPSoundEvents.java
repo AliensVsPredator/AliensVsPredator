@@ -13,6 +13,18 @@ public class AVPSoundEvents {
 
     public static final AVPDeferredHolder<SoundEvent> BLOCK_RESIN_SPREAD = register("block.resin.spread");
 
+    public static final AVPDeferredHolder<SoundEvent> EFFECT_BONE_CRUNCH = register("effect.bone_crunch");
+
+    public static final AVPDeferredHolder<SoundEvent> EFFECT_HEARTBEAT_0 = register("effect.heartbeat.0");
+
+    public static final AVPDeferredHolder<SoundEvent> EFFECT_HEARTBEAT_1 = register("effect.heartbeat.1");
+
+    public static final AVPDeferredHolder<SoundEvent> EFFECT_HEARTBEAT_2 = register("effect.heartbeat.2");
+
+    public static final AVPDeferredHolder<SoundEvent> EFFECT_HEARTBEAT_3 = register("effect.heartbeat.3");
+
+    public static final AVPDeferredHolder<SoundEvent> ENTITY_CHESTBURSTER_BURST = register("entity.chestburster.burst");
+
     public static final AVPDeferredHolder<SoundEvent> ENTITY_OVOMORPH_HATCH = register("entity.ovomorph.hatch");
 
     public static final AVPDeferredHolder<SoundEvent> ENTITY_OVOMORPH_LAID = register("entity.ovomorph.laid");

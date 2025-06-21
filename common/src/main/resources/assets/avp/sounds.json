@@ -17,6 +17,43 @@
     ],
     "subtitle": "subtitles.block.resin.spread"
   },
+  "effect.bone_crunch": {
+    "sounds": [
+      "avp:effect/bone_crunch/bone_crunch_0",
+      "avp:effect/bone_crunch/bone_crunch_1"
+    ],
+    "subtitle": "subtitles.effect.bone_crunch"
+  },
+  "effect.heartbeat.0": {
+    "sounds": [
+      "avp:effect/heartbeat/heartbeat_0"
+    ],
+    "subtitle": "subtitles.effect.heartbeat.0"
+  },
+  "effect.heartbeat.1": {
+    "sounds": [
+      "avp:effect/heartbeat/heartbeat_1"
+    ],
+    "subtitle": "subtitles.effect.heartbeat.1"
+  },
+  "effect.heartbeat.2": {
+    "sounds": [
+      "avp:effect/heartbeat/heartbeat_2"
+    ],
+    "subtitle": "subtitles.effect.heartbeat.2"
+  },
+  "effect.heartbeat.3": {
+    "sounds": [
+      "avp:effect/heartbeat/heartbeat_3"
+    ],
+    "subtitle": "subtitles.effect.heartbeat.3"
+  },
+  "entity.chestburster.burst": {
+    "sounds": [
+      "avp:entity/chestburster/burst/burst"
+    ],
+    "subtitle": "subtitles.entity.chestburster.burst"
+  },
   "entity.ovomorph.hatch": {
     "sounds": [
       "avp:entity/ovomorph/hatch/hatch"

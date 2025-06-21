@@ -14,6 +14,14 @@ public class EnUsSoundEventProvider {
         addSound(builder, AVPSoundEvents.BLOCK_ACID_BURN, "Acid burns");
         addSound(builder, AVPSoundEvents.BLOCK_RESIN_SPREAD, "Xenomorph spreads resin");
 
+        addSound(builder, AVPSoundEvents.EFFECT_BONE_CRUNCH, "Bones crunching");
+        addSound(builder, AVPSoundEvents.EFFECT_HEARTBEAT_0, "Heart beats");
+        addSound(builder, AVPSoundEvents.EFFECT_HEARTBEAT_1, "Heart beats quickly");
+        addSound(builder, AVPSoundEvents.EFFECT_HEARTBEAT_2, "Heart beats rapidly");
+        addSound(builder, AVPSoundEvents.EFFECT_HEARTBEAT_3, "Heart beats fatally");
+
+        addSound(builder, AVPSoundEvents.ENTITY_CHESTBURSTER_BURST, "Chestburster bursting");
+
         addSound(builder, AVPSoundEvents.ENTITY_OVOMORPH_HATCH, "Ovomorph hatches");
         addSound(builder, AVPSoundEvents.ENTITY_OVOMORPH_LAID, "Queen lays egg");
         addSound(builder, AVPSoundEvents.ENTITY_OVOMORPH_ROOT, "Ovomorph takes root");

@@ -72,6 +72,7 @@ public class EnglishLanguageProvider extends FabricLanguageProvider {
         // Death messages
         builder.add("death.attack.acid", "%1$s vaporized in acid");
         builder.add("death.attack.bullet", "%1$s was shot to death");
+        builder.add("death.attack.chestbursting", "%1$s gave birth");
         builder.add("death.attack.radiation", "%1$s surrendered to radiation");
         builder.add("death.attack.razor_wire", "%1$s got tangled in razor wire");
         builder.add("death.attack.smothering", "%1$s was smothered to death");
