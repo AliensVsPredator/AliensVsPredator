@@ -86,15 +86,16 @@ public class HiveManager implements NBTSerializable {
                 }
             }
         });
+
+        if (hiveOption.isSomeAnd(hive -> !hive.getMembershipManager().isMember(alien))) {
+            // Clear hive reference if the alien is not a member of the hive reference it is holding.
+            hiveOption = Option.none();
+        }
     }
 
     private void tryCreateAndAssignHive(HiveLevelData hiveLevelData, @Nullable Hive nearestHive) {
         if (!alien.getType().is(AVPEntityTypeTags.XENOMORPHS)) {
             // Non-xenomorphs cannot create their own hives.
-            return;
-        }
-
-        if (nearestHive != null && nearestHive.getSpaceManager().isEntityWithinHiveBuffer(alien)) {
             return;
         }
 

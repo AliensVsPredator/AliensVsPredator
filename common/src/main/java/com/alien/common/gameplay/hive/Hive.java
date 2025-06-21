@@ -111,6 +111,7 @@ public class Hive implements NBTSerializable {
             !(requestingEntity instanceof Alien alien)
                 // OR the alien is not the same variant as the hive...
                 || !Objects.equals(alien.getVariant(), variant)
+                || isNonLeaderQueen(requestingEntity)
         ) {
             // Then reject the entity's request to join the hive.
             return false;
@@ -127,7 +128,7 @@ public class Hive implements NBTSerializable {
     }
 
     public void ping(@NotNull Entity entity) {
-        if (!entity.isAlive()) {
+        if (!entity.isAlive() || isNonLeaderQueen(entity)) {
             removeHiveMember(entity);
             return;
         }
@@ -174,6 +175,13 @@ public class Hive implements NBTSerializable {
 
     public boolean isAngry() {
         return bossBarManager.isTrackingPlayers();
+    }
+
+    private boolean isNonLeaderQueen(Entity requestingEntity) {
+        // Entity is a queen...
+        return requestingEntity.getType().is(AVPEntityTypeTags.QUEENS)
+            // AND the queen entity is not this hive's leader.
+            && !getLeadershipManager().isLeader(requestingEntity);
     }
 
     @Override
