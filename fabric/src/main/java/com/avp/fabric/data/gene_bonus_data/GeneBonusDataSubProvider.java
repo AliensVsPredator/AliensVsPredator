@@ -43,6 +43,14 @@ public class GeneBonusDataSubProvider extends GeneBonusDataProvider {
         );
 
         add(
+            EntityType.ARMADILLO,
+            List.of(
+                new Tuple2<>(Genes.ARMOR, new GeneModifier(GeneOperationType.ADDITIVE, 2.0)),
+                new Tuple2<>(Genes.ARMOR_TOUGHNESS, new GeneModifier(GeneOperationType.ADDITIVE, 1.0)),
+                new Tuple2<>(Genes.ATTACK_DAMAGE, new GeneModifier(GeneOperationType.MULTIPLICATIVE, -0.075))
+            )
+        );
+        add(
             EntityType.CAMEL,
             List.of(
                 new Tuple2<>(Genes.COLD_RESISTANCE, new GeneModifier(GeneOperationType.MULTIPLICATIVE, -0.05)),
@@ -285,7 +293,6 @@ public class GeneBonusDataSubProvider extends GeneBonusDataProvider {
 
         // Non-hosts
         touchedEntries.add(EntityType.ALLAY);
-        touchedEntries.add(EntityType.ARMADILLO);
         touchedEntries.add(EntityType.AXOLOTL);
         touchedEntries.add(EntityType.BAT);
         touchedEntries.add(EntityType.BEE);
@@ -328,7 +335,6 @@ public class GeneBonusDataSubProvider extends GeneBonusDataProvider {
         touchedEntries.add(EntityType.STRIDER);
         touchedEntries.add(EntityType.TADPOLE);
         touchedEntries.add(EntityType.TROPICAL_FISH);
-        touchedEntries.add(EntityType.TURTLE);
         touchedEntries.add(EntityType.VEX);
         touchedEntries.add(EntityType.WARDEN);
         touchedEntries.add(EntityType.WITHER);
