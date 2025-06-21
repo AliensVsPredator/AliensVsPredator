@@ -9,7 +9,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Supplier;
 
-import com.avp.AVPResources;
 import com.avp.common.registry.AVPDeferredHolder;
 
 public class GeneRegistry {
@@ -36,7 +35,7 @@ public class GeneRegistry {
 
     public static AVPDeferredHolder<Gene> register(Supplier<Gene> geneSupplier) {
         var gene = geneSupplier.get();
-        var resourceLocation = AVPResources.location(gene.id());
+        var resourceLocation = gene.id();
         var holder = Holder.direct(gene);
 
         GENES_BY_RESOURCE_LOCATION.put(resourceLocation, gene);

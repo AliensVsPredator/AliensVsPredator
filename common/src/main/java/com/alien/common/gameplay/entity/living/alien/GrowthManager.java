@@ -9,7 +9,7 @@ import com.lib.common.gameplay.NBTSerializable;
 import com.lib.common.gameplay.gene.GeneOperationType;
 import com.lib.common.gameplay.gene.Genes;
 import com.lib.common.gameplay.util.spatial.block.BlockPosUtil;
-import com.lib.common.util.GeneUtil;
+import com.lib.common.util.GeneIntegrityUtil;
 import net.minecraft.Util;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.Entity;
@@ -196,14 +196,14 @@ public class GrowthManager implements NBTSerializable {
 
     private boolean shouldBecomeBoilerFromGeneDecay() {
         var geneCarrier = (GeneCarrier) entity;
-        var geneDecayLevel = GeneUtil.getGeneDecayLevel(geneCarrier);
+        var geneDecayLevel = GeneIntegrityUtil.getGeneDecayLevel(geneCarrier);
 
         return switch (geneDecayLevel) {
             case FATAL -> true;
             case STABLE, UNSTABLE -> false;
             case VOLATILE -> {
                 // Ex. -2.75 -> 2.75
-                var totalGeneIntegrity = Math.abs(GeneUtil.getTotalGeneticIntegrity(geneCarrier));
+                var totalGeneIntegrity = Math.abs(GeneIntegrityUtil.getTotalGeneticIntegrity(geneCarrier));
                 // Ex. 2.75 - 2 = 0.75
                 var chance = totalGeneIntegrity - Math.floor(totalGeneIntegrity);
                 // Ex. 0.75 means 75% chance to be a boiler.

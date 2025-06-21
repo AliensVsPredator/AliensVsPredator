@@ -21,7 +21,6 @@ import java.util.List;
 import java.util.function.Predicate;
 
 import com.avp.AVP;
-import com.avp.AVPResources;
 import com.avp.common.registry.AVPDeferredHolder;
 import com.avp.common.registry.init.entity_type.AVPEntityTypes;
 import com.avp.common.registry.tag.AVPEntityTypeTags;
@@ -369,7 +368,7 @@ public class GeneBonusDataSubProvider extends GeneBonusDataProvider {
                 geneBonusList.stream()
                     .map(
                         tuple -> new GeneBonusDataEntry(
-                            AVPResources.location(tuple.first().get().id()),
+                            tuple.first().get().id(),
                             tuple.second().operation(),
                             tuple.second().value()
                         )
@@ -388,7 +387,7 @@ public class GeneBonusDataSubProvider extends GeneBonusDataProvider {
                 geneBonusList.stream()
                     .map(
                         tuple -> new GeneBonusDataEntry(
-                            AVPResources.location(tuple.first().get().id()),
+                            tuple.first().get().id(),
                             tuple.second().operation(),
                             tuple.second().value()
                         )

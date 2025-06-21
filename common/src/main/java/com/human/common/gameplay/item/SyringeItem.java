@@ -9,6 +9,7 @@ import com.lib.common.gameplay.gene.GeneBonusDataEntry;
 import com.lib.common.gameplay.gene.GeneOperationType;
 import com.lib.common.gameplay.gene.GeneRegistry;
 import com.lib.common.gameplay.gene.Genes;
+import com.lib.common.util.GeneDataUtil;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
@@ -26,8 +27,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 import java.util.List;
-
-import com.avp.AVPResources;
 
 public class SyringeItem extends Item {
 
@@ -149,7 +148,7 @@ public class SyringeItem extends Item {
                 }
 
                 // Create map to merge genes into.
-                var currentGeneBonusMap = new HashMap<>(syringeContents.toMap());
+                var currentGeneBonusMap = new HashMap<>(GeneDataUtil.toMap(syringeContents.geneBonusDataEntries()));
                 // Overwrite genes.
                 currentGeneBonusMap.putAll(geneBonusMapData);
                 // Convert back to list.
@@ -177,9 +176,8 @@ public class SyringeItem extends Item {
             }
             case INJECT -> {
                 var geneCarrier = (GeneCarrier) interactionTarget;
-                geneCarrier.getOrCreateGeneManager().putDormantGenes(syringeContents.toMap());
-                // TODO: This is terribly unsafe, don't manually create the resource location here.
-                var resourceLocation = AVPResources.location(Genes.GENETIC_INTEGRITY.get().id());
+                geneCarrier.getOrCreateGeneManager().putDormantGenes(GeneDataUtil.toMap(syringeContents.geneBonusDataEntries()));
+                var resourceLocation = Genes.GENETIC_INTEGRITY.get().id();
                 geneCarrier.getOrCreateGeneManager().addDormantGene(resourceLocation, GeneOperationType.ADDITIVE, -0.34);
 
                 stack.set(HumanDataComponents.SYRINGE_CONTENTS.get(), SyringeContents.EMPTY);
@@ -237,17 +235,16 @@ public class SyringeItem extends Item {
         );
 
         // TODO: Pretty this up later.
-        syringeContents.toMap()
-            .entrySet()
+        syringeContents.geneBonusDataEntries()
             .stream()
-            .filter(entry -> GeneRegistry.getValue(entry.getKey().resourceLocation()).isSome())
+            .filter(entry -> GeneRegistry.getValue(entry.resourceLocation()).isSome())
             .forEach(
                 entry -> list.add(
-                    Component.translatable(GeneRegistry.getValue(entry.getKey().resourceLocation()).unwrap().getTranslationKey())
+                    Component.translatable(GeneRegistry.getValue(entry.resourceLocation()).unwrap().getTranslationKey())
                         .append(Component.literal(": "))
                         .append(
-                            Component.literal(format(entry.getKey().operation(), entry.getValue()))
-                                .withStyle(getColorForValue(entry.getValue()))
+                            Component.literal(format(entry.operation(), entry.value()))
+                                .withStyle(getColorForValue(entry.value()))
                         )
                 )
             );

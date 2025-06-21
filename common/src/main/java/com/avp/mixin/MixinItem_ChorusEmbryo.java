@@ -1,8 +1,11 @@
 package com.avp.mixin;
 
 import com.alien.common.data.AlienAdvancements;
+import com.alien.common.model.alien.GeneCarrier;
 import com.alien.common.model.alien.Host;
 import com.alien.common.util.EmbryoUtil;
+import com.lib.common.gameplay.gene.GeneOperationType;
+import com.lib.common.gameplay.gene.Genes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
@@ -49,6 +52,9 @@ public class MixinItem_ChorusEmbryo {
                 livingEmbryo.setPos(livingEntity.position());
                 // Attempt teleportation. We don't need a result from this since it wouldn't be useful anyway.
                 tryTeleportingEntity(livingEmbryo);
+
+                var geneManager = ((GeneCarrier) livingEmbryo).getOrCreateGeneManager();
+                geneManager.addActiveGene(Genes.WARP, GeneOperationType.ADDITIVE, 1);
             }
         });
 

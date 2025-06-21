@@ -1,7 +1,6 @@
 package com.human.common.gameplay.component;
 
 import com.lib.common.gameplay.gene.GeneBonusDataEntry;
-import com.lib.common.gameplay.gene.GeneModifierKey;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.network.FriendlyByteBuf;
@@ -10,8 +9,6 @@ import net.minecraft.network.codec.StreamCodec;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 public record SyringeContents(
     List<GeneBonusDataEntry> geneBonusDataEntries
@@ -32,9 +29,4 @@ public record SyringeContents(
         SyringeContents::geneBonusDataEntries,
         SyringeContents::new
     );
-
-    public Map<GeneModifierKey, Double> toMap() {
-        return geneBonusDataEntries.stream()
-            .collect(Collectors.toMap(GeneBonusDataEntry::toKey, GeneBonusDataEntry::value));
-    }
 }

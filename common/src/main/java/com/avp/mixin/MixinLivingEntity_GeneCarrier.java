@@ -2,11 +2,14 @@ package com.avp.mixin;
 
 import com.alien.common.model.alien.GeneCarrier;
 import com.alien.common.util.AcidBleedUtil;
-import com.alien.common.util.GeneResistanceHurtUtil;
 import com.lib.common.gameplay.entity.manager.GeneManager;
 import com.lib.common.gameplay.gene.GeneOperationType;
 import com.lib.common.gameplay.gene.Genes;
+import com.lib.common.util.GeneResistanceHurtUtil;
+import com.lib.common.util.TeleportUtil;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -24,7 +27,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public abstract class MixinLivingEntity_GeneCarrier extends Entity implements GeneCarrier {
 
     @Unique
-    private GeneManager geneManager;
+    private GeneManager avp$geneManager;
 
     public MixinLivingEntity_GeneCarrier(EntityType<?> entityType, Level level) {
         super(entityType, level);
@@ -32,7 +35,23 @@ public abstract class MixinLivingEntity_GeneCarrier extends Entity implements Ge
 
     @Inject(at = @At("HEAD"), method = "tick")
     public void tick(CallbackInfo callbackInfo) {
-        getOrCreateGeneManager().tick();
+        var geneManager = getOrCreateGeneManager();
+
+        geneManager.tick();
+
+        if (level().isClientSide && geneManager.hasGene(Genes.WARP)) {
+            for (int i = 0; i < 2; ++i) {
+                level().addParticle(
+                    ParticleTypes.PORTAL,
+                    getRandomX(0.5F),
+                    getRandomY() - (double) 0.25F,
+                    getRandomZ(0.5F),
+                    (random.nextDouble() - (double) 0.5F) * (double) 2.0F,
+                    -random.nextDouble(),
+                    (random.nextDouble() - (double) 0.5F) * (double) 2.0F
+                );
+            }
+        }
     }
 
     @ModifyVariable(
@@ -53,8 +72,26 @@ public abstract class MixinLivingEntity_GeneCarrier extends Entity implements Ge
         }
     }
 
+    @Inject(at = @At("HEAD"), method = "hurt", cancellable = true)
+    public void avp$preHurtEffects(DamageSource damageSource, float damage, CallbackInfoReturnable<Boolean> cir) {
+        if (
+            getOrCreateGeneManager().hasGene(Genes.WARP)
+                && (damageSource.is(DamageTypeTags.IS_PROJECTILE)
+                    || random.nextInt(10) == 0)
+        ) {
+            var self = LivingEntity.class.cast(this);
+
+            for (var i = 0; i < 64; ++i) {
+                if (TeleportUtil.teleport(self)) {
+                    cir.setReturnValue(false);
+                    return;
+                }
+            }
+        }
+    }
+
     @Inject(at = @At("RETURN"), method = "hurt")
-    public void avp$hurtBleedAcid(DamageSource damageSource, float damage, CallbackInfoReturnable<Boolean> cir) {
+    public void avp$hurtReturnEffects(DamageSource damageSource, float damage, CallbackInfoReturnable<Boolean> cir) {
         var isHurt = cir.getReturnValueZ();
 
         if (isHurt) {
@@ -82,16 +119,16 @@ public abstract class MixinLivingEntity_GeneCarrier extends Entity implements Ge
 
     @Override
     public GeneManager getOrCreateGeneManager() {
-        if (geneManager == null) {
+        if (avp$geneManager == null) {
             var self = LivingEntity.class.cast(this);
-            this.geneManager = new GeneManager(self);
+            this.avp$geneManager = new GeneManager(self);
         }
 
-        return geneManager;
+        return avp$geneManager;
     }
 
     @Override
     public void setGeneManager(GeneManager geneManager) {
-        this.geneManager = geneManager;
+        this.avp$geneManager = geneManager;
     }
 }

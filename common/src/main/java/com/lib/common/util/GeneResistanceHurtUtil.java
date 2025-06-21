@@ -1,4 +1,4 @@
-package com.alien.common.util;
+package com.lib.common.util;
 
 import com.alien.common.model.alien.GeneCarrier;
 import com.lib.common.gameplay.entity.manager.GeneManager;

@@ -5,7 +5,7 @@ import com.lib.common.gameplay.gene.GeneOperationType;
 import com.lib.common.gameplay.gene.Genes;
 import com.lib.common.model.GeneDecayLevelType;
 
-public class GeneUtil {
+public class GeneIntegrityUtil {
 
     public static GeneDecayLevelType getGeneDecayLevel(GeneCarrier geneCarrier) {
         var totalGeneticIntegrity = getTotalGeneticIntegrity(geneCarrier);

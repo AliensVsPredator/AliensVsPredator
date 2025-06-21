@@ -1,5 +1,6 @@
 package com.avp.neoforge;
 
+import com.alien.common.model.alien.GeneCarrier;
 import com.predator.common.registry.init.PredatorEntityTypes;
 import mod.azure.azurelib.rewrite.animation.cache.AzIdentityRegistry;
 import net.minecraft.core.registries.Registries;
@@ -21,6 +22,7 @@ import net.neoforged.neoforge.event.RegisterCommandsEvent;
 import net.neoforged.neoforge.event.TagsUpdatedEvent;
 import net.neoforged.neoforge.event.entity.EntityAttributeCreationEvent;
 import net.neoforged.neoforge.event.entity.RegisterSpawnPlacementsEvent;
+import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.event.server.ServerAboutToStartEvent;
 import net.neoforged.neoforge.event.tick.LevelTickEvent;
 import net.neoforged.neoforge.event.village.VillagerTradesEvent;
@@ -58,6 +60,7 @@ public class AVPNeoForge {
         // Game bus events.
         NeoForge.EVENT_BUS.addListener(AVPNeoForge::registerCommands);
         NeoForge.EVENT_BUS.addListener(AVPNeoForge::registerDataReloadListeners);
+        NeoForge.EVENT_BUS.addListener(AVPNeoForge::registerPlayerTrackingEntityHandler);
         NeoForge.EVENT_BUS.addListener(AVPNeoForge::registerTagUpdateHandler);
         NeoForge.EVENT_BUS.addListener(AVPNeoForge::addNewVillageBuilding);
         NeoForge.EVENT_BUS.addListener(AVPNeoForge::addCustomTrades);
@@ -80,6 +83,10 @@ public class AVPNeoForge {
     public static void registerDataReloadListeners(AddReloadListenerEvent event) {
         REGISTRY.getReloadListeners()
             .forEach(event::addListener);
+    }
+
+    public static void registerPlayerTrackingEntityHandler(PlayerEvent.StartTracking event) {
+        ((GeneCarrier) event.getTarget()).getOrCreateGeneManager().syncToClient();
     }
 
     // Game event

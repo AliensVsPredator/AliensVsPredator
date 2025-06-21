@@ -4,7 +4,7 @@ import com.alien.common.gameplay.entity.living.alien.ovomorph.Ovomorph;
 import com.alien.common.gameplay.entity.living.alien.xenomorph.queen.Queen;
 import com.alien.common.model.alien.GeneCarrier;
 import com.alien.common.model.alien.variant.AlienVariant;
-import com.lib.common.util.GeneUtil;
+import com.lib.common.util.GeneIntegrityUtil;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.phys.AABB;
@@ -89,14 +89,14 @@ public class QueenLayEggGoal extends Goal {
 
     private boolean shouldBeAberrant() {
         var geneCarrier = (GeneCarrier) queen;
-        var geneDecayLevel = GeneUtil.getGeneDecayLevel(geneCarrier);
+        var geneDecayLevel = GeneIntegrityUtil.getGeneDecayLevel(geneCarrier);
 
         return switch (geneDecayLevel) {
             case FATAL, VOLATILE -> true;
             case STABLE -> false;
             case UNSTABLE -> {
                 // Ex. -1.75 -> 1.75
-                var totalGeneIntegrity = Math.abs(GeneUtil.getTotalGeneticIntegrity(geneCarrier));
+                var totalGeneIntegrity = Math.abs(GeneIntegrityUtil.getTotalGeneticIntegrity(geneCarrier));
                 // Ex. 1.75 - 1 = 0.75
                 var chance = totalGeneIntegrity - Math.floor(totalGeneIntegrity);
                 // Ex. 0.75 means 75% chance to be aberrant.

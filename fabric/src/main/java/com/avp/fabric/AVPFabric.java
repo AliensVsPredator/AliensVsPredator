@@ -1,11 +1,13 @@
 package com.avp.fabric;
 
+import com.alien.common.model.alien.GeneCarrier;
 import com.predator.common.registry.init.PredatorEntityTypes;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.event.lifecycle.v1.CommonLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
+import net.fabricmc.fabric.api.networking.v1.EntityTrackingEvents;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
@@ -44,6 +46,10 @@ public class AVPFabric implements ModInitializer {
         FlammableBlockRegistry.initialize();
         ServerTickEvents.START_WORLD_TICK.register(this::onWorldTick);
         ServerLifecycleEvents.SERVER_STARTING.register(this::addNewVillageBuilding);
+
+        EntityTrackingEvents.START_TRACKING.register(
+            (trackedEntity, player) -> ((GeneCarrier) trackedEntity).getOrCreateGeneManager().syncToClient()
+        );
 
         CommandRegistrationCallback.EVENT.register(
             (dispatcher, registryAccess, environment) -> REGISTRY.getLiteralArgumentBuilders()
