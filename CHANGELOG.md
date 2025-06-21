@@ -65,6 +65,7 @@
 - Facehuggers can no longer be trapped in boats and minecarts.
 - Improved razor wire death message.
 - Poison jelly no longer turns royal ovomorphs into royal aberrant ovomorphs.
+- Same-strain, different-hive xenos now no longer kill each other.
 - Moved the following config options to datapack:
   - `CHESTBURSTER_MAX_GROWTH_TIMER_SECONDS`
   - `DRONE_MAX_GROWTH_TIMER_SECONDS`
