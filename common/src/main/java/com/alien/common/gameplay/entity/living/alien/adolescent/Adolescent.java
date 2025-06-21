@@ -3,11 +3,13 @@ package com.alien.common.gameplay.entity.living.alien.adolescent;
 import com.alien.common.gameplay.entity.living.alien.Alien;
 import com.alien.common.gameplay.entity.living.alien.GrowthManager;
 import com.alien.common.model.alien.variant.AlienVariant;
-import com.alien.common.model.resin.ResinData;
 import com.alien.common.registry.init.AlienEntityTypes;
 import com.alien.common.util.AlienPredicates;
 import com.alien.common.util.XenomorphGrowthUtil;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
@@ -19,6 +21,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import com.avp.AVP;
+import com.avp.common.registry.tag.AVPEntityTypeTags;
 import com.avp.common.util.AVPPredicates;
 
 public class Adolescent extends Alien {
@@ -26,6 +29,13 @@ public class Adolescent extends Alien {
     public static AttributeSupplier.Builder createAdolescentAttributes() {
         return applyFrom(AVP.config.statsConfigs.ADOLESCENT_STATS, Monster.createMonsterAttributes());
     }
+
+    public static final EntityDataAccessor<Boolean> HAS_DORSAL_TUBES = SynchedEntityData.defineId(
+        Adolescent.class,
+        EntityDataSerializers.BOOLEAN
+    );
+
+    private static final String NBT_HAS_DORSAL_TUBES = "hasDorsalTubes";
 
     private final AdolescentAnimationDispatcher animationDispatcher;
 
@@ -37,6 +47,12 @@ public class Adolescent extends Alien {
         this.growthManager = new GrowthManager(this, XenomorphGrowthUtil.GROW_UP_CALLBACK)
             .setGrowOverTime(true);
         this.config = AVP.config.statsConfigs.ADOLESCENT_STATS;
+    }
+
+    @Override
+    protected void defineSynchedData(SynchedEntityData.@NotNull Builder builder) {
+        super.defineSynchedData(builder);
+        builder.define(HAS_DORSAL_TUBES, true);
     }
 
     @Override
@@ -66,6 +82,10 @@ public class Adolescent extends Alien {
     public void tick() {
         super.tick();
         growthManager.tick();
+
+        if (!level().isClientSide) {
+            getHostType().ifSome(hostType -> setHasDorsalTubes(!hostType.is(AVPEntityTypeTags.RUNNER_HOSTS)));
+        }
     }
 
     @Override
@@ -73,25 +93,35 @@ public class Adolescent extends Alien {
         return AVP.config.statsConfigs.ADOLESCENT_STATS.healthRegenPerSecond;
     }
 
-    protected @NotNull ResinData createResinData() {
-        return new ResinData(0, 8, 1, AVP.config.statsConfigs.ADOLESCENT_STATS.nestTickrate);
-    }
-
     @Override
     public void readAdditionalSaveData(@NotNull CompoundTag compoundTag) {
         super.readAdditionalSaveData(compoundTag);
         growthManager.load(compoundTag);
+
+        if (compoundTag.contains(NBT_HAS_DORSAL_TUBES)) {
+            setHasDorsalTubes(compoundTag.getBoolean(NBT_HAS_DORSAL_TUBES));
+        }
     }
 
     @Override
     public void addAdditionalSaveData(@NotNull CompoundTag compoundTag) {
         super.addAdditionalSaveData(compoundTag);
         growthManager.save(compoundTag);
+
+        compoundTag.putBoolean(NBT_HAS_DORSAL_TUBES, hasDorsalTubes());
     }
 
     @Override
     public int getMaxJellyToGrowth() {
         return 1;
+    }
+
+    public boolean hasDorsalTubes() {
+        return entityData.get(HAS_DORSAL_TUBES);
+    }
+
+    public void setHasDorsalTubes(boolean hasDorsalTubes) {
+        entityData.set(HAS_DORSAL_TUBES, hasDorsalTubes);
     }
 
     public AdolescentAnimationDispatcher getAnimationDispatcher() {

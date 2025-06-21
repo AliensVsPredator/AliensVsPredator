@@ -6,6 +6,7 @@ import mod.azure.azurelib.rewrite.animation.AzAnimatorConfig;
 import mod.azure.azurelib.rewrite.animation.controller.AzAnimationController;
 import mod.azure.azurelib.rewrite.animation.controller.AzAnimationControllerContainer;
 import mod.azure.azurelib.rewrite.animation.impl.AzEntityAnimator;
+import mod.azure.azurelib.rewrite.model.AzBakedModel;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 
@@ -41,9 +42,26 @@ public class AdolescentAnimator extends AzEntityAnimator<Adolescent> {
     @Override
     public void setCustomAnimations(Adolescent animatable, float partialTicks) {
         super.setCustomAnimations(animatable, partialTicks);
+        showDorsalTubes(animatable);
 
         // TODO: Re-add this once adolescent animations are done.
         // runPassiveAnimations(animatable);
+    }
+
+    private void showDorsalTubes(Adolescent entity) {
+        var bakedModel = context().boneCache().getBakedModel();
+        hideDorsalTube(entity, bakedModel, "gLeftUpperDorsalTubeNub");
+        hideDorsalTube(entity, bakedModel, "gRightUpperDorsalTubeNub");
+        hideDorsalTube(entity, bakedModel, "gLeftLowerDorsalTubeNub");
+        hideDorsalTube(entity, bakedModel, "gRightLowerDorsalTubeNub");
+    }
+
+    private static void hideDorsalTube(Adolescent entity, AzBakedModel bakedModel, String dorsalTubeBoneName) {
+        var dorsalTubeNub = bakedModel.getBoneOrNull(dorsalTubeBoneName);
+
+        if (dorsalTubeNub != null) {
+            dorsalTubeNub.setHidden(!entity.hasDorsalTubes());
+        }
     }
 
     private void runPassiveAnimations(Adolescent adolescent) {
