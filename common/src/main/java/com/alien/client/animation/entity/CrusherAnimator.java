@@ -24,7 +24,22 @@ public class CrusherAnimator extends AzEntityAnimator<Crusher> {
     @Override
     public void registerControllers(AzAnimationControllerContainer<Crusher> animationControllerContainer) {
         animationControllerContainer.add(
-            AzAnimationController.builder(this, CrusherAnimationRefs.FULL_BODY_CONTROLLER_NAME)
+            AzAnimationController.builder(this, CrusherAnimationRefs.BODY_CONTROLLER_NAME)
+                .setTransitionLength(5)
+                .build(),
+            AzAnimationController.builder(this, CrusherAnimationRefs.HEAD_CONTROLLER_NAME)
+                .setTransitionLength(5)
+                .build(),
+            AzAnimationController.builder(this, CrusherAnimationRefs.LEFT_ARM_CONTROLLER_NAME)
+                .setTransitionLength(5)
+                .build(),
+            AzAnimationController.builder(this, CrusherAnimationRefs.LEFT_LEG_CONTROLLER_NAME)
+                .setTransitionLength(5)
+                .build(),
+            AzAnimationController.builder(this, CrusherAnimationRefs.RIGHT_ARM_CONTROLLER_NAME)
+                .setTransitionLength(5)
+                .build(),
+            AzAnimationController.builder(this, CrusherAnimationRefs.RIGHT_LEG_CONTROLLER_NAME)
                 .setTransitionLength(5)
                 .build(),
             AzAnimationController.builder(this, CrusherAnimationRefs.TAIL_CONTROLLER_NAME)
@@ -49,17 +64,18 @@ public class CrusherAnimator extends AzEntityAnimator<Crusher> {
         var dispatcher = crusher.getAnimationDispatcher();
         var movementAnalyzer = crusher.getMovementAnalyzer();
         var isMovingOnGround = movementAnalyzer.isMovingHorizontally() && crusher.onGround();
-        var isCrawling = crusher.getCrawlingManager().isCrawling();
         Runnable animFunction;
 
+        // FIXME:
         if (crusher.isUnderWater()) {
             // TODO: idle swim
             animFunction = dispatcher::swim;
         } else if (isMovingOnGround) {
-            animFunction = isCrawling ? dispatcher::crawl : dispatcher::walk;
+            // TODO: Crawl
+            animFunction = dispatcher::walk;
         } else {
             // TODO: idle crawl
-            animFunction = isCrawling ? dispatcher::crawlHold : dispatcher::idle;
+            animFunction = dispatcher::idle;
         }
 
         animFunction.run();

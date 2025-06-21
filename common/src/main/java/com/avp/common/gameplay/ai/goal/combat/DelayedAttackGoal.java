@@ -26,7 +26,10 @@ public class DelayedAttackGoal extends MeleeAttackGoal {
         Runnable attackAnimationRunnable
     ) {
         super(mob, speedModifier, bl);
-        this.attackAnimationCooldown = Cooldown.withCooldownTime("attackAnimationCooldownInTicks", Duration.ofMillis(delayTicksBeforeAttack * 50L));
+        this.attackAnimationCooldown = Cooldown.withCooldownTime(
+            "attackAnimationCooldownInTicks",
+            Duration.ofMillis(delayTicksBeforeAttack * 50L)
+        );
         this.attackAnimationRunnable = attackAnimationRunnable;
 
         setFlags(EnumSet.of(Flag.MOVE, Flag.LOOK));

@@ -8,7 +8,7 @@ import java.time.Duration;
 public class Cooldown implements NBTSerializable {
 
     public static Cooldown withCooldownTime(String name, Duration cooldownTime) {
-        return withCooldownTimeInTicks(name, cooldownTime.toSeconds() * 20);
+        return withCooldownTimeInTicks(name, (long) (cooldownTime.toMillis() / 50.0));
     }
 
     public static Cooldown withCooldownTimeInTicks(String name, long maxCooldownInTicks) {
