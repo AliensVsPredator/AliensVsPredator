@@ -9,6 +9,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.SpawnPlacements;
 import net.minecraft.world.level.GameRules;
@@ -86,7 +87,9 @@ public class AVPNeoForge {
     }
 
     public static void registerPlayerTrackingEntityHandler(PlayerEvent.StartTracking event) {
-        ((GeneCarrier) event.getTarget()).getOrCreateGeneManager().syncToClient();
+        if (event.getTarget() instanceof LivingEntity livingEntity) {
+            ((GeneCarrier) livingEntity).getOrCreateGeneManager().syncToClient();
+        }
     }
 
     // Game event

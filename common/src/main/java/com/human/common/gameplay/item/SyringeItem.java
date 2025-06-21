@@ -176,9 +176,14 @@ public class SyringeItem extends Item {
             }
             case INJECT -> {
                 var geneCarrier = (GeneCarrier) interactionTarget;
-                geneCarrier.getOrCreateGeneManager().putDormantGenes(GeneDataUtil.toMap(syringeContents.geneBonusDataEntries()));
+                geneCarrier.getOrCreateGeneManager()
+                    .getGeneContainer()
+                    .putDormantGenes(GeneDataUtil.toMap(syringeContents.geneBonusDataEntries()));
+
                 var resourceLocation = Genes.GENETIC_INTEGRITY.get().id();
-                geneCarrier.getOrCreateGeneManager().addDormantGene(resourceLocation, GeneOperationType.ADDITIVE, -0.34);
+                geneCarrier.getOrCreateGeneManager()
+                    .getGeneContainer()
+                    .addDormantGene(resourceLocation, GeneOperationType.ADDITIVE, -0.34);
 
                 stack.set(HumanDataComponents.SYRINGE_CONTENTS.get(), SyringeContents.EMPTY);
                 stack.hurtAndBreak(1, player, player.getEquipmentSlotForItem(stack));

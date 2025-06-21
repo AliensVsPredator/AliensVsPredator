@@ -2,6 +2,7 @@ package com.avp.mixin;
 
 import com.alien.common.model.alien.GeneCarrier;
 import com.alien.common.util.EmbryoUtil;
+import com.lib.common.util.GeneIntegrityUtil;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.AgeableMob;
 import net.minecraft.world.entity.EntityType;
@@ -27,13 +28,47 @@ public abstract class MixinAnimal_GeneCarrier extends AgeableMob implements Gene
 
     @Inject(at = @At("HEAD"), method = "spawnChildFromBreeding")
     public void avp$spawnChildFromBreeding(ServerLevel level, Animal mate, CallbackInfo ci) {
-        EmbryoUtil.birthEmbryos(this, parent -> avp$birthChild(level, mate), 0);
+        EmbryoUtil.birthEmbryos(
+            this,
+            getOrCreateGeneManager().getGeneContainer(),
+            parent -> avp$birthChild(level, mate),
+            0
+        );
     }
 
     @Inject(at = @At("HEAD"), method = "finalizeSpawnChildFromBreeding")
-    public void avp$finalizeSpawnChildFromBreeding(ServerLevel level, Animal animal, AgeableMob baby, CallbackInfo ci) {
-        EmbryoUtil.applyGenesToEmbryo(this, (GeneCarrier) baby);
-        EmbryoUtil.applyGenesToEmbryo(animal, (GeneCarrier) baby);
+    public void avp$finalizeSpawnChildFromBreeding(ServerLevel level, Animal mate, AgeableMob baby, CallbackInfo ci) {
+        var geneCarrier = (GeneCarrier) baby;
+
+        var babyGeneContainer = geneCarrier.getOrCreateGeneManager().getGeneContainer();
+
+        var parentGeneContainer = getOrCreateGeneManager().getGeneContainer();
+        var otherParentGeneContainer = getOrCreateGeneManager().getGeneContainer();
+
+        // Overwrite active genes.
+        babyGeneContainer.putActiveGenes(parentGeneContainer.getActiveGenes());
+        babyGeneContainer.putActiveGenes(otherParentGeneContainer.getActiveGenes());
+
+        // Add dormant genes.
+        parentGeneContainer.getDormantGenes().forEach(babyGeneContainer::addActiveGene);
+        otherParentGeneContainer.getDormantGenes().forEach(babyGeneContainer::addActiveGene);
+
+        var geneDecayLevel = GeneIntegrityUtil.getGeneDecayLevel(geneCarrier);
+
+        switch (geneDecayLevel) {
+            case FATAL -> baby.kill();
+            case VOLATILE -> {
+                // Ex. -1.75 -> 1.75
+                var totalGeneIntegrity = Math.abs(GeneIntegrityUtil.getTotalGeneticIntegrity(geneCarrier));
+                // Ex. 1.75 - 1 = 0.75
+                var chance = totalGeneIntegrity - Math.floor(totalGeneIntegrity);
+                // Ex. 0.75 means 75% chance to die.
+                if (baby.getRandom().nextDouble() < chance) {
+                    baby.kill();
+                }
+            }
+            case STABLE, UNSTABLE -> { /* NO-OP */ }
+        }
     }
 
     @Unique

@@ -13,6 +13,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.GameRules;
 
 import com.avp.AVP;
@@ -48,7 +49,11 @@ public class AVPFabric implements ModInitializer {
         ServerLifecycleEvents.SERVER_STARTING.register(this::addNewVillageBuilding);
 
         EntityTrackingEvents.START_TRACKING.register(
-            (trackedEntity, player) -> ((GeneCarrier) trackedEntity).getOrCreateGeneManager().syncToClient()
+            (trackedEntity, player) -> {
+                if (trackedEntity instanceof LivingEntity livingEntity) {
+                    ((GeneCarrier) livingEntity).getOrCreateGeneManager().syncToClient();
+                }
+            }
         );
 
         CommandRegistrationCallback.EVENT.register(

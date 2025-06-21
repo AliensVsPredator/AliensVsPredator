@@ -39,7 +39,7 @@ public abstract class MixinLivingEntity_GeneCarrier extends Entity implements Ge
 
         geneManager.tick();
 
-        if (level().isClientSide && geneManager.hasGene(Genes.WARP)) {
+        if (level().isClientSide && geneManager.getGeneContainer().hasGene(Genes.WARP)) {
             for (int i = 0; i < 2; ++i) {
                 level().addParticle(
                     ParticleTypes.PORTAL,
@@ -75,7 +75,7 @@ public abstract class MixinLivingEntity_GeneCarrier extends Entity implements Ge
     @Inject(at = @At("HEAD"), method = "hurt", cancellable = true)
     public void avp$preHurtEffects(DamageSource damageSource, float damage, CallbackInfoReturnable<Boolean> cir) {
         if (
-            getOrCreateGeneManager().hasGene(Genes.WARP)
+            getOrCreateGeneManager().getGeneContainer().hasGene(Genes.WARP)
                 && (damageSource.is(DamageTypeTags.IS_PROJECTILE)
                     || random.nextInt(10) == 0)
         ) {
@@ -95,9 +95,9 @@ public abstract class MixinLivingEntity_GeneCarrier extends Entity implements Ge
         var isHurt = cir.getReturnValueZ();
 
         if (isHurt) {
-            var geneManager = getOrCreateGeneManager();
             // TODO: Factor in additive in here.
-            var acidBloodChance = geneManager.getActiveGeneValue(Genes.ACIDIC_BLOOD, GeneOperationType.MULTIPLICATIVE);
+            var acidBloodChance = getOrCreateGeneManager().getGeneContainer()
+                .getActiveGeneValue(Genes.ACIDIC_BLOOD, GeneOperationType.MULTIPLICATIVE);
 
             if (getRandom().nextDouble() < acidBloodChance && damageSource != damageSources().genericKill()) {
                 var self = LivingEntity.class.cast(this);

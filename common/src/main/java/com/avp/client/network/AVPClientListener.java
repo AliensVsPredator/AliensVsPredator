@@ -34,11 +34,11 @@ public class AVPClientListener {
             return;
         }
 
-        var geneManager = ((GeneCarrier) targetEntity).getOrCreateGeneManager();
+        var geneContainer = ((GeneCarrier) targetEntity).getOrCreateGeneManager().getGeneContainer();
         var map = GeneDataUtil.toMap(syncGenesPayload.geneBonusDataEntries());
 
-        geneManager.clearActiveGenes();
-        geneManager.putActiveGenes(map);
+        geneContainer.clearActiveGenes();
+        geneContainer.putActiveGenes(map);
     }
 
     private AVPClientListener() {

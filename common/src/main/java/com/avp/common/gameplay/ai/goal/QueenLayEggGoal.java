@@ -81,7 +81,9 @@ public class QueenLayEggGoal extends Goal {
         ovomorph.setPos(queen.getOvipositorManager().getEggLayingPosition());
         ovomorph.setPersistenceRequired();
         // Transfer genes.
-        queen.getGeneManager().transfer(ovomorph.getGeneManager(), false);
+        queen.getGeneManager()
+            .getGeneContainer()
+            .transfer(ovomorph.getGeneManager().getGeneContainer(), false);
 
         level.playSound(null, queen, AVPSoundEvents.ENTITY_OVOMORPH_LAID.get(), SoundSource.HOSTILE, 1.0F, 1.0F);
         level.addFreshEntity(ovomorph);

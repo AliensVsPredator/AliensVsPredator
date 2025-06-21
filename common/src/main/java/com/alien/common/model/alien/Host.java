@@ -1,17 +1,20 @@
 package com.alien.common.model.alien;
 
 import com.alien.common.gameplay.entity.living.alien.parasite.Parasite;
+import com.lib.common.gameplay.entity.manager.GeneContainer;
 import net.minecraft.world.entity.EntityType;
 import org.jetbrains.annotations.Nullable;
 
-public interface Host extends GeneCarrier {
+public interface Host {
 
     @Nullable
     EntityType<?> getEmbryoType();
 
+    void setEmbryoType(@Nullable EntityType<?> embryoType);
+
     void implantEmbryo(Parasite parasite);
 
-    void removeEmbryo();
+    GeneContainer getOrCreateParasiteGeneContainer();
 
     int getEmbryoGrowthTimeInTicks();
 
@@ -19,5 +22,11 @@ public interface Host extends GeneCarrier {
 
     default void incrementEmbryoGrowthTimeInTicks() {
         setEmbryoGrowthTimeInTicks(getEmbryoGrowthTimeInTicks() + 1);
+    }
+
+    default void removeEmbryo() {
+        setEmbryoType(null);
+        setEmbryoGrowthTimeInTicks(0);
+        getOrCreateParasiteGeneContainer().clear();
     }
 }

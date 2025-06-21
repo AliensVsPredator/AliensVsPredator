@@ -1,79 +1,32 @@
 package com.alien.common.util;
 
-import com.alien.common.gameplay.entity.living.alien.Alien;
 import com.alien.common.model.alien.GeneCarrier;
-import com.alien.common.model.alien.Host;
 import com.alien.common.registry.GeneBonusDataRegistry;
+import com.lib.common.gameplay.entity.manager.GeneContainer;
 import com.lib.common.gameplay.gene.GeneOperationType;
 import com.lib.common.gameplay.gene.Genes;
-import net.minecraft.world.Difficulty;
-import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.player.Player;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 
 public class EmbryoUtil {
 
-    public static void runEmbryoRoutines(LivingEntity hostEntity) {
-        var host = (Host) hostEntity;
-        var geneCarrier = (GeneCarrier) hostEntity;
-        var level = hostEntity.level();
-
-        if (level.isClientSide) {
-            return;
-        }
-
-        if (hostEntity instanceof Player player && (player.isCreative() || player.isSpectator() || player.isInvulnerable())) {
-            host.removeEmbryo();
-            host.setEmbryoGrowthTimeInTicks(0);
-            // TODO: We don't want to clear this, this is the host's genes.
-            // TODO: Give the embryo its own gene manager.
-            geneCarrier.setGeneManager(null);
-            return;
-        }
-
-        if (host.getEmbryoType() != null) {
-            tickEmbryoGrowth(hostEntity);
-        } else {
-            host.setEmbryoGrowthTimeInTicks(0);
-        }
-    }
-
-    private static void tickEmbryoGrowth(LivingEntity hostEntity) {
-        var host = (Host) hostEntity;
-        host.incrementEmbryoGrowthTimeInTicks();
-
-        // TODO: Use data pack values here.
-        if (host.getEmbryoGrowthTimeInTicks() <= TimeUnit.MINUTES.toSeconds(5) * 20) {
-            return;
-        }
-
-        if (hostEntity.level().getDifficulty() != Difficulty.PEACEFUL) {
-            birthEmbryos(hostEntity);
-            hostEntity.kill();
-        }
-
-        // Remove the embryo no matter what.
-        host.removeEmbryo();
-        // Reset the embryo growth time (in ticks) no matter what.
-        host.setEmbryoGrowthTimeInTicks(0);
-    }
-
-    public static List<Entity> birthEmbryos(LivingEntity hostEntity, Function<LivingEntity, @Nullable Entity> onBirth, int baseBirthCount) {
-        var host = (Host) hostEntity;
+    public static List<Entity> birthEmbryos(
+        LivingEntity parentEntity,
+        GeneContainer parentGeneContainer,
+        Function<LivingEntity, @Nullable Entity> embryoFactory,
+        int baseBirthCount
+    ) {
         var embryoList = new ArrayList<Entity>();
 
         // 1 added here to guarantee 1 birth by default.
         var birthBonus = baseBirthCount + Math.clamp(
-            host.getOrCreateGeneManager().getActiveGeneValue(Genes.BONUS_EMBRYO_COUNT, GeneOperationType.ADDITIVE),
+            parentGeneContainer.getActiveGeneValue(Genes.BONUS_EMBRYO_COUNT, GeneOperationType.ADDITIVE),
             0.0,
             3.0
         );
@@ -82,7 +35,7 @@ public class EmbryoUtil {
 
         // Guaranteed births based on whole number values.
         for (int i = 0; i < baseOffspring; i++) {
-            var embryo = onBirth.apply(hostEntity);
+            var embryo = embryoFactory.apply(parentEntity);
 
             if (embryo != null) {
                 embryoList.add(embryo);
@@ -90,8 +43,8 @@ public class EmbryoUtil {
         }
 
         // Probabilistic birth based on fractional values.
-        if (hostEntity.getRandom().nextDouble() < fractionalChance) {
-            var embryo = onBirth.apply(hostEntity);
+        if (parentEntity.getRandom().nextDouble() < fractionalChance) {
+            var embryo = embryoFactory.apply(parentEntity);
 
             if (embryo != null) {
                 embryoList.add(embryo);
@@ -101,61 +54,20 @@ public class EmbryoUtil {
         return embryoList;
     }
 
-    public static List<Entity> birthEmbryos(LivingEntity hostEntity) {
-        return birthEmbryos(hostEntity, EmbryoUtil::birthEmbryo, 1);
-    }
-
-    public static @Nullable Entity birthEmbryo(@NotNull LivingEntity hostEntity) {
-        var level = hostEntity.level();
-        var host = (Host) hostEntity;
-        var embryoType = host.getEmbryoType();
-
-        if (embryoType == null) {
-            return null;
-        }
-
-        var embryo = embryoType.create(level);
-
-        if (embryo == null) {
-            return null;
-        }
-
-        if (embryo instanceof Mob mob) {
-            mob.setPersistenceRequired();
-        }
-
-        if (embryo instanceof Alien alien) {
-            applyGenesToEmbryo(hostEntity, (GeneCarrier) alien);
-            alien.setHostType(hostEntity.getType());
-        }
-
-        embryo.moveTo(hostEntity.position(), hostEntity.getYRot(), hostEntity.getXRot());
-        embryo.setYRot(hostEntity.getYRot());
-        embryo.setXRot(hostEntity.getXRot());
-
-        if (embryo instanceof LivingEntity livingEmbryo) {
-            // TODO: The genes are assigned once here, but if they're removed they don't appear on the embryo again.
-            // Copies effects from previous entity to the next
-            for (var effect : hostEntity.getActiveEffects()) {
-                livingEmbryo.addEffect(new MobEffectInstance(effect.getEffect(), Integer.MAX_VALUE, effect.getAmplifier(), false, false));
-            }
-        }
-
-        level.addFreshEntity(embryo);
-
-        return embryo;
-    }
-
-    public static void applyGenesToEmbryo(@NotNull LivingEntity parentEntity, GeneCarrier offspring) {
-        var parentGeneManager = ((GeneCarrier) parentEntity).getOrCreateGeneManager();
-        var offspringGeneManager = offspring.getOrCreateGeneManager();
+    public static void applyGenesToEmbryo(
+        EntityType<?> parentType,
+        GeneContainer parentGeneContainer,
+        GeneCarrier offspring,
+        boolean addBonusGenes
+    ) {
+        var offspringGeneContainer = offspring.getOrCreateGeneManager().getGeneContainer();
 
         // Transfer genes.
-        parentGeneManager.transfer(offspringGeneManager, true);
+        parentGeneContainer.transfer(offspringGeneContainer, true);
 
-        // Transfer genes from host to embryo.
-        var parentType = parentEntity.getType();
-        var parentSpecificBonusGenesMap = GeneBonusDataRegistry.getOrDefault(parentType);
-        parentSpecificBonusGenesMap.forEach(offspringGeneManager::addActiveGene);
+        if (addBonusGenes) {
+            var parentSpecificBonusGenesMap = GeneBonusDataRegistry.getOrDefault(parentType);
+            parentSpecificBonusGenesMap.forEach(offspringGeneContainer::addActiveGene);
+        }
     }
 }

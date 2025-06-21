@@ -3,7 +3,7 @@ package com.avp.mixin;
 import com.alien.common.data.AlienAdvancements;
 import com.alien.common.model.alien.GeneCarrier;
 import com.alien.common.model.alien.Host;
-import com.alien.common.util.EmbryoUtil;
+import com.alien.common.util.AlienEmbryoUtil;
 import com.lib.common.gameplay.gene.GeneOperationType;
 import com.lib.common.gameplay.gene.Genes;
 import net.minecraft.server.level.ServerLevel;
@@ -43,7 +43,7 @@ public class MixinItem_ChorusEmbryo {
             return;
         }
 
-        var embryos = EmbryoUtil.birthEmbryos(livingEntity);
+        var embryos = AlienEmbryoUtil.birthEmbryos(livingEntity);
 
         embryos.forEach(embryo -> {
             if (embryo instanceof LivingEntity livingEmbryo) {
@@ -53,8 +53,9 @@ public class MixinItem_ChorusEmbryo {
                 // Attempt teleportation. We don't need a result from this since it wouldn't be useful anyway.
                 tryTeleportingEntity(livingEmbryo);
 
-                var geneManager = ((GeneCarrier) livingEmbryo).getOrCreateGeneManager();
-                geneManager.addActiveGene(Genes.WARP, GeneOperationType.ADDITIVE, 1);
+                ((GeneCarrier) livingEmbryo).getOrCreateGeneManager()
+                    .getGeneContainer()
+                    .addActiveGene(Genes.WARP, GeneOperationType.ADDITIVE, 1);
             }
         });
 

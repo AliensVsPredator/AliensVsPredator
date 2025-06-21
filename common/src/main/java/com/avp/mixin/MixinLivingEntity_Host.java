@@ -3,7 +3,8 @@ package com.avp.mixin;
 import com.alien.common.gameplay.entity.living.alien.parasite.Parasite;
 import com.alien.common.model.alien.Host;
 import com.alien.common.registry.InfectionRegistry;
-import com.alien.common.util.EmbryoUtil;
+import com.alien.common.util.AlienEmbryoUtil;
+import com.lib.common.gameplay.entity.manager.GeneContainer;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
@@ -22,6 +23,9 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public abstract class MixinLivingEntity_Host extends Entity implements Host {
 
     @Unique
+    private static final String NBT_PARASITE_GENES = "parasiteGenes";
+
+    @Unique
     private static final String NBT_EMBRYO_GROWTH_TIME_IN_TICKS = "embryoGrowthTimeInTicks";
 
     @Unique
@@ -33,6 +37,9 @@ public abstract class MixinLivingEntity_Host extends Entity implements Host {
     @Unique
     private EntityType<?> embryoType;
 
+    @Unique
+    private GeneContainer parasiteGeneContainer;
+
     public MixinLivingEntity_Host(EntityType<?> entityType, Level level) {
         super(entityType, level);
     }
@@ -40,7 +47,7 @@ public abstract class MixinLivingEntity_Host extends Entity implements Host {
     @Inject(at = @At("HEAD"), method = "tick")
     public void tick(CallbackInfo callbackInfo) {
         var self = LivingEntity.class.cast(this);
-        EmbryoUtil.runEmbryoRoutines(self);
+        AlienEmbryoUtil.runAlienEmbryoRoutines(self);
     }
 
     @Inject(at = @At("HEAD"), method = "readAdditionalSaveData")
@@ -51,8 +58,14 @@ public abstract class MixinLivingEntity_Host extends Entity implements Host {
         var resourceLocation = ResourceLocation.parse(resourceLocationString);
         var entityType = BuiltInRegistries.ENTITY_TYPE.get(resourceLocation);
 
+        // TODO: Fix this, don't check for a pig.
         if (!entityType.equals(EntityType.PIG)) {
-            this.embryoType = entityType;
+            setEmbryoType(entityType);
+        }
+
+        if (compoundTag.contains(NBT_PARASITE_GENES)) {
+            var tag = compoundTag.getCompound(NBT_PARASITE_GENES);
+            getOrCreateParasiteGeneContainer().load(tag);
         }
     }
 
@@ -64,6 +77,10 @@ public abstract class MixinLivingEntity_Host extends Entity implements Host {
             var resourceLocation = BuiltInRegistries.ENTITY_TYPE.getKey(embryoType);
             compoundTag.putString(NBT_EMBRYO_TYPE, resourceLocation.toString());
         }
+
+        var tag = new CompoundTag();
+        getOrCreateParasiteGeneContainer().save(tag);
+        compoundTag.put(NBT_PARASITE_GENES, tag);
     }
 
     @Override
@@ -71,9 +88,11 @@ public abstract class MixinLivingEntity_Host extends Entity implements Host {
         var infectionOption = InfectionRegistry.get(getType(), parasite.getType());
 
         infectionOption.ifSome(infection -> {
-            this.embryoType = infection.embryoType();
-            // Assign the active genes from the parasite to the host's gene manager.
-            parasite.getGeneManager().transfer(getOrCreateGeneManager(), false);
+            setEmbryoType(infection.embryoType());
+            // Assign the active genes from the parasite to the embryo's gene container.
+            parasite.getGeneManager()
+                .getGeneContainer()
+                .transfer(getOrCreateParasiteGeneContainer(), false);
 
             var self = LivingEntity.class.cast(this);
 
@@ -85,13 +104,22 @@ public abstract class MixinLivingEntity_Host extends Entity implements Host {
     }
 
     @Override
-    public void removeEmbryo() {
-        this.embryoType = null;
+    public GeneContainer getOrCreateParasiteGeneContainer() {
+        if (parasiteGeneContainer == null) {
+            this.parasiteGeneContainer = new GeneContainer();
+        }
+
+        return parasiteGeneContainer;
     }
 
     @Override
     public EntityType<?> getEmbryoType() {
         return embryoType;
+    }
+
+    @Override
+    public void setEmbryoType(EntityType<?> embryoType) {
+        this.embryoType = embryoType;
     }
 
     @Override

@@ -1,7 +1,7 @@
 package com.compat.gigeresque.common.patch;
 
 import com.alien.common.model.alien.Host;
-import com.alien.common.util.EmbryoUtil;
+import com.alien.common.util.AlienEmbryoUtil;
 import com.compat.gigeresque.GigResources;
 import mods.cybercat.gigeresque.CommonMod;
 import mods.cybercat.gigeresque.common.item.GigItems;
@@ -29,7 +29,7 @@ public class GigSurgeryKitPatch {
             return;
         }
 
-        var embryos = EmbryoUtil.birthEmbryos(livingEntity);
+        var embryos = AlienEmbryoUtil.birthEmbryos(livingEntity);
 
         if (!embryos.isEmpty()) {
             // Removes the embryo without any side effects.

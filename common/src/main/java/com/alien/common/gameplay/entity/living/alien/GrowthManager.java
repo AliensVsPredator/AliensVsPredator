@@ -185,9 +185,9 @@ public class GrowthManager implements NBTSerializable {
     }
 
     private boolean shouldBecomeBoilerFromAcidVolatility() {
-        var geneManager = entity.getGeneManager();
-        var additiveAcidVolatility = geneManager.getActiveGeneValue(Genes.ACID_VOLATILITY, GeneOperationType.ADDITIVE);
-        var multiplicativeAcidVolatility = geneManager.getActiveGeneValue(Genes.ACID_VOLATILITY, GeneOperationType.MULTIPLICATIVE);
+        var geneContainer = entity.getGeneManager().getGeneContainer();
+        var additiveAcidVolatility = geneContainer.getActiveGeneValue(Genes.ACID_VOLATILITY, GeneOperationType.ADDITIVE);
+        var multiplicativeAcidVolatility = geneContainer.getActiveGeneValue(Genes.ACID_VOLATILITY, GeneOperationType.MULTIPLICATIVE);
 
         var totalAcidVolatility = additiveAcidVolatility + multiplicativeAcidVolatility;
 
