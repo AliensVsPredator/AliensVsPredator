@@ -46,7 +46,7 @@ public class GeneBonusDataSubProvider extends GeneBonusDataProvider {
             EntityType.CAMEL,
             List.of(
                 new Tuple2<>(Genes.COLD_RESISTANCE, new GeneModifier(GeneOperationType.MULTIPLICATIVE, -0.05)),
-                new Tuple2<>(Genes.FIRE_RESISTANCE, new GeneModifier(GeneOperationType.MULTIPLICATIVE, 0.05)),
+                new Tuple2<>(Genes.FIRE_RESISTANCE, new GeneModifier(GeneOperationType.MULTIPLICATIVE, 0.1)),
                 new Tuple2<>(Genes.INTELLIGENCE, new GeneModifier(GeneOperationType.ADDITIVE, -5.0)),
                 new Tuple2<>(Genes.MOVE_SPEED, new GeneModifier(GeneOperationType.ADDITIVE, 0.02))
             )
@@ -83,7 +83,7 @@ public class GeneBonusDataSubProvider extends GeneBonusDataProvider {
             EntityType.GOAT,
             List.of(
                 new Tuple2<>(Genes.ATTACK_DAMAGE, new GeneModifier(GeneOperationType.ADDITIVE, 1.0)),
-                new Tuple2<>(Genes.COLD_RESISTANCE, new GeneModifier(GeneOperationType.MULTIPLICATIVE, 0.1)),
+                new Tuple2<>(Genes.COLD_RESISTANCE, new GeneModifier(GeneOperationType.MULTIPLICATIVE, 0.15)),
                 new Tuple2<>(Genes.INTELLIGENCE, new GeneModifier(GeneOperationType.ADDITIVE, -10.0))
             )
         );
@@ -91,8 +91,8 @@ public class GeneBonusDataSubProvider extends GeneBonusDataProvider {
             EntityType.HOGLIN,
             List.of(
                 new Tuple2<>(Genes.ATTACK_DAMAGE, new GeneModifier(GeneOperationType.ADDITIVE, 4.0)),
-                new Tuple2<>(Genes.COLD_RESISTANCE, new GeneModifier(GeneOperationType.MULTIPLICATIVE, -0.05)),
-                new Tuple2<>(Genes.FIRE_RESISTANCE, new GeneModifier(GeneOperationType.MULTIPLICATIVE, 0.1)),
+                new Tuple2<>(Genes.COLD_RESISTANCE, new GeneModifier(GeneOperationType.MULTIPLICATIVE, -0.1)),
+                new Tuple2<>(Genes.FIRE_RESISTANCE, new GeneModifier(GeneOperationType.MULTIPLICATIVE, 0.2)),
                 new Tuple2<>(Genes.INTELLIGENCE, new GeneModifier(GeneOperationType.ADDITIVE, -10.0)),
                 new Tuple2<>(Genes.KNOCKBACK_RESISTANCE, new GeneModifier(GeneOperationType.ADDITIVE, 0.1)),
                 new Tuple2<>(Genes.MAX_HEALTH, new GeneModifier(GeneOperationType.MULTIPLICATIVE, 0.15))
@@ -139,7 +139,6 @@ public class GeneBonusDataSubProvider extends GeneBonusDataProvider {
             EntityType.PANDA,
             List.of(
                 new Tuple2<>(Genes.ATTACK_DAMAGE, new GeneModifier(GeneOperationType.ADDITIVE, -3.0)),
-                new Tuple2<>(Genes.COLD_RESISTANCE, new GeneModifier(GeneOperationType.MULTIPLICATIVE, 0.05)),
                 new Tuple2<>(Genes.INTELLIGENCE, new GeneModifier(GeneOperationType.ADDITIVE, -5.0)),
                 new Tuple2<>(Genes.MOVE_SPEED, new GeneModifier(GeneOperationType.ADDITIVE, -0.005))
             )
@@ -156,7 +155,8 @@ public class GeneBonusDataSubProvider extends GeneBonusDataProvider {
             EntityType.PIGLIN,
             List.of(
                 new Tuple2<>(Genes.ATTACK_DAMAGE, new GeneModifier(GeneOperationType.ADDITIVE, 4.0)),
-                new Tuple2<>(Genes.COLD_RESISTANCE, new GeneModifier(GeneOperationType.MULTIPLICATIVE, -0.05)),
+                new Tuple2<>(Genes.COLD_RESISTANCE, new GeneModifier(GeneOperationType.MULTIPLICATIVE, -0.075)),
+                new Tuple2<>(Genes.FIRE_RESISTANCE, new GeneModifier(GeneOperationType.MULTIPLICATIVE, 0.15)),
                 new Tuple2<>(Genes.INTELLIGENCE, new GeneModifier(GeneOperationType.ADDITIVE, 10.0))
             )
         );
@@ -164,7 +164,8 @@ public class GeneBonusDataSubProvider extends GeneBonusDataProvider {
             EntityType.PIGLIN_BRUTE,
             List.of(
                 new Tuple2<>(Genes.ATTACK_DAMAGE, new GeneModifier(GeneOperationType.ADDITIVE, 6.5)),
-                new Tuple2<>(Genes.COLD_RESISTANCE, new GeneModifier(GeneOperationType.MULTIPLICATIVE, -0.05)),
+                new Tuple2<>(Genes.COLD_RESISTANCE, new GeneModifier(GeneOperationType.MULTIPLICATIVE, -0.075)),
+                new Tuple2<>(Genes.FIRE_RESISTANCE, new GeneModifier(GeneOperationType.MULTIPLICATIVE, 0.15)),
                 new Tuple2<>(Genes.INTELLIGENCE, new GeneModifier(GeneOperationType.ADDITIVE, 5.0))
             )
         );
@@ -186,7 +187,7 @@ public class GeneBonusDataSubProvider extends GeneBonusDataProvider {
             EntityType.POLAR_BEAR,
             List.of(
                 new Tuple2<>(Genes.ATTACK_DAMAGE, new GeneModifier(GeneOperationType.ADDITIVE, 3.0)),
-                new Tuple2<>(Genes.COLD_RESISTANCE, new GeneModifier(GeneOperationType.MULTIPLICATIVE, 0.15)),
+                new Tuple2<>(Genes.COLD_RESISTANCE, new GeneModifier(GeneOperationType.MULTIPLICATIVE, 0.2)),
                 new Tuple2<>(Genes.MAX_HEALTH, new GeneModifier(GeneOperationType.MULTIPLICATIVE, 0.1))
             )
         );
@@ -204,7 +205,7 @@ public class GeneBonusDataSubProvider extends GeneBonusDataProvider {
             EntityType.SHEEP,
             List.of(
                 new Tuple2<>(Genes.BONUS_EMBRYO_COUNT, new GeneModifier(GeneOperationType.ADDITIVE, 0.4)),
-                new Tuple2<>(Genes.COLD_RESISTANCE, new GeneModifier(GeneOperationType.MULTIPLICATIVE, 0.05)),
+                new Tuple2<>(Genes.COLD_RESISTANCE, new GeneModifier(GeneOperationType.MULTIPLICATIVE, 0.15)),
                 new Tuple2<>(Genes.INTELLIGENCE, new GeneModifier(GeneOperationType.ADDITIVE, -10.0))
             )
         );
@@ -221,8 +222,8 @@ public class GeneBonusDataSubProvider extends GeneBonusDataProvider {
             EntityType.STRIDER,
             List.of(
                 new Tuple2<>(Genes.ATTACK_DAMAGE, new GeneModifier(GeneOperationType.ADDITIVE, -2.0)),
-                new Tuple2<>(Genes.COLD_RESISTANCE, new GeneModifier(GeneOperationType.MULTIPLICATIVE, -0.2)),
-                new Tuple2<>(Genes.FIRE_RESISTANCE, new GeneModifier(GeneOperationType.MULTIPLICATIVE, 0.2))
+                new Tuple2<>(Genes.COLD_RESISTANCE, new GeneModifier(GeneOperationType.MULTIPLICATIVE, -0.34)),
+                new Tuple2<>(Genes.FIRE_RESISTANCE, new GeneModifier(GeneOperationType.MULTIPLICATIVE, 0.34))
             )
         );
         add(EntityType.TRADER_LLAMA, llamaGeneBonuses);
@@ -256,7 +257,7 @@ public class GeneBonusDataSubProvider extends GeneBonusDataProvider {
             EntityType.WOLF,
             List.of(
                 new Tuple2<>(Genes.BONUS_EMBRYO_COUNT, new GeneModifier(GeneOperationType.ADDITIVE, 0.65)),
-                new Tuple2<>(Genes.COLD_RESISTANCE, new GeneModifier(GeneOperationType.MULTIPLICATIVE, 0.05)),
+                new Tuple2<>(Genes.COLD_RESISTANCE, new GeneModifier(GeneOperationType.MULTIPLICATIVE, 0.075)),
                 new Tuple2<>(Genes.MAX_HEALTH, new GeneModifier(GeneOperationType.MULTIPLICATIVE, -0.1)),
                 new Tuple2<>(Genes.MOVE_SPEED, new GeneModifier(GeneOperationType.ADDITIVE, 0.01))
             )
