@@ -1,8 +1,11 @@
 package com.avp.mixin;
 
 import com.alien.common.model.alien.GeneCarrier;
+import com.alien.common.util.AcidBleedUtil;
 import com.alien.common.util.GeneResistanceHurtUtil;
 import com.lib.common.gameplay.entity.manager.GeneManager;
+import com.lib.common.gameplay.gene.GeneOperationType;
+import com.lib.common.gameplay.gene.Genes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
@@ -44,9 +47,26 @@ public abstract class MixinLivingEntity_GeneCarrier extends Entity implements Ge
     }
 
     @Inject(at = @At("HEAD"), method = "hurt", cancellable = true)
-    public void hurt(DamageSource source, float amount, CallbackInfoReturnable<Boolean> cir) {
-        if (amount == 0) {
+    public void avp$hurt(DamageSource damageSource, float damage, CallbackInfoReturnable<Boolean> cir) {
+        if (damage == 0) {
             cir.cancel();
+        }
+    }
+
+    @Inject(at = @At("RETURN"), method = "hurt")
+    public void avp$hurtBleedAcid(DamageSource damageSource, float damage, CallbackInfoReturnable<Boolean> cir) {
+        var isHurt = cir.getReturnValueZ();
+
+        if (isHurt) {
+            var geneManager = getOrCreateGeneManager();
+            // TODO: Factor in additive in here.
+            var acidBloodChance = geneManager.getActiveGeneValue(Genes.ACIDIC_BLOOD, GeneOperationType.MULTIPLICATIVE);
+
+            if (getRandom().nextDouble() < acidBloodChance && damageSource != damageSources().genericKill()) {
+                var self = LivingEntity.class.cast(this);
+                var randomPos = AcidBleedUtil.computeRandomPosFromBoundingBox(self);
+                AcidBleedUtil.spawnAcid(self, damage, randomPos);
+            }
         }
     }
 

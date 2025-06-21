@@ -6,8 +6,12 @@ import com.avp.common.registry.AVPDeferredHolder;
 
 public class Genes {
 
+    public static final AVPDeferredHolder<Gene> ACID_RESISTANCE = GeneRegistry.register(() -> new Gene.Simple("acid_resistance"));
+
     // Controls how explosive xenomorph acid is. This results in boilers.
     public static final AVPDeferredHolder<Gene> ACID_VOLATILITY = GeneRegistry.register(() -> new Gene.Simple("acid_volatility"));
+
+    public static final AVPDeferredHolder<Gene> ACIDIC_BLOOD = GeneRegistry.register(() -> new Gene.Simple("acidic_blood"));
 
     public static final AVPDeferredHolder<Gene> ARMOR = GeneRegistry.register(
         () -> new Gene.Attribute("armor", Attributes.ARMOR)

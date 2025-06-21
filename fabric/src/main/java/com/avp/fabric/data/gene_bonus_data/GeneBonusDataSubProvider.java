@@ -24,6 +24,7 @@ import com.avp.AVP;
 import com.avp.AVPResources;
 import com.avp.common.registry.AVPDeferredHolder;
 import com.avp.common.registry.init.entity_type.AVPEntityTypes;
+import com.avp.common.registry.tag.AVPEntityTypeTags;
 
 public class GeneBonusDataSubProvider extends GeneBonusDataProvider {
 
@@ -42,6 +43,15 @@ public class GeneBonusDataSubProvider extends GeneBonusDataProvider {
             new Tuple2<>(Genes.MOVE_SPEED, new GeneModifier(GeneOperationType.ADDITIVE, 0.01))
         );
 
+        add(
+            AVPEntityTypeTags.ALIENS,
+            List.of(
+                new Tuple2<>(Genes.ACIDIC_BLOOD, new GeneModifier(GeneOperationType.MULTIPLICATIVE, 0.34)),
+                new Tuple2<>(Genes.ACID_RESISTANCE, new GeneModifier(GeneOperationType.MULTIPLICATIVE, 0.34)),
+                new Tuple2<>(Genes.GENETIC_INTEGRITY, new GeneModifier(GeneOperationType.ADDITIVE, -0.34)),
+                new Tuple2<>(Genes.INTELLIGENCE, new GeneModifier(GeneOperationType.ADDITIVE, 15.0))
+            )
+        );
         add(
             EntityType.ARMADILLO,
             List.of(

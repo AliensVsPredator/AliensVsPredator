@@ -9,6 +9,7 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageTypes;
 
 import com.avp.common.registry.AVPDeferredHolder;
+import com.avp.common.registry.key.AVPDamageTypeKeys;
 
 public class GeneResistanceHurtUtil {
 
@@ -18,6 +19,15 @@ public class GeneResistanceHurtUtil {
         float damage
     ) {
         var geneManager = geneCarrier.getOrCreateGeneManager();
+
+        if (damageSource.is(AVPDamageTypeKeys.ACID)) {
+            return applyGeneResistanceToDamage(
+                geneManager,
+                Genes.ACID_RESISTANCE,
+                damageSource,
+                damage
+            );
+        }
 
         if (isFireDamageSource(damageSource)) {
             return applyGeneResistanceToDamage(
