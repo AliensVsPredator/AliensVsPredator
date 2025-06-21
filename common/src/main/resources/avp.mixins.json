@@ -8,6 +8,7 @@
     "AbstractFurnaceBlockEntityInvoker",
     "BlockBehaviourInvoker",
     "GiveGiftToHeroAccessor",
+    "MixinAnimal_GeneCarrier",
     "MixinArmorStand_EquipArmorFromArmorCase",
     "MixinCow_FillMilkCanister",
     "MixinCreeper_Nuked",

@@ -18,6 +18,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Function;
 
 public class EmbryoUtil {
 
@@ -66,12 +67,12 @@ public class EmbryoUtil {
         host.setEmbryoGrowthTimeInTicks(0);
     }
 
-    public static List<Entity> birthEmbryos(LivingEntity hostEntity) {
+    public static List<Entity> birthEmbryos(LivingEntity hostEntity, Function<LivingEntity, @Nullable Entity> onBirth, int baseBirthCount) {
         var host = (Host) hostEntity;
         var embryoList = new ArrayList<Entity>();
 
         // 1 added here to guarantee 1 birth by default.
-        var birthBonus = 1 + Math.clamp(
+        var birthBonus = baseBirthCount + Math.clamp(
             host.getOrCreateGeneManager().getActiveGeneValue(Genes.BONUS_EMBRYO_COUNT, GeneOperationType.ADDITIVE),
             0.0,
             3.0
@@ -81,7 +82,7 @@ public class EmbryoUtil {
 
         // Guaranteed births based on whole number values.
         for (int i = 0; i < baseOffspring; i++) {
-            var embryo = birthEmbryo(hostEntity);
+            var embryo = onBirth.apply(hostEntity);
 
             if (embryo != null) {
                 embryoList.add(embryo);
@@ -90,11 +91,18 @@ public class EmbryoUtil {
 
         // Probabilistic birth based on fractional values.
         if (hostEntity.getRandom().nextDouble() < fractionalChance) {
-            var embryo = birthEmbryo(hostEntity);
-            embryoList.add(embryo);
+            var embryo = onBirth.apply(hostEntity);
+
+            if (embryo != null) {
+                embryoList.add(embryo);
+            }
         }
 
         return embryoList;
+    }
+
+    public static List<Entity> birthEmbryos(LivingEntity hostEntity) {
+        return birthEmbryos(hostEntity, EmbryoUtil::birthEmbryo, 1);
     }
 
     public static @Nullable Entity birthEmbryo(@NotNull LivingEntity hostEntity) {
@@ -117,7 +125,7 @@ public class EmbryoUtil {
         }
 
         if (embryo instanceof Alien alien) {
-            applyGenesToEmbryo(hostEntity, alien);
+            applyGenesToEmbryo(hostEntity, (GeneCarrier) alien);
             alien.setHostType(hostEntity.getType());
         }
 
@@ -138,16 +146,16 @@ public class EmbryoUtil {
         return embryo;
     }
 
-    private static void applyGenesToEmbryo(@NotNull LivingEntity hostEntity, Alien embryo) {
-        var host = (Host) hostEntity;
-        var alienGeneManager = embryo.getGeneManager();
+    public static void applyGenesToEmbryo(@NotNull LivingEntity parentEntity, GeneCarrier offspring) {
+        var parentGeneManager = ((GeneCarrier) parentEntity).getOrCreateGeneManager();
+        var offspringGeneManager = offspring.getOrCreateGeneManager();
 
         // Transfer genes.
-        host.getOrCreateGeneManager().transfer(alienGeneManager, true);
+        parentGeneManager.transfer(offspringGeneManager, true);
 
         // Transfer genes from host to embryo.
-        var hostType = hostEntity.getType();
-        var hostSpecificBonusGenesMap = GeneBonusDataRegistry.getOrDefault(hostType);
-        hostSpecificBonusGenesMap.forEach(alienGeneManager::addActiveGene);
+        var parentType = parentEntity.getType();
+        var parentSpecificBonusGenesMap = GeneBonusDataRegistry.getOrDefault(parentType);
+        parentSpecificBonusGenesMap.forEach(offspringGeneManager::addActiveGene);
     }
 }

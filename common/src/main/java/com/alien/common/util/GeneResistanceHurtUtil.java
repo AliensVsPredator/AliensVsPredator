@@ -1,6 +1,6 @@
 package com.alien.common.util;
 
-import com.alien.common.gameplay.entity.living.alien.Alien;
+import com.alien.common.model.alien.GeneCarrier;
 import com.lib.common.gameplay.entity.manager.GeneManager;
 import com.lib.common.gameplay.gene.Gene;
 import com.lib.common.gameplay.gene.GeneOperationType;
@@ -8,54 +8,43 @@ import com.lib.common.gameplay.gene.Genes;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageTypes;
 
-import java.util.function.BiFunction;
-
 import com.avp.common.registry.AVPDeferredHolder;
-import com.avp.common.registry.tag.AVPDamageTypesTags;
 
-public class AlienHurtUtil {
+public class GeneResistanceHurtUtil {
 
-    public static boolean isHurt(
-        Alien alien,
+    public static float applyResistancesToDamage(
+        GeneCarrier geneCarrier,
         DamageSource damageSource,
-        float damage,
-        BiFunction<DamageSource, Float, Boolean> superCall
+        float damage
     ) {
-        if (damageSource.is(AVPDamageTypesTags.DOES_NOT_HURT_ALIENS)) {
-            return false;
-        }
-
-        var geneManager = alien.getGeneManager();
+        var geneManager = geneCarrier.getOrCreateGeneManager();
 
         if (isFireDamageSource(damageSource)) {
-            return hurtWithResistance(
+            return applyGeneResistanceToDamage(
                 geneManager,
                 Genes.FIRE_RESISTANCE,
                 damageSource,
-                damage,
-                superCall
+                damage
             );
         }
 
         if (damageSource.is(DamageTypes.FREEZE)) {
-            return hurtWithResistance(
+            return applyGeneResistanceToDamage(
                 geneManager,
                 Genes.COLD_RESISTANCE,
                 damageSource,
-                damage,
-                superCall
+                damage
             );
         }
 
-        return superCall.apply(damageSource, damage);
+        return damage;
     }
 
-    private static boolean hurtWithResistance(
+    private static float applyGeneResistanceToDamage(
         GeneManager geneManager,
         AVPDeferredHolder<Gene> gene,
         DamageSource damageSource,
-        float damage,
-        BiFunction<DamageSource, Float, Boolean> superCall
+        float damage
     ) {
         // Percent reduction value.
         var percentageResistance = geneManager.getActiveGeneValue(gene, GeneOperationType.MULTIPLICATIVE);
@@ -63,7 +52,7 @@ public class AlienHurtUtil {
         var damageResistance = geneManager.getActiveGeneValue(gene, GeneOperationType.ADDITIVE);
         var modifiedDamage = Math.max(damage - (percentageResistance * damage) - damageResistance, 0);
 
-        return modifiedDamage > 0 && superCall.apply(damageSource, (float) modifiedDamage);
+        return (float) modifiedDamage;
     }
 
     private static boolean isFireDamageSource(DamageSource damageSource) {

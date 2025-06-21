@@ -3,7 +3,6 @@ package com.alien.common.gameplay.entity.living.alien;
 import com.alien.common.model.alien.GeneCarrier;
 import com.alien.common.model.alien.variant.AlienVariant;
 import com.alien.common.util.AcidBleedUtil;
-import com.alien.common.util.AlienHurtUtil;
 import com.alien.common.util.AlienTransitionUtil;
 import com.bvanseg.just.functional.option.Option;
 import com.google.common.base.Objects;
@@ -41,6 +40,7 @@ import java.util.function.Predicate;
 import com.avp.AVP;
 import com.avp.common.config.AVPConfig;
 import com.avp.common.registry.key.AVPBiomeKeys;
+import com.avp.common.registry.tag.AVPDamageTypesTags;
 import com.avp.common.registry.tag.AVPEntityTypeTags;
 import com.avp.common.registry.tag.AVPMobEffectTags;
 import com.avp.common.util.MovementAnalyzer;
@@ -204,7 +204,6 @@ public abstract class Alien extends Monster {
     @Override
     public void tick() {
         super.tick();
-        ((GeneCarrier) this).getOrCreateGeneManager().tick();
         movementAnalyzer.tick();
         hiveManager.tick();
         vibrationSystemManager.tick();
@@ -269,8 +268,13 @@ public abstract class Alien extends Monster {
     }
 
     @Override
+    public boolean isInvulnerableTo(DamageSource damageSource) {
+        return damageSource.is(AVPDamageTypesTags.DOES_NOT_HURT_ALIENS) || super.isInvulnerableTo(damageSource);
+    }
+
+    @Override
     public boolean hurt(@NotNull DamageSource damageSource, float damage) {
-        var isHurt = AlienHurtUtil.isHurt(this, damageSource, damage, super::hurt);
+        var isHurt = super.hurt(damageSource, damage);
 
         if (isHurt) {
             lastHurtTimeInTicks = tickCount;
