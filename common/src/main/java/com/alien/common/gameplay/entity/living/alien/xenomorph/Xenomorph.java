@@ -62,8 +62,6 @@ public abstract class Xenomorph extends Alien implements ResinProducer {
 
     private final ResinManager resinManager;
 
-    public int attackDelayTicks;
-
     public Xenomorph(EntityType<? extends Xenomorph> entityType, Level level) {
         super(entityType, level);
         this.crawlingManager = new CrawlingManager(this, IS_CRAWLING);
@@ -71,6 +69,10 @@ public abstract class Xenomorph extends Alien implements ResinProducer {
             .setGrowOverTime(false);
         this.navigationManager = new XenomorphNavigationManager(this, moveControl);
         this.resinManager = new ResinManager(this, createResinData());
+    }
+
+    protected int getAttackDelayInTicks() {
+        return 5;
     }
 
     protected abstract @NotNull ResinData createResinData();

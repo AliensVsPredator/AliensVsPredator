@@ -24,7 +24,6 @@ public class Praetorian extends Xenomorph {
 
     public Praetorian(EntityType<? extends Praetorian> entityType, Level level) {
         super(entityType, level);
-        this.attackDelayTicks = 10;
         this.animationDispatcher = new PraetorianAnimationDispatcher(this);
         this.config = AVP.config.statsConfigs.PRAETORIAN_STATS;
     }

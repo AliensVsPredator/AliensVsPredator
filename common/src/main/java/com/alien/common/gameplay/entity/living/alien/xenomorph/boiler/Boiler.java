@@ -26,7 +26,6 @@ public class Boiler extends Xenomorph {
 
     public Boiler(EntityType<? extends Boiler> entityType, Level level) {
         super(entityType, level);
-        this.attackDelayTicks = 7;
         this.animationDispatcher = new BoilerAnimationDispatcher(this);
         this.config = AVP.config.statsConfigs.BOILER_STATS;
     }

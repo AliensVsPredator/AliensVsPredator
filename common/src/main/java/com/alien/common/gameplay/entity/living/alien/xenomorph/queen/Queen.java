@@ -45,7 +45,6 @@ public class Queen extends Xenomorph {
 
     public Queen(EntityType<? extends Queen> entityType, Level level) {
         super(entityType, level);
-        this.attackDelayTicks = 20;
         this.animationDispatcher = new QueenAnimationDispatcher(this);
         this.ovipositorManager = new OvipositorManager(this);
         this.config = AVP.config.statsConfigs.QUEEN_STATS;

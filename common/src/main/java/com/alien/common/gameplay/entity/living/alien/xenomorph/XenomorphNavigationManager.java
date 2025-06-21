@@ -29,7 +29,7 @@ public class XenomorphNavigationManager {
 
     public XenomorphNavigationManager(Xenomorph xenomorph, MoveControl moveControl) {
         // Ground navigation.
-        this.groundAttackGoal = new DelayedAttackGoal(xenomorph, 1.1, false, xenomorph.attackDelayTicks, xenomorph::runAttackAnimations);
+        this.groundAttackGoal = new DelayedAttackGoal(xenomorph, 1.1, false, xenomorph.getAttackDelayInTicks(), xenomorph::runAttackAnimations);
         this.groundMoveControl = moveControl;
         this.groundNavigation = new GroundPathNavigation(xenomorph, xenomorph.level()) {
 

@@ -26,7 +26,6 @@ public class Warrior extends Xenomorph {
 
     public Warrior(EntityType<? extends Warrior> entityType, Level level) {
         super(entityType, level);
-        this.attackDelayTicks = 7;
         this.animationDispatcher = new WarriorAnimationDispatcher(this);
         this.config = AVP.config.statsConfigs.WARRIOR_STATS;
     }

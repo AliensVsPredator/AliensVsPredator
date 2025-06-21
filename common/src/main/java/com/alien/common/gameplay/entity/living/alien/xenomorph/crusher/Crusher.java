@@ -26,7 +26,6 @@ public class Crusher extends Xenomorph {
 
     public Crusher(EntityType<? extends Crusher> entityType, Level level) {
         super(entityType, level);
-        this.attackDelayTicks = 7;
         this.animationDispatcher = new CrusherAnimationDispatcher(this);
         this.config = AVP.config.statsConfigs.CRUSHER_STATS;
     }

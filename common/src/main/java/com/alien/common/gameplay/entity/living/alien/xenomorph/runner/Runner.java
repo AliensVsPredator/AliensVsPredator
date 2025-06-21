@@ -26,7 +26,6 @@ public class Runner extends Xenomorph {
 
     public Runner(EntityType<? extends Runner> entityType, Level level) {
         super(entityType, level);
-        this.attackDelayTicks = 7;
         this.animationDispatcher = new RunnerAnimationDispatcher(this);
         this.config = AVP.config.statsConfigs.RUNNER_STATS;
     }

@@ -26,7 +26,6 @@ public class Prowler extends Xenomorph {
 
     public Prowler(EntityType<? extends Prowler> entityType, Level level) {
         super(entityType, level);
-        this.attackDelayTicks = 7;
         this.animationDispatcher = new ProwlerAnimationDispatcher(this);
         this.config = AVP.config.statsConfigs.PROWLER_STATS;
     }
