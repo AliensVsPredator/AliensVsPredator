@@ -19,7 +19,6 @@ import net.minecraft.world.entity.MobCategory;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
-import java.util.function.UnaryOperator;
 
 import com.avp.AVP;
 import com.avp.AVPResources;
@@ -37,15 +36,9 @@ public class GeneBonusDataSubProvider extends GeneBonusDataProvider {
 
     @Override
     protected void generate() {
-        var warriorHalfHearts = 60.0;
-        var fiveHalfHearts = 5.0;
-        var fiveHalfHeartsPercentage = fiveHalfHearts / warriorHalfHearts;
-        UnaryOperator<Double> mulHealthBonusFactory = halfHearts -> fiveHalfHeartsPercentage * (halfHearts / fiveHalfHearts);
-
         var llamaGeneBonuses = List.of(
             new Tuple2<>(Genes.COLD_RESISTANCE, new GeneModifier(GeneOperationType.MULTIPLICATIVE, 0.05)),
             new Tuple2<>(Genes.INTELLIGENCE, new GeneModifier(GeneOperationType.ADDITIVE, -5.0)),
-            new Tuple2<>(Genes.MAX_HEALTH, new GeneModifier(GeneOperationType.MULTIPLICATIVE, mulHealthBonusFactory.apply(7.5))),
             new Tuple2<>(Genes.MOVE_SPEED, new GeneModifier(GeneOperationType.ADDITIVE, 0.01))
         );
 
@@ -55,7 +48,6 @@ public class GeneBonusDataSubProvider extends GeneBonusDataProvider {
                 new Tuple2<>(Genes.COLD_RESISTANCE, new GeneModifier(GeneOperationType.MULTIPLICATIVE, -0.05)),
                 new Tuple2<>(Genes.FIRE_RESISTANCE, new GeneModifier(GeneOperationType.MULTIPLICATIVE, 0.05)),
                 new Tuple2<>(Genes.INTELLIGENCE, new GeneModifier(GeneOperationType.ADDITIVE, -5.0)),
-                new Tuple2<>(Genes.MAX_HEALTH, new GeneModifier(GeneOperationType.MULTIPLICATIVE, mulHealthBonusFactory.apply(16.0))),
                 new Tuple2<>(Genes.MOVE_SPEED, new GeneModifier(GeneOperationType.ADDITIVE, 0.02))
             )
         );
@@ -63,14 +55,13 @@ public class GeneBonusDataSubProvider extends GeneBonusDataProvider {
             EntityType.CREEPER,
             List.of(
                 new Tuple2<>(Genes.ACID_VOLATILITY, new GeneModifier(GeneOperationType.ADDITIVE, 0.34)),
-                new Tuple2<>(Genes.MAX_HEALTH, new GeneModifier(GeneOperationType.MULTIPLICATIVE, mulHealthBonusFactory.apply(10.0))),
                 new Tuple2<>(Genes.INTELLIGENCE, new GeneModifier(GeneOperationType.ADDITIVE, 5.0))
             )
         );
         add(
             EntityType.COW,
             List.of(
-                new Tuple2<>(Genes.MAX_HEALTH, new GeneModifier(GeneOperationType.MULTIPLICATIVE, mulHealthBonusFactory.apply(5.0))),
+                new Tuple2<>(Genes.BONUS_EMBRYO_COUNT, new GeneModifier(GeneOperationType.ADDITIVE, 0.25)),
                 new Tuple2<>(Genes.INTELLIGENCE, new GeneModifier(GeneOperationType.ADDITIVE, -10.0))
             )
         );
@@ -78,7 +69,6 @@ public class GeneBonusDataSubProvider extends GeneBonusDataProvider {
             EntityType.DONKEY,
             List.of(
                 new Tuple2<>(Genes.INTELLIGENCE, new GeneModifier(GeneOperationType.ADDITIVE, -5.0)),
-                new Tuple2<>(Genes.MAX_HEALTH, new GeneModifier(GeneOperationType.MULTIPLICATIVE, mulHealthBonusFactory.apply(7.5))),
                 new Tuple2<>(Genes.MOVE_SPEED, new GeneModifier(GeneOperationType.ADDITIVE, 0.015))
             )
         );
@@ -86,8 +76,7 @@ public class GeneBonusDataSubProvider extends GeneBonusDataProvider {
             EntityType.EVOKER,
             List.of(
                 new Tuple2<>(Genes.ATTACK_DAMAGE, new GeneModifier(GeneOperationType.ADDITIVE, 12.0)),
-                new Tuple2<>(Genes.INTELLIGENCE, new GeneModifier(GeneOperationType.ADDITIVE, 15.0)),
-                new Tuple2<>(Genes.MAX_HEALTH, new GeneModifier(GeneOperationType.MULTIPLICATIVE, mulHealthBonusFactory.apply(12.0)))
+                new Tuple2<>(Genes.INTELLIGENCE, new GeneModifier(GeneOperationType.ADDITIVE, 15.0))
             )
         );
         add(
@@ -95,27 +84,23 @@ public class GeneBonusDataSubProvider extends GeneBonusDataProvider {
             List.of(
                 new Tuple2<>(Genes.ATTACK_DAMAGE, new GeneModifier(GeneOperationType.ADDITIVE, 1.0)),
                 new Tuple2<>(Genes.COLD_RESISTANCE, new GeneModifier(GeneOperationType.MULTIPLICATIVE, 0.1)),
-                new Tuple2<>(Genes.INTELLIGENCE, new GeneModifier(GeneOperationType.ADDITIVE, -10.0)),
-                new Tuple2<>(Genes.MAX_HEALTH, new GeneModifier(GeneOperationType.MULTIPLICATIVE, mulHealthBonusFactory.apply(5.0)))
+                new Tuple2<>(Genes.INTELLIGENCE, new GeneModifier(GeneOperationType.ADDITIVE, -10.0))
             )
         );
         add(
             EntityType.HOGLIN,
             List.of(
-                new Tuple2<>(Genes.ARMOR, new GeneModifier(GeneOperationType.ADDITIVE, 3.0)),
-                new Tuple2<>(Genes.ARMOR_TOUGHNESS, new GeneModifier(GeneOperationType.ADDITIVE, 2.0)),
                 new Tuple2<>(Genes.ATTACK_DAMAGE, new GeneModifier(GeneOperationType.ADDITIVE, 4.0)),
                 new Tuple2<>(Genes.COLD_RESISTANCE, new GeneModifier(GeneOperationType.MULTIPLICATIVE, -0.05)),
                 new Tuple2<>(Genes.FIRE_RESISTANCE, new GeneModifier(GeneOperationType.MULTIPLICATIVE, 0.1)),
                 new Tuple2<>(Genes.INTELLIGENCE, new GeneModifier(GeneOperationType.ADDITIVE, -10.0)),
                 new Tuple2<>(Genes.KNOCKBACK_RESISTANCE, new GeneModifier(GeneOperationType.ADDITIVE, 0.1)),
-                new Tuple2<>(Genes.MAX_HEALTH, new GeneModifier(GeneOperationType.MULTIPLICATIVE, mulHealthBonusFactory.apply(20.0)))
+                new Tuple2<>(Genes.MAX_HEALTH, new GeneModifier(GeneOperationType.MULTIPLICATIVE, 0.15))
             )
         );
         add(
             EntityType.HORSE,
             List.of(
-                new Tuple2<>(Genes.MAX_HEALTH, new GeneModifier(GeneOperationType.MULTIPLICATIVE, mulHealthBonusFactory.apply(7.5))),
                 new Tuple2<>(Genes.MOVE_SPEED, new GeneModifier(GeneOperationType.ADDITIVE, 0.025))
             )
         );
@@ -123,8 +108,7 @@ public class GeneBonusDataSubProvider extends GeneBonusDataProvider {
             EntityType.ILLUSIONER,
             List.of(
                 new Tuple2<>(Genes.ATTACK_DAMAGE, new GeneModifier(GeneOperationType.ADDITIVE, 2.5)),
-                new Tuple2<>(Genes.INTELLIGENCE, new GeneModifier(GeneOperationType.ADDITIVE, 15.0)),
-                new Tuple2<>(Genes.MAX_HEALTH, new GeneModifier(GeneOperationType.MULTIPLICATIVE, mulHealthBonusFactory.apply(16.0)))
+                new Tuple2<>(Genes.INTELLIGENCE, new GeneModifier(GeneOperationType.ADDITIVE, 15.0))
             )
         );
         add(EntityType.LLAMA, llamaGeneBonuses);
@@ -132,8 +116,7 @@ public class GeneBonusDataSubProvider extends GeneBonusDataProvider {
             HumanEntityTypes.MARINE.get(),
             List.of(
                 new Tuple2<>(Genes.ATTACK_DAMAGE, new GeneModifier(GeneOperationType.ADDITIVE, 1.0)),
-                new Tuple2<>(Genes.INTELLIGENCE, new GeneModifier(GeneOperationType.ADDITIVE, 30.0)),
-                new Tuple2<>(Genes.MAX_HEALTH, new GeneModifier(GeneOperationType.MULTIPLICATIVE, mulHealthBonusFactory.apply(10.0)))
+                new Tuple2<>(Genes.INTELLIGENCE, new GeneModifier(GeneOperationType.ADDITIVE, 30.0))
             )
         );
         add(
@@ -142,15 +125,13 @@ public class GeneBonusDataSubProvider extends GeneBonusDataProvider {
                 new Tuple2<>(Genes.ARMOR, new GeneModifier(GeneOperationType.ADDITIVE, -0.25)),
                 new Tuple2<>(Genes.ARMOR_TOUGHNESS, new GeneModifier(GeneOperationType.ADDITIVE, -0.25)),
                 new Tuple2<>(Genes.GENETIC_INTEGRITY, new GeneModifier(GeneOperationType.ADDITIVE, -0.2)),
-                new Tuple2<>(Genes.INTELLIGENCE, new GeneModifier(GeneOperationType.ADDITIVE, -10.0)),
-                new Tuple2<>(Genes.MAX_HEALTH, new GeneModifier(GeneOperationType.MULTIPLICATIVE, mulHealthBonusFactory.apply(5.0)))
+                new Tuple2<>(Genes.INTELLIGENCE, new GeneModifier(GeneOperationType.ADDITIVE, -10.0))
             )
         );
         add(
             EntityType.MULE,
             List.of(
                 new Tuple2<>(Genes.INTELLIGENCE, new GeneModifier(GeneOperationType.ADDITIVE, -5.0)),
-                new Tuple2<>(Genes.MAX_HEALTH, new GeneModifier(GeneOperationType.MULTIPLICATIVE, mulHealthBonusFactory.apply(7.5))),
                 new Tuple2<>(Genes.MOVE_SPEED, new GeneModifier(GeneOperationType.ADDITIVE, 0.015))
             )
         );
@@ -160,15 +141,15 @@ public class GeneBonusDataSubProvider extends GeneBonusDataProvider {
                 new Tuple2<>(Genes.ATTACK_DAMAGE, new GeneModifier(GeneOperationType.ADDITIVE, -3.0)),
                 new Tuple2<>(Genes.COLD_RESISTANCE, new GeneModifier(GeneOperationType.MULTIPLICATIVE, 0.05)),
                 new Tuple2<>(Genes.INTELLIGENCE, new GeneModifier(GeneOperationType.ADDITIVE, -5.0)),
-                new Tuple2<>(Genes.MAX_HEALTH, new GeneModifier(GeneOperationType.MULTIPLICATIVE, mulHealthBonusFactory.apply(10.0))),
                 new Tuple2<>(Genes.MOVE_SPEED, new GeneModifier(GeneOperationType.ADDITIVE, -0.005))
             )
         );
         add(
             EntityType.PIG,
             List.of(
-                new Tuple2<>(Genes.INTELLIGENCE, new GeneModifier(GeneOperationType.ADDITIVE, -5.0)),
-                new Tuple2<>(Genes.MAX_HEALTH, new GeneModifier(GeneOperationType.MULTIPLICATIVE, mulHealthBonusFactory.apply(5.0)))
+                new Tuple2<>(Genes.BONUS_EMBRYO_COUNT, new GeneModifier(GeneOperationType.ADDITIVE, 1.0)),
+                new Tuple2<>(Genes.INTELLIGENCE, new GeneModifier(GeneOperationType.ADDITIVE, -15.0)),
+                new Tuple2<>(Genes.MAX_HEALTH, new GeneModifier(GeneOperationType.MULTIPLICATIVE, -0.1))
             )
         );
         add(
@@ -176,8 +157,7 @@ public class GeneBonusDataSubProvider extends GeneBonusDataProvider {
             List.of(
                 new Tuple2<>(Genes.ATTACK_DAMAGE, new GeneModifier(GeneOperationType.ADDITIVE, 4.0)),
                 new Tuple2<>(Genes.COLD_RESISTANCE, new GeneModifier(GeneOperationType.MULTIPLICATIVE, -0.05)),
-                new Tuple2<>(Genes.INTELLIGENCE, new GeneModifier(GeneOperationType.ADDITIVE, 10.0)),
-                new Tuple2<>(Genes.MAX_HEALTH, new GeneModifier(GeneOperationType.MULTIPLICATIVE, mulHealthBonusFactory.apply(8.0)))
+                new Tuple2<>(Genes.INTELLIGENCE, new GeneModifier(GeneOperationType.ADDITIVE, 10.0))
             )
         );
         add(
@@ -185,24 +165,21 @@ public class GeneBonusDataSubProvider extends GeneBonusDataProvider {
             List.of(
                 new Tuple2<>(Genes.ATTACK_DAMAGE, new GeneModifier(GeneOperationType.ADDITIVE, 6.5)),
                 new Tuple2<>(Genes.COLD_RESISTANCE, new GeneModifier(GeneOperationType.MULTIPLICATIVE, -0.05)),
-                new Tuple2<>(Genes.INTELLIGENCE, new GeneModifier(GeneOperationType.ADDITIVE, 5.0)),
-                new Tuple2<>(Genes.MAX_HEALTH, new GeneModifier(GeneOperationType.MULTIPLICATIVE, mulHealthBonusFactory.apply(25.0)))
+                new Tuple2<>(Genes.INTELLIGENCE, new GeneModifier(GeneOperationType.ADDITIVE, 5.0))
             )
         );
         add(
             EntityType.PILLAGER,
             List.of(
                 new Tuple2<>(Genes.ATTACK_DAMAGE, new GeneModifier(GeneOperationType.ADDITIVE, 2.0)),
-                new Tuple2<>(Genes.INTELLIGENCE, new GeneModifier(GeneOperationType.ADDITIVE, 15.0)),
-                new Tuple2<>(Genes.MAX_HEALTH, new GeneModifier(GeneOperationType.MULTIPLICATIVE, mulHealthBonusFactory.apply(12.0)))
+                new Tuple2<>(Genes.INTELLIGENCE, new GeneModifier(GeneOperationType.ADDITIVE, 15.0))
             )
         );
         add(
             EntityType.PLAYER,
             List.of(
                 new Tuple2<>(Genes.ATTACK_DAMAGE, new GeneModifier(GeneOperationType.ADDITIVE, 1.0)),
-                new Tuple2<>(Genes.INTELLIGENCE, new GeneModifier(GeneOperationType.ADDITIVE, 30.0)),
-                new Tuple2<>(Genes.MAX_HEALTH, new GeneModifier(GeneOperationType.MULTIPLICATIVE, mulHealthBonusFactory.apply(10.0)))
+                new Tuple2<>(Genes.INTELLIGENCE, new GeneModifier(GeneOperationType.ADDITIVE, 30.0))
             )
         );
         add(
@@ -210,27 +187,25 @@ public class GeneBonusDataSubProvider extends GeneBonusDataProvider {
             List.of(
                 new Tuple2<>(Genes.ATTACK_DAMAGE, new GeneModifier(GeneOperationType.ADDITIVE, 3.0)),
                 new Tuple2<>(Genes.COLD_RESISTANCE, new GeneModifier(GeneOperationType.MULTIPLICATIVE, 0.15)),
-                new Tuple2<>(Genes.MAX_HEALTH, new GeneModifier(GeneOperationType.MULTIPLICATIVE, mulHealthBonusFactory.apply(15.0)))
+                new Tuple2<>(Genes.MAX_HEALTH, new GeneModifier(GeneOperationType.MULTIPLICATIVE, 0.1))
             )
         );
         add(
             EntityType.RAVAGER,
             List.of(
-                new Tuple2<>(Genes.ARMOR, new GeneModifier(GeneOperationType.ADDITIVE, 4.0)),
-                new Tuple2<>(Genes.ARMOR_TOUGHNESS, new GeneModifier(GeneOperationType.ADDITIVE, 4.0)),
                 new Tuple2<>(Genes.ATTACK_DAMAGE, new GeneModifier(GeneOperationType.ADDITIVE, 6.0)),
                 new Tuple2<>(Genes.INTELLIGENCE, new GeneModifier(GeneOperationType.ADDITIVE, -10.0)),
-                new Tuple2<>(Genes.KNOCKBACK_RESISTANCE, new GeneModifier(GeneOperationType.ADDITIVE, 0.15)),
-                new Tuple2<>(Genes.MAX_HEALTH, new GeneModifier(GeneOperationType.MULTIPLICATIVE, mulHealthBonusFactory.apply(50.0))),
+                new Tuple2<>(Genes.KNOCKBACK_RESISTANCE, new GeneModifier(GeneOperationType.ADDITIVE, 0.1)),
+                new Tuple2<>(Genes.MAX_HEALTH, new GeneModifier(GeneOperationType.MULTIPLICATIVE, 0.25)),
                 new Tuple2<>(Genes.MOVE_SPEED, new GeneModifier(GeneOperationType.ADDITIVE, -0.005))
             )
         );
         add(
             EntityType.SHEEP,
             List.of(
+                new Tuple2<>(Genes.BONUS_EMBRYO_COUNT, new GeneModifier(GeneOperationType.ADDITIVE, 0.4)),
                 new Tuple2<>(Genes.COLD_RESISTANCE, new GeneModifier(GeneOperationType.MULTIPLICATIVE, 0.05)),
-                new Tuple2<>(Genes.INTELLIGENCE, new GeneModifier(GeneOperationType.ADDITIVE, -10.0)),
-                new Tuple2<>(Genes.MAX_HEALTH, new GeneModifier(GeneOperationType.MULTIPLICATIVE, mulHealthBonusFactory.apply(4.0)))
+                new Tuple2<>(Genes.INTELLIGENCE, new GeneModifier(GeneOperationType.ADDITIVE, -10.0))
             )
         );
         add(
@@ -238,7 +213,7 @@ public class GeneBonusDataSubProvider extends GeneBonusDataProvider {
             List.of(
                 new Tuple2<>(Genes.ATTACK_DAMAGE, new GeneModifier(GeneOperationType.ADDITIVE, -3.0)),
                 new Tuple2<>(Genes.INTELLIGENCE, new GeneModifier(GeneOperationType.ADDITIVE, -5.0)),
-                new Tuple2<>(Genes.MAX_HEALTH, new GeneModifier(GeneOperationType.MULTIPLICATIVE, mulHealthBonusFactory.apply(7.0))),
+                new Tuple2<>(Genes.MAX_HEALTH, new GeneModifier(GeneOperationType.MULTIPLICATIVE, 0.15)),
                 new Tuple2<>(Genes.MOVE_SPEED, new GeneModifier(GeneOperationType.ADDITIVE, -0.01))
             )
         );
@@ -247,64 +222,55 @@ public class GeneBonusDataSubProvider extends GeneBonusDataProvider {
             List.of(
                 new Tuple2<>(Genes.ATTACK_DAMAGE, new GeneModifier(GeneOperationType.ADDITIVE, -2.0)),
                 new Tuple2<>(Genes.COLD_RESISTANCE, new GeneModifier(GeneOperationType.MULTIPLICATIVE, -0.2)),
-                new Tuple2<>(Genes.FIRE_RESISTANCE, new GeneModifier(GeneOperationType.MULTIPLICATIVE, 0.2)),
-                new Tuple2<>(Genes.INTELLIGENCE, new GeneModifier(GeneOperationType.ADDITIVE, -5.0)),
-                new Tuple2<>(Genes.MAX_HEALTH, new GeneModifier(GeneOperationType.MULTIPLICATIVE, mulHealthBonusFactory.apply(10.0)))
+                new Tuple2<>(Genes.FIRE_RESISTANCE, new GeneModifier(GeneOperationType.MULTIPLICATIVE, 0.2))
             )
         );
         add(EntityType.TRADER_LLAMA, llamaGeneBonuses);
         add(
             EntityType.VILLAGER,
             List.of(
-                new Tuple2<>(Genes.INTELLIGENCE, new GeneModifier(GeneOperationType.ADDITIVE, 15.0)),
-                new Tuple2<>(Genes.MAX_HEALTH, new GeneModifier(GeneOperationType.MULTIPLICATIVE, mulHealthBonusFactory.apply(10.0)))
+                new Tuple2<>(Genes.INTELLIGENCE, new GeneModifier(GeneOperationType.ADDITIVE, 15.0))
             )
         );
         add(
             EntityType.VINDICATOR,
             List.of(
                 new Tuple2<>(Genes.ATTACK_DAMAGE, new GeneModifier(GeneOperationType.ADDITIVE, 6.5)),
-                new Tuple2<>(Genes.INTELLIGENCE, new GeneModifier(GeneOperationType.ADDITIVE, 15.0)),
-                new Tuple2<>(Genes.MAX_HEALTH, new GeneModifier(GeneOperationType.MULTIPLICATIVE, mulHealthBonusFactory.apply(12.0)))
+                new Tuple2<>(Genes.INTELLIGENCE, new GeneModifier(GeneOperationType.ADDITIVE, 15.0))
             )
         );
         add(
             EntityType.WANDERING_TRADER,
             List.of(
-                new Tuple2<>(Genes.INTELLIGENCE, new GeneModifier(GeneOperationType.ADDITIVE, 15.0)),
-                new Tuple2<>(Genes.MAX_HEALTH, new GeneModifier(GeneOperationType.MULTIPLICATIVE, mulHealthBonusFactory.apply(10.0)))
+                new Tuple2<>(Genes.INTELLIGENCE, new GeneModifier(GeneOperationType.ADDITIVE, 15.0))
             )
         );
         add(
             EntityType.WITCH,
             List.of(
                 new Tuple2<>(Genes.GENETIC_INTEGRITY, new GeneModifier(GeneOperationType.ADDITIVE, -0.2)),
-                new Tuple2<>(Genes.INTELLIGENCE, new GeneModifier(GeneOperationType.ADDITIVE, 15.0)),
-                new Tuple2<>(Genes.MAX_HEALTH, new GeneModifier(GeneOperationType.MULTIPLICATIVE, mulHealthBonusFactory.apply(10.0)))
+                new Tuple2<>(Genes.INTELLIGENCE, new GeneModifier(GeneOperationType.ADDITIVE, 15.0))
             )
         );
         add(
             EntityType.WOLF,
             List.of(
-                new Tuple2<>(Genes.BONUS_EMBRYO_COUNT, new GeneModifier(GeneOperationType.ADDITIVE, 1.0)),
+                new Tuple2<>(Genes.BONUS_EMBRYO_COUNT, new GeneModifier(GeneOperationType.ADDITIVE, 0.65)),
                 new Tuple2<>(Genes.COLD_RESISTANCE, new GeneModifier(GeneOperationType.MULTIPLICATIVE, 0.05)),
-                new Tuple2<>(Genes.INTELLIGENCE, new GeneModifier(GeneOperationType.ADDITIVE, 5.0)),
-                new Tuple2<>(Genes.MAX_HEALTH, new GeneModifier(GeneOperationType.MULTIPLICATIVE, mulHealthBonusFactory.apply(4.0))),
+                new Tuple2<>(Genes.MAX_HEALTH, new GeneModifier(GeneOperationType.MULTIPLICATIVE, -0.1)),
                 new Tuple2<>(Genes.MOVE_SPEED, new GeneModifier(GeneOperationType.ADDITIVE, 0.01))
             )
         );
         add(
             PredatorEntityTypes.YAUTJA.get(),
             List.of(
-                new Tuple2<>(Genes.ARMOR, new GeneModifier(GeneOperationType.ADDITIVE, 8.0)),
-                new Tuple2<>(Genes.ARMOR_TOUGHNESS, new GeneModifier(GeneOperationType.ADDITIVE, 8.0)),
                 new Tuple2<>(Genes.ATTACK_DAMAGE, new GeneModifier(GeneOperationType.ADDITIVE, 7.5)),
                 new Tuple2<>(Genes.COLD_RESISTANCE, new GeneModifier(GeneOperationType.MULTIPLICATIVE, 0.05)),
-                new Tuple2<>(Genes.FIRE_RESISTANCE, new GeneModifier(GeneOperationType.MULTIPLICATIVE, 0.15)),
+                new Tuple2<>(Genes.FIRE_RESISTANCE, new GeneModifier(GeneOperationType.MULTIPLICATIVE, 0.2)),
                 new Tuple2<>(Genes.INTELLIGENCE, new GeneModifier(GeneOperationType.ADDITIVE, 30.0)),
-                new Tuple2<>(Genes.KNOCKBACK_RESISTANCE, new GeneModifier(GeneOperationType.ADDITIVE, 0.5)),
-                new Tuple2<>(Genes.MAX_HEALTH, new GeneModifier(GeneOperationType.MULTIPLICATIVE, mulHealthBonusFactory.apply(100.0))),
-                new Tuple2<>(Genes.MOVE_SPEED, new GeneModifier(GeneOperationType.ADDITIVE, 0.01))
+                new Tuple2<>(Genes.KNOCKBACK_RESISTANCE, new GeneModifier(GeneOperationType.ADDITIVE, 0.15)),
+                new Tuple2<>(Genes.MAX_HEALTH, new GeneModifier(GeneOperationType.MULTIPLICATIVE, 0.5)),
+                new Tuple2<>(Genes.MOVE_SPEED, new GeneModifier(GeneOperationType.ADDITIVE, 0.005))
             )
         );
 
