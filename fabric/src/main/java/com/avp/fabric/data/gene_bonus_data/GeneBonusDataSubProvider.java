@@ -228,6 +228,14 @@ public class GeneBonusDataSubProvider extends GeneBonusDataProvider {
         );
         add(EntityType.TRADER_LLAMA, llamaGeneBonuses);
         add(
+            EntityType.TURTLE,
+            List.of(
+                new Tuple2<>(Genes.ARMOR, new GeneModifier(GeneOperationType.ADDITIVE, 4.0)),
+                new Tuple2<>(Genes.ARMOR_TOUGHNESS, new GeneModifier(GeneOperationType.ADDITIVE, 2.0)),
+                new Tuple2<>(Genes.MOVE_SPEED, new GeneModifier(GeneOperationType.ADDITIVE, -0.02))
+            )
+        );
+        add(
             EntityType.VILLAGER,
             List.of(
                 new Tuple2<>(Genes.INTELLIGENCE, new GeneModifier(GeneOperationType.ADDITIVE, 15.0))
