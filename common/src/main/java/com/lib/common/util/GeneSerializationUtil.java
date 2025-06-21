@@ -47,7 +47,7 @@ public class GeneSerializationUtil {
 
                 GeneBonusDataEntry.CODEC.parse(new Dynamic<>(NbtOps.INSTANCE, elementTag))
                     .resultOrPartial(AVP.LOGGER::error)
-                    .ifPresent(entry -> geneMap.put(new GeneModifierKey(entry.resourceLocation(), entry.operation()), entry.value()));
+                    .ifPresent(entry -> geneMap.put(new GeneModifierKey(entry.id(), entry.operation()), entry.value()));
             }
         }
     }

@@ -8,14 +8,14 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
 
 public record GeneBonusDataEntry(
-    ResourceLocation resourceLocation,
+    ResourceLocation id,
     GeneOperationType operation,
     double value
 ) {
 
     public static final Codec<GeneBonusDataEntry> CODEC = RecordCodecBuilder.create(
         instance -> instance.group(
-            ResourceLocation.CODEC.fieldOf("resourceLocation").forGetter(GeneBonusDataEntry::resourceLocation),
+            ResourceLocation.CODEC.fieldOf("id").forGetter(GeneBonusDataEntry::id),
             GeneOperationType.CODEC.fieldOf("operation").forGetter(GeneBonusDataEntry::operation),
             Codec.DOUBLE.fieldOf("value").forGetter(GeneBonusDataEntry::value)
         ).apply(instance, GeneBonusDataEntry::new)
@@ -23,7 +23,7 @@ public record GeneBonusDataEntry(
 
     public static final StreamCodec<FriendlyByteBuf, GeneBonusDataEntry> STREAM_CODEC = StreamCodec.composite(
         ResourceLocation.STREAM_CODEC,
-        GeneBonusDataEntry::resourceLocation,
+        GeneBonusDataEntry::id,
         GeneOperationType.STREAM_CODEC,
         GeneBonusDataEntry::operation,
         ByteBufCodecs.DOUBLE,
@@ -32,6 +32,6 @@ public record GeneBonusDataEntry(
     );
 
     public GeneModifierKey toKey() {
-        return new GeneModifierKey(resourceLocation, operation);
+        return new GeneModifierKey(id, operation);
     }
 }

@@ -242,10 +242,10 @@ public class SyringeItem extends Item {
         // TODO: Pretty this up later.
         syringeContents.geneBonusDataEntries()
             .stream()
-            .filter(entry -> GeneRegistry.getValue(entry.resourceLocation()).isSome())
+            .filter(entry -> GeneRegistry.getValue(entry.id()).isSome())
             .forEach(
                 entry -> list.add(
-                    Component.translatable(GeneRegistry.getValue(entry.resourceLocation()).unwrap().getTranslationKey())
+                    Component.translatable(GeneRegistry.getValue(entry.id()).unwrap().getTranslationKey())
                         .append(Component.literal(": "))
                         .append(
                             Component.literal(format(entry.operation(), entry.value()))
