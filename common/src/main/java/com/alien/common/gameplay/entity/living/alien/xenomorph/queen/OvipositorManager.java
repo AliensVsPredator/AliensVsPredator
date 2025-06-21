@@ -52,12 +52,6 @@ public class OvipositorManager implements NBTSerializable {
                 // Head rotation.
                 ovipositor.yHeadRot = queen.yHeadRot;
             });
-
-            queen.getHiveManager().hive().ifSome(hive -> {
-                if (hive.getLeadershipManager().isLeader(queen)) {
-                    hive.moveCenter(queen.blockPosition());
-                }
-            });
             return;
         }
 

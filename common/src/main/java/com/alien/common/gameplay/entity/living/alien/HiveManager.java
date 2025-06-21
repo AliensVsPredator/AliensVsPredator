@@ -80,6 +80,10 @@ public class HiveManager implements NBTSerializable {
 
             if (alien.tickCount % (20 * 30) == 0) {
                 hive.ping(alien);
+
+                if (hive.getLeadershipManager().isLeader(alien)) {
+                    hive.moveCenter(alien.blockPosition());
+                }
             }
         });
     }

@@ -66,6 +66,7 @@
 - Improved razor wire death message.
 - Poison jelly no longer turns royal ovomorphs into royal aberrant ovomorphs.
 - Same-strain, different-hive xenos now no longer kill each other.
+- Hive centers now constantly move with the hive leader.
 - Moved the following config options to datapack:
   - `CHESTBURSTER_MAX_GROWTH_TIMER_SECONDS`
   - `DRONE_MAX_GROWTH_TIMER_SECONDS`
