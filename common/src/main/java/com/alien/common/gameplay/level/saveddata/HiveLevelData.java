@@ -80,6 +80,8 @@ public class HiveLevelData extends SavedData {
         var hive = createHive(alien.blockPosition());
         // Set the hive's variant.
         hive.setVariant(alien.getVariant());
+        // Immediately become a member of the hive.
+        hive.getMembershipManager().addMember(alien);
         // Immediately become the hive's leader so that the hive isn't briefly leaderless.
         hive.getLeadershipManager().setLeaderId(alien.getUUID());
         // Immediately ping the hive.
