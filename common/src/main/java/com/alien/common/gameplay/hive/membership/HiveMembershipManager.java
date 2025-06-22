@@ -88,7 +88,7 @@ public class HiveMembershipManager implements NBTSerializable {
     }
 
     public int getMemberCount() {
-        return getMemberUUIDs().size();
+        return hiveMembershipCache.size();
     }
 
     public List<Entity> getLoadedMembers() {

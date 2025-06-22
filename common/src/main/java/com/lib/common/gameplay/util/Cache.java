@@ -57,6 +57,10 @@ public abstract class Cache<K, T> {
         return List.copyOf(cache.entrySet()).stream();
     }
 
+    public final int size() {
+        return cache.size();
+    }
+
     protected void onAddToCache(K id, @Nullable T oldValue, T newValue) {}
 
     protected void onRemoveFromCache(K id, T value) {}
