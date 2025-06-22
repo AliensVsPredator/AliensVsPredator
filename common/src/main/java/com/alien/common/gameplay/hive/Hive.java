@@ -111,7 +111,6 @@ public class Hive implements NBTSerializable {
             !(requestingEntity instanceof Alien alien)
                 // OR the alien is not the same variant as the hive...
                 || !Objects.equals(alien.getVariant(), variant)
-                || isNonLeaderQueen(requestingEntity)
         ) {
             // Then reject the entity's request to join the hive.
             return false;
@@ -128,7 +127,11 @@ public class Hive implements NBTSerializable {
     }
 
     public void ping(@NotNull Entity entity) {
-        if (!entity.isAlive() || isNonLeaderQueen(entity)) {
+        if (
+            !entity.isAlive()
+                || (membershipManager.isMember(entity)
+                    && !spaceManager.isEntityLeashedToHive(entity))
+        ) {
             removeHiveMember(entity);
             return;
         }
@@ -163,8 +166,7 @@ public class Hive implements NBTSerializable {
             // Once the hive is defeated, blacklist chunks around the hive center so no more queens can spawn.
             QueenSpawnChunkData.getOrCreate(level)
                 .ifSome(queenSpawnChunkData -> {
-                    // TODO: Use a precise circular area of chunks based on the hive's radius/size. This uses a square
-                    // area.
+                    // TODO: Use a precise circular area of chunks based on the hive's radius/size.
                     var chunkRadiusToBlacklist = AVP.config.hiveConfigs.MINIMUM_DISTANCE_BETWEEN_NATURAL_QUEEN_SPAWNS_IN_CHUNKS;
                     var nearbyChunkPositions = ChunkPosUtil.getChunksAround(centerPosition(), chunkRadiusToBlacklist);
 
@@ -175,13 +177,6 @@ public class Hive implements NBTSerializable {
 
     public boolean isAngry() {
         return bossBarManager.isTrackingPlayers();
-    }
-
-    private boolean isNonLeaderQueen(Entity requestingEntity) {
-        // Entity is a queen...
-        return requestingEntity.getType().is(AVPEntityTypeTags.QUEENS)
-            // AND the queen entity is not this hive's leader.
-            && !getLeadershipManager().isLeader(requestingEntity);
     }
 
     @Override

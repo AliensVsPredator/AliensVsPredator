@@ -24,7 +24,7 @@ public class BoilerRenderer extends AzEntityRenderer<Boiler> {
 
     public BoilerRenderer(EntityRendererProvider.Context context) {
         super(
-            AzEntityRendererConfig.<Boiler>builder($ -> MODEL, BoilerRenderer::textureLocation)
+            AzEntityRendererConfig.builder($ -> MODEL, BoilerRenderer::textureLocation)
                 .setAnimatorProvider(BoilerAnimator::new)
                 .addRenderLayer(new RadiationGlowLayer<>())
                 .build(),

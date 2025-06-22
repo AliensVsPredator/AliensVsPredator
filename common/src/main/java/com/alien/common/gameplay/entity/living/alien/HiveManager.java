@@ -99,6 +99,10 @@ public class HiveManager implements NBTSerializable {
             return;
         }
 
+        if (nearestHive != null && nearestHive.getSpaceManager().isEntityWithinHiveBuffer(alien)) {
+            return;
+        }
+
         var newHive = hiveLevelData.createHive(alien);
         this.hiveOption = Option.some(newHive);
     }
