@@ -99,6 +99,10 @@ public class HiveLevelData extends SavedData {
         return hive;
     }
 
+    public void removeHive(Hive hive) {
+        hiveByIdMap.remove(hive.id());
+    }
+
     public Collection<Hive> allHives() {
         return hiveByIdMap.values();
     }

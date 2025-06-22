@@ -7,6 +7,7 @@ import com.alien.common.gameplay.hive.ai.task.impl.BalanceDronesAndWarriorsHiveT
 import com.alien.common.gameplay.hive.ai.task.impl.BalancePraetoriansHiveTask;
 import com.alien.common.gameplay.hive.ai.task.impl.BalanceQueenHiveTask;
 import com.alien.common.gameplay.hive.ai.task.impl.BalanceRunnersAndProwlersHiveTask;
+import com.alien.common.gameplay.hive.ai.task.impl.MergeWithNearbyHiveTask;
 import com.alien.common.gameplay.hive.ai.task.impl.PickBestLeaderTask;
 import com.alien.common.gameplay.hive.membership.HiveLeadershipManager;
 import com.alien.common.gameplay.hive.membership.HiveMembershipManager;
@@ -81,6 +82,7 @@ public class Hive implements NBTSerializable {
         tasks.add(new BalancePraetoriansHiveTask(this));
         tasks.add(new BalanceQueenHiveTask(this));
         tasks.add(new PickBestLeaderTask(this));
+        tasks.add(new MergeWithNearbyHiveTask(this));
     }
 
     public void tick() {

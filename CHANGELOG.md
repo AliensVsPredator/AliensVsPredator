@@ -73,6 +73,10 @@
 - Same-strain, different-hive xenos now no longer kill each other.
 - Hive centers now constantly move with the hive leader.
 - Updated the chestbursting death message to have a proper, better-fitting message.
+- Hives will now merge with each other given certain conditions in the following order (most -> least important):
+  - Hives with a weaker leader will merge into hives with a stronger leader.
+  - Hives with a lower member count will merge into hives with a larger member count.
+  - Younger hives will merge into older hives.
 - Moved the following config options to datapack:
   - `CHESTBURSTER_MAX_GROWTH_TIMER_SECONDS`
   - `DRONE_MAX_GROWTH_TIMER_SECONDS`

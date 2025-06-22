@@ -62,6 +62,10 @@ public class HiveMembershipManager implements NBTSerializable {
         });
     }
 
+    public void clearMembers() {
+        hiveMembershipCache.clear();
+    }
+
     public void addMember(Entity entity) {
         var resourceLocation = BuiltInRegistries.ENTITY_TYPE.getKey(entity.getType());
         var hiveMemberData = new HiveMemberData(resourceLocation, entity.blockPosition(), hive.ageInTicks());
