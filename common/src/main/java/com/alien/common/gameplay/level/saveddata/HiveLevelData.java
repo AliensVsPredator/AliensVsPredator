@@ -43,7 +43,7 @@ public class HiveLevelData extends SavedData {
         hiveByIdMap.values().removeIf(hive -> {
             hive.tick();
 
-            var shouldRemove = !hive.isAlive();
+            var shouldRemove = hive.isRemoved();
 
             if (shouldRemove) {
                 hive.onRemove();

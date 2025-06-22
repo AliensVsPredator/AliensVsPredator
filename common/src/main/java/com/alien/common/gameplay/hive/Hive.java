@@ -11,7 +11,6 @@ import com.alien.common.gameplay.hive.ai.task.impl.MergeWithNearbyHiveTask;
 import com.alien.common.gameplay.hive.ai.task.impl.PickBestLeaderTask;
 import com.alien.common.gameplay.hive.membership.HiveLeadershipManager;
 import com.alien.common.gameplay.hive.membership.HiveMembershipManager;
-import com.alien.common.gameplay.level.saveddata.HiveLevelData;
 import com.alien.common.gameplay.level.saveddata.QueenSpawnChunkData;
 import com.alien.common.model.alien.variant.AlienVariant;
 import com.lib.common.gameplay.NBTSerializable;
@@ -22,6 +21,7 @@ import net.minecraft.world.Difficulty;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -57,6 +57,8 @@ public class Hive implements NBTSerializable {
 
     private final List<Task> tasks;
 
+    private @Nullable HiveRemovalReason removalReason;
+
     private BlockPos centerPos;
 
     private int ageInTicks;
@@ -67,6 +69,7 @@ public class Hive implements NBTSerializable {
         this.variant = DEFAULT_VARIANT;
         this.tasks = new ArrayList<>();
         this.id = id;
+        this.removalReason = null;
         this.level = level;
         this.bossBarManager = new HiveBossBarManager(this);
         this.debugManager = new HiveDebugManager(this);
@@ -99,6 +102,10 @@ public class Hive implements NBTSerializable {
         tasks.stream()
             .filter(Task::canRun)
             .forEach(Task::run);
+
+        if (ageInTicks % 20 == 0 && !hasXenomorphs()) {
+            remove(HiveRemovalReason.KILLED);
+        }
 
         ageInTicks++;
     }
@@ -151,12 +158,26 @@ public class Hive implements NBTSerializable {
     }
 
     public boolean isAlive() {
+        return !isRemoved();
+    }
+
+    public boolean hasXenomorphs() {
         // Ovomorphs, facehuggers and chestbursters do not sustain a hive. That's why we check the xenomorph count
         // here instead of the overall hive member map size.
-        return !membershipManager.getMembersMatching(entityType -> entityType.is(AVPEntityTypeTags.XENOMORPHS)).isEmpty()
-            && HiveLevelData.getOrCreate(level)
-                .filter(data -> data.hasHive(this))
-                .isSome();
+        return !membershipManager.getMembersMatching(entityType -> entityType.is(AVPEntityTypeTags.XENOMORPHS))
+            .isEmpty();
+    }
+
+    public @Nullable HiveRemovalReason getRemovalReason() {
+        return removalReason;
+    }
+
+    public boolean isRemoved() {
+        return removalReason != null;
+    }
+
+    public void remove(HiveRemovalReason removalReason) {
+        this.removalReason = removalReason;
     }
 
     public void onRemove() {

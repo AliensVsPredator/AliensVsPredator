@@ -1,6 +1,7 @@
 package com.alien.common.gameplay.hive.ai.task.impl;
 
 import com.alien.common.gameplay.hive.Hive;
+import com.alien.common.gameplay.hive.HiveRemovalReason;
 import com.alien.common.gameplay.hive.ai.task.HiveTask;
 import com.alien.common.gameplay.hive.util.HiveLeaderDispositionUtil;
 import com.alien.common.gameplay.level.saveddata.HiveLevelData;
@@ -116,7 +117,6 @@ public class MergeWithNearbyHiveTask extends HiveTask {
         // Clear the left hive's leader.
         left.getLeadershipManager().setLeaderId(null);
         // Finally remove the left hive.
-        HiveLevelData.getOrCreate(left.level())
-            .ifSome(hiveLevelData -> hiveLevelData.removeHive(left));
+        left.remove(HiveRemovalReason.DISCARDED);
     }
 }
