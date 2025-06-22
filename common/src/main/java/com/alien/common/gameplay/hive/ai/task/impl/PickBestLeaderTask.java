@@ -2,9 +2,9 @@ package com.alien.common.gameplay.hive.ai.task.impl;
 
 import com.alien.common.gameplay.hive.Hive;
 import com.alien.common.gameplay.hive.ai.task.HiveTask;
+import com.alien.common.gameplay.hive.util.HiveLeaderDispositionUtil;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntityType;
 
 import com.avp.common.registry.tag.AVPEntityTypeTags;
 
@@ -41,7 +41,7 @@ public class PickBestLeaderTask extends HiveTask {
                 continue;
             }
 
-            if (compareEntityTypes(candidate.getType(), contestant.getType())) {
+            if (HiveLeaderDispositionUtil.isLeftLowerDisposition(candidate.getType(), contestant.getType())) {
                 candidate = contestant;
                 candidateHiveMemberData = contestantHiveMemberData;
             }
@@ -50,25 +50,5 @@ public class PickBestLeaderTask extends HiveTask {
         if (candidate != null) {
             hive.getLeadershipManager().setLeaderId(candidate.getUUID());
         }
-    }
-
-    public boolean compareEntityTypes(EntityType<?> current, EntityType<?> other) {
-        var currentDisposition = getDispositionForEntityType(current);
-        var contestantDisposition = getDispositionForEntityType(other);
-        return currentDisposition < contestantDisposition;
-    }
-
-    private int getDispositionForEntityType(EntityType<?> entityType) {
-        if (entityType.is(AVPEntityTypeTags.DRONES) || entityType.is(AVPEntityTypeTags.RUNNERS)) {
-            return 0;
-        } else if (entityType.is(AVPEntityTypeTags.WARRIORS) || entityType.is(AVPEntityTypeTags.PROWLERS)) {
-            return 1;
-        } else if (entityType.is(AVPEntityTypeTags.PRAETORIANS) || entityType.is(AVPEntityTypeTags.CRUSHERS)) {
-            return 2;
-        } else if (entityType.is(AVPEntityTypeTags.QUEENS)) {
-            return 3;
-        }
-
-        return -1;
     }
 }
