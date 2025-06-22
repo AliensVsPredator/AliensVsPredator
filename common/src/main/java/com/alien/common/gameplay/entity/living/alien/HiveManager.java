@@ -78,7 +78,7 @@ public class HiveManager implements NBTSerializable {
                 return;
             }
 
-            if (alien.tickCount % (20 * 30) == 0) {
+            if (alien.tickCount % 20 == 0) {
                 hive.ping(alien);
 
                 if (hive.getLeadershipManager().isLeader(alien)) {
