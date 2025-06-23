@@ -5,8 +5,8 @@ import com.alien.common.util.AcidBleedUtil;
 import com.lib.common.gameplay.entity.manager.GeneManager;
 import com.lib.common.gameplay.gene.GeneOperationType;
 import com.lib.common.gameplay.gene.Genes;
-import com.lib.common.network.SyncedDataKey;
-import com.lib.common.network.SyncedDataUser;
+import com.lib.common.network.DataAccessor;
+import com.lib.common.network.DataUser;
 import com.lib.common.util.GeneResistanceHurtUtil;
 import com.lib.common.util.TeleportUtil;
 import net.minecraft.core.particles.ParticleTypes;
@@ -26,16 +26,13 @@ import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import com.avp.AVPResources;
-
 @Mixin(LivingEntity.class)
-public abstract class MixinLivingEntity_GeneCarrier extends Entity implements GeneCarrier, SyncedDataUser {
+public abstract class MixinLivingEntity_GeneCarrier extends Entity implements GeneCarrier, DataUser {
 
     @Unique
-    private static final SyncedDataKey<Boolean> HAS_WARP_EFFECT = new SyncedDataKey<>(
-        AVPResources.location("has_warp_effect"),
-        ByteBufCodecs.BOOL
-    );
+    private final DataAccessor<Boolean> hasWarpEffect = getDataContainer().<Boolean>builder("hasWarpEffect")
+        .networkSynchronized(ByteBufCodecs.BOOL)
+        .build(false);
 
     @Unique
     private GeneManager avp$geneManager;
@@ -44,18 +41,13 @@ public abstract class MixinLivingEntity_GeneCarrier extends Entity implements Ge
         super(entityType, level);
     }
 
-    @Inject(method = "<init>", at = @At("TAIL"))
-    private void onConstruct(EntityType<?> type, Level level, CallbackInfo ci) {
-        getSyncedDataContainer().define(HAS_WARP_EFFECT, false);
-    }
-
     @Inject(at = @At("HEAD"), method = "tick")
     public void tick(CallbackInfo callbackInfo) {
         var geneManager = getOrCreateGeneManager();
 
         geneManager.tick();
 
-        if (level().isClientSide && getSyncedDataContainer().get(HAS_WARP_EFFECT)) {
+        if (level().isClientSide && hasWarpEffect.get()) {
             for (int i = 0; i < 2; ++i) {
                 level().addParticle(
                     ParticleTypes.PORTAL,
@@ -70,8 +62,7 @@ public abstract class MixinLivingEntity_GeneCarrier extends Entity implements Ge
         }
 
         if (!level().isClientSide) {
-            var hasWarpEffect = getOrCreateGeneManager().getGeneContainer().hasGene(Genes.WARP);
-            getSyncedDataContainer().set(HAS_WARP_EFFECT, hasWarpEffect);
+            hasWarpEffect.set(getOrCreateGeneManager().getGeneContainer().hasGene(Genes.WARP));
         }
     }
 
@@ -96,7 +87,7 @@ public abstract class MixinLivingEntity_GeneCarrier extends Entity implements Ge
     @Inject(at = @At("HEAD"), method = "hurt", cancellable = true)
     public void avp$preHurtEffects(DamageSource damageSource, float damage, CallbackInfoReturnable<Boolean> cir) {
         if (
-            getSyncedDataContainer().get(HAS_WARP_EFFECT)
+            hasWarpEffect.get()
                 && (damageSource.is(DamageTypeTags.IS_PROJECTILE)
                     || random.nextInt(10) == 0)
         ) {

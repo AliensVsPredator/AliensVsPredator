@@ -21,7 +21,7 @@ public class HumanHairLayer<T extends AbstractHuman> implements AzRenderLayer<T>
         var vertexConsumer = context.multiBufferSource().getBuffer(renderType);
         var previousColor = context.renderColor();
 
-        context.setRenderColor(animatable.getHairColor());
+        context.setRenderColor(animatable.hairColor.get());
         context.setVertexConsumer(vertexConsumer);
 
         renderPipeline.reRender(context);

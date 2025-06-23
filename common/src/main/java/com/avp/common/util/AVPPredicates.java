@@ -104,6 +104,5 @@ public class AVPPredicates {
         EquipmentSlot.HEAD
     ).is(AVPItemTags.FACEHUGGER_RESISTANT_HELMETS);
 
-    public static final Predicate<LivingEntity> HAS_MASK = livingEntity -> livingEntity instanceof Yautja yautja && yautja.yautjaMaskManager
-        .hasMask();
+    public static final Predicate<LivingEntity> HAS_MASK = livingEntity -> livingEntity instanceof Yautja yautja && yautja.hasMask.get();
 }

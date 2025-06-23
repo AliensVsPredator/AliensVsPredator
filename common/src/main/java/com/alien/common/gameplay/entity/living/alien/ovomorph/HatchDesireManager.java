@@ -1,7 +1,7 @@
 package com.alien.common.gameplay.entity.living.alien.ovomorph;
 
-import com.lib.common.gameplay.NBTSerializable;
-import net.minecraft.nbt.CompoundTag;
+import com.lib.common.network.DataAccessor;
+import com.mojang.serialization.Codec;
 import net.minecraft.world.level.LightLayer;
 import net.minecraft.world.level.gameevent.vibrations.VibrationInfo;
 
@@ -10,9 +10,7 @@ import java.util.Objects;
 
 import com.avp.common.util.AVPPredicates;
 
-public class HatchDesireManager implements NBTSerializable {
-
-    private static final String NBT_DESIRE_TO_HATCH = "desireToHatch";
+public class HatchDesireManager {
 
     private static final int MAXIMUM_DESIRE_TO_HATCH = 100;
 
@@ -20,14 +18,18 @@ public class HatchDesireManager implements NBTSerializable {
 
     private final Ovomorph ovomorph;
 
-    private int desireToHatch;
+    private final DataAccessor<Integer> desireToHatch;
 
     private VibrationInfo lastVibrationInfo;
 
     public HatchDesireManager(Ovomorph ovomorph) {
         this.ovomorph = ovomorph;
         this.lastBrightnessMap = new EnumMap<>(LightLayer.class);
-        this.desireToHatch = 0;
+
+        this.desireToHatch = ovomorph.getDataContainer()
+            .<Integer>builder("desireToHatch")
+            .persistent(Codec.INT)
+            .build(0);
 
         lastBrightnessMap.put(LightLayer.BLOCK, getBrightness(LightLayer.BLOCK));
         lastBrightnessMap.put(LightLayer.SKY, getBrightness(LightLayer.SKY));
@@ -46,7 +48,7 @@ public class HatchDesireManager implements NBTSerializable {
         }
 
         if (ovomorph.getHatchManager().isHatched()) {
-            this.desireToHatch = 0;
+            desireToHatch.reset();
         }
     }
 
@@ -91,22 +93,10 @@ public class HatchDesireManager implements NBTSerializable {
     }
 
     public boolean wantsToHatch() {
-        return desireToHatch == MAXIMUM_DESIRE_TO_HATCH;
-    }
-
-    @Override
-    public void load(CompoundTag compoundTag) {
-        if (compoundTag.contains(NBT_DESIRE_TO_HATCH)) {
-            this.desireToHatch = compoundTag.getInt(NBT_DESIRE_TO_HATCH);
-        }
-    }
-
-    @Override
-    public void save(CompoundTag compoundTag) {
-        compoundTag.putInt(NBT_DESIRE_TO_HATCH, desireToHatch);
+        return desireToHatch.get() == MAXIMUM_DESIRE_TO_HATCH;
     }
 
     private void addDesire(int desireAmount) {
-        this.desireToHatch = Math.clamp(desireToHatch + desireAmount, 0, MAXIMUM_DESIRE_TO_HATCH);
+        desireToHatch.set(Math.clamp(desireToHatch.get() + desireAmount, 0, MAXIMUM_DESIRE_TO_HATCH));
     }
 }

@@ -70,7 +70,7 @@ public class YautjaAnimator extends AzEntityAnimator<Yautja> {
         var helmet = bakedModel.getBoneOrNull("gArmorMask");
 
         if (helmet != null) {
-            helmet.setHidden(!entity.yautjaMaskManager.hasMask());
+            helmet.setHidden(!entity.hasMask.get());
         }
     }
 }

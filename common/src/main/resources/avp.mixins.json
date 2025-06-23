@@ -13,7 +13,7 @@
     "MixinCow_FillMilkCanister",
     "MixinCreeper_Nuked",
     "MixinDecoratedPotPatterns_GetPatternForCustomSherds",
-    "MixinEntity_SyncedDataUser",
+    "MixinEntity_DataUser",
     "MixinEntityTypeBuilder_SilenceDataFixerError",
     "MixinInventory_InsertAmmoItemsIntoAmmoChest",
     "MixinInventory_InsertRadioactiveItemsIntoLeadChest",

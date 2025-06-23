@@ -2,8 +2,12 @@ package com.alien.common.gameplay.entity.acid;
 
 import com.alien.common.data.AlienVariantTypes;
 import com.lib.common.gameplay.util.GravityUtil;
+import com.lib.common.network.DataAccessor;
+import com.lib.common.network.DataUser;
+import com.mojang.serialization.Codec;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -15,7 +19,7 @@ import net.minecraft.world.entity.Pose;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
-public class Acid extends Entity {
+public class Acid extends Entity implements DataUser {
 
     public static final int MAX_MULTIPLIER = 5;
 
@@ -27,18 +31,9 @@ public class Acid extends Entity {
 
     private static final String IS_IRRADIATED_KEY = "isIrradiated";
 
-    private static final String MULTIPLIER_KEY = "Multiplier";
-
-    private static final String TICK_COUNT_FOR_CURRENT_MULTIPLIER = "TickCountForMultiplier";
-
     private static final EntityDataAccessor<Boolean> IS_NETHER_AFFLICTED = SynchedEntityData.defineId(
         Acid.class,
         EntityDataSerializers.BOOLEAN
-    );
-
-    private static final EntityDataAccessor<Integer> MULTIPLIER = SynchedEntityData.defineId(
-        Acid.class,
-        EntityDataSerializers.INT
     );
 
     public static final EntityDataAccessor<Boolean> IS_IRRADIATED = SynchedEntityData.defineId(
@@ -46,9 +41,17 @@ public class Acid extends Entity {
         EntityDataSerializers.BOOLEAN
     );
 
-    private int particleTickCounter = 0;
+    public final DataAccessor<Integer> multiplier = getDataContainer().<Integer>builder("Multiplier")
+        .networkSynchronized(ByteBufCodecs.INT)
+        .persistent(Codec.INT)
+        .onChange($ -> refreshDimensions())
+        .build(1);
 
-    private int tickCountForCurrentMultiplier = 0;
+    public final DataAccessor<Integer> tickCountForCurrentMultiplier = getDataContainer().<Integer>builder("TickCountForMultiplier")
+        .persistent(Codec.INT)
+        .build(0);
+
+    private int particleTickCounter = 0;
 
     public Acid(EntityType<? extends Entity> entityType, Level level) {
         super(entityType, level);
@@ -58,7 +61,6 @@ public class Acid extends Entity {
 
     @Override
     protected void defineSynchedData(SynchedEntityData.Builder builder) {
-        builder.define(MULTIPLIER, 1);
         builder.define(IS_NETHER_AFFLICTED, false);
         builder.define(IS_IRRADIATED, false);
     }
@@ -82,11 +84,12 @@ public class Acid extends Entity {
 
         if (!level.isClientSide) {
             // Acid disappears twice as fast when in water.
-            tickCountForCurrentMultiplier += getMultiplier() * (isInWater() ? 2 : 1);
+            var increment = getMultiplier() * (isInWater() ? 2 : 1);
+            tickCountForCurrentMultiplier.set(tickCountForCurrentMultiplier.get() + increment);
 
-            if (tickCountForCurrentMultiplier > DEFAULT_MAX_LIFE_IN_TICKS) {
+            if (tickCountForCurrentMultiplier.get() > DEFAULT_MAX_LIFE_IN_TICKS) {
                 decreaseMultiplier();
-                tickCountForCurrentMultiplier = 0;
+                tickCountForCurrentMultiplier.reset();
             }
 
             if (getMultiplier() == 0) {
@@ -113,20 +116,12 @@ public class Acid extends Entity {
 
     @Override
     protected void readAdditionalSaveData(@NotNull CompoundTag compoundTag) {
-        if (compoundTag.contains(MULTIPLIER_KEY)) {
-            setMultiplier(compoundTag.getInt(MULTIPLIER_KEY));
-        }
-
-        tickCountForCurrentMultiplier = compoundTag.getInt(TICK_COUNT_FOR_CURRENT_MULTIPLIER);
-
         setNetherAfflicted(compoundTag.getBoolean(IS_NETHER_AFFLICTED_KEY));
         setIrradiated(compoundTag.getBoolean(IS_IRRADIATED_KEY));
     }
 
     @Override
     protected void addAdditionalSaveData(@NotNull CompoundTag compoundTag) {
-        compoundTag.putInt(MULTIPLIER_KEY, getMultiplier());
-        compoundTag.putInt(TICK_COUNT_FOR_CURRENT_MULTIPLIER, tickCountForCurrentMultiplier);
         compoundTag.putBoolean(IS_NETHER_AFFLICTED_KEY, isNetherAfflicted());
         compoundTag.putBoolean(IS_IRRADIATED_KEY, isIrradiated());
     }
@@ -168,22 +163,13 @@ public class Acid extends Entity {
     }
 
     public int getMultiplier() {
-        return entityData.get(MULTIPLIER);
+        return multiplier.get();
     }
 
     public void setMultiplier(int multiplier) {
-        entityData.set(MULTIPLIER, Mth.clamp(multiplier, 0, MAX_MULTIPLIER));
-        tickCountForCurrentMultiplier = 0;
+        this.multiplier.set(Mth.clamp(multiplier, 0, MAX_MULTIPLIER));
+        tickCountForCurrentMultiplier.reset();
         refreshDimensions();
-    }
-
-    @Override
-    public void onSyncedDataUpdated(@NotNull EntityDataAccessor<?> entityDataAccessor) {
-        super.onSyncedDataUpdated(entityDataAccessor);
-
-        if (MULTIPLIER.equals(entityDataAccessor)) {
-            refreshDimensions();
-        }
     }
 
     @Override
@@ -201,6 +187,6 @@ public class Acid extends Entity {
     }
 
     public void age() {
-        tickCountForCurrentMultiplier += getMultiplier();
+        tickCountForCurrentMultiplier.set(tickCountForCurrentMultiplier.get() + getMultiplier());
     }
 }

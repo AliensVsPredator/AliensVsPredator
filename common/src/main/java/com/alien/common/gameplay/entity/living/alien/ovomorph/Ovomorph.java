@@ -9,8 +9,8 @@ import com.alien.common.registry.init.AlienEntityTypes;
 import com.alien.common.registry.init.AlienItems;
 import com.bvanseg.just.functional.option.Option;
 import com.lib.common.gameplay.entity.manager.VibrationSystemManager;
-import com.lib.common.network.SyncedDataAccessor;
-import net.minecraft.nbt.CompoundTag;
+import com.lib.common.network.DataAccessor;
+import com.mojang.serialization.Codec;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -30,7 +30,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import com.avp.AVP;
-import com.avp.common.network.sync.AVPSyncedDataKey;
 import com.avp.common.registry.init.AVPSoundEvents;
 import com.avp.common.util.AVPPredicates;
 
@@ -38,30 +37,24 @@ public class Ovomorph extends Alien implements Shearable {
 
     public static final HatchState DEFAULT_HATCH_STATE = HatchState.SLEEPING;
 
-    private static final String NBT_HATCH_STATE = "hatchState";
-
-    private static final String NBT_MAXIMUM_SPAWN_COUNT = "maximumSpawnCount";
-
-    private static final String NBT_IS_ROOTED = "isRooted";
-
     public static AttributeSupplier.Builder createOvomorphAttributes() {
         return applyFrom(AVP.config.statsConfigs.OVOMORPH_STATS, Monster.createMonsterAttributes());
     }
 
-    public final SyncedDataAccessor<Byte> hatchStateId = getSyncedDataContainer().define(
-        new AVPSyncedDataKey<>("hatch_state", ByteBufCodecs.BYTE),
-        (byte) DEFAULT_HATCH_STATE.getId()
-    );
+    public final DataAccessor<Byte> hatchStateId = getDataContainer().<Byte>builder("hatchState")
+        .networkSynchronized(ByteBufCodecs.BYTE)
+        .persistent(Codec.BYTE)
+        .build((byte) DEFAULT_HATCH_STATE.getId());
 
-    public final SyncedDataAccessor<Byte> maxSpawnCount = getSyncedDataContainer().define(
-        new AVPSyncedDataKey<>("max_spawn_count", ByteBufCodecs.BYTE),
-        (byte) 1
-    );
+    public final DataAccessor<Byte> maxSpawnCount = getDataContainer().<Byte>builder("maximumSpawnCount")
+        .networkSynchronized(ByteBufCodecs.BYTE)
+        .persistent(Codec.BYTE)
+        .build((byte) 1);
 
-    public final SyncedDataAccessor<Boolean> isRooted = getSyncedDataContainer().define(
-        new AVPSyncedDataKey<>("is_rooted", ByteBufCodecs.BOOL),
-        true
-    );
+    public final DataAccessor<Boolean> isRooted = getDataContainer().<Boolean>builder("isRooted")
+        .networkSynchronized(ByteBufCodecs.BOOL)
+        .persistent(Codec.BOOL)
+        .build(true);
 
     private final OvomorphAnimationDispatcher animationDispatcher;
 
@@ -235,36 +228,6 @@ public class Ovomorph extends Alien implements Shearable {
     @Override
     protected float getHealthRegenPerSecond() {
         return AVP.config.statsConfigs.OVOMORPH_STATS.healthRegenPerSecond;
-    }
-
-    @Override
-    public void readAdditionalSaveData(@NotNull CompoundTag compoundTag) {
-        super.readAdditionalSaveData(compoundTag);
-        hatchManager.load(compoundTag);
-
-        if (compoundTag.contains(NBT_HATCH_STATE)) {
-            // Assign the default hatch state in case we read an invalid hatch state ID.
-            var hatchState = HatchState.ID_TO_HATCH_STATE_MAP.getOrDefault((int) compoundTag.getByte(NBT_HATCH_STATE), DEFAULT_HATCH_STATE);
-            setHatchState(hatchState);
-        }
-
-        if (compoundTag.contains(NBT_IS_ROOTED)) {
-            isRooted.set(compoundTag.getBoolean(NBT_IS_ROOTED));
-        }
-
-        if (compoundTag.contains(NBT_MAXIMUM_SPAWN_COUNT)) {
-            maxSpawnCount.set(compoundTag.getByte(NBT_MAXIMUM_SPAWN_COUNT));
-        }
-    }
-
-    @Override
-    public void addAdditionalSaveData(@NotNull CompoundTag compoundTag) {
-        super.addAdditionalSaveData(compoundTag);
-        hatchManager.save(compoundTag);
-
-        compoundTag.putByte(NBT_HATCH_STATE, (byte) getHatchState().unwrapOr(DEFAULT_HATCH_STATE).getId());
-        compoundTag.putBoolean(NBT_IS_ROOTED, isRooted.get());
-        compoundTag.putByte(NBT_MAXIMUM_SPAWN_COUNT, maxSpawnCount.get());
     }
 
     public HatchManager getHatchManager() {

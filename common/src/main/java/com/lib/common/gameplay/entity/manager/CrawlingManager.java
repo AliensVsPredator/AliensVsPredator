@@ -2,7 +2,7 @@ package com.lib.common.gameplay.entity.manager;
 
 import com.alien.common.gameplay.entity.living.alien.xenomorph.queen.Queen;
 import com.lib.common.gameplay.NBTSerializable;
-import com.lib.common.network.SyncedDataAccessor;
+import com.lib.common.network.DataAccessor;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.PathfinderMob;
@@ -13,9 +13,9 @@ public class CrawlingManager implements NBTSerializable {
 
     private final PathfinderMob entity;
 
-    private final SyncedDataAccessor<Boolean> isCrawling;
+    private final DataAccessor<Boolean> isCrawling;
 
-    public CrawlingManager(PathfinderMob entity, SyncedDataAccessor<Boolean> isCrawling) {
+    public CrawlingManager(PathfinderMob entity, DataAccessor<Boolean> isCrawling) {
         this.entity = entity;
         this.isCrawling = isCrawling;
     }

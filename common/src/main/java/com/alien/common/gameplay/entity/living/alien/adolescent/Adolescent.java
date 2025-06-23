@@ -6,7 +6,7 @@ import com.alien.common.model.alien.variant.AlienVariant;
 import com.alien.common.registry.init.AlienEntityTypes;
 import com.alien.common.util.AlienPredicates;
 import com.alien.common.util.XenomorphGrowthUtil;
-import com.lib.common.network.SyncedDataAccessor;
+import com.lib.common.network.DataAccessor;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.world.entity.EntityType;
@@ -20,7 +20,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import com.avp.AVP;
-import com.avp.common.network.sync.AVPSyncedDataKey;
 import com.avp.common.registry.tag.AVPEntityTypeTags;
 import com.avp.common.util.AVPPredicates;
 
@@ -32,10 +31,9 @@ public class Adolescent extends Alien {
 
     private static final String NBT_HAS_DORSAL_TUBES = "hasDorsalTubes";
 
-    public final SyncedDataAccessor<Boolean> hasDorsalTubes = getSyncedDataContainer().define(
-        new AVPSyncedDataKey<>("has_dorsal_tubes", ByteBufCodecs.BOOL),
-        true
-    );
+    public final DataAccessor<Boolean> hasDorsalTubes = getDataContainer().<Boolean>builder("hasDorsalTubes")
+        .networkSynchronized(ByteBufCodecs.BOOL)
+        .build(true);
 
     private final AdolescentAnimationDispatcher animationDispatcher;
 

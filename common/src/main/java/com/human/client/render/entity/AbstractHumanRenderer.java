@@ -25,7 +25,7 @@ public abstract class AbstractHumanRenderer<T extends AbstractHuman> extends AzE
     private static final ResourceLocation TEXTURE = AVPResources.entityTextureLocation("human/base");
 
     public static <T extends AbstractHuman> ResourceLocation getModel(T entity) {
-        return entity.isMale() ? MALE_MODEL : FEMALE_MODEL;
+        return entity.isMale.get() ? MALE_MODEL : FEMALE_MODEL;
     }
 
     public static <T extends AbstractHuman> ResourceLocation getTexture(T entity) {

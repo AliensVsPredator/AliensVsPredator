@@ -3,8 +3,8 @@ package com.alien.common.gameplay.entity.living.alien.parasite;
 import com.alien.common.gameplay.entity.living.alien.Alien;
 import com.alien.common.model.alien.FreeMob;
 import com.alien.common.registry.init.AlienItems;
-import com.lib.common.network.SyncedDataAccessor;
-import net.minecraft.nbt.CompoundTag;
+import com.lib.common.network.DataAccessor;
+import com.mojang.serialization.Codec;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.protocol.game.ClientboundSetPassengersPacket;
 import net.minecraft.server.level.ServerPlayer;
@@ -19,15 +19,14 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
-import com.avp.common.network.sync.AVPSyncedDataKey;
 import com.avp.common.util.AVPPredicates;
 
 public abstract class Parasite extends Alien {
 
-    public final SyncedDataAccessor<Boolean> isFertile = getSyncedDataContainer().define(
-        new AVPSyncedDataKey<>("is_fertile", ByteBufCodecs.BOOL),
-        true
-    );
+    public final DataAccessor<Boolean> isFertile = getDataContainer().<Boolean>builder("isFertile")
+        .networkSynchronized(ByteBufCodecs.BOOL)
+        .persistent(Codec.BOOL)
+        .build(true);
 
     protected final ParasiteAttachmentManager attachmentManager;
 
@@ -59,7 +58,7 @@ public abstract class Parasite extends Alien {
     public @NotNull InteractionResult mobInteract(Player player, @NotNull InteractionHand interactionHand) {
         ItemStack itemStack = player.getItemInHand(interactionHand);
         if (itemStack.is(AlienItems.RAW_ROYAL_JELLY.get())) {
-            if (!level().isClientSide && !attachmentManager.isFertile()) {
+            if (!level().isClientSide && !isFertile.get()) {
                 attachmentManager.restore();
                 player.getItemInHand(interactionHand).shrink(1);
                 return InteractionResult.SUCCESS;
@@ -87,7 +86,7 @@ public abstract class Parasite extends Alien {
     }
 
     protected boolean isValidHost(LivingEntity target) {
-        return attachmentManager.isFertile() && AVPPredicates.isFreeHost(this, target);
+        return isFertile.get() && AVPPredicates.isFreeHost(this, target);
     }
 
     @Override
@@ -133,29 +132,17 @@ public abstract class Parasite extends Alien {
 
     @Override
     protected boolean canHeal() {
-        return attachmentManager.isFertile() && super.canHeal();
+        return isFertile.get() && super.canHeal();
     }
 
     @Override
     protected boolean canBleedAcid() {
-        return attachmentManager.isFertile() || attachmentManager.isAttachedToHost();
+        return isFertile.get() || attachmentManager.isAttachedToHost();
     }
 
     @Override
     public boolean isPushable() {
-        return attachmentManager.isFertile();
-    }
-
-    @Override
-    public void readAdditionalSaveData(@NotNull CompoundTag compoundTag) {
-        super.readAdditionalSaveData(compoundTag);
-        attachmentManager.load(compoundTag);
-    }
-
-    @Override
-    public void addAdditionalSaveData(@NotNull CompoundTag compoundTag) {
-        super.addAdditionalSaveData(compoundTag);
-        attachmentManager.save(compoundTag);
+        return isFertile.get();
     }
 
     public ParasiteAttachmentManager getAttachmentManager() {

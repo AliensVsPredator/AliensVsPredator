@@ -2,8 +2,8 @@ package com.alien.common.gameplay.entity.living.alien.parasite;
 
 import com.alien.common.model.alien.FreeMob;
 import com.alien.common.model.alien.Host;
-import com.lib.common.gameplay.NBTSerializable;
-import net.minecraft.nbt.CompoundTag;
+import com.lib.common.network.DataAccessor;
+import com.mojang.serialization.Codec;
 import net.minecraft.network.protocol.game.ClientboundSetPassengersPacket;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -17,19 +17,18 @@ import java.util.Objects;
 import com.avp.common.registry.key.AVPDamageTypeKeys;
 import com.avp.common.util.AVPPredicates;
 
-public class ParasiteAttachmentManager implements NBTSerializable {
-
-    private static final String IS_FERTILE_KEY = "isFertile";
-
-    private static final String TICKS_ATTACHED_TO_HOST_KEY = "ticksAttachedToHost";
+public class ParasiteAttachmentManager {
 
     private final Parasite parasite;
 
-    private int ticksAttachedToHost;
+    private final DataAccessor<Integer> ticksAttachedToHost;
 
     public ParasiteAttachmentManager(Parasite parasite) {
         this.parasite = parasite;
-        this.ticksAttachedToHost = 0;
+        this.ticksAttachedToHost = parasite.getDataContainer()
+            .<Integer>builder("ticksAttachedToHost")
+            .persistent(Codec.INT)
+            .build(0);
     }
 
     public void tick() {
@@ -40,7 +39,7 @@ public class ParasiteAttachmentManager implements NBTSerializable {
         var host = getHost();
 
         if (!isAttachedToHost()) {
-            this.ticksAttachedToHost = 0;
+            ticksAttachedToHost.reset();
 
             if (host instanceof Mob mob) {
                 ((FreeMob) mob).restoreFreedom();
@@ -73,7 +72,6 @@ public class ParasiteAttachmentManager implements NBTSerializable {
 
         // TODO: Make time configurable
         if (ticksAttachedToHost() < 20 * 10) {
-            // TODO: Make damage configurable
             host.hurt(parasite.damageSources().source(AVPDamageTypeKeys.SMOTHERING), 0.01F);
         } else if (ticksAttachedToHost() > falloffTimeInTicks) {
             parasite.stopRiding();
@@ -90,7 +88,7 @@ public class ParasiteAttachmentManager implements NBTSerializable {
             if (ticksAttachedToHost() >= 20 * 20) {
                 host.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, 40, 3, true, false, true));
 
-                if (isFertile()) {
+                if (parasite.isFertile.get()) {
                     ((Host) host).implantEmbryo(parasite);
                     setIsFertile(false);
                     // TODO: Play nasty toob sound
@@ -98,28 +96,11 @@ public class ParasiteAttachmentManager implements NBTSerializable {
             }
         }
 
-        ticksAttachedToHost++;
+        ticksAttachedToHost.set(ticksAttachedToHost.get() + 1);
     }
 
     public void restore() {
         setIsFertile(true);
-    }
-
-    @Override
-    public void load(CompoundTag compoundTag) {
-        if (compoundTag.contains(IS_FERTILE_KEY)) {
-            setIsFertile(compoundTag.getBoolean(IS_FERTILE_KEY));
-        }
-
-        if (compoundTag.contains(TICKS_ATTACHED_TO_HOST_KEY)) {
-            this.ticksAttachedToHost = compoundTag.getInt(TICKS_ATTACHED_TO_HOST_KEY);
-        }
-    }
-
-    @Override
-    public void save(CompoundTag compoundTag) {
-        compoundTag.putBoolean(IS_FERTILE_KEY, isFertile());
-        compoundTag.putInt(TICKS_ATTACHED_TO_HOST_KEY, ticksAttachedToHost);
     }
 
     public @Nullable LivingEntity getHost() {
@@ -128,10 +109,6 @@ public class ParasiteAttachmentManager implements NBTSerializable {
 
     public boolean isAttachedToHost() {
         return getHost() != null && parasite.isAlive();
-    }
-
-    public boolean isFertile() {
-        return parasite.isFertile.get();
     }
 
     public void setIsFertile(boolean isFertile) {
@@ -147,6 +124,6 @@ public class ParasiteAttachmentManager implements NBTSerializable {
     }
 
     public int ticksAttachedToHost() {
-        return ticksAttachedToHost;
+        return ticksAttachedToHost.get();
     }
 }

@@ -39,17 +39,17 @@ public class HumanEntityTypes {
             var entity = new Marine(entityType, level);
 
             var random = entity.getRandom();
-            entity.setMale(random.nextBoolean());
-            var isMale = entity.isMale();
+            entity.isMale.set(random.nextBoolean());
+            var isMale = entity.isMale.get();
 
             if (isMale) {
                 entity.setBeardVariant(random.nextInt(3));
             }
 
-            entity.setEyeColor(EyeColorGenerator.random(random));
-            entity.setHairColor(HairColorGenerator.random(random));
-            entity.setHairVariant(random.nextInt(isMale ? 5 : 6));
-            entity.setSkinColor(SkinColorGenerator.random(random));
+            entity.eyeColor.set(EyeColorGenerator.random(random));
+            entity.hairColor.set(HairColorGenerator.random(random));
+            entity.hairVariant.set(random.nextInt(isMale ? 5 : 6));
+            entity.skinColor.set(SkinColorGenerator.random(random));
 
             return entity;
         }, MobCategory.CREATURE).sized(0.7F, 1.95F)

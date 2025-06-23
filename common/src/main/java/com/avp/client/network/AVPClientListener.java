@@ -1,6 +1,6 @@
 package com.avp.client.network;
 
-import com.lib.common.network.SyncedDataUser;
+import com.lib.common.network.DataUser;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.player.Player;
 
@@ -33,11 +33,11 @@ public class AVPClientListener {
             return;
         }
 
-        var syncedDataContainer = ((SyncedDataUser) targetEntity).getSyncedDataContainer();
+        var dataContainer = ((DataUser) targetEntity).getDataContainer();
 
         entityDataSyncPayload.rawDataSyncMap()
             .rawDataById()
-            .forEach(syncedDataContainer::set);
+            .forEach(dataContainer::set);
     }
 
     private AVPClientListener() {

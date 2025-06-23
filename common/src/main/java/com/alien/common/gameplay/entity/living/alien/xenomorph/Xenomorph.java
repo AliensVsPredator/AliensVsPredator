@@ -8,7 +8,7 @@ import com.alien.common.model.resin.ResinProducer;
 import com.alien.common.util.AlienPredicates;
 import com.alien.common.util.XenomorphGrowthUtil;
 import com.lib.common.gameplay.entity.manager.CrawlingManager;
-import com.lib.common.network.SyncedDataAccessor;
+import com.lib.common.network.DataAccessor;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.codec.ByteBufCodecs;
@@ -44,15 +44,14 @@ import java.util.function.BiConsumer;
 import com.avp.common.gameplay.ai.goal.DigToTargetGoal;
 import com.avp.common.gameplay.ai.goal.StrollAroundInWaterGoal;
 import com.avp.common.gameplay.ai.goal.XenoFloatGoal;
-import com.avp.common.network.sync.AVPSyncedDataKey;
 import com.avp.common.registry.init.AVPSoundEvents;
 
 public abstract class Xenomorph extends Alien implements ResinProducer {
 
-    public final SyncedDataAccessor<Boolean> isCrawling = getSyncedDataContainer().define(
-        new AVPSyncedDataKey<>("is_crawling", ByteBufCodecs.BOOL),
-        false
-    );
+    public final DataAccessor<Boolean> isCrawling = getDataContainer().<Boolean>builder("isCrawling")
+        .networkSynchronized(ByteBufCodecs.BOOL)
+        .onChange($ -> this.refreshDimensions())
+        .build(false);
 
     protected final CrawlingManager crawlingManager;
 

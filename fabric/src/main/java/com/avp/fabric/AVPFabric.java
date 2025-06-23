@@ -1,7 +1,7 @@
 package com.avp.fabric;
 
-import com.lib.common.network.SyncedDataContainer;
-import com.lib.common.network.SyncedDataUser;
+import com.lib.common.network.DataContainer;
+import com.lib.common.network.DataUser;
 import com.predator.common.registry.init.PredatorEntityTypes;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
@@ -52,7 +52,7 @@ public class AVPFabric implements ModInitializer {
         EntityTrackingEvents.START_TRACKING.register(
             (trackedEntity, player) -> {
                 if (trackedEntity instanceof LivingEntity livingEntity) {
-                    ((SyncedDataUser) livingEntity).getSyncedDataContainer().syncToClient(livingEntity, SyncedDataContainer.SyncType.ALL);
+                    ((DataUser) livingEntity).getDataContainer().syncToClient(livingEntity, DataContainer.SyncType.ALL);
                 }
             }
         );

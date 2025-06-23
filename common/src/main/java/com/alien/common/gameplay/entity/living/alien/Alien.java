@@ -8,8 +8,8 @@ import com.bvanseg.just.functional.option.Option;
 import com.google.common.base.Objects;
 import com.lib.common.gameplay.entity.manager.GeneManager;
 import com.lib.common.gameplay.entity.manager.VibrationSystemManager;
-import com.lib.common.network.SyncedDataAccessor;
-import com.lib.common.network.SyncedDataUser;
+import com.lib.common.network.DataAccessor;
+import com.lib.common.network.DataUser;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
@@ -39,14 +39,13 @@ import java.util.function.Predicate;
 
 import com.avp.AVP;
 import com.avp.common.config.AVPConfig;
-import com.avp.common.network.sync.AVPSyncedDataKey;
 import com.avp.common.registry.key.AVPBiomeKeys;
 import com.avp.common.registry.tag.AVPDamageTypesTags;
 import com.avp.common.registry.tag.AVPEntityTypeTags;
 import com.avp.common.registry.tag.AVPMobEffectTags;
 import com.avp.common.util.MovementAnalyzer;
 
-public abstract class Alien extends Monster implements SyncedDataUser {
+public abstract class Alien extends Monster implements DataUser {
 
     private static final String NBT_HOST_TYPE = "hostType";
 
@@ -54,15 +53,13 @@ public abstract class Alien extends Monster implements SyncedDataUser {
 
     private static final String NBT_JELLY_COUNT = "jellyCount";
 
-    public final SyncedDataAccessor<Boolean> hasTarget = getSyncedDataContainer().define(
-        new AVPSyncedDataKey<>("has_target", ByteBufCodecs.BOOL),
-        false
-    );
+    public final DataAccessor<Boolean> hasTarget = getDataContainer().<Boolean>builder("hasTarget")
+        .networkSynchronized(ByteBufCodecs.BOOL)
+        .build(false);
 
-    public final SyncedDataAccessor<Boolean> isMovingHorizontally = getSyncedDataContainer().define(
-        new AVPSyncedDataKey<>("is_moving_horizontally", ByteBufCodecs.BOOL),
-        false
-    );
+    public final DataAccessor<Boolean> isMovingHorizontally = getDataContainer().<Boolean>builder("isMovingHorizontally")
+        .networkSynchronized(ByteBufCodecs.BOOL)
+        .build(false);
 
     protected final HiveManager hiveManager;
 

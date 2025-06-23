@@ -1,7 +1,7 @@
 package com.avp.neoforge;
 
-import com.lib.common.network.SyncedDataContainer;
-import com.lib.common.network.SyncedDataUser;
+import com.lib.common.network.DataContainer;
+import com.lib.common.network.DataUser;
 import com.predator.common.registry.init.PredatorEntityTypes;
 import mod.azure.azurelib.rewrite.animation.cache.AzIdentityRegistry;
 import net.minecraft.core.registries.Registries;
@@ -89,7 +89,7 @@ public class AVPNeoForge {
 
     public static void registerPlayerTrackingEntityHandler(PlayerEvent.StartTracking event) {
         if (event.getTarget() instanceof LivingEntity livingEntity) {
-            ((SyncedDataUser) livingEntity).getSyncedDataContainer().syncToClient(livingEntity, SyncedDataContainer.SyncType.ALL);
+            ((DataUser) livingEntity).getDataContainer().syncToClient(livingEntity, DataContainer.SyncType.ALL);
         }
     }
 
