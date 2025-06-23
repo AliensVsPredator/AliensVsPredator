@@ -65,16 +65,16 @@ public class AVPFabric implements ModInitializer {
         CommonLifecycleEvents.TAGS_LOADED.register((registries, client) -> AVPEvents.onTagsUpdated());
 
         // TODO: Add a command for enabling/disabling server lag, this is very useful for testing purposes.
-//        ServerTickEvents.START_SERVER_TICK.register(server -> {
-//            // Simulate 2 seconds of lag every 20 ticks (once per second)
-//            if (server.getTickCount() % 5 == 0) {
-//                try {
-//                    Thread.sleep(300); // 2000 ms = 2 seconds
-//                } catch (InterruptedException e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//        });
+        // ServerTickEvents.START_SERVER_TICK.register(server -> {
+        // // Simulate 2 seconds of lag every 20 ticks (once per second)
+        // if (server.getTickCount() % 5 == 0) {
+        // try {
+        // Thread.sleep(300); // 2000 ms = 2 seconds
+        // } catch (InterruptedException e) {
+        // e.printStackTrace();
+        // }
+        // }
+        // });
     }
 
     private void onWorldTick(ServerLevel serverLevel) {

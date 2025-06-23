@@ -44,7 +44,7 @@ public class BoilerAnimator extends AzEntityAnimator<Boiler> {
 
     private void runPassiveAnimations(Boiler boiler) {
         var dispatcher = boiler.getAnimationDispatcher();
-        var isMovingOnGround = boiler.isMovingHorizontally() && boiler.onGround();
+        var isMovingOnGround = boiler.isMovingHorizontally.get() && boiler.onGround();
         var isCrawling = boiler.getCrawlingManager().isCrawling();
         Runnable animFunction;
 
@@ -54,7 +54,7 @@ public class BoilerAnimator extends AzEntityAnimator<Boiler> {
         } else if (isMovingOnGround) {
             if (isCrawling) {
                 animFunction = dispatcher::crawl;
-            } else if (boiler.hasTarget()) {
+            } else if (boiler.hasTarget.get()) {
                 animFunction = dispatcher::run;
             } else {
                 animFunction = dispatcher::walk;

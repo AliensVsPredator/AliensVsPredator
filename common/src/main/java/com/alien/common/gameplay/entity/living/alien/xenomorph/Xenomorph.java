@@ -8,11 +8,10 @@ import com.alien.common.model.resin.ResinProducer;
 import com.alien.common.util.AlienPredicates;
 import com.alien.common.util.XenomorphGrowthUtil;
 import com.lib.common.gameplay.entity.manager.CrawlingManager;
+import com.lib.common.network.SyncedDataAccessor;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.syncher.EntityDataAccessor;
-import net.minecraft.network.syncher.EntityDataSerializers;
-import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.tags.FluidTags;
@@ -45,13 +44,14 @@ import java.util.function.BiConsumer;
 import com.avp.common.gameplay.ai.goal.DigToTargetGoal;
 import com.avp.common.gameplay.ai.goal.StrollAroundInWaterGoal;
 import com.avp.common.gameplay.ai.goal.XenoFloatGoal;
+import com.avp.common.network.sync.AVPSyncedDataKey;
 import com.avp.common.registry.init.AVPSoundEvents;
 
 public abstract class Xenomorph extends Alien implements ResinProducer {
 
-    private static final EntityDataAccessor<Boolean> IS_CRAWLING = SynchedEntityData.defineId(
-        Xenomorph.class,
-        EntityDataSerializers.BOOLEAN
+    public final SyncedDataAccessor<Boolean> isCrawling = getSyncedDataContainer().define(
+        new AVPSyncedDataKey<>("is_crawling", ByteBufCodecs.BOOL),
+        false
     );
 
     protected final CrawlingManager crawlingManager;
@@ -64,7 +64,7 @@ public abstract class Xenomorph extends Alien implements ResinProducer {
 
     public Xenomorph(EntityType<? extends Xenomorph> entityType, Level level) {
         super(entityType, level);
-        this.crawlingManager = new CrawlingManager(this, IS_CRAWLING);
+        this.crawlingManager = new CrawlingManager(this, isCrawling);
         this.growthManager = new GrowthManager(this, XenomorphGrowthUtil.GROW_UP_CALLBACK)
             .setGrowOverTime(false);
         this.navigationManager = new XenomorphNavigationManager(this, moveControl);
@@ -78,12 +78,6 @@ public abstract class Xenomorph extends Alien implements ResinProducer {
     protected abstract @NotNull ResinData createResinData();
 
     public abstract void runAttackAnimations();
-
-    @Override
-    protected void defineSynchedData(@NotNull SynchedEntityData.Builder builder) {
-        super.defineSynchedData(builder);
-        builder.define(IS_CRAWLING, false);
-    }
 
     @Override
     protected void registerGoals() {
@@ -244,15 +238,6 @@ public abstract class Xenomorph extends Alien implements ResinProducer {
         crawlingManager.save(compoundTag);
         growthManager.save(compoundTag);
         resinManager.save(compoundTag);
-    }
-
-    @Override
-    public void onSyncedDataUpdated(@NotNull EntityDataAccessor<?> entityDataAccessor) {
-        super.onSyncedDataUpdated(entityDataAccessor);
-
-        if (entityDataAccessor.equals(IS_CRAWLING)) {
-            refreshDimensions();
-        }
     }
 
     public GrowthManager getGrowthManager() {

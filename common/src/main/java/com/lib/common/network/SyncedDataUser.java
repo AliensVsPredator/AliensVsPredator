@@ -6,11 +6,11 @@ public interface SyncedDataUser {
         throw new UnsupportedOperationException();
     }
 
-    default <T> T get(SyncedDataKey<T> key) {
+    default <T> T get(AbstractSyncedDataKey<T> key) {
         return getSyncedDataContainer().get(key);
     }
 
-    default <T> void set(SyncedDataKey<T> key, T value) {
+    default <T> void set(AbstractSyncedDataKey<T> key, T value) {
         getSyncedDataContainer().set(key, value);
     }
 }

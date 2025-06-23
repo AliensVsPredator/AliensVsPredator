@@ -2,22 +2,22 @@ package com.lib.common.gameplay.entity.manager;
 
 import com.alien.common.gameplay.entity.living.alien.xenomorph.queen.Queen;
 import com.lib.common.gameplay.NBTSerializable;
+import com.lib.common.network.SyncedDataAccessor;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.world.entity.PathfinderMob;
 
 public class CrawlingManager implements NBTSerializable {
 
-    private static final String CRAWLING_TAG_KEY = "crawling";
+    private static final String NBT_CRAWLING = "crawling";
 
     private final PathfinderMob entity;
 
-    private final EntityDataAccessor<Boolean> isCrawlingEDA;
+    private final SyncedDataAccessor<Boolean> isCrawling;
 
-    public CrawlingManager(PathfinderMob entity, EntityDataAccessor<Boolean> isCrawlingEDA) {
+    public CrawlingManager(PathfinderMob entity, SyncedDataAccessor<Boolean> isCrawling) {
         this.entity = entity;
-        this.isCrawlingEDA = isCrawlingEDA;
+        this.isCrawling = isCrawling;
     }
 
     public void tick() {
@@ -33,7 +33,7 @@ public class CrawlingManager implements NBTSerializable {
     }
 
     public boolean isCrawling() {
-        return entity.getEntityData().get(isCrawlingEDA);
+        return isCrawling.get();
     }
 
     private void tryToCrawl() {
@@ -56,7 +56,7 @@ public class CrawlingManager implements NBTSerializable {
             isTight = isTight || isTightSpace(nextNode.asBlockPos());
         }
 
-        entity.getEntityData().set(isCrawlingEDA, isTight);
+        isCrawling.set(isTight);
         entity.refreshDimensions();
     }
 
@@ -69,13 +69,13 @@ public class CrawlingManager implements NBTSerializable {
 
     @Override
     public void load(CompoundTag compoundTag) {
-        if (compoundTag.contains(CRAWLING_TAG_KEY)) {
-            entity.getEntityData().set(isCrawlingEDA, compoundTag.getBoolean(CRAWLING_TAG_KEY));
+        if (compoundTag.contains(NBT_CRAWLING)) {
+            isCrawling.set(compoundTag.getBoolean(NBT_CRAWLING));
         }
     }
 
     @Override
     public void save(CompoundTag compoundTag) {
-        compoundTag.putBoolean(CRAWLING_TAG_KEY, entity.getEntityData().get(isCrawlingEDA));
+        compoundTag.putBoolean(NBT_CRAWLING, isCrawling.get());
     }
 }

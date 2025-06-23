@@ -44,7 +44,7 @@ public class DroneAnimator extends AzEntityAnimator<Drone> {
 
     private void runPassiveAnimations(Drone drone) {
         var dispatcher = drone.getAnimationDispatcher();
-        var isMovingOnGround = drone.isMovingHorizontally() && drone.onGround();
+        var isMovingOnGround = drone.isMovingHorizontally.get() && drone.onGround();
         var isCrawling = drone.getCrawlingManager().isCrawling();
         Runnable animFunction;
 
@@ -54,7 +54,7 @@ public class DroneAnimator extends AzEntityAnimator<Drone> {
         } else if (isMovingOnGround) {
             if (isCrawling) {
                 animFunction = dispatcher::crawl;
-            } else if (drone.hasTarget()) {
+            } else if (drone.hasTarget.get()) {
                 animFunction = dispatcher::run;
             } else {
                 animFunction = dispatcher::walk;

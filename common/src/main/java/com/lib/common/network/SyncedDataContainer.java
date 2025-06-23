@@ -20,13 +20,13 @@ import com.avp.service.Services;
 
 public class SyncedDataContainer {
 
-    private final Set<SyncedDataKey<?>> dirtyKeys;
+    private final Set<AbstractSyncedDataKey<?>> dirtyKeys;
 
-    private final List<SyncedDataKey<?>> idToKey;
+    private final List<AbstractSyncedDataKey<?>> idToKey;
 
-    private final Map<SyncedDataKey<?>, Integer> keyToId;
+    private final Map<AbstractSyncedDataKey<?>, Integer> keyToId;
 
-    private final Map<SyncedDataKey<?>, Object> values;
+    private final Map<AbstractSyncedDataKey<?>, Object> values;
 
     public SyncedDataContainer() {
         this.dirtyKeys = new HashSet<>();
@@ -35,7 +35,7 @@ public class SyncedDataContainer {
         this.values = new HashMap<>();
     }
 
-    public <T> SyncedDataContainer define(SyncedDataKey<T> key, T initialValue) {
+    public <T> SyncedDataAccessor<T> define(AbstractSyncedDataKey<T> key, T initialValue) {
         if (keyToId.containsKey(key)) {
             throw new IllegalStateException("Key already defined: " + key);
         }
@@ -45,15 +45,15 @@ public class SyncedDataContainer {
         keyToId.put(key, id);
         values.put(key, initialValue);
 
-        return this;
+        return new SyncedDataAccessor<>(this, key);
     }
 
     @SuppressWarnings("unchecked")
-    public <T> T get(SyncedDataKey<T> key) {
+    public <T> T get(AbstractSyncedDataKey<T> key) {
         return (T) values.get(key);
     }
 
-    public <T> void set(SyncedDataKey<T> key, T value) {
+    public <T> void set(AbstractSyncedDataKey<T> key, T value) {
         if (!Objects.equals(values.get(key), value)) {
             values.put(key, value);
             dirtyKeys.add(key);
@@ -62,7 +62,7 @@ public class SyncedDataContainer {
 
     public void set(int id, byte[] rawData) {
         @SuppressWarnings("unchecked")
-        var key = (SyncedDataKey<Object>) idToKey.get(id);
+        var key = (AbstractSyncedDataKey<Object>) idToKey.get(id);
 
         if (key == null) {
             return;

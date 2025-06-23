@@ -75,7 +75,7 @@ public class HatchManager implements NBTSerializable {
         // The ovomorph has fully opened visually at this point, so set its state to hatched.
         ovomorph.setHatchState(HatchState.HATCHED);
 
-        var canSpawnMoreFacehuggers = spawnCount < ovomorph.getMaximumSpawnCount();
+        var canSpawnMoreFacehuggers = spawnCount < ovomorph.maxSpawnCount.get();
 
         if (!canSpawnMoreFacehuggers) {
             return;

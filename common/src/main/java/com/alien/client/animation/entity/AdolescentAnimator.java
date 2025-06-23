@@ -60,13 +60,13 @@ public class AdolescentAnimator extends AzEntityAnimator<Adolescent> {
         var dorsalTubeNub = bakedModel.getBoneOrNull(dorsalTubeBoneName);
 
         if (dorsalTubeNub != null) {
-            dorsalTubeNub.setHidden(!entity.hasDorsalTubes());
+            dorsalTubeNub.setHidden(!entity.hasDorsalTubes.get());
         }
     }
 
     private void runPassiveAnimations(Adolescent adolescent) {
         var dispatcher = adolescent.getAnimationDispatcher();
-        var isMovingOnGround = adolescent.isMovingHorizontally() && adolescent.onGround();
+        var isMovingOnGround = adolescent.isMovingHorizontally.get() && adolescent.onGround();
         Runnable animFunction;
 
         if (isMovingOnGround) {

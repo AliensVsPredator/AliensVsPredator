@@ -3,11 +3,10 @@ package com.alien.common.gameplay.entity.living.alien.parasite;
 import com.alien.common.gameplay.entity.living.alien.Alien;
 import com.alien.common.model.alien.FreeMob;
 import com.alien.common.registry.init.AlienItems;
+import com.lib.common.network.SyncedDataAccessor;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.protocol.game.ClientboundSetPassengersPacket;
-import net.minecraft.network.syncher.EntityDataAccessor;
-import net.minecraft.network.syncher.EntityDataSerializers;
-import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -20,31 +19,26 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
+import com.avp.common.network.sync.AVPSyncedDataKey;
 import com.avp.common.util.AVPPredicates;
 
 public abstract class Parasite extends Alien {
 
-    private static final EntityDataAccessor<Boolean> IS_FERTILE = SynchedEntityData.defineId(
-        Parasite.class,
-        EntityDataSerializers.BOOLEAN
+    public final SyncedDataAccessor<Boolean> isFertile = getSyncedDataContainer().define(
+        new AVPSyncedDataKey<>("is_fertile", ByteBufCodecs.BOOL),
+        true
     );
 
     protected final ParasiteAttachmentManager attachmentManager;
 
     protected Parasite(EntityType<? extends Parasite> entityType, Level level) {
         super(entityType, level);
-        this.attachmentManager = new ParasiteAttachmentManager(this, IS_FERTILE);
+        this.attachmentManager = new ParasiteAttachmentManager(this);
     }
 
     public void restoreAllGoals() {
         removeAllGoals(AVPPredicates.alwaysTrue());
         registerGoals();
-    }
-
-    @Override
-    protected void defineSynchedData(@NotNull SynchedEntityData.Builder builder) {
-        super.defineSynchedData(builder);
-        builder.define(IS_FERTILE, true);
     }
 
     @Override

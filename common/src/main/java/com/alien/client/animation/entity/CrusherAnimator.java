@@ -62,7 +62,7 @@ public class CrusherAnimator extends AzEntityAnimator<Crusher> {
 
     private void runPassiveAnimations(Crusher crusher) {
         var dispatcher = crusher.getAnimationDispatcher();
-        var isMovingOnGround = crusher.isMovingHorizontally() && crusher.onGround();
+        var isMovingOnGround = crusher.isMovingHorizontally.get() && crusher.onGround();
         Runnable animFunction;
 
         // FIXME:
@@ -70,7 +70,7 @@ public class CrusherAnimator extends AzEntityAnimator<Crusher> {
             // TODO: idle swim
             animFunction = dispatcher::swim;
         } else if (isMovingOnGround) {
-            if (crusher.hasTarget()) {
+            if (crusher.hasTarget.get()) {
                 animFunction = dispatcher::run;
             } else {
                 animFunction = dispatcher::walk;

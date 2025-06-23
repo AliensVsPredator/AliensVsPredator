@@ -53,7 +53,7 @@ public class OvomorphRenderer extends AzEntityRenderer<Ovomorph> {
         @NotNull MultiBufferSource bufferSource,
         int packedLight
     ) {
-        var maxSpawnCount = entity.getMaximumSpawnCount();
+        var maxSpawnCount = entity.maxSpawnCount.get();
         var additiveScale = 0.35F * maxSpawnCount;
         var scale = 1.05F + Math.max(additiveScale, 0);
 

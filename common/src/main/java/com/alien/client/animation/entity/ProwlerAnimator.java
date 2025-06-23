@@ -44,7 +44,7 @@ public class ProwlerAnimator extends AzEntityAnimator<Prowler> {
 
     private void runPassiveAnimations(Prowler prowler) {
         var dispatcher = prowler.getAnimationDispatcher();
-        var isMovingOnGround = prowler.isMovingHorizontally() && prowler.onGround();
+        var isMovingOnGround = prowler.isMovingHorizontally.get() && prowler.onGround();
         var isCrawling = prowler.getCrawlingManager().isCrawling();
         Runnable animFunction;
 
@@ -54,7 +54,7 @@ public class ProwlerAnimator extends AzEntityAnimator<Prowler> {
         } else if (isMovingOnGround) {
             if (isCrawling) {
                 animFunction = dispatcher::crawl;
-            } else if (prowler.hasTarget()) {
+            } else if (prowler.hasTarget.get()) {
                 animFunction = dispatcher::run;
             } else {
                 animFunction = dispatcher::walk;

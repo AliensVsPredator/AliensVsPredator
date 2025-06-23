@@ -6,10 +6,9 @@ import com.alien.common.model.alien.variant.AlienVariant;
 import com.alien.common.registry.init.AlienEntityTypes;
 import com.alien.common.util.AlienPredicates;
 import com.alien.common.util.XenomorphGrowthUtil;
+import com.lib.common.network.SyncedDataAccessor;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.syncher.EntityDataAccessor;
-import net.minecraft.network.syncher.EntityDataSerializers;
-import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
@@ -21,6 +20,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import com.avp.AVP;
+import com.avp.common.network.sync.AVPSyncedDataKey;
 import com.avp.common.registry.tag.AVPEntityTypeTags;
 import com.avp.common.util.AVPPredicates;
 
@@ -30,12 +30,12 @@ public class Adolescent extends Alien {
         return applyFrom(AVP.config.statsConfigs.ADOLESCENT_STATS, Monster.createMonsterAttributes());
     }
 
-    public static final EntityDataAccessor<Boolean> HAS_DORSAL_TUBES = SynchedEntityData.defineId(
-        Adolescent.class,
-        EntityDataSerializers.BOOLEAN
-    );
-
     private static final String NBT_HAS_DORSAL_TUBES = "hasDorsalTubes";
+
+    public final SyncedDataAccessor<Boolean> hasDorsalTubes = getSyncedDataContainer().define(
+        new AVPSyncedDataKey<>("has_dorsal_tubes", ByteBufCodecs.BOOL),
+        true
+    );
 
     private final AdolescentAnimationDispatcher animationDispatcher;
 
@@ -47,12 +47,6 @@ public class Adolescent extends Alien {
         this.growthManager = new GrowthManager(this, XenomorphGrowthUtil.GROW_UP_CALLBACK)
             .setGrowOverTime(true);
         this.config = AVP.config.statsConfigs.ADOLESCENT_STATS;
-    }
-
-    @Override
-    protected void defineSynchedData(SynchedEntityData.@NotNull Builder builder) {
-        super.defineSynchedData(builder);
-        builder.define(HAS_DORSAL_TUBES, true);
     }
 
     @Override
@@ -84,7 +78,7 @@ public class Adolescent extends Alien {
         growthManager.tick();
 
         if (!level().isClientSide) {
-            getHostType().ifSome(hostType -> setHasDorsalTubes(!hostType.is(AVPEntityTypeTags.RUNNER_HOSTS)));
+            getHostType().ifSome(hostType -> hasDorsalTubes.set(!hostType.is(AVPEntityTypeTags.RUNNER_HOSTS)));
         }
     }
 
@@ -99,7 +93,7 @@ public class Adolescent extends Alien {
         growthManager.load(compoundTag);
 
         if (compoundTag.contains(NBT_HAS_DORSAL_TUBES)) {
-            setHasDorsalTubes(compoundTag.getBoolean(NBT_HAS_DORSAL_TUBES));
+            hasDorsalTubes.set(compoundTag.getBoolean(NBT_HAS_DORSAL_TUBES));
         }
     }
 
@@ -108,20 +102,12 @@ public class Adolescent extends Alien {
         super.addAdditionalSaveData(compoundTag);
         growthManager.save(compoundTag);
 
-        compoundTag.putBoolean(NBT_HAS_DORSAL_TUBES, hasDorsalTubes());
+        compoundTag.putBoolean(NBT_HAS_DORSAL_TUBES, hasDorsalTubes.get());
     }
 
     @Override
     public int getMaxJellyToGrowth() {
         return 1;
-    }
-
-    public boolean hasDorsalTubes() {
-        return entityData.get(HAS_DORSAL_TUBES);
-    }
-
-    public void setHasDorsalTubes(boolean hasDorsalTubes) {
-        entityData.set(HAS_DORSAL_TUBES, hasDorsalTubes);
     }
 
     public AdolescentAnimationDispatcher getAnimationDispatcher() {

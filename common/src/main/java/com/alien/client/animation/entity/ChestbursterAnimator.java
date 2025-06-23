@@ -47,7 +47,7 @@ public class ChestbursterAnimator extends AzEntityAnimator<Chestburster> {
 
     private void runPassiveAnimations(Chestburster chestburster) {
         var dispatcher = chestburster.getAnimationDispatcher();
-        var isMovingOnGround = chestburster.isMovingHorizontally() && chestburster.onGround();
+        var isMovingOnGround = chestburster.isMovingHorizontally.get() && chestburster.onGround();
         Runnable animFunction;
 
         // if (isUnderWater()) {

@@ -9,10 +9,9 @@ import com.alien.common.registry.init.AlienEntityTypes;
 import com.alien.common.registry.init.AlienItems;
 import com.bvanseg.just.functional.option.Option;
 import com.lib.common.gameplay.entity.manager.VibrationSystemManager;
+import com.lib.common.network.SyncedDataAccessor;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.syncher.EntityDataAccessor;
-import net.minecraft.network.syncher.EntityDataSerializers;
-import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
@@ -31,28 +30,38 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import com.avp.AVP;
+import com.avp.common.network.sync.AVPSyncedDataKey;
 import com.avp.common.registry.init.AVPSoundEvents;
 import com.avp.common.util.AVPPredicates;
 
 public class Ovomorph extends Alien implements Shearable {
 
-    private static final EntityDataAccessor<Byte> HATCH_STATE = SynchedEntityData.defineId(Ovomorph.class, EntityDataSerializers.BYTE);
-
-    private static final EntityDataAccessor<Byte> MAX_SPAWN_COUNT = SynchedEntityData.defineId(Ovomorph.class, EntityDataSerializers.BYTE);
-
-    private static final EntityDataAccessor<Boolean> ROOTED = SynchedEntityData.defineId(Ovomorph.class, EntityDataSerializers.BOOLEAN);
-
     public static final HatchState DEFAULT_HATCH_STATE = HatchState.SLEEPING;
 
-    private static final String HATCH_STATE_KEY = "hatchState";
+    private static final String NBT_HATCH_STATE = "hatchState";
 
-    private static final String MAXIMUM_SPAWN_COUNT_KEY = "maximumSpawnCount";
+    private static final String NBT_MAXIMUM_SPAWN_COUNT = "maximumSpawnCount";
 
-    private static final String IS_ROOTED_KEY = "isRooted";
+    private static final String NBT_IS_ROOTED = "isRooted";
 
     public static AttributeSupplier.Builder createOvomorphAttributes() {
         return applyFrom(AVP.config.statsConfigs.OVOMORPH_STATS, Monster.createMonsterAttributes());
     }
+
+    public final SyncedDataAccessor<Byte> hatchStateId = getSyncedDataContainer().define(
+        new AVPSyncedDataKey<>("hatch_state", ByteBufCodecs.BYTE),
+        (byte) DEFAULT_HATCH_STATE.getId()
+    );
+
+    public final SyncedDataAccessor<Byte> maxSpawnCount = getSyncedDataContainer().define(
+        new AVPSyncedDataKey<>("max_spawn_count", ByteBufCodecs.BYTE),
+        (byte) 1
+    );
+
+    public final SyncedDataAccessor<Boolean> isRooted = getSyncedDataContainer().define(
+        new AVPSyncedDataKey<>("is_rooted", ByteBufCodecs.BOOL),
+        true
+    );
 
     private final OvomorphAnimationDispatcher animationDispatcher;
 
@@ -76,14 +85,6 @@ public class Ovomorph extends Alien implements Shearable {
     @Override
     protected VibrationSystemManager createVibrationSystemManager() {
         return new VibrationSystemManager(this, 2.5F, 8);
-    }
-
-    @Override
-    protected void defineSynchedData(@NotNull SynchedEntityData.Builder builder) {
-        super.defineSynchedData(builder);
-        builder.define(HATCH_STATE, (byte) DEFAULT_HATCH_STATE.getId());
-        builder.define(MAX_SPAWN_COUNT, (byte) 1);
-        builder.define(ROOTED, true);
     }
 
     @Override
@@ -126,15 +127,15 @@ public class Ovomorph extends Alien implements Shearable {
             } else {
                 return InteractionResult.CONSUME;
             }
-        } else if (isRooted() && itemStack.is(Items.SHEARS)) {
+        } else if (isRooted.get() && itemStack.is(Items.SHEARS)) {
             shear(SoundSource.PLAYERS);
             gameEvent(GameEvent.SHEAR, player);
             itemStack.hurtAndBreak(1, player, getSlotForHand(interactionHand));
 
             return InteractionResult.SUCCESS;
-        } else if (!isRooted() && itemStack.is(resinBallItem)) {
+        } else if (!isRooted.get() && itemStack.is(resinBallItem)) {
             level().playSound(null, this, AVPSoundEvents.ENTITY_OVOMORPH_ROOT.get(), SoundSource.PLAYERS, 1.0F, 1.0F);
-            setRooted(true);
+            isRooted.set(true);
             itemStack.consume(1, player);
         }
 
@@ -143,7 +144,7 @@ public class Ovomorph extends Alien implements Shearable {
 
     @Override
     public void shear(@NotNull SoundSource soundSource) {
-        setRooted(false);
+        isRooted.set(false);
         level().playSound(null, this, SoundEvents.SHEEP_SHEAR, soundSource, 1.0F, 1.0F);
         level().playSound(null, this, AVPSoundEvents.ENTITY_OVOMORPH_SHEAR.get(), soundSource, 1.0F, 1.0F);
         var resinBallItem = AlienVariantTypes.getFor(this).resinBall().get();
@@ -164,7 +165,7 @@ public class Ovomorph extends Alien implements Shearable {
 
     @Override
     public boolean readyForShearing() {
-        return isRooted();
+        return isRooted.get();
     }
 
     @Override
@@ -200,12 +201,12 @@ public class Ovomorph extends Alien implements Shearable {
 
     @Override
     public boolean isPushedByFluid() {
-        return !isRooted();
+        return !isRooted.get();
     }
 
     @Override
     public boolean isPushable() {
-        return !isRooted();
+        return !isRooted.get();
     }
 
     @Override
@@ -216,7 +217,7 @@ public class Ovomorph extends Alien implements Shearable {
         }
 
         // Otherwise if super check passes or if ovomorph is not rooted, then persist the ovomorph.
-        return super.isPersistenceRequired() || !isRooted();
+        return super.isPersistenceRequired() || !isRooted.get();
     }
 
     @Override
@@ -228,7 +229,7 @@ public class Ovomorph extends Alien implements Shearable {
 
     @Override
     protected boolean canAlienRideVehicle(@NotNull Entity vehicle) {
-        return !isRooted();
+        return !isRooted.get();
     }
 
     @Override
@@ -241,18 +242,18 @@ public class Ovomorph extends Alien implements Shearable {
         super.readAdditionalSaveData(compoundTag);
         hatchManager.load(compoundTag);
 
-        if (compoundTag.contains(HATCH_STATE_KEY)) {
+        if (compoundTag.contains(NBT_HATCH_STATE)) {
             // Assign the default hatch state in case we read an invalid hatch state ID.
-            var hatchState = HatchState.ID_TO_HATCH_STATE_MAP.getOrDefault((int) compoundTag.getByte(HATCH_STATE_KEY), DEFAULT_HATCH_STATE);
+            var hatchState = HatchState.ID_TO_HATCH_STATE_MAP.getOrDefault((int) compoundTag.getByte(NBT_HATCH_STATE), DEFAULT_HATCH_STATE);
             setHatchState(hatchState);
         }
 
-        if (compoundTag.contains(IS_ROOTED_KEY)) {
-            setRooted(compoundTag.getBoolean(IS_ROOTED_KEY));
+        if (compoundTag.contains(NBT_IS_ROOTED)) {
+            isRooted.set(compoundTag.getBoolean(NBT_IS_ROOTED));
         }
 
-        if (compoundTag.contains(MAXIMUM_SPAWN_COUNT_KEY)) {
-            setMaximumSpawnCount(compoundTag.getByte(MAXIMUM_SPAWN_COUNT_KEY));
+        if (compoundTag.contains(NBT_MAXIMUM_SPAWN_COUNT)) {
+            maxSpawnCount.set(compoundTag.getByte(NBT_MAXIMUM_SPAWN_COUNT));
         }
     }
 
@@ -261,9 +262,9 @@ public class Ovomorph extends Alien implements Shearable {
         super.addAdditionalSaveData(compoundTag);
         hatchManager.save(compoundTag);
 
-        compoundTag.putByte(HATCH_STATE_KEY, (byte) getHatchState().unwrapOr(DEFAULT_HATCH_STATE).getId());
-        compoundTag.putBoolean(IS_ROOTED_KEY, isRooted());
-        compoundTag.putByte(MAXIMUM_SPAWN_COUNT_KEY, (byte) getMaximumSpawnCount());
+        compoundTag.putByte(NBT_HATCH_STATE, (byte) getHatchState().unwrapOr(DEFAULT_HATCH_STATE).getId());
+        compoundTag.putBoolean(NBT_IS_ROOTED, isRooted.get());
+        compoundTag.putByte(NBT_MAXIMUM_SPAWN_COUNT, maxSpawnCount.get());
     }
 
     public HatchManager getHatchManager() {
@@ -271,28 +272,12 @@ public class Ovomorph extends Alien implements Shearable {
     }
 
     public Option<HatchState> getHatchState() {
-        var id = (int) entityData.get(HATCH_STATE);
+        var id = (int) hatchStateId.get();
         return Option.ofNullable(HatchState.ID_TO_HATCH_STATE_MAP.get(id));
     }
 
     public void setHatchState(HatchState hatchState) {
-        entityData.set(HATCH_STATE, (byte) hatchState.getId());
-    }
-
-    public boolean isRooted() {
-        return entityData.get(ROOTED);
-    }
-
-    public void setRooted(boolean isRooted) {
-        entityData.set(ROOTED, isRooted);
-    }
-
-    public int getMaximumSpawnCount() {
-        return entityData.get(MAX_SPAWN_COUNT);
-    }
-
-    public void setMaximumSpawnCount(int maximumSpawnCount) {
-        entityData.set(MAX_SPAWN_COUNT, (byte) maximumSpawnCount);
+        hatchStateId.set((byte) hatchState.getId());
     }
 
     public OvomorphAnimationDispatcher getAnimationDispatcher() {

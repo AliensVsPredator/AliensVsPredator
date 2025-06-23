@@ -4,12 +4,11 @@ import com.alien.common.model.alien.GeneCarrier;
 import com.alien.common.model.alien.variant.AlienVariant;
 import com.alien.common.util.AcidBleedUtil;
 import com.alien.common.util.AlienTransitionUtil;
-import com.avp.AVPResources;
 import com.bvanseg.just.functional.option.Option;
 import com.google.common.base.Objects;
 import com.lib.common.gameplay.entity.manager.GeneManager;
 import com.lib.common.gameplay.entity.manager.VibrationSystemManager;
-import com.lib.common.network.SyncedDataKey;
+import com.lib.common.network.SyncedDataAccessor;
 import com.lib.common.network.SyncedDataUser;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -40,6 +39,7 @@ import java.util.function.Predicate;
 
 import com.avp.AVP;
 import com.avp.common.config.AVPConfig;
+import com.avp.common.network.sync.AVPSyncedDataKey;
 import com.avp.common.registry.key.AVPBiomeKeys;
 import com.avp.common.registry.tag.AVPDamageTypesTags;
 import com.avp.common.registry.tag.AVPEntityTypeTags;
@@ -54,9 +54,15 @@ public abstract class Alien extends Monster implements SyncedDataUser {
 
     private static final String NBT_JELLY_COUNT = "jellyCount";
 
-    private static final SyncedDataKey<Boolean> HAS_TARGET = new SyncedDataKey<>(AVPResources.location("has_target"), ByteBufCodecs.BOOL);
+    public final SyncedDataAccessor<Boolean> hasTarget = getSyncedDataContainer().define(
+        new AVPSyncedDataKey<>("has_target", ByteBufCodecs.BOOL),
+        false
+    );
 
-    private static final SyncedDataKey<Boolean> IS_MOVING_HORIZONTALLY = new SyncedDataKey<>(AVPResources.location("is_moving_horizontally"), ByteBufCodecs.BOOL);
+    public final SyncedDataAccessor<Boolean> isMovingHorizontally = getSyncedDataContainer().define(
+        new AVPSyncedDataKey<>("is_moving_horizontally", ByteBufCodecs.BOOL),
+        false
+    );
 
     protected final HiveManager hiveManager;
 
@@ -84,25 +90,6 @@ public abstract class Alien extends Monster implements SyncedDataUser {
         this.isPoisoned = false;
         this.jellyCount = 0;
         this.lastHurtTimeInTicks = 0;
-
-        getSyncedDataContainer().define(HAS_TARGET, false);
-        getSyncedDataContainer().define(IS_MOVING_HORIZONTALLY, false);
-    }
-
-    public void setHasTarget(boolean hasTarget) {
-        getSyncedDataContainer().set(HAS_TARGET, hasTarget);
-    }
-
-    public boolean hasTarget() {
-        return getSyncedDataContainer().get(HAS_TARGET);
-    }
-
-    public void setIsMovingHorizontally(boolean isMovingHorizontally) {
-        getSyncedDataContainer().set(IS_MOVING_HORIZONTALLY, isMovingHorizontally);
-    }
-
-    public boolean isMovingHorizontally() {
-        return getSyncedDataContainer().get(IS_MOVING_HORIZONTALLY);
     }
 
     public abstract @Nullable EntityType<? extends Alien> getTypeForVariant(AlienVariant alienVariant);
@@ -233,8 +220,8 @@ public abstract class Alien extends Monster implements SyncedDataUser {
         if (!level().isClientSide) {
             movementAnalyzer.tick();
 
-            setHasTarget(getTarget() != null);
-            setIsMovingHorizontally(movementAnalyzer.isMovingHorizontally());
+            hasTarget.set(getTarget() != null);
+            isMovingHorizontally.set(movementAnalyzer.isMovingHorizontally());
 
             if (getVehicle() != null && !canRide(getVehicle())) {
                 stopRiding();

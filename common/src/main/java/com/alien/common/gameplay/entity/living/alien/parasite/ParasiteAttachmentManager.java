@@ -5,7 +5,6 @@ import com.alien.common.model.alien.Host;
 import com.lib.common.gameplay.NBTSerializable;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.game.ClientboundSetPassengersPacket;
-import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
@@ -26,13 +25,10 @@ public class ParasiteAttachmentManager implements NBTSerializable {
 
     private final Parasite parasite;
 
-    private final EntityDataAccessor<Boolean> isFertileEDA;
-
     private int ticksAttachedToHost;
 
-    public ParasiteAttachmentManager(Parasite parasite, EntityDataAccessor<Boolean> isFertileEDA) {
+    public ParasiteAttachmentManager(Parasite parasite) {
         this.parasite = parasite;
-        this.isFertileEDA = isFertileEDA;
         this.ticksAttachedToHost = 0;
     }
 
@@ -135,11 +131,11 @@ public class ParasiteAttachmentManager implements NBTSerializable {
     }
 
     public boolean isFertile() {
-        return parasite.getEntityData().get(isFertileEDA);
+        return parasite.isFertile.get();
     }
 
     public void setIsFertile(boolean isFertile) {
-        parasite.getEntityData().set(isFertileEDA, isFertile);
+        parasite.isFertile.set(isFertile);
 
         if (!isFertile) {
             ((FreeMob) parasite).removeFreedom();

@@ -41,7 +41,7 @@ public class OvomorphAnimator extends AzEntityAnimator<Ovomorph> {
         var gVeinBottom = bakedModel.getBoneOrNull("gVeinBottom");
 
         if (gVeinBottom != null) {
-            gVeinBottom.setHidden(!ovomorph.isRooted());
+            gVeinBottom.setHidden(!ovomorph.isRooted.get());
         }
 
         runPassiveAnimations(ovomorph);
