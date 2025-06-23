@@ -48,6 +48,8 @@ public class CrusherAnimationDispatcher {
         RUN_TAIL_PLAY_ONCE
     );
 
+    private static final AzCommand RUN_ALL = compose("run");
+
     private static final AzCommand SWIM_ALL = compose("swim");
 
     private static final AzCommand TAILATTACK_TAIL = AzCommand.create(
@@ -80,6 +82,10 @@ public class CrusherAnimationDispatcher {
 
     public void lunge() {
         LEAP_ALL.sendForEntity(crusher);
+    }
+
+    public void run() {
+        RUN_ALL.sendForEntity(crusher);
     }
 
     public void swim() {

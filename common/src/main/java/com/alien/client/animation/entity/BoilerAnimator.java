@@ -44,8 +44,7 @@ public class BoilerAnimator extends AzEntityAnimator<Boiler> {
 
     private void runPassiveAnimations(Boiler boiler) {
         var dispatcher = boiler.getAnimationDispatcher();
-        var movementAnalyzer = boiler.getMovementAnalyzer();
-        var isMovingOnGround = movementAnalyzer.isMovingHorizontally() && boiler.onGround();
+        var isMovingOnGround = boiler.isMovingHorizontally() && boiler.onGround();
         var isCrawling = boiler.getCrawlingManager().isCrawling();
         Runnable animFunction;
 
@@ -53,7 +52,13 @@ public class BoilerAnimator extends AzEntityAnimator<Boiler> {
             // TODO: idle swim
             animFunction = dispatcher::swim;
         } else if (isMovingOnGround) {
-            animFunction = isCrawling ? dispatcher::crawl : dispatcher::walk;
+            if (isCrawling) {
+                animFunction = dispatcher::crawl;
+            } else if (boiler.hasTarget()) {
+                animFunction = dispatcher::run;
+            } else {
+                animFunction = dispatcher::walk;
+            }
         } else {
             // TODO: idle crawl
             animFunction = isCrawling ? dispatcher::crawlHold : dispatcher::idle;

@@ -3,15 +3,10 @@ package com.lib.common.gameplay.entity.manager;
 import com.lib.common.gameplay.NBTSerializable;
 import com.lib.common.gameplay.gene.Gene;
 import com.lib.common.gameplay.gene.GeneRegistry;
-import com.lib.common.util.GeneDataUtil;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-
-import com.avp.common.network.packet.S2CSyncGenesPayload;
-import com.avp.service.Services;
 
 public class GeneManager implements NBTSerializable {
 
@@ -71,16 +66,8 @@ public class GeneManager implements NBTSerializable {
                 }
             }
 
-            syncToClient();
-
             getGeneContainer().setDirty(false);
         }
-    }
-
-    public void syncToClient() {
-        var server = ((ServerLevel) entity.level()).getServer();
-        var payload = new S2CSyncGenesPayload(entity.getId(), GeneDataUtil.toList(geneContainer.getActiveGenes()));
-        Services.SERVER_NETWORKING.sendToAllClients(server, payload);
     }
 
     public GeneContainer getGeneContainer() {

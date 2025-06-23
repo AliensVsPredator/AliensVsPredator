@@ -62,8 +62,7 @@ public class FacehuggerAnimator extends AzEntityAnimator<Facehugger> {
             return;
         }
 
-        var movementAnalyzer = facehugger.getMovementAnalyzer();
-        var isMovingOnGround = movementAnalyzer.isMovingHorizontally() && facehugger.onGround();
+        var isMovingOnGround = facehugger.isMovingHorizontally() && facehugger.onGround();
 
         if (facehugger.isUnderWater()) {
             // TODO: swim

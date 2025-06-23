@@ -44,8 +44,7 @@ public class WarriorAnimator extends AzEntityAnimator<Warrior> {
 
     private void runPassiveAnimations(Warrior warrior) {
         var dispatcher = warrior.getAnimationDispatcher();
-        var movementAnalyzer = warrior.getMovementAnalyzer();
-        var isMovingOnGround = movementAnalyzer.isMovingHorizontally() && warrior.onGround();
+        var isMovingOnGround = warrior.isMovingHorizontally() && warrior.onGround();
         var isCrawling = warrior.getCrawlingManager().isCrawling();
         Runnable animFunction;
 
@@ -53,7 +52,13 @@ public class WarriorAnimator extends AzEntityAnimator<Warrior> {
             // TODO: idle swim
             animFunction = dispatcher::swim;
         } else if (isMovingOnGround) {
-            animFunction = isCrawling ? dispatcher::crawl : dispatcher::walk;
+            if (isCrawling) {
+                animFunction = dispatcher::crawl;
+            } else if (warrior.hasTarget()) {
+                animFunction = dispatcher::run;
+            } else {
+                animFunction = dispatcher::walk;
+            }
         } else {
             // TODO: idle crawl
             animFunction = isCrawling ? dispatcher::crawlHold : dispatcher::idle;

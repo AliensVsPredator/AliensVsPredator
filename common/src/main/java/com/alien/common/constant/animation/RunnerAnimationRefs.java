@@ -14,7 +14,7 @@ public class RunnerAnimationRefs {
 
     public static final String LUNGE_ANIMATION_NAME = "animation.lunge";
 
-    public static final String RUN_ANIMATION_NAME = "animation.run";
+    public static final String RUN_ANIMATION_NAME = "animation.sprint";
 
     public static final String SWIM_ANIMATION_NAME = "animation.swim";
 

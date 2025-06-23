@@ -4,16 +4,17 @@ import com.alien.common.model.alien.GeneCarrier;
 import com.alien.common.model.alien.variant.AlienVariant;
 import com.alien.common.util.AcidBleedUtil;
 import com.alien.common.util.AlienTransitionUtil;
+import com.avp.AVPResources;
 import com.bvanseg.just.functional.option.Option;
 import com.google.common.base.Objects;
 import com.lib.common.gameplay.entity.manager.GeneManager;
 import com.lib.common.gameplay.entity.manager.VibrationSystemManager;
+import com.lib.common.network.SyncedDataKey;
+import com.lib.common.network.SyncedDataUser;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.syncher.EntityDataAccessor;
-import net.minecraft.network.syncher.EntityDataSerializers;
-import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -45,7 +46,7 @@ import com.avp.common.registry.tag.AVPEntityTypeTags;
 import com.avp.common.registry.tag.AVPMobEffectTags;
 import com.avp.common.util.MovementAnalyzer;
 
-public abstract class Alien extends Monster {
+public abstract class Alien extends Monster implements SyncedDataUser {
 
     private static final String NBT_HOST_TYPE = "hostType";
 
@@ -53,15 +54,9 @@ public abstract class Alien extends Monster {
 
     private static final String NBT_JELLY_COUNT = "jellyCount";
 
-    public static final EntityDataAccessor<Boolean> IS_POISONED = SynchedEntityData.defineId(
-        Alien.class,
-        EntityDataSerializers.BOOLEAN
-    );
+    private static final SyncedDataKey<Boolean> HAS_TARGET = new SyncedDataKey<>(AVPResources.location("has_target"), ByteBufCodecs.BOOL);
 
-    public static final EntityDataAccessor<Integer> JELLY_COUNT = SynchedEntityData.defineId(
-        Alien.class,
-        EntityDataSerializers.INT
-    );
+    private static final SyncedDataKey<Boolean> IS_MOVING_HORIZONTALLY = new SyncedDataKey<>(AVPResources.location("is_moving_horizontally"), ByteBufCodecs.BOOL);
 
     protected final HiveManager hiveManager;
 
@@ -71,6 +66,10 @@ public abstract class Alien extends Monster {
 
     private Option<EntityType<?>> hostTypeOption;
 
+    private boolean isPoisoned;
+
+    private int jellyCount;
+
     private int lastHurtTimeInTicks;
 
     protected AVPConfig.StatsConfigs.AdvancedStats config;
@@ -78,9 +77,32 @@ public abstract class Alien extends Monster {
     protected Alien(EntityType<? extends Alien> entityType, Level level) {
         super(entityType, level);
         this.hiveManager = new HiveManager(this);
-        this.hostTypeOption = Option.ofNullable(getDefaultHostType(entityType));
         this.movementAnalyzer = new MovementAnalyzer(this);
         this.vibrationSystemManager = createVibrationSystemManager();
+
+        this.hostTypeOption = Option.ofNullable(getDefaultHostType(entityType));
+        this.isPoisoned = false;
+        this.jellyCount = 0;
+        this.lastHurtTimeInTicks = 0;
+
+        getSyncedDataContainer().define(HAS_TARGET, false);
+        getSyncedDataContainer().define(IS_MOVING_HORIZONTALLY, false);
+    }
+
+    public void setHasTarget(boolean hasTarget) {
+        getSyncedDataContainer().set(HAS_TARGET, hasTarget);
+    }
+
+    public boolean hasTarget() {
+        return getSyncedDataContainer().get(HAS_TARGET);
+    }
+
+    public void setIsMovingHorizontally(boolean isMovingHorizontally) {
+        getSyncedDataContainer().set(IS_MOVING_HORIZONTALLY, isMovingHorizontally);
+    }
+
+    public boolean isMovingHorizontally() {
+        return getSyncedDataContainer().get(IS_MOVING_HORIZONTALLY);
     }
 
     public abstract @Nullable EntityType<? extends Alien> getTypeForVariant(AlienVariant alienVariant);
@@ -128,13 +150,6 @@ public abstract class Alien extends Monster {
         }
     }
 
-    @Override
-    protected void defineSynchedData(@NotNull SynchedEntityData.Builder builder) {
-        super.defineSynchedData(builder);
-        builder.define(IS_POISONED, false);
-        builder.define(JELLY_COUNT, 0);
-    }
-
     public AlienVariant getVariant() {
         if (isAberrant()) {
             return AlienVariant.ABERRANT;
@@ -171,12 +186,20 @@ public abstract class Alien extends Monster {
         }
     }
 
+    public int getJellyCount() {
+        return jellyCount;
+    }
+
+    public void setJellyCount(int jellyCount) {
+        this.jellyCount = jellyCount;
+    }
+
     public boolean isPoisoned() {
-        return entityData.get(IS_POISONED);
+        return isPoisoned;
     }
 
     public void setPoisoned(boolean isPoisoned) {
-        entityData.set(IS_POISONED, isPoisoned);
+        this.isPoisoned = isPoisoned;
     }
 
     public boolean isRoyal() {
@@ -204,11 +227,15 @@ public abstract class Alien extends Monster {
     @Override
     public void tick() {
         super.tick();
-        movementAnalyzer.tick();
         hiveManager.tick();
         vibrationSystemManager.tick();
 
         if (!level().isClientSide) {
+            movementAnalyzer.tick();
+
+            setHasTarget(getTarget() != null);
+            setIsMovingHorizontally(movementAnalyzer.isMovingHorizontally());
+
             if (getVehicle() != null && !canRide(getVehicle())) {
                 stopRiding();
             }
@@ -364,7 +391,7 @@ public abstract class Alien extends Monster {
         }
 
         if (compoundTag.contains(NBT_JELLY_COUNT)) {
-            getEntityData().set(JELLY_COUNT, compoundTag.getInt(NBT_JELLY_COUNT));
+            setJellyCount(compoundTag.getInt(NBT_JELLY_COUNT));
         }
 
         var resourceLocationString = compoundTag.getString(NBT_HOST_TYPE);
@@ -379,7 +406,7 @@ public abstract class Alien extends Monster {
         super.addAdditionalSaveData(compoundTag);
         hiveManager.save(compoundTag);
         compoundTag.putBoolean(NBT_IS_POISONED, isPoisoned());
-        compoundTag.putInt(NBT_JELLY_COUNT, getEntityData().get(JELLY_COUNT));
+        compoundTag.putInt(NBT_JELLY_COUNT, getJellyCount());
 
         hostTypeOption.ifSome(hostType -> {
             var resourceLocation = BuiltInRegistries.ENTITY_TYPE.getKey(hostTypeOption.unwrap());

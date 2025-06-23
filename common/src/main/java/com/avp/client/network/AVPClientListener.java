@@ -1,13 +1,12 @@
 package com.avp.client.network;
 
-import com.alien.common.model.alien.GeneCarrier;
-import com.lib.common.util.GeneDataUtil;
+import com.lib.common.network.SyncedDataUser;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.player.Player;
 
 import com.avp.common.network.packet.S2CBulletHitBlockPayload;
+import com.avp.common.network.packet.S2CEntityDataSyncPayload;
 import com.avp.common.network.packet.S2CGunRecoilPayload;
-import com.avp.common.network.packet.S2CSyncGenesPayload;
 
 public class AVPClientListener {
 
@@ -27,18 +26,18 @@ public class AVPClientListener {
         player.turn(baseRecoilX * 2, -gunRecoilPayload.recoil() * 2);
     }
 
-    public static void handleGeneSync(S2CSyncGenesPayload syncGenesPayload, Player player) {
-        var targetEntity = player.level().getEntity(syncGenesPayload.entityId());
+    public static void handleEntityDataSync(S2CEntityDataSyncPayload entityDataSyncPayload, Player player) {
+        var targetEntity = player.level().getEntity(entityDataSyncPayload.entityId());
 
         if (targetEntity == null) {
             return;
         }
 
-        var geneContainer = ((GeneCarrier) targetEntity).getOrCreateGeneManager().getGeneContainer();
-        var map = GeneDataUtil.toMap(syncGenesPayload.geneBonusDataEntries());
+        var syncedDataContainer = ((SyncedDataUser) targetEntity).getSyncedDataContainer();
 
-        geneContainer.clearActiveGenes();
-        geneContainer.putActiveGenes(map);
+        entityDataSyncPayload.rawDataSyncMap()
+            .rawDataById()
+            .forEach(syncedDataContainer::set);
     }
 
     private AVPClientListener() {

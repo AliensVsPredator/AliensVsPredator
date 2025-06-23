@@ -24,7 +24,7 @@ public class RoyalJellyItem extends Item {
         @NotNull InteractionHand interactionHand
     ) {
         if (livingEntity instanceof Alien xenomorph && !(xenomorph instanceof Praetorian)) {
-            xenomorph.getEntityData().set(Alien.JELLY_COUNT, xenomorph.getEntityData().get(Alien.JELLY_COUNT) + 1);
+            xenomorph.setJellyCount(xenomorph.getJellyCount() + 1);
             itemStack.consume(1, player);
             return InteractionResult.SUCCESS;
         }

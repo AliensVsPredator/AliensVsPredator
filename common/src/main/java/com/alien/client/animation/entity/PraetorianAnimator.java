@@ -47,8 +47,7 @@ public class PraetorianAnimator extends AzEntityAnimator<Praetorian> {
 
     private void runPassiveAnimations(Praetorian praetorian) {
         var dispatcher = praetorian.getAnimationDispatcher();
-        var movementAnalyzer = praetorian.getMovementAnalyzer();
-        var isMovingOnGround = movementAnalyzer.isMovingHorizontally() && praetorian.onGround();
+        var isMovingOnGround = praetorian.isMovingHorizontally() && praetorian.onGround();
         var isCrawling = praetorian.getCrawlingManager().isCrawling();
         Runnable animFunction;
 
@@ -56,7 +55,11 @@ public class PraetorianAnimator extends AzEntityAnimator<Praetorian> {
             // TODO: idle swim
             animFunction = dispatcher::swim;
         } else if (isMovingOnGround) {
-            animFunction = isCrawling ? dispatcher::crawl : dispatcher::walk;
+            if (praetorian.hasTarget()) {
+                animFunction = dispatcher::run;
+            } else {
+                animFunction = dispatcher::walk;
+            }
         } else {
             // TODO: idle crawl
             animFunction = isCrawling ? dispatcher::crawlHold : dispatcher::idle;

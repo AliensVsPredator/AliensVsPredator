@@ -1,6 +1,5 @@
 package com.alien.common.gameplay.entity.living.alien;
 
-import com.alien.common.gameplay.entity.living.alien.xenomorph.Xenomorph;
 import com.alien.common.gameplay.entity.living.alien.xenomorph.boiler.Boiler;
 import com.alien.common.model.alien.GeneCarrier;
 import com.alien.common.model.lifecycle.growth.GrowthStage;
@@ -70,7 +69,7 @@ public class GrowthManager implements NBTSerializable {
             return;
         }
 
-        var canBypassGrowthTime = entity.getEntityData().get(Xenomorph.JELLY_COUNT) >= entity.getMaxJellyToGrowth();
+        var canBypassGrowthTime = entity.getJellyCount() >= entity.getMaxJellyToGrowth();
 
         if (canBypassGrowthTime) {
             // If we can bypass growing over time thanks to royal jelly, then do so.
@@ -154,7 +153,9 @@ public class GrowthManager implements NBTSerializable {
             return null;
         }
 
-        nextForm.getEntityData().set(Xenomorph.JELLY_COUNT, 0);
+        if (nextForm instanceof Alien alien) {
+            alien.setJellyCount(0);
+        }
 
         if (onGrowUpCallback != null) {
             onGrowUpCallback.accept(nextForm);

@@ -44,8 +44,7 @@ public class RunnerAnimator extends AzEntityAnimator<Runner> {
 
     private void runPassiveAnimations(Runner runner) {
         var dispatcher = runner.getAnimationDispatcher();
-        var movementAnalyzer = runner.getMovementAnalyzer();
-        var isMovingOnGround = movementAnalyzer.isMovingHorizontally() && runner.onGround();
+        var isMovingOnGround = runner.isMovingHorizontally() && runner.onGround();
         var isCrawling = runner.getCrawlingManager().isCrawling();
         Runnable animFunction;
 
@@ -53,7 +52,13 @@ public class RunnerAnimator extends AzEntityAnimator<Runner> {
             // TODO: idle swim
             animFunction = dispatcher::swim;
         } else if (isMovingOnGround) {
-            animFunction = isCrawling ? dispatcher::crawl : dispatcher::walk;
+            if (isCrawling) {
+                animFunction = dispatcher::crawl;
+            } else if (runner.hasTarget()) {
+                animFunction = dispatcher::run;
+            } else {
+                animFunction = dispatcher::walk;
+            }
         } else {
             // TODO: idle crawl
             animFunction = isCrawling ? dispatcher::crawlHold : dispatcher::idle;

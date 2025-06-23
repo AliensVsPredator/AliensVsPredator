@@ -54,8 +54,7 @@ public class QueenAnimator extends AzEntityAnimator<Queen> {
 
     private void runPassiveAnimations(Queen queen) {
         var dispatcher = queen.getAnimationDispatcher();
-        var movementAnalyzer = queen.getMovementAnalyzer();
-        var isMovingOnGround = movementAnalyzer.isMovingHorizontally() && queen.onGround();
+        var isMovingOnGround = queen.isMovingHorizontally() && queen.onGround();
         Runnable animFunction;
 
         if (queen.getOvipositorManager().hasOvipositor()) {
@@ -64,7 +63,11 @@ public class QueenAnimator extends AzEntityAnimator<Queen> {
             // TODO: idle swim
             animFunction = dispatcher::swim;
         } else if (isMovingOnGround) {
-            animFunction = dispatcher::walk;
+            if (queen.hasTarget()) {
+                animFunction = dispatcher::run;
+            } else {
+                animFunction = dispatcher::walk;
+            }
         } else {
             // TODO: idle crawl
             animFunction = dispatcher::idle;

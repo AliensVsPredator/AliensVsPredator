@@ -5,8 +5,8 @@ import com.avp.common.network.packet.C2SGunHitResultsPayload;
 import com.avp.common.network.packet.C2SGunReloadPayload;
 import com.avp.common.network.packet.C2SPlayerToggleCrawlPayload;
 import com.avp.common.network.packet.S2CBulletHitBlockPayload;
+import com.avp.common.network.packet.S2CEntityDataSyncPayload;
 import com.avp.common.network.packet.S2CGunRecoilPayload;
-import com.avp.common.network.packet.S2CSyncGenesPayload;
 import com.avp.service.Services;
 
 public class AVPServerPacketHandlerRegistry {
@@ -57,9 +57,9 @@ public class AVPServerPacketHandlerRegistry {
         );
         Services.REGISTRY.registerPacketHandlers(
             new NetworkHandler.FromServer<>(
-                S2CSyncGenesPayload.TYPE,
-                S2CSyncGenesPayload.CODEC,
-                AVPClientListener::handleGeneSync
+                S2CEntityDataSyncPayload.TYPE,
+                S2CEntityDataSyncPayload.CODEC,
+                AVPClientListener::handleEntityDataSync
             )
         );
     }

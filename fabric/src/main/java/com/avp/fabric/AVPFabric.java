@@ -1,6 +1,7 @@
 package com.avp.fabric;
 
-import com.alien.common.model.alien.GeneCarrier;
+import com.lib.common.network.SyncedDataContainer;
+import com.lib.common.network.SyncedDataUser;
 import com.predator.common.registry.init.PredatorEntityTypes;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
@@ -51,7 +52,7 @@ public class AVPFabric implements ModInitializer {
         EntityTrackingEvents.START_TRACKING.register(
             (trackedEntity, player) -> {
                 if (trackedEntity instanceof LivingEntity livingEntity) {
-                    ((GeneCarrier) livingEntity).getOrCreateGeneManager().syncToClient();
+                    ((SyncedDataUser) livingEntity).getSyncedDataContainer().syncToClient(livingEntity, SyncedDataContainer.SyncType.ALL);
                 }
             }
         );
@@ -62,6 +63,18 @@ public class AVPFabric implements ModInitializer {
         );
 
         CommonLifecycleEvents.TAGS_LOADED.register((registries, client) -> AVPEvents.onTagsUpdated());
+
+        // TODO: Add a command for enabling/disabling server lag, this is very useful for testing purposes.
+//        ServerTickEvents.START_SERVER_TICK.register(server -> {
+//            // Simulate 2 seconds of lag every 20 ticks (once per second)
+//            if (server.getTickCount() % 5 == 0) {
+//                try {
+//                    Thread.sleep(300); // 2000 ms = 2 seconds
+//                } catch (InterruptedException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//        });
     }
 
     private void onWorldTick(ServerLevel serverLevel) {

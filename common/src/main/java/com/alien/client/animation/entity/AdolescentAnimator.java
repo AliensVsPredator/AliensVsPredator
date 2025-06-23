@@ -66,8 +66,7 @@ public class AdolescentAnimator extends AzEntityAnimator<Adolescent> {
 
     private void runPassiveAnimations(Adolescent adolescent) {
         var dispatcher = adolescent.getAnimationDispatcher();
-        var movementAnalyzer = adolescent.getMovementAnalyzer();
-        var isMovingOnGround = movementAnalyzer.isMovingHorizontally() && adolescent.onGround();
+        var isMovingOnGround = adolescent.isMovingHorizontally() && adolescent.onGround();
         Runnable animFunction;
 
         if (isMovingOnGround) {
