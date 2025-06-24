@@ -403,7 +403,7 @@ public class AlienEntityTypes {
         Services.REGISTRY.registerEntityAttributes(NETHER_QUEEN, Queen::createQueenAttributes);
         Services.REGISTRY.registerEntityAttributes(NETHER_RUNNER, Runner::createRunnerAttributes);
         Services.REGISTRY.registerEntityAttributes(NETHER_WARRIOR, Warrior::createWarriorAttributes);
-        Services.REGISTRY.registerEntityAttributes(OVIPOSITOR, Ovipositor::createMobAttributes);
+        Services.REGISTRY.registerEntityAttributes(OVIPOSITOR, Ovipositor::createOvipositorAttributes);
         Services.REGISTRY.registerEntityAttributes(OVOMORPH, Ovomorph::createOvomorphAttributes);
         Services.REGISTRY.registerEntityAttributes(PRAETORIAN, Praetorian::createPraetorianAttributes);
         Services.REGISTRY.registerEntityAttributes(PROWLER, Prowler::createProwlerAttributes);
