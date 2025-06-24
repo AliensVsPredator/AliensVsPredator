@@ -108,12 +108,12 @@ public class DataContainer implements NBTSerializable {
             .stream()
             .filter(key -> syncType != SyncType.DIRTY || dirtyKeys.contains(key))
             .filter(key -> key.streamCodec().isSome())
-            .map(dataKey -> {
-                var id = keyToId.get(dataKey);
+            .map(key -> {
+                var id = keyToId.get(key);
                 // Safe to unwrap here due to our earlier filter check.
                 @SuppressWarnings("unchecked")
-                var codec = (StreamCodec<FriendlyByteBuf, Object>) dataKey.streamCodec().unwrap();
-                var value = get(dataKey);
+                var codec = (StreamCodec<FriendlyByteBuf, Object>) key.streamCodec().unwrap();
+                var value = get(key);
                 var friendlyByteBuf = new FriendlyByteBuf(Unpooled.buffer());
 
                 codec.encode(friendlyByteBuf, value);
@@ -147,7 +147,11 @@ public class DataContainer implements NBTSerializable {
                 }
 
                 if (codec == Codec.BOOL) {
-                    values.put(key, compoundTag.getBoolean(id));
+                    @SuppressWarnings("unchecked")
+                    var typedKey = (DataKey<Object>) key;
+                    var value = compoundTag.getBoolean(id);
+                    values.put(key, value);
+                    typedKey.onLoad().accept(value);
                     return;
                 }
 
@@ -171,8 +175,9 @@ public class DataContainer implements NBTSerializable {
 
                 if (value != null) {
                     @SuppressWarnings("unchecked")
-                    var castKey = (DataKey<Object>) key;
-                    values.put(castKey, value);
+                    var typedKey = (DataKey<Object>) key;
+                    values.put(typedKey, value);
+                    typedKey.onLoad().accept(value);
                 }
             });
         });

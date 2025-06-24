@@ -37,12 +37,15 @@ public record DataAccessor<T>(
 
         private Consumer<U> onChangeCallback;
 
+        private Consumer<U> onLoadCallback;
+
         Builder(String id, DataContainer dataContainer) {
             this.id = id;
             this.dataContainer = dataContainer;
             this.persistentCodecOption = Option.none();
             this.streamCodecOption = Option.none();
             this.onChangeCallback = $ -> {};
+            this.onLoadCallback = $ -> {};
         }
 
         public Builder<U> networkSynchronized(StreamCodec<? extends ByteBuf, U> streamCodec) {
@@ -55,13 +58,18 @@ public record DataAccessor<T>(
             return this;
         }
 
+        public Builder<U> onLoad(Consumer<U> onLoadCallback) {
+            this.onLoadCallback = onLoadCallback;
+            return this;
+        }
+
         public Builder<U> persistent(Codec<U> codec) {
             this.persistentCodecOption = Option.some(codec);
             return this;
         }
 
         public DataAccessor<U> build(U initialValue) {
-            var key = new DataKey<>(id, persistentCodecOption, streamCodecOption, onChangeCallback);
+            var key = new DataKey<>(id, persistentCodecOption, streamCodecOption, onChangeCallback, onLoadCallback);
 
             dataContainer.define(key, initialValue);
 

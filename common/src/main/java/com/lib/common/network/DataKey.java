@@ -12,7 +12,8 @@ public record DataKey<T>(
     String id,
     Option<Codec<T>> codec,
     Option<StreamCodec<? extends ByteBuf, T>> streamCodec,
-    Consumer<T> onChange
+    Consumer<T> onChange,
+    Consumer<T> onLoad
 ) {
 
     @Override
