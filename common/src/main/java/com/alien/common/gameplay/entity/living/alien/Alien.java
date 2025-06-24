@@ -378,11 +378,13 @@ public abstract class Alien extends Monster implements DataUser {
             setJellyCount(compoundTag.getInt(NBT_JELLY_COUNT));
         }
 
-        var resourceLocationString = compoundTag.getString(NBT_HOST_TYPE);
-        var resourceLocation = ResourceLocation.parse(resourceLocationString);
-        var entityTypeHolderOptional = BuiltInRegistries.ENTITY_TYPE.getHolder(resourceLocation);
+        if (compoundTag.contains(NBT_HOST_TYPE)) {
+            var resourceLocationString = compoundTag.getString(NBT_HOST_TYPE);
+            var resourceLocation = ResourceLocation.parse(resourceLocationString);
+            var entityTypeHolderOptional = BuiltInRegistries.ENTITY_TYPE.getHolder(resourceLocation);
 
-        entityTypeHolderOptional.ifPresent($ -> this.hostTypeOption = Option.some(BuiltInRegistries.ENTITY_TYPE.get(resourceLocation)));
+            entityTypeHolderOptional.ifPresent($ -> this.hostTypeOption = Option.some(BuiltInRegistries.ENTITY_TYPE.get(resourceLocation)));
+        }
     }
 
     @Override
