@@ -1,6 +1,7 @@
 package com.avp.common.util;
 
-import net.minecraft.world.entity.Entity;
+import net.minecraft.util.Mth;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.phys.HitResult;
@@ -8,8 +9,8 @@ import net.minecraft.world.phys.Vec3;
 
 public class EntityUtil {
 
-    public static Vec3 getRelativePosition(Entity entity, double leftOffset, double upOffset, double backwardOffset) {
-        var forward = entity.getLookAngle().normalize();
+    public static Vec3 getRelativePosition(LivingEntity entity, double leftOffset, double upOffset, double backwardOffset) {
+        var forward = getBodyForward(entity);
         // perpendicular on XZ plane.
         var left = new Vec3(forward.z, 0, -forward.x).normalize();
 
@@ -25,6 +26,13 @@ public class EntityUtil {
             .add(forward.scale(-backwardOffset))
             .add(left.scale(leftOffset))
             .add(0, upOffset, 0);
+    }
+
+    public static Vec3 getBodyForward(LivingEntity entity) {
+        // Body yaw in degrees -> radians.
+        var yawRad = entity.yBodyRot * Mth.DEG_TO_RAD;
+        // Minecraft’s X- (west / left) Z+ (south / forward) convention.
+        return new Vec3(-Mth.sin(yawRad), 0, Mth.cos(yawRad)).normalize();
     }
 
     public static boolean canMobSeeBlock(Mob mob, Vec3 targetVec) {
