@@ -90,7 +90,7 @@ public class ParasiteAttachmentManager {
 
                 if (parasite.isFertile.get()) {
                     ((Host) host).implantEmbryo(parasite);
-                    setIsFertile(false);
+                    parasite.isFertile.set(false);
                     // TODO: Play nasty toob sound
                 }
             }
@@ -100,7 +100,7 @@ public class ParasiteAttachmentManager {
     }
 
     public void restore() {
-        setIsFertile(true);
+        parasite.isFertile.set(true);
     }
 
     public @Nullable LivingEntity getHost() {
@@ -109,18 +109,6 @@ public class ParasiteAttachmentManager {
 
     public boolean isAttachedToHost() {
         return getHost() != null && parasite.isAlive();
-    }
-
-    public void setIsFertile(boolean isFertile) {
-        parasite.isFertile.set(isFertile);
-
-        if (!isFertile) {
-            ((FreeMob) parasite).removeFreedom();
-            parasite.removeAllGoals(AVPPredicates.alwaysTrue());
-        } else {
-            ((FreeMob) parasite).restoreFreedom();
-            parasite.restoreAllGoals();
-        }
     }
 
     public int ticksAttachedToHost() {

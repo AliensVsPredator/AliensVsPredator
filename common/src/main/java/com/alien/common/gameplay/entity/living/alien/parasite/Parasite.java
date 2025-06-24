@@ -26,6 +26,8 @@ public abstract class Parasite extends Alien {
     public final DataAccessor<Boolean> isFertile = getDataContainer().<Boolean>builder("isFertile")
         .networkSynchronized(ByteBufCodecs.BOOL)
         .persistent(Codec.BOOL)
+        .onLoad(this::handleFertilityChange)
+        .onChange(this::handleFertilityChange)
         .build(true);
 
     protected final ParasiteAttachmentManager attachmentManager;
@@ -147,5 +149,15 @@ public abstract class Parasite extends Alien {
 
     public ParasiteAttachmentManager getAttachmentManager() {
         return attachmentManager;
+    }
+
+    private void handleFertilityChange(Boolean isFertile) {
+        if (!isFertile) {
+            ((FreeMob) this).removeFreedom();
+            this.removeAllGoals(AVPPredicates.alwaysTrue());
+        } else {
+            ((FreeMob) this).restoreFreedom();
+            this.restoreAllGoals();
+        }
     }
 }
