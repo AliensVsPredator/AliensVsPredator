@@ -41,9 +41,11 @@ public class GeneResistanceHurtUtil {
         float damage
     ) {
         // Percent reduction value.
-        var percentageResistance = geneContainer.getActiveGeneValue(gene, GeneOperationType.MULTIPLICATIVE);
+        var percentageResistance = geneContainer.getActiveGeneMap()
+            .getValue(gene, GeneOperationType.MULTIPLICATIVE);
         // Damage reduction value.
-        var damageResistance = geneContainer.getActiveGeneValue(gene, GeneOperationType.ADDITIVE);
+        var damageResistance = geneContainer.getActiveGeneMap()
+            .getValue(gene, GeneOperationType.ADDITIVE);
         var modifiedDamage = Math.max(damage - (percentageResistance * damage) - damageResistance, 0);
 
         return (float) modifiedDamage;

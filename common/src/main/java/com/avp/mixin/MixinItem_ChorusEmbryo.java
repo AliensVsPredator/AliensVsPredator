@@ -55,7 +55,8 @@ public class MixinItem_ChorusEmbryo {
 
                 ((GeneCarrier) livingEmbryo).getOrCreateGeneManager()
                     .getGeneContainer()
-                    .addActiveGene(Genes.WARP, GeneOperationType.ADDITIVE, 1);
+                    .getActiveGeneMap()
+                    .add(Genes.WARP, GeneOperationType.ADDITIVE, 1);
             }
         });
 

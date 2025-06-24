@@ -27,8 +27,10 @@ public class GeneIntegrityUtil {
 
     public static double getTotalGeneticIntegrity(GeneCarrier geneCarrier) {
         var geneContainer = geneCarrier.getOrCreateGeneManager().getGeneContainer();
-        var additiveGeneticIntegrity = geneContainer.getActiveGeneValue(Genes.GENETIC_INTEGRITY, GeneOperationType.ADDITIVE);
-        var multiplicativeGeneticIntegrity = geneContainer.getActiveGeneValue(Genes.GENETIC_INTEGRITY, GeneOperationType.MULTIPLICATIVE);
+        var additiveGeneticIntegrity = geneContainer.getActiveGeneMap()
+            .getValue(Genes.GENETIC_INTEGRITY, GeneOperationType.ADDITIVE);
+        var multiplicativeGeneticIntegrity = geneContainer.getActiveGeneMap()
+            .getValue(Genes.GENETIC_INTEGRITY, GeneOperationType.MULTIPLICATIVE);
         // TODO: Maybe don't add multiplicative here
         return additiveGeneticIntegrity + multiplicativeGeneticIntegrity;
     }

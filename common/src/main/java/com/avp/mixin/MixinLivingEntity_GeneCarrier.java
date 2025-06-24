@@ -62,7 +62,10 @@ public abstract class MixinLivingEntity_GeneCarrier extends Entity implements Ge
         }
 
         if (!level().isClientSide) {
-            hasWarpEffect.set(getOrCreateGeneManager().getGeneContainer().hasGene(Genes.WARP));
+            var hasWarpGene = getOrCreateGeneManager().getGeneContainer()
+                .getActiveGeneMap()
+                .hasGene(Genes.WARP);
+            hasWarpEffect.set(hasWarpGene);
         }
     }
 
@@ -109,7 +112,8 @@ public abstract class MixinLivingEntity_GeneCarrier extends Entity implements Ge
         if (isHurt) {
             // TODO: Factor in additive in here.
             var acidBloodChance = getOrCreateGeneManager().getGeneContainer()
-                .getActiveGeneValue(Genes.ACIDIC_BLOOD, GeneOperationType.MULTIPLICATIVE);
+                .getActiveGeneMap()
+                .getValue(Genes.ACIDIC_BLOOD, GeneOperationType.MULTIPLICATIVE);
 
             if (getRandom().nextDouble() < acidBloodChance && damageSource != damageSources().genericKill()) {
                 var self = LivingEntity.class.cast(this);

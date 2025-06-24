@@ -2,9 +2,11 @@ package com.lib.common.gameplay.entity.manager;
 
 import com.lib.common.gameplay.NBTSerializable;
 import com.lib.common.gameplay.gene.Gene;
+import com.lib.common.gameplay.gene.GeneModifierKey;
 import com.lib.common.gameplay.gene.GeneRegistry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 
@@ -20,54 +22,72 @@ public class GeneManager implements NBTSerializable {
     }
 
     public void tick() {
-        if (entity.level().isClientSide) {
+        var activeGeneMap = geneContainer.getActiveGeneMap();
+
+        if (entity.level().isClientSide || !activeGeneMap.isDirty()) {
             return;
         }
 
-        if (geneContainer.isDirty()) {
-            var oldMaxHealth = entity.getMaxHealth();
-            var wasFullHealth = entity.getHealth() == oldMaxHealth;
+        // Do NOT move these to after the gene effects being applied!
+        var oldMaxHealth = entity.getMaxHealth();
+        var wasFullHealth = entity.getHealth() == oldMaxHealth;
 
-            // TODO: This doesn't handle genes that go missing from the map. Remove all modifiers then re-apply them.
-            getGeneContainer().getActiveGenes()
-                .forEach(((geneModifierKey, bonusValue) -> {
-                    var id = geneModifierKey.resourceLocation();
-                    var gene = GeneRegistry.getValueOrNull(id);
+        activeGeneMap.getDirtyKeys()
+            .forEach(this::applyGeneEffects);
 
-                    if (gene != null) {
-                        switch (gene) {
-                            case Gene.Attribute attribute -> {
-                                var attributeInstance = entity.getAttribute(attribute.attributeHolder());
+        var maxHealthAttributeInstance = entity.getAttribute(Attributes.MAX_HEALTH);
 
-                                if (attributeInstance != null) {
-                                    var finalBonusValue = switch (geneModifierKey.operation()) {
-                                        case ADDITIVE -> bonusValue;
-                                        case MULTIPLICATIVE -> attributeInstance.getBaseValue() * bonusValue;
-                                    };
+        if (maxHealthAttributeInstance != null) {
+            var newMax = maxHealthAttributeInstance.getValue();
+            var currentHealth = entity.getHealth();
 
-                                    var modifier = new AttributeModifier(id, finalBonusValue, AttributeModifier.Operation.ADD_VALUE);
+            if (wasFullHealth || currentHealth > newMax) {
+                entity.setHealth((float) newMax);
+            }
+        }
 
-                                    attributeInstance.addOrReplacePermanentModifier(modifier);
-                                }
-                            }
-                            case Gene.Simple ignored -> { /* NO-OP */ }
-                        }
+        activeGeneMap.clearDirtyKeys();
+    }
+
+    private void applyGeneEffects(GeneModifierKey dirtyGeneModifierKey) {
+        var activeGeneMap = geneContainer.getActiveGeneMap();
+        var id = dirtyGeneModifierKey.resourceLocation();
+        var gene = GeneRegistry.getValueOrNull(id);
+
+        if (gene == null) {
+            return;
+        }
+
+        switch (gene) {
+            case Gene.Attribute attribute -> {
+                var attributeInstance = entity.getAttribute(attribute.attributeHolder());
+
+                if (attributeInstance != null) {
+                    var hasGeneModifier = activeGeneMap.hasGeneModifier(dirtyGeneModifierKey);
+
+                    if (hasGeneModifier) {
+                        applyGeneAttributeBonus(dirtyGeneModifierKey, attributeInstance);
+                    } else {
+                        // Container no longer has the gene modifier, so remove the attribute modifier.
+                        attributeInstance.removeModifier(id);
                     }
-                }));
-
-            var maxHealthAttributeInstance = entity.getAttribute(Attributes.MAX_HEALTH);
-
-            if (maxHealthAttributeInstance != null) {
-                var newMax = maxHealthAttributeInstance.getValue();
-                var currentHealth = entity.getHealth();
-
-                if (wasFullHealth || currentHealth > newMax) {
-                    entity.setHealth((float) newMax);
                 }
             }
-
-            getGeneContainer().setDirty(false);
+            case Gene.Simple ignored -> { /* NO-OP */ }
         }
+    }
+
+    private void applyGeneAttributeBonus(GeneModifierKey geneModifierKey, AttributeInstance attributeInstance) {
+        var id = geneModifierKey.resourceLocation();
+        var gene = GeneRegistry.getValueOrNull(id);
+        var bonusValue = geneContainer.getActiveGeneMap().getValue(gene, geneModifierKey.operation());
+        var finalBonusValue = switch (geneModifierKey.operation()) {
+            case ADDITIVE -> bonusValue;
+            case MULTIPLICATIVE -> attributeInstance.getBaseValue() * bonusValue;
+        };
+        var modifier = new AttributeModifier(id, finalBonusValue, AttributeModifier.Operation.ADD_VALUE);
+
+        attributeInstance.addOrReplacePermanentModifier(modifier);
     }
 
     public GeneContainer getGeneContainer() {
@@ -77,7 +97,6 @@ public class GeneManager implements NBTSerializable {
     @Override
     public void load(CompoundTag compoundTag) {
         geneContainer.load(compoundTag);
-        geneContainer.setDirty(true);
     }
 
     @Override

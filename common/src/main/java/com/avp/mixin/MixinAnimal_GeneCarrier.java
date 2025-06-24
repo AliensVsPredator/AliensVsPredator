@@ -46,12 +46,18 @@ public abstract class MixinAnimal_GeneCarrier extends AgeableMob implements Gene
         var otherParentGeneContainer = getOrCreateGeneManager().getGeneContainer();
 
         // Overwrite active genes.
-        babyGeneContainer.putActiveGenes(parentGeneContainer.getActiveGenes());
-        babyGeneContainer.putActiveGenes(otherParentGeneContainer.getActiveGenes());
+        babyGeneContainer.getActiveGeneMap()
+            .putAll(parentGeneContainer.getActiveGeneMap().getBackingMap());
+        babyGeneContainer.getActiveGeneMap()
+            .putAll(otherParentGeneContainer.getActiveGeneMap().getBackingMap());
 
         // Add dormant genes.
-        parentGeneContainer.getDormantGenes().forEach(babyGeneContainer::addActiveGene);
-        otherParentGeneContainer.getDormantGenes().forEach(babyGeneContainer::addActiveGene);
+        parentGeneContainer.getDormantGeneMap()
+            .getBackingMap()
+            .forEach(babyGeneContainer.getActiveGeneMap()::add);
+        otherParentGeneContainer.getDormantGeneMap()
+            .getBackingMap()
+            .forEach(babyGeneContainer.getActiveGeneMap()::add);
 
         var geneDecayLevel = GeneIntegrityUtil.getGeneDecayLevel(geneCarrier);
 

@@ -1,5 +1,6 @@
 package com.lib.common.util;
 
+import com.lib.common.gameplay.entity.manager.GeneMap;
 import com.lib.common.gameplay.gene.GeneBonusDataEntry;
 import com.lib.common.gameplay.gene.GeneModifier;
 import com.lib.common.gameplay.gene.GeneModifierKey;
@@ -9,13 +10,11 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.resources.ResourceLocation;
 
-import java.util.Map;
-
 import com.avp.AVP;
 
 public class GeneSerializationUtil {
 
-    public static void loadGeneMap(String geneMapKey, CompoundTag compoundTag, Map<GeneModifierKey, Double> geneMap) {
+    public static void loadGeneMap(String geneMapKey, CompoundTag compoundTag, GeneMap geneMap) {
         if (compoundTag.contains(geneMapKey, CompoundTag.TAG_COMPOUND)) {
             var geneMapTag = compoundTag.getCompound(geneMapKey);
 
@@ -29,7 +28,7 @@ public class GeneSerializationUtil {
                         .resultOrPartial(
                             AVP.LOGGER::error
                         )
-                        .ifPresent(geneModifier -> geneMap.put(new GeneModifierKey(id, geneModifier.operation()), geneModifier.value()));
+                        .ifPresent(geneModifier -> geneMap.add(new GeneModifierKey(id, geneModifier.operation()), geneModifier.value()));
                 } catch (Exception e) {
                     e.printStackTrace();
                     // Log or handle malformed resource locations
@@ -38,7 +37,7 @@ public class GeneSerializationUtil {
         }
     }
 
-    public static void loadGeneModifiers(String geneListKey, CompoundTag compoundTag, Map<GeneModifierKey, Double> geneMap) {
+    public static void loadGeneModifiers(String geneListKey, CompoundTag compoundTag, GeneMap geneMap) {
         if (compoundTag.contains(geneListKey, CompoundTag.TAG_LIST)) {
             var listTag = compoundTag.getList(geneListKey, CompoundTag.TAG_COMPOUND);
 
@@ -47,15 +46,15 @@ public class GeneSerializationUtil {
 
                 GeneBonusDataEntry.CODEC.parse(new Dynamic<>(NbtOps.INSTANCE, elementTag))
                     .resultOrPartial(AVP.LOGGER::error)
-                    .ifPresent(entry -> geneMap.put(new GeneModifierKey(entry.id(), entry.operation()), entry.value()));
+                    .ifPresent(entry -> geneMap.add(new GeneModifierKey(entry.id(), entry.operation()), entry.value()));
             }
         }
     }
 
-    public static void saveGeneModifiers(String geneListKey, CompoundTag compoundTag, Map<GeneModifierKey, Double> geneMap) {
+    public static void saveGeneModifiers(String geneListKey, CompoundTag compoundTag, GeneMap geneMap) {
         var listTag = new ListTag();
 
-        for (var entry : geneMap.entrySet()) {
+        for (var entry : geneMap.getBackingMap().entrySet()) {
             var geneEntry = new GeneBonusDataEntry(entry.getKey().resourceLocation(), entry.getKey().operation(), entry.getValue());
             GeneBonusDataEntry.CODEC.encodeStart(NbtOps.INSTANCE, geneEntry)
                 .resultOrPartial(AVP.LOGGER::error)

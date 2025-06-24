@@ -26,7 +26,8 @@ public class EmbryoUtil {
 
         // 1 added here to guarantee 1 birth by default.
         var birthBonus = baseBirthCount + Math.clamp(
-            parentGeneContainer.getActiveGeneValue(Genes.BONUS_EMBRYO_COUNT, GeneOperationType.ADDITIVE),
+            parentGeneContainer.getActiveGeneMap()
+                .getValue(Genes.BONUS_EMBRYO_COUNT, GeneOperationType.ADDITIVE),
             0.0,
             3.0
         );
@@ -66,8 +67,8 @@ public class EmbryoUtil {
         parentGeneContainer.transfer(offspringGeneContainer, true);
 
         if (addBonusGenes) {
-            var parentSpecificBonusGenesMap = GeneBonusDataRegistry.getOrDefault(parentType);
-            parentSpecificBonusGenesMap.forEach(offspringGeneContainer::addActiveGene);
+            GeneBonusDataRegistry.getOrDefault(parentType)
+                .forEach(offspringGeneContainer.getActiveGeneMap()::add);
         }
     }
 }
