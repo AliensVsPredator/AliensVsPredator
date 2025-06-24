@@ -4,6 +4,7 @@ import com.alien.common.gameplay.entity.living.alien.parasite.Parasite;
 import com.alien.common.model.alien.Host;
 import com.alien.common.registry.InfectionRegistry;
 import com.alien.common.util.AlienEmbryoUtil;
+import com.bvanseg.just.functional.option.Option;
 import com.lib.common.gameplay.entity.manager.GeneContainer;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
@@ -13,6 +14,7 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.level.Level;
+import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -35,7 +37,7 @@ public abstract class MixinLivingEntity_Host extends Entity implements Host {
     private int embryoGrowthTimeInTicks;
 
     @Unique
-    private EntityType<?> embryoType;
+    private Option<EntityType<?>> embryoTypeOption = Option.none();
 
     @Unique
     private GeneContainer parasiteGeneContainer;
@@ -54,13 +56,14 @@ public abstract class MixinLivingEntity_Host extends Entity implements Host {
     public void readAdditionalSaveData(CompoundTag compoundTag, CallbackInfo callbackInfo) {
         this.embryoGrowthTimeInTicks = compoundTag.getInt(NBT_EMBRYO_GROWTH_TIME_IN_TICKS);
 
-        var resourceLocationString = compoundTag.getString(NBT_EMBRYO_TYPE);
-        var resourceLocation = ResourceLocation.parse(resourceLocationString);
-        var entityType = BuiltInRegistries.ENTITY_TYPE.get(resourceLocation);
+        if (compoundTag.contains(NBT_EMBRYO_TYPE)) {
+            var resourceLocationString = compoundTag.getString(NBT_EMBRYO_TYPE);
+            var resourceLocation = ResourceLocation.parse(resourceLocationString);
+            var entityTypeHolderOptional = BuiltInRegistries.ENTITY_TYPE.getHolder(resourceLocation);
 
-        // TODO: Fix this, don't check for a pig.
-        if (!entityType.equals(EntityType.PIG)) {
-            setEmbryoType(entityType);
+            entityTypeHolderOptional.ifPresent(
+                $ -> this.embryoTypeOption = Option.some(BuiltInRegistries.ENTITY_TYPE.get(resourceLocation))
+            );
         }
 
         if (compoundTag.contains(NBT_PARASITE_GENES)) {
@@ -73,10 +76,10 @@ public abstract class MixinLivingEntity_Host extends Entity implements Host {
     public void addAdditionalSaveData(CompoundTag compoundTag, CallbackInfo callbackInfo) {
         compoundTag.putInt(NBT_EMBRYO_GROWTH_TIME_IN_TICKS, embryoGrowthTimeInTicks);
 
-        if (embryoType != null) {
+        embryoTypeOption.ifSome(embryoType -> {
             var resourceLocation = BuiltInRegistries.ENTITY_TYPE.getKey(embryoType);
             compoundTag.putString(NBT_EMBRYO_TYPE, resourceLocation.toString());
-        }
+        });
 
         var tag = new CompoundTag();
         getOrCreateParasiteGeneContainer().save(tag);
@@ -113,13 +116,13 @@ public abstract class MixinLivingEntity_Host extends Entity implements Host {
     }
 
     @Override
-    public EntityType<?> getEmbryoType() {
-        return embryoType;
+    public Option<EntityType<?>> getEmbryoType() {
+        return embryoTypeOption;
     }
 
     @Override
-    public void setEmbryoType(EntityType<?> embryoType) {
-        this.embryoType = embryoType;
+    public void setEmbryoType(@Nullable EntityType<?> embryoType) {
+        this.embryoTypeOption = Option.ofNullable(embryoType);
     }
 
     @Override

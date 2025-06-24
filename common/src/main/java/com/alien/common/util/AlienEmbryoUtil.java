@@ -34,7 +34,7 @@ public class AlienEmbryoUtil {
             return;
         }
 
-        if (host.getEmbryoType() != null) {
+        if (host.getEmbryoType().isSome()) {
             tickAlienEmbryoGrowth(hostEntity);
         } else {
             host.removeEmbryo();
@@ -114,13 +114,13 @@ public class AlienEmbryoUtil {
     public static @Nullable Entity alienEmbryoFactory(@NotNull LivingEntity hostEntity) {
         var level = hostEntity.level();
         var host = (Host) hostEntity;
-        var embryoType = host.getEmbryoType();
+        var embryoTypeOption = host.getEmbryoType();
 
-        if (embryoType == null) {
+        if (embryoTypeOption.isNone()) {
             return null;
         }
 
-        var embryo = embryoType.create(level);
+        var embryo = embryoTypeOption.unwrap().create(level);
 
         if (embryo == null) {
             return null;
