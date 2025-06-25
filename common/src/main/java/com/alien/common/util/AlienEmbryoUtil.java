@@ -6,6 +6,7 @@ import com.alien.common.model.alien.Host;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
@@ -58,6 +59,8 @@ public class AlienEmbryoUtil {
             if (hostEntity instanceof Player player) {
                 // TODO: Use data pack values here.
                 if (host.getEmbryoGrowthTimeInTicks() > TimeUnit.MINUTES.toSeconds(4) * 20 + 30 * 20) {
+                    hostEntity.addEffect(new MobEffectInstance(MobEffects.CONFUSION, 20 * 4, 1, true, false, true));
+
                     if (player.tickCount % 10 == 0) {
                         player.playNotifySound(AVPSoundEvents.EFFECT_HEARTBEAT_3.get(), SoundSource.MASTER, 1, 1);
                     }

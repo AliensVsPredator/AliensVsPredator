@@ -8,6 +8,7 @@
 
 ## ✨ What's New
 - Aliens now remember what host type they came from.
+- Added new running animations to all xenomorphs.
 - Added two new advancements:
   - "Eviction" - Infected? Eat a chorus fruit to remove the embryo, saving yourself... and dooming the world.
   - "Hive Buster" - Defeat an alien hive.
@@ -15,6 +16,7 @@
   - Heartbeats can now be heard by players minutes before they get chestbursted.
   - The heartbeats get progressively faster the closer the player is to chestbursting.
   - 8 seconds before death, the host (not just players) will emit bone crunching sfx and take (0.001 aka fake) damage.
+  - The player will also have confusion (nausea) 30 seconds before death.
   - Upon death, a chestburster screech will play as the new killing machine enters the world.
 - Revamped genetics system:
   - Gene bonuses are now datapacked.
@@ -40,19 +42,20 @@
   - The queen requires a considerable amount of space as well as stable ground to create her ovipositor.
   - Eggs no longer drop at the queen's feet, but instead at the end of the ovipositor.
   - Egglaying has otherwise remained unchanged.
-- Ovomorphs no longer spawn naturally.
-  - Ovipositor is complete, natural ovomorph spawning is no longer necessary.
 - Added new entities:
   - Aberrant Adolescent
+  - Aberrant Boiler
   - Aberrant Crusher
   - Aberrant Prowler
   - Aberrant Runner
   - Adolescent
+  - Boiler
   - Crusher
   - Irradiated Crusher
   - Irradiated Prowler
   - Irradiated Runner
   - Nether Adolescent
+  - Nether Boiler
   - Nether Crusher
   - Nether Prowler
   - Nether Runner
@@ -73,6 +76,12 @@
 - Same-strain, different-hive xenos now no longer kill each other.
 - Hive centers now constantly move with the hive leader.
 - Updated the chestbursting death message to have a proper, better-fitting message.
+- Improved facehugging effects:
+  - Effects now last 2 seconds longer (4 seconds total).
+  - Weakness is now applied to the host sooner (as soon as smothering damage finishes).
+  - Movement slowdown 100 is now applied after smothering damage finishes.
+- Ovomorphs no longer spawn naturally.
+  - Ovipositor is complete, natural ovomorph spawning is no longer necessary.
 - Hives will now merge with each other given certain conditions in the following order (most -> least important):
   - Hives with a weaker leader will merge into hives with a stronger leader.
   - Hives with a lower member count will merge into hives with a larger member count.
@@ -97,6 +106,8 @@
 - Fixed aberrant chitin armors not counting towards chitin armor advancements.
 - Fixed aliens spreading resin while underwater.
 - Fixed alien attack animations not playing properly.
+- Fixed aliens having jittery animations when servers are lagging behind.
+- Fixed facehuggers not providing host air underwater.
 
 ## 🛠 Data Pack
 - Added `#avp:runner_hosts` entity tag.
