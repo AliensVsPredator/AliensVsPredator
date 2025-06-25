@@ -82,6 +82,7 @@ public class ParasiteAttachmentManager {
             }
         } else {
             host.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, effectTimeInTicks, 3, true, false, true));
+            host.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, effectTimeInTicks, 100, true, false, true));
 
             if (host instanceof Mob mob) {
                 ((FreeMob) mob).removeFreedom();
