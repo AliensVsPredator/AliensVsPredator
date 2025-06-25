@@ -81,13 +81,14 @@ public class ParasiteAttachmentManager {
                 player.connection.send(new ClientboundSetPassengersPacket(host));
             }
         } else {
+            host.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, effectTimeInTicks, 3, true, false, true));
+
             if (host instanceof Mob mob) {
                 ((FreeMob) mob).removeFreedom();
             }
 
             // TODO: Make time configurable
             if (ticksAttachedToHost() >= 20 * 20) {
-                host.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, 40, 3, true, false, true));
 
                 if (parasite.isFertile.get()) {
                     ((Host) host).implantEmbryo(parasite);
