@@ -96,6 +96,7 @@ public class ParasiteAttachmentManager {
             }
         }
 
+        host.setAirSupply(host.getMaxAirSupply());
         ticksAttachedToHost.set(ticksAttachedToHost.get() + 1);
     }
 
