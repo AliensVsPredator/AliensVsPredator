@@ -60,6 +60,7 @@ public class OvipositorManager implements NBTSerializable {
         }
 
         createOvipositor();
+        ovipositorCreationCooldown.reset();
     }
 
     public Vec3 getEggLayingPosition() {
