@@ -97,7 +97,7 @@ public abstract class Xenomorph extends Alien implements ResinProducer {
     }
 
     protected void addDigToTargetGoal() {
-        goalSelector.addGoal(5, new DigToTargetGoal(this, 32, 2));
+        goalSelector.addGoal(5, new DigToTargetGoal(this, 32, 2, () -> true));
     }
 
     @Override

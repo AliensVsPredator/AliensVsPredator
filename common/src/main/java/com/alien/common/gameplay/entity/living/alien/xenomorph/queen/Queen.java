@@ -114,7 +114,7 @@ public class Queen extends Xenomorph {
 
     @Override
     protected void addDigToTargetGoal() {
-        goalSelector.addGoal(5, new DigToTargetGoal(this, 32, 4));
+        goalSelector.addGoal(5, new DigToTargetGoal(this, 32, 4, () -> !Objects.requireNonNull(ovipositorManager).hasOvipositor()));
     }
 
     @Override
