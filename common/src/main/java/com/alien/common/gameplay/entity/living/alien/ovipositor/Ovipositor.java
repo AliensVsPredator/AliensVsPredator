@@ -1,6 +1,7 @@
 package com.alien.common.gameplay.entity.living.alien.ovipositor;
 
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
@@ -9,6 +10,7 @@ import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
 import com.avp.common.registry.tag.AVPDamageTypesTags;
+import com.avp.common.registry.tag.AVPEntityTypeTags;
 
 public class Ovipositor extends Mob {
 
@@ -29,6 +31,16 @@ public class Ovipositor extends Mob {
         }
 
         return super.hurt(damageSource, amount);
+    }
+
+    @Override
+    protected final boolean canRide(@NotNull Entity vehicle) {
+        return super.canRide(vehicle) && vehicle.getType().is(AVPEntityTypeTags.QUEENS);
+    }
+
+    @Override
+    protected final boolean canAddPassenger(@NotNull Entity passenger) {
+        return false;
     }
 
     @Override
