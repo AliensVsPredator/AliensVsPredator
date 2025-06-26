@@ -1,62 +1,49 @@
 package com.alien.common.gameplay.entity.living.alien.xenomorph.runner;
 
 import com.alien.common.constant.animation.RunnerAnimationRefs;
+import com.alien.common.util.AzAlienAnimationUtil;
+import com.lib.common.util.AzAnimationUtil;
 import mod.azure.azurelib.rewrite.animation.dispatch.command.AzCommand;
 import mod.azure.azurelib.rewrite.animation.play_behavior.AzPlayBehaviors;
 
 public class RunnerAnimationDispatcher {
 
-    private static final AzCommand ATTACK_CLAW = AzCommand.create(
-        RunnerAnimationRefs.FULL_BODY_CONTROLLER_NAME,
-        RunnerAnimationRefs.ATTACK_CLAW_ANIMATION_NAME
+    private static final AzCommand ARMATTACK_RIGHTARM = AzCommand.create(
+        AzAlienAnimationUtil.RIGHT_ARM_CONTROLLER_NAME,
+        RunnerAnimationRefs.ARMATTACK_RIGHTARM_ANIMATION_NAME
     );
 
-    private static final AzCommand ATTACK_TAIL = AzCommand.create(
-        RunnerAnimationRefs.FULL_BODY_CONTROLLER_NAME,
-        RunnerAnimationRefs.ATTACK_TAIL_ANIMATION_NAME
+    private static final AzCommand BITEATTACK_HEAD = AzCommand.create(
+        AzAlienAnimationUtil.HEAD_CONTROLLER_NAME,
+        RunnerAnimationRefs.BITEATTACK_HEAD_ANIMATION_NAME
     );
 
-    private static final AzCommand CRAWL = AzCommand.create(
-        RunnerAnimationRefs.FULL_BODY_CONTROLLER_NAME,
-        RunnerAnimationRefs.CRAWL_ANIMATION_NAME,
-        AzPlayBehaviors.LOOP
+    private static final AzCommand TAILATTACK_TAIL = AzCommand.create(
+        AzAlienAnimationUtil.TAIL_CONTROLLER_NAME,
+        RunnerAnimationRefs.TAILATTACK_TAIL_ANIMATION_NAME
     );
 
-    private static final AzCommand CRAWL_HOLD = AzCommand.create(
-        RunnerAnimationRefs.FULL_BODY_CONTROLLER_NAME,
-        RunnerAnimationRefs.CRAWL_ANIMATION_NAME,
+    private static final AzCommand CRAWL_ALL = AzAnimationUtil.compose(AzAlienAnimationUtil.XENO_LIMB_NAMES, "crawl");
+
+    private static final AzCommand CRAWL_ALL_HOLD = AzAnimationUtil.compose(
+        AzAlienAnimationUtil.XENO_LIMB_NAMES,
+        "crawl",
         AzPlayBehaviors.HOLD_ON_LAST_FRAME
     );
 
-    private static final AzCommand IDLE = AzCommand.create(
-        RunnerAnimationRefs.FULL_BODY_CONTROLLER_NAME,
-        RunnerAnimationRefs.IDLE_ANIMATION_NAME,
-        AzPlayBehaviors.LOOP
-    );
+    private static final AzCommand IDLE_ALL = AzAnimationUtil.compose(AzAlienAnimationUtil.XENO_LIMB_NAMES, "idle");
 
-    private static final AzCommand LUNGE = AzCommand.create(
-        RunnerAnimationRefs.FULL_BODY_CONTROLLER_NAME,
-        RunnerAnimationRefs.LUNGE_ANIMATION_NAME,
+    private static final AzCommand LUNGE_ALL = AzAnimationUtil.compose(
+        AzAlienAnimationUtil.XENO_LIMB_NAMES,
+        "lunge",
         AzPlayBehaviors.PLAY_ONCE
     );
 
-    private static final AzCommand RUN = AzCommand.create(
-        RunnerAnimationRefs.FULL_BODY_CONTROLLER_NAME,
-        RunnerAnimationRefs.RUN_ANIMATION_NAME,
-        AzPlayBehaviors.LOOP
-    );
+    private static final AzCommand RUN_ALL = AzAnimationUtil.compose(AzAlienAnimationUtil.XENO_LIMB_NAMES, "sprint");
 
-    private static final AzCommand SWIM = AzCommand.create(
-        RunnerAnimationRefs.FULL_BODY_CONTROLLER_NAME,
-        RunnerAnimationRefs.SWIM_ANIMATION_NAME,
-        AzPlayBehaviors.LOOP
-    );
+    private static final AzCommand SWIM_ALL = AzAnimationUtil.compose(AzAlienAnimationUtil.XENO_LIMB_NAMES, "swim");
 
-    private static final AzCommand WALK = AzCommand.create(
-        RunnerAnimationRefs.FULL_BODY_CONTROLLER_NAME,
-        RunnerAnimationRefs.WALK_ANIMATION_NAME,
-        AzPlayBehaviors.LOOP
-    );
+    private static final AzCommand WALK_ALL = AzAnimationUtil.compose(AzAlienAnimationUtil.XENO_LIMB_NAMES, "walk");
 
     private final Runner runner;
 
@@ -65,38 +52,42 @@ public class RunnerAnimationDispatcher {
     }
 
     public void crawl() {
-        CRAWL.sendForEntity(runner);
+        CRAWL_ALL.sendForEntity(runner);
     }
 
     public void crawlHold() {
-        CRAWL_HOLD.sendForEntity(runner);
+        CRAWL_ALL_HOLD.sendForEntity(runner);
     }
 
     public void idle() {
-        IDLE.sendForEntity(runner);
+        IDLE_ALL.sendForEntity(runner);
     }
 
     public void lunge() {
-        LUNGE.sendForEntity(runner);
+        LUNGE_ALL.sendForEntity(runner);
     }
 
     public void run() {
-        RUN.sendForEntity(runner);
+        RUN_ALL.sendForEntity(runner);
     }
 
     public void swim() {
-        SWIM.sendForEntity(runner);
+        SWIM_ALL.sendForEntity(runner);
     }
 
     public void walk() {
-        WALK.sendForEntity(runner);
+        WALK_ALL.sendForEntity(runner);
     }
 
-    public void clawAttack() {
-        ATTACK_CLAW.sendForEntity(runner);
+    public void biteAttack() {
+        BITEATTACK_HEAD.sendForEntity(runner);
+    }
+
+    public void rightClawAttack() {
+        ARMATTACK_RIGHTARM.sendForEntity(runner);
     }
 
     public void tailAttack() {
-        ATTACK_TAIL.sendForEntity(runner);
+        TAILATTACK_TAIL.sendForEntity(runner);
     }
 }

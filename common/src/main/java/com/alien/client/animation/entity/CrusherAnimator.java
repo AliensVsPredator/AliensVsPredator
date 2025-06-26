@@ -1,7 +1,7 @@
 package com.alien.client.animation.entity;
 
-import com.alien.common.constant.animation.CrusherAnimationRefs;
 import com.alien.common.gameplay.entity.living.alien.xenomorph.crusher.Crusher;
+import com.alien.common.util.AzAlienAnimationUtil;
 import mod.azure.azurelib.rewrite.animation.AzAnimatorConfig;
 import mod.azure.azurelib.rewrite.animation.controller.AzAnimationController;
 import mod.azure.azurelib.rewrite.animation.controller.AzAnimationControllerContainer;
@@ -24,25 +24,25 @@ public class CrusherAnimator extends AzEntityAnimator<Crusher> {
     @Override
     public void registerControllers(AzAnimationControllerContainer<Crusher> animationControllerContainer) {
         animationControllerContainer.add(
-            AzAnimationController.builder(this, CrusherAnimationRefs.BODY_CONTROLLER_NAME)
+            AzAnimationController.builder(this, AzAlienAnimationUtil.BODY_CONTROLLER_NAME)
                 .setTransitionLength(5)
                 .build(),
-            AzAnimationController.builder(this, CrusherAnimationRefs.HEAD_CONTROLLER_NAME)
+            AzAnimationController.builder(this, AzAlienAnimationUtil.HEAD_CONTROLLER_NAME)
                 .setTransitionLength(5)
                 .build(),
-            AzAnimationController.builder(this, CrusherAnimationRefs.LEFT_ARM_CONTROLLER_NAME)
+            AzAnimationController.builder(this, AzAlienAnimationUtil.LEFT_ARM_CONTROLLER_NAME)
                 .setTransitionLength(5)
                 .build(),
-            AzAnimationController.builder(this, CrusherAnimationRefs.LEFT_LEG_CONTROLLER_NAME)
+            AzAnimationController.builder(this, AzAlienAnimationUtil.LEFT_LEG_CONTROLLER_NAME)
                 .setTransitionLength(5)
                 .build(),
-            AzAnimationController.builder(this, CrusherAnimationRefs.RIGHT_ARM_CONTROLLER_NAME)
+            AzAnimationController.builder(this, AzAlienAnimationUtil.RIGHT_ARM_CONTROLLER_NAME)
                 .setTransitionLength(5)
                 .build(),
-            AzAnimationController.builder(this, CrusherAnimationRefs.RIGHT_LEG_CONTROLLER_NAME)
+            AzAnimationController.builder(this, AzAlienAnimationUtil.RIGHT_LEG_CONTROLLER_NAME)
                 .setTransitionLength(5)
                 .build(),
-            AzAnimationController.builder(this, CrusherAnimationRefs.TAIL_CONTROLLER_NAME)
+            AzAnimationController.builder(this, AzAlienAnimationUtil.TAIL_CONTROLLER_NAME)
                 .setTransitionLength(5)
                 .build()
         );

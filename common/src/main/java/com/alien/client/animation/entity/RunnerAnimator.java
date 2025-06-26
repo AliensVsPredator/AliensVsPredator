@@ -1,7 +1,7 @@
 package com.alien.client.animation.entity;
 
-import com.alien.common.constant.animation.RunnerAnimationRefs;
 import com.alien.common.gameplay.entity.living.alien.xenomorph.runner.Runner;
+import com.alien.common.util.AzAlienAnimationUtil;
 import mod.azure.azurelib.rewrite.animation.AzAnimatorConfig;
 import mod.azure.azurelib.rewrite.animation.controller.AzAnimationController;
 import mod.azure.azurelib.rewrite.animation.controller.AzAnimationControllerContainer;
@@ -24,7 +24,25 @@ public class RunnerAnimator extends AzEntityAnimator<Runner> {
     @Override
     public void registerControllers(AzAnimationControllerContainer<Runner> animationControllerContainer) {
         animationControllerContainer.add(
-            AzAnimationController.builder(this, RunnerAnimationRefs.FULL_BODY_CONTROLLER_NAME)
+            AzAnimationController.builder(this, AzAlienAnimationUtil.BODY_CONTROLLER_NAME)
+                .setTransitionLength(5)
+                .build(),
+            AzAnimationController.builder(this, AzAlienAnimationUtil.HEAD_CONTROLLER_NAME)
+                .setTransitionLength(5)
+                .build(),
+            AzAnimationController.builder(this, AzAlienAnimationUtil.LEFT_ARM_CONTROLLER_NAME)
+                .setTransitionLength(5)
+                .build(),
+            AzAnimationController.builder(this, AzAlienAnimationUtil.LEFT_LEG_CONTROLLER_NAME)
+                .setTransitionLength(5)
+                .build(),
+            AzAnimationController.builder(this, AzAlienAnimationUtil.RIGHT_ARM_CONTROLLER_NAME)
+                .setTransitionLength(5)
+                .build(),
+            AzAnimationController.builder(this, AzAlienAnimationUtil.RIGHT_LEG_CONTROLLER_NAME)
+                .setTransitionLength(5)
+                .build(),
+            AzAnimationController.builder(this, AzAlienAnimationUtil.TAIL_CONTROLLER_NAME)
                 .setTransitionLength(5)
                 .build()
         );
