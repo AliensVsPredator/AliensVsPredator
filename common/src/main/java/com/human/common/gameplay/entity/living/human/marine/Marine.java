@@ -3,6 +3,7 @@ package com.human.common.gameplay.entity.living.human.marine;
 import com.human.common.gameplay.entity.living.human.AbstractHuman;
 import com.human.common.gameplay.entity.living.human.marine.ai.MarineGOAP;
 import com.human.common.registry.init.item.HumanGunItems;
+import com.lib.common.gameplay.goap.GOAPUser;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.entity.*;
@@ -24,7 +25,7 @@ import com.avp.common.model.inventory.AVPInventory;
 import com.avp.common.model.inventory.AVPInventoryBearer;
 import com.avp.common.registry.init.item.AVPItems;
 
-public class Marine extends AbstractHuman implements AVPInventoryBearer {
+public class Marine extends AbstractHuman implements AVPInventoryBearer, GOAPUser<MarineGOAP> {
 
     private static final List<List<Item>> USABLE_ARMOR_ITEMS = List.of(
         List.of(
@@ -52,35 +53,28 @@ public class Marine extends AbstractHuman implements AVPInventoryBearer {
         EquipmentSlot.FEET
     );
 
-    private final MarineAnimationDispatcher animationDispatcher;
+    public static AttributeSupplier.Builder createMarineAttributes() {
+        return applyFrom(AVP.config.statsConfigs.MARINE_STATS, Mob.createMobAttributes().add(Attributes.ATTACK_DAMAGE));
+    }
 
-    private final MarineGOAP goap;
+    private final MarineAnimationDispatcher animationDispatcher;
 
     private final MarineInventory marineInventory;
 
     public Marine(EntityType<? extends PathfinderMob> entityType, Level level) {
         super(entityType, level);
         this.animationDispatcher = new MarineAnimationDispatcher(this);
-        this.goap = new MarineGOAP(this);
         this.marineInventory = new MarineInventory(this);
     }
 
-    public static AttributeSupplier.Builder createMarineAttributes() {
-        return applyFrom(AVP.config.statsConfigs.MARINE_STATS, Mob.createMobAttributes().add(Attributes.ATTACK_DAMAGE));
+    @Override
+    public @Nullable MarineGOAP createGOAP() {
+        return new MarineGOAP(this);
     }
 
     @Override
     public void runAttackAnimations() {
         animationDispatcher.rightShoot();
-    }
-
-    @Override
-    public void tick() {
-        super.tick();
-
-        if (!level().isClientSide) {
-            goap.update(this);
-        }
     }
 
     @Override

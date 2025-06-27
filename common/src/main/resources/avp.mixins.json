@@ -24,6 +24,7 @@
     "MixinItemEntity_LithiumExplode",
     "MixinLivingEntity_ApplyArmorEffects",
     "MixinLivingEntity_GeneCarrier",
+    "MixinLivingEntity_GOAPUser",
     "MixinLivingEntity_Host",
     "MixinLivingEntity_NukedRadiation",
     "MixinMob_IncapacitateHost",

@@ -109,7 +109,7 @@ public class GeneBonusDataSubProvider extends GeneBonusDataProvider {
                 // Positives
                 new Tuple2<>(Genes.ATTACK_DAMAGE, new GeneModifier(GeneOperationType.ADDITIVE, 12.0)),
                 new Tuple2<>(Genes.INTELLIGENCE, new GeneModifier(GeneOperationType.ADDITIVE, 15.0))
-                // Negatives
+            // Negatives
             )
         );
         add(
