@@ -1,7 +1,5 @@
 package com.human.common.gameplay.item;
 
-import com.alien.common.model.alien.GeneCarrier;
-import com.alien.common.registry.GeneBonusDataRegistry;
 import com.human.common.gameplay.component.SyringeContents;
 import com.human.common.gameplay.component.SyringeMode;
 import com.human.common.registry.init.HumanDataComponents;
@@ -9,6 +7,8 @@ import com.lib.common.gameplay.gene.GeneBonusDataEntry;
 import com.lib.common.gameplay.gene.GeneOperationType;
 import com.lib.common.gameplay.gene.GeneRegistry;
 import com.lib.common.gameplay.gene.Genes;
+import com.lib.common.model.GeneCarrier;
+import com.lib.common.registry.GeneBonusDataRegistry;
 import com.lib.common.util.GeneDataUtil;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.CommonComponents;

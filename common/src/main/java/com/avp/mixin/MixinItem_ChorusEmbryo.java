@@ -1,11 +1,11 @@
 package com.avp.mixin;
 
 import com.alien.common.data.AlienAdvancements;
-import com.alien.common.model.alien.GeneCarrier;
 import com.alien.common.model.alien.Host;
 import com.alien.common.util.AlienEmbryoUtil;
 import com.lib.common.gameplay.gene.GeneOperationType;
 import com.lib.common.gameplay.gene.Genes;
+import com.lib.common.model.GeneCarrier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;

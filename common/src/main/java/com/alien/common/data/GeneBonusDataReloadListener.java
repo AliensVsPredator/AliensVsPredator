@@ -1,10 +1,10 @@
 package com.alien.common.data;
 
-import com.alien.common.registry.GeneBonusDataRegistry;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.lib.common.gameplay.gene.GeneBonusData;
+import com.lib.common.registry.GeneBonusDataRegistry;
 import com.mojang.serialization.JsonOps;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;

@@ -1,8 +1,9 @@
 package com.alien.common.util;
 
 import com.alien.common.gameplay.entity.living.alien.Alien;
-import com.alien.common.model.alien.GeneCarrier;
 import com.alien.common.model.alien.Host;
+import com.lib.common.model.GeneCarrier;
+import com.lib.common.util.EmbryoUtil;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.effect.MobEffectInstance;

@@ -1,7 +1,7 @@
 package com.avp.mixin;
 
-import com.alien.common.model.alien.GeneCarrier;
-import com.alien.common.util.EmbryoUtil;
+import com.lib.common.model.GeneCarrier;
+import com.lib.common.util.EmbryoUtil;
 import com.lib.common.util.GeneIntegrityUtil;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.AgeableMob;

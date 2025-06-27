@@ -2,8 +2,8 @@ package com.avp.common.gameplay.ai.goal;
 
 import com.alien.common.gameplay.entity.living.alien.ovomorph.Ovomorph;
 import com.alien.common.gameplay.entity.living.alien.xenomorph.queen.Queen;
-import com.alien.common.model.alien.GeneCarrier;
 import com.alien.common.model.alien.variant.AlienVariant;
+import com.lib.common.model.GeneCarrier;
 import com.lib.common.util.GeneIntegrityUtil;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.ai.goal.Goal;

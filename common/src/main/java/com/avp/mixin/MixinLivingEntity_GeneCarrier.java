@@ -1,10 +1,10 @@
 package com.avp.mixin;
 
-import com.alien.common.model.alien.GeneCarrier;
 import com.alien.common.util.AcidBleedUtil;
 import com.lib.common.gameplay.entity.manager.GeneManager;
 import com.lib.common.gameplay.gene.GeneOperationType;
 import com.lib.common.gameplay.gene.Genes;
+import com.lib.common.model.GeneCarrier;
 import com.lib.common.network.DataAccessor;
 import com.lib.common.network.DataUser;
 import com.lib.common.util.GeneResistanceHurtUtil;

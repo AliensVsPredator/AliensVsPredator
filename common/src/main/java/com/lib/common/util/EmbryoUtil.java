@@ -1,10 +1,10 @@
-package com.alien.common.util;
+package com.lib.common.util;
 
-import com.alien.common.model.alien.GeneCarrier;
-import com.alien.common.registry.GeneBonusDataRegistry;
 import com.lib.common.gameplay.entity.manager.GeneContainer;
 import com.lib.common.gameplay.gene.GeneOperationType;
 import com.lib.common.gameplay.gene.Genes;
+import com.lib.common.model.GeneCarrier;
+import com.lib.common.registry.GeneBonusDataRegistry;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;

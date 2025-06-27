@@ -1,8 +1,8 @@
 package com.lib.common.util;
 
-import com.alien.common.model.alien.GeneCarrier;
 import com.lib.common.gameplay.gene.GeneOperationType;
 import com.lib.common.gameplay.gene.Genes;
+import com.lib.common.model.GeneCarrier;
 import com.lib.common.model.GeneDecayLevelType;
 
 public class GeneIntegrityUtil {

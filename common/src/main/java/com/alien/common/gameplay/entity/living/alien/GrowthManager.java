@@ -1,13 +1,13 @@
 package com.alien.common.gameplay.entity.living.alien;
 
 import com.alien.common.gameplay.entity.living.alien.xenomorph.boiler.Boiler;
-import com.alien.common.model.alien.GeneCarrier;
 import com.alien.common.model.lifecycle.growth.GrowthStage;
 import com.alien.common.registry.GrowthStageRegistry;
 import com.lib.common.gameplay.NBTSerializable;
 import com.lib.common.gameplay.gene.GeneOperationType;
 import com.lib.common.gameplay.gene.Genes;
 import com.lib.common.gameplay.util.spatial.block.BlockPosUtil;
+import com.lib.common.model.GeneCarrier;
 import com.lib.common.util.GeneIntegrityUtil;
 import net.minecraft.Util;
 import net.minecraft.nbt.CompoundTag;

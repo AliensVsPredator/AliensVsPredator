@@ -1,4 +1,4 @@
-package com.alien.common.model.alien;
+package com.lib.common.model;
 
 import com.lib.common.gameplay.entity.manager.GeneManager;
 import org.jetbrains.annotations.Nullable;

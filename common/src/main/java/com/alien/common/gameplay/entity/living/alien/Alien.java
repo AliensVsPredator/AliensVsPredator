@@ -1,6 +1,5 @@
 package com.alien.common.gameplay.entity.living.alien;
 
-import com.alien.common.model.alien.GeneCarrier;
 import com.alien.common.model.alien.variant.AlienVariant;
 import com.alien.common.util.AcidBleedUtil;
 import com.alien.common.util.AlienTransitionUtil;
@@ -8,6 +7,7 @@ import com.bvanseg.just.functional.option.Option;
 import com.google.common.base.Objects;
 import com.lib.common.gameplay.entity.manager.GeneManager;
 import com.lib.common.gameplay.entity.manager.VibrationSystemManager;
+import com.lib.common.model.GeneCarrier;
 import com.lib.common.network.DataAccessor;
 import com.lib.common.network.DataUser;
 import net.minecraft.core.Holder;

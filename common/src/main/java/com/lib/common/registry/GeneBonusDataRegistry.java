@@ -1,4 +1,4 @@
-package com.alien.common.registry;
+package com.lib.common.registry;
 
 import com.lib.common.gameplay.gene.GeneBonusData;
 import com.lib.common.gameplay.gene.GeneModifierKey;
