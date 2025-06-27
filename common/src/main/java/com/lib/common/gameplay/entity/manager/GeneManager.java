@@ -73,6 +73,7 @@ public class GeneManager implements NBTSerializable {
                     }
                 }
             }
+            case Gene.Effect effectGene -> effectGene.onChange().accept(entity);
             case Gene.Simple ignored -> { /* NO-OP */ }
         }
     }

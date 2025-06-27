@@ -1,8 +1,14 @@
 package com.lib.common.gameplay.gene;
 
+import com.alien.common.gameplay.entity.living.alien.ovomorph.Ovomorph;
+import com.lib.common.model.GeneCarrier;
 import net.minecraft.core.Holder;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attribute;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+
+import java.util.function.Consumer;
 
 import com.avp.AVPResources;
 import com.avp.common.registry.AVPDeferredHolder;
@@ -24,7 +30,10 @@ public class Genes {
 
     public static final AVPDeferredHolder<Gene> BONUS_EMBRYO_COUNT = registerSimple("bonus_embryo_count");
 
-    public static final AVPDeferredHolder<Gene> BONUS_PARASITE_COUNT = registerSimple("bonus_parasite_count");
+    public static final AVPDeferredHolder<Gene> BONUS_PARASITE_COUNT = registerEffect(
+        "bonus_parasite_count",
+        Genes::handleBonusParasiteCount
+    );
 
     public static final AVPDeferredHolder<Gene> COLD_RESISTANCE = registerSimple("cold_resistance");
 
@@ -51,7 +60,37 @@ public class Genes {
         return GeneRegistry.register(() -> new Gene.Attribute(AVPResources.location(name), attribute));
     }
 
+    private static AVPDeferredHolder<Gene> registerEffect(String name, Consumer<LivingEntity> onChange) {
+        return GeneRegistry.register(() -> new Gene.Effect(AVPResources.location(name), onChange));
+    }
+
     private static AVPDeferredHolder<Gene> registerSimple(String name) {
         return GeneRegistry.register(() -> new Gene.Simple(AVPResources.location(name)));
+    }
+
+    private static void handleBonusParasiteCount(LivingEntity entity) {
+        if (!(entity instanceof Ovomorph ovomorph)) {
+            return;
+        }
+
+        var scaleAttribute = ovomorph.getAttribute(Attributes.SCALE);
+
+        if (scaleAttribute != null) {
+            var geneContainer = ((GeneCarrier) ovomorph).getOrCreateGeneManager().getGeneContainer();
+            var additiveParasiteCount = geneContainer.getActiveGeneMap()
+                .getValue(Genes.BONUS_PARASITE_COUNT, GeneOperationType.ADDITIVE);
+            var multiplicativeParasiteCount = 1 * geneContainer.getActiveGeneMap()
+                .getValue(Genes.BONUS_PARASITE_COUNT, GeneOperationType.MULTIPLICATIVE);
+            var totalParasiteCount = multiplicativeParasiteCount + additiveParasiteCount;
+            var clampedParasiteCount = Math.clamp(totalParasiteCount, 0, 3);
+            var modifier = new AttributeModifier(
+                Genes.BONUS_PARASITE_COUNT.get().id(),
+                clampedParasiteCount / 2.0,
+                AttributeModifier.Operation.ADD_VALUE
+            );
+
+            ovomorph.maxSpawnCount.set((byte) (1 + clampedParasiteCount));
+            scaleAttribute.addOrReplacePermanentModifier(modifier);
+        }
     }
 }
