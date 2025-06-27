@@ -54,6 +54,8 @@ public class Genes {
 
     public static final AVPDeferredHolder<Gene> POISON = registerSimple("poison");
 
+    public static final AVPDeferredHolder<Gene> POISONOUS_BARBS = registerSimple("poisonous_barbs");
+
     public static final AVPDeferredHolder<Gene> THORNS = registerSimple("thorns");
 
     public static final AVPDeferredHolder<Gene> WARP = registerSimple("warp");

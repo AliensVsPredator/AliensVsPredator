@@ -14,6 +14,8 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -111,6 +113,7 @@ public abstract class MixinLivingEntity_GeneCarrier extends Entity implements Ge
 
         if (isHurt) {
             avp$handleAcidBloodGene(damageSource, damage);
+            avp$handlePoisonousBarbsGene(damageSource, damage);
             avp$handleThornsGene(damageSource, damage);
         }
     }
@@ -130,7 +133,26 @@ public abstract class MixinLivingEntity_GeneCarrier extends Entity implements Ge
     }
 
     @Unique
+    private void avp$handlePoisonousBarbsGene(DamageSource damageSource, float damage) {
+        // TODO: Factor in additive in here.
+        var poisonChance = getOrCreateGeneManager().getGeneContainer()
+            .getActiveGeneMap()
+            .getValue(Genes.POISONOUS_BARBS, GeneOperationType.MULTIPLICATIVE);
+
+        var hurtingEntity = damageSource.getEntity();
+
+        if (getRandom().nextDouble() < poisonChance && hurtingEntity instanceof LivingEntity hurtingLivingEntity) {
+            // TODO: Amplify level with increasing levels.
+            hurtingLivingEntity.addEffect(new MobEffectInstance(MobEffects.POISON, 6 * 20, 0), this);
+        }
+    }
+
+    @Unique
     private void avp$handleThornsGene(DamageSource damageSource, float damage) {
+        if (damageSource.is(DamageTypeTags.AVOIDS_GUARDIAN_THORNS)) {
+            return;
+        }
+
         // TODO: Factor in multiplicative in here.
         var thornsDamage = getOrCreateGeneManager().getGeneContainer()
             .getActiveGeneMap()
