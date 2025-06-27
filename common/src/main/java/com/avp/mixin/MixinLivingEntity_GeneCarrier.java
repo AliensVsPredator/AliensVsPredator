@@ -106,20 +106,40 @@ public abstract class MixinLivingEntity_GeneCarrier extends Entity implements Ge
     }
 
     @Inject(at = @At("RETURN"), method = "hurt")
-    public void avp$hurtReturnEffects(DamageSource damageSource, float damage, CallbackInfoReturnable<Boolean> cir) {
+    public void avp$postHurtEffects(DamageSource damageSource, float damage, CallbackInfoReturnable<Boolean> cir) {
         var isHurt = cir.getReturnValueZ();
 
         if (isHurt) {
-            // TODO: Factor in additive in here.
-            var acidBloodChance = getOrCreateGeneManager().getGeneContainer()
-                .getActiveGeneMap()
-                .getValue(Genes.ACIDIC_BLOOD, GeneOperationType.MULTIPLICATIVE);
+            avp$handleAcidBloodGene(damageSource, damage);
+            avp$handleThornsGene(damageSource, damage);
+        }
+    }
 
-            if (getRandom().nextDouble() < acidBloodChance && damageSource != damageSources().genericKill()) {
-                var self = LivingEntity.class.cast(this);
-                var randomPos = AcidBleedUtil.computeRandomPosFromBoundingBox(self);
-                AcidBleedUtil.spawnAcid(self, damage, randomPos);
-            }
+    @Unique
+    private void avp$handleAcidBloodGene(DamageSource damageSource, float damage) {
+        // TODO: Factor in additive in here.
+        var acidBloodChance = getOrCreateGeneManager().getGeneContainer()
+            .getActiveGeneMap()
+            .getValue(Genes.ACIDIC_BLOOD, GeneOperationType.MULTIPLICATIVE);
+
+        if (getRandom().nextDouble() < acidBloodChance && damageSource != damageSources().genericKill()) {
+            var self = LivingEntity.class.cast(this);
+            var randomPos = AcidBleedUtil.computeRandomPosFromBoundingBox(self);
+            AcidBleedUtil.spawnAcid(self, damage, randomPos);
+        }
+    }
+
+    @Unique
+    private void avp$handleThornsGene(DamageSource damageSource, float damage) {
+        // TODO: Factor in multiplicative in here.
+        var thornsDamage = getOrCreateGeneManager().getGeneContainer()
+            .getActiveGeneMap()
+            .getValue(Genes.THORNS, GeneOperationType.ADDITIVE);
+
+        var hurtingEntity = damageSource.getEntity();
+
+        if (hurtingEntity != null && thornsDamage >= 0) {
+            hurtingEntity.hurt(hurtingEntity.damageSources().thorns(this), (float) thornsDamage);
         }
     }
 

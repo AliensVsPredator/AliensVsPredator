@@ -52,6 +52,8 @@ public class Genes {
 
     public static final AVPDeferredHolder<Gene> MOVE_SPEED = registerAttribute("move_speed", Attributes.MOVEMENT_SPEED);
 
+    public static final AVPDeferredHolder<Gene> THORNS = registerSimple("thorns");
+
     public static final AVPDeferredHolder<Gene> WARP = registerSimple("warp");
 
     public static void initialize() {}

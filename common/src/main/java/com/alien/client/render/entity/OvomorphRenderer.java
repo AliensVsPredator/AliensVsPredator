@@ -2,11 +2,14 @@ package com.alien.client.render.entity;
 
 import com.alien.client.animation.entity.OvomorphAnimator;
 import com.alien.common.gameplay.entity.living.alien.ovomorph.Ovomorph;
+import com.mojang.blaze3d.vertex.PoseStack;
 import mod.azure.azurelib.rewrite.render.entity.AzEntityRenderer;
 import mod.azure.azurelib.rewrite.render.entity.AzEntityRendererConfig;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
+import org.jetbrains.annotations.NotNull;
 
 import com.avp.AVPResources;
 
@@ -39,6 +42,22 @@ public class OvomorphRenderer extends AzEntityRenderer<Ovomorph> {
             context
         );
         this.shadowRadius = 0.4F;
+    }
+
+    @Override
+    public void render(
+        @NotNull Ovomorph entity,
+        float entityYaw,
+        float partialTick,
+        @NotNull PoseStack poseStack,
+        @NotNull MultiBufferSource bufferSource,
+        int packedLight
+    ) {
+        var scale = 1.35F;
+        poseStack.pushPose();
+        poseStack.scale(scale, scale, scale);
+        super.render(entity, entityYaw, partialTick, poseStack, bufferSource, packedLight);
+        poseStack.popPose();
     }
 
     public static ResourceLocation modelLocation(Ovomorph ovomorph) {

@@ -25,6 +25,8 @@ public class EnUsGeneProvider {
         addGene(builder, Genes.KNOCKBACK_RESISTANCE, "Knockback Resistance");
         addGene(builder, Genes.MAX_HEALTH, "Max Health");
         addGene(builder, Genes.MOVE_SPEED, "Move Speed");
+        addGene(builder, Genes.THORNS, "Thorns");
+        addGene(builder, Genes.WARP, "Warp");
     };
 
     private static void addGene(
