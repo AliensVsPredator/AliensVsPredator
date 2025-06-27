@@ -110,17 +110,7 @@ public class Ovomorph extends Alien implements Shearable {
         var itemStack = player.getItemInHand(interactionHand);
         var resinBallItem = AlienVariantTypes.getFor(this).resinBall().get();
 
-        if (itemStack.is(AlienItems.RAW_ROYAL_JELLY.get())) {
-            if (hatchManager.isHatching() || getHatchManager().isHatched()) {
-                level().playSound(null, this, SoundEvents.HONEY_BLOCK_PLACE, SoundSource.PLAYERS, 1.0F, 1.0F);
-                hatchManager.restore();
-                itemStack.consume(1, player);
-
-                return InteractionResult.SUCCESS;
-            } else {
-                return InteractionResult.CONSUME;
-            }
-        } else if (isRooted.get() && itemStack.is(Items.SHEARS)) {
+        if (isRooted.get() && itemStack.is(Items.SHEARS)) {
             shear(SoundSource.PLAYERS);
             gameEvent(GameEvent.SHEAR, player);
             itemStack.hurtAndBreak(1, player, getSlotForHand(interactionHand));

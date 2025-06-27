@@ -57,22 +57,6 @@ public abstract class Parasite extends Alien {
     }
 
     @Override
-    public @NotNull InteractionResult mobInteract(Player player, @NotNull InteractionHand interactionHand) {
-        ItemStack itemStack = player.getItemInHand(interactionHand);
-        if (itemStack.is(AlienItems.RAW_ROYAL_JELLY.get())) {
-            if (!level().isClientSide && !isFertile.get()) {
-                attachmentManager.restore();
-                player.getItemInHand(interactionHand).shrink(1);
-                return InteractionResult.SUCCESS;
-            } else {
-                return InteractionResult.CONSUME;
-            }
-        } else {
-            return super.mobInteract(player, interactionHand);
-        }
-    }
-
-    @Override
     public boolean doHurtTarget(@NotNull Entity entity) {
         if (canAttachToHost(entity)) {
             startRiding(entity, true);

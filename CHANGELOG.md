@@ -76,6 +76,8 @@
 - Same-strain, different-hive xenos now no longer kill each other.
 - Hive centers now constantly move with the hive leader.
 - Updated the chestbursting death message to have a proper, better-fitting message.
+- Hatched ovomorphs can no longer be revived with royal jelly.
+- Infertile facehuggers can no longer be revived with royal jelly.
 - Improved facehugging effects:
   - Effects now last 2 seconds longer (4 seconds total).
   - Weakness is now applied to the host sooner (as soon as smothering damage finishes).
