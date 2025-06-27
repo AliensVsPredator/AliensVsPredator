@@ -18,9 +18,9 @@ public class RunnerAnimationDispatcher {
         RunnerAnimationRefs.BITEATTACK_HEAD_ANIMATION_NAME
     );
 
-    private static final AzCommand TAILATTACK_TAIL = AzCommand.create(
+    private static final AzCommand TAILATTACKQUAD_TAIL = AzCommand.create(
         AzAlienAnimationUtil.TAIL_CONTROLLER_NAME,
-        RunnerAnimationRefs.TAILATTACK_TAIL_ANIMATION_NAME
+        RunnerAnimationRefs.TAILATTACKQUAD_TAIL_ANIMATION_NAME
     );
 
     private static final AzCommand CRAWL_ALL = AzAnimationUtil.compose(AzAlienAnimationUtil.XENO_LIMB_NAMES, "crawl");
@@ -87,7 +87,7 @@ public class RunnerAnimationDispatcher {
         ARMATTACK_RIGHTARM.sendForEntity(runner);
     }
 
-    public void tailAttack() {
-        TAILATTACK_TAIL.sendForEntity(runner);
+    public void tailAttackQuad() {
+        TAILATTACKQUAD_TAIL.sendForEntity(runner);
     }
 }

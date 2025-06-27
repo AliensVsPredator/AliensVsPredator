@@ -55,7 +55,7 @@ public class Runner extends Xenomorph {
         switch (attackType) {
             case 0 -> animationDispatcher.rightClawAttack();
             case 1 -> animationDispatcher.biteAttack();
-            default -> animationDispatcher.tailAttack();
+            default -> animationDispatcher.tailAttackQuad();
         }
     }
 

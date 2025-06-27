@@ -10,5 +10,5 @@ public class RunnerAnimationRefs {
 
     public static final String BITEATTACK_HEAD_ANIMATION_NAME = "biteattack.head";
 
-    public static final String TAILATTACK_TAIL_ANIMATION_NAME = "tailattack.tail";
+    public static final String TAILATTACKQUAD_TAIL_ANIMATION_NAME = "tailattackquad.tail";
 }
