@@ -27,6 +27,7 @@
     "MixinLivingEntity_GOAPUser",
     "MixinLivingEntity_Host",
     "MixinLivingEntity_NukedRadiation",
+    "MixinMob_GeneCarrier",
     "MixinMob_IncapacitateHost",
     "MixinMobCategory_InjectCustomAlienCategory",
     "MixinPlayer_CrawlPosing",
