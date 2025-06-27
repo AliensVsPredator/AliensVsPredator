@@ -10,6 +10,7 @@ import net.minecraft.util.Mth;
 import org.jetbrains.annotations.NotNull;
 
 import com.avp.AVPResources;
+import com.avp.client.animation.BasicAnimationUtils;
 
 public class MarineAnimator extends AzEntityAnimator<Marine> {
 
@@ -34,6 +35,8 @@ public class MarineAnimator extends AzEntityAnimator<Marine> {
     @Override
     public void setCustomAnimations(Marine animatable, float partialTicks) {
         super.setCustomAnimations(animatable, partialTicks);
+
+        BasicAnimationUtils.applyHeadRotations(animatable, context(), partialTicks, "gHead", 0F);
 
         var boneCache = this.context().boneCache();
         var leftArm = boneCache.getBakedModel().getBoneOrNull("gLeftArm");
