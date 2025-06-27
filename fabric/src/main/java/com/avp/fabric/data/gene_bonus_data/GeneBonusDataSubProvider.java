@@ -270,6 +270,7 @@ public class GeneBonusDataSubProvider extends GeneBonusDataProvider {
             EntityType.SNIFFER,
             List.of(
                 // Positives
+                new Tuple2<>(Genes.BONUS_PARASITE_COUNT, new GeneModifier(GeneOperationType.ADDITIVE, 0.5)),
                 new Tuple2<>(Genes.MAX_HEALTH, new GeneModifier(GeneOperationType.MULTIPLICATIVE, 0.15)),
                 // Negatives
                 new Tuple2<>(Genes.ATTACK_DAMAGE, new GeneModifier(GeneOperationType.ADDITIVE, -3.0)),
