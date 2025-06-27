@@ -1,6 +1,7 @@
 package com.avp.mixin;
 
 import com.alien.common.model.alien.FreeMob;
+import com.lib.common.gameplay.goap.GOAPUser;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
@@ -44,6 +45,12 @@ public abstract class MixinMob_IncapacitateHost extends LivingEntity implements 
         self.setSpeed(0.0f);
         self.setAggressive(false);
         self.setSilent(true);
+
+        var goap = ((GOAPUser<?>) self).getGOAPOrNull();
+
+        if (goap != null) {
+            goap.setEnabled(false);
+        }
     }
 
     @Override
@@ -51,5 +58,11 @@ public abstract class MixinMob_IncapacitateHost extends LivingEntity implements 
         var self = Mob.class.cast(this);
         self.setAggressive(true);
         self.setSilent(false);
+
+        var goap = ((GOAPUser<?>) self).getGOAPOrNull();
+
+        if (goap != null) {
+            goap.setEnabled(true);
+        }
     }
 }

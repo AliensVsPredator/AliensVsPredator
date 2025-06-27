@@ -108,6 +108,9 @@
 - Fixed alien attack animations not playing properly.
 - Fixed aliens having jittery animations when servers are lagging behind.
 - Fixed facehuggers not providing host air underwater.
+- Fixed marines having broken ground navigation.
+- Fixed marines not moving their heads to match where they are looking.
+- Fixed facehuggers not fully incapacitating marine hosts due to marines using a different AI system.
 
 ## 🛠 Data Pack
 - Added `#avp:runner_hosts` entity tag.
