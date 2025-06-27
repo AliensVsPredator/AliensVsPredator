@@ -104,6 +104,16 @@ public class GeneBonusDataSubProvider extends GeneBonusDataProvider {
             )
         );
         add(
+            EntityType.ELDER_GUARDIAN,
+            List.of(
+                // Positives
+                new Tuple2<>(Genes.THORNS, new GeneModifier(GeneOperationType.ADDITIVE, 4.0)),
+                new Tuple2<>(Genes.ATTACK_DAMAGE, new GeneModifier(GeneOperationType.ADDITIVE, 6.0))
+            // Negatives
+            // TODO: Negative attack speed here.
+            )
+        );
+        add(
             EntityType.EVOKER,
             List.of(
                 // Positives
@@ -120,6 +130,16 @@ public class GeneBonusDataSubProvider extends GeneBonusDataProvider {
                 new Tuple2<>(Genes.COLD_RESISTANCE, new GeneModifier(GeneOperationType.MULTIPLICATIVE, 0.15)),
                 // Negatives
                 new Tuple2<>(Genes.INTELLIGENCE, new GeneModifier(GeneOperationType.ADDITIVE, -10.0))
+            )
+        );
+        add(
+            EntityType.GUARDIAN,
+            List.of(
+                // Positives
+                new Tuple2<>(Genes.THORNS, new GeneModifier(GeneOperationType.ADDITIVE, 2.0)),
+                new Tuple2<>(Genes.ATTACK_DAMAGE, new GeneModifier(GeneOperationType.ADDITIVE, 3.0))
+            // Negatives
+            // TODO: Negative attack speed here.
             )
         );
         add(
@@ -367,10 +387,8 @@ public class GeneBonusDataSubProvider extends GeneBonusDataProvider {
         touchedEntries.add(EntityType.CAVE_SPIDER);
         touchedEntries.add(EntityType.CHICKEN);
         touchedEntries.add(EntityType.COD);
-        touchedEntries.add(EntityType.CREEPER);
         touchedEntries.add(EntityType.DOLPHIN);
         touchedEntries.add(EntityType.DROWNED);
-        touchedEntries.add(EntityType.ELDER_GUARDIAN);
         touchedEntries.add(EntityType.ENDER_DRAGON);
         touchedEntries.add(EntityType.ENDERMAN);
         touchedEntries.add(EntityType.ENDERMITE);
@@ -379,7 +397,6 @@ public class GeneBonusDataSubProvider extends GeneBonusDataProvider {
         touchedEntries.add(EntityType.GHAST);
         touchedEntries.add(EntityType.GIANT);
         touchedEntries.add(EntityType.GLOW_SQUID);
-        touchedEntries.add(EntityType.GUARDIAN);
         touchedEntries.add(EntityType.HUSK);
         touchedEntries.add(EntityType.MAGMA_CUBE);
         touchedEntries.add(EntityType.OCELOT);
