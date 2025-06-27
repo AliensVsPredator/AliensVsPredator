@@ -77,12 +77,13 @@ public class GeneBonusDataSubProvider extends GeneBonusDataProvider {
             )
         );
         add(
-            EntityType.CREEPER,
+            EntityType.CAVE_SPIDER,
             List.of(
                 // Positives
-                new Tuple2<>(Genes.INTELLIGENCE, new GeneModifier(GeneOperationType.ADDITIVE, 5.0)),
-                // Neutrals
-                new Tuple2<>(Genes.ACID_VOLATILITY, new GeneModifier(GeneOperationType.ADDITIVE, 0.34))
+                new Tuple2<>(Genes.MOVE_SPEED, new GeneModifier(GeneOperationType.MULTIPLICATIVE, 0.05)),
+                new Tuple2<>(Genes.POISON, new GeneModifier(GeneOperationType.MULTIPLICATIVE, 0.34)),
+                // Negatives
+                new Tuple2<>(Genes.MAX_HEALTH, new GeneModifier(GeneOperationType.MULTIPLICATIVE, -0.1))
             )
         );
         add(
@@ -92,6 +93,15 @@ public class GeneBonusDataSubProvider extends GeneBonusDataProvider {
                 new Tuple2<>(Genes.BONUS_EMBRYO_COUNT, new GeneModifier(GeneOperationType.ADDITIVE, 0.25)),
                 // Negatives
                 new Tuple2<>(Genes.INTELLIGENCE, new GeneModifier(GeneOperationType.ADDITIVE, -10.0))
+            )
+        );
+        add(
+            EntityType.CREEPER,
+            List.of(
+                // Positives
+                new Tuple2<>(Genes.INTELLIGENCE, new GeneModifier(GeneOperationType.ADDITIVE, 5.0)),
+                // Neutrals
+                new Tuple2<>(Genes.ACID_VOLATILITY, new GeneModifier(GeneOperationType.ADDITIVE, 0.34))
             )
         );
         add(
@@ -384,7 +394,6 @@ public class GeneBonusDataSubProvider extends GeneBonusDataProvider {
         touchedEntries.add(EntityType.BOGGED);
         touchedEntries.add(EntityType.BREEZE);
         touchedEntries.add(EntityType.CAT);
-        touchedEntries.add(EntityType.CAVE_SPIDER);
         touchedEntries.add(EntityType.CHICKEN);
         touchedEntries.add(EntityType.COD);
         touchedEntries.add(EntityType.DOLPHIN);
