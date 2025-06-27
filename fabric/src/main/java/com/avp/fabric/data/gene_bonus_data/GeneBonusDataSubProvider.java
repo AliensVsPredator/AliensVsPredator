@@ -218,6 +218,17 @@ public class GeneBonusDataSubProvider extends GeneBonusDataProvider {
             )
         );
         add(
+            EntityType.PUFFERFISH,
+            List.of(
+                // Positives
+                new Tuple2<>(Genes.POISONOUS_BARBS, new GeneModifier(GeneOperationType.MULTIPLICATIVE, 0.33)),
+                // Negatives
+                new Tuple2<>(Genes.ATTACK_DAMAGE, new GeneModifier(GeneOperationType.ADDITIVE, -1.0)),
+                new Tuple2<>(Genes.INTELLIGENCE, new GeneModifier(GeneOperationType.ADDITIVE, -10.0)),
+                new Tuple2<>(Genes.MOVE_SPEED, new GeneModifier(GeneOperationType.MULTIPLICATIVE, -0.05))
+            )
+        );
+        add(
             EntityType.PIG,
             List.of(
                 // Positives
@@ -411,7 +422,6 @@ public class GeneBonusDataSubProvider extends GeneBonusDataProvider {
         touchedEntries.add(EntityType.OCELOT);
         touchedEntries.add(EntityType.PARROT);
         touchedEntries.add(EntityType.PHANTOM);
-        touchedEntries.add(EntityType.PUFFERFISH);
         touchedEntries.add(EntityType.RABBIT);
         touchedEntries.add(EntityType.SALMON);
         touchedEntries.add(EntityType.SHULKER);
