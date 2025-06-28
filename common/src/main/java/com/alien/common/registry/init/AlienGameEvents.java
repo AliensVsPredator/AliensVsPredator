@@ -8,6 +8,12 @@ import com.avp.service.Services;
 
 public class AlienGameEvents {
 
+    public static final AVPDeferredHolder<GameEvent> EGG_ABERRANT_PICKUP_REQUEST = register("egg_aberrant_pickup_request");
+
+    public static final AVPDeferredHolder<GameEvent> EGG_NETHER_PICKUP_REQUEST = register("egg_nether_pickup_request");
+
+    public static final AVPDeferredHolder<GameEvent> EGG_PICKUP_REQUEST = register("egg_pickup_request");
+
     public static final AVPDeferredHolder<GameEvent> XENOMORPH_ABERRANT_RESIN_SPREAD = register("aberrant_resin_spread");
 
     public static final AVPDeferredHolder<GameEvent> XENOMORPH_IRRADIATED_RESIN_SPREAD = register("irradiated_resin_spread");

@@ -42,12 +42,17 @@
   - The queen requires a considerable amount of space as well as stable ground to create her ovipositor.
   - Eggs no longer drop at the queen's feet, but instead at the end of the ovipositor.
   - Egglaying has otherwise remained unchanged.
+- Drones (and the newly added runners) now distribute ovomorphs around the hive.
+  - Drones/runners like to place eggs with at least a 1-block gap between the eggs.
+  - Drones/runners will pick up eggs that are unrooted.
+  - When the drones/runners place the egg down at the new location, they will automatically root the egg in place.
 - Added new entities:
   - Aberrant Adolescent
   - Aberrant Boiler
   - Aberrant Crusher
   - Aberrant Prowler
   - Aberrant Runner
+  - Aberrant Spitter
   - Adolescent
   - Boiler
   - Crusher
@@ -59,12 +64,14 @@
   - Nether Crusher
   - Nether Prowler
   - Nether Runner
+  - Nether Spitter
   - Ovipositor
   - Prowler
   - Royal Aberrant Adolescent
   - Royal Adolescent
   - Royal Nether Adolescent
   - Runner
+  - Spitter
 
 ## ♻️ Changes
 - Predators no longer spawn naturally in jungles.

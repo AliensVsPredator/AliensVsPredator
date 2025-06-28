@@ -6,6 +6,7 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.gameevent.GameEvent;
+import org.jetbrains.annotations.Nullable;
 
 import com.avp.common.registry.AVPDeferredHolder;
 
@@ -28,6 +29,7 @@ public record AlienVariantType(
     AVPDeferredHolder<Item> resinBall,
 
     // Game Events
+    @Nullable AVPDeferredHolder<GameEvent> eggPickupRequestEvent,
     AVPDeferredHolder<GameEvent> resinSpreadEvent,
 
     // Particle Types

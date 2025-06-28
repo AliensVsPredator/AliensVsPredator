@@ -1,22 +1,33 @@
 package com.alien.common.gameplay.entity.living.alien.xenomorph.drone;
 
+import com.alien.common.gameplay.ai.DropOffEggGoal;
+import com.alien.common.gameplay.ai.PickUpEggGoal;
 import com.alien.common.gameplay.entity.living.alien.Alien;
+import com.alien.common.gameplay.entity.living.alien.EggCarrier;
+import com.alien.common.gameplay.entity.living.alien.xenomorph.EggPickupManager;
 import com.alien.common.gameplay.entity.living.alien.xenomorph.Xenomorph;
 import com.alien.common.model.alien.variant.AlienVariant;
 import com.alien.common.model.resin.ResinData;
 import com.alien.common.registry.init.AlienEntityTypes;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.gameevent.DynamicGameEventListener;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.function.BiConsumer;
 
 import com.avp.AVP;
 import com.avp.common.gameplay.ai.goal.combat.LungeAtTargetGoal;
 import com.avp.common.registry.init.AVPSoundEvents;
+import com.avp.common.registry.tag.AVPEntityTypeTags;
+import com.avp.common.util.EntityUtil;
 
-public class Drone extends Xenomorph {
+public class Drone extends Xenomorph implements EggCarrier {
 
     public static AttributeSupplier.Builder createDroneAttributes() {
         return applyFrom(AVP.config.statsConfigs.DRONE_STATS, Monster.createMonsterAttributes());
@@ -24,10 +35,13 @@ public class Drone extends Xenomorph {
 
     private final DroneAnimationDispatcher animationDispatcher;
 
+    private final EggPickupManager eggPickupManager;
+
     public Drone(EntityType<? extends Drone> entityType, Level level) {
         super(entityType, level);
         this.animationDispatcher = new DroneAnimationDispatcher(this);
         this.config = AVP.config.statsConfigs.DRONE_STATS;
+        this.eggPickupManager = new EggPickupManager(this);
     }
 
     @Override
@@ -44,6 +58,31 @@ public class Drone extends Xenomorph {
     protected void registerGoals() {
         super.registerGoals();
         goalSelector.addGoal(3, new LungeAtTargetGoal(this, 0.05F, 20 * 7, 6, 12).setOnLungeCallback(this::runLungeAnimation));
+        goalSelector.addGoal(4, new PickUpEggGoal<>(this));
+        goalSelector.addGoal(5, new DropOffEggGoal<>(this));
+    }
+
+    @Override
+    public void tick() {
+        super.tick();
+        eggPickupManager.tick();
+    }
+
+    @Override
+    protected boolean canEntityRideAlien(@NotNull Entity passenger) {
+        return super.canEntityRideAlien(passenger)
+            || passenger.getType().is(AVPEntityTypeTags.OVOMORPHS);
+    }
+
+    @Override
+    protected void positionRider(@NotNull Entity passenger, @NotNull MoveFunction callback) {
+        if (passenger.getType().is(AVPEntityTypeTags.OVOMORPHS)) {
+            var relativePos = EntityUtil.getRelativePosition(this, 0, 0.8, -1);
+            callback.accept(passenger, relativePos.x, relativePos.y, relativePos.z);
+            return;
+        }
+
+        super.positionRider(passenger, callback);
     }
 
     @Override
@@ -65,6 +104,12 @@ public class Drone extends Xenomorph {
     }
 
     @Override
+    public void updateDynamicGameEventListener(@NotNull BiConsumer<DynamicGameEventListener<?>, ServerLevel> biConsumer) {
+        super.updateDynamicGameEventListener(biConsumer);
+        eggPickupManager.updateDynamicGameEventListener(biConsumer);
+    }
+
+    @Override
     protected float getHealthRegenPerSecond() {
         return AVP.config.statsConfigs.DRONE_STATS.healthRegenPerSecond;
     }
@@ -72,6 +117,11 @@ public class Drone extends Xenomorph {
     @Override
     public int getMaxJellyToGrowth() {
         return 2;
+    }
+
+    @Override
+    public EggPickupManager getEggPickupManager() {
+        return eggPickupManager;
     }
 
     public DroneAnimationDispatcher getAnimationDispatcher() {

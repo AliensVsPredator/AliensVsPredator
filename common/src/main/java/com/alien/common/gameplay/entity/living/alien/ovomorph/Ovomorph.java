@@ -30,6 +30,7 @@ import org.jetbrains.annotations.Nullable;
 
 import com.avp.AVP;
 import com.avp.common.registry.init.AVPSoundEvents;
+import com.avp.common.registry.tag.AVPEntityTypeTags;
 import com.avp.common.util.AVPPredicates;
 
 public class Ovomorph extends Alien implements Shearable {
@@ -61,12 +62,17 @@ public class Ovomorph extends Alien implements Shearable {
 
     private final HatchManager hatchManager;
 
+    public boolean pickupRequestAcknowledged;
+
+    public boolean wantsPickup;
+
     public Ovomorph(EntityType<? extends Ovomorph> entityType, Level level) {
         super(entityType, level);
         this.animationDispatcher = new OvomorphAnimationDispatcher(this);
         this.goap = new OvomorphGOAP(this);
         this.hatchManager = new HatchManager(this, 3 * 20, 3 * 20);
         this.config = AVP.config.statsConfigs.OVOMORPH_STATS;
+        this.wantsPickup = false;
     }
 
     @Override
@@ -86,6 +92,21 @@ public class Ovomorph extends Alien implements Shearable {
 
         if (!level().isClientSide) {
             goap.update(this);
+
+            this.wantsPickup = !isRooted.get() && !isPassenger();
+
+            if (!pickupRequestAcknowledged && wantsPickup && tickCount % 20 == 0) {
+                var alienVariantType = AlienVariantTypes.getFor(this);
+                var deferredHolder = alienVariantType.eggPickupRequestEvent();
+
+                if (deferredHolder != null) {
+                    gameEvent(deferredHolder.getHolder());
+                }
+            }
+
+            if (isPassenger()) {
+                this.pickupRequestAcknowledged = false;
+            }
         }
     }
 

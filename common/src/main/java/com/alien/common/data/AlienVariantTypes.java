@@ -41,6 +41,7 @@ public class AlienVariantTypes {
         AlienItems.PLATED_ABERRANT_CHITIN,
         AlienItems.ABERRANT_RESIN_BALL,
 
+        AlienGameEvents.EGG_ABERRANT_PICKUP_REQUEST,
         AlienGameEvents.XENOMORPH_ABERRANT_RESIN_SPREAD,
 
         AlienParticleTypes.ACID
@@ -61,6 +62,7 @@ public class AlienVariantTypes {
         AlienItems.PLATED_IRRADIATED_CHITIN,
         AlienItems.IRRADIATED_RESIN_BALL,
 
+        null,
         AlienGameEvents.XENOMORPH_IRRADIATED_RESIN_SPREAD,
 
         AlienParticleTypes.IRRADIATED_ACID
@@ -81,6 +83,7 @@ public class AlienVariantTypes {
         AlienItems.PLATED_NETHER_CHITIN,
         AlienItems.NETHER_RESIN_BALL,
 
+        AlienGameEvents.EGG_NETHER_PICKUP_REQUEST,
         AlienGameEvents.XENOMORPH_NETHER_RESIN_SPREAD,
 
         AlienParticleTypes.BLUE_ACID
@@ -101,6 +104,7 @@ public class AlienVariantTypes {
         AlienItems.PLATED_CHITIN,
         AlienItems.RESIN_BALL,
 
+        AlienGameEvents.EGG_PICKUP_REQUEST,
         AlienGameEvents.XENOMORPH_RESIN_SPREAD,
 
         AlienParticleTypes.ACID
