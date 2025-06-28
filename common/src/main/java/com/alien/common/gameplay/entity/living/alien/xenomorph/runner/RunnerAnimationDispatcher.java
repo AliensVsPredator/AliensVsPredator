@@ -10,17 +10,20 @@ public class RunnerAnimationDispatcher {
 
     private static final AzCommand ARMATTACK_RIGHTARM = AzCommand.create(
         AzAlienAnimationUtil.RIGHT_ARM_CONTROLLER_NAME,
-        RunnerAnimationRefs.ARMATTACK_RIGHTARM_ANIMATION_NAME
+        RunnerAnimationRefs.ATTACKCLAWQUAD_RIGHTARM_ANIMATION_NAME,
+        AzPlayBehaviors.PLAY_ONCE
     );
 
     private static final AzCommand BITEATTACK_HEAD = AzCommand.create(
         AzAlienAnimationUtil.HEAD_CONTROLLER_NAME,
-        RunnerAnimationRefs.BITEATTACK_HEAD_ANIMATION_NAME
+        RunnerAnimationRefs.BITEATTACK_HEAD_ANIMATION_NAME,
+        AzPlayBehaviors.PLAY_ONCE
     );
 
     private static final AzCommand TAILATTACKQUAD_TAIL = AzCommand.create(
         AzAlienAnimationUtil.TAIL_CONTROLLER_NAME,
-        RunnerAnimationRefs.TAILATTACKQUAD_TAIL_ANIMATION_NAME
+        RunnerAnimationRefs.TAILATTACKQUAD_TAIL_ANIMATION_NAME,
+        AzPlayBehaviors.PLAY_ONCE
     );
 
     private static final AzCommand CRAWL_ALL = AzAnimationUtil.compose(AzAlienAnimationUtil.XENO_LIMB_NAMES, "crawl");

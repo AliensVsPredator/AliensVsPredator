@@ -6,7 +6,7 @@ public class RunnerAnimationRefs {
     // ## ANIMATION NAMES ##
     // #####################
 
-    public static final String ARMATTACK_RIGHTARM_ANIMATION_NAME = "armattack.rightarm";
+    public static final String ATTACKCLAWQUAD_RIGHTARM_ANIMATION_NAME = "attackclawquad.rightarm";
 
     public static final String BITEATTACK_HEAD_ANIMATION_NAME = "biteattack.head";
 
