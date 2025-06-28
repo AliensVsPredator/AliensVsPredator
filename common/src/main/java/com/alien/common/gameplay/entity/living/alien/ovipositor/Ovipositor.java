@@ -39,9 +39,17 @@ public class Ovipositor extends Mob {
     }
 
     @Override
+    public boolean attackable() {
+        return false;
+    }
+
+    @Override
     protected final boolean canAddPassenger(@NotNull Entity passenger) {
         return false;
     }
+
+    @Override
+    protected void doPush(@NotNull Entity entity) {}
 
     @Override
     public boolean isPushable() {
