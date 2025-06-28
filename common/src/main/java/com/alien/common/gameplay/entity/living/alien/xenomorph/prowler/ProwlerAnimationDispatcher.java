@@ -1,62 +1,52 @@
 package com.alien.common.gameplay.entity.living.alien.xenomorph.prowler;
 
 import com.alien.common.constant.animation.ProwlerAnimationRefs;
+import com.alien.common.util.AzAlienAnimationUtil;
+import com.lib.common.util.AzAnimationUtil;
 import mod.azure.azurelib.rewrite.animation.dispatch.command.AzCommand;
 import mod.azure.azurelib.rewrite.animation.play_behavior.AzPlayBehaviors;
 
 public class ProwlerAnimationDispatcher {
 
-    private static final AzCommand ATTACK_CLAW = AzCommand.create(
-        ProwlerAnimationRefs.FULL_BODY_CONTROLLER_NAME,
-        ProwlerAnimationRefs.ATTACK_CLAW_ANIMATION_NAME
-    );
-
-    private static final AzCommand ATTACK_TAIL = AzCommand.create(
-        ProwlerAnimationRefs.FULL_BODY_CONTROLLER_NAME,
-        ProwlerAnimationRefs.ATTACK_TAIL_ANIMATION_NAME
-    );
-
-    private static final AzCommand CRAWL = AzCommand.create(
-        ProwlerAnimationRefs.FULL_BODY_CONTROLLER_NAME,
-        ProwlerAnimationRefs.CRAWL_ANIMATION_NAME,
-        AzPlayBehaviors.LOOP
-    );
-
-    private static final AzCommand CRAWL_HOLD = AzCommand.create(
-        ProwlerAnimationRefs.FULL_BODY_CONTROLLER_NAME,
-        ProwlerAnimationRefs.CRAWL_ANIMATION_NAME,
-        AzPlayBehaviors.HOLD_ON_LAST_FRAME
-    );
-
-    private static final AzCommand IDLE = AzCommand.create(
-        ProwlerAnimationRefs.FULL_BODY_CONTROLLER_NAME,
-        ProwlerAnimationRefs.IDLE_ANIMATION_NAME,
-        AzPlayBehaviors.LOOP
-    );
-
-    private static final AzCommand LUNGE = AzCommand.create(
-        ProwlerAnimationRefs.FULL_BODY_CONTROLLER_NAME,
-        ProwlerAnimationRefs.LUNGE_ANIMATION_NAME,
+    private static final AzCommand ARMATTACK_RIGHTARM = AzCommand.create(
+        AzAlienAnimationUtil.RIGHT_ARM_CONTROLLER_NAME,
+        ProwlerAnimationRefs.ATTACKCLAWQUAD_RIGHTARM_ANIMATION_NAME,
         AzPlayBehaviors.PLAY_ONCE
     );
 
-    private static final AzCommand RUN = AzCommand.create(
-        ProwlerAnimationRefs.FULL_BODY_CONTROLLER_NAME,
-        ProwlerAnimationRefs.RUN_ANIMATION_NAME,
-        AzPlayBehaviors.LOOP
+    private static final AzCommand BITEATTACK_HEAD = AzCommand.create(
+        AzAlienAnimationUtil.HEAD_CONTROLLER_NAME,
+        ProwlerAnimationRefs.BITEATTACK_HEAD_ANIMATION_NAME,
+        AzPlayBehaviors.PLAY_ONCE
     );
 
-    private static final AzCommand SWIM = AzCommand.create(
-        ProwlerAnimationRefs.FULL_BODY_CONTROLLER_NAME,
-        ProwlerAnimationRefs.SWIM_ANIMATION_NAME,
-        AzPlayBehaviors.LOOP
+    private static final AzCommand TAILATTACKQUAD_TAIL = AzCommand.create(
+        AzAlienAnimationUtil.TAIL_CONTROLLER_NAME,
+        ProwlerAnimationRefs.TAILATTACKQUAD_TAIL_ANIMATION_NAME,
+        AzPlayBehaviors.PLAY_ONCE
     );
 
-    private static final AzCommand WALK = AzCommand.create(
-        ProwlerAnimationRefs.FULL_BODY_CONTROLLER_NAME,
-        ProwlerAnimationRefs.WALK_ANIMATION_NAME,
-        AzPlayBehaviors.LOOP
+    private static final AzCommand CRAWL_ALL = AzAnimationUtil.compose(AzAlienAnimationUtil.XENO_LIMB_NAMES, "crawl");
+
+    private static final AzCommand CRAWL_ALL_HOLD = AzAnimationUtil.compose(
+        AzAlienAnimationUtil.XENO_LIMB_NAMES,
+        "crawl",
+        AzPlayBehaviors.HOLD_ON_LAST_FRAME
     );
+
+    private static final AzCommand IDLE_ALL = AzAnimationUtil.compose(AzAlienAnimationUtil.XENO_LIMB_NAMES, "idle");
+
+    private static final AzCommand LUNGE_ALL = AzAnimationUtil.compose(
+        AzAlienAnimationUtil.XENO_LIMB_NAMES,
+        "lunge",
+        AzPlayBehaviors.PLAY_ONCE
+    );
+
+    private static final AzCommand RUN_ALL = AzAnimationUtil.compose(AzAlienAnimationUtil.XENO_LIMB_NAMES, "sprint");
+
+    private static final AzCommand SWIM_ALL = AzAnimationUtil.compose(AzAlienAnimationUtil.XENO_LIMB_NAMES, "swim");
+
+    private static final AzCommand WALK_ALL = AzAnimationUtil.compose(AzAlienAnimationUtil.XENO_LIMB_NAMES, "walk");
 
     private final Prowler prowler;
 
@@ -65,38 +55,42 @@ public class ProwlerAnimationDispatcher {
     }
 
     public void crawl() {
-        CRAWL.sendForEntity(prowler);
+        CRAWL_ALL.sendForEntity(prowler);
     }
 
     public void crawlHold() {
-        CRAWL_HOLD.sendForEntity(prowler);
+        CRAWL_ALL_HOLD.sendForEntity(prowler);
     }
 
     public void idle() {
-        IDLE.sendForEntity(prowler);
+        IDLE_ALL.sendForEntity(prowler);
     }
 
     public void lunge() {
-        LUNGE.sendForEntity(prowler);
+        LUNGE_ALL.sendForEntity(prowler);
     }
 
     public void run() {
-        RUN.sendForEntity(prowler);
+        RUN_ALL.sendForEntity(prowler);
     }
 
     public void swim() {
-        SWIM.sendForEntity(prowler);
+        SWIM_ALL.sendForEntity(prowler);
     }
 
     public void walk() {
-        WALK.sendForEntity(prowler);
+        WALK_ALL.sendForEntity(prowler);
     }
 
-    public void clawAttack() {
-        ATTACK_CLAW.sendForEntity(prowler);
+    public void biteAttack() {
+        BITEATTACK_HEAD.sendForEntity(prowler);
     }
 
-    public void tailAttack() {
-        ATTACK_TAIL.sendForEntity(prowler);
+    public void rightClawAttack() {
+        ARMATTACK_RIGHTARM.sendForEntity(prowler);
+    }
+
+    public void tailAttackQuad() {
+        TAILATTACKQUAD_TAIL.sendForEntity(prowler);
     }
 }

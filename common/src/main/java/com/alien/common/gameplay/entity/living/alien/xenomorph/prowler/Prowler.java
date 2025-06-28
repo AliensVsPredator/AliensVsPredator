@@ -53,14 +53,14 @@ public class Prowler extends Xenomorph {
 
     @Override
     public void runAttackAnimations() {
-        var isClawAttack = random.nextBoolean();
+        var attackType = random.nextInt(0, 3);
 
         playSound(AVPSoundEvents.ENTITY_XENOMORPH_ATTACK.get(), getSoundVolume(), (random.nextFloat() - random.nextFloat()) * 0.2F + 1.0F);
 
-        if (isClawAttack) {
-            animationDispatcher.clawAttack();
-        } else {
-            animationDispatcher.tailAttack();
+        switch (attackType) {
+            case 0 -> animationDispatcher.rightClawAttack();
+            case 1 -> animationDispatcher.biteAttack();
+            default -> animationDispatcher.tailAttackQuad();
         }
     }
 

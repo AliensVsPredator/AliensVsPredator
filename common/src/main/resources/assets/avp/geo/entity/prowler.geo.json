@@ -581,7 +581,7 @@
 					]
 				},
 				{
-					"name": "gRightPinkyToe",
+					"name": "gLeftPinkyToe",
 					"parent": "gLeftFoot",
 					"pivot": [3.8196, -3.52772, 1.40349],
 					"rotation": [17.5, -22.5, 0],
@@ -657,7 +657,7 @@
 					]
 				},
 				{
-					"name": "gLeftPinkyToe",
+					"name": "gRightPinkyToe",
 					"parent": "gRightFoot",
 					"pivot": [-3.8196, -3.52772, 1.40349],
 					"rotation": [17.5, 22.5, 0],
