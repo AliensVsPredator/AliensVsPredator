@@ -87,6 +87,13 @@ public class AVPEntitySpawns {
                 .withSpawnSettings(AVP.config.spawnConfigs.RUNNER_SPAWN)
                 .build()
         );
+        Services.REGISTRY.registerEntitySpawnData(
+            AVPEntitySpawnData.builder(AlienEntityTypes.SPITTER)
+                .withBiomeTagKey(AVPBiomeTags.HAS_XENOMORPHS)
+                .withSpawnPredicate(AlienSpawning.getTypedPredicate())
+                .withSpawnSettings(AVP.config.spawnConfigs.SPITTER_SPAWN)
+                .build()
+        );
     }
 
     private static void registerAberrantAlienSpawns() {
@@ -146,6 +153,13 @@ public class AVPEntitySpawns {
                 .withBiomeTagKey(AVPBiomeTags.HAS_XENOMORPHS)
                 .withSpawnPredicate(AlienSpawning.getTypedPredicate())
                 .withSpawnSettings(AVP.config.spawnConfigs.ABERRANT_RUNNER_SPAWN)
+                .build()
+        );
+        Services.REGISTRY.registerEntitySpawnData(
+            AVPEntitySpawnData.builder(AlienEntityTypes.ABERRANT_SPITTER)
+                .withBiomeTagKey(AVPBiomeTags.HAS_XENOMORPHS)
+                .withSpawnPredicate(AlienSpawning.getTypedPredicate())
+                .withSpawnSettings(AVP.config.spawnConfigs.ABERRANT_SPITTER_SPAWN)
                 .build()
         );
     }
@@ -257,6 +271,13 @@ public class AVPEntitySpawns {
                 .withBiomeTagKey(AVPBiomeTags.HAS_XENOMORPHS)
                 .withSpawnPredicate(AlienSpawning.getTypedPredicate())
                 .withSpawnSettings(AVP.config.spawnConfigs.NETHER_RUNNER_SPAWN)
+                .build()
+        );
+        Services.REGISTRY.registerEntitySpawnData(
+            AVPEntitySpawnData.builder(AlienEntityTypes.NETHER_SPITTER)
+                .withBiomeTagKey(AVPBiomeTags.HAS_XENOMORPHS)
+                .withSpawnPredicate(AlienSpawning.getTypedPredicate())
+                .withSpawnSettings(AVP.config.spawnConfigs.NETHER_SPITTER_SPAWN)
                 .build()
         );
     }

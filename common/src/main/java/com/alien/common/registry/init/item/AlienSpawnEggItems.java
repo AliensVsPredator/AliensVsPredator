@@ -78,6 +78,13 @@ public class AlienSpawnEggItems {
         0xD7D7DF
     );
 
+    public static final AVPDeferredHolder<Item> ABERRANT_SPITTER_SPAWN_EGG = AVPSpawnEggItems.register(
+        "aberrant_spitter",
+        AlienEntityTypes.ABERRANT_SPITTER,
+        0xE5BF05,
+        0xD7D7DF
+    );
+
     public static final AVPDeferredHolder<Item> ABERRANT_WARRIOR_SPAWN_EGG = AVPSpawnEggItems.register(
         "aberrant_warrior",
         AlienEntityTypes.ABERRANT_WARRIOR,
@@ -253,6 +260,13 @@ public class AlienSpawnEggItems {
         0x803232
     );
 
+    public static final AVPDeferredHolder<Item> NETHER_SPITTER_SPAWN_EGG = AVPSpawnEggItems.register(
+        "nether_spitter",
+        AlienEntityTypes.NETHER_SPITTER,
+        0x360101,
+        0x803232
+    );
+
     public static final AVPDeferredHolder<Item> NETHER_WARRIOR_SPAWN_EGG = AVPSpawnEggItems.register(
         "nether_warrior",
         AlienEntityTypes.NETHER_WARRIOR,
@@ -382,6 +396,13 @@ public class AlienSpawnEggItems {
     public static final AVPDeferredHolder<Item> RUNNER_SPAWN_EGG = AVPSpawnEggItems.register(
         "runner",
         AlienEntityTypes.RUNNER,
+        0x010202,
+        0xDFE2E4
+    );
+
+    public static final AVPDeferredHolder<Item> SPITTER_SPAWN_EGG = AVPSpawnEggItems.register(
+        "spitter",
+        AlienEntityTypes.SPITTER,
         0x010202,
         0xDFE2E4
     );

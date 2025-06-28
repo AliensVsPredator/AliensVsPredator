@@ -49,6 +49,10 @@ public class EntityLootTableProvider extends SimpleFabricLootTableProvider {
             QueenLootTable.createLootTableBuilder(provider, AlienVariantTypes.NORMAL)
         );
         biConsumer.accept(AlienEntityTypes.RUNNER.get().getDefaultLootTable(), DroneLootTable.create(provider, AlienVariantTypes.NORMAL));
+        biConsumer.accept(
+            AlienEntityTypes.SPITTER.get().getDefaultLootTable(),
+            WarriorLootTable.create(provider, AlienVariantTypes.NORMAL)
+        );
 
         // Nether
         biConsumer.accept(
@@ -79,6 +83,10 @@ public class EntityLootTableProvider extends SimpleFabricLootTableProvider {
             AlienEntityTypes.NETHER_RUNNER.get().getDefaultLootTable(),
             DroneLootTable.create(provider, AlienVariantTypes.NETHER)
         );
+        biConsumer.accept(
+            AlienEntityTypes.NETHER_SPITTER.get().getDefaultLootTable(),
+            WarriorLootTable.create(provider, AlienVariantTypes.NETHER)
+        );
 
         // Aberrant
         biConsumer.accept(
@@ -108,6 +116,10 @@ public class EntityLootTableProvider extends SimpleFabricLootTableProvider {
         biConsumer.accept(
             AlienEntityTypes.ABERRANT_RUNNER.get().getDefaultLootTable(),
             DroneLootTable.create(provider, AlienVariantTypes.ABERRANT)
+        );
+        biConsumer.accept(
+            AlienEntityTypes.ABERRANT_SPITTER.get().getDefaultLootTable(),
+            WarriorLootTable.create(provider, AlienVariantTypes.ABERRANT)
         );
 
         // Irradiated

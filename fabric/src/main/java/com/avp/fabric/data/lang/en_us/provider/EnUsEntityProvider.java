@@ -29,6 +29,7 @@ public class EnUsEntityProvider {
         addEntity(builder, AlienEntityTypes.ABERRANT_PROWLER, "Aberrant Prowler");
         addEntity(builder, AlienEntityTypes.ABERRANT_QUEEN, "Aberrant Queen");
         addEntity(builder, AlienEntityTypes.ABERRANT_RUNNER, "Aberrant Runner");
+        addEntity(builder, AlienEntityTypes.ABERRANT_SPITTER, "Aberrant Spitter");
         addEntity(builder, AlienEntityTypes.ABERRANT_WARRIOR, "Aberrant Warrior");
         addEntity(builder, AlienEntityTypes.ACID, "Acid");
         addEntity(builder, AlienEntityTypes.ADOLESCENT, "Adolescent");
@@ -55,6 +56,7 @@ public class EnUsEntityProvider {
         addEntity(builder, AlienEntityTypes.NETHER_PROWLER, "Nether Prowler");
         addEntity(builder, AlienEntityTypes.NETHER_QUEEN, "Nether Queen");
         addEntity(builder, AlienEntityTypes.NETHER_RUNNER, "Nether Runner");
+        addEntity(builder, AlienEntityTypes.NETHER_SPITTER, "Nether Spitter");
         addEntity(builder, AlienEntityTypes.NETHER_WARRIOR, "Nether Warrior");
         addEntity(builder, AlienEntityTypes.OVOMORPH, "Ovomorph");
         addEntity(builder, AlienEntityTypes.OVIPOSITOR, "Ovipositor");
@@ -74,6 +76,7 @@ public class EnUsEntityProvider {
         addEntity(builder, AlienEntityTypes.ROYAL_NETHER_OVOMORPH, "Royal Nether Ovomorph");
         addEntity(builder, AlienEntityTypes.ROYAL_OVOMORPH, "Royal Ovomorph");
         addEntity(builder, AlienEntityTypes.RUNNER, "Runner");
+        addEntity(builder, AlienEntityTypes.SPITTER, "Spitter");
         addEntity(builder, AlienEntityTypes.WARRIOR, "Warrior");
 
         addEntity(builder, HumanEntityTypes.FLAMETHROW, "Flamethrow");

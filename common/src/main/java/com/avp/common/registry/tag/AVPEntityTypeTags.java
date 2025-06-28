@@ -70,6 +70,8 @@ public class AVPEntityTypeTags {
 
     public static final TagKey<EntityType<?>> SPAWNS_IN_HIVE_WARRIOR_LAYER = create("spawns_in_hive_warrior_layer");
 
+    public static final TagKey<EntityType<?>> SPITTERS = create("spitters");
+
     public static final TagKey<EntityType<?>> WARRIORS = create("warriors");
 
     public static final TagKey<EntityType<?>> XENOMORPHS = create("xenomorphs");

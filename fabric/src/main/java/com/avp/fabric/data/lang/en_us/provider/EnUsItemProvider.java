@@ -242,6 +242,7 @@ public class EnUsItemProvider {
         addItem(builder, AlienSpawnEggItems.ABERRANT_WARRIOR_SPAWN_EGG, "Aberrant Warrior Spawn Egg");
         addItem(builder, AlienSpawnEggItems.ABERRANT_QUEEN_SPAWN_EGG, "Aberrant Queen Spawn Egg");
         addItem(builder, AlienSpawnEggItems.ABERRANT_RUNNER_SPAWN_EGG, "Aberrant Runner Spawn Egg");
+        addItem(builder, AlienSpawnEggItems.ABERRANT_SPITTER_SPAWN_EGG, "Aberrant Spitter Spawn Egg");
         addItem(builder, AlienSpawnEggItems.ADOLESCENT_SPAWN_EGG, "Adolescent Spawn Egg");
         addItem(builder, AlienSpawnEggItems.BOILER_SPAWN_EGG, "Boiler Spawn Egg");
         addItem(builder, AlienSpawnEggItems.CHESTBURSTER_SPAWN_EGG, "Chestburster Spawn Egg");
@@ -258,6 +259,7 @@ public class EnUsItemProvider {
         addItem(builder, AlienSpawnEggItems.NETHER_PRAETORIAN_SPAWN_EGG, "Nether Praetorian Spawn Egg");
         addItem(builder, AlienSpawnEggItems.NETHER_PROWLER_SPAWN_EGG, "Nether Prowler Spawn Egg");
         addItem(builder, AlienSpawnEggItems.NETHER_RUNNER_SPAWN_EGG, "Nether Runner Spawn Egg");
+        addItem(builder, AlienSpawnEggItems.NETHER_SPITTER_SPAWN_EGG, "Nether Spitter Spawn Egg");
         addItem(builder, AlienSpawnEggItems.NETHER_WARRIOR_SPAWN_EGG, "Nether Warrior Spawn Egg");
         addItem(builder, AlienSpawnEggItems.NETHER_QUEEN_SPAWN_EGG, "Nether Queen Spawn Egg");
         addItem(builder, AlienSpawnEggItems.IRRADIATED_CRUSHER_SPAWN_EGG, "Irradiated Crusher Spawn Egg");
@@ -272,6 +274,7 @@ public class EnUsItemProvider {
         addItem(builder, AlienSpawnEggItems.PROWLER_SPAWN_EGG, "Prowler Spawn Egg");
         addItem(builder, AlienSpawnEggItems.QUEEN_SPAWN_EGG, "Queen Spawn Egg");
         addItem(builder, AlienSpawnEggItems.RUNNER_SPAWN_EGG, "Runner Spawn Egg");
+        addItem(builder, AlienSpawnEggItems.SPITTER_SPAWN_EGG, "Spitter Spawn Egg");
         addItem(builder, AlienSpawnEggItems.WARRIOR_SPAWN_EGG, "Warrior Spawn Egg");
         addItem(builder, PredatorSpawnEggItems.YAUTJA_SPAWN_EGG, "Yautja Spawn Egg");
         addItem(builder, HumanSpawnEggItems.MARINE_SPAWN_EGG, "Marine Spawn Egg");

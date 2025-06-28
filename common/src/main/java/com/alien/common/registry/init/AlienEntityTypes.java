@@ -13,6 +13,7 @@ import com.alien.common.gameplay.entity.living.alien.xenomorph.praetorian.Praeto
 import com.alien.common.gameplay.entity.living.alien.xenomorph.prowler.Prowler;
 import com.alien.common.gameplay.entity.living.alien.xenomorph.queen.Queen;
 import com.alien.common.gameplay.entity.living.alien.xenomorph.runner.Runner;
+import com.alien.common.gameplay.entity.living.alien.xenomorph.spitter.Spitter;
 import com.alien.common.gameplay.entity.living.alien.xenomorph.warrior.Warrior;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
@@ -87,6 +88,12 @@ public class AlienEntityTypes {
         "aberrant_runner",
         EntityType.Builder.of(Runner::new, AVPEntityTypes.ALIEN_CATEGORY)
             .sized(0.8f, 0.98f)
+    );
+
+    public static final AVPDeferredHolder<EntityType<Spitter>> ABERRANT_SPITTER = AVPEntityTypes.register(
+        "aberrant_spitter",
+        EntityType.Builder.of(Spitter::new, AVPEntityTypes.ALIEN_CATEGORY)
+            .sized(0.8f, 2.5f)
     );
 
     public static final AVPDeferredHolder<EntityType<Warrior>> ABERRANT_WARRIOR = AVPEntityTypes.register(
@@ -245,6 +252,12 @@ public class AlienEntityTypes {
             .sized(0.8f, 0.98f)
     );
 
+    public static final AVPDeferredHolder<EntityType<Spitter>> NETHER_SPITTER = AVPEntityTypes.register(
+        "nether_spitter",
+        EntityType.Builder.of(Spitter::new, AVPEntityTypes.ALIEN_CATEGORY)
+            .sized(0.8f, 2.5f)
+    );
+
     public static final AVPDeferredHolder<EntityType<Warrior>> NETHER_WARRIOR = AVPEntityTypes.register(
         "nether_warrior",
         EntityType.Builder.of(Warrior::new, AVPEntityTypes.ALIEN_CATEGORY)
@@ -359,6 +372,12 @@ public class AlienEntityTypes {
             .sized(0.8f, 0.98f)
     );
 
+    public static final AVPDeferredHolder<EntityType<Spitter>> SPITTER = AVPEntityTypes.register(
+        "spitter",
+        EntityType.Builder.of(Spitter::new, AVPEntityTypes.ALIEN_CATEGORY)
+            .sized(0.8f, 2.5f)
+    );
+
     public static final AVPDeferredHolder<EntityType<Warrior>> WARRIOR = AVPEntityTypes.register(
         "warrior",
         EntityType.Builder.of(Warrior::new, AVPEntityTypes.ALIEN_CATEGORY)
@@ -377,6 +396,7 @@ public class AlienEntityTypes {
         Services.REGISTRY.registerEntityAttributes(ABERRANT_PROWLER, Prowler::createProwlerAttributes);
         Services.REGISTRY.registerEntityAttributes(ABERRANT_QUEEN, Queen::createQueenAttributes);
         Services.REGISTRY.registerEntityAttributes(ABERRANT_RUNNER, Runner::createRunnerAttributes);
+        Services.REGISTRY.registerEntityAttributes(ABERRANT_SPITTER, Spitter::createSpitterAttributes);
         Services.REGISTRY.registerEntityAttributes(ABERRANT_WARRIOR, Warrior::createWarriorAttributes);
         Services.REGISTRY.registerEntityAttributes(CHESTBURSTER, Chestburster::createChestbursterAttributes);
         Services.REGISTRY.registerEntityAttributes(ADOLESCENT, Adolescent::createAdolescentAttributes);
@@ -402,6 +422,7 @@ public class AlienEntityTypes {
         Services.REGISTRY.registerEntityAttributes(NETHER_PROWLER, Prowler::createProwlerAttributes);
         Services.REGISTRY.registerEntityAttributes(NETHER_QUEEN, Queen::createQueenAttributes);
         Services.REGISTRY.registerEntityAttributes(NETHER_RUNNER, Runner::createRunnerAttributes);
+        Services.REGISTRY.registerEntityAttributes(NETHER_SPITTER, Spitter::createSpitterAttributes);
         Services.REGISTRY.registerEntityAttributes(NETHER_WARRIOR, Warrior::createWarriorAttributes);
         Services.REGISTRY.registerEntityAttributes(OVIPOSITOR, Ovipositor::createOvipositorAttributes);
         Services.REGISTRY.registerEntityAttributes(OVOMORPH, Ovomorph::createOvomorphAttributes);
@@ -421,6 +442,7 @@ public class AlienEntityTypes {
         Services.REGISTRY.registerEntityAttributes(ROYAL_NETHER_OVOMORPH, Ovomorph::createOvomorphAttributes);
         Services.REGISTRY.registerEntityAttributes(ROYAL_OVOMORPH, Ovomorph::createOvomorphAttributes);
         Services.REGISTRY.registerEntityAttributes(RUNNER, Runner::createRunnerAttributes);
+        Services.REGISTRY.registerEntityAttributes(SPITTER, Spitter::createSpitterAttributes);
         Services.REGISTRY.registerEntityAttributes(WARRIOR, Warrior::createWarriorAttributes);
     }
 }

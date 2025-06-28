@@ -51,6 +51,7 @@ public class AVPEntityTypeTagProvider extends FabricTagProvider.EntityTypeTagPro
         addRoyalAliens();
         addRoyalXenomorphs();
         addRunners();
+        addSpitters();
         addWarriors();
         addXenomorphs();
 
@@ -132,6 +133,15 @@ public class AVPEntityTypeTagProvider extends FabricTagProvider.EntityTypeTagPro
             );
     }
 
+    private void addSpitters() {
+        getOrCreateTagBuilder(AVPEntityTypeTags.SPITTERS)
+            .add(
+                AlienEntityTypes.ABERRANT_SPITTER.get(),
+                AlienEntityTypes.NETHER_SPITTER.get(),
+                AlienEntityTypes.SPITTER.get()
+            );
+    }
+
     private void addWarriors() {
         getOrCreateTagBuilder(AVPEntityTypeTags.WARRIORS)
             .add(
@@ -150,6 +160,7 @@ public class AVPEntityTypeTagProvider extends FabricTagProvider.EntityTypeTagPro
             .addTag(AVPEntityTypeTags.PROWLERS)
             .addTag(AVPEntityTypeTags.QUEENS)
             .addTag(AVPEntityTypeTags.RUNNERS)
+            .addTag(AVPEntityTypeTags.SPITTERS)
             .addTag(AVPEntityTypeTags.WARRIORS);
     }
 
@@ -286,6 +297,7 @@ public class AVPEntityTypeTagProvider extends FabricTagProvider.EntityTypeTagPro
                 AlienEntityTypes.ABERRANT_PROWLER.get(),
                 AlienEntityTypes.ABERRANT_QUEEN.get(),
                 AlienEntityTypes.ABERRANT_RUNNER.get(),
+                AlienEntityTypes.ABERRANT_SPITTER.get(),
                 AlienEntityTypes.ABERRANT_WARRIOR.get(),
                 AlienEntityTypes.ROYAL_ABERRANT_ADOLESCENT.get(),
                 AlienEntityTypes.ROYAL_ABERRANT_CHESTBURSTER.get(),
@@ -308,6 +320,7 @@ public class AVPEntityTypeTagProvider extends FabricTagProvider.EntityTypeTagPro
                 AlienEntityTypes.NETHER_PROWLER.get(),
                 AlienEntityTypes.NETHER_QUEEN.get(),
                 AlienEntityTypes.NETHER_RUNNER.get(),
+                AlienEntityTypes.NETHER_SPITTER.get(),
                 AlienEntityTypes.NETHER_WARRIOR.get(),
                 AlienEntityTypes.ROYAL_NETHER_ADOLESCENT.get(),
                 AlienEntityTypes.ROYAL_NETHER_CHESTBURSTER.get(),
@@ -334,6 +347,7 @@ public class AVPEntityTypeTagProvider extends FabricTagProvider.EntityTypeTagPro
                 AlienEntityTypes.ROYAL_FACEHUGGER.get(),
                 AlienEntityTypes.ROYAL_OVOMORPH.get(),
                 AlienEntityTypes.RUNNER.get(),
+                AlienEntityTypes.SPITTER.get(),
                 AlienEntityTypes.WARRIOR.get()
             );
     }
@@ -402,6 +416,7 @@ public class AVPEntityTypeTagProvider extends FabricTagProvider.EntityTypeTagPro
     private void addHiveLayerSpawns() {
         getOrCreateTagBuilder(AVPEntityTypeTags.SPAWNS_IN_HIVE_WARRIOR_LAYER)
             .addTag(AVPEntityTypeTags.PROWLERS)
+            .addTag(AVPEntityTypeTags.SPITTERS)
             .addTag(AVPEntityTypeTags.WARRIORS);
 
         getOrCreateTagBuilder(AVPEntityTypeTags.SPAWNS_IN_HIVE_DRONE_LAYER)

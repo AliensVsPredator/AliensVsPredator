@@ -16,6 +16,8 @@ public record ArmorConstants() {
 
     public static final float RUNNER_ARMOR = 4.0F;
 
+    public static final float SPITTER_ARMOR = 8.0F;
+
     public static final float WARRIOR_ARMOR = 8.0F;
 
     public static final float YAUTJA_ARMOR = 16.0F;

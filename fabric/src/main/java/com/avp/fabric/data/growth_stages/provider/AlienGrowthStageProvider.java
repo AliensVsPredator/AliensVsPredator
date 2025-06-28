@@ -2,7 +2,9 @@ package com.avp.fabric.data.growth_stages.provider;
 
 import com.alien.common.model.lifecycle.growth.GrowthStage;
 import com.alien.common.registry.init.AlienEntityTypes;
+import net.minecraft.world.entity.EntityType;
 
+import java.util.List;
 import java.util.function.BiConsumer;
 
 import com.avp.common.registry.tag.AVPEntityTypeTags;
@@ -38,6 +40,16 @@ public class AlienGrowthStageProvider {
                 AlienEntityTypes.ROYAL_ADOLESCENT.get(),
                 AlienEntityTypes.CRUSHER.get(),
                 GrowthConstants.ROYAL_ADOLESCENT_GROWTH_TIME_IN_TICKS / 2
+            )
+        );
+
+        biConsumer.accept(
+            "adolescent_to_spitter",
+            new GrowthStage(
+                List.of(EntityType.LLAMA, EntityType.TRADER_LLAMA),
+                AlienEntityTypes.ADOLESCENT.get(),
+                AlienEntityTypes.SPITTER.get(),
+                GrowthConstants.ADOLESCENT_GROWTH_TIME_IN_TICKS / 2
             )
         );
     }

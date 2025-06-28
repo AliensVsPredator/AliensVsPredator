@@ -108,6 +108,11 @@ public class AVPConfig {
 
         @Configurable
         @Configurable.Synchronized
+        @Configurable.Comment("Aberrant Spitter spawn settings. Modifying these will require restarting the game.")
+        public SpawnSettings ABERRANT_SPITTER_SPAWN = new SpawnSettings(true, 1, 2, 15);
+
+        @Configurable
+        @Configurable.Synchronized
         @Configurable.Comment("Aberrant Warrior spawn settings. Modifying these will require restarting the game.")
         public SpawnSettings ABERRANT_WARRIOR_SPAWN = new SpawnSettings(true, 1, 2, 25);
 
@@ -200,6 +205,11 @@ public class AVPConfig {
 
         @Configurable
         @Configurable.Synchronized
+        @Configurable.Comment("Nether Spitter spawn settings. Modifying these will require restarting the game.")
+        public SpawnSettings NETHER_SPITTER_SPAWN = new SpawnSettings(true, 1, 2, 15);
+
+        @Configurable
+        @Configurable.Synchronized
         @Configurable.Comment("Nether Warrior spawn settings. Modifying these will require restarting the game.")
         public SpawnSettings NETHER_WARRIOR_SPAWN = new SpawnSettings(true, 1, 2, 25);
 
@@ -222,6 +232,11 @@ public class AVPConfig {
         @Configurable.Synchronized
         @Configurable.Comment("Modifying these will require restarting the game.")
         public SpawnSettings RUNNER_SPAWN = new SpawnSettings(true, 1, 2, 50);
+
+        @Configurable
+        @Configurable.Synchronized
+        @Configurable.Comment("Spitter spawn settings. Modifying these will require restarting the game.")
+        public SpawnSettings SPITTER_SPAWN = new SpawnSettings(true, 1, 2, 15);
 
         @Configurable
         @Configurable.Synchronized
@@ -454,6 +469,21 @@ public class AVPConfig {
             0.0f,
             20,
             FollowRangeConstants.RUNNER_FOLLOW_RANGE
+        );
+
+        @Configurable
+        @Configurable.Synchronized
+        @Configurable.Comment("Modifying any of these will require restarting the game.")
+        public AdvancedStats SPITTER_STATS = new AdvancedStats(
+            HealthConstants.SPITTER_HEALTH,
+            AttackDamageConstants.SPITTER_ATTACK_DAMAGE,
+            HealthRegenConstants.SPITTER_HEALTH_REGEN,
+            KnockbackResistanceConstants.SPITTER_KNOCKBACK_RESISTANCE,
+            MoveSpeedConstants.SPITTER_SPEED,
+            ArmorConstants.SPITTER_ARMOR,
+            0.0f,
+            20,
+            FollowRangeConstants.SPITTER_FOLLOW_RANGE
         );
 
         @Configurable

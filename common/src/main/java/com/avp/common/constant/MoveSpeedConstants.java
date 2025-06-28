@@ -32,6 +32,8 @@ public record MoveSpeedConstants() {
 
     public static final float RUNNER_SPEED = PLAYER_WALK_SPEED * 1F;
 
+    public static final float SPITTER_SPEED = PLAYER_WALK_SPEED * 1.1F;
+
     public static final float WARRIOR_SPEED = PLAYER_WALK_SPEED * 1.1F;
 
     public static final float YAUTJA_SPEED = PLAYER_WALK_SPEED * 1.2F;
