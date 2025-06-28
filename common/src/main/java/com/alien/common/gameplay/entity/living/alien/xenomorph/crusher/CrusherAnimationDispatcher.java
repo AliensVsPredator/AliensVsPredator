@@ -12,7 +12,8 @@ public class CrusherAnimationDispatcher {
 
     private static final AzCommand BITEATTACK_HEAD = AzCommand.create(
         AzAlienAnimationUtil.HEAD_CONTROLLER_NAME,
-        CrusherAnimationRefs.BITEATTACK_HEAD_ANIMATION_NAME
+        CrusherAnimationRefs.BITEATTACK_HEAD_ANIMATION_NAME,
+        AzPlayBehaviors.PLAY_ONCE
     );
 
     private static final AzCommand IDLE_TAIL = AzCommand.create(
@@ -44,7 +45,8 @@ public class CrusherAnimationDispatcher {
 
     private static final AzCommand TAILATTACK_TAIL = AzCommand.create(
         AzAlienAnimationUtil.TAIL_CONTROLLER_NAME,
-        CrusherAnimationRefs.TAILATTACK_TAIL_ANIMATION_NAME
+        CrusherAnimationRefs.TAILATTACK_TAIL_ANIMATION_NAME,
+        AzPlayBehaviors.PLAY_ONCE
     );
 
     private static final AzCommand WALK_ALL = AzCommand.compose(
