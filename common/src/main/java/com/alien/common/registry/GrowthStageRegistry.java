@@ -11,7 +11,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
 
 public class GrowthStageRegistry {
 
@@ -45,26 +44,20 @@ public class GrowthStageRegistry {
     }
 
     private static void compute(GrowthStage growthStage) {
-        var hostTag = growthStage.hostTag().orElse(null);
+        var hostTypePredicate = growthStage.hostTypePredicate().orElse(null);
 
-        if (hostTag == null) {
+        if (hostTypePredicate == null) {
             var lookupKey = new GrowthStageKey(null, growthStage.from());
             GROWTH_STAGE_KEY_TO_GROWTH_STAGE.put(lookupKey, growthStage);
         } else {
-            var holderEntityTypeSetOptional = BuiltInRegistries.ENTITY_TYPE.getTag(hostTag);
-
-            holderEntityTypeSetOptional.ifPresent(holderEntityTypeSet -> {
-                holderEntityTypeSet.stream()
-                    // For every host...
-                    .forEach(entityTypeHolder -> {
-                        var host = entityTypeHolder.unwrap().map(BuiltInRegistries.ENTITY_TYPE::get, Function.identity());
-
-                        // map the lookup key to the step. Aliens will use their host + self type combination
-                        // to look up what step they are currently on.
-                        var lookupKey = new GrowthStageKey(host, growthStage.from());
-                        GROWTH_STAGE_KEY_TO_GROWTH_STAGE.put(lookupKey, growthStage);
-                    });
-            });
+            BuiltInRegistries.ENTITY_TYPE.stream()
+                .filter(hostTypePredicate::test)
+                .forEach(entityType -> {
+                    // map the lookup key to the step. Aliens will use their host + self type combination
+                    // to look up what step they are currently on.
+                    var lookupKey = new GrowthStageKey(entityType, growthStage.from());
+                    GROWTH_STAGE_KEY_TO_GROWTH_STAGE.put(lookupKey, growthStage);
+                });
         }
     }
 
