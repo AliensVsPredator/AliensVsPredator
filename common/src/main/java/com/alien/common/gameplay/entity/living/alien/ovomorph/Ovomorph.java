@@ -172,7 +172,9 @@ public class Ovomorph extends Alien implements Shearable {
             tryHatch();
         }
 
-        super.doPush(entity);
+        if (!entity.getType().is(AVPEntityTypeTags.XENOMORPHS)) {
+            super.doPush(entity);
+        }
     }
 
     @Override
