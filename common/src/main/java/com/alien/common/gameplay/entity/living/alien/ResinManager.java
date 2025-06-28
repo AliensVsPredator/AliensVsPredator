@@ -71,7 +71,9 @@ public class ResinManager implements GameEventListener.Provider<ResinSpreadListe
             return;
         }
 
-        var factor = ticksSinceLastResinProduction / resinData.tickRate();
+        var factor = resinData.tickRate() == 0
+            ? 0
+            : ticksSinceLastResinProduction / resinData.tickRate();
         var accumulatedResin = factor * resinData.resinPerTick();
         resinData.addResin(accumulatedResin);
 
