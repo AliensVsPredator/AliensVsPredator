@@ -18,6 +18,8 @@ public class QueenLayEggGoal extends Goal {
 
     private static final int MAX_EGG_LAY_COOLDOWN_IN_TICKS = (int) TimeUnit.MINUTES.toSeconds(1) * 20;
 
+    private static final int MAX_EGG_COUNT_IN_HIVE = 60;
+
     private final Queen queen;
 
     private int eggLayCooldownInTicks;
@@ -51,6 +53,9 @@ public class QueenLayEggGoal extends Goal {
                         && hive.isChunkLoaded()
                         // AND the queen must be within the hive to lay eggs there.
                         && hive.getSpaceManager().isEntityWithinHive(queen)
+                        && hive.getMembershipManager()
+                            .getMembersMatching(member -> member.is(AVPEntityTypeTags.OVOMORPHS))
+                            .size() < MAX_EGG_COUNT_IN_HIVE
                 )
             // AND there must be no other eggs nearby already.
             && noEggsNearby();
