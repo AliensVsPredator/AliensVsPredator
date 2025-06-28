@@ -2,13 +2,12 @@ package com.alien.client.render.entity;
 
 import com.alien.client.animation.entity.BoilerAnimator;
 import com.alien.common.gameplay.entity.living.alien.xenomorph.boiler.Boiler;
+import com.avp.AVPResources;
+import com.avp.client.render.layer.BoilGlowLayer;
 import mod.azure.azurelib.rewrite.render.entity.AzEntityRenderer;
 import mod.azure.azurelib.rewrite.render.entity.AzEntityRendererConfig;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
-
-import com.avp.AVPResources;
-import com.avp.client.render.layer.RadiationGlowLayer;
 
 public class BoilerRenderer extends AzEntityRenderer<Boiler> {
 
@@ -26,7 +25,7 @@ public class BoilerRenderer extends AzEntityRenderer<Boiler> {
         super(
             AzEntityRendererConfig.builder($ -> MODEL, BoilerRenderer::textureLocation)
                 .setAnimatorProvider(BoilerAnimator::new)
-                .addRenderLayer(new RadiationGlowLayer<>())
+                .addRenderLayer(new BoilGlowLayer<>())
                 .build(),
             context
         );
