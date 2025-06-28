@@ -47,6 +47,11 @@ public class Runner extends Xenomorph {
     }
 
     @Override
+    protected double getPursuitSpeedModifier() {
+        return 1.2;
+    }
+
+    @Override
     public void runAttackAnimations() {
         var attackType = random.nextInt(0, 3);
 

@@ -70,6 +70,10 @@ public abstract class Xenomorph extends Alien implements ResinProducer {
         this.resinManager = new ResinManager(this, createResinData());
     }
 
+    protected double getPursuitSpeedModifier() {
+        return 1.1;
+    }
+
     protected int getAttackDelayInTicks() {
         return 5;
     }

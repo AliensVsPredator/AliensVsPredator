@@ -31,7 +31,7 @@ public class XenomorphNavigationManager {
         // Ground navigation.
         this.groundAttackGoal = new DelayedAttackGoal(
             xenomorph,
-            1.1,
+            xenomorph.getPursuitSpeedModifier(),
             false,
             xenomorph.getAttackDelayInTicks(),
             xenomorph::runAttackAnimations

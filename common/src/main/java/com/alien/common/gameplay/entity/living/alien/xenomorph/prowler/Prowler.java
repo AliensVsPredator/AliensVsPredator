@@ -47,6 +47,11 @@ public class Prowler extends Xenomorph {
     }
 
     @Override
+    protected double getPursuitSpeedModifier() {
+        return 1.2;
+    }
+
+    @Override
     public void runAttackAnimations() {
         var isClawAttack = random.nextBoolean();
 
