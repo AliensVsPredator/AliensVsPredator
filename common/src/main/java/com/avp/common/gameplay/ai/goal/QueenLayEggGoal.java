@@ -80,6 +80,7 @@ public class QueenLayEggGoal extends Goal {
 
         ovomorph.setPos(queen.getOvipositorManager().getEggLayingPosition());
         ovomorph.setPersistenceRequired();
+        ovomorph.isRooted.set(false);
         // Transfer genes.
         queen.getGeneManager()
             .getGeneContainer()
