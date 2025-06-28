@@ -124,6 +124,7 @@ public class QueenLayEggGoal extends Goal {
                 getBoundingBoxAtEggLayingPosition(),
                 // Must be tagged as an ovomorph...
                 entity -> entity.getType().is(AVPEntityTypeTags.OVOMORPHS)
+                    && !entity.isRooted.get()
             )
             // If the list of eggs is empty, then the queen is good to lay an egg.
             .isEmpty();
