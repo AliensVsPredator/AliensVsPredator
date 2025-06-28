@@ -27,7 +27,6 @@ public class AVPEntityTypeTagProvider extends FabricTagProvider.EntityTypeTagPro
         addAcidImmune();
         addAdolescents();
         addAliens();
-        addAnimals();
         addChestbursters();
         addCrushers();
         addDrones();
@@ -100,29 +99,6 @@ public class AVPEntityTypeTagProvider extends FabricTagProvider.EntityTypeTagPro
                 EntityType.WANDERING_TRADER,
                 EntityType.WITCH,
                 HumanEntityTypes.MARINE.get()
-            );
-    }
-
-    private void addAnimals() {
-        getOrCreateTagBuilder(AVPEntityTypeTags.ANIMALS)
-            .add(
-                EntityType.CAMEL,
-                EntityType.COW,
-                EntityType.DONKEY,
-                EntityType.FOX,
-                EntityType.GOAT,
-                EntityType.HORSE,
-                EntityType.LLAMA,
-                EntityType.MOOSHROOM,
-                EntityType.MULE,
-                EntityType.PANDA,
-                EntityType.PIG,
-                EntityType.POLAR_BEAR,
-                EntityType.RAVAGER,
-                EntityType.SHEEP,
-                EntityType.SNIFFER,
-                EntityType.TRADER_LLAMA,
-                EntityType.WOLF
             );
     }
 
@@ -372,8 +348,25 @@ public class AVPEntityTypeTagProvider extends FabricTagProvider.EntityTypeTagPro
     }
 
     private void addRunnerHosts() {
+        // NOTE: Llamas are deliberately excluded here.
         getOrCreateTagBuilder(AVPEntityTypeTags.RUNNER_HOSTS)
-            .addTag(AVPEntityTypeTags.ANIMALS);
+            .add(
+                EntityType.CAMEL,
+                EntityType.COW,
+                EntityType.DONKEY,
+                EntityType.FOX,
+                EntityType.GOAT,
+                EntityType.HORSE,
+                EntityType.MOOSHROOM,
+                EntityType.MULE,
+                EntityType.PANDA,
+                EntityType.PIG,
+                EntityType.POLAR_BEAR,
+                EntityType.RAVAGER,
+                EntityType.SHEEP,
+                EntityType.SNIFFER,
+                EntityType.WOLF
+            );
     }
 
     private void addHosts() {
@@ -381,9 +374,11 @@ public class AVPEntityTypeTagProvider extends FabricTagProvider.EntityTypeTagPro
             .addTag(AVPEntityTypeTags.RUNNER_HOSTS)
             .addOptionalTag(EntityTypeTags.ILLAGER)
             .add(
+                EntityType.LLAMA,
                 EntityType.PIGLIN,
                 EntityType.PIGLIN_BRUTE,
                 EntityType.PLAYER,
+                EntityType.TRADER_LLAMA,
                 EntityType.VILLAGER,
                 EntityType.WANDERING_TRADER,
                 EntityType.WITCH,

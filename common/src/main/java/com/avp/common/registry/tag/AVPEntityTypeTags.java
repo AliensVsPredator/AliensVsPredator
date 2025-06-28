@@ -16,8 +16,6 @@ public class AVPEntityTypeTags {
 
     public static final TagKey<EntityType<?>> ALIENS = create("aliens");
 
-    public static final TagKey<EntityType<?>> ANIMALS = create("animals");
-
     public static final TagKey<EntityType<?>> CHESTBURSTERS = create("chestbursters");
 
     public static final TagKey<EntityType<?>> CRUSHERS = create("crushers");

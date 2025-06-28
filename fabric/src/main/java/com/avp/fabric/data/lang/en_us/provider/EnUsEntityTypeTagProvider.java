@@ -12,7 +12,6 @@ public class EnUsEntityTypeTagProvider {
         builder.add(AVPEntityTypeTags.ABERRANT_ALIENS, "Aberrant Aliens");
         builder.add(AVPEntityTypeTags.ACID_IMMUNE, "Acid Immune");
         builder.add(AVPEntityTypeTags.ALIENS, "Aliens");
-        builder.add(AVPEntityTypeTags.ANIMALS, "Animals");
         builder.add(AVPEntityTypeTags.CHESTBURSTERS, "Chestbursters");
         builder.add(AVPEntityTypeTags.DRONES, "Drones");
         builder.add(AVPEntityTypeTags.FACEHUGGERS, "Facehuggers");
