@@ -78,6 +78,10 @@ public abstract class Xenomorph extends Alien implements ResinProducer {
         return 5;
     }
 
+    protected boolean canTargetInitially(LivingEntity target) {
+        return true;
+    }
+
     protected abstract @NotNull ResinData createResinData();
 
     public abstract void runAttackAnimations();
@@ -96,6 +100,7 @@ public abstract class Xenomorph extends Alien implements ResinProducer {
                 LivingEntity.class,
                 false,
                 target -> AlienPredicates.canTarget(this, target)
+                    && canTargetInitially(target)
             )
         );
     }

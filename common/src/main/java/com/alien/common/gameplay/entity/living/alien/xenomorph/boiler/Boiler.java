@@ -1,16 +1,24 @@
 package com.alien.common.gameplay.entity.living.alien.xenomorph.boiler;
 
+import com.alien.common.gameplay.ai.InvestigateVibrationGoal;
 import com.alien.common.gameplay.entity.living.alien.Alien;
 import com.alien.common.gameplay.entity.living.alien.xenomorph.Xenomorph;
 import com.alien.common.model.alien.variant.AlienVariant;
 import com.alien.common.model.resin.ResinData;
 import com.alien.common.registry.init.AlienEntityTypes;
+import com.alien.common.util.AcidBleedUtil;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import com.avp.AVP;
 
@@ -35,8 +43,59 @@ public class Boiler extends Xenomorph {
 
     @Override
     protected @NotNull ResinData createResinData() {
-        return new ResinData(0, 16, 1, AVP.config.statsConfigs.BOILER_STATS.nestTickrate);
+        return new ResinData(0, 0, 0, 1);
     }
+
+    @Override
+    protected void registerGoals() {
+        super.registerGoals();
+        goalSelector.addGoal(3, new InvestigateVibrationGoal(this));
+    }
+
+    @Override
+    protected boolean canTargetInitially(LivingEntity target) {
+        return target.distanceToSqr(this) <= 4 * 4
+            && super.canTargetInitially(target);
+    }
+
+    @Override
+    public boolean doHurtTarget(@NotNull Entity entity) {
+        var radius = 2F;
+        level().explode(this, getX(), getY(), getZ(), radius, Level.ExplosionInteraction.MOB);
+        // TODO:
+        // this.spawnLingeringCloud();
+        triggerOnDeathMobEffects(RemovalReason.KILLED);
+        discard();
+
+        // TODO: Redo the way acid strength is determined here, it isn't the greatest.
+        getBlockArea(blockPosition(), (int) radius, (int) radius, (int) radius)
+            .stream()
+            .filter(blockPos -> {
+                var blockState = level().getBlockState(blockPos);
+                return blockState.isAir() || blockState.canBeReplaced();
+            })
+            .forEach(blockPos -> AcidBleedUtil.spawnAcid(this, 3, blockPos.getCenter()));
+
+        return true;
+    }
+
+    // TODO: Move this to a util class.
+    private List<BlockPos> getBlockArea(BlockPos center, int radiusX, int radiusY, int radiusZ) {
+        var positions = new ArrayList<BlockPos>();
+
+        for (var dx = -radiusX; dx <= radiusX; dx++) {
+            for (var dy = -radiusY; dy <= radiusY; dy++) {
+                for (var dz = -radiusZ; dz <= radiusZ; dz++) {
+                    positions.add(center.offset(dx, dy, dz));
+                }
+            }
+        }
+
+        return positions;
+    }
+
+    @Override
+    protected void addDigToTargetGoal() {}
 
     @Override
     public void runAttackAnimations() {}
