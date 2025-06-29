@@ -2,10 +2,8 @@ package com.alien.common.gameplay.entity.living.alien.ovomorph;
 
 import com.lib.common.network.DataAccessor;
 import com.mojang.serialization.Codec;
-import net.minecraft.world.level.LightLayer;
 import net.minecraft.world.level.gameevent.vibrations.VibrationInfo;
 
-import java.util.EnumMap;
 import java.util.Objects;
 
 import com.avp.common.util.AVPPredicates;
@@ -13,8 +11,6 @@ import com.avp.common.util.AVPPredicates;
 public class HatchDesireManager {
 
     private static final int MAXIMUM_DESIRE_TO_HATCH = 100;
-
-    private final EnumMap<LightLayer, Integer> lastBrightnessMap;
 
     private final Ovomorph ovomorph;
 
@@ -24,23 +20,14 @@ public class HatchDesireManager {
 
     public HatchDesireManager(Ovomorph ovomorph) {
         this.ovomorph = ovomorph;
-        this.lastBrightnessMap = new EnumMap<>(LightLayer.class);
 
         this.desireToHatch = ovomorph.getDataContainer()
             .<Integer>builder("desireToHatch")
             .persistent(Codec.INT)
             .build(0);
-
-        lastBrightnessMap.put(LightLayer.BLOCK, getBrightness(LightLayer.BLOCK));
-        lastBrightnessMap.put(LightLayer.SKY, getBrightness(LightLayer.SKY));
-    }
-
-    private int getBrightness(LightLayer lightLayer) {
-        return ovomorph.level().getBrightness(lightLayer, ovomorph.blockPosition());
     }
 
     public void tick() {
-        handleBrightness();
         handleVibration();
 
         if (ovomorph.tickCount % 20 == 0) {
@@ -50,25 +37,6 @@ public class HatchDesireManager {
         if (ovomorph.getHatchManager().isHatched()) {
             desireToHatch.reset();
         }
-    }
-
-    private void handleBrightness() {
-        var level = ovomorph.level();
-        var blockPos = ovomorph.blockPosition();
-        var blockBrightness = level.getBrightness(LightLayer.BLOCK, blockPos);
-        var skyBrightness = level.getBrightness(LightLayer.SKY, blockPos);
-
-        lastBrightnessMap.forEach((lightLayer, lastBrightness) -> {
-            var currentBrightness = level.getBrightness(lightLayer, blockPos);
-
-            if (currentBrightness != lastBrightness) {
-                var brightnessDifference = Math.abs(currentBrightness - lastBrightness);
-                addDesire(brightnessDifference);
-            }
-        });
-
-        lastBrightnessMap.put(LightLayer.BLOCK, blockBrightness);
-        lastBrightnessMap.put(LightLayer.SKY, skyBrightness);
     }
 
     private void handleVibration() {
@@ -85,7 +53,17 @@ public class HatchDesireManager {
                 sourceEntity != null && AVPPredicates.isFreeHost(ovomorph, sourceEntity) && ovomorph.getSensing()
                     .hasLineOfSight(sourceEntity)
             ) {
-                addDesire((int) Math.abs(radius - vibrationInfo.distance()) * 2);
+                var baseDesire = (int) Math.abs(radius - vibrationInfo.distance());
+
+                var level = ovomorph.level();
+                var blockPos = ovomorph.blockPosition();
+                var brightness = level.getRawBrightness(blockPos, 0);
+                var bonusFactor = 5.0;
+                var clampedBrightness = Math.clamp(brightness, bonusFactor, 15);
+                // At full brightness, the bonus is 3x for the egg being more likely to hatch.
+                var brightnessBonus = (int) (clampedBrightness / bonusFactor);
+
+                addDesire(baseDesire * brightnessBonus);
             }
 
             this.lastVibrationInfo = vibrationInfo;
