@@ -3755,6 +3755,88 @@
 				}
 			}
 		},
+		"swim.leftleg": {
+			"loop": true,
+			"animation_length": 1.5,
+			"bones": {
+				"gLeftLeg": {
+					"rotation": {
+						"0.0": {
+							"vector": [13, 0, -2],
+							"easing": "linear"
+						},
+						"0.75": {
+							"vector": [-13, 0, -5],
+							"easing": "linear"
+						},
+						"1.5": {
+							"vector": [13, 0, -2],
+							"easing": "linear"
+						}
+					}
+				},
+				"gLeftShin": {
+					"rotation": {
+						"0.0": {
+							"vector": [-45, 0, 0],
+							"easing": "linear"
+						},
+						"0.375": {
+							"vector": [-32.5, 0, 0],
+							"easing": "linear"
+						},
+						"0.75": {
+							"vector": [-45, 0, 0],
+							"easing": "linear"
+						},
+						"1.125": {
+							"vector": [-57.5, 0, 0],
+							"easing": "linear"
+						},
+						"1.5": {
+							"vector": [-45, 0, 0],
+							"easing": "linear"
+						}
+					}
+				},
+				"gLeftAnkle": {
+					"rotation": {
+						"0.0": {
+							"vector": [67.5, 0, 0],
+							"easing": "linear"
+						},
+						"0.75": {
+							"vector": [67.5, 0, 0],
+							"easing": "linear"
+						},
+						"1.0": {
+							"vector": [67.5, 0, 0],
+							"easing": "linear"
+						}
+					}
+				},
+				"gLeftFoot": {
+					"rotation": {
+						"0.0": {
+							"vector": [22.5, 0, 0],
+							"easing": "linear"
+						},
+						"0.75": {
+							"vector": [45, 0, 0],
+							"easing": "linear"
+						},
+						"1.125": {
+							"vector": [22.5, 0, 0],
+							"easing": "linear"
+						},
+						"1.5": {
+							"vector": [22.5, 0, 0],
+							"easing": "linear"
+						}
+					}
+				}
+			}
+		},
 		"walk.tail": {
 			"loop": true,
 			"animation_length": 1,
