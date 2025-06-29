@@ -814,6 +814,11 @@
 					"rotation": {
 						"vector": [0, -10, 0]
 					}
+				},
+				"root": {
+					"position": {
+						"vector": [0, -20.5, 0]
+					}
 				}
 			}
 		},

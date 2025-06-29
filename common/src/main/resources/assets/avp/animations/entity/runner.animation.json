@@ -4532,6 +4532,11 @@
 					"rotation": {
 						"vector": [-22.5, 0, 0]
 					}
+				},
+				"root": {
+					"position": {
+						"vector": [0, -12, 0]
+					}
 				}
 			}
 		},
