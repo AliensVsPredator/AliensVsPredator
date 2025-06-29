@@ -90,7 +90,7 @@ public class WarriorAnimationDispatcher {
         ARMATTACK_RIGHTARM.sendForEntity(warrior);
     }
 
-    public void tailAttackQuad() {
+    public void tailAttack() {
         TAILATTACKQUAD_TAIL.sendForEntity(warrior);
     }
 }

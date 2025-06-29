@@ -60,7 +60,7 @@ public class Warrior extends Xenomorph {
         switch (attackType) {
             case 0 -> animationDispatcher.rightClawAttack();
             case 1 -> animationDispatcher.biteAttack();
-            default -> animationDispatcher.tailAttackQuad();
+            default -> animationDispatcher.tailAttack();
         }
     }
 

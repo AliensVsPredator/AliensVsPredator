@@ -90,7 +90,7 @@ public class DroneAnimationDispatcher {
         ARMATTACK_RIGHTARM.sendForEntity(drone);
     }
 
-    public void tailAttackQuad() {
+    public void tailAttack() {
         TAILATTACKQUAD_TAIL.sendForEntity(drone);
     }
 }

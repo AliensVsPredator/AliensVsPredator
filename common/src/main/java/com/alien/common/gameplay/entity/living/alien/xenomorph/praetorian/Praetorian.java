@@ -13,6 +13,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import com.avp.AVP;
+import com.avp.common.registry.init.AVPSoundEvents;
 
 public class Praetorian extends Xenomorph {
 
@@ -45,12 +46,14 @@ public class Praetorian extends Xenomorph {
 
     @Override
     public void runAttackAnimations() {
-        var isClawAttack = random.nextBoolean();
+        var attackType = random.nextInt(0, 3);
 
-        if (isClawAttack) {
-            animationDispatcher.clawAttack();
-        } else {
-            animationDispatcher.tailAttack();
+        playSound(AVPSoundEvents.ENTITY_XENOMORPH_ATTACK.get(), getSoundVolume(), (random.nextFloat() - random.nextFloat()) * 0.2F + 1.0F);
+
+        switch (attackType) {
+            case 0 -> animationDispatcher.rightClawAttack();
+            case 1 -> animationDispatcher.biteAttack();
+            default -> animationDispatcher.tailAttack();
         }
     }
 
