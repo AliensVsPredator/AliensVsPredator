@@ -57,7 +57,6 @@ public class CrawlingManager implements NBTSerializable {
         }
 
         isCrawling.set(isTight);
-        entity.refreshDimensions();
     }
 
     private boolean isTightSpace(BlockPos blockPos) {
