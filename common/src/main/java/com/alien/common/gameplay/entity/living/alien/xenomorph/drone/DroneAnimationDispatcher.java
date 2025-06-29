@@ -1,62 +1,52 @@
 package com.alien.common.gameplay.entity.living.alien.xenomorph.drone;
 
 import com.alien.common.constant.animation.DroneAnimationRefs;
+import com.alien.common.util.AzAlienAnimationUtil;
+import com.lib.common.util.AzAnimationUtil;
 import mod.azure.azurelib.rewrite.animation.dispatch.command.AzCommand;
 import mod.azure.azurelib.rewrite.animation.play_behavior.AzPlayBehaviors;
 
 public class DroneAnimationDispatcher {
 
-    private static final AzCommand ATTACK_CLAW = AzCommand.create(
-        DroneAnimationRefs.FULL_BODY_CONTROLLER_NAME,
-        DroneAnimationRefs.ATTACK_CLAW_ANIMATION_NAME
-    );
-
-    private static final AzCommand ATTACK_TAIL = AzCommand.create(
-        DroneAnimationRefs.FULL_BODY_CONTROLLER_NAME,
-        DroneAnimationRefs.ATTACK_TAIL_ANIMATION_NAME
-    );
-
-    private static final AzCommand CRAWL = AzCommand.create(
-        DroneAnimationRefs.FULL_BODY_CONTROLLER_NAME,
-        DroneAnimationRefs.CRAWL_ANIMATION_NAME,
-        AzPlayBehaviors.LOOP
-    );
-
-    private static final AzCommand CRAWL_HOLD = AzCommand.create(
-        DroneAnimationRefs.FULL_BODY_CONTROLLER_NAME,
-        DroneAnimationRefs.CRAWL_ANIMATION_NAME,
-        AzPlayBehaviors.HOLD_ON_LAST_FRAME
-    );
-
-    private static final AzCommand IDLE = AzCommand.create(
-        DroneAnimationRefs.FULL_BODY_CONTROLLER_NAME,
-        DroneAnimationRefs.IDLE_ANIMATION_NAME,
-        AzPlayBehaviors.LOOP
-    );
-
-    private static final AzCommand LUNGE = AzCommand.create(
-        DroneAnimationRefs.FULL_BODY_CONTROLLER_NAME,
-        DroneAnimationRefs.LUNGE_ANIMATION_NAME,
+    private static final AzCommand ARMATTACK_RIGHTARM = AzCommand.create(
+        AzAlienAnimationUtil.RIGHT_ARM_CONTROLLER_NAME,
+        DroneAnimationRefs.ATTACKCLAW_RIGHTARM_ANIMATION_NAME,
         AzPlayBehaviors.PLAY_ONCE
     );
 
-    private static final AzCommand RUN = AzCommand.create(
-        DroneAnimationRefs.FULL_BODY_CONTROLLER_NAME,
-        DroneAnimationRefs.RUN_ANIMATION_NAME,
-        AzPlayBehaviors.LOOP
+    private static final AzCommand BITEATTACK_HEAD = AzCommand.create(
+        AzAlienAnimationUtil.HEAD_CONTROLLER_NAME,
+        DroneAnimationRefs.ATTACKBITE_HEAD_ANIMATION_NAME,
+        AzPlayBehaviors.PLAY_ONCE
     );
 
-    private static final AzCommand SWIM = AzCommand.create(
-        DroneAnimationRefs.FULL_BODY_CONTROLLER_NAME,
-        DroneAnimationRefs.SWIM_ANIMATION_NAME,
-        AzPlayBehaviors.LOOP
+    private static final AzCommand TAILATTACKQUAD_TAIL = AzCommand.create(
+        AzAlienAnimationUtil.TAIL_CONTROLLER_NAME,
+        DroneAnimationRefs.ATTACKTAIL_TAIL_ANIMATION_NAME,
+        AzPlayBehaviors.PLAY_ONCE
     );
 
-    private static final AzCommand WALK = AzCommand.create(
-        DroneAnimationRefs.FULL_BODY_CONTROLLER_NAME,
-        DroneAnimationRefs.WALK_ANIMATION_NAME,
-        AzPlayBehaviors.LOOP
+    private static final AzCommand CRAWL_ALL = AzAnimationUtil.compose(AzAlienAnimationUtil.XENO_LIMB_NAMES, "crawl");
+
+    private static final AzCommand CRAWL_ALL_HOLD = AzAnimationUtil.compose(
+        AzAlienAnimationUtil.XENO_LIMB_NAMES,
+        "crawl",
+        AzPlayBehaviors.HOLD_ON_LAST_FRAME
     );
+
+    private static final AzCommand IDLE_ALL = AzAnimationUtil.compose(AzAlienAnimationUtil.XENO_LIMB_NAMES, "idle");
+
+    private static final AzCommand LUNGE_ALL = AzAnimationUtil.compose(
+        AzAlienAnimationUtil.XENO_LIMB_NAMES,
+        "lunge",
+        AzPlayBehaviors.PLAY_ONCE
+    );
+
+    private static final AzCommand RUN_ALL = AzAnimationUtil.compose(AzAlienAnimationUtil.XENO_LIMB_NAMES, "run");
+
+    private static final AzCommand SWIM_ALL = AzAnimationUtil.compose(AzAlienAnimationUtil.XENO_LIMB_NAMES, "swim");
+
+    private static final AzCommand WALK_ALL = AzAnimationUtil.compose(AzAlienAnimationUtil.XENO_LIMB_NAMES, "walk");
 
     private final Drone drone;
 
@@ -65,38 +55,42 @@ public class DroneAnimationDispatcher {
     }
 
     public void crawl() {
-        CRAWL.sendForEntity(drone);
+        CRAWL_ALL.sendForEntity(drone);
     }
 
     public void crawlHold() {
-        CRAWL_HOLD.sendForEntity(drone);
+        CRAWL_ALL_HOLD.sendForEntity(drone);
     }
 
     public void idle() {
-        IDLE.sendForEntity(drone);
+        IDLE_ALL.sendForEntity(drone);
     }
 
     public void lunge() {
-        LUNGE.sendForEntity(drone);
+        LUNGE_ALL.sendForEntity(drone);
     }
 
     public void run() {
-        RUN.sendForEntity(drone);
+        RUN_ALL.sendForEntity(drone);
     }
 
     public void swim() {
-        SWIM.sendForEntity(drone);
+        SWIM_ALL.sendForEntity(drone);
     }
 
     public void walk() {
-        WALK.sendForEntity(drone);
+        WALK_ALL.sendForEntity(drone);
     }
 
-    public void clawAttack() {
-        ATTACK_CLAW.sendForEntity(drone);
+    public void biteAttack() {
+        BITEATTACK_HEAD.sendForEntity(drone);
     }
 
-    public void tailAttack() {
-        ATTACK_TAIL.sendForEntity(drone);
+    public void rightClawAttack() {
+        ARMATTACK_RIGHTARM.sendForEntity(drone);
+    }
+
+    public void tailAttackQuad() {
+        TAILATTACKQUAD_TAIL.sendForEntity(drone);
     }
 }
