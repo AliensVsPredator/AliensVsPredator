@@ -61,6 +61,8 @@ public abstract class Xenomorph extends Alien implements ResinProducer {
 
     private final ResinManager resinManager;
 
+    private boolean wasUnderwaterLastTick;
+
     public Xenomorph(EntityType<? extends Xenomorph> entityType, Level level) {
         super(entityType, level);
         this.crawlingManager = new CrawlingManager(this, isCrawling);
@@ -68,6 +70,7 @@ public abstract class Xenomorph extends Alien implements ResinProducer {
             .setGrowOverTime(false);
         this.navigationManager = new XenomorphNavigationManager(this, moveControl);
         this.resinManager = new ResinManager(this, createResinData());
+        this.wasUnderwaterLastTick = false;
     }
 
     protected double getPursuitSpeedModifier() {
@@ -116,6 +119,8 @@ public abstract class Xenomorph extends Alien implements ResinProducer {
         growthManager.tick();
         resinManager.tick();
 
+        updateDimensionsBasedOnWaterState();
+
         if (!level().isClientSide) {
             var target = getTarget();
 
@@ -124,6 +129,14 @@ public abstract class Xenomorph extends Alien implements ResinProducer {
                 setTarget(null);
             }
         }
+    }
+
+    private void updateDimensionsBasedOnWaterState() {
+        if (wasUnderwaterLastTick != isUnderWater()) {
+            refreshDimensions();
+        }
+
+        this.wasUnderwaterLastTick = isUnderWater();
     }
 
     @Override
@@ -162,7 +175,8 @@ public abstract class Xenomorph extends Alien implements ResinProducer {
     @Override
     public @NotNull EntityDimensions getDefaultDimensions(@NotNull Pose pose) {
         var defaultDimensions = getType().getDimensions();
-        return defaultDimensions.scale(1, crawlingManager.isCrawling() ? 0.4f : 1);
+        var shouldBeSmall = crawlingManager.isCrawling() || isUnderWater();
+        return defaultDimensions.scale(1, shouldBeSmall ? 0.4f : 1);
     }
 
     @Override
