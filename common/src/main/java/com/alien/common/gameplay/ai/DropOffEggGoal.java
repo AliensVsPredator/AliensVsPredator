@@ -126,7 +126,7 @@ public class DropOffEggGoal<T extends Xenomorph & EggCarrier> extends Goal {
                 if (
                     (state.isAir() || state.canBeReplaced())
                         && (aboveState.isAir() || aboveState.canBeReplaced())
-                        && level.getEntities(null, new AABB(adjustedPos).inflate(1.1)).isEmpty()
+                        && level.getEntities(null, new AABB(adjustedPos)).isEmpty()
                 ) {
 
                     var path = eggCarryingXenomorph.getNavigation().createPath(adjustedPos, 0);
