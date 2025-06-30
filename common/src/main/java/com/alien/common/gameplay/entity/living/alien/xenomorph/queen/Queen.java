@@ -30,6 +30,7 @@ import com.avp.AVP;
 import com.avp.common.gameplay.ai.goal.DigToTargetGoal;
 import com.avp.common.gameplay.ai.goal.QueenLayEggGoal;
 import com.avp.common.registry.init.AVPSoundEvents;
+import com.avp.common.registry.tag.AVPEntityTypeTags;
 import com.avp.common.util.EntityUtil;
 import com.avp.server.ServerLevelManagerAccessor;
 
@@ -150,6 +151,19 @@ public class Queen extends Xenomorph {
             animationDispatcher.clawAttack();
         } else {
             animationDispatcher.tailAttack();
+        }
+    }
+
+    @Override
+    protected void doPush(@NotNull Entity entity) {
+        if (
+            // If queen does not have an ovipositor...
+            !ovipositorManager.hasOvipositor()
+                // OR the queen does have an ovipositor and the entity to push is NOT an alien...
+                || !entity.getType().is(AVPEntityTypeTags.ALIENS)
+        ) {
+            // Then push the entity.
+            super.doPush(entity);
         }
     }
 
