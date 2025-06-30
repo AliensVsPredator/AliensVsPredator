@@ -443,9 +443,12 @@ public abstract class Alien extends Monster implements DataUser {
     private void applyAttributes(AVPConfig.StatsConfigs.AdvancedStats config, float scaleFactor) {
         setAttribute(Attributes.MAX_HEALTH, config.health * scaleFactor);
         setAttribute(Attributes.ATTACK_DAMAGE, config.attackDamage * scaleFactor);
-        setAttribute(Attributes.KNOCKBACK_RESISTANCE, config.knockbackResistance * scaleFactor);
         setAttribute(Attributes.ARMOR, config.armor * scaleFactor);
         setAttribute(Attributes.ARMOR_TOUGHNESS, config.armorToughness * scaleFactor);
+
+        if (!getType().is(AVPEntityTypeTags.OVOMORPHS)) {
+            setAttribute(Attributes.KNOCKBACK_RESISTANCE, config.knockbackResistance * scaleFactor);
+        }
     }
 
     private void setAttribute(Holder<Attribute> attribute, float value) {
