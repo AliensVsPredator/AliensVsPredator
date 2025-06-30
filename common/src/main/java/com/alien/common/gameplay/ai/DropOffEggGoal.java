@@ -18,6 +18,8 @@ import com.avp.common.registry.init.AVPSoundEvents;
 
 public class DropOffEggGoal<T extends Xenomorph & EggCarrier> extends Goal {
 
+    private static final List<BlockPos> EGG_GRID_POS_OFFSETS = generateSpiralOffsets(16);
+
     private final T eggCarryingXenomorph;
 
     private BlockPos freeEggPos;
@@ -32,7 +34,7 @@ public class DropOffEggGoal<T extends Xenomorph & EggCarrier> extends Goal {
             return false;
         }
 
-        this.freeEggPos = findFreeEggSpot(eggCarryingXenomorph.level(), eggCarryingXenomorph.blockPosition(), 16, pos -> {
+        this.freeEggPos = findFreeEggSpot(eggCarryingXenomorph.level(), eggCarryingXenomorph.blockPosition(), pos -> {
             var state = eggCarryingXenomorph.level().getBlockState(pos);
             return state.entityCanStandOn(eggCarryingXenomorph.level(), pos, eggCarryingXenomorph);
         }).orElse(null);
@@ -85,7 +87,6 @@ public class DropOffEggGoal<T extends Xenomorph & EggCarrier> extends Goal {
     private Optional<BlockPos> findFreeEggSpot(
         Level level,
         BlockPos center,
-        int maxRadius,
         Predicate<BlockPos> isWalkable
     ) {
         // Snap center to nearest even-even grid position.
@@ -96,7 +97,7 @@ public class DropOffEggGoal<T extends Xenomorph & EggCarrier> extends Goal {
         );
         var useOdd = (gridAlignedCenter.getX() & 1) != 0 && (gridAlignedCenter.getZ() & 1) != 0;
 
-        for (var offset : generateSpiralOffsets(maxRadius)) {
+        for (var offset : EGG_GRID_POS_OFFSETS) {
             var pos = gridAlignedCenter.offset(offset);
 
             // Only proceed if pos.x and pos.z match the expected parity
@@ -139,7 +140,7 @@ public class DropOffEggGoal<T extends Xenomorph & EggCarrier> extends Goal {
         return Optional.empty();
     }
 
-    private List<BlockPos> generateSpiralOffsets(int maxDist) {
+    private static List<BlockPos> generateSpiralOffsets(int maxDist) {
         var step = 2;
         var offsets = new ArrayList<BlockPos>();
 
