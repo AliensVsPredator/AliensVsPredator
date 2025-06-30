@@ -3,10 +3,13 @@ package com.alien.common.gameplay.ai;
 import com.alien.common.gameplay.entity.living.alien.EggCarrier;
 import com.alien.common.gameplay.entity.living.alien.xenomorph.Xenomorph;
 import net.minecraft.world.entity.ai.goal.Goal;
+import net.minecraft.world.level.pathfinder.Path;
 
 public class PickUpEggGoal<T extends Xenomorph & EggCarrier> extends Goal {
 
     private final T eggCarryingXenomorph;
+
+    private Path path;
 
     public PickUpEggGoal(T eggCarryingXenomorph) {
         this.eggCarryingXenomorph = eggCarryingXenomorph;
@@ -27,8 +30,16 @@ public class PickUpEggGoal<T extends Xenomorph & EggCarrier> extends Goal {
         var targetOvomorph = eggCarryingXenomorph.getEggPickupManager().getTargetOvomorphOrNull();
 
         if (targetOvomorph != null) {
-            eggCarryingXenomorph.getNavigation().moveTo(targetOvomorph, 0.5);
+            this.path = eggCarryingXenomorph.getNavigation().createPath(targetOvomorph, 0);
         }
+    }
+
+    @Override
+    public boolean canContinueToUse() {
+        return super.canContinueToUse()
+            && path != null
+            && !path.isDone()
+            && path.canReach();
     }
 
     @Override
@@ -36,7 +47,7 @@ public class PickUpEggGoal<T extends Xenomorph & EggCarrier> extends Goal {
         var targetOvomorph = eggCarryingXenomorph.getEggPickupManager().getTargetOvomorphOrNull();
 
         if (targetOvomorph != null) {
-            eggCarryingXenomorph.getNavigation().moveTo(targetOvomorph, 0.5);
+            eggCarryingXenomorph.getNavigation().moveTo(path, 0.5);
 
             if (eggCarryingXenomorph.distanceToSqr(targetOvomorph) <= 2 * 2) {
                 targetOvomorph.startRiding(eggCarryingXenomorph);
@@ -49,6 +60,8 @@ public class PickUpEggGoal<T extends Xenomorph & EggCarrier> extends Goal {
     @Override
     public void stop() {
         super.stop();
+
+        this.path = null;
 
         eggCarryingXenomorph.getEggPickupManager()
             .setTargetOvomorph(null);
