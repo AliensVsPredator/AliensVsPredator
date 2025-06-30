@@ -37,7 +37,11 @@ public abstract class MixinAnimal_GeneCarrier extends AgeableMob implements Gene
     }
 
     @Inject(at = @At("HEAD"), method = "finalizeSpawnChildFromBreeding")
-    public void avp$finalizeSpawnChildFromBreeding(ServerLevel level, Animal mate, AgeableMob baby, CallbackInfo ci) {
+    public void avp$finalizeSpawnChildFromBreeding(ServerLevel level, Animal mate, @Nullable AgeableMob baby, CallbackInfo ci) {
+        if (baby == null) {
+            return;
+        }
+
         var geneCarrier = (GeneCarrier) baby;
 
         var babyGeneContainer = geneCarrier.getOrCreateGeneManager().getGeneContainer();
