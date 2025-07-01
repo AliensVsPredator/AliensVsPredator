@@ -1,11 +1,9 @@
 package com.predator.common.gameplay.entity.living.yautja;
 
-import com.lib.common.network.DataAccessor;
 import com.lib.common.network.DataUser;
-import com.mojang.serialization.Codec;
 import com.predator.common.gameplay.entity.living.yautja.manager.YautjaNavigationManager;
 import com.predator.common.gameplay.entity.living.yautja.util.YautjaPredicates;
-import net.minecraft.network.codec.ByteBufCodecs;
+import com.predator.common.registry.init.item.PredatorArmorItems;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -44,11 +42,6 @@ public class Yautja extends Monster implements DataUser {
     private final YautjaAnimationDispatcher animationDispatcher;
 
     private final YautjaNavigationManager navigationManager;
-
-    public final DataAccessor<Boolean> hasMask = getDataContainer().<Boolean>builder("hasMask")
-        .networkSynchronized(ByteBufCodecs.BOOL)
-        .persistent(Codec.BOOL)
-        .build(true);
 
     public Yautja(EntityType<? extends Yautja> entityType, Level level) {
         super(entityType, level);
@@ -95,12 +88,19 @@ public class Yautja extends Monster implements DataUser {
     }
 
     public void checkMask() {
-        if (level().isClientSide || !hasMask.get()) {
+        if (level().isClientSide || !hasMask()) {
             return;
         }
 
         var overHalfHealth = getHealth() > getMaxHealth() / 2;
-        hasMask.set(overHalfHealth);
+
+        if (!overHalfHealth) {
+            setItemSlot(EquipmentSlot.HEAD, ItemStack.EMPTY);
+        }
+    }
+
+    public boolean hasMask() {
+        return getItemBySlot(EquipmentSlot.HEAD).getItem() == PredatorArmorItems.JUNGLE_PREDATOR_HELMET.get();
     }
 
     @Override
@@ -119,6 +119,11 @@ public class Yautja extends Monster implements DataUser {
         @NotNull MobSpawnType mobSpawnType,
         @Nullable SpawnGroupData spawnGroupData
     ) {
+        setItemSlot(EquipmentSlot.HEAD, new ItemStack(PredatorArmorItems.JUNGLE_PREDATOR_HELMET.get()));
+        setItemSlot(EquipmentSlot.CHEST, new ItemStack(PredatorArmorItems.JUNGLE_PREDATOR_CHESTPLATE.get()));
+        setItemSlot(EquipmentSlot.LEGS, new ItemStack(PredatorArmorItems.JUNGLE_PREDATOR_LEGGINGS.get()));
+        setItemSlot(EquipmentSlot.FEET, new ItemStack(PredatorArmorItems.JUNGLE_PREDATOR_BOOTS.get()));
+
         if (random.nextDouble() <= 0.5) {
             if (random.nextDouble() <= 0.7) {
                 setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(AVPItems.SHURIKEN.get()));
