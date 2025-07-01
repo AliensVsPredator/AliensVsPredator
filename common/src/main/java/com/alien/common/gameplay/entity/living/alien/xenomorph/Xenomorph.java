@@ -7,6 +7,7 @@ import com.alien.common.model.resin.ResinData;
 import com.alien.common.model.resin.ResinProducer;
 import com.alien.common.util.AlienPredicates;
 import com.alien.common.util.XenomorphGrowthUtil;
+import com.avp.common.registry.tag.AVPEntityTypeTags;
 import com.lib.common.gameplay.entity.manager.CrawlingManager;
 import com.lib.common.network.DataAccessor;
 import net.minecraft.core.BlockPos;
@@ -224,6 +225,18 @@ public abstract class Xenomorph extends Alien implements ResinProducer {
         }
 
         super.setTarget(livingEntity);
+    }
+
+    @Override
+    protected void doPush(Entity entity) {
+        if (
+            !entity.getType().is(AVPEntityTypeTags.FACEHUGGERS)
+                && !entity.getType().is(AVPEntityTypeTags.CHESTBURSTERS)
+                && !entity.getType().is(AVPEntityTypeTags.ADOLESCENTS)
+        ) {
+            // Xenomorphs should not collide with smaller aliens.
+            super.doPush(entity);
+        }
     }
 
     @Override
