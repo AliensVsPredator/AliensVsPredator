@@ -7,7 +7,6 @@ import com.alien.common.model.resin.ResinData;
 import com.alien.common.model.resin.ResinProducer;
 import com.alien.common.util.AlienPredicates;
 import com.alien.common.util.XenomorphGrowthUtil;
-import com.avp.common.registry.tag.AVPEntityTypeTags;
 import com.lib.common.gameplay.entity.manager.CrawlingManager;
 import com.lib.common.network.DataAccessor;
 import net.minecraft.core.BlockPos;
@@ -46,6 +45,7 @@ import com.avp.common.gameplay.ai.goal.DigToTargetGoal;
 import com.avp.common.gameplay.ai.goal.StrollAroundInWaterGoal;
 import com.avp.common.gameplay.ai.goal.XenoFloatGoal;
 import com.avp.common.registry.init.AVPSoundEvents;
+import com.avp.common.registry.tag.AVPEntityTypeTags;
 
 public abstract class Xenomorph extends Alien implements ResinProducer {
 

@@ -85,6 +85,11 @@
 - Updated the chestbursting death message to have a proper, better-fitting message.
 - Hatched ovomorphs can no longer be revived with royal jelly.
 - Infertile facehuggers can no longer be revived with royal jelly.
+- Alien collision interactions have been changed:
+  - Ovomorphs no longer collide with non-ovomorph aliens.
+  - Facehuggers no longer collide with other aliens (including other facehuggers).
+  - Xenomorphs no longer collide with smaller aliens (facehuggers, chestbursters and adolescents).
+  - Queens no longer push other entities when she is on her ovipositor.
 - Improved facehugging effects:
   - Effects now last 2 seconds longer (4 seconds total).
   - Weakness is now applied to the host sooner (as soon as smothering damage finishes).
