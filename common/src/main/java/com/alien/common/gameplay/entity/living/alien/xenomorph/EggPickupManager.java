@@ -87,8 +87,8 @@ public class EggPickupManager implements GameEventListener.Provider<EggPickupReq
             targetOvomorph != null
                 // If the xenomorph is already moving an ovomorph, don't acknowledge this other ovomorph's request.
                 || !getPassengerOvomorphs().isEmpty()
-                // If the xenomorph can't see the ovomorph, don't try to pick the ovomorph up.
-                || !xenomorph.getSensing().hasLineOfSight(ovomorph)
+                // If the xenomorph can't reach the ovomorph, don't try to pick the ovomorph up.
+                || (xenomorph.getNavigation().createPath(ovomorph, 0) == null)
         ) {
             return;
         }
