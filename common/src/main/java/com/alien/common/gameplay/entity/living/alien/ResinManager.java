@@ -26,7 +26,7 @@ import com.avp.AVP;
 
 public class ResinManager implements GameEventListener.Provider<ResinSpreadListener>, NBTSerializable {
 
-    private static final String RESIN_DATA_TAG_KEY = "resinData";
+    private static final String NBT_RESIN_DATA = "resinData";
 
     private final Alien alien;
 
@@ -194,13 +194,15 @@ public class ResinManager implements GameEventListener.Provider<ResinSpreadListe
 
     @Override
     public void load(CompoundTag compoundTag) {
-        ResinData.CODEC.parse(
-            new Dynamic<>(NbtOps.INSTANCE, compoundTag.getCompound(RESIN_DATA_TAG_KEY))
-        )
-            .resultOrPartial(
-                AVP.LOGGER::error
+        if (compoundTag.contains(NBT_RESIN_DATA)) {
+            ResinData.CODEC.parse(
+                new Dynamic<>(NbtOps.INSTANCE, compoundTag.getCompound(NBT_RESIN_DATA))
             )
-            .ifPresent(resinData -> this.resinData = resinData);
+                .resultOrPartial(
+                    AVP.LOGGER::error
+                )
+                .ifPresent(resinData -> this.resinData = resinData);
+        }
     }
 
     @Override
@@ -209,6 +211,6 @@ public class ResinManager implements GameEventListener.Provider<ResinSpreadListe
             .resultOrPartial(
                 AVP.LOGGER::error
             )
-            .ifPresent(tag -> compoundTag.put(RESIN_DATA_TAG_KEY, tag));
+            .ifPresent(tag -> compoundTag.put(NBT_RESIN_DATA, tag));
     }
 }
