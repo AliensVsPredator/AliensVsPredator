@@ -206,7 +206,12 @@ public class Ovomorph extends Alien implements Shearable {
             tryHatch();
         }
 
-        if (!entity.getType().is(AVPEntityTypeTags.XENOMORPHS)) {
+        if (
+            // Entity is not an alien...
+            !entity.getType().is(AVPEntityTypeTags.ALIENS)
+                // OR entity is an ovomorph.
+                || entity.getType().is(AVPEntityTypeTags.OVOMORPHS)
+        ) {
             super.doPush(entity);
         }
     }
