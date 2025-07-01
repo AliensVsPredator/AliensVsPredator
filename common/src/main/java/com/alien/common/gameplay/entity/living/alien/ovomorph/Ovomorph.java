@@ -93,7 +93,7 @@ public class Ovomorph extends Alien implements Shearable {
         if (!level().isClientSide) {
             goap.update(this);
 
-            this.wantsPickup = !isRooted.get() && !isPassenger();
+            this.wantsPickup = canBePickedUp();
 
             if (!pickupRequestAcknowledged && wantsPickup && tickCount % 20 == 0) {
                 var alienVariantType = AlienVariantTypes.getFor(this);
@@ -108,6 +108,19 @@ public class Ovomorph extends Alien implements Shearable {
                 this.pickupRequestAcknowledged = false;
             }
         }
+    }
+
+    public boolean canBeHeld() {
+        return isAlive()
+            && !isDeadOrDying()
+            && !isRooted.get()
+            && getHatchState().contains(HatchState.SLEEPING);
+    }
+
+    public boolean canBePickedUp() {
+        return canBeHeld()
+            && onGround()
+            && !isPassenger();
     }
 
     public void tryHatch() {

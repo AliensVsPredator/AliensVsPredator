@@ -45,20 +45,23 @@ public class EggPickupManager implements GameEventListener.Provider<EggPickupReq
             return;
         }
 
-        if (xenomorph.getTarget() != null) {
-            // Drop all ovomorphs if the alien has an attack target.
-            getPassengerOvomorphs()
-                .forEach(Entity::stopRiding);
+        // Drop all ovomorphs if they can't be held or if the xenomorph has an attack target.
+        getPassengerOvomorphs()
+            .stream()
+            .filter(ovomorph -> xenomorph.getTarget() != null || !ovomorph.canBeHeld())
+            .forEach(Entity::stopRiding);
 
+        if (xenomorph.getTarget() != null || (targetOvomorph != null && !targetOvomorph.canBeHeld())) {
             // Set the target ovomorph to null.
             setTargetOvomorph(null);
         }
     }
 
-    private List<Entity> getPassengerOvomorphs() {
+    private List<Ovomorph> getPassengerOvomorphs() {
         return xenomorph.getPassengers()
             .stream()
             .filter(passenger -> passenger.getType().is(AVPEntityTypeTags.OVOMORPHS))
+            .map(entity -> (Ovomorph) entity)
             .toList();
     }
 
