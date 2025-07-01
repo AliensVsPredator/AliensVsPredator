@@ -121,6 +121,7 @@
 - Fixed marines not moving their heads to match where they are looking.
 - Fixed facehuggers not fully incapacitating marine hosts due to marines using a different AI system.
 - Fixed alien hitboxes being off while swimming.
+- Fixed praetorian count balancing including eggs, facehuggers, chestbursters and adolescents in formula.
 
 ## 🛠 Data Pack
 - Added `#avp:runner_hosts` entity tag.

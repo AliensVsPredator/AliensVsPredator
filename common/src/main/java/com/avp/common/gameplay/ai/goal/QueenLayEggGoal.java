@@ -64,7 +64,7 @@ public class QueenLayEggGoal extends Goal {
     @Override
     public void start() {
         // Reset egg lay cooldown since it's (almost) guaranteed that the queen is about to lay an egg.
-        eggLayCooldownInTicks = MAX_EGG_LAY_COOLDOWN_IN_TICKS;
+        this.eggLayCooldownInTicks = MAX_EGG_LAY_COOLDOWN_IN_TICKS;
         var level = queen.level();
         // Egg has a 5% chance of being royal.
         var isRoyal = queen.getRandom().nextInt(100) < 5;
@@ -115,7 +115,7 @@ public class QueenLayEggGoal extends Goal {
 
     private boolean noEggsNearby() {
         // Reset scanning cooldown regardless of scanner outcome.
-        eggLayCooldownInTicks = MAX_EGG_LAY_COOLDOWN_IN_TICKS;
+        this.eggLayCooldownInTicks = MAX_EGG_LAY_COOLDOWN_IN_TICKS;
         // Scan for ovomorphs.
         return queen.level()
             .getEntitiesOfClass(
