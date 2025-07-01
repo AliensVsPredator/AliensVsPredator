@@ -51,8 +51,7 @@ public class YautjaAnimator extends AzEntityAnimator<Yautja> {
             "gLeftLeg",
             "gRightLeg",
             0F,
-            0F,
-            animatable.isAggressive()
+            0F
         );
     }
 

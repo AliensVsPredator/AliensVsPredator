@@ -56,8 +56,8 @@ public class Yautja extends Monster implements DataUser {
     @Override
     protected void registerGoals() {
         goalSelector.addGoal(0, new FloatGoal(this));
-        goalSelector.addGoal(1, new DelayedAttackGoal(this, 1.0, true, 5, this::runAttackAnimations));
-        goalSelector.addGoal(1, new UseItemGoal(this, this::runAttackAnimations));
+        goalSelector.addGoal(1, new DelayedAttackGoal(this, 1.0, true, 5, () -> {}));
+        goalSelector.addGoal(1, new UseItemGoal(this, () -> {}));
         goalSelector.addGoal(7, new StrollAroundInWaterGoal(this, 1.0));
         goalSelector.addGoal(7, new WaterAvoidingRandomStrollGoal(this, 1.0));
         targetSelector.addGoal(1, new HurtByTargetGoal(this).setAlertOthers(Yautja.class));
@@ -70,10 +70,6 @@ public class Yautja extends Monster implements DataUser {
                 target -> YautjaPredicates.isThreateningTarget(this, target)
             )
         );
-    }
-
-    public void runAttackAnimations() {
-        animationDispatcher.rightShoot();
     }
 
     @Override

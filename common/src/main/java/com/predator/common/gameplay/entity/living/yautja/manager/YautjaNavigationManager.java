@@ -31,7 +31,7 @@ public class YautjaNavigationManager {
     private final Goal waterAttackGoal;
 
     public YautjaNavigationManager(Yautja yautja, MoveControl moveControl) {
-        this.groundAttackGoal = new UseItemGoal(yautja, yautja::runAttackAnimations);
+        this.groundAttackGoal = new UseItemGoal(yautja, () -> {});
         this.groundMoveControl = moveControl;
         this.groundNavigation = new AzureNavigation(yautja, yautja.level()) {
 
@@ -47,7 +47,7 @@ public class YautjaNavigationManager {
 
         // Water navigation.
         yautja.setPathfindingMalus(PathType.WATER, 0.0F);
-        this.waterAttackGoal = new UseItemGoal(yautja, yautja::runAttackAnimations);
+        this.waterAttackGoal = new UseItemGoal(yautja, () -> {});
         this.waterMoveControl = new WaterMoveControl(yautja);
         this.waterNavigation = new WaterBoundPathNavigation(yautja, yautja.level());
     }
