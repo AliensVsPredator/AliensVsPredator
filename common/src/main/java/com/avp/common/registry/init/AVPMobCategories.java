@@ -11,5 +11,7 @@ public record AVPMobCategories() {
 
     public static MobCategory ALIENS;
 
+    public static MobCategory OVOMORPHS;
+
     public static MobCategory PREDATOR;
 }

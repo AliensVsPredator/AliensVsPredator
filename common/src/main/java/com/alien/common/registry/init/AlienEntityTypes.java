@@ -62,7 +62,7 @@ public class AlienEntityTypes {
 
     public static final AVPDeferredHolder<EntityType<Ovomorph>> ABERRANT_OVOMORPH = AVPEntityTypes.register(
         "aberrant_ovomorph",
-        EntityType.Builder.of(Ovomorph::new, AVPEntityTypes.ALIEN_CATEGORY)
+        EntityType.Builder.of(Ovomorph::new, AVPEntityTypes.OVOMORPH_CATEGORY)
             .sized(0.65f, 0.8f)
     );
 
@@ -224,7 +224,7 @@ public class AlienEntityTypes {
 
     public static final AVPDeferredHolder<EntityType<Ovomorph>> NETHER_OVOMORPH = AVPEntityTypes.register(
         "nether_ovomorph",
-        EntityType.Builder.of(Ovomorph::new, AVPEntityTypes.ALIEN_CATEGORY)
+        EntityType.Builder.of(Ovomorph::new, AVPEntityTypes.OVOMORPH_CATEGORY)
             .sized(0.65f, 0.8f)
     );
 
@@ -272,7 +272,7 @@ public class AlienEntityTypes {
 
     public static final AVPDeferredHolder<EntityType<Ovomorph>> OVOMORPH = AVPEntityTypes.register(
         "ovomorph",
-        EntityType.Builder.of(Ovomorph::new, AVPEntityTypes.ALIEN_CATEGORY)
+        EntityType.Builder.of(Ovomorph::new, AVPEntityTypes.OVOMORPH_CATEGORY)
             .sized(0.65f, 0.8f)
     );
 
@@ -314,7 +314,7 @@ public class AlienEntityTypes {
 
     public static final AVPDeferredHolder<EntityType<Ovomorph>> ROYAL_ABERRANT_OVOMORPH = AVPEntityTypes.register(
         "royal_aberrant_ovomorph",
-        EntityType.Builder.of(Ovomorph::new, AVPEntityTypes.ALIEN_CATEGORY)
+        EntityType.Builder.of(Ovomorph::new, AVPEntityTypes.OVOMORPH_CATEGORY)
             .sized(0.65f, 0.8f)
     );
 
@@ -338,7 +338,7 @@ public class AlienEntityTypes {
 
     public static final AVPDeferredHolder<EntityType<Ovomorph>> ROYAL_OVOMORPH = AVPEntityTypes.register(
         "royal_ovomorph",
-        EntityType.Builder.of(Ovomorph::new, AVPEntityTypes.ALIEN_CATEGORY)
+        EntityType.Builder.of(Ovomorph::new, AVPEntityTypes.OVOMORPH_CATEGORY)
             .sized(0.65f, 0.8f)
     );
 
@@ -362,7 +362,7 @@ public class AlienEntityTypes {
 
     public static final AVPDeferredHolder<EntityType<Ovomorph>> ROYAL_NETHER_OVOMORPH = AVPEntityTypes.register(
         "royal_nether_ovomorph",
-        EntityType.Builder.of(Ovomorph::new, AVPEntityTypes.ALIEN_CATEGORY)
+        EntityType.Builder.of(Ovomorph::new, AVPEntityTypes.OVOMORPH_CATEGORY)
             .sized(0.65f, 0.8f)
     );
 

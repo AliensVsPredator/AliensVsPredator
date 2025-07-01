@@ -17,6 +17,8 @@ public class AVPEntityTypes {
 
     public static final MobCategory ALIEN_CATEGORY = AVPMobCategories.ALIENS;
 
+    public static final MobCategory OVOMORPH_CATEGORY = AVPMobCategories.OVOMORPHS;
+
     public static final MobCategory PREDATOR_CATEGORY = AVPMobCategories.PREDATOR;
 
     private static final List<AVPDeferredHolder<? extends EntityType<?>>> ENTITY_TYPE_HOLDERS = new ArrayList<>();

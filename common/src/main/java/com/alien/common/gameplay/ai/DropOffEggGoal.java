@@ -141,7 +141,6 @@ public class DropOffEggGoal<T extends Xenomorph & EggCarrier> extends Goal {
             .toList();
     }
 
-
     private Optional<BlockPos> findFreeEggSpot(
         Level level,
         BlockPos center,

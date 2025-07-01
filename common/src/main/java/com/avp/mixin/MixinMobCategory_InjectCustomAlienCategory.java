@@ -49,12 +49,19 @@ public abstract class MixinMobCategory_InjectCustomAlienCategory {
     private static void addCustomMobCategory(CallbackInfo ci) {
         var categories = new ArrayList<>(Arrays.asList($VALUES));
         var last = categories.get(categories.size() - 1);
+
         var alien = newMobCategory("ALIENS", last.ordinal() + 1, "alien", 75, false, false, 128);
+        var ovomorph = newMobCategory("OVOMORPHS", last.ordinal() + 1, "ovomorph", 60, false, false, 128);
         var predator = newMobCategory("PREDATOR", last.ordinal() + 1, "predator", 75, false, false, 128);
+
         AVPMobCategories.ALIENS = alien;
+        AVPMobCategories.OVOMORPHS = ovomorph;
         AVPMobCategories.PREDATOR = predator;
+
         categories.add(alien);
+        categories.add(ovomorph);
         categories.add(predator);
+
         $VALUES = categories.toArray(new MobCategory[0]);
     }
 }

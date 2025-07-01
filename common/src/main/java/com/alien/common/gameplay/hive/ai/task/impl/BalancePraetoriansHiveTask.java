@@ -5,7 +5,6 @@ import com.alien.common.gameplay.entity.living.alien.xenomorph.praetorian.Praeto
 import com.alien.common.gameplay.entity.living.alien.xenomorph.warrior.Warrior;
 import com.alien.common.gameplay.hive.Hive;
 import com.alien.common.model.hive.HiveMemberData;
-import com.avp.common.registry.tag.AVPEntityTypeTags;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.EntityType;
 
@@ -15,6 +14,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import com.avp.AVP;
+import com.avp.common.registry.tag.AVPEntityTypeTags;
 
 public class BalancePraetoriansHiveTask extends BalanceHiveTask {
 
@@ -35,7 +35,10 @@ public class BalancePraetoriansHiveTask extends BalanceHiveTask {
         int hiveMembersRequiredForPraetorian = AVP.config.hiveConfigs.HIVE_MEMBERS_REQUIRED_FOR_PRAETORIAN;
         int maxPraetorianCount = AVP.config.hiveConfigs.HIVE_MAX_PRAETORIAN_COUNT;
         var desiredPraetorianCount = hiveMembersRequiredForPraetorian > 0
-            ? Math.max(0, Math.clamp(xenomorphHiveMemberCount / hiveMembersRequiredForPraetorian, 0, maxPraetorianCount) - praetorians.size())
+            ? Math.max(
+                0,
+                Math.clamp(xenomorphHiveMemberCount / hiveMembersRequiredForPraetorian, 0, maxPraetorianCount) - praetorians.size()
+            )
             : 0;
 
         if (desiredPraetorianCount == 0) {
