@@ -19,6 +19,18 @@ public class MiscellaneousRecipeProvider {
     public static void provide(RecipeBuilder builder) {
         builder.shaped()
             .withCategory(RecipeCategory.MISC)
+            .define('A', AVPItems.ALUMINUM_INGOT)
+            .define('B', AVPItems.SYRINGE)
+            .define('C', AVPItems.INTEGRATED_CIRCUIT)
+            .define('D', AVPItems.LED_DISPLAY)
+            .define('E', AVPItems.REDSTONE_CRYSTAL)
+            .pattern("ABA")
+            .pattern("CDC")
+            .pattern("AEA")
+            .into(1, AVPItems.GENE_READER);
+
+        builder.shaped()
+            .withCategory(RecipeCategory.MISC)
             .define('A', Items.IRON_NUGGET)
             .define('B', Items.GLASS_BOTTLE)
             .define('C', AVPItems.POLYMER)

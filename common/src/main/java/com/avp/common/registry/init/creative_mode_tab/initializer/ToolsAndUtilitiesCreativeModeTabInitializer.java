@@ -11,6 +11,7 @@ public class ToolsAndUtilitiesCreativeModeTabInitializer {
 
     public static final Consumer<CreativeModeTab.Output> OUTPUT_CONSUMER = output -> {
         CreativeModeTabUtil.accept(output, AVPItems.ARMOR_CASE);
+        CreativeModeTabUtil.accept(output, AVPItems.GENE_READER);
         CreativeModeTabUtil.accept(output, AVPItems.SYRINGE);
         CreativeModeTabUtil.accept(output, AVPItems.CANISTER);
         CreativeModeTabUtil.accept(output, AVPItems.WATER_CANISTER);

@@ -2,6 +2,7 @@ package com.avp.common.registry.init.item;
 
 import com.human.common.gameplay.item.ArmorCaseItem;
 import com.human.common.gameplay.item.CanisterItem;
+import com.human.common.gameplay.item.GeneReaderItem;
 import com.human.common.gameplay.item.MilkCanisterItem;
 import com.human.common.gameplay.item.SolidCanisterItem;
 import com.human.common.gameplay.item.SyringeItem;
@@ -106,6 +107,8 @@ public class AVPItems {
     public static final AVPDeferredHolder<Item> FERROALUMINUM_NUGGET = register("ferroaluminum_nugget");
 
     public static final AVPDeferredHolder<Item> FUEL_TANK = register("fuel_tank", new Item.Properties().stacksTo(1));
+
+    public static final AVPDeferredHolder<Item> GENE_READER = register("gene_reader", GeneReaderItem::new);
 
     public static final AVPDeferredHolder<Item> GRENADE = register("grenade_standard", () -> new GrenadeItem(false, false));
 

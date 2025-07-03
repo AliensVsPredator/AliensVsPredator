@@ -5,7 +5,6 @@ import com.human.common.gameplay.component.SyringeMode;
 import com.human.common.registry.init.HumanDataComponents;
 import com.lib.common.gameplay.gene.GeneBonusDataEntry;
 import com.lib.common.gameplay.gene.GeneOperationType;
-import com.lib.common.gameplay.gene.GeneRegistry;
 import com.lib.common.gameplay.gene.Genes;
 import com.lib.common.model.GeneCarrier;
 import com.lib.common.registry.GeneBonusDataRegistry;
@@ -62,7 +61,7 @@ public class SyringeItem extends Item {
                 if (mode == SyringeMode.EMPTY) {
                     stack.set(HumanDataComponents.SYRINGE_CONTENTS.get(), SyringeContents.EMPTY);
                     // TODO: Use proper translatable here.
-                    player.displayClientMessage(Component.literal("Genes have been cleared."), true);
+                    player.displayClientMessage(Component.literal("Syringe has been emptied."), true);
                 }
             }
 
@@ -92,7 +91,7 @@ public class SyringeItem extends Item {
                 if (mode == SyringeMode.EMPTY) {
                     stack.set(HumanDataComponents.SYRINGE_CONTENTS.get(), SyringeContents.EMPTY);
                     // TODO: Use proper translatable here.
-                    player.displayClientMessage(Component.literal("Genes have been cleared."), true);
+                    player.displayClientMessage(Component.literal("Syringe has been emptied."), true);
                 }
             }
 
@@ -212,8 +211,6 @@ public class SyringeItem extends Item {
         @NotNull TooltipFlag tooltipFlag
     ) {
         super.appendHoverText(itemStack, tooltipContext, list, tooltipFlag);
-        // TODO: Add these once the syringe is functional.
-        // list.addAll(TOOLTIP_COMPONENTS);
         // TODO: Use translatable here.
         list.add(Component.literal("Shift + Right Click to change mode.").withStyle(ChatFormatting.GRAY));
         list.add(CommonComponents.EMPTY);
@@ -230,7 +227,7 @@ public class SyringeItem extends Item {
 
         var syringeContents = itemStack.getOrDefault(HumanDataComponents.SYRINGE_CONTENTS.get(), SyringeContents.EMPTY);
 
-        if (syringeContents.equals(SyringeContents.EMPTY)) {
+        if (syringeContents.equals(SyringeContents.EMPTY) || syringeContents.geneBonusDataEntries().isEmpty()) {
             return;
         }
 
@@ -240,38 +237,10 @@ public class SyringeItem extends Item {
             Component.literal("Genes:")
                 .withStyle(ChatFormatting.YELLOW)
         );
-
-        // TODO: Pretty this up later.
-        syringeContents.geneBonusDataEntries()
-            .stream()
-            .filter(entry -> GeneRegistry.getValue(entry.id()).isSome())
-            .forEach(
-                entry -> list.add(
-                    Component.translatable(GeneRegistry.getValue(entry.id()).unwrap().getTranslationKey())
-                        .append(Component.literal(": "))
-                        .append(
-                            Component.literal(format(entry.operation(), entry.value()))
-                                .withStyle(getColorForValue(entry.value()))
-                        )
-                )
-            );
-    }
-
-    private String format(GeneOperationType operation, double value) {
-        var suffix = operation == GeneOperationType.MULTIPLICATIVE ? "%" : "";
-        var sign = value > 0 ? "+" : "";
-        var formattedValue = String.format("%.2f", operation == GeneOperationType.MULTIPLICATIVE ? value * 100 : value);
-
-        return sign + formattedValue + suffix;
-    }
-
-    private ChatFormatting getColorForValue(double value) {
-        if (value > 0) {
-            return ChatFormatting.GREEN;
-        } else if (value < 0) {
-            return ChatFormatting.RED;
-        }
-
-        return ChatFormatting.GRAY;
+        // TODO: Make this translatable.
+        list.add(
+            Component.literal("???")
+                .withStyle(ChatFormatting.GRAY)
+        );
     }
 }

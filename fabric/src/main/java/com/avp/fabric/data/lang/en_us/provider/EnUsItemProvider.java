@@ -208,6 +208,7 @@ public class EnUsItemProvider {
         // Tools & Utilities Items
         addItem(builder, AVPItems.ARMOR_CASE, "Armor Case");
         addItem(builder, AVPItems.CANISTER, "Canister");
+        addItem(builder, AVPItems.GENE_READER, "Gene Reader");
         addItem(builder, AVPItems.WATER_CANISTER, "Water Canister");
         addItem(builder, AVPItems.LAVA_CANISTER, "Lava Canister");
         addItem(builder, AVPItems.MILK_CANISTER, "Milk Canister");

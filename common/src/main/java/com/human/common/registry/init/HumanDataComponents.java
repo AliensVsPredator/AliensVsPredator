@@ -1,6 +1,8 @@
 package com.human.common.registry.init;
 
 import com.human.common.gameplay.component.ArmorCaseContainerContents;
+import com.human.common.gameplay.component.GeneReaderContents;
+import com.human.common.gameplay.component.GeneReaderMode;
 import com.human.common.gameplay.component.SyringeContents;
 import com.human.common.gameplay.component.SyringeMode;
 import com.mojang.serialization.Codec;
@@ -34,6 +36,20 @@ public class HumanDataComponents {
         "canister_capacity",
         builder -> builder.persistent(ExtraCodecs.NON_NEGATIVE_INT)
             .networkSynchronized(ByteBufCodecs.VAR_INT)
+            .cacheEncoding()
+    );
+
+    public static final AVPDeferredHolder<DataComponentType<GeneReaderContents>> GENE_READER_CONTENTS = register(
+        "gene_reader_contents",
+        builder -> builder.persistent(GeneReaderContents.CODEC)
+            .networkSynchronized(GeneReaderContents.STREAM_CODEC)
+            .cacheEncoding()
+    );
+
+    public static final AVPDeferredHolder<DataComponentType<GeneReaderMode>> GENE_READER_MODE = register(
+        "gene_reader_mode",
+        builder -> builder.persistent(GeneReaderMode.CODEC)
+            .networkSynchronized(GeneReaderMode.STREAM_CODEC)
             .cacheEncoding()
     );
 
