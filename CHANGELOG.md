@@ -144,10 +144,12 @@
 - Added `#avp:runners` entity tag.
 - Added `#avp:prowlers` entity tag.
 - Added `#avp:crushers` entity tag.
+- Added `#avp:adolescents` entity tag.
+- Added `#avp:spitters` entity tag.
 - Updated `#avp:hosts` to be composed of `#avp:runner_hosts` entity tag.
-- Updated `#avp:xenomorphs` tag to include new runner alien line entity tags.
-- Updated hive layer entity tags to include new runner alien line entity tags.
-- Updated variant entity tags to include new runner alien entity types.
+- Updated `#avp:xenomorphs` tag to include new runner alien line entity tags and spitter alien tag.
+- Updated hive layer entity tags to include new runner alien line entity tags and spitter alien tag.
+- Updated variant entity tags to include new runner aliens, spitter alien and adolescent aliens.
 
 ## 🔬 Technical Changes
 - Upgraded alien lifecycles to support host entity tags.
