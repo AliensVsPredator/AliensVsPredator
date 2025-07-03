@@ -15,6 +15,9 @@ public class DataAccessor<T> {
     public DataAccessor(DataContainer dataContainer, DataKey<T> dataKey) {
         this.dataKey = dataKey;
         this.dataContainer = dataContainer;
+
+        // Auto-initialize.
+        dataContainer.set(dataKey, dataKey.initialValue());
     }
 
     public T get() {
