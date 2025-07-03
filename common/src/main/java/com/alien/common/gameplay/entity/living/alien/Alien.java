@@ -345,6 +345,7 @@ public abstract class Alien extends Monster implements DataUser {
     @Override
     public boolean isPersistenceRequired() {
         return super.isPersistenceRequired()
+            || jellyCount > 0
             || hiveManager.hive()
                 .filter(
                     // If the hive is angry, then the alien shouldn't despawn.

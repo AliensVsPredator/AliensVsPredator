@@ -85,6 +85,7 @@
 - Updated the chestbursting death message to have a proper, better-fitting message.
 - Hatched ovomorphs can no longer be revived with royal jelly.
 - Infertile facehuggers can no longer be revived with royal jelly.
+- Aliens that have been given royal jelly will no longer despawn.
 - Alien collision interactions have been changed:
   - Ovomorphs no longer collide with non-ovomorph aliens.
   - Facehuggers no longer collide with other aliens (including other facehuggers).
