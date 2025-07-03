@@ -70,7 +70,7 @@ public class Warrior extends Xenomorph {
     }
 
     @Override
-    public int getMaxJellyToGrowth() {
+    public Integer getMaxJellyToGrowth() {
         return 4;
     }
 

@@ -10,6 +10,7 @@ import com.lib.common.gameplay.entity.manager.VibrationSystemManager;
 import com.lib.common.model.GeneCarrier;
 import com.lib.common.network.DataAccessor;
 import com.lib.common.network.DataUser;
+import com.mojang.serialization.Codec;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
@@ -49,12 +50,15 @@ public abstract class Alien extends Monster implements DataUser {
 
     private static final String NBT_HOST_TYPE = "hostType";
 
-    private static final String NBT_IS_POISONED = "isPoisoned";
-
     private static final String NBT_JELLY_COUNT = "jellyCount";
 
     public final DataAccessor<Boolean> hasTarget = getDataContainer().<Boolean>builder("hasTarget")
         .networkSynchronized(ByteBufCodecs.BOOL)
+        .build(false);
+
+    public final DataAccessor<Boolean> isPoisoned = getDataContainer().<Boolean>builder("isPoisoned")
+        .networkSynchronized(ByteBufCodecs.BOOL)
+        .persistent(Codec.BOOL)
         .build(false);
 
     public final DataAccessor<Boolean> isMovingHorizontally = getDataContainer().<Boolean>builder("isMovingHorizontally")
@@ -69,8 +73,6 @@ public abstract class Alien extends Monster implements DataUser {
 
     private Option<EntityType<?>> hostTypeOption;
 
-    private boolean isPoisoned;
-
     private int jellyCount;
 
     private int lastHurtTimeInTicks;
@@ -84,7 +86,6 @@ public abstract class Alien extends Monster implements DataUser {
         this.vibrationSystemManager = createVibrationSystemManager();
 
         this.hostTypeOption = Option.ofNullable(getDefaultHostType(entityType));
-        this.isPoisoned = false;
         this.jellyCount = 0;
         this.lastHurtTimeInTicks = 0;
     }
@@ -175,15 +176,15 @@ public abstract class Alien extends Monster implements DataUser {
     }
 
     public void setJellyCount(int jellyCount) {
-        this.jellyCount = jellyCount;
+        this.jellyCount = Math.max(jellyCount, 0);
     }
 
     public boolean isPoisoned() {
-        return isPoisoned;
+        return isPoisoned.get();
     }
 
     public void setPoisoned(boolean isPoisoned) {
-        this.isPoisoned = isPoisoned;
+        this.isPoisoned.set(isPoisoned);
     }
 
     public boolean isRoyal() {
@@ -345,7 +346,6 @@ public abstract class Alien extends Monster implements DataUser {
     @Override
     public boolean isPersistenceRequired() {
         return super.isPersistenceRequired()
-            || jellyCount > 0
             || hiveManager.hive()
                 .filter(
                     // If the hive is angry, then the alien shouldn't despawn.
@@ -371,10 +371,6 @@ public abstract class Alien extends Monster implements DataUser {
         super.readAdditionalSaveData(compoundTag);
         hiveManager.load(compoundTag);
 
-        if (compoundTag.contains(NBT_IS_POISONED)) {
-            setPoisoned(compoundTag.getBoolean(NBT_IS_POISONED));
-        }
-
         if (compoundTag.contains(NBT_JELLY_COUNT)) {
             setJellyCount(compoundTag.getInt(NBT_JELLY_COUNT));
         }
@@ -392,7 +388,6 @@ public abstract class Alien extends Monster implements DataUser {
     public void addAdditionalSaveData(@NotNull CompoundTag compoundTag) {
         super.addAdditionalSaveData(compoundTag);
         hiveManager.save(compoundTag);
-        compoundTag.putBoolean(NBT_IS_POISONED, isPoisoned());
         compoundTag.putInt(NBT_JELLY_COUNT, getJellyCount());
 
         hostTypeOption.ifSome(hostType -> {
@@ -417,8 +412,8 @@ public abstract class Alien extends Monster implements DataUser {
         return lastHurtTimeInTicks;
     }
 
-    public int getMaxJellyToGrowth() {
-        return 10;
+    public @Nullable Integer getMaxJellyToGrowth() {
+        return null;
     }
 
     public MovementAnalyzer getMovementAnalyzer() {

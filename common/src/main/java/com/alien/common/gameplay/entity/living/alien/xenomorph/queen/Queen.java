@@ -191,8 +191,8 @@ public class Queen extends Xenomorph {
     }
 
     @Override
-    public int getMaxJellyToGrowth() {
-        return Integer.MAX_VALUE;
+    public Integer getMaxJellyToGrowth() {
+        return null;
     }
 
     public QueenAnimationDispatcher getAnimationDispatcher() {

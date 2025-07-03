@@ -22,7 +22,11 @@ public class PoisonJellyItem extends Item {
         @NotNull LivingEntity livingEntity,
         @NotNull InteractionHand interactionHand
     ) {
-        if (livingEntity instanceof Alien alien && !alien.isPoisoned()) {
+        if (
+            livingEntity instanceof Alien alien
+                && !alien.isPoisoned()
+                && alien.getMaxJellyToGrowth() != null
+        ) {
             alien.setPoisoned(true);
             itemStack.consume(1, player);
             return InteractionResult.SUCCESS;

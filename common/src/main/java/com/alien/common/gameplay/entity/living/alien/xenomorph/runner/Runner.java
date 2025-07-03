@@ -115,7 +115,7 @@ public class Runner extends Xenomorph implements EggCarrier {
     }
 
     @Override
-    public int getMaxJellyToGrowth() {
+    public Integer getMaxJellyToGrowth() {
         return 2;
     }
 

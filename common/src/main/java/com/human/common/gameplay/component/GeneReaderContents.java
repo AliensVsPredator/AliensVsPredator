@@ -17,8 +17,8 @@ public record GeneReaderContents(
 
     public static final GeneReaderContents EMPTY = new GeneReaderContents(new EnumMap<>(GeneReaderMode.class));
 
-    public static final Codec<GeneReaderContents> CODEC = RecordCodecBuilder.create(instance ->
-        instance.group(
+    public static final Codec<GeneReaderContents> CODEC = RecordCodecBuilder.create(
+        instance -> instance.group(
             Codec.unboundedMap(GeneReaderMode.CODEC, GeneBonusDataEntry.CODEC.listOf())
                 .fieldOf("geneBonusDataEntriesByMode")
                 .forGetter(GeneReaderContents::geneBonusDataEntriesByMode)
@@ -26,6 +26,7 @@ public record GeneReaderContents(
     );
 
     public static final StreamCodec<FriendlyByteBuf, GeneReaderContents> STREAM_CODEC = new StreamCodec<>() {
+
         @Override
         public @NotNull GeneReaderContents decode(FriendlyByteBuf buf) {
             var size = buf.readVarInt();

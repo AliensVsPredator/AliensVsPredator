@@ -5,6 +5,7 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 
 public enum GeneReaderMode {
+
     CLEAR,
     ACTIVE_GENES,
     BONUS_GENES,

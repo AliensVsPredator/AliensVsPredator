@@ -69,7 +69,7 @@ public class GrowthManager implements NBTSerializable {
             return;
         }
 
-        var canBypassGrowthTime = entity.getJellyCount() >= entity.getMaxJellyToGrowth();
+        var canBypassGrowthTime = entity.getMaxJellyToGrowth() != null && entity.getJellyCount() >= entity.getMaxJellyToGrowth();
 
         if (canBypassGrowthTime) {
             // If we can bypass growing over time thanks to royal jelly, then do so.
@@ -154,7 +154,11 @@ public class GrowthManager implements NBTSerializable {
         }
 
         if (nextForm instanceof Alien alien) {
-            alien.setJellyCount(0);
+            var jellyCountToSubtract = entity.getMaxJellyToGrowth() == null
+                ? 0
+                : entity.getMaxJellyToGrowth();
+
+            alien.setJellyCount(entity.getJellyCount() - jellyCountToSubtract);
         }
 
         if (onGrowUpCallback != null) {

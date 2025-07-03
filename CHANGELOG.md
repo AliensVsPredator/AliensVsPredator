@@ -83,9 +83,17 @@
 - Same-strain, different-hive xenos now no longer kill each other.
 - Hive centers now constantly move with the hive leader.
 - Updated the chestbursting death message to have a proper, better-fitting message.
-- Hatched ovomorphs can no longer be revived with royal jelly.
-- Infertile facehuggers can no longer be revived with royal jelly.
-- Aliens that have been given royal jelly will no longer despawn.
+- Reworked how royal jelly item and royal jelly blocks are used:
+  - Hatched ovomorphs can no longer be revived with royal jelly.
+  - Infertile facehuggers can no longer be revived with royal jelly.
+  - Aliens that have been given royal jelly or royal jelly blocks will no longer despawn.
+  - Praetorians can now be given regular royal jelly.
+  - All xenomorphs can now be given royal jelly blocks.
+  - Queens can no longer be given royal jelly or royal jelly blocks.
+  - Royal jelly blocks now **add** 9 royal jelly to aliens instead of setting their royal jelly to 10.
+  - Aliens no longer have their royal jelly count reset when growing up, but merely the royal jelly growth cost subtracted.
+  - Poison jelly is no longer usable on aliens that can't grow any further.
+  - Royal jelly items and royal jelly blocks can no longer be used on poisoned aliens.
 - Alien collision interactions have been changed:
   - Ovomorphs no longer collide with non-ovomorph aliens.
   - Facehuggers no longer collide with other aliens (including other facehuggers).
@@ -128,6 +136,7 @@
 - Fixed facehuggers not fully incapacitating marine hosts due to marines using a different AI system.
 - Fixed alien hitboxes being off while swimming.
 - Fixed praetorian count balancing including eggs, facehuggers, chestbursters and adolescents in formula.
+- Fixed aliens that do not grow up being able to consume an infinite amount of royal jelly.
 
 ## 🛠 Data Pack
 - Added `#avp:runner_hosts` entity tag.

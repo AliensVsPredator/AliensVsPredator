@@ -104,7 +104,7 @@ public class Adolescent extends Alien {
     }
 
     @Override
-    public int getMaxJellyToGrowth() {
+    public Integer getMaxJellyToGrowth() {
         return 1;
     }
 

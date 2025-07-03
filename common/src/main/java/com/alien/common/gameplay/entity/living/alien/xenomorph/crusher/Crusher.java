@@ -75,7 +75,7 @@ public class Crusher extends Xenomorph {
     }
 
     @Override
-    public int getMaxJellyToGrowth() {
+    public Integer getMaxJellyToGrowth() {
         return 2;
     }
 
