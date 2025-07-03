@@ -10,11 +10,9 @@ import com.lib.common.gameplay.entity.manager.VibrationSystemManager;
 import com.lib.common.model.GeneCarrier;
 import com.lib.common.network.DataAccessor;
 import com.lib.common.network.DataUser;
-import com.mojang.serialization.Codec;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -40,6 +38,7 @@ import java.util.function.Predicate;
 
 import com.avp.AVP;
 import com.avp.common.config.AVPConfig;
+import com.avp.common.registry.init.AVPDataKeys;
 import com.avp.common.registry.key.AVPBiomeKeys;
 import com.avp.common.registry.tag.AVPDamageTypesTags;
 import com.avp.common.registry.tag.AVPEntityTypeTags;
@@ -52,18 +51,11 @@ public abstract class Alien extends Monster implements DataUser {
 
     private static final String NBT_JELLY_COUNT = "jellyCount";
 
-    public final DataAccessor<Boolean> hasTarget = getDataContainer().<Boolean>builder("hasTarget")
-        .networkSynchronized(ByteBufCodecs.BOOL)
-        .build(false);
+    public final DataAccessor<Boolean> hasTarget;
 
-    public final DataAccessor<Boolean> isPoisoned = getDataContainer().<Boolean>builder("isPoisoned")
-        .networkSynchronized(ByteBufCodecs.BOOL)
-        .persistent(Codec.BOOL)
-        .build(false);
+    public final DataAccessor<Boolean> isPoisoned;
 
-    public final DataAccessor<Boolean> isMovingHorizontally = getDataContainer().<Boolean>builder("isMovingHorizontally")
-        .networkSynchronized(ByteBufCodecs.BOOL)
-        .build(false);
+    public final DataAccessor<Boolean> isMovingHorizontally;
 
     protected final HiveManager hiveManager;
 
@@ -81,6 +73,11 @@ public abstract class Alien extends Monster implements DataUser {
 
     protected Alien(EntityType<? extends Alien> entityType, Level level) {
         super(entityType, level);
+
+        this.hasTarget = new DataAccessor<>(this, AVPDataKeys.ENTITY_HAS_TARGET);
+        this.isPoisoned = new DataAccessor<>(this, AVPDataKeys.ALIEN_IS_POISONED);
+        this.isMovingHorizontally = new DataAccessor<>(this, AVPDataKeys.ENTITY_IS_MOVING_HORIZONTALLY);
+
         this.hiveManager = new HiveManager(this);
         this.movementAnalyzer = new MovementAnalyzer(this);
         this.vibrationSystemManager = createVibrationSystemManager();

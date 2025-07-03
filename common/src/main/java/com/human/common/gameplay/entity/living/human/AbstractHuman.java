@@ -3,8 +3,6 @@ package com.human.common.gameplay.entity.living.human;
 import com.bvanseg.just.functional.option.Option;
 import com.lib.common.network.DataAccessor;
 import com.lib.common.network.DataUser;
-import com.mojang.serialization.Codec;
-import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.damagesource.DamageSource;
@@ -21,6 +19,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import com.avp.common.config.AVPConfig;
+import com.avp.common.registry.init.AVPDataKeys;
 import com.avp.common.util.MovementAnalyzer;
 
 public abstract class AbstractHuman extends PathfinderMob implements DataUser {
@@ -37,35 +36,17 @@ public abstract class AbstractHuman extends PathfinderMob implements DataUser {
         return builder;
     }
 
-    public final DataAccessor<Integer> beardVariant = getDataContainer().<Integer>builder("beardVariant")
-        .networkSynchronized(ByteBufCodecs.INT)
-        .persistent(Codec.INT)
-        .build(0);
+    public final DataAccessor<Integer> beardVariant;
 
-    public final DataAccessor<Integer> eyeColor = getDataContainer().<Integer>builder("eyeColor")
-        .networkSynchronized(ByteBufCodecs.INT)
-        .persistent(Codec.INT)
-        .build(0xA1CAF1);
+    public final DataAccessor<Integer> eyeColor;
 
-    public final DataAccessor<Integer> hairColor = getDataContainer().<Integer>builder("hairColor")
-        .networkSynchronized(ByteBufCodecs.INT)
-        .persistent(Codec.INT)
-        .build(0x86462C);
+    public final DataAccessor<Integer> hairColor;
 
-    public final DataAccessor<Integer> hairVariant = getDataContainer().<Integer>builder("hairVariant")
-        .networkSynchronized(ByteBufCodecs.INT)
-        .persistent(Codec.INT)
-        .build(0);
+    public final DataAccessor<Integer> hairVariant;
 
-    public final DataAccessor<Boolean> isMale = getDataContainer().<Boolean>builder("isMale")
-        .networkSynchronized(ByteBufCodecs.BOOL)
-        .persistent(Codec.BOOL)
-        .build(true);
+    public final DataAccessor<Boolean> isMale;
 
-    public final DataAccessor<Integer> skinColor = getDataContainer().<Integer>builder("skinColor")
-        .networkSynchronized(ByteBufCodecs.INT)
-        .persistent(Codec.INT)
-        .build(0xEED0B6);
+    public final DataAccessor<Integer> skinColor;
 
     protected final MovementAnalyzer movementAnalyzer;
 
@@ -75,6 +56,14 @@ public abstract class AbstractHuman extends PathfinderMob implements DataUser {
 
     public AbstractHuman(EntityType<? extends PathfinderMob> entityType, Level level) {
         super(entityType, level);
+
+        this.beardVariant = new DataAccessor<>(this, AVPDataKeys.MARINE_BEARD_VARIANT);
+        this.eyeColor = new DataAccessor<>(this, AVPDataKeys.MARINE_EYE_COLOR);
+        this.hairColor = new DataAccessor<>(this, AVPDataKeys.MARINE_HAIR_COLOR);
+        this.hairVariant = new DataAccessor<>(this, AVPDataKeys.MARINE_HAIR_VARIANT);
+        this.isMale = new DataAccessor<>(this, AVPDataKeys.MARINE_IS_MALE);
+        this.skinColor = new DataAccessor<>(this, AVPDataKeys.MARINE_SKIN_COLOR);
+
         this.movementAnalyzer = new MovementAnalyzer(this);
         this.navigationManager = new HumanNavigationManager(this, moveControl);
         this.humanFeatureManager = new HumanFeatureManager(this);

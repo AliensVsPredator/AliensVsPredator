@@ -24,6 +24,7 @@ import com.avp.common.registry.init.AVPArmorMaterials;
 import com.avp.common.registry.init.AVPBlockEntityTypes;
 import com.avp.common.registry.init.AVPCommands;
 import com.avp.common.registry.init.AVPCompostingChances;
+import com.avp.common.registry.init.AVPDataKeys;
 import com.avp.common.registry.init.AVPDecoratedPotPatterns;
 import com.avp.common.registry.init.AVPEntitySpawns;
 import com.avp.common.registry.init.AVPFuels;
@@ -79,6 +80,7 @@ public class AVP {
         AVPSoundEvents.initialize();
         AVPJukeboxSongKeys.initialize();
         AVPPacketDirectionRegistry.initialize();
+        AVPDataKeys.initialize();
         AVPServerPacketHandlerRegistry.initialize();
         AVPRecipes.initialize();
         AVPMobEffects.initialize();

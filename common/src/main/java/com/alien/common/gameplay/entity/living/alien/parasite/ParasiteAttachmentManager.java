@@ -3,7 +3,6 @@ package com.alien.common.gameplay.entity.living.alien.parasite;
 import com.alien.common.model.alien.FreeMob;
 import com.alien.common.model.alien.Host;
 import com.lib.common.network.DataAccessor;
-import com.mojang.serialization.Codec;
 import net.minecraft.network.protocol.game.ClientboundSetPassengersPacket;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -14,6 +13,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
 
+import com.avp.common.registry.init.AVPDataKeys;
 import com.avp.common.registry.key.AVPDamageTypeKeys;
 import com.avp.common.util.AVPPredicates;
 
@@ -25,10 +25,7 @@ public class ParasiteAttachmentManager {
 
     public ParasiteAttachmentManager(Parasite parasite) {
         this.parasite = parasite;
-        this.ticksAttachedToHost = parasite.getDataContainer()
-            .<Integer>builder("ticksAttachedToHost")
-            .persistent(Codec.INT)
-            .build(0);
+        this.ticksAttachedToHost = new DataAccessor<>(parasite, AVPDataKeys.PARASITE_TICKS_ATTACHED_TO_HOST);
     }
 
     public void tick() {

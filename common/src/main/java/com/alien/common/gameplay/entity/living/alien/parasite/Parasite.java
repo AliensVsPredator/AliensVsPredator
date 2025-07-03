@@ -3,8 +3,6 @@ package com.alien.common.gameplay.entity.living.alien.parasite;
 import com.alien.common.gameplay.entity.living.alien.Alien;
 import com.alien.common.model.alien.FreeMob;
 import com.lib.common.network.DataAccessor;
-import com.mojang.serialization.Codec;
-import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.protocol.game.ClientboundSetPassengersPacket;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
@@ -14,22 +12,24 @@ import net.minecraft.world.entity.Mob;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
+import com.avp.common.registry.init.AVPDataKeys;
 import com.avp.common.util.AVPPredicates;
 
 public abstract class Parasite extends Alien {
 
-    public final DataAccessor<Boolean> isFertile = getDataContainer().<Boolean>builder("isFertile")
-        .networkSynchronized(ByteBufCodecs.BOOL)
-        .persistent(Codec.BOOL)
-        .onLoad(this::handleFertilityChange)
-        .onChange(this::handleFertilityChange)
-        .build(true);
+    public final DataAccessor<Boolean> isFertile;
 
     protected final ParasiteAttachmentManager attachmentManager;
 
     protected Parasite(EntityType<? extends Parasite> entityType, Level level) {
         super(entityType, level);
+
+        this.isFertile = new DataAccessor<>(this, AVPDataKeys.PARASITE_IS_FERTILE);
+
         this.attachmentManager = new ParasiteAttachmentManager(this);
+
+        isFertile.onChange(this::handleFertilityChange);
+        isFertile.onLoad(this::handleFertilityChange);
     }
 
     public void restoreAllGoals() {

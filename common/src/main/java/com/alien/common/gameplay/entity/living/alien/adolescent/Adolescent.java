@@ -8,7 +8,6 @@ import com.alien.common.util.AlienPredicates;
 import com.alien.common.util.XenomorphGrowthUtil;
 import com.lib.common.network.DataAccessor;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
@@ -20,6 +19,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import com.avp.AVP;
+import com.avp.common.registry.init.AVPDataKeys;
 import com.avp.common.registry.tag.AVPEntityTypeTags;
 import com.avp.common.util.AVPPredicates;
 
@@ -31,9 +31,7 @@ public class Adolescent extends Alien {
 
     private static final String NBT_HAS_DORSAL_TUBES = "hasDorsalTubes";
 
-    public final DataAccessor<Boolean> hasDorsalTubes = getDataContainer().<Boolean>builder("hasDorsalTubes")
-        .networkSynchronized(ByteBufCodecs.BOOL)
-        .build(true);
+    public final DataAccessor<Boolean> hasDorsalTubes;
 
     private final AdolescentAnimationDispatcher animationDispatcher;
 
@@ -41,6 +39,9 @@ public class Adolescent extends Alien {
 
     public Adolescent(EntityType<? extends Adolescent> entityType, Level level) {
         super(entityType, level);
+
+        this.hasDorsalTubes = new DataAccessor<>(this, AVPDataKeys.ADOLESCENT_HAS_DORSAL_TUBES);
+
         this.animationDispatcher = new AdolescentAnimationDispatcher(this);
         this.growthManager = new GrowthManager(this, XenomorphGrowthUtil.GROW_UP_CALLBACK)
             .setGrowOverTime(true);

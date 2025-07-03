@@ -11,7 +11,6 @@ import com.lib.common.util.GeneResistanceHurtUtil;
 import com.lib.common.util.TeleportUtil;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -28,13 +27,13 @@ import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+import com.avp.common.registry.init.AVPDataKeys;
+
 @Mixin(LivingEntity.class)
 public abstract class MixinLivingEntity_GeneCarrier extends Entity implements GeneCarrier, DataUser {
 
     @Unique
-    private final DataAccessor<Boolean> hasWarpEffect = getDataContainer().<Boolean>builder("hasWarpEffect")
-        .networkSynchronized(ByteBufCodecs.BOOL)
-        .build(false);
+    private final DataAccessor<Boolean> avp$hasWarpEffect = new DataAccessor<>(this, AVPDataKeys.ENTITY_HAS_WARP_EFFECT);
 
     @Unique
     private GeneManager avp$geneManager;
@@ -49,7 +48,7 @@ public abstract class MixinLivingEntity_GeneCarrier extends Entity implements Ge
 
         geneManager.tick();
 
-        if (level().isClientSide && hasWarpEffect.get()) {
+        if (level().isClientSide && avp$hasWarpEffect.get()) {
             for (int i = 0; i < 2; ++i) {
                 level().addParticle(
                     ParticleTypes.PORTAL,
@@ -67,7 +66,7 @@ public abstract class MixinLivingEntity_GeneCarrier extends Entity implements Ge
             var hasWarpGene = getOrCreateGeneManager().getGeneContainer()
                 .getActiveGeneMap()
                 .hasGene(Genes.WARP);
-            hasWarpEffect.set(hasWarpGene);
+            avp$hasWarpEffect.set(hasWarpGene);
         }
     }
 
@@ -92,7 +91,7 @@ public abstract class MixinLivingEntity_GeneCarrier extends Entity implements Ge
     @Inject(at = @At("HEAD"), method = "hurt", cancellable = true)
     public void avp$preHurtEffects(DamageSource damageSource, float damage, CallbackInfoReturnable<Boolean> cir) {
         if (
-            hasWarpEffect.get()
+            avp$hasWarpEffect.get()
                 && (damageSource.is(DamageTypeTags.IS_PROJECTILE)
                     || random.nextInt(10) == 0)
         ) {

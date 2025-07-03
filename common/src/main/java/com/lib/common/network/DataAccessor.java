@@ -1,79 +1,39 @@
 package com.lib.common.network;
 
-import com.bvanseg.just.functional.option.Option;
-import com.mojang.serialization.Codec;
-import io.netty.buffer.ByteBuf;
-import net.minecraft.network.codec.StreamCodec;
-
 import java.util.function.Consumer;
 
-public record DataAccessor<T>(
-    DataContainer dataContainer,
-    DataKey<T> key,
-    T initialValue
-) {
+public class DataAccessor<T> {
 
-    public T get() {
-        return dataContainer.get(key);
+    private final DataContainer dataContainer;
+
+    private final DataKey<T> dataKey;
+
+    public DataAccessor(DataUser dataUser, DataKey<T> dataKey) {
+        this(dataUser.getDataContainer(), dataKey);
     }
 
-    public void set(T value) {
-        dataContainer.set(key, value);
+    public DataAccessor(DataContainer dataContainer, DataKey<T> dataKey) {
+        this.dataKey = dataKey;
+        this.dataContainer = dataContainer;
+    }
+
+    public T get() {
+        return dataContainer.get(dataKey);
     }
 
     public void reset() {
-        set(initialValue);
+        dataContainer.set(dataKey, dataKey.initialValue());
     }
 
-    public static class Builder<U> {
+    public void set(T value) {
+        dataContainer.set(dataKey, value);
+    }
 
-        private final String id;
+    public void onChange(Consumer<T> callback) {
+        dataContainer.setOnChangeCallback(dataKey, callback);
+    }
 
-        private final DataContainer dataContainer;
-
-        private Option<Codec<U>> persistentCodecOption;
-
-        private Option<StreamCodec<? extends ByteBuf, U>> streamCodecOption;
-
-        private Consumer<U> onChangeCallback;
-
-        private Consumer<U> onLoadCallback;
-
-        Builder(String id, DataContainer dataContainer) {
-            this.id = id;
-            this.dataContainer = dataContainer;
-            this.persistentCodecOption = Option.none();
-            this.streamCodecOption = Option.none();
-            this.onChangeCallback = $ -> {};
-            this.onLoadCallback = $ -> {};
-        }
-
-        public Builder<U> networkSynchronized(StreamCodec<? extends ByteBuf, U> streamCodec) {
-            this.streamCodecOption = Option.some(streamCodec);
-            return this;
-        }
-
-        public Builder<U> onChange(Consumer<U> onChangeCallback) {
-            this.onChangeCallback = onChangeCallback;
-            return this;
-        }
-
-        public Builder<U> onLoad(Consumer<U> onLoadCallback) {
-            this.onLoadCallback = onLoadCallback;
-            return this;
-        }
-
-        public Builder<U> persistent(Codec<U> codec) {
-            this.persistentCodecOption = Option.some(codec);
-            return this;
-        }
-
-        public DataAccessor<U> build(U initialValue) {
-            var key = new DataKey<>(id, persistentCodecOption, streamCodecOption, onChangeCallback, onLoadCallback);
-
-            dataContainer.define(key, initialValue);
-
-            return new DataAccessor<>(dataContainer, key, initialValue);
-        }
+    public void onLoad(Consumer<T> callback) {
+        dataContainer.setOnLoadCallback(dataKey, callback);
     }
 }

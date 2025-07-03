@@ -1,11 +1,11 @@
 package com.alien.common.gameplay.entity.living.alien.ovomorph;
 
 import com.lib.common.network.DataAccessor;
-import com.mojang.serialization.Codec;
 import net.minecraft.world.level.gameevent.vibrations.VibrationInfo;
 
 import java.util.Objects;
 
+import com.avp.common.registry.init.AVPDataKeys;
 import com.avp.common.util.AVPPredicates;
 
 public class HatchDesireManager {
@@ -20,11 +20,7 @@ public class HatchDesireManager {
 
     public HatchDesireManager(Ovomorph ovomorph) {
         this.ovomorph = ovomorph;
-
-        this.desireToHatch = ovomorph.getDataContainer()
-            .<Integer>builder("desireToHatch")
-            .persistent(Codec.INT)
-            .build(0);
+        this.desireToHatch = new DataAccessor<>(ovomorph, AVPDataKeys.OVOMORPH_DESIRE_TO_HATCH);
     }
 
     public void tick() {

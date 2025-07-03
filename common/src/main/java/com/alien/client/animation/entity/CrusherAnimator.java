@@ -65,7 +65,6 @@ public class CrusherAnimator extends AzEntityAnimator<Crusher> {
         var isMovingOnGround = crusher.isMovingHorizontally.get() && crusher.onGround();
         Runnable animFunction;
 
-        // FIXME:
         if (crusher.isUnderWater()) {
             // TODO: idle swim
             animFunction = dispatcher::swim;

@@ -9,8 +9,6 @@ import com.alien.common.registry.init.AlienEntityTypes;
 import com.bvanseg.just.functional.option.Option;
 import com.lib.common.gameplay.entity.manager.VibrationSystemManager;
 import com.lib.common.network.DataAccessor;
-import com.mojang.serialization.Codec;
-import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
@@ -29,6 +27,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import com.avp.AVP;
+import com.avp.common.registry.init.AVPDataKeys;
 import com.avp.common.registry.init.AVPSoundEvents;
 import com.avp.common.registry.tag.AVPEntityTypeTags;
 import com.avp.common.util.AVPPredicates;
@@ -41,20 +40,11 @@ public class Ovomorph extends Alien implements Shearable {
         return applyFrom(AVP.config.statsConfigs.OVOMORPH_STATS, Monster.createMonsterAttributes());
     }
 
-    public final DataAccessor<Byte> hatchStateId = getDataContainer().<Byte>builder("hatchState")
-        .networkSynchronized(ByteBufCodecs.BYTE)
-        .persistent(Codec.BYTE)
-        .build((byte) DEFAULT_HATCH_STATE.getId());
+    public final DataAccessor<Byte> hatchStateId;
 
-    public final DataAccessor<Byte> maxSpawnCount = getDataContainer().<Byte>builder("maximumSpawnCount")
-        .networkSynchronized(ByteBufCodecs.BYTE)
-        .persistent(Codec.BYTE)
-        .build((byte) 1);
+    public final DataAccessor<Byte> maxSpawnCount;
 
-    public final DataAccessor<Boolean> isRooted = getDataContainer().<Boolean>builder("isRooted")
-        .networkSynchronized(ByteBufCodecs.BOOL)
-        .persistent(Codec.BOOL)
-        .build(true);
+    public final DataAccessor<Boolean> isRooted;
 
     private final OvomorphAnimationDispatcher animationDispatcher;
 
@@ -68,6 +58,11 @@ public class Ovomorph extends Alien implements Shearable {
 
     public Ovomorph(EntityType<? extends Ovomorph> entityType, Level level) {
         super(entityType, level);
+
+        this.hatchStateId = new DataAccessor<>(this, AVPDataKeys.OVOMORPH_HATCH_STATE);
+        this.maxSpawnCount = new DataAccessor<>(this, AVPDataKeys.OVOMORPH_MAXIMUM_SPAWN_COUNT);
+        this.isRooted = new DataAccessor<>(this, AVPDataKeys.OVOMORPH_IS_ROOTED);
+
         this.animationDispatcher = new OvomorphAnimationDispatcher(this);
         this.goap = new OvomorphGOAP(this);
         this.hatchManager = new HatchManager(this, 3 * 20, 3 * 20);

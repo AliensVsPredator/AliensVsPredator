@@ -1,6 +1,7 @@
 package com.lib.common.network;
 
 import com.lib.common.gameplay.NBTSerializable;
+import com.lib.common.registry.DataKeyRegistry;
 import com.mojang.serialization.Codec;
 import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
@@ -10,13 +11,12 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.entity.Entity;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 import com.avp.AVP;
@@ -27,45 +27,42 @@ public class DataContainer implements NBTSerializable {
 
     private final Set<DataKey<?>> dirtyKeys;
 
-    private final List<DataKey<?>> idToKey;
+    private final Map<DataKey<?>, Consumer<?>> onChangeCallbacks;
 
-    private final Map<DataKey<?>, Integer> keyToId;
+    private final Map<DataKey<?>, Consumer<?>> onLoadCallbacks;
 
     private final Map<DataKey<?>, Object> values;
 
     public DataContainer() {
         this.dirtyKeys = new HashSet<>();
-        this.idToKey = new ArrayList<>();
-        this.keyToId = new HashMap<>();
+        this.onChangeCallbacks = new HashMap<>();
+        this.onLoadCallbacks = new HashMap<>();
         this.values = new HashMap<>();
     }
 
-    public <T> DataAccessor.Builder<T> builder(String id) {
-        return new DataAccessor.Builder<>(id, this);
+    public <T> void setOnChangeCallback(DataKey<T> dataKey, Consumer<T> callback) {
+        onChangeCallbacks.put(dataKey, callback);
     }
 
-    public <T> DataAccessor<T> define(DataKey<T> key, T initialValue) {
-        if (keyToId.containsKey(key)) {
-            throw new IllegalStateException("Key already defined: " + key);
-        }
-
-        var id = idToKey.size();
-        idToKey.add(key);
-        keyToId.put(key, id);
-        values.put(key, initialValue);
-
-        return new DataAccessor<>(this, key, initialValue);
+    public <T> void setOnLoadCallback(DataKey<T> dataKey, Consumer<T> callback) {
+        onLoadCallbacks.put(dataKey, callback);
     }
 
     @SuppressWarnings("unchecked")
     public <T> T get(DataKey<T> key) {
-        return (T) values.get(key);
+        return (T) values.getOrDefault(key, key.initialValue());
     }
 
     public <T> void set(DataKey<T> key, T value) {
         if (!Objects.equals(values.get(key), value)) {
             values.put(key, value);
-            key.onChange().accept(value);
+
+            @SuppressWarnings("unchecked")
+            var onChangeCallback = (Consumer<T>) onChangeCallbacks.get(key);
+
+            if (onChangeCallback != null) {
+                onChangeCallback.accept(value);
+            }
 
             if (key.streamCodec().isSome()) {
                 //
@@ -76,7 +73,7 @@ public class DataContainer implements NBTSerializable {
 
     public void set(int id, byte[] rawData) {
         @SuppressWarnings("unchecked")
-        var key = (DataKey<Object>) idToKey.get(id);
+        var key = (DataKey<Object>) DataKeyRegistry.getDataKeyOrNull(id);
 
         if (key == null) {
             return;
@@ -107,9 +104,9 @@ public class DataContainer implements NBTSerializable {
         var dataMap = values.keySet()
             .stream()
             .filter(key -> syncType != SyncType.DIRTY || dirtyKeys.contains(key))
-            .filter(key -> key.streamCodec().isSome())
+            .filter(key -> key.streamCodec().isSome() && DataKeyRegistry.getIdOrNull(key.id()) != null)
             .map(key -> {
-                var id = keyToId.get(key);
+                var id = Objects.requireNonNull(DataKeyRegistry.getIdOrNull(key.id()));
                 // Safe to unwrap here due to our earlier filter check.
                 @SuppressWarnings("unchecked")
                 var codec = (StreamCodec<FriendlyByteBuf, Object>) key.streamCodec().unwrap();
@@ -139,19 +136,26 @@ public class DataContainer implements NBTSerializable {
     @Override
     public void load(CompoundTag compoundTag) {
         values.keySet().forEach(key -> {
-            var id = key.id();
+            var id = key.id().getPath();
 
-            key.codec().ifSome(codec -> {
+            @SuppressWarnings("unchecked")
+            var onLoadCallback = (Consumer<Object>) onLoadCallbacks.get(key);
+
+            key.persistenceMetadata().ifSome(persistData -> {
                 if (!compoundTag.contains(id)) {
                     return;
                 }
 
+                var codec = persistData.codec();
+
                 if (codec == Codec.BOOL) {
-                    @SuppressWarnings("unchecked")
-                    var typedKey = (DataKey<Object>) key;
                     var value = compoundTag.getBoolean(id);
                     values.put(key, value);
-                    typedKey.onLoad().accept(value);
+
+                    if (onLoadCallback != null) {
+                        onLoadCallback.accept(value);
+                    }
+
                     return;
                 }
 
@@ -177,7 +181,10 @@ public class DataContainer implements NBTSerializable {
                     @SuppressWarnings("unchecked")
                     var typedKey = (DataKey<Object>) key;
                     values.put(typedKey, value);
-                    typedKey.onLoad().accept(value);
+
+                    if (onLoadCallback != null) {
+                        onLoadCallback.accept(value);
+                    }
                 }
             });
         });
@@ -186,8 +193,8 @@ public class DataContainer implements NBTSerializable {
     @Override
     public void save(CompoundTag compoundTag) {
         values.forEach((key, value) -> {
-            var id = key.id();
-            var codecOption = key.codec();
+            var id = key.id().getPath();
+            var codecOption = key.persistenceMetadata();
 
             codecOption.ifSome(codec -> {
                 switch (value) {

@@ -11,7 +11,6 @@ import com.lib.common.gameplay.entity.manager.CrawlingManager;
 import com.lib.common.network.DataAccessor;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.tags.FluidTags;
@@ -44,15 +43,13 @@ import java.util.function.BiConsumer;
 import com.avp.common.gameplay.ai.goal.DigToTargetGoal;
 import com.avp.common.gameplay.ai.goal.StrollAroundInWaterGoal;
 import com.avp.common.gameplay.ai.goal.XenoFloatGoal;
+import com.avp.common.registry.init.AVPDataKeys;
 import com.avp.common.registry.init.AVPSoundEvents;
 import com.avp.common.registry.tag.AVPEntityTypeTags;
 
 public abstract class Xenomorph extends Alien implements ResinProducer {
 
-    public final DataAccessor<Boolean> isCrawling = getDataContainer().<Boolean>builder("isCrawling")
-        .networkSynchronized(ByteBufCodecs.BOOL)
-        .onChange($ -> this.refreshDimensions())
-        .build(false);
+    public final DataAccessor<Boolean> isCrawling;
 
     protected final CrawlingManager crawlingManager;
 
@@ -66,12 +63,17 @@ public abstract class Xenomorph extends Alien implements ResinProducer {
 
     public Xenomorph(EntityType<? extends Xenomorph> entityType, Level level) {
         super(entityType, level);
+
+        this.isCrawling = new DataAccessor<>(this, AVPDataKeys.XENOMORPH_IS_CRAWLING);
+
         this.crawlingManager = new CrawlingManager(this, isCrawling);
         this.growthManager = new GrowthManager(this, XenomorphGrowthUtil.GROW_UP_CALLBACK)
             .setGrowOverTime(false);
         this.navigationManager = new XenomorphNavigationManager(this, moveControl);
         this.resinManager = new ResinManager(this, createResinData());
         this.wasUnderwaterLastTick = false;
+
+        isCrawling.onChange($ -> refreshDimensions());
     }
 
     protected double getPursuitSpeedModifier() {

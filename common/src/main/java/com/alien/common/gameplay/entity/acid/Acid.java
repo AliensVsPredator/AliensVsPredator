@@ -4,10 +4,8 @@ import com.alien.common.data.AlienVariantTypes;
 import com.lib.common.gameplay.util.GravityUtil;
 import com.lib.common.network.DataAccessor;
 import com.lib.common.network.DataUser;
-import com.mojang.serialization.Codec;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -18,6 +16,8 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
+
+import com.avp.common.registry.init.AVPDataKeys;
 
 public class Acid extends Entity implements DataUser {
 
@@ -41,22 +41,22 @@ public class Acid extends Entity implements DataUser {
         EntityDataSerializers.BOOLEAN
     );
 
-    public final DataAccessor<Integer> multiplier = getDataContainer().<Integer>builder("Multiplier")
-        .networkSynchronized(ByteBufCodecs.INT)
-        .persistent(Codec.INT)
-        .onChange($ -> refreshDimensions())
-        .build(1);
+    public final DataAccessor<Integer> multiplier;
 
-    public final DataAccessor<Integer> tickCountForCurrentMultiplier = getDataContainer().<Integer>builder("TickCountForMultiplier")
-        .persistent(Codec.INT)
-        .build(0);
+    public final DataAccessor<Integer> tickCountForCurrentMultiplier;
 
     private int particleTickCounter = 0;
 
     public Acid(EntityType<? extends Entity> entityType, Level level) {
         super(entityType, level);
+
+        this.multiplier = new DataAccessor<>(this, AVPDataKeys.ACID_MULTIPLIER);
+        this.tickCountForCurrentMultiplier = new DataAccessor<>(this, AVPDataKeys.ACID_TICK_COUNT_FOR_MULTIPLIER);
+
         setNoGravity(false);
         refreshDimensions();
+
+        multiplier.onChange($ -> refreshDimensions());
     }
 
     @Override
