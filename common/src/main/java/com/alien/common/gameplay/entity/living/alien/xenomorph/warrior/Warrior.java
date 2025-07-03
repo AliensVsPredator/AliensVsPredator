@@ -9,7 +9,6 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.level.Level;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import com.avp.AVP;
@@ -41,7 +40,7 @@ public class Warrior extends Xenomorph {
     }
 
     @Override
-    protected @NotNull ResinData createResinData() {
+    protected @Nullable ResinData createResinData() {
         return new ResinData(0, 32, 1, AVP.config.statsConfigs.WARRIOR_STATS.nestTickrate);
     }
 

@@ -42,8 +42,8 @@ public class Boiler extends Xenomorph {
     }
 
     @Override
-    protected @NotNull ResinData createResinData() {
-        return new ResinData(0, 0, 0, 1);
+    protected @Nullable ResinData createResinData() {
+        return null;
     }
 
     @Override

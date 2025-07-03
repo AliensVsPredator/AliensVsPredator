@@ -88,7 +88,7 @@ public abstract class Xenomorph extends Alien implements ResinProducer {
         return true;
     }
 
-    protected abstract @NotNull ResinData createResinData();
+    protected abstract @Nullable ResinData createResinData();
 
     public abstract void runAttackAnimations();
 

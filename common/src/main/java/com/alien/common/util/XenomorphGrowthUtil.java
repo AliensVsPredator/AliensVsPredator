@@ -12,6 +12,11 @@ public class XenomorphGrowthUtil {
             var resinManager = resinProducer.getResinManager();
             var baseResinData = resinManager.baseResinData();
             var resinData = resinManager.resinData();
+
+            if (baseResinData == null || resinData == null) {
+                return;
+            }
+
             // Growing up consumes all the resin the xenomorph has.
             resinData.setResin(0);
             // Set maximum resin to the base resin data's maximum.

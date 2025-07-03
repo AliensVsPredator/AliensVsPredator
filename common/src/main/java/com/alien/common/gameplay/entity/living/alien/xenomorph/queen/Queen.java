@@ -57,7 +57,7 @@ public class Queen extends Xenomorph {
     }
 
     @Override
-    protected @NotNull ResinData createResinData() {
+    protected @Nullable ResinData createResinData() {
         return new ResinData(0, 128, 1, AVP.config.statsConfigs.QUEEN_STATS.nestTickrate);
     }
 

@@ -50,7 +50,7 @@ public class Runner extends Xenomorph implements EggCarrier {
     }
 
     @Override
-    protected @NotNull ResinData createResinData() {
+    protected @Nullable ResinData createResinData() {
         return new ResinData(0, 16, 1, AVP.config.statsConfigs.RUNNER_STATS.nestTickrate);
     }
 

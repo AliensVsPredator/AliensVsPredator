@@ -19,6 +19,7 @@ import net.minecraft.world.level.gameevent.DynamicGameEventListener;
 import net.minecraft.world.level.gameevent.EntityPositionSource;
 import net.minecraft.world.level.gameevent.GameEventListener;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.function.BiConsumer;
 
@@ -30,19 +31,19 @@ public class ResinManager implements GameEventListener.Provider<ResinSpreadListe
 
     private final Alien alien;
 
-    private final ReadableResinData baseResinData;
+    private final @Nullable ReadableResinData baseResinData;
 
     private final DynamicGameEventListener<ResinSpreadListener> dynamicResinSpreadListener;
 
     private final ResinSpreadListener resinSpreadListener;
 
-    private ResinData resinData;
+    private @Nullable ResinData resinData;
 
     private int ticksSinceLastResinProduction = 0;
 
     private int ticksSinceAttemptedNodePlacement = 0;
 
-    public ResinManager(Alien alien, ResinData resinData) {
+    public ResinManager(Alien alien, @Nullable ResinData resinData) {
         this.alien = alien;
         this.baseResinData = resinData;
         this.resinData = resinData;
@@ -60,7 +61,11 @@ public class ResinManager implements GameEventListener.Provider<ResinSpreadListe
     public void tick() {
         var level = alien.level();
 
-        if (level.isClientSide) {
+        if (
+            level.isClientSide
+                || baseResinData == null
+                || resinData == null
+        ) {
             return;
         }
 
@@ -184,11 +189,11 @@ public class ResinManager implements GameEventListener.Provider<ResinSpreadListe
         }
     }
 
-    public ReadableResinData baseResinData() {
+    public @Nullable ReadableResinData baseResinData() {
         return baseResinData;
     }
 
-    public ResinData resinData() {
+    public @Nullable ResinData resinData() {
         return resinData;
     }
 
@@ -207,10 +212,13 @@ public class ResinManager implements GameEventListener.Provider<ResinSpreadListe
 
     @Override
     public void save(CompoundTag compoundTag) {
-        ResinData.CODEC.encodeStart(NbtOps.INSTANCE, resinData)
-            .resultOrPartial(
-                AVP.LOGGER::error
-            )
-            .ifPresent(tag -> compoundTag.put(NBT_RESIN_DATA, tag));
+        if (resinData != null) {
+            ResinData.CODEC.encodeStart(NbtOps.INSTANCE, resinData)
+                .resultOrPartial(
+                    AVP.LOGGER::error
+                )
+                .ifPresent(tag -> compoundTag.put(NBT_RESIN_DATA, tag));
+
+        }
     }
 }
