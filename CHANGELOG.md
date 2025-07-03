@@ -137,6 +137,7 @@
 - Fixed alien hitboxes being off while swimming.
 - Fixed praetorian count balancing including eggs, facehuggers, chestbursters and adolescents in formula.
 - Fixed aliens that do not grow up being able to consume an infinite amount of royal jelly.
+- Fixed facehuggers not persisting after hatching from ovomorphs.
 
 ## 🛠 Data Pack
 - Added `#avp:runner_hosts` entity tag.

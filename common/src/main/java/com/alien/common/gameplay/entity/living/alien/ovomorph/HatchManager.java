@@ -154,6 +154,9 @@ public class HatchManager {
         facehugger.yBodyRot = ovomorph.yBodyRot; // Body rotation
         facehugger.yHeadRot = ovomorph.yHeadRot; // Head rotation
 
+        // Make sure the facehugger persists after being released from the ovomorph.
+        facehugger.setPersistenceRequired();
+
         // Gives the facehugger a jump like movement if the block above is not a suffocating block.
         if (!ovomorphSuffocatingAboveCheck) {
             facehugger.setDeltaMovement(
