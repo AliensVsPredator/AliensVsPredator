@@ -63,10 +63,7 @@ public abstract class MixinLivingEntity_GeneCarrier extends Entity implements Ge
         }
 
         if (!level().isClientSide) {
-            var hasWarpGene = getOrCreateGeneManager().getGeneContainer()
-                .getActiveGeneMap()
-                .hasGene(Genes.WARP);
-            avp$hasWarpEffect.set(hasWarpGene);
+            avp$hasWarpEffect.set(avp$hasWarpGene());
         }
     }
 
@@ -115,6 +112,19 @@ public abstract class MixinLivingEntity_GeneCarrier extends Entity implements Ge
             avp$handlePoisonousBarbsGene(damageSource, damage);
             avp$handleThornsGene(damageSource, damage);
         }
+    }
+
+    @Inject(at = @At("RETURN"), method = "isSensitiveToWater", cancellable = true)
+    public void avp$isSensitiveToWater(CallbackInfoReturnable<Boolean> cir) {
+        var isSensitiveToWater = cir.getReturnValueZ();
+        cir.setReturnValue(isSensitiveToWater || avp$hasWarpGene());
+    }
+
+    @Unique
+    private boolean avp$hasWarpGene() {
+        return getOrCreateGeneManager().getGeneContainer()
+            .getActiveGeneMap()
+            .hasGene(Genes.WARP);
     }
 
     @Unique
