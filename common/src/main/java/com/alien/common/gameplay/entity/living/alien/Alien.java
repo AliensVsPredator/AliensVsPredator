@@ -1,10 +1,11 @@
 package com.alien.common.gameplay.entity.living.alien;
 
+import com.alien.common.data.AlienVariantTypes;
+import com.alien.common.gameplay.level.saveddata.HiveLevelData;
 import com.alien.common.model.alien.variant.AlienVariant;
 import com.alien.common.util.AcidBleedUtil;
 import com.alien.common.util.AlienTransitionUtil;
 import com.bvanseg.just.functional.option.Option;
-import com.google.common.base.Objects;
 import com.lib.common.gameplay.entity.manager.GeneManager;
 import com.lib.common.gameplay.entity.manager.VibrationSystemManager;
 import com.lib.common.model.GeneCarrier;
@@ -16,11 +17,14 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.MobSpawnType;
+import net.minecraft.world.entity.SpawnGroupData;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -28,11 +32,13 @@ import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.vehicle.Boat;
 import net.minecraft.world.entity.vehicle.Minecart;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.gameevent.DynamicGameEventListener;
 import net.minecraft.world.level.pathfinder.PathType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Objects;
 import java.util.function.BiConsumer;
 import java.util.function.Predicate;
 
@@ -145,15 +151,15 @@ public abstract class Alien extends Monster implements DataUser {
     }
 
     public boolean isAberrant() {
-        return Objects.equal(getType(), getTypeForVariant(AlienVariant.ABERRANT));
+        return Objects.equals(getType(), getTypeForVariant(AlienVariant.ABERRANT));
     }
 
     public boolean isIrradiated() {
-        return Objects.equal(getType(), getTypeForVariant(AlienVariant.IRRADIATED));
+        return Objects.equals(getType(), getTypeForVariant(AlienVariant.IRRADIATED));
     }
 
     public boolean isNetherAfflicted() {
-        return Objects.equal(getType(), getTypeForVariant(AlienVariant.NETHER));
+        return Objects.equals(getType(), getTypeForVariant(AlienVariant.NETHER));
     }
 
     private void applyMalusBasedOnVariant() {
@@ -204,6 +210,40 @@ public abstract class Alien extends Monster implements DataUser {
     @Override
     protected final boolean canRide(@NotNull Entity vehicle) {
         return super.canRide(vehicle) && canAlienRideVehicle(vehicle);
+    }
+
+    @Override
+    public @Nullable SpawnGroupData finalizeSpawn(
+        @NotNull ServerLevelAccessor level,
+        @NotNull DifficultyInstance difficulty,
+        @NotNull MobSpawnType spawnType,
+        @Nullable SpawnGroupData spawnGroupData
+    ) {
+        var alienVariantType = AlienVariantTypes.getFor(getVariant());
+
+        HiveLevelData.getOrCreate(level.getLevel())
+            .andThen(
+                hiveLevelData -> hiveLevelData.findNearestHive(
+                    blockPosition(),
+                    // Find the nearest hive for this alien type's variant type.
+                    hive -> Objects.equals(hive.getVariant(), alienVariantType.variant())
+                )
+            )
+            .ifSome(hive -> {
+                var joinedHiveSuccessfully = hiveManager.tryJoinHive(hive);
+
+                if (joinedHiveSuccessfully) {
+                    hive.getLeadershipManager()
+                        .getLeader()
+                        .map(leader -> ((GeneCarrier) leader).getOrCreateGeneManager().getGeneContainer())
+                        .ifSome(geneContainer -> {
+                            var alienGeneCarrier = ((GeneCarrier) this).getOrCreateGeneManager().getGeneContainer();
+                            geneContainer.transfer(alienGeneCarrier, true);
+                        });
+                }
+            });
+
+        return super.finalizeSpawn(level, difficulty, spawnType, spawnGroupData);
     }
 
     @Override
