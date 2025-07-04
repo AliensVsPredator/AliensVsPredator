@@ -49,7 +49,7 @@ public class HatchDesireManager {
                 sourceEntity != null && AVPPredicates.isFreeHost(ovomorph, sourceEntity) && ovomorph.getSensing()
                     .hasLineOfSight(sourceEntity)
             ) {
-                var baseDesire = (int) Math.abs(radius - vibrationInfo.distance());
+                var baseDesire = (int) Math.abs(radius - vibrationInfo.distance()) * 2;
 
                 var level = ovomorph.level();
                 var blockPos = ovomorph.blockPosition();
