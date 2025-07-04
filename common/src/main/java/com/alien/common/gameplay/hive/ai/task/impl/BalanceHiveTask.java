@@ -22,17 +22,19 @@ public abstract class BalanceHiveTask extends HiveTask {
     protected void growXenomorph(Xenomorph xenomorph) {
         var nextFormEntity = xenomorph.getGrowthManager().grow();
 
-        if (nextFormEntity != null) {
-            var isLeader = Objects.equals(xenomorph.getUUID(), hive.getLeadershipManager().getLeaderIdOrNull());
+        if (nextFormEntity == null) {
+            return;
+        }
 
-            // Remove the old entity's membership.
-            hive.getMembershipManager().removeMember(xenomorph);
-            // Add the new entity as a member.
-            hive.getMembershipManager().addMember(nextFormEntity);
+        var isLeader = Objects.equals(xenomorph.getUUID(), hive.getLeadershipManager().getLeaderIdOrNull());
 
-            if (isLeader) {
-                hive.getLeadershipManager().setLeaderId(nextFormEntity.getUUID());
-            }
+        // Remove the old entity's membership.
+        hive.getMembershipManager().removeMember(xenomorph);
+        // Add the new entity as a member.
+        hive.getMembershipManager().addMember(nextFormEntity);
+
+        if (isLeader) {
+            hive.getLeadershipManager().setLeaderId(nextFormEntity.getUUID());
         }
     }
 }

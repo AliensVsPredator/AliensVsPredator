@@ -1,12 +1,15 @@
 package com.alien.common.gameplay.hive;
 
 import com.alien.common.gameplay.entity.living.alien.Alien;
+import com.alien.common.gameplay.entity.living.alien.xenomorph.drone.Drone;
+import com.alien.common.gameplay.entity.living.alien.xenomorph.prowler.Prowler;
+import com.alien.common.gameplay.entity.living.alien.xenomorph.runner.Runner;
+import com.alien.common.gameplay.entity.living.alien.xenomorph.warrior.Warrior;
 import com.alien.common.gameplay.hive.ai.task.Task;
+import com.alien.common.gameplay.hive.ai.task.impl.BalanceAveragingHiveTask;
 import com.alien.common.gameplay.hive.ai.task.impl.BalanceCrushersHiveTask;
-import com.alien.common.gameplay.hive.ai.task.impl.BalanceDronesAndWarriorsHiveTask;
 import com.alien.common.gameplay.hive.ai.task.impl.BalancePraetoriansHiveTask;
 import com.alien.common.gameplay.hive.ai.task.impl.BalanceQueenHiveTask;
-import com.alien.common.gameplay.hive.ai.task.impl.BalanceRunnersAndProwlersHiveTask;
 import com.alien.common.gameplay.hive.ai.task.impl.MergeWithNearbyHiveTask;
 import com.alien.common.gameplay.hive.ai.task.impl.PickBestLeaderTask;
 import com.alien.common.gameplay.hive.membership.HiveLeadershipManager;
@@ -82,13 +85,28 @@ public class Hive implements NBTSerializable {
         this.spaceManager = new HiveSpaceManager(this);
         this.centerPos = BlockPos.ZERO;
 
-        // Order matters here.
+        // Order matters for hive tasks.
 
-        tasks.add(new BalanceRunnersAndProwlersHiveTask(this));
+        tasks.add(
+            new BalanceAveragingHiveTask(
+                this,
+                () -> Runner.getType(getVariant()),
+                () -> Prowler.getType(getVariant())
+            )
+        );
         tasks.add(new BalanceCrushersHiveTask(this));
-        tasks.add(new BalanceDronesAndWarriorsHiveTask(this));
+
+        tasks.add(
+            new BalanceAveragingHiveTask(
+                this,
+                () -> Drone.getType(getVariant()),
+                () -> Warrior.getType(getVariant())
+            )
+        );
         tasks.add(new BalancePraetoriansHiveTask(this));
+
         tasks.add(new BalanceQueenHiveTask(this));
+
         tasks.add(new PickBestLeaderTask(this));
         tasks.add(new MergeWithNearbyHiveTask(this));
     }
