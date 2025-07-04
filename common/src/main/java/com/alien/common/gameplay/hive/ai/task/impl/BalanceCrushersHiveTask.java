@@ -4,14 +4,10 @@ import com.alien.common.gameplay.entity.living.alien.xenomorph.Xenomorph;
 import com.alien.common.gameplay.entity.living.alien.xenomorph.crusher.Crusher;
 import com.alien.common.gameplay.entity.living.alien.xenomorph.prowler.Prowler;
 import com.alien.common.gameplay.hive.Hive;
-import com.alien.common.model.hive.HiveMemberData;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.entity.EntityType;
 
 import java.util.Comparator;
 import java.util.List;
-import java.util.Map;
-import java.util.UUID;
 
 import com.avp.AVP;
 
@@ -22,7 +18,8 @@ public class BalanceCrushersHiveTask extends BalanceHiveTask {
     }
 
     @Override
-    protected void balance(Map<? extends EntityType<?>, List<Map.Entry<UUID, HiveMemberData>>> membersByType) {
+    public void run() {
+        var membersByType = hive.getMembershipManager().getMembersByEntityType();
         var hiveMemberCount = hive.getMembershipManager().getMemberCount();
         var prowlerEntityType = Prowler.getType(hive.getVariant());
         var crusherEntityType = Crusher.getType(hive.getVariant());
