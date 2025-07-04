@@ -2,6 +2,7 @@ package com.alien.common.gameplay.entity.living.alien.xenomorph.queen;
 
 import com.alien.common.gameplay.entity.living.alien.Alien;
 import com.alien.common.gameplay.entity.living.alien.xenomorph.Xenomorph;
+import com.alien.common.gameplay.entity.living.alien.xenomorph.drone.Drone;
 import com.alien.common.model.alien.variant.AlienVariant;
 import com.alien.common.model.resin.ResinData;
 import com.alien.common.registry.init.AlienEntityTypes;
@@ -9,6 +10,7 @@ import com.lib.common.util.PlayerUtil;
 import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.DifficultyInstance;
@@ -91,20 +93,48 @@ public class Queen extends Xenomorph {
         @Nullable SpawnGroupData spawnGroupData
     ) {
         if (spawnType == MobSpawnType.NATURAL) {
-            for (var player : PlayerUtil.getTrackingPlayers(this)) {
-                player.playNotifySound(AVPSoundEvents.ENTITY_QUEEN_SCREAM.get(), SoundSource.MASTER, 1, 1);
-                player.sendSystemMessage(
-                    Component.literal("A scream from the depths sends chills down your spine...")
-                        .withStyle(ChatFormatting.GREEN, ChatFormatting.ITALIC)
-                );
-            }
-
-            ((ServerLevelManagerAccessor) serverLevelAccessor.getLevel()).getServerLevelManager()
-                .getQueenSpawnCooldown()
-                .reset();
+            applyNaturalSpawnEffects(serverLevelAccessor, spawnType);
         }
 
         return super.finalizeSpawn(serverLevelAccessor, difficulty, spawnType, spawnGroupData);
+    }
+
+    private void applyNaturalSpawnEffects(@NotNull ServerLevelAccessor serverLevelAccessor, @NotNull MobSpawnType spawnType) {
+        alertPlayersOfSpawn();
+        spawnGuards(serverLevelAccessor, spawnType);
+        resetQueenSpawnCooldown(serverLevelAccessor);
+    }
+
+    private void alertPlayersOfSpawn() {
+        for (var player : PlayerUtil.getTrackingPlayers(this)) {
+            player.playNotifySound(AVPSoundEvents.ENTITY_QUEEN_SCREAM.get(), SoundSource.MASTER, 1, 1);
+            player.sendSystemMessage(
+                Component.literal("A scream from the depths sends chills down your spine...")
+                    .withStyle(ChatFormatting.GREEN, ChatFormatting.ITALIC)
+            );
+        }
+    }
+
+    private void spawnGuards(@NotNull ServerLevelAccessor serverLevelAccessor, @NotNull MobSpawnType spawnType) {
+        var level = level();
+
+        if (!level.isClientSide) {
+            for (var i = 0; i < 4; i++) {
+                var droneType = Drone.getType(getVariant());
+                var drone = droneType.spawn((ServerLevel) level, blockPosition(), spawnType);
+
+                if (drone != null) {
+                    drone.setPersistenceRequired();
+                    serverLevelAccessor.addFreshEntity(drone);
+                }
+            }
+        }
+    }
+
+    private static void resetQueenSpawnCooldown(@NotNull ServerLevelAccessor serverLevelAccessor) {
+        ((ServerLevelManagerAccessor) serverLevelAccessor.getLevel()).getServerLevelManager()
+            .getQueenSpawnCooldown()
+            .reset();
     }
 
     @Override
