@@ -1,0 +1,62 @@
+package com.lib.common.gameplay.entity;
+
+import com.mojang.serialization.Codec;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.world.entity.EntityType;
+
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.function.Predicate;
+
+import com.avp.common.util.AVPPredicates;
+
+public class EntityReserves {
+
+    public static final Codec<EntityReserves> CODEC = Codec.unboundedMap(
+        BuiltInRegistries.ENTITY_TYPE.byNameCodec(),
+        Codec.INT
+    )
+        .xmap(
+            map -> {
+                var reserves = new EntityReserves();
+                map.forEach(reserves::add);
+                return reserves;
+            },
+            EntityReserves::getBackingMap
+        );
+
+    private final Map<EntityType<?>, Integer> entityTypesToCountMap;
+
+    public EntityReserves() {
+        this.entityTypesToCountMap = new HashMap<>();
+    }
+
+    public void add(EntityType<?> entityType, int count) {
+        entityTypesToCountMap.merge(entityType, count, (a, b) -> Math.max(a + b, 0));
+    }
+
+    public void putAll(Map<EntityType<?>, Integer> map) {
+        entityTypesToCountMap.putAll(map);
+    }
+
+    public int getCount(EntityType<?> entityType) {
+        return entityTypesToCountMap.getOrDefault(entityType, 0);
+    }
+
+    public int getCount() {
+        return getCountMatching(AVPPredicates.alwaysTrue());
+    }
+
+    public int getCountMatching(Predicate<EntityType<?>> predicate) {
+        return entityTypesToCountMap.entrySet()
+            .stream()
+            .filter(entry -> predicate.test(entry.getKey()))
+            .mapToInt(Map.Entry::getValue)
+            .sum();
+    }
+
+    public Map<EntityType<?>, Integer> getBackingMap() {
+        return Collections.unmodifiableMap(entityTypesToCountMap);
+    }
+}
