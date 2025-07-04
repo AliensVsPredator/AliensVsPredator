@@ -113,6 +113,8 @@ public abstract class Alien extends Monster implements DataUser {
                 || entityType.is(AVPEntityTypeTags.CRUSHERS)
         ) {
             return EntityType.PIG;
+        } else if (entityType.is(AVPEntityTypeTags.SPITTERS)) {
+            return EntityType.LLAMA;
         }
 
         return EntityType.VILLAGER;
