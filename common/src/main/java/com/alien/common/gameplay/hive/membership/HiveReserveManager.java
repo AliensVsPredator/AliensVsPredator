@@ -55,11 +55,23 @@ public class HiveReserveManager implements NBTSerializable {
     }
 
     public void increase(EntityType<?> entityType) {
-        hiveMemberReserves.add(entityType, 1);
+        increase(entityType, 1);
+    }
+
+    public void increase(EntityType<?> entityType, int count) {
+        hiveMemberReserves.add(entityType, count);
     }
 
     public void decrease(EntityType<?> entityType) {
-        hiveMemberReserves.add(entityType, -1);
+        decrease(entityType, -1);
+    }
+
+    public void decrease(EntityType<?> entityType, int count) {
+        hiveMemberReserves.add(entityType, count);
+    }
+
+    public int getCount(EntityType<?> entityType) {
+        return hiveMemberReserves.getCount(entityType);
     }
 
     public int getCountMatching(Predicate<EntityType<?>> predicate) {

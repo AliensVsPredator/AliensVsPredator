@@ -27,7 +27,25 @@ public class BalanceAveragingHiveTask extends BalanceHiveTask {
 
     @Override
     public void run() {
+        balanceReserveUnits();
         balanceLoadedUnits();
+    }
+
+    private void balanceReserveUnits() {
+        var reserveManager = hive.getReserveManager();
+        var baseUnitType = baseUnitTypeSupplier.get();
+        var desiredUnitType = desiredUnitTypeSupplier.get();
+        var baseUnitCount = reserveManager.getCount(baseUnitType);
+        var currentDesiredUnitCount = reserveManager.getCount(desiredUnitType);
+
+        var desiredUnitCount = computeDesiredUnitCount(baseUnitCount, currentDesiredUnitCount);
+
+        if (desiredUnitCount == 0) {
+            return;
+        }
+
+        reserveManager.decrease(baseUnitType, desiredUnitCount);
+        reserveManager.increase(desiredUnitType, desiredUnitCount);
     }
 
     private void balanceLoadedUnits() {
