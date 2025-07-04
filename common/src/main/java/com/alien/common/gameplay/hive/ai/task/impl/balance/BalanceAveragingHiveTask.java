@@ -1,4 +1,4 @@
-package com.alien.common.gameplay.hive.ai.task.impl;
+package com.alien.common.gameplay.hive.ai.task.impl.balance;
 
 import com.alien.common.gameplay.entity.living.alien.xenomorph.Xenomorph;
 import com.alien.common.gameplay.hive.Hive;
@@ -7,21 +7,15 @@ import net.minecraft.world.entity.EntityType;
 
 import java.util.Comparator;
 import java.util.List;
-import java.util.function.Predicate;
 import java.util.function.Supplier;
 
-import com.avp.AVP;
-import com.avp.common.registry.tag.AVPEntityTypeTags;
-
-public class BalanceStepHiveTask extends BalanceHiveTask {
-
-    private static final Predicate<EntityType<?>> XENOMORPH_PREDICATE = entityType -> entityType.is(AVPEntityTypeTags.XENOMORPHS);
+public class BalanceAveragingHiveTask extends BalanceHiveTask {
 
     private final Supplier<EntityType<?>> baseUnitTypeSupplier;
 
     private final Supplier<EntityType<?>> desiredUnitTypeSupplier;
 
-    public BalanceStepHiveTask(
+    public BalanceAveragingHiveTask(
         Hive hive,
         Supplier<EntityType<?>> baseUnitTypeSupplier,
         Supplier<EntityType<?>> desiredUnitTypeSupplier
@@ -39,14 +33,12 @@ public class BalanceStepHiveTask extends BalanceHiveTask {
 
     private void balanceReserveUnits() {
         var reserveManager = hive.getReserveManager();
-        var reserveXenomorphCount = reserveManager
-            .getCountMatching(XENOMORPH_PREDICATE);
-
         var baseUnitType = baseUnitTypeSupplier.get();
         var desiredUnitType = desiredUnitTypeSupplier.get();
+        var baseUnitCount = reserveManager.getCount(baseUnitType);
         var currentDesiredUnitCount = reserveManager.getCount(desiredUnitType);
 
-        var desiredUnitCount = computeDesiredUnitCount(reserveXenomorphCount, currentDesiredUnitCount);
+        var desiredUnitCount = computeDesiredUnitCount(baseUnitCount, currentDesiredUnitCount);
 
         if (desiredUnitCount == 0) {
             return;
@@ -60,17 +52,13 @@ public class BalanceStepHiveTask extends BalanceHiveTask {
 
     private void balanceLoadedUnits() {
         var membersByType = hive.getMembershipManager().getMembersByEntityType();
-        var xenomorphHiveMemberCount = hive.getMembershipManager()
-            .getMembersMatching(XENOMORPH_PREDICATE)
-            .size();
         var baseEntityType = baseUnitTypeSupplier.get();
         var desiredEntityType = desiredUnitTypeSupplier.get();
         var baseUnits = membersByType.getOrDefault(baseEntityType, List.of());
         var baseUnitCount = baseUnits.size();
         var desiredUnits = membersByType.getOrDefault(desiredEntityType, List.of());
-        var currentDesiredUnitCount = desiredUnits.size();
 
-        var desiredUnitCount = computeDesiredUnitCount(xenomorphHiveMemberCount, currentDesiredUnitCount);
+        var desiredUnitCount = computeDesiredUnitCount(baseUnitCount, desiredUnits.size());
 
         if (desiredUnitCount == 0) {
             return;
@@ -93,15 +81,7 @@ public class BalanceStepHiveTask extends BalanceHiveTask {
             });
     }
 
-    private int computeDesiredUnitCount(int xenomorphHiveMemberCount, int desiredUnitCount) {
-        var hiveMembersRequiredForPraetorian = AVP.config.hiveConfigs.HIVE_MEMBERS_REQUIRED_FOR_PRAETORIAN;
-        var maxPraetorianCount = AVP.config.hiveConfigs.HIVE_MAX_PRAETORIAN_COUNT;
-
-        return hiveMembersRequiredForPraetorian > 0
-            ? Math.max(
-                0,
-                Math.clamp(xenomorphHiveMemberCount / hiveMembersRequiredForPraetorian, 0, maxPraetorianCount) - desiredUnitCount
-            )
-            : 0;
+    private int computeDesiredUnitCount(int baseUnitCount, int desiredUnitCount) {
+        return Math.max(0, (baseUnitCount - desiredUnitCount) / 2);
     }
 }

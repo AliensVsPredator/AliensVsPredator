@@ -1,4 +1,4 @@
-package com.alien.common.gameplay.hive.ai.task.impl;
+package com.alien.common.gameplay.hive.ai.task.impl.balance;
 
 import com.alien.common.gameplay.entity.living.alien.xenomorph.Xenomorph;
 import com.alien.common.gameplay.hive.Hive;
