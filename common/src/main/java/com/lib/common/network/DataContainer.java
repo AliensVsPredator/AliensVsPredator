@@ -136,17 +136,17 @@ public class DataContainer implements NBTSerializable {
     @Override
     public void load(CompoundTag compoundTag) {
         values.keySet().forEach(key -> {
-            var id = key.id().getPath();
-
             @SuppressWarnings("unchecked")
             var onLoadCallback = (Consumer<Object>) onLoadCallbacks.get(key);
 
-            key.persistenceMetadata().ifSome(persistData -> {
+            key.persistenceMetadata().ifSome(persistenceMetadata -> {
+                var id = persistenceMetadata.key();
+
                 if (!compoundTag.contains(id)) {
                     return;
                 }
 
-                var codec = persistData.codec();
+                var codec = persistenceMetadata.codec();
 
                 if (codec == Codec.BOOL) {
                     var value = compoundTag.getBoolean(id);
@@ -193,10 +193,11 @@ public class DataContainer implements NBTSerializable {
     @Override
     public void save(CompoundTag compoundTag) {
         values.forEach((key, value) -> {
-            var id = key.id().getPath();
-            var codecOption = key.persistenceMetadata();
+            var persistenceMetadataOption = key.persistenceMetadata();
 
-            codecOption.ifSome(codec -> {
+            persistenceMetadataOption.ifSome(persistenceMetadata -> {
+                var id = persistenceMetadata.key();
+
                 switch (value) {
                     case Byte b -> compoundTag.putByte(id, b);
                     case Short s -> compoundTag.putShort(id, s);
