@@ -24,13 +24,21 @@
   - Gene bonuses now have a more noticeable impact to xenomorphs.
   - Repeated injections will cause xenomorphs to turn aberrant.
   - Further repeated injections will cause aberrant xenomorphs to turn into boilers.
-  - Poison jelly no longer turns royal ovomorphs into royal aberrant ovomorphs. 
+  - Poison jelly no longer turns royal ovomorphs into royal aberrant ovomorphs.
+  - Added a new "gene reader" item:
+    - Right-click (nearly) any mob to read their genes.
+    - Cycle through different modes to see different types of genes that a mob has.
+    - Bonus genes are genes a mob gives that never change. Syringes extract only bonus genes.
+    - Dormant genes are genes a mob has, but do not change the mob's stats/behavior.
+    - Active genes are genes a mob has and DO change the mob's stats/behavior.
+    - When the mob reproduces (animals mating or chestburster bursting), dormant genes become active genes.
   - Added a new "syringe" item:
-    - Right-click any mob to get their genes.
-    - Right-click an ovomorph or a host to add the genes to them.
+    - Right-click (nearly) any mob to get their genes.
+    - Right-click any entity to add the genes to them.
       - Added genes are "dormant" (do not apply immediately).
       - Dormant genes only manifest on chestbursters born from hosts.
       - Every injection makes the entity's and their offspring's genes "unstable". The more unstable the genes, the more negative effects each successive generation will have.
+      - Genes within the syringe can't be immediately seen. Use a gene reader to check the mob you're using a syringe on beforehand!
 - Ovomorphs now have hatching AI
   - Ovomorphs now have a "desire" meter for hatching. 
   - Changes in the environment (such as light) will increase the desire meter.
