@@ -44,8 +44,10 @@ public class BalanceAveragingHiveTask extends BalanceHiveTask {
             return;
         }
 
-        reserveManager.decrease(baseUnitType, desiredUnitCount);
-        reserveManager.increase(desiredUnitType, desiredUnitCount);
+        // Subtract from base unit count by adding a negative.
+        reserveManager.add(baseUnitType, -desiredUnitCount);
+        // Add desired unit count to desired unit type.
+        reserveManager.add(desiredUnitType, desiredUnitCount);
     }
 
     private void balanceLoadedUnits() {
