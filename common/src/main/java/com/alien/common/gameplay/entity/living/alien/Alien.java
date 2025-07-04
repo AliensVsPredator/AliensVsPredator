@@ -1,6 +1,7 @@
 package com.alien.common.gameplay.entity.living.alien;
 
 import com.alien.common.data.AlienVariantTypes;
+import com.alien.common.gameplay.entity.living.alien.xenomorph.drone.Drone;
 import com.alien.common.gameplay.level.saveddata.HiveLevelData;
 import com.alien.common.model.alien.variant.AlienVariant;
 import com.alien.common.util.AcidBleedUtil;
@@ -324,6 +325,17 @@ public abstract class Alien extends Monster implements DataUser {
     @Override
     public boolean isInvulnerableTo(DamageSource damageSource) {
         return damageSource.is(AVPDamageTypesTags.DOES_NOT_HURT_ALIENS) || super.isInvulnerableTo(damageSource);
+    }
+
+    @Override
+    public boolean killedEntity(@NotNull ServerLevel level, @NotNull LivingEntity entity) {
+        var killedEntity = super.killedEntity(level, entity);
+
+        if (killedEntity) {
+            hiveManager.hive().ifSome(hive -> hive.getReserveManager().add(Drone.getType(hive.getVariant()), 1));
+        }
+
+        return killedEntity;
     }
 
     @Override
