@@ -11,6 +11,7 @@ import com.alien.common.gameplay.hive.ai.task.impl.MergeWithNearbyHiveTask;
 import com.alien.common.gameplay.hive.ai.task.impl.PickBestLeaderTask;
 import com.alien.common.gameplay.hive.membership.HiveLeadershipManager;
 import com.alien.common.gameplay.hive.membership.HiveMembershipManager;
+import com.alien.common.gameplay.hive.membership.HiveReserveManager;
 import com.alien.common.gameplay.level.saveddata.QueenSpawnChunkData;
 import com.alien.common.model.alien.variant.AlienVariant;
 import com.lib.common.gameplay.NBTSerializable;
@@ -49,6 +50,8 @@ public class Hive implements NBTSerializable {
 
     private final HiveMembershipManager membershipManager;
 
+    private final HiveReserveManager reserveManager;
+
     private final HiveSpaceManager spaceManager;
 
     private final UUID id;
@@ -75,10 +78,12 @@ public class Hive implements NBTSerializable {
         this.debugManager = new HiveDebugManager(this);
         this.leadershipManager = new HiveLeadershipManager(this);
         this.membershipManager = new HiveMembershipManager(this);
+        this.reserveManager = new HiveReserveManager(this);
         this.spaceManager = new HiveSpaceManager(this);
         this.centerPos = BlockPos.ZERO;
 
         // Order matters here.
+
         tasks.add(new BalanceRunnersAndProwlersHiveTask(this));
         tasks.add(new BalanceCrushersHiveTask(this));
         tasks.add(new BalanceDronesAndWarriorsHiveTask(this));
@@ -98,6 +103,7 @@ public class Hive implements NBTSerializable {
         debugManager.tick();
         leadershipManager.tick();
         membershipManager.tick();
+        reserveManager.tick();
 
         tasks.stream()
             .filter(Task::canRun)
@@ -206,6 +212,7 @@ public class Hive implements NBTSerializable {
     public void load(CompoundTag compoundTag) {
         leadershipManager.load(compoundTag);
         membershipManager.load(compoundTag);
+        reserveManager.load(compoundTag);
 
         var centerPosComponents = compoundTag.getIntArray(CENTER_POS_KEY);
         this.ageInTicks = compoundTag.getInt(AGE_IN_TICKS_KEY);
@@ -220,6 +227,7 @@ public class Hive implements NBTSerializable {
     public void save(CompoundTag compoundTag) {
         leadershipManager.save(compoundTag);
         membershipManager.save(compoundTag);
+        reserveManager.save(compoundTag);
 
         compoundTag.putInt(AGE_IN_TICKS_KEY, ageInTicks);
 
@@ -255,6 +263,10 @@ public class Hive implements NBTSerializable {
 
     public HiveMembershipManager getMembershipManager() {
         return membershipManager;
+    }
+
+    public HiveReserveManager getReserveManager() {
+        return reserveManager;
     }
 
     public HiveSpaceManager getSpaceManager() {

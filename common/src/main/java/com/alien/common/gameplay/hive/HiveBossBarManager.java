@@ -9,11 +9,13 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.BossEvent;
 import net.minecraft.world.Difficulty;
+import net.minecraft.world.entity.EntityType;
 
 import java.util.Arrays;
 import java.util.Locale;
 import java.util.Map;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import com.avp.AVP;
@@ -39,11 +41,13 @@ public class HiveBossBarManager {
             )
         );
 
+    private static final Predicate<EntityType<?>> XENOMORPH_PREDICATE = entityType -> entityType.is(AVPEntityTypeTags.XENOMORPHS);
+
     private final Hive hive;
 
     private final ServerBossEvent bossEvent;
 
-    private int maximumSeenAlienCount;
+    private int maximumSeenXenomorphCount;
 
     public HiveBossBarManager(Hive hive) {
         this.bossEvent = (ServerBossEvent) new ServerBossEvent(
@@ -62,12 +66,19 @@ public class HiveBossBarManager {
     }
 
     private void updateBossBarProgress() {
-        var currentAlienCount = hive.getMembershipManager()
-            .getMembersMatching(entityType -> entityType.is(AVPEntityTypeTags.XENOMORPHS))
+        // Get all xenomorphs that are loaded in the world right now.
+        var loadedXenomorphCount = hive.getMembershipManager()
+            .getMembersMatching(XENOMORPH_PREDICATE)
             .size();
-        this.maximumSeenAlienCount = Math.max(maximumSeenAlienCount, currentAlienCount);
+        // Get all xenomorphs that are in reserves right now.
+        var currentReserveXenomorphCount = hive.getReserveManager()
+            .getCountMatching(XENOMORPH_PREDICATE);
+        // Add the two counts together to get the total xenomorph count.
+        var totalXenomorphCount = loadedXenomorphCount + currentReserveXenomorphCount;
 
-        bossEvent.setProgress(currentAlienCount / (float) maximumSeenAlienCount);
+        this.maximumSeenXenomorphCount = Math.max(maximumSeenXenomorphCount, totalXenomorphCount);
+
+        bossEvent.setProgress(totalXenomorphCount / (float) maximumSeenXenomorphCount);
     }
 
     private void updateBossBarColor() {

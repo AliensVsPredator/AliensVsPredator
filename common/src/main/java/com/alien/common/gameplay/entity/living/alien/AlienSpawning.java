@@ -54,10 +54,10 @@ public class AlienSpawning {
             blockPos,
             randomSource
         ) &&
-            isSpawnPositionWithinHive(entityType, serverLevelAccessor, blockPos);
+            canSpawnWithinNearestHive(entityType, serverLevelAccessor, blockPos);
     }
 
-    private static boolean isSpawnPositionWithinHive(
+    private static boolean canSpawnWithinNearestHive(
         EntityType<? extends Monster> entityType,
         ServerLevelAccessor serverLevelAccessor,
         BlockPos blockPos
@@ -77,10 +77,10 @@ public class AlienSpawning {
             .isSomeAnd(nearestHive ->
             // Aliens can not spawn in hives that are dead.
             nearestHive.isAlive()
-                // AND Hive is not angry/aggro'd.
-                && !nearestHive.isAngry()
                 // AND spawn position must be within range of the hive.
                 && canEntityTypeSpawnWithinHiveLayer(nearestHive, entityType, blockPos)
+                && nearestHive.getReserveManager()
+                    .canSpawn(entityType)
             );
     }
 

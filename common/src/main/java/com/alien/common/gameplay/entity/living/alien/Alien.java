@@ -233,6 +233,9 @@ public abstract class Alien extends Monster implements DataUser {
                 var joinedHiveSuccessfully = hiveManager.tryJoinHive(hive);
 
                 if (joinedHiveSuccessfully) {
+                    // Decrease the reserve count for this entity's type.
+                    hive.getReserveManager().decrease(getType());
+                    // Apply genetics of hive leader to this alien.
                     hive.getLeadershipManager()
                         .getLeader()
                         .map(leader -> ((GeneCarrier) leader).getOrCreateGeneManager().getGeneContainer())
@@ -398,7 +401,11 @@ public abstract class Alien extends Monster implements DataUser {
         super.remove(removalReason);
 
         switch (removalReason) {
-            case KILLED, DISCARDED -> hiveManager.hive().ifSome(hive -> hive.removeHiveMember(this));
+            case KILLED -> hiveManager.hive().ifSome(hive -> hive.removeHiveMember(this));
+            case DISCARDED -> hiveManager.hive().ifSome(hive -> {
+                hive.removeHiveMember(this);
+                hive.getReserveManager().increase(getType());
+            });
             case UNLOADED_TO_CHUNK, UNLOADED_WITH_PLAYER, CHANGED_DIMENSION -> { /* NO-OP */ }
         }
     }
