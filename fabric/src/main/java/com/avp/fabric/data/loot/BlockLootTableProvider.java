@@ -69,7 +69,6 @@ public class BlockLootTableProvider extends FabricBlockLootTableProvider {
         dropSelf(AlienResinBlocks.ABERRANT_RESIN_BRICK_STAIRS);
         dropSelf(AlienResinBlocks.ABERRANT_RESIN_BRICK_WALL);
         dropSelf(AlienResinBlocks.ABERRANT_RESIN_STAIRS);
-        dropSelf(AlienResinBlocks.ABERRANT_RESIN_VENT);
         dropSelf(AlienChitinBlocks.ABERRANT_CHITIN_BLOCK);
         dropSelf(AlienChitinBlocks.ABERRANT_CHITIN_BLOCK_STAIRS);
         dropSelf(AlienChitinBlocks.ABERRANT_CHITIN_BLOCK_WALL);
@@ -87,14 +86,12 @@ public class BlockLootTableProvider extends FabricBlockLootTableProvider {
         dropSelf(AlienResinBlocks.IRRADIATED_RESIN_BRICK_STAIRS);
         dropSelf(AlienResinBlocks.IRRADIATED_RESIN_BRICK_WALL);
         dropSelf(AlienResinBlocks.IRRADIATED_RESIN_STAIRS);
-        dropSelf(AlienResinBlocks.IRRADIATED_RESIN_VENT);
 
         dropSelf(AlienResinBlocks.NETHER_RESIN);
         dropSelf(AlienResinBlocks.NETHER_RESIN_BRICKS);
         dropSelf(AlienResinBlocks.NETHER_RESIN_BRICK_STAIRS);
         dropSelf(AlienResinBlocks.NETHER_RESIN_BRICK_WALL);
         dropSelf(AlienResinBlocks.NETHER_RESIN_STAIRS);
-        dropSelf(AlienResinBlocks.NETHER_RESIN_VENT);
         dropSelf(AlienChitinBlocks.NETHER_CHITIN_BLOCK);
         dropSelf(AlienChitinBlocks.NETHER_CHITIN_BLOCK_STAIRS);
         dropSelf(AlienChitinBlocks.NETHER_CHITIN_BLOCK_WALL);
@@ -112,7 +109,6 @@ public class BlockLootTableProvider extends FabricBlockLootTableProvider {
         dropSelf(AlienResinBlocks.RESIN_BRICK_STAIRS);
         dropSelf(AlienResinBlocks.RESIN_BRICK_WALL);
         dropSelf(AlienResinBlocks.RESIN_STAIRS);
-        dropSelf(AlienResinBlocks.RESIN_VENT);
         dropSelf(AlienChitinBlocks.CHITIN_BLOCK);
         dropSelf(AlienChitinBlocks.CHITIN_BLOCK_STAIRS);
         dropSelf(AlienChitinBlocks.CHITIN_BLOCK_WALL);
@@ -363,15 +359,19 @@ public class BlockLootTableProvider extends FabricBlockLootTableProvider {
     private void generateOtherDrops() {
         dropOther(AlienResinBlocks.ABERRANT_RESIN_NODE, AlienResinBlocks.ABERRANT_RESIN);
         dropOther(AlienResinBlocks.ABERRANT_RESIN_VEIN, AlienItems.ABERRANT_RESIN_BALL);
+        dropOther(AlienResinBlocks.ABERRANT_RESIN_VENT, AlienResinBlocks.ABERRANT_RESIN);
         dropOther(AlienResinBlocks.ABERRANT_RESIN_WEB, AlienItems.ABERRANT_RESIN_BALL);
         dropOther(AlienResinBlocks.IRRADIATED_RESIN_NODE, AlienResinBlocks.IRRADIATED_RESIN);
         dropOther(AlienResinBlocks.IRRADIATED_RESIN_VEIN, AlienItems.IRRADIATED_RESIN_BALL);
+        dropOther(AlienResinBlocks.IRRADIATED_RESIN_VENT, AlienResinBlocks.IRRADIATED_RESIN);
         dropOther(AlienResinBlocks.IRRADIATED_RESIN_WEB, AlienItems.IRRADIATED_RESIN_BALL);
         dropOther(AlienResinBlocks.NETHER_RESIN_NODE, AlienResinBlocks.NETHER_RESIN);
         dropOther(AlienResinBlocks.NETHER_RESIN_VEIN, AlienItems.NETHER_RESIN_BALL);
+        dropOther(AlienResinBlocks.NETHER_RESIN_VENT, AlienResinBlocks.NETHER_RESIN);
         dropOther(AlienResinBlocks.NETHER_RESIN_WEB, AlienItems.NETHER_RESIN_BALL);
         dropOther(AlienResinBlocks.RESIN_NODE, AlienResinBlocks.RESIN);
         dropOther(AlienResinBlocks.RESIN_VEIN, AlienItems.RESIN_BALL);
+        dropOther(AlienResinBlocks.RESIN_VENT, AlienResinBlocks.RESIN);
         dropOther(AlienResinBlocks.RESIN_WEB, AlienItems.RESIN_BALL);
     }
 
