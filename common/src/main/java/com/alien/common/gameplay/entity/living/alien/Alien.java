@@ -343,7 +343,14 @@ public abstract class Alien extends Monster implements DataUser {
         var isHurt = super.hurt(damageSource, damage);
 
         if (isHurt) {
-            lastHurtTimeInTicks = tickCount;
+            this.lastHurtTimeInTicks = tickCount;
+
+            var alienVariantType = AlienVariantTypes.getFor(this);
+
+            if (damageSource.getEntity() != null) {
+                // Cry for help so that nearby vents may try and summon help.
+                gameEvent(alienVariantType.cryForHelpEvent().getHolder());
+            }
 
             if (canBleedAcid() && damageSource != damageSources().genericKill()) {
                 var randomPos = AcidBleedUtil.computeRandomPosFromBoundingBox(this);
