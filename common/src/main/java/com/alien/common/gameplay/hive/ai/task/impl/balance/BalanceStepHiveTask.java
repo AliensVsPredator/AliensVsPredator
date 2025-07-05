@@ -44,9 +44,13 @@ public class BalanceStepHiveTask extends BalanceHiveTask {
 
         var baseUnitType = baseUnitTypeSupplier.get();
         var desiredUnitType = desiredUnitTypeSupplier.get();
-        var currentDesiredUnitCount = reserveManager.getCount(desiredUnitType);
+        var currentBaseUnitCount = reserveManager.getCount(baseUnitType);
 
+        var currentDesiredUnitCount = reserveManager.getCount(desiredUnitType);
         var desiredUnitCount = computeDesiredUnitCount(reserveXenomorphCount, currentDesiredUnitCount);
+
+        // We can't grow desired units more than the number of base units.
+        desiredUnitCount = Math.min(currentBaseUnitCount, desiredUnitCount);
 
         if (desiredUnitCount == 0) {
             return;
