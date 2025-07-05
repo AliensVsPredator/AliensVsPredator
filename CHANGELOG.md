@@ -154,9 +154,10 @@
 - Added `#avp:crushers` entity tag.
 - Added `#avp:adolescents` entity tag.
 - Added `#avp:spitters` entity tag.
+- Added `#avp:answers_xenomorph_cries_for_help` entity tag.
 - Updated `#avp:hosts` to be composed of `#avp:runner_hosts` entity tag.
-- Updated `#avp:xenomorphs` tag to include new runner alien line entity tags and spitter alien tag.
-- Updated hive layer entity tags to include new runner alien line entity tags and spitter alien tag.
+- Updated `#avp:xenomorphs` tag to include new runner alien line entity tags and spitter entity tag.
+- Updated hive layer entity tags to include new runner alien line entity tags and spitter entity tag.
 - Updated variant entity tags to include new runner aliens, spitter alien and adolescent aliens.
 
 ## 🔬 Technical Changes

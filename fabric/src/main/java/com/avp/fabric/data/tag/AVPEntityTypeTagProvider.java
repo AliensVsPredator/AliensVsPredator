@@ -27,6 +27,7 @@ public class AVPEntityTypeTagProvider extends FabricTagProvider.EntityTypeTagPro
         addAcidImmune();
         addAdolescents();
         addAliens();
+        addAnswersXenomorphCriesForHelp();
         addChestbursters();
         addCrushers();
         addDrones();
@@ -179,6 +180,15 @@ public class AVPEntityTypeTagProvider extends FabricTagProvider.EntityTypeTagPro
                 AlienEntityTypes.ROYAL_ADOLESCENT.get(),
                 AlienEntityTypes.ROYAL_NETHER_ADOLESCENT.get()
             );
+    }
+
+    private void addAnswersXenomorphCriesForHelp() {
+        getOrCreateTagBuilder(AVPEntityTypeTags.ANSWERS_XENOMORPH_CRIES_FOR_HELP)
+            .addTag(AVPEntityTypeTags.DRONES)
+            .addTag(AVPEntityTypeTags.PROWLERS)
+            .addTag(AVPEntityTypeTags.RUNNERS)
+            .addTag(AVPEntityTypeTags.SPITTERS)
+            .addTag(AVPEntityTypeTags.WARRIORS);
     }
 
     private void addChestbursters() {
