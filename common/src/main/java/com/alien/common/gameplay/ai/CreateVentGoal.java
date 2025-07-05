@@ -76,7 +76,6 @@ public class CreateVentGoal extends Goal {
                     if (xenomorph.getNavigation().createPath(pathTarget, 1) != null) {
                         this.wallStart = hitPos;
                         this.direction = dir;
-                        cooldown.reset();
                         return true;
                     }
                 }
@@ -118,6 +117,7 @@ public class CreateVentGoal extends Goal {
 
         var placePos = wallStart.relative(direction, WALL_DEPTH);
         level.setBlock(placePos, resinVentHolder.get().defaultBlockState(), Block.UPDATE_ALL);
+        cooldown.reset();
     }
 
     @Override
