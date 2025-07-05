@@ -6,6 +6,7 @@ import net.minecraft.world.entity.EntityType;
 
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
 
@@ -60,6 +61,13 @@ public class EntityReserves {
             .filter(entry -> predicate.test(entry.getKey()))
             .mapToInt(Map.Entry::getValue)
             .sum();
+    }
+
+    public List<EntityType<?>> getAvailableEntityTypes() {
+        return entityTypesToCountMap.keySet()
+            .stream()
+            .filter(key -> entityTypesToCountMap.getOrDefault(key, 0) > 0)
+            .toList();
     }
 
     public Map<EntityType<?>, Integer> getBackingMap() {

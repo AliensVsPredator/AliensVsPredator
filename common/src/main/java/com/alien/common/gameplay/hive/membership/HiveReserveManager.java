@@ -11,6 +11,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.world.entity.EntityType;
 
+import java.util.List;
 import java.util.function.Predicate;
 
 import com.avp.AVP;
@@ -64,6 +65,10 @@ public class HiveReserveManager implements NBTSerializable {
 
     public int getCountMatching(Predicate<EntityType<?>> predicate) {
         return hiveMemberReserves.getCountMatching(predicate);
+    }
+
+    public List<EntityType<?>> getAvailableEntityTypes() {
+        return hiveMemberReserves.getAvailableEntityTypes();
     }
 
     @Override
