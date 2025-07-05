@@ -1,6 +1,7 @@
 package com.alien.common.gameplay.hive.membership;
 
 import com.alien.common.gameplay.entity.living.alien.xenomorph.drone.Drone;
+import com.alien.common.gameplay.entity.living.alien.xenomorph.runner.Runner;
 import com.alien.common.gameplay.hive.Hive;
 import com.alien.common.gameplay.hive.HiveSpaceManager;
 import com.lib.common.gameplay.NBTSerializable;
@@ -36,17 +37,20 @@ public class HiveReserveManager implements NBTSerializable {
         if (hive.ageInTicks() % FIVE_MINUTES_IN_TICKS == 0) {
             var warriorLayer = HiveSpaceManager.HiveLayer.WARRIOR.getSphereLayer();
             // Note that this is XENOMORPHS, not aliens. This is deliberate.
-            var anyXenomorphsInOuterEdges = hive.getMembershipManager()
+            var numberOfXenomorphsInOuterEdges = (int) hive.getMembershipManager()
                 .getLoadedMembers()
                 .stream()
-                .anyMatch(
+                .filter(
                     entity -> entity.getType().is(AVPEntityTypeTags.XENOMORPHS) && !hive.getSpaceManager()
                         .isWithinLayerOrBelow(warriorLayer, new BlockPosVec3(entity.blockPosition()))
-                );
+                )
+                .count();
 
-            if (anyXenomorphsInOuterEdges) {
+            if (numberOfXenomorphsInOuterEdges > 0) {
                 var droneType = Drone.getType(hive.getVariant());
-                hiveMemberReserves.add(droneType, 1);
+                hiveMemberReserves.add(droneType, numberOfXenomorphsInOuterEdges);
+                var runnerType = Runner.getType(hive.getVariant());
+                hiveMemberReserves.add(runnerType, numberOfXenomorphsInOuterEdges);
             }
         }
     }
