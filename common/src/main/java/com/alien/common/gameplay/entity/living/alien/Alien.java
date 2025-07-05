@@ -2,6 +2,7 @@ package com.alien.common.gameplay.entity.living.alien;
 
 import com.alien.common.data.AlienVariantTypes;
 import com.alien.common.gameplay.entity.living.alien.xenomorph.drone.Drone;
+import com.alien.common.gameplay.entity.living.alien.xenomorph.runner.Runner;
 import com.alien.common.gameplay.level.saveddata.HiveLevelData;
 import com.alien.common.model.alien.variant.AlienVariant;
 import com.alien.common.util.AcidBleedUtil;
@@ -332,7 +333,12 @@ public abstract class Alien extends Monster implements DataUser {
         var killedEntity = super.killedEntity(level, entity);
 
         if (killedEntity) {
-            hiveManager.hive().ifSome(hive -> hive.getReserveManager().add(Drone.getType(hive.getVariant()), 1));
+            hiveManager.hive().ifSome(hive -> {
+                var droneType = Drone.getType(hive.getVariant());
+                hive.getReserveManager().add(droneType, 1);
+                var runnerType = Runner.getType(hive.getVariant());
+                hive.getReserveManager().add(runnerType, 1);
+            });
         }
 
         return killedEntity;
