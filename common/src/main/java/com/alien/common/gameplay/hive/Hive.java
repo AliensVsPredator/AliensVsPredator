@@ -16,6 +16,7 @@ import com.alien.common.gameplay.hive.ai.task.impl.balance.BalanceStepHiveTask;
 import com.alien.common.gameplay.hive.membership.HiveLeadershipManager;
 import com.alien.common.gameplay.hive.membership.HiveMembershipManager;
 import com.alien.common.gameplay.hive.membership.HiveReserveManager;
+import com.alien.common.gameplay.hive.vent.HiveVentManager;
 import com.alien.common.gameplay.level.saveddata.QueenSpawnChunkData;
 import com.alien.common.model.alien.variant.AlienVariant;
 import com.lib.common.gameplay.NBTSerializable;
@@ -58,6 +59,8 @@ public class Hive implements NBTSerializable {
 
     private final HiveSpaceManager spaceManager;
 
+    private final HiveVentManager ventManager;
+
     private final UUID id;
 
     private final Level level;
@@ -84,6 +87,7 @@ public class Hive implements NBTSerializable {
         this.membershipManager = new HiveMembershipManager(this);
         this.reserveManager = new HiveReserveManager(this);
         this.spaceManager = new HiveSpaceManager(this);
+        this.ventManager = new HiveVentManager();
         this.centerPos = BlockPos.ZERO;
 
         // Order matters for hive tasks.
@@ -302,6 +306,10 @@ public class Hive implements NBTSerializable {
 
     public HiveSpaceManager getSpaceManager() {
         return spaceManager;
+    }
+
+    public HiveVentManager getVentManager() {
+        return ventManager;
     }
 
     public AlienVariant getVariant() {
