@@ -1,5 +1,6 @@
 package com.alien.common.gameplay.entity.living.alien.xenomorph.runner;
 
+import com.alien.common.gameplay.ai.CreateVentGoal;
 import com.alien.common.gameplay.ai.DropOffEggGoal;
 import com.alien.common.gameplay.ai.PickUpEggGoal;
 import com.alien.common.gameplay.entity.living.alien.Alien;
@@ -60,6 +61,7 @@ public class Runner extends Xenomorph implements EggCarrier {
         goalSelector.addGoal(3, new LungeAtTargetGoal(this, 0.05F, 20 * 7, 6, 12).setOnLungeCallback(this::runLungeAnimation));
         goalSelector.addGoal(4, new PickUpEggGoal<>(this));
         goalSelector.addGoal(5, new DropOffEggGoal<>(this));
+        goalSelector.addGoal(6, new CreateVentGoal(this));
     }
 
     @Override
