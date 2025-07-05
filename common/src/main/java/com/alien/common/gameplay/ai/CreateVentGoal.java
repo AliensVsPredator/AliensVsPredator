@@ -42,6 +42,7 @@ public class CreateVentGoal extends Goal {
         this.level = xenomorph.level();
         this.drillingStarted = false;
 
+        cooldown.reset();
         setFlags(EnumSet.of(Flag.MOVE));
     }
 
