@@ -96,8 +96,7 @@ public class CryForHelpListener implements GameEventListener {
         var reserveManager = hive.getReserveManager();
         var availableEntityTypes = reserveManager.getAvailableEntityTypes()
             .stream()
-            // TODO: Don't hardcode praetorian and crusher spawn prevention here.
-            .filter(entityType -> !entityType.is(AVPEntityTypeTags.PRAETORIANS) && !entityType.is(AVPEntityTypeTags.CRUSHERS))
+            .filter(entityType -> entityType.is(AVPEntityTypeTags.ANSWERS_XENOMORPH_CRIES_FOR_HELP))
             .toList();
 
         var randomSummonType = availableEntityTypes.isEmpty()
