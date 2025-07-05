@@ -12,6 +12,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
 import java.util.List;
@@ -111,7 +112,7 @@ public class HiveMembershipManager implements NBTSerializable {
                 .toList();
     }
 
-    public @NotNull Option<HiveMemberData> getMemberData(Entity entity) {
+    public @NotNull Option<HiveMemberData> getMemberData(@Nullable Entity entity) {
         if (entity == null) {
             return Option.none();
         }
@@ -119,7 +120,7 @@ public class HiveMembershipManager implements NBTSerializable {
         return getMemberData(entity.getUUID());
     }
 
-    public @NotNull Option<HiveMemberData> getMemberData(UUID uuid) {
+    public @NotNull Option<HiveMemberData> getMemberData(@Nullable UUID uuid) {
         if (uuid == null) {
             return Option.none();
         }
