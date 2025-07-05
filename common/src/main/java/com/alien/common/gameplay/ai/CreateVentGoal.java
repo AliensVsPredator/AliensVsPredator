@@ -108,16 +108,29 @@ public class CreateVentGoal extends Goal {
         this.drillingStarted = true;
 
         var alienVariantType = AlienVariantTypes.getFor(xenomorph);
+        var resinHolder = alienVariantType.resin();
         var resinVentHolder = alienVariantType.resinVent();
         var resinWebHolder = alienVariantType.resinWeb();
 
         for (var i = 0; i < WALL_DEPTH; i++) {
-            var pos = wallStart.relative(direction, i);
-            level.setBlock(pos, resinWebHolder.get().defaultBlockState(), Block.UPDATE_ALL);
+            var tunnelPos = wallStart.relative(direction, i);
+
+            level.setBlock(tunnelPos, resinWebHolder.get().defaultBlockState(), Block.UPDATE_ALL);
+
+            for (var adj : Direction.values()) {
+                if (adj == direction || adj == direction.getOpposite()) {
+                    continue;
+                }
+
+                var tunnelWallPos = tunnelPos.relative(adj);
+
+                level.setBlock(tunnelWallPos, resinHolder.get().defaultBlockState(), Block.UPDATE_ALL);
+            }
         }
 
-        var placePos = wallStart.relative(direction, WALL_DEPTH);
-        level.setBlock(placePos, resinVentHolder.get().defaultBlockState(), Block.UPDATE_ALL);
+        var ventPos = wallStart.relative(direction, WALL_DEPTH);
+
+        level.setBlock(ventPos, resinVentHolder.get().defaultBlockState(), Block.UPDATE_ALL);
         cooldown.reset();
     }
 
@@ -161,39 +174,48 @@ public class CreateVentGoal extends Goal {
         );
     }
 
-    private boolean isValidWall(BlockPos start, Direction dir) {
+    private boolean isValidWall(BlockPos start, Direction direction) {
         for (var i = 0; i < WALL_DEPTH; i++) {
-            var current = start.relative(dir, i);
+            var tunnelPos = start.relative(direction, i);
 
-            if (isNotReplaceable(current)) {
+            if (!isTunnelPosClear(tunnelPos)) {
                 return false;
             }
 
             for (var adj : Direction.values()) {
-                if (adj == dir || adj == dir.getOpposite()) {
+                if (adj == direction || adj == direction.getOpposite()) {
                     continue;
                 }
 
-                if (isNotReplaceable(current.relative(adj))) {
+                var tunnelWallPos = tunnelPos.relative(adj);
+
+                if (!isTunnelWallReplaceable(tunnelWallPos)) {
                     return false;
                 }
             }
         }
 
-        var fourth = start.relative(dir, WALL_TOTAL_DEPTH - 1);
-        return !isNotReplaceable(fourth);
+        var ventPos = start.relative(direction, WALL_TOTAL_DEPTH - 1);
+
+        return isTunnelPosClear(ventPos);
     }
 
-    private boolean isNotReplaceable(BlockPos pos) {
+    private boolean isTunnelPosClear(BlockPos pos) {
         var blockState = level.getBlockState(pos);
 
-        if (blockState.is(AVPBlockTags.RESIN_VEINS)) {
+        return blockState.isAir()
+            || isTunnelWallReplaceable(pos);
+    }
+
+    private boolean isTunnelWallReplaceable(BlockPos pos) {
+        var blockState = level.getBlockState(pos);
+        var alienVariantType = AlienVariantTypes.getFor(xenomorph);
+
+        if (blockState.is(AVPBlockTags.XENOMORPH_IMMUNE)) {
             return false;
         }
 
-        return blockState.isAir()
-            || blockState.canBeReplaced()
-            || !blockState.canOcclude()
-            || blockState.is(AVPBlockTags.XENOMORPH_IMMUNE);
+        return blockState.is(alienVariantType.resin().get())
+            || blockState.is(alienVariantType.resinReplaceableTag());
     }
 }
