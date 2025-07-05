@@ -1,6 +1,7 @@
 package com.alien.common.model.alien.variant;
 
 import com.alien.common.gameplay.block.resin.vein.ResinVeinBlock;
+import com.alien.common.gameplay.block.resin.vent.ResinVentBlock;
 import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
@@ -17,6 +18,7 @@ public record AlienVariantType(
     AVPDeferredHolder<Block> resin,
     AVPDeferredHolder<Block> resinNode,
     AVPDeferredHolder<ResinVeinBlock> resinVein,
+    AVPDeferredHolder<ResinVentBlock> resinVent,
     AVPDeferredHolder<Block> resinWeb,
 
     // Block Tags
@@ -29,6 +31,7 @@ public record AlienVariantType(
     AVPDeferredHolder<Item> resinBall,
 
     // Game Events
+    AVPDeferredHolder<GameEvent> cryForHelpEvent,
     @Nullable AVPDeferredHolder<GameEvent> eggPickupRequestEvent,
     AVPDeferredHolder<GameEvent> resinSpreadEvent,
 
