@@ -63,7 +63,7 @@ public class CreateVentGoal extends Goal {
 
                 var ventAlreadyExists = xenomorph.getHiveManager()
                     .hive()
-                    .isSomeAnd(hive -> !hive.getVentManager().getVentsWithinChunk(hitPos).isEmpty());
+                    .isSomeAnd(hive -> !hive.getVentManager().getVentsWithinSection(hitPos).isEmpty());
 
                 if (ventAlreadyExists) {
                     continue;

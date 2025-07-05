@@ -1,6 +1,5 @@
 package com.alien.common.gameplay.entity.living.alien.xenomorph;
 
-import com.alien.common.gameplay.ai.CreateVentGoal;
 import com.alien.common.gameplay.entity.living.alien.Alien;
 import com.alien.common.gameplay.entity.living.alien.GrowthManager;
 import com.alien.common.gameplay.entity.living.alien.ResinManager;

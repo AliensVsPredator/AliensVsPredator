@@ -2,7 +2,7 @@ package com.alien.common.gameplay.hive.vent;
 
 import com.lib.common.gameplay.util.Cache;
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.level.ChunkPos;
+import net.minecraft.core.SectionPos;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
@@ -12,24 +12,25 @@ import java.util.Set;
 
 public class HiveVentCache extends Cache<BlockPos, Void> {
 
-    private final Map<ChunkPos, Set<BlockPos>> ventPositionsByChunkPos;
+    private final Map<SectionPos, Set<BlockPos>> ventPositionsBySectionPos;
 
     public HiveVentCache() {
-        this.ventPositionsByChunkPos = new HashMap<>();
+        this.ventPositionsBySectionPos = new HashMap<>();
     }
 
     @Override
     protected void onAddToCache(BlockPos id, @Nullable Void oldValue, Void newValue) {
-        var chunkPos = new ChunkPos(id);
-        ventPositionsByChunkPos.computeIfAbsent(chunkPos, $ -> new HashSet<>()).add(id);
+        var sectionPos = SectionPos.of(id);
+        ventPositionsBySectionPos.computeIfAbsent(sectionPos, $ -> new HashSet<>()).add(id);
 
         super.onAddToCache(id, oldValue, newValue);
     }
 
     @Override
     protected void onRemoveFromCache(BlockPos id, Void value) {
-        var chunkPos = new ChunkPos(id);
-        ventPositionsByChunkPos.compute(chunkPos, ($1, ventPositions) -> {
+        var sectionPos = SectionPos.of(id);
+
+        ventPositionsBySectionPos.compute(sectionPos, ($1, ventPositions) -> {
             if (ventPositions == null) {
                 return null;
             }
@@ -46,11 +47,11 @@ public class HiveVentCache extends Cache<BlockPos, Void> {
         super.onRemoveFromCache(id, value);
     }
 
-    public Set<BlockPos> getVentsForChunk(BlockPos blockPos) {
-        return getVentsForChunk(new ChunkPos(blockPos));
+    public Set<BlockPos> getVentsForSection(BlockPos blockPos) {
+        return getVentsForSection(SectionPos.of(blockPos));
     }
 
-    public Set<BlockPos> getVentsForChunk(ChunkPos chunkPos) {
-        return ventPositionsByChunkPos.getOrDefault(chunkPos, Set.of());
+    public Set<BlockPos> getVentsForSection(SectionPos sectionPos) {
+        return ventPositionsBySectionPos.getOrDefault(sectionPos, Set.of());
     }
 }

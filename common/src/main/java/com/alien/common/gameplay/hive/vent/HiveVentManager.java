@@ -1,7 +1,7 @@
 package com.alien.common.gameplay.hive.vent;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.level.ChunkPos;
+import net.minecraft.core.SectionPos;
 
 import java.util.Set;
 
@@ -21,11 +21,11 @@ public class HiveVentManager {
         hiveVentCache.remove(blockPos);
     }
 
-    public Set<BlockPos> getVentsWithinChunk(BlockPos blockPos) {
-        return hiveVentCache.getVentsForChunk(blockPos);
+    public Set<BlockPos> getVentsWithinSection(BlockPos blockPos) {
+        return hiveVentCache.getVentsForSection(blockPos);
     }
 
-    public Set<BlockPos> getVentsWithinChunk(ChunkPos chunkPos) {
-        return hiveVentCache.getVentsForChunk(chunkPos);
+    public Set<BlockPos> getVentsWithinSection(SectionPos sectionPos) {
+        return hiveVentCache.getVentsForSection(sectionPos);
     }
 }
