@@ -12,6 +12,8 @@ public class ServerLevelManager {
 
     public ServerLevelManager() {
         this.queenSpawnCooldown = Cooldown.withCooldownTime("queenSpawnCooldownInTicks", Duration.ofSeconds(20));
+
+        queenSpawnCooldown.reset();
     }
 
     public void tick(ServerLevel serverLevel) {
