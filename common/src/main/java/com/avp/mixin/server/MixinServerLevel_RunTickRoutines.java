@@ -14,16 +14,16 @@ import com.avp.server.ServerLevelManagerAccessor;
 public abstract class MixinServerLevel_RunTickRoutines implements ServerLevelManagerAccessor {
 
     @Unique
-    private final ServerLevelManager serverLevelManager = new ServerLevelManager();
+    private final ServerLevelManager avp$serverLevelManager = new ServerLevelManager();
 
     @Inject(at = @At("HEAD"), method = "tick")
     public void tick(CallbackInfo callbackInfo) {
         var serverLevel = ServerLevel.class.cast(this);
-        serverLevelManager.tick(serverLevel);
+        avp$serverLevelManager.tick(serverLevel);
     }
 
     @Override
     public ServerLevelManager getServerLevelManager() {
-        return serverLevelManager;
+        return avp$serverLevelManager;
     }
 }
