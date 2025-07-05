@@ -11,7 +11,7 @@ public class ServerLevelManager {
     private final Cooldown queenSpawnCooldown;
 
     public ServerLevelManager() {
-        this.queenSpawnCooldown = Cooldown.withCooldownTime("queenSpawnCooldownInTicks", Duration.ofSeconds(20));
+        this.queenSpawnCooldown = Cooldown.withCooldownTime("queenSpawnCooldownInTicks", Duration.ofMinutes(5));
 
         queenSpawnCooldown.reset();
     }
