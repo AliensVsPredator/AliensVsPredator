@@ -33,7 +33,13 @@ public class EntityReserves {
     }
 
     public void add(EntityType<?> entityType, int count) {
-        entityTypesToCountMap.merge(entityType, Math.max(count, 0), (a, b) -> Math.max(a + b, 0));
+        entityTypesToCountMap.compute(entityType, ($1, currentCount) -> {
+            if (currentCount == null) {
+                return Math.max(count, 0);
+            }
+
+            return Math.max(count + currentCount, 0);
+        });
     }
 
     public void putAll(Map<EntityType<?>, Integer> map) {
