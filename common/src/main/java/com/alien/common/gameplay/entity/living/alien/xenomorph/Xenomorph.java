@@ -1,5 +1,6 @@
 package com.alien.common.gameplay.entity.living.alien.xenomorph;
 
+import com.alien.common.gameplay.ai.CreateVentGoal;
 import com.alien.common.gameplay.entity.living.alien.Alien;
 import com.alien.common.gameplay.entity.living.alien.GrowthManager;
 import com.alien.common.gameplay.entity.living.alien.ResinManager;
@@ -96,6 +97,7 @@ public abstract class Xenomorph extends Alien implements ResinProducer {
     protected void registerGoals() {
         goalSelector.addGoal(1, new XenoFloatGoal(this));
         addDigToTargetGoal();
+        goalSelector.addGoal(6, new CreateVentGoal(this));
         goalSelector.addGoal(7, new StrollAroundInWaterGoal(this, 0.5));
         goalSelector.addGoal(7, new WaterAvoidingRandomStrollGoal(this, 0.5));
         targetSelector.addGoal(1, (new HurtByTargetGoal(this)).setAlertOthers(Xenomorph.class));
