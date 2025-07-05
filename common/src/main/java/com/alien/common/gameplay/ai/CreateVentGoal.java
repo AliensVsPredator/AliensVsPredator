@@ -72,8 +72,9 @@ public class CreateVentGoal extends Goal {
 
                 if (isValidWall(hitPos, dir)) {
                     var pathTarget = hitPos.relative(dir, WALL_TOTAL_DEPTH - 1);
+                    var path = xenomorph.getNavigation().createPath(pathTarget, 1);
 
-                    if (xenomorph.getNavigation().createPath(pathTarget, 1) != null) {
+                    if (path != null && path.canReach()) {
                         this.wallStart = hitPos;
                         this.direction = dir;
                         return true;
