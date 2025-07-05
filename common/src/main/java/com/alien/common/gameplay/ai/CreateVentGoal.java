@@ -136,6 +136,13 @@ public class CreateVentGoal extends Goal {
 
     private boolean isUnableToCreateVent() {
         return xenomorph.getTarget() != null
+            || xenomorph.getHiveManager()
+                .hive()
+                .isNoneOr(
+                    hive -> !hive.isAlive()
+                        || hive.isAngry()
+                        || !hive.getSpaceManager().isEntityWithinHive(xenomorph)
+                )
             || cooldown.isActive();
     }
 
