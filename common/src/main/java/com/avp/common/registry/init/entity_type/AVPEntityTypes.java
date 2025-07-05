@@ -31,7 +31,7 @@ public class AVPEntityTypes {
         var holder = Services.REGISTRY.register(
             BuiltInRegistries.ENTITY_TYPE,
             id,
-            () -> ((SilencedEntityTypeBuilder) builder).<T>buildWithoutDataFixerCheck()
+            () -> ((SilencedEntityTypeBuilder) builder).<T>avp$buildWithoutDataFixerCheck()
         );
 
         ENTITY_TYPE_HOLDERS.add(holder);
