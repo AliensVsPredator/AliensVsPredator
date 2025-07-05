@@ -667,11 +667,6 @@ public class AVPConfig {
         @Configurable.Synchronized
         @Configurable.Comment("Requires hive debugging to be enabled.")
         public boolean HIVE_DEBUG_HIGHLIGHT_ALL_MEMBERS = false;
-
-        @Configurable
-        @Configurable.Synchronized
-        @Configurable.Comment("Requires hive debugging to be enabled.")
-        public boolean HIVE_DEBUG_MARK_HIVE_CENTER = true;
     }
 
     @Configurable

@@ -1,10 +1,8 @@
 package com.alien.common.gameplay.hive;
 
-import com.alien.common.constant.HiveConstants;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.level.block.Blocks;
 
 import com.avp.AVP;
 
@@ -17,38 +15,17 @@ public class HiveDebugManager {
     }
 
     public void tick() {
-        var level = hive.level();
-        var centerPos = hive.centerPosition();
-        var centerBlockState = level.getBlockState(centerPos);
         var debugManager = hive.getDebugManager();
 
         if (debugManager.isDebugEnabled()) {
             runDebugRoutines();
-        } else if (centerBlockState.is(HiveConstants.DEBUG_BLOCK)) {
-            // Remove debug block if present.
-            level.setBlock(centerPos, Blocks.AIR.defaultBlockState(), 3);
         }
     }
 
-    public void onHiveRemoved() {
-        var level = hive.level();
-        var centerPos = hive.centerPosition();
-
-        if (isDebugEnabled() && isDebugMarkHiveCenterEnabled() && level.getBlockState(centerPos).is(HiveConstants.DEBUG_BLOCK)) {
-            level.setBlock(centerPos, Blocks.AIR.defaultBlockState(), 3);
-        }
-    }
+    public void onHiveRemoved() { /* NO-OP */ }
 
     private void runDebugRoutines() {
-        var level = hive.level();
-        var centerPos = hive.centerPosition();
-        var centerBlockState = level.getBlockState(centerPos);
         var debugManager = hive.getDebugManager();
-
-        if (debugManager.isDebugMarkHiveCenterEnabled() && !centerBlockState.is(HiveConstants.DEBUG_BLOCK)) {
-            // Set to debug block if not present.
-            level.setBlock(centerPos, HiveConstants.DEBUG_BLOCK.defaultBlockState(), 3);
-        }
 
         var hiveLeader = hive.getLeadershipManager().getLeaderOrNull();
 
@@ -83,9 +60,5 @@ public class HiveDebugManager {
 
     public boolean isDebugLeaderHighlightEnabled() {
         return AVP.config.hiveConfigs.HIVE_DEBUG_HIGHLIGHT_LEADER;
-    }
-
-    public boolean isDebugMarkHiveCenterEnabled() {
-        return AVP.config.hiveConfigs.HIVE_DEBUG_MARK_HIVE_CENTER;
     }
 }
