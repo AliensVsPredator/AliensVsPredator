@@ -1,5 +1,6 @@
 package com.alien.common.gameplay.entity.living.alien.xenomorph.queen;
 
+import com.alien.common.data.AlienVariantTypes;
 import com.alien.common.gameplay.entity.living.alien.Alien;
 import com.alien.common.gameplay.entity.living.alien.xenomorph.Xenomorph;
 import com.alien.common.gameplay.entity.living.alien.xenomorph.drone.Drone;
@@ -110,7 +111,7 @@ public class Queen extends Xenomorph {
             player.playNotifySound(AVPSoundEvents.ENTITY_QUEEN_SCREAM.get(), SoundSource.MASTER, 1, 1);
             player.sendSystemMessage(
                 Component.literal("A scream from the depths sends chills down your spine...")
-                    .withStyle(ChatFormatting.GREEN, ChatFormatting.ITALIC)
+                    .withStyle(AlienVariantTypes.getFor(this).chatColor(), ChatFormatting.ITALIC)
             );
         }
     }
