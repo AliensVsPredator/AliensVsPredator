@@ -19,11 +19,10 @@ public class ServerLevelManager {
     public void tick(ServerLevel serverLevel) {
         tickScheduledRunnables();
 
-        var hiveLevelDataOption = HiveLevelData.getOrCreate(serverLevel);
-
         queenSpawnCooldown.tick();
 
-        hiveLevelDataOption.ifSome(HiveLevelData::tick);
+        HiveLevelData.getOrCreate(serverLevel)
+            .ifSome(HiveLevelData::tick);
 
         BlockBreakProgressManager.tick(serverLevel);
     }
