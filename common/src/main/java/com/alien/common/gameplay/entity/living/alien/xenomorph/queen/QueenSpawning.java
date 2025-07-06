@@ -3,7 +3,9 @@ package com.alien.common.gameplay.entity.living.alien.xenomorph.queen;
 import com.alien.common.data.AlienVariantTypes;
 import com.alien.common.gameplay.level.saveddata.HiveLevelData;
 import com.alien.common.gameplay.level.saveddata.QueenSpawnChunkData;
+import com.alien.common.gameplay.level.saveddata.StrainLeakData;
 import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobSpawnType;
@@ -51,8 +53,19 @@ public class QueenSpawning {
         }
 
         return blockPos.getY() <= maxYLevelForDimension
+            && canStrainSpawnInLevel(serverLevel, entityType)
             && checkSpawnRules(entityType, serverLevelAccessor, mobSpawnType, blockPos, randomSource);
     };
+
+    private static boolean canStrainSpawnInLevel(ServerLevel serverLevel, EntityType<Queen> entityType) {
+        var strainLeakDataOption = StrainLeakData.getOrCreate(serverLevel);
+        var alienVariantTypeOption = AlienVariantTypes.getFor(entityType);
+
+        return alienVariantTypeOption.isSomeAnd(
+            alienVariantType -> strainLeakDataOption
+                .isSomeAnd(strainLeakData -> strainLeakData.hasVariant(alienVariantType.variant()))
+        );
+    }
 
     public static boolean checkSpawnRules(
         EntityType<? extends Monster> entityType,

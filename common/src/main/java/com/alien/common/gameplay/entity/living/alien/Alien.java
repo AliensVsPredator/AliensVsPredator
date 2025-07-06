@@ -4,6 +4,7 @@ import com.alien.common.data.AlienVariantTypes;
 import com.alien.common.gameplay.entity.living.alien.xenomorph.drone.Drone;
 import com.alien.common.gameplay.entity.living.alien.xenomorph.runner.Runner;
 import com.alien.common.gameplay.level.saveddata.HiveLevelData;
+import com.alien.common.gameplay.level.saveddata.StrainLeakData;
 import com.alien.common.model.alien.variant.AlienVariant;
 import com.alien.common.util.AcidBleedUtil;
 import com.alien.common.util.AlienTransitionUtil;
@@ -13,9 +14,11 @@ import com.lib.common.gameplay.entity.manager.VibrationSystemManager;
 import com.lib.common.model.GeneCarrier;
 import com.lib.common.network.DataAccessor;
 import com.lib.common.network.DataUser;
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -431,10 +434,48 @@ public abstract class Alien extends Monster implements DataUser {
             case KILLED -> hiveManager.hive().ifSome(hive -> hive.removeHiveMember(this));
             case DISCARDED -> hiveManager.hive().ifSome(hive -> {
                 hive.removeHiveMember(this);
-                hive.getReserveManager().add(getType(), 1);
+
+                if (hive.getSpaceManager().isEntityWithinHive(this)) {
+                    hive.getReserveManager().add(getType(), 1);
+                } else {
+                    StrainLeakData.getOrCreate(level())
+                        .ifSome(strainLeakData -> {
+                            var alienVariant = getVariant();
+                            var alienVariantType = AlienVariantTypes.getFor(this);
+
+                            if (strainLeakData.hasVariant(alienVariant) || !(level() instanceof ServerLevel serverLevel)) {
+                                return;
+                            }
+
+                            var strainBasedLeakMessage = getStrainLeakMessageForVariant(alienVariant);
+
+                            if (strainBasedLeakMessage == null) {
+                                return;
+                            }
+
+                            strainLeakData.addVariant(alienVariant);
+
+                            for (var player : serverLevel.players()) {
+                                player.sendSystemMessage(
+                                    Component.literal(strainBasedLeakMessage)
+                                        .withStyle(alienVariantType.chatColor(), ChatFormatting.ITALIC)
+                                );
+                            }
+                        });
+                }
             });
             case UNLOADED_TO_CHUNK, UNLOADED_WITH_PLAYER, CHANGED_DIMENSION -> { /* NO-OP */ }
         }
+    }
+
+    // TODO: Use level-specific phrasing here.
+    private @Nullable String getStrainLeakMessageForVariant(AlienVariant alienVariant) {
+        return switch (alienVariant) {
+            case NORMAL -> "The perfect organism has found a new world to conquer...";
+            case NETHER -> "Hell has found its way into this plane of existence...";
+            case ABERRANT -> "Genetic experiments have found their way into the wide open world...";
+            case IRRADIATED -> null;
+        };
     }
 
     @Override

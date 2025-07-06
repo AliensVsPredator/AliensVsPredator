@@ -5,7 +5,6 @@ import com.alien.common.gameplay.entity.living.alien.xenomorph.queen.QueenSpawni
 import com.alien.common.registry.init.AlienEntityTypes;
 import com.human.common.gameplay.entity.living.human.marine.MarineSpawning;
 import com.human.common.registry.init.entity_type.HumanEntityTypes;
-import net.minecraft.tags.BiomeTags;
 
 import com.avp.AVP;
 import com.avp.common.model.spawning.AVPEntitySpawnData;
@@ -75,7 +74,7 @@ public class AVPEntitySpawns {
         );
         Services.REGISTRY.registerEntitySpawnData(
             AVPEntitySpawnData.builder(AlienEntityTypes.QUEEN)
-                .withBiomeTagKey(BiomeTags.IS_OVERWORLD)
+                .withBiomeTagKey(AVPBiomeTags.HAS_XENOMORPHS)
                 .withSpawnPredicate(QueenSpawning.PREDICATE)
                 .withSpawnSettings(AVP.config.spawnConfigs.QUEEN_SPAWN)
                 .build()
@@ -144,8 +143,6 @@ public class AVPEntitySpawns {
                 .withBiomeTagKey(AVPBiomeTags.HAS_XENOMORPHS)
                 .withSpawnPredicate(QueenSpawning.PREDICATE)
                 .withSpawnSettings(AVP.config.spawnConfigs.ABERRANT_QUEEN_SPAWN)
-                // Prevents aberrant queen biome spawn configurations from being generated.
-                .disableConfig()
                 .build()
         );
         Services.REGISTRY.registerEntitySpawnData(
@@ -261,7 +258,7 @@ public class AVPEntitySpawns {
         );
         Services.REGISTRY.registerEntitySpawnData(
             AVPEntitySpawnData.builder(AlienEntityTypes.NETHER_QUEEN)
-                .withBiomeTagKey(BiomeTags.IS_NETHER)
+                .withBiomeTagKey(AVPBiomeTags.HAS_XENOMORPHS)
                 .withSpawnPredicate(QueenSpawning.PREDICATE)
                 .withSpawnSettings(AVP.config.spawnConfigs.NETHER_QUEEN_SPAWN)
                 .build()
