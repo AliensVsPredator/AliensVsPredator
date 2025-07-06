@@ -2,8 +2,10 @@ package com.alien.common.model.alien.variant;
 
 import com.alien.common.gameplay.block.resin.vein.ResinVeinBlock;
 import com.alien.common.gameplay.block.resin.vent.ResinVentBlock;
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.tags.TagKey;
+import net.minecraft.world.BossEvent;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.gameevent.GameEvent;
@@ -36,5 +38,9 @@ public record AlienVariantType(
     AVPDeferredHolder<GameEvent> resinSpreadEvent,
 
     // Particle Types
-    AVPDeferredHolder<SimpleParticleType> acidParticleType
+    AVPDeferredHolder<SimpleParticleType> acidParticleType,
+
+    // Miscellaneous
+    BossEvent.BossBarColor bossBarColor,
+    ChatFormatting chatColor
 ) {}

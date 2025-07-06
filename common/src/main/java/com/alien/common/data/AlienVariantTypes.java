@@ -8,7 +8,9 @@ import com.alien.common.registry.init.AlienGameEvents;
 import com.alien.common.registry.init.AlienItems;
 import com.alien.common.registry.init.block.AlienResinBlocks;
 import com.bvanseg.just.functional.option.Option;
+import net.minecraft.ChatFormatting;
 import net.minecraft.Util;
+import net.minecraft.world.BossEvent;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.level.block.Block;
@@ -46,7 +48,10 @@ public class AlienVariantTypes {
         AlienGameEvents.EGG_ABERRANT_PICKUP_REQUEST,
         AlienGameEvents.XENOMORPH_ABERRANT_RESIN_SPREAD,
 
-        AlienParticleTypes.ACID
+        AlienParticleTypes.ACID,
+
+        BossEvent.BossBarColor.YELLOW,
+        ChatFormatting.YELLOW
     );
 
     public static final AlienVariantType IRRADIATED = new AlienVariantType(
@@ -69,7 +74,10 @@ public class AlienVariantTypes {
         null,
         AlienGameEvents.XENOMORPH_IRRADIATED_RESIN_SPREAD,
 
-        AlienParticleTypes.IRRADIATED_ACID
+        AlienParticleTypes.IRRADIATED_ACID,
+
+        BossEvent.BossBarColor.BLUE,
+        ChatFormatting.BLUE
     );
 
     public static final AlienVariantType NETHER = new AlienVariantType(
@@ -92,7 +100,10 @@ public class AlienVariantTypes {
         AlienGameEvents.EGG_NETHER_PICKUP_REQUEST,
         AlienGameEvents.XENOMORPH_NETHER_RESIN_SPREAD,
 
-        AlienParticleTypes.BLUE_ACID
+        AlienParticleTypes.BLUE_ACID,
+
+        BossEvent.BossBarColor.RED,
+        ChatFormatting.RED
     );
 
     public static final AlienVariantType NORMAL = new AlienVariantType(
@@ -115,7 +126,10 @@ public class AlienVariantTypes {
         AlienGameEvents.EGG_PICKUP_REQUEST,
         AlienGameEvents.XENOMORPH_RESIN_SPREAD,
 
-        AlienParticleTypes.ACID
+        AlienParticleTypes.ACID,
+
+        BossEvent.BossBarColor.GREEN,
+        ChatFormatting.GREEN
     );
 
     private static final Map<AlienVariant, AlienVariantType> TYPE_BY_VARIANT = Util.make(() -> {
