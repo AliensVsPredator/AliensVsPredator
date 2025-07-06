@@ -1,6 +1,7 @@
 package com.alien.common.gameplay.hive;
 
 import com.alien.common.data.AlienAdvancements;
+import com.alien.common.data.AlienVariantTypes;
 import com.alien.common.model.alien.variant.AlienVariant;
 import com.alien.common.util.AlienPredicates;
 import net.minecraft.network.chat.Component;
@@ -82,14 +83,8 @@ public class HiveBossBarManager {
     }
 
     private void updateBossBarColor() {
-        var color = switch (hive.getVariant()) {
-            case NORMAL -> BossEvent.BossBarColor.GREEN;
-            case NETHER -> BossEvent.BossBarColor.RED;
-            case ABERRANT -> BossEvent.BossBarColor.YELLOW;
-            case IRRADIATED -> BossEvent.BossBarColor.BLUE;
-        };
-
-        bossEvent.setColor(color);
+        var alienVariantType = AlienVariantTypes.getFor(hive.getVariant());
+        bossEvent.setColor(alienVariantType.bossBarColor());
     }
 
     private void updateBossBarTitle() {
