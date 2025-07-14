@@ -4,6 +4,7 @@ import com.alien.common.data.AlienVariantTypes;
 import com.alien.common.gameplay.entity.living.alien.Alien;
 import com.alien.common.gameplay.entity.living.alien.xenomorph.Xenomorph;
 import com.alien.common.gameplay.entity.living.alien.xenomorph.drone.Drone;
+import com.alien.common.gameplay.level.saveddata.StrainLeakData;
 import com.alien.common.model.alien.variant.AlienVariant;
 import com.alien.common.model.resin.ResinData;
 import com.alien.common.registry.init.AlienEntityTypes;
@@ -104,6 +105,9 @@ public class Queen extends Xenomorph {
         alertPlayersOfSpawn();
         spawnGuards(serverLevelAccessor, spawnType);
         resetQueenSpawnCooldown(serverLevelAccessor);
+
+        StrainLeakData.getOrCreate(serverLevelAccessor.getLevel())
+            .ifSome(strainLeakData -> strainLeakData.add(getVariant(), -1));
     }
 
     private void alertPlayersOfSpawn() {
@@ -132,7 +136,7 @@ public class Queen extends Xenomorph {
         }
     }
 
-    private static void resetQueenSpawnCooldown(@NotNull ServerLevelAccessor serverLevelAccessor) {
+    private void resetQueenSpawnCooldown(@NotNull ServerLevelAccessor serverLevelAccessor) {
         ((ServerLevelManagerAccessor) serverLevelAccessor.getLevel()).getServerLevelManager()
             .getQueenSpawnCooldown()
             .reset();

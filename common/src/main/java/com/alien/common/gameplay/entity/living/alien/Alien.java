@@ -435,15 +435,17 @@ public abstract class Alien extends Monster implements DataUser {
             case DISCARDED -> hiveManager.hive().ifSome(hive -> {
                 hive.removeHiveMember(this);
 
+
                 if (hive.getSpaceManager().isEntityWithinHive(this)) {
                     hive.getReserveManager().add(getType(), 1);
                 } else {
                     StrainLeakData.getOrCreate(level())
                         .ifSome(strainLeakData -> {
                             var alienVariant = getVariant();
+                            var wasAlienVariantAlreadyPresent = strainLeakData.hasVariant(alienVariant);
                             var alienVariantType = AlienVariantTypes.getFor(this);
 
-                            if (strainLeakData.hasVariant(alienVariant) || !(level() instanceof ServerLevel serverLevel)) {
+                            if (!(level() instanceof ServerLevel serverLevel)) {
                                 return;
                             }
 
@@ -453,13 +455,15 @@ public abstract class Alien extends Monster implements DataUser {
                                 return;
                             }
 
-                            strainLeakData.addVariant(alienVariant);
+                            strainLeakData.add(alienVariant, 1);
 
-                            for (var player : serverLevel.players()) {
-                                player.sendSystemMessage(
-                                    Component.literal(strainBasedLeakMessage)
-                                        .withStyle(alienVariantType.chatColor(), ChatFormatting.ITALIC)
-                                );
+                            if (!wasAlienVariantAlreadyPresent) {
+                                for (var player : serverLevel.players()) {
+                                    player.sendSystemMessage(
+                                        Component.literal(strainBasedLeakMessage)
+                                            .withStyle(alienVariantType.chatColor(), ChatFormatting.ITALIC)
+                                    );
+                                }
                             }
                         });
                 }

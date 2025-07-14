@@ -4,16 +4,16 @@ import com.alien.common.model.alien.variant.AlienVariant;
 import com.bvanseg.just.functional.option.Option;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.IntTag;
-import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.saveddata.SavedData;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.HashSet;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * Tracks strain leak progression for the level.
@@ -24,69 +24,93 @@ public class StrainLeakData extends SavedData {
 
     private static final String NBT_ALIEN_VARIANTS = "alienVariants";
 
-    private final Set<AlienVariant> activeVariants;
+    private final Map<AlienVariant, Integer> variantCounts;
 
     private StrainLeakData(Level level) {
-        this.activeVariants = new HashSet<>();
+        this.variantCounts = new HashMap<>();
 
         // Initialize with defaults based on dimension type.
         if (level.dimension() == Level.OVERWORLD) {
-            activeVariants.add(AlienVariant.NORMAL);
+            variantCounts.put(AlienVariant.NORMAL, 1_000_000);
         } else if (level.dimension() == Level.NETHER) {
-            activeVariants.add(AlienVariant.NETHER);
+            variantCounts.put(AlienVariant.NETHER, 1_000_000);
         }
     }
 
     public boolean hasVariant(AlienVariant variant) {
-        return activeVariants.contains(variant);
+        return variantCounts.getOrDefault(variant, 0) > 0;
+    }
+
+    public int getCount(AlienVariant variant) {
+        return variantCounts.getOrDefault(variant, 0);
     }
 
     public Set<AlienVariant> getVariants() {
-        return Set.copyOf(activeVariants);
+        return variantCounts.entrySet()
+            .stream()
+            .filter(entry -> entry.getValue() > 0)
+            .map(Map.Entry::getKey)
+            .collect(Collectors.toUnmodifiableSet());
     }
 
-    public boolean addVariant(AlienVariant variant) {
-        var added = activeVariants.add(variant);
-
-        if (added) {
-            setDirty();
+    public void add(AlienVariant variant, int amount) {
+        if (amount == 0) {
+            return;
         }
 
-        return added;
-    }
+        variantCounts.compute(variant, (key, oldValue) -> {
+            var current = oldValue == null ? 0 : oldValue;
+            var newCount = current + amount;
 
-    public boolean removeVariant(AlienVariant variant) {
-        var removed = activeVariants.remove(variant);
+            if (newCount <= 0) {
+                // remove entry if zero or negative
+                return null;
+            }
 
-        if (removed) {
-            setDirty();
-        }
+            return newCount;
+        });
 
-        return removed;
+        setDirty();
     }
 
     @Override
     public @NotNull CompoundTag save(@NotNull CompoundTag compoundTag, @NotNull HolderLookup.Provider provider) {
-        var listTag = new ListTag();
+        var variantTag = new CompoundTag();
 
-        for (var variant : activeVariants) {
-            listTag.add(IntTag.valueOf(variant.getId()));
+        for (var entry : variantCounts.entrySet()) {
+            var id = entry.getKey().getId();
+            var count = entry.getValue();
+
+            if (count > 0) {
+                variantTag.putInt(Integer.toString(id), count);
+            }
         }
 
-        compoundTag.put(NBT_ALIEN_VARIANTS, listTag);
+        compoundTag.put(NBT_ALIEN_VARIANTS, variantTag);
 
         return compoundTag;
     }
 
     public static StrainLeakData load(Level level, CompoundTag compoundTag, HolderLookup.Provider provider) {
         var data = new StrainLeakData(level);
-        var list = compoundTag.getList(NBT_ALIEN_VARIANTS, Tag.TAG_INT);
 
-        for (var element : list) {
-            var id = ((IntTag) element).getAsInt();
+        if (compoundTag.contains(NBT_ALIEN_VARIANTS, Tag.TAG_COMPOUND)) {
+            var variantTag = compoundTag.getCompound(NBT_ALIEN_VARIANTS);
 
-            AlienVariant.getById(id)
-                .ifSome(data.activeVariants::add);
+            for (var key : variantTag.getAllKeys()) {
+                try {
+                    var id = Integer.parseInt(key);
+                    var count = variantTag.getInt(key);
+
+                    AlienVariant.getById(id).ifSome(variant -> {
+                        if (count > 0) {
+                            data.variantCounts.put(variant, count);
+                        }
+                    });
+                } catch (NumberFormatException ignored) {
+                    // Skip any invalid keys that aren't integers
+                }
+            }
         }
 
         return data;
