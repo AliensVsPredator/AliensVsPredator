@@ -8,9 +8,9 @@ import mod.azure.azurelib.rewrite.animation.play_behavior.AzPlayBehaviors;
 
 public class ProwlerAnimationDispatcher {
 
-    private static final AzCommand ARMATTACK_RIGHTARM = AzCommand.create(
+    private static final AzCommand CLAWATTACKQUAD_RIGHTARM = AzCommand.create(
         AzAlienAnimationUtil.RIGHT_ARM_CONTROLLER_NAME,
-        ProwlerAnimationRefs.ATTACKCLAWQUAD_RIGHTARM_ANIMATION_NAME,
+        ProwlerAnimationRefs.CLAWATTACKQUAD_RIGHTARM_ANIMATION_NAME,
         AzPlayBehaviors.PLAY_ONCE
     );
 
@@ -87,7 +87,7 @@ public class ProwlerAnimationDispatcher {
     }
 
     public void rightClawAttack() {
-        ARMATTACK_RIGHTARM.sendForEntity(prowler);
+        CLAWATTACKQUAD_RIGHTARM.sendForEntity(prowler);
     }
 
     public void tailAttackQuad() {

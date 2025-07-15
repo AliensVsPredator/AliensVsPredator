@@ -6,7 +6,7 @@ public class ProwlerAnimationRefs {
     // ## ANIMATION NAMES ##
     // #####################
 
-    public static final String ATTACKCLAWQUAD_RIGHTARM_ANIMATION_NAME = "attackclawquad.rightarm";
+    public static final String CLAWATTACKQUAD_RIGHTARM_ANIMATION_NAME = "clawattackquad.rightarm";
 
     public static final String BITEATTACK_HEAD_ANIMATION_NAME = "biteattack.head";
 

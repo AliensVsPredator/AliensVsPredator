@@ -435,7 +435,6 @@ public abstract class Alien extends Monster implements DataUser {
             case DISCARDED -> hiveManager.hive().ifSome(hive -> {
                 hive.removeHiveMember(this);
 
-
                 if (hive.getSpaceManager().isEntityWithinHive(this)) {
                     hive.getReserveManager().add(getType(), 1);
                 } else {
