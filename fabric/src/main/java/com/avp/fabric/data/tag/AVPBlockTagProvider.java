@@ -512,8 +512,10 @@ public class AVPBlockTagProvider extends FabricTagProvider.BlockTagProvider {
             .addTag(AVPBlockTags.ACID_IMMUNE);
 
         getOrCreateTagBuilder(AVPBlockTags.IRRADIATED_ACID_IMMUNE)
-            .addTag(AVPBlockTags.IRRADIATED_RESIN)
-            .addTag(AVPBlockTags.SHOULD_NOT_BE_DESTROYED);
+            .addTag(AVPBlockTags.ACID_IMMUNE)
+            .add(
+                Blocks.BLUE_ICE
+            );
 
         getOrCreateTagBuilder(AVPBlockTags.XENOMORPH_IMMUNE)
             .addTag(AVPBlockTags.INDUSTRIAL_CONCRETE)
