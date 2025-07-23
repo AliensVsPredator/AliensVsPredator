@@ -111,7 +111,6 @@ public class CryForHelpListener implements GameEventListener {
 
         if (summonedAlien != null) {
             reserveManager.add(randomSummonType, -1);
-            serverLevel.addFreshEntity(summonedAlien);
 
             if (sourceEntity instanceof Mob sourceMob && summonedAlien instanceof Mob summonedAlienMob) {
                 summonedAlienMob.setTarget(sourceMob.getTarget());
