@@ -35,7 +35,7 @@
     "MixinShearsItem_BreakRazorWire",
     "MixinVillagerHostilesSensor_RunAwayFromAVPMonsters",
     "ParrotSoundMapAccessor",
-    "server.MixinServerLevel_RunTickRoutines",
+    "server.MixinServerLevel",
     "StructurePoolAccessor"
   ],
   "client": [

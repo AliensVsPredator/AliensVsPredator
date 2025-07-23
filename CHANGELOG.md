@@ -146,6 +146,7 @@
 - Fixed praetorian count balancing including eggs, facehuggers, chestbursters and adolescents in formula.
 - Fixed aliens that do not grow up being able to consume an infinite amount of royal jelly.
 - Fixed facehuggers not persisting after hatching from ovomorphs.
+- Fixed block damage from guns, acid and aliens not resetting when the damaged block is broken or replaced.
 
 ## 🛠 Data Pack
 - Added `#avp:runner_hosts` entity tag.

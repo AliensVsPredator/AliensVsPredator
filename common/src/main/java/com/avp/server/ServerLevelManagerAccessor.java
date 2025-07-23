@@ -2,5 +2,5 @@ package com.avp.server;
 
 public interface ServerLevelManagerAccessor {
 
-    ServerLevelManager getServerLevelManager();
+    ServerLevelManager avp$getServerLevelManager();
 }

@@ -30,7 +30,7 @@ public class QueenSpawning {
         randomSource
     ) -> {
         var serverLevel = serverLevelAccessor.getLevel();
-        var serverLevelManager = ((ServerLevelManagerAccessor) serverLevel).getServerLevelManager();
+        var serverLevelManager = ((ServerLevelManagerAccessor) serverLevel).avp$getServerLevelManager();
 
         if (serverLevelManager.getQueenSpawnCooldown().isActive()) {
             return false;

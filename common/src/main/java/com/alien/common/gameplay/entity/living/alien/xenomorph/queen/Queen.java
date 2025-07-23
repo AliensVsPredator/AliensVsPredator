@@ -137,7 +137,7 @@ public class Queen extends Xenomorph {
     }
 
     private void resetQueenSpawnCooldown(@NotNull ServerLevelAccessor serverLevelAccessor) {
-        ((ServerLevelManagerAccessor) serverLevelAccessor.getLevel()).getServerLevelManager()
+        ((ServerLevelManagerAccessor) serverLevelAccessor.getLevel()).avp$getServerLevelManager()
             .getQueenSpawnCooldown()
             .reset();
     }
