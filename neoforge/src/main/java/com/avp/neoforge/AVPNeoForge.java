@@ -101,7 +101,7 @@ public class AVPNeoForge {
     // Mod event
     public static void registerEntityAttributes(EntityAttributeCreationEvent event) {
         REGISTRY.getEntityAttributeSupplierPairs()
-            .forEach(pair -> event.put(pair.first().get(), pair.second().get().build()));
+            .forEach(pair -> event.put(pair.v1().get(), pair.v2().get().build()));
     }
 
     public static void registerSpawnPlacements(RegisterSpawnPlacementsEvent event) {
@@ -197,8 +197,8 @@ public class AVPNeoForge {
 
         REGISTRY.getVillagerTradeData()
             .forEach(villagerTradeData -> {
-                if (event.getType() == villagerTradeData.first().get()) {
-                    trades.get(villagerTradeData.second()).addAll(villagerTradeData.third());
+                if (event.getType() == villagerTradeData.v1().get()) {
+                    trades.get(villagerTradeData.v2()).addAll(villagerTradeData.v3());
                 }
             });
     }

@@ -459,9 +459,9 @@ public class GeneBonusDataSubProvider extends GeneBonusDataProvider {
                 geneBonusList.stream()
                     .map(
                         tuple -> new GeneBonusDataEntry(
-                            tuple.first().get().id(),
-                            tuple.second().operation(),
-                            tuple.second().value()
+                            tuple.v1().get().id(),
+                            tuple.v2().operation(),
+                            tuple.v2().value()
                         )
                     )
                     .toList()
@@ -478,9 +478,9 @@ public class GeneBonusDataSubProvider extends GeneBonusDataProvider {
                 geneBonusList.stream()
                     .map(
                         tuple -> new GeneBonusDataEntry(
-                            tuple.first().get().id(),
-                            tuple.second().operation(),
-                            tuple.second().value()
+                            tuple.v1().get().id(),
+                            tuple.v2().operation(),
+                            tuple.v2().value()
                         )
                     )
                     .toList()

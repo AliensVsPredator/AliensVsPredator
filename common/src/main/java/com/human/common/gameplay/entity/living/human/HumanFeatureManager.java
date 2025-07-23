@@ -1,7 +1,7 @@
 package com.human.common.gameplay.entity.living.human;
 
-import com.bvanseg.just.functional.function.memo.BiMemo;
 import com.bvanseg.just.functional.function.memo.Memo;
+import com.bvanseg.just.functional.function.memo.Memo2;
 import com.bvanseg.just.functional.option.Option;
 import net.minecraft.resources.ResourceLocation;
 
@@ -17,7 +17,7 @@ public class HumanFeatureManager {
     );
 
     // isMale, hair variant index -> hair texture location
-    private final BiMemo<Boolean, Integer, ResourceLocation> cachedHairTexture = new BiMemo<>(
+    private final Memo2<Boolean, Integer, ResourceLocation> cachedHairTexture = new Memo2<>(
         (isMale, hairVariantIndex) -> AVPResources.entityTextureLocation(
             "human/" + (isMale ? "male" : "female") + "/hair/hair_" + hairVariantIndex
         )
