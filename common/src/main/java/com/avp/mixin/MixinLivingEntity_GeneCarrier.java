@@ -143,6 +143,10 @@ public abstract class MixinLivingEntity_GeneCarrier extends Entity implements Ge
 
     @Unique
     private void avp$handlePoisonousBarbsGene(DamageSource damageSource, float damage) {
+        if (damageSource.is(DamageTypeTags.AVOIDS_GUARDIAN_THORNS)) {
+            return;
+        }
+
         // TODO: Factor in additive in here.
         var poisonChance = getOrCreateGeneManager().getGeneContainer()
             .getActiveGeneMap()
