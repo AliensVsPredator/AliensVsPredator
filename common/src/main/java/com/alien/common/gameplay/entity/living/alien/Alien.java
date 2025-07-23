@@ -370,6 +370,20 @@ public abstract class Alien extends Monster implements DataUser {
         return isHurt;
     }
 
+    @Override
+    public boolean doHurtTarget(@NotNull Entity entity) {
+        var didHurtTarget = super.doHurtTarget(entity);
+
+        if (didHurtTarget) {
+            switch (getVariant()) {
+                case NETHER -> entity.igniteForSeconds(15);
+                case ABERRANT, IRRADIATED, NORMAL -> {/* NO-OP */}
+            }
+        }
+
+        return didHurtTarget;
+    }
+
     // Prevent the chestburster from drowning or otherwise running out of air.
     @Override
     public int getAirSupply() {

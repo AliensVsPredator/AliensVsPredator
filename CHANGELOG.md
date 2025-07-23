@@ -9,6 +9,7 @@
 ## ✨ What's New
 - Aliens now remember what host type they came from.
 - Added new running animations to all xenomorphs.
+- Nether aliens now set hurt targets on fire.
 - Added two new advancements:
   - "Eviction" - Infected? Eat a chorus fruit to remove the embryo, saving yourself... and dooming the world.
   - "Hive Buster" - Defeat an alien hive.
