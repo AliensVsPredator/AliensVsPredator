@@ -7,9 +7,8 @@ import com.alien.common.gameplay.hive.HiveSpaceManager;
 import com.lib.common.gameplay.NBTSerializable;
 import com.lib.common.gameplay.entity.EntityReserves;
 import com.lib.common.gameplay.util.spatial.block.BlockPosVec3;
-import com.mojang.serialization.Dynamic;
+import com.lib.common.util.codec.schema.CodecSchemas;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.NbtOps;
 import net.minecraft.world.entity.EntityType;
 
 import java.util.List;
@@ -77,23 +76,13 @@ public class HiveReserveManager implements NBTSerializable {
 
     @Override
     public void load(CompoundTag compoundTag) {
-        if (compoundTag.contains(NBT_HIVE_MEMBER_RESERVES)) {
-            EntityReserves.CODEC.parse(
-                new Dynamic<>(NbtOps.INSTANCE, compoundTag.getCompound(NBT_HIVE_MEMBER_RESERVES))
-            )
-                .resultOrPartial(
-                    AVP.LOGGER::error
-                )
-                .ifPresent(loadedEntityReserves -> hiveMemberReserves.putAll(loadedEntityReserves.getBackingMap()));
-        }
+        EntityReserves.CODEC.decode(CodecSchemas.NBT, compoundTag.getCompound(NBT_HIVE_MEMBER_RESERVES))
+            .inspectErr(tag -> AVP.LOGGER.error("Failed to load tag '{}'. Tag: {}", NBT_HIVE_MEMBER_RESERVES, tag))
+            .ifOk(loadedEntityReserves -> hiveMemberReserves.putAll(loadedEntityReserves.getBackingMap()));
     }
 
     @Override
     public void save(CompoundTag compoundTag) {
-        EntityReserves.CODEC.encodeStart(NbtOps.INSTANCE, hiveMemberReserves)
-            .resultOrPartial(
-                AVP.LOGGER::error
-            )
-            .ifPresent(tag -> compoundTag.put(NBT_HIVE_MEMBER_RESERVES, tag));
+        compoundTag.put(NBT_HIVE_MEMBER_RESERVES, EntityReserves.CODEC.encode(CodecSchemas.NBT, hiveMemberReserves));
     }
 }

@@ -1,7 +1,8 @@
 package com.lib.common.gameplay.entity;
 
-import com.mojang.serialization.Codec;
-import net.minecraft.core.registries.BuiltInRegistries;
+import com.bvanseg.just.serialization.codec.Codec;
+import com.bvanseg.just.serialization.codec.impl.Codecs;
+import com.lib.common.util.codec.impl.MojangCodecs;
 import net.minecraft.world.entity.EntityType;
 
 import java.util.Collections;
@@ -15,8 +16,8 @@ import com.avp.common.util.AVPPredicates;
 public class EntityReserves {
 
     public static final Codec<EntityReserves> CODEC = Codec.unboundedMap(
-        BuiltInRegistries.ENTITY_TYPE.byNameCodec(),
-        Codec.INT
+        MojangCodecs.ENTITY_TYPE,
+        Codecs.INT
     )
         .xmap(
             map -> {
