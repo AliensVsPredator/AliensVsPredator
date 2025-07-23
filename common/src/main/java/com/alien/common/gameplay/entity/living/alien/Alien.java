@@ -22,6 +22,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -355,6 +356,17 @@ public abstract class Alien extends Monster implements DataUser {
             this.lastHurtTimeInTicks = tickCount;
 
             var alienVariantType = AlienVariantTypes.getFor(this);
+
+            if (
+                isNetherAfflicted()
+                    && !damageSource.is(DamageTypeTags.AVOIDS_GUARDIAN_THORNS)
+            ) {
+                var sourceEntity = damageSource.getEntity();
+
+                if (sourceEntity != null) {
+                    sourceEntity.igniteForSeconds(8);
+                }
+            }
 
             if (damageSource.getEntity() != null) {
                 // Cry for help so that nearby vents may try and summon help.
