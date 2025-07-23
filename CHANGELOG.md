@@ -91,6 +91,8 @@
 - Same-strain, different-hive xenos now no longer kill each other.
 - Hive centers now constantly move with the hive leader.
 - Updated the chestbursting death message to have a proper, better-fitting message.
+- Irradiated acid now only converts blocks to ice when the blocks are destroyed.
+- Nether acid now sets air blocks above them on fire.
 - Reworked how royal jelly item and royal jelly blocks are used:
   - Hatched ovomorphs can no longer be revived with royal jelly.
   - Infertile facehuggers can no longer be revived with royal jelly.

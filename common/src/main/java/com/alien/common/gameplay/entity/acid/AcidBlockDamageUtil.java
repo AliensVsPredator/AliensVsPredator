@@ -33,21 +33,34 @@ public class AcidBlockDamageUtil {
     }
 
     private static void damageBlock(Acid acid, BlockPos blockPos, Level level) {
-        if (acid.isIrradiated() && !level.getBlockState(blockPos).is(AVPBlockTags.IRRADIATED_ACID_IMMUNE)) {
-            level.setBlockAndUpdate(blockPos, Blocks.BLUE_ICE.defaultBlockState());
-        } else {
-            if (acid.isNetherAfflicted() && level.getBlockState(blockPos).isAir()) {
-                level.setBlockAndUpdate(blockPos, Blocks.FIRE.defaultBlockState());
+        var result = BlockBreakProgressManager.damage(level, blockPos, 0.2F * acid.getMultiplier());
+
+        switch (result) {
+            case DAMAGED -> {
+
+                if (acid.isNetherAfflicted()) {
+                    var above = blockPos.above();
+
+                    if (level.getBlockState(above).isAir()) {
+                        level.setBlockAndUpdate(above, Blocks.FIRE.defaultBlockState());
+                    }
+                }
+            }
+            case DESTROYED -> {
+                if (acid.isIrradiated()) {
+                    level.setBlockAndUpdate(blockPos, Blocks.BLUE_ICE.defaultBlockState());
+                }
+            }
+        }
+
+        if (result != BlockBreakProgressManager.Result.NOT_DAMAGED) {
+            if (acid.tickCount % (acid.getRandom().nextInt(100) + 10) == 0) {
+                level.playSound(null, acid, AVPSoundEvents.BLOCK_ACID_BURN.get(), SoundSource.NEUTRAL, 1F, 1F);
             }
 
-            BlockBreakProgressManager.damage(level, blockPos, 0.2F * acid.getMultiplier());
+            acid.age();
         }
 
-        if (acid.tickCount % (acid.getRandom().nextInt(100) + 10) == 0) {
-            level.playSound(null, acid, AVPSoundEvents.BLOCK_ACID_BURN.get(), SoundSource.NEUTRAL, 1F, 1F);
-        }
-
-        acid.age();
     }
 
     private static void spawnClientSideParticles(Acid acid, Level level) {
