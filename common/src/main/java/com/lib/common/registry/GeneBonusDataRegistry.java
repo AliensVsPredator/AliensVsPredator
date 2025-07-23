@@ -16,6 +16,10 @@ public class GeneBonusDataRegistry {
 
     private static final Map<EntityType<?>, Map<GeneModifierKey, Double>> ENTITY_TYPE_TO_GENE_BONUS_MAP = new HashMap<>();
 
+    public static boolean has(EntityType<?> entityType) {
+        return ENTITY_TYPE_TO_GENE_BONUS_MAP.containsKey(entityType);
+    }
+
     public static Map<GeneModifierKey, Double> getOrDefault(EntityType<?> entityType) {
         return ENTITY_TYPE_TO_GENE_BONUS_MAP.getOrDefault(entityType, Map.of());
     }
