@@ -1,7 +1,7 @@
 package com.alien.client.animation.entity;
 
-import com.alien.common.constant.animation.AdolescentAnimationRefs;
 import com.alien.common.gameplay.entity.living.alien.adolescent.Adolescent;
+import com.alien.common.util.AzAlienAnimationUtil;
 import mod.azure.azurelib.rewrite.animation.AzAnimatorConfig;
 import mod.azure.azurelib.rewrite.animation.controller.AzAnimationController;
 import mod.azure.azurelib.rewrite.animation.controller.AzAnimationControllerContainer;
@@ -25,10 +25,25 @@ public class AdolescentAnimator extends AzEntityAnimator<Adolescent> {
     @Override
     public void registerControllers(AzAnimationControllerContainer<Adolescent> animationControllerContainer) {
         animationControllerContainer.add(
-            AzAnimationController.builder(this, AdolescentAnimationRefs.HEAD_CONTROLLER_NAME)
+            AzAnimationController.builder(this, AzAlienAnimationUtil.BODY_CONTROLLER_NAME)
                 .setTransitionLength(5)
                 .build(),
-            AzAnimationController.builder(this, AdolescentAnimationRefs.TAIL_CONTROLLER_NAME)
+            AzAnimationController.builder(this, AzAlienAnimationUtil.HEAD_CONTROLLER_NAME)
+                .setTransitionLength(5)
+                .build(),
+            AzAnimationController.builder(this, AzAlienAnimationUtil.LEFT_ARM_CONTROLLER_NAME)
+                .setTransitionLength(5)
+                .build(),
+            AzAnimationController.builder(this, AzAlienAnimationUtil.LEFT_LEG_CONTROLLER_NAME)
+                .setTransitionLength(5)
+                .build(),
+            AzAnimationController.builder(this, AzAlienAnimationUtil.RIGHT_ARM_CONTROLLER_NAME)
+                .setTransitionLength(5)
+                .build(),
+            AzAnimationController.builder(this, AzAlienAnimationUtil.RIGHT_LEG_CONTROLLER_NAME)
+                .setTransitionLength(5)
+                .build(),
+            AzAnimationController.builder(this, AzAlienAnimationUtil.TAIL_CONTROLLER_NAME)
                 .setTransitionLength(5)
                 .build()
         );
@@ -44,8 +59,7 @@ public class AdolescentAnimator extends AzEntityAnimator<Adolescent> {
         super.setCustomAnimations(animatable, partialTicks);
         showDorsalTubes(animatable);
 
-        // TODO: Re-add this once adolescent animations are done.
-        // runPassiveAnimations(animatable);
+        runPassiveAnimations(animatable);
     }
 
     private void showDorsalTubes(Adolescent entity) {
@@ -69,8 +83,15 @@ public class AdolescentAnimator extends AzEntityAnimator<Adolescent> {
         var isMovingOnGround = adolescent.isMovingHorizontally.get() && adolescent.onGround();
         Runnable animFunction;
 
-        if (isMovingOnGround) {
-            animFunction = dispatcher::slowSlither;
+        if (adolescent.isUnderWater()) {
+            // TODO: idle swim
+            animFunction = dispatcher::swim;
+        } else if (isMovingOnGround) {
+            if (adolescent.hasTarget.get()) {
+                animFunction = dispatcher::run;
+            } else {
+                animFunction = dispatcher::walk;
+            }
         } else {
             animFunction = dispatcher::idle;
         }
