@@ -95,18 +95,24 @@ public class Queen extends Xenomorph {
         @Nullable SpawnGroupData spawnGroupData
     ) {
         if (spawnType == MobSpawnType.NATURAL) {
-            applyNaturalSpawnEffects(serverLevelAccessor, spawnType);
+            applyNaturalSpawnEffects();
         }
 
         return super.finalizeSpawn(serverLevelAccessor, difficulty, spawnType, spawnGroupData);
     }
 
-    private void applyNaturalSpawnEffects(@NotNull ServerLevelAccessor serverLevelAccessor, @NotNull MobSpawnType spawnType) {
-        alertPlayersOfSpawn();
-        spawnGuards(serverLevelAccessor, spawnType);
-        resetQueenSpawnCooldown(serverLevelAccessor);
+    private void applyNaturalSpawnEffects() {
+        var level = level();
 
-        StrainLeakData.getOrCreate(serverLevelAccessor.getLevel())
+        if (level.isClientSide) {
+            return;
+        }
+
+        alertPlayersOfSpawn();
+        spawnGuards();
+        resetQueenSpawnCooldown();
+
+        StrainLeakData.getOrCreate(level)
             .ifSome(strainLeakData -> strainLeakData.add(getVariant(), -1));
     }
 
@@ -120,24 +126,20 @@ public class Queen extends Xenomorph {
         }
     }
 
-    private void spawnGuards(@NotNull ServerLevelAccessor serverLevelAccessor, @NotNull MobSpawnType spawnType) {
-        var level = level();
+    private void spawnGuards() {
+        var droneType = Drone.getType(getVariant());
 
-        if (!level.isClientSide) {
-            for (var i = 0; i < 4; i++) {
-                var droneType = Drone.getType(getVariant());
-                var drone = droneType.spawn((ServerLevel) level, blockPosition(), spawnType);
+        for (var i = 0; i < 4; i++) {
+            var drone = droneType.spawn((ServerLevel) level(), blockPosition(), MobSpawnType.NATURAL);
 
-                if (drone != null) {
-                    drone.setPersistenceRequired();
-                    serverLevelAccessor.addFreshEntity(drone);
-                }
+            if (drone != null) {
+                drone.setPersistenceRequired();
             }
         }
     }
 
-    private void resetQueenSpawnCooldown(@NotNull ServerLevelAccessor serverLevelAccessor) {
-        ((ServerLevelManagerAccessor) serverLevelAccessor.getLevel()).avp$getServerLevelManager()
+    private void resetQueenSpawnCooldown() {
+        ((ServerLevelManagerAccessor) level()).avp$getServerLevelManager()
             .getQueenSpawnCooldown()
             .reset();
     }
