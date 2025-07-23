@@ -8,11 +8,11 @@ import com.mojang.serialization.DynamicOps;
 
 import java.util.stream.Stream;
 
-public class CodecSchemaAdapter<T> implements CodecSchema<T> {
+public class DynamicOpsToCodecSchemaAdapter<T> implements CodecSchema<T> {
 
     private final DynamicOps<T> dynamicOps;
 
-    public CodecSchemaAdapter(DynamicOps<T> dynamicOps) {
+    public DynamicOpsToCodecSchemaAdapter(DynamicOps<T> dynamicOps) {
         this.dynamicOps = dynamicOps;
     }
 
