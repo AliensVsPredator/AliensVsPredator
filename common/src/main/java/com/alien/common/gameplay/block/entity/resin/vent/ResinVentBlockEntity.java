@@ -4,6 +4,7 @@ import com.alien.common.data.AlienVariantTypes;
 import com.alien.common.gameplay.hive.Hive;
 import com.alien.common.gameplay.level.gameevent.listener.CryForHelpListener;
 import com.alien.common.gameplay.level.saveddata.HiveLevelData;
+import com.lib.common.data.Cooldown;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -13,11 +14,14 @@ import net.minecraft.world.level.gameevent.GameEventListener;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.time.Duration;
 import java.util.Objects;
 
 import com.avp.common.registry.init.AVPBlockEntityTypes;
 
 public class ResinVentBlockEntity extends BlockEntity implements GameEventListener.Provider<CryForHelpListener> {
+
+    private final Cooldown alienSpawnCooldown;
 
     private final CryForHelpListener cryForHelpListener;
 
@@ -28,6 +32,8 @@ public class ResinVentBlockEntity extends BlockEntity implements GameEventListen
 
         var positionSource = new BlockPositionSource(blockPos);
 
+        // Cooldown of 10 ticks or 500 milliseconds or 1/2 second.
+        this.alienSpawnCooldown = Cooldown.withCooldownTime("spawnAlienCooldown", Duration.ofMillis(500));
         this.cryForHelpListener = new CryForHelpListener(positionSource);
     }
 
@@ -35,11 +41,17 @@ public class ResinVentBlockEntity extends BlockEntity implements GameEventListen
         return hive;
     }
 
+    public Cooldown getAlienSpawnCooldown() {
+        return alienSpawnCooldown;
+    }
+
     public void setHive(@Nullable Hive hive) {
         this.hive = hive;
     }
 
     public static void serverTick(Level level, BlockPos ventPos, BlockState blockState, ResinVentBlockEntity resinVentBlockEntity) {
+        resinVentBlockEntity.getAlienSpawnCooldown().tick();
+
         var hive = resinVentBlockEntity.getHive();
 
         if (hive != null) {

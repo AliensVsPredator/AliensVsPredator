@@ -72,7 +72,10 @@ public class CryForHelpListener implements GameEventListener {
 
         var blockEntity = serverLevel.getBlockEntity(blockPos);
 
-        if (!(blockEntity instanceof ResinVentBlockEntity resinVentBlockEntity)) {
+        if (
+            !(blockEntity instanceof ResinVentBlockEntity resinVentBlockEntity)
+                || resinVentBlockEntity.getAlienSpawnCooldown().isActive()
+        ) {
             return false;
         }
 
@@ -110,6 +113,7 @@ public class CryForHelpListener implements GameEventListener {
         var summonedAlien = randomSummonType.spawn(serverLevel, spawnPos, MobSpawnType.MOB_SUMMONED);
 
         if (summonedAlien != null) {
+            resinVentBlockEntity.getAlienSpawnCooldown().reset();
             reserveManager.add(randomSummonType, -1);
 
             if (sourceEntity instanceof Mob sourceMob && summonedAlien instanceof Mob summonedAlienMob) {
