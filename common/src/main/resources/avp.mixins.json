@@ -13,6 +13,7 @@
     "MixinCow_FillMilkCanister",
     "MixinCreeper_Nuked",
     "MixinDecoratedPotPatterns_GetPatternForCustomSherds",
+    "MixinEntity_ForceInteractions",
     "MixinEntity_DataUser",
     "MixinEntityTypeBuilder_SilenceDataFixerError",
     "MixinInventory_InsertAmmoItemsIntoAmmoChest",
@@ -35,8 +36,8 @@
     "MixinShearsItem_BreakRazorWire",
     "MixinVillagerHostilesSensor_RunAwayFromAVPMonsters",
     "ParrotSoundMapAccessor",
-    "server.MixinServerLevel",
-    "StructurePoolAccessor"
+    "StructurePoolAccessor",
+    "server.MixinServerLevel"
   ],
   "client": [
     "client.MixinGui_CrosshairPickEntityWithinGunRange",

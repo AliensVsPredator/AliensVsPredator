@@ -60,7 +60,6 @@ public class AcidBlockDamageUtil {
 
             acid.age();
         }
-
     }
 
     private static void spawnClientSideParticles(Acid acid, Level level) {
