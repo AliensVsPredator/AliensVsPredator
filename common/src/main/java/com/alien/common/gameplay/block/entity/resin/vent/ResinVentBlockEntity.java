@@ -40,6 +40,18 @@ public class ResinVentBlockEntity extends BlockEntity implements GameEventListen
         var hive = resinVentBlockEntity.getHive();
 
         if (hive != null) {
+            if (
+                // If the hive is not alive...
+                !hive.isAlive()
+                    // OR if the hive has moved such that the vent pos is no longer in range...
+                    || !hive.getSpaceManager().isBlockPosWithinHive(ventPos)
+            ) {
+                // ...then we remove the hive reference as we can no longer use it.
+                resinVentBlockEntity.setHive(null);
+                hive.getVentManager().removeVent(ventPos);
+                return;
+            }
+
             hive.getVentManager().addVent(ventPos);
             return;
         }
