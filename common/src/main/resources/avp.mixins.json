@@ -32,6 +32,7 @@
     "MixinMob_IncapacitateHost",
     "MixinMobCategory_InjectCustomAlienCategory",
     "MixinPlayer_CrawlPosing",
+    "MixinProjectileUtil_AllowHittingVehicle",
     "MixinRegistry_ApplyDataFixes",
     "MixinShearsItem_BreakRazorWire",
     "MixinVillagerHostilesSensor_RunAwayFromAVPMonsters",
