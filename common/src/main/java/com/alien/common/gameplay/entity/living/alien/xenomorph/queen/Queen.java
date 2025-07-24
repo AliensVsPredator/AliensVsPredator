@@ -182,12 +182,14 @@ public class Queen extends Xenomorph {
 
     @Override
     public void runAttackAnimations() {
-        var isClawAttack = random.nextBoolean();
+        var attackType = random.nextInt(0, 3);
 
-        if (isClawAttack) {
-            animationDispatcher.clawAttack();
-        } else {
-            animationDispatcher.tailAttack();
+        playSound(AVPSoundEvents.ENTITY_XENOMORPH_ATTACK.get(), getSoundVolume(), (random.nextFloat() - random.nextFloat()) * 0.2F + 1.0F);
+
+        switch (attackType) {
+            case 0 -> animationDispatcher.swipeDownAttack();
+            case 1 -> animationDispatcher.backhandAttack();
+            default -> animationDispatcher.tailStrikeAttack();
         }
     }
 
