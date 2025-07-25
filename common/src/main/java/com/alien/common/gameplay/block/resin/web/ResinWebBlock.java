@@ -19,6 +19,8 @@ public class ResinWebBlock extends Block {
 
     private static final Vec3 MOVEMENT_MODIFIER = new Vec3(0.05, 0.05F, 0.05);
 
+    private static final Vec3 STUCK_MOVEMENT_MODIFIER = new Vec3(0.05, 0F, 0.05);
+
     public ResinWebBlock(Properties properties) {
         super(properties);
     }
@@ -36,7 +38,14 @@ public class ResinWebBlock extends Block {
     @Override
     protected void entityInside(@NotNull BlockState blockState, @NotNull Level level, @NotNull BlockPos blockPos, Entity entity) {
         if (!entity.getType().is(AVPEntityTypeTags.ALIENS)) {
-            entity.makeStuckInBlock(blockState, MOVEMENT_MODIFIER);
+            var eyePos = entity.getEyePosition();
+            var eyeBlockPos = BlockPos.containing(eyePos);
+            var eyeBlockState = level.getBlockState(eyeBlockPos);
+            var modifier = eyeBlockState.getBlock() instanceof ResinWebBlock
+                ? STUCK_MOVEMENT_MODIFIER
+                : MOVEMENT_MODIFIER;
+
+            entity.makeStuckInBlock(blockState, modifier);
         }
     }
 }
