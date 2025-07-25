@@ -15,6 +15,7 @@ import net.minecraft.world.entity.EntityType;
 import java.util.Arrays;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -112,11 +113,16 @@ public class HiveBossBarManager {
                     return true;
                 }
 
-                return !hive.getSpaceManager().isEntityWithinHive(player);
+                return !hive.getSpaceManager().isEntityWithinHive(player)
+                    || !isPlayerInSameDimensionAsHive(player);
             })
             .toList();
 
         playersToRemove.forEach(bossEvent::removePlayer);
+    }
+
+    private boolean isPlayerInSameDimensionAsHive(ServerPlayer player) {
+        return Objects.equals(player.level().dimensionType(), hive.level().dimensionType());
     }
 
     public void onHiveRemoved() {
