@@ -23,6 +23,7 @@ import com.lib.common.gameplay.NBTSerializable;
 import com.lib.common.gameplay.util.spatial.chunk.ChunkPosUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
@@ -65,6 +66,8 @@ public class Hive implements NBTSerializable {
 
     private final Level level;
 
+    private final RandomSource randomSource;
+
     private final List<Task> tasks;
 
     private @Nullable HiveRemovalReason removalReason;
@@ -85,6 +88,7 @@ public class Hive implements NBTSerializable {
         this.debugManager = new HiveDebugManager(this);
         this.leadershipManager = new HiveLeadershipManager(this);
         this.membershipManager = new HiveMembershipManager(this);
+        this.randomSource = level.random.fork();
         this.reserveManager = new HiveReserveManager(this);
         this.spaceManager = new HiveSpaceManager(this);
         this.ventManager = new HiveVentManager();
@@ -298,6 +302,10 @@ public class Hive implements NBTSerializable {
 
     public HiveMembershipManager getMembershipManager() {
         return membershipManager;
+    }
+
+    public RandomSource getRandom() {
+        return randomSource;
     }
 
     public HiveReserveManager getReserveManager() {
