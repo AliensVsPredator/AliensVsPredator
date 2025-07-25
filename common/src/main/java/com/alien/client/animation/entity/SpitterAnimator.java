@@ -1,7 +1,7 @@
 package com.alien.client.animation.entity;
 
-import com.alien.common.constant.animation.SpitterAnimationRefs;
 import com.alien.common.gameplay.entity.living.alien.xenomorph.spitter.Spitter;
+import com.alien.common.util.AzAlienAnimationUtil;
 import mod.azure.azurelib.rewrite.animation.AzAnimatorConfig;
 import mod.azure.azurelib.rewrite.animation.controller.AzAnimationController;
 import mod.azure.azurelib.rewrite.animation.controller.AzAnimationControllerContainer;
@@ -24,7 +24,25 @@ public class SpitterAnimator extends AzEntityAnimator<Spitter> {
     @Override
     public void registerControllers(AzAnimationControllerContainer<Spitter> animationControllerContainer) {
         animationControllerContainer.add(
-            AzAnimationController.builder(this, SpitterAnimationRefs.FULL_BODY_CONTROLLER_NAME)
+            AzAnimationController.builder(this, AzAlienAnimationUtil.BODY_CONTROLLER_NAME)
+                .setTransitionLength(5)
+                .build(),
+            AzAnimationController.builder(this, AzAlienAnimationUtil.HEAD_CONTROLLER_NAME)
+                .setTransitionLength(5)
+                .build(),
+            AzAnimationController.builder(this, AzAlienAnimationUtil.LEFT_ARM_CONTROLLER_NAME)
+                .setTransitionLength(5)
+                .build(),
+            AzAnimationController.builder(this, AzAlienAnimationUtil.LEFT_LEG_CONTROLLER_NAME)
+                .setTransitionLength(5)
+                .build(),
+            AzAnimationController.builder(this, AzAlienAnimationUtil.RIGHT_ARM_CONTROLLER_NAME)
+                .setTransitionLength(5)
+                .build(),
+            AzAnimationController.builder(this, AzAlienAnimationUtil.RIGHT_LEG_CONTROLLER_NAME)
+                .setTransitionLength(5)
+                .build(),
+            AzAnimationController.builder(this, AzAlienAnimationUtil.TAIL_CONTROLLER_NAME)
                 .setTransitionLength(5)
                 .build()
         );
@@ -39,8 +57,7 @@ public class SpitterAnimator extends AzEntityAnimator<Spitter> {
     public void setCustomAnimations(Spitter animatable, float partialTicks) {
         super.setCustomAnimations(animatable, partialTicks);
 
-        // FIXME:
-        // runPassiveAnimations(animatable);
+         runPassiveAnimations(animatable);
     }
 
     private void runPassiveAnimations(Spitter spitter) {
