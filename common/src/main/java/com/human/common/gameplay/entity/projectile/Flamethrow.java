@@ -99,6 +99,7 @@ public class Flamethrow extends ThrowableProjectile {
         entitiesToHurt.forEach(entity -> {
             entity.hurt(damageSource, 1F);
             entity.igniteForTicks(10 * 20);
+            entity.invulnerableTime = 0;
         });
 
         BFS.traverse(

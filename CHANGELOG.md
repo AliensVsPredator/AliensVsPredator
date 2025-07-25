@@ -95,6 +95,7 @@
 - Irradiated acid now only converts blocks to ice when the blocks are destroyed.
 - Nether acid now sets air blocks above them on fire.
 - Resin web now stops player vertical movement if player eye height is in resin web.
+- Increased flamethrower DPS by a factor of 100 (0.02dps to 20dps).
 - Reworked how royal jelly item and royal jelly blocks are used:
   - Hatched ovomorphs can no longer be revived with royal jelly.
   - Infertile facehuggers can no longer be revived with royal jelly.
