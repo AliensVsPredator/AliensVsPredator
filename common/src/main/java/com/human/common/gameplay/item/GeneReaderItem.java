@@ -120,8 +120,7 @@ public class GeneReaderItem extends Item {
         return values[nextOrdinal];
     }
 
-    @Override
-    public @NotNull InteractionResult interactLivingEntity(
+    public static void interact(
         @NotNull ItemStack stack,
         @NotNull Player player,
         @NotNull LivingEntity interactionTarget,
@@ -130,13 +129,13 @@ public class GeneReaderItem extends Item {
         var geneReaderMode = stack.getOrDefault(HumanDataComponents.GENE_READER_MODE.get(), DEFAULT_MODE);
 
         if (geneReaderMode == GeneReaderMode.CLEAR) {
-            return super.interactLivingEntity(stack, player, interactionTarget, usedHand);
+            return;
         }
 
         var geneBonusMapData = GeneBonusDataRegistry.getOrDefault(interactionTarget.getType());
 
         if (geneBonusMapData.isEmpty()) {
-            return super.interactLivingEntity(stack, player, interactionTarget, usedHand);
+            return;
         }
 
         var geneContainer = ((GeneCarrier) interactionTarget).getOrCreateGeneManager().getGeneContainer();
@@ -156,7 +155,6 @@ public class GeneReaderItem extends Item {
         interactionTarget.hurt(interactionTarget.damageSources().generic(), 0.01F);
         // TODO: Use proper translatable here.
         player.displayClientMessage(Component.literal("Processed gene data from target."), true);
-        return InteractionResult.SUCCESS;
     }
 
     @Override

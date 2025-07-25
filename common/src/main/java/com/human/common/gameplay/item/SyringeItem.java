@@ -121,8 +121,7 @@ public class SyringeItem extends Item {
         return values[nextOrdinal];
     }
 
-    @Override
-    public @NotNull InteractionResult interactLivingEntity(
+    public static void interact(
         @NotNull ItemStack stack,
         @NotNull Player player,
         @NotNull LivingEntity interactionTarget,
@@ -136,17 +135,16 @@ public class SyringeItem extends Item {
                 stack.set(HumanDataComponents.SYRINGE_CONTENTS.get(), SyringeContents.EMPTY);
                 // Assign stack back to player hand to update client-side.
                 player.setItemInHand(usedHand, stack);
-                return InteractionResult.SUCCESS;
             }
             case EXTRACT -> {
                 // Extract genes from mob.
                 var geneBonusMapData = GeneBonusDataRegistry.getOrDefault(interactionTarget.getType());
 
                 if (geneBonusMapData.isEmpty()) {
-                    return super.interactLivingEntity(stack, player, interactionTarget, usedHand);
+                    return;
                 }
 
-                // Create map to merge genes into.
+                // Create a map to merge genes into.
                 var currentGeneBonusMap = new HashMap<>(GeneDataUtil.toMap(syringeContents.geneBonusDataEntries()));
                 // Overwrite genes.
                 currentGeneBonusMap.putAll(geneBonusMapData);
@@ -171,7 +169,6 @@ public class SyringeItem extends Item {
                 interactionTarget.hurt(interactionTarget.damageSources().generic(), 0.01F);
                 // TODO: Use proper translatable here.
                 player.displayClientMessage(Component.literal("Extracted genes from target."), true);
-                return InteractionResult.SUCCESS;
             }
             case INJECT -> {
                 var geneCarrier = (GeneCarrier) interactionTarget;
@@ -195,12 +192,8 @@ public class SyringeItem extends Item {
                 interactionTarget.hurt(interactionTarget.damageSources().generic(), 0.01F);
                 // TODO: Use proper translatable here.
                 player.displayClientMessage(Component.literal("Injected target with genes."), true);
-                return InteractionResult.SUCCESS;
             }
         }
-
-        // Nothing new was added or modified; fall back to default behavior.
-        return super.interactLivingEntity(stack, player, interactionTarget, usedHand);
     }
 
     @Override

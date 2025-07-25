@@ -1,5 +1,7 @@
 package com.avp.mixin;
 
+import com.human.common.gameplay.item.GeneReaderItem;
+import com.human.common.gameplay.item.SyringeItem;
 import com.lib.common.registry.GeneBonusDataRegistry;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -19,7 +21,7 @@ import com.avp.common.registry.init.item.AVPItems;
 public abstract class MixinEntity_ForceInteractions {
 
     @Inject(at = @At("HEAD"), method = "interact", cancellable = true)
-    public void tick(Player player, InteractionHand hand, CallbackInfoReturnable<InteractionResult> cir) {
+    public void avp$interact(Player player, InteractionHand hand, CallbackInfoReturnable<InteractionResult> cir) {
         var self = Entity.class.cast(this);
 
         var itemstack = player.getItemInHand(hand);
@@ -27,7 +29,16 @@ public abstract class MixinEntity_ForceInteractions {
         if (self instanceof LivingEntity livingSelf) {
 
             if (avp$syringeCheck(itemstack, self) || avp$geneReaderCheck(itemstack)) {
-                itemstack.getItem().interactLivingEntity(itemstack, player, livingSelf, hand);
+                var item = itemstack.getItem();
+
+                if (!livingSelf.level().isClientSide) {
+                    if (item instanceof SyringeItem) {
+                        SyringeItem.interact(itemstack, player, livingSelf, hand);
+                    } else if (item instanceof GeneReaderItem) {
+                        GeneReaderItem.interact(itemstack, player, livingSelf, hand);
+                    }
+                }
+
                 cir.setReturnValue(InteractionResult.sidedSuccess(self.level().isClientSide));
             }
         }
