@@ -229,6 +229,13 @@ public abstract class Xenomorph extends Alien implements ResinProducer {
         super.setTarget(livingEntity);
     }
 
+    // Fixes a bug where xenomorphs would try to retaliate attack infected hosts that hurt them.
+    // TODO: Remove this once GOAP AI is introduced and this edge case has been handled in the new AI.
+    @Override
+    public boolean canAttack(@NotNull LivingEntity target) {
+        return super.canAttack(target) && AlienPredicates.canContinueTargeting(this, target);
+    }
+
     @Override
     protected void doPush(Entity entity) {
         if (

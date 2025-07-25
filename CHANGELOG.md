@@ -150,6 +150,7 @@
 - Fixed aliens that do not grow up being able to consume an infinite amount of royal jelly.
 - Fixed facehuggers not persisting after hatching from ovomorphs.
 - Fixed block damage from guns, acid and aliens not resetting when the damaged block is broken or replaced.
+- Fixed xenomorphs trying to attack infected hosts that hurt them.
 - Fixed irradiated acid destroying the following blocks:
   - Chitin blocks
   - Industrial Glass blocks
