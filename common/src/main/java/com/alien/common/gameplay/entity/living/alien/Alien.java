@@ -338,10 +338,12 @@ public abstract class Alien extends Monster implements DataUser {
 
         if (killedEntity) {
             hiveManager.hive().ifSome(hive -> {
-                var droneType = Drone.getType(hive.getVariant());
-                hive.getReserveManager().add(droneType, 1);
-                var runnerType = Runner.getType(hive.getVariant());
-                hive.getReserveManager().add(runnerType, 1);
+                var isDrone = hive.getRandom().nextBoolean();
+                var type = isDrone
+                    ? Drone.getType(hive.getVariant())
+                    : Runner.getType(hive.getVariant());
+
+                hive.getReserveManager().add(type, 1);
             });
         }
 

@@ -46,10 +46,25 @@ public class HiveReserveManager implements NBTSerializable {
                 .count();
 
             if (numberOfXenomorphsInOuterEdges > 0) {
+                var half = numberOfXenomorphsInOuterEdges / 2;
+                var remainder = numberOfXenomorphsInOuterEdges % 2;
+
+                var isDroneFirst = hive.getRandom().nextBoolean();
                 var droneType = Drone.getType(hive.getVariant());
-                hiveMemberReserves.add(droneType, numberOfXenomorphsInOuterEdges);
                 var runnerType = Runner.getType(hive.getVariant());
-                hiveMemberReserves.add(runnerType, numberOfXenomorphsInOuterEdges);
+
+                // Always add half to each.
+                hiveMemberReserves.add(droneType, half);
+                hiveMemberReserves.add(runnerType, half);
+
+                // Randomly assign a remainder (only happens if count is odd, i.e., 1).
+                if (remainder > 0) {
+                    var extraType = isDroneFirst
+                        ? droneType
+                        : runnerType;
+
+                    hiveMemberReserves.add(extraType, 1);
+                }
             }
         }
     }
