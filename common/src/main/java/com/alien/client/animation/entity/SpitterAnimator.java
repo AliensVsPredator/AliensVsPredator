@@ -57,7 +57,7 @@ public class SpitterAnimator extends AzEntityAnimator<Spitter> {
     public void setCustomAnimations(Spitter animatable, float partialTicks) {
         super.setCustomAnimations(animatable, partialTicks);
 
-         runPassiveAnimations(animatable);
+        runPassiveAnimations(animatable);
     }
 
     private void runPassiveAnimations(Spitter spitter) {

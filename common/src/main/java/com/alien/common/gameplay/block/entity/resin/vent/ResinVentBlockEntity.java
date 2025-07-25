@@ -32,8 +32,7 @@ public class ResinVentBlockEntity extends BlockEntity implements GameEventListen
 
         var positionSource = new BlockPositionSource(blockPos);
 
-        // Cooldown of 10 ticks or 500 milliseconds or 1/2 second.
-        this.alienSpawnCooldown = Cooldown.withCooldownTime("spawnAlienCooldown", Duration.ofMillis(500));
+        this.alienSpawnCooldown = Cooldown.withCooldownTime("spawnAlienCooldown", Duration.ofSeconds(3));
         this.cryForHelpListener = new CryForHelpListener(positionSource);
     }
 
