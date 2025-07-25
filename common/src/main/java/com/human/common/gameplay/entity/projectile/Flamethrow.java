@@ -1,6 +1,7 @@
 package com.human.common.gameplay.entity.projectile;
 
 import com.alien.common.data.AlienVariantTypes;
+import com.bvanseg.just.traversal.BFS;
 import com.human.common.registry.init.entity_type.HumanEntityTypes;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -20,8 +21,7 @@ import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayDeque;
-import java.util.HashSet;
+import java.util.Arrays;
 
 import com.avp.common.registry.key.AVPDamageTypeKeys;
 
@@ -73,7 +73,7 @@ public class Flamethrow extends ThrowableProjectile {
                 case EntityHitResult entityHitResult -> firebomb(entityHitResult.getEntity().blockPosition());
                 case BlockHitResult blockHitResult -> {
                     var hit = blockHitResult.getBlockPos();
-                    // Direction the fireball came from.
+                    // The direction the fireball came from.
                     var impactSide = blockHitResult.getDirection();
 
                     // Start fire on the "outside" of the block that was hit.
@@ -88,53 +88,25 @@ public class Flamethrow extends ThrowableProjectile {
         }
     }
 
-    private void firebomb(BlockPos blockPos) {
+    private void firebomb(BlockPos originPos) {
         var radius = isEnhanced ? 2 : 1;
         var registry = registryAccess().registryOrThrow(Registries.DAMAGE_TYPE);
         var damageSource = new DamageSource(registry.getHolderOrThrow(AVPDamageTypeKeys.FLAMETHROW), getOwner());
-        var bottomCorner = blockPos.offset(-radius, -radius, -radius);
-        var topCorner = blockPos.offset(radius, radius, radius);
+        var bottomCorner = originPos.offset(-radius, -radius, -radius);
+        var topCorner = originPos.offset(radius, radius, radius);
         var entitiesToHurt = level().getEntities(this, AABB.encapsulatingFullBlocks(bottomCorner, topCorner));
 
         entitiesToHurt.forEach(entity -> {
-            entity.hurt(damageSource, 0.01F);
+            entity.hurt(damageSource, 1F);
             entity.igniteForTicks(10 * 20);
         });
 
-        bfsFireSpread(blockPos, radius);
-    }
-
-    public void bfsFireSpread(BlockPos origin, int maxRadius) {
-        var visited = new HashSet<BlockPos>();
-        var queue = new ArrayDeque<BlockPos>();
-
-        visited.add(origin);
-        queue.add(origin);
-
-        while (!queue.isEmpty()) {
-            var current = queue.poll();
-
-            if (shouldPlaceFireAt(current)) {
-                level().setBlock(current, Blocks.FIRE.defaultBlockState(), 3);
-            }
-
-            for (var direction : Direction.values()) {
-                var neighbor = current.relative(direction);
-
-                if (visited.contains(neighbor)) {
-                    continue;
-                }
-
-                if (origin.distManhattan(neighbor) > maxRadius + 1) {
-                    continue;
-                }
-
-                if (shouldPlaceFireAt(neighbor)) {
-                    visited.add(neighbor);
-                    queue.add(neighbor);
-                }
-            }
-        }
+        BFS.traverse(
+            originPos,
+            pos -> Arrays.stream(Direction.values()).map(pos::relative).filter(this::shouldPlaceFireAt).toList(),
+            pos -> level().setBlockAndUpdate(pos, Blocks.FIRE.defaultBlockState()),
+            pos -> originPos.distManhattan(pos) > radius + 1
+        );
     }
 
     private boolean shouldPlaceFireAt(BlockPos pos) {
