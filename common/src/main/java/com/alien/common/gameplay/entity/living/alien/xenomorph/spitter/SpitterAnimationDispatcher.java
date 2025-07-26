@@ -8,9 +8,15 @@ import mod.azure.azurelib.rewrite.animation.play_behavior.AzPlayBehaviors;
 
 public class SpitterAnimationDispatcher {
 
-    private static final AzCommand ARMATTACK_RIGHTARM = AzCommand.create(
+    private static final AzCommand ATTACKCLAW_RIGHTARM = AzCommand.create(
         AzAlienAnimationUtil.RIGHT_ARM_CONTROLLER_NAME,
         SpitterAnimationRefs.ATTACKCLAW_RIGHTARM_ANIMATION_NAME,
+        AzPlayBehaviors.PLAY_ONCE
+    );
+
+    private static final AzCommand ATTACKCLAWQUAD_RIGHTARM = AzCommand.create(
+        AzAlienAnimationUtil.RIGHT_ARM_CONTROLLER_NAME,
+        SpitterAnimationRefs.ATTACKCLAWQUAD_RIGHTARM_ANIMATION_NAME,
         AzPlayBehaviors.PLAY_ONCE
     );
 
@@ -87,7 +93,11 @@ public class SpitterAnimationDispatcher {
     }
 
     public void rightClawAttack() {
-        ARMATTACK_RIGHTARM.sendForEntity(spitter);
+        ATTACKCLAW_RIGHTARM.sendForEntity(spitter);
+    }
+
+    public void rightClawAttackQuad() {
+        ATTACKCLAWQUAD_RIGHTARM.sendForEntity(spitter);
     }
 
     public void tailAttack() {

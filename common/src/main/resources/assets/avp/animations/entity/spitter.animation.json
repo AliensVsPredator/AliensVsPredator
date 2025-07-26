@@ -4707,35 +4707,10 @@
 		"attackspit.head": {
 			"animation_length": 1.5,
 			"bones": {
-				"gLowerBody": {
-					"rotation": {
-						"vector": [22.5, 0, 0]
-					}
-				},
-				"gRightLowerDorsalTube": {
-					"rotation": {
-						"vector": [-11, 9, 2]
-					}
-				},
-				"gLeftLowerDorsalTube": {
-					"rotation": {
-						"vector": [-11, -9, -2]
-					}
-				},
-				"gRightUpperDorsalTube": {
-					"rotation": {
-						"vector": [-22, 17, 8]
-					}
-				},
-				"gLeftUpperDorsalTube": {
-					"rotation": {
-						"vector": [-22, -17, -8]
-					}
-				},
 				"gNeck": {
 					"rotation": {
 						"0.0": {
-							"vector": [6, 0, 0]
+							"vector": [0, 0, 0]
 						},
 						"0.5": {
 							"vector": [-44, 0, 0]
@@ -4744,23 +4719,23 @@
 							"vector": [0, 0, 0]
 						},
 						"1.5": {
-							"vector": [6, 0, 0]
+							"vector": [0, 0, 0]
 						}
 					}
 				},
 				"gHead": {
 					"rotation": {
 						"0.0": {
-							"vector": [-45, 0, 0]
+							"vector": [0, 0, 0]
 						},
 						"0.5": {
-							"vector": [12.5, 0, 0]
+							"vector": [25, 0, 0]
 						},
 						"1.0": {
-							"vector": [-57.5, 0, 0]
+							"vector": [-22.5, 0, 0]
 						},
 						"1.5": {
-							"vector": [-45, 0, 0]
+							"vector": [0, 0, 0]
 						}
 					}
 				},
@@ -4865,7 +4840,7 @@
 				"gHead": {
 					"rotation": {
 						"0.0": {
-							"vector": [-22.5, 0, 0]
+							"vector": [0, 0, 0]
 						},
 						"0.1667": {
 							"vector": [-47.5, 0, 0]
@@ -4874,7 +4849,7 @@
 							"vector": [-47.5, 0, 0]
 						},
 						"0.5": {
-							"vector": [-22.5, 0, 0]
+							"vector": [0, 0, 0]
 						}
 					}
 				},
@@ -5449,6 +5424,165 @@
 						},
 						"1.25": {
 							"vector": [-22.5, 0, 0]
+						}
+					}
+				}
+			}
+		},
+		"attackclawquad.rightarm": {
+			"animation_length": 1.5,
+			"bones": {
+				"gRightShoulder": {
+					"rotation": {
+						"0.0": {
+							"vector": [-55, 0, 0]
+						},
+						"0.25": {
+							"vector": [-133.23, 30.97, -5.45]
+						},
+						"0.5": {
+							"vector": [-149.58692, 22.1302, -40.45833]
+						},
+						"1.1667": {
+							"vector": [-55, 0, 0]
+						},
+						"1.5": {
+							"vector": [-55, 0, 0]
+						}
+					}
+				},
+				"gRightBicep": {
+					"rotation": {
+						"0.0": {
+							"vector": [0, 0, 0]
+						},
+						"0.25": {
+							"vector": [0, 0, 57.5]
+						},
+						"0.5": {
+							"vector": [0, 0, -57.5]
+						},
+						"1.1667": {
+							"vector": [0, 0, 0]
+						},
+						"1.5": {
+							"vector": [0, 0, 0]
+						}
+					}
+				},
+				"gRightHand": {
+					"rotation": {
+						"0.0": {
+							"vector": [0, 0, 0]
+						},
+						"0.25": {
+							"vector": [0, 0, 22.5]
+						},
+						"0.5": {
+							"vector": [0, 0, 0]
+						}
+					}
+				},
+				"gRightThumb": {
+					"rotation": {
+						"0.0": {
+							"vector": [0, 0, 0]
+						},
+						"0.25": {
+							"vector": [0, 45, 0]
+						},
+						"1.0": {
+							"vector": [0, 0, 0]
+						}
+					}
+				},
+				"gRightPinkyThumb": {
+					"rotation": {
+						"0.0": {
+							"vector": [0, 0, 0]
+						},
+						"0.25": {
+							"vector": [0, -45, 0]
+						},
+						"1.0": {
+							"vector": [0, 0, 0]
+						}
+					}
+				},
+				"gRightIndex": {
+					"rotation": {
+						"0.0": {
+							"vector": [0, 0, 0]
+						},
+						"0.25": {
+							"vector": [-22.5, 0, 0]
+						},
+						"1.0": {
+							"vector": [0, 0, 0]
+						}
+					}
+				},
+				"gRightIndexEnd": {
+					"rotation": {
+						"0.0": {
+							"vector": [0, 0, 0]
+						},
+						"0.25": {
+							"vector": [0, 0, 45]
+						},
+						"0.5": {
+							"vector": [0, 0, 0]
+						}
+					}
+				},
+				"gRightRing": {
+					"rotation": {
+						"0.0": {
+							"vector": [0, 0, 0]
+						},
+						"0.25": {
+							"vector": [22.5, 0, 0]
+						},
+						"1.0": {
+							"vector": [0, 0, 0]
+						}
+					}
+				},
+				"gRightRingEnd": {
+					"rotation": {
+						"0.0": {
+							"vector": [0, 0, 0]
+						},
+						"0.25": {
+							"vector": [0, 0, 45]
+						},
+						"0.5": {
+							"vector": [0, 0, 0]
+						}
+					}
+				},
+				"gRightForearm": {
+					"rotation": {
+						"0.0": {
+							"vector": [-65, 0, 0]
+						},
+						"0.25": {
+							"vector": [0, 0, 0]
+						},
+						"0.5": {
+							"vector": [0, 0, -12.5]
+						},
+						"0.75": {
+							"vector": [-20, 0, 0]
+						},
+						"0.9583": {
+							"vector": [-45, 0, 0]
+						},
+						"1.1667": {
+							"vector": [-65, 0, 0]
+						},
+						"1.5": {
+							"vector": [-65, 0, 0]
 						}
 					}
 				}
