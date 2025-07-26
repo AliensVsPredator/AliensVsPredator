@@ -96,6 +96,7 @@
 - Nether acid now sets air blocks above them on fire.
 - Resin web now stops player vertical movement if player eye height is in resin web.
 - Increased flamethrower DPS by a factor of 100 (0.02dps to 20dps).
+- Reduced predator hitbox width (0.98 to 0.7).
 - Reworked how royal jelly item and royal jelly blocks are used:
   - Hatched ovomorphs can no longer be revived with royal jelly.
   - Infertile facehuggers can no longer be revived with royal jelly.

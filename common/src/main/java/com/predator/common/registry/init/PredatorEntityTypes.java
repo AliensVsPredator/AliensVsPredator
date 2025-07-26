@@ -27,7 +27,7 @@ public class PredatorEntityTypes {
     public static final AVPDeferredHolder<EntityType<Yautja>> YAUTJA = AVPEntityTypes.register(
         "yautja",
         EntityType.Builder.of(Yautja::new, AVPEntityTypes.PREDATOR_CATEGORY)
-            .sized(0.98f, 2.48f)
+            .sized(0.7f, 2.48f)
     );
 
     public static void initialize() {
