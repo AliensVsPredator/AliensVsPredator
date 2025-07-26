@@ -153,6 +153,7 @@
 - Fixed facehuggers not persisting after hatching from ovomorphs.
 - Fixed block damage from guns, acid and aliens not resetting when the damaged block is broken or replaced.
 - Fixed xenomorphs trying to attack infected hosts that hurt them.
+- Fixed hive boss bar showing after players change dimensions.
 - Fixed irradiated acid destroying the following blocks:
   - Chitin blocks
   - Industrial Glass blocks
