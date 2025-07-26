@@ -1,10 +1,8 @@
 package com.human.common.gameplay.entity.living.human;
 
 import com.bvanseg.just.functional.option.Option;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.syncher.EntityDataAccessor;
-import net.minecraft.network.syncher.EntityDataSerializers;
-import net.minecraft.network.syncher.SynchedEntityData;
+import com.lib.common.network.DataAccessor;
+import com.lib.common.network.DataUser;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.damagesource.DamageSource;
@@ -21,9 +19,10 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import com.avp.common.config.AVPConfig;
+import com.avp.common.registry.init.AVPDataKeys;
 import com.avp.common.util.MovementAnalyzer;
 
-public abstract class AbstractHuman extends PathfinderMob {
+public abstract class AbstractHuman extends PathfinderMob implements DataUser {
 
     public static AttributeSupplier.Builder applyFrom(AVPConfig.StatsConfigs.AdvancedStats config, AttributeSupplier.Builder builder) {
         builder.add(Attributes.ARMOR, config.armor);
@@ -37,35 +36,17 @@ public abstract class AbstractHuman extends PathfinderMob {
         return builder;
     }
 
-    public static final EntityDataAccessor<Integer> BEARD_VARIANT = SynchedEntityData.defineId(
-        AbstractHuman.class,
-        EntityDataSerializers.INT
-    );
+    public final DataAccessor<Integer> beardVariant;
 
-    public static final EntityDataAccessor<Integer> EYE_COLOR = SynchedEntityData.defineId(
-        AbstractHuman.class,
-        EntityDataSerializers.INT
-    );
+    public final DataAccessor<Integer> eyeColor;
 
-    public static final EntityDataAccessor<Integer> HAIR_COLOR = SynchedEntityData.defineId(
-        AbstractHuman.class,
-        EntityDataSerializers.INT
-    );
+    public final DataAccessor<Integer> hairColor;
 
-    public static final EntityDataAccessor<Integer> HAIR_VARIANT = SynchedEntityData.defineId(
-        AbstractHuman.class,
-        EntityDataSerializers.INT
-    );
+    public final DataAccessor<Integer> hairVariant;
 
-    public static final EntityDataAccessor<Boolean> IS_MALE = SynchedEntityData.defineId(
-        AbstractHuman.class,
-        EntityDataSerializers.BOOLEAN
-    );
+    public final DataAccessor<Boolean> isMale;
 
-    public static final EntityDataAccessor<Integer> SKIN_COLOR = SynchedEntityData.defineId(
-        AbstractHuman.class,
-        EntityDataSerializers.INT
-    );
+    public final DataAccessor<Integer> skinColor;
 
     protected final MovementAnalyzer movementAnalyzer;
 
@@ -75,6 +56,14 @@ public abstract class AbstractHuman extends PathfinderMob {
 
     public AbstractHuman(EntityType<? extends PathfinderMob> entityType, Level level) {
         super(entityType, level);
+
+        this.beardVariant = new DataAccessor<>(this, AVPDataKeys.MARINE_BEARD_VARIANT);
+        this.eyeColor = new DataAccessor<>(this, AVPDataKeys.MARINE_EYE_COLOR);
+        this.hairColor = new DataAccessor<>(this, AVPDataKeys.MARINE_HAIR_COLOR);
+        this.hairVariant = new DataAccessor<>(this, AVPDataKeys.MARINE_HAIR_VARIANT);
+        this.isMale = new DataAccessor<>(this, AVPDataKeys.MARINE_IS_MALE);
+        this.skinColor = new DataAccessor<>(this, AVPDataKeys.MARINE_SKIN_COLOR);
+
         this.movementAnalyzer = new MovementAnalyzer(this);
         this.navigationManager = new HumanNavigationManager(this, moveControl);
         this.humanFeatureManager = new HumanFeatureManager(this);
@@ -140,84 +129,21 @@ public abstract class AbstractHuman extends PathfinderMob {
         this.navigation = navigation;
     }
 
-    @Override
-    protected void defineSynchedData(@NotNull SynchedEntityData.Builder builder) {
-        super.defineSynchedData(builder);
-        builder.define(BEARD_VARIANT, 0);
-        builder.define(EYE_COLOR, 0xA1CAF1);
-        builder.define(HAIR_COLOR, 0x86462C);
-        builder.define(HAIR_VARIANT, 0);
-        builder.define(IS_MALE, true);
-        builder.define(SKIN_COLOR, 0xEED0B6);
-    }
-
-    @Override
-    public void readAdditionalSaveData(@NotNull CompoundTag compoundTag) {
-        super.readAdditionalSaveData(compoundTag);
-        humanFeatureManager.load(compoundTag);
-    }
-
-    @Override
-    public void addAdditionalSaveData(@NotNull CompoundTag compoundTag) {
-        super.addAdditionalSaveData(compoundTag);
-        humanFeatureManager.save(compoundTag);
-    }
-
     public HumanFeatureManager getHumanFeatureManager() {
         return humanFeatureManager;
     }
 
     public Option<Integer> getBeardVariant() {
-        return isMale()
-            ? Option.some(entityData.get(BEARD_VARIANT))
+        return isMale.get()
+            ? Option.some(beardVariant.get())
             : Option.none();
     }
 
     public void setBeardVariant(int variantIndex) {
-        if (!isMale()) {
+        if (!isMale.get()) {
             return;
         }
 
-        entityData.set(BEARD_VARIANT, variantIndex);
-    }
-
-    public int getEyeColor() {
-        return entityData.get(EYE_COLOR);
-    }
-
-    public void setEyeColor(int eyeColor) {
-        entityData.set(EYE_COLOR, eyeColor);
-    }
-
-    public int getHairColor() {
-        return entityData.get(HAIR_COLOR);
-    }
-
-    public void setHairColor(int hairColor) {
-        entityData.set(HAIR_COLOR, hairColor);
-    }
-
-    public int getHairVariant() {
-        return entityData.get(HAIR_VARIANT);
-    }
-
-    public void setHairVariant(int variantIndex) {
-        entityData.set(HAIR_VARIANT, variantIndex);
-    }
-
-    public boolean isMale() {
-        return entityData.get(IS_MALE);
-    }
-
-    public void setMale(boolean isMale) {
-        entityData.set(IS_MALE, isMale);
-    }
-
-    public int getSkinColor() {
-        return entityData.get(SKIN_COLOR);
-    }
-
-    public void setSkinColor(int skinColor) {
-        entityData.set(SKIN_COLOR, skinColor);
+        beardVariant.set(variantIndex);
     }
 }

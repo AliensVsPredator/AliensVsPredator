@@ -1,11 +1,10 @@
 package com.avp.service;
 
-import com.alien.common.model.lifecycle.AlienLifecycle;
-import com.alien.common.model.lifecycle.infection.AlienInfection;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.core.Registry;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.server.packs.resources.PreparableReloadListener;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
@@ -29,12 +28,6 @@ public interface RegistryService {
 
     void registerCommand(LiteralArgumentBuilder<CommandSourceStack> literalArgumentBuilder);
 
-    <S extends LivingEntity, P extends LivingEntity> Supplier<AlienInfection<S, P>> registerAlienInfection(
-        Supplier<AlienInfection<S, P>> alienInfectionSupplier
-    );
-
-    Supplier<AlienLifecycle> registerAlienLifecycle(Supplier<AlienLifecycle> alienLifecycleSupplier);
-
     void registerAzureLibIdentity(Supplier<? extends Item> itemSupplier);
 
     void registerCompostableItem(
@@ -56,6 +49,8 @@ public interface RegistryService {
     <T extends CustomPacketPayload> void registerPacketHandlers(NetworkHandler<T> networkHandler);
 
     <T extends CustomPacketPayload> void registerPacketDirection(PacketDirection<T> packetDirection);
+
+    PreparableReloadListener registerReloadListener(String id, PreparableReloadListener listener);
 
     void registerVillagerTrade(
         Supplier<VillagerProfession> villagerProfessionSupplier,

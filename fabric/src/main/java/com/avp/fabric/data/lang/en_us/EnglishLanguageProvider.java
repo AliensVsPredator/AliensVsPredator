@@ -17,6 +17,7 @@ import com.avp.fabric.data.lang.en_us.provider.EnUsDamageTypeTagProvider;
 import com.avp.fabric.data.lang.en_us.provider.EnUsEnchantmentTagProvider;
 import com.avp.fabric.data.lang.en_us.provider.EnUsEntityProvider;
 import com.avp.fabric.data.lang.en_us.provider.EnUsEntityTypeTagProvider;
+import com.avp.fabric.data.lang.en_us.provider.EnUsGeneProvider;
 import com.avp.fabric.data.lang.en_us.provider.EnUsItemProvider;
 import com.avp.fabric.data.lang.en_us.provider.EnUsItemTagProvider;
 import com.avp.fabric.data.lang.en_us.provider.EnUsKeybindProvider;
@@ -45,6 +46,9 @@ public class EnglishLanguageProvider extends FabricLanguageProvider {
         // Entities
         EnUsEntityProvider.CONSUMER.accept(builder);
 
+        // Genes
+        EnUsGeneProvider.CONSUMER.accept(builder);
+
         // Items
         EnUsItemProvider.CONSUMER.accept(builder);
 
@@ -67,8 +71,10 @@ public class EnglishLanguageProvider extends FabricLanguageProvider {
 
         // Death messages
         builder.add("death.attack.acid", "%1$s vaporized in acid");
+        builder.add("death.attack.bullet", "%1$s was shot to death");
+        builder.add("death.attack.chestbursting", "%1$s gave birth");
         builder.add("death.attack.radiation", "%1$s surrendered to radiation");
-        builder.add("death.attack.razor_wire", "%1$s was struck by razor wire");
+        builder.add("death.attack.razor_wire", "%1$s got tangled in razor wire");
         builder.add("death.attack.smothering", "%1$s was smothered to death");
 
         // Advancements

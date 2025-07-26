@@ -45,23 +45,23 @@ public class AVPNeoForgeClient {
     @SubscribeEvent
     public static void onClientSetup(FMLClientSetupEvent event) {
         CLIENT_REGISTRY.getArmorRendererPairs()
-            .forEach(pair -> CLIENT_REGISTRY.registerArmorRendererImmediately(pair.first(), pair.second()));
+            .forEach(pair -> CLIENT_REGISTRY.registerArmorRendererImmediately(pair.v1(), pair.v2()));
 
         CLIENT_REGISTRY.getItemRendererPairs()
-            .forEach(pair -> CLIENT_REGISTRY.registerItemRendererImmediately(pair.first().get(), pair.second()));
+            .forEach(pair -> CLIENT_REGISTRY.registerItemRendererImmediately(pair.v1().get(), pair.v2()));
 
         CLIENT_REGISTRY.getBlockRenderLayerPairs()
-            .forEach(pair -> ItemBlockRenderTypes.setRenderLayer(pair.first().get(), pair.second()));
+            .forEach(pair -> ItemBlockRenderTypes.setRenderLayer(pair.v1().get(), pair.v2()));
     }
 
     @SubscribeEvent
     public static void registerItemColors(RegisterColorHandlersEvent.Item event) {
         CLIENT_REGISTRY.getItemColorPairs()
             .forEach(
-                pair -> pair.second()
+                pair -> pair.v2()
                     .forEach(
                         itemSupplier -> event.getItemColors()
-                            .register(pair.first(), itemSupplier.get())
+                            .register(pair.v1(), itemSupplier.get())
                     )
             );
     }
@@ -71,18 +71,18 @@ public class AVPNeoForgeClient {
         // Entities
         CLIENT_REGISTRY.getEntityRendererPairs()
             .forEach(pair -> {
-                var entityType = pair.first().get();
+                var entityType = pair.v1().get();
                 @SuppressWarnings("unchecked")
-                var entityRendererProvider = (EntityRendererProvider<Entity>) pair.second();
+                var entityRendererProvider = (EntityRendererProvider<Entity>) pair.v2();
                 event.registerEntityRenderer(entityType, entityRendererProvider);
             });
 
         // Block Entities
         CLIENT_REGISTRY.getBlockEntityRendererPairs()
             .forEach(pair -> {
-                var blockEntityType = pair.first().get();
+                var blockEntityType = pair.v1().get();
                 @SuppressWarnings("unchecked")
-                var blockEntityRendererProvider = (BlockEntityRendererProvider<BlockEntity>) pair.second();
+                var blockEntityRendererProvider = (BlockEntityRendererProvider<BlockEntity>) pair.v2();
                 event.registerBlockEntityRenderer(blockEntityType, blockEntityRendererProvider);
             });
     }
@@ -90,15 +90,15 @@ public class AVPNeoForgeClient {
     @SubscribeEvent
     public static void registerBindings(RegisterKeyMappingsEvent event) {
         CLIENT_REGISTRY.getKeyMappingHandlerPairSuppliers()
-            .forEach(keyMappingSupplier -> event.register(keyMappingSupplier.get().first()));
+            .forEach(keyMappingSupplier -> event.register(keyMappingSupplier.get().v1()));
     }
 
     // Game bus event.
     public static void onClientTick(ClientTickEvent.Post event) {
         CLIENT_REGISTRY.getKeyMappingHandlerPairSuppliers()
             .forEach(keyMappingSupplier -> {
-                var keyMapping = keyMappingSupplier.get().first();
-                var keyInteractTypeConsumer = keyMappingSupplier.get().second();
+                var keyMapping = keyMappingSupplier.get().v1();
+                var keyInteractTypeConsumer = keyMappingSupplier.get().v2();
 
                 KeyPressHandler.handle(keyMapping, keyInteractTypeConsumer);
             });
@@ -108,9 +108,9 @@ public class AVPNeoForgeClient {
     public static void registerMenuScreens(RegisterMenuScreensEvent event) {
         CLIENT_REGISTRY.getMenuScreenConstructorPairs()
             .forEach(pair -> {
-                var menuType = pair.first().get();
+                var menuType = pair.v1().get();
                 @SuppressWarnings("unchecked")
-                var screenConstructor = (MenuScreens.ScreenConstructor<AbstractContainerMenu, ?>) pair.second();
+                var screenConstructor = (MenuScreens.ScreenConstructor<AbstractContainerMenu, ?>) pair.v2();
                 event.register(menuType, screenConstructor);
             });
     }
@@ -120,8 +120,8 @@ public class AVPNeoForgeClient {
     public static void registerParticleProviders(RegisterParticleProvidersEvent event) {
         CLIENT_REGISTRY.getParticleProviderFactoryPairs()
             .forEach(pair -> {
-                var particleType = (ParticleType<ParticleOptions>) pair.first().get();
-                var spriteParticleRegistration = (ParticleEngine.SpriteParticleRegistration<ParticleOptions>) pair.second();
+                var particleType = (ParticleType<ParticleOptions>) pair.v1().get();
+                var spriteParticleRegistration = (ParticleEngine.SpriteParticleRegistration<ParticleOptions>) pair.v2();
                 event.registerSpriteSet(particleType, spriteParticleRegistration);
             });
     }

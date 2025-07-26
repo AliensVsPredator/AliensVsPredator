@@ -78,14 +78,13 @@ public class AVPConfig {
 
         @Configurable
         @Configurable.Synchronized
-        @Configurable.Comment("Modifying these will require restarting the game.")
-        public SpawnSettings ABERRANT_DRONE_SPAWN = new SpawnSettings(true, 1, 2, 50);
+        @Configurable.Comment("Aberrant Crusher spawn settings. Modifying these will require restarting the game.")
+        public SpawnSettings ABERRANT_CRUSHER_SPAWN = new SpawnSettings(true, 1, 1, 10);
 
         @Configurable
         @Configurable.Synchronized
         @Configurable.Comment("Modifying these will require restarting the game.")
-        // TODO: Change this to "ABERRANT_OVOMORPH_SPAWN" with 0.2.0.
-        public SpawnSettings ABERRANT_OVAMORPH_SPAWN = new SpawnSettings(true, 1, 3, 10);
+        public SpawnSettings ABERRANT_DRONE_SPAWN = new SpawnSettings(true, 1, 2, 50);
 
         @Configurable
         @Configurable.Synchronized
@@ -94,8 +93,23 @@ public class AVPConfig {
 
         @Configurable
         @Configurable.Synchronized
+        @Configurable.Comment("Aberrant Prowler spawn settings. Modifying these will require restarting the game.")
+        public SpawnSettings ABERRANT_PROWLER_SPAWN = new SpawnSettings(true, 1, 2, 25);
+
+        @Configurable
+        @Configurable.Synchronized
         @Configurable.Comment("Aberrant Queen spawn settings. Modifying these will require restarting the game.")
         public SpawnSettings ABERRANT_QUEEN_SPAWN = new SpawnSettings(true, 1, 1, 5);
+
+        @Configurable
+        @Configurable.Synchronized
+        @Configurable.Comment("Modifying these will require restarting the game.")
+        public SpawnSettings ABERRANT_RUNNER_SPAWN = new SpawnSettings(true, 1, 2, 50);
+
+        @Configurable
+        @Configurable.Synchronized
+        @Configurable.Comment("Aberrant Spitter spawn settings. Modifying these will require restarting the game.")
+        public SpawnSettings ABERRANT_SPITTER_SPAWN = new SpawnSettings(true, 1, 2, 15);
 
         @Configurable
         @Configurable.Synchronized
@@ -109,8 +123,18 @@ public class AVPConfig {
 
         @Configurable
         @Configurable.Synchronized
+        @Configurable.Comment("Crusher spawn settings. Modifying these will require restarting the game.")
+        public SpawnSettings CRUSHER_SPAWN = new SpawnSettings(true, 1, 1, 10);
+
+        @Configurable
+        @Configurable.Synchronized
         @Configurable.Comment("Modifying these will require restarting the game.")
         public SpawnSettings DRONE_SPAWN = new SpawnSettings(true, 1, 2, 50);
+
+        @Configurable
+        @Configurable.Synchronized
+        @Configurable.Comment("Irradiated Crusher spawn settings. Modifying these will require restarting the game.")
+        public SpawnSettings IRRADIATED_CRUSHER_SPAWN = new SpawnSettings(true, 1, 1, 10);
 
         @Configurable
         @Configurable.Synchronized
@@ -124,8 +148,18 @@ public class AVPConfig {
 
         @Configurable
         @Configurable.Synchronized
+        @Configurable.Comment("Irradiated Prowler spawn settings. Modifying these will require restarting the game.")
+        public SpawnSettings IRRADIATED_PROWLER_SPAWN = new SpawnSettings(true, 1, 2, 25);
+
+        @Configurable
+        @Configurable.Synchronized
         @Configurable.Comment("Irradiated Queen spawn settings. Modifying these will require restarting the game.")
         public SpawnSettings IRRADIATED_QUEEN_SPAWN = new SpawnSettings(true, 1, 1, 5);
+
+        @Configurable
+        @Configurable.Synchronized
+        @Configurable.Comment("Irradiated Runner spawn settings. Modifying these will require restarting the game.")
+        public SpawnSettings IRRADIATED_RUNNER_SPAWN = new SpawnSettings(true, 1, 2, 50);
 
         @Configurable
         @Configurable.Synchronized
@@ -141,14 +175,13 @@ public class AVPConfig {
 
         @Configurable
         @Configurable.Synchronized
-        @Configurable.Comment("Modifying these will require restarting the game.")
-        public SpawnSettings NETHER_DRONE_SPAWN = new SpawnSettings(true, 1, 2, 50);
+        @Configurable.Comment("Nether Crusher spawn settings. Modifying these will require restarting the game.")
+        public SpawnSettings NETHER_CRUSHER_SPAWN = new SpawnSettings(true, 1, 1, 10);
 
         @Configurable
         @Configurable.Synchronized
         @Configurable.Comment("Modifying these will require restarting the game.")
-        // TODO: Change this to "NETHER_OVOMORPH_SPAWN" with 0.2.0.
-        public SpawnSettings NETHER_OVAMORPH_SPAWN = new SpawnSettings(true, 1, 3, 10);
+        public SpawnSettings NETHER_DRONE_SPAWN = new SpawnSettings(true, 1, 2, 50);
 
         @Configurable
         @Configurable.Synchronized
@@ -157,8 +190,23 @@ public class AVPConfig {
 
         @Configurable
         @Configurable.Synchronized
+        @Configurable.Comment("Nether Prowler spawn settings. Modifying these will require restarting the game.")
+        public SpawnSettings NETHER_PROWLER_SPAWN = new SpawnSettings(true, 1, 2, 25);
+
+        @Configurable
+        @Configurable.Synchronized
         @Configurable.Comment("Nether Queen spawn settings. Modifying these will require restarting the game.")
         public SpawnSettings NETHER_QUEEN_SPAWN = new SpawnSettings(true, 1, 1, 5);
+
+        @Configurable
+        @Configurable.Synchronized
+        @Configurable.Comment("Modifying these will require restarting the game.")
+        public SpawnSettings NETHER_RUNNER_SPAWN = new SpawnSettings(true, 1, 2, 50);
+
+        @Configurable
+        @Configurable.Synchronized
+        @Configurable.Comment("Nether Spitter spawn settings. Modifying these will require restarting the game.")
+        public SpawnSettings NETHER_SPITTER_SPAWN = new SpawnSettings(true, 1, 2, 15);
 
         @Configurable
         @Configurable.Synchronized
@@ -167,19 +215,28 @@ public class AVPConfig {
 
         @Configurable
         @Configurable.Synchronized
-        @Configurable.Comment("Ovomorph spawn settings. Modifying these will require restarting the game.")
-        // TODO: Change this to "ovomorph" with 0.2.0.
-        public SpawnSettings OVAMORPH_SPAWN = new SpawnSettings(true, 1, 3, 25);
-
-        @Configurable
-        @Configurable.Synchronized
         @Configurable.Comment("Praetorian spawn settings. Modifying these will require restarting the game.")
         public SpawnSettings PRAETORIAN_SPAWN = new SpawnSettings(true, 1, 1, 10);
 
         @Configurable
         @Configurable.Synchronized
+        @Configurable.Comment("Prowler spawn settings. Modifying these will require restarting the game.")
+        public SpawnSettings PROWLER_SPAWN = new SpawnSettings(true, 1, 2, 25);
+
+        @Configurable
+        @Configurable.Synchronized
         @Configurable.Comment("Queen spawn settings. Modifying these will require restarting the game.")
         public SpawnSettings QUEEN_SPAWN = new SpawnSettings(true, 1, 1, 5);
+
+        @Configurable
+        @Configurable.Synchronized
+        @Configurable.Comment("Modifying these will require restarting the game.")
+        public SpawnSettings RUNNER_SPAWN = new SpawnSettings(true, 1, 2, 50);
+
+        @Configurable
+        @Configurable.Synchronized
+        @Configurable.Comment("Spitter spawn settings. Modifying these will require restarting the game.")
+        public SpawnSettings SPITTER_SPAWN = new SpawnSettings(true, 1, 2, 15);
 
         @Configurable
         @Configurable.Synchronized
@@ -252,6 +309,36 @@ public class AVPConfig {
         @Configurable
         @Configurable.Synchronized
         @Configurable.Comment("Modifying any of these will require restarting the game.")
+        public AdvancedStats ADOLESCENT_STATS = new AdvancedStats(
+            HealthConstants.ADOLESCENT_HEALTH,
+            AttackDamageConstants.ADOLESCENT_ATTACK_DAMAGE,
+            HealthRegenConstants.ADOLESCENT_HEALTH_REGEN,
+            KnockbackResistanceConstants.ADOLESCENT_KNOCKBACK_RESISTANCE,
+            MoveSpeedConstants.ADOLESCENT_SPEED,
+            0.0F,
+            0.0f,
+            750,
+            FollowRangeConstants.ADOLESCENT_FOLLOW_RANGE
+        );
+
+        @Configurable
+        @Configurable.Synchronized
+        @Configurable.Comment("Modifying any of these will require restarting the game.")
+        public AdvancedStats BOILER_STATS = new AdvancedStats(
+            HealthConstants.BOILER_HEALTH,
+            AttackDamageConstants.BOILER_ATTACK_DAMAGE,
+            HealthRegenConstants.BOILER_HEALTH_REGEN,
+            KnockbackResistanceConstants.BOILER_KNOCKBACK_RESISTANCE,
+            MoveSpeedConstants.BOILER_SPEED,
+            ArmorConstants.BOILER_ARMOR,
+            0.0f,
+            20,
+            FollowRangeConstants.BOILER_FOLLOW_RANGE
+        );
+
+        @Configurable
+        @Configurable.Synchronized
+        @Configurable.Comment("Modifying any of these will require restarting the game.")
         public AdvancedStats FACEHUGGER_STATS = new AdvancedStats(
             HealthConstants.FACEHUGGER_HEALTH,
             0,
@@ -282,6 +369,21 @@ public class AVPConfig {
         @Configurable
         @Configurable.Synchronized
         @Configurable.Comment("Modifying any of these will require restarting the game.")
+        public AdvancedStats CRUSHER_STATS = new AdvancedStats(
+            HealthConstants.CRUSHER_HEALTH,
+            AttackDamageConstants.CRUSHER_ATTACK_DAMAGE,
+            HealthRegenConstants.CRUSHER_HEALTH_REGEN,
+            KnockbackResistanceConstants.CRUSHER_KNOCKBACK_RESISTANCE,
+            MoveSpeedConstants.CRUSHER_SPEED,
+            ArmorConstants.CRUSHER_ARMOR,
+            ArmorToughnessConstants.CRUSHER_ARMOR_TOUGHNESS,
+            80,
+            FollowRangeConstants.CRUSHER_FOLLOW_RANGE
+        );
+
+        @Configurable
+        @Configurable.Synchronized
+        @Configurable.Comment("Modifying any of these will require restarting the game.")
         public AdvancedStats DRONE_STATS = new AdvancedStats(
             HealthConstants.DRONE_HEALTH,
             AttackDamageConstants.DRONE_ATTACK_DAMAGE,
@@ -297,8 +399,7 @@ public class AVPConfig {
         @Configurable
         @Configurable.Synchronized
         @Configurable.Comment("Modifying any of these will require restarting the game.")
-        // TODO: Change this to "ovomorph" with 0.2.0.
-        public AdvancedStats OVAMORPH_STATS = new AdvancedStats(
+        public AdvancedStats OVOMORPH_STATS = new AdvancedStats(
             HealthConstants.OVOMORPH_HEALTH,
             0,
             HealthRegenConstants.OVOMORPH_HEALTH_REGEN,
@@ -328,6 +429,21 @@ public class AVPConfig {
         @Configurable
         @Configurable.Synchronized
         @Configurable.Comment("Modifying any of these will require restarting the game.")
+        public AdvancedStats PROWLER_STATS = new AdvancedStats(
+            HealthConstants.PROWLER_HEALTH,
+            AttackDamageConstants.PROWLER_ATTACK_DAMAGE,
+            HealthRegenConstants.PROWLER_HEALTH_REGEN,
+            KnockbackResistanceConstants.PROWLER_KNOCKBACK_RESISTANCE,
+            MoveSpeedConstants.PROWLER_SPEED,
+            ArmorConstants.PROWLER_ARMOR,
+            0.0f,
+            40,
+            FollowRangeConstants.PROWLER_FOLLOW_RANGE
+        );
+
+        @Configurable
+        @Configurable.Synchronized
+        @Configurable.Comment("Modifying any of these will require restarting the game.")
         public AdvancedStats QUEEN_STATS = new AdvancedStats(
             HealthConstants.QUEEN_HEALTH,
             AttackDamageConstants.QUEEN_ATTACK_DAMAGE,
@@ -338,6 +454,36 @@ public class AVPConfig {
             ArmorToughnessConstants.QUEEN_ARMOR_TOUGHNESS,
             10,
             FollowRangeConstants.QUEEN_FOLLOW_RANGE
+        );
+
+        @Configurable
+        @Configurable.Synchronized
+        @Configurable.Comment("Modifying any of these will require restarting the game.")
+        public AdvancedStats RUNNER_STATS = new AdvancedStats(
+            HealthConstants.RUNNER_HEALTH,
+            AttackDamageConstants.RUNNER_ATTACK_DAMAGE,
+            HealthRegenConstants.RUNNER_HEALTH_REGEN,
+            KnockbackResistanceConstants.RUNNER_KNOCKBACK_RESISTANCE,
+            MoveSpeedConstants.RUNNER_SPEED,
+            ArmorConstants.RUNNER_ARMOR,
+            0.0f,
+            20,
+            FollowRangeConstants.RUNNER_FOLLOW_RANGE
+        );
+
+        @Configurable
+        @Configurable.Synchronized
+        @Configurable.Comment("Modifying any of these will require restarting the game.")
+        public AdvancedStats SPITTER_STATS = new AdvancedStats(
+            HealthConstants.SPITTER_HEALTH,
+            AttackDamageConstants.SPITTER_ATTACK_DAMAGE,
+            HealthRegenConstants.SPITTER_HEALTH_REGEN,
+            KnockbackResistanceConstants.SPITTER_KNOCKBACK_RESISTANCE,
+            MoveSpeedConstants.SPITTER_SPEED,
+            ArmorConstants.SPITTER_ARMOR,
+            0.0f,
+            20,
+            FollowRangeConstants.SPITTER_FOLLOW_RANGE
         );
 
         @Configurable
@@ -521,31 +667,6 @@ public class AVPConfig {
         @Configurable.Synchronized
         @Configurable.Comment("Requires hive debugging to be enabled.")
         public boolean HIVE_DEBUG_HIGHLIGHT_ALL_MEMBERS = false;
-
-        @Configurable
-        @Configurable.Synchronized
-        @Configurable.Comment("Requires hive debugging to be enabled.")
-        public boolean HIVE_DEBUG_MARK_HIVE_CENTER = true;
-
-        @Configurable
-        @Configurable.Synchronized
-        public int CHESTBURSTER_MAX_GROWTH_TIMER_SECONDS = 1200;
-
-        @Configurable
-        @Configurable.Synchronized
-        public int DRONE_MAX_GROWTH_TIMER_SECONDS = 800;
-
-        @Configurable
-        @Configurable.Synchronized
-        public int WARRIOR_MAX_GROWTH_TIMER_SECONDS = 1600;
-
-        @Configurable
-        @Configurable.Synchronized
-        public int PRAETORIAN_MAX_GROWTH_TIMER_SECONDS = 3200;
-
-        @Configurable
-        @Configurable.Synchronized
-        public int PRAETORIAN_SHORTCUT_TIMER_SECONDS = 1800;
     }
 
     @Configurable

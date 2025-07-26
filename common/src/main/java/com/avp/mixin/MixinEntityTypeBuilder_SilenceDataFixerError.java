@@ -8,6 +8,7 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.flag.FeatureFlagSet;
 import net.minecraft.world.level.block.Block;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
@@ -17,9 +18,11 @@ import com.avp.common.registry.init.entity_type.SilencedEntityTypeBuilder;
 @Mixin(EntityType.Builder.class)
 public class MixinEntityTypeBuilder_SilenceDataFixerError implements SilencedEntityTypeBuilder {
 
+    @Final
     @Shadow
     private EntityType.EntityFactory<Entity> factory;
 
+    @Final
     @Shadow
     private MobCategory category;
 
@@ -59,7 +62,7 @@ public class MixinEntityTypeBuilder_SilenceDataFixerError implements SilencedEnt
     @Unique
     @Override
     @SuppressWarnings("unchecked")
-    public <T extends Entity> EntityType<T> buildWithoutDataFixerCheck() {
+    public <T extends Entity> EntityType<T> avp$buildWithoutDataFixerCheck() {
         return new EntityType<>(
             (EntityType.EntityFactory<T>) this.factory,
             this.category,

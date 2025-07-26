@@ -9,10 +9,10 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.level.Level;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import com.avp.AVP;
+import com.avp.common.registry.init.AVPSoundEvents;
 
 public class Praetorian extends Xenomorph {
 
@@ -24,7 +24,6 @@ public class Praetorian extends Xenomorph {
 
     public Praetorian(EntityType<? extends Praetorian> entityType, Level level) {
         super(entityType, level);
-        this.attackDelayTicks = 10;
         this.animationDispatcher = new PraetorianAnimationDispatcher(this);
         this.config = AVP.config.statsConfigs.PRAETORIAN_STATS;
     }
@@ -35,7 +34,7 @@ public class Praetorian extends Xenomorph {
     }
 
     @Override
-    protected @NotNull ResinData createResinData() {
+    protected @Nullable ResinData createResinData() {
         return new ResinData(0, 64, 1, AVP.config.statsConfigs.PRAETORIAN_STATS.nestTickrate);
     }
 
@@ -46,12 +45,14 @@ public class Praetorian extends Xenomorph {
 
     @Override
     public void runAttackAnimations() {
-        var isClawAttack = random.nextBoolean();
+        var attackType = random.nextInt(0, 3);
 
-        if (isClawAttack) {
-            animationDispatcher.clawAttack();
-        } else {
-            animationDispatcher.tailAttack();
+        playSound(AVPSoundEvents.ENTITY_XENOMORPH_ATTACK.get(), getSoundVolume(), (random.nextFloat() - random.nextFloat()) * 0.2F + 1.0F);
+
+        switch (attackType) {
+            case 0 -> animationDispatcher.rightClawAttack();
+            case 1 -> animationDispatcher.biteAttack();
+            default -> animationDispatcher.tailAttack();
         }
     }
 
@@ -68,7 +69,7 @@ public class Praetorian extends Xenomorph {
     }
 
     @Override
-    public int maxJellyToGrowth() {
+    public Integer getMaxJellyToGrowth() {
         return 9;
     }
 

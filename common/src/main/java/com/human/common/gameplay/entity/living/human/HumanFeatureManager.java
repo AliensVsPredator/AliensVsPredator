@@ -1,27 +1,13 @@
 package com.human.common.gameplay.entity.living.human;
 
-import com.bvanseg.just.functional.function.memo.BiMemo;
 import com.bvanseg.just.functional.function.memo.Memo;
+import com.bvanseg.just.functional.function.memo.Memo2;
 import com.bvanseg.just.functional.option.Option;
-import com.lib.common.gameplay.NBTSerializable;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 
 import com.avp.AVPResources;
 
-public class HumanFeatureManager implements NBTSerializable {
-
-    private static final String BEARD_VARIANT_KEY = "beardVariant";
-
-    private static final String EYE_COLOR_KEY = "eyeColor";
-
-    private static final String HAIR_COLOR_KEY = "hairColor";
-
-    private static final String HAIR_VARIANT_KEY = "hairVariant";
-
-    private static final String IS_MALE_KEY = "isMale";
-
-    private static final String SKIN_COLOR_KEY = "skinColor";
+public class HumanFeatureManager {
 
     private static final ResourceLocation EYES_TEXTURE_LOCATION = AVPResources.entityTextureLocation("human/generic/eyes/eyes");
 
@@ -31,7 +17,7 @@ public class HumanFeatureManager implements NBTSerializable {
     );
 
     // isMale, hair variant index -> hair texture location
-    private final BiMemo<Boolean, Integer, ResourceLocation> cachedHairTexture = new BiMemo<>(
+    private final Memo2<Boolean, Integer, ResourceLocation> cachedHairTexture = new Memo2<>(
         (isMale, hairVariantIndex) -> AVPResources.entityTextureLocation(
             "human/" + (isMale ? "male" : "female") + "/hair/hair_" + hairVariantIndex
         )
@@ -63,52 +49,14 @@ public class HumanFeatureManager implements NBTSerializable {
     }
 
     public ResourceLocation getHairTexture() {
-        return cachedHairTexture.apply(entity.isMale(), entity.getHairVariant());
+        return cachedHairTexture.apply(entity.isMale.get(), entity.hairVariant.get());
     }
 
     public ResourceLocation getOutfitTexture() {
-        return cachedOutfitTexture.apply(entity.isMale());
+        return cachedOutfitTexture.apply(entity.isMale.get());
     }
 
     public ResourceLocation getSkinTexture() {
-        return cachedSkinTexture.apply(entity.isMale());
-    }
-
-    @Override
-    public void load(CompoundTag compoundTag) {
-        if (compoundTag.contains(BEARD_VARIANT_KEY)) {
-            entity.setBeardVariant(compoundTag.getInt(BEARD_VARIANT_KEY));
-        }
-
-        if (compoundTag.contains(EYE_COLOR_KEY)) {
-            entity.setEyeColor(compoundTag.getInt(EYE_COLOR_KEY));
-        }
-
-        if (compoundTag.contains(HAIR_COLOR_KEY)) {
-            entity.setHairColor(compoundTag.getInt(HAIR_COLOR_KEY));
-        }
-
-        if (compoundTag.contains(HAIR_VARIANT_KEY)) {
-            entity.setHairVariant(compoundTag.getInt(HAIR_VARIANT_KEY));
-        }
-
-        if (compoundTag.contains(IS_MALE_KEY)) {
-            entity.setMale(compoundTag.getBoolean(IS_MALE_KEY));
-        }
-
-        if (compoundTag.contains(SKIN_COLOR_KEY)) {
-            entity.setSkinColor(compoundTag.getInt(SKIN_COLOR_KEY));
-        }
-    }
-
-    @Override
-    public void save(CompoundTag compoundTag) {
-        entity.getBeardVariant()
-            .ifSome(beardVariant -> compoundTag.putInt(BEARD_VARIANT_KEY, beardVariant));
-        compoundTag.putInt(EYE_COLOR_KEY, entity.getEyeColor());
-        compoundTag.putInt(HAIR_COLOR_KEY, entity.getHairColor());
-        compoundTag.putInt(HAIR_VARIANT_KEY, entity.getHairVariant());
-        compoundTag.putBoolean(IS_MALE_KEY, entity.isMale());
-        compoundTag.putInt(SKIN_COLOR_KEY, entity.getSkinColor());
+        return cachedSkinTexture.apply(entity.isMale.get());
     }
 }

@@ -13,16 +13,20 @@ public sealed interface GOAPExpression<T> {
         return new Contains<>(expected);
     }
 
+    static <T> DoesNotEqual<T> doesNotEqual(T expected) {
+        return new DoesNotEqual<>(expected);
+    }
+
+    static <T> Equals<T> equalTo(T expected) {
+        return new Equals<>(expected);
+    }
+
     static Equals<Boolean> isFalse() {
         return equalTo(false);
     }
 
     static Equals<Boolean> isTrue() {
         return equalTo(true);
-    }
-
-    static <T> Equals<T> equalTo(T expected) {
-        return new Equals<>(expected);
     }
 
     static <T extends Comparable<T>> LessThan<T> lessThan(T expected) {
@@ -63,6 +67,25 @@ public sealed interface GOAPExpression<T> {
         @Override
         public String toString() {
             return "contains " + expected;
+        }
+    }
+
+    final class DoesNotEqual<T> implements GOAPExpression<T> {
+
+        private final T expected;
+
+        private DoesNotEqual(T expected) {
+            this.expected = expected;
+        }
+
+        @Override
+        public boolean evaluate(@NotNull T actual) {
+            return !Objects.equals(expected, actual);
+        }
+
+        @Override
+        public String toString() {
+            return "does not equal " + expected;
         }
     }
 

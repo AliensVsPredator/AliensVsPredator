@@ -52,7 +52,7 @@ public class FacehuggerAnimator extends AzEntityAnimator<Facehugger> {
         var attachmentManager = facehugger.getAttachmentManager();
         var dispatcher = facehugger.getAnimationDispatcher();
 
-        if ((!attachmentManager.isFertile() && !attachmentManager.isAttachedToHost()) || facehugger.isDeadOrDying()) {
+        if ((!facehugger.isFertile.get() && !attachmentManager.isAttachedToHost()) || facehugger.isDeadOrDying()) {
             dispatcher.infertile();
             return;
         }
@@ -62,8 +62,7 @@ public class FacehuggerAnimator extends AzEntityAnimator<Facehugger> {
             return;
         }
 
-        var movementAnalyzer = facehugger.getMovementAnalyzer();
-        var isMovingOnGround = movementAnalyzer.isMovingHorizontally() && facehugger.onGround();
+        var isMovingOnGround = facehugger.isMovingHorizontally.get() && facehugger.onGround();
 
         if (facehugger.isUnderWater()) {
             // TODO: swim

@@ -17,29 +17,66 @@
     ],
     "subtitle": "subtitles.block.resin.spread"
   },
-  "entity.ovamorph.hatch": {
+  "effect.bone_crunch": {
     "sounds": [
-      "avp:entity/ovamorph/hatch/hatch"
+      "avp:effect/bone_crunch/bone_crunch_0",
+      "avp:effect/bone_crunch/bone_crunch_1"
     ],
-    "subtitle": "subtitles.entity.ovamorph.hatch"
+    "subtitle": "subtitles.effect.bone_crunch"
   },
-  "entity.ovamorph.laid": {
+  "effect.heartbeat.0": {
     "sounds": [
-      "avp:entity/ovamorph/laid/laid"
+      "avp:effect/heartbeat/heartbeat_0"
     ],
-    "subtitle": "subtitles.entity.ovamorph.laid"
+    "subtitle": "subtitles.effect.heartbeat.0"
   },
-  "entity.ovamorph.root": {
+  "effect.heartbeat.1": {
     "sounds": [
-      "avp:entity/ovamorph/root/root"
+      "avp:effect/heartbeat/heartbeat_1"
     ],
-    "subtitle": "subtitles.entity.ovamorph.root"
+    "subtitle": "subtitles.effect.heartbeat.1"
   },
-  "entity.ovamorph.shear": {
+  "effect.heartbeat.2": {
     "sounds": [
-      "avp:entity/ovamorph/shear/shear"
+      "avp:effect/heartbeat/heartbeat_2"
     ],
-    "subtitle": "subtitles.entity.ovamorph.shear"
+    "subtitle": "subtitles.effect.heartbeat.2"
+  },
+  "effect.heartbeat.3": {
+    "sounds": [
+      "avp:effect/heartbeat/heartbeat_3"
+    ],
+    "subtitle": "subtitles.effect.heartbeat.3"
+  },
+  "entity.chestburster.burst": {
+    "sounds": [
+      "avp:entity/chestburster/burst/burst"
+    ],
+    "subtitle": "subtitles.entity.chestburster.burst"
+  },
+  "entity.ovomorph.hatch": {
+    "sounds": [
+      "avp:entity/ovomorph/hatch/hatch"
+    ],
+    "subtitle": "subtitles.entity.ovomorph.hatch"
+  },
+  "entity.ovomorph.laid": {
+    "sounds": [
+      "avp:entity/ovomorph/laid/laid"
+    ],
+    "subtitle": "subtitles.entity.ovomorph.laid"
+  },
+  "entity.ovomorph.root": {
+    "sounds": [
+      "avp:entity/ovomorph/root/root"
+    ],
+    "subtitle": "subtitles.entity.ovomorph.root"
+  },
+  "entity.ovomorph.shear": {
+    "sounds": [
+      "avp:entity/ovomorph/shear/shear"
+    ],
+    "subtitle": "subtitles.entity.ovomorph.shear"
   },
   "entity.queen.arm_attack": {
     "sounds": [

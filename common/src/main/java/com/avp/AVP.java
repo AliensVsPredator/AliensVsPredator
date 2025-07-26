@@ -3,6 +3,7 @@ package com.avp;
 import com.alien.Alien;
 import com.human.Human;
 import com.human.common.gameplay.level.patrol.MarinePatrolSpawner;
+import com.lib.common.gameplay.gene.Genes;
 import com.predator.Predator;
 import mod.azure.azurelib.common.api.common.config.Config;
 import mod.azure.azurelib.common.internal.common.config.ConfigHolder;
@@ -14,6 +15,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.avp.common.config.AVPConfig;
+import com.avp.common.data.AVPReloadListeners;
+import com.avp.common.data.fixer.migration.AVPDataMigrations;
 import com.avp.common.gameplay.worldgen.biome.NukedAshPlacement;
 import com.avp.common.network.AVPPacketDirectionRegistry;
 import com.avp.common.network.AVPServerPacketHandlerRegistry;
@@ -21,6 +24,7 @@ import com.avp.common.registry.init.AVPArmorMaterials;
 import com.avp.common.registry.init.AVPBlockEntityTypes;
 import com.avp.common.registry.init.AVPCommands;
 import com.avp.common.registry.init.AVPCompostingChances;
+import com.avp.common.registry.init.AVPDataKeys;
 import com.avp.common.registry.init.AVPDecoratedPotPatterns;
 import com.avp.common.registry.init.AVPEntitySpawns;
 import com.avp.common.registry.init.AVPFuels;
@@ -76,6 +80,7 @@ public class AVP {
         AVPSoundEvents.initialize();
         AVPJukeboxSongKeys.initialize();
         AVPPacketDirectionRegistry.initialize();
+        AVPDataKeys.initialize();
         AVPServerPacketHandlerRegistry.initialize();
         AVPRecipes.initialize();
         AVPMobEffects.initialize();
@@ -88,6 +93,13 @@ public class AVP {
         AVPEntitySpawns.initialize();
         AVPFuels.initialize();
         AVPVillagerTrades.initialize();
+        Genes.initialize();
+
+        // Listeners/Events
+        AVPReloadListeners.initialize();
+
+        // Data Migration
+        AVPDataMigrations.initialize();
     }
 
     /**

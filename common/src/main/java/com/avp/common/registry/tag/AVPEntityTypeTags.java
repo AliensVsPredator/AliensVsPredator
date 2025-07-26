@@ -12,11 +12,15 @@ public class AVPEntityTypeTags {
 
     public static final TagKey<EntityType<?>> ACID_IMMUNE = create("acid_immune");
 
+    public static final TagKey<EntityType<?>> ADOLESCENTS = create("adolescents");
+
     public static final TagKey<EntityType<?>> ALIENS = create("aliens");
 
-    public static final TagKey<EntityType<?>> ANIMALS = create("animals");
+    public static final TagKey<EntityType<?>> ANSWERS_XENOMORPH_CRIES_FOR_HELP = create("answers_xenomorph_cries_for_help");
 
     public static final TagKey<EntityType<?>> CHESTBURSTERS = create("chestbursters");
+
+    public static final TagKey<EntityType<?>> CRUSHERS = create("crushers");
 
     public static final TagKey<EntityType<?>> DRONES = create("drones");
 
@@ -38,14 +42,15 @@ public class AVPEntityTypeTags {
 
     public static final TagKey<EntityType<?>> NORMAL_ALIENS = create("normal_aliens");
 
-    // TODO: Change this to "ovomorphs" with 0.2.0.
-    public static final TagKey<EntityType<?>> OVOMORPHS = create("ovamorphs");
+    public static final TagKey<EntityType<?>> OVOMORPHS = create("ovomorphs");
 
     public static final TagKey<EntityType<?>> PARASITES = create("parasites");
 
     public static final TagKey<EntityType<?>> PRAETORIANS = create("praetorians");
 
     public static final TagKey<EntityType<?>> PREDATORS = create("predators");
+
+    public static final TagKey<EntityType<?>> PROWLERS = create("prowlers");
 
     public static final TagKey<EntityType<?>> QUEENS = create("queens");
 
@@ -55,6 +60,10 @@ public class AVPEntityTypeTags {
 
     public static final TagKey<EntityType<?>> ROYAL_XENOMORPHS = create("royal_xenomorphs");
 
+    public static final TagKey<EntityType<?>> RUNNER_HOSTS = create("runner_hosts");
+
+    public static final TagKey<EntityType<?>> RUNNERS = create("runners");
+
     public static final TagKey<EntityType<?>> SPAWNS_IN_HIVE_DRONE_LAYER = create("spawns_in_hive_drone_layer");
 
     public static final TagKey<EntityType<?>> SPAWNS_IN_HIVE_PRAETORIAN_LAYER = create("spawns_in_hive_praetorian_layer");
@@ -62,6 +71,8 @@ public class AVPEntityTypeTags {
     public static final TagKey<EntityType<?>> SPAWNS_IN_HIVE_QUEEN_LAYER = create("spawns_in_hive_queen_layer");
 
     public static final TagKey<EntityType<?>> SPAWNS_IN_HIVE_WARRIOR_LAYER = create("spawns_in_hive_warrior_layer");
+
+    public static final TagKey<EntityType<?>> SPITTERS = create("spitters");
 
     public static final TagKey<EntityType<?>> WARRIORS = create("warriors");
 

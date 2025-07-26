@@ -2,49 +2,43 @@ package com.alien.common.gameplay.entity.living.alien.ovomorph;
 
 import com.alien.common.gameplay.entity.living.alien.parasite.facehugger.Facehugger;
 import com.alien.common.model.alien.HatchState;
-import com.lib.common.gameplay.NBTSerializable;
-import net.minecraft.nbt.CompoundTag;
+import com.lib.common.network.DataAccessor;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.Level;
 
 import com.avp.AVP;
+import com.avp.common.registry.init.AVPDataKeys;
 import com.avp.common.registry.init.AVPSoundEvents;
 
-public class HatchManager implements NBTSerializable {
+public class HatchManager {
 
-    private static final String HATCH_DURATION_IN_TICKS_KEY = "hatchDurationInTicks";
-
-    // TODO: Remove this in 0.2.0.
-    @Deprecated(forRemoval = true)
-    private static final String HATCHED_KEY = "hatched";
-
-    private static final String REMAINING_SPAWN_DELAY_IN_TICKS_KEY = "remainingSpawnDelayInTicks";
-
-    private static final String SPAWN_COUNT_KEY = "spawnCount";
+    private final HatchDesireManager hatchDesireManager;
 
     private final Ovomorph ovomorph;
 
-    private final int hatchDurationInTicks;
+    private final DataAccessor<Integer> remainingHatchDurationInTicks;
 
-    private final int spawnDelayInTicks;
+    private final DataAccessor<Integer> remainingSpawnDelayInTicks;
 
-    private int remainingHatchDurationInTicks;
-
-    private int remainingSpawnDelayInTicks;
-
-    private int spawnCount;
+    private final DataAccessor<Integer> spawnCount;
 
     public HatchManager(Ovomorph ovomorph, int hatchDurationInTicks, int spawnDelayInTicks) {
+        this.hatchDesireManager = new HatchDesireManager(ovomorph);
         this.ovomorph = ovomorph;
-        this.hatchDurationInTicks = hatchDurationInTicks;
-        this.remainingHatchDurationInTicks = hatchDurationInTicks;
-        this.spawnDelayInTicks = spawnDelayInTicks;
-        this.remainingSpawnDelayInTicks = spawnDelayInTicks;
-        this.spawnCount = 0;
+
+        this.remainingHatchDurationInTicks = new DataAccessor<>(ovomorph, AVPDataKeys.OVOMORPH_HATCH_DURATION_IN_TICKS);
+        remainingHatchDurationInTicks.set(hatchDurationInTicks);
+
+        this.remainingSpawnDelayInTicks = new DataAccessor<>(ovomorph, AVPDataKeys.OVOMORPH_REMAINING_SPAWN_DELAY_IN_TICKS);
+        remainingSpawnDelayInTicks.set(spawnDelayInTicks);
+
+        this.spawnCount = new DataAccessor<>(ovomorph, AVPDataKeys.OVOMORPH_SPAWN_COUNT);
     }
 
     public void tick() {
+        hatchDesireManager.tick();
+
         var level = ovomorph.level();
 
         if (
@@ -60,7 +54,7 @@ public class HatchManager implements NBTSerializable {
         }
 
         if (isHatching()) {
-            remainingHatchDurationInTicks = Math.max(remainingHatchDurationInTicks - 1, 0);
+            remainingHatchDurationInTicks.set(Math.max(remainingHatchDurationInTicks.get() - 1, 0));
         }
 
         if (!isReadyToSpawnFacehuggers()) {
@@ -70,25 +64,25 @@ public class HatchManager implements NBTSerializable {
         // The ovomorph has fully opened visually at this point, so set its state to hatched.
         ovomorph.setHatchState(HatchState.HATCHED);
 
-        var canSpawnMoreFacehuggers = spawnCount < ovomorph.getMaximumSpawnCount();
+        var canSpawnMoreFacehuggers = spawnCount.get() < ovomorph.maxSpawnCount.get();
 
         if (!canSpawnMoreFacehuggers) {
             return;
         }
 
-        remainingSpawnDelayInTicks = Math.max(remainingSpawnDelayInTicks - 1, 0);
+        remainingSpawnDelayInTicks.set(Math.max(remainingSpawnDelayInTicks.get() - 1, 0));
 
-        if (remainingSpawnDelayInTicks == 0) {
+        if (remainingSpawnDelayInTicks.get() == 0) {
             spawnFacehugger(level);
             // Reset spawn delay.
-            remainingSpawnDelayInTicks = spawnDelayInTicks;
+            remainingSpawnDelayInTicks.reset();
             // Increment the spawns created.
-            spawnCount++;
+            spawnCount.set(spawnCount.get() + 1);
         }
     }
 
     public boolean isReadyToSpawnFacehuggers() {
-        return remainingHatchDurationInTicks <= 0;
+        return remainingHatchDurationInTicks.get() <= 0;
     }
 
     public boolean isHatching() {
@@ -110,38 +104,14 @@ public class HatchManager implements NBTSerializable {
     }
 
     public void restore() {
-        this.spawnCount = 0;
-        this.remainingHatchDurationInTicks = hatchDurationInTicks;
-        this.remainingSpawnDelayInTicks = spawnDelayInTicks;
+        spawnCount.reset();
+        remainingHatchDurationInTicks.reset();
+        remainingSpawnDelayInTicks.reset();
         ovomorph.setHatchState(Ovomorph.DEFAULT_HATCH_STATE);
     }
 
-    @Override
-    public void load(CompoundTag compoundTag) {
-        if (compoundTag.contains(HATCH_DURATION_IN_TICKS_KEY)) {
-            this.remainingHatchDurationInTicks = compoundTag.getInt(HATCH_DURATION_IN_TICKS_KEY);
-        }
-
-        if (compoundTag.contains(REMAINING_SPAWN_DELAY_IN_TICKS_KEY)) {
-            this.remainingSpawnDelayInTicks = compoundTag.getInt(REMAINING_SPAWN_DELAY_IN_TICKS_KEY);
-        }
-
-        if (compoundTag.contains(SPAWN_COUNT_KEY)) {
-            this.spawnCount = compoundTag.getInt(SPAWN_COUNT_KEY);
-        }
-
-        // Here for backwards compatibility.
-        // TODO: Remove this in 0.2.0.
-        if (compoundTag.contains(HATCHED_KEY)) {
-            ovomorph.setHatchState(compoundTag.getBoolean(HATCHED_KEY) ? HatchState.HATCHING : Ovomorph.DEFAULT_HATCH_STATE);
-        }
-    }
-
-    @Override
-    public void save(CompoundTag compoundTag) {
-        compoundTag.putInt(HATCH_DURATION_IN_TICKS_KEY, remainingHatchDurationInTicks);
-        compoundTag.putInt(REMAINING_SPAWN_DELAY_IN_TICKS_KEY, remainingSpawnDelayInTicks);
-        compoundTag.putInt(SPAWN_COUNT_KEY, spawnCount);
+    public HatchDesireManager getHatchDesireManager() {
+        return hatchDesireManager;
     }
 
     private void spawnFacehugger(Level level) {
@@ -163,7 +133,9 @@ public class HatchManager implements NBTSerializable {
             return;
         }
 
-        facehugger.geneManager().setAll(ovomorph.geneManager().getAll());
+        ovomorph.getGeneManager()
+            .getGeneContainer()
+            .transfer(facehugger.getGeneManager().getGeneContainer(), false);
 
         var ovomorphAbovePos = ovomorph.blockPosition().above();
         var ovomorphSuffocatingAboveCheck = ovomorph.level()
@@ -181,6 +153,9 @@ public class HatchManager implements NBTSerializable {
         // Synchronize the visual body rotation.
         facehugger.yBodyRot = ovomorph.yBodyRot; // Body rotation
         facehugger.yHeadRot = ovomorph.yHeadRot; // Head rotation
+
+        // Make sure the facehugger persists after being released from the ovomorph.
+        facehugger.setPersistenceRequired();
 
         // Gives the facehugger a jump like movement if the block above is not a suffocating block.
         if (!ovomorphSuffocatingAboveCheck) {

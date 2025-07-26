@@ -1,58 +1,42 @@
 package com.compat.gigeresque.common.patch;
 
 import com.alien.common.model.alien.Host;
-import com.alien.common.registry.AlienInfectionRegistry;
+import com.alien.common.util.AlienEmbryoUtil;
 import com.compat.gigeresque.GigResources;
 import mods.cybercat.gigeresque.CommonMod;
 import mods.cybercat.gigeresque.common.item.GigItems;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 
+import com.avp.common.util.AVPPredicates;
+
 public class GigSurgeryKitPatch {
 
     public static void removeParasite(Player player, LivingEntity livingEntity, ItemStack itemStack) {
-        if (!(livingEntity instanceof Host host)) {
+        if (
+            // Entity is NOT a host...
+            !(livingEntity instanceof Host host)
+                // OR level is client side...
+                || player.level().isClientSide()
+                // OR the host doesn't have an embryo...
+                || !AVPPredicates.hasEmbryo(livingEntity)
+                // OR this item is not a Gigeresque surgery kit...
+                || !itemStack.is(GigItems.SURGERY_KIT.get())
+        ) {
+            // Then return.
             return;
         }
 
-        if (!itemStack.is(GigItems.SURGERY_KIT.get())) {
-            return;
+        var embryos = AlienEmbryoUtil.birthEmbryos(livingEntity);
+
+        if (!embryos.isEmpty()) {
+            // Removes the embryo without any side effects.
+            host.removeEmbryo();
+            // Apply surgery kit behavior after embryo is removed.
+            applySurgeryKitBehavior(player, livingEntity, itemStack);
         }
-
-        var parasiteType = host.getParasiteType();
-
-        if (parasiteType == null) {
-            return;
-        }
-
-        var alienInfection = AlienInfectionRegistry.get(livingEntity.getType(), parasiteType).unwrapOr(null);
-
-        if (alienInfection == null) {
-            return;
-        }
-
-        var embryoType = alienInfection.embryoType();
-
-        var embryo = embryoType.create(player.level());
-
-        if (!(embryo instanceof LivingEntity livingEmbryo)) {
-            return;
-        }
-
-        livingEmbryo.setPos(livingEntity.position());
-        player.level().addFreshEntity(livingEmbryo);
-
-        // TODO: This logic is duplicated elsewhere, need to unify this with other embryo ejection behavior.
-        for (var effect : livingEntity.getActiveEffects()) {
-            livingEmbryo.addEffect(new MobEffectInstance(effect));
-        }
-
-        host.clearParasiteType();
-
-        applySurgeryKitBehavior(player, livingEntity, itemStack);
     }
 
     private static void applySurgeryKitBehavior(Player player, LivingEntity livingEntity, ItemStack itemStack) {

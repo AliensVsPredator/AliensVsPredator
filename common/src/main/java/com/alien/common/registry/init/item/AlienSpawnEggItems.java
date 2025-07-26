@@ -8,11 +8,32 @@ import com.avp.common.registry.init.item.AVPSpawnEggItems;
 
 public class AlienSpawnEggItems {
 
+    public static final AVPDeferredHolder<Item> ABERRANT_ADOLESCENT_SPAWN_EGG = AVPSpawnEggItems.register(
+        "aberrant_adolescent",
+        AlienEntityTypes.ABERRANT_ADOLESCENT,
+        0xD9D9B8,
+        0xBFBF88
+    );
+
+    public static final AVPDeferredHolder<Item> ABERRANT_BOILER_SPAWN_EGG = AVPSpawnEggItems.register(
+        "aberrant_boiler",
+        AlienEntityTypes.ABERRANT_BOILER,
+        0xE5BF05,
+        0xD7D7DF
+    );
+
     public static final AVPDeferredHolder<Item> ABERRANT_CHESTBURSTER_SPAWN_EGG = AVPSpawnEggItems.register(
         "aberrant_chestburster",
         AlienEntityTypes.ABERRANT_CHESTBURSTER,
         0xD9D9B8,
         0xBFBF88
+    );
+
+    public static final AVPDeferredHolder<Item> ABERRANT_CRUSHER_SPAWN_EGG = AVPSpawnEggItems.register(
+        "aberrant_crusher",
+        AlienEntityTypes.ABERRANT_CRUSHER,
+        0xF1C810,
+        0xD7D7DF
     );
 
     public static final AVPDeferredHolder<Item> ABERRANT_DRONE_SPAWN_EGG = AVPSpawnEggItems.register(
@@ -30,8 +51,7 @@ public class AlienSpawnEggItems {
     );
 
     public static final AVPDeferredHolder<Item> ABERRANT_OVOMORPH_SPAWN_EGG = AVPSpawnEggItems.register(
-        // TODO: Change this to "ovomorph" with 0.2.0.
-        "aberrant_ovamorph",
+        "aberrant_ovomorph",
         AlienEntityTypes.ABERRANT_OVOMORPH,
         0x767139,
         0xC9C432
@@ -41,6 +61,27 @@ public class AlienSpawnEggItems {
         "aberrant_praetorian",
         AlienEntityTypes.ABERRANT_PRAETORIAN,
         0xF1C810,
+        0xD7D7DF
+    );
+
+    public static final AVPDeferredHolder<Item> ABERRANT_PROWLER_SPAWN_EGG = AVPSpawnEggItems.register(
+        "aberrant_prowler",
+        AlienEntityTypes.ABERRANT_PROWLER,
+        0xE5BF05,
+        0xD7D7DF
+    );
+
+    public static final AVPDeferredHolder<Item> ABERRANT_RUNNER_SPAWN_EGG = AVPSpawnEggItems.register(
+        "aberrant_runner",
+        AlienEntityTypes.ABERRANT_RUNNER,
+        0xE5BF05,
+        0xD7D7DF
+    );
+
+    public static final AVPDeferredHolder<Item> ABERRANT_SPITTER_SPAWN_EGG = AVPSpawnEggItems.register(
+        "aberrant_spitter",
+        AlienEntityTypes.ABERRANT_SPITTER,
+        0xE5BF05,
         0xD7D7DF
     );
 
@@ -58,11 +99,32 @@ public class AlienSpawnEggItems {
         0xD7D7DF
     );
 
+    public static final AVPDeferredHolder<Item> ADOLESCENT_SPAWN_EGG = AVPSpawnEggItems.register(
+        "adolescent",
+        AlienEntityTypes.ADOLESCENT,
+        0xD8B877,
+        0xF7E2B4
+    );
+
+    public static final AVPDeferredHolder<Item> BOILER_SPAWN_EGG = AVPSpawnEggItems.register(
+        "boiler",
+        AlienEntityTypes.BOILER,
+        0x010202,
+        0xDFE2E4
+    );
+
     public static final AVPDeferredHolder<Item> CHESTBURSTER_SPAWN_EGG = AVPSpawnEggItems.register(
         "chestburster",
         AlienEntityTypes.CHESTBURSTER,
         0xD8B877,
         0xF7E2B4
+    );
+
+    public static final AVPDeferredHolder<Item> CRUSHER_SPAWN_EGG = AVPSpawnEggItems.register(
+        "crusher",
+        AlienEntityTypes.CRUSHER,
+        0x010202,
+        0x363534
     );
 
     public static final AVPDeferredHolder<Item> DRONE_SPAWN_EGG = AVPSpawnEggItems.register(
@@ -79,6 +141,13 @@ public class AlienSpawnEggItems {
         0xA55863
     );
 
+    public static final AVPDeferredHolder<Item> IRRADIATED_CRUSHER_SPAWN_EGG = AVPSpawnEggItems.register(
+        "irradiated_crusher",
+        AlienEntityTypes.IRRADIATED_CRUSHER,
+        0xD5F2ED,
+        0x73D9CF
+    );
+
     public static final AVPDeferredHolder<Item> IRRADIATED_DRONE_SPAWN_EGG = AVPSpawnEggItems.register(
         "irradiated_drone",
         AlienEntityTypes.IRRADIATED_DRONE,
@@ -93,9 +162,23 @@ public class AlienSpawnEggItems {
         0x73D9CF
     );
 
+    public static final AVPDeferredHolder<Item> IRRADIATED_PROWLER_SPAWN_EGG = AVPSpawnEggItems.register(
+        "irradiated_prowler",
+        AlienEntityTypes.IRRADIATED_PROWLER,
+        0xD5F2ED,
+        0x73D9CF
+    );
+
     public static final AVPDeferredHolder<Item> IRRADIATED_QUEEN_SPAWN_EGG = AVPSpawnEggItems.register(
         "irradiated_queen",
         AlienEntityTypes.IRRADIATED_QUEEN,
+        0xD5F2ED,
+        0x73D9CF
+    );
+
+    public static final AVPDeferredHolder<Item> IRRADIATED_RUNNER_SPAWN_EGG = AVPSpawnEggItems.register(
+        "irradiated_runner",
+        AlienEntityTypes.IRRADIATED_RUNNER,
         0xD5F2ED,
         0x73D9CF
     );
@@ -107,11 +190,32 @@ public class AlienSpawnEggItems {
         0x73D9CF
     );
 
+    public static final AVPDeferredHolder<Item> NETHER_ADOLESCENT_SPAWN_EGG = AVPSpawnEggItems.register(
+        "nether_adolescent",
+        AlienEntityTypes.NETHER_ADOLESCENT,
+        0x360101,
+        0x803232
+    );
+
+    public static final AVPDeferredHolder<Item> NETHER_BOILER_SPAWN_EGG = AVPSpawnEggItems.register(
+        "nether_boiler",
+        AlienEntityTypes.NETHER_BOILER,
+        0x360101,
+        0x803232
+    );
+
     public static final AVPDeferredHolder<Item> NETHER_CHESTBURSTER_SPAWN_EGG = AVPSpawnEggItems.register(
         "nether_chestburster",
         AlienEntityTypes.NETHER_CHESTBURSTER,
         0x360101,
         0x803232
+    );
+
+    public static final AVPDeferredHolder<Item> NETHER_CRUSHER_SPAWN_EGG = AVPSpawnEggItems.register(
+        "nether_crusher",
+        AlienEntityTypes.NETHER_CRUSHER,
+        0x310808,
+        0x5d1f1f
     );
 
     public static final AVPDeferredHolder<Item> NETHER_DRONE_SPAWN_EGG = AVPSpawnEggItems.register(
@@ -129,8 +233,7 @@ public class AlienSpawnEggItems {
     );
 
     public static final AVPDeferredHolder<Item> NETHER_OVOMORPH_SPAWN_EGG = AVPSpawnEggItems.register(
-        // TODO: Change this to "ovomorph" with 0.2.0.
-        "nether_ovamorph",
+        "nether_ovomorph",
         AlienEntityTypes.NETHER_OVOMORPH,
         0x20131C,
         0xFCEE4B
@@ -141,6 +244,27 @@ public class AlienSpawnEggItems {
         AlienEntityTypes.NETHER_PRAETORIAN,
         0x310808,
         0x5d1f1f
+    );
+
+    public static final AVPDeferredHolder<Item> NETHER_PROWLER_SPAWN_EGG = AVPSpawnEggItems.register(
+        "nether_prowler",
+        AlienEntityTypes.NETHER_PROWLER,
+        0x360101,
+        0x803232
+    );
+
+    public static final AVPDeferredHolder<Item> NETHER_RUNNER_SPAWN_EGG = AVPSpawnEggItems.register(
+        "nether_runner",
+        AlienEntityTypes.NETHER_RUNNER,
+        0x360101,
+        0x803232
+    );
+
+    public static final AVPDeferredHolder<Item> NETHER_SPITTER_SPAWN_EGG = AVPSpawnEggItems.register(
+        "nether_spitter",
+        AlienEntityTypes.NETHER_SPITTER,
+        0x360101,
+        0x803232
     );
 
     public static final AVPDeferredHolder<Item> NETHER_WARRIOR_SPAWN_EGG = AVPSpawnEggItems.register(
@@ -158,8 +282,7 @@ public class AlienSpawnEggItems {
     );
 
     public static final AVPDeferredHolder<Item> OVOMORPH_SPAWN_EGG = AVPSpawnEggItems.register(
-        // TODO: Change this to "ovomorph" with 0.2.0.
-        "ovamorph",
+        "ovomorph",
         AlienEntityTypes.OVOMORPH,
         0x615B45,
         0xBF7872
@@ -172,11 +295,25 @@ public class AlienSpawnEggItems {
         0x363534
     );
 
+    public static final AVPDeferredHolder<Item> PROWLER_SPAWN_EGG = AVPSpawnEggItems.register(
+        "prowler",
+        AlienEntityTypes.PROWLER,
+        0x010202,
+        0xDFE2E4
+    );
+
     public static final AVPDeferredHolder<Item> QUEEN_SPAWN_EGG = AVPSpawnEggItems.register(
         "queen",
         AlienEntityTypes.QUEEN,
         0x010202,
         0x363534
+    );
+
+    public static final AVPDeferredHolder<Item> ROYAL_ABERRANT_ADOLESCENT_SPAWN_EGG = AVPSpawnEggItems.register(
+        "royal_aberrant_adolescent",
+        AlienEntityTypes.ROYAL_ABERRANT_ADOLESCENT,
+        0x706c36,
+        0xd3cf51
     );
 
     public static final AVPDeferredHolder<Item> ROYAL_ABERRANT_CHESTBURSTER_SPAWN_EGG = AVPSpawnEggItems.register(
@@ -194,18 +331,17 @@ public class AlienSpawnEggItems {
     );
 
     public static final AVPDeferredHolder<Item> ROYAL_ABERRANT_OVOMORPH_SPAWN_EGG = AVPSpawnEggItems.register(
-        // TODO: Change this to "ovomorph" with 0.2.0.
-        "royal_aberrant_ovamorph",
+        "royal_aberrant_ovomorph",
         AlienEntityTypes.ROYAL_ABERRANT_OVOMORPH,
         0x706c36,
         0xd3cf51
     );
 
-    public static final AVPDeferredHolder<Item> ROYAL_NETHER_CHESTBURSTER_SPAWN_EGG = AVPSpawnEggItems.register(
-        "royal_nether_chestburster",
-        AlienEntityTypes.ROYAL_NETHER_CHESTBURSTER,
-        0x331715,
-        0xfcee4b
+    public static final AVPDeferredHolder<Item> ROYAL_ADOLESCENT_SPAWN_EGG = AVPSpawnEggItems.register(
+        "royal_adolescent",
+        AlienEntityTypes.ROYAL_ADOLESCENT,
+        0x29140a,
+        0xe6b57b
     );
 
     public static final AVPDeferredHolder<Item> ROYAL_CHESTBURSTER_SPAWN_EGG = AVPSpawnEggItems.register(
@@ -213,6 +349,20 @@ public class AlienSpawnEggItems {
         AlienEntityTypes.ROYAL_CHESTBURSTER,
         0x29140a,
         0xe6b57b
+    );
+
+    public static final AVPDeferredHolder<Item> ROYAL_NETHER_ADOLESCENT_SPAWN_EGG = AVPSpawnEggItems.register(
+        "royal_nether_adolescent",
+        AlienEntityTypes.ROYAL_NETHER_ADOLESCENT,
+        0x331715,
+        0xfcee4b
+    );
+
+    public static final AVPDeferredHolder<Item> ROYAL_NETHER_CHESTBURSTER_SPAWN_EGG = AVPSpawnEggItems.register(
+        "royal_nether_chestburster",
+        AlienEntityTypes.ROYAL_NETHER_CHESTBURSTER,
+        0x331715,
+        0xfcee4b
     );
 
     public static final AVPDeferredHolder<Item> ROYAL_FACEHUGGER_SPAWN_EGG = AVPSpawnEggItems.register(
@@ -230,19 +380,31 @@ public class AlienSpawnEggItems {
     );
 
     public static final AVPDeferredHolder<Item> ROYAL_NETHER_OVOMORPH_SPAWN_EGG = AVPSpawnEggItems.register(
-        // TODO: Change this to "ovomorph" with 0.2.0.
-        "royal_nether_ovamorph",
+        "royal_nether_ovomorph",
         AlienEntityTypes.ROYAL_NETHER_OVOMORPH,
         0x331715,
         0xfcee4b
     );
 
     public static final AVPDeferredHolder<Item> ROYAL_OVOMORPH_SPAWN_EGG = AVPSpawnEggItems.register(
-        // TODO: Change this to "ovomorph" with 0.2.0.
-        "royal_ovamorph",
+        "royal_ovomorph",
         AlienEntityTypes.ROYAL_OVOMORPH,
         0x2a2918,
         0x34341f
+    );
+
+    public static final AVPDeferredHolder<Item> RUNNER_SPAWN_EGG = AVPSpawnEggItems.register(
+        "runner",
+        AlienEntityTypes.RUNNER,
+        0x010202,
+        0xDFE2E4
+    );
+
+    public static final AVPDeferredHolder<Item> SPITTER_SPAWN_EGG = AVPSpawnEggItems.register(
+        "spitter",
+        AlienEntityTypes.SPITTER,
+        0x010202,
+        0xDFE2E4
     );
 
     public static final AVPDeferredHolder<Item> WARRIOR_SPAWN_EGG = AVPSpawnEggItems.register(

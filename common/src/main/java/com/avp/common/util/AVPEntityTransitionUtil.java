@@ -56,7 +56,6 @@ public class AVPEntityTransitionUtil {
         oldEntity.save(oldEntityData);
 
         // Step 2: Removes specific fields that shouldn't be copied.
-        // Entity id shouldn't carry over since we're creating a new entity.
         blacklistedKeys.forEach(oldEntityData::remove);
 
         // Step 3: Load the data into the new entity.

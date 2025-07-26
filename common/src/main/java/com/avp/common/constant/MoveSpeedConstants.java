@@ -12,7 +12,13 @@ public record MoveSpeedConstants() {
     public static final float PLAYER_SPRINT_JUMP_SPEED = PLAYER_SPRINT_SPEED * 1.15F;
 
     // Alien measurements
+    public static final float ADOLESCENT_SPEED = PLAYER_WALK_SPEED * 1.025F;
+
+    public static final float BOILER_SPEED = PLAYER_WALK_SPEED * 1F;
+
     public static final float CHESTBURSTER_SPEED = PLAYER_WALK_SPEED * 1.05F;
+
+    public static final float CRUSHER_SPEED = PLAYER_WALK_SPEED * 1.2F;
 
     public static final float DRONE_SPEED = PLAYER_WALK_SPEED * 1F;
 
@@ -20,7 +26,13 @@ public record MoveSpeedConstants() {
 
     public static final float PRAETORIAN_SPEED = PLAYER_WALK_SPEED * 1.2F;
 
+    public static final float PROWLER_SPEED = PLAYER_WALK_SPEED * 1.1F;
+
     public static final float QUEEN_SPEED = PLAYER_WALK_SPEED * 0.9F;
+
+    public static final float RUNNER_SPEED = PLAYER_WALK_SPEED * 1F;
+
+    public static final float SPITTER_SPEED = PLAYER_WALK_SPEED * 1.1F;
 
     public static final float WARRIOR_SPEED = PLAYER_WALK_SPEED * 1.1F;
 

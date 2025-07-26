@@ -1,170 +1,189 @@
-# v0.1.9
+# v0.2.0
 
 ## ☢️ Breaking Changes
-- Some (previously uncraftable) resin blocks have had their registry names changed:
-  - `resin_ribbed` -> `ribbed_resin`
-  - `resin_o` -> `resin_vent`
-  - `resin_smooth` -> `smooth_resin`
+- Renamed `avp:ovamorph` to `avp:ovomorph`.
+- Parasites no longer implant a parasite type into hosts, now implant correct embryo type.
+  - Previously, parasites would store their own entity type to a host. At the time of birth, the embryo type was then computed. This has been changed such that the embryo type is computed immediately and then stored.
+  - This means that any currently-infected hosts in your game *will not burst* and will need to be infected again.
 
 ## ✨ What's New
-- [Fabric] Now requires Fabric API `0.116.0+1.21.1`.
-- [Fabric] Now requires Fabric Loader `0.16.14`.
-- [NeoForge] Now requires NeoForge `21.1.173`.
-- Now requires AzureLib 3.0.20.
-- Added new tooltip hints to armor case item.
-- Added new tooltip hints to predator armor items.
-- Added new tooltip hints to nether chitin armor items.
-- Added new tooltip hints to plated nether chitin armor items.
-- Added new compatibility with the Gigeresque mod:
-  - Gigeresque's Surgery Kit item will now work on hosts infected with AVP aliens.
-- Added a new "event" for when queens spawn naturally in the world.
-  - When a queen spawns, nearby players will get an ominous message.
-  - A sound effect cue will also play when the queen spawns.
-  - This something we're testing for future features, feedback is (always) appreciated <3.
-- Added new alien blocks:
-  - Aberrant Chitin Block
-  - Aberrant Chitin Block Slab
-  - Aberrant Chitin Block Stairs
-  - Aberrant Chitin Block Wall
-  - Aberrant Chitin Bricks
-  - Aberrant Chitin Brick Slab
-  - Aberrant Chitin Brick Stairs
-  - Aberrant Chitin Brick Wall
-  - Aberrant Resin Bricks
-  - Aberrant Resin Brick Slab
-  - Aberrant Resin Brick Stairs
-  - Aberrant Resin Brick Wall
-  - Aberrant Resin Slab
-  - Aberrant Resin Stairs
-  - Aberrant Resin Vent
-  - Chiseled Aberrant Chitin
-  - Chiseled Aberrant Chitin (Embryo)
-  - Chiseled Chitin
-  - Chiseled Chitin (Embryo)
-  - Chiseled Nether Chitin
-  - Chiseled Nether Chitin (Embryo)
-  - Irradiated Chitin Block
-  - Irradiated Chitin Block Slab
-  - Irradiated Chitin Block Stairs
-  - Irradiated Chitin Block Wall
-  - Irradiated Chitin Bricks
-  - Irradiated Chitin Brick Slab
-  - Irradiated Chitin Brick Stairs
-  - Irradiated Chitin Brick Wall
-  - Irradiated Resin Bricks
-  - Irradiated Resin Brick Slab
-  - Irradiated Resin Brick Stairs
-  - Irradiated Resin Brick Wall
-  - Irradiated Resin Slab
-  - Irradiated Resin Stairs
-  - Irradiated Resin Vent
-  - Nether Chitin Block
-  - Nether Chitin Block Slab
-  - Nether Chitin Block Stairs
-  - Nether Chitin Block Wall
-  - Nether Chitin Bricks
-  - Nether Chitin Brick Slab
-  - Nether Chitin Brick Stairs
-  - Nether Chitin Brick Wall
-  - Nether Resin Bricks
-  - Nether Resin Brick Slab
-  - Nether Resin Brick Stairs
-  - Nether Resin Brick Wall
-  - Nether Resin Slab
-  - Nether Resin Stairs
-  - Nether Resin Vent
-  - Polished Aberrant Chitin
-  - Polished Aberrant Chitin Slab
-  - Polished Aberrant Chitin Stairs
-  - Polished Aberrant Chitin Wall
-  - Polished Chitin
-  - Polished Chitin Slab
-  - Polished Chitin Stairs
-  - Polished Chitin Wall
-  - Polished Nether Chitin
-  - Polished Nether Chitin Slab
-  - Polished Nether Chitin Stairs
-  - Polished Nether Chitin Wall
-  - Resin Brick Slab
-  - Resin Brick Stairs
-  - Resin Brick Wall
-  - Resin Slab
-  - Resin Stairs
-  - Ribbed Aberrant Resin
-  - Ribbed Irradiated Resin
-  - Ribbed Nether Resin
-  - Smooth Aberrant Resin
-  - Smooth Aberrant Resin Slab
-  - Smooth Aberrant Resin Stairs
-  - Smooth Aberrant Resin Wall
-  - Smooth Irradiated Resin
-  - Smooth Irradiated Resin Slab
-  - Smooth Irradiated Resin Stairs
-  - Smooth Irradiated Resin Wall
-  - Smooth Nether Resin
-  - Smooth Nether Resin Slab
-  - Smooth Nether Resin Stairs
-  - Smooth Nether Resin Wall
-  - Smooth Resin Slab
-  - Smooth Resin Stairs
-  - Smooth Resin Wall
-- Added keybind to allow players to crawl on demand.
-  - Player crawling already exists in vanilla, but there is no key to activate it on demand.
-  - This update adds a keybind (left alt) to crawl on demand. Player crawling will be important for future AVP updates.
+- Aliens now remember what host type they came from.
+- Added new running animations to all xenomorphs.
+- Nether aliens now set hurt targets on fire.
+- Added two new advancements:
+  - "Eviction" - Infected? Eat a chorus fruit to remove the embryo, saving yourself... and dooming the world.
+  - "Hive Buster" - Defeat an alien hive.
+- Revamped chestbursting:
+  - Heartbeats can now be heard by players minutes before they get chestbursted.
+  - The heartbeats get progressively faster the closer the player is to chestbursting.
+  - 8 seconds before death, the host (not just players) will emit bone crunching sfx and take (0.001 aka fake) damage.
+  - The player will also have confusion (nausea) 30 seconds before death.
+  - Upon death, a chestburster screech will play as the new killing machine enters the world.
+- Revamped genetics system:
+  - Gene bonuses are now datapacked.
+  - All hosts now provide gene bonuses.
+  - Gene bonuses now have a more noticeable impact to xenomorphs.
+  - Repeated injections will cause xenomorphs to turn aberrant.
+  - Further repeated injections will cause aberrant xenomorphs to turn into boilers.
+  - Poison jelly no longer turns royal ovomorphs into royal aberrant ovomorphs.
+  - Added a new "gene reader" item:
+    - Right-click (nearly) any mob to read their genes.
+    - Cycle through different modes to see different types of genes that a mob has.
+    - Bonus genes are genes a mob gives that never change. Syringes extract only bonus genes.
+    - Dormant genes are genes a mob has, but do not change the mob's stats/behavior.
+    - Active genes are genes a mob has and DO change the mob's stats/behavior.
+    - When the mob reproduces (animals mating or chestburster bursting), dormant genes become active genes.
+  - Added a new "syringe" item:
+    - Right-click (nearly) any mob to get their genes.
+    - Right-click any entity to add the genes to them.
+      - Added genes are "dormant" (do not apply immediately).
+      - Dormant genes only manifest on chestbursters born from hosts.
+      - Every injection makes the entity's and their offspring's genes "unstable". The more unstable the genes, the more negative effects each successive generation will have.
+      - Genes within the syringe can't be immediately seen. Use a gene reader to check the mob you're using a syringe on beforehand!
+- Ovomorphs now have hatching AI
+  - Ovomorphs now have a "desire" meter for hatching. 
+  - Changes in the environment (such as light) will increase the desire meter.
+  - Movement of nearby hosts will also increase the desire meter.
+- Added the queen's ovipositor/eggsack:
+  - Queens will create an ovipositor when they are in a hive and are "safe" (they aren't the only hive member).
+  - The queen will play a new animation when she is mounted on her ovipositor.
+  - Ovipositors are an entity and extend off of the queen. Other mobs will not attack the ovipositor.
+  - The queen requires a considerable amount of space as well as stable ground to create her ovipositor.
+  - Eggs no longer drop at the queen's feet, but instead at the end of the ovipositor.
+  - Egglaying has otherwise remained unchanged.
+- Drones (and the newly added runners) now distribute ovomorphs around the hive.
+  - Drones/runners like to place eggs with at least a 1-block gap between the eggs.
+  - Drones/runners will pick up eggs that are unrooted.
+  - When the drones/runners place the egg down at the new location, they will automatically root the egg in place.
+- Added new entities:
+  - Aberrant Adolescent
+  - Aberrant Boiler
+  - Aberrant Crusher
+  - Aberrant Prowler
+  - Aberrant Runner
+  - Aberrant Spitter
+  - Adolescent
+  - Boiler
+  - Crusher
+  - Irradiated Crusher
+  - Irradiated Prowler
+  - Irradiated Runner
+  - Nether Adolescent
+  - Nether Boiler
+  - Nether Crusher
+  - Nether Prowler
+  - Nether Runner
+  - Nether Spitter
+  - Ovipositor
+  - Prowler
+  - Royal Aberrant Adolescent
+  - Royal Adolescent
+  - Royal Nether Adolescent
+  - Runner
+  - Spitter
 
 ## ♻️ Changes
-- Disabled armor case menu (for now, until it is fixed).
-- Iron-like ingots can now be used to craft industrial furnaces.
-- Iron-like ingots can now be used to craft razor wire.
-- Increased the damage dealt by old painless by 2x, making it the highest DPS weapon in the game.
-- Old painless now consumes 6 bullets per shot instead of 1.
-- Reduced queen resin generation per tick (10 -> 1).
-- Refactored queen spawn chunk blacklisting system:
-  - When a hive is defeated, chunks around the hive will now be blacklisted from spawning natural queens.
+- Predators no longer spawn naturally in jungles.
+- All aliens can now detect vibrations (instead of just xenomorphs).
+- Chestbursters can no longer be trapped in boats and minecarts.
+- Facehuggers can no longer be trapped in boats and minecarts.
+- Improved razor wire death message.
+- Poison jelly no longer turns royal ovomorphs into royal aberrant ovomorphs.
+- Same-strain, different-hive xenos now no longer kill each other.
+- Hive centers now constantly move with the hive leader.
+- Updated the chestbursting death message to have a proper, better-fitting message.
+- Irradiated acid now only converts blocks to ice when the blocks are destroyed.
+- Nether acid now sets air blocks above them on fire.
+- Resin web now stops player vertical movement if player eye height is in resin web.
+- Increased flamethrower DPS by a factor of 100 (0.02dps to 20dps).
+- Reduced predator hitbox width (0.98 to 0.7).
+- Reworked how royal jelly item and royal jelly blocks are used:
+  - Hatched ovomorphs can no longer be revived with royal jelly.
+  - Infertile facehuggers can no longer be revived with royal jelly.
+  - Aliens that have been given royal jelly or royal jelly blocks will no longer despawn.
+  - Praetorians can now be given regular royal jelly.
+  - All xenomorphs can now be given royal jelly blocks.
+  - Queens can no longer be given royal jelly or royal jelly blocks.
+  - Royal jelly blocks now **add** 9 royal jelly to aliens instead of setting their royal jelly to 10.
+  - Aliens no longer have their royal jelly count reset when growing up, but merely the royal jelly growth cost subtracted.
+  - Poison jelly is no longer usable on aliens that can't grow any further.
+  - Royal jelly items and royal jelly blocks can no longer be used on poisoned aliens.
+- Alien collision interactions have been changed:
+  - Ovomorphs no longer collide with non-ovomorph aliens.
+  - Facehuggers no longer collide with other aliens (including other facehuggers).
+  - Xenomorphs no longer collide with smaller aliens (facehuggers, chestbursters and adolescents).
+  - Queens no longer push other entities when she is on her ovipositor.
+- Improved facehugging effects:
+  - Effects now last 2 seconds longer (4 seconds total).
+  - Weakness is now applied to the host sooner (as soon as smothering damage finishes).
+  - Movement slowdown 100 is now applied after smothering damage finishes.
+- Ovomorphs no longer spawn naturally.
+  - Ovipositor is complete, natural ovomorph spawning is no longer necessary.
+- Hives will now merge with each other given certain conditions in the following order (most -> least important):
+  - Hives with a weaker leader will merge into hives with a stronger leader.
+  - Hives with a lower member count will merge into hives with a larger member count.
+  - Younger hives will merge into older hives.
+- Moved the following config options to datapack:
+  - `CHESTBURSTER_MAX_GROWTH_TIMER_SECONDS`
+  - `DRONE_MAX_GROWTH_TIMER_SECONDS`
+  - `PRAETORIAN_MAX_GROWTH_TIMER_SECONDS`
+  - `PRAETORIAN_SHORTCUT_TIMER_SECONDS`
+  - `WARRIOR_MAX_GROWTH_TIMER_SECONDS`
+- Removed the following config options:
+  - `ABERRANT_OVOMORPH_SPAWN`
+  - `NETHER_OVOMORPH_SPAWN`
+  - `OVOMORPH_SPAWN`
 
 ## 🐞 Fixes
-- Fixed gun block damage from players ignoring claimed chunks (and other cancelled player block break events).
-- Fixed old painless ammo consumption logic not accounting for consuming multiple bullets per shot.
-- Fixed chestbursters spreading resin like adult xenomorphs.
-- Fixed aberrant resin blocks not burning in fire or lava.
-- Fixed players eating chorus fruit while infected causing facehuggers to spawn instead of the correct embryo type.
-- Fixed aberrant resin being mineable with axes.
-- Fixed irradiated resin being mineable with axes.
-- Fixed the following blocks not dropping anything when mined:
-  - Ferroaluminum Plating Slab
-  - Ferroaluminum Plating Stairs
-  - Ferroaluminum Slab
-  - Ferroaluminum Stairs
-  - Ferroaluminum Tread Slab
-  - Ferroaluminum Tread Stairs
-  - Steel Plating Slab
-  - Steel Plating Stairs
-  - Steel Slab
-  - Steel Stairs
-  - Steel Tread Slab
-  - Steel Tread Stairs
-  - Titanium Plating Slab
-  - Titanium Plating Stairs
-  - Titanium Slab
-  - Titanium Stairs
-  - Titanium Tread Slab
-  - Titanium Tread Stairs
+- Fixed queens not transferring their genes to laid eggs.
+- Fixed potion effects carried over from host to embryo not being permanent.
+- Fixed entities being able to ride aliens (disabling their AI in the process).
+- Fixed embryos born from a host eating chorus fruit not persisting.
+- Fixed inconsistent potion effect behavior with embryos born from hosts eating chorus fruit.
+- Fixed aberrant chitin armors not counting towards chitin armor advancements.
+- Fixed aliens spreading resin while underwater.
+- Fixed alien attack animations not playing properly.
+- Fixed aliens having jittery animations when servers are lagging behind.
+- Fixed facehuggers not providing host air underwater.
+- Fixed marines having broken ground navigation.
+- Fixed marines not moving their heads to match where they are looking.
+- Fixed facehuggers not fully incapacitating marine hosts due to marines using a different AI system.
+- Fixed alien hitboxes being off while swimming.
+- Fixed praetorian count balancing including eggs, facehuggers, chestbursters and adolescents in formula.
+- Fixed aliens that do not grow up being able to consume an infinite amount of royal jelly.
+- Fixed facehuggers not persisting after hatching from ovomorphs.
+- Fixed block damage from guns, acid and aliens not resetting when the damaged block is broken or replaced.
+- Fixed xenomorphs trying to attack infected hosts that hurt them.
+- Fixed hive boss bar showing after players change dimensions.
+- Fixed irradiated acid destroying the following blocks:
+  - Chitin blocks
+  - Industrial Glass blocks
+  - Plastic blocks
+  - Non-Irradiated Resin blocks
+  - Air
+  - Fire
+  - Soul Fire
 
 ## 🛠 Data Pack
-- Renamed `#avp:facehugger_protection_helmet` item tag to `#avp:facehugger_resistant_helmets`.
-- Renamed `#avp:fire_resistant_armor` item tag to `#avp:fire_resistant_armors`.
-- Renamed `#avp:hostile_weapon` item tag to `#avp:hostile_weapons`.
-- Renamed `#avp:radiation_items` item tag to `#avp:radioactive_items`.
-- Renamed `#avp:radiation_resistant_armor` item tag to `#avp:radiation_resistant_armors`.
-- Renamed `#avp:predator_armor` item tag to `#avp:predator_armors`.
-- Added `#avp:aberrant_chitin_armor` item tag.
-- Added `#avp:irradiated_chitin_armor` item tag.
-- Added `#avp:normal_chitin_armor` item tag.
-- Added `#avp:plated_aberrant_chitin_armor` item tag.
-- Added `#avp:plated_irradiated_chitin_armor` item tag.
-- Added `#avp:plated_normal_chitin_armor` item tag.
-- Added `#avp:chitin_armors` item tag.
-- Added `#avp:plated_chitin_armors` item tag.
+- Added `#avp:runner_hosts` entity tag.
+- Added `#avp:runners` entity tag.
+- Added `#avp:prowlers` entity tag.
+- Added `#avp:crushers` entity tag.
+- Added `#avp:adolescents` entity tag.
+- Added `#avp:spitters` entity tag.
+- Added `#avp:answers_xenomorph_cries_for_help` entity tag.
+- Updated `#avp:hosts` to be composed of `#avp:runner_hosts` entity tag.
+- Updated `#avp:xenomorphs` tag to include new runner alien line entity tags and spitter entity tag.
+- Updated hive layer entity tags to include new runner alien line entity tags and spitter entity tag.
+- Updated variant entity tags to include new runner aliens, spitter alien and adolescent aliens.
 
 ## 🔬 Technical Changes
-- Added translations for all tags provided by the AVP mod.
+- Upgraded alien lifecycles to support host entity tags.
+- Added full datapack support for alien growth stages.
+- Alien lifecycle host entity tags have been migrated to individual alien growth stages.
+- Upgraded alien infections to support host entity tags.
+- Added full datapack support for alien infections.
+- Removed redundant royal data from aliens.
+- Added full datapack support for gene bonuses.
+- Alien gene manager now managed through a mixin (same as host gene managers).
+- Added `#avp:does_not_hurt_aliens` damage type tag.

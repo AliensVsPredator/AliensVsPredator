@@ -1,16 +1,23 @@
 package com.alien.common.gameplay.hive;
 
+import com.alien.common.data.AlienAdvancements;
+import com.alien.common.data.AlienVariantTypes;
 import com.alien.common.model.alien.variant.AlienVariant;
 import com.alien.common.util.AlienPredicates;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerBossEvent;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.BossEvent;
+import net.minecraft.world.Difficulty;
+import net.minecraft.world.entity.EntityType;
 
 import java.util.Arrays;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import com.avp.AVP;
@@ -36,11 +43,13 @@ public class HiveBossBarManager {
             )
         );
 
+    private static final Predicate<EntityType<?>> XENOMORPH_PREDICATE = entityType -> entityType.is(AVPEntityTypeTags.XENOMORPHS);
+
     private final Hive hive;
 
     private final ServerBossEvent bossEvent;
 
-    private int maximumSeenAlienCount;
+    private int maximumSeenXenomorphCount;
 
     public HiveBossBarManager(Hive hive) {
         this.bossEvent = (ServerBossEvent) new ServerBossEvent(
@@ -59,23 +68,24 @@ public class HiveBossBarManager {
     }
 
     private void updateBossBarProgress() {
-        var currentAlienCount = hive.getMembershipManager()
-            .getMembersMatching(entityType -> entityType.is(AVPEntityTypeTags.XENOMORPHS))
+        // Get all xenomorphs that are loaded in the world right now.
+        var loadedXenomorphCount = hive.getMembershipManager()
+            .getMembersMatching(XENOMORPH_PREDICATE)
             .size();
-        this.maximumSeenAlienCount = Math.max(maximumSeenAlienCount, currentAlienCount);
+        // Get all xenomorphs that are in reserves right now.
+        var currentReserveXenomorphCount = hive.getReserveManager()
+            .getCountMatching(XENOMORPH_PREDICATE);
+        // Add the two counts together to get the total xenomorph count.
+        var totalXenomorphCount = loadedXenomorphCount + currentReserveXenomorphCount;
 
-        bossEvent.setProgress(currentAlienCount / (float) maximumSeenAlienCount);
+        this.maximumSeenXenomorphCount = Math.max(maximumSeenXenomorphCount, totalXenomorphCount);
+
+        bossEvent.setProgress(totalXenomorphCount / (float) maximumSeenXenomorphCount);
     }
 
     private void updateBossBarColor() {
-        var color = switch (hive.getVariant()) {
-            case NORMAL -> BossEvent.BossBarColor.GREEN;
-            case NETHER -> BossEvent.BossBarColor.RED;
-            case ABERRANT -> BossEvent.BossBarColor.YELLOW;
-            case IRRADIATED -> BossEvent.BossBarColor.BLUE;
-        };
-
-        bossEvent.setColor(color);
+        var alienVariantType = AlienVariantTypes.getFor(hive.getVariant());
+        bossEvent.setColor(alienVariantType.bossBarColor());
     }
 
     private void updateBossBarTitle() {
@@ -103,14 +113,28 @@ public class HiveBossBarManager {
                     return true;
                 }
 
-                return !hive.getSpaceManager().isEntityWithinHive(player);
+                return !hive.getSpaceManager().isEntityWithinHive(player)
+                    || !isPlayerInSameDimensionAsHive(player);
             })
             .toList();
 
         playersToRemove.forEach(bossEvent::removePlayer);
     }
 
+    private boolean isPlayerInSameDimensionAsHive(ServerPlayer player) {
+        return Objects.equals(player.level().dimensionType(), hive.level().dimensionType());
+    }
+
     public void onHiveRemoved() {
+        var level = hive.level();
+
+        if (level.getDifficulty() != Difficulty.PEACEFUL && level instanceof ServerLevel serverLevel) {
+            serverLevel.players()
+                .stream()
+                .filter(player -> hive.getSpaceManager().isEntityWithinHive(player))
+                .forEach(AlienAdvancements.KILL_A_HIVE::grant);
+        }
+
         bossEvent.removeAllPlayers();
     }
 

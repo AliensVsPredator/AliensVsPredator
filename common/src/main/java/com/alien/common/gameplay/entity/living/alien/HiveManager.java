@@ -51,11 +51,9 @@ public class HiveManager implements NBTSerializable {
 
                     tuple.getB()
                         .inspect(nearestHive -> {
-                            var joinedHiveSuccessfully = nearestHive.requestToJoin(alien);
+                            var joinedHiveSuccessfully = tryJoinHive(nearestHive);
 
-                            if (joinedHiveSuccessfully) {
-                                this.hiveOption = Option.some(nearestHive);
-                            } else {
+                            if (!joinedHiveSuccessfully) {
                                 tryCreateAndAssignHive(hiveLevelData, nearestHive);
                             }
                         })
@@ -78,10 +76,29 @@ public class HiveManager implements NBTSerializable {
                 return;
             }
 
-            if (alien.tickCount % (20 * 30) == 0) {
+            if (alien.tickCount % 20 == 0) {
                 hive.ping(alien);
+
+                if (hive.getLeadershipManager().isLeader(alien)) {
+                    hive.moveCenter(alien.blockPosition());
+                }
             }
         });
+
+        if (hiveOption.isSomeAnd(hive -> !hive.getMembershipManager().isMember(alien))) {
+            // Clear hive reference if the alien is not a member of the hive reference it is holding.
+            hiveOption = Option.none();
+        }
+    }
+
+    public boolean tryJoinHive(Hive hive) {
+        var joinedHiveSuccessfully = hive.requestToJoin(alien);
+
+        if (joinedHiveSuccessfully) {
+            this.hiveOption = Option.some(hive);
+        }
+
+        return joinedHiveSuccessfully;
     }
 
     private void tryCreateAndAssignHive(HiveLevelData hiveLevelData, @Nullable Hive nearestHive) {

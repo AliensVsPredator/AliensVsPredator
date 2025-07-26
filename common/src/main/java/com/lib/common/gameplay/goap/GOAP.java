@@ -25,12 +25,15 @@ public abstract class GOAP<T> {
 
     private @NotNull Option<GOAPPlan<T>> currentPlanOption;
 
+    private boolean isEnabled;
+
     protected GOAP() {
         this.planner = new GOAPPlanner<>(this);
         this.actions = new HashSet<>();
         this.goals = new HashSet<>();
         this.sensors = new ArrayList<>();
         this.currentPlanOption = Option.none();
+        this.isEnabled = true;
     }
 
     public void addAction(GOAPAction<T> action) {
@@ -56,6 +59,10 @@ public abstract class GOAP<T> {
     }
 
     public void update(T context) {
+        if (!isEnabled) {
+            return;
+        }
+
         // Sense all world input that we need to.
         var worldState = sense(context);
 
@@ -73,6 +80,10 @@ public abstract class GOAP<T> {
                 case GOAPPlan.State.InProgress inProgress -> {}
             }
         });
+    }
+
+    public void setEnabled(boolean enabled) {
+        isEnabled = enabled;
     }
 
     public Collection<GOAPAction<T>> getAvailableActions() {

@@ -6,6 +6,7 @@ import com.alien.common.gameplay.block.resin.node.IrradiatedResinNodeBlock;
 import com.alien.common.gameplay.block.resin.node.ResinNodeBlock;
 import com.alien.common.gameplay.block.resin.vein.IrradiatedResinVeinBlock;
 import com.alien.common.gameplay.block.resin.vein.ResinVeinBlock;
+import com.alien.common.gameplay.block.resin.vent.ResinVentBlock;
 import com.alien.common.gameplay.block.resin.web.IrradiatedResinWebBlock;
 import com.alien.common.gameplay.block.resin.web.ResinWebBlock;
 import net.minecraft.world.level.block.Block;
@@ -71,9 +72,9 @@ public class AlienResinBlocks {
         () -> new ResinVeinBlock(BlockProperties.ABERRANT_RESIN_VEIN.build())
     );
 
-    public static final AVPDeferredHolder<Block> ABERRANT_RESIN_VENT = AVPBlocks.register(
+    public static final AVPDeferredHolder<ResinVentBlock> ABERRANT_RESIN_VENT = AVPBlocks.register(
         "aberrant_resin_vent",
-        BlockProperties.ABERRANT_RESIN
+        () -> new ResinVentBlock(BlockProperties.ABERRANT_RESIN.build())
     );
 
     public static final AVPDeferredHolder<Block> ABERRANT_RESIN_WEB = AVPBlocks.register(
@@ -132,9 +133,9 @@ public class AlienResinBlocks {
         () -> new IrradiatedResinVeinBlock(BlockProperties.IRRADIATED_RESIN_VEIN.build())
     );
 
-    public static final AVPDeferredHolder<Block> IRRADIATED_RESIN_VENT = AVPBlocks.register(
+    public static final AVPDeferredHolder<ResinVentBlock> IRRADIATED_RESIN_VENT = AVPBlocks.register(
         "irradiated_resin_vent",
-        BlockProperties.IRRADIATED_RESIN
+        () -> new ResinVentBlock(BlockProperties.IRRADIATED_RESIN.build())
     );
 
     public static final AVPDeferredHolder<Block> IRRADIATED_RESIN_WEB = AVPBlocks.register(
@@ -193,7 +194,10 @@ public class AlienResinBlocks {
         () -> new ResinVeinBlock(BlockProperties.NETHER_RESIN_VEIN.build())
     );
 
-    public static final AVPDeferredHolder<Block> NETHER_RESIN_VENT = AVPBlocks.register("nether_resin_vent", BlockProperties.NETHER_RESIN);
+    public static final AVPDeferredHolder<ResinVentBlock> NETHER_RESIN_VENT = AVPBlocks.register(
+        "nether_resin_vent",
+        () -> new ResinVentBlock(BlockProperties.NETHER_RESIN.build())
+    );
 
     public static final AVPDeferredHolder<Block> NETHER_RESIN_WEB = AVPBlocks.register(
         "nether_resin_web",
@@ -245,7 +249,10 @@ public class AlienResinBlocks {
         () -> new ResinVeinBlock(BlockProperties.RESIN_VEIN.build())
     );
 
-    public static final AVPDeferredHolder<Block> RESIN_VENT = AVPBlocks.register("resin_vent", BlockProperties.RESIN);
+    public static final AVPDeferredHolder<ResinVentBlock> RESIN_VENT = AVPBlocks.register(
+        "resin_vent",
+        () -> new ResinVentBlock(BlockProperties.RESIN.build())
+    );
 
     public static final AVPDeferredHolder<Block> RESIN_WEB = AVPBlocks.register(
         "resin_web",

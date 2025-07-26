@@ -1,7 +1,7 @@
 package com.alien.client.animation.entity;
 
-import com.alien.common.constant.animation.WarriorAnimationRefs;
 import com.alien.common.gameplay.entity.living.alien.xenomorph.warrior.Warrior;
+import com.alien.common.util.AzAlienAnimationUtil;
 import mod.azure.azurelib.rewrite.animation.AzAnimatorConfig;
 import mod.azure.azurelib.rewrite.animation.controller.AzAnimationController;
 import mod.azure.azurelib.rewrite.animation.controller.AzAnimationControllerContainer;
@@ -24,7 +24,25 @@ public class WarriorAnimator extends AzEntityAnimator<Warrior> {
     @Override
     public void registerControllers(AzAnimationControllerContainer<Warrior> animationControllerContainer) {
         animationControllerContainer.add(
-            AzAnimationController.builder(this, WarriorAnimationRefs.FULL_BODY_CONTROLLER_NAME)
+            AzAnimationController.builder(this, AzAlienAnimationUtil.BODY_CONTROLLER_NAME)
+                .setTransitionLength(5)
+                .build(),
+            AzAnimationController.builder(this, AzAlienAnimationUtil.HEAD_CONTROLLER_NAME)
+                .setTransitionLength(5)
+                .build(),
+            AzAnimationController.builder(this, AzAlienAnimationUtil.LEFT_ARM_CONTROLLER_NAME)
+                .setTransitionLength(5)
+                .build(),
+            AzAnimationController.builder(this, AzAlienAnimationUtil.LEFT_LEG_CONTROLLER_NAME)
+                .setTransitionLength(5)
+                .build(),
+            AzAnimationController.builder(this, AzAlienAnimationUtil.RIGHT_ARM_CONTROLLER_NAME)
+                .setTransitionLength(5)
+                .build(),
+            AzAnimationController.builder(this, AzAlienAnimationUtil.RIGHT_LEG_CONTROLLER_NAME)
+                .setTransitionLength(5)
+                .build(),
+            AzAnimationController.builder(this, AzAlienAnimationUtil.TAIL_CONTROLLER_NAME)
                 .setTransitionLength(5)
                 .build()
         );
@@ -44,8 +62,7 @@ public class WarriorAnimator extends AzEntityAnimator<Warrior> {
 
     private void runPassiveAnimations(Warrior warrior) {
         var dispatcher = warrior.getAnimationDispatcher();
-        var movementAnalyzer = warrior.getMovementAnalyzer();
-        var isMovingOnGround = movementAnalyzer.isMovingHorizontally() && warrior.onGround();
+        var isMovingOnGround = warrior.isMovingHorizontally.get() && warrior.onGround();
         var isCrawling = warrior.getCrawlingManager().isCrawling();
         Runnable animFunction;
 
@@ -53,7 +70,13 @@ public class WarriorAnimator extends AzEntityAnimator<Warrior> {
             // TODO: idle swim
             animFunction = dispatcher::swim;
         } else if (isMovingOnGround) {
-            animFunction = isCrawling ? dispatcher::crawl : dispatcher::walk;
+            if (isCrawling) {
+                animFunction = dispatcher::crawl;
+            } else if (warrior.hasTarget.get()) {
+                animFunction = dispatcher::run;
+            } else {
+                animFunction = dispatcher::walk;
+            }
         } else {
             // TODO: idle crawl
             animFunction = isCrawling ? dispatcher::crawlHold : dispatcher::idle;

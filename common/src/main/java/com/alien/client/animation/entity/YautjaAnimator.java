@@ -51,8 +51,7 @@ public class YautjaAnimator extends AzEntityAnimator<Yautja> {
             "gLeftLeg",
             "gRightLeg",
             0F,
-            0F,
-            animatable.isAggressive()
+            0F
         );
     }
 
@@ -70,7 +69,7 @@ public class YautjaAnimator extends AzEntityAnimator<Yautja> {
         var helmet = bakedModel.getBoneOrNull("gArmorMask");
 
         if (helmet != null) {
-            helmet.setHidden(!entity.yautjaMaskManager.hasMask());
+            helmet.setHidden(!entity.hasMask());
         }
     }
 }

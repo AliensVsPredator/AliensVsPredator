@@ -1,14 +1,17 @@
 package com.predator.common.gameplay.entity.living.yautja;
 
-import com.predator.common.gameplay.entity.living.yautja.manager.YautjaMaskManager;
+import com.lib.common.network.DataUser;
 import com.predator.common.gameplay.entity.living.yautja.manager.YautjaNavigationManager;
 import com.predator.common.gameplay.entity.living.yautja.util.YautjaPredicates;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.syncher.EntityDataAccessor;
-import net.minecraft.network.syncher.EntityDataSerializers;
-import net.minecraft.network.syncher.SynchedEntityData;
+import com.predator.common.registry.init.item.PredatorArmorItems;
 import net.minecraft.world.DifficultyInstance;
-import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.MobSpawnType;
+import net.minecraft.world.entity.MoverType;
+import net.minecraft.world.entity.SpawnGroupData;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.control.MoveControl;
@@ -34,22 +37,14 @@ import com.avp.common.gameplay.ai.goal.combat.DelayedAttackGoal;
 import com.avp.common.gameplay.ai.goal.combat.UseItemGoal;
 import com.avp.common.registry.init.item.AVPItems;
 
-public class Yautja extends Monster {
+public class Yautja extends Monster implements DataUser {
 
     private final YautjaAnimationDispatcher animationDispatcher;
 
     private final YautjaNavigationManager navigationManager;
 
-    public final YautjaMaskManager yautjaMaskManager;
-
-    private static final EntityDataAccessor<Boolean> HAS_MASK = SynchedEntityData.defineId(
-        Yautja.class,
-        EntityDataSerializers.BOOLEAN
-    );
-
     public Yautja(EntityType<? extends Yautja> entityType, Level level) {
         super(entityType, level);
-        this.yautjaMaskManager = new YautjaMaskManager(this, HAS_MASK);
         this.animationDispatcher = new YautjaAnimationDispatcher(this);
         this.navigationManager = new YautjaNavigationManager(this, moveControl);
     }
@@ -61,8 +56,8 @@ public class Yautja extends Monster {
     @Override
     protected void registerGoals() {
         goalSelector.addGoal(0, new FloatGoal(this));
-        goalSelector.addGoal(1, new DelayedAttackGoal(this, 1.0, true, 5, this::runAttackAnimations));
-        goalSelector.addGoal(1, new UseItemGoal(this, this::runAttackAnimations));
+        goalSelector.addGoal(1, new DelayedAttackGoal(this, 1.0, true, 5, () -> {}));
+        goalSelector.addGoal(1, new UseItemGoal(this, () -> {}));
         goalSelector.addGoal(7, new StrollAroundInWaterGoal(this, 1.0));
         goalSelector.addGoal(7, new WaterAvoidingRandomStrollGoal(this, 1.0));
         targetSelector.addGoal(1, new HurtByTargetGoal(this).setAlertOthers(Yautja.class));
@@ -77,18 +72,31 @@ public class Yautja extends Monster {
         );
     }
 
-    public void runAttackAnimations() {
-        animationDispatcher.rightShoot();
-    }
-
     @Override
     public void tick() {
         super.tick();
-        yautjaMaskManager.tick();
+
+        checkMask();
 
         if (!level().isClientSide && (getVehicle() instanceof Boat || getVehicle() instanceof Minecart)) {
             stopRiding();
         }
+    }
+
+    public void checkMask() {
+        if (level().isClientSide || !hasMask()) {
+            return;
+        }
+
+        var overHalfHealth = getHealth() > getMaxHealth() / 2;
+
+        if (!overHalfHealth) {
+            setItemSlot(EquipmentSlot.HEAD, ItemStack.EMPTY);
+        }
+    }
+
+    public boolean hasMask() {
+        return getItemBySlot(EquipmentSlot.HEAD).getItem() == PredatorArmorItems.JUNGLE_PREDATOR_HELMET.get();
     }
 
     @Override
@@ -107,6 +115,11 @@ public class Yautja extends Monster {
         @NotNull MobSpawnType mobSpawnType,
         @Nullable SpawnGroupData spawnGroupData
     ) {
+        setItemSlot(EquipmentSlot.HEAD, new ItemStack(PredatorArmorItems.JUNGLE_PREDATOR_HELMET.get()));
+        setItemSlot(EquipmentSlot.CHEST, new ItemStack(PredatorArmorItems.JUNGLE_PREDATOR_CHESTPLATE.get()));
+        setItemSlot(EquipmentSlot.LEGS, new ItemStack(PredatorArmorItems.JUNGLE_PREDATOR_LEGGINGS.get()));
+        setItemSlot(EquipmentSlot.FEET, new ItemStack(PredatorArmorItems.JUNGLE_PREDATOR_BOOTS.get()));
+
         if (random.nextDouble() <= 0.5) {
             if (random.nextDouble() <= 0.7) {
                 setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(AVPItems.SHURIKEN.get()));
@@ -160,23 +173,5 @@ public class Yautja extends Monster {
         } else {
             super.travel(vec3);
         }
-    }
-
-    @Override
-    protected void defineSynchedData(@NotNull SynchedEntityData.Builder builder) {
-        super.defineSynchedData(builder);
-        builder.define(HAS_MASK, true);
-    }
-
-    @Override
-    public void readAdditionalSaveData(@NotNull CompoundTag compoundTag) {
-        super.readAdditionalSaveData(compoundTag);
-        yautjaMaskManager.load(compoundTag);
-    }
-
-    @Override
-    public void addAdditionalSaveData(@NotNull CompoundTag compoundTag) {
-        super.addAdditionalSaveData(compoundTag);
-        yautjaMaskManager.save(compoundTag);
     }
 }

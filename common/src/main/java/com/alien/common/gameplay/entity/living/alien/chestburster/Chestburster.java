@@ -3,12 +3,9 @@ package com.alien.common.gameplay.entity.living.alien.chestburster;
 import com.alien.common.gameplay.entity.living.alien.Alien;
 import com.alien.common.gameplay.entity.living.alien.GrowthManager;
 import com.alien.common.model.alien.variant.AlienVariant;
-import com.alien.common.model.resin.ResinData;
 import com.alien.common.registry.init.AlienEntityTypes;
 import com.alien.common.util.AlienPredicates;
 import com.alien.common.util.XenomorphGrowthUtil;
-import com.lib.common.gameplay.gene.GeneKeys;
-import com.lib.common.gameplay.gene.decoder.GeneDecoders;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -37,10 +34,7 @@ public class Chestburster extends Alien {
         super(entityType, level);
         this.animationDispatcher = new ChestbursterAnimationDispatcher(this);
         this.growthManager = new GrowthManager(this, XenomorphGrowthUtil.GROW_UP_CALLBACK)
-            .setGrowOverTime(true)
-            .setGrowthTimeReductionMultiplierProvider(
-                () -> geneManager.get(GeneKeys.GROWTH_SPEED, GeneDecoders.GROWTH_SPEED)
-            );
+            .setGrowOverTime(true);
         this.config = AVP.config.statsConfigs.CHESTBURSTER_STATS;
     }
 
@@ -78,10 +72,6 @@ public class Chestburster extends Alien {
         return AVP.config.statsConfigs.CHESTBURSTER_STATS.healthRegenPerSecond;
     }
 
-    protected @NotNull ResinData createResinData() {
-        return new ResinData(0, 8, 1, AVP.config.statsConfigs.CHESTBURSTER_STATS.nestTickrate);
-    }
-
     @Override
     public void readAdditionalSaveData(@NotNull CompoundTag compoundTag) {
         super.readAdditionalSaveData(compoundTag);
@@ -94,12 +84,8 @@ public class Chestburster extends Alien {
         growthManager.save(compoundTag);
     }
 
-    public GrowthManager growthManager() {
-        return growthManager;
-    }
-
     @Override
-    public int maxJellyToGrowth() {
+    public Integer getMaxJellyToGrowth() {
         return 1;
     }
 

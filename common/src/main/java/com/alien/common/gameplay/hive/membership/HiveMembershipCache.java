@@ -2,9 +2,7 @@ package com.alien.common.gameplay.hive.membership;
 
 import com.alien.common.model.hive.HiveMemberData;
 import com.lib.common.gameplay.util.Cache;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.entity.EntityType;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -13,6 +11,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+
+import com.avp.AVP;
 
 public class HiveMembershipCache extends Cache<UUID, HiveMemberData> {
 
@@ -32,7 +32,12 @@ public class HiveMembershipCache extends Cache<UUID, HiveMemberData> {
 
     @Override
     protected void onAddToCache(UUID uuid, @Nullable HiveMemberData oldValue, HiveMemberData newValue) {
-        var entityType = getEntityType(newValue);
+        var entityType = newValue.getEntityType().unwrapOr(null);
+
+        if (entityType == null) {
+            AVP.LOGGER.warn("onAddToCache - Invalid entity type. Resource Location: {}", newValue.entityTypeResourceLocation());
+            return;
+        }
 
         var list = hiveMemberDataByEntityTypeMap.computeIfAbsent(entityType, $ -> new ArrayList<>());
 
@@ -47,7 +52,13 @@ public class HiveMembershipCache extends Cache<UUID, HiveMemberData> {
 
     @Override
     protected void onRemoveFromCache(UUID uuid, HiveMemberData value) {
-        var entityType = getEntityType(value);
+        var entityType = value.getEntityType().unwrapOr(null);
+
+        if (entityType == null) {
+            AVP.LOGGER.warn("onRemoveFromCache - Invalid entity type. Resource Location: {}", value.entityTypeResourceLocation());
+            return;
+        }
+
         var entry = Map.entry(uuid, value);
 
         hiveMemberDataByEntityTypeMap.computeIfAbsent(entityType, $ -> new ArrayList<>())
@@ -58,9 +69,5 @@ public class HiveMembershipCache extends Cache<UUID, HiveMemberData> {
     protected void onClearCache() {
         super.onClearCache();
         hiveMemberDataByEntityTypeMap.clear();
-    }
-
-    private @NotNull EntityType<?> getEntityType(HiveMemberData newValue) {
-        return BuiltInRegistries.ENTITY_TYPE.get(newValue.entityType());
     }
 }

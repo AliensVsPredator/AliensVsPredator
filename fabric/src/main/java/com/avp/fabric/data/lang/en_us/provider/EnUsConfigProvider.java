@@ -72,13 +72,11 @@ public class EnUsConfigProvider {
         builder.add("config.avp.option.DRONE_SPAWN", "Drone spawn settings");
         builder.add("config.avp.option.NETHER_CHESTBURSTER_SPAWN", "Nether Chestburster spawn settings");
         builder.add("config.avp.option.NETHER_DRONE_SPAWN", "Nether Drone spawn settings");
-        // TODO: Change this to "ovomorph" with 0.2.0.
-        builder.add("config.avp.option.NETHER_OVAMORPH_SPAWN", "Nether Ovomorph spawn settings");
+        builder.add("config.avp.option.NETHER_OVOMORPH_SPAWN", "Nether Ovomorph spawn settings");
         builder.add("config.avp.option.NETHER_PRAETORIAN_SPAWN", "Nether Praetorian spawn settings");
         builder.add("config.avp.option.NETHER_WARRIOR_SPAWN", "Nether Warrior spawn settings");
         builder.add("config.avp.option.NETHER_QUEEN_SPAWN", "Nether Queen spawn settings");
-        // TODO: Change this to "ovomorph" with 0.2.0.
-        builder.add("config.avp.option.OVAMORPH_SPAWN", "Ovomorph spawn settings");
+        builder.add("config.avp.option.OVOMORPH_SPAWN", "Ovomorph spawn settings");
         builder.add("config.avp.option.PRAETORIAN_SPAWN", "Praetorian spawn settings");
         builder.add("config.avp.option.QUEEN_SPAWN", "Queen spawn settings");
         builder.add("config.avp.option.WARRIOR_SPAWN", "Warrior spawn settings");
@@ -106,8 +104,7 @@ public class EnUsConfigProvider {
         builder.add("config.avp.option.nestTickrate", "Nest tickrate");
         builder.add("config.avp.option.followRange", "Follow range");
         builder.add("config.avp.option.DRONE_STATS", "Drone stats");
-        // TODO: Change this to "ovomorph" with 0.2.0.
-        builder.add("config.avp.option.OVAMORPH_STATS", "Ovomorph stats");
+        builder.add("config.avp.option.OVOMORPH_STATS", "Ovomorph stats");
         builder.add("config.avp.option.PRAETORIAN_STATS", "Praetorian stats");
         builder.add("config.avp.option.QUEEN_STATS", "Queen stats");
         builder.add("config.avp.option.WARRIOR_STATS", "Warrior stats");

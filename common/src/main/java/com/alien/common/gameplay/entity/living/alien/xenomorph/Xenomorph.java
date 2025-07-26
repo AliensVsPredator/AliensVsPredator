@@ -8,14 +8,9 @@ import com.alien.common.model.resin.ResinProducer;
 import com.alien.common.util.AlienPredicates;
 import com.alien.common.util.XenomorphGrowthUtil;
 import com.lib.common.gameplay.entity.manager.CrawlingManager;
-import com.lib.common.gameplay.entity.manager.VibrationSystemManager;
-import com.lib.common.gameplay.gene.GeneKeys;
-import com.lib.common.gameplay.gene.decoder.GeneDecoders;
+import com.lib.common.network.DataAccessor;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.syncher.EntityDataAccessor;
-import net.minecraft.network.syncher.EntityDataSerializers;
-import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.tags.FluidTags;
@@ -48,19 +43,13 @@ import java.util.function.BiConsumer;
 import com.avp.common.gameplay.ai.goal.DigToTargetGoal;
 import com.avp.common.gameplay.ai.goal.StrollAroundInWaterGoal;
 import com.avp.common.gameplay.ai.goal.XenoFloatGoal;
+import com.avp.common.registry.init.AVPDataKeys;
 import com.avp.common.registry.init.AVPSoundEvents;
+import com.avp.common.registry.tag.AVPEntityTypeTags;
 
 public abstract class Xenomorph extends Alien implements ResinProducer {
 
-    protected static final EntityDataAccessor<Integer> CLIENT_ANGER_LEVEL = SynchedEntityData.defineId(
-        Xenomorph.class,
-        EntityDataSerializers.INT
-    );
-
-    private static final EntityDataAccessor<Boolean> IS_CRAWLING = SynchedEntityData.defineId(
-        Xenomorph.class,
-        EntityDataSerializers.BOOLEAN
-    );
+    public final DataAccessor<Boolean> isCrawling;
 
     protected final CrawlingManager crawlingManager;
 
@@ -70,41 +59,41 @@ public abstract class Xenomorph extends Alien implements ResinProducer {
 
     private final ResinManager resinManager;
 
-    private final VibrationSystemManager vibrationSystemManager;
-
-    public int attackDelayTicks;
+    private boolean wasUnderwaterLastTick;
 
     public Xenomorph(EntityType<? extends Xenomorph> entityType, Level level) {
         super(entityType, level);
-        this.crawlingManager = new CrawlingManager(this, IS_CRAWLING);
+
+        this.isCrawling = new DataAccessor<>(this, AVPDataKeys.XENOMORPH_IS_CRAWLING);
+
+        this.crawlingManager = new CrawlingManager(this, isCrawling);
         this.growthManager = new GrowthManager(this, XenomorphGrowthUtil.GROW_UP_CALLBACK)
-            .setGrowOverTime(false)
-            .setGrowthTimeReductionMultiplierProvider(
-                () -> geneManager.get(GeneKeys.GROWTH_SPEED, GeneDecoders.GROWTH_SPEED)
-            );
+            .setGrowOverTime(false);
         this.navigationManager = new XenomorphNavigationManager(this, moveControl);
-        this.resinManager = new ResinManager(this, createResinData())
-            .setBonusResinProvider(
-                () -> geneManager.get(GeneKeys.BONUS_RESIN_PRODUCTION, GeneDecoders.BONUS_RESIN_PRODUCTION).intValue()
-            );
-        this.vibrationSystemManager = new VibrationSystemManager(this)
-            .setAngerManagementTickCallback(this::syncClientAngerLevel);
+        this.resinManager = new ResinManager(this, createResinData());
+        this.wasUnderwaterLastTick = false;
+
+        isCrawling.onChange($ -> refreshDimensions());
     }
 
-    protected abstract @NotNull ResinData createResinData();
+    protected double getPursuitSpeedModifier() {
+        return 1.1;
+    }
+
+    protected int getAttackDelayInTicks() {
+        return 5;
+    }
+
+    protected boolean canTargetInitially(LivingEntity target) {
+        return true;
+    }
+
+    protected abstract @Nullable ResinData createResinData();
 
     public abstract void runAttackAnimations();
 
     @Override
-    protected void defineSynchedData(@NotNull SynchedEntityData.Builder builder) {
-        super.defineSynchedData(builder);
-        builder.define(CLIENT_ANGER_LEVEL, 0);
-        builder.define(IS_CRAWLING, false);
-    }
-
-    @Override
     protected void registerGoals() {
-        // goalSelector.addGoal(1, new FleeFightGoal(this));
         goalSelector.addGoal(1, new XenoFloatGoal(this));
         addDigToTargetGoal();
         goalSelector.addGoal(7, new StrollAroundInWaterGoal(this, 0.5));
@@ -117,12 +106,13 @@ public abstract class Xenomorph extends Alien implements ResinProducer {
                 LivingEntity.class,
                 false,
                 target -> AlienPredicates.canTarget(this, target)
+                    && canTargetInitially(target)
             )
         );
     }
 
     protected void addDigToTargetGoal() {
-        goalSelector.addGoal(5, new DigToTargetGoal(this, 32, 2));
+        goalSelector.addGoal(5, new DigToTargetGoal(this, 32, 2, () -> true));
     }
 
     @Override
@@ -131,13 +121,10 @@ public abstract class Xenomorph extends Alien implements ResinProducer {
         crawlingManager.tick();
         growthManager.tick();
         resinManager.tick();
-        vibrationSystemManager.tick();
+
+        updateDimensionsBasedOnWaterState();
 
         if (!level().isClientSide) {
-            if (getVehicle() instanceof Boat || getVehicle() instanceof Minecart) {
-                stopRiding();
-            }
-
             var target = getTarget();
 
             if (target != null && !AlienPredicates.canContinueTargeting(this, target)) {
@@ -145,6 +132,14 @@ public abstract class Xenomorph extends Alien implements ResinProducer {
                 setTarget(null);
             }
         }
+    }
+
+    private void updateDimensionsBasedOnWaterState() {
+        if (wasUnderwaterLastTick != isUnderWater()) {
+            refreshDimensions();
+        }
+
+        this.wasUnderwaterLastTick = isUnderWater();
     }
 
     @Override
@@ -183,13 +178,14 @@ public abstract class Xenomorph extends Alien implements ResinProducer {
     @Override
     public @NotNull EntityDimensions getDefaultDimensions(@NotNull Pose pose) {
         var defaultDimensions = getType().getDimensions();
-        return defaultDimensions.scale(1, crawlingManager.isCrawling() ? 0.4f : 1);
+        var shouldBeSmall = crawlingManager.isCrawling() || isUnderWater();
+        return defaultDimensions.scale(1, shouldBeSmall ? 0.4f : 1);
     }
 
     @Override
     public void updateDynamicGameEventListener(@NotNull BiConsumer<DynamicGameEventListener<?>, ServerLevel> biConsumer) {
+        super.updateDynamicGameEventListener(biConsumer);
         resinManager.updateDynamicGameEventListener(biConsumer);
-        vibrationSystemManager.updateDynamicGameEventListener(biConsumer);
     }
 
     // Allows the xenomorph to disable shields on attack.
@@ -233,6 +229,25 @@ public abstract class Xenomorph extends Alien implements ResinProducer {
         super.setTarget(livingEntity);
     }
 
+    // Fixes a bug where xenomorphs would try to retaliate attack infected hosts that hurt them.
+    // TODO: Remove this once GOAP AI is introduced and this edge case has been handled in the new AI.
+    @Override
+    public boolean canAttack(@NotNull LivingEntity target) {
+        return super.canAttack(target) && AlienPredicates.canContinueTargeting(this, target);
+    }
+
+    @Override
+    protected void doPush(Entity entity) {
+        if (
+            !entity.getType().is(AVPEntityTypeTags.FACEHUGGERS)
+                && !entity.getType().is(AVPEntityTypeTags.CHESTBURSTERS)
+                && !entity.getType().is(AVPEntityTypeTags.ADOLESCENTS)
+        ) {
+            // Xenomorphs should not collide with smaller aliens.
+            super.doPush(entity);
+        }
+    }
+
     @Override
     public int getAmbientSoundInterval() {
         return 6 * 20;
@@ -267,19 +282,6 @@ public abstract class Xenomorph extends Alien implements ResinProducer {
         crawlingManager.save(compoundTag);
         growthManager.save(compoundTag);
         resinManager.save(compoundTag);
-    }
-
-    @Override
-    public void onSyncedDataUpdated(@NotNull EntityDataAccessor<?> entityDataAccessor) {
-        super.onSyncedDataUpdated(entityDataAccessor);
-
-        if (entityDataAccessor.equals(IS_CRAWLING)) {
-            refreshDimensions();
-        }
-    }
-
-    protected void syncClientAngerLevel() {
-        this.entityData.set(CLIENT_ANGER_LEVEL, vibrationSystemManager.getActiveAnger());
     }
 
     public GrowthManager getGrowthManager() {

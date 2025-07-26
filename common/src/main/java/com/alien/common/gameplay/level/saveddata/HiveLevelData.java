@@ -43,7 +43,7 @@ public class HiveLevelData extends SavedData {
         hiveByIdMap.values().removeIf(hive -> {
             hive.tick();
 
-            var shouldRemove = !hive.isAlive();
+            var shouldRemove = hive.isRemoved();
 
             if (shouldRemove) {
                 hive.onRemove();
@@ -80,6 +80,10 @@ public class HiveLevelData extends SavedData {
         var hive = createHive(alien.blockPosition());
         // Set the hive's variant.
         hive.setVariant(alien.getVariant());
+        // Immediately become a member of the hive.
+        hive.getMembershipManager().addMember(alien);
+        // Immediately become the hive's leader so that the hive isn't briefly leaderless.
+        hive.getLeadershipManager().setLeaderId(alien.getUUID());
         // Immediately ping the hive.
         hive.ping(alien);
         return hive;
@@ -93,6 +97,10 @@ public class HiveLevelData extends SavedData {
         hiveByIdMap.put(id, hive);
         AVP.LOGGER.debug("Created hive: {}", id);
         return hive;
+    }
+
+    public void removeHive(Hive hive) {
+        hiveByIdMap.remove(hive.id());
     }
 
     public Collection<Hive> allHives() {

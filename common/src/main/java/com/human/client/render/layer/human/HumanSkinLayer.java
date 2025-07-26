@@ -21,7 +21,7 @@ public class HumanSkinLayer<T extends AbstractHuman> implements AzRenderLayer<T>
         var vertexConsumer = context.multiBufferSource().getBuffer(renderType);
         var previousColor = context.renderColor();
 
-        context.setRenderColor(animatable.getSkinColor());
+        context.setRenderColor(animatable.skinColor.get());
         context.setVertexConsumer(vertexConsumer);
 
         renderPipeline.reRender(context);

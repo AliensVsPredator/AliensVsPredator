@@ -12,6 +12,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
 import java.util.List;
@@ -62,11 +63,19 @@ public class HiveMembershipManager implements NBTSerializable {
         });
     }
 
+    public void clearMembers() {
+        hiveMembershipCache.clear();
+    }
+
     public void addMember(Entity entity) {
         var resourceLocation = BuiltInRegistries.ENTITY_TYPE.getKey(entity.getType());
         var hiveMemberData = new HiveMemberData(resourceLocation, entity.blockPosition(), hive.ageInTicks());
 
-        hiveMembershipCache.add(entity.getUUID(), hiveMemberData);
+        addMember(entity.getUUID(), hiveMemberData);
+    }
+
+    public void addMember(UUID entityUUID, HiveMemberData hiveMemberData) {
+        hiveMembershipCache.add(entityUUID, hiveMemberData);
     }
 
     public boolean isMember(Entity entity) {
@@ -88,7 +97,7 @@ public class HiveMembershipManager implements NBTSerializable {
     }
 
     public int getMemberCount() {
-        return getMemberUUIDs().size();
+        return hiveMembershipCache.size();
     }
 
     public List<Entity> getLoadedMembers() {
@@ -103,7 +112,7 @@ public class HiveMembershipManager implements NBTSerializable {
                 .toList();
     }
 
-    public @NotNull Option<HiveMemberData> getMemberData(Entity entity) {
+    public @NotNull Option<HiveMemberData> getMemberData(@Nullable Entity entity) {
         if (entity == null) {
             return Option.none();
         }
@@ -111,7 +120,7 @@ public class HiveMembershipManager implements NBTSerializable {
         return getMemberData(entity.getUUID());
     }
 
-    public @NotNull Option<HiveMemberData> getMemberData(UUID uuid) {
+    public @NotNull Option<HiveMemberData> getMemberData(@Nullable UUID uuid) {
         if (uuid == null) {
             return Option.none();
         }

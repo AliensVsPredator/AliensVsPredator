@@ -1,110 +1,107 @@
 package com.lib.common.gameplay.entity.manager;
 
 import com.lib.common.gameplay.NBTSerializable;
-import com.lib.common.gameplay.gene.GeneKey;
-import com.lib.common.gameplay.gene.decoder.GeneDecoder;
-import com.lib.common.gameplay.level.saveddata.GenePaletteLevelData;
-import it.unimi.dsi.fastutil.objects.Object2ByteArrayMap;
+import com.lib.common.gameplay.gene.Gene;
+import com.lib.common.gameplay.gene.GeneModifierKey;
+import com.lib.common.gameplay.gene.GeneRegistry;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.entity.Entity;
-
-import java.util.Collections;
-import java.util.Map;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.AttributeInstance;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 
 public class GeneManager implements NBTSerializable {
 
-    private static final String GENE_KEY = "genes";
+    private final LivingEntity entity;
 
-    private final Entity entity;
+    private final GeneContainer geneContainer;
 
-    private final Map<GeneKey, Byte> geneKeyToValueMap;
-
-    public GeneManager(Entity entity) {
+    public GeneManager(LivingEntity entity) {
         this.entity = entity;
-        this.geneKeyToValueMap = new Object2ByteArrayMap<>();
+        this.geneContainer = new GeneContainer();
     }
 
-    public <T> T get(GeneKey geneKey, GeneDecoder<T> geneDecoder) {
-        var rawGeneValue = geneKeyToValueMap.getOrDefault(geneKey, (byte) 0);
-        return geneDecoder.decode(rawGeneValue);
+    public void tick() {
+        var activeGeneMap = geneContainer.getActiveGeneMap();
+
+        if (entity.level().isClientSide || !activeGeneMap.isDirty()) {
+            return;
+        }
+
+        // Do NOT move these to after the gene effects being applied!
+        var oldMaxHealth = entity.getMaxHealth();
+        var wasFullHealth = entity.getHealth() == oldMaxHealth;
+
+        activeGeneMap.getDirtyKeys()
+            .forEach(this::applyGeneEffects);
+
+        var maxHealthAttributeInstance = entity.getAttribute(Attributes.MAX_HEALTH);
+
+        if (maxHealthAttributeInstance != null) {
+            var newMax = maxHealthAttributeInstance.getValue();
+            var currentHealth = entity.getHealth();
+
+            if (wasFullHealth || currentHealth > newMax) {
+                entity.setHealth((float) newMax);
+            }
+        }
+
+        activeGeneMap.clearDirtyKeys();
     }
 
-    public boolean isMaximized(GeneKey geneKey) {
-        var rawGeneValue = geneKeyToValueMap.getOrDefault(geneKey, (byte) 0);
-        return rawGeneValue == Byte.MAX_VALUE;
+    private void applyGeneEffects(GeneModifierKey dirtyGeneModifierKey) {
+        var activeGeneMap = geneContainer.getActiveGeneMap();
+        var id = dirtyGeneModifierKey.resourceLocation();
+        var gene = GeneRegistry.getValueOrNull(id);
+
+        if (gene == null) {
+            return;
+        }
+
+        switch (gene) {
+            case Gene.Attribute attribute -> {
+                var attributeInstance = entity.getAttribute(attribute.attributeHolder());
+
+                if (attributeInstance != null) {
+                    var hasGeneModifier = activeGeneMap.hasGeneModifier(dirtyGeneModifierKey);
+
+                    if (hasGeneModifier) {
+                        applyGeneAttributeBonus(dirtyGeneModifierKey, attributeInstance);
+                    } else {
+                        // Container no longer has the gene modifier, so remove the attribute modifier.
+                        attributeInstance.removeModifier(id);
+                    }
+                }
+            }
+            case Gene.Effect effectGene -> effectGene.onChange().accept(entity);
+            case Gene.Simple ignored -> { /* NO-OP */ }
+        }
     }
 
-    public boolean isMinimized(GeneKey geneKey) {
-        var rawGeneValue = geneKeyToValueMap.getOrDefault(geneKey, (byte) 0);
-        return rawGeneValue == Byte.MIN_VALUE;
+    private void applyGeneAttributeBonus(GeneModifierKey geneModifierKey, AttributeInstance attributeInstance) {
+        var id = geneModifierKey.resourceLocation();
+        var gene = GeneRegistry.getValueOrNull(id);
+        var bonusValue = geneContainer.getActiveGeneMap().getValue(gene, geneModifierKey.operation());
+        var finalBonusValue = switch (geneModifierKey.operation()) {
+            case ADDITIVE -> bonusValue;
+            case MULTIPLICATIVE -> attributeInstance.getBaseValue() * bonusValue;
+        };
+        var modifier = new AttributeModifier(id, finalBonusValue, AttributeModifier.Operation.ADD_VALUE);
+
+        attributeInstance.addOrReplacePermanentModifier(modifier);
     }
 
-    public void add(GeneKey geneKey, int value) {
-        geneKeyToValueMap.compute(geneKey, ($, oldValue) -> {
-            var oldValueNotNull = oldValue == null ? 0 : oldValue;
-            return (byte) Math.clamp(value + oldValueNotNull, Byte.MIN_VALUE, Byte.MAX_VALUE);
-        });
-    }
-
-    public void set(GeneKey geneKey, int value) {
-        var clampedValue = Math.clamp(value, Byte.MIN_VALUE, Byte.MAX_VALUE);
-        geneKeyToValueMap.put(geneKey, (byte) clampedValue);
-    }
-
-    public Map<GeneKey, Byte> getAll() {
-        return Collections.unmodifiableMap(geneKeyToValueMap);
-    }
-
-    public void setAll(Map<GeneKey, Byte> geneKeyToValueMap) {
-        this.geneKeyToValueMap.putAll(geneKeyToValueMap);
-    }
-
-    public void minimize(GeneKey geneKey) {
-        set(geneKey, Byte.MIN_VALUE);
-    }
-
-    public void maximize(GeneKey geneKey) {
-        set(geneKey, Byte.MAX_VALUE);
+    public GeneContainer getGeneContainer() {
+        return geneContainer;
     }
 
     @Override
     public void load(CompoundTag compoundTag) {
-        var level = entity.level();
-        var genePaletteOption = GenePaletteLevelData.getOrCreate(level);
-
-        genePaletteOption.ifSome(genePalette -> {
-            var geneArray = compoundTag.getByteArray(GENE_KEY);
-
-            for (var i = 0; i < geneArray.length; i += 2) {
-                var id = geneArray[i];
-                var value = geneArray[i + 1];
-
-                genePalette.getKey(id)
-                    .ifSome(geneKey -> geneKeyToValueMap.put(geneKey, value));
-            }
-        });
+        geneContainer.load(compoundTag);
     }
 
     @Override
     public void save(CompoundTag compoundTag) {
-        var level = entity.level();
-        var genePaletteOptional = GenePaletteLevelData.getOrCreate(level);
-
-        genePaletteOptional.ifSome(genePalette -> {
-            var geneArray = new byte[geneKeyToValueMap.size() * 2];
-
-            var i = 0;
-
-            for (var entry : geneKeyToValueMap.entrySet()) {
-                var key = entry.getKey();
-                var value = entry.getValue();
-                var id = genePalette.getId(key);
-                geneArray[i] = id;
-                geneArray[i + 1] = value;
-                i += 2;
-            }
-
-            compoundTag.putByteArray(GENE_KEY, geneArray);
-        });
+        geneContainer.save(compoundTag);
     }
 }

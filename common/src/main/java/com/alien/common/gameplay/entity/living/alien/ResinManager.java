@@ -22,31 +22,28 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.function.BiConsumer;
-import java.util.function.Supplier;
 
 import com.avp.AVP;
 
 public class ResinManager implements GameEventListener.Provider<ResinSpreadListener>, NBTSerializable {
 
-    private static final String RESIN_DATA_TAG_KEY = "resinData";
+    private static final String NBT_RESIN_DATA = "resinData";
 
     private final Alien alien;
 
-    private final ReadableResinData baseResinData;
+    private final @Nullable ReadableResinData baseResinData;
 
     private final DynamicGameEventListener<ResinSpreadListener> dynamicResinSpreadListener;
 
     private final ResinSpreadListener resinSpreadListener;
 
-    private @Nullable Supplier<Integer> bonusResinProvider;
-
-    private ResinData resinData;
+    private @Nullable ResinData resinData;
 
     private int ticksSinceLastResinProduction = 0;
 
     private int ticksSinceAttemptedNodePlacement = 0;
 
-    public ResinManager(Alien alien, ResinData resinData) {
+    public ResinManager(Alien alien, @Nullable ResinData resinData) {
         this.alien = alien;
         this.baseResinData = resinData;
         this.resinData = resinData;
@@ -64,7 +61,11 @@ public class ResinManager implements GameEventListener.Provider<ResinSpreadListe
     public void tick() {
         var level = alien.level();
 
-        if (level.isClientSide) {
+        if (
+            level.isClientSide
+                || baseResinData == null
+                || resinData == null
+        ) {
             return;
         }
 
@@ -75,14 +76,11 @@ public class ResinManager implements GameEventListener.Provider<ResinSpreadListe
             return;
         }
 
-        var factor = ticksSinceLastResinProduction / resinData.tickRate();
+        var factor = resinData.tickRate() == 0
+            ? 0
+            : ticksSinceLastResinProduction / resinData.tickRate();
         var accumulatedResin = factor * resinData.resinPerTick();
         resinData.addResin(accumulatedResin);
-
-        if (bonusResinProvider != null) {
-            var bonusResin = bonusResinProvider.get();
-            resinData.addResin(bonusResin);
-        }
 
         ticksSinceLastResinProduction = 0;
 
@@ -127,10 +125,11 @@ public class ResinManager implements GameEventListener.Provider<ResinSpreadListe
         return alien.level().getBrightness(LightLayer.SKY, alien.blockPosition()) == 0
             // AND alien must not have an attack target...
             && alien.getTarget() == null
+            && !alien.isUnderWater()
             // AND alien must have not been hurt for more than 10 seconds...
-            && alien.tickCount > alien.lastHurtTimeInTicks() + (10 * 20)
+            && alien.tickCount > alien.getLastHurtTimeInTicks() + (10 * 20)
             // AND alien hive conditions must be met...
-            && alien.hiveManager()
+            && alien.getHiveManager()
                 .hive()
                 // Where the alien's hive is not angry AND the alien is within range of the hive...
                 .filter(hive -> !hive.isAngry() && hive.getSpaceManager().isEntityWithinHive(alien))
@@ -190,36 +189,36 @@ public class ResinManager implements GameEventListener.Provider<ResinSpreadListe
         }
     }
 
-    public ReadableResinData baseResinData() {
+    public @Nullable ReadableResinData baseResinData() {
         return baseResinData;
     }
 
-    public ResinData resinData() {
+    public @Nullable ResinData resinData() {
         return resinData;
-    }
-
-    public ResinManager setBonusResinProvider(Supplier<Integer> bonusResinProvider) {
-        this.bonusResinProvider = bonusResinProvider;
-        return this;
     }
 
     @Override
     public void load(CompoundTag compoundTag) {
-        ResinData.CODEC.parse(
-            new Dynamic<>(NbtOps.INSTANCE, compoundTag.getCompound(RESIN_DATA_TAG_KEY))
-        )
-            .resultOrPartial(
-                AVP.LOGGER::error
+        if (compoundTag.contains(NBT_RESIN_DATA)) {
+            ResinData.CODEC.parse(
+                new Dynamic<>(NbtOps.INSTANCE, compoundTag.getCompound(NBT_RESIN_DATA))
             )
-            .ifPresent(resinData -> this.resinData = resinData);
+                .resultOrPartial(
+                    AVP.LOGGER::error
+                )
+                .ifPresent(resinData -> this.resinData = resinData);
+        }
     }
 
     @Override
     public void save(CompoundTag compoundTag) {
-        ResinData.CODEC.encodeStart(NbtOps.INSTANCE, resinData)
-            .resultOrPartial(
-                AVP.LOGGER::error
-            )
-            .ifPresent(tag -> compoundTag.put(RESIN_DATA_TAG_KEY, tag));
+        if (resinData != null) {
+            ResinData.CODEC.encodeStart(NbtOps.INSTANCE, resinData)
+                .resultOrPartial(
+                    AVP.LOGGER::error
+                )
+                .ifPresent(tag -> compoundTag.put(NBT_RESIN_DATA, tag));
+
+        }
     }
 }

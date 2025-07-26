@@ -15,8 +15,7 @@ import com.avp.AVPResources;
 
 public class OvomorphRenderer extends AzEntityRenderer<Ovomorph> {
 
-    // TODO: Change this to "ovomorph" with 0.2.0.
-    private static final String NAME = "ovamorph";
+    private static final String NAME = "ovomorph";
 
     private static final ResourceLocation MODEL = AVPResources.entityGeoModelLocation(NAME);
 
@@ -54,10 +53,7 @@ public class OvomorphRenderer extends AzEntityRenderer<Ovomorph> {
         @NotNull MultiBufferSource bufferSource,
         int packedLight
     ) {
-        var maxSpawnCount = entity.getMaximumSpawnCount();
-        var additiveScale = 0.35F * maxSpawnCount;
-        var scale = 1.05F + Math.max(additiveScale, 0);
-
+        var scale = 1.35F;
         poseStack.pushPose();
         poseStack.scale(scale, scale, scale);
         super.render(entity, entityYaw, partialTick, poseStack, bufferSource, packedLight);
@@ -99,8 +95,8 @@ public class OvomorphRenderer extends AzEntityRenderer<Ovomorph> {
 
     public static RenderType getEggRenderType(Ovomorph ovomorph) {
         if (
-            ovomorph.hatchManager().isHatching()
-                || ovomorph.hatchManager().isHatched()
+            ovomorph.getHatchManager().isHatching()
+                || ovomorph.getHatchManager().isHatched()
         ) {
             return RenderType.entityTranslucent(textureLocation(ovomorph));
         }

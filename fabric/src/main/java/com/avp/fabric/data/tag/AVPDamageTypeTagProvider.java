@@ -29,21 +29,35 @@ public class AVPDamageTypeTagProvider extends FabricTagProvider<DamageType> {
 
         getOrCreateTagBuilder(DamageTypeTags.BYPASSES_ARMOR)
             .add(
-                AVPDamageTypeKeys.RADIATION
-            );
-
-        getOrCreateTagBuilder(DamageTypeTags.BYPASSES_WOLF_ARMOR)
-            .add(
+                AVPDamageTypeKeys.CHESTBURSTING,
                 AVPDamageTypeKeys.RADIATION
             );
 
         getOrCreateTagBuilder(DamageTypeTags.BYPASSES_ENCHANTMENTS)
             .add(
+                AVPDamageTypeKeys.CHESTBURSTING,
                 AVPDamageTypeKeys.RADIATION
+            );
+
+        getOrCreateTagBuilder(DamageTypeTags.BYPASSES_INVULNERABILITY)
+            .add(
+                AVPDamageTypeKeys.CHESTBURSTING
             );
 
         getOrCreateTagBuilder(DamageTypeTags.BYPASSES_RESISTANCE)
             .add(
+                AVPDamageTypeKeys.CHESTBURSTING,
+                AVPDamageTypeKeys.RADIATION
+            );
+
+        getOrCreateTagBuilder(DamageTypeTags.BYPASSES_SHIELD)
+            .add(
+                AVPDamageTypeKeys.CHESTBURSTING
+            );
+
+        getOrCreateTagBuilder(DamageTypeTags.BYPASSES_WOLF_ARMOR)
+            .add(
+                AVPDamageTypeKeys.CHESTBURSTING,
                 AVPDamageTypeKeys.RADIATION
             );
 
@@ -62,10 +76,19 @@ public class AVPDamageTypeTagProvider extends FabricTagProvider<DamageType> {
             .add(
                 AVPDamageTypeKeys.ACID,
                 AVPDamageTypeKeys.BULLET,
+                AVPDamageTypeKeys.CHESTBURSTING,
                 AVPDamageTypeKeys.FLAMETHROW,
                 AVPDamageTypeKeys.RADIATION,
                 AVPDamageTypeKeys.RAZOR_WIRE,
                 AVPDamageTypeKeys.SMOTHERING
+            );
+
+        getOrCreateTagBuilder(AVPDamageTypesTags.DOES_NOT_HURT_ALIENS)
+            .add(
+                AVPDamageTypeKeys.ACID,
+                DamageTypes.DROWN,
+                DamageTypes.FREEZE,
+                DamageTypes.IN_WALL
             );
 
         // All missing damage types here were excluded on purpose. Yes, including lava. Lava melts machinery.

@@ -1,23 +1,29 @@
 package com.lib.common.data;
 
+import com.lib.common.gameplay.NBTSerializable;
+import net.minecraft.nbt.CompoundTag;
+
 import java.time.Duration;
 
-public class Cooldown {
+public class Cooldown implements NBTSerializable {
 
-    public static Cooldown withCooldownTime(Duration cooldownTime) {
-        return withCooldownTimeInTicks(cooldownTime.toSeconds() * 20);
+    public static Cooldown withCooldownTime(String name, Duration cooldownTime) {
+        return withCooldownTimeInTicks(name, (long) (cooldownTime.toMillis() / 50.0));
     }
 
-    public static Cooldown withCooldownTimeInTicks(long maxCooldownInTicks) {
-        return new Cooldown(maxCooldownInTicks);
+    public static Cooldown withCooldownTimeInTicks(String name, long maxCooldownInTicks) {
+        return new Cooldown(name, maxCooldownInTicks);
     }
 
     private final long maxCooldownInTicks;
 
+    private final String name;
+
     private long cooldownInTicks;
 
-    private Cooldown(long maxCooldownInTicks) {
+    private Cooldown(String name, long maxCooldownInTicks) {
         this.maxCooldownInTicks = maxCooldownInTicks;
+        this.name = name;
     }
 
     public void tick() {
@@ -30,5 +36,21 @@ public class Cooldown {
 
     public void reset() {
         this.cooldownInTicks = maxCooldownInTicks;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    @Override
+    public void load(CompoundTag compoundTag) {
+        compoundTag.putLong(name, cooldownInTicks);
+    }
+
+    @Override
+    public void save(CompoundTag compoundTag) {
+        if (compoundTag.contains(name)) {
+            this.cooldownInTicks = compoundTag.getLong(name);
+        }
     }
 }

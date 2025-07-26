@@ -1,7 +1,5 @@
 package com.avp.neoforge.service;
 
-import com.alien.common.model.lifecycle.AlienLifecycle;
-import com.alien.common.model.lifecycle.infection.AlienInfection;
 import com.bvanseg.just.functional.tuple.Tuple2;
 import com.bvanseg.just.functional.tuple.Tuple3;
 import com.bvanseg.just.functional.tuple.Tuple4;
@@ -10,6 +8,7 @@ import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.server.packs.resources.PreparableReloadListener;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
@@ -46,10 +45,6 @@ public class NeoForgeRegistryService implements RegistryService {
 
     private final Map<Registry<?>, DeferredRegister<?>> registryToDeferredRegisterMap;
 
-    private final List<Supplier<? extends AlienInfection<?, ?>>> alienInfectionSuppliers;
-
-    private final List<Supplier<AlienLifecycle>> alienLifecycleSuppliers;
-
     private final List<Supplier<? extends Item>> azureLibItemIdentitySuppliers;
 
     private final List<Tuple4<Supplier<? extends ItemLike>, Float, Boolean, Boolean>> compostableData;
@@ -63,6 +58,8 @@ public class NeoForgeRegistryService implements RegistryService {
     private final List<LiteralArgumentBuilder<CommandSourceStack>> literalArgumentBuilders;
 
     private final List<NetworkHandler<?>> networkHandlers;
+
+    private final List<PreparableReloadListener> reloadListeners;
 
     private final List<Tuple3<Supplier<VillagerProfession>, Integer, List<VillagerTrades.ItemListing>>> villagerTradeData;
 
@@ -87,8 +84,6 @@ public class NeoForgeRegistryService implements RegistryService {
             BuiltInRegistries.VILLAGER_PROFESSION
         ).collect(Collectors.toMap(Function.identity(), NeoForgeRegistryService::createDeferredRegistry));
 
-        this.alienInfectionSuppliers = new ArrayList<>();
-        this.alienLifecycleSuppliers = new ArrayList<>();
         this.azureLibItemIdentitySuppliers = new ArrayList<>();
         this.compostableData = new ArrayList<>();
         this.entityAttributeSupplierPairs = new ArrayList<>();
@@ -96,6 +91,7 @@ public class NeoForgeRegistryService implements RegistryService {
         this.furnaceFuelPairs = new ArrayList<>();
         this.literalArgumentBuilders = new ArrayList<>();
         this.networkHandlers = new ArrayList<>();
+        this.reloadListeners = new ArrayList<>();
         this.villagerTradeData = new ArrayList<>();
     }
 
@@ -114,20 +110,6 @@ public class NeoForgeRegistryService implements RegistryService {
     @Override
     public void registerCommand(LiteralArgumentBuilder<CommandSourceStack> literalArgumentBuilder) {
         literalArgumentBuilders.add(literalArgumentBuilder);
-    }
-
-    @Override
-    public <S extends LivingEntity, P extends LivingEntity> Supplier<AlienInfection<S, P>> registerAlienInfection(
-        Supplier<AlienInfection<S, P>> alienInfectionSupplier
-    ) {
-        alienInfectionSuppliers.add(alienInfectionSupplier);
-        return alienInfectionSupplier;
-    }
-
-    @Override
-    public Supplier<AlienLifecycle> registerAlienLifecycle(Supplier<AlienLifecycle> alienLifecycleSupplier) {
-        alienLifecycleSuppliers.add(alienLifecycleSupplier);
-        return alienLifecycleSupplier;
     }
 
     @Override
@@ -174,6 +156,12 @@ public class NeoForgeRegistryService implements RegistryService {
     }
 
     @Override
+    public PreparableReloadListener registerReloadListener(String id, PreparableReloadListener listener) {
+        reloadListeners.add(listener);
+        return listener;
+    }
+
+    @Override
     public void registerVillagerTrade(
         Supplier<VillagerProfession> villagerProfessionSupplier,
         int level,
@@ -188,14 +176,6 @@ public class NeoForgeRegistryService implements RegistryService {
 
     public void initialize(IEventBus modBus) {
         registryToDeferredRegisterMap.values().forEach(deferredRegister -> deferredRegister.register(modBus));
-    }
-
-    public List<Supplier<? extends AlienInfection<?, ?>>> getAlienInfectionSuppliers() {
-        return alienInfectionSuppliers;
-    }
-
-    public List<Supplier<AlienLifecycle>> getAlienLifecycleSuppliers() {
-        return alienLifecycleSuppliers;
     }
 
     public List<Supplier<? extends Item>> getAzureLibItemIdentitySuppliers() {
@@ -224,6 +204,10 @@ public class NeoForgeRegistryService implements RegistryService {
 
     public List<NetworkHandler<?>> getNetworkHandlers() {
         return networkHandlers;
+    }
+
+    public List<PreparableReloadListener> getReloadListeners() {
+        return reloadListeners;
     }
 
     public List<Tuple3<Supplier<VillagerProfession>, Integer, List<VillagerTrades.ItemListing>>> getVillagerTradeData() {

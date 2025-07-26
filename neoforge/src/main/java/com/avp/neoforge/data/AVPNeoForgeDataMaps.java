@@ -27,9 +27,9 @@ public class AVPNeoForgeDataMaps extends DataMapProvider {
         REGISTRY.getCompostableData()
             .forEach(
                 compostableData -> compostablesBuilder.add(
-                    compostableData.first().get().asItem().builtInRegistryHolder(),
-                    new Compostable(compostableData.second(), compostableData.third()),
-                    compostableData.fourth()
+                    compostableData.v1().get().asItem().builtInRegistryHolder(),
+                    new Compostable(compostableData.v2(), compostableData.v3()),
+                    compostableData.v4()
                 )
             );
 
@@ -38,8 +38,8 @@ public class AVPNeoForgeDataMaps extends DataMapProvider {
         REGISTRY.getFurnaceFuelPairs()
             .forEach(
                 fuelPair -> furnaceFuelBuilder.add(
-                    fuelPair.first().get().asItem().builtInRegistryHolder(),
-                    new FurnaceFuel(fuelPair.second()),
+                    fuelPair.v1().get().asItem().builtInRegistryHolder(),
+                    new FurnaceFuel(fuelPair.v2()),
                     false
                 )
             );

@@ -1,6 +1,7 @@
 package com.avp.common.registry.init;
 
 import com.alien.common.gameplay.block.entity.resin.node.ResinNodeBlockEntity;
+import com.alien.common.gameplay.block.entity.resin.vent.ResinVentBlockEntity;
 import com.alien.common.registry.init.block.AlienResinBlocks;
 import com.human.common.gameplay.block.entity.AmmoChestBlockEntity;
 import com.human.common.gameplay.block.entity.DeskTerminalBlockEntity;
@@ -29,6 +30,17 @@ public class AVPBlockEntityTypes {
             AlienResinBlocks.ABERRANT_RESIN_NODE.get(),
             AlienResinBlocks.NETHER_RESIN_NODE.get(),
             AlienResinBlocks.RESIN_NODE.get()
+        )
+    );
+
+    public static final AVPDeferredHolder<BlockEntityType<ResinVentBlockEntity>> RESIN_VENT = register(
+        "resin_vent",
+        () -> BlockEntityType.Builder.of(
+            ResinVentBlockEntity::new,
+            AlienResinBlocks.IRRADIATED_RESIN_VENT.get(),
+            AlienResinBlocks.ABERRANT_RESIN_VENT.get(),
+            AlienResinBlocks.NETHER_RESIN_VENT.get(),
+            AlienResinBlocks.RESIN_VENT.get()
         )
     );
 

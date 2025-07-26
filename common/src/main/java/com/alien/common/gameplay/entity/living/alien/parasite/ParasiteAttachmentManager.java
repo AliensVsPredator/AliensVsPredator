@@ -2,10 +2,8 @@ package com.alien.common.gameplay.entity.living.alien.parasite;
 
 import com.alien.common.model.alien.FreeMob;
 import com.alien.common.model.alien.Host;
-import com.lib.common.gameplay.NBTSerializable;
-import net.minecraft.nbt.CompoundTag;
+import com.lib.common.network.DataAccessor;
 import net.minecraft.network.protocol.game.ClientboundSetPassengersPacket;
-import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
@@ -15,25 +13,19 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
 
+import com.avp.common.registry.init.AVPDataKeys;
 import com.avp.common.registry.key.AVPDamageTypeKeys;
 import com.avp.common.util.AVPPredicates;
 
-public class ParasiteAttachmentManager implements NBTSerializable {
-
-    private static final String IS_FERTILE_KEY = "isFertile";
-
-    private static final String TICKS_ATTACHED_TO_HOST_KEY = "ticksAttachedToHost";
+public class ParasiteAttachmentManager {
 
     private final Parasite parasite;
 
-    private final EntityDataAccessor<Boolean> isFertileEDA;
+    private final DataAccessor<Integer> ticksAttachedToHost;
 
-    private int ticksAttachedToHost;
-
-    public ParasiteAttachmentManager(Parasite parasite, EntityDataAccessor<Boolean> isFertileEDA) {
+    public ParasiteAttachmentManager(Parasite parasite) {
         this.parasite = parasite;
-        this.isFertileEDA = isFertileEDA;
-        this.ticksAttachedToHost = 0;
+        this.ticksAttachedToHost = new DataAccessor<>(parasite, AVPDataKeys.PARASITE_TICKS_ATTACHED_TO_HOST);
     }
 
     public void tick() {
@@ -44,7 +36,7 @@ public class ParasiteAttachmentManager implements NBTSerializable {
         var host = getHost();
 
         if (!isAttachedToHost()) {
-            this.ticksAttachedToHost = 0;
+            ticksAttachedToHost.reset();
 
             if (host instanceof Mob mob) {
                 ((FreeMob) mob).restoreFreedom();
@@ -69,15 +61,15 @@ public class ParasiteAttachmentManager implements NBTSerializable {
             return;
         }
 
-        host.addEffect(new MobEffectInstance(MobEffects.BLINDNESS, 40, 3, true, false, true));
-        host.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 40, 3, true, false, true));
-        host.addEffect(new MobEffectInstance(MobEffects.DIG_SLOWDOWN, 40, 3, true, false, true));
+        var effectTimeInTicks = 20 * 4;
+        host.addEffect(new MobEffectInstance(MobEffects.BLINDNESS, effectTimeInTicks, 3, true, false, true));
+        host.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, effectTimeInTicks, 3, true, false, true));
+        host.addEffect(new MobEffectInstance(MobEffects.DIG_SLOWDOWN, effectTimeInTicks, 3, true, false, true));
 
         var falloffTimeInTicks = (host instanceof ServerPlayer ? 1.5 : 2.5) * 20 * 60;
 
         // TODO: Make time configurable
         if (ticksAttachedToHost() < 20 * 10) {
-            // TODO: Make damage configurable
             host.hurt(parasite.damageSources().source(AVPDamageTypeKeys.SMOTHERING), 0.01F);
         } else if (ticksAttachedToHost() > falloffTimeInTicks) {
             parasite.stopRiding();
@@ -86,44 +78,30 @@ public class ParasiteAttachmentManager implements NBTSerializable {
                 player.connection.send(new ClientboundSetPassengersPacket(host));
             }
         } else {
+            host.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, effectTimeInTicks, 3, true, false, true));
+            host.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, effectTimeInTicks, 100, true, false, true));
+
             if (host instanceof Mob mob) {
                 ((FreeMob) mob).removeFreedom();
             }
 
             // TODO: Make time configurable
             if (ticksAttachedToHost() >= 20 * 20) {
-                host.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, 40, 3, true, false, true));
 
-                if (isFertile()) {
-                    ((Host) host).injectEmbryo(parasite);
-                    setIsFertile(false);
+                if (parasite.isFertile.get()) {
+                    ((Host) host).implantEmbryo(parasite);
+                    parasite.isFertile.set(false);
                     // TODO: Play nasty toob sound
                 }
             }
         }
 
-        ticksAttachedToHost++;
+        host.setAirSupply(host.getMaxAirSupply());
+        ticksAttachedToHost.set(ticksAttachedToHost.get() + 1);
     }
 
     public void restore() {
-        setIsFertile(true);
-    }
-
-    @Override
-    public void load(CompoundTag compoundTag) {
-        if (compoundTag.contains(IS_FERTILE_KEY)) {
-            setIsFertile(compoundTag.getBoolean(IS_FERTILE_KEY));
-        }
-
-        if (compoundTag.contains(TICKS_ATTACHED_TO_HOST_KEY)) {
-            this.ticksAttachedToHost = compoundTag.getInt(TICKS_ATTACHED_TO_HOST_KEY);
-        }
-    }
-
-    @Override
-    public void save(CompoundTag compoundTag) {
-        compoundTag.putBoolean(IS_FERTILE_KEY, isFertile());
-        compoundTag.putInt(TICKS_ATTACHED_TO_HOST_KEY, ticksAttachedToHost);
+        parasite.isFertile.set(true);
     }
 
     public @Nullable LivingEntity getHost() {
@@ -134,23 +112,7 @@ public class ParasiteAttachmentManager implements NBTSerializable {
         return getHost() != null && parasite.isAlive();
     }
 
-    public boolean isFertile() {
-        return parasite.getEntityData().get(isFertileEDA);
-    }
-
-    public void setIsFertile(boolean isFertile) {
-        parasite.getEntityData().set(isFertileEDA, isFertile);
-
-        if (!isFertile) {
-            ((FreeMob) parasite).removeFreedom();
-            parasite.removeAllGoals(AVPPredicates.alwaysTrue());
-        } else {
-            ((FreeMob) parasite).restoreFreedom();
-            parasite.restoreAllGoals();
-        }
-    }
-
     public int ticksAttachedToHost() {
-        return ticksAttachedToHost;
+        return ticksAttachedToHost.get();
     }
 }

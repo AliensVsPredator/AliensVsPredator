@@ -1,7 +1,6 @@
 package com.alien.common.gameplay.item;
 
-import com.alien.common.gameplay.entity.living.alien.xenomorph.Xenomorph;
-import com.alien.common.gameplay.entity.living.alien.xenomorph.praetorian.Praetorian;
+import com.alien.common.gameplay.entity.living.alien.Alien;
 import com.alien.common.registry.init.AlienBlocks;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -24,8 +23,13 @@ public class RoyalJellyBlockItem extends BlockItem {
         @NotNull LivingEntity livingEntity,
         @NotNull InteractionHand interactionHand
     ) {
-        if (livingEntity instanceof Praetorian praetorian) {
-            praetorian.getEntityData().set(Xenomorph.JELLY_COUNT, 10);
+        if (
+            livingEntity instanceof Alien alien
+                && !alien.isPoisoned()
+                && alien.getMaxJellyToGrowth() != null
+        ) {
+            alien.setPersistenceRequired();
+            alien.setJellyCount(alien.getJellyCount() + 9);
             itemStack.consume(1, player);
             return InteractionResult.SUCCESS;
         }

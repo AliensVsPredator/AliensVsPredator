@@ -8,6 +8,8 @@ import com.avp.AVPResources;
 
 public class AVPDamageTypesTags {
 
+    public static final TagKey<DamageType> DOES_NOT_HURT_ALIENS = create("does_not_hurt_aliens");
+
     public static final TagKey<DamageType> DOES_NOT_HURT_SENTRY_TURRETS = create("does_not_hurt_sentry_turrets");
 
     private static TagKey<DamageType> create(String name) {

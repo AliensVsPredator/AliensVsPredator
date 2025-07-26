@@ -18,6 +18,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Supplier;
 
 import com.avp.common.registry.tag.AVPBlockTags;
 import com.avp.server.BlockBreakProgressManager;
@@ -36,6 +37,8 @@ public class DigToTargetGoal extends Goal {
 
     private final int parallelBlockBreakCount;
 
+    private final Supplier<Boolean> canDig;
+
     private BlockState blockState = null;
 
     private Vec3 lastPosition = null;
@@ -45,22 +48,27 @@ public class DigToTargetGoal extends Goal {
     private double lastDistanceToTarget = Double.MAX_VALUE;
 
     public DigToTargetGoal(Mob mob) {
-        this(mob, 16);
+        this(mob, 16, () -> true);
     }
 
-    public DigToTargetGoal(Mob mob, double maxDistanceFromTarget) {
-        this(mob, maxDistanceFromTarget, 1);
+    public DigToTargetGoal(Mob mob, double maxDistanceFromTarget, Supplier<Boolean> canDig) {
+        this(mob, maxDistanceFromTarget, 1, canDig);
     }
 
-    public DigToTargetGoal(Mob mob, double maxDistanceFromTarget, int parallelBlockBreakCount) {
+    public DigToTargetGoal(Mob mob, double maxDistanceFromTarget, int parallelBlockBreakCount, Supplier<Boolean> canDig) {
         this.mob = mob;
         this.reachDistance = 4;
         this.maxDistanceFromTarget = maxDistanceFromTarget * maxDistanceFromTarget;
         this.parallelBlockBreakCount = parallelBlockBreakCount;
+        this.canDig = canDig;
     }
 
     @Override
     public boolean canUse() {
+        if (!canDig.get()) {
+            return false;
+        }
+
         var target = mob.getTarget();
 
         if (target == null || !mob.level().getGameRules().getBoolean(GameRules.RULE_MOBGRIEFING)) {
@@ -79,6 +87,10 @@ public class DigToTargetGoal extends Goal {
 
     @Override
     public boolean canContinueToUse() {
+        if (!canDig.get()) {
+            return false;
+        }
+
         var target = mob.getTarget();
 
         if (target == null || !target.isAlive() || targetBlockPositions.isEmpty()) {

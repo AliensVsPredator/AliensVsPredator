@@ -8,8 +8,6 @@ import net.minecraft.world.entity.monster.Creeper;
 import net.minecraft.world.entity.player.Player;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Comparator;
-import java.util.List;
 import java.util.Objects;
 
 import com.avp.common.registry.tag.AVPBlockTags;
@@ -46,24 +44,10 @@ public class AlienPredicates {
             && areAliensEnemies(alien, potentialAlienTarget);
     }
 
+    // This function is here for semantics reasons.
     public static boolean areAliensEnemies(Alien first, Alien second) {
         // Aliens with different strains will always attack each other.
-        // OR if aliens are the same strain, then they still might have different hives, in which case they should
-        // attack each other.
-        return areAliensDifferentStrains(first, second) || areAliensRivalHiveMembers(first, second);
-    }
-
-    private static boolean areAliensRivalHiveMembers(Alien first, Alien second) {
-        var firstHiveSignatureOption = first.hiveManager().signature();
-        var secondHiveSignatureOption = second.hiveManager().signature();
-
-        if (firstHiveSignatureOption.isNone() || secondHiveSignatureOption.isNone()) {
-            // Aliens are neutral towards other aliens that have no hive.
-            return false;
-        }
-
-        // If hive signatures do not match, then aliens can attack each other.
-        return !Objects.equals(firstHiveSignatureOption, secondHiveSignatureOption);
+        return areAliensDifferentStrains(first, second);
     }
 
     private static boolean areAliensDifferentStrains(Alien first, Alien second) {
@@ -104,8 +88,8 @@ public class AlienPredicates {
     }
 
     public static boolean areAliensSameHive(@NotNull Alien alien, @NotNull Alien otherAlien) {
-        var hiveSignatureOption = alien.hiveManager().signature();
-        var otherHiveSignatureOption = otherAlien.hiveManager().signature();
+        var hiveSignatureOption = alien.getHiveManager().signature();
+        var otherHiveSignatureOption = otherAlien.getHiveManager().signature();
 
         // Two aliens with null/missing hives are not considered part of the same hive.
         return hiveSignatureOption.isSome()
@@ -131,51 +115,4 @@ public class AlienPredicates {
         return potentialTarget.getType().is(AVPEntityTypeTags.HATED_BY_XENOMORPHS)
             || isTargetingHiveMember(alien, potentialTarget);
     }
-
-    /**
-     * Find nearby threatening targets for the Alien within a specified range.
-     *
-     * @param alien The alien entity.
-     * @param range The range to search for targets.
-     * @return A sorted list of valid targets, closest first.
-     */
-    public static List<LivingEntity> findTargets(Alien alien, double range) {
-        var searchArea = alien.getBoundingBox().inflate(range);
-
-        List<LivingEntity> targetsInRange = alien.level()
-            .getEntitiesOfClass(
-                LivingEntity.class,
-                searchArea,
-                potentialTarget -> canTarget(alien, potentialTarget)
-            );
-
-        targetsInRange.sort(Comparator.comparingDouble(alien::distanceTo));
-
-        return targetsInRange;
-    }
-
-    /**
-     * Prioritize and attack nearby targets based on given conditions.
-     *
-     * @param alien The alien entity.
-     * @param range The range to detect threats.
-     */
-    public static void prioritizeAndAttack(Alien alien, double range) {
-        var targets = findTargets(alien, range);
-
-        if (targets.isEmpty()) {
-            alien.setTarget(null);
-            return;
-        }
-
-        var closestTarget = targets.get(0);
-        alien.setTarget(closestTarget);
-
-        for (var target : targets) {
-            if (alien.isWithinMeleeAttackRange(target)) {
-                alien.doHurtTarget(target);
-            }
-        }
-    }
-
 }

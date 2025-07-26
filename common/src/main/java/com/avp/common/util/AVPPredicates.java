@@ -63,7 +63,7 @@ public class AVPPredicates {
     }
 
     public static boolean hasEmbryo(Entity target) {
-        return target instanceof Host host && host.getParasiteType() != null;
+        return target instanceof Host host && host.getEmbryoType().isSome();
     }
 
     public static boolean isFreeHost(Alien parasite, Entity hostTarget) {
@@ -104,6 +104,6 @@ public class AVPPredicates {
         EquipmentSlot.HEAD
     ).is(AVPItemTags.FACEHUGGER_RESISTANT_HELMETS);
 
-    public static final Predicate<LivingEntity> HAS_MASK = livingEntity -> livingEntity instanceof Yautja yautja && yautja.yautjaMaskManager
-        .hasMask();
+    public static final Predicate<LivingEntity> HAS_MASK = livingEntity -> livingEntity instanceof Yautja yautja
+        && yautja.hasMask();
 }

@@ -1,76 +1,38 @@
 package com.alien.common.gameplay.entity.living.alien.xenomorph.praetorian;
 
 import com.alien.common.constant.animation.PraetorianAnimationRefs;
+import com.alien.common.util.AzAlienAnimationUtil;
+import com.lib.common.util.AzAnimationUtil;
 import mod.azure.azurelib.rewrite.animation.dispatch.command.AzCommand;
 import mod.azure.azurelib.rewrite.animation.play_behavior.AzPlayBehaviors;
 
 public class PraetorianAnimationDispatcher {
 
-    private static final AzCommand ATTACK_CLAW = AzCommand.create(
-        PraetorianAnimationRefs.FULL_BODY_CONTROLLER_NAME,
-        PraetorianAnimationRefs.ATTACK_CLAW_ANIMATION_NAME
+    private static final AzCommand ARMATTACK_RIGHTARM = AzCommand.create(
+        AzAlienAnimationUtil.RIGHT_ARM_CONTROLLER_NAME,
+        PraetorianAnimationRefs.ATTACKCLAW_RIGHTARM_ANIMATION_NAME,
+        AzPlayBehaviors.PLAY_ONCE
     );
 
-    private static final AzCommand ATTACK_TAIL = AzCommand.create(
-        PraetorianAnimationRefs.FULL_BODY_CONTROLLER_NAME,
-        PraetorianAnimationRefs.ATTACK_TAIL_ANIMATION_NAME
+    private static final AzCommand BITEATTACK_HEAD = AzCommand.create(
+        AzAlienAnimationUtil.HEAD_CONTROLLER_NAME,
+        PraetorianAnimationRefs.ATTACKBITE_HEAD_ANIMATION_NAME,
+        AzPlayBehaviors.PLAY_ONCE
     );
 
-    private static final AzCommand CRAWL = AzCommand.create(
-        PraetorianAnimationRefs.FULL_BODY_CONTROLLER_NAME,
-        PraetorianAnimationRefs.CRAWL_ANIMATION_NAME,
-        AzPlayBehaviors.LOOP
+    private static final AzCommand TAILATTACKQUAD_TAIL = AzCommand.create(
+        AzAlienAnimationUtil.TAIL_CONTROLLER_NAME,
+        PraetorianAnimationRefs.ATTACKTAIL_TAIL_ANIMATION_NAME,
+        AzPlayBehaviors.PLAY_ONCE
     );
 
-    private static final AzCommand CRAWL_HOLD = AzCommand.create(
-        PraetorianAnimationRefs.FULL_BODY_CONTROLLER_NAME,
-        PraetorianAnimationRefs.CRAWL_ANIMATION_NAME,
-        AzPlayBehaviors.HOLD_ON_LAST_FRAME
-    );
+    private static final AzCommand IDLE_ALL = AzAnimationUtil.compose(AzAlienAnimationUtil.XENO_LIMB_NAMES, "idle");
 
-    private static final AzCommand FLAIL_TAIL = AzCommand.create(
-        PraetorianAnimationRefs.TAIL_CONTROLLER_NAME,
-        PraetorianAnimationRefs.FLAIL_TAIL_ANIMATION_NAME,
-        AzPlayBehaviors.LOOP
-    );
+    private static final AzCommand RUN_ALL = AzAnimationUtil.compose(AzAlienAnimationUtil.XENO_LIMB_NAMES, "run");
 
-    private static final AzCommand IDLE_BODY = AzCommand.create(
-        PraetorianAnimationRefs.FULL_BODY_CONTROLLER_NAME,
-        PraetorianAnimationRefs.IDLE_ANIMATION_NAME,
-        AzPlayBehaviors.LOOP
-    );
+    private static final AzCommand SWIM_ALL = AzAnimationUtil.compose(AzAlienAnimationUtil.XENO_LIMB_NAMES, "swim");
 
-    private static final AzCommand IDLE_TAIL = AzCommand.create(
-        PraetorianAnimationRefs.TAIL_CONTROLLER_NAME,
-        PraetorianAnimationRefs.IDLE_TAIL_ANIMATION_NAME,
-        AzPlayBehaviors.LOOP
-    );
-
-    private static final AzCommand RUN_BODY = AzCommand.create(
-        PraetorianAnimationRefs.FULL_BODY_CONTROLLER_NAME,
-        PraetorianAnimationRefs.RUN_ANIMATION_NAME,
-        AzPlayBehaviors.LOOP
-    );
-
-    private static final AzCommand SWIM = AzCommand.create(
-        PraetorianAnimationRefs.FULL_BODY_CONTROLLER_NAME,
-        PraetorianAnimationRefs.SWIM_ANIMATION_NAME,
-        AzPlayBehaviors.LOOP
-    );
-
-    private static final AzCommand WALK_BODY = AzCommand.create(
-        PraetorianAnimationRefs.FULL_BODY_CONTROLLER_NAME,
-        PraetorianAnimationRefs.WALK_ANIMATION_NAME,
-        AzPlayBehaviors.LOOP
-    );
-
-    // Composed Animations
-
-    private static final AzCommand IDLE = AzCommand.compose(IDLE_BODY, IDLE_TAIL);
-
-    private static final AzCommand RUN = AzCommand.compose(RUN_BODY, FLAIL_TAIL);
-
-    private static final AzCommand WALK = AzCommand.compose(WALK_BODY, IDLE_TAIL);
+    private static final AzCommand WALK_ALL = AzAnimationUtil.compose(AzAlienAnimationUtil.XENO_LIMB_NAMES, "walk");
 
     private final Praetorian praetorian;
 
@@ -78,35 +40,31 @@ public class PraetorianAnimationDispatcher {
         this.praetorian = praetorian;
     }
 
-    public void crawl() {
-        CRAWL.sendForEntity(praetorian);
-    }
-
-    public void crawlHold() {
-        CRAWL_HOLD.sendForEntity(praetorian);
-    }
-
     public void idle() {
-        IDLE.sendForEntity(praetorian);
+        IDLE_ALL.sendForEntity(praetorian);
     }
 
     public void run() {
-        RUN.sendForEntity(praetorian);
+        RUN_ALL.sendForEntity(praetorian);
     }
 
     public void swim() {
-        SWIM.sendForEntity(praetorian);
+        SWIM_ALL.sendForEntity(praetorian);
     }
 
     public void walk() {
-        WALK.sendForEntity(praetorian);
+        WALK_ALL.sendForEntity(praetorian);
     }
 
-    public void clawAttack() {
-        ATTACK_CLAW.sendForEntity(praetorian);
+    public void biteAttack() {
+        BITEATTACK_HEAD.sendForEntity(praetorian);
+    }
+
+    public void rightClawAttack() {
+        ARMATTACK_RIGHTARM.sendForEntity(praetorian);
     }
 
     public void tailAttack() {
-        ATTACK_TAIL.sendForEntity(praetorian);
+        TAILATTACKQUAD_TAIL.sendForEntity(praetorian);
     }
 }

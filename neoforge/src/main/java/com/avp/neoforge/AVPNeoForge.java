@@ -1,7 +1,7 @@
 package com.avp.neoforge;
 
-import com.alien.common.registry.AlienInfectionRegistry;
-import com.alien.common.registry.AlienLifecycleRegistry;
+import com.lib.common.network.DataContainer;
+import com.lib.common.network.DataUser;
 import com.predator.common.registry.init.PredatorEntityTypes;
 import mod.azure.azurelib.rewrite.animation.cache.AzIdentityRegistry;
 import net.minecraft.core.registries.Registries;
@@ -10,6 +10,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.SpawnPlacements;
 import net.minecraft.world.level.GameRules;
@@ -18,9 +19,12 @@ import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.event.AddReloadListenerEvent;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
+import net.neoforged.neoforge.event.TagsUpdatedEvent;
 import net.neoforged.neoforge.event.entity.EntityAttributeCreationEvent;
 import net.neoforged.neoforge.event.entity.RegisterSpawnPlacementsEvent;
+import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.event.server.ServerAboutToStartEvent;
 import net.neoforged.neoforge.event.tick.LevelTickEvent;
 import net.neoforged.neoforge.event.village.VillagerTradesEvent;
@@ -29,6 +33,7 @@ import net.neoforged.neoforge.network.handling.DirectionalPayloadHandler;
 import net.neoforged.neoforge.network.registration.HandlerThread;
 
 import com.avp.AVP;
+import com.avp.common.AVPEvents;
 import com.avp.common.data.worldgen.AVPVillageInjection;
 import com.avp.common.network.NetworkHandler;
 import com.avp.common.registry.init.AVPVillagerProfessions;
@@ -56,18 +61,15 @@ public class AVPNeoForge {
 
         // Game bus events.
         NeoForge.EVENT_BUS.addListener(AVPNeoForge::registerCommands);
+        NeoForge.EVENT_BUS.addListener(AVPNeoForge::registerDataReloadListeners);
+        NeoForge.EVENT_BUS.addListener(AVPNeoForge::registerPlayerTrackingEntityHandler);
+        NeoForge.EVENT_BUS.addListener(AVPNeoForge::registerTagUpdateHandler);
         NeoForge.EVENT_BUS.addListener(AVPNeoForge::addNewVillageBuilding);
         NeoForge.EVENT_BUS.addListener(AVPNeoForge::addCustomTrades);
         NeoForge.EVENT_BUS.addListener(EventPriority.HIGH, AVPNeoForge::onWorldEndTick);
     }
 
     public static void registerMiscellaneous(FMLCommonSetupEvent event) {
-        // Register alien infections.
-        REGISTRY.getAlienInfectionSuppliers()
-            .forEach(alienInfectionSupplier -> AlienInfectionRegistry.register(alienInfectionSupplier.get()));
-        // Register alien lifecycles.
-        REGISTRY.getAlienLifecycleSuppliers()
-            .forEach(alienLifecycleSupplier -> AlienLifecycleRegistry.register(alienLifecycleSupplier.get()));
         // Register AzureLib item identities.
         REGISTRY.getAzureLibItemIdentitySuppliers()
             .forEach(itemSupplier -> AzIdentityRegistry.register(itemSupplier.get()));
@@ -79,10 +81,27 @@ public class AVPNeoForge {
             .forEach(literalArgumentBuilder -> event.getDispatcher().register(literalArgumentBuilder));
     }
 
+    // Game event
+    public static void registerDataReloadListeners(AddReloadListenerEvent event) {
+        REGISTRY.getReloadListeners()
+            .forEach(event::addListener);
+    }
+
+    public static void registerPlayerTrackingEntityHandler(PlayerEvent.StartTracking event) {
+        if (event.getTarget() instanceof LivingEntity livingEntity) {
+            ((DataUser) livingEntity).getDataContainer().syncToClient(livingEntity, DataContainer.SyncType.ALL);
+        }
+    }
+
+    // Game event
+    public static void registerTagUpdateHandler(TagsUpdatedEvent event) {
+        AVPEvents.onTagsUpdated();
+    }
+
     // Mod event
     public static void registerEntityAttributes(EntityAttributeCreationEvent event) {
         REGISTRY.getEntityAttributeSupplierPairs()
-            .forEach(pair -> event.put(pair.first().get(), pair.second().get().build()));
+            .forEach(pair -> event.put(pair.v1().get(), pair.v2().get().build()));
     }
 
     public static void registerSpawnPlacements(RegisterSpawnPlacementsEvent event) {
@@ -178,8 +197,8 @@ public class AVPNeoForge {
 
         REGISTRY.getVillagerTradeData()
             .forEach(villagerTradeData -> {
-                if (event.getType() == villagerTradeData.first().get()) {
-                    trades.get(villagerTradeData.second()).addAll(villagerTradeData.third());
+                if (event.getType() == villagerTradeData.v1().get()) {
+                    trades.get(villagerTradeData.v2()).addAll(villagerTradeData.v3());
                 }
             });
     }

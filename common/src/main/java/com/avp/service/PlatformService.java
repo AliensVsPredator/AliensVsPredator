@@ -1,5 +1,8 @@
 package com.avp.service;
 
+import com.lib.common.util.Version;
+import org.jetbrains.annotations.Nullable;
+
 public interface PlatformService {
 
     /**
@@ -32,4 +35,7 @@ public interface PlatformService {
     default String getEnvironmentName() {
         return isDevelopmentEnvironment() ? "development" : "production";
     }
+
+    @Nullable
+    Version getModVersion();
 }

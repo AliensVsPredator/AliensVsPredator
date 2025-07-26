@@ -2,8 +2,10 @@ package com.avp.common.registry.init.item;
 
 import com.human.common.gameplay.item.ArmorCaseItem;
 import com.human.common.gameplay.item.CanisterItem;
+import com.human.common.gameplay.item.GeneReaderItem;
 import com.human.common.gameplay.item.MilkCanisterItem;
 import com.human.common.gameplay.item.SolidCanisterItem;
+import com.human.common.gameplay.item.SyringeItem;
 import com.human.common.gameplay.item.grenade.GrenadeItem;
 import com.human.common.registry.init.HumanDataComponents;
 import com.human.common.registry.init.item.HumanGunItems;
@@ -105,6 +107,8 @@ public class AVPItems {
     public static final AVPDeferredHolder<Item> FERROALUMINUM_NUGGET = register("ferroaluminum_nugget");
 
     public static final AVPDeferredHolder<Item> FUEL_TANK = register("fuel_tank", new Item.Properties().stacksTo(1));
+
+    public static final AVPDeferredHolder<Item> GENE_READER = register("gene_reader", GeneReaderItem::new);
 
     public static final AVPDeferredHolder<Item> GRENADE = register("grenade_standard", () -> new GrenadeItem(false, false));
 
@@ -257,6 +261,8 @@ public class AVPItems {
         "steel_sword",
         () -> new SwordItem(AVPTiers.STEEL, new Item.Properties().attributes(SwordItem.createAttributes(AVPTiers.STEEL, 3, -2.4F)))
     );
+
+    public static final AVPDeferredHolder<Item> SYRINGE = register("syringe", SyringeItem::new);
 
     public static final AVPDeferredHolder<Item> TITANIUM_AXE = register(
         "titanium_axe",

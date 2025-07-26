@@ -1,20 +1,25 @@
 package com.alien.common.gameplay.entity.living.alien;
 
-import com.alien.common.gameplay.entity.living.alien.xenomorph.Xenomorph;
+import com.alien.common.gameplay.entity.living.alien.xenomorph.boiler.Boiler;
 import com.alien.common.model.lifecycle.growth.GrowthStage;
-import com.alien.common.registry.AlienLifecycleRegistry;
+import com.alien.common.registry.GrowthStageRegistry;
 import com.lib.common.gameplay.NBTSerializable;
+import com.lib.common.gameplay.gene.GeneOperationType;
+import com.lib.common.gameplay.gene.Genes;
 import com.lib.common.gameplay.util.spatial.block.BlockPosUtil;
+import com.lib.common.model.GeneCarrier;
+import com.lib.common.util.GeneIntegrityUtil;
 import net.minecraft.Util;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.HashSet;
 import java.util.Set;
 import java.util.function.Consumer;
-import java.util.function.Supplier;
 
+import com.avp.common.registry.tag.AVPEntityTypeTags;
 import com.avp.common.util.AVPEntityTransitionUtil;
 
 public class GrowthManager implements NBTSerializable {
@@ -29,7 +34,7 @@ public class GrowthManager implements NBTSerializable {
 
     private final Alien entity;
 
-    private final @Nullable Consumer<LivingEntity> onGrowUpCallback;
+    private final @Nullable Consumer<Entity> onGrowUpCallback;
 
     private boolean growOverTime;
 
@@ -39,13 +44,11 @@ public class GrowthManager implements NBTSerializable {
 
     private boolean readyToGrow;
 
-    private @Nullable Supplier<Float> growthTimeReductionMultiplierProvider;
-
     public GrowthManager(Alien entity) {
         this(entity, null);
     }
 
-    public GrowthManager(Alien entity, @Nullable Consumer<LivingEntity> onGrowUpCallback) {
+    public GrowthManager(Alien entity, @Nullable Consumer<Entity> onGrowUpCallback) {
         this.entity = entity;
         this.onGrowUpCallback = onGrowUpCallback;
         this.growOverTime = true;
@@ -55,26 +58,25 @@ public class GrowthManager implements NBTSerializable {
     public void tick() {
         if (
             entity.level().isClientSide
-                || entity.isPoisoned()
-                || entity.isIrradiated()
+                || canNeverGrow()
         ) {
             return;
         }
 
-        var growthStage = AlienLifecycleRegistry.getOrNull(null, entity.getType());
+        var growthStage = getNextGrowthStage();
 
         if (growthStage == null) {
             return;
         }
 
-        var canBypassGrowthTime = entity.getEntityData().get(Xenomorph.JELLY_COUNT) >= entity.maxJellyToGrowth();
+        var canBypassGrowthTime = entity.getMaxJellyToGrowth() != null && entity.getJellyCount() >= entity.getMaxJellyToGrowth();
 
         if (canBypassGrowthTime) {
             // If we can bypass growing over time thanks to royal jelly, then do so.
             this.readyToGrow = true;
         } else if (growOverTime) {
             // Otherwise if we can't bypass growth time, tick the entity's growth progress.
-            growOverTime(growthStage);
+            growOverTime();
         }
 
         if (!readyToGrow) {
@@ -97,11 +99,18 @@ public class GrowthManager implements NBTSerializable {
             return;
         }
 
-        grow(growthStage);
+        grow();
     }
 
-    private void growOverTime(GrowthStage growthStage) {
+    private @Nullable GrowthStage getNextGrowthStage() {
+        var hostType = entity.getHostType().unwrapOr(null);
+        return GrowthStageRegistry.getOrNull(hostType, entity.getType());
+    }
+
+    private void growOverTime() {
         this.growthTimeInTicks++;
+
+        var growthStage = getNextGrowthStage();
 
         if (growthStage == null) {
             return;
@@ -109,11 +118,6 @@ public class GrowthManager implements NBTSerializable {
 
         var requiredGrowthTimeInTicks = growthStage.growthTimeInTicks();
         var growthTimeReductionMultiplier = 1F;
-
-        if (growthTimeReductionMultiplierProvider != null) {
-            var multiplier = growthTimeReductionMultiplierProvider.get();
-            growthTimeReductionMultiplier = Math.clamp(multiplier, 0.2F, 1F);
-        }
 
         if (growthTimeInTicks < requiredGrowthTimeInTicks * growthTimeReductionMultiplier) {
             return;
@@ -124,24 +128,95 @@ public class GrowthManager implements NBTSerializable {
 
     // TODO:
     // Make this return a sealed type result since there are checks here we want to do that might cause growth failure.
-    public @Nullable LivingEntity grow(GrowthStage growthStage) {
+    public @Nullable Entity grow() {
         // Reset growth time at this point.
         this.growthTimeInTicks = 0;
+        var growthStage = getNextGrowthStage();
+
+        if (growthStage == null || canNeverGrow()) {
+            return null;
+        }
 
         var nextFormType = growthStage.to();
-        var nextForm = AVPEntityTransitionUtil.transitionInto(entity, nextFormType, TRANSITION_NBT_KEY_BLACKLIST);
+
+        var canBecomeBoiler = canBecomeBoiler(nextFormType);
+
+        Entity nextForm;
+
+        if (canBecomeBoiler) {
+            nextFormType = Boiler.getType(entity.getVariant());
+        }
+
+        nextForm = AVPEntityTransitionUtil.transitionInto(entity, nextFormType, TRANSITION_NBT_KEY_BLACKLIST);
 
         if (nextForm == null) {
             return null;
         }
 
-        nextForm.getEntityData().set(Xenomorph.JELLY_COUNT, 0);
+        if (nextForm instanceof Alien alien) {
+            var jellyCountToSubtract = entity.getMaxJellyToGrowth() == null
+                ? 0
+                : entity.getMaxJellyToGrowth();
+
+            alien.setJellyCount(entity.getJellyCount() - jellyCountToSubtract);
+        }
 
         if (onGrowUpCallback != null) {
             onGrowUpCallback.accept(nextForm);
         }
 
         return nextForm;
+    }
+
+    private boolean canNeverGrow() {
+        return entity.isPoisoned()
+            || entity.isIrradiated();
+    }
+
+    private boolean canBecomeBoiler(EntityType<?> nextFormType) {
+        if (!isProperTransition(nextFormType)) {
+            return false;
+        }
+
+        return shouldBecomeBoilerFromGeneDecay() || shouldBecomeBoilerFromAcidVolatility();
+    }
+
+    private boolean isProperTransition(EntityType<?> nextFormType) {
+        var isCurrentlyAdolescent = entity.getType().is(AVPEntityTypeTags.ADOLESCENTS);
+        var willGrowIntoAdult = nextFormType.is(AVPEntityTypeTags.XENOMORPHS);
+
+        return isCurrentlyAdolescent
+            && willGrowIntoAdult;
+    }
+
+    private boolean shouldBecomeBoilerFromAcidVolatility() {
+        var geneContainer = entity.getGeneManager().getGeneContainer();
+        var additiveAcidVolatility = geneContainer.getActiveGeneMap()
+            .getValue(Genes.ACID_VOLATILITY, GeneOperationType.ADDITIVE);
+        var multiplicativeAcidVolatility = geneContainer.getActiveGeneMap()
+            .getValue(Genes.ACID_VOLATILITY, GeneOperationType.MULTIPLICATIVE);
+
+        var totalAcidVolatility = additiveAcidVolatility + multiplicativeAcidVolatility;
+
+        return entity.getRandom().nextDouble() < totalAcidVolatility;
+    }
+
+    private boolean shouldBecomeBoilerFromGeneDecay() {
+        var geneCarrier = (GeneCarrier) entity;
+        var geneDecayLevel = GeneIntegrityUtil.getGeneDecayLevel(geneCarrier);
+
+        return switch (geneDecayLevel) {
+            case FATAL -> true;
+            case STABLE, UNSTABLE -> false;
+            case VOLATILE -> {
+                // Ex. -2.75 -> 2.75
+                var totalGeneIntegrity = Math.abs(GeneIntegrityUtil.getTotalGeneticIntegrity(geneCarrier));
+                // Ex. 2.75 - 2 = 0.75
+                var chance = totalGeneIntegrity - Math.floor(totalGeneIntegrity);
+                // Ex. 0.75 means 75% chance to be a boiler.
+                yield entity.getRandom().nextDouble() < chance;
+            }
+        };
     }
 
     @Override
@@ -158,11 +233,6 @@ public class GrowthManager implements NBTSerializable {
 
     public GrowthManager setGrowOverTime(boolean growOverTime) {
         this.growOverTime = growOverTime;
-        return this;
-    }
-
-    public GrowthManager setGrowthTimeReductionMultiplierProvider(@Nullable Supplier<Float> growthTimeReductionMultiplierProvider) {
-        this.growthTimeReductionMultiplierProvider = growthTimeReductionMultiplierProvider;
         return this;
     }
 }

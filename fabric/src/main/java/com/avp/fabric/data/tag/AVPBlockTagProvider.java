@@ -401,6 +401,14 @@ public class AVPBlockTagProvider extends FabricTagProvider.BlockTagProvider {
                 AlienResinBlocks.RESIN_VEIN.get()
             );
 
+        getOrCreateTagBuilder(AVPBlockTags.RESIN_VENTS)
+            .add(
+                AlienResinBlocks.ABERRANT_RESIN_VENT.get(),
+                AlienResinBlocks.IRRADIATED_RESIN_VENT.get(),
+                AlienResinBlocks.NETHER_RESIN_VENT.get(),
+                AlienResinBlocks.RESIN_VENT.get()
+            );
+
         getOrCreateTagBuilder(AVPBlockTags.RESIN_WEBS)
             .add(
                 AlienResinBlocks.ABERRANT_RESIN_WEB.get(),
@@ -504,14 +512,18 @@ public class AVPBlockTagProvider extends FabricTagProvider.BlockTagProvider {
             .addTag(AVPBlockTags.ACID_IMMUNE);
 
         getOrCreateTagBuilder(AVPBlockTags.IRRADIATED_ACID_IMMUNE)
-            .addTag(AVPBlockTags.IRRADIATED_RESIN)
-            .addTag(AVPBlockTags.SHOULD_NOT_BE_DESTROYED);
+            .addTag(AVPBlockTags.ACID_IMMUNE)
+            .add(
+                Blocks.BLUE_ICE
+            );
 
         getOrCreateTagBuilder(AVPBlockTags.XENOMORPH_IMMUNE)
             .addTag(AVPBlockTags.INDUSTRIAL_CONCRETE)
             .addTag(AVPBlockTags.INDUSTRIAL_GLASS)
             .addTag(AVPBlockTags.PLASTIC)
-            .addTag(AVPBlockTags.SHOULD_NOT_BE_DESTROYED);
+            .addTag(AVPBlockTags.SHOULD_NOT_BE_DESTROYED)
+            .addTag(AVPBlockTags.RESIN_VENTS)
+            .addTag(AVPBlockTags.RESIN_WEBS);
 
         getOrCreateTagBuilder(BlockTags.CLIMBABLE)
             .add(

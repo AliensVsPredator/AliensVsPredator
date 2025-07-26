@@ -1,17 +1,23 @@
 package com.alien.common.gameplay.entity.living.alien.xenomorph.queen;
 
+import com.alien.common.data.AlienVariantTypes;
 import com.alien.common.gameplay.entity.living.alien.Alien;
 import com.alien.common.gameplay.entity.living.alien.xenomorph.Xenomorph;
+import com.alien.common.gameplay.entity.living.alien.xenomorph.drone.Drone;
+import com.alien.common.gameplay.level.saveddata.StrainLeakData;
 import com.alien.common.model.alien.variant.AlienVariant;
 import com.alien.common.model.resin.ResinData;
 import com.alien.common.registry.init.AlienEntityTypes;
 import com.lib.common.util.PlayerUtil;
 import net.minecraft.ChatFormatting;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.SpawnGroupData;
@@ -22,10 +28,14 @@ import net.minecraft.world.level.ServerLevelAccessor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Objects;
+
 import com.avp.AVP;
 import com.avp.common.gameplay.ai.goal.DigToTargetGoal;
 import com.avp.common.gameplay.ai.goal.QueenLayEggGoal;
 import com.avp.common.registry.init.AVPSoundEvents;
+import com.avp.common.registry.tag.AVPEntityTypeTags;
+import com.avp.common.util.EntityUtil;
 import com.avp.server.ServerLevelManagerAccessor;
 
 public class Queen extends Xenomorph {
@@ -36,10 +46,12 @@ public class Queen extends Xenomorph {
 
     private final QueenAnimationDispatcher animationDispatcher;
 
+    private final OvipositorManager ovipositorManager;
+
     public Queen(EntityType<? extends Queen> entityType, Level level) {
         super(entityType, level);
-        this.attackDelayTicks = 20;
         this.animationDispatcher = new QueenAnimationDispatcher(this);
+        this.ovipositorManager = new OvipositorManager(this);
         this.config = AVP.config.statsConfigs.QUEEN_STATS;
     }
 
@@ -49,8 +61,30 @@ public class Queen extends Xenomorph {
     }
 
     @Override
-    protected @NotNull ResinData createResinData() {
+    protected @Nullable ResinData createResinData() {
         return new ResinData(0, 128, 1, AVP.config.statsConfigs.QUEEN_STATS.nestTickrate);
+    }
+
+    @Override
+    public void tick() {
+        super.tick();
+        ovipositorManager.tick();
+    }
+
+    @Override
+    protected boolean canEntityRideAlien(@NotNull Entity passenger) {
+        return Objects.equals(passenger.getType(), AlienEntityTypes.OVIPOSITOR.get());
+    }
+
+    @Override
+    protected void positionRider(@NotNull Entity passenger, @NotNull MoveFunction callback) {
+        if (passenger.getType() == AlienEntityTypes.OVIPOSITOR.get()) {
+            var relativePos = EntityUtil.getRelativePosition(this, 3, 0.01, 5.25);
+            callback.accept(passenger, relativePos.x, relativePos.y, relativePos.z);
+            return;
+        }
+
+        super.positionRider(passenger, callback);
     }
 
     @Override
@@ -61,20 +95,53 @@ public class Queen extends Xenomorph {
         @Nullable SpawnGroupData spawnGroupData
     ) {
         if (spawnType == MobSpawnType.NATURAL) {
-            for (var player : PlayerUtil.getTrackingPlayers(this)) {
-                player.playNotifySound(AVPSoundEvents.ENTITY_QUEEN_SCREAM.get(), SoundSource.MASTER, 1, 1);
-                player.sendSystemMessage(
-                    Component.translatable("A scream from the depths sends chills down your spine...")
-                        .withStyle(ChatFormatting.GREEN, ChatFormatting.ITALIC)
-                );
-            }
-
-            ((ServerLevelManagerAccessor) serverLevelAccessor.getLevel()).getServerLevelManager()
-                .getQueenSpawnCooldown()
-                .reset();
+            applyNaturalSpawnEffects();
         }
 
         return super.finalizeSpawn(serverLevelAccessor, difficulty, spawnType, spawnGroupData);
+    }
+
+    private void applyNaturalSpawnEffects() {
+        var level = level();
+
+        if (level.isClientSide) {
+            return;
+        }
+
+        alertPlayersOfSpawn();
+        spawnGuards();
+        resetQueenSpawnCooldown();
+
+        StrainLeakData.getOrCreate(level)
+            .ifSome(strainLeakData -> strainLeakData.add(getVariant(), -1));
+    }
+
+    private void alertPlayersOfSpawn() {
+        for (var player : PlayerUtil.getTrackingPlayers(this)) {
+            player.playNotifySound(AVPSoundEvents.ENTITY_QUEEN_SCREAM.get(), SoundSource.MASTER, 1, 1);
+            player.sendSystemMessage(
+                Component.literal("A scream from the depths sends chills down your spine...")
+                    .withStyle(AlienVariantTypes.getFor(this).chatColor(), ChatFormatting.ITALIC)
+            );
+        }
+    }
+
+    private void spawnGuards() {
+        var droneType = Drone.getType(getVariant());
+
+        for (var i = 0; i < 4; i++) {
+            var drone = droneType.spawn((ServerLevel) level(), blockPosition(), MobSpawnType.NATURAL);
+
+            if (drone != null) {
+                drone.setPersistenceRequired();
+            }
+        }
+    }
+
+    private void resetQueenSpawnCooldown() {
+        ((ServerLevelManagerAccessor) level()).avp$getServerLevelManager()
+            .getQueenSpawnCooldown()
+            .reset();
     }
 
     @Override
@@ -85,7 +152,7 @@ public class Queen extends Xenomorph {
 
     @Override
     protected void addDigToTargetGoal() {
-        goalSelector.addGoal(5, new DigToTargetGoal(this, 32, 4));
+        goalSelector.addGoal(5, new DigToTargetGoal(this, 32, 4, () -> !Objects.requireNonNull(ovipositorManager).hasOvipositor()));
     }
 
     @Override
@@ -115,12 +182,27 @@ public class Queen extends Xenomorph {
 
     @Override
     public void runAttackAnimations() {
-        var isClawAttack = random.nextBoolean();
+        var attackType = random.nextInt(0, 3);
 
-        if (isClawAttack) {
-            animationDispatcher.clawAttack();
-        } else {
-            animationDispatcher.tailAttack();
+        playSound(AVPSoundEvents.ENTITY_XENOMORPH_ATTACK.get(), getSoundVolume(), (random.nextFloat() - random.nextFloat()) * 0.2F + 1.0F);
+
+        switch (attackType) {
+            case 0 -> animationDispatcher.swipeDownAttack();
+            case 1 -> animationDispatcher.backhandAttack();
+            default -> animationDispatcher.tailStrikeAttack();
+        }
+    }
+
+    @Override
+    protected void doPush(@NotNull Entity entity) {
+        if (
+            // If queen does not have an ovipositor...
+            !ovipositorManager.hasOvipositor()
+                // OR the queen does have an ovipositor and the entity to push is NOT an alien...
+                || !entity.getType().is(AVPEntityTypeTags.ALIENS)
+        ) {
+            // Then push the entity.
+            super.doPush(entity);
         }
     }
 
@@ -148,12 +230,28 @@ public class Queen extends Xenomorph {
     }
 
     @Override
-    public int maxJellyToGrowth() {
-        return Integer.MAX_VALUE;
+    public Integer getMaxJellyToGrowth() {
+        return null;
     }
 
     public QueenAnimationDispatcher getAnimationDispatcher() {
         return animationDispatcher;
+    }
+
+    public OvipositorManager getOvipositorManager() {
+        return ovipositorManager;
+    }
+
+    @Override
+    public void readAdditionalSaveData(@NotNull CompoundTag compoundTag) {
+        super.readAdditionalSaveData(compoundTag);
+        ovipositorManager.load(compoundTag);
+    }
+
+    @Override
+    public void addAdditionalSaveData(@NotNull CompoundTag compoundTag) {
+        super.addAdditionalSaveData(compoundTag);
+        ovipositorManager.save(compoundTag);
     }
 
     public static EntityType<? extends Alien> getType(AlienVariant alienVariant) {

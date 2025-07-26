@@ -13,8 +13,7 @@ import com.avp.AVPResources;
 
 public class OvomorphAnimator extends AzEntityAnimator<Ovomorph> {
 
-    // TODO: Change this to "ovomorph" with 0.2.0.
-    private static final String NAME = "ovamorph";
+    private static final String NAME = "ovomorph";
 
     private static final ResourceLocation ANIMATION = AVPResources.entityAnimationLocation(NAME);
 
@@ -42,16 +41,16 @@ public class OvomorphAnimator extends AzEntityAnimator<Ovomorph> {
         var gVeinBottom = bakedModel.getBoneOrNull("gVeinBottom");
 
         if (gVeinBottom != null) {
-            gVeinBottom.setHidden(!ovomorph.isRooted());
+            gVeinBottom.setHidden(!ovomorph.isRooted.get());
         }
 
         runPassiveAnimations(ovomorph);
     }
 
     private void runPassiveAnimations(Ovomorph ovomorph) {
-        if (ovomorph.hatchManager().isHatching()) {
+        if (ovomorph.getHatchManager().isHatching()) {
             ovomorph.getAnimationDispatcher().open();
-        } else if (ovomorph.hatchManager().isHatched()) {
+        } else if (ovomorph.getHatchManager().isHatched()) {
             ovomorph.getAnimationDispatcher().openHold();
         } else {
             ovomorph.getAnimationDispatcher().closeHold();

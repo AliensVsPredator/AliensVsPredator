@@ -11,17 +11,18 @@ public class ServerLevelManager {
     private final Cooldown queenSpawnCooldown;
 
     public ServerLevelManager() {
-        this.queenSpawnCooldown = Cooldown.withCooldownTime(Duration.ofSeconds(20));
+        this.queenSpawnCooldown = Cooldown.withCooldownTime("queenSpawnCooldownInTicks", Duration.ofMinutes(5));
+
+        queenSpawnCooldown.reset();
     }
 
     public void tick(ServerLevel serverLevel) {
         tickScheduledRunnables();
 
-        var hiveLevelDataOption = HiveLevelData.getOrCreate(serverLevel);
-
         queenSpawnCooldown.tick();
 
-        hiveLevelDataOption.ifSome(HiveLevelData::tick);
+        HiveLevelData.getOrCreate(serverLevel)
+            .ifSome(HiveLevelData::tick);
 
         BlockBreakProgressManager.tick(serverLevel);
     }

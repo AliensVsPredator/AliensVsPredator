@@ -1,7 +1,7 @@
 package com.alien.client.animation.entity;
 
-import com.alien.common.constant.animation.PraetorianAnimationRefs;
 import com.alien.common.gameplay.entity.living.alien.xenomorph.praetorian.Praetorian;
+import com.alien.common.util.AzAlienAnimationUtil;
 import mod.azure.azurelib.rewrite.animation.AzAnimatorConfig;
 import mod.azure.azurelib.rewrite.animation.controller.AzAnimationController;
 import mod.azure.azurelib.rewrite.animation.controller.AzAnimationControllerContainer;
@@ -24,10 +24,25 @@ public class PraetorianAnimator extends AzEntityAnimator<Praetorian> {
     @Override
     public void registerControllers(AzAnimationControllerContainer<Praetorian> animationControllerContainer) {
         animationControllerContainer.add(
-            AzAnimationController.builder(this, PraetorianAnimationRefs.FULL_BODY_CONTROLLER_NAME)
+            AzAnimationController.builder(this, AzAlienAnimationUtil.BODY_CONTROLLER_NAME)
                 .setTransitionLength(5)
                 .build(),
-            AzAnimationController.builder(this, PraetorianAnimationRefs.TAIL_CONTROLLER_NAME)
+            AzAnimationController.builder(this, AzAlienAnimationUtil.HEAD_CONTROLLER_NAME)
+                .setTransitionLength(5)
+                .build(),
+            AzAnimationController.builder(this, AzAlienAnimationUtil.LEFT_ARM_CONTROLLER_NAME)
+                .setTransitionLength(5)
+                .build(),
+            AzAnimationController.builder(this, AzAlienAnimationUtil.LEFT_LEG_CONTROLLER_NAME)
+                .setTransitionLength(5)
+                .build(),
+            AzAnimationController.builder(this, AzAlienAnimationUtil.RIGHT_ARM_CONTROLLER_NAME)
+                .setTransitionLength(5)
+                .build(),
+            AzAnimationController.builder(this, AzAlienAnimationUtil.RIGHT_LEG_CONTROLLER_NAME)
+                .setTransitionLength(5)
+                .build(),
+            AzAnimationController.builder(this, AzAlienAnimationUtil.TAIL_CONTROLLER_NAME)
                 .setTransitionLength(5)
                 .build()
         );
@@ -47,19 +62,21 @@ public class PraetorianAnimator extends AzEntityAnimator<Praetorian> {
 
     private void runPassiveAnimations(Praetorian praetorian) {
         var dispatcher = praetorian.getAnimationDispatcher();
-        var movementAnalyzer = praetorian.getMovementAnalyzer();
-        var isMovingOnGround = movementAnalyzer.isMovingHorizontally() && praetorian.onGround();
-        var isCrawling = praetorian.getCrawlingManager().isCrawling();
+        var isMovingOnGround = praetorian.isMovingHorizontally.get() && praetorian.onGround();
         Runnable animFunction;
 
         if (praetorian.isUnderWater()) {
             // TODO: idle swim
             animFunction = dispatcher::swim;
         } else if (isMovingOnGround) {
-            animFunction = isCrawling ? dispatcher::crawl : dispatcher::walk;
+            if (praetorian.hasTarget.get()) {
+                animFunction = dispatcher::run;
+            } else {
+                animFunction = dispatcher::walk;
+            }
         } else {
             // TODO: idle crawl
-            animFunction = isCrawling ? dispatcher::crawlHold : dispatcher::idle;
+            animFunction = dispatcher::idle;
         }
 
         animFunction.run();
