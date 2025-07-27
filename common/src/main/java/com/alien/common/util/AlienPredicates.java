@@ -1,6 +1,9 @@
 package com.alien.common.util;
 
+import com.alien.common.data.AlienVariantTypes;
 import com.alien.common.gameplay.entity.living.alien.Alien;
+import com.alien.common.model.alien.Host;
+import com.alien.common.model.alien.variant.AlienVariant;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ambient.Bat;
@@ -19,24 +22,27 @@ public class AlienPredicates {
     public static boolean canTarget(@NotNull Alien alien, @NotNull LivingEntity potentialTarget) {
         // Target must be valid...
         return canContinueTargeting(alien, potentialTarget)
-            // AND target is either an enemy alien...
+            // AND the target is either an enemy alien...
             && (isAlienTarget(alien, potentialTarget)
                 // ...OR is hated (predator, player or entity targeting a fellow hive member).
                 || isHated(alien, potentialTarget)
                 // ...OR is standing on resin (any mob or monster).
-                || isStandingOnResin(potentialTarget));
+                || isStandingOnResin(potentialTarget)
+                // ...OR the target has an enemy variant embryo.
+                || doesTargetHaveEnemyVariantEmbryo(alien.getVariant(), potentialTarget)
+        );
     }
 
     public static boolean canContinueTargeting(@NotNull Alien alien, @NotNull LivingEntity potentialTarget) {
         // Target must still be valid...
-        return isValidTarget(potentialTarget)
+        return isValidTarget(alien.getVariant(), potentialTarget)
             // AND is not an alien OR if it is an alien, is an enemy alien.
             // We add this check here because the target alien might change strain or hive membership mid-targeting.
             && (!(potentialTarget instanceof Alien targetedAlien) || areAliensEnemies(alien, targetedAlien));
     }
 
     public static boolean isAlienTarget(@NotNull Alien alien, @NotNull LivingEntity potentialTarget) {
-        // If target is tagged as an alien...
+        // If a target is tagged as an alien...
         return potentialTarget.getType().is(AVPEntityTypeTags.ALIENS)
             // AND target is a typed alien...
             && potentialTarget instanceof Alien potentialAlienTarget
@@ -56,34 +62,39 @@ public class AlienPredicates {
             || !Objects.equals(first.isNetherAfflicted(), second.isNetherAfflicted());
     }
 
-    public static boolean isValidTarget(@NotNull LivingEntity potentialTarget) {
+    public static boolean isValidTarget(AlienVariant selfVariant, @NotNull LivingEntity potentialTarget) {
         // Bats are annoying for aliens to target.
         return !(potentialTarget instanceof Bat)
             // AND creepers are foolish for aliens to target.
             && !(potentialTarget instanceof Creeper)
-            // AND target must be alive in order for it to be killed (duh).
+            // AND the target must be alive in order for it to be killed (duh).
             && potentialTarget.isAlive()
             // AND can't attack what can't be attacked (duh).
             && potentialTarget.attackable()
             // AND can't attack immortal players.
             && (!(potentialTarget instanceof Player) || !AVPPredicates.IS_IMMORTAL.test(potentialTarget))
-            // AND *shouldn't* attack entities with an embryo inside of them.
-            // TODO: There's a bug here, what if it's an embryo from an enemy hive or enemy strain?
-            && !AVPPredicates.hasEmbryo(potentialTarget)
+            // AND *shouldn't* attack entities with an embryo inside them.
+            && (!AVPPredicates.hasEmbryo(potentialTarget) || doesTargetHaveEnemyVariantEmbryo(selfVariant, potentialTarget))
             // AND *shouldn't* attack entities with a parasite attached.
-            // TODO: There's a bug here, what if it's a parasite from an enemy hive or enemy strain?
             && !AVPPredicates.isParasiteAttached(potentialTarget);
+    }
+
+    private static boolean doesTargetHaveEnemyVariantEmbryo(AlienVariant selfVariant, @NotNull LivingEntity potentialTarget) {
+        return potentialTarget instanceof Host host && host.getEmbryoType()
+            .isSomeAnd(
+                embryoType -> AlienVariantTypes.getFor(embryoType)
+                    .isSomeAnd(alienVariantType -> !Objects.equals(selfVariant, alienVariantType.variant()))
+            );
     }
 
     public static boolean isTargetingHiveMember(@NotNull Alien alien, @NotNull LivingEntity potentialTarget) {
         // Mobs hold targeting behavior...
         return potentialTarget instanceof Mob mob
-            // AND target must not be null.
+            // AND the target must not be null.
             && mob.getTarget() != null
-            // AND mob's target is an alien.
+            // AND the mob's target is an alien.
             && mob.getTarget() instanceof Alien targetedAlien
             // AND the mob's targeted alien is the same hive as this alien.
-            // TODO: There's a bug here, what if the targeted alien is not a friendly strain to this alien?
             && areAliensSameHive(alien, targetedAlien);
     }
 

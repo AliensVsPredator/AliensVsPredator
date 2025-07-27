@@ -109,7 +109,7 @@ public class HiveBossBarManager {
         var playersToRemove = bossEvent.getPlayers()
             .stream()
             .filter(player -> {
-                if (!AlienPredicates.isValidTarget(player)) {
+                if (!AlienPredicates.isValidTarget(hive.getVariant(), player)) {
                     return true;
                 }
 
