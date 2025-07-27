@@ -12,6 +12,7 @@
 ## 🐞 Fixes
 - Fixed nether aliens setting attackers on fire from afar when attacked with projectiles.
 - Fixed mobs with poison barb genes poisoning attackers from afar when attacked with projectiles.
+- Fixed mobs with thorn genes hurting attackers from afar when attacked with projectiles.
 
 ## 🛠 Data Pack
 - N/A
