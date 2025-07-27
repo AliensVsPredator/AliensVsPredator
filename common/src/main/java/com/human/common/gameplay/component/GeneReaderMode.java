@@ -1,8 +1,9 @@
 package com.human.common.gameplay.component;
 
+import com.bvanseg.just.serialization.codec.stream.StreamCodec;
+import com.bvanseg.just.serialization.codec.stream.schema.StreamCodecSchema;
 import com.mojang.serialization.Codec;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.codec.StreamCodec;
+import org.jetbrains.annotations.NotNull;
 
 public enum GeneReaderMode {
 
@@ -16,18 +17,23 @@ public enum GeneReaderMode {
         GeneReaderMode::name
     );
 
-    public static final StreamCodec<FriendlyByteBuf, GeneReaderMode> STREAM_CODEC =
-        StreamCodec.of(
-            (buf, mode) -> buf.writeVarInt(mode.ordinal()),
-            buf -> {
-                var ordinal = buf.readVarInt();
-                var values = GeneReaderMode.values();
+    public static final StreamCodec<GeneReaderMode> STREAM_CODEC = new StreamCodec<>() {
 
-                if (ordinal < 0 || ordinal >= values.length) {
-                    throw new IllegalArgumentException("Invalid GeneReaderMode ordinal: " + ordinal);
-                }
+        @Override
+        public @NotNull <T> GeneReaderMode decode(@NotNull StreamCodecSchema<T> streamCodecSchema, @NotNull T input) {
+            var ordinal = streamCodecSchema.readVarInt(input);
+            var values = GeneReaderMode.values();
 
-                return values[ordinal];
+            if (ordinal < 0 || ordinal >= values.length) {
+                throw new IllegalArgumentException("Invalid GeneReaderMode ordinal: " + ordinal);
             }
-        );
+
+            return values[ordinal];
+        }
+
+        @Override
+        public <T> void encode(@NotNull StreamCodecSchema<T> streamCodecSchema, @NotNull T input, @NotNull GeneReaderMode value) {
+            streamCodecSchema.writeVarInt(input, value.ordinal());
+        }
+    };
 }

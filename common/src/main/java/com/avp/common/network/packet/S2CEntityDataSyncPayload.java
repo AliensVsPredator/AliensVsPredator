@@ -1,9 +1,9 @@
 package com.avp.common.network.packet;
 
+import com.bvanseg.just.serialization.codec.stream.RecordStreamCodec;
+import com.bvanseg.just.serialization.codec.stream.StreamCodec;
+import com.bvanseg.just.serialization.codec.stream.impl.StreamCodecs;
 import com.lib.common.network.RawDataSyncMap;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.codec.ByteBufCodecs;
-import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
@@ -19,8 +19,8 @@ public record S2CEntityDataSyncPayload(
 
     public static final Type<S2CEntityDataSyncPayload> TYPE = new Type<>(PAYLOAD_ID);
 
-    public static final StreamCodec<FriendlyByteBuf, S2CEntityDataSyncPayload> CODEC = StreamCodec.composite(
-        ByteBufCodecs.INT,
+    public static final StreamCodec<S2CEntityDataSyncPayload> CODEC = RecordStreamCodec.of(
+        StreamCodecs.INT,
         S2CEntityDataSyncPayload::entityId,
         RawDataSyncMap.STREAM_CODEC,
         S2CEntityDataSyncPayload::rawDataSyncMap,

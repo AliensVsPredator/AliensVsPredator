@@ -1,11 +1,13 @@
 package com.human.common.gameplay.item.gun.attack;
 
+import com.bvanseg.just.serialization.codec.stream.RecordStreamCodec;
+import com.bvanseg.just.serialization.codec.stream.StreamCodec;
+import com.bvanseg.just.serialization.codec.stream.impl.StreamCodecs;
+import com.lib.common.util.codec.stream.impl.MojangStreamCodecs;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.UUIDUtil;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.codec.StreamCodec;
 
+import java.util.List;
 import java.util.UUID;
 
 import com.avp.common.network.codec.GunHitResultCodec;
@@ -14,15 +16,17 @@ public sealed interface GunHitResult {
 
     GunHitResultCodec STREAM_CODEC = new GunHitResultCodec();
 
+    StreamCodec<List<GunHitResult>> LIST_STREAM_CODEC = STREAM_CODEC.asList();
+
     record Block(
         BlockPos blockPos,
         Direction direction
     ) implements GunHitResult {
 
-        public static final StreamCodec<FriendlyByteBuf, GunHitResult.Block> STREAM_CODEC = StreamCodec.composite(
-            BlockPos.STREAM_CODEC,
+        public static final StreamCodec<Block> STREAM_CODEC = RecordStreamCodec.of(
+            MojangStreamCodecs.BLOCK_POS,
             GunHitResult.Block::blockPos,
-            Direction.STREAM_CODEC,
+            MojangStreamCodecs.DIRECTION,
             GunHitResult.Block::direction,
             GunHitResult.Block::new
         );
@@ -30,8 +34,8 @@ public sealed interface GunHitResult {
 
     record Entity(UUID entityUUID) implements GunHitResult {
 
-        public static final StreamCodec<FriendlyByteBuf, GunHitResult.Entity> STREAM_CODEC = StreamCodec.composite(
-            UUIDUtil.STREAM_CODEC,
+        public static final StreamCodec<GunHitResult.Entity> STREAM_CODEC = RecordStreamCodec.of(
+            StreamCodecs.UUID,
             GunHitResult.Entity::entityUUID,
             GunHitResult.Entity::new
         );

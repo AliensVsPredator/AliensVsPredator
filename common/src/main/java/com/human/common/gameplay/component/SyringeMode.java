@@ -1,8 +1,9 @@
 package com.human.common.gameplay.component;
 
+import com.bvanseg.just.serialization.codec.stream.StreamCodec;
+import com.bvanseg.just.serialization.codec.stream.schema.StreamCodecSchema;
 import com.mojang.serialization.Codec;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.codec.StreamCodec;
+import org.jetbrains.annotations.NotNull;
 
 public enum SyringeMode {
 
@@ -18,18 +19,23 @@ public enum SyringeMode {
         SyringeMode::name
     );
 
-    public static final StreamCodec<FriendlyByteBuf, SyringeMode> STREAM_CODEC =
-        StreamCodec.of(
-            (buf, mode) -> buf.writeVarInt(mode.ordinal()),
-            buf -> {
-                var ordinal = buf.readVarInt();
-                var values = SyringeMode.values();
+    public static final StreamCodec<SyringeMode> STREAM_CODEC = new StreamCodec<>() {
 
-                if (ordinal < 0 || ordinal >= values.length) {
-                    throw new IllegalArgumentException("Invalid SyringeMode ordinal: " + ordinal);
-                }
+        @Override
+        public @NotNull <T> SyringeMode decode(@NotNull StreamCodecSchema<T> streamCodecSchema, @NotNull T input) {
+            var ordinal = streamCodecSchema.readVarInt(input);
+            var values = SyringeMode.values();
 
-                return values[ordinal];
+            if (ordinal < 0 || ordinal >= values.length) {
+                throw new IllegalArgumentException("Invalid SyringeMode ordinal: " + ordinal);
             }
-        );
+
+            return values[ordinal];
+        }
+
+        @Override
+        public <T> void encode(@NotNull StreamCodecSchema<T> streamCodecSchema, @NotNull T input, @NotNull SyringeMode value) {
+            streamCodecSchema.writeVarInt(input, value.ordinal());
+        }
+    };
 }

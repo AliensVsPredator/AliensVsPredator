@@ -1,14 +1,15 @@
 package com.lib.common.network;
 
+import com.bvanseg.just.serialization.codec.stream.StreamCodec;
 import com.lib.common.gameplay.NBTSerializable;
 import com.lib.common.registry.DataKeyRegistry;
+import com.lib.common.util.codec.stream.schema.StreamCodecSchemas;
 import com.mojang.serialization.Codec;
 import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.entity.Entity;
 
 import java.util.HashMap;
@@ -80,13 +81,12 @@ public class DataContainer implements NBTSerializable {
         }
 
         // TODO: unwrap is terrible here.
-        @SuppressWarnings("unchecked")
-        var codec = (StreamCodec<FriendlyByteBuf, Object>) key.streamCodec().unwrap();
+        var codec = key.streamCodec().unwrap();
 
         var byteBuf = Unpooled.wrappedBuffer(rawData);
         var friendlyByteBuf = new FriendlyByteBuf(byteBuf);
 
-        var value = codec.decode(friendlyByteBuf);
+        var value = codec.decode(StreamCodecSchemas.BYTE_BUF, friendlyByteBuf);
 
         // 5. Store the value
         set(key, value);
@@ -109,11 +109,11 @@ public class DataContainer implements NBTSerializable {
                 var id = Objects.requireNonNull(DataKeyRegistry.getIdOrNull(key.id()));
                 // Safe to unwrap here due to our earlier filter check.
                 @SuppressWarnings("unchecked")
-                var codec = (StreamCodec<FriendlyByteBuf, Object>) key.streamCodec().unwrap();
+                var codec = (StreamCodec<Object>) key.streamCodec().unwrap();
                 var value = get(key);
                 var friendlyByteBuf = new FriendlyByteBuf(Unpooled.buffer());
 
-                codec.encode(friendlyByteBuf, value);
+                codec.encode(StreamCodecSchemas.BYTE_BUF, friendlyByteBuf, value);
 
                 return Map.entry(id, ByteBufUtil.getBytes(friendlyByteBuf));
             })

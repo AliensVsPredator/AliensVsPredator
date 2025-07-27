@@ -1,9 +1,10 @@
 package com.human.common.gameplay.component;
 
+import com.bvanseg.just.serialization.codec.stream.RecordStreamCodec;
+import com.bvanseg.just.serialization.codec.stream.StreamCodec;
+import com.lib.common.util.codec.stream.impl.MojangStreamCodecs;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.ItemStack;
 
 public record ArmorCaseContainerContents(
@@ -30,14 +31,14 @@ public record ArmorCaseContainerContents(
             .apply(instance, ArmorCaseContainerContents::new)
     );
 
-    public static final StreamCodec<RegistryFriendlyByteBuf, ArmorCaseContainerContents> STREAM_CODEC = StreamCodec.composite(
-        ItemStack.OPTIONAL_STREAM_CODEC,
+    public static final StreamCodec<ArmorCaseContainerContents> STREAM_CODEC = RecordStreamCodec.of(
+        MojangStreamCodecs.ITEM_STACK,
         ArmorCaseContainerContents::head,
-        ItemStack.OPTIONAL_STREAM_CODEC,
+        MojangStreamCodecs.ITEM_STACK,
         ArmorCaseContainerContents::chest,
-        ItemStack.OPTIONAL_STREAM_CODEC,
+        MojangStreamCodecs.ITEM_STACK,
         ArmorCaseContainerContents::legs,
-        ItemStack.OPTIONAL_STREAM_CODEC,
+        MojangStreamCodecs.ITEM_STACK,
         ArmorCaseContainerContents::feet,
         ArmorCaseContainerContents::new
     );

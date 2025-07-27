@@ -1,8 +1,8 @@
 package com.avp.common.network.packet;
 
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.codec.ByteBufCodecs;
-import net.minecraft.network.codec.StreamCodec;
+import com.bvanseg.just.serialization.codec.stream.RecordStreamCodec;
+import com.bvanseg.just.serialization.codec.stream.StreamCodec;
+import com.bvanseg.just.serialization.codec.stream.impl.StreamCodecs;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
@@ -17,8 +17,8 @@ public record C2SPlayerToggleCrawlPayload(
 
     public static final Type<C2SPlayerToggleCrawlPayload> TYPE = new Type<>(PAYLOAD_ID);
 
-    public static final StreamCodec<FriendlyByteBuf, C2SPlayerToggleCrawlPayload> CODEC = StreamCodec.composite(
-        ByteBufCodecs.BOOL,
+    public static final StreamCodec<C2SPlayerToggleCrawlPayload> CODEC = RecordStreamCodec.of(
+        StreamCodecs.BOOLEAN,
         C2SPlayerToggleCrawlPayload::shouldCrawl,
         C2SPlayerToggleCrawlPayload::new
     );

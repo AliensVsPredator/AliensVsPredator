@@ -1,39 +1,39 @@
 package com.avp.common.network.codec;
 
+import com.bvanseg.just.serialization.codec.stream.StreamCodec;
+import com.bvanseg.just.serialization.codec.stream.schema.StreamCodecSchema;
 import com.human.common.gameplay.item.gun.attack.GunHitResult;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.codec.StreamCodec;
 import org.jetbrains.annotations.NotNull;
 
-public class GunHitResultCodec implements StreamCodec<FriendlyByteBuf, GunHitResult> {
+public class GunHitResultCodec implements StreamCodec<GunHitResult> {
 
     private static final int BLOCK_HIT_RESULT_CODE = 0;
 
     private static final int ENTITY_HIT_RESULT_CODE = 1;
 
     @Override
-    public @NotNull GunHitResult decode(@NotNull FriendlyByteBuf friendlyByteBuf) {
-        var typeCode = friendlyByteBuf.readByte();
+    public @NotNull <T> GunHitResult decode(@NotNull StreamCodecSchema<T> streamCodecSchema, @NotNull T input) {
+        var typeCode = streamCodecSchema.readByte(input);
 
         return switch (typeCode) {
-            case BLOCK_HIT_RESULT_CODE -> GunHitResult.Block.STREAM_CODEC.decode(friendlyByteBuf);
-            case ENTITY_HIT_RESULT_CODE -> GunHitResult.Entity.STREAM_CODEC.decode(friendlyByteBuf);
+            case BLOCK_HIT_RESULT_CODE -> GunHitResult.Block.STREAM_CODEC.decode(streamCodecSchema, input);
+            case ENTITY_HIT_RESULT_CODE -> GunHitResult.Entity.STREAM_CODEC.decode(streamCodecSchema, input);
             default -> throw new IllegalStateException("Unexpected gun hit result code: " + typeCode);
         };
     }
 
     @Override
-    public void encode(@NotNull FriendlyByteBuf friendlyByteBuf, @NotNull GunHitResult gunHitResult) {
-        var typeCode = switch (gunHitResult) {
+    public <T> void encode(@NotNull StreamCodecSchema<T> streamCodecSchema, @NotNull T input, @NotNull GunHitResult value) {
+        var typeCode = switch (value) {
             case GunHitResult.Block ignored -> BLOCK_HIT_RESULT_CODE;
             case GunHitResult.Entity ignored -> ENTITY_HIT_RESULT_CODE;
         };
 
-        friendlyByteBuf.writeByte(typeCode);
+        streamCodecSchema.writeByte(input, (byte) typeCode);
 
-        switch (gunHitResult) {
-            case GunHitResult.Block block -> GunHitResult.Block.STREAM_CODEC.encode(friendlyByteBuf, block);
-            case GunHitResult.Entity entity -> GunHitResult.Entity.STREAM_CODEC.encode(friendlyByteBuf, entity);
+        switch (value) {
+            case GunHitResult.Block block -> GunHitResult.Block.STREAM_CODEC.encode(streamCodecSchema, input, block);
+            case GunHitResult.Entity entity -> GunHitResult.Entity.STREAM_CODEC.encode(streamCodecSchema, input, entity);
         }
     }
 }

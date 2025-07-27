@@ -1,10 +1,10 @@
 package com.human.common.gameplay.component;
 
+import com.bvanseg.just.serialization.codec.stream.StreamCodec;
+import com.bvanseg.just.serialization.codec.stream.schema.StreamCodecSchema;
 import com.lib.common.gameplay.gene.GeneBonusDataEntry;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.codec.StreamCodec;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.EnumMap;
@@ -25,32 +25,32 @@ public record GeneReaderContents(
         ).apply(instance, GeneReaderContents::new)
     );
 
-    public static final StreamCodec<FriendlyByteBuf, GeneReaderContents> STREAM_CODEC = new StreamCodec<>() {
+    public static final StreamCodec<GeneReaderContents> STREAM_CODEC = new StreamCodec<>() {
 
         @Override
-        public @NotNull GeneReaderContents decode(FriendlyByteBuf buf) {
-            var size = buf.readVarInt();
+        public <T> void encode(@NotNull StreamCodecSchema<T> streamCodecSchema, @NotNull T input, @NotNull GeneReaderContents value) {
+            var map = value.geneBonusDataEntriesByMode();
+
+            streamCodecSchema.writeVarInt(input, map.size());
+
+            for (Map.Entry<GeneReaderMode, List<GeneBonusDataEntry>> entry : map.entrySet()) {
+                streamCodecSchema.write(input, GeneReaderMode.STREAM_CODEC, entry.getKey());
+                streamCodecSchema.write(input, GeneBonusDataEntry.LIST_STREAM_CODEC, entry.getValue());
+            }
+        }
+
+        @Override
+        public @NotNull <T> GeneReaderContents decode(@NotNull StreamCodecSchema<T> streamCodecSchema, @NotNull T input) {
+            var size = streamCodecSchema.readVarInt(input);
             var map = new EnumMap<GeneReaderMode, List<GeneBonusDataEntry>>(GeneReaderMode.class);
 
             for (var i = 0; i < size; i++) {
-                var mode = GeneReaderMode.STREAM_CODEC.decode(buf);
-                var entries = buf.readList(GeneBonusDataEntry.STREAM_CODEC);
+                var mode = GeneReaderMode.STREAM_CODEC.decode(streamCodecSchema, input);
+                var entries = GeneBonusDataEntry.LIST_STREAM_CODEC.decode(streamCodecSchema, input);
                 map.put(mode, entries);
             }
 
             return new GeneReaderContents(map);
-        }
-
-        @Override
-        public void encode(FriendlyByteBuf buf, GeneReaderContents contents) {
-            var map = contents.geneBonusDataEntriesByMode();
-
-            buf.writeVarInt(map.size());
-
-            for (Map.Entry<GeneReaderMode, List<GeneBonusDataEntry>> entry : map.entrySet()) {
-                GeneReaderMode.STREAM_CODEC.encode(buf, entry.getKey());
-                buf.writeCollection(entry.getValue(), GeneBonusDataEntry.STREAM_CODEC);
-            }
         }
     };
 }
