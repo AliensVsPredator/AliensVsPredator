@@ -10,7 +10,7 @@
 - Aliens will now kill hosts that have embryos from other strains.
 
 ## 🐞 Fixes
-- N/A
+- Fixed nether aliens setting attackers on fire from afar when attacked with projectiles.
 
 ## 🛠 Data Pack
 - N/A

@@ -29,8 +29,7 @@ public class AlienPredicates {
                 // ...OR is standing on resin (any mob or monster).
                 || isStandingOnResin(potentialTarget)
                 // ...OR the target has an enemy variant embryo.
-                || doesTargetHaveEnemyVariantEmbryo(alien.getVariant(), potentialTarget)
-        );
+                || doesTargetHaveEnemyVariantEmbryo(alien.getVariant(), potentialTarget));
     }
 
     public static boolean canContinueTargeting(@NotNull Alien alien, @NotNull LivingEntity potentialTarget) {
