@@ -8,6 +8,7 @@
 
 ## ♻️ Changes
 - Aliens will now kill hosts that have embryos from other strains.
+- Nuke blocks are now enabled by default in singleplayer.
 
 ## 🐞 Fixes
 - Fixed nether aliens setting attackers on fire from afar when attacked with projectiles.

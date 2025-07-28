@@ -69,7 +69,7 @@ public class NukeBlock extends Block {
         @NotNull BlockState blockState,
         @NotNull Player player
     ) {
-        if (!level.isClientSide() && !player.isCreative() && Boolean.TRUE.equals(blockState.getValue(UNSTABLE))) {
+        if (!level.isClientSide() && !player.isCreative() && blockState.getValue(UNSTABLE)) {
             this.summonNuke(level, blockPos);
         }
 
