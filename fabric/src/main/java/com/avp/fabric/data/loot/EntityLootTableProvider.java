@@ -2,6 +2,7 @@ package com.avp.fabric.data.loot;
 
 import com.alien.common.data.AlienVariantTypes;
 import com.alien.common.data.loot.DroneLootTable;
+import com.alien.common.data.loot.OvipositorLootTable;
 import com.alien.common.data.loot.PraetorianLootTable;
 import com.alien.common.data.loot.QueenLootTable;
 import com.alien.common.data.loot.WarriorLootTable;
@@ -29,6 +30,8 @@ public class EntityLootTableProvider extends SimpleFabricLootTableProvider {
 
     @Override
     public void generate(BiConsumer<ResourceKey<LootTable>, LootTable.Builder> biConsumer) {
+        biConsumer.accept(AlienEntityTypes.OVIPOSITOR.get().getDefaultLootTable(), OvipositorLootTable.create(provider));
+
         // Normal
         biConsumer.accept(AlienEntityTypes.BOILER.get().getDefaultLootTable(), WarriorLootTable.create(provider, AlienVariantTypes.NORMAL));
         biConsumer.accept(AlienEntityTypes.DRONE.get().getDefaultLootTable(), DroneLootTable.create(provider, AlienVariantTypes.NORMAL));
