@@ -11,7 +11,7 @@
 - Nuke blocks are now enabled by default in singleplayer.
 - Praetorians now have a chance to drop a single royal jelly item (affected by looting).
 - Queens now drop multiple royal jelly items instead of exactly one royal jelly item. (affected by looting).
-- Ovipositors now drop 1–3 royal jelly blocks (affected by looting).
+- Ovipositors now drop multiple royal jelly items (affected by looting).
 
 ## 🐞 Fixes
 - Fixed nether aliens setting attackers on fire from afar when attacked with projectiles.

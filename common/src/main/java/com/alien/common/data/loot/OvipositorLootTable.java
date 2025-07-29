@@ -1,6 +1,6 @@
 package com.alien.common.data.loot;
 
-import com.alien.common.registry.init.AlienBlocks;
+import com.alien.common.registry.init.AlienItems;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.world.level.storage.loot.LootPool;
 import net.minecraft.world.level.storage.loot.LootTable;
@@ -18,8 +18,8 @@ public class OvipositorLootTable {
                 LootPool.lootPool()
                     .setRolls(ConstantValue.exactly(1))
                     .add(
-                        LootItem.lootTableItem(AlienBlocks.ROYAL_JELLY_BLOCK.get())
-                            .apply(SetItemCountFunction.setCount(UniformGenerator.between(1, 3)))
+                        LootItem.lootTableItem(AlienItems.RAW_ROYAL_JELLY.get())
+                            .apply(SetItemCountFunction.setCount(UniformGenerator.between(2, 4)))
                             .apply(EnchantedCountIncreaseFunction.lootingMultiplier(provider, UniformGenerator.between(0, 1)))
                     )
             );
