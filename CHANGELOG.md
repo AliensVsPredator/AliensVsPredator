@@ -10,6 +10,7 @@
 - Aliens will now kill hosts that have embryos from other strains.
 - Nuke blocks are now enabled by default in singleplayer.
 - Praetorians now have a chance to drop a single royal jelly item (affected by looting).
+- Queens now drop multiple royal jelly items instead of exactly one royal jelly item. (affected by looting).
 
 ## 🐞 Fixes
 - Fixed nether aliens setting attackers on fire from afar when attacked with projectiles.

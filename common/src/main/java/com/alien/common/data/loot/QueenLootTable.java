@@ -20,7 +20,7 @@ public class QueenLootTable {
                     .setRolls(ConstantValue.exactly(1))
                     .add(
                         LootItem.lootTableItem(AlienItems.RAW_ROYAL_JELLY.get())
-                            .apply(SetItemCountFunction.setCount(ConstantValue.exactly(1)))
+                            .apply(SetItemCountFunction.setCount(UniformGenerator.between(2, 3)))
                             .apply(EnchantedCountIncreaseFunction.lootingMultiplier(provider, UniformGenerator.between(0, 1)))
                     )
             )
