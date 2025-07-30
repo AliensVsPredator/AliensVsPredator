@@ -1,3 +1,4 @@
+//file:noinspection GroovyAssignabilityCheck
 plugins {
     id 'com.diffplug.spotless'
     id 'multiloader-loader'
@@ -75,6 +76,7 @@ dependencies {
 
 
 def keyPropsFile = new File(rootProject.projectDir, "key.properties")
+
 if (keyPropsFile.exists()) {
     publishMods {
         def releaseProp = new Properties()
@@ -85,7 +87,7 @@ if (keyPropsFile.exists()) {
         type = STABLE
         file = jar.archiveFile
         modLoaders.add("neoforge")
-        dryRun = false
+        dryRun = Boolean.valueOf(project.dry_run)
 
         discord {
             webhookUrl = releaseProp.getProperty("discordKey")
