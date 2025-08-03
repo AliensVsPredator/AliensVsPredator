@@ -8,6 +8,7 @@ import com.human.common.gameplay.block.entity.DeskTerminalBlockEntity;
 import com.human.common.gameplay.block.entity.IndustrialFurnaceBlockEntity;
 import com.human.common.gameplay.block.entity.LeadChestBlockEntity;
 import com.human.common.gameplay.block.entity.ResonatorBlockEntity;
+import com.human.common.gameplay.block.entity.power.InfinitePowerGeneratorBlockEntity;
 import com.predator.common.gameplay.block.entity.TripMineBlockEntity;
 import com.predator.common.registry.init.PredatorBlocks;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -47,6 +48,11 @@ public class AVPBlockEntityTypes {
     public static final AVPDeferredHolder<BlockEntityType<IndustrialFurnaceBlockEntity>> INDUSTRIAL_FURNACE = register(
         "industrial_furnace",
         () -> BlockEntityType.Builder.of(IndustrialFurnaceBlockEntity::new, AVPBlocks.INDUSTRIAL_FURNACE.get())
+    );
+
+    public static final AVPDeferredHolder<BlockEntityType<InfinitePowerGeneratorBlockEntity>> INFINITE_POWER_GENERATOR = register(
+        "infinite_power_generator",
+        () -> BlockEntityType.Builder.of(InfinitePowerGeneratorBlockEntity::new, AVPBlocks.INFINITE_POWER_GENERATOR.get())
     );
 
     public static final AVPDeferredHolder<BlockEntityType<LeadChestBlockEntity>> LEAD_CHEST = register(

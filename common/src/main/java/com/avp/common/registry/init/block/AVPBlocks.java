@@ -9,6 +9,8 @@ import com.human.common.gameplay.block.RazorWireBlock;
 import com.human.common.gameplay.block.RedstoneGeneratorBlock;
 import com.human.common.gameplay.block.ResonatorBlock;
 import com.human.common.gameplay.block.SentryTurretBlock;
+import com.human.common.gameplay.block.power.CableBlock;
+import com.human.common.gameplay.block.power.InfinitePowerGeneratorBlock;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.block.Block;
@@ -46,6 +48,12 @@ public class AVPBlocks {
 
     public static final AVPDeferredHolder<Block> BLUEPRINT_BLOCK = register("blueprint_block", BlockProperties.STEEL);
 
+    public static final AVPDeferredHolder<Block> CABLE = register(
+        "cable",
+        // TODO: Use custom properties here.
+        () -> new CableBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.COBBLESTONE))
+    );
+
     public static final AVPDeferredHolder<Block> DESK_TERMINAL_BLOCK = register(
         "desk_terminal",
         () -> new DeskTerminalBlock(BlockProperties.STEEL.build().noOcclusion())
@@ -55,6 +63,12 @@ public class AVPBlocks {
         "industrial_furnace_block",
         // TODO: Use custom properties here.
         () -> new IndustrialFurnaceBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.BLAST_FURNACE))
+    );
+
+    public static final AVPDeferredHolder<Block> INFINITE_POWER_GENERATOR = register(
+        "infinite_power_generator",
+        // TODO: Use custom properties here.
+        () -> new InfinitePowerGeneratorBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.COBBLESTONE))
     );
 
     public static final AVPDeferredHolder<Block> LEAD_CHEST = register(

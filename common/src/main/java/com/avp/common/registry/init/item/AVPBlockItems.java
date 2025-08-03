@@ -37,6 +37,8 @@ public class AVPBlockItems {
 
     public static final AVPDeferredHolder<BlockItem> BLUEPRINT_BLOCK = register("blueprint_block", AVPBlocks.BLUEPRINT_BLOCK);
 
+    public static final AVPDeferredHolder<BlockItem> CABLE = register("cable", AVPBlocks.CABLE);
+
     public static final AVPDeferredHolder<BlockItem> BRASS_BLOCK = register("brass_block", CoreBlocks.BRASS_BLOCK);
 
     public static final AVPDeferredHolder<BlockItem> DEEPSLATE_TITANIUM_ORE = register(
@@ -53,6 +55,11 @@ public class AVPBlockItems {
     public static final AVPDeferredHolder<BlockItem> INDUSTRIAL_FURNACE_BLOCK = register(
         "industrial_furnace_block",
         AVPBlocks.INDUSTRIAL_FURNACE
+    );
+
+    public static final AVPDeferredHolder<BlockItem> INFINITE_POWER_GENERATOR = register(
+        "infinite_power_generator",
+        AVPBlocks.INFINITE_POWER_GENERATOR
     );
 
     public static final AVPDeferredHolder<BlockItem> LEAD_BLOCK = register("lead_block", CoreBlocks.LEAD_BLOCK);

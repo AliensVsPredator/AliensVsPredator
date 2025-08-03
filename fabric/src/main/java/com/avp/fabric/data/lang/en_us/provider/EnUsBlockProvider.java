@@ -29,6 +29,7 @@ public class EnUsBlockProvider {
 
     public static final Consumer<FabricLanguageProvider.TranslationBuilder> CONSUMER = builder -> {
         addBlock(builder, AVPBlocks.BLUEPRINT_BLOCK, "Blueprint Block");
+        addBlock(builder, AVPBlocks.CABLE, "Cable");
         addBlock(builder, AVPBlocks.REDSTONE_GENERATOR, "Redstone Generator");
         addBlock(builder, AVPBlocks.DESK_TERMINAL_BLOCK, "Desk Terminal");
         addBlock(builder, PredatorBlocks.TRIP_MINE_BLOCK, "Trip Mine");
@@ -343,6 +344,7 @@ public class EnUsBlockProvider {
         addBlock(builder, CoreBlocks.ZINC_BLOCK, "Block of Zinc");
         addBlock(builder, CoreBlocks.ZINC_ORE, "Zinc Ore");
         addBlock(builder, AVPBlocks.INDUSTRIAL_FURNACE, "Industrial Furnace");
+        addBlock(builder, AVPBlocks.INFINITE_POWER_GENERATOR, "Infinite Power Generator");
         addBlock(builder, HumanFerroaluminumBlocks.FERROALUMINUM_SLAB, "Ferroaluminum Slab");
         addBlock(builder, HumanFerroaluminumBlocks.FERROALUMINUM_STAIRS, "Ferroaluminum Stairs");
         addBlock(builder, HumanSteelBlocks.STEEL_SLAB, "Steel Slab");

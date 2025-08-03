@@ -144,6 +144,7 @@ public class BlockLootTableProvider extends FabricBlockLootTableProvider {
         dropSelf(CoreBlocks.ALUMINUM_BLOCK);
         dropSelf(CoreBlocks.ASH_BLOCK);
         dropSelf(CoreBlocks.AUTUNITE_BLOCK);
+        dropSelf(AVPBlocks.CABLE);
         dropSelf(AVPBlocks.BLUEPRINT_BLOCK);
         dropSelf(CoreBlocks.BRASS_BLOCK);
         dropSelf(HumanFerroaluminumBlocks.CHISELED_FERROALUMINUM);
@@ -354,6 +355,7 @@ public class BlockLootTableProvider extends FabricBlockLootTableProvider {
         add(HumanSteelBlocks.STEEL_DOOR, this::createDoorTable);
         add(HumanTitaniumBlocks.TITANIUM_DOOR, this::createDoorTable);
         add(AVPBlocks.INDUSTRIAL_FURNACE, this::createNameableBlockEntityTable);
+        add(AVPBlocks.INFINITE_POWER_GENERATOR, this::createNameableBlockEntityTable);
     }
 
     private void generateOtherDrops() {
