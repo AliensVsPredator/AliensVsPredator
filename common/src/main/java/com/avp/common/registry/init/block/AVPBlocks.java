@@ -11,6 +11,7 @@ import com.human.common.gameplay.block.SentryTurretBlock;
 import com.human.common.gameplay.block.power.CableBlock;
 import com.human.common.gameplay.block.power.InfinitePowerGeneratorBlock;
 import com.human.common.gameplay.block.power.ResonatorBlock;
+import com.human.common.gameplay.block.power.SolarPanelBlock;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.block.Block;
@@ -94,6 +95,12 @@ public class AVPBlocks {
     );
 
     public static final AVPDeferredHolder<Block> SENTRY_TURRET = register("sentry_turret", SentryTurretBlock::new);
+
+    public static final AVPDeferredHolder<Block> SOLAR_PANEL = register(
+        "solar_panel",
+        // TODO: Use custom properties here.
+        () -> new SolarPanelBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.COBBLESTONE))
+    );
 
     public static final Map<DyeColor, AVPDeferredHolder<Block>> DYE_COLOR_TO_CONCRETE_SLAB =
         Collections.unmodifiableMap(

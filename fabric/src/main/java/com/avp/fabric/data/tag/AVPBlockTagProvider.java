@@ -615,6 +615,8 @@ public class AVPBlockTagProvider extends FabricTagProvider.BlockTagProvider {
                 AlienResinBlocks.SMOOTH_NETHER_RESIN_STAIRS.get(),
                 AlienResinBlocks.SMOOTH_NETHER_RESIN_WALL.get(),
 
+                AVPBlocks.SOLAR_PANEL.get(),
+
                 AVPBlocks.NUKE_BLOCK.get(),
                 CoreBlocks.RAW_BAUXITE_BLOCK.get(),
                 CoreBlocks.RAW_GALENA_BLOCK.get(),
@@ -684,6 +686,7 @@ public class AVPBlockTagProvider extends FabricTagProvider.BlockTagProvider {
                 AVPBlocks.REDSTONE_GENERATOR.get(),
                 AVPBlocks.RESONATOR_BLOCK.get(),
                 AVPBlocks.SENTRY_TURRET.get(),
+                AVPBlocks.SOLAR_PANEL.get(),
                 CoreBlocks.TRINITITE_BLOCK.get(),
                 PredatorBlocks.TRIP_MINE_BLOCK.get(),
                 CoreBlocks.URANIUM_BLOCK.get()

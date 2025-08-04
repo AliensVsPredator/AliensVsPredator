@@ -345,6 +345,7 @@ public class EnUsBlockProvider {
         addBlock(builder, CoreBlocks.ZINC_ORE, "Zinc Ore");
         addBlock(builder, AVPBlocks.INDUSTRIAL_FURNACE, "Industrial Furnace");
         addBlock(builder, AVPBlocks.INFINITE_POWER_GENERATOR, "Infinite Power Generator");
+        addBlock(builder, AVPBlocks.SOLAR_PANEL, "Solar Panel");
         addBlock(builder, HumanFerroaluminumBlocks.FERROALUMINUM_SLAB, "Ferroaluminum Slab");
         addBlock(builder, HumanFerroaluminumBlocks.FERROALUMINUM_STAIRS, "Ferroaluminum Stairs");
         addBlock(builder, HumanSteelBlocks.STEEL_SLAB, "Steel Slab");

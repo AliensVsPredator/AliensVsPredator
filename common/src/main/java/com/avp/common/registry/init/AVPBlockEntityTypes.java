@@ -9,6 +9,7 @@ import com.human.common.gameplay.block.entity.IndustrialFurnaceBlockEntity;
 import com.human.common.gameplay.block.entity.LeadChestBlockEntity;
 import com.human.common.gameplay.block.entity.power.impl.InfinitePowerGeneratorBlockEntity;
 import com.human.common.gameplay.block.entity.power.impl.ResonatorBlockEntity;
+import com.human.common.gameplay.block.entity.power.impl.SolarPanelBlockEntity;
 import com.predator.common.gameplay.block.entity.TripMineBlockEntity;
 import com.predator.common.registry.init.PredatorBlocks;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -68,6 +69,11 @@ public class AVPBlockEntityTypes {
     public static final AVPDeferredHolder<BlockEntityType<DeskTerminalBlockEntity>> DESK_TERMINAL = register(
         "desk_terminal",
         () -> BlockEntityType.Builder.of(DeskTerminalBlockEntity::new, AVPBlocks.DESK_TERMINAL_BLOCK.get())
+    );
+
+    public static final AVPDeferredHolder<BlockEntityType<SolarPanelBlockEntity>> SOLAR_PANEL = register(
+        "solar_panel",
+        () -> BlockEntityType.Builder.of(SolarPanelBlockEntity::new, AVPBlocks.SOLAR_PANEL.get())
     );
 
     public static final AVPDeferredHolder<BlockEntityType<TripMineBlockEntity>> TRIP_MINE = register(
