@@ -11,18 +11,12 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BaseEntityBlock;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.StateDefinition;
-import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.concurrent.atomic.AtomicInteger;
 
 import com.avp.AVP;
 import com.avp.common.registry.tag.AVPBlockTags;
@@ -31,11 +25,8 @@ public class ResonatorBlock extends PowerConsumerEntityBlock<ResonatorBlockEntit
 
     public static final MapCodec<ResonatorBlock> CODEC = simpleCodec(ResonatorBlock::new);
 
-    public static final BooleanProperty TRIGGERED = BlockStateProperties.TRIGGERED;
-
     public ResonatorBlock(Properties properties) {
         super(properties);
-        this.registerDefaultState(this.stateDefinition.any().setValue(TRIGGERED, Boolean.FALSE));
     }
 
     @Override
@@ -57,8 +48,6 @@ public class ResonatorBlock extends PowerConsumerEntityBlock<ResonatorBlockEntit
 
         var radius = AVP.config.blockConfigs.RESONATOR_REPLACE_RADIUS;
 
-        var resinBallsGained = new AtomicInteger(0);
-
         BlockPos.betweenClosedStream(blockPos.offset(-radius, -radius, -radius), blockPos.offset(radius, radius, radius))
             .forEach(currentPos -> {
                 var currentState = level.getBlockState(currentPos);
@@ -72,11 +61,7 @@ public class ResonatorBlock extends PowerConsumerEntityBlock<ResonatorBlockEntit
                             var resinBallItem = alienVariantType.resinBall().get();
                             resonatorBlockEntity.addResinBallItem(resinBallItem);
 
-                            resinBallsGained.incrementAndGet();
-
-                            if (resinBallsGained.get() > 0) {
-                                resonatorBlockEntity.setChanged();
-                            }
+                            resonatorBlockEntity.setChanged();
 
                             return;
                         }
@@ -84,27 +69,17 @@ public class ResonatorBlock extends PowerConsumerEntityBlock<ResonatorBlockEntit
                         // TODO: Use variant-specific tag here.
                         if (currentState.is(AVPBlockTags.RESIN)) {
                             // TODO: This is not a safe assumption to make!
-                            var isDeepstone = currentPos.getY() <= 0;
-                            var replacementBlock = isDeepstone ? Blocks.DEEPSLATE : Blocks.STONE;
+                            var replacementBlock = currentPos.getY() <= 0 ? Blocks.DEEPSLATE : Blocks.STONE;
 
                             level.setBlockAndUpdate(currentPos, replacementBlock.defaultBlockState());
 
                             var resinBallItem = alienVariantType.resinBall().get();
                             resonatorBlockEntity.addResinBallItem(resinBallItem);
 
-                            resinBallsGained.incrementAndGet();
-
-                            if (resinBallsGained.get() > 0) {
-                                resonatorBlockEntity.setChanged();
-                            }
+                            resonatorBlockEntity.setChanged();
                         }
                     });
             });
-    }
-
-    @Override
-    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
-        builder.add(TRIGGERED);
     }
 
     @Override
@@ -134,31 +109,6 @@ public class ResonatorBlock extends PowerConsumerEntityBlock<ResonatorBlockEntit
         }
 
         return InteractionResult.SUCCESS;
-    }
-
-    @Override
-    protected boolean hasAnalogOutputSignal(@NotNull BlockState state) {
-        return true;
-    }
-
-    @Override
-    protected void neighborChanged(
-        BlockState state,
-        Level level,
-        @NotNull BlockPos pos,
-        @NotNull Block neighborBlock,
-        @NotNull BlockPos neighborPos,
-        boolean movedByPiston
-    ) {
-        var hasSignal = level.hasNeighborSignal(pos) || level.hasNeighborSignal(pos.above());
-        var triggeredValue = state.getValue(TRIGGERED);
-
-        if (hasSignal && !triggeredValue) {
-            level.scheduleTick(pos, this, 4);
-            level.setBlock(pos, state.setValue(TRIGGERED, Boolean.TRUE), 2);
-        } else if (!hasSignal && triggeredValue) {
-            level.setBlock(pos, state.setValue(TRIGGERED, Boolean.FALSE), 2);
-        }
     }
 
     @Override
