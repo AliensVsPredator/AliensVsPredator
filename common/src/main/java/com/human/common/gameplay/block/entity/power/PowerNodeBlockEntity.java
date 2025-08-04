@@ -12,8 +12,6 @@ public abstract class PowerNodeBlockEntity extends BlockEntity {
 
     private boolean hasInitialized = false;
 
-    private boolean hasPower;
-
     private final PowerNode powerNode;
 
     public PowerNodeBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState blockState) {
@@ -46,13 +44,5 @@ public abstract class PowerNodeBlockEntity extends BlockEntity {
 
     public boolean hasInitialized() {
         return hasInitialized;
-    }
-
-    public void setHasPower(boolean hasPower) {
-        this.hasPower = hasPower;
-    }
-
-    public boolean hasPower() {
-        return hasPower;
     }
 }

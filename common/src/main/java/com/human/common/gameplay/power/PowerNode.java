@@ -7,7 +7,7 @@ public sealed interface PowerNode {
         /**
          * Returns how much power this consumer wants to receive this tick.
          */
-        int getRequestedPower();
+        long getRequestedPower();
 
         /**
          * Called by the power grid to offer power to this consumer.
@@ -15,7 +15,7 @@ public sealed interface PowerNode {
          * @param maxAmount the maximum amount offered
          * @return the amount actually accepted
          */
-        int receivePower(int maxAmount);
+        long receivePower(long maxAmount);
     }
 
     non-sealed interface PowerProducer extends PowerNode {
@@ -23,7 +23,7 @@ public sealed interface PowerNode {
         /**
          * Returns how much power this producer is willing to provide this tick.
          */
-        int getAvailablePower();
+        long getAvailablePower();
 
         /**
          * Called by the power grid to extract power from this producer.
@@ -31,6 +31,6 @@ public sealed interface PowerNode {
          * @param maxAmount the maximum amount to extract
          * @return the actual amount extracted
          */
-        int extractPower(int maxAmount);
+        long extractPower(long maxAmount);
     }
 }

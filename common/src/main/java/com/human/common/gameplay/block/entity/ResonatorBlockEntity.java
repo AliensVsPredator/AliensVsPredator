@@ -1,7 +1,6 @@
 package com.human.common.gameplay.block.entity;
 
-import com.human.common.gameplay.block.entity.power.PowerNodeBlockEntity;
-import com.human.common.gameplay.power.PowerNode;
+import com.human.common.gameplay.block.entity.power.PowerConsumerBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
@@ -15,17 +14,24 @@ import java.util.Map;
 
 import com.avp.common.registry.init.AVPBlockEntityTypes;
 
-public class ResonatorBlockEntity extends PowerNodeBlockEntity implements PowerNode.PowerConsumer {
+public class ResonatorBlockEntity extends PowerConsumerBlockEntity {
 
-    private int tickCounter = 0;
+    private int tickCounter;
 
     private final ResonatorAnimationDispatcher animationDispatcher;
 
-    private final Map<Item, Integer> resinBallCounts = new HashMap<>();
+    private final Map<Item, Integer> resinBallCounts;
 
     public ResonatorBlockEntity(BlockPos pos, BlockState blockState) {
         super(AVPBlockEntityTypes.RESONATOR.get(), pos, blockState);
+        this.tickCounter = 0;
         this.animationDispatcher = new ResonatorAnimationDispatcher();
+        this.resinBallCounts = new HashMap<>();
+    }
+
+    @Override
+    public long getRequestedPower() {
+        return 1000;
     }
 
     public void addResinBallItem(Item resinBallItem) {
@@ -57,17 +63,6 @@ public class ResonatorBlockEntity extends PowerNodeBlockEntity implements PowerN
             resinBallCounts.clear();
             setChanged();
         }
-    }
-
-    @Override
-    public int getRequestedPower() {
-        return 1000;
-    }
-
-    @Override
-    public int receivePower(int maxAmount) {
-        setHasPower(true);
-        return 0;
     }
 
     public void incrementTickCounter() {

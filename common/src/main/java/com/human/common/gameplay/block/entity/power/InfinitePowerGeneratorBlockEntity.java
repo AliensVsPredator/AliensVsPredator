@@ -8,19 +8,19 @@ import com.avp.common.registry.init.AVPBlockEntityTypes;
 
 public class InfinitePowerGeneratorBlockEntity extends PowerNodeBlockEntity implements PowerNode.PowerProducer {
 
-    private static final int INFINITE_POWER = 1_000_000_000;
+    private static final long INFINITE_POWER = 1_000_000_000;
 
     public InfinitePowerGeneratorBlockEntity(BlockPos pos, BlockState state) {
         super(AVPBlockEntityTypes.INFINITE_POWER_GENERATOR.get(), pos, state);
     }
 
     @Override
-    public int getAvailablePower() {
+    public long getAvailablePower() {
         return INFINITE_POWER;
     }
 
     @Override
-    public int extractPower(int maxAmount) {
+    public long extractPower(long maxAmount) {
         // Always gives exactly what was requested.
         return maxAmount;
     }

@@ -1,12 +1,12 @@
 package com.human.common.gameplay.block.power;
 
-import com.human.common.gameplay.block.entity.power.PowerNodeBlockEntity;
+import com.human.common.gameplay.block.entity.power.PowerConsumerBlockEntity;
 import com.human.common.gameplay.power.PowerNode;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 
-public abstract class PowerConsumerEntityBlock<T extends PowerNodeBlockEntity & PowerNode.PowerConsumer> extends PowerNodeEntityBlock<T> {
+public abstract class PowerConsumerEntityBlock<T extends PowerConsumerBlockEntity & PowerNode.PowerConsumer> extends PowerNodeEntityBlock<T> {
 
     public PowerConsumerEntityBlock(Properties properties) {
         super(properties);

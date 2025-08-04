@@ -43,7 +43,7 @@ public class PowerGrid {
      */
     public void tick() {
         var totalAvailable = producers.stream()
-            .mapToInt(PowerNode.PowerProducer::getAvailablePower)
+            .mapToLong(PowerNode.PowerProducer::getAvailablePower)
             .sum();
 
         if (totalAvailable == 0) {
@@ -52,7 +52,7 @@ public class PowerGrid {
         }
 
         var totalRequested = consumers.stream()
-            .mapToInt(PowerNode.PowerConsumer::getRequestedPower)
+            .mapToLong(PowerNode.PowerConsumer::getRequestedPower)
             .sum();
 
         if (totalRequested == 0) {
