@@ -2,11 +2,15 @@ package com.human.common.gameplay.block.entity.power;
 
 import com.human.common.gameplay.power.PowerNode;
 import com.human.common.gameplay.power.PowerSystem;
+import com.human.common.gameplay.power.grid.PowerGridExploreUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+
+import com.avp.AVP;
 
 public abstract class PowerNodeBlockEntity extends BlockEntity {
 
@@ -23,6 +27,25 @@ public abstract class PowerNodeBlockEntity extends BlockEntity {
         }
 
         this.powerNode = node;
+    }
+
+    public void serverTick(Level level, BlockPos blockPos, BlockState blockState) {
+        if (!hasInitialized() && level != null && !level.isClientSide) {
+            setHasInitialized(true);
+
+            var serverLevel = (ServerLevel) level;
+            var manager = PowerSystem.get(serverLevel);
+            manager.registerNode(blockPos, powerNode);
+
+            AVP.LOGGER.debug("Starting BFS for PNBE at pos {}", blockPos);
+            var start = System.currentTimeMillis();
+            var connectedPositions = PowerGridExploreUtil.discover(serverLevel, blockPos);
+            AVP.LOGGER.debug("Finished BFS for PNBE at pos {} in {}ms", blockPos, System.currentTimeMillis() - start);
+
+            for (var pos : connectedPositions) {
+                manager.union(blockPos, pos);
+            }
+        }
     }
 
     @Override

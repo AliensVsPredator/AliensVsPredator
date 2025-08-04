@@ -1,18 +1,23 @@
 package com.human.common.gameplay.block.entity;
 
+import com.alien.common.data.AlienVariantTypes;
 import com.human.common.gameplay.block.entity.power.PowerConsumerBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.avp.AVP;
 import com.avp.common.registry.init.AVPBlockEntityTypes;
+import com.avp.common.registry.tag.AVPBlockTags;
 
 public class ResonatorBlockEntity extends PowerConsumerBlockEntity {
 
@@ -32,6 +37,59 @@ public class ResonatorBlockEntity extends PowerConsumerBlockEntity {
     @Override
     public long getRequestedPower() {
         return 1000;
+    }
+
+    @Override
+    public void unpoweredTick(Level level, BlockPos blockPos, BlockState blockState) {
+        animationDispatcher.unpowered(this);
+    }
+
+    @Override
+    public void poweredTick(Level level, BlockPos blockPos, BlockState blockState) {
+        animationDispatcher.powered(this);
+
+        tickCounter++;
+
+        var tickValue = AVP.config.blockConfigs.RESONATOR_REPLACE_TICKS;
+
+        if (tickCounter % tickValue != 0) {
+            return;
+        }
+
+        var radius = AVP.config.blockConfigs.RESONATOR_REPLACE_RADIUS;
+
+        BlockPos.betweenClosedStream(blockPos.offset(-radius, -radius, -radius), blockPos.offset(radius, radius, radius))
+            .forEach(currentPos -> {
+                var currentState = level.getBlockState(currentPos);
+
+                AlienVariantTypes.getFor(currentState)
+                    .ifSome(alienVariantType -> {
+                        // TODO: Use variant-specific tag here.
+                        if (currentState.is(AVPBlockTags.RESIN_VEINS)) {
+                            level.setBlockAndUpdate(currentPos, Blocks.AIR.defaultBlockState());
+
+                            var resinBallItem = alienVariantType.resinBall().get();
+                            addResinBallItem(resinBallItem);
+
+                            setChanged();
+
+                            return;
+                        }
+
+                        // TODO: Use variant-specific tag here.
+                        if (currentState.is(AVPBlockTags.RESIN)) {
+                            // TODO: This is not a safe assumption to make!
+                            var replacementBlock = currentPos.getY() <= 0 ? Blocks.DEEPSLATE : Blocks.STONE;
+
+                            level.setBlockAndUpdate(currentPos, replacementBlock.defaultBlockState());
+
+                            var resinBallItem = alienVariantType.resinBall().get();
+                            addResinBallItem(resinBallItem);
+
+                            setChanged();
+                        }
+                    });
+            });
     }
 
     public void addResinBallItem(Item resinBallItem) {
@@ -63,17 +121,5 @@ public class ResonatorBlockEntity extends PowerConsumerBlockEntity {
             resinBallCounts.clear();
             setChanged();
         }
-    }
-
-    public void incrementTickCounter() {
-        this.tickCounter++;
-    }
-
-    public int getTickCounter() {
-        return tickCounter;
-    }
-
-    public ResonatorAnimationDispatcher getAnimationDispatcher() {
-        return animationDispatcher;
     }
 }

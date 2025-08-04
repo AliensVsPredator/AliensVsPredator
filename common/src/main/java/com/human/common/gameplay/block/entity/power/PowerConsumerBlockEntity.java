@@ -2,6 +2,7 @@ package com.human.common.gameplay.block.entity.power;
 
 import com.human.common.gameplay.power.PowerNode;
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 
@@ -13,17 +14,36 @@ public abstract class PowerConsumerBlockEntity extends PowerNodeBlockEntity impl
         super(type, pos, blockState);
     }
 
+    public abstract void unpoweredTick(
+        Level level,
+        BlockPos blockPos,
+        BlockState blockState
+    );
+
+    public abstract void poweredTick(
+        Level level,
+        BlockPos blockPos,
+        BlockState blockState
+    );
+
+    @Override
+    public void serverTick(Level level, BlockPos blockPos, BlockState blockState) {
+        super.serverTick(level, blockPos, blockState);
+
+        if (!hasPower) {
+            // Not enough power to operate.
+            unpoweredTick(level, blockPos, blockState);
+            return;
+        }
+
+        poweredTick(level, blockPos, blockState);
+
+        this.hasPower = false;
+    }
+
     @Override
     public long receivePower(long maxAmount) {
-        setHasPower(true);
+        this.hasPower = true;
         return 0;
-    }
-
-    public void setHasPower(boolean hasPower) {
-        this.hasPower = hasPower;
-    }
-
-    public boolean hasPower() {
-        return hasPower;
     }
 }

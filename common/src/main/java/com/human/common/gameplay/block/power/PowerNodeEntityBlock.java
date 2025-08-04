@@ -3,7 +3,6 @@ package com.human.common.gameplay.block.power;
 import com.human.common.gameplay.block.entity.power.PowerNodeBlockEntity;
 import com.human.common.gameplay.power.PowerNode;
 import com.human.common.gameplay.power.PowerSystem;
-import com.human.common.gameplay.power.grid.PowerGridExploreUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
@@ -15,8 +14,6 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import com.avp.AVP;
 
 public abstract class PowerNodeEntityBlock<T extends PowerNodeBlockEntity & PowerNode> extends BaseEntityBlock {
 
@@ -34,7 +31,11 @@ public abstract class PowerNodeEntityBlock<T extends PowerNodeBlockEntity & Powe
     ) {
         return level.isClientSide
             ? null
-            : createTickerHelper(blockEntityType, (BlockEntityType<T>) blockEntityType, this::serverTick);
+            : createTickerHelper(
+                blockEntityType,
+                (BlockEntityType<T>) blockEntityType,
+                (lvl, pos, state, be) -> be.serverTick(lvl, pos, state)
+            );
     }
 
     @Override
@@ -77,29 +78,5 @@ public abstract class PowerNodeEntityBlock<T extends PowerNodeBlockEntity & Powe
         }
 
         super.onRemove(state, level, pos, newState, movedByPiston);
-    }
-
-    protected void serverTick(
-        Level level,
-        BlockPos blockPos,
-        BlockState blockState,
-        T powerNodeBlockEntity
-    ) {
-        if (!powerNodeBlockEntity.hasInitialized() && level != null && !level.isClientSide) {
-            powerNodeBlockEntity.setHasInitialized(true);
-
-            var serverLevel = (ServerLevel) level;
-            var manager = PowerSystem.get(serverLevel);
-            manager.registerNode(blockPos, powerNodeBlockEntity);
-
-            AVP.LOGGER.debug("Starting BFS for PNBE at pos {}", blockPos);
-            var start = System.currentTimeMillis();
-            var connectedPositions = PowerGridExploreUtil.discover(serverLevel, blockPos);
-            AVP.LOGGER.debug("Finished BFS for PNBE at pos {} in {}ms", blockPos, System.currentTimeMillis() - start);
-
-            for (var pos : connectedPositions) {
-                manager.union(blockPos, pos);
-            }
-        }
     }
 }
