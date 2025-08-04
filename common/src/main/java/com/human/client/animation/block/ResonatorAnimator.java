@@ -1,6 +1,6 @@
 package com.human.client.animation.block;
 
-import com.human.common.gameplay.block.entity.ResonatorBlockEntity;
+import com.human.common.gameplay.block.entity.power.impl.ResonatorBlockEntity;
 import mod.azure.azurelib.rewrite.animation.AzAnimatorConfig;
 import mod.azure.azurelib.rewrite.animation.controller.AzAnimationController;
 import mod.azure.azurelib.rewrite.animation.controller.AzAnimationControllerContainer;

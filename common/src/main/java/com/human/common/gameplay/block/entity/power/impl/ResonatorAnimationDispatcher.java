@@ -1,4 +1,4 @@
-package com.human.common.gameplay.block.entity;
+package com.human.common.gameplay.block.entity.power.impl;
 
 import mod.azure.azurelib.rewrite.animation.dispatch.command.AzCommand;
 import mod.azure.azurelib.rewrite.animation.play_behavior.AzPlayBehaviors;

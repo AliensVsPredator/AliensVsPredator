@@ -1,4 +1,4 @@
-package com.human.common.gameplay.block.entity;
+package com.human.common.gameplay.block.entity.power.impl;
 
 import com.alien.common.data.AlienVariantTypes;
 import com.human.common.gameplay.block.entity.power.PowerConsumerBlockEntity;

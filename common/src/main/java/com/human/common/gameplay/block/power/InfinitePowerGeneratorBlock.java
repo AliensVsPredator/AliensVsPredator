@@ -1,6 +1,6 @@
 package com.human.common.gameplay.block.power;
 
-import com.human.common.gameplay.block.entity.power.InfinitePowerGeneratorBlockEntity;
+import com.human.common.gameplay.block.entity.power.impl.InfinitePowerGeneratorBlockEntity;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.BaseEntityBlock;

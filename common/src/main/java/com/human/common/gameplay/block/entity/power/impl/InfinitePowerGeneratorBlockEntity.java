@@ -1,5 +1,6 @@
-package com.human.common.gameplay.block.entity.power;
+package com.human.common.gameplay.block.entity.power.impl;
 
+import com.human.common.gameplay.block.entity.power.PowerNodeBlockEntity;
 import com.human.common.gameplay.power.PowerNode;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.state.BlockState;

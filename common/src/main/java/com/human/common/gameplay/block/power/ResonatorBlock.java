@@ -1,6 +1,6 @@
 package com.human.common.gameplay.block.power;
 
-import com.human.common.gameplay.block.entity.ResonatorBlockEntity;
+import com.human.common.gameplay.block.entity.power.impl.ResonatorBlockEntity;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionResult;

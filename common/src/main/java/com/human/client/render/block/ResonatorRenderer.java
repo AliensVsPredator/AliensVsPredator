@@ -1,7 +1,7 @@
 package com.human.client.render.block;
 
 import com.human.client.animation.block.ResonatorAnimator;
-import com.human.common.gameplay.block.entity.ResonatorBlockEntity;
+import com.human.common.gameplay.block.entity.power.impl.ResonatorBlockEntity;
 import mod.azure.azurelib.rewrite.render.block.AzBlockEntityRenderer;
 import mod.azure.azurelib.rewrite.render.block.AzBlockEntityRendererConfig;
 import net.minecraft.resources.ResourceLocation;
