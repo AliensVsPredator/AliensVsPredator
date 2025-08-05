@@ -615,6 +615,7 @@ public class AVPBlockTagProvider extends FabricTagProvider.BlockTagProvider {
                 AlienResinBlocks.SMOOTH_NETHER_RESIN_STAIRS.get(),
                 AlienResinBlocks.SMOOTH_NETHER_RESIN_WALL.get(),
 
+                AVPBlocks.BATTERY.get(),
                 AVPBlocks.SOLAR_PANEL.get(),
 
                 AVPBlocks.NUKE_BLOCK.get(),
@@ -676,6 +677,7 @@ public class AVPBlockTagProvider extends FabricTagProvider.BlockTagProvider {
             .addTag(AVPBlockTags.TITANIUM)
             .add(
                 AVPBlocks.AMMO_CHEST.get(),
+                AVPBlocks.BATTERY.get(),
                 CoreBlocks.DEEPSLATE_TITANIUM_ORE.get(),
                 AVPBlocks.DESK_TERMINAL_BLOCK.get(),
                 AVPBlocks.INDUSTRIAL_FURNACE.get(),

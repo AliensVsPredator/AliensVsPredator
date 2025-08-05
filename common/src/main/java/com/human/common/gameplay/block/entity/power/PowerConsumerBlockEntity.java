@@ -43,7 +43,7 @@ public abstract class PowerConsumerBlockEntity extends PowerNodeBlockEntity impl
 
     @Override
     public long receivePower(long maxAmount) {
-        this.hasPower = true;
+        this.hasPower = maxAmount >= getRequestedPower();
         return 0;
     }
 }

@@ -7,6 +7,7 @@ import com.human.common.gameplay.block.entity.AmmoChestBlockEntity;
 import com.human.common.gameplay.block.entity.DeskTerminalBlockEntity;
 import com.human.common.gameplay.block.entity.IndustrialFurnaceBlockEntity;
 import com.human.common.gameplay.block.entity.LeadChestBlockEntity;
+import com.human.common.gameplay.block.entity.power.impl.BatteryBlockEntity;
 import com.human.common.gameplay.block.entity.power.impl.InfinitePowerGeneratorBlockEntity;
 import com.human.common.gameplay.block.entity.power.impl.ResonatorBlockEntity;
 import com.human.common.gameplay.block.entity.power.impl.SolarPanelBlockEntity;
@@ -64,6 +65,11 @@ public class AVPBlockEntityTypes {
     public static final AVPDeferredHolder<BlockEntityType<AmmoChestBlockEntity>> AMMO_CHEST = register(
         "ammo_chest",
         () -> BlockEntityType.Builder.of(AmmoChestBlockEntity::new, AVPBlocks.AMMO_CHEST.get())
+    );
+
+    public static final AVPDeferredHolder<BlockEntityType<BatteryBlockEntity>> BATTERY = register(
+        "battery",
+        () -> BlockEntityType.Builder.of(BatteryBlockEntity::new, AVPBlocks.BATTERY.get())
     );
 
     public static final AVPDeferredHolder<BlockEntityType<DeskTerminalBlockEntity>> DESK_TERMINAL = register(

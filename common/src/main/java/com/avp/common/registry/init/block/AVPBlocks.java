@@ -8,6 +8,7 @@ import com.human.common.gameplay.block.NukeBlock;
 import com.human.common.gameplay.block.RazorWireBlock;
 import com.human.common.gameplay.block.RedstoneGeneratorBlock;
 import com.human.common.gameplay.block.SentryTurretBlock;
+import com.human.common.gameplay.block.power.BatteryBlock;
 import com.human.common.gameplay.block.power.CableBlock;
 import com.human.common.gameplay.block.power.InfinitePowerGeneratorBlock;
 import com.human.common.gameplay.block.power.ResonatorBlock;
@@ -45,6 +46,12 @@ public class AVPBlocks {
     public static final AVPDeferredHolder<Block> AMMO_CHEST = register(
         "ammo_chest",
         () -> new AmmoChestBlock(BlockProperties.LEAD.build())
+    );
+
+    public static final AVPDeferredHolder<Block> BATTERY = register(
+        "battery",
+        // TODO: Use custom properties here.
+        () -> new BatteryBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.COBBLESTONE))
     );
 
     public static final AVPDeferredHolder<Block> BLUEPRINT_BLOCK = register("blueprint_block", BlockProperties.STEEL);

@@ -47,6 +47,7 @@ public class PowerGridManager {
 
         gridA.getProducers().forEach(gridB::add);
         gridA.getConsumers().forEach(gridB::add);
+        gridA.getStores().forEach(gridB::add);
 
         // drop old grid.
         grids.remove(rootA);

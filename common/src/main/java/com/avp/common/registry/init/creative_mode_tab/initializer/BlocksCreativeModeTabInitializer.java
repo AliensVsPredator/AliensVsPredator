@@ -175,6 +175,7 @@ public class BlocksCreativeModeTabInitializer {
         CreativeModeTabUtil.accept(output, AVPBlocks.CABLE);
         CreativeModeTabUtil.accept(output, AVPBlocks.REDSTONE_GENERATOR);
         CreativeModeTabUtil.accept(output, AVPBlocks.INDUSTRIAL_FURNACE);
+        CreativeModeTabUtil.accept(output, AVPBlocks.BATTERY);
         CreativeModeTabUtil.accept(output, AVPBlocks.INFINITE_POWER_GENERATOR);
         CreativeModeTabUtil.accept(output, AVPBlocks.SOLAR_PANEL);
         CreativeModeTabUtil.accept(output, AVPBlocks.DESK_TERMINAL_BLOCK);

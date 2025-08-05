@@ -33,4 +33,9 @@ public sealed interface PowerNode {
          */
         long extractPower(long maxAmount);
     }
+
+    non-sealed interface PowerStore extends PowerNode, PowerConsumer, PowerProducer {
+
+        long getStoredPower();
+    }
 }

@@ -13,9 +13,12 @@ public class PowerGrid {
 
     private final Set<PowerNode.PowerProducer> producers;
 
+    private final Set<PowerNode.PowerStore> stores;
+
     public PowerGrid() {
         this.consumers = new HashSet<>();
         this.producers = new HashSet<>();
+        this.stores = new HashSet<>();
     }
 
     /**
@@ -23,6 +26,7 @@ public class PowerGrid {
      */
     public void add(PowerNode node) {
         switch (node) {
+            case PowerNode.PowerStore powerStore -> stores.add(powerStore);
             case PowerNode.PowerConsumer powerConsumer -> consumers.add(powerConsumer);
             case PowerNode.PowerProducer powerProducer -> producers.add(powerProducer);
         }
@@ -33,6 +37,7 @@ public class PowerGrid {
      */
     public void remove(PowerNode node) {
         switch (node) {
+            case PowerNode.PowerStore powerStore -> stores.remove(powerStore);
             case PowerNode.PowerConsumer powerConsumer -> consumers.remove(powerConsumer);
             case PowerNode.PowerProducer powerProducer -> producers.remove(powerProducer);
         }
@@ -42,38 +47,98 @@ public class PowerGrid {
      * Called once per tick to manage energy flow.
      */
     public void tick() {
-        var totalAvailable = producers.stream()
+        long availableFromProducers = producers.stream()
             .mapToLong(PowerNode.PowerProducer::getAvailablePower)
             .sum();
 
-        if (totalAvailable == 0) {
-            // No power to provide, nothing to do.
+        if (availableFromProducers == 0 && stores.stream().mapToLong(PowerNode.PowerStore::getStoredPower).sum() == 0) {
+            // Nothing to offer from producers or stores.
             return;
         }
 
-        var totalRequested = consumers.stream()
+        long requestedByConsumers = consumers.stream()
             .mapToLong(PowerNode.PowerConsumer::getRequestedPower)
             .sum();
 
-        if (totalRequested == 0) {
-            // Nothing wants power, nothing to do.
-            return;
+        // Handle full or partial consumer powering.
+        boolean consumersFullyPowered = false;
+
+        if (requestedByConsumers > 0) {
+            if (availableFromProducers >= requestedByConsumers) {
+                consumersFullyPowered = true;
+
+                // Fully powered — satisfy all consumers.
+                for (var consumer : consumers) {
+                    var requested = consumer.getRequestedPower();
+                    consumer.receivePower(requested);
+                }
+
+                // Extract full supply from producers.
+                for (var producer : producers) {
+                    var offered = producer.getAvailablePower();
+                    producer.extractPower(offered);
+                }
+
+            } else {
+                // Try supplementing with battery power
+                var requiredExtra = requestedByConsumers - availableFromProducers;
+                var availableFromStores = stores.stream()
+                    .mapToLong(PowerNode.PowerStore::getStoredPower)
+                    .sum();
+
+                if (availableFromProducers + availableFromStores >= requestedByConsumers) {
+                    consumersFullyPowered = true;
+
+                    // Extract from producers.
+                    for (var producer : producers) {
+                        var offered = producer.getAvailablePower();
+                        producer.extractPower(offered);
+                    }
+
+                    // Draw remaining power from batteries.
+                    var stillNeeded = requiredExtra;
+
+                    for (var store : stores) {
+                        if (stillNeeded <= 0) {
+                            break;
+                        }
+
+                        var drawn = store.extractPower(stillNeeded);
+                        stillNeeded -= drawn;
+                    }
+
+                    // Power consumers.
+                    for (var consumer : consumers) {
+                        var requested = consumer.getRequestedPower();
+                        consumer.receivePower(requested);
+                    }
+                }
+            }
         }
 
-        if (totalAvailable < totalRequested) {
-            // Grid underpowered — drop power entirely.
-            return;
-        }
+        // Handle surplus charging *only if* we powered all consumers or had no consumers.
+        if (consumersFullyPowered || requestedByConsumers == 0) {
+            var usedByConsumers = requestedByConsumers;
+            var usedByProducers = Math.min(availableFromProducers, usedByConsumers);
+            var surplus = availableFromProducers - usedByProducers;
 
-        // Fully powered — satisfy all consumers.
-        for (var consumer : consumers) {
-            var requested = consumer.getRequestedPower();
-            consumer.receivePower(requested);
-        }
+            if (surplus > 0) {
+                for (var store : stores) {
+                    if (surplus <= 0) {
+                        break;
+                    }
 
-        for (var producer : producers) {
-            var offered = producer.getAvailablePower();
-            producer.extractPower(offered);
+                    var accepted = store.receivePower(surplus);
+                    surplus -= accepted;
+                }
+            }
+
+            // Finally, extract all available power from producers, even if it wasn't necessary yet
+            // (ensures proper accounting if needed elsewhere later)
+            for (var producer : producers) {
+                var offered = producer.getAvailablePower();
+                producer.extractPower(offered);
+            }
         }
     }
 
@@ -91,5 +156,9 @@ public class PowerGrid {
 
     public Set<PowerNode.PowerProducer> getProducers() {
         return Collections.unmodifiableSet(producers);
+    }
+
+    public Set<PowerNode.PowerStore> getStores() {
+        return Collections.unmodifiableSet(stores);
     }
 }

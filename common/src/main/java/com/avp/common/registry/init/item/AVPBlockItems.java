@@ -33,6 +33,11 @@ public class AVPBlockItems {
 
     public static final AVPDeferredHolder<BlockItem> AUTUNITE_ORE = register("autunite_ore", CoreBlocks.AUTUNITE_ORE);
 
+    public static final AVPDeferredHolder<BlockItem> BATTERY = register(
+        "battery",
+        AVPBlocks.BATTERY
+    );
+
     public static final AVPDeferredHolder<BlockItem> BAUXITE_ORE = register("bauxite_ore", CoreBlocks.BAUXITE_ORE);
 
     public static final AVPDeferredHolder<BlockItem> BLUEPRINT_BLOCK = register("blueprint_block", AVPBlocks.BLUEPRINT_BLOCK);
