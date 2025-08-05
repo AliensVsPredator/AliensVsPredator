@@ -347,6 +347,7 @@ public class EnUsBlockProvider {
         addBlock(builder, AVPBlocks.BATTERY, "Battery");
         addBlock(builder, AVPBlocks.INFINITE_POWER_GENERATOR, "Infinite Power Generator");
         addBlock(builder, AVPBlocks.SOLAR_PANEL, "Solar Panel");
+        addBlock(builder, AVPBlocks.WIND_TURBINE, "Wind Turbine");
         addBlock(builder, HumanFerroaluminumBlocks.FERROALUMINUM_SLAB, "Ferroaluminum Slab");
         addBlock(builder, HumanFerroaluminumBlocks.FERROALUMINUM_STAIRS, "Ferroaluminum Stairs");
         addBlock(builder, HumanSteelBlocks.STEEL_SLAB, "Steel Slab");

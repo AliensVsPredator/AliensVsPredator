@@ -11,6 +11,7 @@ import com.human.common.gameplay.block.entity.power.impl.BatteryBlockEntity;
 import com.human.common.gameplay.block.entity.power.impl.InfinitePowerGeneratorBlockEntity;
 import com.human.common.gameplay.block.entity.power.impl.ResonatorBlockEntity;
 import com.human.common.gameplay.block.entity.power.impl.SolarPanelBlockEntity;
+import com.human.common.gameplay.block.entity.power.impl.WindTurbineBlockEntity;
 import com.predator.common.gameplay.block.entity.TripMineBlockEntity;
 import com.predator.common.registry.init.PredatorBlocks;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -90,6 +91,11 @@ public class AVPBlockEntityTypes {
     public static final AVPDeferredHolder<BlockEntityType<ResonatorBlockEntity>> RESONATOR = register(
         "resonator",
         () -> BlockEntityType.Builder.of(ResonatorBlockEntity::new, AVPBlocks.RESONATOR_BLOCK.get())
+    );
+
+    public static final AVPDeferredHolder<BlockEntityType<WindTurbineBlockEntity>> WIND_TURBINE = register(
+        "wind_turbine",
+        () -> BlockEntityType.Builder.of(WindTurbineBlockEntity::new, AVPBlocks.WIND_TURBINE.get())
     );
 
     private static <T extends BlockEntity> AVPDeferredHolder<BlockEntityType<T>> register(

@@ -13,6 +13,7 @@ import com.human.common.gameplay.block.power.CableBlock;
 import com.human.common.gameplay.block.power.InfinitePowerGeneratorBlock;
 import com.human.common.gameplay.block.power.ResonatorBlock;
 import com.human.common.gameplay.block.power.SolarPanelBlock;
+import com.human.common.gameplay.block.power.WindTurbineBlock;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.block.Block;
@@ -107,6 +108,12 @@ public class AVPBlocks {
         "solar_panel",
         // TODO: Use custom properties here.
         () -> new SolarPanelBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.COBBLESTONE))
+    );
+
+    public static final AVPDeferredHolder<Block> WIND_TURBINE = register(
+        "wind_turbine",
+        // TODO: Use custom properties here.
+        () -> new WindTurbineBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.COBBLESTONE))
     );
 
     public static final Map<DyeColor, AVPDeferredHolder<Block>> DYE_COLOR_TO_CONCRETE_SLAB =

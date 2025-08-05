@@ -358,6 +358,7 @@ public class BlockLootTableProvider extends FabricBlockLootTableProvider {
         add(AVPBlocks.INDUSTRIAL_FURNACE, this::createNameableBlockEntityTable);
         add(AVPBlocks.INFINITE_POWER_GENERATOR, this::createNameableBlockEntityTable);
         add(AVPBlocks.SOLAR_PANEL, this::createNameableBlockEntityTable);
+        add(AVPBlocks.WIND_TURBINE, this::createNameableBlockEntityTable);
     }
 
     private void generateOtherDrops() {

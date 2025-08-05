@@ -116,6 +116,11 @@ public class AVPBlockItems {
 
     public static final AVPDeferredHolder<BlockItem> URANIUM_BLOCK = register("uranium_block", CoreBlocks.URANIUM_BLOCK);
 
+    public static final AVPDeferredHolder<BlockItem> WIND_TURBINE = register(
+        "wind_turbine",
+        AVPBlocks.WIND_TURBINE
+    );
+
     public static final AVPDeferredHolder<BlockItem> ZINC_BLOCK = register("zinc_block", CoreBlocks.ZINC_BLOCK);
 
     public static final AVPDeferredHolder<BlockItem> ZINC_ORE = register("zinc_ore", CoreBlocks.ZINC_ORE);
