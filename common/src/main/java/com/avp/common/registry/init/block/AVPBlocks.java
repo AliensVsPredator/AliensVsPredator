@@ -1,7 +1,6 @@
 package com.avp.common.registry.init.block;
 
 import com.human.common.gameplay.block.AmmoChestBlock;
-import com.human.common.gameplay.block.DeskTerminalBlock;
 import com.human.common.gameplay.block.IndustrialFurnaceBlock;
 import com.human.common.gameplay.block.LeadChestBlock;
 import com.human.common.gameplay.block.NukeBlock;
@@ -10,6 +9,7 @@ import com.human.common.gameplay.block.RedstoneGeneratorBlock;
 import com.human.common.gameplay.block.SentryTurretBlock;
 import com.human.common.gameplay.block.power.BatteryBlock;
 import com.human.common.gameplay.block.power.CableBlock;
+import com.human.common.gameplay.block.power.DeskTerminalBlock;
 import com.human.common.gameplay.block.power.InfinitePowerGeneratorBlock;
 import com.human.common.gameplay.block.power.ResonatorBlock;
 import com.human.common.gameplay.block.power.SolarPanelBlock;

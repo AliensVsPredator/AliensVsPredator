@@ -1,6 +1,6 @@
-package com.human.common.gameplay.block;
+package com.human.common.gameplay.block.power;
 
-import com.human.common.gameplay.block.entity.DeskTerminalBlockEntity;
+import com.human.common.gameplay.block.entity.power.impl.DeskTerminalBlockEntity;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -22,7 +22,7 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class DeskTerminalBlock extends BaseEntityBlock {
+public class DeskTerminalBlock extends PowerNodeEntityBlock<DeskTerminalBlockEntity> {
 
     public static final MapCodec<DeskTerminalBlock> CODEC = simpleCodec(DeskTerminalBlock::new);
 
@@ -49,7 +49,12 @@ public class DeskTerminalBlock extends BaseEntityBlock {
     }
 
     @Override
-    protected @NotNull VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
+    protected @NotNull VoxelShape getShape(
+        BlockState state,
+        @NotNull BlockGetter level,
+        @NotNull BlockPos pos,
+        @NotNull CollisionContext context
+    ) {
         var facing = state.getValue(FACING);
         var southShape = Shapes.join(
             Block.box(1, 0, 6, 15, 13, 17),
@@ -102,7 +107,7 @@ public class DeskTerminalBlock extends BaseEntityBlock {
     }
 
     @Override
-    public @Nullable BlockEntity newBlockEntity(BlockPos blockPos, BlockState blockState) {
+    public @Nullable BlockEntity newBlockEntity(@NotNull BlockPos blockPos, @NotNull BlockState blockState) {
         return new DeskTerminalBlockEntity(blockPos, blockState);
     }
 }
