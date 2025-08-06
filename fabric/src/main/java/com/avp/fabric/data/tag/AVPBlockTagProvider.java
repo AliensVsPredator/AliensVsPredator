@@ -617,6 +617,7 @@ public class AVPBlockTagProvider extends FabricTagProvider.BlockTagProvider {
 
                 AVPBlocks.BATTERY.get(),
                 AVPBlocks.SOLAR_PANEL.get(),
+                AVPBlocks.THERMAL_GENERATOR.get(),
                 AVPBlocks.WIND_TURBINE.get(),
 
                 AVPBlocks.NUKE_BLOCK.get(),
@@ -690,6 +691,7 @@ public class AVPBlockTagProvider extends FabricTagProvider.BlockTagProvider {
                 AVPBlocks.RESONATOR_BLOCK.get(),
                 AVPBlocks.SENTRY_TURRET.get(),
                 AVPBlocks.SOLAR_PANEL.get(),
+                AVPBlocks.THERMAL_GENERATOR.get(),
                 AVPBlocks.WIND_TURBINE.get(),
                 CoreBlocks.TRINITITE_BLOCK.get(),
                 PredatorBlocks.TRIP_MINE_BLOCK.get(),

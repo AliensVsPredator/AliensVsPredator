@@ -13,6 +13,7 @@ import com.human.common.gameplay.block.power.CableBlock;
 import com.human.common.gameplay.block.power.InfinitePowerGeneratorBlock;
 import com.human.common.gameplay.block.power.ResonatorBlock;
 import com.human.common.gameplay.block.power.SolarPanelBlock;
+import com.human.common.gameplay.block.power.ThermalGeneratorBlock;
 import com.human.common.gameplay.block.power.WindTurbineBlock;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.DyeColor;
@@ -108,6 +109,12 @@ public class AVPBlocks {
         "solar_panel",
         // TODO: Use custom properties here.
         () -> new SolarPanelBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.COBBLESTONE))
+    );
+
+    public static final AVPDeferredHolder<Block> THERMAL_GENERATOR = register(
+        "thermal_generator",
+        // TODO: Use custom properties here.
+        () -> new ThermalGeneratorBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.COBBLESTONE))
     );
 
     public static final AVPDeferredHolder<Block> WIND_TURBINE = register(

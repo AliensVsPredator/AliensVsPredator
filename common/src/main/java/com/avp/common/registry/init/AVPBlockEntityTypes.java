@@ -11,6 +11,7 @@ import com.human.common.gameplay.block.entity.power.impl.BatteryBlockEntity;
 import com.human.common.gameplay.block.entity.power.impl.InfinitePowerGeneratorBlockEntity;
 import com.human.common.gameplay.block.entity.power.impl.ResonatorBlockEntity;
 import com.human.common.gameplay.block.entity.power.impl.SolarPanelBlockEntity;
+import com.human.common.gameplay.block.entity.power.impl.ThermalGeneratorBlockEntity;
 import com.human.common.gameplay.block.entity.power.impl.WindTurbineBlockEntity;
 import com.predator.common.gameplay.block.entity.TripMineBlockEntity;
 import com.predator.common.registry.init.PredatorBlocks;
@@ -78,19 +79,24 @@ public class AVPBlockEntityTypes {
         () -> BlockEntityType.Builder.of(DeskTerminalBlockEntity::new, AVPBlocks.DESK_TERMINAL_BLOCK.get())
     );
 
+    public static final AVPDeferredHolder<BlockEntityType<ResonatorBlockEntity>> RESONATOR = register(
+        "resonator",
+        () -> BlockEntityType.Builder.of(ResonatorBlockEntity::new, AVPBlocks.RESONATOR_BLOCK.get())
+    );
+
     public static final AVPDeferredHolder<BlockEntityType<SolarPanelBlockEntity>> SOLAR_PANEL = register(
         "solar_panel",
         () -> BlockEntityType.Builder.of(SolarPanelBlockEntity::new, AVPBlocks.SOLAR_PANEL.get())
     );
 
+    public static final AVPDeferredHolder<BlockEntityType<ThermalGeneratorBlockEntity>> THERMAL_GENERATOR = register(
+        "thermal_generator",
+        () -> BlockEntityType.Builder.of(ThermalGeneratorBlockEntity::new, AVPBlocks.THERMAL_GENERATOR.get())
+    );
+
     public static final AVPDeferredHolder<BlockEntityType<TripMineBlockEntity>> TRIP_MINE = register(
         "trip_mine",
         () -> BlockEntityType.Builder.of(TripMineBlockEntity::new, PredatorBlocks.TRIP_MINE_BLOCK.get())
-    );
-
-    public static final AVPDeferredHolder<BlockEntityType<ResonatorBlockEntity>> RESONATOR = register(
-        "resonator",
-        () -> BlockEntityType.Builder.of(ResonatorBlockEntity::new, AVPBlocks.RESONATOR_BLOCK.get())
     );
 
     public static final AVPDeferredHolder<BlockEntityType<WindTurbineBlockEntity>> WIND_TURBINE = register(

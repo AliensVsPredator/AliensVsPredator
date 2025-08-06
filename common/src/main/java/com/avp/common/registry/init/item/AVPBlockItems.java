@@ -112,6 +112,11 @@ public class AVPBlockItems {
         AVPBlocks.SOLAR_PANEL
     );
 
+    public static final AVPDeferredHolder<BlockItem> THERMAL_GENERATOR = register(
+        "thermal_generator",
+        AVPBlocks.THERMAL_GENERATOR
+    );
+
     public static final AVPDeferredHolder<BlockItem> TRINITITE_BLOCK = register("trinitite_block", CoreBlocks.TRINITITE_BLOCK);
 
     public static final AVPDeferredHolder<BlockItem> URANIUM_BLOCK = register("uranium_block", CoreBlocks.URANIUM_BLOCK);
