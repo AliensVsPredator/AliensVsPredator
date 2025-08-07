@@ -4,7 +4,8 @@
 - N/A
 
 ## ✨ What's New
-- N/A
+- [Fabric] Now requires Fabric API `0.116.4+1.21.1`.
+- [NeoForge] Now requires NeoForge `21.1.197`.
 
 ## ♻️ Changes
 - Aliens will now kill hosts that have embryos from other strains.
