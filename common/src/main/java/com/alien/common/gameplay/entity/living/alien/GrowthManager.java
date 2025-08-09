@@ -6,7 +6,6 @@ import com.alien.common.registry.GrowthStageRegistry;
 import com.lib.common.gameplay.NBTSerializable;
 import com.lib.common.gameplay.gene.GeneOperationType;
 import com.lib.common.gameplay.gene.Genes;
-import com.lib.common.gameplay.util.spatial.block.BlockPosUtil;
 import com.lib.common.model.GeneCarrier;
 import com.lib.common.util.GeneIntegrityUtil;
 import net.minecraft.Util;
@@ -90,16 +89,24 @@ public class GrowthManager implements NBTSerializable {
             return;
         }
 
-        if (!BlockPosUtil.canEntityTypeFit(entity.level(), entity.blockPosition(), growthStage.to())) {
-            // if the next stage of the entity's growth can't fit at the entity's location, then the entity can't grow
-            // up yet.
-            // TODO: Add particles here maybe if the alien can't grow up, to indicate "frustration"?
-            // Apply a buffer time period before we retry checking collision.
-            this.growthRetryTimeInTicks = 20 * 10;
-            return;
+        // Growth attempts can fail for a lot of reasons. This switch covers every possible reason.
+        switch (grow()) {
+            case GrowthResult.AlreadyFullyGrown $ -> {/* NO-OP */}
+            case GrowthResult.CanNotGrow $ -> {/* NO-OP */}
+            case GrowthResult.Success $ -> {/* NO-OP */}
+            case GrowthResult.FailedTransitionResult failedTransitionResult -> {
+                switch (failedTransitionResult.result) {
+                    case AVPEntityTransitionUtil.EntityTransitionResult.ClientSide $1 -> {/* NO-OP */}
+                    case AVPEntityTransitionUtil.EntityTransitionResult.EntityCreation $1 -> {/* NO-OP */}
+                    case AVPEntityTransitionUtil.EntityTransitionResult.Obstructed $1 ->
+                        // If the entity failed to grow, then retry in 10 seconds.
+                        // TODO: Add particles here maybe if the alien can't grow up, to indicate "frustration"?
+                        // Apply a buffer time period before we retry growing.
+                        this.growthRetryTimeInTicks = 20 * 10;
+                    case AVPEntityTransitionUtil.EntityTransitionResult.Success<?> $1 -> {/* NO-OP */ }
+                }
+            }
         }
-
-        grow();
     }
 
     private @Nullable GrowthStage getNextGrowthStage() {
@@ -126,15 +133,15 @@ public class GrowthManager implements NBTSerializable {
         this.readyToGrow = true;
     }
 
-    // TODO:
-    // Make this return a sealed type result since there are checks here we want to do that might cause growth failure.
-    public @Nullable Entity grow() {
+    public GrowthResult grow() {
         // Reset growth time at this point.
         this.growthTimeInTicks = 0;
         var growthStage = getNextGrowthStage();
 
-        if (growthStage == null || canNeverGrow()) {
-            return null;
+        if (growthStage == null) {
+            return GrowthResult.AlreadyFullyGrown.INSTANCE;
+        } else if (canNeverGrow()) {
+            return GrowthResult.CanNotGrow.INSTANCE;
         }
 
         var nextFormType = growthStage.to();
@@ -147,10 +154,17 @@ public class GrowthManager implements NBTSerializable {
             nextFormType = Boiler.getType(entity.getVariant());
         }
 
-        nextForm = AVPEntityTransitionUtil.transitionInto(entity, nextFormType, TRANSITION_NBT_KEY_BLACKLIST);
+        var transitionResult = AVPEntityTransitionUtil.transitionInto(entity, nextFormType, TRANSITION_NBT_KEY_BLACKLIST);
+
+        nextForm = switch (transitionResult) {
+            case AVPEntityTransitionUtil.EntityTransitionResult.ClientSide ignored -> null;
+            case AVPEntityTransitionUtil.EntityTransitionResult.EntityCreation ignored -> null;
+            case AVPEntityTransitionUtil.EntityTransitionResult.Obstructed ignored -> null;
+            case AVPEntityTransitionUtil.EntityTransitionResult.Success<?> success -> success.newEntity();
+        };
 
         if (nextForm == null) {
-            return null;
+            return new GrowthResult.FailedTransitionResult(transitionResult);
         }
 
         if (nextForm instanceof Alien alien) {
@@ -165,7 +179,7 @@ public class GrowthManager implements NBTSerializable {
             onGrowUpCallback.accept(nextForm);
         }
 
-        return nextForm;
+        return new GrowthResult.Success(nextForm);
     }
 
     private boolean canNeverGrow() {
@@ -234,5 +248,20 @@ public class GrowthManager implements NBTSerializable {
     public GrowthManager setGrowOverTime(boolean growOverTime) {
         this.growOverTime = growOverTime;
         return this;
+    }
+
+    public sealed interface GrowthResult {
+
+        enum AlreadyFullyGrown implements GrowthResult {
+            INSTANCE
+        }
+
+        enum CanNotGrow implements GrowthResult {
+            INSTANCE
+        }
+
+        record FailedTransitionResult(AVPEntityTransitionUtil.EntityTransitionResult result) implements GrowthResult {}
+
+        record Success(Entity newEntity) implements GrowthResult {}
     }
 }

@@ -18,6 +18,8 @@
 - Fixed nether aliens setting attackers on fire from afar when attacked with projectiles.
 - Fixed mobs with poison barb genes poisoning attackers from afar when attacked with projectiles.
 - Fixed mobs with thorn genes hurting attackers from afar when attacked with projectiles.
+- Fixed aliens growing up in small spaces and clipping out of said small spaces into larger areas.
+  - Aliens will no longer attempt to grow up in small spaces and will need more room to grow into their next growth stage.
 
 ## 🛠 Data Pack
 - N/A
