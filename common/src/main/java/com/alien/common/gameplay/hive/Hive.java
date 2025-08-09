@@ -133,7 +133,7 @@ public class Hive implements NBTSerializable {
     }
 
     public void tick() {
-        if (!isChunkLoaded()) {
+        if (!isActive()) {
             // Don't bother updating the hive if it's not in a loaded chunk.
             return;
         }
@@ -198,8 +198,8 @@ public class Hive implements NBTSerializable {
         membershipManager.removeMember(entity);
     }
 
-    public boolean isChunkLoaded() {
-        return level.getChunkSource().getChunkNow(centerPos.getX() >> 4, centerPos.getZ() >> 4) != null;
+    public boolean isActive() {
+        return bossBarManager.isTrackingPlayers() || isChunkLoaded();
     }
 
     public boolean isAlive() {
@@ -245,6 +245,10 @@ public class Hive implements NBTSerializable {
 
     public boolean isAngry() {
         return bossBarManager.isTrackingPlayers();
+    }
+
+    private boolean isChunkLoaded() {
+        return level.getChunkSource().getChunkNow(centerPos.getX() >> 4, centerPos.getZ() >> 4) != null;
     }
 
     @Override
