@@ -1,0 +1,23 @@
+{
+	"parent": "minecraft:block/block",
+	"texture_size": [32, 32],
+	"textures": {
+		"0": "wire_side"
+	},
+	"elements": [
+		{
+			"name": "wire",
+			"from": [7, 7, 0],
+			"to": [9, 9, 7],
+			"rotation": {"angle": 0, "axis": "y", "origin": [8, 8, 8]},
+			"faces": {
+				"north": {"uv": [3.5, 3.5, 4.5, 4.5], "texture": "#0"},
+				"east": {"uv": [0, 3.5, 3.5, 4.5], "texture": "#0"},
+				"south": {"uv": [8, 3.5, 9, 4.5], "texture": "#0"},
+				"west": {"uv": [4.5, 3.5, 8, 4.5], "texture": "#0"},
+				"up": {"uv": [4.5, 3.5, 3.5, 0], "texture": "#0"},
+				"down": {"uv": [5.5, 0, 4.5, 3.5], "texture": "#0"}
+			}
+		}
+	]
+}

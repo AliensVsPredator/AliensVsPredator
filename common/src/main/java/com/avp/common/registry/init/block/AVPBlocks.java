@@ -61,7 +61,7 @@ public class AVPBlocks {
     public static final AVPDeferredHolder<Block> CABLE = register(
         "cable",
         // TODO: Use custom properties here.
-        () -> new CableBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.COBBLESTONE))
+        () -> new CableBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.COBBLESTONE).noOcclusion())
     );
 
     public static final AVPDeferredHolder<Block> DESK_TERMINAL_BLOCK = register(
