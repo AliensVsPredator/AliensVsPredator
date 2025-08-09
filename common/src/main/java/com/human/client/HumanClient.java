@@ -6,6 +6,7 @@ import com.human.client.render.armor.TacticalArmorRenderer;
 import com.human.client.render.armor.TacticalCamoArmorRenderer;
 import com.human.client.render.block.DeskTerminalRenderer;
 import com.human.client.render.block.ResonatorRenderer;
+import com.human.client.render.block.SolarPanelRenderer;
 import com.human.client.render.entity.FlamethrowRenderer;
 import com.human.client.render.entity.MarineRenderer;
 import com.human.client.render.entity.MushroomCloudRenderer;
@@ -111,6 +112,10 @@ public class HumanClient {
         Services.CLIENT_REGISTRY.registerBlockEntityRenderer(
             AVPBlockEntityTypes.RESONATOR,
             (BlockEntityRendererProvider.Context rendererDispatcherIn) -> new ResonatorRenderer()
+        );
+        Services.CLIENT_REGISTRY.registerBlockEntityRenderer(
+            AVPBlockEntityTypes.SOLAR_PANEL,
+            (BlockEntityRendererProvider.Context rendererDispatcherIn) -> new SolarPanelRenderer()
         );
 
         Services.CLIENT_REGISTRY.registerItemColor(

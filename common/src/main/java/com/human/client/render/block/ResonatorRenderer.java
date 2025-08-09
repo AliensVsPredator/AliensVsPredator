@@ -12,13 +12,13 @@ public class ResonatorRenderer extends AzBlockEntityRenderer<ResonatorBlockEntit
 
     public static final String NAME = "resonator";
 
-    private static final ResourceLocation GEO = AVPResources.blockGeoModelLocation(NAME);
+    private static final ResourceLocation MODEL_LOCATION = AVPResources.blockGeoModelLocation(NAME);
 
-    private static final ResourceLocation TEX = AVPResources.blockTextureLocation(NAME);
+    private static final ResourceLocation TEXTURE_LOCATION = AVPResources.blockTextureLocation(NAME);
 
     public ResonatorRenderer() {
         super(
-            AzBlockEntityRendererConfig.<ResonatorBlockEntity>builder(GEO, TEX)
+            AzBlockEntityRendererConfig.<ResonatorBlockEntity>builder(MODEL_LOCATION, TEXTURE_LOCATION)
                 .setAnimatorProvider(ResonatorAnimator::new)
                 .build()
         );

@@ -108,7 +108,7 @@ public class AVPBlocks {
     public static final AVPDeferredHolder<Block> SOLAR_PANEL = register(
         "solar_panel",
         // TODO: Use custom properties here.
-        () -> new SolarPanelBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.COBBLESTONE))
+        () -> new SolarPanelBlock(BlockProperties.STEEL.build().noOcclusion())
     );
 
     public static final AVPDeferredHolder<Block> THERMAL_GENERATOR = register(
