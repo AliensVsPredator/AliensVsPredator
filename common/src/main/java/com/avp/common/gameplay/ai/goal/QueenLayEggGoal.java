@@ -49,8 +49,6 @@ public class QueenLayEggGoal extends Goal {
                 .isSomeAnd(
                     // And that hive must be alive...
                     hive -> hive.isAlive()
-                        // AND chunk loaded...
-                        && hive.isChunkLoaded()
                         // AND the queen must be within the hive to lay eggs there.
                         && hive.getSpaceManager().isEntityWithinHive(queen)
                         && hive.getMembershipManager()

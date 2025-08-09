@@ -3,10 +3,10 @@ package com.alien.common.gameplay.entity.living.alien;
 import com.alien.common.gameplay.hive.Hive;
 import com.alien.common.gameplay.level.saveddata.HiveLevelData;
 import com.bvanseg.just.functional.option.Option;
+import com.bvanseg.just.functional.tuple.Tuple2;
 import com.lib.common.gameplay.NBTSerializable;
 import com.lib.common.gameplay.util.CompoundTagUtil;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.util.Tuple;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
@@ -37,7 +37,7 @@ public class HiveManager implements NBTSerializable {
         if (hiveOption.isNone() && alien.tickCount % (20 * 10) == 0) {
             HiveLevelData.getOrCreate(level)
                 .map(
-                    hiveLevelData -> new Tuple<>(
+                    hiveLevelData -> new Tuple2<>(
                         hiveLevelData,
                         hiveLevelData.findNearestHive(
                             alien.blockPosition(),
@@ -47,9 +47,9 @@ public class HiveManager implements NBTSerializable {
                     )
                 )
                 .ifSome(tuple -> {
-                    var hiveLevelData = tuple.getA();
+                    var hiveLevelData = tuple.v1();
 
-                    tuple.getB()
+                    tuple.v2()
                         .inspect(nearestHive -> {
                             var joinedHiveSuccessfully = tryJoinHive(nearestHive);
 
