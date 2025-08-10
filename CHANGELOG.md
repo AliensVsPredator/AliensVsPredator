@@ -13,6 +13,8 @@
 - Praetorians now have a chance to drop a single royal jelly item (affected by looting).
 - Queens now drop multiple royal jelly items instead of exactly one royal jelly item. (affected by looting).
 - Ovipositors now drop multiple royal jelly items (affected by looting).
+- Irradiated queens can no longer create ovipositors.
+- Poisoned queens can no longer create ovipositors.
 - Hives now still tick if aggro'd, even if their center chunk is unloaded.
   - This should fix an issue where hive boss bars remain present after players teleport away from the hive.
 - Queens no longer require hive chunk center to be loaded to lay eggs.

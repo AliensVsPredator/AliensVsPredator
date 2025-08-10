@@ -101,6 +101,8 @@ public class OvipositorManager implements NBTSerializable {
 
     private boolean canCreateOvipositor() {
         return queen.getTarget() == null
+            && !queen.isIrradiated()
+            && !queen.isPoisoned()
             && !ovipositorCreationCooldown.isActive()
             && queen.getHiveManager()
                 .hive()
