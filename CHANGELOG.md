@@ -17,6 +17,10 @@
   - This should fix an issue where hive boss bars remain present after players teleport away from the hive.
 - Queens no longer require hive chunk center to be loaded to lay eggs.
   - This was changed since it may result in queens not laying eggs if they are part of a hive with multiple queens.
+- Reduced radiation status effect duration:
+  - Level 1 radiation reduced from 16 minutes to 4 minutes.
+  - Level 2 radiation reduced from 8 minutes to 2 minutes.
+  - Level 3 radiation reduced from 4 minutes to 1 minute.
 
 ## 🐞 Fixes
 - Fixed nether aliens setting attackers on fire from afar when attacked with projectiles.

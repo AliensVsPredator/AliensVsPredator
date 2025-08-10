@@ -1,6 +1,5 @@
 package com.human.client.animation.block;
 
-import com.avp.AVPResources;
 import com.human.common.gameplay.block.entity.power.impl.SolarPanelBlockEntity;
 import mod.azure.azurelib.rewrite.animation.AzAnimatorConfig;
 import mod.azure.azurelib.rewrite.animation.controller.AzAnimationController;
@@ -8,6 +7,8 @@ import mod.azure.azurelib.rewrite.animation.controller.AzAnimationControllerCont
 import mod.azure.azurelib.rewrite.animation.impl.AzBlockAnimator;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
+
+import com.avp.AVPResources;
 
 public class SolarPanelAnimator extends AzBlockAnimator<SolarPanelBlockEntity> {
 
