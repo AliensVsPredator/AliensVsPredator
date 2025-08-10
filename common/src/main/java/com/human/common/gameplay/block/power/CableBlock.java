@@ -50,19 +50,19 @@ public class CableBlock extends Block {
         DOWN
     );
 
-    private static final VoxelShape CORE = box(7, 7, 7, 9, 9, 9);
+    private static final VoxelShape CORE = box(6, 6, 6, 10, 10, 10);
 
-    private static final VoxelShape SIDE_NORTH = box(7, 7, 0, 9, 9, 7); // north (−Z)
+    private static final VoxelShape SIDE_NORTH = box(6, 6, 0, 10, 10, 6);
 
-    private static final VoxelShape SIDE_SOUTH = box(7, 7, 9, 9, 9, 16); // south (+Z)
+    private static final VoxelShape SIDE_SOUTH = box(6, 6, 10, 10, 10, 16);
 
-    private static final VoxelShape SIDE_EAST = box(9, 7, 7, 16, 9, 9); // east (+X)
+    private static final VoxelShape SIDE_EAST = box(10, 6, 6, 16, 10, 10);
 
-    private static final VoxelShape SIDE_WEST = box(0, 7, 7, 7, 9, 9); // west (−X)
+    private static final VoxelShape SIDE_WEST = box(0, 6, 6, 6, 10, 10);
 
-    private static final VoxelShape SIDE_UP = box(7, 9, 7, 9, 16, 9); // up (+Y)
+    private static final VoxelShape SIDE_UP = box(6, 10, 6, 10, 16, 10);
 
-    private static final VoxelShape SIDE_DOWN = box(7, 0, 7, 9, 7, 9); // down (−Y)
+    private static final VoxelShape SIDE_DOWN = box(6, 0, 6, 10, 6, 10);
 
     // bit order: N,S,E,W,U,D
     private static final VoxelShape[] SHAPES_BY_MASK = makeShapes();
