@@ -4,7 +4,7 @@
 - N/A
 
 ## ✨ What's New
-- [Fabric] Now requires Fabric API `0.116.4+1.21.1`.
+- [Fabric] Now requires Fabric API `0.116.5+1.21.1`.
 - [NeoForge] Now requires NeoForge `21.1.197`.
 
 ## ♻️ Changes
