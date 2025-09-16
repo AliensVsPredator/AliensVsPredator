@@ -23,6 +23,8 @@
   - Level 1 radiation reduced from 16 minutes to 4 minutes.
   - Level 2 radiation reduced from 8 minutes to 2 minutes.
   - Level 3 radiation reduced from 4 minutes to 1 minute.
+- Resonator blocks now require power (instead of a redstone signal).
+- Desk Terminal blocks now require power.
 
 ## 🐞 Fixes
 - Fixed nether aliens setting attackers on fire from afar when attacked with projectiles.
@@ -30,6 +32,15 @@
 - Fixed mobs with thorn genes hurting attackers from afar when attacked with projectiles.
 - Fixed aliens growing up in small spaces and clipping out of said small spaces into larger areas.
   - Aliens will no longer attempt to grow up in small spaces and will need more room to grow into their next growth stage.
+
+## 🧪 Experimental
+- Implemented power system:
+  - Added Cable block + item.
+  - Added Solar Panel block + item.
+  - Added battery block + item.
+  - Added wind turbine block + item.
+  - Added thermal generator block + item.
+  - Added an infinite power generator block + item (for testing purposes).
 
 ## 🛠 Data Pack
 - N/A
