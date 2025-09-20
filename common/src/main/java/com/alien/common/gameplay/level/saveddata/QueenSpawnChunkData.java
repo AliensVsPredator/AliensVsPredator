@@ -1,6 +1,6 @@
 package com.alien.common.gameplay.level.saveddata;
 
-import com.bvanseg.just.functional.option.Option;
+import com.just.core.functional.option.Option;
 import com.lib.common.gameplay.util.spatial.region.RegionPos;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;

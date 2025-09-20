@@ -1,14 +1,20 @@
 package com.avp.common.registry.init.block;
 
 import com.human.common.gameplay.block.AmmoChestBlock;
-import com.human.common.gameplay.block.DeskTerminalBlock;
 import com.human.common.gameplay.block.IndustrialFurnaceBlock;
 import com.human.common.gameplay.block.LeadChestBlock;
 import com.human.common.gameplay.block.NukeBlock;
 import com.human.common.gameplay.block.RazorWireBlock;
 import com.human.common.gameplay.block.RedstoneGeneratorBlock;
-import com.human.common.gameplay.block.ResonatorBlock;
 import com.human.common.gameplay.block.SentryTurretBlock;
+import com.human.common.gameplay.block.power.BatteryBlock;
+import com.human.common.gameplay.block.power.CableBlock;
+import com.human.common.gameplay.block.power.DeskTerminalBlock;
+import com.human.common.gameplay.block.power.InfinitePowerGeneratorBlock;
+import com.human.common.gameplay.block.power.ResonatorBlock;
+import com.human.common.gameplay.block.power.SolarPanelBlock;
+import com.human.common.gameplay.block.power.ThermalGeneratorBlock;
+import com.human.common.gameplay.block.power.WindTurbineBlock;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.block.Block;
@@ -44,7 +50,19 @@ public class AVPBlocks {
         () -> new AmmoChestBlock(BlockProperties.LEAD.build())
     );
 
+    public static final AVPDeferredHolder<Block> BATTERY = register(
+        "battery",
+        // TODO: Use custom properties here.
+        () -> new BatteryBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.COBBLESTONE))
+    );
+
     public static final AVPDeferredHolder<Block> BLUEPRINT_BLOCK = register("blueprint_block", BlockProperties.STEEL);
+
+    public static final AVPDeferredHolder<Block> CABLE = register(
+        "cable",
+        // TODO: Use custom properties here.
+        () -> new CableBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.COBBLESTONE).noOcclusion())
+    );
 
     public static final AVPDeferredHolder<Block> DESK_TERMINAL_BLOCK = register(
         "desk_terminal",
@@ -55,6 +73,12 @@ public class AVPBlocks {
         "industrial_furnace_block",
         // TODO: Use custom properties here.
         () -> new IndustrialFurnaceBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.BLAST_FURNACE))
+    );
+
+    public static final AVPDeferredHolder<Block> INFINITE_POWER_GENERATOR = register(
+        "infinite_power_generator",
+        // TODO: Use custom properties here.
+        () -> new InfinitePowerGeneratorBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.COBBLESTONE))
     );
 
     public static final AVPDeferredHolder<Block> LEAD_CHEST = register(
@@ -80,6 +104,24 @@ public class AVPBlocks {
     );
 
     public static final AVPDeferredHolder<Block> SENTRY_TURRET = register("sentry_turret", SentryTurretBlock::new);
+
+    public static final AVPDeferredHolder<Block> SOLAR_PANEL = register(
+        "solar_panel",
+        // TODO: Use custom properties here.
+        () -> new SolarPanelBlock(BlockProperties.STEEL.build().noOcclusion())
+    );
+
+    public static final AVPDeferredHolder<Block> THERMAL_GENERATOR = register(
+        "thermal_generator",
+        // TODO: Use custom properties here.
+        () -> new ThermalGeneratorBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.COBBLESTONE))
+    );
+
+    public static final AVPDeferredHolder<Block> WIND_TURBINE = register(
+        "wind_turbine",
+        // TODO: Use custom properties here.
+        () -> new WindTurbineBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.COBBLESTONE))
+    );
 
     public static final Map<DyeColor, AVPDeferredHolder<Block>> DYE_COLOR_TO_CONCRETE_SLAB =
         Collections.unmodifiableMap(

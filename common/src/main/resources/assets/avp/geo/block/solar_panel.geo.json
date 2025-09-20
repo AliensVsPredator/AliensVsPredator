@@ -1,0 +1,35 @@
+{
+	"format_version": "1.12.0",
+	"minecraft:geometry": [
+		{
+			"description": {
+				"identifier": "geometry.unknown",
+				"texture_width": 64,
+				"texture_height": 64,
+				"visible_bounds_width": 2,
+				"visible_bounds_height": 2.5,
+				"visible_bounds_offset": [0, 0.75, 0]
+			},
+			"bones": [
+				{
+					"name": "gRoot",
+					"pivot": [0, 0, 0],
+					"cubes": [
+						{"origin": [-8, 0, -8], "size": [16, 4, 16], "uv": [0, 0]},
+						{"origin": [-1, 4, -1], "size": [2, 12, 2], "uv": [0, 0]}
+					]
+				},
+				{
+					"name": "gPanel",
+					"parent": "gRoot",
+					"pivot": [0, 14.9, 0],
+					"rotation": [0, 0, -57.5],
+					"cubes": [
+						{"origin": [-8, 16, -8], "size": [16, 2, 16], "uv": [0, 21]},
+						{"origin": [-2, 13.8, -2], "size": [4, 4, 4], "uv": [0, 40]}
+					]
+				}
+			]
+		}
+	]
+}

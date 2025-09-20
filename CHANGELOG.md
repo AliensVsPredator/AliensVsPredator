@@ -1,189 +1,57 @@
-# v0.2.0
+# v0.2.1
+
+## ✍️ Developer Notes
+- For help or other questions, concerns, etc. check out our Discord server: https://discord.gg/wp7mvmbkVb
+- Changelogs will now have a new "✍️ Developer Notes" section in them for more "meta" changes about the mod.
+- Changelogs will now have a new 🧪 Experimental section from now on with in-progress content. This content may or may not be accessible in survival. Players are encouraged to check these features out and give feedback on how they work (or don't work) so far. Please note that this content *can* change heavily and therefore shouldn't be used as part of long-term worlds.
+- With that out of the way, hey guys! I know it's been awhile and this isn't the biggest update, the team has been taking a well-deserved break and enjoying things beyond the mod. Hopefully things will pick up again as holidays roll around. :)
 
 ## ☢️ Breaking Changes
-- Renamed `avp:ovamorph` to `avp:ovomorph`.
-- Parasites no longer implant a parasite type into hosts, now implant correct embryo type.
-  - Previously, parasites would store their own entity type to a host. At the time of birth, the embryo type was then computed. This has been changed such that the embryo type is computed immediately and then stored.
-  - This means that any currently-infected hosts in your game *will not burst* and will need to be infected again.
+- N/A
 
 ## ✨ What's New
-- Aliens now remember what host type they came from.
-- Added new running animations to all xenomorphs.
-- Nether aliens now set hurt targets on fire.
-- Added two new advancements:
-  - "Eviction" - Infected? Eat a chorus fruit to remove the embryo, saving yourself... and dooming the world.
-  - "Hive Buster" - Defeat an alien hive.
-- Revamped chestbursting:
-  - Heartbeats can now be heard by players minutes before they get chestbursted.
-  - The heartbeats get progressively faster the closer the player is to chestbursting.
-  - 8 seconds before death, the host (not just players) will emit bone crunching sfx and take (0.001 aka fake) damage.
-  - The player will also have confusion (nausea) 30 seconds before death.
-  - Upon death, a chestburster screech will play as the new killing machine enters the world.
-- Revamped genetics system:
-  - Gene bonuses are now datapacked.
-  - All hosts now provide gene bonuses.
-  - Gene bonuses now have a more noticeable impact to xenomorphs.
-  - Repeated injections will cause xenomorphs to turn aberrant.
-  - Further repeated injections will cause aberrant xenomorphs to turn into boilers.
-  - Poison jelly no longer turns royal ovomorphs into royal aberrant ovomorphs.
-  - Added a new "gene reader" item:
-    - Right-click (nearly) any mob to read their genes.
-    - Cycle through different modes to see different types of genes that a mob has.
-    - Bonus genes are genes a mob gives that never change. Syringes extract only bonus genes.
-    - Dormant genes are genes a mob has, but do not change the mob's stats/behavior.
-    - Active genes are genes a mob has and DO change the mob's stats/behavior.
-    - When the mob reproduces (animals mating or chestburster bursting), dormant genes become active genes.
-  - Added a new "syringe" item:
-    - Right-click (nearly) any mob to get their genes.
-    - Right-click any entity to add the genes to them.
-      - Added genes are "dormant" (do not apply immediately).
-      - Dormant genes only manifest on chestbursters born from hosts.
-      - Every injection makes the entity's and their offspring's genes "unstable". The more unstable the genes, the more negative effects each successive generation will have.
-      - Genes within the syringe can't be immediately seen. Use a gene reader to check the mob you're using a syringe on beforehand!
-- Ovomorphs now have hatching AI
-  - Ovomorphs now have a "desire" meter for hatching. 
-  - Changes in the environment (such as light) will increase the desire meter.
-  - Movement of nearby hosts will also increase the desire meter.
-- Added the queen's ovipositor/eggsack:
-  - Queens will create an ovipositor when they are in a hive and are "safe" (they aren't the only hive member).
-  - The queen will play a new animation when she is mounted on her ovipositor.
-  - Ovipositors are an entity and extend off of the queen. Other mobs will not attack the ovipositor.
-  - The queen requires a considerable amount of space as well as stable ground to create her ovipositor.
-  - Eggs no longer drop at the queen's feet, but instead at the end of the ovipositor.
-  - Egglaying has otherwise remained unchanged.
-- Drones (and the newly added runners) now distribute ovomorphs around the hive.
-  - Drones/runners like to place eggs with at least a 1-block gap between the eggs.
-  - Drones/runners will pick up eggs that are unrooted.
-  - When the drones/runners place the egg down at the new location, they will automatically root the egg in place.
-- Added new entities:
-  - Aberrant Adolescent
-  - Aberrant Boiler
-  - Aberrant Crusher
-  - Aberrant Prowler
-  - Aberrant Runner
-  - Aberrant Spitter
-  - Adolescent
-  - Boiler
-  - Crusher
-  - Irradiated Crusher
-  - Irradiated Prowler
-  - Irradiated Runner
-  - Nether Adolescent
-  - Nether Boiler
-  - Nether Crusher
-  - Nether Prowler
-  - Nether Runner
-  - Nether Spitter
-  - Ovipositor
-  - Prowler
-  - Royal Aberrant Adolescent
-  - Royal Adolescent
-  - Royal Nether Adolescent
-  - Runner
-  - Spitter
+- [Fabric] AVP now requires Fabric API `0.116.6+1.21.1`.
+- [Fabric] AVP now requires Fabric Loader `0.17.2`.
+- [NeoForge] AVP now requires NeoForge `21.1.209`.
+- AVP now requires AzureLib `3.0.27`.
 
 ## ♻️ Changes
-- Predators no longer spawn naturally in jungles.
-- All aliens can now detect vibrations (instead of just xenomorphs).
-- Chestbursters can no longer be trapped in boats and minecarts.
-- Facehuggers can no longer be trapped in boats and minecarts.
-- Improved razor wire death message.
-- Poison jelly no longer turns royal ovomorphs into royal aberrant ovomorphs.
-- Same-strain, different-hive xenos now no longer kill each other.
-- Hive centers now constantly move with the hive leader.
-- Updated the chestbursting death message to have a proper, better-fitting message.
-- Irradiated acid now only converts blocks to ice when the blocks are destroyed.
-- Nether acid now sets air blocks above them on fire.
-- Resin web now stops player vertical movement if player eye height is in resin web.
-- Increased flamethrower DPS by a factor of 100 (0.02dps to 20dps).
-- Reduced predator hitbox width (0.98 to 0.7).
-- Reworked how royal jelly item and royal jelly blocks are used:
-  - Hatched ovomorphs can no longer be revived with royal jelly.
-  - Infertile facehuggers can no longer be revived with royal jelly.
-  - Aliens that have been given royal jelly or royal jelly blocks will no longer despawn.
-  - Praetorians can now be given regular royal jelly.
-  - All xenomorphs can now be given royal jelly blocks.
-  - Queens can no longer be given royal jelly or royal jelly blocks.
-  - Royal jelly blocks now **add** 9 royal jelly to aliens instead of setting their royal jelly to 10.
-  - Aliens no longer have their royal jelly count reset when growing up, but merely the royal jelly growth cost subtracted.
-  - Poison jelly is no longer usable on aliens that can't grow any further.
-  - Royal jelly items and royal jelly blocks can no longer be used on poisoned aliens.
-- Alien collision interactions have been changed:
-  - Ovomorphs no longer collide with non-ovomorph aliens.
-  - Facehuggers no longer collide with other aliens (including other facehuggers).
-  - Xenomorphs no longer collide with smaller aliens (facehuggers, chestbursters and adolescents).
-  - Queens no longer push other entities when she is on her ovipositor.
-- Improved facehugging effects:
-  - Effects now last 2 seconds longer (4 seconds total).
-  - Weakness is now applied to the host sooner (as soon as smothering damage finishes).
-  - Movement slowdown 100 is now applied after smothering damage finishes.
-- Ovomorphs no longer spawn naturally.
-  - Ovipositor is complete, natural ovomorph spawning is no longer necessary.
-- Hives will now merge with each other given certain conditions in the following order (most -> least important):
-  - Hives with a weaker leader will merge into hives with a stronger leader.
-  - Hives with a lower member count will merge into hives with a larger member count.
-  - Younger hives will merge into older hives.
-- Moved the following config options to datapack:
-  - `CHESTBURSTER_MAX_GROWTH_TIMER_SECONDS`
-  - `DRONE_MAX_GROWTH_TIMER_SECONDS`
-  - `PRAETORIAN_MAX_GROWTH_TIMER_SECONDS`
-  - `PRAETORIAN_SHORTCUT_TIMER_SECONDS`
-  - `WARRIOR_MAX_GROWTH_TIMER_SECONDS`
-- Removed the following config options:
-  - `ABERRANT_OVOMORPH_SPAWN`
-  - `NETHER_OVOMORPH_SPAWN`
-  - `OVOMORPH_SPAWN`
+- Aliens will now kill hosts that have embryos from other strains.
+- Nuke blocks are now enabled by default in singleplayer.
+- Praetorians now have a chance to drop a single royal jelly item (affected by looting).
+- Queens now drop multiple royal jelly items instead of exactly one royal jelly item. (affected by looting).
+- Ovipositors now drop multiple royal jelly items (affected by looting).
+- Irradiated queens can no longer create ovipositors.
+- Poisoned queens can no longer create ovipositors.
+- Hives now still tick if aggro'd, even if their center chunk is unloaded.
+  - This should fix an issue where hive boss bars remain present after players teleport away from the hive.
+- Queens no longer require hive chunk center to be loaded to lay eggs.
+  - This was changed since it may result in queens not laying eggs if they are part of a hive with multiple queens.
+- Reduced radiation status effect duration:
+  - Level 1 radiation reduced from 16 minutes to 4 minutes.
+  - Level 2 radiation reduced from 8 minutes to 2 minutes.
+  - Level 3 radiation reduced from 4 minutes to 1 minute.
+- Resonator blocks now require power (instead of a redstone signal).
+- Desk Terminal blocks now require power.
 
 ## 🐞 Fixes
-- Fixed queens not transferring their genes to laid eggs.
-- Fixed potion effects carried over from host to embryo not being permanent.
-- Fixed entities being able to ride aliens (disabling their AI in the process).
-- Fixed embryos born from a host eating chorus fruit not persisting.
-- Fixed inconsistent potion effect behavior with embryos born from hosts eating chorus fruit.
-- Fixed aberrant chitin armors not counting towards chitin armor advancements.
-- Fixed aliens spreading resin while underwater.
-- Fixed alien attack animations not playing properly.
-- Fixed aliens having jittery animations when servers are lagging behind.
-- Fixed facehuggers not providing host air underwater.
-- Fixed marines having broken ground navigation.
-- Fixed marines not moving their heads to match where they are looking.
-- Fixed facehuggers not fully incapacitating marine hosts due to marines using a different AI system.
-- Fixed alien hitboxes being off while swimming.
-- Fixed praetorian count balancing including eggs, facehuggers, chestbursters and adolescents in formula.
-- Fixed aliens that do not grow up being able to consume an infinite amount of royal jelly.
-- Fixed facehuggers not persisting after hatching from ovomorphs.
-- Fixed block damage from guns, acid and aliens not resetting when the damaged block is broken or replaced.
-- Fixed xenomorphs trying to attack infected hosts that hurt them.
-- Fixed hive boss bar showing after players change dimensions.
-- Fixed irradiated acid destroying the following blocks:
-  - Chitin blocks
-  - Industrial Glass blocks
-  - Plastic blocks
-  - Non-Irradiated Resin blocks
-  - Air
-  - Fire
-  - Soul Fire
+- Fixed nether aliens setting attackers on fire from afar when attacked with projectiles.
+- Fixed mobs with poison barb genes poisoning attackers from afar when attacked with projectiles.
+- Fixed mobs with thorn genes hurting attackers from afar when attacked with projectiles.
+- Fixed aliens growing up in small spaces and clipping out of said small spaces into larger areas.
+  - Aliens will no longer attempt to grow up in small spaces and will need more room to grow into their next growth stage.
+
+## 🧪 Experimental
+- Implemented power system:
+  - Added Cable block + item.
+  - Added Solar Panel block + item.
+  - Added battery block + item.
+  - Added wind turbine block + item.
+  - Added thermal generator block + item.
+  - Added an infinite power generator block + item (for testing purposes).
 
 ## 🛠 Data Pack
-- Added `#avp:runner_hosts` entity tag.
-- Added `#avp:runners` entity tag.
-- Added `#avp:prowlers` entity tag.
-- Added `#avp:crushers` entity tag.
-- Added `#avp:adolescents` entity tag.
-- Added `#avp:spitters` entity tag.
-- Added `#avp:answers_xenomorph_cries_for_help` entity tag.
-- Updated `#avp:hosts` to be composed of `#avp:runner_hosts` entity tag.
-- Updated `#avp:xenomorphs` tag to include new runner alien line entity tags and spitter entity tag.
-- Updated hive layer entity tags to include new runner alien line entity tags and spitter entity tag.
-- Updated variant entity tags to include new runner aliens, spitter alien and adolescent aliens.
+- N/A
 
 ## 🔬 Technical Changes
-- Upgraded alien lifecycles to support host entity tags.
-- Added full datapack support for alien growth stages.
-- Alien lifecycle host entity tags have been migrated to individual alien growth stages.
-- Upgraded alien infections to support host entity tags.
-- Added full datapack support for alien infections.
-- Removed redundant royal data from aliens.
-- Added full datapack support for gene bonuses.
-- Alien gene manager now managed through a mixin (same as host gene managers).
-- Added `#avp:does_not_hurt_aliens` damage type tag.
+- N/A

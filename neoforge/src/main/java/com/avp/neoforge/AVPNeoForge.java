@@ -2,6 +2,7 @@ package com.avp.neoforge;
 
 import com.lib.common.network.DataContainer;
 import com.lib.common.network.DataUser;
+import com.lib.common.util.codec.stream.adapter.JustStreamCodecToMojangStreamCodecAdapter;
 import com.predator.common.registry.init.PredatorEntityTypes;
 import mod.azure.azurelib.rewrite.animation.cache.AzIdentityRegistry;
 import net.minecraft.core.registries.Registries;
@@ -215,12 +216,12 @@ public class AVPNeoForge {
                 switch (typedNetworkHandler) {
                     case NetworkHandler.FromClient<CustomPacketPayload> handler -> registrar.playToServer(
                         handler.type(),
-                        handler.codec(),
+                        new JustStreamCodecToMojangStreamCodecAdapter<>(handler.codec()),
                         (payload, context) -> context.enqueueWork(() -> handler.payloadConsumer().accept(payload, context.player()))
                     );
                     case NetworkHandler.FromEither<CustomPacketPayload> handler -> registrar.playBidirectional(
                         handler.type(),
-                        handler.codec(),
+                        new JustStreamCodecToMojangStreamCodecAdapter<>(handler.codec()),
                         new DirectionalPayloadHandler<>(
                             (payload, context) -> context.enqueueWork(
                                 () -> handler.fromServerPayloadConsumer().accept(payload, context.player())
@@ -232,7 +233,7 @@ public class AVPNeoForge {
                     );
                     case NetworkHandler.FromServer<CustomPacketPayload> handler -> registrar.playToClient(
                         handler.type(),
-                        handler.codec(),
+                        new JustStreamCodecToMojangStreamCodecAdapter<>(handler.codec()),
                         (payload, context) -> context.enqueueWork(() -> handler.payloadConsumer().accept(payload, context.player()))
                     );
                 }

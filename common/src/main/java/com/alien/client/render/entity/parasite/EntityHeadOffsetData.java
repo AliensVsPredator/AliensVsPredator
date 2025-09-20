@@ -1,7 +1,7 @@
 package com.alien.client.render.entity.parasite;
 
-import com.bvanseg.just.functional.function.Lazy;
 import com.human.common.registry.init.entity_type.HumanEntityTypes;
+import com.just.core.functional.function.Lazy;
 import com.predator.common.registry.init.PredatorEntityTypes;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;

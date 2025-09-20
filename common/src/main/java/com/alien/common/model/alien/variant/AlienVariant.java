@@ -1,6 +1,6 @@
 package com.alien.common.model.alien.variant;
 
-import com.bvanseg.just.functional.option.Option;
+import com.just.core.functional.option.Option;
 
 import java.util.Arrays;
 import java.util.Map;

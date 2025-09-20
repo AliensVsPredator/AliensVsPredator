@@ -7,7 +7,7 @@ import com.alien.common.model.alien.variant.AlienVariantType;
 import com.alien.common.registry.init.AlienGameEvents;
 import com.alien.common.registry.init.AlienItems;
 import com.alien.common.registry.init.block.AlienResinBlocks;
-import com.bvanseg.just.functional.option.Option;
+import com.just.core.functional.option.Option;
 import net.minecraft.ChatFormatting;
 import net.minecraft.Util;
 import net.minecraft.world.BossEvent;

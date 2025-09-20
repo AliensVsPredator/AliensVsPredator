@@ -6,10 +6,6 @@ import net.minecraft.nbt.CompoundTag;
 
 public class GeneContainer implements NBTSerializable {
 
-    private static final String NBT_GENE_MAP = "geneMap";
-
-    private static final String NBT_DORMANT_GENE_MAP = "dormantGeneMap";
-
     private static final String NBT_GENE_MODIFIERS = "geneModifiers";
 
     private static final String NBT_DORMANT_GENE_MODIFIERS = "dormantGeneModifiers";
@@ -50,10 +46,6 @@ public class GeneContainer implements NBTSerializable {
     public void load(CompoundTag compoundTag) {
         geneMap.clear();
         dormantGeneMap.clear();
-
-        // TODO: Remove these two lines prior to release of 0.2.0.
-        GeneSerializationUtil.loadGeneMap(NBT_GENE_MAP, compoundTag, geneMap);
-        GeneSerializationUtil.loadGeneMap(NBT_DORMANT_GENE_MAP, compoundTag, geneMap);
 
         GeneSerializationUtil.loadGeneModifiers(NBT_GENE_MODIFIERS, compoundTag, geneMap);
         GeneSerializationUtil.loadGeneModifiers(NBT_DORMANT_GENE_MODIFIERS, compoundTag, dormantGeneMap);

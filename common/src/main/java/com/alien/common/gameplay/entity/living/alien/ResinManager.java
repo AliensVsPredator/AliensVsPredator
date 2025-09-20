@@ -4,7 +4,7 @@ import com.alien.common.data.AlienVariantTypes;
 import com.alien.common.gameplay.level.gameevent.listener.ResinSpreadListener;
 import com.alien.common.model.resin.ReadableResinData;
 import com.alien.common.model.resin.ResinData;
-import com.bvanseg.just.functional.option.Option;
+import com.just.core.functional.option.Option;
 import com.lib.common.gameplay.NBTSerializable;
 import com.mojang.serialization.Dynamic;
 import net.minecraft.core.BlockPos;

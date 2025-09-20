@@ -2,7 +2,7 @@ package com.alien.common.gameplay.hive.membership;
 
 import com.alien.common.gameplay.hive.Hive;
 import com.alien.common.model.hive.HiveMemberData;
-import com.bvanseg.just.functional.option.Option;
+import com.just.core.functional.option.Option;
 import com.lib.common.gameplay.NBTSerializable;
 import com.mojang.serialization.Dynamic;
 import net.minecraft.core.registries.BuiltInRegistries;

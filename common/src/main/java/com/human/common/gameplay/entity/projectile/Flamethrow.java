@@ -1,8 +1,8 @@
 package com.human.common.gameplay.entity.projectile;
 
 import com.alien.common.data.AlienVariantTypes;
-import com.bvanseg.just.traversal.BFS;
 import com.human.common.registry.init.entity_type.HumanEntityTypes;
+import com.just.core.traversal.BFS;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;

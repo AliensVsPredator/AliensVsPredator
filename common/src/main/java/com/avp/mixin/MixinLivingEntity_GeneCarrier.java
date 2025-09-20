@@ -143,38 +143,36 @@ public abstract class MixinLivingEntity_GeneCarrier extends Entity implements Ge
 
     @Unique
     private void avp$handlePoisonousBarbsGene(DamageSource damageSource, float damage) {
-        if (damageSource.is(DamageTypeTags.AVOIDS_GUARDIAN_THORNS)) {
-            return;
-        }
+        if (
+            !damageSource.is(DamageTypeTags.AVOIDS_GUARDIAN_THORNS)
+                && damageSource.getDirectEntity() instanceof LivingEntity livingEntity
+        ) {
+            // TODO: Factor in additive in here.
+            var poisonChance = getOrCreateGeneManager().getGeneContainer()
+                .getActiveGeneMap()
+                .getValue(Genes.POISONOUS_BARBS, GeneOperationType.MULTIPLICATIVE);
 
-        // TODO: Factor in additive in here.
-        var poisonChance = getOrCreateGeneManager().getGeneContainer()
-            .getActiveGeneMap()
-            .getValue(Genes.POISONOUS_BARBS, GeneOperationType.MULTIPLICATIVE);
-
-        var hurtingEntity = damageSource.getEntity();
-
-        if (getRandom().nextDouble() < poisonChance && hurtingEntity instanceof LivingEntity hurtingLivingEntity) {
-            // TODO: Amplify level with increasing levels.
-            hurtingLivingEntity.addEffect(new MobEffectInstance(MobEffects.POISON, 6 * 20, 0), this);
+            if (getRandom().nextDouble() < poisonChance) {
+                // TODO: Amplify level with increasing levels.
+                livingEntity.addEffect(new MobEffectInstance(MobEffects.POISON, 6 * 20, 0), this);
+            }
         }
     }
 
     @Unique
     private void avp$handleThornsGene(DamageSource damageSource, float damage) {
-        if (damageSource.is(DamageTypeTags.AVOIDS_GUARDIAN_THORNS)) {
-            return;
-        }
+        if (
+            !damageSource.is(DamageTypeTags.AVOIDS_GUARDIAN_THORNS)
+                && damageSource.getDirectEntity() instanceof LivingEntity livingEntity
+        ) {
+            // TODO: Factor in multiplicative in here.
+            var thornsDamage = getOrCreateGeneManager().getGeneContainer()
+                .getActiveGeneMap()
+                .getValue(Genes.THORNS, GeneOperationType.ADDITIVE);
 
-        // TODO: Factor in multiplicative in here.
-        var thornsDamage = getOrCreateGeneManager().getGeneContainer()
-            .getActiveGeneMap()
-            .getValue(Genes.THORNS, GeneOperationType.ADDITIVE);
-
-        var hurtingEntity = damageSource.getEntity();
-
-        if (hurtingEntity != null && thornsDamage >= 0) {
-            hurtingEntity.hurt(hurtingEntity.damageSources().thorns(this), (float) thornsDamage);
+            if (thornsDamage >= 0) {
+                livingEntity.hurt(livingEntity.damageSources().thorns(this), (float) thornsDamage);
+            }
         }
     }
 

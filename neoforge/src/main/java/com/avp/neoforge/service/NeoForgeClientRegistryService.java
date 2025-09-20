@@ -1,7 +1,7 @@
 package com.avp.neoforge.service;
 
-import com.bvanseg.just.functional.function.Lazy;
-import com.bvanseg.just.functional.tuple.Tuple2;
+import com.just.core.functional.function.Lazy;
+import com.just.core.functional.tuple.Tuple2;
 import mod.azure.azurelib.rewrite.render.armor.AzArmorRenderer;
 import mod.azure.azurelib.rewrite.render.item.AzItemRenderer;
 import net.minecraft.client.KeyMapping;

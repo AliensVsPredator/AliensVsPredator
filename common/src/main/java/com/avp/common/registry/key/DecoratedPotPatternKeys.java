@@ -1,7 +1,7 @@
 package com.avp.common.registry.key;
 
 import com.alien.common.registry.init.AlienItems;
-import com.bvanseg.just.functional.function.Lazy;
+import com.just.core.functional.function.Lazy;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.Item;

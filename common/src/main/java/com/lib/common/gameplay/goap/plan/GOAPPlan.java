@@ -1,6 +1,6 @@
 package com.lib.common.gameplay.goap.plan;
 
-import com.bvanseg.just.functional.option.Option;
+import com.just.core.functional.option.Option;
 import com.lib.common.gameplay.goap.GOAPAction;
 import com.lib.common.gameplay.goap.GOAPGoal;
 import com.lib.common.gameplay.goap.state.GOAPBlackboard;

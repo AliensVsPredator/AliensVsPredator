@@ -1,13 +1,11 @@
 package com.human.common.gameplay.component;
 
+import com.just.codec.stream.RecordStreamCodec;
+import com.just.codec.stream.StreamCodec;
 import com.lib.common.gameplay.gene.GeneBonusDataEntry;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.codec.ByteBufCodecs;
-import net.minecraft.network.codec.StreamCodec;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public record SyringeContents(
@@ -24,8 +22,8 @@ public record SyringeContents(
         ).apply(instance, SyringeContents::new)
     );
 
-    public static final StreamCodec<FriendlyByteBuf, SyringeContents> STREAM_CODEC = StreamCodec.composite(
-        ByteBufCodecs.collection(ArrayList::new, GeneBonusDataEntry.STREAM_CODEC),
+    public static final StreamCodec<SyringeContents> STREAM_CODEC = RecordStreamCodec.of(
+        GeneBonusDataEntry.LIST_STREAM_CODEC,
         SyringeContents::geneBonusDataEntries,
         SyringeContents::new
     );

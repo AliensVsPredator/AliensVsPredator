@@ -26,7 +26,8 @@ dependencies {
     annotationProcessor group: 'io.github.llamalad7', name: 'mixinextras-common', version: '0.3.5'
 
     // Manually added dependencies
-    compileOnly "com.github.bvanseg:just:${project.just_version}"
+    compileOnly "com.github.just-collective:just-codec:${project.just_codec_version}"
+    compileOnly "com.github.just-collective:just-core:${project.just_core_version}"
     compileOnly "mod.azure.azurelib:azurelib-common-${project.minecraft_version}:${project.azurelib_version}"
     compileOnly "mezz.jei:jei-${minecraft_version}-neoforge-api:${project.jei_version}"
     compileOnly "me.shedaniel:RoughlyEnoughItems-api-neoforge:${project.rei_version}"

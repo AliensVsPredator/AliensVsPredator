@@ -1,6 +1,6 @@
 package com.human.client.render.block;
 
-import com.human.common.gameplay.block.entity.DeskTerminalBlockEntity;
+import com.human.common.gameplay.block.entity.power.impl.DeskTerminalBlockEntity;
 import mod.azure.azurelib.rewrite.render.block.AzBlockEntityRenderer;
 import mod.azure.azurelib.rewrite.render.block.AzBlockEntityRendererConfig;
 import mod.azure.azurelib.rewrite.render.layer.AzAutoGlowingLayer;

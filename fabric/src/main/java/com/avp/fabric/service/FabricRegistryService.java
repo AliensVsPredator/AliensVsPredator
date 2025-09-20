@@ -1,5 +1,6 @@
 package com.avp.fabric.service;
 
+import com.lib.common.util.codec.stream.adapter.JustStreamCodecToMojangStreamCodecAdapter;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import mod.azure.azurelib.rewrite.animation.cache.AzIdentityRegistry;
 import net.fabricmc.fabric.api.biome.v1.BiomeModifications;
@@ -169,7 +170,7 @@ public class FabricRegistryService implements RegistryService {
     public <T extends CustomPacketPayload> void registerPacketDirection(PacketDirection<T> packetDirection) {
         var handleClient = false;
         var handleServer = false;
-        var codec = packetDirection.codec();
+        var codec = new JustStreamCodecToMojangStreamCodecAdapter<>(packetDirection.codec());
         var type = packetDirection.type();
 
         switch (packetDirection) {

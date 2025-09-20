@@ -1,6 +1,6 @@
 package com.human.common.gameplay.entity.living.human.marine;
 
-import com.bvanseg.just.functional.option.Option;
+import com.just.core.functional.option.Option;
 import com.lib.common.gameplay.NBTSerializable;
 import com.lib.common.gameplay.util.ItemUtil;
 import net.minecraft.nbt.CompoundTag;

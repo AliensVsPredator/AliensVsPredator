@@ -1,8 +1,8 @@
 package com.avp.neoforge.service;
 
-import com.bvanseg.just.functional.tuple.Tuple2;
-import com.bvanseg.just.functional.tuple.Tuple3;
-import com.bvanseg.just.functional.tuple.Tuple4;
+import com.just.core.functional.tuple.Tuple2;
+import com.just.core.functional.tuple.Tuple3;
+import com.just.core.functional.tuple.Tuple4;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.core.Registry;

@@ -33,9 +33,16 @@ public class AVPBlockItems {
 
     public static final AVPDeferredHolder<BlockItem> AUTUNITE_ORE = register("autunite_ore", CoreBlocks.AUTUNITE_ORE);
 
+    public static final AVPDeferredHolder<BlockItem> BATTERY = register(
+        "battery",
+        AVPBlocks.BATTERY
+    );
+
     public static final AVPDeferredHolder<BlockItem> BAUXITE_ORE = register("bauxite_ore", CoreBlocks.BAUXITE_ORE);
 
     public static final AVPDeferredHolder<BlockItem> BLUEPRINT_BLOCK = register("blueprint_block", AVPBlocks.BLUEPRINT_BLOCK);
+
+    public static final AVPDeferredHolder<BlockItem> CABLE = register("cable", AVPBlocks.CABLE);
 
     public static final AVPDeferredHolder<BlockItem> BRASS_BLOCK = register("brass_block", CoreBlocks.BRASS_BLOCK);
 
@@ -53,6 +60,11 @@ public class AVPBlockItems {
     public static final AVPDeferredHolder<BlockItem> INDUSTRIAL_FURNACE_BLOCK = register(
         "industrial_furnace_block",
         AVPBlocks.INDUSTRIAL_FURNACE
+    );
+
+    public static final AVPDeferredHolder<BlockItem> INFINITE_POWER_GENERATOR = register(
+        "infinite_power_generator",
+        AVPBlocks.INFINITE_POWER_GENERATOR
     );
 
     public static final AVPDeferredHolder<BlockItem> LEAD_BLOCK = register("lead_block", CoreBlocks.LEAD_BLOCK);
@@ -95,9 +107,24 @@ public class AVPBlockItems {
     // TODO: Change this to "silicon_block" with 0.2.0.
     public static final AVPDeferredHolder<BlockItem> SILICON_BLOCK = register("raw_silica_block", CoreBlocks.SILICON_BLOCK);
 
+    public static final AVPDeferredHolder<BlockItem> SOLAR_PANEL = register(
+        "solar_panel",
+        AVPBlocks.SOLAR_PANEL
+    );
+
+    public static final AVPDeferredHolder<BlockItem> THERMAL_GENERATOR = register(
+        "thermal_generator",
+        AVPBlocks.THERMAL_GENERATOR
+    );
+
     public static final AVPDeferredHolder<BlockItem> TRINITITE_BLOCK = register("trinitite_block", CoreBlocks.TRINITITE_BLOCK);
 
     public static final AVPDeferredHolder<BlockItem> URANIUM_BLOCK = register("uranium_block", CoreBlocks.URANIUM_BLOCK);
+
+    public static final AVPDeferredHolder<BlockItem> WIND_TURBINE = register(
+        "wind_turbine",
+        AVPBlocks.WIND_TURBINE
+    );
 
     public static final AVPDeferredHolder<BlockItem> ZINC_BLOCK = register("zinc_block", CoreBlocks.ZINC_BLOCK);
 

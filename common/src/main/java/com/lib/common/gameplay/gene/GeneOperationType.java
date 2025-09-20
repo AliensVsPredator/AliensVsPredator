@@ -1,8 +1,9 @@
 package com.lib.common.gameplay.gene;
 
+import com.just.codec.stream.StreamCodec;
+import com.just.codec.stream.schema.StreamCodecSchema;
 import com.mojang.serialization.Codec;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.codec.StreamCodec;
+import org.jetbrains.annotations.NotNull;
 
 public enum GeneOperationType {
 
@@ -14,16 +15,21 @@ public enum GeneOperationType {
         GeneOperationType::name
     );
 
-    public static final StreamCodec<FriendlyByteBuf, GeneOperationType> STREAM_CODEC =
-        StreamCodec.of(
-            (buf, value) -> buf.writeVarInt(value.ordinal()),
-            buf -> {
-                int ordinal = buf.readVarInt();
-                GeneOperationType[] values = GeneOperationType.values();
-                if (ordinal < 0 || ordinal >= values.length) {
-                    throw new IllegalArgumentException("Invalid GeneOperationType ordinal: " + ordinal);
-                }
-                return values[ordinal];
+    public static final StreamCodec<GeneOperationType> STREAM_CODEC = new StreamCodec<>() {
+
+        @Override
+        public @NotNull <T> GeneOperationType decode(@NotNull StreamCodecSchema<T> streamCodecSchema, @NotNull T input) {
+            int ordinal = streamCodecSchema.readVarInt(input);
+            GeneOperationType[] values = GeneOperationType.values();
+            if (ordinal < 0 || ordinal >= values.length) {
+                throw new IllegalArgumentException("Invalid GeneOperationType ordinal: " + ordinal);
             }
-        );
+            return values[ordinal];
+        }
+
+        @Override
+        public <T> void encode(@NotNull StreamCodecSchema<T> streamCodecSchema, @NotNull T input, @NotNull GeneOperationType value) {
+            streamCodecSchema.writeVarInt(input, value.ordinal());
+        }
+    };
 }

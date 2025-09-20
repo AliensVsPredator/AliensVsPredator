@@ -2,7 +2,7 @@ package com.alien.common.gameplay.level.saveddata;
 
 import com.alien.common.gameplay.entity.living.alien.Alien;
 import com.alien.common.gameplay.hive.Hive;
-import com.bvanseg.just.functional.option.Option;
+import com.just.core.functional.option.Option;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;

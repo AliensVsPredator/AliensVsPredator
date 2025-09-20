@@ -1,3 +1,4 @@
+//file:noinspection GroovyAssignabilityCheck
 plugins {
     id 'multiloader-loader'
     id 'fabric-loom'
@@ -56,8 +57,11 @@ dependencies {
 
     // Manually added dependencies
     // TODO: Shouldn't need this implementation call, figure out how to remove.
-    implementation "com.github.bvanseg:just:${project.just_version}"
-    include "com.github.bvanseg:just:${project.just_version}"
+    implementation "com.github.just-collective:just-codec:${project.just_codec_version}"
+    include "com.github.just-collective:just-codec:${project.just_codec_version}"
+    // TODO: Shouldn't need this implementation call, figure out how to remove.
+    implementation "com.github.just-collective:just-core:${project.just_core_version}"
+    include "com.github.just-collective:just-core:${project.just_core_version}"
 
     modImplementation "mod.azure.azurelib:azurelib-fabric-${project.minecraft_version}:${project.azurelib_version}"
 
@@ -108,6 +112,7 @@ loom {
 }
 
 def keyPropsFile = new File(rootProject.projectDir, "key.properties")
+
 if (keyPropsFile.exists()) {
     publishMods {
         def releaseProp = new Properties()
@@ -118,7 +123,7 @@ if (keyPropsFile.exists()) {
         type = STABLE
         file = remapJar.archiveFile
         modLoaders.add("fabric")
-        dryRun = false
+        dryRun = Boolean.valueOf(project.dry_run)
 
         discord {
             webhookUrl = releaseProp.getProperty("discordKey")

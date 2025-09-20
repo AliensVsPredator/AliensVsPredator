@@ -1,9 +1,8 @@
 package com.lib.common.network;
 
-import com.bvanseg.just.functional.option.Option;
+import com.just.codec.stream.StreamCodec;
+import com.just.core.functional.option.Option;
 import com.mojang.serialization.Codec;
-import io.netty.buffer.ByteBuf;
-import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.Objects;
@@ -12,7 +11,7 @@ public record DataKey<T>(
     ResourceLocation id,
     T initialValue,
     Option<PersistenceMetadata<T>> persistenceMetadata,
-    Option<StreamCodec<? extends ByteBuf, T>> streamCodec
+    Option<StreamCodec<T>> streamCodec
 ) {
 
     @Override
@@ -37,7 +36,7 @@ public record DataKey<T>(
 
         private Option<PersistenceMetadata<U>> persistDataOption;
 
-        private Option<StreamCodec<? extends ByteBuf, U>> streamCodecOption;
+        private Option<StreamCodec<U>> streamCodecOption;
 
         public Builder(ResourceLocation id) {
             this.id = id;
@@ -45,7 +44,7 @@ public record DataKey<T>(
             this.streamCodecOption = Option.none();
         }
 
-        public Builder<U> networkSynchronized(StreamCodec<? extends ByteBuf, U> streamCodec) {
+        public Builder<U> networkSynchronized(StreamCodec<U> streamCodec) {
             this.streamCodecOption = Option.some(streamCodec);
             return this;
         }

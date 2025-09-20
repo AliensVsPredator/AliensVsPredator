@@ -172,8 +172,14 @@ public class BlocksCreativeModeTabInitializer {
         CreativeModeTabUtil.accept(output, AVPBlocks.LEAD_CHEST);
         CreativeModeTabUtil.accept(output, AVPBlocks.RAZOR_WIRE);
         CreativeModeTabUtil.accept(output, AVPBlocks.BLUEPRINT_BLOCK);
+        CreativeModeTabUtil.accept(output, AVPBlocks.CABLE);
         CreativeModeTabUtil.accept(output, AVPBlocks.REDSTONE_GENERATOR);
         CreativeModeTabUtil.accept(output, AVPBlocks.INDUSTRIAL_FURNACE);
+        CreativeModeTabUtil.accept(output, AVPBlocks.BATTERY);
+        CreativeModeTabUtil.accept(output, AVPBlocks.INFINITE_POWER_GENERATOR);
+        CreativeModeTabUtil.accept(output, AVPBlocks.SOLAR_PANEL);
+        CreativeModeTabUtil.accept(output, AVPBlocks.THERMAL_GENERATOR);
+        CreativeModeTabUtil.accept(output, AVPBlocks.WIND_TURBINE);
         CreativeModeTabUtil.accept(output, AVPBlocks.DESK_TERMINAL_BLOCK);
         CreativeModeTabUtil.accept(output, PredatorBlocks.TRIP_MINE_BLOCK);
         CreativeModeTabUtil.accept(output, AVPBlocks.RESONATOR_BLOCK);

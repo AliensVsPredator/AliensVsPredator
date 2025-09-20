@@ -2,7 +2,7 @@ package com.alien.common.gameplay.hive.membership;
 
 import com.alien.common.gameplay.entity.living.alien.Alien;
 import com.alien.common.gameplay.hive.Hive;
-import com.bvanseg.just.functional.option.Option;
+import com.just.core.functional.option.Option;
 import com.lib.common.gameplay.NBTSerializable;
 import com.lib.common.gameplay.util.CompoundTagUtil;
 import net.minecraft.nbt.CompoundTag;

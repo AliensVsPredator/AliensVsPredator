@@ -1,9 +1,9 @@
-package com.human.common.gameplay.block.entity;
+package com.human.common.gameplay.block.entity.power.impl;
 
 import mod.azure.azurelib.rewrite.animation.dispatch.command.AzCommand;
 import mod.azure.azurelib.rewrite.animation.play_behavior.AzPlayBehaviors;
 
-public class ResonatorAnimDispatcher {
+public class ResonatorAnimationDispatcher {
 
     private static final AzCommand POWER_UP_COMMAND = AzCommand.create(
         "base_controller",
@@ -23,7 +23,7 @@ public class ResonatorAnimDispatcher {
         AzPlayBehaviors.LOOP
     );
 
-    public ResonatorAnimDispatcher() {}
+    public ResonatorAnimationDispatcher() {}
 
     public void unpowered(ResonatorBlockEntity entity) {
         UNPOWERED_COMMAND.sendForBlockEntity(entity);

@@ -1,7 +1,7 @@
 package com.avp.fabric.data.gene_bonus_data;
 
-import com.bvanseg.just.functional.tuple.Tuple2;
 import com.human.common.registry.init.entity_type.HumanEntityTypes;
+import com.just.core.functional.tuple.Tuple2;
 import com.lib.common.data.EntityTypePredicate;
 import com.lib.common.gameplay.gene.Gene;
 import com.lib.common.gameplay.gene.GeneBonusData;

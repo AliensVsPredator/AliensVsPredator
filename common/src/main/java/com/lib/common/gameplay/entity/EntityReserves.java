@@ -1,7 +1,7 @@
 package com.lib.common.gameplay.entity;
 
-import com.bvanseg.just.serialization.codec.Codec;
-import com.bvanseg.just.serialization.codec.impl.Codecs;
+import com.just.codec.Codec;
+import com.just.codec.impl.Codecs;
 import com.lib.common.util.codec.impl.MojangCodecs;
 import net.minecraft.world.entity.EntityType;
 

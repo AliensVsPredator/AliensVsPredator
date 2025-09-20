@@ -8,7 +8,7 @@ import com.alien.common.gameplay.level.saveddata.StrainLeakData;
 import com.alien.common.model.alien.variant.AlienVariant;
 import com.alien.common.util.AcidBleedUtil;
 import com.alien.common.util.AlienTransitionUtil;
-import com.bvanseg.just.functional.option.Option;
+import com.just.core.functional.option.Option;
 import com.lib.common.gameplay.entity.manager.GeneManager;
 import com.lib.common.gameplay.entity.manager.VibrationSystemManager;
 import com.lib.common.model.GeneCarrier;
@@ -362,12 +362,9 @@ public abstract class Alien extends Monster implements DataUser {
             if (
                 isNetherAfflicted()
                     && !damageSource.is(DamageTypeTags.AVOIDS_GUARDIAN_THORNS)
+                    && damageSource.getDirectEntity() instanceof LivingEntity livingEntity
             ) {
-                var sourceEntity = damageSource.getEntity();
-
-                if (sourceEntity != null) {
-                    sourceEntity.igniteForSeconds(4);
-                }
+                livingEntity.igniteForSeconds(4);
             }
 
             if (damageSource.getEntity() != null) {
@@ -384,7 +381,7 @@ public abstract class Alien extends Monster implements DataUser {
         return isHurt;
     }
 
-    // Prevent the chestburster from drowning or otherwise running out of air.
+    // Prevent the alien from drowning or otherwise running out of air.
     @Override
     public int getAirSupply() {
         return Integer.MAX_VALUE;
@@ -407,7 +404,6 @@ public abstract class Alien extends Monster implements DataUser {
         return 14;
     }
 
-    // Prevents chestbursters from being poisoned.
     @Override
     public boolean canBeAffected(MobEffectInstance mobEffectInstance) {
         if (mobEffectInstance.getEffect().is(AVPMobEffectTags.DOES_NOT_AFFECT_ALIENS)) {
@@ -424,7 +420,7 @@ public abstract class Alien extends Monster implements DataUser {
 
     @Override
     public boolean fireImmune() {
-        return isNetherAfflicted();
+        return isNetherAfflicted() || super.fireImmune();
     }
 
     @Override

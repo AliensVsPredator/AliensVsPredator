@@ -536,7 +536,8 @@ public class AVPBlockTagProvider extends FabricTagProvider.BlockTagProvider {
             .addTag(AVPBlockTags.RESIN_VEINS)
             .addTag(AVPBlockTags.RESIN_WEBS)
             .add(
-                AVPBlocks.BLUEPRINT_BLOCK.get()
+                AVPBlocks.BLUEPRINT_BLOCK.get(),
+                AVPBlocks.CABLE.get()
             );
 
         getOrCreateTagBuilder(BlockTags.MINEABLE_WITH_PICKAXE)
@@ -576,6 +577,7 @@ public class AVPBlockTagProvider extends FabricTagProvider.BlockTagProvider {
                 AVPBlocks.DESK_TERMINAL_BLOCK.get(),
                 CoreBlocks.GALENA_ORE.get(),
                 AVPBlocks.INDUSTRIAL_FURNACE.get(),
+                AVPBlocks.INFINITE_POWER_GENERATOR.get(),
 
                 AlienResinBlocks.IRRADIATED_RESIN.get(),
                 AlienResinBlocks.IRRADIATED_RESIN_SLAB.get(),
@@ -612,6 +614,11 @@ public class AVPBlockTagProvider extends FabricTagProvider.BlockTagProvider {
                 AlienResinBlocks.SMOOTH_NETHER_RESIN_SLAB.get(),
                 AlienResinBlocks.SMOOTH_NETHER_RESIN_STAIRS.get(),
                 AlienResinBlocks.SMOOTH_NETHER_RESIN_WALL.get(),
+
+                AVPBlocks.BATTERY.get(),
+                AVPBlocks.SOLAR_PANEL.get(),
+                AVPBlocks.THERMAL_GENERATOR.get(),
+                AVPBlocks.WIND_TURBINE.get(),
 
                 AVPBlocks.NUKE_BLOCK.get(),
                 CoreBlocks.RAW_BAUXITE_BLOCK.get(),
@@ -660,6 +667,7 @@ public class AVPBlockTagProvider extends FabricTagProvider.BlockTagProvider {
             .add(
                 CoreBlocks.BAUXITE_ORE.get(),
                 AVPBlocks.BLUEPRINT_BLOCK.get(),
+                AVPBlocks.CABLE.get(),
                 CoreBlocks.GALENA_ORE.get(),
                 CoreBlocks.RAW_BAUXITE_BLOCK.get()
             );
@@ -671,15 +679,20 @@ public class AVPBlockTagProvider extends FabricTagProvider.BlockTagProvider {
             .addTag(AVPBlockTags.TITANIUM)
             .add(
                 AVPBlocks.AMMO_CHEST.get(),
+                AVPBlocks.BATTERY.get(),
                 CoreBlocks.DEEPSLATE_TITANIUM_ORE.get(),
                 AVPBlocks.DESK_TERMINAL_BLOCK.get(),
                 AVPBlocks.INDUSTRIAL_FURNACE.get(),
+                AVPBlocks.INFINITE_POWER_GENERATOR.get(),
                 AVPBlocks.LEAD_CHEST.get(),
                 AVPBlocks.NUKE_BLOCK.get(),
                 CoreBlocks.RAW_TITANIUM_BLOCK.get(),
                 AVPBlocks.REDSTONE_GENERATOR.get(),
                 AVPBlocks.RESONATOR_BLOCK.get(),
                 AVPBlocks.SENTRY_TURRET.get(),
+                AVPBlocks.SOLAR_PANEL.get(),
+                AVPBlocks.THERMAL_GENERATOR.get(),
+                AVPBlocks.WIND_TURBINE.get(),
                 CoreBlocks.TRINITITE_BLOCK.get(),
                 PredatorBlocks.TRIP_MINE_BLOCK.get(),
                 CoreBlocks.URANIUM_BLOCK.get()

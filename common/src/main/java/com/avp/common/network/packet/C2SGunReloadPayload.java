@@ -1,7 +1,6 @@
 package com.avp.common.network.packet;
 
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.codec.StreamCodec;
+import com.just.codec.stream.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
@@ -16,7 +15,7 @@ public class C2SGunReloadPayload implements CustomPacketPayload {
 
     public static final CustomPacketPayload.Type<C2SGunReloadPayload> TYPE = new CustomPacketPayload.Type<>(PAYLOAD_ID);
 
-    public static final StreamCodec<FriendlyByteBuf, C2SGunReloadPayload> CODEC = StreamCodec.unit(INSTANCE);
+    public static final StreamCodec<C2SGunReloadPayload> CODEC = StreamCodec.unit(INSTANCE);
 
     private C2SGunReloadPayload() {}
 

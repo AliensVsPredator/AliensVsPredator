@@ -1,6 +1,7 @@
 package com.alien.common.data.loot;
 
 import com.alien.common.model.alien.variant.AlienVariantType;
+import com.alien.common.registry.init.AlienItems;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.world.level.storage.loot.LootPool;
 import net.minecraft.world.level.storage.loot.LootTable;
@@ -14,6 +15,15 @@ public class PraetorianLootTable {
 
     public static LootTable.Builder create(HolderLookup.Provider provider, AlienVariantType alienVariantType) {
         return LootTable.lootTable()
+            .withPool(
+                LootPool.lootPool()
+                    .setRolls(ConstantValue.exactly(1))
+                    .add(
+                        LootItem.lootTableItem(AlienItems.RAW_ROYAL_JELLY.get())
+                            .apply(SetItemCountFunction.setCount(UniformGenerator.between(0, 1)))
+                            .apply(EnchantedCountIncreaseFunction.lootingMultiplier(provider, UniformGenerator.between(0, 1)))
+                    )
+            )
             .withPool(
                 LootPool.lootPool()
                     .setRolls(ConstantValue.exactly(1))

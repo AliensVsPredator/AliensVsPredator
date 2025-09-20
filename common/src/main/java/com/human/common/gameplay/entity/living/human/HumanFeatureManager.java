@@ -1,8 +1,8 @@
 package com.human.common.gameplay.entity.living.human;
 
-import com.bvanseg.just.functional.function.memo.Memo;
-import com.bvanseg.just.functional.function.memo.Memo2;
-import com.bvanseg.just.functional.option.Option;
+import com.just.core.functional.function.memo.Memo;
+import com.just.core.functional.function.memo.Memo2;
+import com.just.core.functional.option.Option;
 import net.minecraft.resources.ResourceLocation;
 
 import com.avp.AVPResources;

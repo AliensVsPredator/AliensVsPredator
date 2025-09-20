@@ -1,6 +1,5 @@
 package com.human.common.gameplay.item.gun.pipeline;
 
-import com.bvanseg.just.functional.option.Option;
 import com.human.common.gameplay.item.GunItem;
 import com.human.common.gameplay.item.gun.FireModeConfig;
 import com.human.common.gameplay.item.gun.GunConfig;
@@ -10,6 +9,7 @@ import com.human.common.gameplay.item.gun.pipeline.step.impl.CheckCooldownStep;
 import com.human.common.gameplay.item.gun.pipeline.step.impl.CheckReloadingStep;
 import com.human.common.gameplay.item.gun.pipeline.step.impl.CheckShootDelayStep;
 import com.human.common.registry.init.HumanDataComponents;
+import com.just.core.functional.option.Option;
 import com.lib.common.gameplay.util.EnchantmentUtil;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.EquipmentSlot;

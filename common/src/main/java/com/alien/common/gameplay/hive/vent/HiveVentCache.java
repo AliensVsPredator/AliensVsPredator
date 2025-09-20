@@ -1,6 +1,6 @@
 package com.alien.common.gameplay.hive.vent;
 
-import com.lib.common.gameplay.util.Cache;
+import com.just.core.cache.Cache;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.SectionPos;
 import org.jetbrains.annotations.Nullable;

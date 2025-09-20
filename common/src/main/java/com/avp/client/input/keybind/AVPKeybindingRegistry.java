@@ -1,6 +1,6 @@
 package com.avp.client.input.keybind;
 
-import com.bvanseg.just.functional.tuple.Tuple2;
+import com.just.core.functional.tuple.Tuple2;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import org.lwjgl.glfw.GLFW;

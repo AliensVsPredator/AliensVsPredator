@@ -43,19 +43,19 @@ public class PrimedNuke extends Entity {
     }
 
     public void setFuse(int i) {
-        this.entityData.set(DATA_FUSE_ID, i);
+        entityData.set(DATA_FUSE_ID, i);
     }
 
     public int getFuse() {
-        return this.entityData.get(DATA_FUSE_ID);
+        return entityData.get(DATA_FUSE_ID);
     }
 
     public void setBlockState(BlockState blockState) {
-        this.entityData.set(DATA_BLOCK_STATE_ID, blockState);
+        entityData.set(DATA_BLOCK_STATE_ID, blockState);
     }
 
     public BlockState getBlockState() {
-        return this.entityData.get(DATA_BLOCK_STATE_ID);
+        return entityData.get(DATA_BLOCK_STATE_ID);
     }
 
     @Override
@@ -66,18 +66,19 @@ public class PrimedNuke extends Entity {
 
     @Override
     protected void readAdditionalSaveData(CompoundTag compoundTag) {
-        this.setFuse(compoundTag.getShort("fuse"));
+        setFuse(compoundTag.getShort("fuse"));
+
         if (compoundTag.contains("block_state", 10)) {
-            this.setBlockState(
-                NbtUtils.readBlockState(this.level().holderLookup(Registries.BLOCK), compoundTag.getCompound("block_state"))
+            setBlockState(
+                NbtUtils.readBlockState(level().holderLookup(Registries.BLOCK), compoundTag.getCompound("block_state"))
             );
         }
     }
 
     @Override
     protected void addAdditionalSaveData(CompoundTag compoundTag) {
-        compoundTag.putShort("fuse", (short) this.getFuse());
-        compoundTag.put("block_state", NbtUtils.writeBlockState(this.getBlockState()));
+        compoundTag.putShort("fuse", (short) getFuse());
+        compoundTag.put("block_state", NbtUtils.writeBlockState(getBlockState()));
     }
 
     @Override
@@ -87,7 +88,7 @@ public class PrimedNuke extends Entity {
 
     @Override
     public boolean isPickable() {
-        return !this.isRemoved();
+        return !isRemoved();
     }
 
     @Override
@@ -97,34 +98,41 @@ public class PrimedNuke extends Entity {
 
     @Override
     public void tick() {
-        this.applyGravity();
-        this.move(MoverType.SELF, this.getDeltaMovement());
-        this.setDeltaMovement(this.getDeltaMovement().scale(0.98));
+        applyGravity();
+        move(MoverType.SELF, getDeltaMovement());
+        setDeltaMovement(getDeltaMovement().scale(0.98));
 
-        var fuseValue = this.getFuse() - 1;
-        this.setFuse(fuseValue);
-        if (fuseValue <= 0) {
-            if (!this.level().isClientSide) {
-                if (isNukeEnabled()) {
-                    ServerScheduler.schedule(() -> {
-                        var explosion = ExplosionUtil.createNuclearExplosion(
-                            (ServerLevel) this.level(),
-                            this.blockPosition().getCenter(),
-                            16 * 8,
-                            5
-                        );
-                        explosion.explode();
-                    }, Duration.ofSeconds(1));
-                }
-                this.discard();
+        var level = level();
+        var fuseValue = getFuse() - 1;
+
+        setFuse(fuseValue);
+
+        if (fuseValue <= 0 && !level.isClientSide && level instanceof ServerLevel serverLevel) {
+            if (isNukeEnabled(serverLevel)) {
+                ServerScheduler.schedule(() -> {
+                    var explosion = ExplosionUtil.createNuclearExplosion(
+                        serverLevel,
+                        blockPosition().getCenter(),
+                        16 * 8,
+                        5
+                    );
+
+                    explosion.explode();
+                }, Duration.ofSeconds(1));
             }
+
+            discard();
         } else if (tickCount % 20 == 0) {
             // TODO: Change to custom sound
-            this.level().playSound(null, this.blockPosition(), SoundEvents.SMOKER_SMOKE, SoundSource.BLOCKS, 1.0F, 1.0F);
+            level.playSound(null, blockPosition(), SoundEvents.SMOKER_SMOKE, SoundSource.BLOCKS, 1.0F, 1.0F);
         }
     }
 
-    public boolean isNukeEnabled() {
-        return AVP.config.blockConfigs.ENABLE_NUKE_BLOCK_MECHS;
+    public boolean isNukeEnabled(ServerLevel serverLevel) {
+        if (serverLevel.getServer().isDedicatedServer()) {
+            return AVP.config.blockConfigs.ENABLE_NUKE_BLOCK_MECHS;
+        }
+
+        return true;
     }
 }
