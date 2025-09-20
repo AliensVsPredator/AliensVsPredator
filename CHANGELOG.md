@@ -6,6 +6,7 @@
 ## ✨ What's New
 - [Fabric] Now requires Fabric API `0.116.5+1.21.1`.
 - [NeoForge] Now requires NeoForge `21.1.197`.
+- AVP now requires AzureLib `3.0.27`.
 
 ## ♻️ Changes
 - Aliens will now kill hosts that have embryos from other strains.
