@@ -297,6 +297,16 @@ public class EnUsBlockProvider {
             (key, value) -> addBlock(builder, value, format(key.getName()) + " Framed Plastic")
         );
 
+        HumanPlasticBlocks.DYE_COLOR_TO_PITTED_PLASTIC.forEach(
+            (key, value) -> addBlock(builder, value, format(key.getName()) + " Pitted Plastic")
+        );
+        HumanPlasticBlocks.DYE_COLOR_TO_PITTED_PLASTIC_SLAB.forEach(
+            (key, value) -> addBlock(builder, value, format(key.getName()) + " Pitted Plastic Slab")
+        );
+        HumanPlasticBlocks.DYE_COLOR_TO_PITTED_PLASTIC_STAIRS.forEach(
+            (key, value) -> addBlock(builder, value, format(key.getName()) + " Pitted Plastic Stairs")
+        );
+
         HumanPlasticBlocks.DYE_COLOR_TO_PLASTIC.forEach(
             (key, value) -> addBlock(builder, value, format(key.getName()) + " Plastic")
         );

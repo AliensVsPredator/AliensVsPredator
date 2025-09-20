@@ -7,7 +7,10 @@
 - N/A
 
 ## ✨ What's New
-- Added framed plastic blocks for all 16 dye colors.
+- Added framed plastic blocks.
+- Added pitted plastic blocks.
+- Added pitted plastic slab blocks.
+- Added pitted plastic stairs blocks.
 
 ## ♻️ Changes
 - N/A

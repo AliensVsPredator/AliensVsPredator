@@ -76,6 +76,51 @@ public class HumanPlasticBlocks {
                 )
         );
 
+    public static final Map<DyeColor, AVPDeferredHolder<Block>> DYE_COLOR_TO_PITTED_PLASTIC =
+        Collections.unmodifiableMap(
+            Arrays.stream(DyeColor.values())
+                .collect(
+                    Collectors.toMap(
+                        Function.identity(),
+                        dyeColor -> AVPBlocks.register(
+                            dyeColor.getName() + "_pitted_plastic",
+                            () -> new Block(BlockProperties.DYE_COLOR_TO_PLASTIC_PROPERTIES.get(dyeColor).build())
+                        )
+                    )
+                )
+        );
+
+    public static final Map<DyeColor, AVPDeferredHolder<Block>> DYE_COLOR_TO_PITTED_PLASTIC_STAIRS =
+        Collections.unmodifiableMap(
+            Arrays.stream(DyeColor.values())
+                .collect(
+                    Collectors.toMap(
+                        Function.identity(),
+                        dyeColor -> AVPBlocks.register(
+                            dyeColor.getName() + "_pitted_plastic_stairs",
+                            () -> new StairBlock(
+                                DYE_COLOR_TO_PITTED_PLASTIC.get(dyeColor).get().defaultBlockState(),
+                                BlockProperties.DYE_COLOR_TO_PLASTIC_PROPERTIES.get(dyeColor).build()
+                            )
+                        )
+                    )
+                )
+        );
+
+    public static final Map<DyeColor, AVPDeferredHolder<Block>> DYE_COLOR_TO_PITTED_PLASTIC_SLAB =
+        Collections.unmodifiableMap(
+            Arrays.stream(DyeColor.values())
+                .collect(
+                    Collectors.toMap(
+                        Function.identity(),
+                        dyeColor -> AVPBlocks.register(
+                            dyeColor.getName() + "_pitted_plastic_slab",
+                            () -> new SlabBlock(BlockProperties.DYE_COLOR_TO_PLASTIC_PROPERTIES.get(dyeColor).build())
+                        )
+                    )
+                )
+        );
+
     public static final Map<DyeColor, AVPDeferredHolder<Block>> DYE_COLOR_TO_PLASTIC =
         Collections.unmodifiableMap(
             Arrays.stream(DyeColor.values())

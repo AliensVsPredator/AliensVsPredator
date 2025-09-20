@@ -235,6 +235,18 @@ public class BlockModelProvider extends FabricModelProvider {
 
         HumanPlasticBlocks.DYE_COLOR_TO_FRAMED_PLASTIC.forEach((dyeColor, blockSupplier) -> generators.family(blockSupplier.get()));
 
+        HumanPlasticBlocks.DYE_COLOR_TO_PITTED_PLASTIC.forEach(
+            (dyeColor, blockSupplier) -> {
+                var block = blockSupplier.get();
+                 var slabBlock = HumanPlasticBlocks.DYE_COLOR_TO_PITTED_PLASTIC_SLAB.get(dyeColor).get();
+                 var stairBlock = HumanPlasticBlocks.DYE_COLOR_TO_PITTED_PLASTIC_STAIRS.get(dyeColor).get();
+
+                generators.family(block)
+                 .slab(slabBlock)
+                 .stairs(stairBlock);
+            }
+        );
+
         HumanPlasticBlocks.DYE_COLOR_TO_PLASTIC.forEach(
             (dyeColor, blockSupplier) -> {
                 var block = blockSupplier.get();

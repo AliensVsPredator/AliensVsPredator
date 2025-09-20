@@ -68,9 +68,6 @@ public class PlasticRecipeProvider {
                 .apply(RecipeTemplates.COMPRESSED_BLOCK_2x2.apply(block))
                 .into(4, cutBlock);
 
-            var framedBlock = HumanPlasticBlocks.DYE_COLOR_TO_FRAMED_PLASTIC.get(dyeColor).get();
-            stonecut.into(2, framedBlock);
-
             var cutSlabBlock = HumanPlasticBlocks.DYE_COLOR_TO_CUT_PLASTIC_SLAB.get(dyeColor).get();
             RecipeUtil.createSlabBlockManualAndStonecutterRecipes(builder, cutBlock, cutSlabBlock);
             stonecut.into(8, cutSlabBlock);
@@ -78,6 +75,20 @@ public class PlasticRecipeProvider {
             var cutStairBlock = HumanPlasticBlocks.DYE_COLOR_TO_CUT_PLASTIC_STAIRS.get(dyeColor).get();
             RecipeUtil.createStairBlockManualAndStonecutterRecipes(builder, cutBlock, cutStairBlock);
             stonecut.into(4, cutStairBlock);
+
+            var framedBlock = HumanPlasticBlocks.DYE_COLOR_TO_FRAMED_PLASTIC.get(dyeColor).get();
+            stonecut.into(2, framedBlock);
+
+            var pittedBlock = HumanPlasticBlocks.DYE_COLOR_TO_PITTED_PLASTIC.get(dyeColor).get();
+            stonecut.into(4, pittedBlock);
+
+            var pittedSlabBlock = HumanPlasticBlocks.DYE_COLOR_TO_PITTED_PLASTIC_SLAB.get(dyeColor).get();
+            RecipeUtil.createSlabBlockManualAndStonecutterRecipes(builder, pittedBlock, pittedSlabBlock);
+            stonecut.into(8, pittedSlabBlock);
+
+            var pittedStairBlock = HumanPlasticBlocks.DYE_COLOR_TO_PITTED_PLASTIC_STAIRS.get(dyeColor).get();
+            RecipeUtil.createStairBlockManualAndStonecutterRecipes(builder, pittedBlock, pittedStairBlock);
+            stonecut.into(4, pittedStairBlock);
         }));
     }
 }
