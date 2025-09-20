@@ -23,6 +23,8 @@
 - Ovipositors now drop multiple royal jelly items (affected by looting).
 - Irradiated queens can no longer create ovipositors.
 - Poisoned queens can no longer create ovipositors.
+- Resonator blocks now require power (instead of a redstone signal).
+- Desk Terminal blocks now require power.
 - Hives now still tick if aggro'd, even if their center chunk is unloaded.
   - This should fix an issue where hive boss bars remain present after players teleport away from the hive.
 - Queens no longer require hive chunk center to be loaded to lay eggs.
@@ -31,8 +33,45 @@
   - Level 1 radiation reduced from 16 minutes to 4 minutes.
   - Level 2 radiation reduced from 8 minutes to 2 minutes.
   - Level 3 radiation reduced from 4 minutes to 1 minute.
-- Resonator blocks now require power (instead of a redstone signal).
-- Desk Terminal blocks now require power.
+- Genes now have limits for their values:
+  - Acid Resistance (+) now limited to the range -100 to 100.
+  - Acid Resistance (%) now limited to the range -1 to 1.
+  - Acid Volatility (+) now limited to the range 0 to 100.
+  - Acid Volatility (%) now limited to the range 0 to 1.
+  - Acidic Blood (+) no change.
+  - Acidic Blood (%) no change.
+  - Armor (+) now limited to the range 0 to 24.
+  - Armor (%) now limited to the range -1 to 3.
+  - Armor Toughness (+) now limited to the range 0 to 24.
+  - Armor Toughness (%) now limited to the range -1 to 3.
+  - Attack Damage (+) now limited to the range -50 to 50.
+  - Attack Damage (%) now limited to the range -0.9 to 3.
+  - Bonus Embryo Count (+) now limited to the range 0 to 3.
+  - Bonus Embryo Count (%) now limited to the range 0 to 3.
+  - Bonus Parasite Count (+) now limited to the range 0 to 3.
+  - Bonus Parasite Count (%) now limited to the range 0 to 3.
+  - Cold Resistance (+) now limited to the range -100 to 100.
+  - Cold Resistance (%) now limited to the range -1 to 1.
+  - Fire Resistance (+) now limited to the range -100 to 100.
+  - Fire Resistance (%) now limited to the range -1 to 1.
+  - Genetic Integrity (+) now limited to the range -300 to 100.
+  - Genetic Integrity (%) now limited to the range -3 to 3.
+  - Intelligence (+) now limited to the range -100 to 100.
+  - Intelligence (%) now limited to the range -1 to 1.
+  - Knockback Resistance (+) now limited to the range 0 to 1.
+  - Knockback Resistance (%) now limited to the range -1 to 3.
+  - Max Health (+) now limited to the range 0 to 200.
+  - Max Health (%) now limited to the range -0.9 to 3.
+  - Move Speed (+) now limited to the range 0 to 0.6.
+  - Move Speed (%) now limited to the range -0.9 to 2.
+  - Poison (+) no change.
+  - Poison (%) no change.
+  - Poisonous Barbs (+) no change.
+  - Poisonous Barbs (%) no change.
+  - Thorns (+) no change.
+  - Thorns (%) no change.
+  - Warp (+) no change.
+  - Warp (%) no change.
 
 ## 🐞 Fixes
 - Fixed nether aliens setting attackers on fire from afar when attacked with projectiles.
