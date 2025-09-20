@@ -68,6 +68,9 @@ public class PlasticRecipeProvider {
                 .apply(RecipeTemplates.COMPRESSED_BLOCK_2x2.apply(block))
                 .into(4, cutBlock);
 
+            var framedBlock = HumanPlasticBlocks.DYE_COLOR_TO_FRAMED_PLASTIC.get(dyeColor).get();
+            stonecut.into(2, framedBlock);
+
             var cutSlabBlock = HumanPlasticBlocks.DYE_COLOR_TO_CUT_PLASTIC_SLAB.get(dyeColor).get();
             RecipeUtil.createSlabBlockManualAndStonecutterRecipes(builder, cutBlock, cutSlabBlock);
             stonecut.into(8, cutSlabBlock);

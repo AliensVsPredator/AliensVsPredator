@@ -57,6 +57,20 @@ public class HumanPlasticBlockItems {
                 )
         );
 
+    public static final Map<DyeColor, Supplier<BlockItem>> DYE_COLOR_TO_FRAMED_PLASTIC =
+        Collections.unmodifiableMap(
+            Arrays.stream(DyeColor.values())
+                .collect(
+                    Collectors.toMap(
+                        Function.identity(),
+                        dyeColor -> AVPBlockItems.register(
+                            dyeColor.getName() + "_framed_plastic",
+                            HumanPlasticBlocks.DYE_COLOR_TO_FRAMED_PLASTIC.get(dyeColor)
+                        )
+                    )
+                )
+        );
+
     public static final Map<DyeColor, Supplier<BlockItem>> DYE_COLOR_TO_PLASTIC =
         Collections.unmodifiableMap(
             Arrays.stream(DyeColor.values())

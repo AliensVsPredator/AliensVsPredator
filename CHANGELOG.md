@@ -7,7 +7,7 @@
 - N/A
 
 ## ✨ What's New
-- N/A
+- Added framed plastic blocks for all 16 dye colors.
 
 ## ♻️ Changes
 - N/A

@@ -233,6 +233,8 @@ public class BlockModelProvider extends FabricModelProvider {
             }
         );
 
+        HumanPlasticBlocks.DYE_COLOR_TO_FRAMED_PLASTIC.forEach((dyeColor, blockSupplier) -> generators.family(blockSupplier.get()));
+
         HumanPlasticBlocks.DYE_COLOR_TO_PLASTIC.forEach(
             (dyeColor, blockSupplier) -> {
                 var block = blockSupplier.get();

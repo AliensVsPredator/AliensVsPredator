@@ -248,6 +248,7 @@ public class BlockLootTableProvider extends FabricBlockLootTableProvider {
             AVPBlocks.DYE_COLOR_TO_CONCRETE_STAIRS,
             HumanPlasticBlocks.DYE_COLOR_TO_CUT_PLASTIC,
             HumanPlasticBlocks.DYE_COLOR_TO_CUT_PLASTIC_STAIRS,
+            HumanPlasticBlocks.DYE_COLOR_TO_FRAMED_PLASTIC,
             HumanIndustrialConcreteBlocks.DYE_COLOR_TO_INDUSTRIAL_CONCRETE,
             HumanIndustrialConcreteBlocks.DYE_COLOR_TO_INDUSTRIAL_CONCRETE_STAIRS,
             HumanIndustrialConcreteBlocks.DYE_COLOR_TO_INDUSTRIAL_CONCRETE_WALL,
