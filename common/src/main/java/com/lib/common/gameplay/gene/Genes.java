@@ -62,7 +62,7 @@ public class Genes {
         "attack_damage",
         Attributes.ATTACK_DAMAGE,
         (value, geneOperationType) -> switch (geneOperationType) {
-            case ADDITIVE -> Math.clamp(value, 0, 50);
+            case ADDITIVE -> Math.clamp(value, -50, 50);
             case MULTIPLICATIVE -> Math.clamp(value, -0.9, 3);
         }
     );
