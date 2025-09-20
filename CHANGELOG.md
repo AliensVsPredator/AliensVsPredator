@@ -7,6 +7,7 @@
 - N/A
 
 ## ✨ What's New
+- AVP now requires AzureLib `3.0.28`.
 - Added framed plastic blocks.
 - Added pitted plastic blocks.
 - Added pitted plastic slab blocks.
