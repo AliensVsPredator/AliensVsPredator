@@ -1,5 +1,11 @@
 # v0.2.1
 
+## ✍️ Developer Notes
+- For help or other questions, concerns, etc. check out our Discord server: https://discord.gg/wp7mvmbkVb
+- Changelogs will now have a new "✍️ Developer Notes" section in them for more "meta" changes about the mod.
+- Changelogs will now have a new 🧪 Experimental section from now on with in-progress content. This content may or may not be accessible in survival. Players are encouraged to check these features out and give feedback on how they work (or don't work) so far. Please note that this content *can* change heavily and therefore shouldn't be used as part of long-term worlds.
+- With that out of the way, hey guys! I know it's been awhile and this isn't the biggest update, the team has been taking a well-deserved break and enjoying things beyond the mod. Hopefully things will pick up again as holidays roll around. :)
+
 ## ☢️ Breaking Changes
 - N/A
 

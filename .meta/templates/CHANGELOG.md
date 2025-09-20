@@ -1,5 +1,8 @@
 # vMAJOR.MINOR.PATCH-DIST
 
+## ✍️ Developer Notes
+- N/A
+
 ## ☢️ Breaking Changes
 - N/A
 
@@ -10,6 +13,9 @@
 - N/A
 
 ## 🐞 Fixes
+- N/A
+
+## 🧪 Experimental
 - N/A
 
 ## 🛠 Data Pack
