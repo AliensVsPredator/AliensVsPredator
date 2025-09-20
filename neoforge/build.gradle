@@ -67,8 +67,11 @@ dependencies {
     compileOnly("mezz.jei:jei-${minecraft_version}-neoforge-api:${project.jei_version}")
     runtimeOnly("mezz.jei:jei-${minecraft_version}-neoforge:${project.jei_version}")
 
-    jarJar(implementation("com.github.bvanseg:just:${project.just_version}"))
-    additionalRuntimeClasspath "com.github.bvanseg:just:${project.just_version}"
+    jarJar(implementation("com.github.just-collective:just-codec:${project.just_codec_version}"))
+    additionalRuntimeClasspath "com.github.just-collective:just-codec:${project.just_codec_version}"
+
+    jarJar(implementation("com.github.just-collective:just-core:${project.just_core_version}"))
+    additionalRuntimeClasspath "com.github.just-collective:just-core:${project.just_core_version}"
 
     // Compats
     implementation "maven.modrinth:gigeresque:0.8.8"

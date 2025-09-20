@@ -1,6 +1,6 @@
 package com.lib.common.gameplay.entity.ai.action;
 
-import com.bvanseg.just.functional.option.Option;
+import com.just.core.functional.option.Option;
 import com.lib.common.gameplay.entity.ai.GOAPConstants;
 import com.lib.common.gameplay.entity.ai.util.CombatResponse;
 import com.lib.common.gameplay.goap.GOAPAction;

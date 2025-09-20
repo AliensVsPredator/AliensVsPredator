@@ -2,7 +2,7 @@ package com.alien.common.registry;
 
 import com.alien.common.model.lifecycle.infection.Infection;
 import com.alien.common.model.lifecycle.infection.InfectionKey;
-import com.bvanseg.just.functional.option.Option;
+import com.just.core.functional.option.Option;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.entity.EntityType;
 import org.jetbrains.annotations.Nullable;

@@ -7,9 +7,9 @@ import org.jetbrains.annotations.NotNull;
 
 public class JustStreamCodecToMojangStreamCodecAdapter<A> implements StreamCodec<FriendlyByteBuf, A> {
 
-    private final com.bvanseg.just.serialization.codec.stream.StreamCodec<A> streamCodec;
+    private final com.just.codec.stream.StreamCodec<A> streamCodec;
 
-    public JustStreamCodecToMojangStreamCodecAdapter(com.bvanseg.just.serialization.codec.stream.StreamCodec<A> streamCodec) {
+    public JustStreamCodecToMojangStreamCodecAdapter(com.just.codec.stream.StreamCodec<A> streamCodec) {
         this.streamCodec = streamCodec;
     }
 

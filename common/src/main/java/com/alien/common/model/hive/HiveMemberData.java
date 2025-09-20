@@ -1,6 +1,6 @@
 package com.alien.common.model.hive;
 
-import com.bvanseg.just.functional.option.Option;
+import com.just.core.functional.option.Option;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.BlockPos;

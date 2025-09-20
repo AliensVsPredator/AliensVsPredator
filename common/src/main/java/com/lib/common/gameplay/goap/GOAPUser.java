@@ -1,6 +1,6 @@
 package com.lib.common.gameplay.goap;
 
-import com.bvanseg.just.functional.option.Option;
+import com.just.core.functional.option.Option;
 import org.jetbrains.annotations.Nullable;
 
 public interface GOAPUser<T extends GOAP<?>> {

@@ -1,10 +1,10 @@
 package com.human.common.gameplay.block.entity.power.impl;
 
-import com.bvanseg.just.functional.function.Function;
-import com.bvanseg.just.functional.function.Lazy;
 import com.human.common.gameplay.block.IndustrialFurnaceBlock;
 import com.human.common.gameplay.block.entity.power.PowerNodeBlockEntity;
 import com.human.common.gameplay.power.PowerNode;
+import com.just.core.functional.function.Function;
+import com.just.core.functional.function.Lazy;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.BlastFurnaceBlock;

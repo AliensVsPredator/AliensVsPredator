@@ -1,7 +1,7 @@
 package com.lib.common.network;
 
-import com.bvanseg.just.serialization.codec.stream.StreamCodec;
-import com.bvanseg.just.serialization.codec.stream.schema.StreamCodecSchema;
+import com.just.codec.stream.StreamCodec;
+import com.just.codec.stream.schema.StreamCodecSchema;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;

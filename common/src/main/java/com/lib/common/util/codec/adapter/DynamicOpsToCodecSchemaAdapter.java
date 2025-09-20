@@ -1,8 +1,8 @@
 package com.lib.common.util.codec.adapter;
 
-import com.bvanseg.just.functional.result.Result;
-import com.bvanseg.just.functional.tuple.Tuple2;
-import com.bvanseg.just.serialization.codec.schema.CodecSchema;
+import com.just.codec.schema.CodecSchema;
+import com.just.core.functional.result.Result;
+import com.just.core.functional.tuple.Tuple2;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.DynamicOps;
 

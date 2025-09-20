@@ -1,7 +1,7 @@
 package com.human.common.gameplay.power.grid;
 
-import com.bvanseg.just.traversal.BFS;
 import com.human.common.gameplay.power.PowerNode;
+import com.just.core.traversal.BFS;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.Level;

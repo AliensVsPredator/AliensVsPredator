@@ -1,7 +1,7 @@
 package com.alien.common.gameplay.level.saveddata;
 
 import com.alien.common.model.alien.variant.AlienVariant;
-import com.bvanseg.just.functional.option.Option;
+import com.just.core.functional.option.Option;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;

@@ -1,6 +1,6 @@
 package com.lib.common.gameplay.gene;
 
-import com.bvanseg.just.functional.option.Option;
+import com.just.core.functional.option.Option;
 import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Nullable;

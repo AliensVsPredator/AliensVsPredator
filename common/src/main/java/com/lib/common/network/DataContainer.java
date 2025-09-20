@@ -1,6 +1,6 @@
 package com.lib.common.network;
 
-import com.bvanseg.just.serialization.codec.stream.StreamCodec;
+import com.just.codec.stream.StreamCodec;
 import com.lib.common.gameplay.NBTSerializable;
 import com.lib.common.registry.DataKeyRegistry;
 import com.lib.common.util.codec.stream.schema.StreamCodecSchemas;

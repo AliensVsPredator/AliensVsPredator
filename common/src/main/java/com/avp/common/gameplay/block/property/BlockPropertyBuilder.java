@@ -1,6 +1,6 @@
 package com.avp.common.gameplay.block.property;
 
-import com.bvanseg.just.functional.option.Option;
+import com.just.core.functional.option.Option;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.block.SoundType;

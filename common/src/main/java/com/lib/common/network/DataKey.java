@@ -1,7 +1,7 @@
 package com.lib.common.network;
 
-import com.bvanseg.just.functional.option.Option;
-import com.bvanseg.just.serialization.codec.stream.StreamCodec;
+import com.just.codec.stream.StreamCodec;
+import com.just.core.functional.option.Option;
 import com.mojang.serialization.Codec;
 import net.minecraft.resources.ResourceLocation;
 

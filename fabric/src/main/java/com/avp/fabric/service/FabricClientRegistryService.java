@@ -1,6 +1,6 @@
 package com.avp.fabric.service;
 
-import com.bvanseg.just.functional.tuple.Tuple2;
+import com.just.core.functional.tuple.Tuple2;
 import mod.azure.azurelib.rewrite.render.armor.AzArmorRenderer;
 import mod.azure.azurelib.rewrite.render.item.AzItemRenderer;
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;

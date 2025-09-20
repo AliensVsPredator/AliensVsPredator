@@ -1,7 +1,7 @@
 package com.avp.common.network.packet;
 
-import com.bvanseg.just.serialization.codec.stream.RecordStreamCodec;
-import com.bvanseg.just.serialization.codec.stream.StreamCodec;
+import com.just.codec.stream.RecordStreamCodec;
+import com.just.codec.stream.StreamCodec;
 import com.lib.common.util.codec.stream.impl.MojangStreamCodecs;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;

@@ -1,8 +1,8 @@
 package com.avp.common.network.codec;
 
-import com.bvanseg.just.serialization.codec.stream.StreamCodec;
-import com.bvanseg.just.serialization.codec.stream.schema.StreamCodecSchema;
 import com.human.common.gameplay.item.gun.attack.GunHitResult;
+import com.just.codec.stream.StreamCodec;
+import com.just.codec.stream.schema.StreamCodecSchema;
 import org.jetbrains.annotations.NotNull;
 
 public class GunHitResultCodec implements StreamCodec<GunHitResult> {

@@ -1,8 +1,8 @@
 package com.avp.common.network.packet;
 
-import com.bvanseg.just.serialization.codec.stream.RecordStreamCodec;
-import com.bvanseg.just.serialization.codec.stream.StreamCodec;
 import com.human.common.gameplay.item.gun.attack.GunHitResult;
+import com.just.codec.stream.RecordStreamCodec;
+import com.just.codec.stream.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;

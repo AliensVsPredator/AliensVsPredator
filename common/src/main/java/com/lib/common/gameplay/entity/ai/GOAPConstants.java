@@ -1,6 +1,6 @@
 package com.lib.common.gameplay.entity.ai;
 
-import com.bvanseg.just.functional.option.Option;
+import com.just.core.functional.option.Option;
 import com.lib.common.gameplay.entity.ai.util.CombatResponse;
 import com.lib.common.gameplay.entity.ai.util.ItemType;
 import com.lib.common.gameplay.goap.TypedIdentifier;

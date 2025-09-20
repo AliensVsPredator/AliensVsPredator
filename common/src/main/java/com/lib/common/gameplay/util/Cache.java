@@ -1,6 +1,6 @@
 package com.lib.common.gameplay.util;
 
-import com.bvanseg.just.functional.option.Option;
+import com.just.core.functional.option.Option;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;

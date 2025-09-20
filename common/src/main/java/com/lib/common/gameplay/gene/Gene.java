@@ -1,6 +1,6 @@
 package com.lib.common.gameplay.gene;
 
-import com.bvanseg.just.functional.function.Function2;
+import com.just.core.functional.function.Function2;
 import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.LivingEntity;

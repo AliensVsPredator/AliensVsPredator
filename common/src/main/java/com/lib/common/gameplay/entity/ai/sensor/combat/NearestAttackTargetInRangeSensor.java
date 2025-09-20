@@ -1,8 +1,8 @@
 package com.lib.common.gameplay.entity.ai.sensor.combat;
 
-import com.bvanseg.just.functional.option.None;
-import com.bvanseg.just.functional.option.Option;
-import com.bvanseg.just.functional.option.Some;
+import com.just.core.functional.option.None;
+import com.just.core.functional.option.Option;
+import com.just.core.functional.option.Some;
 import com.lib.common.gameplay.entity.ai.GOAPConstants;
 import com.lib.common.gameplay.goap.GOAPSensor;
 import com.lib.common.gameplay.goap.state.GOAPMutableWorldState;

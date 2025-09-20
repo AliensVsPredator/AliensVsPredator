@@ -6,7 +6,7 @@ import com.alien.common.gameplay.entity.living.alien.ovomorph.ai.OvomorphGOAP;
 import com.alien.common.model.alien.HatchState;
 import com.alien.common.model.alien.variant.AlienVariant;
 import com.alien.common.registry.init.AlienEntityTypes;
-import com.bvanseg.just.functional.option.Option;
+import com.just.core.functional.option.Option;
 import com.lib.common.gameplay.entity.manager.VibrationSystemManager;
 import com.lib.common.network.DataAccessor;
 import net.minecraft.sounds.SoundEvents;

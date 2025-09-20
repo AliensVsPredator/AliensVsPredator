@@ -1,7 +1,7 @@
 package com.avp.common.registry.init;
 
 import com.alien.common.gameplay.entity.living.alien.ovomorph.Ovomorph;
-import com.bvanseg.just.serialization.codec.stream.impl.StreamCodecs;
+import com.just.codec.stream.impl.StreamCodecs;
 import com.lib.common.network.DataKey;
 import com.lib.common.registry.DataKeyRegistry;
 import com.mojang.serialization.Codec;

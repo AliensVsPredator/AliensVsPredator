@@ -1,7 +1,7 @@
 package com.human.common.gameplay.component;
 
-import com.bvanseg.just.serialization.codec.stream.StreamCodec;
-import com.bvanseg.just.serialization.codec.stream.schema.StreamCodecSchema;
+import com.just.codec.stream.StreamCodec;
+import com.just.codec.stream.schema.StreamCodecSchema;
 import com.mojang.serialization.Codec;
 import org.jetbrains.annotations.NotNull;
 

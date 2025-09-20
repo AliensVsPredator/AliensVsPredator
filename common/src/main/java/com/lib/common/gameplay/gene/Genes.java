@@ -1,7 +1,7 @@
 package com.lib.common.gameplay.gene;
 
 import com.alien.common.gameplay.entity.living.alien.ovomorph.Ovomorph;
-import com.bvanseg.just.functional.function.Function2;
+import com.just.core.functional.function.Function2;
 import com.lib.common.model.GeneCarrier;
 import net.minecraft.core.Holder;
 import net.minecraft.world.entity.LivingEntity;

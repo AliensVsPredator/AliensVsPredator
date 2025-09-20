@@ -1,6 +1,6 @@
 package com.lib.common.util.codec.stream.schema;
 
-import com.bvanseg.just.serialization.codec.stream.schema.StreamCodecSchema;
+import com.just.codec.stream.schema.StreamCodecSchema;
 import io.netty.buffer.ByteBuf;
 
 public class ByteBufStreamCodecSchema implements StreamCodecSchema<ByteBuf> {

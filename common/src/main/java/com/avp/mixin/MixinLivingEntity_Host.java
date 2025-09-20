@@ -4,7 +4,7 @@ import com.alien.common.gameplay.entity.living.alien.parasite.Parasite;
 import com.alien.common.model.alien.Host;
 import com.alien.common.registry.InfectionRegistry;
 import com.alien.common.util.AlienEmbryoUtil;
-import com.bvanseg.just.functional.option.Option;
+import com.just.core.functional.option.Option;
 import com.lib.common.gameplay.entity.manager.GeneContainer;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;

@@ -1,6 +1,6 @@
 package com.lib.common.util.codec;
 
-import com.bvanseg.just.functional.result.Result;
+import com.just.core.functional.result.Result;
 import com.mojang.serialization.DataResult;
 
 import java.util.function.Supplier;

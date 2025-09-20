@@ -1,8 +1,8 @@
 package com.lib.common.gameplay.gene;
 
-import com.bvanseg.just.serialization.codec.stream.RecordStreamCodec;
-import com.bvanseg.just.serialization.codec.stream.StreamCodec;
-import com.bvanseg.just.serialization.codec.stream.impl.StreamCodecs;
+import com.just.codec.stream.RecordStreamCodec;
+import com.just.codec.stream.StreamCodec;
+import com.just.codec.stream.impl.StreamCodecs;
 import com.lib.common.util.codec.stream.impl.MojangStreamCodecs;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;

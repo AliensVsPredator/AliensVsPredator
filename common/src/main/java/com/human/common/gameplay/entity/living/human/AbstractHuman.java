@@ -1,6 +1,6 @@
 package com.human.common.gameplay.entity.living.human;
 
-import com.bvanseg.just.functional.option.Option;
+import com.just.core.functional.option.Option;
 import com.lib.common.network.DataAccessor;
 import com.lib.common.network.DataUser;
 import net.minecraft.sounds.SoundEvent;

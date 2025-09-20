@@ -1,6 +1,6 @@
 package com.lib.common.gameplay.goap.condition.expression;
 
-import com.bvanseg.just.functional.option.Option;
+import com.just.core.functional.option.Option;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;

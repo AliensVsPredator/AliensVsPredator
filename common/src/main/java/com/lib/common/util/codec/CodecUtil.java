@@ -1,7 +1,7 @@
 package com.lib.common.util.codec;
 
-import com.bvanseg.just.functional.result.Result;
-import com.bvanseg.just.serialization.codec.schema.CodecSchema;
+import com.just.codec.schema.CodecSchema;
+import com.just.core.functional.result.Result;
 import com.lib.common.util.codec.schema.CodecSchemas;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
@@ -17,8 +17,8 @@ public class CodecUtil {
 
     private static final Map<DynamicOps<?>, CodecSchema<?>> DYNAMIC_OPS_TO_CODEC_SCHEMA = Map.of(NbtOps.INSTANCE, CodecSchemas.NBT);
 
-    public static <A> com.bvanseg.just.serialization.codec.Codec<A> adapt(com.mojang.serialization.Codec<A> codec) {
-        return new com.bvanseg.just.serialization.codec.Codec<>() {
+    public static <A> com.just.codec.Codec<A> adapt(com.mojang.serialization.Codec<A> codec) {
+        return new com.just.codec.Codec<>() {
 
             @Override
             public <T> T encode(CodecSchema<T> codecSchema, A value) {
@@ -44,7 +44,7 @@ public class CodecUtil {
         };
     }
 
-    public static <A> com.mojang.serialization.Codec<A> adapt(com.bvanseg.just.serialization.codec.Codec<A> codec) {
+    public static <A> com.mojang.serialization.Codec<A> adapt(com.just.codec.Codec<A> codec) {
         return new Codec<>() {
 
             @Override
