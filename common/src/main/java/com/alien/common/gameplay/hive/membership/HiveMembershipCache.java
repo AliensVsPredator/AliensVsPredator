@@ -1,7 +1,7 @@
 package com.alien.common.gameplay.hive.membership;
 
 import com.alien.common.model.hive.HiveMemberData;
-import com.lib.common.gameplay.util.Cache;
+import com.just.core.cache.Cache;
 import net.minecraft.world.entity.EntityType;
 import org.jetbrains.annotations.Nullable;
 
