@@ -1,7 +1,7 @@
 # vMAJOR.MINOR.PATCH-DIST
 
 ## ✍️ Developer Notes
-- N/A
+- For help or other questions, concerns, etc. check out our Discord server: https://discord.gg/wp7mvmbkVb
 
 ## ☢️ Breaking Changes
 - N/A
