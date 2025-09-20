@@ -3,6 +3,7 @@ package com.lib.common.gameplay.entity.manager;
 import com.lib.common.gameplay.gene.Gene;
 import com.lib.common.gameplay.gene.GeneModifierKey;
 import com.lib.common.gameplay.gene.GeneOperationType;
+import com.lib.common.gameplay.gene.GeneRegistry;
 import it.unimi.dsi.fastutil.objects.Object2DoubleArrayMap;
 import net.minecraft.resources.ResourceLocation;
 
@@ -47,13 +48,18 @@ public class GeneMap {
         return getValueFromMap(geneHolder, operation, geneMap);
     }
 
+    public double getValue(AVPDeferredHolder<Gene> geneHolder) {
+        var multiplicative = getValue(geneHolder, GeneOperationType.MULTIPLICATIVE);
+        var additive = getValue(geneHolder, GeneOperationType.ADDITIVE);
+        return multiplicative + additive;
+    }
+
     public Map<GeneModifierKey, Double> getBackingMap() {
         return Collections.unmodifiableMap(geneMap);
     }
 
     public void putAll(Map<GeneModifierKey, Double> geneMap) {
-        this.geneMap.putAll(geneMap);
-        dirtyKeys.addAll(geneMap.keySet());
+        geneMap.forEach(this::add);
     }
 
     public void add(AVPDeferredHolder<Gene> geneHolder, GeneOperationType operation, double value) {
@@ -73,9 +79,15 @@ public class GeneMap {
         double additiveValue,
         Map<GeneModifierKey, Double> geneMap
     ) {
+        var gene = GeneRegistry.getValueOrNull(geneModifierKey.resourceLocation());
+
+        if (gene == null) {
+            return;
+        }
+
         var oldValue = geneMap.get(geneModifierKey);
         var oldValueNotNull = oldValue == null ? 0 : oldValue;
-        var newValue = oldValueNotNull + additiveValue;
+        var newValue = gene.transformer().apply(oldValueNotNull + additiveValue, geneModifierKey.operation());
 
         geneMap.put(geneModifierKey, newValue);
 
@@ -86,11 +98,11 @@ public class GeneMap {
         }
     }
 
-    private Double getValueFromMap(AVPDeferredHolder<Gene> geneHolder, GeneOperationType operation, Map<GeneModifierKey, Double> geneMap) {
+    private double getValueFromMap(AVPDeferredHolder<Gene> geneHolder, GeneOperationType operation, Map<GeneModifierKey, Double> geneMap) {
         return getValueFromMap(geneHolder.get(), operation, geneMap);
     }
 
-    private Double getValueFromMap(Gene gene, GeneOperationType operation, Map<GeneModifierKey, Double> geneMap) {
+    private double getValueFromMap(Gene gene, GeneOperationType operation, Map<GeneModifierKey, Double> geneMap) {
         return geneMap.getOrDefault(new GeneModifierKey(gene.id(), operation), 0.0);
     }
 
