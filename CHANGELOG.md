@@ -5,6 +5,7 @@
 
 ## ✨ What's New
 - [Fabric] Now requires Fabric API `0.116.5+1.21.1`.
+- [Fabric] AVP now requires Fabric Loader `0.17.2`.
 - [NeoForge] AVP now requires NeoForge `21.1.209`.
 - AVP now requires AzureLib `3.0.27`.
 
