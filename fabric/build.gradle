@@ -124,7 +124,7 @@ if (keyPropsFile.exists()) {
         file = remapJar.archiveFile
         modLoaders.add("fabric")
         dryRun = Boolean.valueOf(project.dry_run)
-        def discordPublishWebhookUrl = dryRun
+        def discordPublishWebhookUrl = dryRun.get()
             ? releaseProp.getProperty("discordDryRunPublishWebhookUrl")
             : releaseProp.getProperty("discordPublishWebhookUrl")
 
