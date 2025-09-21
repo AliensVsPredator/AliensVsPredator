@@ -21,6 +21,7 @@
 - Updated pipe padding block textures.
 
 ## ♻️ Changes
+- Pipe padding blocks can now be rotated.
 - Updated communication outpost structure (replaced metal blocks with metal double slab variants).
 - Updated munitions outpost structure (replaced metal blocks with metal double slab variants).
 - Updated supply outpost structure (replaced metal blocks with metal double slab variants).

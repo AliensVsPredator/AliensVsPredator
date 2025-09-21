@@ -212,12 +212,10 @@ public class BlockModelProvider extends FabricModelProvider {
         HumanPaddingBlocks.DYE_COLOR_TO_PIPE_PADDING.forEach(
             (dyeColor, blockSupplier) -> {
                 var block = blockSupplier.get();
-                var slabBlock = HumanPaddingBlocks.DYE_COLOR_TO_PIPE_PADDING_SLAB.get(dyeColor).get();
-                var stairBlock = HumanPaddingBlocks.DYE_COLOR_TO_PIPE_PADDING_STAIRS.get(dyeColor).get();
+                createRotatedPillar(generators, block, TexturedModel.CUBE);
 
-                generators.family(block)
-                    .slab(slabBlock)
-                    .stairs(stairBlock);
+                createSlab(generators, block, HumanPaddingBlocks.DYE_COLOR_TO_PIPE_PADDING_SLAB.get(dyeColor).get());
+                createStairs(generators, block, HumanPaddingBlocks.DYE_COLOR_TO_PIPE_PADDING_STAIRS.get(dyeColor).get());
             }
         );
 

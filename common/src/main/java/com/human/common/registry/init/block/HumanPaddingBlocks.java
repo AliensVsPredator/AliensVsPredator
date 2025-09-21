@@ -2,6 +2,7 @@ package com.human.common.registry.init.block;
 
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.RotatedPillarBlock;
 import net.minecraft.world.level.block.SlabBlock;
 import net.minecraft.world.level.block.StairBlock;
 
@@ -115,7 +116,7 @@ public class HumanPaddingBlocks {
                         Function.identity(),
                         dyeColor -> AVPBlocks.register(
                             dyeColor.getName() + "_pipe_padding",
-                            () -> new Block(BlockProperties.DYE_COLOR_TO_PADDING_PROPERTIES.get(dyeColor).build())
+                            () -> new RotatedPillarBlock(BlockProperties.DYE_COLOR_TO_PADDING_PROPERTIES.get(dyeColor).build())
                         )
                     )
                 )
