@@ -283,6 +283,16 @@ public class EnUsBlockProvider {
             (key, value) -> addBlock(builder, value, format(key.getName()) + " Pipe Padding Stairs")
         );
 
+        HumanPaddingBlocks.DYE_COLOR_TO_TILE_PADDING.forEach(
+            (key, value) -> addBlock(builder, value, format(key.getName()) + " Tile Padding")
+        );
+        HumanPaddingBlocks.DYE_COLOR_TO_TILE_PADDING_SLAB.forEach(
+            (key, value) -> addBlock(builder, value, format(key.getName()) + " Tile Padding Slab")
+        );
+        HumanPaddingBlocks.DYE_COLOR_TO_TILE_PADDING_STAIRS.forEach(
+            (key, value) -> addBlock(builder, value, format(key.getName()) + " Tile Padding Stairs")
+        );
+
         HumanPlasticBlocks.DYE_COLOR_TO_CUT_PLASTIC.forEach(
             (key, value) -> addBlock(builder, value, format(key.getName()) + " Cut Plastic")
         );

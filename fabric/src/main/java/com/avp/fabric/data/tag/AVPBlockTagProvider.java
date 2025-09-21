@@ -162,7 +162,10 @@ public class AVPBlockTagProvider extends FabricTagProvider.BlockTagProvider {
             HumanPaddingBlocks.DYE_COLOR_TO_PANEL_PADDING_STAIRS,
             HumanPaddingBlocks.DYE_COLOR_TO_PIPE_PADDING,
             HumanPaddingBlocks.DYE_COLOR_TO_PIPE_PADDING_SLAB,
-            HumanPaddingBlocks.DYE_COLOR_TO_PIPE_PADDING_STAIRS
+            HumanPaddingBlocks.DYE_COLOR_TO_PIPE_PADDING_STAIRS,
+            HumanPaddingBlocks.DYE_COLOR_TO_TILE_PADDING,
+            HumanPaddingBlocks.DYE_COLOR_TO_TILE_PADDING_SLAB,
+            HumanPaddingBlocks.DYE_COLOR_TO_TILE_PADDING_STAIRS
         )
             .map(Map::values)
             .flatMap(Collection::stream)

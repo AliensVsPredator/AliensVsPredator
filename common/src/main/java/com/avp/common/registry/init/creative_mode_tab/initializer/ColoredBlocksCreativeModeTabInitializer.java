@@ -52,6 +52,12 @@ public class ColoredBlocksCreativeModeTabInitializer {
         });
 
         Arrays.stream(DyeColor.values()).forEach(dyeColor -> {
+            output.accept(HumanPaddingBlocks.DYE_COLOR_TO_TILE_PADDING.get(dyeColor).get());
+            output.accept(HumanPaddingBlocks.DYE_COLOR_TO_TILE_PADDING_STAIRS.get(dyeColor).get());
+            output.accept(HumanPaddingBlocks.DYE_COLOR_TO_TILE_PADDING_SLAB.get(dyeColor).get());
+        });
+
+        Arrays.stream(DyeColor.values()).forEach(dyeColor -> {
             output.accept(HumanPlasticBlocks.DYE_COLOR_TO_PLASTIC.get(dyeColor).get());
             output.accept(HumanPlasticBlocks.DYE_COLOR_TO_PLASTIC_STAIRS.get(dyeColor).get());
             output.accept(HumanPlasticBlocks.DYE_COLOR_TO_PLASTIC_SLAB.get(dyeColor).get());

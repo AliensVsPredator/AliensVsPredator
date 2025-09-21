@@ -260,6 +260,8 @@ public class BlockLootTableProvider extends FabricBlockLootTableProvider {
             HumanPaddingBlocks.DYE_COLOR_TO_PANEL_PADDING_STAIRS,
             HumanPaddingBlocks.DYE_COLOR_TO_PIPE_PADDING,
             HumanPaddingBlocks.DYE_COLOR_TO_PIPE_PADDING_STAIRS,
+            HumanPaddingBlocks.DYE_COLOR_TO_TILE_PADDING,
+            HumanPaddingBlocks.DYE_COLOR_TO_TILE_PADDING_STAIRS,
             HumanPlasticBlocks.DYE_COLOR_TO_PITTED_PLASTIC,
             HumanPlasticBlocks.DYE_COLOR_TO_PITTED_PLASTIC_STAIRS,
             HumanPlasticBlocks.DYE_COLOR_TO_PLASTIC,
@@ -337,6 +339,7 @@ public class BlockLootTableProvider extends FabricBlockLootTableProvider {
             HumanPaddingBlocks.DYE_COLOR_TO_PADDING_SLAB,
             HumanPaddingBlocks.DYE_COLOR_TO_PANEL_PADDING_SLAB,
             HumanPaddingBlocks.DYE_COLOR_TO_PIPE_PADDING_SLAB,
+            HumanPaddingBlocks.DYE_COLOR_TO_TILE_PADDING_SLAB,
             HumanPlasticBlocks.DYE_COLOR_TO_PITTED_PLASTIC_SLAB,
             HumanPlasticBlocks.DYE_COLOR_TO_PLASTIC_SLAB,
             HumanPlasticBlocks.DYE_COLOR_TO_PLASTIC_GRATE_SLAB

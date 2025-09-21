@@ -16,6 +16,7 @@
 - Added plastic grate blocks.
 - Added plastic grate slab blocks.
 - Added plastic grate stairs blocks.
+- Added tile padding blocks.
 - Updated padding block textures.
 - Updated pipe padding block textures.
 

@@ -152,5 +152,50 @@ public class HumanPaddingBlocks {
                 )
         );
 
+    public static final Map<DyeColor, AVPDeferredHolder<Block>> DYE_COLOR_TO_TILE_PADDING =
+        Collections.unmodifiableMap(
+            Arrays.stream(DyeColor.values())
+                .collect(
+                    Collectors.toMap(
+                        Function.identity(),
+                        dyeColor -> AVPBlocks.register(
+                            dyeColor.getName() + "_tile_padding",
+                            () -> new Block(BlockProperties.DYE_COLOR_TO_PADDING_PROPERTIES.get(dyeColor).build())
+                        )
+                    )
+                )
+        );
+
+    public static final Map<DyeColor, AVPDeferredHolder<Block>> DYE_COLOR_TO_TILE_PADDING_STAIRS =
+        Collections.unmodifiableMap(
+            Arrays.stream(DyeColor.values())
+                .collect(
+                    Collectors.toMap(
+                        Function.identity(),
+                        dyeColor -> AVPBlocks.register(
+                            dyeColor.getName() + "_tile_padding_stairs",
+                            () -> new StairBlock(
+                                DYE_COLOR_TO_TILE_PADDING.get(dyeColor).get().defaultBlockState(),
+                                BlockProperties.DYE_COLOR_TO_PADDING_PROPERTIES.get(dyeColor).build()
+                            )
+                        )
+                    )
+                )
+        );
+
+    public static final Map<DyeColor, AVPDeferredHolder<Block>> DYE_COLOR_TO_TILE_PADDING_SLAB =
+        Collections.unmodifiableMap(
+            Arrays.stream(DyeColor.values())
+                .collect(
+                    Collectors.toMap(
+                        Function.identity(),
+                        dyeColor -> AVPBlocks.register(
+                            dyeColor.getName() + "_tile_padding_slab",
+                            () -> new SlabBlock(BlockProperties.DYE_COLOR_TO_PADDING_PROPERTIES.get(dyeColor).build())
+                        )
+                    )
+                )
+        );
+
     public static void initialize() {}
 }
