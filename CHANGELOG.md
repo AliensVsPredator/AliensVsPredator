@@ -16,6 +16,7 @@
 - Added plastic grate blocks.
 - Added plastic grate slab blocks.
 - Added plastic grate stairs blocks.
+- Updated padding block textures.
 
 ## ♻️ Changes
 - Updated communication outpost structure (replaced metal blocks with metal double slab variants).
