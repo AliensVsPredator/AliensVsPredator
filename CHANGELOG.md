@@ -2,6 +2,7 @@
 
 ## ✍️ Developer Notes
 - For help or other questions, concerns, etc. check out our Discord server: https://discord.gg/wp7mvmbkVb
+- This update fixes a crash caused by AzureLib. If you are experiencing crashes in v0.2.1, please update to this version.
 
 ## ☢️ Breaking Changes
 - N/A
