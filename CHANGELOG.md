@@ -13,6 +13,9 @@
 - Added pitted plastic blocks.
 - Added pitted plastic slab blocks.
 - Added pitted plastic stairs blocks.
+- Added plastic grate blocks.
+- Added plastic grate slab blocks.
+- Added plastic grate stairs blocks.
 
 ## ♻️ Changes
 - Updated communication outpost structure (replaced metal blocks with metal double slab variants).

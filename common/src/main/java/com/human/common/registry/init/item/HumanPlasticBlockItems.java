@@ -86,32 +86,32 @@ public class HumanPlasticBlockItems {
         );
 
     public static final Map<DyeColor, Supplier<BlockItem>> DYE_COLOR_TO_PITTED_PLASTIC_SLAB =
-            Collections.unmodifiableMap(
-                    Arrays.stream(DyeColor.values())
-                            .collect(
-                                    Collectors.toMap(
-                                            Function.identity(),
-                                            dyeColor -> AVPBlockItems.register(
-                                                    dyeColor.getName() + "_pitted_plastic_slab",
-                                                    HumanPlasticBlocks.DYE_COLOR_TO_PITTED_PLASTIC_SLAB.get(dyeColor)
-                                            )
-                                    )
-                            )
-            );
+        Collections.unmodifiableMap(
+            Arrays.stream(DyeColor.values())
+                .collect(
+                    Collectors.toMap(
+                        Function.identity(),
+                        dyeColor -> AVPBlockItems.register(
+                            dyeColor.getName() + "_pitted_plastic_slab",
+                            HumanPlasticBlocks.DYE_COLOR_TO_PITTED_PLASTIC_SLAB.get(dyeColor)
+                        )
+                    )
+                )
+        );
 
     public static final Map<DyeColor, Supplier<BlockItem>> DYE_COLOR_TO_PITTED_PLASTIC_STAIRS =
-            Collections.unmodifiableMap(
-                    Arrays.stream(DyeColor.values())
-                            .collect(
-                                    Collectors.toMap(
-                                            Function.identity(),
-                                            dyeColor -> AVPBlockItems.register(
-                                                    dyeColor.getName() + "_pitted_plastic_stairs",
-                                                    HumanPlasticBlocks.DYE_COLOR_TO_PITTED_PLASTIC_STAIRS.get(dyeColor)
-                                            )
-                                    )
-                            )
-            );
+        Collections.unmodifiableMap(
+            Arrays.stream(DyeColor.values())
+                .collect(
+                    Collectors.toMap(
+                        Function.identity(),
+                        dyeColor -> AVPBlockItems.register(
+                            dyeColor.getName() + "_pitted_plastic_stairs",
+                            HumanPlasticBlocks.DYE_COLOR_TO_PITTED_PLASTIC_STAIRS.get(dyeColor)
+                        )
+                    )
+                )
+        );
 
     public static final Map<DyeColor, Supplier<BlockItem>> DYE_COLOR_TO_PLASTIC =
         Collections.unmodifiableMap(
@@ -150,6 +150,48 @@ public class HumanPlasticBlockItems {
                         dyeColor -> AVPBlockItems.register(
                             dyeColor.getName() + "_plastic_stairs",
                             HumanPlasticBlocks.DYE_COLOR_TO_PLASTIC_STAIRS.get(dyeColor)
+                        )
+                    )
+                )
+        );
+
+    public static final Map<DyeColor, Supplier<BlockItem>> DYE_COLOR_TO_PLASTIC_GRATE =
+        Collections.unmodifiableMap(
+            Arrays.stream(DyeColor.values())
+                .collect(
+                    Collectors.toMap(
+                        Function.identity(),
+                        dyeColor -> AVPBlockItems.register(
+                            dyeColor.getName() + "_plastic_grate",
+                            HumanPlasticBlocks.DYE_COLOR_TO_PLASTIC_GRATE.get(dyeColor)
+                        )
+                    )
+                )
+        );
+
+    public static final Map<DyeColor, Supplier<BlockItem>> DYE_COLOR_TO_PLASTIC_GRATE_SLAB =
+        Collections.unmodifiableMap(
+            Arrays.stream(DyeColor.values())
+                .collect(
+                    Collectors.toMap(
+                        Function.identity(),
+                        dyeColor -> AVPBlockItems.register(
+                            dyeColor.getName() + "_plastic_grate_slab",
+                            HumanPlasticBlocks.DYE_COLOR_TO_PLASTIC_GRATE_SLAB.get(dyeColor)
+                        )
+                    )
+                )
+        );
+
+    public static final Map<DyeColor, Supplier<BlockItem>> DYE_COLOR_TO_PLASTIC_GRATE_STAIRS =
+        Collections.unmodifiableMap(
+            Arrays.stream(DyeColor.values())
+                .collect(
+                    Collectors.toMap(
+                        Function.identity(),
+                        dyeColor -> AVPBlockItems.register(
+                            dyeColor.getName() + "_plastic_grate_stairs",
+                            HumanPlasticBlocks.DYE_COLOR_TO_PLASTIC_GRATE_STAIRS.get(dyeColor)
                         )
                     )
                 )

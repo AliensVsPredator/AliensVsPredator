@@ -180,6 +180,9 @@ public class AVPBlockTagProvider extends FabricTagProvider.BlockTagProvider {
             HumanPlasticBlocks.DYE_COLOR_TO_PITTED_PLASTIC_SLAB,
             HumanPlasticBlocks.DYE_COLOR_TO_PITTED_PLASTIC_STAIRS,
             HumanPlasticBlocks.DYE_COLOR_TO_PLASTIC,
+            HumanPlasticBlocks.DYE_COLOR_TO_PLASTIC_GRATE,
+            HumanPlasticBlocks.DYE_COLOR_TO_PLASTIC_GRATE_SLAB,
+            HumanPlasticBlocks.DYE_COLOR_TO_PLASTIC_GRATE_STAIRS,
             HumanPlasticBlocks.DYE_COLOR_TO_PLASTIC_SLAB,
             HumanPlasticBlocks.DYE_COLOR_TO_PLASTIC_STAIRS
         )

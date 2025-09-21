@@ -89,6 +89,17 @@ public class PlasticRecipeProvider {
             var pittedStairBlock = HumanPlasticBlocks.DYE_COLOR_TO_PITTED_PLASTIC_STAIRS.get(dyeColor).get();
             RecipeUtil.createStairBlockManualAndStonecutterRecipes(builder, pittedBlock, pittedStairBlock);
             stonecut.into(4, pittedStairBlock);
+
+            var grateBlock = HumanPlasticBlocks.DYE_COLOR_TO_PLASTIC_GRATE.get(dyeColor).get();
+            stonecut.into(4, grateBlock);
+
+            var grateSlabBlock = HumanPlasticBlocks.DYE_COLOR_TO_PLASTIC_GRATE_SLAB.get(dyeColor).get();
+            RecipeUtil.createSlabBlockManualAndStonecutterRecipes(builder, grateBlock, grateSlabBlock);
+            stonecut.into(8, grateSlabBlock);
+
+            var grateStairBlock = HumanPlasticBlocks.DYE_COLOR_TO_PLASTIC_GRATE_STAIRS.get(dyeColor).get();
+            RecipeUtil.createStairBlockManualAndStonecutterRecipes(builder, grateBlock, grateStairBlock);
+            stonecut.into(4, grateStairBlock);
         }));
     }
 }

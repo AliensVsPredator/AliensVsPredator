@@ -263,7 +263,9 @@ public class BlockLootTableProvider extends FabricBlockLootTableProvider {
             HumanPlasticBlocks.DYE_COLOR_TO_PITTED_PLASTIC,
             HumanPlasticBlocks.DYE_COLOR_TO_PITTED_PLASTIC_STAIRS,
             HumanPlasticBlocks.DYE_COLOR_TO_PLASTIC,
-            HumanPlasticBlocks.DYE_COLOR_TO_PLASTIC_STAIRS
+            HumanPlasticBlocks.DYE_COLOR_TO_PLASTIC_STAIRS,
+            HumanPlasticBlocks.DYE_COLOR_TO_PLASTIC_GRATE,
+            HumanPlasticBlocks.DYE_COLOR_TO_PLASTIC_GRATE_STAIRS
         )
             .map(Map::values)
             .flatMap(Collection::stream)
@@ -336,7 +338,8 @@ public class BlockLootTableProvider extends FabricBlockLootTableProvider {
             HumanPaddingBlocks.DYE_COLOR_TO_PANEL_PADDING_SLAB,
             HumanPaddingBlocks.DYE_COLOR_TO_PIPE_PADDING_SLAB,
             HumanPlasticBlocks.DYE_COLOR_TO_PITTED_PLASTIC_SLAB,
-            HumanPlasticBlocks.DYE_COLOR_TO_PLASTIC_SLAB
+            HumanPlasticBlocks.DYE_COLOR_TO_PLASTIC_SLAB,
+            HumanPlasticBlocks.DYE_COLOR_TO_PLASTIC_GRATE_SLAB
         )
             .map(Map::values)
             .flatMap(Collection::stream)

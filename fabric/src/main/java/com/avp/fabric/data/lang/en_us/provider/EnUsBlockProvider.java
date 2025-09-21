@@ -317,6 +317,16 @@ public class EnUsBlockProvider {
             (key, value) -> addBlock(builder, value, format(key.getName()) + " Plastic Stairs")
         );
 
+        HumanPlasticBlocks.DYE_COLOR_TO_PLASTIC_GRATE.forEach(
+            (key, value) -> addBlock(builder, value, format(key.getName()) + " Plastic Grate")
+        );
+        HumanPlasticBlocks.DYE_COLOR_TO_PLASTIC_GRATE_SLAB.forEach(
+            (key, value) -> addBlock(builder, value, format(key.getName()) + " Plastic Grate Slab")
+        );
+        HumanPlasticBlocks.DYE_COLOR_TO_PLASTIC_GRATE_STAIRS.forEach(
+            (key, value) -> addBlock(builder, value, format(key.getName()) + " Plastic Grate Stairs")
+        );
+
         addBlock(builder, CoreBlocks.RAW_BAUXITE_BLOCK, "Block of Raw Bauxite");
         addBlock(builder, CoreBlocks.RAW_GALENA_BLOCK, "Block of Raw Galena");
         addBlock(builder, CoreBlocks.RAW_MONAZITE_BLOCK, "Block of Raw Monazite");
