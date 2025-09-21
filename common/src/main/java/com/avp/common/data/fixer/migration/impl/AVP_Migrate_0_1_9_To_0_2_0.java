@@ -31,7 +31,9 @@ public class AVP_Migrate_0_1_9_To_0_2_0 implements AVPDataMigration {
         register(AVPDataFixerEntry.avpToAvp(BuiltInRegistries.ITEM, "ovamorph_spawn_egg", "ovomorph_spawn_egg"));
         register(AVPDataFixerEntry.avpToAvp(BuiltInRegistries.ITEM, "royal_ovamorph_spawn_egg", "royal_ovomorph_spawn_egg"));
         register(AVPDataFixerEntry.avpToAvp(BuiltInRegistries.ITEM, "aberrant_ovamorph_spawn_egg", "aberrant_ovomorph_spawn_egg"));
-        register(AVPDataFixerEntry.avpToAvp(BuiltInRegistries.ITEM, "royal_aberrant_ovamorph_spawn_egg", "royal_aberrant_ovomorph_spawn_egg"));
+        register(
+            AVPDataFixerEntry.avpToAvp(BuiltInRegistries.ITEM, "royal_aberrant_ovamorph_spawn_egg", "royal_aberrant_ovomorph_spawn_egg")
+        );
         register(AVPDataFixerEntry.avpToAvp(BuiltInRegistries.ITEM, "nether_ovamorph_spawn_egg", "nether_ovomorph_spawn_egg"));
         register(AVPDataFixerEntry.avpToAvp(BuiltInRegistries.ITEM, "royal_nether_ovamorph_spawn_egg", "royal_nether_ovomorph_spawn_egg"));
     }

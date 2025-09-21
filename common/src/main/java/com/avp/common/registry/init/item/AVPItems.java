@@ -83,8 +83,6 @@ public class AVPItems {
 
     public static final AVPDeferredHolder<Item> BRASS_NUGGET = register("brass_nugget");
 
-    public static final AVPDeferredHolder<Item> BULLET_TIP = register("bullet_tip");
-
     public static final AVPDeferredHolder<Item> CANISTER = register(
         "canister",
         () -> new CanisterItem(Fluids.EMPTY, new Item.Properties().stacksTo(16))
@@ -95,8 +93,6 @@ public class AVPItems {
     public static final AVPDeferredHolder<Item> CARBON_DUST = register("carbon_dust");
 
     public static final AVPDeferredHolder<Item> CASELESS_BULLET = register("caseless_bullet");
-
-    public static final AVPDeferredHolder<Item> CASELESS_CARTRIDGE = register("caseless_cartridge");
 
     public static final AVPDeferredHolder<Item> CPU = register("cpu");
 
@@ -120,8 +116,6 @@ public class AVPItems {
 
     public static final AVPDeferredHolder<Item> HEAVY_BULLET = register("heavy_bullet");
 
-    public static final AVPDeferredHolder<Item> HEAVY_CASING = register("heavy_casing");
-
     public static final AVPDeferredHolder<Item> INTEGRATED_CIRCUIT = register("integrated_circuit");
 
     public static final AVPDeferredHolder<Item> LAVA_CANISTER = register(
@@ -143,8 +137,6 @@ public class AVPItems {
     public static final AVPDeferredHolder<Item> LITHIUM_DUST = register("lithium_dust");
 
     public static final AVPDeferredHolder<Item> MEDIUM_BULLET = register("medium_bullet");
-
-    public static final AVPDeferredHolder<Item> MEDIUM_CASING = register("medium_casing");
 
     public static final AVPDeferredHolder<Item> MILK_CANISTER = register(
         "milk_canister",
@@ -210,8 +202,6 @@ public class AVPItems {
 
     public static final AVPDeferredHolder<Item> SERVO = register("servo");
 
-    public static final AVPDeferredHolder<Item> SHOTGUN_CASING = register("shotgun_casing");
-
     public static final AVPDeferredHolder<Item> SHOTGUN_SHELL = register("shotgun_shell");
 
     public static final AVPDeferredHolder<Item> SHURIKEN = register("shuriken", ShurikenItem::new);
@@ -220,8 +210,6 @@ public class AVPItems {
     public static final AVPDeferredHolder<Item> SILICON = register("raw_silica");
 
     public static final AVPDeferredHolder<Item> SMALL_BULLET = register("small_bullet");
-
-    public static final AVPDeferredHolder<Item> SMALL_CASING = register("small_casing");
 
     public static final AVPDeferredHolder<Item> SMART_BARREL = register("smart_barrel");
 

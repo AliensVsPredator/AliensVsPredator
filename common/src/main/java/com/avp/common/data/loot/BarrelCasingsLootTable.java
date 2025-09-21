@@ -19,7 +19,7 @@ public class BarrelCasingsLootTable {
             LootPool.lootPool()
                 .setRolls(ConstantValue.exactly(1))
                 .add(
-                    LootItem.lootTableItem(AVPItems.SMALL_CASING.get())
+                    LootItem.lootTableItem(AVPItems.BRASS_NUGGET.get())
                         .apply(SetItemCountFunction.setCount(UniformGenerator.between(2, 6)))
                         .setWeight(20)
                 )
@@ -28,7 +28,7 @@ public class BarrelCasingsLootTable {
             LootPool.lootPool()
                 .setRolls(ConstantValue.exactly(1))
                 .add(
-                    LootItem.lootTableItem(AVPItems.HEAVY_CASING.get())
+                    LootItem.lootTableItem(AVPItems.STEEL_NUGGET.get())
                         .apply(SetItemCountFunction.setCount(UniformGenerator.between(4, 8)))
                         .setWeight(35)
                 )
