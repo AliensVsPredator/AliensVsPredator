@@ -75,6 +75,31 @@ public class PlasticRecipeProvider {
             var cutStairBlock = HumanPlasticBlocks.DYE_COLOR_TO_CUT_PLASTIC_STAIRS.get(dyeColor).get();
             RecipeUtil.createStairBlockManualAndStonecutterRecipes(builder, cutBlock, cutStairBlock);
             stonecut.into(4, cutStairBlock);
+
+            var framedBlock = HumanPlasticBlocks.DYE_COLOR_TO_FRAMED_PLASTIC.get(dyeColor).get();
+            stonecut.into(2, framedBlock);
+
+            var pittedBlock = HumanPlasticBlocks.DYE_COLOR_TO_PITTED_PLASTIC.get(dyeColor).get();
+            stonecut.into(4, pittedBlock);
+
+            var pittedSlabBlock = HumanPlasticBlocks.DYE_COLOR_TO_PITTED_PLASTIC_SLAB.get(dyeColor).get();
+            RecipeUtil.createSlabBlockManualAndStonecutterRecipes(builder, pittedBlock, pittedSlabBlock);
+            stonecut.into(8, pittedSlabBlock);
+
+            var pittedStairBlock = HumanPlasticBlocks.DYE_COLOR_TO_PITTED_PLASTIC_STAIRS.get(dyeColor).get();
+            RecipeUtil.createStairBlockManualAndStonecutterRecipes(builder, pittedBlock, pittedStairBlock);
+            stonecut.into(4, pittedStairBlock);
+
+            var grateBlock = HumanPlasticBlocks.DYE_COLOR_TO_PLASTIC_GRATE.get(dyeColor).get();
+            stonecut.into(4, grateBlock);
+
+            var grateSlabBlock = HumanPlasticBlocks.DYE_COLOR_TO_PLASTIC_GRATE_SLAB.get(dyeColor).get();
+            RecipeUtil.createSlabBlockManualAndStonecutterRecipes(builder, grateBlock, grateSlabBlock);
+            stonecut.into(8, grateSlabBlock);
+
+            var grateStairBlock = HumanPlasticBlocks.DYE_COLOR_TO_PLASTIC_GRATE_STAIRS.get(dyeColor).get();
+            RecipeUtil.createStairBlockManualAndStonecutterRecipes(builder, grateBlock, grateStairBlock);
+            stonecut.into(4, grateStairBlock);
         }));
     }
 }

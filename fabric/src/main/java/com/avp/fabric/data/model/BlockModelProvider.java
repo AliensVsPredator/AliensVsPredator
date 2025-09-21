@@ -212,8 +212,18 @@ public class BlockModelProvider extends FabricModelProvider {
         HumanPaddingBlocks.DYE_COLOR_TO_PIPE_PADDING.forEach(
             (dyeColor, blockSupplier) -> {
                 var block = blockSupplier.get();
-                var slabBlock = HumanPaddingBlocks.DYE_COLOR_TO_PIPE_PADDING_SLAB.get(dyeColor).get();
-                var stairBlock = HumanPaddingBlocks.DYE_COLOR_TO_PIPE_PADDING_STAIRS.get(dyeColor).get();
+                createRotatedPillar(generators, block, TexturedModel.CUBE);
+
+                createSlab(generators, block, HumanPaddingBlocks.DYE_COLOR_TO_PIPE_PADDING_SLAB.get(dyeColor).get());
+                createStairs(generators, block, HumanPaddingBlocks.DYE_COLOR_TO_PIPE_PADDING_STAIRS.get(dyeColor).get());
+            }
+        );
+
+        HumanPaddingBlocks.DYE_COLOR_TO_TILE_PADDING.forEach(
+            (dyeColor, blockSupplier) -> {
+                var block = blockSupplier.get();
+                var slabBlock = HumanPaddingBlocks.DYE_COLOR_TO_TILE_PADDING_SLAB.get(dyeColor).get();
+                var stairBlock = HumanPaddingBlocks.DYE_COLOR_TO_TILE_PADDING_STAIRS.get(dyeColor).get();
 
                 generators.family(block)
                     .slab(slabBlock)
@@ -233,11 +243,37 @@ public class BlockModelProvider extends FabricModelProvider {
             }
         );
 
+        HumanPlasticBlocks.DYE_COLOR_TO_FRAMED_PLASTIC.forEach((dyeColor, blockSupplier) -> generators.family(blockSupplier.get()));
+
+        HumanPlasticBlocks.DYE_COLOR_TO_PITTED_PLASTIC.forEach(
+            (dyeColor, blockSupplier) -> {
+                var block = blockSupplier.get();
+                var slabBlock = HumanPlasticBlocks.DYE_COLOR_TO_PITTED_PLASTIC_SLAB.get(dyeColor).get();
+                var stairBlock = HumanPlasticBlocks.DYE_COLOR_TO_PITTED_PLASTIC_STAIRS.get(dyeColor).get();
+
+                generators.family(block)
+                    .slab(slabBlock)
+                    .stairs(stairBlock);
+            }
+        );
+
         HumanPlasticBlocks.DYE_COLOR_TO_PLASTIC.forEach(
             (dyeColor, blockSupplier) -> {
                 var block = blockSupplier.get();
                 var slabBlock = HumanPlasticBlocks.DYE_COLOR_TO_PLASTIC_SLAB.get(dyeColor).get();
                 var stairBlock = HumanPlasticBlocks.DYE_COLOR_TO_PLASTIC_STAIRS.get(dyeColor).get();
+
+                generators.family(block)
+                    .slab(slabBlock)
+                    .stairs(stairBlock);
+            }
+        );
+
+        HumanPlasticBlocks.DYE_COLOR_TO_PLASTIC_GRATE.forEach(
+            (dyeColor, blockSupplier) -> {
+                var block = blockSupplier.get();
+                var slabBlock = HumanPlasticBlocks.DYE_COLOR_TO_PLASTIC_GRATE_SLAB.get(dyeColor).get();
+                var stairBlock = HumanPlasticBlocks.DYE_COLOR_TO_PLASTIC_GRATE_STAIRS.get(dyeColor).get();
 
                 generators.family(block)
                     .slab(slabBlock)

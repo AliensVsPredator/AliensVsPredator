@@ -283,6 +283,16 @@ public class EnUsBlockProvider {
             (key, value) -> addBlock(builder, value, format(key.getName()) + " Pipe Padding Stairs")
         );
 
+        HumanPaddingBlocks.DYE_COLOR_TO_TILE_PADDING.forEach(
+            (key, value) -> addBlock(builder, value, format(key.getName()) + " Tile Padding")
+        );
+        HumanPaddingBlocks.DYE_COLOR_TO_TILE_PADDING_SLAB.forEach(
+            (key, value) -> addBlock(builder, value, format(key.getName()) + " Tile Padding Slab")
+        );
+        HumanPaddingBlocks.DYE_COLOR_TO_TILE_PADDING_STAIRS.forEach(
+            (key, value) -> addBlock(builder, value, format(key.getName()) + " Tile Padding Stairs")
+        );
+
         HumanPlasticBlocks.DYE_COLOR_TO_CUT_PLASTIC.forEach(
             (key, value) -> addBlock(builder, value, format(key.getName()) + " Cut Plastic")
         );
@@ -293,6 +303,20 @@ public class EnUsBlockProvider {
             (key, value) -> addBlock(builder, value, format(key.getName()) + " Cut Plastic Stairs")
         );
 
+        HumanPlasticBlocks.DYE_COLOR_TO_FRAMED_PLASTIC.forEach(
+            (key, value) -> addBlock(builder, value, format(key.getName()) + " Framed Plastic")
+        );
+
+        HumanPlasticBlocks.DYE_COLOR_TO_PITTED_PLASTIC.forEach(
+            (key, value) -> addBlock(builder, value, format(key.getName()) + " Pitted Plastic")
+        );
+        HumanPlasticBlocks.DYE_COLOR_TO_PITTED_PLASTIC_SLAB.forEach(
+            (key, value) -> addBlock(builder, value, format(key.getName()) + " Pitted Plastic Slab")
+        );
+        HumanPlasticBlocks.DYE_COLOR_TO_PITTED_PLASTIC_STAIRS.forEach(
+            (key, value) -> addBlock(builder, value, format(key.getName()) + " Pitted Plastic Stairs")
+        );
+
         HumanPlasticBlocks.DYE_COLOR_TO_PLASTIC.forEach(
             (key, value) -> addBlock(builder, value, format(key.getName()) + " Plastic")
         );
@@ -301,6 +325,16 @@ public class EnUsBlockProvider {
         );
         HumanPlasticBlocks.DYE_COLOR_TO_PLASTIC_STAIRS.forEach(
             (key, value) -> addBlock(builder, value, format(key.getName()) + " Plastic Stairs")
+        );
+
+        HumanPlasticBlocks.DYE_COLOR_TO_PLASTIC_GRATE.forEach(
+            (key, value) -> addBlock(builder, value, format(key.getName()) + " Plastic Grate")
+        );
+        HumanPlasticBlocks.DYE_COLOR_TO_PLASTIC_GRATE_SLAB.forEach(
+            (key, value) -> addBlock(builder, value, format(key.getName()) + " Plastic Grate Slab")
+        );
+        HumanPlasticBlocks.DYE_COLOR_TO_PLASTIC_GRATE_STAIRS.forEach(
+            (key, value) -> addBlock(builder, value, format(key.getName()) + " Plastic Grate Stairs")
         );
 
         addBlock(builder, CoreBlocks.RAW_BAUXITE_BLOCK, "Block of Raw Bauxite");

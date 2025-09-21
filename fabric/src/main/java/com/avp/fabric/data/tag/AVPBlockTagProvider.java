@@ -162,7 +162,10 @@ public class AVPBlockTagProvider extends FabricTagProvider.BlockTagProvider {
             HumanPaddingBlocks.DYE_COLOR_TO_PANEL_PADDING_STAIRS,
             HumanPaddingBlocks.DYE_COLOR_TO_PIPE_PADDING,
             HumanPaddingBlocks.DYE_COLOR_TO_PIPE_PADDING_SLAB,
-            HumanPaddingBlocks.DYE_COLOR_TO_PIPE_PADDING_STAIRS
+            HumanPaddingBlocks.DYE_COLOR_TO_PIPE_PADDING_STAIRS,
+            HumanPaddingBlocks.DYE_COLOR_TO_TILE_PADDING,
+            HumanPaddingBlocks.DYE_COLOR_TO_TILE_PADDING_SLAB,
+            HumanPaddingBlocks.DYE_COLOR_TO_TILE_PADDING_STAIRS
         )
             .map(Map::values)
             .flatMap(Collection::stream)
@@ -175,7 +178,14 @@ public class AVPBlockTagProvider extends FabricTagProvider.BlockTagProvider {
             HumanPlasticBlocks.DYE_COLOR_TO_CUT_PLASTIC,
             HumanPlasticBlocks.DYE_COLOR_TO_CUT_PLASTIC_SLAB,
             HumanPlasticBlocks.DYE_COLOR_TO_CUT_PLASTIC_STAIRS,
+            HumanPlasticBlocks.DYE_COLOR_TO_FRAMED_PLASTIC,
+            HumanPlasticBlocks.DYE_COLOR_TO_PITTED_PLASTIC,
+            HumanPlasticBlocks.DYE_COLOR_TO_PITTED_PLASTIC_SLAB,
+            HumanPlasticBlocks.DYE_COLOR_TO_PITTED_PLASTIC_STAIRS,
             HumanPlasticBlocks.DYE_COLOR_TO_PLASTIC,
+            HumanPlasticBlocks.DYE_COLOR_TO_PLASTIC_GRATE,
+            HumanPlasticBlocks.DYE_COLOR_TO_PLASTIC_GRATE_SLAB,
+            HumanPlasticBlocks.DYE_COLOR_TO_PLASTIC_GRATE_STAIRS,
             HumanPlasticBlocks.DYE_COLOR_TO_PLASTIC_SLAB,
             HumanPlasticBlocks.DYE_COLOR_TO_PLASTIC_STAIRS
         )

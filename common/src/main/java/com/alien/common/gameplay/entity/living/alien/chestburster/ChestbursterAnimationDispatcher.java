@@ -12,7 +12,7 @@ public class ChestbursterAnimationDispatcher {
         AzPlayBehaviors.LOOP
     );
 
-    private static final AzCommand IDLE_TAIL = AzCommand.builder()
+    private static final AzCommand IDLE_TAIL = AzCommand.controllerBuilder()
         .cancel(ChestbursterAnimationRefs.TAIL_CONTROLLER_NAME)
         .build();
 

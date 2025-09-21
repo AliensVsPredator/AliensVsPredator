@@ -4,6 +4,7 @@ import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SlabBlock;
 import net.minecraft.world.level.block.StairBlock;
+import net.minecraft.world.level.block.WaterloggedTransparentBlock;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -62,6 +63,65 @@ public class HumanPlasticBlocks {
                 )
         );
 
+    public static final Map<DyeColor, AVPDeferredHolder<Block>> DYE_COLOR_TO_FRAMED_PLASTIC =
+        Collections.unmodifiableMap(
+            Arrays.stream(DyeColor.values())
+                .collect(
+                    Collectors.toMap(
+                        Function.identity(),
+                        dyeColor -> AVPBlocks.register(
+                            dyeColor.getName() + "_framed_plastic",
+                            () -> new Block(BlockProperties.DYE_COLOR_TO_PLASTIC_PROPERTIES.get(dyeColor).build())
+                        )
+                    )
+                )
+        );
+
+    public static final Map<DyeColor, AVPDeferredHolder<Block>> DYE_COLOR_TO_PITTED_PLASTIC =
+        Collections.unmodifiableMap(
+            Arrays.stream(DyeColor.values())
+                .collect(
+                    Collectors.toMap(
+                        Function.identity(),
+                        dyeColor -> AVPBlocks.register(
+                            dyeColor.getName() + "_pitted_plastic",
+                            () -> new Block(BlockProperties.DYE_COLOR_TO_PLASTIC_PROPERTIES.get(dyeColor).build())
+                        )
+                    )
+                )
+        );
+
+    public static final Map<DyeColor, AVPDeferredHolder<Block>> DYE_COLOR_TO_PITTED_PLASTIC_STAIRS =
+        Collections.unmodifiableMap(
+            Arrays.stream(DyeColor.values())
+                .collect(
+                    Collectors.toMap(
+                        Function.identity(),
+                        dyeColor -> AVPBlocks.register(
+                            dyeColor.getName() + "_pitted_plastic_stairs",
+                            () -> new StairBlock(
+                                DYE_COLOR_TO_PITTED_PLASTIC.get(dyeColor).get().defaultBlockState(),
+                                BlockProperties.DYE_COLOR_TO_PLASTIC_PROPERTIES.get(dyeColor).build()
+                            )
+                        )
+                    )
+                )
+        );
+
+    public static final Map<DyeColor, AVPDeferredHolder<Block>> DYE_COLOR_TO_PITTED_PLASTIC_SLAB =
+        Collections.unmodifiableMap(
+            Arrays.stream(DyeColor.values())
+                .collect(
+                    Collectors.toMap(
+                        Function.identity(),
+                        dyeColor -> AVPBlocks.register(
+                            dyeColor.getName() + "_pitted_plastic_slab",
+                            () -> new SlabBlock(BlockProperties.DYE_COLOR_TO_PLASTIC_PROPERTIES.get(dyeColor).build())
+                        )
+                    )
+                )
+        );
+
     public static final Map<DyeColor, AVPDeferredHolder<Block>> DYE_COLOR_TO_PLASTIC =
         Collections.unmodifiableMap(
             Arrays.stream(DyeColor.values())
@@ -102,6 +162,53 @@ public class HumanPlasticBlocks {
                         dyeColor -> AVPBlocks.register(
                             dyeColor.getName() + "_plastic_slab",
                             () -> new SlabBlock(BlockProperties.DYE_COLOR_TO_PLASTIC_PROPERTIES.get(dyeColor).build())
+                        )
+                    )
+                )
+        );
+
+    public static final Map<DyeColor, AVPDeferredHolder<Block>> DYE_COLOR_TO_PLASTIC_GRATE =
+        Collections.unmodifiableMap(
+            Arrays.stream(DyeColor.values())
+                .collect(
+                    Collectors.toMap(
+                        Function.identity(),
+                        dyeColor -> AVPBlocks.register(
+                            dyeColor.getName() + "_plastic_grate",
+                            () -> new WaterloggedTransparentBlock(
+                                BlockProperties.DYE_COLOR_TO_PLASTIC_PROPERTIES.get(dyeColor).noOcclusion().build()
+                            )
+                        )
+                    )
+                )
+        );
+
+    public static final Map<DyeColor, AVPDeferredHolder<Block>> DYE_COLOR_TO_PLASTIC_GRATE_STAIRS =
+        Collections.unmodifiableMap(
+            Arrays.stream(DyeColor.values())
+                .collect(
+                    Collectors.toMap(
+                        Function.identity(),
+                        dyeColor -> AVPBlocks.register(
+                            dyeColor.getName() + "_plastic_grate_stairs",
+                            () -> new StairBlock(
+                                DYE_COLOR_TO_PLASTIC_GRATE.get(dyeColor).get().defaultBlockState(),
+                                BlockProperties.DYE_COLOR_TO_PLASTIC_PROPERTIES.get(dyeColor).noOcclusion().build()
+                            )
+                        )
+                    )
+                )
+        );
+
+    public static final Map<DyeColor, AVPDeferredHolder<Block>> DYE_COLOR_TO_PLASTIC_GRATE_SLAB =
+        Collections.unmodifiableMap(
+            Arrays.stream(DyeColor.values())
+                .collect(
+                    Collectors.toMap(
+                        Function.identity(),
+                        dyeColor -> AVPBlocks.register(
+                            dyeColor.getName() + "_plastic_grate_slab",
+                            () -> new SlabBlock(BlockProperties.DYE_COLOR_TO_PLASTIC_PROPERTIES.get(dyeColor).noOcclusion().build())
                         )
                     )
                 )

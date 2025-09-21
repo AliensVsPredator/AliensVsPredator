@@ -32,6 +32,7 @@ import com.human.client.screen.IndustrialFurnaceScreen;
 import com.human.common.registry.init.HumanMenuTypes;
 import com.human.common.registry.init.block.HumanFerroaluminumBlocks;
 import com.human.common.registry.init.block.HumanIndustrialGlassBlocks;
+import com.human.common.registry.init.block.HumanPlasticBlocks;
 import com.human.common.registry.init.block.HumanSteelBlocks;
 import com.human.common.registry.init.block.HumanTitaniumBlocks;
 import com.human.common.registry.init.entity_type.HumanEntityTypes;
@@ -167,6 +168,12 @@ public class HumanClient {
         Services.CLIENT_REGISTRY.registerBlockRenderLayer(HumanIndustrialGlassBlocks.INDUSTRIAL_GLASS_PANE, RenderType.cutout());
         HumanIndustrialGlassBlocks.DYE_COLOR_TO_INDUSTRIAL_GLASS_PANE.values()
             .forEach(blockSupplier -> Services.CLIENT_REGISTRY.registerBlockRenderLayer(blockSupplier, RenderType.translucent()));
+        HumanPlasticBlocks.DYE_COLOR_TO_PLASTIC_GRATE.values()
+            .forEach(blockSupplier -> Services.CLIENT_REGISTRY.registerBlockRenderLayer(blockSupplier, RenderType.cutout()));
+        HumanPlasticBlocks.DYE_COLOR_TO_PLASTIC_GRATE_SLAB.values()
+            .forEach(blockSupplier -> Services.CLIENT_REGISTRY.registerBlockRenderLayer(blockSupplier, RenderType.cutout()));
+        HumanPlasticBlocks.DYE_COLOR_TO_PLASTIC_GRATE_STAIRS.values()
+            .forEach(blockSupplier -> Services.CLIENT_REGISTRY.registerBlockRenderLayer(blockSupplier, RenderType.cutout()));
     }
 
     private static void registerEntityRenderers() {
