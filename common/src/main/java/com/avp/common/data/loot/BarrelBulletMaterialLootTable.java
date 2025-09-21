@@ -20,7 +20,7 @@ public class BarrelBulletMaterialLootTable {
             LootPool.lootPool()
                 .setRolls(ConstantValue.exactly(1))
                 .add(
-                    LootItem.lootTableItem(AVPItems.BULLET_TIP.get())
+                    LootItem.lootTableItem(AVPItems.LEAD_NUGGET.get())
                         .apply(SetItemCountFunction.setCount(UniformGenerator.between(3, 6)))
                         .setWeight(50)
                 )
@@ -47,7 +47,7 @@ public class BarrelBulletMaterialLootTable {
             LootPool.lootPool()
                 .setRolls(ConstantValue.exactly(1))
                 .add(
-                    LootItem.lootTableItem(AVPItems.HEAVY_CASING.get())
+                    LootItem.lootTableItem(AVPItems.STEEL_NUGGET.get())
                         .apply(SetItemCountFunction.setCount(UniformGenerator.between(4, 10)))
                         .setWeight(30)
                 )

@@ -23,14 +23,13 @@ public class GunRecipeProvider {
             .pattern("SSS")
             .into(1, AVPItems.ROCKET);
 
-        createCasingRecipes(builder);
         createBulletRecipes(builder);
         createGunPartRecipes(builder);
         createGunRecipes(builder);
-        createGrendade(builder);
+        createGrenadeRecipes(builder);
     }
 
-    private static void createGrendade(RecipeBuilder builder) {
+    private static void createGrenadeRecipes(RecipeBuilder builder) {
         builder.shaped()
             .withCategory(RecipeCategory.COMBAT)
             .define('A', AVPItems.STEEL_NUGGET)
@@ -56,89 +55,61 @@ public class GunRecipeProvider {
             .into(4, AVPItems.GRENADE_IRRADIATED);
     }
 
-    private static void createCasingRecipes(RecipeBuilder builder) {
-        builder.shaped()
-            .withCategory(RecipeCategory.COMBAT)
-            .define('A', Items.GUNPOWDER)
-            .define('B', AVPItems.BRASS_NUGGET)
-            .pattern("A")
-            .pattern("B")
-            .into(1, AVPItems.SMALL_CASING);
-        builder.shaped()
-            .withCategory(RecipeCategory.COMBAT)
-            .define('A', Items.GUNPOWDER)
-            .define('B', AVPItems.BRASS_NUGGET)
-            .pattern("A")
-            .pattern("B")
-            .pattern("B")
-            .into(1, AVPItems.MEDIUM_CASING);
-        builder.shaped()
-            .withCategory(RecipeCategory.COMBAT)
-            .define('G', Items.GUNPOWDER)
-            .define('S', AVPItems.STEEL_NUGGET)
-            .pattern("SGS")
-            .pattern(" S ")
-            .into(1, AVPItems.HEAVY_CASING);
-        builder.shaped()
-            .withCategory(RecipeCategory.COMBAT)
-            .define('A', Items.GUNPOWDER)
-            .define('B', AVPItems.BRASS_NUGGET)
-            .define('C', AVPItems.POLYMER)
-            .pattern("A")
-            .pattern("C")
-            .pattern("B")
-            .into(1, AVPItems.SHOTGUN_CASING);
-        builder.shaped()
-            .withCategory(RecipeCategory.COMBAT)
-            .define('A', Items.GUNPOWDER)
-            .define('B', Items.CLAY_BALL)
-            .pattern(" A ")
-            .pattern("BAB")
-            .pattern(" B ")
-            .into(1, AVPItems.CASELESS_CARTRIDGE);
-    }
-
     private static void createBulletRecipes(RecipeBuilder builder) {
         builder.shaped()
             .withCategory(RecipeCategory.COMBAT)
-            .define('A', AVPItems.LEAD_NUGGET)
-            .pattern("A")
-            .into(4, AVPItems.BULLET_TIP);
+            .define('A', AVPItems.BRASS_NUGGET)
+            .define('B', Items.GUNPOWDER)
+            .define('C', AVPItems.LEAD_NUGGET)
+            .pattern(" C ")
+            .pattern("ABA")
+            .pattern("AAA")
+            .into(24, AVPItems.SMALL_BULLET);
+
         builder.shaped()
             .withCategory(RecipeCategory.COMBAT)
-            .define('A', AVPItems.BULLET_TIP)
-            .define('B', AVPItems.SMALL_CASING)
-            .pattern("A")
-            .pattern("B")
-            .into(8, AVPItems.SMALL_BULLET);
+            .define('A', AVPItems.BRASS_NUGGET)
+            .define('B', Items.GUNPOWDER)
+            .define('C', AVPItems.STEEL_NUGGET)
+            .define('D', AVPItems.LEAD_NUGGET)
+            .pattern("ADA")
+            .pattern("ABA")
+            .pattern("ACA")
+            .into(16, AVPItems.MEDIUM_BULLET);
+
         builder.shaped()
             .withCategory(RecipeCategory.COMBAT)
-            .define('A', AVPItems.BULLET_TIP)
-            .define('B', AVPItems.MEDIUM_CASING)
-            .pattern("A")
-            .pattern("B")
-            .into(8, AVPItems.MEDIUM_BULLET);
+            .define('A', AVPItems.BRASS_NUGGET)
+            .define('B', Items.GUNPOWDER)
+            .define('C', AVPItems.STEEL_NUGGET)
+            .define('D', AVPItems.LEAD_NUGGET)
+            .pattern("DDD")
+            .pattern("CBC")
+            .pattern("CAC")
+            .into(8, AVPItems.HEAVY_BULLET);
+
         builder.shaped()
             .withCategory(RecipeCategory.COMBAT)
-            .define('A', AVPItems.BULLET_TIP)
-            .define('B', AVPItems.HEAVY_CASING)
-            .pattern("A")
-            .pattern("B")
-            .into(16, AVPItems.HEAVY_BULLET);
+            .define('A', AVPItems.BRASS_NUGGET)
+            .define('B', Items.GUNPOWDER)
+            .define('C', AVPItems.POLYMER)
+            .define('D', AVPItems.LEAD_NUGGET)
+            .pattern("DDD")
+            .pattern("CBC")
+            .pattern("CAC")
+            .into(12, AVPItems.SHOTGUN_SHELL);
+
         builder.shaped()
             .withCategory(RecipeCategory.COMBAT)
-            .define('A', AVPItems.BULLET_TIP)
-            .define('B', AVPItems.SHOTGUN_CASING)
-            .pattern("A")
-            .pattern("B")
-            .into(8, AVPItems.SHOTGUN_SHELL);
-        builder.shaped()
-            .withCategory(RecipeCategory.COMBAT)
-            .define('A', AVPItems.BULLET_TIP)
-            .define('B', AVPItems.CASELESS_CARTRIDGE)
-            .pattern("A")
-            .pattern("B")
-            .into(8, AVPItems.CASELESS_BULLET);
+            .define('A', AVPItems.BRASS_NUGGET)
+            .define('B', Items.GUNPOWDER)
+            .define('C', Items.CLAY_BALL)
+            .define('D', AVPItems.LEAD_NUGGET)
+            .pattern(" D ")
+            .pattern("CBC")
+            .pattern("CAC")
+            .into(16, AVPItems.CASELESS_BULLET);
+
         builder.shaped()
             .withCategory(RecipeCategory.COMBAT)
             .define('A', AVPItems.ALUMINUM_NUGGET)

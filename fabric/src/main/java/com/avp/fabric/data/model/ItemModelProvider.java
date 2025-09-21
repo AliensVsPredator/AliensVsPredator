@@ -136,7 +136,6 @@ public class ItemModelProvider extends FabricModelProvider {
         generateStandardItem(generators, AVPItems.BLUEPRINT_M4RA_BATTLE_RIFLE);
         generateStandardItem(generators, AVPItems.BLUEPRINT_ZX_76_SHOTGUN);
         generateStandardItem(generators, AVPItems.BRASS_INGOT);
-        generateStandardItem(generators, AVPItems.BULLET_TIP);
         generateStandardItem(generators, AVPItems.CANISTER);
         generateStandardItem(generators, AVPItems.WATER_CANISTER);
         generateStandardItem(generators, AVPItems.LAVA_CANISTER);
@@ -148,19 +147,16 @@ public class ItemModelProvider extends FabricModelProvider {
         generateStandardItem(generators, AVPItems.SERVO);
         generateStandardItem(generators, AVPItems.SPEAKER);
         generateStandardItem(generators, AVPItems.CARBON_DUST);
-        generateStandardItem(generators, AVPItems.CASELESS_CARTRIDGE);
         generateStandardItem(generators, AlienItems.CHITIN);
         generateStandardItem(generators, AVPItems.CPU);
         generateStandardItem(generators, AVPItems.DIODE);
         generateStandardItem(generators, AVPItems.FERROALUMINUM_INGOT);
         generateStandardItem(generators, AVPItems.GRIP);
-        generateStandardItem(generators, AVPItems.HEAVY_CASING);
         generateStandardItem(generators, AVPItems.INTEGRATED_CIRCUIT);
         generateStandardItem(generators, AVPItems.LEAD_INGOT);
         generateStandardItem(generators, AVPItems.LED);
         generateStandardItem(generators, AVPItems.LED_DISPLAY);
         generateStandardItem(generators, AVPItems.LITHIUM_DUST);
-        generateStandardItem(generators, AVPItems.MEDIUM_CASING);
         generateStandardItem(generators, AVPItems.MINIGUN_BARREL);
         generateStandardItem(generators, AVPItems.NEODYMIUM_MAGNET);
         generateStandardItem(generators, AlienItems.NETHER_CHITIN);
@@ -185,9 +181,7 @@ public class ItemModelProvider extends FabricModelProvider {
         generateStandardItem(generators, AVPItems.RESISTOR);
         generateStandardItem(generators, AVPItems.ROCKET_BARREL);
         generateStandardItem(generators, AlienItems.ROYALTY_POTTERY_SHERD);
-        generateStandardItem(generators, AVPItems.SHOTGUN_CASING);
         generateStandardItem(generators, AVPItems.SILICON);
-        generateStandardItem(generators, AVPItems.SMALL_CASING);
         generateStandardItem(generators, AVPItems.SMART_BARREL);
         generateStandardItem(generators, AVPItems.SMART_RECEIVER);
         generateHandheldItem(generators, AVPItems.STEEL_AXE);

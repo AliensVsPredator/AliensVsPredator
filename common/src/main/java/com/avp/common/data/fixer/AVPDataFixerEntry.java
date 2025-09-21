@@ -11,11 +11,11 @@ public record AVPDataFixerEntry(
     ResourceLocation to
 ) {
 
-    public AVPDataFixerEntry(
-        Registry<?> registry,
-        String from,
-        String to
-    ) {
-        this(registry, AVPResources.location(from), AVPResources.location(to));
+    public static AVPDataFixerEntry avpToAvp(Registry<?> registry, String from, String to) {
+        return new AVPDataFixerEntry(registry, AVPResources.location(from), AVPResources.location(to));
+    }
+
+    public static AVPDataFixerEntry avpToMc(Registry<?> registry, String from, String to) {
+        return new AVPDataFixerEntry(registry, AVPResources.location(from), ResourceLocation.fromNamespaceAndPath("minecraft", to));
     }
 }

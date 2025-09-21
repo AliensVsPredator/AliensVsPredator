@@ -81,14 +81,6 @@ public class IngredientsCreativeModeTabInitializer {
         CreativeModeTabUtil.accept(output, AVPItems.SMART_RECEIVER);
         CreativeModeTabUtil.accept(output, AVPItems.STOCK);
 
-        // Ammo materials
-        CreativeModeTabUtil.accept(output, AVPItems.BULLET_TIP);
-        CreativeModeTabUtil.accept(output, AVPItems.SMALL_CASING);
-        CreativeModeTabUtil.accept(output, AVPItems.MEDIUM_CASING);
-        CreativeModeTabUtil.accept(output, AVPItems.HEAVY_CASING);
-        CreativeModeTabUtil.accept(output, AVPItems.SHOTGUN_CASING);
-        CreativeModeTabUtil.accept(output, AVPItems.CASELESS_CARTRIDGE);
-
         // Alien materials
         CreativeModeTabUtil.accept(output, AlienItems.RESIN_BALL);
         CreativeModeTabUtil.accept(output, AlienItems.CHITIN);
