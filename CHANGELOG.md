@@ -14,10 +14,12 @@
 - Added pitted plastic stairs blocks.
 
 ## ♻️ Changes
-- N/A
+- Updated communication outpost structure (replaced metal blocks with metal double slab variants).
+- Updated munitions outpost structure (replaced metal blocks with metal double slab variants).
+- Updated supply outpost structure (replaced metal blocks with metal double slab variants).
 
 ## 🐞 Fixes
-- N/A
+- Fixed multiple issues with outpost structures.
 
 ## 🧪 Experimental
 - N/A
