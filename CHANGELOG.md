@@ -10,7 +10,7 @@
 - N/A
 
 ## ♻️ Changes
-- N/A
+- Reduced thrown grenade velocity by 33%.
 
 ## 🐞 Fixes
 - N/A

@@ -41,18 +41,23 @@ public class GrenadeItem extends Item {
 
         if (!level.isClientSide) {
             var thrownGrenade = new ThrownGrenade(level, player);
+
             thrownGrenade.setItem(itemInHand);
+
             if (isIrradiated) {
                 thrownGrenade.setIrradiated(true);
             }
+
             if (isIncendiary) {
                 thrownGrenade.setIncendiary(true);
             }
-            thrownGrenade.shootFromRotation(player, player.getXRot(), player.getYRot(), 0.0F, 1.5F, 1.0F);
+
+            thrownGrenade.shootFromRotation(player, player.getXRot(), player.getYRot(), 0.0F, 1.0F, 1.0F);
             level.addFreshEntity(thrownGrenade);
         }
 
         player.awardStat(Stats.ITEM_USED.get(this));
+
         if (!player.getAbilities().instabuild) {
             itemInHand.shrink(1);
         }
