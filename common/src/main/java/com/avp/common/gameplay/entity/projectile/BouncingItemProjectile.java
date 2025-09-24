@@ -22,6 +22,10 @@ import com.avp.mixin.BlockBehaviourInvoker;
  */
 public abstract class BouncingItemProjectile extends ThrowableItemProjectile {
 
+    private static final double PERCENT_MOVEMENT_LOSS_ON_DIRECT_BOUNCE = -0.15;
+
+    private static final double PERCENT_MOVEMENT_LOSS_ON_INDIRECT_BOUNCE = 0.5;
+
     protected boolean shouldBounce;
 
     protected int maxLife;
@@ -123,18 +127,34 @@ public abstract class BouncingItemProjectile extends ThrowableItemProjectile {
      *                  modified.
      */
     private void bounce(Direction direction) {
-        var percentMovementLossOnDirectBounce = -0.15;
-        var percentMovementLossOnIndirectBounce = 0.5;
         switch (direction.getAxis()) {
-            case X -> setDeltaMovement(getDeltaMovement().multiply(percentMovementLossOnDirectBounce, percentMovementLossOnIndirectBounce, percentMovementLossOnIndirectBounce));
+            case X -> setDeltaMovement(
+                getDeltaMovement().multiply(
+                    PERCENT_MOVEMENT_LOSS_ON_DIRECT_BOUNCE,
+                    PERCENT_MOVEMENT_LOSS_ON_INDIRECT_BOUNCE,
+                    PERCENT_MOVEMENT_LOSS_ON_INDIRECT_BOUNCE
+                )
+            );
             case Y -> {
-                setDeltaMovement(getDeltaMovement().multiply(percentMovementLossOnIndirectBounce, percentMovementLossOnDirectBounce, percentMovementLossOnIndirectBounce));
+                setDeltaMovement(
+                    getDeltaMovement().multiply(
+                        PERCENT_MOVEMENT_LOSS_ON_INDIRECT_BOUNCE,
+                        PERCENT_MOVEMENT_LOSS_ON_DIRECT_BOUNCE,
+                        PERCENT_MOVEMENT_LOSS_ON_INDIRECT_BOUNCE
+                    )
+                );
 
                 if (getDeltaMovement().y() < getGravity()) {
                     setDeltaMovement(getDeltaMovement().multiply(1, 0, 1));
                 }
             }
-            case Z -> setDeltaMovement(getDeltaMovement().multiply(percentMovementLossOnIndirectBounce, percentMovementLossOnIndirectBounce, percentMovementLossOnDirectBounce));
+            case Z -> setDeltaMovement(
+                getDeltaMovement().multiply(
+                    PERCENT_MOVEMENT_LOSS_ON_INDIRECT_BOUNCE,
+                    PERCENT_MOVEMENT_LOSS_ON_INDIRECT_BOUNCE,
+                    PERCENT_MOVEMENT_LOSS_ON_DIRECT_BOUNCE
+                )
+            );
         }
     }
 
