@@ -123,15 +123,18 @@ public abstract class BouncingItemProjectile extends ThrowableItemProjectile {
      *                  modified.
      */
     private void bounce(Direction direction) {
+        var percentMovementLossOnDirectBounce = -0.15;
+        var percentMovementLossOnIndirectBounce = 0.5;
         switch (direction.getAxis()) {
-            case X -> this.setDeltaMovement(this.getDeltaMovement().multiply(-0.5, 0.75, 0.75));
+            case X -> setDeltaMovement(getDeltaMovement().multiply(percentMovementLossOnDirectBounce, percentMovementLossOnIndirectBounce, percentMovementLossOnIndirectBounce));
             case Y -> {
-                this.setDeltaMovement(this.getDeltaMovement().multiply(0.75, -0.25, 0.75));
-                if (this.getDeltaMovement().y() < this.getGravity()) {
-                    this.setDeltaMovement(this.getDeltaMovement().multiply(1, 0, 1));
+                setDeltaMovement(getDeltaMovement().multiply(percentMovementLossOnIndirectBounce, percentMovementLossOnDirectBounce, percentMovementLossOnIndirectBounce));
+
+                if (getDeltaMovement().y() < getGravity()) {
+                    setDeltaMovement(getDeltaMovement().multiply(1, 0, 1));
                 }
             }
-            case Z -> this.setDeltaMovement(this.getDeltaMovement().multiply(0.75, 0.75, -0.5));
+            case Z -> setDeltaMovement(getDeltaMovement().multiply(percentMovementLossOnIndirectBounce, percentMovementLossOnIndirectBounce, percentMovementLossOnDirectBounce));
         }
     }
 

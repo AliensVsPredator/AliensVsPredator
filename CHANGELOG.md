@@ -11,6 +11,7 @@
 
 ## ♻️ Changes
 - Reduced thrown grenade velocity by 33%.
+- Grenades now lose far more momentum with each bounce.
 
 ## 🐞 Fixes
 - N/A
