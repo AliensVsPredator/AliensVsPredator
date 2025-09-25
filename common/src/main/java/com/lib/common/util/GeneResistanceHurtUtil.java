@@ -5,6 +5,7 @@ import com.lib.common.gameplay.gene.Gene;
 import com.lib.common.gameplay.gene.GeneOperationType;
 import com.lib.common.gameplay.gene.Genes;
 import com.lib.common.model.GeneCarrier;
+import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageTypes;
 
@@ -24,7 +25,7 @@ public class GeneResistanceHurtUtil {
             return applyGeneResistanceToDamage(geneContainer, Genes.ACID_RESISTANCE, damage);
         }
 
-        if (isFireDamageSource(damageSource)) {
+        if (damageSource.is(DamageTypeTags.IS_FIRE)) {
             return applyGeneResistanceToDamage(geneContainer, Genes.FIRE_RESISTANCE, damage);
         }
 
@@ -49,13 +50,5 @@ public class GeneResistanceHurtUtil {
         var modifiedDamage = Math.max(damage - (percentageResistance * damage) - damageResistance, 0);
 
         return (float) modifiedDamage;
-    }
-
-    private static boolean isFireDamageSource(DamageSource damageSource) {
-        return damageSource.is(DamageTypes.IN_FIRE) ||
-            damageSource.is(DamageTypes.ON_FIRE) ||
-            damageSource.is(DamageTypes.CAMPFIRE) ||
-            damageSource.is(DamageTypes.HOT_FLOOR) ||
-            damageSource.is(DamageTypes.LAVA);
     }
 }

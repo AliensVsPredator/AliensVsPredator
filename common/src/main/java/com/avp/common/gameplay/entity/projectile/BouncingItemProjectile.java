@@ -22,6 +22,10 @@ import com.avp.mixin.BlockBehaviourInvoker;
  */
 public abstract class BouncingItemProjectile extends ThrowableItemProjectile {
 
+    private static final double PERCENT_MOVEMENT_LOSS_ON_DIRECT_BOUNCE = -0.15;
+
+    private static final double PERCENT_MOVEMENT_LOSS_ON_INDIRECT_BOUNCE = 0.5;
+
     protected boolean shouldBounce;
 
     protected int maxLife;
@@ -124,14 +128,33 @@ public abstract class BouncingItemProjectile extends ThrowableItemProjectile {
      */
     private void bounce(Direction direction) {
         switch (direction.getAxis()) {
-            case X -> this.setDeltaMovement(this.getDeltaMovement().multiply(-0.5, 0.75, 0.75));
+            case X -> setDeltaMovement(
+                getDeltaMovement().multiply(
+                    PERCENT_MOVEMENT_LOSS_ON_DIRECT_BOUNCE,
+                    PERCENT_MOVEMENT_LOSS_ON_INDIRECT_BOUNCE,
+                    PERCENT_MOVEMENT_LOSS_ON_INDIRECT_BOUNCE
+                )
+            );
             case Y -> {
-                this.setDeltaMovement(this.getDeltaMovement().multiply(0.75, -0.25, 0.75));
-                if (this.getDeltaMovement().y() < this.getGravity()) {
-                    this.setDeltaMovement(this.getDeltaMovement().multiply(1, 0, 1));
+                setDeltaMovement(
+                    getDeltaMovement().multiply(
+                        PERCENT_MOVEMENT_LOSS_ON_INDIRECT_BOUNCE,
+                        PERCENT_MOVEMENT_LOSS_ON_DIRECT_BOUNCE,
+                        PERCENT_MOVEMENT_LOSS_ON_INDIRECT_BOUNCE
+                    )
+                );
+
+                if (getDeltaMovement().y() < getGravity()) {
+                    setDeltaMovement(getDeltaMovement().multiply(1, 0, 1));
                 }
             }
-            case Z -> this.setDeltaMovement(this.getDeltaMovement().multiply(0.75, 0.75, -0.5));
+            case Z -> setDeltaMovement(
+                getDeltaMovement().multiply(
+                    PERCENT_MOVEMENT_LOSS_ON_INDIRECT_BOUNCE,
+                    PERCENT_MOVEMENT_LOSS_ON_INDIRECT_BOUNCE,
+                    PERCENT_MOVEMENT_LOSS_ON_DIRECT_BOUNCE
+                )
+            );
         }
     }
 

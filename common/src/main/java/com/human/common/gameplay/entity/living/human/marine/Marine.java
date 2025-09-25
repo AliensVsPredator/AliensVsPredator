@@ -9,6 +9,7 @@ import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -23,16 +24,23 @@ import java.util.function.Supplier;
 import com.avp.AVP;
 import com.avp.common.model.inventory.AVPInventory;
 import com.avp.common.model.inventory.AVPInventoryBearer;
+import com.avp.common.registry.init.item.AVPArmorItems;
 import com.avp.common.registry.init.item.AVPItems;
 
 public class Marine extends AbstractHuman implements AVPInventoryBearer, GOAPUser<MarineGOAP> {
 
-    private static final List<List<Item>> USABLE_ARMOR_ITEMS = List.of(
+    private static final List<List<Supplier<Item>>> DEFAULT_ARMOR_SETS = List.of(
         List.of(
-            Items.IRON_HELMET,
-            Items.IRON_CHESTPLATE,
-            Items.IRON_LEGGINGS,
-            Items.IRON_BOOTS
+            AVPArmorItems.TACTICAL_HELMET,
+            AVPArmorItems.TACTICAL_CHESTPLATE,
+            AVPArmorItems.TACTICAL_LEGGINGS,
+            AVPArmorItems.TACTICAL_BOOTS
+        ),
+        List.of(
+            AVPArmorItems.TACTICAL_CAMO_HELMET,
+            AVPArmorItems.TACTICAL_CAMO_CHESTPLATE,
+            AVPArmorItems.TACTICAL_CAMO_LEGGINGS,
+            AVPArmorItems.TACTICAL_CAMO_BOOTS
         )
     );
 
@@ -91,11 +99,9 @@ public class Marine extends AbstractHuman implements AVPInventoryBearer, GOAPUse
         @Nullable SpawnGroupData spawnGroupData
     ) {
         addInitialWeapon();
+        marineInventory.addPersonalItem(new ItemStack(AVPItems.GRENADE.get()));
 
-        if (random.nextInt(100) <= 10) {
-            marineInventory.addPersonalItem(new ItemStack(AVPItems.GRENADE.get()));
-            addInitialArmor();
-        }
+        addInitialArmor();
 
         return super.finalizeSpawn(level, difficulty, spawnType, spawnGroupData);
     }
@@ -118,14 +124,19 @@ public class Marine extends AbstractHuman implements AVPInventoryBearer, GOAPUse
     }
 
     private void addInitialArmor() {
-        var randomArmorSetIndex = getRandom().nextInt(USABLE_ARMOR_ITEMS.size());
-        var selectedArmor = USABLE_ARMOR_ITEMS.get(randomArmorSetIndex)
+        var randomArmorSetIndex = getRandom().nextInt(DEFAULT_ARMOR_SETS.size());
+        var selectedArmor = DEFAULT_ARMOR_SETS.get(randomArmorSetIndex)
             .stream()
-            .map(ItemStack::new)
+            .map(itemSupplier -> new ItemStack(itemSupplier.get()))
             .toArray(ItemStack[]::new);
 
         for (var i = 0; i < ARMOR_EQUIPMENT_SLOTS.size(); i++) {
-            marineInventory.addPersonalItem(selectedArmor[i]);
+            // TODO: Once goap ai is improved, add armor to marine's inventory and let them equip it.
+            // marineInventory.addPersonalItem(selectedArmor[i]);
+            var itemStack = selectedArmor[i];
+            // TODO: This cast isn't necessarily safe.
+            var armorItem = (ArmorItem) itemStack.getItem();
+            setItemSlot(armorItem.getEquipmentSlot(), itemStack);
         }
     }
 
