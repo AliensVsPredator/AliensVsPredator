@@ -7,7 +7,7 @@
 - N/A
 
 ## ✨ What's New
-- N/A
+- AVP now requires AzureLib `3.0.30`.
 
 ## ♻️ Changes
 - Reduced thrown grenade velocity by 33%.
