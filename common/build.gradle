@@ -28,6 +28,7 @@ dependencies {
     // Manually added dependencies
     compileOnly "com.github.just-collective:just-codec:${project.just_codec_version}"
     compileOnly "com.github.just-collective:just-core:${project.just_core_version}"
+    compileOnly "com.github.just-collective:just-goap:${project.just_goap_version}"
     compileOnly "mod.azure.azurelib:azurelib-common-${project.minecraft_version}:${project.azurelib_version}"
     compileOnly "mezz.jei:jei-${minecraft_version}-neoforge-api:${project.jei_version}"
     compileOnly "me.shedaniel:RoughlyEnoughItems-api-neoforge:${project.rei_version}"
@@ -35,6 +36,23 @@ dependencies {
 
     // Compats
     compileOnly "maven.modrinth:gigeresque:0.8.8"
+}
+
+configurations.configureEach {
+    resolutionStrategy {
+        force 'org.slf4j:slf4j-api:2.0.9'
+
+        eachDependency { DependencyResolveDetails details ->
+            if (details.requested.group == 'org.slf4j' && details.requested.name == 'slf4j-api') {
+                details.useVersion '2.0.9'
+                details.because 'Aligning SLF4J version to satisfy NeoForge strict constraint'
+            }
+            if (details.requested.group == 'ch.qos.logback' && details.requested.name == 'logback-classic') {
+                details.useVersion '1.4.11'
+                details.because 'Logback 1.5.x requires slf4j-api 2.0.17+, incompatible with NeoForge'
+            }
+        }
+    }
 }
 
 configurations {
