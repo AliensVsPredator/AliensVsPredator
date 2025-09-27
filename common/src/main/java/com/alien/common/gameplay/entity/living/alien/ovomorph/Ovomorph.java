@@ -2,11 +2,14 @@ package com.alien.common.gameplay.entity.living.alien.ovomorph;
 
 import com.alien.common.data.AlienVariantTypes;
 import com.alien.common.gameplay.entity.living.alien.Alien;
+import com.alien.common.gameplay.entity.living.alien.ovomorph.ai.OvomorphGOAPFactory;
 import com.alien.common.model.alien.HatchState;
 import com.alien.common.model.alien.variant.AlienVariant;
 import com.alien.common.registry.init.AlienEntityTypes;
 import com.just.core.functional.option.Option;
+import com.just.goap.GOAP;
 import com.lib.common.gameplay.entity.manager.VibrationSystemManager;
+import com.lib.common.gameplay.goap.GOAPUser;
 import com.lib.common.network.DataAccessor;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -31,7 +34,7 @@ import com.avp.common.registry.init.AVPSoundEvents;
 import com.avp.common.registry.tag.AVPEntityTypeTags;
 import com.avp.common.util.AVPPredicates;
 
-public class Ovomorph extends Alien implements Shearable {
+public class Ovomorph extends Alien implements GOAPUser<Ovomorph>, Shearable {
 
     public static final HatchState DEFAULT_HATCH_STATE = HatchState.SLEEPING;
 
@@ -67,6 +70,11 @@ public class Ovomorph extends Alien implements Shearable {
     }
 
     @Override
+    public @Nullable GOAP<Ovomorph> createGOAP() {
+        return OvomorphGOAPFactory.create();
+    }
+
+    @Override
     public @Nullable EntityType<? extends Alien> getTypeForVariant(AlienVariant alienVariant) {
         return getType(alienVariant, isRoyal());
     }
@@ -82,8 +90,6 @@ public class Ovomorph extends Alien implements Shearable {
         hatchManager.tick();
 
         if (!level().isClientSide) {
-//            goap.update(this);
-
             this.wantsPickup = canBePickedUp();
 
             if (!pickupRequestAcknowledged && wantsPickup && tickCount % 20 == 0) {
