@@ -1,6 +1,5 @@
 package com.avp.common.util;
 
-import com.alien.common.gameplay.entity.living.alien.Alien;
 import com.alien.common.model.alien.Host;
 import com.predator.common.gameplay.entity.living.yautja.Yautja;
 import net.minecraft.world.entity.Entity;
@@ -66,7 +65,7 @@ public class AVPPredicates {
         return target instanceof Host host && host.getEmbryoType().isSome();
     }
 
-    public static boolean isFreeHost(Alien parasite, Entity hostTarget) {
+    public static boolean isFreeHost(Entity parasite, Entity hostTarget) {
         return AVPPredicates.isLiving(hostTarget) &&
             isHost(hostTarget) &&
             !hasEmbryo(hostTarget) &&
@@ -86,7 +85,7 @@ public class AVPPredicates {
         return target.hasPassenger(passenger -> passenger.getType().is(AVPEntityTypeTags.PARASITES));
     }
 
-    public static boolean isSelfOrOtherParasiteAttached(Alien parasite, Entity target) {
+    public static boolean isSelfOrOtherParasiteAttached(Entity parasite, Entity target) {
         return target.hasPassenger(
             passenger -> passenger.equals(parasite) || passenger.getType().is(AVPEntityTypeTags.PARASITES)
         );
