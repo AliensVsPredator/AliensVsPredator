@@ -1,6 +1,6 @@
 package com.avp.mixin;
 
-import com.lib.common.gameplay.goap.GOAP;
+import com.just.goap.GOAP;
 import com.lib.common.gameplay.goap.GOAPUser;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -14,7 +14,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(LivingEntity.class)
-public abstract class MixinLivingEntity_GOAPUser extends Entity implements GOAPUser<GOAP<Entity>> {
+public abstract class MixinLivingEntity_GOAPUser extends Entity implements GOAPUser<Entity> {
 
     @Unique
     private GOAP<Entity> goap;

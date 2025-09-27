@@ -1,8 +1,8 @@
 package com.human.common.gameplay.entity.living.human.marine;
 
 import com.human.common.gameplay.entity.living.human.AbstractHuman;
-import com.human.common.gameplay.entity.living.human.marine.ai.MarineGOAP;
 import com.human.common.registry.init.item.HumanGunItems;
+import com.just.goap.GOAP;
 import com.lib.common.gameplay.goap.GOAPUser;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.DifficultyInstance;
@@ -27,7 +27,7 @@ import com.avp.common.model.inventory.AVPInventoryBearer;
 import com.avp.common.registry.init.item.AVPArmorItems;
 import com.avp.common.registry.init.item.AVPItems;
 
-public class Marine extends AbstractHuman implements AVPInventoryBearer, GOAPUser<MarineGOAP> {
+public class Marine extends AbstractHuman implements AVPInventoryBearer, GOAPUser<Marine> {
 
     private static final List<List<Supplier<Item>>> DEFAULT_ARMOR_SETS = List.of(
         List.of(
@@ -76,8 +76,8 @@ public class Marine extends AbstractHuman implements AVPInventoryBearer, GOAPUse
     }
 
     @Override
-    public @Nullable MarineGOAP createGOAP() {
-        return new MarineGOAP(this);
+    public @Nullable GOAP<Marine> createGOAP() {
+        return GOAP.<Marine>builder().build();
     }
 
     @Override

@@ -2,7 +2,6 @@ package com.alien.common.gameplay.entity.living.alien.ovomorph;
 
 import com.alien.common.data.AlienVariantTypes;
 import com.alien.common.gameplay.entity.living.alien.Alien;
-import com.alien.common.gameplay.entity.living.alien.ovomorph.ai.OvomorphGOAP;
 import com.alien.common.model.alien.HatchState;
 import com.alien.common.model.alien.variant.AlienVariant;
 import com.alien.common.registry.init.AlienEntityTypes;
@@ -48,8 +47,6 @@ public class Ovomorph extends Alien implements Shearable {
 
     private final OvomorphAnimationDispatcher animationDispatcher;
 
-    private final OvomorphGOAP goap;
-
     private final HatchManager hatchManager;
 
     public boolean pickupRequestAcknowledged;
@@ -64,7 +61,6 @@ public class Ovomorph extends Alien implements Shearable {
         this.isRooted = new DataAccessor<>(this, AVPDataKeys.OVOMORPH_IS_ROOTED);
 
         this.animationDispatcher = new OvomorphAnimationDispatcher(this);
-        this.goap = new OvomorphGOAP(this);
         this.hatchManager = new HatchManager(this, 3 * 20, 3 * 20);
         this.config = AVP.config.statsConfigs.OVOMORPH_STATS;
         this.wantsPickup = false;
@@ -86,7 +82,7 @@ public class Ovomorph extends Alien implements Shearable {
         hatchManager.tick();
 
         if (!level().isClientSide) {
-            goap.update(this);
+//            goap.update(this);
 
             this.wantsPickup = canBePickedUp();
 

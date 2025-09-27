@@ -1,18 +1,19 @@
 package com.lib.common.gameplay.goap;
 
 import com.just.core.functional.option.Option;
+import com.just.goap.GOAP;
 import org.jetbrains.annotations.Nullable;
 
-public interface GOAPUser<T extends GOAP<?>> {
+public interface GOAPUser<T> {
 
     @Nullable
-    T createGOAP();
+    GOAP<T> createGOAP();
 
-    default @Nullable T getGOAPOrNull() {
+    default @Nullable GOAP<T> getGOAPOrNull() {
         return null;
     }
 
-    default Option<T> getGOAP() {
+    default Option<GOAP<T>> getGOAP() {
         return Option.ofNullable(getGOAPOrNull());
     }
 }
