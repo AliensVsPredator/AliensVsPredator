@@ -18,12 +18,12 @@ import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Predicate;
 
-public class AVPNeoInventory {
+public class AVPInventory {
 
-    public static final Codec<AVPNeoInventory> CODEC = new Codec<>() {
+    public static final Codec<AVPInventory> CODEC = new Codec<>() {
 
         @Override
-        public <T> Result<AVPNeoInventory, T> decode(CodecSchema<T> codecSchema, T input) {
+        public <T> Result<AVPInventory, T> decode(CodecSchema<T> codecSchema, T input) {
             return codecSchema.getList(input).andThen(consumer -> {
                 var listBuilder = new ArrayList<ItemStack>();
                 var failed = new AtomicBoolean(false);
@@ -41,12 +41,12 @@ public class AVPNeoInventory {
                     return Result.err(input);
                 }
 
-                return Result.ok(AVPNeoInventory.fromItemStacks(listBuilder.toArray(ItemStack[]::new)));
+                return Result.ok(AVPInventory.fromItemStacks(listBuilder.toArray(ItemStack[]::new)));
             });
         }
 
         @Override
-        public <T> T encode(CodecSchema<T> codecSchema, AVPNeoInventory value) {
+        public <T> T encode(CodecSchema<T> codecSchema, AVPInventory value) {
             return codecSchema.createList(
                 Arrays.stream(value.getSerializedItemStacks())
                     .filter(Predicate.not(ItemStack::isEmpty))
@@ -55,8 +55,8 @@ public class AVPNeoInventory {
         }
     };
 
-    public static AVPNeoInventory fromItemStacks(ItemStack[] stacks) {
-        var inventory = new AVPNeoInventory(stacks.length);
+    public static AVPInventory fromItemStacks(ItemStack[] stacks) {
+        var inventory = new AVPInventory(stacks.length);
         for (int i = 0; i < stacks.length; i++) {
             var stack = stacks[i];
             if (stack != null && !stack.isEmpty()) {
@@ -72,7 +72,7 @@ public class AVPNeoInventory {
 
     private final Map<Item, Set<Entry>> itemToEntriesMap;
 
-    public AVPNeoInventory(int size) {
+    public AVPInventory(int size) {
         this.emptyEntries = new ObjectArraySet<>();
         this.itemToEntriesMap = new HashMap<>();
 
@@ -417,8 +417,8 @@ public class AVPNeoInventory {
             this.slotIndex = slotIndex;
         }
 
-        public AVPNeoInventory getInventory() {
-            return AVPNeoInventory.this;
+        public AVPInventory getInventory() {
+            return AVPInventory.this;
         }
 
         public Item getItem() {

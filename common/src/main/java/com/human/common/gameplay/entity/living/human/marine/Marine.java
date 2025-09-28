@@ -37,11 +37,19 @@ import java.util.List;
 import java.util.function.Supplier;
 
 import com.avp.AVP;
-import com.avp.common.model.inventory.AVPNeoInventory;
+import com.avp.common.model.inventory.AVPInventory;
 import com.avp.common.registry.init.item.AVPArmorItems;
 import com.avp.common.registry.init.item.AVPItems;
 
 public class Marine extends AbstractHuman implements GOAPUser<Marine> {
+
+    private static final String NBT_INVENTORY = "inventory";
+
+    @Deprecated
+    private static final String NBT_PERSONAL_INVENTORY = "personalInventory";
+
+    @Deprecated
+    private static final String NBT_PRIMARY_INVENTORY = "primaryInventory";
 
     private static final List<List<Supplier<Item>>> DEFAULT_ARMOR_SETS = List.of(
         List.of(
@@ -81,12 +89,12 @@ public class Marine extends AbstractHuman implements GOAPUser<Marine> {
 
     private final MarineAnimationDispatcher animationDispatcher;
 
-    private final AVPNeoInventory inventory;
+    private final AVPInventory inventory;
 
     public Marine(EntityType<? extends PathfinderMob> entityType, Level level) {
         super(entityType, level);
         this.animationDispatcher = new MarineAnimationDispatcher(this);
-        this.inventory = new AVPNeoInventory(27);
+        this.inventory = new AVPInventory(27);
     }
 
     @Override
@@ -141,15 +149,9 @@ public class Marine extends AbstractHuman implements GOAPUser<Marine> {
         return super.mobInteract(player, interactionHand);
     }
 
-    public AVPNeoInventory getNeoInventory() {
+    public AVPInventory getNeoInventory() {
         return inventory;
     }
-
-    private static final String NBT_INVENTORY = "inventory";
-
-    private static final String NBT_PERSONAL_INVENTORY = "personalInventory";
-
-    private static final String NBT_PRIMARY_INVENTORY = "primaryInventory";
 
     @Override
     public void readAdditionalSaveData(@NotNull CompoundTag compoundTag) {
@@ -168,7 +170,7 @@ public class Marine extends AbstractHuman implements GOAPUser<Marine> {
         }
 
         if (compoundTag.contains(NBT_INVENTORY)) {
-            AVPNeoInventory.CODEC.decode(CodecSchemas.NBT, compoundTag.get(NBT_INVENTORY))
+            AVPInventory.CODEC.decode(CodecSchemas.NBT, compoundTag.get(NBT_INVENTORY))
                 .inspectErr(tag -> AVP.LOGGER.error("Failed to load tag '{}'. Tag: {}", NBT_INVENTORY, tag))
                 .ifOk(loadedInventory -> Arrays.stream(loadedInventory.getSerializedItemStacks()).forEach(inventory::addItemStack));
         }
@@ -177,7 +179,7 @@ public class Marine extends AbstractHuman implements GOAPUser<Marine> {
     @Override
     public void addAdditionalSaveData(@NotNull CompoundTag compoundTag) {
         super.addAdditionalSaveData(compoundTag);
-        compoundTag.put(NBT_INVENTORY, AVPNeoInventory.CODEC.encode(CodecSchemas.NBT, inventory));
+        compoundTag.put(NBT_INVENTORY, AVPInventory.CODEC.encode(CodecSchemas.NBT, inventory));
     }
 
     private void addInitialArmor() {
