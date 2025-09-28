@@ -1,14 +1,28 @@
 package com.human.common.gameplay.entity.living.human.marine;
 
 import com.human.common.gameplay.entity.living.human.AbstractHuman;
+import com.human.common.gameplay.entity.living.human.marine.ai.MarineGOAPFactory;
 import com.human.common.registry.init.item.HumanGunItems;
+import com.just.core.functional.option.Option;
 import com.just.goap.GOAP;
 import com.lib.common.gameplay.goap.GOAPUser;
+import com.lib.common.gameplay.util.ItemUtil;
+import com.lib.common.util.codec.schema.CodecSchemas;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.world.DifficultyInstance;
-import net.minecraft.world.entity.*;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.SimpleContainer;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.MobSpawnType;
+import net.minecraft.world.entity.PathfinderMob;
+import net.minecraft.world.entity.SpawnGroupData;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -18,16 +32,16 @@ import net.minecraft.world.level.ServerLevelAccessor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.function.Supplier;
 
 import com.avp.AVP;
-import com.avp.common.model.inventory.AVPInventory;
-import com.avp.common.model.inventory.AVPInventoryBearer;
+import com.avp.common.model.inventory.AVPNeoInventory;
 import com.avp.common.registry.init.item.AVPArmorItems;
 import com.avp.common.registry.init.item.AVPItems;
 
-public class Marine extends AbstractHuman implements AVPInventoryBearer, GOAPUser<Marine> {
+public class Marine extends AbstractHuman implements GOAPUser<Marine> {
 
     private static final List<List<Supplier<Item>>> DEFAULT_ARMOR_SETS = List.of(
         List.of(
@@ -67,17 +81,17 @@ public class Marine extends AbstractHuman implements AVPInventoryBearer, GOAPUse
 
     private final MarineAnimationDispatcher animationDispatcher;
 
-    private final MarineInventory marineInventory;
+    private final AVPNeoInventory inventory;
 
     public Marine(EntityType<? extends PathfinderMob> entityType, Level level) {
         super(entityType, level);
         this.animationDispatcher = new MarineAnimationDispatcher(this);
-        this.marineInventory = new MarineInventory(this);
+        this.inventory = new AVPNeoInventory(27);
     }
 
     @Override
     public @Nullable GOAP<Marine> createGOAP() {
-        return GOAP.<Marine>builder().build();
+        return MarineGOAPFactory.create();
     }
 
     @Override
@@ -88,7 +102,10 @@ public class Marine extends AbstractHuman implements AVPInventoryBearer, GOAPUse
     @Override
     protected void dropEquipment() {
         super.dropEquipment();
-        marineInventory.dropItems();
+        Arrays.stream(inventory.getSerializedItemStacks())
+            .map(itemStack -> ItemUtil.drop(this, itemStack, true, false))
+            .flatMap(Option::toStream)
+            .forEach(itemEntity -> level().addFreshEntity(itemEntity));
     }
 
     @Override
@@ -99,7 +116,7 @@ public class Marine extends AbstractHuman implements AVPInventoryBearer, GOAPUse
         @Nullable SpawnGroupData spawnGroupData
     ) {
         addInitialWeapon();
-        marineInventory.addPersonalItem(new ItemStack(AVPItems.GRENADE.get()));
+        inventory.addItem(AVPItems.GRENADE.get());
 
         addInitialArmor();
 
@@ -107,20 +124,60 @@ public class Marine extends AbstractHuman implements AVPInventoryBearer, GOAPUse
     }
 
     @Override
-    public AVPInventory getInventory() {
-        return marineInventory;
+    protected @NotNull InteractionResult mobInteract(@NotNull Player player, @NotNull InteractionHand interactionHand) {
+        var itemStack = player.getItemInHand(interactionHand);
+
+        if (itemStack.getItem() instanceof ArmorItem) {
+            if (!level().isClientSide) {
+                var item = new ItemStack(itemStack.getItem(), 1);
+                item.applyComponents(itemStack.getComponents());
+                itemStack.consume(1, player);
+                inventory.addItem(item.getItem());
+            }
+
+            return InteractionResult.sidedSuccess(level().isClientSide);
+        }
+
+        return super.mobInteract(player, interactionHand);
     }
+
+    public AVPNeoInventory getNeoInventory() {
+        return inventory;
+    }
+
+    private static final String NBT_INVENTORY = "inventory";
+
+    private static final String NBT_PERSONAL_INVENTORY = "personalInventory";
+
+    private static final String NBT_PRIMARY_INVENTORY = "primaryInventory";
 
     @Override
     public void readAdditionalSaveData(@NotNull CompoundTag compoundTag) {
         super.readAdditionalSaveData(compoundTag);
-        marineInventory.load(compoundTag);
+
+        if (compoundTag.contains(NBT_PERSONAL_INVENTORY)) {
+            var personalInventory = new SimpleContainer(9);
+            personalInventory.fromTag(compoundTag.getList(NBT_PERSONAL_INVENTORY, Tag.TAG_COMPOUND), level().registryAccess());
+            personalInventory.getItems().forEach(inventory::addItemStack);
+        }
+
+        if (compoundTag.contains(NBT_PRIMARY_INVENTORY)) {
+            var primaryInventory = new SimpleContainer(27);
+            primaryInventory.fromTag(compoundTag.getList(NBT_PRIMARY_INVENTORY, Tag.TAG_COMPOUND), level().registryAccess());
+            primaryInventory.getItems().forEach(inventory::addItemStack);
+        }
+
+        if (compoundTag.contains(NBT_INVENTORY)) {
+            AVPNeoInventory.CODEC.decode(CodecSchemas.NBT, compoundTag.get(NBT_INVENTORY))
+                .inspectErr(tag -> AVP.LOGGER.error("Failed to load tag '{}'. Tag: {}", NBT_INVENTORY, tag))
+                .ifOk(loadedInventory -> Arrays.stream(loadedInventory.getSerializedItemStacks()).forEach(inventory::addItemStack));
+        }
     }
 
     @Override
     public void addAdditionalSaveData(@NotNull CompoundTag compoundTag) {
         super.addAdditionalSaveData(compoundTag);
-        marineInventory.save(compoundTag);
+        compoundTag.put(NBT_INVENTORY, AVPNeoInventory.CODEC.encode(CodecSchemas.NBT, inventory));
     }
 
     private void addInitialArmor() {
@@ -131,17 +188,12 @@ public class Marine extends AbstractHuman implements AVPInventoryBearer, GOAPUse
             .toArray(ItemStack[]::new);
 
         for (var i = 0; i < ARMOR_EQUIPMENT_SLOTS.size(); i++) {
-            // TODO: Once goap ai is improved, add armor to marine's inventory and let them equip it.
-            // marineInventory.addPersonalItem(selectedArmor[i]);
-            var itemStack = selectedArmor[i];
-            // TODO: This cast isn't necessarily safe.
-            var armorItem = (ArmorItem) itemStack.getItem();
-            setItemSlot(armorItem.getEquipmentSlot(), itemStack);
+            inventory.addItemStack(selectedArmor[i]);
         }
     }
 
     private void addInitialWeapon() {
-        marineInventory.addPersonalItem(
+        inventory.addItemStack(
             new ItemStack(USABLE_WEAPON_ITEM_SUPPLIERS.get(random.nextInt(USABLE_WEAPON_ITEM_SUPPLIERS.size())).get())
         );
     }

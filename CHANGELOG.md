@@ -8,6 +8,7 @@
 
 ## ✨ What's New
 - N/A
+- Marines can now be given armor items.
 
 ## ♻️ Changes
 - N/A
