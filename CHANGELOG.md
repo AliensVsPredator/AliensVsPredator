@@ -7,8 +7,9 @@
 - N/A
 
 ## ✨ What's New
-- N/A
 - Marines can now be given armor items.
+  - Marines will now automatically figure out what armor is best to wear depending on their situation.
+  - By default, marines will equip whatever armor offers the best protection. This accounts for defense points, toughness and protection enchantment(s).
 
 ## ♻️ Changes
 - N/A
