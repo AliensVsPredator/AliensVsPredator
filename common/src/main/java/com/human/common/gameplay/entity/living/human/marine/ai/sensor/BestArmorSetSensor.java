@@ -1,7 +1,7 @@
 package com.human.common.gameplay.entity.living.human.marine.ai.sensor;
 
 import com.human.common.gameplay.entity.living.human.marine.Marine;
-import com.human.common.gameplay.entity.living.human.marine.ai.ArmorSet;
+import com.human.common.gameplay.entity.living.human.marine.ai.model.PartialArmorSet;
 import com.just.core.functional.option.Option;
 import com.lib.common.gameplay.util.EnchantmentUtil;
 import net.minecraft.world.item.ArmorItem;
@@ -11,13 +11,18 @@ import org.jetbrains.annotations.NotNull;
 
 public class BestArmorSetSensor {
 
-    public static @NotNull Option<ArmorSet> sense(Marine marine, ArmorSet currentArmorSet) {
-        Option<ItemStack> bestHead = currentArmorSet.head();
-        Option<ItemStack> bestChest = currentArmorSet.chest();
-        Option<ItemStack> bestLegs = currentArmorSet.legs();
-        Option<ItemStack> bestFeet = currentArmorSet.feet();
+    public static @NotNull Option<PartialArmorSet> sense(Marine marine, PartialArmorSet currentPartialArmorSet) {
+        // TODO: This shouldn't be here.
+        if (marine.isUnderWater()) {
+            return Option.none();
+        }
 
-        var entries = marine.getNeoInventory()
+        Option<ItemStack> bestHead = currentPartialArmorSet.head();
+        Option<ItemStack> bestChest = currentPartialArmorSet.chest();
+        Option<ItemStack> bestLegs = currentPartialArmorSet.legs();
+        Option<ItemStack> bestFeet = currentPartialArmorSet.feet();
+
+        var entries = marine.getInventory()
             .filterEntriesByItem(item -> item instanceof ArmorItem);
 
         for (var entry : entries) {
@@ -44,9 +49,9 @@ public class BestArmorSetSensor {
             }
         }
 
-        var newArmorSet = new ArmorSet(bestHead, bestChest, bestLegs, bestFeet);
+        var newArmorSet = new PartialArmorSet(bestHead, bestChest, bestLegs, bestFeet);
 
-        if (newArmorSet.equals(currentArmorSet)) {
+        if (newArmorSet.equals(currentPartialArmorSet)) {
             return Option.none();
         }
 
@@ -63,6 +68,7 @@ public class BestArmorSetSensor {
         }
 
         var current = currentItemStackOption.unwrap();
+
         if (!(current.getItem() instanceof ArmorItem)) {
             return true;
         }

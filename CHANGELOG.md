@@ -7,9 +7,12 @@
 - N/A
 
 ## ✨ What's New
+- AVP now requires AzureLib `3.0.32`.
 - Marines can now be given armor items.
   - Marines will now automatically figure out what armor is best to wear depending on their situation.
   - By default, marines will equip whatever armor offers the best protection. This accounts for defense points, toughness and protection enchantment(s).
+  - If underwater, marines will equip a pressure suit or MK50 to breathe infinitely.
+    - Marines will only equip these armors if they have a full set of either armor type.
 
 ## ♻️ Changes
 - N/A

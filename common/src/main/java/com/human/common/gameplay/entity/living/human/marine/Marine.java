@@ -149,7 +149,7 @@ public class Marine extends AbstractHuman implements GOAPUser<Marine> {
         return super.mobInteract(player, interactionHand);
     }
 
-    public AVPInventory getNeoInventory() {
+    public AVPInventory getInventory() {
         return inventory;
     }
 

@@ -1,7 +1,7 @@
 package com.human.common.gameplay.entity.living.human.marine.ai.sensor;
 
 import com.human.common.gameplay.entity.living.human.marine.Marine;
-import com.human.common.gameplay.entity.living.human.marine.ai.ArmorSet;
+import com.human.common.gameplay.entity.living.human.marine.ai.model.PartialArmorSet;
 import com.just.core.functional.option.Option;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.ArmorItem;
@@ -10,7 +10,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class CurrentArmorSetSensor {
 
-    public static @NotNull ArmorSet sense(Marine marine) {
+    public static @NotNull PartialArmorSet sense(Marine marine) {
         var headStack = marine.getItemBySlot(EquipmentSlot.HEAD);
         var chestStack = marine.getItemBySlot(EquipmentSlot.CHEST);
         var legsStack = marine.getItemBySlot(EquipmentSlot.LEGS);
@@ -29,6 +29,6 @@ public class CurrentArmorSetSensor {
             ? Option.ofNullable(feetStack)
             : Option.<ItemStack>none();
 
-        return new ArmorSet(head, chest, legs, feet);
+        return new PartialArmorSet(head, chest, legs, feet);
     }
 }

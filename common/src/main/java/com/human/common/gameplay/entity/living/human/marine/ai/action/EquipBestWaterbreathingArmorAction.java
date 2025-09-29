@@ -7,10 +7,10 @@ import com.just.goap.state.ReadableWorldState;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.ItemStack;
 
-public class EquipBestArmorAction {
+public class EquipBestWaterbreathingArmorAction {
 
     public static boolean perform(Marine marine, ReadableWorldState worldState, Blackboard ignored) {
-        var bestArmorSetOption = worldState.getOrNull(MarineGOAPKeys.BEST_ARMOR_SET);
+        var bestArmorSetOption = worldState.getOrNull(MarineGOAPKeys.BEST_WATER_BREATHING_ARMOR_SET);
 
         if (bestArmorSetOption == null || bestArmorSetOption.isNone()) {
             return true;
