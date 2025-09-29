@@ -10,6 +10,8 @@ import com.avp.common.util.AVPPredicates;
 
 public class GOAPSensors {
 
+    public static final Sensor.Direct<Entity, Boolean> IS_UNDERWATER = Sensor.direct(GOAPKeys.IS_UNDERWATER, Entity::isUnderWater);
+
     public static final Sensor.Direct<Entity, List<Entity>> NEARBY_ENTITIES = Sensor.direct(
         GOAPKeys.NEARBY_ENTITIES,
         entity -> entity.level()
