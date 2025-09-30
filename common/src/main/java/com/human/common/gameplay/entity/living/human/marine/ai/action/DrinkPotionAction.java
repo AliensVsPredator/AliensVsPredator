@@ -1,7 +1,5 @@
 package com.human.common.gameplay.entity.living.human.marine.ai.action;
 
-import com.avp.common.model.inventory.AVPInventory;
-import com.avp.common.model.inventory.AVPInventoryHolder;
 import com.just.goap.GOAPKey;
 import com.just.goap.state.Blackboard;
 import com.just.goap.state.ReadableWorldState;
@@ -12,9 +10,17 @@ import net.minecraft.world.entity.LivingEntity;
 import java.util.List;
 import java.util.Objects;
 
+import com.avp.common.model.inventory.AVPInventory;
+import com.avp.common.model.inventory.AVPInventoryHolder;
+
 public class DrinkPotionAction {
 
-    public static <T extends LivingEntity & AVPInventoryHolder> boolean perform(GOAPKey<List<AVPInventory.Entry>> potionEntriesKey, T entity, ReadableWorldState worldState, Blackboard blackboard) {
+    public static <T extends LivingEntity & AVPInventoryHolder> boolean perform(
+        GOAPKey<List<AVPInventory.Entry>> potionEntriesKey,
+        T entity,
+        ReadableWorldState worldState,
+        Blackboard blackboard
+    ) {
         return ConsumeItemAction.perform(SoundEvents.GENERIC_DRINK, entity, blackboard, () -> {
             // TODO: Fix this once getOrDefault is supported.
             var potionEntries = worldState.getOrNull(potionEntriesKey);

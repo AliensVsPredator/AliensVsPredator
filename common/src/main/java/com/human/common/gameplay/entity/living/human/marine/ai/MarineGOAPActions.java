@@ -16,8 +16,10 @@ import com.avp.common.model.inventory.AVPInventory;
 
 public class MarineGOAPActions {
 
-    public static final Action<Marine> DRINK_FIRE_RESISTANCE_POTION = Action.<Marine>builder("DrinkFireResistancePotionAction").<List<AVPInventory
-            .Entry>>addPrecondition(
+    public static final Action<Marine> DRINK_FIRE_RESISTANCE_POTION = Action.<Marine>builder(
+        "DrinkFireResistancePotionAction"
+    ).<List<AVPInventory
+        .Entry>>addPrecondition(
             GOAPKeys.FIRE_RESISTANCE_POTION_ENTRIES_IN_INVENTORY,
             Expression.where(Predicate.not(List::isEmpty), "has fire resistance potion")
         )
@@ -25,7 +27,9 @@ public class MarineGOAPActions {
         .withPerformPredicate((a, b, c) -> DrinkPotionAction.perform(GOAPKeys.FIRE_RESISTANCE_POTION_ENTRIES_IN_INVENTORY, a, b, c))
         .build();
 
-    public static final Action<Marine> DRINK_WATER_BREATHING_POTION = Action.<Marine>builder("DrinkWaterBreathingPotionAction").<List<AVPInventory
+    public static final Action<Marine> DRINK_WATER_BREATHING_POTION = Action.<Marine>builder(
+        "DrinkWaterBreathingPotionAction"
+    ).<List<AVPInventory
         .Entry>>addPrecondition(
             GOAPKeys.WATER_BREATHING_POTION_ENTRIES_IN_INVENTORY,
             Expression.where(Predicate.not(List::isEmpty), "has water breathing potion")

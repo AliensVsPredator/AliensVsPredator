@@ -22,9 +22,15 @@ public class GOAPSensors {
 
     public static final Sensor<Entity, Boolean> IS_ON_FIRE = Sensor.direct(GOAPKeys.IS_ON_FIRE, Entity::isOnFire);
 
-    public static final Sensor<LivingEntity, Boolean> IS_PROTECTED_FROM_DROWNING = Sensor.direct(GOAPKeys.IS_PROTECTED_FROM_DROWNING, entity -> entity.hasEffect(MobEffects.WATER_BREATHING));
+    public static final Sensor<LivingEntity, Boolean> IS_PROTECTED_FROM_DROWNING = Sensor.direct(
+        GOAPKeys.IS_PROTECTED_FROM_DROWNING,
+        entity -> entity.hasEffect(MobEffects.WATER_BREATHING)
+    );
 
-    public static final Sensor<LivingEntity, Boolean> IS_PROTECTED_FROM_FIRE = Sensor.direct(GOAPKeys.IS_PROTECTED_FROM_FIRE, entity -> entity.hasEffect(MobEffects.FIRE_RESISTANCE));
+    public static final Sensor<LivingEntity, Boolean> IS_PROTECTED_FROM_FIRE = Sensor.direct(
+        GOAPKeys.IS_PROTECTED_FROM_FIRE,
+        entity -> entity.hasEffect(MobEffects.FIRE_RESISTANCE)
+    );
 
     public static final Sensor<Entity, Boolean> IS_UNDERWATER = Sensor.direct(GOAPKeys.IS_UNDERWATER, Entity::isUnderWater);
 

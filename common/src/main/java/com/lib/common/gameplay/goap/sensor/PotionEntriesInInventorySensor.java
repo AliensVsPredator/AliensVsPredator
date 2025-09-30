@@ -1,7 +1,5 @@
 package com.lib.common.gameplay.goap.sensor;
 
-import com.avp.common.model.inventory.AVPInventory;
-import com.avp.common.model.inventory.AVPInventoryHolder;
 import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.effect.MobEffect;
@@ -11,6 +9,9 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+
+import com.avp.common.model.inventory.AVPInventory;
+import com.avp.common.model.inventory.AVPInventoryHolder;
 
 public class PotionEntriesInInventorySensor {
 
