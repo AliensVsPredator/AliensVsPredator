@@ -27,6 +27,7 @@ import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.PotionItem;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import org.jetbrains.annotations.NotNull;
@@ -136,12 +137,12 @@ public class Marine extends AbstractHuman implements AVPInventoryHolder, GOAPUse
     protected @NotNull InteractionResult mobInteract(@NotNull Player player, @NotNull InteractionHand interactionHand) {
         var itemStack = player.getItemInHand(interactionHand);
 
-        if (itemStack.getItem() instanceof ArmorItem) {
+        if (itemStack.getItem() instanceof ArmorItem || itemStack.getItem() instanceof PotionItem) {
             if (!level().isClientSide) {
                 var item = new ItemStack(itemStack.getItem(), 1);
                 item.applyComponents(itemStack.getComponents());
                 itemStack.consume(1, player);
-                inventory.addItem(item.getItem());
+                inventory.addItemStack(item);
             }
 
             return InteractionResult.sidedSuccess(level().isClientSide);
