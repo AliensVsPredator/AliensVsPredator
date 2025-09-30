@@ -10,6 +10,7 @@ public class MarineGOAPFactory {
 
     private static final Graph<Marine> GRAPH = Graph.<Marine>builder()
         // ??? Sensors
+        .addSensor(GOAPSensors.IS_FULL_HEALTH)
         .addSensor(GOAPSensors.IS_PROTECTED_FROM_DROWNING)
         .addSensor(GOAPSensors.IS_PROTECTED_FROM_FIRE)
         // Environment Sensors
@@ -24,8 +25,8 @@ public class MarineGOAPFactory {
         // Inventory Sensors
         .addSensor(GOAPSensors.ARMOR_ENTRIES_IN_INVENTORY)
         .addSensor(GOAPSensors.POTION_ENTRIES_IN_INVENTORY)
-        .addSensor(GOAPSensors.FIRE_RESISTANCE_POTION_ENTRIES_IN_INVENTORY)
-        .addSensor(GOAPSensors.WATER_BREATHING_POTION_ENTRIES_IN_INVENTORY)
+        // ??? Goals
+        .addGoal(GOAPGoals.KEEP_HEALTH_UP)
         // Environment Goals
         .addGoal(GOAPGoals.PREVENT_DROWNING_DAMAGE)
         .addGoal(GOAPGoals.PREVENT_FIRE_DAMAGE)
@@ -33,8 +34,9 @@ public class MarineGOAPFactory {
         .addGoal(MarineGOAPGoals.EQUIP_BEST_ARMOR)
         .addGoal(MarineGOAPGoals.EQUIP_BEST_WATER_BREATHING_ARMOR)
         // Actions
-        .addAction(MarineGOAPActions.DRINK_WATER_BREATHING_POTION)
         .addAction(MarineGOAPActions.DRINK_FIRE_RESISTANCE_POTION)
+        .addAction(MarineGOAPActions.DRINK_INSTANT_HEALTH_POTION)
+        .addAction(MarineGOAPActions.DRINK_WATER_BREATHING_POTION)
         .addAction(MarineGOAPActions.EQUIP_BEST_ARMOR)
         .addAction(MarineGOAPActions.EQUIP_BEST_WATER_BREATHING_ARMOR)
         .build();

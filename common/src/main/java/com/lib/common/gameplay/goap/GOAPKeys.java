@@ -39,12 +39,4 @@ public class GOAPKeys {
     public static final GOAPKey<Map<Holder<MobEffect>, List<AVPInventory.Entry>>> POTION_ENTRIES_IN_INVENTORY = new GOAPKey<>(
         "potion_entries_in_inventory"
     );
-
-    public static final GOAPKey<List<AVPInventory.Entry>> FIRE_RESISTANCE_POTION_ENTRIES_IN_INVENTORY = new GOAPKey<>(
-        "fire_resistance_potion_entries_in_inventory"
-    );
-
-    public static final GOAPKey<List<AVPInventory.Entry>> WATER_BREATHING_POTION_ENTRIES_IN_INVENTORY = new GOAPKey<>(
-        "water_breathing_potion_entries_in_inventory"
-    );
 }

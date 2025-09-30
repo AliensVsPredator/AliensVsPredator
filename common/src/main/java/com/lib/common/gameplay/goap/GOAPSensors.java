@@ -20,6 +20,8 @@ import com.avp.common.util.AVPPredicates;
 
 public class GOAPSensors {
 
+    public static final Sensor<LivingEntity, Boolean> IS_FULL_HEALTH = Sensor.direct(GOAPKeys.IS_FULL_HEALTH, livingEntity -> livingEntity.getHealth() == livingEntity.getMaxHealth());
+
     public static final Sensor<Entity, Boolean> IS_ON_FIRE = Sensor.direct(GOAPKeys.IS_ON_FIRE, Entity::isOnFire);
 
     public static final Sensor<LivingEntity, Boolean> IS_PROTECTED_FROM_DROWNING = Sensor.direct(
@@ -70,20 +72,6 @@ public class GOAPSensors {
         .direct(
             GOAPKeys.POTION_ENTRIES_IN_INVENTORY,
             PotionEntriesInInventorySensor::sense
-        );
-
-    public static final Sensor<AVPInventoryHolder, List<AVPInventory.Entry>> FIRE_RESISTANCE_POTION_ENTRIES_IN_INVENTORY =
-        Sensor.derived(
-            GOAPKeys.FIRE_RESISTANCE_POTION_ENTRIES_IN_INVENTORY,
-            GOAPKeys.POTION_ENTRIES_IN_INVENTORY,
-            (inventoryHolder, potionItemsInInventory) -> potionItemsInInventory.getOrDefault(MobEffects.FIRE_RESISTANCE, List.of())
-        );
-
-    public static final Sensor<AVPInventoryHolder, List<AVPInventory.Entry>> WATER_BREATHING_POTION_ENTRIES_IN_INVENTORY =
-        Sensor.derived(
-            GOAPKeys.WATER_BREATHING_POTION_ENTRIES_IN_INVENTORY,
-            GOAPKeys.POTION_ENTRIES_IN_INVENTORY,
-            (inventoryHolder, potionItemsInInventory) -> potionItemsInInventory.getOrDefault(MobEffects.WATER_BREATHING, List.of())
         );
 
     private GOAPSensors() {

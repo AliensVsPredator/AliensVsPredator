@@ -8,9 +8,12 @@ import com.just.core.functional.option.Option;
 import com.just.goap.Action;
 import com.just.goap.condition.expression.Expression;
 import com.lib.common.gameplay.goap.GOAPKeys;
+import net.minecraft.core.Holder;
+import net.minecraft.world.effect.MobEffect;
+import net.minecraft.world.effect.MobEffects;
 
 import java.util.List;
-import java.util.function.Predicate;
+import java.util.Map;
 
 import com.avp.common.model.inventory.AVPInventory;
 
@@ -18,24 +21,44 @@ public class MarineGOAPActions {
 
     public static final Action<Marine> DRINK_FIRE_RESISTANCE_POTION = Action.<Marine>builder(
         "DrinkFireResistancePotionAction"
-    ).<List<AVPInventory
-        .Entry>>addPrecondition(
-            GOAPKeys.FIRE_RESISTANCE_POTION_ENTRIES_IN_INVENTORY,
-            Expression.where(Predicate.not(List::isEmpty), "has fire resistance potion")
+    ).<Map<Holder<MobEffect>, List<AVPInventory
+        .Entry>>>addPrecondition(
+            GOAPKeys.POTION_ENTRIES_IN_INVENTORY,
+            Expression.where(
+                potionEntriesByEffect -> potionEntriesByEffect.containsKey(MobEffects.FIRE_RESISTANCE),
+                "has fire resistance potion"
+            )
         )
         .addEffect(GOAPKeys.IS_PROTECTED_FROM_FIRE, true)
-        .withPerformPredicate((a, b, c) -> DrinkPotionAction.perform(GOAPKeys.FIRE_RESISTANCE_POTION_ENTRIES_IN_INVENTORY, a, b, c))
+        .withPerformPredicate((a, b, c) -> DrinkPotionAction.perform(MobEffects.FIRE_RESISTANCE, a, b, c))
+        .build();
+
+    public static final Action<Marine> DRINK_INSTANT_HEALTH_POTION = Action.<Marine>builder(
+            "DrinkInstantHealthPotionAction"
+        ).<Map<Holder<MobEffect>, List<AVPInventory
+            .Entry>>>addPrecondition(
+            GOAPKeys.POTION_ENTRIES_IN_INVENTORY,
+            Expression.where(
+                potionEntriesByEffect -> potionEntriesByEffect.containsKey(MobEffects.HEAL),
+                "has instant health potion"
+            )
+        )
+        .addEffect(GOAPKeys.IS_FULL_HEALTH, true)
+        .withPerformPredicate((a, b, c) -> DrinkPotionAction.perform(MobEffects.HEAL, a, b, c))
         .build();
 
     public static final Action<Marine> DRINK_WATER_BREATHING_POTION = Action.<Marine>builder(
         "DrinkWaterBreathingPotionAction"
-    ).<List<AVPInventory
-        .Entry>>addPrecondition(
-            GOAPKeys.WATER_BREATHING_POTION_ENTRIES_IN_INVENTORY,
-            Expression.where(Predicate.not(List::isEmpty), "has water breathing potion")
+    ).<Map<Holder<MobEffect>, List<AVPInventory
+        .Entry>>>addPrecondition(
+            GOAPKeys.POTION_ENTRIES_IN_INVENTORY,
+            Expression.where(
+                potionEntriesByEffect -> potionEntriesByEffect.containsKey(MobEffects.WATER_BREATHING),
+                "has water breathing potion"
+            )
         )
         .addEffect(GOAPKeys.IS_PROTECTED_FROM_DROWNING, true)
-        .withPerformPredicate((a, b, c) -> DrinkPotionAction.perform(GOAPKeys.WATER_BREATHING_POTION_ENTRIES_IN_INVENTORY, a, b, c))
+        .withPerformPredicate((a, b, c) -> DrinkPotionAction.perform(MobEffects.WATER_BREATHING, a, b, c))
         .build();
 
     public static final Action<Marine> EQUIP_BEST_ARMOR = Action.<Marine>builder("EquipBestArmorAction")

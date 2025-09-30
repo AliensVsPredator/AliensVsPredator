@@ -5,6 +5,11 @@ import com.just.goap.condition.expression.Expression;
 
 public class GOAPGoals {
 
+    public static final Goal KEEP_HEALTH_UP = Goal.builder("KeepHealthUpGoal")
+        .addPrecondition(GOAPKeys.IS_FULL_HEALTH, Expression.isFalse())
+        .addDesiredCondition(GOAPKeys.IS_FULL_HEALTH, Expression.isTrue())
+        .build();
+
     public static final Goal PREVENT_DROWNING_DAMAGE = Goal.builder("PreventDrowningDamageGoal")
         .addPrecondition(GOAPKeys.IS_UNDERWATER, Expression.isTrue())
         .addDesiredCondition(GOAPKeys.IS_PROTECTED_FROM_DROWNING, Expression.isTrue())
