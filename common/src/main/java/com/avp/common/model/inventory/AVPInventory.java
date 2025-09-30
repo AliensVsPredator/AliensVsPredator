@@ -5,8 +5,10 @@ import com.just.codec.schema.CodecSchema;
 import com.just.core.functional.result.Result;
 import com.lib.common.util.codec.impl.MojangCodecs;
 import it.unimi.dsi.fastutil.objects.ObjectArraySet;
+import net.minecraft.core.component.DataComponentType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -415,6 +417,10 @@ public class AVPInventory {
         private Entry(ItemStack itemStack, int slotIndex) {
             this.itemStack = itemStack;
             this.slotIndex = slotIndex;
+        }
+
+        public <T> @Nullable T get(DataComponentType<T> dataComponentType) {
+            return itemStack.get(dataComponentType);
         }
 
         public AVPInventory getInventory() {
