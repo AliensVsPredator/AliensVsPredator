@@ -38,10 +38,11 @@ import java.util.function.Supplier;
 
 import com.avp.AVP;
 import com.avp.common.model.inventory.AVPInventory;
+import com.avp.common.model.inventory.AVPInventoryHolder;
 import com.avp.common.registry.init.item.AVPArmorItems;
 import com.avp.common.registry.init.item.AVPItems;
 
-public class Marine extends AbstractHuman implements GOAPUser<Marine> {
+public class Marine extends AbstractHuman implements AVPInventoryHolder, GOAPUser<Marine> {
 
     private static final String NBT_INVENTORY = "inventory";
 
@@ -149,6 +150,7 @@ public class Marine extends AbstractHuman implements GOAPUser<Marine> {
         return super.mobInteract(player, interactionHand);
     }
 
+    @Override
     public AVPInventory getInventory() {
         return inventory;
     }
