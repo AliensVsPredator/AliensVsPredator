@@ -6,15 +6,14 @@ import com.lib.common.gameplay.goap.GOAPKeys;
 import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.sounds.SoundEvents;
-import net.minecraft.world.effect.InstantenousMobEffect;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.ItemStack;
 
 import java.util.Objects;
 
 import com.avp.common.model.inventory.AVPInventoryHolder;
-import net.minecraft.world.item.ItemStack;
 
 public class DrinkPotionAction {
 
@@ -59,7 +58,8 @@ public class DrinkPotionAction {
             // Apply all of the mob effect instances to the marine.
             potionContents.getAllEffects().forEach(mobEffectInstance -> {
                 if (mobEffectHolder.value().isInstantenous()) {
-                    mobEffectHolder.value().applyInstantenousEffect(null, null, entity, mobEffectInstance.getAmplifier(), entity.getHealth());
+                    mobEffectHolder.value()
+                        .applyInstantenousEffect(null, null, entity, mobEffectInstance.getAmplifier(), entity.getHealth());
                 } else {
                     entity.addEffect(mobEffectInstance);
                 }

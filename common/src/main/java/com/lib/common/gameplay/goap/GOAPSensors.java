@@ -20,7 +20,10 @@ import com.avp.common.util.AVPPredicates;
 
 public class GOAPSensors {
 
-    public static final Sensor<LivingEntity, Boolean> IS_FULL_HEALTH = Sensor.direct(GOAPKeys.IS_FULL_HEALTH, livingEntity -> livingEntity.getHealth() == livingEntity.getMaxHealth());
+    public static final Sensor<LivingEntity, Boolean> IS_FULL_HEALTH = Sensor.direct(
+        GOAPKeys.IS_FULL_HEALTH,
+        livingEntity -> livingEntity.getHealth() == livingEntity.getMaxHealth()
+    );
 
     public static final Sensor<Entity, Boolean> IS_ON_FIRE = Sensor.direct(GOAPKeys.IS_ON_FIRE, Entity::isOnFire);
 
