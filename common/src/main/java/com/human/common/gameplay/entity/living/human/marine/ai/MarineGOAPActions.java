@@ -45,6 +45,7 @@ public class MarineGOAPActions {
         )
         .addEffect(GOAPKeys.IS_FULL_HEALTH, true)
         .withPerformPredicate((a, b, c) -> DrinkPotionAction.perform(MobEffects.HEAL, a, b, c))
+        .withCostCallback((marine, $2) -> marine.getHealth() / marine.getMaxHealth())
         .build();
 
     public static final Action<Marine> DRINK_WATER_BREATHING_POTION = Action.<Marine>builder(

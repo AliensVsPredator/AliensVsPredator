@@ -20,6 +20,8 @@ public class GOAPKeys {
 
     public static final GOAPKey<Boolean> IS_ON_FIRE = new GOAPKey<>("is_on_fire");
 
+    public static final GOAPKey<Boolean> IS_ON_GROUND = new GOAPKey<>("is_on_ground");
+
     public static final GOAPKey<Boolean> IS_PROTECTED_FROM_DROWNING = new GOAPKey<>("is_protected_from_drowning");
 
     public static final GOAPKey<Boolean> IS_PROTECTED_FROM_FIRE = new GOAPKey<>("is_protected_from_fire");

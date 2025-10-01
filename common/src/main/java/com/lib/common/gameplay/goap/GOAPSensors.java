@@ -24,6 +24,8 @@ public class GOAPSensors {
 
     public static final Sensor<Entity, Boolean> IS_ON_FIRE = Sensor.direct(GOAPKeys.IS_ON_FIRE, Entity::isOnFire);
 
+    public static final Sensor<Entity, Boolean> IS_ON_GROUND = Sensor.direct(GOAPKeys.IS_ON_GROUND, Entity::onGround);
+
     public static final Sensor<LivingEntity, Boolean> IS_PROTECTED_FROM_DROWNING = Sensor.direct(
         GOAPKeys.IS_PROTECTED_FROM_DROWNING,
         entity -> entity.hasEffect(MobEffects.WATER_BREATHING)
