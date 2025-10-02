@@ -20,6 +20,7 @@
 - Marines no longer spawn naturally in grassy marine camps.
 - Marines no longer spawn naturally in badland supply outposts.
 - Marines no longer spawn naturally in desert supply outposts.
+- Marines no longer spawn naturally in munition outposts.
 
 ## 🐞 Fixes
 - Fixed marines not turning invisible when the invisibility effect is applied to them.
@@ -29,6 +30,7 @@
 - Fixed mobile labs sometimes spawning in the wrong biome.
 - Fixed badland supply outposts sometimes spawning in the wrong biome.
 - Fixed desert supply outposts sometimes spawning in the wrong biome.
+- Fixed munition outposts sometimes spawning in the wrong biome.
 
 ## 🧪 Experimental
 - N/A
