@@ -20,7 +20,7 @@
 - N/A
 
 ## 🐞 Fixes
-- N/A
+- Fixed marines not turning invisible when the invisibility effect is applied to them.
 
 ## 🧪 Experimental
 - N/A
