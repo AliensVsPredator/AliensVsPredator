@@ -14,7 +14,7 @@
 - N/A
 
 ## ✨ What's New
-- AVP now requires AzureLib `3.0.34`.
+- AVP now requires AzureLib `3.0.35`.
 
 ## ♻️ Changes
 - N/A
