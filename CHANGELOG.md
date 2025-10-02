@@ -9,6 +9,8 @@
   - Resonator blocks rendering incorrectly
   - Alien animations do not smoothly transition between one another like they used to
   - Any other rendering bugs not listed here
+- There are also some fixes for structure generation:
+  - Please note that while marines no longer spawn *naturally* in human structures, there will still be marines that spawn in/around the structures with preset spawn points. This change was made to prevent infinite marine exploits.
 
 ## ☢️ Breaking Changes
 - N/A
@@ -21,6 +23,7 @@
 - Marines no longer spawn naturally in badland supply outposts.
 - Marines no longer spawn naturally in desert supply outposts.
 - Marines no longer spawn naturally in munition outposts.
+- Marines no longer spawn naturally in communication outposts.
 
 ## 🐞 Fixes
 - Fixed marines not turning invisible when the invisibility effect is applied to them.
@@ -31,6 +34,7 @@
 - Fixed badland supply outposts sometimes spawning in the wrong biome.
 - Fixed desert supply outposts sometimes spawning in the wrong biome.
 - Fixed munition outposts sometimes spawning in the wrong biome.
+- Fixed communication outposts sometimes spawning in the wrong biome.
 
 ## 🧪 Experimental
 - N/A
