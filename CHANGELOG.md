@@ -17,10 +17,12 @@
 - AVP now requires AzureLib `3.0.35`.
 
 ## ♻️ Changes
-- N/A
+- Marines no longer spawn naturally in grassy marine camps.
 
 ## 🐞 Fixes
 - Fixed marines not turning invisible when the invisibility effect is applied to them.
+- Fixed grassy marine camps spawning in the wrong biomes.
+- Fixed grassy marine camps having spawning marines from incorrect structure pools.
 
 ## 🧪 Experimental
 - N/A
