@@ -1,13 +1,19 @@
 {
-  "biomes": "#avp:has_mobile_lab",
-  "adapt_noise": false,
   "type": "minecraft:jigsaw",
+  "biomes": [
+    "minecraft:savanna",
+    "minecraft:windswept_savanna",
+    "minecraft:badlands",
+    "minecraft:eroded_badlands",
+    "minecraft:snowy_plains",
+    "minecraft:cherry_grove",
+    "minecraft:plains",
+    "minecraft:desert"
+  ],
   "start_pool": "avp:mobile_lab",
   "placement": "on_land_surface",
   "size": 1,
   "step": "surface_structures",
-  "is_beached": true,
-  "cannot_spawn_in_liquid": true,
   "start_height": {
     "absolute": 0
   },
@@ -15,17 +21,5 @@
   "project_start_to_heightmap": "WORLD_SURFACE_WG",
   "terrain_adaptation": "beard_box",
   "use_expansion_hack": false,
-  "spawn_overrides": {
-    "monster": {
-      "bounding_box": "full",
-      "spawns": [
-        {
-          "type": "minecraft:villager",
-          "weight": 10,
-          "minCount": 1,
-          "maxCount": 1
-        }
-      ]
-    }
-  }
+  "spawn_overrides": {}
 }

@@ -21,8 +21,10 @@
 
 ## 🐞 Fixes
 - Fixed marines not turning invisible when the invisibility effect is applied to them.
-- Fixed grassy marine camps spawning in the wrong biomes.
+- Fixed grassy marine camps sometimes spawning in the wrong biome.
 - Fixed grassy marine camps having spawning marines from incorrect structure pools.
+- Fixed mobile labs having an excessive amount of pigs spawn around them.
+- Fixed mobile labs sometimes spawning in the wrong biome.
 
 ## 🧪 Experimental
 - N/A
