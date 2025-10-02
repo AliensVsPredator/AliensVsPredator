@@ -8,18 +8,12 @@ import com.lib.common.gameplay.goap.GOAPSensors;
 
 public class MarineGOAPFactory {
 
-    private static final Graph<Marine> GRAPH = createGraph();
-
-    private static Graph<Marine> createGraph() {
-        var graphBuilder = Graph.<Marine>builder();
-
-        addGenericPackage(graphBuilder);
-        addHealthPackage(graphBuilder);
-        addDrowningPreventionPackage(graphBuilder);
-        addFirePreventionPackage(graphBuilder);
-
-        return graphBuilder.build();
-    }
+    private static final Graph<Marine> GRAPH = Graph.<Marine>builder()
+        .apply(MarineGOAPFactory::addGenericPackage)
+        .apply(MarineGOAPFactory::addHealthPackage)
+        .apply(MarineGOAPFactory::addDrowningPreventionPackage)
+        .apply(MarineGOAPFactory::addFirePreventionPackage)
+        .build();
 
     private static void addGenericPackage(Graph.Builder<Marine> graphBuilder) {
         graphBuilder
@@ -55,6 +49,9 @@ public class MarineGOAPFactory {
         graphBuilder.addGoal(GOAPGoals.PREVENT_DROWNING_DAMAGE);
         // Actions
         graphBuilder.addAction(MarineGOAPActions.DRINK_WATER_BREATHING_POTION);
+        // TODO: Add "equip water breathing armor set" action
+        // TODO: Add "equip turtle helmet" action
+        // TODO: Add "equip respiration helmet" action
         // Sensors
         graphBuilder.addSensor(GOAPSensors.IS_UNDERWATER);
         graphBuilder.addSensor(GOAPSensors.IS_PROTECTED_FROM_DROWNING);
