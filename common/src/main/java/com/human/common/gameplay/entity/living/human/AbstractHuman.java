@@ -1,6 +1,5 @@
 package com.human.common.gameplay.entity.living.human;
 
-import com.just.core.functional.option.Option;
 import com.lib.common.network.DataAccessor;
 import com.lib.common.network.DataUser;
 import net.minecraft.sounds.SoundEvent;
@@ -133,10 +132,10 @@ public abstract class AbstractHuman extends PathfinderMob implements DataUser {
         return humanFeatureManager;
     }
 
-    public Option<Integer> getBeardVariant() {
+    public Integer getBeardVariantOrNull() {
         return isMale.get()
-            ? Option.some(beardVariant.get())
-            : Option.none();
+            ? beardVariant.get()
+            : null;
     }
 
     public void setBeardVariant(int variantIndex) {

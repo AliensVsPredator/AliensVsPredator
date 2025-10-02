@@ -4,7 +4,6 @@ import com.human.common.gameplay.entity.living.human.AbstractHuman;
 import mod.azure.azurelib.rewrite.model.AzBone;
 import mod.azure.azurelib.rewrite.render.AzRendererPipelineContext;
 import mod.azure.azurelib.rewrite.render.layer.AzRenderLayer;
-import net.minecraft.client.renderer.RenderType;
 
 public class HumanHairLayer<T extends AbstractHuman> implements AzRenderLayer<T> {
 
@@ -14,20 +13,8 @@ public class HumanHairLayer<T extends AbstractHuman> implements AzRenderLayer<T>
     @Override
     public void render(AzRendererPipelineContext<T> context) {
         var animatable = context.animatable();
-        var renderPipeline = context.rendererPipeline();
-
         var textureLocation = animatable.getHumanFeatureManager().getHairTexture();
-        var renderType = RenderType.entityCutout(textureLocation);
-        var vertexConsumer = context.multiBufferSource().getBuffer(renderType);
-        var previousColor = context.renderColor();
-
-        context.setRenderColor(animatable.hairColor.get());
-        context.setVertexConsumer(vertexConsumer);
-
-        renderPipeline.reRender(context);
-
-        // make sure to reset the color at the end.
-        context.setRenderColor(previousColor);
+        HumanRenderLayerUtil.applyColorWithInvisibility(context, textureLocation, context.animatable().hairColor.get());
     }
 
     @Override

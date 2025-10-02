@@ -2,7 +2,6 @@ package com.human.common.gameplay.entity.living.human;
 
 import com.just.core.functional.function.memo.Memo;
 import com.just.core.functional.function.memo.Memo2;
-import com.just.core.functional.option.Option;
 import net.minecraft.resources.ResourceLocation;
 
 import com.avp.AVPResources;
@@ -43,9 +42,10 @@ public class HumanFeatureManager {
         return EYES_TEXTURE_LOCATION;
     }
 
-    // TODO: Use getBeardTextureOrNull here since this method is accessed on a hot path (rendering).
-    public Option<ResourceLocation> getBeardTexture() {
-        return entity.getBeardVariant().map(cachedBeardTexture);
+    public ResourceLocation getBeardTextureOrNull() {
+        return entity.getBeardVariantOrNull() == null
+            ? null
+            : cachedBeardTexture.apply(entity.getBeardVariantOrNull());
     }
 
     public ResourceLocation getHairTexture() {

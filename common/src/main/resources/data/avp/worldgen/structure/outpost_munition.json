@@ -1,12 +1,14 @@
 {
-  "biomes": "#avp:has_outpost_munition",
-  "adapt_noise": false,
   "type": "minecraft:jigsaw",
+  "biomes": [
+    "minecraft:old_growth_pine_taiga",
+    "minecraft:old_growth_spruce_taiga",
+    "minecraft:snowy_taiga"
+  ],
   "start_pool": "avp:outpost_munition",
   "placement": "on_land_surface",
   "size": 1,
   "step": "top_layer_modification",
-  "cannot_spawn_in_liquid": true,
   "start_height": {
     "absolute": 0
   },
@@ -14,17 +16,5 @@
   "project_start_to_heightmap": "WORLD_SURFACE_WG",
   "terrain_adaptation": "beard_box",
   "use_expansion_hack": false,
-  "spawn_overrides": {
-    "monster": {
-      "bounding_box": "full",
-      "spawns": [
-        {
-          "type": "avp:marine",
-          "weight": 10,
-          "minCount": 1,
-          "maxCount": 2
-        }
-      ]
-    }
-  }
+  "spawn_overrides": {}
 }
