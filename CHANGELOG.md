@@ -26,6 +26,7 @@
 - Marines no longer spawn naturally in communication outposts.
 
 ## 🐞 Fixes
+- Fixed a crash between AVP and Gigeresque due to a redirect mixin on AVP's part.
 - Fixed marines not turning invisible when the invisibility effect is applied to them.
 - Fixed grassy marine camps sometimes spawning in the wrong biome.
 - Fixed grassy marine camps having spawning marines from incorrect structure pools.
