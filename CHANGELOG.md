@@ -1,4 +1,4 @@
-# v0.2.5
+# v0.3.0
 
 ## ✍️ Developer Notes
 - For help or other questions, concerns, etc. check out our Discord server: https://discord.gg/wp7mvmbkVb
@@ -7,7 +7,6 @@
 - N/A
 
 ## ✨ What's New
-- AVP now requires AzureLib `3.0.32`.
 - Marines can now be given armor items.
 - Marines can now use armor items:
   - Marines will now automatically figure out what armor is best to wear depending on their situation.
