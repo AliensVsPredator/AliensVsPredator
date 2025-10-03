@@ -7,10 +7,10 @@ import com.just.goap.Sensor;
 public class OvomorphGOAPSensors {
 
     static final Sensor<Ovomorph, HatchState> HATCH_STATE =
-        Sensor.direct(OvomorphGOAPKeys.HATCH_STATE, ovomorph -> ovomorph.getHatchState().unwrapOr(Ovomorph.DEFAULT_HATCH_STATE));
+        Sensor.direct(OvomorphGOAPStateKeys.HATCH_STATE, ovomorph -> ovomorph.getHatchState().unwrapOr(Ovomorph.DEFAULT_HATCH_STATE));
 
     static final Sensor<Ovomorph, Boolean> WANTS_TO_HATCH =
-        Sensor.direct(OvomorphGOAPKeys.WANTS_TO_HATCH, ovomorph -> ovomorph.getHatchManager().getHatchDesireManager().wantsToHatch());
+        Sensor.direct(OvomorphGOAPStateKeys.WANTS_TO_HATCH, ovomorph -> ovomorph.getHatchManager().getHatchDesireManager().wantsToHatch());
 
     private OvomorphGOAPSensors() {
         throw new UnsupportedOperationException();

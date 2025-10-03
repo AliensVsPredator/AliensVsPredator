@@ -1,18 +1,17 @@
 package com.human.common.gameplay.entity.living.human.marine.ai;
 
 import com.human.common.gameplay.entity.living.human.marine.Marine;
-import com.just.goap.GOAP;
 import com.just.goap.graph.Graph;
 import com.lib.common.gameplay.goap.GOAPGoals;
 import com.lib.common.gameplay.goap.GOAPSensors;
 
-public class MarineGOAPFactory {
+public class MarineGOAP {
 
-    private static final Graph<Marine> GRAPH = Graph.<Marine>builder()
-        .apply(MarineGOAPFactory::addGenericPackage)
-        .apply(MarineGOAPFactory::addHealthPackage)
-        .apply(MarineGOAPFactory::addDrowningPreventionPackage)
-        .apply(MarineGOAPFactory::addFirePreventionPackage)
+    public static final Graph<Marine> GRAPH = Graph.<Marine>builder()
+        .apply(MarineGOAP::addGenericPackage)
+        .apply(MarineGOAP::addHealthPackage)
+        .apply(MarineGOAP::addDrowningPreventionPackage)
+        .apply(MarineGOAP::addFirePreventionPackage)
         .build();
 
     private static void addGenericPackage(Graph.Builder<Marine> graphBuilder) {
@@ -67,11 +66,7 @@ public class MarineGOAPFactory {
         graphBuilder.addSensor(GOAPSensors.IS_PROTECTED_FROM_FIRE);
     }
 
-    public static GOAP<Marine> create() {
-        return GOAP.of(GRAPH);
-    }
-
-    private MarineGOAPFactory() {
+    private MarineGOAP() {
         throw new UnsupportedOperationException();
     }
 }

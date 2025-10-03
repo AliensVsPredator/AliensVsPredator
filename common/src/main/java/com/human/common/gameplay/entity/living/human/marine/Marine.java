@@ -1,10 +1,10 @@
 package com.human.common.gameplay.entity.living.human.marine;
 
 import com.human.common.gameplay.entity.living.human.AbstractHuman;
-import com.human.common.gameplay.entity.living.human.marine.ai.MarineGOAPFactory;
+import com.human.common.gameplay.entity.living.human.marine.ai.MarineGOAP;
 import com.human.common.registry.init.item.HumanGunItems;
 import com.just.core.functional.option.Option;
-import com.just.goap.GOAP;
+import com.just.goap.graph.Graph;
 import com.lib.common.gameplay.goap.GOAPUser;
 import com.lib.common.gameplay.util.ItemUtil;
 import com.lib.common.util.codec.schema.CodecSchemas;
@@ -100,8 +100,8 @@ public class Marine extends AbstractHuman implements AVPInventoryHolder, GOAPUse
     }
 
     @Override
-    public @Nullable GOAP<Marine> createGOAP() {
-        return MarineGOAPFactory.create();
+    public @Nullable Graph<Marine> getCurrentGraph() {
+        return MarineGOAP.GRAPH;
     }
 
     @Override

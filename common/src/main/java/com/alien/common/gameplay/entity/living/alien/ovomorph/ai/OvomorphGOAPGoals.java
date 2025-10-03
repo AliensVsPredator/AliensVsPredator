@@ -7,7 +7,7 @@ import com.just.goap.condition.expression.Expressions;
 public class OvomorphGOAPGoals {
 
     static final Goal HATCH = Goal.builder("HatchGoal")
-        .addDesiredCondition(OvomorphGOAPKeys.HATCH_STATE, Expressions.Compare.equalTo(HatchState.HATCHED))
+        .addDesiredCondition(OvomorphGOAPStateKeys.HATCH_STATE.asDerived(), Expressions.Compare.equalTo(HatchState.HATCHED))
         .build();
 
     private OvomorphGOAPGoals() {

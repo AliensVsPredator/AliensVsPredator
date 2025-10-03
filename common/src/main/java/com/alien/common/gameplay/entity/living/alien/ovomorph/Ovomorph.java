@@ -2,12 +2,12 @@ package com.alien.common.gameplay.entity.living.alien.ovomorph;
 
 import com.alien.common.data.AlienVariantTypes;
 import com.alien.common.gameplay.entity.living.alien.Alien;
-import com.alien.common.gameplay.entity.living.alien.ovomorph.ai.OvomorphGOAPFactory;
+import com.alien.common.gameplay.entity.living.alien.ovomorph.ai.OvomorphGOAP;
 import com.alien.common.model.alien.HatchState;
 import com.alien.common.model.alien.variant.AlienVariant;
 import com.alien.common.registry.init.AlienEntityTypes;
 import com.just.core.functional.option.Option;
-import com.just.goap.GOAP;
+import com.just.goap.graph.Graph;
 import com.lib.common.gameplay.entity.manager.VibrationSystemManager;
 import com.lib.common.gameplay.goap.GOAPUser;
 import com.lib.common.network.DataAccessor;
@@ -70,8 +70,8 @@ public class Ovomorph extends Alien implements GOAPUser<Ovomorph>, Shearable {
     }
 
     @Override
-    public @Nullable GOAP<Ovomorph> createGOAP() {
-        return OvomorphGOAPFactory.create();
+    public @Nullable Graph<Ovomorph> getCurrentGraph() {
+        return OvomorphGOAP.GRAPH;
     }
 
     @Override

@@ -8,12 +8,12 @@ import com.just.goap.condition.expression.Expressions;
 public class OvomorphGOAPActions {
 
     static final Action<Ovomorph> HATCH = Action.<Ovomorph>builder("HatchAction")
-        .addPrecondition(OvomorphGOAPKeys.WANTS_TO_HATCH, Expressions.Boolean.isTrue())
-        .addPrecondition(OvomorphGOAPKeys.HATCH_STATE, Expressions.Compare.doesNotEqual(HatchState.HATCHED))
-        .addEffect(OvomorphGOAPKeys.HATCH_STATE, HatchState.HATCHED)
-        .withPerformPredicate((ovomorph, $2, $3) -> {
+        .addPrecondition(OvomorphGOAPStateKeys.WANTS_TO_HATCH, Expressions.Boolean.isTrue())
+        .addPrecondition(OvomorphGOAPStateKeys.HATCH_STATE, Expressions.Compare.doesNotEqual(HatchState.HATCHED))
+        .addEffect(OvomorphGOAPStateKeys.HATCH_STATE.asDerived(), HatchState.HATCHED)
+        .withPerformCallback((ovomorph, $2, $3) -> {
             ovomorph.getHatchManager().hatch();
-            return ovomorph.getHatchManager().isHatched();
+            return Action.Result.CONTINUE;
         })
         .build();
 

@@ -2,6 +2,7 @@ package com.human.common.gameplay.entity.living.human.marine.ai.action;
 
 import com.human.common.gameplay.entity.living.human.marine.Marine;
 import com.human.common.gameplay.entity.living.human.marine.ai.MarineGOAPKeys;
+import com.just.goap.Action;
 import com.just.goap.state.Blackboard;
 import com.just.goap.state.ReadableWorldState;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -9,11 +10,11 @@ import net.minecraft.world.item.ItemStack;
 
 public class EquipBestArmorAction {
 
-    public static boolean perform(Marine marine, ReadableWorldState worldState, Blackboard ignored) {
+    public static Action.Result perform(Marine marine, ReadableWorldState worldState, Blackboard ignored) {
         var bestArmorSetOption = worldState.getOrNull(MarineGOAPKeys.BEST_ARMOR_SET);
 
         if (bestArmorSetOption == null || bestArmorSetOption.isNone()) {
-            return true;
+            return Action.Result.CONTINUE;
         }
 
         var bestArmorSet = bestArmorSetOption.unwrap();
@@ -23,7 +24,7 @@ public class EquipBestArmorAction {
         bestArmorSet.legs().ifSome(legsStack -> swapEquipSlotIfDifferent(marine, legsStack, EquipmentSlot.LEGS));
         bestArmorSet.feet().ifSome(feetStack -> swapEquipSlotIfDifferent(marine, feetStack, EquipmentSlot.FEET));
 
-        return true;
+        return Action.Result.CONTINUE;
     }
 
     private static void swapEquipSlotIfDifferent(Marine marine, ItemStack desiredStack, EquipmentSlot slot) {

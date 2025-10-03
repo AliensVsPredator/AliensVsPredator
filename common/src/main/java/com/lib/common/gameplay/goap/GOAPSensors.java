@@ -21,47 +21,47 @@ import com.avp.common.util.AVPPredicates;
 public class GOAPSensors {
 
     public static final Sensor<LivingEntity, Boolean> IS_FULL_HEALTH = Sensor.direct(
-        GOAPKeys.IS_FULL_HEALTH,
+        GOAPStateKeys.IS_FULL_HEALTH,
         livingEntity -> livingEntity.getHealth() == livingEntity.getMaxHealth()
     );
 
-    public static final Sensor<Entity, Boolean> IS_ON_FIRE = Sensor.direct(GOAPKeys.IS_ON_FIRE, Entity::isOnFire);
+    public static final Sensor<Entity, Boolean> IS_ON_FIRE = Sensor.direct(GOAPStateKeys.IS_ON_FIRE, Entity::isOnFire);
 
-    public static final Sensor<Entity, Boolean> IS_ON_GROUND = Sensor.direct(GOAPKeys.IS_ON_GROUND, Entity::onGround);
+    public static final Sensor<Entity, Boolean> IS_ON_GROUND = Sensor.direct(GOAPStateKeys.IS_ON_GROUND, Entity::onGround);
 
     public static final Sensor<LivingEntity, Boolean> IS_PROTECTED_FROM_DROWNING = Sensor.direct(
-        GOAPKeys.IS_PROTECTED_FROM_DROWNING,
+        GOAPStateKeys.IS_PROTECTED_FROM_DROWNING,
         entity -> entity.hasEffect(MobEffects.WATER_BREATHING)
     );
 
     public static final Sensor<LivingEntity, Boolean> IS_PROTECTED_FROM_FIRE = Sensor.direct(
-        GOAPKeys.IS_PROTECTED_FROM_FIRE,
+        GOAPStateKeys.IS_PROTECTED_FROM_FIRE,
         entity -> entity.hasEffect(MobEffects.FIRE_RESISTANCE)
     );
 
-    public static final Sensor<Entity, Boolean> IS_UNDERWATER = Sensor.direct(GOAPKeys.IS_UNDERWATER, Entity::isUnderWater);
+    public static final Sensor<Entity, Boolean> IS_UNDERWATER = Sensor.direct(GOAPStateKeys.IS_UNDERWATER, Entity::isUnderWater);
 
     public static final Sensor<Entity, List<BlockPos>> NEARBY_BLOCK_POSITIONS = Sensor.direct(
-        GOAPKeys.NEARBY_BLOCK_POSITIONS,
+        GOAPStateKeys.NEARBY_BLOCK_POSITIONS,
         entity -> BlockPos.betweenClosedStream(entity.getBoundingBox().inflate(1)).toList()
     );
 
     public static final Sensor<Entity, Boolean> IS_NEAR_RADIOACTIVE_BIOME = Sensor.derived(
-        GOAPKeys.IS_NEAR_RADIOACTIVE_BIOME,
-        GOAPKeys.NEARBY_BLOCK_POSITIONS,
+        GOAPStateKeys.IS_NEAR_RADIOACTIVE_BIOME,
+        GOAPStateKeys.NEARBY_BLOCK_POSITIONS,
         (entity, nearbyBlockPositions) -> nearbyBlockPositions.stream()
             .anyMatch(blockPos -> entity.level().getBiome(blockPos).is(AVPBiomeTags.IS_IRRADIATED))
     );
 
     public static final Sensor<Entity, List<Entity>> NEARBY_ENTITIES = Sensor.direct(
-        GOAPKeys.NEARBY_ENTITIES,
+        GOAPStateKeys.NEARBY_ENTITIES,
         entity -> entity.level()
             .getEntitiesOfClass(Entity.class, entity.getBoundingBox().inflate(16), AVPPredicates.alwaysTrue())
     );
 
     public static final Sensor<Entity, List<LivingEntity>> NEARBY_LIVING_ENTITIES = Sensor.derived(
-        GOAPKeys.NEARBY_LIVING_ENTITIES,
-        GOAPKeys.NEARBY_ENTITIES,
+        GOAPStateKeys.NEARBY_LIVING_ENTITIES,
+        GOAPStateKeys.NEARBY_ENTITIES,
         (entity, nearbyEntities) -> nearbyEntities.stream()
             .filter(e -> e instanceof LivingEntity)
             .map(e -> (LivingEntity) e)
@@ -69,13 +69,13 @@ public class GOAPSensors {
     );
 
     public static final Sensor<AVPInventoryHolder, List<AVPInventory.Entry>> ARMOR_ENTRIES_IN_INVENTORY = Sensor.direct(
-        GOAPKeys.ARMOR_ENTRIES_IN_INVENTORY,
+        GOAPStateKeys.ARMOR_ENTRIES_IN_INVENTORY,
         inventoryHolder -> inventoryHolder.getInventory().filterEntriesByItem(item -> item instanceof ArmorItem)
     );
 
     public static final Sensor<AVPInventoryHolder, Map<Holder<MobEffect>, List<AVPInventory.Entry>>> POTION_ENTRIES_IN_INVENTORY = Sensor
         .direct(
-            GOAPKeys.POTION_ENTRIES_IN_INVENTORY,
+            GOAPStateKeys.POTION_ENTRIES_IN_INVENTORY,
             PotionEntriesInInventorySensor::sense
         );
 

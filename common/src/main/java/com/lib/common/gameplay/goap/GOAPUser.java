@@ -1,19 +1,15 @@
 package com.lib.common.gameplay.goap;
 
-import com.just.core.functional.option.Option;
-import com.just.goap.GOAP;
+import com.just.goap.graph.Graph;
+import net.minecraft.world.entity.LivingEntity;
 import org.jetbrains.annotations.Nullable;
 
-public interface GOAPUser<T> {
+public interface GOAPUser<T extends LivingEntity> {
 
     @Nullable
-    GOAP<T> createGOAP();
+    Graph<T> getCurrentGraph();
 
-    default @Nullable GOAP<T> getGOAPOrNull() {
+    default @Nullable LivingEntityAgent<T> getGOAPAgentOrNull() {
         return null;
-    }
-
-    default Option<GOAP<T>> getGOAP() {
-        return Option.ofNullable(getGOAPOrNull());
     }
 }

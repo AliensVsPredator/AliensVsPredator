@@ -1,6 +1,7 @@
 package com.human.common.gameplay.entity.living.human.marine.ai.action;
 
-import com.just.goap.GOAPKey;
+import com.just.goap.Action;
+import com.just.goap.StateKey;
 import com.just.goap.state.Blackboard;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.LivingEntity;
@@ -11,13 +12,13 @@ import com.avp.common.model.inventory.AVPInventoryHolder;
 
 public class ConsumeItemAction {
 
-    private static final GOAPKey<Integer> CONSUME_TICK_DURATION = new GOAPKey<>("consume_tick_duration");
+    private static final StateKey<Integer> CONSUME_TICK_DURATION = StateKey.sensed("consume_tick_duration");
 
-    public static <T extends LivingEntity & AVPInventoryHolder> boolean perform(
+    public static <T extends LivingEntity & AVPInventoryHolder> Action.Result perform(
         SoundEvent soundEvent,
         T entity,
         Blackboard blackboard,
-        Supplier<Boolean> onConsume
+        Supplier<Action.Result> onConsume
     ) {
         var tickDuration = blackboard.getOrDefault(CONSUME_TICK_DURATION, 0);
         blackboard.set(CONSUME_TICK_DURATION, tickDuration + 1);
@@ -32,6 +33,6 @@ public class ConsumeItemAction {
         }
 
         // Not finished, yet.
-        return false;
+        return Action.Result.CONTINUE;
     }
 }

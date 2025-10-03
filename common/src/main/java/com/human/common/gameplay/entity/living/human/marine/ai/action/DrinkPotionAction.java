@@ -1,8 +1,9 @@
 package com.human.common.gameplay.entity.living.human.marine.ai.action;
 
+import com.just.goap.Action;
 import com.just.goap.state.Blackboard;
 import com.just.goap.state.ReadableWorldState;
-import com.lib.common.gameplay.goap.GOAPKeys;
+import com.lib.common.gameplay.goap.GOAPStateKeys;
 import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.sounds.SoundEvents;
@@ -17,29 +18,27 @@ import com.avp.common.model.inventory.AVPInventoryHolder;
 
 public class DrinkPotionAction {
 
-    public static <T extends LivingEntity & AVPInventoryHolder> boolean perform(
+    public static <T extends LivingEntity & AVPInventoryHolder> Action.Result perform(
         Holder<MobEffect> mobEffectHolder,
         T entity,
         ReadableWorldState worldState,
         Blackboard blackboard
     ) {
         // TODO: Fix this once getOrDefault is supported.
-        var potionEntriesByMobEffect = worldState.getOrNull(GOAPKeys.POTION_ENTRIES_IN_INVENTORY);
+        var potionEntriesByMobEffect = worldState.getOrNull(GOAPStateKeys.POTION_ENTRIES_IN_INVENTORY);
 
         if (
             potionEntriesByMobEffect == null || potionEntriesByMobEffect.isEmpty() || !potionEntriesByMobEffect.containsKey(
                 mobEffectHolder
             )
         ) {
-            // TODO: This is technically a failure, but we return true here to stop the plan.
-            return true;
+            return Action.Result.FAILED;
         }
 
         var potionEntries = potionEntriesByMobEffect.get(mobEffectHolder);
 
         if (potionEntries == null || potionEntries.isEmpty()) {
-            // TODO: This is technically a failure, but we return true here to stop the plan.
-            return true;
+            return Action.Result.FAILED;
         }
 
         var potionEntry = potionEntries.getFirst();
@@ -64,7 +63,7 @@ public class DrinkPotionAction {
                     entity.addEffect(mobEffectInstance);
                 }
             });
-            return true;
+            return Action.Result.CONTINUE;
         });
     }
 }
