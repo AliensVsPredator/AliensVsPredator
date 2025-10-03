@@ -12,6 +12,7 @@ public class LivingEntityAgent<T extends LivingEntity> {
 
     public LivingEntityAgent() {
         this.agent = Agent.create();
+        this.isEnabled = true;
     }
 
     public void update(Graph<T> graph, T context) {
