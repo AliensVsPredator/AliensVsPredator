@@ -14,6 +14,10 @@ import com.avp.common.model.inventory.AVPInventory;
 
 public class GOAPStateKeys {
 
+    public static final StateKey.Sensed<Boolean> HAS_FIRE_RESISTANCE = StateKey.sensed("has_fire_resistance");
+
+    public static final StateKey.Sensed<Boolean> HAS_WATER_BREATHING = StateKey.sensed("has_water_breathing");
+
     public static final StateKey.Sensed<Boolean> IS_FULL_HEALTH = StateKey.sensed("is_full_health");
 
     public static final StateKey.Sensed<Boolean> IS_NEAR_RADIOACTIVE_BIOME = StateKey.sensed("is_near_radioactive_biome");
@@ -21,12 +25,6 @@ public class GOAPStateKeys {
     public static final StateKey.Sensed<Boolean> IS_ON_FIRE = StateKey.sensed("is_on_fire");
 
     public static final StateKey.Sensed<Boolean> IS_ON_GROUND = StateKey.sensed("is_on_ground");
-
-    public static final StateKey.Sensed<Boolean> IS_PROTECTED_FROM_DROWNING = StateKey.sensed("is_protected_from_drowning");
-
-    public static final StateKey.Sensed<Boolean> IS_PROTECTED_FROM_FIRE = StateKey.sensed("is_protected_from_fire");
-
-    public static final StateKey.Sensed<Boolean> IS_PROTECTED_FROM_RADIATION = StateKey.sensed("is_protected_from_radiation");
 
     public static final StateKey.Sensed<Boolean> IS_UNDERWATER = StateKey.sensed("is_underwater");
 

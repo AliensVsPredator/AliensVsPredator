@@ -1,46 +1,41 @@
 package com.human.common.gameplay.entity.living.human.marine.ai;
 
 import com.human.common.gameplay.entity.living.human.marine.Marine;
-import com.human.common.gameplay.entity.living.human.marine.ai.action.DrinkPotionAction;
-import com.human.common.gameplay.entity.living.human.marine.ai.action.EquipBestArmorAction;
-import com.human.common.gameplay.entity.living.human.marine.ai.action.EquipBestWaterbreathingArmorAction;
-import com.just.core.functional.option.Option;
+import com.human.common.gameplay.entity.living.human.marine.ai.action.PlaceWaterAtFeetAction;
+import com.human.common.gameplay.entity.living.human.marine.ai.model.ArmorIntent;
 import com.just.goap.Action;
 import com.just.goap.condition.expression.Expressions;
 import com.lib.common.gameplay.goap.GOAPStateKeys;
-import net.minecraft.world.effect.MobEffects;
 
 public class MarineGOAPActions {
 
-    public static final Action<Marine> DRINK_FIRE_RESISTANCE_POTION = Action.<Marine>builder("DrinkFireResistancePotionAction")
-        .addPrecondition(GOAPStateKeys.POTION_ENTRIES_IN_INVENTORY, Expressions.Map.containsKey(MobEffects.FIRE_RESISTANCE))
-        .addEffect(GOAPStateKeys.IS_PROTECTED_FROM_FIRE.asDerived(), true)
-        .withPerformCallback((a, b, c) -> DrinkPotionAction.perform(MobEffects.FIRE_RESISTANCE, a, b, c))
+    public static final Action<Marine> EQUIP_FIRE_RESISTANT_ARMOR = Action.<Marine>builder("EquipFireResistantArmorAction")
+        .addPrecondition(MarineGOAPStateKeys.ARMOR_INTENT, Expressions.Compare.equalTo(ArmorIntent.FIRE_PROTECTION))
+        // TODO: Add a precondition where a "BETTER_ARMOR" state is not empty.
+        .addEffect(GOAPStateKeys.HAS_FIRE_RESISTANCE.asDerived(), true)
+        .withPerformCallback((a, b, c) -> {
+            // TODO: Take off current armor pieces and put them back into the inventory.
+            // TODO: Equip the parts of the "BETTER_ARMOR" state that are present.
+            return Action.Result.CONTINUE;
+        })
         .build();
 
-    public static final Action<Marine> DRINK_INSTANT_HEALTH_POTION = Action.<Marine>builder("DrinkInstantHealthPotionAction")
-        .addPrecondition(GOAPStateKeys.POTION_ENTRIES_IN_INVENTORY, Expressions.Map.containsKey(MobEffects.HEAL))
-        .addEffect(GOAPStateKeys.IS_FULL_HEALTH.asDerived(), true)
-        .withPerformCallback((a, b, c) -> DrinkPotionAction.perform(MobEffects.HEAL, a, b, c))
-        .withCostCallback((marine, $2) -> marine.getHealth() / marine.getMaxHealth())
+    public static final Action<Marine> PLACE_WATER_AT_FEET_ACTION = Action.<Marine>builder("PlaceWaterAtFeetAction")
+        .addPrecondition(GOAPStateKeys.IS_ON_GROUND, Expressions.Boolean.isTrue())
+        .addPrecondition(MarineGOAPStateKeys.HAS_WATER_BUCKET, Expressions.Boolean.isTrue())
+        .addPrecondition(MarineGOAPStateKeys.IS_CURRENT_BLOCK_POS_REPLACEABLE, Expressions.Boolean.isTrue())
+        .addEffect(GOAPStateKeys.IS_ON_FIRE.asDerived(), false)
+        .withPerformCallback((marine, $2, blackboard) -> PlaceWaterAtFeetAction.perform(marine, blackboard))
+        .withFinishCallback((marine, $2, blackboard) -> PlaceWaterAtFeetAction.onFinish(marine, blackboard))
         .build();
 
-    public static final Action<Marine> DRINK_WATER_BREATHING_POTION = Action.<Marine>builder("DrinkWaterBreathingPotionAction")
-        .addPrecondition(GOAPStateKeys.POTION_ENTRIES_IN_INVENTORY, Expressions.Map.containsKey(MobEffects.WATER_BREATHING))
-        .addEffect(GOAPStateKeys.IS_PROTECTED_FROM_DROWNING.asDerived(), true)
-        .withPerformCallback((a, b, c) -> DrinkPotionAction.perform(MobEffects.WATER_BREATHING, a, b, c))
-        .build();
-
-    public static final Action<Marine> EQUIP_BEST_ARMOR = Action.<Marine>builder("EquipBestArmorAction")
-        .addPrecondition(MarineGOAPKeys.BEST_ARMOR_SET, Expressions.Option.isSome())
-        .addEffect(MarineGOAPKeys.BEST_ARMOR_SET.asDerived(), Option.none())
-        .withPerformCallback(EquipBestArmorAction::perform)
-        .build();
-
-    public static final Action<Marine> EQUIP_BEST_WATER_BREATHING_ARMOR = Action.<Marine>builder("EquipBestWaterBreathingArmorAction")
-        .addPrecondition(MarineGOAPKeys.BEST_WATER_BREATHING_ARMOR_SET, Expressions.Option.isSome())
-        .addEffect(MarineGOAPKeys.BEST_WATER_BREATHING_ARMOR_SET.asDerived(), Option.none())
-        .withPerformCallback(EquipBestWaterbreathingArmorAction::perform)
+    public static final Action<Marine> USE_FIRE_RESISTANCE_ITEM = Action.<Marine>builder("UseFireResistanceItemAction")
+        // TODO: Add a precondition where a "FIRE_RESISTANCE_ITEMS" state is not empty.
+        .addEffect(GOAPStateKeys.HAS_FIRE_RESISTANCE.asDerived(), true)
+        .withPerformCallback((a, b, c) -> {
+            // TODO: Determine the best FIRE_RESISTANCE_ITEM to use and use it.
+            return Action.Result.CONTINUE;
+        })
         .build();
 
     private MarineGOAPActions() {

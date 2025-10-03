@@ -20,6 +20,16 @@ import com.avp.common.util.AVPPredicates;
 
 public class GOAPSensors {
 
+    public static final Sensor<LivingEntity, Boolean> HAS_FIRE_RESISTANCE = Sensor.direct(
+        GOAPStateKeys.HAS_FIRE_RESISTANCE,
+        entity -> entity.hasEffect(MobEffects.FIRE_RESISTANCE)
+    );
+
+    public static final Sensor<LivingEntity, Boolean> HAS_WATER_BREATHING = Sensor.direct(
+        GOAPStateKeys.HAS_WATER_BREATHING,
+        entity -> entity.hasEffect(MobEffects.WATER_BREATHING)
+    );
+
     public static final Sensor<LivingEntity, Boolean> IS_FULL_HEALTH = Sensor.direct(
         GOAPStateKeys.IS_FULL_HEALTH,
         livingEntity -> livingEntity.getHealth() == livingEntity.getMaxHealth()
@@ -28,16 +38,6 @@ public class GOAPSensors {
     public static final Sensor<Entity, Boolean> IS_ON_FIRE = Sensor.direct(GOAPStateKeys.IS_ON_FIRE, Entity::isOnFire);
 
     public static final Sensor<Entity, Boolean> IS_ON_GROUND = Sensor.direct(GOAPStateKeys.IS_ON_GROUND, Entity::onGround);
-
-    public static final Sensor<LivingEntity, Boolean> IS_PROTECTED_FROM_DROWNING = Sensor.direct(
-        GOAPStateKeys.IS_PROTECTED_FROM_DROWNING,
-        entity -> entity.hasEffect(MobEffects.WATER_BREATHING)
-    );
-
-    public static final Sensor<LivingEntity, Boolean> IS_PROTECTED_FROM_FIRE = Sensor.direct(
-        GOAPStateKeys.IS_PROTECTED_FROM_FIRE,
-        entity -> entity.hasEffect(MobEffects.FIRE_RESISTANCE)
-    );
 
     public static final Sensor<Entity, Boolean> IS_UNDERWATER = Sensor.direct(GOAPStateKeys.IS_UNDERWATER, Entity::isUnderWater);
 

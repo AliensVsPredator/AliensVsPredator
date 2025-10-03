@@ -137,7 +137,10 @@ public class Marine extends AbstractHuman implements AVPInventoryHolder, GOAPUse
     protected @NotNull InteractionResult mobInteract(@NotNull Player player, @NotNull InteractionHand interactionHand) {
         var itemStack = player.getItemInHand(interactionHand);
 
-        if (itemStack.getItem() instanceof ArmorItem || itemStack.getItem() instanceof PotionItem) {
+        if (
+            itemStack.getItem() instanceof ArmorItem || itemStack.getItem() instanceof PotionItem || itemStack
+                .getItem() == Items.WATER_BUCKET
+        ) {
             if (!level().isClientSide) {
                 var item = new ItemStack(itemStack.getItem(), 1);
                 item.applyComponents(itemStack.getComponents());
