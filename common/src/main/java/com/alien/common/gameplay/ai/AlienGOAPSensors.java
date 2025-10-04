@@ -2,7 +2,7 @@ package com.alien.common.gameplay.ai;
 
 import com.alien.common.gameplay.entity.living.alien.ovomorph.Ovomorph;
 import com.just.goap.Sensor;
-import com.lib.common.gameplay.goap.GOAPStateKeys;
+import com.lib.common.gameplay.goap.GOAPSensors;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 
@@ -14,7 +14,7 @@ public class AlienGOAPSensors {
 
     public static final Sensor.Derived<Entity, List<LivingEntity>, List<LivingEntity>> NEARBY_HOSTS = Sensor.derived(
         AlienGOAPKeys.NEARBY_HOSTS,
-        GOAPStateKeys.NEARBY_LIVING_ENTITIES,
+        GOAPSensors.NEARBY_LIVING_ENTITIES.key(),
         (entity, nearbyEntities) -> nearbyEntities.stream()
             .filter(e -> AVPPredicates.isFreeHost(entity, e))
             .toList()

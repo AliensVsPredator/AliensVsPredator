@@ -68,4 +68,8 @@ public class PlaceWaterAtFeetAction {
             }
         };
     }
+
+    private PlaceWaterAtFeetAction() {
+        throw new UnsupportedOperationException();
+    }
 }

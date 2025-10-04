@@ -2,6 +2,8 @@ package com.human.common.gameplay.entity.living.human.marine;
 
 import com.human.common.gameplay.entity.living.human.AbstractHuman;
 import com.human.common.gameplay.entity.living.human.marine.ai.MarineGOAP;
+import com.human.common.gameplay.entity.living.human.marine.ai.utility.fire_resistance.ConsumableFireResistanceItemStrategies;
+import com.human.common.gameplay.entity.living.human.marine.ai.utility.fire_resistance.ThrowableFireResistanceItemStrategies;
 import com.human.common.registry.init.item.HumanGunItems;
 import com.just.core.functional.option.Option;
 import com.just.goap.graph.Graph;
@@ -27,7 +29,6 @@ import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.item.PotionItem;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import org.jetbrains.annotations.NotNull;
@@ -138,8 +139,10 @@ public class Marine extends AbstractHuman implements AVPInventoryHolder, GOAPUse
         var itemStack = player.getItemInHand(interactionHand);
 
         if (
-            itemStack.getItem() instanceof ArmorItem || itemStack.getItem() instanceof PotionItem || itemStack
-                .getItem() == Items.WATER_BUCKET
+            itemStack.getItem() instanceof ArmorItem
+                || itemStack.getItem() == Items.WATER_BUCKET
+                || ConsumableFireResistanceItemStrategies.isConsumableFireResistanceItem(itemStack)
+                || ThrowableFireResistanceItemStrategies.isThrowableFireResistanceItem(itemStack)
         ) {
             if (!level().isClientSide) {
                 var item = new ItemStack(itemStack.getItem(), 1);
