@@ -1,19 +1,18 @@
 package com.human.common.gameplay.entity.living.human.marine.ai.utility.fire_resistance.strategy.impl;
 
-import com.human.common.gameplay.entity.living.human.marine.Marine;
+import com.avp.common.model.inventory.AVPInventoryHolder;
 import com.human.common.gameplay.entity.living.human.marine.ai.utility.fire_resistance.FireResistanceItemStrategyUtil;
 import com.human.common.gameplay.entity.living.human.marine.ai.utility.fire_resistance.strategy.FireResistanceItemStrategy;
 import com.just.goap.Action;
-import com.just.goap.state.Blackboard;
-import com.just.goap.state.ReadableWorldState;
 import net.minecraft.core.component.DataComponents;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.projectile.ThrownPotion;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 
 import java.util.Objects;
 
-public class LingeringPotionFireResistanceItemStrategy implements FireResistanceItemStrategy {
+public class LingeringPotionFireResistanceItemStrategy<T extends LivingEntity & AVPInventoryHolder> implements FireResistanceItemStrategy<T> {
 
     @Override
     public boolean matches(ItemStack itemStack) {
@@ -22,7 +21,9 @@ public class LingeringPotionFireResistanceItemStrategy implements FireResistance
     }
 
     @Override
-    public double score(Marine marine, Context context, ItemStack itemStack, Weights weights) {
+    public double score(ItemStack itemStack, Context<T> context) {
+        var livingEntity = context.getLivingEntity();
+        var weights = context.getWeights();
         // Lingering ~ 1/4 duration per full exposure if you stick in the cloud.
         var base = FireResistanceItemStrategyUtil.fireResistanceTicksFromStack(itemStack);
         var ticks = (int) Math.round(base * 0.25);
@@ -33,7 +34,7 @@ public class LingeringPotionFireResistanceItemStrategy implements FireResistance
 
         var U = FireResistanceItemStrategyUtil.urgencyTerm(context);
         var D = FireResistanceItemStrategyUtil.durationTermSeconds(ticks);
-        var use = FireResistanceItemStrategyUtil.timePenalty(FireResistanceItemStrategyUtil.useDurationTicks(marine, itemStack));
+        var use = FireResistanceItemStrategyUtil.timePenalty(FireResistanceItemStrategyUtil.useDurationTicks(livingEntity, itemStack));
         var waste = FireResistanceItemStrategyUtil.overlapWasteTerm(context, ticks);
 
         // Cloud unreliability penalty.
@@ -47,8 +48,9 @@ public class LingeringPotionFireResistanceItemStrategy implements FireResistance
     }
 
     @Override
-    public Action.Result consume(Marine marine, ReadableWorldState worldState, Blackboard blackboard) {
-        var itemStack = marine.getMainHandItem();
+    public Action.Result execute(Context<T> context) {
+        var livingEntity = context.getLivingEntity();
+        var itemStack = livingEntity.getMainHandItem();
 
         if (!itemStack.is(Items.LINGERING_POTION)) {
             return Action.Result.FAILED;
@@ -58,14 +60,14 @@ public class LingeringPotionFireResistanceItemStrategy implements FireResistance
 
         itemStack.shrink(1);
 
-        var level = marine.level();
-        var thrownPotion = new ThrownPotion(level, marine);
+        var level = livingEntity.level();
+        var thrownPotion = new ThrownPotion(level, livingEntity);
 
         thrownPotion.setItem(itemStack);
         thrownPotion.shoot(0.0, -1.0, 0.0, 0.5F, 1.0F);
         level.addFreshEntity(thrownPotion);
 
-        potionContents.getAllEffects().forEach(marine::addEffect);
+        potionContents.getAllEffects().forEach(livingEntity::addEffect);
 
         return Action.Result.CONTINUE;
     }

@@ -48,7 +48,7 @@ public class MarineGOAPActions {
     )
         .addPrecondition(MarineGOAPSensors.HAS_CONSUMABLE_FIRE_RESISTANCE_ITEMS_IN_INVENTORY.key(), Expressions.Boolean.isTrue())
         .addEffect(MarineGOAPSensors.HAS_CONSUMABLE_FIRE_RESISTANCE_ITEM_EQUIPPED.key().asDerived(), true)
-        .withPerformCallback((marine, worldState, blackboard) -> EquipConsumableFireResistanceItemAction.perform(marine, worldState))
+        .withPerformCallback(EquipConsumableFireResistanceItemAction::perform)
         .build();
 
     public static final Action<Marine> CONSUME_FIRE_RESISTANCE_ITEM = Action.<Marine>builder("ConsumeFireResistanceItemAction")
@@ -69,7 +69,7 @@ public class MarineGOAPActions {
     )
         .addPrecondition(MarineGOAPSensors.HAS_THROWABLE_FIRE_RESISTANCE_ITEMS_IN_INVENTORY.key(), Expressions.Boolean.isTrue())
         .addEffect(MarineGOAPSensors.HAS_THROWABLE_FIRE_RESISTANCE_ITEM_EQUIPPED.key().asDerived(), true)
-        .withPerformCallback((marine, worldState, blackboard) -> EquipThrowableResistanceItemAction.perform(marine, worldState))
+        .withPerformCallback(EquipThrowableResistanceItemAction::perform)
         .build();
 
     public static final Action<Marine> THROW_FIRE_RESISTANCE_ITEM = Action.<Marine>builder("ThrowFireResistanceItemAction")

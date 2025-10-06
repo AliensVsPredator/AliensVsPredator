@@ -1,22 +1,21 @@
 package com.human.common.gameplay.entity.living.human.marine.ai.utility.fire_resistance.strategy.impl;
 
-import com.human.common.gameplay.entity.living.human.marine.Marine;
+import com.avp.common.model.inventory.AVPInventoryHolder;
 import com.human.common.gameplay.entity.living.human.marine.ai.action.ConsumeItemAction;
 import com.human.common.gameplay.entity.living.human.marine.ai.utility.fire_resistance.FireResistanceItemStrategyUtil;
 import com.human.common.gameplay.entity.living.human.marine.ai.utility.fire_resistance.strategy.FireResistanceItemStrategy;
 import com.just.goap.Action;
-import com.just.goap.state.Blackboard;
-import com.just.goap.state.ReadableWorldState;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.food.Foods;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import org.jetbrains.annotations.NotNull;
 
-public class EnchantedGoldenAppleFireResistanceItemStrategy implements FireResistanceItemStrategy {
+public class EnchantedGoldenAppleFireResistanceItemStrategy<T extends LivingEntity & AVPInventoryHolder> implements FireResistanceItemStrategy<T> {
 
     private static final int TICK_DURATION = Foods.ENCHANTED_GOLDEN_APPLE
         .effects()
@@ -33,14 +32,17 @@ public class EnchantedGoldenAppleFireResistanceItemStrategy implements FireResis
     }
 
     @Override
-    public double score(Marine marine, Context context, ItemStack itemStack, Weights weights) {
+    public double score(ItemStack itemStack, Context<T> context) {
+        var livingEntity = context.getLivingEntity();
+        var weights = context.getWeights();
+
         var U = FireResistanceItemStrategyUtil.urgencyTerm(context);
         var D = FireResistanceItemStrategyUtil.durationTermSeconds(TICK_DURATION);
 
         // Side-benefit is bigger if low HP.
         var side = FireResistanceItemStrategyUtil.clamp01((1.0 - context.healthRatio()) * 0.6);
 
-        var use = FireResistanceItemStrategyUtil.timePenalty(FireResistanceItemStrategyUtil.useDurationTicks(marine, itemStack));
+        var use = FireResistanceItemStrategyUtil.timePenalty(FireResistanceItemStrategyUtil.useDurationTicks(livingEntity, itemStack));
         var waste = FireResistanceItemStrategyUtil.overlapWasteTerm(context, TICK_DURATION);
 
         // Apply rarity penalty unless highly urgent.
@@ -53,12 +55,14 @@ public class EnchantedGoldenAppleFireResistanceItemStrategy implements FireResis
     }
 
     @Override
-    public Action.Result consume(Marine marine, ReadableWorldState worldState, Blackboard blackboard) {
-        return ConsumeItemAction.perform(SoundEvents.GENERIC_EAT, marine, blackboard, () -> onConsume(marine));
+    public Action.Result execute(Context<T> context) {
+        var blackboard = context.getBlackboard();
+        var livingEntity = context.getLivingEntity();
+        return ConsumeItemAction.perform(SoundEvents.GENERIC_EAT, livingEntity, blackboard, () -> onConsume(livingEntity));
     }
 
-    private static Action.@NotNull Result onConsume(Marine marine) {
-        var itemStack = marine.getMainHandItem();
+    private static Action.@NotNull Result onConsume(LivingEntity livingEntity) {
+        var itemStack = livingEntity.getMainHandItem();
 
         if (!itemStack.is(Items.ENCHANTED_GOLDEN_APPLE)) {
             return Action.Result.FAILED;
@@ -70,7 +74,7 @@ public class EnchantedGoldenAppleFireResistanceItemStrategy implements FireResis
             .effects()
             .stream()
             .map(FoodProperties.PossibleEffect::effect)
-            .forEach(marine::addEffect);
+            .forEach(livingEntity::addEffect);
 
         return Action.Result.CONTINUE;
     }

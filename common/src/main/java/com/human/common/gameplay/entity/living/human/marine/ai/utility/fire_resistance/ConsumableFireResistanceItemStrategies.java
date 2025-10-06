@@ -1,39 +1,45 @@
 package com.human.common.gameplay.entity.living.human.marine.ai.utility.fire_resistance;
 
-import com.human.common.gameplay.entity.living.human.marine.ai.utility.fire_resistance.strategy.FireResistanceItemStrategy;
+import com.avp.common.model.inventory.AVPInventory;
+import com.human.common.gameplay.entity.living.human.marine.Marine;
 import com.human.common.gameplay.entity.living.human.marine.ai.utility.fire_resistance.strategy.impl.DrinkablePotionFireResistanceItemStrategy;
 import com.human.common.gameplay.entity.living.human.marine.ai.utility.fire_resistance.strategy.impl.EnchantedGoldenAppleFireResistanceItemStrategy;
+import com.human.common.gameplay.entity.living.human.marine.ai.utility.general.UtilityAI;
+import com.human.common.gameplay.entity.living.human.marine.ai.utility.fire_resistance.strategy.FireResistanceItemStrategy;
 import com.just.core.functional.option.Option;
+import com.just.core.functional.tuple.Tuple2;
+import com.just.goap.Action;
 import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
 public final class ConsumableFireResistanceItemStrategies {
 
-    public static final FireResistanceItemStrategy DRINKABLE_POTION = new DrinkablePotionFireResistanceItemStrategy();
+    private static final FireResistanceItemStrategy<Marine> DRINKABLE_POTION = new DrinkablePotionFireResistanceItemStrategy<>();
 
-    public static final FireResistanceItemStrategy ENCHANTED_GOLDEN_APPLE = new EnchantedGoldenAppleFireResistanceItemStrategy();
+    private static final FireResistanceItemStrategy<Marine> ENCHANTED_GOLDEN_APPLE = new EnchantedGoldenAppleFireResistanceItemStrategy<>();
 
-    private static final List<FireResistanceItemStrategy> REGISTRY = List.of(
+    private static final List<FireResistanceItemStrategy<Marine>> STRATEGIES = List.of(
         ENCHANTED_GOLDEN_APPLE,
         DRINKABLE_POTION
     );
 
-    public static Option<FireResistanceItemStrategy> strategyFor(ItemStack stack) {
-        for (var strategy : REGISTRY) {
-            if (strategy.matches(stack)) {
-                return Option.some(strategy);
-            }
-        }
+    private static final UtilityAI<ItemStack, FireResistanceItemStrategy.Context<Marine>, Action.Result, FireResistanceItemStrategy<Marine>> UTILITY_AI = new UtilityAI<>(STRATEGIES);
 
-        return Option.none();
+    public static Option<FireResistanceItemStrategy<Marine>> strategyFor(ItemStack stack) {
+        return UTILITY_AI.getFirstStrategy(stack);
     }
 
     public static boolean isConsumableFireResistanceItem(ItemStack stack) {
         return strategyFor(stack).isSome();
     }
 
-    public static List<FireResistanceItemStrategy> all() {
-        return REGISTRY;
+    public static List<FireResistanceItemStrategy<Marine>> all() {
+        return STRATEGIES;
+    }
+
+    public static @Nullable UtilityAI.Pick<ItemStack, FireResistanceItemStrategy<Marine>> getBestStrategyAndMatchableOrNull(List<AVPInventory.Entry> entries, FireResistanceItemStrategy.Context<Marine> context) {
+        return UTILITY_AI.getBestStrategyAndMatchableOrNull(entries, AVPInventory.Entry::copyItemStack, context);
     }
 }

@@ -1,24 +1,66 @@
 package com.human.common.gameplay.entity.living.human.marine.ai.utility.fire_resistance.strategy;
 
-import com.human.common.gameplay.entity.living.human.marine.Marine;
+import com.avp.common.model.inventory.AVPInventoryHolder;
+import com.human.common.gameplay.entity.living.human.marine.ai.utility.general.Strategy;
 import com.just.goap.Action;
 import com.just.goap.state.Blackboard;
 import com.just.goap.state.ReadableWorldState;
+import com.lib.common.gameplay.goap.GOAPSensors;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 
-public interface FireResistanceItemStrategy {
+public interface FireResistanceItemStrategy<T extends LivingEntity & AVPInventoryHolder> extends Strategy<ItemStack, FireResistanceItemStrategy.Context<T>, Action.Result> {
 
-    boolean matches(ItemStack itemStack);
+    class Context<T extends LivingEntity & AVPInventoryHolder> {
 
-    double score(Marine marine, Context context, ItemStack itemStack, Weights weights);
+        public static <T extends LivingEntity & AVPInventoryHolder> Context<T> create(T livingEntity, ReadableWorldState worldState, Blackboard blackboard, Weights weights) {
+            var context = new Context<T>();
+            context.apply(livingEntity, worldState, blackboard, weights);
+            return context;
+        }
 
-    Action.Result consume(Marine marine, ReadableWorldState worldState, Blackboard blackboard);
+        private Blackboard blackboard;
 
-    record Context(
-        boolean isOnFire,
-        double healthRatio,
-        int fireResTicksRemaining
-    ) {}
+        private T livingEntity;
+
+        private Weights weights;
+
+        private ReadableWorldState worldState;
+
+        private Context() {
+        }
+
+        public void apply(T livingEntity, ReadableWorldState worldState, Blackboard blackboard, Weights weights) {
+            this.blackboard = blackboard;
+            this.livingEntity = livingEntity;
+            this.weights = weights;
+            this.worldState = worldState;
+        }
+
+        public Blackboard getBlackboard() {
+            return blackboard;
+        }
+
+        public T getLivingEntity() {
+            return livingEntity;
+        }
+
+        public Weights getWeights() {
+            return weights;
+        }
+
+        public float healthRatio() {
+            return blackboard.getOrDefault(GOAPSensors.HEALTH_RATIO.key(), 1.0F);
+        }
+
+        public int fireResTicksRemaining() {
+            return worldState.getOrDefault(GOAPSensors.FIRE_RESISTANCE_REMAINING_TICKS.key(), 0);
+        }
+
+        public boolean isOnFire() {
+            return worldState.getOrDefault(GOAPSensors.IS_ON_FIRE.key(), false);
+        }
+    }
 
     /**
      * @param urgency             Higher means “use something now”.

@@ -25,7 +25,7 @@ public class FireResistanceItemStrategyUtil {
         return stack.getUseDuration(livingEntity);
     }
 
-    public static double urgencyTerm(FireResistanceItemStrategy.Context context) {
+    public static double urgencyTerm(FireResistanceItemStrategy.Context<?> context) {
         var onFire = context.isOnFire() ? 1.0 : 0.0;
         var lowHp = 1.0 - clamp01(context.healthRatio());
 
@@ -39,7 +39,7 @@ public class FireResistanceItemStrategyUtil {
         return clamp01(secs / 180.0);
     }
 
-    public static double overlapWasteTerm(FireResistanceItemStrategy.Context context, int newTicks) {
+    public static double overlapWasteTerm(FireResistanceItemStrategy.Context<?> context, int newTicks) {
         // If you already have long remaining, discourage stacking.
         var remain = context.fireResTicksRemaining();
 
