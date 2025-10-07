@@ -85,7 +85,12 @@ public class MetalRecipeProvider {
 
         RecipeUtil.createCompressedBlockRecipes3x3(builder, AVPItems.AUTUNITE_DUST.get(), CoreBlocks.AUTUNITE_BLOCK.get());
         RecipeUtil.createCompressedBlockRecipes3x3(builder, AVPItems.LITHIUM_DUST.get(), CoreBlocks.LITHIUM_BLOCK.get());
-        RecipeUtil.createCompressedBlockRecipes3x3(builder, AVPItems.RAW_BAUXITE.get(), CoreBlocks.RAW_BAUXITE_BLOCK.get());
+        RecipeUtil.createCompressedBlockRecipes3x3TagFriendly(
+            builder,
+            AVPItems.RAW_BAUXITE.get(),
+            CommonConstants.RAW_MATERIALS_ALUMINUM,
+            CoreBlocks.RAW_BAUXITE_BLOCK.get()
+        );
         RecipeUtil.createCompressedBlockRecipes3x3TagFriendly(
             builder,
             AVPItems.RAW_GALENA.get(),
