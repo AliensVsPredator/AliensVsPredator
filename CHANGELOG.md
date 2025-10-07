@@ -20,6 +20,7 @@
   - Raw bauxite blocks now accept any kind of raw aluminum items.
   - Raw galena blocks now accept any kind of raw lead items.
   - Raw titanium blocks now accept any kind of raw titanium items.
+  - Raw zinc blocks now accept any kind of raw zinc items.
 
 ## 🐞 Fixes
 - Fixed predators rendering incorrectly.
