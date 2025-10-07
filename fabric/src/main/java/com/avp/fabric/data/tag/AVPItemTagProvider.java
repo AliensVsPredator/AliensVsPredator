@@ -548,5 +548,11 @@ public class AVPItemTagProvider extends FabricTagProvider.ItemTagProvider {
             .add(
                 AVPItems.RAW_BAUXITE.get()
             );
+
+        getOrCreateTagBuilder(CommonConstants.RAW_MATERIALS_LEAD)
+            .setReplace(false)
+            .add(
+                AVPItems.RAW_GALENA.get()
+            );
     }
 }

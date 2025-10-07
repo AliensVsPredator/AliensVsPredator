@@ -25,6 +25,7 @@
 
 ## 🛠 Data Pack
 - Added `avp:raw_aluminum` to `c:raw_materials/aluminum` tag.
+- Added `avp:raw_galena` to `c:raw_materials/lead` tag.
 
 ## 🔬 Technical Changes
 - N/A
