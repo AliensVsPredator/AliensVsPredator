@@ -13,7 +13,7 @@
 - N/A
 
 ## 🐞 Fixes
-- N/A
+- Fixed predators rendering incorrectly.
 
 ## 🧪 Experimental
 - N/A
