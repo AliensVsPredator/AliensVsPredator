@@ -11,6 +11,7 @@ import java.util.function.Supplier;
 
 import com.avp.common.registry.init.block.CoreBlocks;
 import com.avp.common.registry.init.item.AVPItems;
+import com.avp.fabric.data.compatibility.common.CommonConstants;
 import com.avp.fabric.data.recipe.RecipeConstants;
 import com.avp.fabric.data.recipe.RecipeTemplates;
 import com.avp.fabric.data.recipe.builder.RecipeBuilder;
@@ -85,7 +86,12 @@ public class MetalRecipeProvider {
         RecipeUtil.createCompressedBlockRecipes3x3(builder, AVPItems.AUTUNITE_DUST.get(), CoreBlocks.AUTUNITE_BLOCK.get());
         RecipeUtil.createCompressedBlockRecipes3x3(builder, AVPItems.LITHIUM_DUST.get(), CoreBlocks.LITHIUM_BLOCK.get());
         RecipeUtil.createCompressedBlockRecipes3x3(builder, AVPItems.RAW_BAUXITE.get(), CoreBlocks.RAW_BAUXITE_BLOCK.get());
-        RecipeUtil.createCompressedBlockRecipes3x3(builder, AVPItems.RAW_GALENA.get(), CoreBlocks.RAW_GALENA_BLOCK.get());
+        RecipeUtil.createCompressedBlockRecipes3x3TagFriendly(
+            builder,
+            AVPItems.RAW_GALENA.get(),
+            CommonConstants.RAW_MATERIALS_LEAD,
+            CoreBlocks.RAW_GALENA_BLOCK.get()
+        );
         RecipeUtil.createCompressedBlockRecipes3x3(builder, AVPItems.RAW_MONAZITE.get(), CoreBlocks.RAW_MONAZITE_BLOCK.get());
         RecipeUtil.createCompressedBlockRecipes3x3(builder, AVPItems.RAW_TITANIUM.get(), CoreBlocks.RAW_TITANIUM_BLOCK.get());
         RecipeUtil.createCompressedBlockRecipes3x3(builder, AVPItems.RAW_ZINC.get(), CoreBlocks.RAW_ZINC_BLOCK.get());

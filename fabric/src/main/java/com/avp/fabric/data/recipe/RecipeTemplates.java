@@ -1,9 +1,12 @@
 package com.avp.fabric.data.recipe;
 
 import net.minecraft.data.recipes.RecipeCategory;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.ItemLike;
 
+import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.UnaryOperator;
 
@@ -58,6 +61,14 @@ public class RecipeTemplates {
             .pattern("AAA")
             .pattern("AAA")
             .pattern("AAA");
+
+    public static final BiFunction<ItemLike, TagKey<Item>, UnaryOperator<ShapedRecipeBuilder>> COMPRESSED_BLOCK_3x3_TAG_FRIENDLY =
+        (discriminator, itemTagKey) -> builder -> builder
+            .define('A', discriminator)
+            .define('B', itemTagKey)
+            .pattern("BBB")
+            .pattern("BAB")
+            .pattern("BBB");
 
     public static final Function<ItemLike, UnaryOperator<ShapedRecipeBuilder>> DOOR_BLOCK =
         itemLike -> builder -> builder
