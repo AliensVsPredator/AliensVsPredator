@@ -98,7 +98,12 @@ public class MetalRecipeProvider {
             CoreBlocks.RAW_GALENA_BLOCK.get()
         );
         RecipeUtil.createCompressedBlockRecipes3x3(builder, AVPItems.RAW_MONAZITE.get(), CoreBlocks.RAW_MONAZITE_BLOCK.get());
-        RecipeUtil.createCompressedBlockRecipes3x3(builder, AVPItems.RAW_TITANIUM.get(), CoreBlocks.RAW_TITANIUM_BLOCK.get());
+        RecipeUtil.createCompressedBlockRecipes3x3TagFriendly(
+            builder,
+            AVPItems.RAW_TITANIUM.get(),
+            CommonConstants.RAW_MATERIALS_TITANIUM,
+            CoreBlocks.RAW_TITANIUM_BLOCK.get()
+        );
         RecipeUtil.createCompressedBlockRecipes3x3(builder, AVPItems.RAW_ZINC.get(), CoreBlocks.RAW_ZINC_BLOCK.get());
         RecipeUtil.createCompressedBlockRecipes3x3(builder, AVPItems.SILICON.get(), CoreBlocks.SILICON_BLOCK.get());
 
