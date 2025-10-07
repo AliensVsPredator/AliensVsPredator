@@ -14,11 +14,11 @@ public class ConsumeItemAction {
 
     private static final StateKey<Integer> CONSUME_TICK_DURATION = StateKey.sensed("consume_tick_duration");
 
-    public static <T extends LivingEntity & AVPInventoryHolder> Action.Result perform(
+    public static <T extends LivingEntity & AVPInventoryHolder> Action.Signal perform(
         SoundEvent soundEvent,
         T entity,
         Blackboard blackboard,
-        Supplier<Action.Result> onConsume
+        Supplier<Action.Signal> onConsume
     ) {
         var tickDuration = blackboard.getOrDefault(CONSUME_TICK_DURATION, 0);
         blackboard.set(CONSUME_TICK_DURATION, tickDuration + 1);
@@ -33,6 +33,6 @@ public class ConsumeItemAction {
         }
 
         // Not finished, yet.
-        return Action.Result.CONTINUE;
+        return Action.Signal.CONTINUE;
     }
 }

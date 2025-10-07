@@ -111,5 +111,9 @@ public final class UtilityAI<M, C, R, S extends Strategy<M, C, R>> {
         return Option.ofNullable(getFirstStrategyOrNull(matchable));
     }
 
-    public record Pick<M,S>(M matchable, S strategy, double score) {}
+    public record Pick<M, S>(
+        M matchable,
+        S strategy,
+        double score
+    ) {}
 }

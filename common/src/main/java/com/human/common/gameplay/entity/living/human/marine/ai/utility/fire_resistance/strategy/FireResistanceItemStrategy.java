@@ -1,6 +1,5 @@
 package com.human.common.gameplay.entity.living.human.marine.ai.utility.fire_resistance.strategy;
 
-import com.avp.common.model.inventory.AVPInventoryHolder;
 import com.human.common.gameplay.entity.living.human.marine.ai.utility.general.Strategy;
 import com.just.goap.Action;
 import com.just.goap.state.Blackboard;
@@ -9,11 +8,18 @@ import com.lib.common.gameplay.goap.GOAPSensors;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 
-public interface FireResistanceItemStrategy<T extends LivingEntity & AVPInventoryHolder> extends Strategy<ItemStack, FireResistanceItemStrategy.Context<T>, Action.Result> {
+import com.avp.common.model.inventory.AVPInventoryHolder;
+
+public interface FireResistanceItemStrategy<T extends LivingEntity & AVPInventoryHolder> extends Strategy<ItemStack, FireResistanceItemStrategy.Context<T>, Action.Signal> {
 
     class Context<T extends LivingEntity & AVPInventoryHolder> {
 
-        public static <T extends LivingEntity & AVPInventoryHolder> Context<T> create(T livingEntity, ReadableWorldState worldState, Blackboard blackboard, Weights weights) {
+        public static <T extends LivingEntity & AVPInventoryHolder> Context<T> create(
+            T livingEntity,
+            ReadableWorldState worldState,
+            Blackboard blackboard,
+            Weights weights
+        ) {
             var context = new Context<T>();
             context.apply(livingEntity, worldState, blackboard, weights);
             return context;
@@ -27,8 +33,7 @@ public interface FireResistanceItemStrategy<T extends LivingEntity & AVPInventor
 
         private ReadableWorldState worldState;
 
-        private Context() {
-        }
+        private Context() {}
 
         public void apply(T livingEntity, ReadableWorldState worldState, Blackboard blackboard, Weights weights) {
             this.blackboard = blackboard;

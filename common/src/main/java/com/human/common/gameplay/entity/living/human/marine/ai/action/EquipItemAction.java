@@ -5,14 +5,13 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import org.jetbrains.annotations.NotNull;
 
 import com.avp.common.model.inventory.AVPInventory;
 import com.avp.common.model.inventory.AVPInventoryHolder;
 
 public class EquipItemAction {
 
-    public static <T extends LivingEntity & AVPInventoryHolder> Action.@NotNull Result perform(
+    public static <T extends LivingEntity & AVPInventoryHolder> Action.Signal perform(
         T livingEntityWithInventory,
         Item item,
         InteractionHand interactionHand
@@ -20,7 +19,7 @@ public class EquipItemAction {
         return perform(livingEntityWithInventory, new ItemStack(item), interactionHand);
     }
 
-    public static <T extends LivingEntity & AVPInventoryHolder> Action.@NotNull Result perform(
+    public static <T extends LivingEntity & AVPInventoryHolder> Action.Signal perform(
         T livingEntityWithInventory,
         ItemStack itemStack,
         InteractionHand interactionHand
@@ -31,8 +30,8 @@ public class EquipItemAction {
         var removeResult = livingEntityWithInventory.getInventory().removeItemStack(itemStack);
 
         return switch (removeResult) {
-            case AVPInventory.RemoveResult.InventoryEmpty inventoryEmpty -> Action.Result.FAILED;
-            case AVPInventory.RemoveResult.Partial partial -> Action.Result.FAILED;
+            case AVPInventory.RemoveResult.InventoryEmpty inventoryEmpty -> Action.Signal.ABORT;
+            case AVPInventory.RemoveResult.Partial partial -> Action.Signal.ABORT;
             case AVPInventory.RemoveResult.Success success -> {
                 // Put target hand item in inventory.
                 livingEntityWithInventory.getInventory().addItemStack(targetHandItemStack);
@@ -40,7 +39,7 @@ public class EquipItemAction {
                 // Equip item.
                 livingEntityWithInventory.setItemInHand(interactionHand, itemStack);
 
-                yield Action.Result.CONTINUE;
+                yield Action.Signal.CONTINUE;
             }
         };
     }

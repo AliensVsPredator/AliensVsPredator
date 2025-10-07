@@ -1,6 +1,5 @@
 package com.human.common.gameplay.entity.living.human.marine.ai.utility.fire_resistance.strategy.impl;
 
-import com.avp.common.model.inventory.AVPInventoryHolder;
 import com.human.common.gameplay.entity.living.human.marine.ai.utility.fire_resistance.FireResistanceItemStrategyUtil;
 import com.human.common.gameplay.entity.living.human.marine.ai.utility.fire_resistance.strategy.FireResistanceItemStrategy;
 import com.just.goap.Action;
@@ -12,6 +11,8 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.SplashPotionItem;
 
 import java.util.Objects;
+
+import com.avp.common.model.inventory.AVPInventoryHolder;
 
 public class SplashPotionFireResistanceItemStrategy<T extends LivingEntity & AVPInventoryHolder> implements FireResistanceItemStrategy<T> {
 
@@ -48,12 +49,12 @@ public class SplashPotionFireResistanceItemStrategy<T extends LivingEntity & AVP
     }
 
     @Override
-    public Action.Result execute(Context<T> context) {
+    public Action.Signal execute(Context<T> context) {
         var livingEntity = context.getLivingEntity();
         var itemStack = livingEntity.getMainHandItem();
 
         if (!itemStack.is(Items.SPLASH_POTION)) {
-            return Action.Result.FAILED;
+            return Action.Signal.ABORT;
         }
 
         var potionContents = Objects.requireNonNull(itemStack.get(DataComponents.POTION_CONTENTS));
@@ -69,6 +70,6 @@ public class SplashPotionFireResistanceItemStrategy<T extends LivingEntity & AVP
 
         potionContents.getAllEffects().forEach(livingEntity::addEffect);
 
-        return Action.Result.CONTINUE;
+        return Action.Signal.CONTINUE;
     }
 }

@@ -24,7 +24,7 @@ public class MarineGOAPActions {
         .withPerformCallback((a, b, c) -> {
             // TODO: Take off current armor pieces and put them back into the inventory.
             // TODO: Equip the parts of the "BETTER_ARMOR" state that are present.
-            return Action.Result.CONTINUE;
+            return Action.Signal.CONTINUE;
         })
         .build();
 

@@ -1,6 +1,5 @@
 package com.human.common.gameplay.entity.living.human.marine.ai.utility.fire_resistance.strategy.impl;
 
-import com.avp.common.model.inventory.AVPInventoryHolder;
 import com.human.common.gameplay.entity.living.human.marine.ai.action.ConsumeItemAction;
 import com.human.common.gameplay.entity.living.human.marine.ai.utility.fire_resistance.FireResistanceItemStrategyUtil;
 import com.human.common.gameplay.entity.living.human.marine.ai.utility.fire_resistance.strategy.FireResistanceItemStrategy;
@@ -10,9 +9,10 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
+
+import com.avp.common.model.inventory.AVPInventoryHolder;
 
 public class DrinkablePotionFireResistanceItemStrategy<T extends LivingEntity & AVPInventoryHolder> implements FireResistanceItemStrategy<T> {
 
@@ -44,17 +44,17 @@ public class DrinkablePotionFireResistanceItemStrategy<T extends LivingEntity & 
     }
 
     @Override
-    public Action.Result execute(Context<T> context) {
+    public Action.Signal execute(Context<T> context) {
         var blackboard = context.getBlackboard();
         var livingEntity = context.getLivingEntity();
         return ConsumeItemAction.perform(SoundEvents.GENERIC_DRINK, livingEntity, blackboard, () -> onConsume(livingEntity));
     }
 
-    private static Action.@NotNull Result onConsume(LivingEntity livingEntity) {
+    private static Action.Signal onConsume(LivingEntity livingEntity) {
         var itemStack = livingEntity.getMainHandItem();
 
         if (!itemStack.is(Items.POTION)) {
-            return Action.Result.FAILED;
+            return Action.Signal.ABORT;
         }
 
         var potionContents = Objects.requireNonNull(itemStack.get(DataComponents.POTION_CONTENTS));
@@ -62,6 +62,6 @@ public class DrinkablePotionFireResistanceItemStrategy<T extends LivingEntity & 
         itemStack.shrink(1);
 
         potionContents.getAllEffects().forEach(livingEntity::addEffect);
-        return Action.Result.CONTINUE;
+        return Action.Signal.CONTINUE;
     }
 }

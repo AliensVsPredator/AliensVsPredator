@@ -13,7 +13,7 @@ public class OvomorphGOAPActions {
         .addEffect(OvomorphGOAPStateKeys.HATCH_STATE.asDerived(), HatchState.HATCHED)
         .withPerformCallback((ovomorph, $2, $3) -> {
             ovomorph.getHatchManager().hatch();
-            return Action.Result.CONTINUE;
+            return Action.Signal.CONTINUE;
         })
         .build();
 

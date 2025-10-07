@@ -1,17 +1,18 @@
 package com.human.common.gameplay.entity.living.human.marine.ai.utility.fire_resistance;
 
-import com.avp.common.model.inventory.AVPInventory;
 import com.human.common.gameplay.entity.living.human.marine.Marine;
+import com.human.common.gameplay.entity.living.human.marine.ai.utility.fire_resistance.strategy.FireResistanceItemStrategy;
 import com.human.common.gameplay.entity.living.human.marine.ai.utility.fire_resistance.strategy.impl.LingeringPotionFireResistanceItemStrategy;
 import com.human.common.gameplay.entity.living.human.marine.ai.utility.fire_resistance.strategy.impl.SplashPotionFireResistanceItemStrategy;
 import com.human.common.gameplay.entity.living.human.marine.ai.utility.general.UtilityAI;
-import com.human.common.gameplay.entity.living.human.marine.ai.utility.fire_resistance.strategy.FireResistanceItemStrategy;
 import com.just.core.functional.option.Option;
 import com.just.goap.Action;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+
+import com.avp.common.model.inventory.AVPInventory;
 
 public final class ThrowableFireResistanceItemStrategies {
 
@@ -24,7 +25,8 @@ public final class ThrowableFireResistanceItemStrategies {
         LINGERING_POTION
     );
 
-    private static final UtilityAI<ItemStack, FireResistanceItemStrategy.Context<Marine>, Action.Result, FireResistanceItemStrategy<Marine>> UTILITY_AI = new UtilityAI<>(STRATEGIES);
+    private static final UtilityAI<ItemStack, FireResistanceItemStrategy.Context<Marine>, Action.Signal, FireResistanceItemStrategy<Marine>> UTILITY_AI =
+        new UtilityAI<>(STRATEGIES);
 
     public static Option<FireResistanceItemStrategy<Marine>> strategyFor(ItemStack stack) {
         return UTILITY_AI.getFirstStrategy(stack);
@@ -38,7 +40,10 @@ public final class ThrowableFireResistanceItemStrategies {
         return STRATEGIES;
     }
 
-    public static @Nullable UtilityAI.Pick<ItemStack, FireResistanceItemStrategy<Marine>> getBestStrategyAndMatchableOrNull(List<AVPInventory.Entry> entries, FireResistanceItemStrategy.Context<Marine> context) {
+    public static @Nullable UtilityAI.Pick<ItemStack, FireResistanceItemStrategy<Marine>> getBestStrategyAndMatchableOrNull(
+        List<AVPInventory.Entry> entries,
+        FireResistanceItemStrategy.Context<Marine> context
+    ) {
         return UTILITY_AI.getBestStrategyAndMatchableOrNull(entries, AVPInventory.Entry::copyItemStack, context);
     }
 }

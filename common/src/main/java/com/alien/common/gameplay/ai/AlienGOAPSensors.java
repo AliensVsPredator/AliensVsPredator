@@ -1,7 +1,7 @@
 package com.alien.common.gameplay.ai;
 
 import com.alien.common.gameplay.entity.living.alien.ovomorph.Ovomorph;
-import com.just.goap.Sensor;
+import com.just.goap.sensor.Sensor;
 import com.lib.common.gameplay.goap.GOAPSensors;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -12,16 +12,16 @@ import com.avp.common.util.AVPPredicates;
 
 public class AlienGOAPSensors {
 
-    public static final Sensor.Derived<Entity, List<LivingEntity>, List<LivingEntity>> NEARBY_HOSTS = Sensor.derived(
-        AlienGOAPKeys.NEARBY_HOSTS,
+    public static final Sensor.Mono<Entity, List<LivingEntity>> NEARBY_HOSTS = Sensor.compose(
         GOAPSensors.NEARBY_LIVING_ENTITIES.key(),
+        AlienGOAPKeys.NEARBY_HOSTS,
         (entity, nearbyEntities) -> nearbyEntities.stream()
             .filter(e -> AVPPredicates.isFreeHost(entity, e))
             .toList()
     );
 
-    static final Sensor<Ovomorph, Boolean> HAS_NEARBY_HOST =
-        Sensor.derived(AlienGOAPKeys.HAS_NEARBY_HOST, AlienGOAPKeys.NEARBY_HOSTS, (ovomorph, nearbyHosts) -> !nearbyHosts.isEmpty());
+    static final Sensor.Mono<Ovomorph, Boolean> HAS_NEARBY_HOST =
+        Sensor.compose(AlienGOAPKeys.NEARBY_HOSTS, AlienGOAPKeys.HAS_NEARBY_HOST, (ovomorph, nearbyHosts) -> !nearbyHosts.isEmpty());
 
     private AlienGOAPSensors() {
         throw new UnsupportedOperationException();

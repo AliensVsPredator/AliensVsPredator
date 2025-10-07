@@ -1,6 +1,5 @@
 package com.human.common.gameplay.entity.living.human.marine.ai.utility.fire_resistance.strategy.impl;
 
-import com.avp.common.model.inventory.AVPInventoryHolder;
 import com.human.common.gameplay.entity.living.human.marine.ai.action.ConsumeItemAction;
 import com.human.common.gameplay.entity.living.human.marine.ai.utility.fire_resistance.FireResistanceItemStrategyUtil;
 import com.human.common.gameplay.entity.living.human.marine.ai.utility.fire_resistance.strategy.FireResistanceItemStrategy;
@@ -13,7 +12,8 @@ import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.food.Foods;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import org.jetbrains.annotations.NotNull;
+
+import com.avp.common.model.inventory.AVPInventoryHolder;
 
 public class EnchantedGoldenAppleFireResistanceItemStrategy<T extends LivingEntity & AVPInventoryHolder> implements FireResistanceItemStrategy<T> {
 
@@ -55,17 +55,17 @@ public class EnchantedGoldenAppleFireResistanceItemStrategy<T extends LivingEnti
     }
 
     @Override
-    public Action.Result execute(Context<T> context) {
+    public Action.Signal execute(Context<T> context) {
         var blackboard = context.getBlackboard();
         var livingEntity = context.getLivingEntity();
         return ConsumeItemAction.perform(SoundEvents.GENERIC_EAT, livingEntity, blackboard, () -> onConsume(livingEntity));
     }
 
-    private static Action.@NotNull Result onConsume(LivingEntity livingEntity) {
+    private static Action.Signal onConsume(LivingEntity livingEntity) {
         var itemStack = livingEntity.getMainHandItem();
 
         if (!itemStack.is(Items.ENCHANTED_GOLDEN_APPLE)) {
-            return Action.Result.FAILED;
+            return Action.Signal.ABORT;
         }
 
         itemStack.shrink(1);
@@ -76,6 +76,6 @@ public class EnchantedGoldenAppleFireResistanceItemStrategy<T extends LivingEnti
             .map(FoodProperties.PossibleEffect::effect)
             .forEach(livingEntity::addEffect);
 
-        return Action.Result.CONTINUE;
+        return Action.Signal.CONTINUE;
     }
 }
