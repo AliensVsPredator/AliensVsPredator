@@ -165,7 +165,7 @@ public class Genes {
     public static final AVPDeferredHolder<Gene> WARP = registerSimple(
         "warp",
         (value, geneOperationType) -> switch (geneOperationType) {
-            case ADDITIVE, MULTIPLICATIVE -> value;
+            case ADDITIVE, MULTIPLICATIVE -> Math.clamp(value, 0, 1.0);
         }
     );
 
