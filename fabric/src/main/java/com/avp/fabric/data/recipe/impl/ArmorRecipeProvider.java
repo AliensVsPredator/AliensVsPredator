@@ -2,6 +2,7 @@ package com.avp.fabric.data.recipe.impl;
 
 import com.alien.common.registry.init.AlienItems;
 import com.alien.common.registry.init.item.AlienArmorItems;
+import com.avp.fabric.data.compatibility.common.CommonConstants;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.Item;
@@ -175,8 +176,8 @@ public class ArmorRecipeProvider {
     private static void createMk50ArmorSetRecipes(RecipeBuilder builder) {
         Supplier<ShapedRecipeBuilder> mk50ArmorBuilder = () -> builder.shaped()
             .withCategory(RecipeCategory.COMBAT)
-            .define('A', AVPItems.ALUMINUM_INGOT)
-            .define('C', AVPItems.LEAD_INGOT);
+            .define('A', CommonConstants.INGOTS_ALUMINUM)
+            .define('C', CommonConstants.INGOTS_LEAD);
 
         mk50ArmorBuilder.get()
             .define('B', AVPItemTags.INDUSTRIAL_GLASS_PANE)
