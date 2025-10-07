@@ -24,7 +24,7 @@
 - N/A
 
 ## 🛠 Data Pack
-- N/A
+- Added `avp:raw_aluminum` to `c:raw_materials/aluminum` tag.
 
 ## 🔬 Technical Changes
 - N/A

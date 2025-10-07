@@ -542,5 +542,11 @@ public class AVPItemTagProvider extends FabricTagProvider.ItemTagProvider {
                 AVPBlockItems.MONAZITE_ORE.get(),
                 AVPBlockItems.ZINC_ORE.get()
             );
+
+        getOrCreateTagBuilder(CommonConstants.RAW_MATERIALS_ALUMINUM)
+            .setReplace(false)
+            .add(
+                AVPItems.RAW_BAUXITE.get()
+            );
     }
 }
