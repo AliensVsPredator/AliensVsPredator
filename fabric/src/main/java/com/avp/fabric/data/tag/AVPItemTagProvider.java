@@ -554,5 +554,11 @@ public class AVPItemTagProvider extends FabricTagProvider.ItemTagProvider {
             .add(
                 AVPItems.RAW_GALENA.get()
             );
+
+        getOrCreateTagBuilder(CommonConstants.RAW_MATERIALS_TITANIUM)
+            .setReplace(false)
+            .add(
+                AVPItems.RAW_TITANIUM.get()
+            );
     }
 }
