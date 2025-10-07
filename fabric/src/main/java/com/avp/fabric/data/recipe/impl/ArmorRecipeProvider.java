@@ -210,7 +210,7 @@ public class ArmorRecipeProvider {
     private static void createPressureArmorSetRecipes(RecipeBuilder builder) {
         Supplier<ShapedRecipeBuilder> pressureArmorBuilder = () -> builder.shaped()
             .withCategory(RecipeCategory.COMBAT)
-            .define('A', AVPItems.ALUMINUM_INGOT);
+            .define('A', CommonConstants.INGOTS_ALUMINUM);
 
         pressureArmorBuilder.get()
             .define('B', AVPItemTags.INDUSTRIAL_GLASS_PANE)
