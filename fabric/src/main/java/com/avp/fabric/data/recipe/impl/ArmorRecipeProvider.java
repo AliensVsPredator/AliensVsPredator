@@ -244,7 +244,7 @@ public class ArmorRecipeProvider {
     private static void createTacticalArmorSetRecipes(RecipeBuilder builder) {
         Supplier<ShapedRecipeBuilder> tacticalArmorBuilder = () -> builder.shaped()
             .withCategory(RecipeCategory.COMBAT)
-            .define('A', AVPItems.STEEL_INGOT)
+            .define('A', CommonConstants.INGOTS_STEEL)
             .define('B', ItemTags.WOOL);
 
         tacticalArmorBuilder.get()
