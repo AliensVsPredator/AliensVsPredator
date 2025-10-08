@@ -182,7 +182,7 @@ public class ArmorRecipeProvider {
 
         mk50ArmorBuilder.get()
             .define('B', AVPItemTags.INDUSTRIAL_GLASS_PANE)
-            .define('E', AVPItems.CARBON_DUST)
+            .define('E', CommonConstants.DUSTS_COAL)
             .pattern("CAC")
             .pattern("B B")
             .pattern("AEA")
@@ -215,7 +215,7 @@ public class ArmorRecipeProvider {
 
         pressureArmorBuilder.get()
             .define('B', AVPItemTags.INDUSTRIAL_GLASS_PANE)
-            .define('E', AVPItems.CARBON_DUST)
+            .define('E', CommonConstants.DUSTS_COAL)
             .pattern("AAA")
             .pattern("B B")
             .pattern("EEE")

@@ -23,7 +23,7 @@ public class MetalRecipeProvider {
     public static void provide(RecipeBuilder builder) {
         builder.shapeless()
             .withCategory(RecipeCategory.MISC)
-            .requires(1, AVPItems.CARBON_DUST.get())
+            .requires(1, CommonConstants.DUSTS_COAL)
             .requires(1, CommonConstants.RAW_MATERIALS_IRON)
             .into(1, AVPItems.RAW_CRUDE_IRON.get());
 
@@ -36,7 +36,7 @@ public class MetalRecipeProvider {
         builder.shapeless()
             .withCategory(RecipeCategory.MISC)
             .requires(1, CommonConstants.RAW_MATERIALS_ALUMINUM)
-            .requires(1, AVPItems.CARBON_DUST.get())
+            .requires(1, CommonConstants.DUSTS_COAL)
             .requires(1, CommonConstants.RAW_MATERIALS_IRON)
             .into(2, AVPItems.RAW_FERROBAUXITE.get());
 

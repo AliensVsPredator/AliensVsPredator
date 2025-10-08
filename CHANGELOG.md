@@ -41,17 +41,22 @@
   - Ferroaluminum trapdoor block now accept any ferroaluminum ingots.
   - Gene readers now accept any aluminum ingots.
   - Gun parts now accept any steel ingots.
+  - Gunpowder now accepts any coal dust.
   - Integrated circuits now accept any lead ingots.
   - Lead blocks now accept any lead ingots.
   - Lead chests now accept any lead ingots.
   - Lead ingot now accepts any lead nuggets.
   - MK50 armor set now accepts any lead ingots and any aluminum ingots.
+  - MK50 helmet now accepts any coal dust.
   - Nuke blocks now accept any lead ingots.
   - Pressure armor set now accepts any aluminum ingots.
+  - Pressure helmet now accepts any coal dust.
   - Raw bauxite blocks now accept any raw aluminum.
   - Raw brass now accepts any raw copper.
   - Raw brass now accepts any raw zinc.
+  - Raw crude iron now accepts any coal dust.
   - Raw crude iron now accepts any raw iron.
+  - Raw ferrobauxite now accepts any coal dust.
   - Raw ferrobauxite now accepts any raw aluminum/bauxite.
   - Raw ferrobauxite now accepts any raw iron.
   - Raw galena blocks now accept any raw lead.

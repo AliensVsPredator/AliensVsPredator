@@ -13,6 +13,8 @@ public class CommonConstants {
     /*
      * Items
      */
+    public static final TagKey<Item> DUSTS_COAL = createItem("dusts/coal");
+
     public static final TagKey<Item> DUSTS_REDSTONE = createItem("dusts/redstone");
 
     public static final TagKey<Item> HEAVY_METAL = createItem("ingots/heavy_metal");
