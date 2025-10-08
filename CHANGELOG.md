@@ -11,6 +11,7 @@
 
 ## ♻️ Changes
 - Guns can now be repaired with steel ingots from other mods.
+- MK50 armor can now be repaired with any lead ingots.
 - Steel armor can now be repaired with any steel ingots.
 - Tactical armor can now be repaired with any steel ingots.
 - Modified numerous recipes to support tagged items from other mods:

@@ -32,7 +32,7 @@ public class AVPArmorMaterials {
         ),
         6,
         AVPSoundEvents.ITEM_ARMOR_EQUIP_MK50::getHolder,
-        () -> Ingredient.of(AVPItems.LEAD_INGOT.get()),
+        () -> Ingredient.of(CommonConstants.INGOTS_LEAD),
         0,
         0,
         true
