@@ -31,6 +31,8 @@ public class CommonConstants {
 
     public static final TagKey<Item> INGOTS_TITANIUM = createItem("ingots/titanium");
 
+    public static final TagKey<Item> INGOTS_URANIUM = createItem("ingots/uranium");
+
     public static final TagKey<Item> INGOTS_ZINC = createItem("ingots/zinc");
 
     public static final TagKey<Item> NUGGETS = createItem("nuggets");
@@ -56,8 +58,6 @@ public class CommonConstants {
     public static final TagKey<Item> RAW_MATERIALS_TITANIUM = createItem("raw_materials/titanium");
 
     public static final TagKey<Item> RAW_MATERIALS_ZINC = createItem("raw_materials/zinc");
-
-    public static final TagKey<Item> URANIUM = createItem("ingots/uranium");
 
     /*
      * Blocks

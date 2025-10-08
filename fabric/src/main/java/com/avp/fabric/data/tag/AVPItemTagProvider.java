@@ -185,7 +185,7 @@ public class AVPItemTagProvider extends FabricTagProvider.ItemTagProvider {
                 AlienResinBlockItems.IRRADIATED_RESIN_VEIN.get(),
                 AlienResinBlockItems.IRRADIATED_RESIN_WEB.get()
             )
-            .addOptionalTag(CommonConstants.URANIUM);
+            .addOptionalTag(CommonConstants.INGOTS_URANIUM);
 
         getOrCreateTagBuilder(AVPItemTags.URANIUM_NUGGET_LIKE)
             .add(

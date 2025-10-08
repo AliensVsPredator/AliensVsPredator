@@ -53,7 +53,9 @@ public class EnUsItemTagProvider {
         builder.add(CommonConstants.INGOTS_LEAD, "Lead Ingots");
         builder.add(CommonConstants.INGOTS_STEEL, "Steel Ingots");
         builder.add(CommonConstants.INGOTS_TITANIUM, "Titanium Ingots");
+        builder.add(CommonConstants.INGOTS_URANIUM, "Uranium Ingots");
         builder.add(CommonConstants.INGOTS_ZINC, "Zinc Ingots");
+
         builder.add(CommonConstants.NUGGETS, "Nuggets");
         builder.add(CommonConstants.NUGGETS_ALUMINUM, "Aluminum Nuggets");
         builder.add(CommonConstants.NUGGETS_BRASS, "Brass Nuggets");
@@ -62,6 +64,5 @@ public class EnUsItemTagProvider {
         builder.add(CommonConstants.NUGGETS_TITANIUM, "Titanium Nuggets");
         builder.add(CommonConstants.NUGGETS_ZINC, "Zinc Nuggets");
         builder.add(CommonConstants.ORES, "Ores");
-        builder.add(CommonConstants.URANIUM, "Uranium");
     };
 }

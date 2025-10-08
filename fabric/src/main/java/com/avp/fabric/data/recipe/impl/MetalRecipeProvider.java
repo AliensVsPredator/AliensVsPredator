@@ -70,41 +70,77 @@ public class MetalRecipeProvider {
         createSmeltAndBlastRecipes(builder, AVPItems.RAW_TITANIUM.get(), AVPItems.TITANIUM_INGOT.get());
         createSmeltAndBlastRecipes(builder, AVPItems.RAW_ZINC.get(), AVPItems.ZINC_INGOT.get());
 
-        RecipeUtil.createCompressedBlockRecipes3x3(builder, AVPItems.ALUMINUM_INGOT.get(), CoreBlocks.ALUMINUM_BLOCK.get());
-        RecipeUtil.createCompressedBlockRecipes3x3(builder, AVPItems.BRASS_INGOT.get(), CoreBlocks.BRASS_BLOCK.get());
-        RecipeUtil.createCompressedBlockRecipes3x3(
+        RecipeUtil.createCompressedBlockRecipes3x3TagFriendlyWithDiscriminator(
+            builder,
+            AVPItems.ALUMINUM_INGOT.get(),
+            CommonConstants.INGOTS_ALUMINUM,
+            CoreBlocks.ALUMINUM_BLOCK.get()
+        );
+        RecipeUtil.createCompressedBlockRecipes3x3TagFriendlyWithDiscriminator(
+            builder,
+            AVPItems.BRASS_INGOT.get(),
+            CommonConstants.INGOTS_BRASS,
+            CoreBlocks.BRASS_BLOCK.get()
+        );
+        RecipeUtil.createCompressedBlockRecipes3x3TagFriendlyWithDiscriminator(
             builder,
             AVPItems.FERROALUMINUM_INGOT.get(),
+            CommonConstants.INGOTS_FERROALUMINUM,
             HumanFerroaluminumBlocks.FERROALUMINUM_BLOCK.get()
         );
-        RecipeUtil.createCompressedBlockRecipes3x3(builder, AVPItems.LEAD_INGOT.get(), CoreBlocks.LEAD_BLOCK.get());
-        RecipeUtil.createCompressedBlockRecipes3x3(builder, AVPItems.STEEL_INGOT.get(), HumanSteelBlocks.STEEL_BLOCK.get());
-        RecipeUtil.createCompressedBlockRecipes3x3(builder, AVPItems.TITANIUM_INGOT.get(), HumanTitaniumBlocks.TITANIUM_BLOCK.get());
-        RecipeUtil.createCompressedBlockRecipes3x3(builder, AVPItems.URANIUM_INGOT.get(), CoreBlocks.URANIUM_BLOCK.get());
-        RecipeUtil.createCompressedBlockRecipes3x3(builder, AVPItems.ZINC_INGOT.get(), CoreBlocks.ZINC_BLOCK.get());
+        RecipeUtil.createCompressedBlockRecipes3x3TagFriendlyWithDiscriminator(
+            builder,
+            AVPItems.LEAD_INGOT.get(),
+            CommonConstants.INGOTS_LEAD,
+            CoreBlocks.LEAD_BLOCK.get()
+        );
+        RecipeUtil.createCompressedBlockRecipes3x3TagFriendlyWithDiscriminator(
+            builder,
+            AVPItems.STEEL_INGOT.get(),
+            CommonConstants.INGOTS_STEEL,
+            HumanSteelBlocks.STEEL_BLOCK.get()
+        );
+        RecipeUtil.createCompressedBlockRecipes3x3TagFriendlyWithDiscriminator(
+            builder,
+            AVPItems.TITANIUM_INGOT.get(),
+            CommonConstants.INGOTS_TITANIUM,
+            HumanTitaniumBlocks.TITANIUM_BLOCK.get()
+        );
+        RecipeUtil.createCompressedBlockRecipes3x3TagFriendlyWithDiscriminator(
+            builder,
+            AVPItems.URANIUM_INGOT.get(),
+            CommonConstants.INGOTS_URANIUM,
+            CoreBlocks.URANIUM_BLOCK.get()
+        );
+        RecipeUtil.createCompressedBlockRecipes3x3TagFriendlyWithDiscriminator(
+            builder,
+            AVPItems.ZINC_INGOT.get(),
+            CommonConstants.INGOTS_ZINC,
+            CoreBlocks.ZINC_BLOCK.get()
+        );
 
         RecipeUtil.createCompressedBlockRecipes3x3(builder, AVPItems.AUTUNITE_DUST.get(), CoreBlocks.AUTUNITE_BLOCK.get());
         RecipeUtil.createCompressedBlockRecipes3x3(builder, AVPItems.LITHIUM_DUST.get(), CoreBlocks.LITHIUM_BLOCK.get());
-        RecipeUtil.createCompressedBlockRecipes3x3TagFriendly(
+        RecipeUtil.createCompressedBlockRecipes3x3TagFriendlyWithDiscriminator(
             builder,
             AVPItems.RAW_BAUXITE.get(),
             CommonConstants.RAW_MATERIALS_ALUMINUM,
             CoreBlocks.RAW_BAUXITE_BLOCK.get()
         );
-        RecipeUtil.createCompressedBlockRecipes3x3TagFriendly(
+        RecipeUtil.createCompressedBlockRecipes3x3TagFriendlyWithDiscriminator(
             builder,
             AVPItems.RAW_GALENA.get(),
             CommonConstants.RAW_MATERIALS_LEAD,
             CoreBlocks.RAW_GALENA_BLOCK.get()
         );
         RecipeUtil.createCompressedBlockRecipes3x3(builder, AVPItems.RAW_MONAZITE.get(), CoreBlocks.RAW_MONAZITE_BLOCK.get());
-        RecipeUtil.createCompressedBlockRecipes3x3TagFriendly(
+        RecipeUtil.createCompressedBlockRecipes3x3TagFriendlyWithDiscriminator(
             builder,
             AVPItems.RAW_TITANIUM.get(),
             CommonConstants.RAW_MATERIALS_TITANIUM,
             CoreBlocks.RAW_TITANIUM_BLOCK.get()
         );
-        RecipeUtil.createCompressedBlockRecipes3x3TagFriendly(
+        RecipeUtil.createCompressedBlockRecipes3x3TagFriendlyWithDiscriminator(
             builder,
             AVPItems.RAW_ZINC.get(),
             CommonConstants.RAW_MATERIALS_ZINC,

@@ -19,11 +19,15 @@
 - Titanium armor can now be repaired with any titanium ingots.
 - Titanium tools can now be repaired with any titanium ingots.
 - Modified numerous recipes to support tagged items from other mods:
+  - Aluminum blocks now accept any aluminum ingots.
+  - Brass blocks now accept any brass ingots.
+  - Ferroaluminum blocks now accept any ferroaluminum ingots.
   - Ferroaluminum button block now accept any ferroaluminum ingots.
   - Ferroaluminum door block now accept any ferroaluminum ingots.
   - Ferroaluminum pressure plate block now accept any ferroaluminum ingots.
   - Ferroaluminum trapdoor block now accept any ferroaluminum ingots.
   - Gun parts now accept any steel ingots.
+  - Lead blocks now accept any lead ingots.
   - MK50 armor set now accepts any lead ingots and any aluminum ingots.
   - Pressure armor set now accepts any aluminum ingots.
   - Raw bauxite blocks now accept any kind of raw aluminum items.
@@ -32,6 +36,7 @@
   - Raw zinc blocks now accept any kind of raw zinc items.
   - Steel armor set now accepts any steel ingots.
   - Steel bars block now accept any steel ingots.
+  - Steel blocks now accept any steel ingots.
   - Steel button block now accept any steel ingots.
   - Steel door block now accept any steel ingots.
   - Steel pressure plate block now accept any steel ingots.
@@ -39,12 +44,15 @@
   - Steel trapdoor block now accept any steel ingots.
   - Tactical armor set now accepts any steel ingots.
   - Titanium armor set now accepts any titanium ingots.
+  - Titanium blocks now accept any titanium ingots.
   - Titanium button block now accept any titanium ingots.
   - Titanium door block now accept any titanium ingots.
   - Titanium pressure plate block now accept any titanium ingots.
   - Titanium tool set now accepts any titanium ingots.
   - Titanium trapdoor block now accept any titanium ingots.
+  - Uranium blocks now accept any uranium ingots.
   - Uranium ingots now accept any titanium ingots.
+  - Zinc blocks now accept any zinc ingots.
 - Eating a chorus fruit while infected with a chestburster now only grants 10% warp gene strength to the chestburster instead of 100%.
   - Warp genes now start off at 10% strength and gain 10% additional strength each generation, up to 100%.
   - Warp gene strength will determine the chance the warp xeno has to teleport.

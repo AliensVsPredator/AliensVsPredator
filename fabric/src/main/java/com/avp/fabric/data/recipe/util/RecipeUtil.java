@@ -73,7 +73,12 @@ public class RecipeUtil {
             .into(9, item);
     }
 
-    public static void createCompressedBlockRecipes3x3TagFriendly(RecipeBuilder builder, Item item, TagKey<Item> itemTagKey, Block block) {
+    public static void createCompressedBlockRecipes3x3TagFriendlyWithDiscriminator(
+        RecipeBuilder builder,
+        Item item,
+        TagKey<Item> itemTagKey,
+        Block block
+    ) {
         builder.shaped()
             .withCategory(RecipeCategory.BUILDING_BLOCKS)
             .apply(RecipeTemplates.COMPRESSED_BLOCK_3x3_TAG_FRIENDLY.apply(item, itemTagKey))
