@@ -84,7 +84,7 @@ public class AVPArmorMaterials {
         ),
         5,
         AVPSoundEvents.ITEM_ARMOR_EQUIP_TACTICAL::getHolder,
-        () -> Ingredient.of(AVPItems.STEEL_INGOT.get()),
+        () -> Ingredient.of(CommonConstants.INGOTS_STEEL),
         0,
         0,
         false
