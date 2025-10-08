@@ -46,6 +46,7 @@
   - Raw galena blocks now accept any raw lead.
   - Raw titanium blocks now accept any raw titanium.
   - Raw zinc blocks now accept any raw zinc.
+  - Razor wire now accepts any iron nuggets.
   - Regulators now accept any lead ingots.
   - Speakers now accept any aluminum ingots.
   - Steel armor set now accepts any steel ingots.

@@ -134,7 +134,7 @@ public class MiscellaneousRecipeProvider {
         builder.shaped()
             .withCategory(RecipeCategory.COMBAT)
             .define('I', AVPItemTags.IRON_INGOT_LIKE)
-            .define('N', Items.IRON_NUGGET)
+            .define('N', CommonConstants.NUGGETS_IRON)
             .pattern("INI")
             .pattern("NIN")
             .pattern("INI")
