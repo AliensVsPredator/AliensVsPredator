@@ -77,11 +77,13 @@
 - N/A
 
 ## 🛠 Data Pack
-- Added `avp:ferroaluminum_ingot` to `c:ingots/ferroaluminum` tag.
-- Added `avp:raw_aluminum` to `c:raw_materials/aluminum` tag.
-- Added `avp:raw_galena` to `c:raw_materials/lead` tag.
-- Added `avp:raw_titanium` to `c:raw_materials/titanium` tag.
-- Added `avp:raw_zinc` to `c:raw_materials/zinc` tag.
+- Added `#c:nuggets/ferroaluminum` item tag.
+- Added `#c:nuggets/uranium` item tag.
+- Added `avp:ferroaluminum_ingot` to `#c:ingots/ferroaluminum` item tag.
+- Added `avp:raw_aluminum` to `#c:raw_materials/aluminum` item tag.
+- Added `avp:raw_galena` to `#c:raw_materials/lead` item tag.
+- Added `avp:raw_titanium` to `#c:raw_materials/titanium` item tag.
+- Added `avp:raw_zinc` to `#c:raw_materials/zinc` item tag.
 
 ## 🔬 Technical Changes
 - N/A

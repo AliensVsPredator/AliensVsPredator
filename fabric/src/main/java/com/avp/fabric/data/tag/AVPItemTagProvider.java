@@ -512,6 +512,12 @@ public class AVPItemTagProvider extends FabricTagProvider.ItemTagProvider {
                 AVPItems.BRASS_NUGGET.get()
             );
 
+        getOrCreateTagBuilder(CommonConstants.NUGGETS_FERROALUMINUM)
+            .setReplace(false)
+            .add(
+                AVPItems.FERROALUMINUM_NUGGET.get()
+            );
+
         getOrCreateTagBuilder(CommonConstants.NUGGETS_LEAD)
             .setReplace(false)
             .add(
@@ -528,6 +534,12 @@ public class AVPItemTagProvider extends FabricTagProvider.ItemTagProvider {
             .setReplace(false)
             .add(
                 AVPItems.TITANIUM_NUGGET.get()
+            );
+
+        getOrCreateTagBuilder(CommonConstants.NUGGETS_URANIUM)
+            .setReplace(false)
+            .add(
+                AVPItems.URANIUM_NUGGET.get()
             );
 
         getOrCreateTagBuilder(CommonConstants.NUGGETS_ZINC)
