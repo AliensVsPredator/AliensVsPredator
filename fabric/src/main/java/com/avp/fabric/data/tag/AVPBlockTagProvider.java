@@ -796,6 +796,21 @@ public class AVPBlockTagProvider extends FabricTagProvider.BlockTagProvider {
                 CoreBlocks.ZINC_ORE.get()
             );
 
+        getOrCreateTagBuilder(CommonBlockTags.STORAGE_BLOCKS)
+            .setReplace(false)
+            .addTag(CommonBlockTags.STORAGE_BLOCKS_ALUMINUM)
+            .addTag(CommonBlockTags.STORAGE_BLOCKS_BRASS)
+            .addTag(CommonBlockTags.STORAGE_BLOCKS_FERROALUMINUM)
+            .addTag(CommonBlockTags.STORAGE_BLOCKS_LEAD)
+            .addTag(CommonBlockTags.STORAGE_BLOCKS_RAW_ALUMINUM)
+            .addTag(CommonBlockTags.STORAGE_BLOCKS_RAW_LEAD)
+            .addTag(CommonBlockTags.STORAGE_BLOCKS_RAW_TITANIUM)
+            .addTag(CommonBlockTags.STORAGE_BLOCKS_RAW_ZINC)
+            .addTag(CommonBlockTags.STORAGE_BLOCKS_STEEL)
+            .addTag(CommonBlockTags.STORAGE_BLOCKS_TITANIUM)
+            .addTag(CommonBlockTags.STORAGE_BLOCKS_URANIUM)
+            .addTag(CommonBlockTags.STORAGE_BLOCKS_ZINC);
+
         getOrCreateTagBuilder(CommonBlockTags.STORAGE_BLOCKS_ALUMINUM)
             .setReplace(false)
             .add(CoreBlocks.ALUMINUM_BLOCK.get());

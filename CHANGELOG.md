@@ -2,6 +2,7 @@
 
 ## ✍️ Developer Notes
 - For help or other questions, concerns, etc. check out our Discord server: https://discord.gg/wp7mvmbkVb
+- Shoutout to Moobien on our Github issue tracker for raising awareness on compatibility issues with the mod's blocks/items!
 
 ## ☢️ Breaking Changes
 - N/A
@@ -10,7 +11,7 @@
 - AVP now requires AzureLib 3.0.38.
 - Added a new recipe for raw ferrobauxite (1 raw crude iron + 1 raw bauxite).
   - Existing raw crude iron and raw ferrobauxite recipes have 2 overlapping ingredients, so it made sense to have another recipe where the overlapping ingredients are substituted with raw crude iron.
-  - Thanks to Davianortis for this suggestion!
+  - Shoutout to Davianortis in our Discord server for this suggestion!
 
 ## ♻️ Changes
 - Guns can now be repaired with steel ingots from other mods.
@@ -22,7 +23,7 @@
 - Titanium armor can now be repaired with any titanium ingots.
 - Titanium tools can now be repaired with any titanium ingots.
 - Modified numerous recipes to support tagged items from other mods:
-  - Aluminum blocks now accepts any aluminum ingots.
+  - Aluminum blocks now accept any aluminum ingots.
   - Aluminum ingot now accepts any aluminum nuggets.
   - Ammo chests now accept any steel ingots.
   - Armor cases now accept any aluminum ingots.

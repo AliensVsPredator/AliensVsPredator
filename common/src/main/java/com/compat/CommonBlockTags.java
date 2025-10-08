@@ -8,11 +8,9 @@ public class CommonBlockTags {
 
     public static final TagKey<Block> CHESTS = create("chests");
 
-    public static final TagKey<Block> DYED = create("dyed");
-
-    public static final TagKey<Block> GLASS_BLOCKS = create("glass_blocks");
-
     public static final TagKey<Block> ORES_BLOCKS = create("ores");
+
+    public static final TagKey<Block> STORAGE_BLOCKS = create("storage_blocks");
 
     public static final TagKey<Block> STORAGE_BLOCKS_ALUMINUM = create("storage_blocks/aluminum");
 

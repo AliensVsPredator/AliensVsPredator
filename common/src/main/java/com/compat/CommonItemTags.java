@@ -60,6 +60,8 @@ public class CommonItemTags {
 
     public static final TagKey<Item> ORES = create("ores");
 
+    public static final TagKey<Item> RAW_MATERIALS = create("raw_materials");
+
     public static final TagKey<Item> RAW_MATERIALS_ALUMINUM = create("raw_materials/aluminum");
 
     public static final TagKey<Item> RAW_MATERIALS_COPPER = create("raw_materials/copper");
@@ -75,6 +77,8 @@ public class CommonItemTags {
     public static final TagKey<Item> RAW_MATERIALS_ZINC = create("raw_materials/zinc");
 
     public static final TagKey<Item> SILICON = create("silicon");
+
+    public static final TagKey<Item> STORAGE_BLOCKS = create("storage_blocks");
 
     public static final TagKey<Item> STORAGE_BLOCKS_ALUMINUM = create("storage_blocks/aluminum");
 
