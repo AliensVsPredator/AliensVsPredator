@@ -53,6 +53,7 @@
 
 ## 🐞 Fixes
 - Fixed predators rendering incorrectly.
+- Fixed uranium ingot recipe data name.
 
 ## 🧪 Experimental
 - N/A
