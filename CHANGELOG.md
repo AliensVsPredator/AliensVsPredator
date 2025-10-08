@@ -31,6 +31,7 @@
   - Bullets now accept any aluminum, brass, lead or steel nuggets (where applicable).
   - Canisters now accept any titanium ingots.
   - Electronic parts now accept any brass nuggets or gold nuggets (where applicable).
+  - Electronic parts now accept any redstone dust (where applicable).
   - Electronic parts now accept any silicon (where applicable).
   - Ferroaluminum blocks now accept any ferroaluminum ingots.
   - Ferroaluminum button block now accept any ferroaluminum ingots.

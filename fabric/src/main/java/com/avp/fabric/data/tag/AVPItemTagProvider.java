@@ -430,6 +430,10 @@ public class AVPItemTagProvider extends FabricTagProvider.ItemTagProvider {
     }
 
     private void addCompatibilityTags() {
+        getOrCreateTagBuilder(CommonConstants.DUSTS_REDSTONE)
+            .setReplace(false)
+            .add(Items.REDSTONE);
+
         getOrCreateTagBuilder(CommonConstants.INGOTS)
             .setReplace(false)
             .add(
