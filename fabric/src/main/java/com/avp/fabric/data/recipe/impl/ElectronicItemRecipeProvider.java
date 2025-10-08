@@ -28,7 +28,7 @@ public class ElectronicItemRecipeProvider {
 
         builder.shaped()
             .withCategory(RecipeCategory.MISC)
-            .define('B', AVPItems.BRASS_NUGGET)
+            .define('B', CommonConstants.NUGGETS_BRASS)
             .define('C', Items.COPPER_INGOT)
             .define('N', AVPItems.NEODYMIUM_MAGNET)
             .define('I', AVPItems.INTEGRATED_CIRCUIT)
@@ -39,7 +39,7 @@ public class ElectronicItemRecipeProvider {
 
         builder.shaped()
             .withCategory(RecipeCategory.MISC)
-            .define('A', Items.GOLD_NUGGET)
+            .define('A', CommonConstants.NUGGETS_GOLD)
             .define('B', Items.REDSTONE)
             .define('C', AVPItems.SILICON)
             .pattern("AB")
@@ -49,7 +49,7 @@ public class ElectronicItemRecipeProvider {
 
         builder.shaped()
             .withCategory(RecipeCategory.MISC)
-            .define('A', Items.GOLD_NUGGET)
+            .define('A', CommonConstants.NUGGETS_GOLD)
             .define('B', Items.REDSTONE)
             .define('C', AVPItems.SILICON)
             .pattern(" A ")
@@ -59,7 +59,7 @@ public class ElectronicItemRecipeProvider {
 
         builder.shaped()
             .withCategory(RecipeCategory.MISC)
-            .define('G', Items.GOLD_NUGGET)
+            .define('G', CommonConstants.NUGGETS_GOLD)
             .define('L', Items.LEVER)
             .define('R', Items.REDSTONE)
             .define('S', AVPItems.SILICON)
@@ -82,7 +82,7 @@ public class ElectronicItemRecipeProvider {
 
         builder.shaped()
             .withCategory(RecipeCategory.MISC)
-            .define('G', Items.GOLD_NUGGET)
+            .define('G', CommonConstants.NUGGETS_GOLD)
             .define('L', AVPItems.LITHIUM_DUST)
             .define('R', Items.REDSTONE)
             .define('S', AVPItems.SILICON)
@@ -108,7 +108,7 @@ public class ElectronicItemRecipeProvider {
         builder.shaped()
             .withCategory(RecipeCategory.MISC)
             .define('D', AVPItems.DIODE)
-            .define('G', Items.GOLD_NUGGET)
+            .define('G', CommonConstants.NUGGETS_GOLD)
             .define('I', AVPItemTags.INDUSTRIAL_GLASS_PANE)
             .define('R', Items.REDSTONE)
             .pattern("G  ")
