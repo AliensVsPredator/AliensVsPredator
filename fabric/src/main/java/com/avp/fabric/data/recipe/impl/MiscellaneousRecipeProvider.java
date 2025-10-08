@@ -175,7 +175,7 @@ public class MiscellaneousRecipeProvider {
             .define('C', Items.CLOCK)
             .define('S', AVPItems.LED_DISPLAY)
             .define('P', AVPItems.CPU)
-            .define('L', AVPItems.LEAD_INGOT)
+            .define('L', CommonConstants.INGOTS_LEAD)
             .define('N', AVPItems.NEODYMIUM_MAGNET)
             .define('T', Items.TNT)
             .pattern("CSP")
