@@ -43,6 +43,10 @@ public class CommonConstants {
 
     public static final TagKey<Item> NUGGETS_FERROALUMINUM = createItem("nuggets/ferroaluminum");
 
+    public static final TagKey<Item> NUGGETS_GOLD = createItem("nuggets/gold");
+
+    public static final TagKey<Item> NUGGETS_IRON = createItem("nuggets/iron");
+
     public static final TagKey<Item> NUGGETS_LEAD = createItem("nuggets/lead");
 
     public static final TagKey<Item> NUGGETS_STEEL = createItem("nuggets/steel");

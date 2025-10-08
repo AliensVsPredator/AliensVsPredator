@@ -516,6 +516,14 @@ public class AVPItemTagProvider extends FabricTagProvider.ItemTagProvider {
                 AVPItems.FERROALUMINUM_NUGGET.get()
             );
 
+        getOrCreateTagBuilder(CommonConstants.NUGGETS_GOLD)
+            .setReplace(false)
+            .add(Items.GOLD_NUGGET);
+
+        getOrCreateTagBuilder(CommonConstants.NUGGETS_IRON)
+            .setReplace(false)
+            .add(Items.IRON_NUGGET);
+
         getOrCreateTagBuilder(CommonConstants.NUGGETS_LEAD)
             .setReplace(false)
             .add(
