@@ -1,5 +1,6 @@
 package com.avp.fabric.data.recipe.impl;
 
+import com.compat.CommonConstants;
 import com.human.common.registry.init.block.HumanFerroaluminumBlocks;
 import com.human.common.registry.init.block.HumanSteelBlocks;
 import com.human.common.registry.init.block.HumanTitaniumBlocks;
@@ -11,7 +12,6 @@ import java.util.function.Supplier;
 
 import com.avp.common.registry.init.block.CoreBlocks;
 import com.avp.common.registry.init.item.AVPItems;
-import com.avp.fabric.data.compatibility.common.CommonConstants;
 import com.avp.fabric.data.recipe.RecipeConstants;
 import com.avp.fabric.data.recipe.RecipeTemplates;
 import com.avp.fabric.data.recipe.builder.RecipeBuilder;

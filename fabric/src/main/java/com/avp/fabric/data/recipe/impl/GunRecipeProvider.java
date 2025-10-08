@@ -1,5 +1,6 @@
 package com.avp.fabric.data.recipe.impl;
 
+import com.compat.CommonConstants;
 import com.human.common.registry.init.item.HumanGunItems;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.world.item.Item;
@@ -9,7 +10,6 @@ import java.util.function.Supplier;
 
 import com.avp.common.registry.init.item.AVPItems;
 import com.avp.common.registry.tag.AVPItemTags;
-import com.avp.fabric.data.compatibility.common.CommonConstants;
 import com.avp.fabric.data.recipe.builder.RecipeBuilder;
 
 public class GunRecipeProvider {

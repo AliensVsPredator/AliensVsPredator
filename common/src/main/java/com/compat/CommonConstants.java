@@ -1,4 +1,4 @@
-package com.avp.fabric.data.compatibility.common;
+package com.compat;
 
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;

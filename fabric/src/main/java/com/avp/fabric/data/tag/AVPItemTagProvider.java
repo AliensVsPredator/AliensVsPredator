@@ -3,6 +3,7 @@ package com.avp.fabric.data.tag;
 import com.alien.common.registry.init.AlienItems;
 import com.alien.common.registry.init.item.AlienArmorItems;
 import com.alien.common.registry.init.item.AlienResinBlockItems;
+import com.compat.CommonConstants;
 import com.human.common.gameplay.item.GunItem;
 import com.human.common.registry.init.item.HumanFerroaluminumBlockItems;
 import com.human.common.registry.init.item.HumanIndustrialGlassBlockItems;
@@ -35,7 +36,6 @@ import com.avp.common.registry.init.item.AVPArmorItems;
 import com.avp.common.registry.init.item.AVPBlockItems;
 import com.avp.common.registry.init.item.AVPItems;
 import com.avp.common.registry.tag.AVPItemTags;
-import com.avp.fabric.data.compatibility.common.CommonConstants;
 
 public class AVPItemTagProvider extends FabricTagProvider.ItemTagProvider {
 

@@ -2,6 +2,7 @@ package com.avp.fabric.data.tag;
 
 import com.alien.common.registry.init.block.AlienChitinBlocks;
 import com.alien.common.registry.init.block.AlienResinBlocks;
+import com.compat.CommonConstants;
 import com.compat.gigeresque.common.registry.tag.GigBlockTags;
 import com.human.common.registry.init.block.HumanFerroaluminumBlocks;
 import com.human.common.registry.init.block.HumanIndustrialConcreteBlocks;
@@ -35,7 +36,6 @@ import java.util.stream.Stream;
 import com.avp.common.registry.init.block.AVPBlocks;
 import com.avp.common.registry.init.block.CoreBlocks;
 import com.avp.common.registry.tag.AVPBlockTags;
-import com.avp.fabric.data.compatibility.common.CommonConstants;
 
 public class AVPBlockTagProvider extends FabricTagProvider.BlockTagProvider {
 
