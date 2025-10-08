@@ -23,6 +23,7 @@
   - Armor cases now accept any aluminum ingots.
   - Battery packs now accept any aluminum ingots.
   - Brass blocks now accept any brass ingots.
+  - Canisters now accept any titanium ingots.
   - Ferroaluminum blocks now accept any ferroaluminum ingots.
   - Ferroaluminum button block now accept any ferroaluminum ingots.
   - Ferroaluminum door block now accept any ferroaluminum ingots.

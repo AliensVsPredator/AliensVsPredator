@@ -155,7 +155,7 @@ public class MiscellaneousRecipeProvider {
 
         builder.shaped()
             .withCategory(RecipeCategory.MISC)
-            .define('T', AVPItems.TITANIUM_INGOT)
+            .define('T', CommonConstants.INGOTS_TITANIUM)
             .define('R', AVPItems.REDSTONE_CRYSTAL)
             .define('P', Items.PISTON)
             .define('B', Items.BUCKET)
