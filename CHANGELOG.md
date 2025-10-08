@@ -59,6 +59,7 @@
   - Raw ferrobauxite now accepts any coal dust.
   - Raw ferrobauxite now accepts any raw aluminum/bauxite.
   - Raw ferrobauxite now accepts any raw iron.
+  - Raw ferrobauxite now accepts any raw steel.
   - Raw galena blocks now accept any raw lead.
   - Raw titanium blocks now accept any raw titanium.
   - Raw zinc blocks now accept any raw zinc.

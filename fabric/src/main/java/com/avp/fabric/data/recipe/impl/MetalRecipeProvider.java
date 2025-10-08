@@ -38,7 +38,7 @@ public class MetalRecipeProvider {
             .withCategory(RecipeCategory.MISC)
             .withCustomName(name -> "raw_ferrobauxite_using_raw_crude_iron")
             .requires(1, CommonConstants.RAW_MATERIALS_ALUMINUM)
-            .requires(1, AVPItems.RAW_CRUDE_IRON.get())
+            .requires(1, CommonConstants.RAW_MATERIALS_STEEL)
             .into(2, AVPItems.RAW_FERROBAUXITE.get());
 
         // Steel can only be blasted.

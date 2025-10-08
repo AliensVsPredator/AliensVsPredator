@@ -568,6 +568,10 @@ public class AVPItemTagProvider extends FabricTagProvider.ItemTagProvider {
             .setReplace(false)
             .add(AVPItems.RAW_GALENA.get());
 
+        getOrCreateTagBuilder(CommonConstants.RAW_MATERIALS_STEEL)
+            .setReplace(false)
+            .add(AVPItems.RAW_CRUDE_IRON.get());
+
         getOrCreateTagBuilder(CommonConstants.RAW_MATERIALS_TITANIUM)
             .setReplace(false)
             .add(AVPItems.RAW_TITANIUM.get());
