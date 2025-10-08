@@ -1,10 +1,10 @@
 package com.avp.fabric.data.recipe.impl;
 
+import com.compat.CommonItemTags;
 import com.human.common.registry.init.block.HumanPaddingBlocks;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.DyeItem;
-import net.minecraft.world.item.Items;
 
 import com.avp.fabric.data.recipe.builder.RecipeBuilder;
 import com.avp.fabric.data.recipe.util.RecipeUtil;
@@ -22,7 +22,7 @@ public class PaddingRecipeProvider {
             builder.shapeless()
                 .withCategory(RecipeCategory.BUILDING_BLOCKS)
                 .requires(1, DyeItem.byColor(dyeColor))
-                .requires(1, Items.LEATHER)
+                .requires(1, CommonItemTags.LEATHERS)
                 .requires(1, ItemTags.WOOL)
                 .into(4, block);
 

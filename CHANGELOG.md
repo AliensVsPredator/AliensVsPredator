@@ -22,7 +22,7 @@
 - Titanium armor can now be repaired with any titanium ingots.
 - Titanium tools can now be repaired with any titanium ingots.
 - Modified numerous recipes to support tagged items from other mods:
-  - Aluminum blocks now accept any aluminum ingots.
+  - Aluminum blocks now accepts any aluminum ingots.
   - Aluminum ingot now accepts any aluminum nuggets.
   - Ammo chests now accept any steel ingots.
   - Armor cases now accept any aluminum ingots.
@@ -52,6 +52,7 @@
   - MK50 helmet now accepts any coal dust.
   - MK50 leggings now accepts any leather.
   - Nuke blocks now accept any lead ingots.
+  - Padding blocks now accept any leather.
   - Pressure armor set now accepts any aluminum ingots.
   - Pressure helmet now accepts any coal dust.
   - Raw bauxite blocks now accept any raw aluminum.
