@@ -1,6 +1,6 @@
 package com.avp.fabric.data.recipe.impl.vanilla;
 
-import com.compat.CommonConstants;
+import com.compat.CommonItemTags;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.world.item.Items;
 
@@ -17,7 +17,7 @@ public class VanillaChestRecipeProvider {
     private static void createChestRecipes(RecipeBuilder builder) {
         builder.shaped()
             .withCategory(RecipeCategory.DECORATIONS)
-            .define('#', CommonConstants.INGOTS_LEAD)
+            .define('#', CommonItemTags.INGOTS_LEAD)
             .define('C', Items.CHEST)
             .pattern("###")
             .pattern("#C#")

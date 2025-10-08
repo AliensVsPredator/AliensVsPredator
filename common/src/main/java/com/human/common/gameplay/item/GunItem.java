@@ -1,6 +1,6 @@
 package com.human.common.gameplay.item;
 
-import com.compat.CommonConstants;
+import com.compat.CommonItemTags;
 import com.human.common.gameplay.item.gun.GunConfig;
 import com.human.common.gameplay.item.gun.pipeline.GunShootContext;
 import com.human.common.gameplay.item.old_painless.OldPainlessAnimationRefs;
@@ -85,7 +85,7 @@ public class GunItem extends Item {
 
     @Override
     public boolean isValidRepairItem(@NotNull ItemStack toRepair, ItemStack repairIngredient) {
-        return repairIngredient.is(CommonConstants.INGOTS_STEEL);
+        return repairIngredient.is(CommonItemTags.INGOTS_STEEL);
     }
 
     @Override

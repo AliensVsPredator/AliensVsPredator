@@ -1,6 +1,6 @@
 package com.avp.fabric.data.recipe.impl;
 
-import com.compat.CommonConstants;
+import com.compat.CommonItemTags;
 
 import com.avp.common.registry.init.item.AVPItems;
 import com.avp.fabric.data.recipe.RecipeTemplates;
@@ -15,37 +15,37 @@ public class ToolRecipeProvider {
 
     private static void createSteelToolsetRecipes(RecipeBuilder builder) {
         builder.shaped()
-            .apply(RecipeTemplates.AXE.apply(CommonConstants.INGOTS_STEEL))
+            .apply(RecipeTemplates.AXE.apply(CommonItemTags.INGOTS_STEEL))
             .into(1, AVPItems.STEEL_AXE);
         builder.shaped()
-            .apply(RecipeTemplates.HOE.apply(CommonConstants.INGOTS_STEEL))
+            .apply(RecipeTemplates.HOE.apply(CommonItemTags.INGOTS_STEEL))
             .into(1, AVPItems.STEEL_HOE);
         builder.shaped()
-            .apply(RecipeTemplates.PICKAXE.apply(CommonConstants.INGOTS_STEEL))
+            .apply(RecipeTemplates.PICKAXE.apply(CommonItemTags.INGOTS_STEEL))
             .into(1, AVPItems.STEEL_PICKAXE);
         builder.shaped()
-            .apply(RecipeTemplates.SHOVEL.apply(CommonConstants.INGOTS_STEEL))
+            .apply(RecipeTemplates.SHOVEL.apply(CommonItemTags.INGOTS_STEEL))
             .into(1, AVPItems.STEEL_SHOVEL);
         builder.shaped()
-            .apply(RecipeTemplates.SWORD.apply(CommonConstants.INGOTS_STEEL))
+            .apply(RecipeTemplates.SWORD.apply(CommonItemTags.INGOTS_STEEL))
             .into(1, AVPItems.STEEL_SWORD);
     }
 
     private static void createTitaniumToolsetRecipes(RecipeBuilder builder) {
         builder.shaped()
-            .apply(RecipeTemplates.AXE.apply(CommonConstants.INGOTS_TITANIUM))
+            .apply(RecipeTemplates.AXE.apply(CommonItemTags.INGOTS_TITANIUM))
             .into(1, AVPItems.TITANIUM_AXE);
         builder.shaped()
-            .apply(RecipeTemplates.HOE.apply(CommonConstants.INGOTS_TITANIUM))
+            .apply(RecipeTemplates.HOE.apply(CommonItemTags.INGOTS_TITANIUM))
             .into(1, AVPItems.TITANIUM_HOE);
         builder.shaped()
-            .apply(RecipeTemplates.PICKAXE.apply(CommonConstants.INGOTS_TITANIUM))
+            .apply(RecipeTemplates.PICKAXE.apply(CommonItemTags.INGOTS_TITANIUM))
             .into(1, AVPItems.TITANIUM_PICKAXE);
         builder.shaped()
-            .apply(RecipeTemplates.SHOVEL.apply(CommonConstants.INGOTS_TITANIUM))
+            .apply(RecipeTemplates.SHOVEL.apply(CommonItemTags.INGOTS_TITANIUM))
             .into(1, AVPItems.TITANIUM_SHOVEL);
         builder.shaped()
-            .apply(RecipeTemplates.SWORD.apply(CommonConstants.INGOTS_TITANIUM))
+            .apply(RecipeTemplates.SWORD.apply(CommonItemTags.INGOTS_TITANIUM))
             .into(1, AVPItems.TITANIUM_SWORD);
     }
 }

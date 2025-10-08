@@ -1,6 +1,6 @@
 package com.avp.fabric.data.recipe.impl;
 
-import com.compat.CommonConstants;
+import com.compat.CommonItemTags;
 import com.human.common.registry.init.block.HumanFerroaluminumBlocks;
 import com.human.common.registry.init.block.HumanSteelBlocks;
 import com.human.common.registry.init.block.HumanTitaniumBlocks;
@@ -23,22 +23,22 @@ public class MetalRecipeProvider {
     public static void provide(RecipeBuilder builder) {
         builder.shapeless()
             .withCategory(RecipeCategory.MISC)
-            .requires(1, CommonConstants.DUSTS_COAL)
-            .requires(1, CommonConstants.RAW_MATERIALS_IRON)
+            .requires(1, CommonItemTags.DUSTS_COAL)
+            .requires(1, CommonItemTags.RAW_MATERIALS_IRON)
             .into(1, AVPItems.RAW_CRUDE_IRON.get());
 
         builder.shapeless()
             .withCategory(RecipeCategory.MISC)
-            .requires(1, CommonConstants.RAW_MATERIALS_ALUMINUM)
-            .requires(1, CommonConstants.DUSTS_COAL)
-            .requires(1, CommonConstants.RAW_MATERIALS_IRON)
+            .requires(1, CommonItemTags.RAW_MATERIALS_ALUMINUM)
+            .requires(1, CommonItemTags.DUSTS_COAL)
+            .requires(1, CommonItemTags.RAW_MATERIALS_IRON)
             .into(2, AVPItems.RAW_FERROBAUXITE.get());
 
         builder.shapeless()
             .withCategory(RecipeCategory.MISC)
             .withCustomName(name -> "raw_ferrobauxite_using_raw_crude_iron")
-            .requires(1, CommonConstants.RAW_MATERIALS_ALUMINUM)
-            .requires(1, CommonConstants.RAW_MATERIALS_STEEL)
+            .requires(1, CommonItemTags.RAW_MATERIALS_ALUMINUM)
+            .requires(1, CommonItemTags.RAW_MATERIALS_STEEL)
             .into(2, AVPItems.RAW_FERROBAUXITE.get());
 
         // Steel can only be blasted.
@@ -49,15 +49,15 @@ public class MetalRecipeProvider {
 
         builder.shapeless()
             .withCategory(RecipeCategory.MISC)
-            .requires(1, CommonConstants.RAW_MATERIALS_ZINC)
-            .requires(1, CommonConstants.RAW_MATERIALS_COPPER)
+            .requires(1, CommonItemTags.RAW_MATERIALS_ZINC)
+            .requires(1, CommonItemTags.RAW_MATERIALS_COPPER)
             .into(2, AVPItems.RAW_BRASS.get());
 
         builder.shaped()
             .withCustomName(name -> "uranium_ingot_normal")
             .withCategory(RecipeCategory.MISC)
             .define('A', AVPItems.AUTUNITE_DUST.get())
-            .define('T', CommonConstants.INGOTS_TITANIUM)
+            .define('T', CommonItemTags.INGOTS_TITANIUM)
             .pattern(" A ")
             .pattern("ATA")
             .pattern(" A ")
@@ -81,49 +81,49 @@ public class MetalRecipeProvider {
         RecipeUtil.createCompressedBlockRecipes3x3TagFriendlyWithDiscriminator(
             builder,
             AVPItems.ALUMINUM_INGOT.get(),
-            CommonConstants.INGOTS_ALUMINUM,
+            CommonItemTags.INGOTS_ALUMINUM,
             CoreBlocks.ALUMINUM_BLOCK.get()
         );
         RecipeUtil.createCompressedBlockRecipes3x3TagFriendlyWithDiscriminator(
             builder,
             AVPItems.BRASS_INGOT.get(),
-            CommonConstants.INGOTS_BRASS,
+            CommonItemTags.INGOTS_BRASS,
             CoreBlocks.BRASS_BLOCK.get()
         );
         RecipeUtil.createCompressedBlockRecipes3x3TagFriendlyWithDiscriminator(
             builder,
             AVPItems.FERROALUMINUM_INGOT.get(),
-            CommonConstants.INGOTS_FERROALUMINUM,
+            CommonItemTags.INGOTS_FERROALUMINUM,
             HumanFerroaluminumBlocks.FERROALUMINUM_BLOCK.get()
         );
         RecipeUtil.createCompressedBlockRecipes3x3TagFriendlyWithDiscriminator(
             builder,
             AVPItems.LEAD_INGOT.get(),
-            CommonConstants.INGOTS_LEAD,
+            CommonItemTags.INGOTS_LEAD,
             CoreBlocks.LEAD_BLOCK.get()
         );
         RecipeUtil.createCompressedBlockRecipes3x3TagFriendlyWithDiscriminator(
             builder,
             AVPItems.STEEL_INGOT.get(),
-            CommonConstants.INGOTS_STEEL,
+            CommonItemTags.INGOTS_STEEL,
             HumanSteelBlocks.STEEL_BLOCK.get()
         );
         RecipeUtil.createCompressedBlockRecipes3x3TagFriendlyWithDiscriminator(
             builder,
             AVPItems.TITANIUM_INGOT.get(),
-            CommonConstants.INGOTS_TITANIUM,
+            CommonItemTags.INGOTS_TITANIUM,
             HumanTitaniumBlocks.TITANIUM_BLOCK.get()
         );
         RecipeUtil.createCompressedBlockRecipes3x3TagFriendlyWithDiscriminator(
             builder,
             AVPItems.URANIUM_INGOT.get(),
-            CommonConstants.INGOTS_URANIUM,
+            CommonItemTags.INGOTS_URANIUM,
             CoreBlocks.URANIUM_BLOCK.get()
         );
         RecipeUtil.createCompressedBlockRecipes3x3TagFriendlyWithDiscriminator(
             builder,
             AVPItems.ZINC_INGOT.get(),
-            CommonConstants.INGOTS_ZINC,
+            CommonItemTags.INGOTS_ZINC,
             CoreBlocks.ZINC_BLOCK.get()
         );
 
@@ -132,84 +132,84 @@ public class MetalRecipeProvider {
         RecipeUtil.createCompressedBlockRecipes3x3TagFriendlyWithDiscriminator(
             builder,
             AVPItems.RAW_BAUXITE.get(),
-            CommonConstants.RAW_MATERIALS_ALUMINUM,
+            CommonItemTags.RAW_MATERIALS_ALUMINUM,
             CoreBlocks.RAW_BAUXITE_BLOCK.get()
         );
         RecipeUtil.createCompressedBlockRecipes3x3TagFriendlyWithDiscriminator(
             builder,
             AVPItems.RAW_GALENA.get(),
-            CommonConstants.RAW_MATERIALS_LEAD,
+            CommonItemTags.RAW_MATERIALS_LEAD,
             CoreBlocks.RAW_GALENA_BLOCK.get()
         );
         RecipeUtil.createCompressedBlockRecipes3x3(builder, AVPItems.RAW_MONAZITE.get(), CoreBlocks.RAW_MONAZITE_BLOCK.get());
         RecipeUtil.createCompressedBlockRecipes3x3TagFriendlyWithDiscriminator(
             builder,
             AVPItems.RAW_TITANIUM.get(),
-            CommonConstants.RAW_MATERIALS_TITANIUM,
+            CommonItemTags.RAW_MATERIALS_TITANIUM,
             CoreBlocks.RAW_TITANIUM_BLOCK.get()
         );
         RecipeUtil.createCompressedBlockRecipes3x3TagFriendlyWithDiscriminator(
             builder,
             AVPItems.RAW_ZINC.get(),
-            CommonConstants.RAW_MATERIALS_ZINC,
+            CommonItemTags.RAW_MATERIALS_ZINC,
             CoreBlocks.RAW_ZINC_BLOCK.get()
         );
         RecipeUtil.createCompressedBlockRecipes3x3(builder, AVPItems.SILICON.get(), CoreBlocks.SILICON_BLOCK.get());
 
         builder.shaped()
             .withCategory(RecipeCategory.BUILDING_BLOCKS)
-            .apply(RecipeTemplates.BARS_BLOCK.apply(CommonConstants.INGOTS_STEEL))
+            .apply(RecipeTemplates.BARS_BLOCK.apply(CommonItemTags.INGOTS_STEEL))
             .into(16, HumanSteelBlocks.STEEL_BARS);
 
         builder.shaped()
             .withCategory(RecipeCategory.BUILDING_BLOCKS)
-            .apply(RecipeTemplates.BUTTON_BLOCK.apply(CommonConstants.INGOTS_FERROALUMINUM))
+            .apply(RecipeTemplates.BUTTON_BLOCK.apply(CommonItemTags.INGOTS_FERROALUMINUM))
             .into(2, HumanFerroaluminumBlocks.FERROALUMINUM_BUTTON);
         builder.shaped()
             .withCategory(RecipeCategory.BUILDING_BLOCKS)
-            .apply(RecipeTemplates.BUTTON_BLOCK.apply(CommonConstants.INGOTS_STEEL))
+            .apply(RecipeTemplates.BUTTON_BLOCK.apply(CommonItemTags.INGOTS_STEEL))
             .into(2, HumanSteelBlocks.STEEL_BUTTON);
         builder.shaped()
             .withCategory(RecipeCategory.BUILDING_BLOCKS)
-            .apply(RecipeTemplates.BUTTON_BLOCK.apply(CommonConstants.INGOTS_TITANIUM))
+            .apply(RecipeTemplates.BUTTON_BLOCK.apply(CommonItemTags.INGOTS_TITANIUM))
             .into(2, HumanTitaniumBlocks.TITANIUM_BUTTON);
         builder.shaped()
             .withCategory(RecipeCategory.BUILDING_BLOCKS)
-            .apply(RecipeTemplates.DOOR_BLOCK_TAG_FRIENDLY.apply(CommonConstants.INGOTS_FERROALUMINUM))
+            .apply(RecipeTemplates.DOOR_BLOCK_TAG_FRIENDLY.apply(CommonItemTags.INGOTS_FERROALUMINUM))
             .into(3, HumanFerroaluminumBlocks.FERROALUMINUM_DOOR);
         builder.shaped()
             .withCategory(RecipeCategory.BUILDING_BLOCKS)
-            .apply(RecipeTemplates.DOOR_BLOCK_TAG_FRIENDLY.apply(CommonConstants.INGOTS_STEEL))
+            .apply(RecipeTemplates.DOOR_BLOCK_TAG_FRIENDLY.apply(CommonItemTags.INGOTS_STEEL))
             .into(3, HumanSteelBlocks.STEEL_DOOR);
         builder.shaped()
             .withCategory(RecipeCategory.BUILDING_BLOCKS)
-            .apply(RecipeTemplates.DOOR_BLOCK_TAG_FRIENDLY.apply(CommonConstants.INGOTS_TITANIUM))
+            .apply(RecipeTemplates.DOOR_BLOCK_TAG_FRIENDLY.apply(CommonItemTags.INGOTS_TITANIUM))
             .into(3, HumanTitaniumBlocks.TITANIUM_DOOR);
 
         builder.shaped()
             .withCategory(RecipeCategory.BUILDING_BLOCKS)
-            .apply(RecipeTemplates.TRAP_DOOR_BLOCK_TAG_FRIENDLY.apply(CommonConstants.INGOTS_FERROALUMINUM))
+            .apply(RecipeTemplates.TRAP_DOOR_BLOCK_TAG_FRIENDLY.apply(CommonItemTags.INGOTS_FERROALUMINUM))
             .into(2, HumanFerroaluminumBlocks.FERROALUMINUM_TRAP_DOOR);
         builder.shaped()
             .withCategory(RecipeCategory.BUILDING_BLOCKS)
-            .apply(RecipeTemplates.TRAP_DOOR_BLOCK_TAG_FRIENDLY.apply(CommonConstants.INGOTS_STEEL))
+            .apply(RecipeTemplates.TRAP_DOOR_BLOCK_TAG_FRIENDLY.apply(CommonItemTags.INGOTS_STEEL))
             .into(2, HumanSteelBlocks.STEEL_TRAP_DOOR);
         builder.shaped()
             .withCategory(RecipeCategory.BUILDING_BLOCKS)
-            .apply(RecipeTemplates.TRAP_DOOR_BLOCK_TAG_FRIENDLY.apply(CommonConstants.INGOTS_TITANIUM))
+            .apply(RecipeTemplates.TRAP_DOOR_BLOCK_TAG_FRIENDLY.apply(CommonItemTags.INGOTS_TITANIUM))
             .into(2, HumanTitaniumBlocks.TITANIUM_TRAP_DOOR);
 
         builder.shaped()
             .withCategory(RecipeCategory.BUILDING_BLOCKS)
-            .apply(RecipeTemplates.PRESSURE_PLATE_BLOCK.apply(CommonConstants.INGOTS_FERROALUMINUM))
+            .apply(RecipeTemplates.PRESSURE_PLATE_BLOCK.apply(CommonItemTags.INGOTS_FERROALUMINUM))
             .into(1, HumanFerroaluminumBlocks.FERROALUMINUM_PRESSURE_PLATE);
         builder.shaped()
             .withCategory(RecipeCategory.BUILDING_BLOCKS)
-            .apply(RecipeTemplates.PRESSURE_PLATE_BLOCK.apply(CommonConstants.INGOTS_STEEL))
+            .apply(RecipeTemplates.PRESSURE_PLATE_BLOCK.apply(CommonItemTags.INGOTS_STEEL))
             .into(1, HumanSteelBlocks.STEEL_PRESSURE_PLATE);
         builder.shaped()
             .withCategory(RecipeCategory.BUILDING_BLOCKS)
-            .apply(RecipeTemplates.PRESSURE_PLATE_BLOCK.apply(CommonConstants.INGOTS_TITANIUM))
+            .apply(RecipeTemplates.PRESSURE_PLATE_BLOCK.apply(CommonItemTags.INGOTS_TITANIUM))
             .into(1, HumanTitaniumBlocks.TITANIUM_PRESSURE_PLATE);
 
         // Add standard slab and stair crafting recipes
@@ -238,19 +238,19 @@ public class MetalRecipeProvider {
         createVariantSlabAndStairRecipes(builder);
 
         // Nugget to ingot recipes
-        nuggetToIngot(builder, AVPItems.ALUMINUM_NUGGET.get(), CommonConstants.NUGGETS_ALUMINUM, AVPItems.ALUMINUM_INGOT.get());
-        nuggetToIngot(builder, AVPItems.BRASS_NUGGET.get(), CommonConstants.NUGGETS_BRASS, AVPItems.BRASS_INGOT.get());
+        nuggetToIngot(builder, AVPItems.ALUMINUM_NUGGET.get(), CommonItemTags.NUGGETS_ALUMINUM, AVPItems.ALUMINUM_INGOT.get());
+        nuggetToIngot(builder, AVPItems.BRASS_NUGGET.get(), CommonItemTags.NUGGETS_BRASS, AVPItems.BRASS_INGOT.get());
         nuggetToIngot(
             builder,
             AVPItems.FERROALUMINUM_NUGGET.get(),
-            CommonConstants.NUGGETS_FERROALUMINUM,
+            CommonItemTags.NUGGETS_FERROALUMINUM,
             AVPItems.FERROALUMINUM_INGOT.get()
         );
-        nuggetToIngot(builder, AVPItems.LEAD_NUGGET.get(), CommonConstants.NUGGETS_LEAD, AVPItems.LEAD_INGOT.get());
-        nuggetToIngot(builder, AVPItems.STEEL_NUGGET.get(), CommonConstants.NUGGETS_STEEL, AVPItems.STEEL_INGOT.get());
-        nuggetToIngot(builder, AVPItems.TITANIUM_NUGGET.get(), CommonConstants.NUGGETS_TITANIUM, AVPItems.TITANIUM_INGOT.get());
-        nuggetToIngot(builder, AVPItems.URANIUM_NUGGET.get(), CommonConstants.NUGGETS_URANIUM, AVPItems.URANIUM_INGOT.get());
-        nuggetToIngot(builder, AVPItems.ZINC_NUGGET.get(), CommonConstants.NUGGETS_ZINC, AVPItems.ZINC_INGOT.get());
+        nuggetToIngot(builder, AVPItems.LEAD_NUGGET.get(), CommonItemTags.NUGGETS_LEAD, AVPItems.LEAD_INGOT.get());
+        nuggetToIngot(builder, AVPItems.STEEL_NUGGET.get(), CommonItemTags.NUGGETS_STEEL, AVPItems.STEEL_INGOT.get());
+        nuggetToIngot(builder, AVPItems.TITANIUM_NUGGET.get(), CommonItemTags.NUGGETS_TITANIUM, AVPItems.TITANIUM_INGOT.get());
+        nuggetToIngot(builder, AVPItems.URANIUM_NUGGET.get(), CommonItemTags.NUGGETS_URANIUM, AVPItems.URANIUM_INGOT.get());
+        nuggetToIngot(builder, AVPItems.ZINC_NUGGET.get(), CommonItemTags.NUGGETS_ZINC, AVPItems.ZINC_INGOT.get());
 
         // Ingot to nugget recipes
         ingotToNugget(builder, AVPItems.ALUMINUM_INGOT.get(), AVPItems.ALUMINUM_NUGGET.get());

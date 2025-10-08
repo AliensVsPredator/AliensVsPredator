@@ -3,11 +3,12 @@ package com.avp.fabric.data.tag;
 import com.alien.common.registry.init.AlienItems;
 import com.alien.common.registry.init.item.AlienArmorItems;
 import com.alien.common.registry.init.item.AlienResinBlockItems;
-import com.compat.CommonConstants;
+import com.compat.CommonItemTags;
 import com.human.common.gameplay.item.GunItem;
 import com.human.common.registry.init.item.HumanFerroaluminumBlockItems;
 import com.human.common.registry.init.item.HumanIndustrialGlassBlockItems;
 import com.human.common.registry.init.item.HumanSteelBlockItems;
+import com.human.common.registry.init.item.HumanTitaniumBlockItems;
 import com.predator.common.registry.init.item.PredatorArmorItems;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
@@ -185,10 +186,10 @@ public class AVPItemTagProvider extends FabricTagProvider.ItemTagProvider {
                 AlienResinBlockItems.IRRADIATED_RESIN_VEIN.get(),
                 AlienResinBlockItems.IRRADIATED_RESIN_WEB.get()
             )
-            .addOptionalTag(CommonConstants.INGOTS_URANIUM);
+            .addOptionalTag(CommonItemTags.INGOTS_URANIUM);
 
         getOrCreateTagBuilder(AVPItemTags.URANIUM_NUGGET_LIKE)
-            .addOptionalTag(CommonConstants.NUGGETS_URANIUM)
+            .addOptionalTag(CommonItemTags.NUGGETS_URANIUM)
             .add(AlienItems.IRRADIATED_CHITIN.get());
     }
 
@@ -430,15 +431,15 @@ public class AVPItemTagProvider extends FabricTagProvider.ItemTagProvider {
     }
 
     private void addCompatibilityTags() {
-        getOrCreateTagBuilder(CommonConstants.DUSTS_COAL)
+        getOrCreateTagBuilder(CommonItemTags.DUSTS_COAL)
             .setReplace(false)
             .add(AVPItems.CARBON_DUST.get());
 
-        getOrCreateTagBuilder(CommonConstants.DUSTS_REDSTONE)
+        getOrCreateTagBuilder(CommonItemTags.DUSTS_REDSTONE)
             .setReplace(false)
             .add(Items.REDSTONE);
 
-        getOrCreateTagBuilder(CommonConstants.INGOTS)
+        getOrCreateTagBuilder(CommonItemTags.INGOTS)
             .setReplace(false)
             .add(
                 AVPItems.ALUMINUM_INGOT.get(),
@@ -451,42 +452,42 @@ public class AVPItemTagProvider extends FabricTagProvider.ItemTagProvider {
                 AVPItems.ZINC_INGOT.get()
             );
 
-        getOrCreateTagBuilder(CommonConstants.INGOTS_ALUMINUM)
+        getOrCreateTagBuilder(CommonItemTags.INGOTS_ALUMINUM)
             .setReplace(false)
             .add(AVPItems.ALUMINUM_INGOT.get());
 
-        getOrCreateTagBuilder(CommonConstants.INGOTS_BRASS)
+        getOrCreateTagBuilder(CommonItemTags.INGOTS_BRASS)
             .setReplace(false)
             .add(AVPItems.BRASS_INGOT.get());
 
-        getOrCreateTagBuilder(CommonConstants.INGOTS_LEAD)
+        getOrCreateTagBuilder(CommonItemTags.INGOTS_LEAD)
             .setReplace(false)
             .add(AVPItems.LEAD_INGOT.get());
 
-        getOrCreateTagBuilder(CommonConstants.INGOTS_FERROALUMINUM)
+        getOrCreateTagBuilder(CommonItemTags.INGOTS_FERROALUMINUM)
             .setReplace(false)
             .add(AVPItems.FERROALUMINUM_INGOT.get());
 
-        getOrCreateTagBuilder(CommonConstants.INGOTS_STEEL)
+        getOrCreateTagBuilder(CommonItemTags.INGOTS_STEEL)
             .setReplace(false)
             .add(AVPItems.STEEL_INGOT.get());
 
-        getOrCreateTagBuilder(CommonConstants.INGOTS_TITANIUM)
+        getOrCreateTagBuilder(CommonItemTags.INGOTS_TITANIUM)
             .setReplace(false)
             .add(AVPItems.TITANIUM_INGOT.get());
 
-        getOrCreateTagBuilder(CommonConstants.INGOTS_ZINC)
+        getOrCreateTagBuilder(CommonItemTags.INGOTS_ZINC)
             .setReplace(false)
             .add(AVPItems.ZINC_INGOT.get());
 
-        getOrCreateTagBuilder(CommonConstants.MUSIC_DISCS)
+        getOrCreateTagBuilder(CommonItemTags.MUSIC_DISCS)
             .setReplace(false)
             .add(
                 AlienItems.ALIEN_MUSIC_DISC_1.get(),
                 AVPItems.PREDATOR_MUSIC_DISC_1.get()
             );
 
-        getOrCreateTagBuilder(CommonConstants.NUGGETS)
+        getOrCreateTagBuilder(CommonItemTags.NUGGETS)
             .setReplace(false)
             .add(
                 AVPItems.ALUMINUM_NUGGET.get(),
@@ -499,47 +500,47 @@ public class AVPItemTagProvider extends FabricTagProvider.ItemTagProvider {
                 AVPItems.ZINC_NUGGET.get()
             );
 
-        getOrCreateTagBuilder(CommonConstants.NUGGETS_ALUMINUM)
+        getOrCreateTagBuilder(CommonItemTags.NUGGETS_ALUMINUM)
             .setReplace(false)
             .add(AVPItems.ALUMINUM_NUGGET.get());
 
-        getOrCreateTagBuilder(CommonConstants.NUGGETS_BRASS)
+        getOrCreateTagBuilder(CommonItemTags.NUGGETS_BRASS)
             .setReplace(false)
             .add(AVPItems.BRASS_NUGGET.get());
 
-        getOrCreateTagBuilder(CommonConstants.NUGGETS_FERROALUMINUM)
+        getOrCreateTagBuilder(CommonItemTags.NUGGETS_FERROALUMINUM)
             .setReplace(false)
             .add(AVPItems.FERROALUMINUM_NUGGET.get());
 
-        getOrCreateTagBuilder(CommonConstants.NUGGETS_GOLD)
+        getOrCreateTagBuilder(CommonItemTags.NUGGETS_GOLD)
             .setReplace(false)
             .add(Items.GOLD_NUGGET);
 
-        getOrCreateTagBuilder(CommonConstants.NUGGETS_IRON)
+        getOrCreateTagBuilder(CommonItemTags.NUGGETS_IRON)
             .setReplace(false)
             .add(Items.IRON_NUGGET);
 
-        getOrCreateTagBuilder(CommonConstants.NUGGETS_LEAD)
+        getOrCreateTagBuilder(CommonItemTags.NUGGETS_LEAD)
             .setReplace(false)
             .add(AVPItems.LEAD_NUGGET.get());
 
-        getOrCreateTagBuilder(CommonConstants.NUGGETS_STEEL)
+        getOrCreateTagBuilder(CommonItemTags.NUGGETS_STEEL)
             .setReplace(false)
             .add(AVPItems.STEEL_NUGGET.get());
 
-        getOrCreateTagBuilder(CommonConstants.NUGGETS_TITANIUM)
+        getOrCreateTagBuilder(CommonItemTags.NUGGETS_TITANIUM)
             .setReplace(false)
             .add(AVPItems.TITANIUM_NUGGET.get());
 
-        getOrCreateTagBuilder(CommonConstants.NUGGETS_URANIUM)
+        getOrCreateTagBuilder(CommonItemTags.NUGGETS_URANIUM)
             .setReplace(false)
             .add(AVPItems.URANIUM_NUGGET.get());
 
-        getOrCreateTagBuilder(CommonConstants.NUGGETS_ZINC)
+        getOrCreateTagBuilder(CommonItemTags.NUGGETS_ZINC)
             .setReplace(false)
             .add(AVPItems.ZINC_NUGGET.get());
 
-        getOrCreateTagBuilder(CommonConstants.ORES)
+        getOrCreateTagBuilder(CommonItemTags.ORES)
             .setReplace(false)
             .add(
                 AVPBlockItems.AUTUNITE_ORE.get(),
@@ -552,36 +553,84 @@ public class AVPItemTagProvider extends FabricTagProvider.ItemTagProvider {
                 AVPBlockItems.ZINC_ORE.get()
             );
 
-        getOrCreateTagBuilder(CommonConstants.RAW_MATERIALS_ALUMINUM)
+        getOrCreateTagBuilder(CommonItemTags.RAW_MATERIALS_ALUMINUM)
             .setReplace(false)
             .add(AVPItems.RAW_BAUXITE.get());
 
-        getOrCreateTagBuilder(CommonConstants.RAW_MATERIALS_COPPER)
+        getOrCreateTagBuilder(CommonItemTags.RAW_MATERIALS_COPPER)
             .setReplace(false)
             .add(Items.RAW_COPPER);
 
-        getOrCreateTagBuilder(CommonConstants.RAW_MATERIALS_IRON)
+        getOrCreateTagBuilder(CommonItemTags.RAW_MATERIALS_IRON)
             .setReplace(false)
             .add(Items.RAW_IRON);
 
-        getOrCreateTagBuilder(CommonConstants.RAW_MATERIALS_LEAD)
+        getOrCreateTagBuilder(CommonItemTags.RAW_MATERIALS_LEAD)
             .setReplace(false)
             .add(AVPItems.RAW_GALENA.get());
 
-        getOrCreateTagBuilder(CommonConstants.RAW_MATERIALS_STEEL)
+        getOrCreateTagBuilder(CommonItemTags.RAW_MATERIALS_STEEL)
             .setReplace(false)
             .add(AVPItems.RAW_CRUDE_IRON.get());
 
-        getOrCreateTagBuilder(CommonConstants.RAW_MATERIALS_TITANIUM)
+        getOrCreateTagBuilder(CommonItemTags.RAW_MATERIALS_TITANIUM)
             .setReplace(false)
             .add(AVPItems.RAW_TITANIUM.get());
 
-        getOrCreateTagBuilder(CommonConstants.RAW_MATERIALS_ZINC)
+        getOrCreateTagBuilder(CommonItemTags.RAW_MATERIALS_ZINC)
             .setReplace(false)
             .add(AVPItems.RAW_ZINC.get());
 
-        getOrCreateTagBuilder(CommonConstants.SILICON)
+        getOrCreateTagBuilder(CommonItemTags.SILICON)
             .setReplace(false)
             .add(AVPItems.SILICON.get());
+
+        getOrCreateTagBuilder(CommonItemTags.STORAGE_BLOCKS_ALUMINUM)
+            .setReplace(false)
+            .add(AVPBlockItems.ALUMINUM_BLOCK.get());
+
+        getOrCreateTagBuilder(CommonItemTags.STORAGE_BLOCKS_BRASS)
+            .setReplace(false)
+            .add(AVPBlockItems.BRASS_BLOCK.get());
+
+        getOrCreateTagBuilder(CommonItemTags.STORAGE_BLOCKS_FERROALUMINUM)
+            .setReplace(false)
+            .add(HumanFerroaluminumBlockItems.FERROALUMINUM_BLOCK.get());
+
+        getOrCreateTagBuilder(CommonItemTags.STORAGE_BLOCKS_LEAD)
+            .setReplace(false)
+            .add(AVPBlockItems.LEAD_BLOCK.get());
+
+        getOrCreateTagBuilder(CommonItemTags.STORAGE_BLOCKS_RAW_ALUMINUM)
+            .setReplace(false)
+            .add(AVPBlockItems.RAW_BAUXITE_BLOCK.get());
+
+        getOrCreateTagBuilder(CommonItemTags.STORAGE_BLOCKS_RAW_LEAD)
+            .setReplace(false)
+            .add(AVPBlockItems.RAW_GALENA_BLOCK.get());
+
+        getOrCreateTagBuilder(CommonItemTags.STORAGE_BLOCKS_RAW_TITANIUM)
+            .setReplace(false)
+            .add(AVPBlockItems.RAW_TITANIUM_BLOCK.get());
+
+        getOrCreateTagBuilder(CommonItemTags.STORAGE_BLOCKS_RAW_ZINC)
+            .setReplace(false)
+            .add(AVPBlockItems.RAW_ZINC_BLOCK.get());
+
+        getOrCreateTagBuilder(CommonItemTags.STORAGE_BLOCKS_STEEL)
+            .setReplace(false)
+            .add(HumanSteelBlockItems.STEEL_BLOCK.get());
+
+        getOrCreateTagBuilder(CommonItemTags.STORAGE_BLOCKS_TITANIUM)
+            .setReplace(false)
+            .add(HumanTitaniumBlockItems.TITANIUM_BLOCK.get());
+
+        getOrCreateTagBuilder(CommonItemTags.STORAGE_BLOCKS_URANIUM)
+            .setReplace(false)
+            .add(AVPBlockItems.URANIUM_BLOCK.get());
+
+        getOrCreateTagBuilder(CommonItemTags.STORAGE_BLOCKS_ZINC)
+            .setReplace(false)
+            .add(AVPBlockItems.ZINC_BLOCK.get());
     }
 }

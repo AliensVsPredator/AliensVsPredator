@@ -1,6 +1,6 @@
 package com.avp.fabric.data.recipe.impl;
 
-import com.compat.CommonConstants;
+import com.compat.CommonItemTags;
 import com.human.common.registry.init.item.HumanGunItems;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.world.item.Item;
@@ -17,7 +17,7 @@ public class GunRecipeProvider {
     public static void provide(RecipeBuilder builder) {
         builder.shaped()
             .withCategory(RecipeCategory.COMBAT)
-            .define('S', CommonConstants.INGOTS_STEEL)
+            .define('S', CommonItemTags.INGOTS_STEEL)
             .define('T', Items.TNT)
             .pattern("SSS")
             .pattern("STS")
@@ -33,14 +33,14 @@ public class GunRecipeProvider {
     private static void createGrenadeRecipes(RecipeBuilder builder) {
         builder.shaped()
             .withCategory(RecipeCategory.COMBAT)
-            .define('A', CommonConstants.NUGGETS_STEEL)
+            .define('A', CommonItemTags.NUGGETS_STEEL)
             .define('B', Items.GUNPOWDER)
             .pattern("ABA")
             .pattern("ABA")
             .into(4, AVPItems.GRENADE);
         builder.shaped()
             .withCategory(RecipeCategory.COMBAT)
-            .define('A', CommonConstants.NUGGETS_STEEL)
+            .define('A', CommonItemTags.NUGGETS_STEEL)
             .define('B', Items.GUNPOWDER)
             .define('C', Items.BLAZE_POWDER)
             .pattern("ACA")
@@ -48,7 +48,7 @@ public class GunRecipeProvider {
             .into(4, AVPItems.GRENADE_INCENDIARY);
         builder.shaped()
             .withCategory(RecipeCategory.COMBAT)
-            .define('A', CommonConstants.NUGGETS_STEEL)
+            .define('A', CommonItemTags.NUGGETS_STEEL)
             .define('B', Items.GUNPOWDER)
             .define('C', AVPItemTags.URANIUM_NUGGET_LIKE)
             .pattern("ACA")
@@ -59,9 +59,9 @@ public class GunRecipeProvider {
     private static void createBulletRecipes(RecipeBuilder builder) {
         builder.shaped()
             .withCategory(RecipeCategory.COMBAT)
-            .define('A', CommonConstants.NUGGETS_BRASS)
+            .define('A', CommonItemTags.NUGGETS_BRASS)
             .define('B', Items.GUNPOWDER)
-            .define('C', CommonConstants.NUGGETS_LEAD)
+            .define('C', CommonItemTags.NUGGETS_LEAD)
             .pattern(" C ")
             .pattern("ABA")
             .pattern("AAA")
@@ -69,10 +69,10 @@ public class GunRecipeProvider {
 
         builder.shaped()
             .withCategory(RecipeCategory.COMBAT)
-            .define('A', CommonConstants.NUGGETS_BRASS)
+            .define('A', CommonItemTags.NUGGETS_BRASS)
             .define('B', Items.GUNPOWDER)
-            .define('C', CommonConstants.NUGGETS_STEEL)
-            .define('D', CommonConstants.NUGGETS_LEAD)
+            .define('C', CommonItemTags.NUGGETS_STEEL)
+            .define('D', CommonItemTags.NUGGETS_LEAD)
             .pattern("ADA")
             .pattern("ABA")
             .pattern("ACA")
@@ -80,10 +80,10 @@ public class GunRecipeProvider {
 
         builder.shaped()
             .withCategory(RecipeCategory.COMBAT)
-            .define('A', CommonConstants.NUGGETS_BRASS)
+            .define('A', CommonItemTags.NUGGETS_BRASS)
             .define('B', Items.GUNPOWDER)
-            .define('C', CommonConstants.NUGGETS_STEEL)
-            .define('D', CommonConstants.NUGGETS_LEAD)
+            .define('C', CommonItemTags.NUGGETS_STEEL)
+            .define('D', CommonItemTags.NUGGETS_LEAD)
             .pattern("DDD")
             .pattern("CBC")
             .pattern("CAC")
@@ -91,10 +91,10 @@ public class GunRecipeProvider {
 
         builder.shaped()
             .withCategory(RecipeCategory.COMBAT)
-            .define('A', CommonConstants.NUGGETS_BRASS)
+            .define('A', CommonItemTags.NUGGETS_BRASS)
             .define('B', Items.GUNPOWDER)
             .define('C', AVPItems.POLYMER)
-            .define('D', CommonConstants.NUGGETS_LEAD)
+            .define('D', CommonItemTags.NUGGETS_LEAD)
             .pattern("DDD")
             .pattern("CBC")
             .pattern("CAC")
@@ -102,10 +102,10 @@ public class GunRecipeProvider {
 
         builder.shaped()
             .withCategory(RecipeCategory.COMBAT)
-            .define('A', CommonConstants.NUGGETS_BRASS)
+            .define('A', CommonItemTags.NUGGETS_BRASS)
             .define('B', Items.GUNPOWDER)
             .define('C', Items.CLAY_BALL)
-            .define('D', CommonConstants.NUGGETS_LEAD)
+            .define('D', CommonItemTags.NUGGETS_LEAD)
             .pattern(" D ")
             .pattern("CBC")
             .pattern("CAC")
@@ -113,7 +113,7 @@ public class GunRecipeProvider {
 
         builder.shaped()
             .withCategory(RecipeCategory.COMBAT)
-            .define('A', CommonConstants.NUGGETS_ALUMINUM)
+            .define('A', CommonItemTags.NUGGETS_ALUMINUM)
             .define('B', Items.MAGMA_CREAM)
             .pattern("AAA")
             .pattern("ABA")
@@ -182,14 +182,14 @@ public class GunRecipeProvider {
     private static void createGunPartRecipes(RecipeBuilder builder) {
         builder.shaped()
             .withCategory(RecipeCategory.COMBAT)
-            .define('A', CommonConstants.INGOTS_STEEL)
+            .define('A', CommonItemTags.INGOTS_STEEL)
             .pattern("AAA")
             .into(1, AVPItems.BARREL);
 
         builder.shaped()
             .withCategory(RecipeCategory.COMBAT)
             .define('A', AVPItems.POLYMER)
-            .define('B', CommonConstants.INGOTS_STEEL)
+            .define('B', CommonItemTags.INGOTS_STEEL)
             .pattern("B")
             .pattern("A")
             .pattern("A")
@@ -197,7 +197,7 @@ public class GunRecipeProvider {
 
         builder.shaped()
             .withCategory(RecipeCategory.COMBAT)
-            .define('A', CommonConstants.INGOTS_STEEL)
+            .define('A', CommonItemTags.INGOTS_STEEL)
             .define('B', AVPItems.BARREL)
             .pattern("BBB")
             .pattern("A A")
@@ -206,7 +206,7 @@ public class GunRecipeProvider {
 
         builder.shaped()
             .withCategory(RecipeCategory.COMBAT)
-            .define('A', CommonConstants.INGOTS_STEEL)
+            .define('A', CommonItemTags.INGOTS_STEEL)
             .pattern("AAA")
             .pattern("   ")
             .pattern("AAA")
@@ -214,7 +214,7 @@ public class GunRecipeProvider {
 
         builder.shaped()
             .withCategory(RecipeCategory.COMBAT)
-            .define('A', CommonConstants.INGOTS_STEEL)
+            .define('A', CommonItemTags.INGOTS_STEEL)
             .define('B', AVPItems.POLYMER)
             .define('C', Items.TRIPWIRE_HOOK)
             .define('D', Items.STONE_BUTTON)
@@ -245,7 +245,7 @@ public class GunRecipeProvider {
         builder.shaped()
             .withCategory(RecipeCategory.COMBAT)
             .define('A', AVPItems.POLYMER)
-            .define('B', CommonConstants.INGOTS_STEEL)
+            .define('B', CommonItemTags.INGOTS_STEEL)
             .pattern("  A")
             .pattern("BAA")
             .pattern("  A")

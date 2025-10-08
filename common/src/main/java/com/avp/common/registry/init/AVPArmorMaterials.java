@@ -1,6 +1,6 @@
 package com.avp.common.registry.init;
 
-import com.compat.CommonConstants;
+import com.compat.CommonItemTags;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.sounds.SoundEvent;
@@ -31,7 +31,7 @@ public class AVPArmorMaterials {
         ),
         6,
         AVPSoundEvents.ITEM_ARMOR_EQUIP_MK50::getHolder,
-        () -> Ingredient.of(CommonConstants.INGOTS_LEAD),
+        () -> Ingredient.of(CommonItemTags.INGOTS_LEAD),
         0,
         0,
         true
@@ -48,7 +48,7 @@ public class AVPArmorMaterials {
         ),
         6,
         AVPSoundEvents.ITEM_ARMOR_EQUIP_PRESSURE::getHolder,
-        () -> Ingredient.of(CommonConstants.INGOTS_ALUMINUM),
+        () -> Ingredient.of(CommonItemTags.INGOTS_ALUMINUM),
         0,
         0,
         false
@@ -67,7 +67,7 @@ public class AVPArmorMaterials {
         ),
         5, // TODO:
         AVPSoundEvents.ITEM_ARMOR_EQUIP_STEEL::getHolder,
-        () -> Ingredient.of(CommonConstants.INGOTS_STEEL),
+        () -> Ingredient.of(CommonItemTags.INGOTS_STEEL),
         0,
         0,
         false
@@ -83,7 +83,7 @@ public class AVPArmorMaterials {
         ),
         5,
         AVPSoundEvents.ITEM_ARMOR_EQUIP_TACTICAL::getHolder,
-        () -> Ingredient.of(CommonConstants.INGOTS_STEEL),
+        () -> Ingredient.of(CommonItemTags.INGOTS_STEEL),
         0,
         0,
         false
@@ -102,7 +102,7 @@ public class AVPArmorMaterials {
         ),
         5,
         AVPSoundEvents.ITEM_ARMOR_EQUIP_TITANIUM::getHolder,
-        () -> Ingredient.of(CommonConstants.INGOTS_TITANIUM),
+        () -> Ingredient.of(CommonItemTags.INGOTS_TITANIUM),
         1,
         0,
         false

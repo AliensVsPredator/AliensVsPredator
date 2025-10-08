@@ -105,16 +105,7 @@
 - N/A
 
 ## 🛠 Data Pack
-- Added `#c:nuggets/ferroaluminum` item tag.
-- Added `#c:nuggets/uranium` item tag.
-- Added `#c:silicon` item tag.
-- Added `avp:ferroaluminum_ingot` to `#c:ingots/ferroaluminum` item tag.
-- Added `avp:raw_aluminum` to `#c:raw_materials/aluminum` item tag.
-- Added `avp:raw_galena` to `#c:raw_materials/lead` item tag.
-- Added `avp:raw_titanium` to `#c:raw_materials/titanium` item tag.
-- Added `avp:raw_zinc` to `#c:raw_materials/zinc` item tag.
-- Added `avp:alien_music_disc_1` to `#c:music_discs` item tag.
-- Added `avp:predator_music_disc_1` to `#c:music_discs` item tag.
+- Too many changes to record here, but mostly just adding AVP blocks/items to pre-existing common block/item tags.
 
 ## 🔬 Technical Changes
 - N/A

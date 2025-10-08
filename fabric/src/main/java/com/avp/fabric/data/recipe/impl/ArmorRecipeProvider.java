@@ -2,7 +2,7 @@ package com.avp.fabric.data.recipe.impl;
 
 import com.alien.common.registry.init.AlienItems;
 import com.alien.common.registry.init.item.AlienArmorItems;
-import com.compat.CommonConstants;
+import com.compat.CommonItemTags;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
@@ -66,7 +66,7 @@ public class ArmorRecipeProvider {
         );
         createStandardArmorSetRecipes(
             builder,
-            CommonConstants.INGOTS_STEEL,
+            CommonItemTags.INGOTS_STEEL,
             AVPArmorItems.STEEL_HELMET.get(),
             AVPArmorItems.STEEL_CHESTPLATE.get(),
             AVPArmorItems.STEEL_LEGGINGS.get(),
@@ -74,7 +74,7 @@ public class ArmorRecipeProvider {
         );
         createStandardArmorSetRecipes(
             builder,
-            CommonConstants.INGOTS_TITANIUM,
+            CommonItemTags.INGOTS_TITANIUM,
             AVPArmorItems.TITANIUM_HELMET.get(),
             AVPArmorItems.TITANIUM_CHESTPLATE.get(),
             AVPArmorItems.TITANIUM_LEGGINGS.get(),
@@ -177,12 +177,12 @@ public class ArmorRecipeProvider {
     private static void createMk50ArmorSetRecipes(RecipeBuilder builder) {
         Supplier<ShapedRecipeBuilder> mk50ArmorBuilder = () -> builder.shaped()
             .withCategory(RecipeCategory.COMBAT)
-            .define('A', CommonConstants.INGOTS_ALUMINUM)
-            .define('C', CommonConstants.INGOTS_LEAD);
+            .define('A', CommonItemTags.INGOTS_ALUMINUM)
+            .define('C', CommonItemTags.INGOTS_LEAD);
 
         mk50ArmorBuilder.get()
             .define('B', AVPItemTags.INDUSTRIAL_GLASS_PANE)
-            .define('E', CommonConstants.DUSTS_COAL)
+            .define('E', CommonItemTags.DUSTS_COAL)
             .pattern("CAC")
             .pattern("B B")
             .pattern("AEA")
@@ -211,11 +211,11 @@ public class ArmorRecipeProvider {
     private static void createPressureArmorSetRecipes(RecipeBuilder builder) {
         Supplier<ShapedRecipeBuilder> pressureArmorBuilder = () -> builder.shaped()
             .withCategory(RecipeCategory.COMBAT)
-            .define('A', CommonConstants.INGOTS_ALUMINUM);
+            .define('A', CommonItemTags.INGOTS_ALUMINUM);
 
         pressureArmorBuilder.get()
             .define('B', AVPItemTags.INDUSTRIAL_GLASS_PANE)
-            .define('E', CommonConstants.DUSTS_COAL)
+            .define('E', CommonItemTags.DUSTS_COAL)
             .pattern("AAA")
             .pattern("B B")
             .pattern("EEE")
@@ -245,7 +245,7 @@ public class ArmorRecipeProvider {
     private static void createTacticalArmorSetRecipes(RecipeBuilder builder) {
         Supplier<ShapedRecipeBuilder> tacticalArmorBuilder = () -> builder.shaped()
             .withCategory(RecipeCategory.COMBAT)
-            .define('A', CommonConstants.INGOTS_STEEL)
+            .define('A', CommonItemTags.INGOTS_STEEL)
             .define('B', ItemTags.WOOL);
 
         tacticalArmorBuilder.get()

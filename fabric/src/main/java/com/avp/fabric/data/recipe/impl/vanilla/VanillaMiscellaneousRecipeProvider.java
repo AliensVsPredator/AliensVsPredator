@@ -1,6 +1,6 @@
 package com.avp.fabric.data.recipe.impl.vanilla;
 
-import com.compat.CommonConstants;
+import com.compat.CommonItemTags;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.world.item.Items;
 
@@ -11,7 +11,7 @@ public class VanillaMiscellaneousRecipeProvider {
     public static void provide(RecipeBuilder builder) {
         builder.shaped()
             .withCategory(RecipeCategory.MISC)
-            .define('A', CommonConstants.DUSTS_COAL)
+            .define('A', CommonItemTags.DUSTS_COAL)
             .define('B', Items.BLAZE_POWDER)
             .pattern("AAA")
             .pattern("ABA")

@@ -2,7 +2,7 @@ package com.avp.fabric.data.tag;
 
 import com.alien.common.registry.init.block.AlienChitinBlocks;
 import com.alien.common.registry.init.block.AlienResinBlocks;
-import com.compat.CommonConstants;
+import com.compat.CommonBlockTags;
 import com.compat.gigeresque.common.registry.tag.GigBlockTags;
 import com.human.common.registry.init.block.HumanFerroaluminumBlocks;
 import com.human.common.registry.init.block.HumanIndustrialConcreteBlocks;
@@ -776,14 +776,14 @@ public class AVPBlockTagProvider extends FabricTagProvider.BlockTagProvider {
         getOrCreateTagBuilder(AVPBlockTags.ACID_IMMUNE)
             .addOptionalTag(GigBlockTags.ACID_RESISTANT);
 
-        getOrCreateTagBuilder(CommonConstants.CHESTS)
+        getOrCreateTagBuilder(CommonBlockTags.CHESTS)
             .setReplace(false)
             .add(
                 AVPBlocks.AMMO_CHEST.get(),
                 AVPBlocks.LEAD_CHEST.get()
             );
 
-        getOrCreateTagBuilder(CommonConstants.ORES_BLOCKS)
+        getOrCreateTagBuilder(CommonBlockTags.ORES_BLOCKS)
             .setReplace(false)
             .add(
                 CoreBlocks.AUTUNITE_ORE.get(),
@@ -795,5 +795,53 @@ public class AVPBlockTagProvider extends FabricTagProvider.BlockTagProvider {
                 CoreBlocks.MONAZITE_ORE.get(),
                 CoreBlocks.ZINC_ORE.get()
             );
+
+        getOrCreateTagBuilder(CommonBlockTags.STORAGE_BLOCKS_ALUMINUM)
+            .setReplace(false)
+            .add(CoreBlocks.ALUMINUM_BLOCK.get());
+
+        getOrCreateTagBuilder(CommonBlockTags.STORAGE_BLOCKS_BRASS)
+            .setReplace(false)
+            .add(CoreBlocks.BRASS_BLOCK.get());
+
+        getOrCreateTagBuilder(CommonBlockTags.STORAGE_BLOCKS_FERROALUMINUM)
+            .setReplace(false)
+            .add(HumanFerroaluminumBlocks.FERROALUMINUM_BLOCK.get());
+
+        getOrCreateTagBuilder(CommonBlockTags.STORAGE_BLOCKS_LEAD)
+            .setReplace(false)
+            .add(CoreBlocks.LEAD_BLOCK.get());
+
+        getOrCreateTagBuilder(CommonBlockTags.STORAGE_BLOCKS_RAW_ALUMINUM)
+            .setReplace(false)
+            .add(CoreBlocks.RAW_BAUXITE_BLOCK.get());
+
+        getOrCreateTagBuilder(CommonBlockTags.STORAGE_BLOCKS_RAW_LEAD)
+            .setReplace(false)
+            .add(CoreBlocks.RAW_GALENA_BLOCK.get());
+
+        getOrCreateTagBuilder(CommonBlockTags.STORAGE_BLOCKS_RAW_TITANIUM)
+            .setReplace(false)
+            .add(CoreBlocks.RAW_TITANIUM_BLOCK.get());
+
+        getOrCreateTagBuilder(CommonBlockTags.STORAGE_BLOCKS_RAW_ZINC)
+            .setReplace(false)
+            .add(CoreBlocks.RAW_ZINC_BLOCK.get());
+
+        getOrCreateTagBuilder(CommonBlockTags.STORAGE_BLOCKS_STEEL)
+            .setReplace(false)
+            .add(HumanSteelBlocks.STEEL_BLOCK.get());
+
+        getOrCreateTagBuilder(CommonBlockTags.STORAGE_BLOCKS_TITANIUM)
+            .setReplace(false)
+            .add(HumanTitaniumBlocks.TITANIUM_BLOCK.get());
+
+        getOrCreateTagBuilder(CommonBlockTags.STORAGE_BLOCKS_URANIUM)
+            .setReplace(false)
+            .add(CoreBlocks.URANIUM_BLOCK.get());
+
+        getOrCreateTagBuilder(CommonBlockTags.STORAGE_BLOCKS_ZINC)
+            .setReplace(false)
+            .add(CoreBlocks.ZINC_BLOCK.get());
     }
 }
