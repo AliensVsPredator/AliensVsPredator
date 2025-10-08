@@ -19,6 +19,7 @@
 - Modified numerous recipes to support tagged items from other mods:
   - Gun parts now accept any steel ingots.
   - Steel tool set now accepts any steel ingots.
+  - Titanium tool set now accepts any titanium ingots.
   - MK50 armor set now accepts any lead ingots and any aluminum ingots.
   - Pressure suit armor set now accepts any aluminum ingots.
   - Tactical armor set now accepts any steel ingots.

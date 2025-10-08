@@ -32,19 +32,19 @@ public class ToolRecipeProvider {
 
     private static void createTitaniumToolsetRecipes(RecipeBuilder builder) {
         builder.shaped()
-            .apply(RecipeTemplates.AXE.apply(AVPItems.TITANIUM_INGOT.get()))
+            .apply(RecipeTemplates.AXE_TAG_FRIENDLY.apply(CommonConstants.INGOTS_TITANIUM))
             .into(1, AVPItems.TITANIUM_AXE);
         builder.shaped()
-            .apply(RecipeTemplates.HOE.apply(AVPItems.TITANIUM_INGOT.get()))
+            .apply(RecipeTemplates.HOE_TAG_FRIENDLY.apply(CommonConstants.INGOTS_TITANIUM))
             .into(1, AVPItems.TITANIUM_HOE);
         builder.shaped()
-            .apply(RecipeTemplates.PICKAXE.apply(AVPItems.TITANIUM_INGOT.get()))
+            .apply(RecipeTemplates.PICKAXE_TAG_FRIENDLY.apply(CommonConstants.INGOTS_TITANIUM))
             .into(1, AVPItems.TITANIUM_PICKAXE);
         builder.shaped()
-            .apply(RecipeTemplates.SHOVEL.apply(AVPItems.TITANIUM_INGOT.get()))
+            .apply(RecipeTemplates.SHOVEL_TAG_FRIENDLY.apply(CommonConstants.INGOTS_TITANIUM))
             .into(1, AVPItems.TITANIUM_SHOVEL);
         builder.shaped()
-            .apply(RecipeTemplates.SWORD.apply(AVPItems.TITANIUM_INGOT.get()))
+            .apply(RecipeTemplates.SWORD_TAG_FRIENDLY.apply(CommonConstants.INGOTS_TITANIUM))
             .into(1, AVPItems.TITANIUM_SWORD);
     }
 }
