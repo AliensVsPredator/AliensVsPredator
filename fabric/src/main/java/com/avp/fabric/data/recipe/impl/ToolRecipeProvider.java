@@ -14,37 +14,37 @@ public class ToolRecipeProvider {
 
     private static void createSteelToolsetRecipes(RecipeBuilder builder) {
         builder.shaped()
-            .apply(RecipeTemplates.AXE_TAG_FRIENDLY.apply(CommonConstants.INGOTS_STEEL))
+            .apply(RecipeTemplates.AXE.apply(CommonConstants.INGOTS_STEEL))
             .into(1, AVPItems.STEEL_AXE);
         builder.shaped()
-            .apply(RecipeTemplates.HOE_TAG_FRIENDLY.apply(CommonConstants.INGOTS_STEEL))
+            .apply(RecipeTemplates.HOE.apply(CommonConstants.INGOTS_STEEL))
             .into(1, AVPItems.STEEL_HOE);
         builder.shaped()
-            .apply(RecipeTemplates.PICKAXE_TAG_FRIENDLY.apply(CommonConstants.INGOTS_STEEL))
+            .apply(RecipeTemplates.PICKAXE.apply(CommonConstants.INGOTS_STEEL))
             .into(1, AVPItems.STEEL_PICKAXE);
         builder.shaped()
-            .apply(RecipeTemplates.SHOVEL_TAG_FRIENDLY.apply(CommonConstants.INGOTS_STEEL))
+            .apply(RecipeTemplates.SHOVEL.apply(CommonConstants.INGOTS_STEEL))
             .into(1, AVPItems.STEEL_SHOVEL);
         builder.shaped()
-            .apply(RecipeTemplates.SWORD_TAG_FRIENDLY.apply(CommonConstants.INGOTS_STEEL))
+            .apply(RecipeTemplates.SWORD.apply(CommonConstants.INGOTS_STEEL))
             .into(1, AVPItems.STEEL_SWORD);
     }
 
     private static void createTitaniumToolsetRecipes(RecipeBuilder builder) {
         builder.shaped()
-            .apply(RecipeTemplates.AXE_TAG_FRIENDLY.apply(CommonConstants.INGOTS_TITANIUM))
+            .apply(RecipeTemplates.AXE.apply(CommonConstants.INGOTS_TITANIUM))
             .into(1, AVPItems.TITANIUM_AXE);
         builder.shaped()
-            .apply(RecipeTemplates.HOE_TAG_FRIENDLY.apply(CommonConstants.INGOTS_TITANIUM))
+            .apply(RecipeTemplates.HOE.apply(CommonConstants.INGOTS_TITANIUM))
             .into(1, AVPItems.TITANIUM_HOE);
         builder.shaped()
-            .apply(RecipeTemplates.PICKAXE_TAG_FRIENDLY.apply(CommonConstants.INGOTS_TITANIUM))
+            .apply(RecipeTemplates.PICKAXE.apply(CommonConstants.INGOTS_TITANIUM))
             .into(1, AVPItems.TITANIUM_PICKAXE);
         builder.shaped()
-            .apply(RecipeTemplates.SHOVEL_TAG_FRIENDLY.apply(CommonConstants.INGOTS_TITANIUM))
+            .apply(RecipeTemplates.SHOVEL.apply(CommonConstants.INGOTS_TITANIUM))
             .into(1, AVPItems.TITANIUM_SHOVEL);
         builder.shaped()
-            .apply(RecipeTemplates.SWORD_TAG_FRIENDLY.apply(CommonConstants.INGOTS_TITANIUM))
+            .apply(RecipeTemplates.SWORD.apply(CommonConstants.INGOTS_TITANIUM))
             .into(1, AVPItems.TITANIUM_SWORD);
     }
 }

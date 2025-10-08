@@ -4,6 +4,7 @@ import com.alien.common.registry.init.AlienItems;
 import com.alien.common.registry.init.item.AlienArmorItems;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.tags.ItemTags;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.ItemLike;
@@ -65,7 +66,7 @@ public class ArmorRecipeProvider {
         );
         createStandardArmorSetRecipes(
             builder,
-            AVPItems.STEEL_INGOT.get(),
+            CommonConstants.INGOTS_STEEL,
             AVPArmorItems.STEEL_HELMET.get(),
             AVPArmorItems.STEEL_CHESTPLATE.get(),
             AVPArmorItems.STEEL_LEGGINGS.get(),
@@ -73,7 +74,7 @@ public class ArmorRecipeProvider {
         );
         createStandardArmorSetRecipes(
             builder,
-            AVPItems.TITANIUM_INGOT.get(),
+            CommonConstants.INGOTS_TITANIUM,
             AVPArmorItems.TITANIUM_HELMET.get(),
             AVPArmorItems.TITANIUM_CHESTPLATE.get(),
             AVPArmorItems.TITANIUM_LEGGINGS.get(),
@@ -295,6 +296,31 @@ public class ArmorRecipeProvider {
 
         builder.shaped()
             .apply(RecipeTemplates.BOOTS.apply(base))
+            .into(1, boots);
+    }
+
+    private static void createStandardArmorSetRecipes(
+        RecipeBuilder builder,
+        TagKey<Item> base,
+        Item helmet,
+        Item chestplate,
+        Item leggings,
+        Item boots
+    ) {
+        builder.shaped()
+            .apply(RecipeTemplates.HELMET_TAG_FRIENDLY.apply(base))
+            .into(1, helmet);
+
+        builder.shaped()
+            .apply(RecipeTemplates.CHESTPLATE_TAG_FRIENDLY.apply(base))
+            .into(1, chestplate);
+
+        builder.shaped()
+            .apply(RecipeTemplates.LEGGINGS_TAG_FRIENDLY.apply(base))
+            .into(1, leggings);
+
+        builder.shaped()
+            .apply(RecipeTemplates.BOOTS_TAG_FRIENDLY.apply(base))
             .into(1, boots);
     }
 }
