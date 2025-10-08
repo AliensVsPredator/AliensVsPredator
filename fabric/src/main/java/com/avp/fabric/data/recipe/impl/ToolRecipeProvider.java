@@ -1,6 +1,7 @@
 package com.avp.fabric.data.recipe.impl;
 
 import com.avp.common.registry.init.item.AVPItems;
+import com.avp.fabric.data.compatibility.common.CommonConstants;
 import com.avp.fabric.data.recipe.RecipeTemplates;
 import com.avp.fabric.data.recipe.builder.RecipeBuilder;
 
@@ -13,19 +14,19 @@ public class ToolRecipeProvider {
 
     private static void createSteelToolsetRecipes(RecipeBuilder builder) {
         builder.shaped()
-            .apply(RecipeTemplates.AXE.apply(AVPItems.STEEL_INGOT.get()))
+            .apply(RecipeTemplates.AXE_TAG_FRIENDLY.apply(CommonConstants.INGOTS_STEEL))
             .into(1, AVPItems.STEEL_AXE);
         builder.shaped()
-            .apply(RecipeTemplates.HOE.apply(AVPItems.STEEL_INGOT.get()))
+            .apply(RecipeTemplates.HOE_TAG_FRIENDLY.apply(CommonConstants.INGOTS_STEEL))
             .into(1, AVPItems.STEEL_HOE);
         builder.shaped()
-            .apply(RecipeTemplates.PICKAXE.apply(AVPItems.STEEL_INGOT.get()))
+            .apply(RecipeTemplates.PICKAXE_TAG_FRIENDLY.apply(CommonConstants.INGOTS_STEEL))
             .into(1, AVPItems.STEEL_PICKAXE);
         builder.shaped()
-            .apply(RecipeTemplates.SHOVEL.apply(AVPItems.STEEL_INGOT.get()))
+            .apply(RecipeTemplates.SHOVEL_TAG_FRIENDLY.apply(CommonConstants.INGOTS_STEEL))
             .into(1, AVPItems.STEEL_SHOVEL);
         builder.shaped()
-            .apply(RecipeTemplates.SWORD.apply(AVPItems.STEEL_INGOT.get()))
+            .apply(RecipeTemplates.SWORD_TAG_FRIENDLY.apply(CommonConstants.INGOTS_STEEL))
             .into(1, AVPItems.STEEL_SWORD);
     }
 
