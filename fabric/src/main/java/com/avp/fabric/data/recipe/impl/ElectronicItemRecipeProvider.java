@@ -1,5 +1,6 @@
 package com.avp.fabric.data.recipe.impl;
 
+import com.compat.CommonConstants;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.world.item.Items;
 
@@ -16,7 +17,7 @@ public class ElectronicItemRecipeProvider {
     private static void createElectronicItemRecipes(RecipeBuilder builder) {
         builder.shaped()
             .withCategory(RecipeCategory.MISC)
-            .define('A', AVPItems.ALUMINUM_INGOT)
+            .define('A', CommonConstants.INGOTS_ALUMINUM)
             .define('N', AVPItems.NEODYMIUM_MAGNET)
             .define('R', AVPItems.REGULATOR)
             .define('P', AVPItems.POLYMER)

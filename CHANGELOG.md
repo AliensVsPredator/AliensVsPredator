@@ -35,6 +35,7 @@
   - Raw galena blocks now accept any kind of raw lead items.
   - Raw titanium blocks now accept any kind of raw titanium items.
   - Raw zinc blocks now accept any kind of raw zinc items.
+  - Speakers now accept any aluminum ingots.
   - Steel armor set now accepts any steel ingots.
   - Steel bars block now accept any steel ingots.
   - Steel blocks now accept any steel ingots.
