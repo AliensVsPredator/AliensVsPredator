@@ -20,6 +20,7 @@
 - Titanium tools can now be repaired with any titanium ingots.
 - Modified numerous recipes to support tagged items from other mods:
   - Aluminum blocks now accept any aluminum ingots.
+  - Battery packs now accept any aluminum ingots.
   - Brass blocks now accept any brass ingots.
   - Ferroaluminum blocks now accept any ferroaluminum ingots.
   - Ferroaluminum button block now accept any ferroaluminum ingots.

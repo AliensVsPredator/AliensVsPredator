@@ -139,7 +139,7 @@ public class ElectronicItemRecipeProvider {
 
         builder.shaped()
             .withCategory(RecipeCategory.MISC)
-            .define('A', AVPItems.ALUMINUM_INGOT)
+            .define('A', CommonConstants.INGOTS_ALUMINUM)
             .define('C', AVPItems.CAPACITOR)
             .define('L', AVPItems.LITHIUM_DUST)
             .pattern("ACA")
