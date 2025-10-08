@@ -114,58 +114,58 @@ public class MetalRecipeProvider {
 
         builder.shaped()
             .withCategory(RecipeCategory.BUILDING_BLOCKS)
-            .apply(RecipeTemplates.BARS_BLOCK.apply(AVPItems.STEEL_INGOT.get()))
+            .apply(RecipeTemplates.BARS_BLOCK.apply(CommonConstants.INGOTS_STEEL))
             .into(16, HumanSteelBlocks.STEEL_BARS);
 
         builder.shaped()
             .withCategory(RecipeCategory.BUILDING_BLOCKS)
-            .apply(RecipeTemplates.BUTTON_BLOCK.apply(AVPItems.FERROALUMINUM_INGOT.get()))
+            .apply(RecipeTemplates.BUTTON_BLOCK.apply(CommonConstants.INGOTS_FERROALUMINUM))
             .into(2, HumanFerroaluminumBlocks.FERROALUMINUM_BUTTON);
         builder.shaped()
             .withCategory(RecipeCategory.BUILDING_BLOCKS)
-            .apply(RecipeTemplates.BUTTON_BLOCK.apply(AVPItems.STEEL_INGOT.get()))
+            .apply(RecipeTemplates.BUTTON_BLOCK.apply(CommonConstants.INGOTS_STEEL))
             .into(2, HumanSteelBlocks.STEEL_BUTTON);
         builder.shaped()
             .withCategory(RecipeCategory.BUILDING_BLOCKS)
-            .apply(RecipeTemplates.BUTTON_BLOCK.apply(AVPItems.TITANIUM_INGOT.get()))
+            .apply(RecipeTemplates.BUTTON_BLOCK.apply(CommonConstants.INGOTS_TITANIUM))
             .into(2, HumanTitaniumBlocks.TITANIUM_BUTTON);
         builder.shaped()
             .withCategory(RecipeCategory.BUILDING_BLOCKS)
-            .apply(RecipeTemplates.DOOR_BLOCK.apply(AVPItems.FERROALUMINUM_INGOT.get()))
+            .apply(RecipeTemplates.DOOR_BLOCK_TAG_FRIENDLY.apply(CommonConstants.INGOTS_FERROALUMINUM))
             .into(3, HumanFerroaluminumBlocks.FERROALUMINUM_DOOR);
         builder.shaped()
             .withCategory(RecipeCategory.BUILDING_BLOCKS)
-            .apply(RecipeTemplates.DOOR_BLOCK.apply(AVPItems.STEEL_INGOT.get()))
+            .apply(RecipeTemplates.DOOR_BLOCK_TAG_FRIENDLY.apply(CommonConstants.INGOTS_STEEL))
             .into(3, HumanSteelBlocks.STEEL_DOOR);
         builder.shaped()
             .withCategory(RecipeCategory.BUILDING_BLOCKS)
-            .apply(RecipeTemplates.DOOR_BLOCK.apply(AVPItems.TITANIUM_INGOT.get()))
+            .apply(RecipeTemplates.DOOR_BLOCK_TAG_FRIENDLY.apply(CommonConstants.INGOTS_TITANIUM))
             .into(3, HumanTitaniumBlocks.TITANIUM_DOOR);
 
         builder.shaped()
             .withCategory(RecipeCategory.BUILDING_BLOCKS)
-            .apply(RecipeTemplates.TRAP_DOOR_BLOCK.apply(AVPItems.FERROALUMINUM_INGOT.get()))
+            .apply(RecipeTemplates.TRAP_DOOR_BLOCK_TAG_FRIENDLY.apply(CommonConstants.INGOTS_FERROALUMINUM))
             .into(2, HumanFerroaluminumBlocks.FERROALUMINUM_TRAP_DOOR);
         builder.shaped()
             .withCategory(RecipeCategory.BUILDING_BLOCKS)
-            .apply(RecipeTemplates.TRAP_DOOR_BLOCK.apply(AVPItems.STEEL_INGOT.get()))
+            .apply(RecipeTemplates.TRAP_DOOR_BLOCK_TAG_FRIENDLY.apply(CommonConstants.INGOTS_STEEL))
             .into(2, HumanSteelBlocks.STEEL_TRAP_DOOR);
         builder.shaped()
             .withCategory(RecipeCategory.BUILDING_BLOCKS)
-            .apply(RecipeTemplates.TRAP_DOOR_BLOCK.apply(AVPItems.TITANIUM_INGOT.get()))
+            .apply(RecipeTemplates.TRAP_DOOR_BLOCK_TAG_FRIENDLY.apply(CommonConstants.INGOTS_TITANIUM))
             .into(2, HumanTitaniumBlocks.TITANIUM_TRAP_DOOR);
 
         builder.shaped()
             .withCategory(RecipeCategory.BUILDING_BLOCKS)
-            .apply(RecipeTemplates.PRESSURE_PLATE_BLOCK.apply(AVPItems.FERROALUMINUM_INGOT.get()))
+            .apply(RecipeTemplates.PRESSURE_PLATE_BLOCK.apply(CommonConstants.INGOTS_FERROALUMINUM))
             .into(1, HumanFerroaluminumBlocks.FERROALUMINUM_PRESSURE_PLATE);
         builder.shaped()
             .withCategory(RecipeCategory.BUILDING_BLOCKS)
-            .apply(RecipeTemplates.PRESSURE_PLATE_BLOCK.apply(AVPItems.STEEL_INGOT.get()))
+            .apply(RecipeTemplates.PRESSURE_PLATE_BLOCK.apply(CommonConstants.INGOTS_STEEL))
             .into(1, HumanSteelBlocks.STEEL_PRESSURE_PLATE);
         builder.shaped()
             .withCategory(RecipeCategory.BUILDING_BLOCKS)
-            .apply(RecipeTemplates.PRESSURE_PLATE_BLOCK.apply(AVPItems.TITANIUM_INGOT.get()))
+            .apply(RecipeTemplates.PRESSURE_PLATE_BLOCK.apply(CommonConstants.INGOTS_TITANIUM))
             .into(1, HumanTitaniumBlocks.TITANIUM_PRESSURE_PLATE);
 
         // Add standard slab and stair crafting recipes

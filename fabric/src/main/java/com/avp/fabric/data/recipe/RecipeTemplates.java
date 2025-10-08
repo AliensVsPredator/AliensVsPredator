@@ -23,15 +23,15 @@ public class RecipeTemplates {
             .pattern("AB ")
             .pattern(" B ");
 
-    public static final Function<ItemLike, UnaryOperator<ShapedRecipeBuilder>> BARS_BLOCK =
-        itemLike -> builder -> builder
-            .define('A', itemLike)
+    public static final Function<TagKey<Item>, UnaryOperator<ShapedRecipeBuilder>> BARS_BLOCK =
+        itemTagKey -> builder -> builder
+            .define('A', itemTagKey)
             .pattern("AAA")
             .pattern("AAA");
 
-    public static final Function<ItemLike, UnaryOperator<ShapedRecipeBuilder>> BUTTON_BLOCK =
-        itemLike -> builder -> builder
-            .define('A', itemLike)
+    public static final Function<TagKey<Item>, UnaryOperator<ShapedRecipeBuilder>> BUTTON_BLOCK =
+        itemTagKey -> builder -> builder
+            .define('A', itemTagKey)
             .pattern("A")
             .pattern("A");
 
@@ -91,6 +91,13 @@ public class RecipeTemplates {
             .pattern("AA")
             .pattern("AA");
 
+    public static final Function<TagKey<Item>, UnaryOperator<ShapedRecipeBuilder>> DOOR_BLOCK_TAG_FRIENDLY =
+        itemTagKey -> builder -> builder
+            .define('A', itemTagKey)
+            .pattern("AA")
+            .pattern("AA")
+            .pattern("AA");
+
     public static final Function<ItemLike, UnaryOperator<ShapedRecipeBuilder>> HELMET = itemLike -> builder -> builder
         .withCategory(RecipeCategory.COMBAT)
         .define('A', itemLike)
@@ -144,9 +151,9 @@ public class RecipeTemplates {
             .pattern("AAA")
             .pattern(" A ");
 
-    public static final Function<ItemLike, UnaryOperator<ShapedRecipeBuilder>> PRESSURE_PLATE_BLOCK =
-        itemLike -> builder -> builder
-            .define('A', itemLike)
+    public static final Function<TagKey<Item>, UnaryOperator<ShapedRecipeBuilder>> PRESSURE_PLATE_BLOCK =
+        itemTagKey -> builder -> builder
+            .define('A', itemTagKey)
             .pattern("AA");
 
     public static final Function<TagKey<Item>, UnaryOperator<ShapedRecipeBuilder>> SHOVEL =
@@ -182,6 +189,12 @@ public class RecipeTemplates {
     public static final Function<ItemLike, UnaryOperator<ShapedRecipeBuilder>> TRAP_DOOR_BLOCK =
         itemLike -> builder -> builder
             .define('A', itemLike)
+            .pattern("AA")
+            .pattern("AA");
+
+    public static final Function<TagKey<Item>, UnaryOperator<ShapedRecipeBuilder>> TRAP_DOOR_BLOCK_TAG_FRIENDLY =
+        itemTagKey -> builder -> builder
+            .define('A', itemTagKey)
             .pattern("AA")
             .pattern("AA");
 

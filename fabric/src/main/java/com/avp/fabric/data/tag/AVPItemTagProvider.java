@@ -463,6 +463,12 @@ public class AVPItemTagProvider extends FabricTagProvider.ItemTagProvider {
                 AVPItems.LEAD_INGOT.get()
             );
 
+        getOrCreateTagBuilder(CommonConstants.INGOTS_FERROALUMINUM)
+            .setReplace(false)
+            .add(
+                AVPItems.FERROALUMINUM_INGOT.get()
+            );
+
         getOrCreateTagBuilder(CommonConstants.INGOTS_STEEL)
             .setReplace(false)
             .add(

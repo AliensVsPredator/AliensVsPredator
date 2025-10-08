@@ -17,6 +17,10 @@
       - For any attack, warp xenos previously had a fixed 10% chance to teleport. This is now 1% at 10% warp gene strength, 2% at 20%, and so on up until 10% chance to teleport.
   - Based on player feedback, we decided that the warp gene providing full strength within the first generation was too punishing. We want to allow people to still make warp xenos at full strength, but we don't want warp xenos to be impossible to kill after only a single generation (they are immune to projectiles like bullets at 100% strength!). This patch should be a fair compromise by not punishing players severely for simple chorus fruit usage to save their lives, while also not preventing them from achieving warp xenos with full strength (with a bit more effort and intent).
 - Modified numerous recipes to support tagged items from other mods:
+  - Ferroaluminum button block now accept any ferroaluminum ingots.
+  - Ferroaluminum door block now accept any ferroaluminum ingots.
+  - Ferroaluminum pressure plate block now accept any ferroaluminum ingots.
+  - Ferroaluminum trapdoor block now accept any ferroaluminum ingots.
   - Gun parts now accept any steel ingots.
   - MK50 armor set now accepts any lead ingots and any aluminum ingots.
   - Pressure suit armor set now accepts any aluminum ingots.
@@ -25,10 +29,19 @@
   - Raw titanium blocks now accept any kind of raw titanium items.
   - Raw zinc blocks now accept any kind of raw zinc items.
   - Steel armor set now accepts any steel ingots.
+  - Steel bars block now accept any steel ingots.
+  - Steel button block now accept any steel ingots.
+  - Steel door block now accept any steel ingots.
+  - Steel pressure plate block now accept any steel ingots.
   - Steel tool set now accepts any steel ingots.
+  - Steel trapdoor block now accept any steel ingots.
   - Tactical armor set now accepts any steel ingots.
   - Titanium armor set now accepts any titanium ingots.
+  - Titanium button block now accept any titanium ingots.
+  - Titanium door block now accept any titanium ingots.
+  - Titanium pressure plate block now accept any titanium ingots.
   - Titanium tool set now accepts any titanium ingots.
+  - Titanium trapdoor block now accept any titanium ingots.
 
 ## 🐞 Fixes
 - Fixed predators rendering incorrectly.
@@ -37,6 +50,7 @@
 - N/A
 
 ## 🛠 Data Pack
+- Added `avp:ferroaluminum_ingot` to `c:ingots/ferroaluminum` tag.
 - Added `avp:raw_aluminum` to `c:raw_materials/aluminum` tag.
 - Added `avp:raw_galena` to `c:raw_materials/lead` tag.
 - Added `avp:raw_titanium` to `c:raw_materials/titanium` tag.

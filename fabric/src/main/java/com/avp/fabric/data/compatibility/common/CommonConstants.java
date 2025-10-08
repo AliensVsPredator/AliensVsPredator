@@ -23,6 +23,8 @@ public class CommonConstants {
 
     public static final TagKey<Item> INGOTS_BRASS = createItem("ingots/brass");
 
+    public static final TagKey<Item> INGOTS_FERROALUMINUM = createItem("ingots/ferroaluminum");
+
     public static final TagKey<Item> INGOTS_LEAD = createItem("ingots/lead");
 
     public static final TagKey<Item> INGOTS_STEEL = createItem("ingots/steel");
