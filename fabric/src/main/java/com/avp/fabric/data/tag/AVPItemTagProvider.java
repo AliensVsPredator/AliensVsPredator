@@ -479,6 +479,13 @@ public class AVPItemTagProvider extends FabricTagProvider.ItemTagProvider {
             .setReplace(false)
             .add(AVPItems.ZINC_INGOT.get());
 
+        getOrCreateTagBuilder(CommonConstants.MUSIC_DISCS)
+            .setReplace(false)
+            .add(
+                AlienItems.ALIEN_MUSIC_DISC_1.get(),
+                AVPItems.PREDATOR_MUSIC_DISC_1.get()
+            );
+
         getOrCreateTagBuilder(CommonConstants.NUGGETS)
             .setReplace(false)
             .add(

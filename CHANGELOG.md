@@ -112,6 +112,8 @@
 - Added `avp:raw_galena` to `#c:raw_materials/lead` item tag.
 - Added `avp:raw_titanium` to `#c:raw_materials/titanium` item tag.
 - Added `avp:raw_zinc` to `#c:raw_materials/zinc` item tag.
+- Added `avp:alien_music_disc_1` to `#c:music_discs` item tag.
+- Added `avp:predator_music_disc_1` to `#c:music_discs` item tag.
 
 ## 🔬 Technical Changes
 - N/A

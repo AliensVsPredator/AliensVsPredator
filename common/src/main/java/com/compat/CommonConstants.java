@@ -39,6 +39,8 @@ public class CommonConstants {
 
     public static final TagKey<Item> INGOTS_ZINC = createItem("ingots/zinc");
 
+    public static final TagKey<Item> MUSIC_DISCS = createItem("music_discs");
+
     public static final TagKey<Item> NUGGETS = createItem("nuggets");
 
     public static final TagKey<Item> NUGGETS_ALUMINUM = createItem("nuggets/aluminum");
