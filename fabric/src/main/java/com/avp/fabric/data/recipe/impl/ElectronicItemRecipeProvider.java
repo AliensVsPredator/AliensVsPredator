@@ -72,7 +72,7 @@ public class ElectronicItemRecipeProvider {
         builder.shaped()
             .withCategory(RecipeCategory.MISC)
             .define('D', AVPItems.DIODE)
-            .define('L', AVPItems.LEAD_INGOT)
+            .define('L', CommonConstants.INGOTS_LEAD)
             .define('R', AVPItems.RESISTOR)
             .define('S', AVPItems.SILICON)
             .pattern(" D ")

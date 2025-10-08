@@ -36,10 +36,11 @@
   - MK50 armor set now accepts any lead ingots and any aluminum ingots.
   - Nuke blocks now accept any lead ingots.
   - Pressure armor set now accepts any aluminum ingots.
-  - Raw bauxite blocks now accept any kind of raw aluminum items.
-  - Raw galena blocks now accept any kind of raw lead items.
-  - Raw titanium blocks now accept any kind of raw titanium items.
-  - Raw zinc blocks now accept any kind of raw zinc items.
+  - Raw bauxite blocks now accept any raw aluminum.
+  - Raw galena blocks now accept any raw lead.
+  - Raw titanium blocks now accept any raw titanium.
+  - Raw zinc blocks now accept any raw zinc.
+  - Regulators now accept any lead ingots.
   - Speakers now accept any aluminum ingots.
   - Steel armor set now accepts any steel ingots.
   - Steel bars block now accept any steel ingots.
