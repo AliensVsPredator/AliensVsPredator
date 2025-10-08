@@ -2,6 +2,7 @@ package com.avp.fabric.data.recipe.impl;
 
 import com.alien.common.registry.init.AlienBlocks;
 import com.alien.common.registry.init.AlienItems;
+import com.compat.CommonConstants;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.Items;
@@ -19,7 +20,7 @@ public class MiscellaneousRecipeProvider {
     public static void provide(RecipeBuilder builder) {
         builder.shaped()
             .withCategory(RecipeCategory.MISC)
-            .define('A', AVPItems.ALUMINUM_INGOT)
+            .define('A', CommonConstants.INGOTS_ALUMINUM)
             .define('B', AVPItems.SYRINGE)
             .define('C', AVPItems.INTEGRATED_CIRCUIT)
             .define('D', AVPItems.LED_DISPLAY)
