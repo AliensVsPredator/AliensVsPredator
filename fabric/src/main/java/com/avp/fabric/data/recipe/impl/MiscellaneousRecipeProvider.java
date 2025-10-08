@@ -32,7 +32,7 @@ public class MiscellaneousRecipeProvider {
 
         builder.shaped()
             .withCategory(RecipeCategory.MISC)
-            .define('A', Items.IRON_NUGGET)
+            .define('A', CommonConstants.NUGGETS_IRON)
             .define('B', Items.GLASS_BOTTLE)
             .define('C', AVPItems.POLYMER)
             .pattern("A  ")

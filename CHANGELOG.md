@@ -57,6 +57,7 @@
   - Steel pressure plate block now accept any steel ingots.
   - Steel tool set now accepts any steel ingots.
   - Steel trapdoor block now accept any steel ingots.
+  - Syringes now accept any iron nuggets.
   - Tactical armor set now accepts any steel ingots.
   - Titanium armor set now accepts any titanium ingots.
   - Titanium blocks now accept any titanium ingots.
