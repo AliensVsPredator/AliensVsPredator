@@ -11,6 +11,7 @@
 
 ## ♻️ Changes
 - Guns can now be repaired with steel ingots from other mods.
+- Steel armor can now be repaired with any steel ingots.
 - Modified numerous recipes to support tagged items from other mods:
   - Ferroaluminum button block now accept any ferroaluminum ingots.
   - Ferroaluminum door block now accept any ferroaluminum ingots.

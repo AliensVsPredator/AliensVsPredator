@@ -1,5 +1,6 @@
 package com.avp.common.registry.init;
 
+import com.compat.CommonConstants;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.sounds.SoundEvent;
@@ -67,7 +68,7 @@ public class AVPArmorMaterials {
         ),
         5, // TODO:
         AVPSoundEvents.ITEM_ARMOR_EQUIP_STEEL::getHolder,
-        () -> Ingredient.of(AVPItems.STEEL_INGOT.get()),
+        () -> Ingredient.of(CommonConstants.INGOTS_STEEL),
         0,
         0,
         false
