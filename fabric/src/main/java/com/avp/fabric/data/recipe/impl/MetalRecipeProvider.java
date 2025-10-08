@@ -25,14 +25,20 @@ public class MetalRecipeProvider {
         builder.shapeless()
             .withCategory(RecipeCategory.MISC)
             .requires(1, AVPItems.CARBON_DUST.get())
-            .requires(1, Items.RAW_IRON)
+            .requires(1, CommonConstants.RAW_MATERIALS_IRON)
             .into(1, AVPItems.RAW_CRUDE_IRON.get());
 
         builder.shapeless()
             .withCategory(RecipeCategory.MISC)
-            .requires(1, AVPItems.RAW_BAUXITE.get())
+            .requires(1, CommonConstants.RAW_MATERIALS_ALUMINUM)
+            .requires(1, AVPItems.RAW_CRUDE_IRON.get())
+            .into(2, AVPItems.RAW_FERROBAUXITE.get());
+
+        builder.shapeless()
+            .withCategory(RecipeCategory.MISC)
+            .requires(1, CommonConstants.RAW_MATERIALS_ALUMINUM)
             .requires(1, AVPItems.CARBON_DUST.get())
-            .requires(1, Items.RAW_IRON)
+            .requires(1, CommonConstants.RAW_MATERIALS_IRON)
             .into(2, AVPItems.RAW_FERROBAUXITE.get());
 
         // Steel can only be blasted.

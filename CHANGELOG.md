@@ -8,6 +8,9 @@
 
 ## ✨ What's New
 - AVP now requires AzureLib 3.0.38.
+- Added a new recipe for raw ferrobauxite (1 raw crude iron + 1 raw bauxite).
+  - Existing raw crude iron and raw ferrobauxite recipes have 2 overlapping ingredients, so it made sense to have another recipe where the overlapping ingredients are substituted with raw crude iron.
+  - Thanks to Davianortis for this suggestion!
 
 ## ♻️ Changes
 - Guns can now be repaired with steel ingots from other mods.
@@ -44,6 +47,9 @@
   - Nuke blocks now accept any lead ingots.
   - Pressure armor set now accepts any aluminum ingots.
   - Raw bauxite blocks now accept any raw aluminum.
+  - Raw crude iron now accepts any raw iron.
+  - Raw ferrobauxite now accepts any raw aluminum/bauxite.
+  - Raw ferrobauxite now accepts any raw iron.
   - Raw galena blocks now accept any raw lead.
   - Raw titanium blocks now accept any raw titanium.
   - Raw zinc blocks now accept any raw zinc.
