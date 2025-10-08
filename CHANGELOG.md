@@ -16,7 +16,8 @@
       - For projectiles, the warp xeno with 10% warp gene strength will have a 10% chance to dodge projectiles, 20% for 20%, and so on up until 100% dodge rate.
       - For any attack, warp xenos previously had a fixed 10% chance to teleport. This is now 1% at 10% warp gene strength, 2% at 20%, and so on up until 10% chance to teleport.
   - Based on player feedback, we decided that the warp gene providing full strength within the first generation was too punishing. We want to allow people to still make warp xenos at full strength, but we don't want warp xenos to be impossible to kill after only a single generation (they are immune to projectiles like bullets at 100% strength!). This patch should be a fair compromise by not punishing players severely for simple chorus fruit usage to save their lives, while also not preventing them from achieving warp xenos with full strength (with a bit more effort and intent).
-- Modified numerous recipes to support tagged items:
+- Modified numerous recipes to support tagged items from other mods:
+  - Gun parts now accept any steel ingots.
   - Steel tool set now accepts any steel ingots.
   - MK50 armor set now accepts any lead ingots and any aluminum ingots.
   - Pressure suit armor set now accepts any aluminum ingots.

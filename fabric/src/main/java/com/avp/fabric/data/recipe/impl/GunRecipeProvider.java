@@ -9,6 +9,7 @@ import java.util.function.Supplier;
 
 import com.avp.common.registry.init.item.AVPItems;
 import com.avp.common.registry.tag.AVPItemTags;
+import com.avp.fabric.data.compatibility.common.CommonConstants;
 import com.avp.fabric.data.recipe.builder.RecipeBuilder;
 
 public class GunRecipeProvider {
@@ -16,7 +17,7 @@ public class GunRecipeProvider {
     public static void provide(RecipeBuilder builder) {
         builder.shaped()
             .withCategory(RecipeCategory.COMBAT)
-            .define('S', AVPItems.STEEL_INGOT)
+            .define('S', CommonConstants.INGOTS_STEEL)
             .define('T', Items.TNT)
             .pattern("SSS")
             .pattern("STS")
@@ -181,14 +182,14 @@ public class GunRecipeProvider {
     private static void createGunPartRecipes(RecipeBuilder builder) {
         builder.shaped()
             .withCategory(RecipeCategory.COMBAT)
-            .define('A', AVPItems.STEEL_INGOT)
+            .define('A', CommonConstants.INGOTS_STEEL)
             .pattern("AAA")
             .into(1, AVPItems.BARREL);
 
         builder.shaped()
             .withCategory(RecipeCategory.COMBAT)
             .define('A', AVPItems.POLYMER)
-            .define('B', AVPItems.STEEL_INGOT)
+            .define('B', CommonConstants.INGOTS_STEEL)
             .pattern("B")
             .pattern("A")
             .pattern("A")
@@ -196,7 +197,7 @@ public class GunRecipeProvider {
 
         builder.shaped()
             .withCategory(RecipeCategory.COMBAT)
-            .define('A', AVPItems.STEEL_INGOT)
+            .define('A', CommonConstants.INGOTS_STEEL)
             .define('B', AVPItems.BARREL)
             .pattern("BBB")
             .pattern("A A")
@@ -205,7 +206,7 @@ public class GunRecipeProvider {
 
         builder.shaped()
             .withCategory(RecipeCategory.COMBAT)
-            .define('A', AVPItems.STEEL_INGOT)
+            .define('A', CommonConstants.INGOTS_STEEL)
             .pattern("AAA")
             .pattern("   ")
             .pattern("AAA")
@@ -213,7 +214,7 @@ public class GunRecipeProvider {
 
         builder.shaped()
             .withCategory(RecipeCategory.COMBAT)
-            .define('A', AVPItems.STEEL_INGOT)
+            .define('A', CommonConstants.INGOTS_STEEL)
             .define('B', AVPItems.POLYMER)
             .define('C', Items.TRIPWIRE_HOOK)
             .define('D', Items.STONE_BUTTON)
@@ -244,7 +245,7 @@ public class GunRecipeProvider {
         builder.shaped()
             .withCategory(RecipeCategory.COMBAT)
             .define('A', AVPItems.POLYMER)
-            .define('B', AVPItems.STEEL_INGOT)
+            .define('B', CommonConstants.INGOTS_STEEL)
             .pattern("  A")
             .pattern("BAA")
             .pattern("  A")
