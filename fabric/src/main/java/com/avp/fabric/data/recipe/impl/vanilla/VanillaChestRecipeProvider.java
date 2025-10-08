@@ -5,7 +5,6 @@ import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.world.item.Items;
 
 import com.avp.common.registry.init.item.AVPBlockItems;
-import com.avp.common.registry.init.item.AVPItems;
 import com.avp.fabric.data.recipe.builder.RecipeBuilder;
 
 public class VanillaChestRecipeProvider {
@@ -26,7 +25,7 @@ public class VanillaChestRecipeProvider {
 
         builder.shaped()
             .withCategory(RecipeCategory.DECORATIONS)
-            .define('#', AVPItems.STEEL_INGOT)
+            .define('#', CommonItemTags.INGOTS_STEEL)
             .define('C', Items.CHEST)
             .pattern("###")
             .pattern("#C#")

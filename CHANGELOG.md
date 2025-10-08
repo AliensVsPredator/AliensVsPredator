@@ -24,6 +24,7 @@
 - Modified numerous recipes to support tagged items from other mods:
   - Aluminum blocks now accept any aluminum ingots.
   - Aluminum ingot now accepts any aluminum nuggets.
+  - Ammo chests now accept any steel ingots.
   - Armor cases now accept any aluminum ingots.
   - Battery packs now accept any aluminum ingots.
   - Brass blocks now accept any brass ingots.
