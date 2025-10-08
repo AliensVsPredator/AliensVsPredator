@@ -47,7 +47,9 @@
   - Lead chests now accept any lead ingots.
   - Lead ingot now accepts any lead nuggets.
   - MK50 armor set now accepts any lead ingots and any aluminum ingots.
+  - MK50 chestplate now accepts any leather.
   - MK50 helmet now accepts any coal dust.
+  - MK50 leggings now accepts any leather.
   - Nuke blocks now accept any lead ingots.
   - Pressure armor set now accepts any aluminum ingots.
   - Pressure helmet now accepts any coal dust.

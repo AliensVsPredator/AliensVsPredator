@@ -7,7 +7,6 @@ import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.level.ItemLike;
 
 import java.util.function.Supplier;
@@ -189,14 +188,14 @@ public class ArmorRecipeProvider {
             .into(1, AVPArmorItems.MK50_HELMET);
 
         mk50ArmorBuilder.get()
-            .define('D', Items.LEATHER)
+            .define('D', CommonItemTags.LEATHERS)
             .pattern("A A")
             .pattern("CAC")
             .pattern("DAD")
             .into(1, AVPArmorItems.MK50_CHESTPLATE);
 
         mk50ArmorBuilder.get()
-            .define('D', Items.LEATHER)
+            .define('D', CommonItemTags.LEATHERS)
             .pattern("CDC")
             .pattern("D D")
             .pattern("A A")

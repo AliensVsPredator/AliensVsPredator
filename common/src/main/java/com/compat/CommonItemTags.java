@@ -32,6 +32,8 @@ public class CommonItemTags {
 
     public static final TagKey<Item> INGOTS_ZINC = create("ingots/zinc");
 
+    public static final TagKey<Item> LEATHERS = create("leathers");
+
     public static final TagKey<Item> MUSIC_DISCS = create("music_discs");
 
     public static final TagKey<Item> NUGGETS = create("nuggets");
