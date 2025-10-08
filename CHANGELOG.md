@@ -20,13 +20,16 @@
 - Titanium tools can now be repaired with any titanium ingots.
 - Modified numerous recipes to support tagged items from other mods:
   - Aluminum blocks now accept any aluminum ingots.
+  - Aluminum ingot now accepts any aluminum nuggets.
   - Armor cases now accept any aluminum ingots.
   - Battery packs now accept any aluminum ingots.
   - Brass blocks now accept any brass ingots.
+  - Brass ingot now accepts any brass nuggets.
   - Canisters now accept any titanium ingots.
   - Ferroaluminum blocks now accept any ferroaluminum ingots.
   - Ferroaluminum button block now accept any ferroaluminum ingots.
   - Ferroaluminum door block now accept any ferroaluminum ingots.
+  - Ferroaluminum ingot now accepts any ferroaluminum nuggets.
   - Ferroaluminum pressure plate block now accept any ferroaluminum ingots.
   - Ferroaluminum trapdoor block now accept any ferroaluminum ingots.
   - Gene readers now accept any aluminum ingots.
@@ -34,6 +37,7 @@
   - Integrated circuits now accept any lead ingots.
   - Lead blocks now accept any lead ingots.
   - Lead chests now accept any lead ingots.
+  - Lead ingot now accepts any lead nuggets.
   - MK50 armor set now accepts any lead ingots and any aluminum ingots.
   - Nuke blocks now accept any lead ingots.
   - Pressure armor set now accepts any aluminum ingots.
@@ -48,6 +52,7 @@
   - Steel blocks now accept any steel ingots.
   - Steel button block now accept any steel ingots.
   - Steel door block now accept any steel ingots.
+  - Steel ingot now accepts any steel nuggets.
   - Steel pressure plate block now accept any steel ingots.
   - Steel tool set now accepts any steel ingots.
   - Steel trapdoor block now accept any steel ingots.
@@ -56,12 +61,15 @@
   - Titanium blocks now accept any titanium ingots.
   - Titanium button block now accept any titanium ingots.
   - Titanium door block now accept any titanium ingots.
+  - Titanium ingot now accepts any titanium nuggets.
   - Titanium pressure plate block now accept any titanium ingots.
   - Titanium tool set now accepts any titanium ingots.
   - Titanium trapdoor block now accept any titanium ingots.
   - Uranium blocks now accept any uranium ingots.
+  - Uranium ingot now accepts any uranium nuggets.
   - Uranium ingots now accept any titanium ingots.
   - Zinc blocks now accept any zinc ingots.
+  - Zinc ingot now accepts any zinc nuggets.
 - Eating a chorus fruit while infected with a chestburster now only grants 10% warp gene strength to the chestburster instead of 100%.
   - Warp genes now start off at 10% strength and gain 10% additional strength each generation, up to 100%.
   - Warp gene strength will determine the chance the warp xeno has to teleport.

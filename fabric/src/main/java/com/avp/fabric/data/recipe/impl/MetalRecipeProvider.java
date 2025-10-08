@@ -5,6 +5,8 @@ import com.human.common.registry.init.block.HumanFerroaluminumBlocks;
 import com.human.common.registry.init.block.HumanSteelBlocks;
 import com.human.common.registry.init.block.HumanTitaniumBlocks;
 import net.minecraft.data.recipes.RecipeCategory;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.ItemLike;
 
@@ -230,24 +232,29 @@ public class MetalRecipeProvider {
         createVariantSlabAndStairRecipes(builder);
 
         // Nugget to ingot recipes
-        nuggetToIngot(builder, AVPItems.FERROALUMINUM_NUGGET.get(), AVPItems.FERROALUMINUM_INGOT.get());
-        nuggetToIngot(builder, AVPItems.STEEL_NUGGET.get(), AVPItems.STEEL_INGOT.get());
-        nuggetToIngot(builder, AVPItems.BRASS_NUGGET.get(), AVPItems.BRASS_INGOT.get());
-        nuggetToIngot(builder, AVPItems.TITANIUM_NUGGET.get(), AVPItems.TITANIUM_INGOT.get());
-        nuggetToIngot(builder, AVPItems.LEAD_NUGGET.get(), AVPItems.LEAD_INGOT.get());
-        nuggetToIngot(builder, AVPItems.URANIUM_NUGGET.get(), AVPItems.URANIUM_INGOT.get());
-        nuggetToIngot(builder, AVPItems.ZINC_NUGGET.get(), AVPItems.ZINC_INGOT.get());
-        nuggetToIngot(builder, AVPItems.ALUMINUM_NUGGET.get(), AVPItems.ALUMINUM_INGOT.get());
+        nuggetToIngot(builder, AVPItems.ALUMINUM_NUGGET.get(), CommonConstants.NUGGETS_ALUMINUM, AVPItems.ALUMINUM_INGOT.get());
+        nuggetToIngot(builder, AVPItems.BRASS_NUGGET.get(), CommonConstants.NUGGETS_BRASS, AVPItems.BRASS_INGOT.get());
+        nuggetToIngot(
+            builder,
+            AVPItems.FERROALUMINUM_NUGGET.get(),
+            CommonConstants.NUGGETS_FERROALUMINUM,
+            AVPItems.FERROALUMINUM_INGOT.get()
+        );
+        nuggetToIngot(builder, AVPItems.LEAD_NUGGET.get(), CommonConstants.NUGGETS_LEAD, AVPItems.LEAD_INGOT.get());
+        nuggetToIngot(builder, AVPItems.STEEL_NUGGET.get(), CommonConstants.NUGGETS_STEEL, AVPItems.STEEL_INGOT.get());
+        nuggetToIngot(builder, AVPItems.TITANIUM_NUGGET.get(), CommonConstants.NUGGETS_TITANIUM, AVPItems.TITANIUM_INGOT.get());
+        nuggetToIngot(builder, AVPItems.URANIUM_NUGGET.get(), CommonConstants.NUGGETS_URANIUM, AVPItems.URANIUM_INGOT.get());
+        nuggetToIngot(builder, AVPItems.ZINC_NUGGET.get(), CommonConstants.NUGGETS_ZINC, AVPItems.ZINC_INGOT.get());
 
         // Ingot to nugget recipes
-        ingotToNugget(builder, AVPItems.FERROALUMINUM_INGOT.get(), AVPItems.FERROALUMINUM_NUGGET.get());
-        ingotToNugget(builder, AVPItems.STEEL_INGOT.get(), AVPItems.STEEL_NUGGET.get());
+        ingotToNugget(builder, AVPItems.ALUMINUM_INGOT.get(), AVPItems.ALUMINUM_NUGGET.get());
         ingotToNugget(builder, AVPItems.BRASS_INGOT.get(), AVPItems.BRASS_NUGGET.get());
-        ingotToNugget(builder, AVPItems.TITANIUM_INGOT.get(), AVPItems.TITANIUM_NUGGET.get());
+        ingotToNugget(builder, AVPItems.FERROALUMINUM_INGOT.get(), AVPItems.FERROALUMINUM_NUGGET.get());
         ingotToNugget(builder, AVPItems.LEAD_INGOT.get(), AVPItems.LEAD_NUGGET.get());
+        ingotToNugget(builder, AVPItems.STEEL_INGOT.get(), AVPItems.STEEL_NUGGET.get());
+        ingotToNugget(builder, AVPItems.TITANIUM_INGOT.get(), AVPItems.TITANIUM_NUGGET.get());
         ingotToNugget(builder, AVPItems.URANIUM_INGOT.get(), AVPItems.URANIUM_NUGGET.get());
         ingotToNugget(builder, AVPItems.ZINC_INGOT.get(), AVPItems.ZINC_NUGGET.get());
-        ingotToNugget(builder, AVPItems.ALUMINUM_INGOT.get(), AVPItems.ALUMINUM_NUGGET.get());
     }
 
     private static void createFerroaluminumBlockVariantRecipes(RecipeBuilder builder) {
@@ -533,13 +540,14 @@ public class MetalRecipeProvider {
             .into(output);
     }
 
-    private static void nuggetToIngot(RecipeBuilder builder, ItemLike input, ItemLike output) {
+    private static void nuggetToIngot(RecipeBuilder builder, ItemLike input, TagKey<Item> itemTagKey, ItemLike output) {
         builder.shaped()
             .withCategory(RecipeCategory.BUILDING_BLOCKS)
-            .define('N', input)
-            .pattern("NNN")
-            .pattern("NNN")
-            .pattern("NNN")
+            .define('A', input)
+            .define('B', input)
+            .pattern("BBB")
+            .pattern("BAB")
+            .pattern("BBB")
             .into(1, output);
     }
 
