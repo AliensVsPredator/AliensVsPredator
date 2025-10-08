@@ -93,7 +93,7 @@ public class MiscellaneousRecipeProvider {
 
         builder.shaped()
             .withCategory(RecipeCategory.MISC)
-            .define('A', AVPItems.ALUMINUM_INGOT)
+            .define('A', CommonConstants.INGOTS_ALUMINUM)
             .define('B', AVPItems.POLYMER)
             .define('C', Items.CHEST)
             .pattern("ABA")
