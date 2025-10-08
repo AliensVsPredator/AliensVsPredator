@@ -31,6 +31,7 @@
   - Ferroaluminum trapdoor block now accept any ferroaluminum ingots.
   - Gene readers now accept any aluminum ingots.
   - Gun parts now accept any steel ingots.
+  - Integrated circuits now accept any lead ingots.
   - Lead blocks now accept any lead ingots.
   - Lead chests now accept any lead ingots.
   - MK50 armor set now accepts any lead ingots and any aluminum ingots.
