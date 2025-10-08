@@ -7,7 +7,6 @@ import com.human.common.registry.init.block.HumanTitaniumBlocks;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.level.ItemLike;
 
 import java.util.function.Supplier;
@@ -50,7 +49,7 @@ public class MetalRecipeProvider {
         builder.shapeless()
             .withCategory(RecipeCategory.MISC)
             .requires(1, CommonConstants.RAW_MATERIALS_ZINC)
-            .requires(1, Items.RAW_COPPER)
+            .requires(1, CommonConstants.RAW_MATERIALS_COPPER)
             .into(2, AVPItems.RAW_BRASS.get());
 
         builder.shaped()

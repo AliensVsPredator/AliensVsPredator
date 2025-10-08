@@ -47,6 +47,7 @@
   - Nuke blocks now accept any lead ingots.
   - Pressure armor set now accepts any aluminum ingots.
   - Raw bauxite blocks now accept any raw aluminum.
+  - Raw brass now accepts any raw copper.
   - Raw brass now accepts any raw zinc.
   - Raw crude iron now accepts any raw iron.
   - Raw ferrobauxite now accepts any raw aluminum/bauxite.

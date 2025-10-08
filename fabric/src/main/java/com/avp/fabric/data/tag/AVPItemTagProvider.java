@@ -539,9 +539,11 @@ public class AVPItemTagProvider extends FabricTagProvider.ItemTagProvider {
 
         getOrCreateTagBuilder(CommonConstants.RAW_MATERIALS_ALUMINUM)
             .setReplace(false)
-            .add(
-                AVPItems.RAW_BAUXITE.get()
-            );
+            .add(AVPItems.RAW_BAUXITE.get());
+
+        getOrCreateTagBuilder(CommonConstants.RAW_MATERIALS_COPPER)
+            .setReplace(false)
+            .add(Items.RAW_COPPER);
 
         getOrCreateTagBuilder(CommonConstants.RAW_MATERIALS_IRON)
             .setReplace(false)
