@@ -32,6 +32,7 @@
   - Gene readers now accept any aluminum ingots.
   - Gun parts now accept any steel ingots.
   - Lead blocks now accept any lead ingots.
+  - Lead chests now accept any lead ingots.
   - MK50 armor set now accepts any lead ingots and any aluminum ingots.
   - Pressure armor set now accepts any aluminum ingots.
   - Raw bauxite blocks now accept any kind of raw aluminum items.
