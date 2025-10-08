@@ -16,7 +16,6 @@ import java.util.function.Supplier;
 
 import com.avp.AVPResources;
 import com.avp.common.registry.AVPDeferredHolder;
-import com.avp.common.registry.init.item.AVPItems;
 import com.avp.service.Services;
 
 public class AVPArmorMaterials {

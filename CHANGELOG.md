@@ -44,6 +44,7 @@
   - Titanium pressure plate block now accept any titanium ingots.
   - Titanium tool set now accepts any titanium ingots.
   - Titanium trapdoor block now accept any titanium ingots.
+  - Uranium ingots now accept any titanium ingots.
 - Eating a chorus fruit while infected with a chestburster now only grants 10% warp gene strength to the chestburster instead of 100%.
   - Warp genes now start off at 10% strength and gain 10% additional strength each generation, up to 100%.
   - Warp gene strength will determine the chance the warp xeno has to teleport.
