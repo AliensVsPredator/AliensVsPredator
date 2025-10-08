@@ -8,7 +8,7 @@
 - N/A
 
 ## ✨ What's New
-- AVP now requires AzureLib 3.0.38.
+- AVP now requires AzureLib 3.0.39.
 - Added a new recipe for raw ferrobauxite (1 raw crude iron + 1 raw bauxite).
   - Existing raw crude iron and raw ferrobauxite recipes have 2 overlapping ingredients, so it made sense to have another recipe where the overlapping ingredients are substituted with raw crude iron.
   - Shoutout to Davianortis in our Discord server for this suggestion!
@@ -103,7 +103,7 @@
   - Based on player feedback, we decided that the warp gene providing full strength within the first generation was too punishing. We want to allow people to still make warp xenos at full strength, but we don't want warp xenos to be impossible to kill after only a single generation (they are immune to projectiles like bullets at 100% strength!). This patch should be a fair compromise by not punishing players severely for simple chorus fruit usage to save their lives, while also not preventing them from achieving warp xenos with full strength (with a bit more effort and intent).
 
 ## 🐞 Fixes
-- Fixed predators rendering incorrectly.
+- Fixed numerous rendering issues for aliens, predators and marines by upgrading AzureLib.
 - Fixed uranium ingot recipe data name.
 
 ## 🧪 Experimental
