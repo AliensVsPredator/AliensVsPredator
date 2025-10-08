@@ -8,7 +8,25 @@ public class CommonBlockTags {
 
     public static final TagKey<Block> CHESTS = create("chests");
 
-    public static final TagKey<Block> ORES_BLOCKS = create("ores");
+    public static final TagKey<Block> ORES = create("ores");
+
+    public static final TagKey<Block> ORES_ALUMINUM = create("ores/aluminum");
+
+    public static final TagKey<Block> ORES_AUTUNITE = create("ores/autunite");
+
+    public static final TagKey<Block> ORES_BAUXITE = create("ores/bauxite");
+
+    public static final TagKey<Block> ORES_GALENA = create("ores/galena");
+
+    public static final TagKey<Block> ORES_LEAD = create("ores/lead");
+
+    public static final TagKey<Block> ORES_LITHIUM = create("ores/lithium");
+
+    public static final TagKey<Block> ORES_MONAZITE = create("ores/monazite");
+
+    public static final TagKey<Block> ORES_TITANIUM = create("ores/titanium");
+
+    public static final TagKey<Block> ORES_ZINC = create("ores/zinc");
 
     public static final TagKey<Block> STORAGE_BLOCKS = create("storage_blocks");
 

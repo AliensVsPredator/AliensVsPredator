@@ -60,6 +60,24 @@ public class CommonItemTags {
 
     public static final TagKey<Item> ORES = create("ores");
 
+    public static final TagKey<Item> ORES_ALUMINUM = create("ores/aluminum");
+
+    public static final TagKey<Item> ORES_AUTUNITE = create("ores/autunite");
+
+    public static final TagKey<Item> ORES_BAUXITE = create("ores/bauxite");
+
+    public static final TagKey<Item> ORES_GALENA = create("ores/galena");
+
+    public static final TagKey<Item> ORES_LEAD = create("ores/lead");
+
+    public static final TagKey<Item> ORES_LITHIUM = create("ores/lithium");
+
+    public static final TagKey<Item> ORES_MONAZITE = create("ores/monazite");
+
+    public static final TagKey<Item> ORES_TITANIUM = create("ores/titanium");
+
+    public static final TagKey<Item> ORES_ZINC = create("ores/zinc");
+
     public static final TagKey<Item> RAW_MATERIALS = create("raw_materials");
 
     public static final TagKey<Item> RAW_MATERIALS_ALUMINUM = create("raw_materials/aluminum");

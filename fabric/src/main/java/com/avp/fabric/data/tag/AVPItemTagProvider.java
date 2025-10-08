@@ -544,16 +544,50 @@ public class AVPItemTagProvider extends FabricTagProvider.ItemTagProvider {
 
         getOrCreateTagBuilder(CommonItemTags.ORES)
             .setReplace(false)
-            .add(
-                AVPBlockItems.AUTUNITE_ORE.get(),
-                AVPBlockItems.BAUXITE_ORE.get(),
-                AVPBlockItems.DEEPSLATE_TITANIUM_ORE.get(),
-                AVPBlockItems.DEEPSLATE_ZINC_ORE.get(),
-                AVPBlockItems.GALENA_ORE.get(),
-                AVPBlockItems.LITHIUM_ORE.get(),
-                AVPBlockItems.MONAZITE_ORE.get(),
-                AVPBlockItems.ZINC_ORE.get()
-            );
+            .addTag(CommonItemTags.ORES_ALUMINUM)
+            .addTag(CommonItemTags.ORES_AUTUNITE)
+            .addTag(CommonItemTags.ORES_LEAD)
+            .addTag(CommonItemTags.ORES_LITHIUM)
+            .addTag(CommonItemTags.ORES_MONAZITE)
+            .addTag(CommonItemTags.ORES_TITANIUM)
+            .addTag(CommonItemTags.ORES_ZINC);
+
+        getOrCreateTagBuilder(CommonItemTags.ORES_ALUMINUM)
+            .setReplace(false)
+            .addTag(CommonItemTags.ORES_BAUXITE);
+
+        getOrCreateTagBuilder(CommonItemTags.ORES_AUTUNITE)
+            .setReplace(false)
+            .add(AVPBlockItems.AUTUNITE_ORE.get());
+
+        getOrCreateTagBuilder(CommonItemTags.ORES_BAUXITE)
+            .setReplace(false)
+            .add(AVPBlockItems.BAUXITE_ORE.get());
+
+        getOrCreateTagBuilder(CommonItemTags.ORES_GALENA)
+            .setReplace(false)
+            .add(AVPBlockItems.GALENA_ORE.get());
+
+        getOrCreateTagBuilder(CommonItemTags.ORES_LEAD)
+            .setReplace(false)
+            .addTag(CommonItemTags.ORES_GALENA);
+
+        getOrCreateTagBuilder(CommonItemTags.ORES_LITHIUM)
+            .setReplace(false)
+            .add(AVPBlockItems.LITHIUM_ORE.get());
+
+        getOrCreateTagBuilder(CommonItemTags.ORES_MONAZITE)
+            .setReplace(false)
+            .add(AVPBlockItems.MONAZITE_ORE.get());
+
+        getOrCreateTagBuilder(CommonItemTags.ORES_TITANIUM)
+            .setReplace(false)
+            .add(AVPBlockItems.DEEPSLATE_TITANIUM_ORE.get());
+
+        getOrCreateTagBuilder(CommonItemTags.ORES_ZINC)
+            .setReplace(false)
+            .add(AVPBlockItems.ZINC_ORE.get())
+            .add(AVPBlockItems.DEEPSLATE_ZINC_ORE.get());
 
         getOrCreateTagBuilder(CommonItemTags.RAW_MATERIALS)
             .setReplace(false)
