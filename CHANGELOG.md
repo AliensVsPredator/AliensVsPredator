@@ -45,6 +45,7 @@
   - Gun parts now accept any steel ingots.
   - Gunpowder now accepts any coal dust.
   - Integrated circuits now accept any lead ingots.
+  - Iron block/item like vanilla recipes now use metals from other mods.
   - Lead blocks now accept any lead ingots.
   - Lead chests now accept any lead ingots.
   - Lead ingot now accepts any lead nuggets.
@@ -113,4 +114,4 @@
 - Too many changes to record here, but mostly just adding AVP blocks/items to pre-existing common block/item tags.
 
 ## 🔬 Technical Changes
-- N/A
+- Cleaned up alien rendering code.

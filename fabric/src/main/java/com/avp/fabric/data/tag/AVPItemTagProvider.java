@@ -97,22 +97,18 @@ public class AVPItemTagProvider extends FabricTagProvider.ItemTagProvider {
             .addTag(AVPItemTags.DECORATIVE_POT_SHERDS);
 
         getOrCreateTagBuilder(AVPItemTags.IRON_BLOCK_LIKE)
-            .add(
-                Items.IRON_BLOCK,
-                AVPBlockItems.ALUMINUM_BLOCK.get(),
-                HumanFerroaluminumBlockItems.FERROALUMINUM_BLOCK.get(),
-                HumanSteelBlockItems.STEEL_BLOCK.get(),
-                AVPBlockItems.ZINC_BLOCK.get()
-            );
+            .add(Items.IRON_BLOCK)
+            .addTag(CommonItemTags.STORAGE_BLOCKS_ALUMINUM)
+            .addTag(CommonItemTags.STORAGE_BLOCKS_FERROALUMINUM)
+            .addTag(CommonItemTags.STORAGE_BLOCKS_STEEL)
+            .addTag(CommonItemTags.STORAGE_BLOCKS_ZINC);
 
         getOrCreateTagBuilder(AVPItemTags.IRON_INGOT_LIKE)
-            .add(
-                Items.IRON_INGOT,
-                AVPItems.ALUMINUM_INGOT.get(),
-                AVPItems.FERROALUMINUM_INGOT.get(),
-                AVPItems.STEEL_INGOT.get(),
-                AVPItems.ZINC_INGOT.get()
-            );
+            .add(Items.IRON_INGOT)
+            .addTag(CommonItemTags.INGOTS_ALUMINUM)
+            .addTag(CommonItemTags.INGOTS_FERROALUMINUM)
+            .addTag(CommonItemTags.INGOTS_STEEL)
+            .addTag(CommonItemTags.INGOTS_ZINC);
 
         var industrialGlassBlockTagBuilder = getOrCreateTagBuilder(AVPItemTags.INDUSTRIAL_GLASS_BLOCK);
 
