@@ -26,13 +26,13 @@ public class YautjaRenderer extends AzEntityRenderer<Yautja> {
     public YautjaRenderer(EntityRendererProvider.Context context) {
         super(
             AzEntityRendererConfig.<Yautja>builder(MODEL, TEXTURE)
+                .setRenderType(YautjaRenderer::getRenderType)
                 .setAnimatorProvider(YautjaAnimator::new)
                 .addRenderLayer(new YautjaItemLayer())
-                .setRenderType(YautjaRenderer::getRenderType)
+                .setShadowRadius(0.5F)
                 .build(),
             context
         );
-        this.shadowRadius = 0.5F;
     }
 
     private static RenderType getRenderType(Yautja yautja) {

@@ -1,16 +1,17 @@
 package com.alien.client.render.entity;
 
 import com.alien.client.animation.entity.AdolescentAnimator;
+import com.alien.client.render.AlienRenderResourceCache;
 import com.alien.common.gameplay.entity.living.alien.adolescent.Adolescent;
+import com.alien.common.model.alien.variant.AlienVariant;
 import com.mojang.blaze3d.vertex.PoseStack;
 import mod.azure.azurelib.rewrite.render.entity.AzEntityRenderer;
 import mod.azure.azurelib.rewrite.render.entity.AzEntityRendererConfig;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
-
-import com.avp.AVPResources;
 
 public class AdolescentRenderer extends AzEntityRenderer<Adolescent> {
 
@@ -18,25 +19,12 @@ public class AdolescentRenderer extends AzEntityRenderer<Adolescent> {
 
     private static final String NAME = "adolescent";
 
-    private static final ResourceLocation MODEL = AVPResources.entityGeoModelLocation(NAME);
-
-    private static final ResourceLocation ROYAL_MODEL = AVPResources.entityGeoModelLocation("royal_" + NAME);
-
-    private static final ResourceLocation TEXTURE = AVPResources.entityTextureLocation(NAME);
-
-    private static final ResourceLocation ABERRANT_TEXTURE = AVPResources.entityTextureLocation("aberrant_" + NAME);
-
-    private static final ResourceLocation NETHER_TEXTURE = AVPResources.entityTextureLocation("nether_" + NAME);
-
-    private static final ResourceLocation ROYAL_TEXTURE = AVPResources.entityTextureLocation("royal_" + NAME);
-
-    private static final ResourceLocation ABERRANT_ROYAL_TEXTURE = AVPResources.entityTextureLocation("royal_aberrant_" + NAME);
-
-    private static final ResourceLocation NETHER_ROYAL_TEXTURE = AVPResources.entityTextureLocation("royal_nether_" + NAME);
+    private static final AlienRenderResourceCache RESOURCE_CACHE = new AlienRenderResourceCache(NAME, RenderType::entityCutoutNoCull);
 
     public AdolescentRenderer(EntityRendererProvider.Context context) {
         super(
             AzEntityRendererConfig.builder(AdolescentRenderer::modelLocation, AdolescentRenderer::textureLocation)
+                .setRenderType(AdolescentRenderer::renderType)
                 .setAnimatorProvider(AdolescentAnimator::new)
                 .build(),
             context
@@ -62,35 +50,15 @@ public class AdolescentRenderer extends AzEntityRenderer<Adolescent> {
         poseStack.popPose();
     }
 
-    public static ResourceLocation modelLocation(Adolescent adolescent) {
-        if (adolescent.isRoyal()) {
-            return ROYAL_MODEL;
-        }
-
-        return MODEL;
+    private static ResourceLocation modelLocation(Adolescent adolescent) {
+        return RESOURCE_CACHE.getOrCreateModelLocationForVariant(AlienVariant.NORMAL, adolescent.isRoyal());
     }
 
-    public static ResourceLocation textureLocation(Adolescent adolescent) {
-        if (adolescent.isRoyal()) {
-            if (adolescent.isNetherAfflicted()) {
-                return NETHER_ROYAL_TEXTURE;
-            }
-            if (adolescent.isAberrant()) {
-                return ABERRANT_ROYAL_TEXTURE;
-            }
-            return ROYAL_TEXTURE;
-        }
+    private static RenderType renderType(Adolescent adolescent) {
+        return RESOURCE_CACHE.getOrCreateRenderTypeForVariant(adolescent.getVariant(), adolescent.isRoyal());
+    }
 
-        if (!adolescent.isRoyal()) {
-            if (adolescent.isNetherAfflicted()) {
-                return NETHER_TEXTURE;
-            }
-
-            if (adolescent.isAberrant()) {
-                return ABERRANT_TEXTURE;
-            }
-        }
-
-        return TEXTURE;
+    private static ResourceLocation textureLocation(Adolescent adolescent) {
+        return RESOURCE_CACHE.getOrCreateTextureLocationForVariant(adolescent.getVariant(), adolescent.isRoyal());
     }
 }
