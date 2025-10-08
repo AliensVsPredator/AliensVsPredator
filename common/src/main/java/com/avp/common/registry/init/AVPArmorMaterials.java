@@ -103,7 +103,7 @@ public class AVPArmorMaterials {
         ),
         5,
         AVPSoundEvents.ITEM_ARMOR_EQUIP_TITANIUM::getHolder,
-        () -> Ingredient.of(AVPItems.TITANIUM_INGOT.get()),
+        () -> Ingredient.of(CommonConstants.INGOTS_TITANIUM),
         1,
         0,
         false
