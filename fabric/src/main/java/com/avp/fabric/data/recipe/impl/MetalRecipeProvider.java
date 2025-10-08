@@ -49,7 +49,7 @@ public class MetalRecipeProvider {
 
         builder.shapeless()
             .withCategory(RecipeCategory.MISC)
-            .requires(1, AVPItems.RAW_ZINC.get())
+            .requires(1, CommonConstants.RAW_MATERIALS_ZINC)
             .requires(1, Items.RAW_COPPER)
             .into(2, AVPItems.RAW_BRASS.get());
 
