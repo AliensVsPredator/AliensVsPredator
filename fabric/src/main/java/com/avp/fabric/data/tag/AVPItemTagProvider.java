@@ -560,5 +560,9 @@ public class AVPItemTagProvider extends FabricTagProvider.ItemTagProvider {
         getOrCreateTagBuilder(CommonConstants.RAW_MATERIALS_ZINC)
             .setReplace(false)
             .add(AVPItems.RAW_ZINC.get());
+
+        getOrCreateTagBuilder(CommonConstants.SILICON)
+            .setReplace(false)
+            .add(AVPItems.SILICON.get());
     }
 }

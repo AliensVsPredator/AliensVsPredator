@@ -71,6 +71,8 @@ public class CommonConstants {
 
     public static final TagKey<Item> RAW_MATERIALS_ZINC = createItem("raw_materials/zinc");
 
+    public static final TagKey<Item> SILICON = createItem("silicon");
+
     /*
      * Blocks
      */

@@ -99,6 +99,7 @@
 ## 🛠 Data Pack
 - Added `#c:nuggets/ferroaluminum` item tag.
 - Added `#c:nuggets/uranium` item tag.
+- Added `#c:silicon` item tag.
 - Added `avp:ferroaluminum_ingot` to `#c:ingots/ferroaluminum` item tag.
 - Added `avp:raw_aluminum` to `#c:raw_materials/aluminum` item tag.
 - Added `avp:raw_galena` to `#c:raw_materials/lead` item tag.
