@@ -12,6 +12,7 @@
 ## ♻️ Changes
 - Guns can now be repaired with steel ingots from other mods.
 - MK50 armor can now be repaired with any lead ingots.
+- Pressure armor can now be repaired with any aluminum ingots.
 - Steel armor can now be repaired with any steel ingots.
 - Tactical armor can now be repaired with any steel ingots.
 - Modified numerous recipes to support tagged items from other mods:
@@ -21,7 +22,7 @@
   - Ferroaluminum trapdoor block now accept any ferroaluminum ingots.
   - Gun parts now accept any steel ingots.
   - MK50 armor set now accepts any lead ingots and any aluminum ingots.
-  - Pressure suit armor set now accepts any aluminum ingots.
+  - Pressure armor set now accepts any aluminum ingots.
   - Raw bauxite blocks now accept any kind of raw aluminum items.
   - Raw galena blocks now accept any kind of raw lead items.
   - Raw titanium blocks now accept any kind of raw titanium items.

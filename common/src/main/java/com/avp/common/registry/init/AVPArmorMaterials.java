@@ -49,7 +49,7 @@ public class AVPArmorMaterials {
         ),
         6,
         AVPSoundEvents.ITEM_ARMOR_EQUIP_PRESSURE::getHolder,
-        () -> Ingredient.of(AVPItems.ALUMINUM_INGOT.get()),
+        () -> Ingredient.of(CommonConstants.INGOTS_ALUMINUM),
         0,
         0,
         false
