@@ -188,10 +188,8 @@ public class AVPItemTagProvider extends FabricTagProvider.ItemTagProvider {
             .addOptionalTag(CommonConstants.INGOTS_URANIUM);
 
         getOrCreateTagBuilder(AVPItemTags.URANIUM_NUGGET_LIKE)
-            .add(
-                AVPItems.URANIUM_NUGGET.get(),
-                AlienItems.IRRADIATED_CHITIN.get()
-            );
+            .addOptionalTag(CommonConstants.NUGGETS_URANIUM)
+            .add(AlienItems.IRRADIATED_CHITIN.get());
     }
 
     private void addAutomatedTagItems() {

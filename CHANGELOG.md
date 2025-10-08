@@ -25,6 +25,7 @@
   - Battery packs now accept any aluminum ingots.
   - Brass blocks now accept any brass ingots.
   - Brass ingot now accepts any brass nuggets.
+  - Bullets now accept any aluminum, brass, lead or steel nuggets.
   - Canisters now accept any titanium ingots.
   - Ferroaluminum blocks now accept any ferroaluminum ingots.
   - Ferroaluminum button block now accept any ferroaluminum ingots.
