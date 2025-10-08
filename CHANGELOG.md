@@ -17,6 +17,7 @@
 - Steel tools can now be repaired with any steel ingots.
 - Tactical armor can now be repaired with any steel ingots.
 - Titanium armor can now be repaired with any titanium ingots.
+- Titanium tools can now be repaired with any titanium ingots.
 - Modified numerous recipes to support tagged items from other mods:
   - Ferroaluminum button block now accept any ferroaluminum ingots.
   - Ferroaluminum door block now accept any ferroaluminum ingots.

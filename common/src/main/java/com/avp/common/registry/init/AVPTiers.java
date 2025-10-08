@@ -29,7 +29,7 @@ public class AVPTiers {
         2.5F,
         BlockTags.INCORRECT_FOR_IRON_TOOL,
         12,
-        () -> Ingredient.of(AVPItems.TITANIUM_INGOT.get())
+        () -> Ingredient.of(CommonConstants.INGOTS_TITANIUM)
     );
 
     public static final Tier VERITANIUM = create(
