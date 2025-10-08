@@ -1,5 +1,6 @@
 package com.avp.common.registry.init;
 
+import com.compat.CommonConstants;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Tier;
@@ -19,7 +20,7 @@ public class AVPTiers {
         2.5F,
         BlockTags.INCORRECT_FOR_IRON_TOOL,
         13,
-        () -> Ingredient.of(AVPItems.STEEL_INGOT.get())
+        () -> Ingredient.of(CommonConstants.INGOTS_STEEL)
     );
 
     public static final Tier TITANIUM = create(
