@@ -6,9 +6,13 @@ import net.minecraft.world.item.Item;
 
 public class CommonItemTags {
 
+    public static final TagKey<Item> DIAMONDS = create("diamonds");
+
     public static final TagKey<Item> DUSTS_COAL = create("dusts/coal");
 
     public static final TagKey<Item> DUSTS_REDSTONE = create("dusts/redstone");
+
+    public static final TagKey<Item> GEMS_DIAMOND = create("gems/diamond");
 
     public static final TagKey<Item> HEAVY_METAL = create("ingots/heavy_metal");
 

@@ -69,7 +69,7 @@ public class MiscellaneousRecipeProvider {
             .withCategory(RecipeCategory.MISC)
             .define('A', AVPItems.AUTUNITE_DUST)
             .define('G', Items.GOLD_INGOT)
-            .define('D', Items.DIAMOND)
+            .define('D', CommonItemTags.GEMS_DIAMOND)
             .pattern("GDG")
             .pattern("AAA")
             .pattern("GDG")

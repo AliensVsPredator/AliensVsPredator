@@ -427,6 +427,10 @@ public class AVPItemTagProvider extends FabricTagProvider.ItemTagProvider {
     }
 
     private void addCompatibilityTags() {
+        getOrCreateTagBuilder(CommonItemTags.DIAMONDS)
+            .setReplace(false)
+            .add(Items.DIAMOND);
+
         getOrCreateTagBuilder(CommonItemTags.DUSTS_COAL)
             .setReplace(false)
             .add(AVPItems.CARBON_DUST.get());
@@ -434,6 +438,10 @@ public class AVPItemTagProvider extends FabricTagProvider.ItemTagProvider {
         getOrCreateTagBuilder(CommonItemTags.DUSTS_REDSTONE)
             .setReplace(false)
             .add(Items.REDSTONE);
+
+        getOrCreateTagBuilder(CommonItemTags.GEMS_DIAMOND)
+            .setReplace(false)
+            .addTag(CommonItemTags.DIAMONDS);
 
         getOrCreateTagBuilder(CommonItemTags.INGOTS)
             .setReplace(false)
