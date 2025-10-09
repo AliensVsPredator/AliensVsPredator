@@ -10,11 +10,15 @@ public class SentryTurretItemRenderer extends AzItemRenderer {
 
     public static final String NAME = "sentry_turret";
 
-    private static final ResourceLocation GEO = AVPResources.blockGeoModelLocation(NAME);
+    private static final ResourceLocation MODEL = AVPResources.blockGeoModelLocation(NAME);
 
-    private static final ResourceLocation TEX = AVPResources.blockTextureLocation(NAME);
+    private static final ResourceLocation TEXTURE = AVPResources.blockTextureLocation(NAME);
 
     public SentryTurretItemRenderer() {
-        super(AzItemRendererConfig.builder(GEO, TEX).useNewOffset(true).build());
+        super(
+            AzItemRendererConfig.builder(MODEL, TEXTURE)
+                .useNewOffset(true)
+                .build()
+        );
     }
 }
