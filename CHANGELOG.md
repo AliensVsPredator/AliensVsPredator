@@ -53,6 +53,7 @@
   - MK50 chestplate now accepts any leather.
   - MK50 helmet now accepts any coal dust.
   - MK50 leggings now accepts any leather.
+  - Nuclear battery now accepts any autunite dust.
   - Nuclear battery now accepts any diamonds.
   - Nuke blocks now accept any lead ingots.
   - Padding blocks now accept any leather.

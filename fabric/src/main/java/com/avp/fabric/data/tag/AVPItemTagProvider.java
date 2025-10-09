@@ -439,6 +439,10 @@ public class AVPItemTagProvider extends FabricTagProvider.ItemTagProvider {
             .setReplace(false)
             .add(AVPItems.CARBON_DUST.get());
 
+        getOrCreateTagBuilder(CommonItemTags.DUSTS_LITHIUM)
+            .setReplace(false)
+            .add(AVPItems.LITHIUM_DUST.get());
+
         getOrCreateTagBuilder(CommonItemTags.DUSTS_REDSTONE)
             .setReplace(false)
             .add(Items.REDSTONE);
