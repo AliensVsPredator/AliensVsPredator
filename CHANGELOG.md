@@ -8,7 +8,8 @@
 - N/A
 
 ## ✨ What's New
-- AVP now requires AzureLib 3.0.39.
+- [Fabric] AVP now requires Fabric API `0.116.7+1.21.1`.
+- AVP now requires AzureLib `3.0.39`.
 - Added a new recipe for raw ferrobauxite (1 raw crude iron + 1 raw bauxite).
   - Existing raw crude iron and raw ferrobauxite recipes have 2 overlapping ingredients, so it made sense to have another recipe where the overlapping ingredients are substituted with raw crude iron.
   - Shoutout to Davianortis in our Discord server for this suggestion!
