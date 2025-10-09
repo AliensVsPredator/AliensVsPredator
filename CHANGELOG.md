@@ -96,6 +96,12 @@
   - Uranium ingots now accept any titanium ingots.
   - Zinc blocks now accept any zinc ingots.
   - Zinc ingot now accepts any zinc nuggets.
+- The type of alien added to hives from mob kills is no longer a 50/50 chance between a drone or a runner, but now depends on the type of mob killed.
+  - Runner hosts will add runners to the hive's reserves. All other mobs add to the drone count in the hive's reserves.
+- Alien hives no longer grow from mob kills if the mob killed was another alien.
+  - This prevents infinite hive wars if multiple enemy hives are near each other.
+- The number of aliens added to hives from mob kills now scales with the killing alien's bonus embryo count gene value.
+  - For example if an alien has a bonus embryo count of 2 and it kills a pig, then the hive gains 1 + 2 runner aliens.
 - Eating a chorus fruit while infected with a chestburster now only grants 10% warp gene strength to the chestburster instead of 100%.
   - Warp genes now start off at 10% strength and gain 10% additional strength each generation, up to 100%.
   - Warp gene strength will determine the chance the warp xeno has to teleport.
@@ -106,6 +112,7 @@
 ## 🐞 Fixes
 - Fixed numerous rendering issues for aliens, predators and marines by upgrading AzureLib.
 - Fixed uranium ingot recipe data name.
+- Fixed irradiated hives growing in size due to mob kills (irradiated hives aren't supposed to grow in size because they are infertile).
 
 ## 🧪 Experimental
 - N/A
